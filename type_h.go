@@ -1,0 +1,12 @@
+package winffi
+
+type (
+	HACCEL    HANDLE
+	HANDLE    uintptr
+	HCURSOR   HANDLE
+	HICON     HANDLE
+	HINSTANCE HANDLE
+	HMENU     HANDLE
+	HMONITOR  HANDLE
+	HWND      HANDLE
+)
