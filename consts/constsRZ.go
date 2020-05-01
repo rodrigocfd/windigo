@@ -1,0 +1,16 @@
+package consts
+
+type WM uint32
+
+const (
+	WM_COMMAND     WM = 0x0111
+	WM_CREATE      WM = 0x0001
+	WM_DESTROY     WM = 0x0002
+	WM_LBUTTONDOWN WM = 0x0201
+	WM_NCCREATE    WM = 0x0081
+	WM_NCDESTROY   WM = 0x0082
+	WM_NCPAINT     WM = 0x0085
+	WM_NOTIFY      WM = 0x004E
+	WM_SETFONT     WM = 0x0030
+	WM_SIZE        WM = 0x0005
+)
