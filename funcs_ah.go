@@ -2,10 +2,10 @@ package winffi
 
 import (
 	"syscall"
-	"winffi/proc"
+	"winffi/procs"
 )
 
 func InitCommonControls() {
-	syscall.Syscall(proc.InitCommonControls.Addr(), 0,
+	syscall.Syscall(procs.InitCommonControls.Addr(), 0,
 		0, 0, 0)
 }

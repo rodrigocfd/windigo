@@ -1,4 +1,4 @@
-package winffi
+package consts
 
 type MB uint32
 
