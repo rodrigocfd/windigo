@@ -10,3 +10,7 @@ type (
 	HMONITOR  HANDLE
 	HWND      HANDLE
 )
+
+type (
+	LPARAM uintptr
+)
