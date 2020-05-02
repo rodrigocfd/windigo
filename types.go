@@ -1,0 +1,27 @@
+package winffi
+
+type (
+	ATOM      uint16
+	COLORREF  uint32
+	HACCEL    HANDLE
+	HANDLE    uintptr
+	HBITMAP   HGDIOBJ
+	HBRUSH    HANDLE
+	HCURSOR   HANDLE
+	HDC       HANDLE
+	HFONT     HGDIOBJ
+	HGDIOBJ   HANDLE
+	HICON     HANDLE
+	HINSTANCE HANDLE
+	HMENU     HANDLE
+	HMONITOR  HANDLE
+	HPEN      HGDIOBJ
+	HRGN      HGDIOBJ
+	HTHEME    HANDLE
+	HWND      HANDLE
+)
+
+type (
+	LPARAM uintptr
+	WPARAM uintptr
+)

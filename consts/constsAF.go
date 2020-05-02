@@ -1,5 +1,7 @@
 package consts
 
+const CCHDEVICENAME = 32
+
 type COLOR uint8
 
 const (

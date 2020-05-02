@@ -14,6 +14,8 @@ const (
 	IDYES      ID = 6
 )
 
+const LF_FACESIZE = 32
+
 type LVP uint8
 
 const (
