@@ -1,5 +1,16 @@
 package consts
 
+type GWLP int32
+
+const (
+	GWLP_EXSTYLE   GWLP = -20
+	GWLP_HINSTANCE GWLP = -6
+	GWLP_ID        GWLP = -12
+	GWLP_STYLE     GWLP = -16
+	GWLP_USERDATA  GWLP = -21
+	GWLP_WNDPROC   GWLP = -4
+)
+
 type ID uint16
 
 const (

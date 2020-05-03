@@ -26,9 +26,7 @@ func CreateWindowEx(exStyle c.WS_EX, className, title string,
 	return HWND(ret), errno
 }
 
-func (hwnd HWND) DefWindowProc(msg c.WM, wParam WPARAM,
-	lParam LPARAM) uintptr {
-
+func (hwnd HWND) DefWindowProc(msg c.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	ret, _, _ := syscall.Syscall6(p.DefWindowProc.Addr(), 4,
 		uintptr(hwnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
 		0, 0)
@@ -45,10 +43,11 @@ func (hwnd HWND) EnumChildWindows() []HWND {
 	hChildren := []HWND{}
 	syscall.Syscall(p.EnumChildWindows.Addr(), 3,
 		uintptr(hwnd),
-		syscall.NewCallback(func(hChild HWND, lp LPARAM) uintptr {
-			hChildren = append(hChildren, hChild)
-			return uintptr(1)
-		}), 0)
+		syscall.NewCallback(
+			func(hChild HWND, lp LPARAM) uintptr {
+				hChildren = append(hChildren, hChild)
+				return uintptr(1)
+			}), 0)
 	return hChildren
 }
 
@@ -70,6 +69,13 @@ func (hwnd HWND) GetWindowDC() HDC {
 	return HDC(ret)
 }
 
+func (hwnd HWND) GetWindowLongPtr(index c.GWLP) uintptr {
+	ret, _, _ := syscall.Syscall(p.GetWindowLongPtr.Addr(), 2,
+		uintptr(hwnd), uintptr(index),
+		0)
+	return ret
+}
+
 func (hwnd HWND) IsDialogMessage(msg *MSG) bool {
 	ret, _, _ := syscall.Syscall(p.IsDialogMessage.Addr(), 2,
 		uintptr(hwnd), uintptr(unsafe.Pointer(msg)), 0)
@@ -81,4 +87,35 @@ func (hwnd HWND) MessageBox(message, caption string, flags c.MB) int32 {
 		uintptr(0), toUtf16ToUintptr(message), toUtf16ToUintptr(caption),
 		uintptr(flags), 0, 0)
 	return int32(ret)
+}
+
+func (hwnd HWND) ReleaseDC(hdc HDC) int32 {
+	ret, _, _ := syscall.Syscall(p.ReleaseDC.Addr(), 2,
+		uintptr(hwnd), uintptr(hdc), 0)
+	return int32(ret)
+}
+
+func (hWnd HWND) ScreenToClientPoint(point *POINT) {
+	syscall.Syscall(p.ScreenToClient.Addr(), 2,
+		uintptr(hWnd), uintptr(unsafe.Pointer(point)), 0)
+}
+
+func (hWnd HWND) ScreenToClientRect(rect *RECT) {
+	syscall.Syscall(p.ScreenToClient.Addr(), 2,
+		uintptr(hWnd), uintptr(unsafe.Pointer(rect)), 0)
+	syscall.Syscall(p.ScreenToClient.Addr(), 2,
+		uintptr(hWnd), uintptr(unsafe.Pointer(&rect.Right)), 0)
+}
+
+func (hwnd HWND) SendMessage(msg c.WM, wParam WPARAM, lParam LPARAM) uintptr {
+	ret, _, _ := syscall.Syscall6(p.SendMessage.Addr(), 4,
+		uintptr(hwnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
+		0, 0)
+	return ret
+}
+
+func (hWnd HWND) SetWindowLongPtr(index c.GWLP, newLong uintptr) uintptr {
+	ret, _, _ := syscall.Syscall(p.SetWindowLongPtr.Addr(), 3,
+		uintptr(hWnd), uintptr(index), newLong)
+	return ret
 }
