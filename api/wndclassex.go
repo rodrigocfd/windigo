@@ -3,12 +3,14 @@ package api
 import (
 	"syscall"
 	"unsafe"
+	c "winffi/consts"
 	p "winffi/procs"
 )
 
+// WNDCLASSEX wrapper.
 type WNDCLASSEX struct {
 	Size          uint32
-	Style         uint32
+	Style         c.CS
 	WndProc       uintptr
 	ClsExtra      int32
 	WndExtra      int32
@@ -21,6 +23,7 @@ type WNDCLASSEX struct {
 	HIconSm       HICON
 }
 
+// RegisterClassEx wrapper.
 func (wcx *WNDCLASSEX) RegisterClassEx() (ATOM, syscall.Errno) {
 	ret, _, errno := syscall.Syscall(p.RegisterClassEx.Addr(), 1,
 		uintptr(unsafe.Pointer(wcx)), 0, 0)

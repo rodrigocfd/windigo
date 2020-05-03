@@ -43,6 +43,29 @@ const (
 	COLOR_WINDOWTEXT              COLOR = 8
 )
 
+type CS uint32
+
+const (
+	CS_BYTEALIGNCLIENT CS = 0x1000
+	CS_BYTEALIGNWINDOW CS = 0x2000
+	CS_CLASSDC         CS = 0x0040
+	CS_DBLCLKS         CS = 0x0008
+	CS_DROPSHADOW      CS = 0x00020000
+	CS_GLOBALCLASS     CS = 0x4000
+	CS_HREDRAW         CS = 0x0002
+	CS_NOCLOSE         CS = 0x0200
+	CS_OWNDC           CS = 0x0020
+	CS_PARENTDC        CS = 0x0080
+	CS_SAVEBITS        CS = 0x0800
+	CS_VREDRAW         CS = 0x0001
+)
+
+type ERROR uint32
+
+const (
+	ERROR_CLASS_ALREADY_EXISTS ERROR = 1410
+)
+
 type FW uint32
 
 const (
