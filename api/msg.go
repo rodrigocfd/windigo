@@ -30,3 +30,9 @@ func (msg *MSG) GetMessage(hWnd HWND,
 		0, 0)
 	return int32(ret), errno
 }
+
+func (msg *MSG) TranslateMessage() bool {
+	ret, _, _ := syscall.Syscall(p.TranslateMessage.Addr(), 1,
+		uintptr(unsafe.Pointer(msg)), 0, 0)
+	return ret != 0
+}

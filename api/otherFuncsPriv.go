@@ -11,11 +11,10 @@ func toUtf16ToUintptr(s string) uintptr {
 }
 
 func toUtf16BlankIsNilToUintptr(s string) uintptr {
-	pstr := uintptr(0)
 	if s != "" {
-		pstr = toUtf16ToUintptr(s)
+		return toUtf16ToUintptr(s)
 	}
-	return pstr
+	return uintptr(0)
 }
 
 func boolToUintptr(b bool) uintptr {

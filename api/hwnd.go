@@ -51,16 +51,28 @@ func (hwnd HWND) EnumChildWindows() []HWND {
 	return hChildren
 }
 
+func (hwnd HWND) GetExStyle() c.WS_EX {
+	return c.WS_EX(hwnd.GetWindowLongPtr(c.GWLP_EXSTYLE))
+}
+
 func GetForegroundWindow() HWND {
 	ret, _, _ := syscall.Syscall(p.GetForegroundWindow.Addr(), 0,
 		0, 0, 0)
 	return HWND(ret)
 }
 
+func (hwnd HWND) GetInstance() HINSTANCE {
+	return HINSTANCE(hwnd.GetWindowLongPtr(c.GWLP_HINSTANCE))
+}
+
 func (hwnd HWND) GetParent() HWND {
 	ret, _, _ := syscall.Syscall(p.GetParent.Addr(), 1,
 		uintptr(hwnd), 0, 0)
 	return HWND(ret)
+}
+
+func (hwnd HWND) GetStyle() c.WS {
+	return c.WS(hwnd.GetWindowLongPtr(c.GWLP_STYLE))
 }
 
 func (hwnd HWND) GetWindowDC() HDC {
@@ -76,17 +88,31 @@ func (hwnd HWND) GetWindowLongPtr(index c.GWLP) uintptr {
 	return ret
 }
 
+func (hwnd HWND) GetWindowText() string {
+	len := hwnd.GetWindowTextLength() + 1
+	buf := make([]uint16, len)
+	syscall.Syscall(p.GetWindowText.Addr(), 3,
+		uintptr(hwnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(len))
+	return syscall.UTF16ToString(buf)
+}
+
+func (hwnd HWND) GetWindowTextLength() int32 {
+	ret, _, _ := syscall.Syscall(p.GetWindowTextLength.Addr(), 1,
+		uintptr(hwnd), 0, 0)
+	return int32(ret)
+}
+
 func (hwnd HWND) IsDialogMessage(msg *MSG) bool {
 	ret, _, _ := syscall.Syscall(p.IsDialogMessage.Addr(), 2,
 		uintptr(hwnd), uintptr(unsafe.Pointer(msg)), 0)
 	return ret != 0
 }
 
-func (hwnd HWND) MessageBox(message, caption string, flags c.MB) int32 {
+func (hwnd HWND) MessageBox(message, caption string, flags c.MB) c.ID {
 	ret, _, _ := syscall.Syscall6(p.MessageBox.Addr(), 4,
 		uintptr(0), toUtf16ToUintptr(message), toUtf16ToUintptr(caption),
 		uintptr(flags), 0, 0)
-	return int32(ret)
+	return c.ID(ret)
 }
 
 func (hwnd HWND) ReleaseDC(hdc HDC) int32 {
@@ -118,4 +144,29 @@ func (hWnd HWND) SetWindowLongPtr(index c.GWLP, newLong uintptr) uintptr {
 	ret, _, _ := syscall.Syscall(p.SetWindowLongPtr.Addr(), 3,
 		uintptr(hWnd), uintptr(index), newLong)
 	return ret
+}
+
+func (hwnd HWND) ShowWindow(nCmdShow c.SW) bool {
+	ret, _, _ := syscall.Syscall(p.ShowWindow.Addr(), 1,
+		uintptr(hwnd), uintptr(nCmdShow), 0)
+	return ret != 0
+}
+
+func (hwnd HWND) TranslateAccelerator(hAccel HACCEL,
+	msg *MSG) (int32, syscall.Errno) {
+
+	ret, _, errno := syscall.Syscall(p.TranslateAccelerator.Addr(), 3,
+		uintptr(hwnd), uintptr(hAccel), uintptr(unsafe.Pointer(msg)))
+	return int32(ret), errno
+}
+
+func (hwnd HWND) SetWindowText(text string) {
+	syscall.Syscall(p.SetWindowText.Addr(), 2,
+		uintptr(hwnd), toUtf16ToUintptr(text), 0)
+}
+
+func (hwnd HWND) UpdateWindow() bool {
+	ret, _, _ := syscall.Syscall(p.UpdateWindow.Addr(), 1,
+		uintptr(hwnd), 0, 0)
+	return ret != 0
 }
