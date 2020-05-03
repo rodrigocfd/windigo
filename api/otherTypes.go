@@ -1,0 +1,20 @@
+package api
+
+type (
+	ATOM     uint16
+	COLORREF uint32
+	HANDLE   uintptr
+	HBITMAP  HGDIOBJ
+	HCURSOR  HANDLE
+	HGDIOBJ  HANDLE
+	HICON    HANDLE
+	HMENU    HANDLE
+	HMONITOR HANDLE
+	HRGN     HGDIOBJ
+	HTHEME   HANDLE
+)
+
+type (
+	LPARAM uintptr
+	WPARAM uintptr
+)

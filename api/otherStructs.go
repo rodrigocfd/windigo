@@ -1,8 +1,23 @@
-package winffi
+package api
 
-import (
-	"winffi/consts"
-)
+import "winffi/consts"
+
+type ACCEL struct {
+	virt uint8
+	key  uint16
+	cmd  uint16
+}
+
+type CREATESTRUCT struct {
+	CreateParams    uintptr
+	Instance        HINSTANCE
+	Menu            HMENU
+	Parent          HWND
+	Cy, Cx, Y, X    int32
+	Style           int32
+	Name, ClassName uintptr
+	ExStyle         uint32
+}
 
 type MONITORINFOEX struct {
 	Size      uint32
@@ -10,15 +25,6 @@ type MONITORINFOEX struct {
 	RcWork    RECT
 	Flags     uint32
 	Device    [consts.CCHDEVICENAME]uint16
-}
-
-type MSG struct {
-	HWnd   HWND
-	Msg    uint32
-	WParam WPARAM
-	LParam LPARAM
-	Time   uint32
-	Pt     POINT
 }
 
 type NMHDR struct {
@@ -45,20 +51,6 @@ type NONCLIENTMETRICS struct {
 	MessageFont     LOGFONT
 }
 
-type OSVERSIONINFOEX struct {
-	OsVersionInfoSize uint32
-	MajorVersion      uint32
-	MinorVersion      uint32
-	BuildNumber       uint32
-	PlatformId        uint32
-	CSDVersion        [128]uint16
-	ServicePackMajor  uint16
-	ServicePackMinor  uint16
-	SuiteMask         uint16
-	ProductType       uint8
-	Reserve           uint8
-}
-
 type POINT struct {
 	X, Y int32
 }
@@ -69,4 +61,19 @@ type RECT struct {
 
 type SIZE struct {
 	Cx, Cy int32
+}
+
+type WNDCLASSEX struct {
+	Size          uint32
+	Style         uint32
+	WndProc       uintptr
+	ClsExtra      int32
+	WndExtra      int32
+	HInstance     HINSTANCE
+	HIcon         HICON
+	HCursor       HCURSOR
+	HbrBackground HBRUSH
+	LpszMenuName  *uint16
+	LpszClassName *uint16
+	HIconSm       HICON
 }

@@ -1,4 +1,4 @@
-package winffi
+package api
 
 import (
 	"syscall"

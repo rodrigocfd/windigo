@@ -1,4 +1,4 @@
-package winffi
+package api
 
 import (
 	"syscall"
@@ -6,12 +6,6 @@ import (
 	"winffi/consts"
 	"winffi/procs"
 )
-
-func GetModuleHandle(moduleName string) HINSTANCE {
-	ret, _, _ := syscall.Syscall(procs.GetModuleHandle.Addr(), 1,
-		toUtf16BlankIsNilToUintptr(moduleName), 0, 0)
-	return HINSTANCE(ret)
-}
 
 func InitCommonControls() {
 	syscall.Syscall(procs.InitCommonControls.Addr(), 0,
@@ -35,7 +29,7 @@ func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32,
 			consts.VER_MINORVERSION, consts.VER_GREATER_EQUAL),
 		consts.VER_SERVICEPACKMAJOR, consts.VER_GREATER_EQUAL)
 
-	ret, _ := VerifyVersionInfo(&ovi,
+	ret, _ := ovi.VerifyVersionInfo(
 		consts.VER_MAJORVERSION|consts.VER_MINORVERSION|
 			consts.VER_SERVICEPACKMAJOR,
 		conditionMask)
