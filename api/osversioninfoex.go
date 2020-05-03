@@ -3,8 +3,8 @@ package api
 import (
 	"syscall"
 	"unsafe"
-	"winffi/consts"
-	"winffi/procs"
+	c "winffi/consts"
+	p "winffi/procs"
 )
 
 type OSVERSIONINFOEX struct {
@@ -21,19 +21,19 @@ type OSVERSIONINFOEX struct {
 	Reserve           uint8
 }
 
-func (ovi *OSVERSIONINFOEX) VerifyVersionInfo(typeMask consts.VER,
+func (ovi *OSVERSIONINFOEX) VerifyVersionInfo(typeMask c.VER,
 	conditionMask uint64) (bool, syscall.Errno) {
 
-	ret, _, errno := syscall.Syscall(procs.VerifyVersionInfo.Addr(), 3,
+	ret, _, errno := syscall.Syscall(p.VerifyVersionInfo.Addr(), 3,
 		uintptr(unsafe.Pointer(ovi)),
 		uintptr(typeMask), uintptr(conditionMask))
 	return ret != 0, errno
 }
 
-func VerSetConditionMask(conditionMask uint64, typeMask consts.VER,
-	condition consts.VERCOND) uint64 {
+func VerSetConditionMask(conditionMask uint64, typeMask c.VER,
+	condition c.VERCOND) uint64 {
 
-	ret, _, _ := syscall.Syscall(procs.VerSetConditionMask.Addr(), 3,
+	ret, _, _ := syscall.Syscall(p.VerSetConditionMask.Addr(), 3,
 		uintptr(conditionMask), uintptr(typeMask), uintptr(condition))
 	return uint64(ret)
 }

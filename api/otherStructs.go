@@ -1,6 +1,6 @@
 package api
 
-import "winffi/consts"
+import c "winffi/consts"
 
 type ACCEL struct {
 	virt uint8
@@ -24,7 +24,7 @@ type MONITORINFOEX struct {
 	RcMonitor RECT
 	RcWork    RECT
 	Flags     uint32
-	Device    [consts.CCHDEVICENAME]uint16
+	Device    [c.CCHDEVICENAME]uint16
 }
 
 type NMHDR struct {
