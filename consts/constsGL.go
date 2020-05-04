@@ -1,5 +1,13 @@
 package consts
 
+type GA uint32
+
+const (
+	GA_PARENT    GA = 1
+	GA_ROOT      GA = 2
+	GA_ROOTOWNER GA = 3
+)
+
 type GWLP int32
 
 const (

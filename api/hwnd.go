@@ -10,7 +10,7 @@ import (
 
 type HWND HANDLE
 
-func (hwnd HWND) ClientToScreen(point *POINT) {
+func (hwnd HWND) ClientToScreenPt(point *POINT) {
 	ret, _, _ := syscall.Syscall(proc.ClientToScreen.Addr(), 2,
 		uintptr(hwnd), uintptr(unsafe.Pointer(point)), 0)
 	if ret == 0 {
@@ -53,6 +53,12 @@ func (hwnd HWND) DestroyWindow() {
 	}
 }
 
+func (hwnd HWND) EnableWindow(bEnable bool) bool {
+	ret, _, _ := syscall.Syscall(proc.EnableWindow.Addr(), 2,
+		uintptr(hwnd), boolToUintptr(bEnable), 0)
+	return ret != 0 // the window was previously disabled?
+}
+
 func (hwnd HWND) EnumChildWindows() []HWND {
 	hChildren := make([]HWND, 0)
 	syscall.Syscall(proc.EnumChildWindows.Addr(), 3,
@@ -63,6 +69,12 @@ func (hwnd HWND) EnumChildWindows() []HWND {
 				return boolToUintptr(true)
 			}), 0)
 	return hChildren
+}
+
+func (hwnd HWND) GetAncestor(gaFlags c.GA) HWND {
+	ret, _, _ := syscall.Syscall(proc.GetAncestor.Addr(), 2,
+		uintptr(hwnd), uintptr(gaFlags), 0)
+	return HWND(ret)
 }
 
 func (hwnd HWND) GetExStyle() c.WS_EX {
@@ -130,6 +142,12 @@ func (hwnd HWND) GetWindowTextLength() uint32 {
 	return uint32(ret)
 }
 
+func (hwnd HWND) IsWindowEnabled() bool {
+	ret, _, _ := syscall.Syscall(proc.IsWindowEnabled.Addr(), 1,
+		uintptr(hwnd), 0, 0)
+	return ret != 0
+}
+
 func (hwnd HWND) IsDialogMessage(msg *MSG) bool {
 	ret, _, _ := syscall.Syscall(proc.IsDialogMessage.Addr(), 2,
 		uintptr(hwnd), uintptr(unsafe.Pointer(msg)), 0)
@@ -151,12 +169,12 @@ func (hwnd HWND) ReleaseDC(hdc HDC) int32 {
 	return int32(ret)
 }
 
-func (hwnd HWND) ScreenToClientPoint(point *POINT) {
+func (hwnd HWND) ScreenToClientPt(point *POINT) {
 	syscall.Syscall(proc.ScreenToClient.Addr(), 2,
 		uintptr(hwnd), uintptr(unsafe.Pointer(point)), 0)
 }
 
-func (hwnd HWND) ScreenToClientRect(rect *RECT) {
+func (hwnd HWND) ScreenToClientRc(rect *RECT) {
 	syscall.Syscall(proc.ScreenToClient.Addr(), 2,
 		uintptr(hwnd), uintptr(unsafe.Pointer(rect)), 0)
 	syscall.Syscall(proc.ScreenToClient.Addr(), 2,
@@ -188,6 +206,16 @@ func (hwnd HWND) TranslateAccelerator(hAccel HACCEL,
 	ret, _, errno := syscall.Syscall(proc.TranslateAccelerator.Addr(), 3,
 		uintptr(hwnd), uintptr(hAccel), uintptr(unsafe.Pointer(msg)))
 	return int32(ret), errno
+}
+
+func (hwnd HWND) SetFocus() HWND {
+	ret, _, errno := syscall.Syscall(proc.SetFocus.Addr(), 1,
+		uintptr(hwnd), 0, 0)
+	if ret == 0 && errno != 0 {
+		panic(fmt.Sprintf("SetFocus failed: %d %s\n",
+			errno, errno.Error()))
+	}
+	return HWND(ret) // handle to the window that previously had the keyboard focus
 }
 
 func (hwnd HWND) SetWindowText(text string) {
