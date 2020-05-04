@@ -27,7 +27,7 @@ func newWindowMainSetup() windowMainSetup {
 	return windowMainSetup{
 		ClassStyle: c.CS_DBLCLKS,
 
-		Width:   600,
+		Width:   600, // arbitrary dimensions
 		Height:  500,
 		Style:   c.WS_CAPTION | c.WS_SYSMENU | c.WS_CLIPCHILDREN | c.WS_BORDER,
 		ExStyle: c.WS_EX(0),
@@ -54,6 +54,12 @@ func (s *windowMainSetup) genWndclassex(hInst api.HINSTANCE) *api.WNDCLASSEX {
 		wcx.HCursor = s.HCursor
 	} else {
 		wcx.HCursor = api.HINSTANCE(0).LoadCursor(c.IDC_ARROW)
+	}
+
+	if s.HBrushBg != 0 {
+		wcx.HbrBackground = s.HBrushBg
+	} else {
+		wcx.HbrBackground = api.NewBrushFromSysColor(c.COLOR_BTNFACE)
 	}
 
 	return &wcx

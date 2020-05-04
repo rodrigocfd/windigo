@@ -2,7 +2,7 @@ package consts
 
 const CCHDEVICENAME = 32
 
-type COLOR uint8
+type COLOR uint32
 
 const (
 	COLOR_3DDKSHADOW              COLOR = 21

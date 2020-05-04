@@ -28,6 +28,10 @@ func (base *windowBase) Hwnd() api.HWND {
 }
 
 func (base *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
+	if wcx.LpszClassName == nil {
+		panic("Class name not given.")
+	}
+
 	wcx.WndProc = syscall.NewCallback(wndProc)
 
 	atom, errno := wcx.RegisterClassEx()
