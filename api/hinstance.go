@@ -1,9 +1,11 @@
 package api
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 	"winffi/api/proc"
+	c "winffi/consts"
 )
 
 type HINSTANCE HANDLE
@@ -23,4 +25,14 @@ func GetModuleHandle(moduleName string) HINSTANCE {
 		uintptr(unsafe.Pointer(ToUtf16PtrBlankIsNil(moduleName))),
 		0, 0)
 	return HINSTANCE(ret)
+}
+
+func (hinst HINSTANCE) LoadCursor(lpCursorName c.IDC) HCURSOR {
+	ret, _, errno := syscall.Syscall(proc.LoadCursor.Addr(), 2,
+		uintptr(hinst), uintptr(lpCursorName), 0)
+	if ret == 0 {
+		panic(fmt.Sprintf("LoadCursor failed: %d %s\n",
+			errno, errno.Error()))
+	}
+	return HCURSOR(ret)
 }

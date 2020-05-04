@@ -29,6 +29,7 @@ var (
 	GetWindowText           = dllUser32.NewProc("GetWindowTextW")
 	GetWindowTextLength     = dllUser32.NewProc("GetWindowTextLengthW")
 	IsDialogMessage         = dllUser32.NewProc("IsDialogMessageW")
+	LoadCursor              = dllUser32.NewProc("LoadCursorW")
 	MessageBox              = dllUser32.NewProc("MessageBoxW")
 	PostQuitMessage         = dllUser32.NewProc("PostQuitMessage")
 	RegisterClassEx         = dllUser32.NewProc("RegisterClassExW")

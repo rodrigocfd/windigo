@@ -25,6 +25,27 @@ const (
 	IDYES      ID = 6
 )
 
+type IDC uintptr
+
+const (
+	IDC_APPSTARTING IDC = 32650
+	IDC_ARROW       IDC = 32512
+	IDC_CROSS       IDC = 32515
+	IDC_HAND        IDC = 32649
+	IDC_HELP        IDC = 32651
+	IDC_IBEAM       IDC = 32513
+	IDC_ICON        IDC = 32641
+	IDC_NO          IDC = 32648
+	IDC_SIZE        IDC = 32640
+	IDC_SIZEALL     IDC = 32646
+	IDC_SIZENESW    IDC = 32643
+	IDC_SIZENS      IDC = 32645
+	IDC_SIZENWSE    IDC = 32642
+	IDC_SIZEWE      IDC = 32644
+	IDC_UPARROW     IDC = 32516
+	IDC_WAIT        IDC = 32514
+)
+
 const LF_FACESIZE = 32
 
 type LVN WM

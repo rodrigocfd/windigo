@@ -9,15 +9,15 @@ import (
 type windowMainSetup struct {
 	ClassName  string
 	ClassStyle c.CS
-	Hcursor    api.HCURSOR
-	HbrushBg   api.HBRUSH
+	HCursor    api.HCURSOR
+	HBrushBg   api.HBRUSH
 
 	Title   string
 	Width   uint32
 	Height  uint32
 	Style   c.WS
 	ExStyle c.WS_EX
-	hMenu   api.HMENU
+	HMenu   api.HMENU
 
 	CmdShow c.SW
 }
@@ -49,8 +49,12 @@ func (s *windowMainSetup) genWndclassex(hInst api.HINSTANCE) *api.WNDCLASSEX {
 	wcx.HInstance = hInst
 	wcx.LpszClassName = api.ToUtf16PtrBlankIsNil(s.ClassName)
 	wcx.Style = s.ClassStyle
-	wcx.HCursor = s.Hcursor
-	wcx.HbrBackground = s.HbrushBg
+
+	if s.HCursor != 0 {
+		wcx.HCursor = s.HCursor
+	} else {
+		wcx.HCursor = api.HINSTANCE(0).LoadCursor(c.IDC_ARROW)
+	}
 
 	return &wcx
 }

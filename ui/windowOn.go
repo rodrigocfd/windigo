@@ -5,6 +5,12 @@ import (
 	"winffi/parm"
 )
 
+// Custom hash for WM_NOTIFY messages.
+type nfyHash struct {
+	IdFrom c.ID
+	Code   c.WM
+}
+
 // Keeps all user message handlers.
 type windowOn struct {
 	msgs map[c.WM]func(p parm.Raw) uintptr
@@ -13,12 +19,6 @@ type windowOn struct {
 
 	Wm  windowOnWm
 	Lvn windowOnLvn
-}
-
-// Custom hash for WM_NOTIFY messages.
-type nfyHash struct {
-	IdFrom c.ID
-	Code   c.WM
 }
 
 // Constructor: must use.
