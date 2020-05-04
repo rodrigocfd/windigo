@@ -4,32 +4,32 @@ import (
 	"fmt"
 	"syscall"
 	"unsafe"
-	a "winffi/api"
+	"winffi/api"
 	c "winffi/consts"
 )
 
 // Base to all window types.
 type windowBase struct {
-	hwnd a.HWND
-	Wcx  a.WNDCLASSEX
+	hwnd api.HWND
+	Wcx  api.WNDCLASSEX
 	On   windowOn
 }
 
 // Constructor: must use.
 func newWindowBase() windowBase {
 	return windowBase{
-		Wcx: a.WNDCLASSEX{
+		Wcx: api.WNDCLASSEX{
 			Style: c.CS_DBLCLKS,
 		},
 		On: newWindowOn(),
 	}
 }
 
-func (base *windowBase) Hwnd() a.HWND {
+func (base *windowBase) Hwnd() api.HWND {
 	return base.hwnd
 }
 
-func (base *windowBase) registerClass(hInst a.HINSTANCE) a.ATOM {
+func (base *windowBase) registerClass(hInst api.HINSTANCE) api.ATOM {
 	base.Wcx.Size = uint32(unsafe.Sizeof(base.Wcx))
 	base.Wcx.WndProc = syscall.NewCallback(wndProc)
 	base.Wcx.HInstance = hInst
@@ -37,7 +37,7 @@ func (base *windowBase) registerClass(hInst a.HINSTANCE) a.ATOM {
 	atom, errno := base.Wcx.RegisterClassEx()
 	if errno != 0 {
 		if c.ERROR(errno) == c.ERROR_CLASS_ALREADY_EXISTS {
-			atom = a.ATOM(hInst.GetClassInfo(base.Wcx.LpszClassName,
+			atom = api.ATOM(hInst.GetClassInfo(base.Wcx.LpszClassName,
 				&base.Wcx)) // https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
 		} else {
 			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s",
@@ -48,9 +48,9 @@ func (base *windowBase) registerClass(hInst a.HINSTANCE) a.ATOM {
 	return atom
 }
 
-func wndProc(hwnd a.HWND, msg c.WM, wParam a.WPARAM, lParam a.LPARAM) uintptr {
+func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uintptr {
 	if msg == c.WM_NCCREATE {
-		cs := (*a.CREATESTRUCT)(unsafe.Pointer(lParam))
+		cs := (*api.CREATESTRUCT)(unsafe.Pointer(lParam))
 		base := (*windowBase)(unsafe.Pointer(cs.CreateParams))
 		hwnd.SetWindowLongPtr(c.GWLP_USERDATA, uintptr(unsafe.Pointer(base)))
 		base.hwnd = hwnd // assign actual HWND

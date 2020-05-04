@@ -1,7 +1,7 @@
 package ui
 
 import (
-	a "winffi/api"
+	"winffi/api"
 )
 
 // Main application window.
@@ -17,9 +17,9 @@ func NewWindowMain() *windowMain {
 }
 
 func (wnd *windowMain) RunAsMain() {
-	a.InitCommonControls()
+	api.InitCommonControls()
 
-	hInst := a.GetModuleHandle("")
+	hInst := api.GetModuleHandle("")
 	wnd.registerClass(hInst)
 
 }

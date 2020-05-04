@@ -2,13 +2,14 @@ package ui
 
 import (
 	c "winffi/consts"
+	"winffi/parm"
 )
 
 // Keeps all user message handlers.
 type windowOn struct {
-	msgs map[c.WM]func(p Param) uintptr
-	cmds map[c.ID]func(p ParamCommand)
-	nfys map[nfyMsgType]func(p ParamNotify) uintptr
+	msgs map[c.WM]func(p parm.Raw) uintptr
+	cmds map[c.ID]func(p parm.WmCommand)
+	nfys map[nfyMsgType]func(p parm.WmNotify) uintptr
 
 	Wm windowOnWm
 }
@@ -21,9 +22,9 @@ type nfyMsgType struct {
 
 // Constructor: must use.
 func newWindowOn() windowOn {
-	msgs := make(map[c.WM]func(p Param) uintptr)
-	cmds := make(map[c.ID]func(p ParamCommand))
-	nfys := make(map[nfyMsgType]func(p ParamNotify) uintptr)
+	msgs := make(map[c.WM]func(p parm.Raw) uintptr)
+	cmds := make(map[c.ID]func(p parm.WmCommand))
+	nfys := make(map[nfyMsgType]func(p parm.WmNotify) uintptr)
 
 	return windowOn{
 		msgs: msgs,
