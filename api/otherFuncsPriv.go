@@ -29,19 +29,3 @@ func boolToUintptr(b bool) uintptr {
 	}
 	return uintptr(0)
 }
-
-func hiWord(value uint32) uint16 {
-	return uint16(value >> 16 & 0xffff)
-}
-
-func loWord(value uint32) uint16 {
-	return uint16(value)
-}
-
-func hiByte(value uint16) uint8 {
-	return uint8(value >> 8 & 0xff)
-}
-
-func loByte(value uint16) uint8 {
-	return uint8(value)
-}

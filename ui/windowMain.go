@@ -4,11 +4,12 @@ import (
 	a "winffi/api"
 )
 
+// Main application window.
 type windowMain struct {
 	windowBase
 }
 
-// NewWindowMain creates a new main application window.
+// Creates a new main application window.
 func NewWindowMain() *windowMain {
 	return &windowMain{
 		newWindowBase(),

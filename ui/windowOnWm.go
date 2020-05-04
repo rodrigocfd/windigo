@@ -4,6 +4,7 @@ import (
 	c "winffi/consts"
 )
 
+// Allows user to add WM message handlers.
 type windowOnWm struct {
 	msgs map[c.WM]func(p Param) uintptr
 	cmds map[c.ID]func(p ParamCommand)

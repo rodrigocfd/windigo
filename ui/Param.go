@@ -6,26 +6,31 @@ import (
 	c "winffi/consts"
 )
 
-// Param cracks a raw message data.
 type Param struct {
 	Msg    c.WM
 	Wparam a.WPARAM
 	Lparam a.LPARAM
 }
 
-// ParamCommand cracks WM_COMMAND data.
 type ParamCommand Param
 
-// ParamCreate cracks WM_CREATE data.
+func (p *ParamCommand) IsFromMenu() bool         { return a.HiWord(uint32(p.Wparam)) == 0 }
+func (p *ParamCommand) IsFromAccelerator() bool  { return a.HiWord(uint32(p.Wparam)) == 1 }
+func (p *ParamCommand) IsFromControl() bool      { return !p.IsFromMenu() && !p.IsFromAccelerator() }
+func (p *ParamCommand) MenuId() uint16           { return p.ControlId() }
+func (p *ParamCommand) AcceleratorId() uint16    { return p.ControlId() }
+func (p *ParamCommand) ControlId() uint16        { return a.LoWord(uint32(p.Wparam)) }
+func (p *ParamCommand) ControlNotifCode() uint16 { return a.HiWord(uint32(p.Wparam)) }
+func (p *ParamCommand) ControlHwnd() a.HWND      { return a.HWND(p.Lparam) }
+
 type ParamCreate Param
 
-// Createstruct cracker.
 func (p *ParamCreate) Createstruct() *a.CREATESTRUCT {
 	return (*a.CREATESTRUCT)(unsafe.Pointer(p.Lparam))
 }
 
-// ParamDestroy cracks WM_DESTROY data.
 type ParamDestroy Param
 
-// ParamNotify cracks WM_NOFIFY data.
 type ParamNotify Param
+
+func (p *ParamNotify) Nmhdr() *a.NMHDR { return (*a.NMHDR)(unsafe.Pointer(p.Lparam)) }

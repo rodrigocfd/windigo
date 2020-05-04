@@ -4,6 +4,7 @@ import (
 	c "winffi/consts"
 )
 
+// Keeps all user message handlers.
 type windowOn struct {
 	msgs map[c.WM]func(p Param) uintptr
 	cmds map[c.ID]func(p ParamCommand)
