@@ -12,7 +12,7 @@ type Edit struct {
 }
 
 func NewEdit() Edit {
-	return NewEditWithId(0)
+	return NewEditWithId(NextAutoCtrlId())
 }
 
 func NewEditWithId(ctrlId c.ID) Edit {
@@ -22,7 +22,7 @@ func NewEditWithId(ctrlId c.ID) Edit {
 	}
 }
 
-func (edit *Edit) Create(parent IWindow, x, y int32, width, height uint32,
+func (edit *Edit) Create(parent Window, x, y int32, width, height uint32,
 	initialText string, exStyles c.WS_EX, styles c.WS,
 	editStyles c.ES) api.HWND {
 
@@ -35,30 +35,30 @@ func (edit *Edit) Create(parent IWindow, x, y int32, width, height uint32,
 	return edit.hwnd
 }
 
-func (edit *Edit) CreateMultiLine(parent IWindow, x, y int32,
+func (edit *Edit) CreateMultiLine(parent Window, x, y int32,
 	width, height uint32, initialText string) api.HWND {
 
 	return edit.Create(parent, x, y, width, height, initialText,
 		c.WS_EX_CLIENTEDGE,
-		c.WS_CHILD|c.WS_TABSTOP|c.WS_VISIBLE,
+		c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
 		c.ES_MULTILINE|c.ES_WANTRETURN)
 }
 
-func (edit *Edit) CreatePassword(parent IWindow, x, y int32, width uint32,
+func (edit *Edit) CreatePassword(parent Window, x, y int32, width uint32,
 	initialText string) api.HWND {
 
 	return edit.Create(parent, x, y, width, 21, initialText,
 		c.WS_EX_CLIENTEDGE,
-		c.WS_CHILD|c.WS_TABSTOP|c.WS_VISIBLE,
+		c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
 		c.ES_AUTOHSCROLL|c.ES_PASSWORD)
 }
 
-func (edit *Edit) CreateSimple(parent IWindow, x, y int32, width uint32,
+func (edit *Edit) CreateSimple(parent Window, x, y int32, width uint32,
 	initialText string) api.HWND {
 
 	return edit.Create(parent, x, y, width, 21, initialText,
 		c.WS_EX_CLIENTEDGE,
-		c.WS_CHILD|c.WS_TABSTOP|c.WS_VISIBLE,
+		c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
 		c.ES_AUTOHSCROLL)
 }
 

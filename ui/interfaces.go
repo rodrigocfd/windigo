@@ -5,11 +5,11 @@ import (
 	c "winffi/consts"
 )
 
-type IControl interface {
-	IWindow
+type Control interface {
+	Window
 	CtrlId() c.ID
 }
 
-type IWindow interface {
+type Window interface {
 	Hwnd() api.HWND
 }
