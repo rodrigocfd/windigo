@@ -1,9 +1,10 @@
 package api
 
 import (
-	"log"
+	"fmt"
 	"syscall"
-	p "winffi/api/proc"
+	"winffi/api/proc"
+	c "winffi/consts"
 )
 
 func ToUtf16Ptr(s string) *uint16 {
@@ -12,7 +13,8 @@ func ToUtf16Ptr(s string) *uint16 {
 	// https://stackoverflow.com/a/51188315
 	pstr, err := syscall.UTF16PtrFromString(s)
 	if err != nil {
-		log.Panicf("toUtf16Ptr failed \"%s\": %s\n", s, err)
+		panic(fmt.Sprintf("ToUtf16Ptr failed \"%s\": %s\n",
+			s, err))
 	}
 	return pstr
 }
@@ -52,10 +54,16 @@ func LoByte(value uint16) uint8 {
 //------------------------------------------------------------------------------
 
 func InitCommonControls() {
-	syscall.Syscall(p.InitCommonControls.Addr(), 0,
+	syscall.Syscall(proc.InitCommonControls.Addr(), 0,
 		0, 0, 0)
 }
 
+func GetSystemMetrics(index c.SM) int32 {
+	ret, _, _ := syscall.Syscall(proc.GetSystemMetrics.Addr(), 1,
+		uintptr(index), 0, 0)
+	return int32(ret)
+}
+
 func PostQuitMessage(exitCode int32) {
-	syscall.Syscall(p.PostQuitMessage.Addr(), 1, uintptr(exitCode), 0, 0)
+	syscall.Syscall(proc.PostQuitMessage.Addr(), 1, uintptr(exitCode), 0, 0)
 }

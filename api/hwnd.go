@@ -1,7 +1,7 @@
 package api
 
 import (
-	"log"
+	"fmt"
 	"syscall"
 	"unsafe"
 	"winffi/api/proc"
@@ -28,9 +28,12 @@ func CreateWindowEx(exStyle c.WS_EX, className, title string, style c.WS,
 		uintptr(unsafe.Pointer(ToUtf16PtrBlankIsNil(title))),
 		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
 		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
+
 	if ret == 0 {
-		log.Panicf("CreateWindowEx failed: %d %s", errno, errno.Error())
+		panic(fmt.Sprintf("CreateWindowEx failed \"%s\": %d %s\n",
+			className, errno, errno.Error()))
 	}
+
 	return HWND(ret)
 }
 
@@ -45,7 +48,8 @@ func (hwnd HWND) DestroyWindow() {
 	ret, _, errno := syscall.Syscall(proc.DestroyWindow.Addr(), 1,
 		uintptr(hwnd), 0, 0)
 	if ret == 0 {
-		log.Panicf("DestroyWindow failed: %d %s", errno, errno.Error())
+		panic(fmt.Sprintf("DestroyWindow failed: %d %s\n",
+			errno, errno.Error()))
 	}
 }
 
@@ -79,7 +83,8 @@ func (hwnd HWND) GetParent() HWND {
 	ret, _, errno := syscall.Syscall(proc.GetParent.Addr(), 1,
 		uintptr(hwnd), 0, 0)
 	if ret == 0 {
-		log.Panicf("GetParent failed: %d %s", errno, errno.Error())
+		panic(fmt.Sprintf("GetParent failed: %d %s\n",
+			errno, errno.Error()))
 	}
 	return HWND(ret)
 }
@@ -107,11 +112,15 @@ func (hwnd HWND) GetWindowLongPtr(index c.GWLP) uintptr {
 func (hwnd HWND) GetWindowText() string {
 	len := hwnd.GetWindowTextLength() + 1
 	buf := make([]uint16, len)
+
 	ret, _, errno := syscall.Syscall(proc.GetWindowText.Addr(), 3,
 		uintptr(hwnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(len))
+
 	if ret == 0 && errno != 0 {
-		log.Panicf("GetWindowText failed: %d %s", errno, errno.Error())
+		panic(fmt.Sprintf("GetWindowText failed: %d %s\n",
+			errno, errno.Error()))
 	}
+
 	return syscall.UTF16ToString(buf)
 }
 

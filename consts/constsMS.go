@@ -38,6 +38,14 @@ const (
 	MB_SERVICE_NOTIFICATION MB = 0x00200000
 )
 
+type SM int32
+
+const (
+	SM_CMONITORS SM = 80
+	SM_CXSCREEN  SM = 0
+	SM_CYSCREEN  SM = 1
+)
+
 type SW int32
 
 const (

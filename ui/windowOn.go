@@ -31,8 +31,9 @@ func newWindowOn() windowOn {
 		msgs: msgs,
 		cmds: cmds,
 		nfys: nfys,
-		Wm:   newWindowOnWm(msgs, cmds),
-		Lvn:  newWindowOnLvn(nfys),
+
+		Wm:  newWindowOnWm(msgs, cmds),
+		Lvn: newWindowOnLvn(nfys),
 	}
 }
 

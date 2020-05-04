@@ -6,12 +6,6 @@ import (
 	c "winffi/consts"
 )
 
-type Raw struct {
-	Msg    c.WM
-	WParam api.WPARAM
-	LParam api.LPARAM
-}
-
 type WmCommand Raw
 
 func (p *WmCommand) IsFromMenu() bool         { return api.HiWord(uint32(p.WParam)) == 0 }

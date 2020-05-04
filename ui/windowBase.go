@@ -12,17 +12,14 @@ import (
 // Base to all window types.
 type windowBase struct {
 	hwnd api.HWND
-	Wcx  api.WNDCLASSEX
 	On   windowOn
 }
 
 // Constructor: must use.
 func newWindowBase() windowBase {
 	return windowBase{
-		Wcx: api.WNDCLASSEX{
-			Style: c.CS_DBLCLKS,
-		},
-		On: newWindowOn(),
+		hwnd: api.HWND(0),
+		On:   newWindowOn(),
 	}
 }
 
@@ -30,18 +27,15 @@ func (base *windowBase) Hwnd() api.HWND {
 	return base.hwnd
 }
 
-func (base *windowBase) registerClass(hInst api.HINSTANCE) api.ATOM {
-	base.Wcx.Size = uint32(unsafe.Sizeof(base.Wcx))
-	base.Wcx.WndProc = syscall.NewCallback(wndProc)
-	base.Wcx.HInstance = hInst
+func (base *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
+	wcx.WndProc = syscall.NewCallback(wndProc)
 
-	atom, errno := base.Wcx.RegisterClassEx()
+	atom, errno := wcx.RegisterClassEx()
 	if errno != 0 {
-		if c.ERROR(errno) == c.ERROR_CLASS_ALREADY_EXISTS {
-			atom = api.ATOM(hInst.GetClassInfo(base.Wcx.LpszClassName,
-				&base.Wcx)) // https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
+		if c.ERROR(errno) == c.ERROR_CLASS_ALREADY_EXISTS { // https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
+			atom = api.ATOM(wcx.HInstance.GetClassInfo(wcx.LpszClassName, wcx))
 		} else {
-			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s",
+			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s\n",
 				atom, errno, errno.Error()))
 		}
 	}
