@@ -1,28 +1,32 @@
 package ui
 
 import (
-	"log"
+	"fmt"
 	"syscall"
 	"unsafe"
 	a "winffi/api"
 	c "winffi/consts"
 )
 
+// Base to all window types.
 type windowBase struct {
 	hwnd a.HWND
 	Wcx  a.WNDCLASSEX
+	On   windowOn
 }
 
-func (base *windowBase) Hwnd() a.HWND {
-	return base.hwnd
-}
-
+// Constructor: must use.
 func newWindowBase() windowBase {
 	return windowBase{
 		Wcx: a.WNDCLASSEX{
 			Style: c.CS_DBLCLKS,
 		},
+		On: newWindowOn(),
 	}
+}
+
+func (base *windowBase) Hwnd() a.HWND {
+	return base.hwnd
 }
 
 func (base *windowBase) registerClass(hInst a.HINSTANCE) a.ATOM {
@@ -36,8 +40,8 @@ func (base *windowBase) registerClass(hInst a.HINSTANCE) a.ATOM {
 			atom = a.ATOM(hInst.GetClassInfo(base.Wcx.LpszClassName,
 				&base.Wcx)) // https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
 		} else {
-			log.Panicf("RegisterClassEx failed with atom %d: %d\n%s",
-				atom, errno, errno.Error())
+			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s",
+				atom, errno, errno.Error()))
 		}
 	}
 

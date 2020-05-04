@@ -8,6 +8,7 @@ type windowMain struct {
 	windowBase
 }
 
+// NewWindowMain creates a new main application window.
 func NewWindowMain() *windowMain {
 	return &windowMain{
 		newWindowBase(),
