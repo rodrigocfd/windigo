@@ -41,6 +41,21 @@ const (
 	WIN32_WINNT_WIN10        WIN32_WINNT = 0x0A00
 )
 
+type WM int32
+
+const (
+	WM_COMMAND     WM = 0x0111
+	WM_CREATE      WM = 0x0001
+	WM_DESTROY     WM = 0x0002
+	WM_LBUTTONDOWN WM = 0x0201
+	WM_NCCREATE    WM = 0x0081
+	WM_NCDESTROY   WM = 0x0082
+	WM_NCPAINT     WM = 0x0085
+	WM_NOTIFY      WM = 0x004E
+	WM_SETFONT     WM = 0x0030
+	WM_SIZE        WM = 0x0005
+)
+
 type WS uint32
 
 const (
@@ -103,19 +118,4 @@ const (
 	WS_EX_TOPMOST             WS_EX = 0x00000008
 	WS_EX_TRANSPARENT         WS_EX = 0x00000020
 	WS_EX_WINDOWEDGE          WS_EX = 0x00000100
-)
-
-type WM uint32
-
-const (
-	WM_COMMAND     WM = 0x0111
-	WM_CREATE      WM = 0x0001
-	WM_DESTROY     WM = 0x0002
-	WM_LBUTTONDOWN WM = 0x0201
-	WM_NCCREATE    WM = 0x0081
-	WM_NCDESTROY   WM = 0x0082
-	WM_NCPAINT     WM = 0x0085
-	WM_NOTIFY      WM = 0x004E
-	WM_SETFONT     WM = 0x0030
-	WM_SIZE        WM = 0x0005
 )

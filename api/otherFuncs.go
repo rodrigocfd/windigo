@@ -6,7 +6,7 @@ import (
 	p "winffi/api/proc"
 )
 
-func toUtf16Ptr(s string) *uint16 {
+func ToUtf16Ptr(s string) *uint16 {
 	// We won't return an uintptr right away because it has no pointer semantics,
 	// it's just a number, so pointed memory can be garbage-collected.
 	// https://stackoverflow.com/a/51188315
@@ -17,9 +17,9 @@ func toUtf16Ptr(s string) *uint16 {
 	return pstr
 }
 
-func toUtf16PtrBlankIsNil(s string) *uint16 {
+func ToUtf16PtrBlankIsNil(s string) *uint16 {
 	if s != "" {
-		return toUtf16Ptr(s)
+		return ToUtf16Ptr(s)
 	}
 	return nil
 }

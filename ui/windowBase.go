@@ -6,6 +6,7 @@ import (
 	"unsafe"
 	"winffi/api"
 	c "winffi/consts"
+	"winffi/parm"
 )
 
 // Base to all window types.
@@ -56,6 +57,7 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 		base.hwnd = hwnd // assign actual HWND
 	}
 
+	// Retrieve passed pointer.
 	base := (*windowBase)(unsafe.Pointer(hwnd.GetWindowLongPtr(c.GWLP_USERDATA)))
 
 	// If no pointer stored, then no processing is done.
@@ -64,7 +66,27 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 		return hwnd.DefWindowProc(msg, wParam, lParam)
 	}
 
-	//...
+	// Mount object to be passed to user handler.
+	paramRaw := parm.Raw{
+		Msg:    msg,
+		WParam: wParam,
+		LParam: lParam,
+	}
 
+	// Try to process the message with an user handler.
+	userResult, wasProcessed := base.On.processMessage(paramRaw)
+
+	// No further messages processed after this one.
+	if msg == c.WM_NCDESTROY {
+		base.hwnd.SetWindowLongPtr(c.GWLP_USERDATA, 0) // clear passed pointer
+		base.hwnd = api.HWND(0)
+	}
+
+	// Save *windowBase from being collected by GC.
+	hwnd.SetWindowLongPtr(c.GWLP_USERDATA, uintptr(unsafe.Pointer(base)))
+
+	if wasProcessed {
+		return userResult
+	}
 	return hwnd.DefWindowProc(msg, wParam, lParam)
 }

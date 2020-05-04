@@ -20,7 +20,7 @@ func (hinst HINSTANCE) GetClassInfo(className *uint16,
 
 func GetModuleHandle(moduleName string) HINSTANCE {
 	ret, _, _ := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
-		uintptr(unsafe.Pointer(toUtf16PtrBlankIsNil(moduleName))),
+		uintptr(unsafe.Pointer(ToUtf16PtrBlankIsNil(moduleName))),
 		0, 0)
 	return HINSTANCE(ret)
 }

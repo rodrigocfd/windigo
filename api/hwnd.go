@@ -24,8 +24,8 @@ func CreateWindowEx(exStyle c.WS_EX, className, title string, style c.WS,
 
 	ret, _, errno := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
 		uintptr(exStyle),
-		uintptr(unsafe.Pointer(toUtf16PtrBlankIsNil(className))),
-		uintptr(unsafe.Pointer(toUtf16PtrBlankIsNil(title))),
+		uintptr(unsafe.Pointer(ToUtf16PtrBlankIsNil(className))),
+		uintptr(unsafe.Pointer(ToUtf16PtrBlankIsNil(title))),
 		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
 		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
 	if ret == 0 {
@@ -130,8 +130,8 @@ func (hwnd HWND) IsDialogMessage(msg *MSG) bool {
 func (hwnd HWND) MessageBox(message, caption string, flags c.MB) c.ID {
 	ret, _, _ := syscall.Syscall6(proc.MessageBox.Addr(), 4,
 		uintptr(0),
-		uintptr(unsafe.Pointer(toUtf16Ptr(message))),
-		uintptr(unsafe.Pointer(toUtf16Ptr(caption))),
+		uintptr(unsafe.Pointer(ToUtf16Ptr(message))),
+		uintptr(unsafe.Pointer(ToUtf16Ptr(caption))),
 		uintptr(flags), 0, 0)
 	return c.ID(ret)
 }
@@ -184,7 +184,7 @@ func (hwnd HWND) TranslateAccelerator(hAccel HACCEL,
 func (hwnd HWND) SetWindowText(text string) {
 	syscall.Syscall(proc.SetWindowText.Addr(), 2,
 		uintptr(hwnd),
-		uintptr(unsafe.Pointer(toUtf16Ptr(text))),
+		uintptr(unsafe.Pointer(ToUtf16Ptr(text))),
 		0)
 }
 
