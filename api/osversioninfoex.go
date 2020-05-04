@@ -3,8 +3,8 @@ package api
 import (
 	"syscall"
 	"unsafe"
+	"winffi/api/proc"
 	c "winffi/consts"
-	p "winffi/procs"
 )
 
 type OSVERSIONINFOEX struct {
@@ -75,7 +75,7 @@ func IsWindowsVistaOrGreater() bool {
 func (ovi *OSVERSIONINFOEX) VerifyVersionInfo(typeMask c.VER,
 	conditionMask uint64) (bool, syscall.Errno) {
 
-	ret, _, errno := syscall.Syscall(p.VerifyVersionInfo.Addr(), 3,
+	ret, _, errno := syscall.Syscall(proc.VerifyVersionInfo.Addr(), 3,
 		uintptr(unsafe.Pointer(ovi)),
 		uintptr(typeMask), uintptr(conditionMask))
 	return ret != 0, errno
@@ -84,7 +84,7 @@ func (ovi *OSVERSIONINFOEX) VerifyVersionInfo(typeMask c.VER,
 func VerSetConditionMask(conditionMask uint64, typeMask c.VER,
 	condition c.VERCOND) uint64 {
 
-	ret, _, _ := syscall.Syscall(p.VerSetConditionMask.Addr(), 3,
+	ret, _, _ := syscall.Syscall(proc.VerSetConditionMask.Addr(), 3,
 		uintptr(conditionMask), uintptr(typeMask), uintptr(condition))
 	return uint64(ret)
 }

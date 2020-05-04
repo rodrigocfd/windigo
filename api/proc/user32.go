@@ -1,4 +1,4 @@
-package procs
+package proc
 
 import (
 	"syscall"

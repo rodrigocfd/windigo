@@ -3,7 +3,7 @@ package api
 import (
 	"syscall"
 	"unsafe"
-	p "winffi/procs"
+	"winffi/api/proc"
 )
 
 type MSG struct {
@@ -16,7 +16,7 @@ type MSG struct {
 }
 
 func (msg *MSG) DispatchMessage() uintptr {
-	ret, _, _ := syscall.Syscall(p.DispatchMessage.Addr(), 1,
+	ret, _, _ := syscall.Syscall(proc.DispatchMessage.Addr(), 1,
 		uintptr(unsafe.Pointer(msg)), 0, 0)
 	return ret
 }
@@ -24,7 +24,7 @@ func (msg *MSG) DispatchMessage() uintptr {
 func (msg *MSG) GetMessage(hWnd HWND,
 	msgFilterMin, msgFilterMax uint32) (int32, syscall.Errno) {
 
-	ret, _, errno := syscall.Syscall6(p.GetMessage.Addr(), 4,
+	ret, _, errno := syscall.Syscall6(proc.GetMessage.Addr(), 4,
 		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
 		uintptr(msgFilterMin), uintptr(msgFilterMax),
 		0, 0)
@@ -32,7 +32,7 @@ func (msg *MSG) GetMessage(hWnd HWND,
 }
 
 func (msg *MSG) TranslateMessage() bool {
-	ret, _, _ := syscall.Syscall(p.TranslateMessage.Addr(), 1,
+	ret, _, _ := syscall.Syscall(proc.TranslateMessage.Addr(), 1,
 		uintptr(unsafe.Pointer(msg)), 0, 0)
 	return ret != 0
 }

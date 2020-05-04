@@ -3,8 +3,8 @@ package api
 import (
 	"syscall"
 	"unsafe"
+	"winffi/api/proc"
 	c "winffi/consts"
-	p "winffi/procs"
 )
 
 type WNDCLASSEX struct {
@@ -23,7 +23,7 @@ type WNDCLASSEX struct {
 }
 
 func (wcx *WNDCLASSEX) RegisterClassEx() (ATOM, syscall.Errno) {
-	ret, _, errno := syscall.Syscall(p.RegisterClassEx.Addr(), 1,
+	ret, _, errno := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
 		uintptr(unsafe.Pointer(wcx)), 0, 0)
 	return ATOM(ret), errno
 }

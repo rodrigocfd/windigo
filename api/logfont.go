@@ -3,8 +3,8 @@ package api
 import (
 	"syscall"
 	"unsafe"
+	"winffi/api/proc"
 	c "winffi/consts"
-	p "winffi/procs"
 )
 
 type LOGFONT struct {
@@ -25,7 +25,7 @@ type LOGFONT struct {
 }
 
 func (lf *LOGFONT) CreateFontIndirect() HFONT {
-	ret, _, _ := syscall.Syscall(p.CreateFontIndirect.Addr(), 1,
+	ret, _, _ := syscall.Syscall(proc.CreateFontIndirect.Addr(), 1,
 		uintptr(unsafe.Pointer(lf)), 0, 0)
 	return HFONT(ret)
 }

@@ -3,14 +3,14 @@ package api
 import (
 	"syscall"
 	"unsafe"
-	p "winffi/procs"
+	"winffi/api/proc"
 )
 
 type HDC HANDLE
 
 func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) []HMONITOR {
 	hMons := []HMONITOR{}
-	syscall.Syscall6(p.EnumDisplayMonitors.Addr(), 4,
+	syscall.Syscall6(proc.EnumDisplayMonitors.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(rcClip)),
 		syscall.NewCallback(
 			func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lp LPARAM) uintptr {
