@@ -1,0 +1,55 @@
+package consts
+
+type GA uint32
+
+const (
+	GA_PARENT    GA = 1
+	GA_ROOT      GA = 2
+	GA_ROOTOWNER GA = 3
+)
+
+type GWLP int32
+
+const (
+	GWLP_EXSTYLE   GWLP = -20
+	GWLP_HINSTANCE GWLP = -6
+	GWLP_ID        GWLP = -12
+	GWLP_STYLE     GWLP = -16
+	GWLP_USERDATA  GWLP = -21
+	GWLP_WNDPROC   GWLP = -4
+)
+
+type ID uint16
+
+const (
+	IDABORT    ID = 3
+	IDCANCEL   ID = 2
+	IDCONTINUE ID = 11
+	IDIGNORE   ID = 5
+	IDNO       ID = 7
+	IDOK       ID = 1
+	IDRETRY    ID = 4
+	IDTRYAGAIN ID = 10
+	IDYES      ID = 6
+)
+
+type IDC uintptr
+
+const (
+	IDC_APPSTARTING IDC = 32650
+	IDC_ARROW       IDC = 32512
+	IDC_CROSS       IDC = 32515
+	IDC_HAND        IDC = 32649
+	IDC_HELP        IDC = 32651
+	IDC_IBEAM       IDC = 32513
+	IDC_ICON        IDC = 32641
+	IDC_NO          IDC = 32648
+	IDC_SIZE        IDC = 32640
+	IDC_SIZEALL     IDC = 32646
+	IDC_SIZENESW    IDC = 32643
+	IDC_SIZENS      IDC = 32645
+	IDC_SIZENWSE    IDC = 32642
+	IDC_SIZEWE      IDC = 32644
+	IDC_UPARROW     IDC = 32516
+	IDC_WAIT        IDC = 32514
+)
