@@ -1,8 +1,71 @@
 package consts
 
-const LF_FACESIZE = 32
+type LVCF uint32 // LVCOLUMN mask
 
-type LVN WM
+const (
+	LVCF_DEFAULTWIDTH LVCF = 0x0080
+	LVCF_FMT          LVCF = 0x0001
+	LVCF_IDEALWIDTH   LVCF = 0x0100
+	LVCF_IMAGE        LVCF = 0x0010
+	LVCF_MINWIDTH     LVCF = 0x0040
+	LVCF_ORDER        LVCF = 0x0020
+	LVCF_SUBITEM      LVCF = 0x0008
+	LVCF_TEXT         LVCF = 0x0004
+	LVCF_WIDTH        LVCF = 0x0002
+)
+
+type LVIF uint32 // LVITEM mask
+
+const (
+	LVIF_COLFMT      LVIF = 0x00010000
+	LVIF_COLUMNS     LVIF = 0x00000200
+	LVIF_GROUPID     LVIF = 0x00000100
+	LVIF_IMAGE       LVIF = 0x00000002
+	LVIF_INDENT      LVIF = 0x00000010
+	LVIF_NORECOMPUTE LVIF = 0x00000800
+	LVIF_PARAM       LVIF = 0x00000004
+	LVIF_STATE       LVIF = 0x00000008
+	LVIF_TEXT        LVIF = 0x00000001
+)
+
+type LVIS uint16 // list view item state
+
+const (
+	LVIS_ACTIVATING     LVIS = 0x0020
+	LVIS_CUT            LVIS = 0x0004
+	LVIS_DROPHILITED    LVIS = 0x0008
+	LVIS_FOCUSED        LVIS = 0x0001
+	LVIS_GLOW           LVIS = 0x0010
+	LVIS_OVERLAYMASK    LVIS = 0x0F00
+	LVIS_SELECTED       LVIS = 0x0002
+	LVIS_STATEIMAGEMASK LVIS = 0xF000
+)
+
+type LVM WM // list view message
+
+const (
+	LVM_FIRST LVM = 0x1000
+
+	LVM_DELETEALLITEMS     LVM = LVM_FIRST + 9
+	LVM_DELETEITEM         LVM = LVM_FIRST + 8
+	LVM_GETCOLUMN          LVM = LVM_FIRST + 95
+	LVM_GETCOLUMNWIDTH     LVM = LVM_FIRST + 29
+	LVM_GETHEADER          LVM = LVM_FIRST + 31
+	LVM_GETITEMSTATE       LVM = LVM_FIRST + 44
+	LVM_GETITEMTEXT        LVM = LVM_FIRST + 115
+	LVM_GETSELECTEDCOUNT   LVM = LVM_FIRST + 50
+	LVM_INSERTCOLUMN       LVM = LVM_FIRST + 97
+	LVM_INSERTITEM         LVM = LVM_FIRST + 77
+	LVM_ISGROUPVIEWENABLED LVM = LVM_FIRST + 175
+	LVM_ISITEMVISIBLE      LVM = LVM_FIRST + 182
+	LVM_SETCOLUMN          LVM = LVM_FIRST + 96
+	LVM_SETCOLUMNWIDTH     LVM = LVM_FIRST + 30
+	LVM_SETITEMSTATE       LVM = LVM_FIRST + 43
+	LVM_SETITEMTEXT        LVM = LVM_FIRST + 116
+	LVM_UPDATE             LVM = LVM_FIRST + 42
+)
+
+type LVN WM // list view notification
 
 const (
 	LVN_FIRST LVN = -100
@@ -31,7 +94,7 @@ const (
 	LVN_SETDISPINFO       LVN = LVN_FIRST - 78
 )
 
-type LVP uint8
+type LVP uint8 // DrawThemeBackground
 
 const (
 	LVP_LISTITEM         LVP = 1
@@ -41,7 +104,7 @@ const (
 	LVP_EMPTYTEXT        LVP = 5
 )
 
-type LVS WS
+type LVS WS // list view style
 
 const (
 	LVS_ALIGNLEFT       LVS = 0x0800
@@ -68,36 +131,36 @@ const (
 	LVS_TYPESTYLEMASK   LVS = 0xfc00
 )
 
-type LVS_EX WS_EX
+type LVS_EX WS_EX // list view extended style
 
 const (
-	LVS_EX_AUTOAUTOARRANGE       LVS_EX = 0x01000000 // Icons automatically arrange if no icon positions have been set
+	LVS_EX_AUTOAUTOARRANGE       LVS_EX = 0x01000000
 	LVS_EX_AUTOCHECKSELECT       LVS_EX = 0x08000000
 	LVS_EX_AUTOSIZECOLUMNS       LVS_EX = 0x10000000
-	LVS_EX_BORDERSELECT          LVS_EX = 0x00008000 // border selection style instead of highlight
+	LVS_EX_BORDERSELECT          LVS_EX = 0x00008000
 	LVS_EX_CHECKBOXES            LVS_EX = 0x00000004
 	LVS_EX_COLUMNOVERFLOW        LVS_EX = 0x80000000
 	LVS_EX_COLUMNSNAPPOINTS      LVS_EX = 0x40000000
 	LVS_EX_DOUBLEBUFFER          LVS_EX = 0x00010000
 	LVS_EX_FLATSB                LVS_EX = 0x00000100
-	LVS_EX_FULLROWSELECT         LVS_EX = 0x00000020 // applies to report mode only
+	LVS_EX_FULLROWSELECT         LVS_EX = 0x00000020
 	LVS_EX_GRIDLINES             LVS_EX = 0x00000001
 	LVS_EX_HEADERDRAGDROP        LVS_EX = 0x00000010
-	LVS_EX_HEADERINALLVIEWS      LVS_EX = 0x02000000 // Display column header in all view modes
+	LVS_EX_HEADERINALLVIEWS      LVS_EX = 0x02000000
 	LVS_EX_HIDELABELS            LVS_EX = 0x00020000
-	LVS_EX_INFOTIP               LVS_EX = 0x00000400 // listview does InfoTips for you
-	LVS_EX_JUSTIFYCOLUMNS        LVS_EX = 0x00200000 // Icons are lined up in columns that use up the whole view area.
-	LVS_EX_LABELTIP              LVS_EX = 0x00004000 // listview unfolds partly hidden labels if it does not have infotip text
+	LVS_EX_INFOTIP               LVS_EX = 0x00000400
+	LVS_EX_JUSTIFYCOLUMNS        LVS_EX = 0x00200000
+	LVS_EX_LABELTIP              LVS_EX = 0x00004000
 	LVS_EX_MULTIWORKAREAS        LVS_EX = 0x00002000
 	LVS_EX_ONECLICKACTIVATE      LVS_EX = 0x00000040
 	LVS_EX_REGIONAL              LVS_EX = 0x00000200
-	LVS_EX_SIMPLESELECT          LVS_EX = 0x00100000 // Also changes overlay rendering to top right for icon mode.
+	LVS_EX_SIMPLESELECT          LVS_EX = 0x00100000
 	LVS_EX_SINGLEROW             LVS_EX = 0x00040000
-	LVS_EX_SNAPTOGRID            LVS_EX = 0x00080000 // Icons automatically snap to grid.
+	LVS_EX_SNAPTOGRID            LVS_EX = 0x00080000
 	LVS_EX_SUBITEMIMAGES         LVS_EX = 0x00000002
 	LVS_EX_TRACKSELECT           LVS_EX = 0x00000008
-	LVS_EX_TRANSPARENTBKGND      LVS_EX = 0x00400000 // Background is painted by the parent via WM_PRINTCLIENT
-	LVS_EX_TRANSPARENTSHADOWTEXT LVS_EX = 0x00800000 // Enable shadow text on transparent backgrounds only (useful with bitmaps)
+	LVS_EX_TRANSPARENTBKGND      LVS_EX = 0x00400000
+	LVS_EX_TRANSPARENTSHADOWTEXT LVS_EX = 0x00800000
 	LVS_EX_TWOCLICKACTIVATE      LVS_EX = 0x00000080
 	LVS_EX_UNDERLINECOLD         LVS_EX = 0x00001000
 	LVS_EX_UNDERLINEHOT          LVS_EX = 0x00000800

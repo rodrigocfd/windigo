@@ -12,7 +12,7 @@ type LOGFONT struct {
 	Width          int32
 	Escapement     int32
 	Orientation    int32
-	Weight         int32
+	Weight         c.FW
 	Italic         uint8
 	Underline      uint8
 	StrikeOut      uint8
@@ -21,7 +21,7 @@ type LOGFONT struct {
 	ClipPrecision  uint8
 	Quality        uint8
 	PitchAndFamily uint8
-	FaceName       [c.LF_FACESIZE]uint16
+	FaceName       [32]uint16 // LF_FACESIZE
 }
 
 func (lf *LOGFONT) CreateFontIndirect() HFONT {

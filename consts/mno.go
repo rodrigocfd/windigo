@@ -1,6 +1,6 @@
 package consts
 
-type MB uint32
+type MB uint32 // MessageBox
 
 const (
 	MB_ABORTRETRYIGNORE  MB = 0x00000002
