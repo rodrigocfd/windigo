@@ -28,7 +28,7 @@ func (wnd *WindowMain) RunAsMain() {
 	hInst := api.GetModuleHandle("")
 	wnd.registerClass(wnd.Setup.genWndclassex(hInst))
 
-	wnd.On.Wm.NcDestroy(func(p parm.WmNcDestroy) {
+	wnd.On.WmNcDestroy(func(p parm.WmNcDestroy) {
 		api.PostQuitMessage(0)
 	})
 

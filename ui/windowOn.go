@@ -16,9 +16,6 @@ type windowOn struct {
 	msgs map[c.WM]func(p parm.Raw) uintptr
 	cmds map[c.ID]func(p parm.WmCommand)
 	nfys map[nfyHash]func(p parm.WmNotify) uintptr
-
-	Wm  windowOnWm
-	Lvn windowOnLvn
 }
 
 // Constructor: must use.
@@ -31,9 +28,6 @@ func newWindowOn() windowOn {
 		msgs: msgs,
 		cmds: cmds,
 		nfys: nfys,
-
-		Wm:  newWindowOnWm(msgs, cmds),
-		Lvn: newWindowOnLvn(nfys),
 	}
 }
 
