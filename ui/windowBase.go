@@ -58,6 +58,9 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 	// Retrieve passed pointer.
 	base := (*windowBase)(unsafe.Pointer(hwnd.GetWindowLongPtr(c.GWLP_USERDATA)))
 
+	// Save *windowBase from being collected by GC.
+	hwnd.SetWindowLongPtr(c.GWLP_USERDATA, uintptr(unsafe.Pointer(base)))
+
 	// If no pointer stored, then no processing is done.
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
 	if base == nil {
@@ -79,9 +82,6 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 		base.hwnd.SetWindowLongPtr(c.GWLP_USERDATA, 0) // clear passed pointer
 		base.hwnd = api.HWND(0)
 	}
-
-	// Save *windowBase from being collected by GC.
-	hwnd.SetWindowLongPtr(c.GWLP_USERDATA, uintptr(unsafe.Pointer(base)))
 
 	if wasProcessed {
 		return userResult
