@@ -23,31 +23,29 @@ func MakeButtonWithId(ctrlId c.ID) Button {
 }
 
 func (btn *Button) Create(parent Window, x, y int32, width, height uint32,
-	text string, exStyles c.WS_EX, styles c.WS,
-	buttonStyles c.BS) api.HWND {
+	text string, exStyles c.WS_EX, styles c.WS, btnStyles c.BS) {
 
 	if btn.hwnd != 0 {
 		panic("Trying to create Button twice.")
 	}
 	btn.hwnd = api.CreateWindowEx(exStyles, "Button", text,
-		styles|c.WS(buttonStyles), x, y, width, height,
+		styles|c.WS(btnStyles), x, y, width, height,
 		parent.Hwnd(), api.HMENU(btn.id), parent.Hwnd().GetInstance(), nil)
 	globalUiFont.SetOnControl(btn)
-	return btn.hwnd
 }
 
 func (btn *Button) CreateSimple(parent Window, x, y int32,
-	width uint32, text string) api.HWND {
+	width uint32, text string) {
 
-	return btn.Create(parent, x, y, width, 23, text,
+	btn.Create(parent, x, y, width, 23, text,
 		c.WS_EX(0), c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
 		c.BS(0))
 }
 
 func (btn *Button) CreateSimpleDef(parent Window, x, y int32,
-	width uint32, text string) api.HWND {
+	width uint32, text string) {
 
-	return btn.Create(parent, x, y, width, 23, text,
+	btn.Create(parent, x, y, width, 23, text,
 		c.WS_EX(0), c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
 		c.BS_DEFPUSHBUTTON)
 }

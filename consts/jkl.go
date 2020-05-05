@@ -40,3 +40,65 @@ const (
 	LVP_LISTSORTEDDETAIL LVP = 4
 	LVP_EMPTYTEXT        LVP = 5
 )
+
+type LVS WS
+
+const (
+	LVS_ALIGNLEFT       LVS = 0x0800
+	LVS_ALIGNMASK       LVS = 0x0c00
+	LVS_ALIGNTOP        LVS = 0x0000
+	LVS_AUTOARRANGE     LVS = 0x0100
+	LVS_EDITLABELS      LVS = 0x0200
+	LVS_ICON            LVS = 0x0000
+	LVS_LIST            LVS = 0x0003
+	LVS_NOCOLUMNHEADER  LVS = 0x4000
+	LVS_NOLABELWRAP     LVS = 0x0080
+	LVS_NOSCROLL        LVS = 0x2000
+	LVS_NOSORTHEADER    LVS = 0x8000
+	LVS_OWNERDATA       LVS = 0x1000
+	LVS_OWNERDRAWFIXED  LVS = 0x0400
+	LVS_REPORT          LVS = 0x0001
+	LVS_SHAREIMAGELISTS LVS = 0x0040
+	LVS_SHOWSELALWAYS   LVS = 0x0008
+	LVS_SINGLESEL       LVS = 0x0004
+	LVS_SMALLICON       LVS = 0x0002
+	LVS_SORTASCENDING   LVS = 0x0010
+	LVS_SORTDESCENDING  LVS = 0x0020
+	LVS_TYPEMASK        LVS = 0x0003
+	LVS_TYPESTYLEMASK   LVS = 0xfc00
+)
+
+type LVS_EX WS_EX
+
+const (
+	LVS_EX_AUTOAUTOARRANGE       LVS_EX = 0x01000000 // Icons automatically arrange if no icon positions have been set
+	LVS_EX_AUTOCHECKSELECT       LVS_EX = 0x08000000
+	LVS_EX_AUTOSIZECOLUMNS       LVS_EX = 0x10000000
+	LVS_EX_BORDERSELECT          LVS_EX = 0x00008000 // border selection style instead of highlight
+	LVS_EX_CHECKBOXES            LVS_EX = 0x00000004
+	LVS_EX_COLUMNOVERFLOW        LVS_EX = 0x80000000
+	LVS_EX_COLUMNSNAPPOINTS      LVS_EX = 0x40000000
+	LVS_EX_DOUBLEBUFFER          LVS_EX = 0x00010000
+	LVS_EX_FLATSB                LVS_EX = 0x00000100
+	LVS_EX_FULLROWSELECT         LVS_EX = 0x00000020 // applies to report mode only
+	LVS_EX_GRIDLINES             LVS_EX = 0x00000001
+	LVS_EX_HEADERDRAGDROP        LVS_EX = 0x00000010
+	LVS_EX_HEADERINALLVIEWS      LVS_EX = 0x02000000 // Display column header in all view modes
+	LVS_EX_HIDELABELS            LVS_EX = 0x00020000
+	LVS_EX_INFOTIP               LVS_EX = 0x00000400 // listview does InfoTips for you
+	LVS_EX_JUSTIFYCOLUMNS        LVS_EX = 0x00200000 // Icons are lined up in columns that use up the whole view area.
+	LVS_EX_LABELTIP              LVS_EX = 0x00004000 // listview unfolds partly hidden labels if it does not have infotip text
+	LVS_EX_MULTIWORKAREAS        LVS_EX = 0x00002000
+	LVS_EX_ONECLICKACTIVATE      LVS_EX = 0x00000040
+	LVS_EX_REGIONAL              LVS_EX = 0x00000200
+	LVS_EX_SIMPLESELECT          LVS_EX = 0x00100000 // Also changes overlay rendering to top right for icon mode.
+	LVS_EX_SINGLEROW             LVS_EX = 0x00040000
+	LVS_EX_SNAPTOGRID            LVS_EX = 0x00080000 // Icons automatically snap to grid.
+	LVS_EX_SUBITEMIMAGES         LVS_EX = 0x00000002
+	LVS_EX_TRACKSELECT           LVS_EX = 0x00000008
+	LVS_EX_TRANSPARENTBKGND      LVS_EX = 0x00400000 // Background is painted by the parent via WM_PRINTCLIENT
+	LVS_EX_TRANSPARENTSHADOWTEXT LVS_EX = 0x00800000 // Enable shadow text on transparent backgrounds only (useful with bitmaps)
+	LVS_EX_TWOCLICKACTIVATE      LVS_EX = 0x00000080
+	LVS_EX_UNDERLINECOLD         LVS_EX = 0x00001000
+	LVS_EX_UNDERLINEHOT          LVS_EX = 0x00000800
+)
