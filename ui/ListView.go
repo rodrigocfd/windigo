@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"fmt"
+	"unsafe"
 	"winffi/api"
 	c "winffi/consts"
 )
@@ -19,6 +21,20 @@ func MakeListViewWithId(ctrlId c.ID) ListView {
 		hwnd: api.HWND(0),
 		id:   ctrlId,
 	}
+}
+
+func (lv *ListView) AddColumn(text string, width uint32) ListViewColumn {
+	lvc := api.LVCOLUMN{
+		Mask:    c.LVCF_TEXT | c.LVCF_WIDTH,
+		PszText: api.StrToUtf16Ptr(text),
+		Cx:      int32(width),
+	}
+	newIdx := lv.hwnd.SendMessage(c.WM(c.LVM_INSERTCOLUMN), 0xFFFF,
+		api.LPARAM(unsafe.Pointer(&lvc)))
+	if int32(newIdx) == -1 {
+		panic(fmt.Sprintf("LVM_INSERTCOLUMN failed \"%s\".", text))
+	}
+	return MakeListViewColumn(lv, uint32(newIdx))
 }
 
 func (lv *ListView) Create(parent Window, x, y int32, width, height uint32,

@@ -40,7 +40,7 @@ func (s *windowMainSetup) genWndclassex(hInst api.HINSTANCE) *api.WNDCLASSEX {
 
 	wcx.CbSize = uint32(unsafe.Sizeof(wcx))
 	wcx.HInstance = hInst
-	wcx.LpszClassName = api.ToUtf16PtrBlankIsNil(s.ClassName)
+	wcx.LpszClassName = api.StrToUtf16PtrBlankIsNil(s.ClassName)
 	wcx.Style = s.ClassStyle
 
 	if s.HCursor != 0 {

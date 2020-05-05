@@ -8,7 +8,8 @@ import (
 	c "winffi/consts"
 )
 
-func ToUtf16Ptr(s string) *uint16 {
+// Wrapper to syscall.UTF16PtrFromString(), panics in error.
+func StrToUtf16Ptr(s string) *uint16 {
 	// We won't return an uintptr right away because it has no pointer semantics,
 	// it's just a number, so pointed memory can be garbage-collected.
 	// https://stackoverflow.com/a/51188315
@@ -20,9 +21,11 @@ func ToUtf16Ptr(s string) *uint16 {
 	return pstr
 }
 
-func ToUtf16PtrBlankIsNil(s string) *uint16 {
+// Wrapper to syscall.UTF16PtrFromString(), panics in error. A blank string will
+// return a null pointer.
+func StrToUtf16PtrBlankIsNil(s string) *uint16 {
 	if s != "" {
-		return ToUtf16Ptr(s)
+		return StrToUtf16Ptr(s)
 	}
 	return nil
 }
