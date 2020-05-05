@@ -23,61 +23,61 @@ func MakeListViewWithId(ctrlId c.ID) ListView {
 	}
 }
 
-func (lv *ListView) AddColumn(text string, width uint32) ListViewColumn {
+func (me *ListView) AddColumn(text string, width uint32) ListViewColumn {
 	lvc := api.LVCOLUMN{
 		Mask:    c.LVCF_TEXT | c.LVCF_WIDTH,
 		PszText: api.StrToUtf16Ptr(text),
 		Cx:      int32(width),
 	}
-	newIdx := lv.hwnd.SendMessage(c.WM(c.LVM_INSERTCOLUMN), 0xFFFF,
+	newIdx := me.hwnd.SendMessage(c.WM(c.LVM_INSERTCOLUMN), 0xFFFF,
 		api.LPARAM(unsafe.Pointer(&lvc)))
 	if int32(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTCOLUMN failed \"%s\".", text))
 	}
-	return MakeListViewColumn(lv, uint32(newIdx))
+	return MakeListViewColumn(me, uint32(newIdx))
 }
 
-func (lv *ListView) Create(parent Window, x, y int32, width, height uint32,
+func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 	exStyles c.WS_EX, styles c.WS,
 	lvExStyles c.LVS_EX, lvStyles c.LVS) *ListView {
 
-	if lv.hwnd != 0 {
+	if me.hwnd != 0 {
 		panic("Trying to create ListView twice.")
 	}
-	lv.hwnd = api.CreateWindowEx(exStyles|c.WS_EX(lvExStyles),
+	me.hwnd = api.CreateWindowEx(exStyles|c.WS_EX(lvExStyles),
 		"SysListView32", "", styles|c.WS(lvStyles),
-		x, y, width, height, parent.Hwnd(), api.HMENU(lv.id),
+		x, y, width, height, parent.Hwnd(), api.HMENU(me.id),
 		parent.Hwnd().GetInstance(), nil)
-	return lv
+	return me
 }
 
-func (lv *ListView) CreateReport(parent Window, x, y int32,
+func (me *ListView) CreateReport(parent Window, x, y int32,
 	width, height uint32) *ListView {
 
-	return lv.Create(parent, x, y, width, height,
+	return me.Create(parent, x, y, width, height,
 		c.WS_EX_CLIENTEDGE,
 		c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
 		c.LVS_EX_FULLROWSELECT,
 		c.LVS_REPORT|c.LVS_SHOWSELALWAYS)
 }
 
-func (lv *ListView) CtrlId() c.ID {
-	return lv.id
+func (me *ListView) CtrlId() c.ID {
+	return me.id
 }
 
-func (lv *ListView) Enable(enabled bool) *ListView {
-	lv.hwnd.EnableWindow(enabled)
-	return lv
+func (me *ListView) Enable(enabled bool) *ListView {
+	me.hwnd.EnableWindow(enabled)
+	return me
 }
 
-func (lv *ListView) Hwnd() api.HWND {
-	return lv.hwnd
+func (me *ListView) Hwnd() api.HWND {
+	return me.hwnd
 }
 
-func (lv *ListView) IsEnabled() bool {
-	return lv.hwnd.IsWindowEnabled()
+func (me *ListView) IsEnabled() bool {
+	return me.hwnd.IsWindowEnabled()
 }
 
-func (lv *ListView) SetFocus() api.HWND {
-	return lv.hwnd.SetFocus()
+func (me *ListView) SetFocus() api.HWND {
+	return me.hwnd.SetFocus()
 }

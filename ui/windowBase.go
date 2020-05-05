@@ -22,11 +22,11 @@ func makeWindowBase() windowBase {
 	}
 }
 
-func (base *windowBase) Hwnd() api.HWND {
-	return base.hwnd
+func (me *windowBase) Hwnd() api.HWND {
+	return me.hwnd
 }
 
-func (base *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
+func (me *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
 	if wcx.LpszClassName == nil {
 		panic("Class name not given.")
 	}

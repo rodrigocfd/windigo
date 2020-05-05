@@ -19,24 +19,24 @@ func NewFont() *Font {
 	}
 }
 
-func (f *Font) Destroy() {
-	if f.hFont != 0 {
-		f.hFont.DeleteObject()
-		f.hFont = api.HFONT(0)
+func (me *Font) Destroy() {
+	if me.hFont != 0 {
+		me.hFont.DeleteObject()
+		me.hFont = api.HFONT(0)
 	}
 }
 
-func (f *Font) Hfont() api.HFONT {
-	return f.hFont
+func (me *Font) Hfont() api.HFONT {
+	return me.hFont
 }
 
-func (f *Font) CreateFontLogFont(lf *api.LOGFONT) *Font {
-	f.Destroy()
-	f.hFont = lf.CreateFontIndirect()
-	return f
+func (me *Font) CreateFontLogFont(lf *api.LOGFONT) *Font {
+	me.Destroy()
+	me.hFont = lf.CreateFontIndirect()
+	return me
 }
 
-func (f *Font) CreateUi() *Font {
+func (me *Font) CreateUi() *Font {
 	ncm := api.NONCLIENTMETRICS{}
 	ncm.CbSize = uint32(unsafe.Sizeof(ncm))
 
@@ -46,11 +46,11 @@ func (f *Font) CreateUi() *Font {
 
 	api.SystemParametersInfo(c.SPI_GETNONCLIENTMETRICS,
 		ncm.CbSize, unsafe.Pointer(&ncm), 0)
-	f.CreateFontLogFont(&ncm.LfMenuFont)
-	return f
+	me.CreateFontLogFont(&ncm.LfMenuFont)
+	return me
 }
 
-func (f *Font) SetOnControl(ctrl Window) *Font {
-	ctrl.Hwnd().SendMessage(c.WM_SETFONT, api.WPARAM(f.hFont), 1)
-	return f
+func (me *Font) SetOnControl(ctrl Window) *Font {
+	ctrl.Hwnd().SendMessage(c.WM_SETFONT, api.WPARAM(me.hFont), 1)
+	return me
 }

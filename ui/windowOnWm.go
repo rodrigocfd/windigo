@@ -5,46 +5,46 @@ import (
 	"winffi/parm"
 )
 
-func (won *windowOn) WmCommand(cmd c.ID, userFunc func(p parm.WmCommand)) {
-	won.cmds[cmd] = userFunc
+func (me *windowOn) WmCommand(cmd c.ID, userFunc func(p parm.WmCommand)) {
+	me.cmds[cmd] = userFunc
 }
 
-func (won *windowOn) WmActivate(userFunc func(p parm.WmActivate)) {
-	won.msgs[c.WM_ACTIVATE] = func(p parm.Raw) uintptr {
+func (me *windowOn) WmActivate(userFunc func(p parm.WmActivate)) {
+	me.msgs[c.WM_ACTIVATE] = func(p parm.Raw) uintptr {
 		userFunc(parm.WmActivate(p))
 		return 0
 	}
 }
 
-func (won *windowOn) WmClose(userFunc func(p parm.WmClose)) {
-	won.msgs[c.WM_CLOSE] = func(p parm.Raw) uintptr {
+func (me *windowOn) WmClose(userFunc func(p parm.WmClose)) {
+	me.msgs[c.WM_CLOSE] = func(p parm.Raw) uintptr {
 		userFunc(parm.WmClose(p))
 		return 0
 	}
 }
 
-func (won *windowOn) WmCreate(userFunc func(p parm.WmCreate) uintptr) {
-	won.msgs[c.WM_CREATE] = func(p parm.Raw) uintptr {
+func (me *windowOn) WmCreate(userFunc func(p parm.WmCreate) uintptr) {
+	me.msgs[c.WM_CREATE] = func(p parm.Raw) uintptr {
 		return userFunc(parm.WmCreate(p))
 	}
 }
 
-func (won *windowOn) WmDestroy(userFunc func(p parm.WmDestroy)) {
-	won.msgs[c.WM_DESTROY] = func(p parm.Raw) uintptr {
+func (me *windowOn) WmDestroy(userFunc func(p parm.WmDestroy)) {
+	me.msgs[c.WM_DESTROY] = func(p parm.Raw) uintptr {
 		userFunc(parm.WmDestroy(p))
 		return 0
 	}
 }
 
-func (won *windowOn) WmNcDestroy(userFunc func(p parm.WmNcDestroy)) {
-	won.msgs[c.WM_NCDESTROY] = func(p parm.Raw) uintptr {
+func (me *windowOn) WmNcDestroy(userFunc func(p parm.WmNcDestroy)) {
+	me.msgs[c.WM_NCDESTROY] = func(p parm.Raw) uintptr {
 		userFunc(parm.WmNcDestroy(p))
 		return 0
 	}
 }
 
-func (won *windowOn) WmSize(userFunc func(p parm.WmSize)) {
-	won.msgs[c.WM_SIZE] = func(p parm.Raw) uintptr {
+func (me *windowOn) WmSize(userFunc func(p parm.WmSize)) {
+	me.msgs[c.WM_SIZE] = func(p parm.Raw) uintptr {
 		userFunc(parm.WmSize(p))
 		return 0
 	}

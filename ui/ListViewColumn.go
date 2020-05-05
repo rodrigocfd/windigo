@@ -20,51 +20,51 @@ func MakeListViewColumn(owner *ListView, index uint32) ListViewColumn {
 	}
 }
 
-func (lvc *ListViewColumn) GetText() string {
+func (me *ListViewColumn) GetText() string {
 	buf := make([]uint16, 256) // arbitrary
-	lvcol := api.LVCOLUMN{
-		ISubItem:   int32(lvc.index),
+	lvc := api.LVCOLUMN{
+		ISubItem:   int32(me.index),
 		Mask:       c.LVCF_TEXT,
 		PszText:    &buf[0],
 		CchTextMax: int32(len(buf)),
 	}
-	ret := lvc.owner.Hwnd().SendMessage(c.WM(c.LVM_GETCOLUMN),
-		api.WPARAM(lvc.index), api.LPARAM(unsafe.Pointer(&lvcol)))
+	ret := me.owner.Hwnd().SendMessage(c.WM(c.LVM_GETCOLUMN),
+		api.WPARAM(me.index), api.LPARAM(unsafe.Pointer(&lvc)))
 	if ret < 0 {
 		panic("LVM_GETCOLUMN failed to get text.")
 	}
 	return syscall.UTF16ToString(buf)
 }
 
-func (lvc *ListViewColumn) GetWidth() uint32 {
-	cx := lvc.owner.Hwnd().SendMessage(c.WM(c.LVM_GETCOLUMNWIDTH),
-		api.WPARAM(lvc.index), 0)
+func (me *ListViewColumn) GetWidth() uint32 {
+	cx := me.owner.Hwnd().SendMessage(c.WM(c.LVM_GETCOLUMNWIDTH),
+		api.WPARAM(me.index), 0)
 	if cx == 0 {
 		panic("LVM_GETCOLUMNWIDTH failed.")
 	}
 	return uint32(cx)
 }
 
-func (lvc *ListViewColumn) Index() uint32 {
-	return lvc.index
+func (me *ListViewColumn) Index() uint32 {
+	return me.index
 }
 
-func (lvc *ListViewColumn) SetText(text string) *ListViewColumn {
-	lvcol := api.LVCOLUMN{
-		ISubItem: int32(lvc.index),
+func (me *ListViewColumn) SetText(text string) *ListViewColumn {
+	lvc := api.LVCOLUMN{
+		ISubItem: int32(me.index),
 		Mask:     c.LVCF_TEXT,
 		PszText:  api.StrToUtf16Ptr(text),
 	}
-	ret := lvc.owner.Hwnd().SendMessage(c.WM(c.LVM_SETCOLUMN),
-		api.WPARAM(lvc.index), api.LPARAM(unsafe.Pointer(&lvcol)))
+	ret := me.owner.Hwnd().SendMessage(c.WM(c.LVM_SETCOLUMN),
+		api.WPARAM(me.index), api.LPARAM(unsafe.Pointer(&lvc)))
 	if ret == 0 {
 		panic(fmt.Sprintf("LVM_SETCOLUMN failed to set text \"%s\".", text))
 	}
-	return lvc
+	return me
 }
 
-func (lvc *ListViewColumn) SetWidth(width uint32) *ListViewColumn {
-	lvc.owner.Hwnd().SendMessage(c.WM(c.LVM_SETCOLUMNWIDTH),
-		api.WPARAM(lvc.index), api.LPARAM(width))
-	return lvc
+func (me *ListViewColumn) SetWidth(width uint32) *ListViewColumn {
+	me.owner.Hwnd().SendMessage(c.WM(c.LVM_SETCOLUMNWIDTH),
+		api.WPARAM(me.index), api.LPARAM(width))
+	return me
 }

@@ -30,11 +30,11 @@ func makeWindowOn() windowOn {
 	}
 }
 
-func (won *windowOn) processMessage(p parm.Raw) (uintptr, bool) {
+func (me *windowOn) processMessage(p parm.Raw) (uintptr, bool) {
 	switch p.Msg {
 	case c.WM_COMMAND:
 		paramCmd := parm.WmCommand(p)
-		if userFunc, hasCmd := won.cmds[paramCmd.ControlId()]; hasCmd {
+		if userFunc, hasCmd := me.cmds[paramCmd.ControlId()]; hasCmd {
 			userFunc(paramCmd)
 			return 0, true
 		}
@@ -44,11 +44,11 @@ func (won *windowOn) processMessage(p parm.Raw) (uintptr, bool) {
 			IdFrom: c.ID(paramNfy.NmHdr().IdFrom),
 			Code:   c.WM(paramNfy.NmHdr().Code),
 		}
-		if userFunc, hasNfy := won.nfys[hash]; hasNfy {
+		if userFunc, hasNfy := me.nfys[hash]; hasNfy {
 			return userFunc(paramNfy), true
 		}
 	default:
-		if userFunc, hasMsg := won.msgs[p.Msg]; hasMsg {
+		if userFunc, hasMsg := me.msgs[p.Msg]; hasMsg {
 			return userFunc(p), true
 		}
 	}

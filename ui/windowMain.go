@@ -20,38 +20,38 @@ func MakeWindowMain() WindowMain {
 	}
 }
 
-func (wnd *WindowMain) RunAsMain() {
+func (me *WindowMain) RunAsMain() {
 	api.InitCommonControls()
 	hInst := api.GetModuleHandle("")
-	wnd.registerClass(wnd.Setup.genWndclassex(hInst))
+	me.registerClass(me.Setup.genWndclassex(hInst))
 
-	wnd.On.WmNcDestroy(func(p parm.WmNcDestroy) {
+	me.On.WmNcDestroy(func(p parm.WmNcDestroy) {
 		api.PostQuitMessage(0)
 	})
 
-	wnd.createWindow(hInst)
-	wnd.runMainLoop()
+	me.createWindow(hInst)
+	me.runMainLoop()
 }
 
-func (wnd *WindowMain) createWindow(hInst api.HINSTANCE) {
+func (me *WindowMain) createWindow(hInst api.HINSTANCE) {
 	globalUiFont.CreateUi()
 
 	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN)
 	cyScreen := api.GetSystemMetrics(c.SM_CYSCREEN)
 
-	hwnd := api.CreateWindowEx(wnd.Setup.ExStyle,
-		wnd.Setup.ClassName, wnd.Setup.Title, wnd.Setup.Style,
-		cxScreen/2-int32(wnd.Setup.Width)/2, // center window on screen
-		cyScreen/2-int32(wnd.Setup.Height)/2,
-		wnd.Setup.Width, wnd.Setup.Height,
+	hwnd := api.CreateWindowEx(me.Setup.ExStyle,
+		me.Setup.ClassName, me.Setup.Title, me.Setup.Style,
+		cxScreen/2-int32(me.Setup.Width)/2, // center window on screen
+		cyScreen/2-int32(me.Setup.Height)/2,
+		me.Setup.Width, me.Setup.Height,
 		api.HWND(0), api.HMENU(0), hInst,
-		unsafe.Pointer(&wnd.windowBase)) // pass pointer to windowBase object
+		unsafe.Pointer(&me.windowBase)) // pass pointer to windowBase object
 
-	hwnd.ShowWindow(wnd.Setup.CmdShow)
+	hwnd.ShowWindow(me.Setup.CmdShow)
 	hwnd.UpdateWindow()
 }
 
-func (wnd *WindowMain) runMainLoop() {
+func (me *WindowMain) runMainLoop() {
 	defer globalUiFont.Destroy()
 
 	msg := api.MSG{}
@@ -61,13 +61,13 @@ func (wnd *WindowMain) runMainLoop() {
 			break // WM_QUIT was sent, gracefully terminate the program
 		}
 
-		if wnd.isModelessMsg() { // does this message belong to a modeless child (if any)?
+		if me.isModelessMsg() { // does this message belong to a modeless child (if any)?
 			continue
 		}
 
 		// TODO haccel check !!!
 
-		if wnd.hwnd.IsDialogMessage(&msg) { // processes all keyboard actions for our child controls
+		if me.hwnd.IsDialogMessage(&msg) { // processes all keyboard actions for our child controls
 			continue
 		}
 
@@ -76,6 +76,6 @@ func (wnd *WindowMain) runMainLoop() {
 	}
 }
 
-func (wnd *WindowMain) isModelessMsg() bool {
+func (me *WindowMain) isModelessMsg() bool {
 	return false
 }
