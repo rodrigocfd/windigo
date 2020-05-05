@@ -22,8 +22,6 @@ func NewWindowMain() WindowMain {
 }
 
 func (wnd *WindowMain) RunAsMain() {
-	wnd.Setup.checkInit()
-
 	api.InitCommonControls()
 	hInst := api.GetModuleHandle("")
 	wnd.registerClass(wnd.Setup.genWndclassex(hInst))

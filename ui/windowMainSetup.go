@@ -36,12 +36,6 @@ func newWindowMainSetup() windowMainSetup {
 	}
 }
 
-func (s *windowMainSetup) checkInit() {
-	if s.Width == 0 || s.Height == 0 {
-		panic("Internal structures not initialized... did you use the class constructor?")
-	}
-}
-
 func (s *windowMainSetup) genWndclassex(hInst api.HINSTANCE) *api.WNDCLASSEX {
 	wcx := api.WNDCLASSEX{}
 
