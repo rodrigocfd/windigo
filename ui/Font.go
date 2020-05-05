@@ -8,9 +8,15 @@ import (
 
 var globalUiFont = NewFont() // managed in WindowMain's createWindow() and runMainLoop()
 
-// Manages a font resource. Call NewFont() to construct the object.
+// Manages a font resource.
 type Font struct {
 	hFont api.HFONT
+}
+
+func NewFont() *Font {
+	return &Font{
+		hFont: api.HFONT(0),
+	}
 }
 
 func (f *Font) Destroy() {
@@ -40,12 +46,6 @@ func (f *Font) CreateUi() {
 	api.SystemParametersInfo(c.SPI_GETNONCLIENTMETRICS,
 		ncm.Size, unsafe.Pointer(&ncm), 0)
 	f.CreateFontLogFont(&ncm.MenuFont)
-}
-
-func NewFont() *Font {
-	return &Font{
-		hFont: api.HFONT(0),
-	}
 }
 
 func (f *Font) SetOnControl(ctrl Window) {

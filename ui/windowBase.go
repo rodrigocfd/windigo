@@ -15,11 +15,10 @@ type windowBase struct {
 	On   windowOn
 }
 
-// Constructor: must use.
-func newWindowBase() windowBase {
+func makeWindowBase() windowBase {
 	return windowBase{
 		hwnd: api.HWND(0),
-		On:   newWindowOn(),
+		On:   makeWindowOn(),
 	}
 }
 

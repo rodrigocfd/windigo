@@ -5,17 +5,17 @@ import (
 	c "winffi/consts"
 )
 
-// Edit control. Call NewEdit() to construct the object.
+// Edit control.
 type Edit struct {
 	hwnd api.HWND
 	id   c.ID
 }
 
-func NewEdit() Edit {
-	return NewEditWithId(NextAutoCtrlId())
+func MakeEdit() Edit {
+	return MakeEditWithId(NextAutoCtrlId())
 }
 
-func NewEditWithId(ctrlId c.ID) Edit {
+func MakeEditWithId(ctrlId c.ID) Edit {
 	return Edit{
 		hwnd: api.HWND(0),
 		id:   ctrlId,

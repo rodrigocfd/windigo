@@ -5,17 +5,17 @@ import (
 	c "winffi/consts"
 )
 
-// Button control. Call NewButton() to construct the object.
+// Button control.
 type Button struct {
 	hwnd api.HWND
 	id   c.ID
 }
 
-func NewButton() Button {
-	return NewButtonWithId(NextAutoCtrlId())
+func MakeButton() Button {
+	return MakeButtonWithId(NextAutoCtrlId())
 }
 
-func NewButtonWithId(ctrlId c.ID) Button {
+func MakeButtonWithId(ctrlId c.ID) Button {
 	return Button{
 		hwnd: api.HWND(0),
 		id:   ctrlId,

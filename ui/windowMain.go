@@ -7,17 +7,16 @@ import (
 	"winffi/parm"
 )
 
-// Main application window. Call NewWindowMain() to construct the object.
+// Main application window.
 type WindowMain struct {
 	windowBase
 	Setup windowMainSetup
 }
 
-// Creates a new main application window.
-func NewWindowMain() WindowMain {
+func MakeWindowMain() WindowMain {
 	return WindowMain{
-		windowBase: newWindowBase(),
-		Setup:      newWindowMainSetup(),
+		windowBase: makeWindowBase(),
+		Setup:      makeWindowMainSetup(),
 	}
 }
 

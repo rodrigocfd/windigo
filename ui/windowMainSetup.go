@@ -22,8 +22,7 @@ type windowMainSetup struct {
 	CmdShow c.SW
 }
 
-// Constructor: must use.
-func newWindowMainSetup() windowMainSetup {
+func makeWindowMainSetup() windowMainSetup {
 	return windowMainSetup{
 		ClassStyle: c.CS_DBLCLKS,
 

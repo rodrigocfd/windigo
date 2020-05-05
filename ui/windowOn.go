@@ -18,8 +18,7 @@ type windowOn struct {
 	nfys map[nfyHash]func(p parm.WmNotify) uintptr
 }
 
-// Constructor: must use.
-func newWindowOn() windowOn {
+func makeWindowOn() windowOn {
 	msgs := make(map[c.WM]func(p parm.Raw) uintptr)
 	cmds := make(map[c.ID]func(p parm.WmCommand))
 	nfys := make(map[nfyHash]func(p parm.WmNotify) uintptr)
