@@ -32,6 +32,7 @@ func (btn *Button) Create(parent Window, x, y int32, width, height uint32,
 	btn.hwnd = api.CreateWindowEx(exStyles, "Button", text,
 		styles|c.WS(buttonStyles), x, y, width, height,
 		parent.Hwnd(), api.HMENU(btn.id), parent.Hwnd().GetInstance(), nil)
+	globalUiFont.SetOnControl(btn)
 	return btn.hwnd
 }
 

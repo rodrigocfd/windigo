@@ -27,5 +27,12 @@ type LOGFONT struct {
 func (lf *LOGFONT) CreateFontIndirect() HFONT {
 	ret, _, _ := syscall.Syscall(proc.CreateFontIndirect.Addr(), 1,
 		uintptr(unsafe.Pointer(lf)), 0, 0)
+	if ret == 0 {
+		panic("CreateFontIndirect failed.")
+	}
 	return HFONT(ret)
+}
+
+func (lf *LOGFONT) GetFaceName() string {
+	return syscall.UTF16ToString(lf.FaceName[:])
 }

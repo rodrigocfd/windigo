@@ -18,6 +18,12 @@ const (
 	SM_CYSCREEN  SM = 1
 )
 
+type SPI uint32
+
+const (
+	SPI_GETNONCLIENTMETRICS SPI = 0x0029
+)
+
 type SW int32
 
 const (

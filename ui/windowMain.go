@@ -37,6 +37,8 @@ func (wnd *WindowMain) RunAsMain() {
 }
 
 func (wnd *WindowMain) createWindow(hInst api.HINSTANCE) {
+	globalUiFont.CreateUi()
+
 	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN)
 	cyScreen := api.GetSystemMetrics(c.SM_CYSCREEN)
 
@@ -53,6 +55,8 @@ func (wnd *WindowMain) createWindow(hInst api.HINSTANCE) {
 }
 
 func (wnd *WindowMain) runMainLoop() {
+	defer globalUiFont.Destroy()
+
 	msg := api.MSG{}
 	for {
 		status := msg.GetMessage(api.HWND(0), 0, 0)

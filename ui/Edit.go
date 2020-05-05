@@ -32,6 +32,7 @@ func (edit *Edit) Create(parent Window, x, y int32, width, height uint32,
 	edit.hwnd = api.CreateWindowEx(exStyles, "Edit", initialText,
 		styles|c.WS(editStyles), x, y, width, height,
 		parent.Hwnd(), api.HMENU(edit.id), parent.Hwnd().GetInstance(), nil)
+	globalUiFont.SetOnControl(edit)
 	return edit.hwnd
 }
 

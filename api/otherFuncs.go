@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"syscall"
+	"unsafe"
 	"winffi/api/proc"
 	c "winffi/consts"
 )
@@ -66,4 +67,16 @@ func GetSystemMetrics(index c.SM) int32 {
 
 func PostQuitMessage(exitCode int32) {
 	syscall.Syscall(proc.PostQuitMessage.Addr(), 1, uintptr(exitCode), 0, 0)
+}
+
+func SystemParametersInfo(action c.SPI, param uint32,
+	pvParam unsafe.Pointer, winIni uint32) {
+
+	ret, _, errno := syscall.Syscall6(proc.SystemParametersInfo.Addr(), 4,
+		uintptr(action), uintptr(param), uintptr(pvParam), uintptr(winIni),
+		0, 0)
+	if ret == 0 {
+		panic(fmt.Sprintf("SystemParametersInfo failed: %d %s\n",
+			errno, errno.Error()))
+	}
 }
