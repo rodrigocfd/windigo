@@ -6,6 +6,14 @@ import (
 	c "winffi/consts"
 )
 
+type WmActivate Raw
+
+func Event(p *WmActivate) c.WA              { return c.WA(api.LoWord(uint32(p.LParam))) }
+func IsMinimized(p *WmActivate) bool        { return api.HiWord(uint32(p.LParam)) != 0 }
+func PreviousWindow(p *WmActivate) api.HWND { return api.HWND(p.LParam) }
+
+type WmClose Raw
+
 type WmCommand Raw
 
 func (p *WmCommand) IsFromMenu() bool         { return api.HiWord(uint32(p.WParam)) == 0 }
@@ -30,3 +38,10 @@ type WmNcDestroy Raw
 type WmNotify Raw
 
 func (p *WmNotify) NmHdr() *api.NMHDR { return (*api.NMHDR)(unsafe.Pointer(p.LParam)) }
+
+type WmSize Raw
+
+func Request(p *WmSize) c.SIZE { return c.SIZE(p.WParam) }
+func Size(p *WmSize) api.SIZE {
+	return api.SIZE{Cx: int32(api.LoWord(uint32(p.LParam))), Cy: int32(api.HiWord(uint32(p.LParam)))}
+}

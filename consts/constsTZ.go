@@ -23,6 +23,14 @@ const (
 	VER_OR  VERCOND = 7
 )
 
+type WA int32
+
+const (
+	WA_ACTIVE      WA = 1
+	WA_CLICKACTIVE WA = 2
+	WA_INACTIVE    WA = 0
+)
+
 type WIN32_WINNT uint16
 
 const (
@@ -44,6 +52,8 @@ const (
 type WM int32
 
 const (
+	WM_ACTIVATE    WM = 0x0006
+	WM_CLOSE       WM = 0x0010
 	WM_COMMAND     WM = 0x0111
 	WM_CREATE      WM = 0x0001
 	WM_DESTROY     WM = 0x0002
