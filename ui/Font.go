@@ -30,12 +30,13 @@ func (f *Font) Hfont() api.HFONT {
 	return f.hFont
 }
 
-func (f *Font) CreateFontLogFont(lf *api.LOGFONT) {
+func (f *Font) CreateFontLogFont(lf *api.LOGFONT) *Font {
 	f.Destroy()
 	f.hFont = lf.CreateFontIndirect()
+	return f
 }
 
-func (f *Font) CreateUi() {
+func (f *Font) CreateUi() *Font {
 	ncm := api.NONCLIENTMETRICS{}
 	ncm.Size = uint32(unsafe.Sizeof(ncm))
 
@@ -46,8 +47,10 @@ func (f *Font) CreateUi() {
 	api.SystemParametersInfo(c.SPI_GETNONCLIENTMETRICS,
 		ncm.Size, unsafe.Pointer(&ncm), 0)
 	f.CreateFontLogFont(&ncm.MenuFont)
+	return f
 }
 
-func (f *Font) SetOnControl(ctrl Window) {
+func (f *Font) SetOnControl(ctrl Window) *Font {
 	ctrl.Hwnd().SendMessage(c.WM_SETFONT, api.WPARAM(f.hFont), 1)
+	return f
 }
