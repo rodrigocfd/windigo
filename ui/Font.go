@@ -38,15 +38,15 @@ func (f *Font) CreateFontLogFont(lf *api.LOGFONT) *Font {
 
 func (f *Font) CreateUi() *Font {
 	ncm := api.NONCLIENTMETRICS{}
-	ncm.Size = uint32(unsafe.Sizeof(ncm))
+	ncm.CbSize = uint32(unsafe.Sizeof(ncm))
 
 	if !api.IsWindowsVistaOrGreater() {
-		ncm.Size -= uint32(unsafe.Sizeof(ncm.BorderWidth))
+		ncm.CbSize -= uint32(unsafe.Sizeof(ncm.IBorderWidth))
 	}
 
 	api.SystemParametersInfo(c.SPI_GETNONCLIENTMETRICS,
-		ncm.Size, unsafe.Pointer(&ncm), 0)
-	f.CreateFontLogFont(&ncm.MenuFont)
+		ncm.CbSize, unsafe.Pointer(&ncm), 0)
+	f.CreateFontLogFont(&ncm.LfMenuFont)
 	return f
 }
 

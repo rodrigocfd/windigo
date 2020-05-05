@@ -8,11 +8,11 @@ import (
 )
 
 type WNDCLASSEX struct {
-	Size          uint32
+	CbSize        uint32
 	Style         c.CS
-	WndProc       uintptr
-	ClsExtra      int32
-	WndExtra      int32
+	LpfnWndProc   uintptr
+	CbClsExtra    int32
+	CbWndExtra    int32
 	HInstance     HINSTANCE
 	HIcon         HICON
 	HCursor       HCURSOR

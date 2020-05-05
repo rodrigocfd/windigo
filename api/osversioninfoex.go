@@ -8,28 +8,28 @@ import (
 )
 
 type OSVERSIONINFOEX struct {
-	OsVersionInfoSize uint32
-	MajorVersion      uint32
-	MinorVersion      uint32
-	BuildNumber       uint32
-	PlatformId        uint32
-	CSDVersion        [128]uint16
-	ServicePackMajor  uint16
-	ServicePackMinor  uint16
-	SuiteMask         uint16
-	ProductType       uint8
-	Reserve           uint8
+	DwOsVersionInfoSize uint32
+	DwMajorVersion      uint32
+	DwMinorVersion      uint32
+	DwBuildNumber       uint32
+	DWPlatformId        uint32
+	SzCSDVersion        [128]uint16
+	WServicePackMajor   uint16
+	WServicePackMinor   uint16
+	WSuiteMask          uint16
+	WProductType        uint8
+	WReserve            uint8
 }
 
 func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32,
 	servicePackMajor uint16) bool {
 
 	ovi := OSVERSIONINFOEX{
-		MajorVersion:     majorVersion,
-		MinorVersion:     minorVersion,
-		ServicePackMajor: servicePackMajor,
+		DwMajorVersion:    majorVersion,
+		DwMinorVersion:    minorVersion,
+		WServicePackMajor: servicePackMajor,
 	}
-	ovi.OsVersionInfoSize = uint32(unsafe.Sizeof(ovi))
+	ovi.DwOsVersionInfoSize = uint32(unsafe.Sizeof(ovi))
 
 	conditionMask := VerSetConditionMask(
 		VerSetConditionMask(

@@ -38,7 +38,7 @@ func makeWindowMainSetup() windowMainSetup {
 func (s *windowMainSetup) genWndclassex(hInst api.HINSTANCE) *api.WNDCLASSEX {
 	wcx := api.WNDCLASSEX{}
 
-	wcx.Size = uint32(unsafe.Sizeof(wcx))
+	wcx.CbSize = uint32(unsafe.Sizeof(wcx))
 	wcx.HInstance = hInst
 	wcx.LpszClassName = api.ToUtf16PtrBlankIsNil(s.ClassName)
 	wcx.Style = s.ClassStyle

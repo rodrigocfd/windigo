@@ -31,7 +31,7 @@ func (base *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
 		panic("Class name not given.")
 	}
 
-	wcx.WndProc = syscall.NewCallback(wndProc)
+	wcx.LpfnWndProc = syscall.NewCallback(wndProc)
 
 	atom, errno := wcx.RegisterClassEx()
 	if errno != 0 {
@@ -49,7 +49,7 @@ func (base *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
 func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uintptr {
 	if msg == c.WM_NCCREATE {
 		cs := (*api.CREATESTRUCT)(unsafe.Pointer(lParam))
-		base := (*windowBase)(unsafe.Pointer(cs.CreateParams))
+		base := (*windowBase)(unsafe.Pointer(cs.LpCreateParams))
 		hwnd.SetWindowLongPtr(c.GWLP_USERDATA, uintptr(unsafe.Pointer(base)))
 		base.hwnd = hwnd // assign actual HWND
 	}
