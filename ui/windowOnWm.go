@@ -36,6 +36,13 @@ func (me *windowOn) WmDestroy(userFunc func(p parm.WmDestroy)) {
 	}
 }
 
+func (me *windowOn) WmInitMenuPopup(userFunc func(p parm.WmInitMenuPopup)) {
+	me.msgs[c.WM_INITMENUPOPUP] = func(p parm.Raw) uintptr {
+		userFunc(parm.WmInitMenuPopup(p))
+		return 0
+	}
+}
+
 func (me *windowOn) WmLButtonDblClk(userFunc func(p parm.WmLButtonDblClk)) {
 	me.msgs[c.WM_LBUTTONDBLCLK] = func(p parm.Raw) uintptr {
 		userFunc(parm.WmLButtonDblClk(p))
@@ -107,6 +114,20 @@ func (me *windowOn) WmRButtonUp(userFunc func(p parm.WmRButtonUp)) {
 	}
 }
 
+func (me *windowOn) WmMouseLeave(userFunc func(p parm.WmMouseLeave)) {
+	me.msgs[c.WM_MOUSELEAVE] = func(p parm.Raw) uintptr {
+		userFunc(parm.WmMouseLeave(p))
+		return 0
+	}
+}
+
+func (me *windowOn) WmMove(userFunc func(p parm.WmMove)) {
+	me.msgs[c.WM_MOVE] = func(p parm.Raw) uintptr {
+		userFunc(parm.WmMove(p))
+		return 0
+	}
+}
+
 func (me *windowOn) WmNcDestroy(userFunc func(p parm.WmNcDestroy)) {
 	me.msgs[c.WM_NCDESTROY] = func(p parm.Raw) uintptr {
 		userFunc(parm.WmNcDestroy(p))
@@ -117,6 +138,27 @@ func (me *windowOn) WmNcDestroy(userFunc func(p parm.WmNcDestroy)) {
 func (me *windowOn) WmNcPaint(userFunc func(p parm.WmNcPaint)) {
 	me.msgs[c.WM_NCPAINT] = func(p parm.Raw) uintptr {
 		userFunc(parm.WmNcPaint(p))
+		return 0
+	}
+}
+
+func (me *windowOn) WmPaint(userFunc func(p parm.WmPaint)) {
+	me.msgs[c.WM_PAINT] = func(p parm.Raw) uintptr {
+		userFunc(parm.WmPaint(p))
+		return 0
+	}
+}
+
+func (me *windowOn) WmSetFocus(userFunc func(p parm.WmSetFocus)) {
+	me.msgs[c.WM_SETFOCUS] = func(p parm.Raw) uintptr {
+		userFunc(parm.WmSetFocus(p))
+		return 0
+	}
+}
+
+func (me *windowOn) WmSetFont(userFunc func(p parm.WmSetFont)) {
+	me.msgs[c.WM_SETFONT] = func(p parm.Raw) uintptr {
+		userFunc(parm.WmSetFont(p))
 		return 0
 	}
 }

@@ -33,6 +33,12 @@ func (p WmCreate) CreateStruct() *api.CREATESTRUCT {
 
 type WmDestroy Raw
 
+type WmInitMenuPopup Raw
+
+func (p WmInitMenuPopup) Hmenu() api.HMENU        { return api.HMENU(p.WParam) }
+func (p WmInitMenuPopup) SourceItemIndex() uint16 { return api.LoWord(uint32(p.LParam)) }
+func (p WmInitMenuPopup) IsWindowMenu() bool      { return api.HiWord(uint32(p.LParam)) != 0 }
+
 type WmLButtonDblClk Raw // inherit
 
 func (p WmLButtonDblClk) HasCtrl() bool      { return (c.MK(p.WParam) & c.MK_CONTROL) != 0 }
@@ -43,7 +49,7 @@ func (p WmLButtonDblClk) HasShift() bool     { return (c.MK(p.WParam) & c.MK_SHI
 func (p WmLButtonDblClk) HasXBtn1() bool     { return (c.MK(p.WParam) & c.MK_XBUTTON1) != 0 }
 func (p WmLButtonDblClk) HasXBtn2() bool     { return (c.MK(p.WParam) & c.MK_XBUTTON2) != 0 }
 func (p WmLButtonDblClk) Pos() *api.POINT {
-	return &api.POINT{int32(api.LoWord(uint32(p.LParam))), int32(api.HiWord(uint32(p.LParam)))}
+	return &api.POINT{X: int32(api.LoWord(uint32(p.LParam))), Y: int32(api.HiWord(uint32(p.LParam)))}
 }
 
 type WmLButtonDown struct{ WmLButtonDblClk } // inherit
@@ -57,6 +63,14 @@ type WmRButtonDblClk struct{ WmLButtonDblClk }
 type WmRButtonDown struct{ WmLButtonDblClk }
 type WmRButtonUp struct{ WmLButtonDblClk }
 
+type WmMouseLeave Raw
+
+type WmMove Raw
+
+func (p WmMove) Pos() *api.POINT {
+	return &api.POINT{X: int32(api.LoWord(uint32(p.LParam))), Y: int32(api.HiWord(uint32(p.LParam)))}
+}
+
 type WmNcDestroy Raw
 
 type WmNcPaint Raw
@@ -67,9 +81,20 @@ type WmNotify Raw
 
 func (p WmNotify) NmHdr() *api.NMHDR { return (*api.NMHDR)(unsafe.Pointer(p.LParam)) }
 
+type WmPaint Raw
+
+type WmSetFocus Raw
+
+func (p WmSetFocus) unfocusedWindow() api.HWND { return api.HWND(p.WParam) }
+
+type WmSetFont Raw
+
+func (p WmSetFont) Hfont() api.HFONT   { return api.HFONT(p.WParam) }
+func (p WmSetFont) ShouldRedraw() bool { return p.LParam == 1 }
+
 type WmSize Raw
 
-func Request(p WmSize) c.SIZE { return c.SIZE(p.WParam) }
-func Size(p WmSize) api.SIZE {
-	return api.SIZE{Cx: int32(api.LoWord(uint32(p.LParam))), Cy: int32(api.HiWord(uint32(p.LParam)))}
+func (p WmSize) Request() c.SIZE_REQ { return c.SIZE_REQ(p.WParam) }
+func (p WmSize) SizeClientArea() *api.SIZE {
+	return &api.SIZE{Cx: int32(api.LoWord(uint32(p.LParam))), Cy: int32(api.HiWord(uint32(p.LParam)))}
 }
