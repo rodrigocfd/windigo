@@ -179,3 +179,14 @@ func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
 	me.hwnd.SendMessage(c.WM_SETREDRAW, api.WPARAM(wp), 0)
 	return me
 }
+
+func (me *ListView) SetView(view c.LV_VIEW) *ListView {
+	if int32(me.hwnd.SendMessage(c.WM(c.LVM_SETVIEW), 0, 0)) == -1 {
+		panic("LVM_SETVIEW failed.")
+	}
+	return me
+}
+
+func (me *ListView) View() c.LV_VIEW {
+	return c.LV_VIEW(me.hwnd.SendMessage(c.WM(c.LVM_GETVIEW), 0, 0))
+}

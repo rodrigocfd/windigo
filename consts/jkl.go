@@ -1,5 +1,16 @@
 package consts
 
+type LV_VIEW uint16 // list view view
+
+const (
+	LV_VIEW_ICON      LV_VIEW = 0x0000
+	LV_VIEW_DETAILS   LV_VIEW = 0x0001
+	LV_VIEW_SMALLICON LV_VIEW = 0x0002
+	LV_VIEW_LIST      LV_VIEW = 0x0003
+	LV_VIEW_TILE      LV_VIEW = 0x0004
+	LV_VIEW_MAX       LV_VIEW = 0x0004
+)
+
 type LVCF uint32 // LVCOLUMN mask
 
 const (
