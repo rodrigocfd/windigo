@@ -20,6 +20,19 @@ const (
 	GWLP_ID         GWLP = -12
 )
 
+type HDM WM // list view header message
+
+const (
+	HDM_FIRST HDM = 0x1200
+
+	HDM_GETITEMCOUNT HDM = HDM_FIRST + 0
+	HDM_INSERTITEM   HDM = HDM_FIRST + 10
+	HDM_DELETEITEM   HDM = HDM_FIRST + 2
+	HDM_GETITEM      HDM = HDM_FIRST + 11
+	HDM_SETITEM      HDM = HDM_FIRST + 12
+	HDM_LAYOUT       HDM = HDM_FIRST + 5
+)
+
 type ID uint16 // dialog box command ID
 
 const (

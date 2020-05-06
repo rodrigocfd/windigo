@@ -65,6 +65,35 @@ func (me *ListView) CtrlId() c.ID {
 	return me.id
 }
 
+func (me *ListView) Column(index uint32) ListViewColumn {
+	numCols := me.ColumnCount()
+	if index >= numCols {
+		panic("Trying to retrieve column with index beyond count.")
+	}
+	return MakeListViewColumn(me, index)
+}
+
+func (me *ListView) ColumnCount() uint32 {
+	hHeader := api.HWND(me.hwnd.SendMessage(c.WM(c.LVM_GETHEADER), 0, 0))
+	if hHeader == 0 {
+		panic("LVM_GETHEADER failed.")
+	}
+
+	count := hHeader.SendMessage(c.WM(c.HDM_GETITEMCOUNT), 0, 0)
+	if int32(count) == -1 {
+		panic("HDM_GETITEMCOUNT failed.")
+	}
+	return uint32(count)
+}
+
+func (me *ListView) DeleteAllItems() *ListView {
+	ret := me.hwnd.SendMessage(c.WM(c.LVM_DELETEALLITEMS), 0, 0)
+	if ret == 0 {
+		panic("LVM_DELETEALLITEMS failed.")
+	}
+	return me
+}
+
 func (me *ListView) Enable(enabled bool) *ListView {
 	me.hwnd.EnableWindow(enabled)
 	return me
@@ -78,6 +107,35 @@ func (me *ListView) IsEnabled() bool {
 	return me.hwnd.IsWindowEnabled()
 }
 
+func (me *ListView) IsGroupViewEnabled() bool {
+	return me.hwnd.SendMessage(c.WM(c.LVM_ISGROUPVIEWENABLED), 0, 0) >= 0
+}
+
+func (me *ListView) ItemCount() uint32 {
+	count := me.hwnd.SendMessage(c.WM(c.LVM_GETITEMCOUNT), 0, 0)
+	if int32(count) == -1 {
+		panic("LVM_GETITEMCOUNT failed.")
+	}
+	return uint32(count)
+}
+
+func (me *ListView) SelectedItemCount() uint32 {
+	count := me.hwnd.SendMessage(c.WM(c.LVM_GETSELECTEDCOUNT), 0, 0)
+	if int32(count) == -1 {
+		panic("LVM_GETSELECTEDCOUNT failed.")
+	}
+	return uint32(count)
+}
+
 func (me *ListView) SetFocus() api.HWND {
 	return me.hwnd.SetFocus()
+}
+
+func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
+	wp := 0
+	if allowRedraw {
+		wp = 1
+	}
+	me.hwnd.SendMessage(c.WM_SETREDRAW, api.WPARAM(wp), 0)
+	return me
 }

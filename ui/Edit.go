@@ -71,10 +71,6 @@ func (me *Edit) Enable(enabled bool) *Edit {
 	return me
 }
 
-func (me *Edit) GetText() string {
-	return me.hwnd.GetWindowText()
-}
-
 func (me *Edit) Hwnd() api.HWND {
 	return me.hwnd
 }
@@ -90,4 +86,8 @@ func (me *Edit) SetFocus() api.HWND {
 func (me *Edit) SetText(text string) *Edit {
 	me.hwnd.SetWindowText(text)
 	return me
+}
+
+func (me *Edit) Text() string {
+	return me.hwnd.GetWindowText()
 }

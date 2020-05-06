@@ -60,10 +60,6 @@ func (me *Button) Enable(enabled bool) *Button {
 	return me
 }
 
-func (me *Button) GetText() string {
-	return me.hwnd.GetWindowText()
-}
-
 func (me *Button) Hwnd() api.HWND {
 	return me.hwnd
 }
@@ -79,4 +75,8 @@ func (me *Button) SetFocus() api.HWND {
 func (me *Button) SetText(text string) *Button {
 	me.hwnd.SetWindowText(text)
 	return me
+}
+
+func (me *Button) Text() string {
+	return me.hwnd.GetWindowText()
 }
