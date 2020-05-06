@@ -12,12 +12,12 @@ type ListView struct {
 	id   c.ID
 }
 
-func MakeListView() ListView {
-	return MakeListViewWithId(NextAutoCtrlId())
+func NewListView() *ListView {
+	return NewListViewWithId(NextAutoCtrlId())
 }
 
-func MakeListViewWithId(ctrlId c.ID) ListView {
-	return ListView{
+func NewListViewWithId(ctrlId c.ID) *ListView {
+	return &ListView{
 		hwnd: api.HWND(0),
 		id:   ctrlId,
 	}

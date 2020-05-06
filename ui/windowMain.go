@@ -13,8 +13,8 @@ type WindowMain struct {
 	Setup windowMainSetup
 }
 
-func MakeWindowMain() WindowMain {
-	return WindowMain{
+func NewWindowMain() *WindowMain {
+	return &WindowMain{
 		windowBase: makeWindowBase(),
 		Setup:      makeWindowMainSetup(),
 	}

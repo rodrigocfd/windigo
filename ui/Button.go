@@ -11,12 +11,12 @@ type Button struct {
 	id   c.ID
 }
 
-func MakeButton() Button {
-	return MakeButtonWithId(NextAutoCtrlId())
+func NewButton() *Button {
+	return NewButtonWithId(NextAutoCtrlId())
 }
 
-func MakeButtonWithId(ctrlId c.ID) Button {
-	return Button{
+func NewButtonWithId(ctrlId c.ID) *Button {
+	return &Button{
 		hwnd: api.HWND(0),
 		id:   ctrlId,
 	}

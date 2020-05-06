@@ -11,12 +11,12 @@ type Edit struct {
 	id   c.ID
 }
 
-func MakeEdit() Edit {
-	return MakeEditWithId(NextAutoCtrlId())
+func NewEdit() *Edit {
+	return NewEditWithId(NextAutoCtrlId())
 }
 
-func MakeEditWithId(ctrlId c.ID) Edit {
-	return Edit{
+func NewEditWithId(ctrlId c.ID) *Edit {
+	return &Edit{
 		hwnd: api.HWND(0),
 		id:   ctrlId,
 	}
