@@ -15,7 +15,7 @@ type WindowControl struct {
 }
 
 func NewWindowControl() *WindowControl {
-	return NewWindowControlWithId(NextAutoCtrlId())
+	return NewWindowControlWithId(nextAutoCtrlId())
 }
 
 func NewWindowControlWithId(ctrlId c.ID) *WindowControl {

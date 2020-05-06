@@ -13,7 +13,7 @@ type nativeControlBase struct {
 }
 
 func makeNativeControlBase() nativeControlBase {
-	return makeNativeControlBaseWithId(NextAutoCtrlId())
+	return makeNativeControlBaseWithId(nextAutoCtrlId())
 }
 
 func makeNativeControlBaseWithId(ctrlId c.ID) nativeControlBase {
