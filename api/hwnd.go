@@ -77,6 +77,18 @@ func (hwnd HWND) GetAncestor(gaFlags c.GA) HWND {
 	return HWND(ret)
 }
 
+func (hwnd HWND) GetClientRect() *RECT {
+	rc := &RECT{}
+	ret, _, errno := syscall.Syscall(proc.GetClientRect.Addr(), 2,
+		uintptr(hwnd), uintptr(unsafe.Pointer(rc)), 0)
+
+	if ret == 0 {
+		panic(fmt.Sprintf("GetClientRect failed: %d %s\n",
+			errno, errno.Error()))
+	}
+	return rc
+}
+
 func (hwnd HWND) GetExStyle() c.WS_EX {
 	return c.WS_EX(hwnd.GetWindowLongPtr(c.GWLP_EXSTYLE))
 }
@@ -119,6 +131,18 @@ func (hwnd HWND) GetWindowLongPtr(index c.GWLP) uintptr {
 		uintptr(hwnd), uintptr(index),
 		0)
 	return ret
+}
+
+func (hwnd HWND) GetWindowRect() *RECT {
+	rc := &RECT{}
+	ret, _, errno := syscall.Syscall(proc.GetWindowRect.Addr(), 2,
+		uintptr(hwnd), uintptr(unsafe.Pointer(rc)), 0)
+
+	if ret == 0 {
+		panic(fmt.Sprintf("GetWindowRect failed: %d %s\n",
+			errno, errno.Error()))
+	}
+	return rc
 }
 
 func (hwnd HWND) GetWindowText() string {
@@ -208,14 +232,6 @@ func (hwnd HWND) ShowWindow(nCmdShow c.SW) bool {
 	return ret != 0
 }
 
-func (hwnd HWND) TranslateAccelerator(hAccel HACCEL,
-	msg *MSG) (int32, syscall.Errno) {
-
-	ret, _, errno := syscall.Syscall(proc.TranslateAccelerator.Addr(), 3,
-		uintptr(hwnd), uintptr(hAccel), uintptr(unsafe.Pointer(msg)))
-	return int32(ret), errno
-}
-
 func (hwnd HWND) SetFocus() HWND {
 	ret, _, errno := syscall.Syscall(proc.SetFocus.Addr(), 1,
 		uintptr(hwnd), 0, 0)
@@ -231,6 +247,14 @@ func (hwnd HWND) SetWindowText(text string) {
 		uintptr(hwnd),
 		uintptr(unsafe.Pointer(StrToUtf16Ptr(text))),
 		0)
+}
+
+func (hwnd HWND) TranslateAccelerator(hAccel HACCEL,
+	msg *MSG) (int32, syscall.Errno) {
+
+	ret, _, errno := syscall.Syscall(proc.TranslateAccelerator.Addr(), 3,
+		uintptr(hwnd), uintptr(hAccel), uintptr(unsafe.Pointer(msg)))
+	return int32(ret), errno
 }
 
 func (hwnd HWND) UpdateWindow() bool {

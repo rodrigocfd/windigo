@@ -136,16 +136,6 @@ const (
 	LVN_SETDISPINFO       LVN = LVN_FIRST - 78
 )
 
-type LVP uint8 // DrawThemeBackground
-
-const (
-	LVP_LISTITEM         LVP = 1
-	LVP_LISTGROUP        LVP = 2
-	LVP_LISTDETAIL       LVP = 3
-	LVP_LISTSORTEDDETAIL LVP = 4
-	LVP_EMPTYTEXT        LVP = 5
-)
-
 type LVS WS // list view style
 
 const (

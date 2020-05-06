@@ -13,7 +13,6 @@ type (
 	HMENU    HANDLE
 	HMONITOR HANDLE
 	HRGN     HGDIOBJ
-	HTHEME   HANDLE
 )
 
 type (

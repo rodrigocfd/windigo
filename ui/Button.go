@@ -5,27 +5,27 @@ import (
 	c "gowinui/consts"
 )
 
-// Button control.
+// Native button control.
 type Button struct {
-	controlBase
+	nativeControlBase
 }
 
 func NewButton() *Button {
 	return &Button{
-		controlBase: makeControlBase(),
+		nativeControlBase: makeNativeControlBase(),
 	}
 }
 
 func NewButtonWithId(ctrlId c.ID) *Button {
 	return &Button{
-		controlBase: makeControlBaseWithId(ctrlId),
+		nativeControlBase: makeNativeControlBaseWithId(ctrlId),
 	}
 }
 
 func (me *Button) Create(parent Window, x, y int32, width, height uint32,
 	text string, exStyles c.WS_EX, styles c.WS, btnStyles c.BS) *Button {
 
-	me.controlBase.create(exStyles, "Button", text,
+	me.nativeControlBase.create(exStyles, "Button", text,
 		styles|c.WS(btnStyles), x, y, width, height, parent)
 	globalUiFont.SetOnControl(me)
 	return me
@@ -48,23 +48,23 @@ func (me *Button) CreateSimpleDef(parent Window, x, y int32,
 }
 
 func (me *Button) Enable(enabled bool) *Button {
-	me.controlBase.Hwnd().EnableWindow(enabled)
+	me.nativeControlBase.Hwnd().EnableWindow(enabled)
 	return me
 }
 
 func (me *Button) IsEnabled() bool {
-	return me.controlBase.Hwnd().IsWindowEnabled()
+	return me.nativeControlBase.Hwnd().IsWindowEnabled()
 }
 
 func (me *Button) SetFocus() api.HWND {
-	return me.controlBase.Hwnd().SetFocus()
+	return me.nativeControlBase.Hwnd().SetFocus()
 }
 
 func (me *Button) SetText(text string) *Button {
-	me.controlBase.Hwnd().SetWindowText(text)
+	me.nativeControlBase.Hwnd().SetWindowText(text)
 	return me
 }
 
 func (me *Button) Text() string {
-	return me.controlBase.Hwnd().GetWindowText()
+	return me.nativeControlBase.Hwnd().GetWindowText()
 }

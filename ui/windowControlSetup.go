@@ -13,12 +13,15 @@ type windowControlSetup struct {
 	HBrushBg   api.HBRUSH
 
 	Style   c.WS
-	ExStyle c.WS_EX
+	ExStyle c.WS_EX // for border, use WS_EX_CLIENTEDGE
 }
 
 func makeWindowControlSetup() windowControlSetup {
 	return windowControlSetup{
 		ClassStyle: c.CS_DBLCLKS,
+
+		Style:   c.WS_CHILD | c.WS_VISIBLE | c.WS_CLIPCHILDREN | c.WS_CLIPSIBLINGS,
+		ExStyle: c.WS_EX(0),
 	}
 }
 
@@ -41,7 +44,7 @@ func (me *windowControlSetup) genWndClassEx(
 	if me.HBrushBg != 0 {
 		wcx.HbrBackground = me.HBrushBg
 	} else {
-		wcx.HbrBackground = api.NewBrushFromSysColor(c.COLOR_BTNFACE)
+		wcx.HbrBackground = api.NewBrushFromSysColor(c.COLOR_WINDOW)
 	}
 
 	return &wcx

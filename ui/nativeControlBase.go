@@ -7,23 +7,23 @@ import (
 )
 
 // Base to all child control types.
-type controlBase struct {
+type nativeControlBase struct {
 	hwnd   api.HWND
 	ctrlId c.ID
 }
 
-func makeControlBase() controlBase {
-	return makeControlBaseWithId(NextAutoCtrlId())
+func makeNativeControlBase() nativeControlBase {
+	return makeNativeControlBaseWithId(NextAutoCtrlId())
 }
 
-func makeControlBaseWithId(ctrlId c.ID) controlBase {
-	return controlBase{
+func makeNativeControlBaseWithId(ctrlId c.ID) nativeControlBase {
+	return nativeControlBase{
 		hwnd:   api.HWND(0),
 		ctrlId: ctrlId,
 	}
 }
 
-func (me *controlBase) create(exStyle c.WS_EX, className, title string,
+func (me *nativeControlBase) create(exStyle c.WS_EX, className, title string,
 	style c.WS, x, y int32, width, height uint32, parent Window) {
 
 	if me.hwnd != 0 {
@@ -35,11 +35,11 @@ func (me *controlBase) create(exStyle c.WS_EX, className, title string,
 }
 
 // Returns the control ID of this child window control.
-func (me *controlBase) CtrlId() c.ID {
+func (me *nativeControlBase) CtrlId() c.ID {
 	return me.ctrlId
 }
 
 // Returns the underlying HWND handle of this window.
-func (me *controlBase) Hwnd() api.HWND {
+func (me *nativeControlBase) Hwnd() api.HWND {
 	return me.hwnd
 }

@@ -5,27 +5,27 @@ import (
 	c "gowinui/consts"
 )
 
-// Edit control.
+// Native edit control.
 type Edit struct {
-	controlBase
+	nativeControlBase
 }
 
 func NewEdit() *Edit {
 	return &Edit{
-		controlBase: makeControlBase(),
+		nativeControlBase: makeNativeControlBase(),
 	}
 }
 
 func NewEditWithId(ctrlId c.ID) *Edit {
 	return &Edit{
-		controlBase: makeControlBaseWithId(ctrlId),
+		nativeControlBase: makeNativeControlBaseWithId(ctrlId),
 	}
 }
 
 func (me *Edit) Create(parent Window, x, y int32, width, height uint32,
 	initialText string, exStyles c.WS_EX, styles c.WS, editStyles c.ES) *Edit {
 
-	me.controlBase.create(exStyles, "Edit", initialText,
+	me.nativeControlBase.create(exStyles, "Edit", initialText,
 		styles|c.WS(editStyles), x, y, width, height, parent)
 	globalUiFont.SetOnControl(me)
 	return me
@@ -59,23 +59,23 @@ func (me *Edit) CreateSimple(parent Window, x, y int32, width uint32,
 }
 
 func (me *Edit) Enable(enabled bool) *Edit {
-	me.controlBase.Hwnd().EnableWindow(enabled)
+	me.nativeControlBase.Hwnd().EnableWindow(enabled)
 	return me
 }
 
 func (me *Edit) IsEnabled() bool {
-	return me.controlBase.Hwnd().IsWindowEnabled()
+	return me.nativeControlBase.Hwnd().IsWindowEnabled()
 }
 
 func (me *Edit) SetFocus() api.HWND {
-	return me.controlBase.Hwnd().SetFocus()
+	return me.nativeControlBase.Hwnd().SetFocus()
 }
 
 func (me *Edit) SetText(text string) *Edit {
-	me.controlBase.Hwnd().SetWindowText(text)
+	me.nativeControlBase.Hwnd().SetWindowText(text)
 	return me
 }
 
 func (me *Edit) Text() string {
-	return me.controlBase.Hwnd().GetWindowText()
+	return me.nativeControlBase.Hwnd().GetWindowText()
 }

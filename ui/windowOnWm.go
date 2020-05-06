@@ -43,6 +43,13 @@ func (me *windowOn) WmNcDestroy(userFunc func(p parm.WmNcDestroy)) {
 	}
 }
 
+func (me *windowOn) WmNcPaint(userFunc func(p parm.WmNcPaint)) {
+	me.msgs[c.WM_NCPAINT] = func(p parm.Raw) uintptr {
+		userFunc(parm.WmNcPaint(p))
+		return 0
+	}
+}
+
 func (me *windowOn) WmSize(userFunc func(p parm.WmSize)) {
 	me.msgs[c.WM_SIZE] = func(p parm.Raw) uintptr {
 		userFunc(parm.WmSize(p))

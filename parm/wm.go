@@ -35,6 +35,10 @@ type WmDestroy Raw
 
 type WmNcDestroy Raw
 
+type WmNcPaint Raw
+
+func (p *WmNcPaint) Hrgn() api.HRGN { return api.HRGN(p.LParam) }
+
 type WmNotify Raw
 
 func (p *WmNotify) NmHdr() *api.NMHDR { return (*api.NMHDR)(unsafe.Pointer(p.LParam)) }

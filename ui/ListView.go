@@ -7,20 +7,20 @@ import (
 	"unsafe"
 )
 
-// List view control.
+// Native list view control.
 type ListView struct {
-	controlBase
+	nativeControlBase
 }
 
 func NewListView() *ListView {
 	return &ListView{
-		controlBase: makeControlBase(),
+		nativeControlBase: makeNativeControlBase(),
 	}
 }
 
 func NewListViewWithId(ctrlId c.ID) *ListView {
 	return &ListView{
-		makeControlBaseWithId(ctrlId),
+		nativeControlBase: makeNativeControlBaseWithId(ctrlId),
 	}
 }
 
@@ -73,7 +73,7 @@ func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 	exStyles c.WS_EX, styles c.WS,
 	lvExStyles c.LVS_EX, lvStyles c.LVS) *ListView {
 
-	me.controlBase.create(exStyles|c.WS_EX(lvExStyles),
+	me.nativeControlBase.create(exStyles|c.WS_EX(lvExStyles),
 		"SysListView32", "", styles|c.WS(lvStyles),
 		x, y, width, height, parent)
 	return me
@@ -182,6 +182,6 @@ func (me *ListView) View() c.LV_VIEW {
 func (me *ListView) sendLvmMessage(msg c.LVM,
 	wParam api.WPARAM, lParam api.LPARAM) uintptr {
 
-	return me.controlBase.Hwnd().
+	return me.nativeControlBase.Hwnd().
 		SendMessage(c.WM(msg), wParam, lParam) // simple wrapper
 }
