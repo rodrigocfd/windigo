@@ -15,3 +15,11 @@ type Control interface {
 type Window interface {
 	Hwnd() api.HWND
 }
+
+//------------------------------------------------------------------------------
+
+func EnableControls(enabled bool, ctrls []Control) {
+	for _, ctrl := range ctrls {
+		ctrl.Hwnd().EnableWindow(enabled)
+	}
+}

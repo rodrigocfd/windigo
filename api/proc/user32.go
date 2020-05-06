@@ -30,6 +30,7 @@ var (
 	GetWindowRect           = dllUser32.NewProc("GetWindowRect")
 	GetWindowText           = dllUser32.NewProc("GetWindowTextW")
 	GetWindowTextLength     = dllUser32.NewProc("GetWindowTextLengthW")
+	InvalidateRect          = dllUser32.NewProc("InvalidateRect")
 	IsDialogMessage         = dllUser32.NewProc("IsDialogMessageW")
 	IsWindowEnabled         = dllUser32.NewProc("IsWindowEnabled")
 	LoadCursor              = dllUser32.NewProc("LoadCursorW")

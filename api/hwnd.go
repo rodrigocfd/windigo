@@ -142,6 +142,14 @@ func (hwnd HWND) GetWindowTextLength() uint32 {
 	return uint32(ret)
 }
 
+func (hwnd HWND) InvalidateRect(lpRect *RECT, bErase bool) {
+	ret, _, _ := syscall.Syscall(proc.InvalidateRect.Addr(), 3,
+		uintptr(hwnd), uintptr(unsafe.Pointer(lpRect)), boolToUintptr(bErase))
+	if ret == 0 {
+		panic("InvalidateRect failed.")
+	}
+}
+
 func (hwnd HWND) IsWindowEnabled() bool {
 	ret, _, _ := syscall.Syscall(proc.IsWindowEnabled.Addr(), 1,
 		uintptr(hwnd), 0, 0)

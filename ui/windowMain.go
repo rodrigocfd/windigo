@@ -20,6 +20,15 @@ func MakeWindowMain() WindowMain {
 	}
 }
 
+func (me *WindowMain) SetTitle(title string) *WindowMain {
+	me.hwnd.SetWindowText(title)
+	return me
+}
+
+func (me *WindowMain) Title() string {
+	return me.hwnd.GetWindowText()
+}
+
 func (me *WindowMain) RunAsMain() {
 	api.InitCommonControls()
 	hInst := api.GetModuleHandle("")
