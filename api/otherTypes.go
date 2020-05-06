@@ -1,9 +1,11 @@
 package api
 
+import "syscall"
+
 type (
 	ATOM     uint16
 	COLORREF uint32
-	HANDLE   uintptr
+	HANDLE   syscall.Handle
 	HBITMAP  HGDIOBJ
 	HCURSOR  HANDLE
 	HGDIOBJ  HANDLE

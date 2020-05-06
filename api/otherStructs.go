@@ -40,8 +40,8 @@ type LVITEM struct {
 	Mask       c.LVIF
 	IItem      int32
 	ISubItem   int32
-	State      uint32
-	StateMask  uint32
+	State      c.LVIS
+	StateMask  c.LVIS
 	PszText    *uint16
 	CchTextMax int32
 	IImage     int32

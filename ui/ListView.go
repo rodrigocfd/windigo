@@ -23,7 +23,7 @@ func MakeListViewWithId(ctrlId c.ID) ListView {
 	}
 }
 
-func (me *ListView) AddColumn(text string, width uint32) ListViewColumn {
+func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 	lvc := api.LVCOLUMN{
 		Mask:    c.LVCF_TEXT | c.LVCF_WIDTH,
 		PszText: api.StrToUtf16Ptr(text),
@@ -34,7 +34,38 @@ func (me *ListView) AddColumn(text string, width uint32) ListViewColumn {
 	if int32(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTCOLUMN failed \"%s\".", text))
 	}
-	return MakeListViewColumn(me, uint32(newIdx))
+	return NewListViewColumn(me, uint32(newIdx)) // return newly inserted column
+}
+
+func (me *ListView) AddColumns(texts []string, widths []uint32) *ListView {
+	if len(texts) != len(widths) {
+		panic("Mismatch lenghts of texts and widths.")
+	}
+	for i := range texts {
+		me.AddColumn(texts[i], widths[i])
+	}
+	return me
+}
+
+func (me *ListView) AddItem(text string) *ListViewItem {
+	lvi := api.LVITEM{
+		Mask:    c.LVIF_TEXT,
+		PszText: api.StrToUtf16Ptr(text),
+		IItem:   0x0FFFFFFF, // insert as the last one
+	}
+	newIdx := me.hwnd.SendMessage(c.WM(c.LVM_INSERTITEM), 0,
+		api.LPARAM(unsafe.Pointer(&lvi)))
+	if int32(newIdx) == -1 {
+		panic(fmt.Sprintf("LVM_INSERTITEM failed \"%s\".", text))
+	}
+	return NewListViewItem(me, uint32(newIdx)) // return newly inserted item
+}
+
+func (me *ListView) AddItems(texts []string) *ListView {
+	for i := range texts {
+		me.AddItem(texts[i])
+	}
+	return me
 }
 
 func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
@@ -65,12 +96,12 @@ func (me *ListView) CtrlId() c.ID {
 	return me.id
 }
 
-func (me *ListView) Column(index uint32) ListViewColumn {
+func (me *ListView) Column(index uint32) *ListViewColumn {
 	numCols := me.ColumnCount()
 	if index >= numCols {
-		panic("Trying to retrieve column with index beyond count.")
+		panic("Trying to retrieve column with index out of bounds.")
 	}
-	return MakeListViewColumn(me, index)
+	return NewListViewColumn(me, index)
 }
 
 func (me *ListView) ColumnCount() uint32 {
@@ -109,6 +140,14 @@ func (me *ListView) IsEnabled() bool {
 
 func (me *ListView) IsGroupViewEnabled() bool {
 	return me.hwnd.SendMessage(c.WM(c.LVM_ISGROUPVIEWENABLED), 0, 0) >= 0
+}
+
+func (me *ListView) Item(index uint32) *ListViewItem {
+	numItems := me.ItemCount()
+	if index >= numItems {
+		panic("Trying to retrieve item with index out of bounds.")
+	}
+	return NewListViewItem(me, index)
 }
 
 func (me *ListView) ItemCount() uint32 {

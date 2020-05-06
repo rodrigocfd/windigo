@@ -28,16 +28,16 @@ const (
 	LVIF_TEXT        LVIF = 0x00000001
 )
 
-type LVIS uint16 // list view item state
+type LVIS uint32 // list view item state
 
 const (
-	LVIS_ACTIVATING     LVIS = 0x0020
+	LVIS_FOCUSED        LVIS = 0x0001
+	LVIS_SELECTED       LVIS = 0x0002
 	LVIS_CUT            LVIS = 0x0004
 	LVIS_DROPHILITED    LVIS = 0x0008
-	LVIS_FOCUSED        LVIS = 0x0001
 	LVIS_GLOW           LVIS = 0x0010
+	LVIS_ACTIVATING     LVIS = 0x0020
 	LVIS_OVERLAYMASK    LVIS = 0x0F00
-	LVIS_SELECTED       LVIS = 0x0002
 	LVIS_STATEIMAGEMASK LVIS = 0xF000
 )
 
