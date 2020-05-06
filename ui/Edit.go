@@ -7,30 +7,26 @@ import (
 
 // Edit control.
 type Edit struct {
-	hwnd api.HWND
-	id   c.ID
+	controlBase
 }
 
 func NewEdit() *Edit {
-	return NewEditWithId(NextAutoCtrlId())
+	return &Edit{
+		controlBase: makeControlBase(),
+	}
 }
 
 func NewEditWithId(ctrlId c.ID) *Edit {
 	return &Edit{
-		hwnd: api.HWND(0),
-		id:   ctrlId,
+		controlBase: makeControlBaseWithId(ctrlId),
 	}
 }
 
 func (me *Edit) Create(parent Window, x, y int32, width, height uint32,
 	initialText string, exStyles c.WS_EX, styles c.WS, editStyles c.ES) *Edit {
 
-	if me.hwnd != 0 {
-		panic("Trying to create Edit twice.")
-	}
-	me.hwnd = api.CreateWindowEx(exStyles, "Edit", initialText,
-		styles|c.WS(editStyles), x, y, width, height,
-		parent.Hwnd(), api.HMENU(me.id), parent.Hwnd().GetInstance(), nil)
+	me.controlBase.create(exStyles, "Edit", initialText,
+		styles|c.WS(editStyles), x, y, width, height, parent)
 	globalUiFont.SetOnControl(me)
 	return me
 }
@@ -62,32 +58,24 @@ func (me *Edit) CreateSimple(parent Window, x, y int32, width uint32,
 		c.ES_AUTOHSCROLL)
 }
 
-func (me *Edit) CtrlId() c.ID {
-	return me.id
-}
-
 func (me *Edit) Enable(enabled bool) *Edit {
-	me.hwnd.EnableWindow(enabled)
+	me.controlBase.Hwnd().EnableWindow(enabled)
 	return me
 }
 
-func (me *Edit) Hwnd() api.HWND {
-	return me.hwnd
-}
-
 func (me *Edit) IsEnabled() bool {
-	return me.hwnd.IsWindowEnabled()
+	return me.controlBase.Hwnd().IsWindowEnabled()
 }
 
 func (me *Edit) SetFocus() api.HWND {
-	return me.hwnd.SetFocus()
+	return me.controlBase.Hwnd().SetFocus()
 }
 
 func (me *Edit) SetText(text string) *Edit {
-	me.hwnd.SetWindowText(text)
+	me.controlBase.Hwnd().SetWindowText(text)
 	return me
 }
 
 func (me *Edit) Text() string {
-	return me.hwnd.GetWindowText()
+	return me.controlBase.Hwnd().GetWindowText()
 }

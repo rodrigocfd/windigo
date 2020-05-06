@@ -25,7 +25,7 @@ func (me *ListViewItem) Delete() {
 		return
 	}
 
-	ret := me.owner.Hwnd().SendMessage(c.WM(c.LVM_DELETEITEM),
+	ret := me.owner.sendLvmMessage(c.LVM_DELETEITEM,
 		api.WPARAM(me.index), 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("LVM_DELETEITEM failed, index %d.\n", me.index))
@@ -37,25 +37,25 @@ func (me *ListViewItem) Index() uint32 {
 }
 
 func (me *ListViewItem) IsCut() bool {
-	sta := me.owner.Hwnd().SendMessage(c.WM(c.LVM_GETITEMSTATE),
+	sta := me.owner.sendLvmMessage(c.LVM_GETITEMSTATE,
 		api.WPARAM(me.index), api.LPARAM(c.LVIS_CUT))
 	return (c.LVIS(sta) & c.LVIS_CUT) != 0
 }
 
 func (me *ListViewItem) IsFocused() bool {
-	sta := me.owner.Hwnd().SendMessage(c.WM(c.LVM_GETITEMSTATE),
+	sta := me.owner.sendLvmMessage(c.LVM_GETITEMSTATE,
 		api.WPARAM(me.index), api.LPARAM(c.LVIS_FOCUSED))
 	return (c.LVIS(sta) & c.LVIS_FOCUSED) != 0
 }
 
 func (me *ListViewItem) IsSelected() bool {
-	sta := me.owner.Hwnd().SendMessage(c.WM(c.LVM_GETITEMSTATE),
+	sta := me.owner.sendLvmMessage(c.LVM_GETITEMSTATE,
 		api.WPARAM(me.index), api.LPARAM(c.LVIS_SELECTED))
 	return (c.LVIS(sta) & c.LVIS_SELECTED) != 0
 }
 
 func (me *ListViewItem) IsVisible() bool {
-	return me.owner.Hwnd().SendMessage(c.WM(c.LVM_ISITEMVISIBLE),
+	return me.owner.sendLvmMessage(c.LVM_ISITEMVISIBLE,
 		api.WPARAM(me.index), 0) != 0
 }
 
@@ -64,7 +64,7 @@ func (me *ListViewItem) SetFocus() *ListViewItem {
 		StateMask: c.LVIS_FOCUSED,
 		State:     c.LVIS_FOCUSED,
 	}
-	ret := me.owner.Hwnd().SendMessage(c.WM(c.LVM_SETITEMSTATE),
+	ret := me.owner.sendLvmMessage(c.LVM_SETITEMSTATE,
 		api.WPARAM(me.index), api.LPARAM(unsafe.Pointer(&lvi)))
 	if ret == 0 {
 		panic("LVM_SETITEMSTATE failed for LVIS_FOCUSED.")
@@ -79,7 +79,7 @@ func (me *ListViewItem) SetSelected(selected bool) *ListViewItem {
 	if selected { // otherwise is zero
 		lvi.State = c.LVIS_SELECTED
 	}
-	ret := me.owner.Hwnd().SendMessage(c.WM(c.LVM_SETITEMSTATE),
+	ret := me.owner.sendLvmMessage(c.LVM_SETITEMSTATE,
 		api.WPARAM(me.index), api.LPARAM(unsafe.Pointer(&lvi)))
 	if ret == 0 {
 		panic("LVM_SETITEMSTATE failed for LVIS_SELECTED.")
@@ -105,8 +105,7 @@ func (me *ListViewItem) Text() string {
 }
 
 func (me *ListViewItem) Update() *ListViewItem {
-	ret := me.owner.Hwnd().SendMessage(c.WM(c.LVM_UPDATE),
-		api.WPARAM(me.index), 0)
+	ret := me.owner.sendLvmMessage(c.LVM_UPDATE, api.WPARAM(me.index), 0)
 	if ret == 0 {
 		panic("LVM_UPDATE failed.")
 	}

@@ -9,18 +9,18 @@ import (
 
 // List view control.
 type ListView struct {
-	hwnd api.HWND
-	id   c.ID
+	controlBase
 }
 
 func NewListView() *ListView {
-	return NewListViewWithId(NextAutoCtrlId())
+	return &ListView{
+		controlBase: makeControlBase(),
+	}
 }
 
 func NewListViewWithId(ctrlId c.ID) *ListView {
 	return &ListView{
-		hwnd: api.HWND(0),
-		id:   ctrlId,
+		makeControlBaseWithId(ctrlId),
 	}
 }
 
@@ -30,7 +30,7 @@ func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 		PszText: api.StrToUtf16Ptr(text),
 		Cx:      int32(width),
 	}
-	newIdx := me.hwnd.SendMessage(c.WM(c.LVM_INSERTCOLUMN), 0xFFFF,
+	newIdx := me.sendLvmMessage(c.LVM_INSERTCOLUMN, 0xFFFF,
 		api.LPARAM(unsafe.Pointer(&lvc)))
 	if int32(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTCOLUMN failed \"%s\".", text))
@@ -54,7 +54,7 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 		PszText: api.StrToUtf16Ptr(text),
 		IItem:   0x0FFFFFFF, // insert as the last one
 	}
-	newIdx := me.hwnd.SendMessage(c.WM(c.LVM_INSERTITEM), 0,
+	newIdx := me.sendLvmMessage(c.LVM_INSERTITEM, 0,
 		api.LPARAM(unsafe.Pointer(&lvi)))
 	if int32(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTITEM failed \"%s\".", text))
@@ -73,13 +73,9 @@ func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 	exStyles c.WS_EX, styles c.WS,
 	lvExStyles c.LVS_EX, lvStyles c.LVS) *ListView {
 
-	if me.hwnd != 0 {
-		panic("Trying to create ListView twice.")
-	}
-	me.hwnd = api.CreateWindowEx(exStyles|c.WS_EX(lvExStyles),
+	me.controlBase.create(exStyles|c.WS_EX(lvExStyles),
 		"SysListView32", "", styles|c.WS(lvStyles),
-		x, y, width, height, parent.Hwnd(), api.HMENU(me.id),
-		parent.Hwnd().GetInstance(), nil)
+		x, y, width, height, parent)
 	return me
 }
 
@@ -93,10 +89,6 @@ func (me *ListView) CreateReport(parent Window, x, y int32,
 		c.LVS_REPORT|c.LVS_SHOWSELALWAYS)
 }
 
-func (me *ListView) CtrlId() c.ID {
-	return me.id
-}
-
 func (me *ListView) Column(index uint32) *ListViewColumn {
 	numCols := me.ColumnCount()
 	if index >= numCols {
@@ -106,7 +98,7 @@ func (me *ListView) Column(index uint32) *ListViewColumn {
 }
 
 func (me *ListView) ColumnCount() uint32 {
-	hHeader := api.HWND(me.hwnd.SendMessage(c.WM(c.LVM_GETHEADER), 0, 0))
+	hHeader := api.HWND(me.sendLvmMessage(c.LVM_GETHEADER, 0, 0))
 	if hHeader == 0 {
 		panic("LVM_GETHEADER failed.")
 	}
@@ -119,7 +111,7 @@ func (me *ListView) ColumnCount() uint32 {
 }
 
 func (me *ListView) DeleteAllItems() *ListView {
-	ret := me.hwnd.SendMessage(c.WM(c.LVM_DELETEALLITEMS), 0, 0)
+	ret := me.sendLvmMessage(c.LVM_DELETEALLITEMS, 0, 0)
 	if ret == 0 {
 		panic("LVM_DELETEALLITEMS failed.")
 	}
@@ -131,16 +123,12 @@ func (me *ListView) Enable(enabled bool) *ListView {
 	return me
 }
 
-func (me *ListView) Hwnd() api.HWND {
-	return me.hwnd
-}
-
 func (me *ListView) IsEnabled() bool {
 	return me.hwnd.IsWindowEnabled()
 }
 
 func (me *ListView) IsGroupViewEnabled() bool {
-	return me.hwnd.SendMessage(c.WM(c.LVM_ISGROUPVIEWENABLED), 0, 0) >= 0
+	return me.sendLvmMessage(c.LVM_ISGROUPVIEWENABLED, 0, 0) >= 0
 }
 
 func (me *ListView) Item(index uint32) *ListViewItem {
@@ -152,7 +140,7 @@ func (me *ListView) Item(index uint32) *ListViewItem {
 }
 
 func (me *ListView) ItemCount() uint32 {
-	count := me.hwnd.SendMessage(c.WM(c.LVM_GETITEMCOUNT), 0, 0)
+	count := me.sendLvmMessage(c.LVM_GETITEMCOUNT, 0, 0)
 	if int32(count) == -1 {
 		panic("LVM_GETITEMCOUNT failed.")
 	}
@@ -160,7 +148,7 @@ func (me *ListView) ItemCount() uint32 {
 }
 
 func (me *ListView) SelectedItemCount() uint32 {
-	count := me.hwnd.SendMessage(c.WM(c.LVM_GETSELECTEDCOUNT), 0, 0)
+	count := me.sendLvmMessage(c.LVM_GETSELECTEDCOUNT, 0, 0)
 	if int32(count) == -1 {
 		panic("LVM_GETSELECTEDCOUNT failed.")
 	}
@@ -181,12 +169,19 @@ func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
 }
 
 func (me *ListView) SetView(view c.LV_VIEW) *ListView {
-	if int32(me.hwnd.SendMessage(c.WM(c.LVM_SETVIEW), 0, 0)) == -1 {
+	if int32(me.sendLvmMessage(c.LVM_SETVIEW, 0, 0)) == -1 {
 		panic("LVM_SETVIEW failed.")
 	}
 	return me
 }
 
 func (me *ListView) View() c.LV_VIEW {
-	return c.LV_VIEW(me.hwnd.SendMessage(c.WM(c.LVM_GETVIEW), 0, 0))
+	return c.LV_VIEW(me.sendLvmMessage(c.LVM_GETVIEW, 0, 0))
+}
+
+func (me *ListView) sendLvmMessage(msg c.LVM,
+	wParam api.WPARAM, lParam api.LPARAM) uintptr {
+
+	return me.controlBase.Hwnd().
+		SendMessage(c.WM(msg), wParam, lParam) // simple wrapper
 }

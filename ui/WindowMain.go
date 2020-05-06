@@ -20,21 +20,13 @@ func NewWindowMain() *WindowMain {
 	}
 }
 
-func (me *WindowMain) SetTitle(title string) *WindowMain {
-	me.hwnd.SetWindowText(title)
-	return me
-}
-
-func (me *WindowMain) Title() string {
-	return me.hwnd.GetWindowText()
-}
-
+// Creates the main window and runs the main application loop.
 func (me *WindowMain) RunAsMain() {
 	api.InitCommonControls()
 	hInst := api.GetModuleHandle("")
-	me.registerClass(me.Setup.genWndclassex(hInst))
+	me.windowBase.registerClass(me.Setup.genWndClassEx(hInst))
 
-	me.On.WmNcDestroy(func(p parm.WmNcDestroy) {
+	me.windowBase.On.WmNcDestroy(func(p parm.WmNcDestroy) {
 		api.PostQuitMessage(0)
 	})
 
@@ -48,7 +40,7 @@ func (me *WindowMain) createWindow(hInst api.HINSTANCE) {
 	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN)
 	cyScreen := api.GetSystemMetrics(c.SM_CYSCREEN)
 
-	hwnd := api.CreateWindowEx(me.Setup.ExStyle,
+	api.CreateWindowEx(me.Setup.ExStyle, // hwnd member is saved in WM_NCCREATE processing
 		me.Setup.ClassName, me.Setup.Title, me.Setup.Style,
 		cxScreen/2-int32(me.Setup.Width)/2, // center window on screen
 		cyScreen/2-int32(me.Setup.Height)/2,
@@ -56,8 +48,17 @@ func (me *WindowMain) createWindow(hInst api.HINSTANCE) {
 		api.HWND(0), api.HMENU(0), hInst,
 		unsafe.Pointer(&me.windowBase)) // pass pointer to windowBase object
 
-	hwnd.ShowWindow(me.Setup.CmdShow)
-	hwnd.UpdateWindow()
+	me.windowBase.Hwnd().ShowWindow(me.Setup.CmdShow)
+	me.windowBase.Hwnd().UpdateWindow()
+}
+
+func (me *WindowMain) SetTitle(title string) *WindowMain {
+	me.windowBase.Hwnd().SetWindowText(title)
+	return me
+}
+
+func (me *WindowMain) Title() string {
+	return me.windowBase.Hwnd().GetWindowText()
 }
 
 func (me *WindowMain) runMainLoop() {
@@ -76,7 +77,7 @@ func (me *WindowMain) runMainLoop() {
 
 		// TODO haccel check !!!
 
-		if me.hwnd.IsDialogMessage(&msg) { // processes all keyboard actions for our child controls
+		if me.windowBase.Hwnd().IsDialogMessage(&msg) { // processes all keyboard actions for our child controls
 			continue
 		}
 

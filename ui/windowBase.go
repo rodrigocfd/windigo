@@ -22,6 +22,7 @@ func makeWindowBase() windowBase {
 	}
 }
 
+// Returns the underlying HWND handle of this window.
 func (me *windowBase) Hwnd() api.HWND {
 	return me.hwnd
 }

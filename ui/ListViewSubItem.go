@@ -30,7 +30,7 @@ func (me *ListViewSubItem) SetText(text string) *ListViewSubItem {
 		ISubItem: int32(me.index),
 		PszText:  api.StrToUtf16Ptr(text),
 	}
-	ret := me.item.owner.Hwnd().SendMessage(c.WM(c.LVM_SETITEMTEXT),
+	ret := me.item.owner.sendLvmMessage(c.LVM_SETITEMTEXT,
 		api.WPARAM(me.item.index), api.LPARAM(unsafe.Pointer(&lvi)))
 	if ret == 0 {
 		panic(fmt.Sprintf("LVM_SETITEMTEXT failed \"%s\".", text))
@@ -45,7 +45,7 @@ func (me *ListViewSubItem) Text() string {
 		PszText:    &buf[0],
 		CchTextMax: int32(len(buf)),
 	}
-	ret := me.item.owner.Hwnd().SendMessage(c.WM(c.LVM_GETITEMTEXT),
+	ret := me.item.owner.sendLvmMessage(c.LVM_GETITEMTEXT,
 		api.WPARAM(me.item.index), api.LPARAM(unsafe.Pointer(&lvi)))
 	if ret < 0 {
 		panic("LVM_GETITEMTEXT failed.")
