@@ -1,7 +1,7 @@
 package ui
 
 import (
-	c "winffi/consts"
+	c "gowinui/consts"
 )
 
 var baseId = c.ID(1000) // arbitrary, taken from Visual Studio resource editor

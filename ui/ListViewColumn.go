@@ -2,10 +2,10 @@ package ui
 
 import (
 	"fmt"
+	"gowinui/api"
+	c "gowinui/consts"
 	"syscall"
 	"unsafe"
-	"winffi/api"
-	c "winffi/consts"
 )
 
 // A single column of a list view control.

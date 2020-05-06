@@ -1,8 +1,8 @@
 package ui
 
 import (
-	"winffi/api"
-	c "winffi/consts"
+	"gowinui/api"
+	c "gowinui/consts"
 )
 
 // Edit control.

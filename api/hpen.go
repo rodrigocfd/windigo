@@ -1,8 +1,8 @@
 package api
 
 import (
+	"gowinui/api/proc"
 	"syscall"
-	"winffi/api/proc"
 )
 
 type HPEN HANDLE

@@ -1,10 +1,10 @@
 package ui
 
 import (
+	"gowinui/api"
+	c "gowinui/consts"
+	"gowinui/parm"
 	"unsafe"
-	"winffi/api"
-	c "winffi/consts"
-	"winffi/parm"
 )
 
 // Main application window.

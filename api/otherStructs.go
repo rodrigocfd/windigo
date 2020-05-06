@@ -1,7 +1,7 @@
 package api
 
 import (
-	c "winffi/consts"
+	c "gowinui/consts"
 )
 
 type ACCEL struct {

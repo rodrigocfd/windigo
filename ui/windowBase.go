@@ -2,11 +2,11 @@ package ui
 
 import (
 	"fmt"
+	"gowinui/api"
+	c "gowinui/consts"
+	"gowinui/parm"
 	"syscall"
 	"unsafe"
-	"winffi/api"
-	c "winffi/consts"
-	"winffi/parm"
 )
 
 // Base to all window types.

@@ -2,10 +2,10 @@ package ui
 
 import (
 	"fmt"
+	"gowinui/api"
+	c "gowinui/consts"
 	"syscall"
 	"unsafe"
-	"winffi/api"
-	c "winffi/consts"
 )
 
 var globalUiFont = NewFont() // managed in WindowMain's createWindow() and runMainLoop()

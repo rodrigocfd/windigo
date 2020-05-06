@@ -1,9 +1,9 @@
 package parm
 
 import (
+	"gowinui/api"
+	c "gowinui/consts"
 	"unsafe"
-	"winffi/api"
-	c "winffi/consts"
 )
 
 type WmActivate Raw

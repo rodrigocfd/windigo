@@ -1,8 +1,8 @@
 package parm
 
 import (
-	"winffi/api"
-	c "winffi/consts"
+	"gowinui/api"
+	c "gowinui/consts"
 )
 
 type Raw struct {

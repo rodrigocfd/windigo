@@ -1,10 +1,10 @@
 package api
 
 import (
+	"gowinui/api/proc"
+	c "gowinui/consts"
 	"syscall"
 	"unsafe"
-	"winffi/api/proc"
-	c "winffi/consts"
 )
 
 type LOGFONT struct {

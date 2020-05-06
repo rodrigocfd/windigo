@@ -1,8 +1,8 @@
 package ui
 
 import (
-	c "winffi/consts"
-	"winffi/parm"
+	c "gowinui/consts"
+	"gowinui/parm"
 )
 
 func (me *windowOn) LvnDeleteAllItems(cid c.ID, userFunc func(p parm.LvnDeleteAllItems)) {

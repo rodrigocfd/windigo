@@ -1,8 +1,8 @@
 package ui
 
 import (
-	c "winffi/consts"
-	"winffi/parm"
+	c "gowinui/consts"
+	"gowinui/parm"
 )
 
 // Custom hash for WM_NOTIFY messages.

@@ -2,10 +2,10 @@ package api
 
 import (
 	"fmt"
+	"gowinui/api/proc"
+	c "gowinui/consts"
 	"syscall"
 	"unsafe"
-	"winffi/api/proc"
-	c "winffi/consts"
 )
 
 type HWND HANDLE

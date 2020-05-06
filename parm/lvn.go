@@ -1,8 +1,8 @@
 package parm
 
 import (
+	"gowinui/api"
 	"unsafe"
-	"winffi/api"
 )
 
 type LvnDeleteAllItems WmNotify

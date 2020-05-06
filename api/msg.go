@@ -2,9 +2,9 @@ package api
 
 import (
 	"fmt"
+	"gowinui/api/proc"
 	"syscall"
 	"unsafe"
-	"winffi/api/proc"
 )
 
 type MSG struct {

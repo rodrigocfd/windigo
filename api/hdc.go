@@ -1,9 +1,9 @@
 package api
 
 import (
+	"gowinui/api/proc"
 	"syscall"
 	"unsafe"
-	"winffi/api/proc"
 )
 
 type HDC HANDLE
