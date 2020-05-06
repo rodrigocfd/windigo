@@ -8,6 +8,7 @@ import (
 	c "winffi/consts"
 )
 
+// A cell from a list view item row.
 type ListViewSubItem struct {
 	item  *ListViewItem
 	index uint32

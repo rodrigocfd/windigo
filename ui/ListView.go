@@ -7,6 +7,7 @@ import (
 	c "winffi/consts"
 )
 
+// List view control.
 type ListView struct {
 	hwnd api.HWND
 	id   c.ID

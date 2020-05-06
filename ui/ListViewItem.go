@@ -7,6 +7,7 @@ import (
 	c "winffi/consts"
 )
 
+// A single item row of a list view control.
 type ListViewItem struct {
 	owner *ListView
 	index uint32

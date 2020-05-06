@@ -8,6 +8,7 @@ import (
 	c "winffi/consts"
 )
 
+// A single column of a list view control.
 type ListViewColumn struct {
 	owner *ListView
 	index uint32

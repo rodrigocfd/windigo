@@ -15,6 +15,7 @@ type Font struct {
 	hFont api.HFONT
 }
 
+// Simplified options to create a Font object.
 type FontSetup struct {
 	Name      string
 	Size      int32

@@ -18,6 +18,7 @@ type Window interface {
 
 //------------------------------------------------------------------------------
 
+// Enables or disables many controls at once.
 func EnableControls(enabled bool, ctrls []Control) {
 	for _, ctrl := range ctrls {
 		ctrl.Hwnd().EnableWindow(enabled)
