@@ -2,7 +2,6 @@ package ui
 
 import (
 	"fmt"
-	"syscall"
 	"unsafe"
 	"winffi/api"
 	c "winffi/consts"
@@ -20,7 +19,7 @@ func NewListViewItem(owner *ListView, index uint32) *ListViewItem {
 	}
 }
 
-func (me *ListViewItem) delete() {
+func (me *ListViewItem) Delete() {
 	if me.index >= me.owner.ItemCount() { // index out of bounds: ignore
 		return
 	}
@@ -88,29 +87,20 @@ func (me *ListViewItem) SetSelected(selected bool) *ListViewItem {
 }
 
 func (me *ListViewItem) SetText(text string) *ListViewItem {
-	lvi := api.LVITEM{
-		PszText: api.StrToUtf16Ptr(text),
-	}
-	ret := me.owner.Hwnd().SendMessage(c.WM(c.LVM_SETITEMTEXT),
-		api.WPARAM(me.index), api.LPARAM(unsafe.Pointer(&lvi)))
-	if ret == 0 {
-		panic(fmt.Sprintf("LVM_SETITEMTEXT failed \"%s\".", text))
-	}
+	me.SubItem(0).SetText(text)
 	return me
 }
 
+func (me *ListViewItem) SubItem(index uint32) *ListViewSubItem {
+	numCols := me.owner.ColumnCount()
+	if index >= numCols {
+		panic("Trying to retrieve sub item with index out of bounds.")
+	}
+	return NewListViewSubItem(me, index)
+}
+
 func (me *ListViewItem) Text() string {
-	buf := make([]uint16, 256) // arbitrary
-	lvi := api.LVITEM{
-		PszText:    &buf[0],
-		CchTextMax: int32(len(buf)),
-	}
-	ret := me.owner.Hwnd().SendMessage(c.WM(c.LVM_GETITEMTEXT),
-		api.WPARAM(me.index), api.LPARAM(unsafe.Pointer(&lvi)))
-	if ret < 0 {
-		panic("LVM_GETITEMTEXT failed.")
-	}
-	return syscall.UTF16ToString(buf)
+	return me.SubItem(0).Text()
 }
 
 func (me *ListViewItem) Update() *ListViewItem {
