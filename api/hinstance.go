@@ -13,11 +13,11 @@ type HINSTANCE HANDLE
 func (hinst HINSTANCE) GetClassInfo(className *uint16,
 	destBuf *WNDCLASSEX) syscall.Errno {
 
-	_, _, errno := syscall.Syscall(proc.GetClassInfo.Addr(), 3,
+	_, _, lerr := syscall.Syscall(proc.GetClassInfo.Addr(), 3,
 		uintptr(hinst),
 		uintptr(unsafe.Pointer(className)),
 		uintptr(unsafe.Pointer(destBuf)))
-	return errno
+	return lerr
 }
 
 func GetModuleHandle(moduleName string) HINSTANCE {
@@ -28,11 +28,11 @@ func GetModuleHandle(moduleName string) HINSTANCE {
 }
 
 func (hinst HINSTANCE) LoadCursor(lpCursorName c.IDC) HCURSOR {
-	ret, _, errno := syscall.Syscall(proc.LoadCursor.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.LoadCursor.Addr(), 2,
 		uintptr(hinst), uintptr(lpCursorName), 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("LoadCursor failed: %d %s\n",
-			errno, errno.Error()))
+			lerr, lerr.Error()))
 	}
 	return HCURSOR(ret)
 }

@@ -22,10 +22,10 @@ func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
 }
 
 func CreateAcceleratorTable(accelList []ACCEL) (HACCEL, syscall.Errno) {
-	ret, _, errno := syscall.Syscall(proc.CreateAcceleratorTable.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.CreateAcceleratorTable.Addr(), 2,
 		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)),
 		0)
-	return HACCEL(ret), errno
+	return HACCEL(ret), lerr
 }
 
 func (hAccel HACCEL) DestroyAcceleratorTable() bool {

@@ -23,13 +23,13 @@ func (msg *MSG) DispatchMessage() uintptr {
 }
 
 func (msg *MSG) GetMessage(hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
-	ret, _, errno := syscall.Syscall6(proc.GetMessage.Addr(), 4,
+	ret, _, lerr := syscall.Syscall6(proc.GetMessage.Addr(), 4,
 		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
 		uintptr(msgFilterMin), uintptr(msgFilterMax),
 		0, 0)
 	if int32(ret) == -1 {
 		panic(fmt.Sprintf("GetMessage failed: %d %s\n",
-			errno, errno.Error()))
+			lerr, lerr.Error()))
 	}
 	return int32(ret)
 }

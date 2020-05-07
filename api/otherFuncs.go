@@ -75,11 +75,11 @@ func PostQuitMessage(exitCode int32) {
 func SystemParametersInfo(action c.SPI, param uint32,
 	pvParam unsafe.Pointer, winIni uint32) {
 
-	ret, _, errno := syscall.Syscall6(proc.SystemParametersInfo.Addr(), 4,
+	ret, _, lerr := syscall.Syscall6(proc.SystemParametersInfo.Addr(), 4,
 		uintptr(action), uintptr(param), uintptr(pvParam), uintptr(winIni),
 		0, 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("SystemParametersInfo failed: %d %s\n",
-			errno, errno.Error()))
+			lerr, lerr.Error()))
 	}
 }

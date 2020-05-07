@@ -54,6 +54,31 @@ type LVITEM struct {
 	IGroup     int32
 }
 
+type MENUINFO struct {
+	CbSize          uint32
+	FMask           c.MIM
+	DwStyle         c.MNS
+	CyMax           uint32
+	HbrBack         HBRUSH
+	DwContextHelpID uint32
+	DwMenuData      uintptr
+}
+
+type MENUITEMINFO struct {
+	CbSize        uint32
+	FMask         c.MIIM
+	FType         c.MFT
+	FState        c.MFS
+	WId           uint32
+	HSubMenu      HMENU
+	HBmpChecked   HBITMAP
+	HBmpUnchecked HBITMAP
+	DwItemData    uintptr
+	DwTypeData    *uint16
+	Cch           uint32
+	HBmpItem      HBITMAP
+}
+
 type MONITORINFOEX struct {
 	CbSize    uint32
 	RcMonitor RECT

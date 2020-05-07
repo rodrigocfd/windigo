@@ -34,13 +34,13 @@ func (me *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
 
 	wcx.LpfnWndProc = syscall.NewCallback(wndProc)
 
-	atom, errno := wcx.RegisterClassEx()
-	if errno != 0 {
-		if c.ERROR(errno) == c.ERROR_CLASS_ALREADY_EXISTS { // https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
+	atom, lerr := wcx.RegisterClassEx()
+	if lerr != 0 {
+		if c.ERROR(lerr) == c.ERROR_CLASS_ALREADY_EXISTS { // https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
 			atom = api.ATOM(wcx.HInstance.GetClassInfo(wcx.LpszClassName, wcx))
 		} else {
 			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s\n",
-				atom, errno, errno.Error()))
+				atom, lerr, lerr.Error()))
 		}
 	}
 

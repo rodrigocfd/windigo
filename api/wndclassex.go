@@ -23,7 +23,9 @@ type WNDCLASSEX struct {
 }
 
 func (wcx *WNDCLASSEX) RegisterClassEx() (ATOM, syscall.Errno) {
-	ret, _, errno := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
+	wcx.CbSize = uint32(unsafe.Sizeof(*wcx)) // safety
+
+	ret, _, lerr := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
 		uintptr(unsafe.Pointer(wcx)), 0, 0)
-	return ATOM(ret), errno
+	return ATOM(ret), lerr
 }

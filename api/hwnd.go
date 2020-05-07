@@ -22,7 +22,7 @@ func CreateWindowEx(exStyle c.WS_EX, className, title string, style c.WS,
 	x, y int32, width, height uint32, parent HWND, menu HMENU,
 	instance HINSTANCE, param unsafe.Pointer) HWND {
 
-	ret, _, errno := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
+	ret, _, lerr := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
 		uintptr(exStyle),
 		uintptr(unsafe.Pointer(StrToUtf16PtrBlankIsNil(className))),
 		uintptr(unsafe.Pointer(StrToUtf16PtrBlankIsNil(title))),
@@ -31,7 +31,7 @@ func CreateWindowEx(exStyle c.WS_EX, className, title string, style c.WS,
 
 	if ret == 0 {
 		panic(fmt.Sprintf("CreateWindowEx failed \"%s\": %d %s\n",
-			className, errno, errno.Error()))
+			className, lerr, lerr.Error()))
 	}
 
 	return HWND(ret)
@@ -45,11 +45,20 @@ func (hwnd HWND) DefWindowProc(msg c.WM, wParam WPARAM, lParam LPARAM) uintptr {
 }
 
 func (hwnd HWND) DestroyWindow() {
-	ret, _, errno := syscall.Syscall(proc.DestroyWindow.Addr(), 1,
+	ret, _, lerr := syscall.Syscall(proc.DestroyWindow.Addr(), 1,
 		uintptr(hwnd), 0, 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("DestroyWindow failed: %d %s\n",
-			errno, errno.Error()))
+			lerr, lerr.Error()))
+	}
+}
+
+func (hwnd HWND) DrawMenuBar() {
+	ret, _, lerr := syscall.Syscall(proc.DrawMenuBar.Addr(), 1,
+		uintptr(hwnd), 0, 0)
+	if ret == 0 {
+		panic(fmt.Sprintf("DrawMenuBar failed: %d %s\n",
+			lerr, lerr.Error()))
 	}
 }
 
@@ -79,12 +88,12 @@ func (hwnd HWND) GetAncestor(gaFlags c.GA) HWND {
 
 func (hwnd HWND) GetClientRect() *RECT {
 	rc := &RECT{}
-	ret, _, errno := syscall.Syscall(proc.GetClientRect.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.GetClientRect.Addr(), 2,
 		uintptr(hwnd), uintptr(unsafe.Pointer(rc)), 0)
 
 	if ret == 0 {
 		panic(fmt.Sprintf("GetClientRect failed: %d %s\n",
-			errno, errno.Error()))
+			lerr, lerr.Error()))
 	}
 	return rc
 }
@@ -103,12 +112,18 @@ func (hwnd HWND) GetInstance() HINSTANCE {
 	return HINSTANCE(hwnd.GetWindowLongPtr(c.GWLP_HINSTANCE))
 }
 
+func (hwnd HWND) GetMenu() HMENU {
+	ret, _, _ := syscall.Syscall(proc.GetMenu.Addr(), 1,
+		uintptr(hwnd), 0, 0)
+	return HMENU(ret)
+}
+
 func (hwnd HWND) GetParent() HWND {
-	ret, _, errno := syscall.Syscall(proc.GetParent.Addr(), 1,
+	ret, _, lerr := syscall.Syscall(proc.GetParent.Addr(), 1,
 		uintptr(hwnd), 0, 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("GetParent failed: %d %s\n",
-			errno, errno.Error()))
+			lerr, lerr.Error()))
 	}
 	return HWND(ret)
 }
@@ -135,12 +150,12 @@ func (hwnd HWND) GetWindowLongPtr(index c.GWLP) uintptr {
 
 func (hwnd HWND) GetWindowRect() *RECT {
 	rc := &RECT{}
-	ret, _, errno := syscall.Syscall(proc.GetWindowRect.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.GetWindowRect.Addr(), 2,
 		uintptr(hwnd), uintptr(unsafe.Pointer(rc)), 0)
 
 	if ret == 0 {
 		panic(fmt.Sprintf("GetWindowRect failed: %d %s\n",
-			errno, errno.Error()))
+			lerr, lerr.Error()))
 	}
 	return rc
 }
@@ -149,12 +164,12 @@ func (hwnd HWND) GetWindowText() string {
 	len := hwnd.GetWindowTextLength() + 1
 	buf := make([]uint16, len)
 
-	ret, _, errno := syscall.Syscall(proc.GetWindowText.Addr(), 3,
+	ret, _, lerr := syscall.Syscall(proc.GetWindowText.Addr(), 3,
 		uintptr(hwnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(len))
 
-	if ret == 0 && errno != 0 {
+	if ret == 0 && lerr != 0 {
 		panic(fmt.Sprintf("GetWindowText failed: %d %s\n",
-			errno, errno.Error()))
+			lerr, lerr.Error()))
 	}
 
 	return syscall.UTF16ToString(buf)
@@ -188,7 +203,7 @@ func (hwnd HWND) IsDialogMessage(msg *MSG) bool {
 
 func (hwnd HWND) MessageBox(message, caption string, flags c.MB) c.ID {
 	ret, _, _ := syscall.Syscall6(proc.MessageBox.Addr(), 4,
-		uintptr(0),
+		uintptr(hwnd),
 		uintptr(unsafe.Pointer(StrToUtf16Ptr(message))),
 		uintptr(unsafe.Pointer(StrToUtf16Ptr(caption))),
 		uintptr(flags), 0, 0)
@@ -233,11 +248,11 @@ func (hwnd HWND) ShowWindow(nCmdShow c.SW) bool {
 }
 
 func (hwnd HWND) SetFocus() HWND {
-	ret, _, errno := syscall.Syscall(proc.SetFocus.Addr(), 1,
+	ret, _, lerr := syscall.Syscall(proc.SetFocus.Addr(), 1,
 		uintptr(hwnd), 0, 0)
-	if ret == 0 && errno != 0 {
+	if ret == 0 && lerr != 0 {
 		panic(fmt.Sprintf("SetFocus failed: %d %s\n",
-			errno, errno.Error()))
+			lerr, lerr.Error()))
 	}
 	return HWND(ret) // handle to the window that previously had the keyboard focus
 }
@@ -252,9 +267,9 @@ func (hwnd HWND) SetWindowText(text string) {
 func (hwnd HWND) TranslateAccelerator(hAccel HACCEL,
 	msg *MSG) (int32, syscall.Errno) {
 
-	ret, _, errno := syscall.Syscall(proc.TranslateAccelerator.Addr(), 3,
+	ret, _, lerr := syscall.Syscall(proc.TranslateAccelerator.Addr(), 3,
 		uintptr(hwnd), uintptr(hAccel), uintptr(unsafe.Pointer(msg)))
-	return int32(ret), errno
+	return int32(ret), lerr
 }
 
 func (hwnd HWND) UpdateWindow() bool {
