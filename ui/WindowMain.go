@@ -63,6 +63,7 @@ func (me *WindowMain) Title() string {
 
 func (me *WindowMain) runMainLoop() {
 	defer globalUiFont.Destroy()
+	me.windowBase.On.loopStarted = true
 
 	msg := api.MSG{}
 	for {
