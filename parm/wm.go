@@ -39,7 +39,7 @@ func (p WmInitMenuPopup) Hmenu() api.HMENU        { return api.HMENU(p.WParam) }
 func (p WmInitMenuPopup) SourceItemIndex() uint16 { return api.LoWord(uint32(p.LParam)) }
 func (p WmInitMenuPopup) IsWindowMenu() bool      { return api.HiWord(uint32(p.LParam)) != 0 }
 
-type WmLButtonDblClk Raw // inherit
+type WmLButtonDblClk Raw
 
 func (p WmLButtonDblClk) HasCtrl() bool      { return (c.MK(p.WParam) & c.MK_CONTROL) != 0 }
 func (p WmLButtonDblClk) HasLeftBtn() bool   { return (c.MK(p.WParam) & c.MK_LBUTTON) != 0 }

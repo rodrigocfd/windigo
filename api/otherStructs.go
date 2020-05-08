@@ -89,7 +89,7 @@ type MONITORINFOEX struct {
 
 type NMHDR struct {
 	HWndFrom HWND
-	IdFrom   uint32
+	IdFrom   uintptr
 	Code     uint32
 }
 
