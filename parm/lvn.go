@@ -11,20 +11,18 @@ func (p LvnDeleteAllItems) NmListView() *api.NMLISTVIEW {
 	return (*api.NMLISTVIEW)(unsafe.Pointer(p.LParam))
 }
 
-type LvnDeleteItem WmNotify
+type LvnDeleteItem struct{ LvnDeleteAllItems } // inherit
+type LvnInsertItem struct{ LvnDeleteAllItems }
+type LvnItemChanged struct{ LvnDeleteAllItems }
 
-func (p LvnDeleteItem) NmListView() *api.NMLISTVIEW {
-	return (*api.NMLISTVIEW)(unsafe.Pointer(p.LParam))
+type LvnItemActivate WmNotify
+
+func (p LvnItemActivate) NmItemActivate() *api.NMITEMACTIVATE {
+	return (*api.NMITEMACTIVATE)(unsafe.Pointer(p.LParam))
 }
 
-type LvnInsertItem WmNotify
+type LvnKeyDown WmNotify
 
-func (p LvnInsertItem) NmListView() *api.NMLISTVIEW {
-	return (*api.NMLISTVIEW)(unsafe.Pointer(p.LParam))
-}
-
-type LvnItemChanged WmNotify
-
-func (p LvnItemChanged) NmListView() *api.NMLISTVIEW {
-	return (*api.NMLISTVIEW)(unsafe.Pointer(p.LParam))
+func (p LvnKeyDown) NmLvKeyDown() *api.NMLVKEYDOWN {
+	return (*api.NMLVKEYDOWN)(unsafe.Pointer(p.LParam))
 }

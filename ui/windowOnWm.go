@@ -48,6 +48,8 @@ func (me *windowOn) WmInitMenuPopup(userFunc func(p parm.WmInitMenuPopup)) {
 	})
 }
 
+//------------------------------------------------------------------------------
+
 func (me *windowOn) WmLButtonDblClk(userFunc func(p parm.WmLButtonDblClk)) {
 	me.addMsg(c.WM_LBUTTONDBLCLK, func(p parm.Raw) uintptr {
 		userFunc(parm.WmLButtonDblClk(p))
@@ -118,6 +120,8 @@ func (me *windowOn) WmRButtonUp(userFunc func(p parm.WmRButtonUp)) {
 		return 0
 	})
 }
+
+//------------------------------------------------------------------------------
 
 func (me *windowOn) WmMouseLeave(userFunc func(p parm.WmMouseLeave)) {
 	me.addMsg(c.WM_MOUSELEAVE, func(p parm.Raw) uintptr {

@@ -52,6 +52,14 @@ const (
 	LVIS_STATEIMAGEMASK LVIS = 0xF000
 )
 
+type LVKF uint32 // NMITEMACTIVATE UKeyFlags
+
+const (
+	LVKF_ALT     LVKF = 0x0001
+	LVKF_CONTROL LVKF = 0x0002
+	LVKF_SHIFT   LVKF = 0x0004
+)
+
 type LVM WM // list view message
 
 const (
