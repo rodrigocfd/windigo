@@ -90,7 +90,7 @@ type MONITORINFOEX struct {
 type NMHDR struct {
 	HWndFrom HWND
 	IdFrom   uintptr
-	Code     uint32
+	Code     uint32 // in fact it should be int32
 }
 
 type NONCLIENTMETRICS struct {

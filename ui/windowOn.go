@@ -8,7 +8,7 @@ import (
 // Custom hash for WM_NOTIFY messages.
 type nfyHash struct {
 	IdFrom c.ID
-	Code   int32
+	Code   c.NM
 }
 
 // Keeps all user message handlers.
@@ -40,7 +40,7 @@ func (me *windowOn) addMsg(msg c.WM, userFunc func(p wmBase) uintptr) {
 	me.msgs[msg] = userFunc
 }
 
-func (me *windowOn) addNfy(idFrom c.ID, code int32,
+func (me *windowOn) addNfy(idFrom c.ID, code c.NM,
 	userFunc func(p wmBase) uintptr) {
 
 	if me.loopStarted {
@@ -63,7 +63,7 @@ func (me *windowOn) processMessage(p wmBase) (uintptr, bool) {
 		paramNfy := makeWmNotify(p)
 		hash := nfyHash{
 			IdFrom: c.ID(paramNfy.NmHdr.IdFrom),
-			Code:   int32(paramNfy.NmHdr.Code),
+			Code:   c.NM(paramNfy.NmHdr.Code),
 		}
 		if userFunc, hasNfy := me.nfys[hash]; hasNfy {
 			return userFunc(p), true

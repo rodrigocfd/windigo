@@ -56,11 +56,11 @@ func (me *windowOn) WmClose(userFunc func()) {
 	})
 }
 
-func (me *windowOn) WmCreate(userFunc func(p WmCreate) uintptr) {
+func (me *windowOn) WmCreate(userFunc func(p WmCreate) int32) {
 	me.addMsg(c.WM_CREATE, func(p wmBase) uintptr {
-		return userFunc(WmCreate{
+		return uintptr(userFunc(WmCreate{
 			CreateStruct: (*api.CREATESTRUCT)(unsafe.Pointer(p.LParam)),
-		})
+		}))
 	})
 }
 

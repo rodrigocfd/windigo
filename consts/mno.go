@@ -144,3 +144,32 @@ const (
 	MNS_NOTIFYBYPOS MNS = 0x08000000
 	MNS_CHECKORBMP  MNS = 0x04000000
 )
+
+type NM int32 // common control notification
+
+const (
+	nM_FIRST NM = 0
+
+	NM_OUTOFMEMORY          NM = nM_FIRST - 1
+	NM_CLICK                NM = nM_FIRST - 2
+	NM_DBLCLK               NM = nM_FIRST - 3
+	NM_RETURN               NM = nM_FIRST - 4
+	NM_RCLICK               NM = nM_FIRST - 5
+	NM_RDBLCLK              NM = nM_FIRST - 6
+	NM_SETFOCUS             NM = nM_FIRST - 7
+	NM_KILLFOCUS            NM = nM_FIRST - 8
+	NM_CUSTOMDRAW           NM = nM_FIRST - 12
+	NM_HOVER                NM = nM_FIRST - 13
+	NM_NCHITTEST            NM = nM_FIRST - 14
+	NM_KEYDOWN              NM = nM_FIRST - 15
+	NM_RELEASEDCAPTURE      NM = nM_FIRST - 16
+	NM_SETCURSOR            NM = nM_FIRST - 17
+	NM_CHAR                 NM = nM_FIRST - 18
+	NM_TOOLTIPSCREATED      NM = nM_FIRST - 19
+	NM_LDOWN                NM = nM_FIRST - 20
+	NM_RDOWN                NM = nM_FIRST - 21
+	NM_THEMECHANGED         NM = nM_FIRST - 22
+	NM_FONTCHANGED          NM = nM_FIRST - 23
+	NM_CUSTOMTEXT           NM = nM_FIRST - 24
+	NM_TVSTATEIMAGECHANGING NM = nM_FIRST - 24
+)
