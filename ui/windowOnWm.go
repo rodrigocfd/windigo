@@ -7,8 +7,16 @@ import (
 	"unsafe"
 )
 
-func makeWmCommand(p wmBase) WmCommand {
-	return WmCommand{
+func (me *windowOn) WmCommand(cmd c.ID, userFunc func(p *WmCommand)) {
+	if me.loopStarted {
+		panic(fmt.Sprintf(
+			"Cannot add command message %d after application loop started.", cmd))
+	}
+	me.cmds[cmd] = userFunc
+}
+
+func newWmCommand(p wmBase) *WmCommand {
+	return &WmCommand{
 		IsFromMenu:        api.HiWord(uint32(p.WParam)) == 0,
 		IsFromAccelerator: api.HiWord(uint32(p.WParam)) == 1,
 		IsFromControl:     api.HiWord(uint32(p.WParam)) != 0 && api.HiWord(uint32(p.WParam)) != 1,
@@ -20,27 +28,11 @@ func makeWmCommand(p wmBase) WmCommand {
 	}
 }
 
-func makeWmNotify(p wmBase) WmNotify {
-	return WmNotify{
-		NmHdr: (*api.NMHDR)(unsafe.Pointer(p.LParam)),
-	}
-}
-
 //------------------------------------------------------------------------------
 
-func (me *windowOn) WmCommand(cmd c.ID, userFunc func(p WmCommand)) {
-	if me.loopStarted {
-		panic(fmt.Sprintf(
-			"Cannot add command message %d after application loop started.", cmd))
-	}
-	me.cmds[cmd] = userFunc
-}
-
-//------------------------------------------------------------------------------
-
-func (me *windowOn) WmActivate(userFunc func(p WmActivate)) {
+func (me *windowOn) WmActivate(userFunc func(p *WmActivate)) {
 	me.addMsg(c.WM_ACTIVATE, func(p wmBase) uintptr {
-		userFunc(WmActivate{
+		userFunc(&WmActivate{
 			Event:          c.WA(api.LoWord(uint32(p.LParam))),
 			IsMinimized:    api.HiWord(uint32(p.LParam)) != 0,
 			PreviousWindow: api.HWND(p.LParam),
@@ -56,9 +48,9 @@ func (me *windowOn) WmClose(userFunc func()) {
 	})
 }
 
-func (me *windowOn) WmCreate(userFunc func(p WmCreate) int32) {
+func (me *windowOn) WmCreate(userFunc func(p *WmCreate) int32) {
 	me.addMsg(c.WM_CREATE, func(p wmBase) uintptr {
-		return uintptr(userFunc(WmCreate{
+		return uintptr(userFunc(&WmCreate{
 			CreateStruct: (*api.CREATESTRUCT)(unsafe.Pointer(p.LParam)),
 		}))
 	})
@@ -71,9 +63,9 @@ func (me *windowOn) WmDestroy(userFunc func()) {
 	})
 }
 
-func (me *windowOn) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
+func (me *windowOn) WmInitMenuPopup(userFunc func(p *WmInitMenuPopup)) {
 	me.addMsg(c.WM_INITMENUPOPUP, func(p wmBase) uintptr {
-		userFunc(WmInitMenuPopup{
+		userFunc(&WmInitMenuPopup{
 			Hmenu:           api.HMENU(p.WParam),
 			SourceItemIndex: api.LoWord(uint32(p.LParam)),
 			IsWindowMenu:    api.HiWord(uint32(p.LParam)) != 0,
@@ -100,99 +92,99 @@ func makeWmBaseBtn(p wmBase) WmBaseBtn {
 	}
 }
 
-func (me *windowOn) WmLButtonDblClk(userFunc func(p WmLButtonDblClk)) {
+func (me *windowOn) WmLButtonDblClk(userFunc func(p *WmLButtonDblClk)) {
 	me.addMsg(c.WM_LBUTTONDBLCLK, func(p wmBase) uintptr {
-		userFunc(WmLButtonDblClk{
+		userFunc(&WmLButtonDblClk{
 			WmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
 }
 
-func (me *windowOn) WmLButtonDown(userFunc func(p WmLButtonDown)) {
+func (me *windowOn) WmLButtonDown(userFunc func(p *WmLButtonDown)) {
 	me.addMsg(c.WM_LBUTTONDOWN, func(p wmBase) uintptr {
-		userFunc(WmLButtonDown{
+		userFunc(&WmLButtonDown{
 			WmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
 }
 
-func (me *windowOn) WmLButtonUp(userFunc func(p WmLButtonUp)) {
+func (me *windowOn) WmLButtonUp(userFunc func(p *WmLButtonUp)) {
 	me.addMsg(c.WM_LBUTTONUP, func(p wmBase) uintptr {
-		userFunc(WmLButtonUp{
+		userFunc(&WmLButtonUp{
 			WmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
 }
 
-func (me *windowOn) WmMButtonDblClk(userFunc func(p WmMButtonDblClk)) {
+func (me *windowOn) WmMButtonDblClk(userFunc func(p *WmMButtonDblClk)) {
 	me.addMsg(c.WM_MBUTTONDBLCLK, func(p wmBase) uintptr {
-		userFunc(WmMButtonDblClk{
+		userFunc(&WmMButtonDblClk{
 			WmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
 }
 
-func (me *windowOn) WmMButtonDown(userFunc func(p WmMButtonDown)) {
+func (me *windowOn) WmMButtonDown(userFunc func(p *WmMButtonDown)) {
 	me.addMsg(c.WM_MBUTTONDOWN, func(p wmBase) uintptr {
-		userFunc(WmMButtonDown{
+		userFunc(&WmMButtonDown{
 			WmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
 }
 
-func (me *windowOn) WmMButtonUp(userFunc func(p WmMButtonUp)) {
+func (me *windowOn) WmMButtonUp(userFunc func(p *WmMButtonUp)) {
 	me.addMsg(c.WM_MBUTTONUP, func(p wmBase) uintptr {
-		userFunc(WmMButtonUp{
+		userFunc(&WmMButtonUp{
 			WmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
 }
 
-func (me *windowOn) WmMouseHover(userFunc func(p WmMouseHover)) {
+func (me *windowOn) WmMouseHover(userFunc func(p *WmMouseHover)) {
 	me.addMsg(c.WM_MOUSEHOVER, func(p wmBase) uintptr {
-		userFunc(WmMouseHover{
+		userFunc(&WmMouseHover{
 			WmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
 }
 
-func (me *windowOn) WmMouseMove(userFunc func(p WmMouseMove)) {
+func (me *windowOn) WmMouseMove(userFunc func(p *WmMouseMove)) {
 	me.addMsg(c.WM_MOUSEMOVE, func(p wmBase) uintptr {
-		userFunc(WmMouseMove{
+		userFunc(&WmMouseMove{
 			WmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
 }
 
-func (me *windowOn) WmRButtonDblClk(userFunc func(p WmRButtonDblClk)) {
+func (me *windowOn) WmRButtonDblClk(userFunc func(p *WmRButtonDblClk)) {
 	me.addMsg(c.WM_RBUTTONDBLCLK, func(p wmBase) uintptr {
-		userFunc(WmRButtonDblClk{
+		userFunc(&WmRButtonDblClk{
 			WmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
 }
 
-func (me *windowOn) WmRButtonDown(userFunc func(p WmRButtonDown)) {
+func (me *windowOn) WmRButtonDown(userFunc func(p *WmRButtonDown)) {
 	me.addMsg(c.WM_RBUTTONDOWN, func(p wmBase) uintptr {
-		userFunc(WmRButtonDown{
+		userFunc(&WmRButtonDown{
 			WmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
 }
 
-func (me *windowOn) WmRButtonUp(userFunc func(p WmRButtonUp)) {
+func (me *windowOn) WmRButtonUp(userFunc func(p *WmRButtonUp)) {
 	me.addMsg(c.WM_RBUTTONUP, func(p wmBase) uintptr {
-		userFunc(WmRButtonUp{
+		userFunc(&WmRButtonUp{
 			WmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
@@ -208,9 +200,9 @@ func (me *windowOn) WmMouseLeave(userFunc func()) {
 	})
 }
 
-func (me *windowOn) WmMove(userFunc func(p WmMove)) {
+func (me *windowOn) WmMove(userFunc func(p *WmMove)) {
 	me.addMsg(c.WM_MOVE, func(p wmBase) uintptr {
-		userFunc(WmMove{
+		userFunc(&WmMove{
 			Pos: &api.POINT{
 				X: int32(api.LoWord(uint32(p.LParam))),
 				Y: int32(api.HiWord(uint32(p.LParam))),
@@ -227,9 +219,9 @@ func (me *windowOn) WmNcDestroy(userFunc func()) {
 	})
 }
 
-func (me *windowOn) WmNcPaint(userFunc func(p WmNcPaint)) {
+func (me *windowOn) WmNcPaint(userFunc func(p *WmNcPaint)) {
 	me.addMsg(c.WM_NCPAINT, func(p wmBase) uintptr {
-		userFunc(WmNcPaint{
+		userFunc(&WmNcPaint{
 			Hrgn: api.HRGN(p.WParam),
 		})
 		return 0
@@ -243,18 +235,18 @@ func (me *windowOn) WmPaint(userFunc func()) {
 	})
 }
 
-func (me *windowOn) WmSetFocus(userFunc func(p WmSetFocus)) {
+func (me *windowOn) WmSetFocus(userFunc func(p *WmSetFocus)) {
 	me.addMsg(c.WM_SETFOCUS, func(p wmBase) uintptr {
-		userFunc(WmSetFocus{
+		userFunc(&WmSetFocus{
 			UnfocusedWindow: api.HWND(p.WParam),
 		})
 		return 0
 	})
 }
 
-func (me *windowOn) WmSetFont(userFunc func(p WmSetFont)) {
+func (me *windowOn) WmSetFont(userFunc func(p *WmSetFont)) {
 	me.addMsg(c.WM_SETFONT, func(p wmBase) uintptr {
-		userFunc(WmSetFont{
+		userFunc(&WmSetFont{
 			Hfont:        api.HFONT(p.WParam),
 			ShouldRedraw: p.LParam == 1,
 		})
@@ -262,9 +254,9 @@ func (me *windowOn) WmSetFont(userFunc func(p WmSetFont)) {
 	})
 }
 
-func (me *windowOn) WmSize(userFunc func(p WmSize)) {
+func (me *windowOn) WmSize(userFunc func(p *WmSize)) {
 	me.addMsg(c.WM_SIZE, func(p wmBase) uintptr {
-		userFunc(WmSize{
+		userFunc(&WmSize{
 			Request: c.SIZE_REQ(p.WParam),
 			ClientAreaSize: &api.SIZE{
 				Cx: int32(api.LoWord(uint32(p.LParam))),

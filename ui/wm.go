@@ -22,9 +22,9 @@ type WmCommand struct {
 	ControlHwnd       api.HWND
 }
 
-type WmNotify struct {
-	NmHdr *api.NMHDR
-}
+// type WmNotify struct {
+// 	NmHdr *api.NMHDR
+// }
 
 //------------------------------------------------------------------------------
 

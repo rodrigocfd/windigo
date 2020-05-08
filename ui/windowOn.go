@@ -2,7 +2,9 @@ package ui
 
 import (
 	"fmt"
+	"gowinui/api"
 	c "gowinui/consts"
+	"unsafe"
 )
 
 // Custom hash for WM_NOTIFY messages.
@@ -14,14 +16,14 @@ type nfyHash struct {
 // Keeps all user message handlers.
 type windowOn struct {
 	msgs        map[c.WM]func(p wmBase) uintptr
-	cmds        map[c.ID]func(p WmCommand)
+	cmds        map[c.ID]func(p *WmCommand)
 	nfys        map[nfyHash]func(p wmBase) uintptr
 	loopStarted bool
 }
 
 func makeWindowOn() windowOn {
 	msgs := make(map[c.WM]func(p wmBase) uintptr)
-	cmds := make(map[c.ID]func(p WmCommand))
+	cmds := make(map[c.ID]func(p *WmCommand))
 	nfys := make(map[nfyHash]func(p wmBase) uintptr)
 
 	return windowOn{
@@ -54,16 +56,16 @@ func (me *windowOn) addNfy(idFrom c.ID, code c.NM,
 func (me *windowOn) processMessage(p wmBase) (uintptr, bool) {
 	switch p.Msg {
 	case c.WM_COMMAND:
-		paramCmd := makeWmCommand(p)
-		if userFunc, hasCmd := me.cmds[paramCmd.ControlId]; hasCmd {
-			userFunc(paramCmd)
-			return 0, true
+		cmdId := c.ID(api.LoWord(uint32(p.WParam)))
+		if userFunc, hasCmd := me.cmds[cmdId]; hasCmd {
+			userFunc(newWmCommand(p))
+			return 0, true // always return zero
 		}
 	case c.WM_NOTIFY:
-		paramNfy := makeWmNotify(p)
+		nmHdr := (*api.NMHDR)(unsafe.Pointer(p.LParam))
 		hash := nfyHash{
-			IdFrom: c.ID(paramNfy.NmHdr.IdFrom),
-			Code:   c.NM(paramNfy.NmHdr.Code),
+			IdFrom: c.ID(nmHdr.IdFrom),
+			Code:   c.NM(nmHdr.Code),
 		}
 		if userFunc, hasNfy := me.nfys[hash]; hasNfy {
 			return userFunc(p), true

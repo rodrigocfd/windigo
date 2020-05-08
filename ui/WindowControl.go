@@ -36,7 +36,7 @@ func (me *WindowControl) Create(parent Window,
 	hInst := parent.Hwnd().GetInstance()
 	me.windowBase.registerClass(me.Setup.genWndClassEx(hInst))
 
-	me.windowBase.On.WmNcPaint(func(p WmNcPaint) { // default WM_NCPAINT handling
+	me.windowBase.On.WmNcPaint(func(p *WmNcPaint) { // default WM_NCPAINT handling
 		me.paintThemedBorders(p)
 	})
 
@@ -46,7 +46,7 @@ func (me *WindowControl) Create(parent Window,
 		unsafe.Pointer(&me.windowBase)) // pass pointer to windowBase object
 }
 
-func (me *WindowControl) paintThemedBorders(p WmNcPaint) {
+func (me *WindowControl) paintThemedBorders(p *WmNcPaint) {
 	me.Hwnd().DefWindowProc(c.WM_NCPAINT, api.WPARAM(p.Hrgn), 0) // make system draw the scrollbar for us
 
 	if (me.Hwnd().GetExStyle()&c.WS_EX_CLIENTEDGE) == 0 ||
