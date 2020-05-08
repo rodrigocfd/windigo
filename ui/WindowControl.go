@@ -3,7 +3,6 @@ package ui
 import (
 	"gowinui/api"
 	c "gowinui/consts"
-	"gowinui/parm"
 	"unsafe"
 )
 
@@ -37,8 +36,8 @@ func (me *WindowControl) Create(parent Window,
 	hInst := parent.Hwnd().GetInstance()
 	me.windowBase.registerClass(me.Setup.genWndClassEx(hInst))
 
-	me.windowBase.On.WmNcPaint(func(p parm.WmNcPaint) {
-		me.paintThemedBorders(&p)
+	me.windowBase.On.WmNcPaint(func(p WmNcPaint) { // default WM_NCPAINT handling
+		me.paintThemedBorders(p)
 	})
 
 	api.CreateWindowEx(me.Setup.ExStyle, // hwnd member is saved in WM_NCCREATE processing
@@ -47,8 +46,8 @@ func (me *WindowControl) Create(parent Window,
 		unsafe.Pointer(&me.windowBase)) // pass pointer to windowBase object
 }
 
-func (me *WindowControl) paintThemedBorders(p *parm.WmNcPaint) {
-	me.Hwnd().DefWindowProc(c.WM_NCPAINT, p.WParam, p.LParam) // make system draw the scrollbar for us
+func (me *WindowControl) paintThemedBorders(p WmNcPaint) {
+	me.Hwnd().DefWindowProc(c.WM_NCPAINT, api.WPARAM(p.Hrgn), 0) // make system draw the scrollbar for us
 
 	if (me.Hwnd().GetExStyle()&c.WS_EX_CLIENTEDGE) == 0 ||
 		!api.IsThemeActive() ||

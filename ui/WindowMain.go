@@ -3,7 +3,6 @@ package ui
 import (
 	"gowinui/api"
 	c "gowinui/consts"
-	"gowinui/parm"
 	"unsafe"
 )
 
@@ -26,7 +25,7 @@ func (me *WindowMain) RunAsMain() {
 	hInst := api.GetModuleHandle("")
 	me.windowBase.registerClass(me.Setup.genWndClassEx(hInst))
 
-	me.windowBase.On.WmNcDestroy(func(p parm.WmNcDestroy) {
+	me.windowBase.On.WmNcDestroy(func() { // default WM_NCDESTROY handling
 		api.PostQuitMessage(0)
 	})
 

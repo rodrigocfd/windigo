@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"gowinui/api"
 	c "gowinui/consts"
-	"gowinui/parm"
 	"syscall"
 	"unsafe"
 )
@@ -68,7 +67,7 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 	}
 
 	// Mount object to be passed to user handler.
-	paramRaw := parm.Raw{
+	paramRaw := wmBase{
 		Msg:    msg,
 		WParam: wParam,
 		LParam: lParam,
