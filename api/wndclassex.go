@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"gowinui/api/proc"
 	c "gowinui/consts"
 	"syscall"
@@ -20,6 +21,15 @@ type WNDCLASSEX struct {
 	LpszMenuName  *uint16
 	LpszClassName *uint16
 	HIconSm       HICON
+}
+
+// Generates a string from all fields, excluding CbSize and LpszClassName, that
+// uniquely identifies a WNDCLASSEX object.
+func (wcx *WNDCLASSEX) Hash() string {
+	return fmt.Sprintf("%x.%x.%x.%x.%x.%x.%x.%x.%x.%x",
+		wcx.Style, wcx.LpfnWndProc, wcx.CbClsExtra, wcx.CbWndExtra,
+		wcx.HInstance, wcx.HIcon, wcx.HCursor, wcx.HbrBackground,
+		wcx.LpszMenuName, wcx.HIcon)
 }
 
 func (wcx *WNDCLASSEX) RegisterClassEx() (ATOM, syscall.Errno) {
