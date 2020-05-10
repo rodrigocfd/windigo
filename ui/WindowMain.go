@@ -21,9 +21,7 @@ func NewWindowMain() *WindowMain {
 
 // Creates the main window and runs the main application loop.
 func (me *WindowMain) RunAsMain() {
-	if api.IsWindows10OrGreater() {
-		api.SetProcessDpiAwarenessContext(c.DPI_AWARE_CTX_PER_MON_AWARE_V2)
-	} else if api.IsWindowsVistaOrGreater() {
+	if api.IsWindowsVistaOrGreater() {
 		api.SetProcessDPIAware()
 	}
 
