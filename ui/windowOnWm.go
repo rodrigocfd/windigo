@@ -63,6 +63,15 @@ func (me *windowOn) WmDestroy(userFunc func()) {
 	})
 }
 
+func (me *windowOn) WmDropFiles(userFunc func(p *WmDropFiles)) {
+	me.addMsg(c.WM_DROPFILES, func(p wmBase) uintptr {
+		userFunc(&WmDropFiles{
+			Hdrop: api.HDROP(p.WParam),
+		})
+		return 0
+	})
+}
+
 func (me *windowOn) WmInitMenuPopup(userFunc func(p *WmInitMenuPopup)) {
 	me.addMsg(c.WM_INITMENUPOPUP, func(p wmBase) uintptr {
 		userFunc(&WmInitMenuPopup{
@@ -76,8 +85,8 @@ func (me *windowOn) WmInitMenuPopup(userFunc func(p *WmInitMenuPopup)) {
 
 //------------------------------------------------------------------------------
 
-func makeWmBaseBtn(p wmBase) WmBaseBtn {
-	return WmBaseBtn{
+func makeWmBaseBtn(p wmBase) wmBaseBtn {
+	return wmBaseBtn{
 		HasCtrl:      (c.MK(p.WParam) & c.MK_CONTROL) != 0,
 		HasLeftBtn:   (c.MK(p.WParam) & c.MK_LBUTTON) != 0,
 		HasMiddleBtn: (c.MK(p.WParam) & c.MK_MBUTTON) != 0,
@@ -95,7 +104,7 @@ func makeWmBaseBtn(p wmBase) WmBaseBtn {
 func (me *windowOn) WmLButtonDblClk(userFunc func(p *WmLButtonDblClk)) {
 	me.addMsg(c.WM_LBUTTONDBLCLK, func(p wmBase) uintptr {
 		userFunc(&WmLButtonDblClk{
-			WmBaseBtn: makeWmBaseBtn(p),
+			wmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
@@ -104,7 +113,7 @@ func (me *windowOn) WmLButtonDblClk(userFunc func(p *WmLButtonDblClk)) {
 func (me *windowOn) WmLButtonDown(userFunc func(p *WmLButtonDown)) {
 	me.addMsg(c.WM_LBUTTONDOWN, func(p wmBase) uintptr {
 		userFunc(&WmLButtonDown{
-			WmBaseBtn: makeWmBaseBtn(p),
+			wmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
@@ -113,7 +122,7 @@ func (me *windowOn) WmLButtonDown(userFunc func(p *WmLButtonDown)) {
 func (me *windowOn) WmLButtonUp(userFunc func(p *WmLButtonUp)) {
 	me.addMsg(c.WM_LBUTTONUP, func(p wmBase) uintptr {
 		userFunc(&WmLButtonUp{
-			WmBaseBtn: makeWmBaseBtn(p),
+			wmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
@@ -122,7 +131,7 @@ func (me *windowOn) WmLButtonUp(userFunc func(p *WmLButtonUp)) {
 func (me *windowOn) WmMButtonDblClk(userFunc func(p *WmMButtonDblClk)) {
 	me.addMsg(c.WM_MBUTTONDBLCLK, func(p wmBase) uintptr {
 		userFunc(&WmMButtonDblClk{
-			WmBaseBtn: makeWmBaseBtn(p),
+			wmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
@@ -131,7 +140,7 @@ func (me *windowOn) WmMButtonDblClk(userFunc func(p *WmMButtonDblClk)) {
 func (me *windowOn) WmMButtonDown(userFunc func(p *WmMButtonDown)) {
 	me.addMsg(c.WM_MBUTTONDOWN, func(p wmBase) uintptr {
 		userFunc(&WmMButtonDown{
-			WmBaseBtn: makeWmBaseBtn(p),
+			wmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
@@ -140,7 +149,7 @@ func (me *windowOn) WmMButtonDown(userFunc func(p *WmMButtonDown)) {
 func (me *windowOn) WmMButtonUp(userFunc func(p *WmMButtonUp)) {
 	me.addMsg(c.WM_MBUTTONUP, func(p wmBase) uintptr {
 		userFunc(&WmMButtonUp{
-			WmBaseBtn: makeWmBaseBtn(p),
+			wmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
@@ -149,7 +158,7 @@ func (me *windowOn) WmMButtonUp(userFunc func(p *WmMButtonUp)) {
 func (me *windowOn) WmMouseHover(userFunc func(p *WmMouseHover)) {
 	me.addMsg(c.WM_MOUSEHOVER, func(p wmBase) uintptr {
 		userFunc(&WmMouseHover{
-			WmBaseBtn: makeWmBaseBtn(p),
+			wmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
@@ -158,7 +167,7 @@ func (me *windowOn) WmMouseHover(userFunc func(p *WmMouseHover)) {
 func (me *windowOn) WmMouseMove(userFunc func(p *WmMouseMove)) {
 	me.addMsg(c.WM_MOUSEMOVE, func(p wmBase) uintptr {
 		userFunc(&WmMouseMove{
-			WmBaseBtn: makeWmBaseBtn(p),
+			wmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
@@ -167,7 +176,7 @@ func (me *windowOn) WmMouseMove(userFunc func(p *WmMouseMove)) {
 func (me *windowOn) WmRButtonDblClk(userFunc func(p *WmRButtonDblClk)) {
 	me.addMsg(c.WM_RBUTTONDBLCLK, func(p wmBase) uintptr {
 		userFunc(&WmRButtonDblClk{
-			WmBaseBtn: makeWmBaseBtn(p),
+			wmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
@@ -176,7 +185,7 @@ func (me *windowOn) WmRButtonDblClk(userFunc func(p *WmRButtonDblClk)) {
 func (me *windowOn) WmRButtonDown(userFunc func(p *WmRButtonDown)) {
 	me.addMsg(c.WM_RBUTTONDOWN, func(p wmBase) uintptr {
 		userFunc(&WmRButtonDown{
-			WmBaseBtn: makeWmBaseBtn(p),
+			wmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})
@@ -185,7 +194,7 @@ func (me *windowOn) WmRButtonDown(userFunc func(p *WmRButtonDown)) {
 func (me *windowOn) WmRButtonUp(userFunc func(p *WmRButtonUp)) {
 	me.addMsg(c.WM_RBUTTONUP, func(p wmBase) uintptr {
 		userFunc(&WmRButtonUp{
-			WmBaseBtn: makeWmBaseBtn(p),
+			wmBaseBtn: makeWmBaseBtn(p),
 		})
 		return 0
 	})

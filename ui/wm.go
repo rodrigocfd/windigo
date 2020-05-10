@@ -38,13 +38,17 @@ type WmCreate struct {
 	CreateStruct *api.CREATESTRUCT
 }
 
+type WmDropFiles struct {
+	Hdrop api.HDROP
+}
+
 type WmInitMenuPopup struct {
 	Hmenu           api.HMENU
 	SourceItemIndex uint16
 	IsWindowMenu    bool
 }
 
-type WmBaseBtn struct {
+type wmBaseBtn struct {
 	HasCtrl      bool
 	HasLeftBtn   bool
 	HasMiddleBtn bool
@@ -54,17 +58,17 @@ type WmBaseBtn struct {
 	HasXBtn2     bool
 	Pos          *api.POINT
 }
-type WmLButtonDblClk struct{ WmBaseBtn }
-type WmLButtonDown struct{ WmBaseBtn }
-type WmLButtonUp struct{ WmBaseBtn }
-type WmMButtonDblClk struct{ WmBaseBtn }
-type WmMButtonDown struct{ WmBaseBtn }
-type WmMButtonUp struct{ WmBaseBtn }
-type WmMouseHover struct{ WmBaseBtn }
-type WmMouseMove struct{ WmBaseBtn }
-type WmRButtonDblClk struct{ WmBaseBtn }
-type WmRButtonDown struct{ WmBaseBtn }
-type WmRButtonUp struct{ WmBaseBtn }
+type WmLButtonDblClk struct{ wmBaseBtn }
+type WmLButtonDown struct{ wmBaseBtn }
+type WmLButtonUp struct{ wmBaseBtn }
+type WmMButtonDblClk struct{ wmBaseBtn }
+type WmMButtonDown struct{ wmBaseBtn }
+type WmMButtonUp struct{ wmBaseBtn }
+type WmMouseHover struct{ wmBaseBtn }
+type WmMouseMove struct{ wmBaseBtn }
+type WmRButtonDblClk struct{ wmBaseBtn }
+type WmRButtonDown struct{ wmBaseBtn }
+type WmRButtonUp struct{ wmBaseBtn }
 
 type WmMove struct {
 	Pos *api.POINT
