@@ -10,14 +10,18 @@ import (
 
 type HINSTANCE HANDLE
 
-func (hinst HINSTANCE) GetClassInfo(className *uint16,
-	destBuf *WNDCLASSEX) syscall.Errno {
+func (hinst HINSTANCE) GetClassInfoEx(className *uint16,
+	destBuf *WNDCLASSEX) ATOM {
 
-	_, _, lerr := syscall.Syscall(proc.GetClassInfo.Addr(), 3,
+	ret, _, lerr := syscall.Syscall(proc.GetClassInfoEx.Addr(), 3,
 		uintptr(hinst),
 		uintptr(unsafe.Pointer(className)),
 		uintptr(unsafe.Pointer(destBuf)))
-	return lerr
+	if ret == 0 {
+		panic(fmt.Sprintf("GetClassInfoEx failed: %d %s\n",
+			lerr, lerr.Error()))
+	}
+	return ATOM(ret)
 }
 
 func GetModuleHandle(moduleName string) HINSTANCE {

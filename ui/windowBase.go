@@ -27,22 +27,18 @@ func (me *windowBase) Hwnd() api.HWND {
 }
 
 func (me *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
-	if wcx.LpszClassName == nil {
-		panic("Class name not given.")
-	}
-
 	wcx.LpfnWndProc = syscall.NewCallback(wndProc)
-
 	atom, lerr := wcx.RegisterClassEx()
 	if lerr != 0 {
-		if c.ERROR(lerr) == c.ERROR_CLASS_ALREADY_EXISTS { // https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
-			atom = api.ATOM(wcx.HInstance.GetClassInfo(wcx.LpszClassName, wcx))
+		// https://devblogs.microsoft.com/oldnewthing/20150429-00/?p=44984
+		// https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
+		if c.ERROR(lerr) == c.ERROR_CLASS_ALREADY_EXISTS {
+			atom = wcx.HInstance.GetClassInfoEx(wcx.LpszClassName, wcx)
 		} else {
 			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s\n",
 				atom, lerr, lerr.Error()))
 		}
 	}
-
 	return atom
 }
 

@@ -25,7 +25,7 @@ var (
 	EnumChildWindows        = dllUser32.NewProc("EnumChildWindows")
 	EnumDisplayMonitors     = dllUser32.NewProc("EnumDisplayMonitors")
 	GetAncestor             = dllUser32.NewProc("GetAncestor")
-	GetClassInfo            = dllUser32.NewProc("GetClassInfoW")
+	GetClassInfoEx          = dllUser32.NewProc("GetClassInfoExW")
 	GetClientRect           = dllUser32.NewProc("GetClientRect")
 	GetForegroundWindow     = dllUser32.NewProc("GetForegroundWindow")
 	GetMenu                 = dllUser32.NewProc("GetMenu")
