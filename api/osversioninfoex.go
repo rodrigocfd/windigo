@@ -63,12 +63,39 @@ func IsWindows7OrGreater() bool {
 		0)
 }
 
+func IsWindows8OrGreater() bool {
+	return IsWindowsVersionOrGreater(
+		uint32(
+			HiByte(uint16(c.WIN32_WINNT_WIN8))),
+		uint32(
+			LoByte(uint16(c.WIN32_WINNT_WIN8))),
+		0)
+}
+
+func IsWindows8Point1OrGreater() bool {
+	return IsWindowsVersionOrGreater(
+		uint32(
+			HiByte(uint16(c.WIN32_WINNT_WINBLUE))),
+		uint32(
+			LoByte(uint16(c.WIN32_WINNT_WINBLUE))),
+		0)
+}
+
 func IsWindowsVistaOrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(
 			HiByte(uint16(c.WIN32_WINNT_VISTA))),
 		uint32(
 			LoByte(uint16(c.WIN32_WINNT_VISTA))),
+		0)
+}
+
+func IsWindowsXpOrGreater() bool {
+	return IsWindowsVersionOrGreater(
+		uint32(
+			HiByte(uint16(c.WIN32_WINNT_WINXP))),
+		uint32(
+			LoByte(uint16(c.WIN32_WINNT_WINXP))),
 		0)
 }
 

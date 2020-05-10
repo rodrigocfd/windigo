@@ -1,5 +1,15 @@
 package consts
 
+type DPI_AWARE_CTX int32 // SetProcessDpiAwarenessContext
+
+const (
+	DPI_AWARE_CTX_UNAWARE           DPI_AWARE_CTX = -1
+	DPI_AWARE_CTX_SYSTEM_AWARE      DPI_AWARE_CTX = -2
+	DPI_AWARE_CTX_PER_MON_AWARE     DPI_AWARE_CTX = -3
+	DPI_AWARE_CTX_PER_MON_AWARE_V2  DPI_AWARE_CTX = -4
+	DPI_AWARE_CTX_UNAWARE_GDISCALED DPI_AWARE_CTX = -5
+)
+
 type ES WS // edit control style
 
 const (

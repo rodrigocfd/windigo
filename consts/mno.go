@@ -1,5 +1,14 @@
 package consts
 
+type MDT uint32 // GetDpiForMonitor
+
+const (
+	MDT_EFFECTIVE_DPI MDT = 0
+	MDT_ANGULAR_DPI   MDT = 1
+	MDT_RAW_DPI       MDT = 2
+	MDT_DEFAULT       MDT = MDT_EFFECTIVE_DPI
+)
+
 type MB uint32 // MessageBox
 
 const (
@@ -143,6 +152,14 @@ const (
 	MNS_AUTODISMISS MNS = 0x10000000
 	MNS_NOTIFYBYPOS MNS = 0x08000000
 	MNS_CHECKORBMP  MNS = 0x04000000
+)
+
+type MONITOR uint32 // MonitorFromPoint
+
+const (
+	MONITOR_DEFAULTTONULL    MONITOR = 0x00000000
+	MONITOR_DEFAULTTOPRIMARY MONITOR = 0x00000001
+	MONITOR_DEFAULTTONEAREST MONITOR = 0x00000002
 )
 
 type NM int32 // common control notification

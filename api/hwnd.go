@@ -98,6 +98,22 @@ func (hwnd HWND) GetClientRect() *RECT {
 	return rc
 }
 
+func (hwnd HWND) GetDC() HDC {
+	ret, _, _ := syscall.Syscall(proc.GetDC.Addr(), 1,
+		uintptr(hwnd), 0, 0)
+	if ret == 0 {
+		panic("GetDC failed.")
+	}
+	return HDC(ret)
+}
+
+// Windows 10, version 1607 and above.
+func (hwnd HWND) GetDpiForWindow() uint32 {
+	ret, _, _ := syscall.Syscall(proc.GetDpiForWindow.Addr(), 1,
+		uintptr(hwnd), 0, 0)
+	return uint32(ret)
+}
+
 func (hwnd HWND) GetExStyle() c.WS_EX {
 	return c.WS_EX(hwnd.GetWindowLongPtr(c.GWLP_EXSTYLE))
 }

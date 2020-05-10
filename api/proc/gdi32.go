@@ -9,4 +9,5 @@ var (
 
 	CreateFontIndirect = dllGdi32.NewProc("CreateFontIndirectW")
 	DeleteObject       = dllGdi32.NewProc("DeleteObject")
+	GetDeviceCaps      = dllGdi32.NewProc("GetDeviceCaps")
 )

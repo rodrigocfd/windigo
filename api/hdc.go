@@ -19,3 +19,9 @@ func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) []HMONITOR {
 			}), 0, 0, 0)
 	return hMons
 }
+
+func (hdc HDC) GetDeviceCaps(index int32) int32 {
+	ret, _, _ := syscall.Syscall(proc.GetDeviceCaps.Addr(), 2,
+		uintptr(hdc), uintptr(index), 0)
+	return int32(ret)
+}

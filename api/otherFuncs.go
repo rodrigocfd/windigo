@@ -62,14 +62,48 @@ func InitCommonControls() {
 		0, 0, 0)
 }
 
+// Available in Windows 10, version 1607.
+func GetDpiForSystem() uint32 {
+	ret, _, _ := syscall.Syscall(proc.GetDpiForSystem.Addr(), 0,
+		0, 0, 0)
+	return uint32(ret)
+}
+
 func GetSystemMetrics(index c.SM) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetSystemMetrics.Addr(), 1,
 		uintptr(index), 0, 0)
 	return int32(ret)
 }
 
+// Multiplies two 32-bit values and then divides the 64-bit result by a third
+// 32-bit value. The final result is rounded to the nearest integer.
+func MulDiv(number, numerator, denominator int32) int32 {
+	ret, _, _ := syscall.Syscall(proc.MulDiv.Addr(), 3,
+		uintptr(number), uintptr(numerator), uintptr(denominator))
+	return int32(ret)
+}
+
 func PostQuitMessage(exitCode int32) {
 	syscall.Syscall(proc.PostQuitMessage.Addr(), 1, uintptr(exitCode), 0, 0)
+}
+
+// Available in Windows 10, version 1703.
+func SetProcessDpiAwarenessContext(value c.DPI_AWARE_CTX) {
+	ret, _, lerr := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
+		uintptr(value), 0, 0)
+	if ret == 0 {
+		panic(fmt.Sprintf("SetProcessDpiAwarenessContext failed: %d %s\n",
+			lerr, lerr.Error()))
+	}
+}
+
+// Available in Windows Vista.
+func SetProcessDPIAware() {
+	ret, _, _ := syscall.Syscall(proc.SetProcessDPIAware.Addr(), 0,
+		0, 0, 0)
+	if ret == 0 {
+		panic("SetProcessDPIAware failed.")
+	}
 }
 
 func SystemParametersInfo(action c.SPI, param uint32,
