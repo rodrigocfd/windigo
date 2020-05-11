@@ -23,7 +23,7 @@ func NewWindowControlWithId(ctrlId c.ID) *WindowControl {
 		Setup:      makeWindowControlSetup(),
 	}
 
-	me.windowBase.On.WmNcPaint(func(p *WmNcPaint) { // default WM_NCPAINT handling
+	me.windowBase.OnMsg.WmNcPaint(func(p *WmNcPaint) { // default WM_NCPAINT handling
 		me.paintThemedBorders(p)
 	})
 

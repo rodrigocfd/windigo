@@ -8,7 +8,7 @@ import (
 // Modal popup window.
 type WindowModal struct {
 	windowBase
-	prevFocus api.HWND
+	prevFocus api.HWND         // child control last focused on parent
 	Setup     windowModalSetup // Parameters that will be used to create the window.
 }
 
@@ -19,7 +19,7 @@ func NewWindowModal() *WindowModal {
 		Setup:      makeWindowModalSetup(),
 	}
 
-	me.windowBase.On.WmClose(func() { // default WM_CLOSE handling
+	me.windowBase.OnMsg.WmClose(func() { // default WM_CLOSE handling
 		me.windowBase.Hwnd().GetWindow(c.GW_OWNER).EnableWindow(true) // re-enable parent
 		me.windowBase.Hwnd().DestroyWindow()                          // then destroy modal
 		me.prevFocus.SetFocus()
@@ -45,13 +45,4 @@ func (me *WindowModal) Show(parent Window) {
 		cxScreen/2-int32(me.Setup.Width)/2, // center window on screen
 		cyScreen/2-int32(me.Setup.Height)/2,
 		me.Setup.Width, me.Setup.Height, parent, api.HMENU(0), hInst)
-}
-
-func (me *WindowModal) SetTitle(title string) *WindowModal {
-	me.windowBase.Hwnd().SetWindowText(title)
-	return me
-}
-
-func (me *WindowModal) Title() string {
-	return me.windowBase.Hwnd().GetWindowText()
 }

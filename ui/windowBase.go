@@ -10,14 +10,14 @@ import (
 
 // Base to all window types.
 type windowBase struct {
-	hwnd api.HWND
-	On   windowOn // Exposes all the window messages the can be handled.
+	hwnd  api.HWND
+	OnMsg windowMsg // Exposes all the window messages the can be handled.
 }
 
 func makeWindowBase() windowBase {
 	return windowBase{
-		hwnd: api.HWND(0),
-		On:   makeWindowOn(),
+		hwnd:  api.HWND(0),
+		OnMsg: makeWindowMsg(),
 	}
 }
 
@@ -84,7 +84,7 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 	}
 
 	// Try to process the message with an user handler.
-	userResult, wasProcessed := base.On.processMessage(paramRaw)
+	userResult, wasProcessed := base.OnMsg.processMessage(paramRaw)
 
 	// No further messages processed after this one.
 	if msg == c.WM_NCDESTROY {

@@ -17,7 +17,7 @@ func NewWindowMain() *WindowMain {
 		Setup:      makeWindowMainSetup(),
 	}
 
-	me.windowBase.On.WmNcDestroy(func() { // default WM_NCDESTROY handling
+	me.windowBase.OnMsg.WmNcDestroy(func() { // default WM_NCDESTROY handling
 		api.PostQuitMessage(0)
 	})
 
@@ -51,18 +51,9 @@ func (me *WindowMain) RunAsMain() {
 	me.runMainLoop()
 }
 
-func (me *WindowMain) SetTitle(title string) *WindowMain {
-	me.windowBase.Hwnd().SetWindowText(title)
-	return me
-}
-
-func (me *WindowMain) Title() string {
-	return me.windowBase.Hwnd().GetWindowText()
-}
-
 func (me *WindowMain) runMainLoop() {
 	defer globalUiFont.Destroy()
-	me.windowBase.On.loopStarted = true
+	me.windowBase.OnMsg.loopStarted = true
 
 	msg := api.MSG{}
 	for {
