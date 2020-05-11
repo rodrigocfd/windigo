@@ -13,11 +13,19 @@ type WindowModal struct {
 }
 
 func NewWindowModal() *WindowModal {
-	return &WindowModal{
+	me := WindowModal{
 		windowBase: makeWindowBase(),
 		prevFocus:  api.HWND(0),
 		Setup:      makeWindowModalSetup(),
 	}
+
+	me.windowBase.On.WmClose(func() { // default WM_CLOSE handling
+		me.windowBase.Hwnd().GetWindow(c.GW_OWNER).EnableWindow(true) // re-enable parent
+		me.windowBase.Hwnd().DestroyWindow()                          // then destroy modal
+		me.prevFocus.SetFocus()
+	})
+
+	return &me
 }
 
 // Creates the modal window and disables the parent. This function will return
@@ -29,13 +37,7 @@ func (me *WindowModal) Show(parent Window) {
 	me.prevFocus = api.GetFocus()     // currently focused control
 	parent.Hwnd().EnableWindow(false) // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
-	me.windowBase.On.WmClose(func() { // default WM_CLOSE handling
-		me.windowBase.Hwnd().GetWindow(c.GW_OWNER).EnableWindow(true) // re-enable parent
-		me.windowBase.Hwnd().DestroyWindow()                          // then destroy modal
-		me.prevFocus.SetFocus()
-	})
-
-	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN)
+	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN) // retrieve screen size
 	cyScreen := api.GetSystemMetrics(c.SM_CYSCREEN)
 
 	me.windowBase.createWindow(me.Setup.ExStyle, me.Setup.ClassName,

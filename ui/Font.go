@@ -31,6 +31,7 @@ func NewFont() *Font {
 	}
 }
 
+// Calls DeleteObject and sets the HFONT to zero.
 func (me *Font) Destroy() {
 	if me.hFont != 0 {
 		me.hFont.DeleteObject()
@@ -38,10 +39,12 @@ func (me *Font) Destroy() {
 	}
 }
 
+// Returns the HFONT handle.
 func (me *Font) Hfont() api.HFONT {
 	return me.hFont
 }
 
+// Creates a font based on a FontSetup struct.
 func (me *Font) Create(setup *FontSetup) *Font {
 	me.Destroy()
 	lf := api.LOGFONT{}
@@ -72,12 +75,14 @@ func (me *Font) Create(setup *FontSetup) *Font {
 	return me.CreateFromLogFont(&lf)
 }
 
+// Creates a font based on a LOGFONT struct.
 func (me *Font) CreateFromLogFont(lf *api.LOGFONT) *Font {
 	me.Destroy()
 	me.hFont = lf.CreateFontIndirect()
 	return me
 }
 
+// Creates a font identical to the current system font, usually Tahoma or Segoe UI.
 func (me *Font) CreateUi() *Font {
 	ncm := api.NONCLIENTMETRICS{}
 	ncm.CbSize = uint32(unsafe.Sizeof(ncm))
@@ -92,6 +97,7 @@ func (me *Font) CreateUi() *Font {
 	return me
 }
 
+// Sends a WM_SETFONT message to the child control to apply the font.
 func (me *Font) SetOnControl(ctrl Window) *Font {
 	ctrl.Hwnd().SendMessage(c.WM_SETFONT, api.WPARAM(me.hFont), 1)
 	return me

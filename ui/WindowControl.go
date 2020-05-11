@@ -17,11 +17,17 @@ func NewWindowControl() *WindowControl {
 }
 
 func NewWindowControlWithId(ctrlId c.ID) *WindowControl {
-	return &WindowControl{
+	me := WindowControl{
 		windowBase: makeWindowBase(),
 		ctrlId:     ctrlId,
 		Setup:      makeWindowControlSetup(),
 	}
+
+	me.windowBase.On.WmNcPaint(func(p *WmNcPaint) { // default WM_NCPAINT handling
+		me.paintThemedBorders(p)
+	})
+
+	return &me
 }
 
 // Returns the control ID of this child window control.
@@ -35,10 +41,6 @@ func (me *WindowControl) Create(parent Window,
 
 	hInst := parent.Hwnd().GetInstance()
 	me.windowBase.registerClass(me.Setup.genWndClassEx(hInst))
-
-	me.windowBase.On.WmNcPaint(func(p *WmNcPaint) { // default WM_NCPAINT handling
-		me.paintThemedBorders(p)
-	})
 
 	me.windowBase.createWindow(me.Setup.ExStyle, me.Setup.ClassName, "",
 		me.Setup.Style, x, y, width, height, parent, api.HMENU(me.ctrlId), hInst)

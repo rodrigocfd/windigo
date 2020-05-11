@@ -12,10 +12,16 @@ type WindowMain struct {
 }
 
 func NewWindowMain() *WindowMain {
-	return &WindowMain{
+	me := WindowMain{
 		windowBase: makeWindowBase(),
 		Setup:      makeWindowMainSetup(),
 	}
+
+	me.windowBase.On.WmNcDestroy(func() { // default WM_NCDESTROY handling
+		api.PostQuitMessage(0)
+	})
+
+	return &me
 }
 
 // Creates the main window and runs the main application loop.
@@ -28,18 +34,9 @@ func (me *WindowMain) RunAsMain() {
 	hInst := api.GetModuleHandle("")
 	me.windowBase.registerClass(me.Setup.genWndClassEx(hInst))
 
-	me.windowBase.On.WmNcDestroy(func() { // default WM_NCDESTROY handling
-		api.PostQuitMessage(0)
-	})
+	globalUiFont.CreateUi() // create global font to be applied everywhere
 
-	me.createWindow(hInst)
-	me.runMainLoop()
-}
-
-func (me *WindowMain) createWindow(hInst api.HINSTANCE) {
-	globalUiFont.CreateUi()
-
-	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN)
+	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN) // retrieve screen size
 	cyScreen := api.GetSystemMetrics(c.SM_CYSCREEN)
 
 	me.windowBase.createWindow(me.Setup.ExStyle, me.Setup.ClassName,
@@ -50,6 +47,8 @@ func (me *WindowMain) createWindow(hInst api.HINSTANCE) {
 
 	me.windowBase.Hwnd().ShowWindow(me.Setup.CmdShow)
 	me.windowBase.Hwnd().UpdateWindow()
+
+	me.runMainLoop()
 }
 
 func (me *WindowMain) SetTitle(title string) *WindowMain {
