@@ -42,6 +42,14 @@ func (me *windowMsg) addMsg(msg c.WM, userFunc func(p wmBase) uintptr) {
 	me.msgs[msg] = userFunc
 }
 
+func (me *windowMsg) addCmd(cmd c.ID, userFunc func(p *WmCommand)) {
+	if me.loopStarted {
+		panic(fmt.Sprintf(
+			"Cannot add command message %d after application loop started.", cmd))
+	}
+	me.cmds[cmd] = userFunc
+}
+
 func (me *windowMsg) addNfy(idFrom c.ID, code c.NM,
 	userFunc func(p wmBase) uintptr) {
 

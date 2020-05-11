@@ -1,19 +1,10 @@
 package ui
 
 import (
-	"fmt"
 	"unsafe"
 	"wingows/api"
 	c "wingows/consts"
 )
-
-func (me *windowMsg) WmCommand(cmd c.ID, userFunc func(p *WmCommand)) {
-	if me.loopStarted {
-		panic(fmt.Sprintf(
-			"Cannot add command message %d after application loop started.", cmd))
-	}
-	me.cmds[cmd] = userFunc
-}
 
 func newWmCommand(p wmBase) *WmCommand {
 	return &WmCommand{
@@ -26,6 +17,10 @@ func newWmCommand(p wmBase) *WmCommand {
 		ControlNotifCode:  api.HiWord(uint32(p.WParam)),
 		ControlHwnd:       api.HWND(p.LParam),
 	}
+}
+
+func (me *windowMsg) WmCommand(cmd c.ID, userFunc func(p *WmCommand)) {
+	me.addCmd(cmd, userFunc)
 }
 
 //------------------------------------------------------------------------------
