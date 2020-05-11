@@ -294,6 +294,20 @@ func (hwnd HWND) SetFocus() HWND {
 	return HWND(ret) // handle to the window that previously had the keyboard focus
 }
 
+// You can pass a HWND handle or SWP_HWND constants in hwndInsertAfter argument.
+func (hwnd HWND) SetWindowPos(hwndInsertAfter c.SWP_HWND, x, y int32,
+	cx, cy uint32, uFlags c.SWP) {
+
+	ret, _, lerr := syscall.Syscall12(proc.SetWindowPos.Addr(), 7,
+		uintptr(hwnd), uintptr(hwndInsertAfter),
+		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy),
+		uintptr(uFlags), 0, 0, 0, 0, 0)
+	if ret == 0 {
+		panic(fmt.Sprintf("SetWindowPos failed: %d %s\n",
+			lerr, lerr.Error()))
+	}
+}
+
 func (hwnd HWND) SetWindowText(text string) {
 	syscall.Syscall(proc.SetWindowText.Addr(), 2,
 		uintptr(hwnd),

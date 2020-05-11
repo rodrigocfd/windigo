@@ -24,12 +24,13 @@ func (me *windowBase) OnMsg() *windowMsg {
 	return &me.wndMsg
 }
 
-func (me *windowBase) createWindow(exStyle c.WS_EX, className, title string,
-	style c.WS, x, y int32, width, height uint32, parent Window, menu api.HMENU,
-	hInst api.HINSTANCE) {
+func (me *windowBase) createWindow(uiName string, exStyle c.WS_EX,
+	className, title string, style c.WS, x, y int32, width, height uint32,
+	parent Window, menu api.HMENU, hInst api.HINSTANCE) {
 
 	if me.hwnd != 0 {
-		panic("Trying to create window twice.")
+		panic(fmt.Sprintf("Trying to create %s \"%s\" twice.",
+			uiName, title))
 	}
 
 	hwndParent := api.HWND(0) // if no parent, pass zero to CreateWindowEx

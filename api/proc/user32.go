@@ -66,6 +66,7 @@ var (
 	SetProcessDpiAwarenessContext = dllUser32.NewProc("SetProcessDpiAwarenessContext")
 	SetRect                       = dllUser32.NewProc("SetRect")
 	SetWindowLongPtr              = dllUser32.NewProc("SetWindowLongPtrW")
+	SetWindowPos                  = dllUser32.NewProc("SetWindowPos")
 	SetWindowText                 = dllUser32.NewProc("SetWindowTextW")
 	ShowWindow                    = dllUser32.NewProc("ShowWindow")
 	SystemParametersInfo          = dllUser32.NewProc("SystemParametersInfoW")

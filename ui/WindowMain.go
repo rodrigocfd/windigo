@@ -37,8 +37,8 @@ func (me *WindowMain) RunAsMain() {
 	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN) // retrieve screen size
 	cyScreen := api.GetSystemMetrics(c.SM_CYSCREEN)
 
-	me.windowBase.createWindow(me.setup.ExStyle, me.setup.ClassName,
-		me.setup.Title, me.setup.Style,
+	me.windowBase.createWindow("WindowMain", me.setup.ExStyle,
+		me.setup.ClassName, me.setup.Title, me.setup.Style,
 		cxScreen/2-int32(me.setup.Width)/2, // center window on screen
 		cyScreen/2-int32(me.setup.Height)/2,
 		me.setup.Width, me.setup.Height, nil, me.setup.HMenu, hInst)

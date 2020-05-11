@@ -35,8 +35,8 @@ func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32)
 		me.paintThemedBorders(p)
 	})
 
-	me.windowBase.createWindow(me.setup.ExStyle, me.setup.ClassName, "",
-		me.setup.Style, x, y, width, height, parent,
+	me.windowBase.createWindow("WindowControl", me.setup.ExStyle,
+		me.setup.ClassName, "", me.setup.Style, x, y, width, height, parent,
 		api.HMENU(me.ctrlIdGuard.CtrlId()), hInst)
 }
 

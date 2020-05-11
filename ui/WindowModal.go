@@ -34,12 +34,16 @@ func (me *WindowModal) Show(parent Window) {
 	me.prevFocus = api.GetFocus()     // currently focused control
 	parent.Hwnd().EnableWindow(false) // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
-	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN) // retrieve screen size
-	cyScreen := api.GetSystemMetrics(c.SM_CYSCREEN)
-
-	me.windowBase.createWindow(me.setup.ExStyle, me.setup.ClassName,
-		me.setup.Title, me.setup.Style,
-		cxScreen/2-int32(me.setup.Width)/2, // center window on screen
-		cyScreen/2-int32(me.setup.Height)/2,
+	me.windowBase.createWindow("WindowModal", me.setup.ExStyle,
+		me.setup.ClassName, me.setup.Title, me.setup.Style,
+		0, 0, // initially anchored at zero
 		me.setup.Width, me.setup.Height, parent, api.HMENU(0), hInst)
+
+	rc := me.windowBase.Hwnd().GetWindowRect()
+	rcParent := parent.Hwnd().GetWindowRect() // both rc relative to screen
+
+	me.windowBase.Hwnd().SetWindowPos(c.SWP_HWND(0), // center modal over parent (warning: happens after WM_CREATE processing)
+		rcParent.Left+(rcParent.Right-rcParent.Left)/2-(rc.Right-rc.Left)/2,
+		rcParent.Top+(rcParent.Bottom-rcParent.Top)/2-(rc.Bottom-rc.Top)/2,
+		0, 0, c.SWP_NOZORDER|c.SWP_NOSIZE)
 }
