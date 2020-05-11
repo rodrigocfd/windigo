@@ -2,10 +2,10 @@ package ui
 
 import (
 	"fmt"
-	"gowinui/api"
-	c "gowinui/consts"
 	"syscall"
 	"unsafe"
+	"wingows/api"
+	c "wingows/consts"
 )
 
 // A cell from a list view item row.

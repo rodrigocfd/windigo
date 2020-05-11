@@ -1,9 +1,9 @@
 package api
 
 import (
-	"gowinui/api/proc"
 	"syscall"
 	"unsafe"
+	"wingows/api/proc"
 )
 
 type HACCEL HANDLE

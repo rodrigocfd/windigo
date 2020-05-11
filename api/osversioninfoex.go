@@ -1,10 +1,10 @@
 package api
 
 import (
-	"gowinui/api/proc"
-	c "gowinui/consts"
 	"syscall"
 	"unsafe"
+	"wingows/api/proc"
+	c "wingows/consts"
 )
 
 type OSVERSIONINFOEX struct {

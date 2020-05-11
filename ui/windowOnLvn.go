@@ -1,9 +1,9 @@
 package ui
 
 import (
-	"gowinui/api"
-	c "gowinui/consts"
 	"unsafe"
+	"wingows/api"
+	c "wingows/consts"
 )
 
 func (me *windowOn) LvnDeleteAllItems(lv *ListView, userFunc func(p *api.NMLISTVIEW)) {

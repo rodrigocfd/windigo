@@ -1,7 +1,7 @@
 package api
 
 import (
-	c "gowinui/consts"
+	c "wingows/consts"
 )
 
 type NMITEMACTIVATE struct {

@@ -1,8 +1,8 @@
 package api
 
 import (
-	"gowinui/api/proc"
 	"syscall"
+	"wingows/api/proc"
 )
 
 type HFONT HANDLE

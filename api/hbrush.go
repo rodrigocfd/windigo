@@ -1,9 +1,9 @@
 package api
 
 import (
-	"gowinui/api/proc"
-	c "gowinui/consts"
 	"syscall"
+	"wingows/api/proc"
+	c "wingows/consts"
 )
 
 type HBRUSH HANDLE

@@ -1,9 +1,9 @@
 package ui
 
 import (
-	"gowinui/api"
-	c "gowinui/consts"
 	"unsafe"
+	"wingows/api"
+	c "wingows/consts"
 )
 
 type windowMainSetup struct {

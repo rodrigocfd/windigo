@@ -1,8 +1,8 @@
 package ui
 
 import (
-	"gowinui/api"
-	c "gowinui/consts"
+	"wingows/api"
+	c "wingows/consts"
 )
 
 // Main application window.

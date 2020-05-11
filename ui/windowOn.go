@@ -2,9 +2,9 @@ package ui
 
 import (
 	"fmt"
-	"gowinui/api"
-	c "gowinui/consts"
 	"unsafe"
+	"wingows/api"
+	c "wingows/consts"
 )
 
 // Custom hash for WM_NOTIFY messages.

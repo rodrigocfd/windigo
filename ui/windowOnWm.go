@@ -2,9 +2,9 @@ package ui
 
 import (
 	"fmt"
-	"gowinui/api"
-	c "gowinui/consts"
 	"unsafe"
+	"wingows/api"
+	c "wingows/consts"
 )
 
 func (me *windowOn) WmCommand(cmd c.ID, userFunc func(p *WmCommand)) {

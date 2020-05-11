@@ -2,8 +2,8 @@ package ui
 
 import (
 	"fmt"
-	"gowinui/api"
-	c "gowinui/consts"
+	"wingows/api"
+	c "wingows/consts"
 )
 
 // Base to all child control types.
