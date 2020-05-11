@@ -118,6 +118,11 @@ func (hwnd HWND) GetExStyle() c.WS_EX {
 	return c.WS_EX(hwnd.GetWindowLongPtr(c.GWLP_EXSTYLE))
 }
 
+func GetFocus() HWND {
+	ret, _, _ := syscall.Syscall(proc.GetFocus.Addr(), 0, 0, 0, 0)
+	return HWND(ret)
+}
+
 func GetForegroundWindow() HWND {
 	ret, _, _ := syscall.Syscall(proc.GetForegroundWindow.Addr(), 0,
 		0, 0, 0)
@@ -146,6 +151,16 @@ func (hwnd HWND) GetParent() HWND {
 
 func (hwnd HWND) GetStyle() c.WS {
 	return c.WS(hwnd.GetWindowLongPtr(c.GWLP_STYLE))
+}
+
+func (hwnd HWND) GetWindow(uCmd c.GW) HWND {
+	ret, _, lerr := syscall.Syscall(proc.GetWindow.Addr(), 2,
+		uintptr(hwnd), uintptr(uCmd), 0)
+	if ret == 0 {
+		panic(fmt.Sprintf("GetWindow failed: %d %s\n",
+			lerr, lerr.Error()))
+	}
+	return HWND(ret)
 }
 
 func (hwnd HWND) GetWindowDC() HDC {
@@ -203,6 +218,12 @@ func (hwnd HWND) InvalidateRect(lpRect *RECT, bErase bool) {
 	if ret == 0 {
 		panic("InvalidateRect failed.")
 	}
+}
+
+func (hwnd HWND) IsChild(hwndParent HWND) bool {
+	ret, _, _ := syscall.Syscall(proc.IsChild.Addr(), 2,
+		uintptr(hwndParent), uintptr(hwnd), 0)
+	return ret != 0
 }
 
 func (hwnd HWND) IsWindowEnabled() bool {

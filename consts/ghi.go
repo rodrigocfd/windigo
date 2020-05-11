@@ -53,6 +53,19 @@ const (
 	GDC_COLORMGMTCAPS   GDC = 121
 )
 
+type GW uint32 // GetWindow
+
+const (
+	GW_HWNDFIRST    GW = 0
+	GW_HWNDLAST     GW = 1
+	GW_HWNDNEXT     GW = 2
+	GW_HWNDPREV     GW = 3
+	GW_OWNER        GW = 4
+	GW_CHILD        GW = 5
+	GW_ENABLEDPOPUP GW = 6
+	GW_MAX          GW = 6
+)
+
 type GWLP int32 // GetWindowLongPtr offsets
 
 const (
