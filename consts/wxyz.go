@@ -220,7 +220,7 @@ const (
 	WM_TOUCHHITTESTING                WM = 0x024D
 	WM_POINTERWHEEL                   WM = 0x024E
 	WM_POINTERHWHEEL                  WM = 0x024F
-	DM_POINTERHITTEST                 WM = 0x0250
+	WM_POINTERHITTEST                 WM = 0x0250 // originally DM_POINTERHITTEST
 	WM_POINTERROUTEDTO                WM = 0x0251
 	WM_POINTERROUTEDAWAY              WM = 0x0252
 	WM_POINTERROUTEDRELEASED          WM = 0x0253

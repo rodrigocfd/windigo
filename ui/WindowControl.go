@@ -10,7 +10,7 @@ import (
 type WindowControl struct {
 	windowBase
 	ctrlId c.ID
-	Setup  windowControlSetup
+	Setup  windowControlSetup // Parameters that will be used to create the window.
 }
 
 func NewWindowControl() *WindowControl {
@@ -30,6 +30,7 @@ func (me *WindowControl) CtrlId() c.ID {
 	return me.ctrlId
 }
 
+// Creates the child control window.
 func (me *WindowControl) Create(parent Window,
 	x, y int32, width, height uint32) {
 

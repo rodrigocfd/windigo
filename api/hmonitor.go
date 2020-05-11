@@ -15,6 +15,7 @@ func MonitorFromPoint(pt POINT, dwFlags c.MONITOR) HMONITOR {
 	return HMONITOR(ret)
 }
 
+// Available in Windows 8.1.
 func (hmon HMONITOR) GetDpiForMonitor(dpiType c.MDT) (uint32, uint32) {
 	dpiX, dpiY := uint32(0), uint32(0)
 	ret, _, _ := syscall.Syscall6(proc.GetDpiForMonitor.Addr(), 4,

@@ -11,7 +11,7 @@ import (
 // Base to all window types.
 type windowBase struct {
 	hwnd api.HWND
-	On   windowOn
+	On   windowOn // Exposes all the window messages the can be handled.
 }
 
 func makeWindowBase() windowBase {

@@ -9,7 +9,7 @@ import (
 // Main application window.
 type WindowMain struct {
 	windowBase
-	Setup windowMainSetup
+	Setup windowMainSetup // Parameters that will be used to create the window.
 }
 
 func NewWindowMain() *WindowMain {

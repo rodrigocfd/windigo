@@ -2,6 +2,7 @@ package api
 
 import (
 	"gowinui/api/proc"
+	c "gowinui/consts"
 	"syscall"
 	"unsafe"
 )
@@ -20,7 +21,7 @@ func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) []HMONITOR {
 	return hMons
 }
 
-func (hdc HDC) GetDeviceCaps(index int32) int32 {
+func (hdc HDC) GetDeviceCaps(index c.GDC) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetDeviceCaps.Addr(), 2,
 		uintptr(hdc), uintptr(index), 0)
 	return int32(ret)
