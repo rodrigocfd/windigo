@@ -3,7 +3,6 @@ package ui
 import (
 	"gowinui/api"
 	c "gowinui/consts"
-	"unsafe"
 )
 
 // Modal popup window.
@@ -39,13 +38,11 @@ func (me *WindowModal) Show(parent Window) {
 	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN)
 	cyScreen := api.GetSystemMetrics(c.SM_CYSCREEN)
 
-	api.CreateWindowEx(me.Setup.ExStyle, // hwnd member is saved in WM_NCCREATE processing
-		me.Setup.ClassName, me.Setup.Title, me.Setup.Style,
+	me.windowBase.createWindow(me.Setup.ExStyle, me.Setup.ClassName,
+		me.Setup.Title, me.Setup.Style,
 		cxScreen/2-int32(me.Setup.Width)/2, // center window on screen
 		cyScreen/2-int32(me.Setup.Height)/2,
-		me.Setup.Width, me.Setup.Height,
-		parent.Hwnd(), api.HMENU(0), hInst,
-		unsafe.Pointer(&me.windowBase)) // pass pointer to windowBase object
+		me.Setup.Width, me.Setup.Height, parent, api.HMENU(0), hInst)
 }
 
 func (me *WindowModal) SetTitle(title string) *WindowModal {

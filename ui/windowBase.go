@@ -26,6 +26,20 @@ func (me *windowBase) Hwnd() api.HWND {
 	return me.hwnd
 }
 
+func (me *windowBase) createWindow(exStyle c.WS_EX, className, title string,
+	style c.WS, x, y int32, width, height uint32, parent Window, menu api.HMENU,
+	hInst api.HINSTANCE) {
+
+	hwndParent := api.HWND(0)
+	if parent != nil {
+		hwndParent = parent.Hwnd()
+	}
+
+	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
+	api.CreateWindowEx(exStyle, className, title, style, x, y, width, height,
+		hwndParent, menu, hInst, unsafe.Pointer(me)) // pass pointer to our object
+}
+
 func (me *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
 	wcx.LpfnWndProc = syscall.NewCallback(wndProc)
 	atom, lerr := wcx.RegisterClassEx()

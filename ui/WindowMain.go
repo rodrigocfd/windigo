@@ -3,7 +3,6 @@ package ui
 import (
 	"gowinui/api"
 	c "gowinui/consts"
-	"unsafe"
 )
 
 // Main application window.
@@ -43,13 +42,11 @@ func (me *WindowMain) createWindow(hInst api.HINSTANCE) {
 	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN)
 	cyScreen := api.GetSystemMetrics(c.SM_CYSCREEN)
 
-	api.CreateWindowEx(me.Setup.ExStyle, // hwnd member is saved in WM_NCCREATE processing
-		me.Setup.ClassName, me.Setup.Title, me.Setup.Style,
+	me.windowBase.createWindow(me.Setup.ExStyle, me.Setup.ClassName,
+		me.Setup.Title, me.Setup.Style,
 		cxScreen/2-int32(me.Setup.Width)/2, // center window on screen
 		cyScreen/2-int32(me.Setup.Height)/2,
-		me.Setup.Width, me.Setup.Height,
-		api.HWND(0), api.HMENU(0), hInst,
-		unsafe.Pointer(&me.windowBase)) // pass pointer to windowBase object
+		me.Setup.Width, me.Setup.Height, nil, me.Setup.HMenu, hInst)
 
 	me.windowBase.Hwnd().ShowWindow(me.Setup.CmdShow)
 	me.windowBase.Hwnd().UpdateWindow()

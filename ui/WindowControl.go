@@ -3,7 +3,6 @@ package ui
 import (
 	"gowinui/api"
 	c "gowinui/consts"
-	"unsafe"
 )
 
 // Custom user control.
@@ -41,10 +40,8 @@ func (me *WindowControl) Create(parent Window,
 		me.paintThemedBorders(p)
 	})
 
-	api.CreateWindowEx(me.Setup.ExStyle, // hwnd member is saved in WM_NCCREATE processing
-		me.Setup.ClassName, "", me.Setup.Style, x, y, width, height,
-		parent.Hwnd(), api.HMENU(me.ctrlId), hInst,
-		unsafe.Pointer(&me.windowBase)) // pass pointer to windowBase object
+	me.windowBase.createWindow(me.Setup.ExStyle, me.Setup.ClassName, "",
+		me.Setup.Style, x, y, width, height, parent, api.HMENU(me.ctrlId), hInst)
 }
 
 func (me *WindowControl) paintThemedBorders(p *WmNcPaint) {
