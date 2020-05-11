@@ -8,7 +8,7 @@ import (
 	c "wingows/consts"
 )
 
-var globalUiFont = NewFont() // managed in WindowMain's createWindow() and runMainLoop()
+var globalUiFont = Font{} // managed in WindowMain's createWindow() and runMainLoop()
 
 // Manages a font resource.
 type Font struct {
@@ -23,12 +23,6 @@ type FontSetup struct {
 	Italic    bool
 	StrikeOut bool
 	Underline bool
-}
-
-func NewFont() *Font {
-	return &Font{
-		hFont: api.HFONT(0),
-	}
 }
 
 // Calls DeleteObject and sets the HFONT to zero.

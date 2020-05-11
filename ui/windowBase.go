@@ -10,15 +10,8 @@ import (
 
 // Base to all window types.
 type windowBase struct {
-	hwnd  api.HWND
-	OnMsg windowMsg // Exposes all the window messages the can be handled.
-}
-
-func makeWindowBase() windowBase {
-	return windowBase{
-		hwnd:  api.HWND(0),
-		OnMsg: makeWindowMsg(),
-	}
+	hwnd   api.HWND
+	wndMsg windowMsg
 }
 
 // Returns the underlying HWND handle of this window.
@@ -26,11 +19,20 @@ func (me *windowBase) Hwnd() api.HWND {
 	return me.hwnd
 }
 
+// Exposes all the window messages the can be handled.
+func (me *windowBase) OnMsg() *windowMsg {
+	return &me.wndMsg
+}
+
 func (me *windowBase) createWindow(exStyle c.WS_EX, className, title string,
 	style c.WS, x, y int32, width, height uint32, parent Window, menu api.HMENU,
 	hInst api.HINSTANCE) {
 
-	hwndParent := api.HWND(0)
+	if me.hwnd != 0 {
+		panic("Trying to create window twice.")
+	}
+
+	hwndParent := api.HWND(0) // if no parent, pass zero to CreateWindowEx
 	if parent != nil {
 		hwndParent = parent.Hwnd()
 	}
@@ -84,7 +86,7 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 	}
 
 	// Try to process the message with an user handler.
-	userResult, wasProcessed := base.OnMsg.processMessage(paramRaw)
+	userResult, wasProcessed := base.wndMsg.processMessage(paramRaw)
 
 	// No further messages processed after this one.
 	if msg == c.WM_NCDESTROY {

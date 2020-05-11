@@ -14,7 +14,7 @@ type ListViewSubItem struct {
 	index uint32
 }
 
-func NewListViewSubItem(item *ListViewItem, index uint32) *ListViewSubItem {
+func newListViewSubItem(item *ListViewItem, index uint32) *ListViewSubItem {
 	return &ListViewSubItem{
 		item:  item,
 		index: index,

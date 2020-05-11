@@ -12,15 +12,10 @@ type ListView struct {
 	nativeControlBase
 }
 
-func NewListView() *ListView {
-	return &ListView{
-		nativeControlBase: makeNativeControlBase(),
-	}
-}
-
-func NewListViewWithId(ctrlId c.ID) *ListView {
-	return &ListView{
-		nativeControlBase: makeNativeControlBaseWithId(ctrlId),
+// Optional; returns a ListView with a specific control ID.
+func MakeListView(ctrlId c.ID) ListView {
+	return ListView{
+		nativeControlBase: makeNativeControlBase(ctrlId),
 	}
 }
 
@@ -35,7 +30,7 @@ func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 	if int32(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTCOLUMN failed \"%s\".", text))
 	}
-	return NewListViewColumn(me, uint32(newIdx)) // return newly inserted column
+	return newListViewColumn(me, uint32(newIdx)) // return newly inserted column
 }
 
 func (me *ListView) AddColumns(texts []string, widths []uint32) *ListView {
@@ -59,7 +54,7 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 	if int32(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTITEM failed \"%s\".", text))
 	}
-	return NewListViewItem(me, uint32(newIdx)) // return newly inserted item
+	return newListViewItem(me, uint32(newIdx)) // return newly inserted item
 }
 
 func (me *ListView) AddItems(texts []string) *ListView {
@@ -94,7 +89,7 @@ func (me *ListView) Column(index uint32) *ListViewColumn {
 	if index >= numCols {
 		panic("Trying to retrieve column with index out of bounds.")
 	}
-	return NewListViewColumn(me, index)
+	return newListViewColumn(me, index)
 }
 
 func (me *ListView) ColumnCount() uint32 {
@@ -136,7 +131,7 @@ func (me *ListView) Item(index uint32) *ListViewItem {
 	if index >= numItems {
 		panic("Trying to retrieve item with index out of bounds.")
 	}
-	return NewListViewItem(me, index)
+	return newListViewItem(me, index)
 }
 
 func (me *ListView) ItemCount() uint32 {

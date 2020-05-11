@@ -10,15 +10,10 @@ type Button struct {
 	nativeControlBase
 }
 
-func NewButton() *Button {
-	return &Button{
-		nativeControlBase: makeNativeControlBase(),
-	}
-}
-
-func NewButtonWithId(ctrlId c.ID) *Button {
-	return &Button{
-		nativeControlBase: makeNativeControlBaseWithId(ctrlId),
+// Optional; returns a Button with a specific control ID.
+func MakeButton(ctrlId c.ID) Button {
+	return Button{
+		nativeControlBase: makeNativeControlBase(ctrlId),
 	}
 }
 

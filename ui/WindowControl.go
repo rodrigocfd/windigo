@@ -8,42 +8,36 @@ import (
 // Custom user control.
 type WindowControl struct {
 	windowBase
-	ctrlId c.ID
-	Setup  windowControlSetup // Parameters that will be used to create the window.
+	ctrlIdGuard
+	setup windowControlSetup // Parameters that will be used to create the window.
 }
 
-func NewWindowControl() *WindowControl {
-	return NewWindowControlWithId(nextAutoCtrlId())
-}
-
-func NewWindowControlWithId(ctrlId c.ID) *WindowControl {
-	me := WindowControl{
-		windowBase: makeWindowBase(),
-		ctrlId:     ctrlId,
-		Setup:      makeWindowControlSetup(),
+// Optional; returns a WindowControl with a specific control ID.
+func MakeWindowControl(ctrlId c.ID) WindowControl {
+	return WindowControl{
+		ctrlIdGuard: makeCtrlIdGuard(ctrlId),
 	}
+}
 
-	me.windowBase.OnMsg.WmNcPaint(func(p *WmNcPaint) { // default WM_NCPAINT handling
+// Exposes parameters that will be used to create the child window control.
+func (me *WindowControl) Setup() *windowControlSetup {
+	me.setup.initOnce() // guard
+	return &me.setup
+}
+
+// Creates the child window control.
+func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32) {
+	me.setup.initOnce() // guard
+	hInst := parent.Hwnd().GetInstance()
+	me.windowBase.registerClass(me.setup.genWndClassEx(hInst))
+
+	me.windowBase.OnMsg().WmNcPaint(func(p *WmNcPaint) { // default WM_NCPAINT handling
 		me.paintThemedBorders(p)
 	})
 
-	return &me
-}
-
-// Returns the control ID of this child window control.
-func (me *WindowControl) CtrlId() c.ID {
-	return me.ctrlId
-}
-
-// Creates the child control window.
-func (me *WindowControl) Create(parent Window,
-	x, y int32, width, height uint32) {
-
-	hInst := parent.Hwnd().GetInstance()
-	me.windowBase.registerClass(me.Setup.genWndClassEx(hInst))
-
-	me.windowBase.createWindow(me.Setup.ExStyle, me.Setup.ClassName, "",
-		me.Setup.Style, x, y, width, height, parent, api.HMENU(me.ctrlId), hInst)
+	me.windowBase.createWindow(me.setup.ExStyle, me.setup.ClassName, "",
+		me.setup.Style, x, y, width, height, parent,
+		api.HMENU(me.ctrlIdGuard.CtrlId()), hInst)
 }
 
 func (me *WindowControl) paintThemedBorders(p *WmNcPaint) {

@@ -18,26 +18,16 @@ type windowMsg struct {
 	msgs        map[c.WM]func(p wmBase) uintptr
 	cmds        map[c.ID]func(p *WmCommand)
 	nfys        map[nfyHash]func(p wmBase) uintptr
-	loopStarted bool
-}
-
-func makeWindowMsg() windowMsg {
-	msgs := make(map[c.WM]func(p wmBase) uintptr)
-	cmds := make(map[c.ID]func(p *WmCommand))
-	nfys := make(map[nfyHash]func(p wmBase) uintptr)
-
-	return windowMsg{
-		msgs:        msgs,
-		cmds:        cmds,
-		nfys:        nfys,
-		loopStarted: false,
-	}
+	loopStarted bool // false by default, set once by WindowMain
 }
 
 func (me *windowMsg) addMsg(msg c.WM, userFunc func(p wmBase) uintptr) {
 	if me.loopStarted {
 		panic(fmt.Sprintf(
 			"Cannot add message 0x%04x after application loop started.", msg))
+	}
+	if me.msgs == nil {
+		me.msgs = make(map[c.WM]func(p wmBase) uintptr)
 	}
 	me.msgs[msg] = userFunc
 }
@@ -46,6 +36,9 @@ func (me *windowMsg) addCmd(cmd c.ID, userFunc func(p *WmCommand)) {
 	if me.loopStarted {
 		panic(fmt.Sprintf(
 			"Cannot add command message %d after application loop started.", cmd))
+	}
+	if me.cmds == nil {
+		me.cmds = make(map[c.ID]func(p *WmCommand))
 	}
 	me.cmds[cmd] = userFunc
 }
@@ -57,6 +50,9 @@ func (me *windowMsg) addNfy(idFrom c.ID, code c.NM,
 		panic(fmt.Sprintf(
 			"Cannot add motify message %d/%d after application loop started.",
 			idFrom, code))
+	}
+	if me.nfys == nil {
+		me.nfys = make(map[nfyHash]func(p wmBase) uintptr)
 	}
 	me.nfys[nfyHash{IdFrom: idFrom, Code: code}] = userFunc
 }

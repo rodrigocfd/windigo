@@ -14,7 +14,7 @@ type ListViewColumn struct {
 	index uint32
 }
 
-func NewListViewColumn(owner *ListView, index uint32) *ListViewColumn {
+func newListViewColumn(owner *ListView, index uint32) *ListViewColumn {
 	return &ListViewColumn{
 		owner: owner,
 		index: index,

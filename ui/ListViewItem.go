@@ -13,7 +13,7 @@ type ListViewItem struct {
 	index uint32
 }
 
-func NewListViewItem(owner *ListView, index uint32) *ListViewItem {
+func newListViewItem(owner *ListView, index uint32) *ListViewItem {
 	return &ListViewItem{
 		owner: owner,
 		index: index,
@@ -97,7 +97,7 @@ func (me *ListViewItem) SubItem(index uint32) *ListViewSubItem {
 	if index >= numCols {
 		panic("Trying to retrieve sub item with index out of bounds.")
 	}
-	return NewListViewSubItem(me, index)
+	return newListViewSubItem(me, index)
 }
 
 func (me *ListViewItem) Text() string {

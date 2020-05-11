@@ -10,15 +10,10 @@ type Edit struct {
 	nativeControlBase
 }
 
-func NewEdit() *Edit {
-	return &Edit{
-		nativeControlBase: makeNativeControlBase(),
-	}
-}
-
-func NewEditWithId(ctrlId c.ID) *Edit {
-	return &Edit{
-		nativeControlBase: makeNativeControlBaseWithId(ctrlId),
+// Optional; returns a, Edit with a specific control ID.
+func MakeEdit(ctrlId c.ID) Edit {
+	return Edit{
+		nativeControlBase: makeNativeControlBase(ctrlId),
 	}
 }
 

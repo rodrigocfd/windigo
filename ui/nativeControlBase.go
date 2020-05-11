@@ -8,19 +8,19 @@ import (
 
 // Base to all child control types.
 type nativeControlBase struct {
-	hwnd   api.HWND
-	ctrlId c.ID
+	ctrlIdGuard
+	hwnd api.HWND
 }
 
-func makeNativeControlBase() nativeControlBase {
-	return makeNativeControlBaseWithId(nextAutoCtrlId())
-}
-
-func makeNativeControlBaseWithId(ctrlId c.ID) nativeControlBase {
+func makeNativeControlBase(ctrlId c.ID) nativeControlBase {
 	return nativeControlBase{
-		hwnd:   api.HWND(0),
-		ctrlId: ctrlId,
+		ctrlIdGuard: makeCtrlIdGuard(ctrlId),
 	}
+}
+
+// Returns the underlying HWND handle of this native control.
+func (me *nativeControlBase) Hwnd() api.HWND {
+	return me.hwnd
 }
 
 func (me *nativeControlBase) create(exStyle c.WS_EX, className, title string,
@@ -30,16 +30,6 @@ func (me *nativeControlBase) create(exStyle c.WS_EX, className, title string,
 		panic(fmt.Sprintf("Trying to create %s twice.", className))
 	}
 	me.hwnd = api.CreateWindowEx(exStyle, className, title, style,
-		x, y, width, height, parent.Hwnd(), api.HMENU(me.ctrlId),
+		x, y, width, height, parent.Hwnd(), api.HMENU(me.ctrlIdGuard.CtrlId()),
 		parent.Hwnd().GetInstance(), nil)
-}
-
-// Returns the control ID of this child window control.
-func (me *nativeControlBase) CtrlId() c.ID {
-	return me.ctrlId
-}
-
-// Returns the underlying HWND handle of this window.
-func (me *nativeControlBase) Hwnd() api.HWND {
-	return me.hwnd
 }

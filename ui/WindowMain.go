@@ -8,20 +8,13 @@ import (
 // Main application window.
 type WindowMain struct {
 	windowBase
-	Setup windowMainSetup // Parameters that will be used to create the window.
+	setup windowMainSetup
 }
 
-func NewWindowMain() *WindowMain {
-	me := WindowMain{
-		windowBase: makeWindowBase(),
-		Setup:      makeWindowMainSetup(),
-	}
-
-	me.windowBase.OnMsg.WmNcDestroy(func() { // default WM_NCDESTROY handling
-		api.PostQuitMessage(0)
-	})
-
-	return &me
+// Exposes parameters that will be used to create the window.
+func (me *WindowMain) Setup() *windowMainSetup {
+	me.setup.initOnce() // guard
+	return &me.setup
 }
 
 // Creates the main window and runs the main application loop.
@@ -29,23 +22,28 @@ func (me *WindowMain) RunAsMain() {
 	if api.IsWindowsVistaOrGreater() {
 		api.SetProcessDPIAware()
 	}
-
 	api.InitCommonControls()
+
+	me.setup.initOnce() // guard
 	hInst := api.GetModuleHandle("")
-	me.windowBase.registerClass(me.Setup.genWndClassEx(hInst))
+	me.windowBase.registerClass(me.setup.genWndClassEx(hInst))
 
 	globalUiFont.CreateUi() // create global font to be applied everywhere
+
+	me.windowBase.OnMsg().WmNcDestroy(func() { // default WM_NCDESTROY handling
+		api.PostQuitMessage(0)
+	})
 
 	cxScreen := api.GetSystemMetrics(c.SM_CXSCREEN) // retrieve screen size
 	cyScreen := api.GetSystemMetrics(c.SM_CYSCREEN)
 
-	me.windowBase.createWindow(me.Setup.ExStyle, me.Setup.ClassName,
-		me.Setup.Title, me.Setup.Style,
-		cxScreen/2-int32(me.Setup.Width)/2, // center window on screen
-		cyScreen/2-int32(me.Setup.Height)/2,
-		me.Setup.Width, me.Setup.Height, nil, me.Setup.HMenu, hInst)
+	me.windowBase.createWindow(me.setup.ExStyle, me.setup.ClassName,
+		me.setup.Title, me.setup.Style,
+		cxScreen/2-int32(me.setup.Width)/2, // center window on screen
+		cyScreen/2-int32(me.setup.Height)/2,
+		me.setup.Width, me.setup.Height, nil, me.setup.HMenu, hInst)
 
-	me.windowBase.Hwnd().ShowWindow(me.Setup.CmdShow)
+	me.windowBase.Hwnd().ShowWindow(me.setup.CmdShow)
 	me.windowBase.Hwnd().UpdateWindow()
 
 	me.runMainLoop()
@@ -53,7 +51,7 @@ func (me *WindowMain) RunAsMain() {
 
 func (me *WindowMain) runMainLoop() {
 	defer globalUiFont.Destroy()
-	me.windowBase.OnMsg.loopStarted = true
+	me.windowBase.wndMsg.loopStarted = true
 
 	msg := api.MSG{}
 	for {
