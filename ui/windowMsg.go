@@ -20,19 +20,19 @@ type nfyHash struct {
 
 // Keeps all user message handlers.
 type windowMsg struct {
-	msgs        map[c.WM]func(p WmBase) uintptr
+	msgs        map[c.WM]func(p wmBase) uintptr
 	cmds        map[c.ID]func(p WmCommand)
 	nfys        map[nfyHash]func(p WmNotify) uintptr
 	loopStarted bool // false by default, set once by WindowMain
 }
 
-func (me *windowMsg) addMsg(msg c.WM, userFunc func(p WmBase) uintptr) {
+func (me *windowMsg) addMsg(msg c.WM, userFunc func(p wmBase) uintptr) {
 	if me.loopStarted {
 		panic(fmt.Sprintf(
 			"Cannot add message 0x%04x after application loop started.", msg))
 	}
 	if me.msgs == nil {
-		me.msgs = make(map[c.WM]func(p WmBase) uintptr)
+		me.msgs = make(map[c.WM]func(p wmBase) uintptr)
 	}
 	me.msgs[msg] = userFunc
 }
@@ -62,8 +62,8 @@ func (me *windowMsg) addNfy(idFrom c.ID, code c.NM,
 	me.nfys[nfyHash{IdFrom: idFrom, Code: code}] = userFunc
 }
 
-func (me *windowMsg) processMessage(p WmBase) (uintptr, bool) {
-	switch p.Msg {
+func (me *windowMsg) processMessage(msg c.WM, p wmBase) (uintptr, bool) {
+	switch msg {
 	case c.WM_COMMAND:
 		pCmd := WmCommand{base: p}
 		if userFunc, hasCmd := me.cmds[pCmd.ControlId()]; hasCmd {
@@ -80,7 +80,7 @@ func (me *windowMsg) processMessage(p WmBase) (uintptr, bool) {
 			return userFunc(pNfy), true
 		}
 	default:
-		if userFunc, hasMsg := me.msgs[p.Msg]; hasMsg {
+		if userFunc, hasMsg := me.msgs[msg]; hasMsg {
 			return userFunc(p), true
 		}
 	}

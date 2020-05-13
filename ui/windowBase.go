@@ -59,7 +59,7 @@ func (me *windowBase) createWindow(uiName string, exStyle c.WS_EX,
 		hwndParent = parent.Hwnd()
 	}
 
-	me.wndMsg.addMsg(wM_UI_THREAD, func(p WmBase) uintptr { // handle our custom thread UI message
+	me.wndMsg.addMsg(wM_UI_THREAD, func(p wmBase) uintptr { // handle our custom thread UI message
 		if p.WParam == 0xC0DEF00D {
 			pack := (*threadPack)(unsafe.Pointer(p.LParam))
 			pack.userFunc()
@@ -108,15 +108,9 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 		return hwnd.DefWindowProc(msg, wParam, lParam)
 	}
 
-	// Mount object to be passed to user handler.
-	paramRaw := WmBase{
-		Msg:    msg,
-		WParam: wParam,
-		LParam: lParam,
-	}
-
 	// Try to process the message with an user handler.
-	userResult, wasProcessed := base.wndMsg.processMessage(paramRaw)
+	userResult, wasProcessed := base.wndMsg.processMessage(msg,
+		wmBase{WParam: wParam, LParam: lParam})
 
 	// No further messages processed after this one.
 	if msg == c.WM_NCDESTROY {

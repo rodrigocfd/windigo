@@ -14,13 +14,12 @@ import (
 )
 
 // Raw window message parameters.
-type WmBase struct {
-	Msg    c.WM
+type wmBase struct {
 	WParam api.WPARAM
 	LParam api.LPARAM
 }
 
-type WmCommand struct{ base WmBase }
+type WmCommand struct{ base wmBase }
 
 func (p WmCommand) IsFromMenu() bool         { return api.HiWord(uint32(p.base.WParam)) == 0 }
 func (p WmCommand) IsFromAccelerator() bool  { return api.HiWord(uint32(p.base.WParam)) == 1 }
@@ -31,35 +30,35 @@ func (p WmCommand) ControlId() c.ID          { return c.ID(api.LoWord(uint32(p.b
 func (p WmCommand) ControlNotifCode() uint16 { return api.HiWord(uint32(p.base.WParam)) }
 func (p WmCommand) ControlHwnd() api.HWND    { return api.HWND(p.base.LParam) }
 
-type WmNotify struct{ base WmBase }
+type WmNotify struct{ base wmBase }
 
 func (p WmNotify) NmHdr() *api.NMHDR { return (*api.NMHDR)(unsafe.Pointer(p.base.LParam)) }
 
 //------------------------------------------------------------------------------
 
-type WmActivate struct{ base WmBase }
+type WmActivate struct{ base wmBase }
 
 func (p WmActivate) Event() c.WA              { return c.WA(api.LoWord(uint32(p.base.LParam))) }
 func (p WmActivate) IsMinimized() bool        { return api.HiWord(uint32(p.base.LParam)) != 0 }
 func (p WmActivate) PreviousWindow() api.HWND { return api.HWND(p.base.LParam) }
 
-type WmCreate struct{ base WmBase }
+type WmCreate struct{ base wmBase }
 
 func (p WmCreate) CreateStruct() *api.CREATESTRUCT {
 	return (*api.CREATESTRUCT)(unsafe.Pointer(p.base.LParam))
 }
 
-type WmDropFiles struct{ base WmBase }
+type WmDropFiles struct{ base wmBase }
 
 func (p WmDropFiles) Hdrop() api.HDROP { return api.HDROP(p.base.WParam) }
 
-type WmInitMenuPopup struct{ base WmBase }
+type WmInitMenuPopup struct{ base wmBase }
 
 func (p WmInitMenuPopup) Hmenu() api.HMENU        { return api.HMENU(p.base.WParam) }
 func (p WmInitMenuPopup) SourceItemIndex() uint16 { return api.LoWord(uint32(p.base.LParam)) }
 func (p WmInitMenuPopup) IsWindowMenu() bool      { return api.HiWord(uint32(p.base.LParam)) != 0 }
 
-type wmBaseBtn struct{ base WmBase }
+type wmBaseBtn struct{ base wmBase }
 
 func (p wmBaseBtn) HasCtrl() bool      { return (c.MK(p.base.WParam) & c.MK_CONTROL) != 0 }
 func (p wmBaseBtn) HasLeftBtn() bool   { return (c.MK(p.base.WParam) & c.MK_LBUTTON) != 0 }
@@ -82,24 +81,24 @@ type WmRButtonDblClk struct{ wmBaseBtn }
 type WmRButtonDown struct{ wmBaseBtn }
 type WmRButtonUp struct{ wmBaseBtn }
 
-type WmMove struct{ base WmBase }
+type WmMove struct{ base wmBase }
 
 func (p WmMove) Pos() api.POINT { return makePointLp(p.base.LParam) }
 
-type WmNcPaint struct{ base WmBase }
+type WmNcPaint struct{ base wmBase }
 
 func (p WmNcPaint) Hrgn() api.HRGN { return api.HRGN(p.base.WParam) }
 
-type WmSetFocus struct{ base WmBase }
+type WmSetFocus struct{ base wmBase }
 
 func (p WmSetFocus) UnfocusedWindow() api.HWND { return api.HWND(p.base.WParam) }
 
-type WmSetFont struct{ base WmBase }
+type WmSetFont struct{ base wmBase }
 
 func (p WmSetFont) Hfont() api.HFONT   { return api.HFONT(p.base.WParam) }
 func (p WmSetFont) ShouldRedraw() bool { return p.base.LParam == 1 }
 
-type WmSize struct{ base WmBase }
+type WmSize struct{ base wmBase }
 
 func (p WmSize) Request() c.SIZE_REQ      { return c.SIZE_REQ(p.base.WParam) }
 func (p WmSize) ClientAreaSize() api.SIZE { return makeSizeLp(p.base.LParam) }

@@ -47,7 +47,7 @@ func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32)
 		api.HMENU(me.ctrlIdGuard.CtrlId()), hInst)
 }
 
-func (me *WindowControl) paintThemedBorders(p WmBase) {
+func (me *WindowControl) paintThemedBorders(p wmBase) {
 	me.Hwnd().DefWindowProc(c.WM_NCPAINT, p.WParam, p.LParam) // make system draw the scrollbar for us
 
 	if (me.Hwnd().GetExStyle()&c.WS_EX_CLIENTEDGE) == 0 ||
