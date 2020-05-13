@@ -289,7 +289,7 @@ const (
 	SW_MAX             SW = 11
 )
 
-type SWP uint32 // SetWindowPos uFlags
+type SWP uint32 // SetWindowPos, DeferWindowPos uFlags
 
 const (
 	SWP_NOSIZE         SWP = 0x0001
