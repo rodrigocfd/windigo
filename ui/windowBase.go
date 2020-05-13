@@ -59,7 +59,7 @@ func (me *windowBase) createWindow(uiName string, exStyle c.WS_EX,
 		hwndParent = parent.Hwnd()
 	}
 
-	me.wndMsg.addMsg(wM_UI_THREAD, func(p wmBase) uintptr { // handle our custom thread UI message
+	me.wndMsg.addMsg(wM_UI_THREAD, func(p WmBase) uintptr { // handle our custom thread UI message
 		if p.WParam == 0xC0DEF00D {
 			pack := (*threadPack)(unsafe.Pointer(p.LParam))
 			pack.userFunc()
@@ -109,7 +109,7 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 	}
 
 	// Mount object to be passed to user handler.
-	paramRaw := wmBase{
+	paramRaw := WmBase{
 		Msg:    msg,
 		WParam: wParam,
 		LParam: lParam,

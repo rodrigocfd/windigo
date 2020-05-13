@@ -9,8 +9,6 @@ package ui
 
 import (
 	"fmt"
-	"unsafe"
-	"wingows/api"
 	c "wingows/consts"
 )
 
@@ -22,36 +20,36 @@ type nfyHash struct {
 
 // Keeps all user message handlers.
 type windowMsg struct {
-	msgs        map[c.WM]func(p wmBase) uintptr
-	cmds        map[c.ID]func(p *WmCommand)
-	nfys        map[nfyHash]func(p wmBase) uintptr
+	msgs        map[c.WM]func(p WmBase) uintptr
+	cmds        map[c.ID]func(p WmCommand)
+	nfys        map[nfyHash]func(p WmNotify) uintptr
 	loopStarted bool // false by default, set once by WindowMain
 }
 
-func (me *windowMsg) addMsg(msg c.WM, userFunc func(p wmBase) uintptr) {
+func (me *windowMsg) addMsg(msg c.WM, userFunc func(p WmBase) uintptr) {
 	if me.loopStarted {
 		panic(fmt.Sprintf(
 			"Cannot add message 0x%04x after application loop started.", msg))
 	}
 	if me.msgs == nil {
-		me.msgs = make(map[c.WM]func(p wmBase) uintptr)
+		me.msgs = make(map[c.WM]func(p WmBase) uintptr)
 	}
 	me.msgs[msg] = userFunc
 }
 
-func (me *windowMsg) addCmd(cmd c.ID, userFunc func(p *WmCommand)) {
+func (me *windowMsg) addCmd(cmd c.ID, userFunc func(p WmCommand)) {
 	if me.loopStarted {
 		panic(fmt.Sprintf(
 			"Cannot add command message %d after application loop started.", cmd))
 	}
 	if me.cmds == nil {
-		me.cmds = make(map[c.ID]func(p *WmCommand))
+		me.cmds = make(map[c.ID]func(p WmCommand))
 	}
 	me.cmds[cmd] = userFunc
 }
 
 func (me *windowMsg) addNfy(idFrom c.ID, code c.NM,
-	userFunc func(p wmBase) uintptr) {
+	userFunc func(p WmNotify) uintptr) {
 
 	if me.loopStarted {
 		panic(fmt.Sprintf(
@@ -59,27 +57,27 @@ func (me *windowMsg) addNfy(idFrom c.ID, code c.NM,
 			idFrom, code))
 	}
 	if me.nfys == nil {
-		me.nfys = make(map[nfyHash]func(p wmBase) uintptr)
+		me.nfys = make(map[nfyHash]func(p WmNotify) uintptr)
 	}
 	me.nfys[nfyHash{IdFrom: idFrom, Code: code}] = userFunc
 }
 
-func (me *windowMsg) processMessage(p wmBase) (uintptr, bool) {
+func (me *windowMsg) processMessage(p WmBase) (uintptr, bool) {
 	switch p.Msg {
 	case c.WM_COMMAND:
-		cmdId := c.ID(api.LoWord(uint32(p.WParam)))
-		if userFunc, hasCmd := me.cmds[cmdId]; hasCmd {
-			userFunc(newWmCommand(p))
+		pCmd := WmCommand{base: p}
+		if userFunc, hasCmd := me.cmds[pCmd.ControlId()]; hasCmd {
+			userFunc(pCmd)
 			return 0, true // always return zero
 		}
 	case c.WM_NOTIFY:
-		nmHdr := (*api.NMHDR)(unsafe.Pointer(p.LParam))
+		pNfy := WmNotify{base: p}
 		hash := nfyHash{
-			IdFrom: c.ID(nmHdr.IdFrom),
-			Code:   c.NM(nmHdr.Code),
+			IdFrom: c.ID(pNfy.NmHdr().IdFrom),
+			Code:   c.NM(pNfy.NmHdr().Code),
 		}
 		if userFunc, hasNfy := me.nfys[hash]; hasNfy {
-			return userFunc(p), true
+			return userFunc(pNfy), true
 		}
 	default:
 		if userFunc, hasMsg := me.msgs[p.Msg]; hasMsg {

@@ -38,8 +38,8 @@ func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32)
 	hInst := parent.Hwnd().GetInstance()
 	me.windowBase.registerClass(me.setup.genWndClassEx(hInst))
 
-	me.windowBase.OnMsg().WmNcPaint(func(p *WmNcPaint) { // default WM_NCPAINT handling
-		me.paintThemedBorders(p)
+	me.windowBase.OnMsg().WmNcPaint(func(p WmNcPaint) { // default WM_NCPAINT handling
+		me.paintThemedBorders(p.base)
 	})
 
 	me.windowBase.createWindow("WindowControl", me.setup.ExStyle,
@@ -47,8 +47,8 @@ func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32)
 		api.HMENU(me.ctrlIdGuard.CtrlId()), hInst)
 }
 
-func (me *WindowControl) paintThemedBorders(p *WmNcPaint) {
-	me.Hwnd().DefWindowProc(c.WM_NCPAINT, api.WPARAM(p.Hrgn), 0) // make system draw the scrollbar for us
+func (me *WindowControl) paintThemedBorders(p WmBase) {
+	me.Hwnd().DefWindowProc(c.WM_NCPAINT, p.WParam, p.LParam) // make system draw the scrollbar for us
 
 	if (me.Hwnd().GetExStyle()&c.WS_EX_CLIENTEDGE) == 0 ||
 		!api.IsThemeActive() ||
