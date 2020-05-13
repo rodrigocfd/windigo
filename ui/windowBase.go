@@ -21,6 +21,9 @@ type windowBase struct {
 	wndMsg windowMsg
 }
 
+const wM_UI_THREAD = c.WM_APP + 0x3FFF // used in UI thread handling
+type threadPack struct{ userFunc func() }
+
 // Returns the underlying HWND handle of this window.
 func (me *windowBase) Hwnd() api.HWND {
 	return me.hwnd
@@ -29,6 +32,17 @@ func (me *windowBase) Hwnd() api.HWND {
 // Exposes all the window messages the can be handled.
 func (me *windowBase) OnMsg() *windowMsg {
 	return &me.wndMsg
+}
+
+// Runs a closure synchronously in the window original UI thread.
+// When in a goroutine, you *MUST* use this method to update the UI.
+func (me *windowBase) RunUiThread(userFunc func()) {
+	// This method is analog to SendMessage (synchronous), but intended to be
+	// called from another thread, so a callback function can, tunelled by
+	// wndproc, run in the original thread of the window, thus allowing GUI
+	// updates. This avoids the user to deal with a custom WM_ message.
+	pack := &threadPack{userFunc: userFunc}
+	me.hwnd.SendMessage(wM_UI_THREAD, 0xC0DEF00D, api.LPARAM(unsafe.Pointer(pack)))
 }
 
 func (me *windowBase) createWindow(uiName string, exStyle c.WS_EX,
@@ -44,6 +58,14 @@ func (me *windowBase) createWindow(uiName string, exStyle c.WS_EX,
 	if parent != nil {
 		hwndParent = parent.Hwnd()
 	}
+
+	me.wndMsg.addMsg(wM_UI_THREAD, func(p wmBase) uintptr { // handle our custom thread UI message
+		if p.WParam == 0xC0DEF00D {
+			pack := (*threadPack)(unsafe.Pointer(p.LParam))
+			pack.userFunc()
+		}
+		return 0
+	})
 
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
 	api.CreateWindowEx(exStyle, className, title, style, x, y, width, height,
