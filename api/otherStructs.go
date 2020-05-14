@@ -29,38 +29,6 @@ type CREATESTRUCT struct {
 	ExStyle        c.WS_EX
 }
 
-type LVCOLUMN struct {
-	Mask       c.LVCF
-	Fmt        int32
-	Cx         int32
-	PszText    *uint16
-	CchTextMax int32
-	ISubItem   int32
-	IImage     int32
-	IOrder     int32
-	CxMin      int32
-	CxDefault  int32
-	CxIdeal    int32
-}
-
-type LVITEM struct {
-	Mask       c.LVIF
-	IItem      int32
-	ISubItem   int32
-	State      c.LVIS
-	StateMask  c.LVIS
-	PszText    *uint16
-	CchTextMax int32
-	IImage     int32
-	LParam     uintptr
-	IIndent    int32
-	IGroupId   int32
-	CColumns   uint32
-	PuColumns  *uint32
-	PiColFmt   *int32
-	IGroup     int32
-}
-
 type MENUINFO struct {
 	CbSize          uint32
 	FMask           c.MIM
