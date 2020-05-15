@@ -58,7 +58,6 @@ func (me *WindowMain) RunAsMain() {
 
 func (me *WindowMain) runMainLoop() {
 	defer globalUiFont.Destroy()
-	me.windowBase.wndMsg.loopStarted = true
 
 	msg := api.MSG{}
 	for {
