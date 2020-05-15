@@ -7,6 +7,25 @@
 
 package consts
 
+type LIF uint32 // LITEM mask
+
+const (
+	LIF_ITEMINDEX LIF = 0x00000001
+	LIF_STATE     LIF = 0x00000002
+	LIF_ITEMID    LIF = 0x00000004
+	LIF_URL       LIF = 0x00000008
+)
+
+type LIS uint32 // LITEM state
+
+const (
+	LIS_FOCUSED       LIS = 0x00000001
+	LIS_ENABLED       LIS = 0x00000002
+	LIS_VISITED       LIS = 0x00000004
+	LIS_HOTTRACK      LIS = 0x00000008
+	LIS_DEFAULTCOLORS LIS = 0x00000010
+)
+
 type LV_VIEW uint16 // list view view
 
 const (
@@ -30,6 +49,24 @@ const (
 	LVCF_SUBITEM      LVCF = 0x0008
 	LVCF_TEXT         LVCF = 0x0004
 	LVCF_WIDTH        LVCF = 0x0002
+)
+
+type LVFI uint32 // LVFINDINFO
+
+const (
+	LVFI_PARAM     LVFI = 0x0001
+	LVFI_STRING    LVFI = 0x0002
+	LVFI_SUBSTRING LVFI = 0x0004
+	LVFI_PARTIAL   LVFI = 0x0008
+	LVFI_WRAP      LVFI = 0x0020
+	LVFI_NEARESTXY LVFI = 0x0040
+)
+
+type LVGIT uint32 // NMLVGETINFOTIP
+
+const (
+	LVGIT_ZERO     LVGIT = 0x0000
+	LVGIT_UNFOLDED LVGIT = 0x0001
 )
 
 type LVIF uint32 // LVITEM mask

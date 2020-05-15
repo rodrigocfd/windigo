@@ -11,6 +11,15 @@ import (
 	c "wingows/consts"
 )
 
+type LITEM struct {
+	Mask      c.LIF
+	ILink     int32
+	State     c.LIS
+	StateMask c.LIS
+	SzID      [48]uint16            // MAX_LINKID_TEXT
+	SzUrl     [2048 + 32 + 3]uint16 // L_MAX_URL_LENGTH
+}
+
 type LVCOLUMN struct {
 	Mask       c.LVCF
 	Fmt        int32
@@ -23,6 +32,14 @@ type LVCOLUMN struct {
 	CxMin      int32
 	CxDefault  int32
 	CxIdeal    int32
+}
+
+type LVFINDINFO struct {
+	Flags       c.LVFI
+	Psz         *uint16
+	LParam      LPARAM
+	Pt          POINT
+	VkDirection uint32
 }
 
 type LVITEM struct {
@@ -41,6 +58,16 @@ type LVITEM struct {
 	PuColumns  *uint32
 	PiColFmt   *int32
 	IGroup     int32
+}
+
+type NMCUSTOMDRAW struct {
+	Hdr         NMHDR
+	DwDrawStage c.CDDS
+	Hdc         HDC
+	Rc          RECT
+	DwItemSpec  uintptr
+	UItemState  c.CDIS
+	LItemlParam LPARAM
 }
 
 type NMITEMACTIVATE struct {
@@ -77,9 +104,21 @@ type NMLVDISPINFO struct {
 	Item LVITEM
 }
 
+type NMLVEMPTYMARKUP struct {
+	Hdr      NMHDR
+	DwFlags  c.EMF
+	SzMarkup [2048 + 32 + 3]uint16 // L_MAX_URL_LENGTH
+}
+
+type NMLVFINDITEM struct {
+	Hdr    NMHDR
+	IStart int32
+	Lvfi   LVFINDINFO
+}
+
 type NMLVGETINFOTIP struct {
 	Hdr        NMHDR
-	DwFlags    uint32
+	DwFlags    c.LVGIT
 	PszText    *uint16
 	CchTextMax int32
 	IItem      int32
@@ -91,4 +130,25 @@ type NMLVKEYDOWN struct {
 	Hdr   NMHDR
 	WVKey c.VK
 	Flags uint32
+}
+
+type NMLVLINK struct {
+	Hdr      NMHDR
+	Link     LITEM
+	IItem    int32
+	ISubItem int32
+}
+
+type NMLVODSTATECHANGE struct {
+	Hdr       NMHDR
+	IFrom     int32
+	ITo       int32
+	UNewState c.LVIS
+	UOldState c.LVIS
+}
+
+type NMLVSCROLL struct {
+	Hdr NMHDR
+	Dx  int32
+	Dy  int32
 }

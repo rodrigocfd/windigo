@@ -17,6 +17,13 @@ const (
 	DPI_AWARE_CTX_UNAWARE_GDISCALED DPI_AWARE_CTX = -5
 )
 
+type EMF uint32 // NMLVEMPTYMARKUP
+
+const (
+	EMF_NULL     EMF = 0x00000000
+	EMF_CENTERED EMF = 0x00000001
+)
+
 type ES WS // edit control style
 
 const (

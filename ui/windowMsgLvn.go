@@ -13,6 +13,50 @@ import (
 	c "wingows/consts"
 )
 
+func (me *windowMsg) LvnBeginDrag(lv *ListView, userFunc func(p *api.NMLISTVIEW)) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_BEGINDRAG), func(p WmNotify) uintptr {
+		userFunc((*api.NMLISTVIEW)(unsafe.Pointer(p.base.LParam)))
+		return 0
+	})
+}
+
+func (me *windowMsg) LvnBeginLabelEdit(lv *ListView, userFunc func(p *api.NMLVDISPINFO) bool) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_BEGINLABELEDIT), func(p WmNotify) uintptr {
+		if userFunc((*api.NMLVDISPINFO)(unsafe.Pointer(p.base.LParam))) {
+			return 1
+		}
+		return 0
+	})
+}
+
+func (me *windowMsg) LvnBeginRDrag(lv *ListView, userFunc func(p *api.NMLISTVIEW)) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_BEGINRDRAG), func(p WmNotify) uintptr {
+		userFunc((*api.NMLISTVIEW)(unsafe.Pointer(p.base.LParam)))
+		return 0
+	})
+}
+
+func (me *windowMsg) LvnBeginScroll(lv *ListView, userFunc func(p *api.NMLVSCROLL)) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_BEGINSCROLL), func(p WmNotify) uintptr {
+		userFunc((*api.NMLVSCROLL)(unsafe.Pointer(p.base.LParam)))
+		return 0
+	})
+}
+
+func (me *windowMsg) LvnColumnClick(lv *ListView, userFunc func(p *api.NMLISTVIEW)) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_COLUMNCLICK), func(p WmNotify) uintptr {
+		userFunc((*api.NMLISTVIEW)(unsafe.Pointer(p.base.LParam)))
+		return 0
+	})
+}
+
+func (me *windowMsg) LvnColumnDropDown(lv *ListView, userFunc func(p *api.NMLISTVIEW)) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_COLUMNDROPDOWN), func(p WmNotify) uintptr {
+		userFunc((*api.NMLISTVIEW)(unsafe.Pointer(p.base.LParam)))
+		return 0
+	})
+}
+
 func (me *windowMsg) LvnColumnOverflowClick(lv *ListView, userFunc func(p *api.NMLISTVIEW)) {
 	me.addNfy(lv.CtrlId(), c.NM(c.LVN_COLUMNOVERFLOWCLICK), func(p WmNotify) uintptr {
 		userFunc((*api.NMLISTVIEW)(unsafe.Pointer(p.base.LParam)))
@@ -34,9 +78,34 @@ func (me *windowMsg) LvnDeleteItem(lv *ListView, userFunc func(p *api.NMLISTVIEW
 	})
 }
 
+func (me *windowMsg) LvnEndLabelEdit(lv *ListView, userFunc func(p *api.NMLVDISPINFO) bool) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_ENDLABELEDIT), func(p WmNotify) uintptr {
+		if userFunc((*api.NMLVDISPINFO)(unsafe.Pointer(p.base.LParam))) {
+			return 1
+		}
+		return 0
+	})
+}
+
+func (me *windowMsg) LvnEndScroll(lv *ListView, userFunc func(p *api.NMLVSCROLL)) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_ENDSCROLL), func(p WmNotify) uintptr {
+		userFunc((*api.NMLVSCROLL)(unsafe.Pointer(p.base.LParam)))
+		return 0
+	})
+}
+
 func (me *windowMsg) LvnGetDispInfo(lv *ListView, userFunc func(p *api.NMLVDISPINFO)) {
 	me.addNfy(lv.CtrlId(), c.NM(c.LVN_GETDISPINFO), func(p WmNotify) uintptr {
 		userFunc((*api.NMLVDISPINFO)(unsafe.Pointer(p.base.LParam)))
+		return 0
+	})
+}
+
+func (me *windowMsg) LvnGetEmptyMarkup(lv *ListView, userFunc func(p *api.NMLVEMPTYMARKUP) bool) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_GETEMPTYMARKUP), func(p WmNotify) uintptr {
+		if userFunc((*api.NMLVEMPTYMARKUP)(unsafe.Pointer(p.base.LParam))) {
+			return 1
+		}
 		return 0
 	})
 }
@@ -51,6 +120,12 @@ func (me *windowMsg) LvnGetInfoTip(lv *ListView, userFunc func(p *api.NMLVGETINF
 func (me *windowMsg) LvnHotTrack(lv *ListView, userFunc func(p *api.NMLISTVIEW) int32) {
 	me.addNfy(lv.CtrlId(), c.NM(c.LVN_HOTTRACK), func(p WmNotify) uintptr {
 		return uintptr(userFunc((*api.NMLISTVIEW)(unsafe.Pointer(p.base.LParam))))
+	})
+}
+
+func (me *windowMsg) LvnIncrementalSearch(lv *ListView, userFunc func(p *api.NMLVFINDITEM) int32) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_INCREMENTALSEARCH), func(p WmNotify) uintptr {
+		return uintptr(userFunc((*api.NMLVFINDITEM)(unsafe.Pointer(p.base.LParam))))
 	})
 }
 
@@ -91,15 +166,35 @@ func (me *windowMsg) LvnKeyDown(lv *ListView, userFunc func(p *api.NMLVKEYDOWN))
 	})
 }
 
+func (me *windowMsg) LvnLinkClick(lv *ListView, userFunc func(p *api.NMLVLINK)) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_LINKCLICK), func(p WmNotify) uintptr {
+		userFunc((*api.NMLVLINK)(unsafe.Pointer(p.base.LParam)))
+		return 0
+	})
+}
+
 func (me *windowMsg) LvnMarqueeBegin(lv *ListView, userFunc func(p *api.NMHDR) uint32) {
 	me.addNfy(lv.CtrlId(), c.NM(c.LVN_MARQUEEBEGIN), func(p WmNotify) uintptr {
 		return uintptr(userFunc((*api.NMHDR)(unsafe.Pointer(p.base.LParam))))
 	})
 }
 
-func (me *windowMsg) LvnOdCacheHint(lv *ListView, userFunc func(p *api.NMLVCACHEHINT)) {
+func (me *windowMsg) LvnODCacheHint(lv *ListView, userFunc func(p *api.NMLVCACHEHINT)) {
 	me.addNfy(lv.CtrlId(), c.NM(c.LVN_ODCACHEHINT), func(p WmNotify) uintptr {
 		userFunc((*api.NMLVCACHEHINT)(unsafe.Pointer(p.base.LParam)))
+		return 0
+	})
+}
+
+func (me *windowMsg) LvnODFindItem(lv *ListView, userFunc func(p *api.NMLVFINDITEM) int32) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_ODFINDITEM), func(p WmNotify) uintptr {
+		return uintptr(userFunc((*api.NMLVFINDITEM)(unsafe.Pointer(p.base.LParam))))
+	})
+}
+
+func (me *windowMsg) LvnODStateChanged(lv *ListView, userFunc func(p *api.NMLVODSTATECHANGE)) {
+	me.addNfy(lv.CtrlId(), c.NM(c.LVN_ODSTATECHANGED), func(p WmNotify) uintptr {
+		userFunc((*api.NMLVODSTATECHANGE)(unsafe.Pointer(p.base.LParam)))
 		return 0
 	})
 }
@@ -117,6 +212,12 @@ func (me *windowMsg) LvnClick(lv *ListView, userFunc func(p *api.NMITEMACTIVATE)
 	me.addNfy(lv.CtrlId(), c.NM_CLICK, func(p WmNotify) uintptr {
 		userFunc((*api.NMITEMACTIVATE)(unsafe.Pointer(p.base.LParam)))
 		return 0
+	})
+}
+
+func (me *windowMsg) LvnCustomDraw(lv *ListView, userFunc func(p *api.NMCUSTOMDRAW) c.CDRF) {
+	me.addNfy(lv.CtrlId(), c.NM_CUSTOMDRAW, func(p WmNotify) uintptr {
+		return uintptr(userFunc((*api.NMCUSTOMDRAW)(unsafe.Pointer(p.base.LParam))))
 	})
 }
 
