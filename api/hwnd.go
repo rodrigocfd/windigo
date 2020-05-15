@@ -44,6 +44,15 @@ func CreateWindowEx(exStyle c.WS_EX, className, title string, style c.WS,
 	return HWND(ret)
 }
 
+func (hwnd HWND) DefSubclassProc(msg c.WM,
+	wParam WPARAM, lParam LPARAM) uintptr {
+
+	ret, _, _ := syscall.Syscall6(proc.DefSubclassProc.Addr(), 4,
+		uintptr(hwnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
+		0, 0)
+	return ret
+}
+
 func (hwnd HWND) DefWindowProc(msg c.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	ret, _, _ := syscall.Syscall6(proc.DefWindowProc.Addr(), 4,
 		uintptr(hwnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
@@ -260,6 +269,16 @@ func (hwnd HWND) ReleaseDC(hdc HDC) int32 {
 	return int32(ret)
 }
 
+func (hwnd HWND) RemoveWindowSubclass(
+	subclassProc uintptr, uIdSubclass uint32) {
+
+	ret, _, _ := syscall.Syscall(proc.RemoveWindowSubclass.Addr(), 3,
+		uintptr(hwnd), subclassProc, uintptr(uIdSubclass))
+	if ret == 0 {
+		panic("RemoveWindowSubclass failed.")
+	}
+}
+
 func (hwnd HWND) ScreenToClientPt(point *POINT) {
 	syscall.Syscall(proc.ScreenToClient.Addr(), 2,
 		uintptr(hwnd), uintptr(unsafe.Pointer(point)), 0)
@@ -298,6 +317,7 @@ func (hwnd HWND) SetStyle(style c.WS) {
 }
 
 func (hwnd HWND) SetWindowLongPtr(index c.GWLP, newLong uintptr) uintptr {
+	// Since we can't properly call SetLastError(0), we'll ignore errors.
 	ret, _, _ := syscall.Syscall(proc.SetWindowLongPtr.Addr(), 3,
 		uintptr(hwnd), uintptr(index), newLong)
 	return ret
@@ -323,10 +343,22 @@ func (hwnd HWND) SetWindowPos(hwndInsertAfter c.SWP_HWND, x, y int32,
 	}
 }
 
+// Use syscall.NewCallback() to convert the closure to uintptr, and keep this
+// uintptr to pass to RemoveWindowSubclass.
+func (hwnd HWND) SetWindowSubclass(subclassProc uintptr, uIdSubclass uint32,
+	dwRefData unsafe.Pointer) {
+
+	ret, _, _ := syscall.Syscall6(proc.SetWindowSubclass.Addr(), 4,
+		uintptr(hwnd), subclassProc, uintptr(uIdSubclass), uintptr(dwRefData),
+		0, 0)
+	if ret == 0 {
+		panic("SetWindowSubclass failed.")
+	}
+}
+
 func (hwnd HWND) SetWindowText(text string) {
 	syscall.Syscall(proc.SetWindowText.Addr(), 2,
-		uintptr(hwnd),
-		uintptr(unsafe.Pointer(StrToUtf16Ptr(text))),
+		uintptr(hwnd), uintptr(unsafe.Pointer(StrToUtf16Ptr(text))),
 		0)
 }
 

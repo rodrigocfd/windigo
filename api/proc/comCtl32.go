@@ -14,5 +14,8 @@ import (
 var (
 	dllComCtl32 = syscall.NewLazyDLL("comctl32.dll")
 
-	InitCommonControls = dllComCtl32.NewProc("InitCommonControls")
+	DefSubclassProc      = dllComCtl32.NewProc("DefSubclassProc")
+	InitCommonControls   = dllComCtl32.NewProc("InitCommonControls")
+	RemoveWindowSubclass = dllComCtl32.NewProc("RemoveWindowSubclass")
+	SetWindowSubclass    = dllComCtl32.NewProc("SetWindowSubclass")
 )

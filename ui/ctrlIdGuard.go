@@ -27,7 +27,7 @@ func makeCtrlIdGuard(initialId c.ID) ctrlIdGuard {
 // Returns the ID of this child window control.
 func (me *ctrlIdGuard) CtrlId() c.ID {
 	if me.ctrlId == 0 { // not initialized yet?
-		baseId += 1 // increments sequential global ID
+		baseId++ // increments sequential global ID
 		me.ctrlId = baseId
 	}
 	return me.ctrlId
