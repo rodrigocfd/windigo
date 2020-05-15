@@ -279,16 +279,8 @@ func (hwnd HWND) SendMessage(msg c.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	return ret
 }
 
-func (hwnd HWND) SetWindowLongPtr(index c.GWLP, newLong uintptr) uintptr {
-	ret, _, _ := syscall.Syscall(proc.SetWindowLongPtr.Addr(), 3,
-		uintptr(hwnd), uintptr(index), newLong)
-	return ret
-}
-
-func (hwnd HWND) ShowWindow(nCmdShow c.SW) bool {
-	ret, _, _ := syscall.Syscall(proc.ShowWindow.Addr(), 1,
-		uintptr(hwnd), uintptr(nCmdShow), 0)
-	return ret != 0
+func (hwnd HWND) SetExStyle(style c.WS) {
+	hwnd.SetWindowLongPtr(c.GWLP_EXSTYLE, uintptr(style))
 }
 
 func (hwnd HWND) SetFocus() HWND {
@@ -299,6 +291,22 @@ func (hwnd HWND) SetFocus() HWND {
 			lerr, lerr.Error()))
 	}
 	return HWND(ret) // handle to the window that previously had the keyboard focus
+}
+
+func (hwnd HWND) SetStyle(style c.WS) {
+	hwnd.SetWindowLongPtr(c.GWLP_STYLE, uintptr(style))
+}
+
+func (hwnd HWND) SetWindowLongPtr(index c.GWLP, newLong uintptr) uintptr {
+	ret, _, _ := syscall.Syscall(proc.SetWindowLongPtr.Addr(), 3,
+		uintptr(hwnd), uintptr(index), newLong)
+	return ret
+}
+
+func (hwnd HWND) ShowWindow(nCmdShow c.SW) bool {
+	ret, _, _ := syscall.Syscall(proc.ShowWindow.Addr(), 1,
+		uintptr(hwnd), uintptr(nCmdShow), 0)
+	return ret != 0
 }
 
 // You can pass a HWND handle or SWP_HWND constants in hwndInsertAfter argument.
