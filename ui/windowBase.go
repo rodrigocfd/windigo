@@ -97,29 +97,29 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 	}
 
 	// Retrieve passed pointer.
-	base := (*windowBase)(unsafe.Pointer(hwnd.GetWindowLongPtr(c.GWLP_USERDATA)))
+	pMe := (*windowBase)(unsafe.Pointer(hwnd.GetWindowLongPtr(c.GWLP_USERDATA)))
 
 	// Save *windowBase from being collected by GC.
-	hwnd.SetWindowLongPtr(c.GWLP_USERDATA, uintptr(unsafe.Pointer(base)))
+	hwnd.SetWindowLongPtr(c.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 
 	// If no pointer stored, then no processing is done.
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
-	if base == nil {
+	if pMe == nil {
 		return hwnd.DefWindowProc(msg, wParam, lParam)
 	}
 
 	// Try to process the message with an user handler.
-	userResult, wasProcessed := base.wndMsg.processMessage(msg,
+	userResult, wasProcessed := pMe.wndMsg.processMessage(msg,
 		wmBase{WParam: wParam, LParam: lParam})
 
 	// No further messages processed after this one.
 	if msg == c.WM_NCDESTROY {
-		base.hwnd.SetWindowLongPtr(c.GWLP_USERDATA, 0) // clear passed pointer
-		base.hwnd = api.HWND(0)
+		pMe.hwnd.SetWindowLongPtr(c.GWLP_USERDATA, 0) // clear passed pointer
+		pMe.hwnd = api.HWND(0)
 	}
 
 	if wasProcessed {
 		return userResult
 	}
-	return hwnd.DefWindowProc(msg, wParam, lParam)
+	return hwnd.DefWindowProc(msg, wParam, lParam) // message was not processed
 }

@@ -31,7 +31,7 @@ func (me *windowMsg) addMsg(msg c.WM, userFunc func(p wmBase) uintptr) {
 		panic(fmt.Sprintf(
 			"Cannot add message 0x%04x after the window was created.", msg))
 	}
-	if me.msgs == nil {
+	if me.msgs == nil { // guard
 		me.msgs = make(map[c.WM]func(p wmBase) uintptr)
 	}
 	me.msgs[msg] = userFunc
@@ -42,7 +42,7 @@ func (me *windowMsg) addCmd(cmd c.ID, userFunc func(p WmCommand)) {
 		panic(fmt.Sprintf(
 			"Cannot add command message %d after the window was created.", cmd))
 	}
-	if me.cmds == nil {
+	if me.cmds == nil { // guard
 		me.cmds = make(map[c.ID]func(p WmCommand))
 	}
 	me.cmds[cmd] = userFunc
@@ -56,7 +56,7 @@ func (me *windowMsg) addNfy(idFrom c.ID, code c.NM,
 			"Cannot add motify message %d/%d after the window was created.",
 			idFrom, code))
 	}
-	if me.nfys == nil {
+	if me.nfys == nil { // guard
 		me.nfys = make(map[nfyHash]func(p WmNotify) uintptr)
 	}
 	me.nfys[nfyHash{IdFrom: idFrom, Code: code}] = userFunc
