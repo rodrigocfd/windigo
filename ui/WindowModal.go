@@ -41,10 +41,12 @@ func (me *WindowModal) Show(parent Window) {
 	me.prevFocus = api.GetFocus()     // currently focused control
 	parent.Hwnd().EnableWindow(false) // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
+	_, _, cx, cy := multiplyByDpi(0, 0, me.setup.Width, me.setup.Height)
+
 	me.windowBase.createWindow("WindowModal", me.setup.ExStyle,
 		me.setup.ClassName, me.setup.Title, me.setup.Style,
 		0, 0, // initially anchored at zero
-		me.setup.Width, me.setup.Height, parent, api.HMENU(0), hInst)
+		cx, cy, parent, api.HMENU(0), hInst)
 
 	rc := me.windowBase.Hwnd().GetWindowRect()
 	rcParent := parent.Hwnd().GetWindowRect() // both rc relative to screen

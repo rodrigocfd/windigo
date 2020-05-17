@@ -50,6 +50,8 @@ func (me *nativeControlBase) create(exStyle c.WS_EX, className, title string,
 		panic(fmt.Sprintf("Trying to create %s twice.", className))
 	}
 
+	x, y, width, height = multiplyByDpi(x, y, width, height)
+
 	me.hwnd = api.CreateWindowEx(exStyle, className, title, style,
 		x, y, width, height, parent.Hwnd(), api.HMENU(me.ctrlIdGuard.CtrlId()),
 		parent.Hwnd().GetInstance(), nil)
