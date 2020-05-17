@@ -13,11 +13,13 @@ import (
 
 var baseId = c.ID(1000) // arbitrary, taken from Visual Studio resource editor
 
-// Ensures that control ID will be properly initialized before any call.
+// Encapsulates the control ID and, if not initialized, uses an auto-incremented value.
 type ctrlIdGuard struct {
 	ctrlId c.ID // defaults to zero
 }
 
+// Optional; returns a ctrlIdGuard with a custom control ID, not using the
+// default auto-incremented one.
 func makeCtrlIdGuard(initialId c.ID) ctrlIdGuard {
 	return ctrlIdGuard{
 		ctrlId: initialId, // properly initialized

@@ -17,7 +17,8 @@ import (
 
 var globalUiFont = Font{} // managed in WindowMain's createWindow() and runMainLoop()
 
-// Manages a font resource.
+// Manages a font resource. Must be default-initialized, then call one of the
+// creation methods on the object.
 type Font struct {
 	hFont api.HFONT
 }

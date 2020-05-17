@@ -13,6 +13,8 @@ import (
 )
 
 // Native button control.
+// Can be default-initialized.
+// Call one of the create methods during parent's WM_CREATE.
 type Button struct {
 	nativeControlBase
 }

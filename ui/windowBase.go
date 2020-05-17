@@ -15,7 +15,7 @@ import (
 	c "wingows/consts"
 )
 
-// Base to all window types.
+// Base to all window types: WindowControl, WindowMain and WindowModal.
 type windowBase struct {
 	hwnd   api.HWND
 	wndMsg windowMsg

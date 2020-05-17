@@ -18,7 +18,7 @@ import (
 var baseSubclassId = uint32(0)   // incremented at each subclass installed
 var subclassProcPtr = uintptr(0) // necessary for RemoveWindowSubclass
 
-// Base to all child control types.
+// Base to all child control types, like Button and Edit.
 type nativeControlBase struct {
 	ctrlIdGuard
 	hwnd        api.HWND
@@ -92,7 +92,7 @@ func subclassProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM,
 		if wasProcessed && msg != c.WM_LBUTTONUP {
 			// For some reason, if we don't call DefSubclassProc with WM_LBUTTONUP,
 			// all parent window messages are routed to this proc, and it becomes
-			// unresponsive. So user return is not used.
+			// unresponsive. So we return user result only if not WM_LBUTTONUP.
 			return userResult
 		}
 	} else if msg == c.WM_NCDESTROY { // https://devblogs.microsoft.com/oldnewthing/20031111-00/?p=41883
