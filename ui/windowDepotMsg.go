@@ -71,6 +71,38 @@ func (me *windowDepotMsg) WmActivate(userFunc func(p WmActivate)) {
 	})
 }
 
+func (me *windowDepotMsg) WmActivateApp(userFunc func(p WmActivateApp)) {
+	me.addMsg(c.WM_ACTIVATEAPP, func(p wmBase) uintptr {
+		userFunc(WmActivateApp{base: wmBase(p)})
+		return 0
+	})
+}
+
+//------------------------------------------------------------------------------
+
+func (me *windowDepotMsg) WmChar(userFunc func(p WmChar)) {
+	me.addMsg(c.WM_CHAR, func(p wmBase) uintptr {
+		userFunc(WmChar{wmBaseChar: wmBaseChar{base: wmBase(p)}})
+		return 0
+	})
+}
+
+func (me *windowDepotMsg) WmDeadChar(userFunc func(p WmDeadChar)) {
+	me.addMsg(c.WM_DEADCHAR, func(p wmBase) uintptr {
+		userFunc(WmDeadChar{wmBaseChar: wmBaseChar{base: wmBase(p)}})
+		return 0
+	})
+}
+
+func (me *windowDepotMsg) WmSysDeadChar(userFunc func(p WmSysDeadChar)) {
+	me.addMsg(c.WM_SYSDEADCHAR, func(p wmBase) uintptr {
+		userFunc(WmSysDeadChar{wmBaseChar: wmBaseChar{base: wmBase(p)}})
+		return 0
+	})
+}
+
+//------------------------------------------------------------------------------
+
 func (me *windowDepotMsg) WmClose(userFunc func()) {
 	me.addMsg(c.WM_CLOSE, func(p wmBase) uintptr {
 		userFunc()
@@ -104,6 +136,15 @@ func (me *windowDepotMsg) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
 		return 0
 	})
 }
+
+func (me *windowDepotMsg) WmKeyDown(userFunc func(p WmKeyDown)) {
+	me.addMsg(c.WM_KEYDOWN, func(p wmBase) uintptr {
+		userFunc(WmKeyDown{base: wmBase(p)})
+		return 0
+	})
+}
+
+//------------------------------------------------------------------------------
 
 func (me *windowDepotMsg) WmLButtonDblClk(userFunc func(p WmLButtonDblClk)) {
 	me.addMsg(c.WM_LBUTTONDBLCLK, func(p wmBase) uintptr {
@@ -182,6 +223,8 @@ func (me *windowDepotMsg) WmRButtonUp(userFunc func(p WmRButtonUp)) {
 	})
 }
 
+//------------------------------------------------------------------------------
+
 func (me *windowDepotMsg) WmMouseLeave(userFunc func()) {
 	me.addMsg(c.WM_MOUSELEAVE, func(p wmBase) uintptr {
 		userFunc()
@@ -217,6 +260,13 @@ func (me *windowDepotMsg) WmPaint(userFunc func()) {
 	})
 }
 
+func (me *windowDepotMsg) WmPrint(userFunc func(p WmPrint)) {
+	me.addMsg(c.WM_PRINT, func(p wmBase) uintptr {
+		userFunc(WmPrint{base: wmBase(p)})
+		return 0
+	})
+}
+
 func (me *windowDepotMsg) WmSetFocus(userFunc func(p WmSetFocus)) {
 	me.addMsg(c.WM_SETFOCUS, func(p wmBase) uintptr {
 		userFunc(WmSetFocus{base: wmBase(p)})
@@ -234,6 +284,20 @@ func (me *windowDepotMsg) WmSetFont(userFunc func(p WmSetFont)) {
 func (me *windowDepotMsg) WmSize(userFunc func(p WmSize)) {
 	me.addMsg(c.WM_SIZE, func(p wmBase) uintptr {
 		userFunc(WmSize{base: wmBase(p)})
+		return 0
+	})
+}
+
+func (me *windowDepotMsg) WmSysKeyDown(userFunc func(p WmSysKeyDown)) {
+	me.addMsg(c.WM_SYSKEYDOWN, func(p wmBase) uintptr {
+		userFunc(WmSysKeyDown{base: wmBase(p)})
+		return 0
+	})
+}
+
+func (me *windowDepotMsg) WmTimeChange(userFunc func()) {
+	me.addMsg(c.WM_TIMECHANGE, func(p wmBase) uintptr {
+		userFunc()
 		return 0
 	})
 }
