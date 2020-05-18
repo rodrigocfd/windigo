@@ -13,20 +13,20 @@ import (
 var baseId = c.ID(1000) // arbitrary, taken from Visual Studio resource editor
 
 // Encapsulates the control ID and, if not initialized, uses an auto-incremented value.
-type ctrlIdGuard struct {
+type controlIdGuard struct {
 	ctrlId c.ID // defaults to zero
 }
 
 // Optional; returns a ctrlIdGuard with a custom control ID, not using the
 // default auto-incremented one.
-func makeCtrlIdGuard(initialId c.ID) ctrlIdGuard {
-	return ctrlIdGuard{
+func makeCtrlIdGuard(initialId c.ID) controlIdGuard {
+	return controlIdGuard{
 		ctrlId: initialId, // properly initialized
 	}
 }
 
 // Returns the ID of this child window control.
-func (me *ctrlIdGuard) CtrlId() c.ID {
+func (me *controlIdGuard) CtrlId() c.ID {
 	if me.ctrlId == 0 { // not initialized yet?
 		baseId++ // increments sequential global ID
 		me.ctrlId = baseId

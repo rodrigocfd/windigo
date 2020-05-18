@@ -17,13 +17,13 @@ import (
 // Can be default-initialized.
 // Call one of the create methods during parent's WM_CREATE.
 type ListView struct {
-	nativeControlBase
+	controlNativeBase
 }
 
 // Optional; returns a ListView with a specific control ID.
 func MakeListView(ctrlId c.ID) ListView {
 	return ListView{
-		nativeControlBase: makeNativeControlBase(ctrlId),
+		controlNativeBase: makeNativeControlBase(ctrlId),
 	}
 }
 
@@ -76,7 +76,7 @@ func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 	exStyles c.WS_EX, styles c.WS,
 	lvExStyles c.LVS_EX, lvStyles c.LVS) *ListView {
 
-	me.nativeControlBase.create(exStyles|c.WS_EX(lvExStyles),
+	me.controlNativeBase.create(exStyles|c.WS_EX(lvExStyles),
 		"SysListView32", "", styles|c.WS(lvStyles),
 		x, y, width, height, parent)
 	return me
@@ -172,6 +172,6 @@ func (me *ListView) View() c.LV_VIEW {
 func (me *ListView) sendLvmMessage(msg c.LVM,
 	wParam api.WPARAM, lParam api.LPARAM) uintptr {
 
-	return me.nativeControlBase.Hwnd().
+	return me.controlNativeBase.Hwnd().
 		SendMessage(c.WM(msg), wParam, lParam) // simple wrapper
 }

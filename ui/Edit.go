@@ -14,20 +14,20 @@ import (
 // Can be default-initialized.
 // Call one of the create methods during parent's WM_CREATE.
 type Edit struct {
-	nativeControlBase
+	controlNativeBase
 }
 
 // Optional; returns a, Edit with a specific control ID.
 func MakeEdit(ctrlId c.ID) Edit {
 	return Edit{
-		nativeControlBase: makeNativeControlBase(ctrlId),
+		controlNativeBase: makeNativeControlBase(ctrlId),
 	}
 }
 
 func (me *Edit) Create(parent Window, x, y int32, width, height uint32,
 	initialText string, exStyles c.WS_EX, styles c.WS, editStyles c.ES) *Edit {
 
-	me.nativeControlBase.create(exStyles, "Edit", initialText,
+	me.controlNativeBase.create(exStyles, "Edit", initialText,
 		styles|c.WS(editStyles), x, y, width, height, parent)
 	globalUiFont.SetOnControl(me)
 	return me

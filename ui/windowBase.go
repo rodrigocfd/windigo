@@ -14,10 +14,15 @@ import (
 	c "wingows/consts"
 )
 
+type windowBaseMsgNfyProxy struct { // aglutinate both msg and nfy into one façade
+	windowDepotMsg
+	windowDepotNfy
+}
+
 // Base to all window types: WindowControl, WindowMain and WindowModal.
 type windowBase struct {
-	hwnd   api.HWND
-	wndMsg windowMsg
+	hwnd    api.HWND
+	msgNfys windowBaseMsgNfyProxy
 }
 
 const wM_UI_THREAD = c.WM_APP + 0x3FFF // used in UI thread handling
@@ -29,8 +34,8 @@ func (me *windowBase) Hwnd() api.HWND {
 }
 
 // Exposes all the window messages the can be handled.
-func (me *windowBase) OnMsg() *windowMsg {
-	return &me.wndMsg
+func (me *windowBase) OnMsg() *windowBaseMsgNfyProxy {
+	return &me.msgNfys
 }
 
 // Runs a closure synchronously in the window original UI thread.
@@ -58,13 +63,16 @@ func (me *windowBase) createWindow(uiName string, exStyle c.WS_EX,
 		hwndParent = parent.Hwnd()
 	}
 
-	me.wndMsg.addMsg(wM_UI_THREAD, func(p wmBase) uintptr { // handle our custom thread UI message
+	me.msgNfys.addMsg(wM_UI_THREAD, func(p wmBase) uintptr { // handle our custom thread UI message
 		if p.WParam == 0xC0DEF00D {
 			pack := (*threadPack)(unsafe.Pointer(p.LParam))
 			pack.userFunc()
 		}
 		return 0
 	})
+
+	me.msgNfys.windowDepotMsg.wasCreated = true // no further messages can be added
+	me.msgNfys.windowDepotNfy.wasCreated = true
 
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
 	api.CreateWindowEx(exStyle, className, title, style, x, y, width, height,
@@ -108,8 +116,11 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 	}
 
 	// Try to process the message with an user handler.
-	userResult, wasProcessed := pMe.wndMsg.processMessage(msg,
-		wmBase{WParam: wParam, LParam: lParam})
+	parm := wmBase{WParam: wParam, LParam: lParam}
+	userRet, wasHandled := pMe.msgNfys.windowDepotMsg.processMessage(msg, parm)
+	if !wasHandled {
+		userRet, wasHandled = pMe.msgNfys.windowDepotNfy.processMessage(msg, parm)
+	}
 
 	// No further messages processed after this one.
 	if msg == c.WM_NCDESTROY {
@@ -117,8 +128,8 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 		pMe.hwnd = api.HWND(0)
 	}
 
-	if wasProcessed {
-		return userResult
+	if wasHandled {
+		return userRet
 	}
 	return hwnd.DefWindowProc(msg, wParam, lParam) // message was not processed
 }

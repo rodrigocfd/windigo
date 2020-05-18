@@ -14,20 +14,20 @@ import (
 // Can be default-initialized.
 // Call one of the create methods during parent's WM_CREATE.
 type Button struct {
-	nativeControlBase
+	controlNativeBase
 }
 
 // Optional; returns a Button with a specific control ID.
 func MakeButton(ctrlId c.ID) Button {
 	return Button{
-		nativeControlBase: makeNativeControlBase(ctrlId),
+		controlNativeBase: makeNativeControlBase(ctrlId),
 	}
 }
 
 func (me *Button) Create(parent Window, x, y int32, width, height uint32,
 	text string, exStyles c.WS_EX, styles c.WS, btnStyles c.BS) *Button {
 
-	me.nativeControlBase.create(exStyles, "Button", text,
+	me.controlNativeBase.create(exStyles, "Button", text,
 		styles|c.WS(btnStyles), x, y, width, height, parent)
 	globalUiFont.SetOnControl(me)
 	return me
