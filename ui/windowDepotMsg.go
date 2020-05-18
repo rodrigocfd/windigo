@@ -78,25 +78,32 @@ func (me *windowDepotMsg) WmActivateApp(userFunc func(p WmActivateApp)) {
 	})
 }
 
+func (me *windowDepotMsg) WmAppCommand(userFunc func(p WmAppCommand)) {
+	me.addMsg(c.WM_APPCOMMAND, func(p wmBase) uintptr {
+		userFunc(WmAppCommand{base: wmBase(p)})
+		return 1
+	})
+}
+
 //------------------------------------------------------------------------------
 
 func (me *windowDepotMsg) WmChar(userFunc func(p WmChar)) {
 	me.addMsg(c.WM_CHAR, func(p wmBase) uintptr {
-		userFunc(WmChar{wmBaseChar: wmBaseChar{base: wmBase(p)}})
+		userFunc(WmChar{wmCharBase: wmCharBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmDeadChar(userFunc func(p WmDeadChar)) {
 	me.addMsg(c.WM_DEADCHAR, func(p wmBase) uintptr {
-		userFunc(WmDeadChar{wmBaseChar: wmBaseChar{base: wmBase(p)}})
+		userFunc(WmDeadChar{wmCharBase: wmCharBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmSysDeadChar(userFunc func(p WmSysDeadChar)) {
 	me.addMsg(c.WM_SYSDEADCHAR, func(p wmBase) uintptr {
-		userFunc(WmSysDeadChar{wmBaseChar: wmBaseChar{base: wmBase(p)}})
+		userFunc(WmSysDeadChar{wmCharBase: wmCharBase{base: wmBase(p)}})
 		return 0
 	})
 }
@@ -137,6 +144,13 @@ func (me *windowDepotMsg) WmHelp(userFunc func(p WmHelp)) {
 	})
 }
 
+func (me *windowDepotMsg) WmHotKey(userFunc func(p WmHotKey)) {
+	me.addMsg(c.WM_HOTKEY, func(p wmBase) uintptr {
+		userFunc(WmHotKey{base: wmBase(p)})
+		return 0
+	})
+}
+
 func (me *windowDepotMsg) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
 	me.addMsg(c.WM_INITMENUPOPUP, func(p wmBase) uintptr {
 		userFunc(WmInitMenuPopup{base: wmBase(p)})
@@ -151,86 +165,106 @@ func (me *windowDepotMsg) WmKeyDown(userFunc func(p WmKeyDown)) {
 	})
 }
 
+func (me *windowDepotMsg) WmKeyUp(userFunc func(p WmKeyUp)) {
+	me.addMsg(c.WM_KEYUP, func(p wmBase) uintptr {
+		userFunc(WmKeyUp{base: wmBase(p)})
+		return 0
+	})
+}
+
+func (me *windowDepotMsg) WmKillFocus(userFunc func(p WmKillFocus)) {
+	me.addMsg(c.WM_KILLFOCUS, func(p wmBase) uintptr {
+		userFunc(WmKillFocus{base: wmBase(p)})
+		return 0
+	})
+}
+
 //------------------------------------------------------------------------------
 
 func (me *windowDepotMsg) WmLButtonDblClk(userFunc func(p WmLButtonDblClk)) {
 	me.addMsg(c.WM_LBUTTONDBLCLK, func(p wmBase) uintptr {
-		userFunc(WmLButtonDblClk{wmBaseBtn: wmBaseBtn{base: wmBase(p)}})
+		userFunc(WmLButtonDblClk{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmLButtonDown(userFunc func(p WmLButtonDown)) {
 	me.addMsg(c.WM_LBUTTONDOWN, func(p wmBase) uintptr {
-		userFunc(WmLButtonDown{wmBaseBtn: wmBaseBtn{base: wmBase(p)}})
+		userFunc(WmLButtonDown{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmLButtonUp(userFunc func(p WmLButtonUp)) {
 	me.addMsg(c.WM_LBUTTONUP, func(p wmBase) uintptr {
-		userFunc(WmLButtonUp{wmBaseBtn: wmBaseBtn{base: wmBase(p)}})
+		userFunc(WmLButtonUp{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmMButtonDblClk(userFunc func(p WmMButtonDblClk)) {
 	me.addMsg(c.WM_MBUTTONDBLCLK, func(p wmBase) uintptr {
-		userFunc(WmMButtonDblClk{wmBaseBtn: wmBaseBtn{base: wmBase(p)}})
+		userFunc(WmMButtonDblClk{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmMButtonDown(userFunc func(p WmMButtonDown)) {
 	me.addMsg(c.WM_MBUTTONDOWN, func(p wmBase) uintptr {
-		userFunc(WmMButtonDown{wmBaseBtn: wmBaseBtn{base: wmBase(p)}})
+		userFunc(WmMButtonDown{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmMButtonUp(userFunc func(p WmMButtonUp)) {
 	me.addMsg(c.WM_MBUTTONUP, func(p wmBase) uintptr {
-		userFunc(WmMButtonUp{wmBaseBtn: wmBaseBtn{base: wmBase(p)}})
+		userFunc(WmMButtonUp{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmMouseHover(userFunc func(p WmMouseHover)) {
 	me.addMsg(c.WM_MOUSEHOVER, func(p wmBase) uintptr {
-		userFunc(WmMouseHover{wmBaseBtn: wmBaseBtn{base: wmBase(p)}})
+		userFunc(WmMouseHover{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmMouseMove(userFunc func(p WmMouseMove)) {
 	me.addMsg(c.WM_MOUSEMOVE, func(p wmBase) uintptr {
-		userFunc(WmMouseMove{wmBaseBtn: wmBaseBtn{base: wmBase(p)}})
+		userFunc(WmMouseMove{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmRButtonDblClk(userFunc func(p WmRButtonDblClk)) {
 	me.addMsg(c.WM_RBUTTONDBLCLK, func(p wmBase) uintptr {
-		userFunc(WmRButtonDblClk{wmBaseBtn: wmBaseBtn{base: wmBase(p)}})
+		userFunc(WmRButtonDblClk{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmRButtonDown(userFunc func(p WmRButtonDown)) {
 	me.addMsg(c.WM_RBUTTONDOWN, func(p wmBase) uintptr {
-		userFunc(WmRButtonDown{wmBaseBtn: wmBaseBtn{base: wmBase(p)}})
+		userFunc(WmRButtonDown{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmRButtonUp(userFunc func(p WmRButtonUp)) {
 	me.addMsg(c.WM_RBUTTONUP, func(p wmBase) uintptr {
-		userFunc(WmRButtonUp{wmBaseBtn: wmBaseBtn{base: wmBase(p)}})
+		userFunc(WmRButtonUp{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
 		return 0
 	})
 }
 
 //------------------------------------------------------------------------------
+
+func (me *windowDepotMsg) WmMenuChar(userFunc func(p WmMenuChar) c.MNC) {
+	me.addMsg(c.WM_MENUCHAR, func(p wmBase) uintptr {
+		return uintptr(userFunc(WmMenuChar{base: wmBase(p)}))
+	})
+}
 
 func (me *windowDepotMsg) WmMouseLeave(userFunc func()) {
 	me.addMsg(c.WM_MOUSELEAVE, func(p wmBase) uintptr {
@@ -295,9 +329,23 @@ func (me *windowDepotMsg) WmSize(userFunc func(p WmSize)) {
 	})
 }
 
+func (me *windowDepotMsg) WmSysCommand(userFunc func(p WmSysCommand)) {
+	me.addMsg(c.WM_SYSCOMMAND, func(p wmBase) uintptr {
+		userFunc(WmSysCommand{base: wmBase(p)})
+		return 0
+	})
+}
+
 func (me *windowDepotMsg) WmSysKeyDown(userFunc func(p WmSysKeyDown)) {
 	me.addMsg(c.WM_SYSKEYDOWN, func(p wmBase) uintptr {
 		userFunc(WmSysKeyDown{base: wmBase(p)})
+		return 0
+	})
+}
+
+func (me *windowDepotMsg) WmSysKeyUp(userFunc func(p WmSysKeyUp)) {
+	me.addMsg(c.WM_SYSKEYUP, func(p wmBase) uintptr {
+		userFunc(WmSysKeyUp{base: wmBase(p)})
 		return 0
 	})
 }

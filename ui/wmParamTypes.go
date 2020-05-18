@@ -46,27 +46,36 @@ type WmActivateApp struct{ base wmBase }
 func (p WmActivateApp) IsBeingActivated() bool { return p.base.WParam != 0 }
 func (p WmActivateApp) ThreadId() uint32       { return uint32(p.base.LParam) }
 
+type WmAppCommand struct{ base wmBase }
+
+func (p WmAppCommand) OwnerWindow() api.HWND { return api.HWND(p.base.WParam) }
+func (p WmAppCommand) AppCommand() c.APPCOMMAND {
+	return c.APPCOMMAND(hiWordLp(p.base.LParam) &^ 0xF000)
+}
+func (p WmAppCommand) UDevice() c.FAPPCOMMAND { return c.FAPPCOMMAND(hiWordLp(p.base.LParam) & 0xF000) }
+func (p WmAppCommand) Keys() c.MK             { return c.MK(loWordLp(p.base.LParam)) }
+
 //------------------------------------------------------------------------------
 
-type wmBaseChar struct{ base wmBase }
+type wmCharBase struct{ base wmBase }
 
-func (p wmBaseChar) CharCode() uint16    { return uint16(p.base.WParam) }
-func (p wmBaseChar) RepeatCount() uint16 { return api.LoWord(uint32(p.base.LParam)) }
-func (p wmBaseChar) ScanCode() uint8     { return api.LoByte(api.HiWord(uint32(p.base.LParam))) }
-func (p wmBaseChar) IsExtendedKey() bool {
+func (p wmCharBase) CharCode() uint16    { return uint16(p.base.WParam) }
+func (p wmCharBase) RepeatCount() uint16 { return api.LoWord(uint32(p.base.LParam)) }
+func (p wmCharBase) ScanCode() uint8     { return api.LoByte(api.HiWord(uint32(p.base.LParam))) }
+func (p wmCharBase) IsExtendedKey() bool {
 	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00000001) != 0
 }
-func (p wmBaseChar) HasAltKey() bool { return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00100000) != 0 }
-func (p wmBaseChar) IsKeyDownBeforeSend() bool {
+func (p wmCharBase) HasAltKey() bool { return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00100000) != 0 }
+func (p wmCharBase) IsKeyDownBeforeSend() bool {
 	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b01000000) != 0
 }
-func (p wmBaseChar) KeyBeingReleased() bool {
+func (p wmCharBase) KeyBeingReleased() bool {
 	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b10000000) != 0
 }
 
-type WmChar struct{ wmBaseChar } // inherit
-type WmDeadChar struct{ wmBaseChar }
-type WmSysDeadChar struct{ wmBaseChar }
+type WmChar struct{ wmCharBase } // inherit
+type WmDeadChar struct{ wmCharBase }
+type WmSysDeadChar struct{ wmCharBase }
 
 //------------------------------------------------------------------------------
 
@@ -83,6 +92,12 @@ func (p WmDropFiles) Hdrop() api.HDROP { return api.HDROP(p.base.WParam) }
 type WmHelp struct{ base wmBase }
 
 func (p WmHelp) HelpInfo() *api.HELPINFO { return (*api.HELPINFO)(unsafe.Pointer(p.base.LParam)) }
+
+type WmHotKey struct{ base wmBase }
+
+func (p WmHotKey) HotKey() c.IDHOT      { return c.IDHOT(p.base.WParam) }
+func (p WmHotKey) OtherKeys() c.MOD     { return c.MOD(loWordLp(p.base.LParam)) }
+func (p WmHotKey) VirtualKeyCode() c.VK { return c.VK(hiWordLp(p.base.LParam)) }
 
 type WmInitMenuPopup struct{ base wmBase }
 
@@ -102,32 +117,48 @@ func (p WmKeyDown) IsKeyDownBeforeSend() bool {
 	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b01000000) != 0
 }
 
-//------------------------------------------------------------------------------
+type WmKeyUp struct{ base wmBase }
 
-type wmBaseBtn struct{ base wmBase }
+func (p WmKeyUp) VirtualKeyCode() c.VK { return c.VK(p.base.WParam) }
+func (p WmKeyUp) ScanCode() uint8      { return api.LoByte(api.HiWord(uint32(p.base.LParam))) }
+func (p WmKeyUp) IsExtendedKey() bool  { return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00000001) != 0 }
 
-func (p wmBaseBtn) HasCtrl() bool      { return (c.MK(p.base.WParam) & c.MK_CONTROL) != 0 }
-func (p wmBaseBtn) HasLeftBtn() bool   { return (c.MK(p.base.WParam) & c.MK_LBUTTON) != 0 }
-func (p wmBaseBtn) HasMiddleBtn() bool { return (c.MK(p.base.WParam) & c.MK_MBUTTON) != 0 }
-func (p wmBaseBtn) HasRightBtn() bool  { return (c.MK(p.base.WParam) & c.MK_RBUTTON) != 0 }
-func (p wmBaseBtn) HasShift() bool     { return (c.MK(p.base.WParam) & c.MK_SHIFT) != 0 }
-func (p wmBaseBtn) HasXBtn1() bool     { return (c.MK(p.base.WParam) & c.MK_XBUTTON1) != 0 }
-func (p wmBaseBtn) HasXBtn2() bool     { return (c.MK(p.base.WParam) & c.MK_XBUTTON2) != 0 }
-func (p wmBaseBtn) Pos() api.POINT     { return makePointLp(p.base.LParam) }
+type WmKillFocus struct{ base wmBase }
 
-type WmLButtonDblClk struct{ wmBaseBtn } // inherit
-type WmLButtonDown struct{ wmBaseBtn }
-type WmLButtonUp struct{ wmBaseBtn }
-type WmMButtonDblClk struct{ wmBaseBtn }
-type WmMButtonDown struct{ wmBaseBtn }
-type WmMButtonUp struct{ wmBaseBtn }
-type WmMouseHover struct{ wmBaseBtn }
-type WmMouseMove struct{ wmBaseBtn }
-type WmRButtonDblClk struct{ wmBaseBtn }
-type WmRButtonDown struct{ wmBaseBtn }
-type WmRButtonUp struct{ wmBaseBtn }
+func (p WmKillFocus) WindowReceivingFocus() api.HWND { return api.HWND(p.base.WParam) }
 
 //------------------------------------------------------------------------------
+
+type wmLButtonDblClkBase struct{ base wmBase }
+
+func (p wmLButtonDblClkBase) HasCtrl() bool      { return (c.MK(p.base.WParam) & c.MK_CONTROL) != 0 }
+func (p wmLButtonDblClkBase) HasLeftBtn() bool   { return (c.MK(p.base.WParam) & c.MK_LBUTTON) != 0 }
+func (p wmLButtonDblClkBase) HasMiddleBtn() bool { return (c.MK(p.base.WParam) & c.MK_MBUTTON) != 0 }
+func (p wmLButtonDblClkBase) HasRightBtn() bool  { return (c.MK(p.base.WParam) & c.MK_RBUTTON) != 0 }
+func (p wmLButtonDblClkBase) HasShift() bool     { return (c.MK(p.base.WParam) & c.MK_SHIFT) != 0 }
+func (p wmLButtonDblClkBase) HasXBtn1() bool     { return (c.MK(p.base.WParam) & c.MK_XBUTTON1) != 0 }
+func (p wmLButtonDblClkBase) HasXBtn2() bool     { return (c.MK(p.base.WParam) & c.MK_XBUTTON2) != 0 }
+func (p wmLButtonDblClkBase) Pos() api.POINT     { return makePointLp(p.base.LParam) }
+
+type WmLButtonDblClk struct{ wmLButtonDblClkBase } // inherit
+type WmLButtonDown struct{ wmLButtonDblClkBase }
+type WmLButtonUp struct{ wmLButtonDblClkBase }
+type WmMButtonDblClk struct{ wmLButtonDblClkBase }
+type WmMButtonDown struct{ wmLButtonDblClkBase }
+type WmMButtonUp struct{ wmLButtonDblClkBase }
+type WmMouseHover struct{ wmLButtonDblClkBase }
+type WmMouseMove struct{ wmLButtonDblClkBase }
+type WmRButtonDblClk struct{ wmLButtonDblClkBase }
+type WmRButtonDown struct{ wmLButtonDblClkBase }
+type WmRButtonUp struct{ wmLButtonDblClkBase }
+
+//------------------------------------------------------------------------------
+
+type WmMenuChar struct{ base wmBase }
+
+func (p WmMenuChar) CharCode() uint16      { return loWordWp(p.base.WParam) }
+func (p WmMenuChar) ActiveMenuType() c.MF  { return c.MF(hiWordWp(p.base.WParam)) }
+func (p WmMenuChar) ActiveMenu() api.HMENU { return api.HMENU(p.base.LParam) }
 
 type WmMove struct{ base wmBase }
 
@@ -156,6 +187,11 @@ type WmSize struct{ base wmBase }
 func (p WmSize) Request() c.SIZE_REQ      { return c.SIZE_REQ(p.base.WParam) }
 func (p WmSize) ClientAreaSize() api.SIZE { return makeSizeLp(p.base.LParam) }
 
+type WmSysCommand struct{ base wmBase }
+
+func (p WmSysCommand) RequestCommand() c.SC { return c.SC(p.base.WParam) }
+func (p WmSysCommand) CursorPos() api.POINT { return makePointLp(p.base.LParam) }
+
 type WmSysKeyDown struct{ base wmBase }
 
 func (p WmSysKeyDown) VirtualKeyCode() c.VK { return c.VK(p.base.WParam) }
@@ -170,6 +206,15 @@ func (p WmSysKeyDown) HasAltKey() bool {
 func (p WmSysKeyDown) IsKeyDownBeforeSend() bool {
 	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b01000000) != 0
 }
+
+type WmSysKeyUp struct{ base wmBase }
+
+func (p WmSysKeyUp) VirtualKeyCode() c.VK { return c.VK(p.base.WParam) }
+func (p WmSysKeyUp) ScanCode() uint8      { return api.LoByte(api.HiWord(uint32(p.base.LParam))) }
+func (p WmSysKeyUp) IsExtendedKey() bool {
+	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00000001) != 0
+}
+func (p WmSysKeyUp) HasAltKey() bool { return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00100000) != 0 }
 
 //------------------------------------------------------------------------------
 

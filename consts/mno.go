@@ -149,6 +149,15 @@ const (
 	MK_XBUTTON2 MK = 0x0040
 )
 
+type MNC uint32 // WM_MENUCHAR return
+
+const (
+	MNC_IGNORE  MNC = 0
+	MNC_CLOSE   MNC = 1
+	MNC_EXECUTE MNC = 2
+	MNC_SELECT  MNC = 3
+)
+
 type MNS uint32 // MENUINFO style
 
 const (
@@ -158,6 +167,18 @@ const (
 	MNS_AUTODISMISS MNS = 0x10000000
 	MNS_NOTIFYBYPOS MNS = 0x08000000
 	MNS_CHECKORBMP  MNS = 0x04000000
+)
+
+type MOD uint16 // WM_HOTKEY
+
+const (
+	MOD_ALT                 MOD = 0x0001
+	MOD_CONTROL             MOD = 0x0002
+	MOD_SHIFT               MOD = 0x0004
+	MOD_LEFT                MOD = 0x8000
+	MOD_RIGHT               MOD = 0x4000
+	MOD_ON_KEYUP            MOD = 0x0800
+	MOD_IGNORE_ALL_MODIFIER MOD = 0x0400
 )
 
 type MONITOR uint32 // MonitorFromPoint

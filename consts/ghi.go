@@ -141,3 +141,10 @@ const (
 	IDC_PIN         IDC = 32671
 	IDC_PERSON      IDC = 32672
 )
+
+type IDHOT int32 // WM_HOTKEY
+
+const (
+	IDHOT_SNAPWINDOW  IDHOT = -1
+	IDHOT_SNAPDESKTOP IDHOT = -2
+)
