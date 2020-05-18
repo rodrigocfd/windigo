@@ -7,7 +7,6 @@
 package ui
 
 import (
-	"wingows/api"
 	c "wingows/consts"
 )
 
@@ -59,26 +58,4 @@ func (me *Edit) CreateSimple(parent Window, x, y int32, width uint32,
 		c.WS_EX_CLIENTEDGE,
 		c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
 		c.ES_AUTOHSCROLL)
-}
-
-func (me *Edit) Enable(enabled bool) *Edit {
-	me.nativeControlBase.Hwnd().EnableWindow(enabled)
-	return me
-}
-
-func (me *Edit) IsEnabled() bool {
-	return me.nativeControlBase.Hwnd().IsWindowEnabled()
-}
-
-func (me *Edit) SetFocus() api.HWND {
-	return me.nativeControlBase.Hwnd().SetFocus()
-}
-
-func (me *Edit) SetText(text string) *Edit {
-	me.nativeControlBase.Hwnd().SetWindowText(text)
-	return me
-}
-
-func (me *Edit) Text() string {
-	return me.nativeControlBase.Hwnd().GetWindowText()
 }

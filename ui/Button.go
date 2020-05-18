@@ -7,7 +7,6 @@
 package ui
 
 import (
-	"wingows/api"
 	c "wingows/consts"
 )
 
@@ -48,26 +47,4 @@ func (me *Button) CreateSimpleDef(parent Window, x, y int32,
 	return me.Create(parent, x, y, width, 23, text,
 		c.WS_EX(0), c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
 		c.BS_DEFPUSHBUTTON)
-}
-
-func (me *Button) Enable(enabled bool) *Button {
-	me.nativeControlBase.Hwnd().EnableWindow(enabled)
-	return me
-}
-
-func (me *Button) IsEnabled() bool {
-	return me.nativeControlBase.Hwnd().IsWindowEnabled()
-}
-
-func (me *Button) SetFocus() api.HWND {
-	return me.nativeControlBase.Hwnd().SetFocus()
-}
-
-func (me *Button) SetText(text string) *Button {
-	me.nativeControlBase.Hwnd().SetWindowText(text)
-	return me
-}
-
-func (me *Button) Text() string {
-	return me.nativeControlBase.Hwnd().GetWindowText()
 }

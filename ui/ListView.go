@@ -121,15 +121,6 @@ func (me *ListView) DeleteAllItems() *ListView {
 	return me
 }
 
-func (me *ListView) Enable(enabled bool) *ListView {
-	me.hwnd.EnableWindow(enabled)
-	return me
-}
-
-func (me *ListView) IsEnabled() bool {
-	return me.hwnd.IsWindowEnabled()
-}
-
 func (me *ListView) IsGroupViewEnabled() bool {
 	return me.sendLvmMessage(c.LVM_ISGROUPVIEWENABLED, 0, 0) >= 0
 }
@@ -156,10 +147,6 @@ func (me *ListView) SelectedItemCount() uint32 {
 		panic("LVM_GETSELECTEDCOUNT failed.")
 	}
 	return uint32(count)
-}
-
-func (me *ListView) SetFocus() api.HWND {
-	return me.hwnd.SetFocus()
 }
 
 func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
