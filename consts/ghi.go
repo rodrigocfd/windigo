@@ -97,6 +97,13 @@ const (
 	HDM_LAYOUT       HDM = hDM_FIRST + 5
 )
 
+type HELPINFO int32 // HELPINFO iContextType
+
+const (
+	HELPINFO_WINDOW   HELPINFO = 0x0001
+	HELPINFO_MENUITEM HELPINFO = 0x0002
+)
+
 type ID uint16 // dialog box command ID
 
 const (

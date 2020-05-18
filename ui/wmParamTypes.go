@@ -80,6 +80,10 @@ type WmDropFiles struct{ base wmBase }
 
 func (p WmDropFiles) Hdrop() api.HDROP { return api.HDROP(p.base.WParam) }
 
+type WmHelp struct{ base wmBase }
+
+func (p WmHelp) HelpInfo() *api.HELPINFO { return (*api.HELPINFO)(unsafe.Pointer(p.base.LParam)) }
+
 type WmInitMenuPopup struct{ base wmBase }
 
 func (p WmInitMenuPopup) Hmenu() api.HMENU        { return api.HMENU(p.base.WParam) }

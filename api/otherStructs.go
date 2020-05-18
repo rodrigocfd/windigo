@@ -28,6 +28,15 @@ type CREATESTRUCT struct {
 	ExStyle        c.WS_EX
 }
 
+type HELPINFO struct {
+	CbSize       uint32
+	IContextType c.HELPINFO
+	ICtrlId      int32
+	HItemHandle  HANDLE
+	DwContextId  uintptr
+	MousePos     POINT
+}
+
 type MENUINFO struct {
 	CbSize          uint32
 	FMask           c.MIM

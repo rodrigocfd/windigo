@@ -130,6 +130,13 @@ func (me *windowDepotMsg) WmDropFiles(userFunc func(p WmDropFiles)) {
 	})
 }
 
+func (me *windowDepotMsg) WmHelp(userFunc func(p WmHelp)) {
+	me.addMsg(c.WM_HELP, func(p wmBase) uintptr {
+		userFunc(WmHelp{base: wmBase(p)})
+		return 1
+	})
+}
+
 func (me *windowDepotMsg) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
 	me.addMsg(c.WM_INITMENUPOPUP, func(p wmBase) uintptr {
 		userFunc(WmInitMenuPopup{base: wmBase(p)})
