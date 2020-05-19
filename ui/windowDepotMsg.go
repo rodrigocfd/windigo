@@ -26,7 +26,7 @@ func (me *windowDepotMsg) addMsg(msg c.WM, userFunc func(p wmBase) uintptr) {
 			"Cannot add message 0x%04x after the window was created.", msg))
 	}
 	if me.mapMsgs == nil { // guard
-		me.mapMsgs = make(map[c.WM]func(p wmBase) uintptr)
+		me.mapMsgs = make(map[c.WM]func(p wmBase) uintptr, 16) // arbitrary capacity
 	}
 	me.mapMsgs[msg] = userFunc
 }
@@ -37,7 +37,7 @@ func (me *windowDepotMsg) addCmd(cmd c.ID, userFunc func(p WmCommand)) {
 			"Cannot add command message %d after the window was created.", cmd))
 	}
 	if me.mapCmds == nil { // guard
-		me.mapCmds = make(map[c.ID]func(p WmCommand))
+		me.mapCmds = make(map[c.ID]func(p WmCommand), 16) // arbitrary capacity
 	}
 	me.mapCmds[cmd] = userFunc
 }

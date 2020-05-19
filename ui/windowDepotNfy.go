@@ -33,7 +33,7 @@ func (me *windowDepotNfy) addNfy(idFrom c.ID, code c.NM,
 			idFrom, code))
 	}
 	if me.mapNfys == nil { // guard
-		me.mapNfys = make(map[nfyHash]func(p WmNotify) uintptr)
+		me.mapNfys = make(map[nfyHash]func(p WmNotify) uintptr, 16) // arbitrary capacity
 	}
 	me.mapNfys[nfyHash{IdFrom: idFrom, Code: code}] = userFunc
 }
