@@ -65,6 +65,13 @@ const (
 	APPCOMMAND_DWM_FLIP3D                        APPCOMMAND = 54
 )
 
+type BKMODE int32 // SetBkMode
+
+const (
+	BKMODE_TRANSPARENT BKMODE = 1
+	BKMODE_OPAQUE      BKMODE = 2
+)
+
 type BS uint32 // button style
 
 const (
