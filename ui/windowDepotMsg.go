@@ -165,6 +165,15 @@ func (me *windowDepotMsg) WmDeadChar(userFunc func(p WmDeadChar)) {
 	})
 }
 
+type WmSysChar struct{ wmCharBase }
+
+func (me *windowDepotMsg) WmSysChar(userFunc func(p WmSysChar)) {
+	me.addMsg(c.WM_SYSCHAR, func(p wmBase) uintptr {
+		userFunc(WmSysChar{wmCharBase: wmCharBase{base: wmBase(p)}})
+		return 0
+	})
+}
+
 type WmSysDeadChar struct{ wmCharBase }
 
 func (me *windowDepotMsg) WmSysDeadChar(userFunc func(p WmSysDeadChar)) {
@@ -179,6 +188,18 @@ func (me *windowDepotMsg) WmSysDeadChar(userFunc func(p WmSysDeadChar)) {
 func (me *windowDepotMsg) WmClose(userFunc func()) {
 	me.addMsg(c.WM_CLOSE, func(p wmBase) uintptr {
 		userFunc()
+		return 0
+	})
+}
+
+type WmContextMenu struct{ base wmBase }
+
+func (p WmContextMenu) RightClickedWindow() api.HWND { return api.HWND(p.base.WParam) }
+func (p WmContextMenu) CursorPos() api.POINT         { return makePointLp(p.base.LParam) }
+
+func (me *windowDepotMsg) WmContextMenu(userFunc func(p WmContextMenu)) {
+	me.addMsg(c.WM_CONTEXTMENU, func(p wmBase) uintptr {
+		userFunc(WmContextMenu{base: wmBase(p)})
 		return 0
 	})
 }
@@ -416,6 +437,31 @@ func (p WmMenuChar) ActiveMenu() api.HMENU { return api.HMENU(p.base.LParam) }
 func (me *windowDepotMsg) WmMenuChar(userFunc func(p WmMenuChar) c.MNC) {
 	me.addMsg(c.WM_MENUCHAR, func(p wmBase) uintptr {
 		return uintptr(userFunc(WmMenuChar{base: wmBase(p)}))
+	})
+}
+
+type WmMenuCommand struct{ base wmBase }
+
+func (p WmMenuCommand) ItemIndex() uint16 { return uint16(p.base.WParam) }
+func (p WmMenuCommand) Hmenu() api.HMENU  { return api.HMENU(p.base.LParam) }
+
+func (me *windowDepotMsg) WmMenuCommand(userFunc func(p WmMenuCommand)) {
+	me.addMsg(c.WM_MENUCOMMAND, func(p wmBase) uintptr {
+		userFunc(WmMenuCommand{base: wmBase(p)})
+		return 0
+	})
+}
+
+type WmMenuSelect struct{ base wmBase }
+
+func (p WmMenuSelect) Item() uint16     { return loWordWp(p.base.WParam) }
+func (p WmMenuSelect) Flags() c.MF      { return c.MF(hiWordWp(p.base.WParam)) }
+func (p WmMenuSelect) Hmenu() api.HMENU { return api.HMENU(p.base.LParam) }
+
+func (me *windowDepotMsg) WmMenuSelect(userFunc func(p WmMenuSelect)) {
+	me.addMsg(c.WM_MENUSELECT, func(p wmBase) uintptr {
+		userFunc(WmMenuSelect{base: wmBase(p)})
+		return 0
 	})
 }
 
