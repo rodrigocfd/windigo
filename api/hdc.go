@@ -7,6 +7,7 @@
 package api
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
@@ -14,6 +15,15 @@ import (
 )
 
 type HDC HANDLE
+
+func (hdc HDC) CreateCompatibleDC() HDC {
+	ret, _, _ := syscall.Syscall(proc.CreateCompatibleDC.Addr(), 1,
+		uintptr(hdc), 0, 0)
+	if ret == 0 {
+		panic("CreateCompatibleDC failed.")
+	}
+	return HDC(ret)
+}
 
 func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) []HMONITOR {
 	hMons := []HMONITOR{}
@@ -25,6 +35,14 @@ func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) []HMONITOR {
 				return uintptr(1)
 			}), 0, 0, 0)
 	return hMons
+}
+
+func (hdc HDC) DeleteDC() {
+	ret, _, _ := syscall.Syscall(proc.DeleteDC.Addr(), 1,
+		uintptr(hdc), 0, 0)
+	if ret == 0 {
+		panic("DeleteDC failed.")
+	}
 }
 
 func (hdc HDC) GetDeviceCaps(index c.GDC) int32 {
@@ -59,6 +77,40 @@ func (hdc HDC) LineTo(x, y int32) {
 		uintptr(hdc), uintptr(x), uintptr(y))
 	if ret == 0 {
 		panic("LineTo failed.")
+	}
+}
+
+func (hdc HDC) PolyDraw(apt []POINT, aj []c.PT) {
+	ret, _, _ := syscall.Syscall6(proc.PolyDraw.Addr(), 4,
+		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])),
+		uintptr(unsafe.Pointer(&aj[0])), uintptr(len(apt)),
+		0, 0)
+	if ret == 0 {
+		panic(fmt.Sprintf("PolyDraw failed for %d points.", len(apt)))
+	}
+}
+
+func (hdc HDC) Polygon(apt []POINT) {
+	ret, _, _ := syscall.Syscall(proc.Polygon.Addr(), 3,
+		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
+	if ret == 0 {
+		panic(fmt.Sprintf("Polygon failed for %d points.", len(apt)))
+	}
+}
+
+func (hdc HDC) Polyline(apt []POINT) {
+	ret, _, _ := syscall.Syscall(proc.Polyline.Addr(), 3,
+		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
+	if ret == 0 {
+		panic(fmt.Sprintf("Polyline failed for %d points.", len(apt)))
+	}
+}
+
+func (hdc HDC) PolylineTo(apt []POINT) {
+	ret, _, _ := syscall.Syscall(proc.PolylineTo.Addr(), 3,
+		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
+	if ret == 0 {
+		panic(fmt.Sprintf("PolylineTo failed for %d points.", len(apt)))
 	}
 }
 
