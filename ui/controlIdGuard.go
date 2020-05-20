@@ -10,8 +10,6 @@ import (
 	c "wingows/consts"
 )
 
-var baseId = c.ID(1000) // arbitrary, taken from Visual Studio resource editor
-
 // Encapsulates the control ID and, if not initialized, uses an auto-incremented value.
 type controlIdGuard struct {
 	ctrlId c.ID // defaults to zero
@@ -28,8 +26,8 @@ func makeCtrlIdGuard(initialId c.ID) controlIdGuard {
 // Returns the ID of this child window control.
 func (me *controlIdGuard) CtrlId() c.ID {
 	if me.ctrlId == 0 { // not initialized yet?
-		baseId++ // increments sequential global ID
-		me.ctrlId = baseId
+		globalBaseCtrlId++ // increments sequential global ID
+		me.ctrlId = globalBaseCtrlId
 	}
 	return me.ctrlId
 }

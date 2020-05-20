@@ -14,9 +14,6 @@ import (
 	c "wingows/consts"
 )
 
-var baseSubclassId = uint32(0)   // incremented at each subclass installed
-var subclassProcPtr = uintptr(0) // necessary for RemoveWindowSubclass
-
 // Base to all native child control types, like Button and Edit.
 // Allows control subclassing.
 type controlNativeBase struct {
@@ -61,15 +58,15 @@ func (me *controlNativeBase) create(exStyle c.WS_EX, className, title string,
 	if len(me.msgs.mapMsgs) > 0 || // at last 1 subclass message was added?
 		len(me.msgs.mapCmds) > 0 {
 
-		if subclassProcPtr == 0 {
-			subclassProcPtr = syscall.NewCallback(subclassProc)
+		if globalSubclassProcPtr == 0 {
+			globalSubclassProcPtr = syscall.NewCallback(subclassProc)
 		}
-		baseSubclassId++
-		me.subclassId = baseSubclassId
+		globalBaseSubclassId++
+		me.subclassId = globalBaseSubclassId
 
 		// Subclass is installed after window creation, thus WM_CREATE can never
 		// be handled for a subclassed control.
-		me.hwnd.SetWindowSubclass(subclassProcPtr,
+		me.hwnd.SetWindowSubclass(globalSubclassProcPtr,
 			me.subclassId, unsafe.Pointer(me))
 	}
 }
@@ -88,7 +85,7 @@ func subclassProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM,
 			wmBase{WParam: wParam, LParam: lParam}) // try to process the message with an user handler
 
 		if msg == c.WM_NCDESTROY { // even if the user handles WM_NCDESTROY, we must ensure cleanup
-			pMe.hwnd.RemoveWindowSubclass(subclassProcPtr, pMe.subclassId)
+			pMe.hwnd.RemoveWindowSubclass(globalSubclassProcPtr, pMe.subclassId)
 		}
 		if wasHandled && msg != c.WM_LBUTTONUP {
 			// For some reason, if we don't call DefSubclassProc with WM_LBUTTONUP,
@@ -97,7 +94,7 @@ func subclassProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM,
 			return userRet
 		}
 	} else if msg == c.WM_NCDESTROY { // https://devblogs.microsoft.com/oldnewthing/20031111-00/?p=41883
-		hwnd.RemoveWindowSubclass(subclassProcPtr, pMe.subclassId)
+		hwnd.RemoveWindowSubclass(globalSubclassProcPtr, pMe.subclassId)
 	}
 
 	return hwnd.DefSubclassProc(msg, wParam, lParam) // message was not processed
