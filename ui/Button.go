@@ -27,7 +27,7 @@ func MakeButton(ctrlId c.ID) Button {
 func (me *Button) Create(parent Window, x, y int32, width, height uint32,
 	text string, exStyles c.WS_EX, styles c.WS, btnStyles c.BS) *Button {
 
-	me.controlNativeBase.create(exStyles, "Button", text,
+	me.controlNativeBase.create(exStyles, "BUTTON", text,
 		styles|c.WS(btnStyles), x, y, width, height, parent)
 	globalUiFont.SetOnControl(me)
 	return me

@@ -10,7 +10,7 @@ import (
 	c "wingows/consts"
 )
 
-// Native edit control.
+// Native edit control (textbox).
 // Can be default-initialized.
 // Call one of the create methods during parent's WM_CREATE.
 type Edit struct {
@@ -27,7 +27,7 @@ func MakeEdit(ctrlId c.ID) Edit {
 func (me *Edit) Create(parent Window, x, y int32, width, height uint32,
 	initialText string, exStyles c.WS_EX, styles c.WS, editStyles c.ES) *Edit {
 
-	me.controlNativeBase.create(exStyles, "Edit", initialText,
+	me.controlNativeBase.create(exStyles, "EDIT", initialText,
 		styles|c.WS(editStyles), x, y, width, height, parent)
 	globalUiFont.SetOnControl(me)
 	return me

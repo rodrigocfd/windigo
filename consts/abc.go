@@ -72,7 +72,7 @@ const (
 	BKMODE_OPAQUE      BKMODE = 2
 )
 
-type BS uint32 // button style
+type BS WS // button control style
 
 const (
 	BS_PUSHBUTTON      BS = 0x00000000
