@@ -25,15 +25,15 @@ type Window interface {
 //------------------------------------------------------------------------------
 
 func multiplyByDpi(x, y int32, cx, cy uint32) (int32, int32, uint32, uint32) {
-	if globalDpiRatioX == -1 {
+	if globalDpi.X == 0 {
 		dc := api.HWND(0).GetDC()
-		globalDpiRatioX = float32(dc.GetDeviceCaps(c.GDC_LOGPIXELSX)) / 96
-		globalDpiRatioY = float32(dc.GetDeviceCaps(c.GDC_LOGPIXELSY)) / 96
+		globalDpi.X = dc.GetDeviceCaps(c.GDC_LOGPIXELSX)
+		globalDpi.Y = dc.GetDeviceCaps(c.GDC_LOGPIXELSY)
 	}
-	return int32(float32(x) * globalDpiRatioX),
-		int32(float32(y) * globalDpiRatioY),
-		uint32(float32(cx) * globalDpiRatioX),
-		uint32(float32(cy) * globalDpiRatioY)
+	return api.MulDiv(x, globalDpi.X, 96),
+		api.MulDiv(y, globalDpi.Y, 96),
+		uint32(api.MulDiv(int32(cx), globalDpi.X, 96)),
+		uint32(api.MulDiv(int32(cy), globalDpi.Y, 96))
 }
 
 //------------------------------------------------------------------------------

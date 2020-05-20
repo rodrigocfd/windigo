@@ -7,6 +7,7 @@
 package ui
 
 import (
+	"wingows/api"
 	c "wingows/consts"
 )
 
@@ -20,5 +21,5 @@ var (
 	globalBaseSubclassId  = uint32(0)  // controlNativeBase; incremented at each subclass installed
 	globalSubclassProcPtr = uintptr(0) // controlNativeBase; necessary for RemoveWindowSubclass
 
-	globalDpiRatioX, globalDpiRatioY float32 = -1, -1 // multiplyByDpi()
+	globalDpi = api.POINT{X: 0, Y: 0} // multiplyByDpi()
 )
