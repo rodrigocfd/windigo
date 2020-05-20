@@ -8,6 +8,7 @@ package ui
 
 import (
 	"strings"
+	"wingows/api"
 	c "wingows/consts"
 )
 
@@ -35,26 +36,36 @@ func (me *Static) Create(parent Window, x, y int32, width, height uint32,
 }
 
 func (me *Static) CreateLText(parent Window, x, y int32, text string) *Static {
-	cx, cy := me.calcIdealSize(parent, text, true)
+	staStyles := c.SS_LEFT
+	cx, cy := me.calcIdealSize(parent.Hwnd(), text, staStyles)
 	return me.Create(parent, x, y, cx, cy, text,
-		c.WS_EX(0), c.WS_CHILD|c.WS_GROUP|c.WS_VISIBLE, c.SS_LEFT)
+		c.WS_EX(0), c.WS_CHILD|c.WS_GROUP|c.WS_VISIBLE, staStyles)
 }
 
-func (me *Static) calcIdealSize(parent Window, text string,
-	ampersandIsUnderline bool) (uint32, uint32) {
+// Sets the text and resizes the static control accordingly.
+func (me *Static) SetText(text string) {
+	cx, cy := me.calcIdealSize(me.Hwnd().GetParent(), text,
+		c.SS(me.Hwnd().GetStyle()))
+	me.Hwnd().SetWindowPos(c.SWP_HWND(0), 0, 0, cx, cy,
+		c.SWP_NOZORDER|c.SWP_NOMOVE)
+	me.Hwnd().SetWindowText(text)
+}
 
-	parentDc := parent.Hwnd().GetDC()
+func (me *Static) calcIdealSize(hParent api.HWND, text string,
+	staStyles c.SS) (uint32, uint32) {
+
+	parentDc := hParent.GetDC()
 	cloneDc := parentDc.CreateCompatibleDC()
 	prevFont := cloneDc.SelectObjectFont(globalUiFont.Hfont())
 
-	if ampersandIsUnderline {
+	if (staStyles & c.SS_NOPREFIX) == 0 {
 		text = me.removeAmpersands(text)
 	}
 
 	bounds := cloneDc.GetTextExtentPoint32(text) // counting &, must remove!
 	cloneDc.SelectObjectFont(prevFont)
 	cloneDc.DeleteDC()
-	parent.Hwnd().ReleaseDC(parentDc)
+	hParent.ReleaseDC(parentDc)
 
 	return uint32(bounds.Cx), uint32(bounds.Cy)
 }
