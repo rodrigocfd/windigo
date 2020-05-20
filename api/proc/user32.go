@@ -53,7 +53,7 @@ var (
 	GetSystemMetrics              = dllUser32.NewProc("GetSystemMetrics")
 	GetWindow                     = dllUser32.NewProc("GetWindow")
 	GetWindowDC                   = dllUser32.NewProc("GetWindowDC")
-	GetWindowLongPtr              = dllUser32.NewProc("SetWindowLongPtrW")
+	GetWindowLongPtr              = dllUser32.NewProc("GetWindowLongPtrW")
 	GetWindowRect                 = dllUser32.NewProc("GetWindowRect")
 	GetWindowText                 = dllUser32.NewProc("GetWindowTextW")
 	GetWindowTextLength           = dllUser32.NewProc("GetWindowTextLengthW")
