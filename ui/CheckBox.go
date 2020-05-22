@@ -45,14 +45,7 @@ func (me *CheckBox) Create(parent Window, x, y int32, width, height uint32,
 func (me *CheckBox) CreateThreeState(parent Window, x, y int32,
 	text string) *CheckBox {
 
-	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
-	cx, cy := me.calcCheckBoxIdealSize(parent.Hwnd(), text)
-
-	me.controlNativeBase.create(c.WS_EX(0), "BUTTON", text,
-		c.WS_CHILD|c.WS_GROUP|c.WS_VISIBLE|c.WS(c.BS_AUTO3STATE),
-		x, y, cx, cy, parent)
-	globalUiFont.SetOnControl(me)
-	return me
+	return me.createBase(parent, x, y, text, c.BS_AUTO3STATE)
 }
 
 // Calls CreateWindowEx(). Creates a check box with BS_AUTOCHECKBOX style.
@@ -61,32 +54,39 @@ func (me *CheckBox) CreateThreeState(parent Window, x, y int32,
 func (me *CheckBox) CreateTwoState(parent Window, x, y int32,
 	text string) *CheckBox {
 
-	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
-	cx, cy := me.calcCheckBoxIdealSize(parent.Hwnd(), text)
-
-	me.controlNativeBase.create(c.WS_EX(0), "BUTTON", text,
-		c.WS_CHILD|c.WS_GROUP|c.WS_VISIBLE|c.WS(c.BS_AUTOCHECKBOX),
-		x, y, cx, cy, parent)
-	globalUiFont.SetOnControl(me)
-	return me
+	return me.createBase(parent, x, y, text, c.BS_AUTOCHECKBOX)
 }
 
 func (me *CheckBox) IsChecked() bool {
 	return me.State() == c.BST_CHECKED
 }
 
-// Sets the text and resizes the control to fit the text exactly.
-func (me *CheckBox) SetText(text string) {
+func (me *CheckBox) SetCheck() *CheckBox {
+	return me.SetState(c.BST_CHECKED)
+}
+
+// A BS_AUTOCHECKBOX can be only checked or unchecked, a BS_AUTO3STATE can also
+// be indeterminate.
+func (me *CheckBox) SetState(state c.BST) *CheckBox {
+	me.Hwnd().SendMessage(c.WM(c.BM_SETCHECK), api.WPARAM(state), 0)
+	return me
+}
+
+// SetWindowText() doesn't resize the control to fit the text. This method
+// resizes the control to fit the text exactly.
+func (me *CheckBox) SetText(text string) *CheckBox {
 	cx, cy := me.calcCheckBoxIdealSize(me.Hwnd().GetParent(), text)
 
 	me.Hwnd().SetWindowPos(c.SWP_HWND(0), 0, 0, cx, cy,
 		c.SWP_NOZORDER|c.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
+	return me
 }
 
-// Returns the check state of the check box control.
+// A BS_AUTOCHECKBOX can be only checked or unchecked, a BS_AUTO3STATE can also
+// be indeterminate.
 func (me *CheckBox) State() c.BST {
-	return me.Hwnd().GetParent().IsDlgButtonChecked(me.CtrlId())
+	return c.BST(me.Hwnd().SendMessage(c.WM(c.BM_GETCHECK), 0, 0))
 }
 
 func (me *CheckBox) calcCheckBoxIdealSize(hReferenceDc api.HWND,
@@ -98,8 +98,21 @@ func (me *CheckBox) calcCheckBoxIdealSize(hReferenceDc api.HWND,
 
 	cyCheck := uint32(api.GetSystemMetrics(c.SM_CYMENUCHECK))
 	if cyCheck > cy {
-		cy = cyCheck // if the checkbox is taller than the font, use its height
+		cy = cyCheck // if the check is taller than the font, use its height
 	}
 
 	return cx, cy
+}
+
+func (me *CheckBox) createBase(parent Window, x, y int32,
+	text string, chbxStyles c.BS) *CheckBox {
+
+	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
+	cx, cy := me.calcCheckBoxIdealSize(parent.Hwnd(), text)
+
+	me.controlNativeBase.create(c.WS_EX(0), "BUTTON", text,
+		c.WS_CHILD|c.WS_GROUP|c.WS_VISIBLE|c.WS(chbxStyles),
+		x, y, cx, cy, parent)
+	globalUiFont.SetOnControl(me)
+	return me
 }

@@ -72,6 +72,20 @@ const (
 	BKMODE_OPAQUE      BKMODE = 2
 )
 
+type BM WM // button messages
+
+const (
+	BM_GETCHECK     BM = 0x00F0
+	BM_SETCHECK     BM = 0x00F1
+	BM_GETSTATE     BM = 0x00F2
+	BM_SETSTATE     BM = 0x00F3
+	BM_SETSTYLE     BM = 0x00F4
+	BM_CLICK        BM = 0x00F5
+	BM_GETIMAGE     BM = 0x00F6
+	BM_SETIMAGE     BM = 0x00F7
+	BM_SETDONTCLICK BM = 0x00F8
+)
+
 type BS WS // button control style
 
 const (
