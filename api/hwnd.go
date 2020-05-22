@@ -122,6 +122,16 @@ func (hwnd HWND) GetDC() HDC {
 	return HDC(ret)
 }
 
+func (hwnd HWND) GetDlgItem(nIDDlgItem c.ID) HWND {
+	ret, _, lerr := syscall.Syscall(proc.GetDlgItem.Addr(), 2,
+		uintptr(hwnd), uintptr(nIDDlgItem), 0)
+	if ret == 0 {
+		panic(fmt.Sprintf("GetDlgItem failed: %d %s\n",
+			lerr, lerr.Error()))
+	}
+	return HWND(ret)
+}
+
 // Available in Windows 10, version 1607.
 func (hwnd HWND) GetDpiForWindow() uint32 {
 	ret, _, _ := syscall.Syscall(proc.GetDpiForWindow.Addr(), 1,
@@ -241,15 +251,21 @@ func (hwnd HWND) IsChild(hwndParent HWND) bool {
 	return ret != 0
 }
 
-func (hwnd HWND) IsWindowEnabled() bool {
-	ret, _, _ := syscall.Syscall(proc.IsWindowEnabled.Addr(), 1,
-		uintptr(hwnd), 0, 0)
-	return ret != 0
-}
-
 func (hwnd HWND) IsDialogMessage(msg *MSG) bool {
 	ret, _, _ := syscall.Syscall(proc.IsDialogMessage.Addr(), 2,
 		uintptr(hwnd), uintptr(unsafe.Pointer(msg)), 0)
+	return ret != 0
+}
+
+func (hwnd HWND) IsDlgButtonChecked(nIDButton c.ID) c.BST {
+	ret, _, _ := syscall.Syscall(proc.IsDlgButtonChecked.Addr(), 2,
+		uintptr(hwnd), uintptr(nIDButton), 0)
+	return c.BST(ret)
+}
+
+func (hwnd HWND) IsWindowEnabled() bool {
+	ret, _, _ := syscall.Syscall(proc.IsWindowEnabled.Addr(), 1,
+		uintptr(hwnd), 0, 0)
 	return ret != 0
 }
 

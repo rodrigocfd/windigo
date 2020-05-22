@@ -105,6 +105,16 @@ const (
 	BS_RIGHTBUTTON     BS = BS_LEFTTEXT
 )
 
+type BST uint32 // IsDlgButtonChecked
+
+const (
+	BST_UNCHECKED     BST = 0x0000
+	BST_CHECKED       BST = 0x0001
+	BST_INDETERMINATE BST = 0x0002
+	BST_PUSHED        BST = 0x0004
+	BST_FOCUS         BST = 0x0008
+)
+
 type CDIS uint32 // NMCUSTOMDRAW uItemState
 
 const (
