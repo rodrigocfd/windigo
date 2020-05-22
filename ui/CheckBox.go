@@ -39,9 +39,26 @@ func (me *CheckBox) Create(parent Window, x, y int32, width, height uint32,
 	return me
 }
 
-// Calls CreateWindowEx(). Position will be adjusted to the current system DPI.
-// The size will be calculated to fit the text exactly.
-func (me *CheckBox) CreateSimple(parent Window, x, y int32,
+// Calls CreateWindowEx(). Creates a check box with BS_AUTO3STATE style.
+// Position will be adjusted to the current system DPI. The size will be
+// calculated to fit the text exactly.
+func (me *CheckBox) CreateThreeState(parent Window, x, y int32,
+	text string) *CheckBox {
+
+	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
+	cx, cy := me.calcCheckBoxIdealSize(parent.Hwnd(), text)
+
+	me.controlNativeBase.create(c.WS_EX(0), "BUTTON", text,
+		c.WS_CHILD|c.WS_GROUP|c.WS_VISIBLE|c.WS(c.BS_AUTO3STATE),
+		x, y, cx, cy, parent)
+	globalUiFont.SetOnControl(me)
+	return me
+}
+
+// Calls CreateWindowEx(). Creates a check box with BS_AUTOCHECKBOX style.
+// Position will be adjusted to the current system DPI. The size will be
+// calculated to fit the text exactly.
+func (me *CheckBox) CreateTwoState(parent Window, x, y int32,
 	text string) *CheckBox {
 
 	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
