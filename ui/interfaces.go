@@ -7,6 +7,7 @@
 package ui
 
 import (
+	"strings"
 	"wingows/api"
 	c "wingows/consts"
 )
@@ -24,6 +25,7 @@ type Window interface {
 
 //------------------------------------------------------------------------------
 
+// Multiplies position and size by current DPI factor.
 func multiplyByDpi(x, y int32, cx, cy uint32) (int32, int32, uint32, uint32) {
 	if globalDpi.X == 0 {
 		dc := api.HWND(0).GetDC()
@@ -34,6 +36,41 @@ func multiplyByDpi(x, y int32, cx, cy uint32) (int32, int32, uint32, uint32) {
 		api.MulDiv(y, globalDpi.Y, 96),
 		uint32(api.MulDiv(int32(cx), globalDpi.X, 96)),
 		uint32(api.MulDiv(int32(cy), globalDpi.Y, 96))
+}
+
+// Calculates the bound rectangle to fit the text with current system font.
+func calcIdealSize(hReferenceDc api.HWND, text string,
+	considerAccelerators bool) (uint32, uint32) {
+
+	parentDc := hReferenceDc.GetDC()
+	cloneDc := parentDc.CreateCompatibleDC()
+	prevFont := cloneDc.SelectObjectFont(globalUiFont.Hfont()) // system font; already adjusted to current DPI
+
+	if considerAccelerators {
+		text = removeAcceleratorAmpersands(text)
+	}
+
+	bounds := cloneDc.GetTextExtentPoint32(text)
+	cloneDc.SelectObjectFont(prevFont)
+	cloneDc.DeleteDC()
+	hReferenceDc.ReleaseDC(parentDc)
+
+	return uint32(bounds.Cx), uint32(bounds.Cy)
+}
+
+// "&He && she" becomes "He & she".
+func removeAcceleratorAmpersands(text string) string {
+	buf := strings.Builder{}
+	for i := 0; i < len(text)-1; i++ {
+		if text[i] == '&' && text[i+1] != '&' {
+			continue
+		}
+		buf.WriteByte(text[i])
+	}
+	if text[len(text)-1] != '&' {
+		buf.WriteByte(text[len(text)-1])
+	}
+	return buf.String()
 }
 
 //------------------------------------------------------------------------------
