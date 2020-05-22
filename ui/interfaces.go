@@ -42,6 +42,12 @@ func multiplyByDpi(x, y int32, cx, cy uint32) (int32, int32, uint32, uint32) {
 func calcIdealSize(hReferenceDc api.HWND, text string,
 	considerAccelerators bool) (uint32, uint32) {
 
+	isEmpty := false
+	if len(text) == 0 {
+		isEmpty = true
+		text = "Pj" // just a placeholder to get the height
+	}
+
 	parentDc := hReferenceDc.GetDC()
 	cloneDc := parentDc.CreateCompatibleDC()
 	prevFont := cloneDc.SelectObjectFont(globalUiFont.Hfont()) // system font; already adjusted to current DPI
@@ -55,6 +61,9 @@ func calcIdealSize(hReferenceDc api.HWND, text string,
 	cloneDc.DeleteDC()
 	hReferenceDc.ReleaseDC(parentDc)
 
+	if isEmpty {
+		bounds.Cx = 0 // if no text was given, return just the height
+	}
 	return uint32(bounds.Cx), uint32(bounds.Cy)
 }
 

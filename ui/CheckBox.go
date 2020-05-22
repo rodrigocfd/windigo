@@ -45,10 +45,7 @@ func (me *CheckBox) CreateSimple(parent Window, x, y int32,
 	text string) *CheckBox {
 
 	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
-	cx, cy := calcIdealSize(parent.Hwnd(), text, true)
-
-	cx += uint32(api.GetSystemMetrics(c.SM_CXMENUCHECK)) +
-		uint32(api.GetSystemMetrics(c.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
+	cx, cy := me.calcCheckBoxIdealSize(parent.Hwnd(), text)
 
 	me.controlNativeBase.create(c.WS_EX(0), "BUTTON", text,
 		c.WS_CHILD|c.WS_GROUP|c.WS_VISIBLE|c.WS(c.BS_AUTOCHECKBOX),
@@ -61,6 +58,31 @@ func (me *CheckBox) IsChecked() bool {
 	return me.State() == c.BST_CHECKED
 }
 
+// Sets the text and resizes the control to fit the text exactly.
+func (me *CheckBox) SetText(text string) {
+	cx, cy := me.calcCheckBoxIdealSize(me.Hwnd().GetParent(), text)
+
+	me.Hwnd().SetWindowPos(c.SWP_HWND(0), 0, 0, cx, cy,
+		c.SWP_NOZORDER|c.SWP_NOMOVE)
+	me.Hwnd().SetWindowText(text)
+}
+
+// Returns the check state of the check box control.
 func (me *CheckBox) State() c.BST {
 	return me.Hwnd().GetParent().IsDlgButtonChecked(me.CtrlId())
+}
+
+func (me *CheckBox) calcCheckBoxIdealSize(hReferenceDc api.HWND,
+	text string) (uint32, uint32) {
+
+	cx, cy := calcIdealSize(hReferenceDc, text, true)
+	cx += uint32(api.GetSystemMetrics(c.SM_CXMENUCHECK)) +
+		uint32(api.GetSystemMetrics(c.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
+
+	cyCheck := uint32(api.GetSystemMetrics(c.SM_CYMENUCHECK))
+	if cyCheck > cy {
+		cy = cyCheck // if the checkbox is taller than the font, use its height
+	}
+
+	return cx, cy
 }

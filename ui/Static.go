@@ -50,7 +50,7 @@ func (me *Static) CreateLText(parent Window, x, y int32, text string) *Static {
 	return me
 }
 
-// Sets the text and resizes the static control to fit the text exactly.
+// Sets the text and resizes the control to fit the text exactly.
 func (me *Static) SetText(text string) {
 	hasAccel := (c.SS(me.Hwnd().GetStyle()) & c.SS_NOPREFIX) == 0
 	cx, cy := calcIdealSize(me.Hwnd().GetParent(), text, hasAccel)
