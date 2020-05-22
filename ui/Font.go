@@ -81,7 +81,9 @@ func (me *Font) CreateFromLogFont(lf *api.LOGFONT) *Font {
 	return me
 }
 
-// Creates a font identical to the current system font, usually Tahoma or Segoe UI.
+// Creates a font identical to the current system font, usually Tahoma or Segoe
+// UI. Because we call SetProcessDPIAware(), higher DPI resolutions will be
+// reflected in the font size.
 func (me *Font) CreateUi() *Font {
 	ncm := api.NONCLIENTMETRICS{}
 	ncm.CbSize = uint32(unsafe.Sizeof(ncm))

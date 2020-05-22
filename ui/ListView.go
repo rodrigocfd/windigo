@@ -72,9 +72,14 @@ func (me *ListView) AddItems(texts []string) *ListView {
 	return me
 }
 
+// Calls CreateWindowEx(). This is a basic method: no styles are provided by
+// default, you must inform all of them. Position and size will be adjusted to
+// the current system DPI.
 func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 	exStyles c.WS_EX, styles c.WS,
 	lvExStyles c.LVS_EX, lvStyles c.LVS) *ListView {
+
+	x, y, width, height = multiplyByDpi(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles|c.WS_EX(lvExStyles),
 		"SysListView32", "", styles|c.WS(lvStyles),
@@ -82,6 +87,8 @@ func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 	return me
 }
 
+// Calls CreateWindowEx(). List view control will have LVS_REPORT style.
+// Position and size will be adjusted to the current system DPI.
 func (me *ListView) CreateReport(parent Window, x, y int32,
 	width, height uint32) *ListView {
 

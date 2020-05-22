@@ -26,8 +26,13 @@ func MakeStatic(ctrlId c.ID) Static {
 	}
 }
 
+// Calls CreateWindowEx(). This is a basic method: no styles are provided by
+// default, you must inform all of them. Position and size will be adjusted to
+// the current system DPI.
 func (me *Static) Create(parent Window, x, y int32, width, height uint32,
 	text string, exStyles c.WS_EX, styles c.WS, staStyles c.SS) *Static {
+
+	x, y, width, height = multiplyByDpi(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "STATIC", text,
 		styles|c.WS(staStyles), x, y, width, height, parent)
@@ -35,14 +40,20 @@ func (me *Static) Create(parent Window, x, y int32, width, height uint32,
 	return me
 }
 
+// Calls CreateWindowEx(). Position will be adjusted to the current system DPI.
+// The size will be calculated to fit the text exactly.
 func (me *Static) CreateLText(parent Window, x, y int32, text string) *Static {
 	staStyles := c.SS_LEFT
+	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
 	cx, cy := me.calcIdealSize(parent.Hwnd(), text, staStyles)
-	return me.Create(parent, x, y, cx, cy, text,
-		c.WS_EX(0), c.WS_CHILD|c.WS_GROUP|c.WS_VISIBLE, staStyles)
+
+	me.controlNativeBase.create(c.WS_EX(0), "STATIC", text,
+		c.WS_CHILD|c.WS_GROUP|c.WS_VISIBLE|c.WS(staStyles), x, y, cx, cy, parent)
+	globalUiFont.SetOnControl(me)
+	return me
 }
 
-// Sets the text and resizes the static control accordingly.
+// Sets the text and resizes the static control to fit the text exactly.
 func (me *Static) SetText(text string) {
 	cx, cy := me.calcIdealSize(me.Hwnd().GetParent(), text,
 		c.SS(me.Hwnd().GetStyle()))
@@ -56,13 +67,13 @@ func (me *Static) calcIdealSize(hParent api.HWND, text string,
 
 	parentDc := hParent.GetDC()
 	cloneDc := parentDc.CreateCompatibleDC()
-	prevFont := cloneDc.SelectObjectFont(globalUiFont.Hfont())
+	prevFont := cloneDc.SelectObjectFont(globalUiFont.Hfont()) // system font; already adjusted to current DPI
 
 	if (staStyles & c.SS_NOPREFIX) == 0 {
 		text = me.removeAmpersands(text)
 	}
 
-	bounds := cloneDc.GetTextExtentPoint32(text) // counting &, must remove!
+	bounds := cloneDc.GetTextExtentPoint32(text)
 	cloneDc.SelectObjectFont(prevFont)
 	cloneDc.DeleteDC()
 	hParent.ReleaseDC(parentDc)

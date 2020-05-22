@@ -24,8 +24,13 @@ func MakeEdit(ctrlId c.ID) Edit {
 	}
 }
 
+// Calls CreateWindowEx(). This is a basic method: no styles are provided by
+// default, you must inform all of them. Position and size will be adjusted to
+// the current system DPI.
 func (me *Edit) Create(parent Window, x, y int32, width, height uint32,
 	initialText string, exStyles c.WS_EX, styles c.WS, editStyles c.ES) *Edit {
+
+	x, y, width, height = multiplyByDpi(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "EDIT", initialText,
 		styles|c.WS(editStyles), x, y, width, height, parent)
@@ -33,6 +38,8 @@ func (me *Edit) Create(parent Window, x, y int32, width, height uint32,
 	return me
 }
 
+// Calls CreateWindowEx(). Edit control will have ES_MULTILINE and ES_WANTRETURN
+// styles. Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreateMultiLine(parent Window, x, y int32,
 	width, height uint32, initialText string) *Edit {
 
@@ -42,6 +49,9 @@ func (me *Edit) CreateMultiLine(parent Window, x, y int32,
 		c.ES_MULTILINE|c.ES_WANTRETURN)
 }
 
+// Calls CreateWindowEx(). Edit control will have ES_PASSWORD style. Position
+// and width will be adjusted to the current system DPI. Height will be
+// standard.
 func (me *Edit) CreatePassword(parent Window, x, y int32, width uint32,
 	initialText string) *Edit {
 
@@ -51,6 +61,8 @@ func (me *Edit) CreatePassword(parent Window, x, y int32, width uint32,
 		c.ES_AUTOHSCROLL|c.ES_PASSWORD)
 }
 
+// Calls CreateWindowEx(). Position and width will be adjusted to the current
+// system DPI. Height will be standard.
 func (me *Edit) CreateSimple(parent Window, x, y int32, width uint32,
 	initialText string) *Edit {
 

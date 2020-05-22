@@ -49,8 +49,6 @@ func (me *controlNativeBase) create(exStyle c.WS_EX, className, title string,
 
 	me.msgs.wasCreated = true // no further messages can be added
 
-	x, y, width, height = multiplyByDpi(x, y, width, height)
-
 	me.hwnd = api.CreateWindowEx(exStyle, className, title, style,
 		x, y, width, height, parent.Hwnd(), api.HMENU(me.controlIdGuard.CtrlId()),
 		parent.Hwnd().GetInstance(), nil)
