@@ -14,15 +14,15 @@ import (
 	c "wingows/consts"
 )
 
-type windowBaseMsgNfyProxy struct { // aglutinate both msg and nfy into one façade
+type windowBaseDepot struct { // aglutinate both msg and nfy into one façade
 	windowDepotMsg
 	windowDepotNfy
 }
 
 // Base to all window types: WindowControl, WindowMain and WindowModal.
 type windowBase struct {
-	hwnd    api.HWND
-	msgNfys windowBaseMsgNfyProxy
+	hwnd  api.HWND
+	depot windowBaseDepot
 }
 
 const wM_UI_THREAD = c.WM_APP + 0x3FFF // used in UI thread handling
@@ -34,8 +34,8 @@ func (me *windowBase) Hwnd() api.HWND {
 }
 
 // Exposes all the window messages the can be handled.
-func (me *windowBase) OnMsg() *windowBaseMsgNfyProxy {
-	return &me.msgNfys
+func (me *windowBase) OnMsg() *windowBaseDepot {
+	return &me.depot
 }
 
 // Runs a closure synchronously in the window original UI thread.
@@ -63,7 +63,7 @@ func (me *windowBase) createWindow(uiName string, exStyle c.WS_EX,
 		hwndParent = parent.Hwnd()
 	}
 
-	me.msgNfys.addMsg(wM_UI_THREAD, func(p wmBase) uintptr { // handle our custom thread UI message
+	me.depot.addMsg(wM_UI_THREAD, func(p wmBase) uintptr { // handle our custom thread UI message
 		if p.WParam == 0xC0DEF00D {
 			pack := (*threadPack)(unsafe.Pointer(p.LParam))
 			pack.userFunc()
@@ -71,8 +71,8 @@ func (me *windowBase) createWindow(uiName string, exStyle c.WS_EX,
 		return 0
 	})
 
-	me.msgNfys.windowDepotMsg.wasCreated = true // no further messages can be added
-	me.msgNfys.windowDepotNfy.wasCreated = true
+	me.depot.windowDepotMsg.wasCreated = true // no further messages can be added
+	me.depot.windowDepotNfy.wasCreated = true
 
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
 	api.CreateWindowEx(exStyle, className, title, style, x, y, width, height,
@@ -117,9 +117,9 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 
 	// Try to process the message with an user handler.
 	parm := wmBase{WParam: wParam, LParam: lParam}
-	userRet, wasHandled := pMe.msgNfys.windowDepotMsg.processMessage(msg, parm)
+	userRet, wasHandled := pMe.depot.windowDepotMsg.processMessage(msg, parm)
 	if !wasHandled {
-		userRet, wasHandled = pMe.msgNfys.windowDepotNfy.processMessage(msg, parm)
+		userRet, wasHandled = pMe.depot.windowDepotNfy.processMessage(msg, parm)
 	}
 
 	// No further messages processed after this one.
