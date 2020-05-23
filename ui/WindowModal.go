@@ -104,7 +104,7 @@ func (me *windowModalSetup) genWndClassEx(hInst api.HINSTANCE) *api.WNDCLASSEX {
 	if me.HBrushBackground != 0 {
 		wcx.HbrBackground = me.HBrushBackground
 	} else {
-		wcx.HbrBackground = api.NewBrushFromSysColor(c.COLOR_BTNFACE)
+		wcx.HbrBackground = api.CreateSysColorBrush(c.COLOR_BTNFACE)
 	}
 
 	if me.ClassName == "" {

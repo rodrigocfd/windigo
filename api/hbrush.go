@@ -14,10 +14,6 @@ import (
 
 type HBRUSH HANDLE
 
-func NewBrushFromSysColor(sysColor c.COLOR) HBRUSH {
-	return HBRUSH(sysColor + 1)
-}
-
 func CreatePatternBrush(hbm HBITMAP) HBRUSH {
 	ret, _, _ := syscall.Syscall(proc.CreatePatternBrush.Addr(), 1,
 		uintptr(hbm), 0, 0)
@@ -25,6 +21,12 @@ func CreatePatternBrush(hbm HBITMAP) HBRUSH {
 		panic("CreatePatternBrush failed.")
 	}
 	return HBRUSH(ret)
+}
+
+// This is not a Win32 function, it's just a tricky conversion to create a brush
+// from a system color.
+func CreateSysColorBrush(sysColor c.COLOR) HBRUSH {
+	return HBRUSH(sysColor + 1)
 }
 
 func (hBrush HBRUSH) DeleteObject() bool {

@@ -133,7 +133,7 @@ func (me *windowControlSetup) genWndClassEx(
 	if me.HBrushBackground != 0 {
 		wcx.HbrBackground = me.HBrushBackground
 	} else {
-		wcx.HbrBackground = api.NewBrushFromSysColor(c.COLOR_WINDOW)
+		wcx.HbrBackground = api.CreateSysColorBrush(c.COLOR_WINDOW)
 	}
 
 	if me.ClassName == "" {
