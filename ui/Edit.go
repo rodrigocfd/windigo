@@ -7,6 +7,8 @@
 package ui
 
 import (
+	"unsafe"
+	"wingows/api"
 	c "wingows/consts"
 )
 
@@ -70,4 +72,40 @@ func (me *Edit) CreateSimple(parent Window, x, y int32, width uint32,
 		c.WS_EX_CLIENTEDGE,
 		c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
 		c.ES_AUTOHSCROLL)
+}
+
+// Replaces the currently selected text in the edit control.
+func (me *Edit) ReplaceSelection(newText string) *Edit {
+	me.sendEmMessage(c.EM_REPLACESEL, 1,
+		api.LPARAM(unsafe.Pointer(api.StrToUtf16Ptr(newText))))
+	return me
+}
+
+// Selects all the text in the edit control.
+// Only has effect if edit control is focused.
+func (me *Edit) SelectAll() *Edit {
+	return me.SelectRange(0, -1)
+}
+
+// Retrieves the selected range of text in the edit control.
+func (me *Edit) SelectedRange() (int32, int32) {
+	start, firstAfter := int32(0), int32(0)
+	me.sendEmMessage(c.EM_GETSEL, api.WPARAM(unsafe.Pointer(&start)),
+		api.LPARAM(unsafe.Pointer(&firstAfter)))
+	return start, firstAfter - start
+}
+
+// Selects a range of text in the edit control.
+// Only has effect if edit control is focused.
+func (me *Edit) SelectRange(start, length int32) *Edit {
+	me.sendEmMessage(c.EM_SETSEL, api.WPARAM(start),
+		api.LPARAM(start+length))
+	return me
+}
+
+func (me *Edit) sendEmMessage(msg c.EM,
+	wParam api.WPARAM, lParam api.LPARAM) uintptr {
+
+	return me.controlNativeBase.Hwnd().
+		SendMessage(c.WM(msg), wParam, lParam) // simple wrapper
 }

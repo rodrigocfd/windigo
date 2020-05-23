@@ -72,7 +72,7 @@ const (
 	BKMODE_OPAQUE      BKMODE = 2
 )
 
-type BM WM // button messages
+type BM WM // button control messages
 
 const (
 	BM_GETCHECK     BM = 0x00F0

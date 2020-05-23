@@ -18,11 +18,12 @@ type RadioButton struct {
 	controlNativeBase
 }
 
-// Helper function to retrieve the index of the selected radio button.
-func GetCheckedRadio(radioGroup []RadioButton) int {
+// Helper function to retrieve the index of the checked radio button.
+// Returns -1 if none is checked.
+func GetCheckedRadio(radioGroup []RadioButton) int32 {
 	for i := range radioGroup {
 		if radioGroup[i].IsChecked() {
-			return i
+			return int32(i)
 		}
 	}
 	return -1 // no checked one
