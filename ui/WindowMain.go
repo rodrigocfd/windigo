@@ -12,6 +12,10 @@ import (
 	c "wingows/consts"
 )
 
+var (
+	globalUiFont = Font{} // created in RunAsMain(), freed in runMainLoop()
+)
+
 // Main application window.
 // Allows message and notification handling.
 type WindowMain struct {

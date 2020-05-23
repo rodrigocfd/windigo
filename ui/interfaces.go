@@ -25,6 +25,8 @@ type Window interface {
 
 //------------------------------------------------------------------------------
 
+var globalDpi = api.POINT{X: 0, Y: 0} // set once by multiplyByDpi
+
 // Multiplies position and size by current DPI factor.
 func multiplyByDpi(x, y int32, cx, cy uint32) (int32, int32, uint32, uint32) {
 	if globalDpi.X == 0 {

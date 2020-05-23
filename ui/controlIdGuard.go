@@ -10,6 +10,10 @@ import (
 	c "wingows/consts"
 )
 
+var (
+	globalBaseCtrlId = c.ID(1000) // arbitrary, taken from Visual Studio resource editor
+)
+
 // Encapsulates the control ID and, if not initialized, uses an auto-incremented value.
 type controlIdGuard struct {
 	ctrlId c.ID // defaults to zero

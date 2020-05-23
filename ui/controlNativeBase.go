@@ -14,6 +14,11 @@ import (
 	c "wingows/consts"
 )
 
+var (
+	globalBaseSubclassId  = uint32(0)  // incremented at each subclass installed
+	globalSubclassProcPtr = uintptr(0) // necessary for RemoveWindowSubclass
+)
+
 // Base to all native child control types, like Button and Edit.
 // Allows control subclassing.
 type controlNativeBase struct {
