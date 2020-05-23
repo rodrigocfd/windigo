@@ -49,7 +49,7 @@ func calcIdealSize(hReferenceDc api.HWND, text string,
 	}
 
 	if considerAccelerators {
-		text = removeAcceleratorAmpersands(text)
+		text = removeAccelAmpersands(text)
 	}
 
 	parentDc := hReferenceDc.GetDC()
@@ -67,7 +67,7 @@ func calcIdealSize(hReferenceDc api.HWND, text string,
 }
 
 // "&He && she" becomes "He & she".
-func removeAcceleratorAmpersands(text string) string {
+func removeAccelAmpersands(text string) string {
 	buf := strings.Builder{}
 	for i := 0; i < len(text)-1; i++ {
 		if text[i] == '&' && text[i+1] != '&' {

@@ -18,6 +18,16 @@ type RadioButton struct {
 	controlNativeBase
 }
 
+// Helper function to retrieve the index of the selected radio button.
+func GetCheckedRadio(radioGroup []RadioButton) int {
+	for i := range radioGroup {
+		if radioGroup[i].IsChecked() {
+			return i
+		}
+	}
+	return -1 // no checked one
+}
+
 // Optional; returns a RadioButton with a specific control ID.
 func MakeRadioButton(ctrlId c.ID) RadioButton {
 	return RadioButton{
@@ -77,6 +87,13 @@ func (me *RadioButton) SetText(text string) *RadioButton {
 		c.SWP_NOZORDER|c.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 	return me
+}
+
+// Returns the text without the accelerator ampersands.
+// For example: "&He && she" is returned as "He & she".
+// Use HWND().GetWindowText() to retrieve the full text, with ampersands.
+func (me *RadioButton) Text() string {
+	return removeAccelAmpersands(me.Hwnd().GetWindowText())
 }
 
 func (me *RadioButton) calcRadioButtonIdealSize(hReferenceDc api.HWND,

@@ -89,6 +89,13 @@ func (me *CheckBox) State() c.BST {
 	return c.BST(me.Hwnd().SendMessage(c.WM(c.BM_GETCHECK), 0, 0))
 }
 
+// Returns the text without the accelerator ampersands.
+// For example: "&He && she" is returned as "He & she".
+// Use HWND().GetWindowText() to retrieve the full text, with ampersands.
+func (me *CheckBox) Text() string {
+	return removeAccelAmpersands(me.Hwnd().GetWindowText())
+}
+
 func (me *CheckBox) calcCheckBoxIdealSize(hReferenceDc api.HWND,
 	text string) (uint32, uint32) {
 

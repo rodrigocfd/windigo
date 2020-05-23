@@ -58,3 +58,10 @@ func (me *Button) CreateSimpleDef(parent Window, x, y int32,
 		c.WS_EX(0), c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
 		c.BS_DEFPUSHBUTTON)
 }
+
+// Returns the text without the accelerator ampersands.
+// For example: "&He && she" is returned as "He & she".
+// Use HWND().GetWindowText() to retrieve the full text, with ampersands.
+func (me *Button) Text() string {
+	return removeAccelAmpersands(me.Hwnd().GetWindowText())
+}

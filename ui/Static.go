@@ -59,3 +59,10 @@ func (me *Static) SetText(text string) {
 		c.SWP_NOZORDER|c.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 }
+
+// Returns the text without the accelerator ampersands.
+// For example: "&He && she" is returned as "He & she".
+// Use HWND().GetWindowText() to retrieve the full text, with ampersands.
+func (me *Static) Text() string {
+	return removeAccelAmpersands(me.Hwnd().GetWindowText())
+}
