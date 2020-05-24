@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"syscall"
 	"wingows/api/proc"
-	c "wingows/consts"
 )
 
 type HDWP HANDLE
@@ -26,7 +25,7 @@ func BeginDeferWindowPos(numWindows uint32) HDWP {
 }
 
 func (hdwp HDWP) DeferWindowPos(hWnd HWND, hWndInsertAfter HWND, x, y int32,
-	cx, cy uint32, uFlags c.SWP) HDWP {
+	cx, cy uint32, uFlags SWP) HDWP {
 
 	ret, _, lerr := syscall.Syscall9(proc.DeferWindowPos.Addr(), 8,
 		uintptr(hdwp), uintptr(hWnd), uintptr(hWndInsertAfter),

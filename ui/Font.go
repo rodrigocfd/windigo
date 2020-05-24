@@ -11,7 +11,6 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api"
-	c "wingows/consts"
 )
 
 // Manages a font resource. Must be default-initialized, then call one of the
@@ -56,9 +55,9 @@ func (me *Font) Create(setup *FontSetup) *Font {
 	copy(lf.LfFaceName[:], syscall.StringToUTF16(setup.Name))
 
 	if setup.Bold {
-		lf.LfWeight = c.FW_BOLD
+		lf.LfWeight = api.FW_BOLD
 	} else {
-		lf.LfWeight = c.FW_DONTCARE
+		lf.LfWeight = api.FW_DONTCARE
 	}
 
 	if setup.Italic {
@@ -92,7 +91,7 @@ func (me *Font) CreateUi() *Font {
 		ncm.CbSize -= uint32(unsafe.Sizeof(ncm.IBorderWidth))
 	}
 
-	api.SystemParametersInfo(c.SPI_GETNONCLIENTMETRICS,
+	api.SystemParametersInfo(api.SPI_GETNONCLIENTMETRICS,
 		ncm.CbSize, unsafe.Pointer(&ncm), 0)
 	me.CreateFromLogFont(&ncm.LfMenuFont)
 	return me
@@ -100,6 +99,6 @@ func (me *Font) CreateUi() *Font {
 
 // Sends a WM_SETFONT message to the child control to apply the font.
 func (me *Font) SetOnControl(ctrl Window) *Font {
-	ctrl.Hwnd().SendMessage(c.WM_SETFONT, api.WPARAM(me.hFont), 1)
+	ctrl.Hwnd().SendMessage(api.WM_SETFONT, api.WPARAM(me.hFont), 1)
 	return me
 }

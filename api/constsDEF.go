@@ -4,7 +4,7 @@
  * This library is released under the MIT license.
  */
 
-package consts
+package api
 
 type DPI_AWARE_CTX int32 // SetProcessDpiAwarenessContext
 

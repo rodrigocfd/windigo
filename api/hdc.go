@@ -11,7 +11,6 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
-	c "wingows/consts"
 )
 
 type HDC HANDLE
@@ -45,7 +44,7 @@ func (hdc HDC) DeleteDC() {
 	}
 }
 
-func (hdc HDC) GetDeviceCaps(index c.GDC) int32 {
+func (hdc HDC) GetDeviceCaps(index GDC) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetDeviceCaps.Addr(), 2,
 		uintptr(hdc), uintptr(index), 0)
 	return int32(ret)
@@ -80,7 +79,7 @@ func (hdc HDC) LineTo(x, y int32) {
 	}
 }
 
-func (hdc HDC) PolyDraw(apt []POINT, aj []c.PT) {
+func (hdc HDC) PolyDraw(apt []POINT, aj []PT) {
 	ret, _, _ := syscall.Syscall6(proc.PolyDraw.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])),
 		uintptr(unsafe.Pointer(&aj[0])), uintptr(len(apt)),
@@ -168,11 +167,11 @@ func (hdc HDC) SetBkColor(color COLORREF) COLORREF {
 	return COLORREF(ret)
 }
 
-func (hdc HDC) SetBkMode(mode c.BKMODE) c.BKMODE {
+func (hdc HDC) SetBkMode(mode BKMODE) BKMODE {
 	ret, _, _ := syscall.Syscall(proc.SetBkMode.Addr(), 2,
 		uintptr(hdc), uintptr(mode), 0)
 	if ret == 0 {
 		panic("SetBkMode failed.")
 	}
-	return c.BKMODE(ret)
+	return BKMODE(ret)
 }

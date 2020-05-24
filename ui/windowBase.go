@@ -11,7 +11,6 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api"
-	c "wingows/consts"
 )
 
 type windowBaseDepot struct { // aglutinate both msg and nfy into one façade
@@ -25,7 +24,7 @@ type windowBase struct {
 	depot windowBaseDepot
 }
 
-const wM_UI_THREAD = c.WM_APP + 0x3FFF // used in UI thread handling
+const wM_UI_THREAD = api.WM_APP + 0x3FFF // used in UI thread handling
 type threadPack struct{ userFunc func() }
 
 // Returns the underlying HWND handle of this window.
@@ -49,8 +48,8 @@ func (me *windowBase) RunUiThread(userFunc func()) {
 	me.hwnd.SendMessage(wM_UI_THREAD, 0xC0DEF00D, api.LPARAM(unsafe.Pointer(pack)))
 }
 
-func (me *windowBase) createWindow(uiName string, exStyle c.WS_EX,
-	className, title string, style c.WS, x, y int32, width, height uint32,
+func (me *windowBase) createWindow(uiName string, exStyle api.WS_EX,
+	className, title string, style api.WS, x, y int32, width, height uint32,
 	parent Window, menu api.HMENU, hInst api.HINSTANCE) {
 
 	if me.hwnd != 0 {
@@ -85,7 +84,7 @@ func (me *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
 	if lerr != 0 {
 		// https://devblogs.microsoft.com/oldnewthing/20150429-00/?p=44984
 		// https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
-		if c.ERROR(lerr) == c.ERROR_CLASS_ALREADY_EXISTS {
+		if api.ERROR(lerr) == api.ERROR_CLASS_ALREADY_EXISTS {
 			atom = wcx.HInstance.GetClassInfoEx(wcx.LpszClassName, wcx)
 		} else {
 			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s\n",
@@ -95,19 +94,22 @@ func (me *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
 	return atom
 }
 
-func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uintptr {
-	if msg == c.WM_NCCREATE {
+func wndProc(hwnd api.HWND, msg api.WM,
+	wParam api.WPARAM, lParam api.LPARAM) uintptr {
+
+	if msg == api.WM_NCCREATE {
 		cs := (*api.CREATESTRUCT)(unsafe.Pointer(lParam))
 		base := (*windowBase)(unsafe.Pointer(cs.LpCreateParams))
-		hwnd.SetWindowLongPtr(c.GWLP_USERDATA, uintptr(unsafe.Pointer(base)))
+		hwnd.SetWindowLongPtr(api.GWLP_USERDATA, uintptr(unsafe.Pointer(base)))
 		base.hwnd = hwnd // assign actual HWND
 	}
 
 	// Retrieve passed pointer.
-	pMe := (*windowBase)(unsafe.Pointer(hwnd.GetWindowLongPtr(c.GWLP_USERDATA)))
+	pMe := (*windowBase)(unsafe.Pointer(
+		hwnd.GetWindowLongPtr(api.GWLP_USERDATA)))
 
 	// Save *windowBase from being collected by GC.
-	hwnd.SetWindowLongPtr(c.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
+	hwnd.SetWindowLongPtr(api.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 
 	// If no pointer stored, then no processing is done.
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
@@ -123,8 +125,8 @@ func wndProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM) uint
 	}
 
 	// No further messages processed after this one.
-	if msg == c.WM_NCDESTROY {
-		pMe.hwnd.SetWindowLongPtr(c.GWLP_USERDATA, 0) // clear passed pointer
+	if msg == api.WM_NCDESTROY {
+		pMe.hwnd.SetWindowLongPtr(api.GWLP_USERDATA, 0) // clear passed pointer
 		pMe.hwnd = api.HWND(0)
 	}
 

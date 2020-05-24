@@ -11,7 +11,6 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
-	c "wingows/consts"
 )
 
 type HINSTANCE HANDLE
@@ -37,7 +36,7 @@ func GetModuleHandle(moduleName string) HINSTANCE {
 	return HINSTANCE(ret)
 }
 
-func (hinst HINSTANCE) LoadCursor(lpCursorName c.IDC) HCURSOR {
+func (hinst HINSTANCE) LoadCursor(lpCursorName IDC) HCURSOR {
 	ret, _, lerr := syscall.Syscall(proc.LoadCursor.Addr(), 2,
 		uintptr(hinst), uintptr(lpCursorName), 0)
 	if ret == 0 {

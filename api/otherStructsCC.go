@@ -6,21 +6,17 @@
 
 package api
 
-import (
-	c "wingows/consts"
-)
-
 type LITEM struct {
-	Mask      c.LIF
+	Mask      LIF
 	ILink     int32
-	State     c.LIS
-	StateMask c.LIS
+	State     LIS
+	StateMask LIS
 	SzID      [48]uint16            // MAX_LINKID_TEXT
 	SzUrl     [2048 + 32 + 3]uint16 // L_MAX_URL_LENGTH
 }
 
 type LVCOLUMN struct {
-	Mask       c.LVCF
+	Mask       LVCF
 	Fmt        int32
 	Cx         int32
 	PszText    *uint16
@@ -34,7 +30,7 @@ type LVCOLUMN struct {
 }
 
 type LVFINDINFO struct {
-	Flags       c.LVFI
+	Flags       LVFI
 	Psz         *uint16
 	LParam      LPARAM
 	Pt          POINT
@@ -42,11 +38,11 @@ type LVFINDINFO struct {
 }
 
 type LVITEM struct {
-	Mask       c.LVIF
+	Mask       LVIF
 	IItem      int32
 	ISubItem   int32
-	State      c.LVIS
-	StateMask  c.LVIS
+	State      LVIS
+	StateMask  LVIS
 	PszText    *uint16
 	CchTextMax int32
 	IImage     int32
@@ -61,11 +57,11 @@ type LVITEM struct {
 
 type NMCUSTOMDRAW struct {
 	Hdr         NMHDR
-	DwDrawStage c.CDDS
+	DwDrawStage CDDS
 	Hdc         HDC
 	Rc          RECT
 	DwItemSpec  uintptr
-	UItemState  c.CDIS
+	UItemState  CDIS
 	LItemlParam LPARAM
 }
 
@@ -78,7 +74,7 @@ type NMITEMACTIVATE struct {
 	UChanged  uint32
 	PtAction  POINT
 	LParam    LPARAM
-	UKeyFlags c.LVKF
+	UKeyFlags LVKF
 }
 
 type NMLISTVIEW struct {
@@ -105,7 +101,7 @@ type NMLVDISPINFO struct {
 
 type NMLVEMPTYMARKUP struct {
 	Hdr      NMHDR
-	DwFlags  c.EMF
+	DwFlags  EMF
 	SzMarkup [2048 + 32 + 3]uint16 // L_MAX_URL_LENGTH
 }
 
@@ -117,7 +113,7 @@ type NMLVFINDITEM struct {
 
 type NMLVGETINFOTIP struct {
 	Hdr        NMHDR
-	DwFlags    c.LVGIT
+	DwFlags    LVGIT
 	PszText    *uint16
 	CchTextMax int32
 	IItem      int32
@@ -127,7 +123,7 @@ type NMLVGETINFOTIP struct {
 
 type NMLVKEYDOWN struct {
 	Hdr   NMHDR
-	WVKey c.VK
+	WVKey VK
 	Flags uint32
 }
 
@@ -142,8 +138,8 @@ type NMLVODSTATECHANGE struct {
 	Hdr       NMHDR
 	IFrom     int32
 	ITo       int32
-	UNewState c.LVIS
-	UOldState c.LVIS
+	UNewState LVIS
+	UOldState LVIS
 }
 
 type NMLVSCROLL struct {

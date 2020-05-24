@@ -11,7 +11,6 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api"
-	c "wingows/consts"
 )
 
 // A single column of a list view control.
@@ -34,10 +33,10 @@ func (me *ListViewColumn) Index() uint32 {
 func (me *ListViewColumn) SetText(text string) *ListViewColumn {
 	lvc := api.LVCOLUMN{
 		ISubItem: int32(me.index),
-		Mask:     c.LVCF_TEXT,
+		Mask:     api.LVCF_TEXT,
 		PszText:  api.StrToUtf16Ptr(text),
 	}
-	ret := me.owner.sendLvmMessage(c.LVM_SETCOLUMN,
+	ret := me.owner.sendLvmMessage(api.LVM_SETCOLUMN,
 		api.WPARAM(me.index), api.LPARAM(unsafe.Pointer(&lvc)))
 	if ret == 0 {
 		panic(fmt.Sprintf("LVM_SETCOLUMN failed to set text \"%s\".", text))
@@ -46,7 +45,7 @@ func (me *ListViewColumn) SetText(text string) *ListViewColumn {
 }
 
 func (me *ListViewColumn) SetWidth(width uint32) *ListViewColumn {
-	me.owner.sendLvmMessage(c.LVM_SETCOLUMNWIDTH,
+	me.owner.sendLvmMessage(api.LVM_SETCOLUMNWIDTH,
 		api.WPARAM(me.index), api.LPARAM(width))
 	return me
 }
@@ -55,11 +54,11 @@ func (me *ListViewColumn) Text() string {
 	buf := make([]uint16, 256) // arbitrary
 	lvc := api.LVCOLUMN{
 		ISubItem:   int32(me.index),
-		Mask:       c.LVCF_TEXT,
+		Mask:       api.LVCF_TEXT,
 		PszText:    &buf[0],
 		CchTextMax: int32(len(buf)),
 	}
-	ret := me.owner.sendLvmMessage(c.LVM_GETCOLUMN,
+	ret := me.owner.sendLvmMessage(api.LVM_GETCOLUMN,
 		api.WPARAM(me.index), api.LPARAM(unsafe.Pointer(&lvc)))
 	if ret < 0 {
 		panic("LVM_GETCOLUMN failed to get text.")
@@ -68,7 +67,7 @@ func (me *ListViewColumn) Text() string {
 }
 
 func (me *ListViewColumn) Width() uint32 {
-	cx := me.owner.sendLvmMessage(c.LVM_GETCOLUMNWIDTH, api.WPARAM(me.index), 0)
+	cx := me.owner.sendLvmMessage(api.LVM_GETCOLUMNWIDTH, api.WPARAM(me.index), 0)
 	if cx == 0 {
 		panic("LVM_GETCOLUMNWIDTH failed.")
 	}

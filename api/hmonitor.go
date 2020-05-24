@@ -10,19 +10,18 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
-	c "wingows/consts"
 )
 
 type HMONITOR HANDLE
 
-func MonitorFromPoint(pt POINT, dwFlags c.MONITOR) HMONITOR {
+func MonitorFromPoint(pt POINT, dwFlags MONITOR) HMONITOR {
 	ret, _, _ := syscall.Syscall(proc.MonitorFromPoint.Addr(), 3,
 		uintptr(pt.X), uintptr(pt.Y), uintptr(dwFlags))
 	return HMONITOR(ret)
 }
 
 // Available in Windows 8.1.
-func (hmon HMONITOR) GetDpiForMonitor(dpiType c.MDT) (uint32, uint32) {
+func (hmon HMONITOR) GetDpiForMonitor(dpiType MDT) (uint32, uint32) {
 	dpiX, dpiY := uint32(0), uint32(0)
 	ret, _, _ := syscall.Syscall6(proc.GetDpiForMonitor.Addr(), 4,
 		uintptr(hmon), uintptr(dpiType),

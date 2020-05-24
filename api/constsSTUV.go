@@ -4,7 +4,7 @@
  * This library is released under the MIT license.
  */
 
-package consts
+package api
 
 type SC uint32 // WM_SYSCOMMAND
 

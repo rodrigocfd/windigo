@@ -4,7 +4,7 @@
  * This library is released under the MIT license.
  */
 
-package consts
+package api
 
 type MDT uint32 // GetDpiForMonitor
 

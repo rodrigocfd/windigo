@@ -4,7 +4,7 @@
  * This library is released under the MIT license.
  */
 
-package consts
+package api
 
 type APPCOMMAND int16 // WM_APPCOMMAND
 

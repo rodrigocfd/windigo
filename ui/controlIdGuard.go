@@ -7,28 +7,28 @@
 package ui
 
 import (
-	c "wingows/consts"
+	"wingows/api"
 )
 
 var (
-	globalBaseCtrlId = c.ID(1000) // arbitrary, taken from Visual Studio resource editor
+	globalBaseCtrlId = api.ID(1000) // arbitrary, taken from Visual Studio resource editor
 )
 
 // Encapsulates the control ID and, if not initialized, uses an auto-incremented value.
 type controlIdGuard struct {
-	ctrlId c.ID // defaults to zero
+	ctrlId api.ID // defaults to zero
 }
 
 // Optional; returns a ctrlIdGuard with a custom control ID, not using the
 // default auto-incremented one.
-func makeCtrlIdGuard(initialId c.ID) controlIdGuard {
+func makeCtrlIdGuard(initialId api.ID) controlIdGuard {
 	return controlIdGuard{
 		ctrlId: initialId, // properly initialized
 	}
 }
 
 // Returns the ID of this child window control.
-func (me *controlIdGuard) CtrlId() c.ID {
+func (me *controlIdGuard) CtrlId() api.ID {
 	if me.ctrlId == 0 { // not initialized yet?
 		globalBaseCtrlId++ // increments sequential global ID
 		me.ctrlId = globalBaseCtrlId

@@ -7,7 +7,7 @@
 package ui
 
 import (
-	c "wingows/consts"
+	"wingows/api"
 )
 
 // Native button control.
@@ -18,7 +18,7 @@ type Button struct {
 }
 
 // Optional; returns a Button with a specific control ID.
-func MakeButton(ctrlId c.ID) Button {
+func MakeButton(ctrlId api.ID) Button {
 	return Button{
 		controlNativeBase: makeNativeControlBase(ctrlId),
 	}
@@ -28,12 +28,12 @@ func MakeButton(ctrlId c.ID) Button {
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
 func (me *Button) Create(parent Window, x, y int32, width, height uint32,
-	text string, exStyles c.WS_EX, styles c.WS, btnStyles c.BS) *Button {
+	text string, exStyles api.WS_EX, styles api.WS, btnStyles api.BS) *Button {
 
 	x, y, width, height = multiplyByDpi(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "BUTTON", text,
-		styles|c.WS(btnStyles), x, y, width, height, parent)
+		styles|api.WS(btnStyles), x, y, width, height, parent)
 	globalUiFont.SetOnControl(me)
 	return me
 }
@@ -44,8 +44,8 @@ func (me *Button) CreateSimple(parent Window, x, y int32,
 	width uint32, text string) *Button {
 
 	return me.Create(parent, x, y, width, 23, text,
-		c.WS_EX(0), c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
-		c.BS(0))
+		api.WS_EX(0), api.WS_CHILD|api.WS_GROUP|api.WS_TABSTOP|api.WS_VISIBLE,
+		api.BS(0))
 }
 
 // Calls CreateWindowEx(). Creates a button with BS_DEFPUSHBUTTON style.
@@ -55,8 +55,8 @@ func (me *Button) CreateSimpleDef(parent Window, x, y int32,
 	width uint32, text string) *Button {
 
 	return me.Create(parent, x, y, width, 23, text,
-		c.WS_EX(0), c.WS_CHILD|c.WS_GROUP|c.WS_TABSTOP|c.WS_VISIBLE,
-		c.BS_DEFPUSHBUTTON)
+		api.WS_EX(0), api.WS_CHILD|api.WS_GROUP|api.WS_TABSTOP|api.WS_VISIBLE,
+		api.BS_DEFPUSHBUTTON)
 }
 
 // Returns the text without the accelerator ampersands.

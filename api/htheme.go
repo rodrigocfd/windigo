@@ -11,7 +11,6 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
-	c "wingows/consts"
 )
 
 type HTHEME HANDLE
@@ -25,7 +24,7 @@ func (hTheme HTHEME) CloseThemeData() {
 }
 
 func (hTheme HTHEME) DrawThemeBackground(hdc HDC,
-	partId c.VS_STYLE_PART, stateId c.VS_STYLE_STATE,
+	partId VS_STYLE_PART, stateId VS_STYLE_STATE,
 	rect *RECT, clipRect *RECT) {
 
 	hr, _, _ := syscall.Syscall6(proc.DrawThemeBackground.Addr(), 6,

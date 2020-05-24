@@ -11,7 +11,6 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api"
-	c "wingows/consts"
 )
 
 var (
@@ -28,7 +27,7 @@ type controlNativeBase struct {
 	subclassId uint32
 }
 
-func makeNativeControlBase(ctrlId c.ID) controlNativeBase {
+func makeNativeControlBase(ctrlId api.ID) controlNativeBase {
 	return controlNativeBase{
 		controlIdGuard: makeCtrlIdGuard(ctrlId),
 	}
@@ -45,8 +44,8 @@ func (me *controlNativeBase) OnSubclassMsg() *windowDepotMsg {
 	return &me.msgs
 }
 
-func (me *controlNativeBase) create(exStyle c.WS_EX, className, title string,
-	style c.WS, x, y int32, width, height uint32, parent Window) {
+func (me *controlNativeBase) create(exStyle api.WS_EX, className, title string,
+	style api.WS, x, y int32, width, height uint32, parent Window) {
 
 	if me.hwnd != 0 {
 		panic(fmt.Sprintf("Trying to create %s twice.", className))
@@ -74,29 +73,30 @@ func (me *controlNativeBase) create(exStyle c.WS_EX, className, title string,
 	}
 }
 
-func subclassProc(hwnd api.HWND, msg c.WM, wParam api.WPARAM, lParam api.LPARAM,
+func subclassProc(hwnd api.HWND, msg api.WM,
+	wParam api.WPARAM, lParam api.LPARAM,
 	uIdSubclass, dwRefData uintptr) uintptr {
 
 	// Retrieve passed pointer.
 	pMe := (*controlNativeBase)(unsafe.Pointer(dwRefData))
 
 	// Save *nativeControlBase from being collected by GC; stored won't be used.
-	hwnd.SetWindowLongPtr(c.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
+	hwnd.SetWindowLongPtr(api.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 
 	if pMe != nil && pMe.hwnd != 0 {
 		userRet, wasHandled := pMe.msgs.processMessage(msg,
 			wmBase{WParam: wParam, LParam: lParam}) // try to process the message with an user handler
 
-		if msg == c.WM_NCDESTROY { // even if the user handles WM_NCDESTROY, we must ensure cleanup
+		if msg == api.WM_NCDESTROY { // even if the user handles WM_NCDESTROY, we must ensure cleanup
 			pMe.hwnd.RemoveWindowSubclass(globalSubclassProcPtr, pMe.subclassId)
 		}
-		if wasHandled && msg != c.WM_LBUTTONUP {
+		if wasHandled && msg != api.WM_LBUTTONUP {
 			// For some reason, if we don't call DefSubclassProc with WM_LBUTTONUP,
 			// all parent window messages are routed to this proc, and it becomes
 			// unresponsive. So we return user result only if not WM_LBUTTONUP.
 			return userRet
 		}
-	} else if msg == c.WM_NCDESTROY { // https://devblogs.microsoft.com/oldnewthing/20031111-00/?p=41883
+	} else if msg == api.WM_NCDESTROY { // https://devblogs.microsoft.com/oldnewthing/20031111-00/?p=41883
 		hwnd.RemoveWindowSubclass(globalSubclassProcPtr, pMe.subclassId)
 	}
 
