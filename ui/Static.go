@@ -7,7 +7,7 @@
 package ui
 
 import (
-	"wingows/api"
+	"wingows/co"
 )
 
 // Native static control (label).
@@ -18,7 +18,7 @@ type Static struct {
 }
 
 // Optional; returns a Button with a specific control ID.
-func MakeStatic(ctrlId api.ID) Static {
+func MakeStatic(ctrlId co.ID) Static {
 	return Static{
 		controlNativeBase: makeNativeControlBase(ctrlId),
 	}
@@ -28,12 +28,12 @@ func MakeStatic(ctrlId api.ID) Static {
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
 func (me *Static) Create(parent Window, x, y int32, width, height uint32,
-	text string, exStyles api.WS_EX, styles api.WS, staStyles api.SS) *Static {
+	text string, exStyles co.WS_EX, styles co.WS, staStyles co.SS) *Static {
 
 	x, y, width, height = multiplyByDpi(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "STATIC", text,
-		styles|api.WS(staStyles), x, y, width, height, parent)
+		styles|co.WS(staStyles), x, y, width, height, parent)
 	globalUiFont.SetOnControl(me)
 	return me
 }
@@ -44,8 +44,8 @@ func (me *Static) CreateLText(parent Window, x, y int32, text string) *Static {
 	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
 	cx, cy := calcIdealSize(parent.Hwnd(), text, true)
 
-	me.controlNativeBase.create(api.WS_EX(0), "STATIC", text,
-		api.WS_CHILD|api.WS_GROUP|api.WS_VISIBLE|api.WS(api.SS_LEFT),
+	me.controlNativeBase.create(co.WS_EX(0), "STATIC", text,
+		co.WS_CHILD|co.WS_GROUP|co.WS_VISIBLE|co.WS(co.SS_LEFT),
 		x, y, cx, cy, parent)
 	globalUiFont.SetOnControl(me)
 	return me
@@ -53,11 +53,11 @@ func (me *Static) CreateLText(parent Window, x, y int32, text string) *Static {
 
 // Sets the text and resizes the control to fit the text exactly.
 func (me *Static) SetText(text string) {
-	hasAccel := (api.SS(me.Hwnd().GetStyle()) & api.SS_NOPREFIX) == 0
+	hasAccel := (co.SS(me.Hwnd().GetStyle()) & co.SS_NOPREFIX) == 0
 	cx, cy := calcIdealSize(me.Hwnd().GetParent(), text, hasAccel)
 
-	me.Hwnd().SetWindowPos(api.SWP_HWND(0), 0, 0, cx, cy,
-		api.SWP_NOZORDER|api.SWP_NOMOVE)
+	me.Hwnd().SetWindowPos(co.SWP_HWND(0), 0, 0, cx, cy,
+		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 }
 

@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
+	"wingows/co"
 )
 
 type LOGFONT struct {
@@ -17,7 +18,7 @@ type LOGFONT struct {
 	LfWidth          int32
 	LfEscapement     int32
 	LfOrientation    int32
-	LfWeight         FW
+	LfWeight         co.FW
 	LfItalic         uint8
 	LfUnderline      uint8
 	LfStrikeOut      uint8

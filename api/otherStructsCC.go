@@ -6,17 +6,21 @@
 
 package api
 
+import (
+	"wingows/co"
+)
+
 type LITEM struct {
-	Mask      LIF
+	Mask      co.LIF
 	ILink     int32
-	State     LIS
-	StateMask LIS
+	State     co.LIS
+	StateMask co.LIS
 	SzID      [48]uint16            // MAX_LINKID_TEXT
 	SzUrl     [2048 + 32 + 3]uint16 // L_MAX_URL_LENGTH
 }
 
 type LVCOLUMN struct {
-	Mask       LVCF
+	Mask       co.LVCF
 	Fmt        int32
 	Cx         int32
 	PszText    *uint16
@@ -30,7 +34,7 @@ type LVCOLUMN struct {
 }
 
 type LVFINDINFO struct {
-	Flags       LVFI
+	Flags       co.LVFI
 	Psz         *uint16
 	LParam      LPARAM
 	Pt          POINT
@@ -38,11 +42,11 @@ type LVFINDINFO struct {
 }
 
 type LVITEM struct {
-	Mask       LVIF
+	Mask       co.LVIF
 	IItem      int32
 	ISubItem   int32
-	State      LVIS
-	StateMask  LVIS
+	State      co.LVIS
+	StateMask  co.LVIS
 	PszText    *uint16
 	CchTextMax int32
 	IImage     int32
@@ -57,11 +61,11 @@ type LVITEM struct {
 
 type NMCUSTOMDRAW struct {
 	Hdr         NMHDR
-	DwDrawStage CDDS
+	DwDrawStage co.CDDS
 	Hdc         HDC
 	Rc          RECT
 	DwItemSpec  uintptr
-	UItemState  CDIS
+	UItemState  co.CDIS
 	LItemlParam LPARAM
 }
 
@@ -74,7 +78,7 @@ type NMITEMACTIVATE struct {
 	UChanged  uint32
 	PtAction  POINT
 	LParam    LPARAM
-	UKeyFlags LVKF
+	UKeyFlags co.LVKF
 }
 
 type NMLISTVIEW struct {
@@ -101,7 +105,7 @@ type NMLVDISPINFO struct {
 
 type NMLVEMPTYMARKUP struct {
 	Hdr      NMHDR
-	DwFlags  EMF
+	DwFlags  co.EMF
 	SzMarkup [2048 + 32 + 3]uint16 // L_MAX_URL_LENGTH
 }
 
@@ -113,7 +117,7 @@ type NMLVFINDITEM struct {
 
 type NMLVGETINFOTIP struct {
 	Hdr        NMHDR
-	DwFlags    LVGIT
+	DwFlags    co.LVGIT
 	PszText    *uint16
 	CchTextMax int32
 	IItem      int32
@@ -123,7 +127,7 @@ type NMLVGETINFOTIP struct {
 
 type NMLVKEYDOWN struct {
 	Hdr   NMHDR
-	WVKey VK
+	WVKey co.VK
 	Flags uint32
 }
 
@@ -138,8 +142,8 @@ type NMLVODSTATECHANGE struct {
 	Hdr       NMHDR
 	IFrom     int32
 	ITo       int32
-	UNewState LVIS
-	UOldState LVIS
+	UNewState co.LVIS
+	UOldState co.LVIS
 }
 
 type NMLVSCROLL struct {

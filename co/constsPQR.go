@@ -4,7 +4,7 @@
  * This library is released under the MIT license.
  */
 
-package api
+package co
 
 type PRF uint32 // WM_PRINT
 

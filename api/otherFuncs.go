@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
+	"wingows/co"
 )
 
 // Wrapper to syscall.UTF16PtrFromString(), panics in error.
@@ -74,7 +75,7 @@ func GetDpiForSystem() uint32 {
 	return uint32(ret)
 }
 
-func GetSystemMetrics(index SM) int32 {
+func GetSystemMetrics(index co.SM) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetSystemMetrics.Addr(), 1,
 		uintptr(index), 0, 0)
 	return int32(ret)
@@ -93,7 +94,7 @@ func PostQuitMessage(exitCode int32) {
 }
 
 // Available in Windows 10, version 1703.
-func SetProcessDpiAwarenessContext(value DPI_AWARE_CTX) {
+func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 	ret, _, lerr := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
 		uintptr(value), 0, 0)
 	if ret == 0 {
@@ -111,7 +112,7 @@ func SetProcessDPIAware() {
 	}
 }
 
-func SystemParametersInfo(action SPI, param uint32,
+func SystemParametersInfo(action co.SPI, param uint32,
 	pvParam unsafe.Pointer, winIni uint32) {
 
 	ret, _, lerr := syscall.Syscall6(proc.SystemParametersInfo.Addr(), 4,

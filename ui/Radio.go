@@ -8,6 +8,7 @@ package ui
 
 import (
 	"wingows/api"
+	"wingows/co"
 )
 
 // Native radio button control.
@@ -29,7 +30,7 @@ func GetCheckedRadio(radioGroup []RadioButton) int32 {
 }
 
 // Optional; returns a RadioButton with a specific control ID.
-func MakeRadioButton(ctrlId api.ID) RadioButton {
+func MakeRadioButton(ctrlId co.ID) RadioButton {
 	return RadioButton{
 		controlNativeBase: makeNativeControlBase(ctrlId),
 	}
@@ -39,12 +40,12 @@ func MakeRadioButton(ctrlId api.ID) RadioButton {
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
 func (me *RadioButton) Create(parent Window, x, y int32, width, height uint32,
-	text string, exStyles api.WS_EX, styles api.WS, btnStyles api.BS) *RadioButton {
+	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *RadioButton {
 
 	x, y, width, height = multiplyByDpi(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "BUTTON", text, // radio button is, in fact, a button
-		styles|api.WS(btnStyles), x, y, width, height, parent)
+		styles|co.WS(btnStyles), x, y, width, height, parent)
 	globalUiFont.SetOnControl(me)
 	return me
 }
@@ -56,7 +57,7 @@ func (me *RadioButton) CreateFirst(parent Window, x, y int32,
 	text string) *RadioButton {
 
 	return me.createBase(parent, x, y, text,
-		api.WS_GROUP|api.WS(api.BS_AUTORADIOBUTTON))
+		co.WS_GROUP|co.WS(co.BS_AUTORADIOBUTTON))
 }
 
 // Calls CreateWindowEx(). Creates a subsequent radio button of a group, with
@@ -65,17 +66,17 @@ func (me *RadioButton) CreateFirst(parent Window, x, y int32,
 func (me *RadioButton) CreateSubsequent(parent Window, x, y int32,
 	text string) *RadioButton {
 
-	return me.createBase(parent, x, y, text, api.WS(api.BS_AUTORADIOBUTTON))
+	return me.createBase(parent, x, y, text, co.WS(co.BS_AUTORADIOBUTTON))
 }
 
 func (me *RadioButton) IsChecked() bool {
-	return api.BST(me.Hwnd().
-		SendMessage(api.WM(api.BM_GETCHECK), 0, 0)) == api.BST_CHECKED
+	return co.BST(me.Hwnd().
+		SendMessage(co.WM(co.BM_GETCHECK), 0, 0)) == co.BST_CHECKED
 }
 
 func (me *RadioButton) SetCheck() *RadioButton {
 	me.Hwnd().
-		SendMessage(api.WM(api.BM_SETCHECK), api.WPARAM(api.BST_CHECKED), 0)
+		SendMessage(co.WM(co.BM_SETCHECK), api.WPARAM(co.BST_CHECKED), 0)
 	return me
 }
 
@@ -84,8 +85,8 @@ func (me *RadioButton) SetCheck() *RadioButton {
 func (me *RadioButton) SetText(text string) *RadioButton {
 	cx, cy := me.calcRadioButtonIdealSize(me.Hwnd().GetParent(), text)
 
-	me.Hwnd().SetWindowPos(api.SWP_HWND(0), 0, 0, cx, cy,
-		api.SWP_NOZORDER|api.SWP_NOMOVE)
+	me.Hwnd().SetWindowPos(co.SWP_HWND(0), 0, 0, cx, cy,
+		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 	return me
 }
@@ -101,10 +102,10 @@ func (me *RadioButton) calcRadioButtonIdealSize(hReferenceDc api.HWND,
 	text string) (uint32, uint32) {
 
 	cx, cy := calcIdealSize(hReferenceDc, text, true)
-	cx += uint32(api.GetSystemMetrics(api.SM_CXMENUCHECK)) +
-		uint32(api.GetSystemMetrics(api.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
+	cx += uint32(api.GetSystemMetrics(co.SM_CXMENUCHECK)) +
+		uint32(api.GetSystemMetrics(co.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
 
-	cyCheck := uint32(api.GetSystemMetrics(api.SM_CYMENUCHECK))
+	cyCheck := uint32(api.GetSystemMetrics(co.SM_CYMENUCHECK))
 	if cyCheck > cy {
 		cy = cyCheck // if the check is taller than the font, use its height
 	}
@@ -113,13 +114,13 @@ func (me *RadioButton) calcRadioButtonIdealSize(hReferenceDc api.HWND,
 }
 
 func (me *RadioButton) createBase(parent Window, x, y int32,
-	text string, otherStyles api.WS) *RadioButton {
+	text string, otherStyles co.WS) *RadioButton {
 
 	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
 	cx, cy := me.calcRadioButtonIdealSize(parent.Hwnd(), text)
 
-	me.controlNativeBase.create(api.WS_EX(0), "BUTTON", text,
-		api.WS_CHILD|api.WS_VISIBLE|otherStyles,
+	me.controlNativeBase.create(co.WS_EX(0), "BUTTON", text,
+		co.WS_CHILD|co.WS_VISIBLE|otherStyles,
 		x, y, cx, cy, parent)
 	globalUiFont.SetOnControl(me)
 	return me

@@ -9,6 +9,7 @@ package api
 import (
 	"syscall"
 	"wingows/api/proc"
+	"wingows/co"
 )
 
 type HBRUSH HANDLE
@@ -24,7 +25,7 @@ func CreatePatternBrush(hbm HBITMAP) HBRUSH {
 
 // This is not a Win32 function, it's just a tricky conversion to create a brush
 // from a system color.
-func CreateSysColorBrush(sysColor COLOR) HBRUSH {
+func CreateSysColorBrush(sysColor co.COLOR) HBRUSH {
 	return HBRUSH(sysColor + 1)
 }
 

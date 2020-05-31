@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
+	"wingows/co"
 )
 
 type OSVERSIONINFOEX struct {
@@ -38,12 +39,12 @@ func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32,
 
 	conditionMask := VerSetConditionMask(
 		VerSetConditionMask(
-			VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL),
-			VER_MINORVERSION, VER_GREATER_EQUAL),
-		VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL)
+			VerSetConditionMask(0, co.VER_MAJORVERSION, co.VER_GREATER_EQUAL),
+			co.VER_MINORVERSION, co.VER_GREATER_EQUAL),
+		co.VER_SERVICEPACKMAJOR, co.VER_GREATER_EQUAL)
 
 	ret, _ := ovi.VerifyVersionInfo(
-		VER_MAJORVERSION|VER_MINORVERSION|VER_SERVICEPACKMAJOR,
+		co.VER_MAJORVERSION|co.VER_MINORVERSION|co.VER_SERVICEPACKMAJOR,
 		conditionMask)
 	return ret
 }
@@ -51,58 +52,58 @@ func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32,
 func IsWindows10OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(
-			HiByte(uint16(WIN32_WINNT_WINTHRESHOLD))),
+			HiByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
 		uint32(
-			LoByte(uint16(WIN32_WINNT_WINTHRESHOLD))),
+			LoByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
 		0)
 }
 
 func IsWindows7OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(
-			HiByte(uint16(WIN32_WINNT_WIN7))),
+			HiByte(uint16(co.WIN32_WINNT_WIN7))),
 		uint32(
-			LoByte(uint16(WIN32_WINNT_WIN7))),
+			LoByte(uint16(co.WIN32_WINNT_WIN7))),
 		0)
 }
 
 func IsWindows8OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(
-			HiByte(uint16(WIN32_WINNT_WIN8))),
+			HiByte(uint16(co.WIN32_WINNT_WIN8))),
 		uint32(
-			LoByte(uint16(WIN32_WINNT_WIN8))),
+			LoByte(uint16(co.WIN32_WINNT_WIN8))),
 		0)
 }
 
 func IsWindows8Point1OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(
-			HiByte(uint16(WIN32_WINNT_WINBLUE))),
+			HiByte(uint16(co.WIN32_WINNT_WINBLUE))),
 		uint32(
-			LoByte(uint16(WIN32_WINNT_WINBLUE))),
+			LoByte(uint16(co.WIN32_WINNT_WINBLUE))),
 		0)
 }
 
 func IsWindowsVistaOrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(
-			HiByte(uint16(WIN32_WINNT_VISTA))),
+			HiByte(uint16(co.WIN32_WINNT_VISTA))),
 		uint32(
-			LoByte(uint16(WIN32_WINNT_VISTA))),
+			LoByte(uint16(co.WIN32_WINNT_VISTA))),
 		0)
 }
 
 func IsWindowsXpOrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(
-			HiByte(uint16(WIN32_WINNT_WINXP))),
+			HiByte(uint16(co.WIN32_WINNT_WINXP))),
 		uint32(
-			LoByte(uint16(WIN32_WINNT_WINXP))),
+			LoByte(uint16(co.WIN32_WINNT_WINXP))),
 		0)
 }
 
-func (ovi *OSVERSIONINFOEX) VerifyVersionInfo(typeMask VER,
+func (ovi *OSVERSIONINFOEX) VerifyVersionInfo(typeMask co.VER,
 	conditionMask uint64) (bool, syscall.Errno) {
 
 	ret, _, lerr := syscall.Syscall(proc.VerifyVersionInfo.Addr(), 3,
@@ -111,8 +112,8 @@ func (ovi *OSVERSIONINFOEX) VerifyVersionInfo(typeMask VER,
 	return ret != 0, lerr
 }
 
-func VerSetConditionMask(conditionMask uint64, typeMask VER,
-	condition VERCOND) uint64 {
+func VerSetConditionMask(conditionMask uint64, typeMask co.VER,
+	condition co.VERCOND) uint64 {
 
 	ret, _, _ := syscall.Syscall(proc.VerSetConditionMask.Addr(), 3,
 		uintptr(conditionMask), uintptr(typeMask), uintptr(condition))

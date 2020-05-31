@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
+	"wingows/co"
 )
 
 type HWND HANDLE
@@ -23,7 +24,7 @@ func (hwnd HWND) ClientToScreenPt(point *POINT) {
 	}
 }
 
-func CreateWindowEx(exStyle WS_EX, className, title string, style WS,
+func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
 	x, y int32, width, height uint32, parent HWND, menu HMENU,
 	instance HINSTANCE, param unsafe.Pointer) HWND {
 
@@ -42,7 +43,7 @@ func CreateWindowEx(exStyle WS_EX, className, title string, style WS,
 	return HWND(ret)
 }
 
-func (hwnd HWND) DefSubclassProc(msg WM,
+func (hwnd HWND) DefSubclassProc(msg co.WM,
 	wParam WPARAM, lParam LPARAM) uintptr {
 
 	ret, _, _ := syscall.Syscall6(proc.DefSubclassProc.Addr(), 4,
@@ -51,7 +52,9 @@ func (hwnd HWND) DefSubclassProc(msg WM,
 	return ret
 }
 
-func (hwnd HWND) DefWindowProc(msg WM, wParam WPARAM, lParam LPARAM) uintptr {
+func (hwnd HWND) DefWindowProc(msg co.WM,
+	wParam WPARAM, lParam LPARAM) uintptr {
+
 	ret, _, _ := syscall.Syscall6(proc.DefWindowProc.Addr(), 4,
 		uintptr(hwnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
 		0, 0)
@@ -94,7 +97,7 @@ func (hwnd HWND) EnumChildWindows() []HWND {
 	return hChildren
 }
 
-func (hwnd HWND) GetAncestor(gaFlags GA) HWND {
+func (hwnd HWND) GetAncestor(gaFlags co.GA) HWND {
 	ret, _, _ := syscall.Syscall(proc.GetAncestor.Addr(), 2,
 		uintptr(hwnd), uintptr(gaFlags), 0)
 	return HWND(ret)
@@ -121,7 +124,7 @@ func (hwnd HWND) GetDC() HDC {
 	return HDC(ret)
 }
 
-func (hwnd HWND) GetDlgItem(nIDDlgItem ID) HWND {
+func (hwnd HWND) GetDlgItem(nIDDlgItem co.ID) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetDlgItem.Addr(), 2,
 		uintptr(hwnd), uintptr(nIDDlgItem), 0)
 	if ret == 0 {
@@ -138,8 +141,8 @@ func (hwnd HWND) GetDpiForWindow() uint32 {
 	return uint32(ret)
 }
 
-func (hwnd HWND) GetExStyle() WS_EX {
-	return WS_EX(hwnd.GetWindowLongPtr(GWLP_EXSTYLE))
+func (hwnd HWND) GetExStyle() co.WS_EX {
+	return co.WS_EX(hwnd.GetWindowLongPtr(co.GWLP_EXSTYLE))
 }
 
 func GetFocus() HWND {
@@ -154,7 +157,7 @@ func GetForegroundWindow() HWND {
 }
 
 func (hwnd HWND) GetInstance() HINSTANCE {
-	return HINSTANCE(hwnd.GetWindowLongPtr(GWLP_HINSTANCE))
+	return HINSTANCE(hwnd.GetWindowLongPtr(co.GWLP_HINSTANCE))
 }
 
 func (hwnd HWND) GetMenu() HMENU {
@@ -173,11 +176,11 @@ func (hwnd HWND) GetParent() HWND {
 	return HWND(ret)
 }
 
-func (hwnd HWND) GetStyle() WS {
-	return WS(hwnd.GetWindowLongPtr(GWLP_STYLE))
+func (hwnd HWND) GetStyle() co.WS {
+	return co.WS(hwnd.GetWindowLongPtr(co.GWLP_STYLE))
 }
 
-func (hwnd HWND) GetWindow(uCmd GW) HWND {
+func (hwnd HWND) GetWindow(uCmd co.GW) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetWindow.Addr(), 2,
 		uintptr(hwnd), uintptr(uCmd), 0)
 	if ret == 0 {
@@ -196,7 +199,7 @@ func (hwnd HWND) GetWindowDC() HDC {
 	return HDC(ret)
 }
 
-func (hwnd HWND) GetWindowLongPtr(index GWLP) uintptr {
+func (hwnd HWND) GetWindowLongPtr(index co.GWLP) uintptr {
 	ret, _, _ := syscall.Syscall(proc.GetWindowLongPtr.Addr(), 2,
 		uintptr(hwnd), uintptr(index),
 		0)
@@ -256,10 +259,10 @@ func (hwnd HWND) IsDialogMessage(msg *MSG) bool {
 	return ret != 0
 }
 
-func (hwnd HWND) IsDlgButtonChecked(nIDButton ID) BST {
+func (hwnd HWND) IsDlgButtonChecked(nIDButton co.ID) co.BST {
 	ret, _, _ := syscall.Syscall(proc.IsDlgButtonChecked.Addr(), 2,
 		uintptr(hwnd), uintptr(nIDButton), 0)
-	return BST(ret)
+	return co.BST(ret)
 }
 
 func (hwnd HWND) IsWindowEnabled() bool {
@@ -268,13 +271,13 @@ func (hwnd HWND) IsWindowEnabled() bool {
 	return ret != 0
 }
 
-func (hwnd HWND) MessageBox(message, caption string, flags MB) ID {
+func (hwnd HWND) MessageBox(message, caption string, flags co.MB) co.ID {
 	ret, _, _ := syscall.Syscall6(proc.MessageBox.Addr(), 4,
 		uintptr(hwnd),
 		uintptr(unsafe.Pointer(StrToUtf16Ptr(message))),
 		uintptr(unsafe.Pointer(StrToUtf16Ptr(caption))),
 		uintptr(flags), 0, 0)
-	return ID(ret)
+	return co.ID(ret)
 }
 
 func (hwnd HWND) ReleaseDC(hdc HDC) int32 {
@@ -305,15 +308,15 @@ func (hwnd HWND) ScreenToClientRc(rect *RECT) {
 		uintptr(hwnd), uintptr(unsafe.Pointer(&rect.Right)), 0)
 }
 
-func (hwnd HWND) SendMessage(msg WM, wParam WPARAM, lParam LPARAM) uintptr {
+func (hwnd HWND) SendMessage(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	ret, _, _ := syscall.Syscall6(proc.SendMessage.Addr(), 4,
 		uintptr(hwnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
 		0, 0)
 	return ret
 }
 
-func (hwnd HWND) SetExStyle(style WS) {
-	hwnd.SetWindowLongPtr(GWLP_EXSTYLE, uintptr(style))
+func (hwnd HWND) SetExStyle(style co.WS) {
+	hwnd.SetWindowLongPtr(co.GWLP_EXSTYLE, uintptr(style))
 }
 
 func (hwnd HWND) SetFocus() HWND {
@@ -326,26 +329,26 @@ func (hwnd HWND) SetFocus() HWND {
 	return HWND(ret) // handle to the window that previously had the keyboard focus
 }
 
-func (hwnd HWND) SetStyle(style WS) {
-	hwnd.SetWindowLongPtr(GWLP_STYLE, uintptr(style))
+func (hwnd HWND) SetStyle(style co.WS) {
+	hwnd.SetWindowLongPtr(co.GWLP_STYLE, uintptr(style))
 }
 
-func (hwnd HWND) SetWindowLongPtr(index GWLP, newLong uintptr) uintptr {
+func (hwnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
 	// Since we can't properly call SetLastError(0), we'll ignore errors.
 	ret, _, _ := syscall.Syscall(proc.SetWindowLongPtr.Addr(), 3,
 		uintptr(hwnd), uintptr(index), newLong)
 	return ret
 }
 
-func (hwnd HWND) ShowWindow(nCmdShow SW) bool {
+func (hwnd HWND) ShowWindow(nCmdShow co.SW) bool {
 	ret, _, _ := syscall.Syscall(proc.ShowWindow.Addr(), 1,
 		uintptr(hwnd), uintptr(nCmdShow), 0)
 	return ret != 0
 }
 
 // You can pass a HWND handle or SWP_HWND constants in hwndInsertAfter argument.
-func (hwnd HWND) SetWindowPos(hwndInsertAfter SWP_HWND, x, y int32,
-	cx, cy uint32, uFlags SWP) {
+func (hwnd HWND) SetWindowPos(hwndInsertAfter co.SWP_HWND, x, y int32,
+	cx, cy uint32, uFlags co.SWP) {
 
 	ret, _, lerr := syscall.Syscall9(proc.SetWindowPos.Addr(), 7,
 		uintptr(hwnd), uintptr(hwndInsertAfter),

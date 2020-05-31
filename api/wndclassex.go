@@ -11,11 +11,12 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
+	"wingows/co"
 )
 
 type WNDCLASSEX struct {
 	CbSize        uint32
-	Style         CS
+	Style         co.CS
 	LpfnWndProc   uintptr
 	CbClsExtra    int32
 	CbWndExtra    int32

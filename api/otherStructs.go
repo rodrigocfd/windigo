@@ -6,6 +6,10 @@
 
 package api
 
+import (
+	"wingows/co"
+)
+
 type ACCEL struct {
 	FVirt uint8
 	Key   uint16
@@ -18,15 +22,15 @@ type CREATESTRUCT struct {
 	HMenu          HMENU
 	HwndParent     HWND
 	Cy, Cx, Y, X   int32
-	Style          WS
+	Style          co.WS
 	LpszName       *uint16
 	LpszClass      *uint16
-	ExStyle        WS_EX
+	ExStyle        co.WS_EX
 }
 
 type HELPINFO struct {
 	CbSize       uint32
-	IContextType HELPINFOC
+	IContextType co.HELPINFO
 	ICtrlId      int32
 	HItemHandle  HANDLE
 	DwContextId  uintptr
@@ -35,8 +39,8 @@ type HELPINFO struct {
 
 type MENUINFO struct {
 	CbSize          uint32
-	FMask           MIM
-	DwStyle         MNS
+	FMask           co.MIM
+	DwStyle         co.MNS
 	CyMax           uint32
 	HbrBack         HBRUSH
 	DwContextHelpID uint32
@@ -45,9 +49,9 @@ type MENUINFO struct {
 
 type MENUITEMINFO struct {
 	CbSize        uint32
-	FMask         MIIM
-	FType         MFT
-	FState        MFS
+	FMask         co.MIIM
+	FType         co.MFT
+	FState        co.MFS
 	WId           uint32
 	HSubMenu      HMENU
 	HBmpChecked   HBITMAP

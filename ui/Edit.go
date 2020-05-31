@@ -9,6 +9,7 @@ package ui
 import (
 	"unsafe"
 	"wingows/api"
+	"wingows/co"
 )
 
 // Native edit control (textbox).
@@ -19,7 +20,7 @@ type Edit struct {
 }
 
 // Optional; returns a, Edit with a specific control ID.
-func MakeEdit(ctrlId api.ID) Edit {
+func MakeEdit(ctrlId co.ID) Edit {
 	return Edit{
 		controlNativeBase: makeNativeControlBase(ctrlId),
 	}
@@ -29,13 +30,13 @@ func MakeEdit(ctrlId api.ID) Edit {
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
 func (me *Edit) Create(parent Window, x, y int32, width, height uint32,
-	initialText string, exStyles api.WS_EX, styles api.WS,
-	editStyles api.ES) *Edit {
+	initialText string, exStyles co.WS_EX, styles co.WS,
+	editStyles co.ES) *Edit {
 
 	x, y, width, height = multiplyByDpi(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "EDIT", initialText,
-		styles|api.WS(editStyles), x, y, width, height, parent)
+		styles|co.WS(editStyles), x, y, width, height, parent)
 	globalUiFont.SetOnControl(me)
 	return me
 }
@@ -46,9 +47,9 @@ func (me *Edit) CreateMultiLine(parent Window, x, y int32,
 	width, height uint32, initialText string) *Edit {
 
 	return me.Create(parent, x, y, width, height, initialText,
-		api.WS_EX_CLIENTEDGE,
-		api.WS_CHILD|api.WS_GROUP|api.WS_TABSTOP|api.WS_VISIBLE,
-		api.ES_MULTILINE|api.ES_WANTRETURN)
+		co.WS_EX_CLIENTEDGE,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.ES_MULTILINE|co.ES_WANTRETURN)
 }
 
 // Calls CreateWindowEx(). Edit control will have ES_PASSWORD style. Position
@@ -58,9 +59,9 @@ func (me *Edit) CreatePassword(parent Window, x, y int32, width uint32,
 	initialText string) *Edit {
 
 	return me.Create(parent, x, y, width, 21, initialText,
-		api.WS_EX_CLIENTEDGE,
-		api.WS_CHILD|api.WS_GROUP|api.WS_TABSTOP|api.WS_VISIBLE,
-		api.ES_AUTOHSCROLL|api.ES_PASSWORD)
+		co.WS_EX_CLIENTEDGE,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.ES_AUTOHSCROLL|co.ES_PASSWORD)
 }
 
 // Calls CreateWindowEx(). Position and width will be adjusted to the current
@@ -69,14 +70,14 @@ func (me *Edit) CreateSimple(parent Window, x, y int32, width uint32,
 	initialText string) *Edit {
 
 	return me.Create(parent, x, y, width, 21, initialText,
-		api.WS_EX_CLIENTEDGE,
-		api.WS_CHILD|api.WS_GROUP|api.WS_TABSTOP|api.WS_VISIBLE,
-		api.ES_AUTOHSCROLL)
+		co.WS_EX_CLIENTEDGE,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.ES_AUTOHSCROLL)
 }
 
 // Replaces the currently selected text in the edit control.
 func (me *Edit) ReplaceSelection(newText string) *Edit {
-	me.sendEmMessage(api.EM_REPLACESEL, 1,
+	me.sendEmMessage(co.EM_REPLACESEL, 1,
 		api.LPARAM(unsafe.Pointer(api.StrToUtf16Ptr(newText))))
 	return me
 }
@@ -90,7 +91,7 @@ func (me *Edit) SelectAll() *Edit {
 // Retrieves the selected range of text in the edit control.
 func (me *Edit) SelectedRange() (int32, int32) {
 	start, firstAfter := int32(0), int32(0)
-	me.sendEmMessage(api.EM_GETSEL, api.WPARAM(unsafe.Pointer(&start)),
+	me.sendEmMessage(co.EM_GETSEL, api.WPARAM(unsafe.Pointer(&start)),
 		api.LPARAM(unsafe.Pointer(&firstAfter)))
 	return start, firstAfter - start
 }
@@ -98,14 +99,14 @@ func (me *Edit) SelectedRange() (int32, int32) {
 // Selects a range of text in the edit control.
 // Only has effect if edit control is focused.
 func (me *Edit) SelectRange(start, length int32) *Edit {
-	me.sendEmMessage(api.EM_SETSEL, api.WPARAM(start),
+	me.sendEmMessage(co.EM_SETSEL, api.WPARAM(start),
 		api.LPARAM(start+length))
 	return me
 }
 
-func (me *Edit) sendEmMessage(msg api.EM,
+func (me *Edit) sendEmMessage(msg co.EM,
 	wParam api.WPARAM, lParam api.LPARAM) uintptr {
 
 	return me.controlNativeBase.Hwnd().
-		SendMessage(api.WM(msg), wParam, lParam) // simple wrapper
+		SendMessage(co.WM(msg), wParam, lParam) // simple wrapper
 }

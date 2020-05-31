@@ -11,11 +11,12 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
+	"wingows/co"
 )
 
 type HMENU HANDLE
 
-func (hmenu HMENU) AppendMenu(uFlags MF, uIDNewItem uintptr,
+func (hmenu HMENU) AppendMenu(uFlags co.MF, uIDNewItem uintptr,
 	lpNewItem uintptr) {
 
 	ret, _, lerr := syscall.Syscall6(proc.AppendMenu.Addr(), 4,
@@ -37,9 +38,9 @@ func CreateMenu() HMENU {
 	return HMENU(ret)
 }
 
-func (hmenu HMENU) DeleteMenuById(id ID) {
+func (hmenu HMENU) DeleteMenuById(id co.ID) {
 	ret, _, lerr := syscall.Syscall(proc.DeleteMenu.Addr(), 3,
-		uintptr(hmenu), uintptr(id), uintptr(MF_BYCOMMAND))
+		uintptr(hmenu), uintptr(id), uintptr(co.MF_BYCOMMAND))
 	if ret == 0 {
 		panic(fmt.Sprintf("DeleteMeny by ID failed: %d %s\n",
 			lerr, lerr.Error()))
@@ -48,7 +49,7 @@ func (hmenu HMENU) DeleteMenuById(id ID) {
 
 func (hmenu HMENU) DeleteMenuByPos(index uint32) {
 	ret, _, lerr := syscall.Syscall(proc.DeleteMenu.Addr(), 3,
-		uintptr(hmenu), uintptr(index), uintptr(MF_BYPOSITION))
+		uintptr(hmenu), uintptr(index), uintptr(co.MF_BYPOSITION))
 	if ret == 0 {
 		panic(fmt.Sprintf("DeleteMeny by pos failed: %d %s\n",
 			lerr, lerr.Error()))
@@ -64,7 +65,7 @@ func (hmenu HMENU) DestroyMenu() {
 	}
 }
 
-func (hmenu HMENU) EnableMenuItem(uIDEnableItem uint32, uEnable MF) {
+func (hmenu HMENU) EnableMenuItem(uIDEnableItem uint32, uEnable co.MF) {
 	syscall.Syscall(proc.EnableMenuItem.Addr(), 3,
 		uintptr(hmenu), uintptr(uIDEnableItem), uintptr(uEnable))
 }
@@ -90,13 +91,13 @@ func (hmenu HMENU) GetMenuInfo(mi *MENUINFO) {
 	}
 }
 
-func (hmenu HMENU) GetMenuItemID(index uint32) ID {
+func (hmenu HMENU) GetMenuItemID(index uint32) co.ID {
 	ret, _, _ := syscall.Syscall(proc.GetMenuItemID.Addr(), 2,
 		uintptr(hmenu), uintptr(index), 0)
-	return ID(ret)
+	return co.ID(ret)
 }
 
-func (hmenu HMENU) GetMenuItemInfoById(id ID, mii *MENUITEMINFO) {
+func (hmenu HMENU) GetMenuItemInfoById(id co.ID, mii *MENUITEMINFO) {
 	mii.CbSize = uint32(unsafe.Sizeof(*mii)) // safety
 
 	ret, _, lerr := syscall.Syscall6(proc.GetMenuItemInfo.Addr(), 4,
@@ -126,7 +127,7 @@ func (hmenu HMENU) GetSubMenu(nPos uint32) HMENU {
 	return HMENU(ret)
 }
 
-func (hmenu HMENU) SetMenuItemInfoById(id ID, mii *MENUITEMINFO) {
+func (hmenu HMENU) SetMenuItemInfoById(id co.ID, mii *MENUITEMINFO) {
 	mii.CbSize = uint32(unsafe.Sizeof(*mii)) // safety
 
 	ret, _, lerr := syscall.Syscall6(proc.SetMenuItemInfo.Addr(), 4,

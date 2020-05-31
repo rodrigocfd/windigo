@@ -4,7 +4,7 @@
  * This library is released under the MIT license.
  */
 
-package api
+package co
 
 type GA uint32 // GetAncestor
 
@@ -97,11 +97,11 @@ const (
 	HDM_LAYOUT       HDM = hDM_FIRST + 5
 )
 
-type HELPINFOC int32 // HELPINFO iContextType
+type HELPINFO int32 // HELPINFO iContextType
 
 const (
-	HELPINFOC_WINDOW   HELPINFOC = 0x0001
-	HELPINFOC_MENUITEM HELPINFOC = 0x0002
+	HELPINFO_WINDOW   HELPINFO = 0x0001
+	HELPINFO_MENUITEM HELPINFO = 0x0002
 )
 
 type ID uint16 // dialog box command ID
