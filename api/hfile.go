@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/api/proc"
+	"wingows/co"
 )
 
 type HFILE HANDLE
@@ -24,4 +25,12 @@ func (hfile HFILE) GetFileSize() int64 {
 			lerr, lerr.Error()))
 	}
 	return buf
+}
+
+func CreateFile(fileName string, desiredAccess co.GENERIC,
+	shareMode co.FILE_SHARE, securityAttributes uintptr,
+	creationDisposition co.FILE_DISP, attributes co.FILE_ATTRIBUTE,
+	flags co.FILE_FLAG, security co.SECURITY) HFILE {
+
+	return 0
 }

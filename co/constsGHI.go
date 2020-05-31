@@ -59,6 +59,15 @@ const (
 	GDC_COLORMGMTCAPS   GDC = 121
 )
 
+type GENERIC uint32 // CreateFile dwDesiredAccess
+
+const (
+	GENERIC_READ    GENERIC = 0x80000000
+	GENERIC_WRITE   GENERIC = 0x40000000
+	GENERIC_EXECUTE GENERIC = 0x20000000
+	GENERIC_ALL     GENERIC = 0x10000000
+)
+
 type GW uint32 // GetWindow
 
 const (

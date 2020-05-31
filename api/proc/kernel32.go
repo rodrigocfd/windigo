@@ -13,6 +13,7 @@ import (
 var (
 	dllKernel32 = syscall.NewLazyDLL("kernel32.dll")
 
+	CreateFileW         = dllKernel32.NewProc("CreateFileW")
 	GetFileSizeEx       = dllKernel32.NewProc("GetFileSizeEx")
 	MulDiv              = dllKernel32.NewProc("MulDiv")
 	GetModuleHandle     = dllKernel32.NewProc("GetModuleHandleW")
