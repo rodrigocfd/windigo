@@ -549,7 +549,7 @@ func (me *windowDepotMsg) WmSetFont(userFunc func(p WmSetFont)) {
 
 type WmSize struct{ base wmBase }
 
-func (p WmSize) Request() co.SIZE_REQ     { return co.SIZE_REQ(p.base.WParam) }
+func (p WmSize) Request() co.SIZE         { return co.SIZE(p.base.WParam) }
 func (p WmSize) ClientAreaSize() api.SIZE { return makeSizeLp(p.base.LParam) }
 
 func (me *windowDepotMsg) WmSize(userFunc func(p WmSize)) {
