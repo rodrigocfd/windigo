@@ -103,6 +103,12 @@ type RECT struct {
 	Left, Top, Right, Bottom int32
 }
 
+type SECURITY_ATTRIBUTES struct {
+	NLength              uint32
+	LpSecurityDescriptor uintptr
+	BInheritHandle       int32
+}
+
 type SIZE struct {
 	Cx, Cy int32
 }
