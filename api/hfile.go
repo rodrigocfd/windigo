@@ -54,6 +54,22 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 	return HFILE(ret)
 }
 
+func (hfile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
+	protectPage co.PAGE, protectSec co.SEC, maxSize uint32,
+	objectName string) HFILEMAP {
+
+	ret, _, lerr := syscall.Syscall6(proc.CreateFileMapping.Addr(), 6,
+		uintptr(hfile), uintptr(unsafe.Pointer(securityAttributes)),
+		uintptr(uint32(protectPage)|uint32(protectSec)),
+		0, uintptr(maxSize),
+		uintptr(unsafe.Pointer(StrToUtf16PtrBlankIsNil(objectName))))
+	if lerr != 0 {
+		panic(fmt.Sprintf("CreateFileMapping failed: %d %s\n",
+			lerr, lerr.Error()))
+	}
+	return HFILEMAP(ret)
+}
+
 func (hfile HFILE) DeleteFile(fileName string) {
 	ret, _, lerr := syscall.Syscall(proc.DeleteFile.Addr(), 1,
 		uintptr(unsafe.Pointer(StrToUtf16Ptr(fileName))), 0, 0)

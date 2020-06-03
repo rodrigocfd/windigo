@@ -35,7 +35,7 @@ func (wcx *WNDCLASSEX) Hash() string {
 	return fmt.Sprintf("%x.%x.%x.%x.%x.%x.%x.%x.%x.%x",
 		wcx.Style, wcx.LpfnWndProc, wcx.CbClsExtra, wcx.CbWndExtra,
 		wcx.HInstance, wcx.HIcon, wcx.HCursor, wcx.HbrBackground,
-		wcx.LpszMenuName, wcx.HIcon)
+		wcx.LpszMenuName, wcx.HIconSm)
 }
 
 func (wcx *WNDCLASSEX) RegisterClassEx() (ATOM, syscall.Errno) {
