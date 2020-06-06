@@ -7,7 +7,6 @@
 package ui
 
 import (
-	"fmt"
 	"unsafe"
 	"wingows/api"
 	"wingows/co"
@@ -15,16 +14,11 @@ import (
 
 // Keeps all user message handlers.
 type windowDepotMsg struct {
-	mapMsgs    map[co.WM]func(p wmBase) uintptr
-	mapCmds    map[co.ID]func(p WmCommand)
-	wasCreated bool // false by default, set by windowBase/controlNativeBase when the window is created
+	mapMsgs map[co.WM]func(p wmBase) uintptr
+	mapCmds map[co.ID]func(p WmCommand)
 }
 
 func (me *windowDepotMsg) addMsg(msg co.WM, userFunc func(p wmBase) uintptr) {
-	if me.wasCreated {
-		panic(fmt.Sprintf(
-			"Cannot add message 0x%04x after the window was created.", msg))
-	}
 	if me.mapMsgs == nil { // guard
 		me.mapMsgs = make(map[co.WM]func(p wmBase) uintptr, 16) // arbitrary capacity
 	}
@@ -32,10 +26,6 @@ func (me *windowDepotMsg) addMsg(msg co.WM, userFunc func(p wmBase) uintptr) {
 }
 
 func (me *windowDepotMsg) addCmd(cmd co.ID, userFunc func(p WmCommand)) {
-	if me.wasCreated {
-		panic(fmt.Sprintf(
-			"Cannot add command message %d after the window was created.", cmd))
-	}
 	if me.mapCmds == nil { // guard
 		me.mapCmds = make(map[co.ID]func(p WmCommand), 16) // arbitrary capacity
 	}

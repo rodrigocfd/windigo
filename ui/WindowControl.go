@@ -29,6 +29,9 @@ func MakeWindowControl(ctrlId co.ID) WindowControl {
 
 // Exposes parameters that will be used to create the child window control.
 func (me *WindowControl) Setup() *windowControlSetup {
+	if me.Hwnd() != 0 {
+		panic("Cannot change setup after the control was created.")
+	}
 	me.setup.initOnce() // guard
 	return &me.setup
 }

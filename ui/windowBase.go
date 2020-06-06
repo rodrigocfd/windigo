@@ -35,6 +35,9 @@ func (me *windowBase) Hwnd() api.HWND {
 
 // Exposes all the window messages the can be handled.
 func (me *windowBase) OnMsg() *windowBaseDepot {
+	if me.Hwnd() != 0 {
+		panic("Cannot add message after the window was created.")
+	}
 	return &me.depot
 }
 
@@ -71,9 +74,6 @@ func (me *windowBase) createWindow(uiName string, exStyle co.WS_EX,
 		}
 		return 0
 	})
-
-	me.depot.windowDepotMsg.wasCreated = true // no further messages can be added
-	me.depot.windowDepotNfy.wasCreated = true
 
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
 	api.CreateWindowEx(exStyle, className, title, style, x, y, width, height,

@@ -25,6 +25,9 @@ type WindowMain struct {
 
 // Exposes parameters that will be used to create the window.
 func (me *WindowMain) Setup() *windowMainSetup {
+	if me.Hwnd() != 0 {
+		panic("Cannot change setup after the window was created.")
+	}
 	me.setup.initOnce() // guard
 	return &me.setup
 }

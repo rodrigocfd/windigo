@@ -7,7 +7,6 @@
 package ui
 
 import (
-	"fmt"
 	"unsafe"
 	"wingows/api"
 	"wingows/co"
@@ -20,18 +19,12 @@ type nfyHash struct { // custom hash for WM_NOTIFY messages
 
 // Keeps all user common control notification handlers.
 type windowDepotNfy struct {
-	mapNfys    map[nfyHash]func(p WmNotify) uintptr
-	wasCreated bool // false by default, set by windowBase/controlNativeBase when the window is created
+	mapNfys map[nfyHash]func(p WmNotify) uintptr
 }
 
 func (me *windowDepotNfy) addNfy(idFrom co.ID, code co.NM,
 	userFunc func(p WmNotify) uintptr) {
 
-	if me.wasCreated {
-		panic(fmt.Sprintf(
-			"Cannot add motify message %d/%d after the window was created.",
-			idFrom, code))
-	}
 	if me.mapNfys == nil { // guard
 		me.mapNfys = make(map[nfyHash]func(p WmNotify) uintptr, 16) // arbitrary capacity
 	}
