@@ -57,7 +57,7 @@ func (me *WindowMain) RunAsMain() {
 	me.windowBase.createWindow("WindowMain", me.setup.ExStyle,
 		me.setup.ClassName, me.setup.Title, me.setup.Style,
 		cxScreen/2-int32(cx)/2, cyScreen/2-int32(cy)/2, // center window on screen
-		me.setup.Width, me.setup.Height, nil, me.setup.HMenu, hInst)
+		cx, cy, nil, me.setup.HMenu, hInst)
 
 	me.windowBase.Hwnd().ShowWindow(me.setup.CmdShow)
 	me.windowBase.Hwnd().UpdateWindow()
