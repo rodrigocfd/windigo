@@ -63,6 +63,7 @@ var (
 	IsChild                       = dllUser32.NewProc("IsChild")
 	IsDlgButtonChecked            = dllUser32.NewProc("IsDlgButtonChecked")
 	IsDialogMessage               = dllUser32.NewProc("IsDialogMessageW")
+	IsWindow                      = dllUser32.NewProc("IsWindow")
 	IsWindowEnabled               = dllUser32.NewProc("IsWindowEnabled")
 	LoadCursor                    = dllUser32.NewProc("LoadCursorW")
 	MessageBox                    = dllUser32.NewProc("MessageBoxW")

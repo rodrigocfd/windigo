@@ -275,6 +275,12 @@ func (hwnd HWND) IsDlgButtonChecked(nIDButton co.ID) co.BST {
 	return co.BST(ret)
 }
 
+func (hwnd HWND) IsWindow() bool {
+	ret, _, _ := syscall.Syscall(proc.IsWindow.Addr(), 1,
+		uintptr(hwnd), 0, 0)
+	return ret != 0
+}
+
 func (hwnd HWND) IsWindowEnabled() bool {
 	ret, _, _ := syscall.Syscall(proc.IsWindowEnabled.Addr(), 1,
 		uintptr(hwnd), 0, 0)

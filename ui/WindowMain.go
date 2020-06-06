@@ -20,8 +20,9 @@ var (
 // Allows message and notification handling.
 type WindowMain struct {
 	windowBase
-	setup          windowMainSetup
-	childPrevFocus api.HWND // when window is inactivated
+	setup            windowMainSetup
+	modelessChildren []api.HWND
+	childPrevFocus   api.HWND // when window is inactivated
 }
 
 // Exposes parameters that will be used to create the window.
@@ -105,7 +106,7 @@ func (me *WindowMain) runMainLoop() {
 			break // WM_QUIT was sent, gracefully terminate the program
 		}
 
-		if me.isModelessMsg() { // does this message belong to a modeless child (if any)?
+		if me.isModelessMsg(&msg) { // does this message belong to a modeless child (if any)?
 			// http://www.winprog.org/tutorial/modeless_dialogs.html
 			continue
 		}
@@ -121,8 +122,16 @@ func (me *WindowMain) runMainLoop() {
 	}
 }
 
-func (me *WindowMain) isModelessMsg() bool {
-	return false
+func (me *WindowMain) isModelessMsg(msg *api.MSG) bool {
+	for _, hChild := range me.modelessChildren { // check all modeless HWNDs
+		if hChild == 0 || !hChild.IsWindow() {
+			continue // skip invalid HWND
+		}
+		if hChild.IsDialogMessage(msg) {
+			return true // it was a message for this modeless, it was processed and we're done
+		}
+	}
+	return false // the message wasn't for any of the modeless HWNDs
 }
 
 //------------------------------------------------------------------------------

@@ -16,8 +16,8 @@ import (
 // Allows message and notification handling.
 type WindowModal struct {
 	windowBase
-	prevFocus api.HWND // child control last focused on parent
-	setup     windowModalSetup
+	prevFocusParent api.HWND // child control last focused on parent
+	setup           windowModalSetup
 }
 
 // Parameters that will be used to create the window.
@@ -39,11 +39,11 @@ func (me *WindowModal) Show(parent Window) {
 	me.windowBase.OnMsg().WmClose(func() { // default WM_CLOSE handling
 		me.windowBase.Hwnd().GetWindow(co.GW_OWNER).EnableWindow(true) // re-enable parent
 		me.windowBase.Hwnd().DestroyWindow()                           // then destroy modal
-		me.prevFocus.SetFocus()
+		me.prevFocusParent.SetFocus()
 	})
 
-	me.prevFocus = api.GetFocus()     // currently focused control
-	parent.Hwnd().EnableWindow(false) // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
+	me.prevFocusParent = api.GetFocus() // currently focused control
+	parent.Hwnd().EnableWindow(false)   // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
 	_, _, cx, cy := multiplyByDpi(0, 0, me.setup.Width, me.setup.Height)
 
