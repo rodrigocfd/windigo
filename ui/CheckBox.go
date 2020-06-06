@@ -118,7 +118,7 @@ func (me *CheckBox) createBase(parent Window, x, y int32,
 	cx, cy := me.calcCheckBoxIdealSize(parent.Hwnd(), text)
 
 	me.controlNativeBase.create(co.WS_EX(0), "BUTTON", text,
-		co.WS_CHILD|co.WS_GROUP|co.WS_VISIBLE|co.WS(chbxStyles),
+		co.WS_CHILD|co.WS_TABSTOP|co.WS_GROUP|co.WS_VISIBLE|co.WS(chbxStyles),
 		x, y, cx, cy, parent)
 	globalUiFont.SetOnControl(me)
 	return me

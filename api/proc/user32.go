@@ -49,6 +49,7 @@ var (
 	GetMenuItemInfo               = dllUser32.NewProc("GetMenuItemInfoW")
 	GetMessage                    = dllUser32.NewProc("GetMessageW")
 	GetMonitorInfo                = dllUser32.NewProc("GetMonitorInfoW")
+	GetNextDlgTabItem             = dllUser32.NewProc("GetNextDlgTabItem")
 	GetParent                     = dllUser32.NewProc("GetParent")
 	GetSubMenu                    = dllUser32.NewProc("GetSubMenu")
 	GetSystemMetrics              = dllUser32.NewProc("GetSystemMetrics")

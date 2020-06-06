@@ -166,6 +166,16 @@ func (hwnd HWND) GetMenu() HMENU {
 	return HMENU(ret)
 }
 
+func (hwnd HWND) GetNextDlgTabItem(hChild HWND, bPrevious bool) HWND {
+	ret, _, lerr := syscall.Syscall(proc.GetNextDlgTabItem.Addr(), 3,
+		uintptr(hwnd), uintptr(hChild), boolToUintptr(bPrevious))
+	if ret == 0 && lerr != 0 {
+		panic(fmt.Sprintf("GetNextDlgTabItem failed: %d %s\n",
+			lerr, lerr.Error()))
+	}
+	return HWND(ret)
+}
+
 func (hwnd HWND) GetParent() HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetParent.Addr(), 1,
 		uintptr(hwnd), 0, 0)
@@ -247,9 +257,9 @@ func (hwnd HWND) InvalidateRect(lpRect *RECT, bErase bool) {
 	}
 }
 
-func (hwnd HWND) IsChild(hwndParent HWND) bool {
+func (hwnd HWND) IsChild(hChild HWND) bool {
 	ret, _, _ := syscall.Syscall(proc.IsChild.Addr(), 2,
-		uintptr(hwndParent), uintptr(hwnd), 0)
+		uintptr(hwnd), uintptr(hChild), 0)
 	return ret != 0
 }
 

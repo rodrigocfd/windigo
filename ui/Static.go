@@ -45,7 +45,7 @@ func (me *Static) CreateLText(parent Window, x, y int32, text string) *Static {
 	cx, cy := calcIdealSize(parent.Hwnd(), text, true)
 
 	me.controlNativeBase.create(co.WS_EX(0), "STATIC", text,
-		co.WS_CHILD|co.WS_GROUP|co.WS_VISIBLE|co.WS(co.SS_LEFT),
+		co.WS_CHILD|co.WS_VISIBLE|co.WS(co.SS_LEFT),
 		x, y, cx, cy, parent)
 	globalUiFont.SetOnControl(me)
 	return me

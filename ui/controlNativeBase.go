@@ -42,7 +42,7 @@ func (me *controlNativeBase) Hwnd() api.HWND {
 // Exposes all the control subclass methods that can be handled.
 // The subclass will be installed if at least 1 message was added.
 func (me *controlNativeBase) OnSubclassMsg() *windowDepotMsg {
-	if me.Hwnd() != 0 {
+	if me.hwnd != 0 {
 		panic("Cannot add subclass message after the control was created.")
 	}
 	return &me.msgs

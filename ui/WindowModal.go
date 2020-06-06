@@ -22,7 +22,7 @@ type WindowModal struct {
 
 // Parameters that will be used to create the window.
 func (me *WindowModal) Setup() *windowModalSetup {
-	if me.Hwnd() != 0 {
+	if me.windowBase.Hwnd() != 0 {
 		panic("Cannot change setup after the window was created.")
 	}
 	me.setup.initOnce() // guard

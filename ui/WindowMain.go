@@ -20,12 +20,13 @@ var (
 // Allows message and notification handling.
 type WindowMain struct {
 	windowBase
-	setup windowMainSetup
+	setup          windowMainSetup
+	childPrevFocus api.HWND // when window is inactivated
 }
 
 // Exposes parameters that will be used to create the window.
 func (me *WindowMain) Setup() *windowMainSetup {
-	if me.Hwnd() != 0 {
+	if me.windowBase.Hwnd() != 0 {
 		panic("Cannot change setup after the window was created.")
 	}
 	me.setup.initOnce() // guard
@@ -45,9 +46,7 @@ func (me *WindowMain) RunAsMain() {
 
 	globalUiFont.CreateUi() // create global font to be applied everywhere
 
-	me.windowBase.OnMsg().WmNcDestroy(func() { // default WM_NCDESTROY handling
-		api.PostQuitMessage(0)
-	})
+	me.default_message_handling()
 
 	cxScreen := api.GetSystemMetrics(co.SM_CXSCREEN) // retrieve screen size
 	cyScreen := api.GetSystemMetrics(co.SM_CYSCREEN)
@@ -65,6 +64,37 @@ func (me *WindowMain) RunAsMain() {
 	me.runMainLoop()
 }
 
+func (me *WindowMain) default_message_handling() {
+	me.windowBase.OnMsg().WmNcDestroy(func() {
+		api.PostQuitMessage(0)
+	})
+
+	me.windowBase.OnMsg().WmSetFocus(func(p WmSetFocus) {
+		// We receive this message on window creation of user didn't
+		// manually call SetFocus() on any control.
+		if me.childPrevFocus == 0 {
+			// Do this only after window is created.
+			me.windowBase.Hwnd().
+				GetNextDlgTabItem(api.HWND(0), false).
+				SetFocus()
+		}
+	})
+
+	me.windowBase.OnMsg().WmActivate(func(p WmActivate) {
+		// https://devblogs.microsoft.com/oldnewthing/20140521-00/?p=943
+		if !p.IsMinimized() {
+			if p.State() == co.WA_INACTIVE {
+				curFocus := api.GetFocus()
+				if curFocus != 0 && me.windowBase.Hwnd().IsChild(curFocus) {
+					me.childPrevFocus = curFocus // save previously focused control
+				}
+			} else if me.childPrevFocus != 0 {
+				me.childPrevFocus.SetFocus() // put focus back
+			}
+		}
+	})
+}
+
 func (me *WindowMain) runMainLoop() {
 	defer globalUiFont.Destroy()
 
@@ -76,6 +106,7 @@ func (me *WindowMain) runMainLoop() {
 		}
 
 		if me.isModelessMsg() { // does this message belong to a modeless child (if any)?
+			// http://www.winprog.org/tutorial/modeless_dialogs.html
 			continue
 		}
 

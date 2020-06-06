@@ -57,7 +57,7 @@ func (me *RadioButton) CreateFirst(parent Window, x, y int32,
 	text string) *RadioButton {
 
 	return me.createBase(parent, x, y, text,
-		co.WS_GROUP|co.WS(co.BS_AUTORADIOBUTTON))
+		co.WS_GROUP|co.WS_TABSTOP|co.WS(co.BS_AUTORADIOBUTTON))
 }
 
 // Calls CreateWindowEx(). Creates a subsequent radio button of a group, with
