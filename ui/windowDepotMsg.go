@@ -58,13 +58,13 @@ type wmBase struct {
 
 type WmCommand struct{ base wmBase }
 
-func (p WmCommand) IsFromMenu() bool         { return hiWordWp(p.base.WParam) == 0 }
-func (p WmCommand) IsFromAccelerator() bool  { return hiWordWp(p.base.WParam) == 1 }
+func (p WmCommand) IsFromMenu() bool         { return p.base.WParam.HiWord() == 0 }
+func (p WmCommand) IsFromAccelerator() bool  { return p.base.WParam.HiWord() == 1 }
 func (p WmCommand) IsFromControl() bool      { return !p.IsFromMenu() && !p.IsFromAccelerator() }
 func (p WmCommand) MenuId() co.ID            { return p.ControlId() }
 func (p WmCommand) AcceleratorId() co.ID     { return p.ControlId() }
-func (p WmCommand) ControlId() co.ID         { return co.ID(loWordWp(p.base.WParam)) }
-func (p WmCommand) ControlNotifCode() uint16 { return hiWordWp(p.base.WParam) }
+func (p WmCommand) ControlId() co.ID         { return co.ID(p.base.WParam.LoWord()) }
+func (p WmCommand) ControlNotifCode() uint16 { return p.base.WParam.HiWord() }
 func (p WmCommand) ControlHwnd() api.HWND    { return api.HWND(p.base.LParam) }
 
 func (me *windowDepotMsg) WmCommand(cmd co.ID, userFunc func(p WmCommand)) {
@@ -80,8 +80,8 @@ func (p WmNotify) NmHdr() *api.NMHDR { return (*api.NMHDR)(unsafe.Pointer(p.base
 
 type WmActivate struct{ base wmBase }
 
-func (p WmActivate) State() co.WA                           { return co.WA(loWordWp(p.base.WParam)) }
-func (p WmActivate) IsMinimized() bool                      { return hiWordWp(p.base.WParam) != 0 }
+func (p WmActivate) State() co.WA                           { return co.WA(p.base.WParam.LoWord()) }
+func (p WmActivate) IsMinimized() bool                      { return p.base.WParam.HiWord() != 0 }
 func (p WmActivate) ActivatedOrDeactivatedWindow() api.HWND { return api.HWND(p.base.LParam) }
 
 // Warning: default handled in WindowMain.
@@ -108,12 +108,12 @@ type WmAppCommand struct{ base wmBase }
 
 func (p WmAppCommand) OwnerWindow() api.HWND { return api.HWND(p.base.WParam) }
 func (p WmAppCommand) AppCommand() co.APPCOMMAND {
-	return co.APPCOMMAND(hiWordLp(p.base.LParam) &^ 0xF000)
+	return co.APPCOMMAND(p.base.LParam.HiWord() &^ 0xF000)
 }
 func (p WmAppCommand) UDevice() co.FAPPCOMMAND {
-	return co.FAPPCOMMAND(hiWordLp(p.base.LParam) & 0xF000)
+	return co.FAPPCOMMAND(p.base.LParam.HiWord() & 0xF000)
 }
-func (p WmAppCommand) Keys() co.MK { return co.MK(loWordLp(p.base.LParam)) }
+func (p WmAppCommand) Keys() co.MK { return co.MK(p.base.LParam.LoWord()) }
 
 func (me *windowDepotMsg) WmAppCommand(userFunc func(p WmAppCommand)) {
 	me.addMsg(co.WM_APPCOMMAND, func(p wmBase) uintptr {
@@ -127,17 +127,17 @@ func (me *windowDepotMsg) WmAppCommand(userFunc func(p WmAppCommand)) {
 type wmCharBase struct{ base wmBase }
 
 func (p wmCharBase) CharCode() uint16    { return uint16(p.base.WParam) }
-func (p wmCharBase) RepeatCount() uint16 { return api.LoWord(uint32(p.base.LParam)) }
-func (p wmCharBase) ScanCode() uint8     { return api.LoByte(api.HiWord(uint32(p.base.LParam))) }
+func (p wmCharBase) RepeatCount() uint16 { return p.base.LParam.LoWord() }
+func (p wmCharBase) ScanCode() uint8     { return api.LoByte(p.base.LParam.HiWord()) }
 func (p wmCharBase) IsExtendedKey() bool {
-	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00000001) != 0
+	return (api.HiByte(p.base.LParam.HiWord()) & 0b00000001) != 0
 }
-func (p wmCharBase) HasAltKey() bool { return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00100000) != 0 }
+func (p wmCharBase) HasAltKey() bool { return (api.HiByte(p.base.LParam.HiWord()) & 0b00100000) != 0 }
 func (p wmCharBase) IsKeyDownBeforeSend() bool {
-	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b01000000) != 0
+	return (api.HiByte(p.base.LParam.HiWord()) & 0b01000000) != 0
 }
 func (p wmCharBase) KeyBeingReleased() bool {
-	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b10000000) != 0
+	return (api.HiByte(p.base.LParam.HiWord()) & 0b10000000) != 0
 }
 
 type WmChar struct{ wmCharBase }
@@ -242,8 +242,8 @@ func (me *windowDepotMsg) WmHelp(userFunc func(p WmHelp)) {
 type WmHotKey struct{ base wmBase }
 
 func (p WmHotKey) HotKey() co.IDHOT      { return co.IDHOT(p.base.WParam) }
-func (p WmHotKey) OtherKeys() co.MOD     { return co.MOD(loWordLp(p.base.LParam)) }
-func (p WmHotKey) VirtualKeyCode() co.VK { return co.VK(hiWordLp(p.base.LParam)) }
+func (p WmHotKey) OtherKeys() co.MOD     { return co.MOD(p.base.LParam.LoWord()) }
+func (p WmHotKey) VirtualKeyCode() co.VK { return co.VK(p.base.LParam.HiWord()) }
 
 func (me *windowDepotMsg) WmHotKey(userFunc func(p WmHotKey)) {
 	me.addMsg(co.WM_HOTKEY, func(p wmBase) uintptr {
@@ -255,8 +255,8 @@ func (me *windowDepotMsg) WmHotKey(userFunc func(p WmHotKey)) {
 type WmInitMenuPopup struct{ base wmBase }
 
 func (p WmInitMenuPopup) Hmenu() api.HMENU        { return api.HMENU(p.base.WParam) }
-func (p WmInitMenuPopup) SourceItemIndex() uint16 { return loWordLp(p.base.LParam) }
-func (p WmInitMenuPopup) IsWindowMenu() bool      { return hiWordLp(p.base.LParam) != 0 }
+func (p WmInitMenuPopup) SourceItemIndex() uint16 { return p.base.LParam.LoWord() }
+func (p WmInitMenuPopup) IsWindowMenu() bool      { return p.base.LParam.HiWord() != 0 }
 
 func (me *windowDepotMsg) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
 	me.addMsg(co.WM_INITMENUPOPUP, func(p wmBase) uintptr {
@@ -268,13 +268,13 @@ func (me *windowDepotMsg) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
 type WmKeyDown struct{ base wmBase }
 
 func (p WmKeyDown) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
-func (p WmKeyDown) RepeatCount() uint16   { return api.LoWord(uint32(p.base.LParam)) }
-func (p WmKeyDown) ScanCode() uint8       { return api.LoByte(api.HiWord(uint32(p.base.LParam))) }
+func (p WmKeyDown) RepeatCount() uint16   { return p.base.LParam.LoWord() }
+func (p WmKeyDown) ScanCode() uint8       { return api.LoByte(p.base.LParam.HiWord()) }
 func (p WmKeyDown) IsExtendedKey() bool {
-	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00000001) != 0
+	return (api.HiByte(p.base.LParam.HiWord()) & 0b00000001) != 0
 }
 func (p WmKeyDown) IsKeyDownBeforeSend() bool {
-	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b01000000) != 0
+	return (api.HiByte(p.base.LParam.HiWord()) & 0b01000000) != 0
 }
 
 func (me *windowDepotMsg) WmKeyDown(userFunc func(p WmKeyDown)) {
@@ -287,8 +287,8 @@ func (me *windowDepotMsg) WmKeyDown(userFunc func(p WmKeyDown)) {
 type WmKeyUp struct{ base wmBase }
 
 func (p WmKeyUp) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
-func (p WmKeyUp) ScanCode() uint8       { return api.LoByte(api.HiWord(uint32(p.base.LParam))) }
-func (p WmKeyUp) IsExtendedKey() bool   { return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00000001) != 0 }
+func (p WmKeyUp) ScanCode() uint8       { return api.LoByte(p.base.LParam.HiWord()) }
+func (p WmKeyUp) IsExtendedKey() bool   { return (api.HiByte(p.base.LParam.HiWord()) & 0b00000001) != 0 }
 
 func (me *windowDepotMsg) WmKeyUp(userFunc func(p WmKeyUp)) {
 	me.addMsg(co.WM_KEYUP, func(p wmBase) uintptr {
@@ -426,8 +426,8 @@ func (me *windowDepotMsg) WmRButtonUp(userFunc func(p WmRButtonUp)) {
 
 type WmMenuChar struct{ base wmBase }
 
-func (p WmMenuChar) CharCode() uint16      { return loWordWp(p.base.WParam) }
-func (p WmMenuChar) ActiveMenuType() co.MF { return co.MF(hiWordWp(p.base.WParam)) }
+func (p WmMenuChar) CharCode() uint16      { return p.base.WParam.LoWord() }
+func (p WmMenuChar) ActiveMenuType() co.MF { return co.MF(p.base.WParam.HiWord()) }
 func (p WmMenuChar) ActiveMenu() api.HMENU { return api.HMENU(p.base.LParam) }
 
 func (me *windowDepotMsg) WmMenuChar(userFunc func(p WmMenuChar) co.MNC) {
@@ -450,8 +450,8 @@ func (me *windowDepotMsg) WmMenuCommand(userFunc func(p WmMenuCommand)) {
 
 type WmMenuSelect struct{ base wmBase }
 
-func (p WmMenuSelect) Item() uint16     { return loWordWp(p.base.WParam) }
-func (p WmMenuSelect) Flags() co.MF     { return co.MF(hiWordWp(p.base.WParam)) }
+func (p WmMenuSelect) Item() uint16     { return p.base.WParam.LoWord() }
+func (p WmMenuSelect) Flags() co.MF     { return co.MF(p.base.WParam.HiWord()) }
 func (p WmMenuSelect) Hmenu() api.HMENU { return api.HMENU(p.base.LParam) }
 
 func (me *windowDepotMsg) WmMenuSelect(userFunc func(p WmMenuSelect)) {
@@ -569,16 +569,14 @@ func (me *windowDepotMsg) WmSysCommand(userFunc func(p WmSysCommand)) {
 type WmSysKeyDown struct{ base wmBase }
 
 func (p WmSysKeyDown) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
-func (p WmSysKeyDown) RepeatCount() uint16   { return api.LoWord(uint32(p.base.LParam)) }
-func (p WmSysKeyDown) ScanCode() uint8       { return api.LoByte(api.HiWord(uint32(p.base.LParam))) }
+func (p WmSysKeyDown) RepeatCount() uint16   { return p.base.LParam.LoWord() }
+func (p WmSysKeyDown) ScanCode() uint8       { return api.LoByte(p.base.LParam.HiWord()) }
 func (p WmSysKeyDown) IsExtendedKey() bool {
-	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00000001) != 0
+	return (api.HiByte(p.base.LParam.HiWord()) & 0b00000001) != 0
 }
-func (p WmSysKeyDown) HasAltKey() bool {
-	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00100000) != 0
-}
+func (p WmSysKeyDown) HasAltKey() bool { return (api.HiByte(p.base.LParam.HiWord()) & 0b00100000) != 0 }
 func (p WmSysKeyDown) IsKeyDownBeforeSend() bool {
-	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b01000000) != 0
+	return (api.HiByte(p.base.LParam.HiWord()) & 0b01000000) != 0
 }
 
 func (me *windowDepotMsg) WmSysKeyDown(userFunc func(p WmSysKeyDown)) {
@@ -593,9 +591,9 @@ type WmSysKeyUp struct{ base wmBase }
 func (p WmSysKeyUp) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
 func (p WmSysKeyUp) ScanCode() uint8       { return api.LoByte(api.HiWord(uint32(p.base.LParam))) }
 func (p WmSysKeyUp) IsExtendedKey() bool {
-	return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00000001) != 0
+	return (api.HiByte(p.base.LParam.HiWord()) & 0b00000001) != 0
 }
-func (p WmSysKeyUp) HasAltKey() bool { return (api.HiByte(hiWordLp(p.base.LParam)) & 0b00100000) != 0 }
+func (p WmSysKeyUp) HasAltKey() bool { return (api.HiByte(p.base.LParam.HiWord()) & 0b00100000) != 0 }
 
 func (me *windowDepotMsg) WmSysKeyUp(userFunc func(p WmSysKeyUp)) {
 	me.addMsg(co.WM_SYSKEYUP, func(p wmBase) uintptr {
@@ -612,11 +610,6 @@ func (me *windowDepotMsg) WmTimeChange(userFunc func()) {
 }
 
 //------------------------------------------------------------------------------
-
-func loWordWp(p api.WPARAM) uint16 { return api.LoWord(uint32(p)) }
-func hiWordWp(p api.WPARAM) uint16 { return api.HiWord(uint32(p)) }
-func loWordLp(p api.LPARAM) uint16 { return api.LoWord(uint32(p)) }
-func hiWordLp(p api.LPARAM) uint16 { return api.HiWord(uint32(p)) }
 
 func makePointLp(p api.LPARAM) api.POINT {
 	return api.POINT{

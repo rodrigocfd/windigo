@@ -19,7 +19,12 @@ type (
 	HRGN     HGDIOBJ
 )
 
-type (
-	LPARAM uintptr
-	WPARAM uintptr
-)
+type WPARAM uintptr
+
+func (wp WPARAM) LoWord() uint16 { return LoWord(uint32(wp)) }
+func (wp WPARAM) HiWord() uint16 { return HiWord(uint32(wp)) }
+
+type LPARAM uintptr
+
+func (lp LPARAM) LoWord() uint16 { return LoWord(uint32(lp)) }
+func (lp LPARAM) HiWord() uint16 { return HiWord(uint32(lp)) }
