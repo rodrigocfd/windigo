@@ -84,6 +84,7 @@ func (p WmActivate) State() co.WA                           { return co.WA(loWor
 func (p WmActivate) IsMinimized() bool                      { return hiWordWp(p.base.WParam) != 0 }
 func (p WmActivate) ActivatedOrDeactivatedWindow() api.HWND { return api.HWND(p.base.LParam) }
 
+// Warning: default handled in WindowMain.
 func (me *windowDepotMsg) WmActivate(userFunc func(p WmActivate)) {
 	me.addMsg(co.WM_ACTIVATE, func(p wmBase) uintptr {
 		userFunc(WmActivate{base: wmBase(p)})
@@ -177,6 +178,7 @@ func (me *windowDepotMsg) WmSysDeadChar(userFunc func(p WmSysDeadChar)) {
 
 //------------------------------------------------------------------------------
 
+// Warning: default handled in WindowModal.
 func (me *windowDepotMsg) WmClose(userFunc func()) {
 	me.addMsg(co.WM_CLOSE, func(p wmBase) uintptr {
 		userFunc()
@@ -477,6 +479,7 @@ func (me *windowDepotMsg) WmMove(userFunc func(p WmMove)) {
 	})
 }
 
+// Warning: default handled in WindowMain.
 func (me *windowDepotMsg) WmNcDestroy(userFunc func()) {
 	me.addMsg(co.WM_NCDESTROY, func(p wmBase) uintptr {
 		userFunc()
@@ -488,6 +491,7 @@ type WmNcPaint struct{ base wmBase }
 
 func (p WmNcPaint) Hrgn() api.HRGN { return api.HRGN(p.base.WParam) }
 
+// Warning: default handled in WindowControl.
 func (me *windowDepotMsg) WmNcPaint(userFunc func(p WmNcPaint)) {
 	me.addMsg(co.WM_NCPAINT, func(p wmBase) uintptr {
 		userFunc(WmNcPaint{base: wmBase(p)})
@@ -518,6 +522,7 @@ type WmSetFocus struct{ base wmBase }
 
 func (p WmSetFocus) UnfocusedWindow() api.HWND { return api.HWND(p.base.WParam) }
 
+// Warning: default handled in WindowMain and WindowModal.
 func (me *windowDepotMsg) WmSetFocus(userFunc func(p WmSetFocus)) {
 	me.addMsg(co.WM_SETFOCUS, func(p wmBase) uintptr {
 		userFunc(WmSetFocus{base: wmBase(p)})

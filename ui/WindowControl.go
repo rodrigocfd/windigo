@@ -42,9 +42,7 @@ func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32)
 	hInst := parent.Hwnd().GetInstance()
 	me.windowBase.registerClass(me.setup.genWndClassEx(hInst))
 
-	me.windowBase.OnMsg().WmNcPaint(func(p WmNcPaint) { // default WM_NCPAINT handling
-		me.paintThemedBorders(p.base)
-	})
+	me.defaultMessageHandling()
 
 	x, y, width, height = multiplyByDpi(x, y, width, height)
 
@@ -53,44 +51,46 @@ func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32)
 		api.HMENU(me.controlIdGuard.CtrlId()), hInst)
 }
 
-func (me *WindowControl) paintThemedBorders(p wmBase) {
-	me.Hwnd().DefWindowProc(co.WM_NCPAINT, p.WParam, p.LParam) // make system draw the scrollbar for us
+func (me *WindowControl) defaultMessageHandling() {
+	me.windowBase.OnMsg().WmNcPaint(func(p WmNcPaint) {
+		me.Hwnd().DefWindowProc(co.WM_NCPAINT, p.base.WParam, p.base.LParam) // make system draw the scrollbar for us
 
-	if (me.Hwnd().GetExStyle()&co.WS_EX_CLIENTEDGE) == 0 || // has no border
-		!api.IsThemeActive() ||
-		!api.IsAppThemed() {
+		if (me.Hwnd().GetExStyle()&co.WS_EX_CLIENTEDGE) == 0 || // has no border
+			!api.IsThemeActive() ||
+			!api.IsAppThemed() {
 
-		return
-	}
+			return // no themed borders to be painted
+		}
 
-	rc := me.Hwnd().GetWindowRect() // window outmost coordinates, including margins
-	me.Hwnd().ScreenToClientRc(rc)
-	rc.Left += 2 // manual fix, because it comes up anchored at -2,-2
-	rc.Top += 2
-	rc.Right += 2
-	rc.Bottom += 2
+		rc := me.Hwnd().GetWindowRect() // window outmost coordinates, including margins
+		me.Hwnd().ScreenToClientRc(rc)
+		rc.Left += 2 // manual fix, because it comes up anchored at -2,-2
+		rc.Top += 2
+		rc.Right += 2
+		rc.Bottom += 2
 
-	hdc := me.Hwnd().GetWindowDC()
-	defer me.Hwnd().ReleaseDC(hdc)
+		hdc := me.Hwnd().GetWindowDC()
+		defer me.Hwnd().ReleaseDC(hdc)
 
-	hTheme := me.Hwnd().OpenThemeData("LISTVIEW") // borrow style from listview
-	if hTheme != 0 {
-		// Clipping region; will draw only within this rectangle.
-		// Draw only the borders to avoid flickering.
-		rc2 := api.RECT{Left: rc.Left, Top: rc.Top, Right: rc.Left + 2, Bottom: rc.Bottom}
-		hTheme.DrawThemeBackground(hdc, co.VSTY_PART_LVP_LISTGROUP, 0, rc, &rc2) // draw themed left border
+		hTheme := me.Hwnd().OpenThemeData("LISTVIEW") // borrow style from listview
+		if hTheme != 0 {
+			// Clipping region; will draw only within this rectangle.
+			// Draw only the borders to avoid flickering.
+			rc2 := api.RECT{Left: rc.Left, Top: rc.Top, Right: rc.Left + 2, Bottom: rc.Bottom}
+			hTheme.DrawThemeBackground(hdc, co.VSTY_PART_LVP_LISTGROUP, 0, rc, &rc2) // draw themed left border
 
-		rc2 = api.RECT{Left: rc.Left, Top: rc.Top, Right: rc.Right, Bottom: rc.Top + 2}
-		hTheme.DrawThemeBackground(hdc, co.VSTY_PART_LVP_LISTGROUP, 0, rc, &rc2) // draw themed top border
+			rc2 = api.RECT{Left: rc.Left, Top: rc.Top, Right: rc.Right, Bottom: rc.Top + 2}
+			hTheme.DrawThemeBackground(hdc, co.VSTY_PART_LVP_LISTGROUP, 0, rc, &rc2) // draw themed top border
 
-		rc2 = api.RECT{Left: rc.Right - 2, Top: rc.Top, Right: rc.Right, Bottom: rc.Bottom}
-		hTheme.DrawThemeBackground(hdc, co.VSTY_PART_LVP_LISTGROUP, 0, rc, &rc2) // draw themed right border
+			rc2 = api.RECT{Left: rc.Right - 2, Top: rc.Top, Right: rc.Right, Bottom: rc.Bottom}
+			hTheme.DrawThemeBackground(hdc, co.VSTY_PART_LVP_LISTGROUP, 0, rc, &rc2) // draw themed right border
 
-		rc2 = api.RECT{Left: rc.Left, Top: rc.Bottom - 2, Right: rc.Right, Bottom: rc.Bottom}
-		hTheme.DrawThemeBackground(hdc, co.VSTY_PART_LVP_LISTGROUP, 0, rc, &rc2) // draw themed bottom border
+			rc2 = api.RECT{Left: rc.Left, Top: rc.Bottom - 2, Right: rc.Right, Bottom: rc.Bottom}
+			hTheme.DrawThemeBackground(hdc, co.VSTY_PART_LVP_LISTGROUP, 0, rc, &rc2) // draw themed bottom border
 
-		hTheme.CloseThemeData()
-	}
+			hTheme.CloseThemeData()
+		}
+	})
 }
 
 //------------------------------------------------------------------------------
