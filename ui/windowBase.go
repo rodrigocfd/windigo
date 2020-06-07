@@ -99,6 +99,7 @@ func (me *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
 func wndProc(hwnd api.HWND, msg co.WM,
 	wParam api.WPARAM, lParam api.LPARAM) uintptr {
 
+	// https://devblogs.microsoft.com/oldnewthing/20050422-08/?p=35813
 	if msg == co.WM_NCCREATE {
 		cs := (*api.CREATESTRUCT)(unsafe.Pointer(lParam))
 		base := (*windowBase)(unsafe.Pointer(cs.LpCreateParams))

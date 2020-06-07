@@ -36,11 +36,7 @@ func (me *WindowModal) Show(parent Window) {
 	hInst := parent.Hwnd().GetInstance()
 	me.windowBase.registerClass(me.setup.genWndClassEx(hInst))
 
-	me.windowBase.OnMsg().WmClose(func() { // default WM_CLOSE handling
-		me.windowBase.Hwnd().GetWindow(co.GW_OWNER).EnableWindow(true) // re-enable parent
-		me.windowBase.Hwnd().DestroyWindow()                           // then destroy modal
-		me.prevFocusParent.SetFocus()
-	})
+	me.defaultMessageHandling()
 
 	me.prevFocusParent = api.GetFocus() // currently focused control
 	parent.Hwnd().EnableWindow(false)   // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
@@ -59,6 +55,25 @@ func (me *WindowModal) Show(parent Window) {
 		rcParent.Left+(rcParent.Right-rcParent.Left)/2-(rc.Right-rc.Left)/2,
 		rcParent.Top+(rcParent.Bottom-rcParent.Top)/2-(rc.Bottom-rc.Top)/2,
 		0, 0, co.SWP_NOZORDER|co.SWP_NOSIZE)
+}
+
+func (me *WindowModal) defaultMessageHandling() {
+	me.windowBase.OnMsg().WmSetFocus(func(p WmSetFocus) {
+		if me.windowBase.Hwnd() == api.GetFocus() {
+			// If window receive focus, delegate to first child.
+			// This also happens right after the modal is created.
+			me.windowBase.Hwnd().
+				GetNextDlgTabItem(api.HWND(0), false).
+				SetFocus()
+		}
+	})
+
+	me.windowBase.OnMsg().WmClose(func() {
+		me.windowBase.Hwnd().
+			GetWindow(co.GW_OWNER).EnableWindow(true) // re-enable parent
+		me.windowBase.Hwnd().DestroyWindow() // then destroy modal
+		me.prevFocusParent.SetFocus()        // could be on WM_DESTROY too
+	})
 }
 
 //------------------------------------------------------------------------------

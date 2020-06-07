@@ -47,7 +47,7 @@ func (me *WindowMain) RunAsMain() {
 
 	globalUiFont.CreateUi() // create global font to be applied everywhere
 
-	me.default_message_handling()
+	me.defaultMessageHandling()
 
 	cxScreen := api.GetSystemMetrics(co.SM_CXSCREEN) // retrieve screen size
 	cyScreen := api.GetSystemMetrics(co.SM_CYSCREEN)
@@ -65,16 +65,14 @@ func (me *WindowMain) RunAsMain() {
 	me.runMainLoop()
 }
 
-func (me *WindowMain) default_message_handling() {
+func (me *WindowMain) defaultMessageHandling() {
 	me.windowBase.OnMsg().WmNcDestroy(func() {
 		api.PostQuitMessage(0)
 	})
 
 	me.windowBase.OnMsg().WmSetFocus(func(p WmSetFocus) {
-		// We receive this message on window creation of user didn't
-		// manually call SetFocus() on any control.
-		if me.childPrevFocus == 0 {
-			// Do this only after window is created.
+		if me.windowBase.Hwnd() == api.GetFocus() {
+			// If window receive focus, delegate to first child.
 			me.windowBase.Hwnd().
 				GetNextDlgTabItem(api.HWND(0), false).
 				SetFocus()
@@ -113,7 +111,10 @@ func (me *WindowMain) runMainLoop() {
 
 		// TODO haccel check !!!
 
-		if me.windowBase.Hwnd().IsDialogMessage(&msg) { // processes all keyboard actions for our child controls
+		// If a child window, will retrieve its top-level parent.
+		// If a top-level, use itself.
+		if msg.HWnd.GetAncestor(co.GA_ROOT).IsDialogMessage(&msg) {
+			// Processed all keyboard actions for child controls.
 			continue
 		}
 

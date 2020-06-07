@@ -179,7 +179,7 @@ func (hwnd HWND) GetNextDlgTabItem(hChild HWND, bPrevious bool) HWND {
 func (hwnd HWND) GetParent() HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetParent.Addr(), 1,
 		uintptr(hwnd), 0, 0)
-	if ret == 0 {
+	if ret == 0 && lerr != 0 {
 		panic(fmt.Sprintf("GetParent failed: %d %s\n",
 			lerr, lerr.Error()))
 	}
@@ -193,7 +193,7 @@ func (hwnd HWND) GetStyle() co.WS {
 func (hwnd HWND) GetWindow(uCmd co.GW) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetWindow.Addr(), 2,
 		uintptr(hwnd), uintptr(uCmd), 0)
-	if ret == 0 {
+	if ret == 0 && lerr != 0 {
 		panic(fmt.Sprintf("GetWindow failed: %d %s\n",
 			lerr, lerr.Error()))
 	}
@@ -273,6 +273,12 @@ func (hwnd HWND) IsDlgButtonChecked(nIDButton co.ID) co.BST {
 	ret, _, _ := syscall.Syscall(proc.IsDlgButtonChecked.Addr(), 2,
 		uintptr(hwnd), uintptr(nIDButton), 0)
 	return co.BST(ret)
+}
+
+func (hwnd HWND) IsTopLevelWindow() bool {
+	// Allegedly undocumented Win32 function; implemented here.
+	// https://stackoverflow.com/a/16975012
+	return hwnd == hwnd.GetAncestor(co.GA_ROOT)
 }
 
 func (hwnd HWND) IsWindow() bool {
