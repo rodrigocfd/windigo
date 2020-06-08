@@ -53,6 +53,22 @@ func (me *windowBase) RunUiThread(userFunc func()) {
 		api.LPARAM(unsafe.Pointer(pack)))
 }
 
+func (me *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
+	wcx.LpfnWndProc = syscall.NewCallback(wndProc)
+	atom, lerr := wcx.RegisterClassEx()
+	if lerr != 0 {
+		// https://devblogs.microsoft.com/oldnewthing/20150429-00/?p=44984
+		// https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
+		if co.ERROR(lerr) == co.ERROR_CLASS_ALREADY_EXISTS {
+			atom = wcx.HInstance.GetClassInfoEx(wcx.LpszClassName, wcx)
+		} else {
+			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s\n",
+				atom, lerr, lerr.Error()))
+		}
+	}
+	return atom
+}
+
 func (me *windowBase) createWindow(uiName string, exStyle co.WS_EX,
 	className, title string, style co.WS, x, y int32, width, height uint32,
 	parent Window, menu api.HMENU, hInst api.HINSTANCE) {
@@ -78,22 +94,6 @@ func (me *windowBase) createWindow(uiName string, exStyle co.WS_EX,
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
 	api.CreateWindowEx(exStyle, className, title, style, x, y, width, height,
 		hwndParent, menu, hInst, unsafe.Pointer(me)) // pass pointer to our object
-}
-
-func (me *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
-	wcx.LpfnWndProc = syscall.NewCallback(wndProc)
-	atom, lerr := wcx.RegisterClassEx()
-	if lerr != 0 {
-		// https://devblogs.microsoft.com/oldnewthing/20150429-00/?p=44984
-		// https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
-		if co.ERROR(lerr) == co.ERROR_CLASS_ALREADY_EXISTS {
-			atom = wcx.HInstance.GetClassInfoEx(wcx.LpszClassName, wcx)
-		} else {
-			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s\n",
-				atom, lerr, lerr.Error()))
-		}
-	}
-	return atom
 }
 
 func wndProc(hwnd api.HWND, msg co.WM,

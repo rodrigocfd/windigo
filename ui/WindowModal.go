@@ -55,6 +55,8 @@ func (me *WindowModal) Show(parent Window) {
 		rcParent.Left+(rcParent.Right-rcParent.Left)/2-(rc.Right-rc.Left)/2,
 		rcParent.Top+(rcParent.Bottom-rcParent.Top)/2-(rc.Bottom-rc.Top)/2,
 		0, 0, co.SWP_NOZORDER|co.SWP_NOSIZE)
+
+	me.runModalLoop()
 }
 
 func (me *WindowModal) defaultMessageHandling() {
@@ -74,6 +76,34 @@ func (me *WindowModal) defaultMessageHandling() {
 		me.windowBase.Hwnd().DestroyWindow() // then destroy modal
 		me.prevFocusParent.SetFocus()        // could be on WM_DESTROY too
 	})
+}
+
+func (me *WindowModal) runModalLoop() {
+	msg := api.MSG{}
+	for {
+		status := msg.GetMessage(api.HWND(0), 0, 0)
+		if status == 0 {
+			break // WM_QUIT was sent, exit modal loop now
+		}
+
+		// If a child window, will retrieve its top-level parent.
+		// If a top-level, use itself.
+		if msg.HWnd.GetAncestor(co.GA_ROOT).IsDialogMessage(&msg) {
+			// Processed all keyboard actions for child controls.
+			if me.hwnd == api.HWND(0) {
+				break // our modal was destroyed
+			} else {
+				continue
+			}
+		}
+
+		msg.TranslateMessage()
+		msg.DispatchMessage()
+
+		if me.hwnd == api.HWND(0) {
+			break // our modal was destroyed
+		}
+	}
 }
 
 //------------------------------------------------------------------------------
