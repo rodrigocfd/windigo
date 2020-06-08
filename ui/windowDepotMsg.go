@@ -80,7 +80,7 @@ func (p WmNotify) NmHdr() *api.NMHDR { return (*api.NMHDR)(unsafe.Pointer(p.base
 
 type WmActivate struct{ base wmBase }
 
-func (p WmActivate) State() co.WA                           { return co.WA(p.base.WParam.LoWord()) }
+func (p WmActivate) Event() co.WA                           { return co.WA(p.base.WParam.LoWord()) }
 func (p WmActivate) IsMinimized() bool                      { return p.base.WParam.HiWord() != 0 }
 func (p WmActivate) ActivatedOrDeactivatedWindow() api.HWND { return api.HWND(p.base.LParam) }
 

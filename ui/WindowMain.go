@@ -72,7 +72,7 @@ func (me *WindowMain) defaultMessageHandling() {
 
 	me.windowBase.OnMsg().WmSetFocus(func(p WmSetFocus) {
 		if me.windowBase.Hwnd() == api.GetFocus() {
-			// If window receive focus, delegate to first child.
+			// If window receives focus, delegate to first child.
 			me.windowBase.Hwnd().
 				GetNextDlgTabItem(api.HWND(0), false).
 				SetFocus()
@@ -82,7 +82,7 @@ func (me *WindowMain) defaultMessageHandling() {
 	me.windowBase.OnMsg().WmActivate(func(p WmActivate) {
 		// https://devblogs.microsoft.com/oldnewthing/20140521-00/?p=943
 		if !p.IsMinimized() {
-			if p.State() == co.WA_INACTIVE {
+			if p.Event() == co.WA_INACTIVE {
 				curFocus := api.GetFocus()
 				if curFocus != 0 && me.windowBase.Hwnd().IsChild(curFocus) {
 					me.childPrevFocus = curFocus // save previously focused control
