@@ -83,7 +83,10 @@ func (me *WindowModal) runModalLoop() {
 	for {
 		status := msg.GetMessage(api.HWND(0), 0, 0)
 		if status == 0 {
-			break // WM_QUIT was sent, exit modal loop now
+			// WM_QUIT was sent, exit modal loop now.
+			// https://devblogs.microsoft.com/oldnewthing/20050222-00/?p=36393
+			api.PostQuitMessage(int32(msg.WParam))
+			break
 		}
 
 		// If a child window, will retrieve its top-level parent.
