@@ -35,7 +35,7 @@ func (me *WindowMain) Setup() *windowMainSetup {
 }
 
 // Creates the main window and runs the main application loop.
-func (me *WindowMain) RunAsMain() {
+func (me *WindowMain) RunAsMain() int32 {
 	if api.IsWindowsVistaOrGreater() {
 		api.SetProcessDPIAware()
 	}
@@ -62,7 +62,7 @@ func (me *WindowMain) RunAsMain() {
 	me.windowBase.Hwnd().ShowWindow(me.setup.CmdShow)
 	me.windowBase.Hwnd().UpdateWindow()
 
-	me.runMainLoop()
+	return me.runMainLoop()
 }
 
 func (me *WindowMain) defaultMessageHandling() {
@@ -94,14 +94,14 @@ func (me *WindowMain) defaultMessageHandling() {
 	})
 }
 
-func (me *WindowMain) runMainLoop() {
+func (me *WindowMain) runMainLoop() int32 {
 	defer globalUiFont.Destroy()
 
 	msg := api.MSG{}
 	for {
 		status := msg.GetMessage(api.HWND(0), 0, 0)
 		if status == 0 {
-			break // WM_QUIT was sent, gracefully terminate the program
+			return int32(msg.WParam) // WM_QUIT was sent, gracefully terminate the program
 		}
 
 		if me.isModelessMsg(&msg) { // does this message belong to a modeless child (if any)?
