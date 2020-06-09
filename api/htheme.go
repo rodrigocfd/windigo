@@ -25,7 +25,7 @@ func (hTheme HTHEME) CloseThemeData() {
 }
 
 func (hTheme HTHEME) DrawThemeBackground(hdc HDC,
-	partId co.VSTY_PART, stateId co.VSTY_STATE,
+	partId co.VS_PART, stateId co.VS_STATE,
 	rect *RECT, clipRect *RECT) {
 
 	hr, _, _ := syscall.Syscall6(proc.DrawThemeBackground.Addr(), 6,
