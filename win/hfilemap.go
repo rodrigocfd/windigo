@@ -1,10 +1,10 @@
-package api
+package win
 
 import (
 	"fmt"
 	"syscall"
-	"wingows/api/proc"
 	"wingows/co"
+	"wingows/win/proc"
 )
 
 // Type doesn't exist in Win32, we're wrapping HANDLE just to have a proper

@@ -4,14 +4,14 @@
  * This library is released under the MIT license.
  */
 
-package api
+package win
 
 import (
 	"fmt"
 	"syscall"
 	"unsafe"
-	"wingows/api/proc"
 	"wingows/co"
+	"wingows/win/proc"
 )
 
 // Wrapper to syscall.UTF16PtrFromString(), panics in error.

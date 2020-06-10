@@ -7,8 +7,8 @@
 package ui
 
 import (
-	"wingows/api"
 	"wingows/co"
+	"wingows/win"
 )
 
 // Native check box control.
@@ -68,7 +68,7 @@ func (me *CheckBox) SetCheck() *CheckBox {
 // A BS_AUTOCHECKBOX can be only checked or unchecked, a BS_AUTO3STATE can also
 // be indeterminate.
 func (me *CheckBox) SetState(state co.BST) *CheckBox {
-	me.Hwnd().SendMessage(co.WM(co.BM_SETCHECK), api.WPARAM(state), 0)
+	me.Hwnd().SendMessage(co.WM(co.BM_SETCHECK), win.WPARAM(state), 0)
 	return me
 }
 
@@ -96,14 +96,14 @@ func (me *CheckBox) Text() string {
 	return removeAccelAmpersands(me.Hwnd().GetWindowText())
 }
 
-func (me *CheckBox) calcCheckBoxIdealSize(hReferenceDc api.HWND,
+func (me *CheckBox) calcCheckBoxIdealSize(hReferenceDc win.HWND,
 	text string) (uint32, uint32) {
 
 	cx, cy := calcIdealSize(hReferenceDc, text, true)
-	cx += uint32(api.GetSystemMetrics(co.SM_CXMENUCHECK)) +
-		uint32(api.GetSystemMetrics(co.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
+	cx += uint32(win.GetSystemMetrics(co.SM_CXMENUCHECK)) +
+		uint32(win.GetSystemMetrics(co.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
 
-	cyCheck := uint32(api.GetSystemMetrics(co.SM_CYMENUCHECK))
+	cyCheck := uint32(win.GetSystemMetrics(co.SM_CYMENUCHECK))
 	if cyCheck > cy {
 		cy = cyCheck // if the check is taller than the font, use its height
 	}

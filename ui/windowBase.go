@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"syscall"
 	"unsafe"
-	"wingows/api"
 	"wingows/co"
+	"wingows/win"
 )
 
 type windowBaseDepot struct { // aglutinate both msg and nfy into one façade
@@ -21,7 +21,7 @@ type windowBaseDepot struct { // aglutinate both msg and nfy into one façade
 
 // Base to all window types: WindowControl, WindowMain and WindowModal.
 type windowBase struct {
-	hwnd  api.HWND
+	hwnd  win.HWND
 	depot windowBaseDepot
 }
 
@@ -29,7 +29,7 @@ const wM_UI_THREAD = co.WM_APP + 0x3FFF // used in UI thread handling
 type threadPack struct{ userFunc func() }
 
 // Returns the underlying HWND handle of this window.
-func (me *windowBase) Hwnd() api.HWND {
+func (me *windowBase) Hwnd() win.HWND {
 	return me.hwnd
 }
 
@@ -50,10 +50,10 @@ func (me *windowBase) RunUiThread(userFunc func()) {
 	// updates. This avoids the user to deal with a custom WM_ message.
 	pack := &threadPack{userFunc: userFunc}
 	me.hwnd.SendMessage(wM_UI_THREAD, 0xC0DEF00D,
-		api.LPARAM(unsafe.Pointer(pack)))
+		win.LPARAM(unsafe.Pointer(pack)))
 }
 
-func (me *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
+func (me *windowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 	wcx.LpfnWndProc = syscall.NewCallback(wndProc)
 	atom, lerr := wcx.RegisterClassEx()
 	if lerr != 0 {
@@ -71,14 +71,14 @@ func (me *windowBase) registerClass(wcx *api.WNDCLASSEX) api.ATOM {
 
 func (me *windowBase) createWindow(uiName string, exStyle co.WS_EX,
 	className, title string, style co.WS, x, y int32, width, height uint32,
-	parent Window, menu api.HMENU, hInst api.HINSTANCE) {
+	parent Window, menu win.HMENU, hInst win.HINSTANCE) {
 
 	if me.hwnd != 0 {
 		panic(fmt.Sprintf("Trying to create %s \"%s\" twice.",
 			uiName, title))
 	}
 
-	hwndParent := api.HWND(0) // if no parent, pass zero to CreateWindowEx
+	hwndParent := win.HWND(0) // if no parent, pass zero to CreateWindowEx
 	if parent != nil {
 		hwndParent = parent.Hwnd()
 	}
@@ -92,16 +92,16 @@ func (me *windowBase) createWindow(uiName string, exStyle co.WS_EX,
 	})
 
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
-	api.CreateWindowEx(exStyle, className, title, style, x, y, width, height,
+	win.CreateWindowEx(exStyle, className, title, style, x, y, width, height,
 		hwndParent, menu, hInst, unsafe.Pointer(me)) // pass pointer to our object
 }
 
-func wndProc(hwnd api.HWND, msg co.WM,
-	wParam api.WPARAM, lParam api.LPARAM) uintptr {
+func wndProc(hwnd win.HWND, msg co.WM,
+	wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
 	// https://devblogs.microsoft.com/oldnewthing/20050422-08/?p=35813
 	if msg == co.WM_NCCREATE {
-		cs := (*api.CREATESTRUCT)(unsafe.Pointer(lParam))
+		cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
 		base := (*windowBase)(unsafe.Pointer(cs.LpCreateParams))
 		hwnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(base)))
 		base.hwnd = hwnd // assign actual HWND
@@ -130,7 +130,7 @@ func wndProc(hwnd api.HWND, msg co.WM,
 	// No further messages processed after this one.
 	if msg == co.WM_NCDESTROY {
 		pMe.hwnd.SetWindowLongPtr(co.GWLP_USERDATA, 0) // clear passed pointer
-		pMe.hwnd = api.HWND(0)
+		pMe.hwnd = win.HWND(0)
 	}
 
 	if wasHandled {

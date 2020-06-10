@@ -8,8 +8,8 @@ package ui
 
 import (
 	"strings"
-	"wingows/api"
 	"wingows/co"
+	"wingows/win"
 )
 
 // Any child control with HWND and ID.
@@ -20,28 +20,28 @@ type Control interface {
 
 // Any window with a HWND handle.
 type Window interface {
-	Hwnd() api.HWND
+	Hwnd() win.HWND
 }
 
 //------------------------------------------------------------------------------
 
-var globalDpi = api.POINT{X: 0, Y: 0} // set once by multiplyByDpi
+var globalDpi = win.POINT{X: 0, Y: 0} // set once by multiplyByDpi
 
 // Multiplies position and size by current DPI factor.
 func multiplyByDpi(x, y int32, cx, cy uint32) (int32, int32, uint32, uint32) {
 	if globalDpi.X == 0 {
-		dc := api.HWND(0).GetDC()
+		dc := win.HWND(0).GetDC()
 		globalDpi.X = dc.GetDeviceCaps(co.GDC_LOGPIXELSX)
 		globalDpi.Y = dc.GetDeviceCaps(co.GDC_LOGPIXELSY)
 	}
-	return api.MulDiv(x, globalDpi.X, 96),
-		api.MulDiv(y, globalDpi.Y, 96),
-		uint32(api.MulDiv(int32(cx), globalDpi.X, 96)),
-		uint32(api.MulDiv(int32(cy), globalDpi.Y, 96))
+	return win.MulDiv(x, globalDpi.X, 96),
+		win.MulDiv(y, globalDpi.Y, 96),
+		uint32(win.MulDiv(int32(cx), globalDpi.X, 96)),
+		uint32(win.MulDiv(int32(cy), globalDpi.Y, 96))
 }
 
 // Calculates the bound rectangle to fit the text with current system font.
-func calcIdealSize(hReferenceDc api.HWND, text string,
+func calcIdealSize(hReferenceDc win.HWND, text string,
 	considerAccelerators bool) (uint32, uint32) {
 
 	isTextEmpty := false

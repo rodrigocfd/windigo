@@ -4,13 +4,13 @@
  * This library is released under the MIT license.
  */
 
-package api
+package win
 
 import (
 	"fmt"
 	"syscall"
 	"unsafe"
-	"wingows/api/proc"
+	"wingows/win/proc"
 )
 
 type MSG struct {

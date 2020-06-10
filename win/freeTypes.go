@@ -4,7 +4,7 @@
  * This library is released under the MIT license.
  */
 
-package api
+package win
 
 import "syscall"
 

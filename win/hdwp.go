@@ -4,13 +4,13 @@
  * This library is released under the MIT license.
  */
 
-package api
+package win
 
 import (
 	"fmt"
 	"syscall"
-	"wingows/api/proc"
 	"wingows/co"
+	"wingows/win/proc"
 )
 
 type HDWP HANDLE

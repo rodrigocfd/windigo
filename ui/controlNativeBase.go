@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"syscall"
 	"unsafe"
-	"wingows/api"
 	"wingows/co"
+	"wingows/win"
 )
 
 var (
@@ -23,7 +23,7 @@ var (
 // Allows control subclassing.
 type controlNativeBase struct {
 	controlIdGuard
-	hwnd       api.HWND
+	hwnd       win.HWND
 	msgs       windowDepotMsg
 	subclassId uint32
 }
@@ -35,7 +35,7 @@ func makeNativeControlBase(ctrlId co.ID) controlNativeBase {
 }
 
 // Returns the underlying HWND handle of this native control.
-func (me *controlNativeBase) Hwnd() api.HWND {
+func (me *controlNativeBase) Hwnd() win.HWND {
 	return me.hwnd
 }
 
@@ -55,8 +55,8 @@ func (me *controlNativeBase) create(exStyle co.WS_EX, className, title string,
 		panic(fmt.Sprintf("Trying to create %s twice.", className))
 	}
 
-	me.hwnd = api.CreateWindowEx(exStyle, className, title, style,
-		x, y, width, height, parent.Hwnd(), api.HMENU(me.controlIdGuard.CtrlId()),
+	me.hwnd = win.CreateWindowEx(exStyle, className, title, style,
+		x, y, width, height, parent.Hwnd(), win.HMENU(me.controlIdGuard.CtrlId()),
 		parent.Hwnd().GetInstance(), nil)
 
 	if len(me.msgs.mapMsgs) > 0 || // at last 1 subclass message was added?
@@ -75,8 +75,8 @@ func (me *controlNativeBase) create(exStyle co.WS_EX, className, title string,
 	}
 }
 
-func subclassProc(hwnd api.HWND, msg co.WM,
-	wParam api.WPARAM, lParam api.LPARAM,
+func subclassProc(hwnd win.HWND, msg co.WM,
+	wParam win.WPARAM, lParam win.LPARAM,
 	uIdSubclass, dwRefData uintptr) uintptr {
 
 	// Retrieve passed pointer.

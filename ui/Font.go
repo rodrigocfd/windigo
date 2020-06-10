@@ -10,14 +10,14 @@ import (
 	"fmt"
 	"syscall"
 	"unsafe"
-	"wingows/api"
 	"wingows/co"
+	"wingows/win"
 )
 
 // Manages a font resource. Must be default-initialized, then call one of the
 // creation methods on the object.
 type Font struct {
-	hFont api.HFONT
+	hFont win.HFONT
 }
 
 // Simplified options to create a Font object.
@@ -34,19 +34,19 @@ type FontSetup struct {
 func (me *Font) Destroy() {
 	if me.hFont != 0 {
 		me.hFont.DeleteObject()
-		me.hFont = api.HFONT(0)
+		me.hFont = win.HFONT(0)
 	}
 }
 
 // Returns the HFONT handle.
-func (me *Font) Hfont() api.HFONT {
+func (me *Font) Hfont() win.HFONT {
 	return me.hFont
 }
 
 // Creates a font based on a FontSetup struct.
 func (me *Font) Create(setup *FontSetup) *Font {
 	me.Destroy()
-	lf := api.LOGFONT{}
+	lf := win.LOGFONT{}
 	lf.LfHeight = -(setup.Size + 3)
 
 	if len(setup.Name) > len(lf.LfFaceName)-1 {
@@ -75,7 +75,7 @@ func (me *Font) Create(setup *FontSetup) *Font {
 }
 
 // Creates a font based on a LOGFONT struct.
-func (me *Font) CreateFromLogFont(lf *api.LOGFONT) *Font {
+func (me *Font) CreateFromLogFont(lf *win.LOGFONT) *Font {
 	me.Destroy()
 	me.hFont = lf.CreateFontIndirect()
 	return me
@@ -85,14 +85,14 @@ func (me *Font) CreateFromLogFont(lf *api.LOGFONT) *Font {
 // UI. Because we call SetProcessDPIAware(), higher DPI resolutions will be
 // reflected in the font size.
 func (me *Font) CreateUi() *Font {
-	ncm := api.NONCLIENTMETRICS{}
+	ncm := win.NONCLIENTMETRICS{}
 	ncm.CbSize = uint32(unsafe.Sizeof(ncm))
 
-	if !api.IsWindowsVistaOrGreater() {
+	if !win.IsWindowsVistaOrGreater() {
 		ncm.CbSize -= uint32(unsafe.Sizeof(ncm.IBorderWidth))
 	}
 
-	api.SystemParametersInfo(co.SPI_GETNONCLIENTMETRICS,
+	win.SystemParametersInfo(co.SPI_GETNONCLIENTMETRICS,
 		ncm.CbSize, unsafe.Pointer(&ncm), 0)
 	me.CreateFromLogFont(&ncm.LfMenuFont)
 	return me
@@ -100,6 +100,6 @@ func (me *Font) CreateUi() *Font {
 
 // Sends a WM_SETFONT message to the child control to apply the font.
 func (me *Font) SetOnControl(ctrl Window) *Font {
-	ctrl.Hwnd().SendMessage(co.WM_SETFONT, api.WPARAM(me.hFont), 1)
+	ctrl.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(me.hFont), 1)
 	return me
 }

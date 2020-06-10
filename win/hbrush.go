@@ -4,12 +4,12 @@
  * This library is released under the MIT license.
  */
 
-package api
+package win
 
 import (
 	"syscall"
-	"wingows/api/proc"
 	"wingows/co"
+	"wingows/win/proc"
 )
 
 type HBRUSH HANDLE
