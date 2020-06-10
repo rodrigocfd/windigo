@@ -65,6 +65,7 @@ var (
 	IsDialogMessage               = dllUser32.NewProc("IsDialogMessageW")
 	IsWindow                      = dllUser32.NewProc("IsWindow")
 	IsWindowEnabled               = dllUser32.NewProc("IsWindowEnabled")
+	LoadIcon                      = dllUser32.NewProc("LoadIconW")
 	LoadCursor                    = dllUser32.NewProc("LoadCursorW")
 	MessageBox                    = dllUser32.NewProc("MessageBoxW")
 	MonitorFromPoint              = dllUser32.NewProc("MonitorFromPoint")
