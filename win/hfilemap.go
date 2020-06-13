@@ -7,9 +7,12 @@ import (
 	"wingows/win/proc"
 )
 
-// Type doesn't exist in Win32, we're wrapping HANDLE just to have a proper
+// These types don't exist in Win32, we're wrapping HANDLE just to have a proper
 // scope on the functions.
-type HFILEMAP HANDLE
+type (
+	HFILEMAP     HANDLE  // Returned by HFILE.CreateFileMapping().
+	HFILEMAPADDR uintptr // Returned by HFILEMAP.MapViewOfFile(), just a BYTE pointer to memory address.
+)
 
 func (hmap HFILEMAP) CloseHandle() {
 	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
@@ -21,7 +24,7 @@ func (hmap HFILEMAP) CloseHandle() {
 }
 
 func (hmap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
-	offset uint32, numBytesToMap uintptr) uintptr {
+	offset uint32, numBytesToMap uintptr) HFILEMAPADDR {
 
 	ret, _, lerr := syscall.Syscall6(proc.MapViewOfFile.Addr(), 5,
 		uintptr(hmap), uintptr(desiredAccess), 0, uintptr(offset),
@@ -30,12 +33,12 @@ func (hmap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 		panic(fmt.Sprintf("MapViewOfFile failed: %d %s\n",
 			lerr, lerr.Error()))
 	}
-	return ret
+	return HFILEMAPADDR(ret)
 }
 
-func UnmapViewOfFile(mappedPtr uintptr) {
+func (mappedPtr HFILEMAPADDR) UnmapViewOfFile() {
 	ret, _, lerr := syscall.Syscall(proc.UnmapViewOfFile.Addr(), 1,
-		mappedPtr, 0, 0)
+		uintptr(mappedPtr), 0, 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("UnmapViewOfFile failed: %d %s\n",
 			lerr, lerr.Error()))
