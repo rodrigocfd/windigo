@@ -39,9 +39,9 @@ func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32,
 
 	conditionMask := VerSetConditionMask(
 		VerSetConditionMask(
-			VerSetConditionMask(0, co.VER_MAJORVERSION, co.VER_GREATER_EQUAL),
-			co.VER_MINORVERSION, co.VER_GREATER_EQUAL),
-		co.VER_SERVICEPACKMAJOR, co.VER_GREATER_EQUAL)
+			VerSetConditionMask(0, co.VER_MAJORVERSION, co.VER_COND_GREATER_EQUAL),
+			co.VER_MINORVERSION, co.VER_COND_GREATER_EQUAL),
+		co.VER_SERVICEPACKMAJOR, co.VER_COND_GREATER_EQUAL)
 
 	ret, _ := ovi.VerifyVersionInfo(
 		co.VER_MAJORVERSION|co.VER_MINORVERSION|co.VER_SERVICEPACKMAJOR,
@@ -113,7 +113,7 @@ func (ovi *OSVERSIONINFOEX) VerifyVersionInfo(typeMask co.VER,
 }
 
 func VerSetConditionMask(conditionMask uint64, typeMask co.VER,
-	condition co.VERCOND) uint64 {
+	condition co.VER_COND) uint64 {
 
 	ret, _, _ := syscall.Syscall(proc.VerSetConditionMask.Addr(), 3,
 		uintptr(conditionMask), uintptr(typeMask), uintptr(condition))

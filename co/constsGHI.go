@@ -113,6 +113,21 @@ const (
 	HELPINFO_MENUITEM HELPINFO = 0x0002
 )
 
+type HKEY uintptr // RegOpenKeyEx hKey
+
+const (
+	HKEY_CLASSES_ROOT                HKEY = 0x80000000
+	HKEY_CURRENT_USER                HKEY = 0x80000001
+	HKEY_LOCAL_MACHINE               HKEY = 0x80000002
+	HKEY_USERS                       HKEY = 0x80000003
+	HKEY_PERFORMANCE_DATA            HKEY = 0x80000004
+	HKEY_PERFORMANCE_TEXT            HKEY = 0x80000050
+	HKEY_PERFORMANCE_NLSTEXT         HKEY = 0x80000060
+	HKEY_CURRENT_CONFIG              HKEY = 0x80000005
+	HKEY_DYN_DATA                    HKEY = 0x80000006
+	HKEY_CURRENT_USER_LOCAL_SETTINGS HKEY = 0x80000007
+)
+
 type ID uint16 // dialog box command ID
 
 const (

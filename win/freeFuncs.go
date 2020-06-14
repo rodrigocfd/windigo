@@ -112,11 +112,11 @@ func SetProcessDPIAware() {
 	}
 }
 
-func SystemParametersInfo(action co.SPI, param uint32,
-	pvParam unsafe.Pointer, winIni uint32) {
+func SystemParametersInfo(uiAction co.SPI, uiParam uint32,
+	pvParam unsafe.Pointer, fWinIni uint32) {
 
 	ret, _, lerr := syscall.Syscall6(proc.SystemParametersInfo.Addr(), 4,
-		uintptr(action), uintptr(param), uintptr(pvParam), uintptr(winIni),
+		uintptr(uiAction), uintptr(uiParam), uintptr(pvParam), uintptr(fWinIni),
 		0, 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("SystemParametersInfo failed: %d %s\n",
