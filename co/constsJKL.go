@@ -68,7 +68,7 @@ const (
 	LVCF_WIDTH        LVCF = 0x0002
 )
 
-type LVFI uint32 // LVFINDINFO
+type LVFI uint32 // LVFINDINFO flags
 
 const (
 	LVFI_PARAM     LVFI = 0x0001
@@ -79,7 +79,7 @@ const (
 	LVFI_NEARESTXY LVFI = 0x0040
 )
 
-type LVGIT uint32 // NMLVGETINFOTIP
+type LVGIT uint32 // NMLVGETINFOTIP dwFlags
 
 const (
 	LVGIT_ZERO     LVGIT = 0x0000
@@ -113,7 +113,7 @@ const (
 	LVIS_STATEIMAGEMASK LVIS = 0xF000
 )
 
-type LVKF uint32 // NMITEMACTIVATE UKeyFlags
+type LVKF uint32 // NMITEMACTIVATE uKeyFlags
 
 const (
 	LVKF_ALT     LVKF = 0x0001

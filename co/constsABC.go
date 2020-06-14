@@ -6,9 +6,7 @@
 
 package co
 
-// Composes KEY, STANDARD_RIGHTS.
-// Originally has no prefix.
-type ACCESS_RIGHTS uint32
+type ACCESS_RIGHTS uint32 // composes KEY, STANDARD_RIGHTS; originally has no prefix
 
 const (
 	ACCESS_RIGHTS_DELETE       ACCESS_RIGHTS = 0x00010000
@@ -77,7 +75,7 @@ const (
 	APPCOMMAND_DWM_FLIP3D                        APPCOMMAND = 54
 )
 
-type BKMODE int32 // SetBkMode
+type BKMODE int32 // SetBkMode mode
 
 const (
 	BKMODE_TRANSPARENT BKMODE = 1
@@ -131,7 +129,7 @@ const (
 	BS_RIGHTBUTTON     BS = BS_LEFTTEXT
 )
 
-type BST uint32 // IsDlgButtonChecked
+type BST uint32 // IsDlgButtonChecked nIDButton
 
 const (
 	BST_UNCHECKED     BST = 0x0000

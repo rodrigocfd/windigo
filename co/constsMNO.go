@@ -6,7 +6,7 @@
 
 package co
 
-type MDT uint32 // GetDpiForMonitor
+type MDT uint32 // GetDpiForMonitor dpiType
 
 const (
 	MDT_EFFECTIVE_DPI MDT = 0
@@ -15,7 +15,7 @@ const (
 	MDT_DEFAULT       MDT = MDT_EFFECTIVE_DPI
 )
 
-type MB uint32 // MessageBox
+type MB uint32 // MessageBox uType
 
 const (
 	MB_ABORTRETRYIGNORE  MB = 0x00000002
@@ -53,7 +53,7 @@ const (
 	MB_SERVICE_NOTIFICATION MB = 0x00200000
 )
 
-type MF uint32 // EnableMenuItem
+type MF uint32 // EnableMenuItem uEnable
 
 const (
 	MF_INSERT          MF = 0x00000000
@@ -85,7 +85,7 @@ const (
 	MF_MOUSESELECT     MF = 0x00008000
 )
 
-type MFS uint32 // MENUITEMINFO state
+type MFS uint32 // MENUITEMINFO fState
 
 const (
 	MFS_GRAYED    MFS = 0x00000003
@@ -98,7 +98,7 @@ const (
 	MFS_DEFAULT   MFS = MFS(MF_DEFAULT)
 )
 
-type MFT uint32 // MENUITEMINFO ftype
+type MFT uint32 // MENUITEMINFO fType
 
 const (
 	MFT_STRING       MFT = MFT(MF_STRING)
@@ -112,7 +112,7 @@ const (
 	MFT_RIGHTJUSTIFY MFT = MFT(MF_RIGHTJUSTIFY)
 )
 
-type MIIM uint32 //MENUITEMINFO mask
+type MIIM uint32 // MENUITEMINFO fMask
 
 const (
 	MIIM_STATE      MIIM = 0x00000001
@@ -126,7 +126,7 @@ const (
 	MIIM_FTYPE      MIIM = 0x00000100
 )
 
-type MIM uint32 // MENUINFO mask
+type MIM uint32 // MENUINFO fMask
 
 const (
 	MIM_MAXHEIGHT       MIM = 0x00000001
@@ -158,7 +158,7 @@ const (
 	MNC_SELECT  MNC = 3
 )
 
-type MNS uint32 // MENUINFO style
+type MNS uint32 // MENUINFO dwStyle
 
 const (
 	MNS_NOCHECK     MNS = 0x80000000
@@ -181,7 +181,7 @@ const (
 	MOD_IGNORE_ALL_MODIFIER MOD = 0x0400
 )
 
-type MONITOR uint32 // MonitorFromPoint
+type MONITOR uint32 // MonitorFromPoint dwFlags
 
 const (
 	MONITOR_DEFAULTTONULL    MONITOR = 0x00000000

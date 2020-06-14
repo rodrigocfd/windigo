@@ -48,7 +48,7 @@ const (
 	SEC_IMAGE_NO_EXECUTE       SEC = SEC_IMAGE | SEC_NOCACHE
 )
 
-type SECTION uint32 // FILE_MAP uses it
+type SECTION uint32 // composes FILE_MAP
 
 const (
 	SECTION_QUERY                SECTION = 0x0001
@@ -432,7 +432,7 @@ const (
 	SWP_HWND_TOPMOST   SWP_HWND = -1
 )
 
-type VER uint32 // VerifyVersionInfo
+type VER uint32 // VerifyVersionInfo dwTypeMask
 
 const (
 	VER_BUILDNUMBER      VER = 0x0000004
@@ -445,7 +445,7 @@ const (
 	VER_SUITENAME        VER = 0x0000040
 )
 
-type VER_COND uint8 // VerifyVersionInfo
+type VER_COND uint8 // VerifyVersionInfo dwlConditionMask
 
 const (
 	VER_COND_EQUAL         VER_COND = 1

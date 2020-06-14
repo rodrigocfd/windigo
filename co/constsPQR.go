@@ -40,7 +40,7 @@ const (
 	PRF_OWNED        PRF = 0x00000020
 )
 
-type PT uint8 // PolyDraw
+type PT uint8 // PolyDraw aj
 
 const (
 	PT_CLOSEFIGURE PT = 0x01

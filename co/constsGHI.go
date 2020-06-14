@@ -6,7 +6,7 @@
 
 package co
 
-type GA uint32 // GetAncestor
+type GA uint32 // GetAncestor gaFlags
 
 const (
 	GA_PARENT    GA = 1
@@ -14,7 +14,7 @@ const (
 	GA_ROOTOWNER GA = 3
 )
 
-type GDC int32 // GetDeviceCaps, originally constants have no prefix
+type GDC int32 // GetDeviceCaps index, originally has no prefix
 
 const (
 	GDC_DRIVERVERSION   GDC = 0
@@ -68,7 +68,7 @@ const (
 	GENERIC_ALL     GENERIC = 0x10000000
 )
 
-type GW uint32 // GetWindow
+type GW uint32 // GetWindow uCmd
 
 const (
 	GW_HWNDFIRST    GW = 0
@@ -81,7 +81,7 @@ const (
 	GW_MAX          GW = 6
 )
 
-type GWLP int32 // GetWindowLongPtr offsets
+type GWLP int32 // Get/SetWindowLongPtr nIndex
 
 const (
 	GWLP_STYLE      GWLP = -16
@@ -145,7 +145,7 @@ const (
 	IDTIMEOUT  ID = 32000
 )
 
-type IDC uintptr // LoadCursor
+type IDC uintptr // LoadCursor lpCursorName
 
 const (
 	IDC_ARROW       IDC = 32512
@@ -166,7 +166,7 @@ const (
 	IDC_PERSON      IDC = 32672
 )
 
-type IDI uintptr // LoadIcon
+type IDI uintptr // LoadIcon lpIconName
 
 const (
 	IDI_APPLICATION IDI = 32512

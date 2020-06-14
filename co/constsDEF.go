@@ -6,7 +6,7 @@
 
 package co
 
-type DPI_AWARE_CTX int32 // SetProcessDpiAwarenessContext
+type DPI_AWARE_CTX int32 // SetProcessDpiAwarenessContext value
 
 const (
 	DPI_AWARE_CTX_UNAWARE           DPI_AWARE_CTX = -1
@@ -60,7 +60,7 @@ const (
 	EM_GETIMESTATUS        EM = 0x00D9
 )
 
-type EMF uint32 // NMLVEMPTYMARKUP
+type EMF uint32 // NMLVEMPTYMARKUP dwFlags
 
 const (
 	EMF_NULL     EMF = 0x00000000
@@ -86,7 +86,7 @@ const (
 	ES_NUMBER      ES = 0x2000
 )
 
-type ERROR uint32 // GetLastError
+type ERROR uint32 // GetLastError result
 
 const (
 	ERROR_SUCCESS              ERROR = 0
@@ -159,7 +159,7 @@ const (
 	FILE_FLAG_OPEN_REQUIRING_OPLOCK FILE_FLAG = 0x00040000
 )
 
-type FILE_MAP uint32
+type FILE_MAP uint32 // MapViewOfFile dwDesiredAccess
 
 const (
 	FILE_MAP_WRITE           FILE_MAP = FILE_MAP(SECTION_MAP_WRITE)
@@ -172,7 +172,7 @@ const (
 	FILE_MAP_LARGE_PAGES     FILE_MAP = 0x20000000
 )
 
-type FILE_SETPTR uint32 // SetFilePointer
+type FILE_SETPTR uint32 // SetFilePointer dwMoveMethod
 
 const (
 	FILE_SETPTR_BEGIN   FILE_SETPTR = 0
@@ -189,7 +189,7 @@ const (
 	FILE_SHARE_DELETE FILE_SHARE = 0x00000004
 )
 
-type FW uint32 // logfont weight
+type FW uint32 // LOGFONT lfWeight
 
 const (
 	FW_DONTCARE   FW = 0
