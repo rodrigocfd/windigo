@@ -49,6 +49,25 @@ const (
 	PT_MOVETO      PT = 0x06
 )
 
+type REG uint32 // RegQueryValueEx lpType
+
+const (
+	REG_NONE                       REG = 0 // No value type
+	REG_SZ                         REG = 1 // Unicode nul terminated string
+	REG_EXPAND_SZ                  REG = 2 // Unicode nul terminated string (with environment variable references)
+	REG_BINARY                     REG = 3 // Free form binary
+	REG_DWORD                      REG = 4 // 32-bit number
+	REG_DWORD_LITTLE_ENDIAN        REG = 4 // 32-bit number (same as REG_DWORD)
+	REG_DWORD_BIG_ENDIAN           REG = 5 // 32-bit number
+	REG_LINK                       REG = 6 // Symbolic Link (unicode)
+	REG_MULTI_SZ                   REG = 7 // Multiple Unicode strings
+	REG_RESOURCE_LIST              REG = 8 // Resource list in the resource map
+	REG_FULL_RESOURCE_DESCRIPTOR   REG = 9 // Resource list in the hardware description
+	REG_RESOURCE_REQUIREMENTS_LIST REG = 10
+	REG_QWORD                      REG = 11 // 64-bit number
+	REG_QWORD_LITTLE_ENDIAN        REG = 11 // 64-bit number (same as REG_QWORD)
+)
+
 type REG_OPTION uint32 // RegOpenKeyEx ulOptions
 
 const (
