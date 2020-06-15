@@ -15,9 +15,9 @@ import (
 
 type HKEY HANDLE
 
-func (hkey HKEY) RegCloseKey() {
+func (hKey HKEY) RegCloseKey() {
 	ret, _, _ := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
-		uintptr(hkey), 0, 0)
+		uintptr(hKey), 0, 0)
 	lerr := syscall.Errno(ret)
 	if co.ERROR(lerr) != co.ERROR_SUCCESS {
 		panic(fmt.Sprintf("RegCloseKey failed: %d %s\n",
