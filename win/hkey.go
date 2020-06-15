@@ -73,6 +73,7 @@ func (hKey HKEY) RegEnumValue() []RegistryValueInfo {
 	return retVals
 }
 
+// Returns zero if key doesn't exist.
 func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
 	samDesired co.KEY) HKEY {
 
@@ -81,30 +82,24 @@ func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
 		uintptr(hKeyPredef), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpSubKey))),
 		uintptr(ulOptions), uintptr(samDesired), uintptr(unsafe.Pointer(&hKey)),
 		0)
-	if co.ERROR(ret) != co.ERROR_SUCCESS {
+	if co.ERROR(ret) == co.ERROR_FILE_NOT_FOUND {
+		return HKEY(0) // not found
+	} else if co.ERROR(ret) != co.ERROR_SUCCESS {
 		panic(fmt.Sprintf("RegOpenKeyEx failed: %d %s\n",
 			ret, syscall.Errno(ret).Error()))
 	}
 	return hKey
 }
 
+// Retrieves string value, panics if any other type.
 func (hKey HKEY) RegQueryValueExString(lpValueName string) string {
-	dataType := co.REG_NONE
-	dataBufSize := uint32(0)
-
-	ret, _, _ := syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
-		uintptr(hKey), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpValueName))), 0,
-		uintptr(unsafe.Pointer(&dataType)),
-		0, uintptr(unsafe.Pointer(&dataBufSize)))
-	if co.ERROR(ret) != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("RegQueryValueEx failed: %d %s\n",
-			ret, syscall.Errno(ret).Error()))
-	} else if dataType != co.REG_SZ {
+	dataType, dataBufSize := hKey.RegQueryValueExType(lpValueName)
+	if dataType != co.REG_SZ {
 		panic(fmt.Sprintf("Registry data isn't string, type is %d.\n", dataType))
 	}
 
 	dataBuf := make([]uint16, dataBufSize/2) // returned size is in bytes, we've got wide chars
-	ret, _, _ = syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
+	ret, _, _ := syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
 		uintptr(hKey), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpValueName))), 0,
 		uintptr(unsafe.Pointer(&dataType)), uintptr(unsafe.Pointer(&dataBuf[0])),
 		uintptr(unsafe.Pointer(&dataBufSize)))
@@ -116,10 +111,10 @@ func (hKey HKEY) RegQueryValueExString(lpValueName string) string {
 	return syscall.UTF16ToString(dataBuf)
 }
 
-func (hKey HKEY) RegQueryValueExUint32(lpValueName string) uint32 {
+// Retrieves data type and size of value.
+func (hKey HKEY) RegQueryValueExType(lpValueName string) (co.REG, uint32) {
 	dataType := co.REG_NONE
 	dataBufSize := uint32(0)
-
 	ret, _, _ := syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
 		uintptr(hKey), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpValueName))), 0,
 		uintptr(unsafe.Pointer(&dataType)),
@@ -127,12 +122,20 @@ func (hKey HKEY) RegQueryValueExUint32(lpValueName string) uint32 {
 	if co.ERROR(ret) != co.ERROR_SUCCESS {
 		panic(fmt.Sprintf("RegQueryValueEx failed: %d %s\n",
 			ret, syscall.Errno(ret).Error()))
-	} else if dataType != co.REG_DWORD {
-		panic(fmt.Sprintf("Registry data isn't uint32, type is %d.\n", dataType))
+	}
+	return dataType, dataBufSize
+}
+
+// Retrieves uint32 value, panics if any other type.
+func (hKey HKEY) RegQueryValueExUint32(lpValueName string) uint32 {
+	dataType, _ := hKey.RegQueryValueExType(lpValueName)
+	if dataType != co.REG_DWORD {
+		panic(fmt.Sprintf("Registry data isn't string, type is %d.\n", dataType))
 	}
 
-	dataBuf := uint32(0) // 4 bytes
-	ret, _, _ = syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
+	dataBuf := uint32(0)
+	dataBufSize := uint32(unsafe.Sizeof(dataBuf)) // 4 bytes
+	ret, _, _ := syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
 		uintptr(hKey), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpValueName))), 0,
 		uintptr(unsafe.Pointer(&dataType)), uintptr(unsafe.Pointer(&dataBuf)),
 		uintptr(unsafe.Pointer(&dataBufSize)))

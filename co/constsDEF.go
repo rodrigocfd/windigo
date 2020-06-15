@@ -94,6 +94,7 @@ type ERROR syscall.Errno // GetLastError result
 
 const (
 	ERROR_SUCCESS              ERROR = 0
+	ERROR_FILE_NOT_FOUND       ERROR = 2
 	ERROR_INVALID_HANDLE       ERROR = 6
 	ERROR_SHARING_VIOLATION    ERROR = 32
 	ERROR_MORE_DATA            ERROR = 234
