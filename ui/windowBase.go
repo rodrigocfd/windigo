@@ -83,6 +83,14 @@ func (me *windowBase) createWindow(uiName string, exStyle co.WS_EX,
 		hwndParent = parent.Hwnd()
 	}
 
+	me.defaultMessageHandling()
+
+	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
+	win.CreateWindowEx(exStyle, className, title, style, x, y, width, height,
+		hwndParent, menu, hInst, unsafe.Pointer(me)) // pass pointer to our object
+}
+
+func (me *windowBase) defaultMessageHandling() {
 	me.depot.addMsg(wM_UI_THREAD, func(p wmBase) uintptr { // handle our custom thread UI message
 		if p.WParam == 0xC0DEF00D {
 			pack := (*threadPack)(unsafe.Pointer(p.LParam))
@@ -90,10 +98,6 @@ func (me *windowBase) createWindow(uiName string, exStyle co.WS_EX,
 		}
 		return 0
 	})
-
-	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
-	win.CreateWindowEx(exStyle, className, title, style, x, y, width, height,
-		hwndParent, menu, hInst, unsafe.Pointer(me)) // pass pointer to our object
 }
 
 func wndProc(hwnd win.HWND, msg co.WM,

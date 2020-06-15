@@ -74,6 +74,8 @@ func (me *WindowControl) defaultMessageHandling() {
 
 		hTheme := me.Hwnd().OpenThemeData("LISTVIEW") // borrow style from listview
 		if hTheme != 0 {
+			defer hTheme.CloseThemeData()
+
 			// Clipping region; will draw only within this rectangle.
 			// Draw only the borders to avoid flickering.
 			rc2 := win.RECT{Left: rc.Left, Top: rc.Top, Right: rc.Left + 2, Bottom: rc.Bottom}
@@ -87,8 +89,6 @@ func (me *WindowControl) defaultMessageHandling() {
 
 			rc2 = win.RECT{Left: rc.Left, Top: rc.Bottom - 2, Right: rc.Right, Bottom: rc.Bottom}
 			hTheme.DrawThemeBackground(hdc, co.VS_PART_LVP_LISTGROUP, co.VS_STATE(0), rc, &rc2) // draw themed bottom border
-
-			hTheme.CloseThemeData()
 		}
 	})
 }
