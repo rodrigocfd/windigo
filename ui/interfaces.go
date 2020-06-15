@@ -14,7 +14,7 @@ import (
 // Any child control with HWND and ID.
 type Control interface {
 	Window
-	CtrlId() co.ID
+	Id() co.ID
 }
 
 // Any window with a HWND handle.

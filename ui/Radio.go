@@ -125,3 +125,12 @@ func (me *RadioButton) createBase(parent Window, x, y int32,
 	globalUiFont.SetOnControl(me)
 	return me
 }
+
+// Simple utility conversion; useful with Resizer.
+func RadioSliceAsControl(radios []RadioButton) []Control {
+	ctrls := make([]Control, 0, len(radios))
+	for i := range radios {
+		ctrls = append(ctrls, &radios[i])
+	}
+	return ctrls
+}

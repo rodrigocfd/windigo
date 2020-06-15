@@ -48,7 +48,7 @@ func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32)
 
 	me.windowBase.createWindow("WindowControl", me.setup.ExStyle,
 		me.setup.ClassName, "", me.setup.Style, x, y, width, height, parent,
-		win.HMENU(me.controlIdGuard.CtrlId()), hInst)
+		win.HMENU(me.controlIdGuard.Id()), hInst)
 }
 
 func (me *WindowControl) defaultMessageHandling() {
