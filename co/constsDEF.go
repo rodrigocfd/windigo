@@ -6,6 +6,10 @@
 
 package co
 
+import (
+	"syscall"
+)
+
 type DPI_AWARE_CTX int32 // SetProcessDpiAwarenessContext value
 
 const (
@@ -86,7 +90,7 @@ const (
 	ES_NUMBER      ES = 0x2000
 )
 
-type ERROR uint32 // GetLastError result
+type ERROR syscall.Errno // GetLastError result
 
 const (
 	ERROR_SUCCESS              ERROR = 0
