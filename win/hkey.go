@@ -88,9 +88,58 @@ func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
 	return hKey
 }
 
-// func (hKey HKEY) RegQueryValueEx(lpValueName string, ) {
-// 	valType := co.REG_NONE
-// 	ret, _, _ := syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
-// 		uintptr(hKey), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpValueName))),
-// 		0, uintptr(unsafe.Pointer(&valType)), a5 uintptr, a6 uintptr)
-// }
+func (hKey HKEY) RegQueryValueExString(lpValueName string) string {
+	dataType := co.REG_NONE
+	dataBufSize := uint32(0)
+
+	ret, _, _ := syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
+		uintptr(hKey), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpValueName))), 0,
+		uintptr(unsafe.Pointer(&dataType)),
+		0, uintptr(unsafe.Pointer(&dataBufSize)))
+	if co.ERROR(ret) != co.ERROR_SUCCESS {
+		panic(fmt.Sprintf("RegQueryValueEx failed: %d %s\n",
+			ret, syscall.Errno(ret).Error()))
+	} else if dataType != co.REG_SZ {
+		panic(fmt.Sprintf("Registry data isn't string, type is %d.\n", dataType))
+	}
+
+	dataBuf := make([]uint16, dataBufSize/2) // returned size is in bytes, we've got wide chars
+	ret, _, _ = syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
+		uintptr(hKey), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpValueName))), 0,
+		uintptr(unsafe.Pointer(&dataType)), uintptr(unsafe.Pointer(&dataBuf[0])),
+		uintptr(unsafe.Pointer(&dataBufSize)))
+	if co.ERROR(ret) != co.ERROR_SUCCESS {
+		panic(fmt.Sprintf("RegQueryValueEx failed: %d %s\n",
+			ret, syscall.Errno(ret).Error()))
+	}
+
+	return syscall.UTF16ToString(dataBuf)
+}
+
+func (hKey HKEY) RegQueryValueExUint32(lpValueName string) uint32 {
+	dataType := co.REG_NONE
+	dataBufSize := uint32(0)
+
+	ret, _, _ := syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
+		uintptr(hKey), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpValueName))), 0,
+		uintptr(unsafe.Pointer(&dataType)),
+		0, uintptr(unsafe.Pointer(&dataBufSize)))
+	if co.ERROR(ret) != co.ERROR_SUCCESS {
+		panic(fmt.Sprintf("RegQueryValueEx failed: %d %s\n",
+			ret, syscall.Errno(ret).Error()))
+	} else if dataType != co.REG_DWORD {
+		panic(fmt.Sprintf("Registry data isn't uint32, type is %d.\n", dataType))
+	}
+
+	dataBuf := uint32(0) // 4 bytes
+	ret, _, _ = syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
+		uintptr(hKey), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpValueName))), 0,
+		uintptr(unsafe.Pointer(&dataType)), uintptr(unsafe.Pointer(&dataBuf)),
+		uintptr(unsafe.Pointer(&dataBufSize)))
+	if co.ERROR(ret) != co.ERROR_SUCCESS {
+		panic(fmt.Sprintf("RegQueryValueEx failed: %d %s\n",
+			ret, syscall.Errno(ret).Error()))
+	}
+
+	return dataBuf
+}

@@ -13,8 +13,8 @@ import (
 var (
 	dllAdvapi32 = syscall.NewLazyDLL("advapi32.dll")
 
-	RegCloseKey  = dllAdvapi32.NewProc("RegCloseKey")
-	RegEnumValue = dllAdvapi32.NewProc("RegEnumValueW")
-	RegOpenKeyEx = dllAdvapi32.NewProc("RegOpenKeyExW")
-	// RegQueryValueEx = dllAdvapi32.NewProc("RegQueryValueExW")
+	RegCloseKey     = dllAdvapi32.NewProc("RegCloseKey")
+	RegEnumValue    = dllAdvapi32.NewProc("RegEnumValueW")
+	RegOpenKeyEx    = dllAdvapi32.NewProc("RegOpenKeyExW")
+	RegQueryValueEx = dllAdvapi32.NewProc("RegQueryValueExW")
 )
