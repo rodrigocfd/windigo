@@ -296,31 +296,31 @@ type WS uint32 // window style
 const (
 	WS_OVERLAPPED       WS = 0x00000000
 	WS_POPUP            WS = 0x80000000
-	WS_CHILD            WS = 0x40000000
-	WS_MINIMIZE         WS = 0x20000000
-	WS_VISIBLE          WS = 0x10000000
-	WS_DISABLED         WS = 0x08000000
-	WS_CLIPSIBLINGS     WS = 0x04000000
-	WS_CLIPCHILDREN     WS = 0x02000000
-	WS_MAXIMIZE         WS = 0x01000000
-	WS_CAPTION          WS = 0x00C00000
+	WS_CHILD            WS = 0x40000000 // The window is a child window.
+	WS_MINIMIZE         WS = 0x20000000 // The window is initially minimized.
+	WS_VISIBLE          WS = 0x10000000 // The window is initially visible.
+	WS_DISABLED         WS = 0x08000000 // The window is initially disabled.
+	WS_CLIPSIBLINGS     WS = 0x04000000 // Clips child windows relative to each other.
+	WS_CLIPCHILDREN     WS = 0x02000000 // Excludes the area occupied by child windows when drawing occurs within the parent window. This style is used when creating the parent window.
+	WS_MAXIMIZE         WS = 0x01000000 // The window is initially maximized.
+	WS_CAPTION          WS = 0x00C00000 // The window has a title bar (includes the WS_BORDER style).
 	WS_BORDER           WS = 0x00800000
 	WS_DLGFRAME         WS = 0x00400000
-	WS_VSCROLL          WS = 0x00200000
-	WS_HSCROLL          WS = 0x00100000
-	WS_SYSMENU          WS = 0x00080000
-	WS_THICKFRAME       WS = 0x00040000
-	WS_GROUP            WS = 0x00020000
-	WS_TABSTOP          WS = 0x00010000
-	WS_MINIMIZEBOX      WS = 0x00020000
-	WS_MAXIMIZEBOX      WS = 0x00010000
+	WS_VSCROLL          WS = 0x00200000 // The window has a vertical scroll bar.
+	WS_HSCROLL          WS = 0x00100000 // The window has a horizontal scroll bar.
+	WS_SYSMENU          WS = 0x00080000 // The window has a window menu on its title bar. The WS_CAPTION style must also be specified.
+	WS_THICKFRAME       WS = 0x00040000 // The window has a sizing border. Same as the WS_SIZEBOX style.
+	WS_GROUP            WS = 0x00020000 // The window is the first control of a group of controls.
+	WS_TABSTOP          WS = 0x00010000 // The window is a control that can receive the keyboard focus when the user presses the TAB key.
+	WS_MINIMIZEBOX      WS = 0x00020000 // The window has a minimize button.
+	WS_MAXIMIZEBOX      WS = 0x00010000 // The window has a maximize button.
 	WS_TILED            WS = WS_OVERLAPPED
-	WS_ICONIC           WS = WS_MINIMIZE
-	WS_SIZEBOX          WS = WS_THICKFRAME
+	WS_ICONIC           WS = WS_MINIMIZE   // The window is initially minimized. Same as the WS_MINIMIZE style.
+	WS_SIZEBOX          WS = WS_THICKFRAME // The window has a sizing border. Same as the WS_THICKFRAME style.
 	WS_TILEDWINDOW      WS = WS_OVERLAPPEDWINDOW
 	WS_OVERLAPPEDWINDOW WS = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX
 	WS_POPUPWINDOW      WS = WS_POPUP | WS_BORDER | WS_SYSMENU
-	WS_CHILDWINDOW      WS = WS_CHILD
+	WS_CHILDWINDOW      WS = WS_CHILD // Same as the WS_CHILD style.
 )
 
 type WS_EX uint32 // window extended style
