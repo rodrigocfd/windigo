@@ -18,7 +18,7 @@ func (hmap HFILEMAP) CloseHandle() {
 	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
 		uintptr(hmap), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("CloseHandle failed: %d %s\n",
+		panic(fmt.Sprintf("CloseHandle failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -30,7 +30,7 @@ func (hmap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 		uintptr(hmap), uintptr(desiredAccess), 0, uintptr(offset),
 		numBytesToMap, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("MapViewOfFile failed: %d %s\n",
+		panic(fmt.Sprintf("MapViewOfFile failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return HFILEMAPADDR(ret)
@@ -40,7 +40,7 @@ func (mappedPtr HFILEMAPADDR) UnmapViewOfFile() {
 	ret, _, lerr := syscall.Syscall(proc.UnmapViewOfFile.Addr(), 1,
 		uintptr(mappedPtr), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("UnmapViewOfFile failed: %d %s\n",
+		panic(fmt.Sprintf("UnmapViewOfFile failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }

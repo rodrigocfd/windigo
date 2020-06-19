@@ -36,7 +36,7 @@ func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
 		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
 
 	if ret == 0 {
-		panic(fmt.Sprintf("CreateWindowEx failed \"%s\": %d %s\n",
+		panic(fmt.Sprintf("CreateWindowEx failed \"%s\": %d %s",
 			className, lerr, lerr.Error()))
 	}
 
@@ -65,7 +65,7 @@ func (hWnd HWND) DestroyWindow() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyWindow.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("DestroyWindow failed: %d %s\n",
+		panic(fmt.Sprintf("DestroyWindow failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -74,7 +74,7 @@ func (hWnd HWND) DrawMenuBar() {
 	ret, _, lerr := syscall.Syscall(proc.DrawMenuBar.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("DrawMenuBar failed: %d %s\n",
+		panic(fmt.Sprintf("DrawMenuBar failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -109,7 +109,7 @@ func (hWnd HWND) GetClientRect() *RECT {
 		uintptr(hWnd), uintptr(unsafe.Pointer(rc)), 0)
 
 	if ret == 0 {
-		panic(fmt.Sprintf("GetClientRect failed: %d %s\n",
+		panic(fmt.Sprintf("GetClientRect failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return rc
@@ -128,7 +128,7 @@ func (hWnd HWND) GetDlgItem(nIDDlgItem co.ID) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetDlgItem.Addr(), 2,
 		uintptr(hWnd), uintptr(nIDDlgItem), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("GetDlgItem failed: %d %s\n",
+		panic(fmt.Sprintf("GetDlgItem failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return HWND(ret)
@@ -170,7 +170,7 @@ func (hWnd HWND) GetNextDlgTabItem(hChild HWND, bPrevious bool) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetNextDlgTabItem.Addr(), 3,
 		uintptr(hWnd), uintptr(hChild), boolToUintptr(bPrevious))
 	if ret == 0 && lerr != 0 {
-		panic(fmt.Sprintf("GetNextDlgTabItem failed: %d %s\n",
+		panic(fmt.Sprintf("GetNextDlgTabItem failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return HWND(ret)
@@ -180,7 +180,7 @@ func (hWnd HWND) GetParent() HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetParent.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	if ret == 0 && lerr != 0 {
-		panic(fmt.Sprintf("GetParent failed: %d %s\n",
+		panic(fmt.Sprintf("GetParent failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return HWND(ret)
@@ -194,7 +194,7 @@ func (hWnd HWND) GetWindow(uCmd co.GW) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetWindow.Addr(), 2,
 		uintptr(hWnd), uintptr(uCmd), 0)
 	if ret == 0 && lerr != 0 {
-		panic(fmt.Sprintf("GetWindow failed: %d %s\n",
+		panic(fmt.Sprintf("GetWindow failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return HWND(ret)
@@ -222,7 +222,7 @@ func (hWnd HWND) GetWindowRect() *RECT {
 		uintptr(hWnd), uintptr(unsafe.Pointer(rc)), 0)
 
 	if ret == 0 {
-		panic(fmt.Sprintf("GetWindowRect failed: %d %s\n",
+		panic(fmt.Sprintf("GetWindowRect failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return rc
@@ -236,7 +236,7 @@ func (hWnd HWND) GetWindowText() string {
 		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(len))
 
 	if ret == 0 && lerr != 0 {
-		panic(fmt.Sprintf("GetWindowText failed: %d %s\n",
+		panic(fmt.Sprintf("GetWindowText failed: %d %s",
 			lerr, lerr.Error()))
 	}
 
@@ -345,7 +345,7 @@ func (hWnd HWND) SetFocus() HWND {
 	ret, _, lerr := syscall.Syscall(proc.SetFocus.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	if ret == 0 && lerr != 0 {
-		panic(fmt.Sprintf("SetFocus failed: %d %s\n",
+		panic(fmt.Sprintf("SetFocus failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return HWND(ret) // handle to the window that previously had the keyboard focus
@@ -377,7 +377,7 @@ func (hWnd HWND) SetWindowPos(hwndInsertAfter co.SWP_HWND, x, y int32,
 		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy),
 		uintptr(uFlags), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SetWindowPos failed: %d %s\n",
+		panic(fmt.Sprintf("SetWindowPos failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }

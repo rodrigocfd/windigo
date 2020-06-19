@@ -34,7 +34,7 @@ func (msg *MSG) GetMessage(hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
 		uintptr(msgFilterMin), uintptr(msgFilterMax),
 		0, 0)
 	if int32(ret) == -1 {
-		panic(fmt.Sprintf("GetMessage failed: %d %s\n",
+		panic(fmt.Sprintf("GetMessage failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return int32(ret)

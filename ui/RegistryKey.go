@@ -27,10 +27,12 @@ func (me *RegistryKey) Close() {
 	}
 }
 
+// Enumerates all values in this registry key.
 func (me *RegistryKey) EnumValues() []win.RegistryValueInfo {
 	return me.hKey.RegEnumValue()
 }
 
+// Opens a registry key for reading.
 func (me *RegistryKey) OpenForRead(keyPredef co.HKEY, subKey string) {
 	me.hKey = win.RegOpenKeyEx(keyPredef, subKey,
 		co.REG_OPTION_NONE, co.KEY_READ)
@@ -47,6 +49,7 @@ func (me *RegistryKey) ValueInfo(valueName string) (co.REG, uint32) {
 	return dataType, dataBufSize
 }
 
+// Reads a string. Panics if data type is different.
 func (me *RegistryKey) ReadString(valueName string) string {
 	dataType, dataBufSize := me.ValueInfo(valueName)
 	if dataType != co.REG_SZ {
@@ -59,6 +62,7 @@ func (me *RegistryKey) ReadString(valueName string) string {
 	return syscall.UTF16ToString(dataBuf)
 }
 
+// Reads an uint32 (DWORD). Panics if data type is different.
 func (me *RegistryKey) ReadUint32(valueName string) uint32 {
 	dataType, dataBufSize := me.ValueInfo(valueName)
 	if dataType != co.REG_DWORD {
@@ -71,6 +75,7 @@ func (me *RegistryKey) ReadUint32(valueName string) uint32 {
 	return dataBuf
 }
 
+// Checks if a value exists within the key.
 func (me *RegistryKey) ValueExists(valueName string) bool {
 	return me.hKey.RegQueryValueEx(valueName, nil, 0, nil) == co.ERROR_SUCCESS
 }

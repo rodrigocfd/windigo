@@ -62,7 +62,7 @@ func (me *windowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 		if co.ERROR(lerr) == co.ERROR_CLASS_ALREADY_EXISTS {
 			atom = wcx.HInstance.GetClassInfoEx(wcx.LpszClassName, wcx)
 		} else {
-			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s\n",
+			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s",
 				atom, lerr, lerr.Error()))
 		}
 	}

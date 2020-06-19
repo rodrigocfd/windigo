@@ -29,7 +29,7 @@ func (hKey HKEY) RegCloseKey() {
 	ret, _, _ := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
 		uintptr(hKey), 0, 0)
 	if co.ERROR(ret) != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("RegCloseKey failed: %d %s\n",
+		panic(fmt.Sprintf("RegCloseKey failed: %d %s",
 			ret, syscall.Errno(ret).Error()))
 	}
 }
@@ -62,7 +62,7 @@ func (hKey HKEY) RegEnumValue() []RegistryValueInfo {
 			nameBufSize += 64 // arbitrary
 			nameBuf = make([]uint16, nameBufSize)
 		} else {
-			panic(fmt.Sprintf("RegEnumValue failed: %d %s\n",
+			panic(fmt.Sprintf("RegEnumValue failed: %d %s",
 				ret, syscall.Errno(ret).Error()))
 		}
 	}
@@ -85,7 +85,7 @@ func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
 	if co.ERROR(ret) == co.ERROR_FILE_NOT_FOUND {
 		return HKEY(0) // not found
 	} else if co.ERROR(ret) != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("RegOpenKeyEx failed: %d %s\n",
+		panic(fmt.Sprintf("RegOpenKeyEx failed: %d %s",
 			ret, syscall.Errno(ret).Error()))
 	}
 	return hKey
@@ -99,7 +99,7 @@ func (hKey HKEY) RegQueryValueEx(lpValueName string, lpType *co.REG,
 		uintptr(unsafe.Pointer(lpType)), lpData,
 		uintptr(unsafe.Pointer(lpcbData)))
 	if co.ERROR(ret) != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("RegQueryValueEx failed: %d %s\n",
+		panic(fmt.Sprintf("RegQueryValueEx failed: %d %s",
 			ret, syscall.Errno(ret).Error()))
 	}
 	return co.ERROR(ret)

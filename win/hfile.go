@@ -20,7 +20,7 @@ func (hfile HFILE) CloseHandle() {
 	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
 		uintptr(hfile), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("CloseHandle failed: %d %s\n",
+		panic(fmt.Sprintf("CloseHandle failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -30,7 +30,7 @@ func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) {
 		uintptr(unsafe.Pointer(StrToUtf16Ptr(pathName))),
 		uintptr(unsafe.Pointer(securityAttributes)), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("CreateDirectory failed: %d %s\n",
+		panic(fmt.Sprintf("CreateDirectory failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -48,7 +48,7 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 		uintptr(uint32(attributes)|uint32(flags)|uint32(security)),
 		uintptr(hTemplateFile), 0, 0)
 	if int32(ret) == -1 {
-		panic(fmt.Sprintf("CreateFile failed: %d %s\n",
+		panic(fmt.Sprintf("CreateFile failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return HFILE(ret)
@@ -64,7 +64,7 @@ func (hfile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 		0, uintptr(maxSize),
 		uintptr(unsafe.Pointer(StrToUtf16PtrBlankIsNil(objectName))))
 	if lerr != 0 {
-		panic(fmt.Sprintf("CreateFileMapping failed: %d %s\n",
+		panic(fmt.Sprintf("CreateFileMapping failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return HFILEMAP(ret)
@@ -74,7 +74,7 @@ func (hfile HFILE) DeleteFile(fileName string) {
 	ret, _, lerr := syscall.Syscall(proc.DeleteFile.Addr(), 1,
 		uintptr(unsafe.Pointer(StrToUtf16Ptr(fileName))), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("DeleteFile failed: %d %s\n",
+		panic(fmt.Sprintf("DeleteFile failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -83,7 +83,7 @@ func GetFileAttributes(fileName string) co.FILE_ATTRIBUTE {
 	ret, _, lerr := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
 		uintptr(unsafe.Pointer(StrToUtf16Ptr(fileName))), 0, 0)
 	if int32(ret) == -1 {
-		panic(fmt.Sprintf("GetFileAttributes failed: %d %s\n",
+		panic(fmt.Sprintf("GetFileAttributes failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return co.FILE_ATTRIBUTE(ret)
@@ -94,7 +94,7 @@ func (hfile HFILE) GetFileSize() uint32 {
 		uintptr(hfile), 0, 0)
 	if ret == 0xFFFFFFFF && lerr != 0 {
 		hfile.CloseHandle()
-		panic(fmt.Sprintf("GetFileSize failed: %d %s\n",
+		panic(fmt.Sprintf("GetFileSize failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return uint32(ret)
@@ -106,7 +106,7 @@ func (hfile HFILE) GetFileSizeEx() int64 {
 		uintptr(hfile), uintptr(unsafe.Pointer(&buf)), 0)
 	if ret == 0 && lerr != 0 {
 		hfile.CloseHandle()
-		panic(fmt.Sprintf("GetFileSizeEx failed: %d %s\n",
+		panic(fmt.Sprintf("GetFileSizeEx failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return buf
@@ -119,7 +119,7 @@ func (hfile HFILE) ReadFile(buf []uint8, bytesToRead uint32) {
 		uintptr(bytesToRead), uintptr(unsafe.Pointer(&read)), 0, 0) // OVERLAPPED not even considered
 	if ret == 0 {
 		hfile.CloseHandle()
-		panic(fmt.Sprintf("ReadFile failed: %d %s\n",
+		panic(fmt.Sprintf("ReadFile failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -129,7 +129,7 @@ func (hfile HFILE) SetEndOfFile() {
 		uintptr(hfile), 0, 0)
 	if ret == 0 {
 		hfile.CloseHandle()
-		panic(fmt.Sprintf("SetEndOfFile failed: %d %s\n",
+		panic(fmt.Sprintf("SetEndOfFile failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -142,7 +142,7 @@ func (hfile HFILE) SetFilePointer(distanceToMove int32,
 		0, 0)
 	if int32(ret) == -1 && lerr != 0 {
 		hfile.CloseHandle()
-		panic(fmt.Sprintf("SetFilePointer failed: %d %s\n",
+		panic(fmt.Sprintf("SetFilePointer failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -155,7 +155,7 @@ func (hfile HFILE) SetFilePointerEx(distanceToMove int64,
 		0, 0)
 	if ret == 0 {
 		hfile.CloseHandle()
-		panic(fmt.Sprintf("SetFilePointerEx failed: %d %s\n",
+		panic(fmt.Sprintf("SetFilePointerEx failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -167,7 +167,7 @@ func (hfile HFILE) WriteFile(buf []uint8) {
 		uintptr(len(buf)), uintptr(unsafe.Pointer(&written)), 0, 0) // OVERLAPPED not even considered
 	if ret == 0 {
 		hfile.CloseHandle()
-		panic(fmt.Sprintf("WriteFile failed: %d %s\n",
+		panic(fmt.Sprintf("WriteFile failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }

@@ -21,7 +21,7 @@ func StrToUtf16Ptr(s string) *uint16 {
 	// https://stackoverflow.com/a/51188315
 	pstr, err := syscall.UTF16PtrFromString(s)
 	if err != nil {
-		panic(fmt.Sprintf("ToUtf16Ptr failed \"%s\": %s\n",
+		panic(fmt.Sprintf("ToUtf16Ptr failed \"%s\": %s",
 			s, err))
 	}
 	return pstr
@@ -98,7 +98,7 @@ func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 	ret, _, lerr := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
 		uintptr(value), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SetProcessDpiAwarenessContext failed: %d %s\n",
+		panic(fmt.Sprintf("SetProcessDpiAwarenessContext failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -119,7 +119,7 @@ func SystemParametersInfo(uiAction co.SPI, uiParam uint32,
 		uintptr(uiAction), uintptr(uiParam), uintptr(pvParam), uintptr(fWinIni),
 		0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SystemParametersInfo failed: %d %s\n",
+		panic(fmt.Sprintf("SystemParametersInfo failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }

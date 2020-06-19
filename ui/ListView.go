@@ -270,7 +270,7 @@ func (me *ListViewItem) Delete() {
 	ret := me.owner.sendLvmMessage(co.LVM_DELETEITEM,
 		win.WPARAM(me.index), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("LVM_DELETEITEM failed, index %d.\n", me.index))
+		panic(fmt.Sprintf("LVM_DELETEITEM failed, index %d.", me.index))
 	}
 }
 

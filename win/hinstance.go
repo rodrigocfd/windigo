@@ -24,7 +24,7 @@ func (hinst HINSTANCE) GetClassInfoEx(className *uint16,
 		uintptr(unsafe.Pointer(className)),
 		uintptr(unsafe.Pointer(destBuf)))
 	if ret == 0 {
-		panic(fmt.Sprintf("GetClassInfoEx failed: %d %s\n",
+		panic(fmt.Sprintf("GetClassInfoEx failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return ATOM(ret)
@@ -41,7 +41,7 @@ func (hinst HINSTANCE) LoadCursor(lpCursorName co.IDC) HCURSOR {
 	ret, _, lerr := syscall.Syscall(proc.LoadCursor.Addr(), 2,
 		uintptr(hinst), uintptr(lpCursorName), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("LoadCursor failed: %d %s\n",
+		panic(fmt.Sprintf("LoadCursor failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return HCURSOR(ret)
@@ -51,7 +51,7 @@ func (hinst HINSTANCE) LoadIcon(lpIconName co.IDI) HICON {
 	ret, _, lerr := syscall.Syscall(proc.LoadIcon.Addr(), 2,
 		uintptr(hinst), uintptr(lpIconName), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("LoadIcon failed: %d %s\n",
+		panic(fmt.Sprintf("LoadIcon failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return HICON(ret)
