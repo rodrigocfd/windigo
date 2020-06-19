@@ -233,7 +233,7 @@ func (me *ListViewColumn) Text() string {
 	}
 	ret := me.owner.sendLvmMessage(co.LVM_GETCOLUMN,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvc)))
-	if ret < 0 {
+	if ret == 0 {
 		panic("LVM_GETCOLUMN failed to get text.")
 	}
 	return syscall.UTF16ToString(buf)
