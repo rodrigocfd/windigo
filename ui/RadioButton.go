@@ -18,17 +18,6 @@ type RadioButton struct {
 	controlNativeBase
 }
 
-// Helper function to retrieve the index of the checked radio button.
-// Returns -1 if none is checked.
-func GetCheckedRadio(radioGroup []RadioButton) int32 {
-	for i := range radioGroup {
-		if radioGroup[i].IsChecked() {
-			return int32(i)
-		}
-	}
-	return -1 // no checked one
-}
-
 // Optional; returns a RadioButton with a specific control ID.
 func MakeRadioButton(ctrlId co.ID) RadioButton {
 	return RadioButton{
@@ -124,6 +113,17 @@ func (me *RadioButton) createBase(parent Window, x, y int32,
 		x, y, cx, cy, parent)
 	globalUiFont.SetOnControl(me)
 	return me
+}
+
+// Helper function to retrieve the index of the checked radio button.
+// Returns -1 if none is checked.
+func GetCheckedRadio(radioGroup []RadioButton) int32 {
+	for i := range radioGroup {
+		if radioGroup[i].IsChecked() {
+			return int32(i)
+		}
+	}
+	return -1 // no checked one
 }
 
 // Simple utility conversion; useful with Resizer.

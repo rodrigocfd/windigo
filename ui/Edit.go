@@ -19,7 +19,7 @@ type Edit struct {
 	controlNativeBase
 }
 
-// Optional; returns a, Edit with a specific control ID.
+// Optional; returns an Edit with a specific control ID.
 func MakeEdit(ctrlId co.ID) Edit {
 	return Edit{
 		controlNativeBase: makeNativeControlBase(ctrlId),

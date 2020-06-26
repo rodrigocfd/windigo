@@ -17,7 +17,7 @@ type Static struct {
 	controlNativeBase
 }
 
-// Optional; returns a Button with a specific control ID.
+// Optional; returns a Static control with a specific control ID.
 func MakeStatic(ctrlId co.ID) Static {
 	return Static{
 		controlNativeBase: makeNativeControlBase(ctrlId),
