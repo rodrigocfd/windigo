@@ -129,12 +129,12 @@ type wmCharBase struct{ base wmBase }
 func (p wmCharBase) CharCode() uint16    { return uint16(p.base.WParam) }
 func (p wmCharBase) RepeatCount() uint16 { return p.base.LParam.LoWord() }
 func (p wmCharBase) ScanCode() uint8     { return p.base.LParam.LoByteHiWord() }
-func (p wmCharBase) IsExtendedKey() bool { return (p.base.LParam.HiByteHiWord() & 0b00000001) != 0 }
-func (p wmCharBase) HasAltKey() bool     { return (p.base.LParam.HiByteHiWord() & 0b00100000) != 0 }
+func (p wmCharBase) IsExtendedKey() bool { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
+func (p wmCharBase) HasAltKey() bool     { return (p.base.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
 func (p wmCharBase) IsKeyDownBeforeSend() bool {
-	return (p.base.LParam.HiByteHiWord() & 0b01000000) != 0
+	return (p.base.LParam.HiByteHiWord() & 0b0100_0000) != 0
 }
-func (p wmCharBase) KeyBeingReleased() bool { return (p.base.LParam.HiByteHiWord() & 0b10000000) != 0 }
+func (p wmCharBase) KeyBeingReleased() bool { return (p.base.LParam.HiByteHiWord() & 0b1000_0000) != 0 }
 
 type WmChar struct{ wmCharBase }
 
@@ -266,9 +266,9 @@ type WmKeyDown struct{ base wmBase }
 func (p WmKeyDown) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
 func (p WmKeyDown) RepeatCount() uint16   { return p.base.LParam.LoWord() }
 func (p WmKeyDown) ScanCode() uint8       { return p.base.LParam.LoByteHiWord() }
-func (p WmKeyDown) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b00000001) != 0 }
+func (p WmKeyDown) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
 func (p WmKeyDown) IsKeyDownBeforeSend() bool {
-	return (p.base.LParam.HiByteHiWord() & 0b01000000) != 0
+	return (p.base.LParam.HiByteHiWord() & 0b0100_0000) != 0
 }
 
 func (me *windowDepotMsg) WmKeyDown(userFunc func(p WmKeyDown)) {
@@ -282,7 +282,7 @@ type WmKeyUp struct{ base wmBase }
 
 func (p WmKeyUp) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
 func (p WmKeyUp) ScanCode() uint8       { return p.base.LParam.LoByteHiWord() }
-func (p WmKeyUp) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b00000001) != 0 }
+func (p WmKeyUp) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
 
 func (me *windowDepotMsg) WmKeyUp(userFunc func(p WmKeyUp)) {
 	me.addMsg(co.WM_KEYUP, func(p wmBase) uintptr {
@@ -565,10 +565,10 @@ type WmSysKeyDown struct{ base wmBase }
 func (p WmSysKeyDown) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
 func (p WmSysKeyDown) RepeatCount() uint16   { return p.base.LParam.LoWord() }
 func (p WmSysKeyDown) ScanCode() uint8       { return p.base.LParam.LoByteHiWord() }
-func (p WmSysKeyDown) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b00000001) != 0 }
-func (p WmSysKeyDown) HasAltKey() bool       { return (p.base.LParam.HiByteHiWord() & 0b00100000) != 0 }
+func (p WmSysKeyDown) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
+func (p WmSysKeyDown) HasAltKey() bool       { return (p.base.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
 func (p WmSysKeyDown) IsKeyDownBeforeSend() bool {
-	return (p.base.LParam.HiByteHiWord() & 0b01000000) != 0
+	return (p.base.LParam.HiByteHiWord() & 0b0100_0000) != 0
 }
 
 func (me *windowDepotMsg) WmSysKeyDown(userFunc func(p WmSysKeyDown)) {
@@ -582,8 +582,8 @@ type WmSysKeyUp struct{ base wmBase }
 
 func (p WmSysKeyUp) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
 func (p WmSysKeyUp) ScanCode() uint8       { return p.base.LParam.LoByteHiWord() }
-func (p WmSysKeyUp) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b00000001) != 0 }
-func (p WmSysKeyUp) HasAltKey() bool       { return (p.base.LParam.HiByteHiWord() & 0b00100000) != 0 }
+func (p WmSysKeyUp) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
+func (p WmSysKeyUp) HasAltKey() bool       { return (p.base.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
 
 func (me *windowDepotMsg) WmSysKeyUp(userFunc func(p WmSysKeyUp)) {
 	me.addMsg(co.WM_SYSKEYUP, func(p wmBase) uintptr {
