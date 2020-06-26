@@ -117,9 +117,9 @@ func (me *RadioButton) createBase(parent Window, x, y int32,
 
 // Helper function to retrieve the index of the checked radio button.
 // Returns -1 if none is checked.
-func GetCheckedRadio(radioGroup []RadioButton) int32 {
-	for i := range radioGroup {
-		if radioGroup[i].IsChecked() {
+func GetCheckedRadio(radios []RadioButton) int32 {
+	for i := range radios {
+		if radios[i].IsChecked() {
 			return int32(i)
 		}
 	}
@@ -127,7 +127,7 @@ func GetCheckedRadio(radioGroup []RadioButton) int32 {
 }
 
 // Simple utility conversion; useful with Resizer.
-func RadioSliceAsControl(radios []RadioButton) []Control {
+func RadioButtonAsControl(radios []RadioButton) []Control {
 	ctrls := make([]Control, 0, len(radios))
 	for i := range radios {
 		ctrls = append(ctrls, &radios[i])
