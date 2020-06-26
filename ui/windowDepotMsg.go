@@ -122,58 +122,6 @@ func (me *windowDepotMsg) WmAppCommand(userFunc func(p WmAppCommand)) {
 	})
 }
 
-//------------------------------------------------------------------------------
-
-type wmCharBase struct{ base wmBase }
-
-func (p wmCharBase) CharCode() uint16    { return uint16(p.base.WParam) }
-func (p wmCharBase) RepeatCount() uint16 { return p.base.LParam.LoWord() }
-func (p wmCharBase) ScanCode() uint8     { return p.base.LParam.LoByteHiWord() }
-func (p wmCharBase) IsExtendedKey() bool { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
-func (p wmCharBase) HasAltKey() bool     { return (p.base.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
-func (p wmCharBase) IsKeyDownBeforeSend() bool {
-	return (p.base.LParam.HiByteHiWord() & 0b0100_0000) != 0
-}
-func (p wmCharBase) KeyBeingReleased() bool { return (p.base.LParam.HiByteHiWord() & 0b1000_0000) != 0 }
-
-type WmChar struct{ wmCharBase }
-
-func (me *windowDepotMsg) WmChar(userFunc func(p WmChar)) {
-	me.addMsg(co.WM_CHAR, func(p wmBase) uintptr {
-		userFunc(WmChar{wmCharBase: wmCharBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmDeadChar struct{ wmCharBase }
-
-func (me *windowDepotMsg) WmDeadChar(userFunc func(p WmDeadChar)) {
-	me.addMsg(co.WM_DEADCHAR, func(p wmBase) uintptr {
-		userFunc(WmDeadChar{wmCharBase: wmCharBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmSysChar struct{ wmCharBase }
-
-func (me *windowDepotMsg) WmSysChar(userFunc func(p WmSysChar)) {
-	me.addMsg(co.WM_SYSCHAR, func(p wmBase) uintptr {
-		userFunc(WmSysChar{wmCharBase: wmCharBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmSysDeadChar struct{ wmCharBase }
-
-func (me *windowDepotMsg) WmSysDeadChar(userFunc func(p WmSysDeadChar)) {
-	me.addMsg(co.WM_SYSDEADCHAR, func(p wmBase) uintptr {
-		userFunc(WmSysDeadChar{wmCharBase: wmCharBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-//------------------------------------------------------------------------------
-
 // Warning: default handled in WindowModal.
 func (me *windowDepotMsg) WmClose(userFunc func()) {
 	me.addMsg(co.WM_CLOSE, func(p wmBase) uintptr {
@@ -261,36 +209,6 @@ func (me *windowDepotMsg) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
 	})
 }
 
-type WmKeyDown struct{ base wmBase }
-
-func (p WmKeyDown) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
-func (p WmKeyDown) RepeatCount() uint16   { return p.base.LParam.LoWord() }
-func (p WmKeyDown) ScanCode() uint8       { return p.base.LParam.LoByteHiWord() }
-func (p WmKeyDown) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
-func (p WmKeyDown) IsKeyDownBeforeSend() bool {
-	return (p.base.LParam.HiByteHiWord() & 0b0100_0000) != 0
-}
-
-func (me *windowDepotMsg) WmKeyDown(userFunc func(p WmKeyDown)) {
-	me.addMsg(co.WM_KEYDOWN, func(p wmBase) uintptr {
-		userFunc(WmKeyDown{base: wmBase(p)})
-		return 0
-	})
-}
-
-type WmKeyUp struct{ base wmBase }
-
-func (p WmKeyUp) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
-func (p WmKeyUp) ScanCode() uint8       { return p.base.LParam.LoByteHiWord() }
-func (p WmKeyUp) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
-
-func (me *windowDepotMsg) WmKeyUp(userFunc func(p WmKeyUp)) {
-	me.addMsg(co.WM_KEYUP, func(p wmBase) uintptr {
-		userFunc(WmKeyUp{base: wmBase(p)})
-		return 0
-	})
-}
-
 type WmKillFocus struct{ base wmBase }
 
 func (p WmKillFocus) WindowReceivingFocus() win.HWND { return win.HWND(p.base.WParam) }
@@ -301,122 +219,6 @@ func (me *windowDepotMsg) WmKillFocus(userFunc func(p WmKillFocus)) {
 		return 0
 	})
 }
-
-//------------------------------------------------------------------------------
-
-type wmLButtonDblClkBase struct{ base wmBase }
-
-func (p wmLButtonDblClkBase) HasCtrl() bool    { return (co.MK(p.base.WParam) & co.MK_CONTROL) != 0 }
-func (p wmLButtonDblClkBase) HasLeftBtn() bool { return (co.MK(p.base.WParam) & co.MK_LBUTTON) != 0 }
-func (p wmLButtonDblClkBase) HasMiddleBtn() bool {
-	return (co.MK(p.base.WParam) & co.MK_MBUTTON) != 0
-}
-func (p wmLButtonDblClkBase) HasRightBtn() bool { return (co.MK(p.base.WParam) & co.MK_RBUTTON) != 0 }
-func (p wmLButtonDblClkBase) HasShift() bool    { return (co.MK(p.base.WParam) & co.MK_SHIFT) != 0 }
-func (p wmLButtonDblClkBase) HasXBtn1() bool    { return (co.MK(p.base.WParam) & co.MK_XBUTTON1) != 0 }
-func (p wmLButtonDblClkBase) HasXBtn2() bool    { return (co.MK(p.base.WParam) & co.MK_XBUTTON2) != 0 }
-func (p wmLButtonDblClkBase) Pos() win.POINT    { return p.base.LParam.MakePoint() }
-
-type WmLButtonDblClk struct{ wmLButtonDblClkBase }
-
-func (me *windowDepotMsg) WmLButtonDblClk(userFunc func(p WmLButtonDblClk)) {
-	me.addMsg(co.WM_LBUTTONDBLCLK, func(p wmBase) uintptr {
-		userFunc(WmLButtonDblClk{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmLButtonDown struct{ wmLButtonDblClkBase }
-
-func (me *windowDepotMsg) WmLButtonDown(userFunc func(p WmLButtonDown)) {
-	me.addMsg(co.WM_LBUTTONDOWN, func(p wmBase) uintptr {
-		userFunc(WmLButtonDown{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmLButtonUp struct{ wmLButtonDblClkBase }
-
-func (me *windowDepotMsg) WmLButtonUp(userFunc func(p WmLButtonUp)) {
-	me.addMsg(co.WM_LBUTTONUP, func(p wmBase) uintptr {
-		userFunc(WmLButtonUp{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmMButtonDblClk struct{ wmLButtonDblClkBase }
-
-func (me *windowDepotMsg) WmMButtonDblClk(userFunc func(p WmMButtonDblClk)) {
-	me.addMsg(co.WM_MBUTTONDBLCLK, func(p wmBase) uintptr {
-		userFunc(WmMButtonDblClk{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmMButtonDown struct{ wmLButtonDblClkBase }
-
-func (me *windowDepotMsg) WmMButtonDown(userFunc func(p WmMButtonDown)) {
-	me.addMsg(co.WM_MBUTTONDOWN, func(p wmBase) uintptr {
-		userFunc(WmMButtonDown{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmMButtonUp struct{ wmLButtonDblClkBase }
-
-func (me *windowDepotMsg) WmMButtonUp(userFunc func(p WmMButtonUp)) {
-	me.addMsg(co.WM_MBUTTONUP, func(p wmBase) uintptr {
-		userFunc(WmMButtonUp{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmMouseHover struct{ wmLButtonDblClkBase }
-
-func (me *windowDepotMsg) WmMouseHover(userFunc func(p WmMouseHover)) {
-	me.addMsg(co.WM_MOUSEHOVER, func(p wmBase) uintptr {
-		userFunc(WmMouseHover{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmMouseMove struct{ wmLButtonDblClkBase }
-
-func (me *windowDepotMsg) WmMouseMove(userFunc func(p WmMouseMove)) {
-	me.addMsg(co.WM_MOUSEMOVE, func(p wmBase) uintptr {
-		userFunc(WmMouseMove{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmRButtonDblClk struct{ wmLButtonDblClkBase }
-
-func (me *windowDepotMsg) WmRButtonDblClk(userFunc func(p WmRButtonDblClk)) {
-	me.addMsg(co.WM_RBUTTONDBLCLK, func(p wmBase) uintptr {
-		userFunc(WmRButtonDblClk{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmRButtonDown struct{ wmLButtonDblClkBase }
-
-func (me *windowDepotMsg) WmRButtonDown(userFunc func(p WmRButtonDown)) {
-	me.addMsg(co.WM_RBUTTONDOWN, func(p wmBase) uintptr {
-		userFunc(WmRButtonDown{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-type WmRButtonUp struct{ wmLButtonDblClkBase }
-
-func (me *windowDepotMsg) WmRButtonUp(userFunc func(p WmRButtonUp)) {
-	me.addMsg(co.WM_RBUTTONUP, func(p wmBase) uintptr {
-		userFunc(WmRButtonUp{wmLButtonDblClkBase: wmLButtonDblClkBase{base: wmBase(p)}})
-		return 0
-	})
-}
-
-//------------------------------------------------------------------------------
 
 type WmMenuChar struct{ base wmBase }
 
@@ -560,41 +362,220 @@ func (me *windowDepotMsg) WmSysCommand(userFunc func(p WmSysCommand)) {
 	})
 }
 
-type WmSysKeyDown struct{ base wmBase }
-
-func (p WmSysKeyDown) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
-func (p WmSysKeyDown) RepeatCount() uint16   { return p.base.LParam.LoWord() }
-func (p WmSysKeyDown) ScanCode() uint8       { return p.base.LParam.LoByteHiWord() }
-func (p WmSysKeyDown) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
-func (p WmSysKeyDown) HasAltKey() bool       { return (p.base.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
-func (p WmSysKeyDown) IsKeyDownBeforeSend() bool {
-	return (p.base.LParam.HiByteHiWord() & 0b0100_0000) != 0
-}
-
-func (me *windowDepotMsg) WmSysKeyDown(userFunc func(p WmSysKeyDown)) {
-	me.addMsg(co.WM_SYSKEYDOWN, func(p wmBase) uintptr {
-		userFunc(WmSysKeyDown{base: wmBase(p)})
-		return 0
-	})
-}
-
-type WmSysKeyUp struct{ base wmBase }
-
-func (p WmSysKeyUp) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
-func (p WmSysKeyUp) ScanCode() uint8       { return p.base.LParam.LoByteHiWord() }
-func (p WmSysKeyUp) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
-func (p WmSysKeyUp) HasAltKey() bool       { return (p.base.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
-
-func (me *windowDepotMsg) WmSysKeyUp(userFunc func(p WmSysKeyUp)) {
-	me.addMsg(co.WM_SYSKEYUP, func(p wmBase) uintptr {
-		userFunc(WmSysKeyUp{base: wmBase(p)})
-		return 0
-	})
-}
-
 func (me *windowDepotMsg) WmTimeChange(userFunc func()) {
 	me.addMsg(co.WM_TIMECHANGE, func(p wmBase) uintptr {
 		userFunc()
+		return 0
+	})
+}
+
+//------------------------------------------------------------------------------
+
+type wmBaseButton struct{ base wmBase }
+
+func (p wmBaseButton) HasCtrl() bool      { return (co.MK(p.base.WParam) & co.MK_CONTROL) != 0 }
+func (p wmBaseButton) HasLeftBtn() bool   { return (co.MK(p.base.WParam) & co.MK_LBUTTON) != 0 }
+func (p wmBaseButton) HasMiddleBtn() bool { return (co.MK(p.base.WParam) & co.MK_MBUTTON) != 0 }
+func (p wmBaseButton) HasRightBtn() bool  { return (co.MK(p.base.WParam) & co.MK_RBUTTON) != 0 }
+func (p wmBaseButton) HasShift() bool     { return (co.MK(p.base.WParam) & co.MK_SHIFT) != 0 }
+func (p wmBaseButton) HasXBtn1() bool     { return (co.MK(p.base.WParam) & co.MK_XBUTTON1) != 0 }
+func (p wmBaseButton) HasXBtn2() bool     { return (co.MK(p.base.WParam) & co.MK_XBUTTON2) != 0 }
+func (p wmBaseButton) Pos() win.POINT     { return p.base.LParam.MakePoint() }
+
+type WmLButtonDblClk struct{ wmBaseButton }
+
+func (me *windowDepotMsg) WmLButtonDblClk(userFunc func(p WmLButtonDblClk)) {
+	me.addMsg(co.WM_LBUTTONDBLCLK, func(p wmBase) uintptr {
+		userFunc(WmLButtonDblClk{wmBaseButton: wmBaseButton{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmLButtonDown struct{ wmBaseButton }
+
+func (me *windowDepotMsg) WmLButtonDown(userFunc func(p WmLButtonDown)) {
+	me.addMsg(co.WM_LBUTTONDOWN, func(p wmBase) uintptr {
+		userFunc(WmLButtonDown{wmBaseButton: wmBaseButton{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmLButtonUp struct{ wmBaseButton }
+
+func (me *windowDepotMsg) WmLButtonUp(userFunc func(p WmLButtonUp)) {
+	me.addMsg(co.WM_LBUTTONUP, func(p wmBase) uintptr {
+		userFunc(WmLButtonUp{wmBaseButton: wmBaseButton{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmMButtonDblClk struct{ wmBaseButton }
+
+func (me *windowDepotMsg) WmMButtonDblClk(userFunc func(p WmMButtonDblClk)) {
+	me.addMsg(co.WM_MBUTTONDBLCLK, func(p wmBase) uintptr {
+		userFunc(WmMButtonDblClk{wmBaseButton: wmBaseButton{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmMButtonDown struct{ wmBaseButton }
+
+func (me *windowDepotMsg) WmMButtonDown(userFunc func(p WmMButtonDown)) {
+	me.addMsg(co.WM_MBUTTONDOWN, func(p wmBase) uintptr {
+		userFunc(WmMButtonDown{wmBaseButton: wmBaseButton{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmMButtonUp struct{ wmBaseButton }
+
+func (me *windowDepotMsg) WmMButtonUp(userFunc func(p WmMButtonUp)) {
+	me.addMsg(co.WM_MBUTTONUP, func(p wmBase) uintptr {
+		userFunc(WmMButtonUp{wmBaseButton: wmBaseButton{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmMouseHover struct{ wmBaseButton }
+
+func (me *windowDepotMsg) WmMouseHover(userFunc func(p WmMouseHover)) {
+	me.addMsg(co.WM_MOUSEHOVER, func(p wmBase) uintptr {
+		userFunc(WmMouseHover{wmBaseButton: wmBaseButton{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmMouseMove struct{ wmBaseButton }
+
+func (me *windowDepotMsg) WmMouseMove(userFunc func(p WmMouseMove)) {
+	me.addMsg(co.WM_MOUSEMOVE, func(p wmBase) uintptr {
+		userFunc(WmMouseMove{wmBaseButton: wmBaseButton{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmRButtonDblClk struct{ wmBaseButton }
+
+func (me *windowDepotMsg) WmRButtonDblClk(userFunc func(p WmRButtonDblClk)) {
+	me.addMsg(co.WM_RBUTTONDBLCLK, func(p wmBase) uintptr {
+		userFunc(WmRButtonDblClk{wmBaseButton: wmBaseButton{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmRButtonDown struct{ wmBaseButton }
+
+func (me *windowDepotMsg) WmRButtonDown(userFunc func(p WmRButtonDown)) {
+	me.addMsg(co.WM_RBUTTONDOWN, func(p wmBase) uintptr {
+		userFunc(WmRButtonDown{wmBaseButton: wmBaseButton{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmRButtonUp struct{ wmBaseButton }
+
+func (me *windowDepotMsg) WmRButtonUp(userFunc func(p WmRButtonUp)) {
+	me.addMsg(co.WM_RBUTTONUP, func(p wmBase) uintptr {
+		userFunc(WmRButtonUp{wmBaseButton: wmBaseButton{base: wmBase(p)}})
+		return 0
+	})
+}
+
+//------------------------------------------------------------------------------
+
+type wmBaseChar struct{ base wmBase }
+
+func (p wmBaseChar) CharCode() uint16    { return uint16(p.base.WParam) }
+func (p wmBaseChar) RepeatCount() uint16 { return p.base.LParam.LoWord() }
+func (p wmBaseChar) ScanCode() uint8     { return p.base.LParam.LoByteHiWord() }
+func (p wmBaseChar) IsExtendedKey() bool { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
+func (p wmBaseChar) HasAltKey() bool     { return (p.base.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
+func (p wmBaseChar) IsKeyDownBeforeSend() bool {
+	return (p.base.LParam.HiByteHiWord() & 0b0100_0000) != 0
+}
+func (p wmBaseChar) KeyBeingReleased() bool { return (p.base.LParam.HiByteHiWord() & 0b1000_0000) != 0 }
+
+type WmChar struct{ wmBaseChar }
+
+func (me *windowDepotMsg) WmChar(userFunc func(p WmChar)) {
+	me.addMsg(co.WM_CHAR, func(p wmBase) uintptr {
+		userFunc(WmChar{wmBaseChar: wmBaseChar{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmDeadChar struct{ wmBaseChar }
+
+func (me *windowDepotMsg) WmDeadChar(userFunc func(p WmDeadChar)) {
+	me.addMsg(co.WM_DEADCHAR, func(p wmBase) uintptr {
+		userFunc(WmDeadChar{wmBaseChar: wmBaseChar{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmSysChar struct{ wmBaseChar }
+
+func (me *windowDepotMsg) WmSysChar(userFunc func(p WmSysChar)) {
+	me.addMsg(co.WM_SYSCHAR, func(p wmBase) uintptr {
+		userFunc(WmSysChar{wmBaseChar: wmBaseChar{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmSysDeadChar struct{ wmBaseChar }
+
+func (me *windowDepotMsg) WmSysDeadChar(userFunc func(p WmSysDeadChar)) {
+	me.addMsg(co.WM_SYSDEADCHAR, func(p wmBase) uintptr {
+		userFunc(WmSysDeadChar{wmBaseChar: wmBaseChar{base: wmBase(p)}})
+		return 0
+	})
+}
+
+//------------------------------------------------------------------------------
+
+type wmBaseVirtKey struct{ base wmBase }
+
+func (p wmBaseVirtKey) VirtualKeyCode() co.VK { return co.VK(p.base.WParam) }
+func (p wmBaseVirtKey) RepeatCount() uint16   { return p.base.LParam.LoWord() }
+func (p wmBaseVirtKey) ScanCode() uint8       { return p.base.LParam.LoByteHiWord() }
+func (p wmBaseVirtKey) IsExtendedKey() bool   { return (p.base.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
+func (p wmBaseVirtKey) HasAltKey() bool       { return (p.base.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
+func (p wmBaseVirtKey) IsKeyDownBeforeSend() bool {
+	return (p.base.LParam.HiByteHiWord() & 0b0100_0000) != 0
+}
+
+type WmKeyDown struct{ wmBaseVirtKey }
+
+func (me *windowDepotMsg) WmKeyDown(userFunc func(p WmKeyDown)) {
+	me.addMsg(co.WM_KEYDOWN, func(p wmBase) uintptr {
+		userFunc(WmKeyDown{wmBaseVirtKey: wmBaseVirtKey{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmKeyUp struct{ wmBaseVirtKey }
+
+func (me *windowDepotMsg) WmKeyUp(userFunc func(p WmKeyUp)) {
+	me.addMsg(co.WM_KEYUP, func(p wmBase) uintptr {
+		userFunc(WmKeyUp{wmBaseVirtKey: wmBaseVirtKey{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmSysKeyDown struct{ wmBaseVirtKey }
+
+func (me *windowDepotMsg) WmSysKeyDown(userFunc func(p WmSysKeyDown)) {
+	me.addMsg(co.WM_SYSKEYDOWN, func(p wmBase) uintptr {
+		userFunc(WmSysKeyDown{wmBaseVirtKey: wmBaseVirtKey{base: wmBase(p)}})
+		return 0
+	})
+}
+
+type WmSysKeyUp struct{ wmBaseVirtKey }
+
+func (me *windowDepotMsg) WmSysKeyUp(userFunc func(p WmSysKeyUp)) {
+	me.addMsg(co.WM_SYSKEYUP, func(p wmBase) uintptr {
+		userFunc(WmSysKeyUp{wmBaseVirtKey: wmBaseVirtKey{base: wmBase(p)}})
 		return 0
 	})
 }
