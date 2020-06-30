@@ -38,20 +38,11 @@ func CreateMenu() HMENU {
 	return HMENU(ret)
 }
 
-func (hMenu HMENU) DeleteMenuById(id co.ID) {
+func (hMenu HMENU) DeleteMenu(uPosition uintptr, uFlags co.MF) {
 	ret, _, lerr := syscall.Syscall(proc.DeleteMenu.Addr(), 3,
-		uintptr(hMenu), uintptr(id), uintptr(co.MF_BYCOMMAND))
+		uintptr(hMenu), uPosition, uintptr(uFlags))
 	if ret == 0 {
-		panic(fmt.Sprintf("DeleteMeny by ID failed: %d %s",
-			lerr, lerr.Error()))
-	}
-}
-
-func (hMenu HMENU) DeleteMenuByPos(index uint32) {
-	ret, _, lerr := syscall.Syscall(proc.DeleteMenu.Addr(), 3,
-		uintptr(hMenu), uintptr(index), uintptr(co.MF_BYPOSITION))
-	if ret == 0 {
-		panic(fmt.Sprintf("DeleteMeny by pos failed: %d %s",
+		panic(fmt.Sprintf("DeleteMenu failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -65,9 +56,9 @@ func (hMenu HMENU) DestroyMenu() {
 	}
 }
 
-func (hMenu HMENU) EnableMenuItem(uIDEnableItem uint32, uEnable co.MF) {
+func (hMenu HMENU) EnableMenuItem(uIDEnableItem uintptr, uEnable co.MF) {
 	syscall.Syscall(proc.EnableMenuItem.Addr(), 3,
-		uintptr(hMenu), uintptr(uIDEnableItem), uintptr(uEnable))
+		uintptr(hMenu), uIDEnableItem, uintptr(uEnable))
 }
 
 func (hMenu HMENU) GetMenuItemCount() uint32 {
@@ -97,26 +88,16 @@ func (hMenu HMENU) GetMenuItemID(index uint32) co.ID {
 	return co.ID(ret)
 }
 
-func (hMenu HMENU) GetMenuItemInfoById(id co.ID, mii *MENUITEMINFO) {
-	mii.CbSize = uint32(unsafe.Sizeof(*mii)) // safety
+func (hMenu HMENU) GetMenuItemInfo(item uintptr, fByPosition bool,
+	lpmii *MENUITEMINFO) {
+
+	lpmii.CbSize = uint32(unsafe.Sizeof(*lpmii)) // safety
 
 	ret, _, lerr := syscall.Syscall6(proc.GetMenuItemInfo.Addr(), 4,
-		uintptr(hMenu), uintptr(id), 0, uintptr(unsafe.Pointer(mii)),
-		0, 0)
+		uintptr(hMenu), item, boolToUintptr(fByPosition),
+		uintptr(unsafe.Pointer(lpmii)), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("GetMenuItemInfo by ID failed: %d %s",
-			lerr, lerr.Error()))
-	}
-}
-
-func (hMenu HMENU) GetMenuItemInfoByPos(index uint32, mii *MENUITEMINFO) {
-	mii.CbSize = uint32(unsafe.Sizeof(*mii)) // safety
-
-	ret, _, lerr := syscall.Syscall6(proc.GetMenuItemInfo.Addr(), 4,
-		uintptr(hMenu), uintptr(index), 1, uintptr(unsafe.Pointer(mii)),
-		0, 0)
-	if ret == 0 {
-		panic(fmt.Sprintf("GetMenuItemInfo by pos failed: %d %s",
+		panic(fmt.Sprintf("GetMenuItemInfo failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
@@ -127,26 +108,16 @@ func (hMenu HMENU) GetSubMenu(nPos uint32) HMENU {
 	return HMENU(ret)
 }
 
-func (hMenu HMENU) SetMenuItemInfoById(id co.ID, mii *MENUITEMINFO) {
-	mii.CbSize = uint32(unsafe.Sizeof(*mii)) // safety
+func (hMenu HMENU) SetMenuItemInfo(item uintptr, fByPosition bool,
+	lpmii *MENUITEMINFO) {
+
+	lpmii.CbSize = uint32(unsafe.Sizeof(*lpmii)) // safety
 
 	ret, _, lerr := syscall.Syscall6(proc.SetMenuItemInfo.Addr(), 4,
-		uintptr(hMenu), uintptr(id), 0, uintptr(unsafe.Pointer(mii)),
-		0, 0)
+		uintptr(hMenu), item, boolToUintptr(fByPosition),
+		uintptr(unsafe.Pointer(lpmii)), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SetMenuItemInfo by ID failed: %d %s",
-			lerr, lerr.Error()))
-	}
-}
-
-func (hMenu HMENU) SetMenuItemInfoByPos(index uint32, mii *MENUITEMINFO) {
-	mii.CbSize = uint32(unsafe.Sizeof(*mii)) // safety
-
-	ret, _, lerr := syscall.Syscall6(proc.SetMenuItemInfo.Addr(), 4,
-		uintptr(hMenu), uintptr(index), 1, uintptr(unsafe.Pointer(mii)),
-		0, 0)
-	if ret == 0 {
-		panic(fmt.Sprintf("SetMenuItemInfo by pos failed: %d %s",
+		panic(fmt.Sprintf("SetMenuItemInfo failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }

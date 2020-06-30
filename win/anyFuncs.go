@@ -68,6 +68,17 @@ func InitCommonControls() {
 		0, 0, 0)
 }
 
+func GetCursorPos() POINT {
+	ptBuf := POINT{}
+	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
+		uintptr(unsafe.Pointer(&ptBuf)), 0, 0)
+	if ret == 0 {
+		panic(fmt.Sprintf("GetCursorPos failed: %d %s",
+			lerr, lerr.Error()))
+	}
+	return ptBuf
+}
+
 // Available in Windows 10, version 1607.
 func GetDpiForSystem() uint32 {
 	ret, _, _ := syscall.Syscall(proc.GetDpiForSystem.Addr(), 0,
