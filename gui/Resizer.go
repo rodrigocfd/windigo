@@ -12,19 +12,19 @@ import (
 )
 
 // Action to be done when resizing occurs.
-type ResizerDo uint8
+type RESZ uint8
 
 const (
-	ResizerDo_Repos  ResizerDo = iota // Move left/top coordinates of the control.
-	ResizerDo_Resize                  // Increase or decrease width/height.
-	ResizerDo_Nothing
+	RESZ_REPOS  RESZ = iota // Move left/top coordinates of the control.
+	RESZ_RESIZE             // Increase or decrease width/height.
+	RESZ_NOTHING
 )
 
 type ctrl struct {
 	hChild Control
 	rcOrig win.RECT
-	doHorz ResizerDo
-	doVert ResizerDo
+	doHorz RESZ
+	doVert RESZ
 }
 
 type Resizer struct {
@@ -32,7 +32,7 @@ type Resizer struct {
 	szOrig win.SIZE
 }
 
-func (me *Resizer) Add(hCtrl Control, doHorz, doVert ResizerDo) *Resizer {
+func (me *Resizer) Add(hCtrl Control, doHorz, doVert RESZ) *Resizer {
 	hParent := hCtrl.Hwnd().GetParent()
 	if len(me.ctrls) == 0 { // first control being added
 		rc := hParent.GetClientRect()
@@ -50,9 +50,7 @@ func (me *Resizer) Add(hCtrl Control, doHorz, doVert ResizerDo) *Resizer {
 	return me
 }
 
-func (me *Resizer) AddMany(hCtrls []Control,
-	doHorz, doVert ResizerDo) *Resizer {
-
+func (me *Resizer) AddMany(hCtrls []Control, doHorz, doVert RESZ) *Resizer {
 	for i := range hCtrls {
 		me.Add(hCtrls[i], doHorz, doVert)
 	}
@@ -71,36 +69,36 @@ func (me *Resizer) Adjust(p WmSize) {
 		c := me.ctrls[i]
 
 		uFlags := co.SWP_NOZORDER
-		if c.doHorz == ResizerDo_Repos && c.doVert == ResizerDo_Repos { // repos both horz and vert
+		if c.doHorz == RESZ_REPOS && c.doVert == RESZ_REPOS { // repos both horz and vert
 			uFlags |= co.SWP_NOSIZE
-		} else if c.doHorz == ResizerDo_Resize && c.doVert == ResizerDo_Resize { // resize both horz and vert
+		} else if c.doHorz == RESZ_RESIZE && c.doVert == RESZ_RESIZE { // resize both horz and vert
 			uFlags |= co.SWP_NOMOVE
 		}
 
 		szParent := p.ClientAreaSize()
 		x := func() int32 {
-			if c.doHorz == ResizerDo_Repos {
+			if c.doHorz == RESZ_REPOS {
 				return szParent.Cx - me.szOrig.Cx + c.rcOrig.Left
 			} else {
 				return c.rcOrig.Left // keep original pos
 			}
 		}()
 		y := func() int32 {
-			if c.doVert == ResizerDo_Repos {
+			if c.doVert == RESZ_REPOS {
 				return szParent.Cy - me.szOrig.Cy + c.rcOrig.Top
 			} else {
 				return c.rcOrig.Top // keep original pos
 			}
 		}()
 		cx := func() uint32 {
-			if c.doHorz == ResizerDo_Resize {
+			if c.doHorz == RESZ_RESIZE {
 				return uint32(szParent.Cx - me.szOrig.Cx + c.rcOrig.Right - c.rcOrig.Left)
 			} else {
 				return uint32(c.rcOrig.Right - c.rcOrig.Left) // keep original width
 			}
 		}()
 		cy := func() uint32 {
-			if c.doVert == ResizerDo_Resize {
+			if c.doVert == RESZ_RESIZE {
 				return uint32(szParent.Cy - me.szOrig.Cy + c.rcOrig.Bottom - c.rcOrig.Top)
 			} else {
 				return uint32(c.rcOrig.Bottom - c.rcOrig.Top) // keep original height
