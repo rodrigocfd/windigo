@@ -9,6 +9,7 @@ package gui
 import (
 	"unsafe"
 	"wingows/co"
+	"wingows/gui/wm"
 	"wingows/win"
 )
 
@@ -52,8 +53,8 @@ func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32)
 }
 
 func (me *WindowControl) defaultMessageHandling() {
-	me.windowBase.OnMsg().WmNcPaint(func(p WmNcPaint) {
-		me.Hwnd().DefWindowProc(co.WM_NCPAINT, p.base.WParam, p.base.LParam) // make system draw the scrollbar for us
+	me.windowBase.OnMsg().WmNcPaint(func(p wm.NcPaint) {
+		me.Hwnd().DefWindowProc(co.WM_NCPAINT, p.WParam, p.LParam) // make system draw the scrollbar for us
 
 		if (me.Hwnd().GetExStyle()&co.WS_EX_CLIENTEDGE) == 0 || // has no border
 			!win.IsThemeActive() ||

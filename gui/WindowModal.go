@@ -9,6 +9,7 @@ package gui
 import (
 	"unsafe"
 	"wingows/co"
+	"wingows/gui/wm"
 	"wingows/win"
 )
 
@@ -60,7 +61,7 @@ func (me *WindowModal) Show(parent Window) {
 }
 
 func (me *WindowModal) defaultMessageHandling() {
-	me.windowBase.OnMsg().WmSetFocus(func(p WmSetFocus) {
+	me.windowBase.OnMsg().WmSetFocus(func(p wm.SetFocus) {
 		if me.windowBase.Hwnd() == win.GetFocus() {
 			// If window receive focus, delegate to first child.
 			// This also happens right after the modal is created.
