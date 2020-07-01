@@ -28,6 +28,7 @@ func makeCtrlIdGuard(initialId co.ID) controlIdGuard {
 }
 
 // Returns the ID of this child window control.
+// Will be initialized upon first call.
 func (me *controlIdGuard) Id() co.ID {
 	if me.id == 0 { // not initialized yet?
 		globalBaseCtrlId++ // increments sequential global ID

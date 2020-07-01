@@ -123,14 +123,5 @@ func GetCheckedRadio(radios []RadioButton) int32 {
 			return int32(i)
 		}
 	}
-	return -1 // no checked one
-}
-
-// Simple utility conversion; useful with Resizer.
-func RadioButtonAsControl(radios []RadioButton) []Control {
-	ctrls := make([]Control, 0, len(radios))
-	for i := range radios {
-		ctrls = append(ctrls, &radios[i])
-	}
-	return ctrls
+	return -1
 }

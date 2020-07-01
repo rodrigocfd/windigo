@@ -33,8 +33,8 @@ type Resizer struct {
 	szOrig win.SIZE
 }
 
-func (me *Resizer) Add(hCtrl Control, doHorz, doVert RESZ) *Resizer {
-	hParent := hCtrl.Hwnd().GetParent()
+func (me *Resizer) Add(child Control, doHorz, doVert RESZ) *Resizer {
+	hParent := child.Hwnd().GetParent()
 	if len(me.ctrls) == 0 { // first control being added
 		rc := hParent.GetClientRect()
 		me.szOrig.Cx = rc.Right
@@ -42,8 +42,8 @@ func (me *Resizer) Add(hCtrl Control, doHorz, doVert RESZ) *Resizer {
 	}
 
 	me.ctrls = append(me.ctrls, ctrl{
-		hChild: hCtrl,
-		rcOrig: *hCtrl.Hwnd().GetWindowRect(),
+		hChild: child,
+		rcOrig: *child.Hwnd().GetWindowRect(),
 		doHorz: doHorz,
 		doVert: doVert,
 	})
@@ -51,13 +51,23 @@ func (me *Resizer) Add(hCtrl Control, doHorz, doVert RESZ) *Resizer {
 	return me
 }
 
-func (me *Resizer) AddMany(hCtrls []Control, doHorz, doVert RESZ) *Resizer {
-	for i := range hCtrls {
-		me.Add(hCtrls[i], doHorz, doVert)
+func (me *Resizer) AddMany(children []Control, doHorz, doVert RESZ) *Resizer {
+	for _, child := range children {
+		me.Add(child, doHorz, doVert)
 	}
 	return me
 }
 
+func (me *Resizer) AddRadioButtons(radios []RadioButton,
+	doHorz, doVert RESZ) *Resizer {
+
+	for i := range radios {
+		me.Add(&radios[i], doHorz, doVert)
+	}
+	return me
+}
+
+// Call during WM_SIZE processing.
 func (me *Resizer) Adjust(p wm.Size) {
 	if len(me.ctrls) == 0 || p.Request() == co.SIZE_MINIMIZED {
 		return // no need to resize if window is minimized
