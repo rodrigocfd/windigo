@@ -4,7 +4,7 @@
  * This library is released under the MIT license.
  */
 
-package ui
+package gui
 
 import (
 	"fmt"
