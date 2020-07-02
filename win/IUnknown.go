@@ -25,6 +25,30 @@ type iUnknownVtbl struct {
 	Release        uintptr
 }
 
+func (v *IUnknown) queryInterface(iid *co.GUID) *IUnknown {
+	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(v.lpVtbl))
+	iidFlip := cloneFlipLastUint64(iid)
+	retIUnk := &IUnknown{}
+
+	ret, _, _ := syscall.Syscall(lpVtbl.AddRef, 3,
+		uintptr(unsafe.Pointer(v)), uintptr(unsafe.Pointer(&iidFlip)),
+		uintptr(unsafe.Pointer(&retIUnk)))
+
+	if co.ERROR(ret) != co.ERROR_S_OK {
+		lerr := syscall.Errno(ret)
+		panic(fmt.Sprintf("IUnknown.QueryInterface failed: %d %s",
+			lerr, lerr.Error()))
+	}
+	return retIUnk
+}
+
+func (v *IUnknown) AddRef() uint32 {
+	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(v.lpVtbl))
+	ret, _, _ := syscall.Syscall(lpVtbl.AddRef, 1,
+		uintptr(unsafe.Pointer(v)), 0, 0)
+	return uint32(ret)
+}
+
 func (v *IUnknown) Release() uint32 {
 	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(v.lpVtbl))
 	ret, _, _ := syscall.Syscall(lpVtbl.Release, 1,
@@ -39,20 +63,8 @@ func coCreateInstance(clsid *co.GUID, iid *co.GUID) *IUnknown {
 		iid = &co.Guid_IUnknown
 	}
 
-	// Returns a new GUID with the last uint64 member bytes flipped.
-	// This is better than having a makeGuid() function being called to
-	// initialize all the GUIDs with correct by order, or even having to flip
-	// them manually on each global declaration.
-	flipLastUint64 := func(guid *co.GUID) co.GUID {
-		buf64 := [8]byte{}
-		binary.BigEndian.PutUint64(buf64[:], guid.Data4)
-		guidCopy := *guid
-		guidCopy.Data4 = binary.LittleEndian.Uint64(buf64[:])
-		return guidCopy
-	}
-
-	clsidFlip := flipLastUint64(clsid)
-	iidFlip := flipLastUint64(iid)
+	clsidFlip := cloneFlipLastUint64(clsid)
+	iidFlip := cloneFlipLastUint64(iid)
 	retIUnk := &IUnknown{}
 
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
@@ -66,4 +78,16 @@ func coCreateInstance(clsid *co.GUID, iid *co.GUID) *IUnknown {
 			lerr, lerr.Error()))
 	}
 	return retIUnk
+}
+
+// Returns a new GUID with the last uint64 member bytes flipped.
+// This is better than having a makeGuid() function being called to initialize
+// all the GUIDs with correct by order, or even having to flip them manually on
+// each global declaration.
+func cloneFlipLastUint64(guid *co.GUID) co.GUID {
+	buf64 := [8]byte{}
+	binary.BigEndian.PutUint64(buf64[:], guid.Data4)
+	guidCopy := *guid
+	guidCopy.Data4 = binary.LittleEndian.Uint64(buf64[:])
+	return guidCopy
 }
