@@ -4,14 +4,12 @@
  * This library is released under the MIT license.
  */
 
-package com
+package win
 
 import (
 	"syscall"
 	"unsafe"
 )
-
-var Guid_IUnknown = makeGuid(0x00000000, 0x0000, 0x0000, 0xC000000000000046)
 
 type IUnknown struct {
 	lpVtbl *iUnknownVtbl

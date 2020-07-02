@@ -63,6 +63,37 @@ func LoByte(value uint16) uint8 {
 
 //------------------------------------------------------------------------------
 
+func CoCreateInstance(clsid *co.GUID, iid *co.GUID) *IUnknown {
+	if iid == nil {
+		iid = &co.Guid_IUnknown
+	}
+	unk := &IUnknown{}
+	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
+		uintptr(unsafe.Pointer(clsid)), 0, uintptr(co.CLSCTX_INPROC_SERVER),
+		uintptr(unsafe.Pointer(iid)), uintptr(unsafe.Pointer(&unk)), 0)
+
+	if co.ERROR(ret) != co.ERROR_S_OK {
+		lerr := syscall.Errno(ret)
+		panic(fmt.Sprintf("CoCreateInstance failed: %d %s",
+			lerr, lerr.Error()))
+	}
+	return unk
+}
+
+func CoInitializeEx(dwCoInit co.COINIT) {
+	ret, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
+		0, uintptr(dwCoInit), 0)
+	if co.ERROR(ret) != co.ERROR_S_OK && co.ERROR(ret) != co.ERROR_S_FALSE {
+		lerr := syscall.Errno(ret)
+		panic(fmt.Sprintf("CoInitializeEx failed: %d %s",
+			lerr, lerr.Error()))
+	}
+}
+
+func CoUninitialize() {
+	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)
+}
+
 func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
 }
