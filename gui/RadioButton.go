@@ -19,7 +19,7 @@ type RadioButton struct {
 }
 
 // Optional; returns a RadioButton with a specific control ID.
-func MakeRadioButton(ctrlId co.ID) RadioButton {
+func MakeRadioButton(ctrlId int32) RadioButton {
 	return RadioButton{
 		controlNativeBase: makeNativeControlBase(ctrlId),
 	}

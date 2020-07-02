@@ -18,7 +18,7 @@ type Button struct {
 }
 
 // Optional; returns a Button with a specific control ID.
-func MakeButton(ctrlId co.ID) Button {
+func MakeButton(ctrlId int32) Button {
 	return Button{
 		controlNativeBase: makeNativeControlBase(ctrlId),
 	}

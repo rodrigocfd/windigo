@@ -19,7 +19,7 @@ type CheckBox struct {
 }
 
 // Optional; returns a CheckBox with a specific control ID.
-func MakeCheckBox(ctrlId co.ID) CheckBox {
+func MakeCheckBox(ctrlId int32) CheckBox {
 	return CheckBox{
 		controlNativeBase: makeNativeControlBase(ctrlId),
 	}

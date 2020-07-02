@@ -51,9 +51,9 @@ type Command struct{ Base }
 func (p Command) IsFromMenu() bool         { return p.WParam.HiWord() == 0 }
 func (p Command) IsFromAccelerator() bool  { return p.WParam.HiWord() == 1 }
 func (p Command) IsFromControl() bool      { return !p.IsFromMenu() && !p.IsFromAccelerator() }
-func (p Command) MenuId() co.ID            { return p.ControlId() }
-func (p Command) AcceleratorId() co.ID     { return p.ControlId() }
-func (p Command) ControlId() co.ID         { return co.ID(p.WParam.LoWord()) }
+func (p Command) MenuId() int32            { return p.ControlId() }
+func (p Command) AcceleratorId() int32     { return p.ControlId() }
+func (p Command) ControlId() int32         { return int32(p.WParam.LoWord()) }
 func (p Command) ControlNotifCode() uint16 { return p.WParam.HiWord() }
 func (p Command) ControlHwnd() win.HWND    { return win.HWND(p.LParam) }
 

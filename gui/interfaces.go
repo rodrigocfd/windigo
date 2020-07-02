@@ -7,14 +7,13 @@
 package gui
 
 import (
-	"wingows/co"
 	"wingows/win"
 )
 
 // Any child control with HWND and ID.
 type Control interface {
 	Window
-	Id() co.ID
+	Id() int32
 }
 
 // Any window with a HWND handle.

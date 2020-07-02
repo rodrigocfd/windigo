@@ -22,7 +22,7 @@ type ListView struct {
 }
 
 // Optional; returns a ListView with a specific control ID.
-func MakeListView(ctrlId co.ID) ListView {
+func MakeListView(ctrlId int32) ListView {
 	return ListView{
 		controlNativeBase: makeNativeControlBase(ctrlId),
 	}

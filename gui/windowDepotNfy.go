@@ -14,7 +14,7 @@ import (
 )
 
 type nfyHash struct { // custom hash for WM_NOTIFY messages
-	IdFrom co.ID
+	IdFrom int32
 	Code   co.NM
 }
 
@@ -23,7 +23,7 @@ type windowDepotNfy struct {
 	mapNfys map[nfyHash]func(p wm.Notify) uintptr
 }
 
-func (me *windowDepotNfy) addNfy(idFrom co.ID, code co.NM,
+func (me *windowDepotNfy) addNfy(idFrom int32, code co.NM,
 	userFunc func(p wm.Notify) uintptr) {
 
 	if me.mapNfys == nil { // guard
@@ -36,7 +36,7 @@ func (me *windowDepotNfy) processMessage(msg co.WM, p wm.Base) (uintptr, bool) {
 	if msg == co.WM_NOTIFY {
 		pNfy := wm.Notify{Base: p}
 		hash := nfyHash{
-			IdFrom: co.ID(pNfy.NmHdr().IdFrom),
+			IdFrom: int32(pNfy.NmHdr().IdFrom),
 			Code:   co.NM(pNfy.NmHdr().Code),
 		}
 		if userFunc, hasNfy := me.mapNfys[hash]; hasNfy {

@@ -30,7 +30,7 @@ type controlNativeBase struct {
 	subclassId uint32
 }
 
-func makeNativeControlBase(ctrlId co.ID) controlNativeBase {
+func makeNativeControlBase(ctrlId int32) controlNativeBase {
 	return controlNativeBase{
 		controlIdGuard: makeCtrlIdGuard(ctrlId),
 	}

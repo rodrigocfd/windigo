@@ -82,10 +82,10 @@ func (hMenu HMENU) GetMenuInfo(mi *MENUINFO) {
 	}
 }
 
-func (hMenu HMENU) GetMenuItemID(index uint32) co.ID {
+func (hMenu HMENU) GetMenuItemID(index uint32) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetMenuItemID.Addr(), 2,
 		uintptr(hMenu), uintptr(index), 0)
-	return co.ID(ret)
+	return int32(ret)
 }
 
 func (hMenu HMENU) GetMenuItemInfo(item uintptr, fByPosition bool,

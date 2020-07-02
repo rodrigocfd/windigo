@@ -22,7 +22,7 @@ type WindowControl struct {
 }
 
 // Optional; returns a WindowControl with a specific control ID.
-func MakeWindowControl(ctrlId co.ID) WindowControl {
+func MakeWindowControl(ctrlId int32) WindowControl {
 	return WindowControl{
 		controlIdGuard: makeCtrlIdGuard(ctrlId),
 	}

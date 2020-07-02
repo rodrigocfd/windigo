@@ -124,7 +124,7 @@ func (hWnd HWND) GetDC() HDC {
 	return HDC(ret)
 }
 
-func (hWnd HWND) GetDlgItem(nIDDlgItem co.ID) HWND {
+func (hWnd HWND) GetDlgItem(nIDDlgItem int32) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetDlgItem.Addr(), 2,
 		uintptr(hWnd), uintptr(nIDDlgItem), 0)
 	if ret == 0 {
@@ -269,7 +269,7 @@ func (hWnd HWND) IsDialogMessage(msg *MSG) bool {
 	return ret != 0
 }
 
-func (hWnd HWND) IsDlgButtonChecked(nIDButton co.ID) co.BST {
+func (hWnd HWND) IsDlgButtonChecked(nIDButton int32) co.BST {
 	ret, _, _ := syscall.Syscall(proc.IsDlgButtonChecked.Addr(), 2,
 		uintptr(hWnd), uintptr(nIDButton), 0)
 	return co.BST(ret)
@@ -300,13 +300,13 @@ func (hWnd HWND) MenuItemFromPoint(hMenu HMENU, ptScreen POINT) int32 {
 	return int32(ret)
 }
 
-func (hWnd HWND) MessageBox(message, caption string, flags co.MB) co.ID {
+func (hWnd HWND) MessageBox(message, caption string, flags co.MB) co.MBID {
 	ret, _, _ := syscall.Syscall6(proc.MessageBox.Addr(), 4,
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(StrToUtf16Ptr(message))),
 		uintptr(unsafe.Pointer(StrToUtf16Ptr(caption))),
 		uintptr(flags), 0, 0)
-	return co.ID(ret)
+	return co.MBID(ret)
 }
 
 func (hWnd HWND) ReleaseDC(hdc HDC) int32 {

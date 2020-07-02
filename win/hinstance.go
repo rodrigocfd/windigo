@@ -57,7 +57,7 @@ func (hInst HINSTANCE) LoadIcon(lpIconName co.IDI) HICON {
 	return HICON(ret)
 }
 
-func (hInst HINSTANCE) LoadMenu(lpMenuName co.ID) HMENU {
+func (hInst HINSTANCE) LoadMenu(lpMenuName int32) HMENU {
 	ret, _, lerr := syscall.Syscall(proc.LoadMenu.Addr(), 2,
 		uintptr(hInst), uintptr(lpMenuName), 0)
 	if ret == 0 {

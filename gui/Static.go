@@ -18,7 +18,7 @@ type Static struct {
 }
 
 // Optional; returns a Static control with a specific control ID.
-func MakeStatic(ctrlId co.ID) Static {
+func MakeStatic(ctrlId int32) Static {
 	return Static{
 		controlNativeBase: makeNativeControlBase(ctrlId),
 	}

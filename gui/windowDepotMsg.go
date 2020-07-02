@@ -14,7 +14,7 @@ import (
 // Keeps all user message handlers.
 type windowDepotMsg struct {
 	mapMsgs map[co.WM]func(p wm.Base) uintptr
-	mapCmds map[co.ID]func(p wm.Command)
+	mapCmds map[int32]func(p wm.Command)
 }
 
 func (me *windowDepotMsg) addMsg(msg co.WM, userFunc func(p wm.Base) uintptr) {
@@ -24,9 +24,9 @@ func (me *windowDepotMsg) addMsg(msg co.WM, userFunc func(p wm.Base) uintptr) {
 	me.mapMsgs[msg] = userFunc
 }
 
-func (me *windowDepotMsg) addCmd(cmd co.ID, userFunc func(p wm.Command)) {
+func (me *windowDepotMsg) addCmd(cmd int32, userFunc func(p wm.Command)) {
 	if me.mapCmds == nil { // guard
-		me.mapCmds = make(map[co.ID]func(p wm.Command), 16) // arbitrary capacity
+		me.mapCmds = make(map[int32]func(p wm.Command), 16) // arbitrary capacity
 	}
 	me.mapCmds[cmd] = userFunc
 }
@@ -86,7 +86,7 @@ func (me *windowDepotMsg) WmClose(userFunc func()) {
 	})
 }
 
-func (me *windowDepotMsg) WmCommand(cmd co.ID, userFunc func(p wm.Command)) {
+func (me *windowDepotMsg) WmCommand(cmd int32, userFunc func(p wm.Command)) {
 	me.addCmd(cmd, userFunc)
 }
 

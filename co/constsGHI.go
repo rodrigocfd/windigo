@@ -128,21 +128,18 @@ const (
 	HKEY_CURRENT_USER_LOCAL_SETTINGS HKEY = 0x80000007
 )
 
-type ID uint16 // dialog box command ID
+type MBID int32 // MessageBox return
 
 const (
-	IDOK       ID = 1
-	IDCANCEL   ID = 2
-	IDABORT    ID = 3
-	IDRETRY    ID = 4
-	IDIGNORE   ID = 5
-	IDYES      ID = 6
-	IDNO       ID = 7
-	IDCLOSE    ID = 8
-	IDHELP     ID = 9
-	IDTRYAGAIN ID = 10
-	IDCONTINUE ID = 11
-	IDTIMEOUT  ID = 32000
+	IDOK       MBID = 1
+	IDCANCEL   MBID = 2
+	IDABORT    MBID = 3
+	IDRETRY    MBID = 4
+	IDIGNORE   MBID = 5
+	IDYES      MBID = 6
+	IDNO       MBID = 7
+	IDTRYAGAIN MBID = 10
+	IDCONTINUE MBID = 11
 )
 
 type IDC uintptr // LoadCursor lpCursorName
