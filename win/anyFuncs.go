@@ -7,6 +7,7 @@
 package win
 
 import (
+	"encoding/binary"
 	"fmt"
 	"syscall"
 	"unsafe"
@@ -67,17 +68,34 @@ func CoCreateInstance(clsid *co.GUID, iid *co.GUID) *IUnknown {
 	if iid == nil {
 		iid = &co.Guid_IUnknown
 	}
-	unk := &IUnknown{}
+
+	// Returns a new GUID with the last uint64 member bytes flipped.
+	// This is better than having a makeGuid() function being called to
+	// initialize all the GUIDs with correct by order, or even having to flip
+	// them manually on each global declaration.
+	flipLastUint64 := func(guid *co.GUID) co.GUID {
+		buf64 := [8]byte{}
+		binary.BigEndian.PutUint64(buf64[:], guid.Data4)
+		guidCopy := *guid
+		guidCopy.Data4 = binary.LittleEndian.Uint64(buf64[:])
+		return guidCopy
+	}
+
+	clsidFlip := flipLastUint64(clsid)
+	iidFlip := flipLastUint64(iid)
+	retIUnk := &IUnknown{}
+
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
-		uintptr(unsafe.Pointer(clsid)), 0, uintptr(co.CLSCTX_INPROC_SERVER),
-		uintptr(unsafe.Pointer(iid)), uintptr(unsafe.Pointer(&unk)), 0)
+		uintptr(unsafe.Pointer(&clsidFlip)), 0,
+		uintptr(co.CLSCTX_INPROC_SERVER),
+		uintptr(unsafe.Pointer(&iidFlip)), uintptr(unsafe.Pointer(&retIUnk)), 0)
 
 	if co.ERROR(ret) != co.ERROR_S_OK {
 		lerr := syscall.Errno(ret)
 		panic(fmt.Sprintf("CoCreateInstance failed: %d %s",
 			lerr, lerr.Error()))
 	}
-	return unk
+	return retIUnk
 }
 
 func CoInitializeEx(dwCoInit co.COINIT) {
