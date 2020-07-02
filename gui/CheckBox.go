@@ -45,7 +45,7 @@ func (me *CheckBox) Create(parent Window, x, y int32, width, height uint32,
 func (me *CheckBox) CreateThreeState(parent Window, x, y int32,
 	text string) *CheckBox {
 
-	return me.createBase(parent, x, y, text, co.BS_AUTO3STATE)
+	return me.createAutoSize(parent, x, y, text, co.BS_AUTO3STATE)
 }
 
 // Calls CreateWindowEx(). Creates a check box with BS_AUTOCHECKBOX style.
@@ -54,7 +54,7 @@ func (me *CheckBox) CreateThreeState(parent Window, x, y int32,
 func (me *CheckBox) CreateTwoState(parent Window, x, y int32,
 	text string) *CheckBox {
 
-	return me.createBase(parent, x, y, text, co.BS_AUTOCHECKBOX)
+	return me.createAutoSize(parent, x, y, text, co.BS_AUTOCHECKBOX)
 }
 
 func (me *CheckBox) IsChecked() bool {
@@ -75,8 +75,7 @@ func (me *CheckBox) SetState(state co.BST) *CheckBox {
 // SetWindowText() doesn't resize the control to fit the text. This method
 // resizes the control to fit the text exactly.
 func (me *CheckBox) SetText(text string) *CheckBox {
-	cx, cy := me.calcCheckBoxIdealSize(me.Hwnd().GetParent(), text)
-
+	cx, cy := me.calcIdealSize(me.Hwnd().GetParent(), text)
 	me.Hwnd().SetWindowPos(co.SWP_HWND(0), 0, 0, cx, cy,
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
@@ -96,10 +95,10 @@ func (me *CheckBox) Text() string {
 	return removeAccelAmpersands(me.Hwnd().GetWindowText())
 }
 
-func (me *CheckBox) calcCheckBoxIdealSize(hReferenceDc win.HWND,
+func (me *CheckBox) calcIdealSize(hReferenceDc win.HWND,
 	text string) (uint32, uint32) {
 
-	cx, cy := calcIdealSize(hReferenceDc, text, true)
+	cx, cy := calcTextBoundBox(hReferenceDc, text, true)
 	cx += uint32(win.GetSystemMetrics(co.SM_CXMENUCHECK)) +
 		uint32(win.GetSystemMetrics(co.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
 
@@ -111,11 +110,11 @@ func (me *CheckBox) calcCheckBoxIdealSize(hReferenceDc win.HWND,
 	return cx, cy
 }
 
-func (me *CheckBox) createBase(parent Window, x, y int32,
+func (me *CheckBox) createAutoSize(parent Window, x, y int32,
 	text string, chbxStyles co.BS) *CheckBox {
 
 	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
-	cx, cy := me.calcCheckBoxIdealSize(parent.Hwnd(), text)
+	cx, cy := me.calcIdealSize(parent.Hwnd(), text)
 
 	me.controlNativeBase.create(co.WS_EX(0), "BUTTON", text,
 		co.WS_CHILD|co.WS_TABSTOP|co.WS_GROUP|co.WS_VISIBLE|co.WS(chbxStyles),

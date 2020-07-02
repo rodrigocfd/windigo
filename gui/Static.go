@@ -42,7 +42,7 @@ func (me *Static) Create(parent Window, x, y int32, width, height uint32,
 // The size will be calculated to fit the text exactly.
 func (me *Static) CreateLText(parent Window, x, y int32, text string) *Static {
 	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
-	cx, cy := calcIdealSize(parent.Hwnd(), text, true)
+	cx, cy := calcTextBoundBox(parent.Hwnd(), text, true)
 
 	me.controlNativeBase.create(co.WS_EX(0), "STATIC", text,
 		co.WS_CHILD|co.WS_VISIBLE|co.WS(co.SS_LEFT),
@@ -54,7 +54,7 @@ func (me *Static) CreateLText(parent Window, x, y int32, text string) *Static {
 // Sets the text and resizes the control to fit the text exactly.
 func (me *Static) SetText(text string) {
 	hasAccel := (co.SS(me.Hwnd().GetStyle()) & co.SS_NOPREFIX) == 0
-	cx, cy := calcIdealSize(me.Hwnd().GetParent(), text, hasAccel)
+	cx, cy := calcTextBoundBox(me.Hwnd().GetParent(), text, hasAccel)
 
 	me.Hwnd().SetWindowPos(co.SWP_HWND(0), 0, 0, cx, cy,
 		co.SWP_NOZORDER|co.SWP_NOMOVE)

@@ -45,7 +45,7 @@ func (me *RadioButton) Create(parent Window, x, y int32, width, height uint32,
 func (me *RadioButton) CreateFirst(parent Window, x, y int32,
 	text string) *RadioButton {
 
-	return me.createBase(parent, x, y, text,
+	return me.createAutoSize(parent, x, y, text,
 		co.WS_GROUP|co.WS_TABSTOP|co.WS(co.BS_AUTORADIOBUTTON))
 }
 
@@ -55,7 +55,7 @@ func (me *RadioButton) CreateFirst(parent Window, x, y int32,
 func (me *RadioButton) CreateSubsequent(parent Window, x, y int32,
 	text string) *RadioButton {
 
-	return me.createBase(parent, x, y, text, co.WS(co.BS_AUTORADIOBUTTON))
+	return me.createAutoSize(parent, x, y, text, co.WS(co.BS_AUTORADIOBUTTON))
 }
 
 func (me *RadioButton) IsChecked() bool {
@@ -72,8 +72,7 @@ func (me *RadioButton) SetCheck() *RadioButton {
 // SetWindowText() doesn't resize the control to fit the text. This method
 // resizes the control to fit the text exactly.
 func (me *RadioButton) SetText(text string) *RadioButton {
-	cx, cy := me.calcRadioButtonIdealSize(me.Hwnd().GetParent(), text)
-
+	cx, cy := me.calcIdealSize(me.Hwnd().GetParent(), text)
 	me.Hwnd().SetWindowPos(co.SWP_HWND(0), 0, 0, cx, cy,
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
@@ -87,10 +86,10 @@ func (me *RadioButton) Text() string {
 	return removeAccelAmpersands(me.Hwnd().GetWindowText())
 }
 
-func (me *RadioButton) calcRadioButtonIdealSize(hReferenceDc win.HWND,
+func (me *RadioButton) calcIdealSize(hReferenceDc win.HWND,
 	text string) (uint32, uint32) {
 
-	cx, cy := calcIdealSize(hReferenceDc, text, true)
+	cx, cy := calcTextBoundBox(hReferenceDc, text, true)
 	cx += uint32(win.GetSystemMetrics(co.SM_CXMENUCHECK)) +
 		uint32(win.GetSystemMetrics(co.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
 
@@ -102,11 +101,11 @@ func (me *RadioButton) calcRadioButtonIdealSize(hReferenceDc win.HWND,
 	return cx, cy
 }
 
-func (me *RadioButton) createBase(parent Window, x, y int32,
+func (me *RadioButton) createAutoSize(parent Window, x, y int32,
 	text string, otherStyles co.WS) *RadioButton {
 
 	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
-	cx, cy := me.calcRadioButtonIdealSize(parent.Hwnd(), text)
+	cx, cy := me.calcIdealSize(parent.Hwnd(), text)
 
 	me.controlNativeBase.create(co.WS_EX(0), "BUTTON", text,
 		co.WS_CHILD|co.WS_VISIBLE|otherStyles,

@@ -108,7 +108,7 @@ func subclassProc(hwnd win.HWND, msg co.WM,
 }
 
 // Calculates the bound rectangle to fit the text with current system font.
-func calcIdealSize(hReferenceDc win.HWND, text string,
+func calcTextBoundBox(hReferenceDc win.HWND, text string,
 	considerAccelerators bool) (uint32, uint32) {
 
 	isTextEmpty := false
