@@ -51,55 +51,43 @@ func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32,
 
 func IsWindows10OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(
-			HiByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
-		uint32(
-			LoByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
+		uint32(hiByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
+		uint32(loByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
 		0)
 }
 
 func IsWindows7OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(
-			HiByte(uint16(co.WIN32_WINNT_WIN7))),
-		uint32(
-			LoByte(uint16(co.WIN32_WINNT_WIN7))),
+		uint32(hiByte(uint16(co.WIN32_WINNT_WIN7))),
+		uint32(loByte(uint16(co.WIN32_WINNT_WIN7))),
 		0)
 }
 
 func IsWindows8OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(
-			HiByte(uint16(co.WIN32_WINNT_WIN8))),
-		uint32(
-			LoByte(uint16(co.WIN32_WINNT_WIN8))),
+		uint32(hiByte(uint16(co.WIN32_WINNT_WIN8))),
+		uint32(loByte(uint16(co.WIN32_WINNT_WIN8))),
 		0)
 }
 
 func IsWindows8Point1OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(
-			HiByte(uint16(co.WIN32_WINNT_WINBLUE))),
-		uint32(
-			LoByte(uint16(co.WIN32_WINNT_WINBLUE))),
+		uint32(hiByte(uint16(co.WIN32_WINNT_WINBLUE))),
+		uint32(loByte(uint16(co.WIN32_WINNT_WINBLUE))),
 		0)
 }
 
 func IsWindowsVistaOrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(
-			HiByte(uint16(co.WIN32_WINNT_VISTA))),
-		uint32(
-			LoByte(uint16(co.WIN32_WINNT_VISTA))),
+		uint32(hiByte(uint16(co.WIN32_WINNT_VISTA))),
+		uint32(loByte(uint16(co.WIN32_WINNT_VISTA))),
 		0)
 }
 
 func IsWindowsXpOrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(
-			HiByte(uint16(co.WIN32_WINNT_WINXP))),
-		uint32(
-			LoByte(uint16(co.WIN32_WINNT_WINXP))),
+		uint32(hiByte(uint16(co.WIN32_WINNT_WINXP))),
+		uint32(loByte(uint16(co.WIN32_WINNT_WINXP))),
 		0)
 }
 

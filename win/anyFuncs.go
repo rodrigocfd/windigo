@@ -36,6 +36,7 @@ func StrToUtf16PtrBlankIsNil(s string) *uint16 {
 	return nil
 }
 
+// Simple conversion for syscalls.
 func boolToUintptr(b bool) uintptr {
 	if b {
 		return uintptr(1)
@@ -43,23 +44,10 @@ func boolToUintptr(b bool) uintptr {
 	return uintptr(0)
 }
 
-//------------------------------------------------------------------------------
-
-func HiWord(value uint32) uint16 {
-	return uint16(value >> 16 & 0xffff)
-}
-
-func LoWord(value uint32) uint16 {
-	return uint16(value)
-}
-
-func HiByte(value uint16) uint8 {
-	return uint8(value >> 8 & 0xff)
-}
-
-func LoByte(value uint16) uint8 {
-	return uint8(value)
-}
+func hiWord(value uint32) uint16 { return uint16(value >> 16 & 0xffff) }
+func loWord(value uint32) uint16 { return uint16(value) }
+func hiByte(value uint16) uint8  { return uint8(value >> 8 & 0xff) }
+func loByte(value uint16) uint8  { return uint8(value) }
 
 //------------------------------------------------------------------------------
 
