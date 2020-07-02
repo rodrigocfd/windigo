@@ -8,6 +8,8 @@ package gui
 
 import (
 	"fmt"
+	"sort"
+	"strings"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -19,6 +21,13 @@ type RegistryKey struct {
 	hKey win.HKEY
 }
 
+// Returned by EnumValues.
+type RegistryValueInfo struct {
+	DataType co.REG
+	Name     string
+	Size     uint32 // In uint8, notice wide strings are uint16 chars.
+}
+
 // Calls RegCloseKey and sets the HKEY to zero.
 func (me *RegistryKey) Close() {
 	if me.hKey != 0 {
@@ -28,8 +37,37 @@ func (me *RegistryKey) Close() {
 }
 
 // Enumerates all values in this registry key.
-func (me *RegistryKey) EnumValues() []win.RegistryValueInfo {
-	return me.hKey.RegEnumValue()
+func (me *RegistryKey) EnumValues() []RegistryValueInfo {
+	retVals := make([]RegistryValueInfo, 0)
+	index := uint32(0)
+	nameBufSz := uint32(64) // arbitrary
+	nameBuf := make([]uint16, nameBufSz)
+	dataType := co.REG_NONE
+	dataBufSz := uint32(0)
+
+	for {
+		errCode := me.hKey.RegEnumValue(index, nameBuf, &nameBufSz,
+			&dataType, 0, &dataBufSz)
+
+		if errCode == co.ERROR_SUCCESS { // we got this one, but there's more
+			retVals = append(retVals, RegistryValueInfo{
+				DataType: dataType,
+				Name:     syscall.UTF16ToString(nameBuf),
+				Size:     dataBufSz,
+			})
+			index++
+		} else if errCode == co.ERROR_NO_MORE_ITEMS { // we're done
+			break
+		} else if errCode == co.ERROR_MORE_DATA { // increase buffer size
+			nameBufSz += 4 // arbitrary
+			nameBuf = make([]uint16, nameBufSz)
+		}
+	}
+
+	sort.Slice(retVals, func(i, j int) bool {
+		return strings.ToUpper(retVals[i].Name) < strings.ToUpper(retVals[j].Name)
+	})
+	return retVals
 }
 
 // Opens a registry key for reading.
