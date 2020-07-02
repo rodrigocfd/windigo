@@ -6,8 +6,15 @@
 
 package win
 
+import (
+	"fmt"
+	"syscall"
+	"unsafe"
+	"wingows/co"
+)
+
 type iTaskbarList struct {
-	lpVtbl *iTaskbarListVtbl
+	IUnknown
 }
 
 type iTaskbarListVtbl struct {
@@ -22,7 +29,7 @@ type iTaskbarListVtbl struct {
 //------------------------------------------------------------------------------
 
 type iTaskbarList2 struct {
-	lpVtbl *iTaskbarList2Vtbl
+	iTaskbarList
 }
 
 type iTaskbarList2Vtbl struct {
@@ -33,7 +40,7 @@ type iTaskbarList2Vtbl struct {
 //------------------------------------------------------------------------------
 
 type ITaskbarList3 struct {
-	lpVtbl *iTaskbarList3Vtbl
+	iTaskbarList2
 }
 
 type iTaskbarList3Vtbl struct {
@@ -50,4 +57,41 @@ type iTaskbarList3Vtbl struct {
 	SetOverlayIcon        uintptr
 	SetThumbnailTooltip   uintptr
 	SetThumbnailClip      uintptr
+}
+
+func CoCreateITaskbarList3() *ITaskbarList3 {
+	iUnk := coCreateInstance(&co.Guid_ITaskbarList, &co.Guid_ITaskbarList3)
+	return &ITaskbarList3{
+		iTaskbarList2: iTaskbarList2{
+			iTaskbarList: iTaskbarList{
+				IUnknown: *iUnk,
+			},
+		},
+	}
+}
+
+func (v *ITaskbarList3) SetProgressValue(hwnd HWND,
+	ullCompleted, ullTotal uint64) {
+
+	lpVtbl := (*iTaskbarList3Vtbl)(unsafe.Pointer(v.lpVtbl))
+	ret, _, _ := syscall.Syscall6(lpVtbl.SetProgressValue, 4,
+		uintptr(unsafe.Pointer(v)), uintptr(hwnd),
+		uintptr(ullCompleted), uintptr(ullTotal),
+		0, 0)
+	if co.ERROR(ret) != co.ERROR_S_OK {
+		lerr := syscall.Errno(ret)
+		panic(fmt.Sprintf("ITaskbarList3.SetProgressValue failed: %d %s",
+			lerr, lerr.Error()))
+	}
+}
+
+func (v *ITaskbarList3) SetProgressState(hwnd HWND, tbpFlags co.TBPF) {
+	lpVtbl := (*iTaskbarList3Vtbl)(unsafe.Pointer(v.lpVtbl))
+	ret, _, _ := syscall.Syscall(lpVtbl.SetProgressState, 3,
+		uintptr(unsafe.Pointer(v)), uintptr(hwnd), uintptr(tbpFlags))
+	if co.ERROR(ret) != co.ERROR_S_OK {
+		lerr := syscall.Errno(ret)
+		panic(fmt.Sprintf("ITaskbarList3.SetProgressState failed: %d %s",
+			lerr, lerr.Error()))
+	}
 }
