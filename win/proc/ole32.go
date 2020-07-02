@@ -13,6 +13,7 @@ import (
 var (
 	dllOle32 = syscall.NewLazyDLL("ole32.dll")
 
-	CoInitializeEx = dllOle32.NewProc("CoInitializeEx")
-	CoUninitialize = dllOle32.NewProc("CoUninitialize")
+	CoCreateInstance = dllOle32.NewProc("CoCreateInstance")
+	CoInitializeEx   = dllOle32.NewProc("CoInitializeEx")
+	CoUninitialize   = dllOle32.NewProc("CoUninitialize")
 )
