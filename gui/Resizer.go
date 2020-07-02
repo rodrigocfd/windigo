@@ -58,15 +58,6 @@ func (me *Resizer) AddMany(children []Control, doHorz, doVert RESZ) *Resizer {
 	return me
 }
 
-func (me *Resizer) AddRadioButtons(radios []RadioButton,
-	doHorz, doVert RESZ) *Resizer {
-
-	for i := range radios {
-		me.Add(&radios[i], doHorz, doVert)
-	}
-	return me
-}
-
 // Call during WM_SIZE processing.
 func (me *Resizer) Adjust(p wm.Size) {
 	if len(me.ctrls) == 0 || p.Request() == co.SIZE_MINIMIZED {
