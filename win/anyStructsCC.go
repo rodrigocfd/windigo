@@ -41,6 +41,14 @@ type LVFINDINFO struct {
 	VkDirection uint32
 }
 
+type LVHITTESTINFO struct {
+	Pt       POINT // Coordinates relative to list view.
+	Flags    co.LVHT
+	IItem    int32 // -1 if no item.
+	ISubItem int32
+	IGroup   int32
+}
+
 type LVITEM struct {
 	Mask       co.LVIF
 	IItem      int32

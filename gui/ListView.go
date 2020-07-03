@@ -149,6 +149,17 @@ func (me *ListView) GroupViewEnabled() bool {
 	return me.sendLvmMessage(co.LVM_ISGROUPVIEWENABLED, 0, 0) >= 0
 }
 
+// Sends LVM_HITTEST to determine the item at specified position, if any.
+func (me *ListView) HitTest(pos win.POINT) *win.LVHITTESTINFO {
+	lvhti := &win.LVHITTESTINFO{
+		Pt: pos,
+	}
+	wp := int32(-1) // Vista: retrieve iGroup and iSubItem
+	me.sendLvmMessage(co.LVM_HITTEST,
+		win.WPARAM(wp), win.LPARAM(unsafe.Pointer(&lvhti)))
+	return lvhti
+}
+
 func (me *ListView) Item(index uint32) *ListViewItem {
 	numItems := me.ItemCount()
 	if index >= numItems {
