@@ -30,61 +30,45 @@ func (me *ListViewItem) Delete() {
 	}
 }
 
+func (me *ListViewItem) Focused() bool {
+	return (me.State() & co.LVIS_FOCUSED) != 0
+}
+
 func (me *ListViewItem) Index() uint32 {
 	return me.index
-}
-
-func (me *ListViewItem) IsCut() bool {
-	sta := me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
-		win.WPARAM(me.index), win.LPARAM(co.LVIS_CUT))
-	return (co.LVIS(sta) & co.LVIS_CUT) != 0
-}
-
-func (me *ListViewItem) IsFocused() bool {
-	sta := me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
-		win.WPARAM(me.index), win.LPARAM(co.LVIS_FOCUSED))
-	return (co.LVIS(sta) & co.LVIS_FOCUSED) != 0
-}
-
-func (me *ListViewItem) IsSelected() bool {
-	sta := me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
-		win.WPARAM(me.index), win.LPARAM(co.LVIS_SELECTED))
-	return (co.LVIS(sta) & co.LVIS_SELECTED) != 0
-}
-
-func (me *ListViewItem) IsVisible() bool {
-	return me.owner.sendLvmMessage(co.LVM_ISITEMVISIBLE,
-		win.WPARAM(me.index), 0) != 0
 }
 
 func (me *ListViewItem) Owner() *ListView {
 	return me.owner
 }
 
+func (me *ListViewItem) Selected() bool {
+	return (me.State() & co.LVIS_SELECTED) != 0
+}
+
 func (me *ListViewItem) SetFocus() *ListViewItem {
-	lvi := win.LVITEM{
-		StateMask: co.LVIS_FOCUSED,
-		State:     co.LVIS_FOCUSED,
-	}
-	ret := me.owner.sendLvmMessage(co.LVM_SETITEMSTATE,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
-	if ret == 0 {
-		panic("LVM_SETITEMSTATE failed for LVIS_FOCUSED.")
-	}
-	return me
+	return me.SetState(co.LVIS_FOCUSED, co.LVIS_FOCUSED)
 }
 
 func (me *ListViewItem) SetSelected(selected bool) *ListViewItem {
-	lvi := win.LVITEM{
-		StateMask: co.LVIS_SELECTED,
+	state := co.LVIS(0)
+	if selected {
+		state = co.LVIS_SELECTED
 	}
-	if selected { // otherwise remains zero
-		lvi.State = co.LVIS_SELECTED
+	return me.SetState(state, co.LVIS_SELECTED)
+}
+
+func (me *ListViewItem) SetState(
+	state co.LVIS, stateMask co.LVIS) *ListViewItem {
+
+	lvi := win.LVITEM{
+		State:     state,
+		StateMask: stateMask,
 	}
 	ret := me.owner.sendLvmMessage(co.LVM_SETITEMSTATE,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
 	if ret == 0 {
-		panic("LVM_SETITEMSTATE failed for LVIS_SELECTED.")
+		panic("LVM_SETITEMSTATE failed.")
 	}
 	return me
 }
@@ -92,6 +76,13 @@ func (me *ListViewItem) SetSelected(selected bool) *ListViewItem {
 func (me *ListViewItem) SetText(text string) *ListViewItem {
 	me.SubItem(0).SetText(text)
 	return me
+}
+
+func (me *ListViewItem) State() co.LVIS {
+	return co.LVIS(
+		me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
+			win.WPARAM(me.index), win.LPARAM(co.LVIS_FOCUSED)),
+	)
 }
 
 func (me *ListViewItem) SubItem(index uint32) *ListViewSubItem {
@@ -109,10 +100,16 @@ func (me *ListViewItem) Text() string {
 	return me.SubItem(0).Text()
 }
 
+// Sends LVM_UPDATE for this item.
 func (me *ListViewItem) Update() *ListViewItem {
 	ret := me.owner.sendLvmMessage(co.LVM_UPDATE, win.WPARAM(me.index), 0)
 	if ret == 0 {
 		panic("LVM_UPDATE failed.")
 	}
 	return me
+}
+
+func (me *ListViewItem) Visible() bool {
+	return me.owner.sendLvmMessage(co.LVM_ISITEMVISIBLE,
+		win.WPARAM(me.index), 0) != 0
 }

@@ -145,7 +145,7 @@ func (me *ListView) DeleteAllItems() *ListView {
 	return me
 }
 
-func (me *ListView) IsGroupViewEnabled() bool {
+func (me *ListView) GroupViewEnabled() bool {
 	return me.sendLvmMessage(co.LVM_ISGROUPVIEWENABLED, 0, 0) >= 0
 }
 
@@ -181,12 +181,44 @@ func (me *ListView) SetExtendedStyle(exStyle co.LVS_EX) *ListView {
 	return me
 }
 
+// Returns image list previously associated.
+func (me *ListView) SetImageList(typeImgList co.LVSIL,
+	hImgList win.HIMAGELIST) win.HIMAGELIST {
+
+	return win.HIMAGELIST(
+		me.sendLvmMessage(co.LVM_SETIMAGELIST,
+			win.WPARAM(typeImgList), win.LPARAM(hImgList)),
+	)
+}
+
 func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
 	wp := 0
 	if allowRedraw {
 		wp = 1
 	}
 	me.hwnd.SendMessage(co.WM_SETREDRAW, win.WPARAM(wp), 0)
+	return me
+}
+
+func (me *ListView) SetSelectedAllItems(selected bool) *ListView {
+	idx := int32(-1)
+	allItems := ListViewItem{
+		owner: me,
+		index: uint32(idx),
+	}
+	allItems.SetSelected(selected)
+	return me
+}
+
+func (me *ListView) SetStateAllItems(
+	state co.LVIS, stateMask co.LVIS) *ListView {
+
+	idx := int32(-1)
+	allItems := ListViewItem{
+		owner: me,
+		index: uint32(idx),
+	}
+	allItems.SetState(state, stateMask)
 	return me
 }
 
