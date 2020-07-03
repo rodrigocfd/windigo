@@ -20,15 +20,12 @@ type ListViewSubItem struct {
 	index uint32
 }
 
-func newListViewSubItem(item *ListViewItem, index uint32) *ListViewSubItem {
-	return &ListViewSubItem{
-		item:  item,
-		index: index,
-	}
-}
-
 func (me *ListViewSubItem) Index() uint32 {
 	return me.index
+}
+
+func (me *ListViewSubItem) OwnerItem() *ListViewItem {
+	return me.item
 }
 
 func (me *ListViewSubItem) SetText(text string) *ListViewSubItem {

@@ -27,6 +27,7 @@ func MakeListView(ctrlId int32) ListView {
 	}
 }
 
+// Adds a new column; returns the newly inserted column.
 func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 	lvc := win.LVCOLUMN{
 		Mask:    co.LVCF_TEXT | co.LVCF_WIDTH,
@@ -38,9 +39,13 @@ func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 	if int32(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTCOLUMN failed \"%s\".", text))
 	}
-	return newListViewColumn(me, uint32(newIdx)) // return newly inserted column
+	return &ListViewColumn{
+		owner: me,
+		index: uint32(newIdx),
+	}
 }
 
+// Adds many columns at once.
 func (me *ListView) AddColumns(texts []string, widths []uint32) *ListView {
 	if len(texts) != len(widths) {
 		panic("Mismatch lenghts of texts and widths.")
@@ -51,6 +56,7 @@ func (me *ListView) AddColumns(texts []string, widths []uint32) *ListView {
 	return me
 }
 
+// Adds a new item; returns the newly inserted item.
 func (me *ListView) AddItem(text string) *ListViewItem {
 	lvi := win.LVITEM{
 		Mask:    co.LVIF_TEXT,
@@ -62,9 +68,13 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 	if int32(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTITEM failed \"%s\".", text))
 	}
-	return newListViewItem(me, uint32(newIdx)) // return newly inserted item
+	return &ListViewItem{
+		owner: me,
+		index: uint32(newIdx),
+	}
 }
 
+// Adds many items at once.
 func (me *ListView) AddItems(texts []string) *ListView {
 	for i := range texts {
 		me.AddItem(texts[i])
@@ -81,9 +91,13 @@ func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 
 	x, y, width, height = multiplyByDpi(x, y, width, height)
 
-	me.controlNativeBase.create(exStyles|co.WS_EX(lvExStyles),
+	me.controlNativeBase.create(exStyles,
 		"SysListView32", "", styles|co.WS(lvStyles),
 		x, y, width, height, parent)
+
+	if lvExStyles != co.LVS_EX(0) {
+		me.SetExtendedStyle(lvExStyles)
+	}
 	return me
 }
 
@@ -104,7 +118,10 @@ func (me *ListView) Column(index uint32) *ListViewColumn {
 	if index >= numCols {
 		panic("Trying to retrieve column with index out of bounds.")
 	}
-	return newListViewColumn(me, index)
+	return &ListViewColumn{
+		owner: me,
+		index: index,
+	}
 }
 
 func (me *ListView) ColumnCount() uint32 {
@@ -137,7 +154,10 @@ func (me *ListView) Item(index uint32) *ListViewItem {
 	if index >= numItems {
 		panic("Trying to retrieve item with index out of bounds.")
 	}
-	return newListViewItem(me, index)
+	return &ListViewItem{
+		owner: me,
+		index: index,
+	}
 }
 
 func (me *ListView) ItemCount() uint32 {
@@ -154,6 +174,11 @@ func (me *ListView) SelectedItemCount() uint32 {
 		panic("LVM_GETSELECTEDCOUNT failed.")
 	}
 	return uint32(count)
+}
+
+func (me *ListView) SetExtendedStyle(exStyle co.LVS_EX) *ListView {
+	me.sendLvmMessage(co.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, win.LPARAM(exStyle))
+	return me
 }
 
 func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
@@ -176,9 +201,10 @@ func (me *ListView) View() co.LV_VIEW {
 	return co.LV_VIEW(me.sendLvmMessage(co.LVM_GETVIEW, 0, 0))
 }
 
+// Simple wrapper.
 func (me *ListView) sendLvmMessage(msg co.LVM,
 	wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
 	return me.controlNativeBase.Hwnd().
-		SendMessage(co.WM(msg), wParam, lParam) // simple wrapper
+		SendMessage(co.WM(msg), wParam, lParam)
 }

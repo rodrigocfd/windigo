@@ -20,13 +20,6 @@ type ListViewColumn struct {
 	index uint32
 }
 
-func newListViewColumn(owner *ListView, index uint32) *ListViewColumn {
-	return &ListViewColumn{
-		owner: owner,
-		index: index,
-	}
-}
-
 func (me *ListViewColumn) Index() uint32 {
 	return me.index
 }

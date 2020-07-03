@@ -151,3 +151,27 @@ type NMLVSCROLL struct {
 	Dx  int32
 	Dy  int32
 }
+
+type TVINSERTSTRUCT struct {
+	HParent      HTREEITEM
+	HInsertAfter HTREEITEM
+	Itemex       TVITEMEX
+}
+
+type TVITEMEX struct {
+	Mask           co.TVIF
+	HItem          HTREEITEM
+	State          co.TVIS
+	StateMask      co.TVIS
+	PszText        *uint16
+	CchTextMax     int32
+	IImage         int32
+	ISelectedImage int32
+	CChildren      co.TVI_CHILDREN
+	LParam         LPARAM
+	IIntegral      int32
+	UStateEx       co.TVIS_EX
+	Hwnd           HWND
+	IExpandedImage int32
+	IReserved      int32
+}

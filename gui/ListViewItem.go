@@ -19,18 +19,10 @@ type ListViewItem struct {
 	index uint32
 }
 
-func newListViewItem(owner *ListView, index uint32) *ListViewItem {
-	return &ListViewItem{
-		owner: owner,
-		index: index,
-	}
-}
-
 func (me *ListViewItem) Delete() {
 	if me.index >= me.owner.ItemCount() { // index out of bounds: ignore
 		return
 	}
-
 	ret := me.owner.sendLvmMessage(co.LVM_DELETEITEM,
 		win.WPARAM(me.index), 0)
 	if ret == 0 {
@@ -63,6 +55,10 @@ func (me *ListViewItem) IsSelected() bool {
 func (me *ListViewItem) IsVisible() bool {
 	return me.owner.sendLvmMessage(co.LVM_ISITEMVISIBLE,
 		win.WPARAM(me.index), 0) != 0
+}
+
+func (me *ListViewItem) Owner() *ListView {
+	return me.owner
 }
 
 func (me *ListViewItem) SetFocus() *ListViewItem {
@@ -103,7 +99,10 @@ func (me *ListViewItem) SubItem(index uint32) *ListViewSubItem {
 	if index >= numCols {
 		panic("Trying to retrieve sub item with index out of bounds.")
 	}
-	return newListViewSubItem(me, index)
+	return &ListViewSubItem{
+		item:  me,
+		index: index,
+	}
 }
 
 func (me *ListViewItem) Text() string {
