@@ -74,6 +74,11 @@ type DropFiles struct{ Base }
 
 func (p DropFiles) Hdrop() win.HDROP { return win.HDROP(p.WParam) }
 
+type GetDlgCode struct{ Base }
+
+func (p GetDlgCode) VirtualKeyCode() co.VK { return co.VK(p.LParam) }
+func (p GetDlgCode) Msg() *win.MSG         { return (*win.MSG)(unsafe.Pointer(p.LParam)) }
+
 type Help struct{ Base }
 
 func (p Help) HelpInfo() *win.HELPINFO { return (*win.HELPINFO)(unsafe.Pointer(p.LParam)) }

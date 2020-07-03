@@ -105,7 +105,7 @@ func (me *windowDepotMsg) WmCreate(userFunc func(p wm.Create) int32) {
 
 func (me *windowDepotMsg) WmDeadChar(userFunc func(p wm.DeadChar)) {
 	me.addMsg(co.WM_DEADCHAR, func(p wm.Base) uintptr {
-		userFunc(wm.DeadChar{wm.Char{Base: p}})
+		userFunc(wm.DeadChar{Char: wm.Char{Base: p}})
 		return 0
 	})
 }
@@ -121,6 +121,12 @@ func (me *windowDepotMsg) WmDropFiles(userFunc func(p wm.DropFiles)) {
 	me.addMsg(co.WM_DROPFILES, func(p wm.Base) uintptr {
 		userFunc(wm.DropFiles{Base: p})
 		return 0
+	})
+}
+
+func (me *windowDepotMsg) WmGetDlgCode(userFunc func(p wm.GetDlgCode) co.DLGC) {
+	me.addMsg(co.WM_GETDLGCODE, func(p wm.Base) uintptr {
+		return uintptr(userFunc(wm.GetDlgCode{Base: p}))
 	})
 }
 
@@ -154,7 +160,7 @@ func (me *windowDepotMsg) WmKeyDown(userFunc func(p wm.KeyDown)) {
 
 func (me *windowDepotMsg) WmKeyUp(userFunc func(p wm.KeyUp)) {
 	me.addMsg(co.WM_KEYUP, func(p wm.Base) uintptr {
-		userFunc(wm.KeyUp{wm.KeyDown{Base: p}})
+		userFunc(wm.KeyUp{KeyDown: wm.KeyDown{Base: p}})
 		return 0
 	})
 }
@@ -175,35 +181,35 @@ func (me *windowDepotMsg) WmLButtonDblClk(userFunc func(p wm.LButtonDblClk)) {
 
 func (me *windowDepotMsg) WmLButtonDown(userFunc func(p wm.LButtonDown)) {
 	me.addMsg(co.WM_LBUTTONDOWN, func(p wm.Base) uintptr {
-		userFunc(wm.LButtonDown{wm.LButtonDblClk{Base: p}})
+		userFunc(wm.LButtonDown{LButtonDblClk: wm.LButtonDblClk{Base: p}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmLButtonUp(userFunc func(p wm.LButtonUp)) {
 	me.addMsg(co.WM_LBUTTONUP, func(p wm.Base) uintptr {
-		userFunc(wm.LButtonUp{wm.LButtonDblClk{Base: p}})
+		userFunc(wm.LButtonUp{LButtonDblClk: wm.LButtonDblClk{Base: p}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmMButtonDblClk(userFunc func(p wm.MButtonDblClk)) {
 	me.addMsg(co.WM_MBUTTONDBLCLK, func(p wm.Base) uintptr {
-		userFunc(wm.MButtonDblClk{wm.LButtonDblClk{Base: p}})
+		userFunc(wm.MButtonDblClk{LButtonDblClk: wm.LButtonDblClk{Base: p}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmMButtonDown(userFunc func(p wm.MButtonDown)) {
 	me.addMsg(co.WM_MBUTTONDOWN, func(p wm.Base) uintptr {
-		userFunc(wm.MButtonDown{wm.LButtonDblClk{Base: p}})
+		userFunc(wm.MButtonDown{LButtonDblClk: wm.LButtonDblClk{Base: p}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmMButtonUp(userFunc func(p wm.MButtonUp)) {
 	me.addMsg(co.WM_MBUTTONUP, func(p wm.Base) uintptr {
-		userFunc(wm.MButtonUp{wm.LButtonDblClk{Base: p}})
+		userFunc(wm.MButtonUp{LButtonDblClk: wm.LButtonDblClk{Base: p}})
 		return 0
 	})
 }
@@ -230,7 +236,7 @@ func (me *windowDepotMsg) WmMenuSelect(userFunc func(p wm.MenuSelect)) {
 
 func (me *windowDepotMsg) WmMouseHover(userFunc func(p wm.MouseHover)) {
 	me.addMsg(co.WM_MOUSEHOVER, func(p wm.Base) uintptr {
-		userFunc(wm.MouseHover{wm.LButtonDblClk{Base: p}})
+		userFunc(wm.MouseHover{LButtonDblClk: wm.LButtonDblClk{Base: p}})
 		return 0
 	})
 }
@@ -244,7 +250,7 @@ func (me *windowDepotMsg) WmMouseLeave(userFunc func()) {
 
 func (me *windowDepotMsg) WmMouseMove(userFunc func(p wm.MouseMove)) {
 	me.addMsg(co.WM_MOUSEMOVE, func(p wm.Base) uintptr {
-		userFunc(wm.MouseMove{wm.LButtonDblClk{Base: p}})
+		userFunc(wm.MouseMove{LButtonDblClk: wm.LButtonDblClk{Base: p}})
 		return 0
 	})
 }
@@ -288,21 +294,21 @@ func (me *windowDepotMsg) WmPrint(userFunc func(p wm.Print)) {
 
 func (me *windowDepotMsg) WmRButtonDblClk(userFunc func(p wm.RButtonDblClk)) {
 	me.addMsg(co.WM_RBUTTONDBLCLK, func(p wm.Base) uintptr {
-		userFunc(wm.RButtonDblClk{wm.LButtonDblClk{Base: p}})
+		userFunc(wm.RButtonDblClk{LButtonDblClk: wm.LButtonDblClk{Base: p}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmRButtonDown(userFunc func(p wm.RButtonDown)) {
 	me.addMsg(co.WM_RBUTTONDOWN, func(p wm.Base) uintptr {
-		userFunc(wm.RButtonDown{wm.LButtonDblClk{Base: p}})
+		userFunc(wm.RButtonDown{LButtonDblClk: wm.LButtonDblClk{Base: p}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmRButtonUp(userFunc func(p wm.RButtonUp)) {
 	me.addMsg(co.WM_RBUTTONUP, func(p wm.Base) uintptr {
-		userFunc(wm.RButtonUp{wm.LButtonDblClk{Base: p}})
+		userFunc(wm.RButtonUp{LButtonDblClk: wm.LButtonDblClk{Base: p}})
 		return 0
 	})
 }
@@ -331,7 +337,7 @@ func (me *windowDepotMsg) WmSize(userFunc func(p wm.Size)) {
 
 func (me *windowDepotMsg) WmSysChar(userFunc func(p wm.SysChar)) {
 	me.addMsg(co.WM_SYSCHAR, func(p wm.Base) uintptr {
-		userFunc(wm.SysChar{wm.Char{Base: p}})
+		userFunc(wm.SysChar{Char: wm.Char{Base: p}})
 		return 0
 	})
 }
@@ -345,21 +351,21 @@ func (me *windowDepotMsg) WmSysCommand(userFunc func(p wm.SysCommand)) {
 
 func (me *windowDepotMsg) WmSysDeadChar(userFunc func(p wm.SysDeadChar)) {
 	me.addMsg(co.WM_SYSDEADCHAR, func(p wm.Base) uintptr {
-		userFunc(wm.SysDeadChar{wm.Char{Base: p}})
+		userFunc(wm.SysDeadChar{Char: wm.Char{Base: p}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmSysKeyDown(userFunc func(p wm.SysKeyDown)) {
 	me.addMsg(co.WM_SYSKEYDOWN, func(p wm.Base) uintptr {
-		userFunc(wm.SysKeyDown{wm.KeyDown{Base: p}})
+		userFunc(wm.SysKeyDown{KeyDown: wm.KeyDown{Base: p}})
 		return 0
 	})
 }
 
 func (me *windowDepotMsg) WmSysKeyUp(userFunc func(p wm.SysKeyUp)) {
 	me.addMsg(co.WM_SYSKEYUP, func(p wm.Base) uintptr {
-		userFunc(wm.SysKeyUp{wm.KeyDown{Base: p}})
+		userFunc(wm.SysKeyUp{KeyDown: wm.KeyDown{Base: p}})
 		return 0
 	})
 }
