@@ -30,8 +30,8 @@ func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
 
 	ret, _, lerr := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
 		uintptr(exStyle),
-		uintptr(unsafe.Pointer(StrToUtf16PtrBlankIsNil(className))),
-		uintptr(unsafe.Pointer(StrToUtf16PtrBlankIsNil(title))),
+		uintptr(unsafe.Pointer(StrToPtrBlankIsNil(className))),
+		uintptr(unsafe.Pointer(StrToPtrBlankIsNil(title))),
 		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
 		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
 
@@ -303,10 +303,17 @@ func (hWnd HWND) MenuItemFromPoint(hMenu HMENU, ptScreen POINT) int32 {
 func (hWnd HWND) MessageBox(message, caption string, flags co.MB) co.MBID {
 	ret, _, _ := syscall.Syscall6(proc.MessageBox.Addr(), 4,
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(StrToUtf16Ptr(message))),
-		uintptr(unsafe.Pointer(StrToUtf16Ptr(caption))),
+		uintptr(unsafe.Pointer(StrToPtr(message))),
+		uintptr(unsafe.Pointer(StrToPtr(caption))),
 		uintptr(flags), 0, 0)
 	return co.MBID(ret)
+}
+
+func (hWnd HWND) PostMessage(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
+	ret, _, _ := syscall.Syscall6(proc.PostMessage.Addr(), 4,
+		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
+		0, 0)
+	return ret
 }
 
 func (hWnd HWND) ReleaseDC(hdc HDC) int32 {
@@ -346,6 +353,13 @@ func (hWnd HWND) SendMessage(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 
 func (hWnd HWND) SetExStyle(style co.WS) {
 	hWnd.SetWindowLongPtr(co.GWLP_EXSTYLE, uintptr(style))
+}
+
+// Returns true if window was brought to foreground.
+func (hWnd HWND) SetForegroundWindow() bool {
+	ret, _, _ := syscall.Syscall(proc.SetForegroundWindow.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	return ret != 0
 }
 
 func (hWnd HWND) SetFocus() HWND {
@@ -404,7 +418,7 @@ func (hWnd HWND) SetWindowSubclass(subclassProc uintptr, uIdSubclass uint32,
 
 func (hWnd HWND) SetWindowText(text string) {
 	syscall.Syscall(proc.SetWindowText.Addr(), 2,
-		uintptr(hWnd), uintptr(unsafe.Pointer(StrToUtf16Ptr(text))),
+		uintptr(hWnd), uintptr(unsafe.Pointer(StrToPtr(text))),
 		0)
 }
 

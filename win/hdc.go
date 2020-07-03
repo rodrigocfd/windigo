@@ -54,7 +54,7 @@ func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 func (hdc HDC) GetTextExtentPoint32(lpString string) *SIZE {
 	sz := &SIZE{}
 	ret, _, _ := syscall.Syscall6(proc.GetTextExtentPoint32.Addr(), 4,
-		uintptr(hdc), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpString))),
+		uintptr(hdc), uintptr(unsafe.Pointer(StrToPtr(lpString))),
 		uintptr(len(lpString)), uintptr(unsafe.Pointer(sz)), 0, 0)
 	if ret == 0 {
 		panic("GetTextExtentPoint32 failed.")

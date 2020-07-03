@@ -31,7 +31,7 @@ func MakeListView(ctrlId int32) ListView {
 func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 	lvc := win.LVCOLUMN{
 		Mask:    co.LVCF_TEXT | co.LVCF_WIDTH,
-		PszText: win.StrToUtf16Ptr(text),
+		PszText: win.StrToPtr(text),
 		Cx:      int32(width),
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTCOLUMN, 0xFFFF,
@@ -60,7 +60,7 @@ func (me *ListView) AddColumns(texts []string, widths []uint32) *ListView {
 func (me *ListView) AddItem(text string) *ListViewItem {
 	lvi := win.LVITEM{
 		Mask:    co.LVIF_TEXT,
-		PszText: win.StrToUtf16Ptr(text),
+		PszText: win.StrToPtr(text),
 		IItem:   0x0FFFFFFF, // insert as the last one
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTITEM, 0,
@@ -145,6 +145,7 @@ func (me *ListView) DeleteAllItems() *ListView {
 	return me
 }
 
+// Sends LVM_ISGROUPVIEWENABLED.
 func (me *ListView) GroupViewEnabled() bool {
 	return me.sendLvmMessage(co.LVM_ISGROUPVIEWENABLED, 0, 0) >= 0
 }
@@ -179,6 +180,16 @@ func (me *ListView) ItemCount() uint32 {
 	return uint32(count)
 }
 
+// Returns nil if none.
+func (me *ListView) NextItem(relationship co.LVNI) *ListViewItem {
+	idx := int32(-1)
+	allItems := ListViewItem{
+		owner: me,
+		index: uint32(idx),
+	}
+	return allItems.NextItem(relationship)
+}
+
 func (me *ListView) SelectedItemCount() uint32 {
 	count := me.sendLvmMessage(co.LVM_GETSELECTEDCOUNT, 0, 0)
 	if int32(count) == -1 {
@@ -211,16 +222,6 @@ func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
 	return me
 }
 
-func (me *ListView) SetSelectedAllItems(selected bool) *ListView {
-	idx := int32(-1)
-	allItems := ListViewItem{
-		owner: me,
-		index: uint32(idx),
-	}
-	allItems.SetSelected(selected)
-	return me
-}
-
 func (me *ListView) SetStateAllItems(
 	state co.LVIS, stateMask co.LVIS) *ListView {
 
@@ -238,6 +239,16 @@ func (me *ListView) SetView(view co.LV_VIEW) *ListView {
 		panic("LVM_SETVIEW failed.")
 	}
 	return me
+}
+
+// Returns the width of a string using list view current font.
+func (me *ListView) StringWidth(text string) uint32 {
+	ret := me.sendLvmMessage(co.LVM_GETSTRINGWIDTH,
+		0, win.LPARAM(unsafe.Pointer(win.StrToPtr(text))))
+	if ret == 0 {
+		panic("LVM_GETSTRINGWIDTH failed.")
+	}
+	return uint32(ret)
 }
 
 func (me *ListView) View() co.LV_VIEW {

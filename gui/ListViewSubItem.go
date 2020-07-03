@@ -31,7 +31,7 @@ func (me *ListViewSubItem) OwnerItem() *ListViewItem {
 func (me *ListViewSubItem) SetText(text string) *ListViewSubItem {
 	lvi := win.LVITEM{
 		ISubItem: int32(me.index),
-		PszText:  win.StrToUtf16Ptr(text),
+		PszText:  win.StrToPtr(text),
 	}
 	ret := me.item.owner.sendLvmMessage(co.LVM_SETITEMTEXT,
 		win.WPARAM(me.item.index), win.LPARAM(unsafe.Pointer(&lvi)))

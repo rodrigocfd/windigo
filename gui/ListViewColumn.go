@@ -28,7 +28,7 @@ func (me *ListViewColumn) SetText(text string) *ListViewColumn {
 	lvc := win.LVCOLUMN{
 		ISubItem: int32(me.index),
 		Mask:     co.LVCF_TEXT,
-		PszText:  win.StrToUtf16Ptr(text),
+		PszText:  win.StrToPtr(text),
 	}
 	ret := me.owner.sendLvmMessage(co.LVM_SETCOLUMN,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvc)))

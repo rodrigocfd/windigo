@@ -162,7 +162,7 @@ func (me *windowModalSetup) genWndClassEx(hInst win.HINSTANCE) *win.WNDCLASSEX {
 	if me.ClassName == "" {
 		me.ClassName = wcx.Hash() // generate hash after all other fields are set
 	}
-	wcx.LpszClassName = win.StrToUtf16Ptr(me.ClassName)
+	wcx.LpszClassName = win.StrToPtr(me.ClassName)
 
 	return &wcx
 }

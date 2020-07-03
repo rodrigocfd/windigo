@@ -55,7 +55,7 @@ func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
 
 	hKey := HKEY(0)
 	ret, _, _ := syscall.Syscall6(proc.RegOpenKeyEx.Addr(), 5,
-		uintptr(hKeyPredef), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpSubKey))),
+		uintptr(hKeyPredef), uintptr(unsafe.Pointer(StrToPtr(lpSubKey))),
 		uintptr(ulOptions), uintptr(samDesired), uintptr(unsafe.Pointer(&hKey)),
 		0)
 	if co.ERROR(ret) == co.ERROR_FILE_NOT_FOUND {
@@ -71,7 +71,7 @@ func (hKey HKEY) RegQueryValueEx(lpValueName string, lpType *co.REG,
 	lpData uintptr, lpcbData *uint32) co.ERROR {
 
 	ret, _, _ := syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
-		uintptr(hKey), uintptr(unsafe.Pointer(StrToUtf16Ptr(lpValueName))), 0,
+		uintptr(hKey), uintptr(unsafe.Pointer(StrToPtr(lpValueName))), 0,
 		uintptr(unsafe.Pointer(lpType)), lpData,
 		uintptr(unsafe.Pointer(lpcbData)))
 	if co.ERROR(ret) != co.ERROR_SUCCESS {

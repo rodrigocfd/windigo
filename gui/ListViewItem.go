@@ -19,6 +19,7 @@ type ListViewItem struct {
 	index uint32
 }
 
+// Sends LVM_DELETEITEM for this item.
 func (me *ListViewItem) Delete() {
 	if me.index >= me.owner.ItemCount() { // index out of bounds: ignore
 		return
@@ -30,32 +31,38 @@ func (me *ListViewItem) Delete() {
 	}
 }
 
-func (me *ListViewItem) Focused() bool {
-	return (me.State() & co.LVIS_FOCUSED) != 0
-}
-
 func (me *ListViewItem) Index() uint32 {
 	return me.index
+}
+
+// Returns nil if none.
+func (me *ListViewItem) NextItem(relationship co.LVNI) *ListViewItem {
+	ret := me.owner.sendLvmMessage(co.LVM_GETNEXTITEM,
+		win.WPARAM(me.index), win.LPARAM(relationship))
+	if int32(ret) == -1 {
+		return nil
+	}
+	return &ListViewItem{
+		owner: me.owner,
+		index: uint32(ret),
+	}
 }
 
 func (me *ListViewItem) Owner() *ListView {
 	return me.owner
 }
 
-func (me *ListViewItem) Selected() bool {
-	return (me.State() & co.LVIS_SELECTED) != 0
-}
-
-func (me *ListViewItem) SetFocus() *ListViewItem {
-	return me.SetState(co.LVIS_FOCUSED, co.LVIS_FOCUSED)
-}
-
-func (me *ListViewItem) SetSelected(selected bool) *ListViewItem {
-	state := co.LVIS(0)
-	if selected {
-		state = co.LVIS_SELECTED
+// Sends LVM_GETITEMRECT. Retrieved coordinates are relative to list view.
+func (me *ListViewItem) Rect(portion co.LVIR) *win.RECT {
+	rcItem := &win.RECT{
+		Left: int32(portion),
 	}
-	return me.SetState(state, co.LVIS_SELECTED)
+	ret := me.owner.sendLvmMessage(co.LVM_GETITEMRECT,
+		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&rcItem)))
+	if ret == 0 {
+		panic("LVM_GETITEMRECT failed.")
+	}
+	return rcItem
 }
 
 func (me *ListViewItem) SetState(
@@ -109,6 +116,7 @@ func (me *ListViewItem) Update() *ListViewItem {
 	return me
 }
 
+// Sends LVM_ISITEMVISIBLE for this item.
 func (me *ListViewItem) Visible() bool {
 	return me.owner.sendLvmMessage(co.LVM_ISITEMVISIBLE,
 		win.WPARAM(me.index), 0) != 0

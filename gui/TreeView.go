@@ -65,8 +65,14 @@ func (me *TreeView) ExtendedStyle() co.TVS_EX {
 	return co.TVS_EX(me.sendTvmMessage(co.TVM_GETEXTENDEDSTYLE, 0, 0))
 }
 
+// Returns nil if none.
 func (me *TreeView) FirstRoot() *TreeViewItem {
-	return me.Item(0).FirstChild()
+	return me.Item(0).NextItem(co.TVGN_ROOT)
+}
+
+// Returns nil if none.
+func (me *TreeView) FirstVisible() *TreeViewItem {
+	return me.Item(0).NextItem(co.TVGN_FIRSTVISIBLE)
 }
 
 func (me *TreeView) Item(hTreeItem win.HTREEITEM) *TreeViewItem {
@@ -84,12 +90,31 @@ func (me *TreeView) ItemCount() uint32 {
 	return uint32(ret)
 }
 
+// Returns nil if none.
+func (me *TreeView) NextItem(flags co.TVGN) *TreeViewItem {
+	return me.Item(0).NextItem(flags)
+}
+
 func (me *TreeView) Roots() []TreeViewItem {
 	return me.Item(0).Children()
 }
 
+// Returns nil if none.
+func (me *TreeView) SelectedItem() *TreeViewItem {
+	return me.Item(0).NextItem(co.TVGN_CARET)
+}
+
 func (me *TreeView) SetExtendedStyle(exStyle co.TVS_EX) *TreeView {
 	me.sendTvmMessage(co.TVM_SETEXTENDEDSTYLE, 0, win.LPARAM(exStyle))
+	return me
+}
+
+func (me *TreeView) SetRedraw(allowRedraw bool) *TreeView {
+	wp := 0
+	if allowRedraw {
+		wp = 1
+	}
+	me.hwnd.SendMessage(co.WM_SETREDRAW, win.WPARAM(wp), 0)
 	return me
 }
 

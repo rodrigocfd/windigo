@@ -50,7 +50,7 @@ func IsThemeActive() bool {
 
 func (hWnd HWND) OpenThemeData(classNames string) HTHEME {
 	ret, _, _ := syscall.Syscall(proc.OpenThemeData.Addr(), 2,
-		uintptr(hWnd), uintptr(unsafe.Pointer(StrToUtf16Ptr(classNames))),
+		uintptr(hWnd), uintptr(unsafe.Pointer(StrToPtr(classNames))),
 		0)
 	return HTHEME(ret) // zero if no match, never fails
 }

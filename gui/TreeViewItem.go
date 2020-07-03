@@ -27,7 +27,7 @@ func (me *TreeViewItem) AddChild(text string) *TreeViewItem {
 		HInsertAfter: win.HTREEITEM(co.HTREEITEM_LAST),
 		Itemex: win.TVITEMEX{
 			Mask:    co.TVIF_TEXT,
-			PszText: win.StrToUtf16Ptr(text),
+			PszText: win.StrToPtr(text),
 		},
 	}
 	ret := me.owner.sendTvmMessage(co.TVM_INSERTITEM,
@@ -60,25 +60,19 @@ func (me *TreeViewItem) Expand(flags co.TVE) *TreeViewItem {
 	return me
 }
 
+// Returns nil if none.
 func (me *TreeViewItem) FirstChild() *TreeViewItem {
-	ret := me.owner.sendTvmMessage(co.TVM_GETNEXTITEM,
-		win.WPARAM(co.TVGN_ROOT), win.LPARAM(me.hTreeItem))
-	if ret == 0 {
-		return nil
-	}
-	return &TreeViewItem{
-		owner:     me.owner,
-		hTreeItem: win.HTREEITEM(ret),
-	}
+	return me.NextItem(co.TVGN_CHILD)
 }
 
 func (me *TreeViewItem) HTreeItem() win.HTREEITEM {
 	return me.hTreeItem
 }
 
-func (me *TreeViewItem) NextSibling() *TreeViewItem {
+// Returns nil if none.
+func (me *TreeViewItem) NextItem(flags co.TVGN) *TreeViewItem {
 	ret := me.owner.sendTvmMessage(co.TVM_GETNEXTITEM,
-		win.WPARAM(co.TVGN_NEXT), win.LPARAM(me.hTreeItem))
+		win.WPARAM(flags), win.LPARAM(me.hTreeItem))
 	if ret == 0 {
 		return nil
 	}
@@ -86,6 +80,11 @@ func (me *TreeViewItem) NextSibling() *TreeViewItem {
 		owner:     me.owner,
 		hTreeItem: win.HTREEITEM(ret),
 	}
+}
+
+// Returns nil if none.
+func (me *TreeViewItem) NextSibling() *TreeViewItem {
+	return me.NextItem(co.TVGN_NEXT)
 }
 
 func (me *TreeViewItem) Owner() *TreeView {
@@ -105,16 +104,14 @@ func (me *TreeViewItem) Param() win.LPARAM {
 	return tvi.LParam
 }
 
+// Returns nil if root.
+func (me *TreeViewItem) Parent() *TreeViewItem {
+	return me.NextItem(co.TVGN_PARENT)
+}
+
+// Returns nil if none.
 func (me *TreeViewItem) PrevSibling() *TreeViewItem {
-	ret := me.owner.sendTvmMessage(co.TVM_GETNEXTITEM,
-		win.WPARAM(co.TVGN_PREVIOUS), win.LPARAM(me.hTreeItem))
-	if ret == 0 {
-		return nil
-	}
-	return &TreeViewItem{
-		owner:     me.owner,
-		hTreeItem: win.HTREEITEM(ret),
-	}
+	return me.NextItem(co.TVGN_PREVIOUS)
 }
 
 func (me *TreeViewItem) SetParam(lp win.LPARAM) *TreeViewItem {
@@ -135,7 +132,7 @@ func (me *TreeViewItem) SetText(text string) *TreeViewItem {
 	tvi := win.TVITEMEX{
 		HItem:   me.hTreeItem,
 		Mask:    co.TVIF_TEXT,
-		PszText: win.StrToUtf16Ptr(text),
+		PszText: win.StrToPtr(text),
 	}
 	ret := me.owner.sendTvmMessage(co.TVM_SETITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))

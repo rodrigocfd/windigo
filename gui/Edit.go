@@ -78,7 +78,7 @@ func (me *Edit) CreateSimple(parent Window, x, y int32, width uint32,
 // Replaces the currently selected text in the edit control.
 func (me *Edit) ReplaceSelection(newText string) *Edit {
 	me.sendEmMessage(co.EM_REPLACESEL, 1,
-		win.LPARAM(unsafe.Pointer(win.StrToUtf16Ptr(newText))))
+		win.LPARAM(unsafe.Pointer(win.StrToPtr(newText))))
 	return me
 }
 

@@ -27,7 +27,7 @@ func (hfile HFILE) CloseHandle() {
 
 func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) {
 	ret, _, lerr := syscall.Syscall(proc.CreateDirectory.Addr(), 2,
-		uintptr(unsafe.Pointer(StrToUtf16Ptr(pathName))),
+		uintptr(unsafe.Pointer(StrToPtr(pathName))),
 		uintptr(unsafe.Pointer(securityAttributes)), 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("CreateDirectory failed: %d %s",
@@ -41,7 +41,7 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 	flags co.FILE_FLAG, security co.SECURITY, hTemplateFile HFILE) HFILE {
 
 	ret, _, lerr := syscall.Syscall9(proc.CreateFile.Addr(), 7,
-		uintptr(unsafe.Pointer(StrToUtf16Ptr(fileName))),
+		uintptr(unsafe.Pointer(StrToPtr(fileName))),
 		uintptr(desiredAccess), uintptr(shareMode),
 		uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(creationDisposition),
@@ -62,7 +62,7 @@ func (hfile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 		uintptr(hfile), uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
 		0, uintptr(maxSize),
-		uintptr(unsafe.Pointer(StrToUtf16PtrBlankIsNil(objectName))))
+		uintptr(unsafe.Pointer(StrToPtrBlankIsNil(objectName))))
 	if lerr != 0 {
 		panic(fmt.Sprintf("CreateFileMapping failed: %d %s",
 			lerr, lerr.Error()))
@@ -72,7 +72,7 @@ func (hfile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 
 func (hfile HFILE) DeleteFile(fileName string) {
 	ret, _, lerr := syscall.Syscall(proc.DeleteFile.Addr(), 1,
-		uintptr(unsafe.Pointer(StrToUtf16Ptr(fileName))), 0, 0)
+		uintptr(unsafe.Pointer(StrToPtr(fileName))), 0, 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("DeleteFile failed: %d %s",
 			lerr, lerr.Error()))
@@ -81,7 +81,7 @@ func (hfile HFILE) DeleteFile(fileName string) {
 
 func GetFileAttributes(fileName string) co.FILE_ATTRIBUTE {
 	ret, _, lerr := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
-		uintptr(unsafe.Pointer(StrToUtf16Ptr(fileName))), 0, 0)
+		uintptr(unsafe.Pointer(StrToPtr(fileName))), 0, 0)
 	if int32(ret) == -1 {
 		panic(fmt.Sprintf("GetFileAttributes failed: %d %s",
 			lerr, lerr.Error()))
