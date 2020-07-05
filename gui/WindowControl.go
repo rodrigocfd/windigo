@@ -17,15 +17,14 @@ import (
 // Allows message and notification handling.
 type WindowControl struct {
 	windowBase
-	controlIdGuard
+	controlId
 	setup windowControlSetup // Parameters that will be used to create the window.
 }
 
-// Optional; returns a WindowControl with a specific control ID.
-func MakeWindowControl(ctrlId int32) WindowControl {
-	return WindowControl{
-		controlIdGuard: makeCtrlIdGuard(ctrlId),
-	}
+// Sets a custom ID for this control, otherwise it will have an automatically
+// generated ID.
+func (me *WindowControl) SetId(customId int32) {
+	me.controlId.SetId(customId)
 }
 
 // Exposes parameters that will be used to create the child window control.
@@ -49,7 +48,7 @@ func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32)
 
 	me.windowBase.createWindow("WindowControl", me.setup.ExStyle,
 		me.setup.ClassName, "", me.setup.Style, x, y, width, height, parent,
-		win.HMENU(me.controlIdGuard.Id()), hInst)
+		win.HMENU(me.controlId.Id()), hInst)
 }
 
 func (me *WindowControl) defaultMessageHandling() {

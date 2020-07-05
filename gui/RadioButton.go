@@ -18,13 +18,6 @@ type RadioButton struct {
 	controlNativeBase
 }
 
-// Optional; returns a RadioButton with a specific control ID.
-func MakeRadioButton(ctrlId int32) RadioButton {
-	return RadioButton{
-		controlNativeBase: makeNativeControlBase(ctrlId),
-	}
-}
-
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.

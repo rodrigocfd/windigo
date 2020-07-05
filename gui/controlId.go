@@ -11,21 +11,22 @@ var (
 )
 
 // Encapsulates the control ID and, if not initialized, uses an auto-incremented value.
-type controlIdGuard struct {
+type controlId struct {
 	id int32 // defaults to zero
 }
 
-// Optional; returns a ctrlIdGuard with a custom control ID, not using the
-// default auto-incremented one.
-func makeCtrlIdGuard(initialId int32) controlIdGuard {
-	return controlIdGuard{
-		id: initialId, // properly initialized
+// Sets a custom ID. Must be done before using the ID, otherwise an automatic
+// ID will be set.
+func (me *controlId) SetId(customId int32) {
+	if me.id != 0 {
+		panic("Can't set control ID now, it must be the first thing you do.")
 	}
+	me.id = customId
 }
 
 // Returns the ID of this child window control.
-// Will be initialized upon first call.
-func (me *controlIdGuard) Id() int32 {
+// If not custom se, will be initialized upon first call.
+func (me *controlId) Id() int32 {
 	if me.id == 0 { // not initialized yet?
 		globalBaseCtrlId++ // increments sequential global ID
 		me.id = globalBaseCtrlId

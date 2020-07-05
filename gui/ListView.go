@@ -20,13 +20,6 @@ type ListView struct {
 	controlNativeBase
 }
 
-// Optional; returns a ListView with a specific control ID.
-func MakeListView(ctrlId int32) ListView {
-	return ListView{
-		controlNativeBase: makeNativeControlBase(ctrlId),
-	}
-}
-
 // Adds a new column; returns the newly inserted column.
 func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 	lvc := win.LVCOLUMN{

@@ -18,13 +18,6 @@ type CheckBox struct {
 	controlNativeBase
 }
 
-// Optional; returns a CheckBox with a specific control ID.
-func MakeCheckBox(ctrlId int32) CheckBox {
-	return CheckBox{
-		controlNativeBase: makeNativeControlBase(ctrlId),
-	}
-}
-
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.

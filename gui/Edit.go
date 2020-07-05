@@ -19,13 +19,6 @@ type Edit struct {
 	controlNativeBase
 }
 
-// Optional; returns an Edit with a specific control ID.
-func MakeEdit(ctrlId int32) Edit {
-	return Edit{
-		controlNativeBase: makeNativeControlBase(ctrlId),
-	}
-}
-
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.

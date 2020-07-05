@@ -17,13 +17,6 @@ type Static struct {
 	controlNativeBase
 }
 
-// Optional; returns a Static control with a specific control ID.
-func MakeStatic(ctrlId int32) Static {
-	return Static{
-		controlNativeBase: makeNativeControlBase(ctrlId),
-	}
-}
-
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.

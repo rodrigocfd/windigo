@@ -17,13 +17,6 @@ type Button struct {
 	controlNativeBase
 }
 
-// Optional; returns a Button with a specific control ID.
-func MakeButton(ctrlId int32) Button {
-	return Button{
-		controlNativeBase: makeNativeControlBase(ctrlId),
-	}
-}
-
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.

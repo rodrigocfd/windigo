@@ -18,13 +18,6 @@ type TreeView struct {
 	controlNativeBase
 }
 
-// Optional; returns a TreeView with a specific control ID.
-func MakeTreeView(ctrlId int32) TreeView {
-	return TreeView{
-		controlNativeBase: makeNativeControlBase(ctrlId),
-	}
-}
-
 // Adds a new root item; returns the newly inserted item.
 func (me *TreeView) AddRoot(text string) *TreeViewItem {
 	return me.Item(0).AddChild(text)
