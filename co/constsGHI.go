@@ -140,15 +140,15 @@ const (
 type MBID int32 // MessageBox return
 
 const (
-	IDOK       MBID = 1
-	IDCANCEL   MBID = 2
-	IDABORT    MBID = 3
-	IDRETRY    MBID = 4
-	IDIGNORE   MBID = 5
-	IDYES      MBID = 6
-	IDNO       MBID = 7
-	IDTRYAGAIN MBID = 10
-	IDCONTINUE MBID = 11
+	MBID_OK       MBID = 1
+	MBID_CANCEL   MBID = 2
+	MBID_ABORT    MBID = 3
+	MBID_RETRY    MBID = 4
+	MBID_IGNORE   MBID = 5
+	MBID_YES      MBID = 6
+	MBID_NO       MBID = 7
+	MBID_TRYAGAIN MBID = 10
+	MBID_CONTINUE MBID = 11
 )
 
 type IDC uintptr // LoadCursor lpCursorName
