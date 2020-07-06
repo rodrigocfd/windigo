@@ -38,7 +38,7 @@ func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32)
 
 	me.defaultMessageHandling()
 
-	x, y, width, height = multiplyByDpi(x, y, width, height)
+	x, y, width, height = globalDpi.multiply(x, y, width, height)
 
 	me.windowBase.createWindow("WindowControl", me.setup.ExStyle,
 		me.setup.ClassName, "", me.setup.Style, x, y, width, height, parent,

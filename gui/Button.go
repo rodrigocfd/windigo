@@ -23,7 +23,7 @@ type Button struct {
 func (me *Button) Create(parent Window, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *Button {
 
-	x, y, width, height = multiplyByDpi(x, y, width, height)
+	x, y, width, height = globalDpi.multiply(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "BUTTON", text,
 		styles|co.WS(btnStyles), x, y, width, height, parent)

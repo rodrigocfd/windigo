@@ -24,7 +24,7 @@ type CheckBox struct {
 func (me *CheckBox) Create(parent Window, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *CheckBox {
 
-	x, y, width, height = multiplyByDpi(x, y, width, height)
+	x, y, width, height = globalDpi.multiply(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "BUTTON", text, // check box is, in fact, a button
 		styles|co.WS(btnStyles), x, y, width, height, parent)
@@ -106,7 +106,7 @@ func (me *CheckBox) calcIdealSize(hReferenceDc win.HWND,
 func (me *CheckBox) createAutoSize(parent Window, x, y int32,
 	text string, chbxStyles co.BS) *CheckBox {
 
-	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
+	x, y, _, _ = globalDpi.multiply(x, y, 0, 0)
 	cx, cy := me.calcIdealSize(parent.Hwnd(), text)
 
 	me.controlNativeBase.create(co.WS_EX(0), "BUTTON", text,

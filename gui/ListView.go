@@ -82,7 +82,7 @@ func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 	exStyles co.WS_EX, styles co.WS,
 	lvExStyles co.LVS_EX, lvStyles co.LVS) *ListView {
 
-	x, y, width, height = multiplyByDpi(x, y, width, height)
+	x, y, width, height = globalDpi.multiply(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles,
 		"SysListView32", "", styles|co.WS(lvStyles),

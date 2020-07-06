@@ -23,7 +23,7 @@ type Static struct {
 func (me *Static) Create(parent Window, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, staStyles co.SS) *Static {
 
-	x, y, width, height = multiplyByDpi(x, y, width, height)
+	x, y, width, height = globalDpi.multiply(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "STATIC", text,
 		styles|co.WS(staStyles), x, y, width, height, parent)
@@ -34,7 +34,7 @@ func (me *Static) Create(parent Window, x, y int32, width, height uint32,
 // Calls CreateWindowEx(). Position will be adjusted to the current system DPI.
 // The size will be calculated to fit the text exactly.
 func (me *Static) CreateLText(parent Window, x, y int32, text string) *Static {
-	x, y, _, _ = multiplyByDpi(x, y, 0, 0)
+	x, y, _, _ = globalDpi.multiply(x, y, 0, 0)
 	cx, cy := calcTextBoundBox(parent.Hwnd(), text, true)
 
 	me.controlNativeBase.create(co.WS_EX(0), "STATIC", text,
