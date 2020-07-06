@@ -14,7 +14,7 @@ import (
 	"wingows/win/proc"
 )
 
-// Returns *uint16.StrToPtr
+// Returns *uint16.
 // Wrapper to syscall.UTF16PtrFromString().
 // Panics on error.
 func StrToPtr(s string) *uint16 {
@@ -126,6 +126,31 @@ func SetProcessDPIAware() {
 	if ret == 0 {
 		panic("SetProcessDPIAware failed.")
 	}
+}
+
+// Depends of CoInitializeEx().
+func SHGetFileInfo(pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
+	uFlags co.SHGFI) *SHFILEINFO {
+
+	shfi := &SHFILEINFO{}
+	ret, _, _ := syscall.Syscall6(proc.SHGetFileInfo.Addr(), 5,
+		uintptr(unsafe.Pointer(StrToPtr(pszPath))),
+		uintptr(dwFileAttributes), uintptr(unsafe.Pointer(shfi)),
+		unsafe.Sizeof(*shfi), uintptr(uFlags), 0)
+
+	if (uFlags&co.SHGFI_EXETYPE) == 0 || (uFlags&co.SHGFI_SYSICONINDEX) == 0 {
+		if ret == 0 {
+			panic("SHGetFileInfo failed.")
+		}
+	}
+
+	if (uFlags & co.SHGFI_EXETYPE) != 0 {
+		if ret == 0 {
+			panic("SHGetFileInfo failed.")
+		}
+	}
+
+	return shfi
 }
 
 func SystemParametersInfo(uiAction co.SPI, uiParam uint32,

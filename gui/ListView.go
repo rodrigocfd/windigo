@@ -67,6 +67,28 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 	}
 }
 
+// Adds a new item; returns the newly inserted item.
+// Before call this method, attach an image list and load its icons.
+func (me *ListView) AddItemWithIcon(text string,
+	iconIndex uint32) *ListViewItem {
+
+	lvi := win.LVITEM{
+		Mask:    co.LVIF_TEXT | co.LVIF_IMAGE,
+		PszText: win.StrToPtr(text),
+		IImage:  int32(iconIndex),
+		IItem:   0x0FFFFFFF, // insert as the last one
+	}
+	newIdx := me.sendLvmMessage(co.LVM_INSERTITEM, 0,
+		win.LPARAM(unsafe.Pointer(&lvi)))
+	if int32(newIdx) == -1 {
+		panic(fmt.Sprintf("LVM_INSERTITEM failed \"%s\".", text))
+	}
+	return &ListViewItem{
+		owner: me,
+		index: uint32(newIdx),
+	}
+}
+
 // Adds many items at once.
 func (me *ListView) AddItems(texts []string) *ListView {
 	for i := range texts {

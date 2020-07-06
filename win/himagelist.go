@@ -19,8 +19,6 @@ func (hImg HIMAGELIST) AddIcon(hIcon HICON) {
 	hImg.ReplaceIcon(-1, hIcon)
 }
 
-// Automatically destroyed if attached to a ListView, unless created with
-// LVS_SHAREIMAGELISTS. For TreeView, must be manually destroyed.
 func (hImg HIMAGELIST) Destroy() {
 	// http://www.catch22.net/tuts/win32/system-image-list
 	// https://www.autohotkey.com/docs/commands/ListView.htm
@@ -74,6 +72,8 @@ func (hImg HIMAGELIST) GetImageInfo(index uint32) *IMAGEINFO {
 	return ii
 }
 
+// Automatically destroyed if attached to a ListView, unless created with
+// LVS_SHAREIMAGELISTS. For TreeView, must be manually destroyed.
 func ImageListCreate(cx, cy uint32, flags co.ILC,
 	cInitial, cGrow uint32) HIMAGELIST {
 

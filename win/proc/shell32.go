@@ -16,4 +16,5 @@ var (
 	DragFinish     = dllShell32.NewProc("DragFinish")
 	DragQueryFile  = dllShell32.NewProc("DragQueryFileW")
 	DragQueryPoint = dllShell32.NewProc("DragQueryPoint")
+	SHGetFileInfo  = dllShell32.NewProc("SHGetFileInfoW")
 )

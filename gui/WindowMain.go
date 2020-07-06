@@ -182,19 +182,19 @@ func (me *windowMainSetup) genWndClassEx(hInst win.HINSTANCE) *win.WNDCLASSEX {
 	wcx.HIcon = me.HIcon
 	wcx.HIconSm = me.HIconSmall
 
-	if me.HCursor != 0 {
+	if me.HCursor != 0 { // user specified a cursor
 		wcx.HCursor = me.HCursor
 	} else {
 		wcx.HCursor = win.HINSTANCE(0).LoadCursor(co.IDC_ARROW)
 	}
 
-	if me.HBrushBackground != 0 {
+	if me.HBrushBackground != 0 { // user specified a background brush
 		wcx.HbrBackground = me.HBrushBackground
 	} else {
 		wcx.HbrBackground = win.CreateSysColorBrush(co.COLOR_BTNFACE)
 	}
 
-	if me.ClassName == "" {
+	if me.ClassName == "" { // user left class name blank
 		me.ClassName = wcx.Hash() // generate hash after all other fields are set
 	}
 	wcx.LpszClassName = win.StrToPtr(me.ClassName)

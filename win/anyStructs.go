@@ -116,6 +116,14 @@ type SECURITY_ATTRIBUTES struct {
 	BInheritHandle       int32
 }
 
+type SHFILEINFO struct {
+	HIcon         HICON
+	IIcon         int32
+	DwAttributes  co.SFGAO
+	SzDisplayName [260]uint16 // MAX_PATH
+	SzTypeName    [80]uint16
+}
+
 type SIZE struct {
 	Cx, Cy int32
 }

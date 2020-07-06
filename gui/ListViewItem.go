@@ -31,6 +31,19 @@ func (me *ListViewItem) Delete() {
 	}
 }
 
+func (me *ListViewItem) IconIndex() uint32 {
+	lvi := win.LVITEM{
+		IItem: int32(me.index),
+		Mask:  co.LVIF_IMAGE,
+	}
+	ret := me.owner.sendLvmMessage(co.LVM_GETITEM,
+		0, win.LPARAM(unsafe.Pointer(&lvi)))
+	if ret == 0 {
+		panic("LVM_GETITEM failed.")
+	}
+	return uint32(lvi.IImage)
+}
+
 func (me *ListViewItem) Index() uint32 {
 	return me.index
 }
@@ -63,6 +76,20 @@ func (me *ListViewItem) Rect(portion co.LVIR) *win.RECT {
 		panic("LVM_GETITEMRECT failed.")
 	}
 	return rcItem
+}
+
+func (me *ListViewItem) SetIconIndex(index uint32) *ListViewItem {
+	lvi := win.LVITEM{
+		IItem:  int32(me.index),
+		Mask:   co.LVIF_IMAGE,
+		IImage: int32(index),
+	}
+	ret := me.owner.sendLvmMessage(co.LVM_SETITEM,
+		0, win.LPARAM(unsafe.Pointer(&lvi)))
+	if ret == 0 {
+		panic("LVM_GETITEM failed.")
+	}
+	return me
 }
 
 func (me *ListViewItem) SetState(
