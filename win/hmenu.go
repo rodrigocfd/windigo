@@ -81,9 +81,10 @@ func (hMenu HMENU) DestroyMenu() {
 	}
 }
 
-func (hMenu HMENU) EnableMenuItem(uIDEnableItem int32, uEnable co.MF) {
-	syscall.Syscall(proc.EnableMenuItem.Addr(), 3,
+func (hMenu HMENU) EnableMenuItem(uIDEnableItem int32, uEnable co.MF) co.MF {
+	ret, _, _ := syscall.Syscall(proc.EnableMenuItem.Addr(), 3,
 		uintptr(hMenu), uintptr(uIDEnableItem), uintptr(uEnable))
+	return co.MF(ret)
 }
 
 func (hMenu HMENU) GetMenuInfo(mi *MENUINFO) {

@@ -10,6 +10,14 @@ import (
 	"wingows/co"
 )
 
+type IMAGEINFO struct {
+	HbmImage HBITMAP
+	HbmMask  HBITMAP
+	Unused1  int32
+	Unused2  int32
+	RcImage  RECT
+}
+
 type LITEM struct {
 	Mask      co.LIF
 	ILink     int32
