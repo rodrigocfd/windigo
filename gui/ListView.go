@@ -111,7 +111,7 @@ func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 		x, y, width, height, parent)
 
 	if lvExStyles != co.LVS_EX(0) {
-		me.SetExtendedStyle(lvExStyles)
+		me.SetExtendedStyle(lvExStyles, lvExStyles)
 	}
 	return me
 }
@@ -125,7 +125,7 @@ func (me *ListView) CreateReport(parent Window, x, y int32,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.LVS_EX_FULLROWSELECT,
-		co.LVS_REPORT|co.LVS_SHOWSELALWAYS)
+		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS)
 }
 
 // Retrieves the column at the given index.
@@ -161,6 +161,11 @@ func (me *ListView) DeleteAllItems() *ListView {
 		panic("LVM_DELETEALLITEMS failed.")
 	}
 	return me
+}
+
+// Retrieves extended styles with LVM_GETEXTENDEDLISTVIEWSTYLE.
+func (me *ListView) ExtendedStyle() co.LVS_EX {
+	return co.LVS_EX(me.sendLvmMessage(co.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0))
 }
 
 // Sends LVM_ISGROUPVIEWENABLED.
@@ -237,8 +242,9 @@ func (me *ListView) SelectedItemCount() uint32 {
 }
 
 // Sends LVM_SETEXTENDEDLISTVIEWSTYLE.
-func (me *ListView) SetExtendedStyle(exStyle co.LVS_EX) *ListView {
-	me.sendLvmMessage(co.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, win.LPARAM(exStyle))
+func (me *ListView) SetExtendedStyle(mask, exStyle co.LVS_EX) *ListView {
+	me.sendLvmMessage(co.LVM_SETEXTENDEDLISTVIEWSTYLE,
+		win.WPARAM(mask), win.LPARAM(exStyle))
 	return me
 }
 

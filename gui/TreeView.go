@@ -7,6 +7,8 @@
 package gui
 
 import (
+	"fmt"
+	"syscall"
 	"wingows/co"
 	"wingows/win"
 )
@@ -37,7 +39,7 @@ func (me *TreeView) Create(parent Window, x, y int32, width, height uint32,
 		x, y, width, height, parent)
 
 	if tvExStyles != co.TVS_EX(0) {
-		me.SetExtendedStyle(tvExStyles)
+		me.SetExtendedStyle(tvExStyles, tvExStyles)
 	}
 	return me
 }
@@ -54,7 +56,7 @@ func (me *TreeView) CreateSimple(parent Window, x, y int32,
 		co.TVS_HASLINES|co.TVS_LINESATROOT|co.TVS_SHOWSELALWAYS|co.TVS_HASBUTTONS)
 }
 
-// Sends TVM_GETEXTENDEDSTYLE.
+// Retrieves extended styles with TVM_GETEXTENDEDSTYLE.
 func (me *TreeView) ExtendedStyle() co.TVS_EX {
 	return co.TVS_EX(me.sendTvmMessage(co.TVM_GETEXTENDEDSTYLE, 0, 0))
 }
@@ -101,8 +103,13 @@ func (me *TreeView) SelectedItem() *TreeViewItem {
 }
 
 // Sends TVM_SETEXTENDEDSTYLE.
-func (me *TreeView) SetExtendedStyle(exStyle co.TVS_EX) *TreeView {
-	me.sendTvmMessage(co.TVM_SETEXTENDEDSTYLE, 0, win.LPARAM(exStyle))
+func (me *TreeView) SetExtendedStyle(mask, exStyle co.TVS_EX) *TreeView {
+	ret := me.sendTvmMessage(co.TVM_SETEXTENDEDSTYLE,
+		win.WPARAM((mask)), win.LPARAM(exStyle))
+	if co.ERROR(ret) != co.ERROR_S_OK {
+		panic(fmt.Sprintf("TVM_SETEXTENDEDSTYLE: %d %s",
+			ret, syscall.Errno(ret).Error()))
+	}
 	return me
 }
 
