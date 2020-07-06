@@ -20,6 +20,21 @@ type ListViewColumn struct {
 	index uint32
 }
 
+func (me *ListViewColumn) FillRoom() *ListViewColumn {
+	numCols := me.owner.ColumnCount()
+	cxUsed := uint32(0)
+
+	for i := uint32(0); i < numCols; i++ {
+		if i != me.index {
+			cxUsed += me.owner.Column(i).Width() // retrieve cx of each column, but us
+		}
+	}
+
+	rc := me.owner.Hwnd().GetClientRect()  // list view client area
+	me.SetWidth(uint32(rc.Right) - cxUsed) // fill available space
+	return me
+}
+
 func (me *ListViewColumn) Index() uint32 {
 	return me.index
 }
