@@ -54,11 +54,12 @@ func (me *TreeView) CreateSimple(parent Window, x, y int32,
 		co.TVS_HASLINES|co.TVS_LINESATROOT|co.TVS_SHOWSELALWAYS|co.TVS_HASBUTTONS)
 }
 
+// Sends TVM_GETEXTENDEDSTYLE.
 func (me *TreeView) ExtendedStyle() co.TVS_EX {
 	return co.TVS_EX(me.sendTvmMessage(co.TVM_GETEXTENDEDSTYLE, 0, 0))
 }
 
-// Returns nil if none.
+// Sends TVM_GETNEXTITEM with TVGN_ROOT, returns nil if none.
 func (me *TreeView) FirstRoot() *TreeViewItem {
 	return me.Item(0).NextItem(co.TVGN_ROOT)
 }
@@ -68,6 +69,7 @@ func (me *TreeView) FirstVisible() *TreeViewItem {
 	return me.Item(0).NextItem(co.TVGN_FIRSTVISIBLE)
 }
 
+// Returns the item of the given HTREEITEM.
 func (me *TreeView) Item(hTreeItem win.HTREEITEM) *TreeViewItem {
 	return &TreeViewItem{
 		owner:     me,
@@ -75,6 +77,7 @@ func (me *TreeView) Item(hTreeItem win.HTREEITEM) *TreeViewItem {
 	}
 }
 
+// Returns the number of items with TVM_GETCOUNT.
 func (me *TreeView) ItemCount() uint32 {
 	ret := me.sendTvmMessage(co.TVM_GETCOUNT, 0, 0)
 	if ret < 0 {
@@ -83,7 +86,7 @@ func (me *TreeView) ItemCount() uint32 {
 	return uint32(ret)
 }
 
-// Returns nil if none.
+// Sends TVM_GETNEXTITEM, returns nil if none found.
 func (me *TreeView) NextItem(flags co.TVGN) *TreeViewItem {
 	return me.Item(0).NextItem(flags)
 }
@@ -92,16 +95,18 @@ func (me *TreeView) Roots() []TreeViewItem {
 	return me.Item(0).Children()
 }
 
-// Returns nil if none.
+// Sends TVM_GETNEXTITEM with TVGN_CARET, returns nil if none.
 func (me *TreeView) SelectedItem() *TreeViewItem {
 	return me.Item(0).NextItem(co.TVGN_CARET)
 }
 
+// Sends TVM_SETEXTENDEDSTYLE.
 func (me *TreeView) SetExtendedStyle(exStyle co.TVS_EX) *TreeView {
 	me.sendTvmMessage(co.TVM_SETEXTENDEDSTYLE, 0, win.LPARAM(exStyle))
 	return me
 }
 
+// Sends WM_SETREDRAW to enable or disable UI updates.
 func (me *TreeView) SetRedraw(allowRedraw bool) *TreeView {
 	wp := 0
 	if allowRedraw {

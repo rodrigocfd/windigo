@@ -51,6 +51,7 @@ func (me *TreeViewItem) Children() []TreeViewItem {
 	return retNodes
 }
 
+// Expand or collapses the item with TVM_EXPAND.
 func (me *TreeViewItem) Expand(flags co.TVE) *TreeViewItem {
 	ret := me.owner.sendTvmMessage(co.TVM_EXPAND,
 		win.WPARAM(flags), win.LPARAM(me.hTreeItem))
@@ -60,7 +61,7 @@ func (me *TreeViewItem) Expand(flags co.TVE) *TreeViewItem {
 	return me
 }
 
-// Returns nil if none.
+// Sends TVM_GETNEXTITEM with TVGN_CHILD, returns nil if none.
 func (me *TreeViewItem) FirstChild() *TreeViewItem {
 	return me.NextItem(co.TVGN_CHILD)
 }
@@ -69,7 +70,7 @@ func (me *TreeViewItem) HTreeItem() win.HTREEITEM {
 	return me.hTreeItem
 }
 
-// Returns nil if none.
+// Sends TVM_GETNEXTITEM, returns nil if none found.
 func (me *TreeViewItem) NextItem(flags co.TVGN) *TreeViewItem {
 	ret := me.owner.sendTvmMessage(co.TVM_GETNEXTITEM,
 		win.WPARAM(flags), win.LPARAM(me.hTreeItem))
@@ -82,15 +83,17 @@ func (me *TreeViewItem) NextItem(flags co.TVGN) *TreeViewItem {
 	}
 }
 
-// Returns nil if none.
+// Sends TVM_GETNEXTITEM with TVGN_NEXT, returns nil if none.
 func (me *TreeViewItem) NextSibling() *TreeViewItem {
 	return me.NextItem(co.TVGN_NEXT)
 }
 
+// Returns the TreeView to which this item belongs.
 func (me *TreeViewItem) Owner() *TreeView {
 	return me.owner
 }
 
+// Retrieves the associated LPARAM with TVM_GETITEM.
 func (me *TreeViewItem) Param() win.LPARAM {
 	tvi := win.TVITEMEX{
 		HItem: me.hTreeItem,
@@ -104,16 +107,17 @@ func (me *TreeViewItem) Param() win.LPARAM {
 	return tvi.LParam
 }
 
-// Returns nil if root.
+// Sends TVM_GETNEXTITEM with TVGN_PARENT, returns nil if none.
 func (me *TreeViewItem) Parent() *TreeViewItem {
 	return me.NextItem(co.TVGN_PARENT)
 }
 
-// Returns nil if none.
+// Sends TVM_GETNEXTITEM with TVGN_PREVIOUS, returns nil if none.
 func (me *TreeViewItem) PrevSibling() *TreeViewItem {
 	return me.NextItem(co.TVGN_PREVIOUS)
 }
 
+// Sets the associated LPARAM with TVM_SETITEM.
 func (me *TreeViewItem) SetParam(lp win.LPARAM) *TreeViewItem {
 	tvi := win.TVITEMEX{
 		HItem:  me.hTreeItem,
@@ -128,6 +132,7 @@ func (me *TreeViewItem) SetParam(lp win.LPARAM) *TreeViewItem {
 	return me
 }
 
+// Sets the text with TVM_SETITEM.
 func (me *TreeViewItem) SetText(text string) *TreeViewItem {
 	tvi := win.TVITEMEX{
 		HItem:   me.hTreeItem,
@@ -142,6 +147,7 @@ func (me *TreeViewItem) SetText(text string) *TreeViewItem {
 	return me
 }
 
+// Retrieves the text with TVM_GETITEM.
 func (me *TreeViewItem) Text() string {
 	buf := make([]uint16, 256) // arbitrary
 	tvi := win.TVITEMEX{

@@ -20,14 +20,17 @@ type ListViewSubItem struct {
 	index uint32
 }
 
+// Returns the column index of this subitem.
 func (me *ListViewSubItem) Index() uint32 {
 	return me.index
 }
 
+// Returns the ListViewItem to which this subitem belongs.
 func (me *ListViewSubItem) OwnerItem() *ListViewItem {
 	return me.item
 }
 
+// Sends LVM_SETITEMTEXT to change the text.
 func (me *ListViewSubItem) SetText(text string) *ListViewSubItem {
 	lvi := win.LVITEM{
 		ISubItem: int32(me.index),
@@ -41,6 +44,7 @@ func (me *ListViewSubItem) SetText(text string) *ListViewSubItem {
 	return me
 }
 
+// Sends LVM_GETITEMTEXT to retrieve the text.
 func (me *ListViewSubItem) Text() string {
 	buf := make([]uint16, 256) // arbitrary
 	lvi := win.LVITEM{

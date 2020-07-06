@@ -128,6 +128,7 @@ func (me *ListView) CreateReport(parent Window, x, y int32,
 		co.LVS_REPORT|co.LVS_SHOWSELALWAYS)
 }
 
+// Retrieves the column at the given index.
 func (me *ListView) Column(index uint32) *ListViewColumn {
 	numCols := me.ColumnCount()
 	if index >= numCols {
@@ -139,6 +140,7 @@ func (me *ListView) Column(index uint32) *ListViewColumn {
 	}
 }
 
+// Retrieves the number of columns with LVM_GETHEADER and HDM_GETITEMCOUNT.
 func (me *ListView) ColumnCount() uint32 {
 	hHeader := win.HWND(me.sendLvmMessage(co.LVM_GETHEADER, 0, 0))
 	if hHeader == 0 {
@@ -152,6 +154,7 @@ func (me *ListView) ColumnCount() uint32 {
 	return uint32(count)
 }
 
+// Deletes all items with LVM_DELETEALLITEMS.
 func (me *ListView) DeleteAllItems() *ListView {
 	ret := me.sendLvmMessage(co.LVM_DELETEALLITEMS, 0, 0)
 	if ret == 0 {
@@ -176,6 +179,14 @@ func (me *ListView) HitTest(pos win.POINT) *win.LVHITTESTINFO {
 	return lvhti
 }
 
+// Retrieves the associated HIMAGELIST by sending LVM_GETIMAGELIST.
+func (me *ListView) ImageList(typeImgList co.LVSIL) win.HIMAGELIST {
+	return win.HIMAGELIST(
+		me.sendLvmMessage(co.LVM_GETIMAGELIST, win.WPARAM(typeImgList), 0),
+	)
+}
+
+// Retrieves the item at the given index.
 func (me *ListView) Item(index uint32) *ListViewItem {
 	numItems := me.ItemCount()
 	if index >= numItems {
@@ -187,6 +198,7 @@ func (me *ListView) Item(index uint32) *ListViewItem {
 	}
 }
 
+// Retrieves the number of items with LVM_GETITEMCOUNT.
 func (me *ListView) ItemCount() uint32 {
 	count := me.sendLvmMessage(co.LVM_GETITEMCOUNT, 0, 0)
 	if int32(count) == -1 {
@@ -215,6 +227,7 @@ func (me *ListView) Scroll(pxHorz, pxVert int32) *ListView {
 	return me
 }
 
+// Retrieves the number of selected items with LVM_GETSELECTEDCOUNT.
 func (me *ListView) SelectedItemCount() uint32 {
 	count := me.sendLvmMessage(co.LVM_GETSELECTEDCOUNT, 0, 0)
 	if int32(count) == -1 {
@@ -223,11 +236,13 @@ func (me *ListView) SelectedItemCount() uint32 {
 	return uint32(count)
 }
 
+// Sends LVM_SETEXTENDEDLISTVIEWSTYLE.
 func (me *ListView) SetExtendedStyle(exStyle co.LVS_EX) *ListView {
 	me.sendLvmMessage(co.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, win.LPARAM(exStyle))
 	return me
 }
 
+// Sends LVM_SETIMAGELIST.
 // Returns image list previously associated.
 func (me *ListView) SetImageList(typeImgList co.LVSIL,
 	hImgList win.HIMAGELIST) win.HIMAGELIST {
@@ -238,6 +253,7 @@ func (me *ListView) SetImageList(typeImgList co.LVSIL,
 	)
 }
 
+// Sends WM_SETREDRAW to enable or disable UI updates.
 func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
 	wp := 0
 	if allowRedraw {
@@ -247,6 +263,7 @@ func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
 	return me
 }
 
+// Sends LVM_SETITEMSTATE with index -1, which affects all items.
 func (me *ListView) SetStateAllItems(
 	state co.LVIS, stateMask co.LVIS) *ListView {
 
@@ -259,6 +276,7 @@ func (me *ListView) SetStateAllItems(
 	return me
 }
 
+// Sends LVM_SETVIEW.
 func (me *ListView) SetView(view co.LV_VIEW) *ListView {
 	if int32(me.sendLvmMessage(co.LVM_SETVIEW, 0, 0)) == -1 {
 		panic("LVM_SETVIEW failed.")
@@ -281,6 +299,7 @@ func (me *ListView) TopIndex() uint32 {
 	return uint32(me.sendLvmMessage(co.LVM_GETTOPINDEX, 0, 0))
 }
 
+// Retrieves current view with LVM_GETVIEW.
 func (me *ListView) View() co.LV_VIEW {
 	return co.LV_VIEW(me.sendLvmMessage(co.LVM_GETVIEW, 0, 0))
 }

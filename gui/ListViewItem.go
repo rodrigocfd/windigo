@@ -56,6 +56,7 @@ func (me *ListViewItem) IconIndex() uint32 {
 	return uint32(lvi.IImage)
 }
 
+// Returns the index of this item.
 func (me *ListViewItem) Index() uint32 {
 	return me.index
 }
@@ -73,6 +74,7 @@ func (me *ListViewItem) NextItem(relationship co.LVNI) *ListViewItem {
 	}
 }
 
+// Returns the ListView to which this item belongs.
 func (me *ListViewItem) Owner() *ListView {
 	return me.owner
 }
@@ -135,6 +137,7 @@ func (me *ListViewItem) SetParam(lParam win.LPARAM) *ListViewItem {
 	return me
 }
 
+// Changes the item state with LVM_SETITEMSTATE.
 func (me *ListViewItem) SetState(
 	state co.LVIS, stateMask co.LVIS) *ListViewItem {
 
@@ -150,11 +153,13 @@ func (me *ListViewItem) SetState(
 	return me
 }
 
+// Sends LVM_SETITEMTEXT to change text of first column.
 func (me *ListViewItem) SetText(text string) *ListViewItem {
 	me.SubItem(0).SetText(text)
 	return me
 }
 
+// Retrieves item state with LVM_GETITEMSTATE.
 func (me *ListViewItem) State() co.LVIS {
 	return co.LVIS(
 		me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
@@ -162,6 +167,7 @@ func (me *ListViewItem) State() co.LVIS {
 	)
 }
 
+// Retrieves the subitem at the given column index.
 func (me *ListViewItem) SubItem(index uint32) *ListViewSubItem {
 	numCols := me.owner.ColumnCount()
 	if index >= numCols {
@@ -173,6 +179,7 @@ func (me *ListViewItem) SubItem(index uint32) *ListViewSubItem {
 	}
 }
 
+// Sends LVM_GETITEMTEXT to retrieve the text of the first column.
 func (me *ListViewItem) Text() string {
 	return me.SubItem(0).Text()
 }
