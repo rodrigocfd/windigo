@@ -21,12 +21,6 @@ type WindowControl struct {
 	setup windowControlSetup // Parameters that will be used to create the window.
 }
 
-// Sets a custom ID for this control, otherwise it will have an automatically
-// generated ID.
-func (me *WindowControl) SetId(customId int32) {
-	me.controlId.SetId(customId)
-}
-
 // Exposes parameters that will be used to create the child window control.
 func (me *WindowControl) Setup() *windowControlSetup {
 	if me.windowBase.Hwnd() != 0 {

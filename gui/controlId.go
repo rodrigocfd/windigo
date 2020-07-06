@@ -6,6 +6,10 @@
 
 package gui
 
+import (
+	"fmt"
+)
+
 var (
 	globalBaseCtrlId int32 = 1000 // arbitrary, taken from Visual Studio resource editor
 )
@@ -19,7 +23,7 @@ type controlId struct {
 // ID will be set.
 func (me *controlId) SetId(customId int32) {
 	if me.id != 0 {
-		panic("Can't set control ID now, it must be the first thing you do.")
+		panic(fmt.Sprintf("Can't set control ID %d, already set.", customId))
 	}
 	me.id = customId
 }

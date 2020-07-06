@@ -35,12 +35,6 @@ func (me *controlNativeBase) Hwnd() win.HWND {
 	return me.hwnd
 }
 
-// Sets a custom ID for this control, otherwise it will have an automatically
-// generated ID.
-func (me *controlNativeBase) SetId(customId int32) {
-	me.controlId.SetId(customId)
-}
-
 // Exposes all the control subclass methods that can be handled.
 // The subclass will be installed in create() if at least 1 message was added.
 func (me *controlNativeBase) OnSubclassMsg() *windowDepotMsg {
