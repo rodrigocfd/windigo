@@ -25,42 +25,15 @@ type iUnknownVtbl struct {
 	Release        uintptr
 }
 
-func (v *IUnknown) queryInterface(iid *co.GUID) *IUnknown {
-	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(v.lpVtbl))
-	iidFlip := cloneFlipLastUint64(iid)
-	retIUnk := &IUnknown{}
-
-	ret, _, _ := syscall.Syscall(lpVtbl.AddRef, 3,
-		uintptr(unsafe.Pointer(v)), uintptr(unsafe.Pointer(&iidFlip)),
-		uintptr(unsafe.Pointer(&retIUnk)))
-
-	if co.ERROR(ret) != co.ERROR_S_OK {
-		lerr := syscall.Errno(ret)
-		panic(fmt.Sprintf("IUnknown.QueryInterface failed: %d %s",
-			lerr, lerr.Error()))
-	}
-	return retIUnk
-}
-
-func (v *IUnknown) AddRef() uint32 {
-	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(v.lpVtbl))
-	ret, _, _ := syscall.Syscall(lpVtbl.AddRef, 1,
-		uintptr(unsafe.Pointer(v)), 0, 0)
-	return uint32(ret)
-}
-
-func (v *IUnknown) Release() uint32 {
-	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(v.lpVtbl))
-	ret, _, _ := syscall.Syscall(lpVtbl.Release, 1,
-		uintptr(unsafe.Pointer(v)), 0, 0)
-	return uint32(ret)
-}
-
 // Creates any COM interface, returning the base IUnknown.
 // To retrieve the other interface itself, cast the inner lpVtbl.
-func coCreateInstance(clsid *co.GUID, iid *co.GUID) *IUnknown {
+func (me *IUnknown) coCreateInstance(clsid *co.GUID, iid *co.GUID) {
+	if me.lpVtbl != 0 {
+		panic("Trying to CoCreateInstance() an IUnknown already created.")
+	}
+
 	if iid == nil {
-		iid = &co.Guid_IUnknown
+		iid = &co.Guid_IUnknown // if iid is not passed, assume IUnknown
 	}
 
 	clsidFlip := cloneFlipLastUint64(clsid)
@@ -77,7 +50,40 @@ func coCreateInstance(clsid *co.GUID, iid *co.GUID) *IUnknown {
 		panic(fmt.Sprintf("CoCreateInstance failed: %d %s",
 			lerr, lerr.Error()))
 	}
+	*me = *retIUnk
+}
+
+// Queries any COm interface, returning the base IUnknown.
+// To retrieve the other interface itself, cast the inner lpVtbl.
+func (me *IUnknown) queryInterface(iid *co.GUID) *IUnknown {
+	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(me.lpVtbl))
+	iidFlip := cloneFlipLastUint64(iid)
+	retIUnk := &IUnknown{}
+
+	ret, _, _ := syscall.Syscall(lpVtbl.AddRef, 3,
+		uintptr(unsafe.Pointer(me)), uintptr(unsafe.Pointer(&iidFlip)),
+		uintptr(unsafe.Pointer(&retIUnk)))
+
+	if co.ERROR(ret) != co.ERROR_S_OK {
+		lerr := syscall.Errno(ret)
+		panic(fmt.Sprintf("IUnknown.QueryInterface failed: %d %s",
+			lerr, lerr.Error()))
+	}
 	return retIUnk
+}
+
+func (me *IUnknown) AddRef() uint32 {
+	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(me.lpVtbl))
+	ret, _, _ := syscall.Syscall(lpVtbl.AddRef, 1,
+		uintptr(unsafe.Pointer(me)), 0, 0)
+	return uint32(ret)
+}
+
+func (me *IUnknown) Release() uint32 {
+	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(me.lpVtbl))
+	ret, _, _ := syscall.Syscall(lpVtbl.Release, 1,
+		uintptr(unsafe.Pointer(me)), 0, 0)
+	return uint32(ret)
 }
 
 // Returns a new GUID with the last uint64 member bytes flipped.

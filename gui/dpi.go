@@ -11,8 +11,6 @@ import (
 	"wingows/win"
 )
 
-//------------------------------------------------------------------------------
-
 var globalDpi = win.POINT{X: 0, Y: 0} // set once by multiplyByDpi
 
 // Multiplies position and size by current DPI factor.

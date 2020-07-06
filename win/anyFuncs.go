@@ -54,6 +54,7 @@ func loByte(value uint16) uint8  { return uint8(value) }
 
 //------------------------------------------------------------------------------
 
+// Don't forget to call CoUninitialize().
 func CoInitializeEx(dwCoInit co.COINIT) {
 	ret, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
 		0, uintptr(dwCoInit), 0)

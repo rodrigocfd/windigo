@@ -59,23 +59,20 @@ type iTaskbarList3Vtbl struct {
 	SetThumbnailClip      uintptr
 }
 
-func CoCreateITaskbarList3() *ITaskbarList3 {
-	iUnk := coCreateInstance(&co.Guid_ITaskbarList, &co.Guid_ITaskbarList3)
-	return &ITaskbarList3{
-		iTaskbarList2: iTaskbarList2{
-			iTaskbarList: iTaskbarList{
-				IUnknown: *iUnk,
-			},
-		},
+func (me *ITaskbarList3) coCreateInstance() {
+	if me.lpVtbl == 0 { // if not created yet
+		me.IUnknown.coCreateInstance(
+			&co.Guid_ITaskbarList, &co.Guid_ITaskbarList3)
 	}
 }
 
-func (v *ITaskbarList3) SetProgressValue(hwnd HWND,
+func (me *ITaskbarList3) SetProgressValue(hwnd HWND,
 	ullCompleted, ullTotal uint64) {
 
-	lpVtbl := (*iTaskbarList3Vtbl)(unsafe.Pointer(v.lpVtbl))
+	me.coCreateInstance()
+	lpVtbl := (*iTaskbarList3Vtbl)(unsafe.Pointer(me.lpVtbl))
 	ret, _, _ := syscall.Syscall6(lpVtbl.SetProgressValue, 4,
-		uintptr(unsafe.Pointer(v)), uintptr(hwnd),
+		uintptr(unsafe.Pointer(me)), uintptr(hwnd),
 		uintptr(ullCompleted), uintptr(ullTotal),
 		0, 0)
 	if co.ERROR(ret) != co.ERROR_S_OK {
@@ -85,10 +82,11 @@ func (v *ITaskbarList3) SetProgressValue(hwnd HWND,
 	}
 }
 
-func (v *ITaskbarList3) SetProgressState(hwnd HWND, tbpFlags co.TBPF) {
-	lpVtbl := (*iTaskbarList3Vtbl)(unsafe.Pointer(v.lpVtbl))
+func (me *ITaskbarList3) SetProgressState(hwnd HWND, tbpFlags co.TBPF) {
+	me.coCreateInstance()
+	lpVtbl := (*iTaskbarList3Vtbl)(unsafe.Pointer(me.lpVtbl))
 	ret, _, _ := syscall.Syscall(lpVtbl.SetProgressState, 3,
-		uintptr(unsafe.Pointer(v)), uintptr(hwnd), uintptr(tbpFlags))
+		uintptr(unsafe.Pointer(me)), uintptr(hwnd), uintptr(tbpFlags))
 	if co.ERROR(ret) != co.ERROR_S_OK {
 		lerr := syscall.Errno(ret)
 		panic(fmt.Sprintf("ITaskbarList3.SetProgressState failed: %d %s",
