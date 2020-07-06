@@ -66,7 +66,7 @@ type LVITEM struct {
 	PszText    *uint16
 	CchTextMax int32
 	IImage     int32
-	LParam     uintptr
+	LParam     LPARAM
 	IIndent    int32
 	IGroupId   int32
 	CColumns   uint32

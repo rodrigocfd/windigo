@@ -205,6 +205,16 @@ func (me *ListView) NextItem(relationship co.LVNI) *ListViewItem {
 	return allItems.NextItem(relationship)
 }
 
+// Sends LVM_SCROLL.
+func (me *ListView) Scroll(pxHorz, pxVert int32) *ListView {
+	ret := me.sendLvmMessage(co.LVM_SCROLL,
+		win.WPARAM(pxHorz), win.LPARAM(pxVert))
+	if ret == 0 {
+		panic("LVM_SCROLL failed.")
+	}
+	return me
+}
+
 func (me *ListView) SelectedItemCount() uint32 {
 	count := me.sendLvmMessage(co.LVM_GETSELECTEDCOUNT, 0, 0)
 	if int32(count) == -1 {
@@ -264,6 +274,11 @@ func (me *ListView) StringWidth(text string) uint32 {
 		panic("LVM_GETSTRINGWIDTH failed.")
 	}
 	return uint32(ret)
+}
+
+// Retrieves the index of the topmost visible item with LVM_GETTOPINDEX.
+func (me *ListView) TopIndex() uint32 {
+	return uint32(me.sendLvmMessage(co.LVM_GETTOPINDEX, 0, 0))
 }
 
 func (me *ListView) View() co.LV_VIEW {

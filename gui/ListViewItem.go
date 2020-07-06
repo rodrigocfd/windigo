@@ -31,6 +31,18 @@ func (me *ListViewItem) Delete() {
 	}
 }
 
+// Sends LVM_ENSUREVISIBLE for this item.
+// Scrolls the list view if necessary.
+func (me *ListViewItem) EnsureVisible() *ListViewItem {
+	ret := me.owner.sendLvmMessage(co.LVM_ENSUREVISIBLE,
+		win.WPARAM(me.index), win.LPARAM(1)) // always entirely visible
+	if ret == 0 {
+		panic("LVM_ENSUREVISIBLE failed.")
+	}
+	return me
+}
+
+// Retrieves the image index with LVM_GETITEM.
 func (me *ListViewItem) IconIndex() uint32 {
 	lvi := win.LVITEM{
 		IItem: int32(me.index),
@@ -65,7 +77,22 @@ func (me *ListViewItem) Owner() *ListView {
 	return me.owner
 }
 
-// Sends LVM_GETITEMRECT. Retrieved coordinates are relative to list view.
+// Retrieves the LPARAM with LVM_GETITEM.
+func (me *ListViewItem) Param() win.LPARAM {
+	lvi := win.LVITEM{
+		IItem: int32(me.index),
+		Mask:  co.LVIF_PARAM,
+	}
+	ret := me.owner.sendLvmMessage(co.LVM_GETITEM,
+		0, win.LPARAM(unsafe.Pointer(&lvi)))
+	if ret == 0 {
+		panic("LVM_GETITEM failed.")
+	}
+	return lvi.LParam
+}
+
+// Sends LVM_GETITEMRECT for this item.
+// Retrieved coordinates are relative to list view.
 func (me *ListViewItem) Rect(portion co.LVIR) *win.RECT {
 	rcItem := &win.RECT{
 		Left: int32(portion),
@@ -78,11 +105,27 @@ func (me *ListViewItem) Rect(portion co.LVIR) *win.RECT {
 	return rcItem
 }
 
+// Sets the image index with LVM_SETITEM.
 func (me *ListViewItem) SetIconIndex(index uint32) *ListViewItem {
 	lvi := win.LVITEM{
 		IItem:  int32(me.index),
 		Mask:   co.LVIF_IMAGE,
 		IImage: int32(index),
+	}
+	ret := me.owner.sendLvmMessage(co.LVM_SETITEM,
+		0, win.LPARAM(unsafe.Pointer(&lvi)))
+	if ret == 0 {
+		panic("LVM_GETITEM failed.")
+	}
+	return me
+}
+
+// Sets the LPARAM with LVM_SETITEM.
+func (me *ListViewItem) SetParam(lParam win.LPARAM) *ListViewItem {
+	lvi := win.LVITEM{
+		IItem:  int32(me.index),
+		Mask:   co.LVIF_PARAM,
+		LParam: lParam,
 	}
 	ret := me.owner.sendLvmMessage(co.LVM_SETITEM,
 		0, win.LPARAM(unsafe.Pointer(&lvi)))
