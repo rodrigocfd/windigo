@@ -14,8 +14,6 @@ import (
 )
 
 // Native list view control.
-// Can be default-initialized.
-// Call one of the create methods during parent's WM_CREATE.
 type ListView struct {
 	controlNativeBase
 }

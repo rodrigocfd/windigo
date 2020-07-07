@@ -13,8 +13,6 @@ import (
 )
 
 // Native edit control (textbox).
-// Can be default-initialized.
-// Call one of the create methods during parent's WM_CREATE.
 type Edit struct {
 	controlNativeBase
 }

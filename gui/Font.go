@@ -14,8 +14,7 @@ import (
 	"wingows/win"
 )
 
-// Manages a font resource. Must be default-initialized, then call one of the
-// creation methods on the object.
+// Manages a font resource.
 type Font struct {
 	hFont win.HFONT
 }
