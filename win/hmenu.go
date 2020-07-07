@@ -183,6 +183,7 @@ func (hMenu HMENU) SetMenuItemInfo(item int32, fByPosition bool,
 	}
 }
 
+// This function will block until the menu disappears.
 func (hMenu HMENU) TrackPopupMenu(uFlags co.TPM, x, y int32, hWnd HWND) int32 {
 	ret, _, lerr := syscall.Syscall9(proc.TrackPopupMenu.Addr(), 7,
 		uintptr(hMenu), uintptr(uFlags), uintptr(x), uintptr(y), 0, uintptr(hWnd),
