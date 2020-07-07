@@ -7,6 +7,7 @@
 package gui
 
 import (
+	"fmt"
 	"strings"
 	"unsafe"
 	"wingows/co"
@@ -93,7 +94,8 @@ func (me *Menu) Hmenu() win.HMENU {
 }
 
 // Returns the command ID of the given item hierarchy, pipe-separated.
-// Example: IdOf("&File|&Open").
+// Don't pass accelerator ampersands in the string.
+// Example: IdOf("File|Open").
 func (me *Menu) IdOf(path string) int32 {
 	entries := strings.Split(path, "|")
 	lastSubmenu := me
@@ -106,26 +108,30 @@ func (me *Menu) IdOf(path string) int32 {
 	return -1 // not found
 }
 
-// Returns the first item with the given string, or nil.
-// Remember the accelerator ampersands in the string, if any.
+// Returns the first item with the given string, or panics.
+// Don't pass accelerator ampersands in the string.
 func (me *Menu) Item(text string) *menuItem {
 	for _, child := range me.children {
-		if item, ok := child.(*menuItem); ok && item.text == text {
-			return item
+		if item, ok := child.(*menuItem); ok {
+			if removeAccelAmpersands(item.text) == text {
+				return item
+			}
 		}
 	}
-	return nil
+	panic(fmt.Sprintf("Inexistent menu item text: %s", text))
 }
 
-// Returns the first submenu with the given string, or nil.
-// Remember the accelerator ampersands in the string, if any.
+// Returns the first submenu with the given string, or panics.
+// Don't pass accelerator ampersands in the string.
 func (me *Menu) Submenu(text string) *Menu {
 	for _, child := range me.children {
-		if submenu, ok := child.(*Menu); ok && submenu.text == text {
-			return submenu
+		if submenu, ok := child.(*Menu); ok {
+			if removeAccelAmpersands(submenu.text) == text {
+				return submenu
+			}
 		}
 	}
-	return nil
+	panic(fmt.Sprintf("Inexistent submenu text: %s", text))
 }
 
 //------------------------------------------------------------------------------

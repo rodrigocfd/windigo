@@ -131,15 +131,18 @@ func calcTextBoundBox(hReferenceDc win.HWND, text string,
 
 // "&He && she" becomes "He & she".
 func removeAccelAmpersands(text string) string {
+	runes := []rune(text)
 	buf := strings.Builder{}
-	for i := 0; i < len(text)-1; i++ {
-		if text[i] == '&' && text[i+1] != '&' {
+	buf.Grow(len(text)) // prealloc for performance
+
+	for i := 0; i < len(runes)-1; i++ {
+		if runes[i] == '&' && runes[i+1] != '&' {
 			continue
 		}
-		buf.WriteByte(text[i])
+		buf.WriteRune(runes[i])
 	}
-	if text[len(text)-1] != '&' {
-		buf.WriteByte(text[len(text)-1])
+	if runes[len(runes)-1] != '&' {
+		buf.WriteRune(runes[len(runes)-1])
 	}
 	return buf.String()
 }
