@@ -317,13 +317,15 @@ func (me *ListView) installSubclass() {
 	me.OnSubclassMsg().WmRButtonDown(func(p wm.RButtonDown) {
 		// WM_RBUTTONUP doesn't work, only NM_RCLICK on parent.
 		// https://stackoverflow.com/a/30206896
-		me.showContextMenu(me.hMenuContext, true, p.HasCtrl(), p.HasShift())
+		me.showContextMenu(true, p.HasCtrl(), p.HasShift())
 	})
 
 	me.OnSubclassMsg().WmGetDlgCode(func(p wm.GetDlgCode) co.DLGC {
 		if !p.IsQuery() && p.VirtualKeyCode() == 'A' && p.HasCtrl() { // Ctrl+A to select all items
 			me.SetStateAllItems(co.LVIS_SELECTED, co.LVIS_SELECTED)
 			return co.DLGC_WANTCHARS
+		} else if !p.IsQuery() && p.VirtualKeyCode() == co.VK_APPS { // context menu key
+			me.showContextMenu(false, p.HasCtrl(), p.HasShift())
 		}
 		return co.DLGC(
 			me.Hwnd().DefSubclassProc(co.WM_GETDLGCODE, p.WParam, p.LParam),
@@ -333,8 +335,10 @@ func (me *ListView) installSubclass() {
 
 // Shows the popup menu anchored at cursor pos.
 // This function will block until the menu disappears.
-func (me *ListView) showContextMenu(hMenu win.HMENU,
-	followCursor, hasCtrl, hasShift bool) {
+func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
+	if me.hMenuContext == 0 {
+		return
+	}
 
 	menuPos := win.POINT{} // menu anchor coords, relative to list view
 
@@ -370,7 +374,7 @@ func (me *ListView) showContextMenu(hMenu win.HMENU,
 	}
 
 	fakeMenuStrip := menuStrip{
-		hMenu: hMenu, // note: no janitor member
+		hMenu: me.hMenuContext, // note: no janitor member
 	}
 	fakeMenuStrip.ShowAtPoint(menuPos, me.Hwnd().GetParent(), me.Hwnd())
 }
