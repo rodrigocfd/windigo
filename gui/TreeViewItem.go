@@ -22,12 +22,13 @@ type TreeViewItem struct {
 
 // Adds a new child item; returns the newly inserted item.
 func (me *TreeViewItem) AddChild(text string) *TreeViewItem {
+	textBuf := win.StrToSlice(text)
 	tvi := win.TVINSERTSTRUCT{
 		HParent:      me.hTreeItem,
 		HInsertAfter: win.HTREEITEM(co.HTREEITEM_LAST),
 		Itemex: win.TVITEMEX{
 			Mask:    co.TVIF_TEXT,
-			PszText: win.StrToPtr(text),
+			PszText: uintptr(unsafe.Pointer(&textBuf[0])),
 		},
 	}
 	ret := me.owner.sendTvmMessage(co.TVM_INSERTITEM,
@@ -134,10 +135,11 @@ func (me *TreeViewItem) SetParam(lp win.LPARAM) *TreeViewItem {
 
 // Sets the text with TVM_SETITEM.
 func (me *TreeViewItem) SetText(text string) *TreeViewItem {
+	textBuf := win.StrToSlice(text)
 	tvi := win.TVITEMEX{
 		HItem:   me.hTreeItem,
 		Mask:    co.TVIF_TEXT,
-		PszText: win.StrToPtr(text),
+		PszText: uintptr(unsafe.Pointer(&textBuf[0])),
 	}
 	ret := me.owner.sendTvmMessage(co.TVM_SETITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))
@@ -149,11 +151,11 @@ func (me *TreeViewItem) SetText(text string) *TreeViewItem {
 
 // Retrieves the text with TVM_GETITEM.
 func (me *TreeViewItem) Text() string {
-	buf := make([]uint16, 256) // arbitrary
+	buf := [256]uint16{} // arbitrary
 	tvi := win.TVITEMEX{
 		HItem:      me.hTreeItem,
 		Mask:       co.TVIF_TEXT,
-		PszText:    &buf[0],
+		PszText:    uintptr(unsafe.Pointer(&buf[0])),
 		CchTextMax: int32(len(buf)),
 	}
 	ret := me.owner.sendTvmMessage(co.TVM_GETITEM,
@@ -161,5 +163,5 @@ func (me *TreeViewItem) Text() string {
 	if ret == 0 {
 		panic("TVM_GETITEM failed.")
 	}
-	return syscall.UTF16ToString(buf)
+	return syscall.UTF16ToString(buf[:])
 }

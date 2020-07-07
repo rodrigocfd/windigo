@@ -23,10 +23,22 @@ func StrToPtr(s string) *uint16 {
 	// https://stackoverflow.com/a/51188315
 	pstr, err := syscall.UTF16PtrFromString(s)
 	if err != nil {
-		panic(fmt.Sprintf("ToUtf16Ptr failed \"%s\": %s",
+		panic(fmt.Sprintf("StrToPtr failed \"%s\": %s",
 			s, err))
 	}
 	return pstr
+}
+
+// Returns a null-terminated []uint16.
+// Wrapper to syscall.UTF16FromString().
+// Panics on error.
+func StrToSlice(s string) []uint16 {
+	sli, err := syscall.UTF16FromString(s)
+	if err != nil {
+		panic(fmt.Sprintf("StrToSlice failed \"%s\": %s",
+			s, err))
+	}
+	return sli
 }
 
 // Returns *uint16, or nil of empty string.

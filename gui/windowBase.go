@@ -61,7 +61,8 @@ func (me *windowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 		// https://devblogs.microsoft.com/oldnewthing/20150429-00/?p=44984
 		// https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
 		if co.ERROR(lerr) == co.ERROR_CLASS_ALREADY_EXISTS {
-			atom = wcx.HInstance.GetClassInfoEx(wcx.LpszClassName, wcx)
+			atom = wcx.HInstance.GetClassInfoEx(
+				(*uint16)(unsafe.Pointer(wcx.LpszClassName)), wcx)
 		} else {
 			panic(fmt.Sprintf("RegisterClassEx failed with atom %d: %d %s",
 				atom, lerr, lerr.Error()))
@@ -118,6 +119,7 @@ func wndProc(hwnd win.HWND, msg co.WM,
 
 	// If the retrieved *windowBase stays here, the GC will collect it.
 	// Sending it away will prevent the GC collection.
+	// https://stackoverflow.com/a/51188315
 	hwnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 
 	// If no pointer stored, then no processing is done.

@@ -32,9 +32,10 @@ func (me *ListViewSubItem) OwnerItem() *ListViewItem {
 
 // Sends LVM_SETITEMTEXT to change the text.
 func (me *ListViewSubItem) SetText(text string) *ListViewSubItem {
+	textBuf := win.StrToSlice(text)
 	lvi := win.LVITEM{
 		ISubItem: int32(me.index),
-		PszText:  win.StrToPtr(text),
+		PszText:  uintptr(unsafe.Pointer(&textBuf[0])),
 	}
 	ret := me.item.owner.sendLvmMessage(co.LVM_SETITEMTEXT,
 		win.WPARAM(me.item.index), win.LPARAM(unsafe.Pointer(&lvi)))
@@ -46,10 +47,10 @@ func (me *ListViewSubItem) SetText(text string) *ListViewSubItem {
 
 // Sends LVM_GETITEMTEXT to retrieve the text.
 func (me *ListViewSubItem) Text() string {
-	buf := make([]uint16, 256) // arbitrary
+	buf := [256]uint16{} // arbitrary
 	lvi := win.LVITEM{
 		ISubItem:   int32(me.index),
-		PszText:    &buf[0],
+		PszText:    uintptr(unsafe.Pointer(&buf[0])),
 		CchTextMax: int32(len(buf)),
 	}
 	ret := me.item.owner.sendLvmMessage(co.LVM_GETITEMTEXT,
@@ -57,5 +58,5 @@ func (me *ListViewSubItem) Text() string {
 	if ret < 0 {
 		panic("LVM_GETITEMTEXT failed.")
 	}
-	return syscall.UTF16ToString(buf)
+	return syscall.UTF16ToString(buf[:])
 }

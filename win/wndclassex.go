@@ -24,8 +24,8 @@ type WNDCLASSEX struct {
 	HIcon         HICON
 	HCursor       HCURSOR
 	HbrBackground HBRUSH
-	LpszMenuName  *uint16
-	LpszClassName *uint16
+	LpszMenuName  uintptr // LPCWSTR
+	LpszClassName uintptr // LPCWSTR
 	HIconSm       HICON
 }
 

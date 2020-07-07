@@ -40,10 +40,11 @@ func (me *ListViewColumn) Index() uint32 {
 }
 
 func (me *ListViewColumn) SetText(text string) *ListViewColumn {
+	textBuf := win.StrToSlice(text)
 	lvc := win.LVCOLUMN{
 		ISubItem: int32(me.index),
 		Mask:     co.LVCF_TEXT,
-		PszText:  win.StrToPtr(text),
+		PszText:  uintptr(unsafe.Pointer(&textBuf[0])),
 	}
 	ret := me.owner.sendLvmMessage(co.LVM_SETCOLUMN,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvc)))
@@ -64,7 +65,7 @@ func (me *ListViewColumn) Text() string {
 	lvc := win.LVCOLUMN{
 		ISubItem:   int32(me.index),
 		Mask:       co.LVCF_TEXT,
-		PszText:    &buf[0],
+		PszText:    uintptr(unsafe.Pointer(&buf[0])),
 		CchTextMax: int32(len(buf)),
 	}
 	ret := me.owner.sendLvmMessage(co.LVM_GETCOLUMN,

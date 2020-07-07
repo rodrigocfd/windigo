@@ -23,8 +23,8 @@ type CREATESTRUCT struct {
 	HwndParent     HWND
 	Cy, Cx, Y, X   int32
 	Style          co.WS
-	LpszName       *uint16
-	LpszClass      *uint16
+	LpszName       uintptr // LPCWSTR
+	LpszClass      uintptr // LPCWSTR
 	ExStyle        co.WS_EX
 }
 

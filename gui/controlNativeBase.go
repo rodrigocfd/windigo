@@ -80,6 +80,7 @@ func subclassProc(hwnd win.HWND, msg co.WM,
 
 	// If the retrieved *nativeControlBase stays here, the GC will collect it.
 	// Sending it away will prevent the GC collection.
+	// https://stackoverflow.com/a/51188315
 	hwnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 
 	if pMe != nil && pMe.hwnd != 0 {

@@ -22,9 +22,10 @@ type ListView struct {
 
 // Adds a new column; returns the newly inserted column.
 func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
+	textBuf := win.StrToSlice(text)
 	lvc := win.LVCOLUMN{
 		Mask:    co.LVCF_TEXT | co.LVCF_WIDTH,
-		PszText: win.StrToPtr(text),
+		PszText: uintptr(unsafe.Pointer(&textBuf[0])),
 		Cx:      int32(width),
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTCOLUMN, 0xFFFF,
@@ -51,9 +52,10 @@ func (me *ListView) AddColumns(texts []string, widths []uint32) *ListView {
 
 // Adds a new item; returns the newly inserted item.
 func (me *ListView) AddItem(text string) *ListViewItem {
+	textBuf := win.StrToSlice(text)
 	lvi := win.LVITEM{
 		Mask:    co.LVIF_TEXT,
-		PszText: win.StrToPtr(text),
+		PszText: uintptr(unsafe.Pointer(&textBuf[0])),
 		IItem:   0x0FFFFFFF, // insert as the last one
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTITEM, 0,
@@ -72,9 +74,10 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 func (me *ListView) AddItemWithIcon(text string,
 	iconIndex uint32) *ListViewItem {
 
+	textBuf := win.StrToSlice(text)
 	lvi := win.LVITEM{
 		Mask:    co.LVIF_TEXT | co.LVIF_IMAGE,
-		PszText: win.StrToPtr(text),
+		PszText: uintptr(unsafe.Pointer(&textBuf[0])),
 		IImage:  int32(iconIndex),
 		IItem:   0x0FFFFFFF, // insert as the last one
 	}

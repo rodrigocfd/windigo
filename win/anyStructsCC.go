@@ -31,7 +31,7 @@ type LVCOLUMN struct {
 	Mask       co.LVCF
 	Fmt        int32
 	Cx         int32
-	PszText    *uint16
+	PszText    uintptr // LPWSTR
 	CchTextMax int32
 	ISubItem   int32
 	IImage     int32
@@ -43,7 +43,7 @@ type LVCOLUMN struct {
 
 type LVFINDINFO struct {
 	Flags       co.LVFI
-	Psz         *uint16
+	Psz         uintptr // LPCWSTR
 	LParam      LPARAM
 	Pt          POINT
 	VkDirection uint32
@@ -63,15 +63,15 @@ type LVITEM struct {
 	ISubItem   int32
 	State      co.LVIS
 	StateMask  co.LVIS
-	PszText    *uint16
+	PszText    uintptr // LPWSTR
 	CchTextMax int32
 	IImage     int32
 	LParam     LPARAM
 	IIndent    int32
 	IGroupId   int32
 	CColumns   uint32
-	PuColumns  *uint32
-	PiColFmt   *int32
+	PuColumns  uintptr // *uint32
+	PiColFmt   uintptr // *int32
 	IGroup     int32
 }
 
@@ -134,7 +134,7 @@ type NMLVFINDITEM struct {
 type NMLVGETINFOTIP struct {
 	Hdr        NMHDR
 	DwFlags    co.LVGIT
-	PszText    *uint16
+	PszText    uintptr // LPWSTR
 	CchTextMax int32
 	IItem      int32
 	ISubItem   int32
@@ -179,7 +179,7 @@ type TVITEMEX struct {
 	HItem          HTREEITEM
 	State          co.TVIS
 	StateMask      co.TVIS
-	PszText        *uint16
+	PszText        uintptr // LPWSTR
 	CchTextMax     int32
 	IImage         int32
 	ISelectedImage int32
