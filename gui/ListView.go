@@ -319,6 +319,16 @@ func (me *ListView) installSubclass() {
 		// https://stackoverflow.com/a/30206896
 		me.showContextMenu(me.hMenuContext, true, p.HasCtrl(), p.HasShift())
 	})
+
+	me.OnSubclassMsg().WmGetDlgCode(func(p wm.GetDlgCode) co.DLGC {
+		if !p.IsQuery() && p.VirtualKeyCode() == 'A' && p.HasCtrl() { // Ctrl+A to select all items
+			me.SetStateAllItems(co.LVIS_SELECTED, co.LVIS_SELECTED)
+			return co.DLGC_WANTCHARS
+		}
+		return co.DLGC(
+			me.Hwnd().DefSubclassProc(co.WM_GETDLGCODE, p.WParam, p.LParam),
+		)
+	})
 }
 
 // Shows the popup menu anchored at cursor pos.

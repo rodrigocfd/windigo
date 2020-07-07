@@ -76,8 +76,12 @@ func (p DropFiles) Hdrop() win.HDROP { return win.HDROP(p.WParam) }
 
 type GetDlgCode struct{ Base }
 
-func (p GetDlgCode) VirtualKeyCode() co.VK { return co.VK(p.LParam) }
+func (p GetDlgCode) VirtualKeyCode() co.VK { return co.VK(p.WParam) }
+func (p GetDlgCode) IsQuery() bool         { return p.LParam == 0 }
 func (p GetDlgCode) Msg() *win.MSG         { return (*win.MSG)(unsafe.Pointer(p.LParam)) }
+func (p GetDlgCode) HasAlt() bool          { return (win.GetAsyncKeyState(co.VK_MENU) & 0x8000) != 0 }
+func (p GetDlgCode) HasCtrl() bool         { return (win.GetAsyncKeyState(co.VK_CONTROL) & 0x8000) != 0 }
+func (p GetDlgCode) HasShift() bool        { return (win.GetAsyncKeyState(co.VK_SHIFT) & 0x8000) != 0 }
 
 type Help struct{ Base }
 

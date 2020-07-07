@@ -85,6 +85,12 @@ func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
 }
 
+func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
+	ret, _, _ := syscall.Syscall(proc.GetAsyncKeyState.Addr(), 1,
+		uintptr(virtKeyCode), 0, 0)
+	return uint16(ret)
+}
+
 func GetCursorPos() POINT {
 	ptBuf := POINT{}
 	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,

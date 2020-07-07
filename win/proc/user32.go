@@ -38,6 +38,7 @@ var (
 	EnumChildWindows              = dllUser32.NewProc("EnumChildWindows")
 	EnumDisplayMonitors           = dllUser32.NewProc("EnumDisplayMonitors")
 	GetAncestor                   = dllUser32.NewProc("GetAncestor")
+	GetAsyncKeyState              = dllUser32.NewProc("GetAsyncKeyState")
 	GetClassInfoEx                = dllUser32.NewProc("GetClassInfoExW")
 	GetClientRect                 = dllUser32.NewProc("GetClientRect")
 	GetCursorPos                  = dllUser32.NewProc("GetCursorPos")
