@@ -61,6 +61,7 @@ func (me *ListViewItem) Index() uint32 {
 	return me.index
 }
 
+// Sends LVM_GETNEXTITEM from this item.
 // Returns nil if none.
 func (me *ListViewItem) NextItem(relationship co.LVNI) *ListViewItem {
 	ret := me.owner.sendLvmMessage(co.LVM_GETNEXTITEM,
@@ -100,7 +101,7 @@ func (me *ListViewItem) Rect(portion co.LVIR) *win.RECT {
 		Left: int32(portion),
 	}
 	ret := me.owner.sendLvmMessage(co.LVM_GETITEMRECT,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&rcItem)))
+		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(rcItem)))
 	if ret == 0 {
 		panic("LVM_GETITEMRECT failed.")
 	}

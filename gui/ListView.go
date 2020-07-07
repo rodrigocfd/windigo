@@ -10,12 +10,14 @@ import (
 	"fmt"
 	"unsafe"
 	"wingows/co"
+	"wingows/gui/wm"
 	"wingows/win"
 )
 
 // Native list view control.
 type ListView struct {
 	controlNativeBase
+	hMenuContext win.HMENU // if set, will be shown with right-click
 }
 
 // Adds a new column; returns the newly inserted column.
@@ -35,17 +37,6 @@ func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 		owner: me,
 		index: uint32(newIdx),
 	}
-}
-
-// Adds many columns at once.
-func (me *ListView) AddColumns(texts []string, widths []uint32) *ListView {
-	if len(texts) != len(widths) {
-		panic("Mismatch lenghts of texts and widths.")
-	}
-	for i := range texts {
-		me.AddColumn(texts[i], widths[i])
-	}
-	return me
 }
 
 // Adds a new item; returns the newly inserted item.
@@ -105,8 +96,9 @@ func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 	exStyles co.WS_EX, styles co.WS,
 	lvExStyles co.LVS_EX, lvStyles co.LVS) *ListView {
 
-	x, y, width, height = globalDpi.multiply(x, y, width, height)
+	me.installSubclass()
 
+	x, y, width, height = globalDpi.multiply(x, y, width, height)
 	me.controlNativeBase.create(exStyles,
 		"SysListView32", "", styles|co.WS(lvStyles),
 		x, y, width, height, parent)
@@ -175,13 +167,14 @@ func (me *ListView) GroupViewEnabled() bool {
 }
 
 // Sends LVM_HITTEST to determine the item at specified position, if any.
+// Pos coordinates must be relative to list view.
 func (me *ListView) HitTest(pos win.POINT) *win.LVHITTESTINFO {
 	lvhti := &win.LVHITTESTINFO{
 		Pt: pos,
 	}
 	wp := int32(-1) // Vista: retrieve iGroup and iSubItem
 	me.sendLvmMessage(co.LVM_HITTEST,
-		win.WPARAM(wp), win.LPARAM(unsafe.Pointer(&lvhti)))
+		win.WPARAM(wp), win.LPARAM(unsafe.Pointer(lvhti)))
 	return lvhti
 }
 
@@ -213,6 +206,7 @@ func (me *ListView) ItemCount() uint32 {
 	return uint32(count)
 }
 
+// Sends LVM_GETNEXTITEM with -1 as item index.
 // Returns nil if none.
 func (me *ListView) NextItem(relationship co.LVNI) *ListViewItem {
 	idx := int32(-1)
@@ -240,6 +234,12 @@ func (me *ListView) SelectedItemCount() uint32 {
 		panic("LVM_GETSELECTEDCOUNT failed.")
 	}
 	return uint32(count)
+}
+
+// Defines a menu to be shown as the context menu for the list view.
+func (me *ListView) SetContextMenu(hMenu win.HMENU) *ListView {
+	me.hMenuContext = hMenu
+	return me
 }
 
 // Sends LVM_SETEXTENDEDLISTVIEWSTYLE.
@@ -291,7 +291,8 @@ func (me *ListView) SetView(view co.LV_VIEW) *ListView {
 	return me
 }
 
-// Returns the width of a string using list view current font.
+// Returns the width of a string using list view current font, with
+// LVM_GETSTRINGWIDTH.
 func (me *ListView) StringWidth(text string) uint32 {
 	ret := me.sendLvmMessage(co.LVM_GETSTRINGWIDTH,
 		0, win.LPARAM(unsafe.Pointer(win.StrToPtr(text))))
@@ -309,6 +310,59 @@ func (me *ListView) TopIndex() uint32 {
 // Retrieves current view with LVM_GETVIEW.
 func (me *ListView) View() co.LV_VIEW {
 	return co.LV_VIEW(me.sendLvmMessage(co.LVM_GETVIEW, 0, 0))
+}
+
+// Adds all subclass message handlers; must be called before creation.
+func (me *ListView) installSubclass() {
+	me.OnSubclassMsg().WmRButtonDown(func(p wm.RButtonDown) {
+		// WM_RBUTTONUP doesn't work, only NM_RCLICK on parent.
+		// https://stackoverflow.com/a/30206896
+		me.showContextMenu(me.hMenuContext, true, p.HasCtrl(), p.HasShift())
+	})
+}
+
+// Shows the popup menu anchored at cursor pos.
+// This function will block until the menu disappears.
+func (me *ListView) showContextMenu(hMenu win.HMENU,
+	followCursor, hasCtrl, hasShift bool) {
+
+	menuPos := win.POINT{} // menu anchor coords, relative to list view
+
+	if followCursor { // usually when fired by a right-click
+		menuPos = win.GetCursorPos()         // relative to screen
+		me.Hwnd().ScreenToClientPt(&menuPos) // now relative to list view
+		lvhti := me.HitTest(menuPos)         // to find item below cursor, if any
+
+		if lvhti.IItem != -1 { // an item was right-clicked
+			if !hasCtrl && !hasShift {
+				clickedItem := me.Item(uint32(lvhti.IItem))
+				if (clickedItem.State() & co.LVIS_SELECTED) == 0 { // not selected?
+					me.SetStateAllItems(0, co.LVIS_SELECTED)                 // unselect all
+					clickedItem.SetState(co.LVIS_SELECTED, co.LVIS_SELECTED) // select it
+				}
+				clickedItem.SetState(co.LVIS_FOCUSED, co.LVIS_FOCUSED) // and focus it
+			}
+		} else if !hasCtrl && !hasShift { // no item was right-clicked
+			me.SetStateAllItems(0, co.LVIS_SELECTED) // unselect all
+		}
+		me.Hwnd().SetFocus() // because a right-click won't set the focus by itself
+
+	} else { // usually fired with the context keyboard key
+		focusedItem := me.NextItem(co.LVNI_FOCUSED)
+		if focusedItem != nil && focusedItem.Visible() { // there is a focused item, and it's visible
+			rcItem := focusedItem.Rect(co.LVIR_BOUNDS)
+			menuPos.X = rcItem.Left + 16 // arbitrary
+			menuPos.Y = rcItem.Top + (rcItem.Bottom-rcItem.Top)/2
+		} else { // no item is focused and visible
+			menuPos.X = 6 // arbitrary
+			menuPos.Y = 10
+		}
+	}
+
+	fakeMenuStrip := menuStrip{
+		hMenu: hMenu, // note: no janitor member
+	}
+	fakeMenuStrip.ShowAtPoint(menuPos, me.Hwnd().GetParent(), me.Hwnd())
 }
 
 // Simple wrapper.

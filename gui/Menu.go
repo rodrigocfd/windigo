@@ -166,7 +166,7 @@ func (me *menuStrip) Hmenu() win.HMENU {
 }
 
 // Shows the popup menu anchored at the given coordinates.
-// If hCoordsRelativeTo is zero, coordinates are relative to hParent.
+// If hCoordsRelativeTo is zero, coordinates must be relative to hParent.
 // This function will block until the menu disappears.
 func (me *menuStrip) ShowAtPoint(pos win.POINT,
 	hParent, hCoordsRelativeTo win.HWND) {
