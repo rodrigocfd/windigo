@@ -165,6 +165,22 @@ func (me *menuStrip) Hmenu() win.HMENU {
 	return me.hMenu
 }
 
+// Shows the popup menu anchored at the given coordinates, which can be relative
+// to a window.
+func (me *Menu) ShowAtPoint(pos win.POINT,
+	hParent, hCoordsRelativeTo win.HWND) {
+
+	if hCoordsRelativeTo == 0 {
+		hCoordsRelativeTo = hParent
+	}
+	hCoordsRelativeTo.
+
+	ptParent := pos // receives coordinates relative to hParent
+
+	hParent.SetForegroundWindow()
+
+}
+
 //------------------------------------------------------------------------------
 
 type menuItem struct {

@@ -20,7 +20,20 @@ func (hWnd HWND) ClientToScreenPt(point *POINT) {
 	ret, _, _ := syscall.Syscall(proc.ClientToScreen.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(point)), 0)
 	if ret == 0 {
-		panic("ClientToScreen failed.")
+		panic("ClientToScreen failed for POINT.")
+	}
+}
+
+func (hWnd HWND) ClientToScreenRc(rect *RECT) {
+	ret, _, _ := syscall.Syscall(proc.ClientToScreen.Addr(), 2,
+		uintptr(hWnd), uintptr(unsafe.Pointer(rect)), 0)
+	if ret == 0 {
+		panic("ClientToScreen failed for RECT (1).")
+	}
+	ret, _, _ = syscall.Syscall(proc.ClientToScreen.Addr(), 2,
+		uintptr(hWnd), uintptr(unsafe.Pointer(&rect.Right)), 0)
+	if ret == 0 {
+		panic("ClientToScreen failed for RECT (2).")
 	}
 }
 
@@ -333,15 +346,24 @@ func (hWnd HWND) RemoveWindowSubclass(
 }
 
 func (hWnd HWND) ScreenToClientPt(point *POINT) {
-	syscall.Syscall(proc.ScreenToClient.Addr(), 2,
+	ret, _, _ := syscall.Syscall(proc.ScreenToClient.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(point)), 0)
+	if ret == 0 {
+		panic("ScreenToClient failed for POINT.")
+	}
 }
 
 func (hWnd HWND) ScreenToClientRc(rect *RECT) {
-	syscall.Syscall(proc.ScreenToClient.Addr(), 2,
+	ret, _, _ := syscall.Syscall(proc.ScreenToClient.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(rect)), 0)
-	syscall.Syscall(proc.ScreenToClient.Addr(), 2,
+	if ret == 0 {
+		panic("ScreenToClient failed for RECT (1).")
+	}
+	ret, _, _ = syscall.Syscall(proc.ScreenToClient.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&rect.Right)), 0)
+	if ret == 0 {
+		panic("ScreenToClient failed for RECT (2).")
+	}
 }
 
 func (hWnd HWND) SendMessage(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
