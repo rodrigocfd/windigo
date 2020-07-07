@@ -116,7 +116,8 @@ func wndProc(hwnd win.HWND, msg co.WM,
 	pMe := (*windowBase)(unsafe.Pointer(
 		hwnd.GetWindowLongPtr(co.GWLP_USERDATA)))
 
-	// Save *windowBase from being collected by GC.
+	// If the retrieved *windowBase stays here, the GC will collect it.
+	// Sending it away will prevent the GC collection.
 	hwnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 
 	// If no pointer stored, then no processing is done.

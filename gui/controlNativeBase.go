@@ -78,7 +78,8 @@ func subclassProc(hwnd win.HWND, msg co.WM,
 	// Retrieve passed pointer.
 	pMe := (*controlNativeBase)(unsafe.Pointer(dwRefData))
 
-	// Save *nativeControlBase from being collected by GC; stored won't be used.
+	// If the retrieved *nativeControlBase stays here, the GC will collect it.
+	// Sending it away will prevent the GC collection.
 	hwnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 
 	if pMe != nil && pMe.hwnd != 0 {

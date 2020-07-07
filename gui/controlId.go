@@ -29,7 +29,7 @@ func (me *controlId) SetId(customId int32) {
 }
 
 // Returns the ID of this child window control.
-// If not custom se, will be initialized upon first call.
+// If not custom set, will be initialized upon first call.
 func (me *controlId) Id() int32 {
 	if me.id == 0 { // not initialized yet?
 		globalBaseCtrlId++ // increments sequential global ID

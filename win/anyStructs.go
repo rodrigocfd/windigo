@@ -64,7 +64,7 @@ type MENUITEMINFO struct {
 	HBmpChecked   HBITMAP
 	HBmpUnchecked HBITMAP
 	DwItemData    uintptr
-	DwTypeData    *uint16
+	DwTypeData    uintptr // LPWSTR
 	Cch           uint32
 	HBmpItem      HBITMAP
 }
