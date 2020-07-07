@@ -324,9 +324,25 @@ func (me *ListView) installSubclass() {
 		if !p.IsQuery() && p.VirtualKeyCode() == 'A' && p.HasCtrl() { // Ctrl+A to select all items
 			me.SetStateAllItems(co.LVIS_SELECTED, co.LVIS_SELECTED)
 			return co.DLGC_WANTCHARS
+
+		} else if !p.IsQuery() && p.VirtualKeyCode() == co.VK_RETURN { // send Enter key to parent
+			code := co.LVN_KEYDOWN
+			nmlvk := win.NMLVKEYDOWN{
+				Hdr: win.NMHDR{
+					HWndFrom: me.Hwnd(),
+					Code:     uint32(code),
+					IdFrom:   uintptr(me.Id()),
+				},
+				WVKey: co.VK_RETURN,
+			}
+			me.Hwnd().GetAncestor(co.GA_PARENT).SendMessage(co.WM_NOTIFY,
+				win.WPARAM(me.Hwnd()), win.LPARAM(unsafe.Pointer(&nmlvk)))
+			return co.DLGC_WANTALLKEYS
+
 		} else if !p.IsQuery() && p.VirtualKeyCode() == co.VK_APPS { // context menu key
 			me.showContextMenu(false, p.HasCtrl(), p.HasShift())
 		}
+
 		return co.DLGC(
 			me.Hwnd().DefSubclassProc(co.WM_GETDLGCODE, p.WParam, p.LParam),
 		)
