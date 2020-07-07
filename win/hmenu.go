@@ -44,6 +44,7 @@ func (hMenu HMENU) CheckMenuRadioItem(first, last, check int32, flags co.MF) {
 	}
 }
 
+// Creates a horizontal menu bar.
 func CreateMenu() HMENU {
 	ret, _, lerr := syscall.Syscall(proc.CreateMenu.Addr(), 0,
 		0, 0, 0)
@@ -54,6 +55,7 @@ func CreateMenu() HMENU {
 	return HMENU(ret)
 }
 
+// Creates a vertical popup menu.
 func CreatePopupMenu() HMENU {
 	ret, _, lerr := syscall.Syscall(proc.CreatePopupMenu.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
@@ -142,6 +144,18 @@ func (hMenu HMENU) InsertMenu(uPosition int32, uFlags co.MF,
 		uIDNewItem, lpNewItem, 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("InsertMenu failed: %d %s",
+			lerr, lerr.Error()))
+	}
+}
+
+func (hMenu HMENU) InsertMenuItem(item int32, fByPosition bool,
+	lpmi *MENUITEMINFO) {
+
+	ret, _, lerr := syscall.Syscall6(proc.InsertMenuItem.Addr(), 4,
+		uintptr(hMenu), uintptr(item), boolToUintptr(fByPosition),
+		uintptr(unsafe.Pointer(lpmi)), 0, 0)
+	if ret == 0 {
+		panic(fmt.Sprintf("InsertMenuItem failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }

@@ -65,6 +65,7 @@ var (
 	GetWindowText                 = dllUser32.NewProc("GetWindowTextW")
 	GetWindowTextLength           = dllUser32.NewProc("GetWindowTextLengthW")
 	InsertMenu                    = dllUser32.NewProc("InsertMenuW")
+	InsertMenuItem                = dllUser32.NewProc("InsertMenuItemW")
 	InvalidateRect                = dllUser32.NewProc("InvalidateRect")
 	IsChild                       = dllUser32.NewProc("IsChild")
 	IsDialogMessage               = dllUser32.NewProc("IsDialogMessageW")
