@@ -13,32 +13,20 @@ import (
 
 // Helps building an accelerator table.
 type AccelTable struct {
-	accels map[string]win.ACCEL
+	accels []win.ACCEL
 	built  bool
-}
-
-// Adds a new accelerator, with an auto-generated command ID.
-// If passing a character code, use uppercase.
-func (me *AccelTable) Add(textId string,
-	vKey co.VK, flags co.ACCELF) *AccelTable {
-
-	newCmdId := controlId{}
-	return me.AddWithCmdId(textId, vKey, flags, newCmdId.Id())
 }
 
 // Adds a new accelerator, with a specific command ID.
 // If passing a character code, use uppercase.
-func (me *AccelTable) AddWithCmdId(textId string,
+func (me *AccelTable) Add(textId string,
 	vKey co.VK, flags co.ACCELF, cmdId int32) *AccelTable {
 
-	if me.accels == nil {
-		me.accels = make(map[string]win.ACCEL)
-	}
-	me.accels[textId] = win.ACCEL{
+	me.accels = append(me.accels, win.ACCEL{
 		FVirt: flags | co.ACCELF_VIRTKEY,
 		Key:   vKey,
 		Cmd:   uint16(cmdId),
-	}
+	})
 	return me
 }
 
@@ -53,10 +41,5 @@ func (me *AccelTable) Build() win.HACCEL {
 	if len(me.accels) == 0 { // no accelerators added
 		return win.HACCEL(0)
 	}
-
-	slice := make([]win.ACCEL, 0, len(me.accels)) // slice with map values
-	for _, accel := range me.accels {
-		slice = append(slice, accel)
-	}
-	return win.CreateAcceleratorTable(slice)
+	return win.CreateAcceleratorTable(me.accels)
 }
