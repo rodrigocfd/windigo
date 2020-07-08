@@ -55,3 +55,19 @@ func (ofn *OPENFILENAME) GetOpenFileName() bool {
 	}
 	return true // user clicked OK
 }
+
+func (ofn *OPENFILENAME) GetSaveFileName() bool {
+	ofn.LStructSize = uint32(unsafe.Sizeof(*ofn)) // safety
+	ret, _, _ := syscall.Syscall(proc.GetSaveFileName.Addr(), 1,
+		uintptr(unsafe.Pointer(ofn)), 0, 0)
+	if ret == 0 {
+		ret, _, _ := syscall.Syscall(proc.CommDlgExtendedError.Addr(), 0,
+			0, 0, 0)
+		if ret != 0 {
+			panic(fmt.Sprintf("GetSaveFileName failed: %d.", ret))
+		} else {
+			return false // user cancelled
+		}
+	}
+	return true // user clicked OK
+}

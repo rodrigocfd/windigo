@@ -15,4 +15,5 @@ var (
 
 	CommDlgExtendedError = dllComDlg32.NewProc("CommDlgExtendedError")
 	GetOpenFileName      = dllComDlg32.NewProc("GetOpenFileNameW")
+	GetSaveFileName      = dllComDlg32.NewProc("GetSaveFileNameW")
 )

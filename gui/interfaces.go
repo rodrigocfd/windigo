@@ -105,6 +105,40 @@ func ShowFileOpenMany(owner Window, filtersWithPipe []string) (bool, []string) {
 	return true, final
 }
 
+// Shows the save file system dialog.
+// Default name can be empty.
+// Default extension can be empty, or like "txt".
+// Example filtersWithPipe:
+// []string{"Text files (*.txt)|*.txt", "All files|*.*"}
+func ShowFileSave(owner Window, defaultName, defaultExt string,
+	filtersWithPipe []string) (bool, string) {
+
+	zFilters := filterToUtf16(filtersWithPipe)
+	defExt := win.StrToSlice(defaultExt)
+
+	result := [260]uint16{} // MAX_PATH
+	if defaultName != "" {
+		copy(result[:], win.StrToSlice(defaultName))
+	}
+
+	ofn := win.OPENFILENAME{
+		HwndOwner:   owner.Hwnd(),
+		LpstrFilter: uintptr(unsafe.Pointer(&zFilters[0])),
+		LpstrFile:   uintptr(unsafe.Pointer(&result[0])),
+		NMaxFile:    uint32(len(result)),
+		Flags:       co.OFN_HIDEREADONLY | co.OFN_OVERWRITEPROMPT,
+		// If absent, no default extension is appended.
+		// If present, even if empty, default extension is appended; if no default
+		// extension, first one of the filter is appended.
+		LpstrDefExt: uintptr(unsafe.Pointer(&defExt[0])),
+	}
+
+	if !ofn.GetSaveFileName() {
+		return false, ""
+	}
+	return true, syscall.UTF16ToString(result[:])
+}
+
 func filterToUtf16(filtersWithPipe []string) []uint16 {
 	filters16 := make([][]uint16, 0, len(filtersWithPipe)) // each filter as []uint16 with terminating null
 	charCount := 0
