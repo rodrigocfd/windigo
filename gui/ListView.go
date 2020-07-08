@@ -118,7 +118,7 @@ func (me *ListView) CreateReport(parent Window, x, y int32,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.LVS_EX_FULLROWSELECT,
-		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS)
+		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS|co.LVS_SORTASCENDING)
 }
 
 // Retrieves the column at the given index.
@@ -159,6 +159,25 @@ func (me *ListView) DeleteAllItems() *ListView {
 // Retrieves extended styles with LVM_GETEXTENDEDLISTVIEWSTYLE.
 func (me *ListView) ExtendedStyle() co.LVS_EX {
 	return co.LVS_EX(me.sendLvmMessage(co.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0))
+}
+
+// Searches for an item with the given exact text, case-insensitive.
+func (me *ListView) FindItem(text string) *ListViewItem {
+	buf := win.StrToSlice(text)
+	lvfi := win.LVFINDINFO{
+		Flags: co.LVFI_STRING,
+		Psz:   uintptr(unsafe.Pointer(&buf[0])),
+	}
+	wp := int32(-1)
+	idx := me.sendLvmMessage(co.LVM_FINDITEM,
+		win.WPARAM(wp), win.LPARAM(unsafe.Pointer(&lvfi)))
+	if int32(idx) == -1 {
+		return nil // not found
+	}
+	return &ListViewItem{
+		owner: me,
+		index: uint32(idx),
+	}
 }
 
 // Sends LVM_ISGROUPVIEWENABLED.
