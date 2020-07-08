@@ -81,6 +81,10 @@ func (hdc HDC) LineTo(x, y int32) {
 }
 
 func (hdc HDC) PolyDraw(apt []POINT, aj []co.PT) {
+	if len(apt) != len(aj) {
+		panic(fmt.Sprintf("PolyDraw different slice sizes: %d, %d.",
+			len(apt), len(aj)))
+	}
 	ret, _, _ := syscall.Syscall6(proc.PolyDraw.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])),
 		uintptr(unsafe.Pointer(&aj[0])), uintptr(len(apt)),
@@ -114,6 +118,7 @@ func (hdc HDC) PolylineTo(apt []POINT) {
 	}
 }
 
+// SelectObject() for HBITMAP.
 func (hdc HDC) SelectObjectBitmap(b HBITMAP) HBITMAP {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(b), 0)
@@ -123,6 +128,7 @@ func (hdc HDC) SelectObjectBitmap(b HBITMAP) HBITMAP {
 	return HBITMAP(ret)
 }
 
+// SelectObject() for HBRUSH.
 func (hdc HDC) SelectObjectBrush(b HBRUSH) HBRUSH {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(b), 0)
@@ -132,6 +138,7 @@ func (hdc HDC) SelectObjectBrush(b HBRUSH) HBRUSH {
 	return HBRUSH(ret)
 }
 
+// SelectObject() for HFONT.
 func (hdc HDC) SelectObjectFont(f HFONT) HFONT {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(f), 0)
@@ -141,6 +148,7 @@ func (hdc HDC) SelectObjectFont(f HFONT) HFONT {
 	return HFONT(ret)
 }
 
+// SelectObject() for HPEN.
 func (hdc HDC) SelectObjectPen(p HPEN) HPEN {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(p), 0)

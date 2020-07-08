@@ -7,7 +7,6 @@
 package win
 
 import (
-	"sort"
 	"syscall"
 	"unsafe"
 	"wingows/win/proc"
@@ -37,22 +36,4 @@ func (hDrop HDROP) DragQueryPoint() (*POINT, bool) {
 	ret, _, _ := syscall.Syscall(proc.DragQueryPoint.Addr(), 2,
 		uintptr(hDrop), uintptr(unsafe.Pointer(pt)), 0)
 	return pt, ret != 0 // true if dropped within client area
-}
-
-// Calls DragQueryFile successively to retrieve all file names, and releases the
-// HDROP handle.
-func (hDrop HDROP) GetAllFiles() []string {
-	count := hDrop.DragQueryFile(0xFFFFFFFF, nil, 0)
-	files := make([]string, 0, count)
-
-	for i := uint32(0); i < count; i++ {
-		pathLen := hDrop.DragQueryFile(i, nil, 0) + 1 // room for terminating null
-		pathBuf := make([]uint16, pathLen)
-		hDrop.DragQueryFile(i, &pathBuf[0], pathLen)
-		files = append(files, syscall.UTF16ToString(pathBuf))
-	}
-
-	hDrop.DragFinish()
-	sort.Strings(files)
-	return files
 }

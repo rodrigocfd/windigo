@@ -20,20 +20,20 @@ type (
 	HFILEMAPADDR uintptr // Returned by HFILEMAP.MapViewOfFile(), just a BYTE pointer to memory address.
 )
 
-func (hmap HFILEMAP) CloseHandle() {
+func (hMap HFILEMAP) CloseHandle() {
 	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
-		uintptr(hmap), 0, 0)
+		uintptr(hMap), 0, 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("CloseHandle failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
 
-func (hmap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
+func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 	offset uint32, numBytesToMap uintptr) HFILEMAPADDR {
 
 	ret, _, lerr := syscall.Syscall6(proc.MapViewOfFile.Addr(), 5,
-		uintptr(hmap), uintptr(desiredAccess), 0, uintptr(offset),
+		uintptr(hMap), uintptr(desiredAccess), 0, uintptr(offset),
 		numBytesToMap, 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("MapViewOfFile failed: %d %s",

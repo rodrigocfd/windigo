@@ -306,13 +306,6 @@ func (hWnd HWND) IsWindowEnabled() bool {
 	return ret != 0
 }
 
-func (hWnd HWND) MenuItemFromPoint(hMenu HMENU, ptScreen POINT) int32 {
-	ret, _, _ := syscall.Syscall6(proc.MenuItemFromPoint.Addr(), 3,
-		uintptr(hWnd), uintptr(hMenu), uintptr(ptScreen.X), uintptr(ptScreen.Y), // TODO: correct?
-		0, 0)
-	return int32(ret)
-}
-
 func (hWnd HWND) MessageBox(message, caption string, flags co.MB) co.MBID {
 	ret, _, _ := syscall.Syscall6(proc.MessageBox.Addr(), 4,
 		uintptr(hWnd),

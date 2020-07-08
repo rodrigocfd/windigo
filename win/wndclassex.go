@@ -40,7 +40,6 @@ func (wcx *WNDCLASSEX) Hash() string {
 
 func (wcx *WNDCLASSEX) RegisterClassEx() (ATOM, syscall.Errno) {
 	wcx.CbSize = uint32(unsafe.Sizeof(*wcx)) // safety
-
 	ret, _, lerr := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
 		uintptr(unsafe.Pointer(wcx)), 0, 0)
 	return ATOM(ret), lerr

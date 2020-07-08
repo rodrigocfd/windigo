@@ -16,9 +16,9 @@ import (
 
 type HFILE HANDLE
 
-func (hfile HFILE) CloseHandle() {
+func (hFile HFILE) CloseHandle() {
 	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
-		uintptr(hfile), 0, 0)
+		uintptr(hFile), 0, 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("CloseHandle failed: %d %s",
 			lerr, lerr.Error()))
@@ -54,12 +54,12 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 	return HFILE(ret)
 }
 
-func (hfile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
+func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 	protectPage co.PAGE, protectSec co.SEC, maxSize uint32,
 	objectName string) HFILEMAP {
 
 	ret, _, lerr := syscall.Syscall6(proc.CreateFileMapping.Addr(), 6,
-		uintptr(hfile), uintptr(unsafe.Pointer(securityAttributes)),
+		uintptr(hFile), uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
 		0, uintptr(maxSize),
 		uintptr(unsafe.Pointer(StrToPtrBlankIsNil(objectName))))
@@ -70,7 +70,7 @@ func (hfile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 	return HFILEMAP(ret)
 }
 
-func (hfile HFILE) DeleteFile(fileName string) {
+func DeleteFile(fileName string) {
 	ret, _, lerr := syscall.Syscall(proc.DeleteFile.Addr(), 1,
 		uintptr(unsafe.Pointer(StrToPtr(fileName))), 0, 0)
 	if ret == 0 {
@@ -89,84 +89,79 @@ func GetFileAttributes(fileName string) co.FILE_ATTRIBUTE {
 	return co.FILE_ATTRIBUTE(ret)
 }
 
-func (hfile HFILE) GetFileSize() uint32 {
+func (hFile HFILE) GetFileSize() uint32 {
 	ret, _, lerr := syscall.Syscall(proc.GetFileSize.Addr(), 1,
-		uintptr(hfile), 0, 0)
+		uintptr(hFile), 0, 0)
 	if ret == 0xFFFFFFFF && lerr != 0 {
-		hfile.CloseHandle()
 		panic(fmt.Sprintf("GetFileSize failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return uint32(ret)
 }
 
-func (hfile HFILE) GetFileSizeEx() int64 {
+func (hFile HFILE) GetFileSizeEx() int64 {
 	buf := int64(0)
 	ret, _, lerr := syscall.Syscall(proc.GetFileSizeEx.Addr(), 2,
-		uintptr(hfile), uintptr(unsafe.Pointer(&buf)), 0)
+		uintptr(hFile), uintptr(unsafe.Pointer(&buf)), 0)
 	if ret == 0 && lerr != 0 {
-		hfile.CloseHandle()
 		panic(fmt.Sprintf("GetFileSizeEx failed: %d %s",
 			lerr, lerr.Error()))
 	}
 	return buf
 }
 
-func (hfile HFILE) ReadFile(buf []uint8, bytesToRead uint32) {
-	read := uint32(0)
+// Returns the number of bytes read.
+func (hFile HFILE) ReadFile(buf []uint8, bytesToRead uint32) uint32 {
+	numRead := uint32(0)
 	ret, _, lerr := syscall.Syscall6(proc.ReadFile.Addr(), 5,
-		uintptr(hfile), uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(bytesToRead), uintptr(unsafe.Pointer(&read)), 0, 0) // OVERLAPPED not even considered
+		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(bytesToRead), uintptr(unsafe.Pointer(&numRead)), 0, 0) // OVERLAPPED not even considered
 	if ret == 0 {
-		hfile.CloseHandle()
 		panic(fmt.Sprintf("ReadFile failed: %d %s",
 			lerr, lerr.Error()))
 	}
+	return numRead
 }
 
-func (hfile HFILE) SetEndOfFile() {
+func (hFile HFILE) SetEndOfFile() {
 	ret, _, lerr := syscall.Syscall(proc.SetEndOfFile.Addr(), 1,
-		uintptr(hfile), 0, 0)
+		uintptr(hFile), 0, 0)
 	if ret == 0 {
-		hfile.CloseHandle()
 		panic(fmt.Sprintf("SetEndOfFile failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
 
-func (hfile HFILE) SetFilePointer(distanceToMove int32,
+func (hFile HFILE) SetFilePointer(distanceToMove int32,
 	moveMethod co.FILE_SETPTR) {
 
 	ret, _, lerr := syscall.Syscall6(proc.SetFilePointer.Addr(), 4,
-		uintptr(hfile), uintptr(distanceToMove), 0, uintptr(moveMethod),
+		uintptr(hFile), uintptr(distanceToMove), 0, uintptr(moveMethod),
 		0, 0)
 	if int32(ret) == -1 && lerr != 0 {
-		hfile.CloseHandle()
 		panic(fmt.Sprintf("SetFilePointer failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
 
-func (hfile HFILE) SetFilePointerEx(distanceToMove int64,
+func (hFile HFILE) SetFilePointerEx(distanceToMove int64,
 	moveMethod co.FILE_SETPTR) {
 
 	ret, _, lerr := syscall.Syscall6(proc.SetFilePointer.Addr(), 4,
-		uintptr(hfile), uintptr(distanceToMove), 0, uintptr(moveMethod),
+		uintptr(hFile), uintptr(distanceToMove), 0, uintptr(moveMethod),
 		0, 0)
 	if ret == 0 {
-		hfile.CloseHandle()
 		panic(fmt.Sprintf("SetFilePointerEx failed: %d %s",
 			lerr, lerr.Error()))
 	}
 }
 
-func (hfile HFILE) WriteFile(buf []uint8) {
+func (hFile HFILE) WriteFile(buf []uint8) {
 	written := uint32(0)
 	ret, _, lerr := syscall.Syscall6(proc.WriteFile.Addr(), 5,
-		uintptr(hfile), uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(len(buf)), uintptr(unsafe.Pointer(&written)), 0, 0) // OVERLAPPED not even considered
 	if ret == 0 {
-		hfile.CloseHandle()
 		panic(fmt.Sprintf("WriteFile failed: %d %s",
 			lerr, lerr.Error()))
 	}

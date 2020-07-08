@@ -7,6 +7,8 @@
 package wm
 
 import (
+	"sort"
+	"syscall"
 	"unsafe"
 	"wingows/co"
 	"wingows/win"
@@ -73,6 +75,22 @@ type DeadChar struct{ Char }
 type DropFiles struct{ Base }
 
 func (p DropFiles) Hdrop() win.HDROP { return win.HDROP(p.WParam) }
+
+// Calls DragQueryFile successively to retrieve all file names, and releases the
+// HDROP handle.
+func (p DropFiles) RetrieveAll() []string {
+	count := p.Hdrop().DragQueryFile(0xFFFFFFFF, nil, 0)
+	files := make([]string, 0, count)
+	for i := uint32(0); i < count; i++ {
+		pathLen := p.Hdrop().DragQueryFile(i, nil, 0) + 1 // room for terminating null
+		pathBuf := make([]uint16, pathLen)
+		p.Hdrop().DragQueryFile(i, &pathBuf[0], pathLen)
+		files = append(files, syscall.UTF16ToString(pathBuf))
+	}
+	p.Hdrop().DragFinish()
+	sort.Strings(files)
+	return files
+}
 
 type GetDlgCode struct{ Base }
 

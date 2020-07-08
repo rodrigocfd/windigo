@@ -53,7 +53,7 @@ func (me *IUnknown) coCreateInstance(clsid *co.GUID, iid *co.GUID) {
 	*me = *retIUnk
 }
 
-// Queries any COm interface, returning the base IUnknown.
+// Queries any COM interface, returning the base IUnknown.
 // To retrieve the other interface itself, cast the inner lpVtbl.
 func (me *IUnknown) queryInterface(iid *co.GUID) *IUnknown {
 	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(me.lpVtbl))
