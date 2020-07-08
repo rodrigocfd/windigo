@@ -8,6 +8,7 @@ package wm
 
 import (
 	"sort"
+	"strings"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -88,7 +89,9 @@ func (p DropFiles) RetrieveAll() []string {
 		files = append(files, syscall.UTF16ToString(pathBuf))
 	}
 	p.Hdrop().DragFinish()
-	sort.Strings(files)
+	sort.Slice(files, func(i, j int) bool { // case insensitive
+		return strings.ToUpper(files[i]) < strings.ToUpper(files[j])
+	})
 	return files
 }
 
