@@ -50,9 +50,13 @@ func (me *AccelTable) Build() win.HACCEL {
 	}
 	me.built = true
 
-	accelSlice := make([]win.ACCEL, 0, len(me.accels))
-	for _, accel := range me.accels { // make slice from map values
-		accelSlice = append(accelSlice, accel)
+	if len(me.accels) == 0 { // no accelerators added
+		return win.HACCEL(0)
 	}
-	return win.CreateAcceleratorTable(accelSlice)
+
+	slice := make([]win.ACCEL, 0, len(me.accels)) // slice with map values
+	for _, accel := range me.accels {
+		slice = append(slice, accel)
+	}
+	return win.CreateAcceleratorTable(slice)
 }

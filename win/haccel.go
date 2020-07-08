@@ -28,8 +28,12 @@ func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
 }
 
 func CreateAcceleratorTable(accelList []ACCEL) HACCEL {
+	// Random ERROR_NOACCESS happened, this local copy fixed it for some reason.
+	localSlice := make([]ACCEL, len(accelList))
+	copy(localSlice, accelList)
+
 	ret, _, lerr := syscall.Syscall(proc.CreateAcceleratorTable.Addr(), 2,
-		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)),
+		uintptr(unsafe.Pointer(&localSlice[0])), uintptr(len(localSlice)),
 		0)
 	if ret == 0 {
 		panic(fmt.Sprintf("CreateAcceleratorTable failed: %d %s",
