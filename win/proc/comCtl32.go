@@ -13,7 +13,9 @@ import (
 var (
 	dllComCtl32 = syscall.NewLazyDLL("comctl32.dll")
 
+	CommDlgExtendedError    = dllComCtl32.NewProc("CommDlgExtendedError")
 	DefSubclassProc         = dllComCtl32.NewProc("DefSubclassProc")
+	GetOpenFileName         = dllComCtl32.NewProc("GetOpenFileNameW")
 	ImageList_Create        = dllComCtl32.NewProc("ImageList_Create")
 	ImageList_Duplicate     = dllComCtl32.NewProc("ImageList_Duplicate")
 	ImageList_GetIcon       = dllComCtl32.NewProc("ImageList_GetIcon")
