@@ -6,6 +6,16 @@
 
 package co
 
+type ACCELF uint8 // ACCELL fVirt
+
+const (
+	ACCELF_NONE    ACCELF = 0
+	ACCELF_VIRTKEY ACCELF = 1
+	ACCELF_SHIFT   ACCELF = 0x04
+	ACCELF_CONTROL ACCELF = 0x08
+	ACCELF_ALT     ACCELF = 0x10
+)
+
 type ACCESS_RIGHTS uint32 // composes KEY, STANDARD_RIGHTS; originally has no prefix
 
 const (

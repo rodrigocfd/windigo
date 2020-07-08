@@ -52,8 +52,8 @@ func (me *WindowControl) defaultMessageHandling() {
 		if (me.Hwnd().GetExStyle()&co.WS_EX_CLIENTEDGE) == 0 || // has no border
 			!win.IsThemeActive() ||
 			!win.IsAppThemed() {
-
-			return // no themed borders to be painted
+			// No themed borders to be painted.
+			return
 		}
 
 		rc := me.Hwnd().GetWindowRect() // window outmost coordinates, including margins

@@ -444,12 +444,10 @@ func (hWnd HWND) SetWindowText(text string) {
 		0)
 }
 
-func (hWnd HWND) TranslateAccelerator(hAccel HACCEL,
-	msg *MSG) (int32, syscall.Errno) {
-
-	ret, _, lerr := syscall.Syscall(proc.TranslateAccelerator.Addr(), 3,
+func (hWnd HWND) TranslateAccelerator(hAccel HACCEL, msg *MSG) bool {
+	ret, _, _ := syscall.Syscall(proc.TranslateAccelerator.Addr(), 3,
 		uintptr(hWnd), uintptr(hAccel), uintptr(unsafe.Pointer(msg)))
-	return int32(ret), lerr
+	return ret != 0
 }
 
 func (hWnd HWND) UpdateWindow() bool {

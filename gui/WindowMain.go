@@ -99,7 +99,12 @@ func (me *WindowMain) defaultMessageHandling() {
 }
 
 func (me *WindowMain) runMainLoop() int {
-	defer globalUiFont.Destroy()
+	defer func() {
+		if me.setup.HAccel != 0 {
+			me.setup.HAccel.DestroyAcceleratorTable()
+		}
+		globalUiFont.Destroy()
+	}()
 
 	msg := win.MSG{}
 	for {
@@ -119,11 +124,20 @@ func (me *WindowMain) runMainLoop() int {
 			continue
 		}
 
-		// TODO haccel check !!!
+		// If a child window, will retrieve its top-level parent.
+		// If a top-level, use itself.
+		hTopLevel := msg.HWnd.GetAncestor(co.GA_ROOT)
+
+		// If we have an accelerator table, try to translate the message.
+		if me.setup.HAccel != 0 &&
+			hTopLevel.TranslateAccelerator(me.setup.HAccel, &msg) {
+			// Message translated, no further processing is done.
+			continue
+		}
 
 		// If a child window, will retrieve its top-level parent.
 		// If a top-level, use itself.
-		if msg.HWnd.GetAncestor(co.GA_ROOT).IsDialogMessage(&msg) {
+		if hTopLevel.IsDialogMessage(&msg) {
 			// Processed all keyboard actions for child controls.
 			continue
 		}
@@ -165,7 +179,8 @@ type windowMainSetup struct {
 	ExStyle co.WS_EX  // Window extended style, passed to CreateWindowEx.
 	HMenu   win.HMENU // Main window menu, passed to CreateWindowEx.
 
-	CmdShow co.SW // Passed to ShowWindow, defaults to SW_SHOW.
+	HAccel  win.HACCEL // Accelerator table. Will be automatically destroyed.
+	CmdShow co.SW      // Passed to ShowWindow, defaults to SW_SHOW.
 }
 
 func (me *windowMainSetup) initOnce() {

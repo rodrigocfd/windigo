@@ -11,9 +11,9 @@ import (
 )
 
 type ACCEL struct {
-	FVirt uint8
-	Key   uint16
-	Cmd   uint16
+	FVirt co.ACCELF
+	Key   co.VK
+	Cmd   uint16 // LOWORD(wParam) value
 }
 
 type CREATESTRUCT struct {

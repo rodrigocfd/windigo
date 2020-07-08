@@ -127,7 +127,7 @@ func (me *menuStrip) AddItem(textId, text string) *menuStrip {
 	return me.AddItemWithCmdId(textId, text, newCmdId.Id())
 }
 
-// Appends a new item to the submenu, with an specific command ID.
+// Appends a new item to the submenu, with a specific command ID.
 func (me *menuStrip) AddItemWithCmdId(textId, text string,
 	cmdId int32) *menuStrip {
 

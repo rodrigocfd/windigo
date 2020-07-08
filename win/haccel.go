@@ -7,6 +7,7 @@
 package win
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/win/proc"
@@ -20,18 +21,21 @@ func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
 	if szRet == 0 {
 		return []ACCEL{}
 	}
-
 	accelList := make([]ACCEL, uint32(szRet))
 	syscall.Syscall(proc.CopyAcceleratorTable.Addr(), 3,
 		uintptr(hAccel), uintptr(unsafe.Pointer(&accelList[0])), szRet)
 	return accelList
 }
 
-func CreateAcceleratorTable(accelList []ACCEL) (HACCEL, syscall.Errno) {
+func CreateAcceleratorTable(accelList []ACCEL) HACCEL {
 	ret, _, lerr := syscall.Syscall(proc.CreateAcceleratorTable.Addr(), 2,
 		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)),
 		0)
-	return HACCEL(ret), lerr
+	if ret == 0 {
+		panic(fmt.Sprintf("CreateAcceleratorTable failed: %d %s",
+			lerr, lerr.Error()))
+	}
+	return HACCEL(ret)
 }
 
 func (hAccel HACCEL) DestroyAcceleratorTable() bool {
