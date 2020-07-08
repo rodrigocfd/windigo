@@ -17,6 +17,8 @@ type ImageList struct {
 	resolution uint32
 }
 
+// Automatically destroyed if attached to a ListView, unless created with
+// LVS_SHAREIMAGELISTS. For TreeView, must be manually destroyed.
 func (me *ImageList) Create(resolution, iconCount uint32) *ImageList {
 	if me.himl != 0 {
 		panic("ImageList already created.")

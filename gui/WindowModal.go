@@ -7,6 +7,8 @@
 package gui
 
 import (
+	"fmt"
+	"syscall"
 	"unsafe"
 	"wingows/co"
 	"wingows/gui/wm"
@@ -82,9 +84,12 @@ func (me *WindowModal) defaultMessageHandling() {
 func (me *WindowModal) runModalLoop() {
 	msg := win.MSG{}
 	for {
-		status := msg.GetMessage(win.HWND(0), 0, 0)
-		if status == 0 {
-			// WM_QUIT was sent, exit modal loop now.
+		status, lerr := msg.GetMessage(win.HWND(0), 0, 0)
+		if lerr != syscall.Errno(0) {
+			panic(fmt.Sprintf("GetMessage failed for WindowModal: %d %s",
+				lerr, lerr.Error()))
+		} else if status == 0 {
+			// WM_QUIT was sent, exit modal loop now and signal parent.
 			// https://devblogs.microsoft.com/oldnewthing/20050222-00/?p=36393
 			win.PostQuitMessage(int32(msg.WParam))
 			break
@@ -95,7 +100,7 @@ func (me *WindowModal) runModalLoop() {
 		if msg.HWnd.GetAncestor(co.GA_ROOT).IsDialogMessage(&msg) {
 			// Processed all keyboard actions for child controls.
 			if me.hwnd == win.HWND(0) {
-				break // our modal was destroyed
+				break // our modal was destroyed, terminate loop
 			} else {
 				continue
 			}
@@ -105,7 +110,7 @@ func (me *WindowModal) runModalLoop() {
 		msg.DispatchMessage()
 
 		if me.hwnd == win.HWND(0) {
-			break // our modal was destroyed
+			break // our modal was destroyed, terminate loop
 		}
 	}
 }

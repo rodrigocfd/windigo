@@ -7,6 +7,9 @@
 package gui
 
 import (
+	"fmt"
+	"os"
+	"syscall"
 	"unsafe"
 	"wingows/co"
 	"wingows/gui/wm"
@@ -36,7 +39,7 @@ func (me *WindowMain) Setup() *windowMainSetup {
 }
 
 // Creates the main window and runs the main application loop.
-func (me *WindowMain) RunAsMain() int32 {
+func (me *WindowMain) RunAsMain() int {
 	if win.IsWindowsVistaOrGreater() {
 		win.SetProcessDPIAware()
 	}
@@ -95,14 +98,20 @@ func (me *WindowMain) defaultMessageHandling() {
 	})
 }
 
-func (me *WindowMain) runMainLoop() int32 {
+func (me *WindowMain) runMainLoop() int {
 	defer globalUiFont.Destroy()
 
 	msg := win.MSG{}
 	for {
-		status := msg.GetMessage(win.HWND(0), 0, 0)
-		if status == 0 {
-			return int32(msg.WParam) // WM_QUIT was sent, gracefully terminate the program
+		status, lerr := msg.GetMessage(win.HWND(0), 0, 0)
+		if lerr != syscall.Errno(0) {
+			fmt.Fprintf(os.Stderr, "GetMessage failed for WindowMain: %d %s",
+				lerr, lerr.Error())
+			return int(lerr) // return error code
+		} else if status == 0 { // WM_QUIT was sent, gracefully terminate the program
+			// WParam has the program exit code.
+			// https://docs.microsoft.com/en-us/windows/win32/winmsg/using-messages-and-message-queues
+			return int(msg.WParam)
 		}
 
 		if me.isModelessMsg(&msg) { // does this message belong to a modeless child (if any)?

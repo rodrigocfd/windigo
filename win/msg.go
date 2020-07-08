@@ -7,7 +7,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/win/proc"
@@ -28,16 +27,17 @@ func (msg *MSG) DispatchMessage() uintptr {
 	return ret
 }
 
-func (msg *MSG) GetMessage(hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
+func (msg *MSG) GetMessage(hWnd HWND,
+	msgFilterMin, msgFilterMax uint32) (int32, syscall.Errno) {
+
 	ret, _, lerr := syscall.Syscall6(proc.GetMessage.Addr(), 4,
 		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
 		uintptr(msgFilterMin), uintptr(msgFilterMax),
 		0, 0)
 	if int32(ret) == -1 {
-		panic(fmt.Sprintf("GetMessage failed: %d %s",
-			lerr, lerr.Error()))
+		return -1, lerr
 	}
-	return int32(ret)
+	return int32(ret), syscall.Errno(0)
 }
 
 func (msg *MSG) TranslateMessage() bool {
