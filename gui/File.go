@@ -115,3 +115,11 @@ func PathIsFolder(path string) bool {
 func PathIsHidden(path string) bool {
 	return (win.GetFileAttributes(path) & co.FILE_ATTRIBUTE_HIDDEN) != 0
 }
+
+// Replaces all file contents, possibly resizing the file.
+func (me *File) EraseAndWrite(data []uint8) *File {
+	me.SetSize(uint32(len(data)))
+	me.hFile.WriteFile(data)
+	me.Rewind()
+	return me
+}
