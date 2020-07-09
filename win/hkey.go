@@ -25,6 +25,9 @@ func (hKey HKEY) RegCloseKey() {
 }
 
 func (hKey HKEY) regCloseKeyNoPanic() syscall.Errno {
+	if hKey == 0 {
+		return syscall.Errno(co.ERROR_SUCCESS)
+	}
 	ret, _, _ := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
 		uintptr(hKey), 0, 0)
 	return syscall.Errno(ret)

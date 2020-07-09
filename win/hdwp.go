@@ -49,6 +49,9 @@ func (hDwp HDWP) EndDeferWindowPos() {
 }
 
 func (hDwp HDWP) endDeferWindowPosNoPanic() (uintptr, syscall.Errno) {
+	if hDwp == 0 {
+		return 1, syscall.Errno(co.ERROR_SUCCESS)
+	}
 	ret, _, lerr := syscall.Syscall(proc.EndDeferWindowPos.Addr(), 1,
 		uintptr(hDwp), 0, 0)
 	return ret, lerr

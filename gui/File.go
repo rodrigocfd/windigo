@@ -7,6 +7,7 @@
 package gui
 
 import (
+	"syscall"
 	"wingows/co"
 	"wingows/win"
 )
@@ -25,6 +26,24 @@ func (me *File) Close() {
 
 func (me *File) HFile() win.HFILE {
 	return me.hFile
+}
+
+// Returns all the file names that match a pattern like "C:\\foo\\*.txt".
+func ListFilesInFolder(pathAndPattern string) []string {
+	files := make([]string, 0)
+
+	wfd := win.WIN32_FIND_DATA{}
+	found, hFind := win.FindFirstFile(pathAndPattern, &wfd)
+	defer hFind.FindClose()
+
+	for {
+		if !found {
+			break
+		}
+		found = hFind.FindNextFile(&wfd)
+		files = append(files, syscall.UTF16ToString(wfd.CFileName[:]))
+	}
+	return files
 }
 
 func (me *File) OpenExistingForRead(path string) *File {

@@ -29,6 +29,9 @@ func (hMap HFILEMAP) CloseHandle() {
 }
 
 func (hMap HFILEMAP) closeHandleNoPanic() (uintptr, syscall.Errno) {
+	if hMap == 0 {
+		return 1, syscall.Errno(co.ERROR_SUCCESS)
+	}
 	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
 		uintptr(hMap), 0, 0)
 	return ret, lerr

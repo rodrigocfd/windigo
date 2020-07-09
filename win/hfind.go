@@ -26,6 +26,9 @@ func (hFind HFIND) FindClose() {
 }
 
 func (hFind HFIND) findCloseNoPanic() (uintptr, syscall.Errno) {
+	if hFind == 0 {
+		return 1, syscall.Errno(co.ERROR_SUCCESS)
+	}
 	ret, _, lerr := syscall.Syscall(proc.FindClose.Addr(), 1,
 		uintptr(hFind), 0, 0)
 	return ret, lerr
@@ -40,7 +43,9 @@ func FindFirstFile(lpFileName string,
 		uintptr(unsafe.Pointer(lpFindFileData)), 0)
 
 	if int32(ret) == -1 { // INVALID_HANDLE_VALUE
-		if co.ERROR(lerr) == co.ERROR_FILE_NOT_FOUND { // no matching files, not an error
+		if co.ERROR(lerr) == co.ERROR_FILE_NOT_FOUND ||
+			co.ERROR(lerr) == co.ERROR_PATH_NOT_FOUND {
+			// No matching files, not an error.
 			return false, 0
 		} else {
 			panic(fmt.Sprintf("FindFirstFile failed: %d %s",

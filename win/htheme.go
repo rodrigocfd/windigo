@@ -24,6 +24,9 @@ func (hTheme HTHEME) CloseThemeData() {
 }
 
 func (hTheme HTHEME) closeThemeDataNoPanic() uintptr {
+	if hTheme == 0 {
+		return uintptr(co.ERROR_S_OK)
+	}
 	hr, _, _ := syscall.Syscall(proc.CloseThemeData.Addr(), 0,
 		uintptr(hTheme), 0, 0)
 	return hr
