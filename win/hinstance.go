@@ -16,6 +16,15 @@ import (
 
 type HINSTANCE HANDLE
 
+func (hInst HINSTANCE) DuplicateIcon(hIcon HICON) HICON {
+	ret, _, _ := syscall.Syscall(proc.DuplicateIcon.Addr(), 2,
+		uintptr(hInst), uintptr(hIcon), 0)
+	if ret == 0 {
+		panic("DuplicateIcon failed.")
+	}
+	return HICON(ret)
+}
+
 func (hInst HINSTANCE) GetClassInfoEx(className *uint16,
 	destBuf *WNDCLASSEX) ATOM {
 

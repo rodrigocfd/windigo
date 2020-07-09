@@ -83,6 +83,11 @@ func (hWnd HWND) DestroyWindow() {
 	}
 }
 
+func (hWnd HWND) DragAcceptFiles(fAccept bool) {
+	syscall.Syscall(proc.DragAcceptFiles.Addr(), 2,
+		uintptr(hWnd), boolToUintptr(fAccept), 0)
+}
+
 func (hWnd HWND) DrawMenuBar() {
 	ret, _, lerr := syscall.Syscall(proc.DrawMenuBar.Addr(), 1,
 		uintptr(hWnd), 0, 0)
