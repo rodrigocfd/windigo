@@ -7,10 +7,6 @@
 package gui
 
 import (
-	"path/filepath"
-	"sort"
-	"strings"
-	"syscall"
 	"wingows/co"
 	"wingows/win"
 )
@@ -29,30 +25,6 @@ func (me *File) Close() {
 
 func (me *File) HFile() win.HFILE {
 	return me.hFile
-}
-
-// Returns all the file names that match a pattern like "C:\\foo\\*.txt".
-func ListFilesInFolder(pathAndPattern string) []string {
-	retFiles := make([]string, 0)
-	dirPath := filepath.Dir(pathAndPattern)
-
-	wfd := win.WIN32_FIND_DATA{}
-	found, hFind := win.FindFirstFile(pathAndPattern, &wfd)
-	defer hFind.FindClose()
-
-	for found {
-		fileNameFound := syscall.UTF16ToString(wfd.CFileName[:])
-		if fileNameFound != ".." {
-			retFiles = append(retFiles, dirPath+"\\"+fileNameFound)
-		}
-
-		found = hFind.FindNextFile(&wfd)
-	}
-
-	sort.Slice(retFiles, func(i, j int) bool { // case insensitive
-		return strings.ToUpper(retFiles[i]) < strings.ToUpper(retFiles[j])
-	})
-	return retFiles
 }
 
 func (me *File) OpenExistingForRead(path string) *File {
@@ -102,18 +74,6 @@ func (me *File) SetSize(numBytes uint32) *File {
 
 func (me *File) Size() uint32 {
 	return me.hFile.GetFileSize()
-}
-
-func PathExists(path string) bool {
-	return win.GetFileAttributes(path) != co.FILE_ATTRIBUTE_INVALID
-}
-
-func PathIsFolder(path string) bool {
-	return (win.GetFileAttributes(path) & co.FILE_ATTRIBUTE_DIRECTORY) != 0
-}
-
-func PathIsHidden(path string) bool {
-	return (win.GetFileAttributes(path) & co.FILE_ATTRIBUTE_HIDDEN) != 0
 }
 
 // Replaces all file contents, possibly resizing the file.

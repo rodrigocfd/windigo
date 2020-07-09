@@ -89,14 +89,10 @@ func DeleteFile(fileName string) {
 	}
 }
 
-func GetFileAttributes(lpFileName string) co.FILE_ATTRIBUTE {
+func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, co.ERROR) {
 	ret, _, lerr := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
 		uintptr(unsafe.Pointer(StrToPtr(lpFileName))), 0, 0)
-	if int32(ret) == -1 {
-		panic(fmt.Sprintf("GetFileAttributes failed: %d %s",
-			lerr, lerr.Error()))
-	}
-	return co.FILE_ATTRIBUTE(ret)
+	return co.FILE_ATTRIBUTE(ret), co.ERROR(lerr)
 }
 
 func (hFile HFILE) GetFileSize() uint32 {
