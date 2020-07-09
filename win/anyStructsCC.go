@@ -134,6 +134,21 @@ type NMLVCACHEHINT struct {
 	ITo   int32
 }
 
+type NMLVCUSTOMDRAW struct {
+	Nmcd        NMCUSTOMDRAW
+	ClrText     COLORREF
+	ClrTextBk   COLORREF
+	ISubItem    int32
+	DwItemType  co.LVCDI
+	ClrFace     COLORREF
+	IIconEffect int32
+	IIconPhase  int32
+	IPartId     int32
+	IStateId    int32
+	RcText      RECT
+	UAlign      co.LVGA_HEADER
+}
+
 type NMLVDISPINFO struct {
 	Hdr  NMHDR
 	Item LVITEM
@@ -188,6 +203,14 @@ type NMLVSCROLL struct {
 	Dy  int32
 }
 
+type NMMOUSE struct {
+	Hdr        NMHDR
+	DwItemSpec uintptr
+	DwItemData uintptr
+	Pt         POINT
+	DwHitInfo  LPARAM
+}
+
 type NMTREEVIEW struct {
 	Hdr     NMHDR
 	Action  uint32 // co.TVE | co.TVC
@@ -204,6 +227,13 @@ type NMTVASYNCDRAW struct {
 	LParam         LPARAM
 	DwRetFlags     co.ADRF
 	IRetImageIndex int32
+}
+
+type NMTVCUSTOMDRAW struct {
+	Nmcd      NMCUSTOMDRAW
+	ClrText   COLORREF
+	ClrTextBk COLORREF
+	ILevel    int32
 }
 
 type NMTVDISPINFO struct {

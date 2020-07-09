@@ -47,7 +47,7 @@ func (me *windowDepotNfy) processMessage(msg co.WM, p wm.Base) (uintptr, bool) {
 	return 0, false // no user handler found
 }
 
-//------------------------------------------------------------------------------
+//------------------------------------------------------------- ListView LVN ---
 
 func (me *windowDepotNfy) LvnBeginDrag(lv *ListView, userFunc func(p *win.NMLISTVIEW)) {
 	me.addNfy(lv.Id(), co.NM(co.LVN_BEGINDRAG), func(p wm.Notify) uintptr {
@@ -242,7 +242,7 @@ func (me *windowDepotNfy) LvnSetDispInfo(lv *ListView, userFunc func(p *win.NMLV
 	})
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------- ListView NM ---
 
 func (me *windowDepotNfy) LvnClick(lv *ListView, userFunc func(p *win.NMITEMACTIVATE)) {
 	me.addNfy(lv.Id(), co.NM_CLICK, func(p wm.Notify) uintptr {
@@ -251,9 +251,9 @@ func (me *windowDepotNfy) LvnClick(lv *ListView, userFunc func(p *win.NMITEMACTI
 	})
 }
 
-func (me *windowDepotNfy) LvnCustomDraw(lv *ListView, userFunc func(p *win.NMCUSTOMDRAW) co.CDRF) {
+func (me *windowDepotNfy) LvnCustomDraw(lv *ListView, userFunc func(p *win.NMLVCUSTOMDRAW) co.CDRF) {
 	me.addNfy(lv.Id(), co.NM_CUSTOMDRAW, func(p wm.Notify) uintptr {
-		return uintptr(userFunc((*win.NMCUSTOMDRAW)(unsafe.Pointer(p.LParam))))
+		return uintptr(userFunc((*win.NMLVCUSTOMDRAW)(unsafe.Pointer(p.LParam))))
 	})
 }
 
@@ -312,7 +312,7 @@ func (me *windowDepotNfy) LvnSetFocus(lv *ListView, userFunc func(p *win.NMHDR))
 	})
 }
 
-//------------------------------------------------------------------------------
+//------------------------------------------------------------- TreeView TVN ---
 
 func (me *windowDepotNfy) TvnAsyncDraw(tv *TreeView, userFunc func(p *win.NMTVASYNCDRAW)) {
 	me.addNfy(tv.Id(), co.NM(co.TVN_ASYNCDRAW), func(p wm.Notify) uintptr {
@@ -438,5 +438,68 @@ func (me *windowDepotNfy) TvnSetDispInfo(tv *TreeView, userFunc func(p *win.NMTV
 func (me *windowDepotNfy) TvnSingleExpand(tv *TreeView, userFunc func(p *win.NMTREEVIEW) co.TVNRET) {
 	me.addNfy(tv.Id(), co.NM(co.TVN_SINGLEEXPAND), func(p wm.Notify) uintptr {
 		return uintptr(userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam))))
+	})
+}
+
+//--------------------------------------------------------------- TreView NM ---
+
+func (me *windowDepotNfy) TvnClick(tv *TreeView, userFunc func(p *win.NMHDR)) {
+	me.addNfy(tv.Id(), co.NM_CLICK, func(p wm.Notify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnCustomDraw(tv *TreeView, userFunc func(p *win.NMTVCUSTOMDRAW) co.CDRF) {
+	me.addNfy(tv.Id(), co.NM_CUSTOMDRAW, func(p wm.Notify) uintptr {
+		return uintptr(userFunc((*win.NMTVCUSTOMDRAW)(unsafe.Pointer(p.LParam))))
+	})
+}
+
+func (me *windowDepotNfy) TvnDblClk(tv *TreeView, userFunc func(p *win.NMHDR)) {
+	me.addNfy(tv.Id(), co.NM_DBLCLK, func(p wm.Notify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnKillFocus(tv *TreeView, userFunc func(p *win.NMHDR)) {
+	me.addNfy(tv.Id(), co.NM_KILLFOCUS, func(p wm.Notify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnRClick(tv *TreeView, userFunc func(p *win.NMHDR)) {
+	me.addNfy(tv.Id(), co.NM_RCLICK, func(p wm.Notify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnRDblClk(tv *TreeView, userFunc func(p *win.NMHDR)) {
+	me.addNfy(tv.Id(), co.NM_RDBLCLK, func(p wm.Notify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnReturn(tv *TreeView, userFunc func(p *win.NMHDR)) {
+	me.addNfy(tv.Id(), co.NM_RETURN, func(p wm.Notify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnSetCursor(tv *TreeView, userFunc func(p *win.NMMOUSE) int32) {
+	me.addNfy(tv.Id(), co.NM_SETCURSOR, func(p wm.Notify) uintptr {
+		return uintptr(userFunc((*win.NMMOUSE)(unsafe.Pointer(p.LParam))))
+	})
+}
+
+func (me *windowDepotNfy) TvnSetFocus(tv *TreeView, userFunc func(p *win.NMHDR)) {
+	me.addNfy(tv.Id(), co.NM_SETFOCUS, func(p wm.Notify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
 	})
 }
