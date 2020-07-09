@@ -91,15 +91,15 @@ func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
 	return uint16(ret)
 }
 
-func GetCursorPos() POINT {
-	ptBuf := POINT{}
+func GetCursorPos() *POINT {
+	pt := &POINT{}
 	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
-		uintptr(unsafe.Pointer(&ptBuf)), 0, 0)
+		uintptr(unsafe.Pointer(pt)), 0, 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("GetCursorPos failed: %d %s",
 			lerr, lerr.Error()))
 	}
-	return ptBuf
+	return pt
 }
 
 // Available in Windows 10, version 1607.

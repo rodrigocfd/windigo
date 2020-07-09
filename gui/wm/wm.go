@@ -117,7 +117,7 @@ func (p HotKey) VirtualKeyCode() co.VK { return co.VK(p.LParam.HiWord()) }
 type InitMenuPopup struct{ Base }
 
 func (p InitMenuPopup) Hmenu() win.HMENU        { return win.HMENU(p.WParam) }
-func (p InitMenuPopup) SourceItemIndex() uint16 { return p.LParam.LoWord() }
+func (p InitMenuPopup) MenuRelativePos() uint16 { return p.LParam.LoWord() }
 func (p InitMenuPopup) IsWindowMenu() bool      { return p.LParam.HiWord() != 0 }
 
 type KeyDown struct{ Base }

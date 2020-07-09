@@ -168,13 +168,13 @@ func (me *menuStrip) Hmenu() win.HMENU {
 // Shows the popup menu anchored at the given coordinates.
 // If hCoordsRelativeTo is zero, coordinates must be relative to hParent.
 // This function will block until the menu disappears.
-func (me *menuStrip) ShowAtPoint(pos win.POINT,
+func (me *menuStrip) ShowAtPoint(pos *win.POINT,
 	hParent, hCoordsRelativeTo win.HWND) {
 
 	if hCoordsRelativeTo == 0 {
 		hCoordsRelativeTo = hParent
 	}
-	hCoordsRelativeTo.ClientToScreenPt(&pos) // now relative to screen
+	hCoordsRelativeTo.ClientToScreenPt(pos) // now relative to screen
 	hParent.SetForegroundWindow()
 	me.hMenu.TrackPopupMenu(co.TPM_LEFTBUTTON, pos.X, pos.Y, hParent)
 	hParent.PostMessage(co.WM_NULL, 0, 0) // necessary according to TrackMenuPopup docs
