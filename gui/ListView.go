@@ -236,6 +236,24 @@ func (me *ListView) NextItem(relationship co.LVNI) *ListViewItem {
 	return allItems.NextItem(relationship)
 }
 
+// Calls LVM_GETNEXTITEM sequentially to retrieve all matched items.
+func (me *ListView) NextItemAll(relationship co.LVNI) []ListViewItem {
+	idx := int32(-1)
+	items := make([]ListViewItem, 0, me.SelectedItemCount())
+	for {
+		idx = int32(me.sendLvmMessage(co.LVM_GETNEXTITEM,
+			win.WPARAM(idx), win.LPARAM(relationship)))
+		if idx == -1 {
+			break
+		}
+		items = append(items, ListViewItem{
+			owner: me,
+			index: uint32(idx),
+		})
+	}
+	return items
+}
+
 // Sends LVM_SCROLL.
 func (me *ListView) Scroll(pxHorz, pxVert int32) *ListView {
 	ret := me.sendLvmMessage(co.LVM_SCROLL,
