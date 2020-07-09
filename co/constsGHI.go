@@ -231,3 +231,13 @@ const (
 	ILD_FOCUS         ILD = ILD_BLEND25
 	ILD_BLEND         ILD = ILD_BLEND50
 )
+
+type ILS uint32 // image list state
+
+const (
+	ILS_NORMAL   ILS = 0x00000000
+	ILS_GLOW     ILS = 0x00000001
+	ILS_SHADOW   ILS = 0x00000002
+	ILS_SATURATE ILS = 0x00000004
+	ILS_ALPHA    ILS = 0x00000008
+)

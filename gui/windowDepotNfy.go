@@ -311,3 +311,132 @@ func (me *windowDepotNfy) LvnSetFocus(lv *ListView, userFunc func(p *win.NMHDR))
 		return 0
 	})
 }
+
+//------------------------------------------------------------------------------
+
+func (me *windowDepotNfy) TvnAsyncDraw(tv *TreeView, userFunc func(p *win.NMTVASYNCDRAW)) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_ASYNCDRAW), func(p wm.Notify) uintptr {
+		userFunc((*win.NMTVASYNCDRAW)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnBeginDrag(tv *TreeView, userFunc func(p *win.NMTREEVIEW)) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_BEGINDRAG), func(p wm.Notify) uintptr {
+		userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnBeginLabelEdit(tv *TreeView, userFunc func(p *win.NMTVDISPINFO) bool) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_BEGINLABELEDIT), func(p wm.Notify) uintptr {
+		if userFunc((*win.NMTVDISPINFO)(unsafe.Pointer(p.LParam))) {
+			return 1
+		}
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnBeginRDrag(tv *TreeView, userFunc func(p *win.NMTREEVIEW)) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_BEGINRDRAG), func(p wm.Notify) uintptr {
+		userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnDeleteItem(tv *TreeView, userFunc func(p *win.NMTREEVIEW)) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_DELETEITEM), func(p wm.Notify) uintptr {
+		userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnEndLabelEdit(tv *TreeView, userFunc func(p *win.NMTVDISPINFO) bool) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_ENDLABELEDIT), func(p wm.Notify) uintptr {
+		if userFunc((*win.NMTVDISPINFO)(unsafe.Pointer(p.LParam))) {
+			return 1
+		}
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnGetDispInfo(tv *TreeView, userFunc func(p *win.NMTVDISPINFO)) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_GETDISPINFO), func(p wm.Notify) uintptr {
+		userFunc((*win.NMTVDISPINFO)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnGetInfoTip(tv *TreeView, userFunc func(p *win.NMTVGETINFOTIP)) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_GETINFOTIP), func(p wm.Notify) uintptr {
+		userFunc((*win.NMTVGETINFOTIP)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnItemChanged(tv *TreeView, userFunc func(p *win.NMTVITEMCHANGE)) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_ITEMCHANGED), func(p wm.Notify) uintptr {
+		userFunc((*win.NMTVITEMCHANGE)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnItemChanging(tv *TreeView, userFunc func(p *win.NMTVITEMCHANGE) bool) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_ITEMCHANGING), func(p wm.Notify) uintptr {
+		if userFunc((*win.NMTVITEMCHANGE)(unsafe.Pointer(p.LParam))) {
+			return 1
+		}
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnItemExpanded(tv *TreeView, userFunc func(p *win.NMTREEVIEW)) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_ITEMEXPANDED), func(p wm.Notify) uintptr {
+		userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnItemExpanding(tv *TreeView, userFunc func(p *win.NMTREEVIEW) bool) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_ITEMEXPANDING), func(p wm.Notify) uintptr {
+		if userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam))) {
+			return 1
+		}
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnKeyDown(tv *TreeView, userFunc func(p *win.NMTVKEYDOWN) int32) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_KEYDOWN), func(p wm.Notify) uintptr {
+		return uintptr(userFunc((*win.NMTVKEYDOWN)(unsafe.Pointer(p.LParam))))
+	})
+}
+
+func (me *windowDepotNfy) TvnSelChanged(tv *TreeView, userFunc func(p *win.NMTREEVIEW)) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_SELCHANGED), func(p wm.Notify) uintptr {
+		userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnSelChanging(tv *TreeView, userFunc func(p *win.NMTREEVIEW) bool) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_SELCHANGING), func(p wm.Notify) uintptr {
+		if userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam))) {
+			return 1
+		}
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnSetDispInfo(tv *TreeView, userFunc func(p *win.NMTVDISPINFO)) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_SETDISPINFO), func(p wm.Notify) uintptr {
+		userFunc((*win.NMTVDISPINFO)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) TvnSingleExpand(tv *TreeView, userFunc func(p *win.NMTREEVIEW) co.TVNRET) {
+	me.addNfy(tv.Id(), co.NM(co.TVN_SINGLEEXPAND), func(p wm.Notify) uintptr {
+		return uintptr(userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam))))
+	})
+}

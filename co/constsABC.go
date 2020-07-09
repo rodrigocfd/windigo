@@ -26,6 +26,15 @@ const (
 	ACCESS_RIGHTS_SYNCHRONIZE  ACCESS_RIGHTS = 0x00100000
 )
 
+type ADRF uint32 // NMTVASYNCDRAW dwRetFlags, don't seem to be defined anywhere, values are unconfirmed
+
+const (
+	ADRF_DRAWSYNC     ADRF = 0
+	ADRF_DRAWNOTHING  ADRF = 1
+	ADRF_DRAWFALLBACK ADRF = 2
+	ADRF_DRAWIMAGE    ADRF = 3
+)
+
 type APPCOMMAND int16 // WM_APPCOMMAND
 
 const (

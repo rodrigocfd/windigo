@@ -18,6 +18,26 @@ type IMAGEINFO struct {
 	RcImage  RECT
 }
 
+type IMAGELISTDRAWPARAMS struct {
+	CbSize   uint32
+	Himl     HIMAGELIST
+	I        int32
+	HdcDst   HDC
+	X        int32
+	Y        int32
+	Cx       int32
+	Cy       int32
+	XBitmap  int32
+	YBitmap  int32
+	RgbBk    COLORREF
+	RgbFg    COLORREF
+	FStyle   co.ILD
+	DwRop    co.ROP
+	FState   co.ILS
+	Frame    uint32
+	CrEffect COLORREF
+}
+
 type LITEM struct {
 	Mask      co.LIF
 	ILink     int32
@@ -168,10 +188,69 @@ type NMLVSCROLL struct {
 	Dy  int32
 }
 
+type NMTREEVIEW struct {
+	Hdr     NMHDR
+	Action  uint32 // co.TVE | co.TVC
+	ItemOld TVITEM
+	ItemNew TVITEM
+	PtDrag  POINT
+}
+
+type NMTVASYNCDRAW struct {
+	Hdr            NMHDR
+	Pimldp         uintptr  // LPIMAGELISTDRAWPARAMS
+	Hr             co.ERROR // HRESULT
+	Hitem          HTREEITEM
+	LParam         LPARAM
+	DwRetFlags     co.ADRF
+	IRetImageIndex int32
+}
+
+type NMTVDISPINFO struct {
+	Hdr  NMHDR
+	Item TVITEM
+}
+
+type NMTVGETINFOTIP struct {
+	Hdr        NMHDR
+	PszText    uintptr // LPWSTR
+	CchTextMax int32
+	HItem      HTREEITEM
+	LParam     LPARAM
+}
+
+type NMTVITEMCHANGE struct {
+	Hdr       NMHDR
+	UChanged  co.TVIF
+	HItem     HTREEITEM
+	UStateNew co.TVIS
+	UStateOld co.TVIS
+	LParam    LPARAM
+}
+
+type NMTVKEYDOWN struct {
+	Hdr   NMHDR
+	WVKey co.VK
+	Flags uint32
+}
+
 type TVINSERTSTRUCT struct {
 	HParent      HTREEITEM
 	HInsertAfter HTREEITEM
 	Itemex       TVITEMEX
+}
+
+type TVITEM struct {
+	Mask           co.TVIF
+	HItem          HTREEITEM
+	State          co.TVIS
+	StateMask      co.TVIS
+	PszText        uintptr // LPWSTR
+	CchTextMax     int32
+	IImage         int32
+	ISelectedImage int32
+	CChildren      co.TVI_CHILDREN
+	LParam         LPARAM
 }
 
 type TVITEMEX struct {
