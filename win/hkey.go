@@ -17,12 +17,17 @@ import (
 type HKEY HANDLE
 
 func (hKey HKEY) RegCloseKey() {
-	ret, _, _ := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
-		uintptr(hKey), 0, 0)
+	ret := hKey.regCloseKeyNoPanic()
 	if co.ERROR(ret) != co.ERROR_SUCCESS {
 		panic(fmt.Sprintf("RegCloseKey failed: %d %s",
-			ret, syscall.Errno(ret).Error()))
+			ret, ret.Error()))
 	}
+}
+
+func (hKey HKEY) regCloseKeyNoPanic() syscall.Errno {
+	ret, _, _ := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
+		uintptr(hKey), 0, 0)
+	return syscall.Errno(ret)
 }
 
 func (hKey HKEY) RegEnumValue(dwIndex uint32,
@@ -42,9 +47,10 @@ func (hKey HKEY) RegEnumValue(dwIndex uint32,
 	case co.ERROR_NO_MORE_ITEMS:
 		fallthrough
 	case co.ERROR_MORE_DATA:
-		return co.ERROR(ret)
+		return co.ERROR(ret) // not really errors
 	}
 
+	hKey.regCloseKeyNoPanic() // cleanup
 	panic(fmt.Sprintf("RegEnumValue failed: %d %s",
 		ret, syscall.Errno(ret).Error()))
 }
@@ -59,7 +65,7 @@ func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
 		uintptr(ulOptions), uintptr(samDesired), uintptr(unsafe.Pointer(&hKey)),
 		0)
 	if co.ERROR(ret) == co.ERROR_FILE_NOT_FOUND {
-		return HKEY(0) // not found
+		return 0 // not found
 	} else if co.ERROR(ret) != co.ERROR_SUCCESS {
 		panic(fmt.Sprintf("RegOpenKeyEx failed: %d %s",
 			ret, syscall.Errno(ret).Error()))
@@ -74,7 +80,9 @@ func (hKey HKEY) RegQueryValueEx(lpValueName string, lpType *co.REG,
 		uintptr(hKey), uintptr(unsafe.Pointer(StrToPtr(lpValueName))), 0,
 		uintptr(unsafe.Pointer(lpType)), lpData,
 		uintptr(unsafe.Pointer(lpcbData)))
+
 	if co.ERROR(ret) != co.ERROR_SUCCESS {
+		hKey.regCloseKeyNoPanic() // cleanup
 		panic(fmt.Sprintf("RegQueryValueEx failed: %d %s",
 			ret, syscall.Errno(ret).Error()))
 	}

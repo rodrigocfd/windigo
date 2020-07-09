@@ -26,6 +26,7 @@ func (hDrop HDROP) DragQueryFile(iFile uint32, lpszFile *uint16,
 		uintptr(hDrop), uintptr(iFile), uintptr(unsafe.Pointer(lpszFile)),
 		uintptr(cch), 0, 0)
 	if ret == 0 {
+		hDrop.DragFinish() // cleanup
 		panic("DragQueryFile failed.")
 	}
 	return uint32(ret)

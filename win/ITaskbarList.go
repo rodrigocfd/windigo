@@ -76,6 +76,7 @@ func (me *ITaskbarList3) SetProgressValue(hwnd HWND,
 		uintptr(ullCompleted), uintptr(ullTotal),
 		0, 0)
 	if co.ERROR(ret) != co.ERROR_S_OK {
+		me.Release() // cleanup
 		lerr := syscall.Errno(ret)
 		panic(fmt.Sprintf("ITaskbarList3.SetProgressValue failed: %d %s",
 			lerr, lerr.Error()))
@@ -88,6 +89,7 @@ func (me *ITaskbarList3) SetProgressState(hwnd HWND, tbpFlags co.TBPF) {
 	ret, _, _ := syscall.Syscall(lpVtbl.SetProgressState, 3,
 		uintptr(unsafe.Pointer(me)), uintptr(hwnd), uintptr(tbpFlags))
 	if co.ERROR(ret) != co.ERROR_S_OK {
+		me.Release() // cleanup
 		lerr := syscall.Errno(ret)
 		panic(fmt.Sprintf("ITaskbarList3.SetProgressState failed: %d %s",
 			lerr, lerr.Error()))

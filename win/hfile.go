@@ -24,10 +24,10 @@ func (hFile HFILE) CloseHandle() {
 	}
 }
 
-func (hFile HFILE) closeHandleNoPanic() (HFILE, syscall.Errno) {
+func (hFile HFILE) closeHandleNoPanic() (uintptr, syscall.Errno) {
 	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
 		uintptr(hFile), 0, 0)
-	return HFILE(ret), lerr
+	return ret, lerr
 }
 
 func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) {
@@ -68,8 +68,9 @@ func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 		uintptr(uint32(protectPage)|uint32(protectSec)),
 		0, uintptr(maxSize),
 		uintptr(unsafe.Pointer(StrToPtrBlankIsNil(objectName))))
+
 	if lerr != 0 {
-		hFile.closeHandleNoPanic()
+		hFile.closeHandleNoPanic() // cleanup
 		panic(fmt.Sprintf("CreateFileMapping failed: %d %s",
 			lerr, lerr.Error()))
 	}
@@ -85,9 +86,9 @@ func DeleteFile(fileName string) {
 	}
 }
 
-func GetFileAttributes(fileName string) co.FILE_ATTRIBUTE {
+func GetFileAttributes(lpFileName string) co.FILE_ATTRIBUTE {
 	ret, _, lerr := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
-		uintptr(unsafe.Pointer(StrToPtr(fileName))), 0, 0)
+		uintptr(unsafe.Pointer(StrToPtr(lpFileName))), 0, 0)
 	if int32(ret) == -1 {
 		panic(fmt.Sprintf("GetFileAttributes failed: %d %s",
 			lerr, lerr.Error()))
@@ -99,7 +100,7 @@ func (hFile HFILE) GetFileSize() uint32 {
 	ret, _, lerr := syscall.Syscall(proc.GetFileSize.Addr(), 1,
 		uintptr(hFile), 0, 0)
 	if ret == 0xFFFFFFFF && lerr != 0 {
-		hFile.closeHandleNoPanic()
+		hFile.closeHandleNoPanic() // cleanup
 		panic(fmt.Sprintf("GetFileSize failed: %d %s",
 			lerr, lerr.Error()))
 	}
@@ -111,7 +112,7 @@ func (hFile HFILE) GetFileSizeEx() int64 {
 	ret, _, lerr := syscall.Syscall(proc.GetFileSizeEx.Addr(), 2,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf)), 0)
 	if ret == 0 && lerr != 0 {
-		hFile.closeHandleNoPanic()
+		hFile.closeHandleNoPanic() // cleanup
 		panic(fmt.Sprintf("GetFileSizeEx failed: %d %s",
 			lerr, lerr.Error()))
 	}
@@ -125,8 +126,9 @@ func (hFile HFILE) ReadFile(buf []uint8, bytesToRead uint32) uint32 {
 	ret, _, lerr := syscall.Syscall6(proc.ReadFile.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(bytesToRead), uintptr(unsafe.Pointer(&numRead)), 0, 0) // OVERLAPPED not even considered
+
 	if ret == 0 {
-		hFile.closeHandleNoPanic()
+		hFile.closeHandleNoPanic() // cleanup
 		panic(fmt.Sprintf("ReadFile failed: %d %s",
 			lerr, lerr.Error()))
 	}
@@ -137,7 +139,7 @@ func (hFile HFILE) SetEndOfFile() {
 	ret, _, lerr := syscall.Syscall(proc.SetEndOfFile.Addr(), 1,
 		uintptr(hFile), 0, 0)
 	if ret == 0 {
-		hFile.closeHandleNoPanic()
+		hFile.closeHandleNoPanic() // cleanup
 		panic(fmt.Sprintf("SetEndOfFile failed: %d %s",
 			lerr, lerr.Error()))
 	}
@@ -150,7 +152,7 @@ func (hFile HFILE) SetFilePointer(distanceToMove int32,
 		uintptr(hFile), uintptr(distanceToMove), 0, uintptr(moveMethod),
 		0, 0)
 	if int32(ret) == -1 && lerr != 0 {
-		hFile.closeHandleNoPanic()
+		hFile.closeHandleNoPanic() // cleanup
 		panic(fmt.Sprintf("SetFilePointer failed: %d %s",
 			lerr, lerr.Error()))
 	}
@@ -163,7 +165,7 @@ func (hFile HFILE) SetFilePointerEx(distanceToMove int64,
 		uintptr(hFile), uintptr(distanceToMove), 0, uintptr(moveMethod),
 		0, 0)
 	if ret == 0 {
-		hFile.closeHandleNoPanic()
+		hFile.closeHandleNoPanic() // cleanup
 		panic(fmt.Sprintf("SetFilePointerEx failed: %d %s",
 			lerr, lerr.Error()))
 	}
@@ -175,7 +177,7 @@ func (hFile HFILE) WriteFile(buf []uint8) {
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(len(buf)), uintptr(unsafe.Pointer(&written)), 0, 0) // OVERLAPPED not even considered
 	if ret == 0 {
-		hFile.closeHandleNoPanic()
+		hFile.closeHandleNoPanic() // cleanup
 		panic(fmt.Sprintf("WriteFile failed: %d %s",
 			lerr, lerr.Error()))
 	}

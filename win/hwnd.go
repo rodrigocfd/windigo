@@ -436,9 +436,9 @@ func (hWnd HWND) SetWindowSubclass(subclassProc uintptr, uIdSubclass uint32,
 	}
 }
 
-func (hWnd HWND) SetWindowText(text string) {
+func (hWnd HWND) SetWindowText(lpString string) {
 	syscall.Syscall(proc.SetWindowText.Addr(), 2,
-		uintptr(hWnd), uintptr(unsafe.Pointer(StrToPtr(text))),
+		uintptr(hWnd), uintptr(unsafe.Pointer(StrToPtr(lpString))),
 		0)
 }
 

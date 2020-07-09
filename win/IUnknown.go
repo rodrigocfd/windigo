@@ -65,6 +65,7 @@ func (me *IUnknown) queryInterface(iid *co.GUID) *IUnknown {
 		uintptr(unsafe.Pointer(&retIUnk)))
 
 	if co.ERROR(ret) != co.ERROR_S_OK {
+		me.Release() // cleanup
 		lerr := syscall.Errno(ret)
 		panic(fmt.Sprintf("IUnknown.QueryInterface failed: %d %s",
 			lerr, lerr.Error()))

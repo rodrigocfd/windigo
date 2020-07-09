@@ -17,11 +17,16 @@ import (
 type HTHEME HANDLE
 
 func (hTheme HTHEME) CloseThemeData() {
-	hr, _, _ := syscall.Syscall(proc.CloseThemeData.Addr(), 0,
-		uintptr(hTheme), 0, 0)
+	hr := hTheme.closeThemeDataNoPanic()
 	if hr != 0 {
 		panic(fmt.Sprintf("CloseThemeData failed: %d.", hr))
 	}
+}
+
+func (hTheme HTHEME) closeThemeDataNoPanic() uintptr {
+	hr, _, _ := syscall.Syscall(proc.CloseThemeData.Addr(), 0,
+		uintptr(hTheme), 0, 0)
+	return hr
 }
 
 func (hTheme HTHEME) DrawThemeBackground(hdc HDC,
@@ -32,6 +37,7 @@ func (hTheme HTHEME) DrawThemeBackground(hdc HDC,
 		uintptr(hTheme), uintptr(hdc), uintptr(partId), uintptr(stateId),
 		uintptr(unsafe.Pointer(rect)), uintptr(unsafe.Pointer(clipRect)))
 	if hr != 0 {
+		hTheme.closeThemeDataNoPanic() // cleanup
 		panic(fmt.Sprintf("DrawThemeBackground failed: %d.", hr))
 	}
 }

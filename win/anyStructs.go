@@ -28,6 +28,11 @@ type CREATESTRUCT struct {
 	ExStyle        co.WS_EX
 }
 
+type FILETIME struct {
+	DwLowDateTime  uint32
+	DwHighDateTime uint32
+}
+
 type GUID struct {
 	Data1 uint32
 	Data2 uint16
@@ -126,4 +131,20 @@ type SHFILEINFO struct {
 
 type SIZE struct {
 	Cx, Cy int32
+}
+
+type WIN32_FIND_DATA struct {
+	DwFileAttributes   co.FILE_ATTRIBUTE
+	FtCreationTime     FILETIME
+	FtLastAccessTime   FILETIME
+	FtLastWriteTime    FILETIME
+	NFileSizeHigh      uint32
+	NFileSizeLow       uint32
+	DwReserved0        uint32
+	DwReserved1        uint32
+	CFileName          [260]uint16 // MAX_PATH
+	CAlternateFileName [14]uint16
+	DwFileType         uint32
+	DwCreatorType      uint32
+	WFinderFlags       uint16
 }
