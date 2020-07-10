@@ -51,29 +51,16 @@ func StrToPtrBlankIsNil(s string) *uint16 {
 	return nil
 }
 
-// Simple conversion for syscalls.
-func boolToUintptr(b bool) uintptr {
-	if b {
-		return uintptr(1)
-	}
-	return uintptr(0)
-}
-
-func hiWord(value uint32) uint16 { return uint16(value >> 16 & 0xffff) }
-func loWord(value uint32) uint16 { return uint16(value) }
-func hiByte(value uint16) uint8  { return uint8(value >> 8 & 0xff) }
-func loByte(value uint16) uint8  { return uint8(value) }
-
 //------------------------------------------------------------------------------
 
 // Don't forget to call CoUninitialize().
 func CoInitializeEx(dwCoInit co.COINIT) {
 	ret, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
 		0, uintptr(dwCoInit), 0)
-	if co.ERROR(ret) != co.ERROR_S_OK && co.ERROR(ret) != co.ERROR_S_FALSE {
-		lerr := syscall.Errno(ret)
-		panic(fmt.Sprintf("CoInitializeEx failed: %d %s",
-			lerr, lerr.Error()))
+
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK && lerr != co.ERROR_S_FALSE {
+		panic(lerr.Format("CoInitializeEx failed."))
 	}
 }
 
@@ -96,8 +83,7 @@ func GetCursorPos() *POINT {
 	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(pt)), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("GetCursorPos failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("GetCursorPos failed."))
 	}
 	return pt
 }
@@ -132,8 +118,7 @@ func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 	ret, _, lerr := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
 		uintptr(value), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SetProcessDpiAwarenessContext failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("SetProcessDpiAwarenessContext failed."))
 	}
 }
 
@@ -178,7 +163,6 @@ func SystemParametersInfo(uiAction co.SPI, uiParam uint32,
 		uintptr(uiAction), uintptr(uiParam), uintptr(pvParam), uintptr(fWinIni),
 		0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SystemParametersInfo failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("SystemParametersInfo failed."))
 	}
 }

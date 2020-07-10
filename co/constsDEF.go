@@ -7,6 +7,7 @@
 package co
 
 import (
+	"fmt"
 	"syscall"
 )
 
@@ -116,7 +117,14 @@ const (
 	ES_NUMBER      ES = 0x2000
 )
 
-type ERROR syscall.Errno // GetLastError result
+// Returned by GetLastError(), also an HINSTANCE.
+// We can't simply use syscall.Errno because it's an uintptr (8 bytes), thus a
+// native struct with such a field type would be wrong.
+type ERROR uint32
+
+func (e ERROR) Format(msg string) string {
+	return fmt.Sprintf("%s [%d 0x%x] %s", msg, e, e, syscall.Errno(e).Error())
+}
 
 const (
 	ERROR_SUCCESS                   ERROR = 0

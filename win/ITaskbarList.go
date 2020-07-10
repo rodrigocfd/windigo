@@ -7,7 +7,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -75,11 +74,11 @@ func (me *ITaskbarList3) SetProgressValue(hwnd HWND,
 		uintptr(unsafe.Pointer(me)), uintptr(hwnd),
 		uintptr(ullCompleted), uintptr(ullTotal),
 		0, 0)
-	if co.ERROR(ret) != co.ERROR_S_OK {
-		me.Release() // cleanup
-		lerr := syscall.Errno(ret)
-		panic(fmt.Sprintf("ITaskbarList3.SetProgressValue failed: %d %s",
-			lerr, lerr.Error()))
+
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		me.Release() // free resource
+		panic(lerr.Format("ITaskbarList3.SetProgressValue failed."))
 	}
 }
 
@@ -88,10 +87,10 @@ func (me *ITaskbarList3) SetProgressState(hwnd HWND, tbpFlags co.TBPF) {
 	lpVtbl := (*iTaskbarList3Vtbl)(unsafe.Pointer(me.lpVtbl))
 	ret, _, _ := syscall.Syscall(lpVtbl.SetProgressState, 3,
 		uintptr(unsafe.Pointer(me)), uintptr(hwnd), uintptr(tbpFlags))
-	if co.ERROR(ret) != co.ERROR_S_OK {
-		me.Release() // cleanup
-		lerr := syscall.Errno(ret)
-		panic(fmt.Sprintf("ITaskbarList3.SetProgressState failed: %d %s",
-			lerr, lerr.Error()))
+
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		me.Release() // free resource
+		panic(lerr.Format("ITaskbarList3.SetProgressState failed."))
 	}
 }

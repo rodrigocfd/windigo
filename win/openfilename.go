@@ -44,6 +44,7 @@ func (ofn *OPENFILENAME) GetOpenFileName() bool {
 	ofn.LStructSize = uint32(unsafe.Sizeof(*ofn)) // safety
 	ret, _, _ := syscall.Syscall(proc.GetOpenFileName.Addr(), 1,
 		uintptr(unsafe.Pointer(ofn)), 0, 0)
+
 	if ret == 0 {
 		ret, _, _ := syscall.Syscall(proc.CommDlgExtendedError.Addr(), 0,
 			0, 0, 0)
@@ -60,6 +61,7 @@ func (ofn *OPENFILENAME) GetSaveFileName() bool {
 	ofn.LStructSize = uint32(unsafe.Sizeof(*ofn)) // safety
 	ret, _, _ := syscall.Syscall(proc.GetSaveFileName.Addr(), 1,
 		uintptr(unsafe.Pointer(ofn)), 0, 0)
+
 	if ret == 0 {
 		ret, _, _ := syscall.Syscall(proc.CommDlgExtendedError.Addr(), 0,
 			0, 0, 0)

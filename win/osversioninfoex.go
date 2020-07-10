@@ -92,12 +92,12 @@ func IsWindowsXpOrGreater() bool {
 }
 
 func (ovi *OSVERSIONINFOEX) VerifyVersionInfo(typeMask co.VER,
-	conditionMask uint64) (bool, syscall.Errno) {
+	conditionMask uint64) (bool, co.ERROR) {
 
 	ret, _, lerr := syscall.Syscall(proc.VerifyVersionInfo.Addr(), 3,
 		uintptr(unsafe.Pointer(ovi)),
 		uintptr(typeMask), uintptr(conditionMask))
-	return ret != 0, lerr
+	return ret != 0, co.ERROR(lerr)
 }
 
 func VerSetConditionMask(conditionMask uint64, typeMask co.VER,

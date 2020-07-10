@@ -7,7 +7,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -18,19 +17,13 @@ type HKEY HANDLE
 
 func (hKey HKEY) RegCloseKey() {
 	ret := hKey.regCloseKeyNoPanic()
-	if co.ERROR(ret) != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("RegCloseKey failed: %d %s",
-			ret, ret.Error()))
+	if ret != co.ERROR_SUCCESS {
+		panic(ret.Format("RegCloseKey failed."))
 	}
 }
 
-func (hKey HKEY) regCloseKeyNoPanic() syscall.Errno {
-	if hKey == 0 {
-		return syscall.Errno(co.ERROR_SUCCESS)
-	}
-	ret, _, _ := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
-		uintptr(hKey), 0, 0)
-	return syscall.Errno(ret)
+func (hKey HKEY) regCloseKeyNoPanic() co.ERROR {
+	return freeNoPanic(HANDLE(hKey), proc.RegCloseKey)
 }
 
 func (hKey HKEY) RegEnumValue(dwIndex uint32,
@@ -44,18 +37,16 @@ func (hKey HKEY) RegEnumValue(dwIndex uint32,
 		uintptr(unsafe.Pointer(lpType)),
 		lpData, uintptr(unsafe.Pointer(lpcbData)), 0)
 
-	switch co.ERROR(ret) {
-	case co.ERROR_SUCCESS:
-		fallthrough
-	case co.ERROR_NO_MORE_ITEMS:
-		fallthrough
-	case co.ERROR_MORE_DATA:
-		return co.ERROR(ret) // not really errors
+	lerr := co.ERROR(ret)
+	if lerr == co.ERROR_SUCCESS ||
+		lerr == co.ERROR_NO_MORE_ITEMS ||
+		lerr == co.ERROR_MORE_DATA {
+		// These are not really errors.
+		return lerr
 	}
 
-	hKey.regCloseKeyNoPanic() // cleanup
-	panic(fmt.Sprintf("RegEnumValue failed: %d %s",
-		ret, syscall.Errno(ret).Error()))
+	hKey.regCloseKeyNoPanic() // free resource
+	panic(lerr.Format("RegEnumValue failed."))
 }
 
 // Returns zero if key doesn't exist.
@@ -67,11 +58,12 @@ func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
 		uintptr(hKeyPredef), uintptr(unsafe.Pointer(StrToPtr(lpSubKey))),
 		uintptr(ulOptions), uintptr(samDesired), uintptr(unsafe.Pointer(&hKey)),
 		0)
-	if co.ERROR(ret) == co.ERROR_FILE_NOT_FOUND {
+
+	lerr := co.ERROR(ret)
+	if lerr == co.ERROR_FILE_NOT_FOUND {
 		return 0 // not found
-	} else if co.ERROR(ret) != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("RegOpenKeyEx failed: %d %s",
-			ret, syscall.Errno(ret).Error()))
+	} else if lerr != co.ERROR_SUCCESS {
+		panic(lerr.Format("RegOpenKeyEx failed."))
 	}
 	return hKey
 }
@@ -84,10 +76,10 @@ func (hKey HKEY) RegQueryValueEx(lpValueName string, lpType *co.REG,
 		uintptr(unsafe.Pointer(lpType)), lpData,
 		uintptr(unsafe.Pointer(lpcbData)))
 
-	if co.ERROR(ret) != co.ERROR_SUCCESS {
-		hKey.regCloseKeyNoPanic() // cleanup
-		panic(fmt.Sprintf("RegQueryValueEx failed: %d %s",
-			ret, syscall.Errno(ret).Error()))
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_SUCCESS {
+		hKey.regCloseKeyNoPanic() // free resource
+		panic(lerr.Format("RegQueryValueEx failed."))
 	}
-	return co.ERROR(ret)
+	return lerr
 }

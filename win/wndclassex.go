@@ -38,9 +38,9 @@ func (wcx *WNDCLASSEX) Hash() string {
 		wcx.LpszMenuName, wcx.HIconSm)
 }
 
-func (wcx *WNDCLASSEX) RegisterClassEx() (ATOM, syscall.Errno) {
+func (wcx *WNDCLASSEX) RegisterClassEx() (ATOM, co.ERROR) {
 	wcx.CbSize = uint32(unsafe.Sizeof(*wcx)) // safety
 	ret, _, lerr := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
 		uintptr(unsafe.Pointer(wcx)), 0, 0)
-	return ATOM(ret), lerr
+	return ATOM(ret), co.ERROR(lerr)
 }

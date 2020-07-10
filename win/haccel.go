@@ -7,9 +7,9 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
+	"wingows/co"
 	"wingows/win/proc"
 )
 
@@ -32,8 +32,7 @@ func CreateAcceleratorTable(accelList []ACCEL) HACCEL {
 		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)),
 		0)
 	if ret == 0 {
-		panic(fmt.Sprintf("CreateAcceleratorTable failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("CreateAcceleratorTable failed."))
 	}
 	return HACCEL(ret)
 }

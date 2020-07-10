@@ -7,55 +7,47 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"wingows/co"
 	"wingows/win/proc"
 )
 
-// These types don't exist in Win32, we're wrapping HANDLE just to have a proper
-// scope on the functions.
-type (
-	HFILEMAP     HANDLE  // Returned by HFILE.CreateFileMapping().
-	HFILEMAPADDR uintptr // Returned by HFILEMAP.MapViewOfFile(), just a BYTE pointer to memory address.
-)
+// This type doesn't exist in Win32, just a HANDLE.
+type HFILEMAP HANDLE
 
 func (hMap HFILEMAP) CloseHandle() {
-	ret, lerr := hMap.closeHandleNoPanic()
-	if ret == 0 {
-		panic(fmt.Sprintf("CloseHandle failed: %d %s",
-			lerr, lerr.Error()))
+	lerr := hMap.closeHandleNoPanic()
+	if lerr != co.ERROR_SUCCESS {
+		panic(lerr.Format("CloseHandle failed."))
 	}
 }
 
-func (hMap HFILEMAP) closeHandleNoPanic() (uintptr, syscall.Errno) {
-	if hMap == 0 {
-		return 1, syscall.Errno(co.ERROR_SUCCESS)
-	}
-	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
-		uintptr(hMap), 0, 0)
-	return ret, lerr
+func (hMap HFILEMAP) closeHandleNoPanic() co.ERROR {
+	return freeNoPanic(HANDLE(hMap), proc.CloseHandle)
 }
 
 func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
-	offset uint32, numBytesToMap uintptr) HFILEMAPADDR {
+	offset uint32, numBytesToMap uintptr) HFILEMAP_PTR {
 
 	ret, _, lerr := syscall.Syscall6(proc.MapViewOfFile.Addr(), 5,
 		uintptr(hMap), uintptr(desiredAccess), 0, uintptr(offset),
 		numBytesToMap, 0)
 	if ret == 0 {
-		hMap.closeHandleNoPanic() // cleanup
-		panic(fmt.Sprintf("MapViewOfFile failed: %d %s",
-			lerr, lerr.Error()))
+		hMap.closeHandleNoPanic() // free resource
+		panic(co.ERROR(lerr).Format("MapViewOfFile failed."))
 	}
-	return HFILEMAPADDR(ret)
+	return HFILEMAP_PTR(ret)
 }
 
-func (mappedPtr HFILEMAPADDR) UnmapViewOfFile() {
+//------------------------------------------------------------------------------
+
+// This type doesn't exist in Win32, just a BYTE pointer to memory address.
+type HFILEMAP_PTR uintptr
+
+func (mappedPtr HFILEMAP_PTR) UnmapViewOfFile() {
 	ret, _, lerr := syscall.Syscall(proc.UnmapViewOfFile.Addr(), 1,
 		uintptr(mappedPtr), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("UnmapViewOfFile failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("UnmapViewOfFile failed."))
 	}
 }

@@ -7,7 +7,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -23,8 +22,7 @@ func (hMenu HMENU) AppendMenu(uFlags co.MF, uIDNewItem uintptr,
 		uintptr(hMenu), uintptr(uFlags), uIDNewItem, uintptr(lpNewItem),
 		0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("AppendMenu failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("AppendMenu failed."))
 	}
 }
 
@@ -39,8 +37,7 @@ func (hMenu HMENU) CheckMenuRadioItem(first, last, check int32, flags co.MF) {
 		uintptr(hMenu), uintptr(first), uintptr(last), uintptr(check),
 		uintptr(flags), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("CheckMenuRadioItem failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("CheckMenuRadioItem failed."))
 	}
 }
 
@@ -49,8 +46,7 @@ func CreateMenu() HMENU {
 	ret, _, lerr := syscall.Syscall(proc.CreateMenu.Addr(), 0,
 		0, 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("CreateMenu failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("CreateMenu failed."))
 	}
 	return HMENU(ret)
 }
@@ -59,8 +55,7 @@ func CreateMenu() HMENU {
 func CreatePopupMenu() HMENU {
 	ret, _, lerr := syscall.Syscall(proc.CreatePopupMenu.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("CreatePopupMenu failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("CreatePopupMenu failed."))
 	}
 	return HMENU(ret)
 }
@@ -69,8 +64,7 @@ func (hMenu HMENU) DeleteMenu(uPosition int32, uFlags co.MF) {
 	ret, _, lerr := syscall.Syscall(proc.DeleteMenu.Addr(), 3,
 		uintptr(hMenu), uintptr(uPosition), uintptr(uFlags))
 	if ret == 0 {
-		panic(fmt.Sprintf("DeleteMenu failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("DeleteMenu failed."))
 	}
 }
 
@@ -78,8 +72,7 @@ func (hMenu HMENU) DestroyMenu() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyMenu.Addr(), 1,
 		uintptr(hMenu), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("DestroyMenu failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("DestroyMenu failed."))
 	}
 }
 
@@ -95,8 +88,7 @@ func (hMenu HMENU) GetMenuInfo(mi *MENUINFO) {
 	ret, _, lerr := syscall.Syscall(proc.GetMenuInfo.Addr(), 2,
 		uintptr(hMenu), uintptr(unsafe.Pointer(mi)), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("GetMenuInfo failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("GetMenuInfo failed."))
 	}
 }
 
@@ -104,8 +96,7 @@ func (hMenu HMENU) GetMenuItemCount() uint32 {
 	ret, _, lerr := syscall.Syscall(proc.GetMenuItemCount.Addr(), 1,
 		uintptr(hMenu), 0, 0)
 	if int32(ret) == -1 {
-		panic(fmt.Sprintf("GetItemCount failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("GetItemCount failed."))
 	}
 	return uint32(ret)
 }
@@ -125,8 +116,7 @@ func (hMenu HMENU) GetMenuItemInfo(item int32, fByPosition bool,
 		uintptr(hMenu), uintptr(item), boolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmii)), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("GetMenuItemInfo failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("GetMenuItemInfo failed."))
 	}
 }
 
@@ -143,8 +133,7 @@ func (hMenu HMENU) InsertMenu(uPosition int32, uFlags co.MF,
 		uintptr(hMenu), uintptr(uPosition), uintptr(uFlags),
 		uIDNewItem, lpNewItem, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("InsertMenu failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("InsertMenu failed."))
 	}
 }
 
@@ -155,8 +144,7 @@ func (hMenu HMENU) InsertMenuItem(item int32, fByPosition bool,
 		uintptr(hMenu), uintptr(item), boolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmi)), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("InsertMenuItem failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("InsertMenuItem failed."))
 	}
 }
 
@@ -164,8 +152,7 @@ func (hMenu HMENU) SetMenuDefaultItem(uItem int32, fByPos bool) {
 	ret, _, lerr := syscall.Syscall(proc.SetMenuDefaultItem.Addr(), 3,
 		uintptr(hMenu), uintptr(uItem), boolToUintptr(fByPos))
 	if ret == 0 {
-		panic(fmt.Sprintf("SetMenuDefaultItem failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("SetMenuDefaultItem failed."))
 	}
 }
 
@@ -178,8 +165,7 @@ func (hMenu HMENU) SetMenuItemInfo(item int32, fByPosition bool,
 		uintptr(hMenu), uintptr(item), boolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmii)), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SetMenuItemInfo failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("SetMenuItemInfo failed."))
 	}
 }
 
@@ -188,17 +174,16 @@ func (hMenu HMENU) TrackPopupMenu(uFlags co.TPM, x, y int32, hWnd HWND) int32 {
 	ret, _, lerr := syscall.Syscall9(proc.TrackPopupMenu.Addr(), 7,
 		uintptr(hMenu), uintptr(uFlags), uintptr(x), uintptr(y), 0, uintptr(hWnd),
 		0, 0, 0)
+
 	if (uFlags & co.TPM_RETURNCMD) != 0 {
 		if ret == 0 && lerr != 0 {
-			panic(fmt.Sprintf("TrackPopupMenu failed: %d %s",
-				lerr, lerr.Error()))
+			panic(co.ERROR(lerr).Format("TrackPopupMenu failed."))
 		} else {
 			return int32(ret)
 		}
 	} else {
 		if ret == 0 {
-			panic(fmt.Sprintf("TrackPopupMenu failed: %d %s",
-				lerr, lerr.Error()))
+			panic(co.ERROR(lerr).Format("TrackPopupMenu failed."))
 		} else {
 			return 0
 		}

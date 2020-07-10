@@ -8,7 +8,6 @@ package win
 
 import (
 	"encoding/binary"
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -45,10 +44,9 @@ func (me *IUnknown) coCreateInstance(clsid *co.GUID, iid *co.GUID) {
 		uintptr(co.CLSCTX_INPROC_SERVER),
 		uintptr(unsafe.Pointer(&iidFlip)), uintptr(unsafe.Pointer(&retIUnk)), 0)
 
-	if co.ERROR(ret) != co.ERROR_S_OK {
-		lerr := syscall.Errno(ret)
-		panic(fmt.Sprintf("CoCreateInstance failed: %d %s",
-			lerr, lerr.Error()))
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		panic(lerr.Format("CoCreateInstance failed."))
 	}
 	*me = *retIUnk
 }
@@ -64,11 +62,10 @@ func (me *IUnknown) queryInterface(iid *co.GUID) *IUnknown {
 		uintptr(unsafe.Pointer(me)), uintptr(unsafe.Pointer(&iidFlip)),
 		uintptr(unsafe.Pointer(&retIUnk)))
 
-	if co.ERROR(ret) != co.ERROR_S_OK {
-		me.Release() // cleanup
-		lerr := syscall.Errno(ret)
-		panic(fmt.Sprintf("IUnknown.QueryInterface failed: %d %s",
-			lerr, lerr.Error()))
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		me.Release() // free resource
+		panic(lerr.Format("IUnknown.QueryInterface failed."))
 	}
 	return retIUnk
 }

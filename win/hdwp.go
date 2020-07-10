@@ -7,7 +7,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"wingows/co"
 	"wingows/win/proc"
@@ -19,8 +18,7 @@ func BeginDeferWindowPos(numWindows uint32) HDWP {
 	ret, _, lerr := syscall.Syscall(proc.BeginDeferWindowPos.Addr(), 1,
 		uintptr(numWindows), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("BeginDeferWindowPos failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("BeginDeferWindowPos failed."))
 	}
 	return HDWP(ret)
 }
@@ -33,26 +31,19 @@ func (hDwp HDWP) DeferWindowPos(hWnd HWND, hWndInsertAfter HWND, x, y int32,
 		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy), uintptr(uFlags),
 		0)
 	if ret == 0 {
-		hDwp.endDeferWindowPosNoPanic() // cleanup
-		panic(fmt.Sprintf("DeferWindowPos failed: %d %s",
-			lerr, lerr.Error()))
+		hDwp.endDeferWindowPosNoPanic() // free resource
+		panic(co.ERROR(lerr).Format("DeferWindowPos failed."))
 	}
 	return HDWP(ret)
 }
 
 func (hDwp HDWP) EndDeferWindowPos() {
-	ret, lerr := hDwp.endDeferWindowPosNoPanic()
-	if ret == 0 {
-		panic(fmt.Sprintf("EndDeferWindowPos failed: %d %s",
-			lerr, lerr.Error()))
+	lerr := hDwp.endDeferWindowPosNoPanic()
+	if lerr != co.ERROR_SUCCESS {
+		panic(lerr.Format("EndDeferWindowPos failed."))
 	}
 }
 
-func (hDwp HDWP) endDeferWindowPosNoPanic() (uintptr, syscall.Errno) {
-	if hDwp == 0 {
-		return 1, syscall.Errno(co.ERROR_SUCCESS)
-	}
-	ret, _, lerr := syscall.Syscall(proc.EndDeferWindowPos.Addr(), 1,
-		uintptr(hDwp), 0, 0)
-	return ret, lerr
+func (hDwp HDWP) endDeferWindowPosNoPanic() co.ERROR {
+	return freeNoPanic(HANDLE(hDwp), proc.EndDeferWindowPos)
 }

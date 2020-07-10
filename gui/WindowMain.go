@@ -9,7 +9,6 @@ package gui
 import (
 	"fmt"
 	"os"
-	"syscall"
 	"unsafe"
 	"wingows/co"
 	"wingows/gui/wm"
@@ -109,9 +108,10 @@ func (me *WindowMain) runMainLoop() int {
 	msg := win.MSG{}
 	for {
 		status, lerr := msg.GetMessage(win.HWND(0), 0, 0)
-		if lerr != syscall.Errno(0) {
-			fmt.Fprintf(os.Stderr, "GetMessage failed for WindowMain: %d %s",
-				lerr, lerr.Error())
+
+		if lerr != co.ERROR_SUCCESS {
+			fmt.Fprintf(os.Stderr,
+				lerr.Format("GetMessage failed for WindowMain."))
 			return int(lerr) // return error code
 		} else if status == 0 { // WM_QUIT was sent, gracefully terminate the program
 			// WParam has the program exit code.

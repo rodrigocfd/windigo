@@ -9,6 +9,7 @@ package win
 import (
 	"syscall"
 	"unsafe"
+	"wingows/co"
 	"wingows/win/proc"
 )
 
@@ -28,16 +29,16 @@ func (msg *MSG) DispatchMessage() uintptr {
 }
 
 func (msg *MSG) GetMessage(hWnd HWND,
-	msgFilterMin, msgFilterMax uint32) (int32, syscall.Errno) {
+	msgFilterMin, msgFilterMax uint32) (int32, co.ERROR) {
 
 	ret, _, lerr := syscall.Syscall6(proc.GetMessage.Addr(), 4,
 		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
 		uintptr(msgFilterMin), uintptr(msgFilterMax),
 		0, 0)
 	if int32(ret) == -1 {
-		return -1, lerr
+		return -1, co.ERROR(lerr)
 	}
-	return int32(ret), syscall.Errno(0)
+	return int32(ret), co.ERROR_SUCCESS
 }
 
 func (msg *MSG) TranslateMessage() bool {

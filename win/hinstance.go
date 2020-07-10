@@ -7,7 +7,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -33,8 +32,7 @@ func (hInst HINSTANCE) GetClassInfoEx(className *uint16,
 		uintptr(unsafe.Pointer(className)),
 		uintptr(unsafe.Pointer(destBuf)))
 	if ret == 0 {
-		panic(fmt.Sprintf("GetClassInfoEx failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("GetClassInfoEx failed."))
 	}
 	return ATOM(ret)
 }
@@ -50,8 +48,7 @@ func (hInst HINSTANCE) LoadCursor(lpCursorName co.IDC) HCURSOR {
 	ret, _, lerr := syscall.Syscall(proc.LoadCursor.Addr(), 2,
 		uintptr(hInst), uintptr(lpCursorName), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("LoadCursor failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("LoadCursor failed."))
 	}
 	return HCURSOR(ret)
 }
@@ -60,8 +57,7 @@ func (hInst HINSTANCE) LoadIcon(lpIconName co.IDI) HICON {
 	ret, _, lerr := syscall.Syscall(proc.LoadIcon.Addr(), 2,
 		uintptr(hInst), uintptr(lpIconName), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("LoadIcon failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("LoadIcon failed."))
 	}
 	return HICON(ret)
 }
@@ -70,8 +66,7 @@ func (hInst HINSTANCE) LoadMenu(lpMenuName int32) HMENU {
 	ret, _, lerr := syscall.Syscall(proc.LoadMenu.Addr(), 2,
 		uintptr(hInst), uintptr(lpMenuName), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("LoadMenu failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("LoadMenu failed."))
 	}
 	return HMENU(ret)
 }

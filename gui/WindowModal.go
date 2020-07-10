@@ -7,8 +7,6 @@
 package gui
 
 import (
-	"fmt"
-	"syscall"
 	"unsafe"
 	"wingows/co"
 	"wingows/gui/wm"
@@ -85,9 +83,9 @@ func (me *WindowModal) runModalLoop() {
 	msg := win.MSG{}
 	for {
 		status, lerr := msg.GetMessage(win.HWND(0), 0, 0)
-		if lerr != syscall.Errno(0) {
-			panic(fmt.Sprintf("GetMessage failed for WindowModal: %d %s",
-				lerr, lerr.Error()))
+
+		if lerr != co.ERROR_SUCCESS {
+			panic(lerr.Format("GetMessage failed for WindowModal."))
 		} else if status == 0 {
 			// WM_QUIT was sent, exit modal loop now and signal parent.
 			// https://devblogs.microsoft.com/oldnewthing/20050222-00/?p=36393

@@ -7,8 +7,8 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
+	"wingows/co"
 	"wingows/win/proc"
 )
 
@@ -18,7 +18,6 @@ func (hIcon HICON) DestroyIcon() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyIcon.Addr(), 1,
 		uintptr(hIcon), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("DestroyIcon failed: %d %s",
-			lerr, lerr.Error()))
+		panic(co.ERROR(lerr).Format("DestroyIcon failed."))
 	}
 }

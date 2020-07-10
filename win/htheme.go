@@ -7,7 +7,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -19,17 +18,12 @@ type HTHEME HANDLE
 func (hTheme HTHEME) CloseThemeData() {
 	hr := hTheme.closeThemeDataNoPanic()
 	if hr != 0 {
-		panic(fmt.Sprintf("CloseThemeData failed: %d.", hr))
+		panic(hr.Format("CloseThemeData failed."))
 	}
 }
 
-func (hTheme HTHEME) closeThemeDataNoPanic() uintptr {
-	if hTheme == 0 {
-		return uintptr(co.ERROR_S_OK)
-	}
-	hr, _, _ := syscall.Syscall(proc.CloseThemeData.Addr(), 0,
-		uintptr(hTheme), 0, 0)
-	return hr
+func (hTheme HTHEME) closeThemeDataNoPanic() co.ERROR {
+	return freeNoPanic(HANDLE(hTheme), proc.CloseThemeData)
 }
 
 func (hTheme HTHEME) DrawThemeBackground(hdc HDC,
@@ -40,8 +34,8 @@ func (hTheme HTHEME) DrawThemeBackground(hdc HDC,
 		uintptr(hTheme), uintptr(hdc), uintptr(partId), uintptr(stateId),
 		uintptr(unsafe.Pointer(rect)), uintptr(unsafe.Pointer(clipRect)))
 	if hr != 0 {
-		hTheme.closeThemeDataNoPanic() // cleanup
-		panic(fmt.Sprintf("DrawThemeBackground failed: %d.", hr))
+		hTheme.closeThemeDataNoPanic() // free resource
+		panic(co.ERROR(hr).Format("DrawThemeBackground failed."))
 	}
 }
 
@@ -55,11 +49,4 @@ func IsThemeActive() bool {
 	ret, _, _ := syscall.Syscall(proc.IsThemeActive.Addr(), 0,
 		0, 0, 0)
 	return ret != 0
-}
-
-func (hWnd HWND) OpenThemeData(classNames string) HTHEME {
-	ret, _, _ := syscall.Syscall(proc.OpenThemeData.Addr(), 2,
-		uintptr(hWnd), uintptr(unsafe.Pointer(StrToPtr(classNames))),
-		0)
-	return HTHEME(ret) // zero if no match, never fails
 }
