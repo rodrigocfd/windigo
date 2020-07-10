@@ -66,7 +66,7 @@ func (me *ListViewItem) Index() uint32 {
 func (me *ListViewItem) NextItem(relationship co.LVNI) *ListViewItem {
 	ret := me.owner.sendLvmMessage(co.LVM_GETNEXTITEM,
 		win.WPARAM(me.index), win.LPARAM(relationship))
-	if int32(ret) == -1 {
+	if int(ret) == -1 {
 		return nil
 	}
 	return &ListViewItem{

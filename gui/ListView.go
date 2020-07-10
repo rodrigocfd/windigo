@@ -30,7 +30,7 @@ func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTCOLUMN, 0xFFFF,
 		win.LPARAM(unsafe.Pointer(&lvc)))
-	if int32(newIdx) == -1 {
+	if int(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTCOLUMN failed \"%s\".", text))
 	}
 	return &ListViewColumn{
@@ -49,7 +49,7 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTITEM, 0,
 		win.LPARAM(unsafe.Pointer(&lvi)))
-	if int32(newIdx) == -1 {
+	if int(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTITEM failed \"%s\".", text))
 	}
 	return &ListViewItem{
@@ -72,7 +72,7 @@ func (me *ListView) AddItemWithIcon(text string,
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTITEM, 0,
 		win.LPARAM(unsafe.Pointer(&lvi)))
-	if int32(newIdx) == -1 {
+	if int(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTITEM failed \"%s\".", text))
 	}
 	return &ListViewItem{
@@ -141,7 +141,7 @@ func (me *ListView) ColumnCount() uint32 {
 	}
 
 	count := hHeader.SendMessage(co.WM(co.HDM_GETITEMCOUNT), 0, 0)
-	if int32(count) == -1 {
+	if int(count) == -1 {
 		panic("HDM_GETITEMCOUNT failed.")
 	}
 	return uint32(count)
@@ -168,10 +168,10 @@ func (me *ListView) FindItem(text string) *ListViewItem {
 		Flags: co.LVFI_STRING,
 		Psz:   uintptr(unsafe.Pointer(&buf[0])),
 	}
-	wp := int32(-1)
+	wp := -1
 	idx := me.sendLvmMessage(co.LVM_FINDITEM,
 		win.WPARAM(wp), win.LPARAM(unsafe.Pointer(&lvfi)))
-	if int32(idx) == -1 {
+	if int(idx) == -1 {
 		return nil // not found
 	}
 	return &ListViewItem{
@@ -191,7 +191,7 @@ func (me *ListView) HitTest(pos *win.POINT) *win.LVHITTESTINFO {
 	lvhti := &win.LVHITTESTINFO{
 		Pt: *pos,
 	}
-	wp := int32(-1) // Vista: retrieve iGroup and iSubItem
+	wp := -1 // Vista: retrieve iGroup and iSubItem
 	me.sendLvmMessage(co.LVM_HITTEST,
 		win.WPARAM(wp), win.LPARAM(unsafe.Pointer(lvhti)))
 	return lvhti
@@ -219,7 +219,7 @@ func (me *ListView) Item(index uint32) *ListViewItem {
 // Retrieves the number of items with LVM_GETITEMCOUNT.
 func (me *ListView) ItemCount() uint32 {
 	count := me.sendLvmMessage(co.LVM_GETITEMCOUNT, 0, 0)
-	if int32(count) == -1 {
+	if int(count) == -1 {
 		panic("LVM_GETITEMCOUNT failed.")
 	}
 	return uint32(count)
@@ -228,7 +228,7 @@ func (me *ListView) ItemCount() uint32 {
 // Sends LVM_GETNEXTITEM with -1 as item index.
 // Returns nil if none.
 func (me *ListView) NextItem(relationship co.LVNI) *ListViewItem {
-	idx := int32(-1)
+	idx := -1
 	allItems := ListViewItem{
 		owner: me,
 		index: uint32(idx),
@@ -238,10 +238,10 @@ func (me *ListView) NextItem(relationship co.LVNI) *ListViewItem {
 
 // Calls LVM_GETNEXTITEM sequentially to retrieve all matched items.
 func (me *ListView) NextItemAll(relationship co.LVNI) []ListViewItem {
-	idx := int32(-1)
-	items := make([]ListViewItem, 0, me.SelectedItemCount())
+	idx := -1
+	items := make([]ListViewItem, 0)
 	for {
-		idx = int32(me.sendLvmMessage(co.LVM_GETNEXTITEM,
+		idx = int(me.sendLvmMessage(co.LVM_GETNEXTITEM,
 			win.WPARAM(idx), win.LPARAM(relationship)))
 		if idx == -1 {
 			break
@@ -267,7 +267,7 @@ func (me *ListView) Scroll(pxHorz, pxVert int32) *ListView {
 // Retrieves the number of selected items with LVM_GETSELECTEDCOUNT.
 func (me *ListView) SelectedItemCount() uint32 {
 	count := me.sendLvmMessage(co.LVM_GETSELECTEDCOUNT, 0, 0)
-	if int32(count) == -1 {
+	if int(count) == -1 {
 		panic("LVM_GETSELECTEDCOUNT failed.")
 	}
 	return uint32(count)
@@ -311,7 +311,7 @@ func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
 func (me *ListView) SetStateAllItems(
 	state co.LVIS, stateMask co.LVIS) *ListView {
 
-	idx := int32(-1)
+	idx := -1
 	allItems := ListViewItem{
 		owner: me,
 		index: uint32(idx),
@@ -322,7 +322,7 @@ func (me *ListView) SetStateAllItems(
 
 // Sends LVM_SETVIEW.
 func (me *ListView) SetView(view co.LV_VIEW) *ListView {
-	if int32(me.sendLvmMessage(co.LVM_SETVIEW, 0, 0)) == -1 {
+	if int(me.sendLvmMessage(co.LVM_SETVIEW, 0, 0)) == -1 {
 		panic("LVM_SETVIEW failed.")
 	}
 	return me
