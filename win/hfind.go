@@ -29,7 +29,7 @@ func (hFind HFIND) findCloseNoPanic() co.ERROR {
 
 // Returns true/false if a file was found or not.
 func FindFirstFile(lpFileName string,
-	lpFindFileData *WIN32_FIND_DATA) (bool, HFIND) {
+	lpFindFileData *WIN32_FIND_DATA) (HFIND, bool) {
 
 	ret, _, lerr := syscall.Syscall(proc.FindFirstFile.Addr(), 2,
 		uintptr(unsafe.Pointer(StrToPtr(lpFileName))),
@@ -40,12 +40,12 @@ func FindFirstFile(lpFileName string,
 		if lerr2 == co.ERROR_FILE_NOT_FOUND ||
 			lerr2 == co.ERROR_PATH_NOT_FOUND {
 			// No matching files, not an error.
-			return false, 0
+			return 0, false
 		} else {
 			panic(lerr2.Format("FindFirstFile failed."))
 		}
 	}
-	return true, HFIND(ret)
+	return HFIND(ret), true
 }
 
 func (hFind HFIND) FindNextFile(lpFindFileData *WIN32_FIND_DATA) bool {

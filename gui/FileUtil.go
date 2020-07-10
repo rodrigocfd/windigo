@@ -26,7 +26,7 @@ func (fileUtilT) ListFilesInFolder(pathAndPattern string) []string {
 	dirPath := filepath.Dir(pathAndPattern)
 
 	wfd := win.WIN32_FIND_DATA{}
-	found, hFind := win.FindFirstFile(pathAndPattern, &wfd)
+	hFind, found := win.FindFirstFile(pathAndPattern, &wfd)
 	defer hFind.FindClose()
 
 	for found {

@@ -23,7 +23,7 @@ var SysDlg sysDlgT
 // Shows the open file system dialog, choice restricted to 1 file.
 // Example filtersWithPipe:
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (sysDlgT) FileOpen(owner Window, filtersWithPipe []string) (bool, string) {
+func (sysDlgT) FileOpen(owner Window, filtersWithPipe []string) (string, bool) {
 	zFilters := filterToUtf16(filtersWithPipe)
 	result := [260]uint16{} // MAX_PATH
 
@@ -36,16 +36,16 @@ func (sysDlgT) FileOpen(owner Window, filtersWithPipe []string) (bool, string) {
 	}
 
 	if !ofn.GetOpenFileName() {
-		return false, ""
+		return "", false
 	}
-	return true, syscall.UTF16ToString(result[:])
+	return syscall.UTF16ToString(result[:]), true
 }
 
 // Shows the open file system dialog, user can choose multiple files.
 // Example filtersWithPipe:
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
 func (sysDlgT) FileOpenMany(owner Window,
-	filtersWithPipe []string) (bool, []string) {
+	filtersWithPipe []string) ([]string, bool) {
 
 	zFilters := filterToUtf16(filtersWithPipe)
 	multiBuf := make([]uint16, 65536) // http://www.askjf.com/?q=2179s http://www.askjf.com/?q=2181s
@@ -59,7 +59,7 @@ func (sysDlgT) FileOpenMany(owner Window,
 	}
 
 	if !ofn.GetOpenFileName() {
-		return false, []string{}
+		return nil, false
 	}
 
 	resultStrs := make([][]uint16, 0)
@@ -76,7 +76,7 @@ func (sysDlgT) FileOpenMany(owner Window,
 
 	// User selected only 1 file, this string is the full path, and that's all.
 	if len(resultStrs) == 1 {
-		return true, []string{syscall.UTF16ToString(resultStrs[0][:])}
+		return []string{syscall.UTF16ToString(resultStrs[0][:])}, true
 	}
 
 	// User selected 2 or more files.
@@ -89,7 +89,7 @@ func (sysDlgT) FileOpenMany(owner Window,
 	sort.Slice(final, func(i, j int) bool { // case insensitive
 		return strings.ToUpper(final[i]) < strings.ToUpper(final[j])
 	})
-	return true, final
+	return final, true
 }
 
 // Shows the save file system dialog.
@@ -98,7 +98,7 @@ func (sysDlgT) FileOpenMany(owner Window,
 // Example filtersWithPipe:
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
 func (sysDlgT) FileSave(owner Window, defaultName, defaultExt string,
-	filtersWithPipe []string) (bool, string) {
+	filtersWithPipe []string) (string, bool) {
 
 	zFilters := filterToUtf16(filtersWithPipe)
 	defExt := win.StrToSlice(defaultExt)
@@ -121,9 +121,9 @@ func (sysDlgT) FileSave(owner Window, defaultName, defaultExt string,
 	}
 
 	if !ofn.GetSaveFileName() {
-		return false, ""
+		return "", false
 	}
-	return true, syscall.UTF16ToString(result[:])
+	return syscall.UTF16ToString(result[:]), true
 }
 
 func filterToUtf16(filtersWithPipe []string) []uint16 {
