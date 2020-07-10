@@ -44,6 +44,14 @@ const (
 	SBT_NOTABPARSING SBT = 0x08
 )
 
+type SBN NM // status bar notification
+
+const (
+	sBN_FIRST SBN = -880
+
+	SBN_SIMPLEMODECHANGE SBN = sBN_FIRST - 0
+)
+
 type SC uint32 // WM_SYSCOMMAND
 
 const (

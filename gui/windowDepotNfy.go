@@ -312,6 +312,45 @@ func (me *windowDepotNfy) LvnSetFocus(lv *ListView, userFunc func(p *win.NMHDR))
 	})
 }
 
+//------------------------------------------------------------ StatusBar SBN ---
+
+func (me *windowDepotNfy) SbnSimpleModeChange(tv *TreeView, userFunc func(p *win.NMHDR)) {
+	me.addNfy(tv.Id(), co.NM(co.SBN_SIMPLEMODECHANGE), func(p wm.Notify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+//------------------------------------------------------------- StatusBar NM ---
+
+func (me *windowDepotNfy) SbnClick(sb *StatusBar, userFunc func(p *win.NMMOUSE)) {
+	me.addNfy(sb.Id(), co.NM_CLICK, func(p wm.Notify) uintptr {
+		userFunc((*win.NMMOUSE)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) SbnDblClk(sb *StatusBar, userFunc func(p *win.NMMOUSE)) {
+	me.addNfy(sb.Id(), co.NM_DBLCLK, func(p wm.Notify) uintptr {
+		userFunc((*win.NMMOUSE)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) SbnRClick(sb *StatusBar, userFunc func(p *win.NMMOUSE)) {
+	me.addNfy(sb.Id(), co.NM_RCLICK, func(p wm.Notify) uintptr {
+		userFunc((*win.NMMOUSE)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+func (me *windowDepotNfy) SbnRDblClk(sb *StatusBar, userFunc func(p *win.NMMOUSE)) {
+	me.addNfy(sb.Id(), co.NM_RDBLCLK, func(p wm.Notify) uintptr {
+		userFunc((*win.NMMOUSE)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
 //------------------------------------------------------------- TreeView TVN ---
 
 func (me *windowDepotNfy) TvnAsyncDraw(tv *TreeView, userFunc func(p *win.NMTVASYNCDRAW)) {
