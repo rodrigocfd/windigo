@@ -436,6 +436,5 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 func (me *ListView) sendLvmMessage(msg co.LVM,
 	wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
-	return me.controlNativeBase.Hwnd().
-		SendMessage(co.WM(msg), wParam, lParam)
+	return me.Hwnd().SendMessage(co.WM(msg), wParam, lParam)
 }

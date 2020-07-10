@@ -6,6 +6,44 @@
 
 package co
 
+type SB WM // status bar message
+
+const (
+	SB_SETTEXT          SB = SB(WM_USER) + 11
+	SB_GETTEXT          SB = SB(WM_USER) + 13
+	SB_GETTEXTLENGTH    SB = SB(WM_USER) + 12
+	SB_SETPARTS         SB = SB(WM_USER) + 4
+	SB_GETPARTS         SB = SB(WM_USER) + 6
+	SB_GETBORDERS       SB = SB(WM_USER) + 7
+	SB_SETMINHEIGHT     SB = SB(WM_USER) + 8
+	SB_SIMPLE           SB = SB(WM_USER) + 9
+	SB_GETRECT          SB = SB(WM_USER) + 10
+	SB_ISSIMPLE         SB = SB(WM_USER) + 14
+	SB_SETICON          SB = SB(WM_USER) + 15
+	SB_SETTIPTEXT       SB = SB(WM_USER) + 17
+	SB_GETTIPTEXT       SB = SB(WM_USER) + 19
+	SB_GETICON          SB = SB(WM_USER) + 20
+	SB_SETUNICODEFORMAT SB = SB(CCM_SETUNICODEFORMAT)
+	SB_GETUNICODEFORMAT SB = SB(CCM_GETUNICODEFORMAT)
+)
+
+type SBARS WS // status bar style
+
+const (
+	SBARS_SIZEGRIP SBARS = 0x0100
+	SBARS_TOOLTIPS SBARS = 0x0800
+)
+
+type SBT uint8 // SB_SETTEXT drawing operation
+
+const (
+	SBT_OWNERDRAW    SBT = 0x10
+	SBT_NOBORDERS    SBT = 0x01
+	SBT_POPOUT       SBT = 0x02
+	SBT_RTLREADING   SBT = 0x04
+	SBT_NOTABPARSING SBT = 0x08
+)
+
 type SC uint32 // WM_SYSCOMMAND
 
 const (

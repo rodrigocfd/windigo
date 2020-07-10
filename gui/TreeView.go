@@ -125,6 +125,5 @@ func (me *TreeView) SetRedraw(allowRedraw bool) *TreeView {
 func (me *TreeView) sendTvmMessage(msg co.TVM,
 	wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
-	return me.controlNativeBase.Hwnd().
-		SendMessage(co.WM(msg), wParam, lParam)
+	return me.Hwnd().SendMessage(co.WM(msg), wParam, lParam)
 }
