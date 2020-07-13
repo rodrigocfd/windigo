@@ -95,8 +95,9 @@ func (me *Edit) SelectRange(start, length int32) *Edit {
 	return me
 }
 
+// Simple wrapper.
 func (me *Edit) sendEmMessage(msg co.EM,
 	wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
-	return me.Hwnd().SendMessage(co.WM(msg), wParam, lParam) // simple wrapper
+	return me.Hwnd().SendMessage(co.WM(msg), wParam, lParam)
 }
