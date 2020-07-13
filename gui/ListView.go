@@ -118,6 +118,18 @@ func (me *ListView) CreateReport(parent Window, x, y int32,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.LVS_EX_FULLROWSELECT,
+		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS)
+}
+
+// Calls CreateWindowEx(). List view control will have LVS_REPORT and
+// LVS_SORTASCENDING styles. Position and size will be adjusted to the current system DPI.
+func (me *ListView) CreateSortedReport(parent Window, x, y int32,
+	width, height uint32) *ListView {
+
+	return me.Create(parent, x, y, width, height,
+		co.WS_EX_CLIENTEDGE,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.LVS_EX_FULLROWSELECT,
 		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS|co.LVS_SORTASCENDING)
 }
 
