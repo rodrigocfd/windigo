@@ -31,6 +31,7 @@ var (
 	SetEndOfFile        = dllKernel32.NewProc("SetEndOfFile")
 	SetFilePointer      = dllKernel32.NewProc("SetFilePointer")
 	SetFilePointerEx    = dllKernel32.NewProc("SetFilePointerEx")
+	Sleep               = dllKernel32.NewProc("Sleep")
 	UnmapViewOfFile     = dllKernel32.NewProc("UnmapViewOfFile")
 	VerifyVersionInfo   = dllKernel32.NewProc("VerifyVersionInfoW")
 	VerSetConditionMask = dllKernel32.NewProc("VerSetConditionMask")

@@ -156,6 +156,11 @@ func SHGetFileInfo(pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
 	return shfi
 }
 
+func Sleep(dwMilliseconds uint32) {
+	syscall.Syscall(proc.Sleep.Addr(), 1,
+		uintptr(dwMilliseconds), 0, 0)
+}
+
 func SystemParametersInfo(uiAction co.SPI, uiParam uint32,
 	pvParam unsafe.Pointer, fWinIni uint32) {
 
