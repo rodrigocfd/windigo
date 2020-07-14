@@ -135,8 +135,6 @@ func (me *WindowMain) runMainLoop() int {
 			continue
 		}
 
-		// If a child window, will retrieve its top-level parent.
-		// If a top-level, use itself.
 		if hTopLevel.IsDialogMessage(&msg) {
 			// Processed all keyboard actions for child controls.
 			continue

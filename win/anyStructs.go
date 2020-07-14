@@ -21,7 +21,8 @@ type CREATESTRUCT struct {
 	HInstance      HINSTANCE
 	HMenu          HMENU
 	HwndParent     HWND
-	Cy, Cx, Y, X   int32
+	Cy, Cx         uint32 // actually int32
+	Y, X           int32
 	Style          co.WS
 	LpszName       uintptr // LPCWSTR
 	LpszClass      uintptr // LPCWSTR
