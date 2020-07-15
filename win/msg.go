@@ -33,7 +33,7 @@ func (msg *MSG) GetMessage(hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
 		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
 		uintptr(msgFilterMin), uintptr(msgFilterMax),
 		0, 0)
-	if int32(ret) == -1 {
+	if int(ret) == -1 {
 		panic(co.ERROR(lerr).Format("GetMessage failed."))
 	}
 	return int32(ret)

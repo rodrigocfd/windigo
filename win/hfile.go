@@ -47,7 +47,7 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 		uintptr(creationDisposition),
 		uintptr(uint32(attributes)|uint32(flags)|uint32(security)),
 		uintptr(hTemplateFile), 0, 0)
-	if int32(ret) == -1 {
+	if int(ret) == -1 {
 		panic(co.ERROR(lerr).Format("CreateFile failed."))
 	}
 	return HFILE(ret)
@@ -135,7 +135,7 @@ func (hFile HFILE) SetFilePointer(distanceToMove int32,
 	ret, _, lerr := syscall.Syscall6(proc.SetFilePointer.Addr(), 4,
 		uintptr(hFile), uintptr(distanceToMove), 0, uintptr(moveMethod),
 		0, 0)
-	if int32(ret) == -1 && lerr != 0 {
+	if int(ret) == -1 && lerr != 0 {
 		hFile.closeHandleNoPanic() // free resource
 		panic(co.ERROR(lerr).Format("SetFilePointer failed."))
 	}

@@ -36,7 +36,7 @@ func FindFirstFile(lpFileName string,
 		uintptr(unsafe.Pointer(lpFindFileData)), 0)
 
 	lerr2 := co.ERROR(lerr)
-	if int32(ret) == -1 { // INVALID_HANDLE_VALUE
+	if int(ret) == -1 { // INVALID_HANDLE_VALUE
 		if lerr2 == co.ERROR_FILE_NOT_FOUND ||
 			lerr2 == co.ERROR_PATH_NOT_FOUND {
 			// No matching files, not an error.

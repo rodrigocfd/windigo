@@ -95,7 +95,7 @@ func (hMenu HMENU) GetMenuInfo(mi *MENUINFO) {
 func (hMenu HMENU) GetMenuItemCount() uint32 {
 	ret, _, lerr := syscall.Syscall(proc.GetMenuItemCount.Addr(), 1,
 		uintptr(hMenu), 0, 0)
-	if int32(ret) == -1 {
+	if int(ret) == -1 {
 		panic(co.ERROR(lerr).Format("GetItemCount failed."))
 	}
 	return uint32(ret)
