@@ -53,21 +53,6 @@ func StrToPtrBlankIsNil(s string) *uint16 {
 
 //------------------------------------------------------------------------------
 
-// Don't forget to call CoUninitialize().
-func CoInitializeEx(dwCoInit co.COINIT) {
-	ret, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
-		0, uintptr(dwCoInit), 0)
-
-	lerr := co.ERROR(ret)
-	if lerr != co.ERROR_S_OK && lerr != co.ERROR_S_FALSE {
-		panic(lerr.Format("CoInitializeEx failed."))
-	}
-}
-
-func CoUninitialize() {
-	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)
-}
-
 func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
 }

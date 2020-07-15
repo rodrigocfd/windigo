@@ -4,42 +4,17 @@
  * This library is released under the MIT license.
  */
 
-package win
+package com
 
 import (
 	"syscall"
 	"unsafe"
 	"wingows/co"
+	"wingows/win"
 )
 
-type iTaskbarList struct {
-	IUnknown
-}
-
-type iTaskbarListVtbl struct {
-	iUnknownVtbl
-	HrInit       uintptr
-	AddTab       uintptr
-	DeleteTab    uintptr
-	ActivateTab  uintptr
-	SetActiveAlt uintptr
-}
-
-//------------------------------------------------------------------------------
-
-type iTaskbarList2 struct {
-	iTaskbarList
-}
-
-type iTaskbarList2Vtbl struct {
-	iTaskbarListVtbl
-	MarkFullscreenWindow uintptr
-}
-
-//------------------------------------------------------------------------------
-
 type ITaskbarList3 struct {
-	iTaskbarList2
+	ITaskbarList2
 }
 
 type iTaskbarList3Vtbl struct {
@@ -65,7 +40,7 @@ func (me *ITaskbarList3) coCreateInstance() {
 	}
 }
 
-func (me *ITaskbarList3) SetProgressValue(hwnd HWND,
+func (me *ITaskbarList3) SetProgressValue(hwnd win.HWND,
 	ullCompleted, ullTotal uint64) {
 
 	me.coCreateInstance()
@@ -82,7 +57,7 @@ func (me *ITaskbarList3) SetProgressValue(hwnd HWND,
 	}
 }
 
-func (me *ITaskbarList3) SetProgressState(hwnd HWND, tbpFlags co.TBPF) {
+func (me *ITaskbarList3) SetProgressState(hwnd win.HWND, tbpFlags co.TBPF) {
 	me.coCreateInstance()
 	lpVtbl := (*iTaskbarList3Vtbl)(unsafe.Pointer(me.lpVtbl))
 	ret, _, _ := syscall.Syscall(lpVtbl.SetProgressState, 3,
