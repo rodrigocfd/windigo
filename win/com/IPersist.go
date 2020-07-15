@@ -6,14 +6,11 @@
 
 package com
 
-type IDispatch struct {
+type IPersist struct {
 	IUnknown
 }
 
-type iDispatchVtbl struct {
+type iPersistVtbl struct {
 	iUnknownVtbl
-	GetTypeInfoCount uintptr
-	GetTypeInfo      uintptr
-	GetIDsOfNames    uintptr
-	Invoke           uintptr
+	GetClassID uintptr
 }
