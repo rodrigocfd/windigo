@@ -82,12 +82,9 @@ func (me *WindowModal) defaultMessageHandling() {
 func (me *WindowModal) runModalLoop() {
 	msg := win.MSG{}
 	for {
-		status, lerr := msg.GetMessage(win.HWND(0), 0, 0)
-
-		if lerr != co.ERROR_SUCCESS {
-			panic(lerr.Format("GetMessage failed for WindowModal."))
-		} else if status == 0 {
+		if msg.GetMessage(win.HWND(0), 0, 0) == 0 {
 			// WM_QUIT was sent, exit modal loop now and signal parent.
+			// If it returned -1, it will simply panic.
 			// https://devblogs.microsoft.com/oldnewthing/20050222-00/?p=36393
 			win.PostQuitMessage(int32(msg.WParam))
 			break

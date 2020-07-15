@@ -123,7 +123,7 @@ const (
 type ERROR uint32
 
 func (e ERROR) Format(msg string) string {
-	return fmt.Sprintf("%s [%d 0x%x] %s", msg, e, e, syscall.Errno(e).Error())
+	return fmt.Sprintf("%s\n[%d 0x%02x] %s", msg, e, e, syscall.Errno(e).Error())
 }
 
 const (

@@ -28,17 +28,15 @@ func (msg *MSG) DispatchMessage() uintptr {
 	return ret
 }
 
-func (msg *MSG) GetMessage(hWnd HWND,
-	msgFilterMin, msgFilterMax uint32) (int32, co.ERROR) {
-
+func (msg *MSG) GetMessage(hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
 	ret, _, lerr := syscall.Syscall6(proc.GetMessage.Addr(), 4,
 		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
 		uintptr(msgFilterMin), uintptr(msgFilterMax),
 		0, 0)
 	if int32(ret) == -1 {
-		return -1, co.ERROR(lerr)
+		panic(co.ERROR(lerr).Format("GetMessage failed."))
 	}
-	return int32(ret), co.ERROR_SUCCESS
+	return int32(ret)
 }
 
 func (msg *MSG) TranslateMessage() bool {

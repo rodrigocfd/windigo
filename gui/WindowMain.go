@@ -8,7 +8,7 @@ package gui
 
 import (
 	"fmt"
-	"os"
+	"runtime/debug"
 	"unsafe"
 	"wingows/co"
 	"wingows/gui/wm"
@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	globalUiFont = Font{} // created in RunAsMain(), freed in runMainLoop()
+	globalUiFont = Font{} // created/freed in RunAsMain()
 )
 
 // Main application window.
@@ -39,6 +39,27 @@ func (me *WindowMain) Setup() *windowMainSetup {
 
 // Creates the main window and runs the main application loop.
 func (me *WindowMain) RunAsMain() int {
+	defer func() {
+		// Recover from any panic within GUI thread.
+		// Panics in other threads can't be recovered.
+		if r := recover(); r != nil {
+			msg, ok := r.(string)
+			if ok {
+				msg = fmt.Sprintf("A panic has occurred:\n\n%s", msg)
+			} else {
+				msg = "An unspecified panic occurred."
+			}
+			win.HWND(0).MessageBox(msg+"\n\n"+string(debug.Stack()),
+				"Panic", co.MB_ICONERROR)
+		}
+
+		// Free resources.
+		if me.setup.HAccel != 0 {
+			me.setup.HAccel.DestroyAcceleratorTable()
+		}
+		globalUiFont.Destroy()
+	}()
+
 	if win.IsWindowsVistaOrGreater() {
 		win.SetProcessDPIAware()
 	}
@@ -98,22 +119,11 @@ func (me *WindowMain) defaultMessageHandling() {
 }
 
 func (me *WindowMain) runMainLoop() int {
-	defer func() {
-		if me.setup.HAccel != 0 {
-			me.setup.HAccel.DestroyAcceleratorTable()
-		}
-		globalUiFont.Destroy()
-	}()
-
 	msg := win.MSG{}
 	for {
-		status, lerr := msg.GetMessage(win.HWND(0), 0, 0)
-
-		if lerr != co.ERROR_SUCCESS {
-			fmt.Fprintf(os.Stderr,
-				lerr.Format("GetMessage failed for WindowMain."))
-			return int(lerr) // return error code
-		} else if status == 0 { // WM_QUIT was sent, gracefully terminate the program
+		if msg.GetMessage(win.HWND(0), 0, 0) == 0 {
+			// WM_QUIT was sent, gracefully terminate the program.
+			// If it returned -1, it will simply panic.
 			// WParam has the program exit code.
 			// https://docs.microsoft.com/en-us/windows/win32/winmsg/using-messages-and-message-queues
 			return int(msg.WParam)
