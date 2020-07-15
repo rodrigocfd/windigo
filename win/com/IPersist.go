@@ -6,6 +6,7 @@
 
 package com
 
+// IPersist > IUnknown.
 type IPersist struct {
 	IUnknown
 }

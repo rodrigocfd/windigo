@@ -6,6 +6,7 @@
 
 package com
 
+// IDispatch > IUnknown.
 type IDispatch struct {
 	IUnknown
 }

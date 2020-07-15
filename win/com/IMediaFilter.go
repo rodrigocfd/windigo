@@ -6,6 +6,7 @@
 
 package com
 
+// IMediaFilter > IPersist > IUnknown.
 type IMediaFilter struct {
 	IPersist
 }

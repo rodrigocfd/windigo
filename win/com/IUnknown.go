@@ -14,6 +14,7 @@ import (
 	"wingows/win/proc"
 )
 
+// IUnknown is the base to all COM interfaces.
 type IUnknown struct {
 	lpVtbl uintptr
 }

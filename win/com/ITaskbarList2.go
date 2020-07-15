@@ -6,6 +6,7 @@
 
 package com
 
+// ITaskbarList2 > ITaskbarList > IUnknown.
 type ITaskbarList2 struct {
 	ITaskbarList
 }

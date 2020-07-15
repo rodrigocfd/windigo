@@ -13,6 +13,7 @@ import (
 	"wingows/win"
 )
 
+// ITaskbarList3 > ITaskbarList2 > ITaskbarList > IUnknown.
 type ITaskbarList3 struct {
 	ITaskbarList2
 }
