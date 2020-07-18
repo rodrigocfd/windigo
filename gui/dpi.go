@@ -22,6 +22,7 @@ func (me *systemDpi) init() {
 		dc := win.HWND(0).GetDC()
 		me.x = dc.GetDeviceCaps(co.GDC_LOGPIXELSX)
 		me.y = dc.GetDeviceCaps(co.GDC_LOGPIXELSY)
+		win.HWND(0).ReleaseDC(dc)
 	}
 }
 
