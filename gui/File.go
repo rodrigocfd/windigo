@@ -23,37 +23,27 @@ func (me *File) Close() {
 	}
 }
 
-func (me *File) HFile() win.HFILE {
-	return me.hFile
-}
-
 func (me *File) OpenExistingForRead(path string) *File {
-	me.hFile = win.CreateFile(path, co.GENERIC_READ,
-		co.FILE_SHARE_READ, nil, co.FILE_DISPO_OPEN_EXISTING,
-		co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE, co.SECURITY_NONE, 0)
-	return me
+	return me.rawOpen(path, co.GENERIC_READ,
+		co.FILE_SHARE_READ, co.FILE_DISPO_OPEN_EXISTING)
 }
 
 func (me *File) OpenExistingForReadWrite(path string) *File {
-	me.hFile = win.CreateFile(path, co.GENERIC_READ|co.GENERIC_WRITE,
-		co.FILE_SHARE_NONE, nil, co.FILE_DISPO_OPEN_EXISTING,
-		co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE, co.SECURITY_NONE, 0)
-	return me
+	return me.rawOpen(path, co.GENERIC_READ|co.GENERIC_WRITE,
+		co.FILE_SHARE_NONE, co.FILE_DISPO_OPEN_EXISTING)
 }
 
 func (me *File) OpenOrCreate(path string) *File {
-	me.hFile = win.CreateFile(path, co.GENERIC_READ|co.GENERIC_WRITE,
-		co.FILE_SHARE_NONE, nil, co.FILE_DISPO_OPEN_ALWAYS,
-		co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE, co.SECURITY_NONE, 0)
-	return me
+	return me.rawOpen(path, co.GENERIC_READ|co.GENERIC_WRITE,
+		co.FILE_SHARE_NONE, co.FILE_DISPO_OPEN_ALWAYS)
 }
 
 // Rewinds the file pointer and reads all the raw file contents.
-func (me *File) ReadAll() []uint8 {
+func (me *File) ReadAll() []byte {
 	me.Rewind()
 	sz := me.Size()
-	buf := make([]uint8, sz)
-	me.hFile.ReadFile(buf, sz)
+	buf := make([]byte, sz)
+	me.hFile.ReadFile(buf, uint32(sz)) // will truncate if actual size overflows uint32
 	me.Rewind()
 	return buf
 }
@@ -64,22 +54,34 @@ func (me *File) Rewind() *File {
 	return me
 }
 
-// Expands or shrinks the file.
-func (me *File) SetSize(numBytes uint32) *File {
-	me.hFile.SetFilePointer(int32(numBytes), co.FILE_SETPTR_BEGIN)
+// Truncates or expands the file, according to the new size.
+// Zero will empty the file.
+func (me *File) SetSize(numBytes uint64) *File {
+	me.hFile.SetFilePointerEx(int64(numBytes), co.FILE_SETPTR_BEGIN) // simply go beyond
 	me.hFile.SetEndOfFile()
 	me.Rewind()
 	return me
 }
 
-func (me *File) Size() uint32 {
-	return me.hFile.GetFileSize()
+// Retrieves the files size. This value is not cached.
+func (me *File) Size() uint64 {
+	return uint64(me.hFile.GetFileSizeEx()) // no reason to return an unsigned
 }
 
 // Replaces all file contents, possibly resizing the file.
-func (me *File) EraseAndWrite(data []uint8) *File {
-	me.SetSize(uint32(len(data)))
+func (me *File) EraseAndWrite(data []byte) *File {
+	me.SetSize(uint64(len(data)))
 	me.hFile.WriteFile(data)
 	me.Rewind()
+	return me
+}
+
+func (me *File) rawOpen(path string, desiredAccess co.GENERIC,
+	shareMode co.FILE_SHARE, creationDisposition co.FILE_DISPO) *File {
+
+	me.Close()
+	me.hFile = win.CreateFile(path, desiredAccess, shareMode, nil,
+		creationDisposition, co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE,
+		co.SECURITY_NONE, 0)
 	return me
 }

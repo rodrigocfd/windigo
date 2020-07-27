@@ -107,7 +107,11 @@ func (hFile HFILE) GetFileSizeEx() int64 {
 
 // Returns the number of bytes actually read.
 // Buffer must be previously allocated.
-func (hFile HFILE) ReadFile(buf []uint8, bytesToRead uint32) uint32 {
+func (hFile HFILE) ReadFile(buf []byte, bytesToRead uint32) uint32 {
+	if len(buf) < int(bytesToRead) {
+		panic("ReadFile failed: not enough room in buffer.")
+	}
+
 	numRead := uint32(0)
 	ret, _, lerr := syscall.Syscall6(proc.ReadFile.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
@@ -153,7 +157,7 @@ func (hFile HFILE) SetFilePointerEx(distanceToMove int64,
 	}
 }
 
-func (hFile HFILE) WriteFile(buf []uint8) {
+func (hFile HFILE) WriteFile(buf []byte) {
 	written := uint32(0)
 	ret, _, lerr := syscall.Syscall6(proc.WriteFile.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
