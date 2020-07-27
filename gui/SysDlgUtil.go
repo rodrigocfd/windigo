@@ -15,15 +15,15 @@ import (
 	"wingows/win"
 )
 
-type sysDlgT struct{}
+type sysDlgUtilT struct{}
 
 // System dialogs.
-var SysDlg sysDlgT
+var SysDlgUtil sysDlgUtilT
 
 // Shows the open file system dialog, choice restricted to 1 file.
 // Example filtersWithPipe:
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (sysDlgT) FileOpen(owner Window, filtersWithPipe []string) (string, bool) {
+func (sysDlgUtilT) FileOpen(owner Window, filtersWithPipe []string) (string, bool) {
 	zFilters := filterToUtf16(filtersWithPipe)
 	result := [260]uint16{} // MAX_PATH
 
@@ -44,7 +44,7 @@ func (sysDlgT) FileOpen(owner Window, filtersWithPipe []string) (string, bool) {
 // Shows the open file system dialog, user can choose multiple files.
 // Example filtersWithPipe:
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (sysDlgT) FileOpenMany(owner Window,
+func (sysDlgUtilT) FileOpenMany(owner Window,
 	filtersWithPipe []string) ([]string, bool) {
 
 	zFilters := filterToUtf16(filtersWithPipe)
@@ -97,7 +97,7 @@ func (sysDlgT) FileOpenMany(owner Window,
 // Default extension can be empty, or like "txt".
 // Example filtersWithPipe:
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (sysDlgT) FileSave(owner Window, defaultName, defaultExt string,
+func (sysDlgUtilT) FileSave(owner Window, defaultName, defaultExt string,
 	filtersWithPipe []string) (string, bool) {
 
 	zFilters := filterToUtf16(filtersWithPipe)

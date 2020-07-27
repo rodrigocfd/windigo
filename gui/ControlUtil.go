@@ -6,13 +6,13 @@
 
 package gui
 
-type ctlT struct{}
+type controlUtilT struct{}
 
 // General control utilities.
-var Ctl ctlT
+var ControlUtil controlUtilT
 
 // Enables or disables many controls at once.
-func (ctlT) Enable(enabled bool, ctrls []Control) {
+func (controlUtilT) Enable(enabled bool, ctrls []Control) {
 	for _, ctrl := range ctrls {
 		ctrl.Hwnd().EnableWindow(enabled)
 	}
@@ -20,7 +20,7 @@ func (ctlT) Enable(enabled bool, ctrls []Control) {
 
 // Returns the index of the checked radio button within the group, or -1 if none
 // is checked.
-func (ctlT) CheckedRadio(radios []RadioButton) int32 {
+func (controlUtilT) CheckedRadio(radios []RadioButton) int32 {
 	for i := range radios {
 		if radios[i].IsChecked() {
 			return int32(i)
@@ -30,7 +30,7 @@ func (ctlT) CheckedRadio(radios []RadioButton) int32 {
 }
 
 // Converts a RadioButton slice into a Control slice.
-func (ctlT) RadioSlice(radios []RadioButton) []Control {
+func (controlUtilT) RadioSlice(radios []RadioButton) []Control {
 	ctrls := make([]Control, 0, len(radios))
 	for i := range radios {
 		ctrls = append(ctrls, &radios[i])
