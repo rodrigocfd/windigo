@@ -26,7 +26,7 @@ type iTaskbarList2Vtbl struct {
 func (me *ITaskbarList2) coCreateInstance() {
 	if me.lpVtbl == 0 { // if not created yet
 		me.IUnknown.coCreateInstance(
-			&co.Guid_ITaskbarList, &co.Guid_ITaskbarList2)
+			&co.CLSID_TaskbarList, &co.IID_ITaskbarList2)
 	}
 }
 

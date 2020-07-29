@@ -27,17 +27,17 @@ type iUnknownVtbl struct {
 
 // Creates any COM interface, returning the base IUnknown.
 // To retrieve the other interface itself, cast the inner lpVtbl.
-func (me *IUnknown) coCreateInstance(clsid *co.GUID, iid *co.GUID) {
+func (me *IUnknown) coCreateInstance(clsid *co.CLSID, iid *co.IID) {
 	if me.lpVtbl != 0 {
 		panic("Trying to CoCreateInstance() an IUnknown already created.")
 	}
 
-	if iid == nil {
-		iid = &co.Guid_IUnknown // if iid is not passed, assume IUnknown
-	}
+	// if iid == nil {
+	// 	iid = &co.Guid_IUnknown // if iid is not passed, assume IUnknown
+	// }
 
-	clsidFlip := cloneFlipLastUint64(clsid)
-	iidFlip := cloneFlipLastUint64(iid)
+	clsidFlip := cloneFlipLastUint64Clsid(clsid)
+	iidFlip := cloneFlipLastUint64Iid(iid)
 	retIUnk := &IUnknown{}
 
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
@@ -54,9 +54,13 @@ func (me *IUnknown) coCreateInstance(clsid *co.GUID, iid *co.GUID) {
 
 // Queries any COM interface, returning the base IUnknown.
 // To retrieve the other interface itself, cast the inner lpVtbl.
-func (me *IUnknown) queryInterface(iid *co.GUID) *IUnknown {
+func (me *IUnknown) queryInterface(iid *co.IID) *IUnknown {
+	if me.lpVtbl == 0 {
+		panic("Calling queryInterface on empty IUnknown.")
+	}
+
 	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(me.lpVtbl))
-	iidFlip := cloneFlipLastUint64(iid)
+	iidFlip := cloneFlipLastUint64Iid(iid)
 	retIUnk := &IUnknown{}
 
 	ret, _, _ := syscall.Syscall(lpVtbl.AddRef, 3,
@@ -72,6 +76,10 @@ func (me *IUnknown) queryInterface(iid *co.GUID) *IUnknown {
 }
 
 func (me *IUnknown) AddRef() uint32 {
+	if me.lpVtbl == 0 {
+		panic("Calling AddRef on empty IUnknown.")
+	}
+
 	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(me.lpVtbl))
 	ret, _, _ := syscall.Syscall(lpVtbl.AddRef, 1,
 		uintptr(unsafe.Pointer(me)), 0, 0)
@@ -79,6 +87,10 @@ func (me *IUnknown) AddRef() uint32 {
 }
 
 func (me *IUnknown) Release() uint32 {
+	if me.lpVtbl == 0 {
+		panic("Calling Release on empty IUnknown.")
+	}
+
 	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(me.lpVtbl))
 	ret, _, _ := syscall.Syscall(lpVtbl.Release, 1,
 		uintptr(unsafe.Pointer(me)), 0, 0)
@@ -86,13 +98,21 @@ func (me *IUnknown) Release() uint32 {
 }
 
 // Returns a new GUID with the last uint64 member bytes flipped.
-// This is better than having a makeGuid() function being called to initialize
-// all the GUIDs with correct by order, or even having to flip them manually on
-// each global declaration.
+// This allows us to have easy literal declaration for GUID constants.
+// With a literal declaration, the last uint64 will have its bits flipped.
+// This function is called to make the conversion when needed internally.
 func cloneFlipLastUint64(guid *co.GUID) co.GUID {
 	buf64 := [8]byte{}
 	binary.BigEndian.PutUint64(buf64[:], guid.Data4)
 	guidCopy := *guid
 	guidCopy.Data4 = binary.LittleEndian.Uint64(buf64[:])
 	return guidCopy
+}
+
+func cloneFlipLastUint64Clsid(clsid *co.CLSID) co.CLSID {
+	return co.CLSID(cloneFlipLastUint64((*co.GUID)(clsid))) // specialization for CLSID
+}
+
+func cloneFlipLastUint64Iid(iid *co.IID) co.IID {
+	return co.IID(cloneFlipLastUint64((*co.GUID)(iid))) // specialization for IID
 }
