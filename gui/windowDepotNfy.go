@@ -34,7 +34,7 @@ func (me *windowDepotNfy) addNfy(idFrom int32, code co.NM,
 
 func (me *windowDepotNfy) processMessage(msg co.WM, p wm.Base) (uintptr, bool) {
 	if msg == co.WM_NOTIFY {
-		pNfy := wm.Notify{Base: p}
+		pNfy := wm.Notify(p)
 		hash := nfyHash{
 			IdFrom: int32(pNfy.NmHdr().IdFrom),
 			Code:   co.NM(pNfy.NmHdr().Code),

@@ -129,10 +129,13 @@ func wndProc(hwnd win.HWND, msg co.WM,
 	}
 
 	// Try to process the message with an user handler.
-	parm := wm.Base{WParam: wParam, LParam: lParam}
-	userRet, wasHandled := pMe.depot.windowDepotMsg.processMessage(msg, parm)
+	msgParms := wm.Base{}
+	msgParms.WParam = wParam
+	msgParms.LParam = lParam
+
+	userRet, wasHandled := pMe.depot.windowDepotMsg.processMessage(msg, msgParms)
 	if !wasHandled {
-		userRet, wasHandled = pMe.depot.windowDepotNfy.processMessage(msg, parm)
+		userRet, wasHandled = pMe.depot.windowDepotNfy.processMessage(msg, msgParms)
 	}
 
 	// No further messages processed after this one.

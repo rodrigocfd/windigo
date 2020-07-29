@@ -119,12 +119,11 @@ func (me *StatusBar) SetIcon(part uint32, hIcon win.HICON) *StatusBar {
 
 func (me *StatusBar) SetText(part uint32, text string) *StatusBar {
 	if !me.firstAdjust { // text is painted only after first adjust
-		me.Adjust(wm.Size{
-			Base: wm.Base{
-				WParam: win.WPARAM(co.SIZE_RESTORED),
-				LParam: win.LPARAM(me.Hwnd().GetParent().GetClientRect().Right),
-			},
-		})
+		msgParms := wm.Base{}
+		msgParms.WParam = win.WPARAM(co.SIZE_RESTORED)
+		msgParms.LParam = win.LPARAM(me.Hwnd().GetParent().GetClientRect().Right)
+
+		me.Adjust(wm.Size(msgParms))
 	}
 	me.sendSbMessage(co.SB_SETTEXT,
 		win.WPARAM(part), win.LPARAM(unsafe.Pointer(win.StrToPtr(text))))
