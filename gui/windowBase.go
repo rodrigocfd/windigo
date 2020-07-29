@@ -11,7 +11,6 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/co"
-	"wingows/gui/wm"
 	"wingows/win"
 )
 
@@ -93,7 +92,7 @@ func (me *windowBase) createWindow(uiName string, exStyle co.WS_EX,
 }
 
 func (me *windowBase) defaultMessageHandling() {
-	me.depot.addMsg(wM_UI_THREAD, func(p wm.Base) uintptr { // handle our custom thread UI message
+	me.depot.addMsg(wM_UI_THREAD, func(p Wm) uintptr { // handle our custom thread UI message
 		if p.WParam == 0xC0DEF00D {
 			pack := (*threadPack)(unsafe.Pointer(p.LParam))
 			pack.userFunc()
@@ -129,9 +128,12 @@ func wndProc(hwnd win.HWND, msg co.WM,
 	}
 
 	// Try to process the message with an user handler.
-	msgParms := wm.Base{}
-	msgParms.WParam = wParam
-	msgParms.LParam = lParam
+	msgParms := Wm{
+		wplp: wplp{
+			WParam: wParam,
+			LParam: lParam,
+		},
+	}
 
 	userRet, wasHandled := pMe.depot.windowDepotMsg.processMessage(msg, msgParms)
 	if !wasHandled {

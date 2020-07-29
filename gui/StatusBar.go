@@ -10,7 +10,6 @@ import (
 	"syscall"
 	"unsafe"
 	"wingows/co"
-	"wingows/gui/wm"
 	"wingows/win"
 )
 
@@ -47,7 +46,7 @@ func (me *StatusBar) AddResizablePart(resizeWeight uint32) *StatusBar {
 }
 
 // Call during WM_SIZE processing.
-func (me *StatusBar) Adjust(p wm.Size) {
+func (me *StatusBar) Adjust(p WmSize) {
 	if p.Request() == co.SIZE_MINIMIZED {
 		return // no need to adjust when minimized
 	}
@@ -119,11 +118,12 @@ func (me *StatusBar) SetIcon(part uint32, hIcon win.HICON) *StatusBar {
 
 func (me *StatusBar) SetText(part uint32, text string) *StatusBar {
 	if !me.firstAdjust { // text is painted only after first adjust
-		msgParms := wm.Base{}
-		msgParms.WParam = win.WPARAM(co.SIZE_RESTORED)
-		msgParms.LParam = win.LPARAM(me.Hwnd().GetParent().GetClientRect().Right)
-
-		me.Adjust(wm.Size(msgParms))
+		me.Adjust(WmSize{ // manually construct param
+			wplp: wplp{
+				WParam: win.WPARAM(co.SIZE_RESTORED),
+				LParam: win.LPARAM(me.Hwnd().GetParent().GetClientRect().Right),
+			},
+		})
 	}
 	me.sendSbMessage(co.SB_SETTEXT,
 		win.WPARAM(part), win.LPARAM(unsafe.Pointer(win.StrToPtr(text))))

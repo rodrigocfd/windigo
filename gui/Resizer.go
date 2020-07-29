@@ -8,7 +8,6 @@ package gui
 
 import (
 	"wingows/co"
-	"wingows/gui/wm"
 	"wingows/win"
 )
 
@@ -59,7 +58,7 @@ func (me *Resizer) AddMany(children []Control, doHorz, doVert RESZ) *Resizer {
 }
 
 // Call during WM_SIZE processing.
-func (me *Resizer) Adjust(p wm.Size) {
+func (me *Resizer) Adjust(p WmSize) {
 	if len(me.ctrls) == 0 || p.Request() == co.SIZE_MINIMIZED {
 		return // no need to resize if window is minimized
 	}
