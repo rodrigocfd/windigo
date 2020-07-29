@@ -12,6 +12,14 @@ import (
 	"wingows/win/proc"
 )
 
+// Simple conversion for syscalls.
+func boolToUintptr(b bool) uintptr {
+	if b {
+		return uintptr(1)
+	}
+	return uintptr(0)
+}
+
 // Initializes the COM library.
 // Must be freed with CoUninitialize().
 func CoInitializeEx(dwCoInit co.COINIT) {

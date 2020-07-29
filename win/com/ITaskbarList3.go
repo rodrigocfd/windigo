@@ -41,8 +41,8 @@ func (me *ITaskbarList3) coCreateInstance() {
 	}
 }
 
-func (me *ITaskbarList3) SetProgressValue(hwnd win.HWND,
-	ullCompleted, ullTotal uint64) {
+func (me *ITaskbarList3) SetProgressValue(
+	hwnd win.HWND, ullCompleted, ullTotal uint64) {
 
 	me.coCreateInstance()
 	lpVtbl := (*iTaskbarList3Vtbl)(unsafe.Pointer(me.lpVtbl))
