@@ -33,9 +33,9 @@ func (me *baseITaskbarList2) CoCreateInstance(dwClsContext co.CLSCTX) {
 func (me *baseITaskbarList2) MarkFullscreenWindow(
 	hwnd win.HWND, fFullScreen bool) {
 
-	pVtbTy := (*vtbITaskbarList2)(unsafe.Pointer(me.uintptr))
-	ret, _, _ := syscall.Syscall(pVtbTy.MarkFullscreenWindow, 3,
-		uintptr(unsafe.Pointer(&me.uintptr)), uintptr(hwnd),
+	ret, _, _ := syscall.Syscall(
+		(*vtbITaskbarList2)(unsafe.Pointer(me.pVtb())).MarkFullscreenWindow, 3,
+		uintptr(unsafe.Pointer(me.uintptr)), uintptr(hwnd),
 		uintptr(boolToUintptr(fFullScreen)))
 
 	lerr := co.ERROR(ret)

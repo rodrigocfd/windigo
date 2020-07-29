@@ -44,9 +44,9 @@ func (me *baseITaskbarList3) CoCreateInstance(dwClsContext co.CLSCTX) {
 func (me *ITaskbarList3) SetProgressValue(
 	hwnd win.HWND, ullCompleted, ullTotal uint64) {
 
-	pVtbTy := (*vtbITaskbarList3)(unsafe.Pointer(me.uintptr))
-	ret, _, _ := syscall.Syscall6(pVtbTy.SetProgressValue, 4,
-		uintptr(unsafe.Pointer(&me.uintptr)), uintptr(hwnd),
+	ret, _, _ := syscall.Syscall6(
+		(*vtbITaskbarList3)(unsafe.Pointer(me.pVtb())).SetProgressValue, 4,
+		uintptr(unsafe.Pointer(me.uintptr)), uintptr(hwnd),
 		uintptr(ullCompleted), uintptr(ullTotal),
 		0, 0)
 
@@ -58,9 +58,9 @@ func (me *ITaskbarList3) SetProgressValue(
 }
 
 func (me *ITaskbarList3) SetProgressState(hwnd win.HWND, tbpFlags co.TBPF) {
-	pVtbTy := (*vtbITaskbarList3)(unsafe.Pointer(me.uintptr))
-	ret, _, _ := syscall.Syscall(pVtbTy.SetProgressState, 3,
-		uintptr(unsafe.Pointer(&me.uintptr)), uintptr(hwnd), uintptr(tbpFlags))
+	ret, _, _ := syscall.Syscall(
+		(*vtbITaskbarList3)(unsafe.Pointer(me.pVtb())).SetProgressState, 3,
+		uintptr(unsafe.Pointer(me.uintptr)), uintptr(hwnd), uintptr(tbpFlags))
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {

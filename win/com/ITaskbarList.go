@@ -6,6 +6,10 @@
 
 package com
 
+import (
+	"wingows/co"
+)
+
 type (
 	baseITaskbarList struct{ baseIUnknown }
 
@@ -21,3 +25,8 @@ type (
 		SetActiveAlt uintptr
 	}
 )
+
+func (me *baseITaskbarList) CoCreateInstance(dwClsContext co.CLSCTX) {
+	me.baseIUnknown.coCreateInstance(
+		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList)
+}

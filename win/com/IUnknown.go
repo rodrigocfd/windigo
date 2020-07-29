@@ -15,7 +15,8 @@ import (
 )
 
 type (
-	baseIUnknown struct{ uintptr }
+	iUnknownPtr  struct{ uintptr } // IUnknown pointer itself, which has a pointer to virtual table
+	baseIUnknown struct{ uintptr } // container, which has a pointer to IUnknown
 
 	// IUnknown is the base to all COM interfaces.
 	IUnknown struct{ baseIUnknown }
@@ -26,6 +27,14 @@ type (
 		Release        uintptr
 	}
 )
+
+// Returns a pointer to IUnknown virtual table.
+func (me *baseIUnknown) pVtb() *vtbIUnknown {
+	// https://www.codeproject.com/Articles/633/Introduction-to-COM-What-It-Is-and-How-to-Use-It
+	ptrIUnk := (*iUnknownPtr)(unsafe.Pointer(me.uintptr))
+	ptrVtb := (*vtbIUnknown)(unsafe.Pointer(ptrIUnk.uintptr))
+	return ptrVtb
+}
 
 // Creates any COM interface, returning the base IUnknown.
 // To retrieve the other interface itself, cast the inner lpVtbl.
@@ -38,18 +47,16 @@ func (me *baseIUnknown) coCreateInstance(
 
 	clsidFlip := cloneFlipLastUint64Clsid(clsid)
 	iidFlip := cloneFlipLastUint64Iid(iid)
-	retIUnk := &baseIUnknown{}
 
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
 		uintptr(unsafe.Pointer(&clsidFlip)), 0,
 		uintptr(dwClsContext), uintptr(unsafe.Pointer(&iidFlip)),
-		uintptr(unsafe.Pointer(&retIUnk)), 0)
+		uintptr(unsafe.Pointer(&me.uintptr)), 0)
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
 		panic(lerr.Format("CoCreateInstance failed."))
 	}
-	me.uintptr = retIUnk.uintptr
 }
 
 // Queries any COM interface, returning the base IUnknown.
@@ -59,12 +66,12 @@ func (me *baseIUnknown) queryInterface(iid *co.IID) IUnknown {
 		panic("Calling queryInterface on empty IUnknown.")
 	}
 
-	lpVtbl := (*vtbIUnknown)(unsafe.Pointer(me.uintptr))
 	iidFlip := cloneFlipLastUint64Iid(iid)
-	retIUnk := &baseIUnknown{}
+	retIUnk := IUnknown{}
 
-	ret, _, _ := syscall.Syscall(lpVtbl.AddRef, 3,
-		uintptr(unsafe.Pointer(me)), uintptr(unsafe.Pointer(&iidFlip)),
+	ret, _, _ := syscall.Syscall(me.pVtb().QueryInterface, 3,
+		uintptr(unsafe.Pointer(me.uintptr)),
+		uintptr(unsafe.Pointer(&iidFlip)),
 		uintptr(unsafe.Pointer(&retIUnk.uintptr)))
 
 	lerr := co.ERROR(ret)
@@ -72,7 +79,7 @@ func (me *baseIUnknown) queryInterface(iid *co.IID) IUnknown {
 		me.Release() // free resource
 		panic(lerr.Format("IUnknown.QueryInterface failed."))
 	}
-	return IUnknown{*retIUnk}
+	return retIUnk
 }
 
 func (me *baseIUnknown) AddRef() uint32 {
@@ -80,9 +87,8 @@ func (me *baseIUnknown) AddRef() uint32 {
 		panic("Calling AddRef on empty IUnknown.")
 	}
 
-	pVtbTy := (*vtbIUnknown)(unsafe.Pointer(me.uintptr))
-	ret, _, _ := syscall.Syscall(pVtbTy.AddRef, 1,
-		uintptr(unsafe.Pointer(me)), 0, 0)
+	ret, _, _ := syscall.Syscall(me.pVtb().AddRef, 1,
+		uintptr(unsafe.Pointer(me.uintptr)), 0, 0)
 	return uint32(ret)
 }
 
@@ -91,9 +97,8 @@ func (me *baseIUnknown) Release() uint32 {
 		panic("Calling Release on empty IUnknown.")
 	}
 
-	pVtbTy := (*vtbIUnknown)(unsafe.Pointer(me.uintptr))
-	ret, _, _ := syscall.Syscall(pVtbTy.Release, 1,
-		uintptr(unsafe.Pointer(&me.uintptr)), 0, 0)
+	ret, _, _ := syscall.Syscall(me.pVtb().Release, 1,
+		uintptr(unsafe.Pointer(me.uintptr)), 0, 0)
 	return uint32(ret)
 }
 
@@ -114,5 +119,13 @@ func cloneFlipLastUint64Clsid(clsid *co.CLSID) co.CLSID {
 }
 
 func cloneFlipLastUint64Iid(iid *co.IID) co.IID {
+	return co.IID(cloneFlipLastUint64((*co.GUID)(iid))) // specialization for IID
+}
+
+func XcloneFlipLastUint64Clsid(clsid *co.CLSID) co.CLSID {
+	return co.CLSID(cloneFlipLastUint64((*co.GUID)(clsid))) // specialization for CLSID
+}
+
+func XcloneFlipLastUint64Iid(iid *co.IID) co.IID {
 	return co.IID(cloneFlipLastUint64((*co.GUID)(iid))) // specialization for IID
 }

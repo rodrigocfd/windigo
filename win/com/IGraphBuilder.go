@@ -36,9 +36,9 @@ func (me *baseIGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
 }
 
 func (me *IGraphBuilder) Abort() {
-	pVtbTy := (*vtbIGraphBuilder)(unsafe.Pointer(me.uintptr))
-	ret, _, _ := syscall.Syscall(pVtbTy.Abort, 1,
-		uintptr(unsafe.Pointer(&me.uintptr)), 0, 0)
+	ret, _, _ := syscall.Syscall(
+		(*vtbIGraphBuilder)(unsafe.Pointer(me.pVtb())).Abort, 1,
+		uintptr(unsafe.Pointer(me.uintptr)), 0, 0)
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
