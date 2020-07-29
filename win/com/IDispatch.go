@@ -6,15 +6,17 @@
 
 package com
 
-// IDispatch > IUnknown.
-type IDispatch struct {
-	IUnknown
-}
+type (
+	baseIDispatch struct{ baseIUnknown }
 
-type iDispatchVtbl struct {
-	iUnknownVtbl
-	GetTypeInfoCount uintptr
-	GetTypeInfo      uintptr
-	GetIDsOfNames    uintptr
-	Invoke           uintptr
-}
+	// IDispatch > IUnknown.
+	IDispatch struct{ baseIDispatch }
+
+	vtbIDispatch struct {
+		vtbIUnknown
+		GetTypeInfoCount uintptr
+		GetTypeInfo      uintptr
+		GetIDsOfNames    uintptr
+		Invoke           uintptr
+	}
+)

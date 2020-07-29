@@ -6,22 +6,24 @@
 
 package com
 
-// IFilterGraph > IUnknown.
-type IFilterGraph struct {
-	IUnknown
-}
+type (
+	baseIFilterGraph struct{ baseIUnknown }
 
-type iFilterGraphVtbl struct {
-	iUnknownVtbl
-	AddFilter            uintptr
-	RemoveFilter         uintptr
-	EnumFilters          uintptr
-	FindFilterByName     uintptr
-	ConnectDirect        uintptr
-	Reconnect            uintptr
-	Disconnect           uintptr
-	SetDefaultSyncSource uintptr
-}
+	// IFilterGraph > IUnknown.
+	IFilterGraph struct{ baseIFilterGraph }
+
+	vtbIFilterGraph struct {
+		vtbIUnknown
+		AddFilter            uintptr
+		RemoveFilter         uintptr
+		EnumFilters          uintptr
+		FindFilterByName     uintptr
+		ConnectDirect        uintptr
+		Reconnect            uintptr
+		Disconnect           uintptr
+		SetDefaultSyncSource uintptr
+	}
+)
 
 // func (me *IFilterGraph) coCreateInstance() {
 // 	if me.lpVtbl == 0 { // if not created yet

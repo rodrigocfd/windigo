@@ -6,17 +6,19 @@
 
 package com
 
-// IMediaFilter > IPersist > IUnknown.
-type IMediaFilter struct {
-	IPersist
-}
+type (
+	baseIMediaFilter struct{ baseIPersist }
 
-type iMediaFilterVtbl struct {
-	iPersistVtbl
-	Stop          uintptr
-	Pause         uintptr
-	Run           uintptr
-	GetState      uintptr
-	SetSyncSource uintptr
-	GetSyncSource uintptr
-}
+	// IMediaFilter > IPersist > IUnknown.
+	IMediaFilter struct{ baseIMediaFilter }
+
+	vtbIMediaFilter struct {
+		vtbIPersist
+		Stop          uintptr
+		Pause         uintptr
+		Run           uintptr
+		GetState      uintptr
+		SetSyncSource uintptr
+		GetSyncSource uintptr
+	}
+)

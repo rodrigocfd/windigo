@@ -12,34 +12,33 @@ import (
 	"wingows/co"
 )
 
-// IGraphBuilder > IFilterGraph > IUnknown.
-type IGraphBuilder struct {
-	IFilterGraph
-}
+type (
+	baseIGraphBuilder struct{ baseIFilterGraph }
 
-type iGraphBuilderVtbl struct {
-	iFilterGraphVtbl
-	Connect                 uintptr
-	Render                  uintptr
-	RenderFile              uintptr
-	AddSourceFilter         uintptr
-	SetLogFile              uintptr
-	Abort                   uintptr
-	ShouldOperationContinue uintptr
-}
+	// IGraphBuilder > IFilterGraph > IUnknown.
+	IGraphBuilder struct{ baseIGraphBuilder }
 
-func (me *IGraphBuilder) coCreateInstance() {
-	if me.lpVtbl == 0 { // if not created yet
-		me.IUnknown.coCreateInstance(
-			&co.CLSID_FilterGraph, &co.IID_IGraphBuilder)
+	vtbIGraphBuilder struct {
+		vtbIFilterGraph
+		Connect                 uintptr
+		Render                  uintptr
+		RenderFile              uintptr
+		AddSourceFilter         uintptr
+		SetLogFile              uintptr
+		Abort                   uintptr
+		ShouldOperationContinue uintptr
 	}
+)
+
+func (me *baseIGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
+	me.baseIUnknown.coCreateInstance(
+		&co.CLSID_FilterGraph, dwClsContext, &co.IID_IGraphBuilder)
 }
 
 func (me *IGraphBuilder) Abort() {
-	me.coCreateInstance()
-	lpVtbl := (*iGraphBuilderVtbl)(unsafe.Pointer(me.lpVtbl))
-	ret, _, _ := syscall.Syscall(lpVtbl.Abort, 1,
-		uintptr(unsafe.Pointer(me)), 0, 0)
+	pVtbTy := (*vtbIGraphBuilder)(unsafe.Pointer(me.uintptr))
+	ret, _, _ := syscall.Syscall(pVtbTy.Abort, 1,
+		uintptr(unsafe.Pointer(&me.uintptr)), 0, 0)
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {

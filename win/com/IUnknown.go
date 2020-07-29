@@ -14,86 +14,86 @@ import (
 	"wingows/win/proc"
 )
 
-// IUnknown is the base to all COM interfaces.
-type IUnknown struct {
-	lpVtbl uintptr
-}
+type (
+	baseIUnknown struct{ uintptr }
 
-type iUnknownVtbl struct {
-	QueryInterface uintptr
-	AddRef         uintptr
-	Release        uintptr
-}
+	// IUnknown is the base to all COM interfaces.
+	IUnknown struct{ baseIUnknown }
+
+	vtbIUnknown struct {
+		QueryInterface uintptr
+		AddRef         uintptr
+		Release        uintptr
+	}
+)
 
 // Creates any COM interface, returning the base IUnknown.
 // To retrieve the other interface itself, cast the inner lpVtbl.
-func (me *IUnknown) coCreateInstance(clsid *co.CLSID, iid *co.IID) {
-	if me.lpVtbl != 0 {
+func (me *baseIUnknown) coCreateInstance(
+	clsid *co.CLSID, dwClsContext co.CLSCTX, iid *co.IID) {
+
+	if me.uintptr != 0 {
 		panic("Trying to CoCreateInstance() an IUnknown already created.")
 	}
 
-	// if iid == nil {
-	// 	iid = &co.Guid_IUnknown // if iid is not passed, assume IUnknown
-	// }
-
 	clsidFlip := cloneFlipLastUint64Clsid(clsid)
 	iidFlip := cloneFlipLastUint64Iid(iid)
-	retIUnk := &IUnknown{}
+	retIUnk := &baseIUnknown{}
 
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
 		uintptr(unsafe.Pointer(&clsidFlip)), 0,
-		uintptr(co.CLSCTX_INPROC_SERVER),
-		uintptr(unsafe.Pointer(&iidFlip)), uintptr(unsafe.Pointer(&retIUnk)), 0)
+		uintptr(dwClsContext), uintptr(unsafe.Pointer(&iidFlip)),
+		uintptr(unsafe.Pointer(&retIUnk)), 0)
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
 		panic(lerr.Format("CoCreateInstance failed."))
 	}
-	*me = *retIUnk
+	me.uintptr = retIUnk.uintptr
 }
 
 // Queries any COM interface, returning the base IUnknown.
 // To retrieve the other interface itself, cast the inner lpVtbl.
-func (me *IUnknown) queryInterface(iid *co.IID) *IUnknown {
-	if me.lpVtbl == 0 {
+func (me *baseIUnknown) queryInterface(iid *co.IID) IUnknown {
+	if me.uintptr == 0 {
 		panic("Calling queryInterface on empty IUnknown.")
 	}
 
-	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(me.lpVtbl))
+	lpVtbl := (*vtbIUnknown)(unsafe.Pointer(me.uintptr))
 	iidFlip := cloneFlipLastUint64Iid(iid)
-	retIUnk := &IUnknown{}
+	retIUnk := &baseIUnknown{}
 
 	ret, _, _ := syscall.Syscall(lpVtbl.AddRef, 3,
 		uintptr(unsafe.Pointer(me)), uintptr(unsafe.Pointer(&iidFlip)),
-		uintptr(unsafe.Pointer(&retIUnk)))
+		uintptr(unsafe.Pointer(&retIUnk.uintptr)))
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
 		me.Release() // free resource
 		panic(lerr.Format("IUnknown.QueryInterface failed."))
 	}
-	return retIUnk
+	return IUnknown{*retIUnk}
 }
 
-func (me *IUnknown) AddRef() uint32 {
-	if me.lpVtbl == 0 {
+func (me *baseIUnknown) AddRef() uint32 {
+	if me.uintptr == 0 {
 		panic("Calling AddRef on empty IUnknown.")
 	}
 
-	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(me.lpVtbl))
-	ret, _, _ := syscall.Syscall(lpVtbl.AddRef, 1,
+	pVtbTy := (*vtbIUnknown)(unsafe.Pointer(me.uintptr))
+	ret, _, _ := syscall.Syscall(pVtbTy.AddRef, 1,
 		uintptr(unsafe.Pointer(me)), 0, 0)
 	return uint32(ret)
 }
 
-func (me *IUnknown) Release() uint32 {
-	if me.lpVtbl == 0 {
+func (me *baseIUnknown) Release() uint32 {
+	if me.uintptr == 0 {
 		panic("Calling Release on empty IUnknown.")
 	}
 
-	lpVtbl := (*iUnknownVtbl)(unsafe.Pointer(me.lpVtbl))
-	ret, _, _ := syscall.Syscall(lpVtbl.Release, 1,
-		uintptr(unsafe.Pointer(me)), 0, 0)
+	pVtbTy := (*vtbIUnknown)(unsafe.Pointer(me.uintptr))
+	ret, _, _ := syscall.Syscall(pVtbTy.Release, 1,
+		uintptr(unsafe.Pointer(&me.uintptr)), 0, 0)
 	return uint32(ret)
 }
 

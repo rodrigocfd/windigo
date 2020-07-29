@@ -6,12 +6,14 @@
 
 package com
 
-// IPersist > IUnknown.
-type IPersist struct {
-	IUnknown
-}
+type (
+	baseIPersist struct{ baseIUnknown }
 
-type iPersistVtbl struct {
-	iUnknownVtbl
-	GetClassID uintptr
-}
+	// IPersist > IUnknown.
+	IPersist struct{ baseIPersist }
+
+	vtbIPersist struct {
+		vtbIUnknown
+		GetClassID uintptr
+	}
+)

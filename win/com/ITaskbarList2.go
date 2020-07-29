@@ -13,30 +13,29 @@ import (
 	"wingows/win"
 )
 
-// ITaskbarList2 > ITaskbarList > IUnknown.
-type ITaskbarList2 struct {
-	ITaskbarList
-}
+type (
+	baseITaskbarList2 struct{ baseITaskbarList }
 
-type iTaskbarList2Vtbl struct {
-	iTaskbarListVtbl
-	MarkFullscreenWindow uintptr
-}
+	// ITaskbarList2 > ITaskbarList > IUnknown.
+	ITaskbarList2 struct{ baseITaskbarList2 }
 
-func (me *ITaskbarList2) coCreateInstance() {
-	if me.lpVtbl == 0 { // if not created yet
-		me.IUnknown.coCreateInstance(
-			&co.CLSID_TaskbarList, &co.IID_ITaskbarList2)
+	vtbITaskbarList2 struct {
+		tvbITaskbarList
+		MarkFullscreenWindow uintptr
 	}
+)
+
+func (me *baseITaskbarList2) CoCreateInstance(dwClsContext co.CLSCTX) {
+	me.baseIUnknown.coCreateInstance(
+		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList2)
 }
 
-func (me *ITaskbarList2) MarkFullscreenWindow(
+func (me *baseITaskbarList2) MarkFullscreenWindow(
 	hwnd win.HWND, fFullScreen bool) {
 
-	me.coCreateInstance()
-	lpVtbl := (*iTaskbarList2Vtbl)(unsafe.Pointer(me.lpVtbl))
-	ret, _, _ := syscall.Syscall(lpVtbl.MarkFullscreenWindow, 3,
-		uintptr(unsafe.Pointer(me)), uintptr(hwnd),
+	pVtbTy := (*vtbITaskbarList2)(unsafe.Pointer(me.uintptr))
+	ret, _, _ := syscall.Syscall(pVtbTy.MarkFullscreenWindow, 3,
+		uintptr(unsafe.Pointer(&me.uintptr)), uintptr(hwnd),
 		uintptr(boolToUintptr(fFullScreen)))
 
 	lerr := co.ERROR(ret)

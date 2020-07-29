@@ -13,41 +13,40 @@ import (
 	"wingows/win"
 )
 
-// ITaskbarList3 > ITaskbarList2 > ITaskbarList > IUnknown.
-type ITaskbarList3 struct {
-	ITaskbarList2
-}
+type (
+	baseITaskbarList3 struct{ baseITaskbarList2 }
 
-type iTaskbarList3Vtbl struct {
-	iTaskbarList2Vtbl
-	SetProgressValue      uintptr
-	SetProgressState      uintptr
-	RegisterTab           uintptr
-	UnregisterTab         uintptr
-	SetTabOrder           uintptr
-	SetTabActive          uintptr
-	ThumbBarAddButtons    uintptr
-	ThumbBarUpdateButtons uintptr
-	ThumbBarSetImageList  uintptr
-	SetOverlayIcon        uintptr
-	SetThumbnailTooltip   uintptr
-	SetThumbnailClip      uintptr
-}
+	// ITaskbarList3 > ITaskbarList2 > ITaskbarList > IUnknown.
+	ITaskbarList3 struct{ baseITaskbarList3 }
 
-func (me *ITaskbarList3) coCreateInstance() {
-	if me.lpVtbl == 0 { // if not created yet
-		me.IUnknown.coCreateInstance(
-			&co.CLSID_TaskbarList, &co.IID_ITaskbarList3)
+	vtbITaskbarList3 struct {
+		vtbITaskbarList2
+		SetProgressValue      uintptr
+		SetProgressState      uintptr
+		RegisterTab           uintptr
+		UnregisterTab         uintptr
+		SetTabOrder           uintptr
+		SetTabActive          uintptr
+		ThumbBarAddButtons    uintptr
+		ThumbBarUpdateButtons uintptr
+		ThumbBarSetImageList  uintptr
+		SetOverlayIcon        uintptr
+		SetThumbnailTooltip   uintptr
+		SetThumbnailClip      uintptr
 	}
+)
+
+func (me *baseITaskbarList3) CoCreateInstance(dwClsContext co.CLSCTX) {
+	me.baseIUnknown.coCreateInstance(
+		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList3)
 }
 
 func (me *ITaskbarList3) SetProgressValue(
 	hwnd win.HWND, ullCompleted, ullTotal uint64) {
 
-	me.coCreateInstance()
-	lpVtbl := (*iTaskbarList3Vtbl)(unsafe.Pointer(me.lpVtbl))
-	ret, _, _ := syscall.Syscall6(lpVtbl.SetProgressValue, 4,
-		uintptr(unsafe.Pointer(me)), uintptr(hwnd),
+	pVtbTy := (*vtbITaskbarList3)(unsafe.Pointer(me.uintptr))
+	ret, _, _ := syscall.Syscall6(pVtbTy.SetProgressValue, 4,
+		uintptr(unsafe.Pointer(&me.uintptr)), uintptr(hwnd),
 		uintptr(ullCompleted), uintptr(ullTotal),
 		0, 0)
 
@@ -59,10 +58,9 @@ func (me *ITaskbarList3) SetProgressValue(
 }
 
 func (me *ITaskbarList3) SetProgressState(hwnd win.HWND, tbpFlags co.TBPF) {
-	me.coCreateInstance()
-	lpVtbl := (*iTaskbarList3Vtbl)(unsafe.Pointer(me.lpVtbl))
-	ret, _, _ := syscall.Syscall(lpVtbl.SetProgressState, 3,
-		uintptr(unsafe.Pointer(me)), uintptr(hwnd), uintptr(tbpFlags))
+	pVtbTy := (*vtbITaskbarList3)(unsafe.Pointer(me.uintptr))
+	ret, _, _ := syscall.Syscall(pVtbTy.SetProgressState, 3,
+		uintptr(unsafe.Pointer(&me.uintptr)), uintptr(hwnd), uintptr(tbpFlags))
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {

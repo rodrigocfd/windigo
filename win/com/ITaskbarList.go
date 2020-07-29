@@ -6,16 +6,18 @@
 
 package com
 
-// ITaskbarList > IUnknown.
-type ITaskbarList struct {
-	IUnknown
-}
+type (
+	baseITaskbarList struct{ baseIUnknown }
 
-type iTaskbarListVtbl struct {
-	iUnknownVtbl
-	HrInit       uintptr
-	AddTab       uintptr
-	DeleteTab    uintptr
-	ActivateTab  uintptr
-	SetActiveAlt uintptr
-}
+	// ITaskbarList > IUnknown.
+	ITaskbarList struct{ baseITaskbarList }
+
+	tvbITaskbarList struct {
+		vtbIUnknown
+		HrInit       uintptr
+		AddTab       uintptr
+		DeleteTab    uintptr
+		ActivateTab  uintptr
+		SetActiveAlt uintptr
+	}
+)

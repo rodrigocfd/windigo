@@ -6,16 +6,18 @@
 
 package com
 
-// IBaseFilter > IMediaFilter > IPersist > IUnknown.
-type IBaseFilter struct {
-	IMediaFilter
-}
+type (
+	baseIBaseFilter struct{ baseIMediaFilter }
 
-type iBaseFilterVtbl struct {
-	iMediaFilterVtbl
-	EnumPins        uintptr
-	FindPin         uintptr
-	QueryFilterInfo uintptr
-	JoinFilterGraph uintptr
-	QueryVendorInfo uintptr
-}
+	// IBaseFilter > IMediaFilter > IPersist > IUnknown.
+	IBaseFilter struct{ baseIBaseFilter }
+
+	vtbIBaseFilter struct {
+		vtbIMediaFilter
+		EnumPins        uintptr
+		FindPin         uintptr
+		QueryFilterInfo uintptr
+		JoinFilterGraph uintptr
+		QueryVendorInfo uintptr
+	}
+)
