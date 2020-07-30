@@ -7,6 +7,7 @@
 package gui
 
 import (
+	"unicode"
 	"wingows/co"
 	"wingows/win"
 )
@@ -14,32 +15,50 @@ import (
 // Helps building an accelerator table.
 type AccelTable struct {
 	accels []win.ACCEL
-	built  bool
+	hAccel win.HACCEL
 }
 
-// Adds a new accelerator, with a specific command ID.
-// If passing a character code, use uppercase.
-func (me *AccelTable) Add(
-	textId string, vKey co.VK, flags co.ACCELF, cmdId int32) *AccelTable {
+// Adds a new character accelerator, with a specific command ID.
+func (me *AccelTable) AddChar(
+	character rune, modifiers co.ACCELF, cmdId int32) *AccelTable {
 
 	me.accels = append(me.accels, win.ACCEL{
-		FVirt: flags | co.ACCELF_VIRTKEY,
+		FVirt: modifiers | co.ACCELF_VIRTKEY,
+		Key:   co.VK(unicode.ToUpper(character)),
+		Cmd:   uint16(cmdId),
+	})
+	return me
+}
+
+// Adds a new key accelerator, with a specific command ID.
+func (me *AccelTable) AddKey(
+	vKey co.VK, modifiers co.ACCELF, cmdId int32) *AccelTable {
+
+	me.accels = append(me.accels, win.ACCEL{
+		FVirt: modifiers | co.ACCELF_VIRTKEY,
 		Key:   vKey,
 		Cmd:   uint16(cmdId),
 	})
 	return me
 }
 
-// Builds the accelerator table resource and returns its handle.
-// It must be freed with DestroyAcceleratorTable().
-func (me *AccelTable) Build() win.HACCEL {
-	if me.built {
-		panic("Accelerator table already built.")
+// Builds the HACCEL from the ACCEL array.
+func (me *AccelTable) Build() *AccelTable {
+	if me.hAccel == 0 && len(me.accels) > 0 { // build only once
+		me.hAccel = win.CreateAcceleratorTable(me.accels)
 	}
-	me.built = true
+	return me
+}
 
-	if len(me.accels) == 0 { // no accelerators added
-		return win.HACCEL(0)
+// Accelerator tables must be destroyed manually.
+func (me *AccelTable) Destroy() {
+	if me.hAccel != 0 {
+		me.hAccel.DestroyAcceleratorTable()
+		me.hAccel = 0
 	}
-	return win.CreateAcceleratorTable(me.accels)
+}
+
+// Returns the HACCEL handle.
+func (me *AccelTable) Haccel() win.HACCEL {
+	return me.hAccel
 }

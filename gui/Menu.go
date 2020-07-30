@@ -55,8 +55,10 @@ func (me *Menu) CreatePopup() *Menu {
 
 // Only necessary if the menu is not attached to any window.
 func (me *Menu) Destroy() {
-	me.hMenu.DestroyMenu()
-	me.hMenu = 0
+	if me.hMenu != 0 {
+		me.hMenu.DestroyMenu()
+		me.hMenu = 0
+	}
 }
 
 func (me *Menu) EnableManyByCmdId(isEnabled bool, cmdIds []int32) *Menu {

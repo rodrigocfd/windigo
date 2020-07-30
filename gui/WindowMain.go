@@ -53,9 +53,7 @@ func (me *WindowMain) RunAsMain() int {
 		}
 
 		// Free resources.
-		if me.setup.HAccel != 0 {
-			me.setup.HAccel.DestroyAcceleratorTable()
-		}
+		me.setup.AcceleratorTable.Destroy()
 		globalUiFont.Destroy()
 	}()
 
@@ -80,7 +78,7 @@ func (me *WindowMain) RunAsMain() int {
 	me.windowBase.createWindow("WindowMain", me.setup.ExStyle,
 		me.setup.ClassName, me.setup.Title, me.setup.Style,
 		cxScreen/2-int32(cx)/2, cyScreen/2-int32(cy)/2, // center window on screen
-		cx, cy, nil, me.setup.HMenu, hInst)
+		cx, cy, nil, me.setup.MainMenu.Hmenu(), hInst)
 
 	me.windowBase.Hwnd().ShowWindow(me.setup.CmdShow)
 	me.windowBase.Hwnd().UpdateWindow()
@@ -138,8 +136,9 @@ func (me *WindowMain) runMainLoop() int {
 		hTopLevel := msg.HWnd.GetAncestor(co.GA_ROOT)
 
 		// If we have an accelerator table, try to translate the message.
-		if me.setup.HAccel != 0 &&
-			hTopLevel.TranslateAccelerator(me.setup.HAccel, &msg) {
+		if me.setup.AcceleratorTable.Haccel() != 0 &&
+			hTopLevel.TranslateAccelerator(
+				me.setup.AcceleratorTable.Haccel(), &msg) {
 			// Message translated, no further processing is done.
 			continue
 		}
@@ -179,15 +178,15 @@ type windowMainSetup struct {
 	HBrushBackground win.HBRUSH  // Window background brush, passed to RegisterClassEx.
 	HIconSmall       win.HICON   // Small icon associated with the window, passed to RegisterClassEx.
 
-	Title   string    // The title of the window, passed to CreateWindowEx.
-	Width   uint32    // Initial width of the window, passed to CreateWindowEx.
-	Height  uint32    // Initial height of the window, passed to CreateWindowEx.
-	Style   co.WS     // Window style, passed to CreateWindowEx.
-	ExStyle co.WS_EX  // Window extended style, passed to CreateWindowEx.
-	HMenu   win.HMENU // Main window menu, passed to CreateWindowEx.
+	Title    string   // The title of the window, passed to CreateWindowEx.
+	Width    uint32   // Initial width of the window, passed to CreateWindowEx.
+	Height   uint32   // Initial height of the window, passed to CreateWindowEx.
+	Style    co.WS    // Window style, passed to CreateWindowEx.
+	ExStyle  co.WS_EX // Window extended style, passed to CreateWindowEx.
+	MainMenu Menu     // Main window menu, passed to CreateWindowEx.
 
-	HAccel  win.HACCEL // Accelerator table. Will be automatically destroyed.
-	CmdShow co.SW      // Passed to ShowWindow, defaults to SW_SHOW.
+	AcceleratorTable AccelTable // Accelerator table used in main loop. Will be automatically destroyed.
+	CmdShow          co.SW      // Passed to ShowWindow, defaults to SW_SHOW.
 }
 
 func (me *windowMainSetup) initOnce() {
