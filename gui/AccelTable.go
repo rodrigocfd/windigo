@@ -19,8 +19,13 @@ type AccelTable struct {
 }
 
 // Adds a new character accelerator, with a specific command ID.
+// Call Build() after all commands are added.
 func (me *AccelTable) AddChar(
 	character rune, modifiers co.ACCELF, cmdId int32) *AccelTable {
+
+	if me.hAccel != 0 {
+		panic("Cannot add character after accelerator table was built.")
+	}
 
 	me.accels = append(me.accels, win.ACCEL{
 		FVirt: modifiers | co.ACCELF_VIRTKEY,
@@ -31,8 +36,13 @@ func (me *AccelTable) AddChar(
 }
 
 // Adds a new key accelerator, with a specific command ID.
+// Call Build() after all commands are added.
 func (me *AccelTable) AddKey(
 	vKey co.VK, modifiers co.ACCELF, cmdId int32) *AccelTable {
+
+	if me.hAccel != 0 {
+		panic("Cannot add key after accelerator table was built.")
+	}
 
 	me.accels = append(me.accels, win.ACCEL{
 		FVirt: modifiers | co.ACCELF_VIRTKEY,
@@ -42,7 +52,7 @@ func (me *AccelTable) AddKey(
 	return me
 }
 
-// Builds the HACCEL from the ACCEL array.
+// Builds the HACCEL from the ACCEL array, making it ready to use.
 func (me *AccelTable) Build() *AccelTable {
 	if me.hAccel == 0 && len(me.accels) > 0 { // build only once
 		me.hAccel = win.CreateAcceleratorTable(me.accels)
