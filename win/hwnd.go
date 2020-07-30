@@ -332,6 +332,15 @@ func (hWnd HWND) MessageBox(message, caption string, flags co.MB) co.MBID {
 	return co.MBID(ret)
 }
 
+func (hWnd HWND) MoveWindow(x, y, int32, width, height uint32, bRepaint bool) {
+	ret, _, lerr := syscall.Syscall6(proc.MoveWindow.Addr(), 6,
+		uintptr(hWnd), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
+		boolToUintptr(bRepaint))
+	if ret == 0 {
+		panic(co.ERROR(lerr).Format("MoveWindow failed."))
+	}
+}
+
 func (hWnd HWND) OpenThemeData(classNames string) HTHEME {
 	ret, _, _ := syscall.Syscall(proc.OpenThemeData.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(StrToPtr(classNames))),

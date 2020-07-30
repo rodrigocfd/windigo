@@ -63,6 +63,12 @@ func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
 	return uint16(ret)
 }
 
+func GetCurrentThreadId() uint32 {
+	ret, _, _ := syscall.Syscall(proc.GetCurrentThreadId.Addr(), 0,
+		0, 0, 0)
+	return uint32(ret)
+}
+
 func GetCursorPos() *POINT {
 	pt := &POINT{}
 	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
@@ -114,6 +120,19 @@ func SetProcessDPIAware() {
 	if ret == 0 {
 		panic("SetProcessDPIAware failed.")
 	}
+}
+
+func SetWindowsHookEx(idHook co.WH,
+	lpfn func(code int, wp WPARAM, lp LPARAM) uintptr,
+	hmod HINSTANCE, dwThreadId uint32) HHOOK {
+
+	ret, _, lerr := syscall.Syscall6(proc.SetWindowsHookEx.Addr(), 4,
+		uintptr(idHook), syscall.NewCallback(lpfn),
+		uintptr(hmod), uintptr(dwThreadId), 0, 0)
+	if ret == 0 {
+		panic(co.ERROR(lerr).Format("SetWindowsHookEx failed."))
+	}
+	return HHOOK(ret)
 }
 
 // Depends of CoInitializeEx().

@@ -14,6 +14,26 @@ const (
 	WA_CLICKACTIVE WA = 2
 )
 
+type WH int // SetWindowsHookEx idHook
+
+const (
+	WH_MSGFILTER       WH = -1
+	WH_JOURNALRECORD   WH = 0
+	WH_JOURNALPLAYBACK WH = 1
+	WH_KEYBOARD        WH = 2
+	WH_GETMESSAGE      WH = 3
+	WH_CALLWNDPROC     WH = 4
+	WH_CBT             WH = 5
+	WH_SYSMSGFILTER    WH = 6
+	WH_MOUSE           WH = 7
+	WH_DEBUG           WH = 9
+	WH_SHELL           WH = 10
+	WH_FOREGROUNDIDLE  WH = 11
+	WH_CALLWNDPROCRET  WH = 12
+	WH_KEYBOARD_LL     WH = 13
+	WH_MOUSE_LL        WH = 14
+)
+
 type WIN32_WINNT uint16 // OSVERSIONINFOEX, originally _WIN32_WINNT
 
 const (

@@ -93,6 +93,33 @@ const (
 	GWLP_ID         GWLP = -12
 )
 
+type HC int // SetWindowsHookEx callback hook codes
+
+const (
+	HC_ACTION      HC = 0
+	HC_GETNEXT     HC = 1
+	HC_SKIP        HC = 2
+	HC_NOREMOVE    HC = 3
+	HC_NOREM       HC = HC_NOREMOVE
+	HC_SYSMODALON  HC = 4
+	HC_SYSMODALOFF HC = 5
+)
+
+type HCBT int // SetWindowsHookEx callback CBT hook codes
+
+const (
+	HCBT_MOVESIZE     HCBT = 0
+	HCBT_MINMAX       HCBT = 1
+	HCBT_QS           HCBT = 2
+	HCBT_CREATEWND    HCBT = 3
+	HCBT_DESTROYWND   HCBT = 4
+	HCBT_ACTIVATE     HCBT = 5
+	HCBT_CLICKSKIPPED HCBT = 6
+	HCBT_KEYSKIPPED   HCBT = 7
+	HCBT_SYSCOMMAND   HCBT = 8
+	HCBT_SETFOCUS     HCBT = 9
+)
+
 type HDM WM // list view header message
 
 const (

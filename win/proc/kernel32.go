@@ -21,6 +21,7 @@ var (
 	FindClose           = dllKernel32.NewProc("FindClose")
 	FindFirstFile       = dllKernel32.NewProc("FindFirstFileW")
 	FindNextFile        = dllKernel32.NewProc("FindNextFileW")
+	GetCurrentThreadId  = dllKernel32.NewProc("GetCurrentThreadId")
 	GetFileAttributes   = dllKernel32.NewProc("GetFileAttributesW")
 	GetFileSize         = dllKernel32.NewProc("GetFileSize")
 	GetFileSizeEx       = dllKernel32.NewProc("GetFileSizeEx")
