@@ -97,6 +97,12 @@ func (me *Font) CreateUi() *Font {
 	return me
 }
 
+// Replaces current HFONT with another one.
+func (me *Font) Set(hFont win.HFONT) *Font {
+	me.hFont = hFont
+	return me
+}
+
 // Sends a WM_SETFONT message to the child control to apply the font.
 func (me *Font) SetOnControl(ctrl Window) *Font {
 	ctrl.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(me.hFont), 1)

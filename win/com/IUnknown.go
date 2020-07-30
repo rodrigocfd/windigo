@@ -42,7 +42,7 @@ func (me *baseIUnknown) coCreateInstance(
 	clsid *co.CLSID, dwClsContext co.CLSCTX, iid *co.IID) {
 
 	if me.uintptr != 0 {
-		panic("Trying to CoCreateInstance() an IUnknown already created.")
+		panic("IUnknown already created, CoCreateInstance not called.")
 	}
 
 	clsidFlip := cloneFlipLastUint64Clsid(clsid)

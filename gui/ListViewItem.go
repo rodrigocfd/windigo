@@ -168,12 +168,9 @@ func (me *ListViewItem) State() co.LVIS {
 	)
 }
 
-// Retrieves the subitem at the given column index.
+// Returns the subitem at the given column index.
+// Does not perform bound checking.
 func (me *ListViewItem) SubItem(index uint32) *ListViewSubItem {
-	numCols := me.owner.ColumnCount()
-	if index >= numCols {
-		panic("Trying to retrieve sub item with index out of bounds.")
-	}
 	return &ListViewSubItem{
 		item:  me,
 		index: index,

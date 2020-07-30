@@ -16,7 +16,7 @@ import (
 // Native list view control.
 type ListView struct {
 	controlNativeBase
-	hMenuContext win.HMENU // if set, will be shown with right-click
+	contextMenu *Menu // if set, will be shown with right-click
 }
 
 // Adds a new column; returns the newly inserted column.
@@ -132,12 +132,9 @@ func (me *ListView) CreateSortedReport(parent Window, x, y int32,
 		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS|co.LVS_SORTASCENDING)
 }
 
-// Retrieves the column at the given index.
+// Returns the column at the given index.
+// Does not perform bound checking.
 func (me *ListView) Column(index uint32) *ListViewColumn {
-	numCols := me.ColumnCount()
-	if index >= numCols {
-		panic("Trying to retrieve column with index out of bounds.")
-	}
 	return &ListViewColumn{
 		owner: me,
 		index: index,
@@ -215,12 +212,9 @@ func (me *ListView) ImageList(typeImgList co.LVSIL) win.HIMAGELIST {
 	)
 }
 
-// Retrieves the item at the given index.
+// Returns the item at the given index.
+// Does not perform bound checking.
 func (me *ListView) Item(index uint32) *ListViewItem {
-	numItems := me.ItemCount()
-	if index >= numItems {
-		panic("Trying to retrieve item with index out of bounds.")
-	}
 	return &ListViewItem{
 		owner: me,
 		index: index,
@@ -285,8 +279,8 @@ func (me *ListView) SelectedItemCount() uint32 {
 }
 
 // Defines a menu to be shown as the context menu for the list view.
-func (me *ListView) SetContextMenu(hMenu win.HMENU) *ListView {
-	me.hMenuContext = hMenu
+func (me *ListView) SetContextMenu(popupMenu *Menu) *ListView {
+	me.contextMenu = popupMenu
 	return me
 }
 
@@ -400,7 +394,7 @@ func (me *ListView) installSubclass() {
 // Shows the popup menu anchored at cursor pos.
 // This function will block until the menu disappears.
 func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
-	if me.hMenuContext == 0 {
+	if me.contextMenu.Hmenu() == 0 {
 		return
 	}
 
@@ -437,10 +431,7 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		}
 	}
 
-	fakeMenuStrip := menuStrip{
-		hMenu: me.hMenuContext, // note: no janitor member
-	}
-	fakeMenuStrip.ShowAtPoint(menuPos, me.Hwnd().GetParent(), me.Hwnd())
+	me.contextMenu.ShowAtPoint(menuPos, me.Hwnd().GetParent(), me.Hwnd())
 }
 
 // Simple wrapper.

@@ -15,26 +15,29 @@ import (
 
 type HMENU HANDLE
 
-func (hMenu HMENU) AppendMenu(uFlags co.MF, uIDNewItem uintptr,
-	lpNewItem uintptr) {
+func (hMenu HMENU) AppendMenu(
+	uFlags co.MF, idOrPos uintptr, bmpOrDataOrStr unsafe.Pointer) {
 
 	ret, _, lerr := syscall.Syscall6(proc.AppendMenu.Addr(), 4,
-		uintptr(hMenu), uintptr(uFlags), uIDNewItem, uintptr(lpNewItem),
+		uintptr(hMenu), uintptr(uFlags), idOrPos, uintptr(bmpOrDataOrStr),
 		0, 0)
 	if ret == 0 {
 		panic(co.ERROR(lerr).Format("AppendMenu failed."))
 	}
 }
 
-func (hMenu HMENU) CheckMenuItem(uIDCheckItem int32, uCheck co.MF) co.MF {
+func (hMenu HMENU) CheckMenuItem(idOrPos uintptr, uCheck co.MF) co.MF {
 	ret, _, _ := syscall.Syscall(proc.CheckMenuItem.Addr(), 3,
-		uintptr(hMenu), uintptr(uIDCheckItem), uintptr(uCheck))
+		uintptr(hMenu), idOrPos, uintptr(uCheck))
 	return co.MF(ret)
 }
 
-func (hMenu HMENU) CheckMenuRadioItem(first, last, check int32, flags co.MF) {
+// Radio group goes from first to last, check is the selected one.
+func (hMenu HMENU) CheckMenuRadioItem(
+	firstIdOrPos, lastIdOrPos, checkedIdOrPos uintptr, flags co.MF) {
+
 	ret, _, lerr := syscall.Syscall6(proc.CheckMenuRadioItem.Addr(), 5,
-		uintptr(hMenu), uintptr(first), uintptr(last), uintptr(check),
+		uintptr(hMenu), firstIdOrPos, lastIdOrPos, checkedIdOrPos,
 		uintptr(flags), 0)
 	if ret == 0 {
 		panic(co.ERROR(lerr).Format("CheckMenuRadioItem failed."))
@@ -60,9 +63,9 @@ func CreatePopupMenu() HMENU {
 	return HMENU(ret)
 }
 
-func (hMenu HMENU) DeleteMenu(uPosition int32, uFlags co.MF) {
+func (hMenu HMENU) DeleteMenu(idOrPos uintptr, uFlags co.MF) {
 	ret, _, lerr := syscall.Syscall(proc.DeleteMenu.Addr(), 3,
-		uintptr(hMenu), uintptr(uPosition), uintptr(uFlags))
+		uintptr(hMenu), idOrPos, uintptr(uFlags))
 	if ret == 0 {
 		panic(co.ERROR(lerr).Format("DeleteMenu failed."))
 	}
@@ -76,9 +79,9 @@ func (hMenu HMENU) DestroyMenu() {
 	}
 }
 
-func (hMenu HMENU) EnableMenuItem(uIDEnableItem int32, uEnable co.MF) co.MF {
+func (hMenu HMENU) EnableMenuItem(idOrPos uintptr, uEnable co.MF) co.MF {
 	ret, _, _ := syscall.Syscall(proc.EnableMenuItem.Addr(), 3,
-		uintptr(hMenu), uintptr(uIDEnableItem), uintptr(uEnable))
+		uintptr(hMenu), idOrPos, uintptr(uEnable))
 	return co.MF(ret)
 }
 
@@ -101,68 +104,69 @@ func (hMenu HMENU) GetMenuItemCount() uint32 {
 	return uint32(ret)
 }
 
-func (hMenu HMENU) GetMenuItemID(index uint32) int32 {
+func (hMenu HMENU) GetMenuItemID(nPos uint32) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetMenuItemID.Addr(), 2,
-		uintptr(hMenu), uintptr(index), 0)
+		uintptr(hMenu), uintptr(nPos), 0)
 	return int32(ret)
 }
 
-func (hMenu HMENU) GetMenuItemInfo(item int32, fByPosition bool,
-	lpmii *MENUITEMINFO) {
+func (hMenu HMENU) GetMenuItemInfo(
+	idOrPos uintptr, fByPosition bool, lpmii *MENUITEMINFO) {
 
 	lpmii.CbSize = uint32(unsafe.Sizeof(*lpmii)) // safety
 
 	ret, _, lerr := syscall.Syscall6(proc.GetMenuItemInfo.Addr(), 4,
-		uintptr(hMenu), uintptr(item), boolToUintptr(fByPosition),
+		uintptr(hMenu), idOrPos, boolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmii)), 0, 0)
 	if ret == 0 {
 		panic(co.ERROR(lerr).Format("GetMenuItemInfo failed."))
 	}
 }
 
+// If nPos is not a submenu, returns zero.
 func (hMenu HMENU) GetSubMenu(nPos uint32) HMENU {
 	ret, _, _ := syscall.Syscall(proc.GetSubMenu.Addr(), 2,
 		uintptr(hMenu), uintptr(nPos), 0)
 	return HMENU(ret)
 }
 
-func (hMenu HMENU) InsertMenu(uPosition int32, uFlags co.MF,
-	uIDNewItem uintptr, lpNewItem uintptr) {
+func (hMenu HMENU) InsertMenu(beforeIdOrPos uintptr, uFlags co.MF,
+	idOrHmenu uintptr, bmpOrDataOrStr unsafe.Pointer) {
 
 	ret, _, lerr := syscall.Syscall6(proc.InsertMenu.Addr(), uintptr(5),
-		uintptr(hMenu), uintptr(uPosition), uintptr(uFlags),
-		uIDNewItem, lpNewItem, 0)
+		uintptr(hMenu), beforeIdOrPos, uintptr(uFlags),
+		idOrHmenu, uintptr(bmpOrDataOrStr), 0)
 	if ret == 0 {
 		panic(co.ERROR(lerr).Format("InsertMenu failed."))
 	}
 }
 
-func (hMenu HMENU) InsertMenuItem(item int32, fByPosition bool,
-	lpmi *MENUITEMINFO) {
+func (hMenu HMENU) InsertMenuItem(
+	beforeIdOrPos uintptr, fByPosition bool, lpmi *MENUITEMINFO) {
 
 	ret, _, lerr := syscall.Syscall6(proc.InsertMenuItem.Addr(), 4,
-		uintptr(hMenu), uintptr(item), boolToUintptr(fByPosition),
+		uintptr(hMenu), beforeIdOrPos, boolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmi)), 0, 0)
 	if ret == 0 {
 		panic(co.ERROR(lerr).Format("InsertMenuItem failed."))
 	}
 }
 
-func (hMenu HMENU) SetMenuDefaultItem(uItem int32, fByPos bool) {
+func (hMenu HMENU) SetMenuDefaultItem(idOrPos uintptr, fByPos bool) {
 	ret, _, lerr := syscall.Syscall(proc.SetMenuDefaultItem.Addr(), 3,
-		uintptr(hMenu), uintptr(uItem), boolToUintptr(fByPos))
+		uintptr(hMenu), idOrPos, boolToUintptr(fByPos))
 	if ret == 0 {
 		panic(co.ERROR(lerr).Format("SetMenuDefaultItem failed."))
 	}
 }
 
-func (hMenu HMENU) SetMenuItemInfo(item int32, fByPosition bool,
-	lpmii *MENUITEMINFO) {
+func (hMenu HMENU) SetMenuItemInfo(
+	idOrPos uintptr, fByPosition bool, lpmii *MENUITEMINFO) {
 
 	lpmii.CbSize = uint32(unsafe.Sizeof(*lpmii)) // safety
 
 	ret, _, lerr := syscall.Syscall6(proc.SetMenuItemInfo.Addr(), 4,
-		uintptr(hMenu), uintptr(item), boolToUintptr(fByPosition),
+		uintptr(hMenu), idOrPos, boolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmii)), 0, 0)
 	if ret == 0 {
 		panic(co.ERROR(lerr).Format("SetMenuItemInfo failed."))
@@ -170,7 +174,8 @@ func (hMenu HMENU) SetMenuItemInfo(item int32, fByPosition bool,
 }
 
 // This function will block until the menu disappears.
-func (hMenu HMENU) TrackPopupMenu(uFlags co.TPM, x, y int32, hWnd HWND) int32 {
+// If TPM_RETURNCMD is passed, returns the selected command ID.
+func (hMenu HMENU) TrackPopupMenu(uFlags co.TPM, x, y int32, hWnd HWND) int {
 	ret, _, lerr := syscall.Syscall9(proc.TrackPopupMenu.Addr(), 7,
 		uintptr(hMenu), uintptr(uFlags), uintptr(x), uintptr(y), 0, uintptr(hWnd),
 		0, 0, 0)
@@ -179,7 +184,7 @@ func (hMenu HMENU) TrackPopupMenu(uFlags co.TPM, x, y int32, hWnd HWND) int32 {
 		if ret == 0 && lerr != 0 {
 			panic(co.ERROR(lerr).Format("TrackPopupMenu failed."))
 		} else {
-			return int32(ret)
+			return int(ret)
 		}
 	} else {
 		if ret == 0 {

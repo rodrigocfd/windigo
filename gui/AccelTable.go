@@ -19,8 +19,8 @@ type AccelTable struct {
 
 // Adds a new accelerator, with a specific command ID.
 // If passing a character code, use uppercase.
-func (me *AccelTable) Add(textId string,
-	vKey co.VK, flags co.ACCELF, cmdId int32) *AccelTable {
+func (me *AccelTable) Add(
+	textId string, vKey co.VK, flags co.ACCELF, cmdId int32) *AccelTable {
 
 	me.accels = append(me.accels, win.ACCEL{
 		FVirt: flags | co.ACCELF_VIRTKEY,
