@@ -43,6 +43,7 @@ var (
 	GetClientRect                 = dllUser32.NewProc("GetClientRect")
 	GetCursorPos                  = dllUser32.NewProc("GetCursorPos")
 	GetDC                         = dllUser32.NewProc("GetDC")
+	GetDlgCtrlID                  = dllUser32.NewProc("GetDlgCtrlID")
 	GetDlgItem                    = dllUser32.NewProc("GetDlgItem")
 	GetDpiForSystem               = dllUser32.NewProc("GetDpiForSystem")
 	GetDpiForWindow               = dllUser32.NewProc("GetDpiForWindow")

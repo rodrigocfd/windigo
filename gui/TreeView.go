@@ -24,7 +24,8 @@ func (me *TreeView) AddRoot(text string) *TreeViewItem {
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
-func (me *TreeView) Create(parent Window, x, y int32, width, height uint32,
+func (me *TreeView) Create(
+	parent Window, ctrlId, x, y int32, width, height uint32,
 	exStyles co.WS_EX, styles co.WS,
 	tvExStyles co.TVS_EX, tvStyles co.TVS) *TreeView {
 
@@ -32,7 +33,7 @@ func (me *TreeView) Create(parent Window, x, y int32, width, height uint32,
 
 	me.controlNativeBase.create(exStyles,
 		"SysTreeView32", "", styles|co.WS(tvStyles),
-		x, y, width, height, parent)
+		x, y, width, height, parent, ctrlId)
 
 	if tvExStyles != co.TVS_EX(0) {
 		me.SetExtendedStyle(tvExStyles, tvExStyles)
@@ -42,10 +43,10 @@ func (me *TreeView) Create(parent Window, x, y int32, width, height uint32,
 
 // Calls CreateWindowEx(). Tree view control will have lines and buttons.
 // Position and size will be adjusted to the current system DPI.
-func (me *TreeView) CreateSimple(parent Window, x, y int32,
-	width, height uint32) *TreeView {
+func (me *TreeView) CreateSimple(
+	parent Window, ctrlId, x, y int32, width, height uint32) *TreeView {
 
-	return me.Create(parent, x, y, width, height,
+	return me.Create(parent, ctrlId, x, y, width, height,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.TVS_EX(0),

@@ -91,7 +91,8 @@ func (me *ListView) AddItems(texts []string) *ListView {
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
-func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
+func (me *ListView) Create(
+	parent Window, ctrlId, x, y int32, width, height uint32,
 	exStyles co.WS_EX, styles co.WS,
 	lvExStyles co.LVS_EX, lvStyles co.LVS) *ListView {
 
@@ -100,7 +101,7 @@ func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 	x, y, width, height = globalDpi.multiply(x, y, width, height)
 	me.controlNativeBase.create(exStyles,
 		"SysListView32", "", styles|co.WS(lvStyles),
-		x, y, width, height, parent)
+		x, y, width, height, parent, ctrlId)
 
 	if lvExStyles != co.LVS_EX(0) {
 		me.SetExtendedStyle(lvExStyles, lvExStyles)
@@ -110,10 +111,10 @@ func (me *ListView) Create(parent Window, x, y int32, width, height uint32,
 
 // Calls CreateWindowEx(). List view control will have LVS_REPORT style.
 // Position and size will be adjusted to the current system DPI.
-func (me *ListView) CreateReport(parent Window, x, y int32,
-	width, height uint32) *ListView {
+func (me *ListView) CreateReport(
+	parent Window, ctrlId, x, y int32, width, height uint32) *ListView {
 
-	return me.Create(parent, x, y, width, height,
+	return me.Create(parent, ctrlId, x, y, width, height,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.LVS_EX_FULLROWSELECT,
@@ -122,10 +123,10 @@ func (me *ListView) CreateReport(parent Window, x, y int32,
 
 // Calls CreateWindowEx(). List view control will have LVS_REPORT and
 // LVS_SORTASCENDING styles. Position and size will be adjusted to the current system DPI.
-func (me *ListView) CreateSortedReport(parent Window, x, y int32,
-	width, height uint32) *ListView {
+func (me *ListView) CreateSortedReport(
+	parent Window, ctrlId, x, y int32, width, height uint32) *ListView {
 
-	return me.Create(parent, x, y, width, height,
+	return me.Create(parent, ctrlId, x, y, width, height,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.LVS_EX_FULLROWSELECT,

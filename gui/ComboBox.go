@@ -42,23 +42,24 @@ func (me *ComboBox) Count() uint32 {
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
-func (me *ComboBox) Create(parent Window, x, y int32, width uint32,
+func (me *ComboBox) Create(
+	parent Window, ctrlId, x, y int32, width uint32,
 	exStyles co.WS_EX, styles co.WS, cbStyles co.CBS) *ComboBox {
 
 	x, y, width, _ = globalDpi.multiply(x, y, width, 0)
 
 	me.controlNativeBase.create(exStyles, "COMBOBOX", "",
-		styles|co.WS(cbStyles), x, y, width, 0, parent)
+		styles|co.WS(cbStyles), x, y, width, 0, parent, ctrlId)
 	globalUiFont.SetOnControl(me)
 	return me
 }
 
 // Calls CreateWindowEx(). Combo box will control will have CBS_DROPDOWNLIST
 // style. Position and size will be adjusted to the current system DPI.
-func (me *ComboBox) CreateList(parent Window,
-	x, y int32, width uint32) *ComboBox {
+func (me *ComboBox) CreateList(
+	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
 
-	return me.Create(parent, x, y, width, co.WS_EX(0),
+	return me.Create(parent, ctrlId, x, y, width, co.WS_EX(0),
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.CBS_DROPDOWNLIST)
 }
@@ -66,10 +67,10 @@ func (me *ComboBox) CreateList(parent Window,
 // Calls CreateWindowEx(). Combo box will control will have CBS_DROPDOWNLIST and
 // CBS_SORT styles. Position and size will be adjusted to the current system
 // DPI.
-func (me *ComboBox) CreateSortedList(parent Window,
-	x, y int32, width uint32) *ComboBox {
+func (me *ComboBox) CreateSortedList(
+	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
 
-	return me.Create(parent, x, y, width, co.WS_EX(0),
+	return me.Create(parent, ctrlId, x, y, width, co.WS_EX(0),
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.CBS_DROPDOWNLIST|co.CBS_SORT)
 }

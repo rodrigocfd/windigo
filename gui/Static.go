@@ -18,26 +18,29 @@ type Static struct {
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
-func (me *Static) Create(parent Window, x, y int32, width, height uint32,
+func (me *Static) Create(
+	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, staStyles co.SS) *Static {
 
 	x, y, width, height = globalDpi.multiply(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "STATIC", text,
-		styles|co.WS(staStyles), x, y, width, height, parent)
+		styles|co.WS(staStyles), x, y, width, height, parent, ctrlId)
 	globalUiFont.SetOnControl(me)
 	return me
 }
 
 // Calls CreateWindowEx(). Position will be adjusted to the current system DPI.
 // The size will be calculated to fit the text exactly.
-func (me *Static) CreateLText(parent Window, x, y int32, text string) *Static {
+func (me *Static) CreateLText(
+	parent Window, ctrlId, x, y int32, text string) *Static {
+
 	x, y, _, _ = globalDpi.multiply(x, y, 0, 0)
 	cx, cy := calcTextBoundBox(parent.Hwnd(), text, true)
 
 	me.controlNativeBase.create(co.WS_EX(0), "STATIC", text,
 		co.WS_CHILD|co.WS_VISIBLE|co.WS(co.SS_LEFT),
-		x, y, cx, cy, parent)
+		x, y, cx, cy, parent, ctrlId)
 	globalUiFont.SetOnControl(me)
 	return me
 }

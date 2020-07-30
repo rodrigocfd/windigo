@@ -23,7 +23,6 @@ var (
 // Base to all native child control types, like Button and Edit.
 // Allows control subclassing.
 type controlNativeBase struct {
-	controlId
 	hwnd       win.HWND
 	msgs       windowDepotMsg
 	subclassId uint32
@@ -32,6 +31,11 @@ type controlNativeBase struct {
 // Returns the underlying HWND handle of this native control.
 func (me *controlNativeBase) Hwnd() win.HWND {
 	return me.hwnd
+}
+
+// Retrieves the command ID for this control.
+func (me *controlNativeBase) Id() int32 {
+	return me.hwnd.GetDlgCtrlID()
 }
 
 // Exposes all the control subclass methods that can be handled.
@@ -43,15 +47,16 @@ func (me *controlNativeBase) OnSubclassMsg() *windowDepotMsg {
 	return &me.msgs
 }
 
-func (me *controlNativeBase) create(exStyle co.WS_EX, className, title string,
-	style co.WS, x, y int32, width, height uint32, parent Window) {
+func (me *controlNativeBase) create(
+	exStyle co.WS_EX, className, title string, style co.WS,
+	x, y int32, width, height uint32, parent Window, ctrlId int32) {
 
 	if me.hwnd != 0 {
 		panic(fmt.Sprintf("Trying to create %s twice.", className))
 	}
 
 	me.hwnd = win.CreateWindowEx(exStyle, className, title, style,
-		x, y, width, height, parent.Hwnd(), win.HMENU(me.controlId.Id()),
+		x, y, width, height, parent.Hwnd(), win.HMENU(ctrlId),
 		parent.Hwnd().GetInstance(), nil)
 
 	if len(me.msgs.mapMsgs) > 0 || // at last 1 subclass message was added?

@@ -18,23 +18,24 @@ type Button struct {
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
-func (me *Button) Create(parent Window, x, y int32, width, height uint32,
+func (me *Button) Create(
+	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *Button {
 
 	x, y, width, height = globalDpi.multiply(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "BUTTON", text,
-		styles|co.WS(btnStyles), x, y, width, height, parent)
+		styles|co.WS(btnStyles), x, y, width, height, parent, ctrlId)
 	globalUiFont.SetOnControl(me)
 	return me
 }
 
 // Calls CreateWindowEx(). Position and width will be adjusted to the current
 // system DPI. Height will be standard.
-func (me *Button) CreateSimple(parent Window, x, y int32,
-	width uint32, text string) *Button {
+func (me *Button) CreateSimple(
+	parent Window, ctrlId, x, y int32, width uint32, text string) *Button {
 
-	return me.Create(parent, x, y, width, 23, text,
+	return me.Create(parent, ctrlId, x, y, width, 23, text,
 		co.WS_EX(0), co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.BS(0))
 }
@@ -42,10 +43,10 @@ func (me *Button) CreateSimple(parent Window, x, y int32,
 // Calls CreateWindowEx(). Creates a button with BS_DEFPUSHBUTTON style.
 // Position and width will be adjusted to the current system DPI. Height will be
 // standard.
-func (me *Button) CreateSimpleDef(parent Window, x, y int32,
-	width uint32, text string) *Button {
+func (me *Button) CreateSimpleDef(
+	parent Window, ctrlId, x, y int32, width uint32, text string) *Button {
 
-	return me.Create(parent, x, y, width, 23, text,
+	return me.Create(parent, ctrlId, x, y, width, 23, text,
 		co.WS_EX(0), co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.BS_DEFPUSHBUTTON)
 }

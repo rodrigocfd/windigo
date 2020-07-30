@@ -20,24 +20,25 @@ type Edit struct {
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
-func (me *Edit) Create(parent Window, x, y int32, width, height uint32,
-	initialText string, exStyles co.WS_EX, styles co.WS,
-	editStyles co.ES) *Edit {
+func (me *Edit) Create(
+	parent Window, ctrlId, x, y int32, width, height uint32, initialText string,
+	exStyles co.WS_EX, styles co.WS, editStyles co.ES) *Edit {
 
 	x, y, width, height = globalDpi.multiply(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "EDIT", initialText,
-		styles|co.WS(editStyles), x, y, width, height, parent)
+		styles|co.WS(editStyles), x, y, width, height, parent, ctrlId)
 	globalUiFont.SetOnControl(me)
 	return me
 }
 
 // Calls CreateWindowEx(). Edit control will have ES_MULTILINE and ES_WANTRETURN
 // styles. Position and size will be adjusted to the current system DPI.
-func (me *Edit) CreateMultiLine(parent Window, x, y int32,
-	width, height uint32, initialText string) *Edit {
+func (me *Edit) CreateMultiLine(
+	parent Window, ctrlId, x, y int32, width, height uint32,
+	initialText string) *Edit {
 
-	return me.Create(parent, x, y, width, height, initialText,
+	return me.Create(parent, ctrlId, x, y, width, height, initialText,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.ES_MULTILINE|co.ES_WANTRETURN)
@@ -46,10 +47,10 @@ func (me *Edit) CreateMultiLine(parent Window, x, y int32,
 // Calls CreateWindowEx(). Edit control will have ES_PASSWORD style. Position
 // and width will be adjusted to the current system DPI. Height will be
 // standard.
-func (me *Edit) CreatePassword(parent Window, x, y int32, width uint32,
-	initialText string) *Edit {
+func (me *Edit) CreatePassword(
+	parent Window, ctrlId, x, y int32, width uint32, initialText string) *Edit {
 
-	return me.Create(parent, x, y, width, 21, initialText,
+	return me.Create(parent, ctrlId, x, y, width, 21, initialText,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.ES_AUTOHSCROLL|co.ES_PASSWORD)
@@ -57,10 +58,10 @@ func (me *Edit) CreatePassword(parent Window, x, y int32, width uint32,
 
 // Calls CreateWindowEx(). Position and width will be adjusted to the current
 // system DPI. Height will be standard.
-func (me *Edit) CreateSimple(parent Window, x, y int32, width uint32,
-	initialText string) *Edit {
+func (me *Edit) CreateSimple(
+	parent Window, ctrlId, x, y int32, width uint32, initialText string) *Edit {
 
-	return me.Create(parent, x, y, width, 21, initialText,
+	return me.Create(parent, ctrlId, x, y, width, 21, initialText,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.ES_AUTOHSCROLL)

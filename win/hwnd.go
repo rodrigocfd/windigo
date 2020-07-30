@@ -140,6 +140,15 @@ func (hWnd HWND) GetDC() HDC {
 	return HDC(ret)
 }
 
+func (hWnd HWND) GetDlgCtrlID() int32 {
+	ret, _, lerr := syscall.Syscall(proc.GetDlgCtrlID.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	if ret == 0 {
+		panic(co.ERROR(lerr).Format("GetDlgCtrlID failed."))
+	}
+	return int32(ret)
+}
+
 func (hWnd HWND) GetDlgItem(nIDDlgItem int32) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetDlgItem.Addr(), 2,
 		uintptr(hWnd), uintptr(nIDDlgItem), 0)

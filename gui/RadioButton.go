@@ -19,13 +19,14 @@ type RadioButton struct {
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
-func (me *RadioButton) Create(parent Window, x, y int32, width, height uint32,
+func (me *RadioButton) Create(
+	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *RadioButton {
 
 	x, y, width, height = globalDpi.multiply(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "BUTTON", text, // radio button is, in fact, a button
-		styles|co.WS(btnStyles), x, y, width, height, parent)
+		styles|co.WS(btnStyles), x, y, width, height, parent, ctrlId)
 	globalUiFont.SetOnControl(me)
 	return me
 }
@@ -33,20 +34,21 @@ func (me *RadioButton) Create(parent Window, x, y int32, width, height uint32,
 // Calls CreateWindowEx(). Creates the first radio button of a group, with
 // WS_GROUP and BS_AUTORADIOBUTTON styles. Position will be adjusted to the
 // current system DPI. The size will be calculated to fit the text exactly.
-func (me *RadioButton) CreateFirst(parent Window, x, y int32,
-	text string) *RadioButton {
+func (me *RadioButton) CreateFirst(
+	parent Window, ctrlId, x, y int32, text string) *RadioButton {
 
-	return me.createAutoSize(parent, x, y, text,
+	return me.createAutoSize(parent, ctrlId, x, y, text,
 		co.WS_GROUP|co.WS_TABSTOP|co.WS(co.BS_AUTORADIOBUTTON))
 }
 
 // Calls CreateWindowEx(). Creates a subsequent radio button of a group, with
 // BS_AUTORADIOBUTTON style. Position will be adjusted to the current system
 // DPI. The size will be calculated to fit the text exactly.
-func (me *RadioButton) CreateSubsequent(parent Window, x, y int32,
-	text string) *RadioButton {
+func (me *RadioButton) CreateSubsequent(
+	parent Window, ctrlId, x, y int32, text string) *RadioButton {
 
-	return me.createAutoSize(parent, x, y, text, co.WS(co.BS_AUTORADIOBUTTON))
+	return me.createAutoSize(parent, ctrlId, x, y, text,
+		co.WS(co.BS_AUTORADIOBUTTON))
 }
 
 func (me *RadioButton) IsChecked() bool {
@@ -92,7 +94,8 @@ func (me *RadioButton) calcIdealSize(hReferenceDc win.HWND,
 	return cx, cy
 }
 
-func (me *RadioButton) createAutoSize(parent Window, x, y int32,
+func (me *RadioButton) createAutoSize(
+	parent Window, ctrlId, x, y int32,
 	text string, otherStyles co.WS) *RadioButton {
 
 	x, y, _, _ = globalDpi.multiply(x, y, 0, 0)
@@ -100,7 +103,7 @@ func (me *RadioButton) createAutoSize(parent Window, x, y int32,
 
 	me.controlNativeBase.create(co.WS_EX(0), "BUTTON", text,
 		co.WS_CHILD|co.WS_VISIBLE|otherStyles,
-		x, y, cx, cy, parent)
+		x, y, cx, cy, parent, ctrlId)
 	globalUiFont.SetOnControl(me)
 	return me
 }

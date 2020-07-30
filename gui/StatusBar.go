@@ -87,7 +87,7 @@ func (me *StatusBar) Adjust(p WmSize) {
 }
 
 // Calls CreateWindowEx(). Control will be docked at bottom of parent window.
-func (me *StatusBar) Create(parent Window) *StatusBar {
+func (me *StatusBar) Create(parent Window, ctrlId int32) *StatusBar {
 	style := co.WS_CHILD | co.WS_VISIBLE
 
 	parentStyle := parent.Hwnd().GetStyle()
@@ -98,7 +98,7 @@ func (me *StatusBar) Create(parent Window) *StatusBar {
 	}
 
 	me.controlNativeBase.create(co.WS_EX(0), "msctls_statusbar32", "", style,
-		0, 0, 0, 0, parent)
+		0, 0, 0, 0, parent, ctrlId)
 	return me
 }
 

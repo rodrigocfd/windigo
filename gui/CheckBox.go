@@ -19,13 +19,14 @@ type CheckBox struct {
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them. Position and size will be adjusted to
 // the current system DPI.
-func (me *CheckBox) Create(parent Window, x, y int32, width, height uint32,
+func (me *CheckBox) Create(
+	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *CheckBox {
 
 	x, y, width, height = globalDpi.multiply(x, y, width, height)
 
 	me.controlNativeBase.create(exStyles, "BUTTON", text, // check box is, in fact, a button
-		styles|co.WS(btnStyles), x, y, width, height, parent)
+		styles|co.WS(btnStyles), x, y, width, height, parent, ctrlId)
 	globalUiFont.SetOnControl(me)
 	return me
 }
@@ -33,19 +34,19 @@ func (me *CheckBox) Create(parent Window, x, y int32, width, height uint32,
 // Calls CreateWindowEx(). Creates a check box with BS_AUTO3STATE style.
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
-func (me *CheckBox) CreateThreeState(parent Window, x, y int32,
-	text string) *CheckBox {
+func (me *CheckBox) CreateThreeState(
+	parent Window, ctrlId, x, y int32, text string) *CheckBox {
 
-	return me.createAutoSize(parent, x, y, text, co.BS_AUTO3STATE)
+	return me.createAutoSize(parent, ctrlId, x, y, text, co.BS_AUTO3STATE)
 }
 
 // Calls CreateWindowEx(). Creates a check box with BS_AUTOCHECKBOX style.
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
-func (me *CheckBox) CreateTwoState(parent Window, x, y int32,
-	text string) *CheckBox {
+func (me *CheckBox) CreateTwoState(
+	parent Window, ctrlId, x, y int32, text string) *CheckBox {
 
-	return me.createAutoSize(parent, x, y, text, co.BS_AUTOCHECKBOX)
+	return me.createAutoSize(parent, ctrlId, x, y, text, co.BS_AUTOCHECKBOX)
 }
 
 func (me *CheckBox) IsChecked() bool {
@@ -101,15 +102,15 @@ func (me *CheckBox) calcIdealSize(hReferenceDc win.HWND,
 	return cx, cy
 }
 
-func (me *CheckBox) createAutoSize(parent Window, x, y int32,
-	text string, chbxStyles co.BS) *CheckBox {
+func (me *CheckBox) createAutoSize(
+	parent Window, ctrlId, x, y int32, text string, chbxStyles co.BS) *CheckBox {
 
 	x, y, _, _ = globalDpi.multiply(x, y, 0, 0)
 	cx, cy := me.calcIdealSize(parent.Hwnd(), text)
 
 	me.controlNativeBase.create(co.WS_EX(0), "BUTTON", text,
 		co.WS_CHILD|co.WS_TABSTOP|co.WS_GROUP|co.WS_VISIBLE|co.WS(chbxStyles),
-		x, y, cx, cy, parent)
+		x, y, cx, cy, parent, ctrlId)
 	globalUiFont.SetOnControl(me)
 	return me
 }

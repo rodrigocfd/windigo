@@ -16,8 +16,12 @@ import (
 // Allows message and notification handling.
 type WindowControl struct {
 	windowBase
-	controlId
 	setup windowControlSetup // Parameters that will be used to create the window.
+}
+
+// Retrieves the command ID for this control.
+func (me *WindowControl) Id() int32 {
+	return me.hwnd.GetDlgCtrlID()
 }
 
 // Exposes parameters that will be used to create the child window control.
@@ -30,7 +34,9 @@ func (me *WindowControl) Setup() *windowControlSetup {
 }
 
 // Creates the child window control.
-func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32) {
+func (me *WindowControl) Create(
+	parent Window, ctrlId, x, y int32, width, height uint32) {
+
 	me.setup.initOnce() // guard
 	hInst := parent.Hwnd().GetInstance()
 	me.windowBase.registerClass(me.setup.genWndClassEx(hInst))
@@ -41,7 +47,7 @@ func (me *WindowControl) Create(parent Window, x, y int32, width, height uint32)
 
 	me.windowBase.createWindow("WindowControl", me.setup.ExStyle,
 		me.setup.ClassName, "", me.setup.Style, x, y, width, height, parent,
-		win.HMENU(me.controlId.Id()), hInst)
+		win.HMENU(ctrlId), hInst)
 }
 
 func (me *WindowControl) defaultMessageHandling() {
