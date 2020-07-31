@@ -53,6 +53,21 @@ func StrToPtrBlankIsNil(s string) *uint16 {
 
 //------------------------------------------------------------------------------
 
+func EnumWindows(
+	lpEnumFunc func(hwnd HWND, lParam LPARAM) bool,
+	lParam LPARAM) {
+
+	ret, _, lerr := syscall.Syscall(proc.EnumWindows.Addr(), 2,
+		syscall.NewCallback(
+			func(hwnd HWND, lParam LPARAM) int32 {
+				return boolToInt32(lpEnumFunc(hwnd, lParam))
+			}),
+		uintptr(lParam), 0)
+	if ret == 0 {
+		panic(co.ERROR(lerr).Format("EnumWindow failed."))
+	}
+}
+
 func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
 }
@@ -102,6 +117,32 @@ func MulDiv(number, numerator, denominator int32) int32 {
 
 func PostQuitMessage(exitCode int32) {
 	syscall.Syscall(proc.PostQuitMessage.Addr(), 1, uintptr(exitCode), 0, 0)
+}
+
+func PostThreadMessage(
+	idThread uint32, Msg co.WM, wParam WPARAM, lParam LPARAM) {
+
+	ret, _, lerr := syscall.Syscall6(proc.PostThreadMessage.Addr(), 4,
+		uintptr(idThread), uintptr(Msg), uintptr(wParam), uintptr(lParam),
+		0, 0)
+	if ret == 0 {
+		panic(co.ERROR(lerr).Format("PostThreadMessage failed."))
+	}
+}
+
+func RegisterWindowMessage(lpString string) uint32 {
+	ret, _, lerr := syscall.Syscall(proc.RegisterWindowMessage.Addr(), 1,
+		uintptr(unsafe.Pointer(StrToPtr(lpString))), 0, 0)
+	if ret == 0 {
+		panic(co.ERROR(lerr).Format("RegisterWindowMessage failed."))
+	}
+	return uint32(ret)
+}
+
+func ReplyMessage(lResult uintptr) bool {
+	ret, _, _ := syscall.Syscall(proc.ReplyMessage.Addr(), 1,
+		lResult, 0, 0)
+	return ret != 0
 }
 
 // Available in Windows 10, version 1703.

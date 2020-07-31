@@ -102,16 +102,17 @@ func (hWnd HWND) EnableWindow(bEnable bool) bool {
 	return ret != 0 // the window was previously disabled?
 }
 
-func (hWnd HWND) EnumChildWindows() []HWND {
-	hChildren := make([]HWND, 0)
+func (hWnd HWND) EnumChildWindows(
+	lpEnumFunc func(hChild HWND, lParam LPARAM) bool,
+	lParam LPARAM) {
+
 	syscall.Syscall(proc.EnumChildWindows.Addr(), 3,
 		uintptr(hWnd),
 		syscall.NewCallback(
-			func(hChild HWND, lp LPARAM) uintptr {
-				hChildren = append(hChildren, hChild)
-				return boolToUintptr(true)
-			}), 0)
-	return hChildren
+			func(hChild HWND, lParam LPARAM) int32 {
+				return boolToInt32(lpEnumFunc(hChild, lParam))
+			}),
+		uintptr(lParam))
 }
 
 func (hWnd HWND) GetAncestor(gaFlags co.GA) HWND {
@@ -422,6 +423,15 @@ func (hWnd HWND) SetFocus() HWND {
 	return HWND(ret)
 }
 
+func (hWnd HWND) SetParent(hWndNewParent HWND) HWND {
+	ret, _, lerr := syscall.Syscall(proc.SetParent.Addr(), 2,
+		uintptr(hWnd), uintptr(hWndNewParent), 0)
+	if ret == 0 {
+		panic(co.ERROR(lerr).Format("SetParent failed."))
+	}
+	return HWND(ret)
+}
+
 func (hWnd HWND) SetStyle(style co.WS) {
 	hWnd.SetWindowLongPtr(co.GWLP_STYLE, uintptr(style))
 }
@@ -435,12 +445,6 @@ func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
 		panic(lerr2.Format("SetWindowLongPtr failed."))
 	}
 	return ret
-}
-
-func (hWnd HWND) ShowWindow(nCmdShow co.SW) bool {
-	ret, _, _ := syscall.Syscall(proc.ShowWindow.Addr(), 1,
-		uintptr(hWnd), uintptr(nCmdShow), 0)
-	return ret != 0
 }
 
 // You can pass a HWND handle or SWP_HWND constants in hwndInsertAfter argument.
@@ -473,6 +477,12 @@ func (hWnd HWND) SetWindowText(lpString string) {
 	syscall.Syscall(proc.SetWindowText.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(StrToPtr(lpString))),
 		0)
+}
+
+func (hWnd HWND) ShowWindow(nCmdShow co.SW) bool {
+	ret, _, _ := syscall.Syscall(proc.ShowWindow.Addr(), 1,
+		uintptr(hWnd), uintptr(nCmdShow), 0)
+	return ret != 0
 }
 
 func (hWnd HWND) TranslateAccelerator(hAccel HACCEL, msg *MSG) bool {

@@ -17,11 +17,19 @@ func hiByte(value uint16) uint8  { return uint8(value >> 8 & 0xff) }
 func loByte(value uint16) uint8  { return uint8(value) }
 
 // Simple conversion for syscalls.
+func boolToInt32(b bool) int32 {
+	if b {
+		return 1
+	}
+	return 0
+}
+
+// Simple conversion for syscalls.
 func boolToUintptr(b bool) uintptr {
 	if b {
-		return uintptr(1)
+		return 1
 	}
-	return uintptr(0)
+	return 0
 }
 
 // Calls the specific system call to release the handle, returning the error

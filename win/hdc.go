@@ -25,16 +25,21 @@ func (hdc HDC) CreateCompatibleDC() HDC {
 	return HDC(ret)
 }
 
-func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) []HMONITOR {
-	hMons := []HMONITOR{}
-	syscall.Syscall6(proc.EnumDisplayMonitors.Addr(), 4,
-		uintptr(hdc), uintptr(unsafe.Pointer(rcClip)),
+func (hdc HDC) EnumDisplayMonitors(
+	lprcClip *RECT,
+	lpfnEnum func(hMon HMONITOR, hdcMon HDC, rcMon uintptr, lp LPARAM) bool,
+	dwData LPARAM) {
+
+	ret, _, _ := syscall.Syscall6(proc.EnumDisplayMonitors.Addr(), 4,
+		uintptr(hdc), uintptr(unsafe.Pointer(lprcClip)),
 		syscall.NewCallback(
-			func(hMon HMONITOR, hdcMon HDC, rcMon uintptr, lp LPARAM) uintptr {
-				hMons = append(hMons, hMon)
-				return uintptr(1)
-			}), 0, 0, 0)
-	return hMons
+			func(hMon HMONITOR, hdcMon HDC, rcMon uintptr, lp LPARAM) int32 {
+				return boolToInt32(lpfnEnum(hMon, hdcMon, rcMon, lp))
+			}),
+		0, 0, 0)
+	if ret == 0 {
+		panic("EnumDisplayMonitors failed.")
+	}
 }
 
 func (hdc HDC) DeleteDC() {
