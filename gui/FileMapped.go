@@ -14,10 +14,11 @@ import (
 
 // Manages a memory-mapped file resource.
 type FileMapped struct {
-	objFile File
-	hMap    win.HFILEMAP
-	pMem    win.HFILEMAP_PTR
-	sz      uint64
+	objFile  File
+	hMap     win.HFILEMAP
+	pMem     win.HFILEMAP_PTR
+	sz       uint64
+	readOnly bool // necessary for SetSize()
 }
 
 func (me *FileMapped) Close() {
@@ -68,22 +69,25 @@ func (me *FileMapped) OpenExistingForReadWrite(path string) *FileMapped {
 	return me.rawOpen(path, false)
 }
 
+// Truncates or expands the file, according to the new size.
+// Zero will empty the file.
+// File is unmapped, then remapped back into memory.
+func (me *FileMapped) SetSize(numBytes uint64) *FileMapped {
+	me.pMem.UnmapViewOfFile()
+	me.hMap.CloseHandle()
+	me.objFile.SetSize(numBytes)
+	return me.mapInMemory()
+}
+
 // Retrieves the file size. This value is cached.
 func (me *FileMapped) Size() uint64 {
 	return me.sz
 }
 
-func (me *FileMapped) rawOpen(path string, readOnly bool) *FileMapped {
-	me.Close()
-	if readOnly {
-		me.objFile.OpenExistingForRead(path)
-	} else {
-		me.objFile.OpenExistingForReadWrite(path)
-	}
-
+func (me *FileMapped) mapInMemory() *FileMapped {
 	// Mapping into memory.
 	var pageFlags co.PAGE
-	if readOnly {
+	if me.readOnly {
 		pageFlags = co.PAGE_READONLY
 	} else {
 		pageFlags = co.PAGE_READWRITE
@@ -93,7 +97,7 @@ func (me *FileMapped) rawOpen(path string, readOnly bool) *FileMapped {
 
 	// Get pointer to data block.
 	var mapFlags co.FILE_MAP
-	if readOnly {
+	if me.readOnly {
 		mapFlags = co.FILE_MAP_READ
 	} else {
 		mapFlags = co.FILE_MAP_WRITE
@@ -104,4 +108,15 @@ func (me *FileMapped) rawOpen(path string, readOnly bool) *FileMapped {
 	me.sz = me.objFile.Size()
 
 	return me
+}
+
+func (me *FileMapped) rawOpen(path string, readOnly bool) *FileMapped {
+	me.Close()
+	if readOnly {
+		me.objFile.OpenExistingForRead(path)
+	} else {
+		me.objFile.OpenExistingForReadWrite(path)
+	}
+	me.readOnly = readOnly
+	return me.mapInMemory()
 }
