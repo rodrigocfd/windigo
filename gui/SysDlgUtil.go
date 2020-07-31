@@ -127,16 +127,18 @@ func (sysDlgUtilT) FileSave(owner Window, defaultName, defaultExt string,
 }
 
 func filterToUtf16(filtersWithPipe []string) []uint16 {
-	filters16 := make([][]uint16, 0, len(filtersWithPipe)) // each filter as []uint16 with terminating null
+	// Each filter as []uint16 with terminating null.
+	filters16 := make([][]uint16, 0, len(filtersWithPipe))
 	charCount := 0
 	for _, filter := range filtersWithPipe {
 		filters16 = append(filters16, win.StrToSlice(filter))
 		charCount += len(filter) + 1 // also count terminating null
 	}
 
-	finalBuf := make([]uint16, 0, charCount+1) // double terminating null
+	// Concat all filters into one big []uint16, null-separated, double-null-terminated.
+	finalBuf := make([]uint16, 0, charCount+1)
 	for _, filter16 := range filters16 {
-		finalBuf = append(finalBuf, filter16...) // concat all filters into one big slice
+		finalBuf = append(finalBuf, filter16...)
 	}
 	finalBuf = append(finalBuf, 0) // double terminating null
 
@@ -146,4 +148,66 @@ func filterToUtf16(filtersWithPipe []string) []uint16 {
 		}
 	}
 	return finalBuf
+}
+
+var (
+	globalMsgBoxHook   = win.HHOOK(0)
+	globalMsgBoxParent = win.HWND(0)
+)
+
+// Ordinary MessageBox, but centered at parent.
+func (sysDlgUtilT) MsgBox(
+	parent Window, message, caption string, flags co.MB) co.MBID {
+
+	globalMsgBoxParent = parent.Hwnd()
+
+	globalMsgBoxHook = win.SetWindowsHookEx(co.WH_CBT,
+		func(code int, wp win.WPARAM, lp win.LPARAM) uintptr {
+			// http://www.codeguru.com/cpp/w-p/win32/messagebox/print.php/c4541
+			if co.HCBT(code) == co.HCBT_ACTIVATE {
+				hMsgBox := win.HWND(wp)
+
+				if hMsgBox != 0 {
+					rcMsgBox := hMsgBox.GetWindowRect()
+					rcParent := globalMsgBoxParent.GetWindowRect()
+
+					rcScreen := win.RECT{}
+					win.SystemParametersInfo(
+						co.SPI_GETWORKAREA, 0, unsafe.Pointer(&rcScreen), 0) // desktop size
+
+					// Adjusted x,y coordinates to message box window.
+					pos := win.POINT{
+						X: rcParent.Left +
+							(rcParent.Right-rcParent.Left)/2 -
+							(rcMsgBox.Right-rcMsgBox.Left)/2,
+						Y: rcParent.Top +
+							(rcParent.Bottom-rcParent.Top)/2 -
+							(rcMsgBox.Bottom-rcMsgBox.Top)/2,
+					}
+
+					// Screen out-of-bounds corrections.
+					if pos.X < 0 {
+						pos.X = 0
+					} else if pos.X+(rcMsgBox.Right-rcMsgBox.Left) > rcScreen.Right {
+						pos.X = rcScreen.Right - (rcMsgBox.Right - rcMsgBox.Left)
+					}
+					if pos.Y < 0 {
+						pos.Y = 0
+					} else if pos.Y+(rcMsgBox.Bottom-rcMsgBox.Top) > rcScreen.Bottom {
+						pos.Y = rcScreen.Bottom - (rcMsgBox.Bottom - rcMsgBox.Top)
+					}
+
+					hMsgBox.MoveWindow(pos.X, pos.Y,
+						uint32(rcMsgBox.Right-rcMsgBox.Left),
+						uint32(rcMsgBox.Bottom-rcMsgBox.Top),
+						false)
+				}
+				globalMsgBoxHook.UnhookWindowsHookEx() // release global hook
+				globalMsgBoxHook = 0
+			}
+			return win.HHOOK(0).CallNextHookEx(code, wp, lp)
+		},
+		win.HINSTANCE(0), win.GetCurrentThreadId())
+
+	return parent.Hwnd().MessageBox(message, caption, flags)
 }
