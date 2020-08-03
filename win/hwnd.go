@@ -280,6 +280,14 @@ func (hWnd HWND) GetWindowTextLength() uint32 {
 	return uint32(ret)
 }
 
+func (hWnd HWND) HideCaret() {
+	ret, _, lerr := syscall.Syscall(proc.HideCaret.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	if ret == 0 {
+		panic(co.ERROR(lerr).Format("HideCaret failed."))
+	}
+}
+
 func (hWnd HWND) InvalidateRect(lpRect *RECT, bErase bool) {
 	ret, _, _ := syscall.Syscall(proc.InvalidateRect.Addr(), 3,
 		uintptr(hWnd), uintptr(unsafe.Pointer(lpRect)), boolToUintptr(bErase))
@@ -477,6 +485,14 @@ func (hWnd HWND) SetWindowText(lpString string) {
 	syscall.Syscall(proc.SetWindowText.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(StrToPtr(lpString))),
 		0)
+}
+
+func (hWnd HWND) ShowCaret() {
+	ret, _, lerr := syscall.Syscall(proc.ShowCaret.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	if ret == 0 {
+		panic(co.ERROR(lerr).Format("ShowCaret failed."))
+	}
 }
 
 func (hWnd HWND) ShowWindow(nCmdShow co.SW) bool {

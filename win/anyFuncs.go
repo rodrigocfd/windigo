@@ -62,10 +62,24 @@ func CreateFontIndirect(lf *LOGFONT) HFONT {
 	return HFONT(ret)
 }
 
+func DestroyCaret() {
+	ret, _, lerr := syscall.Syscall(proc.DestroyCaret.Addr(), 0, 0, 0, 0)
+	if ret == 0 {
+		panic(co.ERROR(lerr).Format("DestroyCaret failed."))
+	}
+}
+
 func DispatchMessage(msg *MSG) uintptr {
 	ret, _, _ := syscall.Syscall(proc.DispatchMessage.Addr(), 1,
 		uintptr(unsafe.Pointer(msg)), 0, 0)
 	return ret
+}
+
+func EndMenu() {
+	ret, _, lerr := syscall.Syscall(proc.EndMenu.Addr(), 0, 0, 0, 0)
+	if ret == 0 {
+		panic(co.ERROR(lerr).Format("EndMenu failed."))
+	}
 }
 
 func EnumWindows(
