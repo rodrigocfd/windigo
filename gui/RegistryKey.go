@@ -47,7 +47,7 @@ func (me *RegistryKey) EnumValues() []RegistryValueInfo {
 
 	for {
 		errCode := me.hKey.RegEnumValue(index, nameBuf, &nameBufSz,
-			&dataType, 0, &dataBufSz)
+			&dataType, nil, &dataBufSz)
 
 		if errCode == co.ERROR_SUCCESS { // we got this one, but there's more
 			retVals = append(retVals, RegistryValueInfo{
@@ -83,7 +83,7 @@ func (me *RegistryKey) OpenForRead(keyPredef co.HKEY, subKey string) {
 func (me *RegistryKey) ValueInfo(valueName string) (co.REG, uint32) {
 	dataType := co.REG_NONE
 	dataBufSize := uint32(0)
-	me.hKey.RegQueryValueEx(valueName, &dataType, 0, &dataBufSize)
+	me.hKey.RegQueryValueEx(valueName, &dataType, nil, &dataBufSize)
 	return dataType, dataBufSize
 }
 
@@ -96,7 +96,7 @@ func (me *RegistryKey) ReadString(valueName string) string {
 
 	dataBuf := make([]uint16, dataBufSize/2) // returned size is in bytes, we've got wide chars
 	me.hKey.RegQueryValueEx(valueName, &dataType,
-		uintptr(unsafe.Pointer(&dataBuf[0])), &dataBufSize)
+		unsafe.Pointer(&dataBuf[0]), &dataBufSize)
 	return syscall.UTF16ToString(dataBuf)
 }
 
@@ -109,11 +109,11 @@ func (me *RegistryKey) ReadUint32(valueName string) uint32 {
 
 	dataBuf := uint32(0) // 4 bytes
 	me.hKey.RegQueryValueEx(valueName, &dataType,
-		uintptr(unsafe.Pointer(&dataBuf)), &dataBufSize)
+		unsafe.Pointer(&dataBuf), &dataBufSize)
 	return dataBuf
 }
 
 // Checks if a value exists within the key.
 func (me *RegistryKey) ValueExists(valueName string) bool {
-	return me.hKey.RegQueryValueEx(valueName, nil, 0, nil) == co.ERROR_SUCCESS
+	return me.hKey.RegQueryValueEx(valueName, nil, nil, nil) == co.ERROR_SUCCESS
 }

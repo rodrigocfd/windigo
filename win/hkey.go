@@ -28,14 +28,14 @@ func (hKey HKEY) regCloseKeyNoPanic() co.ERROR {
 
 func (hKey HKEY) RegEnumValue(dwIndex uint32,
 	lpValueName []uint16, lpcchValueName *uint32, lpType *co.REG,
-	lpData uintptr, lpcbData *uint32) co.ERROR {
+	lpData unsafe.Pointer, lpcbData *uint32) co.ERROR {
 
 	ret, _, _ := syscall.Syscall9(proc.RegEnumValue.Addr(), 8,
 		uintptr(hKey), uintptr(dwIndex),
 		uintptr(unsafe.Pointer(&lpValueName[0])),
 		uintptr(unsafe.Pointer(lpcchValueName)), 0,
 		uintptr(unsafe.Pointer(lpType)),
-		lpData, uintptr(unsafe.Pointer(lpcbData)), 0)
+		uintptr(lpData), uintptr(unsafe.Pointer(lpcbData)), 0)
 
 	lerr := co.ERROR(ret)
 	if lerr == co.ERROR_SUCCESS ||
@@ -69,11 +69,11 @@ func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
 }
 
 func (hKey HKEY) RegQueryValueEx(lpValueName string, lpType *co.REG,
-	lpData uintptr, lpcbData *uint32) co.ERROR {
+	lpData unsafe.Pointer, lpcbData *uint32) co.ERROR {
 
 	ret, _, _ := syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
 		uintptr(hKey), uintptr(unsafe.Pointer(StrToPtr(lpValueName))), 0,
-		uintptr(unsafe.Pointer(lpType)), lpData,
+		uintptr(unsafe.Pointer(lpType)), uintptr(lpData),
 		uintptr(unsafe.Pointer(lpcbData)))
 
 	lerr := co.ERROR(ret)
