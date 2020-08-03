@@ -22,10 +22,6 @@ func (hMap HFILEMAP) CloseHandle() {
 	}
 }
 
-func (hMap HFILEMAP) closeHandleNoPanic() co.ERROR {
-	return freeNoPanic(HANDLE(hMap), proc.CloseHandle)
-}
-
 func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 	offset uint32, numBytesToMap uintptr) HFILEMAP_PTR {
 
@@ -37,6 +33,18 @@ func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 		panic(co.ERROR(lerr).Format("MapViewOfFile failed."))
 	}
 	return HFILEMAP_PTR(ret)
+}
+
+func (hMap HFILEMAP) closeHandleNoPanic() co.ERROR {
+	if hMap == 0 { // handle is null, do nothing
+		return co.ERROR_SUCCESS
+	}
+	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
+		uintptr(hMap), 0, 0)
+	if ret == 0 { // an error occurred
+		return co.ERROR(lerr)
+	}
+	return co.ERROR_SUCCESS
 }
 
 //------------------------------------------------------------------------------

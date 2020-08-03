@@ -45,5 +45,13 @@ func (hDwp HDWP) EndDeferWindowPos() {
 }
 
 func (hDwp HDWP) endDeferWindowPosNoPanic() co.ERROR {
-	return freeNoPanic(HANDLE(hDwp), proc.EndDeferWindowPos)
+	if hDwp == 0 { // handle is null, do nothing
+		return co.ERROR_SUCCESS
+	}
+	ret, _, lerr := syscall.Syscall(proc.EndDeferWindowPos.Addr(), 1,
+		uintptr(hDwp), 0, 0)
+	if ret == 0 { // an error occurred
+		return co.ERROR(lerr)
+	}
+	return co.ERROR_SUCCESS
 }

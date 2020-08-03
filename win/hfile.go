@@ -22,10 +22,6 @@ func (hFile HFILE) CloseHandle() {
 	}
 }
 
-func (hFile HFILE) closeHandleNoPanic() co.ERROR {
-	return freeNoPanic(HANDLE(hFile), proc.CloseHandle)
-}
-
 func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) {
 	ret, _, lerr := syscall.Syscall(proc.CreateDirectory.Addr(), 2,
 		uintptr(unsafe.Pointer(StrToPtr(pathName))),
@@ -166,4 +162,16 @@ func (hFile HFILE) WriteFile(buf []byte) {
 		hFile.closeHandleNoPanic() // free resource
 		panic(co.ERROR(lerr).Format("WriteFile failed."))
 	}
+}
+
+func (hFile HFILE) closeHandleNoPanic() co.ERROR {
+	if hFile == 0 { // handle is null, do nothing
+		return co.ERROR_SUCCESS
+	}
+	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
+		uintptr(hFile), 0, 0)
+	if ret == 0 { // an error occurred
+		return co.ERROR(lerr)
+	}
+	return co.ERROR_SUCCESS
 }

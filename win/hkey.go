@@ -22,10 +22,6 @@ func (hKey HKEY) RegCloseKey() {
 	}
 }
 
-func (hKey HKEY) regCloseKeyNoPanic() co.ERROR {
-	return freeNoPanic(HANDLE(hKey), proc.RegCloseKey)
-}
-
 func (hKey HKEY) RegEnumValue(dwIndex uint32,
 	lpValueName []uint16, lpcchValueName *uint32, lpType *co.REG,
 	lpData unsafe.Pointer, lpcbData *uint32) co.ERROR {
@@ -82,4 +78,16 @@ func (hKey HKEY) RegQueryValueEx(lpValueName string, lpType *co.REG,
 		panic(lerr.Format("RegQueryValueEx failed."))
 	}
 	return lerr
+}
+
+func (hKey HKEY) regCloseKeyNoPanic() co.ERROR {
+	if hKey == 0 { // handle is null, do nothing
+		return co.ERROR_SUCCESS
+	}
+	ret, _, lerr := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
+		uintptr(hKey), 0, 0)
+	if ret == 0 { // an error occurred
+		return co.ERROR(lerr)
+	}
+	return co.ERROR_SUCCESS
 }

@@ -6,11 +6,6 @@
 
 package win
 
-import (
-	"syscall"
-	"wingows/co"
-)
-
 func hiWord(value uint32) uint16 { return uint16(value >> 16 & 0xffff) }
 func loWord(value uint32) uint16 { return uint16(value) }
 func hiByte(value uint16) uint8  { return uint8(value >> 8 & 0xff) }
@@ -30,17 +25,4 @@ func boolToUintptr(b bool) uintptr {
 		return 1
 	}
 	return 0
-}
-
-// Calls the specific system call to release the handle, returning the error
-// code without panic.
-func freeNoPanic(h HANDLE, fun *syscall.LazyProc) co.ERROR {
-	if h == 0 { // handle is null, do nothing
-		return co.ERROR_SUCCESS
-	}
-	ret, _, lerr := syscall.Syscall(fun.Addr(), 1, uintptr(h), 0, 0)
-	if ret == 0 { // an error occurred
-		return co.ERROR(lerr)
-	}
-	return co.ERROR_SUCCESS
 }

@@ -23,10 +23,6 @@ func (hFind HFIND) FindClose() {
 	}
 }
 
-func (hFind HFIND) findCloseNoPanic() co.ERROR {
-	return freeNoPanic(HANDLE(hFind), proc.FindClose)
-}
-
 // Returns true/false if a file was found or not.
 func FindFirstFile(lpFileName string,
 	lpFindFileData *WIN32_FIND_DATA) (HFIND, bool) {
@@ -62,4 +58,16 @@ func (hFind HFIND) FindNextFile(lpFindFileData *WIN32_FIND_DATA) bool {
 		}
 	}
 	return true
+}
+
+func (hFind HFIND) findCloseNoPanic() co.ERROR {
+	if hFind == 0 { // handle is null, do nothing
+		return co.ERROR_SUCCESS
+	}
+	ret, _, lerr := syscall.Syscall(proc.FindClose.Addr(), 1,
+		uintptr(hFind), 0, 0)
+	if ret == 0 { // an error occurred
+		return co.ERROR(lerr)
+	}
+	return co.ERROR_SUCCESS
 }
