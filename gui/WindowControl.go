@@ -140,7 +140,7 @@ func (me *windowControlSetup) genWndClassEx(
 	}
 
 	if me.ClassName == "" { // user left class name blank
-		me.ClassName = wcx.Hash() // generate hash after all other fields are set
+		me.ClassName = wndclassex_hash(&wcx) // generate hash after all other fields are set
 	}
 	me.classNameBuf = win.StrToSlice(me.ClassName)
 	wcx.LpszClassName = uintptr(unsafe.Pointer(&me.classNameBuf[0]))

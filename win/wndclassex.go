@@ -7,7 +7,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -27,15 +26,6 @@ type WNDCLASSEX struct {
 	LpszMenuName  uintptr // LPCWSTR
 	LpszClassName uintptr // LPCWSTR
 	HIconSm       HICON
-}
-
-// Generates a string from all fields, excluding CbSize and LpszClassName, that
-// uniquely identifies a WNDCLASSEX object.
-func (wcx *WNDCLASSEX) Hash() string {
-	return fmt.Sprintf("%x.%x.%x.%x.%x.%x.%x.%x.%x.%x",
-		wcx.Style, wcx.LpfnWndProc, wcx.CbClsExtra, wcx.CbWndExtra,
-		wcx.HInstance, wcx.HIcon, wcx.HCursor, wcx.HbrBackground,
-		wcx.LpszMenuName, wcx.HIconSm)
 }
 
 func (wcx *WNDCLASSEX) RegisterClassEx() (ATOM, co.ERROR) {

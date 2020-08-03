@@ -8,7 +8,6 @@ package gui
 
 import (
 	"fmt"
-	"strings"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -137,22 +136,4 @@ func calcTextBoundBox(hReferenceDc win.HWND, text string,
 		bounds.Cx = 0 // if no text was given, return just the height
 	}
 	return uint32(bounds.Cx), uint32(bounds.Cy)
-}
-
-// "&He && she" becomes "He & she".
-func removeAccelAmpersands(text string) string {
-	runes := []rune(text)
-	buf := strings.Builder{}
-	buf.Grow(len(text)) // prealloc for performance
-
-	for i := 0; i < len(runes)-1; i++ {
-		if runes[i] == '&' && runes[i+1] != '&' {
-			continue
-		}
-		buf.WriteRune(runes[i])
-	}
-	if runes[len(runes)-1] != '&' {
-		buf.WriteRune(runes[len(runes)-1])
-	}
-	return buf.String()
 }
