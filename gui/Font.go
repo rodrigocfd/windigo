@@ -76,7 +76,7 @@ func (me *Font) Create(setup *FontSetup) *Font {
 // Creates a font based on a LOGFONT struct.
 func (me *Font) CreateFromLogFont(lf *win.LOGFONT) *Font {
 	me.Destroy()
-	me.hFont = lf.CreateFontIndirect()
+	me.hFont = win.CreateFontIndirect(lf)
 	return me
 }
 

@@ -53,6 +53,21 @@ func StrToPtrBlankIsNil(s string) *uint16 {
 
 //------------------------------------------------------------------------------
 
+func CreateFontIndirect(lf *LOGFONT) HFONT {
+	ret, _, _ := syscall.Syscall(proc.CreateFontIndirect.Addr(), 1,
+		uintptr(unsafe.Pointer(lf)), 0, 0)
+	if ret == 0 {
+		panic("CreateFontIndirect failed.")
+	}
+	return HFONT(ret)
+}
+
+func DispatchMessage(msg *MSG) uintptr {
+	ret, _, _ := syscall.Syscall(proc.DispatchMessage.Addr(), 1,
+		uintptr(unsafe.Pointer(msg)), 0, 0)
+	return ret
+}
+
 func EnumWindows(
 	lpEnumFunc func(hwnd HWND, lParam LPARAM) bool,
 	lParam LPARAM) {
@@ -66,10 +81,6 @@ func EnumWindows(
 	if ret == 0 {
 		panic(co.ERROR(lerr).Format("EnumWindow failed."))
 	}
-}
-
-func InitCommonControls() {
-	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
 }
 
 func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
@@ -101,10 +112,123 @@ func GetDpiForSystem() uint32 {
 	return uint32(ret)
 }
 
+func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
+	ret, _, lerr := syscall.Syscall6(proc.GetMessage.Addr(), 4,
+		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
+		uintptr(msgFilterMin), uintptr(msgFilterMax),
+		0, 0)
+	if int(ret) == -1 {
+		panic(co.ERROR(lerr).Format("GetMessage failed."))
+	}
+	return int32(ret)
+}
+
+func GetOpenFileName(ofn *OPENFILENAME) bool {
+	ofn.LStructSize = uint32(unsafe.Sizeof(*ofn)) // safety
+	ret, _, _ := syscall.Syscall(proc.GetOpenFileName.Addr(), 1,
+		uintptr(unsafe.Pointer(ofn)), 0, 0)
+
+	if ret == 0 {
+		ret, _, _ := syscall.Syscall(proc.CommDlgExtendedError.Addr(), 0,
+			0, 0, 0)
+		if ret != 0 {
+			panic(fmt.Sprintf("GetOpenFileName failed: %d.", ret))
+		} else {
+			return false // user cancelled
+		}
+	}
+	return true // user clicked OK
+}
+
+func GetSaveFileName(ofn *OPENFILENAME) bool {
+	ofn.LStructSize = uint32(unsafe.Sizeof(*ofn)) // safety
+	ret, _, _ := syscall.Syscall(proc.GetSaveFileName.Addr(), 1,
+		uintptr(unsafe.Pointer(ofn)), 0, 0)
+
+	if ret == 0 {
+		ret, _, _ := syscall.Syscall(proc.CommDlgExtendedError.Addr(), 0,
+			0, 0, 0)
+		if ret != 0 {
+			panic(fmt.Sprintf("GetSaveFileName failed: %d.", ret))
+		} else {
+			return false // user cancelled
+		}
+	}
+	return true // user clicked OK
+}
+
 func GetSystemMetrics(index co.SM) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetSystemMetrics.Addr(), 1,
 		uintptr(index), 0, 0)
 	return int32(ret)
+}
+
+func InitCommonControls() {
+	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
+}
+
+func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32,
+	servicePackMajor uint16) bool {
+
+	ovi := OSVERSIONINFOEX{
+		DwMajorVersion:    majorVersion,
+		DwMinorVersion:    minorVersion,
+		WServicePackMajor: servicePackMajor,
+	}
+	ovi.DwOsVersionInfoSize = uint32(unsafe.Sizeof(ovi))
+
+	conditionMask := VerSetConditionMask(
+		VerSetConditionMask(
+			VerSetConditionMask(0, co.VER_MAJORVERSION, co.VER_COND_GREATER_EQUAL),
+			co.VER_MINORVERSION, co.VER_COND_GREATER_EQUAL),
+		co.VER_SERVICEPACKMAJOR, co.VER_COND_GREATER_EQUAL)
+
+	ret, _ := VerifyVersionInfo(&ovi,
+		co.VER_MAJORVERSION|co.VER_MINORVERSION|co.VER_SERVICEPACKMAJOR,
+		conditionMask)
+	return ret
+}
+
+func IsWindows10OrGreater() bool {
+	return IsWindowsVersionOrGreater(
+		uint32(hiByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
+		uint32(loByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
+		0)
+}
+
+func IsWindows7OrGreater() bool {
+	return IsWindowsVersionOrGreater(
+		uint32(hiByte(uint16(co.WIN32_WINNT_WIN7))),
+		uint32(loByte(uint16(co.WIN32_WINNT_WIN7))),
+		0)
+}
+
+func IsWindows8OrGreater() bool {
+	return IsWindowsVersionOrGreater(
+		uint32(hiByte(uint16(co.WIN32_WINNT_WIN8))),
+		uint32(loByte(uint16(co.WIN32_WINNT_WIN8))),
+		0)
+}
+
+func IsWindows8Point1OrGreater() bool {
+	return IsWindowsVersionOrGreater(
+		uint32(hiByte(uint16(co.WIN32_WINNT_WINBLUE))),
+		uint32(loByte(uint16(co.WIN32_WINNT_WINBLUE))),
+		0)
+}
+
+func IsWindowsVistaOrGreater() bool {
+	return IsWindowsVersionOrGreater(
+		uint32(hiByte(uint16(co.WIN32_WINNT_VISTA))),
+		uint32(loByte(uint16(co.WIN32_WINNT_VISTA))),
+		0)
+}
+
+func IsWindowsXpOrGreater() bool {
+	return IsWindowsVersionOrGreater(
+		uint32(hiByte(uint16(co.WIN32_WINNT_WINXP))),
+		uint32(loByte(uint16(co.WIN32_WINNT_WINXP))),
+		0)
 }
 
 // Multiplies two 32-bit values and then divides the 64-bit result by a third
@@ -128,6 +252,13 @@ func PostThreadMessage(
 	if ret == 0 {
 		panic(co.ERROR(lerr).Format("PostThreadMessage failed."))
 	}
+}
+
+func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, co.ERROR) {
+	wcx.CbSize = uint32(unsafe.Sizeof(*wcx)) // safety
+	ret, _, lerr := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
+		uintptr(unsafe.Pointer(wcx)), 0, 0)
+	return ATOM(ret), co.ERROR(lerr)
 }
 
 func RegisterWindowMessage(lpString string) uint32 {
@@ -215,4 +346,27 @@ func SystemParametersInfo(uiAction co.SPI, uiParam uint32,
 	if ret == 0 {
 		panic(co.ERROR(lerr).Format("SystemParametersInfo failed."))
 	}
+}
+
+func TranslateMessage(msg *MSG) bool {
+	ret, _, _ := syscall.Syscall(proc.TranslateMessage.Addr(), 1,
+		uintptr(unsafe.Pointer(msg)), 0, 0)
+	return ret != 0
+}
+
+func VerifyVersionInfo(ovi *OSVERSIONINFOEX, typeMask co.VER,
+	conditionMask uint64) (bool, co.ERROR) {
+
+	ret, _, lerr := syscall.Syscall(proc.VerifyVersionInfo.Addr(), 3,
+		uintptr(unsafe.Pointer(ovi)),
+		uintptr(typeMask), uintptr(conditionMask))
+	return ret != 0, co.ERROR(lerr)
+}
+
+func VerSetConditionMask(conditionMask uint64, typeMask co.VER,
+	condition co.VER_COND) uint64 {
+
+	ret, _, _ := syscall.Syscall(proc.VerSetConditionMask.Addr(), 3,
+		uintptr(conditionMask), uintptr(typeMask), uintptr(condition))
+	return uint64(ret)
 }

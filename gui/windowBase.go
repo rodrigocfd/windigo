@@ -55,7 +55,7 @@ func (me *windowBase) RunUiThread(userFunc func()) {
 
 func (me *windowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 	wcx.LpfnWndProc = syscall.NewCallback(wndProc)
-	atom, lerr := wcx.RegisterClassEx()
+	atom, lerr := win.RegisterClassEx(wcx)
 
 	if lerr == co.ERROR_CLASS_ALREADY_EXISTS {
 		// https://devblogs.microsoft.com/oldnewthing/20150429-00/?p=44984

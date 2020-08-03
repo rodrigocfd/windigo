@@ -50,6 +50,23 @@ type HELPINFO struct {
 	MousePos     POINT
 }
 
+type LOGFONT struct {
+	LfHeight         int32
+	LfWidth          int32
+	LfEscapement     int32
+	LfOrientation    int32
+	LfWeight         co.FW
+	LfItalic         uint8
+	LfUnderline      uint8
+	LfStrikeOut      uint8
+	LfCharSet        uint8
+	LfOutPrecision   uint8
+	LfClipPrecision  uint8
+	LfQuality        uint8
+	LfPitchAndFamily uint8
+	LfFaceName       [32]uint16 // LF_FACESIZE
+}
+
 type MENUINFO struct {
 	CbSize          uint32
 	FMask           co.MIM
@@ -83,6 +100,15 @@ type MONITORINFOEX struct {
 	SzDevice  [32]uint16 // CCHDEVICENAME
 }
 
+type MSG struct {
+	HWnd   HWND
+	Msg    uint32
+	WParam WPARAM
+	LParam LPARAM
+	Time   uint32
+	Pt     POINT
+}
+
 type NMHDR struct {
 	HWndFrom HWND
 	IdFrom   uintptr
@@ -108,6 +134,46 @@ type NONCLIENTMETRICS struct {
 	IPaddedBorderWidth int32
 }
 
+type OPENFILENAME struct {
+	LStructSize       uint32
+	HwndOwner         HWND
+	HInstance         HINSTANCE
+	LpstrFilter       uintptr // LPCWSTR
+	LpstrCustomFilter uintptr // LPWSTR
+	NMaxCustFilter    uint32
+	NFilterIndex      uint32
+	LpstrFile         uintptr // LPWSTR
+	NMaxFile          uint32
+	LpstrFileTitle    uintptr // LPWSTR
+	NMaxFileTitle     uint32
+	LpstrInitialDir   uintptr // LPCWSTR
+	LpstrTitle        uintptr // LPCWSTR
+	Flags             co.OFN
+	NFileOffset       uint16
+	NFileExtension    uint16
+	LpstrDefExt       uintptr // LPCWSTR
+	LCustData         LPARAM
+	LpfnHook          uintptr // LPOFNHOOKPROC
+	LpTemplateName    uintptr // LPCWSTR
+	PvReserved        uintptr
+	DwReserved        uint32
+	FlagsEx           co.OFN_EX
+}
+
+type OSVERSIONINFOEX struct {
+	DwOsVersionInfoSize uint32
+	DwMajorVersion      uint32
+	DwMinorVersion      uint32
+	DwBuildNumber       uint32
+	DWPlatformId        uint32
+	SzCSDVersion        [128]uint16
+	WServicePackMajor   uint16
+	WServicePackMinor   uint16
+	WSuiteMask          uint16
+	WProductType        uint8
+	WReserve            uint8
+}
+
 type POINT struct {
 	X, Y int32
 }
@@ -118,7 +184,7 @@ type RECT struct {
 
 type SECURITY_ATTRIBUTES struct {
 	NLength              uint32
-	LpSecurityDescriptor uintptr
+	LpSecurityDescriptor uintptr // LPVOID
 	BInheritHandle       int32
 }
 
@@ -148,4 +214,19 @@ type WIN32_FIND_DATA struct {
 	DwFileType         uint32
 	DwCreatorType      uint32
 	WFinderFlags       uint16
+}
+
+type WNDCLASSEX struct {
+	CbSize        uint32
+	Style         co.CS
+	LpfnWndProc   uintptr
+	CbClsExtra    int32
+	CbWndExtra    int32
+	HInstance     HINSTANCE
+	HIcon         HICON
+	HCursor       HCURSOR
+	HbrBackground HBRUSH
+	LpszMenuName  uintptr // LPCWSTR
+	LpszClassName uintptr // LPCWSTR
+	HIconSm       HICON
 }

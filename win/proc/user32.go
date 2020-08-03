@@ -28,6 +28,7 @@ var (
 	DefWindowProc                 = dllUser32.NewProc("DefWindowProcW")
 	DeleteMenu                    = dllUser32.NewProc("DeleteMenu")
 	DestroyAcceleratorTable       = dllUser32.NewProc("DestroyAcceleratorTable")
+	DestroyCursor                 = dllUser32.NewProc("DestroyCursor")
 	DestroyIcon                   = dllUser32.NewProc("DestroyIcon")
 	DestroyMenu                   = dllUser32.NewProc("DestroyMenu")
 	DestroyWindow                 = dllUser32.NewProc("DestroyWindow")

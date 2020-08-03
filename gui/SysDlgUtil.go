@@ -35,7 +35,7 @@ func (sysDlgUtilT) FileOpen(owner Window, filtersWithPipe []string) (string, boo
 		Flags:       co.OFN_EXPLORER | co.OFN_ENABLESIZING | co.OFN_FILEMUSTEXIST,
 	}
 
-	if !ofn.GetOpenFileName() {
+	if !win.GetOpenFileName(&ofn) {
 		return "", false
 	}
 	return syscall.UTF16ToString(result[:]), true
@@ -58,7 +58,7 @@ func (sysDlgUtilT) FileOpenMany(owner Window,
 		Flags:       co.OFN_EXPLORER | co.OFN_ENABLESIZING | co.OFN_FILEMUSTEXIST | co.OFN_ALLOWMULTISELECT,
 	}
 
-	if !ofn.GetOpenFileName() {
+	if !win.GetOpenFileName(&ofn) {
 		return nil, false
 	}
 
@@ -120,7 +120,7 @@ func (sysDlgUtilT) FileSave(owner Window, defaultName, defaultExt string,
 		LpstrDefExt: uintptr(unsafe.Pointer(&defExt[0])),
 	}
 
-	if !ofn.GetSaveFileName() {
+	if !win.GetSaveFileName(&ofn) {
 		return "", false
 	}
 	return syscall.UTF16ToString(result[:]), true

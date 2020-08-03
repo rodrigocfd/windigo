@@ -81,7 +81,7 @@ func (me *WindowModal) defaultMessageHandling() {
 func (me *WindowModal) runModalLoop() {
 	msg := win.MSG{}
 	for {
-		if msg.GetMessage(win.HWND(0), 0, 0) == 0 {
+		if win.GetMessage(&msg, win.HWND(0), 0, 0) == 0 {
 			// WM_QUIT was sent, exit modal loop now and signal parent.
 			// If it returned -1, it will simply panic.
 			// https://devblogs.microsoft.com/oldnewthing/20050222-00/?p=36393
@@ -100,8 +100,8 @@ func (me *WindowModal) runModalLoop() {
 			}
 		}
 
-		msg.TranslateMessage()
-		msg.DispatchMessage()
+		win.TranslateMessage(&msg)
+		win.DispatchMessage(&msg)
 
 		if me.hwnd == win.HWND(0) {
 			break // our modal was destroyed, terminate loop

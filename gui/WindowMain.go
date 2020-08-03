@@ -118,7 +118,7 @@ func (me *WindowMain) defaultMessageHandling() {
 func (me *WindowMain) runMainLoop() int {
 	msg := win.MSG{}
 	for {
-		if msg.GetMessage(win.HWND(0), 0, 0) == 0 {
+		if win.GetMessage(&msg, win.HWND(0), 0, 0) == 0 {
 			// WM_QUIT was sent, gracefully terminate the program.
 			// If it returned -1, it will simply panic.
 			// WParam has the program exit code.
@@ -148,8 +148,8 @@ func (me *WindowMain) runMainLoop() int {
 			continue
 		}
 
-		msg.TranslateMessage()
-		msg.DispatchMessage()
+		win.TranslateMessage(&msg)
+		win.DispatchMessage(&msg)
 	}
 }
 
