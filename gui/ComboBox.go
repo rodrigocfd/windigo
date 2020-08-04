@@ -46,7 +46,7 @@ func (me *ComboBox) Create(
 	parent Window, ctrlId, x, y int32, width uint32,
 	exStyles co.WS_EX, styles co.WS, cbStyles co.CBS) *ComboBox {
 
-	x, y, width, _ = _globalDpi.multiply(x, y, width, 0)
+	x, y, width, _ = _Util.MultiplyDpi(x, y, width, 0)
 
 	me._ControlNativeBase.create(exStyles, "COMBOBOX", "",
 		styles|co.WS(cbStyles), x, y, width, 0, parent, ctrlId)

@@ -29,7 +29,7 @@ func (me *TreeView) Create(
 	exStyles co.WS_EX, styles co.WS,
 	tvExStyles co.TVS_EX, tvStyles co.TVS) *TreeView {
 
-	x, y, width, height = _globalDpi.multiply(x, y, width, height)
+	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
 
 	me._ControlNativeBase.create(exStyles,
 		"SysTreeView32", "", styles|co.WS(tvStyles),

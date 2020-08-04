@@ -73,7 +73,7 @@ func (me *WindowMain) RunAsMain() int {
 	cxScreen := win.GetSystemMetrics(co.SM_CXSCREEN) // retrieve screen size
 	cyScreen := win.GetSystemMetrics(co.SM_CYSCREEN)
 
-	_, _, cx, cy := _globalDpi.multiply(0, 0, me.setup.Width, me.setup.Height)
+	_, _, cx, cy := _Util.MultiplyDpi(0, 0, me.setup.Width, me.setup.Height)
 
 	me._WindowBase.createWindow("WindowMain", me.setup.ExStyle,
 		me.setup.ClassName, me.setup.Title, me.setup.Style,
@@ -226,7 +226,7 @@ func (me *_WindowMainSetup) genWndClassEx(hInst win.HINSTANCE) *win.WNDCLASSEX {
 	}
 
 	if me.ClassName == "" { // user left class name blank
-		me.ClassName = wndclassex_hash(&wcx) // generate hash after all other fields are set
+		me.ClassName = _Util.WndclassexHash(&wcx) // generate hash after all other fields are set
 	}
 	me.classNameBuf = win.StrToSlice(me.ClassName)
 	wcx.LpszClassName = uintptr(unsafe.Pointer(&me.classNameBuf[0]))

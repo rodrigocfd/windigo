@@ -24,7 +24,7 @@ func (me *Edit) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32, initialText string,
 	exStyles co.WS_EX, styles co.WS, editStyles co.ES) *Edit {
 
-	x, y, width, height = _globalDpi.multiply(x, y, width, height)
+	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
 
 	me._ControlNativeBase.create(exStyles, "EDIT", initialText,
 		styles|co.WS(editStyles), x, y, width, height, parent, ctrlId)

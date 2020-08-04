@@ -22,7 +22,7 @@ func (me *Button) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *Button {
 
-	x, y, width, height = _globalDpi.multiply(x, y, width, height)
+	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
 
 	me._ControlNativeBase.create(exStyles, "BUTTON", text,
 		styles|co.WS(btnStyles), x, y, width, height, parent, ctrlId)
@@ -55,5 +55,5 @@ func (me *Button) CreateSimpleDef(
 // For example: "&He && she" is returned as "He & she".
 // Use HWND().GetWindowText() to retrieve the full text, with ampersands.
 func (me *Button) Text() string {
-	return removeAccelAmpersands(me.Hwnd().GetWindowText())
+	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }

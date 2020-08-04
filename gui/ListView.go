@@ -98,7 +98,7 @@ func (me *ListView) Create(
 
 	me.installSubclass()
 
-	x, y, width, height = _globalDpi.multiply(x, y, width, height)
+	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
 	me._ControlNativeBase.create(exStyles,
 		"SysListView32", "", styles|co.WS(lvStyles),
 		x, y, width, height, parent, ctrlId)

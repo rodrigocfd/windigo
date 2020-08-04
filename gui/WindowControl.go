@@ -43,7 +43,7 @@ func (me *WindowControl) Create(
 
 	me.defaultMessageHandling()
 
-	x, y, width, height = _globalDpi.multiply(x, y, width, height)
+	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
 
 	me._WindowBase.createWindow("WindowControl", me.setup.ExStyle,
 		me.setup.ClassName, "", me.setup.Style, x, y, width, height, parent,
@@ -140,7 +140,7 @@ func (me *_WindowControlSetup) genWndClassEx(
 	}
 
 	if me.ClassName == "" { // user left class name blank
-		me.ClassName = wndclassex_hash(&wcx) // generate hash after all other fields are set
+		me.ClassName = _Util.WndclassexHash(&wcx) // generate hash after all other fields are set
 	}
 	me.classNameBuf = win.StrToSlice(me.ClassName)
 	wcx.LpszClassName = uintptr(unsafe.Pointer(&me.classNameBuf[0]))

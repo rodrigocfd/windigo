@@ -23,7 +23,7 @@ func (me *CheckBox) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *CheckBox {
 
-	x, y, width, height = _globalDpi.multiply(x, y, width, height)
+	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
 
 	me._ControlNativeBase.create(exStyles, "BUTTON", text, // check box is, in fact, a button
 		styles|co.WS(btnStyles), x, y, width, height, parent, ctrlId)
@@ -84,7 +84,7 @@ func (me *CheckBox) State() co.BST {
 // For example: "&He && she" is returned as "He & she".
 // Use HWND().GetWindowText() to retrieve the full text, with ampersands.
 func (me *CheckBox) Text() string {
-	return removeAccelAmpersands(me.Hwnd().GetWindowText())
+	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }
 
 func (me *CheckBox) calcIdealSize(hReferenceDc win.HWND,
@@ -105,7 +105,7 @@ func (me *CheckBox) calcIdealSize(hReferenceDc win.HWND,
 func (me *CheckBox) createAutoSize(
 	parent Window, ctrlId, x, y int32, text string, chbxStyles co.BS) *CheckBox {
 
-	x, y, _, _ = _globalDpi.multiply(x, y, 0, 0)
+	x, y, _, _ = _Util.MultiplyDpi(x, y, 0, 0)
 	cx, cy := me.calcIdealSize(parent.Hwnd(), text)
 
 	me._ControlNativeBase.create(co.WS_EX(0), "BUTTON", text,

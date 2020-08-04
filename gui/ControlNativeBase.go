@@ -121,7 +121,7 @@ func calcTextBoundBox(hReferenceDc win.HWND, text string,
 	}
 
 	if considerAccelerators {
-		text = removeAccelAmpersands(text)
+		text = _Util.RemoveAccelAmpersands(text)
 	}
 
 	parentDc := hReferenceDc.GetDC()
