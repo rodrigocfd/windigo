@@ -15,15 +15,15 @@ import (
 	"wingows/win"
 )
 
-type sysDlgUtilT struct{}
+type _SysDlgUtilT struct{}
 
 // System dialogs.
-var SysDlgUtil sysDlgUtilT
+var SysDlgUtil _SysDlgUtilT
 
 // Shows the open file system dialog, choice restricted to 1 file.
 // Example filtersWithPipe:
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (sysDlgUtilT) FileOpen(owner Window, filtersWithPipe []string) (string, bool) {
+func (_SysDlgUtilT) FileOpen(owner Window, filtersWithPipe []string) (string, bool) {
 	zFilters := filterToUtf16(filtersWithPipe)
 	result := [260]uint16{} // MAX_PATH
 
@@ -44,7 +44,7 @@ func (sysDlgUtilT) FileOpen(owner Window, filtersWithPipe []string) (string, boo
 // Shows the open file system dialog, user can choose multiple files.
 // Example filtersWithPipe:
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (sysDlgUtilT) FileOpenMany(owner Window,
+func (_SysDlgUtilT) FileOpenMany(owner Window,
 	filtersWithPipe []string) ([]string, bool) {
 
 	zFilters := filterToUtf16(filtersWithPipe)
@@ -97,7 +97,7 @@ func (sysDlgUtilT) FileOpenMany(owner Window,
 // Default extension can be empty, or like "txt".
 // Example filtersWithPipe:
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (sysDlgUtilT) FileSave(owner Window, defaultName, defaultExt string,
+func (_SysDlgUtilT) FileSave(owner Window, defaultName, defaultExt string,
 	filtersWithPipe []string) (string, bool) {
 
 	zFilters := filterToUtf16(filtersWithPipe)
@@ -151,17 +151,17 @@ func filterToUtf16(filtersWithPipe []string) []uint16 {
 }
 
 var (
-	globalMsgBoxHook   = win.HHOOK(0)
-	globalMsgBoxParent = win.HWND(0)
+	_globalMsgBoxHook   = win.HHOOK(0)
+	_globalMsgBoxParent = win.HWND(0)
 )
 
 // Ordinary MessageBox, but centered at parent.
-func (sysDlgUtilT) MsgBox(
+func (_SysDlgUtilT) MsgBox(
 	parent Window, message, caption string, flags co.MB) co.MBID {
 
-	globalMsgBoxParent = parent.Hwnd()
+	_globalMsgBoxParent = parent.Hwnd()
 
-	globalMsgBoxHook = win.SetWindowsHookEx(co.WH_CBT,
+	_globalMsgBoxHook = win.SetWindowsHookEx(co.WH_CBT,
 		func(code int, wp win.WPARAM, lp win.LPARAM) uintptr {
 			// http://www.codeguru.com/cpp/w-p/win32/messagebox/print.php/c4541
 			if co.HCBT(code) == co.HCBT_ACTIVATE {
@@ -169,7 +169,7 @@ func (sysDlgUtilT) MsgBox(
 
 				if hMsgBox != 0 {
 					rcMsgBox := hMsgBox.GetWindowRect()
-					rcParent := globalMsgBoxParent.GetWindowRect()
+					rcParent := _globalMsgBoxParent.GetWindowRect()
 
 					rcScreen := win.RECT{}
 					win.SystemParametersInfo(
@@ -202,8 +202,8 @@ func (sysDlgUtilT) MsgBox(
 						uint32(rcMsgBox.Bottom-rcMsgBox.Top),
 						false)
 				}
-				globalMsgBoxHook.UnhookWindowsHookEx() // release global hook
-				globalMsgBoxHook = 0
+				_globalMsgBoxHook.UnhookWindowsHookEx() // release global hook
+				_globalMsgBoxHook = 0
 			}
 			return win.HHOOK(0).CallNextHookEx(code, wp, lp)
 		},

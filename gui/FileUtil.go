@@ -15,13 +15,13 @@ import (
 	"wingows/win"
 )
 
-type fileUtilT struct{}
+type _FileUtilT struct{}
 
 // File utilities.
-var FileUtil fileUtilT
+var FileUtil _FileUtilT
 
 // Returns all the file names that match a pattern like "C:\\foo\\*.txt".
-func (fileUtilT) ListFilesInFolder(pathAndPattern string) []string {
+func (_FileUtilT) ListFilesInFolder(pathAndPattern string) []string {
 	retFiles := make([]string, 0)
 	dirPath := filepath.Dir(pathAndPattern)
 
@@ -44,18 +44,18 @@ func (fileUtilT) ListFilesInFolder(pathAndPattern string) []string {
 	return retFiles
 }
 
-func (fileUtilT) PathExists(path string) bool {
+func (_FileUtilT) PathExists(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID
 }
 
-func (fileUtilT) PathIsFolder(path string) bool {
+func (_FileUtilT) PathIsFolder(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID &&
 		(attr&co.FILE_ATTRIBUTE_DIRECTORY) != 0
 }
 
-func (fileUtilT) PathIsHidden(path string) bool {
+func (_FileUtilT) PathIsHidden(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID &&
 		(attr&co.FILE_ATTRIBUTE_HIDDEN) != 0

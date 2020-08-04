@@ -15,7 +15,7 @@ import (
 
 // Native list view control.
 type ListView struct {
-	controlNativeBase
+	_ControlNativeBase
 	contextMenu *Menu // if set, will be shown with right-click
 }
 
@@ -98,8 +98,8 @@ func (me *ListView) Create(
 
 	me.installSubclass()
 
-	x, y, width, height = globalDpi.multiply(x, y, width, height)
-	me.controlNativeBase.create(exStyles,
+	x, y, width, height = _globalDpi.multiply(x, y, width, height)
+	me._ControlNativeBase.create(exStyles,
 		"SysListView32", "", styles|co.WS(lvStyles),
 		x, y, width, height, parent, ctrlId)
 

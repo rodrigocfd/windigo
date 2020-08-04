@@ -11,13 +11,15 @@ import (
 	"wingows/win"
 )
 
-type systemDpi struct {
+type _SystemDpi struct {
 	x, y int32
 }
 
-var globalDpi = systemDpi{x: 0, y: 0}
+var (
+	_globalDpi = _SystemDpi{x: 0, y: 0}
+)
 
-func (me *systemDpi) init() {
+func (me *_SystemDpi) init() {
 	if me.x == 0 { // not initialized yet?
 		dc := win.HWND(0).GetDC()
 		me.x = dc.GetDeviceCaps(co.GDC_LOGPIXELSX)
@@ -27,7 +29,7 @@ func (me *systemDpi) init() {
 }
 
 // Multiplies position and size by current DPI factor.
-func (me *systemDpi) multiply(x, y int32,
+func (me *_SystemDpi) multiply(x, y int32,
 	cx, cy uint32) (int32, int32, uint32, uint32) {
 
 	me.init()

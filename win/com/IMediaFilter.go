@@ -7,13 +7,13 @@
 package com
 
 type (
-	baseIMediaFilter struct{ baseIPersist }
+	_IMediaFilter struct{ _IPersist }
 
 	// IMediaFilter > IPersist > IUnknown.
-	IMediaFilter struct{ baseIMediaFilter }
+	IMediaFilter struct{ _IMediaFilter }
 
-	vtbIMediaFilter struct {
-		vtbIPersist
+	_IMediaFilterVtbl struct {
+		_IPersistVtbl
 		Stop          uintptr
 		Pause         uintptr
 		Run           uintptr

@@ -7,13 +7,13 @@
 package com
 
 type (
-	baseIDispatch struct{ baseIUnknown }
+	_IDispatch struct{ _IUnknown }
 
 	// IDispatch > IUnknown.
-	IDispatch struct{ baseIDispatch }
+	IDispatch struct{ _IDispatch }
 
-	vtbIDispatch struct {
-		vtbIUnknown
+	_IDispatchVtbl struct {
+		_IUnknownVtbl
 		GetTypeInfoCount uintptr
 		GetTypeInfo      uintptr
 		GetIDsOfNames    uintptr

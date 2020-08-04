@@ -15,21 +15,21 @@ import (
 )
 
 var (
-	globalUiFont = Font{} // created/freed in RunAsMain()
+	_globalUiFont = Font{} // created/freed in RunAsMain()
 )
 
 // Main application window.
 // Allows message and notification handling.
 type WindowMain struct {
-	windowBase
-	setup            windowMainSetup
+	_WindowBase
+	setup            _WindowMainSetup
 	modelessChildren []win.HWND
 	childPrevFocus   win.HWND // when window is inactivated
 }
 
 // Exposes parameters that will be used to create the window.
-func (me *WindowMain) Setup() *windowMainSetup {
-	if me.windowBase.Hwnd() != 0 {
+func (me *WindowMain) Setup() *_WindowMainSetup {
+	if me.Hwnd() != 0 {
 		panic("Cannot change setup after the window was created.")
 	}
 	me.setup.initOnce() // guard
@@ -54,7 +54,7 @@ func (me *WindowMain) RunAsMain() int {
 
 		// Free resources.
 		me.setup.AcceleratorTable.Destroy()
-		globalUiFont.Destroy()
+		_globalUiFont.Destroy()
 	}()
 
 	if win.IsWindowsVistaOrGreater() {
@@ -64,48 +64,48 @@ func (me *WindowMain) RunAsMain() int {
 
 	me.setup.initOnce() // guard
 	hInst := win.GetModuleHandle("")
-	me.windowBase.registerClass(me.setup.genWndClassEx(hInst))
+	me._WindowBase.registerClass(me.setup.genWndClassEx(hInst))
 
-	globalUiFont.CreateUi() // create global font to be applied everywhere
+	_globalUiFont.CreateUi() // create global font to be applied everywhere
 
 	me.defaultMessageHandling()
 
 	cxScreen := win.GetSystemMetrics(co.SM_CXSCREEN) // retrieve screen size
 	cyScreen := win.GetSystemMetrics(co.SM_CYSCREEN)
 
-	_, _, cx, cy := globalDpi.multiply(0, 0, me.setup.Width, me.setup.Height)
+	_, _, cx, cy := _globalDpi.multiply(0, 0, me.setup.Width, me.setup.Height)
 
-	me.windowBase.createWindow("WindowMain", me.setup.ExStyle,
+	me._WindowBase.createWindow("WindowMain", me.setup.ExStyle,
 		me.setup.ClassName, me.setup.Title, me.setup.Style,
 		cxScreen/2-int32(cx)/2, cyScreen/2-int32(cy)/2, // center window on screen
 		cx, cy, nil, me.setup.MainMenu.Hmenu(), hInst)
 
-	me.windowBase.Hwnd().ShowWindow(me.setup.CmdShow)
-	me.windowBase.Hwnd().UpdateWindow()
+	me.Hwnd().ShowWindow(me.setup.CmdShow)
+	me.Hwnd().UpdateWindow()
 
 	return me.runMainLoop()
 }
 
 func (me *WindowMain) defaultMessageHandling() {
-	me.windowBase.OnMsg().WmNcDestroy(func() {
+	me.OnMsg().WmNcDestroy(func() {
 		win.PostQuitMessage(0)
 	})
 
-	me.windowBase.OnMsg().WmSetFocus(func(p WmSetFocus) {
-		if me.windowBase.Hwnd() == win.GetFocus() {
+	me.OnMsg().WmSetFocus(func(p WmSetFocus) {
+		if me.Hwnd() == win.GetFocus() {
 			// If window receives focus, delegate to first child.
-			me.windowBase.Hwnd().
+			me.Hwnd().
 				GetNextDlgTabItem(win.HWND(0), false).
 				SetFocus()
 		}
 	})
 
-	me.windowBase.OnMsg().WmActivate(func(p WmActivate) {
+	me.OnMsg().WmActivate(func(p WmActivate) {
 		// https://devblogs.microsoft.com/oldnewthing/20140521-00/?p=943
 		if !p.IsMinimized() {
 			if p.Event() == co.WA_INACTIVE {
 				curFocus := win.GetFocus()
-				if curFocus != 0 && me.windowBase.Hwnd().IsChild(curFocus) {
+				if curFocus != 0 && me.Hwnd().IsChild(curFocus) {
 					me.childPrevFocus = curFocus // save previously focused control
 				}
 			} else if me.childPrevFocus != 0 {
@@ -167,7 +167,7 @@ func (me *WindowMain) isModelessMsg(msg *win.MSG) bool {
 
 //------------------------------------------------------------------------------
 
-type windowMainSetup struct {
+type _WindowMainSetup struct {
 	wasInit bool // default to false
 
 	classNameBuf     []uint16
@@ -189,7 +189,7 @@ type windowMainSetup struct {
 	CmdShow          co.SW      // Passed to ShowWindow, defaults to SW_SHOW.
 }
 
-func (me *windowMainSetup) initOnce() {
+func (me *_WindowMainSetup) initOnce() {
 	if !me.wasInit {
 		me.wasInit = true
 
@@ -204,7 +204,7 @@ func (me *windowMainSetup) initOnce() {
 	}
 }
 
-func (me *windowMainSetup) genWndClassEx(hInst win.HINSTANCE) *win.WNDCLASSEX {
+func (me *_WindowMainSetup) genWndClassEx(hInst win.HINSTANCE) *win.WNDCLASSEX {
 	wcx := win.WNDCLASSEX{}
 
 	wcx.CbSize = uint32(unsafe.Sizeof(wcx))

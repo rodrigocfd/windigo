@@ -15,7 +15,7 @@ import (
 
 // Native status bar control.
 type StatusBar struct {
-	controlNativeBase
+	_ControlNativeBase
 	parts       []statusBarPart
 	firstAdjust bool
 }
@@ -97,7 +97,7 @@ func (me *StatusBar) Create(parent Window, ctrlId int32) *StatusBar {
 		style |= co.WS(co.SBARS_SIZEGRIP)
 	}
 
-	me.controlNativeBase.create(co.WS_EX(0), "msctls_statusbar32", "", style,
+	me._ControlNativeBase.create(co.WS_EX(0), "msctls_statusbar32", "", style,
 		0, 0, 0, 0, parent, ctrlId)
 	return me
 }
@@ -119,7 +119,7 @@ func (me *StatusBar) SetIcon(part uint32, hIcon win.HICON) *StatusBar {
 func (me *StatusBar) SetText(part uint32, text string) *StatusBar {
 	if !me.firstAdjust { // text is painted only after first adjust
 		me.Adjust(WmSize{ // manually construct param
-			wplp: wplp{
+			_Wm{
 				WParam: win.WPARAM(co.SIZE_RESTORED),
 				LParam: win.LPARAM(me.Hwnd().GetParent().GetClientRect().Right),
 			},

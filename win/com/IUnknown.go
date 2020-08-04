@@ -15,13 +15,13 @@ import (
 )
 
 type (
-	iUnknownPtr  struct{ uintptr } // IUnknown pointer itself, which has a pointer to virtual table
-	baseIUnknown struct{ uintptr } // container, which has a pointer to IUnknown
+	_IUnknownPtr struct{ uintptr } // IUnknown pointer itself, which has a pointer to virtual table
+	_IUnknown    struct{ uintptr } // container, which has a pointer to actual IUnknown
 
 	// IUnknown is the base to all COM interfaces.
-	IUnknown struct{ baseIUnknown }
+	IUnknown struct{ _IUnknown }
 
-	vtbIUnknown struct {
+	_IUnknownVtbl struct {
 		QueryInterface uintptr
 		AddRef         uintptr
 		Release        uintptr
@@ -29,16 +29,16 @@ type (
 )
 
 // Returns a pointer to IUnknown virtual table.
-func (me *baseIUnknown) pVtb() *vtbIUnknown {
+func (me *_IUnknown) pVtb() *_IUnknownVtbl {
 	// https://www.codeproject.com/Articles/633/Introduction-to-COM-What-It-Is-and-How-to-Use-It
-	ptrIUnk := (*iUnknownPtr)(unsafe.Pointer(me.uintptr))
-	ptrVtb := (*vtbIUnknown)(unsafe.Pointer(ptrIUnk.uintptr))
+	ptrIUnk := (*_IUnknownPtr)(unsafe.Pointer(me.uintptr))
+	ptrVtb := (*_IUnknownVtbl)(unsafe.Pointer(ptrIUnk.uintptr))
 	return ptrVtb
 }
 
 // Creates any COM interface, returning the base IUnknown.
 // To retrieve the other interface itself, cast the inner lpVtbl.
-func (me *baseIUnknown) coCreateInstance(
+func (me *_IUnknown) coCreateInstance(
 	clsid *co.CLSID, dwClsContext co.CLSCTX, iid *co.IID) {
 
 	if me.uintptr != 0 {
@@ -61,7 +61,7 @@ func (me *baseIUnknown) coCreateInstance(
 
 // Queries any COM interface, returning the base IUnknown.
 // To retrieve the other interface itself, cast the inner lpVtbl.
-func (me *baseIUnknown) queryInterface(iid *co.IID) IUnknown {
+func (me *_IUnknown) queryInterface(iid *co.IID) IUnknown {
 	if me.uintptr == 0 {
 		panic("Calling queryInterface on empty IUnknown.")
 	}
@@ -82,7 +82,7 @@ func (me *baseIUnknown) queryInterface(iid *co.IID) IUnknown {
 	return retIUnk
 }
 
-func (me *baseIUnknown) AddRef() uint32 {
+func (me *_IUnknown) AddRef() uint32 {
 	if me.uintptr == 0 {
 		panic("Calling AddRef on empty IUnknown.")
 	}
@@ -92,7 +92,7 @@ func (me *baseIUnknown) AddRef() uint32 {
 	return uint32(ret)
 }
 
-func (me *baseIUnknown) Release() uint32 {
+func (me *_IUnknown) Release() uint32 {
 	if me.uintptr == 0 {
 		panic("Calling Release on empty IUnknown.")
 	}

@@ -13,7 +13,7 @@ import (
 
 // Native check box control.
 type CheckBox struct {
-	controlNativeBase
+	_ControlNativeBase
 }
 
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
@@ -23,11 +23,11 @@ func (me *CheckBox) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *CheckBox {
 
-	x, y, width, height = globalDpi.multiply(x, y, width, height)
+	x, y, width, height = _globalDpi.multiply(x, y, width, height)
 
-	me.controlNativeBase.create(exStyles, "BUTTON", text, // check box is, in fact, a button
+	me._ControlNativeBase.create(exStyles, "BUTTON", text, // check box is, in fact, a button
 		styles|co.WS(btnStyles), x, y, width, height, parent, ctrlId)
-	globalUiFont.SetOnControl(me)
+	_globalUiFont.SetOnControl(me)
 	return me
 }
 
@@ -105,12 +105,12 @@ func (me *CheckBox) calcIdealSize(hReferenceDc win.HWND,
 func (me *CheckBox) createAutoSize(
 	parent Window, ctrlId, x, y int32, text string, chbxStyles co.BS) *CheckBox {
 
-	x, y, _, _ = globalDpi.multiply(x, y, 0, 0)
+	x, y, _, _ = _globalDpi.multiply(x, y, 0, 0)
 	cx, cy := me.calcIdealSize(parent.Hwnd(), text)
 
-	me.controlNativeBase.create(co.WS_EX(0), "BUTTON", text,
+	me._ControlNativeBase.create(co.WS_EX(0), "BUTTON", text,
 		co.WS_CHILD|co.WS_TABSTOP|co.WS_GROUP|co.WS_VISIBLE|co.WS(chbxStyles),
 		x, y, cx, cy, parent, ctrlId)
-	globalUiFont.SetOnControl(me)
+	_globalUiFont.SetOnControl(me)
 	return me
 }

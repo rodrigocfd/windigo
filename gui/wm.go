@@ -15,47 +15,47 @@ import (
 	"wingows/win"
 )
 
-type wplp struct {
+type _Wm struct {
 	WParam win.WPARAM
 	LParam win.LPARAM
 }
 
 // Raw window message parameters.
 type Wm struct {
-	wplp
+	_Wm
 }
 
-type WmActivate struct{ wplp }
+type WmActivate struct{ _Wm }
 
 func (p WmActivate) Event() co.WA                           { return co.WA(p.WParam.LoWord()) }
 func (p WmActivate) IsMinimized() bool                      { return p.WParam.HiWord() != 0 }
 func (p WmActivate) ActivatedOrDeactivatedWindow() win.HWND { return win.HWND(p.LParam) }
 
-type WmActivateApp struct{ wplp }
+type WmActivateApp struct{ _Wm }
 
 func (p WmActivateApp) IsBeingActivated() bool { return p.WParam != 0 }
 func (p WmActivateApp) ThreadId() uint32       { return uint32(p.LParam) }
 
-type WmAppCommand struct{ wplp }
+type WmAppCommand struct{ _Wm }
 
 func (p WmAppCommand) OwnerWindow() win.HWND     { return win.HWND(p.WParam) }
 func (p WmAppCommand) AppCommand() co.APPCOMMAND { return co.APPCOMMAND(p.LParam.HiWord() &^ 0xF000) }
 func (p WmAppCommand) UDevice() co.FAPPCOMMAND   { return co.FAPPCOMMAND(p.LParam.HiWord() & 0xF000) }
 func (p WmAppCommand) Keys() co.MK               { return co.MK(p.LParam.LoWord()) }
 
-type bChar struct{ wplp } // base for other messages
+type _Char struct{ _Wm } // base for other messages
 
-func (p bChar) CharCode() uint16          { return uint16(p.WParam) }
-func (p bChar) RepeatCount() uint16       { return p.LParam.LoWord() }
-func (p bChar) ScanCode() uint8           { return p.LParam.LoByteHiWord() }
-func (p bChar) IsExtendedKey() bool       { return (p.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
-func (p bChar) HasAltKey() bool           { return (p.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
-func (p bChar) IsKeyDownBeforeSend() bool { return (p.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
-func (p bChar) KeyBeingReleased() bool    { return (p.LParam.HiByteHiWord() & 0b1000_0000) != 0 }
+func (p _Char) CharCode() uint16          { return uint16(p.WParam) }
+func (p _Char) RepeatCount() uint16       { return p.LParam.LoWord() }
+func (p _Char) ScanCode() uint8           { return p.LParam.LoByteHiWord() }
+func (p _Char) IsExtendedKey() bool       { return (p.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
+func (p _Char) HasAltKey() bool           { return (p.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
+func (p _Char) IsKeyDownBeforeSend() bool { return (p.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
+func (p _Char) KeyBeingReleased() bool    { return (p.LParam.HiByteHiWord() & 0b1000_0000) != 0 }
 
-type WmChar struct{ bChar }
+type WmChar struct{ _Char }
 
-type WmCommand struct{ wplp }
+type WmCommand struct{ _Wm }
 
 func (p WmCommand) IsFromMenu() bool         { return p.WParam.HiWord() == 0 }
 func (p WmCommand) IsFromAccelerator() bool  { return p.WParam.HiWord() == 1 }
@@ -66,20 +66,20 @@ func (p WmCommand) ControlId() int32         { return int32(p.WParam.LoWord()) }
 func (p WmCommand) ControlNotifCode() uint16 { return p.WParam.HiWord() }
 func (p WmCommand) ControlHwnd() win.HWND    { return win.HWND(p.LParam) }
 
-type WmContextMenu struct{ wplp }
+type WmContextMenu struct{ _Wm }
 
 func (p WmContextMenu) RightClickedWindow() win.HWND { return win.HWND(p.WParam) }
 func (p WmContextMenu) CursorPos() win.POINT         { return p.LParam.MakePoint() }
 
-type WmCreate struct{ wplp }
+type WmCreate struct{ _Wm }
 
 func (p WmCreate) CreateStruct() *win.CREATESTRUCT {
 	return (*win.CREATESTRUCT)(unsafe.Pointer(p.LParam))
 }
 
-type WmDeadChar struct{ bChar }
+type WmDeadChar struct{ _Char }
 
-type WmDropFiles struct{ wplp }
+type WmDropFiles struct{ _Wm }
 
 func (p WmDropFiles) Hdrop() win.HDROP { return win.HDROP(p.WParam) }
 
@@ -101,7 +101,7 @@ func (p WmDropFiles) RetrieveAll() []string {
 	return files
 }
 
-type WmGetDlgCode struct{ wplp }
+type WmGetDlgCode struct{ _Wm }
 
 func (p WmGetDlgCode) VirtualKeyCode() co.VK { return co.VK(p.WParam) }
 func (p WmGetDlgCode) IsQuery() bool         { return p.LParam == 0 }
@@ -110,129 +110,129 @@ func (p WmGetDlgCode) HasAlt() bool          { return (win.GetAsyncKeyState(co.V
 func (p WmGetDlgCode) HasCtrl() bool         { return (win.GetAsyncKeyState(co.VK_CONTROL) & 0x8000) != 0 }
 func (p WmGetDlgCode) HasShift() bool        { return (win.GetAsyncKeyState(co.VK_SHIFT) & 0x8000) != 0 }
 
-type WmHelp struct{ wplp }
+type WmHelp struct{ _Wm }
 
 func (p WmHelp) HelpInfo() *win.HELPINFO { return (*win.HELPINFO)(unsafe.Pointer(p.LParam)) }
 
-type WmHotKey struct{ wplp }
+type WmHotKey struct{ _Wm }
 
 func (p WmHotKey) HotKey() co.IDHOT      { return co.IDHOT(p.WParam) }
 func (p WmHotKey) OtherKeys() co.MOD     { return co.MOD(p.LParam.LoWord()) }
 func (p WmHotKey) VirtualKeyCode() co.VK { return co.VK(p.LParam.HiWord()) }
 
-type WmInitMenuPopup struct{ wplp }
+type WmInitMenuPopup struct{ _Wm }
 
 func (p WmInitMenuPopup) Hmenu() win.HMENU        { return win.HMENU(p.WParam) }
 func (p WmInitMenuPopup) MenuRelativePos() uint16 { return p.LParam.LoWord() }
 func (p WmInitMenuPopup) IsWindowMenu() bool      { return p.LParam.HiWord() != 0 }
 
-type bKeyUpDn struct{ wplp } // base for other messages
+type _Key struct{ _Wm } // base for other messages
 
-func (p bKeyUpDn) VirtualKeyCode() co.VK     { return co.VK(p.WParam) }
-func (p bKeyUpDn) RepeatCount() uint16       { return p.LParam.LoWord() }
-func (p bKeyUpDn) ScanCode() uint8           { return p.LParam.LoByteHiWord() }
-func (p bKeyUpDn) IsExtendedKey() bool       { return (p.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
-func (p bKeyUpDn) HasAltKey() bool           { return (p.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
-func (p bKeyUpDn) IsKeyDownBeforeSend() bool { return (p.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
+func (p _Key) VirtualKeyCode() co.VK     { return co.VK(p.WParam) }
+func (p _Key) RepeatCount() uint16       { return p.LParam.LoWord() }
+func (p _Key) ScanCode() uint8           { return p.LParam.LoByteHiWord() }
+func (p _Key) IsExtendedKey() bool       { return (p.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
+func (p _Key) HasAltKey() bool           { return (p.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
+func (p _Key) IsKeyDownBeforeSend() bool { return (p.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
 
-type WmKeyDown struct{ bKeyUpDn }
+type WmKeyDown struct{ _Key }
 
-type WmKeyUp struct{ bKeyUpDn }
+type WmKeyUp struct{ _Key }
 
-type WmKillFocus struct{ wplp }
+type WmKillFocus struct{ _Wm }
 
 func (p WmKillFocus) WindowReceivingFocus() win.HWND { return win.HWND(p.WParam) }
 
-type bButtonClk struct{ wplp } // base for other messages
+type _Button struct{ _Wm } // base for other messages
 
-func (p bButtonClk) HasCtrl() bool      { return (co.MK(p.WParam) & co.MK_CONTROL) != 0 }
-func (p bButtonClk) HasLeftBtn() bool   { return (co.MK(p.WParam) & co.MK_LBUTTON) != 0 }
-func (p bButtonClk) HasMiddleBtn() bool { return (co.MK(p.WParam) & co.MK_MBUTTON) != 0 }
-func (p bButtonClk) HasRightBtn() bool  { return (co.MK(p.WParam) & co.MK_RBUTTON) != 0 }
-func (p bButtonClk) HasShift() bool     { return (co.MK(p.WParam) & co.MK_SHIFT) != 0 }
-func (p bButtonClk) HasXBtn1() bool     { return (co.MK(p.WParam) & co.MK_XBUTTON1) != 0 }
-func (p bButtonClk) HasXBtn2() bool     { return (co.MK(p.WParam) & co.MK_XBUTTON2) != 0 }
-func (p bButtonClk) Pos() win.POINT     { return p.LParam.MakePoint() }
+func (p _Button) HasCtrl() bool      { return (co.MK(p.WParam) & co.MK_CONTROL) != 0 }
+func (p _Button) HasLeftBtn() bool   { return (co.MK(p.WParam) & co.MK_LBUTTON) != 0 }
+func (p _Button) HasMiddleBtn() bool { return (co.MK(p.WParam) & co.MK_MBUTTON) != 0 }
+func (p _Button) HasRightBtn() bool  { return (co.MK(p.WParam) & co.MK_RBUTTON) != 0 }
+func (p _Button) HasShift() bool     { return (co.MK(p.WParam) & co.MK_SHIFT) != 0 }
+func (p _Button) HasXBtn1() bool     { return (co.MK(p.WParam) & co.MK_XBUTTON1) != 0 }
+func (p _Button) HasXBtn2() bool     { return (co.MK(p.WParam) & co.MK_XBUTTON2) != 0 }
+func (p _Button) Pos() win.POINT     { return p.LParam.MakePoint() }
 
-type WmLButtonDblClk struct{ bButtonClk }
+type WmLButtonDblClk struct{ _Button }
 
-type WmLButtonDown struct{ bButtonClk }
+type WmLButtonDown struct{ _Button }
 
-type WmLButtonUp struct{ bButtonClk }
+type WmLButtonUp struct{ _Button }
 
-type WmMButtonDblClk struct{ bButtonClk }
+type WmMButtonDblClk struct{ _Button }
 
-type WmMButtonDown struct{ bButtonClk }
+type WmMButtonDown struct{ _Button }
 
-type WmMButtonUp struct{ bButtonClk }
+type WmMButtonUp struct{ _Button }
 
-type WmMenuChar struct{ wplp }
+type WmMenuChar struct{ _Wm }
 
 func (p WmMenuChar) CharCode() uint16      { return p.WParam.LoWord() }
 func (p WmMenuChar) ActiveMenuType() co.MF { return co.MF(p.WParam.HiWord()) }
 func (p WmMenuChar) ActiveMenu() win.HMENU { return win.HMENU(p.LParam) }
 
-type WmMenuCommand struct{ wplp }
+type WmMenuCommand struct{ _Wm }
 
 func (p WmMenuCommand) ItemIndex() uint16 { return uint16(p.WParam) }
 func (p WmMenuCommand) Hmenu() win.HMENU  { return win.HMENU(p.LParam) }
 
-type WmMenuSelect struct{ wplp }
+type WmMenuSelect struct{ _Wm }
 
 func (p WmMenuSelect) Item() uint16     { return p.WParam.LoWord() }
 func (p WmMenuSelect) Flags() co.MF     { return co.MF(p.WParam.HiWord()) }
 func (p WmMenuSelect) Hmenu() win.HMENU { return win.HMENU(p.LParam) }
 
-type WmMouseHover struct{ bButtonClk }
+type WmMouseHover struct{ _Button }
 
-type WmMouseMove struct{ bButtonClk }
+type WmMouseMove struct{ _Button }
 
-type WmMove struct{ wplp }
+type WmMove struct{ _Wm }
 
 func (p WmMove) Pos() win.POINT { return p.LParam.MakePoint() }
 
-type WmNcPaint struct{ wplp }
+type WmNcPaint struct{ _Wm }
 
 func (p WmNcPaint) Hrgn() win.HRGN { return win.HRGN(p.WParam) }
 
-type WmNotify struct{ wplp }
+type WmNotify struct{ _Wm }
 
 func (p WmNotify) NmHdr() *win.NMHDR { return (*win.NMHDR)(unsafe.Pointer(p.LParam)) }
 
-type WmPrint struct{ wplp }
+type WmPrint struct{ _Wm }
 
 func (p WmPrint) Hdc() win.HDC           { return win.HDC(p.WParam) }
 func (p WmPrint) DrawingOptions() co.PRF { return co.PRF(p.LParam) }
 
-type WmRButtonDblClk struct{ bButtonClk }
+type WmRButtonDblClk struct{ _Button }
 
-type WmRButtonDown struct{ bButtonClk }
+type WmRButtonDown struct{ _Button }
 
-type WmRButtonUp struct{ bButtonClk }
+type WmRButtonUp struct{ _Button }
 
-type WmSetFocus struct{ wplp }
+type WmSetFocus struct{ _Wm }
 
 func (p WmSetFocus) UnfocusedWindow() win.HWND { return win.HWND(p.WParam) }
 
-type WmSetFont struct{ wplp }
+type WmSetFont struct{ _Wm }
 
 func (p WmSetFont) Hfont() win.HFONT   { return win.HFONT(p.WParam) }
 func (p WmSetFont) ShouldRedraw() bool { return p.LParam == 1 }
 
-type WmSize struct{ wplp }
+type WmSize struct{ _Wm }
 
 func (p WmSize) Request() co.SIZE         { return co.SIZE(p.WParam) }
 func (p WmSize) ClientAreaSize() win.SIZE { return p.LParam.MakeSize() }
 
-type WmSysChar struct{ bChar }
+type WmSysChar struct{ _Char }
 
-type WmSysCommand struct{ wplp }
+type WmSysCommand struct{ _Wm }
 
 func (p WmSysCommand) RequestCommand() co.SC { return co.SC(p.WParam) }
 func (p WmSysCommand) CursorPos() win.POINT  { return p.LParam.MakePoint() }
 
-type WmSysDeadChar struct{ bChar }
+type WmSysDeadChar struct{ _Char }
 
-type WmSysKeyDown struct{ bKeyUpDn }
+type WmSysKeyDown struct{ _Key }
 
-type WmSysKeyUp struct{ bKeyUpDn }
+type WmSysKeyUp struct{ _Key }

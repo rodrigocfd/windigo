@@ -7,13 +7,13 @@
 package com
 
 type (
-	baseIPersist struct{ baseIUnknown }
+	_IPersist struct{ _IUnknown }
 
 	// IPersist > IUnknown.
-	IPersist struct{ baseIPersist }
+	IPersist struct{ _IPersist }
 
-	vtbIPersist struct {
-		vtbIUnknown
+	_IPersistVtbl struct {
+		_IUnknownVtbl
 		GetClassID uintptr
 	}
 )

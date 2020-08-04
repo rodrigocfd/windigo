@@ -13,13 +13,13 @@ import (
 )
 
 type (
-	baseIGraphBuilder struct{ baseIFilterGraph }
+	_IGraphBuilder struct{ _IFilterGraph }
 
 	// IGraphBuilder > IFilterGraph > IUnknown.
-	IGraphBuilder struct{ baseIGraphBuilder }
+	IGraphBuilder struct{ _IGraphBuilder }
 
-	vtbIGraphBuilder struct {
-		vtbIFilterGraph
+	_IGraphBuilderVtbl struct {
+		_IFilterGraphVtbl
 		Connect                 uintptr
 		Render                  uintptr
 		RenderFile              uintptr
@@ -30,14 +30,14 @@ type (
 	}
 )
 
-func (me *baseIGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
-	me.baseIUnknown.coCreateInstance(
+func (me *_IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
+	me._IUnknown.coCreateInstance(
 		&co.CLSID_FilterGraph, dwClsContext, &co.IID_IGraphBuilder)
 }
 
 func (me *IGraphBuilder) Abort() {
 	ret, _, _ := syscall.Syscall(
-		(*vtbIGraphBuilder)(unsafe.Pointer(me.pVtb())).Abort, 1,
+		(*_IGraphBuilderVtbl)(unsafe.Pointer(me.pVtb())).Abort, 1,
 		uintptr(unsafe.Pointer(me.uintptr)), 0, 0)
 
 	lerr := co.ERROR(ret)

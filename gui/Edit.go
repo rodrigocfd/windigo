@@ -14,7 +14,7 @@ import (
 
 // Native edit control (textbox).
 type Edit struct {
-	controlNativeBase
+	_ControlNativeBase
 }
 
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
@@ -24,11 +24,11 @@ func (me *Edit) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32, initialText string,
 	exStyles co.WS_EX, styles co.WS, editStyles co.ES) *Edit {
 
-	x, y, width, height = globalDpi.multiply(x, y, width, height)
+	x, y, width, height = _globalDpi.multiply(x, y, width, height)
 
-	me.controlNativeBase.create(exStyles, "EDIT", initialText,
+	me._ControlNativeBase.create(exStyles, "EDIT", initialText,
 		styles|co.WS(editStyles), x, y, width, height, parent, ctrlId)
-	globalUiFont.SetOnControl(me)
+	_globalUiFont.SetOnControl(me)
 	return me
 }
 

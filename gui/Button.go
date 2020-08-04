@@ -12,7 +12,7 @@ import (
 
 // Native button control.
 type Button struct {
-	controlNativeBase
+	_ControlNativeBase
 }
 
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
@@ -22,11 +22,11 @@ func (me *Button) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *Button {
 
-	x, y, width, height = globalDpi.multiply(x, y, width, height)
+	x, y, width, height = _globalDpi.multiply(x, y, width, height)
 
-	me.controlNativeBase.create(exStyles, "BUTTON", text,
+	me._ControlNativeBase.create(exStyles, "BUTTON", text,
 		styles|co.WS(btnStyles), x, y, width, height, parent, ctrlId)
-	globalUiFont.SetOnControl(me)
+	_globalUiFont.SetOnControl(me)
 	return me
 }
 

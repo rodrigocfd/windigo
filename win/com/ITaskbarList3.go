@@ -14,13 +14,13 @@ import (
 )
 
 type (
-	baseITaskbarList3 struct{ baseITaskbarList2 }
+	_ITaskbarList3 struct{ _ITaskbarList2 }
 
 	// ITaskbarList3 > ITaskbarList2 > ITaskbarList > IUnknown.
-	ITaskbarList3 struct{ baseITaskbarList3 }
+	ITaskbarList3 struct{ _ITaskbarList3 }
 
-	vtbITaskbarList3 struct {
-		vtbITaskbarList2
+	_ITaskbarList3Vtbl struct {
+		_ITaskbarList2Vtbl
 		SetProgressValue      uintptr
 		SetProgressState      uintptr
 		RegisterTab           uintptr
@@ -36,8 +36,8 @@ type (
 	}
 )
 
-func (me *baseITaskbarList3) CoCreateInstance(dwClsContext co.CLSCTX) {
-	me.baseIUnknown.coCreateInstance(
+func (me *_ITaskbarList3) CoCreateInstance(dwClsContext co.CLSCTX) {
+	me._IUnknown.coCreateInstance(
 		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList3)
 }
 
@@ -45,7 +45,7 @@ func (me *ITaskbarList3) SetProgressValue(
 	hwnd win.HWND, ullCompleted, ullTotal uint64) {
 
 	ret, _, _ := syscall.Syscall6(
-		(*vtbITaskbarList3)(unsafe.Pointer(me.pVtb())).SetProgressValue, 4,
+		(*_ITaskbarList3Vtbl)(unsafe.Pointer(me.pVtb())).SetProgressValue, 4,
 		uintptr(unsafe.Pointer(me.uintptr)), uintptr(hwnd),
 		uintptr(ullCompleted), uintptr(ullTotal),
 		0, 0)
@@ -59,7 +59,7 @@ func (me *ITaskbarList3) SetProgressValue(
 
 func (me *ITaskbarList3) SetProgressState(hwnd win.HWND, tbpFlags co.TBPF) {
 	ret, _, _ := syscall.Syscall(
-		(*vtbITaskbarList3)(unsafe.Pointer(me.pVtb())).SetProgressState, 3,
+		(*_ITaskbarList3Vtbl)(unsafe.Pointer(me.pVtb())).SetProgressState, 3,
 		uintptr(unsafe.Pointer(me.uintptr)), uintptr(hwnd), uintptr(tbpFlags))
 
 	lerr := co.ERROR(ret)

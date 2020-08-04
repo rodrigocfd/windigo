@@ -14,27 +14,27 @@ import (
 )
 
 type (
-	baseITaskbarList2 struct{ baseITaskbarList }
+	_ITaskbarList2 struct{ _ITaskbarList }
 
 	// ITaskbarList2 > ITaskbarList > IUnknown.
-	ITaskbarList2 struct{ baseITaskbarList2 }
+	ITaskbarList2 struct{ _ITaskbarList2 }
 
-	vtbITaskbarList2 struct {
-		tvbITaskbarList
+	_ITaskbarList2Vtbl struct {
+		_ITaskbarListVtbl
 		MarkFullscreenWindow uintptr
 	}
 )
 
-func (me *baseITaskbarList2) CoCreateInstance(dwClsContext co.CLSCTX) {
-	me.baseIUnknown.coCreateInstance(
+func (me *_ITaskbarList2) CoCreateInstance(dwClsContext co.CLSCTX) {
+	me._IUnknown.coCreateInstance(
 		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList2)
 }
 
-func (me *baseITaskbarList2) MarkFullscreenWindow(
+func (me *_ITaskbarList2) MarkFullscreenWindow(
 	hwnd win.HWND, fFullScreen bool) {
 
 	ret, _, _ := syscall.Syscall(
-		(*vtbITaskbarList2)(unsafe.Pointer(me.pVtb())).MarkFullscreenWindow, 3,
+		(*_ITaskbarList2Vtbl)(unsafe.Pointer(me.pVtb())).MarkFullscreenWindow, 3,
 		uintptr(unsafe.Pointer(me.uintptr)), uintptr(hwnd),
 		uintptr(boolToUintptr(fFullScreen)))
 

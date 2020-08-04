@@ -16,7 +16,7 @@ import (
 
 // Native combo box control.
 type ComboBox struct {
-	controlNativeBase
+	_ControlNativeBase
 }
 
 // Adds a single item to the combo box.
@@ -46,11 +46,11 @@ func (me *ComboBox) Create(
 	parent Window, ctrlId, x, y int32, width uint32,
 	exStyles co.WS_EX, styles co.WS, cbStyles co.CBS) *ComboBox {
 
-	x, y, width, _ = globalDpi.multiply(x, y, width, 0)
+	x, y, width, _ = _globalDpi.multiply(x, y, width, 0)
 
-	me.controlNativeBase.create(exStyles, "COMBOBOX", "",
+	me._ControlNativeBase.create(exStyles, "COMBOBOX", "",
 		styles|co.WS(cbStyles), x, y, width, 0, parent, ctrlId)
-	globalUiFont.SetOnControl(me)
+	_globalUiFont.SetOnControl(me)
 	return me
 }
 

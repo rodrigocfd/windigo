@@ -12,7 +12,7 @@ import (
 
 // Native static control (label).
 type Static struct {
-	controlNativeBase
+	_ControlNativeBase
 }
 
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
@@ -22,11 +22,11 @@ func (me *Static) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, staStyles co.SS) *Static {
 
-	x, y, width, height = globalDpi.multiply(x, y, width, height)
+	x, y, width, height = _globalDpi.multiply(x, y, width, height)
 
-	me.controlNativeBase.create(exStyles, "STATIC", text,
+	me._ControlNativeBase.create(exStyles, "STATIC", text,
 		styles|co.WS(staStyles), x, y, width, height, parent, ctrlId)
-	globalUiFont.SetOnControl(me)
+	_globalUiFont.SetOnControl(me)
 	return me
 }
 
@@ -35,13 +35,13 @@ func (me *Static) Create(
 func (me *Static) CreateLText(
 	parent Window, ctrlId, x, y int32, text string) *Static {
 
-	x, y, _, _ = globalDpi.multiply(x, y, 0, 0)
+	x, y, _, _ = _globalDpi.multiply(x, y, 0, 0)
 	cx, cy := calcTextBoundBox(parent.Hwnd(), text, true)
 
-	me.controlNativeBase.create(co.WS_EX(0), "STATIC", text,
+	me._ControlNativeBase.create(co.WS_EX(0), "STATIC", text,
 		co.WS_CHILD|co.WS_VISIBLE|co.WS(co.SS_LEFT),
 		x, y, cx, cy, parent, ctrlId)
-	globalUiFont.SetOnControl(me)
+	_globalUiFont.SetOnControl(me)
 	return me
 }
 

@@ -7,13 +7,13 @@
 package com
 
 type (
-	baseIFilterGraph struct{ baseIUnknown }
+	_IFilterGraph struct{ _IUnknown }
 
 	// IFilterGraph > IUnknown.
-	IFilterGraph struct{ baseIFilterGraph }
+	IFilterGraph struct{ _IFilterGraph }
 
-	vtbIFilterGraph struct {
-		vtbIUnknown
+	_IFilterGraphVtbl struct {
+		_IUnknownVtbl
 		AddFilter            uintptr
 		RemoveFilter         uintptr
 		EnumFilters          uintptr

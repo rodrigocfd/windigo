@@ -7,13 +7,13 @@
 package com
 
 type (
-	baseIBaseFilter struct{ baseIMediaFilter }
+	_IBaseFilter struct{ _IMediaFilter }
 
 	// IBaseFilter > IMediaFilter > IPersist > IUnknown.
-	IBaseFilter struct{ baseIBaseFilter }
+	IBaseFilter struct{ _IBaseFilter }
 
-	vtbIBaseFilter struct {
-		vtbIMediaFilter
+	_IBaseFilterVtbl struct {
+		_IMediaFilterVtbl
 		EnumPins        uintptr
 		FindPin         uintptr
 		QueryFilterInfo uintptr

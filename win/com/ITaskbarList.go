@@ -11,13 +11,13 @@ import (
 )
 
 type (
-	baseITaskbarList struct{ baseIUnknown }
+	_ITaskbarList struct{ _IUnknown }
 
 	// ITaskbarList > IUnknown.
-	ITaskbarList struct{ baseITaskbarList }
+	ITaskbarList struct{ _ITaskbarList }
 
-	tvbITaskbarList struct {
-		vtbIUnknown
+	_ITaskbarListVtbl struct {
+		_IUnknownVtbl
 		HrInit       uintptr
 		AddTab       uintptr
 		DeleteTab    uintptr
@@ -26,7 +26,7 @@ type (
 	}
 )
 
-func (me *baseITaskbarList) CoCreateInstance(dwClsContext co.CLSCTX) {
-	me.baseIUnknown.coCreateInstance(
+func (me *_ITaskbarList) CoCreateInstance(dwClsContext co.CLSCTX) {
+	me._IUnknown.coCreateInstance(
 		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList)
 }

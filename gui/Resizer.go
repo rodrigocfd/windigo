@@ -20,7 +20,7 @@ const (
 	RESZ_NOTHING
 )
 
-type ctrl struct {
+type _ReszCtrl struct {
 	hChild Control
 	rcOrig win.RECT
 	doHorz RESZ
@@ -28,7 +28,7 @@ type ctrl struct {
 }
 
 type Resizer struct {
-	ctrls  []ctrl
+	ctrls  []_ReszCtrl
 	szOrig win.SIZE
 }
 
@@ -40,7 +40,7 @@ func (me *Resizer) Add(child Control, doHorz, doVert RESZ) *Resizer {
 		me.szOrig.Cy = rc.Bottom // save original size of parent
 	}
 
-	me.ctrls = append(me.ctrls, ctrl{
+	me.ctrls = append(me.ctrls, _ReszCtrl{
 		hChild: child,
 		rcOrig: *child.Hwnd().GetWindowRect(),
 		doHorz: doHorz,

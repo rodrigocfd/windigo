@@ -15,38 +15,38 @@ import (
 )
 
 var (
-	globalBaseSubclassId  = uint32(0)  // incremented at each subclass installed
-	globalSubclassProcPtr = uintptr(0) // necessary for RemoveWindowSubclass
+	_globalBaseSubclassId  = uint32(0)  // incremented at each subclass installed
+	_globalSubclassProcPtr = uintptr(0) // necessary for RemoveWindowSubclass
 )
 
 // Base to all native child control types, like Button and Edit.
 // Allows control subclassing.
-type controlNativeBase struct {
+type _ControlNativeBase struct {
 	hwnd       win.HWND
-	msgs       windowDepotMsg
+	msgs       _WindowDepotMsg
 	subclassId uint32
 }
 
 // Returns the underlying HWND handle of this native control.
-func (me *controlNativeBase) Hwnd() win.HWND {
+func (me *_ControlNativeBase) Hwnd() win.HWND {
 	return me.hwnd
 }
 
 // Retrieves the command ID for this control.
-func (me *controlNativeBase) Id() int32 {
+func (me *_ControlNativeBase) Id() int32 {
 	return me.hwnd.GetDlgCtrlID()
 }
 
 // Exposes all the control subclass methods that can be handled.
 // The subclass will be installed in create() if at least 1 message was added.
-func (me *controlNativeBase) OnSubclassMsg() *windowDepotMsg {
+func (me *_ControlNativeBase) OnSubclassMsg() *_WindowDepotMsg {
 	if me.hwnd != 0 {
 		panic("Cannot add subclass message after the control was created.")
 	}
 	return &me.msgs
 }
 
-func (me *controlNativeBase) create(
+func (me *_ControlNativeBase) create(
 	exStyle co.WS_EX, className, title string, style co.WS,
 	x, y int32, width, height uint32, parent Window, ctrlId int32) {
 
@@ -61,15 +61,15 @@ func (me *controlNativeBase) create(
 	if len(me.msgs.mapMsgs) > 0 || // at last 1 subclass message was added?
 		len(me.msgs.mapCmds) > 0 {
 
-		if globalSubclassProcPtr == 0 {
-			globalSubclassProcPtr = syscall.NewCallback(subclassProc)
+		if _globalSubclassProcPtr == 0 {
+			_globalSubclassProcPtr = syscall.NewCallback(subclassProc)
 		}
-		globalBaseSubclassId++
-		me.subclassId = globalBaseSubclassId
+		_globalBaseSubclassId++
+		me.subclassId = _globalBaseSubclassId
 
 		// Subclass is installed after window creation, thus WM_CREATE can never
 		// be handled for a subclassed control.
-		me.hwnd.SetWindowSubclass(globalSubclassProcPtr,
+		me.hwnd.SetWindowSubclass(_globalSubclassProcPtr,
 			me.subclassId, unsafe.Pointer(me))
 	}
 }
@@ -79,7 +79,7 @@ func subclassProc(hwnd win.HWND, msg co.WM,
 	uIdSubclass, dwRefData uintptr) uintptr {
 
 	// Retrieve passed pointer.
-	pMe := (*controlNativeBase)(unsafe.Pointer(dwRefData))
+	pMe := (*_ControlNativeBase)(unsafe.Pointer(dwRefData))
 
 	// If the retrieved *nativeControlBase stays here, the GC will collect it.
 	// Sending it away will prevent the GC collection.
@@ -88,14 +88,14 @@ func subclassProc(hwnd win.HWND, msg co.WM,
 
 	if pMe != nil && pMe.hwnd != 0 {
 		userRet, wasHandled := pMe.msgs.processMessage(msg, Wm{ // try to process the message with an user handler
-			wplp: wplp{
+			_Wm{
 				WParam: wParam,
 				LParam: lParam,
 			},
 		})
 
 		if msg == co.WM_NCDESTROY { // even if the user handles WM_NCDESTROY, we must ensure cleanup
-			pMe.hwnd.RemoveWindowSubclass(globalSubclassProcPtr, pMe.subclassId)
+			pMe.hwnd.RemoveWindowSubclass(_globalSubclassProcPtr, pMe.subclassId)
 		}
 		if wasHandled && msg != co.WM_LBUTTONUP {
 			// For some reason, if we don't call DefSubclassProc with WM_LBUTTONUP,
@@ -104,7 +104,7 @@ func subclassProc(hwnd win.HWND, msg co.WM,
 			return userRet
 		}
 	} else if msg == co.WM_NCDESTROY { // https://devblogs.microsoft.com/oldnewthing/20031111-00/?p=41883
-		hwnd.RemoveWindowSubclass(globalSubclassProcPtr, pMe.subclassId)
+		hwnd.RemoveWindowSubclass(_globalSubclassProcPtr, pMe.subclassId)
 	}
 
 	return hwnd.DefSubclassProc(msg, wParam, lParam) // message was not processed
@@ -126,7 +126,7 @@ func calcTextBoundBox(hReferenceDc win.HWND, text string,
 
 	parentDc := hReferenceDc.GetDC()
 	cloneDc := parentDc.CreateCompatibleDC()
-	prevFont := cloneDc.SelectObjectFont(globalUiFont.Hfont()) // system font; already adjusted to current DPI
+	prevFont := cloneDc.SelectObjectFont(_globalUiFont.Hfont()) // system font; already adjusted to current DPI
 	bounds := cloneDc.GetTextExtentPoint32(text)
 	cloneDc.SelectObjectFont(prevFont)
 	cloneDc.DeleteDC()

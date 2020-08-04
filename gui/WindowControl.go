@@ -15,8 +15,8 @@ import (
 // Custom user control.
 // Allows message and notification handling.
 type WindowControl struct {
-	windowBase
-	setup windowControlSetup // Parameters that will be used to create the window.
+	_WindowBase
+	setup _WindowControlSetup // Parameters that will be used to create the window.
 }
 
 // Retrieves the command ID for this control.
@@ -25,8 +25,8 @@ func (me *WindowControl) Id() int32 {
 }
 
 // Exposes parameters that will be used to create the child window control.
-func (me *WindowControl) Setup() *windowControlSetup {
-	if me.windowBase.Hwnd() != 0 {
+func (me *WindowControl) Setup() *_WindowControlSetup {
+	if me.Hwnd() != 0 {
 		panic("Cannot change setup after the control was created.")
 	}
 	me.setup.initOnce() // guard
@@ -39,19 +39,19 @@ func (me *WindowControl) Create(
 
 	me.setup.initOnce() // guard
 	hInst := parent.Hwnd().GetInstance()
-	me.windowBase.registerClass(me.setup.genWndClassEx(hInst))
+	me._WindowBase.registerClass(me.setup.genWndClassEx(hInst))
 
 	me.defaultMessageHandling()
 
-	x, y, width, height = globalDpi.multiply(x, y, width, height)
+	x, y, width, height = _globalDpi.multiply(x, y, width, height)
 
-	me.windowBase.createWindow("WindowControl", me.setup.ExStyle,
+	me._WindowBase.createWindow("WindowControl", me.setup.ExStyle,
 		me.setup.ClassName, "", me.setup.Style, x, y, width, height, parent,
 		win.HMENU(ctrlId), hInst)
 }
 
 func (me *WindowControl) defaultMessageHandling() {
-	me.windowBase.OnMsg().WmNcPaint(func(p WmNcPaint) {
+	me.OnMsg().WmNcPaint(func(p WmNcPaint) {
 		me.Hwnd().DefWindowProc(co.WM_NCPAINT, p.WParam, p.LParam) // make system draw the scrollbar for us
 
 		if (me.Hwnd().GetExStyle()&co.WS_EX_CLIENTEDGE) == 0 || // has no border
@@ -94,7 +94,7 @@ func (me *WindowControl) defaultMessageHandling() {
 
 //------------------------------------------------------------------------------
 
-type windowControlSetup struct {
+type _WindowControlSetup struct {
 	wasInit bool // default to false
 
 	classNameBuf     []uint16
@@ -107,7 +107,7 @@ type windowControlSetup struct {
 	ExStyle co.WS_EX // Window extended style, passed to CreateWindowEx. For a border, use WS_EX_CLIENTEDGE
 }
 
-func (me *windowControlSetup) initOnce() {
+func (me *_WindowControlSetup) initOnce() {
 	if !me.wasInit {
 		me.wasInit = true
 
@@ -118,7 +118,7 @@ func (me *windowControlSetup) initOnce() {
 	}
 }
 
-func (me *windowControlSetup) genWndClassEx(
+func (me *_WindowControlSetup) genWndClassEx(
 	hInst win.HINSTANCE) *win.WNDCLASSEX {
 
 	wcx := win.WNDCLASSEX{}

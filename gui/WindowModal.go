@@ -15,14 +15,14 @@ import (
 // Modal popup window.
 // Allows message and notification handling.
 type WindowModal struct {
-	windowBase
+	_WindowBase
 	prevFocusParent win.HWND // child control last focused on parent
-	setup           windowModalSetup
+	setup           _WindowModalSetup
 }
 
 // Parameters that will be used to create the window.
-func (me *WindowModal) Setup() *windowModalSetup {
-	if me.windowBase.Hwnd() != 0 {
+func (me *WindowModal) Setup() *_WindowModalSetup {
+	if me.Hwnd() != 0 {
 		panic("Cannot change setup after the window was created.")
 	}
 	me.setup.initOnce() // guard
@@ -34,24 +34,24 @@ func (me *WindowModal) Setup() *windowModalSetup {
 func (me *WindowModal) Show(parent Window) {
 	me.setup.initOnce() // guard
 	hInst := parent.Hwnd().GetInstance()
-	me.windowBase.registerClass(me.setup.genWndClassEx(hInst))
+	me._WindowBase.registerClass(me.setup.genWndClassEx(hInst))
 
 	me.defaultMessageHandling()
 
 	me.prevFocusParent = win.GetFocus() // currently focused control
 	parent.Hwnd().EnableWindow(false)   // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
-	_, _, cx, cy := globalDpi.multiply(0, 0, me.setup.Width, me.setup.Height)
+	_, _, cx, cy := _globalDpi.multiply(0, 0, me.setup.Width, me.setup.Height)
 
-	me.windowBase.createWindow("WindowModal", me.setup.ExStyle,
+	me._WindowBase.createWindow("WindowModal", me.setup.ExStyle,
 		me.setup.ClassName, me.setup.Title, me.setup.Style,
 		0, 0, // initially anchored at zero
 		cx, cy, parent, win.HMENU(0), hInst)
 
-	rc := me.windowBase.Hwnd().GetWindowRect()
+	rc := me.Hwnd().GetWindowRect()
 	rcParent := parent.Hwnd().GetWindowRect() // both rc relative to screen
 
-	me.windowBase.Hwnd().SetWindowPos(co.SWP_HWND(0), // center modal over parent (warning: happens after WM_CREATE processing)
+	me.Hwnd().SetWindowPos(co.SWP_HWND(0), // center modal over parent (warning: happens after WM_CREATE processing)
 		rcParent.Left+(rcParent.Right-rcParent.Left)/2-(rc.Right-rc.Left)/2,
 		rcParent.Top+(rcParent.Bottom-rcParent.Top)/2-(rc.Bottom-rc.Top)/2,
 		0, 0, co.SWP_NOZORDER|co.SWP_NOSIZE)
@@ -60,21 +60,20 @@ func (me *WindowModal) Show(parent Window) {
 }
 
 func (me *WindowModal) defaultMessageHandling() {
-	me.windowBase.OnMsg().WmSetFocus(func(p WmSetFocus) {
-		if me.windowBase.Hwnd() == win.GetFocus() {
+	me.OnMsg().WmSetFocus(func(p WmSetFocus) {
+		if me._WindowBase.Hwnd() == win.GetFocus() {
 			// If window receive focus, delegate to first child.
 			// This also happens right after the modal is created.
-			me.windowBase.Hwnd().
+			me._WindowBase.Hwnd().
 				GetNextDlgTabItem(win.HWND(0), false).
 				SetFocus()
 		}
 	})
 
-	me.windowBase.OnMsg().WmClose(func() {
-		me.windowBase.Hwnd().
-			GetWindow(co.GW_OWNER).EnableWindow(true) // re-enable parent
-		me.windowBase.Hwnd().DestroyWindow() // then destroy modal
-		me.prevFocusParent.SetFocus()        // could be on WM_DESTROY too
+	me.OnMsg().WmClose(func() {
+		me.Hwnd().GetWindow(co.GW_OWNER).EnableWindow(true) // re-enable parent
+		me.Hwnd().DestroyWindow()                           // then destroy modal
+		me.prevFocusParent.SetFocus()                       // could be on WM_DESTROY too
 	})
 }
 
@@ -111,7 +110,7 @@ func (me *WindowModal) runModalLoop() {
 
 //------------------------------------------------------------------------------
 
-type windowModalSetup struct {
+type _WindowModalSetup struct {
 	wasInit bool // default to false
 
 	classNameBuf     []uint16
@@ -127,7 +126,7 @@ type windowModalSetup struct {
 	ExStyle co.WS_EX // Window extended style, passed to CreateWindowEx.
 }
 
-func (me *windowModalSetup) initOnce() {
+func (me *_WindowModalSetup) initOnce() {
 	if !me.wasInit {
 		me.wasInit = true
 
@@ -140,7 +139,7 @@ func (me *windowModalSetup) initOnce() {
 	}
 }
 
-func (me *windowModalSetup) genWndClassEx(hInst win.HINSTANCE) *win.WNDCLASSEX {
+func (me *_WindowModalSetup) genWndClassEx(hInst win.HINSTANCE) *win.WNDCLASSEX {
 	wcx := win.WNDCLASSEX{}
 
 	wcx.CbSize = uint32(unsafe.Sizeof(wcx))

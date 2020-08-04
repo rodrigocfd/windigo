@@ -192,30 +192,30 @@ const (
 type NM int32 // common control notification
 
 const (
-	nM_FIRST NM = 0
+	_NM_FIRST NM = 0
 
-	NM_OUTOFMEMORY          NM = nM_FIRST - 1
-	NM_CLICK                NM = nM_FIRST - 2
-	NM_DBLCLK               NM = nM_FIRST - 3
-	NM_RETURN               NM = nM_FIRST - 4
-	NM_RCLICK               NM = nM_FIRST - 5
-	NM_RDBLCLK              NM = nM_FIRST - 6
-	NM_SETFOCUS             NM = nM_FIRST - 7
-	NM_KILLFOCUS            NM = nM_FIRST - 8
-	NM_CUSTOMDRAW           NM = nM_FIRST - 12
-	NM_HOVER                NM = nM_FIRST - 13
-	NM_NCHITTEST            NM = nM_FIRST - 14
-	NM_KEYDOWN              NM = nM_FIRST - 15
-	NM_RELEASEDCAPTURE      NM = nM_FIRST - 16
-	NM_SETCURSOR            NM = nM_FIRST - 17
-	NM_CHAR                 NM = nM_FIRST - 18
-	NM_TOOLTIPSCREATED      NM = nM_FIRST - 19
-	NM_LDOWN                NM = nM_FIRST - 20
-	NM_RDOWN                NM = nM_FIRST - 21
-	NM_THEMECHANGED         NM = nM_FIRST - 22
-	NM_FONTCHANGED          NM = nM_FIRST - 23
-	NM_CUSTOMTEXT           NM = nM_FIRST - 24
-	NM_TVSTATEIMAGECHANGING NM = nM_FIRST - 24
+	NM_OUTOFMEMORY          NM = _NM_FIRST - 1
+	NM_CLICK                NM = _NM_FIRST - 2
+	NM_DBLCLK               NM = _NM_FIRST - 3
+	NM_RETURN               NM = _NM_FIRST - 4
+	NM_RCLICK               NM = _NM_FIRST - 5
+	NM_RDBLCLK              NM = _NM_FIRST - 6
+	NM_SETFOCUS             NM = _NM_FIRST - 7
+	NM_KILLFOCUS            NM = _NM_FIRST - 8
+	NM_CUSTOMDRAW           NM = _NM_FIRST - 12
+	NM_HOVER                NM = _NM_FIRST - 13
+	NM_NCHITTEST            NM = _NM_FIRST - 14
+	NM_KEYDOWN              NM = _NM_FIRST - 15
+	NM_RELEASEDCAPTURE      NM = _NM_FIRST - 16
+	NM_SETCURSOR            NM = _NM_FIRST - 17
+	NM_CHAR                 NM = _NM_FIRST - 18
+	NM_TOOLTIPSCREATED      NM = _NM_FIRST - 19
+	NM_LDOWN                NM = _NM_FIRST - 20
+	NM_RDOWN                NM = _NM_FIRST - 21
+	NM_THEMECHANGED         NM = _NM_FIRST - 22
+	NM_FONTCHANGED          NM = _NM_FIRST - 23
+	NM_CUSTOMTEXT           NM = _NM_FIRST - 24
+	NM_TVSTATEIMAGECHANGING NM = _NM_FIRST - 24
 )
 
 type OFN uint32 // OPENFILENAME Flags
