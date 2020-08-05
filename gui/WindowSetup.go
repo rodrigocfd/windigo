@@ -7,6 +7,7 @@
 package gui
 
 import (
+	"fmt"
 	"unsafe"
 	"wingows/co"
 	"wingows/win"
@@ -56,7 +57,10 @@ func (me *_WindowSetupBase) genWndclassex(
 	// generate one by hashing all the WNDCLASSEX fields. That's why it must be
 	// the last thing to be done.
 	if me.ClassName == "" {
-		me.ClassName = _Util.WndclassexHash(&wcx)
+		me.ClassName = fmt.Sprintf("%x.%x.%x.%x.%x.%x.%x.%x.%x.%x",
+			wcx.Style, wcx.LpfnWndProc, wcx.CbClsExtra, wcx.CbWndExtra,
+			wcx.HInstance, wcx.HIcon, wcx.HCursor, wcx.HbrBackground,
+			wcx.LpszMenuName, wcx.HIconSm)
 	}
 
 	me.classNameBuf = win.StrToSlice(me.ClassName) // keep the buffer, we'll use a pointer to it

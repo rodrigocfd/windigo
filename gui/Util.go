@@ -7,7 +7,6 @@
 package gui
 
 import (
-	"fmt"
 	"strings"
 	"wingows/co"
 	"wingows/win"
@@ -58,13 +57,4 @@ func (_UtilT) RemoveAccelAmpersands(text string) string {
 		buf.WriteRune(runes[len(runes)-1])
 	}
 	return buf.String()
-}
-
-// Generates a string from all fields, excluding CbSize and LpszClassName, that
-// uniquely identifies a WNDCLASSEX object.
-func (_UtilT) WndclassexHash(wcx *win.WNDCLASSEX) string {
-	return fmt.Sprintf("%x.%x.%x.%x.%x.%x.%x.%x.%x.%x",
-		wcx.Style, wcx.LpfnWndProc, wcx.CbClsExtra, wcx.CbWndExtra,
-		wcx.HInstance, wcx.HIcon, wcx.HCursor, wcx.HbrBackground,
-		wcx.LpszMenuName, wcx.HIconSm)
 }
