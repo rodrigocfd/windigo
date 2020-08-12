@@ -8,6 +8,7 @@ package gui
 
 import (
 	"fmt"
+	"syscall"
 	"unsafe"
 	"wingows/co"
 	"wingows/win"
@@ -175,25 +176,47 @@ func (me *ListViewItem) SetParam(lParam win.LPARAM) *ListViewItem {
 	return me
 }
 
-// Sends LVM_SETITEMTEXT to change text of first column.
-func (me *ListViewItem) SetText(text string) *ListViewItem {
-	me.SubItem(0).SetText(text)
+// Sends LVM_SETITEMTEXT to change the text.
+func (me *ListViewItem) SetSubItemText(
+	columnIndex uint32, text string) *ListViewItem {
+
+	textBuf := win.StrToSlice(text)
+	lvi := win.LVITEM{
+		ISubItem: int32(columnIndex),
+		PszText:  uintptr(unsafe.Pointer(&textBuf[0])),
+	}
+	ret := me.owner.sendLvmMessage(co.LVM_SETITEMTEXT,
+		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
+	if ret == 0 {
+		panic(fmt.Sprintf("LVM_SETITEMTEXT failed \"%s\".", text))
+	}
 	return me
 }
 
-// Returns the subitem at the given column index.
-//
-// Does not perform bound checking.
-func (me *ListViewItem) SubItem(index uint32) *ListViewSubItem {
-	return &ListViewSubItem{
-		item:  me,
-		index: index,
+// Sends LVM_SETITEMTEXT to change text of first column.
+func (me *ListViewItem) SetText(text string) *ListViewItem {
+	return me.SetSubItemText(0, text)
+}
+
+// Sends LVM_GETITEMTEXT to retrieve the text.
+func (me *ListViewItem) SubItemText(columnIndex uint32) string {
+	buf := [256]uint16{} // arbitrary
+	lvi := win.LVITEM{
+		ISubItem:   int32(columnIndex),
+		PszText:    uintptr(unsafe.Pointer(&buf[0])),
+		CchTextMax: int32(len(buf)),
 	}
+	ret := me.owner.sendLvmMessage(co.LVM_GETITEMTEXT,
+		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
+	if ret < 0 {
+		panic("LVM_GETITEMTEXT failed.")
+	}
+	return syscall.UTF16ToString(buf[:])
 }
 
 // Sends LVM_GETITEMTEXT to retrieve the text of the first column.
 func (me *ListViewItem) Text() string {
-	return me.SubItem(0).Text()
+	return me.SubItemText(0)
 }
 
 // Sends LVM_UPDATE for this item.
