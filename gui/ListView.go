@@ -176,8 +176,10 @@ func (me *ListView) DeleteAllItems() *ListView {
 }
 
 // Deletes many items at once.
+//
+// Assumes the items are sorted by index.
 func (me *ListView) DeleteItems(items []ListViewItem) *ListView {
-	for i := range items {
+	for i := len(items) - 1; i >= 0; i-- {
 		if items[i].owner != me {
 			panic("Cannot delete an item from another list view.")
 		}
@@ -251,6 +253,9 @@ func (me *ListView) ImageList(typeImgList co.LVSIL) win.HIMAGELIST {
 // Returns the item at the given index.
 //
 // Does not perform bound checking.
+//
+// Note: When an item is deleted, all other items may become invalid, because
+// they keep the sequential index.
 func (me *ListView) Item(index uint32) *ListViewItem {
 	return &ListViewItem{
 		owner: me,
@@ -306,7 +311,7 @@ func (me *ListView) SelectedItemCount() uint32 {
 	return uint32(count)
 }
 
-// Retrieves the currently selected items.
+// Retrieves the currently selected items, sorted by index.
 func (me *ListView) SelectedItems() []ListViewItem {
 	items := make([]ListViewItem, 0, me.SelectedItemCount())
 	idx := -1
