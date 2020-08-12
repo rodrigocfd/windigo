@@ -27,6 +27,11 @@ func (_UtilT) BoolToUint32(b bool) uint32 {
 	return 0
 }
 
+// Analog to MAKEWPARAM() macro.
+func (_UtilT) MakeWParam(lo, hi uint16) win.WPARAM {
+	return win.WPARAM((lo & 0xffff) | ((hi & 0xffff) << 16))
+}
+
 // Multiplies position and size by current DPI factor.
 func (me *_UtilT) MultiplyDpi(x, y int32,
 	cx, cy uint32) (int32, int32, uint32, uint32) {

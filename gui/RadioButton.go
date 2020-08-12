@@ -12,6 +12,8 @@ import (
 )
 
 // Native radio button control.
+//
+// Prefer using RadioGroup instead of manually managing each radio button.
 type RadioButton struct {
 	_ControlNativeBase
 }
@@ -62,9 +64,22 @@ func (me *RadioButton) CreateSubsequent(
 		co.WS(co.BS_AUTORADIOBUTTON))
 }
 
+// Sets the state to BST_CHECKED.
+//
+// The currently checked radio button won't be cleared. Prefer using
+// RadioGroup.SetCheck().
 func (me *RadioButton) SetCheck() *RadioButton {
 	me.Hwnd().
 		SendMessage(co.WM(co.BM_SETCHECK), win.WPARAM(co.BST_CHECKED), 0)
+	return me
+}
+
+// Sets the state to BST_CHECKED and emulates the user click.
+func (me *RadioButton) SetCheckAndTrigger() *RadioButton {
+	me.SetCheck()
+	me.Hwnd().SendMessage(co.WM_COMMAND,
+		_Util.MakeWParam(uint16(me.Hwnd().GetDlgCtrlID()), 0),
+		win.LPARAM(me.Hwnd()))
 	return me
 }
 

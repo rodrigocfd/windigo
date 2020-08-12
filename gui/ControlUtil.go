@@ -17,23 +17,3 @@ func (_ControlUtilT) Enable(enabled bool, ctrls []Control) {
 		ctrl.Hwnd().EnableWindow(enabled)
 	}
 }
-
-// Returns the index of the checked radio button within the group, or -1 if none
-// is checked.
-func (_ControlUtilT) CheckedRadio(radios []RadioButton) int32 {
-	for i := range radios {
-		if radios[i].Checked() {
-			return int32(i)
-		}
-	}
-	return -1
-}
-
-// Converts a RadioButton slice into a Control slice.
-func (_ControlUtilT) RadioSlice(radios []RadioButton) []Control {
-	ctrls := make([]Control, 0, len(radios))
-	for i := range radios {
-		ctrls = append(ctrls, &radios[i])
-	}
-	return ctrls
-}
