@@ -28,8 +28,9 @@ func (me *WindowModal) Setup() *_WindowSetupModal {
 	return &me.setup
 }
 
-// Creates the modal window and disables the parent. This function will return
-// only after the modal is closed.
+// Creates the modal window and disables the parent.
+//
+// This function will return only after the modal is closed.
 func (me *WindowModal) Show(parent Window) {
 	me.setup.initOnce() // guard
 	hInst := parent.Hwnd().GetInstance()

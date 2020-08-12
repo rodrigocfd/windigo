@@ -14,8 +14,8 @@ import (
 	"wingows/win/proc"
 )
 
-// Returns *uint16.
-// Wrapper to syscall.UTF16PtrFromString().
+// Returns *uint16, wrapper to syscall.UTF16PtrFromString().
+//
 // Panics on error.
 func StrToPtr(s string) *uint16 {
 	// We won't return an uintptr right away because it has no pointer semantics,
@@ -29,8 +29,8 @@ func StrToPtr(s string) *uint16 {
 	return pstr
 }
 
-// Returns a null-terminated []uint16.
-// Wrapper to syscall.UTF16FromString().
+// Returns a null-terminated []uint16, wrapper to syscall.UTF16FromString().
+//
 // Panics on error.
 func StrToSlice(s string) []uint16 {
 	sli, err := syscall.UTF16FromString(s)
@@ -41,8 +41,9 @@ func StrToSlice(s string) []uint16 {
 	return sli
 }
 
-// Returns *uint16, or nil of empty string.
-// Wrapper to syscall.UTF16PtrFromString().
+// Returns *uint16, or nil of empty string, wrapper to
+// syscall.UTF16PtrFromString().
+//
 // Panics on error.
 func StrToPtrBlankIsNil(s string) *uint16 {
 	if s != "" {

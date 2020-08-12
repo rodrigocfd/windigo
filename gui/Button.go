@@ -16,8 +16,9 @@ type Button struct {
 }
 
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
-// default, you must inform all of them. Position and size will be adjusted to
-// the current system DPI.
+// default, you must inform all of them.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *Button) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *Button {
@@ -30,8 +31,9 @@ func (me *Button) Create(
 	return me
 }
 
-// Calls CreateWindowEx(). Position and width will be adjusted to the current
-// system DPI. Height will be standard.
+// Calls CreateWindowEx() with height 23, and no button styles.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *Button) CreateSimple(
 	parent Window, ctrlId, x, y int32, width uint32, text string) *Button {
 
@@ -40,9 +42,9 @@ func (me *Button) CreateSimple(
 		co.BS(0))
 }
 
-// Calls CreateWindowEx(). Creates a button with BS_DEFPUSHBUTTON style.
-// Position and width will be adjusted to the current system DPI. Height will be
-// standard.
+// Calls CreateWindowEx() with height 23, and BS_DEFPUSHBUTTON.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *Button) CreateSimpleDef(
 	parent Window, ctrlId, x, y int32, width uint32, text string) *Button {
 
@@ -51,9 +53,11 @@ func (me *Button) CreateSimpleDef(
 		co.BS_DEFPUSHBUTTON)
 }
 
-// Returns the text without the accelerator ampersands.
-// For example: "&He && she" is returned as "He & she".
-// Use HWND().GetWindowText() to retrieve the full text, with ampersands.
+// Returns the text without the accelerator ampersands, for example:
+// "&He && she" is returned as "He & she".
+//
+// Use Hwnd().GetWindowText() to retrieve the raw text, with accelerator
+// ampersands.
 func (me *Button) Text() string {
 	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }

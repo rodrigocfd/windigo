@@ -16,9 +16,15 @@ type CheckBox struct {
 	_ControlNativeBase
 }
 
+// Tells if the current state is BST_CHECKED.
+func (me *CheckBox) Checked() bool {
+	return me.State() == co.BST_CHECKED
+}
+
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
-// default, you must inform all of them. Position and size will be adjusted to
-// the current system DPI.
+// default, you must inform all of them.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *CheckBox) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *CheckBox {
@@ -31,16 +37,18 @@ func (me *CheckBox) Create(
 	return me
 }
 
-// Calls CreateWindowEx(). Creates a check box with BS_AUTO3STATE style.
+// Calls CreateWindowEx() with BS_AUTO3STATE.
+//
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
-func (me *CheckBox) CreateThreeState(
+func (me *CheckBox) Create3State(
 	parent Window, ctrlId, x, y int32, text string) *CheckBox {
 
 	return me.createAutoSize(parent, ctrlId, x, y, text, co.BS_AUTO3STATE)
 }
 
-// Calls CreateWindowEx(). Creates a check box with BS_AUTOCHECKBOX style.
+// Calls CreateWindowEx() with BS_AUTOCHECKBOX.
+//
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
 func (me *CheckBox) CreateTwoState(
@@ -49,16 +57,17 @@ func (me *CheckBox) CreateTwoState(
 	return me.createAutoSize(parent, ctrlId, x, y, text, co.BS_AUTOCHECKBOX)
 }
 
-func (me *CheckBox) IsChecked() bool {
-	return me.State() == co.BST_CHECKED
+// Sets the current state to BST_CHECKED or BST_UNCHECKED.
+func (me *CheckBox) SetCheck(isChecked bool) *CheckBox {
+	state := co.BST_UNCHECKED
+	if isChecked {
+		state = co.BST_CHECKED
+	}
+	return me.SetState(state)
 }
 
-func (me *CheckBox) SetCheck() *CheckBox {
-	return me.SetState(co.BST_CHECKED)
-}
-
-// A BS_AUTOCHECKBOX can be only checked or unchecked, a BS_AUTO3STATE can also
-// be indeterminate.
+// A BS_AUTOCHECKBOX can be only checked or unchecked, but a BS_AUTO3STATE can
+// also be indeterminate.
 func (me *CheckBox) SetState(state co.BST) *CheckBox {
 	me.Hwnd().SendMessage(co.WM(co.BM_SETCHECK), win.WPARAM(state), 0)
 	return me
@@ -80,9 +89,11 @@ func (me *CheckBox) State() co.BST {
 	return co.BST(me.Hwnd().SendMessage(co.WM(co.BM_GETCHECK), 0, 0))
 }
 
-// Returns the text without the accelerator ampersands.
-// For example: "&He && she" is returned as "He & she".
-// Use HWND().GetWindowText() to retrieve the full text, with ampersands.
+// Returns the text without the accelerator ampersands, for example:
+// "&He && she" is returned as "He & she".
+//
+// Use Hwnd().GetWindowText() to retrieve the raw text, with accelerator
+// ampersands.
 func (me *CheckBox) Text() string {
 	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }

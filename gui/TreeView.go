@@ -22,8 +22,9 @@ func (me *TreeView) AddRoot(text string) *TreeViewItem {
 }
 
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
-// default, you must inform all of them. Position and size will be adjusted to
-// the current system DPI.
+// default, you must inform all of them.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *TreeView) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	exStyles co.WS_EX, styles co.WS,
@@ -41,7 +42,9 @@ func (me *TreeView) Create(
 	return me
 }
 
-// Calls CreateWindowEx(). Tree view control will have lines and buttons.
+// Calls CreateWindowEx() with TVS_HASLINES, TVS_LINESATROOT, TVS_SHOWSELALWAYS,
+// TVS_HASBUTTONS.
+//
 // Position and size will be adjusted to the current system DPI.
 func (me *TreeView) CreateSimple(
 	parent Window, ctrlId, x, y int32, width, height uint32) *TreeView {
@@ -59,12 +62,12 @@ func (me *TreeView) ExtendedStyle() co.TVS_EX {
 }
 
 // Sends TVM_GETNEXTITEM with TVGN_ROOT, returns nil if none.
-func (me *TreeView) FirstRoot() *TreeViewItem {
+func (me *TreeView) FirstRootItem() *TreeViewItem {
 	return me.Item(0).NextItem(co.TVGN_ROOT)
 }
 
 // Returns nil if none.
-func (me *TreeView) FirstVisible() *TreeViewItem {
+func (me *TreeView) FirstVisibleItem() *TreeViewItem {
 	return me.Item(0).NextItem(co.TVGN_FIRSTVISIBLE)
 }
 

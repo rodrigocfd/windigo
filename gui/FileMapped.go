@@ -47,8 +47,9 @@ func (me *FileMapped) CopyToBuffer(offset, length uint64) []byte {
 	return buf
 }
 
-// Returns a slice to the memory-mapped bytes.
-// The file must remain mapped while the slice is being used.
+// Returns a slice to the memory-mapped bytes. The FileMapped object must remain
+// open while the slice is being used.
+//
 // To close the file and still work on the data, use CopyToBuffer().
 func (me *FileMapped) HotSlice() []byte {
 	// https://golang.org/src/syscall/syscall_unix.go#L52
@@ -69,9 +70,10 @@ func (me *FileMapped) OpenExistingForReadWrite(path string) *FileMapped {
 	return me.rawOpen(path, false)
 }
 
-// Truncates or expands the file, according to the new size.
-// Zero will empty the file.
-// File is unmapped, then remapped back into memory.
+// Truncates or expands the file, according to the new size. Zero will empty the
+// file.
+//
+// Internally, the file is unmapped, then remapped back into memory.
 func (me *FileMapped) SetSize(numBytes uint64) *FileMapped {
 	me.pMem.UnmapViewOfFile()
 	me.hMap.CloseHandle()
@@ -86,21 +88,17 @@ func (me *FileMapped) Size() uint64 {
 
 func (me *FileMapped) mapInMemory() *FileMapped {
 	// Mapping into memory.
-	var pageFlags co.PAGE
+	pageFlags := co.PAGE_READWRITE
 	if me.readOnly {
 		pageFlags = co.PAGE_READONLY
-	} else {
-		pageFlags = co.PAGE_READWRITE
 	}
 	me.hMap = me.objFile.hFile.CreateFileMapping(
 		nil, pageFlags, co.SEC_NONE, 0, "")
 
 	// Get pointer to data block.
-	var mapFlags co.FILE_MAP
+	mapFlags := co.FILE_MAP_WRITE
 	if me.readOnly {
 		mapFlags = co.FILE_MAP_READ
-	} else {
-		mapFlags = co.FILE_MAP_WRITE
 	}
 	me.pMem = me.hMap.MapViewOfFile(mapFlags, 0, 0)
 

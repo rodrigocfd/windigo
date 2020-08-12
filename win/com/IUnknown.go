@@ -60,6 +60,7 @@ func (me *_IUnknown) coCreateInstance(
 }
 
 // Queries any COM interface, returning the base IUnknown.
+//
 // To retrieve the other interface itself, cast the inner lpVtbl.
 func (me *_IUnknown) queryInterface(iid *co.IID) IUnknown {
 	if me.uintptr == 0 {
@@ -102,9 +103,10 @@ func (me *_IUnknown) Release() uint32 {
 	return uint32(ret)
 }
 
-// Returns a new GUID with the last uint64 member bytes flipped.
-// This allows us to have easy literal declaration for GUID constants.
-// With a literal declaration, the last uint64 will have its bits flipped.
+// Returns a new GUID with the last uint64 member bytes flipped. This allows us
+// to have easy literal declaration for GUID constants. With a literal
+// declaration, the last uint64 will have its bits flipped.
+//
 // This function is called to make the conversion when needed internally.
 func cloneFlipLastUint64(guid *co.GUID) co.GUID {
 	buf64 := [8]byte{}

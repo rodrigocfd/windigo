@@ -42,6 +42,7 @@ func (me *_WindowBase) OnMsg() *_WindowBaseDepot {
 }
 
 // Runs a closure synchronously in the window original UI thread.
+//
 // When in a goroutine, you *MUST* use this method to update the UI.
 func (me *_WindowBase) RunUiThread(userFunc func()) {
 	// This method is analog to SendMessage (synchronous), but intended to be

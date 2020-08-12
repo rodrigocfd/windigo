@@ -21,7 +21,9 @@ type _SysDlgUtilT struct{}
 var SysDlgUtil _SysDlgUtilT
 
 // Shows the open file system dialog, choice restricted to 1 file.
-// Example filtersWithPipe:
+//
+// Example of filtersWithPipe:
+//
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
 func (_SysDlgUtilT) FileOpen(owner Window, filtersWithPipe []string) (string, bool) {
 	zFilters := filterToUtf16(filtersWithPipe)
@@ -42,7 +44,9 @@ func (_SysDlgUtilT) FileOpen(owner Window, filtersWithPipe []string) (string, bo
 }
 
 // Shows the open file system dialog, user can choose multiple files.
-// Example filtersWithPipe:
+//
+// Example of filtersWithPipe:
+//
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
 func (_SysDlgUtilT) FileOpenMany(owner Window,
 	filtersWithPipe []string) ([]string, bool) {
@@ -93,9 +97,11 @@ func (_SysDlgUtilT) FileOpenMany(owner Window,
 }
 
 // Shows the save file system dialog.
-// Default name can be empty.
-// Default extension can be empty, or like "txt".
-// Example filtersWithPipe:
+//
+// Default name can be empty, default extension can be empty, or like "txt".
+//
+// Example of filtersWithPipe:
+//
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
 func (_SysDlgUtilT) FileSave(owner Window, defaultName, defaultExt string,
 	filtersWithPipe []string) (string, bool) {
@@ -155,7 +161,7 @@ var (
 	_globalMsgBoxParent = win.HWND(0)
 )
 
-// Ordinary MessageBox, but centered at parent.
+// Ordinary MessageBox(), but centered at parent.
 func (_SysDlgUtilT) MsgBox(
 	parent Window, message, caption string, flags co.MB) co.MBID {
 

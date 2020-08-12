@@ -18,6 +18,7 @@ var (
 )
 
 // Main application window.
+//
 // Allows message and notification handling.
 type WindowMain struct {
 	_WindowBase

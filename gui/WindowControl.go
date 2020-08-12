@@ -12,6 +12,7 @@ import (
 )
 
 // Custom user control.
+//
 // Allows message and notification handling.
 type WindowControl struct {
 	_WindowBase

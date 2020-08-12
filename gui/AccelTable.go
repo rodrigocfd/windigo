@@ -19,7 +19,6 @@ type AccelTable struct {
 }
 
 // Adds a new character accelerator, with a specific command ID.
-// Call Build() after all commands are added.
 func (me *AccelTable) AddChar(
 	character rune, modifiers co.ACCELF, cmdId int32) *AccelTable {
 
@@ -36,7 +35,6 @@ func (me *AccelTable) AddChar(
 }
 
 // Adds a new key accelerator, with a specific command ID.
-// Call Build() after all commands are added.
 func (me *AccelTable) AddKey(
 	vKey co.VK, modifiers co.ACCELF, cmdId int32) *AccelTable {
 
@@ -52,15 +50,15 @@ func (me *AccelTable) AddKey(
 	return me
 }
 
-// Builds the HACCEL from the ACCEL array, making it ready to use.
+// Effectively builds the accelerator table, so it's ready to be used.
 func (me *AccelTable) Build() *AccelTable {
-	if me.hAccel == 0 && len(me.accels) > 0 { // build only once
+	if me.hAccel == 0 && len(me.accels) > 0 {
 		me.hAccel = win.CreateAcceleratorTable(me.accels)
 	}
 	return me
 }
 
-// Accelerator tables must be destroyed manually.
+// Calls DestroyAcceleratorTable() to free the resources.
 func (me *AccelTable) Destroy() {
 	if me.hAccel != 0 {
 		me.hAccel.DestroyAcceleratorTable()
@@ -68,7 +66,8 @@ func (me *AccelTable) Destroy() {
 	}
 }
 
-// Returns the HACCEL handle.
+// Buils the accelerator table once, and returns the HACCEL handle.
 func (me *AccelTable) Haccel() win.HACCEL {
+	me.Build()
 	return me.hAccel
 }

@@ -18,7 +18,7 @@ type ImageList struct {
 }
 
 // Automatically destroyed if attached to a ListView, unless created with
-// LVS_SHAREIMAGELISTS. For TreeView, must be manually destroyed.
+// LVS_SHAREIMAGELISTS. Other than that, must always be manually destroyed.
 func (me *ImageList) Create(resolution, iconCount uint32) *ImageList {
 	if me.himl != 0 {
 		panic("ImageList already created.")
@@ -41,6 +41,7 @@ func (me *ImageList) AddResourceIcon(resourceId int32) *ImageList {
 }
 
 // Loads an icon from Windows Shell.
+//
 // Extension must be in the format "*.mp3".
 func (me *ImageList) AddShellIcon(fileExtension string) *ImageList {
 	szFlag := co.SHGFI(0)

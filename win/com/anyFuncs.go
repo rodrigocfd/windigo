@@ -21,6 +21,7 @@ func boolToUintptr(b bool) uintptr {
 }
 
 // Initializes the COM library.
+//
 // Must be freed with CoUninitialize().
 func CoInitializeEx(dwCoInit co.COINIT) {
 	ret, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,

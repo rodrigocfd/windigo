@@ -16,8 +16,9 @@ type Static struct {
 }
 
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
-// default, you must inform all of them. Position and size will be adjusted to
-// the current system DPI.
+// default, you must inform all of them.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *Static) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, staStyles co.SS) *Static {
@@ -30,8 +31,10 @@ func (me *Static) Create(
 	return me
 }
 
-// Calls CreateWindowEx(). Position will be adjusted to the current system DPI.
-// The size will be calculated to fit the text exactly.
+// Calls CreateWindowEx() with SS_LEFT.
+//
+// Position will be adjusted to the current system DPI. The size will be
+// calculated to fit the text exactly.
 func (me *Static) CreateLText(
 	parent Window, ctrlId, x, y int32, text string) *Static {
 
@@ -55,9 +58,11 @@ func (me *Static) SetText(text string) {
 	me.Hwnd().SetWindowText(text)
 }
 
-// Returns the text without the accelerator ampersands.
-// For example: "&He && she" is returned as "He & she".
-// Use HWND().GetWindowText() to retrieve the full text, with ampersands.
+// Returns the text without the accelerator ampersands, for example:
+// "&He && she" is returned as "He & she".
+//
+// Use Hwnd().GetWindowText() to retrieve the raw text, with accelerator
+// ampersands.
 func (me *Static) Text() string {
 	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }

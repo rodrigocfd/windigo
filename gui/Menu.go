@@ -37,6 +37,9 @@ func (me *Menu) AppendSubmenu(text string) *Menu {
 	return newMenu
 }
 
+// Calls CreateMenu(), used when created the main menu of a window.
+//
+// If attached to a window, will be automatically destroyed by the system.
 func (me *Menu) CreateMain() *Menu {
 	if me.hMenu != 0 {
 		panic("Menu already created, CreateMenu not called.")
@@ -45,6 +48,10 @@ func (me *Menu) CreateMain() *Menu {
 	return me
 }
 
+// Calls CreatePopupMenu().
+//
+// Must be manually destroyed, unless attached to an existing main menu which is
+// attached to a window.
 func (me *Menu) CreatePopup() *Menu {
 	if me.hMenu != 0 {
 		panic("Menu already created, CreatePopupMenu not called.")
@@ -53,7 +60,7 @@ func (me *Menu) CreatePopup() *Menu {
 	return me
 }
 
-// Only necessary if the menu is not attached to any window.
+// Calls DestroyMenu().
 func (me *Menu) Destroy() {
 	if me.hMenu != 0 {
 		me.hMenu.DestroyMenu()
@@ -61,6 +68,7 @@ func (me *Menu) Destroy() {
 	}
 }
 
+// Enables or disables many items at once, by command ID.
 func (me *Menu) EnableManyByCmdId(isEnabled bool, cmdIds []int32) *Menu {
 	for _, cmdId := range cmdIds {
 		me.ItemByCmdId(cmdId).Enable(isEnabled)
@@ -68,6 +76,7 @@ func (me *Menu) EnableManyByCmdId(isEnabled bool, cmdIds []int32) *Menu {
 	return me
 }
 
+// Enables or disables many items at once, by zero-based position.
 func (me *Menu) EnableManyByPos(isEnabled bool, poss []uint32) *Menu {
 	for _, pos := range poss {
 		me.ItemByPos(pos).Enable(isEnabled)
@@ -81,6 +90,7 @@ func (me *Menu) Hmenu() win.HMENU {
 }
 
 // Returns the item with the given command ID.
+//
 // Does not validate if such item exists.
 func (me *Menu) ItemByCmdId(cmdId int32) *MenuItem {
 	return &MenuItem{
@@ -90,7 +100,8 @@ func (me *Menu) ItemByCmdId(cmdId int32) *MenuItem {
 }
 
 // Returns the item at the given position.
-// Does not perform bounds checking.
+//
+// Does not perform bound checking.
 func (me *Menu) ItemByPos(pos uint32) *MenuItem {
 	return me.ItemByCmdId(me.hMenu.GetMenuItemID(pos))
 }
@@ -102,7 +113,9 @@ func (me *Menu) Set(hMenu win.HMENU) *Menu {
 }
 
 // Shows the popup menu anchored at the given coordinates.
+//
 // If hCoordsRelativeTo is zero, coordinates must be relative to hParent.
+//
 // This function will block until the menu disappears.
 func (me *Menu) ShowAtPoint(
 	pos *win.POINT, hParent, hCoordsRelativeTo win.HWND) {
@@ -117,6 +130,7 @@ func (me *Menu) ShowAtPoint(
 }
 
 // Returns the submenu at the given position.
+//
 // If pos is not a submenu, returns nil.
 func (me *Menu) SubMenu(pos uint32) *Menu {
 	hSub := me.hMenu.GetSubMenu(pos)

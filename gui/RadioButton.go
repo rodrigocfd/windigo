@@ -16,9 +16,16 @@ type RadioButton struct {
 	_ControlNativeBase
 }
 
+// Tells if the current state is BST_CHECKED.
+func (me *RadioButton) Checked() bool {
+	return co.BST(me.Hwnd().
+		SendMessage(co.WM(co.BM_GETCHECK), 0, 0)) == co.BST_CHECKED
+}
+
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
-// default, you must inform all of them. Position and size will be adjusted to
-// the current system DPI.
+// default, you must inform all of them.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *RadioButton) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *RadioButton {
@@ -31,9 +38,12 @@ func (me *RadioButton) Create(
 	return me
 }
 
-// Calls CreateWindowEx(). Creates the first radio button of a group, with
-// WS_GROUP and BS_AUTORADIOBUTTON styles. Position will be adjusted to the
-// current system DPI. The size will be calculated to fit the text exactly.
+// Calls CreateWindowEx() with BS_AUTORADIOBUTTON, WS_GROUP.
+//
+// Call this method to create the first radio button of a group.
+//
+// Position will be adjusted to the current system DPI. The size will be
+// calculated to fit the text exactly.
 func (me *RadioButton) CreateFirst(
 	parent Window, ctrlId, x, y int32, text string) *RadioButton {
 
@@ -41,19 +51,15 @@ func (me *RadioButton) CreateFirst(
 		co.WS_GROUP|co.WS_TABSTOP|co.WS(co.BS_AUTORADIOBUTTON))
 }
 
-// Calls CreateWindowEx(). Creates a subsequent radio button of a group, with
-// BS_AUTORADIOBUTTON style. Position will be adjusted to the current system
-// DPI. The size will be calculated to fit the text exactly.
+// Calls CreateWindowEx() with BS_AUTORADIOBUTTON.
+//
+// Position will be adjusted to the current system DPI. The size will be
+// calculated to fit the text exactly.
 func (me *RadioButton) CreateSubsequent(
 	parent Window, ctrlId, x, y int32, text string) *RadioButton {
 
 	return me.createAutoSize(parent, ctrlId, x, y, text,
 		co.WS(co.BS_AUTORADIOBUTTON))
-}
-
-func (me *RadioButton) IsChecked() bool {
-	return co.BST(me.Hwnd().
-		SendMessage(co.WM(co.BM_GETCHECK), 0, 0)) == co.BST_CHECKED
 }
 
 func (me *RadioButton) SetCheck() *RadioButton {
@@ -72,9 +78,11 @@ func (me *RadioButton) SetText(text string) *RadioButton {
 	return me
 }
 
-// Returns the text without the accelerator ampersands.
-// For example: "&He && she" is returned as "He & she".
-// Use HWND().GetWindowText() to retrieve the full text, with ampersands.
+// Returns the text without the accelerator ampersands, for example:
+// "&He && she" is returned as "He & she".
+//
+// Use Hwnd().GetWindowText() to retrieve the raw text, with accelerator
+// ampersands.
 func (me *RadioButton) Text() string {
 	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }

@@ -40,8 +40,9 @@ func (me *ComboBox) Count() uint32 {
 }
 
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
-// default, you must inform all of them. Position and size will be adjusted to
-// the current system DPI.
+// default, you must inform all of them.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) Create(
 	parent Window, ctrlId, x, y int32, width uint32,
 	exStyles co.WS_EX, styles co.WS, cbStyles co.CBS) *ComboBox {
@@ -54,8 +55,9 @@ func (me *ComboBox) Create(
 	return me
 }
 
-// Calls CreateWindowEx(). Combo box will control will have CBS_DROPDOWNLIST
-// style. Position and size will be adjusted to the current system DPI.
+// Calls CreateWindowEx() with CBS_DROPDOWNLIST.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) CreateList(
 	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
 
@@ -64,9 +66,9 @@ func (me *ComboBox) CreateList(
 		co.CBS_DROPDOWNLIST)
 }
 
-// Calls CreateWindowEx(). Combo box will control will have CBS_DROPDOWNLIST and
-// CBS_SORT styles. Position and size will be adjusted to the current system
-// DPI.
+// Calls CreateWindowEx() with CBS_DROPDOWNLIST, CBS_SORT.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) CreateSortedList(
 	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
 
@@ -100,7 +102,7 @@ func (me *ComboBox) Text(index uint32) string {
 	return syscall.UTF16ToString(buf)
 }
 
-// Simple wrapper.
+// Syntactic sugar.
 func (me *ComboBox) sendCbMessage(msg co.CB,
 	wParam win.WPARAM, lParam win.LPARAM) uintptr {
 

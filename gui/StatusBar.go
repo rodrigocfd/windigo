@@ -86,7 +86,9 @@ func (me *StatusBar) Adjust(p WmSize) {
 		win.WPARAM(len(me.parts)), win.LPARAM(unsafe.Pointer(&rightEdges[0])))
 }
 
-// Calls CreateWindowEx(). Control will be docked at bottom of parent window.
+// Calls CreateWindowEx().
+//
+// Control will be docked at bottom of parent window.
 func (me *StatusBar) Create(parent Window, ctrlId int32) *StatusBar {
 	style := co.WS_CHILD | co.WS_VISIBLE
 
@@ -102,6 +104,8 @@ func (me *StatusBar) Create(parent Window, ctrlId int32) *StatusBar {
 	return me
 }
 
+// Retrieves the HICON of the part.
+//
 // The status bar won't destroy the icon after use.
 func (me *StatusBar) Icon(part uint32) win.HICON {
 	return win.HICON(
@@ -116,6 +120,7 @@ func (me *StatusBar) SetIcon(part uint32, hIcon win.HICON) *StatusBar {
 	return me
 }
 
+// Sets the text of the part.
 func (me *StatusBar) SetText(part uint32, text string) *StatusBar {
 	if !me.firstAdjust { // text is painted only after first adjust
 		me.Adjust(WmSize{ // manually construct param
@@ -130,6 +135,7 @@ func (me *StatusBar) SetText(part uint32, text string) *StatusBar {
 	return me
 }
 
+// Retrieves the text of the part.
 func (me *StatusBar) Text(part uint32) string {
 	len := uint16(me.sendSbMessage(co.SB_GETTEXTLENGTH, win.WPARAM(part), 0))
 	if len == 0 {
@@ -142,7 +148,7 @@ func (me *StatusBar) Text(part uint32) string {
 	return syscall.UTF16ToString(buf)
 }
 
-// Simple wrapper.
+// Syntactic sugar.
 func (me *StatusBar) sendSbMessage(msg co.SB,
 	wParam win.WPARAM, lParam win.LPARAM) uintptr {
 

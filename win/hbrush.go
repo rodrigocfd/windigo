@@ -23,8 +23,8 @@ func CreatePatternBrush(hbm HBITMAP) HBRUSH {
 	return HBRUSH(ret)
 }
 
-// This is not a Win32 function, it's just a tricky conversion to create a brush
-// from a system color.
+// This is not an actual Win32 function, it's just a tricky conversion to create
+// a brush from a system color.
 func CreateSysColorBrush(sysColor co.COLOR) HBRUSH {
 	return HBRUSH(sysColor + 1)
 }

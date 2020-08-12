@@ -22,7 +22,7 @@ func (_ControlUtilT) Enable(enabled bool, ctrls []Control) {
 // is checked.
 func (_ControlUtilT) CheckedRadio(radios []RadioButton) int32 {
 	for i := range radios {
-		if radios[i].IsChecked() {
+		if radios[i].Checked() {
 			return int32(i)
 		}
 	}

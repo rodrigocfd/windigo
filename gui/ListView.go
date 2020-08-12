@@ -64,6 +64,7 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 }
 
 // Adds a new item; returns the newly inserted item.
+//
 // Before call this method, attach an image list and load its icons.
 func (me *ListView) AddItemWithIcon(text string,
 	iconIndex uint32) *ListViewItem {

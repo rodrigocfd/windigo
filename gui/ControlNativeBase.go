@@ -20,6 +20,7 @@ var (
 )
 
 // Base to all native child control types, like Button and Edit.
+//
 // Allows control subclassing.
 type _ControlNativeBase struct {
 	hwnd       win.HWND
@@ -38,6 +39,7 @@ func (me *_ControlNativeBase) Id() int32 {
 }
 
 // Exposes all the control subclass methods that can be handled.
+//
 // The subclass will be installed in create() if at least 1 message was added.
 func (me *_ControlNativeBase) OnSubclassMsg() *_WindowDepotMsg {
 	if me.hwnd != 0 {

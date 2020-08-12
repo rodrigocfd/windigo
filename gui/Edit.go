@@ -18,8 +18,9 @@ type Edit struct {
 }
 
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
-// default, you must inform all of them. Position and size will be adjusted to
-// the current system DPI.
+// default, you must inform all of them.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *Edit) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32, initialText string,
 	exStyles co.WS_EX, styles co.WS, editStyles co.ES) *Edit {
@@ -32,8 +33,9 @@ func (me *Edit) Create(
 	return me
 }
 
-// Calls CreateWindowEx(). Edit control will have ES_MULTILINE and ES_WANTRETURN
-// styles. Position and size will be adjusted to the current system DPI.
+// Calls CreateWindowEx() with ES_MULTILINE, ES_WANTRETURN.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreateMultiLine(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	initialText string) *Edit {
@@ -44,9 +46,9 @@ func (me *Edit) CreateMultiLine(
 		co.ES_MULTILINE|co.ES_WANTRETURN)
 }
 
-// Calls CreateWindowEx(). Edit control will have ES_PASSWORD style. Position
-// and width will be adjusted to the current system DPI. Height will be
-// standard.
+// Calls CreateWindowEx() with ES_AUTOHSCROLL, ES_PASSWORD.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreatePassword(
 	parent Window, ctrlId, x, y int32, width uint32, initialText string) *Edit {
 
@@ -56,8 +58,9 @@ func (me *Edit) CreatePassword(
 		co.ES_AUTOHSCROLL|co.ES_PASSWORD)
 }
 
-// Calls CreateWindowEx(). Position and width will be adjusted to the current
-// system DPI. Height will be standard.
+// Calls CreateWindowEx() with ES_AUTOHSCROLL.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreateSimple(
 	parent Window, ctrlId, x, y int32, width uint32, initialText string) *Edit {
 
@@ -75,6 +78,7 @@ func (me *Edit) ReplaceSelection(newText string) *Edit {
 }
 
 // Selects all the text in the edit control.
+//
 // Only has effect if edit control is focused.
 func (me *Edit) SelectAll() *Edit {
 	return me.SelectRange(0, -1)
@@ -89,6 +93,7 @@ func (me *Edit) SelectedRange() (int32, int32) {
 }
 
 // Selects a range of text in the edit control.
+//
 // Only has effect if edit control is focused.
 func (me *Edit) SelectRange(start, length int32) *Edit {
 	me.sendEmMessage(co.EM_SETSEL, win.WPARAM(start),
@@ -96,7 +101,7 @@ func (me *Edit) SelectRange(start, length int32) *Edit {
 	return me
 }
 
-// Simple wrapper.
+// Syntactic sugar.
 func (me *Edit) sendEmMessage(msg co.EM,
 	wParam win.WPARAM, lParam win.LPARAM) uintptr {
 

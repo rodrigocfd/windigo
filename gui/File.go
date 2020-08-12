@@ -55,6 +55,7 @@ func (me *File) Rewind() *File {
 }
 
 // Truncates or expands the file, according to the new size.
+//
 // Zero will empty the file.
 func (me *File) SetSize(numBytes uint64) *File {
 	me.hFile.SetFilePointerEx(int64(numBytes), co.FILE_SETPTR_BEGIN) // simply go beyond

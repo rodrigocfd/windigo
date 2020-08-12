@@ -32,6 +32,7 @@ type Resizer struct {
 	szOrig win.SIZE
 }
 
+// Adds a child control and its resizing behavior.
 func (me *Resizer) Add(child Control, doHorz, doVert RESZ) *Resizer {
 	hParent := child.Hwnd().GetParent()
 	if len(me.ctrls) == 0 { // first control being added
@@ -50,6 +51,7 @@ func (me *Resizer) Add(child Control, doHorz, doVert RESZ) *Resizer {
 	return me
 }
 
+// Adds many child controls at once with an unique resizing behavior.
 func (me *Resizer) AddMany(children []Control, doHorz, doVert RESZ) *Resizer {
 	for _, child := range children {
 		me.Add(child, doHorz, doVert)
@@ -57,7 +59,7 @@ func (me *Resizer) AddMany(children []Control, doHorz, doVert RESZ) *Resizer {
 	return me
 }
 
-// Call during WM_SIZE processing.
+// Call during WM_SIZE processing to adjust all child controls at once.
 func (me *Resizer) Adjust(p WmSize) {
 	if len(me.ctrls) == 0 || p.Request() == co.SIZE_MINIMIZED {
 		return // no need to resize if window is minimized

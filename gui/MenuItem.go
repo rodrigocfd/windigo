@@ -19,14 +19,17 @@ type MenuItem struct {
 	cmdId int32
 }
 
+// Returns the command ID of this menu item.
 func (me *MenuItem) CmdId() int32 {
 	return me.cmdId
 }
 
+// Calls DeleteMenu() on this item.
 func (me *MenuItem) Delete() {
 	me.owner.Hmenu().DeleteMenu(uintptr(me.cmdId), co.MF_BYCOMMAND)
 }
 
+// Calls EnableMenuItem().
 func (me *MenuItem) Enable(isEnabled bool) *MenuItem {
 	flags := co.MF_BYCOMMAND
 	if isEnabled {
@@ -38,10 +41,12 @@ func (me *MenuItem) Enable(isEnabled bool) *MenuItem {
 	return me
 }
 
+// Returns the menu to which this item belongs.
 func (me *MenuItem) Owner() *Menu {
 	return me.owner
 }
 
+// Sets the text to this menu item.
 func (me *MenuItem) SetText(text string) *MenuItem {
 	textBuf := win.StrToSlice(text)
 	mii := win.MENUITEMINFO{
@@ -52,6 +57,7 @@ func (me *MenuItem) SetText(text string) *MenuItem {
 	return me
 }
 
+// Retrieves the text of this menu item.
 func (me *MenuItem) Text() string {
 	mii := win.MENUITEMINFO{
 		FMask: co.MIIM_STRING,
