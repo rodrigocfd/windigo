@@ -23,6 +23,7 @@ type TreeViewItem struct {
 // Adds a new child item; returns the newly inserted item.
 func (me *TreeViewItem) AddChild(text string) *TreeViewItem {
 	textBuf := win.StrToSlice(text)
+
 	tvi := win.TVINSERTSTRUCT{
 		HParent:      me.hTreeItem,
 		HInsertAfter: win.HTREEITEM(co.HTREEITEM_LAST),
@@ -36,12 +37,14 @@ func (me *TreeViewItem) AddChild(text string) *TreeViewItem {
 	if ret == 0 {
 		panic(fmt.Sprintf("TVM_INSERTITEM failed \"%s\".", text))
 	}
+
 	return &TreeViewItem{
 		owner:     me.owner,
 		hTreeItem: win.HTREEITEM(ret),
 	}
 }
 
+// Returns all child items of this item, if any.
 func (me *TreeViewItem) Children() []TreeViewItem {
 	retNodes := make([]TreeViewItem, 0)
 	node := me.FirstChild()
@@ -64,29 +67,17 @@ func (me *TreeViewItem) Expand(flags co.TVE) *TreeViewItem {
 
 // Sends TVM_GETNEXTITEM with TVGN_CHILD, returns nil if none.
 func (me *TreeViewItem) FirstChild() *TreeViewItem {
-	return me.NextItem(co.TVGN_CHILD)
+	return me.nextItem(co.TVGN_CHILD)
 }
 
+// Returns the HTREEITEM handle of this item.
 func (me *TreeViewItem) HTreeItem() win.HTREEITEM {
 	return me.hTreeItem
 }
 
-// Sends TVM_GETNEXTITEM, returns nil if none found.
-func (me *TreeViewItem) NextItem(flags co.TVGN) *TreeViewItem {
-	ret := me.owner.sendTvmMessage(co.TVM_GETNEXTITEM,
-		win.WPARAM(flags), win.LPARAM(me.hTreeItem))
-	if ret == 0 {
-		return nil
-	}
-	return &TreeViewItem{
-		owner:     me.owner,
-		hTreeItem: win.HTREEITEM(ret),
-	}
-}
-
 // Sends TVM_GETNEXTITEM with TVGN_NEXT, returns nil if none.
 func (me *TreeViewItem) NextSibling() *TreeViewItem {
-	return me.NextItem(co.TVGN_NEXT)
+	return me.nextItem(co.TVGN_NEXT)
 }
 
 // Returns the TreeView to which this item belongs.
@@ -110,12 +101,12 @@ func (me *TreeViewItem) Param() win.LPARAM {
 
 // Sends TVM_GETNEXTITEM with TVGN_PARENT, returns nil if none.
 func (me *TreeViewItem) Parent() *TreeViewItem {
-	return me.NextItem(co.TVGN_PARENT)
+	return me.nextItem(co.TVGN_PARENT)
 }
 
 // Sends TVM_GETNEXTITEM with TVGN_PREVIOUS, returns nil if none.
 func (me *TreeViewItem) PrevSibling() *TreeViewItem {
-	return me.NextItem(co.TVGN_PREVIOUS)
+	return me.nextItem(co.TVGN_PREVIOUS)
 }
 
 // Sets the associated LPARAM with TVM_SETITEM.
@@ -164,4 +155,17 @@ func (me *TreeViewItem) Text() string {
 		panic("TVM_GETITEM failed.")
 	}
 	return syscall.UTF16ToString(buf[:])
+}
+
+// Sends TVM_GETNEXTITEM, returns nil if none found.
+func (me *TreeViewItem) nextItem(flags co.TVGN) *TreeViewItem {
+	ret := me.owner.sendTvmMessage(co.TVM_GETNEXTITEM,
+		win.WPARAM(flags), win.LPARAM(me.hTreeItem)) // HTREEITEM can be zero
+	if ret == 0 {
+		return nil
+	}
+	return &TreeViewItem{
+		owner:     me.owner,
+		hTreeItem: win.HTREEITEM(ret),
+	}
 }

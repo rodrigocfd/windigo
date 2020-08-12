@@ -17,7 +17,7 @@ type TreeView struct {
 }
 
 // Adds a new root item; returns the newly inserted item.
-func (me *TreeView) AddRoot(text string) *TreeViewItem {
+func (me *TreeView) AddRootItem(text string) *TreeViewItem {
 	return me.Item(0).AddChild(text)
 }
 
@@ -63,12 +63,12 @@ func (me *TreeView) ExtendedStyle() co.TVS_EX {
 
 // Sends TVM_GETNEXTITEM with TVGN_ROOT, returns nil if none.
 func (me *TreeView) FirstRootItem() *TreeViewItem {
-	return me.Item(0).NextItem(co.TVGN_ROOT)
+	return me.Item(0).nextItem(co.TVGN_ROOT)
 }
 
 // Returns nil if none.
 func (me *TreeView) FirstVisibleItem() *TreeViewItem {
-	return me.Item(0).NextItem(co.TVGN_FIRSTVISIBLE)
+	return me.Item(0).nextItem(co.TVGN_FIRSTVISIBLE)
 }
 
 // Returns the item of the given HTREEITEM.
@@ -88,18 +88,14 @@ func (me *TreeView) ItemCount() uint32 {
 	return uint32(ret)
 }
 
-// Sends TVM_GETNEXTITEM, returns nil if none found.
-func (me *TreeView) NextItem(flags co.TVGN) *TreeViewItem {
-	return me.Item(0).NextItem(flags)
-}
-
-func (me *TreeView) Roots() []TreeViewItem {
+// Returns all root items.
+func (me *TreeView) RootItems() []TreeViewItem {
 	return me.Item(0).Children()
 }
 
 // Sends TVM_GETNEXTITEM with TVGN_CARET, returns nil if none.
 func (me *TreeView) SelectedItem() *TreeViewItem {
-	return me.Item(0).NextItem(co.TVGN_CARET)
+	return me.Item(0).nextItem(co.TVGN_CARET)
 }
 
 // Sends TVM_SETEXTENDEDSTYLE.
@@ -116,15 +112,12 @@ func (me *TreeView) SetExtendedStyle(mask, exStyle co.TVS_EX) *TreeView {
 
 // Sends WM_SETREDRAW to enable or disable UI updates.
 func (me *TreeView) SetRedraw(allowRedraw bool) *TreeView {
-	wp := 0
-	if allowRedraw {
-		wp = 1
-	}
-	me.hwnd.SendMessage(co.WM_SETREDRAW, win.WPARAM(wp), 0)
+	me.hwnd.SendMessage(co.WM_SETREDRAW,
+		win.WPARAM(_Util.BoolToUint32(allowRedraw)), 0)
 	return me
 }
 
-// Simple wrapper.
+// Syntactic sugar.
 func (me *TreeView) sendTvmMessage(msg co.TVM,
 	wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
