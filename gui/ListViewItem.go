@@ -32,6 +32,7 @@ func (me *ListViewItem) Delete() {
 }
 
 // Sends LVM_ENSUREVISIBLE for this item.
+//
 // Scrolls the list view if necessary.
 func (me *ListViewItem) EnsureVisible() *ListViewItem {
 	ret := me.owner.sendLvmMessage(co.LVM_ENSUREVISIBLE,
@@ -40,6 +41,28 @@ func (me *ListViewItem) EnsureVisible() *ListViewItem {
 		panic("LVM_ENSUREVISIBLE failed.")
 	}
 	return me
+}
+
+// Sets the item as the currently focused one.
+func (me *ListViewItem) Focus() *ListViewItem {
+	lvi := win.LVITEM{
+		State:     co.LVIS_FOCUSED,
+		StateMask: co.LVIS_FOCUSED,
+	}
+	ret := me.owner.sendLvmMessage(co.LVM_SETITEMSTATE,
+		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
+	if ret == 0 {
+		panic("LVM_SETITEMSTATE failed.")
+	}
+	return me
+}
+
+// Tells if the item is the currently focused one.
+func (me *ListViewItem) Focused() bool {
+	return co.LVIS(
+		me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
+			win.WPARAM(me.index), win.LPARAM(co.LVIS_FOCUSED)),
+	) == co.LVIS_FOCUSED
 }
 
 // Retrieves the image index with LVM_GETITEM.
@@ -59,20 +82,6 @@ func (me *ListViewItem) IconIndex() uint32 {
 // Returns the index of this item.
 func (me *ListViewItem) Index() uint32 {
 	return me.index
-}
-
-// Sends LVM_GETNEXTITEM from this item.
-// Returns nil if none.
-func (me *ListViewItem) NextItem(relationship co.LVNI) *ListViewItem {
-	ret := me.owner.sendLvmMessage(co.LVM_GETNEXTITEM,
-		win.WPARAM(me.index), win.LPARAM(relationship))
-	if int(ret) == -1 {
-		return nil
-	}
-	return &ListViewItem{
-		owner: me.owner,
-		index: uint32(ret),
-	}
 }
 
 // Returns the ListView to which this item belongs.
@@ -95,6 +104,7 @@ func (me *ListViewItem) Param() win.LPARAM {
 }
 
 // Sends LVM_GETITEMRECT for this item.
+//
 // Retrieved coordinates are relative to list view.
 func (me *ListViewItem) Rect(portion co.LVIR) *win.RECT {
 	rcItem := &win.RECT{
@@ -106,6 +116,33 @@ func (me *ListViewItem) Rect(portion co.LVIR) *win.RECT {
 		panic("LVM_GETITEMRECT failed.")
 	}
 	return rcItem
+}
+
+// Selects or unselects the item.
+func (me *ListViewItem) Select(isSelected bool) *ListViewItem {
+	state := co.LVIS_NONE
+	if isSelected {
+		state = co.LVIS_SELECTED
+	}
+
+	lvi := win.LVITEM{
+		State:     state,
+		StateMask: co.LVIS_SELECTED,
+	}
+	ret := me.owner.sendLvmMessage(co.LVM_SETITEMSTATE,
+		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
+	if ret == 0 {
+		panic("LVM_SETITEMSTATE failed.")
+	}
+	return me
+}
+
+// Tells if the item is currently selected.
+func (me *ListViewItem) Selected() bool {
+	return co.LVIS(
+		me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
+			win.WPARAM(me.index), win.LPARAM(co.LVIS_SELECTED)),
+	) == co.LVIS_SELECTED
 }
 
 // Sets the image index with LVM_SETITEM.
@@ -138,37 +175,14 @@ func (me *ListViewItem) SetParam(lParam win.LPARAM) *ListViewItem {
 	return me
 }
 
-// Changes the item state with LVM_SETITEMSTATE.
-func (me *ListViewItem) SetState(
-	state co.LVIS, stateMask co.LVIS) *ListViewItem {
-
-	lvi := win.LVITEM{
-		State:     state,
-		StateMask: stateMask,
-	}
-	ret := me.owner.sendLvmMessage(co.LVM_SETITEMSTATE,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
-	if ret == 0 {
-		panic("LVM_SETITEMSTATE failed.")
-	}
-	return me
-}
-
 // Sends LVM_SETITEMTEXT to change text of first column.
 func (me *ListViewItem) SetText(text string) *ListViewItem {
 	me.SubItem(0).SetText(text)
 	return me
 }
 
-// Retrieves item state with LVM_GETITEMSTATE.
-func (me *ListViewItem) State() co.LVIS {
-	return co.LVIS(
-		me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
-			win.WPARAM(me.index), win.LPARAM(co.LVIS_FOCUSED)),
-	)
-}
-
 // Returns the subitem at the given column index.
+//
 // Does not perform bound checking.
 func (me *ListViewItem) SubItem(index uint32) *ListViewSubItem {
 	return &ListViewSubItem{

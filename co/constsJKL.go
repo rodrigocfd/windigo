@@ -141,6 +141,7 @@ const (
 type LVIS uint32 // list view item state
 
 const (
+	LVIS_NONE           LVIS = 0
 	LVIS_FOCUSED        LVIS = 0x0001
 	LVIS_SELECTED       LVIS = 0x0002
 	LVIS_CUT            LVIS = 0x0004

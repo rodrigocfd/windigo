@@ -19,6 +19,14 @@ type _UtilT struct {
 // Internal package utilities.
 var _Util _UtilT
 
+// Syntactic sugar; converts bool to 0 or 1.
+func (_UtilT) BoolToUint32(b bool) uint32 {
+	if b {
+		return 1
+	}
+	return 0
+}
+
 // Multiplies position and size by current DPI factor.
 func (me *_UtilT) MultiplyDpi(x, y int32,
 	cx, cy uint32) (int32, int32, uint32, uint32) {

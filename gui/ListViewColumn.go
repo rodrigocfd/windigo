@@ -20,6 +20,7 @@ type ListViewColumn struct {
 	index uint32
 }
 
+// Resizes the column to fill the remaining space.
 func (me *ListViewColumn) FillRoom() *ListViewColumn {
 	numCols := me.owner.ColumnCount()
 	cxUsed := uint32(0)
@@ -35,10 +36,12 @@ func (me *ListViewColumn) FillRoom() *ListViewColumn {
 	return me
 }
 
+// Returns the index of this column.
 func (me *ListViewColumn) Index() uint32 {
 	return me.index
 }
 
+// Sets the text of this column with LVM_SETCOLUMN.
 func (me *ListViewColumn) SetText(text string) *ListViewColumn {
 	textBuf := win.StrToSlice(text)
 	lvc := win.LVCOLUMN{
@@ -54,12 +57,14 @@ func (me *ListViewColumn) SetText(text string) *ListViewColumn {
 	return me
 }
 
+// Sends LVM_SETCOLUMNWIDTH.
 func (me *ListViewColumn) SetWidth(width uint32) *ListViewColumn {
 	me.owner.sendLvmMessage(co.LVM_SETCOLUMNWIDTH,
 		win.WPARAM(me.index), win.LPARAM(width))
 	return me
 }
 
+// Retrieves the text of this column with LVM_GETCOLUMN.
 func (me *ListViewColumn) Text() string {
 	buf := [128]uint16{} // arbitrary
 	lvc := win.LVCOLUMN{
@@ -76,6 +81,7 @@ func (me *ListViewColumn) Text() string {
 	return syscall.UTF16ToString(buf[:])
 }
 
+// Sends LVM_GETCOLUMNWIDTH.
 func (me *ListViewColumn) Width() uint32 {
 	cx := me.owner.sendLvmMessage(co.LVM_GETCOLUMNWIDTH, win.WPARAM(me.index), 0)
 	if cx == 0 {

@@ -19,7 +19,7 @@ type ListView struct {
 	contextMenu *Menu // if set, will be shown with right-click
 }
 
-// Adds a new column; returns the newly inserted column.
+// Appends a new column, returns the new column.
 func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 	textBuf := win.StrToSlice(text)
 	lvc := win.LVCOLUMN{
@@ -32,10 +32,19 @@ func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 	if int(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTCOLUMN failed \"%s\".", text))
 	}
-	return &ListViewColumn{
-		owner: me,
-		index: uint32(newIdx),
+	return me.Column(uint32(newIdx))
+}
+
+// Appends many columns at once.
+func (me *ListView) AddColumns(texts []string, widths []uint32) *ListView {
+	if len(texts) != len(widths) {
+		panic("ColumnAdd texts/widths mismatch.")
 	}
+
+	for i := 0; i < len(texts); i++ {
+		me.AddColumn(texts[i], widths[i])
+	}
+	return me
 }
 
 // Adds a new item; returns the newly inserted item.
@@ -51,10 +60,7 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 	if int(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTITEM failed \"%s\".", text))
 	}
-	return &ListViewItem{
-		owner: me,
-		index: uint32(newIdx),
-	}
+	return me.Item(uint32(newIdx))
 }
 
 // Adds a new item; returns the newly inserted item.
@@ -74,10 +80,7 @@ func (me *ListView) AddItemWithIcon(text string,
 	if int(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTITEM failed \"%s\".", text))
 	}
-	return &ListViewItem{
-		owner: me,
-		index: uint32(newIdx),
-	}
+	return me.Item(uint32(newIdx))
 }
 
 // Adds many items at once.
@@ -88,9 +91,20 @@ func (me *ListView) AddItems(texts []string) *ListView {
 	return me
 }
 
+// Returns the column at the given index.
+//
+// Does not perform bound checking.
+func (me *ListView) Column(index uint32) *ListViewColumn {
+	return &ListViewColumn{
+		owner: me,
+		index: index,
+	}
+}
+
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
-// default, you must inform all of them. Position and size will be adjusted to
-// the current system DPI.
+// default, you must inform all of them.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *ListView) Create(
 	parent Window, ctrlId, x, y int32, width, height uint32,
 	exStyles co.WS_EX, styles co.WS,
@@ -109,7 +123,9 @@ func (me *ListView) Create(
 	return me
 }
 
-// Calls CreateWindowEx(). List view control will have LVS_REPORT style.
+// Calls CreateWindowEx() with LVS_REPORT, LVS_NOSORTHEADER, LVS_SHOWSELALWAYS,
+// LVS_SHAREIMAGELISTS.
+//
 // Position and size will be adjusted to the current system DPI.
 func (me *ListView) CreateReport(
 	parent Window, ctrlId, x, y int32, width, height uint32) *ListView {
@@ -118,11 +134,13 @@ func (me *ListView) CreateReport(
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.LVS_EX_FULLROWSELECT,
-		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS)
+		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS|co.LVS_SHAREIMAGELISTS)
 }
 
-// Calls CreateWindowEx(). List view control will have LVS_REPORT and
-// LVS_SORTASCENDING styles. Position and size will be adjusted to the current system DPI.
+// Calls CreateWindowEx() with LVS_REPORT, LVS_NOSORTHEADER, LVS_SHOWSELALWAYS,
+// LVS_SORTASCENDING, LVS_SHAREIMAGELISTS.
+//
+// Position and size will be adjusted to the current system DPI.
 func (me *ListView) CreateSortedReport(
 	parent Window, ctrlId, x, y int32, width, height uint32) *ListView {
 
@@ -130,16 +148,7 @@ func (me *ListView) CreateSortedReport(
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.LVS_EX_FULLROWSELECT,
-		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS|co.LVS_SORTASCENDING)
-}
-
-// Returns the column at the given index.
-// Does not perform bound checking.
-func (me *ListView) Column(index uint32) *ListViewColumn {
-	return &ListViewColumn{
-		owner: me,
-		index: index,
-	}
+		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS|co.LVS_SORTASCENDING|co.LVS_SHAREIMAGELISTS)
 }
 
 // Retrieves the number of columns with LVM_GETHEADER and HDM_GETITEMCOUNT.
@@ -165,12 +174,25 @@ func (me *ListView) DeleteAllItems() *ListView {
 	return me
 }
 
+// Deletes many items at once.
+func (me *ListView) DeleteItems(items []ListViewItem) *ListView {
+	for i := range items {
+		if items[i].owner != me {
+			panic("Cannot delete an item from another list view.")
+		}
+		items[i].Delete()
+	}
+	return me
+}
+
 // Retrieves extended styles with LVM_GETEXTENDEDLISTVIEWSTYLE.
 func (me *ListView) ExtendedStyle() co.LVS_EX {
 	return co.LVS_EX(me.sendLvmMessage(co.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0))
 }
 
 // Searches for an item with the given exact text, case-insensitive.
+//
+// Returns nil if not found.
 func (me *ListView) FindItem(text string) *ListViewItem {
 	buf := win.StrToSlice(text)
 	lvfi := win.LVFINDINFO{
@@ -189,12 +211,24 @@ func (me *ListView) FindItem(text string) *ListViewItem {
 	}
 }
 
+// Retrieves the currently focused item, or nil if none.
+func (me *ListView) FocusedItem() *ListViewItem {
+	idx := -1
+	idx = int(me.sendLvmMessage(co.LVM_GETNEXTITEM,
+		win.WPARAM(idx), win.LPARAM(co.LVNI_FOCUSED)))
+	if idx == -1 {
+		return nil
+	}
+	return me.Item(uint32(idx))
+}
+
 // Sends LVM_ISGROUPVIEWENABLED.
 func (me *ListView) GroupViewEnabled() bool {
 	return me.sendLvmMessage(co.LVM_ISGROUPVIEWENABLED, 0, 0) >= 0
 }
 
 // Sends LVM_HITTEST to determine the item at specified position, if any.
+//
 // Pos coordinates must be relative to list view.
 func (me *ListView) HitTest(pos *win.POINT) *win.LVHITTESTINFO {
 	lvhti := &win.LVHITTESTINFO{
@@ -214,6 +248,7 @@ func (me *ListView) ImageList(typeImgList co.LVSIL) win.HIMAGELIST {
 }
 
 // Returns the item at the given index.
+//
 // Does not perform bound checking.
 func (me *ListView) Item(index uint32) *ListViewItem {
 	return &ListViewItem{
@@ -231,41 +266,32 @@ func (me *ListView) ItemCount() uint32 {
 	return uint32(count)
 }
 
-// Sends LVM_GETNEXTITEM with -1 as item index.
-// Returns nil if none.
-func (me *ListView) NextItem(relationship co.LVNI) *ListViewItem {
-	idx := -1
-	allItems := ListViewItem{
-		owner: me,
-		index: uint32(idx),
-	}
-	return allItems.NextItem(relationship)
-}
-
-// Calls LVM_GETNEXTITEM sequentially to retrieve all matched items.
-func (me *ListView) NextItemAll(relationship co.LVNI) []ListViewItem {
-	idx := -1
-	items := make([]ListViewItem, 0)
-	for {
-		idx = int(me.sendLvmMessage(co.LVM_GETNEXTITEM,
-			win.WPARAM(idx), win.LPARAM(relationship)))
-		if idx == -1 {
-			break
-		}
-		items = append(items, ListViewItem{
-			owner: me,
-			index: uint32(idx),
-		})
-	}
-	return items
-}
-
 // Sends LVM_SCROLL.
 func (me *ListView) Scroll(pxHorz, pxVert int32) *ListView {
 	ret := me.sendLvmMessage(co.LVM_SCROLL,
 		win.WPARAM(pxHorz), win.LPARAM(pxVert))
 	if ret == 0 {
 		panic("LVM_SCROLL failed.")
+	}
+	return me
+}
+
+// Selects or deselects all items at once.
+func (me *ListView) SelectAllItems(isSelected bool) *ListView {
+	state := co.LVIS_NONE
+	if isSelected {
+		state = co.LVIS_SELECTED
+	}
+
+	lvi := win.LVITEM{
+		State:     state,
+		StateMask: co.LVIS_SELECTED,
+	}
+	idx := -1
+	ret := me.sendLvmMessage(co.LVM_SETITEMSTATE,
+		win.WPARAM(idx), win.LPARAM(unsafe.Pointer(&lvi)))
+	if ret == 0 {
+		panic("LVM_SETITEMSTATE failed.")
 	}
 	return me
 }
@@ -277,6 +303,21 @@ func (me *ListView) SelectedItemCount() uint32 {
 		panic("LVM_GETSELECTEDCOUNT failed.")
 	}
 	return uint32(count)
+}
+
+// Retrieves the currently selected items.
+func (me *ListView) SelectedItems() []ListViewItem {
+	items := make([]ListViewItem, 0, me.SelectedItemCount())
+	idx := -1
+	for {
+		idx = int(me.sendLvmMessage(co.LVM_GETNEXTITEM,
+			win.WPARAM(idx), win.LPARAM(co.LVNI_SELECTED)))
+		if idx == -1 {
+			break
+		}
+		items = append(items, *me.Item(uint32(idx)))
+	}
+	return items
 }
 
 // Defines a menu to be shown as the context menu for the list view.
@@ -292,8 +333,10 @@ func (me *ListView) SetExtendedStyle(mask, exStyle co.LVS_EX) *ListView {
 	return me
 }
 
-// Sends LVM_SETIMAGELIST.
-// Returns image list previously associated.
+// Sends LVM_SETIMAGELIST, returning the previously associated image list.
+//
+// Note that if the list view was created with LVS_SHAREIMAGELISTS, the image
+// list must be manually destroyed.
 func (me *ListView) SetImageList(typeImgList co.LVSIL,
 	hImgList win.HIMAGELIST) win.HIMAGELIST {
 
@@ -305,24 +348,8 @@ func (me *ListView) SetImageList(typeImgList co.LVSIL,
 
 // Sends WM_SETREDRAW to enable or disable UI updates.
 func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
-	wp := 0
-	if allowRedraw {
-		wp = 1
-	}
-	me.hwnd.SendMessage(co.WM_SETREDRAW, win.WPARAM(wp), 0)
-	return me
-}
-
-// Sends LVM_SETITEMSTATE with index -1, which affects all items.
-func (me *ListView) SetStateAllItems(
-	state co.LVIS, stateMask co.LVIS) *ListView {
-
-	idx := -1
-	allItems := ListViewItem{
-		owner: me,
-		index: uint32(idx),
-	}
-	allItems.SetState(state, stateMask)
+	me.hwnd.SendMessage(co.WM_SETREDRAW,
+		win.WPARAM(_Util.BoolToUint32(allowRedraw)), 0)
 	return me
 }
 
@@ -345,9 +372,13 @@ func (me *ListView) StringWidth(text string) uint32 {
 	return uint32(ret)
 }
 
-// Retrieves the index of the topmost visible item with LVM_GETTOPINDEX.
-func (me *ListView) TopIndex() uint32 {
-	return uint32(me.sendLvmMessage(co.LVM_GETTOPINDEX, 0, 0))
+// Retrieves the topmost visible item with LVM_GETTOPINDEX or nil if none.
+func (me *ListView) TopMostVisibleItem() *ListViewItem {
+	idx := int(me.sendLvmMessage(co.LVM_GETTOPINDEX, 0, 0))
+	if idx == -1 {
+		return nil
+	}
+	return me.Item(uint32(idx))
 }
 
 // Retrieves current view with LVM_GETVIEW.
@@ -365,7 +396,7 @@ func (me *ListView) installSubclass() {
 
 	me.OnSubclassMsg().WmGetDlgCode(func(p WmGetDlgCode) co.DLGC {
 		if !p.IsQuery() && p.VirtualKeyCode() == 'A' && p.HasCtrl() { // Ctrl+A to select all items
-			me.SetStateAllItems(co.LVIS_SELECTED, co.LVIS_SELECTED)
+			me.SelectAllItems(true)
 			return co.DLGC_WANTCHARS
 
 		} else if !p.IsQuery() && p.VirtualKeyCode() == co.VK_RETURN { // send Enter key to parent
@@ -393,6 +424,7 @@ func (me *ListView) installSubclass() {
 }
 
 // Shows the popup menu anchored at cursor pos.
+//
 // This function will block until the menu disappears.
 func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 	if me.contextMenu.Hmenu() == 0 {
@@ -409,19 +441,19 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		if lvhti.IItem != -1 { // an item was right-clicked
 			if !hasCtrl && !hasShift {
 				clickedItem := me.Item(uint32(lvhti.IItem))
-				if (clickedItem.State() & co.LVIS_SELECTED) == 0 { // not selected?
-					me.SetStateAllItems(0, co.LVIS_SELECTED)                 // unselect all
-					clickedItem.SetState(co.LVIS_SELECTED, co.LVIS_SELECTED) // select it
+				if !clickedItem.Selected() {
+					me.SelectAllItems(false)
+					clickedItem.Select(true)
 				}
-				clickedItem.SetState(co.LVIS_FOCUSED, co.LVIS_FOCUSED) // and focus it
+				clickedItem.Focus()
 			}
 		} else if !hasCtrl && !hasShift { // no item was right-clicked
-			me.SetStateAllItems(0, co.LVIS_SELECTED) // unselect all
+			me.SelectAllItems(false)
 		}
 		me.Hwnd().SetFocus() // because a right-click won't set the focus by itself
 
 	} else { // usually fired with the context keyboard key
-		focusedItem := me.NextItem(co.LVNI_FOCUSED)
+		focusedItem := me.FocusedItem()
 		if focusedItem != nil && focusedItem.Visible() { // there is a focused item, and it's visible
 			rcItem := focusedItem.Rect(co.LVIR_BOUNDS)
 			menuPos.X = rcItem.Left + 16 // arbitrary
@@ -435,7 +467,7 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 	me.contextMenu.ShowAtPoint(menuPos, me.Hwnd().GetParent(), me.Hwnd())
 }
 
-// Simple wrapper.
+// Syntactic sugar.
 func (me *ListView) sendLvmMessage(msg co.LVM,
 	wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
