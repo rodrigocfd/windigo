@@ -18,12 +18,6 @@ type RadioButton struct {
 	_ControlNativeBase
 }
 
-// Tells if the current state is BST_CHECKED.
-func (me *RadioButton) Checked() bool {
-	return co.BST(me.Hwnd().
-		SendMessage(co.WM(co.BM_GETCHECK), 0, 0)) == co.BST_CHECKED
-}
-
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them.
 //
@@ -62,6 +56,12 @@ func (me *RadioButton) CreateSubsequent(
 
 	return me.createAutoSize(parent, ctrlId, x, y, text,
 		co.WS(co.BS_AUTORADIOBUTTON))
+}
+
+// Tells if the current state is BST_CHECKED.
+func (me *RadioButton) IsChecked() bool {
+	return co.BST(me.Hwnd().
+		SendMessage(co.WM(co.BM_GETCHECK), 0, 0)) == co.BST_CHECKED
 }
 
 // Sets the state to BST_CHECKED.

@@ -23,6 +23,14 @@ func (me *File) Close() {
 	}
 }
 
+// Replaces all file contents, possibly resizing the file.
+func (me *File) EraseAndWrite(data []byte) *File {
+	me.SetSize(uint64(len(data)))
+	me.hFile.WriteFile(data)
+	me.Rewind()
+	return me
+}
+
 func (me *File) OpenExistingForRead(path string) *File {
 	return me.rawOpen(path, co.GENERIC_READ,
 		co.FILE_SHARE_READ, co.FILE_DISPO_OPEN_EXISTING)
@@ -67,14 +75,6 @@ func (me *File) SetSize(numBytes uint64) *File {
 // Retrieves the files size. This value is not cached.
 func (me *File) Size() uint64 {
 	return uint64(me.hFile.GetFileSizeEx()) // no reason to return an unsigned
-}
-
-// Replaces all file contents, possibly resizing the file.
-func (me *File) EraseAndWrite(data []byte) *File {
-	me.SetSize(uint64(len(data)))
-	me.hFile.WriteFile(data)
-	me.Rewind()
-	return me
 }
 
 func (me *File) rawOpen(path string, desiredAccess co.GENERIC,

@@ -58,14 +58,6 @@ func (me *ListViewItem) Focus() *ListViewItem {
 	return me
 }
 
-// Tells if the item is the currently focused one.
-func (me *ListViewItem) Focused() bool {
-	return co.LVIS(
-		me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
-			win.WPARAM(me.index), win.LPARAM(co.LVIS_FOCUSED)),
-	) == co.LVIS_FOCUSED
-}
-
 // Retrieves the image index with LVM_GETITEM.
 func (me *ListViewItem) IconIndex() uint32 {
 	lvi := win.LVITEM{
@@ -83,6 +75,28 @@ func (me *ListViewItem) IconIndex() uint32 {
 // Returns the index of this item.
 func (me *ListViewItem) Index() uint32 {
 	return me.index
+}
+
+// Tells if the item is the currently focused one.
+func (me *ListViewItem) IsFocused() bool {
+	return co.LVIS(
+		me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
+			win.WPARAM(me.index), win.LPARAM(co.LVIS_FOCUSED)),
+	) == co.LVIS_FOCUSED
+}
+
+// Tells if the item is currently selected.
+func (me *ListViewItem) IsSelected() bool {
+	return co.LVIS(
+		me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
+			win.WPARAM(me.index), win.LPARAM(co.LVIS_SELECTED)),
+	) == co.LVIS_SELECTED
+}
+
+// Sends LVM_ISITEMVISIBLE for this item.
+func (me *ListViewItem) IsVisible() bool {
+	return me.owner.sendLvmMessage(co.LVM_ISITEMVISIBLE,
+		win.WPARAM(me.index), 0) != 0
 }
 
 // Returns the ListView to which this item belongs.
@@ -136,14 +150,6 @@ func (me *ListViewItem) Select(isSelected bool) *ListViewItem {
 		panic("LVM_SETITEMSTATE failed.")
 	}
 	return me
-}
-
-// Tells if the item is currently selected.
-func (me *ListViewItem) Selected() bool {
-	return co.LVIS(
-		me.owner.sendLvmMessage(co.LVM_GETITEMSTATE,
-			win.WPARAM(me.index), win.LPARAM(co.LVIS_SELECTED)),
-	) == co.LVIS_SELECTED
 }
 
 // Sets the image index with LVM_SETITEM.
@@ -226,10 +232,4 @@ func (me *ListViewItem) Update() *ListViewItem {
 		panic("LVM_UPDATE failed.")
 	}
 	return me
-}
-
-// Sends LVM_ISITEMVISIBLE for this item.
-func (me *ListViewItem) Visible() bool {
-	return me.owner.sendLvmMessage(co.LVM_ISITEMVISIBLE,
-		win.WPARAM(me.index), 0) != 0
 }

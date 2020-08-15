@@ -37,10 +37,19 @@ func (me *RadioGroup) Add(
 	return me
 }
 
+// Returns a slice of Control with all radio buttons.
+func (me *RadioGroup) AsSlice() []Control {
+	ctrls := make([]Control, 0, len(me.radios))
+	for i := range me.radios {
+		ctrls = append(ctrls, &me.radios[i])
+	}
+	return ctrls
+}
+
 // Returns the ID of the currently selected radio button, if any.
 func (me *RadioGroup) CheckedId() (int32, bool) {
 	for i := range me.radios {
-		if me.radios[i].Checked() {
+		if me.radios[i].IsChecked() {
 			return me.radios[i].Id(), true
 		}
 	}
@@ -76,15 +85,6 @@ func (me *RadioGroup) SetCheckAndTrigger(radioButtonId int32) *RadioGroup {
 	me.SetCheck(radioButtonId)
 	me.radioById(radioButtonId).SetCheckAndTrigger()
 	return me
-}
-
-// Returns a slice of Control with all radio buttons.
-func (me *RadioGroup) Slice() []Control {
-	ctrls := make([]Control, 0, len(me.radios))
-	for i := range me.radios {
-		ctrls = append(ctrls, &me.radios[i])
-	}
-	return ctrls
 }
 
 func (me *RadioGroup) radioById(radioButtonId int32) *RadioButton {

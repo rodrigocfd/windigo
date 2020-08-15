@@ -51,7 +51,7 @@ func (p _WmChar) ScanCode() uint8           { return p.LParam.LoByteHiWord() }
 func (p _WmChar) IsExtendedKey() bool       { return (p.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
 func (p _WmChar) HasAltKey() bool           { return (p.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
 func (p _WmChar) IsKeyDownBeforeSend() bool { return (p.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
-func (p _WmChar) KeyBeingReleased() bool    { return (p.LParam.HiByteHiWord() & 0b1000_0000) != 0 }
+func (p _WmChar) IsKeyBeingReleased() bool  { return (p.LParam.HiByteHiWord() & 0b1000_0000) != 0 }
 
 type WmChar struct{ _WmChar }
 

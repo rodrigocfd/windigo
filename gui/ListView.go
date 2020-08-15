@@ -225,11 +225,6 @@ func (me *ListView) FocusedItem() *ListViewItem {
 	return me.Item(uint32(idx))
 }
 
-// Sends LVM_ISGROUPVIEWENABLED.
-func (me *ListView) GroupViewEnabled() bool {
-	return me.sendLvmMessage(co.LVM_ISGROUPVIEWENABLED, 0, 0) >= 0
-}
-
 // Sends LVM_HITTEST to determine the item at specified position, if any.
 //
 // Pos coordinates must be relative to list view.
@@ -248,6 +243,11 @@ func (me *ListView) ImageList(typeImgList co.LVSIL) win.HIMAGELIST {
 	return win.HIMAGELIST(
 		me.sendLvmMessage(co.LVM_GETIMAGELIST, win.WPARAM(typeImgList), 0),
 	)
+}
+
+// Sends LVM_ISGROUPVIEWENABLED.
+func (me *ListView) IsGroupViewEnabled() bool {
+	return me.sendLvmMessage(co.LVM_ISGROUPVIEWENABLED, 0, 0) >= 0
 }
 
 // Returns the item at the given index.
@@ -447,7 +447,7 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		if lvhti.IItem != -1 { // an item was right-clicked
 			if !hasCtrl && !hasShift {
 				clickedItem := me.Item(uint32(lvhti.IItem))
-				if !clickedItem.Selected() {
+				if !clickedItem.IsSelected() {
 					me.SelectAllItems(false)
 					clickedItem.Select(true)
 				}
@@ -460,7 +460,7 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 
 	} else { // usually fired with the context keyboard key
 		focusedItem := me.FocusedItem()
-		if focusedItem != nil && focusedItem.Visible() { // there is a focused item, and it's visible
+		if focusedItem != nil && focusedItem.IsVisible() { // there is a focused item, and it's visible
 			rcItem := focusedItem.Rect(co.LVIR_BOUNDS)
 			menuPos.X = rcItem.Left + 16 // arbitrary
 			menuPos.Y = rcItem.Top + (rcItem.Bottom-rcItem.Top)/2

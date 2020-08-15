@@ -16,11 +16,6 @@ type CheckBox struct {
 	_ControlNativeBase
 }
 
-// Tells if the current state is BST_CHECKED.
-func (me *CheckBox) Checked() bool {
-	return me.State() == co.BST_CHECKED
-}
-
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them.
 //
@@ -51,10 +46,15 @@ func (me *CheckBox) Create3State(
 //
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
-func (me *CheckBox) CreateTwoState(
+func (me *CheckBox) Create2State(
 	parent Window, ctrlId, x, y int32, text string) *CheckBox {
 
 	return me.createAutoSize(parent, ctrlId, x, y, text, co.BS_AUTOCHECKBOX)
+}
+
+// Tells if the current state is BST_CHECKED.
+func (me *CheckBox) IsChecked() bool {
+	return me.State() == co.BST_CHECKED
 }
 
 // Sets the current state to BST_CHECKED or BST_UNCHECKED.

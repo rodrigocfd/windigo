@@ -83,7 +83,7 @@ func (me *ComboBox) SelectedIndex() int32 {
 }
 
 // Sets the index of the selected item, or -1 to clear.
-func (me *ComboBox) SetSelectedIndex(index int32) *ComboBox {
+func (me *ComboBox) SelectIndex(index int32) *ComboBox {
 	me.sendCbMessage(co.CB_SETCURSEL, win.WPARAM(index), 0)
 	return me
 }
