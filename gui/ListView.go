@@ -63,6 +63,15 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 	return me.Item(uint32(newIdx))
 }
 
+// Adds a new item specifying the text of many columns at once.
+func (me *ListView) AddItemMultiColumn(textsOfEachColumn []string) *ListView {
+	newItem := me.AddItem(textsOfEachColumn[0])
+	for i := 1; i < len(textsOfEachColumn); i++ {
+		newItem.SetSubItemText(uint32(i), textsOfEachColumn[i])
+	}
+	return me
+}
+
 // Adds a new item; returns the newly inserted item.
 //
 // Before call this method, attach an image list and load its icons.
