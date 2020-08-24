@@ -52,7 +52,7 @@ const (
 	WIN32_WINNT_WIN10        WIN32_WINNT = 0x0A00
 )
 
-type WM int32 // window message
+type WM uint32 // window message
 
 const (
 	WM_NULL                           WM = 0x0000
