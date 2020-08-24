@@ -13,6 +13,7 @@ import (
 	"wingows/win/proc"
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/
 type HTHEME HANDLE
 
 // https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-closethemedata

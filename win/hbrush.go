@@ -12,6 +12,7 @@ import (
 	"wingows/win/proc"
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbrush
 type HBRUSH HANDLE
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpatternbrush

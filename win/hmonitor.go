@@ -13,6 +13,7 @@ import (
 	"wingows/win/proc"
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hmonitor
 type HMONITOR HANDLE
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint

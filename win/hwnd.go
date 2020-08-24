@@ -14,6 +14,7 @@ import (
 	"wingows/win/proc"
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hwnd
 type HWND HANDLE
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clienttoscreen

@@ -6,6 +6,7 @@
 
 package win
 
+// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#wparam
 type WPARAM uintptr
 
 func (wp WPARAM) LoWord() uint16      { return loWord(uint32(wp)) }
@@ -15,6 +16,7 @@ func (wp WPARAM) HiByteLoWord() uint8 { return hiByte(wp.LoWord()) }
 func (wp WPARAM) LoByteHiWord() uint8 { return loByte(wp.HiWord()) }
 func (wp WPARAM) HiByteHiWord() uint8 { return hiByte(wp.HiWord()) }
 
+// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#lparam
 type LPARAM uintptr
 
 func (lp LPARAM) LoWord() uint16      { return loWord(uint32(lp)) }

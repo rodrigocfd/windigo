@@ -12,6 +12,7 @@ import (
 	"wingows/win/proc"
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hfont
 type HFONT HANDLE
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontindirectw

@@ -12,6 +12,7 @@ import (
 	"wingows/win/proc"
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdrop
 type HDROP HANDLE
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragfinish

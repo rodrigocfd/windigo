@@ -71,12 +71,11 @@ func (me *RegistryKey) EnumValues() []RegistryValueInfo {
 }
 
 // Opens a registry key for reading.
-func (me *RegistryKey) OpenForRead(keyPredef co.HKEY, subKey string) {
-	me.hKey = win.RegOpenKeyEx(keyPredef, subKey,
+func (me *RegistryKey) OpenForRead(keyPredef co.HKEY, subKey string) co.ERROR {
+	var err co.ERROR
+	me.hKey, err = win.RegOpenKeyEx(keyPredef, subKey,
 		co.REG_OPTION_NONE, co.KEY_READ)
-	if me.hKey == win.HKEY(0) {
-		panic("Key doesn't exist.")
-	}
+	return err
 }
 
 // Retrieves data type and size.

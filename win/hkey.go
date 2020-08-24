@@ -13,6 +13,7 @@ import (
 	"wingows/win/proc"
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hkey
 type HKEY HANDLE
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regclosekey
@@ -49,21 +50,14 @@ func (hKey HKEY) RegEnumValue(dwIndex uint32,
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
 func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
-	samDesired co.KEY) HKEY {
+	samDesired co.KEY) (HKEY, co.ERROR) {
 
 	hKey := HKEY(0)
 	ret, _, _ := syscall.Syscall6(proc.RegOpenKeyEx.Addr(), 5,
 		uintptr(hKeyPredef), uintptr(unsafe.Pointer(StrToPtr(lpSubKey))),
 		uintptr(ulOptions), uintptr(samDesired), uintptr(unsafe.Pointer(&hKey)),
 		0)
-
-	lerr := co.ERROR(ret)
-	if lerr == co.ERROR_FILE_NOT_FOUND {
-		return 0 // not found
-	} else if lerr != co.ERROR_SUCCESS {
-		panic(lerr.Format("RegOpenKeyEx failed."))
-	}
-	return hKey
+	return hKey, co.ERROR(ret)
 }
 
 // https://www.google.com/search?client=firefox-b-d&q=RegQueryValueExW

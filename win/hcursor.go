@@ -12,6 +12,7 @@ import (
 	"wingows/win/proc"
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hcursor
 type HCURSOR HANDLE
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycursor
