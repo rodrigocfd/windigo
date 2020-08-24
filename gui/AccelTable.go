@@ -50,14 +50,6 @@ func (me *AccelTable) AddKey(
 	return me
 }
 
-// Effectively builds the accelerator table, so it's ready to be used.
-func (me *AccelTable) Build() *AccelTable {
-	if me.hAccel == 0 && len(me.accels) > 0 {
-		me.hAccel = win.CreateAcceleratorTable(me.accels)
-	}
-	return me
-}
-
 // Calls DestroyAcceleratorTable() to free the resources.
 func (me *AccelTable) Destroy() {
 	if me.hAccel != 0 {
@@ -67,7 +59,11 @@ func (me *AccelTable) Destroy() {
 }
 
 // Buils the accelerator table once, and returns the HACCEL handle.
+//
+// Further accelerator additions will panic after this call.
 func (me *AccelTable) Haccel() win.HACCEL {
-	me.Build()
+	if me.hAccel == 0 && len(me.accels) > 0 { // build resource once
+		me.hAccel = win.CreateAcceleratorTable(me.accels)
+	}
 	return me.hAccel
 }

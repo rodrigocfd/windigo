@@ -37,7 +37,7 @@ func (me *Menu) AppendSubmenu(text string) *Menu {
 	return newMenu
 }
 
-// Calls CreateMenu(), used when created the main menu of a window.
+// Calls CreateMenu(), used when creating the main menu of a window.
 //
 // If attached to a window, will be automatically destroyed by the system.
 func (me *Menu) CreateMain() *Menu {
@@ -60,7 +60,7 @@ func (me *Menu) CreatePopup() *Menu {
 	return me
 }
 
-// Calls DestroyMenu().
+// Calls DestroyMenu() to free the resources.
 func (me *Menu) Destroy() {
 	if me.hMenu != 0 {
 		me.hMenu.DestroyMenu()
