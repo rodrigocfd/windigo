@@ -7,6 +7,7 @@
 package com
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -43,6 +44,7 @@ func (me *_ITaskbarList2) MarkFullscreenWindow(
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
 		me.Release() // free resource
-		panic(lerr.Format("ITaskbarList2.MarkFullscreenWindow failed."))
+		panic(fmt.Sprintf("ITaskbarList2.MarkFullscreenWindow failed. %s",
+			lerr.Error()))
 	}
 }

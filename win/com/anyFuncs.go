@@ -7,6 +7,7 @@
 package com
 
 import (
+	"fmt"
 	"syscall"
 	"wingows/co"
 	"wingows/win/proc"
@@ -29,7 +30,7 @@ func CoInitializeEx(dwCoInit co.COINIT) {
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK && lerr != co.ERROR_S_FALSE {
-		panic(lerr.Format("CoInitializeEx failed."))
+		panic(fmt.Sprintf("CoInitializeEx failed. %s", lerr.Error()))
 	}
 }
 

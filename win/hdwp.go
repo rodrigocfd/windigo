@@ -7,6 +7,7 @@
 package win
 
 import (
+	"fmt"
 	"syscall"
 	"wingows/co"
 	"wingows/win/proc"
@@ -20,7 +21,8 @@ func BeginDeferWindowPos(numWindows uint32) HDWP {
 	ret, _, lerr := syscall.Syscall(proc.BeginDeferWindowPos.Addr(), 1,
 		uintptr(numWindows), 0, 0)
 	if ret == 0 {
-		panic(co.ERROR(lerr).Format("BeginDeferWindowPos failed."))
+		panic(fmt.Sprintf("BeginDeferWindowPos failed. %s",
+			co.ERROR(lerr).Error()))
 	}
 	return HDWP(ret)
 }
@@ -35,7 +37,7 @@ func (hDwp HDWP) DeferWindowPos(hWnd HWND, hWndInsertAfter HWND, x, y int32,
 		0)
 	if ret == 0 {
 		hDwp.endDeferWindowPosNoPanic() // free resource
-		panic(co.ERROR(lerr).Format("DeferWindowPos failed."))
+		panic(fmt.Sprintf("DeferWindowPos failed. %s", co.ERROR(lerr).Error()))
 	}
 	return HDWP(ret)
 }
@@ -44,7 +46,7 @@ func (hDwp HDWP) DeferWindowPos(hWnd HWND, hWndInsertAfter HWND, x, y int32,
 func (hDwp HDWP) EndDeferWindowPos() {
 	lerr := hDwp.endDeferWindowPosNoPanic()
 	if lerr != co.ERROR_SUCCESS {
-		panic(lerr.Format("EndDeferWindowPos failed."))
+		panic(fmt.Sprintf("EndDeferWindowPos failed. %s", co.ERROR(lerr).Error()))
 	}
 }
 

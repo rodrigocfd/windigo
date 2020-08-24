@@ -7,6 +7,7 @@
 package win
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -20,7 +21,7 @@ type HFIND HANDLE
 func (hFind HFIND) FindClose() {
 	lerr := hFind.findCloseNoPanic()
 	if lerr != co.ERROR_SUCCESS {
-		panic(lerr.Format("FindClose failed."))
+		panic(fmt.Sprintf("FindClose failed. %s", co.ERROR(lerr).Error()))
 	}
 }
 
@@ -41,7 +42,7 @@ func FindFirstFile(lpFileName string,
 			// No matching files, not an error.
 			return 0, false
 		} else {
-			panic(lerr2.Format("FindFirstFile failed."))
+			panic(fmt.Sprintf("FindFirstFile failed. %s", co.ERROR(lerr).Error()))
 		}
 	}
 	return HFIND(ret), true
@@ -58,7 +59,7 @@ func (hFind HFIND) FindNextFile(lpFindFileData *WIN32_FIND_DATA) bool {
 			return false
 		} else {
 			hFind.findCloseNoPanic() // free resource
-			panic(lerr2.Format("FindNextFile failed."))
+			panic(fmt.Sprintf("FindNextFile failed. %s", co.ERROR(lerr).Error()))
 		}
 	}
 	return true

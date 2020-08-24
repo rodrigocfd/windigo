@@ -8,6 +8,7 @@ package com
 
 import (
 	"encoding/binary"
+	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -55,7 +56,7 @@ func (me *_IUnknown) coCreateInstance(
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
-		panic(lerr.Format("CoCreateInstance failed."))
+		panic(fmt.Sprintf("CoCreateInstance failed. %s", lerr.Error()))
 	}
 }
 
@@ -78,7 +79,7 @@ func (me *_IUnknown) queryInterface(iid *co.IID) IUnknown {
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
 		me.Release() // free resource
-		panic(lerr.Format("IUnknown.QueryInterface failed."))
+		panic(fmt.Sprintf("IUnknown.QueryInterface failed. %s", lerr.Error()))
 	}
 	return retIUnk
 }

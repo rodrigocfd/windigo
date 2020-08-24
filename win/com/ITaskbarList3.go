@@ -7,6 +7,7 @@
 package com
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -55,7 +56,8 @@ func (me *ITaskbarList3) SetProgressValue(
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
 		me.Release() // free resource
-		panic(lerr.Format("ITaskbarList3.SetProgressValue failed."))
+		panic(fmt.Sprintf("ITaskbarList3.SetProgressValue failed. %s",
+			lerr.Error()))
 	}
 }
 
@@ -67,6 +69,7 @@ func (me *ITaskbarList3) SetProgressState(hwnd win.HWND, tbpFlags co.TBPF) {
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
 		me.Release() // free resource
-		panic(lerr.Format("ITaskbarList3.SetProgressState failed."))
+		panic(fmt.Sprintf("ITaskbarList3.SetProgressState failed. %s",
+			lerr.Error()))
 	}
 }

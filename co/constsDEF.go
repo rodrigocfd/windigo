@@ -122,8 +122,9 @@ const (
 // native struct with such a field type would be wrong.
 type ERROR uint32
 
-func (e ERROR) Format(msg string) string {
-	return fmt.Sprintf("%s\n[%d 0x%02x] %s", msg, e, e, syscall.Errno(e).Error())
+// Calls FormatMessage() to retrieve error description.
+func (e ERROR) Error() string {
+	return fmt.Sprintf("[%d 0x%02x] %s", uint32(e), uint32(e), syscall.Errno(e).Error())
 }
 
 const (

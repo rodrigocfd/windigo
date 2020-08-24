@@ -7,6 +7,7 @@
 package com
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -45,6 +46,6 @@ func (me *IGraphBuilder) Abort() {
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
 		me.Release() // free resource
-		panic(lerr.Format("IGraphBuilder.Abort failed."))
+		panic(fmt.Sprintf("IGraphBuilder.Abort failed. %s", lerr.Error()))
 	}
 }

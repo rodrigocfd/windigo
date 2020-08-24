@@ -7,6 +7,7 @@
 package win
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -20,7 +21,7 @@ type HKEY HANDLE
 func (hKey HKEY) RegCloseKey() {
 	ret := hKey.regCloseKeyNoPanic()
 	if ret != co.ERROR_SUCCESS {
-		panic(ret.Format("RegCloseKey failed."))
+		panic(fmt.Sprintf("RegCloseKey failed. %s", ret.Error()))
 	}
 }
 
@@ -45,7 +46,7 @@ func (hKey HKEY) RegEnumValue(dwIndex uint32,
 	}
 
 	hKey.regCloseKeyNoPanic() // free resource
-	panic(lerr.Format("RegEnumValue failed."))
+	panic(fmt.Sprintf("RegEnumValue failed. %s", lerr.Error()))
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
@@ -72,7 +73,7 @@ func (hKey HKEY) RegQueryValueEx(lpValueName string, lpType *co.REG,
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_SUCCESS {
 		hKey.regCloseKeyNoPanic() // free resource
-		panic(lerr.Format("RegQueryValueEx failed."))
+		panic(fmt.Sprintf("RegQueryValueEx failed. %s", lerr.Error()))
 	}
 	return lerr
 }

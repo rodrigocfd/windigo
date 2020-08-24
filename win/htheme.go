@@ -7,6 +7,7 @@
 package win
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -20,7 +21,7 @@ type HTHEME HANDLE
 func (hTheme HTHEME) CloseThemeData() {
 	hr := hTheme.closeThemeDataNoPanic()
 	if hr != 0 {
-		panic(hr.Format("CloseThemeData failed."))
+		panic(fmt.Sprintf("CloseThemeData failed. %s", hr.Error()))
 	}
 }
 
@@ -34,7 +35,7 @@ func (hTheme HTHEME) DrawThemeBackground(hdc HDC,
 		uintptr(unsafe.Pointer(rect)), uintptr(unsafe.Pointer(clipRect)))
 	if hr != 0 {
 		hTheme.closeThemeDataNoPanic() // free resource
-		panic(co.ERROR(hr).Format("DrawThemeBackground failed."))
+		panic(fmt.Sprintf("DrawThemeBackground failed. %s", co.ERROR(hr).Error()))
 	}
 }
 

@@ -53,7 +53,7 @@ func StrToPtrBlankIsNil(s string) *uint16 {
 func DestroyCaret() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyCaret.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
-		panic(co.ERROR(lerr).Format("DestroyCaret failed."))
+		panic(fmt.Sprintf("DestroyCaret failed. %s", co.ERROR(lerr).Error()))
 	}
 }
 
@@ -68,7 +68,7 @@ func DispatchMessage(msg *MSG) uintptr {
 func EndMenu() {
 	ret, _, lerr := syscall.Syscall(proc.EndMenu.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
-		panic(co.ERROR(lerr).Format("EndMenu failed."))
+		panic(fmt.Sprintf("EndMenu failed. %s", co.ERROR(lerr).Error()))
 	}
 }
 
@@ -84,7 +84,7 @@ func EnumWindows(
 			}),
 		uintptr(lParam), 0)
 	if ret == 0 {
-		panic(co.ERROR(lerr).Format("EnumWindow failed."))
+		panic(fmt.Sprintf("EnumWindow failed. %s", co.ERROR(lerr).Error()))
 	}
 }
 
@@ -108,7 +108,7 @@ func GetCursorPos() *POINT {
 	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(pt)), 0, 0)
 	if ret == 0 {
-		panic(co.ERROR(lerr).Format("GetCursorPos failed."))
+		panic(fmt.Sprintf("GetCursorPos failed. %s", co.ERROR(lerr).Error()))
 	}
 	return pt
 }
@@ -129,7 +129,7 @@ func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
 		uintptr(msgFilterMin), uintptr(msgFilterMax),
 		0, 0)
 	if int(ret) == -1 {
-		panic(co.ERROR(lerr).Format("GetMessage failed."))
+		panic(fmt.Sprintf("GetMessage failed. %s", co.ERROR(lerr).Error()))
 	}
 	return int32(ret)
 }
@@ -273,7 +273,7 @@ func PostThreadMessage(
 		uintptr(idThread), uintptr(Msg), uintptr(wParam), uintptr(lParam),
 		0, 0)
 	if ret == 0 {
-		panic(co.ERROR(lerr).Format("PostThreadMessage failed."))
+		panic(fmt.Sprintf("PostThreadMessage failed. %s", co.ERROR(lerr).Error()))
 	}
 }
 
@@ -290,7 +290,8 @@ func RegisterWindowMessage(lpString string) uint32 {
 	ret, _, lerr := syscall.Syscall(proc.RegisterWindowMessage.Addr(), 1,
 		uintptr(unsafe.Pointer(StrToPtr(lpString))), 0, 0)
 	if ret == 0 {
-		panic(co.ERROR(lerr).Format("RegisterWindowMessage failed."))
+		panic(fmt.Sprintf("RegisterWindowMessage failed. %s",
+			co.ERROR(lerr).Error()))
 	}
 	return uint32(ret)
 }
@@ -309,7 +310,8 @@ func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 	ret, _, lerr := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
 		uintptr(value), 0, 0)
 	if ret == 0 {
-		panic(co.ERROR(lerr).Format("SetProcessDpiAwarenessContext failed."))
+		panic(fmt.Sprintf("SetProcessDpiAwarenessContext failed. %s",
+			co.ERROR(lerr).Error()))
 	}
 }
 
@@ -333,7 +335,7 @@ func SetWindowsHookEx(idHook co.WH,
 		uintptr(idHook), syscall.NewCallback(lpfn),
 		uintptr(hmod), uintptr(dwThreadId), 0, 0)
 	if ret == 0 {
-		panic(co.ERROR(lerr).Format("SetWindowsHookEx failed."))
+		panic(fmt.Sprintf("SetWindowsHookEx failed. %s", co.ERROR(lerr).Error()))
 	}
 	return HHOOK(ret)
 }
@@ -379,7 +381,8 @@ func SystemParametersInfo(uiAction co.SPI, uiParam uint32,
 		uintptr(uiAction), uintptr(uiParam), uintptr(pvParam), uintptr(fWinIni),
 		0, 0)
 	if ret == 0 {
-		panic(co.ERROR(lerr).Format("SystemParametersInfo failed."))
+		panic(fmt.Sprintf("SystemParametersInfo failed. %s",
+			co.ERROR(lerr).Error()))
 	}
 }
 

@@ -7,6 +7,7 @@
 package win
 
 import (
+	"fmt"
 	"syscall"
 	"wingows/co"
 	"wingows/win/proc"
@@ -19,7 +20,7 @@ type HFILEMAP HANDLE
 func (hMap HFILEMAP) CloseHandle() {
 	lerr := hMap.closeHandleNoPanic()
 	if lerr != co.ERROR_SUCCESS {
-		panic(lerr.Format("CloseHandle failed."))
+		panic(fmt.Sprintf("CloseHandle failed. %s", co.ERROR(lerr).Error()))
 	}
 }
 
@@ -32,7 +33,7 @@ func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 		numBytesToMap, 0)
 	if ret == 0 {
 		hMap.closeHandleNoPanic() // free resource
-		panic(co.ERROR(lerr).Format("MapViewOfFile failed."))
+		panic(fmt.Sprintf("MapViewOfFile failed. %s", co.ERROR(lerr).Error()))
 	}
 	return HFILEMAP_PTR(ret)
 }
@@ -59,6 +60,6 @@ func (mappedPtr HFILEMAP_PTR) UnmapViewOfFile() {
 	ret, _, lerr := syscall.Syscall(proc.UnmapViewOfFile.Addr(), 1,
 		uintptr(mappedPtr), 0, 0)
 	if ret == 0 {
-		panic(co.ERROR(lerr).Format("UnmapViewOfFile failed."))
+		panic(fmt.Sprintf("UnmapViewOfFile failed. %s", co.ERROR(lerr).Error()))
 	}
 }

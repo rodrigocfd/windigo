@@ -65,7 +65,7 @@ func (me *_WindowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 			(*uint16)(unsafe.Pointer(wcx.LpszClassName)), wcx)
 
 	} else if lerr != co.ERROR_SUCCESS {
-		panic(lerr.Format("RegisterClassEx failed."))
+		panic(fmt.Sprintf("RegisterClassEx failed. %s", lerr.Error()))
 	}
 
 	return atom

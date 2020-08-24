@@ -7,6 +7,7 @@
 package gui
 
 import (
+	"fmt"
 	"wingows/co"
 	"wingows/win"
 )
@@ -81,8 +82,12 @@ func (me *File) rawOpen(path string, desiredAccess co.GENERIC,
 	shareMode co.FILE_SHARE, creationDisposition co.FILE_DISPO) *File {
 
 	me.Close()
-	me.hFile = win.CreateFile(path, desiredAccess, shareMode, nil,
+	var err co.ERROR
+	me.hFile, err = win.CreateFile(path, desiredAccess, shareMode, nil,
 		creationDisposition, co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE,
 		co.SECURITY_NONE, 0)
+	if err != co.ERROR_SUCCESS {
+		panic(fmt.Sprintf("CreateFile failed. %s", err.Error()))
+	}
 	return me
 }
