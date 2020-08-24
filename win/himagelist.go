@@ -15,10 +15,16 @@ import (
 
 type HIMAGELIST HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_addicon
+//
+// If icon was loaded with LoadIcon(), it doesn't need to be destroyed, because
+// all icon resources are automatically freed.
+// Otherwise, if CreateIcon(), it can be destroyed after the function returns.
 func (hImg HIMAGELIST) AddIcon(hIcon HICON) {
 	hImg.ReplaceIcon(-1, hIcon)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_destroy
 func (hImg HIMAGELIST) Destroy() {
 	// http://www.catch22.net/tuts/win32/system-image-list
 	// https://www.autohotkey.com/docs/commands/ListView.htm
@@ -26,6 +32,7 @@ func (hImg HIMAGELIST) Destroy() {
 		uintptr(hImg), 0, 0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_duplicate
 func (hImg HIMAGELIST) Duplicate() HIMAGELIST {
 	ret, _, _ := syscall.Syscall(proc.ImageList_Duplicate.Addr(), 1,
 		uintptr(hImg), 0, 0)
@@ -35,6 +42,8 @@ func (hImg HIMAGELIST) Duplicate() HIMAGELIST {
 	return HIMAGELIST(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticon
+//
 // Returned icon must be destroyed.
 func (hImg HIMAGELIST) GetIcon(index uint32, flags co.ILD) HICON {
 	ret, _, _ := syscall.Syscall(proc.ImageList_GetIcon.Addr(), 3,
@@ -45,6 +54,7 @@ func (hImg HIMAGELIST) GetIcon(index uint32, flags co.ILD) HICON {
 	return HICON(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticonsize
 func (hImg HIMAGELIST) GetIconSize() *SIZE {
 	sz := &SIZE{}
 	ret, _, _ := syscall.Syscall(proc.ImageList_GetIconSize.Addr(), 3,
@@ -56,12 +66,14 @@ func (hImg HIMAGELIST) GetIconSize() *SIZE {
 	return sz
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_getimagecount
 func (hImg HIMAGELIST) GetImageCount() uint32 {
 	ret, _, _ := syscall.Syscall(proc.ImageList_GetImageCount.Addr(), 1,
 		uintptr(hImg), 0, 0)
 	return uint32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_getimageinfo
 func (hImg HIMAGELIST) GetImageInfo(index uint32) *IMAGEINFO {
 	ii := &IMAGEINFO{}
 	ret, _, _ := syscall.Syscall(proc.ImageList_GetImageInfo.Addr(), 3,
@@ -72,8 +84,7 @@ func (hImg HIMAGELIST) GetImageInfo(index uint32) *IMAGEINFO {
 	return ii
 }
 
-// Automatically destroyed if attached to a ListView, unless created with
-// LVS_SHAREIMAGELISTS. For TreeView, must be manually destroyed.
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
 func ImageListCreate(cx, cy uint32, flags co.ILC,
 	cInitial, cGrow uint32) HIMAGELIST {
 
@@ -86,6 +97,8 @@ func ImageListCreate(cx, cy uint32, flags co.ILC,
 	return HIMAGELIST(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_replaceicon
+//
 // If icon was loaded with LoadIcon(), it doesn't need to be destroyed, because
 // all icon resources are automatically freed.
 // Otherwise, if CreateIcon(), it can be destroyed after the function returns.

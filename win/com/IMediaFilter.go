@@ -9,6 +9,8 @@ package com
 type (
 	_IMediaFilter struct{ _IPersist }
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
+	//
 	// IMediaFilter > IPersist > IUnknown.
 	IMediaFilter struct{ _IMediaFilter }
 

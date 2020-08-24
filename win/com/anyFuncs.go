@@ -20,7 +20,7 @@ func boolToUintptr(b bool) uintptr {
 	return uintptr(0)
 }
 
-// Initializes the COM library.
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 //
 // Must be freed with CoUninitialize().
 func CoInitializeEx(dwCoInit co.COINIT) {
@@ -33,7 +33,7 @@ func CoInitializeEx(dwCoInit co.COINIT) {
 	}
 }
 
-// Closes the COM library and frees the resources.
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
 func CoUninitialize() {
 	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)
 }

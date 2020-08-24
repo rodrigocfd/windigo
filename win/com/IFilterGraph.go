@@ -9,6 +9,8 @@ package com
 type (
 	_IFilterGraph struct{ _IUnknown }
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
+	//
 	// IFilterGraph > IUnknown.
 	IFilterGraph struct{ _IFilterGraph }
 

@@ -15,6 +15,8 @@ import (
 type (
 	_IGraphBuilder struct{ _IFilterGraph }
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-igraphbuilder
+	//
 	// IGraphBuilder > IFilterGraph > IUnknown.
 	IGraphBuilder struct{ _IGraphBuilder }
 

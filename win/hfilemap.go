@@ -15,6 +15,7 @@ import (
 // This type doesn't exist in Win32, just a HANDLE.
 type HFILEMAP HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hMap HFILEMAP) CloseHandle() {
 	lerr := hMap.closeHandleNoPanic()
 	if lerr != co.ERROR_SUCCESS {
@@ -22,6 +23,7 @@ func (hMap HFILEMAP) CloseHandle() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 	offset uint32, numBytesToMap uintptr) HFILEMAP_PTR {
 
@@ -52,6 +54,7 @@ func (hMap HFILEMAP) closeHandleNoPanic() co.ERROR {
 // This type doesn't exist in Win32, just a BYTE pointer to memory address.
 type HFILEMAP_PTR uintptr
 
+// https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
 func (mappedPtr HFILEMAP_PTR) UnmapViewOfFile() {
 	ret, _, lerr := syscall.Syscall(proc.UnmapViewOfFile.Addr(), 1,
 		uintptr(mappedPtr), 0, 0)

@@ -16,6 +16,7 @@ import (
 
 type HDC HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createcompatibledc
 func (hdc HDC) CreateCompatibleDC() HDC {
 	ret, _, _ := syscall.Syscall(proc.CreateCompatibleDC.Addr(), 1,
 		uintptr(hdc), 0, 0)
@@ -25,6 +26,7 @@ func (hdc HDC) CreateCompatibleDC() HDC {
 	return HDC(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
 func (hdc HDC) EnumDisplayMonitors(
 	lprcClip *RECT,
 	lpfnEnum func(hMon HMONITOR, hdcMon HDC, rcMon uintptr, lp LPARAM) bool,
@@ -42,6 +44,7 @@ func (hdc HDC) EnumDisplayMonitors(
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deletedc
 func (hdc HDC) DeleteDC() {
 	ret, _, _ := syscall.Syscall(proc.DeleteDC.Addr(), 1,
 		uintptr(hdc), 0, 0)
@@ -50,12 +53,14 @@ func (hdc HDC) DeleteDC() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdevicecaps
 func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetDeviceCaps.Addr(), 2,
 		uintptr(hdc), uintptr(index), 0)
 	return int32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextextentpoint32w
 func (hdc HDC) GetTextExtentPoint32(lpString string) *SIZE {
 	sz := &SIZE{}
 	ret, _, _ := syscall.Syscall6(proc.GetTextExtentPoint32.Addr(), 4,
@@ -67,6 +72,7 @@ func (hdc HDC) GetTextExtentPoint32(lpString string) *SIZE {
 	return sz
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextfacew
 func (hdc HDC) GetTextFace() string {
 	buf := [32]uint16{} // LF_FACESIZE
 	ret, _, _ := syscall.Syscall(proc.GetTextFace.Addr(), 3,
@@ -77,6 +83,7 @@ func (hdc HDC) GetTextFace() string {
 	return syscall.UTF16ToString(buf[:])
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-lineto
 func (hdc HDC) LineTo(x, y int32) {
 	ret, _, _ := syscall.Syscall(proc.LineTo.Addr(), 3,
 		uintptr(hdc), uintptr(x), uintptr(y))
@@ -85,6 +92,7 @@ func (hdc HDC) LineTo(x, y int32) {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polydraw
 func (hdc HDC) PolyDraw(apt []POINT, aj []co.PT) {
 	if len(apt) != len(aj) {
 		panic(fmt.Sprintf("PolyDraw different slice sizes: %d, %d.",
@@ -99,6 +107,7 @@ func (hdc HDC) PolyDraw(apt []POINT, aj []co.PT) {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polygon
 func (hdc HDC) Polygon(apt []POINT) {
 	ret, _, _ := syscall.Syscall(proc.Polygon.Addr(), 3,
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
@@ -107,6 +116,7 @@ func (hdc HDC) Polygon(apt []POINT) {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polyline
 func (hdc HDC) Polyline(apt []POINT) {
 	ret, _, _ := syscall.Syscall(proc.Polyline.Addr(), 3,
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
@@ -115,6 +125,7 @@ func (hdc HDC) Polyline(apt []POINT) {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polylineto
 func (hdc HDC) PolylineTo(apt []POINT) {
 	ret, _, _ := syscall.Syscall(proc.PolylineTo.Addr(), 3,
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
@@ -123,7 +134,7 @@ func (hdc HDC) PolylineTo(apt []POINT) {
 	}
 }
 
-// SelectObject() for HBITMAP.
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectBitmap(b HBITMAP) HBITMAP {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(b), 0)
@@ -133,7 +144,7 @@ func (hdc HDC) SelectObjectBitmap(b HBITMAP) HBITMAP {
 	return HBITMAP(ret)
 }
 
-// SelectObject() for HBRUSH.
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectBrush(b HBRUSH) HBRUSH {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(b), 0)
@@ -143,7 +154,7 @@ func (hdc HDC) SelectObjectBrush(b HBRUSH) HBRUSH {
 	return HBRUSH(ret)
 }
 
-// SelectObject() for HFONT.
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectFont(f HFONT) HFONT {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(f), 0)
@@ -153,7 +164,7 @@ func (hdc HDC) SelectObjectFont(f HFONT) HFONT {
 	return HFONT(ret)
 }
 
-// SelectObject() for HPEN.
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectPen(p HPEN) HPEN {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(p), 0)
@@ -163,6 +174,7 @@ func (hdc HDC) SelectObjectPen(p HPEN) HPEN {
 	return HPEN(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectRgn(r HRGN) HRGN {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(r), 0)
@@ -172,6 +184,7 @@ func (hdc HDC) SelectObjectRgn(r HRGN) HRGN {
 	return HRGN(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setbkcolor
 func (hdc HDC) SetBkColor(color COLORREF) COLORREF {
 	ret, _, _ := syscall.Syscall(proc.SetBkColor.Addr(), 2,
 		uintptr(hdc), uintptr(color), 0)
@@ -181,6 +194,7 @@ func (hdc HDC) SetBkColor(color COLORREF) COLORREF {
 	return COLORREF(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setbkmode
 func (hdc HDC) SetBkMode(mode co.BKMODE) co.BKMODE {
 	ret, _, _ := syscall.Syscall(proc.SetBkMode.Addr(), 2,
 		uintptr(hdc), uintptr(mode), 0)

@@ -14,11 +14,13 @@ import (
 
 type HDROP HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragfinish
 func (hDrop HDROP) DragFinish() {
 	syscall.Syscall(proc.DragFinish.Addr(), 1,
 		uintptr(hDrop), 0, 0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragqueryfilew
 func (hDrop HDROP) DragQueryFile(iFile uint32, lpszFile *uint16,
 	cch uint32) uint32 {
 
@@ -32,6 +34,7 @@ func (hDrop HDROP) DragQueryFile(iFile uint32, lpszFile *uint16,
 	return uint32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragquerypoint
 func (hDrop HDROP) DragQueryPoint() (*POINT, bool) {
 	pt := &POINT{}
 	ret, _, _ := syscall.Syscall(proc.DragQueryPoint.Addr(), 2,

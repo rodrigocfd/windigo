@@ -13,6 +13,7 @@ import (
 
 type HPEN HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hPen HPEN) DeleteObject() bool {
 	ret, _, _ := syscall.Syscall(proc.DeleteObject.Addr(), 1,
 		uintptr(hPen), 0, 0)

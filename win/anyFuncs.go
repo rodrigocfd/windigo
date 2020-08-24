@@ -14,9 +14,7 @@ import (
 	"wingows/win/proc"
 )
 
-// Returns *uint16, wrapper to syscall.UTF16PtrFromString().
-//
-// Panics on error.
+// Returns *uint16, wrapper to syscall.UTF16PtrFromString(). Panics on error.
 func StrToPtr(s string) *uint16 {
 	// We won't return an uintptr right away because it has no pointer semantics,
 	// it's just a number, so pointed memory can be garbage-collected.
@@ -30,7 +28,6 @@ func StrToPtr(s string) *uint16 {
 }
 
 // Returns a null-terminated []uint16, wrapper to syscall.UTF16FromString().
-//
 // Panics on error.
 func StrToSlice(s string) []uint16 {
 	sli, err := syscall.UTF16FromString(s)
@@ -42,9 +39,7 @@ func StrToSlice(s string) []uint16 {
 }
 
 // Returns *uint16, or nil of empty string, wrapper to
-// syscall.UTF16PtrFromString().
-//
-// Panics on error.
+// syscall.UTF16PtrFromString(). Panics on error.
 func StrToPtrBlankIsNil(s string) *uint16 {
 	if s != "" {
 		return StrToPtr(s)
@@ -54,15 +49,7 @@ func StrToPtrBlankIsNil(s string) *uint16 {
 
 //------------------------------------------------------------------------------
 
-func CreateFontIndirect(lf *LOGFONT) HFONT {
-	ret, _, _ := syscall.Syscall(proc.CreateFontIndirect.Addr(), 1,
-		uintptr(unsafe.Pointer(lf)), 0, 0)
-	if ret == 0 {
-		panic("CreateFontIndirect failed.")
-	}
-	return HFONT(ret)
-}
-
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycaret
 func DestroyCaret() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyCaret.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
@@ -70,12 +57,14 @@ func DestroyCaret() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dispatchmessage
 func DispatchMessage(msg *MSG) uintptr {
 	ret, _, _ := syscall.Syscall(proc.DispatchMessage.Addr(), 1,
 		uintptr(unsafe.Pointer(msg)), 0, 0)
 	return ret
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endmenu
 func EndMenu() {
 	ret, _, lerr := syscall.Syscall(proc.EndMenu.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
@@ -83,6 +72,7 @@ func EndMenu() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
 func EnumWindows(
 	lpEnumFunc func(hwnd HWND, lParam LPARAM) bool,
 	lParam LPARAM) {
@@ -98,18 +88,21 @@ func EnumWindows(
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getasynckeystate
 func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
 	ret, _, _ := syscall.Syscall(proc.GetAsyncKeyState.Addr(), 1,
 		uintptr(virtKeyCode), 0, 0)
 	return uint16(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthreadid
 func GetCurrentThreadId() uint32 {
 	ret, _, _ := syscall.Syscall(proc.GetCurrentThreadId.Addr(), 0,
 		0, 0, 0)
 	return uint32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcursorpos
 func GetCursorPos() *POINT {
 	pt := &POINT{}
 	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
@@ -120,6 +113,8 @@ func GetCursorPos() *POINT {
 	return pt
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforsystem
+//
 // Available in Windows 10, version 1607.
 func GetDpiForSystem() uint32 {
 	ret, _, _ := syscall.Syscall(proc.GetDpiForSystem.Addr(), 0,
@@ -127,6 +122,7 @@ func GetDpiForSystem() uint32 {
 	return uint32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagew
 func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
 	ret, _, lerr := syscall.Syscall6(proc.GetMessage.Addr(), 4,
 		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
@@ -138,6 +134,7 @@ func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
 	return int32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-getopenfilenamew
 func GetOpenFileName(ofn *OPENFILENAME) bool {
 	ofn.LStructSize = uint32(unsafe.Sizeof(*ofn)) // safety
 	ret, _, _ := syscall.Syscall(proc.GetOpenFileName.Addr(), 1,
@@ -155,6 +152,7 @@ func GetOpenFileName(ofn *OPENFILENAME) bool {
 	return true // user clicked OK
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-getsavefilenamew
 func GetSaveFileName(ofn *OPENFILENAME) bool {
 	ofn.LStructSize = uint32(unsafe.Sizeof(*ofn)) // safety
 	ret, _, _ := syscall.Syscall(proc.GetSaveFileName.Addr(), 1,
@@ -172,16 +170,19 @@ func GetSaveFileName(ofn *OPENFILENAME) bool {
 	return true // user clicked OK
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
 func GetSystemMetrics(index co.SM) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetSystemMetrics.Addr(), 1,
 		uintptr(index), 0, 0)
 	return int32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
 func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsversionorgreater
 func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32,
 	servicePackMajor uint16) bool {
 
@@ -204,6 +205,7 @@ func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32,
 	return ret
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows10orgreater
 func IsWindows10OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(hiByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
@@ -211,6 +213,7 @@ func IsWindows10OrGreater() bool {
 		0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows7orgreater
 func IsWindows7OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(hiByte(uint16(co.WIN32_WINNT_WIN7))),
@@ -218,6 +221,7 @@ func IsWindows7OrGreater() bool {
 		0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8orgreater
 func IsWindows8OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(hiByte(uint16(co.WIN32_WINNT_WIN8))),
@@ -225,6 +229,7 @@ func IsWindows8OrGreater() bool {
 		0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8point1orgreater
 func IsWindows8Point1OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(hiByte(uint16(co.WIN32_WINNT_WINBLUE))),
@@ -232,6 +237,7 @@ func IsWindows8Point1OrGreater() bool {
 		0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsvistaorgreater
 func IsWindowsVistaOrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(hiByte(uint16(co.WIN32_WINNT_VISTA))),
@@ -239,6 +245,7 @@ func IsWindowsVistaOrGreater() bool {
 		0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsxporgreater
 func IsWindowsXpOrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(hiByte(uint16(co.WIN32_WINNT_WINXP))),
@@ -246,18 +253,19 @@ func IsWindowsXpOrGreater() bool {
 		0)
 }
 
-// Multiplies two 32-bit values and then divides the 64-bit result by a third
-// 32-bit value. The final result is rounded to the nearest integer.
+// https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-muldiv
 func MulDiv(number, numerator, denominator int32) int32 {
 	ret, _, _ := syscall.Syscall(proc.MulDiv.Addr(), 3,
 		uintptr(number), uintptr(numerator), uintptr(denominator))
 	return int32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postquitmessage
 func PostQuitMessage(exitCode int32) {
 	syscall.Syscall(proc.PostQuitMessage.Addr(), 1, uintptr(exitCode), 0, 0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postthreadmessagew
 func PostThreadMessage(
 	idThread uint32, Msg co.WM, wParam WPARAM, lParam LPARAM) {
 
@@ -269,6 +277,7 @@ func PostThreadMessage(
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassexw
 func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, co.ERROR) {
 	wcx.CbSize = uint32(unsafe.Sizeof(*wcx)) // safety
 	ret, _, lerr := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
@@ -276,6 +285,7 @@ func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, co.ERROR) {
 	return ATOM(ret), co.ERROR(lerr)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerwindowmessagew
 func RegisterWindowMessage(lpString string) uint32 {
 	ret, _, lerr := syscall.Syscall(proc.RegisterWindowMessage.Addr(), 1,
 		uintptr(unsafe.Pointer(StrToPtr(lpString))), 0, 0)
@@ -285,12 +295,15 @@ func RegisterWindowMessage(lpString string) uint32 {
 	return uint32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-replymessage
 func ReplyMessage(lResult uintptr) bool {
 	ret, _, _ := syscall.Syscall(proc.ReplyMessage.Addr(), 1,
 		lResult, 0, 0)
 	return ret != 0
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
+//
 // Available in Windows 10, version 1703.
 func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 	ret, _, lerr := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
@@ -300,6 +313,8 @@ func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiaware
+//
 // Available in Windows Vista.
 func SetProcessDPIAware() {
 	ret, _, _ := syscall.Syscall(proc.SetProcessDPIAware.Addr(), 0,
@@ -309,6 +324,7 @@ func SetProcessDPIAware() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
 func SetWindowsHookEx(idHook co.WH,
 	lpfn func(code int, wp WPARAM, lp LPARAM) uintptr,
 	hmod HINSTANCE, dwThreadId uint32) HHOOK {
@@ -322,6 +338,8 @@ func SetWindowsHookEx(idHook co.WH,
 	return HHOOK(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
+//
 // Depends of CoInitializeEx().
 func SHGetFileInfo(pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
 	uFlags co.SHGFI) *SHFILEINFO {
@@ -347,11 +365,13 @@ func SHGetFileInfo(pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
 	return shfi
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
 func Sleep(dwMilliseconds uint32) {
 	syscall.Syscall(proc.Sleep.Addr(), 1,
 		uintptr(dwMilliseconds), 0, 0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
 func SystemParametersInfo(uiAction co.SPI, uiParam uint32,
 	pvParam unsafe.Pointer, fWinIni uint32) {
 
@@ -363,12 +383,14 @@ func SystemParametersInfo(uiAction co.SPI, uiParam uint32,
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translatemessage
 func TranslateMessage(msg *MSG) bool {
 	ret, _, _ := syscall.Syscall(proc.TranslateMessage.Addr(), 1,
 		uintptr(unsafe.Pointer(msg)), 0, 0)
 	return ret != 0
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
 func VerifyVersionInfo(ovi *OSVERSIONINFOEX, typeMask co.VER,
 	conditionMask uint64) (bool, co.ERROR) {
 
@@ -378,6 +400,7 @@ func VerifyVersionInfo(ovi *OSVERSIONINFOEX, typeMask co.VER,
 	return ret != 0, co.ERROR(lerr)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-versetconditionmask
 func VerSetConditionMask(conditionMask uint64, typeMask co.VER,
 	condition co.VER_COND) uint64 {
 

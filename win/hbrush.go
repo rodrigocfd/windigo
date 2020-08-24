@@ -14,6 +14,7 @@ import (
 
 type HBRUSH HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpatternbrush
 func CreatePatternBrush(hbm HBITMAP) HBRUSH {
 	ret, _, _ := syscall.Syscall(proc.CreatePatternBrush.Addr(), 1,
 		uintptr(hbm), 0, 0)
@@ -29,6 +30,7 @@ func CreateSysColorBrush(sysColor co.COLOR) HBRUSH {
 	return HBRUSH(sysColor + 1)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hBrush HBRUSH) DeleteObject() bool {
 	ret, _, _ := syscall.Syscall(proc.DeleteObject.Addr(), 1,
 		uintptr(hBrush), 0, 0)

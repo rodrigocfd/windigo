@@ -9,6 +9,8 @@ package com
 type (
 	_IDispatch struct{ _IUnknown }
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
+	//
 	// IDispatch > IUnknown.
 	IDispatch struct{ _IDispatch }
 

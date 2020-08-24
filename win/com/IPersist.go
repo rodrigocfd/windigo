@@ -9,6 +9,8 @@ package com
 type (
 	_IPersist struct{ _IUnknown }
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
+	//
 	// IPersist > IUnknown.
 	IPersist struct{ _IPersist }
 

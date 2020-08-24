@@ -15,6 +15,7 @@ import (
 
 type HTHEME HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-closethemedata
 func (hTheme HTHEME) CloseThemeData() {
 	hr := hTheme.closeThemeDataNoPanic()
 	if hr != 0 {
@@ -22,6 +23,7 @@ func (hTheme HTHEME) CloseThemeData() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-drawthemebackground
 func (hTheme HTHEME) DrawThemeBackground(hdc HDC,
 	partId co.VS_PART, stateId co.VS_STATE,
 	rect *RECT, clipRect *RECT) {
@@ -35,12 +37,14 @@ func (hTheme HTHEME) DrawThemeBackground(hdc HDC,
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isappthemed
 func IsAppThemed() bool {
 	ret, _, _ := syscall.Syscall(proc.IsAppThemed.Addr(), 0,
 		0, 0, 0)
 	return ret != 0
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemeactive
 func IsThemeActive() bool {
 	ret, _, _ := syscall.Syscall(proc.IsThemeActive.Addr(), 0,
 		0, 0, 0)

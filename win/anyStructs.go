@@ -10,12 +10,14 @@ import (
 	"wingows/co"
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-accel
 type ACCEL struct {
 	FVirt co.ACCELF
 	Key   co.VK
 	Cmd   uint16 // LOWORD(wParam) value
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-createstructw
 type CREATESTRUCT struct {
 	LpCreateParams uintptr
 	HInstance      HINSTANCE
@@ -29,11 +31,13 @@ type CREATESTRUCT struct {
 	ExStyle        co.WS_EX
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
 type FILETIME struct {
 	DwLowDateTime  uint32
 	DwHighDateTime uint32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
 type GUID struct {
 	Data1 uint32
 	Data2 uint16
@@ -41,6 +45,7 @@ type GUID struct {
 	Data4 uint64
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
 type HELPINFO struct {
 	CbSize       uint32
 	IContextType co.HELPINFO
@@ -50,6 +55,7 @@ type HELPINFO struct {
 	MousePos     POINT
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type LOGFONT struct {
 	LfHeight         int32
 	LfWidth          int32
@@ -67,6 +73,7 @@ type LOGFONT struct {
 	LfFaceName       [32]uint16 // LF_FACESIZE
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
 type MENUINFO struct {
 	CbSize          uint32
 	FMask           co.MIM
@@ -77,6 +84,7 @@ type MENUINFO struct {
 	DwMenuData      uintptr
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
 type MENUITEMINFO struct {
 	CbSize        uint32
 	FMask         co.MIIM
@@ -92,6 +100,7 @@ type MENUITEMINFO struct {
 	HBmpItem      HBITMAP
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfoexw
 type MONITORINFOEX struct {
 	CbSize    uint32
 	RcMonitor RECT
@@ -100,6 +109,7 @@ type MONITORINFOEX struct {
 	SzDevice  [32]uint16 // CCHDEVICENAME
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msg
 type MSG struct {
 	HWnd   HWND
 	Msg    uint32
@@ -109,12 +119,14 @@ type MSG struct {
 	Pt     POINT
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nmhdr
 type NMHDR struct {
 	HWndFrom HWND
 	IdFrom   uintptr
 	Code     uint32 // in fact it should be int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nonclientmetricsw
 type NONCLIENTMETRICS struct {
 	CbSize             uint32
 	IBorderWidth       int32
@@ -134,6 +146,7 @@ type NONCLIENTMETRICS struct {
 	IPaddedBorderWidth int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-openfilenamew
 type OPENFILENAME struct {
 	LStructSize       uint32
 	HwndOwner         HWND
@@ -160,6 +173,7 @@ type OPENFILENAME struct {
 	FlagsEx           co.OFN_EX
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
 type OSVERSIONINFOEX struct {
 	DwOsVersionInfoSize uint32
 	DwMajorVersion      uint32
@@ -174,20 +188,24 @@ type OSVERSIONINFOEX struct {
 	WReserve            uint8
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-point
 type POINT struct {
 	X, Y int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-rect
 type RECT struct {
 	Left, Top, Right, Bottom int32
 }
 
+// https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/aa379560(v=vs.85)
 type SECURITY_ATTRIBUTES struct {
 	NLength              uint32
 	LpSecurityDescriptor uintptr // LPVOID
 	BInheritHandle       int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
 type SHFILEINFO struct {
 	HIcon         HICON
 	IIcon         int32
@@ -196,10 +214,12 @@ type SHFILEINFO struct {
 	SzTypeName    [80]uint16
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-size
 type SIZE struct {
 	Cx, Cy int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw
 type WIN32_FIND_DATA struct {
 	DwFileAttributes   co.FILE_ATTRIBUTE
 	FtCreationTime     FILETIME
@@ -216,6 +236,7 @@ type WIN32_FIND_DATA struct {
 	WFinderFlags       uint16
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassexw
 type WNDCLASSEX struct {
 	CbSize        uint32
 	Style         co.CS

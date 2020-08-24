@@ -18,7 +18,7 @@ type (
 	_IUnknownPtr struct{ uintptr } // IUnknown pointer itself, which has a pointer to virtual table
 	_IUnknown    struct{ uintptr } // container, which has a pointer to actual IUnknown
 
-	// IUnknown is the base to all COM interfaces.
+	// https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 	IUnknown struct{ _IUnknown }
 
 	_IUnknownVtbl struct {

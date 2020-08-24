@@ -15,6 +15,7 @@ import (
 
 type HFILE HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hFile HFILE) CloseHandle() {
 	lerr := hFile.closeHandleNoPanic()
 	if lerr != co.ERROR_SUCCESS {
@@ -22,6 +23,7 @@ func (hFile HFILE) CloseHandle() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw
 func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) {
 	ret, _, lerr := syscall.Syscall(proc.CreateDirectory.Addr(), 2,
 		uintptr(unsafe.Pointer(StrToPtr(pathName))),
@@ -31,6 +33,7 @@ func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 func CreateFile(fileName string, desiredAccess co.GENERIC,
 	shareMode co.FILE_SHARE, securityAttributes *SECURITY_ATTRIBUTES,
 	creationDisposition co.FILE_DISPO, attributes co.FILE_ATTRIBUTE,
@@ -49,6 +52,7 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 	return HFILE(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
 func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 	protectPage co.PAGE, protectSec co.SEC, maxSize uint32,
 	objectName string) HFILEMAP {
@@ -66,6 +70,7 @@ func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 	return HFILEMAP(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
 func DeleteFile(fileName string) {
 	ret, _, lerr := syscall.Syscall(proc.DeleteFile.Addr(), 1,
 		uintptr(unsafe.Pointer(StrToPtr(fileName))), 0, 0)
@@ -74,12 +79,14 @@ func DeleteFile(fileName string) {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, co.ERROR) {
 	ret, _, lerr := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
 		uintptr(unsafe.Pointer(StrToPtr(lpFileName))), 0, 0)
 	return co.FILE_ATTRIBUTE(ret), co.ERROR(lerr)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesize
 func (hFile HFILE) GetFileSize() uint32 {
 	ret, _, lerr := syscall.Syscall(proc.GetFileSize.Addr(), 1,
 		uintptr(hFile), 0, 0)
@@ -90,6 +97,7 @@ func (hFile HFILE) GetFileSize() uint32 {
 	return uint32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex
 func (hFile HFILE) GetFileSizeEx() int64 {
 	buf := int64(0)
 	ret, _, lerr := syscall.Syscall(proc.GetFileSizeEx.Addr(), 2,
@@ -101,17 +109,16 @@ func (hFile HFILE) GetFileSizeEx() int64 {
 	return buf
 }
 
-// Returns the number of bytes actually read.
-// Buffer must be previously allocated.
-func (hFile HFILE) ReadFile(buf []byte, bytesToRead uint32) uint32 {
-	if len(buf) < int(bytesToRead) {
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
+func (hFile HFILE) ReadFile(buf []byte, numBytesToRead uint32) uint32 {
+	if len(buf) < int(numBytesToRead) {
 		panic("ReadFile failed: not enough room in buffer.")
 	}
 
 	numRead := uint32(0)
 	ret, _, lerr := syscall.Syscall6(proc.ReadFile.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(bytesToRead), uintptr(unsafe.Pointer(&numRead)), 0, 0) // OVERLAPPED not even considered
+		uintptr(numBytesToRead), uintptr(unsafe.Pointer(&numRead)), 0, 0) // OVERLAPPED not even considered
 
 	if ret == 0 {
 		hFile.closeHandleNoPanic() // free resource
@@ -120,6 +127,7 @@ func (hFile HFILE) ReadFile(buf []byte, bytesToRead uint32) uint32 {
 	return numRead
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setendoffile
 func (hFile HFILE) SetEndOfFile() {
 	ret, _, lerr := syscall.Syscall(proc.SetEndOfFile.Addr(), 1,
 		uintptr(hFile), 0, 0)
@@ -129,6 +137,7 @@ func (hFile HFILE) SetEndOfFile() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointer
 func (hFile HFILE) SetFilePointer(distanceToMove int32,
 	moveMethod co.FILE_SETPTR) {
 
@@ -141,6 +150,7 @@ func (hFile HFILE) SetFilePointer(distanceToMove int32,
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
 func (hFile HFILE) SetFilePointerEx(distanceToMove int64,
 	moveMethod co.FILE_SETPTR) {
 
@@ -153,6 +163,7 @@ func (hFile HFILE) SetFilePointerEx(distanceToMove int64,
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
 func (hFile HFILE) WriteFile(buf []byte) {
 	written := uint32(0)
 	ret, _, lerr := syscall.Syscall6(proc.WriteFile.Addr(), 5,

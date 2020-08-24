@@ -9,6 +9,8 @@ package com
 type (
 	_IBaseFilter struct{ _IMediaFilter }
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
+	//
 	// IBaseFilter > IMediaFilter > IPersist > IUnknown.
 	IBaseFilter struct{ _IBaseFilter }
 

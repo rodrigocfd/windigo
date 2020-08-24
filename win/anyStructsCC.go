@@ -10,6 +10,7 @@ import (
 	"wingows/co"
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imageinfo
 type IMAGEINFO struct {
 	HbmImage HBITMAP
 	HbmMask  HBITMAP
@@ -18,6 +19,7 @@ type IMAGEINFO struct {
 	RcImage  RECT
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
 type IMAGELISTDRAWPARAMS struct {
 	CbSize   uint32
 	Himl     HIMAGELIST
@@ -38,6 +40,7 @@ type IMAGELISTDRAWPARAMS struct {
 	CrEffect COLORREF
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
 type LITEM struct {
 	Mask      co.LIF
 	ILink     int32
@@ -47,6 +50,7 @@ type LITEM struct {
 	SzUrl     [2048 + 32 + 3]uint16 // L_MAX_URL_LENGTH
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
 type LVCOLUMN struct {
 	Mask       co.LVCF
 	Fmt        int32
@@ -61,6 +65,7 @@ type LVCOLUMN struct {
 	CxIdeal    int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvfindinfow
 type LVFINDINFO struct {
 	Flags       co.LVFI
 	Psz         uintptr // LPCWSTR
@@ -69,6 +74,7 @@ type LVFINDINFO struct {
 	VkDirection uint32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvhittestinfo
 type LVHITTESTINFO struct {
 	Pt       POINT // Coordinates relative to list view.
 	Flags    co.LVHT
@@ -77,6 +83,7 @@ type LVHITTESTINFO struct {
 	IGroup   int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemw
 type LVITEM struct {
 	Mask       co.LVIF
 	IItem      int32
@@ -95,6 +102,7 @@ type LVITEM struct {
 	IGroup     int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcustomdraw
 type NMCUSTOMDRAW struct {
 	Hdr         NMHDR
 	DwDrawStage co.CDDS
@@ -105,6 +113,7 @@ type NMCUSTOMDRAW struct {
 	LItemlParam LPARAM
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmitemactivate
 type NMITEMACTIVATE struct {
 	Hdr       NMHDR
 	IItem     int32
@@ -117,6 +126,7 @@ type NMITEMACTIVATE struct {
 	UKeyFlags co.LVKF
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlistview
 type NMLISTVIEW struct {
 	Hdr       NMHDR
 	IItem     int32
@@ -128,12 +138,14 @@ type NMLISTVIEW struct {
 	LParam    LPARAM
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvcachehint
 type NMLVCACHEHINT struct {
 	Hdr   NMHDR
 	IFrom int32
 	ITo   int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvcustomdraw
 type NMLVCUSTOMDRAW struct {
 	Nmcd        NMCUSTOMDRAW
 	ClrText     COLORREF
@@ -149,23 +161,27 @@ type NMLVCUSTOMDRAW struct {
 	UAlign      co.LVGA_HEADER
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvdispinfow
 type NMLVDISPINFO struct {
 	Hdr  NMHDR
 	Item LVITEM
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvemptymarkup
 type NMLVEMPTYMARKUP struct {
 	Hdr      NMHDR
 	DwFlags  co.EMF
 	SzMarkup [2048 + 32 + 3]uint16 // L_MAX_URL_LENGTH
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvfinditemw
 type NMLVFINDITEM struct {
 	Hdr    NMHDR
 	IStart int32
 	Lvfi   LVFINDINFO
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvgetinfotipw
 type NMLVGETINFOTIP struct {
 	Hdr        NMHDR
 	DwFlags    co.LVGIT
@@ -176,12 +192,14 @@ type NMLVGETINFOTIP struct {
 	LParam     LPARAM
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvkeydown
 type NMLVKEYDOWN struct {
 	Hdr   NMHDR
 	WVKey co.VK
 	Flags uint32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvlink
 type NMLVLINK struct {
 	Hdr      NMHDR
 	Link     LITEM
@@ -189,6 +207,7 @@ type NMLVLINK struct {
 	ISubItem int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvodstatechange
 type NMLVODSTATECHANGE struct {
 	Hdr       NMHDR
 	IFrom     int32
@@ -197,12 +216,14 @@ type NMLVODSTATECHANGE struct {
 	UOldState co.LVIS
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvscroll
 type NMLVSCROLL struct {
 	Hdr NMHDR
 	Dx  int32
 	Dy  int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmmouse
 type NMMOUSE struct {
 	Hdr        NMHDR
 	DwItemSpec uintptr
@@ -211,6 +232,7 @@ type NMMOUSE struct {
 	DwHitInfo  LPARAM
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtreevieww
 type NMTREEVIEW struct {
 	Hdr     NMHDR
 	Action  uint32 // co.TVE | co.TVC
@@ -219,6 +241,7 @@ type NMTREEVIEW struct {
 	PtDrag  POINT
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvasyncdraw
 type NMTVASYNCDRAW struct {
 	Hdr            NMHDR
 	Pimldp         uintptr  // LPIMAGELISTDRAWPARAMS
@@ -229,6 +252,7 @@ type NMTVASYNCDRAW struct {
 	IRetImageIndex int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvcustomdraw
 type NMTVCUSTOMDRAW struct {
 	Nmcd      NMCUSTOMDRAW
 	ClrText   COLORREF
@@ -236,11 +260,13 @@ type NMTVCUSTOMDRAW struct {
 	ILevel    int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvdispinfow
 type NMTVDISPINFO struct {
 	Hdr  NMHDR
 	Item TVITEM
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvgetinfotipw
 type NMTVGETINFOTIP struct {
 	Hdr        NMHDR
 	PszText    uintptr // LPWSTR
@@ -249,6 +275,7 @@ type NMTVGETINFOTIP struct {
 	LParam     LPARAM
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvitemchange
 type NMTVITEMCHANGE struct {
 	Hdr       NMHDR
 	UChanged  co.TVIF
@@ -258,18 +285,21 @@ type NMTVITEMCHANGE struct {
 	LParam    LPARAM
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvkeydown
 type NMTVKEYDOWN struct {
 	Hdr   NMHDR
 	WVKey co.VK
 	Flags uint32
 }
 
+// https://www.google.com/search?client=firefox-b-d&q=TVINSERTSTRUCTW
 type TVINSERTSTRUCT struct {
 	HParent      HTREEITEM
 	HInsertAfter HTREEITEM
 	Itemex       TVITEMEX
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemw
 type TVITEM struct {
 	Mask           co.TVIF
 	HItem          HTREEITEM
@@ -283,6 +313,7 @@ type TVITEM struct {
 	LParam         LPARAM
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
 type TVITEMEX struct {
 	Mask           co.TVIF
 	HItem          HTREEITEM

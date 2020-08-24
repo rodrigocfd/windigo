@@ -13,6 +13,8 @@ import (
 type (
 	_ITaskbarList struct{ _IUnknown }
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
+	//
 	// ITaskbarList > IUnknown.
 	ITaskbarList struct{ _ITaskbarList }
 

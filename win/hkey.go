@@ -15,6 +15,7 @@ import (
 
 type HKEY HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regclosekey
 func (hKey HKEY) RegCloseKey() {
 	ret := hKey.regCloseKeyNoPanic()
 	if ret != co.ERROR_SUCCESS {
@@ -22,6 +23,7 @@ func (hKey HKEY) RegCloseKey() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumvaluew
 func (hKey HKEY) RegEnumValue(dwIndex uint32,
 	lpValueName []uint16, lpcchValueName *uint32, lpType *co.REG,
 	lpData unsafe.Pointer, lpcbData *uint32) co.ERROR {
@@ -45,7 +47,7 @@ func (hKey HKEY) RegEnumValue(dwIndex uint32,
 	panic(lerr.Format("RegEnumValue failed."))
 }
 
-// Returns zero if key doesn't exist.
+// https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
 func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
 	samDesired co.KEY) HKEY {
 
@@ -64,6 +66,7 @@ func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
 	return hKey
 }
 
+// https://www.google.com/search?client=firefox-b-d&q=RegQueryValueExW
 func (hKey HKEY) RegQueryValueEx(lpValueName string, lpType *co.REG,
 	lpData unsafe.Pointer, lpcbData *uint32) co.ERROR {
 

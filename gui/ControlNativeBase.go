@@ -24,7 +24,7 @@ var (
 // Allows control subclassing.
 type _ControlNativeBase struct {
 	hwnd       win.HWND
-	msgs       _WindowDepotMsg
+	msgs       _DepotMsg
 	subclassId uint32
 }
 
@@ -41,7 +41,7 @@ func (me *_ControlNativeBase) Id() int32 {
 // Exposes all the control subclass methods that can be handled.
 //
 // The subclass will be installed in create() if at least 1 message was added.
-func (me *_ControlNativeBase) OnSubclassMsg() *_WindowDepotMsg {
+func (me *_ControlNativeBase) OnSubclassMsg() *_DepotMsg {
 	if me.hwnd != 0 {
 		panic("Cannot add subclass message after the control was created.")
 	}

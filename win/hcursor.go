@@ -14,6 +14,7 @@ import (
 
 type HCURSOR HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycursor
 func (hCursor HCURSOR) DestroyCursor() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyCursor.Addr(), 1,
 		uintptr(hCursor), 0, 0)

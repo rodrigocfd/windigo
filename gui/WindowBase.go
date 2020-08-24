@@ -14,15 +14,15 @@ import (
 	"wingows/win"
 )
 
-type _WindowBaseDepot struct { // aglutinate both msg and nfy into one façade
-	_WindowDepotMsg
-	_WindowDepotNfy
+type _WindowDepot struct { // aglutinate both msg and nfy into one façade
+	_DepotMsg
+	_DepotNfy
 }
 
 // Base to all window types: WindowControl, WindowMain and WindowModal.
 type _WindowBase struct {
 	hwnd  win.HWND
-	depot _WindowBaseDepot
+	depot _WindowDepot
 }
 
 const _WM_UI_THREAD = co.WM_APP + 0x3FFF   // used in UI thread handling
@@ -34,7 +34,7 @@ func (me *_WindowBase) Hwnd() win.HWND {
 }
 
 // Exposes all the window messages the can be handled.
-func (me *_WindowBase) OnMsg() *_WindowBaseDepot {
+func (me *_WindowBase) OnMsg() *_WindowDepot {
 	if me.Hwnd() != 0 {
 		panic("Cannot add message after the window was created.")
 	}
@@ -136,9 +136,9 @@ func wndProc(hwnd win.HWND, msg co.WM,
 		},
 	}
 
-	userRet, wasHandled := pMe.depot._WindowDepotMsg.processMessage(msg, msgParms)
+	userRet, wasHandled := pMe.depot._DepotMsg.processMessage(msg, msgParms)
 	if !wasHandled {
-		userRet, wasHandled = pMe.depot._WindowDepotNfy.processMessage(msg, msgParms)
+		userRet, wasHandled = pMe.depot._DepotNfy.processMessage(msg, msgParms)
 	}
 
 	// No further messages processed after this one.
