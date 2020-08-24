@@ -44,6 +44,7 @@ func (me *_ITaskbarList3) CoCreateInstance(dwClsContext co.CLSCTX) {
 		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList3)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue
 func (me *ITaskbarList3) SetProgressValue(
 	hwnd win.HWND, ullCompleted, ullTotal uint64) {
 
@@ -61,6 +62,7 @@ func (me *ITaskbarList3) SetProgressValue(
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
 func (me *ITaskbarList3) SetProgressState(hwnd win.HWND, tbpFlags co.TBPF) {
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(me.pVtb())).SetProgressState, 3,

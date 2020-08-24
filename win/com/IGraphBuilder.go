@@ -38,6 +38,7 @@ func (me *_IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
 		&co.CLSID_FilterGraph, dwClsContext, &co.IID_IGraphBuilder)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
 func (me *IGraphBuilder) Abort() {
 	ret, _, _ := syscall.Syscall(
 		(*_IGraphBuilderVtbl)(unsafe.Pointer(me.pVtb())).Abort, 1,

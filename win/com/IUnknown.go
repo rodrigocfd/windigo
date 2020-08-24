@@ -84,6 +84,7 @@ func (me *_IUnknown) queryInterface(iid *co.IID) IUnknown {
 	return retIUnk
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *_IUnknown) AddRef() uint32 {
 	if me.uintptr == 0 {
 		panic("Calling AddRef on empty IUnknown.")
@@ -94,6 +95,7 @@ func (me *_IUnknown) AddRef() uint32 {
 	return uint32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 func (me *_IUnknown) Release() uint32 {
 	if me.uintptr == 0 {
 		panic("Calling Release on empty IUnknown.")

@@ -33,6 +33,7 @@ func (me *_ITaskbarList2) CoCreateInstance(dwClsContext co.CLSCTX) {
 		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList2)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow
 func (me *_ITaskbarList2) MarkFullscreenWindow(
 	hwnd win.HWND, fFullScreen bool) {
 
