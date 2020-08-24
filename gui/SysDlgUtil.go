@@ -17,7 +17,7 @@ import (
 
 type _SysDlgUtilT struct{}
 
-// System dialogs.
+// System dialogs utilities.
 var SysDlgUtil _SysDlgUtilT
 
 // Shows the open file system dialog, choice restricted to 1 file.

@@ -8,7 +8,7 @@ package gui
 
 type _ControlUtilT struct{}
 
-// General control utilities.
+// General child control utilities.
 var ControlUtil _ControlUtilT
 
 // Enables or disables many controls at once.

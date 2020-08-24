@@ -21,7 +21,7 @@ type RegistryKey struct {
 	hKey win.HKEY
 }
 
-// Returned by EnumValues.
+// Data returned by RegistryKey.EnumValues().
 type RegistryValueInfo struct {
 	DataType co.REG
 	Name     string

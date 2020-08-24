@@ -11,13 +11,15 @@ import (
 	"wingows/win"
 )
 
-// Action to be done when resizing occurs.
+// Used in Resizer.Add().
+//
+// Action to be done on a child control when the parent is resized.
 type RESZ uint8
 
 const (
-	RESZ_REPOS  RESZ = iota // Move left/top coordinates of the control.
-	RESZ_RESIZE             // Increase or decrease width/height.
-	RESZ_NOTHING
+	RESZ_REPOS   RESZ = iota // When resizing occurs, change control left or top position.
+	RESZ_RESIZE              // When resizing occurs, change control width or height.
+	RESZ_NOTHING             // When resizing occurs, do nothing.
 )
 
 type _ReszCtrl struct {
@@ -27,6 +29,8 @@ type _ReszCtrl struct {
 	doVert RESZ
 }
 
+// When the parent window resizes, changes size and/or position of several
+// children automatically.
 type Resizer struct {
 	ctrls  []_ReszCtrl
 	szOrig win.SIZE
@@ -79,34 +83,26 @@ func (me *Resizer) Adjust(p WmSize) {
 		}
 
 		szParent := p.ClientAreaSize()
-		x := func() int32 {
-			if c.doHorz == RESZ_REPOS {
-				return szParent.Cx - me.szOrig.Cx + c.rcOrig.Left
-			} else {
-				return c.rcOrig.Left // keep original pos
-			}
-		}()
-		y := func() int32 {
-			if c.doVert == RESZ_REPOS {
-				return szParent.Cy - me.szOrig.Cy + c.rcOrig.Top
-			} else {
-				return c.rcOrig.Top // keep original pos
-			}
-		}()
-		cx := func() uint32 {
-			if c.doHorz == RESZ_RESIZE {
-				return uint32(szParent.Cx - me.szOrig.Cx + c.rcOrig.Right - c.rcOrig.Left)
-			} else {
-				return uint32(c.rcOrig.Right - c.rcOrig.Left) // keep original width
-			}
-		}()
-		cy := func() uint32 {
-			if c.doVert == RESZ_RESIZE {
-				return uint32(szParent.Cy - me.szOrig.Cy + c.rcOrig.Bottom - c.rcOrig.Top)
-			} else {
-				return uint32(c.rcOrig.Bottom - c.rcOrig.Top) // keep original height
-			}
-		}()
+
+		x := c.rcOrig.Left // keep original left pos
+		if c.doHorz == RESZ_REPOS {
+			x = szParent.Cx - me.szOrig.Cx + c.rcOrig.Left
+		}
+
+		y := c.rcOrig.Top // keep original top pos
+		if c.doVert == RESZ_REPOS {
+			y = szParent.Cy - me.szOrig.Cy + c.rcOrig.Top
+		}
+
+		cx := uint32(c.rcOrig.Right - c.rcOrig.Left) // keep original width
+		if c.doHorz == RESZ_RESIZE {
+			cx = uint32(szParent.Cx - me.szOrig.Cx + c.rcOrig.Right - c.rcOrig.Left)
+		}
+
+		cy := uint32(c.rcOrig.Bottom - c.rcOrig.Top) // keep original height
+		if c.doVert == RESZ_RESIZE {
+			cy = uint32(szParent.Cy - me.szOrig.Cy + c.rcOrig.Bottom - c.rcOrig.Top)
+		}
 
 		hdwp.DeferWindowPos(c.hChild.Hwnd(), win.HWND(0), x, y, cx, cy, uFlags)
 	}

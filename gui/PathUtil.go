@@ -15,13 +15,13 @@ import (
 	"wingows/win"
 )
 
-type _FileUtilT struct{}
+type _PathUtilT struct{}
 
-// File utilities.
-var FileUtil _FileUtilT
+// File and folder path utilities.
+var PathUtil _PathUtilT
 
 // Returns all the file names that match a pattern like "C:\\foo\\*.txt".
-func (_FileUtilT) ListFilesInFolder(pathAndPattern string) []string {
+func (_PathUtilT) ListFilesInFolder(pathAndPattern string) []string {
 	retFiles := make([]string, 0)
 	dirPath := filepath.Dir(pathAndPattern)
 
@@ -44,18 +44,21 @@ func (_FileUtilT) ListFilesInFolder(pathAndPattern string) []string {
 	return retFiles
 }
 
-func (_FileUtilT) PathExists(path string) bool {
+// Tells if a given file or folder exists.
+func (_PathUtilT) PathExists(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID
 }
 
-func (_FileUtilT) PathIsFolder(path string) bool {
+// Tells if a given path is a folder, and not a file.
+func (_PathUtilT) PathIsFolder(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID &&
 		(attr&co.FILE_ATTRIBUTE_DIRECTORY) != 0
 }
 
-func (_FileUtilT) PathIsHidden(path string) bool {
+// Tells if the given file or folder is hidden.
+func (_PathUtilT) PathIsHidden(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID &&
 		(attr&co.FILE_ATTRIBUTE_HIDDEN) != 0
