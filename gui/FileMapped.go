@@ -58,13 +58,13 @@ func (me *FileMapped) OpenExistingForReadWrite(path string) *win.WinError {
 }
 
 // Copies all file data into a []byte and returns it.
-func (me *FileMapped) ReadAll() []byte {
-	return me.Read(0, me.sz)
+func (me *FileMapped) CopyAllData() []byte {
+	return me.CopyDataChunk(0, me.sz)
 }
 
 // Copies file data into a []byte and returns it, starting from offset, with
 // given length.
-func (me *FileMapped) Read(offset, length uint64) []byte {
+func (me *FileMapped) CopyDataChunk(offset, length uint64) []byte {
 	hotSlice := me.HotSlice()
 	buf := make([]byte, length)
 	copy(buf, hotSlice[offset:offset+length])
