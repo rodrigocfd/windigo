@@ -22,6 +22,17 @@ type _Wm struct {
 	LParam win.LPARAM
 }
 
+type _WmButton struct{ _Wm }
+
+func (p _WmButton) HasCtrl() bool      { return (co.MK(p.WParam) & co.MK_CONTROL) != 0 }
+func (p _WmButton) HasLeftBtn() bool   { return (co.MK(p.WParam) & co.MK_LBUTTON) != 0 }
+func (p _WmButton) HasMiddleBtn() bool { return (co.MK(p.WParam) & co.MK_MBUTTON) != 0 }
+func (p _WmButton) HasRightBtn() bool  { return (co.MK(p.WParam) & co.MK_RBUTTON) != 0 }
+func (p _WmButton) HasShift() bool     { return (co.MK(p.WParam) & co.MK_SHIFT) != 0 }
+func (p _WmButton) HasXBtn1() bool     { return (co.MK(p.WParam) & co.MK_XBUTTON1) != 0 }
+func (p _WmButton) HasXBtn2() bool     { return (co.MK(p.WParam) & co.MK_XBUTTON2) != 0 }
+func (p _WmButton) Pos() win.POINT     { return p.LParam.MakePoint() }
+
 type _WmChar struct{ _Wm }
 
 func (p _WmChar) CharCode() uint16          { return uint16(p.WParam) }
@@ -46,16 +57,11 @@ func (p _WmKey) IsExtendedKey() bool       { return (p.LParam.HiByteHiWord() & 0
 func (p _WmKey) HasAltKey() bool           { return (p.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
 func (p _WmKey) IsKeyDownBeforeSend() bool { return (p.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
 
-type _WmButton struct{ _Wm }
+type _WmScroll struct{ _Wm }
 
-func (p _WmButton) HasCtrl() bool      { return (co.MK(p.WParam) & co.MK_CONTROL) != 0 }
-func (p _WmButton) HasLeftBtn() bool   { return (co.MK(p.WParam) & co.MK_LBUTTON) != 0 }
-func (p _WmButton) HasMiddleBtn() bool { return (co.MK(p.WParam) & co.MK_MBUTTON) != 0 }
-func (p _WmButton) HasRightBtn() bool  { return (co.MK(p.WParam) & co.MK_RBUTTON) != 0 }
-func (p _WmButton) HasShift() bool     { return (co.MK(p.WParam) & co.MK_SHIFT) != 0 }
-func (p _WmButton) HasXBtn1() bool     { return (co.MK(p.WParam) & co.MK_XBUTTON1) != 0 }
-func (p _WmButton) HasXBtn2() bool     { return (co.MK(p.WParam) & co.MK_XBUTTON2) != 0 }
-func (p _WmButton) Pos() win.POINT     { return p.LParam.MakePoint() }
+func (p _WmScroll) ScrollBoxPos() uint16    { return p.WParam.HiWord() }
+func (p _WmScroll) Request() co.SBR         { return co.SBR(p.WParam.LoWord()) }
+func (p _WmScroll) HwndScrollbar() win.HWND { return win.HWND(p.LParam) }
 
 type WmNotify struct{ _Wm }
 

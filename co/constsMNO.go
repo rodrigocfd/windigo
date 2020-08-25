@@ -218,6 +218,16 @@ const (
 	NM_TVSTATEIMAGECHANGING NM = _NM_FIRST - 24
 )
 
+type ODT uint32 // DELETEITEMSTRUCT CtlType
+
+const (
+	ODT_MENU     ODT = 1
+	ODT_LISTBOX  ODT = 2
+	ODT_COMBOBOX ODT = 3
+	ODT_BUTTON   ODT = 4
+	ODT_STATIC   ODT = 5
+)
+
 type OFN uint32 // OPENFILENAME Flags
 
 const (

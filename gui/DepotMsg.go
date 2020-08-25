@@ -173,12 +173,57 @@ func (p WmCreate) CreateStruct() *win.CREATESTRUCT {
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorbtn
 func (me *_DepotMsg) WmCtlColorBtn(userFunc func(p WmCtlColorBtn) win.HBRUSH) {
-	me.addMsg(co.WM_CONTEXTMENU, func(p Wm) uintptr {
+	me.addMsg(co.WM_CTLCOLORBTN, func(p Wm) uintptr {
 		return uintptr(userFunc(WmCtlColorBtn{_WmCtlColor(Wm(p))}))
 	})
 }
 
 type WmCtlColorBtn struct{ _WmCtlColor }
+
+// https://docs.microsoft.com/en-us/windows/win32/dlgbox/wm-ctlcolordlg
+func (me *_DepotMsg) WmCtlColorDlg(userFunc func(p WmCtlColorDlg) win.HBRUSH) {
+	me.addMsg(co.WM_CTLCOLORDLG, func(p Wm) uintptr {
+		return uintptr(userFunc(WmCtlColorDlg{_WmCtlColor(Wm(p))}))
+	})
+}
+
+type WmCtlColorDlg struct{ _WmCtlColor }
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/wm-ctlcoloredit
+func (me *_DepotMsg) WmCtlColorEdit(userFunc func(p WmCtlColorEdit) win.HBRUSH) {
+	me.addMsg(co.WM_CTLCOLOREDIT, func(p Wm) uintptr {
+		return uintptr(userFunc(WmCtlColorEdit{_WmCtlColor(Wm(p))}))
+	})
+}
+
+type WmCtlColorEdit struct{ _WmCtlColor }
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorlistbox
+func (me *_DepotMsg) WmCtlColorListBox(userFunc func(p WmCtlColorListBox) win.HBRUSH) {
+	me.addMsg(co.WM_CTLCOLORLISTBOX, func(p Wm) uintptr {
+		return uintptr(userFunc(WmCtlColorListBox{_WmCtlColor(Wm(p))}))
+	})
+}
+
+type WmCtlColorListBox struct{ _WmCtlColor }
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorscrollbar
+func (me *_DepotMsg) WmCtlColorScrollBar(userFunc func(p WmCtlColorScrollBar) win.HBRUSH) {
+	me.addMsg(co.WM_CTLCOLORSCROLLBAR, func(p Wm) uintptr {
+		return uintptr(userFunc(WmCtlColorScrollBar{_WmCtlColor(Wm(p))}))
+	})
+}
+
+type WmCtlColorScrollBar struct{ _WmCtlColor }
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorstatic
+func (me *_DepotMsg) WmCtlColorStatic(userFunc func(p WmCtlColorStatic) win.HBRUSH) {
+	me.addMsg(co.WM_CTLCOLORSTATIC, func(p Wm) uintptr {
+		return uintptr(userFunc(WmCtlColorStatic{_WmCtlColor(Wm(p))}))
+	})
+}
+
+type WmCtlColorStatic struct{ _WmCtlColor }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-deadchar
 func (me *_DepotMsg) WmDeadChar(userFunc func(p WmDeadChar)) {
@@ -190,6 +235,21 @@ func (me *_DepotMsg) WmDeadChar(userFunc func(p WmDeadChar)) {
 
 type WmDeadChar struct{ _WmChar }
 
+// https://docs.microsoft.com/en-us/windows/win32/controls/wm-deleteitem
+func (me *_DepotMsg) WmDeleteItem(userFunc func(p WmDeleteItem)) {
+	me.addMsg(co.WM_DELETEITEM, func(p Wm) uintptr {
+		userFunc(WmDeleteItem(p))
+		return 1
+	})
+}
+
+type WmDeleteItem struct{ _Wm }
+
+func (p WmDeleteItem) ControlId() int32 { return int32(p.WParam) }
+func (p WmDeleteItem) DeleteItemStruct() *win.DELETEITEMSTRUCT {
+	return (*win.DELETEITEMSTRUCT)(unsafe.Pointer(p.LParam))
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-destroy
 func (me *_DepotMsg) WmDestroy(userFunc func()) {
 	me.addMsg(co.WM_DESTROY, func(p Wm) uintptr {
@@ -197,6 +257,19 @@ func (me *_DepotMsg) WmDestroy(userFunc func()) {
 		return 0
 	})
 }
+
+// https://docs.microsoft.com/en-us/windows/win32/gdi/wm-displaychange
+func (me *_DepotMsg) WmDisplayChange(userFunc func(p WmDisplayChange)) {
+	me.addMsg(co.WM_DISPLAYCHANGE, func(p Wm) uintptr {
+		userFunc(WmDisplayChange(p))
+		return 0
+	})
+}
+
+type WmDisplayChange struct{ _Wm }
+
+func (p WmDisplayChange) BitsPerPixel() uint32 { return uint32(p.WParam) }
+func (p WmDisplayChange) Size() win.SIZE       { return p.LParam.MakeSize() }
 
 // https://docs.microsoft.com/en-us/windows/win32/shell/wm-dropfiles
 func (me *_DepotMsg) WmDropFiles(userFunc func(p WmDropFiles)) {
@@ -226,6 +299,45 @@ func (p WmDropFiles) RetrieveAll() []string {
 		return strings.ToUpper(files[i]) < strings.ToUpper(files[j])
 	})
 	return files
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-enable
+func (me *_DepotMsg) WmEnable(userFunc func(p WmEnable)) {
+	me.addMsg(co.WM_ENABLE, func(p Wm) uintptr {
+		userFunc(WmEnable(p))
+		return 0
+	})
+}
+
+type WmEnable struct{ _Wm }
+
+func (p WmEnable) Enabled() bool { return p.WParam != 0 }
+
+// https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-entersizemove
+func (me *_DepotMsg) WmEnterSizeMove(userFunc func()) {
+	me.addMsg(co.WM_ENTERSIZEMOVE, func(p Wm) uintptr {
+		userFunc()
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-erasebkgnd
+func (me *_DepotMsg) WmEraseBkGnd(userFunc func(p WmEraseBkGnd) int32) {
+	me.addMsg(co.WM_ERASEBKGND, func(p Wm) uintptr {
+		return uintptr(userFunc(WmEraseBkGnd(p)))
+	})
+}
+
+type WmEraseBkGnd struct{ _Wm }
+
+func (p WmEraseBkGnd) Hdc() win.HDC { return win.HDC(p.WParam) }
+
+// https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-exitsizemove
+func (me *_DepotMsg) WmExitSizeMove(userFunc func()) {
+	me.addMsg(co.WM_EXITSIZEMOVE, func(p Wm) uintptr {
+		userFunc()
+		return 0
+	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/dlgbox/wm-getdlgcode
@@ -269,6 +381,16 @@ type WmHotKey struct{ _Wm }
 func (p WmHotKey) HotKey() co.IDHOT      { return co.IDHOT(p.WParam) }
 func (p WmHotKey) OtherKeys() co.MOD     { return co.MOD(p.LParam.LoWord()) }
 func (p WmHotKey) VirtualKeyCode() co.VK { return co.VK(p.LParam.HiWord()) }
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/wm-hscroll
+func (me *_DepotMsg) WmHScroll(userFunc func(p WmHScroll)) {
+	me.addMsg(co.WM_HSCROLL, func(p Wm) uintptr {
+		userFunc(WmHScroll{_WmScroll(Wm(p))})
+		return 0
+	})
+}
+
+type WmHScroll struct{ _WmScroll }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-initmenupopup
 func (me *_DepotMsg) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
@@ -631,3 +753,13 @@ func (me *_DepotMsg) WmTimeChange(userFunc func()) {
 		return 0
 	})
 }
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/wm-vscroll
+func (me *_DepotMsg) WmVScroll(userFunc func(p WmVScroll)) {
+	me.addMsg(co.WM_VSCROLL, func(p Wm) uintptr {
+		userFunc(WmVScroll{_WmScroll(Wm(p))})
+		return 0
+	})
+}
+
+type WmVScroll struct{ _WmScroll }

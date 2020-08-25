@@ -34,6 +34,26 @@ const (
 	SBARS_TOOLTIPS SBARS = 0x0800
 )
 
+type SBR uint16 // WM_HSCROLL and WM_VSCROLL request, originally SB prefix
+
+const (
+	SBR_LINEUP        SBR = 0
+	SBR_LINELEFT      SBR = 0
+	SBR_LINEDOWN      SBR = 1
+	SBR_LINERIGHT     SBR = 1
+	SBR_PAGEUP        SBR = 2
+	SBR_PAGELEFT      SBR = 2
+	SBR_PAGEDOWN      SBR = 3
+	SBR_PAGERIGHT     SBR = 3
+	SBR_THUMBPOSITION SBR = 4
+	SBR_THUMBTRACK    SBR = 5
+	SBR_TOP           SBR = 6
+	SBR_LEFT          SBR = 6
+	SBR_BOTTOM        SBR = 7
+	SBR_RIGHT         SBR = 7
+	SBR_ENDSCROLL     SBR = 8
+)
+
 type SBT uint8 // SB_SETTEXT drawing operation
 
 const (

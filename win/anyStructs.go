@@ -31,6 +31,15 @@ type CREATESTRUCT struct {
 	ExStyle        co.WS_EX
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-deleteitemstruct
+type DELETEITEMSTRUCT struct {
+	CtlType  co.ODT
+	CtlID    uint32
+	ItemID   uint32
+	HwndItem HWND
+	ItemData uintptr // ULONG_PTR
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
 type FILETIME struct {
 	DwLowDateTime  uint32
