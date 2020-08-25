@@ -335,6 +335,16 @@ func (me *ListView) SelectedItems() []ListViewItem {
 	return items
 }
 
+// Retrieves the texts of the selected items, under the given column, if any.
+func (me *ListView) SelectedItemTexts(columnIndex uint32) []string {
+	selItems := me.SelectedItems()
+	texts := make([]string, 0, len(selItems))
+	for _, item := range selItems {
+		texts = append(texts, item.SubItemText(columnIndex))
+	}
+	return texts
+}
+
 // Defines a menu to be shown as the context menu for the list view.
 func (me *ListView) SetContextMenu(popupMenu *Menu) *ListView {
 	me.contextMenu = popupMenu
