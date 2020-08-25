@@ -46,8 +46,8 @@ type LITEM struct {
 	ILink     int32
 	State     co.LIS
 	StateMask co.LIS
-	SzID      [48]uint16            // MAX_LINKID_TEXT
-	SzUrl     [2048 + 32 + 3]uint16 // L_MAX_URL_LENGTH
+	SzID      [_MAX_LINKID_TEXT]uint16
+	SzUrl     [_L_MAX_URL_LENGTH]uint16
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
@@ -171,7 +171,7 @@ type NMLVDISPINFO struct {
 type NMLVEMPTYMARKUP struct {
 	Hdr      NMHDR
 	DwFlags  co.EMF
-	SzMarkup [2048 + 32 + 3]uint16 // L_MAX_URL_LENGTH
+	SzMarkup [_L_MAX_URL_LENGTH]uint16
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvfinditemw

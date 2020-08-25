@@ -21,12 +21,17 @@ type _PathUtilT struct{}
 var PathUtil _PathUtilT
 
 // Returns all the file names that match a pattern like "C:\\foo\\*.txt".
-func (_PathUtilT) ListFilesInFolder(pathAndPattern string) []string {
+func (_PathUtilT) ListFilesInFolder(
+	pathAndPattern string) ([]string, *win.WinError) {
+
 	retFiles := make([]string, 0)
-	dirPath := filepath.Dir(pathAndPattern)
+	dirPath := filepath.Dir(pathAndPattern) // path without file name
 
 	wfd := win.WIN32_FIND_DATA{}
-	hFind, found := win.FindFirstFile(pathAndPattern, &wfd)
+	hFind, found, err := win.FindFirstFile(pathAndPattern, &wfd)
+	if err != nil {
+		return nil, err
+	}
 	defer hFind.FindClose()
 
 	for found {
@@ -35,13 +40,16 @@ func (_PathUtilT) ListFilesInFolder(pathAndPattern string) []string {
 			retFiles = append(retFiles, dirPath+"\\"+fileNameFound)
 		}
 
-		found = hFind.FindNextFile(&wfd)
+		found, err = hFind.FindNextFile(&wfd)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	sort.Slice(retFiles, func(i, j int) bool { // case insensitive
 		return strings.ToUpper(retFiles[i]) < strings.ToUpper(retFiles[j])
 	})
-	return retFiles
+	return retFiles, nil // search finished successfully
 }
 
 // Tells if a given file or folder exists.

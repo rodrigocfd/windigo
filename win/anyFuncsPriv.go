@@ -26,3 +26,16 @@ func boolToUintptr(b bool) uintptr {
 	}
 	return 0
 }
+
+// Private constants.
+const (
+	_CCHDEVICENAME        = 32
+	_CLR_INVALID          = 0xFFFF_FFFF
+	_HGDI_ERROR           = 0xFFFF_FFFF
+	_INVALID_FILE_SIZE    = 0xFFFF_FFFF
+	_INVALID_HANDLE_VALUE = -1
+	_L_MAX_URL_LENGTH     = 2048 + 32 + 3
+	_LF_FACESIZE          = 32
+	_MAX_LINKID_TEXT      = 48
+	_MAX_PATH             = 260
+)

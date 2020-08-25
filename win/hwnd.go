@@ -22,7 +22,7 @@ func (hWnd HWND) ClientToScreenPt(point *POINT) {
 	ret, _, _ := syscall.Syscall(proc.ClientToScreen.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(point)), 0)
 	if ret == 0 {
-		panic("ClientToScreen failed for POINT.")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "ClientToScreen").Error())
 	}
 }
 
@@ -31,12 +31,12 @@ func (hWnd HWND) ClientToScreenRc(rect *RECT) {
 	ret, _, _ := syscall.Syscall(proc.ClientToScreen.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(rect)), 0)
 	if ret == 0 {
-		panic("ClientToScreen failed for RECT (1).")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "ClientToScreen, RECT (1)").Error())
 	}
 	ret, _, _ = syscall.Syscall(proc.ClientToScreen.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&rect.Right)), 0)
 	if ret == 0 {
-		panic("ClientToScreen failed for RECT (2).")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "ClientToScreen, RECT (2)").Error())
 	}
 }
 
@@ -53,8 +53,8 @@ func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
 		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
 
 	if ret == 0 {
-		panic(fmt.Sprintf("CreateWindowEx failed for %s. %s",
-			className, co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr),
+			fmt.Sprintf("CreateWindowEx (%s)", className)).Error())
 	}
 
 	return HWND(ret)
@@ -85,7 +85,7 @@ func (hWnd HWND) DestroyWindow() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyWindow.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("DestroyWindow failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "DestroyWindow").Error())
 	}
 }
 
@@ -100,7 +100,7 @@ func (hWnd HWND) DrawMenuBar() {
 	ret, _, lerr := syscall.Syscall(proc.DrawMenuBar.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("DrawMenubar failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "DrawMenuBar").Error())
 	}
 }
 
@@ -139,7 +139,7 @@ func (hWnd HWND) GetClientRect() *RECT {
 		uintptr(hWnd), uintptr(unsafe.Pointer(rc)), 0)
 
 	if ret == 0 {
-		panic(fmt.Sprintf("GetClientRect failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "GetClientRect").Error())
 	}
 	return rc
 }
@@ -149,7 +149,7 @@ func (hWnd HWND) GetDC() HDC {
 	ret, _, _ := syscall.Syscall(proc.GetDC.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	if ret == 0 {
-		panic("GetDC failed.")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetDC").Error())
 	}
 	return HDC(ret)
 }
@@ -159,7 +159,7 @@ func (hWnd HWND) GetDlgCtrlID() int32 {
 	ret, _, lerr := syscall.Syscall(proc.GetDlgCtrlID.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("GetDlgCtrlID failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "GetDlgCtrlID").Error())
 	}
 	return int32(ret)
 }
@@ -169,7 +169,7 @@ func (hWnd HWND) GetDlgItem(nIDDlgItem int32) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetDlgItem.Addr(), 2,
 		uintptr(hWnd), uintptr(nIDDlgItem), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("GetDlgItem failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "GetDlgItem").Error())
 	}
 	return HWND(ret)
 }
@@ -221,10 +221,8 @@ func (hWnd HWND) GetMenu() HMENU {
 func (hWnd HWND) GetNextDlgTabItem(hChild HWND, bPrevious bool) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetNextDlgTabItem.Addr(), 3,
 		uintptr(hWnd), uintptr(hChild), boolToUintptr(bPrevious))
-
-	lerr2 := co.ERROR(lerr)
-	if ret == 0 && lerr2 != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("GetNextDlgTabItem failed. %s", lerr2.Error()))
+	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
+		panic(NewWinError(co.ERROR(lerr), "GetNextDlgTagItem").Error())
 	}
 	return HWND(ret)
 }
@@ -233,10 +231,8 @@ func (hWnd HWND) GetNextDlgTabItem(hChild HWND, bPrevious bool) HWND {
 func (hWnd HWND) GetParent() HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetParent.Addr(), 1,
 		uintptr(hWnd), 0, 0)
-
-	lerr2 := co.ERROR(lerr)
-	if ret == 0 && lerr2 != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("GetParent failed. %s", lerr2.Error()))
+	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
+		panic(NewWinError(co.ERROR(lerr), "GetParent").Error())
 	}
 	return HWND(ret)
 }
@@ -252,10 +248,8 @@ func (hWnd HWND) GetStyle() co.WS {
 func (hWnd HWND) GetWindow(uCmd co.GW) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetWindow.Addr(), 2,
 		uintptr(hWnd), uintptr(uCmd), 0)
-
-	lerr2 := co.ERROR(lerr)
-	if ret == 0 && lerr2 != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("GetWindow failed. %s", lerr2.Error()))
+	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
+		panic(NewWinError(co.ERROR(lerr), "GetWindow").Error())
 	}
 	return HWND(ret)
 }
@@ -265,7 +259,7 @@ func (hWnd HWND) GetWindowDC() HDC {
 	ret, _, _ := syscall.Syscall(proc.GetWindowDC.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	if ret == 0 {
-		panic("GetWindowDC failed.")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetWindowDC").Error())
 	}
 	return HDC(ret)
 }
@@ -273,12 +267,9 @@ func (hWnd HWND) GetWindowDC() HDC {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
 func (hWnd HWND) GetWindowLongPtr(index co.GWLP) uintptr {
 	ret, _, lerr := syscall.Syscall(proc.GetWindowLongPtr.Addr(), 2,
-		uintptr(hWnd), uintptr(index),
-		0)
-
-	lerr2 := co.ERROR(lerr)
-	if ret == 0 && lerr2 != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("GetWindowLongPtr failed. %s", lerr2.Error()))
+		uintptr(hWnd), uintptr(index), 0)
+	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
+		panic(NewWinError(co.ERROR(lerr), "GetWindowLongPtr").Error())
 	}
 	return ret
 }
@@ -288,9 +279,8 @@ func (hWnd HWND) GetWindowRect() *RECT {
 	rc := &RECT{}
 	ret, _, lerr := syscall.Syscall(proc.GetWindowRect.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(rc)), 0)
-
 	if ret == 0 {
-		panic(fmt.Sprintf("GetWindowRect failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "GetWindowRect").Error())
 	}
 	return rc
 }
@@ -302,10 +292,8 @@ func (hWnd HWND) GetWindowText() string {
 
 	ret, _, lerr := syscall.Syscall(proc.GetWindowText.Addr(), 3,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(len))
-
-	lerr2 := co.ERROR(lerr)
-	if ret == 0 && lerr2 != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("GetWindowText failed. %s", lerr2.Error()))
+	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
+		panic(NewWinError(co.ERROR(lerr), "GetWindowText").Error())
 	}
 	return syscall.UTF16ToString(buf)
 }
@@ -322,7 +310,7 @@ func (hWnd HWND) HideCaret() {
 	ret, _, lerr := syscall.Syscall(proc.HideCaret.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("HideCaret failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "HideCaret").Error())
 	}
 }
 
@@ -331,7 +319,7 @@ func (hWnd HWND) InvalidateRect(lpRect *RECT, bErase bool) {
 	ret, _, _ := syscall.Syscall(proc.InvalidateRect.Addr(), 3,
 		uintptr(hWnd), uintptr(unsafe.Pointer(lpRect)), boolToUintptr(bErase))
 	if ret == 0 {
-		panic("InvalidateRect failed.")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "InvalidateRect").Error())
 	}
 }
 
@@ -392,7 +380,7 @@ func (hWnd HWND) MoveWindow(x, y int32, width, height uint32, bRepaint bool) {
 		uintptr(hWnd), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
 		boolToUintptr(bRepaint))
 	if ret == 0 {
-		panic(fmt.Sprintf("MoveWindow failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "MoveWindow").Error())
 	}
 }
 
@@ -413,10 +401,11 @@ func (hWnd HWND) PostMessage(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-releasedc
-func (hWnd HWND) ReleaseDC(hdc HDC) int32 {
-	ret, _, _ := syscall.Syscall(proc.ReleaseDC.Addr(), 2,
-		uintptr(hWnd), uintptr(hdc), 0)
-	return int32(ret)
+func (hWnd HWND) ReleaseDC(hdc HDC) {
+	if hdc != 0 {
+		syscall.Syscall(proc.ReleaseDC.Addr(), 2,
+			uintptr(hWnd), uintptr(hdc), 0)
+	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-removewindowsubclass
@@ -426,7 +415,7 @@ func (hWnd HWND) RemoveWindowSubclass(
 	ret, _, _ := syscall.Syscall(proc.RemoveWindowSubclass.Addr(), 3,
 		uintptr(hWnd), subclassProc, uintptr(uIdSubclass))
 	if ret == 0 {
-		panic("RemoveWindowSubclass failed.")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "RemoveWindowSubclass").Error())
 	}
 }
 
@@ -435,7 +424,7 @@ func (hWnd HWND) ScreenToClientPt(point *POINT) {
 	ret, _, _ := syscall.Syscall(proc.ScreenToClient.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(point)), 0)
 	if ret == 0 {
-		panic("ScreenToClient failed for POINT.")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "ScreenToClient").Error())
 	}
 }
 
@@ -444,12 +433,12 @@ func (hWnd HWND) ScreenToClientRc(rect *RECT) {
 	ret, _, _ := syscall.Syscall(proc.ScreenToClient.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(rect)), 0)
 	if ret == 0 {
-		panic("ScreenToClient failed for RECT (1).")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "ScreenToClient, RECT (1)").Error())
 	}
 	ret, _, _ = syscall.Syscall(proc.ScreenToClient.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&rect.Right)), 0)
 	if ret == 0 {
-		panic("ScreenToClient failed for RECT (2).")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "ScreenToClient, RECT (2)").Error())
 	}
 }
 
@@ -479,10 +468,8 @@ func (hWnd HWND) SetForegroundWindow() bool {
 func (hWnd HWND) SetFocus() HWND {
 	ret, _, lerr := syscall.Syscall(proc.SetFocus.Addr(), 1,
 		uintptr(hWnd), 0, 0)
-
-	lerr2 := co.ERROR(lerr)
-	if ret == 0 && lerr2 != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("SetFocus failed. %s", lerr2.Error()))
+	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
+		panic(NewWinError(co.ERROR(lerr), "SetFocus").Error())
 	}
 	return HWND(ret)
 }
@@ -492,7 +479,7 @@ func (hWnd HWND) SetParent(hWndNewParent HWND) HWND {
 	ret, _, lerr := syscall.Syscall(proc.SetParent.Addr(), 2,
 		uintptr(hWnd), uintptr(hWndNewParent), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SetParent failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "SetParent").Error())
 	}
 	return HWND(ret)
 }
@@ -508,10 +495,8 @@ func (hWnd HWND) SetStyle(style co.WS) {
 func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
 	ret, _, lerr := syscall.Syscall(proc.SetWindowLongPtr.Addr(), 3,
 		uintptr(hWnd), uintptr(index), newLong)
-
-	lerr2 := co.ERROR(lerr)
-	if ret == 0 && lerr2 != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("SetWindowLongPtr failed. %s", lerr2.Error()))
+	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
+		panic(NewWinError(co.ERROR(lerr), "SetWindowLongPtr").Error())
 	}
 	return ret
 }
@@ -527,7 +512,7 @@ func (hWnd HWND) SetWindowPos(hwndInsertAfter co.SWP_HWND, x, y int32,
 		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy),
 		uintptr(uFlags), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SetWindowPos failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "SetWindowPos").Error())
 	}
 }
 
@@ -542,7 +527,7 @@ func (hWnd HWND) SetWindowSubclass(subclassProc uintptr, uIdSubclass uint32,
 		uintptr(hWnd), subclassProc, uintptr(uIdSubclass), uintptr(dwRefData),
 		0, 0)
 	if ret == 0 {
-		panic("SetWindowSubclass failed.")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SetWindowSubclass").Error())
 	}
 }
 
@@ -558,7 +543,7 @@ func (hWnd HWND) ShowCaret() {
 	ret, _, lerr := syscall.Syscall(proc.ShowCaret.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("ShowCaret failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "ShowCaret").Error())
 	}
 }
 

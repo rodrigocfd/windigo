@@ -79,7 +79,7 @@ type LOGFONT struct {
 	LfClipPrecision  uint8
 	LfQuality        uint8
 	LfPitchAndFamily uint8
-	LfFaceName       [32]uint16 // LF_FACESIZE
+	LfFaceName       [_LF_FACESIZE]uint16
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
@@ -115,7 +115,7 @@ type MONITORINFOEX struct {
 	RcMonitor RECT
 	RcWork    RECT
 	Flags     uint32
-	SzDevice  [32]uint16 // CCHDEVICENAME
+	SzDevice  [_CCHDEVICENAME]uint16
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msg
@@ -219,7 +219,7 @@ type SHFILEINFO struct {
 	HIcon         HICON
 	IIcon         int32
 	DwAttributes  co.SFGAO
-	SzDisplayName [260]uint16 // MAX_PATH
+	SzDisplayName [_MAX_PATH]uint16
 	SzTypeName    [80]uint16
 }
 
@@ -238,7 +238,7 @@ type WIN32_FIND_DATA struct {
 	NFileSizeLow       uint32
 	DwReserved0        uint32
 	DwReserved1        uint32
-	CFileName          [260]uint16 // MAX_PATH
+	CFileName          [_MAX_PATH]uint16
 	CAlternateFileName [14]uint16
 	DwFileType         uint32
 	DwCreatorType      uint32

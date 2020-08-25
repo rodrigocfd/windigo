@@ -8,10 +8,10 @@ package com
 
 import (
 	"encoding/binary"
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
+	"wingows/win"
 	"wingows/win/proc"
 )
 
@@ -56,7 +56,7 @@ func (me *_IUnknown) coCreateInstance(
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
-		panic(fmt.Sprintf("CoCreateInstance failed. %s", lerr.Error()))
+		panic(win.NewWinError(lerr, "CoCreateInstance").Error())
 	}
 }
 
@@ -78,8 +78,7 @@ func (me *_IUnknown) queryInterface(iid *co.IID) IUnknown {
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
-		me.Release() // free resource
-		panic(fmt.Sprintf("IUnknown.QueryInterface failed. %s", lerr.Error()))
+		panic(win.NewWinError(lerr, "IUnknown.QueryInterface").Error())
 	}
 	return retIUnk
 }
@@ -124,13 +123,5 @@ func cloneFlipLastUint64Clsid(clsid *co.CLSID) co.CLSID {
 }
 
 func cloneFlipLastUint64Iid(iid *co.IID) co.IID {
-	return co.IID(cloneFlipLastUint64((*co.GUID)(iid))) // specialization for IID
-}
-
-func XcloneFlipLastUint64Clsid(clsid *co.CLSID) co.CLSID {
-	return co.CLSID(cloneFlipLastUint64((*co.GUID)(clsid))) // specialization for CLSID
-}
-
-func XcloneFlipLastUint64Iid(iid *co.IID) co.IID {
 	return co.IID(cloneFlipLastUint64((*co.GUID)(iid))) // specialization for IID
 }

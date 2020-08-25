@@ -6,11 +6,6 @@
 
 package co
 
-import (
-	"fmt"
-	"syscall"
-)
-
 type DLGC uint32 // WM_GETDLGCODE return
 
 const (
@@ -122,11 +117,6 @@ const (
 // native struct with such a field type would be wrong.
 type ERROR uint32
 
-// Calls FormatMessage() to retrieve error description.
-func (e ERROR) Error() string {
-	return fmt.Sprintf("[%d 0x%02x] %s", uint32(e), uint32(e), syscall.Errno(e).Error())
-}
-
 const (
 	ERROR_SUCCESS                   ERROR = 0
 	ERROR_INVALID_FUNCTION          ERROR = 1
@@ -164,6 +154,19 @@ const (
 	ERROR_LOCK_VIOLATION            ERROR = 33
 	ERROR_WRONG_DISK                ERROR = 34
 	ERROR_SHARING_BUFFER_EXCEEDED   ERROR = 36
+	ERROR_HANDLE_EOF                ERROR = 38
+	ERROR_HANDLE_DISK_FULL          ERROR = 39
+	ERROR_NOT_SUPPORTED             ERROR = 50
+	ERROR_REM_NOT_LIST              ERROR = 51
+	ERROR_DUP_NAME                  ERROR = 52
+	ERROR_BAD_NETPATH               ERROR = 53
+	ERROR_NETWORK_BUSY              ERROR = 54
+	ERROR_DEV_NOT_EXIST             ERROR = 55
+	ERROR_TOO_MANY_CMDS             ERROR = 56
+	ERROR_ADAP_HDW_ERR              ERROR = 57
+	ERROR_BAD_NET_RESP              ERROR = 58
+	ERROR_UNEXP_NET_ERR             ERROR = 59
+	ERROR_BAD_REM_ADAP              ERROR = 60
 	ERROR_INVALID_PASSWORD          ERROR = 86
 	ERROR_INVALID_PARAMETER         ERROR = 87
 	ERROR_NET_WRITE_FAULT           ERROR = 88
@@ -290,7 +293,7 @@ const (
 	FILE_MAP_LARGE_PAGES     FILE_MAP = 0x20000000
 )
 
-type FILE_SETPTR uint32 // SetFilePointer dwMoveMethod
+type FILE_SETPTR uint32 // SetFilePointerEx dwMoveMethod
 
 const (
 	FILE_SETPTR_BEGIN   FILE_SETPTR = 0

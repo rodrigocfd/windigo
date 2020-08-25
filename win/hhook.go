@@ -7,7 +7,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"wingows/co"
 	"wingows/win/proc"
@@ -28,7 +27,6 @@ func (hHook HHOOK) UnhookWindowsHookEx() {
 	ret, _, lerr := syscall.Syscall(proc.UnhookWindowsHookEx.Addr(), 1,
 		uintptr(hHook), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("UnhookWindowsHookEx failed. %s",
-			co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "UnhookWindowsHookEx").Error())
 	}
 }

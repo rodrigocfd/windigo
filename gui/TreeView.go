@@ -7,7 +7,6 @@
 package gui
 
 import (
-	"fmt"
 	"wingows/co"
 	"wingows/win"
 )
@@ -101,13 +100,8 @@ func (me *TreeView) SelectedItem() *TreeViewItem {
 
 // Sends TVM_SETEXTENDEDSTYLE.
 func (me *TreeView) SetExtendedStyle(mask, exStyle co.TVS_EX) *TreeView {
-	ret := me.sendTvmMessage(co.TVM_SETEXTENDEDSTYLE,
+	me.sendTvmMessage(co.TVM_SETEXTENDEDSTYLE,
 		win.WPARAM((mask)), win.LPARAM(exStyle))
-
-	lerr := co.ERROR(ret)
-	if lerr != co.ERROR_S_OK {
-		panic(fmt.Sprintf("TVM_SETEXTENDEDSTYLE failed. %s", lerr.Error()))
-	}
 	return me
 }
 

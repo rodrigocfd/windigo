@@ -53,7 +53,7 @@ func StrToPtrBlankIsNil(s string) *uint16 {
 func DestroyCaret() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyCaret.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("DestroyCaret failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "DestroyCaret").Error())
 	}
 }
 
@@ -68,7 +68,7 @@ func DispatchMessage(msg *MSG) uintptr {
 func EndMenu() {
 	ret, _, lerr := syscall.Syscall(proc.EndMenu.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("EndMenu failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "EndMenu").Error())
 	}
 }
 
@@ -84,7 +84,7 @@ func EnumWindows(
 			}),
 		uintptr(lParam), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("EnumWindow failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "EnumWindow").Error())
 	}
 }
 
@@ -108,7 +108,7 @@ func GetCursorPos() *POINT {
 	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(pt)), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("GetCursorPos failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "GetCursorPos").Error())
 	}
 	return pt
 }
@@ -129,7 +129,7 @@ func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
 		uintptr(msgFilterMin), uintptr(msgFilterMax),
 		0, 0)
 	if int(ret) == -1 {
-		panic(fmt.Sprintf("GetMessage failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "GetMessage").Error())
 	}
 	return int32(ret)
 }
@@ -180,6 +180,15 @@ func GetSystemMetrics(index co.SM) int32 {
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
 func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isguithread
+//
+// Warning: passing true will force current thread to GUI, and it may deadlock.
+func IsGUIThread(bConvertToGuiThread bool) bool {
+	ret, _, _ := syscall.Syscall(proc.IsGUIThread.Addr(), 1,
+		boolToUintptr(bConvertToGuiThread), 0, 0)
+	return ret != 0
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsversionorgreater
@@ -273,27 +282,29 @@ func PostThreadMessage(
 		uintptr(idThread), uintptr(Msg), uintptr(wParam), uintptr(lParam),
 		0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("PostThreadMessage failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "PostThreadMessage").Error())
 	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassexw
-func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, co.ERROR) {
+func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, *WinError) {
 	wcx.CbSize = uint32(unsafe.Sizeof(*wcx)) // safety
 	ret, _, lerr := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
 		uintptr(unsafe.Pointer(wcx)), 0, 0)
-	return ATOM(ret), co.ERROR(lerr)
+	if ret == 0 {
+		return ATOM(0), NewWinError(co.ERROR(lerr), "RegisterClassEx")
+	}
+	return ATOM(ret), nil
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerwindowmessagew
-func RegisterWindowMessage(lpString string) uint32 {
+func RegisterWindowMessage(lpString string) (uint32, *WinError) {
 	ret, _, lerr := syscall.Syscall(proc.RegisterWindowMessage.Addr(), 1,
 		uintptr(unsafe.Pointer(StrToPtr(lpString))), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("RegisterWindowMessage failed. %s",
-			co.ERROR(lerr).Error()))
+		return 0, NewWinError(co.ERROR(lerr), "RegisterWindowMessage")
 	}
-	return uint32(ret)
+	return uint32(ret), nil
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-replymessage
@@ -310,8 +321,7 @@ func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 	ret, _, lerr := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
 		uintptr(value), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SetProcessDpiAwarenessContext failed. %s",
-			co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "SetProcessDpiAwarenessContext").Error())
 	}
 }
 
@@ -335,7 +345,7 @@ func SetWindowsHookEx(idHook co.WH,
 		uintptr(idHook), syscall.NewCallback(lpfn),
 		uintptr(hmod), uintptr(dwThreadId), 0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SetWindowsHookEx failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "SetWindowsHookEx").Error())
 	}
 	return HHOOK(ret)
 }
@@ -354,7 +364,7 @@ func SHGetFileInfo(pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
 
 	if (uFlags&co.SHGFI_EXETYPE) == 0 || (uFlags&co.SHGFI_SYSICONINDEX) == 0 {
 		if ret == 0 {
-			panic("SHGetFileInfo failed.")
+			panic(NewWinError(co.ERROR_E_UNEXPECTED, "SHGetFileInfo").Error())
 		}
 	}
 
@@ -381,8 +391,7 @@ func SystemParametersInfo(uiAction co.SPI, uiParam uint32,
 		uintptr(uiAction), uintptr(uiParam), uintptr(pvParam), uintptr(fWinIni),
 		0, 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("SystemParametersInfo failed. %s",
-			co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "SystemParametersInfo").Error())
 	}
 }
 

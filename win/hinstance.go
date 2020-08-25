@@ -7,7 +7,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -22,23 +21,23 @@ func (hInst HINSTANCE) DuplicateIcon(hIcon HICON) HICON {
 	ret, _, _ := syscall.Syscall(proc.DuplicateIcon.Addr(), 2,
 		uintptr(hInst), uintptr(hIcon), 0)
 	if ret == 0 {
-		panic("DuplicateIcon failed.")
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "DuplicateIcon").Error())
 	}
 	return HICON(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassinfoexw
-func (hInst HINSTANCE) GetClassInfoEx(className *uint16,
-	destBuf *WNDCLASSEX) ATOM {
+func (hInst HINSTANCE) GetClassInfoEx(
+	className *uint16, destBuf *WNDCLASSEX) (ATOM, *WinError) {
 
 	ret, _, lerr := syscall.Syscall(proc.GetClassInfoEx.Addr(), 3,
 		uintptr(hInst),
 		uintptr(unsafe.Pointer(className)),
 		uintptr(unsafe.Pointer(destBuf)))
 	if ret == 0 {
-		panic(fmt.Sprintf("GetClassInfoEx failed. %s", co.ERROR(lerr).Error()))
+		return ATOM(0), NewWinError(co.ERROR(lerr), "GetClassInfoEx")
 	}
-	return ATOM(ret)
+	return ATOM(ret), nil
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
@@ -56,7 +55,7 @@ func (hInst HINSTANCE) LoadCursor(lpCursorName co.IDC) HCURSOR {
 	ret, _, lerr := syscall.Syscall(proc.LoadCursor.Addr(), 2,
 		uintptr(hInst), uintptr(lpCursorName), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("LoadCursor failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "LoadCursor").Error())
 	}
 	return HCURSOR(ret)
 }
@@ -66,7 +65,7 @@ func (hInst HINSTANCE) LoadIcon(lpIconName co.IDI) HICON {
 	ret, _, lerr := syscall.Syscall(proc.LoadIcon.Addr(), 2,
 		uintptr(hInst), uintptr(lpIconName), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("LoadIcon failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "LoadIcon").Error())
 	}
 	return HICON(ret)
 }
@@ -76,7 +75,7 @@ func (hInst HINSTANCE) LoadMenu(lpMenuName int32) HMENU {
 	ret, _, lerr := syscall.Syscall(proc.LoadMenu.Addr(), 2,
 		uintptr(hInst), uintptr(lpMenuName), 0)
 	if ret == 0 {
-		panic(fmt.Sprintf("LoadMenu failed. %s", co.ERROR(lerr).Error()))
+		panic(NewWinError(co.ERROR(lerr), "LoadMenu").Error())
 	}
 	return HMENU(ret)
 }

@@ -34,23 +34,10 @@ func (me *FileMapped) Close() {
 	me.sz = 0
 }
 
-// Allocates a byte buffer and copies all the data into it.
-func (me *FileMapped) CopyAllToBuffer() []byte {
-	return me.CopyToBuffer(0, me.sz)
-}
-
-// Allocates a byte buffer and copies data into it.
-func (me *FileMapped) CopyToBuffer(offset, length uint64) []byte {
-	hotSlice := me.HotSlice()
-	buf := make([]byte, length)
-	copy(buf, hotSlice[offset:offset+length])
-	return buf
-}
-
 // Returns a slice to the memory-mapped bytes. The FileMapped object must remain
 // open while the slice is being used.
 //
-// To close the file and still work on the data, use CopyToBuffer().
+// If you need to close the file right away, use CopyToBuffer() instead.
 func (me *FileMapped) HotSlice() []byte {
 	// https://golang.org/src/syscall/syscall_unix.go#L52
 	var sliceMem = struct {
@@ -62,22 +49,38 @@ func (me *FileMapped) HotSlice() []byte {
 	return *(*[]byte)(unsafe.Pointer(&sliceMem))
 }
 
-func (me *FileMapped) OpenExistingForRead(path string) *FileMapped {
+func (me *FileMapped) OpenExistingForRead(path string) *win.WinError {
 	return me.rawOpen(path, true)
 }
 
-func (me *FileMapped) OpenExistingForReadWrite(path string) *FileMapped {
+func (me *FileMapped) OpenExistingForReadWrite(path string) *win.WinError {
 	return me.rawOpen(path, false)
+}
+
+// Copies all file data into a []byte and returns it.
+func (me *FileMapped) ReadAll() []byte {
+	return me.Read(0, me.sz)
+}
+
+// Copies file data into a []byte and returns it, starting from offset, with
+// given length.
+func (me *FileMapped) Read(offset, length uint64) []byte {
+	hotSlice := me.HotSlice()
+	buf := make([]byte, length)
+	copy(buf, hotSlice[offset:offset+length])
+	return buf
 }
 
 // Truncates or expands the file, according to the new size. Zero will empty the
 // file.
 //
 // Internally, the file is unmapped, then remapped back into memory.
-func (me *FileMapped) SetSize(numBytes uint64) *FileMapped {
+func (me *FileMapped) SetSize(numBytes uint64) *win.WinError {
 	me.pMem.UnmapViewOfFile()
 	me.hMap.CloseHandle()
-	me.objFile.SetSize(numBytes)
+	if err := me.objFile.SetSize(numBytes); err != nil {
+		return err
+	}
 	return me.mapInMemory()
 }
 
@@ -86,35 +89,47 @@ func (me *FileMapped) Size() uint64 {
 	return me.sz
 }
 
-func (me *FileMapped) mapInMemory() *FileMapped {
+func (me *FileMapped) mapInMemory() *win.WinError {
 	// Mapping into memory.
 	pageFlags := co.PAGE_READWRITE
 	if me.readOnly {
 		pageFlags = co.PAGE_READONLY
 	}
-	me.hMap = me.objFile.hFile.CreateFileMapping(
+
+	var err *win.WinError
+	me.hMap, err = me.objFile.hFile.CreateFileMapping(
 		nil, pageFlags, co.SEC_NONE, 0, "")
+	if err != nil {
+		return err
+	}
 
 	// Get pointer to data block.
 	mapFlags := co.FILE_MAP_WRITE
 	if me.readOnly {
 		mapFlags = co.FILE_MAP_READ
 	}
-	me.pMem = me.hMap.MapViewOfFile(mapFlags, 0, 0)
+	me.pMem, err = me.hMap.MapViewOfFile(mapFlags, 0, 0)
+	if err != nil {
+		return err
+	}
 
 	// Cache file size.
 	me.sz = me.objFile.Size()
 
-	return me
+	return nil // file mapped successfully
 }
 
-func (me *FileMapped) rawOpen(path string, readOnly bool) *FileMapped {
+func (me *FileMapped) rawOpen(path string, readOnly bool) *win.WinError {
 	me.Close()
 	if readOnly {
-		me.objFile.OpenExistingForRead(path)
+		if err := me.objFile.OpenExistingForRead(path); err != nil {
+			return err
+		}
 	} else {
-		me.objFile.OpenExistingForReadWrite(path)
+		if err := me.objFile.OpenExistingForReadWrite(path); err != nil {
+			return err
+		}
 	}
-	me.readOnly = readOnly
+	me.readOnly = readOnly // keep flag
 	return me.mapInMemory()
 }

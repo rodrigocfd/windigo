@@ -7,7 +7,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -19,60 +18,49 @@ type HFIND HANDLE
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
 func (hFind HFIND) FindClose() {
-	lerr := hFind.findCloseNoPanic()
-	if lerr != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("FindClose failed. %s", co.ERROR(lerr).Error()))
+	if hFind != 0 {
+		syscall.Syscall(proc.FindClose.Addr(), 1,
+			uintptr(hFind), 0, 0)
 	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
 //
-// Returns true/false if a file was found or not.
+// Returns true if any file was found.
 func FindFirstFile(lpFileName string,
-	lpFindFileData *WIN32_FIND_DATA) (HFIND, bool) {
+	lpFindFileData *WIN32_FIND_DATA) (HFIND, bool, *WinError) {
 
 	ret, _, lerr := syscall.Syscall(proc.FindFirstFile.Addr(), 2,
 		uintptr(unsafe.Pointer(StrToPtr(lpFileName))),
 		uintptr(unsafe.Pointer(lpFindFileData)), 0)
 
 	lerr2 := co.ERROR(lerr)
-	if int(ret) == -1 { // INVALID_HANDLE_VALUE
+	if int(ret) == _INVALID_HANDLE_VALUE {
 		if lerr2 == co.ERROR_FILE_NOT_FOUND ||
 			lerr2 == co.ERROR_PATH_NOT_FOUND {
 			// No matching files, not an error.
-			return 0, false
+			return HFIND(0), false, nil
 		} else {
-			panic(fmt.Sprintf("FindFirstFile failed. %s", co.ERROR(lerr).Error()))
+			return HFIND(0), false, NewWinError(lerr2, "FindFirstFile")
 		}
 	}
-	return HFIND(ret), true
+	return HFIND(ret), true, nil // a file was found
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
-func (hFind HFIND) FindNextFile(lpFindFileData *WIN32_FIND_DATA) bool {
+func (hFind HFIND) FindNextFile(
+	lpFindFileData *WIN32_FIND_DATA) (bool, *WinError) {
+
 	ret, _, lerr := syscall.Syscall(proc.FindNextFile.Addr(), 2,
 		uintptr(hFind), uintptr(unsafe.Pointer(lpFindFileData)), 0)
 
 	lerr2 := co.ERROR(lerr)
 	if ret == 0 {
 		if lerr2 == co.ERROR_NO_MORE_FILES { // not an error, search ended
-			return false
+			return false, nil
 		} else {
-			hFind.findCloseNoPanic() // free resource
-			panic(fmt.Sprintf("FindNextFile failed. %s", co.ERROR(lerr).Error()))
+			return false, NewWinError(lerr2, "FindNextFile")
 		}
 	}
-	return true
-}
-
-func (hFind HFIND) findCloseNoPanic() co.ERROR {
-	if hFind == 0 { // handle is null, do nothing
-		return co.ERROR_SUCCESS
-	}
-	ret, _, lerr := syscall.Syscall(proc.FindClose.Addr(), 1,
-		uintptr(hFind), 0, 0)
-	if ret == 0 { // an error occurred
-		return co.ERROR(lerr)
-	}
-	return co.ERROR_SUCCESS
+	return true, nil // a file was found
 }

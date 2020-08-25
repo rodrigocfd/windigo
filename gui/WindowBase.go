@@ -56,16 +56,20 @@ func (me *_WindowBase) RunUiThread(userFunc func()) {
 
 func (me *_WindowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 	wcx.LpfnWndProc = syscall.NewCallback(wndProc)
-	atom, lerr := win.RegisterClassEx(wcx)
+	atom, err := win.RegisterClassEx(wcx)
 
-	if lerr == co.ERROR_CLASS_ALREADY_EXISTS {
+	if err != nil && err.Code() == co.ERROR_CLASS_ALREADY_EXISTS {
 		// https://devblogs.microsoft.com/oldnewthing/20150429-00/?p=44984
 		// https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
-		atom = wcx.HInstance.GetClassInfoEx(
+		atom, err = wcx.HInstance.GetClassInfoEx(
 			(*uint16)(unsafe.Pointer(wcx.LpszClassName)), wcx)
 
-	} else if lerr != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("RegisterClassEx failed. %s", lerr.Error()))
+		if err != nil {
+			panic(fmt.Sprintf("GetClassInfoEx failed. %s", err.Error()))
+		}
+
+	} else if err != nil && err.Code() != co.ERROR_SUCCESS {
+		panic(fmt.Sprintf("RegisterClassEx failed. %s", err.Error()))
 	}
 
 	return atom

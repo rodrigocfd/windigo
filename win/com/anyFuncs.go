@@ -7,9 +7,9 @@
 package com
 
 import (
-	"fmt"
 	"syscall"
 	"wingows/co"
+	"wingows/win"
 	"wingows/win/proc"
 )
 
@@ -25,12 +25,11 @@ func boolToUintptr(b bool) uintptr {
 //
 // Must be freed with CoUninitialize().
 func CoInitializeEx(dwCoInit co.COINIT) {
-	ret, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
+	hr, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
 		0, uintptr(dwCoInit), 0)
-
-	lerr := co.ERROR(ret)
-	if lerr != co.ERROR_S_OK && lerr != co.ERROR_S_FALSE {
-		panic(fmt.Sprintf("CoInitializeEx failed. %s", lerr.Error()))
+	hr2 := co.ERROR(hr)
+	if hr2 != co.ERROR_S_OK && hr2 != co.ERROR_S_FALSE {
+		panic(win.NewWinError(hr2, "CoInitializeEx").Error())
 	}
 }
 
