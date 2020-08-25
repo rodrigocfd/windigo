@@ -16,6 +16,7 @@ type File struct {
 	hFile win.HFILE
 }
 
+// Calls CloseHandle() to free the file resource.
 func (me *File) Close() {
 	if me.hFile != 0 {
 		me.hFile.CloseHandle()
@@ -31,7 +32,7 @@ func (me *File) EraseAndWrite(data []byte) *win.WinError {
 	if err := me.hFile.WriteFile(data); err != nil {
 		return err
 	}
-	return me.Rewind()
+	return me.RewindPointerOffset()
 }
 
 func (me *File) OpenExistingForRead(path string) *win.WinError {
@@ -49,9 +50,28 @@ func (me *File) OpenOrCreate(path string) *win.WinError {
 		co.FILE_SHARE_NONE, co.FILE_DISPO_OPEN_ALWAYS)
 }
 
+// Retrieves the current pointer offset.
+func (me *File) PointerOffset() uint64 {
+	// https://stackoverflow.com/a/17707021/6923555
+	off, err := me.hFile.SetFilePointerEx(0, co.FILE_SETPTR_CURRENT)
+	if err != nil {
+		panic(err.Error())
+	}
+	return off
+}
+
+// Reads file data at the current internal pointer offset, which then advances.
+func (me *File) Read(numBytes uint32) ([]byte, *win.WinError) {
+	buf := make([]byte, numBytes)
+	if err := me.hFile.ReadFile(buf, numBytes); err != nil {
+		return nil, err
+	}
+	return buf, nil
+}
+
 // Rewinds the file pointer and reads all the raw file contents.
 func (me *File) ReadAll() ([]byte, *win.WinError) {
-	if err := me.Rewind(); err != nil {
+	if err := me.RewindPointerOffset(); err != nil {
 		return nil, err
 	}
 	fileSize := me.Size()
@@ -63,15 +83,16 @@ func (me *File) ReadAll() ([]byte, *win.WinError) {
 		return nil, err
 	}
 
-	if err := me.Rewind(); err != nil {
+	if err := me.RewindPointerOffset(); err != nil {
 		return nil, err
 	}
 	return buf, nil
 }
 
-// Rewinds the file pointer back to the first byte of file.
-func (me *File) Rewind() *win.WinError {
-	return me.hFile.SetFilePointerEx(0, co.FILE_SETPTR_BEGIN)
+// Rewinds the internal pointer back to the first byte of the file.
+func (me *File) RewindPointerOffset() *win.WinError {
+	_, err := me.hFile.SetFilePointerEx(0, co.FILE_SETPTR_BEGIN)
+	return err
 }
 
 // Truncates or expands the file, according to the new size.
@@ -79,13 +100,13 @@ func (me *File) Rewind() *win.WinError {
 // Zero will empty the file.
 func (me *File) SetSize(numBytes uint64) *win.WinError {
 	// Simply go beyond file limits.
-	if err := me.hFile.SetFilePointerEx(int64(numBytes), co.FILE_SETPTR_BEGIN); err != nil {
+	if _, err := me.hFile.SetFilePointerEx(int64(numBytes), co.FILE_SETPTR_BEGIN); err != nil {
 		return err
 	}
 	if err := me.hFile.SetEndOfFile(); err != nil {
 		return err
 	}
-	return me.Rewind()
+	return me.RewindPointerOffset()
 }
 
 // Retrieves the files size. This value is not cached.
@@ -94,7 +115,12 @@ func (me *File) Size() uint64 {
 	if err != nil {
 		panic(err.Error())
 	}
-	return uint64(sz) // no reason to return an unsigned
+	return sz
+}
+
+// Writes the bytes at current internal pointer offset, which then advances.
+func (me *File) Write(data []byte) *win.WinError {
+	return me.hFile.WriteFile(data)
 }
 
 func (me *File) rawOpen(

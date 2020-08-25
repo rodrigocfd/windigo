@@ -95,14 +95,14 @@ func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, *WinError) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex
-func (hFile HFILE) GetFileSizeEx() (int64, *WinError) {
-	buf := int64(0)
+func (hFile HFILE) GetFileSizeEx() (uint64, *WinError) {
+	retSz := int64(0)
 	ret, _, lerr := syscall.Syscall(proc.GetFileSizeEx.Addr(), 2,
-		uintptr(hFile), uintptr(unsafe.Pointer(&buf)), 0)
+		uintptr(hFile), uintptr(unsafe.Pointer(&retSz)), 0)
 	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
 		return 0, NewWinError(co.ERROR(lerr), "GetFileSizeEx")
 	}
-	return buf, nil
+	return uint64(retSz), nil
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
@@ -132,16 +132,19 @@ func (hFile HFILE) SetEndOfFile() *WinError {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
+//
+// Returns the new pointer offset.
 func (hFile HFILE) SetFilePointerEx(
-	distanceToMove int64, moveMethod co.FILE_SETPTR) *WinError {
+	distanceToMove int64, moveMethod co.FILE_SETPTR) (uint64, *WinError) {
 
+	newOff := int64(0)
 	ret, _, lerr := syscall.Syscall6(proc.SetFilePointerEx.Addr(), 4,
-		uintptr(hFile), uintptr(distanceToMove), 0, uintptr(moveMethod),
-		0, 0)
+		uintptr(hFile), uintptr(distanceToMove),
+		uintptr(unsafe.Pointer(&newOff)), uintptr(moveMethod), 0, 0)
 	if ret == 0 {
-		return NewWinError(co.ERROR(lerr), "SetFilePointerEx")
+		return 0, NewWinError(co.ERROR(lerr), "SetFilePointerEx")
 	}
-	return nil
+	return uint64(newOff), nil
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
