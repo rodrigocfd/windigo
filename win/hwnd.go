@@ -244,6 +244,13 @@ func (hWnd HWND) GetStyle() co.WS {
 	return co.WS(hWnd.GetWindowLongPtr(co.GWLP_STYLE))
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmenu
+func (hWnd HWND) GetSystemMenu(bRevert bool) HMENU {
+	ret, _, _ := syscall.Syscall(proc.GetSystemMenu.Addr(), 2,
+		uintptr(hWnd), boolToUintptr(bRevert), 0)
+	return HMENU(ret)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindow
 func (hWnd HWND) GetWindow(uCmd co.GW) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetWindow.Addr(), 2,

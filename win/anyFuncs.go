@@ -95,6 +95,17 @@ func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
 	return uint16(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcaretpos
+func GetCaretPos() *RECT {
+	rc := &RECT{}
+	ret, _, lerr := syscall.Syscall(proc.GetCaretPos.Addr(), 1,
+		uintptr(unsafe.Pointer(rc)), 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "GetCaretPos").Error())
+	}
+	return rc
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthreadid
 func GetCurrentThreadId() uint32 {
 	ret, _, _ := syscall.Syscall(proc.GetCurrentThreadId.Addr(), 0,
@@ -150,6 +161,17 @@ func GetOpenFileName(ofn *OPENFILENAME) bool {
 		}
 	}
 	return true // user clicked OK
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos
+func GetPhysicalCursorPos() *POINT {
+	pt := &POINT{}
+	ret, _, lerr := syscall.Syscall(proc.GetPhysicalCursorPos.Addr(), 1,
+		uintptr(unsafe.Pointer(pt)), 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "GetPhysicalCursorPos").Error())
+	}
+	return pt
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-getsavefilenamew

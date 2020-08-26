@@ -71,6 +71,14 @@ const (
 	GENERIC_ALL     GENERIC = 0x10000000
 )
 
+// GetMenuDefaultItem() gmdiFlags.
+type GMDI uint32
+
+const (
+	GMDI_USEDISABLED  GMDI = 0x0001
+	GMDI_GOINTOPOPUPS GMDI = 0x0002
+)
+
 // GetWindow() uCmd.
 type GW uint32
 

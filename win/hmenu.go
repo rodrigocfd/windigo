@@ -112,6 +112,16 @@ func (hMenu HMENU) GetMenuItemCount() uint32 {
 	return uint32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenudefaultitem
+func (hMenu HMENU) GetMenuDefaultItem(fByPos bool, gmdiFlags co.GMDI) int32 {
+	ret, _, lerr := syscall.Syscall(proc.GetMenuDefaultItem.Addr(), 3,
+		uintptr(hMenu), boolToUintptr(fByPos), uintptr(gmdiFlags))
+	if int(ret) == -1 {
+		panic(NewWinError(co.ERROR(lerr), "GetMenuDefaultItem").Error())
+	}
+	return int32(ret)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuitemid
 func (hMenu HMENU) GetMenuItemID(nPos uint32) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetMenuItemID.Addr(), 2,
