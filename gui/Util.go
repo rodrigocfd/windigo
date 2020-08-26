@@ -27,6 +27,14 @@ func (_UtilT) BoolToUint32(b bool) uint32 {
 	return 0
 }
 
+// Syntactic sugar; converts bool to 0 or 1.
+func (_UtilT) BoolToUintptr(b bool) uintptr {
+	if b {
+		return 1
+	}
+	return 0
+}
+
 // Analog to MAKEWPARAM() macro.
 func (_UtilT) MakeWParam(lo, hi uint16) win.WPARAM {
 	return win.WPARAM((uint32(lo) & 0xffff) | ((uint32(hi) & 0xffff) << 16))

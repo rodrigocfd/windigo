@@ -434,8 +434,9 @@ func (me *ListView) installSubclass() {
 				},
 				WVKey: co.VK_RETURN,
 			}
-			me.Hwnd().GetAncestor(co.GA_PARENT).SendMessage(co.WM_NOTIFY,
-				win.WPARAM(me.Hwnd()), win.LPARAM(unsafe.Pointer(&nmlvk)))
+			me.Hwnd().GetAncestor(co.GA_PARENT).
+				SendMessage(co.WM_NOTIFY,
+					win.WPARAM(me.Hwnd()), win.LPARAM(unsafe.Pointer(&nmlvk)))
 			return co.DLGC_WANTALLKEYS
 
 		} else if !p.IsQuery() && p.VirtualKeyCode() == co.VK_APPS { // context menu key

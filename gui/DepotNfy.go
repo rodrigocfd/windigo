@@ -59,10 +59,7 @@ func (me *_DepotNfy) LvnBeginDrag(listViewId int32, userFunc func(p *win.NMLISTV
 // https://docs.microsoft.com/en-us/windows/win32/controls/lvn-beginlabeledit
 func (me *_DepotNfy) LvnBeginLabelEdit(listViewId int32, userFunc func(p *win.NMLVDISPINFO) bool) {
 	me.addNfy(listViewId, co.NM(co.LVN_BEGINLABELEDIT), func(p WmNotify) uintptr {
-		if userFunc((*win.NMLVDISPINFO)(unsafe.Pointer(p.LParam))) {
-			return 1
-		}
-		return 0
+		return _Util.BoolToUintptr(userFunc((*win.NMLVDISPINFO)(unsafe.Pointer(p.LParam))))
 	})
 }
 
@@ -125,10 +122,7 @@ func (me *_DepotNfy) LvnDeleteItem(listViewId int32, userFunc func(p *win.NMLIST
 // https://docs.microsoft.com/en-us/windows/win32/controls/lvn-endlabeledit
 func (me *_DepotNfy) LvnEndLabelEdit(listViewId int32, userFunc func(p *win.NMLVDISPINFO) bool) {
 	me.addNfy(listViewId, co.NM(co.LVN_ENDLABELEDIT), func(p WmNotify) uintptr {
-		if userFunc((*win.NMLVDISPINFO)(unsafe.Pointer(p.LParam))) {
-			return 1
-		}
-		return 0
+		return _Util.BoolToUintptr(userFunc((*win.NMLVDISPINFO)(unsafe.Pointer(p.LParam))))
 	})
 }
 
@@ -207,10 +201,7 @@ func (me *_DepotNfy) LvnItemChanged(listViewId int32, userFunc func(p *win.NMLIS
 // https://docs.microsoft.com/en-us/windows/win32/controls/lvn-itemchanging
 func (me *_DepotNfy) LvnItemChanging(listViewId int32, userFunc func(p *win.NMLISTVIEW) bool) {
 	me.addNfy(listViewId, co.NM(co.LVN_ITEMCHANGING), func(p WmNotify) uintptr {
-		if userFunc((*win.NMLISTVIEW)(unsafe.Pointer(p.LParam))) {
-			return 1
-		}
-		return 0
+		return _Util.BoolToUintptr(userFunc((*win.NMLISTVIEW)(unsafe.Pointer(p.LParam))))
 	})
 }
 
@@ -413,10 +404,7 @@ func (me *_DepotNfy) TvnBeginDrag(treeViewId int32, userFunc func(p *win.NMTREEV
 // https://docs.microsoft.com/en-us/windows/win32/controls/tvn-beginlabeledit
 func (me *_DepotNfy) TvnBeginLabelEdit(treeViewId int32, userFunc func(p *win.NMTVDISPINFO) bool) {
 	me.addNfy(treeViewId, co.NM(co.TVN_BEGINLABELEDIT), func(p WmNotify) uintptr {
-		if userFunc((*win.NMTVDISPINFO)(unsafe.Pointer(p.LParam))) {
-			return 1
-		}
-		return 0
+		return _Util.BoolToUintptr(userFunc((*win.NMTVDISPINFO)(unsafe.Pointer(p.LParam))))
 	})
 }
 
@@ -439,10 +427,7 @@ func (me *_DepotNfy) TvnDeleteItem(treeViewId int32, userFunc func(p *win.NMTREE
 // https://docs.microsoft.com/en-us/windows/win32/controls/tvn-endlabeledit
 func (me *_DepotNfy) TvnEndLabelEdit(treeViewId int32, userFunc func(p *win.NMTVDISPINFO) bool) {
 	me.addNfy(treeViewId, co.NM(co.TVN_ENDLABELEDIT), func(p WmNotify) uintptr {
-		if userFunc((*win.NMTVDISPINFO)(unsafe.Pointer(p.LParam))) {
-			return 1
-		}
-		return 0
+		return _Util.BoolToUintptr(userFunc((*win.NMTVDISPINFO)(unsafe.Pointer(p.LParam))))
 	})
 }
 
@@ -473,10 +458,7 @@ func (me *_DepotNfy) TvnItemChanged(treeViewId int32, userFunc func(p *win.NMTVI
 // https://docs.microsoft.com/en-us/windows/win32/controls/tvn-itemchanging
 func (me *_DepotNfy) TvnItemChanging(treeViewId int32, userFunc func(p *win.NMTVITEMCHANGE) bool) {
 	me.addNfy(treeViewId, co.NM(co.TVN_ITEMCHANGING), func(p WmNotify) uintptr {
-		if userFunc((*win.NMTVITEMCHANGE)(unsafe.Pointer(p.LParam))) {
-			return 1
-		}
-		return 0
+		return _Util.BoolToUintptr(userFunc((*win.NMTVITEMCHANGE)(unsafe.Pointer(p.LParam))))
 	})
 }
 
@@ -491,10 +473,7 @@ func (me *_DepotNfy) TvnItemExpanded(treeViewId int32, userFunc func(p *win.NMTR
 // https://docs.microsoft.com/en-us/windows/win32/controls/tvn-itemexpanding
 func (me *_DepotNfy) TvnItemExpanding(treeViewId int32, userFunc func(p *win.NMTREEVIEW) bool) {
 	me.addNfy(treeViewId, co.NM(co.TVN_ITEMEXPANDING), func(p WmNotify) uintptr {
-		if userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam))) {
-			return 1
-		}
-		return 0
+		return _Util.BoolToUintptr(userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam))))
 	})
 }
 
@@ -516,10 +495,7 @@ func (me *_DepotNfy) TvnSelChanged(treeViewId int32, userFunc func(p *win.NMTREE
 // https://docs.microsoft.com/en-us/windows/win32/controls/tvn-selchanging
 func (me *_DepotNfy) TvnSelChanging(treeViewId int32, userFunc func(p *win.NMTREEVIEW) bool) {
 	me.addNfy(treeViewId, co.NM(co.TVN_SELCHANGING), func(p WmNotify) uintptr {
-		if userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam))) {
-			return 1
-		}
-		return 0
+		return _Util.BoolToUintptr(userFunc((*win.NMTREEVIEW)(unsafe.Pointer(p.LParam))))
 	})
 }
 

@@ -202,6 +202,13 @@ type POINT struct {
 	X, Y int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-powerbroadcast_setting
+type POWERBROADCAST_SETTING struct {
+	PowerSetting GUID
+	DataLength   uint32
+	Data         [1]uint16
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-rect
 type RECT struct {
 	Left, Top, Right, Bottom int32

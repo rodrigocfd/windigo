@@ -578,6 +578,29 @@ type WmMove struct{ _Wm }
 
 func (p WmMove) Pos() win.POINT { return p.LParam.MakePoint() }
 
+// https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-moving
+func (me *_DepotMsg) WmMoving(userFunc func(p WmMoving)) {
+	me.addMsg(co.WM_MOVING, func(p Wm) uintptr {
+		userFunc(WmMoving(p))
+		return 1
+	})
+}
+
+type WmMoving struct{ _Wm }
+
+func (p WmMoving) ScreenCoords() *win.RECT { return (*win.RECT)(unsafe.Pointer(p.LParam)) }
+
+// https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-ncactivate
+func (me *_DepotMsg) WmNcActivate(userFunc func(p WmNcActivate) bool) {
+	me.addMsg(co.WM_NCACTIVATE, func(p Wm) uintptr {
+		return _Util.BoolToUintptr(userFunc(WmNcActivate(p)))
+	})
+}
+
+type WmNcActivate struct{ _Wm }
+
+func (p WmNcActivate) IsActive() bool { return p.WParam != 0 }
+
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-ncdestroy
 //
 // Warning: default handled in WindowMain.
@@ -608,6 +631,24 @@ func (me *_DepotMsg) WmPaint(userFunc func()) {
 		userFunc()
 		return 0
 	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast
+func (me *_DepotMsg) WmPowerBroadcast(userFunc func(p WmPowerBroadcast)) {
+	me.addMsg(co.WM_POWERBROADCAST, func(p Wm) uintptr {
+		userFunc(WmPowerBroadcast(p))
+		return 1
+	})
+}
+
+type WmPowerBroadcast struct{ _Wm }
+
+func (p WmPowerBroadcast) Event() co.PBT { return co.PBT(p.WParam) }
+func (p WmPowerBroadcast) PowerBroadcastSetting() *win.POWERBROADCAST_SETTING {
+	if p.Event() == co.PBT_POWERSETTINGCHANGE {
+		return (*win.POWERBROADCAST_SETTING)(unsafe.Pointer(p.LParam))
+	}
+	return nil
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/gdi/wm-print
