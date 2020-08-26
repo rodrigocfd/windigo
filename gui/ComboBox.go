@@ -63,7 +63,7 @@ func (me *ComboBox) Create(
 func (me *ComboBox) CreateList(
 	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
 
-	return me.Create(parent, ctrlId, x, y, width, co.WS_EX(0),
+	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.CBS_DROPDOWNLIST)
 }
@@ -74,7 +74,7 @@ func (me *ComboBox) CreateList(
 func (me *ComboBox) CreateSortedList(
 	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
 
-	return me.Create(parent, ctrlId, x, y, width, co.WS_EX(0),
+	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.CBS_DROPDOWNLIST|co.CBS_SORT)
 }

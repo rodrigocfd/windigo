@@ -43,7 +43,7 @@ func (me *Static) CreateLText(
 	x, y, _, _ = _Util.MultiplyDpi(x, y, 0, 0)
 	cx, cy := calcTextBoundBox(parent.Hwnd(), text, true)
 
-	me._ControlNativeBase.create(co.WS_EX(0), "STATIC", text,
+	me._ControlNativeBase.create(co.WS_EX_NONE, "STATIC", text,
 		co.WS_CHILD|co.WS_VISIBLE|co.WS(co.SS_LEFT),
 		x, y, cx, cy, parent, ctrlId)
 	_globalUiFont.SetOnControl(me)
@@ -55,7 +55,7 @@ func (me *Static) SetText(text string) {
 	hasAccel := (co.SS(me.Hwnd().GetStyle()) & co.SS_NOPREFIX) == 0
 	cx, cy := calcTextBoundBox(me.Hwnd().GetParent(), text, hasAccel)
 
-	me.Hwnd().SetWindowPos(co.SWP_HWND(0), 0, 0, cx, cy,
+	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, cx, cy,
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 }

@@ -319,6 +319,7 @@ const (
 type WS uint32
 
 const (
+	WS_NONE             WS = 0
 	WS_OVERLAPPED       WS = 0x00000000
 	WS_POPUP            WS = 0x80000000
 	WS_CHILD            WS = 0x40000000 // The window is a child window.
@@ -352,6 +353,7 @@ const (
 type WS_EX uint32
 
 const (
+	WS_EX_NONE                WS_EX = 0
 	WS_EX_DLGMODALFRAME       WS_EX = 0x00000001
 	WS_EX_NOPARENTNOTIFY      WS_EX = 0x00000004
 	WS_EX_TOPMOST             WS_EX = 0x00000008

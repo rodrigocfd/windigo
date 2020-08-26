@@ -38,7 +38,7 @@ func (me *TreeView) Create(
 		"SysTreeView32", "", styles|co.WS(tvStyles),
 		x, y, width, height, parent, ctrlId)
 
-	if tvExStyles != co.TVS_EX(0) {
+	if tvExStyles != co.TVS_EX_NONE {
 		me.SetExtendedStyle(tvExStyles, tvExStyles)
 	}
 	return me
@@ -54,7 +54,7 @@ func (me *TreeView) CreateSimple(
 	return me.Create(parent, ctrlId, x, y, width, height,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.TVS_EX(0),
+		co.TVS_EX_NONE,
 		co.TVS_HASLINES|co.TVS_LINESATROOT|co.TVS_SHOWSELALWAYS|co.TVS_HASBUTTONS)
 }
 

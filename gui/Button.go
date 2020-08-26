@@ -40,8 +40,8 @@ func (me *Button) CreateSimple(
 	parent Window, ctrlId, x, y int32, width uint32, text string) *Button {
 
 	return me.Create(parent, ctrlId, x, y, width, 23, text,
-		co.WS_EX(0), co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.BS(0))
+		co.WS_EX_NONE, co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.BS_PUSHBUTTON)
 }
 
 // Calls CreateWindowEx() with height 23, and BS_DEFPUSHBUTTON.
@@ -51,7 +51,7 @@ func (me *Button) CreateSimpleDef(
 	parent Window, ctrlId, x, y int32, width uint32, text string) *Button {
 
 	return me.Create(parent, ctrlId, x, y, width, 23, text,
-		co.WS_EX(0), co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.WS_EX_NONE, co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.BS_DEFPUSHBUTTON)
 }
 

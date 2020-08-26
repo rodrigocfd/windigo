@@ -51,7 +51,7 @@ func (me *WindowModal) Show(parent Window) {
 	rc := me.Hwnd().GetWindowRect()
 	rcParent := parent.Hwnd().GetWindowRect() // both rc relative to screen
 
-	me.Hwnd().SetWindowPos(co.SWP_HWND(0), // center modal over parent (warning: happens after WM_CREATE processing)
+	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, // center modal over parent (warning: happens after WM_CREATE processing)
 		rcParent.Left+(rcParent.Right-rcParent.Left)/2-(rc.Right-rc.Left)/2,
 		rcParent.Top+(rcParent.Bottom-rcParent.Top)/2-(rc.Bottom-rc.Top)/2,
 		0, 0, co.SWP_NOZORDER|co.SWP_NOSIZE)

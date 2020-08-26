@@ -101,7 +101,7 @@ func (me *StatusBar) Create(parent Window, ctrlId int32) *StatusBar {
 		style |= co.WS(co.SBARS_SIZEGRIP)
 	}
 
-	me._ControlNativeBase.create(co.WS_EX(0), "msctls_statusbar32", "", style,
+	me._ControlNativeBase.create(co.WS_EX_NONE, "msctls_statusbar32", "", style,
 		0, 0, 0, 0, parent, ctrlId)
 	return me
 }

@@ -46,7 +46,7 @@ func (me *ImageList) AddResourceIcon(resourceId int32) *ImageList {
 //
 // Extension must be in the format "*.mp3".
 func (me *ImageList) AddShellIcon(fileExtension string) *ImageList {
-	szFlag := co.SHGFI(0)
+	szFlag := co.SHGFI_NONE
 	if me.resolution == 16 {
 		szFlag = co.SHGFI_SMALLICON
 	} else if me.resolution == 32 {

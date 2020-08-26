@@ -129,7 +129,7 @@ func (me *ListView) Create(
 		"SysListView32", "", styles|co.WS(lvStyles),
 		x, y, width, height, parent, ctrlId)
 
-	if lvExStyles != co.LVS_EX(0) {
+	if lvExStyles != co.LVS_EX_NONE {
 		me.SetExtendedStyle(lvExStyles, lvExStyles)
 	}
 	return me

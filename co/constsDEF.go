@@ -61,6 +61,20 @@ const (
 	DTN_USERSTRING     DTN = _DTN_FIRST - 5
 )
 
+// Date and time picker styles.
+type DTS WS
+
+const (
+	DTS_UPDOWN                 DTS = 0x0001
+	DTS_SHOWNONE               DTS = 0x0002
+	DTS_SHORTDATEFORMAT        DTS = 0x0000
+	DTS_LONGDATEFORMAT         DTS = 0x0004
+	DTS_SHORTDATECENTURYFORMAT DTS = 0x000C
+	DTS_TIMEFORMAT             DTS = 0x0009
+	DTS_APPCANPARSE            DTS = 0x0010
+	DTS_RIGHTALIGN             DTS = 0x0020
+)
+
 // Edit control messages.
 type EM WM
 

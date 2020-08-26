@@ -96,7 +96,7 @@ func (me *_WindowSetupMain) initOnce() {
 		me.Width = 600 // arbitrary dimensions
 		me.Height = 500
 		me.Style = co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN | co.WS_BORDER
-		me.ExStyle = co.WS_EX(0)
+		me.ExStyle = co.WS_EX_NONE
 
 		me.CmdShow = co.SW_SHOW
 	}
@@ -130,7 +130,7 @@ func (me *_WindowSetupModal) initOnce() {
 		me.Width = 500 // arbitrary dimensions
 		me.Height = 400
 		me.Style = co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN | co.WS_BORDER | co.WS_VISIBLE
-		me.ExStyle = co.WS_EX(0)
+		me.ExStyle = co.WS_EX_NONE
 	}
 }
 
@@ -152,7 +152,7 @@ func (me *_WindowSetupControl) initOnce() {
 		me.ClassStyle = co.CS_DBLCLKS
 
 		me.Style = co.WS_CHILD | co.WS_VISIBLE | co.WS_CLIPCHILDREN | co.WS_CLIPSIBLINGS
-		me.ExStyle = co.WS_EX(0)
+		me.ExStyle = co.WS_EX_NONE
 	}
 }
 

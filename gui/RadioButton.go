@@ -87,7 +87,7 @@ func (me *RadioButton) SetCheckAndTrigger() *RadioButton {
 // resizes the control to fit the text exactly.
 func (me *RadioButton) SetText(text string) *RadioButton {
 	cx, cy := me.calcIdealSize(me.Hwnd().GetParent(), text)
-	me.Hwnd().SetWindowPos(co.SWP_HWND(0), 0, 0, cx, cy,
+	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, cx, cy,
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 	return me
@@ -124,7 +124,7 @@ func (me *RadioButton) createAutoSize(
 	x, y, _, _ = _Util.MultiplyDpi(x, y, 0, 0)
 	cx, cy := me.calcIdealSize(parent.Hwnd(), text)
 
-	me._ControlNativeBase.create(co.WS_EX(0), "BUTTON", text,
+	me._ControlNativeBase.create(co.WS_EX_NONE, "BUTTON", text,
 		co.WS_CHILD|co.WS_VISIBLE|otherStyles,
 		x, y, cx, cy, parent, ctrlId)
 	_globalUiFont.SetOnControl(me)
