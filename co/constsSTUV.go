@@ -6,7 +6,8 @@
 
 package co
 
-type SB WM // status bar message
+// Status bar messages.
+type SB WM
 
 const (
 	SB_SETTEXT          SB = SB(WM_USER) + 11
@@ -27,14 +28,16 @@ const (
 	SB_GETUNICODEFORMAT SB = SB(CCM_GETUNICODEFORMAT)
 )
 
-type SBARS WS // status bar style
+// Status bar styles.
+type SBARS WS
 
 const (
 	SBARS_SIZEGRIP SBARS = 0x0100
 	SBARS_TOOLTIPS SBARS = 0x0800
 )
 
-type SBR uint16 // WM_HSCROLL and WM_VSCROLL request, originally SB prefix
+// WM_HSCROLL/WM_VSCROLL request; originally SB prefix.
+type SBR uint16
 
 const (
 	SBR_LINEUP        SBR = 0
@@ -54,7 +57,8 @@ const (
 	SBR_ENDSCROLL     SBR = 8
 )
 
-type SBT uint8 // SB_SETTEXT drawing operation
+// SB_SETTEXT drawing operation.
+type SBT uint8
 
 const (
 	SBT_OWNERDRAW    SBT = 0x10
@@ -64,7 +68,8 @@ const (
 	SBT_NOTABPARSING SBT = 0x08
 )
 
-type SBN NM // status bar notification
+// Status bar notifications.
+type SBN NM
 
 const (
 	_SBN_FIRST SBN = -880
@@ -72,7 +77,8 @@ const (
 	SBN_SIMPLEMODECHANGE SBN = _SBN_FIRST - 0
 )
 
-type SC uint32 // WM_SYSCOMMAND
+// WM_SYSCOMMAND type of requested command.
+type SC uint32
 
 const (
 	SC_SIZE         SC = 0xF000
@@ -97,7 +103,8 @@ const (
 	SC_SEPARATOR    SC = 0xF00F
 )
 
-type SEC uint32 // CreateFileMapping flProtect
+// CreateFileMapping() flProtect.
+type SEC uint32
 
 const (
 	SEC_NONE                   SEC = 0
@@ -114,7 +121,8 @@ const (
 	SEC_IMAGE_NO_EXECUTE       SEC = SEC_IMAGE | SEC_NOCACHE
 )
 
-type SECTION uint32 // composes FILE_MAP
+// Composes FILE_MAP consts.
+type SECTION uint32
 
 const (
 	SECTION_QUERY                SECTION = 0x0001
@@ -126,7 +134,8 @@ const (
 	SECTION_ALL_ACCESS           SECTION = SECTION(STANDARD_RIGHTS_REQUIRED) | SECTION_QUERY | SECTION_MAP_WRITE | SECTION_MAP_READ | SECTION_MAP_EXECUTE | SECTION_EXTEND_SIZE
 )
 
-type SECURITY uint32 // CreateFile dwFlagsAndAttributes
+// CreateFile() dwFlagsAndAttributes.
+type SECURITY uint32
 
 const (
 	SECURITY_NONE             SECURITY = 0
@@ -140,7 +149,8 @@ const (
 	SECURITY_VALID_SQOS_FLAGS SECURITY = 0x001F0000
 )
 
-type SHGFI uint32 // SHGetFileInfo uFlags
+// SHGetFileInfo() uFlags.
+type SHGFI uint32
 
 const (
 	SHGFI_ICON              SHGFI = 0x000000100
@@ -163,7 +173,8 @@ const (
 	SHGFI_OVERLAYINDEX      SHGFI = 0x000000040
 )
 
-type SIZE int32 // WM_SIZE request
+// WM_SIZE request.
+type SIZE int32
 
 const (
 	SIZE_RESTORED  SIZE = 0
@@ -173,7 +184,8 @@ const (
 	SIZE_MAXHIDE   SIZE = 4
 )
 
-type SFGAO uint32 // SHFILEINFO dwAttributes
+// SHFILEINFO dwAttributes.
+type SFGAO uint32
 
 const (
 	SFGAO_CANCOPY         SFGAO = SFGAO(DROPEFFECT_COPY)
@@ -214,7 +226,8 @@ const (
 	SFGAO_PKEYSFGAOMASK   SFGAO = 0x81044000
 )
 
-type SM int32 // GetSystemMetrics nIndex
+// GetSystemMetrics() nIndex.
+type SM int32
 
 const (
 	SM_CXSCREEN                    SM = 0
@@ -320,7 +333,8 @@ const (
 	SM_SYSTEMDOCKED                SM = 0x2004
 )
 
-type SPI uint32 // SystemParametersInfo uiAction
+// SystemParametersInfo() uiAction.
+type SPI uint32
 
 const (
 	SPI_GETBEEP                     SPI = 0x0001
@@ -466,7 +480,8 @@ const (
 	SPI_SETDOCKMOVING               SPI = 0x0091
 )
 
-type SS WS // static control style
+// Static control styles.
+type SS WS
 
 const (
 	SS_LEFT            SS = 0x00000000
@@ -503,7 +518,8 @@ const (
 	SS_ELLIPSISMASK    SS = 0x0000C000
 )
 
-type STANDARD_RIGHTS uint32 // RegOpenKeyEx samDesired
+// RegOpenKeyEx() samDesired.
+type STANDARD_RIGHTS uint32
 
 const (
 	STANDARD_RIGHTS_REQUIRED STANDARD_RIGHTS = 0x000F0000
@@ -513,7 +529,8 @@ const (
 	STANDARD_RIGHTS_ALL      STANDARD_RIGHTS = 0x001F0000
 )
 
-type SW int32 // ShowWindow nCmdShow
+// ShowWindow() nCmdShow.
+type SW int32
 
 const (
 	SW_HIDE            SW = 0
@@ -533,7 +550,8 @@ const (
 	SW_MAX             SW = 11
 )
 
-type SWP uint32 // SetWindowPos, DeferWindowPos uFlags
+// SetWindowPos(), DeferWindowPos() uFlags.
+type SWP uint32
 
 const (
 	SWP_NOSIZE         SWP = 0x0001
@@ -553,7 +571,8 @@ const (
 	SWP_ASYNCWINDOWPOS SWP = 0x4000
 )
 
-type SWP_HWND int32 // SetWindowPos hwndInsertAfter
+// SetWindowPos() hwndInsertAfter.
+type SWP_HWND int32
 
 const (
 	SWP_HWND_BOTTOM    SWP_HWND = 1
@@ -562,7 +581,8 @@ const (
 	SWP_HWND_TOPMOST   SWP_HWND = -1
 )
 
-type TBPF uint32 // ITaskbarList3.SetProgressState
+// ITaskbarList3.SetProgressState() tbpFlags.
+type TBPF uint32
 
 const (
 	TBPF_NOPROGRESS    TBPF = 0
@@ -572,7 +592,8 @@ const (
 	TBPF_PAUSED        TBPF = 0x8
 )
 
-type TPM uint32 // TrackPopupMenu uFlags
+// TrackPopupMenu() uFlags.
+type TPM uint32
 
 const (
 	TPM_LEFTBUTTON      TPM = 0x0000
@@ -597,7 +618,8 @@ const (
 	TPM_WORKAREA        TPM = 0x10000 // Vista
 )
 
-type TVC uint32 // TVN_SELCHANGED
+// TVN_SELCHANGED type of action.
+type TVC uint32
 
 const (
 	TVC_UNKNOWN    TVC = 0x0000
@@ -605,7 +627,8 @@ const (
 	TVC_BYKEYBOARD TVC = 0x0002
 )
 
-type TVE uint32 // TVM_EXPAND
+// TVM_EXPAND action flag.
+type TVE uint32
 
 const (
 	TVE_COLLAPSE      TVE = 0x0001
@@ -615,7 +638,8 @@ const (
 	TVE_COLLAPSERESET TVE = 0x8000
 )
 
-type TVGN uint32 // TVM_GETNEXTITEM
+// TVM_GETNEXTITEM item to retrieve.
+type TVGN uint32
 
 const (
 	TVGN_ROOT            TVGN = 0x0000
@@ -632,7 +656,8 @@ const (
 	TVGN_NEXTSELECTED    TVGN = 0x000B
 )
 
-type TVI_CHILDREN int32 // TVITEMTEX cChildren
+// TVITEMTEX cChildren.
+type TVI_CHILDREN int32
 
 const (
 	TVI_CHILDREN_ZERO     TVI_CHILDREN = 0
@@ -641,7 +666,8 @@ const (
 	TVI_CHILDREN_AUTO     TVI_CHILDREN = -2
 )
 
-type TVIF uint32 // TVITEMTEX mask
+// TVITEMTEX mask.
+type TVIF uint32
 
 const (
 	TVIF_TEXT          TVIF = 0x0001
@@ -656,7 +682,8 @@ const (
 	TVIF_EXPANDEDIMAGE TVIF = 0x0200
 )
 
-type TVIS uint32 // TVITEMTEX state
+// TVITEMTEX state.
+type TVIS uint32
 
 const (
 	TVIS_SELECTED       TVIS = 0x0002
@@ -671,7 +698,8 @@ const (
 	TVIS_USERMASK       TVIS = 0xF000
 )
 
-type TVIS_EX uint32 // TVITEMTEX uStateEx
+// TVITEMTEX uStateEx.
+type TVIS_EX uint32
 
 const (
 	TVIS_EX_FLAT     TVIS_EX = 0x0001
@@ -679,7 +707,8 @@ const (
 	TVIS_EX_ALL      TVIS_EX = 0x0002
 )
 
-type TVM WM // tree view messages
+// Tree view messages.
+type TVM WM
 
 const (
 	_TVM_FIRST TVM = 0x1100
@@ -737,7 +766,8 @@ const (
 	TVM_GETITEMPARTRECT     TVM = _TVM_FIRST + 72
 )
 
-type TVN NM // tree view notification
+// Tree view notifications.
+type TVN NM
 
 const (
 	_TVN_FIRST TVN = -400
@@ -761,7 +791,8 @@ const (
 	TVN_ASYNCDRAW      TVN = _TVN_FIRST - 20 // Vista
 )
 
-type TVNRET uintptr // TVN_SINGLEEXPAND return value
+// TVN_SINGLEEXPAND return value.
+type TVNRET uintptr
 
 const (
 	TVNRET_DEFAULT TVNRET = 0
@@ -769,7 +800,8 @@ const (
 	TVNRET_SKIPNEW TVNRET = 2
 )
 
-type TVS WS // tree view style
+// Tree view styles.
+type TVS WS
 
 const (
 	TVS_HASBUTTONS      TVS = 0x0001
@@ -790,7 +822,8 @@ const (
 	TVS_NOHSCROLL       TVS = 0x8000
 )
 
-type TVS_EX WS_EX // tree view extended style
+// Tree view extended styles.
+type TVS_EX WS_EX
 
 const (
 	TVS_NOSINGLECOLLAPSE    TVS_EX = 0x0001
@@ -806,7 +839,8 @@ const (
 	TVS_DRAWIMAGEASYNC      TVS_EX = 0x0400
 )
 
-type VER uint32 // VerifyVersionInfo dwTypeMask
+// VerifyVersionInfo() dwTypeMask.
+type VER uint32
 
 const (
 	VER_BUILDNUMBER      VER = 0x0000004
@@ -819,7 +853,8 @@ const (
 	VER_SUITENAME        VER = 0x0000040
 )
 
-type VER_COND uint8 // VerifyVersionInfo dwlConditionMask
+// VerifyVersionInfo() dwlConditionMask.
+type VER_COND uint8
 
 const (
 	VER_COND_EQUAL         VER_COND = 1
@@ -832,7 +867,8 @@ const (
 	VER_COND_OR  VER_COND = 7
 )
 
-type VK uint16 // virtual key code
+// Virtual key codes.
+type VK uint16
 
 const (
 	VK_LBUTTON             VK = 0x01
@@ -997,7 +1033,8 @@ const (
 	VK_OEM_CLEAR           VK = 0xFE
 )
 
-type VS_PART int32 // https://docs.microsoft.com/en-us/windows/win32/controls/parts-and-states
+// https://docs.microsoft.com/en-us/windows/win32/controls/parts-and-states
+type VS_PART int32
 
 const ( // list view styles
 	VS_PART_LVP_LISTITEM         VS_PART = 1
@@ -1012,7 +1049,8 @@ const ( // list view styles
 	VS_PART_LVP_COLUMNDETAIL     VS_PART = 10
 )
 
-type VS_STATE int32 // https://docs.microsoft.com/en-us/windows/win32/controls/parts-and-states
+// https://docs.microsoft.com/en-us/windows/win32/controls/parts-and-states
+type VS_STATE int32
 
 const ( // list view states
 	VS_STATE_LISS_NORMAL           VS_STATE = 1

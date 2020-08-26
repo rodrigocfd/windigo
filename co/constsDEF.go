@@ -6,7 +6,8 @@
 
 package co
 
-type DLGC uint32 // WM_GETDLGCODE return
+// WM_GETDLGCODE return value.
+type DLGC uint32
 
 const (
 	DLGC_WANTARROWS      DLGC = 0x0001 // Control wants arrow keys
@@ -22,7 +23,8 @@ const (
 	DLGC_BUTTON          DLGC = 0x2000 // Button item: can be checked
 )
 
-type DPI_AWARE_CTX int32 // SetProcessDpiAwarenessContext value
+// SetProcessDpiAwarenessContext() value.
+type DPI_AWARE_CTX int32
 
 const (
 	DPI_AWARE_CTX_UNAWARE           DPI_AWARE_CTX = -1
@@ -32,7 +34,8 @@ const (
 	DPI_AWARE_CTX_UNAWARE_GDISCALED DPI_AWARE_CTX = -5
 )
 
-type DROPEFFECT uint32 // composes SFGAO consts
+// Composes SFGAO consts.
+type DROPEFFECT uint32
 
 const (
 	DROPEFFECT_NONE   DROPEFFECT = 0
@@ -42,7 +45,8 @@ const (
 	DROPEFFECT_SCROLL DROPEFFECT = 0x80000000
 )
 
-type EM WM // edit control message
+// Edit control messages.
+type EM WM
 
 const (
 	EM_GETSEL              EM = 0x00B0
@@ -86,14 +90,16 @@ const (
 	EM_GETIMESTATUS        EM = 0x00D9
 )
 
-type EMF uint32 // NMLVEMPTYMARKUP dwFlags
+// NMLVEMPTYMARKUP dwFlags.
+type EMF uint32
 
 const (
 	EMF_NULL     EMF = 0x00000000
 	EMF_CENTERED EMF = 0x00000001
 )
 
-type ES WS // edit control style
+// Edit control styles.
+type ES WS
 
 const (
 	ES_LEFT        ES = 0x0000
@@ -113,6 +119,7 @@ const (
 )
 
 // Returned by GetLastError(), also an HINSTANCE.
+//
 // We can't simply use syscall.Errno because it's an uintptr (8 bytes), thus a
 // native struct with such a field type would be wrong.
 type ERROR uint32
@@ -215,7 +222,8 @@ const (
 	ERROR_RPC_E_CHANGED_MODE ERROR = 0x80010106
 )
 
-type FAPPCOMMAND uint32 // WM_APPCOMMAND
+// WM_APPCOMMAND input event.
+type FAPPCOMMAND uint32
 
 const (
 	FAPPCOMMAND_MOUSE FAPPCOMMAND = 0x8000
@@ -223,7 +231,8 @@ const (
 	FAPPCOMMAND_OEM   FAPPCOMMAND = 0x1000
 )
 
-type FILE_ATTRIBUTE uint32 // CreateFile dwFlagsAndAttributes
+// CreateFile() dwFlagsAndAttributes.
+type FILE_ATTRIBUTE uint32
 
 const (
 	FILE_ATTRIBUTE_INVALID               FILE_ATTRIBUTE = 0xFFFFFFFF // -1
@@ -251,7 +260,8 @@ const (
 	FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS FILE_ATTRIBUTE = 0x00400000
 )
 
-type FILE_DISPO uint32 // CreateFile dwCreationDisposition
+// CreateFile() dwCreationDisposition.
+type FILE_DISPO uint32
 
 const (
 	FILE_DISPO_CREATE_ALWAYS     FILE_DISPO = 2
@@ -261,7 +271,8 @@ const (
 	FILE_DISPO_TRUNCATE_EXISTING FILE_DISPO = 5
 )
 
-type FILE_FLAG uint32 // CreateFile dwFlagsAndAttributes
+// CreateFile() dwFlagsAndAttributes.
+type FILE_FLAG uint32
 
 const (
 	FILE_FLAG_NONE                  FILE_FLAG = 0
@@ -280,7 +291,8 @@ const (
 	FILE_FLAG_OPEN_REQUIRING_OPLOCK FILE_FLAG = 0x00040000
 )
 
-type FILE_MAP uint32 // MapViewOfFile dwDesiredAccess
+// MapViewOfFile() dwDesiredAccess.
+type FILE_MAP uint32
 
 const (
 	FILE_MAP_WRITE           FILE_MAP = FILE_MAP(SECTION_MAP_WRITE)
@@ -293,7 +305,8 @@ const (
 	FILE_MAP_LARGE_PAGES     FILE_MAP = 0x20000000
 )
 
-type FILE_SETPTR uint32 // SetFilePointerEx dwMoveMethod
+// SetFilePointerEx() dwMoveMethod.
+type FILE_SETPTR uint32
 
 const (
 	FILE_SETPTR_BEGIN   FILE_SETPTR = 0
@@ -301,7 +314,8 @@ const (
 	FILE_SETPTR_END     FILE_SETPTR = 2
 )
 
-type FILE_SHARE uint32 // CreateFile dwShareMode
+// CreateFile() dwShareMode.
+type FILE_SHARE uint32
 
 const (
 	FILE_SHARE_NONE   FILE_SHARE = 0
@@ -310,7 +324,8 @@ const (
 	FILE_SHARE_DELETE FILE_SHARE = 0x00000004
 )
 
-type FW uint32 // LOGFONT lfWeight
+// LOGFONT lfWeight.
+type FW uint32
 
 const (
 	FW_DONTCARE   FW = 0

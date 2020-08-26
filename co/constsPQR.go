@@ -6,7 +6,8 @@
 
 package co
 
-type PAGE uint32 // CreateFileMapping flProtect
+// CreateFileMapping() flProtect.
+type PAGE uint32
 
 const (
 	PAGE_NONE                   PAGE = 0
@@ -29,7 +30,8 @@ const (
 	PAGE_ENCLAVE_DECOMMIT       PAGE = 0x10000000
 )
 
-type PBT uint32 // WM_POWERBROADCAST event
+// WM_POWERBROADCAST event.
+type PBT uint32
 
 const (
 	PBT_APMQUERYSUSPEND       PBT = 0x0000
@@ -48,7 +50,8 @@ const (
 	PBT_POWERSETTINGCHANGE    PBT = 0x8013
 )
 
-type PRF uint32 // WM_PRINT
+// WM_PRINT drawing options.
+type PRF uint32
 
 const (
 	PRF_CHECKVISIBLE PRF = 0x00000001
@@ -59,7 +62,8 @@ const (
 	PRF_OWNED        PRF = 0x00000020
 )
 
-type PT uint8 // PolyDraw aj
+// PolyDraw() aj.
+type PT uint8
 
 const (
 	PT_CLOSEFIGURE PT = 0x01
@@ -68,7 +72,8 @@ const (
 	PT_MOVETO      PT = 0x06
 )
 
-type REG uint32 // RegQueryValueEx lpType
+// RegQueryValueEx() lpType.
+type REG uint32
 
 const (
 	REG_NONE                       REG = 0 // No value type
@@ -87,7 +92,8 @@ const (
 	REG_QWORD_LITTLE_ENDIAN        REG = 11 // 64-bit number (same as REG_QWORD)
 )
 
-type REG_OPTION uint32 // RegOpenKeyEx ulOptions
+// RegOpenKeyEx() ulOptions.
+type REG_OPTION uint32
 
 const (
 	REG_OPTION_NONE           REG_OPTION = 0
@@ -99,7 +105,8 @@ const (
 	REG_OPTION_OPEN_LINK      REG_OPTION = 0x00000008
 )
 
-type ROP uint32 // IMAGELISTDRAWPARAMS dwRop
+// IMAGELISTDRAWPARAMS dwRop.
+type ROP uint32
 
 const (
 	ROP_SRCCOPY        ROP = 0x00CC0020

@@ -6,7 +6,8 @@
 
 package co
 
-type KEY uint32 // RegKeyOpenKeyEx samDesired
+// RegKeyOpenKeyEx() samDesired.
+type KEY uint32
 
 const (
 	KEY_QUERY_VALUE        KEY = 0x0001
@@ -24,7 +25,8 @@ const (
 	KEY_ALL_ACCESS         KEY = (KEY(STANDARD_RIGHTS_ALL) | KEY_QUERY_VALUE | KEY_SET_VALUE | KEY_CREATE_SUB_KEY | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY | KEY_CREATE_LINK) &^ KEY(ACCESS_RIGHTS_SYNCHRONIZE)
 )
 
-type LIF uint32 // LITEM mask
+// LITEM mask.
+type LIF uint32
 
 const (
 	LIF_ITEMINDEX LIF = 0x00000001
@@ -33,7 +35,8 @@ const (
 	LIF_URL       LIF = 0x00000008
 )
 
-type LIS uint32 // LITEM state
+// LITEM state.
+type LIS uint32
 
 const (
 	LIS_FOCUSED       LIS = 0x00000001
@@ -43,7 +46,8 @@ const (
 	LIS_DEFAULTCOLORS LIS = 0x00000010
 )
 
-type LV_VIEW uint16 // list view view
+// List view current view.
+type LV_VIEW uint16
 
 const (
 	LV_VIEW_ICON      LV_VIEW = 0x0000
@@ -53,7 +57,8 @@ const (
 	LV_VIEW_TILE      LV_VIEW = 0x0004
 )
 
-type LVCDI uint32 // NMLVCUSTOMDRAW dwItemType
+// NMLVCUSTOMDRAW dwItemType.
+type LVCDI uint32
 
 const (
 	LVCDI_ITEM     LVCDI = 0x00000000
@@ -61,7 +66,8 @@ const (
 	LVCDI_TEMSLIST LVCDI = 0x00000002
 )
 
-type LVCF uint32 // LVCOLUMN mask
+// LVCOLUMN mask.
+type LVCF uint32
 
 const (
 	LVCF_DEFAULTWIDTH LVCF = 0x0080
@@ -75,7 +81,8 @@ const (
 	LVCF_WIDTH        LVCF = 0x0002
 )
 
-type LVFI uint32 // LVFINDINFO flags
+// LVFINDINFO flags.
+type LVFI uint32
 
 const (
 	LVFI_PARAM     LVFI = 0x0001
@@ -86,7 +93,8 @@ const (
 	LVFI_NEARESTXY LVFI = 0x0040
 )
 
-type LVGA_HEADER uint32 // NMLVCUSTOMDRAW uAlign
+// NMLVCUSTOMDRAW uAlign.
+type LVGA_HEADER uint32
 
 const (
 	LVGA_HEADER_LEFT   LVGA_HEADER = 0x00000001
@@ -94,14 +102,16 @@ const (
 	LVGA_HEADER_RIGHT  LVGA_HEADER = 0x00000004
 )
 
-type LVGIT uint32 // NMLVGETINFOTIP dwFlags
+// NMLVGETINFOTIP dwFlags.
+type LVGIT uint32
 
 const (
 	LVGIT_ZERO     LVGIT = 0x0000
 	LVGIT_UNFOLDED LVGIT = 0x0001
 )
 
-type LVHT uint32 // LVHITTESTINFO flags
+// LVHITTESTINFO flags.
+type LVHT uint32
 
 const (
 	LVHT_NOWHERE             LVHT = 0x00000001
@@ -124,7 +134,8 @@ const (
 	LVHT_EX_FOOTER           LVHT = 0x08000000
 )
 
-type LVIF uint32 // LVITEM mask
+// LVITEM mask.
+type LVIF uint32
 
 const (
 	LVIF_COLFMT      LVIF = 0x00010000
@@ -138,7 +149,8 @@ const (
 	LVIF_TEXT        LVIF = 0x00000001
 )
 
-type LVIS uint32 // list view item state
+// List view item states.
+type LVIS uint32
 
 const (
 	LVIS_NONE           LVIS = 0
@@ -152,7 +164,8 @@ const (
 	LVIS_STATEIMAGEMASK LVIS = 0xF000
 )
 
-type LVKF uint32 // NMITEMACTIVATE uKeyFlags
+// NMITEMACTIVATE uKeyFlags.
+type LVKF uint32
 
 const (
 	LVKF_ALT     LVKF = 0x0001
@@ -160,7 +173,8 @@ const (
 	LVKF_SHIFT   LVKF = 0x0004
 )
 
-type LVM WM // list view message
+// List view messages.
+type LVM WM
 
 const (
 	_LVM_FIRST LVM = 0x1000
@@ -291,7 +305,8 @@ const (
 	LVM_GETNEXTITEMINDEX         LVM = _LVM_FIRST + 211
 )
 
-type LVN NM // list view notification
+// List view notifications.
+type LVN NM
 
 const (
 	_LVN_FIRST LVN = -100
@@ -325,7 +340,8 @@ const (
 	LVN_GETEMPTYMARKUP      LVN = _LVN_FIRST - 87
 )
 
-type LVNI uint32 // LVM_GETNEXTITEM
+// LVM_GETNEXTITEM item relationship.
+type LVNI uint32
 
 const (
 	LVNI_ALL           LVNI = 0x0000
@@ -345,7 +361,8 @@ const (
 	LVNI_DIRECTIONMASK LVNI = LVNI_ABOVE | LVNI_BELOW | LVNI_TOLEFT | LVNI_TORIGHT
 )
 
-type LVIR uint32 // LVM_GETITEMRECT
+// LVM_GETITEMRECT portion.
+type LVIR uint32
 
 const (
 	LVIR_BOUNDS       LVIR = 0
@@ -354,7 +371,8 @@ const (
 	LVIR_SELECTBOUNDS LVIR = 3
 )
 
-type LVS WS // list view style
+// List view styles.
+type LVS WS
 
 const (
 	LVS_ALIGNLEFT       LVS = 0x0800
@@ -381,7 +399,8 @@ const (
 	LVS_TYPESTYLEMASK   LVS = 0xfc00
 )
 
-type LVS_EX WS_EX // list view extended style
+// List view extended styles.
+type LVS_EX WS_EX
 
 const (
 	LVS_EX_AUTOAUTOARRANGE       LVS_EX = 0x01000000
@@ -416,7 +435,8 @@ const (
 	LVS_EX_UNDERLINEHOT          LVS_EX = 0x00000800
 )
 
-type LVSIL uint32 // LVM_SETIMAGELIST
+// LVM_SETIMAGELIST type.
+type LVSIL uint32
 
 const (
 	LVSIL_NORMAL      LVSIL = 0

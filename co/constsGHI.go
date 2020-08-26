@@ -6,7 +6,8 @@
 
 package co
 
-type GA uint32 // GetAncestor gaFlags
+// GetAncestor() gaFlags.
+type GA uint32
 
 const (
 	GA_PARENT    GA = 1
@@ -14,7 +15,8 @@ const (
 	GA_ROOTOWNER GA = 3
 )
 
-type GDC int32 // GetDeviceCaps index, originally has no prefix
+// GetDeviceCaps() index; originally has no prefix.
+type GDC int32
 
 const (
 	GDC_DRIVERVERSION   GDC = 0
@@ -59,7 +61,8 @@ const (
 	GDC_COLORMGMTCAPS   GDC = 121
 )
 
-type GENERIC uint32 // CreateFile dwDesiredAccess
+// CreateFile() dwDesiredAccess.
+type GENERIC uint32
 
 const (
 	GENERIC_READ    GENERIC = 0x80000000
@@ -68,7 +71,8 @@ const (
 	GENERIC_ALL     GENERIC = 0x10000000
 )
 
-type GW uint32 // GetWindow uCmd
+// GetWindow() uCmd.
+type GW uint32
 
 const (
 	GW_HWNDFIRST    GW = 0
@@ -81,7 +85,8 @@ const (
 	GW_MAX          GW = 6
 )
 
-type GWLP int32 // Get/SetWindowLongPtr nIndex
+// Get/SetWindowLongPtr() nIndex.
+type GWLP int32
 
 const (
 	GWLP_STYLE      GWLP = -16
@@ -93,7 +98,8 @@ const (
 	GWLP_ID         GWLP = -12
 )
 
-type HC int // SetWindowsHookEx callback hook codes
+// SetWindowsHookEx() callback hook codes.
+type HC int32
 
 const (
 	HC_ACTION      HC = 0
@@ -105,7 +111,8 @@ const (
 	HC_SYSMODALOFF HC = 5
 )
 
-type HCBT int // SetWindowsHookEx callback CBT hook codes
+// SetWindowsHookEx() callback CBT hook codes.
+type HCBT int32
 
 const (
 	HCBT_MOVESIZE     HCBT = 0
@@ -120,7 +127,8 @@ const (
 	HCBT_SETFOCUS     HCBT = 9
 )
 
-type HDM WM // list view header message
+// List view header message.
+type HDM WM
 
 const (
 	_HDM_FIRST HDM = 0x1200
@@ -133,14 +141,16 @@ const (
 	HDM_LAYOUT       HDM = _HDM_FIRST + 5
 )
 
-type HELPINFO int32 // HELPINFO iContextType
+// HELPINFO iContextType.
+type HELPINFO int32
 
 const (
 	HELPINFO_WINDOW   HELPINFO = 0x0001
 	HELPINFO_MENUITEM HELPINFO = 0x0002
 )
 
-type HKEY uintptr // RegOpenKeyEx hKey
+// RegOpenKeyEx() hKey.
+type HKEY uintptr
 
 const (
 	HKEY_CLASSES_ROOT                HKEY = 0x80000000
@@ -155,7 +165,8 @@ const (
 	HKEY_CURRENT_USER_LOCAL_SETTINGS HKEY = 0x80000007
 )
 
-type HTREEITEM uintptr // TVINSERTSTRUCT hInsertAfter
+// TVINSERTSTRUCT hInsertAfter.
+type HTREEITEM uintptr
 
 const (
 	HTREEITEM_ROOT  HTREEITEM = 0x10000
@@ -164,7 +175,8 @@ const (
 	HTREEITEM_SORT  HTREEITEM = 0x0FFFD
 )
 
-type MBID int32 // MessageBox return
+// MessageBox() return value.
+type MBID int32
 
 const (
 	MBID_OK       MBID = 1
@@ -178,7 +190,8 @@ const (
 	MBID_CONTINUE MBID = 11
 )
 
-type IDC uintptr // LoadCursor lpCursorName
+// LoadCursor() lpCursorName.
+type IDC uintptr
 
 const (
 	IDC_ARROW       IDC = 32512
@@ -199,7 +212,8 @@ const (
 	IDC_PERSON      IDC = 32672
 )
 
-type IDI uintptr // LoadIcon lpIconName
+// LoadIcon() lpIconName.
+type IDI uintptr
 
 const (
 	IDI_APPLICATION IDI = 32512
@@ -214,14 +228,16 @@ const (
 	IDI_INFORMATION IDI = IDI_ASTERISK
 )
 
-type IDHOT int32 // WM_HOTKEY
+// WM_HOTKEY identifier.
+type IDHOT int32
 
 const (
 	IDHOT_SNAPWINDOW  IDHOT = -1
 	IDHOT_SNAPDESKTOP IDHOT = -2
 )
 
-type ILC uint32 // ImageList_Create flags
+// ImageList_Create() flags.
+type ILC uint32
 
 const (
 	ILC_MASK             ILC = 0x00000001
@@ -239,7 +255,8 @@ const (
 	ILC_HIGHQUALITYSCALE ILC = 0x00020000 // Vista
 )
 
-type ILD uint32 // ImageList_Draw flags
+// ImageList_Draw() flags.
+type ILD uint32
 
 const (
 	ILD_NORMAL        ILD = 0x00000000
@@ -259,7 +276,8 @@ const (
 	ILD_BLEND         ILD = ILD_BLEND50
 )
 
-type ILS uint32 // image list state
+// Image list state.
+type ILS uint32
 
 const (
 	ILS_NORMAL   ILS = 0x00000000

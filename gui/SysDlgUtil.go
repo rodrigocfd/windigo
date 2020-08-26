@@ -168,7 +168,7 @@ func (_SysDlgUtilT) MsgBox(
 	_globalMsgBoxParent = parent.Hwnd()
 
 	_globalMsgBoxHook = win.SetWindowsHookEx(co.WH_CBT,
-		func(code int, wp win.WPARAM, lp win.LPARAM) uintptr {
+		func(code int32, wp win.WPARAM, lp win.LPARAM) uintptr {
 			// http://www.codeguru.com/cpp/w-p/win32/messagebox/print.php/c4541
 			if co.HCBT(code) == co.HCBT_ACTIVATE {
 				hMsgBox := win.HWND(wp)

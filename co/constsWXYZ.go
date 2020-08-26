@@ -6,7 +6,8 @@
 
 package co
 
-type WA int32 // WM_ACTIVATE
+// WM_ACTIVATE activation state.
+type WA int32
 
 const (
 	WA_INACTIVE    WA = 0
@@ -14,7 +15,8 @@ const (
 	WA_CLICKACTIVE WA = 2
 )
 
-type WH int // SetWindowsHookEx idHook
+// SetWindowsHookEx() idHook.
+type WH int
 
 const (
 	WH_MSGFILTER       WH = -1
@@ -34,7 +36,8 @@ const (
 	WH_MOUSE_LL        WH = 14
 )
 
-type WIN32_WINNT uint16 // OSVERSIONINFOEX, originally _WIN32_WINNT
+// IsWindowsVersionOrGreater() values; originally _WIN32_WINNT.
+type WIN32_WINNT uint16
 
 const (
 	WIN32_WINNT_NT4          WIN32_WINNT = 0x0400
@@ -52,7 +55,8 @@ const (
 	WIN32_WINNT_WIN10        WIN32_WINNT = 0x0A00
 )
 
-type WM uint32 // window message
+// Window messages.
+type WM uint32
 
 const (
 	WM_NULL                           WM = 0x0000
@@ -311,7 +315,8 @@ const (
 	WM_USER                           WM = 0x0400
 )
 
-type WS uint32 // window style
+// Window styles.
+type WS uint32
 
 const (
 	WS_OVERLAPPED       WS = 0x00000000
@@ -343,7 +348,8 @@ const (
 	WS_CHILDWINDOW      WS = WS_CHILD // Same as the WS_CHILD style.
 )
 
-type WS_EX uint32 // window extended style
+// Window extended styles.
+type WS_EX uint32
 
 const (
 	WS_EX_DLGMODALFRAME       WS_EX = 0x00000001

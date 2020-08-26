@@ -6,6 +6,7 @@
 
 package co
 
+// https://docs.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
 type GUID struct {
 	Data1 uint32
 	Data2 uint16
@@ -14,8 +15,10 @@ type GUID struct {
 }
 
 type (
-	CLSID GUID // COM class ID
-	IID   GUID // COM interface ID
+	// COM class ID.
+	CLSID GUID
+	// COM interface ID.
+	IID GUID
 )
 
 var (

@@ -6,7 +6,8 @@
 
 package co
 
-type ACCELF uint8 // ACCELL fVirt
+// ACCELL fVirt.
+type ACCELF uint8
 
 const (
 	ACCELF_NONE    ACCELF = 0
@@ -16,7 +17,8 @@ const (
 	ACCELF_ALT     ACCELF = 0x10
 )
 
-type ACCESS_RIGHTS uint32 // composes KEY, STANDARD_RIGHTS; originally has no prefix
+// Composes KEY, STANDARD_RIGHTS; originally has no prefix.
+type ACCESS_RIGHTS uint32
 
 const (
 	ACCESS_RIGHTS_DELETE       ACCESS_RIGHTS = 0x00010000
@@ -26,7 +28,8 @@ const (
 	ACCESS_RIGHTS_SYNCHRONIZE  ACCESS_RIGHTS = 0x00100000
 )
 
-type ADRF uint32 // NMTVASYNCDRAW dwRetFlags, don't seem to be defined anywhere, values are unconfirmed
+// NMTVASYNCDRAW dwRetFlags, don't seem to be defined anywhere, values are unconfirmed.
+type ADRF uint32
 
 const (
 	ADRF_DRAWSYNC     ADRF = 0
@@ -35,7 +38,8 @@ const (
 	ADRF_DRAWIMAGE    ADRF = 3
 )
 
-type APPCOMMAND int16 // WM_APPCOMMAND
+// WM_APPCOMMAND command.
+type APPCOMMAND int16
 
 const (
 	APPCOMMAND_BROWSER_BACKWARD                  APPCOMMAND = 1
@@ -94,14 +98,16 @@ const (
 	APPCOMMAND_DWM_FLIP3D                        APPCOMMAND = 54
 )
 
-type BKMODE int32 // SetBkMode mode
+// SetBkMode() mode.
+type BKMODE int32
 
 const (
 	BKMODE_TRANSPARENT BKMODE = 1
 	BKMODE_OPAQUE      BKMODE = 2
 )
 
-type BM WM // button control messages
+// Button control messages.
+type BM WM
 
 const (
 	BM_GETCHECK     BM = 0x00F0
@@ -115,7 +121,8 @@ const (
 	BM_SETDONTCLICK BM = 0x00F8
 )
 
-type BS WS // button control style
+// Button control styles.
+type BS WS
 
 const (
 	BS_PUSHBUTTON      BS = 0x00000000
@@ -148,7 +155,8 @@ const (
 	BS_RIGHTBUTTON     BS = BS_LEFTTEXT
 )
 
-type BST uint32 // IsDlgButtonChecked nIDButton
+// IsDlgButtonChecked() nIDButton.
+type BST uint32
 
 const (
 	BST_UNCHECKED     BST = 0x0000
@@ -158,7 +166,8 @@ const (
 	BST_FOCUS         BST = 0x0008
 )
 
-type CB WM // combobox messages
+// Combo box messages.
+type CB WM
 
 const (
 	CB_GETEDITSEL            CB = 0x0140
@@ -199,7 +208,8 @@ const (
 	CB_MSGMAX                CB = 0x0165
 )
 
-type CBS WS // combo box styles
+// Combo box styles.
+type CBS WS
 
 const (
 	CBS_SIMPLE            CBS = 0x0001
@@ -217,7 +227,8 @@ const (
 	CBS_LOWERCASE         CBS = 0x4000
 )
 
-type CCM WM // common controls shared messages
+// Common controls shared messages.
+type CCM WM
 
 const (
 	_CCM_FIRST CCM = 0x2000
@@ -235,7 +246,8 @@ const (
 	CCM_DPISCALE         CCM = _CCM_FIRST + 0xc
 )
 
-type CDIS uint32 // NMCUSTOMDRAW uItemState
+// NMCUSTOMDRAW uItemState.
+type CDIS uint32
 
 const (
 	CDIS_SELECTED         CDIS = 0x0001
@@ -253,7 +265,8 @@ const (
 	CDIS_DROPHILITED      CDIS = 0x1000
 )
 
-type CDDS uint32 // NMCUSTOMDRAW dwDrawStage
+// NMCUSTOMDRAW dwDrawStage.
+type CDDS uint32
 
 const (
 	CDDS_PREPAINT      CDDS = 0x00000001
@@ -268,7 +281,8 @@ const (
 	CDDS_SUBITEM       CDDS = 0x00020000
 )
 
-type CDRF uint32 // NM_CUSTOMDRAW return value
+// NM_CUSTOMDRAW return value.
+type CDRF uint32
 
 const (
 	CDRF_DODEFAULT         CDRF = 0x00000000
@@ -282,7 +296,8 @@ const (
 	CDRF_NOTIFYPOSTERASE   CDRF = 0x00000040
 )
 
-type CLSCTX uint32 // CoCreateInstance
+// CoCreateInstance() dwClsContext.
+type CLSCTX uint32
 
 const (
 	CLSCTX_INPROC_SERVER          CLSCTX = 0x1
@@ -316,7 +331,8 @@ const (
 	CLSCTX_SERVER                 CLSCTX = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER
 )
 
-type COINIT uint32 // CoInitializeEx
+// CoInitializeEx() dwCoInit.
+type COINIT uint32
 
 const (
 	COINIT_APARTMENTTHREADED COINIT = 0x2
@@ -325,7 +341,8 @@ const (
 	COINIT_SPEED_OVER_MEMORY COINIT = 0x8
 )
 
-type COLOR uint32 // system color
+// System colors.
+type COLOR uint32
 
 const (
 	COLOR_SCROLLBAR               COLOR = 0
@@ -366,7 +383,8 @@ const (
 	COLOR_BTNHILIGHT              COLOR = COLOR_BTNHIGHLIGHT
 )
 
-type CS uint32 // window class style
+// Window class styles.
+type CS uint32
 
 const (
 	CS_VREDRAW         CS = 0x0001

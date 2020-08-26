@@ -6,7 +6,8 @@
 
 package co
 
-type MDT uint32 // GetDpiForMonitor dpiType
+// GetDpiForMonitor() dpiType.
+type MDT uint32
 
 const (
 	MDT_EFFECTIVE_DPI MDT = 0
@@ -15,7 +16,8 @@ const (
 	MDT_DEFAULT       MDT = MDT_EFFECTIVE_DPI
 )
 
-type MB uint32 // MessageBox uType
+// MessageBox() uType.
+type MB uint32
 
 const (
 	MB_ABORTRETRYIGNORE  MB = 0x00000002
@@ -53,7 +55,8 @@ const (
 	MB_SERVICE_NOTIFICATION MB = 0x00200000
 )
 
-type MF uint32 // EnableMenuItem uEnable
+// EnableMenuItem() uEnable.
+type MF uint32
 
 const (
 	MF_INSERT          MF = 0x00000000
@@ -85,7 +88,8 @@ const (
 	MF_MOUSESELECT     MF = 0x00008000
 )
 
-type MFS uint32 // MENUITEMINFO fState
+// MENUITEMINFO fState.
+type MFS uint32
 
 const (
 	MFS_GRAYED    MFS = 0x00000003
@@ -98,7 +102,8 @@ const (
 	MFS_DEFAULT   MFS = MFS(MF_DEFAULT)
 )
 
-type MFT uint32 // MENUITEMINFO fType
+// MENUITEMINFO fType.
+type MFT uint32
 
 const (
 	MFT_STRING       MFT = MFT(MF_STRING)
@@ -112,7 +117,8 @@ const (
 	MFT_RIGHTJUSTIFY MFT = MFT(MF_RIGHTJUSTIFY)
 )
 
-type MIIM uint32 // MENUITEMINFO fMask
+// MENUITEMINFO fMask.
+type MIIM uint32
 
 const (
 	MIIM_STATE      MIIM = 0x00000001
@@ -126,7 +132,8 @@ const (
 	MIIM_FTYPE      MIIM = 0x00000100
 )
 
-type MIM uint32 // MENUINFO fMask
+// MENUINFO fMask.
+type MIM uint32
 
 const (
 	MIM_MAXHEIGHT       MIM = 0x00000001
@@ -137,7 +144,8 @@ const (
 	MIM_APPLYTOSUBMENUS MIM = 0x80000000
 )
 
-type MK uint16 // WM_LBUTTONDOWN and similar
+// WM_LBUTTONDOWN (and similar) virtual keys.
+type MK uint16
 
 const (
 	MK_LBUTTON  MK = 0x0001
@@ -149,7 +157,8 @@ const (
 	MK_XBUTTON2 MK = 0x0040
 )
 
-type MNC uint32 // WM_MENUCHAR return
+// WM_MENUCHAR return value.
+type MNC uint32
 
 const (
 	MNC_IGNORE  MNC = 0
@@ -158,7 +167,8 @@ const (
 	MNC_SELECT  MNC = 3
 )
 
-type MNS uint32 // MENUINFO dwStyle
+// MENUINFO dwStyle.
+type MNS uint32
 
 const (
 	MNS_NOCHECK     MNS = 0x80000000
@@ -169,7 +179,8 @@ const (
 	MNS_CHECKORBMP  MNS = 0x04000000
 )
 
-type MOD uint16 // WM_HOTKEY
+// WM_HOTKEY combined keys.
+type MOD uint16
 
 const (
 	MOD_ALT                 MOD = 0x0001
@@ -181,7 +192,8 @@ const (
 	MOD_IGNORE_ALL_MODIFIER MOD = 0x0400
 )
 
-type MONITOR uint32 // MonitorFromPoint dwFlags
+// MonitorFromPoint() dwFlags.
+type MONITOR uint32
 
 const (
 	MONITOR_DEFAULTTONULL    MONITOR = 0x00000000
@@ -189,7 +201,8 @@ const (
 	MONITOR_DEFAULTTONEAREST MONITOR = 0x00000002
 )
 
-type NM int32 // common control notification
+// Common control notification.
+type NM int32
 
 const (
 	_NM_FIRST NM = 0
@@ -218,7 +231,8 @@ const (
 	NM_TVSTATEIMAGECHANGING NM = _NM_FIRST - 24
 )
 
-type ODT uint32 // DELETEITEMSTRUCT CtlType
+// DELETEITEMSTRUCT CtlType.
+type ODT uint32
 
 const (
 	ODT_MENU     ODT = 1
@@ -228,7 +242,8 @@ const (
 	ODT_STATIC   ODT = 5
 )
 
-type OFN uint32 // OPENFILENAME Flags
+// OPENFILENAME Flags.
+type OFN uint32
 
 const (
 	OFN_READONLY             OFN = 0x00000001
@@ -259,7 +274,8 @@ const (
 	OFN_FORCESHOWHIDDEN      OFN = 0x10000000
 )
 
-type OFN_EX uint32 // OPENFILENAME FlagsEx
+// OPENFILENAME FlagsEx.
+type OFN_EX uint32
 
 const (
 	OFN_EX_NONE        OFN_EX = 0

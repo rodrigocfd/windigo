@@ -338,7 +338,7 @@ func SetProcessDPIAware() {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
 func SetWindowsHookEx(idHook co.WH,
-	lpfn func(code int, wp WPARAM, lp LPARAM) uintptr,
+	lpfn func(code int32, wp WPARAM, lp LPARAM) uintptr,
 	hmod HINSTANCE, dwThreadId uint32) HHOOK {
 
 	ret, _, lerr := syscall.Syscall6(proc.SetWindowsHookEx.Addr(), 4,
