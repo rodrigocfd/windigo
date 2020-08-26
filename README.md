@@ -1,6 +1,6 @@
 # Wingows
 
-A thin Go layer over the Win32 API.
+A thin Go layer over the Win32 API, batteries-included.
 
 ## Overview
 
@@ -12,9 +12,9 @@ Wingows is composed of three packages:
 
 Wingows aim to provide a solid foundation to build fast, native and scalable Win32 applications in Go.
 
-It is designed to be familiar to Win32 programmers, using the same concepts, so any C/C++ Win32 tutorial should be applicable. It's heavily based on [WinLamb](https://github.com/rodrigocfd/winlamb) C++ library.
+It is designed to be familiar to Win32 programmers, using the same concepts, so any C/C++ Win32 tutorial should be applicable. The `gui` package is heavily based on [WinLamb](https://github.com/rodrigocfd/winlamb) C++ library.
 
-Since raw Win32 API exposed, there are no limits: you can do everything. But you can also shoot yourself in the foot, so please always refer to the [official Win32 documentation](https://docs.microsoft.com/en-us/windows/win32/).
+Since raw Win32 API is exposed, there are no limits: you can do everything. But you can also shoot yourself in the foot, so please always refer to the [official Win32 documentation](https://docs.microsoft.com/en-us/windows/win32/).
 
 ## Example
 

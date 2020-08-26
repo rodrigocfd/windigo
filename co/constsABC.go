@@ -208,6 +208,20 @@ const (
 	CB_MSGMAX                CB = 0x0165
 )
 
+// ComboBoxEx notifications.
+type CBEN NM
+
+const (
+	_CBEN_FIRST CBEN = -800
+
+	CBEN_INSERTITEM  CBEN = _CBEN_FIRST - 1
+	CBEN_DELETEITEM  CBEN = _CBEN_FIRST - 2
+	CBEN_BEGINEDIT   CBEN = _CBEN_FIRST - 4
+	CBEN_ENDEDIT     CBEN = _CBEN_FIRST - 6
+	CBEN_GETDISPINFO CBEN = _CBEN_FIRST - 7
+	CBEN_DRAGBEGIN   CBEN = _CBEN_FIRST - 9
+)
+
 // Combo box styles.
 type CBS WS
 

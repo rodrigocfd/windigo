@@ -45,6 +45,22 @@ const (
 	DROPEFFECT_SCROLL DROPEFFECT = 0x80000000
 )
 
+// Date and time picker notifications.
+type DTN NM
+
+const (
+	_DTN_FIRST  DTN = -740
+	_DTN_FIRST2 DTN = -753
+
+	DTN_CLOSEUP        DTN = _DTN_FIRST2 - 0
+	DTN_DROPDOWN       DTN = _DTN_FIRST2 - 1
+	DTN_DATETIMECHANGE DTN = _DTN_FIRST2 - 6
+	DTN_FORMATQUERY    DTN = _DTN_FIRST - 2
+	DTN_FORMAT         DTN = _DTN_FIRST - 3
+	DTN_WMKEYDOWN      DTN = _DTN_FIRST - 4
+	DTN_USERSTRING     DTN = _DTN_FIRST - 5
+)
+
 // Edit control messages.
 type EM WM
 

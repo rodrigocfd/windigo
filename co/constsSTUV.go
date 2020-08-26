@@ -36,6 +36,15 @@ const (
 	SBARS_TOOLTIPS SBARS = 0x0800
 )
 
+// Status bar notifications.
+type SBN NM
+
+const (
+	_SBN_FIRST SBN = -880
+
+	SBN_SIMPLEMODECHANGE SBN = _SBN_FIRST - 0
+)
+
 // WM_HSCROLL/WM_VSCROLL request; originally SB prefix.
 type SBR uint16
 
@@ -66,15 +75,6 @@ const (
 	SBT_POPOUT       SBT = 0x02
 	SBT_RTLREADING   SBT = 0x04
 	SBT_NOTABPARSING SBT = 0x08
-)
-
-// Status bar notifications.
-type SBN NM
-
-const (
-	_SBN_FIRST SBN = -880
-
-	SBN_SIMPLEMODECHANGE SBN = _SBN_FIRST - 0
 )
 
 // WM_SYSCOMMAND type of requested command.
@@ -592,6 +592,19 @@ const (
 	TBPF_PAUSED        TBPF = 0x8
 )
 
+// Tab control notifications.
+type TCN NM
+
+const (
+	_TCN_FIRST TCN = -550
+
+	TCN_KEYDOWN     TCN = _TCN_FIRST - 0
+	TCN_SELCHANGE   TCN = _TCN_FIRST - 1
+	TCN_SELCHANGING TCN = _TCN_FIRST - 2
+	TCN_GETOBJECT   TCN = _TCN_FIRST - 3
+	TCN_FOCUSCHANGE TCN = _TCN_FIRST - 4
+)
+
 // TrackPopupMenu() uFlags.
 type TPM uint32
 
@@ -616,6 +629,28 @@ const (
 	TPM_NOANIMATION     TPM = 0x4000
 	TPM_LAYOUTRTL       TPM = 0x8000
 	TPM_WORKAREA        TPM = 0x10000 // Vista
+)
+
+// Trackbar control notifications.
+type TRBN NM
+
+const (
+	_TRBN_FIRST TRBN = -1501
+
+	TRBN_THUMBPOSCHANGING TRBN = _TRBN_FIRST - 1
+)
+
+// Tooltip control notifications.
+type TTN NM
+
+const (
+	_TTN_FIRST TTN = -520
+
+	TTN_SHOW        TTN = _TTN_FIRST - 1
+	TTN_POP         TTN = _TTN_FIRST - 2
+	TTN_LINKCLICK   TTN = _TTN_FIRST - 3
+	TTN_GETDISPINFO TTN = _TTN_FIRST - 10
+	TTN_NEEDTEXT    TTN = TTN_GETDISPINFO
 )
 
 // TVN_SELCHANGED type of action.
@@ -837,6 +872,15 @@ const (
 	TVS_EXCLUSIONCHECKBOXES TVS_EX = 0x0100
 	TVS_DIMMEDCHECKBOXES    TVS_EX = 0x0200
 	TVS_DRAWIMAGEASYNC      TVS_EX = 0x0400
+)
+
+// Up-down control notifications.
+type UDN NM
+
+const (
+	_UDN_FIRST UDN = -721
+
+	UDN_DELTAPOS UDN = _UDN_FIRST - 1
 )
 
 // VerifyVersionInfo() dwTypeMask.

@@ -6,6 +6,18 @@
 
 package co
 
+// Month calendar notifications.
+type MCN NM
+
+const (
+	_MCN_FIRST MCN = -746
+
+	MCN_SELECT      MCN = _MCN_FIRST - 0
+	MCN_GETDAYSTATE MCN = _MCN_FIRST - 1
+	MCN_SELCHANGE   MCN = _MCN_FIRST - 3
+	MCN_VIEWCHANGE  MCN = _MCN_FIRST - 4
+)
+
 // GetDpiForMonitor() dpiType.
 type MDT uint32
 
