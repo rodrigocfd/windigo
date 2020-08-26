@@ -11,7 +11,9 @@ import (
 	"wingows/win"
 )
 
-// Manages a native image list resource.
+// Native image list resource.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/image-lists
 type ImageList struct {
 	himl       win.HIMAGELIST
 	resolution uint32

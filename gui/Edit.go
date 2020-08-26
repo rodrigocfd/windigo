@@ -13,6 +13,8 @@ import (
 )
 
 // Native edit control (textbox).
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/about-edit-controls
 type Edit struct {
 	_ControlNativeBase
 }

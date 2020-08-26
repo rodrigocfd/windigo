@@ -14,6 +14,8 @@ import (
 )
 
 // Native status bar control.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/status-bars
 type StatusBar struct {
 	_ControlNativeBase
 	parts       []statusBarPart

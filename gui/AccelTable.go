@@ -12,7 +12,9 @@ import (
 	"wingows/win"
 )
 
-// Helps building an accelerator table.
+// Native accelerator table resource.
+//
+// https://docs.microsoft.com/en-us/windows/win32/learnwin32/accelerator-tables
 type AccelTable struct {
 	accels []win.ACCEL
 	hAccel win.HACCEL

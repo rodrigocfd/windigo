@@ -12,6 +12,8 @@ import (
 )
 
 // Native tree view control.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls
 type TreeView struct {
 	_ControlNativeBase
 }

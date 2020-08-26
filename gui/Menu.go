@@ -12,7 +12,9 @@ import (
 	"wingows/win"
 )
 
-// Manages a menu resource.
+// Native menu resource.
+//
+// https://docs.microsoft.com/en-us/windows/win32/menurc/about-menus
 type Menu struct {
 	hMenu win.HMENU
 }

@@ -15,6 +15,8 @@ import (
 )
 
 // Native combo box control.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/about-combo-boxes
 type ComboBox struct {
 	_ControlNativeBase
 }

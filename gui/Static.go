@@ -11,6 +11,8 @@ import (
 )
 
 // Native static control (label).
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/about-static-controls
 type Static struct {
 	_ControlNativeBase
 }

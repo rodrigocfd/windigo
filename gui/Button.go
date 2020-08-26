@@ -11,6 +11,8 @@ import (
 )
 
 // Native button control.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#push-buttons
 type Button struct {
 	_ControlNativeBase
 }

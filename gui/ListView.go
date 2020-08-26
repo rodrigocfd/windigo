@@ -14,6 +14,8 @@ import (
 )
 
 // Native list view control.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/list-view-controls-overview
 type ListView struct {
 	_ControlNativeBase
 	contextMenu *Menu // if set, will be shown with right-click

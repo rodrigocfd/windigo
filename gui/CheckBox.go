@@ -12,6 +12,8 @@ import (
 )
 
 // Native check box control.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#check-boxes
 type CheckBox struct {
 	_ControlNativeBase
 }

@@ -13,6 +13,8 @@ import (
 )
 
 // Manages a group of native radio buttons.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioGroup struct {
 	radios []RadioButton
 }
