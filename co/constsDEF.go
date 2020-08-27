@@ -45,6 +45,29 @@ const (
 	DROPEFFECT_SCROLL DROPEFFECT = 0x80000000
 )
 
+// Date and time picker messages.
+type DTM WM
+
+const (
+	_DTM_FIRST DTM = 0x1000
+
+	DTM_GETSYSTEMTIME         DTM = _DTM_FIRST + 1
+	DTM_SETSYSTEMTIME         DTM = _DTM_FIRST + 2
+	DTM_GETRANGE              DTM = _DTM_FIRST + 3
+	DTM_SETRANGE              DTM = _DTM_FIRST + 4
+	DTM_SETFORMAT             DTM = _DTM_FIRST + 50
+	DTM_SETMCCOLOR            DTM = _DTM_FIRST + 6
+	DTM_GETMCCOLOR            DTM = _DTM_FIRST + 7
+	DTM_GETMONTHCAL           DTM = _DTM_FIRST + 8
+	DTM_SETMCFONT             DTM = _DTM_FIRST + 9
+	DTM_GETMCFONT             DTM = _DTM_FIRST + 10
+	DTM_SETMCSTYLE            DTM = _DTM_FIRST + 11
+	DTM_GETMCSTYLE            DTM = _DTM_FIRST + 12
+	DTM_CLOSEMONTHCAL         DTM = _DTM_FIRST + 13
+	DTM_GETDATETIMEPICKERINFO DTM = _DTM_FIRST + 14
+	DTM_GETIDEALSIZE          DTM = _DTM_FIRST + 15
+)
+
 // Date and time picker notifications.
 type DTN NM
 

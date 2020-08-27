@@ -227,6 +227,29 @@ type SIZE struct {
 	Cx, Cy int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime
+type SYSTEMTIME struct {
+	WYear         uint16
+	WMonth        uint16
+	WDayOfWeek    uint16
+	WDay          uint16
+	WHour         uint16
+	WMinute       uint16
+	WSecond       uint16
+	WMilliseconds uint16
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-time_zone_information
+type TIME_ZONE_INFORMATION struct {
+	Bias         int32
+	StandardName [32]uint16
+	StandardDate SYSTEMTIME
+	StandardBias int32
+	DaylightName [32]uint16
+	DaylightDate SYSTEMTIME
+	DaylightBias int32
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw
 type WIN32_FIND_DATA struct {
 	DwFileAttributes   co.FILE_ATTRIBUTE

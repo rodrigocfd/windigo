@@ -88,6 +88,16 @@ func EnumWindows(
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
+func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
+	ret, _, lerr := syscall.Syscall(proc.FileTimeToSystemTime.Addr(), 2,
+		uintptr(unsafe.Pointer(inFileTime)),
+		uintptr(unsafe.Pointer(outSystemTime)), 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "FileTimeToSystemTime").Error())
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getasynckeystate
 func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
 	ret, _, _ := syscall.Syscall(proc.GetAsyncKeyState.Addr(), 1,
@@ -417,11 +427,49 @@ func SystemParametersInfo(uiAction co.SPI, uiParam uint32,
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetofiletime
+func SystemTimeToFileTime(inSystemTime *SYSTEMTIME, outFileTime *FILETIME) {
+	ret, _, lerr := syscall.Syscall(proc.SystemTimeToFileTime.Addr(), 2,
+		uintptr(unsafe.Pointer(inSystemTime)),
+		uintptr(unsafe.Pointer(outFileTime)), 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "SystemTimeToFileTime").Error())
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetotzspecificlocaltime
+func SystemTimeToTzSpecificLocalTime(
+	lpTimeZoneInformation *TIME_ZONE_INFORMATION,
+	inUniversalTime *SYSTEMTIME, outLocalTime *SYSTEMTIME) {
+
+	ret, _, lerr := syscall.Syscall(proc.SystemTimeToTzSpecificLocalTime.Addr(), 3,
+		uintptr(unsafe.Pointer(lpTimeZoneInformation)),
+		uintptr(unsafe.Pointer(inUniversalTime)),
+		uintptr(unsafe.Pointer(outLocalTime)))
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "SystemTimeToTzSpecificLocalTime").Error())
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translatemessage
 func TranslateMessage(msg *MSG) bool {
 	ret, _, _ := syscall.Syscall(proc.TranslateMessage.Addr(), 1,
 		uintptr(unsafe.Pointer(msg)), 0, 0)
 	return ret != 0
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-tzspecificlocaltimetosystemtime
+func TzSpecificLocalTimeToSystemTime(
+	lpTimeZoneInformation *TIME_ZONE_INFORMATION,
+	inLocalTime *SYSTEMTIME, outUniversalTime *SYSTEMTIME) {
+
+	ret, _, lerr := syscall.Syscall(proc.TzSpecificLocalTimeToSystemTime.Addr(), 3,
+		uintptr(unsafe.Pointer(lpTimeZoneInformation)),
+		uintptr(unsafe.Pointer(inLocalTime)),
+		uintptr(unsafe.Pointer(outUniversalTime)))
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "TzSpecificLocalTimeToSystemTime").Error())
+	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow

@@ -61,6 +61,14 @@ const (
 	GDC_COLORMGMTCAPS   GDC = 121
 )
 
+// DTM_SETSYSTEMTIME action.
+type GDT uint32
+
+const (
+	GDT_VALID GDT = 0
+	GDT_NONE  GDT = 1
+)
+
 // CreateFile() dwDesiredAccess.
 type GENERIC uint32
 

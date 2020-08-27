@@ -85,7 +85,7 @@ func (me *ListView) AddItemWithIcon(text string,
 		Mask:    co.LVIF_TEXT | co.LVIF_IMAGE,
 		PszText: uintptr(unsafe.Pointer(&textBuf[0])),
 		IImage:  int32(iconIndex),
-		IItem:   0x0FFFFFFF, // insert as the last one
+		IItem:   0x0FFF_FFFF, // insert as the last one
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTITEM, 0,
 		win.LPARAM(unsafe.Pointer(&lvi)))

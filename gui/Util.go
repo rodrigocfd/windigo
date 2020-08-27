@@ -8,6 +8,7 @@ package gui
 
 import (
 	"strings"
+	"time"
 	"wingows/co"
 	"wingows/win"
 )
@@ -78,4 +79,27 @@ func (_UtilT) RemoveAccelAmpersands(text string) string {
 		buf.WriteRune(runes[len(runes)-1])
 	}
 	return buf.String()
+}
+
+// Converts current timezone SYSTEMTIME into time.Time, millisecond precision.
+func (_UtilT) SystemtimeToTime(stLocalTime *win.SYSTEMTIME) time.Time {
+	return time.Date(int(stLocalTime.WYear),
+		time.Month(stLocalTime.WMonth), int(stLocalTime.WDay),
+		int(stLocalTime.WHour), int(stLocalTime.WMinute), int(stLocalTime.WSecond),
+		int(stLocalTime.WMilliseconds)*1_000_000,
+		time.Local)
+}
+
+// Converts time.Time into current timezone SYSTEMTIME, millisecond precision.
+func (_UtilT) TimeToSystemtime(t time.Time, stLocalTime *win.SYSTEMTIME) {
+	// https://support.microsoft.com/en-ca/help/167296/how-to-convert-a-unix-time-t-to-a-win32-filetime-or-systemtime
+	epoch := t.UnixNano()/100 + 116_444_736_000_000_000
+
+	ft := win.FILETIME{}
+	ft.DwLowDateTime = uint32(epoch & 0xFFFF_FFFF)
+	ft.DwHighDateTime = uint32(epoch >> 32)
+
+	stUtc := win.SYSTEMTIME{}
+	win.FileTimeToSystemTime(&ft, &stUtc)
+	win.SystemTimeToTzSpecificLocalTime(nil, &stUtc, stLocalTime)
 }
