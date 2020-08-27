@@ -17,6 +17,18 @@ type ACCEL struct {
 	Cmd   uint16 // LOWORD(wParam) value
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
+type COMPAREITEMSTRUCT struct {
+	CtlType    co.ODT
+	CtlID      uint32
+	hwndItem   HWND
+	ItemID1    uint32
+	ItemData1  uintptr
+	ItemID2    uint32
+	ItemData2  uintptr
+	DwLocaleId uint32
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-createstructw
 type CREATESTRUCT struct {
 	LpCreateParams uintptr
@@ -38,6 +50,19 @@ type DELETEITEMSTRUCT struct {
 	ItemID   uint32
 	HwndItem HWND
 	ItemData uintptr // ULONG_PTR
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
+type DRAWITEMSTRUCT struct {
+	CtlType    co.ODT
+	CtlID      uint32
+	ItemID     uint32
+	ItemAction co.ODA
+	ItemState  co.ODS
+	HwndItem   HWND
+	Hdc        HDC
+	RcItem     RECT
+	ItemData   uintptr
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime

@@ -109,6 +109,20 @@ type WmCaptureChanged struct{ _Wm }
 
 func (p WmCaptureChanged) WindowGainingMouse() win.HWND { return win.HWND(p.LParam) }
 
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-changecbchain
+func (me *_DepotMsg) WmChangeCbChain(userFunc func(p WmChangeCbChain)) {
+	me.addMsg(co.WM_CHANGECBCHAIN, func(p Wm) uintptr {
+		userFunc(WmChangeCbChain(p))
+		return 0
+	})
+}
+
+type WmChangeCbChain struct{ _Wm }
+
+func (p WmChangeCbChain) WindowBeingRemoved() win.HWND { return win.HWND(p.WParam) }
+func (p WmChangeCbChain) NextWindow() win.HWND         { return win.HWND(p.LParam) }
+func (p WmChangeCbChain) IsLastWindow() bool           { return p.LParam == 0 }
+
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-char
 func (me *_DepotMsg) WmChar(userFunc func(p WmChar)) {
 	me.addMsg(co.WM_CHAR, func(p Wm) uintptr {
@@ -118,6 +132,28 @@ func (me *_DepotMsg) WmChar(userFunc func(p WmChar)) {
 }
 
 type WmChar struct{ _WmChar }
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/wm-chartoitem
+func (me *_DepotMsg) WmCharToItem(userFunc func(p WmCharToItem)) {
+	me.addMsg(co.WM_CHARTOITEM, func(p Wm) uintptr {
+		userFunc(WmCharToItem(p))
+		return 0
+	})
+}
+
+type WmCharToItem struct{ _Wm }
+
+func (p WmCharToItem) CharCode() uint16        { return p.WParam.LoWord() }
+func (p WmCharToItem) CurrentCaretPos() uint16 { return p.WParam.HiWord() }
+func (p WmCharToItem) HwndListBox() win.HWND   { return win.HWND(p.LParam) }
+
+// https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-childactivate
+func (me *_DepotMsg) WmChildActivate(userFunc func()) {
+	me.addMsg(co.WM_CHILDACTIVATE, func(p Wm) uintptr {
+		userFunc()
+		return 0
+	})
+}
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-close
 //
@@ -144,6 +180,20 @@ func (p WmCommand) AcceleratorId() int32     { return p.ControlId() }
 func (p WmCommand) ControlId() int32         { return int32(p.WParam.LoWord()) }
 func (p WmCommand) ControlNotifCode() uint16 { return p.WParam.HiWord() }
 func (p WmCommand) ControlHwnd() win.HWND    { return win.HWND(p.LParam) }
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/wm-compareitem
+func (me *_DepotMsg) WmCompareItem(userFunc func(p WmCompareItem) int32) {
+	me.addMsg(co.WM_COMPAREITEM, func(p Wm) uintptr {
+		return uintptr(userFunc(WmCompareItem(p)))
+	})
+}
+
+type WmCompareItem struct{ _Wm }
+
+func (p WmCompareItem) ControlId() int32 { return int32(p.WParam) }
+func (p WmCompareItem) CompareItemStruct() *win.COMPAREITEMSTRUCT {
+	return (*win.COMPAREITEMSTRUCT)(unsafe.Pointer(p.LParam))
+}
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-contextmenu
 func (me *_DepotMsg) WmContextMenu(userFunc func(p WmContextMenu)) {
@@ -258,6 +308,14 @@ func (me *_DepotMsg) WmDestroy(userFunc func()) {
 	})
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-destroyclipboard
+func (me *_DepotMsg) WmDestroyClipboard(userFunc func()) {
+	me.addMsg(co.WM_DESTROYCLIPBOARD, func(p Wm) uintptr {
+		userFunc()
+		return 0
+	})
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/gdi/wm-displaychange
 func (me *_DepotMsg) WmDisplayChange(userFunc func(p WmDisplayChange)) {
 	me.addMsg(co.WM_DISPLAYCHANGE, func(p Wm) uintptr {
@@ -270,6 +328,30 @@ type WmDisplayChange struct{ _Wm }
 
 func (p WmDisplayChange) BitsPerPixel() uint32 { return uint32(p.WParam) }
 func (p WmDisplayChange) Size() win.SIZE       { return p.LParam.MakeSize() }
+
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-drawclipboard
+func (me *_DepotMsg) WmDrawClipboard(userFunc func()) {
+	me.addMsg(co.WM_DRAWCLIPBOARD, func(p Wm) uintptr {
+		userFunc()
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/wm-drawitem
+func (me *_DepotMsg) WmDrawItem(userFunc func(p WmDrawItem)) {
+	me.addMsg(co.WM_DRAWITEM, func(p Wm) uintptr {
+		userFunc(WmDrawItem(p))
+		return 1
+	})
+}
+
+type WmDrawItem struct{ _Wm }
+
+func (p WmDrawItem) ControlId() int32 { return int32(p.WParam) }
+func (p WmDrawItem) IsFromMenu() bool { return p.WParam == 0 }
+func (p WmDrawItem) DrawItemStruct() *win.DRAWITEMSTRUCT {
+	return (*win.DRAWITEMSTRUCT)(unsafe.Pointer(p.LParam))
+}
 
 // https://docs.microsoft.com/en-us/windows/win32/shell/wm-dropfiles
 func (me *_DepotMsg) WmDropFiles(userFunc func(p WmDropFiles)) {
@@ -313,6 +395,19 @@ type WmEnable struct{ _Wm }
 
 func (p WmEnable) Enabled() bool { return p.WParam != 0 }
 
+// https://docs.microsoft.com/en-us/windows/win32/shutdown/wm-endsession
+func (me *_DepotMsg) WmEndSession(userFunc func(p WmEndSession)) {
+	me.addMsg(co.WM_ENDSESSION, func(p Wm) uintptr {
+		userFunc(WmEndSession(p))
+		return 0
+	})
+}
+
+type WmEndSession struct{ _Wm }
+
+func (p WmEndSession) IsSessionBeingEnded() bool { return p.WParam != 0 }
+func (p WmEndSession) Event() co.ENDSESSION      { return co.ENDSESSION(p.LParam) }
+
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-entersizemove
 func (me *_DepotMsg) WmEnterSizeMove(userFunc func()) {
 	me.addMsg(co.WM_ENTERSIZEMOVE, func(p Wm) uintptr {
@@ -340,6 +435,14 @@ func (me *_DepotMsg) WmExitSizeMove(userFunc func()) {
 	})
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/gdi/wm-fontchange
+func (me *_DepotMsg) WmFontChange(userFunc func()) {
+	me.addMsg(co.WM_FONTCHANGE, func(p Wm) uintptr {
+		userFunc()
+		return 0
+	})
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/dlgbox/wm-getdlgcode
 func (me *_DepotMsg) WmGetDlgCode(userFunc func(p WmGetDlgCode) co.DLGC) {
 	me.addMsg(co.WM_GETDLGCODE, func(p Wm) uintptr {
@@ -355,6 +458,13 @@ func (p WmGetDlgCode) Msg() *win.MSG         { return (*win.MSG)(unsafe.Pointer(
 func (p WmGetDlgCode) HasAlt() bool          { return (win.GetAsyncKeyState(co.VK_MENU) & 0x8000) != 0 }
 func (p WmGetDlgCode) HasCtrl() bool         { return (win.GetAsyncKeyState(co.VK_CONTROL) & 0x8000) != 0 }
 func (p WmGetDlgCode) HasShift() bool        { return (win.GetAsyncKeyState(co.VK_SHIFT) & 0x8000) != 0 }
+
+// https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-getfont
+func (me *_DepotMsg) WmGetFont(userFunc func() win.HFONT) {
+	me.addMsg(co.WM_FONTCHANGE, func(p Wm) uintptr {
+		return uintptr(userFunc())
+	})
+}
 
 // https://docs.microsoft.com/en-us/windows/win32/shell/wm-help
 func (me *_DepotMsg) WmHelp(userFunc func(p WmHelp)) {
