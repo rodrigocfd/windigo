@@ -13,7 +13,7 @@ import (
 	"wingows/win"
 )
 
-// Native date and time picker control.
+// Native date and time picker (calendar) control.
 //
 // https://docs.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-controls
 type DateTimePicker struct {
@@ -36,7 +36,7 @@ func (me *DateTimePicker) Create(
 	return me
 }
 
-// Calls CreateWindowEx() with DTS_LONGDATEFORMAT.
+// Calls CreateWindowEx() with height 23, and DTS_LONGDATEFORMAT.
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) CreateLongDate(
@@ -47,7 +47,7 @@ func (me *DateTimePicker) CreateLongDate(
 		co.DTS_LONGDATEFORMAT)
 }
 
-// Calls CreateWindowEx() with DTS_SHORTDATEFORMAT.
+// Calls CreateWindowEx() with height 23, and DTS_SHORTDATEFORMAT.
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) CreateShortDate(
@@ -58,7 +58,7 @@ func (me *DateTimePicker) CreateShortDate(
 		co.DTS_SHORTDATEFORMAT)
 }
 
-// Calls CreateWindowEx() with DTS_TIMEFORMAT.
+// Calls CreateWindowEx() with height 23, and DTS_TIMEFORMAT.
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) CreateTime(
@@ -73,18 +73,17 @@ func (me *DateTimePicker) CreateTime(
 //
 // https://docs.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-controls#format-strings
 func (me *DateTimePicker) SetFormat(format string) *DateTimePicker {
+	var pFormat unsafe.Pointer
+
 	if len(format) > 0 {
 		formatBuf := win.StrToSlice(format)
-
-		if me.sendDtmMessage(co.DTM_SETFORMAT,
-			0, win.LPARAM(uintptr(unsafe.Pointer(&formatBuf[0])))) == 0 {
-
-			panic("DTM_SETFORMAT failed.")
-		}
+		pFormat = unsafe.Pointer(&formatBuf[0])
 	} else {
-		if me.sendDtmMessage(co.DTM_SETFORMAT, 0, 0) == 0 {
-			panic("DTM_SETFORMAT failed.")
-		}
+		pFormat = nil
+	}
+
+	if me.sendDtmMessage(co.DTM_SETFORMAT, 0, win.LPARAM(pFormat)) == 0 {
+		panic("DTM_SETFORMAT failed.")
 	}
 
 	return me
