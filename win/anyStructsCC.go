@@ -113,6 +113,45 @@ type NMCUSTOMDRAW struct {
 	LItemlParam LPARAM
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimechange
+type NMDATETIMECHANGE struct {
+	Nmhdr   NMHDR
+	DwFlags co.GDT
+	St      SYSTEMTIME
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatw
+type NMDATETIMEFORMAT struct {
+	Nmhdr      NMHDR
+	PszFormat  uintptr // LPCWSTR
+	St         SYSTEMTIME
+	pszDisplay uintptr // LPCWSTR
+	SzDisplay  [64]uint16
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatqueryw
+type NMDATETIMEFORMATQUERY struct {
+	Nmhdr     NMHDR
+	PszFormat uintptr // LPCWSTR
+	SzMax     SIZE
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimestringw
+type NMDATETIMESTRING struct {
+	Nmhdr         NMHDR
+	PszUserString uintptr // LPCWSTR
+	St            SYSTEMTIME
+	DwFlags       co.GDT
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimewmkeydownw
+type NMDATETIMEWMKEYDOWN struct {
+	Nmhdr     NMHDR
+	NVirtKey  int32
+	PszFormat uintptr // LPCWSTR
+	St        SYSTEMTIME
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmitemactivate
 type NMITEMACTIVATE struct {
 	Hdr       NMHDR

@@ -39,8 +39,8 @@ type MyMainWindow struct {
     btnHello gui.Button
 }
 
-// Here we define a constant to identify our button.
 const (
+    // Here we define a constant to identify our button.
     ID_BTN_HELLO int32 = iota + 1000
 )
 

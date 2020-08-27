@@ -46,6 +46,82 @@ func (me *_DepotNfy) processMessage(msg co.WM, p Wm) (uintptr, bool) {
 	return 0, false // no user handler found
 }
 
+//------------------------------------------------------- DateTimePicker DTN ---
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/dtn-closeup
+func (me *_DepotNfy) DtnCloseUp(dateTimePickerId int32, userFunc func(p *win.NMHDR)) {
+	me.addNfy(dateTimePickerId, co.NM(co.DTN_CLOSEUP), func(p WmNotify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/dtn-datetimechange
+func (me *_DepotNfy) DtnDateTimeChange(dateTimePickerId int32, userFunc func(p *win.NMDATETIMECHANGE)) {
+	me.addNfy(dateTimePickerId, co.NM(co.DTN_DATETIMECHANGE), func(p WmNotify) uintptr {
+		userFunc((*win.NMDATETIMECHANGE)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/dtn-dropdown
+func (me *_DepotNfy) DtnDropDown(dateTimePickerId int32, userFunc func(p *win.NMHDR)) {
+	me.addNfy(dateTimePickerId, co.NM(co.DTN_DROPDOWN), func(p WmNotify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/dtn-format
+func (me *_DepotNfy) DtnFormat(dateTimePickerId int32, userFunc func(p *win.NMDATETIMEFORMAT)) {
+	me.addNfy(dateTimePickerId, co.NM(co.DTN_FORMAT), func(p WmNotify) uintptr {
+		userFunc((*win.NMDATETIMEFORMAT)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/dtn-formatquery
+func (me *_DepotNfy) DtnFormatQuery(dateTimePickerId int32, userFunc func(p *win.NMDATETIMEFORMATQUERY)) {
+	me.addNfy(dateTimePickerId, co.NM(co.DTN_FORMATQUERY), func(p WmNotify) uintptr {
+		userFunc((*win.NMDATETIMEFORMATQUERY)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/dtn-userstring
+func (me *_DepotNfy) DtnUserString(dateTimePickerId int32, userFunc func(p *win.NMDATETIMESTRING)) {
+	me.addNfy(dateTimePickerId, co.NM(co.DTN_USERSTRING), func(p WmNotify) uintptr {
+		userFunc((*win.NMDATETIMESTRING)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/dtn-wmkeydown
+func (me *_DepotNfy) DtnWmKeyDown(dateTimePickerId int32, userFunc func(p *win.NMDATETIMEWMKEYDOWN)) {
+	me.addNfy(dateTimePickerId, co.NM(co.DTN_WMKEYDOWN), func(p WmNotify) uintptr {
+		userFunc((*win.NMDATETIMEWMKEYDOWN)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+//-------------------------------------------------------- DateTimePicker NM ---
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/nm-killfocus-date-time
+func (me *_DepotNfy) DtnKillFocus(dateTimePickerId int32, userFunc func(p *win.NMHDR)) {
+	me.addNfy(dateTimePickerId, co.NM_KILLFOCUS, func(p WmNotify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/nm-setfocus-date-time-
+func (me *_DepotNfy) DtnSetFocus(dateTimePickerId int32, userFunc func(p *win.NMHDR)) {
+	me.addNfy(dateTimePickerId, co.NM_SETFOCUS, func(p WmNotify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
 //------------------------------------------------------------- ListView LVN ---
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/lvn-begindrag
