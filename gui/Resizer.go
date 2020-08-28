@@ -17,9 +17,9 @@ import (
 type RESZ uint8
 
 const (
-	RESZ_REPOS   RESZ = iota // When resizing occurs, change control left or top position.
-	RESZ_RESIZE              // When resizing occurs, change control width or height.
-	RESZ_NOTHING             // When resizing occurs, do nothing.
+	RESZ_REPOS   RESZ = iota // When parent resizes, change control left/top position.
+	RESZ_RESIZE              // When parent resizes, change control width/height.
+	RESZ_NOTHING             // When parent resizes, do nothing.
 )
 
 type _ReszCtrl struct {

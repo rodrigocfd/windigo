@@ -250,7 +250,7 @@ const (
 	WM_TOUCHHITTESTING                WM = 0x024D
 	WM_POINTERWHEEL                   WM = 0x024E
 	WM_POINTERHWHEEL                  WM = 0x024F
-	WM_POINTERHITTEST                 WM = 0x0250 // originally DM_POINTERHITTEST
+	WM_POINTERHITTEST                 WM = 0x0250 // Originally DM_POINTERHITTEST.
 	WM_POINTERROUTEDTO                WM = 0x0251
 	WM_POINTERROUTEDAWAY              WM = 0x0252
 	WM_POINTERROUTEDRELEASED          WM = 0x0253
@@ -355,14 +355,14 @@ type WS_EX uint32
 const (
 	WS_EX_NONE                WS_EX = 0
 	WS_EX_DLGMODALFRAME       WS_EX = 0x00000001
-	WS_EX_NOPARENTNOTIFY      WS_EX = 0x00000004
+	WS_EX_NOPARENTNOTIFY      WS_EX = 0x00000004 // The child window created with this style does not send the WM_PARENTNOTIFY message to its parent window when it is created or destroyed.
 	WS_EX_TOPMOST             WS_EX = 0x00000008
-	WS_EX_ACCEPTFILES         WS_EX = 0x00000010
+	WS_EX_ACCEPTFILES         WS_EX = 0x00000010 // The window accepts drag-drop files.
 	WS_EX_TRANSPARENT         WS_EX = 0x00000020
-	WS_EX_MDICHILD            WS_EX = 0x00000040
+	WS_EX_MDICHILD            WS_EX = 0x00000040 // The window is a MDI child window.
 	WS_EX_TOOLWINDOW          WS_EX = 0x00000080
 	WS_EX_WINDOWEDGE          WS_EX = 0x00000100
-	WS_EX_CLIENTEDGE          WS_EX = 0x00000200
+	WS_EX_CLIENTEDGE          WS_EX = 0x00000200 // The window has a border with a sunken edge.
 	WS_EX_CONTEXTHELP         WS_EX = 0x00000400
 	WS_EX_RIGHT               WS_EX = 0x00001000
 	WS_EX_LEFT                WS_EX = 0x00000000
@@ -372,7 +372,7 @@ const (
 	WS_EX_RIGHTSCROLLBAR      WS_EX = 0x00000000
 	WS_EX_CONTROLPARENT       WS_EX = 0x00010000
 	WS_EX_STATICEDGE          WS_EX = 0x00020000
-	WS_EX_APPWINDOW           WS_EX = 0x00040000
+	WS_EX_APPWINDOW           WS_EX = 0x00040000 // Forces a top-level window onto the taskbar when the window is visible.
 	WS_EX_OVERLAPPEDWINDOW    WS_EX = WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE
 	WS_EX_PALETTEWINDOW       WS_EX = WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST
 	WS_EX_LAYERED             WS_EX = 0x00080000
