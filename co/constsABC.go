@@ -208,7 +208,7 @@ const (
 	CB_MSGMAX                CB = 0x0165
 )
 
-// ComboBoxEx notifications.
+// ComboBoxEx notifications, sent via WM_NOTIFY.
 type CBEN NM
 
 const (
@@ -220,6 +220,22 @@ const (
 	CBEN_ENDEDIT     CBEN = _CBEN_FIRST - 6
 	CBEN_GETDISPINFO CBEN = _CBEN_FIRST - 7
 	CBEN_DRAGBEGIN   CBEN = _CBEN_FIRST - 9
+)
+
+// ComboBox notifications, sent via WM_COMMAND.
+type CBN uint16
+
+const (
+	CBN_SELCHANGE    CBN = 1
+	CBN_DBLCLK       CBN = 2
+	CBN_SETFOCUS     CBN = 3
+	CBN_KILLFOCUS    CBN = 4
+	CBN_EDITCHANGE   CBN = 5
+	CBN_EDITUPDATE   CBN = 6
+	CBN_DROPDOWN     CBN = 7
+	CBN_CLOSEUP      CBN = 8
+	CBN_SELENDOK     CBN = 9
+	CBN_SELENDCANCEL CBN = 10
 )
 
 // Combo box styles.

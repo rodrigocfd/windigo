@@ -44,8 +44,7 @@ func (me *TreeView) Create(
 	return me
 }
 
-// Calls CreateWindowEx() with TVS_HASLINES, TVS_LINESATROOT, TVS_SHOWSELALWAYS,
-// TVS_HASBUTTONS.
+// Calls CreateWindowEx() with TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_HASBUTTONS.
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *TreeView) CreateSimple(

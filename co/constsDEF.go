@@ -68,7 +68,7 @@ const (
 	DTM_GETIDEALSIZE          DTM = _DTM_FIRST + 15
 )
 
-// Date and time picker notifications.
+// Date and time picker notifications, sent via WM_NOTIFY.
 type DTN NM
 
 const (

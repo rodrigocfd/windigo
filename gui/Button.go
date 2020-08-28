@@ -33,7 +33,7 @@ func (me *Button) Create(
 	return me
 }
 
-// Calls CreateWindowEx() with height 23, and no button styles.
+// Calls CreateWindowEx() with height 23, and BS_PUSHBUTTON.
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Button) CreateSimple(

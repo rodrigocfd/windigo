@@ -34,7 +34,7 @@ func (me *RadioButton) Create(
 	return me
 }
 
-// Calls CreateWindowEx() with BS_AUTORADIOBUTTON, WS_GROUP.
+// Calls CreateWindowEx() with BS_AUTORADIOBUTTON | WS_GROUP.
 //
 // Call this method to create the first radio button of a group.
 //

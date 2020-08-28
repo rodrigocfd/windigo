@@ -7,7 +7,6 @@
 package gui
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
 	"wingows/co"
@@ -57,10 +56,32 @@ func (me *ComboBox) Create(
 	return me
 }
 
+// Calls CreateWindowEx() with CBS_DROPDOWN.
+//
+// Position and size will be adjusted to the current system DPI.
+func (me *ComboBox) CreateEditable(
+	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
+
+	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.CBS_DROPDOWN)
+}
+
+// Calls CreateWindowEx() with CBS_DROPDOWN | CBS_SORT.
+//
+// Position and size will be adjusted to the current system DPI.
+func (me *ComboBox) CreateEditableSorted(
+	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
+
+	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.CBS_DROPDOWN|co.CBS_SORT)
+}
+
 // Calls CreateWindowEx() with CBS_DROPDOWNLIST.
 //
 // Position and size will be adjusted to the current system DPI.
-func (me *ComboBox) CreateList(
+func (me *ComboBox) CreateFixed(
 	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
 
 	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
@@ -68,15 +89,24 @@ func (me *ComboBox) CreateList(
 		co.CBS_DROPDOWNLIST)
 }
 
-// Calls CreateWindowEx() with CBS_DROPDOWNLIST, CBS_SORT.
+// Calls CreateWindowEx() with CBS_DROPDOWNLIST | CBS_SORT.
 //
 // Position and size will be adjusted to the current system DPI.
-func (me *ComboBox) CreateSortedList(
+func (me *ComboBox) CreateFixedSorted(
 	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
 
 	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.CBS_DROPDOWNLIST|co.CBS_SORT)
+}
+
+// Limits the length of the text the user may type with CB_LIMITTEXT. Pass zero
+// to remove the limitation.
+//
+// Works only if the combo box is editable.
+func (me *ComboBox) LimitEditText(numChars uint32) *ComboBox {
+	me.sendCbMessage(co.CB_LIMITTEXT, win.WPARAM(numChars), 0)
+	return me
 }
 
 // Returns the index of the selected item, or -1 if none.
@@ -90,18 +120,31 @@ func (me *ComboBox) SelectIndex(index int32) *ComboBox {
 	return me
 }
 
-// Returns the string at the given index.
-func (me *ComboBox) Text(index uint32) string {
+// Returns the selected text, if any.
+func (me *ComboBox) SelectedText() (string, bool) {
+	idx := me.SelectedIndex()
+	if idx < 0 {
+		return "", false
+	}
+	return me.Text(uint32(idx))
+}
+
+// Returns the string at the given index, if any.
+//
+// In an editable combo box, the text typed by the user can be retrieved with
+// Hwnd().GetWindowText().
+func (me *ComboBox) Text(index uint32) (string, bool) {
 	len := int(me.sendCbMessage(co.CB_GETLBTEXTLEN, win.WPARAM(index), 0))
 	if len == -1 {
-		panic(fmt.Sprintf("Invalid combo box index: %d.", index))
+		return "", false
 	} else if len == 0 {
-		return ""
+		return "", true
 	}
+
 	buf := make([]uint16, len+1)
 	me.sendCbMessage(co.CB_GETLBTEXT,
 		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&buf[0])))
-	return syscall.UTF16ToString(buf)
+	return syscall.UTF16ToString(buf), true
 }
 
 // Syntactic sugar.

@@ -305,7 +305,7 @@ const (
 	LVM_GETNEXTITEMINDEX         LVM = _LVM_FIRST + 211
 )
 
-// List view notifications.
+// List view notifications, sent via WM_NOTIFY.
 type LVN NM
 
 const (

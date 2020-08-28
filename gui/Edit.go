@@ -35,7 +35,7 @@ func (me *Edit) Create(
 	return me
 }
 
-// Calls CreateWindowEx() with ES_MULTILINE, ES_WANTRETURN.
+// Calls CreateWindowEx() with ES_MULTILINE | ES_WANTRETURN.
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreateMultiLine(
@@ -48,7 +48,7 @@ func (me *Edit) CreateMultiLine(
 		co.ES_MULTILINE|co.ES_WANTRETURN)
 }
 
-// Calls CreateWindowEx() with ES_AUTOHSCROLL, ES_PASSWORD.
+// Calls CreateWindowEx() with ES_AUTOHSCROLL | ES_PASSWORD.
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreatePassword(

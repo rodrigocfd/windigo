@@ -135,8 +135,7 @@ func (me *ListView) Create(
 	return me
 }
 
-// Calls CreateWindowEx() with LVS_REPORT, LVS_NOSORTHEADER, LVS_SHOWSELALWAYS,
-// LVS_SHAREIMAGELISTS.
+// Calls CreateWindowEx() with LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS.
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ListView) CreateReport(
@@ -149,8 +148,7 @@ func (me *ListView) CreateReport(
 		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS|co.LVS_SHAREIMAGELISTS)
 }
 
-// Calls CreateWindowEx() with LVS_REPORT, LVS_NOSORTHEADER, LVS_SHOWSELALWAYS,
-// LVS_SORTASCENDING, LVS_SHAREIMAGELISTS.
+// Calls CreateWindowEx() with LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_SHAREIMAGELISTS.
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ListView) CreateSortedReport(

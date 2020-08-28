@@ -36,7 +36,7 @@ const (
 	SBARS_TOOLTIPS SBARS = 0x0800
 )
 
-// Status bar notifications.
+// Status bar notifications, sent via WM_NOTIFY.
 type SBN NM
 
 const (
@@ -594,7 +594,7 @@ const (
 	TBPF_PAUSED        TBPF = 0x8
 )
 
-// Tab control notifications.
+// Tab control notifications, sent via WM_NOTIFY.
 type TCN NM
 
 const (
@@ -633,7 +633,7 @@ const (
 	TPM_WORKAREA        TPM = 0x10000
 )
 
-// Trackbar control notifications.
+// Trackbar control notifications, sent via WM_NOTIFY.
 type TRBN NM
 
 const (
@@ -642,7 +642,7 @@ const (
 	TRBN_THUMBPOSCHANGING TRBN = _TRBN_FIRST - 1
 )
 
-// Tooltip control notifications.
+// Tooltip control notifications, sent via WM_NOTIFY.
 type TTN NM
 
 const (
@@ -803,7 +803,7 @@ const (
 	TVM_GETITEMPARTRECT     TVM = _TVM_FIRST + 72
 )
 
-// Tree view notifications.
+// Tree view notifications, sent via WM_NOTIFY.
 type TVN NM
 
 const (
@@ -877,7 +877,7 @@ const (
 	TVS_EX_DRAWIMAGEASYNC      TVS_EX = 0x0400
 )
 
-// Up-down control notifications.
+// Up-down control notifications, sent via WM_NOTIFY.
 type UDN NM
 
 const (

@@ -6,7 +6,7 @@
 
 package co
 
-// Month calendar notifications.
+// Month calendar notifications, sent via WM_NOTIFY.
 type MCN NM
 
 const (
