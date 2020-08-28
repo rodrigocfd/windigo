@@ -139,6 +139,19 @@ func (hdc HDC) PolylineTo(apt []POINT) {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-restoredc
+func (hdc HDC) RestoreDC(nSavedDC int32) {
+	syscall.Syscall(proc.RestoreDC.Addr(), 2,
+		uintptr(hdc), uintptr(nSavedDC), 0)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-savedc
+func (hdc HDC) SaveDC() int32 {
+	ret, _, _ := syscall.Syscall(proc.SaveDC.Addr(), 1,
+		uintptr(hdc), 0, 0)
+	return int32(ret)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectBitmap(b HBITMAP) HBITMAP {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,

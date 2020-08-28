@@ -26,6 +26,8 @@ var (
 	Polygon              = dllGdi32.NewProc("Polygon")
 	Polyline             = dllGdi32.NewProc("Polyline")
 	PolylineTo           = dllGdi32.NewProc("PolylineTo")
+	RestoreDC            = dllGdi32.NewProc("RestoreDC")
+	SaveDC               = dllGdi32.NewProc("SaveDC")
 	SelectObject         = dllGdi32.NewProc("SelectObject")
 	SetBkColor           = dllGdi32.NewProc("SetBkColor")
 	SetBkMode            = dllGdi32.NewProc("SetBkMode")
