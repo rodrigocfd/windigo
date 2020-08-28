@@ -23,23 +23,23 @@ type COMPAREITEMSTRUCT struct {
 	CtlID      uint32
 	hwndItem   HWND
 	ItemID1    uint32
-	ItemData1  uintptr
+	ItemData1  uintptr // ULONG_PTR
 	ItemID2    uint32
-	ItemData2  uintptr
+	ItemData2  uintptr // ULONG_PTR
 	DwLocaleId uint32
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-createstructw
 type CREATESTRUCT struct {
-	LpCreateParams uintptr
+	LpCreateParams uintptr // LPVOID
 	HInstance      HINSTANCE
 	HMenu          HMENU
 	HwndParent     HWND
 	Cy, Cx         uint32 // actually int32
 	Y, X           int32
 	Style          co.WS
-	LpszName       uintptr // LPCWSTR
-	LpszClass      uintptr // LPCWSTR
+	LpszName       *uint16
+	LpszClass      *uint16
 	ExStyle        co.WS_EX
 }
 
@@ -62,7 +62,7 @@ type DRAWITEMSTRUCT struct {
 	HwndItem   HWND
 	Hdc        HDC
 	RcItem     RECT
-	ItemData   uintptr
+	ItemData   uintptr // ULONG_PTR
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
@@ -77,7 +77,7 @@ type HELPINFO struct {
 	IContextType co.HELPINFO
 	ICtrlId      int32
 	HItemHandle  HANDLE
-	DwContextId  uintptr
+	DwContextId  uintptr // DWORD_PTR
 	MousePos     POINT
 }
 
@@ -107,7 +107,7 @@ type MENUINFO struct {
 	CyMax           uint32
 	HbrBack         HBRUSH
 	DwContextHelpID uint32
-	DwMenuData      uintptr
+	DwMenuData      uintptr // ULONG_PTR
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
@@ -120,8 +120,8 @@ type MENUITEMINFO struct {
 	HSubMenu      HMENU
 	HBmpChecked   HBITMAP
 	HBmpUnchecked HBITMAP
-	DwItemData    uintptr
-	DwTypeData    uintptr // LPWSTR
+	DwItemData    uintptr // ULONG_PTR
+	DwTypeData    uintptr // LPWSTR, content changes according to fType
 	Cch           uint32
 	HBmpItem      HBITMAP
 }
@@ -148,8 +148,8 @@ type MSG struct {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nmhdr
 type NMHDR struct {
 	HWndFrom HWND
-	IdFrom   uintptr
-	Code     uint32 // in fact it should be int32
+	IdFrom   uintptr // UINT_PTR, actually it's a simple control ID
+	Code     uint32  // in fact it should be int32
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nonclientmetricsw
@@ -177,24 +177,24 @@ type OPENFILENAME struct {
 	LStructSize       uint32
 	HwndOwner         HWND
 	HInstance         HINSTANCE
-	LpstrFilter       uintptr // LPCWSTR
-	LpstrCustomFilter uintptr // LPWSTR
+	LpstrFilter       *uint16
+	LpstrCustomFilter *uint16
 	NMaxCustFilter    uint32
 	NFilterIndex      uint32
-	LpstrFile         uintptr // LPWSTR
+	LpstrFile         *uint16
 	NMaxFile          uint32
-	LpstrFileTitle    uintptr // LPWSTR
+	LpstrFileTitle    *uint16
 	NMaxFileTitle     uint32
-	LpstrInitialDir   uintptr // LPCWSTR
-	LpstrTitle        uintptr // LPCWSTR
+	LpstrInitialDir   *uint16
+	LpstrTitle        *uint16
 	Flags             co.OFN
 	NFileOffset       uint16
 	NFileExtension    uint16
-	LpstrDefExt       uintptr // LPCWSTR
+	LpstrDefExt       *uint16
 	LCustData         LPARAM
 	LpfnHook          uintptr // LPOFNHOOKPROC
-	LpTemplateName    uintptr // LPCWSTR
-	PvReserved        uintptr
+	LpTemplateName    *uint16
+	PvReserved        uintptr // void*
 	DwReserved        uint32
 	FlagsEx           co.OFN_EX
 }
@@ -296,14 +296,14 @@ type WIN32_FIND_DATA struct {
 type WNDCLASSEX struct {
 	CbSize        uint32
 	Style         co.CS
-	LpfnWndProc   uintptr
+	LpfnWndProc   uintptr // WNDPROC
 	CbClsExtra    int32
 	CbWndExtra    int32
 	HInstance     HINSTANCE
 	HIcon         HICON
 	HCursor       HCURSOR
 	HbrBackground HBRUSH
-	LpszMenuName  uintptr // LPCWSTR
-	LpszClassName uintptr // LPCWSTR
+	LpszMenuName  *uint16
+	LpszClassName *uint16
 	HIconSm       HICON
 }

@@ -29,7 +29,7 @@ func (me *TreeViewItem) AddChild(text string) *TreeViewItem {
 		HInsertAfter: win.HTREEITEM(co.HTREEITEM_LAST),
 		Itemex: win.TVITEMEX{
 			Mask:    co.TVIF_TEXT,
-			PszText: uintptr(unsafe.Pointer(&textBuf[0])),
+			PszText: &textBuf[0],
 		},
 	}
 	ret := me.owner.sendTvmMessage(co.TVM_INSERTITEM,
@@ -130,7 +130,7 @@ func (me *TreeViewItem) SetText(text string) *TreeViewItem {
 	tvi := win.TVITEMEX{
 		HItem:   me.hTreeItem,
 		Mask:    co.TVIF_TEXT,
-		PszText: uintptr(unsafe.Pointer(&textBuf[0])),
+		PszText: &textBuf[0],
 	}
 	ret := me.owner.sendTvmMessage(co.TVM_SETITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))
@@ -146,7 +146,7 @@ func (me *TreeViewItem) Text() string {
 	tvi := win.TVITEMEX{
 		HItem:      me.hTreeItem,
 		Mask:       co.TVIF_TEXT,
-		PszText:    uintptr(unsafe.Pointer(&buf[0])),
+		PszText:    &buf[0],
 		CchTextMax: int32(len(buf)),
 	}
 	ret := me.owner.sendTvmMessage(co.TVM_GETITEM,

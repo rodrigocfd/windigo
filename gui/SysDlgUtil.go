@@ -31,8 +31,8 @@ func (_SysDlgUtilT) FileOpen(owner Window, filtersWithPipe []string) (string, bo
 
 	ofn := win.OPENFILENAME{
 		HwndOwner:   owner.Hwnd(),
-		LpstrFilter: uintptr(unsafe.Pointer(&zFilters[0])),
-		LpstrFile:   uintptr(unsafe.Pointer(&result[0])),
+		LpstrFilter: &zFilters[0],
+		LpstrFile:   &result[0],
 		NMaxFile:    uint32(len(result)),
 		Flags:       co.OFN_EXPLORER | co.OFN_ENABLESIZING | co.OFN_FILEMUSTEXIST,
 	}
@@ -56,8 +56,8 @@ func (_SysDlgUtilT) FileOpenMany(owner Window,
 
 	ofn := win.OPENFILENAME{
 		HwndOwner:   owner.Hwnd(),
-		LpstrFilter: uintptr(unsafe.Pointer(&zFilters[0])),
-		LpstrFile:   uintptr(unsafe.Pointer(&multiBuf[0])),
+		LpstrFilter: &zFilters[0],
+		LpstrFile:   &multiBuf[0],
 		NMaxFile:    uint32(len(multiBuf)),
 		Flags:       co.OFN_EXPLORER | co.OFN_ENABLESIZING | co.OFN_FILEMUSTEXIST | co.OFN_ALLOWMULTISELECT,
 	}
@@ -116,14 +116,14 @@ func (_SysDlgUtilT) FileSave(owner Window, defaultName, defaultExt string,
 
 	ofn := win.OPENFILENAME{
 		HwndOwner:   owner.Hwnd(),
-		LpstrFilter: uintptr(unsafe.Pointer(&zFilters[0])),
-		LpstrFile:   uintptr(unsafe.Pointer(&result[0])),
+		LpstrFilter: &zFilters[0],
+		LpstrFile:   &result[0],
 		NMaxFile:    uint32(len(result)),
 		Flags:       co.OFN_HIDEREADONLY | co.OFN_OVERWRITEPROMPT,
 		// If absent, no default extension is appended.
 		// If present, even if empty, default extension is appended; if no default
 		// extension, first one of the filter is appended.
-		LpstrDefExt: uintptr(unsafe.Pointer(&defExt[0])),
+		LpstrDefExt: &defExt[0],
 	}
 
 	if !win.GetSaveFileName(&ofn) {

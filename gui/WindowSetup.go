@@ -64,7 +64,7 @@ func (me *_WindowSetupBase) genWndclassex(
 	}
 
 	me.classNameBuf = win.StrToSlice(me.ClassName) // keep the buffer, we'll use a pointer to it
-	wcx.LpszClassName = uintptr(unsafe.Pointer(&me.classNameBuf[0]))
+	wcx.LpszClassName = &me.classNameBuf[0]
 
 	return &wcx
 }

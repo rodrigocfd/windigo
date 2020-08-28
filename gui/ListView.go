@@ -26,7 +26,7 @@ func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 	textBuf := win.StrToSlice(text)
 	lvc := win.LVCOLUMN{
 		Mask:    co.LVCF_TEXT | co.LVCF_WIDTH,
-		PszText: uintptr(unsafe.Pointer(&textBuf[0])),
+		PszText: &textBuf[0],
 		Cx:      int32(width),
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTCOLUMN, 0xFFFF,
@@ -54,8 +54,8 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 	textBuf := win.StrToSlice(text)
 	lvi := win.LVITEM{
 		Mask:    co.LVIF_TEXT,
-		PszText: uintptr(unsafe.Pointer(&textBuf[0])),
-		IItem:   0x0FFFFFFF, // insert as the last one
+		PszText: &textBuf[0],
+		IItem:   0x0FFF_FFFF, // insert as the last one
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTITEM, 0,
 		win.LPARAM(unsafe.Pointer(&lvi)))
@@ -83,7 +83,7 @@ func (me *ListView) AddItemWithIcon(text string,
 	textBuf := win.StrToSlice(text)
 	lvi := win.LVITEM{
 		Mask:    co.LVIF_TEXT | co.LVIF_IMAGE,
-		PszText: uintptr(unsafe.Pointer(&textBuf[0])),
+		PszText: &textBuf[0],
 		IImage:  int32(iconIndex),
 		IItem:   0x0FFF_FFFF, // insert as the last one
 	}
@@ -211,7 +211,7 @@ func (me *ListView) FindItem(text string) *ListViewItem {
 	buf := win.StrToSlice(text)
 	lvfi := win.LVFINDINFO{
 		Flags: co.LVFI_STRING,
-		Psz:   uintptr(unsafe.Pointer(&buf[0])),
+		Psz:   &buf[0],
 	}
 	wp := -1
 	idx := me.sendLvmMessage(co.LVM_FINDITEM,

@@ -55,7 +55,7 @@ type LVCOLUMN struct {
 	Mask       co.LVCF
 	Fmt        int32
 	Cx         int32
-	PszText    uintptr // LPWSTR
+	PszText    *uint16
 	CchTextMax int32
 	ISubItem   int32
 	IImage     int32
@@ -68,7 +68,7 @@ type LVCOLUMN struct {
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvfindinfow
 type LVFINDINFO struct {
 	Flags       co.LVFI
-	Psz         uintptr // LPCWSTR
+	Psz         *uint16
 	LParam      LPARAM
 	Pt          POINT
 	VkDirection uint32
@@ -90,15 +90,15 @@ type LVITEM struct {
 	ISubItem   int32
 	State      co.LVIS
 	StateMask  co.LVIS
-	PszText    uintptr // LPWSTR
+	PszText    *uint16
 	CchTextMax int32
 	IImage     int32
 	LParam     LPARAM
 	IIndent    int32
 	IGroupId   int32
 	CColumns   uint32
-	PuColumns  uintptr // *uint32
-	PiColFmt   uintptr // *int32
+	PuColumns  *uint32
+	PiColFmt   *int32
 	IGroup     int32
 }
 
@@ -108,7 +108,7 @@ type NMCUSTOMDRAW struct {
 	DwDrawStage co.CDDS
 	Hdc         HDC
 	Rc          RECT
-	DwItemSpec  uintptr
+	DwItemSpec  uintptr // DWORD_PTR
 	UItemState  co.CDIS
 	LItemlParam LPARAM
 }
@@ -123,23 +123,23 @@ type NMDATETIMECHANGE struct {
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatw
 type NMDATETIMEFORMAT struct {
 	Nmhdr      NMHDR
-	PszFormat  uintptr // LPCWSTR
+	PszFormat  *uint16
 	St         SYSTEMTIME
-	pszDisplay uintptr // LPCWSTR
+	pszDisplay *uint16
 	SzDisplay  [64]uint16
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatqueryw
 type NMDATETIMEFORMATQUERY struct {
 	Nmhdr     NMHDR
-	PszFormat uintptr // LPCWSTR
+	PszFormat *uint16
 	SzMax     SIZE
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimestringw
 type NMDATETIMESTRING struct {
 	Nmhdr         NMHDR
-	PszUserString uintptr // LPCWSTR
+	PszUserString *uint16
 	St            SYSTEMTIME
 	DwFlags       co.GDT
 }
@@ -148,7 +148,7 @@ type NMDATETIMESTRING struct {
 type NMDATETIMEWMKEYDOWN struct {
 	Nmhdr     NMHDR
 	NVirtKey  int32
-	PszFormat uintptr // LPCWSTR
+	PszFormat *uint16
 	St        SYSTEMTIME
 }
 
@@ -224,7 +224,7 @@ type NMLVFINDITEM struct {
 type NMLVGETINFOTIP struct {
 	Hdr        NMHDR
 	DwFlags    co.LVGIT
-	PszText    uintptr // LPWSTR
+	PszText    *uint16
 	CchTextMax int32
 	IItem      int32
 	ISubItem   int32
@@ -265,8 +265,8 @@ type NMLVSCROLL struct {
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmmouse
 type NMMOUSE struct {
 	Hdr        NMHDR
-	DwItemSpec uintptr
-	DwItemData uintptr
+	DwItemSpec uintptr // DWORD_PTR
+	DwItemData uintptr // DWORD_PTR
 	Pt         POINT
 	DwHitInfo  LPARAM
 }
@@ -283,7 +283,7 @@ type NMTREEVIEW struct {
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvasyncdraw
 type NMTVASYNCDRAW struct {
 	Hdr            NMHDR
-	Pimldp         uintptr  // LPIMAGELISTDRAWPARAMS
+	Pimldp         *IMAGELISTDRAWPARAMS
 	Hr             co.ERROR // HRESULT
 	Hitem          HTREEITEM
 	LParam         LPARAM
@@ -308,7 +308,7 @@ type NMTVDISPINFO struct {
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvgetinfotipw
 type NMTVGETINFOTIP struct {
 	Hdr        NMHDR
-	PszText    uintptr // LPWSTR
+	PszText    *uint16
 	CchTextMax int32
 	HItem      HTREEITEM
 	LParam     LPARAM
@@ -344,7 +344,7 @@ type TVITEM struct {
 	HItem          HTREEITEM
 	State          co.TVIS
 	StateMask      co.TVIS
-	PszText        uintptr // LPWSTR
+	PszText        *uint16
 	CchTextMax     int32
 	IImage         int32
 	ISelectedImage int32
@@ -358,7 +358,7 @@ type TVITEMEX struct {
 	HItem          HTREEITEM
 	State          co.TVIS
 	StateMask      co.TVIS
-	PszText        uintptr // LPWSTR
+	PszText        *uint16
 	CchTextMax     int32
 	IImage         int32
 	ISelectedImage int32

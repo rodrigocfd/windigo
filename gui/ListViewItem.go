@@ -189,7 +189,7 @@ func (me *ListViewItem) SetSubItemText(
 	textBuf := win.StrToSlice(text)
 	lvi := win.LVITEM{
 		ISubItem: int32(columnIndex),
-		PszText:  uintptr(unsafe.Pointer(&textBuf[0])),
+		PszText:  &textBuf[0],
 	}
 	ret := me.owner.sendLvmMessage(co.LVM_SETITEMTEXT,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
@@ -209,7 +209,7 @@ func (me *ListViewItem) SubItemText(columnIndex uint32) string {
 	buf := [256]uint16{} // arbitrary
 	lvi := win.LVITEM{
 		ISubItem:   int32(columnIndex),
-		PszText:    uintptr(unsafe.Pointer(&buf[0])),
+		PszText:    &buf[0],
 		CchTextMax: int32(len(buf)),
 	}
 	ret := me.owner.sendLvmMessage(co.LVM_GETITEMTEXT,
