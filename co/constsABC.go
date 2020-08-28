@@ -121,6 +121,23 @@ const (
 	BM_SETDONTCLICK BM = 0x00F8
 )
 
+// Button control notifications, sent via WM_COMMAND.
+type BN uint16
+
+const (
+	BN_CLICKED       BN = 0
+	BN_PAINT         BN = 1
+	BN_HILITE        BN = 2
+	BN_UNHILITE      BN = 3
+	BN_DISABLE       BN = 4
+	BN_DOUBLECLICKED BN = 5
+	BN_PUSHED        BN = BN_HILITE
+	BN_UNPUSHED      BN = BN_UNHILITE
+	BN_DBLCLK        BN = BN_DOUBLECLICKED
+	BN_SETFOCUS      BN = 6
+	BN_KILLFOCUS     BN = 7
+)
+
 // Button control styles.
 type BS WS
 
@@ -150,7 +167,7 @@ const (
 	BS_VCENTER         BS = 0x00000C00
 	BS_PUSHLIKE        BS = 0x00001000
 	BS_MULTILINE       BS = 0x00002000
-	BS_NOTIFY          BS = 0x00004000
+	BS_NOTIFY          BS = 0x00004000 // Button will send BN_DISABLE, BN_PUSHED, BN_KILLFOCUS, BN_PAINT, BN_SETFOCUS, and BN_UNPUSHED notifications.
 	BS_FLAT            BS = 0x00008000
 	BS_RIGHTBUTTON     BS = BS_LEFTTEXT
 )
