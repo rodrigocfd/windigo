@@ -80,7 +80,7 @@ func EnumWindows(
 	ret, _, lerr := syscall.Syscall(proc.EnumWindows.Addr(), 2,
 		syscall.NewCallback(
 			func(hwnd HWND, lParam LPARAM) int32 {
-				return boolToInt32(lpEnumFunc(hwnd, lParam))
+				return _Util.BoolToInt32(lpEnumFunc(hwnd, lParam))
 			}),
 		uintptr(lParam), 0)
 	if ret == 0 {
@@ -209,6 +209,16 @@ func GetSystemMetrics(index co.SM) int32 {
 	return int32(ret)
 }
 
+// https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632656(v=vs.85)
+func HiByte(value uint16) uint8 {
+	return uint8(value >> 8 & 0xff)
+}
+
+// https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632657(v=vs.85)
+func HiWord(value uint32) uint16 {
+	return uint16(value >> 16 & 0xffff)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
 func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
@@ -219,7 +229,7 @@ func InitCommonControls() {
 // Warning: passing true will force current thread to GUI, and it may deadlock.
 func IsGUIThread(bConvertToGuiThread bool) bool {
 	ret, _, _ := syscall.Syscall(proc.IsGUIThread.Addr(), 1,
-		boolToUintptr(bConvertToGuiThread), 0, 0)
+		_Util.BoolToUintptr(bConvertToGuiThread), 0, 0)
 	return ret != 0
 }
 
@@ -249,49 +259,69 @@ func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32,
 // https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows10orgreater
 func IsWindows10OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(hiByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
-		uint32(loByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
+		uint32(HiByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
+		uint32(LoByte(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
 		0)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows7orgreater
 func IsWindows7OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(hiByte(uint16(co.WIN32_WINNT_WIN7))),
-		uint32(loByte(uint16(co.WIN32_WINNT_WIN7))),
+		uint32(HiByte(uint16(co.WIN32_WINNT_WIN7))),
+		uint32(LoByte(uint16(co.WIN32_WINNT_WIN7))),
 		0)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8orgreater
 func IsWindows8OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(hiByte(uint16(co.WIN32_WINNT_WIN8))),
-		uint32(loByte(uint16(co.WIN32_WINNT_WIN8))),
+		uint32(HiByte(uint16(co.WIN32_WINNT_WIN8))),
+		uint32(LoByte(uint16(co.WIN32_WINNT_WIN8))),
 		0)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8point1orgreater
 func IsWindows8Point1OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(hiByte(uint16(co.WIN32_WINNT_WINBLUE))),
-		uint32(loByte(uint16(co.WIN32_WINNT_WINBLUE))),
+		uint32(HiByte(uint16(co.WIN32_WINNT_WINBLUE))),
+		uint32(LoByte(uint16(co.WIN32_WINNT_WINBLUE))),
 		0)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsvistaorgreater
 func IsWindowsVistaOrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(hiByte(uint16(co.WIN32_WINNT_VISTA))),
-		uint32(loByte(uint16(co.WIN32_WINNT_VISTA))),
+		uint32(HiByte(uint16(co.WIN32_WINNT_VISTA))),
+		uint32(LoByte(uint16(co.WIN32_WINNT_VISTA))),
 		0)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsxporgreater
 func IsWindowsXpOrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(hiByte(uint16(co.WIN32_WINNT_WINXP))),
-		uint32(loByte(uint16(co.WIN32_WINNT_WINXP))),
+		uint32(HiByte(uint16(co.WIN32_WINNT_WINXP))),
+		uint32(LoByte(uint16(co.WIN32_WINNT_WINXP))),
 		0)
+}
+
+// https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632658(v=vs.85)
+func LoByte(value uint16) uint8 {
+	return uint8(value & 0xFF)
+}
+
+// https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632659(v=vs.85)
+func LoWord(value uint32) uint16 {
+	return uint16(value & 0xFFFF)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makelparam
+func MakeLParam(lo, hi uint16) LPARAM {
+	return LPARAM((uint32(lo) & 0xffff) | ((uint32(hi) & 0xffff) << 16))
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makewparam
+func MakeWParam(lo, hi uint16) WPARAM {
+	return WPARAM((uint32(lo) & 0xffff) | ((uint32(hi) & 0xffff) << 16))
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-muldiv

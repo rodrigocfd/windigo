@@ -17,7 +17,7 @@ type _UtilT struct {
 	globalDpi win.POINT
 }
 
-// Internal package utilities.
+// Internal gui package utilities.
 var _Util _UtilT
 
 // Syntactic sugar; converts bool to 0 or 1.
@@ -34,11 +34,6 @@ func (_UtilT) BoolToUintptr(b bool) uintptr {
 		return 1
 	}
 	return 0
-}
-
-// Analog to MAKEWPARAM() macro.
-func (_UtilT) MakeWParam(lo, hi uint16) win.WPARAM {
-	return win.WPARAM((uint32(lo) & 0xffff) | ((uint32(hi) & 0xffff) << 16))
 }
 
 // Multiplies position and size by current DPI factor.

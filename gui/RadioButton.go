@@ -78,7 +78,7 @@ func (me *RadioButton) SetCheck() *RadioButton {
 func (me *RadioButton) SetCheckAndTrigger() *RadioButton {
 	me.SetCheck()
 	me.Hwnd().SendMessage(co.WM_COMMAND,
-		_Util.MakeWParam(uint16(me.Hwnd().GetDlgCtrlID()), 0),
+		win.MakeWParam(uint16(me.Hwnd().GetDlgCtrlID()), 0),
 		win.LPARAM(me.Hwnd()))
 	return me
 }
