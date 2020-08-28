@@ -8,7 +8,6 @@ package com
 
 import (
 	"syscall"
-	"unsafe"
 	"wingows/co"
 	"wingows/win"
 )
@@ -36,10 +35,9 @@ func (me *_ITaskbarList2) CoCreateInstance(dwClsContext co.CLSCTX) {
 func (me *_ITaskbarList2) MarkFullscreenWindow(
 	hwnd win.HWND, fFullScreen bool) {
 
-	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarList2Vtbl)(unsafe.Pointer(me.pVtb())).MarkFullscreenWindow, 3,
-		uintptr(unsafe.Pointer(me.uintptr)), uintptr(hwnd),
-		uintptr(boolToUintptr(fFullScreen)))
+	vTbl := (*_ITaskbarList2Vtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall(vTbl.MarkFullscreenWindow, 3, me.uintptr,
+		uintptr(hwnd), boolToUintptr(fFullScreen))
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {

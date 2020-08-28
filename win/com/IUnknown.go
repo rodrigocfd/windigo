@@ -16,8 +16,7 @@ import (
 )
 
 type (
-	_IUnknownPtr struct{ uintptr } // IUnknown pointer itself, which has a pointer to virtual table
-	_IUnknown    struct{ uintptr } // container, which has a pointer to actual IUnknown
+	_IUnknown struct{ uintptr }
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 	IUnknown struct{ _IUnknown }
@@ -29,12 +28,11 @@ type (
 	}
 )
 
-// Returns a pointer to IUnknown virtual table.
-func (me *_IUnknown) pVtb() *_IUnknownVtbl {
+// Returns a pointer to the virtual table.
+func (me *_IUnknown) pVtbl() unsafe.Pointer {
 	// https://www.codeproject.com/Articles/633/Introduction-to-COM-What-It-Is-and-How-to-Use-It
-	ptrIUnk := (*_IUnknownPtr)(unsafe.Pointer(me.uintptr))
-	ptrVtb := (*_IUnknownVtbl)(unsafe.Pointer(ptrIUnk.uintptr))
-	return ptrVtb
+	pptr := (*struct{ uintptr })(unsafe.Pointer(me.uintptr))
+	return unsafe.Pointer(pptr.uintptr)
 }
 
 // Creates any COM interface, returning the base IUnknown.
@@ -71,8 +69,8 @@ func (me *_IUnknown) queryInterface(iid *co.IID) IUnknown {
 	iidFlip := cloneFlipLastUint64Iid(iid)
 	retIUnk := IUnknown{}
 
-	ret, _, _ := syscall.Syscall(me.pVtb().QueryInterface, 3,
-		uintptr(unsafe.Pointer(me.uintptr)),
+	vTbl := (*_IUnknownVtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall(vTbl.QueryInterface, 3, me.uintptr,
 		uintptr(unsafe.Pointer(&iidFlip)),
 		uintptr(unsafe.Pointer(&retIUnk.uintptr)))
 
@@ -89,8 +87,8 @@ func (me *_IUnknown) AddRef() uint32 {
 		panic("Calling AddRef on empty IUnknown.")
 	}
 
-	ret, _, _ := syscall.Syscall(me.pVtb().AddRef, 1,
-		uintptr(unsafe.Pointer(me.uintptr)), 0, 0)
+	vTbl := (*_IUnknownVtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall(vTbl.AddRef, 1, me.uintptr, 0, 0)
 	return uint32(ret)
 }
 
@@ -100,8 +98,8 @@ func (me *_IUnknown) Release() uint32 {
 		panic("Calling Release on empty IUnknown.")
 	}
 
-	ret, _, _ := syscall.Syscall(me.pVtb().Release, 1,
-		uintptr(unsafe.Pointer(me.uintptr)), 0, 0)
+	vTbl := (*_IUnknownVtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall(vTbl.Release, 1, me.uintptr, 0, 0)
 	return uint32(ret)
 }
 

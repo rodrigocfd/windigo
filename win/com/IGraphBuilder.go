@@ -8,7 +8,6 @@ package com
 
 import (
 	"syscall"
-	"unsafe"
 	"wingows/co"
 	"wingows/win"
 )
@@ -40,9 +39,8 @@ func (me *_IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
 func (me *IGraphBuilder) Abort() {
-	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(me.pVtb())).Abort, 1,
-		uintptr(unsafe.Pointer(me.uintptr)), 0, 0)
+	vTbl := (*_IGraphBuilderVtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall(vTbl.Abort, 1, me.uintptr, 0, 0)
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {

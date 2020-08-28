@@ -8,7 +8,6 @@ package com
 
 import (
 	"syscall"
-	"unsafe"
 	"wingows/co"
 	"wingows/win"
 )
@@ -47,11 +46,9 @@ func (me *_ITaskbarList3) CoCreateInstance(dwClsContext co.CLSCTX) {
 func (me *ITaskbarList3) SetProgressValue(
 	hwnd win.HWND, ullCompleted, ullTotal uint64) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(me.pVtb())).SetProgressValue, 4,
-		uintptr(unsafe.Pointer(me.uintptr)), uintptr(hwnd),
-		uintptr(ullCompleted), uintptr(ullTotal),
-		0, 0)
+	vTbl := (*_ITaskbarList3Vtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall6(vTbl.SetProgressValue, 4, me.uintptr,
+		uintptr(hwnd), uintptr(ullCompleted), uintptr(ullTotal), 0, 0)
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
@@ -61,9 +58,9 @@ func (me *ITaskbarList3) SetProgressValue(
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
 func (me *ITaskbarList3) SetProgressState(hwnd win.HWND, tbpFlags co.TBPF) {
-	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(me.pVtb())).SetProgressState, 3,
-		uintptr(unsafe.Pointer(me.uintptr)), uintptr(hwnd), uintptr(tbpFlags))
+	vTbl := (*_ITaskbarList3Vtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall(vTbl.SetProgressState, 3, me.uintptr,
+		uintptr(hwnd), uintptr(tbpFlags))
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
