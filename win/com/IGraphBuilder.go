@@ -13,7 +13,7 @@ import (
 )
 
 type (
-	_IGraphBuilder struct{ _IFilterGraph }
+	_IGraphBuilder struct{ _IFilterGraphImpl }
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-igraphbuilder
 	//
@@ -33,7 +33,7 @@ type (
 )
 
 func (me *_IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
-	me._IUnknown.coCreateInstance(
+	me.coCreateInstancePtr(
 		&co.CLSID_FilterGraph, dwClsContext, &co.IID_IGraphBuilder)
 }
 

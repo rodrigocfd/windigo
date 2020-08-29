@@ -13,12 +13,12 @@ import (
 )
 
 type (
-	_ITaskbarList2 struct{ _ITaskbarList }
+	_ITaskbarList2Impl struct{ _ITaskbarListImpl }
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist2
 	//
 	// ITaskbarList2 > ITaskbarList > IUnknown.
-	ITaskbarList2 struct{ _ITaskbarList2 }
+	ITaskbarList2 struct{ _ITaskbarList2Impl }
 
 	_ITaskbarList2Vtbl struct {
 		_ITaskbarListVtbl
@@ -26,13 +26,13 @@ type (
 	}
 )
 
-func (me *_ITaskbarList2) CoCreateInstance(dwClsContext co.CLSCTX) {
-	me._IUnknown.coCreateInstance(
+func (me *_ITaskbarList2Impl) CoCreateInstance(dwClsContext co.CLSCTX) {
+	me.coCreateInstancePtr(
 		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList2)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow
-func (me *_ITaskbarList2) MarkFullscreenWindow(
+func (me *_ITaskbarList2Impl) MarkFullscreenWindow(
 	hwnd win.HWND, fFullScreen bool) {
 
 	vTbl := (*_ITaskbarList2Vtbl)(me.pVtbl())

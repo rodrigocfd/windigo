@@ -16,10 +16,10 @@ import (
 )
 
 type (
-	_IUnknown struct{ uintptr }
+	_IUnknownImpl struct{ uintptr }
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
-	IUnknown struct{ _IUnknown }
+	IUnknown struct{ _IUnknownImpl }
 
 	_IUnknownVtbl struct {
 		QueryInterface uintptr
@@ -29,15 +29,14 @@ type (
 )
 
 // Returns a pointer to the virtual table.
-func (me *_IUnknown) pVtbl() unsafe.Pointer {
+func (me *_IUnknownImpl) pVtbl() unsafe.Pointer {
 	// https://www.codeproject.com/Articles/633/Introduction-to-COM-What-It-Is-and-How-to-Use-It
 	pptr := (*struct{ uintptr })(unsafe.Pointer(me.uintptr))
 	return unsafe.Pointer(pptr.uintptr)
 }
 
 // Creates any COM interface, returning the base IUnknown.
-// To retrieve the other interface itself, cast the inner lpVtbl.
-func (me *_IUnknown) coCreateInstance(
+func (me *_IUnknownImpl) coCreateInstancePtr(
 	clsid *co.CLSID, dwClsContext co.CLSCTX, iid *co.IID) {
 
 	if me.uintptr != 0 {
@@ -61,7 +60,7 @@ func (me *_IUnknown) coCreateInstance(
 // Queries any COM interface, returning the base IUnknown.
 //
 // To retrieve the other interface itself, cast the inner lpVtbl.
-func (me *_IUnknown) queryInterface(iid *co.IID) IUnknown {
+func (me *_IUnknownImpl) queryInterface(iid *co.IID) IUnknown {
 	if me.uintptr == 0 {
 		panic("Calling queryInterface on empty IUnknown.")
 	}
@@ -82,7 +81,7 @@ func (me *_IUnknown) queryInterface(iid *co.IID) IUnknown {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
-func (me *_IUnknown) AddRef() uint32 {
+func (me *_IUnknownImpl) AddRef() uint32 {
 	if me.uintptr == 0 {
 		panic("Calling AddRef on empty IUnknown.")
 	}
@@ -93,7 +92,7 @@ func (me *_IUnknown) AddRef() uint32 {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
-func (me *_IUnknown) Release() uint32 {
+func (me *_IUnknownImpl) Release() uint32 {
 	if me.uintptr == 0 {
 		panic("Calling Release on empty IUnknown.")
 	}

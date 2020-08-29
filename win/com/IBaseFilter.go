@@ -7,12 +7,12 @@
 package com
 
 type (
-	_IBaseFilter struct{ _IMediaFilter }
+	_IBaseFilterImpl struct{ _IMediaFilterImpl }
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
 	//
 	// IBaseFilter > IMediaFilter > IPersist > IUnknown.
-	IBaseFilter struct{ _IBaseFilter }
+	IBaseFilter struct{ _IBaseFilterImpl }
 
 	_IBaseFilterVtbl struct {
 		_IMediaFilterVtbl

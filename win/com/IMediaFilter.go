@@ -7,12 +7,12 @@
 package com
 
 type (
-	_IMediaFilter struct{ _IPersist }
+	_IMediaFilterImpl struct{ _IPersistImpl }
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
 	//
 	// IMediaFilter > IPersist > IUnknown.
-	IMediaFilter struct{ _IMediaFilter }
+	IMediaFilter struct{ _IMediaFilterImpl }
 
 	_IMediaFilterVtbl struct {
 		_IPersistVtbl

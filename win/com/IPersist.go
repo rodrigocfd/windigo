@@ -7,12 +7,12 @@
 package com
 
 type (
-	_IPersist struct{ _IUnknown }
+	_IPersistImpl struct{ _IUnknownImpl }
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
 	//
 	// IPersist > IUnknown.
-	IPersist struct{ _IPersist }
+	IPersist struct{ _IPersistImpl }
 
 	_IPersistVtbl struct {
 		_IUnknownVtbl

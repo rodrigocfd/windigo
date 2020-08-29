@@ -13,12 +13,12 @@ import (
 )
 
 type (
-	_ITaskbarList3 struct{ _ITaskbarList2 }
+	_ITaskbarList3Impl struct{ _ITaskbarList2Impl }
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
 	//
 	// ITaskbarList3 > ITaskbarList2 > ITaskbarList > IUnknown.
-	ITaskbarList3 struct{ _ITaskbarList3 }
+	ITaskbarList3 struct{ _ITaskbarList3Impl }
 
 	_ITaskbarList3Vtbl struct {
 		_ITaskbarList2Vtbl
@@ -37,8 +37,8 @@ type (
 	}
 )
 
-func (me *_ITaskbarList3) CoCreateInstance(dwClsContext co.CLSCTX) {
-	me._IUnknown.coCreateInstance(
+func (me *_ITaskbarList3Impl) CoCreateInstance(dwClsContext co.CLSCTX) {
+	me.coCreateInstancePtr(
 		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList3)
 }
 

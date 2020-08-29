@@ -7,12 +7,12 @@
 package com
 
 type (
-	_IFilterGraph struct{ _IUnknown }
+	_IFilterGraphImpl struct{ _IUnknownImpl }
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
 	//
 	// IFilterGraph > IUnknown.
-	IFilterGraph struct{ _IFilterGraph }
+	IFilterGraph struct{ _IFilterGraphImpl }
 
 	_IFilterGraphVtbl struct {
 		_IUnknownVtbl

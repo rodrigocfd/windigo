@@ -7,12 +7,12 @@
 package com
 
 type (
-	_IDispatch struct{ _IUnknown }
+	_IDispatchImpl struct{ _IUnknownImpl }
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 	//
 	// IDispatch > IUnknown.
-	IDispatch struct{ _IDispatch }
+	IDispatch struct{ _IDispatchImpl }
 
 	_IDispatchVtbl struct {
 		_IUnknownVtbl
