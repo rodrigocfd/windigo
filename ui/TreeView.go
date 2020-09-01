@@ -28,7 +28,7 @@ func (me *TreeView) AddRootItem(text string) *TreeViewItem {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *TreeView) Create(
-	parent Window, ctrlId, x, y int32, width, height uint32,
+	parent Window, ctrlId, x, y int, width, height uint,
 	exStyles co.WS_EX, styles co.WS,
 	tvExStyles co.TVS_EX, tvStyles co.TVS) *TreeView {
 
@@ -48,7 +48,7 @@ func (me *TreeView) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *TreeView) CreateSimple(
-	parent Window, ctrlId, x, y int32, width, height uint32) *TreeView {
+	parent Window, ctrlId, x, y int, width, height uint) *TreeView {
 
 	return me.Create(parent, ctrlId, x, y, width, height,
 		co.WS_EX_CLIENTEDGE,
@@ -81,12 +81,12 @@ func (me *TreeView) Item(hTreeItem win.HTREEITEM) *TreeViewItem {
 }
 
 // Returns the number of items with TVM_GETCOUNT.
-func (me *TreeView) ItemCount() uint32 {
+func (me *TreeView) ItemCount() uint {
 	ret := me.sendTvmMessage(co.TVM_GETCOUNT, 0, 0)
 	if ret < 0 {
 		panic("TVM_GETCOUNT failed.")
 	}
-	return uint32(ret)
+	return uint(ret)
 }
 
 // Returns all root items.

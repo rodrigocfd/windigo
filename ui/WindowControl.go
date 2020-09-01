@@ -20,8 +20,8 @@ type WindowControl struct {
 }
 
 // Retrieves the command ID for this control.
-func (me *WindowControl) Id() int32 {
-	return me.hwnd.GetDlgCtrlID()
+func (me *WindowControl) Id() int {
+	return int(me.hwnd.GetDlgCtrlID())
 }
 
 // Exposes parameters that will be used to create the child window control.
@@ -35,7 +35,7 @@ func (me *WindowControl) Setup() *_WindowSetupControl {
 
 // Creates the child window control.
 func (me *WindowControl) Create(
-	parent Window, ctrlId, x, y int32, width, height uint32) {
+	parent Window, ctrlId, x, y int, width, height uint) {
 
 	me.setup.initOnce() // guard
 	hInst := parent.Hwnd().GetInstance()

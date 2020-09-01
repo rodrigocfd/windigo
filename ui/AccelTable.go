@@ -22,7 +22,7 @@ type AccelTable struct {
 
 // Adds a new character accelerator, with a specific command ID.
 func (me *AccelTable) AddChar(
-	character rune, modifiers co.ACCELF, cmdId int32) *AccelTable {
+	character rune, modifiers co.ACCELF, cmdId int) *AccelTable {
 
 	if me.hAccel != 0 {
 		panic("Cannot add character after accelerator table was built.")
@@ -38,7 +38,7 @@ func (me *AccelTable) AddChar(
 
 // Adds a new key accelerator, with a specific command ID.
 func (me *AccelTable) AddKey(
-	vKey co.VK, modifiers co.ACCELF, cmdId int32) *AccelTable {
+	vKey co.VK, modifiers co.ACCELF, cmdId int) *AccelTable {
 
 	if me.hAccel != 0 {
 		panic("Cannot add key after accelerator table was built.")

@@ -16,11 +16,11 @@ import (
 // A single item of a menu.
 type MenuItem struct {
 	owner *Menu
-	cmdId int32
+	cmdId int
 }
 
 // Returns the command ID of this menu item.
-func (me *MenuItem) CmdId() int32 {
+func (me *MenuItem) CmdId() int {
 	return me.cmdId
 }
 

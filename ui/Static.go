@@ -22,7 +22,7 @@ type Static struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Static) Create(
-	parent Window, ctrlId, x, y int32, width, height uint32,
+	parent Window, ctrlId, x, y int, width, height uint,
 	text string, exStyles co.WS_EX, styles co.WS, staStyles co.SS) *Static {
 
 	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
@@ -38,7 +38,7 @@ func (me *Static) Create(
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
 func (me *Static) CreateLText(
-	parent Window, ctrlId, x, y int32, text string) *Static {
+	parent Window, ctrlId, x, y int, text string) *Static {
 
 	x, y, _, _ = _Util.MultiplyDpi(x, y, 0, 0)
 	cx, cy := calcTextBoundBox(parent.Hwnd(), text, true)
@@ -55,7 +55,7 @@ func (me *Static) SetText(text string) {
 	hasAccel := (co.SS(me.Hwnd().GetStyle()) & co.SS_NOPREFIX) == 0
 	cx, cy := calcTextBoundBox(me.Hwnd().GetParent(), text, hasAccel)
 
-	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, cx, cy,
+	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, uint32(cx), uint32(cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 }

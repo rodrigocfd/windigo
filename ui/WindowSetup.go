@@ -76,8 +76,8 @@ type _WindowSetupMain struct {
 	Style    co.WS    // Window style, passed to CreateWindowEx(). Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER.
 	ExStyle  co.WS_EX // Window extended style, passed to CreateWindowEx(). Defaults to WS_EX_NONE.
 	Title    string   // The title of the window, passed to CreateWindowEx(). Defaults to empty string.
-	Width    uint32   // Initial width of the window, passed to CreateWindowEx(). Defaults to 500px.
-	Height   uint32   // Initial height of the window, passed to CreateWindowEx(). Defaults to 400px.
+	Width    uint     // Initial width of the window, passed to CreateWindowEx(). Defaults to 500px.
+	Height   uint     // Initial height of the window, passed to CreateWindowEx(). Defaults to 400px.
 	MainMenu Menu     // Main window menu, passed to CreateWindowEx(). Automatically destroyed.
 
 	AcceleratorTable AccelTable // Accelerator table with keyboard shortcuts. Automatically destroyed.
@@ -116,8 +116,8 @@ type _WindowSetupModal struct {
 	Style   co.WS    // Window style, passed to CreateWindowEx(). Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER | WS_VISIBLE.
 	ExStyle co.WS_EX // Window extended style, passed to CreateWindowEx(). Defaults to WS_EX_NONE.
 	Title   string   // The title of the window, passed to CreateWindowEx(). Defaults to empty string.
-	Width   uint32   // Initial width of the window, passed to CreateWindowEx(). Defaults to 400px.
-	Height  uint32   // Initial height of the window, passed to CreateWindowEx(). Defaults to 300px.
+	Width   uint     // Initial width of the window, passed to CreateWindowEx(). Defaults to 400px.
+	Height  uint     // Initial height of the window, passed to CreateWindowEx(). Defaults to 300px.
 }
 
 func (me *_WindowSetupModal) initOnce() {

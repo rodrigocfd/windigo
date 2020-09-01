@@ -24,7 +24,7 @@ type ProgressBar struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ProgressBar) Create(
-	parent Window, ctrlId, x, y int32, width, height uint32,
+	parent Window, ctrlId, x, y int, width, height uint,
 	exStyles co.WS_EX, styles co.WS, pbStyles co.PBS) *ProgressBar {
 
 	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
@@ -39,7 +39,7 @@ func (me *ProgressBar) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ProgressBar) CreateHorizontal(
-	parent Window, ctrlId, x, y int32, width, height uint32) *ProgressBar {
+	parent Window, ctrlId, x, y int, width, height uint) *ProgressBar {
 
 	return me.Create(parent, ctrlId, x, y, width, height,
 		co.WS_EX_NONE,
@@ -51,7 +51,7 @@ func (me *ProgressBar) CreateHorizontal(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ProgressBar) CreateVertical(
-	parent Window, ctrlId, x, y int32, width, height uint32) *ProgressBar {
+	parent Window, ctrlId, x, y int, width, height uint) *ProgressBar {
 
 	return me.Create(parent, ctrlId, x, y, width, height,
 		co.WS_EX_NONE,
@@ -60,8 +60,8 @@ func (me *ProgressBar) CreateVertical(
 }
 
 // Retrieves the current position with PBM_GETPOS.
-func (me *ProgressBar) Pos() uint32 {
-	return uint32(me.sendPbmMessage(co.PBM_GETPOS, 0, 0))
+func (me *ProgressBar) Pos() uint {
+	return uint(me.sendPbmMessage(co.PBM_GETPOS, 0, 0))
 }
 
 // Sets indeterminate state, a graphic animation going back and forth.
@@ -84,7 +84,7 @@ func (me *ProgressBar) SetMarquee(isMarquee bool) *ProgressBar {
 }
 
 // Sets the new position with PBM_SETPOS.
-func (me *ProgressBar) SetPos(pos uint32) *ProgressBar {
+func (me *ProgressBar) SetPos(pos uint) *ProgressBar {
 	if me.isMarquee {
 		me.SetMarquee(false) // avoid crash
 	}
@@ -93,7 +93,7 @@ func (me *ProgressBar) SetPos(pos uint32) *ProgressBar {
 }
 
 // Sets the new range with PBM_SETRANGE32. Default is 0-100.
-func (me *ProgressBar) SetRange(min, max uint32) *ProgressBar {
+func (me *ProgressBar) SetRange(min, max uint) *ProgressBar {
 	me.sendPbmMessage(co.PBM_SETRANGE32, win.WPARAM(min), win.LPARAM(max))
 	return me
 }

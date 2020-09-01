@@ -34,8 +34,8 @@ func (me *_ControlNativeBase) Hwnd() win.HWND {
 }
 
 // Retrieves the command ID for this control.
-func (me *_ControlNativeBase) Id() int32 {
-	return me.hwnd.GetDlgCtrlID()
+func (me *_ControlNativeBase) Id() int {
+	return int(me.hwnd.GetDlgCtrlID())
 }
 
 // Exposes all the control subclass methods that can be handled.
@@ -50,15 +50,15 @@ func (me *_ControlNativeBase) OnSubclassMsg() *_DepotMsg {
 
 func (me *_ControlNativeBase) create(
 	exStyle co.WS_EX, className, title string, style co.WS,
-	x, y int32, width, height uint32, parent Window, ctrlId int32) {
+	x, y int, width, height uint, parent Window, ctrlId int) {
 
 	if me.hwnd != 0 {
 		panic(fmt.Sprintf("Trying to create %s twice.", className))
 	}
 
 	me.hwnd = win.CreateWindowEx(exStyle, className, title, style,
-		x, y, width, height, parent.Hwnd(), win.HMENU(ctrlId),
-		parent.Hwnd().GetInstance(), nil)
+		int32(x), int32(y), uint32(width), uint32(height),
+		parent.Hwnd(), win.HMENU(ctrlId), parent.Hwnd().GetInstance(), nil)
 
 	if len(me.msgs.mapMsgs) > 0 || // at last 1 subclass message was added?
 		len(me.msgs.mapCmds) > 0 {
@@ -113,8 +113,8 @@ func subclassProc(hwnd win.HWND, msg co.WM,
 }
 
 // Calculates the bound rectangle to fit the text with current system font.
-func calcTextBoundBox(hReferenceDc win.HWND, text string,
-	considerAccelerators bool) (uint32, uint32) {
+func calcTextBoundBox(
+	hReferenceDc win.HWND, text string, considerAccelerators bool) (uint, uint) {
 
 	isTextEmpty := false
 	if len(text) == 0 {
@@ -137,5 +137,5 @@ func calcTextBoundBox(hReferenceDc win.HWND, text string,
 	if isTextEmpty {
 		bounds.Cx = 0 // if no text was given, return just the height
 	}
-	return uint32(bounds.Cx), uint32(bounds.Cy)
+	return uint(bounds.Cx), uint(bounds.Cy)
 }

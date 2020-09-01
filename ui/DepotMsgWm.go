@@ -35,9 +35,9 @@ func (p _WmButton) Pos() win.POINT     { return p.LParam.MakePoint() }
 
 type _WmChar struct{ _Wm }
 
-func (p _WmChar) CharCode() uint16          { return uint16(p.WParam) }
-func (p _WmChar) RepeatCount() uint16       { return p.LParam.LoWord() }
-func (p _WmChar) ScanCode() uint8           { return p.LParam.LoByteHiWord() }
+func (p _WmChar) CharCode() rune            { return rune(p.WParam) }
+func (p _WmChar) RepeatCount() uint         { return uint(p.LParam.LoWord()) }
+func (p _WmChar) ScanCode() uint            { return uint(p.LParam.LoByteHiWord()) }
 func (p _WmChar) IsExtendedKey() bool       { return (p.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
 func (p _WmChar) HasAltKey() bool           { return (p.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
 func (p _WmChar) IsKeyDownBeforeSend() bool { return (p.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
@@ -51,15 +51,15 @@ func (p _WmCtlColor) HControl() win.HWND { return win.HWND(p.LParam) }
 type _WmKey struct{ _Wm }
 
 func (p _WmKey) VirtualKeyCode() co.VK     { return co.VK(p.WParam) }
-func (p _WmKey) RepeatCount() uint16       { return p.LParam.LoWord() }
-func (p _WmKey) ScanCode() uint8           { return p.LParam.LoByteHiWord() }
+func (p _WmKey) RepeatCount() uint         { return uint(p.LParam.LoWord()) }
+func (p _WmKey) ScanCode() uint            { return uint(p.LParam.LoByteHiWord()) }
 func (p _WmKey) IsExtendedKey() bool       { return (p.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
 func (p _WmKey) HasAltKey() bool           { return (p.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
 func (p _WmKey) IsKeyDownBeforeSend() bool { return (p.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
 
 type _WmScroll struct{ _Wm }
 
-func (p _WmScroll) ScrollBoxPos() uint16    { return p.WParam.HiWord() }
+func (p _WmScroll) ScrollBoxPos() uint      { return uint(p.WParam.HiWord()) }
 func (p _WmScroll) Request() co.SBR         { return co.SBR(p.WParam.LoWord()) }
 func (p _WmScroll) HwndScrollbar() win.HWND { return win.HWND(p.LParam) }
 

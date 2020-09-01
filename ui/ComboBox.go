@@ -36,8 +36,8 @@ func (me *ComboBox) AddMany(texts []string) *ComboBox {
 }
 
 // Returns the number of items in the list box of a combo box.
-func (me *ComboBox) Count() uint32 {
-	return uint32(me.sendCbMessage(co.CB_GETCOUNT, 0, 0))
+func (me *ComboBox) Count() uint {
+	return uint(me.sendCbMessage(co.CB_GETCOUNT, 0, 0))
 }
 
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
@@ -45,7 +45,7 @@ func (me *ComboBox) Count() uint32 {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) Create(
-	parent Window, ctrlId, x, y int32, width uint32,
+	parent Window, ctrlId, x, y int, width uint,
 	exStyles co.WS_EX, styles co.WS, cbStyles co.CBS) *ComboBox {
 
 	x, y, width, _ = _Util.MultiplyDpi(x, y, width, 0)
@@ -60,7 +60,7 @@ func (me *ComboBox) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) CreateEditable(
-	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
+	parent Window, ctrlId, x, y int, width uint) *ComboBox {
 
 	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
@@ -71,7 +71,7 @@ func (me *ComboBox) CreateEditable(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) CreateEditableSorted(
-	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
+	parent Window, ctrlId, x, y int, width uint) *ComboBox {
 
 	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
@@ -82,7 +82,7 @@ func (me *ComboBox) CreateEditableSorted(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) CreateFixed(
-	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
+	parent Window, ctrlId, x, y int, width uint) *ComboBox {
 
 	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
@@ -93,7 +93,7 @@ func (me *ComboBox) CreateFixed(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) CreateFixedSorted(
-	parent Window, ctrlId, x, y int32, width uint32) *ComboBox {
+	parent Window, ctrlId, x, y int, width uint) *ComboBox {
 
 	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
@@ -104,18 +104,18 @@ func (me *ComboBox) CreateFixedSorted(
 // to remove the limitation.
 //
 // Works only if the combo box is editable.
-func (me *ComboBox) LimitEditText(numChars uint32) *ComboBox {
+func (me *ComboBox) LimitEditText(numChars uint) *ComboBox {
 	me.sendCbMessage(co.CB_LIMITTEXT, win.WPARAM(numChars), 0)
 	return me
 }
 
 // Returns the index of the selected item, or -1 if none.
-func (me *ComboBox) SelectedIndex() int32 {
-	return int32(me.sendCbMessage(co.CB_GETCURSEL, 0, 0))
+func (me *ComboBox) SelectedIndex() int {
+	return int(me.sendCbMessage(co.CB_GETCURSEL, 0, 0))
 }
 
 // Sets the index of the selected item, or -1 to clear.
-func (me *ComboBox) SelectIndex(index int32) *ComboBox {
+func (me *ComboBox) SelectIndex(index int) *ComboBox {
 	me.sendCbMessage(co.CB_SETCURSEL, win.WPARAM(index), 0)
 	return me
 }
@@ -126,14 +126,14 @@ func (me *ComboBox) SelectedText() (string, bool) {
 	if idx < 0 {
 		return "", false
 	}
-	return me.Text(uint32(idx))
+	return me.Text(uint(idx))
 }
 
 // Returns the string at the given index, if any.
 //
 // In an editable combo box, the text typed by the user can be retrieved with
 // Hwnd().GetWindowText().
-func (me *ComboBox) Text(index uint32) (string, bool) {
+func (me *ComboBox) Text(index uint) (string, bool) {
 	len := int(me.sendCbMessage(co.CB_GETLBTEXTLEN, win.WPARAM(index), 0))
 	if len == -1 {
 		return "", false

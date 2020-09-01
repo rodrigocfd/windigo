@@ -24,7 +24,7 @@ type Edit struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Edit) Create(
-	parent Window, ctrlId, x, y int32, width, height uint32, initialText string,
+	parent Window, ctrlId, x, y int, width, height uint, initialText string,
 	exStyles co.WS_EX, styles co.WS, editStyles co.ES) *Edit {
 
 	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
@@ -39,7 +39,7 @@ func (me *Edit) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreateMultiLine(
-	parent Window, ctrlId, x, y int32, width, height uint32,
+	parent Window, ctrlId, x, y int, width, height uint,
 	initialText string) *Edit {
 
 	return me.Create(parent, ctrlId, x, y, width, height, initialText,
@@ -52,7 +52,7 @@ func (me *Edit) CreateMultiLine(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreatePassword(
-	parent Window, ctrlId, x, y int32, width uint32, initialText string) *Edit {
+	parent Window, ctrlId, x, y int, width uint, initialText string) *Edit {
 
 	return me.Create(parent, ctrlId, x, y, width, 21, initialText,
 		co.WS_EX_CLIENTEDGE,
@@ -64,7 +64,7 @@ func (me *Edit) CreatePassword(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreateSimple(
-	parent Window, ctrlId, x, y int32, width uint32, initialText string) *Edit {
+	parent Window, ctrlId, x, y int, width uint, initialText string) *Edit {
 
 	return me.Create(parent, ctrlId, x, y, width, 21, initialText,
 		co.WS_EX_CLIENTEDGE,
@@ -87,8 +87,8 @@ func (me *Edit) SelectAll() *Edit {
 }
 
 // Retrieves the selected range of text in the edit control.
-func (me *Edit) SelectedRange() (int32, int32) {
-	start, firstAfter := int32(0), int32(0)
+func (me *Edit) SelectedRange() (int, int) {
+	start, firstAfter := int(0), int(0)
 	me.sendEmMessage(co.EM_GETSEL, win.WPARAM(unsafe.Pointer(&start)),
 		win.LPARAM(unsafe.Pointer(&firstAfter)))
 	return start, firstAfter - start
@@ -97,7 +97,7 @@ func (me *Edit) SelectedRange() (int32, int32) {
 // Selects a range of text in the edit control.
 //
 // Only has effect if edit control is focused.
-func (me *Edit) SelectRange(start, length int32) *Edit {
+func (me *Edit) SelectRange(start, length int) *Edit {
 	me.sendEmMessage(co.EM_SETSEL, win.WPARAM(start),
 		win.LPARAM(start+length))
 	return me

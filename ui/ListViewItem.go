@@ -17,7 +17,7 @@ import (
 // A single item row of a list view control.
 type ListViewItem struct {
 	owner *ListView
-	index uint32
+	index uint
 }
 
 // Sends LVM_DELETEITEM for this item.
@@ -58,8 +58,8 @@ func (me *ListViewItem) Focus() *ListViewItem {
 	return me
 }
 
-// Retrieves the image index with LVM_GETITEM.
-func (me *ListViewItem) IconIndex() uint32 {
+// Retrieves the image index with LVM_GETITEM; or -1 if no image.
+func (me *ListViewItem) IconIndex() int {
 	lvi := win.LVITEM{
 		IItem: int32(me.index),
 		Mask:  co.LVIF_IMAGE,
@@ -69,11 +69,11 @@ func (me *ListViewItem) IconIndex() uint32 {
 	if ret == 0 {
 		panic("LVM_GETITEM failed.")
 	}
-	return uint32(lvi.IImage)
+	return int(lvi.IImage)
 }
 
 // Returns the index of this item.
-func (me *ListViewItem) Index() uint32 {
+func (me *ListViewItem) Index() uint {
 	return me.index
 }
 
@@ -152,8 +152,8 @@ func (me *ListViewItem) Select(isSelected bool) *ListViewItem {
 	return me
 }
 
-// Sets the image index with LVM_SETITEM.
-func (me *ListViewItem) SetIconIndex(index uint32) *ListViewItem {
+// Sets the image index with LVM_SETITEM; or -1 for no image.
+func (me *ListViewItem) SetIconIndex(index int) *ListViewItem {
 	lvi := win.LVITEM{
 		IItem:  int32(me.index),
 		Mask:   co.LVIF_IMAGE,
@@ -184,7 +184,7 @@ func (me *ListViewItem) SetParam(lParam win.LPARAM) *ListViewItem {
 
 // Sends LVM_SETITEMTEXT to change the text.
 func (me *ListViewItem) SetSubItemText(
-	columnIndex uint32, text string) *ListViewItem {
+	columnIndex uint, text string) *ListViewItem {
 
 	textBuf := win.StrToSlice(text)
 	lvi := win.LVITEM{
@@ -205,7 +205,7 @@ func (me *ListViewItem) SetText(text string) *ListViewItem {
 }
 
 // Sends LVM_GETITEMTEXT to retrieve the text.
-func (me *ListViewItem) SubItemText(columnIndex uint32) string {
+func (me *ListViewItem) SubItemText(columnIndex uint) string {
 	buf := [256]uint16{} // arbitrary
 	lvi := win.LVITEM{
 		ISubItem:   int32(columnIndex),

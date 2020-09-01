@@ -16,16 +16,17 @@ import (
 // https://docs.microsoft.com/en-us/windows/win32/controls/image-lists
 type ImageList struct {
 	himl       win.HIMAGELIST
-	resolution uint32
+	resolution uint
 }
 
 // Automatically destroyed if attached to a ListView, unless created with
 // LVS_SHAREIMAGELISTS. Other than that, must always be manually destroyed.
-func (me *ImageList) Create(resolution, iconCount uint32) *ImageList {
+func (me *ImageList) Create(resolution, iconCount uint) *ImageList {
 	if me.himl != 0 {
 		panic("ImageList already created.")
 	}
-	me.himl = win.ImageListCreate(resolution, resolution, co.ILC_COLOR32, iconCount, 1)
+	me.himl = win.ImageListCreate(uint32(resolution), uint32(resolution),
+		co.ILC_COLOR32, uint32(iconCount), 1)
 	me.resolution = resolution
 	return me
 }
@@ -36,7 +37,7 @@ func (me *ImageList) AddIcon(icon win.HICON) *ImageList {
 }
 
 // Loads an icon resource and adds it to the image list.
-func (me *ImageList) AddResourceIcon(resourceId int32) *ImageList {
+func (me *ImageList) AddResourceIcon(resourceId int) *ImageList {
 	return me.AddIcon(
 		win.GetModuleHandle("").LoadIcon(co.IDI(resourceId)),
 	)

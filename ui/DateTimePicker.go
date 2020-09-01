@@ -25,7 +25,7 @@ type DateTimePicker struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) Create(
-	parent Window, ctrlId, x, y int32, width, height uint32,
+	parent Window, ctrlId, x, y int, width, height uint,
 	exStyles co.WS_EX, styles co.WS, dtpStyles co.DTS) *DateTimePicker {
 
 	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
@@ -40,7 +40,7 @@ func (me *DateTimePicker) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) CreateLongDate(
-	parent Window, ctrlId, x, y int32, width uint32) *DateTimePicker {
+	parent Window, ctrlId, x, y int, width uint) *DateTimePicker {
 
 	return me.Create(parent, ctrlId, x, y, width, 23, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
@@ -51,7 +51,7 @@ func (me *DateTimePicker) CreateLongDate(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) CreateShortDate(
-	parent Window, ctrlId, x, y int32, width uint32) *DateTimePicker {
+	parent Window, ctrlId, x, y int, width uint) *DateTimePicker {
 
 	return me.Create(parent, ctrlId, x, y, width, 23, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
@@ -62,7 +62,7 @@ func (me *DateTimePicker) CreateShortDate(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) CreateTime(
-	parent Window, ctrlId, x, y int32, width uint32) *DateTimePicker {
+	parent Window, ctrlId, x, y int, width uint) *DateTimePicker {
 
 	return me.Create(parent, ctrlId, x, y, width, 23, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,

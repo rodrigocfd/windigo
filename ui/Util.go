@@ -37,8 +37,8 @@ func (_UtilT) BoolToUintptr(b bool) uintptr {
 }
 
 // Multiplies position and size by current DPI factor.
-func (me *_UtilT) MultiplyDpi(x, y int32,
-	cx, cy uint32) (int32, int32, uint32, uint32) {
+func (me *_UtilT) MultiplyDpi(x, y int,
+	cx, cy uint) (int, int, uint, uint) {
 
 	if me.globalDpi.X == 0 { // not initialized yet?
 		dc := win.HWND(0).GetDC()
@@ -48,12 +48,12 @@ func (me *_UtilT) MultiplyDpi(x, y int32,
 	}
 
 	if x != 0 || y != 0 {
-		x = win.MulDiv(x, me.globalDpi.X, 96)
-		y = win.MulDiv(y, me.globalDpi.Y, 96)
+		x = int(win.MulDiv(int32(x), me.globalDpi.X, 96))
+		y = int(win.MulDiv(int32(y), me.globalDpi.Y, 96))
 	}
 	if cx != 0 || cy != 0 {
-		cx = uint32(win.MulDiv(int32(cx), me.globalDpi.X, 96))
-		cy = uint32(win.MulDiv(int32(cy), me.globalDpi.Y, 96))
+		cx = uint(win.MulDiv(int32(cx), me.globalDpi.X, 96))
+		cy = uint(win.MulDiv(int32(cy), me.globalDpi.Y, 96))
 	}
 	return x, y, cx, cy
 }

@@ -23,7 +23,7 @@ type RadioButton struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *RadioButton) Create(
-	parent Window, ctrlId, x, y int32, width, height uint32,
+	parent Window, ctrlId, x, y int, width, height uint,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *RadioButton {
 
 	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
@@ -41,7 +41,7 @@ func (me *RadioButton) Create(
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
 func (me *RadioButton) CreateFirst(
-	parent Window, ctrlId, x, y int32, text string) *RadioButton {
+	parent Window, ctrlId, x, y int, text string) *RadioButton {
 
 	return me.createAutoSize(parent, ctrlId, x, y, text,
 		co.WS_GROUP|co.WS_TABSTOP|co.WS(co.BS_AUTORADIOBUTTON))
@@ -52,7 +52,7 @@ func (me *RadioButton) CreateFirst(
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
 func (me *RadioButton) CreateSubsequent(
-	parent Window, ctrlId, x, y int32, text string) *RadioButton {
+	parent Window, ctrlId, x, y int, text string) *RadioButton {
 
 	return me.createAutoSize(parent, ctrlId, x, y, text,
 		co.WS(co.BS_AUTORADIOBUTTON))
@@ -87,7 +87,7 @@ func (me *RadioButton) SetCheckAndTrigger() *RadioButton {
 // resizes the control to fit the text exactly.
 func (me *RadioButton) SetText(text string) *RadioButton {
 	cx, cy := me.calcIdealSize(me.Hwnd().GetParent(), text)
-	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, cx, cy,
+	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, uint32(cx), uint32(cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 	return me
@@ -103,13 +103,13 @@ func (me *RadioButton) Text() string {
 }
 
 func (me *RadioButton) calcIdealSize(hReferenceDc win.HWND,
-	text string) (uint32, uint32) {
+	text string) (uint, uint) {
 
 	cx, cy := calcTextBoundBox(hReferenceDc, text, true)
-	cx += uint32(win.GetSystemMetrics(co.SM_CXMENUCHECK)) +
-		uint32(win.GetSystemMetrics(co.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
+	cx += uint(win.GetSystemMetrics(co.SM_CXMENUCHECK)) +
+		uint(win.GetSystemMetrics(co.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
 
-	cyCheck := uint32(win.GetSystemMetrics(co.SM_CYMENUCHECK))
+	cyCheck := uint(win.GetSystemMetrics(co.SM_CYMENUCHECK))
 	if cyCheck > cy {
 		cy = cyCheck // if the check is taller than the font, use its height
 	}
@@ -118,7 +118,7 @@ func (me *RadioButton) calcIdealSize(hReferenceDc win.HWND,
 }
 
 func (me *RadioButton) createAutoSize(
-	parent Window, ctrlId, x, y int32,
+	parent Window, ctrlId, x, y int,
 	text string, otherStyles co.WS) *RadioButton {
 
 	x, y, _, _ = _Util.MultiplyDpi(x, y, 0, 0)

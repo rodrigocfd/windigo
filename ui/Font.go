@@ -22,7 +22,7 @@ type Font struct {
 // Simplified options to create a Font object.
 type FontSetup struct {
 	Name      string
-	Size      int32
+	Size      int
 	Bold      bool
 	Italic    bool
 	StrikeOut bool
@@ -46,7 +46,7 @@ func (me *Font) Hfont() win.HFONT {
 func (me *Font) Create(setup *FontSetup) *Font {
 	me.Destroy()
 	lf := win.LOGFONT{}
-	lf.LfHeight = -(setup.Size + 3)
+	lf.LfHeight = -(int32(setup.Size) + 3)
 
 	if len(setup.Name) > len(lf.LfFaceName)-1 {
 		panic(fmt.Sprintf("Font name can't be longer than %d chars.",

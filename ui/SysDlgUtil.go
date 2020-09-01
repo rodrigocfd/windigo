@@ -25,7 +25,9 @@ var SysDlgUtil _SysDlgUtilT
 // Example of filtersWithPipe:
 //
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (_SysDlgUtilT) FileOpen(owner Window, filtersWithPipe []string) (string, bool) {
+func (_SysDlgUtilT) FileOpen(
+	owner Window, filtersWithPipe []string) (string, bool) {
+
 	zFilters := filterToUtf16(filtersWithPipe)
 	result := [260]uint16{} // MAX_PATH
 
@@ -48,8 +50,8 @@ func (_SysDlgUtilT) FileOpen(owner Window, filtersWithPipe []string) (string, bo
 // Example of filtersWithPipe:
 //
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (_SysDlgUtilT) FileOpenMany(owner Window,
-	filtersWithPipe []string) ([]string, bool) {
+func (_SysDlgUtilT) FileOpenMany(
+	owner Window, filtersWithPipe []string) ([]string, bool) {
 
 	zFilters := filterToUtf16(filtersWithPipe)
 	multiBuf := make([]uint16, 65536) // http://www.askjf.com/?q=2179s http://www.askjf.com/?q=2181s
@@ -103,7 +105,8 @@ func (_SysDlgUtilT) FileOpenMany(owner Window,
 // Example of filtersWithPipe:
 //
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (_SysDlgUtilT) FileSave(owner Window, defaultName, defaultExt string,
+func (_SysDlgUtilT) FileSave(
+	owner Window, defaultName, defaultExt string,
 	filtersWithPipe []string) (string, bool) {
 
 	zFilters := filterToUtf16(filtersWithPipe)

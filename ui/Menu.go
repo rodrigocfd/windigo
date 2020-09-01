@@ -19,7 +19,7 @@ type Menu struct {
 	hMenu win.HMENU
 }
 
-func (me *Menu) AppendItem(cmdId int32, text string) *Menu {
+func (me *Menu) AppendItem(cmdId int, text string) *Menu {
 	me.hMenu.AppendMenu(co.MF_STRING, uintptr(cmdId),
 		unsafe.Pointer(win.StrToPtr(text)))
 	return me
@@ -71,7 +71,7 @@ func (me *Menu) Destroy() {
 }
 
 // Enables or disables many items at once, by command ID.
-func (me *Menu) EnableManyByCmdId(isEnabled bool, cmdIds []int32) *Menu {
+func (me *Menu) EnableManyByCmdId(isEnabled bool, cmdIds []int) *Menu {
 	for _, cmdId := range cmdIds {
 		me.ItemByCmdId(cmdId).Enable(isEnabled)
 	}
@@ -79,7 +79,7 @@ func (me *Menu) EnableManyByCmdId(isEnabled bool, cmdIds []int32) *Menu {
 }
 
 // Enables or disables many items at once, by zero-based position.
-func (me *Menu) EnableManyByPos(isEnabled bool, poss []uint32) *Menu {
+func (me *Menu) EnableManyByPos(isEnabled bool, poss []uint) *Menu {
 	for _, pos := range poss {
 		me.ItemByPos(pos).Enable(isEnabled)
 	}
@@ -94,7 +94,7 @@ func (me *Menu) Hmenu() win.HMENU {
 // Returns the item with the given command ID.
 //
 // Does not validate if such item exists.
-func (me *Menu) ItemByCmdId(cmdId int32) *MenuItem {
+func (me *Menu) ItemByCmdId(cmdId int) *MenuItem {
 	return &MenuItem{
 		owner: me,
 		cmdId: cmdId,
@@ -104,8 +104,8 @@ func (me *Menu) ItemByCmdId(cmdId int32) *MenuItem {
 // Returns the item at the given position.
 //
 // Does not perform bound checking.
-func (me *Menu) ItemByPos(pos uint32) *MenuItem {
-	return me.ItemByCmdId(me.hMenu.GetMenuItemID(pos))
+func (me *Menu) ItemByPos(pos uint) *MenuItem {
+	return me.ItemByCmdId(int(me.hMenu.GetMenuItemID(uint32(pos))))
 }
 
 // Replaces current HMENU with another one.
@@ -134,8 +134,8 @@ func (me *Menu) ShowAtPoint(
 // Returns the submenu at the given position.
 //
 // If pos is not a submenu, returns nil.
-func (me *Menu) SubMenu(pos uint32) *Menu {
-	hSub := me.hMenu.GetSubMenu(pos)
+func (me *Menu) SubMenu(pos uint) *Menu {
+	hSub := me.hMenu.GetSubMenu(uint32(pos))
 	if hSub != 0 {
 		return &Menu{hMenu: hSub}
 	}

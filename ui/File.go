@@ -26,7 +26,7 @@ func (me *File) Close() {
 
 // Replaces all file contents, possibly resizing the file.
 func (me *File) EraseAndWrite(data []byte) *win.WinError {
-	if err := me.SetSize(uint64(len(data))); err != nil {
+	if err := me.SetSize(uint(len(data))); err != nil {
 		return err
 	}
 	if err := me.hFile.WriteFile(data); err != nil {
@@ -51,19 +51,19 @@ func (me *File) OpenOrCreate(path string) *win.WinError {
 }
 
 // Retrieves the current pointer offset.
-func (me *File) PointerOffset() uint64 {
+func (me *File) PointerOffset() uint {
 	// https://stackoverflow.com/a/17707021/6923555
 	off, err := me.hFile.SetFilePointerEx(0, co.FILE_SETPTR_CURRENT)
 	if err != nil {
 		panic(err.Error())
 	}
-	return off
+	return uint(off)
 }
 
 // Reads file data at the current internal pointer offset, which then advances.
-func (me *File) Read(numBytes uint32) ([]byte, *win.WinError) {
+func (me *File) Read(numBytes uint) ([]byte, *win.WinError) {
 	buf := make([]byte, numBytes)
-	if err := me.hFile.ReadFile(buf, numBytes); err != nil {
+	if err := me.hFile.ReadFile(buf, uint32(numBytes)); err != nil {
 		return nil, err
 	}
 	return buf, nil
@@ -98,7 +98,7 @@ func (me *File) RewindPointerOffset() *win.WinError {
 // Truncates or expands the file, according to the new size.
 //
 // Zero will empty the file.
-func (me *File) SetSize(numBytes uint64) *win.WinError {
+func (me *File) SetSize(numBytes uint) *win.WinError {
 	// Simply go beyond file limits.
 	if _, err := me.hFile.SetFilePointerEx(int64(numBytes), co.FILE_SETPTR_BEGIN); err != nil {
 		return err
@@ -110,12 +110,12 @@ func (me *File) SetSize(numBytes uint64) *win.WinError {
 }
 
 // Retrieves the files size. This value is not cached.
-func (me *File) Size() uint64 {
+func (me *File) Size() uint {
 	sz, err := me.hFile.GetFileSizeEx()
 	if err != nil {
 		panic(err.Error())
 	}
-	return sz
+	return uint(sz)
 }
 
 // Writes the bytes at current internal pointer offset, which then advances.

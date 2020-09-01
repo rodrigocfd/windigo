@@ -22,7 +22,7 @@ type Button struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Button) Create(
-	parent Window, ctrlId, x, y int32, width, height uint32,
+	parent Window, ctrlId, x, y int, width, height uint,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *Button {
 
 	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
@@ -37,7 +37,7 @@ func (me *Button) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Button) CreateSimple(
-	parent Window, ctrlId, x, y int32, width uint32, text string) *Button {
+	parent Window, ctrlId, x, y int, width uint, text string) *Button {
 
 	return me.Create(parent, ctrlId, x, y, width, 23, text,
 		co.WS_EX_NONE, co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
@@ -48,7 +48,7 @@ func (me *Button) CreateSimple(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Button) CreateSimpleDef(
-	parent Window, ctrlId, x, y int32, width uint32, text string) *Button {
+	parent Window, ctrlId, x, y int, width uint, text string) *Button {
 
 	return me.Create(parent, ctrlId, x, y, width, 23, text,
 		co.WS_EX_NONE, co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,

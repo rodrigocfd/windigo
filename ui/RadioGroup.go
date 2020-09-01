@@ -24,7 +24,7 @@ type RadioGroup struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *RadioGroup) Add(
-	parent Window, ctrlId, x, y int32, text string) *RadioGroup {
+	parent Window, ctrlId, x, y int, text string) *RadioGroup {
 
 	me.radios = append(me.radios, RadioButton{})
 	newRad := &me.radios[len(me.radios)-1]
@@ -49,7 +49,7 @@ func (me *RadioGroup) AsSlice() []Control {
 }
 
 // Returns the ID of the currently selected radio button, if any.
-func (me *RadioGroup) CheckedId() (int32, bool) {
+func (me *RadioGroup) CheckedId() (int, bool) {
 	for i := range me.radios {
 		if me.radios[i].IsChecked() {
 			return me.radios[i].Id(), true
@@ -71,25 +71,25 @@ func (me *RadioGroup) ClearChecks() *RadioGroup {
 // Returns the radio button at the given index.
 //
 // Does not perform bound checking.
-func (me *RadioGroup) RadioButton(index uint32) *RadioButton {
+func (me *RadioGroup) RadioButton(index uint) *RadioButton {
 	return &me.radios[index]
 }
 
 // Sets the currently checked radio button.
-func (me *RadioGroup) SetCheck(radioButtonId int32) *RadioGroup {
+func (me *RadioGroup) SetCheck(radioButtonId int) *RadioGroup {
 	me.ClearChecks()
 	me.radioById(radioButtonId).SetCheck()
 	return me
 }
 
 // Sets the currently checked radio button, and emulates the user click.
-func (me *RadioGroup) SetCheckAndTrigger(radioButtonId int32) *RadioGroup {
+func (me *RadioGroup) SetCheckAndTrigger(radioButtonId int) *RadioGroup {
 	me.SetCheck(radioButtonId)
 	me.radioById(radioButtonId).SetCheckAndTrigger()
 	return me
 }
 
-func (me *RadioGroup) radioById(radioButtonId int32) *RadioButton {
+func (me *RadioGroup) radioById(radioButtonId int) *RadioButton {
 	for i := range me.radios {
 		if me.radios[i].Id() == radioButtonId {
 			return &me.radios[i]

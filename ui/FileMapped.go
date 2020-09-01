@@ -17,7 +17,7 @@ type FileMapped struct {
 	objFile  File
 	hMap     win.HFILEMAP
 	pMem     win.HFILEMAP_PTR
-	sz       uint64
+	sz       uint
 	readOnly bool // necessary for SetSize()
 }
 
@@ -64,7 +64,7 @@ func (me *FileMapped) CopyAllData() []byte {
 
 // Copies file data into a []byte and returns it, starting from offset, with
 // given length.
-func (me *FileMapped) CopyDataChunk(offset, length uint64) []byte {
+func (me *FileMapped) CopyDataChunk(offset, length uint) []byte {
 	hotSlice := me.HotSlice()
 	buf := make([]byte, length)
 	copy(buf, hotSlice[offset:offset+length])
@@ -75,7 +75,7 @@ func (me *FileMapped) CopyDataChunk(offset, length uint64) []byte {
 // file.
 //
 // Internally, the file is unmapped, then remapped back into memory.
-func (me *FileMapped) SetSize(numBytes uint64) *win.WinError {
+func (me *FileMapped) SetSize(numBytes uint) *win.WinError {
 	me.pMem.UnmapViewOfFile()
 	me.hMap.CloseHandle()
 	if err := me.objFile.SetSize(numBytes); err != nil {
@@ -85,7 +85,7 @@ func (me *FileMapped) SetSize(numBytes uint64) *win.WinError {
 }
 
 // Retrieves the file size. This value is cached.
-func (me *FileMapped) Size() uint64 {
+func (me *FileMapped) Size() uint {
 	return me.sz
 }
 

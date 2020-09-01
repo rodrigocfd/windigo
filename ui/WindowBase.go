@@ -76,7 +76,7 @@ func (me *_WindowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 }
 
 func (me *_WindowBase) createWindow(uiName string, exStyle co.WS_EX,
-	className, title string, style co.WS, x, y int32, width, height uint32,
+	className, title string, style co.WS, x, y int, width, height uint,
 	parent Window, menu win.HMENU, hInst win.HINSTANCE) {
 
 	if me.hwnd != 0 {
@@ -92,7 +92,8 @@ func (me *_WindowBase) createWindow(uiName string, exStyle co.WS_EX,
 	me.defaultMessageHandling()
 
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
-	win.CreateWindowEx(exStyle, className, title, style, x, y, width, height,
+	win.CreateWindowEx(exStyle, className, title, style,
+		int32(x), int32(y), uint32(width), uint32(height),
 		hwndParent, menu, hInst, unsafe.Pointer(me)) // pass pointer to our object
 }
 

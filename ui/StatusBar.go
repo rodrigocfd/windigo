@@ -23,12 +23,12 @@ type StatusBar struct {
 }
 
 type statusBarPart struct { // describes each added part
-	sizePixels   uint32
-	resizeWeight uint32
+	sizePixels   uint
+	resizeWeight uint
 }
 
 // Adds a part which has a fixed width.
-func (me *StatusBar) AddFixedPart(sizePixels uint32) *StatusBar {
+func (me *StatusBar) AddFixedPart(sizePixels uint) *StatusBar {
 	me.parts = append(me.parts, statusBarPart{
 		sizePixels: sizePixels,
 	})
@@ -40,7 +40,7 @@ func (me *StatusBar) AddFixedPart(sizePixels uint32) *StatusBar {
 // Suppose you have 3 parts, respectively with weights of 1, 1 and 2.
 // If available client area is 400px, respective part widths will be 100, 100
 // and 200px.
-func (me *StatusBar) AddResizablePart(resizeWeight uint32) *StatusBar {
+func (me *StatusBar) AddResizablePart(resizeWeight uint) *StatusBar {
 	me.parts = append(me.parts, statusBarPart{
 		resizeWeight: resizeWeight,
 	})
@@ -54,12 +54,12 @@ func (me *StatusBar) Adjust(p WmSize) {
 	}
 	me.firstAdjust = true
 
-	cxParent := uint32(p.ClientAreaSize().Cx) // available width
-	me.Hwnd().SendMessage(co.WM_SIZE, 0, 0)   // tell statusbar to fit parent
+	cxParent := uint(p.ClientAreaSize().Cx) // available width
+	me.Hwnd().SendMessage(co.WM_SIZE, 0, 0) // tell statusbar to fit parent
 
 	// Find the space to be divided among variable-width parts, and total weight
 	// of variable-width parts.
-	totalWeight := uint32(0)
+	totalWeight := uint(0)
 	cxVariable := cxParent
 
 	for _, part := range me.parts {
@@ -71,7 +71,7 @@ func (me *StatusBar) Adjust(p WmSize) {
 	}
 
 	// Fill right edges array with the right edge of each part.
-	rightEdges := make([]uint32, len(me.parts))
+	rightEdges := make([]uint, len(me.parts))
 	cxTotal := cxParent
 
 	for i := len(me.parts) - 1; i >= 0; i-- {
@@ -91,7 +91,7 @@ func (me *StatusBar) Adjust(p WmSize) {
 // Calls CreateWindowEx().
 //
 // Control will be docked at bottom of parent window.
-func (me *StatusBar) Create(parent Window, ctrlId int32) *StatusBar {
+func (me *StatusBar) Create(parent Window, ctrlId int) *StatusBar {
 	style := co.WS_CHILD | co.WS_VISIBLE
 
 	parentStyle := parent.Hwnd().GetStyle()
@@ -109,21 +109,21 @@ func (me *StatusBar) Create(parent Window, ctrlId int32) *StatusBar {
 // Retrieves the HICON of the part.
 //
 // The status bar won't destroy the icon after use.
-func (me *StatusBar) Icon(part uint32) win.HICON {
+func (me *StatusBar) Icon(part uint) win.HICON {
 	return win.HICON(
 		me.sendSbMessage(co.SB_GETICON, win.WPARAM(part), 0),
 	)
 }
 
 // The status bar won't destroy the icon after use.
-func (me *StatusBar) SetIcon(part uint32, hIcon win.HICON) *StatusBar {
+func (me *StatusBar) SetIcon(part uint, hIcon win.HICON) *StatusBar {
 	me.sendSbMessage(co.SB_SETICON,
 		win.WPARAM(part), win.LPARAM(hIcon))
 	return me
 }
 
 // Sets the text of the part.
-func (me *StatusBar) SetText(part uint32, text string) *StatusBar {
+func (me *StatusBar) SetText(part uint, text string) *StatusBar {
 	if !me.firstAdjust { // text is painted only after first adjust
 		me.Adjust(WmSize{ // manually construct param
 			_Wm{
@@ -138,7 +138,7 @@ func (me *StatusBar) SetText(part uint32, text string) *StatusBar {
 }
 
 // Retrieves the text of the part.
-func (me *StatusBar) Text(part uint32) string {
+func (me *StatusBar) Text(part uint) string {
 	len := uint16(me.sendSbMessage(co.SB_GETTEXTLENGTH, win.WPARAM(part), 0))
 	if len == 0 {
 		return ""

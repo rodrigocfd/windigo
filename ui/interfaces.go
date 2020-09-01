@@ -13,7 +13,7 @@ import (
 // Any child control with HWND and ID.
 type Control interface {
 	Window
-	Id() int32
+	Id() int
 }
 
 // Any window with a HWND handle.

@@ -22,7 +22,7 @@ type ListView struct {
 }
 
 // Appends a new column, returns the new column.
-func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
+func (me *ListView) AddColumn(text string, width uint) *ListViewColumn {
 	textBuf := win.StrToSlice(text)
 	lvc := win.LVCOLUMN{
 		Mask:    co.LVCF_TEXT | co.LVCF_WIDTH,
@@ -34,11 +34,11 @@ func (me *ListView) AddColumn(text string, width uint32) *ListViewColumn {
 	if int(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTCOLUMN failed \"%s\".", text))
 	}
-	return me.Column(uint32(newIdx))
+	return me.Column(uint(newIdx))
 }
 
 // Appends many columns at once.
-func (me *ListView) AddColumns(texts []string, widths []uint32) *ListView {
+func (me *ListView) AddColumns(texts []string, widths []uint) *ListView {
 	if len(texts) != len(widths) {
 		panic("ColumnAdd texts/widths mismatch.")
 	}
@@ -62,14 +62,14 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 	if int(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTITEM failed \"%s\".", text))
 	}
-	return me.Item(uint32(newIdx))
+	return me.Item(uint(newIdx))
 }
 
 // Adds a new item specifying the text of many columns at once.
 func (me *ListView) AddItemMultiColumn(textsOfEachColumn []string) *ListView {
 	newItem := me.AddItem(textsOfEachColumn[0])
 	for i := 1; i < len(textsOfEachColumn); i++ {
-		newItem.SetSubItemText(uint32(i), textsOfEachColumn[i])
+		newItem.SetSubItemText(uint(i), textsOfEachColumn[i])
 	}
 	return me
 }
@@ -77,8 +77,8 @@ func (me *ListView) AddItemMultiColumn(textsOfEachColumn []string) *ListView {
 // Adds a new item; returns the newly inserted item.
 //
 // Before call this method, attach an image list and load its icons.
-func (me *ListView) AddItemWithIcon(text string,
-	iconIndex uint32) *ListViewItem {
+func (me *ListView) AddItemWithIcon(
+	text string, iconIndex int) *ListViewItem {
 
 	textBuf := win.StrToSlice(text)
 	lvi := win.LVITEM{
@@ -92,7 +92,7 @@ func (me *ListView) AddItemWithIcon(text string,
 	if int(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTITEM failed \"%s\".", text))
 	}
-	return me.Item(uint32(newIdx))
+	return me.Item(uint(newIdx))
 }
 
 // Adds many items at once.
@@ -106,7 +106,7 @@ func (me *ListView) AddItems(texts []string) *ListView {
 // Returns the column at the given index.
 //
 // Does not perform bound checking.
-func (me *ListView) Column(index uint32) *ListViewColumn {
+func (me *ListView) Column(index uint) *ListViewColumn {
 	return &ListViewColumn{
 		owner: me,
 		index: index,
@@ -118,7 +118,7 @@ func (me *ListView) Column(index uint32) *ListViewColumn {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ListView) Create(
-	parent Window, ctrlId, x, y int32, width, height uint32,
+	parent Window, ctrlId, x, y int, width, height uint,
 	exStyles co.WS_EX, styles co.WS,
 	lvExStyles co.LVS_EX, lvStyles co.LVS) *ListView {
 
@@ -139,7 +139,7 @@ func (me *ListView) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ListView) CreateReport(
-	parent Window, ctrlId, x, y int32, width, height uint32) *ListView {
+	parent Window, ctrlId, x, y int, width, height uint) *ListView {
 
 	return me.Create(parent, ctrlId, x, y, width, height,
 		co.WS_EX_CLIENTEDGE,
@@ -152,7 +152,7 @@ func (me *ListView) CreateReport(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ListView) CreateSortedReport(
-	parent Window, ctrlId, x, y int32, width, height uint32) *ListView {
+	parent Window, ctrlId, x, y int, width, height uint) *ListView {
 
 	return me.Create(parent, ctrlId, x, y, width, height,
 		co.WS_EX_CLIENTEDGE,
@@ -162,7 +162,7 @@ func (me *ListView) CreateSortedReport(
 }
 
 // Retrieves the number of columns with LVM_GETHEADER and HDM_GETITEMCOUNT.
-func (me *ListView) ColumnCount() uint32 {
+func (me *ListView) ColumnCount() uint {
 	hHeader := win.HWND(me.sendLvmMessage(co.LVM_GETHEADER, 0, 0))
 	if hHeader == 0 {
 		panic("LVM_GETHEADER failed.")
@@ -172,7 +172,7 @@ func (me *ListView) ColumnCount() uint32 {
 	if int(count) == -1 {
 		panic("HDM_GETITEMCOUNT failed.")
 	}
-	return uint32(count)
+	return uint(count)
 }
 
 // Deletes all items with LVM_DELETEALLITEMS.
@@ -219,7 +219,7 @@ func (me *ListView) FindItem(text string) *ListViewItem {
 	}
 	return &ListViewItem{
 		owner: me,
-		index: uint32(idx),
+		index: uint(idx),
 	}
 }
 
@@ -231,7 +231,7 @@ func (me *ListView) FocusedItem() *ListViewItem {
 	if idx == -1 {
 		return nil
 	}
-	return me.Item(uint32(idx))
+	return me.Item(uint(idx))
 }
 
 // Sends LVM_HITTEST to determine the item at specified position, if any.
@@ -265,7 +265,7 @@ func (me *ListView) IsGroupViewEnabled() bool {
 //
 // Note: When an item is deleted, all other items may become invalid, because
 // they keep the sequential index.
-func (me *ListView) Item(index uint32) *ListViewItem {
+func (me *ListView) Item(index uint) *ListViewItem {
 	return &ListViewItem{
 		owner: me,
 		index: index,
@@ -273,16 +273,16 @@ func (me *ListView) Item(index uint32) *ListViewItem {
 }
 
 // Retrieves the number of items with LVM_GETITEMCOUNT.
-func (me *ListView) ItemCount() uint32 {
+func (me *ListView) ItemCount() uint {
 	count := me.sendLvmMessage(co.LVM_GETITEMCOUNT, 0, 0)
 	if int(count) == -1 {
 		panic("LVM_GETITEMCOUNT failed.")
 	}
-	return uint32(count)
+	return uint(count)
 }
 
 // Sends LVM_SCROLL.
-func (me *ListView) Scroll(pxHorz, pxVert int32) *ListView {
+func (me *ListView) Scroll(pxHorz, pxVert int) *ListView {
 	ret := me.sendLvmMessage(co.LVM_SCROLL,
 		win.WPARAM(pxHorz), win.LPARAM(pxVert))
 	if ret == 0 {
@@ -312,12 +312,12 @@ func (me *ListView) SelectAllItems(isSelected bool) *ListView {
 }
 
 // Retrieves the number of selected items with LVM_GETSELECTEDCOUNT.
-func (me *ListView) SelectedItemCount() uint32 {
+func (me *ListView) SelectedItemCount() uint {
 	count := me.sendLvmMessage(co.LVM_GETSELECTEDCOUNT, 0, 0)
 	if int(count) == -1 {
 		panic("LVM_GETSELECTEDCOUNT failed.")
 	}
-	return uint32(count)
+	return uint(count)
 }
 
 // Retrieves the currently selected items, sorted by index.
@@ -330,13 +330,13 @@ func (me *ListView) SelectedItems() []ListViewItem {
 		if idx == -1 {
 			break
 		}
-		items = append(items, *me.Item(uint32(idx)))
+		items = append(items, *me.Item(uint(idx)))
 	}
 	return items
 }
 
 // Retrieves the texts of the selected items, under the given column, if any.
-func (me *ListView) SelectedItemTexts(columnIndex uint32) []string {
+func (me *ListView) SelectedItemTexts(columnIndex uint) []string {
 	selItems := me.SelectedItems()
 	texts := make([]string, 0, len(selItems))
 	for _, item := range selItems {
@@ -388,13 +388,13 @@ func (me *ListView) SetView(view co.LV_VIEW) *ListView {
 
 // Returns the width of a string using list view current font, with
 // LVM_GETSTRINGWIDTH.
-func (me *ListView) StringWidth(text string) uint32 {
+func (me *ListView) StringWidth(text string) uint {
 	ret := me.sendLvmMessage(co.LVM_GETSTRINGWIDTH,
 		0, win.LPARAM(unsafe.Pointer(win.StrToPtr(text))))
 	if ret == 0 {
 		panic("LVM_GETSTRINGWIDTH failed.")
 	}
-	return uint32(ret)
+	return uint(ret)
 }
 
 // Retrieves the topmost visible item with LVM_GETTOPINDEX or nil if none.
@@ -403,7 +403,7 @@ func (me *ListView) TopMostVisibleItem() *ListViewItem {
 	if idx == -1 {
 		return nil
 	}
-	return me.Item(uint32(idx))
+	return me.Item(uint(idx))
 }
 
 // Retrieves current view with LVM_GETVIEW.
@@ -466,7 +466,7 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 
 		if lvhti.IItem != -1 { // an item was right-clicked
 			if !hasCtrl && !hasShift {
-				clickedItem := me.Item(uint32(lvhti.IItem))
+				clickedItem := me.Item(uint(lvhti.IItem))
 				if !clickedItem.IsSelected() {
 					me.SelectAllItems(false)
 					clickedItem.Select(true)

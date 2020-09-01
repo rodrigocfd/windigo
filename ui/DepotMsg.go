@@ -18,7 +18,7 @@ import (
 // Keeps all user message handlers.
 type _DepotMsg struct {
 	mapMsgs map[co.WM]func(p Wm) uintptr
-	mapCmds map[int32]func(p WmCommand)
+	mapCmds map[int]func(p WmCommand)
 }
 
 func (me *_DepotMsg) addMsg(msg co.WM, userFunc func(p Wm) uintptr) {
@@ -28,9 +28,9 @@ func (me *_DepotMsg) addMsg(msg co.WM, userFunc func(p Wm) uintptr) {
 	me.mapMsgs[msg] = userFunc
 }
 
-func (me *_DepotMsg) addCmd(cmd int32, userFunc func(p WmCommand)) {
+func (me *_DepotMsg) addCmd(cmd int, userFunc func(p WmCommand)) {
 	if me.mapCmds == nil { // guard
-		me.mapCmds = make(map[int32]func(p WmCommand), 4) // arbitrary capacity
+		me.mapCmds = make(map[int]func(p WmCommand), 4) // arbitrary capacity
 	}
 	me.mapCmds[cmd] = userFunc
 }
@@ -80,7 +80,7 @@ func (me *_DepotMsg) WmActivateApp(userFunc func(p WmActivateApp)) {
 type WmActivateApp struct{ _Wm }
 
 func (p WmActivateApp) IsBeingActivated() bool { return p.WParam != 0 }
-func (p WmActivateApp) ThreadId() uint32       { return uint32(p.LParam) }
+func (p WmActivateApp) ThreadId() uint         { return uint(p.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-appcommand
 func (me *_DepotMsg) WmAppCommand(userFunc func(p WmAppCommand)) {
@@ -143,9 +143,9 @@ func (me *_DepotMsg) WmCharToItem(userFunc func(p WmCharToItem)) {
 
 type WmCharToItem struct{ _Wm }
 
-func (p WmCharToItem) CharCode() uint16        { return p.WParam.LoWord() }
-func (p WmCharToItem) CurrentCaretPos() uint16 { return p.WParam.HiWord() }
-func (p WmCharToItem) HwndListBox() win.HWND   { return win.HWND(p.LParam) }
+func (p WmCharToItem) CharCode() rune        { return rune(p.WParam.LoWord()) }
+func (p WmCharToItem) CurrentCaretPos() uint { return uint(p.WParam.HiWord()) }
+func (p WmCharToItem) HwndListBox() win.HWND { return win.HWND(p.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-childactivate
 func (me *_DepotMsg) WmChildActivate(userFunc func()) {
@@ -166,23 +166,23 @@ func (me *_DepotMsg) WmClose(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
-func (me *_DepotMsg) WmCommand(cmd int32, userFunc func(p WmCommand)) {
+func (me *_DepotMsg) WmCommand(cmd int, userFunc func(p WmCommand)) {
 	me.addCmd(cmd, userFunc)
 }
 
 type WmCommand struct{ _Wm }
 
-func (p WmCommand) IsFromMenu() bool         { return p.WParam.HiWord() == 0 }
-func (p WmCommand) IsFromAccelerator() bool  { return p.WParam.HiWord() == 1 }
-func (p WmCommand) IsFromControl() bool      { return !p.IsFromMenu() && !p.IsFromAccelerator() }
-func (p WmCommand) MenuId() int32            { return p.ControlId() }
-func (p WmCommand) AcceleratorId() int32     { return p.ControlId() }
-func (p WmCommand) ControlId() int32         { return int32(p.WParam.LoWord()) }
-func (p WmCommand) ControlNotifCode() uint16 { return p.WParam.HiWord() }
-func (p WmCommand) ControlHwnd() win.HWND    { return win.HWND(p.LParam) }
+func (p WmCommand) IsFromMenu() bool        { return p.WParam.HiWord() == 0 }
+func (p WmCommand) IsFromAccelerator() bool { return p.WParam.HiWord() == 1 }
+func (p WmCommand) IsFromControl() bool     { return !p.IsFromMenu() && !p.IsFromAccelerator() }
+func (p WmCommand) MenuId() int             { return p.ControlId() }
+func (p WmCommand) AcceleratorId() int      { return p.ControlId() }
+func (p WmCommand) ControlId() int          { return int(p.WParam.LoWord()) }
+func (p WmCommand) ControlNotifCode() int   { return int(p.WParam.HiWord()) }
+func (p WmCommand) ControlHwnd() win.HWND   { return win.HWND(p.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-compareitem
-func (me *_DepotMsg) WmCompareItem(userFunc func(p WmCompareItem) int32) {
+func (me *_DepotMsg) WmCompareItem(userFunc func(p WmCompareItem) int) {
 	me.addMsg(co.WM_COMPAREITEM, func(p Wm) uintptr {
 		return uintptr(userFunc(WmCompareItem(p)))
 	})
@@ -190,7 +190,7 @@ func (me *_DepotMsg) WmCompareItem(userFunc func(p WmCompareItem) int32) {
 
 type WmCompareItem struct{ _Wm }
 
-func (p WmCompareItem) ControlId() int32 { return int32(p.WParam) }
+func (p WmCompareItem) ControlId() int { return int(p.WParam) }
 func (p WmCompareItem) CompareItemStruct() *win.COMPAREITEMSTRUCT {
 	return (*win.COMPAREITEMSTRUCT)(unsafe.Pointer(p.LParam))
 }
@@ -209,7 +209,7 @@ func (p WmContextMenu) RightClickedWindow() win.HWND { return win.HWND(p.WParam)
 func (p WmContextMenu) CursorPos() win.POINT         { return p.LParam.MakePoint() }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-create
-func (me *_DepotMsg) WmCreate(userFunc func(p WmCreate) int32) {
+func (me *_DepotMsg) WmCreate(userFunc func(p WmCreate) int) {
 	me.addMsg(co.WM_CREATE, func(p Wm) uintptr {
 		return uintptr(userFunc(WmCreate(p)))
 	})
@@ -295,7 +295,7 @@ func (me *_DepotMsg) WmDeleteItem(userFunc func(p WmDeleteItem)) {
 
 type WmDeleteItem struct{ _Wm }
 
-func (p WmDeleteItem) ControlId() int32 { return int32(p.WParam) }
+func (p WmDeleteItem) ControlId() int { return int(p.WParam) }
 func (p WmDeleteItem) DeleteItemStruct() *win.DELETEITEMSTRUCT {
 	return (*win.DELETEITEMSTRUCT)(unsafe.Pointer(p.LParam))
 }
@@ -326,8 +326,8 @@ func (me *_DepotMsg) WmDisplayChange(userFunc func(p WmDisplayChange)) {
 
 type WmDisplayChange struct{ _Wm }
 
-func (p WmDisplayChange) BitsPerPixel() uint32 { return uint32(p.WParam) }
-func (p WmDisplayChange) Size() win.SIZE       { return p.LParam.MakeSize() }
+func (p WmDisplayChange) BitsPerPixel() uint { return uint(p.WParam) }
+func (p WmDisplayChange) Size() win.SIZE     { return p.LParam.MakeSize() }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-drawclipboard
 func (me *_DepotMsg) WmDrawClipboard(userFunc func()) {
@@ -347,7 +347,7 @@ func (me *_DepotMsg) WmDrawItem(userFunc func(p WmDrawItem)) {
 
 type WmDrawItem struct{ _Wm }
 
-func (p WmDrawItem) ControlId() int32 { return int32(p.WParam) }
+func (p WmDrawItem) ControlId() int   { return int(p.WParam) }
 func (p WmDrawItem) IsFromMenu() bool { return p.WParam == 0 }
 func (p WmDrawItem) DrawItemStruct() *win.DRAWITEMSTRUCT {
 	return (*win.DRAWITEMSTRUCT)(unsafe.Pointer(p.LParam))
@@ -417,7 +417,7 @@ func (me *_DepotMsg) WmEnterSizeMove(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-erasebkgnd
-func (me *_DepotMsg) WmEraseBkGnd(userFunc func(p WmEraseBkGnd) int32) {
+func (me *_DepotMsg) WmEraseBkGnd(userFunc func(p WmEraseBkGnd) int) {
 	me.addMsg(co.WM_ERASEBKGND, func(p Wm) uintptr {
 		return uintptr(userFunc(WmEraseBkGnd(p)))
 	})
@@ -512,9 +512,9 @@ func (me *_DepotMsg) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
 
 type WmInitMenuPopup struct{ _Wm }
 
-func (p WmInitMenuPopup) Hmenu() win.HMENU        { return win.HMENU(p.WParam) }
-func (p WmInitMenuPopup) MenuRelativePos() uint16 { return p.LParam.LoWord() }
-func (p WmInitMenuPopup) IsWindowMenu() bool      { return p.LParam.HiWord() != 0 }
+func (p WmInitMenuPopup) Hmenu() win.HMENU   { return win.HMENU(p.WParam) }
+func (p WmInitMenuPopup) Pos() uint          { return uint(p.LParam.LoWord()) }
+func (p WmInitMenuPopup) IsWindowMenu() bool { return p.LParam.HiWord() != 0 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-keydown
 func (me *_DepotMsg) WmKeyDown(userFunc func(p WmKeyDown)) {
@@ -617,7 +617,7 @@ func (me *_DepotMsg) WmMenuChar(userFunc func(p WmMenuChar) co.MNC) {
 
 type WmMenuChar struct{ _Wm }
 
-func (p WmMenuChar) CharCode() uint16      { return p.WParam.LoWord() }
+func (p WmMenuChar) CharCode() rune        { return rune(p.WParam.LoWord()) }
 func (p WmMenuChar) ActiveMenuType() co.MF { return co.MF(p.WParam.HiWord()) }
 func (p WmMenuChar) ActiveMenu() win.HMENU { return win.HMENU(p.LParam) }
 
@@ -631,8 +631,8 @@ func (me *_DepotMsg) WmMenuCommand(userFunc func(p WmMenuCommand)) {
 
 type WmMenuCommand struct{ _Wm }
 
-func (p WmMenuCommand) ItemIndex() uint16 { return uint16(p.WParam) }
-func (p WmMenuCommand) Hmenu() win.HMENU  { return win.HMENU(p.LParam) }
+func (p WmMenuCommand) ItemIndex() uint  { return uint(p.WParam) }
+func (p WmMenuCommand) Hmenu() win.HMENU { return win.HMENU(p.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menuselect
 func (me *_DepotMsg) WmMenuSelect(userFunc func(p WmMenuSelect)) {
@@ -644,7 +644,7 @@ func (me *_DepotMsg) WmMenuSelect(userFunc func(p WmMenuSelect)) {
 
 type WmMenuSelect struct{ _Wm }
 
-func (p WmMenuSelect) Item() uint16     { return p.WParam.LoWord() }
+func (p WmMenuSelect) Item() uint       { return uint(p.WParam.LoWord()) }
 func (p WmMenuSelect) Flags() co.MF     { return co.MF(p.WParam.HiWord()) }
 func (p WmMenuSelect) Hmenu() win.HMENU { return win.HMENU(p.LParam) }
 

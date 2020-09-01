@@ -17,27 +17,27 @@ import (
 // A single column of a list view control.
 type ListViewColumn struct {
 	owner *ListView
-	index uint32
+	index uint
 }
 
 // Resizes the column to fill the remaining space.
 func (me *ListViewColumn) FillRoom() *ListViewColumn {
 	numCols := me.owner.ColumnCount()
-	cxUsed := uint32(0)
+	cxUsed := uint(0)
 
-	for i := uint32(0); i < numCols; i++ {
+	for i := uint(0); i < numCols; i++ {
 		if i != me.index {
 			cxUsed += me.owner.Column(i).Width() // retrieve cx of each column, but us
 		}
 	}
 
-	rc := me.owner.Hwnd().GetClientRect()  // list view client area
-	me.SetWidth(uint32(rc.Right) - cxUsed) // fill available space
+	rc := me.owner.Hwnd().GetClientRect() // list view client area
+	me.SetWidth(uint(rc.Right) - cxUsed)  // fill available space
 	return me
 }
 
 // Returns the index of this column.
-func (me *ListViewColumn) Index() uint32 {
+func (me *ListViewColumn) Index() uint {
 	return me.index
 }
 
@@ -58,7 +58,7 @@ func (me *ListViewColumn) SetText(text string) *ListViewColumn {
 }
 
 // Sends LVM_SETCOLUMNWIDTH.
-func (me *ListViewColumn) SetWidth(width uint32) *ListViewColumn {
+func (me *ListViewColumn) SetWidth(width uint) *ListViewColumn {
 	me.owner.sendLvmMessage(co.LVM_SETCOLUMNWIDTH,
 		win.WPARAM(me.index), win.LPARAM(width))
 	return me
@@ -82,10 +82,10 @@ func (me *ListViewColumn) Text() string {
 }
 
 // Sends LVM_GETCOLUMNWIDTH.
-func (me *ListViewColumn) Width() uint32 {
+func (me *ListViewColumn) Width() uint {
 	cx := me.owner.sendLvmMessage(co.LVM_GETCOLUMNWIDTH, win.WPARAM(me.index), 0)
 	if cx == 0 {
 		panic("LVM_GETCOLUMNWIDTH failed.")
 	}
-	return uint32(cx)
+	return uint(cx)
 }
