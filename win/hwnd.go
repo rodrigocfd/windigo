@@ -17,6 +17,16 @@ import (
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hwnd
 type HWND HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint
+func (hWnd HWND) BeginPaint(lpPaint *PAINTSTRUCT) HDC {
+	ret, _, _ := syscall.Syscall(proc.BeginPaint.Addr(), 2,
+		uintptr(hWnd), uintptr(unsafe.Pointer(lpPaint)), 0)
+	if ret == 0 {
+		panic("BeginPaint failed: no display device context is available.")
+	}
+	return HDC(ret)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clienttoscreen
 func (hWnd HWND) ClientToScreenPt(point *POINT) {
 	ret, _, _ := syscall.Syscall(proc.ClientToScreen.Addr(), 2,
@@ -109,6 +119,12 @@ func (hWnd HWND) EnableWindow(bEnable bool) bool {
 	ret, _, _ := syscall.Syscall(proc.EnableWindow.Addr(), 2,
 		uintptr(hWnd), _Util.BoolToUintptr(bEnable), 0)
 	return ret != 0 // the window was previously disabled?
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endpaint
+func (hWnd HWND) EndPaint(lpPaint *PAINTSTRUCT) {
+	syscall.Syscall(proc.EndPaint.Addr(), 2,
+		uintptr(hWnd), uintptr(unsafe.Pointer(lpPaint)), 0)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumchildwindows

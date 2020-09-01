@@ -214,6 +214,16 @@ type OSVERSIONINFOEX struct {
 	WReserve            uint8
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-paintstruct
+type PAINTSTRUCT struct {
+	Hdc         HDC
+	FErase      int32 // BOOL
+	RcPaint     RECT
+	FRestore    int32 // BOOL
+	FIncUpdate  int32 // BOOL
+	RgbReserved [32]byte
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-point
 type POINT struct {
 	X, Y int32

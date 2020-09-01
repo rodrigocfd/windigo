@@ -15,6 +15,7 @@ var (
 
 	AppendMenu                    = dllUser32.NewProc("AppendMenuW")
 	BeginDeferWindowPos           = dllUser32.NewProc("BeginDeferWindowPos")
+	BeginPaint                    = dllUser32.NewProc("BeginPaint")
 	CallNextHookEx                = dllUser32.NewProc("CallNextHookEx")
 	CheckMenuItem                 = dllUser32.NewProc("CheckMenuItem")
 	CheckMenuRadioItem            = dllUser32.NewProc("CheckMenuRadioItem")
@@ -39,6 +40,7 @@ var (
 	EnableWindow                  = dllUser32.NewProc("EnableWindow")
 	EndDeferWindowPos             = dllUser32.NewProc("EndDeferWindowPos")
 	EndMenu                       = dllUser32.NewProc("EndMenu")
+	EndPaint                      = dllUser32.NewProc("EndPaint")
 	EnumChildWindows              = dllUser32.NewProc("EnumChildWindows")
 	EnumDisplayMonitors           = dllUser32.NewProc("EnumDisplayMonitors")
 	EnumWindows                   = dllUser32.NewProc("EnumWindows")
