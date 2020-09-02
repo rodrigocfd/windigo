@@ -53,6 +53,16 @@ func (me *_DepotMsg) processMessage(msg co.WM, p Wm) (uintptr, bool) {
 
 //------------------------------------------------------------------------------
 
+// Handles a raw, unspecific window message. There will be no treatment of
+// WPARAM/LPARAM data, you'll have to unpack all the information manually. This
+// is very dangerous.
+//
+// Unless you have a very good reason, always prefer the specific message
+// handlers.
+func (me *_DepotMsg) Wm(message co.WM, userFunc func(p Wm) uintptr) {
+	me.addMsg(message, userFunc)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-activate
 //
 // Warning: default handled in WindowMain.
