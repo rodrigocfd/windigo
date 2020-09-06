@@ -57,6 +57,11 @@ func (p _WmKey) IsExtendedKey() bool       { return (p.LParam.HiByteHiWord() & 0
 func (p _WmKey) HasAltKey() bool           { return (p.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
 func (p _WmKey) IsKeyDownBeforeSend() bool { return (p.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
 
+type _WmMenu struct{ _Wm }
+
+func (p _WmMenu) ItemIndex() uint  { return uint(p.WParam) }
+func (p _WmMenu) Hmenu() win.HMENU { return win.HMENU(p.LParam) }
+
 type _WmScroll struct{ _Wm }
 
 func (p _WmScroll) ScrollBoxPos() uint      { return uint(p.WParam.HiWord()) }

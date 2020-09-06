@@ -418,6 +418,18 @@ type WmEndSession struct{ _Wm }
 func (p WmEndSession) IsSessionBeingEnded() bool { return p.WParam != 0 }
 func (p WmEndSession) Event() co.ENDSESSION      { return co.ENDSESSION(p.LParam) }
 
+// https://docs.microsoft.com/en-us/windows/win32/menurc/wm-entermenuloop
+func (me *_DepotMsg) WmEnterMenuLoop(userFunc func(p WmEnterMenuLoop)) {
+	me.addMsg(co.WM_ENTERMENULOOP, func(p Wm) uintptr {
+		userFunc(WmEnterMenuLoop(p))
+		return 0
+	})
+}
+
+type WmEnterMenuLoop struct{ _Wm }
+
+func (p WmEnterMenuLoop) IsTrackPopupMenu() bool { return p.WParam != 0 }
+
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-entersizemove
 func (me *_DepotMsg) WmEnterSizeMove(userFunc func()) {
 	me.addMsg(co.WM_ENTERSIZEMOVE, func(p Wm) uintptr {
@@ -436,6 +448,18 @@ func (me *_DepotMsg) WmEraseBkGnd(userFunc func(p WmEraseBkGnd) int) {
 type WmEraseBkGnd struct{ _Wm }
 
 func (p WmEraseBkGnd) Hdc() win.HDC { return win.HDC(p.WParam) }
+
+// https://docs.microsoft.com/en-us/windows/win32/menurc/wm-exitmenuloop
+func (me *_DepotMsg) WmExitMenuLoop(userFunc func(p WmExitMenuLoop)) {
+	me.addMsg(co.WM_EXITMENULOOP, func(p Wm) uintptr {
+		userFunc(WmExitMenuLoop(p))
+		return 0
+	})
+}
+
+type WmExitMenuLoop struct{ _Wm }
+
+func (p WmExitMenuLoop) IsShortcutMenu() bool { return p.WParam != 0 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-exitsizemove
 func (me *_DepotMsg) WmExitSizeMove(userFunc func()) {
@@ -474,6 +498,20 @@ func (me *_DepotMsg) WmGetFont(userFunc func() win.HFONT) {
 	me.addMsg(co.WM_FONTCHANGE, func(p Wm) uintptr {
 		return uintptr(userFunc())
 	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/menurc/wm-gettitlebarinfoex
+func (me *_DepotMsg) WmGetTitleBarInfoEx(userFunc func(WmGetTitleBarInfoEx)) {
+	me.addMsg(co.WM_GETTITLEBARINFOEX, func(p Wm) uintptr {
+		userFunc(WmGetTitleBarInfoEx(p))
+		return 0
+	})
+}
+
+type WmGetTitleBarInfoEx struct{ _Wm }
+
+func (p WmHelp) TitleBarInfoEx() *win.TITLEBARINFOEX {
+	return (*win.TITLEBARINFOEX)(unsafe.Pointer(p.LParam))
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/shell/wm-help
@@ -634,15 +672,21 @@ func (p WmMenuChar) ActiveMenu() win.HMENU { return win.HMENU(p.LParam) }
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menucommand
 func (me *_DepotMsg) WmMenuCommand(userFunc func(p WmMenuCommand)) {
 	me.addMsg(co.WM_MENUCOMMAND, func(p Wm) uintptr {
-		userFunc(WmMenuCommand(p))
+		userFunc(WmMenuCommand{_WmMenu(Wm(p))})
 		return 0
 	})
 }
 
-type WmMenuCommand struct{ _Wm }
+type WmMenuCommand struct{ _WmMenu }
 
-func (p WmMenuCommand) ItemIndex() uint  { return uint(p.WParam) }
-func (p WmMenuCommand) Hmenu() win.HMENU { return win.HMENU(p.LParam) }
+// https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menudrag
+func (me *_DepotMsg) WmMenuDrag(userFunc func(p WmMenuDrag) co.MND) {
+	me.addMsg(co.WM_MENUDRAG, func(p Wm) uintptr {
+		return uintptr(userFunc(WmMenuDrag{_WmMenu(Wm(p))}))
+	})
+}
+
+type WmMenuDrag struct{ _WmMenu }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menuselect
 func (me *_DepotMsg) WmMenuSelect(userFunc func(p WmMenuSelect)) {

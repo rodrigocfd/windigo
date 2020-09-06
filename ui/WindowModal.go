@@ -12,6 +12,7 @@ import (
 )
 
 // Modal popup window.
+//
 // Allows message and notification handling.
 type WindowModal struct {
 	_WindowBase

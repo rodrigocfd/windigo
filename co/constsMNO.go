@@ -179,6 +179,14 @@ const (
 	MNC_SELECT  MNC = 3
 )
 
+// WM_MENUDRAG return value.
+type MND uint32
+
+const (
+	MND_CONTINUE MND = 0
+	MND_ENDMENU  MND = 1
+)
+
 // MENUINFO dwStyle.
 type MNS uint32
 

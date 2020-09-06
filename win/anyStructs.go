@@ -285,6 +285,14 @@ type TIME_ZONE_INFORMATION struct {
 	DaylightBias int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-titlebarinfoex
+type TITLEBARINFOEX struct {
+	CbSize     uint32
+	RcTitleBar RECT
+	Rgstate    [_CCHILDREN_TITLEBAR + 1]uint32
+	Rgrect     [_CCHILDREN_TITLEBAR + 1]RECT
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw
 type WIN32_FIND_DATA struct {
 	DwFileAttributes   co.FILE_ATTRIBUTE
