@@ -103,6 +103,21 @@ func (me *Edit) SelectRange(start, length int) *Edit {
 	return me
 }
 
+// Sets the text in the edit control.
+//
+// Syntactic sugar to Hwnd().SetWindowText().
+func (me *Edit) SetText(text string) *Edit {
+	me.Hwnd().SetWindowText(text)
+	return me
+}
+
+// Returns the text in the edit control.
+//
+// Syntactic sugar to Hwnd().GetWindowText().
+func (me *Edit) Text() string {
+	return me.Hwnd().GetWindowText()
+}
+
 // Syntactic sugar.
 func (me *Edit) sendEmMessage(msg co.EM,
 	wParam win.WPARAM, lParam win.LPARAM) uintptr {

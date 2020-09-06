@@ -55,10 +55,18 @@ func (me *Button) CreateSimpleDef(
 		co.BS_DEFPUSHBUTTON)
 }
 
+// Sets the text in the button control.
+//
+// Syntactic sugar to Hwnd().SetWindowText().
+func (me *Button) SetText(text string) *Button {
+	me.Hwnd().SetWindowText(text)
+	return me
+}
+
 // Returns the text without the accelerator ampersands, for example:
 // "&He && she" is returned as "He & she".
 //
-// Use Hwnd().GetWindowText() to retrieve the raw text, with accelerator
+// Uses Hwnd().GetWindowText() to retrieve the raw text, with accelerator
 // ampersands.
 func (me *Button) Text() string {
 	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
