@@ -35,6 +35,7 @@ type (
 
 // Private constants.
 const (
+	_CBEMAXSTRLEN         = 260
 	_CCHDEVICENAME        = 32
 	_CCHILDREN_TITLEBAR   = 5
 	_CLR_INVALID          = 0xFFFF_FFFF

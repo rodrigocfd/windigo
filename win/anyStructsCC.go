@@ -10,6 +10,19 @@ import (
 	"wingows/co"
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-comboboxexitemw
+type COMBOBOXEXITEM struct {
+	Mask           co.CBEIF
+	IItem          uintptr // INT_PTR
+	PszText        *uint16
+	CchTextMax     int32
+	IImage         int32
+	ISelectedImage int32
+	IOverlay       int32
+	IIndent        int32
+	LParam         LPARAM
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imageinfo
 type IMAGEINFO struct {
 	HbmImage HBITMAP
@@ -100,6 +113,27 @@ type LVITEM struct {
 	PuColumns  *uint32
 	PiColFmt   *int32
 	IGroup     int32
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcbedragbeginw
+type NMCBEDRAGBEGIN struct {
+	Hdr     NMHDR
+	IItemid int32
+	SzText  [_CBEMAXSTRLEN]uint16
+}
+
+type NMCBEENDEDIT struct {
+	Hdr           NMHDR
+	FChanged      int32 // BOOL
+	INewSelection int32
+	SzText        [_CBEMAXSTRLEN]uint16
+	IWhy          co.CBENF
+}
+
+// https://docs.microsoft.com/pt-br/windows/win32/controls/cben-deleteitem
+type NMCOMBOBOXEX struct {
+	Hdr    NMHDR
+	CeItem COMBOBOXEXITEM
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcustomdraw

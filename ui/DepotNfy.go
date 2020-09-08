@@ -46,6 +46,63 @@ func (me *_DepotNfy) processMessage(msg co.WM, p Wm) (uintptr, bool) {
 	return 0, false // no user handler found
 }
 
+//---------------------------------------------------------- ComboBoxEx CBEN ---
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/cben-beginedit
+func (me *_DepotNfy) CbenBeginEdit(comboBoxExId int, userFunc func(p *win.NMHDR)) {
+	me.addNfy(comboBoxExId, co.NM(co.CBEN_BEGINEDIT), func(p WmNotify) uintptr {
+		userFunc((*win.NMHDR)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/cben-deleteitem
+func (me *_DepotNfy) CbenDeleteItem(comboBoxExId int, userFunc func(p *win.NMCOMBOBOXEX)) {
+	me.addNfy(comboBoxExId, co.NM(co.CBEN_DELETEITEM), func(p WmNotify) uintptr {
+		userFunc((*win.NMCOMBOBOXEX)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/cben-dragbegin
+func (me *_DepotNfy) CbenDragBegin(comboBoxExId int, userFunc func(p *win.NMCBEDRAGBEGIN)) {
+	me.addNfy(comboBoxExId, co.NM(co.CBEN_DRAGBEGIN), func(p WmNotify) uintptr {
+		userFunc((*win.NMCBEDRAGBEGIN)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/cben-endedit
+func (me *_DepotNfy) CbenEndEdit(comboBoxExId int, userFunc func(p *win.NMCBEENDEDIT) bool) {
+	me.addNfy(comboBoxExId, co.NM(co.CBEN_ENDEDIT), func(p WmNotify) uintptr {
+		return _Util.BoolToUintptr(userFunc((*win.NMCBEENDEDIT)(unsafe.Pointer(p.LParam))))
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/cben-getdispinfo
+func (me *_DepotNfy) CbenGetDispInfo(comboBoxExId int, userFunc func(p *win.NMCOMBOBOXEX)) {
+	me.addNfy(comboBoxExId, co.NM(co.CBEN_GETDISPINFO), func(p WmNotify) uintptr {
+		userFunc((*win.NMCOMBOBOXEX)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/cben-insertitem
+func (me *_DepotNfy) CbenInsertItem(comboBoxExId int, userFunc func(p *win.NMCOMBOBOXEX)) {
+	me.addNfy(comboBoxExId, co.NM(co.CBEN_INSERTITEM), func(p WmNotify) uintptr {
+		userFunc((*win.NMCOMBOBOXEX)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
+//------------------------------------------------------------ ComboBoxEx NM ---
+
+func (me *_DepotNfy) CbenSetCursor(comboBoxExId int, userFunc func(p *win.NMMOUSE) int) {
+	me.addNfy(comboBoxExId, co.NM(co.NM_SETCURSOR), func(p WmNotify) uintptr {
+		return uintptr(userFunc((*win.NMMOUSE)(unsafe.Pointer(p.LParam))))
+	})
+}
+
 //------------------------------------------------------- DateTimePicker DTN ---
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/dtn-closeup
