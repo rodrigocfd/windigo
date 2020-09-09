@@ -583,17 +583,6 @@ const (
 	SWP_HWND_TOPMOST   SWP_HWND = -1
 )
 
-// ITaskbarList3.SetProgressState() tbpFlags.
-type TBPF uint32
-
-const (
-	TBPF_NOPROGRESS    TBPF = 0
-	TBPF_INDETERMINATE TBPF = 0x1
-	TBPF_NORMAL        TBPF = 0x2
-	TBPF_ERROR         TBPF = 0x4
-	TBPF_PAUSED        TBPF = 0x8
-)
-
 // Tab control notifications, sent via WM_NOTIFY.
 type TCN NM
 

@@ -49,6 +49,23 @@ func StrToPtrBlankIsNil(s string) *uint16 {
 
 //------------------------------------------------------------------------------
 
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
+//
+// Must be freed with CoUninitialize().
+func CoInitializeEx(dwCoInit co.COINIT) {
+	hr, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
+		0, uintptr(dwCoInit), 0)
+	hr2 := co.ERROR(hr)
+	if hr2 != co.ERROR_S_OK && hr2 != co.ERROR_S_FALSE {
+		panic(NewWinError(hr2, "CoInitializeEx").Error())
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
+func CoUninitialize() {
+	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycaret
 func DestroyCaret() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyCaret.Addr(), 0, 0, 0, 0)

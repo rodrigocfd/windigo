@@ -4,22 +4,21 @@
  * This library is released under the MIT license.
  */
 
-package com
+package win
 
 import (
 	"encoding/binary"
 	"syscall"
 	"unsafe"
 	"wingows/co"
-	"wingows/win"
 	"wingows/win/proc"
 )
 
 type (
-	_IUnknownImpl struct{ uintptr }
-
 	// https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 	IUnknown struct{ _IUnknownImpl }
+
+	_IUnknownImpl struct{ uintptr }
 
 	_IUnknownVtbl struct {
 		QueryInterface uintptr
@@ -53,7 +52,7 @@ func (me *_IUnknownImpl) coCreateInstancePtr(
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "CoCreateInstance").Error())
+		panic(NewWinError(lerr, "CoCreateInstance").Error())
 	}
 }
 
@@ -75,7 +74,7 @@ func (me *_IUnknownImpl) queryInterface(iid *co.IID) IUnknown {
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IUnknown.QueryInterface").Error())
+		panic(NewWinError(lerr, "IUnknown.QueryInterface").Error())
 	}
 	return retIUnk
 }
