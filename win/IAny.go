@@ -8,7 +8,7 @@ package win
 
 import (
 	"syscall"
-	"wingows/co"
+	"windigo/co"
 )
 
 type (

@@ -8,8 +8,8 @@ package win
 
 import (
 	"syscall"
-	"wingows/co"
-	"wingows/win/proc"
+	"windigo/co"
+	"windigo/win/proc"
 )
 
 // This type doesn't exist in Win32, just a HANDLE.

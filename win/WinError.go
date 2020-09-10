@@ -9,7 +9,7 @@ package win
 import (
 	"fmt"
 	"syscall"
-	"wingows/co"
+	"windigo/co"
 )
 
 // A Win32 error, usually retrieved with GetLastError().

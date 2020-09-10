@@ -9,8 +9,8 @@ package win
 import (
 	"syscall"
 	"unsafe"
-	"wingows/co"
-	"wingows/win/proc"
+	"windigo/co"
+	"windigo/win/proc"
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/image-lists

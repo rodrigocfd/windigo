@@ -1,6 +1,6 @@
 /**
- * Part of Wingows - Win32 API layer for Go
- * https://github.com/rodrigocfd/wingows
+ * Part of Windigo - Win32 API layer for Go
+ * https://github.com/rodrigocfd/windigo
  * This library is released under the MIT license.
  */
 
@@ -9,8 +9,8 @@ package ui
 import (
 	"fmt"
 	"unsafe"
-	"wingows/co"
-	"wingows/win"
+	"windigo/co"
+	"windigo/win"
 )
 
 // Native list view control.

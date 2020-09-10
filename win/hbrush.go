@@ -8,8 +8,8 @@ package win
 
 import (
 	"syscall"
-	"wingows/co"
-	"wingows/win/proc"
+	"windigo/co"
+	"windigo/win/proc"
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbrush

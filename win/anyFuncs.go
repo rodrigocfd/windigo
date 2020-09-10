@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"syscall"
 	"unsafe"
-	"wingows/co"
-	"wingows/win/proc"
+	"windigo/co"
+	"windigo/win/proc"
 )
 
 // Returns *uint16, wrapper to syscall.UTF16PtrFromString(). Panics on error.

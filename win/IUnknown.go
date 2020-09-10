@@ -10,8 +10,8 @@ import (
 	"encoding/binary"
 	"syscall"
 	"unsafe"
-	"wingows/co"
-	"wingows/win/proc"
+	"windigo/co"
+	"windigo/win/proc"
 )
 
 type (

@@ -1,6 +1,6 @@
 /**
- * Part of Wingows - Win32 API layer for Go
- * https://github.com/rodrigocfd/wingows
+ * Part of Windigo - Win32 API layer for Go
+ * https://github.com/rodrigocfd/windigo
  * This library is released under the MIT license.
  */
 
@@ -8,8 +8,8 @@ package ui
 
 import (
 	"fmt"
-	"wingows/co"
-	"wingows/win"
+	"windigo/co"
+	"windigo/win"
 )
 
 // Manages a group of native radio buttons.
