@@ -399,7 +399,7 @@ func (hWnd HWND) MessageBox(message, caption string, flags co.MB) co.MBID {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-movewindow
-func (hWnd HWND) MoveWindow(x, y int32, width, height uint32, bRepaint bool) {
+func (hWnd HWND) MoveWindow(x, y, width, height int32, bRepaint bool) {
 	ret, _, lerr := syscall.Syscall6(proc.MoveWindow.Addr(), 6,
 		uintptr(hWnd), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
 		_Util.BoolToUintptr(bRepaint))
@@ -528,8 +528,8 @@ func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
 //
 // You can pass a HWND handle or SWP_HWND constants in hwndInsertAfter argument.
-func (hWnd HWND) SetWindowPos(hwndInsertAfter co.SWP_HWND, x, y int32,
-	cx, cy uint32, uFlags co.SWP) {
+func (hWnd HWND) SetWindowPos(hwndInsertAfter co.SWP_HWND,
+	x, y, cx, cy int32, uFlags co.SWP) {
 
 	ret, _, lerr := syscall.Syscall9(proc.SetWindowPos.Addr(), 7,
 		uintptr(hWnd), uintptr(hwndInsertAfter),

@@ -75,11 +75,12 @@ func (me *CheckBox) SetState(state co.BST) *CheckBox {
 	return me
 }
 
-// SetWindowText() doesn't resize the control to fit the text. This method
-// resizes the control to fit the text exactly.
+// Sets the text, and resizes the control to fit it exactly.
+//
+// To set the text without resizing the control, use Hwnd().SetWindowText().
 func (me *CheckBox) SetText(text string) *CheckBox {
 	cx, cy := me.calcIdealSize(me.Hwnd().GetParent(), text)
-	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, uint32(cx), uint32(cy),
+	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, int32(cx), int32(cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 	return me
@@ -94,8 +95,8 @@ func (me *CheckBox) State() co.BST {
 // Returns the text without the accelerator ampersands, for example:
 // "&He && she" is returned as "He & she".
 //
-// Uses Hwnd().GetWindowText() to retrieve the raw text, with accelerator
-// ampersands.
+// Use Hwnd().GetWindowText() to retrieve the raw text, with unparsed
+// accelerator ampersands.
 func (me *CheckBox) Text() string {
 	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }

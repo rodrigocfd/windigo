@@ -66,8 +66,8 @@ func (me *Button) SetText(text string) *Button {
 // Returns the text without the accelerator ampersands, for example:
 // "&He && she" is returned as "He & she".
 //
-// Uses Hwnd().GetWindowText() to retrieve the raw text, with accelerator
-// ampersands.
+// Use Hwnd().GetWindowText() to retrieve the raw text, with unparsed
+// accelerator ampersands.
 func (me *Button) Text() string {
 	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }

@@ -50,12 +50,14 @@ func (me *Static) CreateLText(
 	return me
 }
 
-// Sets the text and resizes the control to fit the text exactly.
+// Sets the text, and resizes the control to fit it exactly.
+//
+// To set the text without resizing the control, use Hwnd().SetWindowText().
 func (me *Static) SetText(text string) {
 	hasAccel := (co.SS(me.Hwnd().GetStyle()) & co.SS_NOPREFIX) == 0
 	cx, cy := calcTextBoundBox(me.Hwnd().GetParent(), text, hasAccel)
 
-	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, uint32(cx), uint32(cy),
+	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, int32(cx), int32(cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 }
@@ -63,8 +65,8 @@ func (me *Static) SetText(text string) {
 // Returns the text without the accelerator ampersands, for example:
 // "&He && she" is returned as "He & she".
 //
-// Uses Hwnd().GetWindowText() to retrieve the raw text, with accelerator
-// ampersands.
+// Use Hwnd().GetWindowText() to retrieve the raw text, with unparsed
+// accelerator ampersands.
 func (me *Static) Text() string {
 	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }

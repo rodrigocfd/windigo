@@ -248,6 +248,8 @@ func (me *ListView) HitTest(pos *win.POINT) *win.LVHITTESTINFO {
 }
 
 // Retrieves the associated HIMAGELIST by sending LVM_GETIMAGELIST.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getimagelist
 func (me *ListView) ImageList(typeImgList co.LVSIL) win.HIMAGELIST {
 	return win.HIMAGELIST(
 		me.sendLvmMessage(co.LVM_GETIMAGELIST, win.WPARAM(typeImgList), 0),
@@ -255,6 +257,8 @@ func (me *ListView) ImageList(typeImgList co.LVSIL) win.HIMAGELIST {
 }
 
 // Sends LVM_ISGROUPVIEWENABLED.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-isgroupviewenabled
 func (me *ListView) IsGroupViewEnabled() bool {
 	return me.sendLvmMessage(co.LVM_ISGROUPVIEWENABLED, 0, 0) >= 0
 }
@@ -273,6 +277,8 @@ func (me *ListView) Item(index uint) *ListViewItem {
 }
 
 // Retrieves the number of items with LVM_GETITEMCOUNT.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getitemcount
 func (me *ListView) ItemCount() uint {
 	count := me.sendLvmMessage(co.LVM_GETITEMCOUNT, 0, 0)
 	if int(count) == -1 {
@@ -281,7 +287,9 @@ func (me *ListView) ItemCount() uint {
 	return uint(count)
 }
 
-// Sends LVM_SCROLL.
+// Scrolls the contents with LVM_SCROLL.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-scroll
 func (me *ListView) Scroll(pxHorz, pxVert int) *ListView {
 	ret := me.sendLvmMessage(co.LVM_SCROLL,
 		win.WPARAM(pxHorz), win.LPARAM(pxVert))
@@ -312,6 +320,8 @@ func (me *ListView) SelectAllItems(isSelected bool) *ListView {
 }
 
 // Retrieves the number of selected items with LVM_GETSELECTEDCOUNT.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getselectedcount
 func (me *ListView) SelectedItemCount() uint {
 	count := me.sendLvmMessage(co.LVM_GETSELECTEDCOUNT, 0, 0)
 	if int(count) == -1 {
@@ -320,7 +330,9 @@ func (me *ListView) SelectedItemCount() uint {
 	return uint(count)
 }
 
-// Retrieves the currently selected items, sorted by index.
+// Retrieves the currently selected items, sorted by index, with LVM_GETNEXTITEM.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getnextitem
 func (me *ListView) SelectedItems() []ListViewItem {
 	items := make([]ListViewItem, 0, me.SelectedItemCount())
 	idx := -1
@@ -351,8 +363,14 @@ func (me *ListView) SetContextMenu(popupMenu *Menu) *ListView {
 	return me
 }
 
-// Sends LVM_SETEXTENDEDLISTVIEWSTYLE.
-func (me *ListView) SetExtendedStyle(mask, exStyle co.LVS_EX) *ListView {
+// Sets or unsets one or more extended styles with LVM_SETEXTENDEDLISTVIEWSTYLE.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-setextendedlistviewstyle
+func (me *ListView) SetExtendedStyle(isSet bool, exStyle co.LVS_EX) *ListView {
+	mask := exStyle
+	if !isSet {
+		mask = 0
+	}
 	me.sendLvmMessage(co.LVM_SETEXTENDEDLISTVIEWSTYLE,
 		win.WPARAM(mask), win.LPARAM(exStyle))
 	return me
@@ -362,6 +380,8 @@ func (me *ListView) SetExtendedStyle(mask, exStyle co.LVS_EX) *ListView {
 //
 // Note that if the list view was created with LVS_SHAREIMAGELISTS, the image
 // list must be manually destroyed.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-setimagelist
 func (me *ListView) SetImageList(typeImgList co.LVSIL,
 	hImgList win.HIMAGELIST) win.HIMAGELIST {
 
@@ -372,13 +392,17 @@ func (me *ListView) SetImageList(typeImgList co.LVSIL,
 }
 
 // Sends WM_SETREDRAW to enable or disable UI updates.
+//
+// https://docs.microsoft.com/en-us/windows/win32/gdi/wm-setredraw
 func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
 	me.hwnd.SendMessage(co.WM_SETREDRAW,
 		win.WPARAM(_Util.BoolToUint32(allowRedraw)), 0)
 	return me
 }
 
-// Sends LVM_SETVIEW.
+// Sets the current view with LVM_SETVIEW.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-setview
 func (me *ListView) SetView(view co.LV_VIEW) *ListView {
 	if int(me.sendLvmMessage(co.LVM_SETVIEW, 0, 0)) == -1 {
 		panic("LVM_SETVIEW failed.")
@@ -388,6 +412,8 @@ func (me *ListView) SetView(view co.LV_VIEW) *ListView {
 
 // Returns the width of a string using list view current font, with
 // LVM_GETSTRINGWIDTH.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getstringwidth
 func (me *ListView) StringWidth(text string) uint {
 	ret := me.sendLvmMessage(co.LVM_GETSTRINGWIDTH,
 		0, win.LPARAM(unsafe.Pointer(win.StrToPtr(text))))

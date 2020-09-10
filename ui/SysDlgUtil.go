@@ -207,8 +207,8 @@ func (_SysDlgUtilT) MsgBox(
 					}
 
 					hMsgBox.MoveWindow(pos.X, pos.Y,
-						uint32(rcMsgBox.Right-rcMsgBox.Left),
-						uint32(rcMsgBox.Bottom-rcMsgBox.Top),
+						int32(rcMsgBox.Right-rcMsgBox.Left),
+						int32(rcMsgBox.Bottom-rcMsgBox.Top),
 						false)
 				}
 				_globalMsgBoxHook.UnhookWindowsHookEx() // release global hook
