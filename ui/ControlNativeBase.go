@@ -57,7 +57,7 @@ func (me *_ControlNativeBase) create(
 	}
 
 	me.hwnd = win.CreateWindowEx(exStyle, className, title, style,
-		int32(x), int32(y), uint32(width), uint32(height),
+		int32(x), int32(y), int32(width), int32(height),
 		parent.Hwnd(), win.HMENU(ctrlId), parent.Hwnd().GetInstance(), nil)
 
 	if len(me.msgs.mapMsgs) > 0 || // at last 1 subclass message was added?

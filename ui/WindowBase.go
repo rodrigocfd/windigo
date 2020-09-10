@@ -93,7 +93,7 @@ func (me *_WindowBase) createWindow(uiName string, exStyle co.WS_EX,
 
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
 	win.CreateWindowEx(exStyle, className, title, style,
-		int32(x), int32(y), uint32(width), uint32(height),
+		int32(x), int32(y), int32(width), int32(height),
 		hwndParent, menu, hInst, unsafe.Pointer(me)) // pass pointer to our object
 }
 

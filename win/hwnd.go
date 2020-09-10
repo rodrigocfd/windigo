@@ -52,7 +52,7 @@ func (hWnd HWND) ClientToScreenRc(rect *RECT) {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
-	x, y int32, width, height uint32, parent HWND, menu HMENU,
+	x, y, width, height int32, parent HWND, menu HMENU,
 	instance HINSTANCE, param unsafe.Pointer) HWND {
 
 	ret, _, lerr := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,

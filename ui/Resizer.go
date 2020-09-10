@@ -69,7 +69,7 @@ func (me *Resizer) Adjust(p WmSize) {
 		return // no need to resize if window is minimized
 	}
 
-	hdwp := win.BeginDeferWindowPos(uint32(len(me.ctrls)))
+	hdwp := win.BeginDeferWindowPos(int32(len(me.ctrls)))
 	defer hdwp.EndDeferWindowPos()
 
 	for i := range me.ctrls {
@@ -94,14 +94,14 @@ func (me *Resizer) Adjust(p WmSize) {
 			y = szParent.Cy - me.szOrig.Cy + c.rcOrig.Top
 		}
 
-		cx := uint32(c.rcOrig.Right - c.rcOrig.Left) // keep original width
+		cx := c.rcOrig.Right - c.rcOrig.Left // keep original width
 		if c.doHorz == RESZ_RESIZE {
-			cx = uint32(szParent.Cx - me.szOrig.Cx + c.rcOrig.Right - c.rcOrig.Left)
+			cx = szParent.Cx - me.szOrig.Cx + c.rcOrig.Right - c.rcOrig.Left
 		}
 
-		cy := uint32(c.rcOrig.Bottom - c.rcOrig.Top) // keep original height
+		cy := c.rcOrig.Bottom - c.rcOrig.Top // keep original height
 		if c.doVert == RESZ_RESIZE {
-			cy = uint32(szParent.Cy - me.szOrig.Cy + c.rcOrig.Bottom - c.rcOrig.Top)
+			cy = szParent.Cy - me.szOrig.Cy + c.rcOrig.Bottom - c.rcOrig.Top
 		}
 
 		hdwp.DeferWindowPos(c.hChild.Hwnd(), win.HWND(0), x, y, cx, cy, uFlags)
