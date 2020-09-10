@@ -58,7 +58,7 @@ func (me *_IUnknownImpl) coCreateInstancePtr(
 
 // Queries any COM interface, returning the base IUnknown.
 //
-// To retrieve the other interface itself, cast the inner lpVtbl.
+// To retrieve the queried interface, cast the virtual table pointer.
 func (me *_IUnknownImpl) queryInterface(iid *co.IID) IUnknown {
 	if me.uintptr == 0 {
 		panic("Calling queryInterface on empty IUnknown.")

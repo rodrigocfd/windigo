@@ -6,15 +6,15 @@
 
 package co
 
-// https://docs.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
-type GUID struct {
-	Data1 uint32
-	Data2 uint16
-	Data3 uint16
-	Data4 uint64
-}
-
 type (
+	// https://docs.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
+	GUID struct {
+		Data1 uint32
+		Data2 uint16
+		Data3 uint16
+		Data4 uint64
+	}
+
 	// COM class ID.
 	CLSID GUID
 	// COM interface ID.
@@ -24,9 +24,7 @@ type (
 var (
 	CLSID_FilterGraph = CLSID(GUID{0xe436ebb3, 0x524f, 0x11ce, 0x9f53_0020af0ba770})
 	CLSID_TaskbarList = CLSID(GUID{0x56fdf344, 0xfd6d, 0x11d0, 0x958a_006097c9a090})
-)
 
-var (
 	IID_IBaseFilter   = IID(GUID{0x56a86895, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770})
 	IID_IDispatch     = IID(GUID{0x00020400, 0x0000, 0x0000, 0xc000_000000000046})
 	IID_IFilterGraph  = IID(GUID{0x56a8689f, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770})

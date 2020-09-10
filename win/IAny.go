@@ -93,6 +93,7 @@ type (
 	}
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
 		&co.CLSID_FilterGraph, dwClsContext, &co.IID_IGraphBuilder)
@@ -166,6 +167,7 @@ type (
 	}
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_ITaskbarListImpl) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
 		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList)
@@ -209,6 +211,7 @@ type (
 	}
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_ITaskbarList2Impl) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
 		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList2)
@@ -255,6 +258,7 @@ type (
 	}
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_ITaskbarList3Impl) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
 		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList3)
