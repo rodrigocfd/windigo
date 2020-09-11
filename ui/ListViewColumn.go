@@ -57,7 +57,9 @@ func (me *ListViewColumn) SetText(text string) *ListViewColumn {
 	return me
 }
 
-// Sends LVM_SETCOLUMNWIDTH.
+// Sets the width of the column with LVM_SETCOLUMNWIDTH.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-setcolumnwidth
 func (me *ListViewColumn) SetWidth(width uint) *ListViewColumn {
 	me.owner.sendLvmMessage(co.LVM_SETCOLUMNWIDTH,
 		win.WPARAM(me.index), win.LPARAM(width))
@@ -81,7 +83,9 @@ func (me *ListViewColumn) Text() string {
 	return syscall.UTF16ToString(buf[:])
 }
 
-// Sends LVM_GETCOLUMNWIDTH.
+// Retrieves the width of the column with LVM_GETCOLUMNWIDTH.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getcolumnwidth
 func (me *ListViewColumn) Width() uint {
 	cx := me.owner.sendLvmMessage(co.LVM_GETCOLUMNWIDTH, win.WPARAM(me.index), 0)
 	if cx == 0 {

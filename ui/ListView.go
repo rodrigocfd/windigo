@@ -49,7 +49,7 @@ func (me *ListView) AddColumns(texts []string, widths []uint) *ListView {
 	return me
 }
 
-// Adds a new item; returns the newly inserted item.
+// Adds a new item, returns the new item.
 func (me *ListView) AddItem(text string) *ListViewItem {
 	textBuf := win.StrToSlice(text)
 	lvi := win.LVITEM{
@@ -66,7 +66,7 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 }
 
 // Adds a new item specifying the text of many columns at once.
-func (me *ListView) AddItemMultiColumn(textsOfEachColumn []string) *ListView {
+func (me *ListView) AddItemWithColumns(textsOfEachColumn []string) *ListView {
 	newItem := me.AddItem(textsOfEachColumn[0])
 	for i := 1; i < len(textsOfEachColumn); i++ {
 		newItem.SetSubItemText(uint(i), textsOfEachColumn[i])
@@ -74,7 +74,7 @@ func (me *ListView) AddItemMultiColumn(textsOfEachColumn []string) *ListView {
 	return me
 }
 
-// Adds a new item; returns the newly inserted item.
+// Adds a new item returns the new item.
 //
 // Before call this method, attach an image list and load its icons.
 func (me *ListView) AddItemWithIcon(
@@ -130,7 +130,7 @@ func (me *ListView) Create(
 		x, y, width, height, parent, ctrlId)
 
 	if lvExStyles != co.LVS_EX_NONE {
-		me.SetExtendedStyle(lvExStyles, lvExStyles)
+		me.SetExtendedStyle(true, lvExStyles)
 	}
 	return me
 }
@@ -176,6 +176,8 @@ func (me *ListView) ColumnCount() uint {
 }
 
 // Deletes all items with LVM_DELETEALLITEMS.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-deleteallitems
 func (me *ListView) DeleteAllItems() *ListView {
 	ret := me.sendLvmMessage(co.LVM_DELETEALLITEMS, 0, 0)
 	if ret == 0 {
@@ -198,6 +200,8 @@ func (me *ListView) DeleteItems(items []ListViewItem) *ListView {
 }
 
 // Retrieves extended styles with LVM_GETEXTENDEDLISTVIEWSTYLE.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getextendedlistviewstyle
 func (me *ListView) ExtendedStyle() co.LVS_EX {
 	return co.LVS_EX(me.sendLvmMessage(co.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0))
 }
@@ -234,9 +238,10 @@ func (me *ListView) FocusedItem() *ListViewItem {
 	return me.Item(uint(idx))
 }
 
-// Sends LVM_HITTEST to determine the item at specified position, if any.
+// Sends LVM_HITTEST to determine the item at specified position, if any. Pos
+// coordinates must be relative to list view.
 //
-// Pos coordinates must be relative to list view.
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-hittest
 func (me *ListView) HitTest(pos *win.POINT) *win.LVHITTESTINFO {
 	lvhti := &win.LVHITTESTINFO{
 		Pt: *pos,
@@ -423,7 +428,9 @@ func (me *ListView) StringWidth(text string) uint {
 	return uint(ret)
 }
 
-// Retrieves the topmost visible item with LVM_GETTOPINDEX or nil if none.
+// Retrieves the topmost visible item with LVM_GETTOPINDEX, or nil if none.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-gettopindex
 func (me *ListView) TopMostVisibleItem() *ListViewItem {
 	idx := int(me.sendLvmMessage(co.LVM_GETTOPINDEX, 0, 0))
 	if idx == -1 {
@@ -433,6 +440,8 @@ func (me *ListView) TopMostVisibleItem() *ListViewItem {
 }
 
 // Retrieves current view with LVM_GETVIEW.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getview
 func (me *ListView) View() co.LV_VIEW {
 	return co.LV_VIEW(me.sendLvmMessage(co.LVM_GETVIEW, 0, 0))
 }

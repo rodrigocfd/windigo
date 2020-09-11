@@ -20,7 +20,9 @@ type ListViewItem struct {
 	index uint
 }
 
-// Sends LVM_DELETEITEM for this item.
+// Deletes this item with LVM_DELETEITEM.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-deleteitem
 func (me *ListViewItem) Delete() {
 	if me.index >= me.owner.ItemCount() { // index out of bounds: ignore
 		return
@@ -32,9 +34,9 @@ func (me *ListViewItem) Delete() {
 	}
 }
 
-// Sends LVM_ENSUREVISIBLE for this item.
+// Scrolls the list view so this item becomes visible, with LVM_ENSUREVISIBLE.
 //
-// Scrolls the list view if necessary.
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-ensurevisible
 func (me *ListViewItem) EnsureVisible() *ListViewItem {
 	ret := me.owner.sendLvmMessage(co.LVM_ENSUREVISIBLE,
 		win.WPARAM(me.index), win.LPARAM(1)) // always entirely visible
@@ -93,7 +95,9 @@ func (me *ListViewItem) IsSelected() bool {
 	) == co.LVIS_SELECTED
 }
 
-// Sends LVM_ISITEMVISIBLE for this item.
+// Checks if this item is visible with LVM_ISITEMVISIBLE.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-isitemvisible
 func (me *ListViewItem) IsVisible() bool {
 	return me.owner.sendLvmMessage(co.LVM_ISITEMVISIBLE,
 		win.WPARAM(me.index), 0) != 0
@@ -104,7 +108,7 @@ func (me *ListViewItem) Owner() *ListView {
 	return me.owner
 }
 
-// Retrieves the LPARAM with LVM_GETITEM.
+// Retrieves the LPARAM associated to this item with LVM_GETITEM.
 func (me *ListViewItem) Param() win.LPARAM {
 	lvi := win.LVITEM{
 		IItem: int32(me.index),
@@ -118,9 +122,10 @@ func (me *ListViewItem) Param() win.LPARAM {
 	return lvi.LParam
 }
 
-// Sends LVM_GETITEMRECT for this item.
+// Retrieves bound coordinates of the item with LVM_GETITEMRECT. Coordinates are
+// relative to list view.
 //
-// Retrieved coordinates are relative to list view.
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getitemrect
 func (me *ListViewItem) Rect(portion co.LVIR) *win.RECT {
 	rcItem := &win.RECT{
 		Left: int32(portion),
@@ -167,7 +172,7 @@ func (me *ListViewItem) SetIconIndex(index int) *ListViewItem {
 	return me
 }
 
-// Sets the LPARAM with LVM_SETITEM.
+// Sets the LPARAM associated to this item with LVM_SETITEM.
 func (me *ListViewItem) SetParam(lParam win.LPARAM) *ListViewItem {
 	lvi := win.LVITEM{
 		IItem:  int32(me.index),
@@ -182,7 +187,9 @@ func (me *ListViewItem) SetParam(lParam win.LPARAM) *ListViewItem {
 	return me
 }
 
-// Sends LVM_SETITEMTEXT to change the text.
+// Sends LVM_SETITEMTEXT to change the text below any column.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-setitemtext
 func (me *ListViewItem) SetSubItemText(
 	columnIndex uint, text string) *ListViewItem {
 
@@ -200,11 +207,15 @@ func (me *ListViewItem) SetSubItemText(
 }
 
 // Sends LVM_SETITEMTEXT to change text of first column.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-setitemtext
 func (me *ListViewItem) SetText(text string) *ListViewItem {
 	return me.SetSubItemText(0, text)
 }
 
-// Sends LVM_GETITEMTEXT to retrieve the text.
+// Sends LVM_GETITEMTEXT to retrieve the text below any column.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getitemtext
 func (me *ListViewItem) SubItemText(columnIndex uint) string {
 	buf := [256]uint16{} // arbitrary
 	lvi := win.LVITEM{
@@ -221,11 +232,15 @@ func (me *ListViewItem) SubItemText(columnIndex uint) string {
 }
 
 // Sends LVM_GETITEMTEXT to retrieve the text of the first column.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getitemtext
 func (me *ListViewItem) Text() string {
 	return me.SubItemText(0)
 }
 
-// Sends LVM_UPDATE for this item.
+// Updates the item with LVM_UPDATE.
+//
+// https://docs.microsoft.com/en-us/windows/win32/controls/lvm-update
 func (me *ListViewItem) Update() *ListViewItem {
 	ret := me.owner.sendLvmMessage(co.LVM_UPDATE, win.WPARAM(me.index), 0)
 	if ret == 0 {

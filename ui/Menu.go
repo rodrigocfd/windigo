@@ -19,18 +19,20 @@ type Menu struct {
 	hMenu win.HMENU
 }
 
+// Appends a new item to the menu.
 func (me *Menu) AppendItem(cmdId int, text string) *Menu {
 	me.hMenu.AppendMenu(co.MF_STRING, uintptr(cmdId),
 		unsafe.Pointer(win.StrToPtr(text)))
 	return me
 }
 
+// Appends a new separator to the menu.
 func (me *Menu) AppendSeparator() *Menu {
 	me.hMenu.AppendMenu(co.MF_SEPARATOR, 0, nil)
 	return me
 }
 
-// Returns the newly appended menu.
+// Appends a new submenu to the menu, and returns it.
 func (me *Menu) AppendSubmenu(text string) *Menu {
 	newMenu := &Menu{}
 	newMenu.CreatePopup()
@@ -71,7 +73,7 @@ func (me *Menu) Destroy() {
 }
 
 // Enables or disables many items at once, by command ID.
-func (me *Menu) EnableManyByCmdId(isEnabled bool, cmdIds []int) *Menu {
+func (me *Menu) EnableItemsByCmdId(isEnabled bool, cmdIds []int) *Menu {
 	for _, cmdId := range cmdIds {
 		me.ItemByCmdId(cmdId).Enable(isEnabled)
 	}
@@ -79,7 +81,7 @@ func (me *Menu) EnableManyByCmdId(isEnabled bool, cmdIds []int) *Menu {
 }
 
 // Enables or disables many items at once, by zero-based position.
-func (me *Menu) EnableManyByPos(isEnabled bool, poss []uint) *Menu {
+func (me *Menu) EnableItemsByPos(isEnabled bool, poss []uint) *Menu {
 	for _, pos := range poss {
 		me.ItemByPos(pos).Enable(isEnabled)
 	}
