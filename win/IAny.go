@@ -96,7 +96,9 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
-		co.CLSID_FilterGraph, dwClsContext, co.IID_IGraphBuilder)
+		_Win.NewGuid(0x56a8689f, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770), // CLSID_FilterGraph
+		dwClsContext,
+		_Win.NewGuid(0x56a868a9, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770)) // IID_IGraphBuilder
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
@@ -170,7 +172,9 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_ITaskbarListImpl) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
-		co.CLSID_TaskbarList, dwClsContext, co.IID_ITaskbarList)
+		_Win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a_006097c9a090), // CLSID_TaskbarList
+		dwClsContext,
+		_Win.NewGuid(0x56fdf342, 0xfd6d, 0x11d0, 0x958a_006097c9a090)) // IID_ITaskbarList
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
@@ -214,7 +218,9 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_ITaskbarList2Impl) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
-		co.CLSID_TaskbarList, dwClsContext, co.IID_ITaskbarList2)
+		_Win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a_006097c9a090), // CLSID_TaskbarList
+		dwClsContext,
+		_Win.NewGuid(0x602d4995, 0xb13a, 0x429b, 0xa66e_1935e44f4317)) // IID_ITaskbarList2
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow
@@ -261,7 +267,9 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_ITaskbarList3Impl) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
-		co.CLSID_TaskbarList, dwClsContext, co.IID_ITaskbarList3)
+		_Win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a_006097c9a090), // CLSID_TaskbarList
+		dwClsContext,
+		_Win.NewGuid(0xea1afb91, 0x9e28, 0x4b86, 0x90e9_9e9f8a5eefaf)) // IID_ITaskbarList3
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue

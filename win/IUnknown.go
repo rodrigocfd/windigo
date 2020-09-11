@@ -35,18 +35,15 @@ func (me *_IUnknownImpl) pVtbl() unsafe.Pointer {
 
 // Creates any COM interface, returning the base IUnknown.
 func (me *_IUnknownImpl) coCreateInstancePtr(
-	clsid co.CLSID, dwClsContext co.CLSCTX, iid co.IID) {
+	clsid *GUID, dwClsContext co.CLSCTX, iid *GUID) {
 
 	if me.uintptr != 0 {
 		panic("IUnknown already created, CoCreateInstance not called.")
 	}
 
-	clsidFlip := _Win.StrToGuid(string(clsid))
-	iidFlip := _Win.StrToGuid(string(iid))
-
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
-		uintptr(unsafe.Pointer(&clsidFlip)), 0,
-		uintptr(dwClsContext), uintptr(unsafe.Pointer(&iidFlip)),
+		uintptr(unsafe.Pointer(clsid)), 0,
+		uintptr(dwClsContext), uintptr(unsafe.Pointer(iid)),
 		uintptr(unsafe.Pointer(&me.uintptr)), 0)
 
 	lerr := co.ERROR(ret)
@@ -58,17 +55,16 @@ func (me *_IUnknownImpl) coCreateInstancePtr(
 // Queries any COM interface, returning the base IUnknown.
 //
 // To retrieve the queried interface, cast the virtual table pointer.
-func (me *_IUnknownImpl) queryInterface(iid co.IID) IUnknown {
+func (me *_IUnknownImpl) queryInterface(iid *GUID) IUnknown {
 	if me.uintptr == 0 {
 		panic("Calling queryInterface on empty IUnknown.")
 	}
 
-	iidFlip := _Win.StrToGuid(string(iid))
 	retIUnk := IUnknown{}
 
 	vTbl := (*_IUnknownVtbl)(me.pVtbl())
 	ret, _, _ := syscall.Syscall(vTbl.QueryInterface, 3, me.uintptr,
-		uintptr(unsafe.Pointer(&iidFlip)),
+		uintptr(unsafe.Pointer(iid)),
 		uintptr(unsafe.Pointer(&retIUnk.uintptr)))
 
 	lerr := co.ERROR(ret)
