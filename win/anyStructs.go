@@ -71,6 +71,14 @@ type FILETIME struct {
 	DwHighDateTime uint32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
+type GUID struct {
+	Data1 uint32
+	Data2 uint16
+	Data3 uint16
+	Data4 uint64
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
 type HELPINFO struct {
 	CbSize       uint32
@@ -231,7 +239,7 @@ type POINT struct {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-powerbroadcast_setting
 type POWERBROADCAST_SETTING struct {
-	PowerSetting co.GUID
+	PowerSetting GUID
 	DataLength   uint32
 	Data         [1]uint16
 }

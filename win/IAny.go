@@ -96,7 +96,7 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
-		&co.CLSID_FilterGraph, dwClsContext, &co.IID_IGraphBuilder)
+		co.CLSID_FilterGraph, dwClsContext, co.IID_IGraphBuilder)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
@@ -170,7 +170,7 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_ITaskbarListImpl) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
-		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList)
+		co.CLSID_TaskbarList, dwClsContext, co.IID_ITaskbarList)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
@@ -214,7 +214,7 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_ITaskbarList2Impl) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
-		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList2)
+		co.CLSID_TaskbarList, dwClsContext, co.IID_ITaskbarList2)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow
@@ -261,7 +261,7 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_ITaskbarList3Impl) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
-		&co.CLSID_TaskbarList, dwClsContext, &co.IID_ITaskbarList3)
+		co.CLSID_TaskbarList, dwClsContext, co.IID_ITaskbarList3)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue

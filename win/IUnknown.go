@@ -7,7 +7,6 @@
 package win
 
 import (
-	"encoding/binary"
 	"syscall"
 	"unsafe"
 	"windigo/co"
@@ -36,14 +35,14 @@ func (me *_IUnknownImpl) pVtbl() unsafe.Pointer {
 
 // Creates any COM interface, returning the base IUnknown.
 func (me *_IUnknownImpl) coCreateInstancePtr(
-	clsid *co.CLSID, dwClsContext co.CLSCTX, iid *co.IID) {
+	clsid co.CLSID, dwClsContext co.CLSCTX, iid co.IID) {
 
 	if me.uintptr != 0 {
 		panic("IUnknown already created, CoCreateInstance not called.")
 	}
 
-	clsidFlip := cloneFlipLastUint64Clsid(clsid)
-	iidFlip := cloneFlipLastUint64Iid(iid)
+	clsidFlip := _Win.StrToGuid(string(clsid))
+	iidFlip := _Win.StrToGuid(string(iid))
 
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
 		uintptr(unsafe.Pointer(&clsidFlip)), 0,
@@ -59,12 +58,12 @@ func (me *_IUnknownImpl) coCreateInstancePtr(
 // Queries any COM interface, returning the base IUnknown.
 //
 // To retrieve the queried interface, cast the virtual table pointer.
-func (me *_IUnknownImpl) queryInterface(iid *co.IID) IUnknown {
+func (me *_IUnknownImpl) queryInterface(iid co.IID) IUnknown {
 	if me.uintptr == 0 {
 		panic("Calling queryInterface on empty IUnknown.")
 	}
 
-	iidFlip := cloneFlipLastUint64Iid(iid)
+	iidFlip := _Win.StrToGuid(string(iid))
 	retIUnk := IUnknown{}
 
 	vTbl := (*_IUnknownVtbl)(me.pVtbl())
@@ -106,18 +105,18 @@ func (me *_IUnknownImpl) Release() uint32 {
 // declaration, the last uint64 will have its bits flipped.
 //
 // This function is called to make the conversion when needed internally.
-func cloneFlipLastUint64(guid *co.GUID) co.GUID {
-	buf64 := [8]byte{}
-	binary.BigEndian.PutUint64(buf64[:], guid.Data4)
-	guidCopy := *guid
-	guidCopy.Data4 = binary.LittleEndian.Uint64(buf64[:])
-	return guidCopy
-}
+// func cloneFlipLastUint64(guid *co.GUID) co.GUID {
+// 	buf64 := [8]byte{}
+// 	binary.BigEndian.PutUint64(buf64[:], guid.Data4)
+// 	guidCopy := *guid
+// 	guidCopy.Data4 = binary.LittleEndian.Uint64(buf64[:])
+// 	return guidCopy
+// }
 
-func cloneFlipLastUint64Clsid(clsid *co.CLSID) co.CLSID {
-	return co.CLSID(cloneFlipLastUint64((*co.GUID)(clsid))) // specialization for CLSID
-}
+// func cloneFlipLastUint64Clsid(clsid *co.CLSID) co.CLSID {
+// 	return co.CLSID(cloneFlipLastUint64((*co.GUID)(clsid))) // specialization for CLSID
+// }
 
-func cloneFlipLastUint64Iid(iid *co.IID) co.IID {
-	return co.IID(cloneFlipLastUint64((*co.GUID)(iid))) // specialization for IID
-}
+// func cloneFlipLastUint64Iid(iid *co.IID) co.IID {
+// 	return co.IID(cloneFlipLastUint64((*co.GUID)(iid))) // specialization for IID
+// }

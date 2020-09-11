@@ -6,33 +6,26 @@
 
 package co
 
-type (
-	// https://docs.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
-	GUID struct {
-		Data1 uint32
-		Data2 uint16
-		Data3 uint16
-		Data4 uint64
-	}
+// COM class ID.
+type CLSID string
 
-	// COM class ID.
-	CLSID GUID
-	// COM interface ID.
-	IID GUID
+const (
+	CLSID_FilterGraph CLSID = "e436ebb3-524f-11ce-9f53-0020af0ba770"
+	CLSID_TaskbarList CLSID = "56fdf344-fd6d-11d0-958a-006097c9a090"
 )
 
-var (
-	CLSID_FilterGraph = CLSID(GUID{0xe436ebb3, 0x524f, 0x11ce, 0x9f53_0020af0ba770})
-	CLSID_TaskbarList = CLSID(GUID{0x56fdf344, 0xfd6d, 0x11d0, 0x958a_006097c9a090})
+// COM interface ID.
+type IID string
 
-	IID_IBaseFilter   = IID(GUID{0x56a86895, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770})
-	IID_IDispatch     = IID(GUID{0x00020400, 0x0000, 0x0000, 0xc000_000000000046})
-	IID_IFilterGraph  = IID(GUID{0x56a8689f, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770})
-	IID_IGraphBuilder = IID(GUID{0x56a868a9, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770})
-	IID_IMediaFilter  = IID(GUID{0x56a86899, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770})
-	IID_IPersist      = IID(GUID{0x0000010c, 0x0000, 0x0000, 0xc000_000000000046})
-	IID_ITaskbarList  = IID(GUID{0x56fdf342, 0xfd6d, 0x11d0, 0x958a_006097c9a090})
-	IID_ITaskbarList2 = IID(GUID{0x602d4995, 0xb13a, 0x429b, 0xa66e_1935e44f4317})
-	IID_ITaskbarList3 = IID(GUID{0xea1afb91, 0x9e28, 0x4b86, 0x90e9_9e9f8a5eefaf})
-	IID_IUnknown      = IID(GUID{0x00000000, 0x0000, 0x0000, 0xc000_000000000046})
+const (
+	IID_IBaseFilter   IID = "56a86895-0ad4-11ce-b03a-0020af0ba770"
+	IID_IDispatch     IID = "00020400-0000-0000-c000-000000000046"
+	IID_IFilterGraph  IID = "56a8689f-0ad4-11ce-b03a-0020af0ba770"
+	IID_IGraphBuilder IID = "56a868a9-0ad4-11ce-b03a-0020af0ba770"
+	IID_IMediaFilter  IID = "56a86899-0ad4-11ce-b03a-0020af0ba770"
+	IID_IPersist      IID = "0000010c-0000-0000-c000-000000000046"
+	IID_ITaskbarList  IID = "56fdf342-fd6d-11d0-958a-006097c9a090"
+	IID_ITaskbarList2 IID = "602d4995-b13a-429b-a66e-1935e44f4317"
+	IID_ITaskbarList3 IID = "ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf"
+	IID_IUnknown      IID = "00000000-0000-0000-c000-000000000046"
 )
