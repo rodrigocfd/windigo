@@ -28,7 +28,7 @@ func (me *DateTimePicker) Create(
 	parent Window, ctrlId, x, y int, width, height uint,
 	exStyles co.WS_EX, styles co.WS, dtpStyles co.DTS) *DateTimePicker {
 
-	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
+	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
 
 	me._ControlNativeBase.create(exStyles, "SysDateTimePick32", "",
 		styles|co.WS(dtpStyles), x, y, width, height, parent, ctrlId)
@@ -92,7 +92,7 @@ func (me *DateTimePicker) SetFormat(format string) *DateTimePicker {
 // Sets a new time with DTM_SETSYSTEMTIME.
 func (me *DateTimePicker) SetTime(newTime time.Time) *DateTimePicker {
 	st := win.SYSTEMTIME{}
-	_Util.TimeToSystemtime(newTime, &st)
+	_Ui.TimeToSystemtime(newTime, &st)
 	me.sendDtmMessage(co.DTM_SETSYSTEMTIME,
 		win.WPARAM(co.GDT_VALID), win.LPARAM(unsafe.Pointer(&st)))
 	return me
@@ -108,7 +108,7 @@ func (me *DateTimePicker) Time() time.Time {
 		panic("DTM_GETSYSTEMTIME failed.")
 	}
 
-	return _Util.SystemtimeToTime(&st)
+	return _Ui.SystemtimeToTime(&st)
 }
 
 // Syntactic sugar.

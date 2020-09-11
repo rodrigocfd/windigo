@@ -37,7 +37,7 @@ func (hdc HDC) EnumDisplayMonitors(
 		uintptr(hdc), uintptr(unsafe.Pointer(lprcClip)),
 		syscall.NewCallback(
 			func(hMon HMONITOR, hdcMon HDC, rcMon uintptr, lp LPARAM) int32 {
-				return _Util.BoolToInt32(lpfnEnum(hMon, hdcMon, rcMon, lp))
+				return _Win.BoolToInt32(lpfnEnum(hMon, hdcMon, rcMon, lp))
 			}),
 		0, 0, 0)
 	if ret == 0 {

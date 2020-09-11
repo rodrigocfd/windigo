@@ -25,7 +25,7 @@ func (me *Button) Create(
 	parent Window, ctrlId, x, y int, width, height uint,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *Button {
 
-	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
+	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
 
 	me._ControlNativeBase.create(exStyles, "BUTTON", text,
 		styles|co.WS(btnStyles), x, y, width, height, parent, ctrlId)
@@ -69,5 +69,5 @@ func (me *Button) SetText(text string) *Button {
 // Use Hwnd().GetWindowText() to retrieve the raw text, with unparsed
 // accelerator ampersands.
 func (me *Button) Text() string {
-	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
+	return _Ui.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }

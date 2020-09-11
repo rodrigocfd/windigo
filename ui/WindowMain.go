@@ -73,7 +73,7 @@ func (me *WindowMain) RunAsMain() int {
 	cxScreen := int(win.GetSystemMetrics(co.SM_CXSCREEN)) // retrieve screen size
 	cyScreen := int(win.GetSystemMetrics(co.SM_CYSCREEN))
 
-	_, _, cx, cy := _Util.MultiplyDpi(0, 0, me.setup.Width, me.setup.Height)
+	_, _, cx, cy := _Ui.MultiplyDpi(0, 0, me.setup.Width, me.setup.Height)
 
 	me._WindowBase.createWindow("WindowMain", me.setup.ExStyle,
 		me.setup.ClassName, me.setup.Title, me.setup.Style,

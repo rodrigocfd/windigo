@@ -27,7 +27,7 @@ func (me *ProgressBar) Create(
 	parent Window, ctrlId, x, y int, width, height uint,
 	exStyles co.WS_EX, styles co.WS, pbStyles co.PBS) *ProgressBar {
 
-	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
+	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
 
 	me._ControlNativeBase.create(exStyles, "msctls_progress32", "",
 		styles|co.WS(pbStyles), x, y, width, height, parent, ctrlId)
@@ -72,7 +72,7 @@ func (me *ProgressBar) SetMarquee(isMarquee bool) *ProgressBar {
 	}
 
 	me.sendPbmMessage(co.PBM_SETMARQUEE,
-		win.WPARAM(_Util.BoolToUint32(isMarquee)), 0)
+		win.WPARAM(_Ui.BoolToUint32(isMarquee)), 0)
 
 	if !isMarquee {
 		me.Hwnd().SetStyle(

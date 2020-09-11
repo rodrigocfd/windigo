@@ -102,7 +102,7 @@ func (hWnd HWND) DestroyWindow() {
 // https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragacceptfiles
 func (hWnd HWND) DragAcceptFiles(fAccept bool) {
 	syscall.Syscall(proc.DragAcceptFiles.Addr(), 2,
-		uintptr(hWnd), _Util.BoolToUintptr(fAccept), 0)
+		uintptr(hWnd), _Win.BoolToUintptr(fAccept), 0)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawmenubar
@@ -117,7 +117,7 @@ func (hWnd HWND) DrawMenuBar() {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablewindow
 func (hWnd HWND) EnableWindow(bEnable bool) bool {
 	ret, _, _ := syscall.Syscall(proc.EnableWindow.Addr(), 2,
-		uintptr(hWnd), _Util.BoolToUintptr(bEnable), 0)
+		uintptr(hWnd), _Win.BoolToUintptr(bEnable), 0)
 	return ret != 0 // the window was previously disabled?
 }
 
@@ -136,7 +136,7 @@ func (hWnd HWND) EnumChildWindows(
 		uintptr(hWnd),
 		syscall.NewCallback(
 			func(hChild HWND, lParam LPARAM) int32 {
-				return _Util.BoolToInt32(lpEnumFunc(hChild, lParam))
+				return _Win.BoolToInt32(lpEnumFunc(hChild, lParam))
 			}),
 		uintptr(lParam))
 }
@@ -236,7 +236,7 @@ func (hWnd HWND) GetMenu() HMENU {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getnextdlgtabitem
 func (hWnd HWND) GetNextDlgTabItem(hChild HWND, bPrevious bool) HWND {
 	ret, _, lerr := syscall.Syscall(proc.GetNextDlgTabItem.Addr(), 3,
-		uintptr(hWnd), uintptr(hChild), _Util.BoolToUintptr(bPrevious))
+		uintptr(hWnd), uintptr(hChild), _Win.BoolToUintptr(bPrevious))
 	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
 		panic(NewWinError(co.ERROR(lerr), "GetNextDlgTagItem").Error())
 	}
@@ -263,7 +263,7 @@ func (hWnd HWND) GetStyle() co.WS {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmenu
 func (hWnd HWND) GetSystemMenu(bRevert bool) HMENU {
 	ret, _, _ := syscall.Syscall(proc.GetSystemMenu.Addr(), 2,
-		uintptr(hWnd), _Util.BoolToUintptr(bRevert), 0)
+		uintptr(hWnd), _Win.BoolToUintptr(bRevert), 0)
 	return HMENU(ret)
 }
 
@@ -341,7 +341,7 @@ func (hWnd HWND) HideCaret() {
 func (hWnd HWND) InvalidateRect(lpRect *RECT, bErase bool) {
 	ret, _, _ := syscall.Syscall(proc.InvalidateRect.Addr(), 3,
 		uintptr(hWnd), uintptr(unsafe.Pointer(lpRect)),
-		_Util.BoolToUintptr(bErase))
+		_Win.BoolToUintptr(bErase))
 	if ret == 0 {
 		panic(NewWinError(co.ERROR_E_UNEXPECTED, "InvalidateRect").Error())
 	}
@@ -402,7 +402,7 @@ func (hWnd HWND) MessageBox(message, caption string, flags co.MB) co.MBID {
 func (hWnd HWND) MoveWindow(x, y, width, height int32, bRepaint bool) {
 	ret, _, lerr := syscall.Syscall6(proc.MoveWindow.Addr(), 6,
 		uintptr(hWnd), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
-		_Util.BoolToUintptr(bRepaint))
+		_Win.BoolToUintptr(bRepaint))
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "MoveWindow").Error())
 	}

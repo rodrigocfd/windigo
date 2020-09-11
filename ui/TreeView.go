@@ -32,7 +32,7 @@ func (me *TreeView) Create(
 	exStyles co.WS_EX, styles co.WS,
 	tvExStyles co.TVS_EX, tvStyles co.TVS) *TreeView {
 
-	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
+	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
 
 	me._ControlNativeBase.create(exStyles,
 		"SysTreeView32", "", styles|co.WS(tvStyles),
@@ -109,7 +109,7 @@ func (me *TreeView) SetExtendedStyle(mask, exStyle co.TVS_EX) *TreeView {
 // Sends WM_SETREDRAW to enable or disable UI updates.
 func (me *TreeView) SetRedraw(allowRedraw bool) *TreeView {
 	me.hwnd.SendMessage(co.WM_SETREDRAW,
-		win.WPARAM(_Util.BoolToUint32(allowRedraw)), 0)
+		win.WPARAM(_Ui.BoolToUint32(allowRedraw)), 0)
 	return me
 }
 

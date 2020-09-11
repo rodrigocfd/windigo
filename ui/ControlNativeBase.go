@@ -123,7 +123,7 @@ func calcTextBoundBox(
 	}
 
 	if considerAccelerators {
-		text = _Util.RemoveAccelAmpersands(text)
+		text = _Ui.RemoveAccelAmpersands(text)
 	}
 
 	parentDc := hReferenceDc.GetDC()

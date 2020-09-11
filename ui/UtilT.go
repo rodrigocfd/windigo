@@ -13,15 +13,15 @@ import (
 	"windigo/win"
 )
 
-type _UtilT struct {
+type _UiT struct {
 	globalDpi win.POINT
 }
 
-// Internal gui package utilities.
-var _Util _UtilT
+// Internal ui package utilities.
+var _Ui _UiT
 
 // Syntactic sugar; converts bool to 0 or 1.
-func (_UtilT) BoolToUint32(b bool) uint32 {
+func (_UiT) BoolToUint32(b bool) uint32 {
 	if b {
 		return 1
 	}
@@ -29,7 +29,7 @@ func (_UtilT) BoolToUint32(b bool) uint32 {
 }
 
 // Syntactic sugar; converts bool to 0 or 1.
-func (_UtilT) BoolToUintptr(b bool) uintptr {
+func (_UiT) BoolToUintptr(b bool) uintptr {
 	if b {
 		return 1
 	}
@@ -37,7 +37,7 @@ func (_UtilT) BoolToUintptr(b bool) uintptr {
 }
 
 // Multiplies position and size by current DPI factor.
-func (me *_UtilT) MultiplyDpi(x, y int,
+func (me *_UiT) MultiplyDpi(x, y int,
 	cx, cy uint) (int, int, uint, uint) {
 
 	if me.globalDpi.X == 0 { // not initialized yet?
@@ -59,7 +59,7 @@ func (me *_UtilT) MultiplyDpi(x, y int,
 }
 
 // "&He && she" becomes "He & she".
-func (_UtilT) RemoveAccelAmpersands(text string) string {
+func (_UiT) RemoveAccelAmpersands(text string) string {
 	runes := []rune(text)
 	buf := strings.Builder{}
 	buf.Grow(len(text)) // prealloc for performance
@@ -77,7 +77,7 @@ func (_UtilT) RemoveAccelAmpersands(text string) string {
 }
 
 // Converts current timezone SYSTEMTIME into time.Time, millisecond precision.
-func (_UtilT) SystemtimeToTime(stLocalTime *win.SYSTEMTIME) time.Time {
+func (_UiT) SystemtimeToTime(stLocalTime *win.SYSTEMTIME) time.Time {
 	return time.Date(int(stLocalTime.WYear),
 		time.Month(stLocalTime.WMonth), int(stLocalTime.WDay),
 		int(stLocalTime.WHour), int(stLocalTime.WMinute), int(stLocalTime.WSecond),
@@ -86,7 +86,7 @@ func (_UtilT) SystemtimeToTime(stLocalTime *win.SYSTEMTIME) time.Time {
 }
 
 // Converts time.Time into current timezone SYSTEMTIME, millisecond precision.
-func (_UtilT) TimeToSystemtime(t time.Time, stLocalTime *win.SYSTEMTIME) {
+func (_UiT) TimeToSystemtime(t time.Time, stLocalTime *win.SYSTEMTIME) {
 	// https://support.microsoft.com/en-ca/help/167296/how-to-convert-a-unix-time-t-to-a-win32-filetime-or-systemtime
 	epoch := t.UnixNano()/100 + 116_444_736_000_000_000
 

@@ -97,7 +97,7 @@ func EnumWindows(
 	ret, _, lerr := syscall.Syscall(proc.EnumWindows.Addr(), 2,
 		syscall.NewCallback(
 			func(hwnd HWND, lParam LPARAM) int32 {
-				return _Util.BoolToInt32(lpEnumFunc(hwnd, lParam))
+				return _Win.BoolToInt32(lpEnumFunc(hwnd, lParam))
 			}),
 		uintptr(lParam), 0)
 	if ret == 0 {
@@ -246,7 +246,7 @@ func InitCommonControls() {
 // Warning: passing true will force current thread to GUI, and it may deadlock.
 func IsGUIThread(bConvertToGuiThread bool) bool {
 	ret, _, _ := syscall.Syscall(proc.IsGUIThread.Addr(), 1,
-		_Util.BoolToUintptr(bConvertToGuiThread), 0, 0)
+		_Win.BoolToUintptr(bConvertToGuiThread), 0, 0)
 	return ret != 0
 }
 

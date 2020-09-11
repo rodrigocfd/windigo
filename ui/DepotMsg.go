@@ -757,7 +757,7 @@ func (p WmMoving) ScreenCoords() *win.RECT { return (*win.RECT)(unsafe.Pointer(p
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-ncactivate
 func (me *_DepotMsg) WmNcActivate(userFunc func(p WmNcActivate) bool) {
 	me.addMsg(co.WM_NCACTIVATE, func(p Wm) uintptr {
-		return _Util.BoolToUintptr(userFunc(WmNcActivate(p)))
+		return _Ui.BoolToUintptr(userFunc(WmNcActivate(p)))
 	})
 }
 

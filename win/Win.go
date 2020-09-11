@@ -6,13 +6,13 @@
 
 package win
 
-type _UtilT struct{}
+type _WinT struct{}
 
 // Internal win package utilities.
-var _Util _UtilT
+var _Win _WinT
 
 // Syntactic sugar; converts bool to 0 or 1.
-func (_UtilT) BoolToInt32(b bool) int32 {
+func (_WinT) BoolToInt32(b bool) int32 {
 	if b {
 		return 1
 	}
@@ -20,7 +20,7 @@ func (_UtilT) BoolToInt32(b bool) int32 {
 }
 
 // Syntactic sugar; converts bool to 0 or 1.
-func (_UtilT) BoolToUint32(b bool) uint32 {
+func (_WinT) BoolToUint32(b bool) uint32 {
 	if b {
 		return 1
 	}
@@ -28,7 +28,7 @@ func (_UtilT) BoolToUint32(b bool) uint32 {
 }
 
 // Syntactic sugar; converts bool to 0 or 1.
-func (_UtilT) BoolToUintptr(b bool) uintptr {
+func (_WinT) BoolToUintptr(b bool) uintptr {
 	if b {
 		return 1
 	}

@@ -223,7 +223,7 @@ func (me *_ITaskbarList2Impl) MarkFullscreenWindow(
 
 	vTbl := (*_ITaskbarList2Vtbl)(me.pVtbl())
 	ret, _, _ := syscall.Syscall(vTbl.MarkFullscreenWindow, 3, me.uintptr,
-		uintptr(hwnd), _Util.BoolToUintptr(fFullScreen))
+		uintptr(hwnd), _Win.BoolToUintptr(fFullScreen))
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {

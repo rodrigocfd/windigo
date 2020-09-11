@@ -124,7 +124,7 @@ func (me *ListView) Create(
 
 	me.installSubclass()
 
-	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
+	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
 	me._ControlNativeBase.create(exStyles,
 		"SysListView32", "", styles|co.WS(lvStyles),
 		x, y, width, height, parent, ctrlId)
@@ -401,7 +401,7 @@ func (me *ListView) SetImageList(typeImgList co.LVSIL,
 // https://docs.microsoft.com/en-us/windows/win32/gdi/wm-setredraw
 func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
 	me.hwnd.SendMessage(co.WM_SETREDRAW,
-		win.WPARAM(_Util.BoolToUint32(allowRedraw)), 0)
+		win.WPARAM(_Ui.BoolToUint32(allowRedraw)), 0)
 	return me
 }
 

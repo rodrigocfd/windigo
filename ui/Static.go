@@ -25,7 +25,7 @@ func (me *Static) Create(
 	parent Window, ctrlId, x, y int, width, height uint,
 	text string, exStyles co.WS_EX, styles co.WS, staStyles co.SS) *Static {
 
-	x, y, width, height = _Util.MultiplyDpi(x, y, width, height)
+	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
 
 	me._ControlNativeBase.create(exStyles, "STATIC", text,
 		styles|co.WS(staStyles), x, y, width, height, parent, ctrlId)
@@ -40,7 +40,7 @@ func (me *Static) Create(
 func (me *Static) CreateLText(
 	parent Window, ctrlId, x, y int, text string) *Static {
 
-	x, y, _, _ = _Util.MultiplyDpi(x, y, 0, 0)
+	x, y, _, _ = _Ui.MultiplyDpi(x, y, 0, 0)
 	cx, cy := calcTextBoundBox(parent.Hwnd(), text, true)
 
 	me._ControlNativeBase.create(co.WS_EX_NONE, "STATIC", text,
@@ -68,5 +68,5 @@ func (me *Static) SetText(text string) {
 // Use Hwnd().GetWindowText() to retrieve the raw text, with unparsed
 // accelerator ampersands.
 func (me *Static) Text() string {
-	return _Util.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
+	return _Ui.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }
