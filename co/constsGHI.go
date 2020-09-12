@@ -143,7 +143,63 @@ const (
 	HCBT_SETFOCUS     HCBT = 9
 )
 
-// List view header message.
+// HDITEM fmt.
+type HDF int32
+
+const (
+	HDF_LEFT            HDF = 0x0
+	HDF_RIGHT           HDF = 0x1
+	HDF_CENTER          HDF = 0x2
+	HDF_JUSTIFYMASK     HDF = 0x3
+	HDF_RTLREADING      HDF = 0x4
+	HDF_OWNERDRAW       HDF = 0x8000
+	HDF_STRING          HDF = 0x4000
+	HDF_BITMAP          HDF = 0x2000
+	HDF_BITMAP_ON_RIGHT HDF = 0x1000
+	HDF_IMAGE           HDF = 0x800
+	HDF_SORTUP          HDF = 0x400
+	HDF_SORTDOWN        HDF = 0x200
+	HDF_CHECKBOX        HDF = 0x40
+	HDF_CHECKED         HDF = 0x80
+	HDF_FIXEDWIDTH      HDF = 0x100
+	HDF_SPLITBUTTON     HDF = 0x1000000
+)
+
+// HDITEM type.
+type HDFT uint32
+
+const (
+	HDFT_ISSTRING   HDFT = 0x0
+	HDFT_ISNUMBER   HDFT = 0x1
+	HDFT_ISDATE     HDFT = 0x2
+	HDFT_HASNOVALUE HDFT = 0x8000
+)
+
+// HDITEM, NMHDDISPINFO mask.
+type HDI uint32
+
+const (
+	HDI_WIDTH      HDI = 0x1
+	HDI_HEIGHT     HDI = HDI_WIDTH
+	HDI_TEXT       HDI = 0x2
+	HDI_FORMAT     HDI = 0x4
+	HDI_LPARAM     HDI = 0x8
+	HDI_BITMAP     HDI = 0x10
+	HDI_IMAGE      HDI = 0x20
+	HDI_DI_SETITEM HDI = 0x40
+	HDI_ORDER      HDI = 0x80
+	HDI_FILTER     HDI = 0x100
+	HDI_STATE      HDI = 0x0200
+)
+
+// HDITEM state.
+type HDIS uint32
+
+const (
+	HDIS_FOCUSED HDIS = 0x1
+)
+
+// List view header messages.
 type HDM WM
 
 const (
@@ -155,6 +211,33 @@ const (
 	HDM_GETITEM      HDM = _HDM_FIRST + 11
 	HDM_SETITEM      HDM = _HDM_FIRST + 12
 	HDM_LAYOUT       HDM = _HDM_FIRST + 5
+)
+
+// List view header notifications, sent via WM_NOTIFY.
+type HDN NM
+
+const (
+	_HDN_FIRST HDN = -300
+
+	HDN_BEGINDRAG          HDN = _HDN_FIRST - 10
+	HDN_ENDDRAG            HDN = _HDN_FIRST - 11
+	HDN_FILTERCHANGE       HDN = _HDN_FIRST - 12
+	HDN_FILTERBTNCLICK     HDN = _HDN_FIRST - 13
+	HDN_BEGINFILTEREDIT    HDN = _HDN_FIRST - 14
+	HDN_ENDFILTEREDIT      HDN = _HDN_FIRST - 15
+	HDN_ITEMSTATEICONCLICK HDN = _HDN_FIRST - 16
+	HDN_ITEMKEYDOWN        HDN = _HDN_FIRST - 17
+	HDN_DROPDOWN           HDN = _HDN_FIRST - 18
+	HDN_OVERFLOWCLICK      HDN = _HDN_FIRST - 19
+	HDN_ITEMCHANGING       HDN = _HDN_FIRST - 20
+	HDN_ITEMCHANGED        HDN = _HDN_FIRST - 21
+	HDN_ITEMCLICK          HDN = _HDN_FIRST - 22
+	HDN_ITEMDBLCLICK       HDN = _HDN_FIRST - 23
+	HDN_DIVIDERDBLCLICK    HDN = _HDN_FIRST - 25
+	HDN_BEGINTRACK         HDN = _HDN_FIRST - 26
+	HDN_ENDTRACK           HDN = _HDN_FIRST - 27
+	HDN_TRACK              HDN = _HDN_FIRST - 28
+	HDN_GETDISPINFO        HDN = _HDN_FIRST - 29
 )
 
 // HELPINFO iContextType.

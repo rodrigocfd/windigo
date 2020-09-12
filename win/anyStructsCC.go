@@ -23,6 +23,22 @@ type COMBOBOXEXITEM struct {
 	LParam         LPARAM
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-hditemw
+type HDITEM struct {
+	Mask       co.HDI
+	Cxy        int32
+	PszText    *uint16
+	Hbm        HBITMAP
+	CchTextMax int32
+	Fmt        co.HDF
+	LParam     LPARAM
+	IImage     int32
+	IOrder     int32
+	Type       co.HDFT
+	PvFilter   uintptr // void*
+	State      co.HDIS
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imageinfo
 type IMAGEINFO struct {
 	HbmImage HBITMAP
@@ -184,6 +200,32 @@ type NMDATETIMEWMKEYDOWN struct {
 	NVirtKey  int32
 	PszFormat *uint16
 	St        SYSTEMTIME
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmhdfilterbtnclick
+type NMHDFILTERBTNCLICK struct {
+	Hdr   NMHDR
+	IItem int32
+	Rc    RECT
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmhddispinfow
+type NMHDDISPINFO struct {
+	Hdr        NMHDR
+	IItem      int32
+	Mask       co.HDI
+	PszText    *uint16
+	CchTextMax int32
+	IImage     int32
+	LParam     LPARAM
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmheaderw
+type NMHEADER struct {
+	Hdr     NMHDR
+	IItem   int32
+	IButton int32
+	Pitem   *HDITEM
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmitemactivate
