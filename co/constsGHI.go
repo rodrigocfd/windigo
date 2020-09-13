@@ -385,3 +385,12 @@ const (
 	ILS_SATURATE ILS = 0x00000004
 	ILS_ALPHA    ILS = 0x00000008
 )
+
+// IP Address control notifications, sent via WM_NOTIFY.
+type IPN NM
+
+const (
+	_IPN_FIRST IPN = -860
+
+	IPN_FIELDCHANGED IPN = _IPN_FIRST - 0
+)

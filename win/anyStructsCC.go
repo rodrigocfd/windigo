@@ -230,6 +230,13 @@ type (
 		Pitem   *HDITEM
 	}
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/Commctrl/ns-commctrl-nmipaddress
+	NMIPADDRESS struct {
+		Hdr    NMHDR
+		IField int32
+		IValue int32
+	}
+
 	// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmitemactivate
 	NMITEMACTIVATE struct {
 		Hdr       NMHDR
