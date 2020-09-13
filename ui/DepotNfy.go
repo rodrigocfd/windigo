@@ -516,6 +516,16 @@ func (me *_DepotNfy) SbnRDblClk(statusBarId int, userFunc func(p *win.NMMOUSE)) 
 	})
 }
 
+//--------------------------------------------------------------- SysLink NM ---
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/nm-click-syslink
+func (me *_DepotNfy) SlnClick(sysLinkId int, userFunc func(p *win.NMLINK)) {
+	me.addNfy(sysLinkId, co.NM_CLICK, func(p WmNotify) uintptr {
+		userFunc((*win.NMLINK)(unsafe.Pointer(p.LParam)))
+		return 0
+	})
+}
+
 //------------------------------------------------------------- TreeView TVN ---
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/tvn-asyncdraw

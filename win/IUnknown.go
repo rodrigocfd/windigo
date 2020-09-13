@@ -34,6 +34,8 @@ func (me *_IUnknownImpl) pVtbl() unsafe.Pointer {
 }
 
 // Creates any COM interface, returning the base IUnknown.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_IUnknownImpl) coCreateInstancePtr(
 	clsid *GUID, dwClsContext co.CLSCTX, iid *GUID) {
 
@@ -54,7 +56,7 @@ func (me *_IUnknownImpl) coCreateInstancePtr(
 
 // Queries any COM interface, returning the base IUnknown.
 //
-// To retrieve the queried interface, cast the virtual table pointer.
+// https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *_IUnknownImpl) queryInterface(iid *GUID) IUnknown {
 	if me.uintptr == 0 {
 		panic("Calling queryInterface on empty IUnknown.")
@@ -95,24 +97,3 @@ func (me *_IUnknownImpl) Release() uint32 {
 	ret, _, _ := syscall.Syscall(vTbl.Release, 1, me.uintptr, 0, 0)
 	return uint32(ret)
 }
-
-// Returns a new GUID with the last uint64 member bytes flipped. This allows us
-// to have easy literal declaration for GUID constants. With a literal
-// declaration, the last uint64 will have its bits flipped.
-//
-// This function is called to make the conversion when needed internally.
-// func cloneFlipLastUint64(guid *co.GUID) co.GUID {
-// 	buf64 := [8]byte{}
-// 	binary.BigEndian.PutUint64(buf64[:], guid.Data4)
-// 	guidCopy := *guid
-// 	guidCopy.Data4 = binary.LittleEndian.Uint64(buf64[:])
-// 	return guidCopy
-// }
-
-// func cloneFlipLastUint64Clsid(clsid *co.CLSID) co.CLSID {
-// 	return co.CLSID(cloneFlipLastUint64((*co.GUID)(clsid))) // specialization for CLSID
-// }
-
-// func cloneFlipLastUint64Iid(iid *co.IID) co.IID {
-// 	return co.IID(cloneFlipLastUint64((*co.GUID)(iid))) // specialization for IID
-// }

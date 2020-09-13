@@ -46,6 +46,17 @@ const (
 	LIS_DEFAULTCOLORS LIS = 0x00000010
 )
 
+// SysLink control messages.
+type LM WM
+
+const (
+	LM_HITTEST        LM = LM(WM_USER + 0x300)
+	LM_GETIDEALHEIGHT LM = LM(WM_USER + 0x301)
+	LM_SETITEM        LM = LM(WM_USER + 0x302)
+	LM_GETITEM        LM = LM(WM_USER + 0x303)
+	LM_GETIDEALSIZE   LM = LM_GETIDEALHEIGHT
+)
+
 // ListView current view.
 type LV_VIEW uint16
 
@@ -444,4 +455,16 @@ const (
 	LVSIL_SMALL       LVSIL = 1
 	LVSIL_STATE       LVSIL = 2
 	LVSIL_GROUPHEADER LVSIL = 3
+)
+
+// SysLink control styles.
+type LWS WS
+
+const (
+	LWS_TRANSPARENT    LWS = 0x0001
+	LWS_IGNORERETURN   LWS = 0x0002
+	LWS_NOPREFIX       LWS = 0x0004
+	LWS_USEVISUALSTYLE LWS = 0x0008
+	LWS_USECUSTOMTEXT  LWS = 0x0010
+	LWS_RIGHT          LWS = 0x0020
 )

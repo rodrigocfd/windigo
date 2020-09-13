@@ -250,6 +250,12 @@ type (
 		UKeyFlags co.LVKF
 	}
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlink
+	NMLINK struct {
+		Hdr  NMHDR
+		Item LITEM
+	}
+
 	// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlistview
 	NMLISTVIEW struct {
 		Hdr       NMHDR

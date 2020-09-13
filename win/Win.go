@@ -6,7 +6,9 @@
 
 package win
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+)
 
 type _WinT struct{}
 

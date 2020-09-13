@@ -14,11 +14,16 @@ import (
 	"windigo/win/proc"
 )
 
-// Returns *uint16, wrapper to syscall.UTF16PtrFromString(). Panics on error.
+// Converts string to *uint16.
+//
+// Ideal to pass strings to syscalls. We won't return an uintptr right away
+// because it has no pointer semantics, it's just a number, so pointed memory
+// can be garbage-collected.
+//
+// https://stackoverflow.com/a/51188315
+//
+// Wrapper to syscall.UTF16PtrFromString(). Panics on error.
 func StrToPtr(s string) *uint16 {
-	// We won't return an uintptr right away because it has no pointer semantics,
-	// it's just a number, so pointed memory can be garbage-collected.
-	// https://stackoverflow.com/a/51188315
 	pstr, err := syscall.UTF16PtrFromString(s)
 	if err != nil {
 		panic(fmt.Sprintf("StrToPtr failed \"%s\": %s",
@@ -27,8 +32,9 @@ func StrToPtr(s string) *uint16 {
 	return pstr
 }
 
-// Returns a null-terminated []uint16, wrapper to syscall.UTF16FromString().
-// Panics on error.
+// Converts string to null-terminated []uint16.
+//
+// Wrapper to syscall.UTF16FromString(). Panics on error.
 func StrToSlice(s string) []uint16 {
 	sli, err := syscall.UTF16FromString(s)
 	if err != nil {
@@ -38,8 +44,9 @@ func StrToSlice(s string) []uint16 {
 	return sli
 }
 
-// Returns *uint16, or nil of empty string, wrapper to
-// syscall.UTF16PtrFromString(). Panics on error.
+// Converts string to *uint16, or nil if string is empty.
+//
+// Wrapper to syscall.UTF16PtrFromString(). Panics on error.
 func StrToPtrBlankIsNil(s string) *uint16 {
 	if s != "" {
 		return StrToPtr(s)
