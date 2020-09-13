@@ -199,7 +199,7 @@ const (
 	HDIS_FOCUSED HDIS = 0x1
 )
 
-// List view header messages.
+// ListView header messages.
 type HDM WM
 
 const (
@@ -213,7 +213,7 @@ const (
 	HDM_LAYOUT       HDM = _HDM_FIRST + 5
 )
 
-// List view header notifications, sent via WM_NOTIFY.
+// ListView header notifications, sent via WM_NOTIFY.
 type HDN NM
 
 const (
@@ -375,7 +375,7 @@ const (
 	ILD_BLEND         ILD = ILD_BLEND50
 )
 
-// Image list state.
+// ImageList state.
 type ILS uint32
 
 const (
@@ -386,7 +386,7 @@ const (
 	ILS_ALPHA    ILS = 0x00000008
 )
 
-// IP Address control notifications, sent via WM_NOTIFY.
+// IP address control notifications, sent via WM_NOTIFY.
 type IPN NM
 
 const (

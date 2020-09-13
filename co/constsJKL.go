@@ -46,7 +46,7 @@ const (
 	LIS_DEFAULTCOLORS LIS = 0x00000010
 )
 
-// List view current view.
+// ListView current view.
 type LV_VIEW uint16
 
 const (
@@ -149,7 +149,7 @@ const (
 	LVIF_TEXT        LVIF = 0x00000001
 )
 
-// List view item states.
+// ListView item states.
 type LVIS uint32
 
 const (
@@ -173,7 +173,7 @@ const (
 	LVKF_SHIFT   LVKF = 0x0004
 )
 
-// List view messages.
+// ListView messages.
 type LVM WM
 
 const (
@@ -305,7 +305,7 @@ const (
 	LVM_GETNEXTITEMINDEX         LVM = _LVM_FIRST + 211
 )
 
-// List view notifications, sent via WM_NOTIFY.
+// ListView notifications, sent via WM_NOTIFY.
 type LVN NM
 
 const (
@@ -371,7 +371,7 @@ const (
 	LVIR_SELECTBOUNDS LVIR = 3
 )
 
-// List view styles.
+// ListView styles.
 type LVS WS
 
 const (
@@ -399,7 +399,7 @@ const (
 	LVS_TYPESTYLEMASK   LVS = 0xfc00
 )
 
-// List view extended styles.
+// ListView extended styles.
 type LVS_EX WS_EX
 
 const (

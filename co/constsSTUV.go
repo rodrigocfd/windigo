@@ -28,7 +28,7 @@ const (
 	SB_GETUNICODEFORMAT SB = SB(CCM_GETUNICODEFORMAT)
 )
 
-// Status bar styles.
+// StatusBar styles.
 type SBARS WS
 
 const (
@@ -36,7 +36,7 @@ const (
 	SBARS_TOOLTIPS SBARS = 0x0800
 )
 
-// Status bar notifications, sent via WM_NOTIFY.
+// StatusBar notifications, sent via WM_NOTIFY.
 type SBN NM
 
 const (
@@ -733,7 +733,7 @@ const (
 	TVIS_EX_ALL      TVIS_EX = 0x0002
 )
 
-// Tree view messages.
+// TreeView messages.
 type TVM WM
 
 const (
@@ -792,7 +792,7 @@ const (
 	TVM_GETITEMPARTRECT     TVM = _TVM_FIRST + 72
 )
 
-// Tree view notifications, sent via WM_NOTIFY.
+// TreeView notifications, sent via WM_NOTIFY.
 type TVN NM
 
 const (
@@ -826,7 +826,7 @@ const (
 	TVNRET_SKIPNEW TVNRET = 2
 )
 
-// Tree view styles.
+// TreeView styles.
 type TVS WS
 
 const (
@@ -848,7 +848,7 @@ const (
 	TVS_NOHSCROLL       TVS = 0x8000
 )
 
-// Tree view extended styles.
+// TreeView extended styles.
 type TVS_EX WS_EX
 
 const (

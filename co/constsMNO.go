@@ -6,7 +6,7 @@
 
 package co
 
-// Month calendar notifications, sent via WM_NOTIFY.
+// MonthCalendar notifications, sent via WM_NOTIFY.
 type MCN NM
 
 const (
@@ -221,7 +221,7 @@ const (
 	MONITOR_DEFAULTTONEAREST MONITOR = 0x00000002
 )
 
-// Common control notification.
+// Common control notifications.
 type NM int32
 
 const (

@@ -34,7 +34,7 @@ const (
 	DPI_AWARE_CTX_UNAWARE_GDISCALED DPI_AWARE_CTX = -5
 )
 
-// Composes SFGAO consts.
+// Composes SFGAO.
 type DROPEFFECT uint32
 
 const (
@@ -45,7 +45,7 @@ const (
 	DROPEFFECT_SCROLL DROPEFFECT = 0x80000000
 )
 
-// Date and time picker messages.
+// DateTimePicker messages.
 type DTM WM
 
 const (
@@ -68,7 +68,7 @@ const (
 	DTM_GETIDEALSIZE          DTM = _DTM_FIRST + 15
 )
 
-// Date and time picker notifications, sent via WM_NOTIFY.
+// DateTimePicker notifications, sent via WM_NOTIFY.
 type DTN NM
 
 const (
@@ -84,7 +84,7 @@ const (
 	DTN_USERSTRING     DTN = _DTN_FIRST - 5
 )
 
-// Date and time picker styles.
+// DateTimePicker styles.
 type DTS WS
 
 const (

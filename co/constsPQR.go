@@ -30,7 +30,7 @@ const (
 	PAGE_ENCLAVE_DECOMMIT       PAGE = 0x10000000
 )
 
-// Progress bar state.
+// ProgressBar state.
 type PBST uint32
 
 const (
@@ -39,7 +39,7 @@ const (
 	PBST_PAUSED PBST = 0x0003
 )
 
-// Progress bar messages.
+// ProgressBar messages.
 type PBM WM
 
 const (
@@ -61,7 +61,7 @@ const (
 	PBM_GETSTATE    PBM = PBM(WM_USER + 17)
 )
 
-// Progress bar styles.
+// ProgressBar styles.
 type PBS WS
 
 const (
