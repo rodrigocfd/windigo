@@ -15,17 +15,17 @@ import (
 	"windigo/win"
 )
 
-type _SysDlgUtilT struct{}
+type _SysDlgT struct{}
 
-// System dialogs utilities.
-var SysDlgUtil _SysDlgUtilT
+// System dialogs.
+var SysDlg _SysDlgT
 
 // Shows the open file system dialog, choice restricted to 1 file.
 //
 // Example of filtersWithPipe:
 //
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (_SysDlgUtilT) FileOpen(
+func (_SysDlgT) FileOpen(
 	owner Window, filtersWithPipe []string) (string, bool) {
 
 	zFilters := filterToUtf16(filtersWithPipe)
@@ -50,7 +50,7 @@ func (_SysDlgUtilT) FileOpen(
 // Example of filtersWithPipe:
 //
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (_SysDlgUtilT) FileOpenMany(
+func (_SysDlgT) FileOpenMany(
 	owner Window, filtersWithPipe []string) ([]string, bool) {
 
 	zFilters := filterToUtf16(filtersWithPipe)
@@ -105,16 +105,16 @@ func (_SysDlgUtilT) FileOpenMany(
 // Example of filtersWithPipe:
 //
 // []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (_SysDlgUtilT) FileSave(
+func (_SysDlgT) FileSave(
 	owner Window, defaultName, defaultExt string,
 	filtersWithPipe []string) (string, bool) {
 
 	zFilters := filterToUtf16(filtersWithPipe)
-	defExt := win.StrToSlice(defaultExt)
+	defExt := win.Str.ToUint16Slice(defaultExt)
 
 	result := [260]uint16{} // MAX_PATH
 	if defaultName != "" {
-		copy(result[:], win.StrToSlice(defaultName))
+		copy(result[:], win.Str.ToUint16Slice(defaultName))
 	}
 
 	ofn := win.OPENFILENAME{
@@ -140,7 +140,7 @@ func filterToUtf16(filtersWithPipe []string) []uint16 {
 	filters16 := make([][]uint16, 0, len(filtersWithPipe))
 	charCount := 0
 	for _, filter := range filtersWithPipe {
-		filters16 = append(filters16, win.StrToSlice(filter))
+		filters16 = append(filters16, win.Str.ToUint16Slice(filter))
 		charCount += len(filter) + 1 // also count terminating null
 	}
 
@@ -165,7 +165,7 @@ var (
 )
 
 // Ordinary MessageBox(), but centered at parent.
-func (_SysDlgUtilT) MsgBox(
+func (_SysDlgT) MsgBox(
 	parent Window, message, caption string, flags co.MB) co.MBID {
 
 	_globalMsgBoxParent = parent.Hwnd()

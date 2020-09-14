@@ -39,8 +39,8 @@ func (me *FileMapped) Close() {
 //
 // If you need to close the file right away, use CopyToBuffer() instead.
 func (me *FileMapped) HotSlice() []byte {
-	// https://golang.org/src/syscall/syscall_unix.go#L52
-	var sliceMem = struct {
+	// https://stackoverflow.com/a/43592538
+	var sliceMem = struct { // slice memory layout
 		addr uintptr
 		len  int
 		cap  int

@@ -58,7 +58,7 @@ func (me *_WndclassexCommon) genWndclassex(
 			wcx.LpszMenuName, wcx.HIconSm)
 	}
 
-	me.classNameBuf = win.StrToSlice(me.ClassName) // keep the buffer, we'll use a pointer to it
+	me.classNameBuf = win.Str.ToUint16Slice(me.ClassName) // keep the buffer, we'll use a pointer to it
 	wcx.LpszClassName = &me.classNameBuf[0]
 
 	return &wcx

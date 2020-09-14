@@ -22,7 +22,7 @@ type Menu struct {
 // Appends a new item to the menu.
 func (me *Menu) AppendItem(cmdId int, text string) *Menu {
 	me.hMenu.AppendMenu(co.MF_STRING, uintptr(cmdId),
-		unsafe.Pointer(win.StrToPtr(text)))
+		unsafe.Pointer(win.Str.ToUint16Ptr(text)))
 	return me
 }
 
@@ -37,7 +37,7 @@ func (me *Menu) AppendSubmenu(text string) *Menu {
 	newMenu := &Menu{}
 	newMenu.CreatePopup()
 	me.hMenu.AppendMenu(co.MF_STRING|co.MF_POPUP, uintptr(newMenu.Hmenu()),
-		unsafe.Pointer(win.StrToPtr(text)))
+		unsafe.Pointer(win.Str.ToUint16Ptr(text)))
 	return newMenu
 }
 

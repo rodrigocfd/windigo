@@ -12,7 +12,7 @@ import (
 
 type _WinT struct{}
 
-// Internal win package utilities.
+// Internal win package functions.
 var _Win _WinT
 
 // Syntactic sugar; converts bool to 0 or 1.

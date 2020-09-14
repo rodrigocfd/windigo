@@ -57,8 +57,8 @@ func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
 
 	ret, _, lerr := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
 		uintptr(exStyle),
-		uintptr(unsafe.Pointer(StrToPtrBlankIsNil(className))),
-		uintptr(unsafe.Pointer(StrToPtrBlankIsNil(title))),
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(className))),
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(title))),
 		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
 		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
 
@@ -392,8 +392,8 @@ func (hWnd HWND) IsWindowEnabled() bool {
 func (hWnd HWND) MessageBox(message, caption string, flags co.MB) co.MBID {
 	ret, _, _ := syscall.Syscall6(proc.MessageBox.Addr(), 4,
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(StrToPtr(message))),
-		uintptr(unsafe.Pointer(StrToPtr(caption))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(message))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(caption))),
 		uintptr(flags), 0, 0)
 	return co.MBID(ret)
 }
@@ -411,7 +411,7 @@ func (hWnd HWND) MoveWindow(x, y, width, height int32, bRepaint bool) {
 // https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
 func (hWnd HWND) OpenThemeData(classNames string) HTHEME {
 	ret, _, _ := syscall.Syscall(proc.OpenThemeData.Addr(), 2,
-		uintptr(hWnd), uintptr(unsafe.Pointer(StrToPtr(classNames))),
+		uintptr(hWnd), uintptr(unsafe.Pointer(Str.ToUint16Ptr(classNames))),
 		0)
 	return HTHEME(ret) // zero if no match, never fails
 }
@@ -558,7 +558,7 @@ func (hWnd HWND) SetWindowSubclass(subclassProc uintptr, uIdSubclass uint32,
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowtextw
 func (hWnd HWND) SetWindowText(lpString string) {
 	syscall.Syscall(proc.SetWindowText.Addr(), 2,
-		uintptr(hWnd), uintptr(unsafe.Pointer(StrToPtr(lpString))),
+		uintptr(hWnd), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpString))),
 		0)
 }
 

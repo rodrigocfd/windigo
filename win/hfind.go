@@ -31,7 +31,7 @@ func FindFirstFile(lpFileName string,
 	lpFindFileData *WIN32_FIND_DATA) (HFIND, bool, *WinError) {
 
 	ret, _, lerr := syscall.Syscall(proc.FindFirstFile.Addr(), 2,
-		uintptr(unsafe.Pointer(StrToPtr(lpFileName))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))),
 		uintptr(unsafe.Pointer(lpFindFileData)), 0)
 
 	lerr2 := co.ERROR(lerr)

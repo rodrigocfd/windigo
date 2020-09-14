@@ -23,7 +23,7 @@ type ListView struct {
 
 // Appends a new column, returns the new column.
 func (me *ListView) AddColumn(text string, width uint) *ListViewColumn {
-	textBuf := win.StrToSlice(text)
+	textBuf := win.Str.ToUint16Slice(text)
 	lvc := win.LVCOLUMN{
 		Mask:    co.LVCF_TEXT | co.LVCF_WIDTH,
 		PszText: &textBuf[0],
@@ -51,7 +51,7 @@ func (me *ListView) AddColumns(texts []string, widths []uint) *ListView {
 
 // Adds a new item, returns the new item.
 func (me *ListView) AddItem(text string) *ListViewItem {
-	textBuf := win.StrToSlice(text)
+	textBuf := win.Str.ToUint16Slice(text)
 	lvi := win.LVITEM{
 		Mask:    co.LVIF_TEXT,
 		PszText: &textBuf[0],
@@ -80,7 +80,7 @@ func (me *ListView) AddItemWithColumns(textsOfEachColumn []string) *ListView {
 func (me *ListView) AddItemWithIcon(
 	text string, iconIndex int) *ListViewItem {
 
-	textBuf := win.StrToSlice(text)
+	textBuf := win.Str.ToUint16Slice(text)
 	lvi := win.LVITEM{
 		Mask:    co.LVIF_TEXT | co.LVIF_IMAGE,
 		PszText: &textBuf[0],
@@ -210,7 +210,7 @@ func (me *ListView) ExtendedStyle() co.LVS_EX {
 //
 // Returns nil if not found.
 func (me *ListView) FindItem(text string) *ListViewItem {
-	buf := win.StrToSlice(text)
+	buf := win.Str.ToUint16Slice(text)
 	lvfi := win.LVFINDINFO{
 		Flags: co.LVFI_STRING,
 		Psz:   &buf[0],
@@ -421,7 +421,7 @@ func (me *ListView) SetView(view co.LV_VIEW) *ListView {
 // https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getstringwidth
 func (me *ListView) StringWidth(text string) uint {
 	ret := me.sendLvmMessage(co.LVM_GETSTRINGWIDTH,
-		0, win.LPARAM(unsafe.Pointer(win.StrToPtr(text))))
+		0, win.LPARAM(unsafe.Pointer(win.Str.ToUint16Ptr(text))))
 	if ret == 0 {
 		panic("LVM_GETSTRINGWIDTH failed.")
 	}

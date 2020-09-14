@@ -17,7 +17,7 @@ type _UiT struct {
 	globalDpi win.POINT
 }
 
-// Internal ui package utilities.
+// Internal ui package functions.
 var _Ui _UiT
 
 // Syntactic sugar; converts bool to 0 or 1.

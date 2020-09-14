@@ -193,7 +193,7 @@ func (me *ListViewItem) SetParam(lParam win.LPARAM) *ListViewItem {
 func (me *ListViewItem) SetSubItemText(
 	columnIndex uint, text string) *ListViewItem {
 
-	textBuf := win.StrToSlice(text)
+	textBuf := win.Str.ToUint16Slice(text)
 	lvi := win.LVITEM{
 		ISubItem: int32(columnIndex),
 		PszText:  &textBuf[0],

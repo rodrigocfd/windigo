@@ -22,7 +22,7 @@ type TreeViewItem struct {
 
 // Adds a new child item; returns the newly inserted item.
 func (me *TreeViewItem) AddChild(text string) *TreeViewItem {
-	textBuf := win.StrToSlice(text)
+	textBuf := win.Str.ToUint16Slice(text)
 
 	tvi := win.TVINSERTSTRUCT{
 		HParent:      me.hTreeItem,
@@ -126,7 +126,7 @@ func (me *TreeViewItem) SetParam(lp win.LPARAM) *TreeViewItem {
 
 // Sets the text with TVM_SETITEM.
 func (me *TreeViewItem) SetText(text string) *TreeViewItem {
-	textBuf := win.StrToSlice(text)
+	textBuf := win.Str.ToUint16Slice(text)
 	tvi := win.TVITEMEX{
 		HItem:   me.hTreeItem,
 		Mask:    co.TVIF_TEXT,

@@ -29,7 +29,7 @@ func CreateDirectory(pathName string,
 	securityAttributes *SECURITY_ATTRIBUTES) *WinError {
 
 	ret, _, lerr := syscall.Syscall(proc.CreateDirectory.Addr(), 2,
-		uintptr(unsafe.Pointer(StrToPtr(pathName))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pathName))),
 		uintptr(unsafe.Pointer(securityAttributes)), 0)
 	if ret == 0 {
 		return NewWinError(co.ERROR(lerr), "CreateDirectory")
@@ -45,7 +45,7 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 	hTemplateFile HFILE) (HFILE, *WinError) {
 
 	ret, _, lerr := syscall.Syscall9(proc.CreateFile.Addr(), 7,
-		uintptr(unsafe.Pointer(StrToPtr(fileName))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
 		uintptr(desiredAccess), uintptr(shareMode),
 		uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(creationDisposition),
@@ -66,7 +66,7 @@ func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 		uintptr(hFile), uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
 		0, uintptr(maxSize),
-		uintptr(unsafe.Pointer(StrToPtrBlankIsNil(objectName))))
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(objectName))))
 	if ret == 0 {
 		return HFILEMAP(0), NewWinError(co.ERROR(lerr), "CreateFileMapping")
 	}
@@ -76,7 +76,7 @@ func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
 func DeleteFile(fileName string) *WinError {
 	ret, _, lerr := syscall.Syscall(proc.DeleteFile.Addr(), 1,
-		uintptr(unsafe.Pointer(StrToPtr(fileName))), 0, 0)
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))), 0, 0)
 	if ret == 0 {
 		return NewWinError(co.ERROR(lerr), "DeleteFile")
 	}
@@ -86,7 +86,7 @@ func DeleteFile(fileName string) *WinError {
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, *WinError) {
 	ret, _, lerr := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
-		uintptr(unsafe.Pointer(StrToPtr(lpFileName))), 0, 0)
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))), 0, 0)
 	retAttr := co.FILE_ATTRIBUTE(ret)
 	if retAttr == co.FILE_ATTRIBUTE_INVALID {
 		return retAttr, NewWinError(co.ERROR(lerr), "GetFileAttributes")

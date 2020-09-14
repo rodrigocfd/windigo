@@ -14,48 +14,6 @@ import (
 	"windigo/win/proc"
 )
 
-// Converts string to *uint16.
-//
-// Ideal to pass strings to syscalls. We won't return an uintptr right away
-// because it has no pointer semantics, it's just a number, so pointed memory
-// can be garbage-collected.
-//
-// https://stackoverflow.com/a/51188315
-//
-// Wrapper to syscall.UTF16PtrFromString(). Panics on error.
-func StrToPtr(s string) *uint16 {
-	pstr, err := syscall.UTF16PtrFromString(s)
-	if err != nil {
-		panic(fmt.Sprintf("StrToPtr failed \"%s\": %s",
-			s, err))
-	}
-	return pstr
-}
-
-// Converts string to null-terminated []uint16.
-//
-// Wrapper to syscall.UTF16FromString(). Panics on error.
-func StrToSlice(s string) []uint16 {
-	sli, err := syscall.UTF16FromString(s)
-	if err != nil {
-		panic(fmt.Sprintf("StrToSlice failed \"%s\": %s",
-			s, err))
-	}
-	return sli
-}
-
-// Converts string to *uint16, or nil if string is empty.
-//
-// Wrapper to syscall.UTF16PtrFromString(). Panics on error.
-func StrToPtrBlankIsNil(s string) *uint16 {
-	if s != "" {
-		return StrToPtr(s)
-	}
-	return nil
-}
-
-//------------------------------------------------------------------------------
-
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 //
 // Must be freed with CoUninitialize().
@@ -386,7 +344,7 @@ func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, *WinError) {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerwindowmessagew
 func RegisterWindowMessage(lpString string) (uint32, *WinError) {
 	ret, _, lerr := syscall.Syscall(proc.RegisterWindowMessage.Addr(), 1,
-		uintptr(unsafe.Pointer(StrToPtr(lpString))), 0, 0)
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpString))), 0, 0)
 	if ret == 0 {
 		return 0, NewWinError(co.ERROR(lerr), "RegisterWindowMessage")
 	}
@@ -444,7 +402,7 @@ func SHGetFileInfo(pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
 
 	shfi := &SHFILEINFO{}
 	ret, _, _ := syscall.Syscall6(proc.SHGetFileInfo.Addr(), 5,
-		uintptr(unsafe.Pointer(StrToPtr(pszPath))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pszPath))),
 		uintptr(dwFileAttributes), uintptr(unsafe.Pointer(shfi)),
 		unsafe.Sizeof(*shfi), uintptr(uFlags), 0)
 

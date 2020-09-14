@@ -45,7 +45,7 @@ func (hInst HINSTANCE) GetClassInfoEx(
 // Pass an empty string to get own process handle.
 func GetModuleHandle(moduleName string) HINSTANCE {
 	ret, _, _ := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
-		uintptr(unsafe.Pointer(StrToPtrBlankIsNil(moduleName))),
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(moduleName))),
 		0, 0)
 	return HINSTANCE(ret)
 }

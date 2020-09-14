@@ -23,7 +23,7 @@ type ComboBox struct {
 // Adds a single item to the combo box.
 func (me *ComboBox) Add(text string) *ComboBox {
 	me.sendCbMessage(co.CB_ADDSTRING,
-		0, win.LPARAM(unsafe.Pointer(win.StrToPtr(text))))
+		0, win.LPARAM(unsafe.Pointer(win.Str.ToUint16Ptr(text))))
 	return me
 }
 

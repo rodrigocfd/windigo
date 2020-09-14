@@ -15,13 +15,13 @@ import (
 	"windigo/win"
 )
 
-type _PathUtilT struct{}
+type _PathT struct{}
 
-// File and folder path utilities.
-var PathUtil _PathUtilT
+// File and folder path functions.
+var Path _PathT
 
 // Returns all the file names that match a pattern like "C:\\foo\\*.txt".
-func (_PathUtilT) ListFilesInFolder(
+func (_PathT) ListFilesInFolder(
 	pathAndPattern string) ([]string, *win.WinError) {
 
 	retFiles := make([]string, 0)
@@ -53,20 +53,20 @@ func (_PathUtilT) ListFilesInFolder(
 }
 
 // Tells if a given file or folder exists.
-func (_PathUtilT) PathExists(path string) bool {
+func (_PathT) PathExists(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID
 }
 
 // Tells if a given path is a folder, and not a file.
-func (_PathUtilT) PathIsFolder(path string) bool {
+func (_PathT) PathIsFolder(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID &&
 		(attr&co.FILE_ATTRIBUTE_DIRECTORY) != 0
 }
 
 // Tells if the given file or folder is hidden.
-func (_PathUtilT) PathIsHidden(path string) bool {
+func (_PathT) PathIsHidden(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID &&
 		(attr&co.FILE_ATTRIBUTE_HIDDEN) != 0

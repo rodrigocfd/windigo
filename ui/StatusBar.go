@@ -133,7 +133,7 @@ func (me *StatusBar) SetText(part uint, text string) *StatusBar {
 		})
 	}
 	me.sendSbMessage(co.SB_SETTEXT,
-		win.WPARAM(part), win.LPARAM(unsafe.Pointer(win.StrToPtr(text))))
+		win.WPARAM(part), win.LPARAM(unsafe.Pointer(win.Str.ToUint16Ptr(text))))
 	return me
 }
 

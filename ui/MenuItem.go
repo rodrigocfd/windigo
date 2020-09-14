@@ -48,7 +48,7 @@ func (me *MenuItem) Owner() *Menu {
 
 // Sets the text to this menu item.
 func (me *MenuItem) SetText(text string) *MenuItem {
-	textBuf := win.StrToSlice(text)
+	textBuf := win.Str.ToUint16Slice(text)
 	mii := win.MENUITEMINFO{
 		FMask:      co.MIIM_STRING,
 		DwTypeData: uintptr(unsafe.Pointer(&textBuf[0])),

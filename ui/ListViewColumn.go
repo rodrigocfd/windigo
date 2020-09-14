@@ -43,7 +43,7 @@ func (me *ListViewColumn) Index() uint {
 
 // Sets the text of this column with LVM_SETCOLUMN.
 func (me *ListViewColumn) SetText(text string) *ListViewColumn {
-	textBuf := win.StrToSlice(text)
+	textBuf := win.Str.ToUint16Slice(text)
 	lvc := win.LVCOLUMN{
 		ISubItem: int32(me.index),
 		Mask:     co.LVCF_TEXT,

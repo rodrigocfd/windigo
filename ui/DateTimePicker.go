@@ -76,7 +76,7 @@ func (me *DateTimePicker) SetFormat(format string) *DateTimePicker {
 	var pFormat unsafe.Pointer
 
 	if len(format) > 0 {
-		formatBuf := win.StrToSlice(format)
+		formatBuf := win.Str.ToUint16Slice(format)
 		pFormat = unsafe.Pointer(&formatBuf[0])
 	} else {
 		pFormat = nil
