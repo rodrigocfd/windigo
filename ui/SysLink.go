@@ -34,7 +34,7 @@ func (me *SysLink) Create(
 	return me
 }
 
-// Calls CreateWindowEx() with LWS_TRANSPARENT | LWS_USEVISUALSTYLE.
+// Calls CreateWindowEx() with LWS_TRANSPARENT.
 //
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
@@ -44,8 +44,10 @@ func (me *SysLink) CreateLText(
 	x, y, _, _ = _Ui.MultiplyDpi(x, y, 0, 0)
 
 	me._ControlNativeBase.create(co.WS_EX_NONE, "SysLink", text,
-		co.WS_CHILD|co.WS_VISIBLE|co.WS_TABSTOP|co.WS(co.LWS_TRANSPARENT|co.LWS_USEVISUALSTYLE),
+		co.WS_CHILD|co.WS_VISIBLE|co.WS_TABSTOP|co.WS(co.LWS_TRANSPARENT),
 		x, y, 0, 0, parent, ctrlId) // note zero width & height
+
+	_globalUiFont.SetOnControl(me)
 
 	sz := win.SIZE{}
 	me.sendLmMessage(co.LM_GETIDEALSIZE, 0, win.LPARAM(unsafe.Pointer(&sz)))
