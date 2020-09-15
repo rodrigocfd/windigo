@@ -40,11 +40,12 @@ func (me *FileMapped) Close() {
 // If you need to close the file right away, use CopyToBuffer() instead.
 func (me *FileMapped) HotSlice() []byte {
 	// https://stackoverflow.com/a/43592538
+	// https://golang.org/pkg/internal/unsafeheader/#Slice
 	var sliceMem = struct { // slice memory layout
-		addr uintptr
+		addr unsafe.Pointer
 		len  int
 		cap  int
-	}{uintptr(me.pMem), int(me.sz), int(me.sz)}
+	}{unsafe.Pointer(me.pMem), int(me.sz), int(me.sz)}
 
 	return *(*[]byte)(unsafe.Pointer(&sliceMem))
 }

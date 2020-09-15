@@ -36,11 +36,12 @@ func (_StrT) FromUint16Ptr(p *uint16) string {
 
 	// Turn *uint16 into []uint16.
 	// https://stackoverflow.com/a/43592538
+	// https://golang.org/pkg/internal/unsafeheader/#Slice
 	var sliceMem = struct { // slice memory layout
-		addr uintptr
+		addr unsafe.Pointer
 		len  int
 		cap  int
-	}{uintptr(unsafe.Pointer(p)), sLen, sLen}
+	}{unsafe.Pointer(p), sLen, sLen}
 
 	// Decode []uint16 into string.
 	return string(utf16.Decode(*(*[]uint16)(unsafe.Pointer(&sliceMem))))
