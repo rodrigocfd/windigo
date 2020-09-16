@@ -53,13 +53,14 @@ func (me *Static) CreateLText(
 // Sets the text, and resizes the control to fit it exactly.
 //
 // To set the text without resizing the control, use Hwnd().SetWindowText().
-func (me *Static) SetText(text string) {
+func (me *Static) SetText(text string) *Static {
 	hasAccel := (co.SS(me.Hwnd().GetStyle()) & co.SS_NOPREFIX) == 0
 	cx, cy := calcTextBoundBox(me.Hwnd().GetParent(), text, hasAccel)
 
 	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, int32(cx), int32(cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
+	return me
 }
 
 // Returns the text without the accelerator ampersands, for example:

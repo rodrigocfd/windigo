@@ -60,12 +60,13 @@ func (me *SysLink) CreateLText(
 // Sets the text, and resizes the control to fit it exactly.
 //
 // To set the text without resizing the control, use Hwnd().SetWindowText().
-func (me *SysLink) SetText(text string) {
+func (me *SysLink) SetText(text string) *SysLink {
 	cx, cy := calcTextBoundBox(me.Hwnd().GetParent(), text, false)
 
 	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, int32(cx), int32(cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
+	return me
 }
 
 // Returns the text in the SysLink control.
