@@ -57,6 +57,24 @@ func (me *SysLink) CreateLText(
 	return me
 }
 
+// Sets the text, and resizes the control to fit it exactly.
+//
+// To set the text without resizing the control, use Hwnd().SetWindowText().
+func (me *SysLink) SetText(text string) {
+	cx, cy := calcTextBoundBox(me.Hwnd().GetParent(), text, false)
+
+	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, int32(cx), int32(cy),
+		co.SWP_NOZORDER|co.SWP_NOMOVE)
+	me.Hwnd().SetWindowText(text)
+}
+
+// Returns the text in the SysLink control.
+//
+// Syntactic sugar to Hwnd().GetWindowText().
+func (me *SysLink) Text() string {
+	return me.Hwnd().GetWindowText()
+}
+
 // Syntactic sugar.
 func (me *SysLink) sendLmMessage(msg co.LM,
 	wParam win.WPARAM, lParam win.LPARAM) uintptr {
