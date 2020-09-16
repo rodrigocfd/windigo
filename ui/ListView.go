@@ -448,7 +448,7 @@ func (me *ListView) View() co.LV_VIEW {
 
 // Adds all subclass message handlers; must be called before creation.
 func (me *ListView) installSubclass() {
-	me.OnSubclassMsg().WmRButtonDown(func(p WmRButtonDown) {
+	me.OnSubclassMsg().WmRButtonDown(func(p WmMouse) {
 		// WM_RBUTTONUP doesn't work, only NM_RCLICK on parent.
 		// https://stackoverflow.com/a/30206896
 		me.showContextMenu(true, p.HasCtrl(), p.HasShift())
@@ -479,7 +479,8 @@ func (me *ListView) installSubclass() {
 		}
 
 		return co.DLGC(
-			me.Hwnd().DefSubclassProc(co.WM_GETDLGCODE, p.WParam, p.LParam),
+			me.Hwnd().DefSubclassProc(co.WM_GETDLGCODE,
+				p.Raw().WParam, p.Raw().LParam),
 		)
 	})
 }

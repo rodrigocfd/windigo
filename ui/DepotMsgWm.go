@@ -7,67 +7,58 @@
 package ui
 
 import (
-	"unsafe"
 	"windigo/co"
 	"windigo/win"
 )
 
-// Raw window message parameters.
+// Raw window message parameters, WPARAM and LPARAM.
 type Wm struct {
-	_Wm
-}
-
-type _Wm struct {
 	WParam win.WPARAM
 	LParam win.LPARAM
 }
 
-type _WmButton struct{ _Wm }
+type WmChar struct{ m Wm }
 
-func (p _WmButton) HasCtrl() bool      { return (co.MK(p.WParam) & co.MK_CONTROL) != 0 }
-func (p _WmButton) HasLeftBtn() bool   { return (co.MK(p.WParam) & co.MK_LBUTTON) != 0 }
-func (p _WmButton) HasMiddleBtn() bool { return (co.MK(p.WParam) & co.MK_MBUTTON) != 0 }
-func (p _WmButton) HasRightBtn() bool  { return (co.MK(p.WParam) & co.MK_RBUTTON) != 0 }
-func (p _WmButton) HasShift() bool     { return (co.MK(p.WParam) & co.MK_SHIFT) != 0 }
-func (p _WmButton) HasXBtn1() bool     { return (co.MK(p.WParam) & co.MK_XBUTTON1) != 0 }
-func (p _WmButton) HasXBtn2() bool     { return (co.MK(p.WParam) & co.MK_XBUTTON2) != 0 }
-func (p _WmButton) Pos() win.POINT     { return p.LParam.MakePoint() }
+func (p WmChar) CharCode() rune            { return rune(p.m.WParam) }
+func (p WmChar) RepeatCount() uint         { return uint(p.m.LParam.LoWord()) }
+func (p WmChar) ScanCode() uint            { return uint(p.m.LParam.LoByteHiWord()) }
+func (p WmChar) IsExtendedKey() bool       { return (p.m.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
+func (p WmChar) HasAltKey() bool           { return (p.m.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
+func (p WmChar) IsKeyDownBeforeSend() bool { return (p.m.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
+func (p WmChar) IsKeyBeingReleased() bool  { return (p.m.LParam.HiByteHiWord() & 0b1000_0000) != 0 }
 
-type _WmChar struct{ _Wm }
+type WmCtlColor struct{ m Wm }
 
-func (p _WmChar) CharCode() rune            { return rune(p.WParam) }
-func (p _WmChar) RepeatCount() uint         { return uint(p.LParam.LoWord()) }
-func (p _WmChar) ScanCode() uint            { return uint(p.LParam.LoByteHiWord()) }
-func (p _WmChar) IsExtendedKey() bool       { return (p.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
-func (p _WmChar) HasAltKey() bool           { return (p.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
-func (p _WmChar) IsKeyDownBeforeSend() bool { return (p.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
-func (p _WmChar) IsKeyBeingReleased() bool  { return (p.LParam.HiByteHiWord() & 0b1000_0000) != 0 }
+func (p WmCtlColor) Hdc() win.HDC       { return win.HDC(p.m.WParam) }
+func (p WmCtlColor) HControl() win.HWND { return win.HWND(p.m.LParam) }
 
-type _WmCtlColor struct{ _Wm }
+type WmKey struct{ m Wm }
 
-func (p _WmCtlColor) Hdc() win.HDC       { return win.HDC(p.WParam) }
-func (p _WmCtlColor) HControl() win.HWND { return win.HWND(p.LParam) }
+func (p WmKey) VirtualKeyCode() co.VK     { return co.VK(p.m.WParam) }
+func (p WmKey) RepeatCount() uint         { return uint(p.m.LParam.LoWord()) }
+func (p WmKey) ScanCode() uint            { return uint(p.m.LParam.LoByteHiWord()) }
+func (p WmKey) IsExtendedKey() bool       { return (p.m.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
+func (p WmKey) HasAltKey() bool           { return (p.m.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
+func (p WmKey) IsKeyDownBeforeSend() bool { return (p.m.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
 
-type _WmKey struct{ _Wm }
+type WmMenu struct{ m Wm }
 
-func (p _WmKey) VirtualKeyCode() co.VK     { return co.VK(p.WParam) }
-func (p _WmKey) RepeatCount() uint         { return uint(p.LParam.LoWord()) }
-func (p _WmKey) ScanCode() uint            { return uint(p.LParam.LoByteHiWord()) }
-func (p _WmKey) IsExtendedKey() bool       { return (p.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
-func (p _WmKey) HasAltKey() bool           { return (p.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
-func (p _WmKey) IsKeyDownBeforeSend() bool { return (p.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
+func (p WmMenu) ItemIndex() uint  { return uint(p.m.WParam) }
+func (p WmMenu) Hmenu() win.HMENU { return win.HMENU(p.m.LParam) }
 
-type _WmMenu struct{ _Wm }
+type WmMouse struct{ m Wm }
 
-func (p _WmMenu) ItemIndex() uint  { return uint(p.WParam) }
-func (p _WmMenu) Hmenu() win.HMENU { return win.HMENU(p.LParam) }
+func (p WmMouse) HasCtrl() bool      { return (co.MK(p.m.WParam) & co.MK_CONTROL) != 0 }
+func (p WmMouse) HasLeftBtn() bool   { return (co.MK(p.m.WParam) & co.MK_LBUTTON) != 0 }
+func (p WmMouse) HasMiddleBtn() bool { return (co.MK(p.m.WParam) & co.MK_MBUTTON) != 0 }
+func (p WmMouse) HasRightBtn() bool  { return (co.MK(p.m.WParam) & co.MK_RBUTTON) != 0 }
+func (p WmMouse) HasShift() bool     { return (co.MK(p.m.WParam) & co.MK_SHIFT) != 0 }
+func (p WmMouse) HasXBtn1() bool     { return (co.MK(p.m.WParam) & co.MK_XBUTTON1) != 0 }
+func (p WmMouse) HasXBtn2() bool     { return (co.MK(p.m.WParam) & co.MK_XBUTTON2) != 0 }
+func (p WmMouse) Pos() win.POINT     { return p.m.LParam.MakePoint() }
 
-type _WmScroll struct{ _Wm }
+type WmScroll struct{ m Wm }
 
-func (p _WmScroll) ScrollBoxPos() uint      { return uint(p.WParam.HiWord()) }
-func (p _WmScroll) Request() co.SBR         { return co.SBR(p.WParam.LoWord()) }
-func (p _WmScroll) HwndScrollbar() win.HWND { return win.HWND(p.LParam) }
-
-type WmNotify struct{ _Wm }
-
-func (p WmNotify) NmHdr() *win.NMHDR { return (*win.NMHDR)(unsafe.Pointer(p.LParam)) }
+func (p WmScroll) ScrollBoxPos() uint      { return uint(p.m.WParam.HiWord()) }
+func (p WmScroll) Request() co.SBR         { return co.SBR(p.m.WParam.LoWord()) }
+func (p WmScroll) HwndScrollbar() win.HWND { return win.HWND(p.m.LParam) }

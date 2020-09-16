@@ -89,12 +89,8 @@ func subclassProc(hwnd win.HWND, msg co.WM,
 	hwnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 
 	if pMe != nil && pMe.hwnd != 0 {
-		userRet, wasHandled := pMe.msgs.processMessage(msg, Wm{ // try to process the message with an user handler
-			_Wm{
-				WParam: wParam,
-				LParam: lParam,
-			},
-		})
+		userRet, wasHandled := pMe.msgs.processMessage(msg, // try to process the message with an user handler
+			Wm{WParam: wParam, LParam: lParam})
 
 		if msg == co.WM_NCDESTROY { // even if the user handles WM_NCDESTROY, we must ensure cleanup
 			pMe.hwnd.RemoveWindowSubclass(_globalSubclassProcPtr, pMe.subclassId)

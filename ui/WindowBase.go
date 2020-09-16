@@ -98,7 +98,7 @@ func (me *_WindowBase) createWindow(uiName string, exStyle co.WS_EX,
 }
 
 func (me *_WindowBase) defaultMessageHandling() {
-	me.depot.addMsg(_WM_UI_THREAD, func(p Wm) uintptr { // handle our custom thread UI message
+	me.depot.Wm(_WM_UI_THREAD, func(p Wm) uintptr { // handle our custom thread UI message
 		if p.WParam == 0xC0DEF00D {
 			pack := (*_ThreadPack)(unsafe.Pointer(p.LParam))
 			pack.UserFunc()
@@ -134,13 +134,7 @@ func wndProc(hwnd win.HWND, msg co.WM,
 	}
 
 	// Try to process the message with an user handler.
-	msgParms := Wm{
-		_Wm{
-			WParam: wParam,
-			LParam: lParam,
-		},
-	}
-
+	msgParms := Wm{WParam: wParam, LParam: lParam}
 	userRet, wasHandled := pMe.depot._DepotMsg.processMessage(msg, msgParms)
 	if !wasHandled {
 		userRet, wasHandled = pMe.depot._DepotNfy.processMessage(msg, msgParms)

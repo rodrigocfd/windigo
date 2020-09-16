@@ -52,7 +52,7 @@ func (me *WindowControl) Create(
 
 func (me *WindowControl) defaultMessageHandling() {
 	me.OnMsg().WmNcPaint(func(p WmNcPaint) {
-		me.Hwnd().DefWindowProc(co.WM_NCPAINT, p.WParam, p.LParam) // make system draw the scrollbar for us
+		me.Hwnd().DefWindowProc(co.WM_NCPAINT, p.Raw().WParam, p.Raw().LParam) // make system draw the scrollbar for us
 
 		if (me.Hwnd().GetExStyle()&co.WS_EX_CLIENTEDGE) == 0 || // has no border
 			!win.IsThemeActive() ||

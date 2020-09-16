@@ -242,9 +242,9 @@ type (
 		Hdr       NMHDR
 		IItem     int32
 		ISubItem  int32
-		UNewState uint32
-		UOldState uint32
-		UChanged  uint32
+		UNewState co.LVIS
+		UOldState co.LVIS
+		UChanged  co.LVIF
 		PtAction  POINT
 		LParam    LPARAM
 		UKeyFlags co.LVKF
@@ -261,9 +261,9 @@ type (
 		Hdr       NMHDR
 		IItem     int32
 		ISubItem  int32
-		UNewState uint32
-		UOldState uint32
-		UChanged  uint32
+		UNewState co.LVIS
+		UOldState co.LVIS
+		UChanged  co.LVIF
 		PtAction  POINT
 		LParam    LPARAM
 	}

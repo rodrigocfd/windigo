@@ -91,7 +91,7 @@ func (me *WindowMain) defaultMessageHandling() {
 		win.PostQuitMessage(0)
 	})
 
-	me.OnMsg().WmSetFocus(func(p WmSetFocus) {
+	me.OnMsg().WmSetFocus(func(p win.HWND) {
 		if me.Hwnd() == win.GetFocus() {
 			// If window receives focus, delegate to first child.
 			me.Hwnd().

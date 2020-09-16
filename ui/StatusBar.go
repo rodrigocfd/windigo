@@ -52,40 +52,8 @@ func (me *StatusBar) Adjust(p WmSize) {
 	if p.Request() == co.SIZE_MINIMIZED {
 		return // no need to adjust when minimized
 	}
-	me.firstAdjust = true
 
-	cxParent := uint(p.ClientAreaSize().Cx) // available width
-	me.Hwnd().SendMessage(co.WM_SIZE, 0, 0) // tell statusbar to fit parent
-
-	// Find the space to be divided among variable-width parts, and total weight
-	// of variable-width parts.
-	totalWeight := uint(0)
-	cxVariable := cxParent
-
-	for _, part := range me.parts {
-		if part.resizeWeight == 0 { // fixed width
-			cxVariable -= part.sizePixels
-		} else { // variable size
-			totalWeight += part.resizeWeight
-		}
-	}
-
-	// Fill right edges array with the right edge of each part.
-	rightEdges := make([]uint, len(me.parts))
-	cxTotal := cxParent
-
-	for i := len(me.parts) - 1; i >= 0; i-- {
-		rightEdges[i] = cxTotal
-
-		if me.parts[i].resizeWeight == 0 { // fixed width
-			cxTotal -= me.parts[i].sizePixels
-		} else { // variable size
-			cxTotal -= (cxVariable / totalWeight) * me.parts[i].resizeWeight
-		}
-	}
-
-	me.sendSbMessage(co.SB_SETPARTS,
-		win.WPARAM(len(me.parts)), win.LPARAM(unsafe.Pointer(&rightEdges[0])))
+	me.adjustParts(uint(p.ClientAreaSize().Cx))
 }
 
 // Calls CreateWindowEx().
@@ -125,13 +93,9 @@ func (me *StatusBar) SetIcon(part uint, hIcon win.HICON) *StatusBar {
 // Sets the text of the part.
 func (me *StatusBar) SetText(part uint, text string) *StatusBar {
 	if !me.firstAdjust { // text is painted only after first adjust
-		me.Adjust(WmSize{ // manually construct param
-			_Wm{
-				WParam: win.WPARAM(co.SIZE_RESTORED),
-				LParam: win.LPARAM(me.Hwnd().GetParent().GetClientRect().Right),
-			},
-		})
+		me.adjustParts(uint(me.Hwnd().GetParent().GetClientRect().Right))
 	}
+
 	me.sendSbMessage(co.SB_SETTEXT,
 		win.WPARAM(part), win.LPARAM(unsafe.Pointer(win.Str.ToUint16Ptr(text))))
 	return me
@@ -148,6 +112,41 @@ func (me *StatusBar) Text(part uint) string {
 	me.sendSbMessage(co.SB_GETTEXT,
 		win.WPARAM(part), win.LPARAM(unsafe.Pointer(&buf[0])))
 	return syscall.UTF16ToString(buf)
+}
+
+func (me *StatusBar) adjustParts(clientAreaWidth uint) {
+	me.firstAdjust = true
+	me.Hwnd().SendMessage(co.WM_SIZE, 0, 0) // tell statusbar to fit parent
+
+	// Find the space to be divided among variable-width parts, and total weight
+	// of variable-width parts.
+	totalWeight := uint(0)
+	cxVariable := clientAreaWidth
+
+	for _, part := range me.parts {
+		if part.resizeWeight == 0 { // fixed width
+			cxVariable -= part.sizePixels
+		} else { // variable size
+			totalWeight += part.resizeWeight
+		}
+	}
+
+	// Fill right edges array with the right edge of each part.
+	rightEdges := make([]uint, len(me.parts))
+	cxTotal := clientAreaWidth
+
+	for i := len(me.parts) - 1; i >= 0; i-- {
+		rightEdges[i] = cxTotal
+
+		if me.parts[i].resizeWeight == 0 { // fixed width
+			cxTotal -= me.parts[i].sizePixels
+		} else { // variable size
+			cxTotal -= (cxVariable / totalWeight) * me.parts[i].resizeWeight
+		}
+	}
+
+	me.sendSbMessage(co.SB_SETPARTS,
+		win.WPARAM(len(me.parts)), win.LPARAM(unsafe.Pointer(&rightEdges[0])))
 }
 
 // Syntactic sugar.
