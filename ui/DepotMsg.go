@@ -115,17 +115,34 @@ func (p WmAppCommand) AppCommand() co.APPCOMMAND { return co.APPCOMMAND(p.m.LPar
 func (p WmAppCommand) UDevice() co.FAPPCOMMAND   { return co.FAPPCOMMAND(p.m.LParam.HiWord() & 0xF000) }
 func (p WmAppCommand) Keys() co.MK               { return co.MK(p.m.LParam.LoWord()) }
 
-// https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-capturechanged
-func (me *_DepotMsg) WmCaptureChanged(userFunc func(p WmCaptureChanged)) {
-	me.Wm(co.WM_CAPTURECHANGED, func(p Wm) uintptr {
-		userFunc(WmCaptureChanged{m: p})
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-askcbformatname
+func (me *_DepotMsg) WmAskCbFormatName(userFunc func(p WmAskCbFormatName)) {
+	me.Wm(co.WM_ASKCBFORMATNAME, func(p Wm) uintptr {
+		userFunc(WmAskCbFormatName{m: p})
+		return 1
+	})
+}
+
+type WmAskCbFormatName struct{ m Wm }
+
+func (p WmAskCbFormatName) BufferSize() uint { return uint(p.m.WParam) }
+func (p WmAskCbFormatName) Buffer() *uint16  { return (*uint16)(unsafe.Pointer(p.m.LParam)) }
+
+// https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-cancelmode
+func (me *_DepotMsg) WmCancelMode(userFunc func()) {
+	me.Wm(co.WM_CANCELMODE, func(p Wm) uintptr {
+		userFunc()
 		return 0
 	})
 }
 
-type WmCaptureChanged struct{ m Wm }
-
-func (p WmCaptureChanged) WindowGainingMouse() win.HWND { return win.HWND(p.m.LParam) }
+// https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-capturechanged
+func (me *_DepotMsg) WmCaptureChanged(userFunc func(hwndGainingMouse win.HWND)) {
+	me.Wm(co.WM_CAPTURECHANGED, func(p Wm) uintptr {
+		userFunc(win.HWND(p.LParam))
+		return 0
+	})
+}
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-changecbchain
 func (me *_DepotMsg) WmChangeCbChain(userFunc func(p WmChangeCbChain)) {
@@ -207,6 +224,20 @@ type WmContextMenu struct{ m Wm }
 
 func (p WmContextMenu) RightClickedWindow() win.HWND { return win.HWND(p.m.WParam) }
 func (p WmContextMenu) CursorPos() win.POINT         { return p.m.LParam.MakePoint() }
+
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-copydata
+func (me *_DepotMsg) WmCopyData(userFunc func(p WmCopyData) bool) {
+	me.Wm(co.WM_COPYDATA, func(p Wm) uintptr {
+		return _Ui.BoolToUintptr(userFunc(WmCopyData{m: p}))
+	})
+}
+
+type WmCopyData struct{ m Wm }
+
+func (p WmCopyData) WindowPassingData() win.HWND { return win.HWND(p.m.WParam) }
+func (p WmCopyData) CopyDataStruct() *win.COPYDATASTRUCT {
+	return (*win.COPYDATASTRUCT)(unsafe.Pointer(p.m.LParam))
+}
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-create
 func (me *_DepotMsg) WmCreate(userFunc func(p *win.CREATESTRUCT) int) {
@@ -296,6 +327,14 @@ func (me *_DepotMsg) WmDestroyClipboard(userFunc func()) {
 	})
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/gdi/wm-devmodechange
+func (me *_DepotMsg) WmDevModeChange(userFunc func(deviceName string)) {
+	me.Wm(co.WM_DEVMODECHANGE, func(p Wm) uintptr {
+		userFunc(win.Str.FromUint16Ptr((*uint16)(unsafe.Pointer(p.LParam))))
+		return 0
+	})
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/gdi/wm-displaychange
 func (me *_DepotMsg) WmDisplayChange(userFunc func(p WmDisplayChange)) {
 	me.Wm(co.WM_DISPLAYCHANGE, func(p Wm) uintptr {
@@ -344,11 +383,12 @@ func (me *_DepotMsg) WmDropFiles(userFunc func(p WmDropFiles)) {
 type WmDropFiles struct{ m Wm }
 
 func (p WmDropFiles) Hdrop() win.HDROP { return win.HDROP(p.m.WParam) }
+func (p WmDropFiles) Count() uint      { return uint(p.Hdrop().DragQueryFile(0xFFFF_FFFF, nil, 0)) }
 
 // Calls DragQueryFile() successively to retrieve all file names, and releases
 // the HDROP handle with DragFinish().
 func (p WmDropFiles) RetrieveAll() []string {
-	count := p.Hdrop().DragQueryFile(0xFFFF_FFFF, nil, 0)
+	count := uint32(p.Count())
 	files := make([]string, 0, count)
 	for i := uint32(0); i < count; i++ {
 		pathLen := p.Hdrop().DragQueryFile(i, nil, 0) + 1 // room for terminating null
@@ -364,16 +404,12 @@ func (p WmDropFiles) RetrieveAll() []string {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-enable
-func (me *_DepotMsg) WmEnable(userFunc func(p WmEnable)) {
+func (me *_DepotMsg) WmEnable(userFunc func(hasBeenEnabled bool)) {
 	me.Wm(co.WM_ENABLE, func(p Wm) uintptr {
-		userFunc(WmEnable{m: p})
+		userFunc(p.WParam != 0)
 		return 0
 	})
 }
-
-type WmEnable struct{ m Wm }
-
-func (p WmEnable) Enabled() bool { return p.m.WParam != 0 }
 
 // https://docs.microsoft.com/en-us/windows/win32/shutdown/wm-endsession
 func (me *_DepotMsg) WmEndSession(userFunc func(p WmEndSession)) {
@@ -389,16 +425,12 @@ func (p WmEndSession) IsSessionBeingEnded() bool { return p.m.WParam != 0 }
 func (p WmEndSession) Event() co.ENDSESSION      { return co.ENDSESSION(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-entermenuloop
-func (me *_DepotMsg) WmEnterMenuLoop(userFunc func(p WmEnterMenuLoop)) {
+func (me *_DepotMsg) WmEnterMenuLoop(userFunc func(isTrackPopupMenu bool)) {
 	me.Wm(co.WM_ENTERMENULOOP, func(p Wm) uintptr {
-		userFunc(WmEnterMenuLoop{m: p})
+		userFunc(p.WParam != 0)
 		return 0
 	})
 }
-
-type WmEnterMenuLoop struct{ m Wm }
-
-func (p WmEnterMenuLoop) IsTrackPopupMenu() bool { return p.m.WParam != 0 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-entersizemove
 func (me *_DepotMsg) WmEnterSizeMove(userFunc func()) {
@@ -409,23 +441,19 @@ func (me *_DepotMsg) WmEnterSizeMove(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-erasebkgnd
-func (me *_DepotMsg) WmEraseBkGnd(userFunc func(p win.HDC) int) {
+func (me *_DepotMsg) WmEraseBkGnd(userFunc func(hdc win.HDC) int) {
 	me.Wm(co.WM_ERASEBKGND, func(p Wm) uintptr {
 		return uintptr(userFunc(win.HDC(p.WParam)))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-exitmenuloop
-func (me *_DepotMsg) WmExitMenuLoop(userFunc func(p WmExitMenuLoop)) {
+func (me *_DepotMsg) WmExitMenuLoop(userFunc func(isShortcutMenu bool)) {
 	me.Wm(co.WM_EXITMENULOOP, func(p Wm) uintptr {
-		userFunc(WmExitMenuLoop{m: p})
+		userFunc(p.WParam != 0)
 		return 0
 	})
 }
-
-type WmExitMenuLoop struct{ m Wm }
-
-func (p WmExitMenuLoop) IsShortcutMenu() bool { return p.m.WParam != 0 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-exitsizemove
 func (me *_DepotMsg) WmExitSizeMove(userFunc func()) {
@@ -662,7 +690,7 @@ func (me *_DepotMsg) WmMouseMove(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-move
-func (me *_DepotMsg) WmMove(userFunc func(p win.POINT)) {
+func (me *_DepotMsg) WmMove(userFunc func(clientAreaPos win.POINT)) {
 	me.Wm(co.WM_MOVE, func(p Wm) uintptr {
 		userFunc(p.LParam.MakePoint())
 		return 0
@@ -670,7 +698,7 @@ func (me *_DepotMsg) WmMove(userFunc func(p win.POINT)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-moving
-func (me *_DepotMsg) WmMoving(userFunc func(p *win.RECT)) {
+func (me *_DepotMsg) WmMoving(userFunc func(windowPos *win.RECT)) {
 	me.Wm(co.WM_MOVING, func(p Wm) uintptr {
 		userFunc((*win.RECT)(unsafe.Pointer(p.LParam)))
 		return 1

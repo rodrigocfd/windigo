@@ -52,7 +52,7 @@ func (me *MyWindow) RunThisThing() {
 
     // WM_CREATE event is handled with a closure.
     // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-create
-    me.wnd.OnMsg().WmCreate(func(p ui.WmCreate) int32 {
+    me.wnd.OnMsg().WmCreate(func(p *win.CREATESTRUCT) int32 {
         // Physically create the button.
         // The last 3 arguments are: left position, top position and width.
         me.btnHello.CreateSimpleDef(&me.wnd, ID_BTN_HELLO, 10, 10, 90)

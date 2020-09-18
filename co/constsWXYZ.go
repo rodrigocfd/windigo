@@ -108,6 +108,7 @@ const (
 	WM_QUERYDRAGICON                  WM = 0x0037
 	WM_COMPAREITEM                    WM = 0x0039
 	WM_GETOBJECT                      WM = 0x003D
+	WM_COPYDATA                       WM = 0x004A
 	WM_COMPACTING                     WM = 0x0041
 	WM_COMMNOTIFY                     WM = 0x0044
 	WM_WINDOWPOSCHANGING              WM = 0x0046
