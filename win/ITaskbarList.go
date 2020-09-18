@@ -8,6 +8,7 @@ package win
 
 import (
 	"syscall"
+	"unsafe"
 	"windigo/co"
 )
 
@@ -150,6 +151,16 @@ type (
 		SetThumbnailTooltip   uintptr
 		SetThumbnailClip      uintptr
 	}
+
+	// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ns-shobjidl_core-thumbbutton
+	THUMBBUTTON struct {
+		DwMask  co.THB
+		IId     uint32
+		IBitmap uint32
+		HIcon   HICON
+		SzTip   [260]uint16
+		DwFlags co.THBF
+	}
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
@@ -225,11 +236,90 @@ func (me *_ITaskbarList3Impl) SetTabOrder(hwndTab, hwndInsertBefore HWND) {
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settabactive
 func (me *_ITaskbarList3Impl) SetTabActive(hwndTab, hwndMDI HWND) {
 	vTbl := (*_ITaskbarList3Vtbl)(me.pVtbl())
-	ret, _, _ := syscall.Syscall6(vTbl.SetTabOrder, 4, uintptr(me.ptr),
+	ret, _, _ := syscall.Syscall6(vTbl.SetTabActive, 4, uintptr(me.ptr),
 		uintptr(hwndTab), uintptr(hwndMDI), 0, 0, 0)
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
 		panic(NewWinError(lerr, "ITaskbarList3.SetTabActive").Error())
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbaraddbuttons
+func (me *_ITaskbarList3Impl) ThumbBarAddButtons(
+	hwnd HWND, cButtons uint32, pButton *THUMBBUTTON) {
+
+	vTbl := (*_ITaskbarList3Vtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall6(vTbl.ThumbBarAddButtons, 4, uintptr(me.ptr),
+		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
+
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		panic(NewWinError(lerr, "ITaskbarList3.ThumbBarAddButtons").Error())
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarupdatebuttons
+func (me *_ITaskbarList3Impl) ThumbBarUpdateButtons(
+	hwnd HWND, cButtons uint32, pButton *THUMBBUTTON) {
+
+	vTbl := (*_ITaskbarList3Vtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall6(vTbl.ThumbBarUpdateButtons, 4, uintptr(me.ptr),
+		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
+
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		panic(NewWinError(lerr, "ITaskbarList3.ThumbBarUpdateButtons").Error())
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarsetimagelist
+func (me *_ITaskbarList3Impl) ThumbBarSetImageList(hwnd HWND, himl HIMAGELIST) {
+	vTbl := (*_ITaskbarList3Vtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall(vTbl.ThumbBarSetImageList, 3, uintptr(me.ptr),
+		uintptr(hwnd), uintptr(himl))
+
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		panic(NewWinError(lerr, "ITaskbarList3.ThumbBarSetImageList").Error())
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setoverlayicon
+func (me *_ITaskbarList3Impl) SetOverlayIcon(
+	hwnd HWND, hIcon HICON, pszDescription string) {
+
+	vTbl := (*_ITaskbarList3Vtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall6(vTbl.SetOverlayIcon, 4, uintptr(me.ptr),
+		uintptr(hwnd), uintptr(hIcon),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pszDescription))), 0, 0)
+
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		panic(NewWinError(lerr, "ITaskbarList3.SetOverlayIcon").Error())
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
+func (me *_ITaskbarList3Impl) SetThumbnailTooltip(hwnd HWND, pszTip string) {
+	vTbl := (*_ITaskbarList3Vtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall(vTbl.SetThumbnailTooltip, 3, uintptr(me.ptr),
+		uintptr(hwnd), uintptr(unsafe.Pointer(Str.ToUint16Ptr(pszTip))))
+
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		panic(NewWinError(lerr, "ITaskbarList3.SetThumbnailTooltip").Error())
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailclip
+func (me *_ITaskbarList3Impl) SetThumbnailClip(hwnd HWND, prcClip *RECT) {
+	vTbl := (*_ITaskbarList3Vtbl)(me.pVtbl())
+	ret, _, _ := syscall.Syscall(vTbl.SetThumbnailClip, 3, uintptr(me.ptr),
+		uintptr(hwnd), uintptr(unsafe.Pointer(prcClip)))
+
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		panic(NewWinError(lerr, "ITaskbarList3.SetThumbnailClip").Error())
 	}
 }
