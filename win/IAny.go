@@ -124,7 +124,7 @@ func (me *_IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
 func (me *IGraphBuilder) Abort() {
 	vTbl := (*_IGraphBuilderVtbl)(me.pVtbl())
-	ret, _, _ := syscall.Syscall(vTbl.Abort, 1, me.uintptr, 0, 0)
+	ret, _, _ := syscall.Syscall(vTbl.Abort, 1, uintptr(me.ptr), 0, 0)
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
@@ -231,7 +231,7 @@ func (me *_ITaskbarListImpl) CoCreateInstance(dwClsContext co.CLSCTX) {
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
 func (me *_ITaskbarListImpl) ActivateTab(hwnd HWND) {
 	vTbl := (*_ITaskbarListVtbl)(me.pVtbl())
-	ret, _, _ := syscall.Syscall(vTbl.ActivateTab, 1, me.uintptr, 0, 0)
+	ret, _, _ := syscall.Syscall(vTbl.ActivateTab, 1, uintptr(me.ptr), 0, 0)
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
@@ -242,7 +242,7 @@ func (me *_ITaskbarListImpl) ActivateTab(hwnd HWND) {
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-setactivealt
 func (me *_ITaskbarListImpl) SetActiveAlt(hwnd HWND) {
 	vTbl := (*_ITaskbarListVtbl)(me.pVtbl())
-	ret, _, _ := syscall.Syscall(vTbl.SetActiveAlt, 1, me.uintptr, 0, 0)
+	ret, _, _ := syscall.Syscall(vTbl.SetActiveAlt, 1, uintptr(me.ptr), 0, 0)
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
@@ -279,7 +279,7 @@ func (me *_ITaskbarList2Impl) MarkFullscreenWindow(
 	hwnd HWND, fFullScreen bool) {
 
 	vTbl := (*_ITaskbarList2Vtbl)(me.pVtbl())
-	ret, _, _ := syscall.Syscall(vTbl.MarkFullscreenWindow, 3, me.uintptr,
+	ret, _, _ := syscall.Syscall(vTbl.MarkFullscreenWindow, 3, uintptr(me.ptr),
 		uintptr(hwnd), _Win.BoolToUintptr(fFullScreen))
 
 	lerr := co.ERROR(ret)
@@ -328,7 +328,7 @@ func (me *ITaskbarList3) SetProgressValue(
 	hwnd HWND, ullCompleted, ullTotal uint64) {
 
 	vTbl := (*_ITaskbarList3Vtbl)(me.pVtbl())
-	ret, _, _ := syscall.Syscall6(vTbl.SetProgressValue, 4, me.uintptr,
+	ret, _, _ := syscall.Syscall6(vTbl.SetProgressValue, 4, uintptr(me.ptr),
 		uintptr(hwnd), uintptr(ullCompleted), uintptr(ullTotal), 0, 0)
 
 	lerr := co.ERROR(ret)
@@ -340,7 +340,7 @@ func (me *ITaskbarList3) SetProgressValue(
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
 func (me *ITaskbarList3) SetProgressState(hwnd HWND, tbpFlags co.TBPF) {
 	vTbl := (*_ITaskbarList3Vtbl)(me.pVtbl())
-	ret, _, _ := syscall.Syscall(vTbl.SetProgressState, 3, me.uintptr,
+	ret, _, _ := syscall.Syscall(vTbl.SetProgressState, 3, uintptr(me.ptr),
 		uintptr(hwnd), uintptr(tbpFlags))
 
 	lerr := co.ERROR(ret)
