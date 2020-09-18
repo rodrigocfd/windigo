@@ -536,12 +536,16 @@ func (me *_DepotMsg) WmKeyUp(userFunc func(p WmKey)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-killfocus
-func (me *_DepotMsg) WmKillFocus(userFunc func(p win.HWND)) {
+func (me *_DepotMsg) WmKillFocus(userFunc func(p WmKillFocus)) {
 	me.Wm(co.WM_KILLFOCUS, func(p Wm) uintptr {
-		userFunc(win.HWND(p.WParam))
+		userFunc(WmKillFocus{m: p})
 		return 0
 	})
 }
+
+type WmKillFocus struct{ m Wm }
+
+func (p WmKillFocus) WindowReceivingFocus() win.HWND { return win.HWND(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-lbuttondblclk
 func (me *_DepotMsg) WmLButtonDblClk(userFunc func(p WmMouse)) {
@@ -775,12 +779,16 @@ func (me *_DepotMsg) WmRButtonUp(userFunc func(p WmMouse)) {
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-setfocus
 //
 // Warning: default handled in WindowMain and WindowModal.
-func (me *_DepotMsg) WmSetFocus(userFunc func(p win.HWND)) {
+func (me *_DepotMsg) WmSetFocus(userFunc func(p WmSetFocus)) {
 	me.Wm(co.WM_SETFOCUS, func(p Wm) uintptr {
-		userFunc(win.HWND(p.WParam))
+		userFunc(WmSetFocus{m: p})
 		return 0
 	})
 }
+
+type WmSetFocus struct{ m Wm }
+
+func (p WmSetFocus) WindowLosingFocus() win.HWND { return win.HWND(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-setfont
 func (me *_DepotMsg) WmSetFont(userFunc func(p WmSetFont)) {

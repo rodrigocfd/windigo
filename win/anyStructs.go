@@ -22,7 +22,7 @@ type (
 	COMPAREITEMSTRUCT struct {
 		CtlType    co.ODT
 		CtlID      uint32
-		hwndItem   HWND
+		HwndItem   HWND
 		ItemID1    uint32
 		ItemData1  uintptr // ULONG_PTR
 		ItemID2    uint32
