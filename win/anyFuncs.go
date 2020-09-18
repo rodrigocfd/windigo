@@ -18,12 +18,12 @@ import (
 func CoCreateInstance(rclsid *GUID, pUnkOuter unsafe.Pointer,
 	dwClsContext co.CLSCTX, riid *GUID) (unsafe.Pointer, co.ERROR) {
 
-	var pUnk unsafe.Pointer = nil
+	var ppv unsafe.Pointer = nil
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
 		uintptr(unsafe.Pointer(rclsid)), uintptr(pUnkOuter),
 		uintptr(dwClsContext), uintptr(unsafe.Pointer(riid)),
-		uintptr(unsafe.Pointer(&pUnk)), 0)
-	return pUnk, co.ERROR(ret)
+		uintptr(unsafe.Pointer(&ppv)), 0)
+	return ppv, co.ERROR(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex

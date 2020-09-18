@@ -32,51 +32,42 @@ func (me *_IUnknownImpl) pVtbl() unsafe.Pointer {
 	return unsafe.Pointer(pptr.uintptr)
 }
 
-// Creates any COM interface, returning the base IUnknown.
+// Creates any COM interface, returning IUnknown pointer.
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_IUnknownImpl) coCreateInstancePtr(
 	clsid *GUID, dwClsContext co.CLSCTX, iid *GUID) {
 
 	if me.ptr != nil {
-		panic("IUnknown already created, CoCreateInstance not called.")
+		panic("IUnknown already created, cannot call CoCreateInstance again.")
 	}
 
 	pUnk, err := CoCreateInstance(clsid, nil, dwClsContext, iid)
 	if err != co.ERROR_S_OK {
 		panic(NewWinError(err, "CoCreateInstance").Error())
 	}
-	me.ptr = pUnk // assign the base-IUnknown pointer
+	me.ptr = pUnk // assign our pointer
 }
 
 // Queries any COM interface, returning the base IUnknown.
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
-func (me *_IUnknownImpl) queryInterface(iid *GUID) IUnknown {
-	if me.ptr != nil {
-		panic("Calling queryInterface on empty IUnknown.")
-	}
-
-	retIUnk := IUnknown{}
-
+func (me *_IUnknownImpl) QueryInterface(riid *GUID) unsafe.Pointer {
 	vTbl := (*_IUnknownVtbl)(me.pVtbl())
+	var ppvObject unsafe.Pointer = nil
 	ret, _, _ := syscall.Syscall(vTbl.QueryInterface, 3, uintptr(me.ptr),
-		uintptr(unsafe.Pointer(iid)),
-		uintptr(unsafe.Pointer(&retIUnk.ptr)))
+		uintptr(unsafe.Pointer(riid)),
+		uintptr(unsafe.Pointer(&ppvObject)))
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
 		panic(NewWinError(lerr, "IUnknown.QueryInterface").Error())
 	}
-	return retIUnk
+	return ppvObject
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *_IUnknownImpl) AddRef() uint32 {
-	if me.ptr == nil {
-		panic("Calling AddRef on empty IUnknown.")
-	}
-
 	vTbl := (*_IUnknownVtbl)(me.pVtbl())
 	ret, _, _ := syscall.Syscall(vTbl.AddRef, 1, uintptr(me.ptr), 0, 0)
 	return uint32(ret)
@@ -84,10 +75,6 @@ func (me *_IUnknownImpl) AddRef() uint32 {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 func (me *_IUnknownImpl) Release() uint32 {
-	if me.ptr == nil {
-		panic("Calling Release on empty IUnknown.")
-	}
-
 	vTbl := (*_IUnknownVtbl)(me.pVtbl())
 	ret, _, _ := syscall.Syscall(vTbl.Release, 1, uintptr(me.ptr), 0, 0)
 	return uint32(ret)

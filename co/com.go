@@ -35,6 +35,17 @@ const (
 	CLSCTX_SERVER                 CLSCTX = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER
 )
 
+// MFVideoAspectRatioMode.
+type MFVideoARMode uint32
+
+const (
+	MFVideoARMode_None             MFVideoARMode = 0
+	MFVideoARMode_PreservePicture  MFVideoARMode = 0x1
+	MFVideoARMode_PreservePixel    MFVideoARMode = 0x2
+	MFVideoARMode_NonLinearStretch MFVideoARMode = 0x4
+	MFVideoARMode_Mask             MFVideoARMode = 0x7
+)
+
 // ITaskbarList3.SetProgressState() tbpFlags.
 type TBPF uint32
 

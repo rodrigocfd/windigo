@@ -31,7 +31,7 @@ type (
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func (me *_ITaskbarListImpl) CoCreateInstance(dwClsContext co.CLSCTX) {
+func (me *ITaskbarList) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
 		_Win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a_006097c9a090), // CLSID_TaskbarList
 		dwClsContext,
@@ -105,7 +105,7 @@ type (
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func (me *_ITaskbarList2Impl) CoCreateInstance(dwClsContext co.CLSCTX) {
+func (me *ITaskbarList2) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
 		_Win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a_006097c9a090), // CLSID_TaskbarList
 		dwClsContext,
@@ -164,7 +164,7 @@ type (
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func (me *_ITaskbarList3Impl) CoCreateInstance(dwClsContext co.CLSCTX) {
+func (me *ITaskbarList3) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
 		_Win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a_006097c9a090), // CLSID_TaskbarList
 		dwClsContext,
