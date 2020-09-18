@@ -29,6 +29,26 @@ type (
 	}
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
+//
+// https://docs.microsoft.com/en-us/windows/win32/medfound/using-the-directshow-evr-filter
+func (me *_IBaseFilterImpl) CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) {
+	me.coCreateInstancePtr(
+		_Win.NewGuid(0xfa10746c, 0x9b63, 0x4b6c, 0xbc49_fc300ea5f256), // CLSID_EnhancedVideoRenderer
+		dwClsContext,
+		_Win.NewGuid(0x56a86895, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770)) // IID_IBaseFilter
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
+//
+// https://docs.microsoft.com/en-us/windows/win32/directshow/video-mixing-renderer-filter-9
+func (me *_IBaseFilterImpl) CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) {
+	me.coCreateInstancePtr(
+		_Win.NewGuid(0x51b4abf3, 0x748f, 0x4e3b, 0xa276_c828330e926a), // CLSID_VideoMixingRenderer9
+		dwClsContext,
+		_Win.NewGuid(0x56a86895, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770)) // IID_IBaseFilter
+}
+
 //------------------------------------------------------------------------------
 
 type (
@@ -96,7 +116,7 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *_IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) {
 	me.coCreateInstancePtr(
-		_Win.NewGuid(0x56a8689f, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770), // CLSID_FilterGraph
+		_Win.NewGuid(0xe436ebb3, 0x524f, 0x11ce, 0x9f53_0020af0ba770), // CLSID_FilterGraph
 		dwClsContext,
 		_Win.NewGuid(0x56a868a9, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770)) // IID_IGraphBuilder
 }
@@ -130,6 +150,37 @@ type (
 		GetState      uintptr
 		SetSyncSource uintptr
 		GetSyncSource uintptr
+	}
+)
+
+//------------------------------------------------------------------------------
+
+type (
+	// https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
+	//
+	// IMFVideoDisplayControl > IUnknown.
+	IMFVideoDisplayControl struct{ _IMFVideoDisplayControlImpl }
+
+	_IMFVideoDisplayControlImpl struct{ _IUnknownImpl }
+
+	_IMFVideoDisplayControlVtbl struct {
+		_IUnknownVtbl
+		GetNativeVideoSize uintptr
+		GetIdealVideoSize  uintptr
+		SetVideoPosition   uintptr
+		GetVideoPosition   uintptr
+		SetAspectRatioMode uintptr
+		GetAspectRatioMode uintptr
+		SetVideoWindow     uintptr
+		GetVideoWindow     uintptr
+		RepaintVideo       uintptr
+		GetCurrentImage    uintptr
+		SetBorderColor     uintptr
+		GetBorderColor     uintptr
+		SetRenderingPrefs  uintptr
+		GetRenderingPrefs  uintptr
+		SetFullscreen      uintptr
+		GetFullscreen      uintptr
 	}
 )
 
