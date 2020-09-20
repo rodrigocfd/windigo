@@ -48,3 +48,101 @@ func (me *IFilterGraph) AddFilter(
 	}
 	return me
 }
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-removefilter
+func (me *IFilterGraph) RemoveFilter(pFilter IBaseFilter) *IFilterGraph {
+	ret, _, _ := syscall.Syscall(
+		(*IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).RemoveFilter, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(pFilter.Ppv)), 0)
+
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFilterGraph.RemoveFilter").Error())
+	}
+	return me
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-enumfilters
+func (me *IFilterGraph) EnumFilters() IEnumFilters {
+	var ppEnum **win.IUnknownVtbl = nil
+	ret, _, _ := syscall.Syscall(
+		(*IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).EnumFilters, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&ppEnum)), 0)
+
+	lerr := co.ERROR(ret)
+	if lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFilterGraph.EnumFilters").Error())
+	}
+	return IEnumFilters{
+		win.IUnknown{
+			Ppv: ppEnum,
+		},
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-findfilterbyname
+func (me *IFilterGraph) FindFilterByName(pName string) (IBaseFilter, bool) {
+	var ppFilter **win.IUnknownVtbl = nil
+	ret, _, _ := syscall.Syscall(
+		(*IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).FindFilterByName, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&ppFilter)), 0)
+
+	baseFilter := IBaseFilter{
+		IMediaFilter{
+			IPersist{
+				win.IUnknown{
+					Ppv: ppFilter, // if not found, will be nil
+				},
+			},
+		},
+	}
+
+	if ret == 0x80040216 { // VFW_E_NOT_FOUND
+		return baseFilter, false
+	} else if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFilterGraph.FindFilterByName").Error())
+	}
+	return baseFilter, true
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-reconnect
+func (me *IFilterGraph) Reconnect(ppin IPin) *IFilterGraph {
+	ret, _, _ := syscall.Syscall(
+		(*IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).Reconnect, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(ppin.Ppv)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFilterGraph.Reconnect").Error())
+	}
+	return me
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-disconnect
+func (me *IFilterGraph) Disconnect(ppin IPin) *IFilterGraph {
+	ret, _, _ := syscall.Syscall(
+		(*IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).Disconnect, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(ppin.Ppv)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFilterGraph.Disconnect").Error())
+	}
+	return me
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-setdefaultsyncsource
+func (me *IFilterGraph) SetDefaultSyncSource() *IFilterGraph {
+	ret, _, _ := syscall.Syscall(
+		(*IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).SetDefaultSyncSource, 1,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFilterGraph.SetDefaultSyncSource").Error())
+	}
+	return me
+}

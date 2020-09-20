@@ -53,8 +53,7 @@ func (me *IGraphBuilder) RenderFile(file string) *IGraphBuilder {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(file))), 0)
 
-	lerr := co.ERROR(ret)
-	if lerr != co.ERROR_S_OK {
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IGraphBuilder.RenderFile").Error())
 	}
 	return me
@@ -67,8 +66,7 @@ func (me *IGraphBuilder) Abort() *IGraphBuilder {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	lerr := co.ERROR(ret)
-	if lerr != co.ERROR_S_OK {
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IGraphBuilder.Abort").Error())
 	}
 	return me

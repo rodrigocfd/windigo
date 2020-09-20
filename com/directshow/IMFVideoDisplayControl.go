@@ -49,8 +49,7 @@ func (me *IMFVideoDisplayControl) SetAspectRatioMode(
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(mode), 0)
 
-	lerr := co.ERROR(ret)
-	if lerr != co.ERROR_S_OK {
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.SetAspectRatioMode").Error())
 	}
 	return me
@@ -65,8 +64,7 @@ func (me *IMFVideoDisplayControl) SetVideoWindow(
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwndVideo), 0)
 
-	lerr := co.ERROR(ret)
-	if lerr != co.ERROR_S_OK {
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.SetVideoWindow").Error())
 	}
 	return me

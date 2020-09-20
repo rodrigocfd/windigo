@@ -33,8 +33,7 @@ func (me *IPersist) GetClassID() *win.GUID {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&clsid)), 0)
 
-	lerr := co.ERROR(ret)
-	if lerr != co.ERROR_S_OK {
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IPersist.GetClassID").Error())
 	}
 	return &clsid
