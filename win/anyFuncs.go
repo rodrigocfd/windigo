@@ -7,6 +7,7 @@
 package win
 
 import (
+	"encoding/binary"
 	"fmt"
 	"syscall"
 	"unsafe"
@@ -14,11 +15,28 @@ import (
 	"windigo/win/proc"
 )
 
+// Builds a GUID struct from hex numbers.
+func NewGuid(d1 uint32, d2, d3 uint16, d4 uint64) *GUID {
+	newGuid := GUID{
+		Data1: d1,
+		Data2: d2,
+		Data3: d3,
+		Data4: d4,
+	}
+
+	buf64 := [8]byte{}
+	binary.BigEndian.PutUint64(buf64[:], newGuid.Data4)
+	newGuid.Data4 = binary.LittleEndian.Uint64(buf64[:]) // reverse bytes
+	return &newGuid
+}
+
+//------------------------------------------------------------------------------
+
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(rclsid *GUID, pUnkOuter unsafe.Pointer,
-	dwClsContext co.CLSCTX, riid *GUID) (unsafe.Pointer, co.ERROR) {
+	dwClsContext co.CLSCTX, riid *GUID) (**IUnknownVtbl, co.ERROR) {
 
-	var ppv unsafe.Pointer = nil
+	var ppv **IUnknownVtbl = nil
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
 		uintptr(unsafe.Pointer(rclsid)), uintptr(pUnkOuter),
 		uintptr(dwClsContext), uintptr(unsafe.Pointer(riid)),
