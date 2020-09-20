@@ -664,6 +664,21 @@ func (me *_DepotMsg) WmMenuDrag(userFunc func(p WmMenu) co.MND) {
 	})
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menugetobject
+func (me *_DepotMsg) WmMenuGetObject(userFunc func(p *win.MENUGETOBJECTINFO) co.MNGO) {
+	me.Wm(co.WM_MENUGETOBJECT, func(p Wm) uintptr {
+		return uintptr(userFunc((*win.MENUGETOBJECTINFO)(unsafe.Pointer(p.LParam))))
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menurbuttonup
+func (me *_DepotMsg) WmMenuRButtonUp(userFunc func(p WmMenu)) {
+	me.Wm(co.WM_MENURBUTTONUP, func(p Wm) uintptr {
+		userFunc(WmMenu{m: p})
+		return 0
+	})
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menuselect
 func (me *_DepotMsg) WmMenuSelect(userFunc func(p WmMenuSelect)) {
 	me.Wm(co.WM_MENUSELECT, func(p Wm) uintptr {
@@ -753,6 +768,21 @@ type WmNcPaint struct{ m Wm }
 
 func (p WmNcPaint) Raw() Wm        { return p.m }
 func (p WmNcPaint) Hrgn() win.HRGN { return win.HRGN(p.m.WParam) }
+
+// https://docs.microsoft.com/en-us/windows/win32/menurc/wm-nextmenu
+func (me *_DepotMsg) WmNextMenu(userFunc func(p WmNextMenu)) {
+	me.Wm(co.WM_NEXTMENU, func(p Wm) uintptr {
+		userFunc(WmNextMenu{m: p})
+		return 0
+	})
+}
+
+type WmNextMenu struct{ m Wm }
+
+func (p WmNextMenu) VirtualKeyCode() co.VK { return co.VK(p.m.WParam) }
+func (p WmNextMenu) MdiNextMenu() *win.MDINEXTMENU {
+	return (*win.MDINEXTMENU)(unsafe.Pointer(p.m.LParam))
+}
 
 // https://docs.microsoft.com/en-us/windows/win32/gdi/wm-paint
 func (me *_DepotMsg) WmPaint(userFunc func()) {
@@ -906,6 +936,14 @@ func (me *_DepotMsg) WmSysKeyUp(userFunc func(p WmKey)) {
 func (me *_DepotMsg) WmTimeChange(userFunc func()) {
 	me.Wm(co.WM_TIMECHANGE, func(p Wm) uintptr {
 		userFunc()
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/menurc/wm-uninitmenupopup
+func (me *_DepotMsg) WmUnInitMenuPopup(userFunc func(menu win.HMENU)) {
+	me.Wm(co.WM_UNINITMENUPOPUP, func(p Wm) uintptr {
+		userFunc(win.HMENU(p.WParam))
 		return 0
 	})
 }

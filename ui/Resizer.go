@@ -70,7 +70,6 @@ func (me *Resizer) Adjust(p WmSize) {
 	}
 
 	hdwp := win.BeginDeferWindowPos(int32(len(me.ctrls)))
-	defer hdwp.EndDeferWindowPos()
 
 	for i := range me.ctrls {
 		c := me.ctrls[i]
@@ -106,4 +105,6 @@ func (me *Resizer) Adjust(p WmSize) {
 
 		hdwp.DeferWindowPos(c.hChild.Hwnd(), win.HWND(0), x, y, cx, cy, uFlags)
 	}
+
+	hdwp.EndDeferWindowPos()
 }

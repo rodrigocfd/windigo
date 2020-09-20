@@ -187,6 +187,22 @@ const (
 	MND_ENDMENU  MND = 1
 )
 
+// WM_MENUGETOBJECT return value.
+type MNGO uint32
+
+const (
+	MNGO_NOINTERFACE MNGO = 0x00000000
+	MNGO_NOERROR     MNGO = 0x00000001
+)
+
+// MENUGETOBJECTINFO dwFlags.
+type MNGOF uint32
+
+const (
+	MNGOF_TOPGAP    MNGOF = 0x00000001
+	MNGOF_BOTTOMGAP MNGOF = 0x00000002
+)
+
 // MENUINFO dwStyle.
 type MNS uint32
 

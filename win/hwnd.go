@@ -66,7 +66,6 @@ func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
 		panic(NewWinError(co.ERROR(lerr),
 			fmt.Sprintf("CreateWindowEx (%s)", className)).Error())
 	}
-
 	return HWND(ret)
 }
 

@@ -115,6 +115,22 @@ type (
 		LfFaceName       [_LF_FACESIZE]uint16
 	}
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-mdinextmenu
+	MDINEXTMENU struct {
+		HmenuIn   HMENU
+		HmenuNext HMENU
+		HwndNext  HWND
+	}
+
+	// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menugetobjectinfo
+	MENUGETOBJECTINFO struct {
+		DwFlags co.MNGOF
+		UPos    uint32
+		Hmenu   HMENU
+		Riid    uintptr // PVOID
+		PvObj   uintptr // PVOID
+	}
+
 	// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
 	MENUINFO struct {
 		CbSize          uint32
