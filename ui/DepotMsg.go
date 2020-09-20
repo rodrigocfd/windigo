@@ -424,6 +424,19 @@ type WmEndSession struct{ m Wm }
 func (p WmEndSession) IsSessionBeingEnded() bool { return p.m.WParam != 0 }
 func (p WmEndSession) Event() co.ENDSESSION      { return co.ENDSESSION(p.m.LParam) }
 
+// https://docs.microsoft.com/en-us/windows/win32/dlgbox/wm-enteridle
+func (me *_DepotMsg) WmEnterIdle(userFunc func(p WmEnterIdle)) {
+	me.Wm(co.WM_ENTERIDLE, func(p Wm) uintptr {
+		userFunc(WmEnterIdle{m: p})
+		return 0
+	})
+}
+
+type WmEnterIdle struct{ m Wm }
+
+func (p WmEnterIdle) Displayed() co.MSGF       { return co.MSGF(p.m.WParam) }
+func (p WmEnterIdle) DialogOrWindow() win.HWND { return win.HWND(p.m.LParam) }
+
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-entermenuloop
 func (me *_DepotMsg) WmEnterMenuLoop(userFunc func(isTrackPopupMenu bool)) {
 	me.Wm(co.WM_ENTERMENULOOP, func(p Wm) uintptr {
@@ -441,7 +454,7 @@ func (me *_DepotMsg) WmEnterSizeMove(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-erasebkgnd
-func (me *_DepotMsg) WmEraseBkGnd(userFunc func(hdc win.HDC) int) {
+func (me *_DepotMsg) WmEraseBkgnd(userFunc func(hdc win.HDC) int) {
 	me.Wm(co.WM_ERASEBKGND, func(p Wm) uintptr {
 		return uintptr(userFunc(win.HDC(p.WParam)))
 	})

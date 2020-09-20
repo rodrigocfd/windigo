@@ -221,6 +221,19 @@ const (
 	MONITOR_DEFAULTTONEAREST MONITOR = 0x00000002
 )
 
+// WM_ENABLE displayed.
+type MSGF uint32
+
+const (
+	MSGF_DIALOGBOX  MSGF = 0
+	MSGF_MESSAGEBOX MSGF = 1
+	MSGF_MENU       MSGF = 2
+	MSGF_SCROLLBAR  MSGF = 5
+	MSGF_NEXTWINDOW MSGF = 6
+	MSGF_MAX        MSGF = 8
+	MSGF_USER       MSGF = 4096
+)
+
 // Common control notifications.
 type NM int32
 
