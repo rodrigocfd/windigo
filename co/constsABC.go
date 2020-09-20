@@ -98,6 +98,18 @@ const (
 	APPCOMMAND_DWM_FLIP3D                        APPCOMMAND = 54
 )
 
+// BITMAPINFOHEADER biCompression.
+type BI uint32
+
+const (
+	BI_RGB       BI = 0
+	BI_RLE8      BI = 1
+	BI_RLE4      BI = 2
+	BI_BITFIELDS BI = 3
+	BI_JPEG      BI = 4
+	BI_PNG       BI = 5
+)
+
 // SetBkMode() mode.
 type BKMODE int32
 

@@ -18,6 +18,21 @@ type (
 		Cmd   uint16 // LOWORD(wParam) value
 	}
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
+	BITMAPINFOHEADER struct {
+		BiSize          uint32
+		BiWidth         int32
+		BiHeight        int32
+		BiPlanes        uint16
+		BiBitCount      uint16
+		BiCompression   co.BI
+		BiSizeImage     uint32
+		BiXPelsPerMeter int32
+		BiYPelsPerMeter int32
+		BiClrUsed       uint32
+		BiClrImportant  uint32
+	}
+
 	// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
 	COMPAREITEMSTRUCT struct {
 		CtlType    co.ODT

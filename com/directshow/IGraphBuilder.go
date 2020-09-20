@@ -49,7 +49,7 @@ func (me *IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) *IGraphBuilder
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-renderfile
 func (me *IGraphBuilder) RenderFile(file string) *IGraphBuilder {
 	ret, _, _ := syscall.Syscall(
-		(*IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).AddFilter, 3,
+		(*IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).RenderFile, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(file))), 0)
 
