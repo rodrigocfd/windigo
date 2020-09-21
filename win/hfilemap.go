@@ -12,7 +12,8 @@ import (
 	"windigo/win/proc"
 )
 
-// This type doesn't exist in Win32, just a HANDLE.
+// This type doesn't exist in Win32, it's just a HANDLE. It's defined here so we
+// can restrict its methods.
 type HFILEMAP HANDLE
 
 // https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
@@ -38,7 +39,8 @@ func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 
 //------------------------------------------------------------------------------
 
-// This type doesn't exist in Win32, just a BYTE pointer to memory address.
+// This type doesn't exist in Win32, it's just a BYTE pointer to memory address.
+// It's defined here so we can restrict its methods.
 type HFILEMAP_PTR uintptr
 
 // https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile

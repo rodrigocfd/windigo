@@ -264,6 +264,41 @@ const (
 	HKEY_CURRENT_USER_LOCAL_SETTINGS HKEY = 0x80000007
 )
 
+// WM_NCHITTEST return value.
+type HT int32
+
+const (
+	HT_ERROR       HT = -2
+	HT_TRANSPARENT HT = -1
+	HT_NOWHERE     HT = 0
+	HT_CLIENT      HT = 1
+	HT_CAPTION     HT = 2
+	HT_SYSMENU     HT = 3
+	HT_GROWBOX     HT = 4
+	HT_SIZE        HT = HT_GROWBOX
+	HT_MENU        HT = 5
+	HT_HSCROLL     HT = 6
+	HT_VSCROLL     HT = 7
+	HT_MINBUTTON   HT = 8
+	HT_MAXBUTTON   HT = 9
+	HT_LEFT        HT = 10
+	HT_RIGHT       HT = 11
+	HT_TOP         HT = 12
+	HT_TOPLEFT     HT = 13
+	HT_TOPRIGHT    HT = 14
+	HT_BOTTOM      HT = 15
+	HT_BOTTOMLEFT  HT = 16
+	HT_BOTTOMRIGHT HT = 17
+	HT_BORDER      HT = 18
+	HT_REDUCE      HT = HT_MINBUTTON
+	HT_ZOOM        HT = HT_MAXBUTTON
+	HT_SIZEFIRST   HT = HT_LEFT
+	HT_SIZELAST    HT = HT_BOTTOMRIGHT
+	HT_OBJECT      HT = 19
+	HT_CLOSE       HT = 20
+	HT_HELP        HT = 21
+)
+
 // TVINSERTSTRUCT hInsertAfter.
 type HTREEITEM uintptr
 

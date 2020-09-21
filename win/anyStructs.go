@@ -192,6 +192,12 @@ type (
 		Pt     POINT
 	}
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nccalcsize_params
+	NCCALCSIZE_PARAMS struct {
+		Rgrc  [3]RECT
+		Lppos *WINDOWPOS
+	}
+
 	// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nmhdr
 	NMHDR struct {
 		HWndFrom HWND
@@ -355,6 +361,14 @@ type (
 		DwFileType         uint32
 		DwCreatorType      uint32
 		WFinderFlags       uint16
+	}
+
+	// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowpos
+	WINDOWPOS struct {
+		HwndInsertAfter HWND
+		Hwnd            HWND
+		X, Y, Cx, Cy    int32
+		Flags           co.SWP
 	}
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassexw

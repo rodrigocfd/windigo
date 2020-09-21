@@ -61,7 +61,7 @@ func (me *WindowModal) Show(parent Window) {
 }
 
 func (me *WindowModal) defaultMessageHandling() {
-	me.OnMsg().WmSetFocus(func(p WmSetFocus) {
+	me.OnMsg().WmSetFocus(func(hwndLosingFocus win.HWND) {
 		if me._WindowBase.Hwnd() == win.GetFocus() {
 			// If window receive focus, delegate to first child.
 			// This also happens right after the modal is created.

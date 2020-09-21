@@ -48,14 +48,20 @@ func (p WmMenu) Hmenu() win.HMENU { return win.HMENU(p.m.LParam) }
 
 type WmMouse struct{ m Wm }
 
-func (p WmMouse) HasCtrl() bool      { return (co.MK(p.m.WParam) & co.MK_CONTROL) != 0 }
-func (p WmMouse) HasLeftBtn() bool   { return (co.MK(p.m.WParam) & co.MK_LBUTTON) != 0 }
-func (p WmMouse) HasMiddleBtn() bool { return (co.MK(p.m.WParam) & co.MK_MBUTTON) != 0 }
-func (p WmMouse) HasRightBtn() bool  { return (co.MK(p.m.WParam) & co.MK_RBUTTON) != 0 }
-func (p WmMouse) HasShift() bool     { return (co.MK(p.m.WParam) & co.MK_SHIFT) != 0 }
-func (p WmMouse) HasXBtn1() bool     { return (co.MK(p.m.WParam) & co.MK_XBUTTON1) != 0 }
-func (p WmMouse) HasXBtn2() bool     { return (co.MK(p.m.WParam) & co.MK_XBUTTON2) != 0 }
+func (p WmMouse) VirtualKeys() co.MK { return co.MK(p.m.WParam.LoWord()) }
+func (p WmMouse) HasCtrl() bool      { return (p.VirtualKeys() & co.MK_CONTROL) != 0 }
+func (p WmMouse) HasShift() bool     { return (p.VirtualKeys() & co.MK_SHIFT) != 0 }
+func (p WmMouse) IsLeftBtn() bool    { return (p.VirtualKeys() & co.MK_LBUTTON) != 0 }
+func (p WmMouse) IsMiddleBtn() bool  { return (p.VirtualKeys() & co.MK_MBUTTON) != 0 }
+func (p WmMouse) IsRightBtn() bool   { return (p.VirtualKeys() & co.MK_RBUTTON) != 0 }
+func (p WmMouse) IsXBtn1() bool      { return (p.VirtualKeys() & co.MK_XBUTTON1) != 0 }
+func (p WmMouse) IsXBtn2() bool      { return (p.VirtualKeys() & co.MK_XBUTTON2) != 0 }
 func (p WmMouse) Pos() win.POINT     { return p.m.LParam.MakePoint() }
+
+type WmNcMouse struct{ m Wm }
+
+func (p WmNcMouse) HitTest() co.HT { return co.HT(p.m.WParam) }
+func (p WmNcMouse) Pos() win.POINT { return p.m.LParam.MakePoint() }
 
 type WmScroll struct{ m Wm }
 
