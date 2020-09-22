@@ -892,28 +892,28 @@ func (me *_DepotMsg) WmNcRButtonUp(userFunc func(p WmNcMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncxbuttondblclk
-/*func (me *_DepotMsg) WmNcXButtonDblClk(userFunc func(p WmNcMouse)) {
+func (me *_DepotMsg) WmNcXButtonDblClk(userFunc func(p WmNcMouseX)) {
 	me.Wm(co.WM_NCXBUTTONDBLCLK, func(p Wm) uintptr {
-		userFunc(WmNcMouse{m: p})
-		return 0
+		userFunc(WmNcMouseX{m: p})
+		return 1
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncxbuttondown
-func (me *_DepotMsg) WmNcXButtonDown(userFunc func(p WmNcMouse)) {
+func (me *_DepotMsg) WmNcXButtonDown(userFunc func(p WmNcMouseX)) {
 	me.Wm(co.WM_NCXBUTTONDOWN, func(p Wm) uintptr {
-		userFunc(WmNcMouse{m: p})
-		return 0
+		userFunc(WmNcMouseX{m: p})
+		return 1
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncxbuttonup
-func (me *_DepotMsg) WmNcXButtonUp(userFunc func(p WmNcMouse)) {
+func (me *_DepotMsg) WmNcXButtonUp(userFunc func(p WmNcMouseX)) {
 	me.Wm(co.WM_NCXBUTTONUP, func(p Wm) uintptr {
-		userFunc(WmNcMouse{m: p})
-		return 0
+		userFunc(WmNcMouseX{m: p})
+		return 1
 	})
-}*/
+}
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-nextmenu
 func (me *_DepotMsg) WmNextMenu(userFunc func(p WmNextMenu)) {
@@ -1102,7 +1102,7 @@ func (me *_DepotMsg) WmVScroll(userFunc func(p WmScroll)) {
 func (me *_DepotMsg) WmXButtonDblClk(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_XBUTTONDBLCLK, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
-		return 0
+		return 1
 	})
 }
 
@@ -1110,7 +1110,7 @@ func (me *_DepotMsg) WmXButtonDblClk(userFunc func(p WmMouse)) {
 func (me *_DepotMsg) WmXButtonDown(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_XBUTTONDOWN, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
-		return 0
+		return 1
 	})
 }
 
@@ -1118,6 +1118,6 @@ func (me *_DepotMsg) WmXButtonDown(userFunc func(p WmMouse)) {
 func (me *_DepotMsg) WmXButtonUp(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_XBUTTONUP, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
-		return 0
+		return 1
 	})
 }

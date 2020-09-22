@@ -63,6 +63,13 @@ type WmNcMouse struct{ m Wm }
 func (p WmNcMouse) HitTest() co.HT { return co.HT(p.m.WParam) }
 func (p WmNcMouse) Pos() win.POINT { return p.m.LParam.MakePoint() }
 
+type WmNcMouseX struct{ m Wm }
+
+func (p WmNcMouseX) HitTest() co.HT { return co.HT(p.m.WParam.LoWord()) }
+func (p WmNcMouseX) IsXBtn1() bool  { return p.m.WParam.HiWord() == 0x0001 }
+func (p WmNcMouseX) IsXBtn2() bool  { return p.m.WParam.HiWord() == 0x0002 }
+func (p WmNcMouseX) Pos() win.POINT { return p.m.LParam.MakePoint() }
+
 type WmScroll struct{ m Wm }
 
 func (p WmScroll) ScrollBoxPos() uint      { return uint(p.m.WParam.HiWord()) }
