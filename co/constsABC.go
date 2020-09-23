@@ -398,6 +398,39 @@ const (
 	CDRF_NOTIFYPOSTERASE   CDRF = 0x00000040
 )
 
+// Clipboard formats.
+type CF uint16
+
+const (
+	CF_TEXT            CF = 1
+	CF_BITMAP          CF = 2
+	CF_METAFILEPICT    CF = 3
+	CF_SYLK            CF = 4
+	CF_DIF             CF = 5
+	CF_TIFF            CF = 6
+	CF_OEMTEXT         CF = 7
+	CF_DIB             CF = 8
+	CF_PALETTE         CF = 9
+	CF_PENDATA         CF = 10
+	CF_RIFF            CF = 11
+	CF_WAVE            CF = 12
+	CF_UNICODETEXT     CF = 13
+	CF_ENHMETAFILE     CF = 14
+	CF_HDROP           CF = 15
+	CF_LOCALE          CF = 16
+	CF_DIBV5           CF = 17
+	CF_MAX             CF = 18
+	CF_OWNERDISPLAY    CF = 0x0080
+	CF_DSPTEXT         CF = 0x0081
+	CF_DSPBITMAP       CF = 0x0082
+	CF_DSPMETAFILEPICT CF = 0x0083
+	CF_DSPENHMETAFILE  CF = 0x008E
+	CF_PRIVATEFIRST    CF = 0x0200
+	CF_PRIVATELAST     CF = 0x02FF
+	CF_GDIOBJFIRST     CF = 0x0300
+	CF_GDIOBJLAST      CF = 0x03FF
+)
+
 // CoCreateInstance() dwClsContext.
 type CLSCTX uint32
 

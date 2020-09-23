@@ -83,6 +83,14 @@ func DispatchMessage(msg *MSG) uintptr {
 	return ret
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-emptyclipboard
+func EmptyClipboard() {
+	ret, _, lerr := syscall.Syscall(proc.EmptyClipboard.Addr(), 0, 0, 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "EmptyClipboard").Error())
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endmenu
 func EndMenu() {
 	ret, _, lerr := syscall.Syscall(proc.EndMenu.Addr(), 0, 0, 0, 0)

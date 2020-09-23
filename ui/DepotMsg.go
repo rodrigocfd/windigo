@@ -190,6 +190,14 @@ func (me *_DepotMsg) WmChildActivate(userFunc func()) {
 	})
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-clipboardupdate
+func (me *_DepotMsg) WmClipboardUpdate(userFunc func()) {
+	me.Wm(co.WM_CLIPBOARDUPDATE, func(p Wm) uintptr {
+		userFunc()
+		return 0
+	})
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-close
 //
 // Warning: default handled in WindowModal.
@@ -543,6 +551,14 @@ func (p WmHotKey) VirtualKeyCode() co.VK { return co.VK(p.m.LParam.HiWord()) }
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-hscroll
 func (me *_DepotMsg) WmHScroll(userFunc func(p WmScroll)) {
 	me.Wm(co.WM_HSCROLL, func(p Wm) uintptr {
+		userFunc(WmScroll{m: p})
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-hscrollclipboard
+func (me *_DepotMsg) WmHScrollClipboard(userFunc func(p WmScroll)) {
+	me.Wm(co.WM_HSCROLLCLIPBOARD, func(p Wm) uintptr {
 		userFunc(WmScroll{m: p})
 		return 0
 	})
@@ -938,6 +954,21 @@ func (me *_DepotMsg) WmPaint(userFunc func()) {
 	})
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-paintclipboard
+func (me *_DepotMsg) WmPaintClipboard(userFunc func(WmPaintClipboard)) {
+	me.Wm(co.WM_PAINTCLIPBOARD, func(p Wm) uintptr {
+		userFunc(WmPaintClipboard{m: p})
+		return 0
+	})
+}
+
+type WmPaintClipboard struct{ m Wm }
+
+func (p WmPaintClipboard) CbViewerWindow() win.HWND { return win.HWND(p.m.WParam) }
+func (p WmPaintClipboard) PaintStruct() *win.PAINTSTRUCT {
+	return (*win.PAINTSTRUCT)(unsafe.Pointer(p.m.LParam))
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast
 func (me *_DepotMsg) WmPowerBroadcast(userFunc func(p WmPowerBroadcast)) {
 	me.Wm(co.WM_POWERBROADCAST, func(p Wm) uintptr {
@@ -993,6 +1024,22 @@ func (me *_DepotMsg) WmRButtonUp(userFunc func(p WmMouse)) {
 	})
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-renderallformats
+func (me *_DepotMsg) WmRenderAllFormats(userFunc func()) {
+	me.Wm(co.WM_RENDERALLFORMATS, func(p Wm) uintptr {
+		userFunc()
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-renderformat
+func (me *_DepotMsg) WmRenderFormat(userFunc func(clipboardFormat co.CF)) {
+	me.Wm(co.WM_RENDERFORMAT, func(p Wm) uintptr {
+		userFunc(co.CF(p.WParam))
+		return 0
+	})
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-setfocus
 //
 // Warning: default handled in WindowMain and WindowModal.
@@ -1028,6 +1075,19 @@ type WmSize struct{ m Wm }
 
 func (p WmSize) Request() co.SIZE         { return co.SIZE(p.m.WParam) }
 func (p WmSize) ClientAreaSize() win.SIZE { return p.m.LParam.MakeSize() }
+
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-sizeclipboard
+func (me *_DepotMsg) WmSizeClipboard(userFunc func(p WmSizeClipboard)) {
+	me.Wm(co.WM_SIZECLIPBOARD, func(p Wm) uintptr {
+		userFunc(WmSizeClipboard{m: p})
+		return 0
+	})
+}
+
+type WmSizeClipboard struct{ m Wm }
+
+func (p WmSizeClipboard) CbViewerWindow() win.HWND { return win.HWND(p.m.WParam) }
+func (p WmSizeClipboard) NewDimensions() *win.RECT { return (*win.RECT)(unsafe.Pointer(p.m.LParam)) }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-syschar
 func (me *_DepotMsg) WmSysChar(userFunc func(p WmChar)) {
@@ -1093,6 +1153,14 @@ func (me *_DepotMsg) WmUnInitMenuPopup(userFunc func(menu win.HMENU)) {
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-vscroll
 func (me *_DepotMsg) WmVScroll(userFunc func(p WmScroll)) {
 	me.Wm(co.WM_VSCROLL, func(p Wm) uintptr {
+		userFunc(WmScroll{m: p})
+		return 0
+	})
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-vscrollclipboard
+func (me *_DepotMsg) WmVScrollClipboard(userFunc func(p WmScroll)) {
+	me.Wm(co.WM_VSCROLLCLIPBOARD, func(p Wm) uintptr {
 		userFunc(WmScroll{m: p})
 		return 0
 	})

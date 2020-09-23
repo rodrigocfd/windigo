@@ -36,6 +36,7 @@ var (
 	DestroyWindow                 = dllUser32.NewProc("DestroyWindow")
 	DispatchMessage               = dllUser32.NewProc("DispatchMessageW")
 	DrawMenuBar                   = dllUser32.NewProc("DrawMenuBar")
+	EmptyClipboard                = dllUser32.NewProc("EmptyClipboard")
 	EnableMenuItem                = dllUser32.NewProc("EnableMenuItem")
 	EnableWindow                  = dllUser32.NewProc("EnableWindow")
 	EndDeferWindowPos             = dllUser32.NewProc("EndDeferWindowPos")
