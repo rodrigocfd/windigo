@@ -121,7 +121,7 @@ func (p WmAppCommand) Keys() co.MK               { return co.MK(p.m.LParam.LoWor
 func (me *_DepotMsg) WmAskCbFormatName(userFunc func(p WmAskCbFormatName)) {
 	me.Wm(co.WM_ASKCBFORMATNAME, func(p Wm) uintptr {
 		userFunc(WmAskCbFormatName{m: p})
-		return 1
+		return 0
 	})
 }
 

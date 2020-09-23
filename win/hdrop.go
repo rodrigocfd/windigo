@@ -37,8 +37,8 @@ func (hDrop HDROP) DragQueryFile(iFile uint32, lpszFile *uint16,
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragquerypoint
 func (hDrop HDROP) DragQueryPoint() (*POINT, bool) {
-	pt := &POINT{}
+	pt := POINT{}
 	ret, _, _ := syscall.Syscall(proc.DragQueryPoint.Addr(), 2,
-		uintptr(hDrop), uintptr(unsafe.Pointer(pt)), 0)
-	return pt, ret != 0 // true if dropped within client area
+		uintptr(hDrop), uintptr(unsafe.Pointer(&pt)), 0)
+	return &pt, ret != 0 // true if dropped within client area
 }

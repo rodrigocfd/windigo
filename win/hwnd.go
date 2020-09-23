@@ -149,14 +149,14 @@ func (hWnd HWND) GetAncestor(gaFlags co.GA) HWND {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclientrect
 func (hWnd HWND) GetClientRect() *RECT {
-	rc := &RECT{}
+	rc := RECT{}
 	ret, _, lerr := syscall.Syscall(proc.GetClientRect.Addr(), 2,
-		uintptr(hWnd), uintptr(unsafe.Pointer(rc)), 0)
+		uintptr(hWnd), uintptr(unsafe.Pointer(&rc)), 0)
 
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "GetClientRect").Error())
 	}
-	return rc
+	return &rc
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdc
@@ -298,13 +298,13 @@ func (hWnd HWND) GetWindowLongPtr(index co.GWLP) uintptr {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowrect
 func (hWnd HWND) GetWindowRect() *RECT {
-	rc := &RECT{}
+	rc := RECT{}
 	ret, _, lerr := syscall.Syscall(proc.GetWindowRect.Addr(), 2,
-		uintptr(hWnd), uintptr(unsafe.Pointer(rc)), 0)
+		uintptr(hWnd), uintptr(unsafe.Pointer(&rc)), 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "GetWindowRect").Error())
 	}
-	return rc
+	return &rc
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextw
@@ -408,11 +408,11 @@ func (hWnd HWND) MoveWindow(x, y, width, height int32, bRepaint bool) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
-func (hWnd HWND) OpenThemeData(classNames string) HTHEME {
+func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, bool) {
 	ret, _, _ := syscall.Syscall(proc.OpenThemeData.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(Str.ToUint16Ptr(classNames))),
 		0)
-	return HTHEME(ret) // zero if no match, never fails
+	return HTHEME(ret), ret != 0 // if false, no match
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postmessagew

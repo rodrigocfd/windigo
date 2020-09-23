@@ -50,7 +50,7 @@ func (me *_WindowBase) RunUiThread(userFunc func()) {
 	// wndproc, run in the original thread of the window, thus allowing GUI
 	// updates. This avoids the user to deal with a custom WM_ message.
 	pack := &_ThreadPack{UserFunc: userFunc}
-	me.hwnd.SendMessage(_WM_UI_THREAD, 0xC0DEF00D,
+	me.hwnd.SendMessage(_WM_UI_THREAD, 0xc0def00d,
 		win.LPARAM(unsafe.Pointer(pack)))
 }
 
@@ -99,7 +99,7 @@ func (me *_WindowBase) createWindow(uiName string, exStyle co.WS_EX,
 
 func (me *_WindowBase) defaultMessageHandling() {
 	me.depot.Wm(_WM_UI_THREAD, func(p Wm) uintptr { // handle our custom thread UI message
-		if p.WParam == 0xC0DEF00D {
+		if p.WParam == 0xc0def00d {
 			pack := (*_ThreadPack)(unsafe.Pointer(p.LParam))
 			pack.UserFunc()
 		}

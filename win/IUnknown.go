@@ -25,7 +25,10 @@ type (
 	}
 )
 
-// Queries any COM interface, returning the base IUnknown pointer.
+// Queries any COM interface, returning a pointer to pointer to COM virtual
+// table. IUnknown can be cast to any derived COM interface.
+//
+// You must call Release() after use.
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IUnknown) QueryInterface(riid *GUID) (**IUnknownVtbl, co.ERROR) {

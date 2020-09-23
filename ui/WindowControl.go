@@ -71,8 +71,7 @@ func (me *WindowControl) defaultMessageHandling() {
 		hdc := me.Hwnd().GetWindowDC()
 		defer me.Hwnd().ReleaseDC(hdc)
 
-		hTheme := me.Hwnd().OpenThemeData("LISTVIEW") // borrow style from listview
-		if hTheme != 0 {
+		if hTheme, hasMatch := me.Hwnd().OpenThemeData("LISTVIEW"); hasMatch { // borrow style from listview
 			defer hTheme.CloseThemeData()
 
 			// Clipping region; will draw only within this rectangle.

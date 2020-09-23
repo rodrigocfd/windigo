@@ -57,14 +57,14 @@ func (hImg HIMAGELIST) GetIcon(index uint32, flags co.ILD) HICON {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticonsize
 func (hImg HIMAGELIST) GetIconSize() *SIZE {
-	sz := &SIZE{}
+	sz := SIZE{}
 	ret, _, _ := syscall.Syscall(proc.ImageList_GetIconSize.Addr(), 3,
 		uintptr(hImg),
 		uintptr(unsafe.Pointer(&sz.Cx)), uintptr(unsafe.Pointer(&sz.Cy)))
 	if ret == 0 {
 		panic("ImageList_GetIconSize failed.")
 	}
-	return sz
+	return &sz
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_getimagecount
@@ -76,13 +76,13 @@ func (hImg HIMAGELIST) GetImageCount() uint32 {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_getimageinfo
 func (hImg HIMAGELIST) GetImageInfo(index uint32) *IMAGEINFO {
-	ii := &IMAGEINFO{}
+	ii := IMAGEINFO{}
 	ret, _, _ := syscall.Syscall(proc.ImageList_GetImageInfo.Addr(), 3,
-		uintptr(hImg), uintptr(index), uintptr(unsafe.Pointer(ii)))
+		uintptr(hImg), uintptr(index), uintptr(unsafe.Pointer(&ii)))
 	if ret == 0 {
 		panic("ImageList_GetImageInfo failed.")
 	}
-	return ii
+	return &ii
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create

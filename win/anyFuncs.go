@@ -15,7 +15,8 @@ import (
 	"windigo/win/proc"
 )
 
-// Builds a GUID struct from hex numbers.
+// Builds a GUID struct from hex numbers, which can be copied straight from
+// standard GUID definitions.
 func NewGuid(d1 uint32, d2, d3 uint16, d4 uint64) *GUID {
 	newGuid := GUID{
 		Data1: d1,
@@ -26,12 +27,17 @@ func NewGuid(d1 uint32, d2, d3 uint16, d4 uint64) *GUID {
 
 	buf64 := [8]byte{}
 	binary.BigEndian.PutUint64(buf64[:], newGuid.Data4)
-	newGuid.Data4 = binary.LittleEndian.Uint64(buf64[:]) // reverse bytes
+	newGuid.Data4 = binary.LittleEndian.Uint64(buf64[:]) // reverse bytes of Data4
 	return &newGuid
 }
 
 //------------------------------------------------------------------------------
 
+// Returns a pointer to pointer to COM virtual table. IUnknown can be cast to
+// any derived COM interface.
+//
+// You must call Release() after use.
+//
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(rclsid *GUID, pUnkOuter unsafe.Pointer,
 	dwClsContext co.CLSCTX, riid *GUID) (**IUnknownVtbl, co.ERROR) {
@@ -44,9 +50,10 @@ func CoCreateInstance(rclsid *GUID, pUnkOuter unsafe.Pointer,
 	return ppv, co.ERROR(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
+// Loads the COM module. This needs to be done only once in your application. It
+// must be paired with a CoUninitialize() call.
 //
-// Must be freed with CoUninitialize().
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 func CoInitializeEx(dwCoInit co.COINIT) {
 	hr, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
 		0, uintptr(dwCoInit), 0)
@@ -119,13 +126,13 @@ func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcaretpos
 func GetCaretPos() *RECT {
-	rc := &RECT{}
+	rc := RECT{}
 	ret, _, lerr := syscall.Syscall(proc.GetCaretPos.Addr(), 1,
-		uintptr(unsafe.Pointer(rc)), 0, 0)
+		uintptr(unsafe.Pointer(&rc)), 0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "GetCaretPos").Error())
 	}
-	return rc
+	return &rc
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthreadid
@@ -137,13 +144,13 @@ func GetCurrentThreadId() uint32 {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcursorpos
 func GetCursorPos() *POINT {
-	pt := &POINT{}
+	pt := POINT{}
 	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
-		uintptr(unsafe.Pointer(pt)), 0, 0)
+		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "GetCursorPos").Error())
 	}
-	return pt
+	return &pt
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforsystem
@@ -187,13 +194,13 @@ func GetOpenFileName(ofn *OPENFILENAME) bool {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos
 func GetPhysicalCursorPos() *POINT {
-	pt := &POINT{}
+	pt := POINT{}
 	ret, _, lerr := syscall.Syscall(proc.GetPhysicalCursorPos.Addr(), 1,
-		uintptr(unsafe.Pointer(pt)), 0, 0)
+		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "GetPhysicalCursorPos").Error())
 	}
-	return pt
+	return &pt
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-getsavefilenamew
@@ -430,11 +437,11 @@ func SetWindowsHookEx(idHook co.WH,
 func SHGetFileInfo(pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
 	uFlags co.SHGFI) *SHFILEINFO {
 
-	shfi := &SHFILEINFO{}
+	shfi := SHFILEINFO{}
 	ret, _, _ := syscall.Syscall6(proc.SHGetFileInfo.Addr(), 5,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pszPath))),
-		uintptr(dwFileAttributes), uintptr(unsafe.Pointer(shfi)),
-		unsafe.Sizeof(*shfi), uintptr(uFlags), 0)
+		uintptr(dwFileAttributes), uintptr(unsafe.Pointer(&shfi)),
+		unsafe.Sizeof(shfi), uintptr(uFlags), 0)
 
 	if (uFlags&co.SHGFI_EXETYPE) == 0 || (uFlags&co.SHGFI_SYSICONINDEX) == 0 {
 		if ret == 0 {
@@ -448,7 +455,7 @@ func SHGetFileInfo(pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
 		}
 	}
 
-	return shfi
+	return &shfi
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
