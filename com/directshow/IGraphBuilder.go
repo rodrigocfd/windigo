@@ -46,6 +46,33 @@ func (me *IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) *IGraphBuilder
 	return me
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-connect
+func (me *IGraphBuilder) Connect(pinOut, pinIn IPin) *IGraphBuilder {
+	ret, _, _ := syscall.Syscall(
+		(*IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).Connect, 3,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(pinOut.Ppv)),
+		uintptr(unsafe.Pointer(pinIn.Ppv)))
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IGraphBuilder.Connect").Error())
+	}
+	return me
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-render
+func (me *IGraphBuilder) Render(pinOut IPin) *IGraphBuilder {
+	ret, _, _ := syscall.Syscall(
+		(*IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).Render, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(pinOut.Ppv)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IGraphBuilder.Render").Error())
+	}
+	return me
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-renderfile
 func (me *IGraphBuilder) RenderFile(file string) *IGraphBuilder {
 	ret, _, _ := syscall.Syscall(
@@ -55,6 +82,19 @@ func (me *IGraphBuilder) RenderFile(file string) *IGraphBuilder {
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IGraphBuilder.RenderFile").Error())
+	}
+	return me
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-setlogfile
+func (me *IGraphBuilder) SetLogFile(hFile win.HFILE) *IGraphBuilder {
+	ret, _, _ := syscall.Syscall(
+		(*IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).SetLogFile, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(hFile), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IGraphBuilder.SetLogFile").Error())
 	}
 	return me
 }

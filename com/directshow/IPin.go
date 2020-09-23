@@ -7,6 +7,9 @@
 package directshow
 
 import (
+	"syscall"
+	"unsafe"
+	"windigo/co"
 	"windigo/win"
 )
 
@@ -35,3 +38,55 @@ type (
 		NewSegment               uintptr
 	}
 )
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-disconnect
+func (me *IPin) Disconnect() *IPin {
+	ret, _, _ := syscall.Syscall(
+		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).Disconnect, 1,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IPin.Disconnect").Error())
+	}
+	return me
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endofstream
+func (me *IPin) EndOfStream() *IPin {
+	ret, _, _ := syscall.Syscall(
+		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).EndOfStream, 1,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IPin.EndOfStream").Error())
+	}
+	return me
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-beginflush
+func (me *IPin) BeginFlush() *IPin {
+	ret, _, _ := syscall.Syscall(
+		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).BeginFlush, 1,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IPin.BeginFlush").Error())
+	}
+	return me
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endflush
+func (me *IPin) EndFlush() *IPin {
+	ret, _, _ := syscall.Syscall(
+		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).EndFlush, 1,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IPin.EndFlush").Error())
+	}
+	return me
+}

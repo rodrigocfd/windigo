@@ -41,7 +41,7 @@ type (
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getnativevideosize
-func (me *IMFVideoDisplayControl) GetNativeVideoSize() (win.SIZE, win.SIZE) {
+func (me *IMFVideoDisplayControl) GetNativeVideoSize() (*win.SIZE, *win.SIZE) {
 	nativeSize, aspectRatio := win.SIZE{}, win.SIZE{}
 	ret, _, _ := syscall.Syscall(
 		(*IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).GetNativeVideoSize, 3,
@@ -51,11 +51,11 @@ func (me *IMFVideoDisplayControl) GetNativeVideoSize() (win.SIZE, win.SIZE) {
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetNativeVideoSize").Error())
 	}
-	return nativeSize, aspectRatio
+	return &nativeSize, &aspectRatio
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getidealvideosize
-func (me *IMFVideoDisplayControl) GetIdealVideoSize() (win.SIZE, win.SIZE) {
+func (me *IMFVideoDisplayControl) GetIdealVideoSize() (*win.SIZE, *win.SIZE) {
 	min, max := win.SIZE{}, win.SIZE{}
 	ret, _, _ := syscall.Syscall(
 		(*IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).GetIdealVideoSize, 3,
@@ -65,7 +65,7 @@ func (me *IMFVideoDisplayControl) GetIdealVideoSize() (win.SIZE, win.SIZE) {
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetIdealVideoSize").Error())
 	}
-	return min, max
+	return &min, &max
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideoposition
