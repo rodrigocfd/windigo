@@ -737,3 +737,22 @@ func (me *_DepotNfy) TvnSetFocus(treeViewId int, userFunc func()) {
 		return 0
 	})
 }
+
+//--------------------------------------------------------------- UpDown UDN ---
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/udn-deltapos
+func (me *_DepotNfy) UdnDeltaPos(upDownId int, userFunc func(p *win.NMUPDOWN) int) {
+	me.WmNotify(upDownId, co.NM(co.UDN_DELTAPOS), func(p unsafe.Pointer) uintptr {
+		return uintptr(userFunc((*win.NMUPDOWN)(p)))
+	})
+}
+
+//---------------------------------------------------------------- UpDown NN ---
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-up-down-
+func (me *_DepotNfy) UdnReleasedCapture(upDownId int, userFunc func()) {
+	me.WmNotify(upDownId, co.NM_RELEASEDCAPTURE, func(p unsafe.Pointer) uintptr {
+		userFunc()
+		return 0
+	})
+}

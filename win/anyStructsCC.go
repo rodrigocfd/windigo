@@ -422,6 +422,13 @@ type (
 		Flags uint32
 	}
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmupdown
+	NMUPDOWN struct {
+		Hdr    NMHDR
+		IPos   int32
+		IDelta int32
+	}
+
 	// https://www.google.com/search?client=firefox-b-d&q=TVINSERTSTRUCTW
 	TVINSERTSTRUCT struct {
 		HParent      HTREEITEM
