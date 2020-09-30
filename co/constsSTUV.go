@@ -530,6 +530,26 @@ const (
 	STANDARD_RIGHTS_ALL      STANDARD_RIGHTS = 0x001F0000
 )
 
+// Static control messages.
+type STM WM
+
+const (
+	STM_SETICON  STM = 0x0170
+	STM_GETICON  STM = 0x0171
+	STM_SETIMAGE STM = 0x0172
+	STM_GETIMAGE STM = 0x0173
+)
+
+// Static control notifications, sent via WM_COMMAND.
+type STN uint16
+
+const (
+	STN_CLICKED STN = 0
+	STN_DBLCLK  STN = 1
+	STN_ENABLE  STN = 2
+	STN_DISABLE STN = 3
+)
+
 // ShowWindow() nCmdShow.
 type SW int32
 
