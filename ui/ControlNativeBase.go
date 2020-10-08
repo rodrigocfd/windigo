@@ -60,9 +60,7 @@ func (me *_ControlNativeBase) create(
 		int32(x), int32(y), int32(width), int32(height),
 		parent.Hwnd(), win.HMENU(ctrlId), parent.Hwnd().GetInstance(), nil)
 
-	if len(me.msgs.mapMsgs) > 0 || // at last 1 subclass message was added?
-		len(me.msgs.mapCmds) > 0 {
-
+	if me.msgs.hasMessages() {
 		if _globalSubclassProcPtr == 0 {
 			_globalSubclassProcPtr = syscall.NewCallback(subclassProc)
 		}

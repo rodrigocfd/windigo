@@ -16,7 +16,7 @@ import (
 
 type _WindowDepot struct { // aglutinate both msg and nfy into one façade
 	_DepotMsg
-	_DepotNfy
+	_DepotCmdNfy
 }
 
 // Base to all window types: WindowControl, WindowMain and WindowModal.
@@ -137,7 +137,7 @@ func wndProc(hwnd win.HWND, msg co.WM,
 	msgParms := Wm{WParam: wParam, LParam: lParam}
 	userRet, wasHandled := pMe.depot._DepotMsg.processMessage(msg, msgParms)
 	if !wasHandled {
-		userRet, wasHandled = pMe.depot._DepotNfy.processMessage(msg, msgParms)
+		userRet, wasHandled = pMe.depot._DepotCmdNfy.processMessage(msg, msgParms)
 	}
 
 	// No further messages processed after this one.

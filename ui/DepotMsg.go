@@ -15,26 +15,20 @@ import (
 	"windigo/win"
 )
 
-// Keeps all user message handlers.
+// Keeps user message handlers.
 type _DepotMsg struct {
 	mapMsgs map[co.WM]func(p Wm) uintptr
-	mapCmds map[int]func(p WmCommand)
 }
 
 func (me *_DepotMsg) processMessage(msg co.WM, p Wm) (uintptr, bool) {
-	if msg == co.WM_COMMAND {
-		pCmd := WmCommand{m: p}
-		if userFunc, hasCmd := me.mapCmds[pCmd.ControlId()]; hasCmd {
-			userFunc(pCmd)
-			return 0, true // always return zero
-		}
-	} else {
-		if userFunc, hasMsg := me.mapMsgs[msg]; hasMsg {
-			return userFunc(p), true
-		}
+	if userFunc, hasMsg := me.mapMsgs[msg]; hasMsg {
+		return userFunc(p), true // user handler found
 	}
-
 	return 0, false // no user handler found
+}
+
+func (me *_DepotMsg) hasMessages() bool {
+	return len(me.mapMsgs) > 0
 }
 
 // Handles a raw, unspecific window message. There will be no treatment of
@@ -49,27 +43,6 @@ func (me *_DepotMsg) Wm(message co.WM, userFunc func(p Wm) uintptr) {
 	}
 	me.mapMsgs[message] = userFunc
 }
-
-// Handles a WM_COMMAND message for a specific command ID.
-//
-// https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
-func (me *_DepotMsg) WmCommand(commandId int, userFunc func(p WmCommand)) {
-	if me.mapCmds == nil { // guard
-		me.mapCmds = make(map[int]func(p WmCommand), 4) // arbitrary capacity, just to speed-up the first allocations
-	}
-	me.mapCmds[commandId] = userFunc
-}
-
-type WmCommand struct{ m Wm }
-
-func (p WmCommand) IsFromMenu() bool        { return p.m.WParam.HiWord() == 0 }
-func (p WmCommand) IsFromAccelerator() bool { return p.m.WParam.HiWord() == 1 }
-func (p WmCommand) IsFromControl() bool     { return !p.IsFromMenu() && !p.IsFromAccelerator() }
-func (p WmCommand) MenuId() int             { return p.ControlId() }
-func (p WmCommand) AcceleratorId() int      { return p.ControlId() }
-func (p WmCommand) ControlId() int          { return int(p.m.WParam.LoWord()) }
-func (p WmCommand) ControlNotifCode() int   { return int(p.m.WParam.HiWord()) }
-func (p WmCommand) ControlHwnd() win.HWND   { return win.HWND(p.m.LParam) }
 
 //------------------------------------------------------------------------------
 
