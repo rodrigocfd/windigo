@@ -105,31 +105,3 @@ func subclassProc(hwnd win.HWND, msg co.WM,
 
 	return hwnd.DefSubclassProc(msg, wParam, lParam) // message was not processed
 }
-
-// Calculates the bound rectangle to fit the text with current system font.
-func calcTextBoundBox(
-	hReferenceDc win.HWND, text string, considerAccelerators bool) (uint, uint) {
-
-	isTextEmpty := false
-	if len(text) == 0 {
-		isTextEmpty = true
-		text = "Pj" // just a placeholder to get the text height
-	}
-
-	if considerAccelerators {
-		text = _Ui.RemoveAccelAmpersands(text)
-	}
-
-	parentDc := hReferenceDc.GetDC()
-	cloneDc := parentDc.CreateCompatibleDC()
-	prevFont := cloneDc.SelectObjectFont(_globalUiFont.Hfont()) // system font; already adjusted to current DPI
-	bounds := cloneDc.GetTextExtentPoint32(text)
-	cloneDc.SelectObjectFont(prevFont)
-	cloneDc.DeleteDC()
-	hReferenceDc.ReleaseDC(parentDc)
-
-	if isTextEmpty {
-		bounds.Cx = 0 // if no text was given, return just the height
-	}
-	return uint(bounds.Cx), uint(bounds.Cy)
-}

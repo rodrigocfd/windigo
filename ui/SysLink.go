@@ -61,7 +61,7 @@ func (me *SysLink) CreateLText(
 //
 // To set the text without resizing the control, use Hwnd().SetWindowText().
 func (me *SysLink) SetText(text string) *SysLink {
-	cx, cy := calcTextBoundBox(me.Hwnd().GetParent(), text, false)
+	cx, cy := _Ui.CalcTextBoundBox(me.Hwnd().GetParent(), text, false)
 
 	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, int32(cx), int32(cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)

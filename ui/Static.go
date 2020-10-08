@@ -41,7 +41,7 @@ func (me *Static) CreateLText(
 	parent Window, ctrlId, x, y int, text string) *Static {
 
 	x, y, _, _ = _Ui.MultiplyDpi(x, y, 0, 0)
-	cx, cy := calcTextBoundBox(parent.Hwnd(), text, true)
+	cx, cy := _Ui.CalcTextBoundBox(parent.Hwnd(), text, true)
 
 	me._ControlNativeBase.create(co.WS_EX_NONE, "STATIC", text,
 		co.WS_CHILD|co.WS_VISIBLE|co.WS(co.SS_LEFT),
@@ -55,7 +55,7 @@ func (me *Static) CreateLText(
 // To set the text without resizing the control, use Hwnd().SetWindowText().
 func (me *Static) SetText(text string) *Static {
 	hasAccel := (co.SS(me.Hwnd().GetStyle()) & co.SS_NOPREFIX) == 0
-	cx, cy := calcTextBoundBox(me.Hwnd().GetParent(), text, hasAccel)
+	cx, cy := _Ui.CalcTextBoundBox(me.Hwnd().GetParent(), text, hasAccel)
 
 	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, int32(cx), int32(cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)

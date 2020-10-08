@@ -58,6 +58,34 @@ func (me *_UiT) MultiplyDpi(x, y int,
 	return x, y, cx, cy
 }
 
+// Calculates the bound rectangle to fit the text with current system font.
+func (_UiT) CalcTextBoundBox(
+	hReferenceDc win.HWND, text string, considerAccelerators bool) (uint, uint) {
+
+	isTextEmpty := false
+	if len(text) == 0 {
+		isTextEmpty = true
+		text = "Pj" // just a placeholder to get the text height
+	}
+
+	if considerAccelerators {
+		text = _Ui.RemoveAccelAmpersands(text)
+	}
+
+	parentDc := hReferenceDc.GetDC()
+	cloneDc := parentDc.CreateCompatibleDC()
+	prevFont := cloneDc.SelectObjectFont(_globalUiFont.Hfont()) // system font; already adjusted to current DPI
+	bounds := cloneDc.GetTextExtentPoint32(text)
+	cloneDc.SelectObjectFont(prevFont)
+	cloneDc.DeleteDC()
+	hReferenceDc.ReleaseDC(parentDc)
+
+	if isTextEmpty {
+		bounds.Cx = 0 // if no text was given, return just the height
+	}
+	return uint(bounds.Cx), uint(bounds.Cy)
+}
+
 // "&He && she" becomes "He & she".
 func (_UiT) RemoveAccelAmpersands(text string) string {
 	runes := []rune(text)

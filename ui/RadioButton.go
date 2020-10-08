@@ -106,7 +106,7 @@ func (me *RadioButton) Text() string {
 func (me *RadioButton) calcIdealSize(hReferenceDc win.HWND,
 	text string) (uint, uint) {
 
-	cx, cy := calcTextBoundBox(hReferenceDc, text, true)
+	cx, cy := _Ui.CalcTextBoundBox(hReferenceDc, text, true)
 	cx += uint(win.GetSystemMetrics(co.SM_CXMENUCHECK)) +
 		uint(win.GetSystemMetrics(co.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
 
