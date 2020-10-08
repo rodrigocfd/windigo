@@ -387,6 +387,15 @@ func (hWnd HWND) IsWindowEnabled() bool {
 	return ret != 0
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-killtimer
+func (hWnd HWND) KillTimer(uIDEvent uintptr) {
+	ret, _, lerr := syscall.Syscall(proc.KillTimer.Addr(), 2,
+		uintptr(hWnd), uIDEvent, 0)
+	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
+		panic(NewWinError(co.ERROR(lerr), "KillTimer").Error())
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
 func (hWnd HWND) MessageBox(message, caption string, flags co.MB) co.MBID {
 	ret, _, _ := syscall.Syscall6(proc.MessageBox.Addr(), 4,
@@ -512,6 +521,26 @@ func (hWnd HWND) SetParent(hWndNewParent HWND) HWND {
 // SetWindowLongPtr() with GWLP_STYLE flag.
 func (hWnd HWND) SetStyle(style co.WS) {
 	hWnd.SetWindowLongPtr(co.GWLP_STYLE, uintptr(style))
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
+func (hWnd HWND) SetTimer(nIDEvent, uElapse uintptr,
+	lpTimerFunc func(hWnd HWND, nIDEvent uintptr, msElapsed uint32)) {
+
+	cbTimer := uintptr(0)
+	if lpTimerFunc != nil {
+		cbTimer = syscall.NewCallback(
+			func(hWnd HWND, nIDEvent uintptr, wmTimer uint32, msElapsed uint32) uintptr {
+				lpTimerFunc(hWnd, nIDEvent, msElapsed)
+				return 0
+			})
+	}
+
+	ret, _, lerr := syscall.Syscall6(proc.SetTimer.Addr(), 4,
+		uintptr(hWnd), nIDEvent, uElapse, cbTimer, 0, 0)
+	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
+		panic(NewWinError(co.ERROR(lerr), "SetTimer").Error())
+	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw

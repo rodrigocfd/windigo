@@ -17,11 +17,17 @@ import (
 
 // Keeps user message handlers.
 type _DepotMsg struct {
-	mapMsgs map[co.WM]func(p Wm) uintptr
+	mapMsgs   map[co.WM]func(p Wm) uintptr
+	mapTimers map[uintptr]func()
 }
 
 func (me *_DepotMsg) processMessage(msg co.WM, p Wm) (uintptr, bool) {
-	if userFunc, hasMsg := me.mapMsgs[msg]; hasMsg {
+	if msg == co.WM_TIMER {
+		if userFunc, hasMsg := me.mapTimers[uintptr(p.WParam)]; hasMsg {
+			userFunc()
+			return 0, true // always return zero; user handler found
+		}
+	} else if userFunc, hasMsg := me.mapMsgs[msg]; hasMsg {
 		return userFunc(p), true // user handler found
 	}
 	return 0, false // no user handler found
@@ -30,6 +36,8 @@ func (me *_DepotMsg) processMessage(msg co.WM, p Wm) (uintptr, bool) {
 func (me *_DepotMsg) hasMessages() bool {
 	return len(me.mapMsgs) > 0
 }
+
+//------------------------------------------------------------------------------
 
 // Handles a raw, unspecific window message. There will be no treatment of
 // WPARAM/LPARAM data, you'll have to unpack all the information manually. This
@@ -42,6 +50,16 @@ func (me *_DepotMsg) Wm(message co.WM, userFunc func(p Wm) uintptr) {
 		me.mapMsgs = make(map[co.WM]func(p Wm) uintptr, 4) // arbitrary capacity, just to speed-up the first allocations
 	}
 	me.mapMsgs[message] = userFunc
+}
+
+// Handles a WM_TIMER message for a specific timer ID.
+//
+// https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-timer
+func (me *_DepotMsg) WmTimer(nIDEvent uintptr, userFunc func()) {
+	if me.mapTimers == nil { // guard
+		me.mapTimers = make(map[uintptr]func())
+	}
+	me.mapTimers[nIDEvent] = userFunc
 }
 
 //------------------------------------------------------------------------------
