@@ -524,14 +524,14 @@ func (hWnd HWND) SetStyle(style co.WS) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
-func (hWnd HWND) SetTimer(nIDEvent, uElapse uintptr,
-	lpTimerFunc func(hWnd HWND, nIDEvent uintptr, msElapsed uint32)) {
+func (hWnd HWND) SetTimer(
+	nIDEvent, uElapse uintptr, lpTimerFunc func(msElapsed uint32)) {
 
 	cbTimer := uintptr(0)
 	if lpTimerFunc != nil {
 		cbTimer = syscall.NewCallback(
 			func(hWnd HWND, nIDEvent uintptr, wmTimer uint32, msElapsed uint32) uintptr {
-				lpTimerFunc(hWnd, nIDEvent, msElapsed)
+				lpTimerFunc(msElapsed)
 				return 0
 			})
 	}
