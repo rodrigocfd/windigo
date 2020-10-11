@@ -13,6 +13,7 @@ import (
 var (
 	dllUser32 = syscall.NewLazyDLL("user32.dll")
 
+	AdjustWindowRectEx            = dllUser32.NewProc("AdjustWindowRectEx")
 	AppendMenu                    = dllUser32.NewProc("AppendMenuW")
 	BeginDeferWindowPos           = dllUser32.NewProc("BeginDeferWindowPos")
 	BeginPaint                    = dllUser32.NewProc("BeginPaint")

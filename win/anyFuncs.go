@@ -33,8 +33,20 @@ func NewGuid(d1 uint32, d2, d3 uint16, d4 uint64) *GUID {
 
 //------------------------------------------------------------------------------
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-adjustwindowrectex
+func AdjustWindowRectEx(
+	lpRect *RECT, dwStyle co.WS, hasMenu bool, dwExStyle co.WS_EX) {
+
+	ret, _, lerr := syscall.Syscall6(proc.AdjustWindowRectEx.Addr(), 4,
+		uintptr(unsafe.Pointer(lpRect)), uintptr(dwStyle),
+		_Win.BoolToUintptr(hasMenu), uintptr(dwExStyle), 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "AdjustWindowRectEx").Error())
+	}
+}
+
 // Returns a pointer to pointer to COM virtual table. IUnknown can be cast to
-// any derived COM interface.
+// any derived COM interface.1
 //
 // You must call Release() after use.
 //
