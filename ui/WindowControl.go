@@ -44,7 +44,6 @@ func (me *WindowControl) Create(
 	me.defaultMessageHandling()
 
 	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
-
 	me._WindowBase.createWindow("WindowControl", me.setup.ExStyle,
 		me.setup.ClassName, "", me.setup.Style, x, y, width, height, parent,
 		win.HMENU(ctrlId), hInst)

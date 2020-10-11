@@ -42,20 +42,10 @@ func (me *WindowModal) Show(parent Window) {
 	me.prevFocusParent = win.GetFocus() // currently focused control
 	parent.Hwnd().EnableWindow(false)   // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
-	_, _, cx, cy := _Ui.MultiplyDpi(0, 0, me.setup.Width, me.setup.Height)
-
+	x, y, cx, cy := me.setup.calcCoords(parent)
 	me._WindowBase.createWindow("WindowModal", me.setup.ExStyle,
 		me.setup.ClassName, me.setup.Title, me.setup.Style,
-		0, 0, // initially anchored at zero
-		cx, cy, parent, win.HMENU(0), hInst)
-
-	rc := me.Hwnd().GetWindowRect()
-	rcParent := parent.Hwnd().GetWindowRect() // both rc relative to screen
-
-	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, // center modal over parent (warning: happens after WM_CREATE processing)
-		rcParent.Left+(rcParent.Right-rcParent.Left)/2-(rc.Right-rc.Left)/2,
-		rcParent.Top+(rcParent.Bottom-rcParent.Top)/2-(rc.Bottom-rc.Top)/2,
-		0, 0, co.SWP_NOZORDER|co.SWP_NOSIZE)
+		x, y, cx, cy, parent, win.HMENU(0), hInst)
 
 	me.runModalLoop()
 }

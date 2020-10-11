@@ -70,19 +70,13 @@ func (me *WindowMain) RunAsMain() int {
 
 	me.defaultMessageHandling()
 
-	cxScreen := int(win.GetSystemMetrics(co.SM_CXSCREEN)) // retrieve screen size
-	cyScreen := int(win.GetSystemMetrics(co.SM_CYSCREEN))
-
-	_, _, cx, cy := _Ui.MultiplyDpi(0, 0, me.setup.Width, me.setup.Height)
-
+	x, y, cx, cy := me.setup.calcCoords()
 	me._WindowBase.createWindow("WindowMain", me.setup.ExStyle,
 		me.setup.ClassName, me.setup.Title, me.setup.Style,
-		cxScreen/2-int(cx)/2, cyScreen/2-int(cy)/2, // center window on screen
-		cx, cy, nil, me.setup.MainMenu.Hmenu(), hInst)
+		x, y, cx, cy, nil, me.setup.MainMenu.Hmenu(), hInst)
 
 	me.Hwnd().ShowWindow(me.setup.CmdShow)
 	me.Hwnd().UpdateWindow()
-
 	return me.runMainLoop()
 }
 

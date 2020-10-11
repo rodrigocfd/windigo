@@ -76,9 +76,9 @@ type _WindowSetupMain struct {
 	Style    co.WS    // Window style, passed to CreateWindowEx(). Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER.
 	ExStyle  co.WS_EX // Window extended style, passed to CreateWindowEx(). Defaults to WS_EX_NONE.
 	Title    string   // The title of the window, passed to CreateWindowEx(). Defaults to empty string.
-	Width    uint     // Initial width of the window, passed to CreateWindowEx(). Defaults to 500px.
-	Height   uint     // Initial height of the window, passed to CreateWindowEx(). Defaults to 400px.
-	MainMenu Menu     // Main window menu, passed to CreateWindowEx(). Automatically destroyed.
+	Width    uint     // Width of client area, passed to CreateWindowEx(). Defaults to 500px.
+	Height   uint     // Height of client area, passed to CreateWindowEx(). Defaults to 400px.
+	MainMenu Menu     // Main window menu, passed to CreateWindowEx(). You must call CreateMain(). Automatically destroyed.
 
 	AcceleratorTable AccelTable // Accelerator table with keyboard shortcuts. Automatically destroyed.
 	CmdShow          co.SW      // Passed to ShowWindow(). Defaults to SW_SHOW.
@@ -107,6 +107,27 @@ func (me *_WindowSetupMain) genWndclassex(hInst win.HINSTANCE) *win.WNDCLASSEX {
 		})
 }
 
+func (me *_WindowSetupMain) calcCoords() (int, int, uint, uint) {
+	_, _, cx, cy := _Ui.MultiplyDpi(0, 0, me.Width, me.Height) // size adjusted to DPI
+
+	cxScreen := uint(win.GetSystemMetrics(co.SM_CXSCREEN)) // retrieve screen size
+	cyScreen := uint(win.GetSystemMetrics(co.SM_CYSCREEN))
+
+	x := int(cxScreen/2 - cx/2) // center on screen
+	y := int(cyScreen/2 - cy/2)
+
+	rc := win.RECT{
+		Left:   int32(x),
+		Top:    int32(y),
+		Right:  int32(int(cx) + x),
+		Bottom: int32(int(cy) + y),
+	}
+	win.AdjustWindowRectEx(&rc, me.Style, me.MainMenu.Hmenu() != 0, me.ExStyle)
+
+	return int(rc.Left), int(rc.Top),
+		uint(rc.Right - rc.Left), uint(rc.Bottom - rc.Top)
+}
+
 //------------------------------------------------------------------------------
 
 // Setup parameters for WindowModal.
@@ -116,8 +137,8 @@ type _WindowSetupModal struct {
 	Style   co.WS    // Window style, passed to CreateWindowEx(). Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER | WS_VISIBLE.
 	ExStyle co.WS_EX // Window extended style, passed to CreateWindowEx(). Defaults to WS_EX_NONE.
 	Title   string   // The title of the window, passed to CreateWindowEx(). Defaults to empty string.
-	Width   uint     // Initial width of the window, passed to CreateWindowEx(). Defaults to 400px.
-	Height  uint     // Initial height of the window, passed to CreateWindowEx(). Defaults to 300px.
+	Width   uint     // Width of client area, passed to CreateWindowEx(). Defaults to 400px.
+	Height  uint     // Height of client area, passed to CreateWindowEx(). Defaults to 300px.
 }
 
 func (me *_WindowSetupModal) initOnce() {
@@ -136,6 +157,24 @@ func (me *_WindowSetupModal) initOnce() {
 func (me *_WindowSetupModal) genWndclassex(hInst win.HINSTANCE) *win.WNDCLASSEX {
 	return me._WndclassexCommon.genWndclassex(
 		hInst, co.COLOR_BTNFACE, func(wcx *win.WNDCLASSEX) {})
+}
+
+func (me *_WindowSetupModal) calcCoords(parent Window) (int, int, uint, uint) {
+	_, _, cx, cy := _Ui.MultiplyDpi(0, 0, me.Width, me.Height) // size adjusted to DPI
+
+	rc := win.RECT{
+		Right:  int32(cx),
+		Bottom: int32(cy),
+	}
+	win.AdjustWindowRectEx(&rc, me.Style, false, me.ExStyle)
+	cx = uint(rc.Right - rc.Left)
+	cy = uint(rc.Bottom - rc.Top)
+
+	rcParent := parent.Hwnd().GetWindowRect() // relative to screen
+
+	return int(rcParent.Left + (rcParent.Right-rcParent.Left)/2 - int32(cx)/2), // center on parent
+		int(rcParent.Top + (rcParent.Bottom-rcParent.Top)/2 - int32(cy)/2),
+		cx, cy
 }
 
 //------------------------------------------------------------------------------
