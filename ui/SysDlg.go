@@ -28,7 +28,7 @@ var SysDlg _SysDlgT
 func (_SysDlgT) FileOpen(
 	owner Window, filtersWithPipe []string) (string, bool) {
 
-	zFilters := filterToUtf16(filtersWithPipe)
+	zFilters := SysDlg.filterToUtf16(filtersWithPipe)
 	result := [260]uint16{} // MAX_PATH
 
 	ofn := win.OPENFILENAME{
@@ -53,7 +53,7 @@ func (_SysDlgT) FileOpen(
 func (_SysDlgT) FileOpenMany(
 	owner Window, filtersWithPipe []string) ([]string, bool) {
 
-	zFilters := filterToUtf16(filtersWithPipe)
+	zFilters := SysDlg.filterToUtf16(filtersWithPipe)
 	multiBuf := make([]uint16, 65536) // http://www.askjf.com/?q=2179s http://www.askjf.com/?q=2181s
 
 	ofn := win.OPENFILENAME{
@@ -109,7 +109,7 @@ func (_SysDlgT) FileSave(
 	owner Window, defaultName, defaultExt string,
 	filtersWithPipe []string) (string, bool) {
 
-	zFilters := filterToUtf16(filtersWithPipe)
+	zFilters := SysDlg.filterToUtf16(filtersWithPipe)
 	defExt := win.Str.ToUint16Slice(defaultExt)
 
 	result := [260]uint16{} // MAX_PATH
@@ -135,7 +135,7 @@ func (_SysDlgT) FileSave(
 	return syscall.UTF16ToString(result[:]), true
 }
 
-func filterToUtf16(filtersWithPipe []string) []uint16 {
+func (_SysDlgT) filterToUtf16(filtersWithPipe []string) []uint16 {
 	// Each filter as []uint16 with terminating null.
 	filters16 := make([][]uint16, 0, len(filtersWithPipe))
 	charCount := 0

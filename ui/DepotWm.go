@@ -16,25 +16,26 @@ import (
 )
 
 // Keeps user message handlers.
-type _DepotMsg struct {
+type _DepotWm struct {
 	mapMsgs   map[co.WM]func(p Wm) uintptr
 	mapTimers map[uintptr]func()
 }
 
-func (me *_DepotMsg) processMessage(msg co.WM, p Wm) (uintptr, bool) {
+func (me *_DepotWm) processMessage(msg co.WM, p Wm) (uintptr, bool) {
 	if msg == co.WM_TIMER {
 		if userFunc, hasMsg := me.mapTimers[uintptr(p.WParam)]; hasMsg {
 			userFunc()
 			return 0, true // always return zero; user handler found
 		}
 	} else if userFunc, hasMsg := me.mapMsgs[msg]; hasMsg {
-		return userFunc(p), true // user handler found
+		return userFunc(p), true // return value returned by user closure; user handler found
 	}
 	return 0, false // no user handler found
 }
 
-func (me *_DepotMsg) hasMessages() bool {
-	return len(me.mapMsgs) > 0
+func (me *_DepotWm) hasMessages() bool {
+	return len(me.mapMsgs) > 0 &&
+		len(me.mapTimers) > 0
 }
 
 //------------------------------------------------------------------------------
@@ -45,7 +46,7 @@ func (me *_DepotMsg) hasMessages() bool {
 //
 // Unless you have a very good reason, always prefer the specific message
 // handlers.
-func (me *_DepotMsg) Wm(message co.WM, userFunc func(p Wm) uintptr) {
+func (me *_DepotWm) Wm(message co.WM, userFunc func(p Wm) uintptr) {
 	if me.mapMsgs == nil { // guard
 		me.mapMsgs = make(map[co.WM]func(p Wm) uintptr, 4) // arbitrary capacity, just to speed-up the first allocations
 	}
@@ -55,7 +56,7 @@ func (me *_DepotMsg) Wm(message co.WM, userFunc func(p Wm) uintptr) {
 // Handles a WM_TIMER message for a specific timer ID.
 //
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-timer
-func (me *_DepotMsg) WmTimer(nIDEvent uintptr, userFunc func()) {
+func (me *_DepotWm) WmTimer(nIDEvent uintptr, userFunc func()) {
 	if me.mapTimers == nil { // guard
 		me.mapTimers = make(map[uintptr]func())
 	}
@@ -67,7 +68,7 @@ func (me *_DepotMsg) WmTimer(nIDEvent uintptr, userFunc func()) {
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-activate
 //
 // Warning: default handled in WindowMain.
-func (me *_DepotMsg) WmActivate(userFunc func(p WmActivate)) {
+func (me *_DepotWm) WmActivate(userFunc func(p WmActivate)) {
 	me.Wm(co.WM_ACTIVATE, func(p Wm) uintptr {
 		userFunc(WmActivate{m: p})
 		return 0
@@ -81,7 +82,7 @@ func (p WmActivate) IsMinimized() bool                      { return p.m.WParam.
 func (p WmActivate) ActivatedOrDeactivatedWindow() win.HWND { return win.HWND(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-activateapp
-func (me *_DepotMsg) WmActivateApp(userFunc func(p WmActivateApp)) {
+func (me *_DepotWm) WmActivateApp(userFunc func(p WmActivateApp)) {
 	me.Wm(co.WM_ACTIVATEAPP, func(p Wm) uintptr {
 		userFunc(WmActivateApp{m: p})
 		return 0
@@ -94,7 +95,7 @@ func (p WmActivateApp) IsBeingActivated() bool { return p.m.WParam != 0 }
 func (p WmActivateApp) ThreadId() uint         { return uint(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-appcommand
-func (me *_DepotMsg) WmAppCommand(userFunc func(p WmAppCommand)) {
+func (me *_DepotWm) WmAppCommand(userFunc func(p WmAppCommand)) {
 	me.Wm(co.WM_APPCOMMAND, func(p Wm) uintptr {
 		userFunc(WmAppCommand{m: p})
 		return 1
@@ -109,7 +110,7 @@ func (p WmAppCommand) UDevice() co.FAPPCOMMAND   { return co.FAPPCOMMAND(p.m.LPa
 func (p WmAppCommand) Keys() co.MK               { return co.MK(p.m.LParam.LoWord()) }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-askcbformatname
-func (me *_DepotMsg) WmAskCbFormatName(userFunc func(p WmAskCbFormatName)) {
+func (me *_DepotWm) WmAskCbFormatName(userFunc func(p WmAskCbFormatName)) {
 	me.Wm(co.WM_ASKCBFORMATNAME, func(p Wm) uintptr {
 		userFunc(WmAskCbFormatName{m: p})
 		return 0
@@ -122,7 +123,7 @@ func (p WmAskCbFormatName) BufferSize() uint { return uint(p.m.WParam) }
 func (p WmAskCbFormatName) Buffer() *uint16  { return (*uint16)(unsafe.Pointer(p.m.LParam)) }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-cancelmode
-func (me *_DepotMsg) WmCancelMode(userFunc func()) {
+func (me *_DepotWm) WmCancelMode(userFunc func()) {
 	me.Wm(co.WM_CANCELMODE, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -130,7 +131,7 @@ func (me *_DepotMsg) WmCancelMode(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-capturechanged
-func (me *_DepotMsg) WmCaptureChanged(userFunc func(hwndGainingMouse win.HWND)) {
+func (me *_DepotWm) WmCaptureChanged(userFunc func(hwndGainingMouse win.HWND)) {
 	me.Wm(co.WM_CAPTURECHANGED, func(p Wm) uintptr {
 		userFunc(win.HWND(p.LParam))
 		return 0
@@ -138,7 +139,7 @@ func (me *_DepotMsg) WmCaptureChanged(userFunc func(hwndGainingMouse win.HWND)) 
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-changecbchain
-func (me *_DepotMsg) WmChangeCbChain(userFunc func(p WmChangeCbChain)) {
+func (me *_DepotWm) WmChangeCbChain(userFunc func(p WmChangeCbChain)) {
 	me.Wm(co.WM_CHANGECBCHAIN, func(p Wm) uintptr {
 		userFunc(WmChangeCbChain{m: p})
 		return 0
@@ -152,7 +153,7 @@ func (p WmChangeCbChain) NextWindow() win.HWND         { return win.HWND(p.m.LPa
 func (p WmChangeCbChain) IsLastWindow() bool           { return p.m.LParam == 0 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-char
-func (me *_DepotMsg) WmChar(userFunc func(p WmChar)) {
+func (me *_DepotWm) WmChar(userFunc func(p WmChar)) {
 	me.Wm(co.WM_CHAR, func(p Wm) uintptr {
 		userFunc(WmChar{m: p})
 		return 0
@@ -160,7 +161,7 @@ func (me *_DepotMsg) WmChar(userFunc func(p WmChar)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-chartoitem
-func (me *_DepotMsg) WmCharToItem(userFunc func(p WmCharToItem)) {
+func (me *_DepotWm) WmCharToItem(userFunc func(p WmCharToItem)) {
 	me.Wm(co.WM_CHARTOITEM, func(p Wm) uintptr {
 		userFunc(WmCharToItem{m: p})
 		return 0
@@ -174,7 +175,7 @@ func (p WmCharToItem) CurrentCaretPos() uint { return uint(p.m.WParam.HiWord()) 
 func (p WmCharToItem) HwndListBox() win.HWND { return win.HWND(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-childactivate
-func (me *_DepotMsg) WmChildActivate(userFunc func()) {
+func (me *_DepotWm) WmChildActivate(userFunc func()) {
 	me.Wm(co.WM_CHILDACTIVATE, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -182,7 +183,7 @@ func (me *_DepotMsg) WmChildActivate(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-clipboardupdate
-func (me *_DepotMsg) WmClipboardUpdate(userFunc func()) {
+func (me *_DepotWm) WmClipboardUpdate(userFunc func()) {
 	me.Wm(co.WM_CLIPBOARDUPDATE, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -192,7 +193,7 @@ func (me *_DepotMsg) WmClipboardUpdate(userFunc func()) {
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-close
 //
 // Warning: default handled in WindowModal.
-func (me *_DepotMsg) WmClose(userFunc func()) {
+func (me *_DepotWm) WmClose(userFunc func()) {
 	me.Wm(co.WM_CLOSE, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -200,7 +201,7 @@ func (me *_DepotMsg) WmClose(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-compareitem
-func (me *_DepotMsg) WmCompareItem(userFunc func(p WmCompareItem) int) {
+func (me *_DepotWm) WmCompareItem(userFunc func(p WmCompareItem) int) {
 	me.Wm(co.WM_COMPAREITEM, func(p Wm) uintptr {
 		return uintptr(userFunc(WmCompareItem{m: p}))
 	})
@@ -214,7 +215,7 @@ func (p WmCompareItem) CompareItemStruct() *win.COMPAREITEMSTRUCT {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-contextmenu
-func (me *_DepotMsg) WmContextMenu(userFunc func(p WmContextMenu)) {
+func (me *_DepotWm) WmContextMenu(userFunc func(p WmContextMenu)) {
 	me.Wm(co.WM_CONTEXTMENU, func(p Wm) uintptr {
 		userFunc(WmContextMenu{m: p})
 		return 0
@@ -227,7 +228,7 @@ func (p WmContextMenu) RightClickedWindow() win.HWND { return win.HWND(p.m.WPara
 func (p WmContextMenu) CursorPos() win.POINT         { return p.m.LParam.MakePoint() }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-copydata
-func (me *_DepotMsg) WmCopyData(userFunc func(p WmCopyData) bool) {
+func (me *_DepotWm) WmCopyData(userFunc func(p WmCopyData) bool) {
 	me.Wm(co.WM_COPYDATA, func(p Wm) uintptr {
 		return _Ui.BoolToUintptr(userFunc(WmCopyData{m: p}))
 	})
@@ -241,56 +242,56 @@ func (p WmCopyData) CopyDataStruct() *win.COPYDATASTRUCT {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-create
-func (me *_DepotMsg) WmCreate(userFunc func(p *win.CREATESTRUCT) int) {
+func (me *_DepotWm) WmCreate(userFunc func(p *win.CREATESTRUCT) int) {
 	me.Wm(co.WM_CREATE, func(p Wm) uintptr {
 		return uintptr(userFunc((*win.CREATESTRUCT)(unsafe.Pointer(p.LParam))))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorbtn
-func (me *_DepotMsg) WmCtlColorBtn(userFunc func(p WmCtlColor) win.HBRUSH) {
+func (me *_DepotWm) WmCtlColorBtn(userFunc func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLORBTN, func(p Wm) uintptr {
 		return uintptr(userFunc(WmCtlColor{m: p}))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/dlgbox/wm-ctlcolordlg
-func (me *_DepotMsg) WmCtlColorDlg(userFunc func(p WmCtlColor) win.HBRUSH) {
+func (me *_DepotWm) WmCtlColorDlg(userFunc func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLORDLG, func(p Wm) uintptr {
 		return uintptr(userFunc(WmCtlColor{m: p}))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-ctlcoloredit
-func (me *_DepotMsg) WmCtlColorEdit(userFunc func(p WmCtlColor) win.HBRUSH) {
+func (me *_DepotWm) WmCtlColorEdit(userFunc func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLOREDIT, func(p Wm) uintptr {
 		return uintptr(userFunc(WmCtlColor{m: p}))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorlistbox
-func (me *_DepotMsg) WmCtlColorListBox(userFunc func(p WmCtlColor) win.HBRUSH) {
+func (me *_DepotWm) WmCtlColorListBox(userFunc func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLORLISTBOX, func(p Wm) uintptr {
 		return uintptr(userFunc(WmCtlColor{m: p}))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorscrollbar
-func (me *_DepotMsg) WmCtlColorScrollBar(userFunc func(p WmCtlColor) win.HBRUSH) {
+func (me *_DepotWm) WmCtlColorScrollBar(userFunc func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLORSCROLLBAR, func(p Wm) uintptr {
 		return uintptr(userFunc(WmCtlColor{m: p}))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorstatic
-func (me *_DepotMsg) WmCtlColorStatic(userFunc func(p WmCtlColor) win.HBRUSH) {
+func (me *_DepotWm) WmCtlColorStatic(userFunc func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLORSTATIC, func(p Wm) uintptr {
 		return uintptr(userFunc(WmCtlColor{m: p}))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-deadchar
-func (me *_DepotMsg) WmDeadChar(userFunc func(p WmChar)) {
+func (me *_DepotWm) WmDeadChar(userFunc func(p WmChar)) {
 	me.Wm(co.WM_DEADCHAR, func(p Wm) uintptr {
 		userFunc(WmChar{m: p})
 		return 0
@@ -298,7 +299,7 @@ func (me *_DepotMsg) WmDeadChar(userFunc func(p WmChar)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-deleteitem
-func (me *_DepotMsg) WmDeleteItem(userFunc func(p WmDeleteItem)) {
+func (me *_DepotWm) WmDeleteItem(userFunc func(p WmDeleteItem)) {
 	me.Wm(co.WM_DELETEITEM, func(p Wm) uintptr {
 		userFunc(WmDeleteItem{m: p})
 		return 1
@@ -313,7 +314,7 @@ func (p WmDeleteItem) DeleteItemStruct() *win.DELETEITEMSTRUCT {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-destroy
-func (me *_DepotMsg) WmDestroy(userFunc func()) {
+func (me *_DepotWm) WmDestroy(userFunc func()) {
 	me.Wm(co.WM_DESTROY, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -321,7 +322,7 @@ func (me *_DepotMsg) WmDestroy(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-destroyclipboard
-func (me *_DepotMsg) WmDestroyClipboard(userFunc func()) {
+func (me *_DepotWm) WmDestroyClipboard(userFunc func()) {
 	me.Wm(co.WM_DESTROYCLIPBOARD, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -329,7 +330,7 @@ func (me *_DepotMsg) WmDestroyClipboard(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/gdi/wm-devmodechange
-func (me *_DepotMsg) WmDevModeChange(userFunc func(deviceName string)) {
+func (me *_DepotWm) WmDevModeChange(userFunc func(deviceName string)) {
 	me.Wm(co.WM_DEVMODECHANGE, func(p Wm) uintptr {
 		userFunc(win.Str.FromUint16Ptr((*uint16)(unsafe.Pointer(p.LParam))))
 		return 0
@@ -337,7 +338,7 @@ func (me *_DepotMsg) WmDevModeChange(userFunc func(deviceName string)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/gdi/wm-displaychange
-func (me *_DepotMsg) WmDisplayChange(userFunc func(p WmDisplayChange)) {
+func (me *_DepotWm) WmDisplayChange(userFunc func(p WmDisplayChange)) {
 	me.Wm(co.WM_DISPLAYCHANGE, func(p Wm) uintptr {
 		userFunc(WmDisplayChange{m: p})
 		return 0
@@ -350,7 +351,7 @@ func (p WmDisplayChange) BitsPerPixel() uint { return uint(p.m.WParam) }
 func (p WmDisplayChange) Size() win.SIZE     { return p.m.LParam.MakeSize() }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-drawclipboard
-func (me *_DepotMsg) WmDrawClipboard(userFunc func()) {
+func (me *_DepotWm) WmDrawClipboard(userFunc func()) {
 	me.Wm(co.WM_DRAWCLIPBOARD, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -358,7 +359,7 @@ func (me *_DepotMsg) WmDrawClipboard(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-drawitem
-func (me *_DepotMsg) WmDrawItem(userFunc func(p WmDrawItem)) {
+func (me *_DepotWm) WmDrawItem(userFunc func(p WmDrawItem)) {
 	me.Wm(co.WM_DRAWITEM, func(p Wm) uintptr {
 		userFunc(WmDrawItem{m: p})
 		return 1
@@ -374,7 +375,7 @@ func (p WmDrawItem) DrawItemStruct() *win.DRAWITEMSTRUCT {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/shell/wm-dropfiles
-func (me *_DepotMsg) WmDropFiles(userFunc func(p WmDropFiles)) {
+func (me *_DepotWm) WmDropFiles(userFunc func(p WmDropFiles)) {
 	me.Wm(co.WM_DROPFILES, func(p Wm) uintptr {
 		userFunc(WmDropFiles{m: p})
 		return 0
@@ -405,7 +406,7 @@ func (p WmDropFiles) RetrieveAll() []string {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-enable
-func (me *_DepotMsg) WmEnable(userFunc func(hasBeenEnabled bool)) {
+func (me *_DepotWm) WmEnable(userFunc func(hasBeenEnabled bool)) {
 	me.Wm(co.WM_ENABLE, func(p Wm) uintptr {
 		userFunc(p.WParam != 0)
 		return 0
@@ -413,7 +414,7 @@ func (me *_DepotMsg) WmEnable(userFunc func(hasBeenEnabled bool)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/shutdown/wm-endsession
-func (me *_DepotMsg) WmEndSession(userFunc func(p WmEndSession)) {
+func (me *_DepotWm) WmEndSession(userFunc func(p WmEndSession)) {
 	me.Wm(co.WM_ENDSESSION, func(p Wm) uintptr {
 		userFunc(WmEndSession{m: p})
 		return 0
@@ -426,7 +427,7 @@ func (p WmEndSession) IsSessionBeingEnded() bool { return p.m.WParam != 0 }
 func (p WmEndSession) Event() co.ENDSESSION      { return co.ENDSESSION(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/dlgbox/wm-enteridle
-func (me *_DepotMsg) WmEnterIdle(userFunc func(p WmEnterIdle)) {
+func (me *_DepotWm) WmEnterIdle(userFunc func(p WmEnterIdle)) {
 	me.Wm(co.WM_ENTERIDLE, func(p Wm) uintptr {
 		userFunc(WmEnterIdle{m: p})
 		return 0
@@ -439,7 +440,7 @@ func (p WmEnterIdle) Displayed() co.MSGF       { return co.MSGF(p.m.WParam) }
 func (p WmEnterIdle) DialogOrWindow() win.HWND { return win.HWND(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-entermenuloop
-func (me *_DepotMsg) WmEnterMenuLoop(userFunc func(isTrackPopupMenu bool)) {
+func (me *_DepotWm) WmEnterMenuLoop(userFunc func(isTrackPopupMenu bool)) {
 	me.Wm(co.WM_ENTERMENULOOP, func(p Wm) uintptr {
 		userFunc(p.WParam != 0)
 		return 0
@@ -447,7 +448,7 @@ func (me *_DepotMsg) WmEnterMenuLoop(userFunc func(isTrackPopupMenu bool)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-entersizemove
-func (me *_DepotMsg) WmEnterSizeMove(userFunc func()) {
+func (me *_DepotWm) WmEnterSizeMove(userFunc func()) {
 	me.Wm(co.WM_ENTERSIZEMOVE, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -455,14 +456,14 @@ func (me *_DepotMsg) WmEnterSizeMove(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-erasebkgnd
-func (me *_DepotMsg) WmEraseBkgnd(userFunc func(hdc win.HDC) int) {
+func (me *_DepotWm) WmEraseBkgnd(userFunc func(hdc win.HDC) int) {
 	me.Wm(co.WM_ERASEBKGND, func(p Wm) uintptr {
 		return uintptr(userFunc(win.HDC(p.WParam)))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-exitmenuloop
-func (me *_DepotMsg) WmExitMenuLoop(userFunc func(isShortcutMenu bool)) {
+func (me *_DepotWm) WmExitMenuLoop(userFunc func(isShortcutMenu bool)) {
 	me.Wm(co.WM_EXITMENULOOP, func(p Wm) uintptr {
 		userFunc(p.WParam != 0)
 		return 0
@@ -470,7 +471,7 @@ func (me *_DepotMsg) WmExitMenuLoop(userFunc func(isShortcutMenu bool)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-exitsizemove
-func (me *_DepotMsg) WmExitSizeMove(userFunc func()) {
+func (me *_DepotWm) WmExitSizeMove(userFunc func()) {
 	me.Wm(co.WM_EXITSIZEMOVE, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -478,7 +479,7 @@ func (me *_DepotMsg) WmExitSizeMove(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/gdi/wm-fontchange
-func (me *_DepotMsg) WmFontChange(userFunc func()) {
+func (me *_DepotWm) WmFontChange(userFunc func()) {
 	me.Wm(co.WM_FONTCHANGE, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -486,7 +487,7 @@ func (me *_DepotMsg) WmFontChange(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/dlgbox/wm-getdlgcode
-func (me *_DepotMsg) WmGetDlgCode(userFunc func(p WmGetDlgCode) co.DLGC) {
+func (me *_DepotWm) WmGetDlgCode(userFunc func(p WmGetDlgCode) co.DLGC) {
 	me.Wm(co.WM_GETDLGCODE, func(p Wm) uintptr {
 		return uintptr(userFunc(WmGetDlgCode{m: p}))
 	})
@@ -503,14 +504,14 @@ func (p WmGetDlgCode) HasCtrl() bool         { return (win.GetAsyncKeyState(co.V
 func (p WmGetDlgCode) HasShift() bool        { return (win.GetAsyncKeyState(co.VK_SHIFT) & 0x8000) != 0 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-getfont
-func (me *_DepotMsg) WmGetFont(userFunc func() win.HFONT) {
+func (me *_DepotWm) WmGetFont(userFunc func() win.HFONT) {
 	me.Wm(co.WM_FONTCHANGE, func(p Wm) uintptr {
 		return uintptr(userFunc())
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-gettitlebarinfoex
-func (me *_DepotMsg) WmGetTitleBarInfoEx(userFunc func(p *win.TITLEBARINFOEX)) {
+func (me *_DepotWm) WmGetTitleBarInfoEx(userFunc func(p *win.TITLEBARINFOEX)) {
 	me.Wm(co.WM_GETTITLEBARINFOEX, func(p Wm) uintptr {
 		userFunc((*win.TITLEBARINFOEX)(unsafe.Pointer(p.LParam)))
 		return 0
@@ -518,7 +519,7 @@ func (me *_DepotMsg) WmGetTitleBarInfoEx(userFunc func(p *win.TITLEBARINFOEX)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/shell/wm-help
-func (me *_DepotMsg) WmHelp(userFunc func(p *win.HELPINFO)) {
+func (me *_DepotWm) WmHelp(userFunc func(p *win.HELPINFO)) {
 	me.Wm(co.WM_HELP, func(p Wm) uintptr {
 		userFunc((*win.HELPINFO)(unsafe.Pointer(p.LParam)))
 		return 1
@@ -526,7 +527,7 @@ func (me *_DepotMsg) WmHelp(userFunc func(p *win.HELPINFO)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-hotkey
-func (me *_DepotMsg) WmHotKey(userFunc func(p WmHotKey)) {
+func (me *_DepotWm) WmHotKey(userFunc func(p WmHotKey)) {
 	me.Wm(co.WM_HOTKEY, func(p Wm) uintptr {
 		userFunc(WmHotKey{m: p})
 		return 0
@@ -540,7 +541,7 @@ func (p WmHotKey) OtherKeys() co.MOD     { return co.MOD(p.m.LParam.LoWord()) }
 func (p WmHotKey) VirtualKeyCode() co.VK { return co.VK(p.m.LParam.HiWord()) }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-hscroll
-func (me *_DepotMsg) WmHScroll(userFunc func(p WmScroll)) {
+func (me *_DepotWm) WmHScroll(userFunc func(p WmScroll)) {
 	me.Wm(co.WM_HSCROLL, func(p Wm) uintptr {
 		userFunc(WmScroll{m: p})
 		return 0
@@ -548,7 +549,7 @@ func (me *_DepotMsg) WmHScroll(userFunc func(p WmScroll)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-hscrollclipboard
-func (me *_DepotMsg) WmHScrollClipboard(userFunc func(p WmScroll)) {
+func (me *_DepotWm) WmHScrollClipboard(userFunc func(p WmScroll)) {
 	me.Wm(co.WM_HSCROLLCLIPBOARD, func(p Wm) uintptr {
 		userFunc(WmScroll{m: p})
 		return 0
@@ -556,7 +557,7 @@ func (me *_DepotMsg) WmHScrollClipboard(userFunc func(p WmScroll)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-initmenupopup
-func (me *_DepotMsg) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
+func (me *_DepotWm) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
 	me.Wm(co.WM_INITMENUPOPUP, func(p Wm) uintptr {
 		userFunc(WmInitMenuPopup{m: p})
 		return 0
@@ -570,7 +571,7 @@ func (p WmInitMenuPopup) Pos() uint          { return uint(p.m.LParam.LoWord()) 
 func (p WmInitMenuPopup) IsWindowMenu() bool { return p.m.LParam.HiWord() != 0 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-keydown
-func (me *_DepotMsg) WmKeyDown(userFunc func(p WmKey)) {
+func (me *_DepotWm) WmKeyDown(userFunc func(p WmKey)) {
 	me.Wm(co.WM_KEYDOWN, func(p Wm) uintptr {
 		userFunc(WmKey{m: p})
 		return 0
@@ -578,7 +579,7 @@ func (me *_DepotMsg) WmKeyDown(userFunc func(p WmKey)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-keyup
-func (me *_DepotMsg) WmKeyUp(userFunc func(p WmKey)) {
+func (me *_DepotWm) WmKeyUp(userFunc func(p WmKey)) {
 	me.Wm(co.WM_KEYUP, func(p Wm) uintptr {
 		userFunc(WmKey{m: p})
 		return 0
@@ -586,7 +587,7 @@ func (me *_DepotMsg) WmKeyUp(userFunc func(p WmKey)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-killfocus
-func (me *_DepotMsg) WmKillFocus(userFunc func(p WmKillFocus)) {
+func (me *_DepotWm) WmKillFocus(userFunc func(p WmKillFocus)) {
 	me.Wm(co.WM_KILLFOCUS, func(p Wm) uintptr {
 		userFunc(WmKillFocus{m: p})
 		return 0
@@ -598,7 +599,7 @@ type WmKillFocus struct{ m Wm }
 func (p WmKillFocus) WindowReceivingFocus() win.HWND { return win.HWND(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-lbuttondblclk
-func (me *_DepotMsg) WmLButtonDblClk(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmLButtonDblClk(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_LBUTTONDBLCLK, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 0
@@ -606,7 +607,7 @@ func (me *_DepotMsg) WmLButtonDblClk(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-lbuttondown
-func (me *_DepotMsg) WmLButtonDown(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmLButtonDown(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_LBUTTONDOWN, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 0
@@ -614,7 +615,7 @@ func (me *_DepotMsg) WmLButtonDown(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-lbuttonup
-func (me *_DepotMsg) WmLButtonUp(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmLButtonUp(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_LBUTTONUP, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 0
@@ -622,7 +623,7 @@ func (me *_DepotMsg) WmLButtonUp(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mbuttondblclk
-func (me *_DepotMsg) WmMButtonDblClk(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmMButtonDblClk(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_MBUTTONDBLCLK, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 0
@@ -630,7 +631,7 @@ func (me *_DepotMsg) WmMButtonDblClk(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mbuttondown
-func (me *_DepotMsg) WmMButtonDown(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmMButtonDown(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_MBUTTONDOWN, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 0
@@ -638,7 +639,7 @@ func (me *_DepotMsg) WmMButtonDown(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mbuttonup
-func (me *_DepotMsg) WmMButtonUp(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmMButtonUp(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_MBUTTONUP, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 0
@@ -646,7 +647,7 @@ func (me *_DepotMsg) WmMButtonUp(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menuchar
-func (me *_DepotMsg) WmMenuChar(userFunc func(p WmMenuChar) co.MNC) {
+func (me *_DepotWm) WmMenuChar(userFunc func(p WmMenuChar) co.MNC) {
 	me.Wm(co.WM_MENUCHAR, func(p Wm) uintptr {
 		return uintptr(userFunc(WmMenuChar{m: p}))
 	})
@@ -659,7 +660,7 @@ func (p WmMenuChar) ActiveMenuType() co.MF { return co.MF(p.m.WParam.HiWord()) }
 func (p WmMenuChar) ActiveMenu() win.HMENU { return win.HMENU(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menucommand
-func (me *_DepotMsg) WmMenuCommand(userFunc func(p WmMenu)) {
+func (me *_DepotWm) WmMenuCommand(userFunc func(p WmMenu)) {
 	me.Wm(co.WM_MENUCOMMAND, func(p Wm) uintptr {
 		userFunc(WmMenu{m: p})
 		return 0
@@ -667,21 +668,21 @@ func (me *_DepotMsg) WmMenuCommand(userFunc func(p WmMenu)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menudrag
-func (me *_DepotMsg) WmMenuDrag(userFunc func(p WmMenu) co.MND) {
+func (me *_DepotWm) WmMenuDrag(userFunc func(p WmMenu) co.MND) {
 	me.Wm(co.WM_MENUDRAG, func(p Wm) uintptr {
 		return uintptr(userFunc(WmMenu{m: p}))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menugetobject
-func (me *_DepotMsg) WmMenuGetObject(userFunc func(p *win.MENUGETOBJECTINFO) co.MNGO) {
+func (me *_DepotWm) WmMenuGetObject(userFunc func(p *win.MENUGETOBJECTINFO) co.MNGO) {
 	me.Wm(co.WM_MENUGETOBJECT, func(p Wm) uintptr {
 		return uintptr(userFunc((*win.MENUGETOBJECTINFO)(unsafe.Pointer(p.LParam))))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menurbuttonup
-func (me *_DepotMsg) WmMenuRButtonUp(userFunc func(p WmMenu)) {
+func (me *_DepotWm) WmMenuRButtonUp(userFunc func(p WmMenu)) {
 	me.Wm(co.WM_MENURBUTTONUP, func(p Wm) uintptr {
 		userFunc(WmMenu{m: p})
 		return 0
@@ -689,7 +690,7 @@ func (me *_DepotMsg) WmMenuRButtonUp(userFunc func(p WmMenu)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menuselect
-func (me *_DepotMsg) WmMenuSelect(userFunc func(p WmMenuSelect)) {
+func (me *_DepotWm) WmMenuSelect(userFunc func(p WmMenuSelect)) {
 	me.Wm(co.WM_MENUSELECT, func(p Wm) uintptr {
 		userFunc(WmMenuSelect{m: p})
 		return 0
@@ -703,7 +704,7 @@ func (p WmMenuSelect) Flags() co.MF     { return co.MF(p.m.WParam.HiWord()) }
 func (p WmMenuSelect) Hmenu() win.HMENU { return win.HMENU(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mousehover
-func (me *_DepotMsg) WmMouseHover(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmMouseHover(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_MOUSEHOVER, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 0
@@ -711,7 +712,7 @@ func (me *_DepotMsg) WmMouseHover(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mouseleave
-func (me *_DepotMsg) WmMouseLeave(userFunc func()) {
+func (me *_DepotWm) WmMouseLeave(userFunc func()) {
 	me.Wm(co.WM_MOUSELEAVE, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -719,7 +720,7 @@ func (me *_DepotMsg) WmMouseLeave(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mousemove
-func (me *_DepotMsg) WmMouseMove(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmMouseMove(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_MOUSEMOVE, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 0
@@ -727,7 +728,7 @@ func (me *_DepotMsg) WmMouseMove(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-move
-func (me *_DepotMsg) WmMove(userFunc func(clientAreaPos win.POINT)) {
+func (me *_DepotWm) WmMove(userFunc func(clientAreaPos win.POINT)) {
 	me.Wm(co.WM_MOVE, func(p Wm) uintptr {
 		userFunc(p.LParam.MakePoint())
 		return 0
@@ -735,7 +736,7 @@ func (me *_DepotMsg) WmMove(userFunc func(clientAreaPos win.POINT)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-moving
-func (me *_DepotMsg) WmMoving(userFunc func(windowPos *win.RECT)) {
+func (me *_DepotWm) WmMoving(userFunc func(windowPos *win.RECT)) {
 	me.Wm(co.WM_MOVING, func(p Wm) uintptr {
 		userFunc((*win.RECT)(unsafe.Pointer(p.LParam)))
 		return 1
@@ -743,7 +744,7 @@ func (me *_DepotMsg) WmMoving(userFunc func(windowPos *win.RECT)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-ncactivate
-func (me *_DepotMsg) WmNcActivate(userFunc func(p WmNcActivate) bool) {
+func (me *_DepotWm) WmNcActivate(userFunc func(p WmNcActivate) bool) {
 	me.Wm(co.WM_NCACTIVATE, func(p Wm) uintptr {
 		return _Ui.BoolToUintptr(userFunc(WmNcActivate{m: p}))
 	})
@@ -756,7 +757,7 @@ func (p WmNcActivate) IsVisualStyleActive() bool { return p.m.LParam == 0 }
 func (p WmNcActivate) UpdatedRegion() win.HRGN   { return win.HRGN(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-nccalcsize
-func (me *_DepotMsg) WmNcCalcSize(userFunc func(p WmNcCalcSize) co.WVR) {
+func (me *_DepotWm) WmNcCalcSize(userFunc func(p WmNcCalcSize) co.WVR) {
 	me.Wm(co.WM_NCCALCSIZE, func(p Wm) uintptr {
 		return uintptr(userFunc(WmNcCalcSize{m: p}))
 	})
@@ -773,7 +774,7 @@ func (p WmNcCalcSize) Rect() *win.RECT { return (*win.RECT)(unsafe.Pointer(p.m.L
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-ncdestroy
 //
 // Warning: default handled in WindowMain.
-func (me *_DepotMsg) WmNcDestroy(userFunc func()) {
+func (me *_DepotWm) WmNcDestroy(userFunc func()) {
 	me.Wm(co.WM_NCDESTROY, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -781,14 +782,14 @@ func (me *_DepotMsg) WmNcDestroy(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest
-func (me *_DepotMsg) WmNcHitTest(userFunc func(cursorCoord win.POINT) co.HT) {
+func (me *_DepotWm) WmNcHitTest(userFunc func(cursorCoord win.POINT) co.HT) {
 	me.Wm(co.WM_NCHITTEST, func(p Wm) uintptr {
 		return uintptr(userFunc(p.LParam.MakePoint()))
 	})
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nclbuttondblclk
-func (me *_DepotMsg) WmNcLButtonDblClk(userFunc func(p WmNcMouse)) {
+func (me *_DepotWm) WmNcLButtonDblClk(userFunc func(p WmNcMouse)) {
 	me.Wm(co.WM_NCLBUTTONDBLCLK, func(p Wm) uintptr {
 		userFunc(WmNcMouse{m: p})
 		return 0
@@ -796,7 +797,7 @@ func (me *_DepotMsg) WmNcLButtonDblClk(userFunc func(p WmNcMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nclbuttondown
-func (me *_DepotMsg) WmNcLButtonDown(userFunc func(p WmNcMouse)) {
+func (me *_DepotWm) WmNcLButtonDown(userFunc func(p WmNcMouse)) {
 	me.Wm(co.WM_NCLBUTTONDOWN, func(p Wm) uintptr {
 		userFunc(WmNcMouse{m: p})
 		return 0
@@ -804,7 +805,7 @@ func (me *_DepotMsg) WmNcLButtonDown(userFunc func(p WmNcMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nclbuttonup
-func (me *_DepotMsg) WmNcLButtonUp(userFunc func(p WmNcMouse)) {
+func (me *_DepotWm) WmNcLButtonUp(userFunc func(p WmNcMouse)) {
 	me.Wm(co.WM_NCLBUTTONUP, func(p Wm) uintptr {
 		userFunc(WmNcMouse{m: p})
 		return 0
@@ -812,7 +813,7 @@ func (me *_DepotMsg) WmNcLButtonUp(userFunc func(p WmNcMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncmbuttondblclk
-func (me *_DepotMsg) WmNcMButtonDblClk(userFunc func(p WmNcMouse)) {
+func (me *_DepotWm) WmNcMButtonDblClk(userFunc func(p WmNcMouse)) {
 	me.Wm(co.WM_NCMBUTTONDBLCLK, func(p Wm) uintptr {
 		userFunc(WmNcMouse{m: p})
 		return 0
@@ -820,7 +821,7 @@ func (me *_DepotMsg) WmNcMButtonDblClk(userFunc func(p WmNcMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncmbuttondown
-func (me *_DepotMsg) WmNcMButtonDown(userFunc func(p WmNcMouse)) {
+func (me *_DepotWm) WmNcMButtonDown(userFunc func(p WmNcMouse)) {
 	me.Wm(co.WM_NCMBUTTONDOWN, func(p Wm) uintptr {
 		userFunc(WmNcMouse{m: p})
 		return 0
@@ -828,7 +829,7 @@ func (me *_DepotMsg) WmNcMButtonDown(userFunc func(p WmNcMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncmbuttonup
-func (me *_DepotMsg) WmNcMButtonUp(userFunc func(p WmNcMouse)) {
+func (me *_DepotWm) WmNcMButtonUp(userFunc func(p WmNcMouse)) {
 	me.Wm(co.WM_NCMBUTTONUP, func(p Wm) uintptr {
 		userFunc(WmNcMouse{m: p})
 		return 0
@@ -836,7 +837,7 @@ func (me *_DepotMsg) WmNcMButtonUp(userFunc func(p WmNcMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncmousehover
-func (me *_DepotMsg) WmNcMouseHover(userFunc func(p WmNcMouse)) {
+func (me *_DepotWm) WmNcMouseHover(userFunc func(p WmNcMouse)) {
 	me.Wm(co.WM_NCMOUSEHOVER, func(p Wm) uintptr {
 		userFunc(WmNcMouse{m: p})
 		return 0
@@ -844,7 +845,7 @@ func (me *_DepotMsg) WmNcMouseHover(userFunc func(p WmNcMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncmouseleave
-func (me *_DepotMsg) WmNcMouseLeave(userFunc func()) {
+func (me *_DepotWm) WmNcMouseLeave(userFunc func()) {
 	me.Wm(co.WM_NCMOUSELEAVE, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -852,7 +853,7 @@ func (me *_DepotMsg) WmNcMouseLeave(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncmousemove
-func (me *_DepotMsg) WmNcMouseMove(userFunc func(p WmNcMouse)) {
+func (me *_DepotWm) WmNcMouseMove(userFunc func(p WmNcMouse)) {
 	me.Wm(co.WM_NCMOUSEMOVE, func(p Wm) uintptr {
 		userFunc(WmNcMouse{m: p})
 		return 0
@@ -862,7 +863,7 @@ func (me *_DepotMsg) WmNcMouseMove(userFunc func(p WmNcMouse)) {
 // https://docs.microsoft.com/en-us/windows/win32/gdi/wm-ncpaint
 //
 // Warning: default handled in WindowControl.
-func (me *_DepotMsg) WmNcPaint(userFunc func(p WmNcPaint)) {
+func (me *_DepotWm) WmNcPaint(userFunc func(p WmNcPaint)) {
 	me.Wm(co.WM_NCPAINT, func(p Wm) uintptr {
 		userFunc(WmNcPaint{m: p})
 		return 0
@@ -875,7 +876,7 @@ func (p WmNcPaint) Raw() Wm                 { return p.m }
 func (p WmNcPaint) UpdatedRegion() win.HRGN { return win.HRGN(p.m.WParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncrbuttondblclk
-func (me *_DepotMsg) WmNcRButtonDblClk(userFunc func(p WmNcMouse)) {
+func (me *_DepotWm) WmNcRButtonDblClk(userFunc func(p WmNcMouse)) {
 	me.Wm(co.WM_NCRBUTTONDBLCLK, func(p Wm) uintptr {
 		userFunc(WmNcMouse{m: p})
 		return 0
@@ -883,7 +884,7 @@ func (me *_DepotMsg) WmNcRButtonDblClk(userFunc func(p WmNcMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncrbuttondown
-func (me *_DepotMsg) WmNcRButtonDown(userFunc func(p WmNcMouse)) {
+func (me *_DepotWm) WmNcRButtonDown(userFunc func(p WmNcMouse)) {
 	me.Wm(co.WM_NCRBUTTONDOWN, func(p Wm) uintptr {
 		userFunc(WmNcMouse{m: p})
 		return 0
@@ -891,7 +892,7 @@ func (me *_DepotMsg) WmNcRButtonDown(userFunc func(p WmNcMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncrbuttonup
-func (me *_DepotMsg) WmNcRButtonUp(userFunc func(p WmNcMouse)) {
+func (me *_DepotWm) WmNcRButtonUp(userFunc func(p WmNcMouse)) {
 	me.Wm(co.WM_NCRBUTTONUP, func(p Wm) uintptr {
 		userFunc(WmNcMouse{m: p})
 		return 0
@@ -899,7 +900,7 @@ func (me *_DepotMsg) WmNcRButtonUp(userFunc func(p WmNcMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncxbuttondblclk
-func (me *_DepotMsg) WmNcXButtonDblClk(userFunc func(p WmNcMouseX)) {
+func (me *_DepotWm) WmNcXButtonDblClk(userFunc func(p WmNcMouseX)) {
 	me.Wm(co.WM_NCXBUTTONDBLCLK, func(p Wm) uintptr {
 		userFunc(WmNcMouseX{m: p})
 		return 1
@@ -907,7 +908,7 @@ func (me *_DepotMsg) WmNcXButtonDblClk(userFunc func(p WmNcMouseX)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncxbuttondown
-func (me *_DepotMsg) WmNcXButtonDown(userFunc func(p WmNcMouseX)) {
+func (me *_DepotWm) WmNcXButtonDown(userFunc func(p WmNcMouseX)) {
 	me.Wm(co.WM_NCXBUTTONDOWN, func(p Wm) uintptr {
 		userFunc(WmNcMouseX{m: p})
 		return 1
@@ -915,7 +916,7 @@ func (me *_DepotMsg) WmNcXButtonDown(userFunc func(p WmNcMouseX)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncxbuttonup
-func (me *_DepotMsg) WmNcXButtonUp(userFunc func(p WmNcMouseX)) {
+func (me *_DepotWm) WmNcXButtonUp(userFunc func(p WmNcMouseX)) {
 	me.Wm(co.WM_NCXBUTTONUP, func(p Wm) uintptr {
 		userFunc(WmNcMouseX{m: p})
 		return 1
@@ -923,7 +924,7 @@ func (me *_DepotMsg) WmNcXButtonUp(userFunc func(p WmNcMouseX)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-nextmenu
-func (me *_DepotMsg) WmNextMenu(userFunc func(p WmNextMenu)) {
+func (me *_DepotWm) WmNextMenu(userFunc func(p WmNextMenu)) {
 	me.Wm(co.WM_NEXTMENU, func(p Wm) uintptr {
 		userFunc(WmNextMenu{m: p})
 		return 0
@@ -938,7 +939,7 @@ func (p WmNextMenu) MdiNextMenu() *win.MDINEXTMENU {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/gdi/wm-paint
-func (me *_DepotMsg) WmPaint(userFunc func()) {
+func (me *_DepotWm) WmPaint(userFunc func()) {
 	me.Wm(co.WM_PAINT, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -946,7 +947,7 @@ func (me *_DepotMsg) WmPaint(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-paintclipboard
-func (me *_DepotMsg) WmPaintClipboard(userFunc func(WmPaintClipboard)) {
+func (me *_DepotWm) WmPaintClipboard(userFunc func(WmPaintClipboard)) {
 	me.Wm(co.WM_PAINTCLIPBOARD, func(p Wm) uintptr {
 		userFunc(WmPaintClipboard{m: p})
 		return 0
@@ -961,7 +962,7 @@ func (p WmPaintClipboard) PaintStruct() *win.PAINTSTRUCT {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast
-func (me *_DepotMsg) WmPowerBroadcast(userFunc func(p WmPowerBroadcast)) {
+func (me *_DepotWm) WmPowerBroadcast(userFunc func(p WmPowerBroadcast)) {
 	me.Wm(co.WM_POWERBROADCAST, func(p Wm) uintptr {
 		userFunc(WmPowerBroadcast{m: p})
 		return 1
@@ -979,7 +980,7 @@ func (p WmPowerBroadcast) PowerBroadcastSetting() *win.POWERBROADCAST_SETTING {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/gdi/wm-print
-func (me *_DepotMsg) WmPrint(userFunc func(p WmPrint)) {
+func (me *_DepotWm) WmPrint(userFunc func(p WmPrint)) {
 	me.Wm(co.WM_PRINT, func(p Wm) uintptr {
 		userFunc(WmPrint{m: p})
 		return 0
@@ -992,7 +993,7 @@ func (p WmPrint) Hdc() win.HDC           { return win.HDC(p.m.WParam) }
 func (p WmPrint) DrawingOptions() co.PRF { return co.PRF(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-rbuttondblclk
-func (me *_DepotMsg) WmRButtonDblClk(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmRButtonDblClk(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_RBUTTONDBLCLK, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 0
@@ -1000,7 +1001,7 @@ func (me *_DepotMsg) WmRButtonDblClk(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-rbuttondown
-func (me *_DepotMsg) WmRButtonDown(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmRButtonDown(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_RBUTTONDOWN, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 0
@@ -1008,7 +1009,7 @@ func (me *_DepotMsg) WmRButtonDown(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-rbuttonup
-func (me *_DepotMsg) WmRButtonUp(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmRButtonUp(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_RBUTTONUP, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 0
@@ -1016,7 +1017,7 @@ func (me *_DepotMsg) WmRButtonUp(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-renderallformats
-func (me *_DepotMsg) WmRenderAllFormats(userFunc func()) {
+func (me *_DepotWm) WmRenderAllFormats(userFunc func()) {
 	me.Wm(co.WM_RENDERALLFORMATS, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -1024,7 +1025,7 @@ func (me *_DepotMsg) WmRenderAllFormats(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-renderformat
-func (me *_DepotMsg) WmRenderFormat(userFunc func(clipboardFormat co.CF)) {
+func (me *_DepotWm) WmRenderFormat(userFunc func(clipboardFormat co.CF)) {
 	me.Wm(co.WM_RENDERFORMAT, func(p Wm) uintptr {
 		userFunc(co.CF(p.WParam))
 		return 0
@@ -1034,7 +1035,7 @@ func (me *_DepotMsg) WmRenderFormat(userFunc func(clipboardFormat co.CF)) {
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-setfocus
 //
 // Warning: default handled in WindowMain and WindowModal.
-func (me *_DepotMsg) WmSetFocus(userFunc func(hwndLosingFocus win.HWND)) {
+func (me *_DepotWm) WmSetFocus(userFunc func(hwndLosingFocus win.HWND)) {
 	me.Wm(co.WM_SETFOCUS, func(p Wm) uintptr {
 		userFunc(win.HWND(p.LParam))
 		return 0
@@ -1042,7 +1043,7 @@ func (me *_DepotMsg) WmSetFocus(userFunc func(hwndLosingFocus win.HWND)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-setfont
-func (me *_DepotMsg) WmSetFont(userFunc func(p WmSetFont)) {
+func (me *_DepotWm) WmSetFont(userFunc func(p WmSetFont)) {
 	me.Wm(co.WM_SETFONT, func(p Wm) uintptr {
 		userFunc(WmSetFont{m: p})
 		return 0
@@ -1055,7 +1056,7 @@ func (p WmSetFont) Hfont() win.HFONT   { return win.HFONT(p.m.WParam) }
 func (p WmSetFont) ShouldRedraw() bool { return p.m.LParam == 1 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-size
-func (me *_DepotMsg) WmSize(userFunc func(p WmSize)) {
+func (me *_DepotWm) WmSize(userFunc func(p WmSize)) {
 	me.Wm(co.WM_SIZE, func(p Wm) uintptr {
 		userFunc(WmSize{m: p})
 		return 0
@@ -1068,7 +1069,7 @@ func (p WmSize) Request() co.SIZE         { return co.SIZE(p.m.WParam) }
 func (p WmSize) ClientAreaSize() win.SIZE { return p.m.LParam.MakeSize() }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-sizeclipboard
-func (me *_DepotMsg) WmSizeClipboard(userFunc func(p WmSizeClipboard)) {
+func (me *_DepotWm) WmSizeClipboard(userFunc func(p WmSizeClipboard)) {
 	me.Wm(co.WM_SIZECLIPBOARD, func(p Wm) uintptr {
 		userFunc(WmSizeClipboard{m: p})
 		return 0
@@ -1081,7 +1082,7 @@ func (p WmSizeClipboard) CbViewerWindow() win.HWND { return win.HWND(p.m.WParam)
 func (p WmSizeClipboard) NewDimensions() *win.RECT { return (*win.RECT)(unsafe.Pointer(p.m.LParam)) }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-syschar
-func (me *_DepotMsg) WmSysChar(userFunc func(p WmChar)) {
+func (me *_DepotWm) WmSysChar(userFunc func(p WmChar)) {
 	me.Wm(co.WM_SYSCHAR, func(p Wm) uintptr {
 		userFunc(WmChar{m: p})
 		return 0
@@ -1089,7 +1090,7 @@ func (me *_DepotMsg) WmSysChar(userFunc func(p WmChar)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-syscommand
-func (me *_DepotMsg) WmSysCommand(userFunc func(p WmSysCommand)) {
+func (me *_DepotWm) WmSysCommand(userFunc func(p WmSysCommand)) {
 	me.Wm(co.WM_SYSCOMMAND, func(p Wm) uintptr {
 		userFunc(WmSysCommand{m: p})
 		return 0
@@ -1102,7 +1103,7 @@ func (p WmSysCommand) RequestCommand() co.SC { return co.SC(p.m.WParam) }
 func (p WmSysCommand) CursorPos() win.POINT  { return p.m.LParam.MakePoint() }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-sysdeadchar
-func (me *_DepotMsg) WmSysDeadChar(userFunc func(p WmChar)) {
+func (me *_DepotWm) WmSysDeadChar(userFunc func(p WmChar)) {
 	me.Wm(co.WM_SYSDEADCHAR, func(p Wm) uintptr {
 		userFunc(WmChar{m: p})
 		return 0
@@ -1110,7 +1111,7 @@ func (me *_DepotMsg) WmSysDeadChar(userFunc func(p WmChar)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-syskeydown
-func (me *_DepotMsg) WmSysKeyDown(userFunc func(p WmKey)) {
+func (me *_DepotWm) WmSysKeyDown(userFunc func(p WmKey)) {
 	me.Wm(co.WM_SYSKEYDOWN, func(p Wm) uintptr {
 		userFunc(WmKey{m: p})
 		return 0
@@ -1118,7 +1119,7 @@ func (me *_DepotMsg) WmSysKeyDown(userFunc func(p WmKey)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-syskeyup
-func (me *_DepotMsg) WmSysKeyUp(userFunc func(p WmKey)) {
+func (me *_DepotWm) WmSysKeyUp(userFunc func(p WmKey)) {
 	me.Wm(co.WM_SYSKEYUP, func(p Wm) uintptr {
 		userFunc(WmKey{m: p})
 		return 0
@@ -1126,7 +1127,7 @@ func (me *_DepotMsg) WmSysKeyUp(userFunc func(p WmKey)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/sysinfo/wm-timechange
-func (me *_DepotMsg) WmTimeChange(userFunc func()) {
+func (me *_DepotWm) WmTimeChange(userFunc func()) {
 	me.Wm(co.WM_TIMECHANGE, func(p Wm) uintptr {
 		userFunc()
 		return 0
@@ -1134,7 +1135,7 @@ func (me *_DepotMsg) WmTimeChange(userFunc func()) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-uninitmenupopup
-func (me *_DepotMsg) WmUnInitMenuPopup(userFunc func(menu win.HMENU)) {
+func (me *_DepotWm) WmUnInitMenuPopup(userFunc func(menu win.HMENU)) {
 	me.Wm(co.WM_UNINITMENUPOPUP, func(p Wm) uintptr {
 		userFunc(win.HMENU(p.WParam))
 		return 0
@@ -1142,7 +1143,7 @@ func (me *_DepotMsg) WmUnInitMenuPopup(userFunc func(menu win.HMENU)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/controls/wm-vscroll
-func (me *_DepotMsg) WmVScroll(userFunc func(p WmScroll)) {
+func (me *_DepotWm) WmVScroll(userFunc func(p WmScroll)) {
 	me.Wm(co.WM_VSCROLL, func(p Wm) uintptr {
 		userFunc(WmScroll{m: p})
 		return 0
@@ -1150,7 +1151,7 @@ func (me *_DepotMsg) WmVScroll(userFunc func(p WmScroll)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-vscrollclipboard
-func (me *_DepotMsg) WmVScrollClipboard(userFunc func(p WmScroll)) {
+func (me *_DepotWm) WmVScrollClipboard(userFunc func(p WmScroll)) {
 	me.Wm(co.WM_VSCROLLCLIPBOARD, func(p Wm) uintptr {
 		userFunc(WmScroll{m: p})
 		return 0
@@ -1158,7 +1159,7 @@ func (me *_DepotMsg) WmVScrollClipboard(userFunc func(p WmScroll)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-xbuttondblclk
-func (me *_DepotMsg) WmXButtonDblClk(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmXButtonDblClk(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_XBUTTONDBLCLK, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 1
@@ -1166,7 +1167,7 @@ func (me *_DepotMsg) WmXButtonDblClk(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-xbuttondown
-func (me *_DepotMsg) WmXButtonDown(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmXButtonDown(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_XBUTTONDOWN, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 1
@@ -1174,7 +1175,7 @@ func (me *_DepotMsg) WmXButtonDown(userFunc func(p WmMouse)) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-xbuttonup
-func (me *_DepotMsg) WmXButtonUp(userFunc func(p WmMouse)) {
+func (me *_DepotWm) WmXButtonUp(userFunc func(p WmMouse)) {
 	me.Wm(co.WM_XBUTTONUP, func(p Wm) uintptr {
 		userFunc(WmMouse{m: p})
 		return 1

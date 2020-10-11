@@ -24,7 +24,7 @@ var (
 // Allows control subclassing.
 type _ControlNativeBase struct {
 	hwnd       win.HWND
-	msgs       _DepotMsg
+	msgs       _DepotWm
 	subclassId uint32
 }
 
@@ -41,7 +41,7 @@ func (me *_ControlNativeBase) Id() int {
 // Exposes all the control subclass methods that can be handled.
 //
 // The subclass will be installed in create() if at least 1 message was added.
-func (me *_ControlNativeBase) OnSubclassMsg() *_DepotMsg {
+func (me *_ControlNativeBase) OnSubclassMsg() *_DepotWm {
 	if me.hwnd != 0 {
 		panic("Cannot add subclass message after the control was created.")
 	}
@@ -81,7 +81,7 @@ func subclassProc(hwnd win.HWND, msg co.WM,
 	// Retrieve passed pointer.
 	pMe := (*_ControlNativeBase)(unsafe.Pointer(dwRefData))
 
-	// If the retrieved *nativeControlBase stays here, the GC will collect it.
+	// If the retrieved *_ControlNativeBase stays here, the GC will collect it.
 	// Sending it away will prevent the GC collection.
 	// https://stackoverflow.com/a/51188315
 	hwnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))

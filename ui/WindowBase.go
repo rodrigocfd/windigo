@@ -14,15 +14,10 @@ import (
 	"windigo/win"
 )
 
-type _WindowDepot struct { // aglutinate both msg and nfy into one façade
-	_DepotMsg
-	_DepotCmdNfy
-}
-
 // Base to all window types: WindowControl, WindowMain and WindowModal.
 type _WindowBase struct {
 	hwnd  win.HWND
-	depot _WindowDepot
+	depot _DepotWmCmdNfy
 }
 
 const _WM_UI_THREAD = co.WM_APP + 0x3FFF   // used in UI thread handling
@@ -34,7 +29,7 @@ func (me *_WindowBase) Hwnd() win.HWND {
 }
 
 // Exposes all the window messages the can be handled.
-func (me *_WindowBase) OnMsg() *_WindowDepot {
+func (me *_WindowBase) OnMsg() *_DepotWmCmdNfy {
 	if me.Hwnd() != 0 {
 		panic("Cannot add message after the window was created.")
 	}
@@ -122,7 +117,7 @@ func wndProc(hwnd win.HWND, msg co.WM,
 	pMe := (*_WindowBase)(unsafe.Pointer(
 		hwnd.GetWindowLongPtr(co.GWLP_USERDATA)))
 
-	// If the retrieved *windowBase stays here, the GC will collect it.
+	// If the retrieved *_WindowBase stays here, the GC will collect it.
 	// Sending it away will prevent the GC collection.
 	// https://stackoverflow.com/a/51188315
 	hwnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
@@ -134,11 +129,8 @@ func wndProc(hwnd win.HWND, msg co.WM,
 	}
 
 	// Try to process the message with an user handler.
-	msgParms := Wm{WParam: wParam, LParam: lParam}
-	userRet, wasHandled := pMe.depot._DepotMsg.processMessage(msg, msgParms)
-	if !wasHandled {
-		userRet, wasHandled = pMe.depot._DepotCmdNfy.processMessage(msg, msgParms)
-	}
+	userRet, wasHandled := pMe.depot.processMessage(msg,
+		Wm{WParam: wParam, LParam: lParam})
 
 	// No further messages processed after this one.
 	if msg == co.WM_NCDESTROY {
