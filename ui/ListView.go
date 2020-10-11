@@ -242,14 +242,14 @@ func (me *ListView) FocusedItem() *ListViewItem {
 // coordinates must be relative to list view.
 //
 // https://docs.microsoft.com/en-us/windows/win32/controls/lvm-hittest
-func (me *ListView) HitTest(pos *win.POINT) *win.LVHITTESTINFO {
-	lvhti := &win.LVHITTESTINFO{
-		Pt: *pos,
+func (me *ListView) HitTest(pos win.POINT) *win.LVHITTESTINFO {
+	lvhti := win.LVHITTESTINFO{
+		Pt: pos,
 	}
 	wp := -1 // Vista: retrieve iGroup and iSubItem
 	me.sendLvmMessage(co.LVM_HITTEST,
-		win.WPARAM(wp), win.LPARAM(unsafe.Pointer(lvhti)))
-	return lvhti
+		win.WPARAM(wp), win.LPARAM(unsafe.Pointer(&lvhti)))
+	return &lvhti
 }
 
 // Retrieves the associated HIMAGELIST by sending LVM_GETIMAGELIST.
@@ -493,12 +493,12 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		return
 	}
 
-	menuPos := &win.POINT{} // menu anchor coords, relative to list view
+	menuPos := win.POINT{} // menu anchor coords, relative to list view
 
 	if followCursor { // usually when fired by a right-click
-		menuPos = win.GetCursorPos()        // relative to screen
-		me.Hwnd().ScreenToClientPt(menuPos) // now relative to list view
-		lvhti := me.HitTest(menuPos)        // to find item below cursor, if any
+		menuPos = win.GetCursorPos()         // relative to screen
+		me.Hwnd().ScreenToClientPt(&menuPos) // now relative to list view
+		lvhti := me.HitTest(menuPos)         // to find item below cursor, if any
 
 		if lvhti.IItem != -1 { // an item was right-clicked
 			if !hasCtrl && !hasShift {

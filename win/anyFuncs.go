@@ -163,14 +163,14 @@ func GetCurrentThreadId() uint32 {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcursorpos
-func GetCursorPos() *POINT {
+func GetCursorPos() POINT {
 	pt := POINT{}
 	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "GetCursorPos").Error())
 	}
-	return &pt
+	return pt
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforsystem
@@ -213,14 +213,14 @@ func GetOpenFileName(ofn *OPENFILENAME) bool {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos
-func GetPhysicalCursorPos() *POINT {
+func GetPhysicalCursorPos() POINT {
 	pt := POINT{}
 	ret, _, lerr := syscall.Syscall(proc.GetPhysicalCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "GetPhysicalCursorPos").Error())
 	}
-	return &pt
+	return pt
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-getsavefilenamew

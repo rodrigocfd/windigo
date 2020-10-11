@@ -62,7 +62,7 @@ func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextextentpoint32w
-func (hdc HDC) GetTextExtentPoint32(lpString string) *SIZE {
+func (hdc HDC) GetTextExtentPoint32(lpString string) SIZE {
 	sz := SIZE{}
 	ret, _, _ := syscall.Syscall6(proc.GetTextExtentPoint32.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpString))),
@@ -70,7 +70,7 @@ func (hdc HDC) GetTextExtentPoint32(lpString string) *SIZE {
 	if ret == 0 {
 		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetTextExtentPoint32").Error())
 	}
-	return &sz
+	return sz
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextfacew

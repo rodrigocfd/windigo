@@ -56,7 +56,7 @@ func (hImg HIMAGELIST) GetIcon(index uint32, flags co.ILD) HICON {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticonsize
-func (hImg HIMAGELIST) GetIconSize() *SIZE {
+func (hImg HIMAGELIST) GetIconSize() SIZE {
 	sz := SIZE{}
 	ret, _, _ := syscall.Syscall(proc.ImageList_GetIconSize.Addr(), 3,
 		uintptr(hImg),
@@ -64,7 +64,7 @@ func (hImg HIMAGELIST) GetIconSize() *SIZE {
 	if ret == 0 {
 		panic("ImageList_GetIconSize failed.")
 	}
-	return &sz
+	return sz
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_getimagecount

@@ -70,8 +70,8 @@ func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-defsubclassproc
-func (hWnd HWND) DefSubclassProc(msg co.WM,
-	wParam WPARAM, lParam LPARAM) uintptr {
+func (hWnd HWND) DefSubclassProc(
+	msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 
 	ret, _, _ := syscall.Syscall6(proc.DefSubclassProc.Addr(), 4,
 		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
@@ -80,8 +80,8 @@ func (hWnd HWND) DefSubclassProc(msg co.WM,
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-defwindowprocw
-func (hWnd HWND) DefWindowProc(msg co.WM,
-	wParam WPARAM, lParam LPARAM) uintptr {
+func (hWnd HWND) DefWindowProc(
+	msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 
 	ret, _, _ := syscall.Syscall6(proc.DefWindowProc.Addr(), 4,
 		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
@@ -556,8 +556,8 @@ func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
 //
 // You can pass a HWND handle or SWP_HWND constants in hwndInsertAfter argument.
-func (hWnd HWND) SetWindowPos(hwndInsertAfter co.SWP_HWND,
-	x, y, cx, cy int32, uFlags co.SWP) {
+func (hWnd HWND) SetWindowPos(
+	hwndInsertAfter co.SWP_HWND, x, y, cx, cy int32, uFlags co.SWP) {
 
 	ret, _, lerr := syscall.Syscall9(proc.SetWindowPos.Addr(), 7,
 		uintptr(hWnd), uintptr(hwndInsertAfter),
@@ -572,8 +572,8 @@ func (hWnd HWND) SetWindowPos(hwndInsertAfter co.SWP_HWND,
 //
 // Use syscall.NewCallback() to convert the closure to uintptr, and keep this
 // uintptr to pass to RemoveWindowSubclass().
-func (hWnd HWND) SetWindowSubclass(subclassProc uintptr, uIdSubclass uint32,
-	dwRefData unsafe.Pointer) {
+func (hWnd HWND) SetWindowSubclass(
+	subclassProc uintptr, uIdSubclass uint32, dwRefData unsafe.Pointer) {
 
 	ret, _, _ := syscall.Syscall6(proc.SetWindowSubclass.Addr(), 4,
 		uintptr(hWnd), subclassProc, uintptr(uIdSubclass), uintptr(dwRefData),

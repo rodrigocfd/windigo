@@ -122,12 +122,12 @@ func (me *Menu) Set(hMenu win.HMENU) *Menu {
 //
 // This function will block until the menu disappears.
 func (me *Menu) ShowAtPoint(
-	pos *win.POINT, hParent, hCoordsRelativeTo win.HWND) {
+	pos win.POINT, hParent, hCoordsRelativeTo win.HWND) {
 
 	if hCoordsRelativeTo == 0 {
 		hCoordsRelativeTo = hParent
 	}
-	hCoordsRelativeTo.ClientToScreenPt(pos) // now relative to screen
+	hCoordsRelativeTo.ClientToScreenPt(&pos) // now relative to screen
 	hParent.SetForegroundWindow()
 	me.hMenu.TrackPopupMenu(co.TPM_LEFTBUTTON, pos.X, pos.Y, hParent)
 	hParent.PostMessage(co.WM_NULL, 0, 0) // necessary according to TrackMenuPopup docs
