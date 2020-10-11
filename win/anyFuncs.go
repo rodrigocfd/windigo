@@ -345,12 +345,12 @@ func IsWindowsXpOrGreater() bool {
 
 // https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632658(v=vs.85)
 func LoByte(value uint16) uint8 {
-	return uint8(value & 0xFF)
+	return uint8(value & 0xff)
 }
 
 // https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632659(v=vs.85)
 func LoWord(value uint32) uint16 {
-	return uint16(value & 0xFFFF)
+	return uint16(value & 0xffff)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makelparam

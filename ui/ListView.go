@@ -29,7 +29,7 @@ func (me *ListView) AddColumn(text string, width uint) *ListViewColumn {
 		PszText: &textBuf[0],
 		Cx:      int32(width),
 	}
-	newIdx := me.sendLvmMessage(co.LVM_INSERTCOLUMN, 0xFFFF,
+	newIdx := me.sendLvmMessage(co.LVM_INSERTCOLUMN, 0xffff,
 		win.LPARAM(unsafe.Pointer(&lvc)))
 	if int(newIdx) == -1 {
 		panic(fmt.Sprintf("LVM_INSERTCOLUMN failed \"%s\".", text))
@@ -55,7 +55,7 @@ func (me *ListView) AddItem(text string) *ListViewItem {
 	lvi := win.LVITEM{
 		Mask:    co.LVIF_TEXT,
 		PszText: &textBuf[0],
-		IItem:   0x0FFF_FFFF, // insert as the last one
+		IItem:   0x0fff_ffff, // insert as the last one
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTITEM, 0,
 		win.LPARAM(unsafe.Pointer(&lvi)))
@@ -85,7 +85,7 @@ func (me *ListView) AddItemWithIcon(
 		Mask:    co.LVIF_TEXT | co.LVIF_IMAGE,
 		PszText: &textBuf[0],
 		IImage:  int32(iconIndex),
-		IItem:   0x0FFF_FFFF, // insert as the last one
+		IItem:   0x0fff_ffff, // insert as the last one
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTITEM, 0,
 		win.LPARAM(unsafe.Pointer(&lvi)))

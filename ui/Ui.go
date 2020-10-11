@@ -119,7 +119,7 @@ func (_UiT) TimeToSystemtime(t time.Time, stLocalTime *win.SYSTEMTIME) {
 	epoch := t.UnixNano()/100 + 116_444_736_000_000_000
 
 	ft := win.FILETIME{}
-	ft.DwLowDateTime = uint32(epoch & 0xFFFF_FFFF)
+	ft.DwLowDateTime = uint32(epoch & 0xffff_ffff)
 	ft.DwHighDateTime = uint32(epoch >> 32)
 
 	stUtc := win.SYSTEMTIME{}

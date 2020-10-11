@@ -38,9 +38,9 @@ const (
 	_CBEMAXSTRLEN         = 260
 	_CCHDEVICENAME        = 32
 	_CCHILDREN_TITLEBAR   = 5
-	_CLR_INVALID          = 0xFFFF_FFFF
-	_HGDI_ERROR           = 0xFFFF_FFFF
-	_INVALID_FILE_SIZE    = 0xFFFF_FFFF
+	_CLR_INVALID          = 0xffff_ffff
+	_HGDI_ERROR           = 0xffff_ffff
+	_INVALID_FILE_SIZE    = 0xffff_ffff
 	_INVALID_HANDLE_VALUE = -1
 	_L_MAX_URL_LENGTH     = 2048 + 32 + 3
 	_LF_FACESIZE          = 32

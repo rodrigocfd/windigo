@@ -20,7 +20,7 @@ type _WindowBase struct {
 	depot _DepotWmCmdNfy
 }
 
-const _WM_UI_THREAD = co.WM_APP + 0x3FFF   // used in UI thread handling
+const _WM_UI_THREAD = co.WM_APP + 0x3fff   // used in UI thread handling
 type _ThreadPack struct{ UserFunc func() } // transports user closure
 
 // Returns the underlying HWND handle of this window.

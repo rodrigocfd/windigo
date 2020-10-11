@@ -105,8 +105,8 @@ func (me *_DepotWm) WmAppCommand(userFunc func(p WmAppCommand)) {
 type WmAppCommand struct{ m Wm }
 
 func (p WmAppCommand) OwnerWindow() win.HWND     { return win.HWND(p.m.WParam) }
-func (p WmAppCommand) AppCommand() co.APPCOMMAND { return co.APPCOMMAND(p.m.LParam.HiWord() &^ 0xF000) }
-func (p WmAppCommand) UDevice() co.FAPPCOMMAND   { return co.FAPPCOMMAND(p.m.LParam.HiWord() & 0xF000) }
+func (p WmAppCommand) AppCommand() co.APPCOMMAND { return co.APPCOMMAND(p.m.LParam.HiWord() &^ 0xf000) }
+func (p WmAppCommand) UDevice() co.FAPPCOMMAND   { return co.FAPPCOMMAND(p.m.LParam.HiWord() & 0xf000) }
 func (p WmAppCommand) Keys() co.MK               { return co.MK(p.m.LParam.LoWord()) }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-askcbformatname
@@ -385,7 +385,7 @@ func (me *_DepotWm) WmDropFiles(userFunc func(p WmDropFiles)) {
 type WmDropFiles struct{ m Wm }
 
 func (p WmDropFiles) Hdrop() win.HDROP { return win.HDROP(p.m.WParam) }
-func (p WmDropFiles) Count() uint      { return uint(p.Hdrop().DragQueryFile(0xFFFF_FFFF, nil, 0)) }
+func (p WmDropFiles) Count() uint      { return uint(p.Hdrop().DragQueryFile(0xffff_ffff, nil, 0)) }
 
 // Calls DragQueryFile() successively to retrieve all file names, and releases
 // the HDROP handle with DragFinish().
