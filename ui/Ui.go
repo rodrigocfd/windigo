@@ -37,8 +37,8 @@ func (_UiT) BoolToUintptr(b bool) uintptr {
 }
 
 // Multiplies position and size by current DPI factor.
-func (me *_UiT) MultiplyDpi(x, y int,
-	cx, cy uint) (int, int, uint, uint) {
+func (me *_UiT) MultiplyDpi(
+	x, y int, cx, cy uint) (int, int, uint, uint) {
 
 	if me.globalDpi.X == 0 { // not initialized yet?
 		dc := win.HWND(0).GetDC()
@@ -73,12 +73,15 @@ func (_UiT) CalcTextBoundBox(
 	}
 
 	parentDc := hReferenceDc.GetDC()
+	defer hReferenceDc.ReleaseDC(parentDc)
+
 	cloneDc := parentDc.CreateCompatibleDC()
+	defer cloneDc.DeleteDC()
+
 	prevFont := cloneDc.SelectObjectFont(_globalUiFont.Hfont()) // system font; already adjusted to current DPI
+	defer cloneDc.SelectObjectFont(prevFont)
+
 	bounds := cloneDc.GetTextExtentPoint32(text)
-	cloneDc.SelectObjectFont(prevFont)
-	cloneDc.DeleteDC()
-	hReferenceDc.ReleaseDC(parentDc)
 
 	if isTextEmpty {
 		bounds.Cx = 0 // if no text was given, return just the height
