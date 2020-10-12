@@ -46,8 +46,8 @@ func (me *_DepotWmCmdNfy) processMessage(msg co.WM, p Wm) (uintptr, bool) {
 }
 
 func (me *_DepotWmCmdNfy) hasMessages() bool {
-	return len(me.mapCmds) > 0 &&
-		len(me.mapNfys) > 0 &&
+	return len(me.mapCmds) > 0 ||
+		len(me.mapNfys) > 0 ||
 		me._DepotWm.hasMessages()
 }
 

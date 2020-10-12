@@ -34,7 +34,7 @@ func (me *_DepotWm) processMessage(msg co.WM, p Wm) (uintptr, bool) {
 }
 
 func (me *_DepotWm) hasMessages() bool {
-	return len(me.mapMsgs) > 0 &&
+	return len(me.mapMsgs) > 0 ||
 		len(me.mapTimers) > 0
 }
 
