@@ -22,7 +22,9 @@ type ListView struct {
 }
 
 // Appends a new column, returns the new column.
+// Column width will be adjusted to the current system DPI.
 func (me *ListView) AddColumn(text string, width uint) *ListViewColumn {
+	_, _, width, _ = _Ui.MultiplyDpi(0, 0, width, 0)
 	textBuf := win.Str.ToUint16Slice(text)
 	lvc := win.LVCOLUMN{
 		Mask:    co.LVCF_TEXT | co.LVCF_WIDTH,
@@ -38,6 +40,7 @@ func (me *ListView) AddColumn(text string, width uint) *ListViewColumn {
 }
 
 // Appends many columns at once.
+// Column width will be adjusted to the current system DPI.
 func (me *ListView) AddColumns(texts []string, widths []uint) *ListView {
 	if len(texts) != len(widths) {
 		panic("ColumnAdd texts/widths mismatch.")
