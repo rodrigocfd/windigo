@@ -10,13 +10,27 @@ import (
 	"windigo/win"
 )
 
-// Any child control with HWND and ID.
-type Control interface {
-	Window
-	Id() int
-}
+type (
+	// Any window with a HWND handle.
+	Window interface {
+		Hwnd() win.HWND
+	}
 
-// Any window with a HWND handle.
-type Window interface {
-	Hwnd() win.HWND
-}
+	// Any child control with HWND and ID.
+	Control interface {
+		Window
+		Id() int
+	}
+)
+
+type (
+	// The position of a window or child control.
+	Pos struct {
+		X, Y int
+	}
+
+	// The size of a window or child control.
+	Size struct {
+		Cx, Cy uint
+	}
+)

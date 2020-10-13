@@ -22,13 +22,12 @@ type Button struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Button) Create(
-	parent Window, ctrlId, x, y int, width, height uint,
+	parent Window, ctrlId int, pos Pos, size Size,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *Button {
 
-	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
-
+	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "BUTTON", text,
-		styles|co.WS(btnStyles), x, y, width, height, parent, ctrlId)
+		styles|co.WS(btnStyles), pos, size, parent, ctrlId)
 	_globalUiFont.SetOnControl(me)
 	return me
 }
@@ -37,9 +36,9 @@ func (me *Button) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Button) CreateSimple(
-	parent Window, ctrlId, x, y int, width uint, text string) *Button {
+	parent Window, ctrlId int, pos Pos, width uint, text string) *Button {
 
-	return me.Create(parent, ctrlId, x, y, width, 23, text,
+	return me.Create(parent, ctrlId, pos, Size{width, 23}, text,
 		co.WS_EX_NONE, co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.BS_PUSHBUTTON)
 }
@@ -48,9 +47,9 @@ func (me *Button) CreateSimple(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Button) CreateSimpleDef(
-	parent Window, ctrlId, x, y int, width uint, text string) *Button {
+	parent Window, ctrlId int, pos Pos, width uint, text string) *Button {
 
-	return me.Create(parent, ctrlId, x, y, width, 23, text,
+	return me.Create(parent, ctrlId, pos, Size{width, 23}, text,
 		co.WS_EX_NONE, co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.BS_DEFPUSHBUTTON)
 }

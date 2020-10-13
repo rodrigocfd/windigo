@@ -45,13 +45,14 @@ func (me *ComboBox) Count() uint {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) Create(
-	parent Window, ctrlId, x, y int, width uint,
+	parent Window, ctrlId int, pos Pos, width uint,
 	exStyles co.WS_EX, styles co.WS, cbStyles co.CBS) *ComboBox {
 
-	x, y, width, _ = _Ui.MultiplyDpi(x, y, width, 0)
+	size := Size{width, 0}
+	_Ui.MultiplyDpi(&pos, &size)
 
 	me._ControlNativeBase.create(exStyles, "COMBOBOX", "",
-		styles|co.WS(cbStyles), x, y, width, 0, parent, ctrlId)
+		styles|co.WS(cbStyles), pos, size, parent, ctrlId)
 	_globalUiFont.SetOnControl(me)
 	return me
 }
@@ -60,9 +61,9 @@ func (me *ComboBox) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) CreateEditable(
-	parent Window, ctrlId, x, y int, width uint) *ComboBox {
+	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
 
-	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
+	return me.Create(parent, ctrlId, pos, width, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.CBS_DROPDOWN)
 }
@@ -71,9 +72,9 @@ func (me *ComboBox) CreateEditable(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) CreateEditableSorted(
-	parent Window, ctrlId, x, y int, width uint) *ComboBox {
+	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
 
-	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
+	return me.Create(parent, ctrlId, pos, width, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.CBS_DROPDOWN|co.CBS_SORT)
 }
@@ -82,9 +83,9 @@ func (me *ComboBox) CreateEditableSorted(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) CreateFixed(
-	parent Window, ctrlId, x, y int, width uint) *ComboBox {
+	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
 
-	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
+	return me.Create(parent, ctrlId, pos, width, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.CBS_DROPDOWNLIST)
 }
@@ -93,9 +94,9 @@ func (me *ComboBox) CreateFixed(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ComboBox) CreateFixedSorted(
-	parent Window, ctrlId, x, y int, width uint) *ComboBox {
+	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
 
-	return me.Create(parent, ctrlId, x, y, width, co.WS_EX_NONE,
+	return me.Create(parent, ctrlId, pos, width, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.CBS_DROPDOWNLIST|co.CBS_SORT)
 }
@@ -148,8 +149,8 @@ func (me *ComboBox) Text(index uint) (string, bool) {
 }
 
 // Syntactic sugar.
-func (me *ComboBox) sendCbMessage(msg co.CB,
-	wParam win.WPARAM, lParam win.LPARAM) uintptr {
+func (me *ComboBox) sendCbMessage(
+	msg co.CB, wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
 	return me.Hwnd().SendMessage(co.WM(msg), wParam, lParam)
 }

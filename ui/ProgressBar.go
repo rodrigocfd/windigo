@@ -24,13 +24,12 @@ type ProgressBar struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ProgressBar) Create(
-	parent Window, ctrlId, x, y int, width, height uint,
+	parent Window, ctrlId int, pos Pos, size Size,
 	exStyles co.WS_EX, styles co.WS, pbStyles co.PBS) *ProgressBar {
 
-	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
-
+	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "msctls_progress32", "",
-		styles|co.WS(pbStyles), x, y, width, height, parent, ctrlId)
+		styles|co.WS(pbStyles), pos, size, parent, ctrlId)
 	_globalUiFont.SetOnControl(me)
 	return me
 }
@@ -39,9 +38,9 @@ func (me *ProgressBar) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ProgressBar) CreateHorizontal(
-	parent Window, ctrlId, x, y int, width, height uint) *ProgressBar {
+	parent Window, ctrlId int, pos Pos, size Size) *ProgressBar {
 
-	return me.Create(parent, ctrlId, x, y, width, height,
+	return me.Create(parent, ctrlId, pos, size,
 		co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_VISIBLE,
 		co.PBS_SMOOTH)
@@ -51,9 +50,9 @@ func (me *ProgressBar) CreateHorizontal(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ProgressBar) CreateVertical(
-	parent Window, ctrlId, x, y int, width, height uint) *ProgressBar {
+	parent Window, ctrlId int, pos Pos, size Size) *ProgressBar {
 
-	return me.Create(parent, ctrlId, x, y, width, height,
+	return me.Create(parent, ctrlId, pos, size,
 		co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_VISIBLE,
 		co.PBS_SMOOTH|co.PBS_VERTICAL)

@@ -70,10 +70,10 @@ func (me *WindowMain) RunAsMain() int {
 
 	me.defaultMessageHandling()
 
-	x, y, cx, cy := me.setup.calcCoords()
+	pos, size := me.setup.calcCoords()
 	me._WindowBase.createWindow("WindowMain", me.setup.ExStyle,
 		me.setup.ClassName, me.setup.Title, me.setup.Style,
-		x, y, cx, cy, nil, me.setup.MainMenu.Hmenu(), hInst)
+		pos, size, nil, me.setup.MainMenu.Hmenu(), hInst)
 
 	me.Hwnd().ShowWindow(me.setup.CmdShow)
 	me.Hwnd().UpdateWindow()

@@ -73,12 +73,11 @@ type _WindowSetupMain struct {
 	HIcon      win.HICON // Icon associated with the window, passed to RegisterClassEx(). Defaults to none.
 	HIconSmall win.HICON // Small icon associated with the window, passed to RegisterClassEx(). Defaults to none.
 
-	Style    co.WS    // Window style, passed to CreateWindowEx(). Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER.
-	ExStyle  co.WS_EX // Window extended style, passed to CreateWindowEx(). Defaults to WS_EX_NONE.
-	Title    string   // The title of the window, passed to CreateWindowEx(). Defaults to empty string.
-	Width    uint     // Width of client area, passed to CreateWindowEx(). Defaults to 500px, will be adjusted to the current system DPI.
-	Height   uint     // Height of client area, passed to CreateWindowEx(). Defaults to 400px, will be adjusted to the current system DPI.
-	MainMenu Menu     // Main window menu, passed to CreateWindowEx(). You must call CreateMain(). Automatically destroyed.
+	Style          co.WS    // Window style, passed to CreateWindowEx(). Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER.
+	ExStyle        co.WS_EX // Window extended style, passed to CreateWindowEx(). Defaults to WS_EX_NONE.
+	Title          string   // The title of the window, passed to CreateWindowEx(). Defaults to empty string.
+	ClientAreaSize Size     // Passed to CreateWindowEx(). Defaults to 500px, will be adjusted to the current system DPI.
+	MainMenu       Menu     // Main window menu, passed to CreateWindowEx(). You must call CreateMain(). Automatically destroyed.
 
 	AcceleratorTable AccelTable // Accelerator table with keyboard shortcuts. Automatically destroyed.
 	CmdShow          co.SW      // Passed to ShowWindow(). Defaults to SW_SHOW.
@@ -90,8 +89,7 @@ func (me *_WindowSetupMain) initOnce() {
 
 		me.ClassStyle = co.CS_DBLCLKS
 
-		me.Width = 500 // arbitrary dimensions
-		me.Height = 400
+		me.ClientAreaSize = Size{500, 400} // arbitrary dimensions
 		me.Style = co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN | co.WS_BORDER
 		me.ExStyle = co.WS_EX_NONE
 
@@ -107,25 +105,33 @@ func (me *_WindowSetupMain) genWndclassex(hInst win.HINSTANCE) *win.WNDCLASSEX {
 		})
 }
 
-func (me *_WindowSetupMain) calcCoords() (int, int, uint, uint) {
-	_, _, cx, cy := _Ui.MultiplyDpi(0, 0, me.Width, me.Height) // size adjusted to DPI
+func (me *_WindowSetupMain) calcCoords() (Pos, Size) {
+	screenSize := Size{
+		Cx: uint(win.GetSystemMetrics(co.SM_CXSCREEN)),
+		Cy: uint(win.GetSystemMetrics(co.SM_CYSCREEN)),
+	}
 
-	cxScreen := uint(win.GetSystemMetrics(co.SM_CXSCREEN)) // retrieve screen size
-	cyScreen := uint(win.GetSystemMetrics(co.SM_CYSCREEN))
+	_Ui.MultiplyDpi(nil, &me.ClientAreaSize) // size adjusted to DPI
 
-	x := int(cxScreen/2 - cx/2) // center on screen
-	y := int(cyScreen/2 - cy/2)
+	pos := Pos{
+		X: int(screenSize.Cx/2 - me.ClientAreaSize.Cx/2), // center on screen
+		Y: int(screenSize.Cy/2 - me.ClientAreaSize.Cy/2),
+	}
 
 	rc := win.RECT{
-		Left:   int32(x),
-		Top:    int32(y),
-		Right:  int32(int(cx) + x),
-		Bottom: int32(int(cy) + y),
+		Left:   int32(pos.X),
+		Top:    int32(pos.Y),
+		Right:  int32(int(me.ClientAreaSize.Cx) + pos.X),
+		Bottom: int32(int(me.ClientAreaSize.Cy) + pos.Y),
 	}
 	win.AdjustWindowRectEx(&rc, me.Style, me.MainMenu.Hmenu() != 0, me.ExStyle)
+	me.ClientAreaSize = Size{
+		Cx: uint(rc.Right - rc.Left),
+		Cy: uint(rc.Bottom - rc.Top),
+	}
 
-	return int(rc.Left), int(rc.Top),
-		uint(rc.Right - rc.Left), uint(rc.Bottom - rc.Top)
+	return Pos{int(rc.Left), int(rc.Top)},
+		me.ClientAreaSize
 }
 
 //------------------------------------------------------------------------------
@@ -134,11 +140,10 @@ func (me *_WindowSetupMain) calcCoords() (int, int, uint, uint) {
 type _WindowSetupModal struct {
 	_WndclassexCommon
 
-	Style   co.WS    // Window style, passed to CreateWindowEx(). Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER | WS_VISIBLE.
-	ExStyle co.WS_EX // Window extended style, passed to CreateWindowEx(). Defaults to WS_EX_NONE.
-	Title   string   // The title of the window, passed to CreateWindowEx(). Defaults to empty string.
-	Width   uint     // Width of client area, passed to CreateWindowEx(). Defaults to 400px, will be adjusted to the current system DPI.
-	Height  uint     // Height of client area, passed to CreateWindowEx(). Defaults to 300px, will be adjusted to the current system DPI.
+	Style          co.WS    // Window style, passed to CreateWindowEx(). Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER | WS_VISIBLE.
+	ExStyle        co.WS_EX // Window extended style, passed to CreateWindowEx(). Defaults to WS_EX_NONE.
+	Title          string   // The title of the window, passed to CreateWindowEx(). Defaults to empty string.
+	ClientAreaSize Size     // Passed to CreateWindowEx(). Defaults to 400px, will be adjusted to the current system DPI.
 }
 
 func (me *_WindowSetupModal) initOnce() {
@@ -147,8 +152,7 @@ func (me *_WindowSetupModal) initOnce() {
 
 		me.ClassStyle = co.CS_DBLCLKS
 
-		me.Width = 400 // arbitrary dimensions
-		me.Height = 300
+		me.ClientAreaSize = Size{400, 300} // arbitrary dimensions
 		me.Style = co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN | co.WS_BORDER | co.WS_VISIBLE
 		me.ExStyle = co.WS_EX_NONE
 	}
@@ -159,22 +163,25 @@ func (me *_WindowSetupModal) genWndclassex(hInst win.HINSTANCE) *win.WNDCLASSEX 
 		hInst, co.COLOR_BTNFACE, func(wcx *win.WNDCLASSEX) {})
 }
 
-func (me *_WindowSetupModal) calcCoords(parent Window) (int, int, uint, uint) {
-	_, _, cx, cy := _Ui.MultiplyDpi(0, 0, me.Width, me.Height) // size adjusted to DPI
+func (me *_WindowSetupModal) calcCoords(parent Window) (Pos, Size) {
+	_Ui.MultiplyDpi(nil, &me.ClientAreaSize) // size adjusted to DPI
 
-	rc := win.RECT{
-		Right:  int32(cx),
-		Bottom: int32(cy),
+	rc := win.RECT{ // left and top are zero
+		Right:  int32(me.ClientAreaSize.Cx),
+		Bottom: int32(me.ClientAreaSize.Cy),
 	}
 	win.AdjustWindowRectEx(&rc, me.Style, false, me.ExStyle)
-	cx = uint(rc.Right - rc.Left)
-	cy = uint(rc.Bottom - rc.Top)
+	me.ClientAreaSize = Size{
+		Cx: uint(rc.Right - rc.Left),
+		Cy: uint(rc.Bottom - rc.Top),
+	}
 
 	rcParent := parent.Hwnd().GetWindowRect() // relative to screen
-
-	return int(rcParent.Left + (rcParent.Right-rcParent.Left)/2 - int32(cx)/2), // center on parent
-		int(rcParent.Top + (rcParent.Bottom-rcParent.Top)/2 - int32(cy)/2),
-		cx, cy
+	return Pos{
+			X: int(rcParent.Left + (rcParent.Right-rcParent.Left)/2 - int32(me.ClientAreaSize.Cx)/2), // center on parent
+			Y: int(rcParent.Top + (rcParent.Bottom-rcParent.Top)/2 - int32(me.ClientAreaSize.Cy)/2),
+		},
+		me.ClientAreaSize
 }
 
 //------------------------------------------------------------------------------

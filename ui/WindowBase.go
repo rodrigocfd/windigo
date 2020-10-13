@@ -70,13 +70,14 @@ func (me *_WindowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 	return atom
 }
 
-func (me *_WindowBase) createWindow(uiName string, exStyle co.WS_EX,
-	className, title string, style co.WS, x, y int, width, height uint,
+func (me *_WindowBase) createWindow(
+	windowNameForDebugging string, exStyle co.WS_EX,
+	className, title string, style co.WS, pos Pos, size Size,
 	parent Window, menu win.HMENU, hInst win.HINSTANCE) {
 
 	if me.hwnd != 0 {
 		panic(fmt.Sprintf("Trying to create %s \"%s\" twice.",
-			uiName, title))
+			windowNameForDebugging, title))
 	}
 
 	hwndParent := win.HWND(0) // if no parent, pass zero to CreateWindowEx
@@ -88,7 +89,7 @@ func (me *_WindowBase) createWindow(uiName string, exStyle co.WS_EX,
 
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
 	win.CreateWindowEx(exStyle, className, title, style,
-		int32(x), int32(y), int32(width), int32(height),
+		int32(pos.X), int32(pos.Y), int32(size.Cx), int32(size.Cy),
 		hwndParent, menu, hInst, unsafe.Pointer(me)) // pass pointer to our object
 }
 

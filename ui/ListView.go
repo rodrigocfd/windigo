@@ -24,8 +24,11 @@ type ListView struct {
 // Appends a new column, returns the new column.
 // Column width will be adjusted to the current system DPI.
 func (me *ListView) AddColumn(text string, width uint) *ListViewColumn {
-	_, _, width, _ = _Ui.MultiplyDpi(0, 0, width, 0)
+	colWidth := Size{width, 0}
+	_Ui.MultiplyDpi(nil, &colWidth)
+
 	textBuf := win.Str.ToUint16Slice(text)
+
 	lvc := win.LVCOLUMN{
 		Mask:    co.LVCF_TEXT | co.LVCF_WIDTH,
 		PszText: &textBuf[0],
@@ -121,16 +124,15 @@ func (me *ListView) Column(index uint) *ListViewColumn {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ListView) Create(
-	parent Window, ctrlId, x, y int, width, height uint,
+	parent Window, ctrlId int, pos Pos, size Size,
 	exStyles co.WS_EX, styles co.WS,
 	lvExStyles co.LVS_EX, lvStyles co.LVS) *ListView {
 
 	me.installSubclass()
 
-	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
-	me._ControlNativeBase.create(exStyles,
-		"SysListView32", "", styles|co.WS(lvStyles),
-		x, y, width, height, parent, ctrlId)
+	_Ui.MultiplyDpi(&pos, &size)
+	me._ControlNativeBase.create(exStyles, "SysListView32", "",
+		styles|co.WS(lvStyles), pos, size, parent, ctrlId)
 
 	if lvExStyles != co.LVS_EX_NONE {
 		me.SetExtendedStyle(true, lvExStyles)
@@ -142,9 +144,9 @@ func (me *ListView) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ListView) CreateReport(
-	parent Window, ctrlId, x, y int, width, height uint) *ListView {
+	parent Window, ctrlId int, pos Pos, size Size) *ListView {
 
-	return me.Create(parent, ctrlId, x, y, width, height,
+	return me.Create(parent, ctrlId, pos, size,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.LVS_EX_FULLROWSELECT,
@@ -155,9 +157,9 @@ func (me *ListView) CreateReport(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *ListView) CreateSortedReport(
-	parent Window, ctrlId, x, y int, width, height uint) *ListView {
+	parent Window, ctrlId int, pos Pos, size Size) *ListView {
 
-	return me.Create(parent, ctrlId, x, y, width, height,
+	return me.Create(parent, ctrlId, pos, size,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.LVS_EX_FULLROWSELECT,

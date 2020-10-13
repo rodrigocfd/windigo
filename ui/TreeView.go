@@ -28,15 +28,14 @@ func (me *TreeView) AddRootItem(text string) *TreeViewItem {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *TreeView) Create(
-	parent Window, ctrlId, x, y int, width, height uint,
+	parent Window, ctrlId int, pos Pos, size Size,
 	exStyles co.WS_EX, styles co.WS,
 	tvExStyles co.TVS_EX, tvStyles co.TVS) *TreeView {
 
-	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
-
+	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles,
 		"SysTreeView32", "", styles|co.WS(tvStyles),
-		x, y, width, height, parent, ctrlId)
+		pos, size, parent, ctrlId)
 
 	if tvExStyles != co.TVS_EX_NONE {
 		me.SetExtendedStyle(tvExStyles, tvExStyles)
@@ -48,9 +47,9 @@ func (me *TreeView) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *TreeView) CreateSimple(
-	parent Window, ctrlId, x, y int, width, height uint) *TreeView {
+	parent Window, ctrlId int, pos Pos, size Size) *TreeView {
 
-	return me.Create(parent, ctrlId, x, y, width, height,
+	return me.Create(parent, ctrlId, pos, size,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.TVS_EX_NONE,
@@ -114,8 +113,8 @@ func (me *TreeView) SetRedraw(allowRedraw bool) *TreeView {
 }
 
 // Syntactic sugar.
-func (me *TreeView) sendTvmMessage(msg co.TVM,
-	wParam win.WPARAM, lParam win.LPARAM) uintptr {
+func (me *TreeView) sendTvmMessage(
+	msg co.TVM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
 	return me.Hwnd().SendMessage(co.WM(msg), wParam, lParam)
 }

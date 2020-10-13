@@ -23,13 +23,12 @@ type CheckBox struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *CheckBox) Create(
-	parent Window, ctrlId, x, y int, width, height uint,
+	parent Window, ctrlId int, pos Pos, size Size,
 	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *CheckBox {
 
-	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
-
+	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "BUTTON", text, // check box is, in fact, a button
-		styles|co.WS(btnStyles), x, y, width, height, parent, ctrlId)
+		styles|co.WS(btnStyles), pos, size, parent, ctrlId)
 	_globalUiFont.SetOnControl(me)
 	return me
 }
@@ -39,9 +38,9 @@ func (me *CheckBox) Create(
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
 func (me *CheckBox) Create3State(
-	parent Window, ctrlId, x, y int, text string) *CheckBox {
+	parent Window, ctrlId int, pos Pos, text string) *CheckBox {
 
-	return me.createAutoSize(parent, ctrlId, x, y, text, co.BS_AUTO3STATE)
+	return me.createAutoSize(parent, ctrlId, pos, text, co.BS_AUTO3STATE)
 }
 
 // Calls CreateWindowEx() with BS_AUTOCHECKBOX.
@@ -49,9 +48,9 @@ func (me *CheckBox) Create3State(
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
 func (me *CheckBox) Create2State(
-	parent Window, ctrlId, x, y int, text string) *CheckBox {
+	parent Window, ctrlId int, pos Pos, text string) *CheckBox {
 
-	return me.createAutoSize(parent, ctrlId, x, y, text, co.BS_AUTOCHECKBOX)
+	return me.createAutoSize(parent, ctrlId, pos, text, co.BS_AUTOCHECKBOX)
 }
 
 // Tells if the current state is BST_CHECKED.
@@ -79,8 +78,9 @@ func (me *CheckBox) SetState(state co.BST) *CheckBox {
 //
 // To set the text without resizing the control, use Hwnd().SetWindowText().
 func (me *CheckBox) SetText(text string) *CheckBox {
-	cx, cy := me.calcIdealSize(me.Hwnd().GetParent(), text)
-	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, int32(cx), int32(cy),
+	size := me.calcIdealSize(me.Hwnd().GetParent(), text)
+	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE,
+		0, 0, int32(size.Cx), int32(size.Cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 	return me
@@ -101,30 +101,30 @@ func (me *CheckBox) Text() string {
 	return _Ui.RemoveAccelAmpersands(me.Hwnd().GetWindowText())
 }
 
-func (me *CheckBox) calcIdealSize(hReferenceDc win.HWND,
-	text string) (uint, uint) {
+func (me *CheckBox) calcIdealSize(
+	hReferenceDc win.HWND, text string) Size {
 
-	cx, cy := _Ui.CalcTextBoundBox(hReferenceDc, text, true)
-	cx += uint(win.GetSystemMetrics(co.SM_CXMENUCHECK)) +
+	boundBox := _Ui.CalcTextBoundBox(hReferenceDc, text, true)
+	boundBox.Cx += uint(win.GetSystemMetrics(co.SM_CXMENUCHECK)) +
 		uint(win.GetSystemMetrics(co.SM_CXEDGE)) // https://stackoverflow.com/a/1165052/6923555
 
 	cyCheck := uint(win.GetSystemMetrics(co.SM_CYMENUCHECK))
-	if cyCheck > cy {
-		cy = cyCheck // if the check is taller than the font, use its height
+	if cyCheck > boundBox.Cy {
+		boundBox.Cy = cyCheck // if the check is taller than the font, use its height
 	}
 
-	return cx, cy
+	return boundBox
 }
 
 func (me *CheckBox) createAutoSize(
-	parent Window, ctrlId, x, y int, text string, chbxStyles co.BS) *CheckBox {
+	parent Window, ctrlId int, pos Pos, text string, chbxStyles co.BS) *CheckBox {
 
-	x, y, _, _ = _Ui.MultiplyDpi(x, y, 0, 0)
-	cx, cy := me.calcIdealSize(parent.Hwnd(), text)
+	_Ui.MultiplyDpi(&pos, nil)
+	size := me.calcIdealSize(parent.Hwnd(), text)
 
 	me._ControlNativeBase.create(co.WS_EX_NONE, "BUTTON", text,
 		co.WS_CHILD|co.WS_TABSTOP|co.WS_GROUP|co.WS_VISIBLE|co.WS(chbxStyles),
-		x, y, cx, cy, parent, ctrlId)
+		pos, size, parent, ctrlId)
 	_globalUiFont.SetOnControl(me)
 	return me
 }

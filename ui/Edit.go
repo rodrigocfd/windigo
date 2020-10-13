@@ -24,13 +24,12 @@ type Edit struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Edit) Create(
-	parent Window, ctrlId, x, y int, width, height uint, initialText string,
+	parent Window, ctrlId int, pos Pos, size Size, initialText string,
 	exStyles co.WS_EX, styles co.WS, editStyles co.ES) *Edit {
 
-	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
-
+	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "EDIT", initialText,
-		styles|co.WS(editStyles), x, y, width, height, parent, ctrlId)
+		styles|co.WS(editStyles), pos, size, parent, ctrlId)
 	_globalUiFont.SetOnControl(me)
 	return me
 }
@@ -39,10 +38,10 @@ func (me *Edit) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreateMultiLine(
-	parent Window, ctrlId, x, y int, width, height uint,
+	parent Window, ctrlId int, pos Pos, size Size,
 	initialText string) *Edit {
 
-	return me.Create(parent, ctrlId, x, y, width, height, initialText,
+	return me.Create(parent, ctrlId, pos, size, initialText,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.ES_MULTILINE|co.ES_WANTRETURN)
@@ -52,9 +51,9 @@ func (me *Edit) CreateMultiLine(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreatePassword(
-	parent Window, ctrlId, x, y int, width uint, initialText string) *Edit {
+	parent Window, ctrlId int, pos Pos, width uint, initialText string) *Edit {
 
-	return me.Create(parent, ctrlId, x, y, width, 21, initialText,
+	return me.Create(parent, ctrlId, pos, Size{width, 21}, initialText,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.ES_AUTOHSCROLL|co.ES_PASSWORD)
@@ -64,9 +63,9 @@ func (me *Edit) CreatePassword(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Edit) CreateSimple(
-	parent Window, ctrlId, x, y int, width uint, initialText string) *Edit {
+	parent Window, ctrlId int, pos Pos, width uint, initialText string) *Edit {
 
-	return me.Create(parent, ctrlId, x, y, width, 21, initialText,
+	return me.Create(parent, ctrlId, pos, Size{width, 21}, initialText,
 		co.WS_EX_CLIENTEDGE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.ES_AUTOHSCROLL)
@@ -119,8 +118,8 @@ func (me *Edit) Text() string {
 }
 
 // Syntactic sugar.
-func (me *Edit) sendEmMessage(msg co.EM,
-	wParam win.WPARAM, lParam win.LPARAM) uintptr {
+func (me *Edit) sendEmMessage(
+	msg co.EM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
 	return me.Hwnd().SendMessage(co.WM(msg), wParam, lParam)
 }

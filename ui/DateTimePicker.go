@@ -25,13 +25,12 @@ type DateTimePicker struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) Create(
-	parent Window, ctrlId, x, y int, width, height uint,
+	parent Window, ctrlId int, pos Pos, size Size,
 	exStyles co.WS_EX, styles co.WS, dtpStyles co.DTS) *DateTimePicker {
 
-	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
-
+	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "SysDateTimePick32", "",
-		styles|co.WS(dtpStyles), x, y, width, height, parent, ctrlId)
+		styles|co.WS(dtpStyles), pos, size, parent, ctrlId)
 	_globalUiFont.SetOnControl(me)
 	return me
 }
@@ -40,9 +39,9 @@ func (me *DateTimePicker) Create(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) CreateLongDate(
-	parent Window, ctrlId, x, y int, width uint) *DateTimePicker {
+	parent Window, ctrlId int, pos Pos, width uint) *DateTimePicker {
 
-	return me.Create(parent, ctrlId, x, y, width, 23, co.WS_EX_NONE,
+	return me.Create(parent, ctrlId, pos, Size{width, 23}, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.DTS_LONGDATEFORMAT)
 }
@@ -51,9 +50,9 @@ func (me *DateTimePicker) CreateLongDate(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) CreateShortDate(
-	parent Window, ctrlId, x, y int, width uint) *DateTimePicker {
+	parent Window, ctrlId int, pos Pos, width uint) *DateTimePicker {
 
-	return me.Create(parent, ctrlId, x, y, width, 23, co.WS_EX_NONE,
+	return me.Create(parent, ctrlId, pos, Size{width, 23}, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.DTS_SHORTDATEFORMAT)
 }
@@ -62,9 +61,9 @@ func (me *DateTimePicker) CreateShortDate(
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) CreateTime(
-	parent Window, ctrlId, x, y int, width uint) *DateTimePicker {
+	parent Window, ctrlId int, pos Pos, width uint) *DateTimePicker {
 
-	return me.Create(parent, ctrlId, x, y, width, 23, co.WS_EX_NONE,
+	return me.Create(parent, ctrlId, pos, Size{width, 23}, co.WS_EX_NONE,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.DTS_TIMEFORMAT)
 }
@@ -112,8 +111,8 @@ func (me *DateTimePicker) Time() time.Time {
 }
 
 // Syntactic sugar.
-func (me *DateTimePicker) sendDtmMessage(msg co.DTM,
-	wParam win.WPARAM, lParam win.LPARAM) uintptr {
+func (me *DateTimePicker) sendDtmMessage(
+	msg co.DTM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
 	return me.Hwnd().SendMessage(co.WM(msg), wParam, lParam)
 }

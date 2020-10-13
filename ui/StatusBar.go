@@ -69,8 +69,8 @@ func (me *StatusBar) Create(parent Window, ctrlId int) *StatusBar {
 		style |= co.WS(co.SBARS_SIZEGRIP)
 	}
 
-	me._ControlNativeBase.create(co.WS_EX_NONE, "msctls_statusbar32", "", style,
-		0, 0, 0, 0, parent, ctrlId)
+	me._ControlNativeBase.create(co.WS_EX_NONE, "msctls_statusbar32", "",
+		style, Pos{}, Size{}, parent, ctrlId)
 	return me
 }
 
@@ -150,8 +150,8 @@ func (me *StatusBar) adjustParts(clientAreaWidth uint) {
 }
 
 // Syntactic sugar.
-func (me *StatusBar) sendSbMessage(msg co.SB,
-	wParam win.WPARAM, lParam win.LPARAM) uintptr {
+func (me *StatusBar) sendSbMessage(
+	msg co.SB, wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
 	return me.Hwnd().SendMessage(co.WM(msg), wParam, lParam)
 }

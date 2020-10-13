@@ -50,14 +50,14 @@ func (me *_ControlNativeBase) OnSubclassMsg() *_DepotWm {
 
 func (me *_ControlNativeBase) create(
 	exStyle co.WS_EX, className, title string, style co.WS,
-	x, y int, width, height uint, parent Window, ctrlId int) {
+	pos Pos, size Size, parent Window, ctrlId int) {
 
 	if me.hwnd != 0 {
 		panic(fmt.Sprintf("Trying to create %s twice.", className))
 	}
 
 	me.hwnd = win.CreateWindowEx(exStyle, className, title, style,
-		int32(x), int32(y), int32(width), int32(height),
+		int32(pos.X), int32(pos.Y), int32(size.Cx), int32(size.Cy),
 		parent.Hwnd(), win.HMENU(ctrlId), parent.Hwnd().GetInstance(), nil)
 
 	if me.msgs.hasMessages() {

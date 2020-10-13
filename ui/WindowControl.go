@@ -34,18 +34,16 @@ func (me *WindowControl) Setup() *_WindowSetupControl {
 }
 
 // Creates the child window control.
-func (me *WindowControl) Create(
-	parent Window, ctrlId, x, y int, width, height uint) {
-
+func (me *WindowControl) Create(parent Window, ctrlId int, pos Pos, size Size) {
 	me.setup.initOnce() // guard
 	hInst := parent.Hwnd().GetInstance()
 	me._WindowBase.registerClass(me.setup.genWndclassex(hInst))
 
 	me.defaultMessageHandling()
 
-	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
+	_Ui.MultiplyDpi(&pos, &size)
 	me._WindowBase.createWindow("WindowControl", me.setup.ExStyle,
-		me.setup.ClassName, "", me.setup.Style, x, y, width, height, parent,
+		me.setup.ClassName, "", me.setup.Style, pos, size, parent,
 		win.HMENU(ctrlId), hInst)
 }
 

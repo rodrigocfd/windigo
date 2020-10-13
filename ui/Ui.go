@@ -37,30 +37,27 @@ func (_UiT) BoolToUintptr(b bool) uintptr {
 }
 
 // Multiplies position and size by current DPI factor.
-func (me *_UiT) MultiplyDpi(
-	x, y int, cx, cy uint) (int, int, uint, uint) {
-
+func (me *_UiT) MultiplyDpi(pos *Pos, size *Size) {
 	if me.globalDpi.X == 0 { // not initialized yet?
 		dc := win.HWND(0).GetDC()
-		me.globalDpi.X = dc.GetDeviceCaps(co.GDC_LOGPIXELSX)
+		me.globalDpi.X = dc.GetDeviceCaps(co.GDC_LOGPIXELSX) // cache
 		me.globalDpi.Y = dc.GetDeviceCaps(co.GDC_LOGPIXELSY)
 		win.HWND(0).ReleaseDC(dc)
 	}
 
-	if x != 0 || y != 0 {
-		x = int(win.MulDiv(int32(x), me.globalDpi.X, 96))
-		y = int(win.MulDiv(int32(y), me.globalDpi.Y, 96))
+	if pos != nil {
+		pos.X = int(win.MulDiv(int32(pos.X), me.globalDpi.X, 96))
+		pos.Y = int(win.MulDiv(int32(pos.Y), me.globalDpi.Y, 96))
 	}
-	if cx != 0 || cy != 0 {
-		cx = uint(win.MulDiv(int32(cx), me.globalDpi.X, 96))
-		cy = uint(win.MulDiv(int32(cy), me.globalDpi.Y, 96))
+	if size != nil {
+		size.Cx = uint(win.MulDiv(int32(size.Cx), me.globalDpi.X, 96))
+		size.Cy = uint(win.MulDiv(int32(size.Cy), me.globalDpi.Y, 96))
 	}
-	return x, y, cx, cy
 }
 
 // Calculates the bound rectangle to fit the text with current system font.
 func (_UiT) CalcTextBoundBox(
-	hReferenceDc win.HWND, text string, considerAccelerators bool) (uint, uint) {
+	hReferenceDc win.HWND, text string, considerAccelerators bool) Size {
 
 	isTextEmpty := false
 	if len(text) == 0 {
@@ -86,7 +83,7 @@ func (_UiT) CalcTextBoundBox(
 	if isTextEmpty {
 		bounds.Cx = 0 // if no text was given, return just the height
 	}
-	return uint(bounds.Cx), uint(bounds.Cy)
+	return Size{Cx: uint(bounds.Cx), Cy: uint(bounds.Cy)}
 }
 
 // "&He && she" becomes "He & she".

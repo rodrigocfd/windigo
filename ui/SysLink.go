@@ -24,13 +24,12 @@ type SysLink struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *SysLink) Create(
-	parent Window, ctrlId, x, y int, width, height uint,
+	parent Window, ctrlId int, pos Pos, size Size,
 	text string, exStyles co.WS_EX, styles co.WS, slStyles co.LWS) *SysLink {
 
-	x, y, width, height = _Ui.MultiplyDpi(x, y, width, height)
-
+	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "SysLink", text,
-		styles|co.WS(slStyles), x, y, width, height, parent, ctrlId)
+		styles|co.WS(slStyles), pos, size, parent, ctrlId)
 	return me
 }
 
@@ -39,13 +38,12 @@ func (me *SysLink) Create(
 // Position will be adjusted to the current system DPI. The size will be
 // calculated to fit the text exactly.
 func (me *SysLink) CreateLText(
-	parent Window, ctrlId, x, y int, text string) *SysLink {
+	parent Window, ctrlId int, pos Pos, text string) *SysLink {
 
-	x, y, _, _ = _Ui.MultiplyDpi(x, y, 0, 0)
-
+	_Ui.MultiplyDpi(&pos, nil)
 	me._ControlNativeBase.create(co.WS_EX_NONE, "SysLink", text,
 		co.WS_CHILD|co.WS_VISIBLE|co.WS_TABSTOP|co.WS(co.LWS_TRANSPARENT),
-		x, y, 0, 0, parent, ctrlId) // note zero width & height
+		pos, Size{}, parent, ctrlId) // note zero width & height
 
 	_globalUiFont.SetOnControl(me)
 
@@ -61,9 +59,9 @@ func (me *SysLink) CreateLText(
 //
 // To set the text without resizing the control, use Hwnd().SetWindowText().
 func (me *SysLink) SetText(text string) *SysLink {
-	cx, cy := _Ui.CalcTextBoundBox(me.Hwnd().GetParent(), text, false)
-
-	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE, 0, 0, int32(cx), int32(cy),
+	size := _Ui.CalcTextBoundBox(me.Hwnd().GetParent(), text, false)
+	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE,
+		0, 0, int32(size.Cx), int32(size.Cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
 	me.Hwnd().SetWindowText(text)
 	return me
@@ -77,8 +75,8 @@ func (me *SysLink) Text() string {
 }
 
 // Syntactic sugar.
-func (me *SysLink) sendLmMessage(msg co.LM,
-	wParam win.WPARAM, lParam win.LPARAM) uintptr {
+func (me *SysLink) sendLmMessage(
+	msg co.LM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
 	return me.Hwnd().SendMessage(co.WM(msg), wParam, lParam)
 }

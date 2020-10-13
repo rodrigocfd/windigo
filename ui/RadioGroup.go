@@ -24,16 +24,16 @@ type RadioGroup struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *RadioGroup) Add(
-	parent Window, ctrlId, x, y int, text string) *RadioGroup {
+	parent Window, ctrlId int, pos Pos, text string) *RadioGroup {
 
 	me.radios = append(me.radios, RadioButton{})
 	newRad := &me.radios[len(me.radios)-1]
 
 	if len(me.radios) == 1 {
-		newRad.CreateFirst(parent, ctrlId, x, y, text).
+		newRad.CreateFirst(parent, ctrlId, pos, text).
 			SetCheck() // first one is checked by default
 	} else {
-		newRad.CreateSubsequent(parent, ctrlId, x, y, text)
+		newRad.CreateSubsequent(parent, ctrlId, pos, text)
 	}
 
 	return me

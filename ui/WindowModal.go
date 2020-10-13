@@ -42,10 +42,10 @@ func (me *WindowModal) Show(parent Window) {
 	me.prevFocusParent = win.GetFocus() // currently focused control
 	parent.Hwnd().EnableWindow(false)   // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
-	x, y, cx, cy := me.setup.calcCoords(parent)
+	pos, size := me.setup.calcCoords(parent)
 	me._WindowBase.createWindow("WindowModal", me.setup.ExStyle,
 		me.setup.ClassName, me.setup.Title, me.setup.Style,
-		x, y, cx, cy, parent, win.HMENU(0), hInst)
+		pos, size, parent, win.HMENU(0), hInst)
 
 	me.runModalLoop()
 }
