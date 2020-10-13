@@ -32,7 +32,7 @@ func (me *ListView) AddColumn(text string, width uint) *ListViewColumn {
 	lvc := win.LVCOLUMN{
 		Mask:    co.LVCF_TEXT | co.LVCF_WIDTH,
 		PszText: &textBuf[0],
-		Cx:      int32(width),
+		Cx:      int32(colWidth.Cx),
 	}
 	newIdx := me.sendLvmMessage(co.LVM_INSERTCOLUMN, 0xffff,
 		win.LPARAM(unsafe.Pointer(&lvc)))
