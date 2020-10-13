@@ -76,7 +76,7 @@ type _WindowSetupMain struct {
 	Style          co.WS    // Window style, passed to CreateWindowEx(). Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER.
 	ExStyle        co.WS_EX // Window extended style, passed to CreateWindowEx(). Defaults to WS_EX_NONE.
 	Title          string   // The title of the window, passed to CreateWindowEx(). Defaults to empty string.
-	ClientAreaSize Size     // Passed to CreateWindowEx(). Defaults to 500px, will be adjusted to the current system DPI.
+	ClientAreaSize Size     // Passed to CreateWindowEx(). Defaults to 500/400px, will be adjusted to the current system DPI.
 	MainMenu       Menu     // Main window menu, passed to CreateWindowEx(). You must call CreateMain(). Automatically destroyed.
 
 	AcceleratorTable AccelTable // Accelerator table with keyboard shortcuts. Automatically destroyed.
@@ -143,7 +143,7 @@ type _WindowSetupModal struct {
 	Style          co.WS    // Window style, passed to CreateWindowEx(). Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER | WS_VISIBLE.
 	ExStyle        co.WS_EX // Window extended style, passed to CreateWindowEx(). Defaults to WS_EX_NONE.
 	Title          string   // The title of the window, passed to CreateWindowEx(). Defaults to empty string.
-	ClientAreaSize Size     // Passed to CreateWindowEx(). Defaults to 400px, will be adjusted to the current system DPI.
+	ClientAreaSize Size     // Passed to CreateWindowEx(). Defaults to 400/300px, will be adjusted to the current system DPI.
 }
 
 func (me *_WindowSetupModal) initOnce() {

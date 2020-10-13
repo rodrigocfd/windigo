@@ -367,6 +367,13 @@ func (hWnd HWND) IsDlgButtonChecked(nIDButton int32) co.BST {
 	return co.BST(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isiconic
+func (hWnd HWND) IsIconic() bool {
+	ret, _, _ := syscall.Syscall(proc.IsIconic.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	return ret != 0
+}
+
 // Allegedly undocumented Win32 function; implemented here.
 // https://stackoverflow.com/a/16975012
 func (hWnd HWND) IsTopLevelWindow() bool {
@@ -383,6 +390,13 @@ func (hWnd HWND) IsWindow() bool {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-iswindowenabled
 func (hWnd HWND) IsWindowEnabled() bool {
 	ret, _, _ := syscall.Syscall(proc.IsWindowEnabled.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	return ret != 0
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-iszoomed
+func (hWnd HWND) IsZoomed() bool {
+	ret, _, _ := syscall.Syscall(proc.IsZoomed.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	return ret != 0
 }
