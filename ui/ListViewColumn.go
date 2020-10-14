@@ -58,11 +58,15 @@ func (me *ListViewColumn) SetText(text string) *ListViewColumn {
 }
 
 // Sets the width of the column with LVM_SETCOLUMNWIDTH.
+// Will be adjusted to the current system DPI.
 //
 // https://docs.microsoft.com/en-us/windows/win32/controls/lvm-setcolumnwidth
 func (me *ListViewColumn) SetWidth(width uint) *ListViewColumn {
+	colWidth := Size{width, 0}
+	_Ui.MultiplyDpi(nil, &colWidth)
+
 	me.owner.sendLvmMessage(co.LVM_SETCOLUMNWIDTH,
-		win.WPARAM(me.index), win.LPARAM(width))
+		win.WPARAM(me.index), win.LPARAM(colWidth.Cx))
 	return me
 }
 
