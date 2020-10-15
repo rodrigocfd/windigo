@@ -51,7 +51,7 @@ func (me *WindowModal) Show(parent Window) {
 }
 
 func (me *WindowModal) defaultMessageHandling() {
-	me.OnMsg().WmSetFocus(func(hwndLosingFocus win.HWND) {
+	me.On().WmSetFocus(func(hwndLosingFocus win.HWND) {
 		if me._WindowBase.Hwnd() == win.GetFocus() {
 			// If window receive focus, delegate to first child.
 			// This also happens right after the modal is created.
@@ -61,7 +61,7 @@ func (me *WindowModal) defaultMessageHandling() {
 		}
 	})
 
-	me.OnMsg().WmClose(func() {
+	me.On().WmClose(func() {
 		me.Hwnd().GetWindow(co.GW_OWNER).EnableWindow(true) // re-enable parent
 		me.Hwnd().DestroyWindow()                           // then destroy modal
 		me.prevFocusParent.SetFocus()                       // could be on WM_DESTROY too

@@ -52,7 +52,7 @@ func (me *MyWindow) RunThisThing() {
 
     // WM_CREATE event is handled with a closure.
     // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-create
-    me.wnd.OnMsg().WmCreate(func(p *win.CREATESTRUCT) int32 {
+    me.wnd.On().WmCreate(func(p *win.CREATESTRUCT) int32 {
         // Physically create the button.
         // The last 3 arguments are: left position, top position and width.
         me.btnHello.CreateSimpleDef(&me.wnd, ID_BTN_HELLO, 10, 10, 90)
@@ -61,7 +61,7 @@ func (me *MyWindow) RunThisThing() {
 
     // The button click is handled in the WM_COMMAND event.
     // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
-    me.wnd.OnMsg().WmCommand(ID_BTN_HELLO, func(p ui.WmCommand) {
+    me.wnd.On().WmCommand(ID_BTN_HELLO, func(p ui.WmCommand) {
         // This is the action we execute: show a popup message box.
         // The Hwnd() method returns the HWND handle of our window, which gives
         // us access to all Win32 functions executed on HWNDs.

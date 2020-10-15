@@ -81,11 +81,11 @@ func (me *WindowMain) RunAsMain() int {
 }
 
 func (me *WindowMain) defaultMessageHandling() {
-	me.OnMsg().WmNcDestroy(func() {
+	me.On().WmNcDestroy(func() {
 		win.PostQuitMessage(0)
 	})
 
-	me.OnMsg().WmSetFocus(func(hwndLosingFocus win.HWND) {
+	me.On().WmSetFocus(func(hwndLosingFocus win.HWND) {
 		if me.Hwnd() == win.GetFocus() {
 			// If window receives focus, delegate to first child.
 			me.Hwnd().
@@ -94,7 +94,7 @@ func (me *WindowMain) defaultMessageHandling() {
 		}
 	})
 
-	me.OnMsg().WmActivate(func(p WmActivate) {
+	me.On().WmActivate(func(p WmActivate) {
 		// https://devblogs.microsoft.com/oldnewthing/20140521-00/?p=943
 		if !p.IsMinimized() {
 			if p.Event() == co.WA_INACTIVE {

@@ -29,7 +29,7 @@ func (me *_WindowBase) Hwnd() win.HWND {
 }
 
 // Exposes all the window messages the can be handled.
-func (me *_WindowBase) OnMsg() *_DepotWmCmdNfy {
+func (me *_WindowBase) On() *_DepotWmCmdNfy {
 	if me.Hwnd() != 0 {
 		panic("Cannot add message after the window was created.")
 	}
