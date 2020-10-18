@@ -32,7 +32,8 @@ func (me *ListViewColumn) FillRoom() *ListViewColumn {
 	}
 
 	rc := me.owner.Hwnd().GetClientRect() // list view client area
-	me.SetWidth(uint(rc.Right) - cxUsed)  // fill available space
+	me.owner.sendLvmMessage(co.LVM_SETCOLUMNWIDTH,
+		win.WPARAM(me.index), win.LPARAM(uint(rc.Right)-cxUsed)) // fill available space
 	return me
 }
 
