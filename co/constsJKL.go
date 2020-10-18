@@ -57,6 +57,14 @@ const (
 	LM_GETIDEALSIZE   LM = LM_GETIDEALHEIGHT
 )
 
+// LockSetForegroundWindow uLockCode.
+type LSFW uint32
+
+const (
+	LSFW_LOCK   LSFW = 1
+	LSFW_UNLOCK LSFW = 2
+)
+
 // ListView current view.
 type LV_VIEW uint16
 

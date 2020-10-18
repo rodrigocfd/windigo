@@ -14,6 +14,7 @@ var (
 	dllUser32 = syscall.NewLazyDLL("user32.dll")
 
 	AdjustWindowRectEx            = dllUser32.NewProc("AdjustWindowRectEx")
+	AllowSetForegroundWindow      = dllUser32.NewProc("AllowSetForegroundWindow")
 	AppendMenu                    = dllUser32.NewProc("AppendMenuW")
 	BeginDeferWindowPos           = dllUser32.NewProc("BeginDeferWindowPos")
 	BeginPaint                    = dllUser32.NewProc("BeginPaint")
@@ -95,6 +96,7 @@ var (
 	LoadCursor                    = dllUser32.NewProc("LoadCursorW")
 	LoadIcon                      = dllUser32.NewProc("LoadIconW")
 	LoadMenu                      = dllUser32.NewProc("LoadMenuW")
+	LockSetForegroundWindow       = dllUser32.NewProc("LockSetForegroundWindow")
 	MenuItemFromPoint             = dllUser32.NewProc("MeunItemFromPoint")
 	MessageBox                    = dllUser32.NewProc("MessageBoxW")
 	MonitorFromPoint              = dllUser32.NewProc("MonitorFromPoint")

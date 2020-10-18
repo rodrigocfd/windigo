@@ -45,6 +45,15 @@ func AdjustWindowRectEx(
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-allowsetforegroundwindow
+func AllowSetForegroundWindow(dwProcessId uint32) {
+	ret, _, lerr := syscall.Syscall(proc.AllowSetForegroundWindow.Addr(), 1,
+		uintptr(dwProcessId), 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "AllowSetForegroundWindow").Error())
+	}
+}
+
 // Returns a pointer to pointer to COM virtual table. IUnknown can be cast to
 // any derived COM interface.1
 //
@@ -346,6 +355,15 @@ func IsWindowsXpOrGreater() bool {
 // https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632658(v=vs.85)
 func LoByte(value uint16) uint8 {
 	return uint8(value & 0xff)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-locksetforegroundwindow
+func LockSetForegroundWindow(uLockCode co.LSFW) {
+	ret, _, lerr := syscall.Syscall(proc.LockSetForegroundWindow.Addr(), 1,
+		uintptr(uLockCode), 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "LockSetForegroundWindow").Error())
+	}
 }
 
 // https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632659(v=vs.85)
