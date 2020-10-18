@@ -12,7 +12,7 @@ import (
 	"syscall"
 	"unsafe"
 	"windigo/co"
-	"windigo/win/proc"
+	proc "windigo/win/internal"
 )
 
 // Builds a GUID struct from hex numbers, which can be copied straight from

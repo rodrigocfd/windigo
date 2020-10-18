@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"unsafe"
 	"windigo/co"
-	"windigo/win/proc"
+	proc "windigo/win/internal"
 )
 
 // This type doesn't exist in Win32, it's just a HANDLE.

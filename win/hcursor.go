@@ -8,7 +8,7 @@ package win
 
 import (
 	"syscall"
-	"windigo/win/proc"
+	proc "windigo/win/internal"
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hcursor

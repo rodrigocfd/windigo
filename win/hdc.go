@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"unsafe"
 	"windigo/co"
-	"windigo/win/proc"
+	proc "windigo/win/internal"
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdc

@@ -9,7 +9,7 @@ package win
 import (
 	"syscall"
 	"unsafe"
-	"windigo/win/proc"
+	proc "windigo/win/internal"
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdrop
