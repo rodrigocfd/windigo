@@ -24,7 +24,7 @@ var (
 // Allows control subclassing.
 type _ControlNativeBase struct {
 	hwnd       win.HWND
-	msgs       _DepotWm
+	eventsWm   _EventsWm
 	subclassId uint32
 }
 
@@ -41,11 +41,11 @@ func (me *_ControlNativeBase) Id() int {
 // Exposes all the control subclass methods that can be handled.
 //
 // The subclass will be installed in create() if at least 1 message was added.
-func (me *_ControlNativeBase) OnSubclass() *_DepotWm {
+func (me *_ControlNativeBase) OnSubclass() *_EventsWm {
 	if me.hwnd != 0 {
 		panic("Cannot add subclass message after the control was created.")
 	}
-	return &me.msgs
+	return &me.eventsWm
 }
 
 func (me *_ControlNativeBase) create(
@@ -60,7 +60,7 @@ func (me *_ControlNativeBase) create(
 		int32(pos.X), int32(pos.Y), int32(size.Cx), int32(size.Cy),
 		parent.Hwnd(), win.HMENU(ctrlId), parent.Hwnd().GetInstance(), nil)
 
-	if me.msgs.hasMessages() {
+	if me.eventsWm.hasMessages() {
 		if _globalSubclassProcPtr == 0 {
 			_globalSubclassProcPtr = syscall.NewCallback(subclassProc)
 		}
@@ -87,7 +87,7 @@ func subclassProc(
 	hwnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 
 	if pMe != nil && pMe.hwnd != 0 {
-		userRet, wasHandled := pMe.msgs.processMessage(msg, // try to process the message with an user handler
+		userRet, wasHandled := pMe.eventsWm.processMessage(msg, // try to process the message with an user handler
 			Wm{WParam: wParam, LParam: lParam})
 
 		if msg == co.WM_NCDESTROY { // even if the user handles WM_NCDESTROY, we must ensure cleanup

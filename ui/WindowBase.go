@@ -16,8 +16,8 @@ import (
 
 // Base to all window types: WindowControl, WindowMain and WindowModal.
 type _WindowBase struct {
-	hwnd  win.HWND
-	depot _DepotWmCmdNfy
+	hwnd           win.HWND
+	eventsWmCmdNfy _EventsWmCmdNfy
 }
 
 const _WM_UI_THREAD = co.WM_APP + 0x3fff   // used in UI thread handling
@@ -29,11 +29,11 @@ func (me *_WindowBase) Hwnd() win.HWND {
 }
 
 // Exposes all the window messages the can be handled.
-func (me *_WindowBase) On() *_DepotWmCmdNfy {
+func (me *_WindowBase) On() *_EventsWmCmdNfy {
 	if me.Hwnd() != 0 {
 		panic("Cannot add message after the window was created.")
 	}
-	return &me.depot
+	return &me.eventsWmCmdNfy
 }
 
 // Runs a closure synchronously in the window original UI thread.
@@ -94,7 +94,7 @@ func (me *_WindowBase) createWindow(
 }
 
 func (me *_WindowBase) defaultMessageHandling() {
-	me.depot.Wm(_WM_UI_THREAD, func(p Wm) uintptr { // handle our custom thread UI message
+	me.eventsWmCmdNfy.Wm(_WM_UI_THREAD, func(p Wm) uintptr { // handle our custom thread UI message
 		if p.WParam == 0xc0def00d {
 			pack := (*_ThreadPack)(unsafe.Pointer(p.LParam))
 			pack.UserFunc()
@@ -130,7 +130,7 @@ func wndProc(
 	}
 
 	// Try to process the message with an user handler.
-	userRet, wasHandled := pMe.depot.processMessage(msg,
+	userRet, wasHandled := pMe.eventsWmCmdNfy.processMessage(msg,
 		Wm{WParam: wParam, LParam: lParam})
 
 	// No further messages processed after this one.
