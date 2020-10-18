@@ -103,8 +103,8 @@ func (me *_WindowBase) defaultMessageHandling() {
 	})
 }
 
-func wndProc(hwnd win.HWND, msg co.WM,
-	wParam win.WPARAM, lParam win.LPARAM) uintptr {
+func wndProc(
+	hwnd win.HWND, msg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
 	// https://devblogs.microsoft.com/oldnewthing/20050422-08/?p=35813
 	if msg == co.WM_NCCREATE {

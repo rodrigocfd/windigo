@@ -453,13 +453,13 @@ func (me *ListView) View() co.LV_VIEW {
 
 // Adds all subclass message handlers; must be called before creation.
 func (me *ListView) installSubclass() {
-	me.OnSubclassMsg().WmRButtonDown(func(p WmMouse) {
+	me.OnSubclass().WmRButtonDown(func(p WmMouse) {
 		// WM_RBUTTONUP doesn't work, only NM_RCLICK on parent.
 		// https://stackoverflow.com/a/30206896
 		me.showContextMenu(true, p.HasCtrl(), p.HasShift())
 	})
 
-	me.OnSubclassMsg().WmGetDlgCode(func(p WmGetDlgCode) co.DLGC {
+	me.OnSubclass().WmGetDlgCode(func(p WmGetDlgCode) co.DLGC {
 		if !p.IsQuery() && p.VirtualKeyCode() == 'A' && p.HasCtrl() { // Ctrl+A to select all items
 			me.SelectAllItems(true)
 			return co.DLGC_WANTCHARS

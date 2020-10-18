@@ -41,7 +41,7 @@ func (me *_ControlNativeBase) Id() int {
 // Exposes all the control subclass methods that can be handled.
 //
 // The subclass will be installed in create() if at least 1 message was added.
-func (me *_ControlNativeBase) OnSubclassMsg() *_DepotWm {
+func (me *_ControlNativeBase) OnSubclass() *_DepotWm {
 	if me.hwnd != 0 {
 		panic("Cannot add subclass message after the control was created.")
 	}
@@ -74,8 +74,8 @@ func (me *_ControlNativeBase) create(
 	}
 }
 
-func subclassProc(hwnd win.HWND, msg co.WM,
-	wParam win.WPARAM, lParam win.LPARAM,
+func subclassProc(
+	hwnd win.HWND, msg co.WM, wParam win.WPARAM, lParam win.LPARAM,
 	uIdSubclass, dwRefData uintptr) uintptr {
 
 	// Retrieve passed pointer.

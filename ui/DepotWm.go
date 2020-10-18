@@ -17,13 +17,13 @@ import (
 
 // Keeps user message handlers.
 type _DepotWm struct {
-	mapMsgs   map[co.WM]func(p Wm) uintptr
-	mapTimers map[uintptr]func()
+	mapMsgs map[co.WM]func(p Wm) uintptr
+	mapTims map[uintptr]func()
 }
 
 func (me *_DepotWm) processMessage(msg co.WM, p Wm) (uintptr, bool) {
 	if msg == co.WM_TIMER {
-		if userFunc, hasMsg := me.mapTimers[uintptr(p.WParam)]; hasMsg {
+		if userFunc, hasMsg := me.mapTims[uintptr(p.WParam)]; hasMsg {
 			userFunc()
 			return 0, true // always return zero; user handler found
 		}
@@ -35,7 +35,7 @@ func (me *_DepotWm) processMessage(msg co.WM, p Wm) (uintptr, bool) {
 
 func (me *_DepotWm) hasMessages() bool {
 	return len(me.mapMsgs) > 0 ||
-		len(me.mapTimers) > 0
+		len(me.mapTims) > 0
 }
 
 //------------------------------------------------------------------------------
@@ -57,10 +57,10 @@ func (me *_DepotWm) Wm(message co.WM, userFunc func(p Wm) uintptr) {
 //
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-timer
 func (me *_DepotWm) WmTimer(nIDEvent uintptr, userFunc func()) {
-	if me.mapTimers == nil { // guard
-		me.mapTimers = make(map[uintptr]func())
+	if me.mapTims == nil { // guard
+		me.mapTims = make(map[uintptr]func())
 	}
-	me.mapTimers[nIDEvent] = userFunc
+	me.mapTims[nIDEvent] = userFunc
 }
 
 //------------------------------------------------------------------------------
