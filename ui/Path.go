@@ -53,20 +53,20 @@ func (_PathT) ListFilesInFolder(
 }
 
 // Tells if a given file or folder exists.
-func (_PathT) PathExists(path string) bool {
+func (_PathT) Exists(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID
 }
 
 // Tells if a given path is a folder, and not a file.
-func (_PathT) PathIsFolder(path string) bool {
+func (_PathT) IsFolder(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID &&
 		(attr&co.FILE_ATTRIBUTE_DIRECTORY) != 0
 }
 
 // Tells if the given file or folder is hidden.
-func (_PathT) PathIsHidden(path string) bool {
+func (_PathT) IsHidden(path string) bool {
 	attr, _ := win.GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID &&
 		(attr&co.FILE_ATTRIBUTE_HIDDEN) != 0
