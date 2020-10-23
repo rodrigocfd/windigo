@@ -429,6 +429,19 @@ type (
 		IDelta int32
 	}
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tttoolinfow
+	TTTOOLINFO struct {
+		CbSize     uint32
+		UFlags     co.TTF
+		Hwnd       HWND
+		UId        uintptr // UINT_PTR
+		Rect       RECT
+		Hinst      HINSTANCE
+		LpszText   *uint16
+		LParam     LPARAM
+		LpReserved uintptr // void*
+	}
+
 	// https://www.google.com/search?client=firefox-b-d&q=TVINSERTSTRUCTW
 	TVINSERTSTRUCT struct {
 		HParent      HTREEITEM
