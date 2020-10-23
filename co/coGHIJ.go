@@ -309,21 +309,6 @@ const (
 	HTREEITEM_SORT  HTREEITEM = 0x0fffd
 )
 
-// MessageBox() return value.
-type MBID int32
-
-const (
-	MBID_OK       MBID = 1
-	MBID_CANCEL   MBID = 2
-	MBID_ABORT    MBID = 3
-	MBID_RETRY    MBID = 4
-	MBID_IGNORE   MBID = 5
-	MBID_YES      MBID = 6
-	MBID_NO       MBID = 7
-	MBID_TRYAGAIN MBID = 10
-	MBID_CONTINUE MBID = 11
-)
-
 // LoadCursor() lpCursorName.
 type IDC uintptr
 
