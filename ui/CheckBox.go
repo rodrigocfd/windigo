@@ -23,24 +23,14 @@ type CheckBox struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *CheckBox) Create(
-	parent Window, ctrlId int, pos Pos, size Size,
-	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *CheckBox {
+	parent Window, ctrlId int, pos Pos, size Size, text string,
+	btnStyles co.BS, styles co.WS, exStyles co.WS_EX) *CheckBox {
 
 	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "BUTTON", text, // check box is, in fact, a button
 		styles|co.WS(btnStyles), pos, size, parent, ctrlId)
 	_globalUiFont.SetOnControl(me)
 	return me
-}
-
-// Calls CreateWindowEx() with BS_AUTO3STATE.
-//
-// Position will be adjusted to the current system DPI. The size will be
-// calculated to fit the text exactly.
-func (me *CheckBox) Create3State(
-	parent Window, ctrlId int, pos Pos, text string) *CheckBox {
-
-	return me.createAutoSize(parent, ctrlId, pos, text, co.BS_AUTO3STATE)
 }
 
 // Calls CreateWindowEx() with BS_AUTOCHECKBOX.
@@ -51,6 +41,16 @@ func (me *CheckBox) Create2State(
 	parent Window, ctrlId int, pos Pos, text string) *CheckBox {
 
 	return me.createAutoSize(parent, ctrlId, pos, text, co.BS_AUTOCHECKBOX)
+}
+
+// Calls CreateWindowEx() with BS_AUTO3STATE.
+//
+// Position will be adjusted to the current system DPI. The size will be
+// calculated to fit the text exactly.
+func (me *CheckBox) Create3State(
+	parent Window, ctrlId int, pos Pos, text string) *CheckBox {
+
+	return me.createAutoSize(parent, ctrlId, pos, text, co.BS_AUTO3STATE)
 }
 
 // Tells if the current state is BST_CHECKED.

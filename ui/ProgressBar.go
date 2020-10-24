@@ -25,7 +25,7 @@ type ProgressBar struct {
 // Position and size will be adjusted to the current system DPI.
 func (me *ProgressBar) Create(
 	parent Window, ctrlId int, pos Pos, size Size,
-	exStyles co.WS_EX, styles co.WS, pbStyles co.PBS) *ProgressBar {
+	pbStyles co.PBS, styles co.WS, exStyles co.WS_EX) *ProgressBar {
 
 	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "msctls_progress32", "",
@@ -41,9 +41,9 @@ func (me *ProgressBar) CreateHorizontal(
 	parent Window, ctrlId int, pos Pos, size Size) *ProgressBar {
 
 	return me.Create(parent, ctrlId, pos, size,
-		co.WS_EX_NONE,
+		co.PBS_SMOOTH,
 		co.WS_CHILD|co.WS_VISIBLE,
-		co.PBS_SMOOTH)
+		co.WS_EX_NONE)
 }
 
 // Calls CreateWindowEx() with PBS_SMOOTH, PBS_VERTICAL.
@@ -53,9 +53,9 @@ func (me *ProgressBar) CreateVertical(
 	parent Window, ctrlId int, pos Pos, size Size) *ProgressBar {
 
 	return me.Create(parent, ctrlId, pos, size,
-		co.WS_EX_NONE,
+		co.PBS_SMOOTH|co.PBS_VERTICAL,
 		co.WS_CHILD|co.WS_VISIBLE,
-		co.PBS_SMOOTH|co.PBS_VERTICAL)
+		co.WS_EX_NONE)
 }
 
 // Retrieves the current position with PBM_GETPOS.

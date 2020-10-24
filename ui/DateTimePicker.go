@@ -26,7 +26,7 @@ type DateTimePicker struct {
 // Position and size will be adjusted to the current system DPI.
 func (me *DateTimePicker) Create(
 	parent Window, ctrlId int, pos Pos, size Size,
-	exStyles co.WS_EX, styles co.WS, dtpStyles co.DTS) *DateTimePicker {
+	dtpStyles co.DTS, styles co.WS, exStyles co.WS_EX) *DateTimePicker {
 
 	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "SysDateTimePick32", "",
@@ -41,9 +41,10 @@ func (me *DateTimePicker) Create(
 func (me *DateTimePicker) CreateLongDate(
 	parent Window, ctrlId int, pos Pos, width uint) *DateTimePicker {
 
-	return me.Create(parent, ctrlId, pos, Size{width, 23}, co.WS_EX_NONE,
+	return me.Create(parent, ctrlId, pos, Size{width, 23},
+		co.DTS_LONGDATEFORMAT,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.DTS_LONGDATEFORMAT)
+		co.WS_EX_NONE)
 }
 
 // Calls CreateWindowEx() with height 23, and DTS_SHORTDATEFORMAT.
@@ -52,9 +53,10 @@ func (me *DateTimePicker) CreateLongDate(
 func (me *DateTimePicker) CreateShortDate(
 	parent Window, ctrlId int, pos Pos, width uint) *DateTimePicker {
 
-	return me.Create(parent, ctrlId, pos, Size{width, 23}, co.WS_EX_NONE,
+	return me.Create(parent, ctrlId, pos, Size{width, 23},
+		co.DTS_SHORTDATEFORMAT,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.DTS_SHORTDATEFORMAT)
+		co.WS_EX_NONE)
 }
 
 // Calls CreateWindowEx() with height 23, and DTS_TIMEFORMAT.
@@ -63,9 +65,10 @@ func (me *DateTimePicker) CreateShortDate(
 func (me *DateTimePicker) CreateTime(
 	parent Window, ctrlId int, pos Pos, width uint) *DateTimePicker {
 
-	return me.Create(parent, ctrlId, pos, Size{width, 23}, co.WS_EX_NONE,
+	return me.Create(parent, ctrlId, pos, Size{width, 23},
+		co.DTS_TIMEFORMAT,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.DTS_TIMEFORMAT)
+		co.WS_EX_NONE)
 }
 
 // Sets the format string with DTM_SETFORMAT. An empty string will reset it.

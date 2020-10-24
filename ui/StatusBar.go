@@ -27,6 +27,24 @@ type statusBarPart struct { // describes each added part
 	resizeWeight uint
 }
 
+// Calls CreateWindowEx().
+//
+// Control will be docked at bottom of parent window.
+func (me *StatusBar) Create(parent Window, ctrlId int) *StatusBar {
+	style := co.WS_CHILD | co.WS_VISIBLE
+
+	parentStyle := parent.Hwnd().GetStyle()
+	if (parentStyle&co.WS_MAXIMIZEBOX) != 0 ||
+		(parentStyle&co.WS_SIZEBOX) != 0 {
+		// Parent window can change its size.
+		style |= co.WS(co.SBARS_SIZEGRIP)
+	}
+
+	me._ControlNativeBase.create(co.WS_EX_NONE, "msctls_statusbar32", "",
+		style, Pos{}, Size{}, parent, ctrlId)
+	return me
+}
+
 // Adds a part which has a fixed width.
 func (me *StatusBar) AddFixedPart(sizePixels uint) *StatusBar {
 	me.parts = append(me.parts, statusBarPart{
@@ -54,24 +72,6 @@ func (me *StatusBar) Adjust(p WmSize) {
 	}
 
 	me.adjustParts(uint(p.ClientAreaSize().Cx))
-}
-
-// Calls CreateWindowEx().
-//
-// Control will be docked at bottom of parent window.
-func (me *StatusBar) Create(parent Window, ctrlId int) *StatusBar {
-	style := co.WS_CHILD | co.WS_VISIBLE
-
-	parentStyle := parent.Hwnd().GetStyle()
-	if (parentStyle&co.WS_MAXIMIZEBOX) != 0 ||
-		(parentStyle&co.WS_SIZEBOX) != 0 {
-		// Parent window can change its size.
-		style |= co.WS(co.SBARS_SIZEGRIP)
-	}
-
-	me._ControlNativeBase.create(co.WS_EX_NONE, "msctls_statusbar32", "",
-		style, Pos{}, Size{}, parent, ctrlId)
-	return me
 }
 
 // Retrieves the HICON of the part.

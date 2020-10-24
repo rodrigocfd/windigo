@@ -21,6 +21,53 @@ type ListView struct {
 	contextMenu *Menu // if set, will be shown with right-click
 }
 
+// Calls CreateWindowEx(). This is a basic method: no styles are provided by
+// default, you must inform all of them.
+//
+// Position and size will be adjusted to the current system DPI.
+func (me *ListView) Create(
+	parent Window, ctrlId int, pos Pos, size Size,
+	lvStyles co.LVS, lvExStyles co.LVS_EX,
+	styles co.WS, exStyles co.WS_EX) *ListView {
+
+	me.installSubclass()
+
+	_Ui.MultiplyDpi(&pos, &size)
+	me._ControlNativeBase.create(exStyles, "SysListView32", "",
+		styles|co.WS(lvStyles), pos, size, parent, ctrlId)
+
+	if lvExStyles != co.LVS_EX_NONE {
+		me.SetExtendedStyle(true, lvExStyles)
+	}
+	return me
+}
+
+// Calls CreateWindowEx() with LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS.
+//
+// Position and size will be adjusted to the current system DPI.
+func (me *ListView) CreateReport(
+	parent Window, ctrlId int, pos Pos, size Size) *ListView {
+
+	return me.Create(parent, ctrlId, pos, size,
+		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS|co.LVS_SHAREIMAGELISTS,
+		co.LVS_EX_FULLROWSELECT,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.WS_EX_CLIENTEDGE)
+}
+
+// Calls CreateWindowEx() with LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_SHAREIMAGELISTS.
+//
+// Position and size will be adjusted to the current system DPI.
+func (me *ListView) CreateSortedReport(
+	parent Window, ctrlId int, pos Pos, size Size) *ListView {
+
+	return me.Create(parent, ctrlId, pos, size,
+		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS|co.LVS_SORTASCENDING|co.LVS_SHAREIMAGELISTS,
+		co.LVS_EX_FULLROWSELECT,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.WS_EX_CLIENTEDGE)
+}
+
 // Appends a new column, returns the new column.
 // Column width will be adjusted to the current system DPI.
 func (me *ListView) AddColumn(text string, width uint) *ListViewColumn {
@@ -117,53 +164,6 @@ func (me *ListView) Column(index uint) *ListViewColumn {
 		owner: me,
 		index: index,
 	}
-}
-
-// Calls CreateWindowEx(). This is a basic method: no styles are provided by
-// default, you must inform all of them.
-//
-// Position and size will be adjusted to the current system DPI.
-func (me *ListView) Create(
-	parent Window, ctrlId int, pos Pos, size Size,
-	exStyles co.WS_EX, styles co.WS,
-	lvExStyles co.LVS_EX, lvStyles co.LVS) *ListView {
-
-	me.installSubclass()
-
-	_Ui.MultiplyDpi(&pos, &size)
-	me._ControlNativeBase.create(exStyles, "SysListView32", "",
-		styles|co.WS(lvStyles), pos, size, parent, ctrlId)
-
-	if lvExStyles != co.LVS_EX_NONE {
-		me.SetExtendedStyle(true, lvExStyles)
-	}
-	return me
-}
-
-// Calls CreateWindowEx() with LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS.
-//
-// Position and size will be adjusted to the current system DPI.
-func (me *ListView) CreateReport(
-	parent Window, ctrlId int, pos Pos, size Size) *ListView {
-
-	return me.Create(parent, ctrlId, pos, size,
-		co.WS_EX_CLIENTEDGE,
-		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.LVS_EX_FULLROWSELECT,
-		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS|co.LVS_SHAREIMAGELISTS)
-}
-
-// Calls CreateWindowEx() with LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_SHAREIMAGELISTS.
-//
-// Position and size will be adjusted to the current system DPI.
-func (me *ListView) CreateSortedReport(
-	parent Window, ctrlId int, pos Pos, size Size) *ListView {
-
-	return me.Create(parent, ctrlId, pos, size,
-		co.WS_EX_CLIENTEDGE,
-		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.LVS_EX_FULLROWSELECT,
-		co.LVS_REPORT|co.LVS_NOSORTHEADER|co.LVS_SHOWSELALWAYS|co.LVS_SORTASCENDING|co.LVS_SHAREIMAGELISTS)
 }
 
 // Retrieves the number of columns with LVM_GETHEADER and HDM_GETITEMCOUNT.

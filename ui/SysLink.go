@@ -24,8 +24,8 @@ type SysLink struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *SysLink) Create(
-	parent Window, ctrlId int, pos Pos, size Size,
-	text string, exStyles co.WS_EX, styles co.WS, slStyles co.LWS) *SysLink {
+	parent Window, ctrlId int, pos Pos, size Size, text string,
+	slStyles co.LWS, styles co.WS, exStyles co.WS_EX) *SysLink {
 
 	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "SysLink", text,

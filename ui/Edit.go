@@ -25,7 +25,7 @@ type Edit struct {
 // Position and size will be adjusted to the current system DPI.
 func (me *Edit) Create(
 	parent Window, ctrlId int, pos Pos, size Size, initialText string,
-	exStyles co.WS_EX, styles co.WS, editStyles co.ES) *Edit {
+	editStyles co.ES, styles co.WS, exStyles co.WS_EX) *Edit {
 
 	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "EDIT", initialText,
@@ -42,9 +42,9 @@ func (me *Edit) CreateMultiLine(
 	initialText string) *Edit {
 
 	return me.Create(parent, ctrlId, pos, size, initialText,
-		co.WS_EX_CLIENTEDGE,
+		co.ES_MULTILINE|co.ES_WANTRETURN,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.ES_MULTILINE|co.ES_WANTRETURN)
+		co.WS_EX_CLIENTEDGE)
 }
 
 // Calls CreateWindowEx() with ES_AUTOHSCROLL | ES_PASSWORD.
@@ -54,9 +54,9 @@ func (me *Edit) CreatePassword(
 	parent Window, ctrlId int, pos Pos, width uint, initialText string) *Edit {
 
 	return me.Create(parent, ctrlId, pos, Size{width, 21}, initialText,
-		co.WS_EX_CLIENTEDGE,
+		co.ES_AUTOHSCROLL|co.ES_PASSWORD,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.ES_AUTOHSCROLL|co.ES_PASSWORD)
+		co.WS_EX_CLIENTEDGE)
 }
 
 // Calls CreateWindowEx() with ES_AUTOHSCROLL.
@@ -66,9 +66,9 @@ func (me *Edit) CreateSimple(
 	parent Window, ctrlId int, pos Pos, width uint, initialText string) *Edit {
 
 	return me.Create(parent, ctrlId, pos, Size{width, 21}, initialText,
-		co.WS_EX_CLIENTEDGE,
+		co.ES_AUTOHSCROLL,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.ES_AUTOHSCROLL)
+		co.WS_EX_CLIENTEDGE)
 }
 
 // Replaces the currently selected text in the edit control.

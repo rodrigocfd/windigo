@@ -23,8 +23,8 @@ type RadioButton struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *RadioButton) Create(
-	parent Window, ctrlId int, pos Pos, size Size,
-	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *RadioButton {
+	parent Window, ctrlId int, pos Pos, size Size, text string,
+	btnStyles co.BS, styles co.WS, exStyles co.WS_EX) *RadioButton {
 
 	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "BUTTON", text, // radio button is, in fact, a button

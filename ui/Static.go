@@ -22,8 +22,8 @@ type Static struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Static) Create(
-	parent Window, ctrlId int, pos Pos, size Size,
-	text string, exStyles co.WS_EX, styles co.WS, staStyles co.SS) *Static {
+	parent Window, ctrlId int, pos Pos, size Size, text string,
+	staStyles co.SS, styles co.WS, exStyles co.WS_EX) *Static {
 
 	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "STATIC", text,

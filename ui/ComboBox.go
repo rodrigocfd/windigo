@@ -20,6 +20,71 @@ type ComboBox struct {
 	_ControlNativeBase
 }
 
+// Calls CreateWindowEx(). This is a basic method: no styles are provided by
+// default, you must inform all of them.
+//
+// Position and size will be adjusted to the current system DPI.
+func (me *ComboBox) Create(
+	parent Window, ctrlId int, pos Pos, width uint,
+	cbStyles co.CBS, styles co.WS, exStyles co.WS_EX) *ComboBox {
+
+	size := Size{width, 0}
+	_Ui.MultiplyDpi(&pos, &size)
+
+	me._ControlNativeBase.create(exStyles, "COMBOBOX", "",
+		styles|co.WS(cbStyles), pos, size, parent, ctrlId)
+	_globalUiFont.SetOnControl(me)
+	return me
+}
+
+// Calls CreateWindowEx() with CBS_DROPDOWN.
+//
+// Position and size will be adjusted to the current system DPI.
+func (me *ComboBox) CreateEditable(
+	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
+
+	return me.Create(parent, ctrlId, pos, width,
+		co.CBS_DROPDOWN,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.WS_EX_NONE)
+}
+
+// Calls CreateWindowEx() with CBS_DROPDOWN | CBS_SORT.
+//
+// Position and size will be adjusted to the current system DPI.
+func (me *ComboBox) CreateEditableSorted(
+	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
+
+	return me.Create(parent, ctrlId, pos, width,
+		co.CBS_DROPDOWN|co.CBS_SORT,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.WS_EX_NONE)
+}
+
+// Calls CreateWindowEx() with CBS_DROPDOWNLIST.
+//
+// Position and size will be adjusted to the current system DPI.
+func (me *ComboBox) CreateFixed(
+	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
+
+	return me.Create(parent, ctrlId, pos, width,
+		co.CBS_DROPDOWNLIST,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.WS_EX_NONE)
+}
+
+// Calls CreateWindowEx() with CBS_DROPDOWNLIST | CBS_SORT.
+//
+// Position and size will be adjusted to the current system DPI.
+func (me *ComboBox) CreateFixedSorted(
+	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
+
+	return me.Create(parent, ctrlId, pos, width,
+		co.CBS_DROPDOWNLIST|co.CBS_SORT,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.WS_EX_NONE)
+}
+
 // Adds a single item to the combo box.
 func (me *ComboBox) Add(text string) *ComboBox {
 	me.sendCbMessage(co.CB_ADDSTRING,
@@ -38,67 +103,6 @@ func (me *ComboBox) AddMany(texts []string) *ComboBox {
 // Returns the number of items in the list box of a combo box.
 func (me *ComboBox) Count() uint {
 	return uint(me.sendCbMessage(co.CB_GETCOUNT, 0, 0))
-}
-
-// Calls CreateWindowEx(). This is a basic method: no styles are provided by
-// default, you must inform all of them.
-//
-// Position and size will be adjusted to the current system DPI.
-func (me *ComboBox) Create(
-	parent Window, ctrlId int, pos Pos, width uint,
-	exStyles co.WS_EX, styles co.WS, cbStyles co.CBS) *ComboBox {
-
-	size := Size{width, 0}
-	_Ui.MultiplyDpi(&pos, &size)
-
-	me._ControlNativeBase.create(exStyles, "COMBOBOX", "",
-		styles|co.WS(cbStyles), pos, size, parent, ctrlId)
-	_globalUiFont.SetOnControl(me)
-	return me
-}
-
-// Calls CreateWindowEx() with CBS_DROPDOWN.
-//
-// Position and size will be adjusted to the current system DPI.
-func (me *ComboBox) CreateEditable(
-	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
-
-	return me.Create(parent, ctrlId, pos, width, co.WS_EX_NONE,
-		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.CBS_DROPDOWN)
-}
-
-// Calls CreateWindowEx() with CBS_DROPDOWN | CBS_SORT.
-//
-// Position and size will be adjusted to the current system DPI.
-func (me *ComboBox) CreateEditableSorted(
-	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
-
-	return me.Create(parent, ctrlId, pos, width, co.WS_EX_NONE,
-		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.CBS_DROPDOWN|co.CBS_SORT)
-}
-
-// Calls CreateWindowEx() with CBS_DROPDOWNLIST.
-//
-// Position and size will be adjusted to the current system DPI.
-func (me *ComboBox) CreateFixed(
-	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
-
-	return me.Create(parent, ctrlId, pos, width, co.WS_EX_NONE,
-		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.CBS_DROPDOWNLIST)
-}
-
-// Calls CreateWindowEx() with CBS_DROPDOWNLIST | CBS_SORT.
-//
-// Position and size will be adjusted to the current system DPI.
-func (me *ComboBox) CreateFixedSorted(
-	parent Window, ctrlId int, pos Pos, width uint) *ComboBox {
-
-	return me.Create(parent, ctrlId, pos, width, co.WS_EX_NONE,
-		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.CBS_DROPDOWNLIST|co.CBS_SORT)
 }
 
 // Limits the length of the text the user may type with CB_LIMITTEXT. Pass zero

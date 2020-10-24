@@ -18,19 +18,14 @@ type TreeView struct {
 	_ControlNativeBase
 }
 
-// Adds a new root item; returns the newly inserted item.
-func (me *TreeView) AddRootItem(text string) *TreeViewItem {
-	return me.Item(0).AddChild(text)
-}
-
 // Calls CreateWindowEx(). This is a basic method: no styles are provided by
 // default, you must inform all of them.
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *TreeView) Create(
 	parent Window, ctrlId int, pos Pos, size Size,
-	exStyles co.WS_EX, styles co.WS,
-	tvExStyles co.TVS_EX, tvStyles co.TVS) *TreeView {
+	tvStyles co.TVS, tvExStyles co.TVS_EX,
+	styles co.WS, exStyles co.WS_EX) *TreeView {
 
 	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles,
@@ -50,10 +45,15 @@ func (me *TreeView) CreateSimple(
 	parent Window, ctrlId int, pos Pos, size Size) *TreeView {
 
 	return me.Create(parent, ctrlId, pos, size,
-		co.WS_EX_CLIENTEDGE,
-		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.TVS_HASLINES|co.TVS_LINESATROOT|co.TVS_SHOWSELALWAYS|co.TVS_HASBUTTONS,
 		co.TVS_EX_NONE,
-		co.TVS_HASLINES|co.TVS_LINESATROOT|co.TVS_SHOWSELALWAYS|co.TVS_HASBUTTONS)
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.WS_EX_CLIENTEDGE)
+}
+
+// Adds a new root item; returns the newly inserted item.
+func (me *TreeView) AddRootItem(text string) *TreeViewItem {
+	return me.Item(0).AddChild(text)
 }
 
 // Retrieves extended styles with TVM_GETEXTENDEDSTYLE.

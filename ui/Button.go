@@ -22,8 +22,8 @@ type Button struct {
 //
 // Position and size will be adjusted to the current system DPI.
 func (me *Button) Create(
-	parent Window, ctrlId int, pos Pos, size Size,
-	text string, exStyles co.WS_EX, styles co.WS, btnStyles co.BS) *Button {
+	parent Window, ctrlId int, pos Pos, size Size, text string,
+	btnStyles co.BS, styles co.WS, exStyles co.WS_EX) *Button {
 
 	_Ui.MultiplyDpi(&pos, &size)
 	me._ControlNativeBase.create(exStyles, "BUTTON", text,
@@ -39,8 +39,9 @@ func (me *Button) CreateSimple(
 	parent Window, ctrlId int, pos Pos, width uint, text string) *Button {
 
 	return me.Create(parent, ctrlId, pos, Size{width, 23}, text,
-		co.WS_EX_NONE, co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.BS_PUSHBUTTON)
+		co.BS_PUSHBUTTON,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.WS_EX_NONE)
 }
 
 // Calls CreateWindowEx() with height 23, and BS_DEFPUSHBUTTON.
@@ -50,8 +51,9 @@ func (me *Button) CreateSimpleDef(
 	parent Window, ctrlId int, pos Pos, width uint, text string) *Button {
 
 	return me.Create(parent, ctrlId, pos, Size{width, 23}, text,
-		co.WS_EX_NONE, co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
-		co.BS_DEFPUSHBUTTON)
+		co.BS_DEFPUSHBUTTON,
+		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
+		co.WS_EX_NONE)
 }
 
 // Sets the text in the button control.
