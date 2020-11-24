@@ -40,16 +40,6 @@ func (hInst HINSTANCE) GetClassInfoEx(
 	return ATOM(ret), nil
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
-//
-// Pass an empty string to get own process handle.
-func GetModuleHandle(moduleName string) HINSTANCE {
-	ret, _, _ := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(moduleName))),
-		0, 0)
-	return HINSTANCE(ret)
-}
-
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(lpCursorName co.IDC) HCURSOR {
 	ret, _, lerr := syscall.Syscall(proc.LoadCursor.Addr(), 2,

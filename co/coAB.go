@@ -98,6 +98,16 @@ const (
 	APPCOMMAND_DWM_FLIP3D                        APPCOMMAND = 54
 )
 
+// Button control notifications, sent via WM_NOTIFY.
+type BCN NM
+
+const (
+	_BCN_FIRST BCN = -1250
+
+	BCN_HOTITEMCHANGE BCN = _BCN_FIRST + 0x0001
+	BCN_DROPDOWN      BCN = _BCN_FIRST + 0x0002
+)
+
 // BITMAPINFOHEADER biCompression.
 type BI uint32
 
@@ -134,7 +144,7 @@ const (
 )
 
 // Button control notifications, sent via WM_COMMAND.
-type BN uint16
+type BN int32
 
 const (
 	BN_CLICKED       BN = 0

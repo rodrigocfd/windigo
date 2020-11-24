@@ -192,7 +192,7 @@ const (
 	LVKF_SHIFT   LVKF = 0x0004
 )
 
-// ListView messages.
+// ListView control messages.
 type LVM WM
 
 const (
@@ -324,7 +324,7 @@ const (
 	LVM_GETNEXTITEMINDEX         LVM = _LVM_FIRST + 211
 )
 
-// ListView notifications, sent via WM_NOTIFY.
+// ListView control notifications, sent via WM_NOTIFY.
 type LVN NM
 
 const (
@@ -390,7 +390,7 @@ const (
 	LVIR_SELECTBOUNDS LVIR = 3
 )
 
-// ListView styles.
+// ListView control styles.
 type LVS WS
 
 const (
@@ -418,7 +418,7 @@ const (
 	LVS_TYPESTYLEMASK   LVS = 0xfc00
 )
 
-// ListView extended styles.
+// ListView control extended styles.
 type LVS_EX WS_EX
 
 const (

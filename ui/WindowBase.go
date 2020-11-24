@@ -8,20 +8,28 @@ package ui
 
 import (
 	"fmt"
-	"syscall"
 	"unsafe"
 	"windigo/co"
 	"windigo/win"
 )
 
-// Base to all window types: WindowControl, WindowMain and WindowModal.
+const _WM_UI_THREAD = co.WM_APP + 0x3fff // sent by RunUiThread()
+type _FuncPack struct{ UserFunc func() } // transports user closure in UI thread handling
+
+//------------------------------------------------------------------------------
+
+// Base to all bare window parent types.
 type _WindowBase struct {
 	hwnd           win.HWND
-	eventsWmCmdNfy _EventsWmCmdNfy
+	eventsWmCmdNfy *_EventsWmCmdNfy
 }
 
-const _WM_UI_THREAD = co.WM_APP + 0x3fff   // used in UI thread handling
-type _ThreadPack struct{ UserFunc func() } // transports user closure
+// Constructor.
+func _NewWindowBase() *_WindowBase {
+	return &_WindowBase{
+		eventsWmCmdNfy: _NewEventsWmCmdNfy(),
+	}
+}
 
 // Returns the underlying HWND handle of this window.
 func (me *_WindowBase) Hwnd() win.HWND {
@@ -30,27 +38,26 @@ func (me *_WindowBase) Hwnd() win.HWND {
 
 // Exposes all the window messages the can be handled.
 func (me *_WindowBase) On() *_EventsWmCmdNfy {
-	if me.Hwnd() != 0 {
+	if me.hwnd != 0 {
 		panic("Cannot add message after the window was created.")
 	}
-	return &me.eventsWmCmdNfy
+	return me.eventsWmCmdNfy
 }
 
 // Runs a closure synchronously in the window original UI thread.
-//
 // When in a goroutine, you *MUST* use this method to update the UI.
 func (me *_WindowBase) RunUiThread(userFunc func()) {
 	// This method is analog to SendMessage (synchronous), but intended to be
 	// called from another thread, so a callback function can, tunelled by
 	// wndproc, run in the original thread of the window, thus allowing GUI
 	// updates. This avoids the user to deal with a custom WM_ message.
-	pack := &_ThreadPack{UserFunc: userFunc}
-	me.hwnd.SendMessage(_WM_UI_THREAD, 0xc0def00d,
+	pack := &_FuncPack{UserFunc: userFunc}
+	me.hwnd.SendMessage(_WM_UI_THREAD, 0xc0de_f00d,
 		win.LPARAM(unsafe.Pointer(pack)))
 }
 
+// Calls RegisterClassEx().
 func (me *_WindowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
-	wcx.LpfnWndProc = syscall.NewCallback(wndProc)
 	atom, err := win.RegisterClassEx(wcx)
 
 	if err != nil && err.Code() == co.ERROR_CLASS_ALREADY_EXISTS {
@@ -70,10 +77,11 @@ func (me *_WindowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 	return atom
 }
 
+// Calls CreateWindowEx().
 func (me *_WindowBase) createWindow(
 	windowNameForDebugging string, exStyle co.WS_EX,
 	className, title string, style co.WS, pos Pos, size Size,
-	parent Window, menu win.HMENU, hInst win.HINSTANCE) {
+	parent Parent, menu win.HMENU, hInst win.HINSTANCE) {
 
 	if me.hwnd != 0 {
 		panic(fmt.Sprintf("Trying to create %s \"%s\" twice.",
@@ -85,25 +93,25 @@ func (me *_WindowBase) createWindow(
 		hwndParent = parent.Hwnd()
 	}
 
-	me.defaultMessageHandling()
-
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
 	win.CreateWindowEx(exStyle, className, title, style,
 		int32(pos.X), int32(pos.Y), int32(size.Cx), int32(size.Cy),
 		hwndParent, menu, hInst, unsafe.Pointer(me)) // pass pointer to our object
 }
 
+// Adds the messages which have a default processing. Called by derived windows.
 func (me *_WindowBase) defaultMessageHandling() {
-	me.eventsWmCmdNfy.Wm(_WM_UI_THREAD, func(p Wm) uintptr { // handle our custom thread UI message
-		if p.WParam == 0xc0def00d {
-			pack := (*_ThreadPack)(unsafe.Pointer(p.LParam))
+	me.On().Wm(_WM_UI_THREAD, func(p Wm) uintptr { // handle our custom thread UI message
+		if p.WParam == 0xc0de_f00d {
+			pack := (*_FuncPack)(unsafe.Pointer(p.LParam))
 			pack.UserFunc()
 		}
 		return 0
 	})
 }
 
-func wndProc(
+// WNDPROC for all bare windows.
+func _globalWndProc(
 	hwnd win.HWND, msg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
 	// https://devblogs.microsoft.com/oldnewthing/20050422-08/?p=35813
@@ -130,8 +138,8 @@ func wndProc(
 	}
 
 	// Try to process the message with an user handler.
-	userRet, wasHandled := pMe.eventsWmCmdNfy.processMessage(msg,
-		Wm{WParam: wParam, LParam: lParam})
+	retVal, useRetVal, wasHandled := pMe.eventsWmCmdNfy.processMessage(
+		msg, Wm{WParam: wParam, LParam: lParam})
 
 	// No further messages processed after this one.
 	if msg == co.WM_NCDESTROY {
@@ -140,7 +148,10 @@ func wndProc(
 	}
 
 	if wasHandled {
-		return userRet
+		if useRetVal {
+			return retVal
+		}
+		return 0
 	}
 	return hwnd.DefWindowProc(msg, wParam, lParam) // message was not processed
 }

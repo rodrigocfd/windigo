@@ -172,14 +172,14 @@ func GetCurrentThreadId() uint32 {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcursorpos
-func GetCursorPos() POINT {
+func GetCursorPos() *POINT {
 	pt := POINT{}
 	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "GetCursorPos").Error())
 	}
-	return pt
+	return &pt
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforsystem
@@ -203,6 +203,19 @@ func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
 	return int32(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
+//
+// Pass an empty string to get own process handle.
+func GetModuleHandle(moduleName string) HINSTANCE {
+	ret, _, lerr := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(moduleName))),
+		0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "GetModuleHandle").Error())
+	}
+	return HINSTANCE(ret)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-getopenfilenamew
 func GetOpenFileName(ofn *OPENFILENAME) bool {
 	ofn.LStructSize = uint32(unsafe.Sizeof(*ofn)) // safety
@@ -222,14 +235,14 @@ func GetOpenFileName(ofn *OPENFILENAME) bool {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos
-func GetPhysicalCursorPos() POINT {
+func GetPhysicalCursorPos() *POINT {
 	pt := POINT{}
 	ret, _, lerr := syscall.Syscall(proc.GetPhysicalCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "GetPhysicalCursorPos").Error())
 	}
-	return pt
+	return &pt
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-getsavefilenamew
@@ -265,6 +278,19 @@ func HiByte(value uint16) uint8 {
 // https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632657(v=vs.85)
 func HiWord(value uint32) uint16 {
 	return uint16(value >> 16 & 0xffff)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
+func ImageListCreate(cx, cy uint32, flags co.ILC,
+	cInitial, cGrow uint32) HIMAGELIST {
+
+	ret, _, _ := syscall.Syscall6(proc.ImageList_Create.Addr(), 5,
+		uintptr(cx), uintptr(cy), uintptr(flags),
+		uintptr(cInitial), uintptr(cGrow), 0)
+	if ret == 0 {
+		panic("ImageList_Create failed.")
+	}
+	return HIMAGELIST(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
@@ -374,6 +400,11 @@ func LoWord(value uint32) uint16 {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makelparam
 func MakeLParam(lo, hi uint16) LPARAM {
 	return LPARAM((uint32(lo) & 0xffff) | ((uint32(hi) & 0xffff) << 16))
+}
+
+// https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632663(v=vs.85)
+func MakeWord(lo, hi uint8) uint16 {
+	return (uint16(lo) & 0xff) | ((uint16(hi) & 0xff) << 8)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makewparam

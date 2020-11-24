@@ -11,42 +11,44 @@ import (
 	"windigo/win"
 )
 
-// Custom user control.
-//
-// Allows message and notification handling.
+// Custom control window.
 type WindowControl struct {
-	_WindowBase
-	setup _WindowSetupControl // Parameters that will be used to create the window.
+	*_WindowBase
+	opts *_OptsWindowControl
 }
 
-// Retrieves the command ID for this control.
-func (me *WindowControl) Id() int {
-	return int(me.hwnd.GetDlgCtrlID())
-}
-
-// Exposes parameters that will be used to create the child window control.
-func (me *WindowControl) Setup() *_WindowSetupControl {
-	if me.Hwnd() != 0 {
-		panic("Cannot change setup after the control was created.")
+// Constructor. Initializes the window with the given options.
+func NewWindowControl(opts *_OptsWindowControl) *WindowControl {
+	me := WindowControl{
+		_WindowBase: _NewWindowBase(),
+		opts:        opts,
 	}
-	me.setup.initOnce() // guard
-	return &me.setup
-}
-
-// Creates the child window control.
-func (me *WindowControl) Create(parent Window, ctrlId int, pos Pos, size Size) {
-	me.setup.initOnce() // guard
-	hInst := parent.Hwnd().GetInstance()
-	me._WindowBase.registerClass(me.setup.genWndclassex(hInst))
 
 	me.defaultMessageHandling()
-
-	_Ui.MultiplyDpi(&pos, &size)
-	me._WindowBase.createWindow("WindowControl", me.setup.ExStyle,
-		me.setup.ClassName, "", me.setup.Style, pos, size, parent,
-		win.HMENU(ctrlId), hInst)
+	return &me
 }
 
+// Creates the child window control, returning immediately.
+func (me *WindowControl) Create(parent Parent, pos Pos, size Size) {
+	hInst := parent.Hwnd().GetInstance()
+	wcx, className := _global.GenerateWndclassex(hInst, me.opts.ClassName,
+		me.opts.ClassStyles, me.opts.HCursor, me.opts.HBrushBackground,
+		co.COLOR_WINDOW, win.HICON(0), win.HICON(0))
+	me.opts.ClassName = className // if not specified, is auto-generated
+	me._WindowBase.registerClass(wcx)
+
+	_global.MultiplyDpi(&pos, &size)
+	me._WindowBase.createWindow("WindowControl", me.opts.ExStyles,
+		me.opts.ClassName, "", me.opts.Styles, pos, size, parent,
+		win.HMENU(me.opts.CtrlId), hInst)
+}
+
+// Returns the control ID.
+func (me *WindowControl) CtrlId() int {
+	return me.opts.CtrlId
+}
+
+// Adds the messages which have a default processing.
 func (me *WindowControl) defaultMessageHandling() {
 	me.On().WmNcPaint(func(p WmNcPaint) {
 		me.Hwnd().DefWindowProc(co.WM_NCPAINT, p.Raw().WParam, p.Raw().LParam) // make system draw the scrollbar for us
@@ -86,4 +88,43 @@ func (me *WindowControl) defaultMessageHandling() {
 			hTheme.DrawThemeBackground(hdc, co.VS_PART_LVP_LISTGROUP, co.VS_STATE_NONE, rc, &rc2) // draw themed bottom border
 		}
 	})
+}
+
+//------------------------------------------------------------------------------
+
+type _OptsWindowControl struct {
+	// Class name registered with RegisterClassEx().
+	// Defaults to a computed hash.
+	ClassName string
+	// Window class styles, passed to RegisterClassEx().
+	// Defaults to CS_DBLCLKS.
+	ClassStyles co.CS
+	// Window cursor, passed to RegisterClassEx().
+	// Defaults to stock IDC_ARROW.
+	HCursor win.HCURSOR
+	// Window background brush, passed to RegisterClassEx().
+	// Defaults to COLOR_WINDOW color.
+	HBrushBackground win.HBRUSH
+
+	// Window styles, passed to CreateWindowEx().
+	// Defaults to WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS.
+	Styles co.WS
+	// Extended window styles, passed to CreateWindowEx().
+	// Defaults to WS_EX_CLIENTEDGE, giving the control a border.
+	ExStyles co.WS_EX
+
+	// Specific control ID. If defined, must be unique.
+	// Defaults to an auto-generated number.
+	CtrlId int
+}
+
+// Constructor. Returns an option set for NewWindowControl() with default values.
+func DefOptsWindowControl() *_OptsWindowControl {
+	return &_OptsWindowControl{
+		ClassStyles:      co.CS_DBLCLKS,
+		HCursor:          win.HINSTANCE(0).LoadCursor(co.IDC_ARROW),
+		HBrushBackground: win.CreateSysColorBrush(co.COLOR_WINDOW),
+		Styles:           co.WS_CHILD | co.WS_VISIBLE | co.WS_CLIPCHILDREN | co.WS_CLIPSIBLINGS,
+		ExStyles:         co.WS_EX_CLIENTEDGE, // has a border by default
+	}
 }

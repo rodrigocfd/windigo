@@ -25,7 +25,7 @@ type RegistryKey struct {
 type RegistryValueInfo struct {
 	DataType co.REG
 	Name     string
-	Size     uint // in uint8, notice wide strings are uint16 chars
+	Size     int // size in bytes, notice wide strings are uint16 chars
 }
 
 // Calls RegCloseKey and sets the HKEY to zero.
@@ -55,7 +55,7 @@ func (me *RegistryKey) EnumValues() []RegistryValueInfo {
 			retVals = append(retVals, RegistryValueInfo{
 				DataType: dataType,
 				Name:     syscall.UTF16ToString(nameBuf),
-				Size:     uint(dataBufSz),
+				Size:     int(dataBufSz),
 			})
 			index++
 		} else if status == co.ERROR_NO_MORE_ITEMS { // we're done
@@ -83,14 +83,14 @@ func (me *RegistryKey) OpenForRead(
 }
 
 // Retrieves data type and size.
-func (me *RegistryKey) ValueInfo(valueName string) (co.REG, uint) {
+func (me *RegistryKey) ValueInfo(valueName string) (co.REG, int) {
 	dataType := co.REG_NONE
 	dataBufSize := uint32(0)
 	err := me.hKey.RegQueryValueEx(valueName, &dataType, nil, &dataBufSize)
 	if err != nil {
 		panic(err.Error())
 	}
-	return dataType, uint(dataBufSize)
+	return dataType, int(dataBufSize)
 }
 
 // Reads a string. Panics if data type is different.
@@ -110,7 +110,7 @@ func (me *RegistryKey) ReadString(valueName string) string {
 }
 
 // Reads an uint32. Panics if data type is different.
-func (me *RegistryKey) ReadDword(valueName string) uint {
+func (me *RegistryKey) ReadDword(valueName string) int {
 	dataType, dataBufSize := me.ValueInfo(valueName)
 	if dataType != co.REG_DWORD {
 		panic(fmt.Sprintf("Registry value isn't uint32, type is %d.", dataType))
@@ -122,7 +122,7 @@ func (me *RegistryKey) ReadDword(valueName string) uint {
 		unsafe.Pointer(&dataBuf), &dataBufSize32); err != nil {
 		panic(err.Error())
 	}
-	return uint(dataBuf)
+	return int(dataBuf)
 }
 
 // Checks if a value exists within the key.

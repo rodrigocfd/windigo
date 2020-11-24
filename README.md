@@ -8,7 +8,7 @@ Windigo is composed of three packages:
 
 * `co` – typed Win32 constants;
 * `win` – Win32 structs, handles and functions;
-* `ui` – high level wrappers.
+* `ui` – Windigo high level wrappers.
 
 Windigo aims to provide a solid foundation to build fast, native and scalable Win32 applications in Go.
 
@@ -24,52 +24,45 @@ package main
 import (
     "windigo/co"
     "windigo/ui"
+    "windigo/win"
 )
 
 func main() {
-    w := MyWindow{}
-    w.RunThisThing()
+    myWnd := NewMyWindow()
+    myWnd.Run()
 }
 
-// We implement our window as a struct, which contains a ui.WindowMain member,
-// responsible by window creation and management.
-// We also have a button, which we will create during WM_CREATE event.
 type MyWindow struct {
-    wnd      ui.WindowMain
-    btnHello ui.Button
+    wnd      *ui.WindowMain
+    btnHello *ui.Button
 }
 
-const (
-    // Here we define a constant to identify our button.
-    ID_BTN_HELLO int32 = iota + 1000
-)
+func NewMyWindow() *MyWindow {
+    opts := ui.NewOptsWindowMain()
+    opts.Title = "Hello world"
+    opts.Styles |= co.WS_MINIMIZEBOX
 
-func (me *MyWindow) RunThisThing() {
-    // Here we define some initial parameters of our window.
-    // There are many others, and they're all optional.
-    me.wnd.Setup().Title = "This is the title"
-    me.wnd.Setup().Style |= co.WS_MINIMIZEBOX
+    wnd := ui.NewWindowMain(opts)
 
-    // WM_CREATE event is handled with a closure.
-    // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-create
-    me.wnd.On().WmCreate(func(p *win.CREATESTRUCT) int32 {
-        // Physically create the button.
-        // The last 3 arguments are: left position, top position and width.
-        me.btnHello.CreateSimpleDef(&me.wnd, ID_BTN_HELLO, 10, 10, 90)
+    return &MyMain{
+        wnd:      wnd,
+        btnHello: ui.NewButton(wnd),
+    }
+}
+
+func (me *MyWindow) Run() int {
+    me.events()
+    return me.wnd.RunAsMain()
+}
+
+func (me *MyWindow) events() {
+    me.wnd.On().WmCreate(func(_ *win.CREATESTRUCT) int {
+        me.btnHello.CreateSimpleDef(ui.Pos{X: 10, Y: 10}, 90)
         return 0
     })
 
-    // The button click is handled in the WM_COMMAND event.
-    // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
-    me.wnd.On().WmCommand(ID_BTN_HELLO, func(p ui.WmCommand) {
-        // This is the action we execute: show a popup message box.
-        // The Hwnd() method returns the HWND handle of our window, which gives
-        // us access to all Win32 functions executed on HWNDs.
-        me.wnd.Hwnd().MessageBox("Hello world", "Hi", co.MB_ICONINFORMATION)
+    me.btnHello.On().BnClicked(func() {
+        ui.SysDlg.MsgBox(me.wnd, "Hi", "Hello world!", co.MB_ICONINFORMATION)
     })
-
-    // Finally run our main window.
-    // This method will block until the window is closed.
-    return me.wnd.RunAsMain()
 }
 ```

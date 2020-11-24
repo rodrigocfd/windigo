@@ -11,9 +11,52 @@ import (
 	"windigo/win"
 )
 
+// Used in NewFileOpen().
+//
+// Behavior of the file opening.
+type FILEO uint8
+
+const (
+	FILEO_READ_EXISTING             FILEO = iota // Open an existing file for read only.
+	FILEO_READ_WRITE_EXISTING                    // Open an existing file for read and write.
+	FILEO_READ_WRITE_OPEN_OR_CREATE              // Open a file or create if it doesn't exist, for read and write.
+)
+
+//------------------------------------------------------------------------------
+
 // Manages a file resource.
 type File struct {
 	hFile win.HFILE
+}
+
+// Constructor.
+func NewFileOpen(path string, behavior FILEO) (*File, *win.WinError) {
+	var desiredAccess co.GENERIC
+	var shareMode co.FILE_SHARE
+	var creationDisposition co.FILE_DISPO
+
+	switch behavior {
+	case FILEO_READ_EXISTING:
+		desiredAccess = co.GENERIC_READ
+		shareMode = co.FILE_SHARE_READ
+		creationDisposition = co.FILE_DISPO_OPEN_EXISTING
+	case FILEO_READ_WRITE_EXISTING:
+		desiredAccess = co.GENERIC_READ | co.GENERIC_WRITE
+		shareMode = co.FILE_SHARE_NONE
+		creationDisposition = co.FILE_DISPO_OPEN_EXISTING
+	case FILEO_READ_WRITE_OPEN_OR_CREATE:
+		desiredAccess = co.GENERIC_READ | co.GENERIC_WRITE
+		shareMode = co.FILE_SHARE_NONE
+		creationDisposition = co.FILE_DISPO_OPEN_ALWAYS
+	}
+
+	hFile, err := win.CreateFile(path, desiredAccess, shareMode, nil,
+		creationDisposition, co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE,
+		co.SECURITY_NONE, 0)
+	if err != nil {
+		return nil, err
+	}
+	return &File{hFile: hFile}, nil
 }
 
 // Calls CloseHandle() to free the file resource.
@@ -33,21 +76,6 @@ func (me *File) EraseAndWrite(data []byte) *win.WinError {
 		return err
 	}
 	return me.RewindPointerOffset()
-}
-
-func (me *File) OpenExistingForRead(path string) *win.WinError {
-	return me.rawOpen(path, co.GENERIC_READ,
-		co.FILE_SHARE_READ, co.FILE_DISPO_OPEN_EXISTING)
-}
-
-func (me *File) OpenExistingForReadWrite(path string) *win.WinError {
-	return me.rawOpen(path, co.GENERIC_READ|co.GENERIC_WRITE,
-		co.FILE_SHARE_NONE, co.FILE_DISPO_OPEN_EXISTING)
-}
-
-func (me *File) OpenOrCreate(path string) *win.WinError {
-	return me.rawOpen(path, co.GENERIC_READ|co.GENERIC_WRITE,
-		co.FILE_SHARE_NONE, co.FILE_DISPO_OPEN_ALWAYS)
 }
 
 // Retrieves the current pointer offset.
@@ -121,16 +149,4 @@ func (me *File) Size() uint {
 // Writes the bytes at current internal pointer offset, which then advances.
 func (me *File) Write(data []byte) *win.WinError {
 	return me.hFile.WriteFile(data)
-}
-
-func (me *File) rawOpen(
-	path string, desiredAccess co.GENERIC, shareMode co.FILE_SHARE,
-	creationDisposition co.FILE_DISPO) *win.WinError {
-
-	me.Close()
-	var err *win.WinError
-	me.hFile, err = win.CreateFile(path, desiredAccess, shareMode, nil,
-		creationDisposition, co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE,
-		co.SECURITY_NONE, 0)
-	return err
 }

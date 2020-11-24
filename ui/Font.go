@@ -20,7 +20,7 @@ type Font struct {
 }
 
 // Simplified options to create a Font object.
-type FontSetup struct {
+type FontOpts struct {
 	Name      string
 	Size      int
 	Bold      bool
@@ -29,21 +29,8 @@ type FontSetup struct {
 	Underline bool
 }
 
-// Calls DeleteObject and sets the HFONT to zero.
-func (me *Font) Destroy() {
-	if me.hFont != 0 {
-		me.hFont.DeleteObject()
-		me.hFont = win.HFONT(0)
-	}
-}
-
-// Returns the HFONT handle.
-func (me *Font) Hfont() win.HFONT {
-	return me.hFont
-}
-
-// Creates a font based on a FontSetup struct.
-func (me *Font) Create(setup *FontSetup) *Font {
+// Constructor.
+func (me *Font) Create(setup *FontOpts) *Font {
 	me.Destroy()
 	lf := win.LOGFONT{}
 	lf.LfHeight = -(int32(setup.Size) + 3)
@@ -70,16 +57,18 @@ func (me *Font) Create(setup *FontSetup) *Font {
 		lf.LfStrikeOut = 1
 	}
 
-	return me.CreateFromLogFont(&lf)
+	return me.CreateLogFont(&lf)
 }
 
+// Constructor.
 // Creates a font based on a LOGFONT struct.
-func (me *Font) CreateFromLogFont(lf *win.LOGFONT) *Font {
+func (me *Font) CreateLogFont(lf *win.LOGFONT) *Font {
 	me.Destroy()
 	me.hFont = win.CreateFontIndirect(lf)
 	return me
 }
 
+// Constructor.
 // Creates a font identical to the current system font, usually Tahoma or Segoe
 // UI. Because we call SetProcessDPIAware(), higher DPI resolutions will be
 // reflected in the font size.
@@ -93,18 +82,25 @@ func (me *Font) CreateUi() *Font {
 
 	win.SystemParametersInfo(co.SPI_GETNONCLIENTMETRICS,
 		ncm.CbSize, unsafe.Pointer(&ncm), 0)
-	me.CreateFromLogFont(&ncm.LfMenuFont)
+	me.CreateLogFont(&ncm.LfMenuFont)
 	return me
 }
 
-// Replaces current HFONT with another one.
-func (me *Font) Set(hFont win.HFONT) *Font {
-	me.hFont = hFont
-	return me
+// Releases the font resource.
+func (me *Font) Destroy() {
+	if me.hFont != 0 {
+		me.hFont.DeleteObject()
+		me.hFont = win.HFONT(0)
+	}
+}
+
+// Returns the HFONT handle.
+func (me *Font) Hfont() win.HFONT {
+	return me.hFont
 }
 
 // Sends a WM_SETFONT message to the child control to apply the font.
-func (me *Font) SetOnControl(ctrl Window) *Font {
+func (me *Font) SetOnControl(ctrl Control) *Font {
 	ctrl.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(me.hFont), 1)
 	return me
 }

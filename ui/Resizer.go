@@ -22,6 +22,16 @@ const (
 	RESZ_NOTHING             // When parent resizes, do nothing.
 )
 
+//------------------------------------------------------------------------------
+
+// When the parent window resizes, changes size and/or position of several
+// children automatically.
+type Resizer struct {
+	parent Parent
+	ctrls  []_ReszCtrl
+	szOrig win.SIZE // original parent client area size
+}
+
 type _ReszCtrl struct {
 	hChild Control
 	rcOrig win.RECT
@@ -29,42 +39,36 @@ type _ReszCtrl struct {
 	doVert RESZ
 }
 
-// When the parent window resizes, changes size and/or position of several
-// children automatically.
-type Resizer struct {
-	ctrls  []_ReszCtrl
-	szOrig win.SIZE
+// Constructor.
+func NewResizer(parent Parent) *Resizer {
+	return &Resizer{
+		parent: parent,
+	}
 }
 
-// Adds a child control and its resizing behavior.
-func (me *Resizer) Add(child Control, doHorz, doVert RESZ) *Resizer {
-	hParent := child.Hwnd().GetParent()
-	if len(me.ctrls) == 0 { // first control being added
-		rc := hParent.GetClientRect()
-		me.szOrig.Cx = rc.Right
-		me.szOrig.Cy = rc.Bottom // save original size of parent
+// Adds child controls and their behavior when the parent is resized.
+func (me *Resizer) Add(
+	horzBehavior, vertBehavior RESZ, ctrls ...Control) *Resizer {
+
+	if len(me.ctrls) == 0 { // first one being added
+		rcParent := me.parent.Hwnd().GetClientRect()
+		me.szOrig = win.SIZE{Cx: rcParent.Right, Cy: rcParent.Bottom} // cache
 	}
 
-	me.ctrls = append(me.ctrls, _ReszCtrl{
-		hChild: child,
-		rcOrig: *child.Hwnd().GetWindowRect(),
-		doHorz: doHorz,
-		doVert: doVert,
-	})
-	hParent.ScreenToClientRc(&me.ctrls[len(me.ctrls)-1].rcOrig) // client coordinates relative to parent
-	return me
-}
-
-// Adds many child controls at once with an unique resizing behavior.
-func (me *Resizer) AddMany(children []Control, doHorz, doVert RESZ) *Resizer {
-	for _, child := range children {
-		me.Add(child, doHorz, doVert)
+	for _, ctrl := range ctrls {
+		me.ctrls = append(me.ctrls, _ReszCtrl{
+			hChild: ctrl,
+			rcOrig: *ctrl.Hwnd().GetWindowRect(),
+			doHorz: horzBehavior,
+			doVert: vertBehavior,
+		})
+		me.parent.Hwnd().ScreenToClientRc(&me.ctrls[len(me.ctrls)-1].rcOrig) // client coordinates relative to parent
 	}
 	return me
 }
 
 // Call during WM_SIZE processing to adjust all child controls at once.
-func (me *Resizer) Adjust(p WmSize) {
+func (me *Resizer) AdjustToParent(p WmSize) {
 	if len(me.ctrls) == 0 || p.Request() == co.SIZE_MINIMIZED {
 		return // no need to resize if window is minimized
 	}

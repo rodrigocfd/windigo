@@ -12,15 +12,59 @@ import (
 	"windigo/win"
 )
 
+// Used in NewFileMappedOpen().
+//
+// Behavior of the file opening.
+type FILEMAPO uint8
+
+const (
+	FILEMAPO_READ       FILEMAPO = iota // Open an existing file for read only.
+	FILEMAPO_READ_WRITE                 // Open an existing file for read and write.
+)
+
+//------------------------------------------------------------------------------
+
 // Manages a memory-mapped file resource.
 type FileMapped struct {
-	objFile  File
+	objFile  *File
 	hMap     win.HFILEMAP
 	pMem     win.HFILEMAP_PTR
 	sz       uint
 	readOnly bool // necessary for SetSize()
 }
 
+// Constructor.
+func NewFileMappedOpen(path string, behavior FILEMAPO) (*FileMapped, *win.WinError) {
+	var fBeh FILEO
+	var readOnly bool
+
+	switch behavior {
+	case FILEMAPO_READ:
+		fBeh = FILEO_READ_EXISTING
+		readOnly = true
+	case FILEMAPO_READ_WRITE:
+		fBeh = FILEO_READ_WRITE_EXISTING
+		readOnly = false
+	}
+
+	fObj, err := NewFileOpen(path, fBeh)
+	if err != nil {
+		return nil, err
+	}
+
+	me := FileMapped{
+		objFile:  fObj,
+		readOnly: readOnly,
+	}
+
+	if err := me.mapInMemory(); err != nil {
+		return nil, err
+	}
+
+	return &me, nil
+}
+
+// Unmaps and frees the file resource.
 func (me *FileMapped) Close() {
 	if me.pMem != 0 {
 		me.pMem.UnmapViewOfFile()
@@ -48,14 +92,6 @@ func (me *FileMapped) HotSlice() []byte {
 	}{unsafe.Pointer(me.pMem), int(me.sz), int(me.sz)}
 
 	return *(*[]byte)(unsafe.Pointer(&sliceMem))
-}
-
-func (me *FileMapped) OpenExistingForRead(path string) *win.WinError {
-	return me.rawOpen(path, true)
-}
-
-func (me *FileMapped) OpenExistingForReadWrite(path string) *win.WinError {
-	return me.rawOpen(path, false)
 }
 
 // Copies all file data into a []byte and returns it.
@@ -118,19 +154,4 @@ func (me *FileMapped) mapInMemory() *win.WinError {
 	me.sz = me.objFile.Size()
 
 	return nil // file mapped successfully
-}
-
-func (me *FileMapped) rawOpen(path string, readOnly bool) *win.WinError {
-	me.Close()
-	if readOnly {
-		if err := me.objFile.OpenExistingForRead(path); err != nil {
-			return err
-		}
-	} else {
-		if err := me.objFile.OpenExistingForReadWrite(path); err != nil {
-			return err
-		}
-	}
-	me.readOnly = readOnly // keep flag
-	return me.mapInMemory()
 }

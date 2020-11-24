@@ -11,15 +11,21 @@ import (
 )
 
 type (
-	// Any window with a HWND handle.
+	// Any window.
 	Window interface {
 		Hwnd() win.HWND
 	}
 
-	// Any child control with HWND and ID.
+	// Any window which can have child controls.
+	Parent interface {
+		Window
+		On() *_EventsWmCmdNfy
+	}
+
+	// Any child control.
 	Control interface {
 		Window
-		Id() int
+		CtrlId() int
 	}
 )
 
@@ -31,6 +37,9 @@ type (
 
 	// The size of a window or child control.
 	Size struct {
-		Cx, Cy uint
+		Cx, Cy int
 	}
 )
+
+func (me Pos) equals(other Pos) bool   { return me.X == other.X && me.Y == other.Y }
+func (me Size) equals(other Size) bool { return me.Cx == other.Cy && me.Cy == other.Cy }

@@ -218,9 +218,9 @@ func GetForegroundWindow() HWND {
 	return HWND(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
-//
 // GetWindowLongPtr() with GWLP_HINSTANCE flag.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
 func (hWnd HWND) GetInstance() HINSTANCE {
 	return HINSTANCE(hWnd.GetWindowLongPtr(co.GWLP_HINSTANCE))
 }
@@ -252,9 +252,9 @@ func (hWnd HWND) GetParent() HWND {
 	return HWND(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
-//
 // GetWindowLongPtr() with GWLP_STYLE flag.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
 func (hWnd HWND) GetStyle() co.WS {
 	return co.WS(hWnd.GetWindowLongPtr(co.GWLP_STYLE))
 }
@@ -375,6 +375,7 @@ func (hWnd HWND) IsIconic() bool {
 }
 
 // Allegedly undocumented Win32 function; implemented here.
+//
 // https://stackoverflow.com/a/16975012
 func (hWnd HWND) IsTopLevelWindow() bool {
 	return hWnd == hWnd.GetAncestor(co.GA_ROOT)
@@ -496,9 +497,9 @@ func (hWnd HWND) SendMessage(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	return ret
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
-//
 // SetWindowLongPtr() with GWLP_EXSTYLE flag.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
 func (hWnd HWND) SetExStyle(style co.WS) {
 	hWnd.SetWindowLongPtr(co.GWLP_EXSTYLE, uintptr(style))
 }
@@ -530,9 +531,9 @@ func (hWnd HWND) SetParent(hWndNewParent HWND) HWND {
 	return HWND(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
-//
 // SetWindowLongPtr() with GWLP_STYLE flag.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
 func (hWnd HWND) SetStyle(style co.WS) {
 	hWnd.SetWindowLongPtr(co.GWLP_STYLE, uintptr(style))
 }
@@ -567,9 +568,9 @@ func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
 	return ret
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
-//
 // You can pass a HWND handle or SWP_HWND constants in hwndInsertAfter argument.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
 func (hWnd HWND) SetWindowPos(
 	hwndInsertAfter co.SWP_HWND, x, y, cx, cy int32, uFlags co.SWP) {
 
@@ -582,10 +583,10 @@ func (hWnd HWND) SetWindowPos(
 	}
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-setwindowsubclass
-//
 // Use syscall.NewCallback() to convert the closure to uintptr, and keep this
 // uintptr to pass to RemoveWindowSubclass().
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-setwindowsubclass
 func (hWnd HWND) SetWindowSubclass(
 	subclassProc uintptr, uIdSubclass uint32, dwRefData unsafe.Pointer) {
 

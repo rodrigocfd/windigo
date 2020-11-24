@@ -106,9 +106,10 @@ const (
 )
 
 // ComboBox notifications, sent via WM_COMMAND.
-type CBN uint16
+type CBN int32
 
 const (
+	CBN_ERRSPACE     CBN = -1
 	CBN_SELCHANGE    CBN = 1
 	CBN_DBLCLK       CBN = 2
 	CBN_SETFOCUS     CBN = 3

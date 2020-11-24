@@ -20,9 +20,11 @@ type HIMAGELIST HANDLE
 //
 // If icon was loaded with LoadIcon(), it doesn't need to be destroyed, because
 // all icon resources are automatically freed.
-// Otherwise, if CreateIcon(), it can be destroyed after the function returns.
-func (hImg HIMAGELIST) AddIcon(hIcon HICON) {
-	hImg.ReplaceIcon(-1, hIcon)
+// Otherwise, if loaded with CreateIcon(), it must be destroyed.
+func (hImg HIMAGELIST) AddIcon(hIcons ...HICON) {
+	for _, hIco := range hIcons {
+		hImg.ReplaceIcon(-1, hIco)
+	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_destroy
@@ -83,19 +85,6 @@ func (hImg HIMAGELIST) GetImageInfo(index uint32) *IMAGEINFO {
 		panic("ImageList_GetImageInfo failed.")
 	}
 	return &ii
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
-func ImageListCreate(cx, cy uint32, flags co.ILC,
-	cInitial, cGrow uint32) HIMAGELIST {
-
-	ret, _, _ := syscall.Syscall6(proc.ImageList_Create.Addr(), 5,
-		uintptr(cx), uintptr(cy), uintptr(flags),
-		uintptr(cInitial), uintptr(cGrow), 0)
-	if ret == 0 {
-		panic("ImageList_Create failed.")
-	}
-	return HIMAGELIST(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_replaceicon

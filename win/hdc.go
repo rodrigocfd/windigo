@@ -27,6 +27,15 @@ func (hdc HDC) CreateCompatibleDC() HDC {
 	return HDC(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawicon
+func (hdc HDC) DrawIcon(x, y int32, hIcon HICON) {
+	ret, _, lerr := syscall.Syscall6(proc.DrawIcon.Addr(), 4,
+		uintptr(hdc), uintptr(x), uintptr(y), uintptr(hIcon), 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "DrawIcon").Error())
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
 func (hdc HDC) EnumDisplayMonitors(
 	lprcClip *RECT,

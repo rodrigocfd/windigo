@@ -132,6 +132,18 @@ type (
 		IGroup     int32
 	}
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbcdropdown
+	NMBCDROPDOWN struct {
+		Hdr      NMHDR
+		RcButton RECT
+	}
+
+	// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbchotitem
+	NMBCHOTITEM struct {
+		Hdr     NMHDR
+		DwFlags co.HICF
+	}
+
 	// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcbedragbeginw
 	NMCBEDRAGBEGIN struct {
 		Hdr     NMHDR
