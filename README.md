@@ -8,8 +8,8 @@ Windigo aims to provide a solid foundation to build fast, native and scalable Wi
 
 The library is composed of three packages:
 
-* `co` – typed Win32 constants;
-* `win` – Win32 structs, handles and functions;
+* `co` – typed native Win32 constants;
+* `win` – native Win32 structs, handles and functions;
 * `ui` – Windigo high level wrappers.
 
 It does **not** use CGo anywhere.
@@ -41,11 +41,12 @@ type MyWindow struct {
 }
 
 func NewMyWindow() *MyWindow {
-    opts := ui.NewOptsWindowMain()
-    opts.Title = "Hello world"
-    opts.Styles |= co.WS_MINIMIZEBOX
-
-    wnd := ui.NewWindowMain(opts)
+    wnd := ui.NewWindowMain(
+        &ui.WindowMainOpts{
+            Title:     "Hello world",
+            StylesAdd: co.WS_MINIMIZEBOX,
+        },
+    )
 
     return &MyMain{
         wnd:      wnd,
@@ -69,3 +70,13 @@ func (me *MyWindow) events() {
     })
 }
 ```
+
+## Win32 error handling
+
+Native Win32 errors are represented by `win.WinError` type, which implements `error` interface.
+
+However, in Windigo, most Win32 functions do **not** return errors. That's because most low-level errors are **unrecoverable**, in the sense that if such an error happens in an application, there's really nothing you can do. Unrecoverable errors very rare, occurring in conditions like low memory or internal Windows crashes.
+
+So, in order to keep the API simple, instead of returning lots of errors, unrecoverable errors will simply panic. And all panics are recovered by Windigo at the top of the stack, displaying the error and the stack trace in a [MessageBox](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw), in order to make debugging easier.
+
+However, if the panic happens in a non-GUI thread, it can't be recovered, and no MessageBox will be displayed.
