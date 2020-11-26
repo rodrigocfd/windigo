@@ -8,7 +8,6 @@ package ui
 
 import (
 	"fmt"
-	"syscall"
 	"unsafe"
 	"windigo/co"
 	"windigo/win"
@@ -261,7 +260,7 @@ func (me *StatusBarPart) Text() string {
 	buf := make([]uint16, len+1)
 	me.ctrl.Hwnd().SendMessage(co.WM(co.SB_GETTEXT),
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&buf[0])))
-	return syscall.UTF16ToString(buf)
+	return win.Str.FromUint16Slice(buf)
 }
 
 //------------------------------------------------------------------------------

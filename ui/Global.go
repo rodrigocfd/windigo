@@ -17,16 +17,16 @@ import (
 )
 
 // Global private variables and methods.
-type _Global struct {
+type _GlobalT struct {
 	uiFont     Font
 	dpi        win.POINT
 	autoCtrlId int
 }
 
-var _global _Global
+var _global _GlobalT
 
 // Syntactic sugar; converts bool to 0 or 1.
-func (*_Global) BoolToUint32(b bool) uint32 {
+func (*_GlobalT) BoolToUint32(b bool) uint32 {
 	if b {
 		return 1
 	}
@@ -34,7 +34,7 @@ func (*_Global) BoolToUint32(b bool) uint32 {
 }
 
 // Syntactic sugar; converts bool to 0 or 1.
-func (*_Global) BoolToUintptr(b bool) uintptr {
+func (*_GlobalT) BoolToUintptr(b bool) uintptr {
 	if b {
 		return 1
 	}
@@ -42,7 +42,7 @@ func (*_Global) BoolToUintptr(b bool) uintptr {
 }
 
 // Calculates the bound rectangle to fit the text with current system font.
-func (*_Global) CalcTextBoundBox(
+func (*_GlobalT) CalcTextBoundBox(
 	hReferenceDc win.HWND, text string, considerAccelerators bool) Size {
 
 	isTextEmpty := false
@@ -73,7 +73,7 @@ func (*_Global) CalcTextBoundBox(
 }
 
 // Returns the global UI font, creates if not yet.
-func (me *_Global) UiFont() *Font {
+func (me *_GlobalT) UiFont() *Font {
 	if me.uiFont.Hfont() == win.HFONT(0) { // not initialized yet?
 		me.uiFont.CreateUi()
 	}
@@ -82,7 +82,7 @@ func (me *_Global) UiFont() *Font {
 
 // Returns a WNDCLASSEX structure filled with the given parameters, and the
 // class name, which is auto-generated if not specified.
-func (*_Global) GenerateWndclassex(
+func (*_GlobalT) GenerateWndclassex(
 	hInst win.HINSTANCE, className string, classStyles co.CS,
 	hCursor win.HCURSOR, hBrushBg win.HBRUSH,
 	defBrushBgColor co.COLOR, iconId int) (*win.WNDCLASSEX, string) {
@@ -133,7 +133,7 @@ func (*_Global) GenerateWndclassex(
 }
 
 // Multiplies position and size by current DPI factor.
-func (me *_Global) MultiplyDpi(pos *Pos, size *Size) {
+func (me *_GlobalT) MultiplyDpi(pos *Pos, size *Size) {
 	if me.dpi.X == 0 { // not initialized yet?
 		dc := win.HWND(0).GetDC()
 		me.dpi.X = dc.GetDeviceCaps(co.GDC_LOGPIXELSX) // cache
@@ -152,7 +152,7 @@ func (me *_Global) MultiplyDpi(pos *Pos, size *Size) {
 }
 
 // Returns a new unique auto-generated control ID.
-func (me *_Global) NewAutoCtrlId() int {
+func (me *_GlobalT) NewAutoCtrlId() int {
 	if me.autoCtrlId == 0 { // not initialized yet?
 		me.autoCtrlId = 20_000 // in-between Visual Studio Resource Editor values
 	}
@@ -161,7 +161,7 @@ func (me *_Global) NewAutoCtrlId() int {
 }
 
 // "&He && she" becomes "He & she".
-func (*_Global) RemoveAccelAmpersands(text string) string {
+func (*_GlobalT) RemoveAccelAmpersands(text string) string {
 	runes := []rune(text)
 	buf := strings.Builder{}
 	buf.Grow(len(text)) // prealloc for performance
@@ -179,7 +179,7 @@ func (*_Global) RemoveAccelAmpersands(text string) string {
 }
 
 // Converts current timezone SYSTEMTIME into time.Time, millisecond precision.
-func (*_Global) SystemtimeToTime(stLocalTime *win.SYSTEMTIME) time.Time {
+func (*_GlobalT) SystemtimeToTime(stLocalTime *win.SYSTEMTIME) time.Time {
 	return time.Date(int(stLocalTime.WYear),
 		time.Month(stLocalTime.WMonth), int(stLocalTime.WDay),
 		int(stLocalTime.WHour), int(stLocalTime.WMinute), int(stLocalTime.WSecond),
@@ -188,7 +188,7 @@ func (*_Global) SystemtimeToTime(stLocalTime *win.SYSTEMTIME) time.Time {
 }
 
 // Converts time.Time into current timezone SYSTEMTIME, millisecond precision.
-func (*_Global) TimeToSystemtime(t time.Time, stLocalTime *win.SYSTEMTIME) {
+func (*_GlobalT) TimeToSystemtime(t time.Time, stLocalTime *win.SYSTEMTIME) {
 	// https://support.microsoft.com/en-ca/help/167296/how-to-convert-a-unix-time-t-to-a-win32-filetime-or-systemtime
 	epoch := t.UnixNano()/100 + 116_444_736_000_000_000
 

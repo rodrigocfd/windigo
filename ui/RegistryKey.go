@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-	"syscall"
 	"unsafe"
 	"windigo/co"
 	"windigo/win"
@@ -90,7 +89,7 @@ func (me *RegistryKey) EnumValues() ([]*RegistryValueInfo, error) {
 		} else if status == co.ERROR_SUCCESS { // we got this one, but there's more
 			retVals = append(retVals, &RegistryValueInfo{
 				DataType: dataType,
-				Name:     syscall.UTF16ToString(nameBuf),
+				Name:     win.Str.FromUint16Slice(nameBuf),
 				Size:     int(dataBufSz),
 			})
 			index++
@@ -155,7 +154,7 @@ func (me *RegistryKey) ReadString(valueName string) (string, error) {
 		return "", wErr
 	}
 
-	return syscall.UTF16ToString(dataBuf), nil
+	return win.Str.FromUint16Slice(dataBuf), nil
 }
 
 // Checks if a value exists within the key.

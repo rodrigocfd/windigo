@@ -7,7 +7,6 @@
 package ui
 
 import (
-	"syscall"
 	"unsafe"
 	"windigo/co"
 	"windigo/win"
@@ -193,5 +192,5 @@ func (me *MenuItem) Text() string {
 	buf := make([]uint16, mii.Cch)
 	mii.DwTypeData = uintptr(unsafe.Pointer(&buf[0])) // retrieve text
 	me.owner.Hmenu().GetMenuItemInfo(uintptr(me.cmdId), false, &mii)
-	return syscall.UTF16ToString(buf)
+	return win.Str.FromUint16Slice(buf)
 }

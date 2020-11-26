@@ -8,7 +8,6 @@ package ui
 
 import (
 	"fmt"
-	"syscall"
 	"unsafe"
 	"windigo/co"
 	"windigo/win"
@@ -458,7 +457,7 @@ func (me *ListViewColumn) Text() string {
 	if ret == 0 {
 		panic("LVM_GETCOLUMN failed to get text.")
 	}
-	return syscall.UTF16ToString(buf[:])
+	return win.Str.FromUint16Slice(buf[:])
 }
 
 // Retrieves the width of the column.
@@ -886,7 +885,7 @@ func (me *ListViewItem) SubItemText(columnIndex int) string {
 	if ret < 0 {
 		panic("LVM_GETITEMTEXT failed.")
 	}
-	return syscall.UTF16ToString(buf[:])
+	return win.Str.FromUint16Slice(buf[:])
 }
 
 // Retrieves the text under the first column.

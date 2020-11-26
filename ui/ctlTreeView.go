@@ -8,7 +8,6 @@ package ui
 
 import (
 	"fmt"
-	"syscall"
 	"unsafe"
 	"windigo/co"
 	"windigo/win"
@@ -359,7 +358,7 @@ func (me *TreeViewItem) Text() string {
 	if ret == 0 {
 		panic("TVM_GETITEM failed.")
 	}
-	return syscall.UTF16ToString(buf[:])
+	return win.Str.FromUint16Slice(buf[:])
 }
 
 // Toggles the node, expanded or collapsed.

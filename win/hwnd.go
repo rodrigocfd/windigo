@@ -326,7 +326,7 @@ func (hWnd HWND) GetWindowText() string {
 	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
 		panic(NewWinError(co.ERROR(lerr), "GetWindowText").Error())
 	}
-	return syscall.UTF16ToString(buf)
+	return Str.FromUint16Slice(buf)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextlengthw

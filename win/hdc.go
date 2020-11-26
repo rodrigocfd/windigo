@@ -90,7 +90,7 @@ func (hdc HDC) GetTextFace() string {
 	if ret == 0 {
 		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetTextFace").Error())
 	}
-	return syscall.UTF16ToString(buf[:])
+	return Str.FromUint16Slice(buf[:])
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-lineto

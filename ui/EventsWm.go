@@ -9,7 +9,6 @@ package ui
 import (
 	"sort"
 	"strings"
-	"syscall"
 	"unsafe"
 	"windigo/co"
 	"windigo/win"
@@ -395,7 +394,7 @@ func (p WmDropFiles) RetrieveAll() []string {
 		pathLen := p.Hdrop().DragQueryFile(i, nil, 0) + 1 // room for terminating null
 		pathBuf := make([]uint16, pathLen)
 		p.Hdrop().DragQueryFile(i, &pathBuf[0], pathLen)
-		files = append(files, syscall.UTF16ToString(pathBuf))
+		files = append(files, win.Str.FromUint16Slice(pathBuf))
 	}
 	p.Hdrop().DragFinish()
 	sort.Slice(files, func(i, j int) bool { // case insensitive

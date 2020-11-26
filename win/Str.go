@@ -49,9 +49,9 @@ func (_StrT) FromUint16Ptr(p *uint16) string {
 
 // Converts a null-terminated UTF-16 slice into string.
 //
-// Wrapper to syscall.UTF16ToString().
+// Simple wrapper to syscall.UTF16ToString().
 func (_StrT) FromUint16Slice(s []uint16) string {
-	return syscall.UTF16ToString(s[:])
+	return syscall.UTF16ToString(s)
 }
 
 // Converts string to *uint16.

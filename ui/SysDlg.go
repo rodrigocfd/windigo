@@ -9,7 +9,6 @@ package ui
 import (
 	"sort"
 	"strings"
-	"syscall"
 	"unsafe"
 	"windigo/co"
 	"windigo/win"
@@ -42,7 +41,7 @@ func (_SysDlgT) FileOpen(
 	if !win.GetOpenFileName(&ofn) {
 		return "", false
 	}
-	return syscall.UTF16ToString(result[:]), true
+	return win.Str.FromUint16Slice(result[:]), true
 }
 
 // Shows the open file system dialog, user can choose multiple files.
@@ -82,15 +81,15 @@ func (_SysDlgT) FileOpenMany(
 
 	// User selected only 1 file, this string is the full path, and that's all.
 	if len(resultStrs) == 1 {
-		return []string{syscall.UTF16ToString(resultStrs[0][:])}, true
+		return []string{win.Str.FromUint16Slice(resultStrs[0])}, true
 	}
 
 	// User selected 2 or more files.
 	// 1st string is the base path, the others are the filenames.
 	final := make([]string, 0, len(resultStrs)-1)
-	basePath := syscall.UTF16ToString(resultStrs[0]) + "\\"
+	basePath := win.Str.FromUint16Slice(resultStrs[0]) + "\\"
 	for i := 1; i < len(resultStrs); i++ {
-		final = append(final, basePath+syscall.UTF16ToString(resultStrs[i]))
+		final = append(final, basePath+win.Str.FromUint16Slice(resultStrs[i]))
 	}
 	sort.Slice(final, func(i, j int) bool { // case insensitive
 		return strings.ToUpper(final[i]) < strings.ToUpper(final[j])
@@ -132,7 +131,7 @@ func (_SysDlgT) FileSave(
 	if !win.GetSaveFileName(&ofn) {
 		return "", false
 	}
-	return syscall.UTF16ToString(result[:]), true
+	return win.Str.FromUint16Slice(result[:]), true
 }
 
 func (_SysDlgT) filterToUtf16(filtersWithPipe []string) []uint16 {

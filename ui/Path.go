@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	"syscall"
 	"windigo/co"
 	"windigo/win"
 )
@@ -33,7 +32,7 @@ func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 	defer hFind.FindClose()
 
 	for found {
-		fileNameFound := syscall.UTF16ToString(wfd.CFileName[:])
+		fileNameFound := win.Str.FromUint16Slice(wfd.CFileName[:])
 		if fileNameFound != ".." {
 			retFiles = append(retFiles, dirPath+"\\"+fileNameFound)
 		}

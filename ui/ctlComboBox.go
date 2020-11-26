@@ -7,7 +7,6 @@
 package ui
 
 import (
-	"syscall"
 	"unsafe"
 	"windigo/co"
 	"windigo/win"
@@ -134,7 +133,7 @@ func (me *ComboBox) Text(index int) (string, bool) {
 	buf := make([]uint16, len+1)
 	me.Hwnd().SendMessage(co.WM(co.CB_GETLBTEXT),
 		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&buf[0])))
-	return syscall.UTF16ToString(buf), true
+	return win.Str.FromUint16Slice(buf), true
 }
 
 //------------------------------------------------------------------------------
