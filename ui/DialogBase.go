@@ -28,12 +28,23 @@ func _NewDialogBase(dlgId int) *_DialogBase {
 	}
 }
 
+// Creates all child controls declared in the dialog resource.
+//
+// Should be called at On().WmInitDialog().
+func (me *_DialogBase) CreateChildren(children ...ControlResource) {
+	for _, child := range children {
+		child.createAsDlgCtrl()
+	}
+}
+
 // Returns the underlying HWND handle of this window.
 func (me *_DialogBase) Hwnd() win.HWND {
 	return me.hwnd
 }
 
 // Exposes all the window messages the can be handled.
+//
+// Cannot be called after the window was created.
 func (me *_DialogBase) On() *_EventsWmCmdNfy {
 	if me.hwnd != 0 {
 		panic("Cannot add message after the window was created.")

@@ -37,6 +37,8 @@ func NewStatusBar(parent Parent, ctrlId ...int) *StatusBar {
 // Calls CreateWindowEx().
 //
 // Control will be docked at bottom of parent window.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *StatusBar) Create() *StatusBar {
 	sbStyle := co.WS_CHILD | co.WS_VISIBLE
 
@@ -54,6 +56,8 @@ func (me *StatusBar) Create() *StatusBar {
 }
 
 // Exposes all StatusBar notifications.
+//
+// Cannot be called after the parent window was created.
 func (me *StatusBar) On() *_EventsStatusBar {
 	if me.hwnd != 0 {
 		panic("Cannot add notifications after the StatusBar was created.")

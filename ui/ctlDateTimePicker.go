@@ -34,6 +34,8 @@ func NewDateTimePicker(parent Parent, ctrlId ...int) *DateTimePicker {
 // window styles.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *DateTimePicker) CreateWs(
 	pos Pos, size Size,
 	dtpStyles co.DTS, styles co.WS, exStyles co.WS_EX) *DateTimePicker {
@@ -52,6 +54,8 @@ func (me *DateTimePicker) CreateWs(
 // DTS_SHORTDATEFORMAT, and a time has DTS_TIMEFORMAT.
 //
 // Position and width will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *DateTimePicker) Create(
 	pos Pos, width int, dtpStyles co.DTS) *DateTimePicker {
 
@@ -60,7 +64,11 @@ func (me *DateTimePicker) Create(
 		co.WS_EX_NONE)
 }
 
+func (me *DateTimePicker) createAsDlgCtrl() { me._NativeControlBase.createAssignDlg() }
+
 // Exposes all DateTimePicker notifications.
+//
+// Cannot be called after the parent window was created.
 func (me *DateTimePicker) On() *_EventsDateTimePicker {
 	if me.hwnd != 0 {
 		panic("Cannot add notifications after the DateTimePicker was created.")

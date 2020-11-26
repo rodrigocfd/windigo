@@ -33,6 +33,8 @@ func NewEdit(parent Parent, ctrlId ...int) *Edit {
 // window styles.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *Edit) CreateWs(
 	initialText string, pos Pos, size Size,
 	editStyles co.ES, styles co.WS, exStyles co.WS_EX) *Edit {
@@ -50,6 +52,8 @@ func (me *Edit) CreateWs(
 // A typical Edit has ES_AUTOHSCROLL, a password adds ES_PASSWORD.
 //
 // Position and width will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *Edit) Create(
 	initialText string, pos Pos, width int, editStyles co.ES) *Edit {
 
@@ -64,6 +68,8 @@ func (me *Edit) Create(
 // A typical multi-line Edit has ES_MULTILINE | ES_WANTRETURN.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *Edit) CreateSz(
 	initialText string, pos Pos, size Size, editStyles co.ES) *Edit {
 
@@ -72,7 +78,11 @@ func (me *Edit) CreateSz(
 		co.WS_EX_CLIENTEDGE)
 }
 
+func (me *Edit) createAsDlgCtrl() { me._NativeControlBase.createAssignDlg() }
+
 // Exposes all Edit notifications.
+//
+// Cannot be called after the parent window was created.
 func (me *Edit) On() *_EventsEdit {
 	if me.hwnd != 0 {
 		panic("Cannot add notifications after the Edit was created.")

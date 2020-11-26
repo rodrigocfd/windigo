@@ -32,6 +32,8 @@ func NewRadioButton(parent Parent, ctrlId ...int) *RadioButton {
 // window styles.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *RadioButton) CreateWs(
 	text string, pos Pos, size Size,
 	btnStyles co.BS, styles co.WS, exStyles co.WS_EX) *RadioButton {
@@ -46,6 +48,8 @@ func (me *RadioButton) CreateWs(
 // A typical RadioButton has BS_AUTORADIOBUTTON.
 //
 // Position will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *RadioButton) CreateFirst(
 	text string, pos Pos, btnStyles co.BS) *RadioButton {
 
@@ -62,6 +66,8 @@ func (me *RadioButton) CreateFirst(
 // A typical RadioButton has BS_AUTORADIOBUTTON.
 //
 // Position will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *RadioButton) CreateSubsequent(
 	text string, pos Pos, btnStyles co.BS) *RadioButton {
 
@@ -70,6 +76,18 @@ func (me *RadioButton) CreateSubsequent(
 	return me.createNoDpi(text, pos, size, btnStyles,
 		co.WS_CHILD|co.WS_VISIBLE,
 		co.WS_EX_NONE)
+}
+
+func (me *RadioButton) createAsDlgCtrl() { me._NativeControlBase.createAssignDlg() }
+
+// Exposes all RadioButton notifications.
+//
+// Cannot be called after the parent window was created.
+func (me *RadioButton) On() *_EventsButton {
+	if me.hwnd != 0 {
+		panic("Cannot add notifications after the RadioButton was created.")
+	}
+	return me.events
 }
 
 // Tells if the current state is BST_CHECKED.
@@ -138,7 +156,7 @@ func (me *RadioButton) createNoDpi(
 	text string, pos Pos, size Size,
 	btnStyles co.BS, styles co.WS, exStyles co.WS_EX) *RadioButton {
 
-	me._NativeControlBase.create("BUTTON", text, pos, size, // a RadioButton is actually a button variation
+	me._NativeControlBase.create("BUTTON", text, pos, size, // the RadioButton is just a Button type
 		co.WS(btnStyles)|styles, exStyles)
 	_global.UiFont().SetOnControl(me)
 	return me

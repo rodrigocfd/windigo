@@ -38,6 +38,8 @@ func NewTreeView(parent Parent, ctrlId ...int) *TreeView {
 // window styles.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *TreeView) CreateWs(
 	pos Pos, size Size,
 	tvStyles co.TVS, tvExStyles co.TVS_EX,
@@ -59,6 +61,8 @@ func (me *TreeView) CreateWs(
 // A typical TreeView has TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_HASBUTTONS.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *TreeView) Create(
 	pos Pos, size Size, tvStyles co.TVS, tvExStyles co.TVS_EX) *TreeView {
 
@@ -67,7 +71,11 @@ func (me *TreeView) Create(
 		co.WS_EX_CLIENTEDGE)
 }
 
+func (me *TreeView) createAsDlgCtrl() { me._NativeControlBase.createAssignDlg() }
+
 // Exposes all ListView notifications.
+//
+// Cannot be called after the parent window was created.
 func (me *TreeView) On() *_EventsTreeView {
 	if me.hwnd != 0 {
 		panic("Cannot add notifications after the TreeView was created.")

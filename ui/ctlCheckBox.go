@@ -32,6 +32,8 @@ func NewCheckBox(parent Parent, ctrlId ...int) *CheckBox {
 // window styles.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *CheckBox) CreateWs(
 	text string, pos Pos, size Size,
 	btnStyles co.BS, styles co.WS, exStyles co.WS_EX) *CheckBox {
@@ -46,6 +48,8 @@ func (me *CheckBox) CreateWs(
 // A typical CheckBox has BS_AUTOCHECKBOX, a 3-state has BS_AUTO3STATE.
 //
 // Position will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *CheckBox) Create(text string, pos Pos, btnStyles co.BS) *CheckBox {
 	_global.MultiplyDpi(&pos, nil)
 	size := me.calcIdealSize(me.parent.Hwnd(), text)
@@ -54,7 +58,11 @@ func (me *CheckBox) Create(text string, pos Pos, btnStyles co.BS) *CheckBox {
 		co.WS_EX_NONE)
 }
 
+func (me *CheckBox) createAsDlgCtrl() { me._NativeControlBase.createAssignDlg() }
+
 // Exposes all CheckBox notifications.
+//
+// Cannot be called after the parent window was created.
 func (me *CheckBox) On() *_EventsButton {
 	if me.hwnd != 0 {
 		panic("Cannot add notifications after the CheckBox was created.")
@@ -130,7 +138,7 @@ func (me *CheckBox) createNoDpi(
 	text string, pos Pos, size Size,
 	btnStyles co.BS, styles co.WS, exStyles co.WS_EX) *CheckBox {
 
-	me._NativeControlBase.create("BUTTON", text, pos, size, // a CheckBox is actually a button variation
+	me._NativeControlBase.create("BUTTON", text, pos, size, // the CheckBox is just a Button type
 		co.WS(btnStyles)|styles, exStyles)
 	_global.UiFont().SetOnControl(me)
 	return me

@@ -27,6 +27,12 @@ type (
 		Window
 		CtrlId() int
 	}
+
+	// Any children control created in a dialog resource script.
+	ControlResource interface {
+		Control
+		createAsDlgCtrl()
+	}
 )
 
 type (

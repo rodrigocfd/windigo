@@ -44,6 +44,8 @@ func NewListView(parent Parent, ctrlId ...int) *ListView {
 // For safety, LVS_SHAREIMAGELISTS will be added automatically.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *ListView) CreateWs(
 	pos Pos, size Size,
 	lvStyles co.LVS, lvExStyles co.LVS_EX,
@@ -67,6 +69,8 @@ func (me *ListView) CreateWs(
 // A typical report ListView has LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *ListView) Create(
 	pos Pos, size Size, lvStyles co.LVS, lvExStyles co.LVS_EX) *ListView {
 
@@ -76,7 +80,11 @@ func (me *ListView) Create(
 		co.WS_EX_CLIENTEDGE)
 }
 
+func (me *ListView) createAsDlgCtrl() { me._NativeControlBase.createAssignDlg() }
+
 // Exposes all ListView notifications.
+//
+// Cannot be called after the parent window was created.
 func (me *ListView) On() *_EventsListView {
 	if me.hwnd != 0 {
 		panic("Cannot add notifications after the ListView was created.")

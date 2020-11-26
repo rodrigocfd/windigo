@@ -34,6 +34,8 @@ func NewComboBox(parent Parent, ctrlId ...int) *ComboBox {
 // window styles.
 //
 // Position and width will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *ComboBox) CreateWs(
 	pos Pos, width int,
 	cbStyles co.CBS, styles co.WS, exStyles co.WS_EX) *ComboBox {
@@ -52,13 +54,19 @@ func (me *ComboBox) CreateWs(
 // a non-editable has CBS_DROPDOWNLIST.
 //
 // Position and width will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *ComboBox) Create(pos Pos, width int, cbStyles co.CBS) *ComboBox {
 	return me.CreateWs(pos, width, cbStyles,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.WS_EX_NONE)
 }
 
+func (me *ComboBox) createAsDlgCtrl() { me._NativeControlBase.createAssignDlg() }
+
 // Exposes all Button notifications.
+//
+// Cannot be called after the parent window was created.
 func (me *ComboBox) On() *_EventsComboBox {
 	if me.hwnd != 0 {
 		panic("Cannot add notifications after the ComboBox was created.")

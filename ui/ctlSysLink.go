@@ -33,6 +33,8 @@ func NewSysLink(parent Parent, ctrlId ...int) *SysLink {
 // window styles.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *SysLink) CreateWs(
 	text string, pos Pos, size Size,
 	slStyles co.LWS, styles co.WS, exStyles co.WS_EX) *SysLink {
@@ -50,6 +52,8 @@ func (me *SysLink) CreateWs(
 // A typical SysLink has LWS_TRANSPARENT.
 //
 // Position will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *SysLink) Create(text string, pos Pos, slStyles co.LWS) *SysLink {
 	me.CreateWs(text, pos, Size{}, slStyles, // zero width & height
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
@@ -64,7 +68,11 @@ func (me *SysLink) Create(text string, pos Pos, slStyles co.LWS) *SysLink {
 	return me
 }
 
+func (me *SysLink) createAsDlgCtrl() { me._NativeControlBase.createAssignDlg() }
+
 // Exposes all SysLink notifications.
+//
+// Cannot be called after the parent window was created.
 func (me *SysLink) On() *_EventsSysLink {
 	if me.hwnd != 0 {
 		panic("Cannot add notifications after the SysLink was created.")

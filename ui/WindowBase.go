@@ -37,6 +37,8 @@ func (me *_WindowBase) Hwnd() win.HWND {
 }
 
 // Exposes all the window messages the can be handled.
+//
+// Cannot be called after the window was created.
 func (me *_WindowBase) On() *_EventsWmCmdNfy {
 	if me.hwnd != 0 {
 		panic("Cannot add message after the window was created.")

@@ -33,6 +33,8 @@ func NewButton(parent Parent, ctrlId ...int) *Button {
 // window styles.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *Button) CreateWs(
 	text string, pos Pos, size Size,
 	btnStyles co.BS, styles co.WS, exStyles co.WS_EX) *Button {
@@ -51,6 +53,8 @@ func (me *Button) CreateWs(
 // For notifications beyond BN_CLICKED, use BS_NOTIFY.
 //
 // Position and width will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *Button) Create(
 	text string, pos Pos, width int, btnStyles co.BS) *Button {
 
@@ -59,7 +63,11 @@ func (me *Button) Create(
 		co.WS_EX_NONE)
 }
 
+func (me *Button) createAsDlgCtrl() { me._NativeControlBase.createAssignDlg() }
+
 // Exposes all Button notifications.
+//
+// Cannot be called after the parent window was created.
 func (me *Button) On() *_EventsButton {
 	if me.hwnd != 0 {
 		panic("Cannot add notifications after the Button was created.")

@@ -30,6 +30,8 @@ func NewProgressBar(parent Parent, ctrlId ...int) *ProgressBar {
 // window styles.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *ProgressBar) CreateWs(
 	pos Pos, size Size,
 	pbStyles co.PBS, styles co.WS, exStyles co.WS_EX) *ProgressBar {
@@ -47,6 +49,8 @@ func (me *ProgressBar) CreateWs(
 // A typical ProgressBar has PBS_SMOOTH.
 //
 // Position and width will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *ProgressBar) Create(
 	pos Pos, width int, pbStyles co.PBS) *ProgressBar {
 
@@ -54,6 +58,8 @@ func (me *ProgressBar) Create(
 		co.WS_CHILD|co.WS_VISIBLE,
 		co.WS_EX_NONE)
 }
+
+func (me *ProgressBar) createAsDlgCtrl() { me._NativeControlBase.createAssignDlg() }
 
 // Retrieves the current position.
 func (me *ProgressBar) Pos() int {

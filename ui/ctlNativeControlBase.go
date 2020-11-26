@@ -61,6 +61,8 @@ func (me *_NativeControlBase) CtrlId() int {
 }
 
 // Exposes all the window messages that can be handled with subclassing.
+//
+// Cannot be called after the control was created.
 func (me *_NativeControlBase) OnSubclass() *_EventsWm {
 	if me.hwnd != 0 {
 		panic("Cannot subclass after the control was created.")
@@ -81,6 +83,19 @@ func (me *_NativeControlBase) create(
 		me.parent.Hwnd(), win.HMENU(me.ctrlId), me.parent.Hwnd().GetInstance(),
 		nil)
 
+	me.installSubclassIfNeeded()
+}
+
+// Calls GetDlgItem() to retrieve the control HWND, installs subclass if needed.
+func (me *_NativeControlBase) createAssignDlg() {
+	if me.hwnd != 0 {
+		panic(fmt.Sprintf("Control was already created in dialog."))
+	}
+	me.hwnd = me.parent.Hwnd().GetDlgItem(int32(me.ctrlId))
+	me.installSubclassIfNeeded()
+}
+
+func (me *_NativeControlBase) installSubclassIfNeeded() {
 	if me.eventsWmSubc.hasMessages() {
 		if _globalSubclassProcPtr == 0 {
 			_globalSubclassProcPtr = syscall.NewCallback(_globalSubclassProc)

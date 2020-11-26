@@ -31,6 +31,8 @@ func NewStatic(parent Parent, ctrlId ...int) *Static {
 // window styles.
 //
 // Position and size will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *Static) CreateWs(
 	text string, pos Pos, size Size,
 	sStyles co.SS, styles co.WS, exStyles co.WS_EX) *Static {
@@ -45,6 +47,8 @@ func (me *Static) CreateWs(
 // A typical Static has SS_LEFT | SS_NOTIFY.
 //
 // Position will be adjusted to the current system DPI.
+//
+// Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *Static) Create(text string, pos Pos, sStyles co.SS) *Static {
 	_global.MultiplyDpi(&pos, nil)
 	size := _global.CalcTextBoundBox(me.parent.Hwnd(), text, true)
@@ -53,7 +57,11 @@ func (me *Static) Create(text string, pos Pos, sStyles co.SS) *Static {
 		co.WS_EX_NONE)
 }
 
+func (me *Static) createAsDlgCtrl() { me._NativeControlBase.createAssignDlg() }
+
 // Exposes all Static notifications.
+//
+// Cannot be called after the parent window was created.
 func (me *Static) On() *_EventsStatic {
 	if me.hwnd != 0 {
 		panic("Cannot add notifications after the Static was created.")
