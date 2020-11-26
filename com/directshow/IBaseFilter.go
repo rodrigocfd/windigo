@@ -32,10 +32,10 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/medfound/using-the-directshow-evr-filter
 func (me *IBaseFilter) CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) *IBaseFilter {
 	ppv, err := win.CoCreateInstance(
-		win.NewGuid(0xfa10746c, 0x9b63, 0x4b6c, 0xbc49_fc300ea5f256), // CLSID_EnhancedVideoRenderer
+		win.NewGuid(0xfa10746c, 0x9b63, 0x4b6c, 0xbc49, 0xfc300ea5f256), // CLSID_EnhancedVideoRenderer
 		nil,
 		dwClsContext,
-		win.NewGuid(0x56a86895, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770)) // IID_IBaseFilter
+		win.NewGuid(0x56a86895, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)) // IID_IBaseFilter
 
 	if err != co.ERROR_S_OK {
 		panic(win.NewWinError(err, "CoCreateInstance/EnhancedVideoRenderer"))
@@ -49,10 +49,10 @@ func (me *IBaseFilter) CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) *IB
 // https://docs.microsoft.com/en-us/windows/win32/directshow/video-mixing-renderer-filter-9
 func (me *IBaseFilter) CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) *IBaseFilter {
 	ppv, err := win.CoCreateInstance(
-		win.NewGuid(0x51b4abf3, 0x748f, 0x4e3b, 0xa276_c828330e926a), // CLSID_VideoMixingRenderer9
+		win.NewGuid(0x51b4abf3, 0x748f, 0x4e3b, 0xa276, 0xc828330e926a), // CLSID_VideoMixingRenderer9
 		nil,
 		dwClsContext,
-		win.NewGuid(0x56a86895, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770)) // IID_IBaseFilter
+		win.NewGuid(0x56a86895, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)) // IID_IBaseFilter
 
 	if err != co.ERROR_S_OK {
 		panic(win.NewWinError(err, "CoCreateInstance/VideoMixingRenderer9"))
@@ -66,7 +66,7 @@ func (me *IBaseFilter) CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) *IBa
 // https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
 func (me *IBaseFilter) QueryIMFGetService() IMFGetService {
 	ppv, err := me.QueryInterface(
-		win.NewGuid(0xfa993888, 0x4383, 0x415a, 0xa930_dd472a8cf6f7)) // IID_IMFGetService
+		win.NewGuid(0xfa993888, 0x4383, 0x415a, 0xa930, 0xdd472a8cf6f7)) // IID_IMFGetService
 	if err != co.ERROR_S_OK {
 		panic(win.NewWinError(err, "IBaseFilter.QueryIMFGetService"))
 	}

@@ -34,10 +34,10 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *IGraphBuilder) CoCreateInstance(dwClsContext co.CLSCTX) *IGraphBuilder {
 	ppv, err := win.CoCreateInstance(
-		win.NewGuid(0xe436ebb3, 0x524f, 0x11ce, 0x9f53_0020af0ba770), // CLSID_FilterGraph
+		win.NewGuid(0xe436ebb3, 0x524f, 0x11ce, 0x9f53, 0x0020af0ba770), // CLSID_FilterGraph
 		nil,
 		dwClsContext,
-		win.NewGuid(0x56a868a9, 0x0ad4, 0x11ce, 0xb03a_0020af0ba770)) // IID_IGraphBuilder
+		win.NewGuid(0x56a868a9, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)) // IID_IGraphBuilder
 
 	if err != co.ERROR_S_OK {
 		panic(win.NewWinError(err, "CoCreateInstance/IGraphBuilder"))

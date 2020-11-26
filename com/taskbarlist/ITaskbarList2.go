@@ -28,10 +28,10 @@ type (
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func (me *ITaskbarList2) CoCreateInstance(dwClsContext co.CLSCTX) *ITaskbarList2 {
 	ppv, err := win.CoCreateInstance(
-		win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a_006097c9a090), // CLSID_TaskbarList
+		win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a, 0x006097c9a090), // CLSID_TaskbarList
 		nil,
 		dwClsContext,
-		win.NewGuid(0x602d4995, 0xb13a, 0x429b, 0xa66e_1935e44f4317)) // IID_ITaskbarList2
+		win.NewGuid(0x602d4995, 0xb13a, 0x429b, 0xa66e, 0x1935e44f4317)) // IID_ITaskbarList2
 
 	if err != co.ERROR_S_OK {
 		panic(win.NewWinError(err, "CoCreateInstance/ITaskbarList2"))

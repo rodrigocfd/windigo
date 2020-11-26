@@ -49,8 +49,8 @@ func (me *IMFGetService) GetIMFVideoDisplayControl() IMFVideoDisplayControl {
 	return IMFVideoDisplayControl{
 		win.IUnknown{
 			Ppv: me.GetService(
-				win.NewGuid(0x1092a86c, 0xab1a, 0x459a, 0xa336_831fbc4d11ff),  // MR_VIDEO_RENDER_SERVICE
-				win.NewGuid(0xa490b1e4, 0xab84, 0x4d31, 0xa1b2_181e03b1077a)), // IID_IMFVideoDisplayControl
+				win.NewGuid(0x1092a86c, 0xab1a, 0x459a, 0xa336, 0x831fbc4d11ff),  // MR_VIDEO_RENDER_SERVICE
+				win.NewGuid(0xa490b1e4, 0xab84, 0x4d31, 0xa1b2, 0x181e03b1077a)), // IID_IMFVideoDisplayControl
 		},
 	}
 }
