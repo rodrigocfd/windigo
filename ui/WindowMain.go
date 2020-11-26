@@ -16,7 +16,7 @@ import (
 // Main application window.
 type WindowMain struct {
 	*_WindowBase
-	opts           *_OptsWindowMain
+	opts           *WindowMainOpts
 	mainLoop       *_WindowMainLoop
 	childPrevFocus win.HWND // when window is inactivated
 	mainMenu       *Menu
@@ -24,7 +24,7 @@ type WindowMain struct {
 }
 
 // Constructor. Initializes the window with the given options.
-func NewWindowMain(opts *_OptsWindowMain) *WindowMain {
+func NewWindowMain(opts *WindowMainOpts) *WindowMain {
 	me := WindowMain{
 		_WindowBase: _NewWindowBase(),
 		opts:        opts,
@@ -32,6 +32,7 @@ func NewWindowMain(opts *_OptsWindowMain) *WindowMain {
 		mainMenu:    &Menu{hMenu: win.CreateMenu()}, // passed to CreateWindowEx()
 	}
 
+	me.opts.setDefaultValues()
 	me.defaultMessageHandling()
 	return &me
 }
@@ -82,8 +83,8 @@ func (me *WindowMain) RunAsMain() int {
 	me._WindowBase.registerClass(wcx)
 
 	pos, size := me.calcCoords()
-	me._WindowBase.createWindow("WindowMain", me.opts.ExStyles,
-		me.opts.ClassName, me.opts.Title, me.opts.Styles,
+	me._WindowBase.createWindow("WindowMain", me.opts.ExStylesOverride,
+		me.opts.ClassName, me.opts.Title, me.opts.StylesOverride,
 		pos, size, nil, me.mainMenu.Hmenu(), hInst)
 
 	me.Hwnd().ShowWindow(me.opts.CmdShow)
@@ -141,7 +142,8 @@ func (me *WindowMain) calcCoords() (Pos, Size) {
 		Right:  int32(int(me.opts.ClientAreaSize.Cx) + pos.X),
 		Bottom: int32(int(me.opts.ClientAreaSize.Cy) + pos.Y),
 	}
-	win.AdjustWindowRectEx(&rc, me.opts.Styles, me.mainMenu.ItemCount() > 0, me.opts.ExStyles)
+	win.AdjustWindowRectEx(&rc, me.opts.StylesOverride,
+		me.mainMenu.ItemCount() > 0, me.opts.ExStylesOverride)
 	me.opts.ClientAreaSize = Size{
 		Cx: int(rc.Right - rc.Left),
 		Cy: int(rc.Bottom - rc.Top),
@@ -153,7 +155,8 @@ func (me *WindowMain) calcCoords() (Pos, Size) {
 
 //------------------------------------------------------------------------------
 
-type _OptsWindowMain struct {
+// Options for NewWindowMain().
+type WindowMainOpts struct {
 	// Class name registered with RegisterClassEx().
 	// Defaults to a computed hash.
 	ClassName string
@@ -172,10 +175,18 @@ type _OptsWindowMain struct {
 
 	// Window styles, passed to CreateWindowEx().
 	// Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER | WS_VISIBLE.
-	Styles co.WS
+	StylesOverride co.WS
+	// Window styles, passed to CreateWindowEx().
+	// These styles will be added to StylesOverride.
+	// If you want to keep the default styles while adding others, use this field.
+	StylesAdd co.WS
 	// Extended window styles, passed to CreateWindowEx().
 	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
+	ExStylesOverride co.WS_EX
+	// Extended window styles, passed to CreateWindowEx().
+	// These styles will be added to ExStylesOverride.
+	// If you want to keep the default extended styles while adding others, use this field.
+	ExStylesAdd co.WS_EX
 	// The title of the window, passed to CreateWindowEx().
 	// Defaults to empty string.
 	Title string
@@ -188,14 +199,32 @@ type _OptsWindowMain struct {
 	CmdShow co.SW
 }
 
-// Constructor. Returns an option set for NewWindowMain() with default values.
-func DefOptsWindowMain() *_OptsWindowMain {
-	return &_OptsWindowMain{
-		ClassStyles:      co.CS_DBLCLKS,
-		HCursor:          win.HINSTANCE(0).LoadCursor(co.IDC_ARROW),
-		HBrushBackground: win.CreateSysColorBrush(co.COLOR_BTNFACE),
-		Styles:           co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN | co.WS_BORDER | co.WS_VISIBLE,
-		ClientAreaSize:   Size{Cx: 500, Cy: 400},
-		CmdShow:          co.SW_SHOW,
+func (o *WindowMainOpts) setDefaultValues() {
+	if o.ClassStyles == 0 {
+		o.ClassStyles = co.CS_DBLCLKS
+	}
+	if o.HCursor == 0 {
+		o.HCursor = win.HINSTANCE(0).LoadCursor(co.IDC_ARROW)
+	}
+	if o.HBrushBackground == 0 {
+		o.HBrushBackground = win.CreateSysColorBrush(co.COLOR_BTNFACE)
+	}
+
+	if o.StylesOverride == 0 {
+		o.StylesOverride = co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN | co.WS_BORDER | co.WS_VISIBLE
+	}
+	o.StylesOverride |= o.StylesAdd
+
+	o.ExStylesOverride |= o.ExStylesAdd
+
+	if o.ClientAreaSize.Cx == 0 {
+		o.ClientAreaSize.Cx = 500
+	}
+	if o.ClientAreaSize.Cy == 0 {
+		o.ClientAreaSize.Cy = 400
+	}
+
+	if o.CmdShow == 0 { // note that SW_HIDE (zero) is not supported
+		o.CmdShow = co.SW_SHOW
 	}
 }

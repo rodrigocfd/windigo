@@ -14,16 +14,17 @@ import (
 // Custom control window.
 type WindowControl struct {
 	*_WindowBase
-	opts *_OptsWindowControl
+	opts *WindowControlOpts
 }
 
 // Constructor. Initializes the window with the given options.
-func NewWindowControl(opts *_OptsWindowControl) *WindowControl {
+func NewWindowControl(opts *WindowControlOpts) *WindowControl {
 	me := WindowControl{
 		_WindowBase: _NewWindowBase(),
 		opts:        opts,
 	}
 
+	me.opts.setDefaultValues()
 	me.defaultMessageHandling()
 	return &me
 }
@@ -38,8 +39,8 @@ func (me *WindowControl) Create(parent Parent, pos Pos, size Size) {
 	me._WindowBase.registerClass(wcx)
 
 	_global.MultiplyDpi(&pos, &size)
-	me._WindowBase.createWindow("WindowControl", me.opts.ExStyles,
-		me.opts.ClassName, "", me.opts.Styles, pos, size, parent,
+	me._WindowBase.createWindow("WindowControl", me.opts.ExStylesOverride,
+		me.opts.ClassName, "", me.opts.StylesOverride, pos, size, parent,
 		win.HMENU(me.opts.CtrlId), hInst)
 }
 
@@ -92,7 +93,8 @@ func (me *WindowControl) defaultMessageHandling() {
 
 //------------------------------------------------------------------------------
 
-type _OptsWindowControl struct {
+// Options for NewWindowControl().
+type WindowControlOpts struct {
 	// Class name registered with RegisterClassEx().
 	// Defaults to a computed hash.
 	ClassName string
@@ -108,23 +110,42 @@ type _OptsWindowControl struct {
 
 	// Window styles, passed to CreateWindowEx().
 	// Defaults to WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS.
-	Styles co.WS
+	StylesOverride co.WS
+	// Window styles, passed to CreateWindowEx().
+	// These styles will be added to StylesOverride.
+	// If you want to keep the default styles while adding others, use this field.
+	StylesAdd co.WS
 	// Extended window styles, passed to CreateWindowEx().
 	// Defaults to WS_EX_CLIENTEDGE, giving the control a border.
-	ExStyles co.WS_EX
+	ExStylesOverride co.WS_EX
+	// Extended window styles, passed to CreateWindowEx().
+	// These styles will be added to ExStylesOverride.
+	// If you want to keep the default extended styles while adding others, use this field.
+	ExStylesAdd co.WS_EX
 
 	// Specific control ID. If defined, must be unique.
 	// Defaults to an auto-generated number.
 	CtrlId int
 }
 
-// Constructor. Returns an option set for NewWindowControl() with default values.
-func DefOptsWindowControl() *_OptsWindowControl {
-	return &_OptsWindowControl{
-		ClassStyles:      co.CS_DBLCLKS,
-		HCursor:          win.HINSTANCE(0).LoadCursor(co.IDC_ARROW),
-		HBrushBackground: win.CreateSysColorBrush(co.COLOR_WINDOW),
-		Styles:           co.WS_CHILD | co.WS_VISIBLE | co.WS_CLIPCHILDREN | co.WS_CLIPSIBLINGS,
-		ExStyles:         co.WS_EX_CLIENTEDGE, // has a border by default
+func (o *WindowControlOpts) setDefaultValues() {
+	if o.ClassStyles == 0 {
+		o.ClassStyles = co.CS_DBLCLKS
 	}
+	if o.HCursor == 0 {
+		o.HCursor = win.HINSTANCE(0).LoadCursor(co.IDC_ARROW)
+	}
+	if o.HBrushBackground == 0 {
+		o.HBrushBackground = win.CreateSysColorBrush(co.COLOR_WINDOW)
+	}
+
+	if o.StylesOverride == 0 {
+		o.StylesOverride = co.WS_CHILD | co.WS_VISIBLE | co.WS_CLIPCHILDREN | co.WS_CLIPSIBLINGS
+	}
+	o.StylesOverride |= o.StylesAdd
+
+	if o.ExStylesOverride == 0 {
+		o.ExStylesOverride = co.WS_EX_CLIENTEDGE
+	}
+	o.ExStylesOverride |= o.ExStylesAdd
 }

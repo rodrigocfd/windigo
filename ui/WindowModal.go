@@ -14,17 +14,18 @@ import (
 // Modal popup window.
 type WindowModal struct {
 	*_WindowBase
-	opts            *_OptsWindowModal
+	opts            *WindowModalOpts
 	prevFocusParent win.HWND // child control last focused on parent
 }
 
 // Constructor. Initializes the window with the given options.
-func NewWindowModal(opts *_OptsWindowModal) *WindowModal {
+func NewWindowModal(opts *WindowModalOpts) *WindowModal {
 	me := WindowModal{
 		_WindowBase: _NewWindowBase(),
 		opts:        opts,
 	}
 
+	me.opts.setDefaultValues()
 	me.defaultMessageHandling()
 	return &me
 }
@@ -43,8 +44,8 @@ func (me *WindowModal) Show(parent Parent) {
 	parent.Hwnd().EnableWindow(false)   // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
 	pos, size := me.calcCoords(parent)
-	me._WindowBase.createWindow("WindowModal", me.opts.ExStyles,
-		me.opts.ClassName, me.opts.Title, me.opts.Styles,
+	me._WindowBase.createWindow("WindowModal", me.opts.ExStylesOverride,
+		me.opts.ClassName, me.opts.Title, me.opts.StylesOverride,
 		pos, size, parent, win.HMENU(0), hInst)
 
 	me.runModalLoop()
@@ -77,7 +78,7 @@ func (me *WindowModal) calcCoords(parent Parent) (Pos, Size) {
 		Right:  int32(me.opts.ClientAreaSize.Cx),
 		Bottom: int32(me.opts.ClientAreaSize.Cy),
 	}
-	win.AdjustWindowRectEx(&rc, me.opts.Styles, false, me.opts.ExStyles)
+	win.AdjustWindowRectEx(&rc, me.opts.StylesOverride, false, me.opts.ExStylesOverride)
 	me.opts.ClientAreaSize = Size{
 		Cx: int(rc.Right - rc.Left),
 		Cy: int(rc.Bottom - rc.Top),
@@ -85,8 +86,14 @@ func (me *WindowModal) calcCoords(parent Parent) (Pos, Size) {
 
 	rcParent := parent.Hwnd().GetWindowRect() // relative to screen
 	return Pos{
-			X: int(rcParent.Left + (rcParent.Right-rcParent.Left)/2 - int32(me.opts.ClientAreaSize.Cx)/2), // center on parent
-			Y: int(rcParent.Top + (rcParent.Bottom-rcParent.Top)/2 - int32(me.opts.ClientAreaSize.Cy)/2),
+			X: int(
+				rcParent.Left + (rcParent.Right-rcParent.Left)/2 - // center on parent
+					int32(me.opts.ClientAreaSize.Cx)/2,
+			),
+			Y: int(
+				rcParent.Top + (rcParent.Bottom-rcParent.Top)/2 -
+					int32(me.opts.ClientAreaSize.Cy)/2,
+			),
 		},
 		me.opts.ClientAreaSize
 }
@@ -126,7 +133,8 @@ func (me *WindowModal) runModalLoop() {
 
 //------------------------------------------------------------------------------
 
-type _OptsWindowModal struct {
+// Options for NewWindowModal().
+type WindowModalOpts struct {
 	// Class name registered with RegisterClassEx().
 	// Defaults to a computed hash.
 	ClassName string
@@ -140,12 +148,20 @@ type _OptsWindowModal struct {
 	// Defaults to COLOR_BTNFACE color.
 	HBrushBackground win.HBRUSH
 
-	// Window Styles, passed to CreateWindowEx().
+	// Window styles, passed to CreateWindowEx().
 	// Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER | WS_VISIBLE.
-	Styles co.WS
+	StylesOverride co.WS
+	// Window styles, passed to CreateWindowEx().
+	// These styles will be added to StylesOverride.
+	// If you want to keep the default styles while adding others, use this field.
+	StylesAdd co.WS
 	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
+	// Defaults to WS_EX_DLGMODALFRAME.
+	ExStylesOverride co.WS_EX
+	// Extended window styles, passed to CreateWindowEx().
+	// These styles will be added to ExStylesOverride.
+	// If you want to keep the default extended styles while adding others, use this field.
+	ExStylesAdd co.WS_EX
 	// The Title of the window, passed to CreateWindowEx().
 	// Defaults to empty string.
 	Title string
@@ -154,13 +170,31 @@ type _OptsWindowModal struct {
 	ClientAreaSize Size
 }
 
-// Constructor. Returns an option set for NewWindowModal() with default values.
-func DefOptsWindowModal() *_OptsWindowModal {
-	return &_OptsWindowModal{
-		ClassStyles:      co.CS_DBLCLKS,
-		HCursor:          win.HINSTANCE(0).LoadCursor(co.IDC_ARROW),
-		HBrushBackground: win.CreateSysColorBrush(co.COLOR_BTNFACE),
-		Styles:           co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN | co.WS_BORDER | co.WS_VISIBLE,
-		ClientAreaSize:   Size{Cx: 400, Cy: 300},
+func (o *WindowModalOpts) setDefaultValues() {
+	if o.ClassStyles == 0 {
+		o.ClassStyles = co.CS_DBLCLKS
+	}
+	if o.HCursor == 0 {
+		o.HCursor = win.HINSTANCE(0).LoadCursor(co.IDC_ARROW)
+	}
+	if o.HBrushBackground == 0 {
+		o.HBrushBackground = win.CreateSysColorBrush(co.COLOR_BTNFACE)
+	}
+
+	if o.StylesOverride == 0 {
+		o.StylesOverride = co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN | co.WS_BORDER | co.WS_VISIBLE
+	}
+	o.StylesOverride |= o.StylesAdd
+
+	if o.ExStylesOverride == 0 {
+		o.ExStylesOverride = co.WS_EX_DLGMODALFRAME
+	}
+	o.ExStylesOverride |= o.ExStylesAdd
+
+	if o.ClientAreaSize.Cx == 0 {
+		o.ClientAreaSize.Cx = 400
+	}
+	if o.ClientAreaSize.Cy == 0 {
+		o.ClientAreaSize.Cy = 300
 	}
 }
