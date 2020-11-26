@@ -34,12 +34,11 @@ type _NativeControlBase struct {
 func _NewNativeControlBase(parent Parent, ctrlId ...int) *_NativeControlBase {
 	ourCtrlId := 0
 
-	switch numCtrlId := len(ctrlId); {
-	case numCtrlId > 1:
+	if numCtrlId := len(ctrlId); numCtrlId > 1 {
 		panic("You cannot pass more than 1 control ID.")
-	case numCtrlId == 1:
+	} else if numCtrlId == 1 {
 		ourCtrlId = ctrlId[0]
-	default:
+	} else {
 		ourCtrlId = _global.NewAutoCtrlId()
 	}
 

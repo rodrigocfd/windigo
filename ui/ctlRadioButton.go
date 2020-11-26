@@ -23,7 +23,7 @@ type RadioButton struct {
 func NewRadioButton(parent Parent, ctrlId ...int) *RadioButton {
 	base := _NewNativeControlBase(parent, ctrlId...)
 	return &RadioButton{
-		_NativeControlBase: _NewNativeControlBase(parent, ctrlId...),
+		_NativeControlBase: base,
 		events:             _NewEventsButton(base),
 	}
 }
@@ -169,6 +169,7 @@ func (me *RadioButton) createNoDpi(
 // https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioGroup struct {
 	radioButtons []*RadioButton
+	events       *_EventsRadioGroup
 }
 
 // Constructor. Receives the number of RadioButton controls to be created.
@@ -177,6 +178,7 @@ func NewRadioGroupCount(parent Parent, numRadios int) *RadioGroup {
 	me := RadioGroup{
 		radioButtons: make([]*RadioButton, numRadios),
 	}
+	me.events = _NewEventsRadioGroup(&me)
 	for i := range me.radioButtons {
 		me.radioButtons[i] = NewRadioButton(parent)
 	}
@@ -193,6 +195,18 @@ func NewRadioGroupIds(parent Parent, ctrlIds ...int) *RadioGroup {
 		me.radioButtons[i] = NewRadioButton(parent, ctrlIds[i])
 	}
 	return &me
+}
+
+// Exposes all RadioGroup notifications.
+//
+// Cannot be called after the parent window was created.
+func (me *RadioGroup) On() *_EventsRadioGroup {
+	for _, rb := range me.radioButtons {
+		if rb.Hwnd() != 0 {
+			panic("Cannot add notifications after the RadioButtons were created.")
+		}
+	}
+	return me.events
 }
 
 // Returns a slice with Control interfaces.
@@ -214,9 +228,98 @@ func (me *RadioGroup) Checked() (*RadioButton, bool) {
 	return nil, false
 }
 
+// Returns the number of RadioButton items in this group.
+func (me *RadioGroup) Count() int {
+	return len(me.radioButtons)
+}
+
 // Returns the RadioButton at the given index.
 //
 // Does not perform bound checking.
 func (me *RadioGroup) Get(index int) *RadioButton {
 	return me.radioButtons[index]
+}
+
+//------------------------------------------------------------------------------
+
+// RadioGroup notifications.
+type _EventsRadioGroup struct {
+	group *RadioGroup
+}
+
+// Constructor.
+func _NewEventsRadioGroup(group *RadioGroup) *_EventsRadioGroup {
+	return &_EventsRadioGroup{
+		group: group,
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/bcn-dropdown
+func (me *_EventsRadioGroup) BcnDropDown(userFunc func(radioButton *RadioButton, p *win.NMBCDROPDOWN)) {
+	for _, rb := range me.group.radioButtons {
+		rb := rb // https://github.com/golang/go/wiki/CommonMistakes#using-reference-to-loop-iterator-variable
+		rb.On().BcnDropDown(func(p *win.NMBCDROPDOWN) {
+			userFunc(rb, p)
+		})
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/bcn-hotitemchange
+func (me *_EventsRadioGroup) BcnHotItemChange(userFunc func(radioButton *RadioButton, p *win.NMBCHOTITEM)) {
+	for _, rb := range me.group.radioButtons {
+		rb := rb
+		rb.On().BcnHotItemChange(func(p *win.NMBCHOTITEM) {
+			userFunc(rb, p)
+		})
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/bn-clicked
+func (me *_EventsRadioGroup) BnClicked(userFunc func(radioButton *RadioButton)) {
+	for _, rb := range me.group.radioButtons {
+		rb := rb
+		rb.On().BnClicked(func() {
+			userFunc(rb)
+		})
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/bn-dblclk
+func (me *_EventsRadioGroup) BnDblClk(userFunc func(radioButton *RadioButton)) {
+	for _, rb := range me.group.radioButtons {
+		rb := rb
+		rb.On().BnDblClk(func() {
+			userFunc(rb)
+		})
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/bn-killfocus
+func (me *_EventsRadioGroup) BnKillFocus(userFunc func(radioButton *RadioButton)) {
+	for _, rb := range me.group.radioButtons {
+		rb := rb
+		rb.On().BnKillFocus(func() {
+			userFunc(rb)
+		})
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/bn-setfocus
+func (me *_EventsRadioGroup) BnSetFocus(userFunc func(radioButton *RadioButton)) {
+	for _, rb := range me.group.radioButtons {
+		rb := rb
+		rb.On().BnSetFocus(func() {
+			userFunc(rb)
+		})
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/controls/nm-customdraw-button
+func (me *_EventsRadioGroup) NmCustomDraw(userFunc func(radioButton *RadioButton, p *win.NMCUSTOMDRAW) co.CDRF) {
+	for _, rb := range me.group.radioButtons {
+		rb := rb
+		rb.On().NmCustomDraw(func(p *win.NMCUSTOMDRAW) co.CDRF {
+			return userFunc(rb, p)
+		})
+	}
 }
