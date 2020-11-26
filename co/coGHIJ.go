@@ -105,13 +105,16 @@ const (
 type GWLP int32
 
 const (
-	GWLP_STYLE      GWLP = -16
-	GWLP_EXSTYLE    GWLP = -20
-	GWLP_WNDPROC    GWLP = -4
-	GWLP_HINSTANCE  GWLP = -6
-	GWLP_HWNDPARENT GWLP = -8
-	GWLP_USERDATA   GWLP = -21
-	GWLP_ID         GWLP = -12
+	GWLP_STYLE          GWLP = -16
+	GWLP_EXSTYLE        GWLP = -20
+	GWLP_WNDPROC        GWLP = -4
+	GWLP_HINSTANCE      GWLP = -6
+	GWLP_HWNDPARENT     GWLP = -8
+	GWLP_USERDATA       GWLP = -21
+	GWLP_ID             GWLP = -12
+	GWLP_DWLP_DLGPROC   GWLP = 8 // sizeof(LRESULT) on x64
+	GWLP_DWLP_MSGRESULT GWLP = 0
+	GWLP_DWLP_USER      GWLP = GWLP_DWLP_DLGPROC + 8 // sizeof(LRESULT) on x64
 )
 
 // SetWindowsHookEx() callback hook codes.
@@ -324,6 +327,14 @@ const (
 	HTREEITEM_SORT  HTREEITEM = 0x0fffd
 )
 
+// WM_SETICON icon size; originally ICON prefix.
+type ICON_SZ int32
+
+const (
+	ICON_SZ_SMALL ICON_SZ = 0
+	ICON_SZ_BIG   ICON_SZ = 1
+)
+
 // LoadCursor() lpCursorName.
 type IDC uintptr
 
@@ -419,6 +430,16 @@ const (
 	ILS_SHADOW   ILS = 0x00000002
 	ILS_SATURATE ILS = 0x00000004
 	ILS_ALPHA    ILS = 0x00000008
+)
+
+// LoadImage type.
+type IMAGE uint32
+
+const (
+	IMAGE_BITMAP      IMAGE = 0
+	IMAGE_ICON        IMAGE = 1
+	IMAGE_CURSOR      IMAGE = 2
+	IMAGE_ENHMETAFILE IMAGE = 3
 )
 
 // IP address control notifications, sent via WM_NOTIFY.

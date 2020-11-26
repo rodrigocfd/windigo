@@ -120,6 +120,15 @@ func (hWnd HWND) EnableWindow(bEnable bool) bool {
 	return ret != 0 // the window was previously disabled?
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enddialog
+func (hWnd HWND) EndDialog(nResult uintptr) {
+	ret, _, lerr := syscall.Syscall(proc.EndDialog.Addr(), 2,
+		uintptr(hWnd), nResult, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "EndDialog").Error())
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endpaint
 func (hWnd HWND) EndPaint(lpPaint *PAINTSTRUCT) {
 	syscall.Syscall(proc.EndPaint.Addr(), 2,
@@ -134,8 +143,8 @@ func (hWnd HWND) EnumChildWindows(
 	syscall.Syscall(proc.EnumChildWindows.Addr(), 3,
 		uintptr(hWnd),
 		syscall.NewCallback(
-			func(hChild HWND, lParam LPARAM) int32 {
-				return _Win.BoolToInt32(lpEnumFunc(hChild, lParam))
+			func(hChild HWND, lParam LPARAM) uintptr {
+				return _Win.BoolToUintptr(lpEnumFunc(hChild, lParam))
 			}),
 		uintptr(lParam))
 }

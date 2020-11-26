@@ -182,9 +182,9 @@ func GetCursorPos() *POINT {
 	return &pt
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforsystem
-//
 // Available in Windows 10, version 1607.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforsystem
 func GetDpiForSystem() uint32 {
 	ret, _, _ := syscall.Syscall(proc.GetDpiForSystem.Addr(), 0,
 		0, 0, 0)
@@ -203,9 +203,9 @@ func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
 	return int32(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
-//
 // Pass an empty string to get own process handle.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
 func GetModuleHandle(moduleName string) HINSTANCE {
 	ret, _, lerr := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
 		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(moduleName))),
@@ -298,9 +298,9 @@ func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isguithread
-//
 // Warning: passing true will force current thread to GUI, and it may deadlock.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isguithread
 func IsGUIThread(bConvertToGuiThread bool) bool {
 	ret, _, _ := syscall.Syscall(proc.IsGUIThread.Addr(), 1,
 		_Win.BoolToUintptr(bConvertToGuiThread), 0, 0)
@@ -464,9 +464,9 @@ func ReplyMessage(lResult uintptr) bool {
 	return ret != 0
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
-//
 // Available in Windows 10, version 1703.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
 func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 	ret, _, lerr := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
 		uintptr(value), 0, 0)
@@ -475,9 +475,9 @@ func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 	}
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiaware
-//
 // Available in Windows Vista.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiaware
 func SetProcessDPIAware() {
 	ret, _, _ := syscall.Syscall(proc.SetProcessDPIAware.Addr(), 0,
 		0, 0, 0)
@@ -500,9 +500,9 @@ func SetWindowsHookEx(idHook co.WH,
 	return HHOOK(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
-//
 // Depends of CoInitializeEx().
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
 func SHGetFileInfo(pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
 	uFlags co.SHGFI) *SHFILEINFO {
 

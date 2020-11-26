@@ -84,8 +84,8 @@ func (me *_Global) UiFont() *Font {
 // class name, which is auto-generated if not specified.
 func (*_Global) GenerateWndclassex(
 	hInst win.HINSTANCE, className string, classStyles co.CS,
-	hCursor win.HCURSOR, hBrushBg win.HBRUSH, defBrushBgColor co.COLOR,
-	hIcon, hIconSmall win.HICON) (*win.WNDCLASSEX, string) {
+	hCursor win.HCURSOR, hBrushBg win.HBRUSH,
+	defBrushBgColor co.COLOR, iconId int) (*win.WNDCLASSEX, string) {
 
 	wcx := win.WNDCLASSEX{}
 	wcx.CbSize = uint32(unsafe.Sizeof(wcx))
@@ -105,8 +105,16 @@ func (*_Global) GenerateWndclassex(
 		wcx.HbrBackground = win.CreateSysColorBrush(defBrushBgColor)
 	}
 
-	wcx.HIcon = hIcon
-	wcx.HIconSm = hIconSmall
+	if iconId != 0 {
+		// If an icon ID was specified, load it from the resource.
+		// Resource icons are automatically released by the system.
+		wcx.HIcon = win.HICON(
+			hInst.LoadImage(int32(iconId), co.IMAGE_ICON,
+				32, 32, co.LR_DEFAULTCOLOR))
+		wcx.HIconSm = win.HICON(
+			hInst.LoadImage(int32(iconId), co.IMAGE_ICON,
+				16, 16, co.LR_DEFAULTCOLOR))
+	}
 
 	// After all the fields are set, if no class name, we generate one by hashing
 	// all WNDCLASSEX fields. That's why it must be the last thing to be done.

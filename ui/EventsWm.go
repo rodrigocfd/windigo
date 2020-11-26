@@ -543,6 +543,13 @@ func (me *_EventsWm) WmHScrollClipboard(userFunc func(p WmScroll)) {
 	})
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/dlgbox/wm-initdialog
+func (me *_EventsWm) WmInitDialog(userFunc func(hFocusedCtrl win.HWND) bool) {
+	me.addMsgRet(co.WM_INITDIALOG, func(p Wm) uintptr {
+		return _global.BoolToUintptr(userFunc(win.HWND(p.WParam)))
+	})
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-initmenupopup
 func (me *_EventsWm) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
 	me.addMsg(co.WM_INITMENUPOPUP, func(p Wm) {
@@ -999,6 +1006,18 @@ type WmSetFont struct{ m Wm }
 
 func (p WmSetFont) Hfont() win.HFONT   { return win.HFONT(p.m.WParam) }
 func (p WmSetFont) ShouldRedraw() bool { return p.m.LParam == 1 }
+
+// https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-seticon
+func (me *_EventsWm) WmSetIcon(userFunc func(p WmSetIcon) win.HICON) {
+	me.addMsgRet(co.WM_SETICON, func(p Wm) uintptr {
+		return uintptr(userFunc(WmSetIcon{m: p}))
+	})
+}
+
+type WmSetIcon struct{ m Wm }
+
+func (p WmSetIcon) Size() co.ICON_SZ { return co.ICON_SZ(p.m.WParam) }
+func (p WmSetIcon) Hicon() win.HICON { return win.HICON(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-size
 func (me *_EventsWm) WmSize(userFunc func(p WmSize)) {

@@ -16,11 +16,11 @@ import (
 // Main application window.
 type WindowMain struct {
 	*_WindowBase
-	opts             *_OptsWindowMain
-	modelessChildren []win.HWND
-	childPrevFocus   win.HWND // when window is inactivated
-	mainMenu         *Menu
-	accelTable       AccelTable
+	opts           *_OptsWindowMain
+	mainLoop       *_WindowMainLoop
+	childPrevFocus win.HWND // when window is inactivated
+	mainMenu       *Menu
+	accelTable     AccelTable
 }
 
 // Constructor. Initializes the window with the given options.
@@ -28,6 +28,7 @@ func NewWindowMain(opts *_OptsWindowMain) *WindowMain {
 	me := WindowMain{
 		_WindowBase: _NewWindowBase(),
 		opts:        opts,
+		mainLoop:    _NewWindowMainLoop(),
 		mainMenu:    &Menu{hMenu: win.CreateMenu()}, // passed to CreateWindowEx()
 	}
 
@@ -76,7 +77,7 @@ func (me *WindowMain) RunAsMain() int {
 	hInst := win.GetModuleHandle("")
 	wcx, className := _global.GenerateWndclassex(hInst, me.opts.ClassName,
 		me.opts.ClassStyles, me.opts.HCursor, me.opts.HBrushBackground,
-		co.COLOR_BTNFACE, me.opts.HIcon, me.opts.HIconSmall)
+		co.COLOR_BTNFACE, me.opts.IconId)
 	me.opts.ClassName = className // if not specified, is auto-generated
 	me._WindowBase.registerClass(wcx)
 
@@ -87,7 +88,7 @@ func (me *WindowMain) RunAsMain() int {
 
 	me.Hwnd().ShowWindow(me.opts.CmdShow)
 	me.Hwnd().UpdateWindow()
-	return me.runMainLoop()
+	return me.mainLoop.RunLoop(me.Hwnd(), me.accelTable.Haccel())
 }
 
 // Adds the messages which have a default processing.
@@ -150,59 +151,6 @@ func (me *WindowMain) calcCoords() (Pos, Size) {
 		me.opts.ClientAreaSize
 }
 
-// Runs the main application loop.
-// Will block until the loop ends.
-func (me *WindowMain) runMainLoop() int {
-	msg := win.MSG{}
-	for {
-		if win.GetMessage(&msg, win.HWND(0), 0, 0) == 0 {
-			// WM_QUIT was sent, gracefully terminate the program.
-			// If it returned -1, it will simply panic.
-			// WParam has the program exit code.
-			// https://docs.microsoft.com/en-us/windows/win32/winmsg/using-messages-and-message-queues
-			return int(msg.WParam)
-		}
-
-		if me.isModelessMsg(&msg) { // does this message belong to a modeless child (if any)?
-			// http://www.winprog.org/tutorial/modeless_dialogs.html
-			continue
-		}
-
-		// If a child window, will retrieve its top-level parent.
-		// If a top-level, use itself.
-		hTopLevel := msg.HWnd.GetAncestor(co.GA_ROOT)
-
-		// If we have an accelerator table, try to translate the message.
-		if me.accelTable.Haccel() != 0 &&
-			hTopLevel.TranslateAccelerator(
-				me.accelTable.Haccel(), &msg) {
-			// Message translated, no further processing is done.
-			continue
-		}
-
-		if hTopLevel.IsDialogMessage(&msg) {
-			// Processed all keyboard actions for child controls.
-			continue
-		}
-
-		win.TranslateMessage(&msg)
-		win.DispatchMessage(&msg)
-	}
-}
-
-// Checks if the message belongs to a modeless child, and if so, processes it.
-func (me *WindowMain) isModelessMsg(msg *win.MSG) bool {
-	for _, hChild := range me.modelessChildren { // check all modeless HWNDs
-		if hChild == 0 || !hChild.IsWindow() {
-			continue // skip invalid HWND
-		}
-		if hChild.IsDialogMessage(msg) {
-			return true // it was a message for this modeless, it was processed and we're done
-		}
-	}
-	return false // the message wasn't for any of the modeless HWNDs
-}
-
 //------------------------------------------------------------------------------
 
 type _OptsWindowMain struct {
@@ -218,12 +166,9 @@ type _OptsWindowMain struct {
 	// Window background brush, passed to RegisterClassEx().
 	// Defaults to COLOR_BTNFACE color.
 	HBrushBackground win.HBRUSH
-	// Icon associated with the window, passed to RegisterClassEx().
+	// ID of the icon resource associated with the window, passed to RegisterClassEx().
 	// Defaults to none.
-	HIcon win.HICON
-	// Small icon associated with the window, passed to RegisterClassEx().
-	// Defaults to none.
-	HIconSmall win.HICON
+	IconId int
 
 	// Window styles, passed to CreateWindowEx().
 	// Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER | WS_VISIBLE.

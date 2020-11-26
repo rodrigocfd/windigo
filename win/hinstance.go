@@ -16,6 +16,34 @@ import (
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
 type HINSTANCE HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
+func (hInst HINSTANCE) CreateDialogParam(
+	lpTemplateName int32, hWndParent HWND,
+	lpDialogFunc uintptr, dwInitParam LPARAM) HWND {
+
+	ret, _, lerr := syscall.Syscall6(proc.CreateDialogParam.Addr(), 5,
+		uintptr(hInst), uintptr(lpTemplateName), uintptr(hWndParent),
+		lpDialogFunc, uintptr(dwInitParam), 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "CreateDialogParam").Error())
+	}
+	return HWND(ret)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparamw
+func (hInst HINSTANCE) DialogBoxParam(
+	lpTemplateName int32, hWndParent HWND,
+	lpDialogFunc uintptr, dwInitParam LPARAM) uintptr {
+
+	ret, _, lerr := syscall.Syscall6(proc.DialogBoxParam.Addr(), 5,
+		uintptr(hInst), uintptr(lpTemplateName), uintptr(hWndParent),
+		lpDialogFunc, uintptr(dwInitParam), 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "DialogBoxParam").Error())
+	}
+	return ret
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-duplicateicon
 func (hInst HINSTANCE) DuplicateIcon(hIcon HICON) HICON {
 	ret, _, _ := syscall.Syscall(proc.DuplicateIcon.Addr(), 2,
@@ -40,6 +68,16 @@ func (hInst HINSTANCE) GetClassInfoEx(
 	return ATOM(ret), nil
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
+func (hInst HINSTANCE) LoadAccelerators(lpTableName int32) HACCEL {
+	ret, _, lerr := syscall.Syscall(proc.LoadAccelerators.Addr(), 2,
+		uintptr(hInst), uintptr(lpTableName), 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "LoadAccelerators").Error())
+	}
+	return HACCEL(ret)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(lpCursorName co.IDC) HCURSOR {
 	ret, _, lerr := syscall.Syscall(proc.LoadCursor.Addr(), 2,
@@ -58,6 +96,21 @@ func (hInst HINSTANCE) LoadIcon(lpIconName co.IDI) HICON {
 		panic(NewWinError(co.ERROR(lerr), "LoadIcon").Error())
 	}
 	return HICON(ret)
+}
+
+// Returned HANDLE must be cast into HBITMAP, HCURSOR or HICON.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
+func (hInst HINSTANCE) LoadImage(
+	name int32, imgType co.IMAGE, cx, cy int32, fuLoad co.LR) HANDLE {
+
+	ret, _, lerr := syscall.Syscall6(proc.LoadImage.Addr(), 6,
+		uintptr(hInst), uintptr(name), uintptr(imgType),
+		uintptr(cx), uintptr(cy), uintptr(fuLoad))
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "LoadImage").Error())
+	}
+	return HANDLE(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw

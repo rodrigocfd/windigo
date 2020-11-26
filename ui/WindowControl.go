@@ -33,7 +33,7 @@ func (me *WindowControl) Create(parent Parent, pos Pos, size Size) {
 	hInst := parent.Hwnd().GetInstance()
 	wcx, className := _global.GenerateWndclassex(hInst, me.opts.ClassName,
 		me.opts.ClassStyles, me.opts.HCursor, me.opts.HBrushBackground,
-		co.COLOR_WINDOW, win.HICON(0), win.HICON(0))
+		co.COLOR_WINDOW, 0)
 	me.opts.ClassName = className // if not specified, is auto-generated
 	me._WindowBase.registerClass(wcx)
 
