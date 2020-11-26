@@ -437,7 +437,7 @@ func PostThreadMessage(
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassexw
-func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, *WinError) {
+func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, error) {
 	wcx.CbSize = uint32(unsafe.Sizeof(*wcx)) // safety
 	ret, _, lerr := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
 		uintptr(unsafe.Pointer(wcx)), 0, 0)
@@ -448,7 +448,7 @@ func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, *WinError) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerwindowmessagew
-func RegisterWindowMessage(lpString string) (uint32, *WinError) {
+func RegisterWindowMessage(lpString string) (uint32, error) {
 	ret, _, lerr := syscall.Syscall(proc.RegisterWindowMessage.Addr(), 1,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpString))), 0, 0)
 	if ret == 0 {

@@ -25,8 +25,8 @@ func (hFile HFILE) CloseHandle() {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw
-func CreateDirectory(pathName string,
-	securityAttributes *SECURITY_ATTRIBUTES) *WinError {
+func CreateDirectory(
+	pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
 
 	ret, _, lerr := syscall.Syscall(proc.CreateDirectory.Addr(), 2,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pathName))),
@@ -42,7 +42,7 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 	shareMode co.FILE_SHARE, securityAttributes *SECURITY_ATTRIBUTES,
 	creationDisposition co.FILE_DISPO, attributes co.FILE_ATTRIBUTE,
 	flags co.FILE_FLAG, security co.SECURITY,
-	hTemplateFile HFILE) (HFILE, *WinError) {
+	hTemplateFile HFILE) (HFILE, error) {
 
 	ret, _, lerr := syscall.Syscall9(proc.CreateFile.Addr(), 7,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
@@ -60,7 +60,7 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 // https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
 func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 	protectPage co.PAGE, protectSec co.SEC, maxSize uint32,
-	objectName string) (HFILEMAP, *WinError) {
+	objectName string) (HFILEMAP, error) {
 
 	ret, _, lerr := syscall.Syscall6(proc.CreateFileMapping.Addr(), 6,
 		uintptr(hFile), uintptr(unsafe.Pointer(securityAttributes)),
@@ -74,7 +74,7 @@ func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
-func DeleteFile(fileName string) *WinError {
+func DeleteFile(fileName string) error {
 	ret, _, lerr := syscall.Syscall(proc.DeleteFile.Addr(), 1,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))), 0, 0)
 	if ret == 0 {
@@ -84,7 +84,7 @@ func DeleteFile(fileName string) *WinError {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
-func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, *WinError) {
+func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
 	ret, _, lerr := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))), 0, 0)
 	retAttr := co.FILE_ATTRIBUTE(ret)
@@ -95,7 +95,7 @@ func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, *WinError) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex
-func (hFile HFILE) GetFileSizeEx() (uint64, *WinError) {
+func (hFile HFILE) GetFileSizeEx() (uint64, error) {
 	retSz := int64(0)
 	ret, _, lerr := syscall.Syscall(proc.GetFileSizeEx.Addr(), 2,
 		uintptr(hFile), uintptr(unsafe.Pointer(&retSz)), 0)
@@ -106,7 +106,7 @@ func (hFile HFILE) GetFileSizeEx() (uint64, *WinError) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
-func (hFile HFILE) ReadFile(buf []byte, numBytesToRead uint32) *WinError {
+func (hFile HFILE) ReadFile(buf []byte, numBytesToRead uint32) error {
 	if len(buf) < int(numBytesToRead) {
 		panic("ReadFile failed: not enough room in buffer.")
 	}
@@ -122,7 +122,7 @@ func (hFile HFILE) ReadFile(buf []byte, numBytesToRead uint32) *WinError {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setendoffile
-func (hFile HFILE) SetEndOfFile() *WinError {
+func (hFile HFILE) SetEndOfFile() error {
 	ret, _, lerr := syscall.Syscall(proc.SetEndOfFile.Addr(), 1,
 		uintptr(hFile), 0, 0)
 	if ret == 0 {
@@ -135,7 +135,7 @@ func (hFile HFILE) SetEndOfFile() *WinError {
 //
 // Returns the new pointer offset.
 func (hFile HFILE) SetFilePointerEx(
-	distanceToMove int64, moveMethod co.FILE_SETPTR) (uint64, *WinError) {
+	distanceToMove int64, moveMethod co.FILE_SETPTR) (uint64, error) {
 
 	newOff := int64(0)
 	ret, _, lerr := syscall.Syscall6(proc.SetFilePointerEx.Addr(), 4,
@@ -148,7 +148,7 @@ func (hFile HFILE) SetFilePointerEx(
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
-func (hFile HFILE) WriteFile(buf []byte) *WinError {
+func (hFile HFILE) WriteFile(buf []byte) error {
 	written := uint32(0)
 	ret, _, lerr := syscall.Syscall6(proc.WriteFile.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),

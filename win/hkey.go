@@ -29,7 +29,7 @@ func (hKey HKEY) RegCloseKey() {
 // This function returns co.ERROR as status flag.
 func (hKey HKEY) RegEnumValue(
 	dwIndex uint32, lpValueName []uint16, lpcchValueName *uint32, lpType *co.REG,
-	lpData unsafe.Pointer, lpcbData *uint32) (co.ERROR, *WinError) {
+	lpData unsafe.Pointer, lpcbData *uint32) (co.ERROR, error) {
 
 	ret, _, _ := syscall.Syscall9(proc.RegEnumValue.Addr(), 8,
 		uintptr(hKey), uintptr(dwIndex),
@@ -49,8 +49,9 @@ func (hKey HKEY) RegEnumValue(
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
-func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
-	samDesired co.KEY) (HKEY, *WinError) {
+func RegOpenKeyEx(
+	hKeyPredef co.HKEY, lpSubKey string,
+	ulOptions co.REG_OPTION, samDesired co.KEY) (HKEY, error) {
 
 	hKey := HKEY(0)
 	ret, _, _ := syscall.Syscall6(proc.RegOpenKeyEx.Addr(), 5,
@@ -64,8 +65,9 @@ func RegOpenKeyEx(hKeyPredef co.HKEY, lpSubKey string, ulOptions co.REG_OPTION,
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryvalueexw
-func (hKey HKEY) RegQueryValueEx(lpValueName string, lpType *co.REG,
-	lpData unsafe.Pointer, lpcbData *uint32) *WinError {
+func (hKey HKEY) RegQueryValueEx(
+	lpValueName string, lpType *co.REG,
+	lpData unsafe.Pointer, lpcbData *uint32) error {
 
 	ret, _, _ := syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValueName))), 0,

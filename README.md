@@ -73,7 +73,7 @@ func (me *MyWindow) events() {
 
 ## Win32 error handling
 
-Native Win32 errors are represented by `win.WinError` type, which implements `error` interface.
+Native Win32 API calls may return a `win.WinError` type, which implements `error` interface.
 
 However, in Windigo, most Win32 functions do **not** return errors. That's because most low-level errors are **unrecoverable**, in the sense that if such an error happens in an application, there's really nothing you can do. Unrecoverable errors very rare, occurring in conditions like low memory or internal Windows crashes.
 

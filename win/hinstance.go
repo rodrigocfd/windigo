@@ -56,7 +56,7 @@ func (hInst HINSTANCE) DuplicateIcon(hIcon HICON) HICON {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassinfoexw
 func (hInst HINSTANCE) GetClassInfoEx(
-	className *uint16, destBuf *WNDCLASSEX) (ATOM, *WinError) {
+	className *uint16, destBuf *WNDCLASSEX) (ATOM, error) {
 
 	ret, _, lerr := syscall.Syscall(proc.GetClassInfoEx.Addr(), 3,
 		uintptr(hInst),

@@ -23,9 +23,9 @@ func MonitorFromPoint(pt POINT, dwFlags co.MONITOR) HMONITOR {
 	return HMONITOR(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-getdpiformonitor
-//
 // Available in Windows 8.1.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-getdpiformonitor
 func (hMon HMONITOR) GetDpiForMonitor(dpiType co.MDT) (uint32, uint32) {
 	dpiX, dpiY := uint32(0), uint32(0)
 	ret, _, _ := syscall.Syscall6(proc.GetDpiForMonitor.Addr(), 4,

@@ -12,14 +12,14 @@ import (
 	"windigo/win"
 )
 
-// Used in NewFileMappedOpen().
+// Used in OpenFileMapped().
 //
 // Behavior of the file opening.
-type FILEMAPO uint8
+type FILEMAP_MODE uint8
 
 const (
-	FILEMAPO_READ       FILEMAPO = iota // Open an existing file for read only.
-	FILEMAPO_READ_WRITE                 // Open an existing file for read and write.
+	FILEMAP_MODE_R  FILEMAP_MODE = iota // Open an existing file for read only.
+	FILEMAP_MODE_RW                     // Open an existing file for read and write.
 )
 
 //------------------------------------------------------------------------------
@@ -29,31 +29,33 @@ type FileMapped struct {
 	objFile  *File
 	hMap     win.HFILEMAP
 	pMem     win.HFILEMAP_PTR
-	sz       uint
+	sz       int
 	readOnly bool // necessary for SetSize()
 }
 
 // Constructor.
-func NewFileMappedOpen(path string, behavior FILEMAPO) (*FileMapped, *win.WinError) {
-	var fBeh FILEO
+//
+// You must defer Close().
+func OpenFileMapped(path string, behavior FILEMAP_MODE) (*FileMapped, error) {
+	var fBeh FILE_MODE
 	var readOnly bool
 
 	switch behavior {
-	case FILEMAPO_READ:
-		fBeh = FILEO_READ_EXISTING
+	case FILEMAP_MODE_R:
+		fBeh = FILE_MODE_R_EXISTING
 		readOnly = true
-	case FILEMAPO_READ_WRITE:
-		fBeh = FILEO_READ_WRITE_EXISTING
+	case FILEMAP_MODE_RW:
+		fBeh = FILE_MODE_RW_EXISTING
 		readOnly = false
 	}
 
-	fObj, err := NewFileOpen(path, fBeh)
+	objFile, err := OpenFile(path, fBeh)
 	if err != nil {
 		return nil, err
 	}
 
 	me := FileMapped{
-		objFile:  fObj,
+		objFile:  objFile,
 		readOnly: readOnly,
 	}
 
@@ -101,7 +103,7 @@ func (me *FileMapped) CopyAllData() []byte {
 
 // Copies file data into a []byte and returns it, starting from offset, with
 // given length.
-func (me *FileMapped) CopyDataChunk(offset, length uint) []byte {
+func (me *FileMapped) CopyDataChunk(offset, length int) []byte {
 	hotSlice := me.HotSlice()
 	buf := make([]byte, length)
 	copy(buf, hotSlice[offset:offset+length])
@@ -112,7 +114,7 @@ func (me *FileMapped) CopyDataChunk(offset, length uint) []byte {
 // file.
 //
 // Internally, the file is unmapped, then remapped back into memory.
-func (me *FileMapped) SetSize(numBytes uint) *win.WinError {
+func (me *FileMapped) SetSize(numBytes int) error {
 	me.pMem.UnmapViewOfFile()
 	me.hMap.CloseHandle()
 	if err := me.objFile.SetSize(numBytes); err != nil {
@@ -122,18 +124,18 @@ func (me *FileMapped) SetSize(numBytes uint) *win.WinError {
 }
 
 // Retrieves the file size. This value is cached.
-func (me *FileMapped) Size() uint {
+func (me *FileMapped) Size() int {
 	return me.sz
 }
 
-func (me *FileMapped) mapInMemory() *win.WinError {
+func (me *FileMapped) mapInMemory() error {
 	// Mapping into memory.
 	pageFlags := co.PAGE_READWRITE
 	if me.readOnly {
 		pageFlags = co.PAGE_READONLY
 	}
 
-	var err *win.WinError
+	var err error
 	me.hMap, err = me.objFile.hFile.CreateFileMapping(
 		nil, pageFlags, co.SEC_NONE, 0, "")
 	if err != nil {
@@ -145,6 +147,7 @@ func (me *FileMapped) mapInMemory() *win.WinError {
 	if me.readOnly {
 		mapFlags = co.FILE_MAP_READ
 	}
+
 	me.pMem, err = me.hMap.MapViewOfFile(mapFlags, 0, 0)
 	if err != nil {
 		return err

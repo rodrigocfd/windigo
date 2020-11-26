@@ -17,9 +17,18 @@ type ImageList struct {
 }
 
 // Constructor.
+//
+// You must defer Destroy().
 func NewImageList(cx, cy int) *ImageList {
 	return &ImageList{
 		himl: win.ImageListCreate(uint32(cx), uint32(cy), co.ILC_COLOR32, 0, 1),
+	}
+}
+
+// Releases the image list resource.
+func (me *ImageList) Destroy() {
+	if me.himl != 0 {
+		me.himl.Destroy()
 	}
 }
 
@@ -59,13 +68,6 @@ func (me *ImageList) AddShellIcon(fileExtensions ...string) *ImageList {
 // Retrieves the number of stored images.
 func (me *ImageList) Count() int {
 	return int(me.himl.GetImageCount())
-}
-
-// Releases the image list resource.
-func (me *ImageList) Destroy() {
-	if me.himl != 0 {
-		me.himl.Destroy()
-	}
 }
 
 // Returns the underlying HIMAGELIST handle.

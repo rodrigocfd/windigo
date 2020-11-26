@@ -16,11 +16,11 @@ import (
 // https://docs.microsoft.com/en-us/windows/win32/controls/image-lists
 type HIMAGELIST HANDLE
 
-// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_addicon
-//
 // If icon was loaded with LoadIcon(), it doesn't need to be destroyed, because
 // all icon resources are automatically freed.
 // Otherwise, if loaded with CreateIcon(), it must be destroyed.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_addicon
 func (hImg HIMAGELIST) AddIcon(hIcons ...HICON) {
 	for _, hIco := range hIcons {
 		hImg.ReplaceIcon(-1, hIco)
@@ -45,9 +45,9 @@ func (hImg HIMAGELIST) Duplicate() HIMAGELIST {
 	return HIMAGELIST(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticon
-//
 // Returned icon must be destroyed.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticon
 func (hImg HIMAGELIST) GetIcon(index uint32, flags co.ILD) HICON {
 	ret, _, _ := syscall.Syscall(proc.ImageList_GetIcon.Addr(), 3,
 		uintptr(hImg), uintptr(index), uintptr(flags))
@@ -87,11 +87,11 @@ func (hImg HIMAGELIST) GetImageInfo(index uint32) *IMAGEINFO {
 	return &ii
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_replaceicon
-//
 // If icon was loaded with LoadIcon(), it doesn't need to be destroyed, because
 // all icon resources are automatically freed.
 // Otherwise, if CreateIcon(), it can be destroyed after the function returns.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_replaceicon
 func (hImg HIMAGELIST) ReplaceIcon(i int32, hIcon HICON) int32 {
 	ret, _, _ := syscall.Syscall(proc.ImageList_ReplaceIcon.Addr(), 3,
 		uintptr(hImg), uintptr(i), uintptr(hIcon))

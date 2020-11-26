@@ -30,6 +30,8 @@ type FontOpts struct {
 }
 
 // Constructor.
+//
+// You must defer Destroy().
 func (me *Font) Create(setup *FontOpts) *Font {
 	me.Destroy()
 	lf := win.LOGFONT{}
@@ -62,6 +64,8 @@ func (me *Font) Create(setup *FontOpts) *Font {
 
 // Constructor.
 // Creates a font based on a LOGFONT struct.
+//
+// You must defer Destroy().
 func (me *Font) CreateLogFont(lf *win.LOGFONT) *Font {
 	me.Destroy()
 	me.hFont = win.CreateFontIndirect(lf)
@@ -72,6 +76,8 @@ func (me *Font) CreateLogFont(lf *win.LOGFONT) *Font {
 // Creates a font identical to the current system font, usually Tahoma or Segoe
 // UI. Because we call SetProcessDPIAware(), higher DPI resolutions will be
 // reflected in the font size.
+//
+// You must defer Destroy().
 func (me *Font) CreateUi() *Font {
 	ncm := win.NONCLIENTMETRICS{}
 	ncm.CbSize = uint32(unsafe.Sizeof(ncm))

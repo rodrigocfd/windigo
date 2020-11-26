@@ -40,7 +40,7 @@ func (hdc HDC) DrawIcon(x, y int32, hIcon HICON) {
 func (hdc HDC) EnumDisplayMonitors(
 	lprcClip *RECT,
 	lpfnEnum func(hMon HMONITOR, hdcMon HDC, rcMon uintptr, lp LPARAM) bool,
-	dwData LPARAM) *WinError {
+	dwData LPARAM) error {
 
 	ret, _, _ := syscall.Syscall6(proc.EnumDisplayMonitors.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(lprcClip)),

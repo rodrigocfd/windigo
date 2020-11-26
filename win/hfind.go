@@ -24,11 +24,11 @@ func (hFind HFIND) FindClose() {
 	}
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
+// Returns true if a file was found.
 //
-// Returns true if any file was found.
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
 func FindFirstFile(lpFileName string,
-	lpFindFileData *WIN32_FIND_DATA) (HFIND, bool, *WinError) {
+	lpFindFileData *WIN32_FIND_DATA) (HFIND, bool, error) {
 
 	ret, _, lerr := syscall.Syscall(proc.FindFirstFile.Addr(), 2,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))),
@@ -47,9 +47,11 @@ func FindFirstFile(lpFileName string,
 	return HFIND(ret), true, nil // a file was found
 }
 
+// Returns true if a file was found.
+//
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
 func (hFind HFIND) FindNextFile(
-	lpFindFileData *WIN32_FIND_DATA) (bool, *WinError) {
+	lpFindFileData *WIN32_FIND_DATA) (bool, error) {
 
 	ret, _, lerr := syscall.Syscall(proc.FindNextFile.Addr(), 2,
 		uintptr(hFind), uintptr(unsafe.Pointer(lpFindFileData)), 0)

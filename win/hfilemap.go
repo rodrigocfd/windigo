@@ -26,7 +26,7 @@ func (hMap HFILEMAP) CloseHandle() {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
-	offset uint32, numBytesToMap uintptr) (HFILEMAP_PTR, *WinError) {
+	offset uint32, numBytesToMap uintptr) (HFILEMAP_PTR, error) {
 
 	ret, _, lerr := syscall.Syscall6(proc.MapViewOfFile.Addr(), 5,
 		uintptr(hMap), uintptr(desiredAccess), 0, uintptr(offset),

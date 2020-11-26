@@ -61,21 +61,25 @@ func (me *_WindowBase) RunUiThread(userFunc func()) {
 // Calls RegisterClassEx().
 func (me *_WindowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 	atom, err := win.RegisterClassEx(wcx)
-
-	if err != nil && err.Code() == co.ERROR_CLASS_ALREADY_EXISTS {
-		// https://devblogs.microsoft.com/oldnewthing/20150429-00/?p=44984
-		// https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
-		atom, err = wcx.HInstance.GetClassInfoEx(
-			(*uint16)(unsafe.Pointer(wcx.LpszClassName)), wcx)
-
-		if err != nil {
-			panic(fmt.Sprintf("GetClassInfoEx failed. %s", err.Error()))
+	if err != nil {
+		if wErr, ok := err.(*win.WinError); ok {
+			if wErr.Code() == co.ERROR_CLASS_ALREADY_EXISTS {
+				// https://devblogs.microsoft.com/oldnewthing/20150429-00/?p=44984
+				// https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
+				atom, err = wcx.HInstance.GetClassInfoEx( // retrieve atom from existing window class
+					(*uint16)(unsafe.Pointer(wcx.LpszClassName)), wcx)
+				if err != nil {
+					panic(err.Error()) // GetClassInfoEx failed
+				}
+			} else if wErr.Code() != co.ERROR_SUCCESS {
+				panic(err.Error()) // RegisterClassEx failed
+			}
+		} else {
+			// RegisterClassEx failed with unknown error, not *WinError.
+			// Should never happen.
+			panic(err.Error())
 		}
-
-	} else if err != nil && err.Code() != co.ERROR_SUCCESS {
-		panic(fmt.Sprintf("RegisterClassEx failed. %s", err.Error()))
 	}
-
 	return atom
 }
 

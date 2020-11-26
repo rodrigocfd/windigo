@@ -21,9 +21,7 @@ type _PathT struct{}
 var Path _PathT
 
 // Returns all the file names that match a pattern like "C:\\foo\\*.txt".
-func (_PathT) ListFilesInFolder(
-	pathAndPattern string) ([]string, *win.WinError) {
-
+func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 	retFiles := make([]string, 0)
 	dirPath := filepath.Dir(pathAndPattern) // path without file name
 

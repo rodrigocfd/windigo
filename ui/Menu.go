@@ -23,6 +23,8 @@ type Menu struct {
 //
 // Must be manually destroyed, unless attached to an existing menu which is
 // attached to an existing window.
+//
+// You must defer Destroy().
 func NewMenu() *Menu {
 	return &Menu{
 		hMenu: win.CreatePopupMenu(),

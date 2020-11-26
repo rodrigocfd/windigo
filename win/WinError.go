@@ -15,6 +15,8 @@ import (
 // A Win32 error, usually retrieved with GetLastError(). Contains the error code
 // and the name of the function which triggered it.
 //
+// Implements error interface.
+//
 // https://docs.microsoft.com/en-us/windows/win32/api/errhandlingapi/nf-errhandlingapi-getlasterror
 type WinError struct {
 	code         co.ERROR
@@ -44,5 +46,9 @@ func (e *WinError) FunctionName() string {
 // https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-formatmessagew
 func (e *WinError) Error() string {
 	return fmt.Sprintf("%s [%d 0x%02x] %s",
-		e.functionName, uint32(e.code), uint32(e.code), syscall.Errno(e.code).Error())
+		e.functionName,
+		uint32(e.code),
+		uint32(e.code),
+		syscall.Errno(e.code).Error(),
+	)
 }
