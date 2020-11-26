@@ -127,8 +127,8 @@ func EnumWindows(
 
 	ret, _, lerr := syscall.Syscall(proc.EnumWindows.Addr(), 2,
 		syscall.NewCallback(
-			func(hwnd HWND, lParam LPARAM) int32 {
-				return _Win.BoolToInt32(lpEnumFunc(hwnd, lParam))
+			func(hwnd HWND, lParam LPARAM) uintptr {
+				return _Win.BoolToUintptr(lpEnumFunc(hwnd, lParam))
 			}),
 		uintptr(lParam), 0)
 	if ret == 0 {
