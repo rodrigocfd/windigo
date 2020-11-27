@@ -1,6 +1,6 @@
 /**
- * Part of Wingows - Win32 API layer for Go
- * https://github.com/rodrigocfd/wingows
+ * Part of Windigo - Win32 API layer for Go
+ * https://github.com/rodrigocfd/windigo
  * This library is released under the MIT license.
  */
 
@@ -17,7 +17,7 @@ type (
 	IFileSaveDialog struct{ win.IUnknown }
 
 	IFileSaveDialogVtbl struct {
-		win.IUnknownVtbl
+		IFileDialogVtbl
 		SetSaveAsItem          uintptr
 		SetProperties          uintptr
 		SetCollectedProperties uintptr
