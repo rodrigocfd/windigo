@@ -29,17 +29,6 @@ type (
 	}
 )
 
-// You must defer Release().
-//
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
-func NewShellItem(thePath string) *IShellItem {
-	iUnk := win.SHCreateItemFromParsingName(thePath, 0,
-		win.NewGuid(0x43826d1e, 0xe718, 0x42ee, 0xbc55, 0xa1e261c37bfe)) // IID_IShellItem
-	return &IShellItem{
-		IUnknown: *iUnk,
-	}
-}
-
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
 func (me *IShellItem) GetDisplayName(sigdnName SIGDN) string {
 	var pv *uint16
@@ -54,4 +43,15 @@ func (me *IShellItem) GetDisplayName(sigdnName SIGDN) string {
 	name := win.Str.FromUint16Ptr(pv)
 	win.CoTaskMemFree(unsafe.Pointer(pv))
 	return name
+}
+
+// You must defer Release().
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
+func NewShellItem(thePath string) *IShellItem {
+	iUnk := win.SHCreateItemFromParsingName(thePath, 0,
+		win.NewGuid(0x43826d1e, 0xe718, 0x42ee, 0xbc55, 0xa1e261c37bfe)) // IID_IShellItem
+	return &IShellItem{
+		IUnknown: *iUnk,
+	}
 }

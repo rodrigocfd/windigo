@@ -58,32 +58,6 @@ func CoCreateITaskbarList3(dwClsContext co.CLSCTX) *ITaskbarList3 {
 	}
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue
-func (me *ITaskbarList3) SetProgressValue(
-	hwnd win.HWND, ullCompleted, ullTotal uint64) {
-
-	ret, _, _ := syscall.Syscall6(
-		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetProgressValue, 4,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(ullCompleted), uintptr(ullTotal), 0, 0)
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetProgressValue"))
-	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
-func (me *ITaskbarList3) SetProgressState(hwnd win.HWND, tbpFlags TBPF) {
-	ret, _, _ := syscall.Syscall(
-		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetProgressState, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(tbpFlags))
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetProgressState"))
-	}
-}
-
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-registertab
 func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) {
 	ret, _, _ := syscall.Syscall(
@@ -93,84 +67,6 @@ func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) {
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.RegisterTab"))
-	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-unregistertab
-func (me *ITaskbarList3) UnregisterTab(hwndTab win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).UnregisterTab, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwndTab), 0)
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.UnregisterTab"))
-	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settaborder
-func (me *ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetTabOrder, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwndTab), uintptr(hwndInsertBefore))
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetTabOrder"))
-	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settabactive
-func (me *ITaskbarList3) SetTabActive(hwndTab, hwndMDI win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetTabActive, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwndTab), uintptr(hwndMDI))
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetTabActive"))
-	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbaraddbuttons
-func (me *ITaskbarList3) ThumbBarAddButtons(
-	hwnd win.HWND, cButtons uint32, pButton *THUMBBUTTON) {
-
-	ret, _, _ := syscall.Syscall6(
-		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarAddButtons, 4,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarAddButtons"))
-	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarupdatebuttons
-func (me *ITaskbarList3) ThumbBarUpdateButtons(
-	hwnd win.HWND, cButtons uint32, pButton *THUMBBUTTON) {
-
-	ret, _, _ := syscall.Syscall6(
-		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarUpdateButtons, 4,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarUpdateButtons"))
-	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarsetimagelist
-func (me *ITaskbarList3) ThumbBarSetImageList(
-	hwnd win.HWND, himl win.HIMAGELIST) {
-
-	ret, _, _ := syscall.Syscall(
-		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarSetImageList, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(himl))
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarSetImageList"))
 	}
 }
 
@@ -189,15 +85,53 @@ func (me *ITaskbarList3) SetOverlayIcon(
 	}
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
-func (me *ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, pszTip string) {
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
+func (me *ITaskbarList3) SetProgressState(hwnd win.HWND, tbpFlags TBPF) {
 	ret, _, _ := syscall.Syscall(
-		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetThumbnailTooltip, 3,
+		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetProgressState, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszTip))))
+		uintptr(hwnd), uintptr(tbpFlags))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetThumbnailTooltip"))
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetProgressState"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue
+func (me *ITaskbarList3) SetProgressValue(
+	hwnd win.HWND, ullCompleted, ullTotal uint64) {
+
+	ret, _, _ := syscall.Syscall6(
+		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetProgressValue, 4,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(hwnd), uintptr(ullCompleted), uintptr(ullTotal), 0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetProgressValue"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settabactive
+func (me *ITaskbarList3) SetTabActive(hwndTab, hwndMDI win.HWND) {
+	ret, _, _ := syscall.Syscall(
+		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetTabActive, 3,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(hwndTab), uintptr(hwndMDI))
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetTabActive"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settaborder
+func (me *ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore win.HWND) {
+	ret, _, _ := syscall.Syscall(
+		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetTabOrder, 3,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(hwndTab), uintptr(hwndInsertBefore))
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetTabOrder"))
 	}
 }
 
@@ -210,5 +144,71 @@ func (me *ITaskbarList3) SetThumbnailClip(hwnd win.HWND, prcClip *win.RECT) {
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.SetThumbnailClip"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
+func (me *ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, pszTip string) {
+	ret, _, _ := syscall.Syscall(
+		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetThumbnailTooltip, 3,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(hwnd), uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszTip))))
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetThumbnailTooltip"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbaraddbuttons
+func (me *ITaskbarList3) ThumbBarAddButtons(
+	hwnd win.HWND, cButtons uint32, pButton *THUMBBUTTON) {
+
+	ret, _, _ := syscall.Syscall6(
+		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarAddButtons, 4,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarAddButtons"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarsetimagelist
+func (me *ITaskbarList3) ThumbBarSetImageList(
+	hwnd win.HWND, himl win.HIMAGELIST) {
+
+	ret, _, _ := syscall.Syscall(
+		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarSetImageList, 3,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(hwnd), uintptr(himl))
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarSetImageList"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarupdatebuttons
+func (me *ITaskbarList3) ThumbBarUpdateButtons(
+	hwnd win.HWND, cButtons uint32, pButton *THUMBBUTTON) {
+
+	ret, _, _ := syscall.Syscall6(
+		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarUpdateButtons, 4,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarUpdateButtons"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-unregistertab
+func (me *ITaskbarList3) UnregisterTab(hwndTab win.HWND) {
+	ret, _, _ := syscall.Syscall(
+		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).UnregisterTab, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(hwndTab), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "ITaskbarList3.UnregisterTab"))
 	}
 }

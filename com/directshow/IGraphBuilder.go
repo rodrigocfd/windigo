@@ -51,6 +51,18 @@ func CoCreateIGraphBuilder(dwClsContext co.CLSCTX) *IGraphBuilder {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
+func (me *IGraphBuilder) Abort() {
+	ret, _, _ := syscall.Syscall(
+		(*IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).Abort, 1,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IGraphBuilder.Abort"))
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-connect
 func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 	ret, _, _ := syscall.Syscall(
@@ -97,17 +109,5 @@ func (me *IGraphBuilder) SetLogFile(hFile win.HFILE) {
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IGraphBuilder.SetLogFile"))
-	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
-func (me *IGraphBuilder) Abort() {
-	ret, _, _ := syscall.Syscall(
-		(*IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).Abort, 1,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		0, 0)
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IGraphBuilder.Abort"))
 	}
 }

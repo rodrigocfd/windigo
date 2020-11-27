@@ -31,18 +31,18 @@ type (
 	}
 )
 
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getcount
-func (me *IShellItemArray) GetCount() int {
-	count := uint32(0)
-	ret, _, _ := syscall.Syscall(
-		(*IShellItemArrayVtbl)(unsafe.Pointer(*me.Ppv)).GetCount, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&count)), 0)
+// Syntactic sugar, calls GetDisplayName() on each IShellItem.
+func (me *IShellItemArray) GetDisplayNames() []string {
+	count := me.GetCount()
+	files := make([]string, 0, count)
 
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IShellItemArray.GetCount"))
+	for i := 0; i < count; i++ {
+		shellItem := me.GetItemAt(i)
+		files = append(files, shellItem.GetDisplayName(SIGDN_FILESYSPATH))
+		shellItem.Release()
 	}
-	return int(count)
+
+	return files
 }
 
 // You must defer Release().
@@ -63,16 +63,16 @@ func (me *IShellItemArray) GetItemAt(index int) *IShellItem {
 	}
 }
 
-// Syntactic sugar, calls GetDisplayName() on each IShellItem.
-func (me *IShellItemArray) GetDisplayNames() []string {
-	count := me.GetCount()
-	files := make([]string, 0, count)
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getcount
+func (me *IShellItemArray) GetCount() int {
+	count := uint32(0)
+	ret, _, _ := syscall.Syscall(
+		(*IShellItemArrayVtbl)(unsafe.Pointer(*me.Ppv)).GetCount, 3,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&count)), 0)
 
-	for i := 0; i < count; i++ {
-		shellItem := me.GetItemAt(i)
-		files = append(files, shellItem.GetDisplayName(SIGDN_FILESYSPATH))
-		shellItem.Release()
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IShellItemArray.GetCount"))
 	}
-
-	return files
+	return int(count)
 }

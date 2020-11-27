@@ -47,12 +47,16 @@ func CoCreateITaskbarList(dwClsContext co.CLSCTX) *ITaskbarList {
 	}
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-hrinit
-func (me *ITaskbarList) HrInit() {
-	syscall.Syscall(
-		(*ITaskbarListVtbl)(unsafe.Pointer(*me.Ppv)).HrInit, 1,
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
+func (me *ITaskbarList) ActivateTab(hwnd win.HWND) {
+	ret, _, _ := syscall.Syscall(
+		(*ITaskbarListVtbl)(unsafe.Pointer(*me.Ppv)).ActivateTab, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		0, 0)
+		uintptr(hwnd), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "ITaskbarList.ActivateTab"))
+	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-addtab
@@ -79,16 +83,12 @@ func (me *ITaskbarList) DeleteTab(hwnd win.HWND) {
 	}
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
-func (me *ITaskbarList) ActivateTab(hwnd win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*ITaskbarListVtbl)(unsafe.Pointer(*me.Ppv)).ActivateTab, 2,
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-hrinit
+func (me *ITaskbarList) HrInit() {
+	syscall.Syscall(
+		(*ITaskbarListVtbl)(unsafe.Pointer(*me.Ppv)).HrInit, 1,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), 0)
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList.ActivateTab"))
-	}
+		0, 0)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-setactivealt

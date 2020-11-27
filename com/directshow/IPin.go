@@ -39,30 +39,6 @@ type (
 	}
 )
 
-// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-disconnect
-func (me *IPin) Disconnect() {
-	ret, _, _ := syscall.Syscall(
-		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).Disconnect, 1,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		0, 0)
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IPin.Disconnect"))
-	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endofstream
-func (me *IPin) EndOfStream() {
-	ret, _, _ := syscall.Syscall(
-		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).EndOfStream, 1,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		0, 0)
-
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IPin.EndOfStream"))
-	}
-}
-
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-beginflush
 func (me *IPin) BeginFlush() {
 	ret, _, _ := syscall.Syscall(
@@ -75,6 +51,18 @@ func (me *IPin) BeginFlush() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-disconnect
+func (me *IPin) Disconnect() {
+	ret, _, _ := syscall.Syscall(
+		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).Disconnect, 1,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IPin.Disconnect"))
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endflush
 func (me *IPin) EndFlush() {
 	ret, _, _ := syscall.Syscall(
@@ -84,5 +72,17 @@ func (me *IPin) EndFlush() {
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IPin.EndFlush"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endofstream
+func (me *IPin) EndOfStream() {
+	ret, _, _ := syscall.Syscall(
+		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).EndOfStream, 1,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IPin.EndOfStream"))
 	}
 }

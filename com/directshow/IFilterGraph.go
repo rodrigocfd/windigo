@@ -32,6 +32,24 @@ type (
 	}
 )
 
+// Typically uses CLSCTX_INPROC_SERVER.
+//
+// You must defer Release().
+func CoCreateIFilterGraph(dwClsContext co.CLSCTX) *IFilterGraph {
+	iUnk, err := win.CoCreateInstance(
+		win.NewGuid(0xe436ebb3, 0x524f, 0x11ce, 0x9f53, 0x0020af0ba770), // CLSID_FilterGraph
+		nil,
+		dwClsContext,
+		win.NewGuid(0x56a8689f, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770), // IID_IFilterGraph
+	)
+	if err != nil {
+		panic(err)
+	}
+	return &IFilterGraph{
+		IUnknown: *iUnk,
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-addfilter
 func (me *IFilterGraph) AddFilter(pFilter *IBaseFilter, name string) {
 	ret, _, _ := syscall.Syscall(
@@ -45,15 +63,15 @@ func (me *IFilterGraph) AddFilter(pFilter *IBaseFilter, name string) {
 	}
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-removefilter
-func (me *IFilterGraph) RemoveFilter(pFilter *IBaseFilter) {
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-disconnect
+func (me *IFilterGraph) Disconnect(ppin *IPin) {
 	ret, _, _ := syscall.Syscall(
-		(*IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).RemoveFilter, 2,
+		(*IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).Disconnect, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(pFilter.Ppv)), 0)
+		uintptr(unsafe.Pointer(ppin.Ppv)), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IFilterGraph.RemoveFilter"))
+		panic(win.NewWinError(lerr, "IFilterGraph.Disconnect"))
 	}
 }
 
@@ -113,15 +131,15 @@ func (me *IFilterGraph) Reconnect(ppin *IPin) {
 	}
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-disconnect
-func (me *IFilterGraph) Disconnect(ppin *IPin) {
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-removefilter
+func (me *IFilterGraph) RemoveFilter(pFilter *IBaseFilter) {
 	ret, _, _ := syscall.Syscall(
-		(*IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).Disconnect, 2,
+		(*IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).RemoveFilter, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(ppin.Ppv)), 0)
+		uintptr(unsafe.Pointer(pFilter.Ppv)), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IFilterGraph.Disconnect"))
+		panic(win.NewWinError(lerr, "IFilterGraph.RemoveFilter"))
 	}
 }
 
