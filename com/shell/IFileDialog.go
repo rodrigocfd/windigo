@@ -133,6 +133,42 @@ func (me *IFileDialog) SetFolder(psi *IShellItem) {
 	}
 }
 
+// You must defer Release().
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfolder
+func (me *IFileDialog) GetFolder() *IShellItem {
+	var ppvQueried **win.IUnknownVtbl
+	ret, _, _ := syscall.Syscall(
+		(*IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).GetFolder, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileDialog.GetFolder"))
+	}
+	return &IShellItem{
+		IUnknown: win.IUnknown{Ppv: ppvQueried},
+	}
+}
+
+// You must defer Release().
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getcurrentselection
+func (me *IFileDialog) GetCurrentSelection() *IShellItem {
+	var ppvQueried **win.IUnknownVtbl
+	ret, _, _ := syscall.Syscall(
+		(*IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).GetCurrentSelection, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileDialog.GetCurrentSelection"))
+	}
+	return &IShellItem{
+		IUnknown: win.IUnknown{Ppv: ppvQueried},
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilename
 func (me *IFileDialog) SetFileName(pszName string) {
 	ret, _, _ := syscall.Syscall(
@@ -142,6 +178,58 @@ func (me *IFileDialog) SetFileName(pszName string) {
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IFileDialog.SetFileName"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfilename
+func (me *IFileDialog) GetFileName() string {
+	var pv *uint16
+	ret, _, _ := syscall.Syscall(
+		(*IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).GetFileName, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&pv)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileDialog.GetFileName"))
+	}
+	name := win.Str.FromUint16Ptr(pv)
+	win.CoTaskMemFree(unsafe.Pointer(pv))
+	return name
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-settitle
+func (me *IFileDialog) SetTitle(pszTitle string) {
+	ret, _, _ := syscall.Syscall(
+		(*IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetTitle, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszTitle))), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileDialog.SetTitle"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setokbuttonlabel
+func (me *IFileDialog) SetOkButtonLabel(pszText string) {
+	ret, _, _ := syscall.Syscall(
+		(*IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetOkButtonLabel, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszText))), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileDialog.SetOkButtonLabel"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilenamelabel
+func (me *IFileDialog) SetFileNameLabel(pszLabel string) {
+	ret, _, _ := syscall.Syscall(
+		(*IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetFileNameLabel, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszLabel))), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileDialog.SetFileNameLabel"))
 	}
 }
 
@@ -160,5 +248,41 @@ func (me *IFileDialog) GetResult() *IShellItem {
 	}
 	return &IShellItem{
 		IUnknown: win.IUnknown{Ppv: ppvQueried},
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-close
+func (me *IFileDialog) Close(hr co.ERROR) {
+	ret, _, _ := syscall.Syscall(
+		(*IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).Close, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(hr), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileDialog.Close"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setclientguid
+func (me *IFileDialog) SetClientGuid(guid *win.GUID) {
+	ret, _, _ := syscall.Syscall(
+		(*IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetClientGuid, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(guid)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileDialog.SetClientGuid"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-clearclientdata
+func (me *IFileDialog) ClearClientData() {
+	ret, _, _ := syscall.Syscall(
+		(*IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).ClearClientData, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileDialog.ClearClientData"))
 	}
 }

@@ -48,6 +48,8 @@ func CoCreateIFileOpenDialog(dwClsContext co.CLSCTX) *IFileOpenDialog {
 	}
 }
 
+// You must defer Release().
+//
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
 func (me *IFileOpenDialog) GetResults() *IShellItemArray {
 	var ppvQueried **win.IUnknownVtbl

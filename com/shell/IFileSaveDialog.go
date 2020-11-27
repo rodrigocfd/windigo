@@ -7,6 +7,8 @@
 package shell
 
 import (
+	"syscall"
+	"unsafe"
 	"windigo/co"
 	"windigo/win"
 )
@@ -46,5 +48,17 @@ func CoCreateIFileSaveDialog(dwClsContext co.CLSCTX) *IFileSaveDialog {
 				IUnknown: *iUnk,
 			},
 		},
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem
+func (me *IFileSaveDialog) SetSaveAsItem(psi *IShellItem) {
+	ret, _, _ := syscall.Syscall(
+		(*IFileSaveDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetSaveAsItem, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(psi.Ppv)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileSaveDialog.SetSaveAsItem"))
 	}
 }
