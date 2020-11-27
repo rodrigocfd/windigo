@@ -24,6 +24,9 @@ type WinError struct {
 }
 
 // Creates a new WinError.
+//
+// WinError implements error interface, and stores GetLastError() code and
+// function name.
 func NewWinError(code co.ERROR, functionName string) *WinError {
 	return &WinError{
 		code:         code,

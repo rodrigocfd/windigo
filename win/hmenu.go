@@ -115,7 +115,7 @@ func (hMenu HMENU) GetMenuItemCount() uint32 {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenudefaultitem
 func (hMenu HMENU) GetMenuDefaultItem(fByPos bool, gmdiFlags co.GMDI) int32 {
 	ret, _, lerr := syscall.Syscall(proc.GetMenuDefaultItem.Addr(), 3,
-		uintptr(hMenu), _Win.BoolToUintptr(fByPos), uintptr(gmdiFlags))
+		uintptr(hMenu), boolToUintptr(fByPos), uintptr(gmdiFlags))
 	if int(ret) == -1 {
 		panic(NewWinError(co.ERROR(lerr), "GetMenuDefaultItem"))
 	}
@@ -136,7 +136,7 @@ func (hMenu HMENU) GetMenuItemInfo(
 	lpmii.CbSize = uint32(unsafe.Sizeof(*lpmii)) // safety
 
 	ret, _, lerr := syscall.Syscall6(proc.GetMenuItemInfo.Addr(), 4,
-		uintptr(hMenu), idOrPos, _Win.BoolToUintptr(fByPosition),
+		uintptr(hMenu), idOrPos, boolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmii)), 0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "GetMenuItemInfo"))
@@ -167,7 +167,7 @@ func (hMenu HMENU) InsertMenuItem(
 	beforeIdOrPos uintptr, fByPosition bool, lpmi *MENUITEMINFO) {
 
 	ret, _, lerr := syscall.Syscall6(proc.InsertMenuItem.Addr(), 4,
-		uintptr(hMenu), beforeIdOrPos, _Win.BoolToUintptr(fByPosition),
+		uintptr(hMenu), beforeIdOrPos, boolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmi)), 0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "InsertMenuItem"))
@@ -177,7 +177,7 @@ func (hMenu HMENU) InsertMenuItem(
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenudefaultitem
 func (hMenu HMENU) SetMenuDefaultItem(idOrPos uintptr, fByPos bool) {
 	ret, _, lerr := syscall.Syscall(proc.SetMenuDefaultItem.Addr(), 3,
-		uintptr(hMenu), idOrPos, _Win.BoolToUintptr(fByPos))
+		uintptr(hMenu), idOrPos, boolToUintptr(fByPos))
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "SetMenuDefaultItem"))
 	}
@@ -190,7 +190,7 @@ func (hMenu HMENU) SetMenuItemInfo(
 	lpmii.CbSize = uint32(unsafe.Sizeof(*lpmii)) // safety
 
 	ret, _, lerr := syscall.Syscall6(proc.SetMenuItemInfo.Addr(), 4,
-		uintptr(hMenu), idOrPos, _Win.BoolToUintptr(fByPosition),
+		uintptr(hMenu), idOrPos, boolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmii)), 0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "SetMenuItemInfo"))

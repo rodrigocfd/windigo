@@ -14,13 +14,23 @@ import (
 	proc "windigo/win/internal"
 )
 
+// Syntactic sugar; converts bool to 0 or 1.
+func boolToUintptr(b bool) uintptr {
+	if b {
+		return 1
+	}
+	return 0
+}
+
+//------------------------------------------------------------------------------
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-adjustwindowrectex
 func AdjustWindowRectEx(
 	lpRect *RECT, dwStyle co.WS, hasMenu bool, dwExStyle co.WS_EX) {
 
 	ret, _, lerr := syscall.Syscall6(proc.AdjustWindowRectEx.Addr(), 4,
 		uintptr(unsafe.Pointer(lpRect)), uintptr(dwStyle),
-		_Win.BoolToUintptr(hasMenu), uintptr(dwExStyle), 0, 0)
+		boolToUintptr(hasMenu), uintptr(dwExStyle), 0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "AdjustWindowRectEx"))
 	}
@@ -94,7 +104,7 @@ func EnumWindows(
 	ret, _, lerr := syscall.Syscall(proc.EnumWindows.Addr(), 2,
 		syscall.NewCallback(
 			func(hwnd HWND, lParam LPARAM) uintptr {
-				return _Win.BoolToUintptr(lpEnumFunc(hwnd, lParam))
+				return boolToUintptr(lpEnumFunc(hwnd, lParam))
 			}),
 		uintptr(lParam), 0)
 	if ret == 0 {
@@ -269,7 +279,7 @@ func InitCommonControls() {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isguithread
 func IsGUIThread(bConvertToGuiThread bool) bool {
 	ret, _, _ := syscall.Syscall(proc.IsGUIThread.Addr(), 1,
-		_Win.BoolToUintptr(bConvertToGuiThread), 0, 0)
+		boolToUintptr(bConvertToGuiThread), 0, 0)
 	return ret != 0
 }
 
