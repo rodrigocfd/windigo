@@ -35,7 +35,7 @@ func CreateAcceleratorTable(accelList []ACCEL) HACCEL {
 		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)),
 		0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "CreateAcceleratorTable").Error())
+		panic(NewWinError(co.ERROR(lerr), "CreateAcceleratorTable"))
 	}
 	return HACCEL(ret)
 }

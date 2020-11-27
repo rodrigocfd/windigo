@@ -25,7 +25,7 @@ func (hInst HINSTANCE) CreateDialogParam(
 		uintptr(hInst), uintptr(lpTemplateName), uintptr(hWndParent),
 		lpDialogFunc, uintptr(dwInitParam), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "CreateDialogParam").Error())
+		panic(NewWinError(co.ERROR(lerr), "CreateDialogParam"))
 	}
 	return HWND(ret)
 }
@@ -39,7 +39,7 @@ func (hInst HINSTANCE) DialogBoxParam(
 		uintptr(hInst), uintptr(lpTemplateName), uintptr(hWndParent),
 		lpDialogFunc, uintptr(dwInitParam), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "DialogBoxParam").Error())
+		panic(NewWinError(co.ERROR(lerr), "DialogBoxParam"))
 	}
 	return ret
 }
@@ -49,7 +49,7 @@ func (hInst HINSTANCE) DuplicateIcon(hIcon HICON) HICON {
 	ret, _, _ := syscall.Syscall(proc.DuplicateIcon.Addr(), 2,
 		uintptr(hInst), uintptr(hIcon), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "DuplicateIcon").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "DuplicateIcon"))
 	}
 	return HICON(ret)
 }
@@ -73,7 +73,7 @@ func (hInst HINSTANCE) LoadAccelerators(lpTableName int32) HACCEL {
 	ret, _, lerr := syscall.Syscall(proc.LoadAccelerators.Addr(), 2,
 		uintptr(hInst), uintptr(lpTableName), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "LoadAccelerators").Error())
+		panic(NewWinError(co.ERROR(lerr), "LoadAccelerators"))
 	}
 	return HACCEL(ret)
 }
@@ -83,7 +83,7 @@ func (hInst HINSTANCE) LoadCursor(lpCursorName co.IDC) HCURSOR {
 	ret, _, lerr := syscall.Syscall(proc.LoadCursor.Addr(), 2,
 		uintptr(hInst), uintptr(lpCursorName), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "LoadCursor").Error())
+		panic(NewWinError(co.ERROR(lerr), "LoadCursor"))
 	}
 	return HCURSOR(ret)
 }
@@ -93,7 +93,7 @@ func (hInst HINSTANCE) LoadIcon(lpIconName co.IDI) HICON {
 	ret, _, lerr := syscall.Syscall(proc.LoadIcon.Addr(), 2,
 		uintptr(hInst), uintptr(lpIconName), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "LoadIcon").Error())
+		panic(NewWinError(co.ERROR(lerr), "LoadIcon"))
 	}
 	return HICON(ret)
 }
@@ -108,7 +108,7 @@ func (hInst HINSTANCE) LoadImage(
 		uintptr(hInst), uintptr(name), uintptr(imgType),
 		uintptr(cx), uintptr(cy), uintptr(fuLoad))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "LoadImage").Error())
+		panic(NewWinError(co.ERROR(lerr), "LoadImage"))
 	}
 	return HANDLE(ret)
 }
@@ -118,7 +118,7 @@ func (hInst HINSTANCE) LoadMenu(lpMenuName int32) HMENU {
 	ret, _, lerr := syscall.Syscall(proc.LoadMenu.Addr(), 2,
 		uintptr(hInst), uintptr(lpMenuName), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "LoadMenu").Error())
+		panic(NewWinError(co.ERROR(lerr), "LoadMenu"))
 	}
 	return HMENU(ret)
 }

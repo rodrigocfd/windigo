@@ -36,7 +36,7 @@ func (me *IEnumFilters) Reset() *IEnumFilters {
 		0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IEnumFilters.Reset").Error())
+		panic(win.NewWinError(lerr, "IEnumFilters.Reset"))
 	}
 	return me
 }

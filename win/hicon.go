@@ -20,7 +20,7 @@ func (hIcon HICON) CopyIcon() HICON {
 	ret, _, lerr := syscall.Syscall(proc.CopyIcon.Addr(), 1,
 		uintptr(hIcon), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "CopyIcon").Error())
+		panic(NewWinError(co.ERROR(lerr), "CopyIcon"))
 	}
 	return HICON(ret)
 }

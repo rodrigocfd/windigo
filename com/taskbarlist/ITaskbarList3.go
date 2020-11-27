@@ -61,7 +61,7 @@ func (me *ITaskbarList3) SetProgressValue(
 		uintptr(hwnd), uintptr(ullCompleted), uintptr(ullTotal), 0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetProgressValue").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetProgressValue"))
 	}
 	return me
 }
@@ -76,7 +76,7 @@ func (me *ITaskbarList3) SetProgressState(
 		uintptr(hwnd), uintptr(tbpFlags))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetProgressState").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetProgressState"))
 	}
 	return me
 }
@@ -89,7 +89,7 @@ func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) *ITaskbarList3 {
 		uintptr(hwndTab), uintptr(hwndMDI))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.RegisterTab").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.RegisterTab"))
 	}
 	return me
 }
@@ -102,7 +102,7 @@ func (me *ITaskbarList3) UnregisterTab(hwndTab win.HWND) *ITaskbarList3 {
 		uintptr(hwndTab), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.UnregisterTab").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.UnregisterTab"))
 	}
 	return me
 }
@@ -117,7 +117,7 @@ func (me *ITaskbarList3) SetTabOrder(
 		uintptr(hwndTab), uintptr(hwndInsertBefore))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetTabOrder").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetTabOrder"))
 	}
 	return me
 }
@@ -132,7 +132,7 @@ func (me *ITaskbarList3) SetTabActive(
 		uintptr(hwndTab), uintptr(hwndMDI), 0, 0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetTabActive").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetTabActive"))
 	}
 	return me
 }
@@ -147,7 +147,7 @@ func (me *ITaskbarList3) ThumbBarAddButtons(
 		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarAddButtons").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarAddButtons"))
 	}
 	return me
 }
@@ -162,7 +162,7 @@ func (me *ITaskbarList3) ThumbBarUpdateButtons(
 		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarUpdateButtons").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarUpdateButtons"))
 	}
 	return me
 }
@@ -177,7 +177,7 @@ func (me *ITaskbarList3) ThumbBarSetImageList(
 		uintptr(hwnd), uintptr(himl))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarSetImageList").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarSetImageList"))
 	}
 	return me
 }
@@ -193,7 +193,7 @@ func (me *ITaskbarList3) SetOverlayIcon(
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszDescription))), 0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetOverlayIcon").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetOverlayIcon"))
 	}
 	return me
 }
@@ -208,7 +208,7 @@ func (me *ITaskbarList3) SetThumbnailTooltip(
 		uintptr(hwnd), uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszTip))))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetThumbnailTooltip").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetThumbnailTooltip"))
 	}
 	return me
 }
@@ -223,7 +223,7 @@ func (me *ITaskbarList3) SetThumbnailClip(
 		uintptr(hwnd), uintptr(unsafe.Pointer(prcClip)))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList3.SetThumbnailClip").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList3.SetThumbnailClip"))
 	}
 	return me
 }

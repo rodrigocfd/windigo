@@ -50,7 +50,7 @@ func (me *ITaskbarList2) MarkFullscreenWindow(
 		uintptr(hwnd), _BoolToUintptr(fFullScreen))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList2.MarkFullscreenWindow").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList2.MarkFullscreenWindow"))
 	}
 	return me
 }

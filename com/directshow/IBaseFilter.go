@@ -31,11 +31,15 @@ type (
 //
 // https://docs.microsoft.com/en-us/windows/win32/medfound/using-the-directshow-evr-filter
 func (me *IBaseFilter) CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) *IBaseFilter {
-	ppv, err := win.CoCreateInstance(
+	iUnk, err := win.CoCreateInstance(
 		win.NewGuid(0xfa10746c, 0x9b63, 0x4b6c, 0xbc49, 0xfc300ea5f256), // CLSID_EnhancedVideoRenderer
 		nil,
 		dwClsContext,
 		win.NewGuid(0x56a86895, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)) // IID_IBaseFilter
+
+	if err != nil {
+		panic(err)
+	}
 
 	if err != co.ERROR_S_OK {
 		panic(win.NewWinError(err, "CoCreateInstance/EnhancedVideoRenderer"))

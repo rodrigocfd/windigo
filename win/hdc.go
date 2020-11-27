@@ -22,7 +22,7 @@ func (hdc HDC) CreateCompatibleDC() HDC {
 	ret, _, _ := syscall.Syscall(proc.CreateCompatibleDC.Addr(), 1,
 		uintptr(hdc), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "CreateCompatibleDC").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "CreateCompatibleDC"))
 	}
 	return HDC(ret)
 }
@@ -32,7 +32,7 @@ func (hdc HDC) DrawIcon(x, y int32, hIcon HICON) {
 	ret, _, lerr := syscall.Syscall6(proc.DrawIcon.Addr(), 4,
 		uintptr(hdc), uintptr(x), uintptr(y), uintptr(hIcon), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "DrawIcon").Error())
+		panic(NewWinError(co.ERROR(lerr), "DrawIcon"))
 	}
 }
 
@@ -77,7 +77,7 @@ func (hdc HDC) GetTextExtentPoint32(lpString string) SIZE {
 		uintptr(hdc), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpString))),
 		uintptr(len(lpString)), uintptr(unsafe.Pointer(&sz)), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetTextExtentPoint32").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetTextExtentPoint32"))
 	}
 	return sz
 }
@@ -88,7 +88,7 @@ func (hdc HDC) GetTextFace() string {
 	ret, _, _ := syscall.Syscall(proc.GetTextFace.Addr(), 3,
 		uintptr(hdc), uintptr(len(buf)), uintptr(unsafe.Pointer(&buf[0])))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetTextFace").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetTextFace"))
 	}
 	return Str.FromUint16Slice(buf[:])
 }
@@ -98,7 +98,7 @@ func (hdc HDC) LineTo(x, y int32) {
 	ret, _, _ := syscall.Syscall(proc.LineTo.Addr(), 3,
 		uintptr(hdc), uintptr(x), uintptr(y))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "LineTo").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "LineTo"))
 	}
 }
 
@@ -114,7 +114,7 @@ func (hdc HDC) PolyDraw(apt []POINT, aj []co.PT) {
 		0, 0)
 	if ret == 0 {
 		panic(NewWinError(co.ERROR_E_UNEXPECTED,
-			fmt.Sprintf("PolyDraw, %d points", len(apt))).Error())
+			fmt.Sprintf("PolyDraw, %d points", len(apt))))
 	}
 }
 
@@ -124,7 +124,7 @@ func (hdc HDC) Polygon(apt []POINT) {
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
 	if ret == 0 {
 		panic(NewWinError(co.ERROR_E_UNEXPECTED,
-			fmt.Sprintf("Polygon, %d points", len(apt))).Error())
+			fmt.Sprintf("Polygon, %d points", len(apt))))
 	}
 }
 
@@ -134,7 +134,7 @@ func (hdc HDC) Polyline(apt []POINT) {
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
 	if ret == 0 {
 		panic(NewWinError(co.ERROR_E_UNEXPECTED,
-			fmt.Sprintf("Polyline, %d points", len(apt))).Error())
+			fmt.Sprintf("Polyline, %d points", len(apt))))
 	}
 }
 
@@ -144,7 +144,7 @@ func (hdc HDC) PolylineTo(apt []POINT) {
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
 	if ret == 0 {
 		panic(NewWinError(co.ERROR_E_UNEXPECTED,
-			fmt.Sprintf("PolylineTo failed for %d points.", len(apt))).Error())
+			fmt.Sprintf("PolylineTo failed for %d points.", len(apt))))
 	}
 }
 
@@ -166,7 +166,7 @@ func (hdc HDC) SelectObjectBitmap(b HBITMAP) HBITMAP {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(b), 0)
 	if ret == _HGDI_ERROR {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HBITMAP").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HBITMAP"))
 	}
 	return HBITMAP(ret)
 }
@@ -176,7 +176,7 @@ func (hdc HDC) SelectObjectBrush(b HBRUSH) HBRUSH {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(b), 0)
 	if ret == _HGDI_ERROR {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HBRUSH").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HBRUSH"))
 	}
 	return HBRUSH(ret)
 }
@@ -186,7 +186,7 @@ func (hdc HDC) SelectObjectFont(f HFONT) HFONT {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(f), 0)
 	if ret == _HGDI_ERROR {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HFONT").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HFONT"))
 	}
 	return HFONT(ret)
 }
@@ -196,7 +196,7 @@ func (hdc HDC) SelectObjectPen(p HPEN) HPEN {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(p), 0)
 	if ret == _HGDI_ERROR {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HPEN").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HPEN"))
 	}
 	return HPEN(ret)
 }
@@ -206,7 +206,7 @@ func (hdc HDC) SelectObjectRgn(r HRGN) HRGN {
 	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(r), 0)
 	if ret == _HGDI_ERROR {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HRGN").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HRGN"))
 	}
 	return HRGN(ret)
 }
@@ -216,7 +216,7 @@ func (hdc HDC) SetBkColor(color COLORREF) COLORREF {
 	ret, _, _ := syscall.Syscall(proc.SetBkColor.Addr(), 2,
 		uintptr(hdc), uintptr(color), 0)
 	if ret == _CLR_INVALID {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SetBkColor").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SetBkColor"))
 	}
 	return COLORREF(ret)
 }
@@ -226,7 +226,7 @@ func (hdc HDC) SetBkMode(mode co.BKMODE) co.BKMODE {
 	ret, _, _ := syscall.Syscall(proc.SetBkMode.Addr(), 2,
 		uintptr(hdc), uintptr(mode), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SetBkMode").Error())
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SetBkMode"))
 	}
 	return co.BKMODE(ret)
 }

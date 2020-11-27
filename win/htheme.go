@@ -33,7 +33,7 @@ func (hTheme HTHEME) DrawThemeBackground(
 		uintptr(hTheme), uintptr(hdc), uintptr(partId), uintptr(stateId),
 		uintptr(unsafe.Pointer(rect)), uintptr(unsafe.Pointer(clipRect)))
 	if co.ERROR(hr) != co.ERROR_S_OK {
-		panic(NewWinError(co.ERROR(hr), "DrawThemeBackground").Error())
+		panic(NewWinError(co.ERROR(hr), "DrawThemeBackground"))
 	}
 }
 

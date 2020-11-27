@@ -22,7 +22,7 @@ func AdjustWindowRectEx(
 		uintptr(unsafe.Pointer(lpRect)), uintptr(dwStyle),
 		_Win.BoolToUintptr(hasMenu), uintptr(dwExStyle), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "AdjustWindowRectEx").Error())
+		panic(NewWinError(co.ERROR(lerr), "AdjustWindowRectEx"))
 	}
 }
 
@@ -31,7 +31,7 @@ func AllowSetForegroundWindow(dwProcessId uint32) {
 	ret, _, lerr := syscall.Syscall(proc.AllowSetForegroundWindow.Addr(), 1,
 		uintptr(dwProcessId), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "AllowSetForegroundWindow").Error())
+		panic(NewWinError(co.ERROR(lerr), "AllowSetForegroundWindow"))
 	}
 }
 
@@ -44,7 +44,7 @@ func CoInitializeEx(dwCoInit co.COINIT) {
 		0, uintptr(dwCoInit), 0)
 	hr2 := co.ERROR(hr)
 	if hr2 != co.ERROR_S_OK && hr2 != co.ERROR_S_FALSE {
-		panic(NewWinError(hr2, "CoInitializeEx").Error())
+		panic(NewWinError(hr2, "CoInitializeEx"))
 	}
 }
 
@@ -57,7 +57,7 @@ func CoUninitialize() {
 func DestroyCaret() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyCaret.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "DestroyCaret").Error())
+		panic(NewWinError(co.ERROR(lerr), "DestroyCaret"))
 	}
 }
 
@@ -72,7 +72,7 @@ func DispatchMessage(msg *MSG) uintptr {
 func EmptyClipboard() {
 	ret, _, lerr := syscall.Syscall(proc.EmptyClipboard.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "EmptyClipboard").Error())
+		panic(NewWinError(co.ERROR(lerr), "EmptyClipboard"))
 	}
 }
 
@@ -80,7 +80,7 @@ func EmptyClipboard() {
 func EndMenu() {
 	ret, _, lerr := syscall.Syscall(proc.EndMenu.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "EndMenu").Error())
+		panic(NewWinError(co.ERROR(lerr), "EndMenu"))
 	}
 }
 
@@ -96,7 +96,7 @@ func EnumWindows(
 			}),
 		uintptr(lParam), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "EnumWindow").Error())
+		panic(NewWinError(co.ERROR(lerr), "EnumWindow"))
 	}
 }
 
@@ -106,7 +106,7 @@ func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
 		uintptr(unsafe.Pointer(inFileTime)),
 		uintptr(unsafe.Pointer(outSystemTime)), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "FileTimeToSystemTime").Error())
+		panic(NewWinError(co.ERROR(lerr), "FileTimeToSystemTime"))
 	}
 }
 
@@ -123,7 +123,7 @@ func GetCaretPos() *RECT {
 	ret, _, lerr := syscall.Syscall(proc.GetCaretPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&rc)), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "GetCaretPos").Error())
+		panic(NewWinError(co.ERROR(lerr), "GetCaretPos"))
 	}
 	return &rc
 }
@@ -141,7 +141,7 @@ func GetCursorPos() *POINT {
 	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "GetCursorPos").Error())
+		panic(NewWinError(co.ERROR(lerr), "GetCursorPos"))
 	}
 	return &pt
 }
@@ -162,7 +162,7 @@ func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
 		uintptr(msgFilterMin), uintptr(msgFilterMax),
 		0, 0)
 	if int(ret) == -1 {
-		panic(NewWinError(co.ERROR(lerr), "GetMessage").Error())
+		panic(NewWinError(co.ERROR(lerr), "GetMessage"))
 	}
 	return int32(ret)
 }
@@ -175,7 +175,7 @@ func GetModuleHandle(moduleName string) HINSTANCE {
 		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(moduleName))),
 		0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "GetModuleHandle").Error())
+		panic(NewWinError(co.ERROR(lerr), "GetModuleHandle"))
 	}
 	return HINSTANCE(ret)
 }
@@ -204,7 +204,7 @@ func GetPhysicalCursorPos() *POINT {
 	ret, _, lerr := syscall.Syscall(proc.GetPhysicalCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "GetPhysicalCursorPos").Error())
+		panic(NewWinError(co.ERROR(lerr), "GetPhysicalCursorPos"))
 	}
 	return &pt
 }
@@ -352,7 +352,7 @@ func LockSetForegroundWindow(uLockCode co.LSFW) {
 	ret, _, lerr := syscall.Syscall(proc.LockSetForegroundWindow.Addr(), 1,
 		uintptr(uLockCode), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "LockSetForegroundWindow").Error())
+		panic(NewWinError(co.ERROR(lerr), "LockSetForegroundWindow"))
 	}
 }
 
@@ -396,7 +396,7 @@ func PostThreadMessage(
 		uintptr(idThread), uintptr(Msg), uintptr(wParam), uintptr(lParam),
 		0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "PostThreadMessage").Error())
+		panic(NewWinError(co.ERROR(lerr), "PostThreadMessage"))
 	}
 }
 
@@ -435,7 +435,7 @@ func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 	ret, _, lerr := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
 		uintptr(value), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "SetProcessDpiAwarenessContext").Error())
+		panic(NewWinError(co.ERROR(lerr), "SetProcessDpiAwarenessContext"))
 	}
 }
 
@@ -459,7 +459,7 @@ func SetWindowsHookEx(idHook co.WH,
 		uintptr(idHook), syscall.NewCallback(lpfn),
 		uintptr(hmod), uintptr(dwThreadId), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "SetWindowsHookEx").Error())
+		panic(NewWinError(co.ERROR(lerr), "SetWindowsHookEx"))
 	}
 	return HHOOK(ret)
 }
@@ -478,7 +478,7 @@ func SHGetFileInfo(pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
 
 	if (uFlags&co.SHGFI_EXETYPE) == 0 || (uFlags&co.SHGFI_SYSICONINDEX) == 0 {
 		if ret == 0 {
-			panic(NewWinError(co.ERROR_E_UNEXPECTED, "SHGetFileInfo").Error())
+			panic(NewWinError(co.ERROR_E_UNEXPECTED, "SHGetFileInfo"))
 		}
 	}
 
@@ -505,7 +505,7 @@ func SystemParametersInfo(uiAction co.SPI, uiParam uint32,
 		uintptr(uiAction), uintptr(uiParam), uintptr(pvParam), uintptr(fWinIni),
 		0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "SystemParametersInfo").Error())
+		panic(NewWinError(co.ERROR(lerr), "SystemParametersInfo"))
 	}
 }
 
@@ -515,7 +515,7 @@ func SystemTimeToFileTime(inSystemTime *SYSTEMTIME, outFileTime *FILETIME) {
 		uintptr(unsafe.Pointer(inSystemTime)),
 		uintptr(unsafe.Pointer(outFileTime)), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "SystemTimeToFileTime").Error())
+		panic(NewWinError(co.ERROR(lerr), "SystemTimeToFileTime"))
 	}
 }
 
@@ -529,7 +529,7 @@ func SystemTimeToTzSpecificLocalTime(
 		uintptr(unsafe.Pointer(inUniversalTime)),
 		uintptr(unsafe.Pointer(outLocalTime)))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "SystemTimeToTzSpecificLocalTime").Error())
+		panic(NewWinError(co.ERROR(lerr), "SystemTimeToTzSpecificLocalTime"))
 	}
 }
 
@@ -550,7 +550,7 @@ func TzSpecificLocalTimeToSystemTime(
 		uintptr(unsafe.Pointer(inLocalTime)),
 		uintptr(unsafe.Pointer(outUniversalTime)))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "TzSpecificLocalTimeToSystemTime").Error())
+		panic(NewWinError(co.ERROR(lerr), "TzSpecificLocalTimeToSystemTime"))
 	}
 }
 

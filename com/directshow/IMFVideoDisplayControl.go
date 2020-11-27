@@ -49,7 +49,7 @@ func (me *IMFVideoDisplayControl) GetNativeVideoSize() (*win.SIZE, *win.SIZE) {
 		uintptr(unsafe.Pointer(&nativeSize)), uintptr(unsafe.Pointer(&aspectRatio)))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetNativeVideoSize").Error())
+		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetNativeVideoSize"))
 	}
 	return &nativeSize, &aspectRatio
 }
@@ -63,7 +63,7 @@ func (me *IMFVideoDisplayControl) GetIdealVideoSize() (*win.SIZE, *win.SIZE) {
 		uintptr(unsafe.Pointer(&min)), uintptr(unsafe.Pointer(&max)))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetIdealVideoSize").Error())
+		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetIdealVideoSize"))
 	}
 	return &min, &max
 }
@@ -79,7 +79,7 @@ func (me *IMFVideoDisplayControl) SetVideoPosition(
 		uintptr(unsafe.Pointer(pnrcSource)), uintptr(unsafe.Pointer(prcDest)))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.SetVideoPosition").Error())
+		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.SetVideoPosition"))
 	}
 	return me
 }
@@ -93,7 +93,7 @@ func (me *IMFVideoDisplayControl) GetVideoPosition() (*MFVideoNormalizedRect, *w
 		uintptr(unsafe.Pointer(&pnrcSource)), uintptr(unsafe.Pointer(&prcDest)))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetVideoPosition").Error())
+		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetVideoPosition"))
 	}
 	return &pnrcSource, &prcDest
 }
@@ -108,7 +108,7 @@ func (me *IMFVideoDisplayControl) SetAspectRatioMode(
 		uintptr(mode), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.SetAspectRatioMode").Error())
+		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.SetAspectRatioMode"))
 	}
 	return me
 }
@@ -122,7 +122,7 @@ func (me *IMFVideoDisplayControl) GetAspectRatioMode() MFVideoARMode {
 		uintptr(unsafe.Pointer(&aspectRatioMode)), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetAspectRatioMode").Error())
+		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetAspectRatioMode"))
 	}
 	return aspectRatioMode
 }
@@ -137,7 +137,7 @@ func (me *IMFVideoDisplayControl) SetVideoWindow(
 		uintptr(hwndVideo), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.SetVideoWindow").Error())
+		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.SetVideoWindow"))
 	}
 	return me
 }
@@ -151,7 +151,7 @@ func (me *IMFVideoDisplayControl) GetVideoWindow() win.HWND {
 		uintptr(unsafe.Pointer(&hwndVideo)), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetVideoWindow").Error())
+		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetVideoWindow"))
 	}
 	return hwndVideo
 }
@@ -164,7 +164,7 @@ func (me *IMFVideoDisplayControl) RepaintVideo() *IMFVideoDisplayControl {
 		0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.RepaintVideo").Error())
+		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.RepaintVideo"))
 	}
 	return me
 }

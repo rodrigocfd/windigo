@@ -27,6 +27,6 @@ func (hHook HHOOK) UnhookWindowsHookEx() {
 	ret, _, lerr := syscall.Syscall(proc.UnhookWindowsHookEx.Addr(), 1,
 		uintptr(hHook), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "UnhookWindowsHookEx").Error())
+		panic(NewWinError(co.ERROR(lerr), "UnhookWindowsHookEx"))
 	}
 }

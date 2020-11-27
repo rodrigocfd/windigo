@@ -24,7 +24,7 @@ func (hMenu HMENU) AppendMenu(
 		uintptr(hMenu), uintptr(uFlags), idOrPos, uintptr(bmpOrDataOrStr),
 		0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "AppendMenu").Error())
+		panic(NewWinError(co.ERROR(lerr), "AppendMenu"))
 	}
 }
 
@@ -43,7 +43,7 @@ func (hMenu HMENU) CheckMenuRadioItem(
 		uintptr(hMenu), firstIdOrPos, lastIdOrPos, checkedIdOrPos,
 		uintptr(flags), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "CheckMenuRadioItem").Error())
+		panic(NewWinError(co.ERROR(lerr), "CheckMenuRadioItem"))
 	}
 }
 
@@ -52,7 +52,7 @@ func CreateMenu() HMENU {
 	ret, _, lerr := syscall.Syscall(proc.CreateMenu.Addr(), 0,
 		0, 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "CreateMenu").Error())
+		panic(NewWinError(co.ERROR(lerr), "CreateMenu"))
 	}
 	return HMENU(ret)
 }
@@ -61,7 +61,7 @@ func CreateMenu() HMENU {
 func CreatePopupMenu() HMENU {
 	ret, _, lerr := syscall.Syscall(proc.CreatePopupMenu.Addr(), 0, 0, 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "CreatePopupMenu").Error())
+		panic(NewWinError(co.ERROR(lerr), "CreatePopupMenu"))
 	}
 	return HMENU(ret)
 }
@@ -71,7 +71,7 @@ func (hMenu HMENU) DeleteMenu(idOrPos uintptr, uFlags co.MF) {
 	ret, _, lerr := syscall.Syscall(proc.DeleteMenu.Addr(), 3,
 		uintptr(hMenu), idOrPos, uintptr(uFlags))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "DeleteMenu").Error())
+		panic(NewWinError(co.ERROR(lerr), "DeleteMenu"))
 	}
 }
 
@@ -80,7 +80,7 @@ func (hMenu HMENU) DestroyMenu() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyMenu.Addr(), 1,
 		uintptr(hMenu), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "DestroyMenu").Error())
+		panic(NewWinError(co.ERROR(lerr), "DestroyMenu"))
 	}
 }
 
@@ -98,7 +98,7 @@ func (hMenu HMENU) GetMenuInfo(mi *MENUINFO) {
 	ret, _, lerr := syscall.Syscall(proc.GetMenuInfo.Addr(), 2,
 		uintptr(hMenu), uintptr(unsafe.Pointer(mi)), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "GetMenuInfo").Error())
+		panic(NewWinError(co.ERROR(lerr), "GetMenuInfo"))
 	}
 }
 
@@ -107,7 +107,7 @@ func (hMenu HMENU) GetMenuItemCount() uint32 {
 	ret, _, lerr := syscall.Syscall(proc.GetMenuItemCount.Addr(), 1,
 		uintptr(hMenu), 0, 0)
 	if int(ret) == -1 {
-		panic(NewWinError(co.ERROR(lerr), "GetItemCount").Error())
+		panic(NewWinError(co.ERROR(lerr), "GetItemCount"))
 	}
 	return uint32(ret)
 }
@@ -117,7 +117,7 @@ func (hMenu HMENU) GetMenuDefaultItem(fByPos bool, gmdiFlags co.GMDI) int32 {
 	ret, _, lerr := syscall.Syscall(proc.GetMenuDefaultItem.Addr(), 3,
 		uintptr(hMenu), _Win.BoolToUintptr(fByPos), uintptr(gmdiFlags))
 	if int(ret) == -1 {
-		panic(NewWinError(co.ERROR(lerr), "GetMenuDefaultItem").Error())
+		panic(NewWinError(co.ERROR(lerr), "GetMenuDefaultItem"))
 	}
 	return int32(ret)
 }
@@ -139,7 +139,7 @@ func (hMenu HMENU) GetMenuItemInfo(
 		uintptr(hMenu), idOrPos, _Win.BoolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmii)), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "GetMenuItemInfo").Error())
+		panic(NewWinError(co.ERROR(lerr), "GetMenuItemInfo"))
 	}
 }
 
@@ -158,7 +158,7 @@ func (hMenu HMENU) InsertMenu(beforeIdOrPos uintptr, uFlags co.MF,
 		uintptr(hMenu), beforeIdOrPos, uintptr(uFlags),
 		idOrHmenu, uintptr(bmpOrDataOrStr), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "InsertMenu").Error())
+		panic(NewWinError(co.ERROR(lerr), "InsertMenu"))
 	}
 }
 
@@ -170,7 +170,7 @@ func (hMenu HMENU) InsertMenuItem(
 		uintptr(hMenu), beforeIdOrPos, _Win.BoolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmi)), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "InsertMenuItem").Error())
+		panic(NewWinError(co.ERROR(lerr), "InsertMenuItem"))
 	}
 }
 
@@ -179,7 +179,7 @@ func (hMenu HMENU) SetMenuDefaultItem(idOrPos uintptr, fByPos bool) {
 	ret, _, lerr := syscall.Syscall(proc.SetMenuDefaultItem.Addr(), 3,
 		uintptr(hMenu), idOrPos, _Win.BoolToUintptr(fByPos))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "SetMenuDefaultItem").Error())
+		panic(NewWinError(co.ERROR(lerr), "SetMenuDefaultItem"))
 	}
 }
 
@@ -193,7 +193,7 @@ func (hMenu HMENU) SetMenuItemInfo(
 		uintptr(hMenu), idOrPos, _Win.BoolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmii)), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "SetMenuItemInfo").Error())
+		panic(NewWinError(co.ERROR(lerr), "SetMenuItemInfo"))
 	}
 }
 
@@ -208,13 +208,13 @@ func (hMenu HMENU) TrackPopupMenu(uFlags co.TPM, x, y int32, hWnd HWND) int {
 
 	if (uFlags & co.TPM_RETURNCMD) != 0 {
 		if ret == 0 && lerr != 0 {
-			panic(NewWinError(co.ERROR(lerr), "TrackPopupMenu").Error())
+			panic(NewWinError(co.ERROR(lerr), "TrackPopupMenu"))
 		} else {
 			return int(ret)
 		}
 	} else {
 		if ret == 0 {
-			panic(NewWinError(co.ERROR(lerr), "TrackPopupMenu").Error())
+			panic(NewWinError(co.ERROR(lerr), "TrackPopupMenu"))
 		} else {
 			return 0
 		}

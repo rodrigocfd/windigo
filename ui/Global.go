@@ -8,6 +8,8 @@ package ui
 
 import (
 	"fmt"
+	"os"
+	"runtime/debug"
 	"strings"
 	"syscall"
 	"time"
@@ -185,6 +187,26 @@ func (*_GlobalT) SystemtimeToTime(stLocalTime *win.SYSTEMTIME) time.Time {
 		int(stLocalTime.WHour), int(stLocalTime.WMinute), int(stLocalTime.WSecond),
 		int(stLocalTime.WMilliseconds)*1_000_000,
 		time.Local)
+}
+
+// Displays the panic message, if any.
+func (*_GlobalT) TreatPanic(r interface{}) {
+	var msg string
+
+	switch v := r.(type) {
+	case *win.WinError:
+		msg = fmt.Sprintf("A panic has occurred, Win32 error:\n\n%s", v.Error())
+	case error:
+		msg = fmt.Sprintf("A panic has occurred, error:\n\n%s", v.Error())
+	case string:
+		msg = fmt.Sprintf("A panic occurred:\n\n%s", v)
+	default:
+		msg = "An unspecified panic has occurred."
+	}
+	msg += "\n\n" + string(debug.Stack())
+
+	fmt.Fprintln(os.Stderr, msg)
+	win.HWND(0).MessageBox(msg, "Panic", co.MB_ICONERROR)
 }
 
 // Converts time.Time into current timezone SYSTEMTIME, millisecond precision.

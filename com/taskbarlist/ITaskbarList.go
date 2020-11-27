@@ -61,7 +61,7 @@ func (me *ITaskbarList) AddTab(hwnd win.HWND) *ITaskbarList {
 		uintptr(hwnd), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList.AddTab").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList.AddTab"))
 	}
 	return me
 }
@@ -74,7 +74,7 @@ func (me *ITaskbarList) DeleteTab(hwnd win.HWND) *ITaskbarList {
 		uintptr(hwnd), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList.DeleteTab").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList.DeleteTab"))
 	}
 	return me
 }
@@ -87,7 +87,7 @@ func (me *ITaskbarList) ActivateTab(hwnd win.HWND) *ITaskbarList {
 		0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList.ActivateTab").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList.ActivateTab"))
 	}
 	return me
 }
@@ -100,7 +100,7 @@ func (me *ITaskbarList) SetActiveAlt(hwnd win.HWND) *ITaskbarList {
 		0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "ITaskbarList.SetActiveAlt").Error())
+		panic(win.NewWinError(lerr, "ITaskbarList.SetActiveAlt"))
 	}
 	return me
 }

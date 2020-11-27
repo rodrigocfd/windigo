@@ -55,7 +55,7 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn IPin) *IGraphBuilder {
 		uintptr(unsafe.Pointer(pinIn.Ppv)))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IGraphBuilder.Connect").Error())
+		panic(win.NewWinError(lerr, "IGraphBuilder.Connect"))
 	}
 	return me
 }
@@ -68,7 +68,7 @@ func (me *IGraphBuilder) Render(pinOut IPin) *IGraphBuilder {
 		uintptr(unsafe.Pointer(pinOut.Ppv)), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IGraphBuilder.Render").Error())
+		panic(win.NewWinError(lerr, "IGraphBuilder.Render"))
 	}
 	return me
 }
@@ -81,7 +81,7 @@ func (me *IGraphBuilder) RenderFile(file string) *IGraphBuilder {
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(file))), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IGraphBuilder.RenderFile").Error())
+		panic(win.NewWinError(lerr, "IGraphBuilder.RenderFile"))
 	}
 	return me
 }
@@ -94,7 +94,7 @@ func (me *IGraphBuilder) SetLogFile(hFile win.HFILE) *IGraphBuilder {
 		uintptr(hFile), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IGraphBuilder.SetLogFile").Error())
+		panic(win.NewWinError(lerr, "IGraphBuilder.SetLogFile"))
 	}
 	return me
 }
@@ -107,7 +107,7 @@ func (me *IGraphBuilder) Abort() *IGraphBuilder {
 		0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IGraphBuilder.Abort").Error())
+		panic(win.NewWinError(lerr, "IGraphBuilder.Abort"))
 	}
 	return me
 }

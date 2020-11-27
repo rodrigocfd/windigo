@@ -47,7 +47,7 @@ func (me *IPin) Disconnect() *IPin {
 		0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IPin.Disconnect").Error())
+		panic(win.NewWinError(lerr, "IPin.Disconnect"))
 	}
 	return me
 }
@@ -60,7 +60,7 @@ func (me *IPin) EndOfStream() *IPin {
 		0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IPin.EndOfStream").Error())
+		panic(win.NewWinError(lerr, "IPin.EndOfStream"))
 	}
 	return me
 }
@@ -73,7 +73,7 @@ func (me *IPin) BeginFlush() *IPin {
 		0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IPin.BeginFlush").Error())
+		panic(win.NewWinError(lerr, "IPin.BeginFlush"))
 	}
 	return me
 }
@@ -86,7 +86,7 @@ func (me *IPin) EndFlush() *IPin {
 		0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IPin.EndFlush").Error())
+		panic(win.NewWinError(lerr, "IPin.EndFlush"))
 	}
 	return me
 }

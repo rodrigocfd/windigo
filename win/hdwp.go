@@ -20,7 +20,7 @@ func BeginDeferWindowPos(numWindows int32) HDWP {
 	ret, _, lerr := syscall.Syscall(proc.BeginDeferWindowPos.Addr(), 1,
 		uintptr(numWindows), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "BeginDeferWindowPos").Error())
+		panic(NewWinError(co.ERROR(lerr), "BeginDeferWindowPos"))
 	}
 	return HDWP(ret)
 }
@@ -34,7 +34,7 @@ func (hDwp HDWP) DeferWindowPos(
 		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy), uintptr(uFlags),
 		0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "DeferWindowPos").Error())
+		panic(NewWinError(co.ERROR(lerr), "DeferWindowPos"))
 	}
 	return HDWP(ret)
 }
@@ -44,6 +44,6 @@ func (hDwp HDWP) EndDeferWindowPos() {
 	ret, _, lerr := syscall.Syscall(proc.EndDeferWindowPos.Addr(), 1,
 		uintptr(hDwp), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "EndDeferWindowPos").Error())
+		panic(NewWinError(co.ERROR(lerr), "EndDeferWindowPos"))
 	}
 }

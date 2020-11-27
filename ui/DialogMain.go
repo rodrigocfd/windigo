@@ -7,8 +7,6 @@
 package ui
 
 import (
-	"fmt"
-	"runtime/debug"
 	"windigo/co"
 	"windigo/win"
 )
@@ -42,16 +40,8 @@ func (me *DialogMain) RunAsMain() int {
 		// Recover from any panic within GUI thread.
 		// Panics in other threads can't be recovered.
 		if r := recover(); r != nil {
-			msg, ok := r.(string)
-			if ok {
-				msg = fmt.Sprintf("A panic has occurred:\n\n%s", msg)
-			} else {
-				msg = "An unspecified panic occurred."
-			}
-			win.HWND(0).MessageBox(msg+"\n\n"+string(debug.Stack()),
-				"Panic", co.MB_ICONERROR)
+			_global.TreatPanic(r)
 		}
-
 		_global.uiFont.Destroy() // free resource
 	}()
 

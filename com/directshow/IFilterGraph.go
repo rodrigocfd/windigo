@@ -44,7 +44,7 @@ func (me *IFilterGraph) AddFilter(
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IFilterGraph.AddFilter").Error())
+		panic(win.NewWinError(lerr, "IFilterGraph.AddFilter"))
 	}
 	return me
 }
@@ -58,7 +58,7 @@ func (me *IFilterGraph) RemoveFilter(pFilter IBaseFilter) *IFilterGraph {
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IFilterGraph.RemoveFilter").Error())
+		panic(win.NewWinError(lerr, "IFilterGraph.RemoveFilter"))
 	}
 	return me
 }
@@ -73,7 +73,7 @@ func (me *IFilterGraph) EnumFilters() IEnumFilters {
 
 	lerr := co.ERROR(ret)
 	if lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IFilterGraph.EnumFilters").Error())
+		panic(win.NewWinError(lerr, "IFilterGraph.EnumFilters"))
 	}
 	return IEnumFilters{
 		win.IUnknown{
@@ -103,7 +103,7 @@ func (me *IFilterGraph) FindFilterByName(pName string) (IBaseFilter, bool) {
 	if ret == 0x80040216 { // VFW_E_NOT_FOUND
 		return baseFilter, false
 	} else if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IFilterGraph.FindFilterByName").Error())
+		panic(win.NewWinError(lerr, "IFilterGraph.FindFilterByName"))
 	}
 	return baseFilter, true
 }
@@ -116,7 +116,7 @@ func (me *IFilterGraph) Reconnect(ppin IPin) *IFilterGraph {
 		uintptr(unsafe.Pointer(ppin.Ppv)), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IFilterGraph.Reconnect").Error())
+		panic(win.NewWinError(lerr, "IFilterGraph.Reconnect"))
 	}
 	return me
 }
@@ -129,7 +129,7 @@ func (me *IFilterGraph) Disconnect(ppin IPin) *IFilterGraph {
 		uintptr(unsafe.Pointer(ppin.Ppv)), 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IFilterGraph.Disconnect").Error())
+		panic(win.NewWinError(lerr, "IFilterGraph.Disconnect"))
 	}
 	return me
 }
@@ -142,7 +142,7 @@ func (me *IFilterGraph) SetDefaultSyncSource() *IFilterGraph {
 		0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IFilterGraph.SetDefaultSyncSource").Error())
+		panic(win.NewWinError(lerr, "IFilterGraph.SetDefaultSyncSource"))
 	}
 	return me
 }

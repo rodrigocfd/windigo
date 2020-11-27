@@ -37,7 +37,7 @@ func (me *IMFGetService) GetService(
 		uintptr(unsafe.Pointer(&ppvObject)), 0, 0)
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
-		panic(win.NewWinError(lerr, "IMFGetService.GetService").Error())
+		panic(win.NewWinError(lerr, "IMFGetService.GetService"))
 	}
 	return ppvObject
 }

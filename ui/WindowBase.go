@@ -69,15 +69,15 @@ func (me *_WindowBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 				atom, err = wcx.HInstance.GetClassInfoEx( // retrieve atom from existing window class
 					(*uint16)(unsafe.Pointer(wcx.LpszClassName)), wcx)
 				if err != nil {
-					panic(err.Error()) // GetClassInfoEx failed
+					panic(err) // GetClassInfoEx failed
 				}
 			} else if wErr.Code() != co.ERROR_SUCCESS {
-				panic(err.Error()) // RegisterClassEx failed
+				panic(err) // RegisterClassEx failed
 			}
 		} else {
 			// RegisterClassEx failed with unknown error, not *WinError.
 			// Should never happen.
-			panic(err.Error())
+			panic(err)
 		}
 	}
 	return atom

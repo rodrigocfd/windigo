@@ -85,7 +85,7 @@ func (me *File) PointerOffset() int {
 	// https://stackoverflow.com/a/17707021/6923555
 	off, err := me.hFile.SetFilePointerEx(0, co.FILE_SETPTR_CURRENT)
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 	return int(off)
 }
@@ -146,7 +146,7 @@ func (me *File) SetSize(numBytes int) error {
 func (me *File) Size() int {
 	sz, err := me.hFile.GetFileSizeEx()
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 	return int(sz)
 }
