@@ -8,9 +8,9 @@ package ui
 
 import (
 	"sort"
-	"strings"
 	"unsafe"
 	"windigo/co"
+	"windigo/com/shell"
 	"windigo/win"
 )
 
@@ -20,142 +20,107 @@ type _SysDlgT struct{}
 var SysDlg _SysDlgT
 
 // Shows the open file system dialog, choice restricted to 1 file.
-//
-// Example of filtersWithPipe:
-//
-// []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (_SysDlgT) FileOpen(
-	owner Window, filtersWithPipe []string) (string, bool) {
+func (_SysDlgT) OpenSingleFile(
+	parent Parent, filterSpec []shell.FilterSpec) (string, bool) {
 
-	zFilters := SysDlg.filterToUtf16(filtersWithPipe)
-	result := [260]uint16{} // MAX_PATH
+	fileOpenDialog := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
+	defer fileOpenDialog.Release()
 
-	ofn := win.OPENFILENAME{
-		HwndOwner:   owner.Hwnd(),
-		LpstrFilter: &zFilters[0],
-		LpstrFile:   &result[0],
-		NMaxFile:    uint32(len(result)),
-		Flags:       co.OFN_EXPLORER | co.OFN_ENABLESIZING | co.OFN_FILEMUSTEXIST,
+	flags := fileOpenDialog.GetOptions()
+	fileOpenDialog.SetOptions(flags |
+		shell.FOS_FORCEFILESYSTEM | shell.FOS_FILEMUSTEXIST)
+
+	fileOpenDialog.SetFileTypes(filterSpec)
+	fileOpenDialog.SetFileTypeIndex(0) // first filter chosen by default
+
+	if !fileOpenDialog.Show(parent.Hwnd()) {
+		return "", false // user cancelled
 	}
 
-	if !win.GetOpenFileName(&ofn) {
-		return "", false
-	}
-	return win.Str.FromUint16Slice(result[:]), true
+	shellItem := fileOpenDialog.GetResult()
+	defer shellItem.Release()
+
+	return shellItem.GetDisplayName(shell.SIGDN_FILESYSPATH), true
 }
 
 // Shows the open file system dialog, user can choose multiple files.
-//
-// Example of filtersWithPipe:
-//
-// []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (_SysDlgT) FileOpenMany(
-	owner Window, filtersWithPipe []string) ([]string, bool) {
+func (_SysDlgT) OpenMultipleFiles(
+	parent Parent, filterSpec []shell.FilterSpec) ([]string, bool) {
 
-	zFilters := SysDlg.filterToUtf16(filtersWithPipe)
-	multiBuf := make([]uint16, 65536) // http://www.askjf.com/?q=2179s http://www.askjf.com/?q=2181s
+	fileOpenDialog := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
+	defer fileOpenDialog.Release()
 
-	ofn := win.OPENFILENAME{
-		HwndOwner:   owner.Hwnd(),
-		LpstrFilter: &zFilters[0],
-		LpstrFile:   &multiBuf[0],
-		NMaxFile:    uint32(len(multiBuf)),
-		Flags:       co.OFN_EXPLORER | co.OFN_ENABLESIZING | co.OFN_FILEMUSTEXIST | co.OFN_ALLOWMULTISELECT,
+	flags := fileOpenDialog.GetOptions()
+	fileOpenDialog.SetOptions(flags |
+		shell.FOS_FORCEFILESYSTEM | shell.FOS_FILEMUSTEXIST | shell.FOS_ALLOWMULTISELECT)
+
+	fileOpenDialog.SetFileTypes(filterSpec)
+	fileOpenDialog.SetFileTypeIndex(0) // first filter chosen by default
+
+	if !fileOpenDialog.Show(parent.Hwnd()) {
+		return nil, false // user cancelled
 	}
 
-	if !win.GetOpenFileName(&ofn) {
-		return nil, false
-	}
+	shellItemArray := fileOpenDialog.GetResults()
+	defer shellItemArray.Release()
 
-	resultStrs := make([][]uint16, 0)
-	beginIdx := 0
-	for i := 0; i < len(multiBuf)-1; i++ {
-		if multiBuf[i] == 0 { // found end of a string
-			resultStrs = append(resultStrs, multiBuf[beginIdx:i+1]) // includes terminating null
-			if multiBuf[i+1] == 0 {
-				break // double terminating null: end
-			}
-			beginIdx = i + 1
-		}
-	}
-
-	// User selected only 1 file, this string is the full path, and that's all.
-	if len(resultStrs) == 1 {
-		return []string{win.Str.FromUint16Slice(resultStrs[0])}, true
-	}
-
-	// User selected 2 or more files.
-	// 1st string is the base path, the others are the filenames.
-	final := make([]string, 0, len(resultStrs)-1)
-	basePath := win.Str.FromUint16Slice(resultStrs[0]) + "\\"
-	for i := 1; i < len(resultStrs); i++ {
-		final = append(final, basePath+win.Str.FromUint16Slice(resultStrs[i]))
-	}
-	sort.Slice(final, func(i, j int) bool { // case insensitive
-		return strings.ToUpper(final[i]) < strings.ToUpper(final[j])
-	})
-	return final, true
+	files := shellItemArray.GetDisplayNames()
+	sort.Strings(files)
+	return files, true
 }
 
-// Shows the save file system dialog.
-//
-// Default name can be empty, default extension can be empty, or like "txt".
-//
-// Example of filtersWithPipe:
-//
-// []string{"Text files (*.txt)|*.txt", "All files|*.*"}
-func (_SysDlgT) FileSave(
-	owner Window, defaultName, defaultExt string,
-	filtersWithPipe []string) (string, bool) {
+// Shows the file save system dialog.
+func (_SysDlgT) SaveFile(
+	parent Parent, defaultPath, defaultFileName string,
+	filterSpec []shell.FilterSpec) (string, bool) {
 
-	zFilters := SysDlg.filterToUtf16(filtersWithPipe)
-	defExt := win.Str.ToUint16Slice(defaultExt)
+	fileSaveDialog := shell.CoCreateIFileSaveDialog(co.CLSCTX_INPROC_SERVER)
+	defer fileSaveDialog.Release()
 
-	result := [260]uint16{} // MAX_PATH
-	if defaultName != "" {
-		copy(result[:], win.Str.ToUint16Slice(defaultName))
+	flags := fileSaveDialog.GetOptions()
+	fileSaveDialog.SetOptions(flags | shell.FOS_FORCEFILESYSTEM)
+
+	fileSaveDialog.SetFileTypes(filterSpec)
+	fileSaveDialog.SetFileTypeIndex(0) // first filter chosen by default
+
+	if defaultPath != "" {
+		shellItem := shell.NewShellItem(defaultPath)
+		fileSaveDialog.SetFolder(shellItem)
+		shellItem.Release()
+	}
+	if defaultFileName != "" {
+		fileSaveDialog.SetFileName(defaultFileName)
 	}
 
-	ofn := win.OPENFILENAME{
-		HwndOwner:   owner.Hwnd(),
-		LpstrFilter: &zFilters[0],
-		LpstrFile:   &result[0],
-		NMaxFile:    uint32(len(result)),
-		Flags:       co.OFN_HIDEREADONLY | co.OFN_OVERWRITEPROMPT,
-		// If absent, no default extension is appended.
-		// If present, even if empty, default extension is appended; if no default
-		// extension, first one of the filter is appended.
-		LpstrDefExt: &defExt[0],
+	if !fileSaveDialog.Show(parent.Hwnd()) {
+		return "", false // user cancelled
 	}
 
-	if !win.GetSaveFileName(&ofn) {
-		return "", false
-	}
-	return win.Str.FromUint16Slice(result[:]), true
+	shellItem := fileSaveDialog.GetResult()
+	defer shellItem.Release()
+
+	return shellItem.GetDisplayName(shell.SIGDN_FILESYSPATH), true
 }
 
-func (_SysDlgT) filterToUtf16(filtersWithPipe []string) []uint16 {
-	// Each filter as []uint16 with terminating null.
-	filters16 := make([][]uint16, 0, len(filtersWithPipe))
-	charCount := 0
-	for _, filter := range filtersWithPipe {
-		filters16 = append(filters16, win.Str.ToUint16Slice(filter))
-		charCount += len(filter) + 1 // also count terminating null
+// Shows the choose folder system dialog.
+//
+// The returned file path won't have a trailing slash.
+func (_SysDlgT) ChooseFolder(parent Parent) (string, bool) {
+	fileOpenDialog := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
+	defer fileOpenDialog.Release()
+
+	flags := fileOpenDialog.GetOptions()
+	fileOpenDialog.SetOptions(flags |
+		shell.FOS_FORCEFILESYSTEM | shell.FOS_PICKFOLDERS)
+
+	if !fileOpenDialog.Show(parent.Hwnd()) {
+		return "", false // user cancelled
 	}
 
-	// Concat all filters into one big []uint16, null-separated, double-null-terminated.
-	finalBuf := make([]uint16, 0, charCount+1)
-	for _, filter16 := range filters16 {
-		finalBuf = append(finalBuf, filter16...)
-	}
-	finalBuf = append(finalBuf, 0) // double terminating null
+	shellItem := fileOpenDialog.GetResult()
+	defer shellItem.Release()
 
-	for i := range finalBuf {
-		if finalBuf[i] == '|' {
-			finalBuf[i] = 0 // replace pipes with nulls
-		}
-	}
-	return finalBuf
+	return shellItem.GetDisplayName(shell.SIGDN_FILESYSPATH), true
 }
 
 var (

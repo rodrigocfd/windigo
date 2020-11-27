@@ -62,3 +62,17 @@ func (me *IShellItemArray) GetItemAt(index int) *IShellItem {
 		IUnknown: win.IUnknown{Ppv: ppvQueried},
 	}
 }
+
+// Syntactic sugar, calls GetDisplayName() on each IShellItem.
+func (me *IShellItemArray) GetDisplayNames() []string {
+	count := me.GetCount()
+	files := make([]string, 0, count)
+
+	for i := 0; i < count; i++ {
+		shellItem := me.GetItemAt(i)
+		files = append(files, shellItem.GetDisplayName(SIGDN_FILESYSPATH))
+		shellItem.Release()
+	}
+
+	return files
+}

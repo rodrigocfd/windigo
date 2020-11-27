@@ -121,6 +121,30 @@ func (me *IFileDialog) GetOptions() FOS {
 	return fos
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfolder
+func (me *IFileDialog) SetFolder(psi *IShellItem) {
+	ret, _, _ := syscall.Syscall(
+		(*IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetFolder, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(psi.Ppv)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileDialog.SetFolder"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilename
+func (me *IFileDialog) SetFileName(pszName string) {
+	ret, _, _ := syscall.Syscall(
+		(*IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetFileName, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszName))), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileDialog.SetFileName"))
+	}
+}
+
 // You must defer Release().
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getresult

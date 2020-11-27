@@ -482,10 +482,30 @@ func SetWindowsHookEx(idHook co.WH,
 	return HHOOK(ret)
 }
 
+// Returned pointer should be cast to IShellItem or IShellItem2.
+//
+// You must defer Release().
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
+func SHCreateItemFromParsingName(
+	pszPath string, pbc uintptr, riid *GUID) *IUnknown {
+
+	var ppv **IUnknownVtbl
+	ret, _, _ := syscall.Syscall6(proc.SHCreateItemFromParsingName.Addr(), 4,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pszPath))),
+		pbc, uintptr(unsafe.Pointer(riid)), uintptr(unsafe.Pointer(&ppv)),
+		0, 0)
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(NewWinError(co.ERROR(lerr), "SHCreateItemFromParsingName"))
+	}
+	return &IUnknown{Ppv: ppv}
+}
+
 // Depends of CoInitializeEx().
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
-func SHGetFileInfo(pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
+func SHGetFileInfo(
+	pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
 	uFlags co.SHGFI) *SHFILEINFO {
 
 	shfi := SHFILEINFO{}

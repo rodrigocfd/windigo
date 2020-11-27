@@ -13,10 +13,11 @@ import (
 var (
 	dllShell32 = syscall.NewLazyDLL("shell32.dll")
 
-	DragAcceptFiles = dllShell32.NewProc("DragAcceptFiles")
-	DragFinish      = dllShell32.NewProc("DragFinish")
-	DragQueryFile   = dllShell32.NewProc("DragQueryFileW")
-	DragQueryPoint  = dllShell32.NewProc("DragQueryPoint")
-	DuplicateIcon   = dllShell32.NewProc("DuplicateIcon")
-	SHGetFileInfo   = dllShell32.NewProc("SHGetFileInfoW")
+	DragAcceptFiles             = dllShell32.NewProc("DragAcceptFiles")
+	DragFinish                  = dllShell32.NewProc("DragFinish")
+	DragQueryFile               = dllShell32.NewProc("DragQueryFileW")
+	DragQueryPoint              = dllShell32.NewProc("DragQueryPoint")
+	DuplicateIcon               = dllShell32.NewProc("DuplicateIcon")
+	SHCreateItemFromParsingName = dllShell32.NewProc("SHCreateItemFromParsingName")
+	SHGetFileInfo               = dllShell32.NewProc("SHGetFileInfoW")
 )
