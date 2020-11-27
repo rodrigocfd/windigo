@@ -14,7 +14,7 @@ const (
 	ERROR_VFW_E_NOT_FOUND co.ERROR = 0x80040216
 )
 
-// MFVideoAspectRatioMode.
+// https://docs.microsoft.com/en-us/windows/win32/api/evr/ne-evr-mfvideoaspectratiomode
 type MFVideoARMode uint32
 
 const (

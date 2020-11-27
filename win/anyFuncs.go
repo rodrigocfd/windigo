@@ -60,6 +60,12 @@ func CoInitializeEx(dwCoInit co.COINIT) {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
+func CoTaskMemFree(pv unsafe.Pointer) {
+	syscall.Syscall(proc.CoTaskMemFree.Addr(), 1,
+		uintptr(pv), 0, 0)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
 func CoUninitialize() {
 	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)

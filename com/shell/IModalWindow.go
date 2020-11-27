@@ -25,14 +25,19 @@ type (
 	}
 )
 
+// Returns false if user cancelled.
+//
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-imodalwindow-show
-func (me *IModalWindow) Show(hwndOwner win.HWND) {
+func (me *IModalWindow) Show(hwndOwner win.HWND) bool {
 	ret, _, _ := syscall.Syscall(
 		(*IModalWindowVtbl)(unsafe.Pointer(*me.Ppv)).Show, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwndOwner), 0)
 
-	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+	if lerr := co.ERROR(ret & 0xffff); lerr == co.ERROR_CANCELLED { // HRESULT_FROM_WIN32()
+		return false
+	} else if lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IModalWindow.Show"))
 	}
+	return true
 }

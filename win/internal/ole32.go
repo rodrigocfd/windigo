@@ -15,5 +15,6 @@ var (
 
 	CoCreateInstance = dllOle32.NewProc("CoCreateInstance")
 	CoInitializeEx   = dllOle32.NewProc("CoInitializeEx")
+	CoTaskMemFree    = dllOle32.NewProc("CoTaskMemFree")
 	CoUninitialize   = dllOle32.NewProc("CoUninitialize")
 )
