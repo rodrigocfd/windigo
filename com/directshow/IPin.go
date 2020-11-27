@@ -14,9 +14,9 @@ import (
 )
 
 type (
-	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
-	//
 	// IPin > IUnknown.
+	//
+	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
 	IPin struct{ win.IUnknown }
 
 	IPinVtbl struct {
@@ -40,7 +40,7 @@ type (
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-disconnect
-func (me *IPin) Disconnect() *IPin {
+func (me *IPin) Disconnect() {
 	ret, _, _ := syscall.Syscall(
 		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).Disconnect, 1,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -49,11 +49,10 @@ func (me *IPin) Disconnect() *IPin {
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IPin.Disconnect"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endofstream
-func (me *IPin) EndOfStream() *IPin {
+func (me *IPin) EndOfStream() {
 	ret, _, _ := syscall.Syscall(
 		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).EndOfStream, 1,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -62,11 +61,10 @@ func (me *IPin) EndOfStream() *IPin {
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IPin.EndOfStream"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-beginflush
-func (me *IPin) BeginFlush() *IPin {
+func (me *IPin) BeginFlush() {
 	ret, _, _ := syscall.Syscall(
 		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).BeginFlush, 1,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -75,11 +73,10 @@ func (me *IPin) BeginFlush() *IPin {
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IPin.BeginFlush"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endflush
-func (me *IPin) EndFlush() *IPin {
+func (me *IPin) EndFlush() {
 	ret, _, _ := syscall.Syscall(
 		(*IPinVtbl)(unsafe.Pointer(*me.Ppv)).EndFlush, 1,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -88,5 +85,4 @@ func (me *IPin) EndFlush() *IPin {
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IPin.EndFlush"))
 	}
-	return me
 }

@@ -7,9 +7,9 @@
 package directshow
 
 type (
-	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
-	//
 	// IMediaFilter > IPersist > IUnknown.
+	//
+	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
 	IMediaFilter struct{ IPersist }
 
 	IMediaFilterVtbl struct {

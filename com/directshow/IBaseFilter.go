@@ -12,9 +12,9 @@ import (
 )
 
 type (
-	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
-	//
 	// IBaseFilter > IMediaFilter > IPersist > IUnknown.
+	//
+	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
 	IBaseFilter struct{ IMediaFilter }
 
 	IBaseFilterVtbl struct {
@@ -27,56 +27,65 @@ type (
 	}
 )
 
-// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
+// Typically uses CLSCTX_INPROC_SERVER.
+//
+// You must defer Release().
 //
 // https://docs.microsoft.com/en-us/windows/win32/medfound/using-the-directshow-evr-filter
-func (me *IBaseFilter) CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) *IBaseFilter {
+func CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) *IBaseFilter {
 	iUnk, err := win.CoCreateInstance(
 		win.NewGuid(0xfa10746c, 0x9b63, 0x4b6c, 0xbc49, 0xfc300ea5f256), // CLSID_EnhancedVideoRenderer
 		nil,
 		dwClsContext,
-		win.NewGuid(0x56a86895, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)) // IID_IBaseFilter
-
+		win.NewGuid(0x56a86895, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770), // IID_IBaseFilter
+	)
 	if err != nil {
 		panic(err)
 	}
-
-	if err != co.ERROR_S_OK {
-		panic(win.NewWinError(err, "CoCreateInstance/EnhancedVideoRenderer"))
+	return &IBaseFilter{
+		IMediaFilter{
+			IPersist{
+				IUnknown: *iUnk,
+			},
+		},
 	}
-	me.Ppv = (**win.IUnknownVtbl)(ppv)
-	return me
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
+// Typically uses CLSCTX_INPROC_SERVER.
+//
+// You must defer Release().
 //
 // https://docs.microsoft.com/en-us/windows/win32/directshow/video-mixing-renderer-filter-9
-func (me *IBaseFilter) CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) *IBaseFilter {
-	ppv, err := win.CoCreateInstance(
+func CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) *IBaseFilter {
+	iUnk, err := win.CoCreateInstance(
 		win.NewGuid(0x51b4abf3, 0x748f, 0x4e3b, 0xa276, 0xc828330e926a), // CLSID_VideoMixingRenderer9
 		nil,
 		dwClsContext,
-		win.NewGuid(0x56a86895, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)) // IID_IBaseFilter
-
-	if err != co.ERROR_S_OK {
-		panic(win.NewWinError(err, "CoCreateInstance/VideoMixingRenderer9"))
+		win.NewGuid(0x56a86895, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770), // IID_IBaseFilter
+	)
+	if err != nil {
+		panic(err)
 	}
-	me.Ppv = (**win.IUnknownVtbl)(ppv)
-	return me
+	return &IBaseFilter{
+		IMediaFilter{
+			IPersist{
+				IUnknown: *iUnk,
+			},
+		},
+	}
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
+// You must defer Release().
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
-func (me *IBaseFilter) QueryIMFGetService() IMFGetService {
-	ppv, err := me.QueryInterface(
-		win.NewGuid(0xfa993888, 0x4383, 0x415a, 0xa930, 0xdd472a8cf6f7)) // IID_IMFGetService
-	if err != co.ERROR_S_OK {
-		panic(win.NewWinError(err, "IBaseFilter.QueryIMFGetService"))
+func (me *IBaseFilter) QueryIMFGetService() *IMFGetService {
+	iUnk, err := me.QueryInterface(
+		win.NewGuid(0xfa993888, 0x4383, 0x415a, 0xa930, 0xdd472a8cf6f7), // IID_IMFGetService
+	)
+	if err != nil {
+		panic(err)
 	}
-	return IMFGetService{
-		win.IUnknown{
-			Ppv: ppv,
-		},
+	return &IMFGetService{
+		IUnknown: *iUnk,
 	}
 }

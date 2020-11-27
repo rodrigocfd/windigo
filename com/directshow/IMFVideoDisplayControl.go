@@ -14,9 +14,9 @@ import (
 )
 
 type (
-	// https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
-	//
 	// IMFVideoDisplayControl > IUnknown.
+	//
+	// https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
 	IMFVideoDisplayControl struct{ win.IUnknown }
 
 	IMFVideoDisplayControlVtbl struct {
@@ -46,7 +46,8 @@ func (me *IMFVideoDisplayControl) GetNativeVideoSize() (*win.SIZE, *win.SIZE) {
 	ret, _, _ := syscall.Syscall(
 		(*IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).GetNativeVideoSize, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&nativeSize)), uintptr(unsafe.Pointer(&aspectRatio)))
+		uintptr(unsafe.Pointer(&nativeSize)),
+		uintptr(unsafe.Pointer(&aspectRatio)))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetNativeVideoSize"))
@@ -60,7 +61,8 @@ func (me *IMFVideoDisplayControl) GetIdealVideoSize() (*win.SIZE, *win.SIZE) {
 	ret, _, _ := syscall.Syscall(
 		(*IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).GetIdealVideoSize, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&min)), uintptr(unsafe.Pointer(&max)))
+		uintptr(unsafe.Pointer(&min)),
+		uintptr(unsafe.Pointer(&max)))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetIdealVideoSize"))
@@ -70,18 +72,17 @@ func (me *IMFVideoDisplayControl) GetIdealVideoSize() (*win.SIZE, *win.SIZE) {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideoposition
 func (me *IMFVideoDisplayControl) SetVideoPosition(
-	pnrcSource *MFVideoNormalizedRect,
-	prcDest *win.RECT) *IMFVideoDisplayControl {
+	pnrcSource *MFVideoNormalizedRect, prcDest *win.RECT) {
 
 	ret, _, _ := syscall.Syscall(
 		(*IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).SetVideoPosition, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(pnrcSource)), uintptr(unsafe.Pointer(prcDest)))
+		uintptr(unsafe.Pointer(pnrcSource)),
+		uintptr(unsafe.Pointer(prcDest)))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.SetVideoPosition"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideoposition
@@ -90,7 +91,8 @@ func (me *IMFVideoDisplayControl) GetVideoPosition() (*MFVideoNormalizedRect, *w
 	ret, _, _ := syscall.Syscall(
 		(*IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).GetVideoPosition, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&pnrcSource)), uintptr(unsafe.Pointer(&prcDest)))
+		uintptr(unsafe.Pointer(&pnrcSource)),
+		uintptr(unsafe.Pointer(&prcDest)))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.GetVideoPosition"))
@@ -99,9 +101,7 @@ func (me *IMFVideoDisplayControl) GetVideoPosition() (*MFVideoNormalizedRect, *w
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setaspectratiomode
-func (me *IMFVideoDisplayControl) SetAspectRatioMode(
-	mode MFVideoARMode) *IMFVideoDisplayControl {
-
+func (me *IMFVideoDisplayControl) SetAspectRatioMode(mode MFVideoARMode) {
 	ret, _, _ := syscall.Syscall(
 		(*IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).SetAspectRatioMode, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -110,7 +110,6 @@ func (me *IMFVideoDisplayControl) SetAspectRatioMode(
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.SetAspectRatioMode"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getaspectratiomode
@@ -128,9 +127,7 @@ func (me *IMFVideoDisplayControl) GetAspectRatioMode() MFVideoARMode {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideowindow
-func (me *IMFVideoDisplayControl) SetVideoWindow(
-	hwndVideo win.HWND) *IMFVideoDisplayControl {
-
+func (me *IMFVideoDisplayControl) SetVideoWindow(hwndVideo win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).SetVideoWindow, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -139,7 +136,6 @@ func (me *IMFVideoDisplayControl) SetVideoWindow(
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.SetVideoWindow"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideowindow
@@ -157,7 +153,7 @@ func (me *IMFVideoDisplayControl) GetVideoWindow() win.HWND {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-repaintvideo
-func (me *IMFVideoDisplayControl) RepaintVideo() *IMFVideoDisplayControl {
+func (me *IMFVideoDisplayControl) RepaintVideo() {
 	ret, _, _ := syscall.Syscall(
 		(*IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).RepaintVideo, 1,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -166,5 +162,4 @@ func (me *IMFVideoDisplayControl) RepaintVideo() *IMFVideoDisplayControl {
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IMFVideoDisplayControl.RepaintVideo"))
 	}
-	return me
 }

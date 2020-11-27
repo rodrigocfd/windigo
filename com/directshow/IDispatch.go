@@ -11,12 +11,12 @@ import (
 )
 
 type (
-	// https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
-	//
 	// IDispatch > IUnknown.
+	//
+	// https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 	IDispatch struct{ win.IUnknown }
 
-	_IDispatchVtbl struct {
+	IDispatchVtbl struct {
 		win.IUnknownVtbl
 		GetTypeInfoCount uintptr
 		GetTypeInfo      uintptr

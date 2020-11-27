@@ -36,6 +36,8 @@ func NewGuid(p1 uint32, p2, p3, p4 uint16, p5 uint64) *GUID {
 //------------------------------------------------------------------------------
 
 type (
+	// Base to all COM interfaces.
+	//
 	// https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 	IUnknown struct {
 		Ppv **IUnknownVtbl // Pointer to pointer to the COM virtual table.
@@ -48,36 +50,44 @@ type (
 	}
 )
 
-// Returns a pointer to pointer to COM virtual table. IUnknown can be cast to
-// any derived COM interface.1
+// Returns an IUnknown COM object. The inner Ppv can be cast to any COM interface.
+// Typically uses CLSCTX_INPROC_SERVER.
 //
-// You must call Release() after use.
+// You must defer Release().
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateInstance(rclsid *GUID, pUnkOuter unsafe.Pointer,
-	dwClsContext co.CLSCTX, riid *GUID) (**IUnknownVtbl, co.ERROR) {
+func CoCreateInstance(
+	rclsid *GUID, pUnkOuter unsafe.Pointer,
+	dwClsContext co.CLSCTX, riid *GUID) (*IUnknown, error) {
 
-	var ppv **IUnknownVtbl = nil
+	var ppv **IUnknownVtbl
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
 		uintptr(unsafe.Pointer(rclsid)), uintptr(pUnkOuter),
 		uintptr(dwClsContext), uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppv)), 0)
-	return ppv, co.ERROR(ret)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		return nil, NewWinError(lerr, "CoCreateInstance")
+	}
+	return &IUnknown{Ppv: ppv}, nil
 }
 
-// Queries any COM interface, returning a pointer to pointer to COM virtual
-// table. IUnknown can be cast to any derived COM interface.
+// Queries an IUnknown COM object. The inner Ppv can be cast to any COM interface.
 //
-// You must call Release() after use.
+// You must defer Release() on the returned COM object.
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
-func (me *IUnknown) QueryInterface(riid *GUID) (**IUnknownVtbl, co.ERROR) {
-	var ppvObject **IUnknownVtbl = nil
+func (me *IUnknown) QueryInterface(riid *GUID) (*IUnknown, error) {
+	var ppvQueried **IUnknownVtbl
 	ret, _, _ := syscall.Syscall((*me.Ppv).QueryInterface, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(riid)),
-		uintptr(unsafe.Pointer(&ppvObject)))
-	return ppvObject, co.ERROR(ret)
+		uintptr(unsafe.Pointer(&ppvQueried)))
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		return nil, NewWinError(lerr, "IUnknown.QueryInterface")
+	}
+	return &IUnknown{Ppv: ppvQueried}, nil
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref

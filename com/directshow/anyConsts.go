@@ -6,6 +6,14 @@
 
 package directshow
 
+import (
+	"windigo/co"
+)
+
+const (
+	ERROR_VFW_E_NOT_FOUND co.ERROR = 0x80040216
+)
+
 // MFVideoAspectRatioMode.
 type MFVideoARMode uint32
 

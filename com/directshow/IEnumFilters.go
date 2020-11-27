@@ -14,9 +14,9 @@ import (
 )
 
 type (
-	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
-	//
 	// IEnumFilters > IUnknown.
+	//
+	// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
 	IEnumFilters struct{ win.IUnknown }
 
 	IEnumFiltersVtbl struct {
@@ -29,7 +29,7 @@ type (
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-reset
-func (me *IEnumFilters) Reset() *IEnumFilters {
+func (me *IEnumFilters) Reset() {
 	ret, _, _ := syscall.Syscall(
 		(*IEnumFiltersVtbl)(unsafe.Pointer(*me.Ppv)).Reset, 1,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -38,5 +38,4 @@ func (me *IEnumFilters) Reset() *IEnumFilters {
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "IEnumFilters.Reset"))
 	}
-	return me
 }

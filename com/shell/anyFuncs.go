@@ -4,7 +4,7 @@
  * This library is released under the MIT license.
  */
 
-package taskbarlist
+package shell
 
 // Syntactic sugar; converts bool to 0 or 1.
 func _BoolToUintptr(b bool) uintptr {

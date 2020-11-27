@@ -4,7 +4,7 @@
  * This library is released under the MIT license.
  */
 
-package taskbarlist
+package shell
 
 import (
 	"syscall"
@@ -14,9 +14,9 @@ import (
 )
 
 type (
-	// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
-	//
 	// ITaskbarList3 > ITaskbarList2 > ITaskbarList > IUnknown.
+	//
+	// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
 	ITaskbarList3 struct{ ITaskbarList2 }
 
 	ITaskbarList3Vtbl struct {
@@ -36,24 +36,31 @@ type (
 	}
 )
 
-// https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func (me *ITaskbarList3) CoCreateInstance(dwClsContext co.CLSCTX) *ITaskbarList3 {
-	ppv, err := win.CoCreateInstance(
+// Typically uses CLSCTX_INPROC_SERVER.
+//
+// You must defer Release().
+func CoCreateITaskbarList3(dwClsContext co.CLSCTX) *ITaskbarList3 {
+	iUnk, err := win.CoCreateInstance(
 		win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a, 0x006097c9a090), // CLSID_TaskbarList
 		nil,
 		dwClsContext,
-		win.NewGuid(0xea1afb91, 0x9e28, 0x4b86, 0x90e9, 0x9e9f8a5eefaf)) // IID_ITaskbarList3
-
-	if err != co.ERROR_S_OK {
-		panic(win.NewWinError(err, "CoCreateInstance/ITaskbarList2"))
+		win.NewGuid(0xea1afb91, 0x9e28, 0x4b86, 0x90e9, 0x9e9f8a5eefaf), // IID_ITaskbarList3
+	)
+	if err != nil {
+		panic(err)
 	}
-	me.Ppv = ppv
-	return me
+	return &ITaskbarList3{
+		ITaskbarList2{
+			ITaskbarList{
+				IUnknown: *iUnk,
+			},
+		},
+	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue
 func (me *ITaskbarList3) SetProgressValue(
-	hwnd win.HWND, ullCompleted, ullTotal uint64) *ITaskbarList3 {
+	hwnd win.HWND, ullCompleted, ullTotal uint64) {
 
 	ret, _, _ := syscall.Syscall6(
 		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetProgressValue, 4,
@@ -63,13 +70,10 @@ func (me *ITaskbarList3) SetProgressValue(
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.SetProgressValue"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
-func (me *ITaskbarList3) SetProgressState(
-	hwnd win.HWND, tbpFlags TBPF) *ITaskbarList3 {
-
+func (me *ITaskbarList3) SetProgressState(hwnd win.HWND, tbpFlags TBPF) {
 	ret, _, _ := syscall.Syscall(
 		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetProgressState, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -78,11 +82,10 @@ func (me *ITaskbarList3) SetProgressState(
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.SetProgressState"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-registertab
-func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) *ITaskbarList3 {
+func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).RegisterTab, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -91,11 +94,10 @@ func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) *ITaskbarList3 {
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.RegisterTab"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-unregistertab
-func (me *ITaskbarList3) UnregisterTab(hwndTab win.HWND) *ITaskbarList3 {
+func (me *ITaskbarList3) UnregisterTab(hwndTab win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).UnregisterTab, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -104,13 +106,10 @@ func (me *ITaskbarList3) UnregisterTab(hwndTab win.HWND) *ITaskbarList3 {
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.UnregisterTab"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settaborder
-func (me *ITaskbarList3) SetTabOrder(
-	hwndTab, hwndInsertBefore win.HWND) *ITaskbarList3 {
-
+func (me *ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetTabOrder, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -119,27 +118,23 @@ func (me *ITaskbarList3) SetTabOrder(
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.SetTabOrder"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settabactive
-func (me *ITaskbarList3) SetTabActive(
-	hwndTab, hwndMDI win.HWND) *ITaskbarList3 {
-
-	ret, _, _ := syscall.Syscall6(
-		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetTabActive, 4,
+func (me *ITaskbarList3) SetTabActive(hwndTab, hwndMDI win.HWND) {
+	ret, _, _ := syscall.Syscall(
+		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetTabActive, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwndTab), uintptr(hwndMDI), 0, 0, 0)
+		uintptr(hwndTab), uintptr(hwndMDI))
 
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.SetTabActive"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbaraddbuttons
 func (me *ITaskbarList3) ThumbBarAddButtons(
-	hwnd win.HWND, cButtons uint32, pButton *THUMBBUTTON) *ITaskbarList3 {
+	hwnd win.HWND, cButtons uint32, pButton *THUMBBUTTON) {
 
 	ret, _, _ := syscall.Syscall6(
 		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarAddButtons, 4,
@@ -149,12 +144,11 @@ func (me *ITaskbarList3) ThumbBarAddButtons(
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarAddButtons"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarupdatebuttons
 func (me *ITaskbarList3) ThumbBarUpdateButtons(
-	hwnd win.HWND, cButtons uint32, pButton *THUMBBUTTON) *ITaskbarList3 {
+	hwnd win.HWND, cButtons uint32, pButton *THUMBBUTTON) {
 
 	ret, _, _ := syscall.Syscall6(
 		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarUpdateButtons, 4,
@@ -164,12 +158,11 @@ func (me *ITaskbarList3) ThumbBarUpdateButtons(
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarUpdateButtons"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarsetimagelist
 func (me *ITaskbarList3) ThumbBarSetImageList(
-	hwnd win.HWND, himl win.HIMAGELIST) *ITaskbarList3 {
+	hwnd win.HWND, himl win.HIMAGELIST) {
 
 	ret, _, _ := syscall.Syscall(
 		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarSetImageList, 3,
@@ -179,12 +172,11 @@ func (me *ITaskbarList3) ThumbBarSetImageList(
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.ThumbBarSetImageList"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setoverlayicon
 func (me *ITaskbarList3) SetOverlayIcon(
-	hwnd win.HWND, hIcon win.HICON, pszDescription string) *ITaskbarList3 {
+	hwnd win.HWND, hIcon win.HICON, pszDescription string) {
 
 	ret, _, _ := syscall.Syscall6(
 		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetOverlayIcon, 4,
@@ -195,13 +187,10 @@ func (me *ITaskbarList3) SetOverlayIcon(
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.SetOverlayIcon"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
-func (me *ITaskbarList3) SetThumbnailTooltip(
-	hwnd win.HWND, pszTip string) *ITaskbarList3 {
-
+func (me *ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, pszTip string) {
 	ret, _, _ := syscall.Syscall(
 		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetThumbnailTooltip, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -210,13 +199,10 @@ func (me *ITaskbarList3) SetThumbnailTooltip(
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.SetThumbnailTooltip"))
 	}
-	return me
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailclip
-func (me *ITaskbarList3) SetThumbnailClip(
-	hwnd win.HWND, prcClip *win.RECT) *ITaskbarList3 {
-
+func (me *ITaskbarList3) SetThumbnailClip(hwnd win.HWND, prcClip *win.RECT) {
 	ret, _, _ := syscall.Syscall(
 		(*ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetThumbnailClip, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -225,5 +211,4 @@ func (me *ITaskbarList3) SetThumbnailClip(
 	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
 		panic(win.NewWinError(lerr, "ITaskbarList3.SetThumbnailClip"))
 	}
-	return me
 }

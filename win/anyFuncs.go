@@ -35,8 +35,10 @@ func AllowSetForegroundWindow(dwProcessId uint32) {
 	}
 }
 
-// Loads the COM module. This needs to be done only once in your application. It
-// must be paired with a CoUninitialize() call.
+// Loads the COM module. This needs to be done only once in your application.
+// Typically uses COINIT_APARTMENTTHREADED.
+//
+// You must defer CoUninitialize().
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 func CoInitializeEx(dwCoInit co.COINIT) {

@@ -14,9 +14,9 @@ import (
 )
 
 type (
-	// https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
-	//
 	// IPersist > IUnknown.
+	//
+	// https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
 	IPersist struct{ win.IUnknown }
 
 	IPersistVtbl struct {

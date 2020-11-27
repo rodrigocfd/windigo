@@ -4,7 +4,7 @@
  * This library is released under the MIT license.
  */
 
-package taskbarlist
+package shell
 
 import (
 	"windigo/win"
