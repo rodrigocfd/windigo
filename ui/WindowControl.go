@@ -148,4 +148,8 @@ func (o *WindowControlOpts) setDefaultValues() {
 		o.ExStylesOverride = co.WS_EX_CLIENTEDGE
 	}
 	o.ExStylesOverride |= o.ExStylesAdd
+
+	if o.CtrlId == 0 {
+		o.CtrlId = _global.NewAutoCtrlId()
+	}
 }
