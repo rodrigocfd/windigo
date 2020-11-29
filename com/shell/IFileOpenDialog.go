@@ -65,3 +65,21 @@ func (me *IFileOpenDialog) GetResults() *IShellItemArray {
 		IUnknown: win.IUnknown{Ppv: ppvQueried},
 	}
 }
+
+// You must defer Release().
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
+func (me *IFileOpenDialog) GetSelectedItems() *IShellItemArray {
+	var ppvQueried **win.IUnknownVtbl
+	ret, _, _ := syscall.Syscall(
+		(*IFileOpenDialogVtbl)(unsafe.Pointer(*me.Ppv)).GetSelectedItems, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IFileOpenDialog.GetSelectedItems"))
+	}
+	return &IShellItemArray{
+		IUnknown: win.IUnknown{Ppv: ppvQueried},
+	}
+}

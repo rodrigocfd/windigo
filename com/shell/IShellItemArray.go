@@ -31,20 +31,6 @@ type (
 	}
 )
 
-// Syntactic sugar, calls GetDisplayName() on each IShellItem.
-func (me *IShellItemArray) GetDisplayNames() []string {
-	count := me.GetCount()
-	files := make([]string, 0, count)
-
-	for i := 0; i < count; i++ {
-		shellItem := me.GetItemAt(i)
-		files = append(files, shellItem.GetDisplayName(SIGDN_FILESYSPATH))
-		shellItem.Release()
-	}
-
-	return files
-}
-
 // You must defer Release().
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
@@ -75,4 +61,18 @@ func (me *IShellItemArray) GetCount() int {
 		panic(win.NewWinError(lerr, "IShellItemArray.GetCount"))
 	}
 	return int(count)
+}
+
+// Syntactic sugar, calls GetDisplayName() on each IShellItem.
+func (me *IShellItemArray) GetDisplayNames() []string {
+	count := me.GetCount()
+	files := make([]string, 0, count)
+
+	for i := 0; i < count; i++ {
+		shellItem := me.GetItemAt(i)
+		files = append(files, shellItem.GetDisplayName(SIGDN_FILESYSPATH))
+		shellItem.Release()
+	}
+
+	return files
 }

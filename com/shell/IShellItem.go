@@ -29,6 +29,37 @@ type (
 	}
 )
 
+// Construtor. Creates an IShellItem from a string path.
+//
+// You must defer Release().
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
+func NewShellItem(thePath string) *IShellItem {
+	iUnk := win.SHCreateItemFromParsingName(thePath, 0,
+		win.NewGuid(0x43826d1e, 0xe718, 0x42ee, 0xbc55, 0xa1e261c37bfe)) // IID_IShellItem
+	return &IShellItem{
+		IUnknown: *iUnk,
+	}
+}
+
+// You must defer Release().
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
+func (me *IShellItem) GetParent() *IShellItem {
+	var ppvQueried **win.IUnknownVtbl
+	ret, _, _ := syscall.Syscall(
+		(*IShellItemVtbl)(unsafe.Pointer(*me.Ppv)).GetParent, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IShellItem.GetParent"))
+	}
+	return &IShellItem{
+		IUnknown: win.IUnknown{Ppv: ppvQueried},
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
 func (me *IShellItem) GetDisplayName(sigdnName SIGDN) string {
 	var pv *uint16
@@ -43,15 +74,4 @@ func (me *IShellItem) GetDisplayName(sigdnName SIGDN) string {
 	name := win.Str.FromUint16Ptr(pv)
 	win.CoTaskMemFree(unsafe.Pointer(pv))
 	return name
-}
-
-// You must defer Release().
-//
-// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
-func NewShellItem(thePath string) *IShellItem {
-	iUnk := win.SHCreateItemFromParsingName(thePath, 0,
-		win.NewGuid(0x43826d1e, 0xe718, 0x42ee, 0xbc55, 0xa1e261c37bfe)) // IID_IShellItem
-	return &IShellItem{
-		IUnknown: *iUnk,
-	}
 }

@@ -43,6 +43,7 @@ type (
 		Ppv **IUnknownVtbl // Pointer to pointer to the COM virtual table.
 	}
 
+	// IUnknown virtual table.
 	IUnknownVtbl struct {
 		QueryInterface uintptr
 		AddRef         uintptr
