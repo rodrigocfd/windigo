@@ -6,9 +6,10 @@ A thin Go layer over the Win32 API.
 
 Windigo aims to provide a solid foundation to build fast, native and scalable Win32 applications in Go. The windows can be built using raw API calls or loading dialog resources.
 
-The library is composed of three packages:
+The library is composed of 4 packages:
 
 * `co` – typed native Win32 constants;
+* `com` – subpackages with native Win32 COM interfaces;
 * `win` – native Win32 structs, handles and functions;
 * `ui` – Windigo high level wrappers.
 
@@ -40,6 +41,7 @@ type MyWindow struct {
     btnHello *ui.Button
 }
 
+// Constructor of our main window.
 func NewMyWindow() *MyWindow {
     wnd := ui.NewWindowMain(
         &ui.WindowMainOpts{
@@ -54,6 +56,7 @@ func NewMyWindow() *MyWindow {
     }
 }
 
+// Runs our main window. Returns only after the window is closed.
 func (me *MyWindow) Run() int {
     me.events()
     return me.wnd.RunAsMain()
@@ -77,6 +80,10 @@ Native Win32 API calls may return a `win.WinError` type, which implements `error
 
 However, in Windigo, most Win32 functions do **not** return errors. That's because most low-level errors are **unrecoverable**, in the sense that if such an error happens in an application, there's really nothing you can do. Unrecoverable errors very rare, occurring in conditions like low memory or internal Windows crashes.
 
-So, in order to keep the API simple, instead of returning lots of errors, unrecoverable errors will simply panic. And all panics are recovered by Windigo at the top of the stack, displaying the error and the stack trace in a [MessageBox](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw), in order to make debugging easier.
+So, in order to keep the API simple, instead of returning lots of errors, unrecoverable errors will simply panic.
+
+### Built-in panic treatment
+
+Windigo will recover all panics at the top of the stack, displaying the error and the stack trace in a [MessageBox](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw), in order to make debugging easier.
 
 However, if the panic happens in a non-GUI thread, it can't be recovered, and no MessageBox will be displayed.
