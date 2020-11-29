@@ -7,7 +7,9 @@
 package ui
 
 import (
+	"path/filepath"
 	"sort"
+	"strings"
 	"unsafe"
 	"windigo/co"
 	"windigo/com/shell"
@@ -99,7 +101,17 @@ func (_SysDlgT) SaveFile(
 	shellItem := fileSaveDialog.GetResult()
 	defer shellItem.Release()
 
-	return shellItem.GetDisplayName(shell.SIGDN_FILESYSPATH), true
+	chosenPath := shellItem.GetDisplayName(shell.SIGDN_FILESYSPATH)
+	chosenExtIdx := fileSaveDialog.GetFileTypeIndex() - 1 // returns one-based
+	chosenExt := filterSpec[chosenExtIdx].Spec
+	if chosenExt != "*.*" {
+		chosenExt = strings.TrimLeft(chosenExt, "*")
+		if strings.ToUpper(chosenExt) != strings.ToUpper(filepath.Ext(chosenPath)) {
+			chosenPath = strings.TrimRight(chosenPath, ".") + chosenExt // force chosen extension
+		}
+	}
+
+	return chosenPath, true
 }
 
 // Shows the choose folder system dialog.
