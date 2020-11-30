@@ -98,9 +98,17 @@ func (me *IUnknown) AddRef() uint32 {
 	return uint32(ret)
 }
 
+// Can be called any number of times, will actually release only once.
+//
 // https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 func (me *IUnknown) Release() uint32 {
-	ret, _, _ := syscall.Syscall((*me.Ppv).Release, 1,
-		uintptr(unsafe.Pointer(me.Ppv)), 0, 0)
-	return uint32(ret)
+	if me.Ppv != nil {
+		ret, _, _ := syscall.Syscall((*me.Ppv).Release, 1,
+			uintptr(unsafe.Pointer(me.Ppv)), 0, 0)
+		if ret == 0 { // COM pointer was released
+			me.Ppv = nil
+		}
+		return uint32(ret)
+	}
+	return 0
 }
