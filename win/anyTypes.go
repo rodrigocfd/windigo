@@ -26,9 +26,6 @@ type (
 	// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hgdiobj
 	HGDIOBJ HANDLE
 
-	// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hrgn
-	HRGN HGDIOBJ
-
 	// https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
 	HTREEITEM HANDLE
 )

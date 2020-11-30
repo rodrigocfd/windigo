@@ -16,6 +16,25 @@ import (
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hmenu
 type HMENU HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createmenu
+func CreateMenu() HMENU {
+	ret, _, lerr := syscall.Syscall(proc.CreateMenu.Addr(), 0,
+		0, 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "CreateMenu"))
+	}
+	return HMENU(ret)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createpopupmenu
+func CreatePopupMenu() HMENU {
+	ret, _, lerr := syscall.Syscall(proc.CreatePopupMenu.Addr(), 0, 0, 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "CreatePopupMenu"))
+	}
+	return HMENU(ret)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-appendmenuw
 func (hMenu HMENU) AppendMenu(
 	uFlags co.MF, idOrPos uintptr, bmpOrDataOrStr unsafe.Pointer) {
@@ -45,25 +64,6 @@ func (hMenu HMENU) CheckMenuRadioItem(
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "CheckMenuRadioItem"))
 	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createmenu
-func CreateMenu() HMENU {
-	ret, _, lerr := syscall.Syscall(proc.CreateMenu.Addr(), 0,
-		0, 0, 0)
-	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "CreateMenu"))
-	}
-	return HMENU(ret)
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createpopupmenu
-func CreatePopupMenu() HMENU {
-	ret, _, lerr := syscall.Syscall(proc.CreatePopupMenu.Addr(), 0, 0, 0, 0)
-	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "CreatePopupMenu"))
-	}
-	return HMENU(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deletemenu

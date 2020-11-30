@@ -16,27 +16,6 @@ import (
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HFILE HANDLE
 
-// https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
-func (hFile HFILE) CloseHandle() {
-	if hFile != 0 {
-		syscall.Syscall(proc.CloseHandle.Addr(), 1,
-			uintptr(hFile), 0, 0)
-	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw
-func CreateDirectory(
-	pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
-
-	ret, _, lerr := syscall.Syscall(proc.CreateDirectory.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pathName))),
-		uintptr(unsafe.Pointer(securityAttributes)), 0)
-	if ret == 0 {
-		return NewWinError(co.ERROR(lerr), "CreateDirectory")
-	}
-	return nil
-}
-
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 func CreateFile(fileName string, desiredAccess co.GENERIC,
 	shareMode co.FILE_SHARE, securityAttributes *SECURITY_ATTRIBUTES,
@@ -57,6 +36,14 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 	return HFILE(ret), nil
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+func (hFile HFILE) CloseHandle() {
+	if hFile != 0 {
+		syscall.Syscall(proc.CloseHandle.Addr(), 1,
+			uintptr(hFile), 0, 0)
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
 func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 	protectPage co.PAGE, protectSec co.SEC, maxSize uint32,
@@ -71,27 +58,6 @@ func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 		return HFILEMAP(0), NewWinError(co.ERROR(lerr), "CreateFileMapping")
 	}
 	return HFILEMAP(ret), nil
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
-func DeleteFile(fileName string) error {
-	ret, _, lerr := syscall.Syscall(proc.DeleteFile.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))), 0, 0)
-	if ret == 0 {
-		return NewWinError(co.ERROR(lerr), "DeleteFile")
-	}
-	return nil
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
-func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
-	ret, _, lerr := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))), 0, 0)
-	retAttr := co.FILE_ATTRIBUTE(ret)
-	if retAttr == co.FILE_ATTRIBUTE_INVALID {
-		return retAttr, NewWinError(co.ERROR(lerr), "GetFileAttributes")
-	}
-	return retAttr, nil
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex
@@ -157,4 +123,38 @@ func (hFile HFILE) WriteFile(buf []byte) error {
 		return NewWinError(co.ERROR(lerr), "WriteFile")
 	}
 	return nil
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw
+func CreateDirectory(
+	pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
+
+	ret, _, lerr := syscall.Syscall(proc.CreateDirectory.Addr(), 2,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pathName))),
+		uintptr(unsafe.Pointer(securityAttributes)), 0)
+	if ret == 0 {
+		return NewWinError(co.ERROR(lerr), "CreateDirectory")
+	}
+	return nil
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
+func DeleteFile(fileName string) error {
+	ret, _, lerr := syscall.Syscall(proc.DeleteFile.Addr(), 1,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))), 0, 0)
+	if ret == 0 {
+		return NewWinError(co.ERROR(lerr), "DeleteFile")
+	}
+	return nil
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
+func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
+	ret, _, lerr := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))), 0, 0)
+	retAttr := co.FILE_ATTRIBUTE(ret)
+	if retAttr == co.FILE_ATTRIBUTE_INVALID {
+		return retAttr, NewWinError(co.ERROR(lerr), "GetFileAttributes")
+	}
+	return retAttr, nil
 }

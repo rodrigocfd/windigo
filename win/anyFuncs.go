@@ -71,16 +71,6 @@ func CoUninitialize() {
 	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
-func CreateRectRgnIndirect(lprect *RECT) HRGN {
-	ret, _, _ := syscall.Syscall(proc.CreateRectRgnIndirect.Addr(), 1,
-		uintptr(unsafe.Pointer(lprect)), 0, 0)
-	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "CreateRectRgnIndirect"))
-	}
-	return HRGN(ret)
-}
-
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycaret
 func DestroyCaret() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyCaret.Addr(), 0, 0, 0, 0)
@@ -450,20 +440,6 @@ func SetProcessDPIAware() {
 	if ret == 0 {
 		panic("SetProcessDPIAware failed.")
 	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
-func SetWindowsHookEx(idHook co.WH,
-	lpfn func(code int32, wp WPARAM, lp LPARAM) uintptr,
-	hmod HINSTANCE, dwThreadId uint32) HHOOK {
-
-	ret, _, lerr := syscall.Syscall6(proc.SetWindowsHookEx.Addr(), 4,
-		uintptr(idHook), syscall.NewCallback(lpfn),
-		uintptr(hmod), uintptr(dwThreadId), 0, 0)
-	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "SetWindowsHookEx"))
-	}
-	return HHOOK(ret)
 }
 
 // Returned pointer should be cast to IShellItem or IShellItem2.

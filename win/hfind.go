@@ -16,14 +16,6 @@ import (
 // This type doesn't exist in Win32, it's just a HANDLE.
 type HFIND HANDLE
 
-// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
-func (hFind HFIND) FindClose() {
-	if hFind != 0 {
-		syscall.Syscall(proc.FindClose.Addr(), 1,
-			uintptr(hFind), 0, 0)
-	}
-}
-
 // Returns true if a file was found.
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
@@ -45,6 +37,14 @@ func FindFirstFile(lpFileName string,
 		}
 	}
 	return HFIND(ret), true, nil // a file was found
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
+func (hFind HFIND) FindClose() {
+	if hFind != 0 {
+		syscall.Syscall(proc.FindClose.Addr(), 1,
+			uintptr(hFind), 0, 0)
+	}
 }
 
 // Returns true if a file was found.

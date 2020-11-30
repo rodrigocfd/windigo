@@ -16,6 +16,22 @@ import (
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hkey
 type HKEY HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
+func RegOpenKeyEx(
+	hKeyPredef co.HKEY, lpSubKey string,
+	ulOptions co.REG_OPTION, samDesired co.KEY) (HKEY, error) {
+
+	hKey := HKEY(0)
+	ret, _, _ := syscall.Syscall6(proc.RegOpenKeyEx.Addr(), 5,
+		uintptr(hKeyPredef), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
+		uintptr(ulOptions), uintptr(samDesired), uintptr(unsafe.Pointer(&hKey)),
+		0)
+	if co.ERROR(ret) != co.ERROR_SUCCESS {
+		return HKEY(0), NewWinError(co.ERROR(ret), "RegOpenKeyEx")
+	}
+	return hKey, nil
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regclosekey
 func (hKey HKEY) RegCloseKey() {
 	if hKey != 0 {
@@ -46,22 +62,6 @@ func (hKey HKEY) RegEnumValue(
 		return status, nil
 	}
 	return status, NewWinError(status, "RegEnumValue") // any other status is an error
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
-func RegOpenKeyEx(
-	hKeyPredef co.HKEY, lpSubKey string,
-	ulOptions co.REG_OPTION, samDesired co.KEY) (HKEY, error) {
-
-	hKey := HKEY(0)
-	ret, _, _ := syscall.Syscall6(proc.RegOpenKeyEx.Addr(), 5,
-		uintptr(hKeyPredef), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
-		uintptr(ulOptions), uintptr(samDesired), uintptr(unsafe.Pointer(&hKey)),
-		0)
-	if co.ERROR(ret) != co.ERROR_SUCCESS {
-		return HKEY(0), NewWinError(co.ERROR(ret), "RegOpenKeyEx")
-	}
-	return hKey, nil
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryvalueexw
