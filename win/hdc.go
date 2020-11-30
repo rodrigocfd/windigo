@@ -65,10 +65,20 @@ func (hdc HDC) DeleteDC() {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-fillrgn
 func (hdc HDC) FillRgn(hrgn HRGN, hbr HBRUSH) {
-	ret, _, _ := syscall.Syscall(proc.CreateRectRgnIndirect.Addr(), 3,
+	ret, _, _ := syscall.Syscall(proc.FillRgn.Addr(), 3,
 		uintptr(hdc), uintptr(hrgn), uintptr(hbr))
 	if ret == 0 {
 		panic(NewWinError(co.ERROR_E_UNEXPECTED, "FillRgn"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-framergn
+func (hdc HDC) FrameRgn(hrgn HRGN, hbr HBRUSH, w, h int32) {
+	ret, _, _ := syscall.Syscall6(proc.FrameRgn.Addr(), 5,
+		uintptr(hdc), uintptr(hrgn), uintptr(hbr), uintptr(w), uintptr(h),
+		0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "FrameRgn"))
 	}
 }
 
@@ -77,6 +87,16 @@ func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetDeviceCaps.Addr(), 2,
 		uintptr(hdc), uintptr(index), 0)
 	return int32(ret)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getpolyfillmode
+func (hdc HDC) GetPolyFillMode() co.POLYF {
+	ret, _, _ := syscall.Syscall(proc.GetPolyFillMode.Addr(), 1,
+		uintptr(hdc), 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetPolyFillMode"))
+	}
+	return co.POLYF(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextextentpoint32w
@@ -93,7 +113,7 @@ func (hdc HDC) GetTextExtentPoint32(lpString string) SIZE {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextfacew
 func (hdc HDC) GetTextFace() string {
-	buf := [32]uint16{} // LF_FACESIZE
+	buf := [_LF_FACESIZE]uint16{}
 	ret, _, _ := syscall.Syscall(proc.GetTextFace.Addr(), 3,
 		uintptr(hdc), uintptr(len(buf)), uintptr(unsafe.Pointer(&buf[0])))
 	if ret == 0 {
@@ -102,12 +122,30 @@ func (hdc HDC) GetTextFace() string {
 	return Str.FromUint16Slice(buf[:])
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-invertrgn
+func (hdc HDC) InvertRgn(hrgn HRGN) {
+	ret, _, _ := syscall.Syscall(proc.InvertRgn.Addr(), 2,
+		uintptr(hdc), uintptr(hrgn), 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "InvertRgn"))
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-lineto
 func (hdc HDC) LineTo(x, y int32) {
 	ret, _, _ := syscall.Syscall(proc.LineTo.Addr(), 3,
 		uintptr(hdc), uintptr(x), uintptr(y))
 	if ret == 0 {
 		panic(NewWinError(co.ERROR_E_UNEXPECTED, "LineTo"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-paintrgn
+func (hdc HDC) PaintRgn(hrgn HRGN) {
+	ret, _, _ := syscall.Syscall(proc.PaintRgn.Addr(), 2,
+		uintptr(hdc), uintptr(hrgn), 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "PaintRgn"))
 	}
 }
 
@@ -168,6 +206,16 @@ func (hdc HDC) SaveDC() int32 {
 	ret, _, _ := syscall.Syscall(proc.SaveDC.Addr(), 1,
 		uintptr(hdc), 0, 0)
 	return int32(ret)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setpolyfillmode
+func (hdc HDC) SetPolyFillMode(iMode co.POLYF) co.POLYF {
+	ret, _, _ := syscall.Syscall(proc.SetPolyFillMode.Addr(), 2,
+		uintptr(hdc), uintptr(iMode), 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectPolyFillMode"))
+	}
+	return co.POLYF(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject

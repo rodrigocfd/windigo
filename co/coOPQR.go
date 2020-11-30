@@ -168,6 +168,14 @@ const (
 	PBT_POWERSETTINGCHANGE    PBT = 0x8013
 )
 
+// SetPolyFillMode() mode; originally has no prefix.
+type POLYF int32
+
+const (
+	POLYF_ALTERNATE POLYF = 1
+	POLYF_WINDING   POLYF = 2
+)
+
 // WM_PRINT drawing options.
 type PRF uint32
 
@@ -288,6 +296,19 @@ const (
 	REG_OPTION_CREATE_LINK    REG_OPTION = 0x00000002
 	REG_OPTION_BACKUP_RESTORE REG_OPTION = 0x00000004
 	REG_OPTION_OPEN_LINK      REG_OPTION = 0x00000008
+)
+
+// CombineRgn() iMode.
+type RGN int32
+
+const (
+	RGN_AND  RGN = 1
+	RGN_OR   RGN = 2
+	RGN_XOR  RGN = 3
+	RGN_DIFF RGN = 4
+	RGN_COPY RGN = 5
+	RGN_MIN  RGN = RGN_AND
+	RGN_MAX  RGN = RGN_COPY
 )
 
 // IMAGELISTDRAWPARAMS dwRop.

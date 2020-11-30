@@ -1,6 +1,6 @@
 # Windigo
 
-A thin Go layer over the Win32 API.
+A thin Go layer over the Win32 API, in idiomatic Go.
 
 ## Overview
 
@@ -13,7 +13,7 @@ The library is composed of 4 packages:
 * `win` – native Win32 structs, handles and functions;
 * `ui` – Windigo high level wrappers.
 
-It does **not** use CGo anywhere.
+CGo is **not** used, just syscalls.
 
 Windigo is designed to be familiar to Win32 programmers, using the same concepts, so most C/C++ Win32 tutorials should be applicable. The `ui` package is heavily based on [WinLamb](https://github.com/rodrigocfd/winlamb) C++ library.
 
