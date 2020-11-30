@@ -18,7 +18,7 @@ import (
 type _EventsWm struct {
 	mapMsgsRet map[co.WM]func(p Wm) uintptr // meaningful return value
 	mapMsgs    map[co.WM]func(p Wm)         // just returns zero (or TRUE if dialog)
-	mapTims    map[uint]func()
+	mapTims    map[int]func()
 }
 
 // Constructor.
@@ -26,7 +26,7 @@ func _NewEventsWm() *_EventsWm {
 	return &_EventsWm{
 		mapMsgsRet: make(map[co.WM]func(p Wm) uintptr),
 		mapMsgs:    make(map[co.WM]func(p Wm)),
-		mapTims:    make(map[uint]func()),
+		mapTims:    make(map[int]func()),
 	}
 }
 
@@ -34,7 +34,7 @@ func (me *_EventsWm) processMessage(
 	msg co.WM, p Wm) (retVal uintptr, useRetVal bool, wasHandled bool) {
 
 	if msg == co.WM_TIMER {
-		if userFunc, hasFunc := me.mapTims[uint(p.WParam)]; hasFunc {
+		if userFunc, hasFunc := me.mapTims[int(p.WParam)]; hasFunc {
 			userFunc()
 			retVal, useRetVal, wasHandled = 0, false, true
 			return
@@ -80,9 +80,9 @@ func (me *_EventsWm) Wm(msg co.WM, userFunc func(p Wm) uintptr) {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-timer
-func (me *_EventsWm) WmTimer(nIDEvent uint, userFunc func()) {
+func (me *_EventsWm) WmTimer(nIDEvent int, userFunc func()) {
 	if me.mapTims == nil {
-		me.mapTims = make(map[uint]func())
+		me.mapTims = make(map[int]func())
 	}
 	me.mapTims[nIDEvent] = userFunc
 }
