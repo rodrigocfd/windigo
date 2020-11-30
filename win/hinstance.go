@@ -16,6 +16,19 @@ import (
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
 type HINSTANCE HANDLE
 
+// Pass an empty string to get own process handle.
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
+func GetModuleHandle(moduleName string) HINSTANCE {
+	ret, _, lerr := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(moduleName))),
+		0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "GetModuleHandle"))
+	}
+	return HINSTANCE(ret)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
 func (hInst HINSTANCE) CreateDialogParam(
 	lpTemplateName int32, hWndParent HWND,

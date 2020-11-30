@@ -63,6 +63,15 @@ func (hdc HDC) DeleteDC() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-fillrgn
+func (hdc HDC) FillRgn(hrgn HRGN, hbr HBRUSH) {
+	ret, _, _ := syscall.Syscall(proc.CreateRectRgnIndirect.Addr(), 3,
+		uintptr(hdc), uintptr(hrgn), uintptr(hbr))
+	if ret == 0 {
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "FillRgn"))
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdevicecaps
 func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetDeviceCaps.Addr(), 2,

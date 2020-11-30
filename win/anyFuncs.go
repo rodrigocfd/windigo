@@ -71,6 +71,16 @@ func CoUninitialize() {
 	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
+func CreateRectRgnIndirect(lprect *RECT) HRGN {
+	ret, _, _ := syscall.Syscall(proc.CreateRectRgnIndirect.Addr(), 1,
+		uintptr(unsafe.Pointer(lprect)), 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR_E_UNEXPECTED, "CreateRectRgnIndirect"))
+	}
+	return HRGN(ret)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycaret
 func DestroyCaret() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyCaret.Addr(), 0, 0, 0, 0)
@@ -185,19 +195,6 @@ func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) int32 {
 	return int32(ret)
 }
 
-// Pass an empty string to get own process handle.
-//
-// https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
-func GetModuleHandle(moduleName string) HINSTANCE {
-	ret, _, lerr := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(moduleName))),
-		0, 0)
-	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "GetModuleHandle"))
-	}
-	return HINSTANCE(ret)
-}
-
 // https://docs.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-getopenfilenamew
 func GetOpenFileName(ofn *OPENFILENAME) bool {
 	ofn.LStructSize = uint32(unsafe.Sizeof(*ofn)) // safety
@@ -260,19 +257,6 @@ func HiByte(value uint16) uint8 {
 // https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632657(v=vs.85)
 func HiWord(value uint32) uint16 {
 	return uint16(value >> 16 & 0xffff)
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
-func ImageListCreate(cx, cy uint32, flags co.ILC,
-	cInitial, cGrow uint32) HIMAGELIST {
-
-	ret, _, _ := syscall.Syscall6(proc.ImageList_Create.Addr(), 5,
-		uintptr(cx), uintptr(cy), uintptr(flags),
-		uintptr(cInitial), uintptr(cGrow), 0)
-	if ret == 0 {
-		panic("ImageList_Create failed.")
-	}
-	return HIMAGELIST(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols

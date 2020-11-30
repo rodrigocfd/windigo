@@ -17,6 +17,38 @@ import (
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hwnd
 type HWND HANDLE
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
+func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
+	x, y, width, height int32, parent HWND, menu HMENU,
+	instance HINSTANCE, param unsafe.Pointer) HWND {
+
+	ret, _, lerr := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
+		uintptr(exStyle),
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(className))),
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(title))),
+		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
+		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
+
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr),
+			fmt.Sprintf("CreateWindowEx (%s)", className)))
+	}
+	return HWND(ret)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getfocus
+func GetFocus() HWND {
+	ret, _, _ := syscall.Syscall(proc.GetFocus.Addr(), 0, 0, 0, 0)
+	return HWND(ret)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow
+func GetForegroundWindow() HWND {
+	ret, _, _ := syscall.Syscall(proc.GetForegroundWindow.Addr(), 0,
+		0, 0, 0)
+	return HWND(ret)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint
 func (hWnd HWND) BeginPaint(lpPaint *PAINTSTRUCT) HDC {
 	ret, _, _ := syscall.Syscall(proc.BeginPaint.Addr(), 2,
@@ -48,25 +80,6 @@ func (hWnd HWND) ClientToScreenRc(rect *RECT) {
 	if ret == 0 {
 		panic(NewWinError(co.ERROR_E_UNEXPECTED, "ClientToScreen, RECT (2)"))
 	}
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
-func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
-	x, y, width, height int32, parent HWND, menu HMENU,
-	instance HINSTANCE, param unsafe.Pointer) HWND {
-
-	ret, _, lerr := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
-		uintptr(exStyle),
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(className))),
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(title))),
-		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
-		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
-
-	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr),
-			fmt.Sprintf("CreateWindowEx (%s)", className)))
-	}
-	return HWND(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-defsubclassproc
@@ -212,19 +225,6 @@ func (hWnd HWND) GetDpiForWindow() uint32 {
 // GetWindowLongPtr() with GWLP_EXSTYLE flag.
 func (hWnd HWND) GetExStyle() co.WS_EX {
 	return co.WS_EX(hWnd.GetWindowLongPtr(co.GWLP_EXSTYLE))
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getfocus
-func GetFocus() HWND {
-	ret, _, _ := syscall.Syscall(proc.GetFocus.Addr(), 0, 0, 0, 0)
-	return HWND(ret)
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow
-func GetForegroundWindow() HWND {
-	ret, _, _ := syscall.Syscall(proc.GetForegroundWindow.Addr(), 0,
-		0, 0, 0)
-	return HWND(ret)
 }
 
 // GetWindowLongPtr() with GWLP_HINSTANCE flag.
