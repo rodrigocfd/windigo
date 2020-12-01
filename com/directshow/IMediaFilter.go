@@ -6,6 +6,13 @@
 
 package directshow
 
+import (
+	"syscall"
+	"unsafe"
+	"windigo/co"
+	"windigo/win"
+)
+
 type (
 	// IMediaFilter > IPersist > IUnknown.
 	//
@@ -22,3 +29,27 @@ type (
 		GetSyncSource uintptr
 	}
 )
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-pause
+func (me *IMediaFilter) Pause() {
+	ret, _, _ := syscall.Syscall(
+		(*IMediaFilterVtbl)(unsafe.Pointer(*me.Ppv)).Pause, 1,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK && lerr != co.ERROR_S_FALSE {
+		panic(win.NewWinError(lerr, "IMediaFilter.Pause"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-stop
+func (me *IMediaFilter) Stop() {
+	ret, _, _ := syscall.Syscall(
+		(*IMediaFilterVtbl)(unsafe.Pointer(*me.Ppv)).Stop, 1,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK && lerr != co.ERROR_S_FALSE {
+		panic(win.NewWinError(lerr, "IMediaFilter.Stop"))
+	}
+}

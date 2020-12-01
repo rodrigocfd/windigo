@@ -7,6 +7,9 @@
 package directshow
 
 import (
+	"syscall"
+	"unsafe"
+	"windigo/co"
 	"windigo/win"
 )
 
@@ -24,3 +27,17 @@ type (
 		Invoke           uintptr
 	}
 )
+
+// https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
+func (me *IDispatch) GetTypeInfoCount() int {
+	pctinfo := uint32(0)
+	ret, _, _ := syscall.Syscall(
+		(*IDispatchVtbl)(unsafe.Pointer(*me.Ppv)).GetTypeInfoCount, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&pctinfo)), 0)
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK {
+		panic(win.NewWinError(lerr, "IDispatch.GetTypeInfoCount"))
+	}
+	return int(pctinfo)
+}
