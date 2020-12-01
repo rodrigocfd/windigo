@@ -42,6 +42,40 @@ func NewShellItem(thePath string) *IShellItem {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-compare
+func (me *IShellItem) Compare(psi *IShellItem, hint SICHINT) bool {
+	piOrder := uint32(0)
+	ret, _, _ := syscall.Syscall6(
+		(*IShellItemVtbl)(unsafe.Pointer(*me.Ppv)).Compare, 4,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(psi.Ppv)),
+		uintptr(hint),
+		uintptr(unsafe.Pointer(&piOrder)), 0, 0)
+
+	if lerr := co.ERROR(ret); lerr == co.ERROR_S_OK {
+		return true
+	} else if lerr == co.ERROR_S_FALSE {
+		return false
+	} else {
+		panic(win.NewWinError(lerr, "IShellItem.Compare"))
+	}
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getattributes
+func (me *IShellItem) GetAttributes(sfgaoMask SFGAO) SFGAO {
+	attribs := SFGAO(0)
+	ret, _, _ := syscall.Syscall(
+		(*IShellItemVtbl)(unsafe.Pointer(*me.Ppv)).GetAttributes, 3,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&sfgaoMask)),
+		uintptr(unsafe.Pointer(&attribs)))
+
+	if lerr := co.ERROR(ret); lerr != co.ERROR_S_OK && lerr != co.ERROR_S_FALSE {
+		panic(win.NewWinError(lerr, "IShellItem.GetAttributes"))
+	}
+	return attribs
+}
+
 // You must defer Release().
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
