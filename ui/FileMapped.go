@@ -96,14 +96,14 @@ func (me *FileMapped) HotSlice() []byte {
 	return *(*[]byte)(unsafe.Pointer(&sliceMem))
 }
 
-// Copies all file data into a []byte and returns it.
-func (me *FileMapped) CopyAllData() []byte {
-	return me.CopyDataChunk(0, me.sz)
+// Returns a new []byte with a copy of all data in the file.
+func (me *FileMapped) ReadAll() []byte {
+	return me.ReadChunk(0, me.sz)
 }
 
-// Copies file data into a []byte and returns it, starting from offset, with
+// Returns a new []byte with a copy of data, start with offset, and with the
 // given length.
-func (me *FileMapped) CopyDataChunk(offset, length int) []byte {
+func (me *FileMapped) ReadChunk(offset, length int) []byte {
 	hotSlice := me.HotSlice()
 	buf := make([]byte, length)
 	copy(buf, hotSlice[offset:offset+length])
@@ -114,10 +114,10 @@ func (me *FileMapped) CopyDataChunk(offset, length int) []byte {
 // file.
 //
 // Internally, the file is unmapped, then remapped back into memory.
-func (me *FileMapped) SetSize(numBytes int) error {
+func (me *FileMapped) Resize(numBytes int) error {
 	me.pMem.UnmapViewOfFile()
 	me.hMap.CloseHandle()
-	if err := me.objFile.SetSize(numBytes); err != nil {
+	if err := me.objFile.Resize(numBytes); err != nil {
 		return err
 	}
 	return me.mapInMemory()

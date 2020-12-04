@@ -71,7 +71,7 @@ func (me *File) Close() {
 
 // Replaces all file contents, possibly resizing the file.
 func (me *File) EraseAndWrite(data []byte) error {
-	if err := me.SetSize(len(data)); err != nil {
+	if err := me.Resize(len(data)); err != nil {
 		return err
 	}
 	if err := me.hFile.WriteFile(data); err != nil {
@@ -119,16 +119,10 @@ func (me *File) ReadAll() ([]byte, error) {
 	return buf, nil
 }
 
-// Rewinds the internal pointer back to the first byte of the file.
-func (me *File) RewindPointerOffset() error {
-	_, err := me.hFile.SetFilePointerEx(0, co.FILE_SETPTR_BEGIN)
-	return err
-}
-
 // Truncates or expands the file, according to the new size.
 //
 // Zero will empty the file.
-func (me *File) SetSize(numBytes int) error {
+func (me *File) Resize(numBytes int) error {
 	// Simply go beyond file limits.
 	if _, err := me.hFile.SetFilePointerEx(
 		int64(numBytes), co.FILE_SETPTR_BEGIN); err != nil {
@@ -140,6 +134,12 @@ func (me *File) SetSize(numBytes int) error {
 	}
 
 	return me.RewindPointerOffset()
+}
+
+// Rewinds the internal pointer back to the first byte of the file.
+func (me *File) RewindPointerOffset() error {
+	_, err := me.hFile.SetFilePointerEx(0, co.FILE_SETPTR_BEGIN)
+	return err
 }
 
 // Retrieves the files size. This value is not cached.

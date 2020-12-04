@@ -54,6 +54,8 @@ func (me *IMFVideoDisplayControl) GetAspectRatioMode() MFVideoARMode {
 	return aspectRatioMode
 }
 
+// Returns the minimum and maximum ideal sizes.
+//
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getidealvideosize
 func (me *IMFVideoDisplayControl) GetIdealVideoSize() (*win.SIZE, *win.SIZE) {
 	min, max := win.SIZE{}, win.SIZE{}
@@ -69,6 +71,8 @@ func (me *IMFVideoDisplayControl) GetIdealVideoSize() (*win.SIZE, *win.SIZE) {
 	return &min, &max
 }
 
+// Returns video rectangle and aspect ratio.
+//
 // https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getnativevideosize
 func (me *IMFVideoDisplayControl) GetNativeVideoSize() (*win.SIZE, *win.SIZE) {
 	nativeSize, aspectRatio := win.SIZE{}, win.SIZE{}

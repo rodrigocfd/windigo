@@ -67,9 +67,7 @@ func (me *_DialogBase) createDialogParam(
 }
 
 // Calls DialogBoxParam().
-func (me *_DialogBase) dialogBoxParam(
-	hInst win.HINSTANCE, parent Parent) int {
-
+func (me *_DialogBase) dialogBoxParam(hInst win.HINSTANCE, parent Parent) int {
 	hParent := win.HWND(0)
 	if parent != nil {
 		hParent = parent.Hwnd()
