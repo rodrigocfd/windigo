@@ -195,6 +195,8 @@ func (*_GlobalT) TreatPanic(r interface{}) {
 
 	switch v := r.(type) {
 	case *win.WinError:
+		msg = fmt.Sprintf("A panic has occurred, Win32 function error:\n\n%s", v.Error())
+	case co.ERROR:
 		msg = fmt.Sprintf("A panic has occurred, Win32 error:\n\n%s", v.Error())
 	case error:
 		msg = fmt.Sprintf("A panic has occurred, error:\n\n%s", v.Error())

@@ -8,7 +8,6 @@ package win
 
 import (
 	"fmt"
-	"syscall"
 	"windigo/co"
 )
 
@@ -25,8 +24,8 @@ type WinError struct {
 
 // Creates a new WinError.
 //
-// WinError implements error interface, and stores GetLastError() code and
-// function name.
+// WinError implements error interface, and stores GetLastError() code and the
+// name of the Win32 which originated the error.
 func NewWinError(code co.ERROR, functionName string) *WinError {
 	return &WinError{
 		code:         code,
@@ -35,23 +34,18 @@ func NewWinError(code co.ERROR, functionName string) *WinError {
 }
 
 // Returns the error code.
-func (e *WinError) Code() co.ERROR {
-	return e.code
-}
+func (e *WinError) Code() co.ERROR { return e.code }
 
 // Returns the name of the function which triggered the error.
-func (e *WinError) FunctionName() string {
-	return e.functionName
-}
+func (e *WinError) FunctionName() string { return e.functionName }
+
+// Returns the contained ERROR.
+func (e *WinError) Unwrap() error { return e.code }
 
 // Calls FormatMessage() and returns a full error description.
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-formatmessagew
 func (e *WinError) Error() string {
-	return fmt.Sprintf("%s [%d 0x%02x] %s",
-		e.functionName,
-		uint32(e.code),
-		uint32(e.code),
-		syscall.Errno(e.code).Error(),
-	)
+	return fmt.Sprintf("%s %s",
+		e.functionName, e.Unwrap().Error()) // FormatMessage()
 }
