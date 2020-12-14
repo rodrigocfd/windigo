@@ -98,7 +98,8 @@ func (me *IUnknown) AddRef() uint32 {
 	return uint32(ret)
 }
 
-// Can be called any number of times, will actually release only once.
+// Can be called any number of times, will actually release only while the
+// internal ref count is greater than zero.
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 func (me *IUnknown) Release() uint32 {

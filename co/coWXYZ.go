@@ -16,7 +16,7 @@ const (
 )
 
 // SetWindowsHookEx() idHook.
-type WH int
+type WH int32
 
 const (
 	WH_MSGFILTER       WH = -1
