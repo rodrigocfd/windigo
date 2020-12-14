@@ -7,6 +7,8 @@
 package win
 
 import (
+	"encoding/binary"
+	"sort"
 	"syscall"
 	"unsafe"
 	"windigo/co"
@@ -16,6 +18,8 @@ import (
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hkey
 type HKEY HANDLE
 
+// You must defer RegCloseKey().
+//
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
 func RegOpenKeyEx(
 	hKeyPredef co.HKEY, lpSubKey string,
@@ -41,40 +45,75 @@ func (hKey HKEY) RegCloseKey() {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumvaluew
-//
-// This function returns co.ERROR as status flag.
-func (hKey HKEY) RegEnumValue(
-	dwIndex uint32, lpValueName []uint16, lpcchValueName *uint32, lpType *co.REG,
-	lpData unsafe.Pointer, lpcbData *uint32) (co.ERROR, error) {
+func (hKey HKEY) RegEnumValue() ([]string, error) {
+	valueNames := make([]string, 0)
+	dwIndex := uint32(0)
+	valueNameSz := uint32(64) // arbitrary
+	valueNameBuf := make([]uint16, valueNameSz)
 
-	ret, _, _ := syscall.Syscall9(proc.RegEnumValue.Addr(), 8,
-		uintptr(hKey), uintptr(dwIndex),
-		uintptr(unsafe.Pointer(&lpValueName[0])),
-		uintptr(unsafe.Pointer(lpcchValueName)), 0,
-		uintptr(unsafe.Pointer(lpType)),
-		uintptr(lpData), uintptr(unsafe.Pointer(lpcbData)), 0)
+	for {
+		ret, _, _ := syscall.Syscall9(proc.RegEnumValue.Addr(), 8,
+			uintptr(hKey), uintptr(dwIndex),
+			uintptr(unsafe.Pointer(&valueNameBuf[0])),
+			uintptr(unsafe.Pointer(&valueNameSz)), 0, 0, 0, 0, 0)
 
-	status := co.ERROR(ret)
-	if status == co.ERROR_SUCCESS ||
-		status == co.ERROR_NO_MORE_ITEMS ||
-		status == co.ERROR_MORE_DATA {
-		// These are not really errors.
-		return status, nil
+		lerr := co.ERROR(ret)
+		if lerr == co.ERROR_SUCCESS { // we got this one, but there's more
+			valueNames = append(valueNames, Str.FromUint16Slice(valueNameBuf))
+			dwIndex++
+		} else if lerr == co.ERROR_NO_MORE_ITEMS { // we're done
+			break
+		} else if lerr == co.ERROR_MORE_DATA { // increase buffer size
+			valueNameSz += 8 // arbitrary
+			valueNameBuf = make([]uint16, valueNameSz)
+		} else {
+			return nil, NewWinError(lerr, "RegEnumValue")
+		}
 	}
-	return status, NewWinError(status, "RegEnumValue") // any other status is an error
+
+	sort.Strings(valueNames)
+	return valueNames, nil
 }
 
+// Supported return types: []byte, uint32, uint64, string.
+//
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryvalueexw
-func (hKey HKEY) RegQueryValueEx(
-	lpValueName string, lpType *co.REG,
-	lpData unsafe.Pointer, lpcbData *uint32) error {
+func (hKey HKEY) RegQueryValueEx(lpValueName string) (interface{}, error) {
+	lpType := co.REG(0)
+	lpcbData := uint32(0)
 
 	ret, _, _ := syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValueName))), 0,
-		uintptr(unsafe.Pointer(lpType)), uintptr(lpData),
-		uintptr(unsafe.Pointer(lpcbData)))
+		uintptr(unsafe.Pointer(&lpType)), 0,
+		uintptr(unsafe.Pointer(&lpcbData))) // query type and size
 	if co.ERROR(ret) != co.ERROR_SUCCESS {
-		return NewWinError(co.ERROR(ret), "RegQueryValueEx")
+		return nil, NewWinError(co.ERROR(ret), "RegQueryValueEx")
 	}
-	return nil
+
+	if lpType == co.REG_NONE {
+		return nil, nil // no value to query
+	}
+
+	lpData := make([]byte, lpcbData) // buffer to receive data
+
+	ret, _, _ = syscall.Syscall6(proc.RegQueryValueEx.Addr(), 6,
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValueName))), 0,
+		uintptr(unsafe.Pointer(&lpType)), uintptr(unsafe.Pointer(&lpData[0])),
+		uintptr(unsafe.Pointer(&lpcbData))) // query value itself
+	if co.ERROR(ret) != co.ERROR_SUCCESS {
+		return nil, NewWinError(co.ERROR(ret), "RegQueryValueEx")
+	}
+
+	switch lpType {
+	case co.REG_BINARY:
+		return lpData, nil
+	case co.REG_DWORD:
+		return binary.LittleEndian.Uint32(lpData), nil
+	case co.REG_QWORD:
+		return binary.LittleEndian.Uint64(lpData), nil
+	case co.REG_SZ:
+		return Str.FromUint16Ptr((*uint16)(unsafe.Pointer((&lpData[0])))), nil
+	}
+
+	panic("Unsupported RegQueryValueEx type.")
 }
