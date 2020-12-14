@@ -125,10 +125,10 @@ type (
 		IImage     int32
 		LParam     LPARAM
 		IIndent    int32
-		IGroupId   int32
+		IGroupId   co.LVI_GROUPID
 		CColumns   uint32
 		PuColumns  *uint32
-		PiColFmt   *int32
+		PiColFmt   *co.LVCFMT
 		IGroup     int32
 	}
 
