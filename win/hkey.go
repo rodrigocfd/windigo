@@ -75,7 +75,7 @@ func (hKey HKEY) RegEnumValue() ([]string, error) {
 	return valueNames, nil
 }
 
-// Supported return types: []byte, uint32, uint64, string.
+// Supported return types: []byte, uint32, uint64, string, []string.
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryvalueexw
 func (hKey HKEY) RegQueryValueEx(lpValueName string) (interface{}, error) {
@@ -113,6 +113,8 @@ func (hKey HKEY) RegQueryValueEx(lpValueName string) (interface{}, error) {
 		return binary.LittleEndian.Uint64(lpData), nil
 	case co.REG_SZ:
 		return Str.FromUint16Ptr((*uint16)(unsafe.Pointer((&lpData[0])))), nil
+	case co.REG_MULTI_SZ:
+		return Str.FromUint16PtrMulti((*uint16)(unsafe.Pointer((&lpData[0])))), nil
 	}
 
 	panic("Unsupported RegQueryValueEx type.")

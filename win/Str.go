@@ -9,7 +9,6 @@ package win
 import (
 	"fmt"
 	"syscall"
-	"unicode/utf16"
 	"unsafe"
 )
 
@@ -27,10 +26,10 @@ func (_StrT) FromUint16Ptr(p *uint16) string {
 	}
 
 	// Find null terminator.
-	pEnd := unsafe.Pointer(p)
+	pRun := unsafe.Pointer(p)
 	sLen := 0
-	for *(*uint16)(pEnd) != 0 {
-		pEnd = unsafe.Pointer(uintptr(pEnd) + unsafe.Sizeof(*p)) // pointer++
+	for *(*uint16)(pRun) != 0 { // terminating null won't be included
+		pRun = unsafe.Pointer(uintptr(pRun) + unsafe.Sizeof(*p)) // pRun++
 		sLen++
 	}
 
@@ -43,8 +42,45 @@ func (_StrT) FromUint16Ptr(p *uint16) string {
 		cap  int
 	}{unsafe.Pointer(p), sLen, sLen}
 
-	// Decode []uint16 into string.
-	return string(utf16.Decode(*(*[]uint16)(unsafe.Pointer(&sliceMem))))
+	slice := *(*[]uint16)(unsafe.Pointer(&sliceMem))
+	return Str.FromUint16Slice(slice)
+}
+
+// Converts a pointer to a multi null-terminated UTF-16 into strings.
+func (_StrT) FromUint16PtrMulti(p *uint16) []string {
+	values := make([]string, 0)
+	if p == nil {
+		return values
+	}
+
+	pRun := unsafe.Pointer(p)
+	sLen := 0
+	for {
+		if *(*uint16)(pRun) == 0 { // terminating null found
+			if sLen == 0 {
+				break // two terminating nulls
+			}
+
+			var sliceMem = struct { // slice memory layout
+				addr unsafe.Pointer
+				len  int
+				cap  int
+			}{unsafe.Pointer(p), sLen, sLen}
+
+			slice := *(*[]uint16)(unsafe.Pointer(&sliceMem))
+			values = append(values, Str.FromUint16Slice(slice))
+
+			pRun = unsafe.Pointer(uintptr(pRun) + unsafe.Sizeof(*p)) // pRun++
+			p = (*uint16)(pRun)
+			sLen = 0
+
+		} else {
+			pRun = unsafe.Pointer(uintptr(pRun) + unsafe.Sizeof(*p)) // pRun++
+			sLen++
+		}
+	}
+
+	return values
 }
 
 // Converts a null-terminated UTF-16 slice into string.
