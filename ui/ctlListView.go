@@ -245,12 +245,12 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		return
 	}
 
-	var menuPos *win.POINT // menu anchor coords, relative to list view
+	var menuPos win.POINT // menu anchor coords, relative to list view
 
 	if followCursor { // usually when fired by a right-click
-		menuPos = win.GetCursorPos()          // relative to screen
-		me.Hwnd().ScreenToClientPt(menuPos)   // now relative to list view
-		lvhti := me.Items().HitTest(*menuPos) // to find item below cursor, if any
+		menuPos = *win.GetCursorPos()        // relative to screen
+		me.Hwnd().ScreenToClientPt(&menuPos) // now relative to list view
+		lvhti := me.Items().HitTest(menuPos) // to find item below cursor, if any
 
 		if lvhti.IItem != -1 { // an item was right-clicked
 			if !hasCtrl && !hasShift {
@@ -278,7 +278,7 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		}
 	}
 
-	me.contextMenu.ShowAtPoint(*menuPos, me.Hwnd().GetParent(), me.Hwnd())
+	me.contextMenu.ShowAtPoint(menuPos, me.Hwnd().GetParent(), me.Hwnd())
 }
 
 //------------------------------------------------------------------------------
