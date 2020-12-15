@@ -71,6 +71,31 @@ func CoUninitialize() {
 	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw
+func CreateProcess(
+	lpApplicationName, lpCommandLine string,
+	lpProcessAttributes, lpThreadAttributes *SECURITY_ATTRIBUTES,
+	bInheritHandles bool, dwCreationFlags co.PROC, lpEnvironment unsafe.Pointer,
+	lpCurrentDirectory string, lpStartupInfo *STARTUPINFO,
+	lpProcessInformation *PROCESS_INFORMATION) {
+
+	ret, _, lerr := syscall.Syscall12(proc.CreateProcess.Addr(), 10,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpApplicationName))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpCommandLine))),
+		uintptr(unsafe.Pointer(lpProcessAttributes)),
+		uintptr(unsafe.Pointer(lpThreadAttributes)),
+		boolToUintptr(bInheritHandles),
+		uintptr(dwCreationFlags),
+		uintptr(lpEnvironment),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpCurrentDirectory))),
+		uintptr(unsafe.Pointer(lpStartupInfo)),
+		uintptr(unsafe.Pointer(lpProcessInformation)),
+		0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "CreateProcess"))
+	}
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycaret
 func DestroyCaret() {
 	ret, _, lerr := syscall.Syscall(proc.DestroyCaret.Addr(), 0, 0, 0, 0)
@@ -157,6 +182,13 @@ func GetCaretPos() *RECT {
 		panic(NewWinError(co.ERROR(lerr), "GetCaretPos"))
 	}
 	return &rc
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
+func GetCurrentProcessId() uint32 {
+	ret, _, _ := syscall.Syscall(proc.GetCurrentProcessId.Addr(), 0,
+		0, 0, 0)
+	return uint32(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthreadid

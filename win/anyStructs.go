@@ -289,6 +289,14 @@ type (
 		Data         [1]uint16
 	}
 
+	// https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-process_information
+	PROCESS_INFORMATION struct {
+		HProcess    HANDLE
+		HThread     HANDLE
+		DwProcessId uint32
+		DwThreadId  uint32
+	}
+
 	// https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-rect
 	RECT struct {
 		Left, Top, Right, Bottom int32
@@ -313,6 +321,28 @@ type (
 	// https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-size
 	SIZE struct {
 		Cx, Cy int32
+	}
+
+	// https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
+	STARTUPINFO struct {
+		Cb              uint32
+		LpReserved      *uint16
+		LpDesktop       *uint16
+		LpTitle         *uint16
+		DwX             uint32
+		DwY             uint32
+		DwXSize         uint32
+		DwYSize         uint32
+		DwXCountChars   uint32
+		DwYCountChars   uint32
+		DwFillAttribute uint32
+		DwFlags         co.STARTF
+		WShowWindow     uint16
+		CbReserved2     uint16
+		LpReserved2     *uint8
+		HStdInput       HANDLE
+		HStdOutput      HANDLE
+		HStdError       HANDLE
 	}
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime
