@@ -75,10 +75,19 @@ func (hKey HKEY) RegEnumValue() ([]string, error) {
 	return valueNames, nil
 }
 
-// Supported return types: []byte, uint32, uint64, string, []string.
+// Supported return types:
+//
+// - []byte - REG_BINARY
+// - uint32 - REG_DWORD
+// - uint64 - REG_QWORD
+// - string - REG_SZ
+// - string - REG_EXPAND_SZ
+// - []string - REG_MULTI_SZ
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryvalueexw
-func (hKey HKEY) RegQueryValueEx(lpValueName string) (interface{}, error) {
+func (hKey HKEY) RegQueryValueEx(
+	lpValueName string) (interface{}, co.REG, error) {
+
 	lpType := co.REG(0)
 	lpcbData := uint32(0)
 
@@ -87,11 +96,11 @@ func (hKey HKEY) RegQueryValueEx(lpValueName string) (interface{}, error) {
 		uintptr(unsafe.Pointer(&lpType)), 0,
 		uintptr(unsafe.Pointer(&lpcbData))) // query type and size
 	if co.ERROR(ret) != co.ERROR_SUCCESS {
-		return nil, NewWinError(co.ERROR(ret), "RegQueryValueEx")
+		return nil, co.REG_NONE, NewWinError(co.ERROR(ret), "RegQueryValueEx")
 	}
 
 	if lpType == co.REG_NONE {
-		return nil, nil // no value to query
+		return nil, lpType, nil // no value to query
 	}
 
 	lpData := make([]byte, lpcbData) // buffer to receive data
@@ -101,20 +110,20 @@ func (hKey HKEY) RegQueryValueEx(lpValueName string) (interface{}, error) {
 		uintptr(unsafe.Pointer(&lpType)), uintptr(unsafe.Pointer(&lpData[0])),
 		uintptr(unsafe.Pointer(&lpcbData))) // query value itself
 	if co.ERROR(ret) != co.ERROR_SUCCESS {
-		return nil, NewWinError(co.ERROR(ret), "RegQueryValueEx")
+		return nil, co.REG_NONE, NewWinError(co.ERROR(ret), "RegQueryValueEx")
 	}
 
 	switch lpType {
 	case co.REG_BINARY:
-		return lpData, nil
+		return lpData, lpType, nil
 	case co.REG_DWORD:
-		return binary.LittleEndian.Uint32(lpData), nil
+		return binary.LittleEndian.Uint32(lpData), lpType, nil
 	case co.REG_QWORD:
-		return binary.LittleEndian.Uint64(lpData), nil
-	case co.REG_SZ:
-		return Str.FromUint16Ptr((*uint16)(unsafe.Pointer((&lpData[0])))), nil
+		return binary.LittleEndian.Uint64(lpData), lpType, nil
+	case co.REG_SZ, co.REG_EXPAND_SZ:
+		return Str.FromUint16Ptr((*uint16)(unsafe.Pointer((&lpData[0])))), lpType, nil
 	case co.REG_MULTI_SZ:
-		return Str.FromUint16PtrMulti((*uint16)(unsafe.Pointer((&lpData[0])))), nil
+		return Str.FromUint16PtrMulti((*uint16)(unsafe.Pointer((&lpData[0])))), lpType, nil
 	}
 
 	panic("Unsupported RegQueryValueEx type.")
