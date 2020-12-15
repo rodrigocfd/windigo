@@ -28,21 +28,12 @@ func (_StrT) FromUint16Ptr(p *uint16) string {
 	// Find null terminator.
 	pRun := unsafe.Pointer(p)
 	sLen := 0
-	for *(*uint16)(pRun) != 0 { // terminating null won't be included
+	for *(*uint16)(pRun) != 0 {
 		pRun = unsafe.Pointer(uintptr(pRun) + unsafe.Sizeof(*p)) // pRun++
 		sLen++
 	}
 
-	// Turn *uint16 into []uint16.
-	// https://stackoverflow.com/a/43592538
-	// https://golang.org/pkg/internal/unsafeheader/#Slice
-	var sliceMem = struct { // slice memory layout
-		addr unsafe.Pointer
-		len  int
-		cap  int
-	}{unsafe.Pointer(p), sLen, sLen}
-
-	slice := *(*[]uint16)(unsafe.Pointer(&sliceMem))
+	slice := Str.ptrToSlice(p, sLen) // create slice without terminating null
 	return Str.FromUint16Slice(slice)
 }
 
@@ -61,13 +52,7 @@ func (_StrT) FromUint16PtrMulti(p *uint16) []string {
 				break // two terminating nulls
 			}
 
-			var sliceMem = struct { // slice memory layout
-				addr unsafe.Pointer
-				len  int
-				cap  int
-			}{unsafe.Pointer(p), sLen, sLen}
-
-			slice := *(*[]uint16)(unsafe.Pointer(&sliceMem))
+			slice := Str.ptrToSlice(p, sLen) // create slice without terminating null
 			values = append(values, Str.FromUint16Slice(slice))
 
 			pRun = unsafe.Pointer(uintptr(pRun) + unsafe.Sizeof(*p)) // pRun++
@@ -128,4 +113,17 @@ func (_StrT) ToUint16PtrBlankIsNil(s string) *uint16 {
 		return Str.ToUint16Ptr(s)
 	}
 	return nil
+}
+
+// Converts a *uint16 into a []uint16, with the given length.
+func (_StrT) ptrToSlice(ptr *uint16, length int) []uint16 {
+	// https://stackoverflow.com/a/43592538
+	// https://golang.org/pkg/internal/unsafeheader/#Slice
+	var sliceMem = struct { // slice memory layout
+		addr unsafe.Pointer
+		len  int
+		cap  int
+	}{unsafe.Pointer(ptr), length, length}
+
+	return *(*[]uint16)(unsafe.Pointer(&sliceMem)) // convert to slice itself
 }
