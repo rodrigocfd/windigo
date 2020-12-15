@@ -118,6 +118,19 @@ func EnumWindows(
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
+func ExpandEnvironmentStrings(lpSrc string) string {
+	buf := make([]uint16, _MAX_PATH+1)
+	ret, _, lerr := syscall.Syscall(proc.ExpandEnvironmentStrings.Addr(), 3,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSrc))),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(len(buf)-1))
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "ExpandEnvironmentStrings"))
+	}
+	return Str.FromUint16Slice(buf)
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
 func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
 	ret, _, lerr := syscall.Syscall(proc.FileTimeToSystemTime.Addr(), 2,

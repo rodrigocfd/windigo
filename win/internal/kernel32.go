@@ -18,6 +18,7 @@ var (
 	CreateFile                      = dllKernel32.NewProc("CreateFileW")
 	CreateFileMapping               = dllKernel32.NewProc("CreateFileMappingW")
 	DeleteFile                      = dllKernel32.NewProc("DeleteFileW")
+	ExpandEnvironmentStrings        = dllKernel32.NewProc("ExpandEnvironmentStringsW")
 	FileTimeToSystemTime            = dllKernel32.NewProc("FileTimeToSystemTime")
 	FindClose                       = dllKernel32.NewProc("FindClose")
 	FindFirstFile                   = dllKernel32.NewProc("FindFirstFileW")
