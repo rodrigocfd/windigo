@@ -45,6 +45,27 @@ func (hKey HKEY) RegCloseKey() {
 	}
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyvaluew
+func (hKey HKEY) RegDeleteKeyValue(lpSubKey, lpValueName string) error {
+	ret, _, _ := syscall.Syscall(proc.RegDeleteKeyValue.Addr(), 3,
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValueName))))
+	if co.ERROR(ret) != co.ERROR_SUCCESS {
+		return NewWinError(co.ERROR(ret), "RegDeleteKeyValue")
+	}
+	return nil
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletevaluew
+func (hKey HKEY) RegDeleteValue(lpValueName string) error {
+	ret, _, _ := syscall.Syscall(proc.RegDeleteValue.Addr(), 2,
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValueName))), 0)
+	if co.ERROR(ret) != co.ERROR_SUCCESS {
+		return NewWinError(co.ERROR(ret), "RegDeleteValue")
+	}
+	return nil
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumvaluew
 func (hKey HKEY) RegEnumValue() ([]string, error) {
 	valueNames := make([]string, 0)
