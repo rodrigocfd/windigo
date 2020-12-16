@@ -169,12 +169,33 @@ func (hWnd HWND) GetAncestor(gaFlags co.GA) HWND {
 	return HWND(ret)
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclasslongw
+func (hWnd HWND) GetClassLong(nIndex co.GCL) uint32 {
+	ret, _, lerr := syscall.Syscall(proc.GetClassLong.Addr(), 2,
+		uintptr(hWnd), uintptr(nIndex), 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "GetClassLong"))
+	}
+	return uint32(ret)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassnamew
+func (hWnd HWND) GetClassName() string {
+	var buf [256 + 1]uint16
+
+	ret, _, lerr := syscall.Syscall(proc.GetClassName.Addr(), 3,
+		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(256+1))
+	if ret == 0 && co.ERROR(lerr) != co.ERROR_SUCCESS {
+		panic(NewWinError(co.ERROR(lerr), "GetClassName"))
+	}
+	return Str.FromUint16Slice(buf[:])
+}
+
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclientrect
 func (hWnd HWND) GetClientRect() *RECT {
 	rc := RECT{}
 	ret, _, lerr := syscall.Syscall(proc.GetClientRect.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&rc)), 0)
-
 	if ret == 0 {
 		panic(NewWinError(co.ERROR(lerr), "GetClientRect"))
 	}

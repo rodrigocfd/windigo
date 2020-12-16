@@ -56,6 +56,8 @@ var (
 	GetAsyncKeyState              = user32Dll.NewProc("GetAsyncKeyState")
 	GetCaretPos                   = user32Dll.NewProc("GetCaretPos")
 	GetClassInfoEx                = user32Dll.NewProc("GetClassInfoExW")
+	GetClassLong                  = user32Dll.NewProc("GetClassLongW")
+	GetClassName                  = user32Dll.NewProc("GetClassNameW")
 	GetClientRect                 = user32Dll.NewProc("GetClientRect")
 	GetCursorPos                  = user32Dll.NewProc("GetCursorPos")
 	GetDC                         = user32Dll.NewProc("GetDC")

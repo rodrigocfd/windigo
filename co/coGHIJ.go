@@ -15,6 +15,23 @@ const (
 	GA_ROOTOWNER GA = 3
 )
 
+// GetClassLong() nIndex.
+type GCL int32
+
+const (
+	GCL_ATOM          GCL = -32 // Originally GCW_ATOM.
+	GCL_CBCLSEXTRA    GCL = -20
+	GCL_CBWNDEXTRA    GCL = -18
+	GCL_HBRBACKGROUND GCL = -10
+	GCL_HCURSOR       GCL = -12
+	GCL_HICON         GCL = -14
+	GCL_HICONSM       GCL = -34
+	GCL_HMODULE       GCL = -16
+	GCL_MENUNAME      GCL = -8
+	GCL_STYLE         GCL = -26
+	GCL_WNDPROC       GCL = -24
+)
+
 // GetDeviceCaps() index; originally has no prefix.
 type GDC int32
 
