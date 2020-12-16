@@ -19,14 +19,17 @@ type DialogMain struct {
 	accelTblId int
 }
 
-// Constructor.
-// You can pass zero to iconId and accelTblId.
-func NewDialogMain(dlgId, iconId, accelTblId int) *DialogMain {
+// Constructor. Initializes the dialog with the given options.
+func NewDialogMain(opts *DialogMainOpts) *DialogMain {
+	if opts.DialogId == 0 {
+		panic("Dialog resource ID must be specified.")
+	}
+
 	me := DialogMain{
-		_DialogBase: _NewDialogBase(dlgId),
+		_DialogBase: _NewDialogBase(opts.DialogId),
 		mainLoop:    _NewWindowMainLoop(),
-		iconId:      iconId,
-		accelTblId:  accelTblId,
+		iconId:      opts.IconId,
+		accelTblId:  opts.AccelTableId,
 	}
 
 	me.defaultMessageHandling()
@@ -92,4 +95,16 @@ func (me *DialogMain) setIconIfAny(hInst win.HINSTANCE) {
 					32, 32, co.LR_DEFAULTCOLOR),
 			))
 	}
+}
+
+//------------------------------------------------------------------------------
+
+// Options for NewDialogMain().
+type DialogMainOpts struct {
+	// Dialog resource ID to be loaded.
+	DialogId int
+	// Icon resource ID. Optional.
+	IconId int
+	// Accelerator table resource ID. Optional.
+	AccelTableId int
 }

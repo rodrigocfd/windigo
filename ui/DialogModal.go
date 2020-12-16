@@ -14,9 +14,13 @@ type DialogModal struct {
 }
 
 // Constructor.
-func NewDialogModal(dlgId int) *DialogModal {
+func NewDialogModal(opts *DialogModalOpts) *DialogModal {
+	if opts.DialogId == 0 {
+		panic("Dialog resource ID must be specified.")
+	}
+
 	me := DialogModal{
-		_DialogBase: _NewDialogBase(dlgId),
+		_DialogBase: _NewDialogBase(opts.DialogId),
 	}
 
 	me.defaultMessageHandling()
@@ -36,4 +40,12 @@ func (me *DialogModal) defaultMessageHandling() {
 	me.On().WmClose(func() {
 		me.Hwnd().EndDialog(uintptr(co.MBID_CANCEL))
 	})
+}
+
+//------------------------------------------------------------------------------
+
+// Options for NewDialogModal().
+type DialogModalOpts struct {
+	// Dialog resource ID to be loaded.
+	DialogId int
 }
