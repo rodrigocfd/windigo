@@ -8,6 +8,7 @@ package win
 
 import (
 	"encoding/binary"
+	"fmt"
 	"sort"
 	"syscall"
 	"unsafe"
@@ -75,6 +76,15 @@ func (hKey HKEY) RegEnumValue() ([]string, error) {
 	return valueNames, nil
 }
 
+// Supported return types:
+//
+// - []byte - REG_BINARY
+// - uint32 - REG_DWORD
+// - uint64 - REG_QWORD
+// - string - REG_SZ
+// - string - REG_EXPAND_SZ
+// - []string - REG_MULTI_SZ
+//
 // https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-reggetvaluew
 func (hKey HKEY) RegGetValue(
 	lpSubKey, lpValue string) (interface{}, co.REG, error) {
@@ -108,20 +118,7 @@ func (hKey HKEY) RegGetValue(
 		return nil, co.REG_NONE, NewWinError(co.ERROR(ret), "RegGetValue")
 	}
 
-	switch lpType {
-	case co.REG_BINARY:
-		return lpData, lpType, nil
-	case co.REG_DWORD:
-		return binary.LittleEndian.Uint32(lpData), lpType, nil
-	case co.REG_QWORD:
-		return binary.LittleEndian.Uint64(lpData), lpType, nil
-	case co.REG_SZ, co.REG_EXPAND_SZ:
-		return Str.FromUint16Ptr((*uint16)(unsafe.Pointer((&lpData[0])))), lpType, nil
-	case co.REG_MULTI_SZ:
-		return Str.FromUint16PtrMulti((*uint16)(unsafe.Pointer((&lpData[0])))), lpType, nil
-	}
-
-	panic("Unsupported RegGetValue type.")
+	return hKey.outputValue(lpData, lpType)
 }
 
 // Supported return types:
@@ -162,6 +159,13 @@ func (hKey HKEY) RegQueryValueEx(
 		return nil, co.REG_NONE, NewWinError(co.ERROR(ret), "RegQueryValueEx")
 	}
 
+	return hKey.outputValue(lpData, lpType)
+}
+
+// Returns the converted registry value.
+func (hKey HKEY) outputValue(
+	lpData []byte, lpType co.REG) (interface{}, co.REG, error) {
+
 	switch lpType {
 	case co.REG_BINARY:
 		return lpData, lpType, nil
@@ -175,5 +179,5 @@ func (hKey HKEY) RegQueryValueEx(
 		return Str.FromUint16PtrMulti((*uint16)(unsafe.Pointer((&lpData[0])))), lpType, nil
 	}
 
-	panic("Unsupported RegQueryValueEx type.")
+	panic(fmt.Sprintf("Unsupported registry type: %d.", lpType))
 }

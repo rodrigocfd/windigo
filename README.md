@@ -50,15 +50,17 @@ func NewMyWindow() *MyWindow {
         },
     )
 
-    return &MyMain{
+    me := MyMain{
         wnd:      wnd,
         btnHello: ui.NewButton(wnd),
     }
+
+    me.events()
+    return &me
 }
 
 // Runs our main window. Returns only after the window is closed.
 func (me *MyWindow) Run() int {
-    me.events()
     return me.wnd.RunAsMain()
 }
 
