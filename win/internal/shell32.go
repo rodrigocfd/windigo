@@ -11,13 +11,13 @@ import (
 )
 
 var (
-	dllShell32 = syscall.NewLazyDLL("shell32.dll")
+	shell32Dll = syscall.NewLazyDLL("shell32.dll")
 
-	DragAcceptFiles             = dllShell32.NewProc("DragAcceptFiles")
-	DragFinish                  = dllShell32.NewProc("DragFinish")
-	DragQueryFile               = dllShell32.NewProc("DragQueryFileW")
-	DragQueryPoint              = dllShell32.NewProc("DragQueryPoint")
-	DuplicateIcon               = dllShell32.NewProc("DuplicateIcon")
-	SHCreateItemFromParsingName = dllShell32.NewProc("SHCreateItemFromParsingName")
-	SHGetFileInfo               = dllShell32.NewProc("SHGetFileInfoW")
+	DragAcceptFiles             = shell32Dll.NewProc("DragAcceptFiles")
+	DragFinish                  = shell32Dll.NewProc("DragFinish")
+	DragQueryFile               = shell32Dll.NewProc("DragQueryFileW")
+	DragQueryPoint              = shell32Dll.NewProc("DragQueryPoint")
+	DuplicateIcon               = shell32Dll.NewProc("DuplicateIcon")
+	SHCreateItemFromParsingName = shell32Dll.NewProc("SHCreateItemFromParsingName")
+	SHGetFileInfo               = shell32Dll.NewProc("SHGetFileInfoW")
 )

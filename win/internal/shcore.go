@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	dllShCore = syscall.NewLazyDLL("shcore.dll")
+	shcoreDll = syscall.NewLazyDLL("shcore.dll")
 
-	GetDpiForMonitor = dllShCore.NewProc("GetDpiForMonitor")
+	GetDpiForMonitor = shcoreDll.NewProc("GetDpiForMonitor")
 )

@@ -11,10 +11,10 @@ import (
 )
 
 var (
-	dllOle32 = syscall.NewLazyDLL("ole32.dll")
+	ole32Dll = syscall.NewLazyDLL("ole32.dll")
 
-	CoCreateInstance = dllOle32.NewProc("CoCreateInstance")
-	CoInitializeEx   = dllOle32.NewProc("CoInitializeEx")
-	CoTaskMemFree    = dllOle32.NewProc("CoTaskMemFree")
-	CoUninitialize   = dllOle32.NewProc("CoUninitialize")
+	CoCreateInstance = ole32Dll.NewProc("CoCreateInstance")
+	CoInitializeEx   = ole32Dll.NewProc("CoInitializeEx")
+	CoTaskMemFree    = ole32Dll.NewProc("CoTaskMemFree")
+	CoUninitialize   = ole32Dll.NewProc("CoUninitialize")
 )

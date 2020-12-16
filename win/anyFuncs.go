@@ -309,8 +309,8 @@ func IsGUIThread(bConvertToGuiThread bool) bool {
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsversionorgreater
-func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32,
-	servicePackMajor uint16) bool {
+func IsWindowsVersionOrGreater(
+	majorVersion, minorVersion uint32, servicePackMajor uint16) bool {
 
 	ovi := OSVERSIONINFOEX{
 		DwMajorVersion:    majorVersion,
@@ -598,8 +598,9 @@ func TzSpecificLocalTimeToSystemTime(
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
-func VerifyVersionInfo(ovi *OSVERSIONINFOEX, typeMask co.VER,
-	conditionMask uint64) (bool, co.ERROR) {
+func VerifyVersionInfo(
+	ovi *OSVERSIONINFOEX,
+	typeMask co.VER, conditionMask uint64) (bool, co.ERROR) {
 
 	ret, _, lerr := syscall.Syscall(proc.VerifyVersionInfo.Addr(), 3,
 		uintptr(unsafe.Pointer(ovi)),
@@ -608,8 +609,8 @@ func VerifyVersionInfo(ovi *OSVERSIONINFOEX, typeMask co.VER,
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-versetconditionmask
-func VerSetConditionMask(conditionMask uint64, typeMask co.VER,
-	condition co.VER_COND) uint64 {
+func VerSetConditionMask(
+	conditionMask uint64, typeMask co.VER, condition co.VER_COND) uint64 {
 
 	ret, _, _ := syscall.Syscall(proc.VerSetConditionMask.Addr(), 3,
 		uintptr(conditionMask), uintptr(typeMask), uintptr(condition))
