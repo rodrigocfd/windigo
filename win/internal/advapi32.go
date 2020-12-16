@@ -18,4 +18,5 @@ var (
 	RegGetValue     = advapi32Dll.NewProc("RegGetValueW")
 	RegOpenKeyEx    = advapi32Dll.NewProc("RegOpenKeyExW")
 	RegQueryValueEx = advapi32Dll.NewProc("RegQueryValueExW")
+	RegSetKeyValue  = advapi32Dll.NewProc("RegSetKeyValueW")
 )

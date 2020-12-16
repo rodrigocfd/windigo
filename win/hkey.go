@@ -162,6 +162,68 @@ func (hKey HKEY) RegQueryValueEx(
 	return hKey.outputValue(lpData, lpType)
 }
 
+// Key will be create if it doesn't exist. If new type is different from current
+// type, new type will prevail.
+//
+// Will panic on a wrong data type. Supported types:
+//
+// - []byte - REG_BINARY
+// - uint32 - REG_DWORD
+// - uint64 - REG_QWORD
+// - string - REG_SZ
+// - string - REG_EXPAND_SZ
+// - []string - REG_MULTI_SZ
+//
+// https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetkeyvaluew
+func (hKey HKEY) RegSetKeyValue(
+	lpSubKey, lpValueName string, dwType co.REG, lpData interface{}) error {
+
+	var dataPtr *byte
+	var dataSz uint32
+
+	switch dwType {
+	case co.REG_BINARY:
+		binSlice := lpData.([]byte)
+		dataSz = uint32(len(binSlice))
+		dataPtr = &binSlice[0]
+
+	case co.REG_DWORD:
+		dataSz = uint32(unsafe.Sizeof(uint32(0)))
+		binSlice := make([]byte, dataSz)
+		binary.LittleEndian.PutUint32(binSlice, lpData.(uint32))
+		dataPtr = &binSlice[0]
+
+	case co.REG_QWORD:
+		dataSz = uint32(unsafe.Sizeof(uint64(0)))
+		binSlice := make([]byte, dataSz)
+		binary.LittleEndian.PutUint64(binSlice, lpData.(uint64))
+		dataPtr = &binSlice[0]
+
+	case co.REG_SZ, co.REG_EXPAND_SZ:
+		buf16 := Str.ToUint16Slice(lpData.(string)) // null-terminated
+		dataSz = uint32(len(buf16) * 2)             // wide chars counted in bytes
+		dataPtr = (*byte)(unsafe.Pointer(&buf16[0]))
+
+	case co.REG_MULTI_SZ:
+		buf16 := Str.ToUint16SliceMulti(lpData.([]string)) // double null-terminated
+		dataSz = uint32(len(buf16) * 2)                    // wide chars counted in bytes
+		dataPtr = (*byte)(unsafe.Pointer(&buf16[0]))
+
+	default:
+		panic(fmt.Sprintf("Unsupported registry type: %d.", dwType))
+	}
+
+	ret, _, _ := syscall.Syscall6(proc.RegSetKeyValue.Addr(), 6,
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValueName))),
+		uintptr(dwType), uintptr(unsafe.Pointer(dataPtr)), uintptr(dataSz))
+	if co.ERROR(ret) != co.ERROR_SUCCESS {
+		return NewWinError(co.ERROR(ret), "RegSetKeyValue")
+	}
+
+	return nil
+}
+
 // Returns the converted registry value.
 func (hKey HKEY) outputValue(
 	lpData []byte, lpType co.REG) (interface{}, co.REG, error) {

@@ -14,10 +14,10 @@ import (
 
 type _StrT struct{}
 
-// UTF-16 string conversion functions.
+// Wide char UTF-16 string conversion functions.
 var Str _StrT
 
-// Converts a pointer to a null-terminated UTF-16 into string.
+// Converts a null-terminated *uint16 to string.
 //
 // Copied from syscall_windows.go, utf16PtrToString() private function.
 func (_StrT) FromUint16Ptr(p *uint16) string {
@@ -37,7 +37,9 @@ func (_StrT) FromUint16Ptr(p *uint16) string {
 	return Str.FromUint16Slice(slice)
 }
 
-// Converts a pointer to a multi null-terminated UTF-16 into strings.
+// Converts a multi null-terminated *uint16 to []string.
+//
+// Source must have 2 terminating nulls.
 func (_StrT) FromUint16PtrMulti(p *uint16) []string {
 	values := make([]string, 0)
 	if p == nil {
@@ -68,14 +70,14 @@ func (_StrT) FromUint16PtrMulti(p *uint16) []string {
 	return values
 }
 
-// Converts a null-terminated UTF-16 slice into string.
+// Converts a null-terminated []uint16 to string.
 //
 // Simple wrapper to syscall.UTF16ToString().
 func (_StrT) FromUint16Slice(s []uint16) string {
 	return syscall.UTF16ToString(s)
 }
 
-// Converts string to *uint16.
+// Converts string to null-terminated *uint16.
 //
 // Ideal to pass strings to syscalls. We won't return an uintptr right away
 // because it has no pointer semantics, it's just a number, so pointed memory
@@ -93,6 +95,24 @@ func (_StrT) ToUint16Ptr(s string) *uint16 {
 	return pstr
 }
 
+// Converts string to null-terminated *uint16, or nil if source is empty.
+//
+// Wrapper to syscall.UTF16PtrFromString(). Panics on error.
+func (_StrT) ToUint16PtrBlankIsNil(s string) *uint16 {
+	if s != "" {
+		return Str.ToUint16Ptr(s)
+	}
+	return nil
+}
+
+// Converts []string to multi null-terminated *uint16.
+//
+// Memory block will have 2 terminating nulls.
+func (_StrT) ToUint16PtrMulti(ss []string) *uint16 {
+	slice := Str.ToUint16SliceMulti(ss)
+	return &slice[0]
+}
+
 // Converts string to null-terminated []uint16.
 //
 // Wrapper to syscall.UTF16FromString(). Panics on error.
@@ -105,17 +125,26 @@ func (_StrT) ToUint16Slice(s string) []uint16 {
 	return sli
 }
 
-// Converts string to *uint16, or nil if string is empty.
+// Converts []string to multi null-terminated []uint16.
 //
-// Wrapper to syscall.UTF16PtrFromString(). Panics on error.
-func (_StrT) ToUint16PtrBlankIsNil(s string) *uint16 {
-	if s != "" {
-		return Str.ToUint16Ptr(s)
+// Returned slice will have 2 terminating nulls.
+func (_StrT) ToUint16SliceMulti(ss []string) []uint16 {
+	totalLen := 0
+	for _, s := range ss {
+		totalLen += len(s) + 1 // also count terminating null
 	}
-	return nil
+
+	buf := make([]uint16, 0, totalLen)
+
+	for _, s := range ss {
+		buf = append(buf, Str.ToUint16Slice(s)...)
+	}
+	buf = append(buf, 0) // 2nd terminating null
+
+	return buf
 }
 
-// Converts a *uint16 into a []uint16, with the given length.
+// Converts *uint16 to []uint16, with the given length.
 func (_StrT) ptrToSlice(ptr *uint16, length int) []uint16 {
 	// https://stackoverflow.com/a/43592538
 	// https://golang.org/pkg/internal/unsafeheader/#Slice
