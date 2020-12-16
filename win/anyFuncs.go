@@ -8,6 +8,7 @@ package win
 
 import (
 	"fmt"
+	"strings"
 	"syscall"
 	"unsafe"
 	"windigo/co"
@@ -216,6 +217,31 @@ func GetDpiForSystem() uint32 {
 	ret, _, _ := syscall.Syscall(proc.GetDpiForSystem.Addr(), 0,
 		0, 0, 0)
 	return uint32(ret)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getenvironmentstringsw
+func GetEnvironmentStrings() map[string]string {
+	ret, _, lerr := syscall.Syscall(proc.GetEnvironmentStrings.Addr(), 0,
+		0, 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "GetEnvironmentStrings"))
+	}
+
+	lpwch := (*uint16)(unsafe.Pointer(ret))
+	valsAndKeys := Str.FromUint16PtrMulti(lpwch)
+
+	ret, _, lerr = syscall.Syscall(proc.FreeEnvironmentStrings.Addr(), 1,
+		ret, 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "FreeEnvironmentStrings"))
+	}
+
+	hashMap := make(map[string]string, len(valsAndKeys))
+	for _, valAndKey := range valsAndKeys {
+		tokens := strings.Split(valAndKey, "=")
+		hashMap[tokens[0]] = tokens[1]
+	}
+	return hashMap
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagew
