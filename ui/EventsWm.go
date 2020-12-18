@@ -133,8 +133,8 @@ func (me *_EventsWm) WmAskCbFormatName(userFunc func(p WmAskCbFormatName)) {
 
 type WmAskCbFormatName struct{ m Wm }
 
-func (p WmAskCbFormatName) BufferSize() uint { return uint(p.m.WParam) }
-func (p WmAskCbFormatName) Buffer() *uint16  { return (*uint16)(unsafe.Pointer(p.m.LParam)) }
+func (p WmAskCbFormatName) BufferSize() int { return int(p.m.WParam) }
+func (p WmAskCbFormatName) Buffer() *uint16 { return (*uint16)(unsafe.Pointer(p.m.LParam)) }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-cancelmode
 func (me *_EventsWm) WmCancelMode(userFunc func()) {
@@ -180,7 +180,7 @@ func (me *_EventsWm) WmCharToItem(userFunc func(p WmCharToItem)) {
 type WmCharToItem struct{ m Wm }
 
 func (p WmCharToItem) CharCode() rune        { return rune(p.m.WParam.LoWord()) }
-func (p WmCharToItem) CurrentCaretPos() uint { return uint(p.m.WParam.HiWord()) }
+func (p WmCharToItem) CurrentCaretPos() int  { return int(p.m.WParam.HiWord()) }
 func (p WmCharToItem) HwndListBox() win.HWND { return win.HWND(p.m.LParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-childactivate
@@ -347,8 +347,8 @@ func (me *_EventsWm) WmDisplayChange(userFunc func(p WmDisplayChange)) {
 
 type WmDisplayChange struct{ m Wm }
 
-func (p WmDisplayChange) BitsPerPixel() uint { return uint(p.m.WParam) }
-func (p WmDisplayChange) Size() win.SIZE     { return p.m.LParam.MakeSize() }
+func (p WmDisplayChange) BitsPerPixel() int { return int(p.m.WParam) }
+func (p WmDisplayChange) Size() win.SIZE    { return p.m.LParam.MakeSize() }
 
 // https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-drawclipboard
 func (me *_EventsWm) WmDrawClipboard(userFunc func()) {
@@ -383,7 +383,7 @@ func (me *_EventsWm) WmDropFiles(userFunc func(p WmDropFiles)) {
 type WmDropFiles struct{ m Wm }
 
 func (p WmDropFiles) Hdrop() win.HDROP { return win.HDROP(p.m.WParam) }
-func (p WmDropFiles) Count() uint      { return uint(p.Hdrop().DragQueryFile(0xffff_ffff, nil, 0)) }
+func (p WmDropFiles) Count() int       { return int(p.Hdrop().DragQueryFile(0xffff_ffff, nil, 0)) }
 
 // Calls DragQueryFile() successively to retrieve all file names, and releases
 // the HDROP handle with DragFinish().
@@ -559,7 +559,7 @@ func (me *_EventsWm) WmInitMenuPopup(userFunc func(p WmInitMenuPopup)) {
 type WmInitMenuPopup struct{ m Wm }
 
 func (p WmInitMenuPopup) Hmenu() win.HMENU   { return win.HMENU(p.m.WParam) }
-func (p WmInitMenuPopup) Pos() uint          { return uint(p.m.LParam.LoWord()) }
+func (p WmInitMenuPopup) Pos() int           { return int(p.m.LParam.LoWord()) }
 func (p WmInitMenuPopup) IsWindowMenu() bool { return p.m.LParam.HiWord() != 0 }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-keydown
@@ -679,7 +679,7 @@ func (me *_EventsWm) WmMenuSelect(userFunc func(p WmMenuSelect)) {
 
 type WmMenuSelect struct{ m Wm }
 
-func (p WmMenuSelect) Item() uint       { return uint(p.m.WParam.LoWord()) }
+func (p WmMenuSelect) Item() int        { return int(p.m.WParam.LoWord()) }
 func (p WmMenuSelect) Flags() co.MF     { return co.MF(p.m.WParam.HiWord()) }
 func (p WmMenuSelect) Hmenu() win.HMENU { return win.HMENU(p.m.LParam) }
 
