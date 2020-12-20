@@ -17,6 +17,22 @@ type _StrT struct{}
 // Wide char UTF-16 string conversion functions.
 var Str _StrT
 
+// Formats bytes into KB, MB or TB.
+func (_StrT) FmtBytes(numBytes uint64) string {
+	switch {
+	case numBytes < 1024:
+		return fmt.Sprintf("%d bytes", numBytes)
+	case numBytes < 1024*1024:
+		return fmt.Sprintf("%.2f KB", float64(numBytes)/1024)
+	case numBytes < 1024*1024*1024:
+		return fmt.Sprintf("%.2f MB", float64(numBytes)/1024/1024)
+	case numBytes < 1024*1024*1024*1024:
+		return fmt.Sprintf("%.2f GB", float64(numBytes)/1024/1024/1024)
+	default:
+		return fmt.Sprintf("%.2f TB", float64(numBytes)/1024/1024/1024/1024)
+	}
+}
+
 // Converts a null-terminated *uint16 to string.
 //
 // Copied from syscall_windows.go, utf16PtrToString() private function.
