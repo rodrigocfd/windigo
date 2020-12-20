@@ -123,6 +123,8 @@ func _NewStatusBarPartCollection(ctrl *StatusBar) *_StatusBarPartCollection {
 }
 
 // Adds a new part with fixed width.
+//
+// Width will be adjusted to the current system DPI.
 func (me *_StatusBarPartCollection) AddFixed(sizePixels int) *StatusBar {
 	if sizePixels < 0 {
 		panic("Width of StatusBar part can't be negative.")
@@ -130,8 +132,11 @@ func (me *_StatusBarPartCollection) AddFixed(sizePixels int) *StatusBar {
 
 	me.cacheInitialParentCx()
 
+	size := Size{Cx: sizePixels, Cy: 0}
+	_global.MultiplyDpi(nil, &size)
+
 	me.partsData = append(me.partsData, _StatusBarPartData{
-		sizePixels: sizePixels,
+		sizePixels: size.Cx,
 	})
 	me.rightEdges = append(me.rightEdges, 0)
 
