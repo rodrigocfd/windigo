@@ -837,8 +837,8 @@ func (me *_EventsWm) WmNcPaint(userFunc func(p WmNcPaint)) {
 
 type WmNcPaint struct{ m Wm }
 
-func (p WmNcPaint) Raw() Wm                 { return p.m }
-func (p WmNcPaint) UpdatedRegion() win.HRGN { return win.HRGN(p.m.WParam) }
+func (p WmNcPaint) Raw() Wm               { return p.m }
+func (p WmNcPaint) UpdatedHrgn() win.HRGN { return win.HRGN(p.m.WParam) }
 
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-ncrbuttondblclk
 func (me *_EventsWm) WmNcRButtonDblClk(userFunc func(p WmNcMouse)) {

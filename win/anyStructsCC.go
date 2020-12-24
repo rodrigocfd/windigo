@@ -83,7 +83,7 @@ type (
 	// https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
 	LVCOLUMN struct {
 		Mask       co.LVCF
-		Fmt        int32
+		Fmt        co.LVCFMT_C
 		Cx         int32
 		PszText    *uint16
 		CchTextMax int32
@@ -128,7 +128,7 @@ type (
 		IGroupId   co.LVI_GROUPID
 		CColumns   uint32
 		PuColumns  *uint32
-		PiColFmt   *co.LVCFMT
+		PiColFmt   *co.LVCFMT_I
 		IGroup     int32
 	}
 
