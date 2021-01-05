@@ -210,6 +210,12 @@ func GetCursorPos() *POINT {
 	return &pt
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdesktopwindow
+func GetDesktopWindow() HWND {
+	ret, _, _ := syscall.Syscall(proc.GetDesktopWindow.Addr(), 0, 0, 0, 0)
+	return HWND(ret)
+}
+
 // Available in Windows 10, version 1607.
 //
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforsystem

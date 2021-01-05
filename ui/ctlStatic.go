@@ -51,7 +51,7 @@ func (me *Static) CreateWs(
 // Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *Static) Create(text string, pos Pos, sStyles co.SS) *Static {
 	_global.MultiplyDpi(&pos, nil)
-	size := _global.CalcTextBoundBox(me.parent.Hwnd(), text, true)
+	size := _global.CalcTextBoundBox(text, true)
 	return me.createNoDpi(text, pos, size, sStyles,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.WS_EX_NONE)
@@ -74,7 +74,7 @@ func (me *Static) On() *_EventsStatic {
 // To set the text without resizing the control, use Hwnd().SetWindowText().
 func (me *Static) SetText(text string) *Static {
 	hasAccel := (co.SS(me.Hwnd().GetStyle()) & co.SS_NOPREFIX) == 0
-	size := _global.CalcTextBoundBox(me.Hwnd().GetParent(), text, hasAccel)
+	size := _global.CalcTextBoundBox(text, hasAccel)
 
 	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE,
 		0, 0, int32(size.Cx), int32(size.Cy),

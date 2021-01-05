@@ -52,7 +52,7 @@ func (me *CheckBox) CreateWs(
 // Should be called at On().WmCreate(), or at On().WmInitDialog() if dialog.
 func (me *CheckBox) Create(text string, pos Pos, btnStyles co.BS) *CheckBox {
 	_global.MultiplyDpi(&pos, nil)
-	size := me.calcIdealSize(me.parent.Hwnd(), text)
+	size := me.calcIdealSize(text)
 	return me.createNoDpi(text, pos, size, btnStyles,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.WS_EX_NONE)
@@ -95,7 +95,7 @@ func (me *CheckBox) SetState(state co.BST) *CheckBox {
 //
 // To set the text without resizing the control, use Hwnd().SetWindowText().
 func (me *CheckBox) SetText(text string) *CheckBox {
-	size := me.calcIdealSize(me.Hwnd().GetParent(), text)
+	size := me.calcIdealSize(text)
 	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE,
 		0, 0, int32(size.Cx), int32(size.Cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
@@ -119,8 +119,8 @@ func (me *CheckBox) Text() string {
 }
 
 // Calculates the exact size to fit the text.
-func (me *CheckBox) calcIdealSize(hReferenceDc win.HWND, text string) Size {
-	boundBox := _global.CalcTextBoundBox(hReferenceDc, text, true)
+func (me *CheckBox) calcIdealSize(text string) Size {
+	boundBox := _global.CalcTextBoundBox(text, true)
 	boundBox.Cx += int(
 		win.GetSystemMetrics(co.SM_CXMENUCHECK) + // https://stackoverflow.com/a/1165052/6923555
 			win.GetSystemMetrics(co.SM_CXEDGE),

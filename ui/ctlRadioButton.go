@@ -54,7 +54,7 @@ func (me *RadioButton) CreateFirst(
 	text string, pos Pos, btnStyles co.BS) *RadioButton {
 
 	_global.MultiplyDpi(&pos, nil)
-	size := me.calcIdealSize(me.parent.Hwnd(), text)
+	size := me.calcIdealSize(text)
 	return me.createNoDpi(text, pos, size, btnStyles,
 		co.WS_CHILD|co.WS_GROUP|co.WS_TABSTOP|co.WS_VISIBLE,
 		co.WS_EX_NONE)
@@ -72,7 +72,7 @@ func (me *RadioButton) CreateSubsequent(
 	text string, pos Pos, btnStyles co.BS) *RadioButton {
 
 	_global.MultiplyDpi(&pos, nil)
-	size := me.calcIdealSize(me.parent.Hwnd(), text)
+	size := me.calcIdealSize(text)
 	return me.createNoDpi(text, pos, size, btnStyles,
 		co.WS_CHILD|co.WS_VISIBLE,
 		co.WS_EX_NONE)
@@ -119,7 +119,7 @@ func (me *RadioButton) SetCheckAndTrigger() *RadioButton {
 //
 // To set the text without resizing the control, use Hwnd().SetWindowText().
 func (me *RadioButton) SetText(text string) *RadioButton {
-	size := me.calcIdealSize(me.Hwnd().GetParent(), text)
+	size := me.calcIdealSize(text)
 	me.Hwnd().SetWindowPos(co.SWP_HWND_NONE,
 		0, 0, int32(size.Cx), int32(size.Cy),
 		co.SWP_NOZORDER|co.SWP_NOMOVE)
@@ -137,8 +137,8 @@ func (me *RadioButton) Text() string {
 }
 
 // Calculates the exact size to fit the text.
-func (me *RadioButton) calcIdealSize(hReferenceDc win.HWND, text string) Size {
-	boundBox := _global.CalcTextBoundBox(hReferenceDc, text, true)
+func (me *RadioButton) calcIdealSize(text string) Size {
+	boundBox := _global.CalcTextBoundBox(text, true)
 	boundBox.Cx += int(
 		win.GetSystemMetrics(co.SM_CXMENUCHECK) + // https://stackoverflow.com/a/1165052/6923555
 			win.GetSystemMetrics(co.SM_CXEDGE),

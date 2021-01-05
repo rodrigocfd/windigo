@@ -44,9 +44,7 @@ func (*_GlobalT) BoolToUintptr(b bool) uintptr {
 }
 
 // Calculates the bound rectangle to fit the text with current system font.
-func (*_GlobalT) CalcTextBoundBox(
-	hReferenceDc win.HWND, text string, considerAccelerators bool) Size {
-
+func (*_GlobalT) CalcTextBoundBox(text string, considerAccelerators bool) Size {
 	isTextEmpty := false
 	if len(text) == 0 {
 		isTextEmpty = true
@@ -57,10 +55,11 @@ func (*_GlobalT) CalcTextBoundBox(
 		text = _global.RemoveAccelAmpersands(text)
 	}
 
-	parentDc := hReferenceDc.GetDC()
-	defer hReferenceDc.ReleaseDC(parentDc)
+	desktopHwnd := win.GetDesktopWindow()
+	desktopDc := desktopHwnd.GetDC()
+	defer desktopHwnd.ReleaseDC(desktopDc)
 
-	cloneDc := parentDc.CreateCompatibleDC()
+	cloneDc := desktopDc.CreateCompatibleDC()
 	defer cloneDc.DeleteDC()
 
 	prevFont := cloneDc.SelectObjectFont(_global.UiFont().Hfont()) // system font; already adjusted to current DPI
