@@ -19,10 +19,10 @@ type HDC HANDLE
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createcompatibledc
 func (hdc HDC) CreateCompatibleDC() HDC {
-	ret, _, _ := syscall.Syscall(proc.CreateCompatibleDC.Addr(), 1,
+	ret, _, lerr := syscall.Syscall(proc.CreateCompatibleDC.Addr(), 1,
 		uintptr(hdc), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "CreateCompatibleDC"))
+		panic(NewWinError(co.ERROR(lerr), "CreateCompatibleDC"))
 	}
 	return HDC(ret)
 }
@@ -42,7 +42,7 @@ func (hdc HDC) EnumDisplayMonitors(
 	lpfnEnum func(hMon HMONITOR, hdcMon HDC, rcMon uintptr, lp LPARAM) bool,
 	dwData LPARAM) error {
 
-	ret, _, _ := syscall.Syscall6(proc.EnumDisplayMonitors.Addr(), 4,
+	ret, _, lerr := syscall.Syscall6(proc.EnumDisplayMonitors.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(lprcClip)),
 		syscall.NewCallback(
 			func(hMon HMONITOR, hdcMon HDC, rcMon uintptr, lp LPARAM) uintptr {
@@ -50,7 +50,7 @@ func (hdc HDC) EnumDisplayMonitors(
 			}),
 		0, 0, 0)
 	if ret == 0 {
-		return NewWinError(co.ERROR_E_UNEXPECTED, "EnumDisplayMonitors")
+		return NewWinError(co.ERROR(lerr), "EnumDisplayMonitors")
 	}
 	return nil
 }
@@ -65,20 +65,20 @@ func (hdc HDC) DeleteDC() {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-fillrgn
 func (hdc HDC) FillRgn(hrgn HRGN, hbr HBRUSH) {
-	ret, _, _ := syscall.Syscall(proc.FillRgn.Addr(), 3,
+	ret, _, lerr := syscall.Syscall(proc.FillRgn.Addr(), 3,
 		uintptr(hdc), uintptr(hrgn), uintptr(hbr))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "FillRgn"))
+		panic(NewWinError(co.ERROR(lerr), "FillRgn"))
 	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-framergn
 func (hdc HDC) FrameRgn(hrgn HRGN, hbr HBRUSH, w, h int32) {
-	ret, _, _ := syscall.Syscall6(proc.FrameRgn.Addr(), 5,
+	ret, _, lerr := syscall.Syscall6(proc.FrameRgn.Addr(), 5,
 		uintptr(hdc), uintptr(hrgn), uintptr(hbr), uintptr(w), uintptr(h),
 		0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "FrameRgn"))
+		panic(NewWinError(co.ERROR(lerr), "FrameRgn"))
 	}
 }
 
@@ -91,10 +91,10 @@ func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getpolyfillmode
 func (hdc HDC) GetPolyFillMode() co.POLYF {
-	ret, _, _ := syscall.Syscall(proc.GetPolyFillMode.Addr(), 1,
+	ret, _, lerr := syscall.Syscall(proc.GetPolyFillMode.Addr(), 1,
 		uintptr(hdc), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetPolyFillMode"))
+		panic(NewWinError(co.ERROR(lerr), "GetPolyFillMode"))
 	}
 	return co.POLYF(ret)
 }
@@ -102,11 +102,11 @@ func (hdc HDC) GetPolyFillMode() co.POLYF {
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextextentpoint32w
 func (hdc HDC) GetTextExtentPoint32(lpString string) SIZE {
 	sz := SIZE{}
-	ret, _, _ := syscall.Syscall6(proc.GetTextExtentPoint32.Addr(), 4,
+	ret, _, lerr := syscall.Syscall6(proc.GetTextExtentPoint32.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpString))),
 		uintptr(len(lpString)), uintptr(unsafe.Pointer(&sz)), 0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetTextExtentPoint32"))
+		panic(NewWinError(co.ERROR(lerr), "GetTextExtentPoint32"))
 	}
 	return sz
 }
@@ -114,38 +114,38 @@ func (hdc HDC) GetTextExtentPoint32(lpString string) SIZE {
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextfacew
 func (hdc HDC) GetTextFace() string {
 	buf := [_LF_FACESIZE]uint16{}
-	ret, _, _ := syscall.Syscall(proc.GetTextFace.Addr(), 3,
+	ret, _, lerr := syscall.Syscall(proc.GetTextFace.Addr(), 3,
 		uintptr(hdc), uintptr(len(buf)), uintptr(unsafe.Pointer(&buf[0])))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "GetTextFace"))
+		panic(NewWinError(co.ERROR(lerr), "GetTextFace"))
 	}
 	return Str.FromUint16Slice(buf[:])
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-invertrgn
 func (hdc HDC) InvertRgn(hrgn HRGN) {
-	ret, _, _ := syscall.Syscall(proc.InvertRgn.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.InvertRgn.Addr(), 2,
 		uintptr(hdc), uintptr(hrgn), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "InvertRgn"))
+		panic(NewWinError(co.ERROR(lerr), "InvertRgn"))
 	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-lineto
 func (hdc HDC) LineTo(x, y int32) {
-	ret, _, _ := syscall.Syscall(proc.LineTo.Addr(), 3,
+	ret, _, lerr := syscall.Syscall(proc.LineTo.Addr(), 3,
 		uintptr(hdc), uintptr(x), uintptr(y))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "LineTo"))
+		panic(NewWinError(co.ERROR(lerr), "LineTo"))
 	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-paintrgn
 func (hdc HDC) PaintRgn(hrgn HRGN) {
-	ret, _, _ := syscall.Syscall(proc.PaintRgn.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.PaintRgn.Addr(), 2,
 		uintptr(hdc), uintptr(hrgn), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "PaintRgn"))
+		panic(NewWinError(co.ERROR(lerr), "PaintRgn"))
 	}
 }
 
@@ -155,42 +155,42 @@ func (hdc HDC) PolyDraw(apt []POINT, aj []co.PT) {
 		panic(fmt.Sprintf("PolyDraw different slice sizes: %d, %d.",
 			len(apt), len(aj)))
 	}
-	ret, _, _ := syscall.Syscall6(proc.PolyDraw.Addr(), 4,
+	ret, _, lerr := syscall.Syscall6(proc.PolyDraw.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])),
 		uintptr(unsafe.Pointer(&aj[0])), uintptr(len(apt)),
 		0, 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED,
+		panic(NewWinError(co.ERROR(lerr),
 			fmt.Sprintf("PolyDraw, %d points", len(apt))))
 	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polygon
 func (hdc HDC) Polygon(apt []POINT) {
-	ret, _, _ := syscall.Syscall(proc.Polygon.Addr(), 3,
+	ret, _, lerr := syscall.Syscall(proc.Polygon.Addr(), 3,
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED,
+		panic(NewWinError(co.ERROR(lerr),
 			fmt.Sprintf("Polygon, %d points", len(apt))))
 	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polyline
 func (hdc HDC) Polyline(apt []POINT) {
-	ret, _, _ := syscall.Syscall(proc.Polyline.Addr(), 3,
+	ret, _, lerr := syscall.Syscall(proc.Polyline.Addr(), 3,
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED,
+		panic(NewWinError(co.ERROR(lerr),
 			fmt.Sprintf("Polyline, %d points", len(apt))))
 	}
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polylineto
 func (hdc HDC) PolylineTo(apt []POINT) {
-	ret, _, _ := syscall.Syscall(proc.PolylineTo.Addr(), 3,
+	ret, _, lerr := syscall.Syscall(proc.PolylineTo.Addr(), 3,
 		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED,
+		panic(NewWinError(co.ERROR(lerr),
 			fmt.Sprintf("PolylineTo failed for %d points.", len(apt))))
 	}
 }
@@ -203,87 +203,90 @@ func (hdc HDC) RestoreDC(nSavedDC int32) {
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-savedc
 func (hdc HDC) SaveDC() int32 {
-	ret, _, _ := syscall.Syscall(proc.SaveDC.Addr(), 1,
+	ret, _, lerr := syscall.Syscall(proc.SaveDC.Addr(), 1,
 		uintptr(hdc), 0, 0)
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "SaveDC"))
+	}
 	return int32(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setpolyfillmode
 func (hdc HDC) SetPolyFillMode(iMode co.POLYF) co.POLYF {
-	ret, _, _ := syscall.Syscall(proc.SetPolyFillMode.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.SetPolyFillMode.Addr(), 2,
 		uintptr(hdc), uintptr(iMode), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectPolyFillMode"))
+		panic(NewWinError(co.ERROR(lerr), "SelectPolyFillMode"))
 	}
 	return co.POLYF(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectBitmap(b HBITMAP) HBITMAP {
-	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(b), 0)
-	if ret == _HGDI_ERROR {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HBITMAP"))
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "SelectObject, HBITMAP"))
 	}
 	return HBITMAP(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectBrush(b HBRUSH) HBRUSH {
-	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(b), 0)
-	if ret == _HGDI_ERROR {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HBRUSH"))
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "SelectObject, HBRUSH"))
 	}
 	return HBRUSH(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectFont(f HFONT) HFONT {
-	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(f), 0)
-	if ret == _HGDI_ERROR {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HFONT"))
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "SelectObject, HFONT"))
 	}
 	return HFONT(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectPen(p HPEN) HPEN {
-	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(p), 0)
-	if ret == _HGDI_ERROR {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HPEN"))
+	if ret == 0 {
+		panic(NewWinError(co.ERROR(lerr), "SelectObject, HPEN"))
 	}
 	return HPEN(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
-func (hdc HDC) SelectObjectRgn(r HRGN) HRGN {
-	ret, _, _ := syscall.Syscall(proc.SelectObject.Addr(), 2,
+func (hdc HDC) SelectObjectRgn(r HRGN) co.REGION {
+	ret, _, lerr := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(r), 0)
 	if ret == _HGDI_ERROR {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SelectObject, HRGN"))
+		panic(NewWinError(co.ERROR(lerr), "SelectObject, HRGN"))
 	}
-	return HRGN(ret)
+	return co.REGION(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setbkcolor
 func (hdc HDC) SetBkColor(color COLORREF) COLORREF {
-	ret, _, _ := syscall.Syscall(proc.SetBkColor.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.SetBkColor.Addr(), 2,
 		uintptr(hdc), uintptr(color), 0)
 	if ret == _CLR_INVALID {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SetBkColor"))
+		panic(NewWinError(co.ERROR(lerr), "SetBkColor"))
 	}
 	return COLORREF(ret)
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setbkmode
 func (hdc HDC) SetBkMode(mode co.BKMODE) co.BKMODE {
-	ret, _, _ := syscall.Syscall(proc.SetBkMode.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.SetBkMode.Addr(), 2,
 		uintptr(hdc), uintptr(mode), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "SetBkMode"))
+		panic(NewWinError(co.ERROR(lerr), "SetBkMode"))
 	}
 	return co.BKMODE(ret)
 }

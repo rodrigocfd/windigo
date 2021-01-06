@@ -342,6 +342,15 @@ const (
 	REG_OPTION_OPEN_LINK      REG_OPTION = 0x00000008
 )
 
+// GetUpdateRgn, GetWindowRgn, SelectObject return value.
+type REGION uint32
+
+const (
+	REGION_NULL    REGION = 1
+	REGION_SIMPLE  REGION = 2
+	REGION_COMPLEX REGION = 3
+)
+
 // CombineRgn() iMode.
 type RGN int32
 
