@@ -39,7 +39,7 @@ const (
 	_HGDI_ERROR           = 0xffff_ffff
 	_INVALID_FILE_SIZE    = 0xffff_ffff
 	_INVALID_HANDLE_VALUE = -1
-	_L_MAX_URL_LENGTH     = 2048 + 32 + 3
+	_L_MAX_URL_LENGTH     = 2048 + 32 + 4
 	_LF_FACESIZE          = 32
 	_MAX_LINKID_TEXT      = 48
 	_MAX_PATH             = 260
