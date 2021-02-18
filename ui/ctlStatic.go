@@ -7,7 +7,7 @@
 package ui
 
 import (
-	"windigo/co"
+	"github.com/rodrigocfd/windigo/co"
 )
 
 // Native Static control (label).

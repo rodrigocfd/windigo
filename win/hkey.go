@@ -12,8 +12,9 @@ import (
 	"sort"
 	"syscall"
 	"unsafe"
-	"windigo/co"
-	proc "windigo/win/internal"
+
+	"github.com/rodrigocfd/windigo/co"
+	proc "github.com/rodrigocfd/windigo/win/internal"
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hkey

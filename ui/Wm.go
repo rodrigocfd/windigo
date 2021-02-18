@@ -7,8 +7,8 @@
 package ui
 
 import (
-	"windigo/co"
-	"windigo/win"
+	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/win"
 )
 
 // Raw message parameters, WPARAM and LPARAM.

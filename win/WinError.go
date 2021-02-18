@@ -8,7 +8,8 @@ package win
 
 import (
 	"fmt"
-	"windigo/co"
+
+	"github.com/rodrigocfd/windigo/co"
 )
 
 // A Win32 error, usually retrieved with GetLastError(). Contains the error code

@@ -6,7 +6,9 @@
 
 package ui
 
-import "windigo/co"
+import (
+	"github.com/rodrigocfd/windigo/co"
+)
 
 // Main application dialog.
 type DialogModal struct {

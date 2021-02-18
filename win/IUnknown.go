@@ -10,8 +10,9 @@ import (
 	"encoding/binary"
 	"syscall"
 	"unsafe"
-	"windigo/co"
-	proc "windigo/win/internal"
+
+	"github.com/rodrigocfd/windigo/co"
+	proc "github.com/rodrigocfd/windigo/win/internal"
 )
 
 // Returns a GUID struct from hex numbers, which can be copied straight from

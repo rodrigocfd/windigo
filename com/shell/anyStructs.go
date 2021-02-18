@@ -7,7 +7,7 @@
 package shell
 
 import (
-	"windigo/win"
+	"github.com/rodrigocfd/windigo/win"
 )
 
 type (

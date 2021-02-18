@@ -9,8 +9,9 @@ package ui
 import (
 	"time"
 	"unsafe"
-	"windigo/co"
-	"windigo/win"
+
+	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/win"
 )
 
 // Native date and time picker control.

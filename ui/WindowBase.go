@@ -9,8 +9,9 @@ package ui
 import (
 	"fmt"
 	"unsafe"
-	"windigo/co"
-	"windigo/win"
+
+	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/win"
 )
 
 const _WM_UI_THREAD = co.WM_APP + 0x3fff // sent by RunUiThread()

@@ -11,9 +11,10 @@ import (
 	"sort"
 	"strings"
 	"unsafe"
-	"windigo/co"
-	"windigo/com/shell"
-	"windigo/win"
+
+	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/com/shell"
+	"github.com/rodrigocfd/windigo/win"
 )
 
 type _SysDlgT struct{}

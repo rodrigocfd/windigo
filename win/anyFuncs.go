@@ -11,8 +11,9 @@ import (
 	"strings"
 	"syscall"
 	"unsafe"
-	"windigo/co"
-	proc "windigo/win/internal"
+
+	"github.com/rodrigocfd/windigo/co"
+	proc "github.com/rodrigocfd/windigo/win/internal"
 )
 
 // Syntactic sugar; converts bool to 0 or 1.

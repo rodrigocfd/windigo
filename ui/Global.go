@@ -14,8 +14,9 @@ import (
 	"syscall"
 	"time"
 	"unsafe"
-	"windigo/co"
-	"windigo/win"
+
+	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/win"
 )
 
 // Global private variables and methods.

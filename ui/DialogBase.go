@@ -9,8 +9,9 @@ package ui
 import (
 	"syscall"
 	"unsafe"
-	"windigo/co"
-	"windigo/win"
+
+	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/win"
 )
 
 // Modal popup dialog.

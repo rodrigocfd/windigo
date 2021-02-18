@@ -7,7 +7,7 @@
 package directshow
 
 import (
-	"windigo/co"
+	"github.com/rodrigocfd/windigo/co"
 )
 
 const (

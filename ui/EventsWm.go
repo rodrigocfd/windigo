@@ -10,8 +10,9 @@ import (
 	"sort"
 	"strings"
 	"unsafe"
-	"windigo/co"
-	"windigo/win"
+
+	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/win"
 )
 
 // Keeps WM and WM_TIMER message callbacks.

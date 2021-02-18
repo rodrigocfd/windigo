@@ -7,7 +7,7 @@
 package ui
 
 import (
-	"windigo/win"
+	"github.com/rodrigocfd/windigo/win"
 )
 
 type (

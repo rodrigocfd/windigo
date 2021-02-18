@@ -8,8 +8,9 @@ package win
 
 import (
 	"syscall"
-	"windigo/co"
-	proc "windigo/win/internal"
+
+	"github.com/rodrigocfd/windigo/co"
+	proc "github.com/rodrigocfd/windigo/win/internal"
 )
 
 // This type doesn't exist in Win32, it's just a HANDLE. It's defined here so we
