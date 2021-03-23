@@ -19,30 +19,15 @@ type BOOL int32
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HANDLE syscall.Handle
 
-// A handle to a brush.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbrush
-type HBRUSH HGDIOBJ
-
 // A handle to a cursor.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hcursor
 type HCURSOR HANDLE
 
-// A handle to a GDI object.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hgdiobj
-type HGDIOBJ HANDLE
-
 // Handle to a display monitor.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hmonitor
 type HMONITOR HANDLE
-
-// A handle to a region.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hrgn
-type HRGN HGDIOBJ
 
 // A handle to a tree view control item.
 //
