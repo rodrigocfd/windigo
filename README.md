@@ -24,7 +24,7 @@ Windigo is designed to be familiar to Win32 programmers, using the same concepts
 
 Windows and controls can be created in two ways:
 
-* programmatically, by specifying the parameters used in the underlying [CreateWindowEx](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw);
+* programmatically, by specifying the options used in the underlying [CreateWindowEx](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw);
 * by loading resources from a `.rc` file.
 
 CGo is **not** used, just syscalls.
@@ -39,6 +39,10 @@ The native Win32 functions deal with errors in two ways:
 
 ## Example
 
+The example below creates a window programmatically, and handles the button click. Also, it uses the `minimal.syso` provided in the [resources](resources/) folder.
+
+![Screen capture](example.gif)
+
 ```go
 package main
 
@@ -51,8 +55,8 @@ import (
 )
 
 func main() {
-    myWindow := NewMyWindow()
-    myWindow.wnd.RunAsMain()
+    myWindow := NewMyWindow() // instantiate
+    myWindow.wnd.RunAsMain()  // ...and run
 }
 
 // This struct represents our main window.
@@ -66,15 +70,16 @@ type MyWindow struct {
 // Creates a new instance of our main window.
 func NewMyWindow() *MyWindow {
     wnd := ui.NewWindowMainOpts(ui.WindowMainOpts{
-        Title:          "Hello world",
+        Title:          "Hello you",
         ClientAreaSize: win.SIZE{Cx: 340, Cy: 80},
+        IconId:         101, // see resources folder to understand why ID is 101
     })
 
     me := MyWindow{
         wnd: wnd,
         lblName: ui.NewStaticOpts(wnd, ui.StaticOpts{
             Text:     "Your name",
-            Position: win.POINT{X: 10, Y: 21},
+            Position: win.POINT{X: 10, Y: 22},
         }),
         txtName: ui.NewEditOpts(wnd, ui.EditOpts{
             Position: win.POINT{X: 80, Y: 20},
@@ -87,9 +92,8 @@ func NewMyWindow() *MyWindow {
     }
 
     me.btnShow.On().BnClicked(func() {
-        me.wnd.Hwnd().MessageBox(
-            fmt.Sprintf("Hello, %s!", me.txtName.Text()),
-            "Saying hello", co.MB_ICONINFORMATION)
+        msg := fmt.Sprintf("Hello, %s!", me.txtName.Text())
+        me.wnd.Hwnd().MessageBox(msg, "Saying hello", co.MB_ICONINFORMATION)
     })
 
     return &me
