@@ -43,13 +43,56 @@ The native Win32 functions deal with errors in two ways:
 package main
 
 import (
+    "fmt"
+
+    "github.com/rodrigocfd/windigo/ui"
     "github.com/rodrigocfd/windigo/win"
     "github.com/rodrigocfd/windigo/win/co"
 )
 
 func main() {
-    hwnd := win.GetDesktopWindow()
-    hwnd.MessageBox("Hello world", "Hello", co.MB_INFORMATION | co.MB_OK)
+    myWindow := NewMyWindow()
+    myWindow.wnd.RunAsMain()
+}
+
+// This struct represents our main window.
+type MyWindow struct {
+    wnd     ui.WindowMain
+    lblName ui.Static
+    txtName ui.Edit
+    btnShow ui.Button
+}
+
+// Creates a new instance of our main window.
+func NewMyWindow() *MyWindow {
+    wnd := ui.NewWindowMainOpts(ui.WindowMainOpts{
+        Title:          "Hello world",
+        ClientAreaSize: win.SIZE{Cx: 340, Cy: 80},
+    })
+
+    me := MyWindow{
+        wnd: wnd,
+        lblName: ui.NewStaticOpts(wnd, ui.StaticOpts{
+            Text:     "Your name",
+            Position: win.POINT{X: 10, Y: 21},
+        }),
+        txtName: ui.NewEditOpts(wnd, ui.EditOpts{
+            Position: win.POINT{X: 80, Y: 20},
+            Size:     win.SIZE{Cx: 150},
+        }),
+        btnShow: ui.NewButtonOpts(wnd, ui.ButtonOpts{
+            Text:     "&Show",
+            Position: win.POINT{X: 240, Y: 19},
+        }),
+    }
+
+    me.btnShow.On().BnClicked(func() {
+        me.wnd.Hwnd().MessageBox(
+            fmt.Sprintf("Hello, %s!", me.txtName.Text()),
+            "Saying hello", co.MB_ICONINFORMATION)
+    })
+
+    return &me
 }
 ```
 
