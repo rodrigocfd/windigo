@@ -4,6 +4,7 @@ import (
 	"syscall"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
+	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -79,4 +80,16 @@ type HRGN HGDIOBJ
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hRgn HRGN) DeleteObject() {
 	HGDIOBJ(hRgn).DeleteObject()
+}
+
+// Combines the two regions and stores the result in current region.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
+func (hRgn HRGN) CombineRgn(hrgnSrc1, hrgnSrc2 HRGN, iMode co.RGN) co.REGION {
+	ret, _, lerr := syscall.Syscall6(proc.CombineRgn.Addr(), 4,
+		uintptr(hRgn), uintptr(hrgnSrc1), uintptr(hrgnSrc2), uintptr(iMode), 0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return co.REGION(ret)
 }

@@ -236,6 +236,19 @@ const (
 	REGION_COMPLEX REGION = 3
 )
 
+// CombineRgn() iMode.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
+type RGN int32
+
+const (
+	RGN_AND  RGN = 1
+	RGN_OR   RGN = 2
+	RGN_XOR  RGN = 3
+	RGN_DIFF RGN = 4
+	RGN_COPY RGN = 5
+)
+
 // IMAGELISTDRAWPARAMS dwRop.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams

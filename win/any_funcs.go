@@ -151,6 +151,43 @@ func CreatePopupMenu() HMENU {
 	return HMENU(ret)
 }
 
+// ⚠️ You must defer DeleteObject().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
+func CreateRectRgnIndirect(lprect *RECT) HRGN {
+	ret, _, lerr := syscall.Syscall(proc.CreateRectRgnIndirect.Addr(), 1,
+		uintptr(unsafe.Pointer(lprect)), 0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return HRGN(ret)
+}
+
+// ⚠️ You must defer DeleteObject().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createroundrectrgn
+func CreateRoundRectRgn(x1, y1, x2, y2, w, h int32) HRGN {
+	ret, _, lerr := syscall.Syscall6(proc.CreateRoundRectRgn.Addr(), 6,
+		uintptr(x1), uintptr(y1), uintptr(x2), uintptr(y2),
+		uintptr(w), uintptr(h))
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return HRGN(ret)
+}
+
+// ⚠️ You must defer DeleteObject().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createsolidbrush
+func CreateSolidBrush(color COLORREF) HBRUSH {
+	ret, _, lerr := syscall.Syscall(proc.CreateSolidBrush.Addr(), 1,
+		uintptr(color), 0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return HBRUSH(ret)
+}
+
 // Not an actual Win32 function, just a tricky conversion to create a brush from
 // a system color, particularly used when registering a window class.
 func CreateSysColorBrush(sysColor co.COLOR) HBRUSH {

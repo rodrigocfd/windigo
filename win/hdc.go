@@ -16,6 +16,26 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdc
 type HDC HANDLE
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-arc
+func (hdc HDC) Arc(left, top, right, bottom, xr1, yr1, xr2, yr2 int32) {
+	ret, _, lerr := syscall.Syscall9(proc.Arc.Addr(), 9,
+		uintptr(hdc), uintptr(left), uintptr(top), uintptr(right), uintptr(bottom),
+		uintptr(xr1), uintptr(yr1), uintptr(xr2), uintptr(yr2))
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-arcto
+func (hdc HDC) ArcTo(left, top, right, bottom, xr1, yr1, xr2, yr2 int32) {
+	ret, _, lerr := syscall.Syscall9(proc.ArcTo.Addr(), 9,
+		uintptr(hdc), uintptr(left), uintptr(top), uintptr(right), uintptr(bottom),
+		uintptr(xr1), uintptr(yr1), uintptr(xr2), uintptr(yr2))
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+}
+
 // ⚠️ You must defer DeleteDC().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createcompatibledc
@@ -41,6 +61,16 @@ func (hdc HDC) DeleteDC() {
 func (hdc HDC) DrawIcon(x, y int32, hIcon HICON) {
 	ret, _, lerr := syscall.Syscall6(proc.DrawIcon.Addr(), 4,
 		uintptr(hdc), uintptr(x), uintptr(y), uintptr(hIcon), 0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-ellipse
+func (hdc HDC) Ellipse(left, top, right, bottom int32) {
+	ret, _, lerr := syscall.Syscall6(proc.Ellipse.Addr(), 5,
+		uintptr(hdc), uintptr(left), uintptr(top),
+		uintptr(right), uintptr(bottom), 0)
 	if ret == 0 {
 		panic(err.ERROR(lerr))
 	}
