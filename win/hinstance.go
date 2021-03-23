@@ -1,36 +1,20 @@
-/**
- * Part of Windigo - Win32 API layer for Go
- * https://github.com/rodrigocfd/windigo
- * This library is released under the MIT license.
- */
-
 package win
 
 import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/co"
-	proc "github.com/rodrigocfd/windigo/win/internal"
+	"github.com/rodrigocfd/windigo/internal/proc"
+	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/err"
 )
 
-// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
+// A handle to an instance. This is the base address of the module in memory.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
 type HINSTANCE HANDLE
 
-// Pass an empty string to get own process handle.
-//
-// https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
-func GetModuleHandle(moduleName string) HINSTANCE {
-	ret, _, lerr := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(moduleName))),
-		0, 0)
-	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "GetModuleHandle"))
-	}
-	return HINSTANCE(ret)
-}
-
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
 func (hInst HINSTANCE) CreateDialogParam(
 	lpTemplateName int32, hWndParent HWND,
 	lpDialogFunc uintptr, dwInitParam LPARAM) HWND {
@@ -39,12 +23,12 @@ func (hInst HINSTANCE) CreateDialogParam(
 		uintptr(hInst), uintptr(lpTemplateName), uintptr(hWndParent),
 		lpDialogFunc, uintptr(dwInitParam), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "CreateDialogParam"))
+		panic(err.ERROR(lerr))
 	}
 	return HWND(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparamw
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparamw
 func (hInst HINSTANCE) DialogBoxParam(
 	lpTemplateName int32, hWndParent HWND,
 	lpDialogFunc uintptr, dwInitParam LPARAM) uintptr {
@@ -52,23 +36,23 @@ func (hInst HINSTANCE) DialogBoxParam(
 	ret, _, lerr := syscall.Syscall6(proc.DialogBoxParam.Addr(), 5,
 		uintptr(hInst), uintptr(lpTemplateName), uintptr(hWndParent),
 		lpDialogFunc, uintptr(dwInitParam), 0)
-	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "DialogBoxParam"))
+	if int(ret) == -1 && err.ERROR(lerr) != err.SUCCESS {
+		panic(err.ERROR(lerr))
 	}
 	return ret
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-duplicateicon
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-duplicateicon
 func (hInst HINSTANCE) DuplicateIcon(hIcon HICON) HICON {
-	ret, _, _ := syscall.Syscall(proc.DuplicateIcon.Addr(), 2,
+	ret, _, lerr := syscall.Syscall(proc.DuplicateIcon.Addr(), 2,
 		uintptr(hInst), uintptr(hIcon), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR_E_UNEXPECTED, "DuplicateIcon"))
+		panic(err.ERROR(lerr))
 	}
 	return HICON(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassinfoexw
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassinfoexw
 func (hInst HINSTANCE) GetClassInfoEx(
 	className *uint16, destBuf *WNDCLASSEX) (ATOM, error) {
 
@@ -77,44 +61,44 @@ func (hInst HINSTANCE) GetClassInfoEx(
 		uintptr(unsafe.Pointer(className)),
 		uintptr(unsafe.Pointer(destBuf)))
 	if ret == 0 {
-		return ATOM(0), NewWinError(co.ERROR(lerr), "GetClassInfoEx")
+		return ATOM(0), err.ERROR(lerr)
 	}
 	return ATOM(ret), nil
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
-func (hInst HINSTANCE) LoadAccelerators(lpTableName int32) HACCEL {
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
+func (hInst HINSTANCE) LoadAccelerators(lpTableName uintptr) HACCEL {
 	ret, _, lerr := syscall.Syscall(proc.LoadAccelerators.Addr(), 2,
 		uintptr(hInst), uintptr(lpTableName), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "LoadAccelerators"))
+		panic(err.ERROR(lerr))
 	}
 	return HACCEL(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(lpCursorName co.IDC) HCURSOR {
 	ret, _, lerr := syscall.Syscall(proc.LoadCursor.Addr(), 2,
 		uintptr(hInst), uintptr(lpCursorName), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "LoadCursor"))
+		panic(err.ERROR(lerr))
 	}
 	return HCURSOR(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hInst HINSTANCE) LoadIcon(lpIconName co.IDI) HICON {
 	ret, _, lerr := syscall.Syscall(proc.LoadIcon.Addr(), 2,
 		uintptr(hInst), uintptr(lpIconName), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "LoadIcon"))
+		panic(err.ERROR(lerr))
 	}
 	return HICON(ret)
 }
 
 // Returned HANDLE must be cast into HBITMAP, HCURSOR or HICON.
 //
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
 func (hInst HINSTANCE) LoadImage(
 	name int32, imgType co.IMAGE, cx, cy int32, fuLoad co.LR) HANDLE {
 
@@ -122,17 +106,17 @@ func (hInst HINSTANCE) LoadImage(
 		uintptr(hInst), uintptr(name), uintptr(imgType),
 		uintptr(cx), uintptr(cy), uintptr(fuLoad))
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "LoadImage"))
+		panic(err.ERROR(lerr))
 	}
 	return HANDLE(ret)
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
 func (hInst HINSTANCE) LoadMenu(lpMenuName int32) HMENU {
 	ret, _, lerr := syscall.Syscall(proc.LoadMenu.Addr(), 2,
 		uintptr(hInst), uintptr(lpMenuName), 0)
 	if ret == 0 {
-		panic(NewWinError(co.ERROR(lerr), "LoadMenu"))
+		panic(err.ERROR(lerr))
 	}
 	return HMENU(ret)
 }

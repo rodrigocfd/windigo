@@ -1,23 +1,41 @@
+[![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/rodrigocfd/windigo)](https://github.com/rodrigocfd/windigo)
+[![Lines of code](https://tokei.rs/b1/github/rodrigocfd/windigo)](https://github.com/rodrigocfd/windigo)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # Windigo
 
-A thin Go layer over the Win32 API, in idiomatic Go.
+Win32 API and GUI in idiomatic Go.
 
 ## Overview
 
-Windigo aims to provide a solid foundation to build fast, native and scalable Win32 applications in Go. The windows can be built using raw API calls or loading dialog resources.
+The library is divided in the following packages:
 
-The library is composed of 4 packages:
+| Package | Description |
+| - | - |
+| `ui` | High-level GUI wrappers for windows and controls. |
+| `ui/wm` | High-level message parameters. |
+| `win` | Native Win32 structs, handles and functions. |
+| `win/co` | Native Win32 constants, all typed. |
+| `win/com/dshow` | Native Win32 DirectShow COM interfaces. |
+| `win/com/shell` | Native Win32 Shell COM interfaces. |
+| `win/err` | Native Win32 error codes, all typed as `err.ERROR`. |
 
-* `co` – typed native Win32 constants;
-* `com` – subpackages with native Win32 COM interfaces;
-* `win` – native Win32 structs, handles and functions;
-* `ui` – Windigo high level wrappers.
+Windigo is designed to be familiar to Win32 programmers, using the same concepts, so most C/C++ Win32 tutorials should be applicable.
+
+Windows and controls can be created in two ways:
+
+* programmatically, by specifying the parameters used in the underlying [CreateWindowEx](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw);
+* by loading resources from a `.rc` file.
 
 CGo is **not** used, just syscalls.
 
-Windigo is designed to be familiar to Win32 programmers, using the same concepts, so most C/C++ Win32 tutorials should be applicable. The `ui` package is heavily based on [WinLamb](https://github.com/rodrigocfd/winlamb) C++ library.
+## Error treatment
 
-Since raw Win32 API is exposed, there are no limits: you can do everything. But you can also shoot yourself in the foot, so please always refer to the [official Win32 documentation](https://docs.microsoft.com/en-us/windows/win32/).
+The native Win32 functions deal with errors in two ways:
+
+* Recoverable errors will return an `err.ERROR` value, which implements the [`error`](https://golang.org/pkg/builtin/#error) interface;
+
+* Unrecoverable errors will simply **panic**. This avoids the excess of `if err != nil` with errors that cannot be recovered anyway, like internal Windows errors.
 
 ## Example
 
@@ -25,67 +43,16 @@ Since raw Win32 API is exposed, there are no limits: you can do everything. But 
 package main
 
 import (
-    "windigo/co"
-    "windigo/ui"
-    "windigo/win"
+    "github.com/rodrigocfd/windigo/win"
+    "github.com/rodrigocfd/windigo/win/co"
 )
 
 func main() {
-    myWnd := NewMyWindow()
-    myWnd.Run()
-}
-
-// Struct of our main window.
-type MyWindow struct {
-    wnd      *ui.WindowMain
-    btnHello *ui.Button
-}
-
-// Constructor of our main window.
-func NewMyWindow() *MyWindow {
-    wnd := ui.NewWindowMain(
-        &ui.WindowMainOpts{
-            Title:     "Hello world",
-            StylesAdd: co.WS_MINIMIZEBOX,
-        },
-    )
-
-    me := MyMain{
-        wnd:      wnd,
-        btnHello: ui.NewButton(wnd),
-    }
-
-    me.events()
-    return &me
-}
-
-// Runs our main window. Returns only after the window is closed.
-func (me *MyWindow) Run() int {
-    return me.wnd.RunAsMain()
-}
-
-func (me *MyWindow) events() {
-    me.wnd.On().WmCreate(func(_ *win.CREATESTRUCT) int {
-        me.btnHello.Create("Click me", ui.Pos{X: 10, Y: 10}, 90, co.BS_DEFPUSHBUTTON)
-        return 0
-    })
-
-    me.btnHello.On().BnClicked(func() {
-        ui.SysDlg.MsgBox(me.wnd, "Hi", "Hello world!", co.MB_ICONINFORMATION)
-    })
+    hwnd := win.GetDesktopWindow()
+    hwnd.MessageBox("Hello world", "Hello", co.MB_INFORMATION | co.MB_OK)
 }
 ```
 
-## Win32 error handling
+## License
 
-Native Win32 API calls may return a `win.WinError` type, which implements `error` interface.
-
-However, in Windigo, most Win32 functions do **not** return errors. That's because most low-level errors are **unrecoverable**, in the sense that if such an error happens in an application, there's really nothing you can do. Unrecoverable errors very rare, occurring in conditions like low memory or internal Windows crashes.
-
-So, in order to keep the API simple, instead of returning lots of errors, unrecoverable errors will simply panic.
-
-### Built-in panic treatment
-
-Windigo will recover all panics at the top of the stack, displaying the error and the stack trace in a [MessageBox](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw), in order to make debugging easier.
-
-However, if the panic happens in a non-GUI thread, it can't be recovered, and no MessageBox will be displayed.
+Licensed under [MIT license](https://opensource.org/licenses/MIT), see [LICENSE.txt](LICENSE.txt) for details.

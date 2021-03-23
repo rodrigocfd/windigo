@@ -1,14 +1,9 @@
-/**
- * Part of Windigo - Win32 API layer for Go
- * https://github.com/rodrigocfd/windigo
- * This library is released under the MIT license.
- */
-
 package ui
 
 import (
-	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/ui/wm"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/co"
 )
 
 // Used in Resizer.Add().
@@ -24,52 +19,61 @@ const (
 
 //------------------------------------------------------------------------------
 
-// When the parent window resizes, changes size and/or position of several
-// children automatically.
-type Resizer struct {
-	parent Parent
-	ctrls  []_ReszCtrl
-	szOrig win.SIZE // original parent client area size
+type Resizer interface {
+	// Adds child controls, and their behavior when the parent is resized.
+	Add(horzBehavior, vertBehavior RESZ, ctrls ...AnyControl) Resizer
 }
 
-type _ReszCtrl struct {
-	hChild Control
-	rcOrig win.RECT
-	doHorz RESZ
-	doVert RESZ
+type _ResizerCtrl struct {
+	hChild     AnyControl
+	rcOrig     win.RECT
+	horzAction RESZ
+	vertAction RESZ
 }
 
-// Constructor.
-func NewResizer(parent Parent) *Resizer {
-	return &Resizer{
+//------------------------------------------------------------------------------
+
+type _Resizer struct {
+	parent AnyParent
+	ctrls  []_ResizerCtrl
+	szOrig win.SIZE // Original client area of parent.
+}
+
+// Creates a new Resizer.
+func NewResizer(parent AnyParent) Resizer {
+	me := _Resizer{
 		parent: parent,
 	}
+
+	parent.internalOn().addMsgZero(co.WM_SIZE, func(p wm.Any) {
+		me.adjustToParent(wm.Size{Msg: p})
+	})
+
+	return &me
 }
 
-// Adds child controls and their behavior when the parent is resized.
-func (me *Resizer) Add(
-	horzBehavior, vertBehavior RESZ, ctrls ...Control) *Resizer {
+func (me *_Resizer) Add(
+	horzBehavior, vertBehavior RESZ, ctrls ...AnyControl) Resizer {
 
-	if len(me.ctrls) == 0 { // first one being added
+	if len(me.ctrls) == 0 { // first one being added?
 		rcParent := me.parent.Hwnd().GetClientRect()
-		me.szOrig = win.SIZE{Cx: rcParent.Right, Cy: rcParent.Bottom} // cache
+		me.szOrig = win.SIZE{Cx: rcParent.Right, Cy: rcParent.Bottom} // save parent client area
 	}
 
 	for _, ctrl := range ctrls {
-		me.ctrls = append(me.ctrls, _ReszCtrl{
-			hChild: ctrl,
-			rcOrig: *ctrl.Hwnd().GetWindowRect(),
-			doHorz: horzBehavior,
-			doVert: vertBehavior,
+		me.ctrls = append(me.ctrls, _ResizerCtrl{
+			hChild:     ctrl,
+			rcOrig:     ctrl.Hwnd().GetWindowRect(),
+			horzAction: horzBehavior,
+			vertAction: vertBehavior,
 		})
 		me.parent.Hwnd().ScreenToClientRc(&me.ctrls[len(me.ctrls)-1].rcOrig) // client coordinates relative to parent
 	}
 	return me
 }
 
-// Call during WM_SIZE processing to adjust all child controls at once.
-func (me *Resizer) AdjustToParent(p WmSize) {
-	if len(me.ctrls) == 0 || p.Request() == co.SIZE_MINIMIZED {
+func (me *_Resizer) adjustToParent(parm wm.Size) {
+	if len(me.ctrls) == 0 || parm.Request() == co.SIZE_REQ_MINIMIZED {
 		return // no need to resize if window is minimized
 	}
 
@@ -77,37 +81,37 @@ func (me *Resizer) AdjustToParent(p WmSize) {
 	defer hdwp.EndDeferWindowPos()
 
 	for i := range me.ctrls {
-		c := me.ctrls[i]
+		ctl := me.ctrls[i]
 
 		uFlags := co.SWP_NOZORDER
-		if c.doHorz == RESZ_REPOS && c.doVert == RESZ_REPOS { // repos both horz and vert
+		if ctl.horzAction == RESZ_REPOS && ctl.vertAction == RESZ_REPOS { // repos both horz and vert
 			uFlags |= co.SWP_NOSIZE
-		} else if c.doHorz == RESZ_RESIZE && c.doVert == RESZ_RESIZE { // resize both horz and vert
+		} else if ctl.horzAction == RESZ_RESIZE && ctl.vertAction == RESZ_RESIZE { // resize both horz and vert
 			uFlags |= co.SWP_NOMOVE
 		}
 
-		szParent := p.ClientAreaSize()
+		szParent := parm.ClientAreaSize()
 
-		x := c.rcOrig.Left // keep original left pos
-		if c.doHorz == RESZ_REPOS {
-			x = szParent.Cx - me.szOrig.Cx + c.rcOrig.Left
+		x := ctl.rcOrig.Left // keep original left pos
+		if ctl.horzAction == RESZ_REPOS {
+			x = szParent.Cx - me.szOrig.Cx + ctl.rcOrig.Left
 		}
 
-		y := c.rcOrig.Top // keep original top pos
-		if c.doVert == RESZ_REPOS {
-			y = szParent.Cy - me.szOrig.Cy + c.rcOrig.Top
+		y := ctl.rcOrig.Top // keep original top pos
+		if ctl.vertAction == RESZ_REPOS {
+			y = szParent.Cy - me.szOrig.Cy + ctl.rcOrig.Top
 		}
 
-		cx := c.rcOrig.Right - c.rcOrig.Left // keep original width
-		if c.doHorz == RESZ_RESIZE {
-			cx = szParent.Cx - me.szOrig.Cx + c.rcOrig.Right - c.rcOrig.Left
+		cx := ctl.rcOrig.Right - ctl.rcOrig.Left // keep original width
+		if ctl.horzAction == RESZ_RESIZE {
+			cx = szParent.Cx - me.szOrig.Cx + ctl.rcOrig.Right - ctl.rcOrig.Left
 		}
 
-		cy := c.rcOrig.Bottom - c.rcOrig.Top // keep original height
-		if c.doVert == RESZ_RESIZE {
-			cy = szParent.Cy - me.szOrig.Cy + c.rcOrig.Bottom - c.rcOrig.Top
+		cy := ctl.rcOrig.Bottom - ctl.rcOrig.Top // keep original height
+		if ctl.vertAction == RESZ_RESIZE {
+			cy = szParent.Cy - me.szOrig.Cy + ctl.rcOrig.Bottom - ctl.rcOrig.Top
 		}
 
-		hdwp.DeferWindowPos(c.hChild.Hwnd(), win.HWND(0), x, y, cx, cy, uFlags)
+		hdwp.DeferWindowPos(ctl.hChild.Hwnd(), win.HWND(0), x, y, cx, cy, uFlags)
 	}
 }

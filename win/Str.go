@@ -1,9 +1,3 @@
-/**
- * Part of Windigo - Win32 API layer for Go
- * https://github.com/rodrigocfd/windigo
- * This library is released under the MIT license.
- */
-
 package win
 
 import (
@@ -17,7 +11,7 @@ type _StrT struct{}
 // Wide char UTF-16 string conversion functions.
 var Str _StrT
 
-// Formats bytes into KB, MB or TB.
+// Formats bytes into KB, MB, GB or TB.
 func (_StrT) FmtBytes(numBytes uint64) string {
 	switch {
 	case numBytes < 1024:
@@ -103,10 +97,10 @@ func (_StrT) FromUint16Slice(s []uint16) string {
 //
 // Wrapper to syscall.UTF16PtrFromString(). Panics on error.
 func (_StrT) ToUint16Ptr(s string) *uint16 {
-	pstr, err := syscall.UTF16PtrFromString(s)
-	if err != nil {
+	pstr, lerr := syscall.UTF16PtrFromString(s)
+	if lerr != nil {
 		panic(fmt.Sprintf("StrToPtr failed \"%s\": %s",
-			s, err))
+			s, lerr))
 	}
 	return pstr
 }
@@ -133,10 +127,10 @@ func (_StrT) ToUint16PtrMulti(ss []string) *uint16 {
 //
 // Wrapper to syscall.UTF16FromString(). Panics on error.
 func (_StrT) ToUint16Slice(s string) []uint16 {
-	sli, err := syscall.UTF16FromString(s)
-	if err != nil {
+	sli, lerr := syscall.UTF16FromString(s)
+	if lerr != nil {
 		panic(fmt.Sprintf("StrToSlice failed \"%s\": %s",
-			s, err))
+			s, lerr))
 	}
 	return sli
 }
