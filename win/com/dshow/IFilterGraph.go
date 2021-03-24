@@ -46,7 +46,7 @@ func CoCreateIFilterGraph(dwClsContext co.CLSCTX) IFilterGraph {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-addfilter
-func (me *IFilterGraph) AddFilter(pFilter *IBaseFilter, name string) {
+func (me *IFilterGraph) AddFilter(pFilter *IBaseFilter, name string) error {
 	ret, _, _ := syscall.Syscall(
 		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).AddFilter, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -54,8 +54,9 @@ func (me *IFilterGraph) AddFilter(pFilter *IBaseFilter, name string) {
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(name))))
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+		return lerr
 	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-disconnect

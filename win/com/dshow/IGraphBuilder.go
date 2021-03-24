@@ -112,15 +112,16 @@ func (me *IGraphBuilder) Render(pinOut *IPin) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-renderfile
-func (me *IGraphBuilder) RenderFile(file string) {
+func (me *IGraphBuilder) RenderFile(file string) error {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).RenderFile, 2,
+		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).RenderFile, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(file))), 0)
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+		return lerr
 	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-setlogfile

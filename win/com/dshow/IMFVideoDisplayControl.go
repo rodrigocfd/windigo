@@ -126,15 +126,16 @@ func (me *IMFVideoDisplayControl) RepaintVideo() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setaspectratiomode
-func (me *IMFVideoDisplayControl) SetAspectRatioMode(mode co.MFVideoARMode) {
+func (me *IMFVideoDisplayControl) SetAspectRatioMode(mode co.MFVideoARMode) error {
 	ret, _, _ := syscall.Syscall(
 		(*_IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).SetAspectRatioMode, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(mode), 0)
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+		return lerr
 	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideoposition
@@ -153,13 +154,14 @@ func (me *IMFVideoDisplayControl) SetVideoPosition(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideowindow
-func (me *IMFVideoDisplayControl) SetVideoWindow(hwndVideo win.HWND) {
+func (me *IMFVideoDisplayControl) SetVideoWindow(hwndVideo win.HWND) error {
 	ret, _, _ := syscall.Syscall(
 		(*_IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).SetVideoWindow, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwndVideo), 0)
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+		return lerr
 	}
+	return nil
 }
