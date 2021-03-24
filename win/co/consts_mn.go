@@ -90,11 +90,10 @@ const (
 type MFVideoARMode uint32
 
 const (
-	MFVideoARMode_None             MFVideoARMode = 0
-	MFVideoARMode_PreservePicture  MFVideoARMode = 0x1
-	MFVideoARMode_PreservePixel    MFVideoARMode = 0x2
-	MFVideoARMode_NonLinearStretch MFVideoARMode = 0x4
-	MFVideoARMode_Mask             MFVideoARMode = 0x7
+	MFVideoARMode_None             MFVideoARMode = 0   // Do not maintain the aspect ratio of the video. Stretch the video to fit the output rectangle.
+	MFVideoARMode_PreservePicture  MFVideoARMode = 0x1 // Preserve the aspect ratio of the video by letterboxing or within the output rectangle.
+	MFVideoARMode_PreservePixel    MFVideoARMode = 0x2 // Currently the EVR ignores this flag.
+	MFVideoARMode_NonLinearStretch MFVideoARMode = 0x4 // Apply a non-linear horizontal stretch if the aspect ratio of the destination rectangle does not match the aspect ratio of the source rectangle.
 )
 
 // MENUITEMINFO fState.

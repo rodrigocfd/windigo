@@ -9,7 +9,7 @@ import (
 )
 
 type _IMediaControlVtbl struct {
-	_IPersistVtbl
+	_IDispatchVtbl
 	Run                    uintptr
 	Pause                  uintptr
 	Stop                   uintptr
@@ -25,7 +25,7 @@ type _IMediaControlVtbl struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
 type IMediaControl struct {
-	IPersist // Base IPersist > IUnknown.
+	IDispatch // Base IDispatch > IUnknown.
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-pause

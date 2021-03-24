@@ -40,8 +40,8 @@ func (me *IMFGetService) GetService(guidService, riid *win.GUID) win.IUnknown {
 
 // ⚠️ You must defer Release().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
-func (me *IMFGetService) GetIMFVideoDisplayControl() IMFVideoDisplayControl {
+// Calls IMFGetService.GetService() to return IMFVideoDisplayControl.
+func (me *IMFGetService) GetServiceIMFVideoDisplayControl() IMFVideoDisplayControl {
 	mrVideoRenderService := win.NewGuid(0x1092a86c, 0xab1a, 0x459a, 0xa336, 0x831fbc4d11ff)
 	iidIMFVideoDisplayControl := win.NewGuid(0xa490b1e4, 0xab84, 0x4d31, 0xa1b2, 0x181e03b1077a)
 

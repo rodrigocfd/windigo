@@ -71,6 +71,34 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 	}
 }
 
+// ⚠️ You must defer Release().
+//
+// Calls IUnknown.QueryInterface() to return IMediaControl.
+func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
+	iidIMediaControl := win.NewGuid(0x56a868b1, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)
+
+	iUnk, err := me.QueryInterface(iidIMediaControl)
+	if err != nil {
+		panic(err)
+	}
+	return IMediaControl{
+		IDispatch{IUnknown: iUnk},
+	}
+}
+
+// ⚠️ You must defer Release().
+//
+// Calls IUnknown.QueryInterface() to return IMediaSeeking.
+func (me *IGraphBuilder) QueryIMediaSeeking() IMediaSeeking {
+	iidIMediaSeeking := win.NewGuid(0x36b73880, 0xc2c8, 0x11cf, 0x8b46, 0x00805f6cef60)
+
+	iUnk, err := me.QueryInterface(iidIMediaSeeking)
+	if err != nil {
+		panic(err)
+	}
+	return IMediaSeeking{IUnknown: iUnk}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-render
 func (me *IGraphBuilder) Render(pinOut *IPin) {
 	ret, _, _ := syscall.Syscall(

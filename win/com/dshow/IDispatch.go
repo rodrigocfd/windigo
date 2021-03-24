@@ -19,7 +19,9 @@ type _IDispatchVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
-type IDispatch struct{ win.IUnknown }
+type IDispatch struct {
+	win.IUnknown // Base IUnknown.
+}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
 func (me *IDispatch) GetTypeInfoCount() int {

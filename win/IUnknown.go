@@ -68,14 +68,17 @@ func (me *IUnknown) QueryInterface(riid *GUID) (IUnknown, error) {
 	return IUnknown{ppvQueried}, nil
 }
 
-// Releases the COM pointer.
+// Releases the COM pointer. Never fails, can be called any number of times.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 func (me *IUnknown) Release() uint32 {
-	ret, _, _ := syscall.Syscall((*me.Ppv).Release, 1,
-		uintptr(unsafe.Pointer(me.Ppv)), 0, 0)
-	if ret == 0 { // COM pointer was released
-		me.Ppv = nil
+	ret := uintptr(0)
+	if me.Ppv != nil {
+		ret, _, _ = syscall.Syscall((*me.Ppv).Release, 1,
+			uintptr(unsafe.Pointer(me.Ppv)), 0, 0)
+		if ret == 0 { // COM pointer was released
+			me.Ppv = nil
+		}
 	}
 	return uint32(ret)
 }

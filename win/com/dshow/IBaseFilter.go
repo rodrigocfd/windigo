@@ -65,7 +65,7 @@ func CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) IBaseFilter {
 
 // ⚠️ You must defer Release().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
+// Calls IUnknown.QueryInterface() to return IMFGetService.
 func (me *IBaseFilter) QueryIMFGetService() IMFGetService {
 	iidIMFGetService := win.NewGuid(0xfa993888, 0x4383, 0x415a, 0xa930, 0xdd472a8cf6f7)
 
