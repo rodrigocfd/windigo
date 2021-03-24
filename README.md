@@ -1,6 +1,7 @@
+[![Go Reference](https://pkg.go.dev/badge/github.com/rodrigocfd/windigo.svg)](https://pkg.go.dev/github.com/rodrigocfd/windigo)
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/rodrigocfd/windigo.svg)](https://github.com/rodrigocfd/windigo)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Lines of code](https://tokei.rs/b1/github/rodrigocfd/windigo)](https://github.com/rodrigocfd/windigo)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # Windigo
 
