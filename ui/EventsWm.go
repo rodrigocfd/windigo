@@ -16,9 +16,9 @@ type _EventsWm struct {
 }
 
 func (me *_EventsWm) new() {
-	me.msgsRet = make(map[co.WM]func(p wm.Any) uintptr)
-	me.msgsZero = make(map[co.WM]func(p wm.Any))
-	me.timers = make(map[int]func())
+	me.msgsRet = make(map[co.WM]func(p wm.Any) uintptr, 10) // arbitrary
+	me.msgsZero = make(map[co.WM]func(p wm.Any), 10)
+	me.timers = make(map[int]func(), 5)
 }
 
 // Adds a new WM message with a meaningful return value.

@@ -134,7 +134,7 @@ func _WndProc(
 	// Retrieve passed pointer.
 	pMe := (*_WindowOptsBase)(unsafe.Pointer(hWnd.GetWindowLongPtr(co.GWLP_USERDATA)))
 
-	// If the retrieved *_WindowBaseRaw stays here, the GC will collect it.
+	// If the retrieved *_WindowOptBase stays here, the GC will collect it.
 	// Sending it away will prevent the GC collection.
 	// https://stackoverflow.com/a/51188315
 	hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))

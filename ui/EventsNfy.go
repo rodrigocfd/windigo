@@ -32,9 +32,9 @@ type _EventsNfy struct {
 
 func (me *_EventsNfy) new() {
 	me._EventsWm.new()
-	me.cmdsZero = make(map[_HashCmd]func(p wm.Command))
-	me.nfysRet = make(map[_HashNfy]func(p unsafe.Pointer) uintptr)
-	me.nfysZero = make(map[_HashNfy]func(p unsafe.Pointer))
+	me.cmdsZero = make(map[_HashCmd]func(p wm.Command), 10) // arbitrary
+	me.nfysRet = make(map[_HashNfy]func(p unsafe.Pointer) uintptr, 10)
+	me.nfysZero = make(map[_HashNfy]func(p unsafe.Pointer), 10)
 }
 
 // Adds a WM_COMMAND event with no meaningful return value, always returning zero.

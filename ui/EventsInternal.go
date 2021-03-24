@@ -16,11 +16,11 @@ type _EventsInternal struct {
 }
 
 func (me *_EventsInternal) new() {
-	me.msgsZero = make(map[co.WM][]func(p wm.Any), 10) // arbitrary
-	me.nfysZero = make(map[_HashNfy][]func(p unsafe.Pointer))
+	me.msgsZero = make(map[co.WM][]func(p wm.Any), 5) // arbitrary
+	me.nfysZero = make(map[_HashNfy][]func(p unsafe.Pointer), 10)
 }
 
-// Adds a WM_COMMAND event.
+// Adds a WM event.
 func (me *_EventsInternal) addMsgZero(uMsg co.WM, userFunc func(p wm.Any)) {
 	var slice []func(p wm.Any)
 	if existingSlice, hasSlice := me.msgsZero[uMsg]; hasSlice {
