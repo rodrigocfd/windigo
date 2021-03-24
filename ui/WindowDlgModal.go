@@ -5,28 +5,28 @@ import (
 )
 
 // Implements WindowModal interface.
-type _WindowModalDlg struct {
-	_WindowBaseDlg
+type _WindowDlgModal struct {
+	_WindowDlgBase
 }
 
 // Creates a new WindowModal by loading a dialog resource.
 func NewWindowModalDlg(dialogId int) WindowModal {
-	me := _WindowModalDlg{}
-	me._WindowBaseDlg.new(dialogId)
+	me := _WindowDlgModal{}
+	me._WindowDlgBase.new(dialogId)
 
 	me.defaultMessages()
 	return &me
 }
 
-func (me *_WindowModalDlg) ShowModal(parent AnyParent) {
-	me._WindowBaseDlg.dialogBox(parent.Hwnd(), parent.Hwnd().Hinstance())
+func (me *_WindowDlgModal) ShowModal(parent AnyParent) {
+	me._WindowDlgBase.dialogBox(parent.Hwnd(), parent.Hwnd().Hinstance())
 }
 
-func (me *_WindowModalDlg) isDialog() bool {
+func (me *_WindowDlgModal) isDialog() bool {
 	return true
 }
 
-func (me *_WindowModalDlg) defaultMessages() {
+func (me *_WindowDlgModal) defaultMessages() {
 	me.On().WmClose(func() {
 		me.Hwnd().EndDialog(uintptr(co.ID_CANCEL))
 	})

@@ -10,7 +10,7 @@ import (
 
 const _WM_UI_THREAD = co.WM_APP + 0x3fff // sent by RunUiThread()
 
-// Base to _BaseEventsRaw and _BaseEventsDlg.
+// Base to _WindowOptsBase and _WindowDlgBase.
 type _WindowBase struct {
 	hWnd           win.HWND
 	events         _EventsNfy

@@ -7,8 +7,8 @@ import (
 )
 
 // Implements WindowControl interface.
-type _WindowControlDlg struct {
-	_WindowBaseDlg
+type _WindowDlgControl struct {
+	_WindowDlgBase
 	parent AnyParent
 	ctrlId int
 }
@@ -34,8 +34,8 @@ func NewWindowControlDlgWithId(
 func _NewWindowControlDlg(
 	parent AnyParent, dialogId int, position win.POINT, ctrlId int) WindowControl {
 
-	me := _WindowControlDlg{}
-	me._WindowBaseDlg.new(dialogId)
+	me := _WindowDlgControl{}
+	me._WindowDlgBase.new(dialogId)
 	me.parent = parent
 	me.ctrlId = 0
 
@@ -46,7 +46,7 @@ func _NewWindowControlDlg(
 	parent.internalOn().addMsgZero(_ParentCreateWm(parent), func(_ wm.Any) {
 		_MultiplyDpi(&position, nil)
 
-		me._WindowBaseDlg.createDialog(parent.Hwnd(), parent.Hwnd().Hinstance())
+		me._WindowDlgBase.createDialog(parent.Hwnd(), parent.Hwnd().Hinstance())
 		me.Hwnd().SetWindowPos(win.HWND(0), position.X, position.Y, 0, 0,
 			co.SWP_NOZORDER|co.SWP_NOSIZE)
 	})
@@ -55,19 +55,19 @@ func _NewWindowControlDlg(
 	return &me
 }
 
-func (me *_WindowControlDlg) CtrlId() int {
+func (me *_WindowDlgControl) CtrlId() int {
 	return me.ctrlId
 }
 
-func (me *_WindowControlDlg) Parent() AnyParent {
+func (me *_WindowDlgControl) Parent() AnyParent {
 	return me.parent
 }
 
-func (me *_WindowControlDlg) isDialog() bool {
+func (me *_WindowDlgControl) isDialog() bool {
 	return true
 }
 
-func (me *_WindowControlDlg) defaultMessages() {
+func (me *_WindowDlgControl) defaultMessages() {
 	me.On().WmNcPaint(func(p wm.NcPaint) {
 		_PaintThemedBorders(me.Hwnd(), p)
 	})

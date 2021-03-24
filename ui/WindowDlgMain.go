@@ -7,8 +7,8 @@ import (
 )
 
 // Implements WindowMain interface.
-type _WindowMainDlg struct {
-	_WindowBaseDlg
+type _WindowDlgMain struct {
+	_WindowDlgBase
 	iconId       int
 	accelTableId int
 }
@@ -17,8 +17,8 @@ type _WindowMainDlg struct {
 //
 // Parameters iconId and accelTableId are optional.
 func NewWindowMainDlg(dialogId, iconId, accelTableId int) WindowMain {
-	me := _WindowMainDlg{}
-	me._WindowBaseDlg.new(dialogId)
+	me := _WindowDlgMain{}
+	me._WindowDlgBase.new(dialogId)
 	me.iconId = iconId
 	me.accelTableId = accelTableId
 
@@ -26,7 +26,7 @@ func NewWindowMainDlg(dialogId, iconId, accelTableId int) WindowMain {
 	return &me
 }
 
-func (me *_WindowMainDlg) RunAsMain() int {
+func (me *_WindowDlgMain) RunAsMain() int {
 	if win.IsWindowsVistaOrGreater() {
 		win.SetProcessDPIAware()
 	}
@@ -35,7 +35,7 @@ func (me *_WindowMainDlg) RunAsMain() int {
 	defer _globalUiFont.DeleteObject()
 
 	hInst := win.GetModuleHandle("")
-	me._WindowBaseDlg.createDialog(win.HWND(0), hInst)
+	me._WindowDlgBase.createDialog(win.HWND(0), hInst)
 
 	me.setIcon(me.iconId, hInst)
 	me.Hwnd().ShowWindow(co.SW_SHOW)
@@ -48,11 +48,11 @@ func (me *_WindowMainDlg) RunAsMain() int {
 	return _RunMainLoop(me.Hwnd(), hAccel)
 }
 
-func (me *_WindowMainDlg) isDialog() bool {
+func (me *_WindowDlgMain) isDialog() bool {
 	return true
 }
 
-func (me *_WindowMainDlg) defaultMessages() {
+func (me *_WindowDlgMain) defaultMessages() {
 	me.On().WmClose(func() {
 		me.Hwnd().DestroyWindow()
 	})
@@ -62,9 +62,9 @@ func (me *_WindowMainDlg) defaultMessages() {
 	})
 }
 
-func (me *_WindowMainDlg) setIcon(iconId int, hInst win.HINSTANCE) {
+func (me *_WindowDlgMain) setIcon(iconId int, hInst win.HINSTANCE) {
 	if me.iconId != 0 {
-		hIcon16, hIcon32 := me._WindowBaseDlg._WindowBase.loadIcons(hInst, iconId)
+		hIcon16, hIcon32 := me._WindowDlgBase._WindowBase.loadIcons(hInst, iconId)
 		me.Hwnd().SendMessage(co.WM_SETICON,
 			win.WPARAM(co.ICON_SZ_SMALL), win.LPARAM(hIcon16))
 		me.Hwnd().SendMessage(co.WM_SETICON,

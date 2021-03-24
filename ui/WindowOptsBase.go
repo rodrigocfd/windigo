@@ -12,17 +12,17 @@ import (
 
 // Base to all windows created by specifying all options, which will be passed
 // to the underlying CreateWindowEx().
-type _WindowBaseOpts struct {
+type _WindowOptsBase struct {
 	_WindowBase
 }
 
-func (me *_WindowBaseOpts) new() {
+func (me *_WindowOptsBase) new() {
 	me._WindowBase.new()
 }
 
 // Fills the WNDCLASSEX structure with the given parameters, and the class name,
 // if not specified, will be auto-generated.
-func (me *_WindowBaseOpts) generateWcx(
+func (me *_WindowOptsBase) generateWcx(
 	wcx *win.WNDCLASSEX,
 	hInst win.HINSTANCE, className string, classStyles co.CS,
 	hCursor win.HCURSOR, hBrushBg win.HBRUSH, iconId int) string {
@@ -54,7 +54,7 @@ func (me *_WindowBaseOpts) generateWcx(
 }
 
 // Calls RegisterClassEx().
-func (me *_WindowBaseOpts) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
+func (me *_WindowOptsBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 	atom, fail := win.RegisterClassEx(wcx)
 	if fail != nil {
 		lerr, _ := fail.(err.ERROR)
@@ -74,7 +74,7 @@ func (me *_WindowBaseOpts) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 }
 
 // Calls CreateWindowEx().
-func (me *_WindowBaseOpts) createWindow(
+func (me *_WindowOptsBase) createWindow(
 	exStyle co.WS_EX, className, title string, style co.WS,
 	pos win.POINT, size win.SIZE, hParent win.HWND, hMenu win.HMENU,
 	hInst win.HINSTANCE) {
@@ -90,7 +90,7 @@ func (me *_WindowBaseOpts) createWindow(
 }
 
 // Returns window coords at screen center, and window size from its client area.
-func (me *_WindowBaseOpts) calcWndCoords(
+func (me *_WindowOptsBase) calcWndCoords(
 	pClientArea *win.SIZE, hMenu win.HMENU,
 	styles co.WS, exStyles co.WS_EX) (win.POINT, win.SIZE) {
 
@@ -126,13 +126,13 @@ func _WndProc(
 	// https://devblogs.microsoft.com/oldnewthing/20050422-08/?p=35813
 	if uMsg == co.WM_NCCREATE {
 		cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
-		pMe := (*_WindowBaseOpts)(unsafe.Pointer(cs.LpCreateParams))
+		pMe := (*_WindowOptsBase)(unsafe.Pointer(cs.LpCreateParams))
 		hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 		pMe._WindowBase.hWnd = hWnd // assign actual HWND
 	}
 
 	// Retrieve passed pointer.
-	pMe := (*_WindowBaseOpts)(unsafe.Pointer(hWnd.GetWindowLongPtr(co.GWLP_USERDATA)))
+	pMe := (*_WindowOptsBase)(unsafe.Pointer(hWnd.GetWindowLongPtr(co.GWLP_USERDATA)))
 
 	// If the retrieved *_WindowBaseRaw stays here, the GC will collect it.
 	// Sending it away will prevent the GC collection.

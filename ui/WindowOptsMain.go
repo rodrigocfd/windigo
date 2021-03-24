@@ -7,8 +7,8 @@ import (
 )
 
 // Implements WindowMain interface.
-type _WindowMainOpts struct {
-	_WindowBaseOpts
+type _WindowOptsMain struct {
+	_WindowOptsBase
 	opts            WindowMainOpts
 	hChildPrevFocus win.HWND // when window is inactivated
 }
@@ -18,8 +18,8 @@ type _WindowMainOpts struct {
 func NewWindowMainOpts(opts WindowMainOpts) WindowMain {
 	opts.fillBlankValuesWithDefault()
 
-	me := _WindowMainOpts{}
-	me._WindowBaseOpts.new()
+	me := _WindowOptsMain{}
+	me._WindowOptsBase.new()
 	me.opts = opts
 	me.hChildPrevFocus = win.HWND(0)
 
@@ -27,7 +27,7 @@ func NewWindowMainOpts(opts WindowMainOpts) WindowMain {
 	return &me
 }
 
-func (me *_WindowMainOpts) RunAsMain() int {
+func (me *_WindowOptsMain) RunAsMain() int {
 	if win.IsWindowsVistaOrGreater() {
 		win.SetProcessDPIAware()
 	}
@@ -37,14 +37,14 @@ func (me *_WindowMainOpts) RunAsMain() int {
 
 	hInst := win.GetModuleHandle("")
 	wcx := win.WNDCLASSEX{}
-	me.opts.ClassName = me._WindowBaseOpts.generateWcx(&wcx, hInst,
+	me.opts.ClassName = me._WindowOptsBase.generateWcx(&wcx, hInst,
 		me.opts.ClassName, me.opts.ClassStyles, me.opts.HCursor,
 		me.opts.HBrushBackground, me.opts.IconId)
-	me._WindowBaseOpts.registerClass(&wcx)
+	me._WindowOptsBase.registerClass(&wcx)
 
-	pos, size := me._WindowBaseOpts.calcWndCoords(&me.opts.ClientAreaSize,
+	pos, size := me._WindowOptsBase.calcWndCoords(&me.opts.ClientAreaSize,
 		me.opts.MainMenu, me.opts.Styles, me.opts.ExStyles)
-	me._WindowBaseOpts.createWindow(me.opts.ExStyles, me.opts.ClassName,
+	me._WindowOptsBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
 		me.opts.Title, me.opts.Styles, pos, size, win.HWND(0),
 		me.opts.MainMenu, hInst)
 
@@ -60,11 +60,11 @@ func (me *_WindowMainOpts) RunAsMain() int {
 	return _RunMainLoop(me.Hwnd(), hAccel)
 }
 
-func (me *_WindowMainOpts) isDialog() bool {
+func (me *_WindowOptsMain) isDialog() bool {
 	return false
 }
 
-func (me *_WindowMainOpts) defaultMessages() {
+func (me *_WindowOptsMain) defaultMessages() {
 	me.On().WmNcDestroy(func() {
 		win.PostQuitMessage(0)
 	})

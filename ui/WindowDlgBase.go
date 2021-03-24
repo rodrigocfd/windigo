@@ -10,18 +10,18 @@ import (
 )
 
 // Base to all dialog windows.
-type _WindowBaseDlg struct {
+type _WindowDlgBase struct {
 	_WindowBase
 	dialogId int
 }
 
-func (me *_WindowBaseDlg) new(dialogId int) {
+func (me *_WindowDlgBase) new(dialogId int) {
 	me._WindowBase.new()
 	me.dialogId = dialogId
 }
 
 // Calls CreateDialogParam().
-func (me *_WindowBaseDlg) createDialog(hParent win.HWND, hInst win.HINSTANCE) {
+func (me *_WindowDlgBase) createDialog(hParent win.HWND, hInst win.HINSTANCE) {
 	if me.Hwnd() != 0 {
 		panic(fmt.Sprintf("Dialog already created: %d.", me.dialogId))
 	}
@@ -31,7 +31,7 @@ func (me *_WindowBaseDlg) createDialog(hParent win.HWND, hInst win.HINSTANCE) {
 }
 
 // Calls DialogBoxParam().
-func (me *_WindowBaseDlg) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
+func (me *_WindowDlgBase) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
 	if me.Hwnd() != 0 {
 		panic(fmt.Sprintf("Dialog already created: %d.", me.dialogId))
 	}
@@ -46,15 +46,15 @@ func _DlgProc(
 
 	// https://devblogs.microsoft.com/oldnewthing/20050422-08/?p=35813
 	if uMsg == co.WM_INITDIALOG {
-		pMe := (*_WindowBaseDlg)(unsafe.Pointer(lParam))
+		pMe := (*_WindowDlgBase)(unsafe.Pointer(lParam))
 		hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, uintptr(unsafe.Pointer(pMe)))
 		pMe._WindowBase.hWnd = hDlg // assign actual HWND
 	}
 
 	// Retrieve passed pointer.
-	pMe := (*_WindowBaseDlg)(unsafe.Pointer(hDlg.GetWindowLongPtr(co.GWLP_DWLP_USER)))
+	pMe := (*_WindowDlgBase)(unsafe.Pointer(hDlg.GetWindowLongPtr(co.GWLP_DWLP_USER)))
 
-	// If the retrieved *_WindowBaseDlg stays here, the GC will collect it.
+	// If the retrieved *_WindowDlgBase stays here, the GC will collect it.
 	// Sending it away will prevent the GC collection.
 	// https://stackoverflow.com/a/51188315
 	hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, uintptr(unsafe.Pointer(pMe)))

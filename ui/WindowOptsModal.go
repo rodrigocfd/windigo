@@ -7,8 +7,8 @@ import (
 )
 
 // Implements WindowModal interface.
-type _WindowModalOpts struct {
-	_WindowBaseOpts
+type _WindowOptsModal struct {
+	_WindowOptsBase
 	opts             WindowModalOpts
 	hPrevFocusParent win.HWND // child control last focused on parent
 }
@@ -18,8 +18,8 @@ type _WindowModalOpts struct {
 func NewWindowModalOpts(opts WindowModalOpts) WindowModal {
 	opts.fillBlankValuesWithDefault()
 
-	me := _WindowModalOpts{}
-	me._WindowBaseOpts.new()
+	me := _WindowOptsModal{}
+	me._WindowOptsBase.new()
 	me.opts = opts
 	me.hPrevFocusParent = win.HWND(0)
 
@@ -27,31 +27,31 @@ func NewWindowModalOpts(opts WindowModalOpts) WindowModal {
 	return &me
 }
 
-func (me *_WindowModalOpts) ShowModal(parent AnyParent) {
+func (me *_WindowOptsModal) ShowModal(parent AnyParent) {
 	hInst := parent.Hwnd().Hinstance()
 	wcx := win.WNDCLASSEX{}
-	me.opts.ClassName = me._WindowBaseOpts.generateWcx(&wcx, hInst,
+	me.opts.ClassName = me._WindowOptsBase.generateWcx(&wcx, hInst,
 		me.opts.ClassName, me.opts.ClassStyles, me.opts.HCursor,
 		me.opts.HBrushBackground, 0)
-	me._WindowBaseOpts.registerClass(&wcx)
+	me._WindowOptsBase.registerClass(&wcx)
 
 	me.hPrevFocusParent = win.GetFocus() // currently focused control in parent
 	parent.Hwnd().EnableWindow(false)    // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
-	pos, size := me._WindowBaseOpts.calcWndCoords(&me.opts.ClientAreaSize,
+	pos, size := me._WindowOptsBase.calcWndCoords(&me.opts.ClientAreaSize,
 		win.HMENU(0), me.opts.Styles, me.opts.ExStyles)
-	me._WindowBaseOpts.createWindow(me.opts.ExStyles, me.opts.ClassName,
+	me._WindowOptsBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
 		me.opts.Title, me.opts.Styles, pos, size, parent.Hwnd(),
 		win.HMENU(0), hInst)
 
 	_RunModalLoop(me.Hwnd())
 }
 
-func (me *_WindowModalOpts) isDialog() bool {
+func (me *_WindowOptsModal) isDialog() bool {
 	return false
 }
 
-func (me *_WindowModalOpts) defaultMessages() {
+func (me *_WindowOptsModal) defaultMessages() {
 	me.On().WmSetFocus(func(_ wm.SetFocus) {
 		if me.Hwnd() == win.GetFocus() {
 			// If window receive focus, delegate to first child.

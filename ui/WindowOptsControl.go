@@ -7,8 +7,8 @@ import (
 )
 
 // Implements WindowControl interface.
-type _WindowControlOpts struct {
-	_WindowBaseOpts
+type _WindowOptsControl struct {
+	_WindowOptsBase
 	opts   WindowControlOpts
 	parent AnyParent
 }
@@ -18,21 +18,21 @@ type _WindowControlOpts struct {
 func NewWindowControlOpts(parent AnyParent, opts WindowControlOpts) WindowControl {
 	opts.fillBlankValuesWithDefault()
 
-	me := _WindowControlOpts{}
-	me._WindowBaseOpts.new()
+	me := _WindowOptsControl{}
+	me._WindowOptsBase.new()
 	me.opts = opts
 	me.parent = parent
 
 	parent.internalOn().addMsgZero(_ParentCreateWm(parent), func(_ wm.Any) {
 		hInst := parent.Hwnd().Hinstance()
 		wcx := win.WNDCLASSEX{}
-		me.opts.ClassName = me._WindowBaseOpts.generateWcx(&wcx, hInst,
+		me.opts.ClassName = me._WindowOptsBase.generateWcx(&wcx, hInst,
 			me.opts.ClassName, me.opts.ClassStyles, me.opts.HCursor,
 			me.opts.HBrushBackground, 0)
-		me._WindowBaseOpts.registerClass(&wcx)
+		me._WindowOptsBase.registerClass(&wcx)
 
 		_MultiplyDpi(&me.opts.Position, &me.opts.Size)
-		me._WindowBaseOpts.createWindow(me.opts.ExStyles, me.opts.ClassName,
+		me._WindowOptsBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
 			"", me.opts.Styles, me.opts.Position, me.opts.Size, parent.Hwnd(),
 			win.HMENU(me.opts.CtrlId), hInst)
 	})
@@ -41,19 +41,19 @@ func NewWindowControlOpts(parent AnyParent, opts WindowControlOpts) WindowContro
 	return &me
 }
 
-func (me *_WindowControlOpts) CtrlId() int {
+func (me *_WindowOptsControl) CtrlId() int {
 	return me.opts.CtrlId
 }
 
-func (me *_WindowControlOpts) Parent() AnyParent {
+func (me *_WindowOptsControl) Parent() AnyParent {
 	return me.parent
 }
 
-func (me *_WindowControlOpts) isDialog() bool {
+func (me *_WindowOptsControl) isDialog() bool {
 	return false
 }
 
-func (me *_WindowControlOpts) defaultMessages() {
+func (me *_WindowOptsControl) defaultMessages() {
 	me.On().WmNcPaint(func(p wm.NcPaint) {
 		_PaintThemedBorders(me.Hwnd(), p)
 	})
