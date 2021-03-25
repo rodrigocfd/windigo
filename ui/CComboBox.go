@@ -39,7 +39,7 @@ func NewComboBoxOpts(parent AnyParent, opts ComboBoxOpts) ComboBox {
 	me.events.new(&me._NativeControlBase)
 	me.items.new(&me._NativeControlBase)
 
-	parent.internalOn().addMsgZero(_ParentCreateWm(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		size := win.SIZE{Cx: int32(opts.Width), Cy: 0}
 		_MultiplyDpi(&opts.Position, &size)
 

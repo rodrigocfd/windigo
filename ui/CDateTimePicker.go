@@ -41,7 +41,7 @@ func NewDateTimePickerOpts(parent AnyParent, opts DateTimePickerOpts) DateTimePi
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 
-	parent.internalOn().addMsgZero(_ParentCreateWm(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_MultiplyDpi(&opts.Position, &opts.Size)
 
 		me._NativeControlBase.createWindow(opts.ExStyles,

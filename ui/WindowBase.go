@@ -13,8 +13,8 @@ const _WM_UI_THREAD = co.WM_APP + 0x3fff // sent by RunUiThread()
 // Base to _WindowOptsBase and _WindowDlgBase.
 type _WindowBase struct {
 	hWnd           win.HWND
-	events         _EventsNfy
-	internalEvents _EventsInternal
+	events         _EventsNfy      // Ordinary window events, added by user.
+	internalEvents _EventsInternal // Events added internally by the library.
 }
 
 func (me *_WindowBase) new() {

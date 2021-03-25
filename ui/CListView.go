@@ -49,7 +49,7 @@ func NewListViewOpts(parent AnyParent, opts ListViewOpts) ListView {
 	me.items.new(&me._NativeControlBase)
 	me.hContextMenu = opts.ContextMenu
 
-	parent.internalOn().addMsgZero(_ParentCreateWm(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_MultiplyDpi(&opts.Position, &opts.Size)
 
 		me._NativeControlBase.createWindow(opts.ExStyles,

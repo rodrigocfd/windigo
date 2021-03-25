@@ -10,7 +10,7 @@ import (
 )
 
 // Returns WM_INITDIALOG if parent is a dialog window, otherwise WM_CREATE.
-func _ParentCreateWm(parent AnyParent) co.WM {
+func _CreateOrInitDialog(parent AnyParent) co.WM {
 	if parent.isDialog() {
 		return co.WM_INITDIALOG
 	}

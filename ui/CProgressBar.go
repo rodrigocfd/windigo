@@ -38,7 +38,7 @@ func NewProgressBarOpts(parent AnyParent, opts ProgressBarOpts) ProgressBar {
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.isMarquee = false
 
-	parent.internalOn().addMsgZero(_ParentCreateWm(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_MultiplyDpi(&opts.Position, &opts.Size)
 
 		me._NativeControlBase.createWindow(opts.ExStyles,

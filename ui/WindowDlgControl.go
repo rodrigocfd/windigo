@@ -43,7 +43,7 @@ func _NewWindowControlDlg(
 		me.ctrlId = _NextCtrlId()
 	}
 
-	parent.internalOn().addMsgZero(_ParentCreateWm(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_MultiplyDpi(&position, nil)
 
 		me._WindowDlgBase.createDialog(parent.Hwnd(), parent.Hwnd().Hinstance())

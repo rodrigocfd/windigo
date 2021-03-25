@@ -40,7 +40,7 @@ func NewStatusBar(parent AnyParent) StatusBar {
 	me.events.new(&me._NativeControlBase)
 	me.parts.new(&me._NativeControlBase)
 
-	parent.internalOn().addMsgZero(_ParentCreateWm(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		sbStyles := co.WS_CHILD | co.WS_VISIBLE | co.WS(co.SBARS_TOOLTIPS)
 
 		parentStyle := co.WS(parent.Hwnd().GetWindowLongPtr(co.GWLP_STYLE))
