@@ -15,6 +15,15 @@ const (
 	AM_SEEKING_Source           AM_SEEKING = 0x100
 )
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-filter_state
+type FILTER_STATE int
+
+const (
+	FILTER_STATE_State_Stopped FILTER_STATE = 0
+	FILTER_STATE_State_Paused  FILTER_STATE = 1
+	FILTER_STATE_State_Running FILTER_STATE = 2
+)
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/ne-evr-mfvideoaspectratiomode
 type MFVideoARMode uint32
 

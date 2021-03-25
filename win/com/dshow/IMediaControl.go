@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -26,6 +27,23 @@ type _IMediaControlVtbl struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
 type IMediaControl struct {
 	IDispatch // Base IDispatch > IUnknown.
+}
+
+// Pass -1 for infinite timeout.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-getstate
+func (me *IMediaControl) GetState(msTimeout int) (co.FILTER_STATE, error) {
+	state := co.FILTER_STATE(0)
+	ret, _, _ := syscall.Syscall(
+		(*_IMediaControlVtbl)(unsafe.Pointer(*me.Ppv)).GetState, 3,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(msTimeout), uintptr(unsafe.Pointer(&state)))
+
+	lerr := err.ERROR(ret)
+	if lerr == err.S_OK {
+		return state, nil
+	}
+	return co.FILTER_STATE(0), lerr
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-pause
