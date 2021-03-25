@@ -119,6 +119,9 @@ func (me *_WindowOptsBase) calcWndCoords(
 		win.SIZE{Cx: rc.Right - rc.Left, Cy: rc.Bottom - rc.Top}
 }
 
+// Keeps all *_WindowOptsBase that were retrieved in _WndProc.
+var _globalWindowOptsBasePtrs = make(map[win.HWND]*_WindowOptsBase, 10)
+
 // Default window procedure.
 func _WndProc(
 	hWnd win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
@@ -127,21 +130,14 @@ func _WndProc(
 	if uMsg == co.WM_NCCREATE {
 		cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
 		pMe := (*_WindowOptsBase)(unsafe.Pointer(cs.LpCreateParams))
-		hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
+		_globalWindowOptsBasePtrs[hWnd] = pMe
 		pMe._WindowBase.hWnd = hWnd // assign actual HWND
 	}
 
 	// Retrieve passed pointer.
-	pMe := (*_WindowOptsBase)(unsafe.Pointer(hWnd.GetWindowLongPtr(co.GWLP_USERDATA)))
-
-	// If the retrieved *_WindowOptBase stays here, the GC will collect it.
-	// Sending it away will prevent the GC collection.
-	// https://stackoverflow.com/a/51188315
-	hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
-
 	// If no pointer stored, then no processing is done.
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
-	if pMe != nil {
+	if pMe, hasPtr := _globalWindowOptsBasePtrs[hWnd]; hasPtr {
 		// Process all internal events.
 		pMe.internalEvents.processMessages(uMsg, wParam, lParam)
 
@@ -151,7 +147,8 @@ func _WndProc(
 
 		// No further messages processed after this one.
 		if uMsg == co.WM_NCDESTROY {
-			pMe._WindowBase.hWnd.SetWindowLongPtr(co.GWLP_USERDATA, 0) // clear passed pointer
+			delete(_globalWindowOptsBasePtrs, hWnd) // clear our pointer
+			println("CLEARED")
 			pMe._WindowBase.hWnd = win.HWND(0)
 		}
 

@@ -95,6 +95,9 @@ func (me *_NativeControlBase) installSubclassIfNeeded() {
 	}
 }
 
+// Keeps all *_NativeControlBase that were retrieved in _SubclassProc.
+var _globalNativeControlBasePtrs = make(map[win.HWND]*_NativeControlBase, 10)
+
 // Default window procedure for subclassed child controls.
 func _SubclassProc(
 	hWnd win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM,
@@ -102,20 +105,16 @@ func _SubclassProc(
 
 	// Retrieve passed pointer.
 	pMe := (*_NativeControlBase)(unsafe.Pointer(dwRefData))
+	_globalNativeControlBasePtrs[hWnd] = pMe
 
-	// If the retrieved *_NativeControlBase stays here, the GC will collect it.
-	// Sending it away will prevent the GC collection.
-	// https://stackoverflow.com/a/51188315
-	hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
-
-	if pMe != nil {
+	if pMe, hasPtr := _globalNativeControlBasePtrs[hWnd]; hasPtr {
 		// Try to process the message with an user handler.
 		retVal, meaningfulRet, wasHandled :=
 			pMe.eventsSubcl.processMessage(uMsg, wParam, lParam)
 
 		if uMsg == co.WM_NCDESTROY { // even if the user handles WM_NCDESTROY, we must ensure cleanup
 			hWnd.RemoveWindowSubclass(_globalSubclassProcPtr, pMe.subclassId)
-			hWnd.SetWindowLongPtr(co.GWLP_USERDATA, 0) // clean passed pointer
+			delete(_globalNativeControlBasePtrs, hWnd) // clear our pointer
 		}
 
 		if wasHandled {

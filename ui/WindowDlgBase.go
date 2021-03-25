@@ -40,6 +40,9 @@ func (me *_WindowDlgBase) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
 		syscall.NewCallback(_DlgProc), win.LPARAM(unsafe.Pointer(me))) // pass pointer to object itself
 }
 
+// Keeps all *_WindowDlgBase that were retrieved in _DlgProc.
+var _globalWindowDlgBasePtrs = make(map[win.HWND]*_WindowDlgBase, 10)
+
 // Default dialog procedure.
 func _DlgProc(
 	hDlg win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
@@ -47,21 +50,14 @@ func _DlgProc(
 	// https://devblogs.microsoft.com/oldnewthing/20050422-08/?p=35813
 	if uMsg == co.WM_INITDIALOG {
 		pMe := (*_WindowDlgBase)(unsafe.Pointer(lParam))
-		hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, uintptr(unsafe.Pointer(pMe)))
+		_globalWindowDlgBasePtrs[hDlg] = pMe
 		pMe._WindowBase.hWnd = hDlg // assign actual HWND
 	}
 
 	// Retrieve passed pointer.
-	pMe := (*_WindowDlgBase)(unsafe.Pointer(hDlg.GetWindowLongPtr(co.GWLP_DWLP_USER)))
-
-	// If the retrieved *_WindowDlgBase stays here, the GC will collect it.
-	// Sending it away will prevent the GC collection.
-	// https://stackoverflow.com/a/51188315
-	hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, uintptr(unsafe.Pointer(pMe)))
-
 	// If no pointer stored, then no processing is done.
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
-	if pMe != nil {
+	if pMe, hasPtr := _globalWindowDlgBasePtrs[hDlg]; hasPtr {
 		// Process all internal events.
 		pMe.internalEvents.processMessages(uMsg, wParam, lParam)
 
@@ -81,7 +77,7 @@ func _DlgProc(
 
 		// No further messages processed after this one.
 		if uMsg == co.WM_NCDESTROY {
-			pMe._WindowBase.hWnd.SetWindowLongPtr(co.GWLP_DWLP_USER, 0) // clear passed pointer
+			delete(_globalWindowDlgBasePtrs, hDlg) // clear our pointer
 			pMe._WindowBase.hWnd = win.HWND(0)
 		}
 
