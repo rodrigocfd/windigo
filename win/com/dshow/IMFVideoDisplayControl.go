@@ -53,8 +53,7 @@ func (me *IMFVideoDisplayControl) GetAspectRatioMode() co.MFVideoARMode {
 // Returns the minimum and maximum ideal sizes.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getidealvideosize
-func (me *IMFVideoDisplayControl) GetIdealVideoSize() (win.SIZE, win.SIZE) {
-	min, max := win.SIZE{}, win.SIZE{}
+func (me *IMFVideoDisplayControl) GetIdealVideoSize() (min, max win.SIZE) {
 	ret, _, _ := syscall.Syscall(
 		(*_IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).GetIdealVideoSize, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -64,39 +63,37 @@ func (me *IMFVideoDisplayControl) GetIdealVideoSize() (win.SIZE, win.SIZE) {
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
 		panic(lerr)
 	}
-	return min, max
+	return
 }
 
 // Returns video rectangle and aspect ratio.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getnativevideosize
-func (me *IMFVideoDisplayControl) GetNativeVideoSize() (win.SIZE, win.SIZE) {
-	nativeSize, aspectRatio := win.SIZE{}, win.SIZE{}
+func (me *IMFVideoDisplayControl) GetNativeVideoSize() (size, aspectRatio win.SIZE) {
 	ret, _, _ := syscall.Syscall(
 		(*_IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).GetNativeVideoSize, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&nativeSize)),
+		uintptr(unsafe.Pointer(&size)),
 		uintptr(unsafe.Pointer(&aspectRatio)))
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
 		panic(lerr)
 	}
-	return nativeSize, aspectRatio
+	return
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideoposition
-func (me *IMFVideoDisplayControl) GetVideoPosition() (MFVideoNormalizedRect, win.RECT) {
-	pnrcSource, prcDest := MFVideoNormalizedRect{}, win.RECT{}
+func (me *IMFVideoDisplayControl) GetVideoPosition() (source MFVideoNormalizedRect, dest win.RECT) {
 	ret, _, _ := syscall.Syscall(
 		(*_IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).GetVideoPosition, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&pnrcSource)),
-		uintptr(unsafe.Pointer(&prcDest)))
+		uintptr(unsafe.Pointer(&source)),
+		uintptr(unsafe.Pointer(&dest)))
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
 		panic(lerr)
 	}
-	return pnrcSource, prcDest
+	return
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideowindow
