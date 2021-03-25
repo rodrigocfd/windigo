@@ -1,18 +1,36 @@
 package co
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-am_seeking_seeking_capabilities
-type AM_SEEKING uint32
+// Originally AM_SEEKING_SeekingCapabilities enum.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-SEEKING_FLAGS_capabilities
+type SEEKING_CAPABILITIES uint32
 
 const (
-	AM_SEEKING_CanSeekAbsolute  AM_SEEKING = 0x1
-	AM_SEEKING_CanSeekForwards  AM_SEEKING = 0x2
-	AM_SEEKING_CanSeekBackwards AM_SEEKING = 0x4
-	AM_SEEKING_CanGetCurrentPos AM_SEEKING = 0x8
-	AM_SEEKING_CanGetStopPos    AM_SEEKING = 0x10
-	AM_SEEKING_CanGetDuration   AM_SEEKING = 0x20
-	AM_SEEKING_CanPlayBackwards AM_SEEKING = 0x40
-	AM_SEEKING_CanDoSegments    AM_SEEKING = 0x80
-	AM_SEEKING_Source           AM_SEEKING = 0x100
+	SEEKING_CAPABILITIES_CanSeekAbsolute  SEEKING_CAPABILITIES = 0x1
+	SEEKING_CAPABILITIES_CanSeekForwards  SEEKING_CAPABILITIES = 0x2
+	SEEKING_CAPABILITIES_CanSeekBackwards SEEKING_CAPABILITIES = 0x4
+	SEEKING_CAPABILITIES_CanGetCurrentPos SEEKING_CAPABILITIES = 0x8
+	SEEKING_CAPABILITIES_CanGetStopPos    SEEKING_CAPABILITIES = 0x10
+	SEEKING_CAPABILITIES_CanGetDuration   SEEKING_CAPABILITIES = 0x20
+	SEEKING_CAPABILITIES_CanPlayBackwards SEEKING_CAPABILITIES = 0x40
+	SEEKING_CAPABILITIES_CanDoSegments    SEEKING_CAPABILITIES = 0x80
+	SEEKING_CAPABILITIES_Source           SEEKING_CAPABILITIES = 0x100
+)
+
+// IMediaSeeking.SetPositions() flags. Originally AM_SEEKING_SeekingFlags enum.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
+type SEEKING_FLAGS uint32
+
+const (
+	SEEKING_FLAGS_NoPositioning          SEEKING_FLAGS = 0x0
+	SEEKING_FLAGS_AbsolutePositioning    SEEKING_FLAGS = 0x1
+	SEEKING_FLAGS_RelativePositioning    SEEKING_FLAGS = 0x2
+	SEEKING_FLAGS_IncrementalPositioning SEEKING_FLAGS = 0x3
+	SEEKING_FLAGS_SeekToKeyFrame         SEEKING_FLAGS = 0x4
+	SEEKING_FLAGS_ReturnTime             SEEKING_FLAGS = 0x8
+	SEEKING_FLAGS_Segment                SEEKING_FLAGS = 0x10
+	SEEKING_FLAGS_NoFlush                SEEKING_FLAGS = 0x20
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-filter_state

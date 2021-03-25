@@ -2,6 +2,7 @@ package dshow
 
 import (
 	"syscall"
+	"time"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
@@ -38,7 +39,9 @@ type IMediaSeeking struct {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-checkcapabilities
-func (me *IMediaSeeking) CheckCapabilities(capabilities co.AM_SEEKING) co.AM_SEEKING {
+func (me *IMediaSeeking) CheckCapabilities(
+	capabilities co.SEEKING_CAPABILITIES) co.SEEKING_CAPABILITIES {
+
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).CheckCapabilities, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -69,21 +72,23 @@ func (me *IMediaSeeking) ConvertTimeFormat(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getavailable
-func (me *IMediaSeeking) GetAvailable() (earliest, latest int64) {
+func (me *IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
+	iEarliest, iLatest := int64(0), int64(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetAvailable, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&earliest)), uintptr(unsafe.Pointer(&latest)))
+		uintptr(unsafe.Pointer(&iEarliest)), uintptr(unsafe.Pointer(&iLatest)))
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
 		panic(lerr)
 	}
+	earliest, latest = _Nanosec100ToDuration(iEarliest), _Nanosec100ToDuration(iLatest)
 	return
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcapabilities
-func (me *IMediaSeeking) GetCapabilities() co.AM_SEEKING {
-	capabilities := co.AM_SEEKING(0)
+func (me *IMediaSeeking) GetCapabilities() co.SEEKING_CAPABILITIES {
+	capabilities := co.SEEKING_CAPABILITIES(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetCapabilities, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -96,7 +101,7 @@ func (me *IMediaSeeking) GetCapabilities() co.AM_SEEKING {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcurrentposition
-func (me *IMediaSeeking) GetCurrentPosition() int64 {
+func (me *IMediaSeeking) GetCurrentPosition() time.Duration {
 	pos := int64(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetCurrentPosition, 2,
@@ -106,11 +111,11 @@ func (me *IMediaSeeking) GetCurrentPosition() int64 {
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
 		panic(lerr)
 	}
-	return pos
+	return _Nanosec100ToDuration(pos)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getduration
-func (me *IMediaSeeking) GetDuration() int64 {
+func (me *IMediaSeeking) GetDuration() time.Duration {
 	duration := int64(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetDuration, 2,
@@ -120,26 +125,28 @@ func (me *IMediaSeeking) GetDuration() int64 {
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
 		panic(lerr)
 	}
-	return duration
+	return _Nanosec100ToDuration(duration)
 }
 
 // Returns current and stop positions.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getpositions
-func (me *IMediaSeeking) GetPositions() (current, stop int64) {
+func (me *IMediaSeeking) GetPositions() (current, stop time.Duration) {
+	iCurrent, iStop := int64(0), int64(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetPositions, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&current)), uintptr(unsafe.Pointer(&stop)))
+		uintptr(unsafe.Pointer(&iCurrent)), uintptr(unsafe.Pointer(&iStop)))
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
 		panic(lerr)
 	}
+	current, stop = _Nanosec100ToDuration(iCurrent), _Nanosec100ToDuration(iStop)
 	return
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getpreroll
-func (me *IMediaSeeking) GetPreroll() int64 {
+func (me *IMediaSeeking) GetPreroll() time.Duration {
 	preroll := int64(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetPreroll, 2,
@@ -149,7 +156,7 @@ func (me *IMediaSeeking) GetPreroll() int64 {
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
 		panic(lerr)
 	}
-	return preroll
+	return _Nanosec100ToDuration(preroll)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getrate
@@ -167,17 +174,17 @@ func (me *IMediaSeeking) GetRate() float64 {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getstopposition
-func (me *IMediaSeeking) GetStopPosition() int64 {
-	pos := int64(0)
+func (me *IMediaSeeking) GetStopPosition() time.Duration {
+	stop := int64(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetStopPosition, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&pos)), 0)
+		uintptr(unsafe.Pointer(&stop)), 0)
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
 		panic(lerr)
 	}
-	return pos
+	return _Nanosec100ToDuration(stop)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-gettimeformat
@@ -242,14 +249,15 @@ func (me *IMediaSeeking) QueryPreferredFormat() *win.GUID {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
 func (me *IMediaSeeking) SetPositions(
-	current int64, currentFlags co.AM_SEEKING,
-	stop int64, stopFlags co.AM_SEEKING) error {
+	current time.Duration, currentFlags co.SEEKING_FLAGS,
+	stop time.Duration, stopFlags co.SEEKING_FLAGS) error {
 
+	iCurrent, iStop := _DurationTo100Nanosec(current), _DurationTo100Nanosec(stop)
 	ret, _, _ := syscall.Syscall6(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).SetPositions, 5,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&current)), uintptr(currentFlags),
-		uintptr(unsafe.Pointer(&stop)), uintptr(stopFlags), 0)
+		uintptr(unsafe.Pointer(&iCurrent)), uintptr(currentFlags),
+		uintptr(unsafe.Pointer(&iStop)), uintptr(stopFlags), 0)
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
 		return lerr
