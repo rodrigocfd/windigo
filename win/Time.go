@@ -9,6 +9,21 @@ type _TimeT struct{}
 // Functions to convert between Go's time.Time and Win32's time structs.
 var Time _TimeT
 
+// Decomposes time.Duration into SYSTEMTIME fields.
+func (_TimeT) DurationToSystemtime(duration time.Duration, st *SYSTEMTIME) {
+	*st = SYSTEMTIME{}
+	st.WHour = uint16(duration / time.Hour)
+	st.WMinute = uint16((duration -
+		time.Duration(st.WHour)*time.Hour) / time.Minute)
+	st.WSecond = uint16((duration -
+		time.Duration(st.WHour)*time.Hour -
+		time.Duration(st.WMinute)*time.Minute) / time.Second)
+	st.WMilliseconds = uint16((duration -
+		time.Duration(st.WHour)*time.Hour -
+		time.Duration(st.WMinute)*time.Minute -
+		time.Duration(st.WSecond)*time.Second) / time.Millisecond)
+}
+
 // Creates a Go's time.Time from a current timezone FILETIME, millisecond precision.
 func (_TimeT) FromFiletime(ftLocalTime *FILETIME) time.Time {
 	st := SYSTEMTIME{}
