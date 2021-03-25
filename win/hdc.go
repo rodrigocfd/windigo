@@ -94,10 +94,28 @@ func (hdc HDC) EnumDisplayMonitors(
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-fillrect
+func (hdc HDC) FillRect(lprc *RECT, hbr HBRUSH) {
+	ret, _, lerr := syscall.Syscall(proc.FillRect.Addr(), 3,
+		uintptr(hdc), uintptr(unsafe.Pointer(lprc)), uintptr(hbr))
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-fillrgn
 func (hdc HDC) FillRgn(hrgn HRGN, hbr HBRUSH) {
 	ret, _, lerr := syscall.Syscall(proc.FillRgn.Addr(), 3,
 		uintptr(hdc), uintptr(hrgn), uintptr(hbr))
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-framerect
+func (hdc HDC) FrameRect(lprc *RECT, hbr HBRUSH) {
+	ret, _, lerr := syscall.Syscall(proc.FrameRect.Addr(), 3,
+		uintptr(hdc), uintptr(unsafe.Pointer(lprc)), uintptr(hbr))
 	if ret == 0 {
 		panic(err.ERROR(lerr))
 	}
@@ -175,6 +193,16 @@ func (hdc HDC) InvertRgn(hrgn HRGN) {
 func (hdc HDC) LineTo(x, y int32) {
 	ret, _, lerr := syscall.Syscall(proc.LineTo.Addr(), 3,
 		uintptr(hdc), uintptr(x), uintptr(y))
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-movetoex
+func (hdc HDC) MoveToEx(x, y int32, lppt *POINT) {
+	ret, _, lerr := syscall.Syscall6(proc.MoveToEx.Addr(), 4,
+		uintptr(hdc), uintptr(x), uintptr(y), uintptr(unsafe.Pointer(lppt)),
+		0, 0)
 	if ret == 0 {
 		panic(err.ERROR(lerr))
 	}

@@ -724,6 +724,8 @@ func (me *_EventsWm) WmNextMenu(userFunc func(p wm.NextMenu)) {
 	})
 }
 
+// Note that you must call BeginPaint/EndPaint, or the window may get stuck.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/gdi/wm-paint
 func (me *_EventsWm) WmPaint(userFunc func()) {
 	me.addMsgZero(co.WM_PAINT, func(_ wm.Any) {
