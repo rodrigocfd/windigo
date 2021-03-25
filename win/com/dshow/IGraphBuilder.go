@@ -73,6 +73,21 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 
 // ⚠️ You must defer Release().
 //
+// Calls IUnknown.QueryInterface() to return IBasicAudio.
+func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
+	iidIBasicAudio := win.NewGuid(0x56a868b3, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)
+
+	iUnk, err := me.QueryInterface(iidIBasicAudio)
+	if err != nil {
+		panic(err)
+	}
+	return IBasicAudio{
+		IDispatch{IUnknown: iUnk},
+	}
+}
+
+// ⚠️ You must defer Release().
+//
 // Calls IUnknown.QueryInterface() to return IMediaControl.
 func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
 	iidIMediaControl := win.NewGuid(0x56a868b1, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)

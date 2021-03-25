@@ -148,7 +148,6 @@ func _WndProc(
 		// No further messages processed after this one.
 		if uMsg == co.WM_NCDESTROY {
 			delete(_globalWindowOptsBasePtrs, hWnd) // clear our pointer
-			println("CLEARED")
 			pMe._WindowBase.hWnd = win.HWND(0)
 		}
 
