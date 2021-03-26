@@ -11,13 +11,13 @@ import (
 	"github.com/rodrigocfd/windigo/win/com/shell"
 )
 
-type _NativeT struct{}
+type _PromptT struct{}
 
-// Various native Windows dialogs, to request input from the user.
-var Native _NativeT
+// Various native dialog prompts, to request input from the user.
+var Prompt _PromptT
 
 // Shows the open file system dialog, choice restricted to 1 file.
-func (_NativeT) OpenSingleFile(
+func (_PromptT) OpenSingleFile(
 	parent AnyParent, filterSpec []shell.FilterSpec) (string, bool) {
 
 	fileOpenDialog := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
@@ -41,7 +41,7 @@ func (_NativeT) OpenSingleFile(
 }
 
 // Shows the open file system dialog, user can choose multiple files.
-func (_NativeT) OpenMultipleFiles(
+func (_PromptT) OpenMultipleFiles(
 	parent AnyParent, filterSpec []shell.FilterSpec) ([]string, bool) {
 
 	fileOpenDialog := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
@@ -67,7 +67,7 @@ func (_NativeT) OpenMultipleFiles(
 }
 
 // Shows the file save system dialog.
-func (_NativeT) SaveFile(
+func (_PromptT) SaveFile(
 	parent AnyParent, defaultPath, defaultFileName string,
 	filterSpec []shell.FilterSpec) (string, bool) {
 
@@ -112,7 +112,7 @@ func (_NativeT) SaveFile(
 // Shows the choose folder system dialog.
 //
 // The returned file path won't have a trailing slash.
-func (_NativeT) ChooseFolder(parent AnyParent) (string, bool) {
+func (_PromptT) ChooseFolder(parent AnyParent) (string, bool) {
 	fileOpenDialog := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
 	defer fileOpenDialog.Release()
 
@@ -136,7 +136,7 @@ var (
 )
 
 // Ordinary MessageBox() function, but centered at parent.
-func (_NativeT) MessageBox(
+func (_PromptT) MessageBox(
 	parent AnyWindow, message, caption string, flags co.MB) co.ID {
 
 	_globalMsgBoxParent = parent.Hwnd()
