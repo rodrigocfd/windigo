@@ -235,11 +235,11 @@ const (
 type SIZE_REQ int32
 
 const (
-	SIZE_REQ_RESTORED  SIZE_REQ = 0
-	SIZE_REQ_MINIMIZED SIZE_REQ = 1
-	SIZE_REQ_MAXIMIZED SIZE_REQ = 2
-	SIZE_REQ_MAXSHOW   SIZE_REQ = 3
-	SIZE_REQ_MAXHIDE   SIZE_REQ = 4
+	SIZE_REQ_RESTORED  SIZE_REQ = 0 // The window has been resized, but neither the SIZE_REQ_MINIMIZED nor SIZE_REQ_MAXIMIZED value applies.
+	SIZE_REQ_MINIMIZED SIZE_REQ = 1 // The window has been minimized.
+	SIZE_REQ_MAXIMIZED SIZE_REQ = 2 // The window has been maximized.
+	SIZE_REQ_MAXSHOW   SIZE_REQ = 3 // Message is sent to all pop-up windows when some other window has been restored to its former size.
+	SIZE_REQ_MAXHIDE   SIZE_REQ = 4 // Message is sent to all pop-up windows when some other window is maximized.
 )
 
 // GetSystemMetrics() nIndex.

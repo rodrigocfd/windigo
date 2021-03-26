@@ -325,33 +325,34 @@ type WS uint32
 
 const (
 	WS_NONE             WS = 0
-	WS_OVERLAPPED       WS = 0x00000000
-	WS_POPUP            WS = 0x80000000
-	WS_CHILD            WS = 0x40000000 // The window is a child window.
-	WS_MINIMIZE         WS = 0x20000000 // The window is initially minimized.
-	WS_VISIBLE          WS = 0x10000000 // The window is initially visible.
-	WS_DISABLED         WS = 0x08000000 // The window is initially disabled.
-	WS_CLIPSIBLINGS     WS = 0x04000000 // Clips child windows relative to each other.
-	WS_CLIPCHILDREN     WS = 0x02000000 // Excludes the area occupied by child windows when drawing occurs within the parent window. This style is used when creating the parent window.
-	WS_MAXIMIZE         WS = 0x01000000 // The window is initially maximized.
-	WS_CAPTION          WS = 0x00c00000 // The window has a title bar (includes the WS_BORDER style).
-	WS_BORDER           WS = 0x00800000
-	WS_DLGFRAME         WS = 0x00400000
-	WS_VSCROLL          WS = 0x00200000 // The window has a vertical scroll bar.
-	WS_HSCROLL          WS = 0x00100000 // The window has a horizontal scroll bar.
-	WS_SYSMENU          WS = 0x00080000 // The window has a window menu on its title bar. The WS_CAPTION style must also be specified.
-	WS_THICKFRAME       WS = 0x00040000 // The window has a sizing border. Same as the WS_SIZEBOX style.
-	WS_GROUP            WS = 0x00020000 // The window is the first control of a group of controls.
-	WS_TABSTOP          WS = 0x00010000 // The window is a control that can receive the keyboard focus when the user presses the TAB key.
-	WS_MINIMIZEBOX      WS = 0x00020000 // The window has a minimize button.
-	WS_MAXIMIZEBOX      WS = 0x00010000 // The window has a maximize button.
-	WS_TILED            WS = WS_OVERLAPPED
-	WS_ICONIC           WS = WS_MINIMIZE   // The window is initially minimized. Same as the WS_MINIMIZE style.
-	WS_SIZEBOX          WS = WS_THICKFRAME // The window has a sizing border. Same as the WS_THICKFRAME style.
-	WS_TILEDWINDOW      WS = WS_OVERLAPPEDWINDOW
-	WS_OVERLAPPEDWINDOW WS = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX
-	WS_POPUPWINDOW      WS = WS_POPUP | WS_BORDER | WS_SYSMENU
-	WS_CHILDWINDOW      WS = WS_CHILD // Same as the WS_CHILD style.
+	WS_OVERLAPPED       WS = 0x00000000          // The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_TILED style.
+	WS_POPUP            WS = 0x80000000          // The window is a pop-up window. This style cannot be used with the WS_CHILD style.
+	WS_CHILD            WS = 0x40000000          // The window is a child window.
+	WS_MINIMIZE         WS = 0x20000000          // The window is initially minimized.
+	WS_VISIBLE          WS = 0x10000000          // The window is initially visible.
+	WS_DISABLED         WS = 0x08000000          // The window is initially disabled.
+	WS_CLIPSIBLINGS     WS = 0x04000000          // Clips child windows relative to each other.
+	WS_CLIPCHILDREN     WS = 0x02000000          // Excludes the area occupied by child windows when drawing occurs within the parent window. This style is used when creating the parent window.
+	WS_MAXIMIZE         WS = 0x01000000          // The window is initially maximized.
+	WS_CAPTION          WS = 0x00c00000          // The window has a title bar (includes the WS_BORDER style).
+	WS_BORDER           WS = 0x00800000          // The window has a thin-line border.
+	WS_DLGFRAME         WS = 0x00400000          // The window has a border of a style typically used with dialog boxes. A window with this style cannot have a title bar.
+	WS_VSCROLL          WS = 0x00200000          // The window has a vertical scroll bar.
+	WS_HSCROLL          WS = 0x00100000          // The window has a horizontal scroll bar.
+	WS_SYSMENU          WS = 0x00080000          // The window has a window menu on its title bar. The WS_CAPTION style must also be specified.
+	WS_THICKFRAME       WS = 0x00040000          // The window has a sizing border. Same as the WS_SIZEBOX style.
+	WS_GROUP            WS = 0x00020000          // The window is the first control of a group of controls.
+	WS_TABSTOP          WS = 0x00010000          // The window is a control that can receive the keyboard focus when the user presses the TAB key.
+	WS_MINIMIZEBOX      WS = 0x00020000          // The window has a minimize button.
+	WS_MAXIMIZEBOX      WS = 0x00010000          // The window has a maximize button.
+	WS_TILED            WS = WS_OVERLAPPED       // The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_OVERLAPPED style.
+	WS_ICONIC           WS = WS_MINIMIZE         // The window is initially minimized. Same as the WS_MINIMIZE style.
+	WS_SIZEBOX          WS = WS_THICKFRAME       // The window has a sizing border. Same as the WS_THICKFRAME style.
+	WS_TILEDWINDOW      WS = WS_OVERLAPPEDWINDOW // The window is an overlapped window. Same as the WS_OVERLAPPEDWINDOW style.
+	WS_OVERLAPPEDWINDOW WS = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU |
+		WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX // The window is an overlapped window. Same as the WS_TILEDWINDOW style.
+	WS_POPUPWINDOW WS = WS_POPUP | WS_BORDER | WS_SYSMENU // The window is a pop-up window. The WS_CAPTION and WS_POPUPWINDOW styles must be combined to make the window menu visible.
+	WS_CHILDWINDOW WS = WS_CHILD                          // Same as the WS_CHILD style.
 )
 
 // Extended window styles.
@@ -361,7 +362,7 @@ type WS_EX uint32
 
 const (
 	WS_EX_NONE                WS_EX = 0
-	WS_EX_DLGMODALFRAME       WS_EX = 0x00000001
+	WS_EX_DLGMODALFRAME       WS_EX = 0x00000001 // The window has a double border; the window can, optionally, be created with a title bar by specifying the WS_CAPTION style in the dwStyle parameter.
 	WS_EX_NOPARENTNOTIFY      WS_EX = 0x00000004 // The child window created with this style does not send the WM_PARENTNOTIFY message to its parent window when it is created or destroyed.
 	WS_EX_TOPMOST             WS_EX = 0x00000008 // The window should be placed above all non-topmost windows and should stay above them, even when the window is deactivated.
 	WS_EX_ACCEPTFILES         WS_EX = 0x00000010 // The window accepts drag-drop files.

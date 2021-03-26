@@ -254,8 +254,8 @@ const (
 type CMD int32
 
 const (
-	CMD_MENU        CMD = 0
-	CMD_ACCELERATOR CMD = 1
+	CMD_MENU        CMD = 0 // Message originated from a menu.
+	CMD_ACCELERATOR CMD = 1 // Message originated from an accelerator.
 )
 
 // CoInitializeEx() dwCoInit.
