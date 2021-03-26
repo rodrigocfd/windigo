@@ -27,23 +27,25 @@ type IGraphBuilder struct {
 	IFilterGraph // Base IFilterGraph > IUnknown.
 }
 
+// Calls IUnknown.CoCreateInstance() to return IGraphBuilder.
+//
 // Typically uses CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateIGraphBuilder(dwClsContext co.CLSCTX) IGraphBuilder {
+func CoCreateIGraphBuilder(dwClsContext co.CLSCTX) (IGraphBuilder, error) {
 	clsidFilterGrapth := win.NewGuid(0xe436ebb3, 0x524f, 0x11ce, 0x9f53, 0x0020af0ba770)
 	iidIGraphBuilder := win.NewGuid(0x56a868a9, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)
 
-	iUnk, err := win.CoCreateInstance(
+	iUnk, lerr := win.CoCreateInstance(
 		clsidFilterGrapth, nil, dwClsContext, iidIGraphBuilder)
-	if err != nil {
-		panic(err)
+	if lerr != nil {
+		return IGraphBuilder{}, lerr
 	}
 	return IGraphBuilder{
 		IFilterGraph{IUnknown: iUnk},
-	}
+	}, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort

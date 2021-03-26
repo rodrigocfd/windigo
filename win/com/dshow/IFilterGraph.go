@@ -28,21 +28,23 @@ type IFilterGraph struct {
 	win.IUnknown // Base IUnknown.
 }
 
+// Calls IUnknown.CoCreateInstance() to return IFilterGraph.
+//
 // Typically uses CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateIFilterGraph(dwClsContext co.CLSCTX) IFilterGraph {
+func CoCreateIFilterGraph(dwClsContext co.CLSCTX) (IFilterGraph, error) {
 	clsidFilterGraph := win.NewGuid(0xe436ebb3, 0x524f, 0x11ce, 0x9f53, 0x0020af0ba770)
 	iidIFilterGraph := win.NewGuid(0x56a8689f, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)
 
-	iUnk, err := win.CoCreateInstance(
+	iUnk, lerr := win.CoCreateInstance(
 		clsidFilterGraph, nil, dwClsContext, iidIFilterGraph)
-	if err != nil {
-		panic(err)
+	if lerr != nil {
+		return IFilterGraph{}, lerr
 	}
-	return IFilterGraph{IUnknown: iUnk}
+	return IFilterGraph{IUnknown: iUnk}, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-addfilter

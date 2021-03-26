@@ -31,7 +31,7 @@ type IShellItem struct {
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
-func NewShellItem(thePath string) IShellItem {
+func NewShellItem(thePath string) (IShellItem, error) {
 	iidIShellItem := win.NewGuid(0x43826d1e, 0xe718, 0x42ee, 0xbc55, 0xa1e261c37bfe)
 	var ppv **win.IUnknownVtbl
 
@@ -41,11 +41,11 @@ func NewShellItem(thePath string) IShellItem {
 		0, 0)
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+		return IShellItem{}, lerr
 	}
 	return IShellItem{
 		win.IUnknown{Ppv: ppv},
-	}
+	}, nil
 }
 
 func (me *IShellItem) Compare(psi IShellItem, hint co.SICHINT) bool {

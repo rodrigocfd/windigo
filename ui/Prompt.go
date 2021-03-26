@@ -20,7 +20,10 @@ var Prompt _PromptT
 func (_PromptT) OpenSingleFile(
 	parent AnyParent, filterSpec []shell.FilterSpec) (string, bool) {
 
-	fileOpenDialog := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
+	fileOpenDialog, lerr := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
+	if lerr != nil {
+		panic(lerr)
+	}
 	defer fileOpenDialog.Release()
 
 	flags := fileOpenDialog.GetOptions()
@@ -44,7 +47,10 @@ func (_PromptT) OpenSingleFile(
 func (_PromptT) OpenMultipleFiles(
 	parent AnyParent, filterSpec []shell.FilterSpec) ([]string, bool) {
 
-	fileOpenDialog := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
+	fileOpenDialog, lerr := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
+	if lerr != nil {
+		panic(lerr)
+	}
 	defer fileOpenDialog.Release()
 
 	flags := fileOpenDialog.GetOptions()
@@ -71,7 +77,10 @@ func (_PromptT) SaveFile(
 	parent AnyParent, defaultPath, defaultFileName string,
 	filterSpec []shell.FilterSpec) (string, bool) {
 
-	fileSaveDialog := shell.CoCreateIFileSaveDialog(co.CLSCTX_INPROC_SERVER)
+	fileSaveDialog, lerr := shell.CoCreateIFileSaveDialog(co.CLSCTX_INPROC_SERVER)
+	if lerr != nil {
+		panic(lerr)
+	}
 	defer fileSaveDialog.Release()
 
 	flags := fileSaveDialog.GetOptions()
@@ -81,7 +90,10 @@ func (_PromptT) SaveFile(
 	fileSaveDialog.SetFileTypeIndex(0) // first filter chosen by default
 
 	if defaultPath != "" {
-		shellItem := shell.NewShellItem(defaultPath)
+		shellItem, lerr := shell.NewShellItem(defaultPath)
+		if lerr != nil {
+			panic(lerr)
+		}
 		fileSaveDialog.SetFolder(&shellItem)
 		shellItem.Release()
 	}
@@ -113,7 +125,10 @@ func (_PromptT) SaveFile(
 //
 // The returned file path won't have a trailing slash.
 func (_PromptT) ChooseFolder(parent AnyParent) (string, bool) {
-	fileOpenDialog := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
+	fileOpenDialog, lerr := shell.CoCreateIFileOpenDialog(co.CLSCTX_INPROC_SERVER)
+	if lerr != nil {
+		panic(lerr)
+	}
 	defer fileOpenDialog.Release()
 
 	flags := fileOpenDialog.GetOptions()

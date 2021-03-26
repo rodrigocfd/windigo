@@ -25,21 +25,23 @@ type ITaskbarList struct {
 	win.IUnknown // Base IUnknown.
 }
 
+// Calls IUnknown.CoCreateInstance() to return ITaskbarList.
+//
 // Typically uses CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateITaskbarList(dwClsContext co.CLSCTX) ITaskbarList {
+func CoCreateITaskbarList(dwClsContext co.CLSCTX) (ITaskbarList, error) {
 	clsidTaskbarList := win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a, 0x006097c9a090)
 	iidITaskbarList := win.NewGuid(0x56fdf342, 0xfd6d, 0x11d0, 0x958a, 0x006097c9a090)
 
-	iUnk, err := win.CoCreateInstance(
+	iUnk, lerr := win.CoCreateInstance(
 		clsidTaskbarList, nil, dwClsContext, iidITaskbarList)
-	if err != nil {
-		panic(err)
+	if lerr != nil {
+		return ITaskbarList{}, lerr
 	}
-	return ITaskbarList{IUnknown: iUnk}
+	return ITaskbarList{IUnknown: iUnk}, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab

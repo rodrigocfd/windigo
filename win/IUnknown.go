@@ -49,7 +49,6 @@ func CoCreateInstance(
 	return IUnknown{ppv}, nil
 }
 
-// Queries an IUnknown COM object.
 // Returns a pointer to a pointer to the IUnknown virtual table, which can be
 // cast into the specific virtual table type.
 //

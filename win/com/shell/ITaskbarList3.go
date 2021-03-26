@@ -32,25 +32,27 @@ type ITaskbarList3 struct {
 	ITaskbarList2 // Base ITaskbarList2 > ITaskbarList > IUnknown.
 }
 
+// Calls IUnknown.CoCreateInstance() to return ITaskbarList3.
+//
 // Typically uses CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateITaskbarList3(dwClsContext co.CLSCTX) ITaskbarList3 {
+func CoCreateITaskbarList3(dwClsContext co.CLSCTX) (ITaskbarList3, error) {
 	clsidTaskbarList := win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a, 0x006097c9a090)
 	iidITaskbarList3 := win.NewGuid(0xea1afb91, 0x9e28, 0x4b86, 0x90e9, 0x9e9f8a5eefaf)
 
-	iUnk, err := win.CoCreateInstance(
+	iUnk, lerr := win.CoCreateInstance(
 		clsidTaskbarList, nil, dwClsContext, iidITaskbarList3)
-	if err != nil {
-		panic(err)
+	if lerr != nil {
+		return ITaskbarList3{}, lerr
 	}
 	return ITaskbarList3{
 		ITaskbarList2{
 			ITaskbarList{IUnknown: iUnk},
 		},
-	}
+	}, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-registertab
