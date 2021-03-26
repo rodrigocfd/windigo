@@ -1,6 +1,8 @@
 package win
 
 import (
+	"time"
+
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -85,6 +87,20 @@ type DRAWITEMSTRUCT struct {
 type FILETIME struct {
 	DwLowDateTime  uint32
 	DwHighDateTime uint32
+}
+
+// Fills this FILETIME with the value of a time.Time.
+func (ft *FILETIME) FromTime(t time.Time) {
+	st := SYSTEMTIME{}
+	st.FromTime(t)
+	SystemTimeToFileTime(&st, ft)
+}
+
+// Converts this FILETIME to time.Time.
+func (ft *FILETIME) ToTime() time.Time {
+	st := SYSTEMTIME{}
+	FileTimeToSystemTime(ft, &st)
+	return st.ToTime()
 }
 
 // Can be created with NewGuid().
@@ -323,6 +339,47 @@ type SYSTEMTIME struct {
 	WMinute       uint16
 	WSecond       uint16
 	WMilliseconds uint16
+}
+
+// Decomposes a time.Duration into this SYSTEMTIME fields.
+func (st *SYSTEMTIME) FromDuration(dur time.Duration) {
+	*st = SYSTEMTIME{}
+	st.WHour = uint16(dur / time.Hour)
+	st.WMinute = uint16((dur -
+		time.Duration(st.WHour)*time.Hour) / time.Minute)
+	st.WSecond = uint16((dur -
+		time.Duration(st.WHour)*time.Hour -
+		time.Duration(st.WMinute)*time.Minute) / time.Second)
+	st.WMilliseconds = uint16((dur -
+		time.Duration(st.WHour)*time.Hour -
+		time.Duration(st.WMinute)*time.Minute -
+		time.Duration(st.WSecond)*time.Second) / time.Millisecond)
+}
+
+// Fills this SYSTEMTIME with the value of a time.Time.
+func (st *SYSTEMTIME) FromTime(t time.Time) {
+	// https://support.microsoft.com/en-ca/help/167296/how-to-convert-a-unix-time-t-to-a-win32-filetime-or-systemtime
+	epoch := t.UnixNano()/100 + 116_444_736_000_000_000
+
+	ft := FILETIME{}
+	ft.DwLowDateTime = uint32(epoch & 0xffff_ffff)
+	ft.DwHighDateTime = uint32(epoch >> 32)
+
+	stUtc := SYSTEMTIME{}
+	FileTimeToSystemTime(&ft, &stUtc)
+
+	// When converted, SYSTEMTIME will receive UTC values, so we need to convert
+	// the fields to current timezone.
+	SystemTimeToTzSpecificLocalTime(nil, &stUtc, st)
+}
+
+// Converts this SYSTEMTIME to time.Time.
+func (st *SYSTEMTIME) ToTime() time.Time {
+	return time.Date(int(st.WYear),
+		time.Month(st.WMonth), int(st.WDay),
+		int(st.WHour), int(st.WMinute), int(st.WSecond),
+		int(st.WMilliseconds)*1_000_000,
+		time.Local)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-textmetricw

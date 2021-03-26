@@ -60,7 +60,7 @@ func NewTreeViewOpts(parent AnyParent, opts TreeViewOpts) TreeView {
 }
 
 // Creates a new TreeView from a dialog resource.
-func NewTreeViewDlg(parent AnyParent, ctrlId, contextMenuId int) TreeView {
+func NewTreeViewDlg(parent AnyParent, ctrlId int) TreeView {
 	me := _TreeView{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)

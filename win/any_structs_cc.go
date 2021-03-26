@@ -150,6 +150,14 @@ type NMDATETIMEWMKEYDOWN struct {
 	St        SYSTEMTIME
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdaystate
+type NMDAYSTATE struct {
+	Nmhdr       NMHDR
+	StStart     SYSTEMTIME
+	CDayState   int32
+	PrgDayState *uint32 // *MONTHDAYSTATE
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmitemactivate
 type NMITEMACTIVATE struct {
 	Hdr       NMHDR
@@ -275,6 +283,13 @@ type NMMOUSE struct {
 	DwHitInfo  LPARAM
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmselchange
+type NMSELCHANGE struct {
+	Nmhdr      NMHDR
+	StSelStart SYSTEMTIME
+	StSelEnd   SYSTEMTIME
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtreevieww
 type NMTREEVIEW struct {
 	Hdr     NMHDR
@@ -333,6 +348,13 @@ type NMTVKEYDOWN struct {
 	Hdr   NMHDR
 	WVKey co.VK
 	Flags uint32
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmviewchange
+type NMVIEWCHANGE struct {
+	Nmhdr     NMHDR
+	DwOldView co.MCMV
+	DwNewView co.MCMV
 }
 
 // 📑 https://www.google.com/search?client=firefox-b-d&q=TVINSERTSTRUCTW

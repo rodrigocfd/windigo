@@ -41,6 +41,87 @@ const (
 	MB_SERVICE_NOTIFICATION MB = 0x00200000
 )
 
+// MonthCalendar control messages.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-messages
+const (
+	_MCM_FIRST WM = 0x1000
+
+	MCM_GETCURSEL           WM = _MCM_FIRST + 1
+	MCM_SETCURSEL           WM = _MCM_FIRST + 2
+	MCM_GETMAXSELCOUNT      WM = _MCM_FIRST + 3
+	MCM_SETMAXSELCOUNT      WM = _MCM_FIRST + 4
+	MCM_GETSELRANGE         WM = _MCM_FIRST + 5
+	MCM_SETSELRANGE         WM = _MCM_FIRST + 6
+	MCM_GETMONTHRANGE       WM = _MCM_FIRST + 7
+	MCM_SETDAYSTATE         WM = _MCM_FIRST + 8
+	MCM_GETMINREQRECT       WM = _MCM_FIRST + 9
+	MCM_SETCOLOR            WM = _MCM_FIRST + 10
+	MCM_GETCOLOR            WM = _MCM_FIRST + 11
+	MCM_SETTODAY            WM = _MCM_FIRST + 12
+	MCM_GETTODAY            WM = _MCM_FIRST + 13
+	MCM_HITTEST             WM = _MCM_FIRST + 14
+	MCM_SETFIRSTDAYOFWEEK   WM = _MCM_FIRST + 15
+	MCM_GETFIRSTDAYOFWEEK   WM = _MCM_FIRST + 16
+	MCM_GETRANGE            WM = _MCM_FIRST + 17
+	MCM_SETRANGE            WM = _MCM_FIRST + 18
+	MCM_GETMONTHDELTA       WM = _MCM_FIRST + 19
+	MCM_SETMONTHDELTA       WM = _MCM_FIRST + 20
+	MCM_GETMAXTODAYWIDTH    WM = _MCM_FIRST + 21
+	MCM_SETUNICODEFORMAT    WM = CCM_SETUNICODEFORMAT
+	MCM_GETUNICODEFORMAT    WM = CCM_GETUNICODEFORMAT
+	MCM_GETCURRENTVIEW      WM = _MCM_FIRST + 22
+	MCM_GETCALENDARCOUNT    WM = _MCM_FIRST + 23
+	MCM_GETCALENDARGRIDINFO WM = _MCM_FIRST + 24
+	MCM_GETCALID            WM = _MCM_FIRST + 27
+	MCM_SETCALID            WM = _MCM_FIRST + 28
+	MCM_SIZERECTTOMIN       WM = _MCM_FIRST + 29
+	MCM_SETCALENDARBORDER   WM = _MCM_FIRST + 30
+	MCM_GETCALENDARBORDER   WM = _MCM_FIRST + 31
+	MCM_SETCURRENTVIEW      WM = _MCM_FIRST + 32
+)
+
+// NMVIEWCHANGE dwOldView/dwNewView.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmviewchange
+type MCMV uint32
+
+const (
+	MCMV_MONTH   MCMV = 0
+	MCMV_YEAR    MCMV = 1
+	MCMV_DECADE  MCMV = 2
+	MCMV_CENTURY MCMV = 3
+)
+
+// MonthCalendar control notifications, sent via WM_NOTIFY.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-notifications
+const (
+	_MCN_FIRST NM = -746
+
+	MCN_SELECT      NM = _MCN_FIRST
+	MCN_GETDAYSTATE NM = _MCN_FIRST - 1
+	MCN_SELCHANGE   NM = _MCN_FIRST - 3
+	MCN_VIEWCHANGE  NM = _MCN_FIRST - 4
+)
+
+// MonthCalendar control styles.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/month-calendar-control-styles
+type MCS WS
+
+const (
+	MCS_NONE             MCS = 0
+	MCS_DAYSTATE         MCS = 0x0001
+	MCS_MULTISELECT      MCS = 0x0002
+	MCS_WEEKNUMBERS      MCS = 0x0004
+	MCS_NOTODAYCIRCLE    MCS = 0x0008
+	MCS_NOTODAY          MCS = 0x0010
+	MCS_NOTRAILINGDATES  MCS = 0x0040
+	MCS_SHORTDAYSOFWEEK  MCS = 0x0080
+	MCS_NOSELCHANGEONNAV MCS = 0x0100
+)
+
 // WM_MENUCHAR menu type. Originally with MF prefix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menuchar

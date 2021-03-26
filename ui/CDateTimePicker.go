@@ -77,7 +77,7 @@ func (me *_DateTimePicker) On() *_DateTimePickerEvents {
 // Sets the current time.
 func (me *_DateTimePicker) SetTime(newTime time.Time) {
 	st := win.SYSTEMTIME{}
-	win.Time.ToSystemtime(newTime, &st)
+	st.FromTime(newTime)
 	me.Hwnd().SendMessage(co.DTM_SETSYSTEMTIME,
 		win.WPARAM(co.GDT_VALID), win.LPARAM(unsafe.Pointer(&st)))
 }
@@ -90,7 +90,7 @@ func (me *_DateTimePicker) Time() time.Time {
 	if ret != co.GDT_VALID {
 		panic("DTM_GETSYSTEMTIME failed.")
 	}
-	return win.Time.FromSystemtime(&st)
+	return st.ToTime()
 }
 
 //------------------------------------------------------------------------------
