@@ -1,14 +1,19 @@
 package ui
 
 import (
-	"unsafe"
+	"sync"
 
 	"github.com/rodrigocfd/windigo/ui/wm"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-const _WM_UI_THREAD = co.WM_APP + 0x3fff // sent by RunUiThread()
+const _WM_UI_THREAD = co.WM_APP + 0x3fff // Sent by RunUiThread().
+var (
+	_globalUiThreadCache = make(map[int]func(), 20) // User functions of RunUiThread().
+	_globalUiThreadCount = 0
+	_globalUiThreadMutex = sync.Mutex{}
+)
 
 // Base to _WindowOptsBase and _WindowDlgBase.
 type _WindowBase struct {
@@ -45,15 +50,25 @@ func (me *_WindowBase) RunUiThread(userFunc func()) {
 	// called from another thread, so a callback function can, tunelled by
 	// wndproc, run in the original thread of the window, thus allowing GUI
 	// updates. This avoids the user to deal with a custom WM_ message.
-	me.hWnd.SendMessage(_WM_UI_THREAD, win.WPARAM(_WM_UI_THREAD),
-		win.LPARAM(unsafe.Pointer(&userFunc)))
+
+	_globalUiThreadMutex.Lock()
+	_globalUiThreadCount++
+	_globalUiThreadCache[_globalUiThreadCount] = userFunc // cache
+	_globalUiThreadMutex.Unlock()
+
+	me.hWnd.SendMessage(_WM_UI_THREAD,
+		win.WPARAM(_WM_UI_THREAD), win.LPARAM(_globalUiThreadCount))
 }
 
 func (me *_WindowBase) defaultMessages() {
 	me.events.Wm(_WM_UI_THREAD, func(p wm.Any) uintptr { // handle our custom thread UI message
 		if p.WParam == win.WPARAM(_WM_UI_THREAD) {
-			pUserFunc := (*func())(unsafe.Pointer(p.LParam))
-			(*pUserFunc)()
+			_globalUiThreadMutex.Lock()
+			userFunc, _ := _globalUiThreadCache[int(p.LParam)]
+			delete(_globalUiThreadCache, int(p.LParam))
+			_globalUiThreadMutex.Unlock()
+
+			userFunc()
 		}
 		return 0
 	})
