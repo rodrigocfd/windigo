@@ -76,44 +76,44 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 // ⚠️ You must defer Release().
 //
 // Calls IUnknown.QueryInterface() to return IBasicAudio.
-func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
+func (me *IGraphBuilder) QueryIBasicAudio() (IBasicAudio, error) {
 	iidIBasicAudio := win.NewGuid(0x56a868b3, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)
 
-	iUnk, err := me.QueryInterface(iidIBasicAudio)
-	if err != nil {
-		panic(err)
+	iUnk, lerr := me.QueryInterface(iidIBasicAudio)
+	if lerr != nil {
+		return IBasicAudio{}, lerr
 	}
 	return IBasicAudio{
 		IDispatch{IUnknown: iUnk},
-	}
+	}, nil
 }
 
 // ⚠️ You must defer Release().
 //
 // Calls IUnknown.QueryInterface() to return IMediaControl.
-func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
+func (me *IGraphBuilder) QueryIMediaControl() (IMediaControl, error) {
 	iidIMediaControl := win.NewGuid(0x56a868b1, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)
 
-	iUnk, err := me.QueryInterface(iidIMediaControl)
-	if err != nil {
-		panic(err)
+	iUnk, lerr := me.QueryInterface(iidIMediaControl)
+	if lerr != nil {
+		return IMediaControl{}, lerr
 	}
 	return IMediaControl{
 		IDispatch{IUnknown: iUnk},
-	}
+	}, nil
 }
 
 // ⚠️ You must defer Release().
 //
 // Calls IUnknown.QueryInterface() to return IMediaSeeking.
-func (me *IGraphBuilder) QueryIMediaSeeking() IMediaSeeking {
+func (me *IGraphBuilder) QueryIMediaSeeking() (IMediaSeeking, error) {
 	iidIMediaSeeking := win.NewGuid(0x36b73880, 0xc2c8, 0x11cf, 0x8b46, 0x00805f6cef60)
 
-	iUnk, err := me.QueryInterface(iidIMediaSeeking)
-	if err != nil {
-		panic(err)
+	iUnk, lerr := me.QueryInterface(iidIMediaSeeking)
+	if lerr != nil {
+		return IMediaSeeking{}, lerr
 	}
-	return IMediaSeeking{IUnknown: iUnk}
+	return IMediaSeeking{IUnknown: iUnk}, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-render
