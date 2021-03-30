@@ -471,6 +471,29 @@ func GetSystemTime(lpSystemTime *SYSTEMTIME) {
 		uintptr(unsafe.Pointer(lpSystemTime)), 0, 0)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimeasfiletime
+func GetSystemTimeAsFileTime() FILETIME {
+	ft := FILETIME{}
+	syscall.Syscall(proc.GetSystemTimeAsFileTime.Addr(), 1,
+		uintptr(unsafe.Pointer(&ft)), 0, 0)
+	return ft
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimepreciseasfiletime
+func GetSystemTimePreciseAsFileTime() FILETIME {
+	ft := FILETIME{}
+	syscall.Syscall(proc.GetSystemTimePreciseAsFileTime.Addr(), 1,
+		uintptr(unsafe.Pointer(&ft)), 0, 0)
+	return ft
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-gettickcount64
+func GetTickCount64() uint64 {
+	ret, _, _ := syscall.Syscall(proc.GetTickCount64.Addr(), 0,
+		0, 0, 0)
+	return uint64(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632656(v=vs.85)
 func HIBYTE(value uint16) uint8 {
 	return uint8(value >> 8 & 0xff)
