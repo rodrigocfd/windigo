@@ -83,6 +83,19 @@ type DRAWITEMSTRUCT struct {
 	ItemData   uintptr // ULONG_PTR
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-dynamic_time_zone_information
+type DYNAMIC_TIME_ZONE_INFORMATION struct {
+	Bias                        int32
+	StandardName                [32]uint16
+	StandardDate                SYSTEMTIME
+	StandardBias                int32
+	DaylightName                [32]uint16
+	DaylightDate                SYSTEMTIME
+	DaylightBias                int32
+	TimeZoneKeyName             [128]uint16
+	DynamicDaylightTimeDisabled uint8 // BOOLEAN
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
 type FILETIME struct {
 	DwLowDateTime  uint32

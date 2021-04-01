@@ -662,6 +662,17 @@ const (
 	TA_RTLREADING TA = 256
 )
 
+// GetTimeZoneInformation() return value.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation
+type TIME_ZONE_ID uint32
+
+const (
+	TIME_ZONE_ID_UNKNOWN  TIME_ZONE_ID = 0
+	TIME_ZONE_ID_STANDARD TIME_ZONE_ID = 1
+	TIME_ZONE_ID_DAYLIGHT TIME_ZONE_ID = 2
+)
+
 // TVM_EXPAND action flag.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvm-expand

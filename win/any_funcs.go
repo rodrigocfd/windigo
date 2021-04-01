@@ -380,6 +380,15 @@ func GetDesktopWindow() HWND {
 	return HWND(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-getdynamictimezoneinformation
+func GetDynamicTimeZoneInformation(
+	pTimeZoneInformation *DYNAMIC_TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
+
+	ret, _, _ := syscall.Syscall(proc.GetDynamicTimeZoneInformation.Addr(), 1,
+		uintptr(unsafe.Pointer(pTimeZoneInformation)), 0, 0)
+	return co.TIME_ZONE_ID(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
 	ret, _, lerr := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
@@ -492,6 +501,28 @@ func GetTickCount64() uint64 {
 	ret, _, _ := syscall.Syscall(proc.GetTickCount64.Addr(), 0,
 		0, 0, 0)
 	return uint64(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation
+func GetTimeZoneInformation(
+	lpTimeZoneInformation *TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
+
+	ret, _, _ := syscall.Syscall(proc.GetTimeZoneInformation.Addr(), 1,
+		uintptr(unsafe.Pointer(lpTimeZoneInformation)), 0, 0)
+	return co.TIME_ZONE_ID(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformationforyear
+func GetTimeZoneInformationForYear(
+	wYear uint16,
+	pdtzi *DYNAMIC_TIME_ZONE_INFORMATION, ptzi *TIME_ZONE_INFORMATION) {
+
+	ret, _, lerr := syscall.Syscall(proc.GetTimeZoneInformationForYear.Addr(), 3,
+		uintptr(wYear),
+		uintptr(unsafe.Pointer(pdtzi)), uintptr(unsafe.Pointer(ptzi)))
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632656(v=vs.85)
