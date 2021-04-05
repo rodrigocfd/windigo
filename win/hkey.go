@@ -29,7 +29,7 @@ const (
 )
 
 // Reads a REG_BINARY value with RegGetValue().
-func (hKey HKEY) LoadBinary(lpSubKey, lpValue string) []byte {
+func (hKey HKEY) ReadBinary(lpSubKey, lpValue string) []byte {
 	pdwType := co.REG_BINARY
 	pcbData := uint32(0)
 
@@ -51,7 +51,7 @@ func (hKey HKEY) LoadBinary(lpSubKey, lpValue string) []byte {
 }
 
 // Reads a REG_DWORD value with RegGetValue().
-func (hKey HKEY) LoadDword(lpSubKey, lpValue string) uint32 {
+func (hKey HKEY) ReadDword(lpSubKey, lpValue string) uint32 {
 	pdwType := co.REG_DWORD
 	pvData := uint32(0)
 	pcbData := uint32(unsafe.Sizeof(pvData))
@@ -65,7 +65,7 @@ func (hKey HKEY) LoadDword(lpSubKey, lpValue string) uint32 {
 }
 
 // Reads a REG_SZ value with RegGetValue().
-func (hKey HKEY) LoadString(lpSubKey, lpValue string) string {
+func (hKey HKEY) ReadString(lpSubKey, lpValue string) string {
 	pdwType := co.REG_SZ
 	pcbData := uint32(0)
 
@@ -130,7 +130,7 @@ func (hKey HKEY) RegSetKeyValue(
 }
 
 // Writes a REG_BINARY value with RegSetKeyValue().
-func (hKey HKEY) SaveBinary(lpSubKey, lpValueName string, lpData []byte) {
+func (hKey HKEY) WriteBinary(lpSubKey, lpValueName string, lpData []byte) {
 	lerr := hKey.RegSetKeyValue(lpSubKey, lpValueName, co.REG_BINARY,
 		unsafe.Pointer(&lpData[0]), uint32(len(lpData)))
 	if lerr != nil {
@@ -139,7 +139,7 @@ func (hKey HKEY) SaveBinary(lpSubKey, lpValueName string, lpData []byte) {
 }
 
 // Writes a REG_DWORD value with RegSetKeyValue().
-func (hKey HKEY) SaveDword(lpSubKey, lpValueName string, lpData uint32) {
+func (hKey HKEY) WriteDword(lpSubKey, lpValueName string, lpData uint32) {
 	lerr := hKey.RegSetKeyValue(lpSubKey, lpValueName, co.REG_DWORD,
 		unsafe.Pointer(&lpData), uint32(unsafe.Sizeof(lpData)))
 	if lerr != nil {
@@ -148,7 +148,7 @@ func (hKey HKEY) SaveDword(lpSubKey, lpValueName string, lpData uint32) {
 }
 
 // Writes a REG_SZ value with RegSetKeyValue().
-func (hKey HKEY) SaveString(lpSubKey, lpValueName string, lpData string) {
+func (hKey HKEY) WriteString(lpSubKey, lpValueName string, lpData string) {
 	slice := Str.ToUint16Slice(lpData)
 	lerr := hKey.RegSetKeyValue(lpSubKey, lpValueName, co.REG_SZ,
 		unsafe.Pointer(&slice[0]), uint32(len(slice)*2)) // pass size in bytes, including terminating null
