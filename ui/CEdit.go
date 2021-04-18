@@ -37,7 +37,7 @@ type _Edit struct {
 
 // Creates a new Edit specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewEditOpts(parent AnyParent, opts EditOpts) Edit {
+func NewEditRaw(parent AnyParent, opts EditRawOpts) Edit {
 	opts.fillBlankValuesWithDefault()
 
 	me := _Edit{}
@@ -109,8 +109,8 @@ func (me *_Edit) Text() string {
 
 //------------------------------------------------------------------------------
 
-// Options for NewEditOpts().
-type EditOpts struct {
+// Options for NewEditRaw().
+type EditRawOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -135,7 +135,7 @@ type EditOpts struct {
 	ExStyles co.WS_EX
 }
 
-func (opts *EditOpts) fillBlankValuesWithDefault() {
+func (opts *EditRawOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

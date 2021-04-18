@@ -7,19 +7,19 @@ import (
 )
 
 // Implements WindowMain interface.
-type _WindowOptsMain struct {
-	_WindowOptsBase
-	opts            WindowMainOpts
+type _WindowRawMain struct {
+	_WindowRawBase
+	opts            WindowMainRawOpts
 	hChildPrevFocus win.HWND // when window is inactivated
 }
 
 // Creates a new WindowMain specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewWindowMainOpts(opts WindowMainOpts) WindowMain {
+func NewWindowMainRaw(opts WindowMainRawOpts) WindowMain {
 	opts.fillBlankValuesWithDefault()
 
-	me := _WindowOptsMain{}
-	me._WindowOptsBase.new()
+	me := _WindowRawMain{}
+	me._WindowRawBase.new()
 	me.opts = opts
 	me.hChildPrevFocus = win.HWND(0)
 
@@ -27,7 +27,7 @@ func NewWindowMainOpts(opts WindowMainOpts) WindowMain {
 	return &me
 }
 
-func (me *_WindowOptsMain) RunAsMain() int {
+func (me *_WindowRawMain) RunAsMain() int {
 	if win.IsWindowsVistaOrGreater() {
 		win.SetProcessDPIAware()
 	}
@@ -37,14 +37,14 @@ func (me *_WindowOptsMain) RunAsMain() int {
 
 	hInst := win.GetModuleHandle("")
 	wcx := win.WNDCLASSEX{}
-	me.opts.ClassName = me._WindowOptsBase.generateWcx(&wcx, hInst,
+	me.opts.ClassName = me._WindowRawBase.generateWcx(&wcx, hInst,
 		me.opts.ClassName, me.opts.ClassStyles, me.opts.HCursor,
 		me.opts.HBrushBackground, me.opts.IconId)
-	me._WindowOptsBase.registerClass(&wcx)
+	me._WindowRawBase.registerClass(&wcx)
 
-	pos, size := me._WindowOptsBase.calcWndCoords(&me.opts.ClientAreaSize,
+	pos, size := me._WindowRawBase.calcWndCoords(&me.opts.ClientAreaSize,
 		me.opts.MainMenu, me.opts.Styles, me.opts.ExStyles)
-	me._WindowOptsBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
+	me._WindowRawBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
 		me.opts.Title, me.opts.Styles, pos, size, win.HWND(0),
 		me.opts.MainMenu, hInst)
 
@@ -60,11 +60,11 @@ func (me *_WindowOptsMain) RunAsMain() int {
 	return _RunMainLoop(me.Hwnd(), hAccel)
 }
 
-func (me *_WindowOptsMain) isDialog() bool {
+func (me *_WindowRawMain) isDialog() bool {
 	return false
 }
 
-func (me *_WindowOptsMain) defaultMessages() {
+func (me *_WindowRawMain) defaultMessages() {
 	me.On().WmNcDestroy(func() {
 		win.PostQuitMessage(0)
 	})
@@ -94,8 +94,8 @@ func (me *_WindowOptsMain) defaultMessages() {
 
 //------------------------------------------------------------------------------
 
-// Options for NewWindowMainOpts().
-type WindowMainOpts struct {
+// Options for NewWindowMainRaw().
+type WindowMainRawOpts struct {
 	// Class name registered with RegisterClassEx().
 	// Defaults to a computed hash.
 	ClassName string
@@ -136,7 +136,7 @@ type WindowMainOpts struct {
 	CmdShow co.SW
 }
 
-func (opts *WindowMainOpts) fillBlankValuesWithDefault() {
+func (opts *WindowMainRawOpts) fillBlankValuesWithDefault() {
 	if opts.ClassStyles == 0 {
 		opts.ClassStyles = co.CS_DBLCLKS
 	}

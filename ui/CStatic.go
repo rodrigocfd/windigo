@@ -30,7 +30,7 @@ type _Static struct {
 
 // Creates a new Static specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewStaticOpts(parent AnyParent, opts StaticOpts) Static {
+func NewStaticRaw(parent AnyParent, opts StaticRawOpts) Static {
 	opts.fillBlankValuesWithDefault()
 
 	me := _Static{}
@@ -80,8 +80,8 @@ func (me *_Static) SetText(text string) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewStaticOpts().
-type StaticOpts struct {
+// Options for NewStaticRaw().
+type StaticRawOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -103,7 +103,7 @@ type StaticOpts struct {
 	ExStyles co.WS_EX
 }
 
-func (opts *StaticOpts) fillBlankValuesWithDefault() {
+func (opts *StaticRawOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

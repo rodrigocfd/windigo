@@ -7,32 +7,32 @@ import (
 )
 
 // Implements WindowControl interface.
-type _WindowOptsControl struct {
-	_WindowOptsBase
-	opts   WindowControlOpts
+type _WindowRawControl struct {
+	_WindowRawBase
+	opts   WindowControlRawOpts
 	parent AnyParent
 }
 
 // Creates a new WindowControl specifying all options, which will be passed to
 // the underlying CreateWindowEx().
-func NewWindowControlOpts(parent AnyParent, opts WindowControlOpts) WindowControl {
+func NewWindowControlRaw(parent AnyParent, opts WindowControlRawOpts) WindowControl {
 	opts.fillBlankValuesWithDefault()
 
-	me := _WindowOptsControl{}
-	me._WindowOptsBase.new()
+	me := _WindowRawControl{}
+	me._WindowRawBase.new()
 	me.opts = opts
 	me.parent = parent
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		hInst := parent.Hwnd().Hinstance()
 		wcx := win.WNDCLASSEX{}
-		me.opts.ClassName = me._WindowOptsBase.generateWcx(&wcx, hInst,
+		me.opts.ClassName = me._WindowRawBase.generateWcx(&wcx, hInst,
 			me.opts.ClassName, me.opts.ClassStyles, me.opts.HCursor,
 			me.opts.HBrushBackground, 0)
-		me._WindowOptsBase.registerClass(&wcx)
+		me._WindowRawBase.registerClass(&wcx)
 
 		_MultiplyDpi(&me.opts.Position, &me.opts.Size)
-		me._WindowOptsBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
+		me._WindowRawBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
 			"", me.opts.Styles, me.opts.Position, me.opts.Size, parent.Hwnd(),
 			win.HMENU(me.opts.CtrlId), hInst)
 	})
@@ -41,19 +41,19 @@ func NewWindowControlOpts(parent AnyParent, opts WindowControlOpts) WindowContro
 	return &me
 }
 
-func (me *_WindowOptsControl) CtrlId() int {
+func (me *_WindowRawControl) CtrlId() int {
 	return me.opts.CtrlId
 }
 
-func (me *_WindowOptsControl) Parent() AnyParent {
+func (me *_WindowRawControl) Parent() AnyParent {
 	return me.parent
 }
 
-func (me *_WindowOptsControl) isDialog() bool {
+func (me *_WindowRawControl) isDialog() bool {
 	return false
 }
 
-func (me *_WindowOptsControl) defaultMessages() {
+func (me *_WindowRawControl) defaultMessages() {
 	me.On().WmNcPaint(func(p wm.NcPaint) {
 		_PaintThemedBorders(me.Hwnd(), p)
 	})
@@ -61,8 +61,8 @@ func (me *_WindowOptsControl) defaultMessages() {
 
 //------------------------------------------------------------------------------
 
-// Options for NewWindowControlOpts().
-type WindowControlOpts struct {
+// Options for NewWindowControlRaw().
+type WindowControlRawOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -94,7 +94,7 @@ type WindowControlOpts struct {
 	Size win.SIZE
 }
 
-func (opts *WindowControlOpts) fillBlankValuesWithDefault() {
+func (opts *WindowControlRawOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

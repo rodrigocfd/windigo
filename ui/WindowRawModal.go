@@ -7,19 +7,19 @@ import (
 )
 
 // Implements WindowModal interface.
-type _WindowOptsModal struct {
-	_WindowOptsBase
-	opts             WindowModalOpts
+type _WindowRawModal struct {
+	_WindowRawBase
+	opts             WindowModalRawOpts
 	hPrevFocusParent win.HWND // child control last focused on parent
 }
 
 // Creates a new WindowModal specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewWindowModalOpts(opts WindowModalOpts) WindowModal {
+func NewWindowModalRaw(opts WindowModalRawOpts) WindowModal {
 	opts.fillBlankValuesWithDefault()
 
-	me := _WindowOptsModal{}
-	me._WindowOptsBase.new()
+	me := _WindowRawModal{}
+	me._WindowRawBase.new()
 	me.opts = opts
 	me.hPrevFocusParent = win.HWND(0)
 
@@ -27,31 +27,31 @@ func NewWindowModalOpts(opts WindowModalOpts) WindowModal {
 	return &me
 }
 
-func (me *_WindowOptsModal) ShowModal(parent AnyParent) {
+func (me *_WindowRawModal) ShowModal(parent AnyParent) {
 	hInst := parent.Hwnd().Hinstance()
 	wcx := win.WNDCLASSEX{}
-	me.opts.ClassName = me._WindowOptsBase.generateWcx(&wcx, hInst,
+	me.opts.ClassName = me._WindowRawBase.generateWcx(&wcx, hInst,
 		me.opts.ClassName, me.opts.ClassStyles, me.opts.HCursor,
 		me.opts.HBrushBackground, 0)
-	me._WindowOptsBase.registerClass(&wcx)
+	me._WindowRawBase.registerClass(&wcx)
 
 	me.hPrevFocusParent = win.GetFocus() // currently focused control in parent
 	parent.Hwnd().EnableWindow(false)    // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
-	pos, size := me._WindowOptsBase.calcWndCoords(&me.opts.ClientAreaSize,
+	pos, size := me._WindowRawBase.calcWndCoords(&me.opts.ClientAreaSize,
 		win.HMENU(0), me.opts.Styles, me.opts.ExStyles)
-	me._WindowOptsBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
+	me._WindowRawBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
 		me.opts.Title, me.opts.Styles, pos, size, parent.Hwnd(),
 		win.HMENU(0), hInst)
 
 	_RunModalLoop(me.Hwnd())
 }
 
-func (me *_WindowOptsModal) isDialog() bool {
+func (me *_WindowRawModal) isDialog() bool {
 	return false
 }
 
-func (me *_WindowOptsModal) defaultMessages() {
+func (me *_WindowRawModal) defaultMessages() {
 	me.On().WmSetFocus(func(_ wm.SetFocus) {
 		if me.Hwnd() == win.GetFocus() {
 			// If window receive focus, delegate to first child.
@@ -74,8 +74,8 @@ func (me *_WindowOptsModal) defaultMessages() {
 
 //------------------------------------------------------------------------------
 
-// Options for NewWindowModalOpts().
-type WindowModalOpts struct {
+// Options for NewWindowModalRaw().
+type WindowModalRawOpts struct {
 	// Class name registered with RegisterClassEx().
 	// Defaults to a computed hash.
 	ClassName string
@@ -103,7 +103,7 @@ type WindowModalOpts struct {
 	ClientAreaSize win.SIZE
 }
 
-func (opts *WindowModalOpts) fillBlankValuesWithDefault() {
+func (opts *WindowModalRawOpts) fillBlankValuesWithDefault() {
 	if opts.ClassStyles == 0 {
 		opts.ClassStyles = co.CS_DBLCLKS
 	}

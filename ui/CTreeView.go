@@ -34,7 +34,7 @@ type _TreeView struct {
 
 // Creates a new TreeView specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewTreeViewOpts(parent AnyParent, opts TreeViewOpts) TreeView {
+func NewTreeViewRaw(parent AnyParent, opts TreeViewRawOpts) TreeView {
 	opts.fillBlankValuesWithDefault()
 
 	me := _TreeView{}
@@ -86,8 +86,8 @@ func (me *_TreeView) Items() *_TreeViewItems {
 
 //------------------------------------------------------------------------------
 
-// Options for NewTreeViewOpts().
-type TreeViewOpts struct {
+// Options for NewTreeViewRaw().
+type TreeViewRawOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -112,7 +112,7 @@ type TreeViewOpts struct {
 	ExStyles co.WS_EX
 }
 
-func (opts *TreeViewOpts) fillBlankValuesWithDefault() {
+func (opts *TreeViewRawOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

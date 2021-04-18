@@ -32,7 +32,7 @@ type _SysLink struct {
 
 // Creates a new SysLink specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewSysLinkOpts(parent AnyParent, opts SysLinkOpts) SysLink {
+func NewSysLinkRaw(parent AnyParent, opts SysLinkRawOpts) SysLink {
 	opts.fillBlankValuesWithDefault()
 
 	me := _SysLink{}
@@ -82,8 +82,8 @@ func (me *_SysLink) SetText(text string) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewSysLinkOpts().
-type SysLinkOpts struct {
+// Options for NewSysLinkRaw().
+type SysLinkRawOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -105,7 +105,7 @@ type SysLinkOpts struct {
 	ExStyles co.WS_EX
 }
 
-func (opts *SysLinkOpts) fillBlankValuesWithDefault() {
+func (opts *SysLinkRawOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

@@ -145,7 +145,7 @@ func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
 			// WM_QUIT was sent, gracefully terminate the program.
 			// If it returned -1, it will simply panic.
 			// WParam has the program exit code.
-			// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/using-messages-and-message-queues
+			// https://docs.microsoft.com/en-us/windows/win32/winmsg/using-messages-and-message-queues
 			return int(msg.WParam)
 		}
 

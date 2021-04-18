@@ -39,7 +39,7 @@ type _ListView struct {
 
 // Creates a new ListView specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewListViewOpts(parent AnyParent, opts ListViewOpts) ListView {
+func NewListViewRaw(parent AnyParent, opts ListViewRawOpts) ListView {
 	opts.fillBlankValuesWithDefault()
 
 	me := _ListView{}
@@ -183,8 +183,8 @@ func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewListViewOpts().
-type ListViewOpts struct {
+// Options for NewListViewRaw().
+type ListViewRawOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -213,7 +213,7 @@ type ListViewOpts struct {
 	ContextMenu win.HMENU
 }
 
-func (opts *ListViewOpts) fillBlankValuesWithDefault() {
+func (opts *ListViewRawOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

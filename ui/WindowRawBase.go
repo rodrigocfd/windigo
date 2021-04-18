@@ -12,17 +12,17 @@ import (
 
 // Base to all windows created by specifying all options, which will be passed
 // to the underlying CreateWindowEx().
-type _WindowOptsBase struct {
+type _WindowRawBase struct {
 	_WindowBase
 }
 
-func (me *_WindowOptsBase) new() {
+func (me *_WindowRawBase) new() {
 	me._WindowBase.new()
 }
 
 // Fills the WNDCLASSEX structure with the given parameters, and the class name,
 // if not specified, will be auto-generated.
-func (me *_WindowOptsBase) generateWcx(
+func (me *_WindowRawBase) generateWcx(
 	wcx *win.WNDCLASSEX,
 	hInst win.HINSTANCE, className string, classStyles co.CS,
 	hCursor win.HCURSOR, hBrushBg win.HBRUSH, iconId int) string {
@@ -54,7 +54,7 @@ func (me *_WindowOptsBase) generateWcx(
 }
 
 // Calls RegisterClassEx().
-func (me *_WindowOptsBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
+func (me *_WindowRawBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 	atom, fail := win.RegisterClassEx(wcx)
 	if fail != nil {
 		lerr, _ := fail.(err.ERROR)
@@ -74,7 +74,7 @@ func (me *_WindowOptsBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 }
 
 // Calls CreateWindowEx().
-func (me *_WindowOptsBase) createWindow(
+func (me *_WindowRawBase) createWindow(
 	exStyle co.WS_EX, className, title string, style co.WS,
 	pos win.POINT, size win.SIZE, hParent win.HWND, hMenu win.HMENU,
 	hInst win.HINSTANCE) {
@@ -90,7 +90,7 @@ func (me *_WindowOptsBase) createWindow(
 }
 
 // Returns window coords at screen center, and window size from its client area.
-func (me *_WindowOptsBase) calcWndCoords(
+func (me *_WindowRawBase) calcWndCoords(
 	pClientArea *win.SIZE, hMenu win.HMENU,
 	styles co.WS, exStyles co.WS_EX) (win.POINT, win.SIZE) {
 
@@ -120,7 +120,7 @@ func (me *_WindowOptsBase) calcWndCoords(
 }
 
 // Keeps all *_WindowOptsBase that were retrieved in _WndProc.
-var _globalWindowOptsBasePtrs = make(map[win.HWND]*_WindowOptsBase, 10)
+var _globalWindowOptsBasePtrs = make(map[win.HWND]*_WindowRawBase, 10)
 
 // Default window procedure.
 func _WndProc(
@@ -129,7 +129,7 @@ func _WndProc(
 	// https://devblogs.microsoft.com/oldnewthing/20050422-08/?p=35813
 	if uMsg == co.WM_NCCREATE {
 		cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
-		pMe := (*_WindowOptsBase)(unsafe.Pointer(cs.LpCreateParams))
+		pMe := (*_WindowRawBase)(unsafe.Pointer(cs.LpCreateParams))
 		_globalWindowOptsBasePtrs[hWnd] = pMe
 		pMe._WindowBase.hWnd = hWnd // assign actual HWND
 	}
