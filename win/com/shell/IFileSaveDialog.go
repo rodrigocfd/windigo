@@ -34,8 +34,8 @@ type IFileSaveDialog struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateIFileSaveDialog(dwClsContext co.CLSCTX) (IFileSaveDialog, error) {
 	iUnk, lerr := win.CoCreateInstance(
-		win.NewGuidFromClsid(co.CLSID_FileSaveDialog), nil, dwClsContext,
-		win.NewGuidFromIid(co.IID_IFileSaveDialog))
+		win.NewGuidFromClsid(CLSID.FileSaveDialog), nil, dwClsContext,
+		win.NewGuidFromIid(IID.IFileSaveDialog))
 	if lerr != nil {
 		return IFileSaveDialog{}, lerr
 	}

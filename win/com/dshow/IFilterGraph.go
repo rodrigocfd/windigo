@@ -37,8 +37,8 @@ type IFilterGraph struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateIFilterGraph(dwClsContext co.CLSCTX) (IFilterGraph, error) {
 	iUnk, lerr := win.CoCreateInstance(
-		win.NewGuidFromClsid(co.CLSID_FilterGraph), nil, dwClsContext,
-		win.NewGuidFromIid(co.IID_IFilterGraph))
+		win.NewGuidFromClsid(CLSID.FilterGraph), nil, dwClsContext,
+		win.NewGuidFromIid(IID.IFilterGraph))
 	if lerr != nil {
 		return IFilterGraph{}, lerr
 	}
