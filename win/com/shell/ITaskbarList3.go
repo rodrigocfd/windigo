@@ -40,11 +40,9 @@ type ITaskbarList3 struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateITaskbarList3(dwClsContext co.CLSCTX) (ITaskbarList3, error) {
-	clsidTaskbarList := win.NewGuid(0x56fdf344, 0xfd6d, 0x11d0, 0x958a, 0x006097c9a090)
-	iidITaskbarList3 := win.NewGuid(0xea1afb91, 0x9e28, 0x4b86, 0x90e9, 0x9e9f8a5eefaf)
-
 	iUnk, lerr := win.CoCreateInstance(
-		clsidTaskbarList, nil, dwClsContext, iidITaskbarList3)
+		win.NewGuidFromClsid(co.CLSID_TaskbarList), nil, dwClsContext,
+		win.NewGuidFromIid(co.IID_ITaskbarList3))
 	if lerr != nil {
 		return ITaskbarList3{}, lerr
 	}

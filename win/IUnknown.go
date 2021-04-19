@@ -34,12 +34,18 @@ type IUnknown struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
-	rclsid *GUID, pUnkOuter unsafe.Pointer,
+	rclsid *GUID, pUnkOuter *IUnknown,
 	dwClsContext co.CLSCTX, riid *GUID) (IUnknown, error) {
 
 	var ppv **IUnknownVtbl
+
+	var ppOuterVtbl ***IUnknownVtbl = nil
+	if pUnkOuter != nil {
+		ppOuterVtbl = &pUnkOuter.Ppv
+	}
+
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
-		uintptr(unsafe.Pointer(rclsid)), uintptr(pUnkOuter),
+		uintptr(unsafe.Pointer(rclsid)), uintptr(unsafe.Pointer(ppOuterVtbl)),
 		uintptr(dwClsContext), uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppv)), 0)
 

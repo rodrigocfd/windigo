@@ -36,11 +36,9 @@ type IFilterGraph struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateIFilterGraph(dwClsContext co.CLSCTX) (IFilterGraph, error) {
-	clsidFilterGraph := win.NewGuid(0xe436ebb3, 0x524f, 0x11ce, 0x9f53, 0x0020af0ba770)
-	iidIFilterGraph := win.NewGuid(0x56a8689f, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)
-
 	iUnk, lerr := win.CoCreateInstance(
-		clsidFilterGraph, nil, dwClsContext, iidIFilterGraph)
+		win.NewGuidFromClsid(co.CLSID_FilterGraph), nil, dwClsContext,
+		win.NewGuidFromIid(co.IID_IFilterGraph))
 	if lerr != nil {
 		return IFilterGraph{}, lerr
 	}

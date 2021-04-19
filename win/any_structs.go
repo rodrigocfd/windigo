@@ -116,16 +116,6 @@ func (ft *FILETIME) ToTime() time.Time {
 	return st.ToTime()
 }
 
-// Can be created with NewGuid().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
-type GUID struct {
-	Data1 uint32
-	Data2 uint16
-	Data3 uint16
-	Data4 uint64
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
 type HELPINFO struct {
 	CbSize       uint32

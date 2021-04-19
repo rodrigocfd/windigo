@@ -35,11 +35,9 @@ type IGraphBuilder struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateIGraphBuilder(dwClsContext co.CLSCTX) (IGraphBuilder, error) {
-	clsidFilterGrapth := win.NewGuid(0xe436ebb3, 0x524f, 0x11ce, 0x9f53, 0x0020af0ba770)
-	iidIGraphBuilder := win.NewGuid(0x56a868a9, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)
-
 	iUnk, lerr := win.CoCreateInstance(
-		clsidFilterGrapth, nil, dwClsContext, iidIGraphBuilder)
+		win.NewGuidFromClsid(co.CLSID_FilterGraph), nil, dwClsContext,
+		win.NewGuidFromIid(co.IID_IGraphBuilder))
 	if lerr != nil {
 		return IGraphBuilder{}, lerr
 	}
@@ -77,9 +75,7 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 //
 // Calls IUnknown.QueryInterface() to return IBasicAudio.
 func (me *IGraphBuilder) QueryIBasicAudio() (IBasicAudio, error) {
-	iidIBasicAudio := win.NewGuid(0x56a868b3, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)
-
-	iUnk, lerr := me.QueryInterface(iidIBasicAudio)
+	iUnk, lerr := me.QueryInterface(win.NewGuidFromIid(co.IID_IBasicAudio))
 	if lerr != nil {
 		return IBasicAudio{}, lerr
 	}
@@ -92,9 +88,7 @@ func (me *IGraphBuilder) QueryIBasicAudio() (IBasicAudio, error) {
 //
 // Calls IUnknown.QueryInterface() to return IMediaControl.
 func (me *IGraphBuilder) QueryIMediaControl() (IMediaControl, error) {
-	iidIMediaControl := win.NewGuid(0x56a868b1, 0x0ad4, 0x11ce, 0xb03a, 0x0020af0ba770)
-
-	iUnk, lerr := me.QueryInterface(iidIMediaControl)
+	iUnk, lerr := me.QueryInterface(win.NewGuidFromIid(co.IID_IMediaControl))
 	if lerr != nil {
 		return IMediaControl{}, lerr
 	}
@@ -107,9 +101,7 @@ func (me *IGraphBuilder) QueryIMediaControl() (IMediaControl, error) {
 //
 // Calls IUnknown.QueryInterface() to return IMediaSeeking.
 func (me *IGraphBuilder) QueryIMediaSeeking() (IMediaSeeking, error) {
-	iidIMediaSeeking := win.NewGuid(0x36b73880, 0xc2c8, 0x11cf, 0x8b46, 0x00805f6cef60)
-
-	iUnk, lerr := me.QueryInterface(iidIMediaSeeking)
+	iUnk, lerr := me.QueryInterface(win.NewGuidFromIid(co.IID_IMediaSeeking))
 	if lerr != nil {
 		return IMediaSeeking{}, lerr
 	}

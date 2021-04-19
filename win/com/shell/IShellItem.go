@@ -32,12 +32,11 @@ type IShellItem struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 func NewShellItem(thePath string) (IShellItem, error) {
-	iidIShellItem := win.NewGuid(0x43826d1e, 0xe718, 0x42ee, 0xbc55, 0xa1e261c37bfe)
 	var ppv **win.IUnknownVtbl
-
 	ret, _, _ := syscall.Syscall6(proc.SHCreateItemFromParsingName.Addr(), 4,
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(thePath))),
-		0, uintptr(unsafe.Pointer(iidIShellItem)), uintptr(unsafe.Pointer(&ppv)),
+		0, uintptr(unsafe.Pointer(win.NewGuidFromIid(co.IID_IShellItem))),
+		uintptr(unsafe.Pointer(&ppv)),
 		0, 0)
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {

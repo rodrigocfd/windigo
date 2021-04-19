@@ -1,7 +1,6 @@
 package win
 
 import (
-	"encoding/binary"
 	"syscall"
 	"unsafe"
 
@@ -687,25 +686,6 @@ func MulDiv(number, numerator, denominator int32) int32 {
 	ret, _, _ := syscall.Syscall(proc.MulDiv.Addr(), 3,
 		uintptr(number), uintptr(numerator), uintptr(denominator))
 	return int32(ret)
-}
-
-// Returns a GUID struct from hex numbers, which can be copied straight from
-// standard GUID definitions.
-//
-// Example for IUnknown:
-// g := NewGuid(0x00000000, 0x0000, 0x0000, 0xc000, 0x000000000046)
-func NewGuid(p1 uint32, p2, p3, p4 uint16, p5 uint64) *GUID {
-	newGuid := GUID{
-		Data1: p1,
-		Data2: p2,
-		Data3: p3,
-		Data4: (uint64(p4) << 48) | p5,
-	}
-
-	buf64 := [8]byte{}
-	binary.BigEndian.PutUint64(buf64[:], newGuid.Data4)
-	newGuid.Data4 = binary.LittleEndian.Uint64(buf64[:]) // reverse bytes of Data4
-	return &newGuid
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postquitmessage

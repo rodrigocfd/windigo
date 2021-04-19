@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -44,10 +45,8 @@ func (me *IMFGetService) GetService(
 //
 // ⚠️ You must defer Release().
 func (me *IMFGetService) GetServiceIMFVideoDisplayControl() (IMFVideoDisplayControl, error) {
-	mrVideoRenderService := win.NewGuid(0x1092a86c, 0xab1a, 0x459a, 0xa336, 0x831fbc4d11ff)
-	iidIMFVideoDisplayControl := win.NewGuid(0xa490b1e4, 0xab84, 0x4d31, 0xa1b2, 0x181e03b1077a)
-
-	iUnk, lerr := me.GetService(mrVideoRenderService, iidIMFVideoDisplayControl)
+	iUnk, lerr := me.GetService(win.NewGuidFromClsid(co.MR_VideoRenderService),
+		win.NewGuidFromIid(co.IID_IMFVideoDisplayControl))
 	if lerr != nil {
 		return IMFVideoDisplayControl{}, lerr
 	}
