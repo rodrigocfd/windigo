@@ -662,6 +662,72 @@ const (
 	TA_RTLREADING TA = 256
 )
 
+// Trackbar control messages.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-messages
+const (
+	TBM_GETPOS           WM = WM_USER
+	TBM_GETRANGEMIN      WM = WM_USER + 1
+	TBM_GETRANGEMAX      WM = WM_USER + 2
+	TBM_GETTIC           WM = WM_USER + 3
+	TBM_SETTIC           WM = WM_USER + 4
+	TBM_SETPOS           WM = WM_USER + 5
+	TBM_SETRANGE         WM = WM_USER + 6
+	TBM_SETRANGEMIN      WM = WM_USER + 7
+	TBM_SETRANGEMAX      WM = WM_USER + 8
+	TBM_CLEARTICS        WM = WM_USER + 9
+	TBM_SETSEL           WM = WM_USER + 10
+	TBM_SETSELSTART      WM = WM_USER + 11
+	TBM_SETSELEND        WM = WM_USER + 12
+	TBM_GETPTICS         WM = WM_USER + 14
+	TBM_GETTICPOS        WM = WM_USER + 15
+	TBM_GETNUMTICS       WM = WM_USER + 16
+	TBM_GETSELSTART      WM = WM_USER + 17
+	TBM_GETSELEND        WM = WM_USER + 18
+	TBM_CLEARSEL         WM = WM_USER + 19
+	TBM_SETTICFREQ       WM = WM_USER + 20
+	TBM_SETPAGESIZE      WM = WM_USER + 21
+	TBM_GETPAGESIZE      WM = WM_USER + 22
+	TBM_SETLINESIZE      WM = WM_USER + 23
+	TBM_GETLINESIZE      WM = WM_USER + 24
+	TBM_GETTHUMBRECT     WM = WM_USER + 25
+	TBM_GETCHANNELRECT   WM = WM_USER + 26
+	TBM_SETTHUMBLENGTH   WM = WM_USER + 27
+	TBM_GETTHUMBLENGTH   WM = WM_USER + 28
+	TBM_SETTOOLTIPS      WM = WM_USER + 29
+	TBM_GETTOOLTIPS      WM = WM_USER + 30
+	TBM_SETTIPSIDE       WM = WM_USER + 31
+	TBM_SETBUDDY         WM = WM_USER + 32
+	TBM_GETBUDDY         WM = WM_USER + 33
+	TBM_SETUNICODEFORMAT WM = CCM_SETUNICODEFORMAT
+	TBM_GETUNICODEFORMAT WM = CCM_GETUNICODEFORMAT
+)
+
+// Trackbar control styles.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/trackbar-control-styles
+type TBS WS
+
+const (
+	TBS_AUTOTICKS        TBS = 0x1
+	TBS_VERT             TBS = 0x2
+	TBS_HORZ             TBS = 0x0
+	TBS_TOP              TBS = 0x4
+	TBS_BOTTOM           TBS = 0x0
+	TBS_LEFT             TBS = 0x4
+	TBS_RIGHT            TBS = 0x0
+	TBS_BOTH             TBS = 0x8
+	TBS_NOTICKS          TBS = 0x10
+	TBS_ENABLESELRANGE   TBS = 0x20
+	TBS_FIXEDLENGTH      TBS = 0x40
+	TBS_NOTHUMB          TBS = 0x80
+	TBS_TOOLTIPS         TBS = 0x100
+	TBS_REVERSED         TBS = 0x200
+	TBS_DOWNISLEFT       TBS = 0x400
+	TBS_NOTIFYBEFOREMOVE TBS = 0x800
+	TBS_TRANSPARENTBKGND TBS = 0x1000
+)
+
 // GetTimeZoneInformation() return value.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation

@@ -20,15 +20,15 @@ type GUID struct {
 
 // Returns a GUID struct from a CLSID string.
 func NewGuidFromClsid(clsid co.CLSID) *GUID {
-	return newGuidFromStr(string(clsid))
+	return _NewGuidFromStr(string(clsid))
 }
 
 // Returns a GUID struct from an IID string.
 func NewGuidFromIid(iid co.IID) *GUID {
-	return newGuidFromStr(string(iid))
+	return _NewGuidFromStr(string(iid))
 }
 
-func newGuidFromStr(strGuid string) *GUID {
+func _NewGuidFromStr(strGuid string) *GUID {
 	strs := strings.Split(strGuid, "-")
 
 	num1, e := strconv.ParseUint(strs[0], 16, 32)

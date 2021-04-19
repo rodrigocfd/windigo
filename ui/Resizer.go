@@ -21,6 +21,8 @@ const (
 
 type Resizer interface {
 	// Adds child controls, and their behavior when the parent is resized.
+	//
+	// Should be called on WM_CREATE or WM_INITDIALOG.
 	Add(horzBehavior, vertBehavior RESZ, ctrls ...AnyControl) Resizer
 }
 
