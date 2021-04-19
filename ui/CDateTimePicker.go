@@ -13,7 +13,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-controls
 type DateTimePicker interface {
-	AnyControl
+	AnyNativeControl
 
 	// Exposes all the DateTimePicker notifications the can be handled.
 	// Cannot be called after the control was created.

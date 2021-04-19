@@ -39,6 +39,11 @@ type AnyControl interface {
 
 	// Returns the parent of this control.
 	Parent() AnyParent
+}
+
+// Any native child window control.
+type AnyNativeControl interface {
+	AnyControl
 
 	// Exposes all the window messages that can be handled with subclassing.
 	//

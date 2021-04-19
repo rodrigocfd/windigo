@@ -13,7 +13,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/month-calendar-controls
 type MonthCalendar interface {
-	AnyControl
+	AnyNativeControl
 
 	// Exposes all the MonthCalendar notifications the can be handled.
 	// Cannot be called after the control was created.

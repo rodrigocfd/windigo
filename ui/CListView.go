@@ -13,7 +13,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/list-view-controls-overview
 type ListView interface {
-	AnyControl
+	AnyNativeControl
 
 	// Exposes all the ListView notifications the can be handled.
 	// Cannot be called after the control was created.

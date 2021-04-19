@@ -11,7 +11,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/progress-bar-control
 type ProgressBar interface {
-	AnyControl
+	AnyNativeControl
 
 	isProgressBar() // disambiguate
 

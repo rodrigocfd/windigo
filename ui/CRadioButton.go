@@ -12,7 +12,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioButton interface {
-	AnyControl
+	AnyNativeControl
 
 	// Exposes all the Button notifications the can be handled.
 	// Cannot be called after the control was created.

@@ -10,7 +10,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-static-controls
 type Static interface {
-	AnyControl
+	AnyNativeControl
 
 	// Exposes all the Static notifications the can be handled.
 	// Cannot be called after the control was created.

@@ -13,7 +13,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/status-bars
 type StatusBar interface {
-	AnyControl
+	AnyNativeControl
 
 	// Exposes all the StatusBar notifications the can be handled.
 	// Cannot be called after the control was created.

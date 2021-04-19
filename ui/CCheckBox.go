@@ -10,7 +10,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#check-boxes
 type CheckBox interface {
-	AnyControl
+	AnyNativeControl
 
 	// Exposes all the Button notifications the can be handled.
 	// Cannot be called after the control was created.

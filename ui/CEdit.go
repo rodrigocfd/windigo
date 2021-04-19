@@ -12,7 +12,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-edit-controls
 type Edit interface {
-	AnyControl
+	AnyNativeControl
 
 	// Exposes all the Edit notifications the can be handled.
 	// Cannot be called after the control was created.
