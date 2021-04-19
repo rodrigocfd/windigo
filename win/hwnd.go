@@ -230,7 +230,7 @@ func (hWnd HWND) GetParent() HWND {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getscrollinfo
-func (hWnd HWND) GetScrollInfo(nBar co.SBB, lpsi *SCROLLINFO) {
+func (hWnd HWND) GetScrollInfo(nBar co.SB_TYPE, lpsi *SCROLLINFO) {
 	ret, _, lerr := syscall.Syscall(proc.GetScrollInfo.Addr(), 3,
 		uintptr(hWnd), uintptr(nBar), uintptr(unsafe.Pointer(lpsi)))
 	if ret == 0 {
@@ -524,7 +524,7 @@ func (hWnd HWND) SetParent(hWndNewParent HWND) HWND {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setscrollinfo
 func (hWnd HWND) SetScrollInfo(
-	nBar co.SBB, lpsi *SCROLLINFO, redraw bool) int32 {
+	nBar co.SB_TYPE, lpsi *SCROLLINFO, redraw bool) int32 {
 
 	ret, _, _ := syscall.Syscall6(proc.SetScrollInfo.Addr(), 4,
 		uintptr(hWnd), uintptr(nBar), uintptr(unsafe.Pointer(lpsi)),

@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"unsafe"
+
 	"github.com/rodrigocfd/windigo/ui/wm"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -186,4 +188,18 @@ type _TrackbarEvents struct {
 func (me *_TrackbarEvents) new(ctrl *_NativeControlBase) {
 	me.ctrlId = ctrl.CtrlId()
 	me.events = ctrl.parent.On()
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/trbn-thumbposchanging
+func (me *_TrackbarEvents) ThumbPosChanging(userFunc func(p *win.NMTRBTHUMBPOSCHANGING)) {
+	me.events.addNfyZero(me.ctrlId, co.TRBN_THUMBPOSCHANGING, func(p unsafe.Pointer) {
+		userFunc((*win.NMTRBTHUMBPOSCHANGING)(p))
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-trackbar-
+func (me *_TrackbarEvents) NmReleasedCapture(userFunc func()) {
+	me.events.addNfyZero(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) {
+		userFunc()
+	})
 }

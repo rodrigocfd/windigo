@@ -290,6 +290,13 @@ type NMSELCHANGE struct {
 	StSelEnd   SYSTEMTIME
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtrbthumbposchanging
+type NMTRBTHUMBPOSCHANGING struct {
+	Hdr     NMHDR
+	DwPos   uint32
+	NReason co.TB
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtreevieww
 type NMTREEVIEW struct {
 	Hdr     NMHDR

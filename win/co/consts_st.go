@@ -22,6 +22,41 @@ const (
 	SB_GETUNICODEFORMAT WM = CCM_GETUNICODEFORMAT
 )
 
+// WM_HSCROLL, WM_HSCROLL, WM_HSCROLLCLIPBOARD and WM_VSCROLLCLIPBOARD request.
+// Originally with SB prefix.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/wm-hscroll
+type SB_REQ uint16
+
+const (
+	SB_REQ_LINEUP        SB_REQ = 0
+	SB_REQ_LINELEFT      SB_REQ = 0
+	SB_REQ_LINEDOWN      SB_REQ = 1
+	SB_REQ_LINERIGHT     SB_REQ = 1
+	SB_REQ_PAGEUP        SB_REQ = 2
+	SB_REQ_PAGELEFT      SB_REQ = 2
+	SB_REQ_PAGEDOWN      SB_REQ = 3
+	SB_REQ_PAGERIGHT     SB_REQ = 3
+	SB_REQ_THUMBPOSITION SB_REQ = 4
+	SB_REQ_THUMBTRACK    SB_REQ = 5
+	SB_REQ_TOP           SB_REQ = 6
+	SB_REQ_LEFT          SB_REQ = 6
+	SB_REQ_BOTTOM        SB_REQ = 7
+	SB_REQ_RIGHT         SB_REQ = 7
+	SB_REQ_ENDSCROLL     SB_REQ = 8
+)
+
+// GetScrollInfo() nBar, among others. Originally has SB prefix.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getscrollinfo
+type SB_TYPE int32
+
+const (
+	SB_TYPE_HORZ SB_TYPE = 0
+	SB_TYPE_VERT SB_TYPE = 1
+	SB_TYPE_CTL  SB_TYPE = 2
+)
+
 // StatusBar styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/status-bar-styles
@@ -32,17 +67,6 @@ const (
 	SBARS_TOOLTIPS SBARS = 0x0800
 )
 
-// GetScrollInfo() nBar, among others. Originally has SB prefix.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getscrollinfo
-type SBB int32
-
-const (
-	SBB_HORZ SBB = 0
-	SBB_VERT SBB = 1
-	SBB_CTL  SBB = 2
-)
-
 // StatusBar control notifications, sent via WM_NOTIFY.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-status-bars-reference-notifications
@@ -50,29 +74,6 @@ const (
 	_SBN_FIRST NM = -880
 
 	SBN_SIMPLEMODECHANGE NM = _SBN_FIRST - 0
-)
-
-// WM_HSCROLLCLIPBOARD request, among others. Originally with SB prefix.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/dataxchg/wm-hscrollclipboard
-type SBS uint16
-
-const (
-	SBS_LINEUP        SBS = 0
-	SBS_LINELEFT      SBS = 0
-	SBS_LINEDOWN      SBS = 1
-	SBS_LINERIGHT     SBS = 1
-	SBS_PAGEUP        SBS = 2
-	SBS_PAGELEFT      SBS = 2
-	SBS_PAGEDOWN      SBS = 3
-	SBS_PAGERIGHT     SBS = 3
-	SBS_THUMBPOSITION SBS = 4
-	SBS_THUMBTRACK    SBS = 5
-	SBS_TOP           SBS = 6
-	SBS_LEFT          SBS = 6
-	SBS_BOTTOM        SBS = 7
-	SBS_RIGHT         SBS = 7
-	SBS_ENDSCROLL     SBS = 8
 )
 
 // WM_SYSCOMMAND type of requested command.
@@ -522,34 +523,6 @@ const (
 	STANDARD_RIGHTS_ALL      STANDARD_RIGHTS = 0x001f0000
 )
 
-// TrackPopupMenu() uFlags.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
-type TPM uint32
-
-const (
-	TPM_LEFTBUTTON      TPM = 0x0000
-	TPM_RIGHTBUTTON     TPM = 0x0002
-	TPM_LEFTALIGN       TPM = 0x0000
-	TPM_CENTERALIGN     TPM = 0x0004
-	TPM_RIGHTALIGN      TPM = 0x0008
-	TPM_TOPALIGN        TPM = 0x0000
-	TPM_VCENTERALIGN    TPM = 0x0010
-	TPM_BOTTOMALIGN     TPM = 0x0020
-	TPM_HORIZONTAL      TPM = 0x0000
-	TPM_VERTICAL        TPM = 0x0040
-	TPM_NONOTIFY        TPM = 0x0080
-	TPM_RETURNCMD       TPM = 0x0100
-	TPM_RECURSE         TPM = 0x0001
-	TPM_HORPOSANIMATION TPM = 0x0400
-	TPM_HORNEGANIMATION TPM = 0x0800
-	TPM_VERPOSANIMATION TPM = 0x1000
-	TPM_VERNEGANIMATION TPM = 0x2000
-	TPM_NOANIMATION     TPM = 0x4000
-	TPM_LAYOUTRTL       TPM = 0x8000
-	TPM_WORKAREA        TPM = 0x10000
-)
-
 // Static control styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/static-control-styles
@@ -662,6 +635,23 @@ const (
 	TA_RTLREADING TA = 256
 )
 
+// Trackbar's WM_HSCROLL and WM_VSCROLL request.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/wm-hscroll--trackbar-
+type TB uint16
+
+const (
+	TB_LINEUP        TB = 0
+	TB_LINEDOWN      TB = 1
+	TB_PAGEUP        TB = 2
+	TB_PAGEDOWN      TB = 3
+	TB_THUMBPOSITION TB = 4
+	TB_THUMBTRACK    TB = 5
+	TB_TOP           TB = 6
+	TB_BOTTOM        TB = 7
+	TB_ENDTRACK      TB = 8
+)
+
 // Trackbar control messages.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-messages
@@ -737,6 +727,43 @@ const (
 	TIME_ZONE_ID_UNKNOWN  TIME_ZONE_ID = 0
 	TIME_ZONE_ID_STANDARD TIME_ZONE_ID = 1
 	TIME_ZONE_ID_DAYLIGHT TIME_ZONE_ID = 2
+)
+
+// Trackbar control notifications, sent via WM_NOTIFY.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-notifications
+const (
+	_TRBN_FIRST NM = -1501
+
+	TRBN_THUMBPOSCHANGING NM = _TRBN_FIRST - 1
+)
+
+// TrackPopupMenu() uFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
+type TPM uint32
+
+const (
+	TPM_LEFTBUTTON      TPM = 0x0000
+	TPM_RIGHTBUTTON     TPM = 0x0002
+	TPM_LEFTALIGN       TPM = 0x0000
+	TPM_CENTERALIGN     TPM = 0x0004
+	TPM_RIGHTALIGN      TPM = 0x0008
+	TPM_TOPALIGN        TPM = 0x0000
+	TPM_VCENTERALIGN    TPM = 0x0010
+	TPM_BOTTOMALIGN     TPM = 0x0020
+	TPM_HORIZONTAL      TPM = 0x0000
+	TPM_VERTICAL        TPM = 0x0040
+	TPM_NONOTIFY        TPM = 0x0080
+	TPM_RETURNCMD       TPM = 0x0100
+	TPM_RECURSE         TPM = 0x0001
+	TPM_HORPOSANIMATION TPM = 0x0400
+	TPM_HORNEGANIMATION TPM = 0x0800
+	TPM_VERPOSANIMATION TPM = 0x1000
+	TPM_VERNEGANIMATION TPM = 0x2000
+	TPM_NOANIMATION     TPM = 0x4000
+	TPM_LAYOUTRTL       TPM = 0x8000
+	TPM_WORKAREA        TPM = 0x10000
 )
 
 // TVM_EXPAND action flag.

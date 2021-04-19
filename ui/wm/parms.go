@@ -176,13 +176,13 @@ func (p HotKey) VirtualKeyCode() co.VK { return co.VK(p.Msg.LParam.HiWord()) }
 type HScroll struct{ Msg Any }
 
 func (p HScroll) ScrollBoxPos() uint      { return uint(p.Msg.WParam.HiWord()) }
-func (p HScroll) Request() co.SBS         { return co.SBS(p.Msg.WParam.LoWord()) }
+func (p HScroll) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.LoWord()) }
 func (p HScroll) HwndScrollbar() win.HWND { return win.HWND(p.Msg.LParam) }
 
 type HScrollClipboard struct{ Msg Any }
 
 func (p HScrollClipboard) ScrollBoxPos() uint      { return uint(p.Msg.WParam.HiWord()) }
-func (p HScrollClipboard) Request() co.SBS         { return co.SBS(p.Msg.WParam.LoWord()) }
+func (p HScrollClipboard) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.LoWord()) }
 func (p HScrollClipboard) HwndScrollbar() win.HWND { return win.HWND(p.Msg.LParam) }
 
 type InitDialog struct{ Msg Any }
@@ -355,11 +355,11 @@ func (p UnInitMenuPopup) Hmenu() win.HMENU { return win.HMENU(p.Msg.WParam) }
 type VScroll struct{ Msg Any }
 
 func (p VScroll) ScrollBoxPos() uint      { return uint(p.Msg.WParam.HiWord()) }
-func (p VScroll) Request() co.SBS         { return co.SBS(p.Msg.WParam.LoWord()) }
+func (p VScroll) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.LoWord()) }
 func (p VScroll) HwndScrollbar() win.HWND { return win.HWND(p.Msg.LParam) }
 
 type VScrollClipboard struct{ Msg Any }
 
 func (p VScrollClipboard) ScrollBoxPos() uint      { return uint(p.Msg.WParam.HiWord()) }
-func (p VScrollClipboard) Request() co.SBS         { return co.SBS(p.Msg.WParam.LoWord()) }
+func (p VScrollClipboard) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.LoWord()) }
 func (p VScrollClipboard) HwndScrollbar() win.HWND { return win.HWND(p.Msg.LParam) }
