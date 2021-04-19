@@ -3,18 +3,21 @@ package co
 const (
 	CLSID_EnhancedVideoRenderer CLSID = "fa10746c-9b63-4b6c-bc49-fc300ea5f256"
 	CLSID_FilterGraph           CLSID = "e436ebb3-524f-11ce-9f53-0020af0ba770"
+	CLSID_MR_VideoRenderService CLSID = "1092a86c-ab1a-459a-a336-831fbc4d11ff"
 	CLSID_VideoMixingRenderer9  CLSID = "51b4abf3-748f-4e3b-a276-c828330e926a"
 
 	IID_IBaseFilter            IID = "56a86895-0ad4-11ce-b03a-0020af0ba770"
 	IID_IBasicAudio            IID = "56a868b3-0ad4-11ce-b03a-0020af0ba770"
+	IID_IEnumFilters           IID = "56a86893-0ad4-11ce-b03a-0020af0ba770"
 	IID_IFilterGraph           IID = "56a8689f-0ad4-11ce-b03a-0020af0ba770"
 	IID_IGraphBuilder          IID = "56a868a9-0ad4-11ce-b03a-0020af0ba770"
 	IID_IMediaControl          IID = "56a868b1-0ad4-11ce-b03a-0020af0ba770"
+	IID_IMediaFilter           IID = "56a86899-0ad4-11ce-b03a-0020af0ba770"
 	IID_IMediaSeeking          IID = "36b73880-c2c8-11cf-8b46-00805f6cef60"
 	IID_IMFGetService          IID = "fa993888-4383-415a-a930-dd472a8cf6f7"
 	IID_IMFVideoDisplayControl IID = "a490b1e4-ab84-4d31-a1b2-181e03b1077a"
-
-	MR_VideoRenderService CLSID = "1092a86c-ab1a-459a-a336-831fbc4d11ff"
+	IID_IPersist               IID = "0000010c-0000-0000-c000-000000000046"
+	IID_IPin                   IID = "56a86891-0ad4-11ce-b03a-0020af0ba770"
 )
 
 // Originally AM_SEEKING_SeekingCapabilities enum.

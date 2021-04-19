@@ -4,11 +4,12 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
 type _IBasicAudioVtbl struct {
-	_IDispatchVtbl
+	win.IDispatchVtbl
 	PutVolume  uintptr
 	GetVolume  uintptr
 	PutBalance uintptr
@@ -19,7 +20,7 @@ type _IBasicAudioVtbl struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-ibasicaudio
 type IBasicAudio struct {
-	IDispatch // Base IDispatch > IUnknown.
+	win.IDispatch // Base IDispatch > IUnknown.
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_balance

@@ -45,7 +45,7 @@ func (me *IMFGetService) GetService(
 //
 // ⚠️ You must defer Release().
 func (me *IMFGetService) GetServiceIMFVideoDisplayControl() (IMFVideoDisplayControl, error) {
-	iUnk, lerr := me.GetService(win.NewGuidFromClsid(co.MR_VideoRenderService),
+	iUnk, lerr := me.GetService(win.NewGuidFromClsid(co.CLSID_MR_VideoRenderService),
 		win.NewGuidFromIid(co.IID_IMFVideoDisplayControl))
 	if lerr != nil {
 		return IMFVideoDisplayControl{}, lerr

@@ -10,7 +10,7 @@ import (
 )
 
 type _IMediaControlVtbl struct {
-	_IDispatchVtbl
+	win.IDispatchVtbl
 	Run                    uintptr
 	Pause                  uintptr
 	Stop                   uintptr
@@ -26,7 +26,7 @@ type _IMediaControlVtbl struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
 type IMediaControl struct {
-	IDispatch // Base IDispatch > IUnknown.
+	win.IDispatch // Base IDispatch > IUnknown.
 }
 
 // Pass -1 for infinite timeout.

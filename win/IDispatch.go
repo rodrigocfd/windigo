@@ -1,15 +1,17 @@
-package dshow
+package win
 
 import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
-type _IDispatchVtbl struct {
-	win.IUnknownVtbl
+// IDispatch virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
+type IDispatchVtbl struct {
+	IUnknownVtbl
 	GetTypeInfoCount uintptr
 	GetTypeInfo      uintptr
 	GetIDsOfNames    uintptr
@@ -18,16 +20,18 @@ type _IDispatchVtbl struct {
 
 //------------------------------------------------------------------------------
 
+// IDispatch COM interface.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 type IDispatch struct {
-	win.IUnknown // Base IUnknown.
+	IUnknown // Base IUnknown.
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
 func (me *IDispatch) GetTypeInfoCount() int {
 	pctinfo := uint32(0)
 	ret, _, _ := syscall.Syscall(
-		(*_IDispatchVtbl)(unsafe.Pointer(*me.Ppv)).GetTypeInfoCount, 2,
+		(*IDispatchVtbl)(unsafe.Pointer(*me.Ppv)).GetTypeInfoCount, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&pctinfo)), 0)
 

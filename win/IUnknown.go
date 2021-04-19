@@ -10,6 +10,8 @@ import (
 )
 
 // IUnknown virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 type IUnknownVtbl struct {
 	QueryInterface uintptr
 	AddRef         uintptr
@@ -18,7 +20,7 @@ type IUnknownVtbl struct {
 
 //------------------------------------------------------------------------------
 
-// Base to all COM interfaces.
+// IUnknown COM interface, ase to all COM interfaces.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 type IUnknown struct {

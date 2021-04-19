@@ -80,7 +80,7 @@ func (me *IGraphBuilder) QueryIBasicAudio() (IBasicAudio, error) {
 		return IBasicAudio{}, lerr
 	}
 	return IBasicAudio{
-		IDispatch{IUnknown: iUnk},
+		win.IDispatch{IUnknown: iUnk},
 	}, nil
 }
 
@@ -93,7 +93,7 @@ func (me *IGraphBuilder) QueryIMediaControl() (IMediaControl, error) {
 		return IMediaControl{}, lerr
 	}
 	return IMediaControl{
-		IDispatch{IUnknown: iUnk},
+		win.IDispatch{IUnknown: iUnk},
 	}, nil
 }
 
