@@ -63,8 +63,8 @@ const (
 type SBARS WS
 
 const (
-	SBARS_SIZEGRIP SBARS = 0x0100
-	SBARS_TOOLTIPS SBARS = 0x0800
+	SBARS_SIZEGRIP SBARS = 0x0100 // The status bar control will include a sizing grip at the right end of the status bar. A sizing grip is similar to a sizing border; it is a rectangular area that the user can click and drag to resize the parent window.
+	SBARS_TOOLTIPS SBARS = 0x0800 // Use this style to enable tooltips.
 )
 
 // StatusBar control notifications, sent via WM_NOTIFY.
@@ -699,23 +699,23 @@ const (
 type TBS WS
 
 const (
-	TBS_AUTOTICKS        TBS = 0x1
-	TBS_VERT             TBS = 0x2
-	TBS_HORZ             TBS = 0x0
-	TBS_TOP              TBS = 0x4
-	TBS_BOTTOM           TBS = 0x0
-	TBS_LEFT             TBS = 0x4
-	TBS_RIGHT            TBS = 0x0
-	TBS_BOTH             TBS = 0x8
-	TBS_NOTICKS          TBS = 0x10
-	TBS_ENABLESELRANGE   TBS = 0x20
-	TBS_FIXEDLENGTH      TBS = 0x40
-	TBS_NOTHUMB          TBS = 0x80
-	TBS_TOOLTIPS         TBS = 0x100
-	TBS_REVERSED         TBS = 0x200
-	TBS_DOWNISLEFT       TBS = 0x400
-	TBS_NOTIFYBEFOREMOVE TBS = 0x800
-	TBS_TRANSPARENTBKGND TBS = 0x1000
+	TBS_AUTOTICKS        TBS = 0x1    // The trackbar control has a tick mark for each increment in its range of values.
+	TBS_VERT             TBS = 0x2    // The trackbar control is oriented vertically.
+	TBS_HORZ             TBS = 0x0    // The trackbar control is oriented horizontally. This is the default orientation.
+	TBS_TOP              TBS = 0x4    // The trackbar control displays tick marks above the control. This style is valid only with TBS_HORZ.
+	TBS_BOTTOM           TBS = 0x0    // The trackbar control displays tick marks below the control. This style is valid only with TBS_HORZ.
+	TBS_LEFT             TBS = 0x4    // The trackbar control displays tick marks to the left of the control. This style is valid only with TBS_VERT.
+	TBS_RIGHT            TBS = 0x0    // The trackbar control displays tick marks to the right of the control. This style is valid only with TBS_VERT.
+	TBS_BOTH             TBS = 0x8    // The trackbar control displays tick marks on both sides of the control. This will be both top and bottom when used with TBS_HORZ or both left and right if used with TBS_VERT.
+	TBS_NOTICKS          TBS = 0x10   // The trackbar control does not display any tick marks.
+	TBS_ENABLESELRANGE   TBS = 0x20   // The trackbar control displays a selection range only. The tick marks at the starting and ending positions of a selection range are displayed as triangles (instead of vertical dashes), and the selection range is highlighted.
+	TBS_FIXEDLENGTH      TBS = 0x40   // The trackbar control allows the size of the slider to be changed with the TBM_SETTHUMBLENGTH message.
+	TBS_NOTHUMB          TBS = 0x80   // The trackbar control does not display a slider.
+	TBS_TOOLTIPS         TBS = 0x100  // The trackbar control supports tooltips. When a trackbar control is created using this style, it automatically creates a default tooltip control that displays the slider's current position. You can change where the tooltips are displayed by using the TBM_SETTIPSIDE message.
+	TBS_REVERSED         TBS = 0x200  // This style bit is used for "reversed" trackbars, where a smaller number indicates "higher" and a larger number indicates "lower." It has no effect on the control; it is simply a label that can be checked to determine whether a trackbar is normal or reversed.
+	TBS_DOWNISLEFT       TBS = 0x400  // By default, the trackbar control uses down equal to right and up equal to left. Use the TBS_DOWNISLEFT style to reverse the default, making down equal left and up equal right.
+	TBS_NOTIFYBEFOREMOVE TBS = 0x800  // Trackbar should notify parent before repositioning the slider due to user action (enables snapping).
+	TBS_TRANSPARENTBKGND TBS = 0x1000 // Background is painted by the parent via the WM_PRINTCLIENT message.
 )
 
 // GetTimeZoneInformation() return value.

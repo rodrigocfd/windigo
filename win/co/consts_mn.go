@@ -112,14 +112,14 @@ type MCS WS
 
 const (
 	MCS_NONE             MCS = 0
-	MCS_DAYSTATE         MCS = 0x0001
-	MCS_MULTISELECT      MCS = 0x0002
-	MCS_WEEKNUMBERS      MCS = 0x0004
-	MCS_NOTODAYCIRCLE    MCS = 0x0008
-	MCS_NOTODAY          MCS = 0x0010
-	MCS_NOTRAILINGDATES  MCS = 0x0040
-	MCS_SHORTDAYSOFWEEK  MCS = 0x0080
-	MCS_NOSELCHANGEONNAV MCS = 0x0100
+	MCS_DAYSTATE         MCS = 0x0001 // The month calendar sends MCN_GETDAYSTATE notifications to request information about which days should be displayed in bold.
+	MCS_MULTISELECT      MCS = 0x0002 // The month calendar enables the user to select a range of dates within the control. By default, the maximum range is one week. You can change the maximum range that can be selected by using the MCM_SETMAXSELCOUNT message.
+	MCS_WEEKNUMBERS      MCS = 0x0004 // The month calendar control displays week numbers (1-52) to the left of each row of days. Week 1 is defined as the first week that contains at least four days.
+	MCS_NOTODAYCIRCLE    MCS = 0x0008 // The month calendar control does not circle the "today" date.
+	MCS_NOTODAY          MCS = 0x0010 // The month calendar control does not display the "today" date at the bottom of the control.
+	MCS_NOTRAILINGDATES  MCS = 0x0040 // Dates from the previous and next months are not displayed in the current month's calendar.
+	MCS_SHORTDAYSOFWEEK  MCS = 0x0080 // Short day names are displayed in the header.
+	MCS_NOSELCHANGEONNAV MCS = 0x0100 // The selection is not changed when the user navigates next or previous in the calendar. This allows the user to select a range larger than is visible.
 )
 
 // WM_MENUCHAR menu type. Originally with MF prefix.
