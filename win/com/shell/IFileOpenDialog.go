@@ -31,8 +31,7 @@ type IFileOpenDialog struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateIFileOpenDialog(dwClsContext co.CLSCTX) (IFileOpenDialog, error) {
 	iUnk, lerr := win.CoCreateInstance(
-		win.NewGuidFromClsid(CLSID.FileOpenDialog), nil, dwClsContext,
-		win.NewGuidFromIid(IID.IFileOpenDialog))
+		CLSID.FileOpenDialog, nil, dwClsContext, IID.IFileOpenDialog)
 	if lerr != nil {
 		return IFileOpenDialog{}, lerr
 	}

@@ -30,8 +30,7 @@ type IBaseFilter struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/medfound/using-the-directshow-evr-filter
 func CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) (IBaseFilter, error) {
 	iUnk, lerr := win.CoCreateInstance(
-		win.NewGuidFromClsid(CLSID.EnhancedVideoRenderer), nil, dwClsContext,
-		win.NewGuidFromIid(IID.IBaseFilter))
+		CLSID.EnhancedVideoRenderer, nil, dwClsContext, IID.IBaseFilter)
 	if lerr != nil {
 		return IBaseFilter{}, lerr
 	}
@@ -51,8 +50,7 @@ func CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) (IBaseFilter, error) 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/directshow/video-mixing-renderer-filter-9
 func CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) (IBaseFilter, error) {
 	iUnk, lerr := win.CoCreateInstance(
-		win.NewGuidFromClsid(CLSID.VideoMixingRenderer9), nil, dwClsContext,
-		win.NewGuidFromIid(IID.IBaseFilter))
+		CLSID.VideoMixingRenderer9, nil, dwClsContext, IID.IBaseFilter)
 	if lerr != nil {
 		return IBaseFilter{}, lerr
 	}
@@ -67,7 +65,7 @@ func CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) (IBaseFilter, error) {
 //
 // ⚠️ You must defer Release().
 func (me *IBaseFilter) QueryIMFGetService() (IMFGetService, error) {
-	iUnk, lerr := me.QueryInterface(win.NewGuidFromIid(IID.IMFGetService))
+	iUnk, lerr := me.QueryInterface(IID.IMFGetService)
 	if lerr != nil {
 		return IMFGetService{}, lerr
 	}

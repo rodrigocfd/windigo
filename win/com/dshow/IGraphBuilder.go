@@ -36,8 +36,7 @@ type IGraphBuilder struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateIGraphBuilder(dwClsContext co.CLSCTX) (IGraphBuilder, error) {
 	iUnk, lerr := win.CoCreateInstance(
-		win.NewGuidFromClsid(CLSID.FilterGraph), nil, dwClsContext,
-		win.NewGuidFromIid(IID.IGraphBuilder))
+		CLSID.FilterGraph, nil, dwClsContext, IID.IGraphBuilder)
 	if lerr != nil {
 		return IGraphBuilder{}, lerr
 	}
@@ -75,7 +74,7 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 //
 // Calls IUnknown.QueryInterface() to return IBasicAudio.
 func (me *IGraphBuilder) QueryIBasicAudio() (IBasicAudio, error) {
-	iUnk, lerr := me.QueryInterface(win.NewGuidFromIid(IID.IBasicAudio))
+	iUnk, lerr := me.QueryInterface(IID.IBasicAudio)
 	if lerr != nil {
 		return IBasicAudio{}, lerr
 	}
@@ -88,7 +87,7 @@ func (me *IGraphBuilder) QueryIBasicAudio() (IBasicAudio, error) {
 //
 // Calls IUnknown.QueryInterface() to return IMediaControl.
 func (me *IGraphBuilder) QueryIMediaControl() (IMediaControl, error) {
-	iUnk, lerr := me.QueryInterface(win.NewGuidFromIid(IID.IMediaControl))
+	iUnk, lerr := me.QueryInterface(IID.IMediaControl)
 	if lerr != nil {
 		return IMediaControl{}, lerr
 	}
@@ -101,7 +100,7 @@ func (me *IGraphBuilder) QueryIMediaControl() (IMediaControl, error) {
 //
 // Calls IUnknown.QueryInterface() to return IMediaSeeking.
 func (me *IGraphBuilder) QueryIMediaSeeking() (IMediaSeeking, error) {
-	iUnk, lerr := me.QueryInterface(win.NewGuidFromIid(IID.IMediaSeeking))
+	iUnk, lerr := me.QueryInterface(IID.IMediaSeeking)
 	if lerr != nil {
 		return IMediaSeeking{}, lerr
 	}
