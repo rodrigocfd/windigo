@@ -2,6 +2,8 @@ package dshow
 
 import (
 	"time"
+
+	"github.com/rodrigocfd/windigo/win"
 )
 
 // Converts 100 nanoseconds to time.Duration.
@@ -17,4 +19,17 @@ func _DurationTo100Nanosec(duration time.Duration) int64 {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/ns-evr-mfvideonormalizedrect
 type MFVideoNormalizedRect struct {
 	Left, Top, Right, Bottom float32
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ns-strmif-am_media_type
+type AM_MEDIA_TYPE struct {
+	Majortype            win.GUID
+	Subtype              win.GUID
+	BFixedSizeSamples    win.BOOL
+	BTemporalCompression win.BOOL
+	LSampleSize          uint32
+	Formattype           win.GUID
+	IUnknown             win.IUnknown
+	CbFormat             uint32
+	PbFormat             *byte
 }

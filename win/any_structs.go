@@ -313,7 +313,7 @@ type SCROLLINFO struct {
 type SECURITY_ATTRIBUTES struct {
 	NLength              uint32
 	LpSecurityDescriptor uintptr // LPVOID
-	BInheritHandle       int32
+	BInheritHandle       BOOL
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow

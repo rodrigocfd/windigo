@@ -22,6 +22,7 @@ var IID = struct {
 	IBaseFilter            co.IID
 	IBasicAudio            co.IID
 	IEnumFilters           co.IID
+	IEnumMediaTypes        co.IID
 	IFilterGraph           co.IID
 	IGraphBuilder          co.IID
 	IMediaControl          co.IID
@@ -35,6 +36,7 @@ var IID = struct {
 	IBaseFilter:            "56a86895-0ad4-11ce-b03a-0020af0ba770",
 	IBasicAudio:            "56a868b3-0ad4-11ce-b03a-0020af0ba770",
 	IEnumFilters:           "56a86893-0ad4-11ce-b03a-0020af0ba770",
+	IEnumMediaTypes:        "89c31040-846b-11ce-97d3-00aa0055595a",
 	IFilterGraph:           "56a8689f-0ad4-11ce-b03a-0020af0ba770",
 	IGraphBuilder:          "56a868a9-0ad4-11ce-b03a-0020af0ba770",
 	IMediaControl:          "56a868b1-0ad4-11ce-b03a-0020af0ba770",
