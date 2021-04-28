@@ -41,7 +41,7 @@ type FileMapped interface {
 type _FileMapped struct {
 	objFile  _File
 	hMap     HFILEMAP
-	pMem     HFILEMAPMEM
+	pMem     HFILEMAPVIEW
 	sz       int
 	readOnly bool // necessary for SetSize()
 }
@@ -67,7 +67,7 @@ func OpenFileMapped(
 	me := _FileMapped{
 		objFile:  _File{},
 		hMap:     HFILEMAP(0),
-		pMem:     HFILEMAPMEM(0),
+		pMem:     HFILEMAPVIEW(0),
 		sz:       0,
 		readOnly: readOnly,
 	}

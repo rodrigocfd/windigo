@@ -130,15 +130,15 @@ func (hMap HFILEMAP) CloseHandle() error {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
-	offset uint32, numBytesToMap uintptr) (HFILEMAPMEM, error) {
+	offset uint32, numBytesToMap uintptr) (HFILEMAPVIEW, error) {
 
 	ret, _, lerr := syscall.Syscall6(proc.MapViewOfFile.Addr(), 5,
 		uintptr(hMap), uintptr(desiredAccess), 0, uintptr(offset),
 		numBytesToMap, 0)
 	if ret == 0 {
-		return HFILEMAPMEM(0), err.ERROR(lerr)
+		return HFILEMAPVIEW(0), err.ERROR(lerr)
 	}
-	return HFILEMAPMEM(ret), nil
+	return HFILEMAPVIEW(ret), nil
 }
 
 //------------------------------------------------------------------------------
@@ -146,15 +146,15 @@ func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 // A handle to the memory block of a memory-mapped file.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
-type HFILEMAPMEM HANDLE
+type HFILEMAPVIEW HANDLE
 
 // Returns a pointer to the beginning of the mapped memory block.
-func (hMem HFILEMAPMEM) Ptr() *byte {
+func (hMem HFILEMAPVIEW) Ptr() *byte {
 	return (*byte)(unsafe.Pointer(hMem))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
-func (hMem HFILEMAPMEM) UnmapViewOfFile() error {
+func (hMem HFILEMAPVIEW) UnmapViewOfFile() error {
 	ret, _, lerr := syscall.Syscall(proc.UnmapViewOfFile.Addr(), 1,
 		uintptr(hMem), 0, 0)
 	if ret == 0 {
