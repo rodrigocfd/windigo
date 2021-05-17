@@ -39,21 +39,21 @@ func OpenFile(filePath string, behavior co.OPEN_FILE) (File, error) {
 func (me *_File) openFile(filePath string, behavior co.OPEN_FILE) error {
 	var desiredAccess co.GENERIC
 	var shareMode co.FILE_SHARE
-	var creationDisposition co.CREATION_DISP
+	var creationDisposition co.DISPOSITION
 
 	switch behavior {
 	case co.OPEN_FILE_READ_EXISTING:
 		desiredAccess = co.GENERIC_READ
 		shareMode = co.FILE_SHARE_READ
-		creationDisposition = co.CREATION_DISP_OPEN_EXISTING
+		creationDisposition = co.DISPOSITION_OPEN_EXISTING
 	case co.OPEN_FILE_RW_EXISTING:
 		desiredAccess = co.GENERIC_READ | co.GENERIC_WRITE
 		shareMode = co.FILE_SHARE_NONE
-		creationDisposition = co.CREATION_DISP_OPEN_EXISTING
+		creationDisposition = co.DISPOSITION_OPEN_EXISTING
 	case co.OPEN_FILE_RW_OPEN_OR_CREATE:
 		desiredAccess = co.GENERIC_READ | co.GENERIC_WRITE
 		shareMode = co.FILE_SHARE_NONE
-		creationDisposition = co.CREATION_DISP_OPEN_ALWAYS
+		creationDisposition = co.DISPOSITION_OPEN_ALWAYS
 	}
 
 	hFile, lerr := CreateFile(filePath, desiredAccess, shareMode, nil,

@@ -314,19 +314,6 @@ const (
 	COLOR_BTNHILIGHT              COLOR = COLOR_BTNHIGHLIGHT
 )
 
-// CreateFile() dwCreationDisposition. Originally with CREATE prefix.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
-type CREATION_DISP uint32
-
-const (
-	CREATION_DISP_CREATE_ALWAYS     CREATION_DISP = 2
-	CREATION_DISP_CREATE_NEW        CREATION_DISP = 1
-	CREATION_DISP_OPEN_ALWAYS       CREATION_DISP = 4
-	CREATION_DISP_OPEN_EXISTING     CREATION_DISP = 3
-	CREATION_DISP_TRUNCATE_EXISTING CREATION_DISP = 5
-)
-
 // Window class styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/window-class-styles
@@ -345,6 +332,19 @@ const (
 	CS_BYTEALIGNWINDOW CS = 0x2000
 	CS_GLOBALCLASS     CS = 0x4000
 	CS_DROPSHADOW      CS = 0x00020000
+)
+
+// CreateFile() dwCreationDisposition. Originally without prefix.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+type DISPOSITION uint32
+
+const (
+	DISPOSITION_CREATE_ALWAYS     DISPOSITION = 2
+	DISPOSITION_CREATE_NEW        DISPOSITION = 1
+	DISPOSITION_OPEN_ALWAYS       DISPOSITION = 4
+	DISPOSITION_OPEN_EXISTING     DISPOSITION = 3
+	DISPOSITION_TRUNCATE_EXISTING DISPOSITION = 5
 )
 
 // WM_GETDLGCODE return value.

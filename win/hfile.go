@@ -143,7 +143,8 @@ func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 
 //------------------------------------------------------------------------------
 
-// A handle to the memory block of a memory-mapped file.
+// A handle to the memory block of a memory-mapped file. Actually, this is the
+// starting address of the mapped view.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 type HFILEMAPVIEW HANDLE

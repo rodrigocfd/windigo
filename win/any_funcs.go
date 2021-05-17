@@ -98,7 +98,7 @@ func CreateDirectory(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 func CreateFile(fileName string, desiredAccess co.GENERIC,
 	shareMode co.FILE_SHARE, securityAttributes *SECURITY_ATTRIBUTES,
-	creationDisposition co.CREATION_DISP, attributes co.FILE_ATTRIBUTE,
+	creationDisposition co.DISPOSITION, attributes co.FILE_ATTRIBUTE,
 	flags co.FILE_FLAG, security co.SECURITY,
 	hTemplateFile HFILE) (HFILE, error) {
 
