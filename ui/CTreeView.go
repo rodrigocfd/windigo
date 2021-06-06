@@ -144,7 +144,7 @@ func (opts *TreeViewRawOpts) fillBlankValuesWithDefault() {
 // TreeView control notifications.
 type _TreeViewEvents struct {
 	ctrlId int
-	events *_EventsNfy
+	events *_EventsWmNfy
 }
 
 func (me *_TreeViewEvents) new(ctrl *_NativeControlBase) {

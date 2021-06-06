@@ -182,7 +182,7 @@ func (opts *TrackbarRawOpts) fillBlankValuesWithDefault() {
 // Trackbar control notifications.
 type _TrackbarEvents struct {
 	ctrlId int
-	events *_EventsNfy
+	events *_EventsWmNfy
 }
 
 func (me *_TrackbarEvents) new(ctrl *_NativeControlBase) {

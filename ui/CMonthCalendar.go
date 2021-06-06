@@ -133,7 +133,7 @@ func (opts *MonthCalendarRawOpts) fillBlankValuesWithDefault() {
 // MonthCalendar control notifications.
 type _MonthCalendarEvents struct {
 	ctrlId int
-	events *_EventsNfy
+	events *_EventsWmNfy
 }
 
 func (me *_MonthCalendarEvents) new(ctrl *_NativeControlBase) {

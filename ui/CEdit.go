@@ -163,7 +163,7 @@ func (opts *EditRawOpts) fillBlankValuesWithDefault() {
 // Edit control notifications.
 type _EditEvents struct {
 	ctrlId int
-	events *_EventsNfy
+	events *_EventsWmNfy
 }
 
 func (me *_EditEvents) new(ctrl *_NativeControlBase) {

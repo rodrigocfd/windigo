@@ -18,7 +18,7 @@ var (
 // Base to _WindowRaw and _WindowDlg.
 type _WindowBase struct {
 	hWnd           win.HWND
-	events         _EventsNfy      // Ordinary window events, added by user.
+	events         _EventsWmNfy    // Ordinary window events, added by user.
 	internalEvents _EventsInternal // Events added internally by the library.
 }
 
@@ -34,7 +34,7 @@ func (me *_WindowBase) Hwnd() win.HWND {
 	return me.hWnd
 }
 
-func (me *_WindowBase) On() *_EventsNfy {
+func (me *_WindowBase) On() *_EventsWmNfy {
 	if me.hWnd != 0 {
 		panic("Cannot add event handling after the window is created.")
 	}

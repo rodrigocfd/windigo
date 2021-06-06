@@ -146,7 +146,7 @@ func (opts *DateTimePickerRawOpts) fillBlankValuesWithDefault() {
 // DateTimePicker control notifications.
 type _DateTimePickerEvents struct {
 	ctrlId int
-	events *_EventsNfy
+	events *_EventsWmNfy
 }
 
 func (me *_DateTimePickerEvents) new(ctrl *_NativeControlBase) {

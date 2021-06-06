@@ -124,7 +124,7 @@ func (opts *StaticRawOpts) fillBlankValuesWithDefault() {
 // Static control notifications.
 type _StaticEvents struct {
 	ctrlId int
-	events *_EventsNfy
+	events *_EventsWmNfy
 }
 
 func (me *_StaticEvents) new(ctrl *_NativeControlBase) {

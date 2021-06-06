@@ -21,7 +21,7 @@ type AnyParent interface {
 	// Exposes all the window notifications the can be handled.
 	//
 	// Cannot be called after the window was created.
-	On() *_EventsNfy
+	On() *_EventsWmNfy
 
 	// Runs a closure synchronously in the window original UI thread.
 	//

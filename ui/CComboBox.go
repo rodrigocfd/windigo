@@ -136,7 +136,7 @@ func (opts *ComboBoxRawOpts) fillBlankValuesWithDefault() {
 // ComboBox control notifications.
 type _ComboBoxEvents struct {
 	ctrlId int
-	events *_EventsNfy
+	events *_EventsWmNfy
 }
 
 func (me *_ComboBoxEvents) new(ctrl *_NativeControlBase) {

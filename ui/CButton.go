@@ -136,7 +136,7 @@ func (opts *ButtonRawOpts) fillBlankValuesWithDefault() {
 // Button control notifications.
 type _ButtonEvents struct {
 	ctrlId int
-	events *_EventsNfy
+	events *_EventsWmNfy
 }
 
 func (me *_ButtonEvents) new(ctrl *_NativeControlBase) {

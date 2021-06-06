@@ -126,7 +126,7 @@ func (opts *SysLinkRawOpts) fillBlankValuesWithDefault() {
 // SysLink control notifications.
 type _SysLinkEvents struct {
 	ctrlId int
-	events *_EventsNfy
+	events *_EventsWmNfy
 }
 
 func (me *_SysLinkEvents) new(ctrl *_NativeControlBase) {

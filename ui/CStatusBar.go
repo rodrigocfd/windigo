@@ -78,7 +78,7 @@ func (me *_StatusBar) Parts() *_StatusBarParts {
 // StatusBar control notifications.
 type _StatusBarEvents struct {
 	ctrlId int
-	events *_EventsNfy
+	events *_EventsWmNfy
 }
 
 func (me *_StatusBarEvents) new(ctrl *_NativeControlBase) {

@@ -245,7 +245,7 @@ func (opts *ListViewRawOpts) fillBlankValuesWithDefault() {
 // ListView control notifications.
 type _ListViewEvents struct {
 	ctrlId int
-	events *_EventsNfy
+	events *_EventsWmNfy
 }
 
 func (me *_ListViewEvents) new(ctrl *_NativeControlBase) {

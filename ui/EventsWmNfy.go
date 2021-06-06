@@ -23,14 +23,14 @@ type (
 
 // Ordinary events for WM messages and WM_TIMER, plus WM_COMMAND and WM_NOTIFY.
 // If an event for the given message already exists, it will be overwritten.
-type _EventsNfy struct {
+type _EventsWmNfy struct {
 	_EventsWm
 	cmdsZero map[_HashCmd]func(p wm.Command)
 	nfysRet  map[_HashNfy]func(p unsafe.Pointer) uintptr // meaningful return value
 	nfysZero map[_HashNfy]func(p unsafe.Pointer)         // just returns zero (or TRUE if dialog)
 }
 
-func (me *_EventsNfy) new() {
+func (me *_EventsWmNfy) new() {
 	me._EventsWm.new()
 	me.cmdsZero = make(map[_HashCmd]func(p wm.Command), 10) // arbitrary
 	me.nfysRet = make(map[_HashNfy]func(p unsafe.Pointer) uintptr, 10)
@@ -38,7 +38,7 @@ func (me *_EventsNfy) new() {
 }
 
 // Adds a WM_COMMAND event with no meaningful return value, always returning zero.
-func (me *_EventsNfy) addCmdZero(cmdId int, notifCode co.CMD, userFunc func(p wm.Command)) {
+func (me *_EventsWmNfy) addCmdZero(cmdId int, notifCode co.CMD, userFunc func(p wm.Command)) {
 	me.cmdsZero[_HashCmd{
 		cmdId:     cmdId,
 		notifCode: notifCode,
@@ -46,7 +46,7 @@ func (me *_EventsNfy) addCmdZero(cmdId int, notifCode co.CMD, userFunc func(p wm
 }
 
 // Adds a WM_NOTIFY event with a meaningful return value.
-func (me *_EventsNfy) addNfyRet(idFrom int, code co.NM, userFunc func(p unsafe.Pointer) uintptr) {
+func (me *_EventsWmNfy) addNfyRet(idFrom int, code co.NM, userFunc func(p unsafe.Pointer) uintptr) {
 	me.nfysRet[_HashNfy{
 		idFrom: idFrom,
 		code:   code,
@@ -54,21 +54,21 @@ func (me *_EventsNfy) addNfyRet(idFrom int, code co.NM, userFunc func(p unsafe.P
 }
 
 // Adds a WM_NOTIFY event with no meaningful return value, always returning zero.
-func (me *_EventsNfy) addNfyZero(idFrom int, code co.NM, userFunc func(p unsafe.Pointer)) {
+func (me *_EventsWmNfy) addNfyZero(idFrom int, code co.NM, userFunc func(p unsafe.Pointer)) {
 	me.nfysZero[_HashNfy{
 		idFrom: idFrom,
 		code:   code,
 	}] = userFunc
 }
 
-func (me *_EventsNfy) hasMessages() bool {
+func (me *_EventsWmNfy) hasMessages() bool {
 	return len(me.cmdsZero) > 0 ||
 		len(me.nfysRet) > 0 ||
 		len(me.nfysZero) > 0 ||
 		me._EventsWm.hasMessages()
 }
 
-func (me *_EventsNfy) processMessage(
+func (me *_EventsWmNfy) processMessage(
 	uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM,
 ) (retVal uintptr, meaningfulRet bool, wasHandled bool) {
 
@@ -110,21 +110,21 @@ func (me *_EventsNfy) processMessage(
 // Avoid this method, prefer the specific command notification handlers.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
-func (me *_EventsNfy) WmCommand(cmdId int, notifCode co.CMD, userFunc func(p wm.Command)) {
+func (me *_EventsWmNfy) WmCommand(cmdId int, notifCode co.CMD, userFunc func(p wm.Command)) {
 	me.addCmdZero(cmdId, notifCode, userFunc)
 }
 
 // Handles a WM_COMMAND notification when a menu item is clicked.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
-func (me *_EventsNfy) WmCommandMenu(cmdId int, userFunc func(p wm.Command)) {
+func (me *_EventsWmNfy) WmCommandMenu(cmdId int, userFunc func(p wm.Command)) {
 	me.addCmdZero(cmdId, co.CMD_MENU, userFunc)
 }
 
 // Handles a WM_COMMAND notification when a keyboard shortcut key is hit.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
-func (me *_EventsNfy) WmCommandAccel(cmdId int, userFunc func(p wm.Command)) {
+func (me *_EventsWmNfy) WmCommandAccel(cmdId int, userFunc func(p wm.Command)) {
 	me.addCmdZero(cmdId, co.CMD_ACCELERATOR, userFunc)
 }
 
@@ -132,7 +132,7 @@ func (me *_EventsNfy) WmCommandAccel(cmdId int, userFunc func(p wm.Command)) {
 // menu item is clicked.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
-func (me *_EventsNfy) WmCommandAccelMenu(cmdId int, userFunc func(p wm.Command)) {
+func (me *_EventsWmNfy) WmCommandAccelMenu(cmdId int, userFunc func(p wm.Command)) {
 	me.addCmdZero(cmdId, co.CMD_MENU, userFunc)
 	me.addCmdZero(cmdId, co.CMD_ACCELERATOR, userFunc)
 }
@@ -142,6 +142,6 @@ func (me *_EventsNfy) WmCommandAccelMenu(cmdId int, userFunc func(p wm.Command))
 // Avoid this method, prefer the specific notification handlers.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/wm-notify
-func (me *_EventsNfy) WmNotify(idFrom int, code co.NM, userFunc func(p unsafe.Pointer) uintptr) {
+func (me *_EventsWmNfy) WmNotify(idFrom int, code co.NM, userFunc func(p unsafe.Pointer) uintptr) {
 	me.addNfyRet(idFrom, code, userFunc)
 }
