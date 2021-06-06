@@ -77,10 +77,5 @@ type WindowModal interface {
 // User-custom child control.
 type WindowControl interface {
 	AnyParent
-
-	// Returns the ID of this control.
-	CtrlId() int
-
-	// Returns the parent of this control.
-	Parent() AnyParent
+	AnyControl
 }
