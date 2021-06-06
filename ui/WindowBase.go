@@ -15,7 +15,7 @@ var (
 	_globalUiThreadMutex = sync.Mutex{}
 )
 
-// Base to _WindowOptsBase and _WindowDlgBase.
+// Base to _WindowRaw and _WindowDlg.
 type _WindowBase struct {
 	hWnd           win.HWND
 	events         _EventsNfy      // Ordinary window events, added by user.
@@ -64,8 +64,8 @@ func (me *_WindowBase) defaultMessages() {
 	me.events.Wm(_WM_UI_THREAD, func(p wm.Any) uintptr { // handle our custom thread UI message
 		if p.WParam == win.WPARAM(_WM_UI_THREAD) {
 			_globalUiThreadMutex.Lock()
-			userFunc, _ := _globalUiThreadCache[int(p.LParam)]
-			delete(_globalUiThreadCache, int(p.LParam))
+			userFunc, _ := _globalUiThreadCache[int(p.LParam)] // retrieve from cache
+			delete(_globalUiThreadCache, int(p.LParam))        // clear from cache
 			_globalUiThreadMutex.Unlock()
 
 			userFunc()

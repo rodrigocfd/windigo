@@ -12,17 +12,17 @@ import (
 
 // Base to all windows created by specifying all options, which will be passed
 // to the underlying CreateWindowEx().
-type _WindowRawBase struct {
+type _WindowRaw struct {
 	_WindowBase
 }
 
-func (me *_WindowRawBase) new() {
+func (me *_WindowRaw) new() {
 	me._WindowBase.new()
 }
 
 // Fills the WNDCLASSEX structure with the given parameters, and the class name,
 // if not specified, will be auto-generated.
-func (me *_WindowRawBase) generateWcx(
+func (me *_WindowRaw) generateWcx(
 	wcx *win.WNDCLASSEX,
 	hInst win.HINSTANCE, className string, classStyles co.CS,
 	hCursor win.HCURSOR, hBrushBg win.HBRUSH, iconId int) string {
@@ -54,7 +54,7 @@ func (me *_WindowRawBase) generateWcx(
 }
 
 // Calls RegisterClassEx().
-func (me *_WindowRawBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
+func (me *_WindowRaw) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 	atom, fail := win.RegisterClassEx(wcx)
 	if fail != nil {
 		lerr, _ := fail.(err.ERROR)
@@ -74,7 +74,7 @@ func (me *_WindowRawBase) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 }
 
 // Calls CreateWindowEx().
-func (me *_WindowRawBase) createWindow(
+func (me *_WindowRaw) createWindow(
 	exStyle co.WS_EX, className, title string, style co.WS,
 	pos win.POINT, size win.SIZE, hParent win.HWND, hMenu win.HMENU,
 	hInst win.HINSTANCE) {
@@ -90,7 +90,7 @@ func (me *_WindowRawBase) createWindow(
 }
 
 // Returns window coords at screen center, and window size from its client area.
-func (me *_WindowRawBase) calcWndCoords(
+func (me *_WindowRaw) calcWndCoords(
 	pClientArea *win.SIZE, hMenu win.HMENU,
 	styles co.WS, exStyles co.WS_EX) (win.POINT, win.SIZE) {
 
@@ -119,8 +119,8 @@ func (me *_WindowRawBase) calcWndCoords(
 		win.SIZE{Cx: rc.Right - rc.Left, Cy: rc.Bottom - rc.Top}
 }
 
-// Keeps all *_WindowOptsBase that were retrieved in _WndProc.
-var _globalWindowOptsBasePtrs = make(map[win.HWND]*_WindowRawBase, 10)
+// Keeps all *_WindowRaw that were retrieved in _WndProc.
+var _globalWindowRawPtrs = make(map[win.HWND]*_WindowRaw, 10)
 
 // Default window procedure.
 func _WndProc(
@@ -129,15 +129,15 @@ func _WndProc(
 	// https://devblogs.microsoft.com/oldnewthing/20050422-08/?p=35813
 	if uMsg == co.WM_NCCREATE {
 		cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
-		pMe := (*_WindowRawBase)(unsafe.Pointer(cs.LpCreateParams))
-		_globalWindowOptsBasePtrs[hWnd] = pMe
+		pMe := (*_WindowRaw)(unsafe.Pointer(cs.LpCreateParams))
+		_globalWindowRawPtrs[hWnd] = pMe
 		pMe._WindowBase.hWnd = hWnd // assign actual HWND
 	}
 
 	// Retrieve passed pointer.
 	// If no pointer stored, then no processing is done.
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
-	if pMe, hasPtr := _globalWindowOptsBasePtrs[hWnd]; hasPtr {
+	if pMe, hasPtr := _globalWindowRawPtrs[hWnd]; hasPtr {
 		// Process all internal events.
 		pMe.internalEvents.processMessages(uMsg, wParam, lParam)
 
@@ -147,7 +147,7 @@ func _WndProc(
 
 		// No further messages processed after this one.
 		if uMsg == co.WM_NCDESTROY {
-			delete(_globalWindowOptsBasePtrs, hWnd) // clear our pointer
+			delete(_globalWindowRawPtrs, hWnd) // clear our pointer
 			pMe._WindowBase.hWnd = win.HWND(0)
 		}
 

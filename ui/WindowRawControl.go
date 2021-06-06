@@ -8,7 +8,7 @@ import (
 
 // Implements WindowControl interface.
 type _WindowRawControl struct {
-	_WindowRawBase
+	_WindowRaw
 	opts   WindowControlRawOpts
 	parent AnyParent
 }
@@ -19,20 +19,20 @@ func NewWindowControlRaw(parent AnyParent, opts WindowControlRawOpts) WindowCont
 	opts.fillBlankValuesWithDefault()
 
 	me := _WindowRawControl{}
-	me._WindowRawBase.new()
+	me._WindowRaw.new()
 	me.opts = opts
 	me.parent = parent
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		hInst := parent.Hwnd().Hinstance()
 		wcx := win.WNDCLASSEX{}
-		me.opts.ClassName = me._WindowRawBase.generateWcx(&wcx, hInst,
+		me.opts.ClassName = me._WindowRaw.generateWcx(&wcx, hInst,
 			me.opts.ClassName, me.opts.ClassStyles, me.opts.HCursor,
 			me.opts.HBrushBackground, 0)
-		me._WindowRawBase.registerClass(&wcx)
+		me._WindowRaw.registerClass(&wcx)
 
 		_MultiplyDpi(&me.opts.Position, &me.opts.Size)
-		me._WindowRawBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
+		me._WindowRaw.createWindow(me.opts.ExStyles, me.opts.ClassName,
 			"", me.opts.Styles, me.opts.Position, me.opts.Size, parent.Hwnd(),
 			win.HMENU(me.opts.CtrlId), hInst)
 	})

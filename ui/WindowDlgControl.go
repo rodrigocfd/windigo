@@ -8,7 +8,7 @@ import (
 
 // Implements WindowControl interface.
 type _WindowDlgControl struct {
-	_WindowDlgBase
+	_WindowDlg
 	parent AnyParent
 	ctrlId int
 }
@@ -35,7 +35,7 @@ func _NewWindowControlDlg(
 	parent AnyParent, dialogId int, position win.POINT, ctrlId int) WindowControl {
 
 	me := _WindowDlgControl{}
-	me._WindowDlgBase.new(dialogId)
+	me._WindowDlg.new(dialogId)
 	me.parent = parent
 	me.ctrlId = 0
 
@@ -46,7 +46,7 @@ func _NewWindowControlDlg(
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_MultiplyDpi(&position, nil)
 
-		me._WindowDlgBase.createDialog(parent.Hwnd(), parent.Hwnd().Hinstance())
+		me._WindowDlg.createDialog(parent.Hwnd(), parent.Hwnd().Hinstance())
 		me.Hwnd().SetWindowPos(win.HWND(0), position.X, position.Y, 0, 0,
 			co.SWP_NOZORDER|co.SWP_NOSIZE)
 	})

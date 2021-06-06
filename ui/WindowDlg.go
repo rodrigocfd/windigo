@@ -10,18 +10,18 @@ import (
 )
 
 // Base to all dialog windows.
-type _WindowDlgBase struct {
+type _WindowDlg struct {
 	_WindowBase
 	dialogId int
 }
 
-func (me *_WindowDlgBase) new(dialogId int) {
+func (me *_WindowDlg) new(dialogId int) {
 	me._WindowBase.new()
 	me.dialogId = dialogId
 }
 
 // Calls CreateDialogParam().
-func (me *_WindowDlgBase) createDialog(hParent win.HWND, hInst win.HINSTANCE) {
+func (me *_WindowDlg) createDialog(hParent win.HWND, hInst win.HINSTANCE) {
 	if me.Hwnd() != 0 {
 		panic(fmt.Sprintf("Dialog already created: %d.", me.dialogId))
 	}
@@ -31,7 +31,7 @@ func (me *_WindowDlgBase) createDialog(hParent win.HWND, hInst win.HINSTANCE) {
 }
 
 // Calls DialogBoxParam().
-func (me *_WindowDlgBase) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
+func (me *_WindowDlg) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
 	if me.Hwnd() != 0 {
 		panic(fmt.Sprintf("Dialog already created: %d.", me.dialogId))
 	}
@@ -40,8 +40,8 @@ func (me *_WindowDlgBase) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
 		syscall.NewCallback(_DlgProc), win.LPARAM(unsafe.Pointer(me))) // pass pointer to object itself
 }
 
-// Keeps all *_WindowDlgBase that were retrieved in _DlgProc.
-var _globalWindowDlgBasePtrs = make(map[win.HWND]*_WindowDlgBase, 10)
+// Keeps all *_WindowDlg that were retrieved in _DlgProc.
+var _globalWindowDlgPtrs = make(map[win.HWND]*_WindowDlg, 10)
 
 // Default dialog procedure.
 func _DlgProc(
@@ -49,15 +49,15 @@ func _DlgProc(
 
 	// https://devblogs.microsoft.com/oldnewthing/20050422-08/?p=35813
 	if uMsg == co.WM_INITDIALOG {
-		pMe := (*_WindowDlgBase)(unsafe.Pointer(lParam))
-		_globalWindowDlgBasePtrs[hDlg] = pMe
+		pMe := (*_WindowDlg)(unsafe.Pointer(lParam))
+		_globalWindowDlgPtrs[hDlg] = pMe
 		pMe._WindowBase.hWnd = hDlg // assign actual HWND
 	}
 
 	// Retrieve passed pointer.
 	// If no pointer stored, then no processing is done.
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
-	if pMe, hasPtr := _globalWindowDlgBasePtrs[hDlg]; hasPtr {
+	if pMe, hasPtr := _globalWindowDlgPtrs[hDlg]; hasPtr {
 		// Process all internal events.
 		pMe.internalEvents.processMessages(uMsg, wParam, lParam)
 
@@ -77,7 +77,7 @@ func _DlgProc(
 
 		// No further messages processed after this one.
 		if uMsg == co.WM_NCDESTROY {
-			delete(_globalWindowDlgBasePtrs, hDlg) // clear our pointer
+			delete(_globalWindowDlgPtrs, hDlg) // clear our pointer
 			pMe._WindowBase.hWnd = win.HWND(0)
 		}
 

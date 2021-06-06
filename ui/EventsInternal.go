@@ -8,7 +8,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Events added only internally by the library.
+// Events added only internally by the library, cannot be added by the user.
 // Supports multiple events for the same message, all will be executed.
 type _EventsInternal struct {
 	msgsZero map[co.WM][]func(p wm.Any)

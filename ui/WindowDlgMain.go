@@ -8,7 +8,7 @@ import (
 
 // Implements WindowMain interface.
 type _WindowDlgMain struct {
-	_WindowDlgBase
+	_WindowDlg
 	iconId       int
 	accelTableId int
 }
@@ -18,7 +18,7 @@ type _WindowDlgMain struct {
 // Parameters iconId and accelTableId are optional.
 func NewWindowMainDlg(dialogId, iconId, accelTableId int) WindowMain {
 	me := _WindowDlgMain{}
-	me._WindowDlgBase.new(dialogId)
+	me._WindowDlg.new(dialogId)
 	me.iconId = iconId
 	me.accelTableId = accelTableId
 
@@ -35,7 +35,7 @@ func (me *_WindowDlgMain) RunAsMain() int {
 	defer _globalUiFont.DeleteObject()
 
 	hInst := win.GetModuleHandle("")
-	me._WindowDlgBase.createDialog(win.HWND(0), hInst)
+	me._WindowDlg.createDialog(win.HWND(0), hInst)
 
 	me.setIcon(me.iconId, hInst)
 	me.Hwnd().ShowWindow(co.SW_SHOW)
@@ -64,7 +64,7 @@ func (me *_WindowDlgMain) defaultMessages() {
 
 func (me *_WindowDlgMain) setIcon(iconId int, hInst win.HINSTANCE) {
 	if me.iconId != 0 {
-		hIcon16, hIcon32 := me._WindowDlgBase._WindowBase.loadIcons(hInst, iconId)
+		hIcon16, hIcon32 := me._WindowDlg._WindowBase.loadIcons(hInst, iconId)
 		me.Hwnd().SendMessage(co.WM_SETICON,
 			win.WPARAM(co.ICON_SZ_SMALL), win.LPARAM(hIcon16))
 		me.Hwnd().SendMessage(co.WM_SETICON,

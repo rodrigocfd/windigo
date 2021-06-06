@@ -8,7 +8,7 @@ import (
 
 // Implements WindowMain interface.
 type _WindowRawMain struct {
-	_WindowRawBase
+	_WindowRaw
 	opts            WindowMainRawOpts
 	hChildPrevFocus win.HWND // when window is inactivated
 }
@@ -19,7 +19,7 @@ func NewWindowMainRaw(opts WindowMainRawOpts) WindowMain {
 	opts.fillBlankValuesWithDefault()
 
 	me := _WindowRawMain{}
-	me._WindowRawBase.new()
+	me._WindowRaw.new()
 	me.opts = opts
 	me.hChildPrevFocus = win.HWND(0)
 
@@ -37,14 +37,14 @@ func (me *_WindowRawMain) RunAsMain() int {
 
 	hInst := win.GetModuleHandle("")
 	wcx := win.WNDCLASSEX{}
-	me.opts.ClassName = me._WindowRawBase.generateWcx(&wcx, hInst,
+	me.opts.ClassName = me._WindowRaw.generateWcx(&wcx, hInst,
 		me.opts.ClassName, me.opts.ClassStyles, me.opts.HCursor,
 		me.opts.HBrushBackground, me.opts.IconId)
-	me._WindowRawBase.registerClass(&wcx)
+	me._WindowRaw.registerClass(&wcx)
 
-	pos, size := me._WindowRawBase.calcWndCoords(&me.opts.ClientAreaSize,
+	pos, size := me._WindowRaw.calcWndCoords(&me.opts.ClientAreaSize,
 		me.opts.MainMenu, me.opts.Styles, me.opts.ExStyles)
-	me._WindowRawBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
+	me._WindowRaw.createWindow(me.opts.ExStyles, me.opts.ClassName,
 		me.opts.Title, me.opts.Styles, pos, size, win.HWND(0),
 		me.opts.MainMenu, hInst)
 

@@ -8,7 +8,7 @@ import (
 
 // Implements WindowModal interface.
 type _WindowRawModal struct {
-	_WindowRawBase
+	_WindowRaw
 	opts             WindowModalRawOpts
 	hPrevFocusParent win.HWND // child control last focused on parent
 }
@@ -19,7 +19,7 @@ func NewWindowModalRaw(opts WindowModalRawOpts) WindowModal {
 	opts.fillBlankValuesWithDefault()
 
 	me := _WindowRawModal{}
-	me._WindowRawBase.new()
+	me._WindowRaw.new()
 	me.opts = opts
 	me.hPrevFocusParent = win.HWND(0)
 
@@ -30,17 +30,17 @@ func NewWindowModalRaw(opts WindowModalRawOpts) WindowModal {
 func (me *_WindowRawModal) ShowModal(parent AnyParent) {
 	hInst := parent.Hwnd().Hinstance()
 	wcx := win.WNDCLASSEX{}
-	me.opts.ClassName = me._WindowRawBase.generateWcx(&wcx, hInst,
+	me.opts.ClassName = me._WindowRaw.generateWcx(&wcx, hInst,
 		me.opts.ClassName, me.opts.ClassStyles, me.opts.HCursor,
 		me.opts.HBrushBackground, 0)
-	me._WindowRawBase.registerClass(&wcx)
+	me._WindowRaw.registerClass(&wcx)
 
 	me.hPrevFocusParent = win.GetFocus() // currently focused control in parent
 	parent.Hwnd().EnableWindow(false)    // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
-	pos, size := me._WindowRawBase.calcWndCoords(&me.opts.ClientAreaSize,
+	pos, size := me._WindowRaw.calcWndCoords(&me.opts.ClientAreaSize,
 		win.HMENU(0), me.opts.Styles, me.opts.ExStyles)
-	me._WindowRawBase.createWindow(me.opts.ExStyles, me.opts.ClassName,
+	me._WindowRaw.createWindow(me.opts.ExStyles, me.opts.ClassName,
 		me.opts.Title, me.opts.Styles, pos, size, parent.Hwnd(),
 		win.HMENU(0), hInst)
 
