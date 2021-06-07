@@ -758,6 +758,15 @@ func SetWindowsHookEx(idHook co.WH,
 	return HHOOK(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
+func ShellNotifyIcon(dwMessage co.NIM, lpData *NOTIFYICONDATA) {
+	ret, _, lerr := syscall.Syscall(proc.Shell_NotifyIcon.Addr(), 2,
+		uintptr(dwMessage), uintptr(unsafe.Pointer(lpData)), 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+}
+
 // Depends of CoInitializeEx().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow

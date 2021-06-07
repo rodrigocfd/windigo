@@ -14,5 +14,6 @@ var (
 	DuplicateIcon               = shell32.NewProc("DuplicateIcon")
 	ExtractIconEx               = shell32.NewProc("ExtractIconExW")
 	SHCreateItemFromParsingName = shell32.NewProc("SHCreateItemFromParsingName")
+	Shell_NotifyIcon            = shell32.NewProc("Shell_NotifyIconW")
 	SHGetFileInfo               = shell32.NewProc("SHGetFileInfoW")
 )

@@ -252,6 +252,25 @@ type NONCLIENTMETRICS struct {
 	IPaddedBorderWidth int32
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
+type NOTIFYICONDATA struct {
+	CbSize           uint32
+	Hwnd             HWND
+	UID              uint32
+	UFlags           co.NIF
+	UCallbackMessage co.WM
+	HIcon            HICON
+	SzTip            [128]uint16
+	DwState          co.NIS
+	DwStateMask      co.NIS
+	SzInfo           [256]uint16
+	UTimeoutVersion  uint32 // union
+	SzInfoTitle      [64]uint16
+	DwInfoFlags      co.NIIF
+	GuidItem         GUID
+	HBalloonIcon     HICON
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
 type OSVERSIONINFOEX struct {
 	DwOsVersionInfoSize uint32

@@ -335,6 +335,61 @@ const (
 	MSGF_MENU      MSGF = 2
 )
 
+// NOTIFYICONDATA uFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
+type NIF uint32
+
+const (
+	NIF_MESSAGE  NIF = 0x00000001
+	NIF_ICON     NIF = 0x00000002
+	NIF_TIP      NIF = 0x00000004
+	NIF_STATE    NIF = 0x00000008
+	NIF_INFO     NIF = 0x00000010
+	NIF_GUID     NIF = 0x00000020
+	NIF_REALTIME NIF = 0x00000040
+	NIF_SHOWTIP  NIF = 0x00000080
+)
+
+// NOTIFYICONDATA dwInfoFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
+type NIIF uint32
+
+const (
+	NIIF_NONE               NIIF = 0x00000000
+	NIIF_INFO               NIIF = 0x00000001
+	NIIF_WARNING            NIIF = 0x00000002
+	NIIF_ERROR              NIIF = 0x00000003
+	NIIF_USER               NIIF = 0x00000004
+	NIIF_NOSOUND            NIIF = 0x00000010
+	NIIF_LARGE_ICON         NIIF = 0x00000020
+	NIIF_RESPECT_QUIET_TIME NIIF = 0x00000080
+)
+
+// Shell_NotifyIcon dwMessage.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
+type NIM uint32
+
+const (
+	NIM_ADD        NIM = 0x00000000
+	NIM_MODIFY     NIM = 0x00000001
+	NIM_DELETE     NIM = 0x00000002
+	NIM_SETFOCUS   NIM = 0x00000003
+	NIM_SETVERSION NIM = 0x00000004
+)
+
+// NOTIFYICONDATA dwState and dwStateMask.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
+type NIS uint32
+
+const (
+	NIS_HIDDEN     NIS = 0x00000001
+	NIS_SHAREDICON NIS = 0x00000002
+)
+
 // Common control notifications.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/common-control-reference#notifications
