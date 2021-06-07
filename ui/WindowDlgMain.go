@@ -26,6 +26,7 @@ func NewWindowMainDlg(dialogId, iconId, accelTableId int) WindowMain {
 	return &me
 }
 
+// Implements WindowMain.
 func (me *_WindowDlgMain) RunAsMain() int {
 	if win.IsWindowsVistaOrGreater() {
 		win.SetProcessDPIAware()
@@ -48,6 +49,7 @@ func (me *_WindowDlgMain) RunAsMain() int {
 	return _RunMainLoop(me.Hwnd(), hAccel)
 }
 
+// Implements AnyParent.
 func (me *_WindowDlgMain) isDialog() bool {
 	return true
 }

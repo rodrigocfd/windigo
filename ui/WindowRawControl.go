@@ -41,14 +41,17 @@ func NewWindowControlRaw(parent AnyParent, opts WindowControlRawOpts) WindowCont
 	return &me
 }
 
+// Implements AnyControl.
 func (me *_WindowRawControl) CtrlId() int {
 	return me.opts.CtrlId
 }
 
+// Implements AnyControl.
 func (me *_WindowRawControl) Parent() AnyParent {
 	return me.parent
 }
 
+// Implements AnyParent.
 func (me *_WindowRawControl) isDialog() bool {
 	return false
 }

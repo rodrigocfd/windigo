@@ -18,10 +18,12 @@ func NewWindowModalDlg(dialogId int) WindowModal {
 	return &me
 }
 
+// Implements WindowModal.
 func (me *_WindowDlgModal) ShowModal(parent AnyParent) {
 	me._WindowDlg.dialogBox(parent.Hwnd(), parent.Hwnd().Hinstance())
 }
 
+// Implements AnyParent.
 func (me *_WindowDlgModal) isDialog() bool {
 	return true
 }

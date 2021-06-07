@@ -27,6 +27,7 @@ func NewWindowMainRaw(opts WindowMainRawOpts) WindowMain {
 	return &me
 }
 
+// Implements WindowMain.
 func (me *_WindowRawMain) RunAsMain() int {
 	if win.IsWindowsVistaOrGreater() {
 		win.SetProcessDPIAware()
@@ -60,6 +61,7 @@ func (me *_WindowRawMain) RunAsMain() int {
 	return _RunMainLoop(me.Hwnd(), hAccel)
 }
 
+// Implements AnyParent.
 func (me *_WindowRawMain) isDialog() bool {
 	return false
 }

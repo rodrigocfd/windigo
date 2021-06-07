@@ -27,6 +27,7 @@ func NewWindowModalRaw(opts WindowModalRawOpts) WindowModal {
 	return &me
 }
 
+// Implements WindowModal.
 func (me *_WindowRawModal) ShowModal(parent AnyParent) {
 	hInst := parent.Hwnd().Hinstance()
 	wcx := win.WNDCLASSEX{}
@@ -47,6 +48,7 @@ func (me *_WindowRawModal) ShowModal(parent AnyParent) {
 	_RunModalLoop(me.Hwnd())
 }
 
+// Implements AnyParent.
 func (me *_WindowRawModal) isDialog() bool {
 	return false
 }

@@ -32,18 +32,22 @@ func (me *_NativeControlBase) new(parent AnyParent, ctrlId int) {
 	me.subclassId = 0
 }
 
+// Implements AnyWindow.
 func (me *_NativeControlBase) Hwnd() win.HWND {
 	return me.hWnd
 }
 
+// Implements AnyControl.
 func (me *_NativeControlBase) CtrlId() int {
 	return me.ctrlId
 }
 
+// Implements AnyControl.
 func (me *_NativeControlBase) Parent() AnyParent {
 	return me.parent
 }
 
+// Implements AnyNativeControl.
 func (me *_NativeControlBase) OnSubclass() *_EventsWm {
 	if me.Hwnd() != 0 {
 		panic("Cannot add event handling after the control is created.")

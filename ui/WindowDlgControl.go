@@ -55,14 +55,17 @@ func _NewWindowControlDlg(
 	return &me
 }
 
+// Implements AnyControl.
 func (me *_WindowDlgControl) CtrlId() int {
 	return me.ctrlId
 }
 
+// Implements AnyControl.
 func (me *_WindowDlgControl) Parent() AnyParent {
 	return me.parent
 }
 
+// Implements AnyParent.
 func (me *_WindowDlgControl) isDialog() bool {
 	return true
 }

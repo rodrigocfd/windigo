@@ -30,10 +30,12 @@ func (me *_WindowBase) new() {
 	me.defaultMessages()
 }
 
+// Implements AnyWindow.
 func (me *_WindowBase) Hwnd() win.HWND {
 	return me.hWnd
 }
 
+// Implements AnyParent.
 func (me *_WindowBase) On() *_EventsWmNfy {
 	if me.hWnd != 0 {
 		panic("Cannot add event handling after the window is created.")
@@ -41,10 +43,12 @@ func (me *_WindowBase) On() *_EventsWmNfy {
 	return &me.events
 }
 
+// Implements AnyParent.
 func (me *_WindowBase) internalOn() *_EventsInternal {
 	return &me.internalEvents
 }
 
+// Implements AnyParent.
 func (me *_WindowBase) RunUiThread(userFunc func()) {
 	// This method is analog to SendMessage (synchronous), but intended to be
 	// called from another thread, so a callback function can, tunelled by
