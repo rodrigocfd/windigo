@@ -16,4 +16,5 @@ var (
 	InitCommonControls      = comctl32.NewProc("InitCommonControls")
 	RemoveWindowSubclass    = comctl32.NewProc("RemoveWindowSubclass")
 	SetWindowSubclass       = comctl32.NewProc("SetWindowSubclass")
+	TaskDialog              = comctl32.NewProc("TaskDialog")
 )

@@ -718,6 +718,32 @@ const (
 	TBS_TRANSPARENTBKGND TBS = 0x1000 // Background is painted by the parent via the WM_PRINTCLIENT message.
 )
 
+// TaskDialog() pszIcon; originally with TD prefix and ICON suffix.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
+type TD_ICON uint16
+
+const (
+	TD_ICON_WARNING     TD_ICON = 0xffff
+	TD_ICON_ERROR       TD_ICON = 0xfffe
+	TD_ICON_INFORMATION TD_ICON = 0xfffd
+	TD_ICON_SHIELD      TD_ICON = 0xfffc
+)
+
+// TaskDialog() dwCommonButtons.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
+type TDCBF int32
+
+const (
+	TDCBF_OK_BUTTON     TDCBF = 0x0001
+	TDCBF_YES_BUTTON    TDCBF = 0x0002
+	TDCBF_NO_BUTTON     TDCBF = 0x0004
+	TDCBF_CANCEL_BUTTON TDCBF = 0x0008
+	TDCBF_RETRY_BUTTON  TDCBF = 0x0010
+	TDCBF_CLOSE_BUTTON  TDCBF = 0x0020
+)
+
 // GetTimeZoneInformation() return value.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation

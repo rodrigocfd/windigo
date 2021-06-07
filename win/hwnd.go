@@ -617,6 +617,26 @@ func (hWnd HWND) ShowWindow(nCmdShow co.SW) bool {
 	return ret != 0
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
+func (hWnd HWND) TaskDialog(
+	hInstance HINSTANCE,
+	pszWindowTitle, pszMainInstruction, pszContent string,
+	dwCommonButtons co.TDCBF, pszIcon co.TD_ICON) co.ID {
+
+	pnButton := int32(0)
+	ret, _, _ := syscall.Syscall9(proc.TaskDialog.Addr(), 8,
+		uintptr(hWnd), uintptr(hInstance),
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(pszWindowTitle))),
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(pszMainInstruction))),
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(pszContent))),
+		uintptr(dwCommonButtons), uintptr(pszIcon),
+		uintptr(unsafe.Pointer(&pnButton)), 0)
+	if lerr := err.ERROR(ret); lerr != err.S_OK {
+		panic(lerr)
+	}
+	return co.ID(pnButton)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translateacceleratorw
 func (hWnd HWND) TranslateAccelerator(hAccel HACCEL, msg *MSG) error {
 	ret, _, lerr := syscall.Syscall(proc.TranslateAccelerator.Addr(), 3,
