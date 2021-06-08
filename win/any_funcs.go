@@ -649,6 +649,19 @@ func IsWindowsVersionOrGreater(
 	return ret
 }
 
+// ⚠️ You must defer FreeLibrary().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
+func LoadLibrary(lpLibFileName string) HINSTANCE {
+	ret, _, lerr := syscall.Syscall(proc.LoadLibrary.Addr(), 1,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpLibFileName))),
+		0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return HINSTANCE(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632658(v=vs.85)
 func LOBYTE(value uint16) uint8 {
 	return uint8(value & 0xff)

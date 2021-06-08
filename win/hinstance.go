@@ -52,6 +52,15 @@ func (hInst HINSTANCE) DuplicateIcon(hIcon HICON) HICON {
 	return HICON(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
+func (hInst HINSTANCE) FreeLibrary() {
+	ret, _, lerr := syscall.Syscall(proc.FreeLibrary.Addr(), 1,
+		uintptr(hInst), 0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassinfoexw
 func (hInst HINSTANCE) GetClassInfoEx(
 	className *uint16, destBuf *WNDCLASSEX) (ATOM, error) {
@@ -64,6 +73,19 @@ func (hInst HINSTANCE) GetClassInfoEx(
 		return ATOM(0), err.ERROR(lerr)
 	}
 	return ATOM(ret), nil
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress
+func (hInst HINSTANCE) GetProcAddress(lpProcName string) uintptr {
+	ascii := []byte(lpProcName)
+	ascii = append(ascii, 0x00) // terminating null
+
+	ret, _, lerr := syscall.Syscall(proc.GetProcAddress.Addr(), 2,
+		uintptr(hInst), uintptr(unsafe.Pointer(&ascii[0])), 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return ret
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
