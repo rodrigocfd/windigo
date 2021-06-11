@@ -730,18 +730,18 @@ const (
 	TD_ICON_SHIELD      TD_ICON = 0xfffc
 )
 
-// TaskDialog() dwCommonButtons.
+// TaskDialog() dwCommonButtons. Originally has BUTTON suffix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
 type TDCBF int32
 
 const (
-	TDCBF_OK_BUTTON     TDCBF = 0x0001
-	TDCBF_YES_BUTTON    TDCBF = 0x0002
-	TDCBF_NO_BUTTON     TDCBF = 0x0004
-	TDCBF_CANCEL_BUTTON TDCBF = 0x0008
-	TDCBF_RETRY_BUTTON  TDCBF = 0x0010
-	TDCBF_CLOSE_BUTTON  TDCBF = 0x0020
+	TDCBF_OK     TDCBF = 0x0001
+	TDCBF_YES    TDCBF = 0x0002
+	TDCBF_NO     TDCBF = 0x0004
+	TDCBF_CANCEL TDCBF = 0x0008
+	TDCBF_RETRY  TDCBF = 0x0010
+	TDCBF_CLOSE  TDCBF = 0x0020
 )
 
 // GetTimeZoneInformation() return value.
