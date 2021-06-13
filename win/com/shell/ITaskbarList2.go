@@ -29,15 +29,12 @@ type ITaskbarList2 struct {
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateITaskbarList2(dwClsContext co.CLSCTX) (ITaskbarList2, error) {
-	iUnk, lerr := win.CoCreateInstance(
+func CoCreateITaskbarList2(dwClsContext co.CLSCTX) ITaskbarList2 {
+	iUnk := win.CoCreateInstance(
 		CLSID.TaskbarList, nil, dwClsContext, IID.ITaskbarList2)
-	if lerr != nil {
-		return ITaskbarList2{}, lerr
-	}
 	return ITaskbarList2{
 		ITaskbarList{IUnknown: iUnk},
-	}, nil
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow

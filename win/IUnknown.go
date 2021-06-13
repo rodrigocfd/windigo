@@ -37,7 +37,7 @@ type IUnknown struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
 	rclsid co.CLSID, pUnkOuter *IUnknown,
-	dwClsContext co.CLSCTX, riid co.IID) (IUnknown, error) {
+	dwClsContext co.CLSCTX, riid co.IID) IUnknown {
 
 	var ppv **IUnknownVtbl
 
@@ -54,9 +54,9 @@ func CoCreateInstance(
 		uintptr(unsafe.Pointer(&ppv)), 0)
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return IUnknown{}, lerr
+		panic(lerr)
 	}
-	return IUnknown{ppv}, nil
+	return IUnknown{ppv}
 }
 
 // Returns a pointer to a pointer to the IUnknown virtual table, which can be

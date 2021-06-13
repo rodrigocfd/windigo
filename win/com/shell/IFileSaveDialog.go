@@ -32,17 +32,14 @@ type IFileSaveDialog struct {
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateIFileSaveDialog(dwClsContext co.CLSCTX) (IFileSaveDialog, error) {
-	iUnk, lerr := win.CoCreateInstance(
+func CoCreateIFileSaveDialog(dwClsContext co.CLSCTX) IFileSaveDialog {
+	iUnk := win.CoCreateInstance(
 		CLSID.FileSaveDialog, nil, dwClsContext, IID.IFileSaveDialog)
-	if lerr != nil {
-		return IFileSaveDialog{}, lerr
-	}
 	return IFileSaveDialog{
 		IFileDialog{
 			IModalWindow{IUnknown: iUnk},
 		},
-	}, nil
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem

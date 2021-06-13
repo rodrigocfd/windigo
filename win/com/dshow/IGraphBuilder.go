@@ -34,15 +34,12 @@ type IGraphBuilder struct {
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateIGraphBuilder(dwClsContext co.CLSCTX) (IGraphBuilder, error) {
-	iUnk, lerr := win.CoCreateInstance(
+func CoCreateIGraphBuilder(dwClsContext co.CLSCTX) IGraphBuilder {
+	iUnk := win.CoCreateInstance(
 		CLSID.FilterGraph, nil, dwClsContext, IID.IGraphBuilder)
-	if lerr != nil {
-		return IGraphBuilder{}, lerr
-	}
 	return IGraphBuilder{
 		IFilterGraph{IUnknown: iUnk},
-	}, nil
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort

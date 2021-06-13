@@ -39,17 +39,14 @@ type ITaskbarList3 struct {
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateITaskbarList3(dwClsContext co.CLSCTX) (ITaskbarList3, error) {
-	iUnk, lerr := win.CoCreateInstance(
+func CoCreateITaskbarList3(dwClsContext co.CLSCTX) ITaskbarList3 {
+	iUnk := win.CoCreateInstance(
 		CLSID.TaskbarList, nil, dwClsContext, IID.ITaskbarList3)
-	if lerr != nil {
-		return ITaskbarList3{}, lerr
-	}
 	return ITaskbarList3{
 		ITaskbarList2{
 			ITaskbarList{IUnknown: iUnk},
 		},
-	}, nil
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-registertab

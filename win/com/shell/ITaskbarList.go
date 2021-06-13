@@ -32,13 +32,10 @@ type ITaskbarList struct {
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateITaskbarList(dwClsContext co.CLSCTX) (ITaskbarList, error) {
-	iUnk, lerr := win.CoCreateInstance(
+func CoCreateITaskbarList(dwClsContext co.CLSCTX) ITaskbarList {
+	iUnk := win.CoCreateInstance(
 		CLSID.TaskbarList, nil, dwClsContext, IID.ITaskbarList)
-	if lerr != nil {
-		return ITaskbarList{}, lerr
-	}
-	return ITaskbarList{IUnknown: iUnk}, nil
+	return ITaskbarList{IUnknown: iUnk}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab

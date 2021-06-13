@@ -35,13 +35,10 @@ type IFilterGraph struct {
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateIFilterGraph(dwClsContext co.CLSCTX) (IFilterGraph, error) {
-	iUnk, lerr := win.CoCreateInstance(
+func CoCreateIFilterGraph(dwClsContext co.CLSCTX) IFilterGraph {
+	iUnk := win.CoCreateInstance(
 		CLSID.FilterGraph, nil, dwClsContext, IID.IFilterGraph)
-	if lerr != nil {
-		return IFilterGraph{}, lerr
-	}
-	return IFilterGraph{IUnknown: iUnk}, nil
+	return IFilterGraph{IUnknown: iUnk}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-addfilter

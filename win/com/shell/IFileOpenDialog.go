@@ -29,17 +29,14 @@ type IFileOpenDialog struct {
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateIFileOpenDialog(dwClsContext co.CLSCTX) (IFileOpenDialog, error) {
-	iUnk, lerr := win.CoCreateInstance(
+func CoCreateIFileOpenDialog(dwClsContext co.CLSCTX) IFileOpenDialog {
+	iUnk := win.CoCreateInstance(
 		CLSID.FileOpenDialog, nil, dwClsContext, IID.IFileOpenDialog)
-	if lerr != nil {
-		return IFileOpenDialog{}, lerr
-	}
 	return IFileOpenDialog{
 		IFileDialog{
 			IModalWindow{IUnknown: iUnk},
 		},
-	}, nil
+	}
 }
 
 // ⚠️ You must defer Release().

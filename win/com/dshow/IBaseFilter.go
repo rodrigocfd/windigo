@@ -28,17 +28,14 @@ type IBaseFilter struct {
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/medfound/using-the-directshow-evr-filter
-func CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) (IBaseFilter, error) {
-	iUnk, lerr := win.CoCreateInstance(
+func CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) IBaseFilter {
+	iUnk := win.CoCreateInstance(
 		CLSID.EnhancedVideoRenderer, nil, dwClsContext, IID.IBaseFilter)
-	if lerr != nil {
-		return IBaseFilter{}, lerr
-	}
 	return IBaseFilter{
 		IMediaFilter{
 			IPersist{IUnknown: iUnk},
 		},
-	}, nil
+	}
 }
 
 // Calls IUnknown.CoCreateInstance() to return IBaseFilter.
@@ -48,17 +45,14 @@ func CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) (IBaseFilter, error) 
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/directshow/video-mixing-renderer-filter-9
-func CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) (IBaseFilter, error) {
-	iUnk, lerr := win.CoCreateInstance(
+func CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) IBaseFilter {
+	iUnk := win.CoCreateInstance(
 		CLSID.VideoMixingRenderer9, nil, dwClsContext, IID.IBaseFilter)
-	if lerr != nil {
-		return IBaseFilter{}, lerr
-	}
 	return IBaseFilter{
 		IMediaFilter{
 			IPersist{IUnknown: iUnk},
 		},
-	}, nil
+	}
 }
 
 // Calls IUnknown.QueryInterface() to return IMFGetService.
