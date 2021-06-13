@@ -60,13 +60,13 @@ func (me *IShellItemArray) GetCount() int {
 }
 
 // Syntactic sugar, calls GetDisplayName() on each IShellItem.
-func (me *IShellItemArray) GetDisplayNames() []string {
+func (me *IShellItemArray) GetDisplayNames(sigdnName co.SIGDN) []string {
 	count := me.GetCount()
 	files := make([]string, 0, count)
 
 	for i := 0; i < count; i++ {
 		shellItem := me.GetItemAt(i)
-		files = append(files, shellItem.GetDisplayName(co.SIGDN_FILESYSPATH))
+		files = append(files, shellItem.GetDisplayName(sigdnName))
 		shellItem.Release()
 	}
 
