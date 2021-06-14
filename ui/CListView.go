@@ -21,11 +21,13 @@ type ListView interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-list-view-control-reference-notifications
 	On() *_ListViewEvents
 
-	ContextMenu() win.HMENU                        // Returns the associated context menu, if any.
-	Columns() *_ListViewColumns                    // Column methods.
-	Items() *_ListViewItems                        // Item methods.
-	SetExtendedStyle(doSet bool, styles co.LVS_EX) // Sets or unsets extended style flags.
-	SetRedraw(allowRedraw bool)                    // Sends WM_SETREDRAW to enable or disable UI updates.
+	ContextMenu() win.HMENU                                           // Returns the associated context menu, if any.
+	Columns() *_ListViewColumns                                       // Column methods.
+	ImageList(which co.LVSIL) win.HIMAGELIST                          // Retrieves one of the current image lists.
+	Items() *_ListViewItems                                           // Item methods.
+	SetExtendedStyle(doSet bool, styles co.LVS_EX)                    // Sets or unsets extended style flags.
+	SetImageList(which co.LVSIL, himgl win.HIMAGELIST) win.HIMAGELIST // Sets one of the current image lists.
+	SetRedraw(allowRedraw bool)                                       // Sends WM_SETREDRAW to enable or disable UI updates.
 }
 
 //------------------------------------------------------------------------------
@@ -53,8 +55,8 @@ func NewListViewRaw(parent AnyParent, opts ListViewRawOpts) ListView {
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_MultiplyDpi(&opts.Position, &opts.Size)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"SysListView32", "", opts.Styles|co.WS(opts.ListViewStyles),
+		me._NativeControlBase.createWindow(opts.ExStyles, "SysListView32", "",
+			opts.Styles|co.WS(opts.ListViewStyles|co.LVS_SHAREIMAGELISTS), // force LVS_SHAREIMAGELISTS
 			opts.Position, opts.Size, win.HMENU(opts.CtrlId))
 
 		if opts.ListViewExStyles != co.LVS_EX_NONE {
@@ -87,6 +89,9 @@ func NewListViewDlg(parent AnyParent, ctrlId, contextMenuId int) ListView {
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		me.Hwnd().SetWindowLongPtr(co.GWLP_STYLE,
+			uintptr(me.Hwnd().GetWindowLongPtr(co.GWLP_STYLE))|
+				uintptr(co.LVS_SHAREIMAGELISTS)) // force LVS_SHAREIMAGELISTS
 	})
 
 	me.handledEvents()
@@ -108,6 +113,11 @@ func (me *_ListView) Columns() *_ListViewColumns {
 	return &me.columns
 }
 
+func (me *_ListView) ImageList(which co.LVSIL) win.HIMAGELIST {
+	return win.HIMAGELIST(me.Hwnd().
+		SendMessage(co.LVM_GETIMAGELIST, win.WPARAM(which), 0))
+}
+
 func (me *_ListView) Items() *_ListViewItems {
 	return &me.items
 }
@@ -119,6 +129,13 @@ func (me *_ListView) SetExtendedStyle(doSet bool, styles co.LVS_EX) {
 	}
 	me.Hwnd().SendMessage(co.LVM_SETEXTENDEDLISTVIEWSTYLE,
 		win.WPARAM(affected), win.LPARAM(styles))
+}
+
+func (me *_ListView) SetImageList(
+	which co.LVSIL, himgl win.HIMAGELIST) win.HIMAGELIST {
+
+	return win.HIMAGELIST(me.Hwnd().
+		SendMessage(co.LVM_SETIMAGELIST, win.WPARAM(which), win.LPARAM(himgl)))
 }
 
 func (me *_ListView) SetRedraw(allowRedraw bool) {
@@ -204,6 +221,7 @@ type ListViewRawOpts struct {
 	Size win.SIZE
 	// ListView control styles, passed to CreateWindowEx().
 	// Defaults to LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS.
+	// LVS_SHAREIMAGELISTS will always be added.
 	ListViewStyles co.LVS
 	// ListView extended control styles, passed to CreateWindowEx().
 	// Defaults to LVS_EX_NONE.
@@ -215,7 +233,7 @@ type ListViewRawOpts struct {
 	// Defaults to WS_EX_CLIENTEDGE.
 	ExStyles co.WS_EX
 
-	// Context menu for the list view. This menu is shared, the control won't destroy it.
+	// Context menu for the list view. This handle is shared, the control won't destroy it.
 	// Defaults to none.
 	ContextMenu win.HMENU
 }

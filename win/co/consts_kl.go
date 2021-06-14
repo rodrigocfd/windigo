@@ -493,6 +493,18 @@ const (
 	LVS_EX_UNDERLINEHOT          LVS_EX = 0x00000800
 )
 
+// LVM_GETIMAGELIST type.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getimagelist
+type LVSIL uint8
+
+const (
+	LVSIL_NORMAL      LVSIL = 0
+	LVSIL_SMALL       LVSIL = 1
+	LVSIL_STATE       LVSIL = 2
+	LVSIL_GROUPHEADER LVSIL = 3
+)
+
 // SysLink control styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/syslink-control-styles

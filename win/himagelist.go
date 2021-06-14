@@ -54,7 +54,7 @@ func (hImg HIMAGELIST) Destroy() {
 	// https://www.autohotkey.com/docs/commands/ListView.htm
 	ret, _, lerr := syscall.Syscall(proc.ImageList_Destroy.Addr(), 1,
 		uintptr(hImg), 0, 0)
-	if ret == 0 {
+	if ret == 0 && err.ERROR(lerr) != err.SUCCESS {
 		panic(err.ERROR(lerr))
 	}
 }
