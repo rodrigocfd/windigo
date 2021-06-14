@@ -5,7 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -134,8 +134,8 @@ func (me *IFileDialog) GetFolder() IShellItem {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getoptions
-func (me *IFileDialog) GetOptions() co.FOS {
-	fos := co.FOS(0)
+func (me *IFileDialog) GetOptions() shellco.FOS {
+	fos := shellco.FOS(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).GetOptions, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -260,7 +260,7 @@ func (me *IFileDialog) SetOkButtonLabel(pszText string) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setoptions
-func (me *IFileDialog) SetOptions(fos co.FOS) {
+func (me *IFileDialog) SetOptions(fos shellco.FOS) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetOptions, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),

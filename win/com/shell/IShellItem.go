@@ -7,6 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -35,7 +36,7 @@ func NewShellItem(thePath string) (IShellItem, error) {
 	var ppv **win.IUnknownVtbl
 	ret, _, _ := syscall.Syscall6(proc.SHCreateItemFromParsingName.Addr(), 4,
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(thePath))),
-		0, uintptr(unsafe.Pointer(win.NewGuidFromIid(IID.IShellItem))),
+		0, uintptr(unsafe.Pointer(win.NewGuidFromIid(shellco.IID_IShellItem))),
 		uintptr(unsafe.Pointer(&ppv)),
 		0, 0)
 
@@ -47,7 +48,7 @@ func NewShellItem(thePath string) (IShellItem, error) {
 	}, nil
 }
 
-func (me *IShellItem) Compare(psi IShellItem, hint co.SICHINT) bool {
+func (me *IShellItem) Compare(psi IShellItem, hint shellco.SICHINT) bool {
 	piOrder := uint32(0)
 	ret, _, _ := syscall.Syscall6(
 		(*_IShellItemVtbl)(unsafe.Pointer(*me.Ppv)).Compare, 4,
@@ -99,7 +100,7 @@ func (me *IShellItem) GetParent() IShellItem {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
-func (me *IShellItem) GetDisplayName(sigdnName co.SIGDN) string {
+func (me *IShellItem) GetDisplayName(sigdnName shellco.SIGDN) string {
 	var pv *uint16
 	ret, _, _ := syscall.Syscall(
 		(*_IShellItemVtbl)(unsafe.Pointer(*me.Ppv)).GetDisplayName, 3,

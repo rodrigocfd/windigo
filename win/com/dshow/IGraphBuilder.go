@@ -6,6 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -36,7 +37,8 @@ type IGraphBuilder struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateIGraphBuilder(dwClsContext co.CLSCTX) IGraphBuilder {
 	iUnk := win.CoCreateInstance(
-		CLSID.FilterGraph, nil, dwClsContext, IID.IGraphBuilder)
+		dshowco.CLSID_FilterGraph, nil, dwClsContext,
+		dshowco.IID_IGraphBuilder)
 	return IGraphBuilder{
 		IFilterGraph{IUnknown: iUnk},
 	}
@@ -71,7 +73,7 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 //
 // Calls IUnknown.QueryInterface() to return IBasicAudio.
 func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
-	iUnk := me.QueryInterface(IID.IBasicAudio)
+	iUnk := me.QueryInterface(dshowco.IID_IBasicAudio)
 	return IBasicAudio{
 		win.IDispatch{IUnknown: iUnk},
 	}
@@ -81,7 +83,7 @@ func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
 //
 // Calls IUnknown.QueryInterface() to return IMediaControl.
 func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
-	iUnk := me.QueryInterface(IID.IMediaControl)
+	iUnk := me.QueryInterface(dshowco.IID_IMediaControl)
 	return IMediaControl{
 		win.IDispatch{IUnknown: iUnk},
 	}
@@ -91,7 +93,7 @@ func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
 //
 // Calls IUnknown.QueryInterface() to return IMediaSeeking.
 func (me *IGraphBuilder) QueryIMediaSeeking() IMediaSeeking {
-	iUnk := me.QueryInterface(IID.IMediaSeeking)
+	iUnk := me.QueryInterface(dshowco.IID_IMediaSeeking)
 	return IMediaSeeking{IUnknown: iUnk}
 }
 

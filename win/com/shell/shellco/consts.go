@@ -1,4 +1,4 @@
-package co
+package shellco
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/com/dropeffect-constants
 type DROPEFFECT uint32

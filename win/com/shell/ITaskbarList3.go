@@ -6,6 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -41,7 +42,8 @@ type ITaskbarList3 struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateITaskbarList3(dwClsContext co.CLSCTX) ITaskbarList3 {
 	iUnk := win.CoCreateInstance(
-		CLSID.TaskbarList, nil, dwClsContext, IID.ITaskbarList3)
+		shellco.CLSID_TaskbarList, nil, dwClsContext,
+		shellco.IID_ITaskbarList3)
 	return ITaskbarList3{
 		ITaskbarList2{
 			ITaskbarList{IUnknown: iUnk},
@@ -77,7 +79,9 @@ func (me *ITaskbarList3) SetOverlayIcon(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
-func (me *ITaskbarList3) SetProgressState(hwnd win.HWND, tbpFlags co.TBPF) {
+func (me *ITaskbarList3) SetProgressState(
+	hwnd win.HWND, tbpFlags shellco.TBPF) {
+
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetProgressState, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),

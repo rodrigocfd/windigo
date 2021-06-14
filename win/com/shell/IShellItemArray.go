@@ -5,7 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -60,7 +60,7 @@ func (me *IShellItemArray) GetCount() int {
 }
 
 // Syntactic sugar, calls GetDisplayName() on each IShellItem.
-func (me *IShellItemArray) GetDisplayNames(sigdnName co.SIGDN) []string {
+func (me *IShellItemArray) GetDisplayNames(sigdnName shellco.SIGDN) []string {
 	count := me.GetCount()
 	files := make([]string, 0, count)
 

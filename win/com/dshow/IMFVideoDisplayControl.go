@@ -5,7 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -37,8 +37,8 @@ type IMFVideoDisplayControl struct {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getaspectratiomode
-func (me *IMFVideoDisplayControl) GetAspectRatioMode() co.MFVideoARMode {
-	aspectRatioMode := co.MFVideoARMode_None
+func (me *IMFVideoDisplayControl) GetAspectRatioMode() dshowco.MFVideoARMode {
+	aspectRatioMode := dshowco.MFVideoARMode_None
 	ret, _, _ := syscall.Syscall(
 		(*_IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).GetAspectRatioMode, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -123,7 +123,9 @@ func (me *IMFVideoDisplayControl) RepaintVideo() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setaspectratiomode
-func (me *IMFVideoDisplayControl) SetAspectRatioMode(mode co.MFVideoARMode) error {
+func (me *IMFVideoDisplayControl) SetAspectRatioMode(
+	mode dshowco.MFVideoARMode) error {
+
 	ret, _, _ := syscall.Syscall(
 		(*_IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).SetAspectRatioMode, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),

@@ -6,7 +6,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -40,7 +40,7 @@ type IMediaSeeking struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-checkcapabilities
 func (me *IMediaSeeking) CheckCapabilities(
-	capabilities co.SEEKING_CAPABILITIES) co.SEEKING_CAPABILITIES {
+	capabilities dshowco.SEEKING_CAPABILITIES) dshowco.SEEKING_CAPABILITIES {
 
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).CheckCapabilities, 2,
@@ -87,8 +87,8 @@ func (me *IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcapabilities
-func (me *IMediaSeeking) GetCapabilities() co.SEEKING_CAPABILITIES {
-	capabilities := co.SEEKING_CAPABILITIES(0)
+func (me *IMediaSeeking) GetCapabilities() dshowco.SEEKING_CAPABILITIES {
+	capabilities := dshowco.SEEKING_CAPABILITIES(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetCapabilities, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -249,8 +249,8 @@ func (me *IMediaSeeking) QueryPreferredFormat() *win.GUID {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
 func (me *IMediaSeeking) SetPositions(
-	current time.Duration, currentFlags co.SEEKING_FLAGS,
-	stop time.Duration, stopFlags co.SEEKING_FLAGS) error {
+	current time.Duration, currentFlags dshowco.SEEKING_FLAGS,
+	stop time.Duration, stopFlags dshowco.SEEKING_FLAGS) error {
 
 	iCurrent, iStop := _DurationTo100Nanosec(current), _DurationTo100Nanosec(stop)
 	ret, _, _ := syscall.Syscall6(

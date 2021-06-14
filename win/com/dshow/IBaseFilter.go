@@ -3,6 +3,7 @@ package dshow
 import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 )
 
 type _IBaseFilterVtbl struct {
@@ -30,7 +31,8 @@ type IBaseFilter struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/medfound/using-the-directshow-evr-filter
 func CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) IBaseFilter {
 	iUnk := win.CoCreateInstance(
-		CLSID.EnhancedVideoRenderer, nil, dwClsContext, IID.IBaseFilter)
+		dshowco.CLSID_EnhancedVideoRenderer, nil, dwClsContext,
+		dshowco.IID_IBaseFilter)
 	return IBaseFilter{
 		IMediaFilter{
 			IPersist{IUnknown: iUnk},
@@ -47,7 +49,8 @@ func CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) IBaseFilter {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/directshow/video-mixing-renderer-filter-9
 func CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) IBaseFilter {
 	iUnk := win.CoCreateInstance(
-		CLSID.VideoMixingRenderer9, nil, dwClsContext, IID.IBaseFilter)
+		dshowco.CLSID_VideoMixingRenderer9, nil, dwClsContext,
+		dshowco.IID_IBaseFilter)
 	return IBaseFilter{
 		IMediaFilter{
 			IPersist{IUnknown: iUnk},
@@ -59,6 +62,6 @@ func CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) IBaseFilter {
 //
 // ⚠️ You must defer Release().
 func (me *IBaseFilter) QueryIMFGetService() IMFGetService {
-	iUnk := me.QueryInterface(IID.IMFGetService)
+	iUnk := me.QueryInterface(dshowco.IID_IMFGetService)
 	return IMFGetService{IUnknown: iUnk}
 }

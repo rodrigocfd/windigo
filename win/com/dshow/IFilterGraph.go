@@ -6,6 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -37,7 +38,8 @@ type IFilterGraph struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateIFilterGraph(dwClsContext co.CLSCTX) IFilterGraph {
 	iUnk := win.CoCreateInstance(
-		CLSID.FilterGraph, nil, dwClsContext, IID.IFilterGraph)
+		dshowco.CLSID_FilterGraph, nil, dwClsContext,
+		dshowco.IID_IFilterGraph)
 	return IFilterGraph{IUnknown: iUnk}
 }
 

@@ -6,6 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -31,7 +32,8 @@ type IFileOpenDialog struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateIFileOpenDialog(dwClsContext co.CLSCTX) IFileOpenDialog {
 	iUnk := win.CoCreateInstance(
-		CLSID.FileOpenDialog, nil, dwClsContext, IID.IFileOpenDialog)
+		shellco.CLSID_FileOpenDialog, nil, dwClsContext,
+		shellco.IID_IFileOpenDialog)
 	return IFileOpenDialog{
 		IFileDialog{
 			IModalWindow{IUnknown: iUnk},

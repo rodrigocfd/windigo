@@ -1,4 +1,4 @@
-package co
+package dshowco
 
 // Originally AM_SEEKING_SeekingCapabilities enum.
 //

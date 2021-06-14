@@ -7,6 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -31,7 +32,8 @@ type ITaskbarList2 struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateITaskbarList2(dwClsContext co.CLSCTX) ITaskbarList2 {
 	iUnk := win.CoCreateInstance(
-		CLSID.TaskbarList, nil, dwClsContext, IID.ITaskbarList2)
+		shellco.CLSID_TaskbarList, nil, dwClsContext,
+		shellco.IID_ITaskbarList2)
 	return ITaskbarList2{
 		ITaskbarList{IUnknown: iUnk},
 	}

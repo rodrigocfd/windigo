@@ -2,7 +2,7 @@ package shell
 
 import (
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-comdlg_filterspec
@@ -19,10 +19,10 @@ type FilterSpec struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ns-shobjidl_core-thumbbutton
 type THUMBBUTTON struct {
-	DwMask  co.THB
+	DwMask  shellco.THB
 	IId     uint32
 	IBitmap uint32
 	HIcon   win.HICON
 	SzTip   [260]uint16
-	DwFlags co.THBF
+	DwFlags shellco.THBF
 }

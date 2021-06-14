@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -43,7 +44,7 @@ func (me *IMFGetService) GetService(guidService, riid *win.GUID) win.IUnknown {
 // ⚠️ You must defer Release().
 func (me *IMFGetService) GetServiceIMFVideoDisplayControl() IMFVideoDisplayControl {
 	iUnk := me.GetService(
-		win.NewGuidFromClsid(CLSID.MR_VideoRenderService),
-		win.NewGuidFromIid(IID.IMFVideoDisplayControl))
+		win.NewGuidFromClsid(dshowco.CLSID_MR_VideoRenderService),
+		win.NewGuidFromIid(dshowco.IID_IMFVideoDisplayControl))
 	return IMFVideoDisplayControl{IUnknown: iUnk}
 }

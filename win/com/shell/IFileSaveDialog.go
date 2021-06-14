@@ -6,6 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/err"
 )
 
@@ -34,7 +35,8 @@ type IFileSaveDialog struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateIFileSaveDialog(dwClsContext co.CLSCTX) IFileSaveDialog {
 	iUnk := win.CoCreateInstance(
-		CLSID.FileSaveDialog, nil, dwClsContext, IID.IFileSaveDialog)
+		shellco.CLSID_FileSaveDialog, nil, dwClsContext,
+		shellco.IID_IFileSaveDialog)
 	return IFileSaveDialog{
 		IFileDialog{
 			IModalWindow{IUnknown: iUnk},
