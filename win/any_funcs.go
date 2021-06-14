@@ -719,6 +719,28 @@ func PostThreadMessage(
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter
+func QueryPerformanceCounter() int64 {
+	lpPerformanceCount := int64(0)
+	ret, _, lerr := syscall.Syscall(proc.QueryPerformanceCounter.Addr(), 1,
+		uintptr(unsafe.Pointer(&lpPerformanceCount)), 0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return lpPerformanceCount
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancefrequency
+func QueryPerformanceFrequency() int64 {
+	lpFrequency := int64(0)
+	ret, _, lerr := syscall.Syscall(proc.QueryPerformanceFrequency.Addr(), 1,
+		uintptr(unsafe.Pointer(&lpFrequency)), 0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return lpFrequency
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassexw
 func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, error) {
 	wcx.CbSize = uint32(unsafe.Sizeof(*wcx)) // safety

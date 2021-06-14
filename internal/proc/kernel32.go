@@ -33,6 +33,8 @@ var (
 	LoadLibrary                     = kernel32.NewProc("LoadLibraryW")
 	MapViewOfFile                   = kernel32.NewProc("MapViewOfFile")
 	MulDiv                          = kernel32.NewProc("MulDiv")
+	QueryPerformanceCounter         = kernel32.NewProc("QueryPerformanceCounter")
+	QueryPerformanceFrequency       = kernel32.NewProc("QueryPerformanceFrequency")
 	ReadFile                        = kernel32.NewProc("ReadFile")
 	SetEndOfFile                    = kernel32.NewProc("SetEndOfFile")
 	SetFilePointerEx                = kernel32.NewProc("SetFilePointerEx")
