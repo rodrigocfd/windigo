@@ -13,6 +13,16 @@ type _PathT struct{}
 // File and folder path functions.
 var Path _PathT
 
+// Returns whether the path ends with at least one of the given extensions.
+func (_PathT) HasExtension(path string, extensions ...string) bool {
+	for _, extension := range extensions {
+		if strings.HasSuffix(strings.ToUpper(path), strings.ToUpper(extension)) {
+			return true
+		}
+	}
+	return false
+}
+
 // Returns all the file names that match a pattern like "C:\\foo\\*.txt".
 func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 	retFiles := make([]string, 0, 5)        // arbitrary
