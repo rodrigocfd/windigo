@@ -22,7 +22,7 @@ const (
 type Resizer interface {
 	// Adds child controls, and their behavior when the parent is resized.
 	//
-	// Should be called on WM_CREATE or WM_INITDIALOG.
+	// Should be called before the window is created.
 	Add(horzBehavior, vertBehavior RESZ, ctrls ...AnyControl) Resizer
 }
 
@@ -47,6 +47,16 @@ func NewResizer(parent AnyParent) Resizer {
 		parent: parent,
 	}
 
+	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
+		rcParent := me.parent.Hwnd().GetClientRect()
+		me.szOrig = win.SIZE{Cx: rcParent.Right, Cy: rcParent.Bottom} // save parent client area
+
+		for i, _ := range me.ctrls {
+			me.ctrls[i].rcOrig = me.ctrls[i].hChild.Hwnd().GetWindowRect() // relative to screen
+			parent.Hwnd().ScreenToClientRc(&me.ctrls[i].rcOrig)            // now relative to parent
+		}
+	})
+
 	parent.internalOn().addMsgZero(co.WM_SIZE, func(p wm.Any) {
 		me.adjustToParent(wm.Size{Msg: p})
 	})
@@ -57,19 +67,17 @@ func NewResizer(parent AnyParent) Resizer {
 func (me *_Resizer) Add(
 	horzBehavior, vertBehavior RESZ, ctrls ...AnyControl) Resizer {
 
-	if len(me.ctrls) == 0 { // first one being added?
-		rcParent := me.parent.Hwnd().GetClientRect()
-		me.szOrig = win.SIZE{Cx: rcParent.Right, Cy: rcParent.Bottom} // save parent client area
+	if me.parent.Hwnd() != 0 {
+		panic("Cannot add Resizer controls after the window is created.")
 	}
 
 	for _, ctrl := range ctrls {
 		me.ctrls = append(me.ctrls, _ResizerCtrl{
 			hChild:     ctrl,
-			rcOrig:     ctrl.Hwnd().GetWindowRect(),
+			rcOrig:     win.RECT{}, // will be set during WM_CREATE or WM_INITDIALOG
 			horzAction: horzBehavior,
 			vertAction: vertBehavior,
 		})
-		me.parent.Hwnd().ScreenToClientRc(&me.ctrls[len(me.ctrls)-1].rcOrig) // client coordinates relative to parent
 	}
 	return me
 }

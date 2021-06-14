@@ -21,10 +21,11 @@ type ListView interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-list-view-control-reference-notifications
 	On() *_ListViewEvents
 
-	ContextMenu() win.HMENU     // Returns the associated context menu, if any.
-	Columns() *_ListViewColumns // Column methods.
-	Items() *_ListViewItems     // Item methods.
-	SetRedraw(allowRedraw bool) // Sends WM_SETREDRAW to enable or disable UI updates.
+	ContextMenu() win.HMENU                        // Returns the associated context menu, if any.
+	Columns() *_ListViewColumns                    // Column methods.
+	Items() *_ListViewItems                        // Item methods.
+	SetExtendedStyle(doSet bool, styles co.LVS_EX) // Sets or unsets extended style flags.
+	SetRedraw(allowRedraw bool)                    // Sends WM_SETREDRAW to enable or disable UI updates.
 }
 
 //------------------------------------------------------------------------------
@@ -57,9 +58,7 @@ func NewListViewRaw(parent AnyParent, opts ListViewRawOpts) ListView {
 			opts.Position, opts.Size, win.HMENU(opts.CtrlId))
 
 		if opts.ListViewExStyles != co.LVS_EX_NONE {
-			me.Hwnd().SendMessage(co.LVM_SETEXTENDEDLISTVIEWSTYLE,
-				win.WPARAM(opts.ListViewExStyles),
-				win.LPARAM(opts.ListViewExStyles))
+			me.SetExtendedStyle(true, opts.ListViewExStyles)
 		}
 	})
 
@@ -71,7 +70,12 @@ func NewListViewRaw(parent AnyParent, opts ListViewRawOpts) ListView {
 func NewListViewDlg(parent AnyParent, ctrlId, contextMenuId int) ListView {
 	hContextMenu := win.HMENU(0)
 	if contextMenuId != 0 {
-		hContextMenu = win.HINSTANCE(0).LoadMenu(int32(contextMenuId))
+		hResMenu, found := win.HINSTANCE(0).
+			LoadMenu(int32(contextMenuId)).GetSubMenu(0) // usually this is how it's set in the resources
+		if !found {
+			panic("ListView context menu not found.")
+		}
+		hContextMenu = hResMenu // menu resources are automatically freed by the system
 	}
 
 	me := _ListView{}
@@ -108,6 +112,15 @@ func (me *_ListView) Items() *_ListViewItems {
 	return &me.items
 }
 
+func (me *_ListView) SetExtendedStyle(doSet bool, styles co.LVS_EX) {
+	affected := styles
+	if doSet {
+		affected = 0
+	}
+	me.Hwnd().SendMessage(co.LVM_SETEXTENDEDLISTVIEWSTYLE,
+		win.WPARAM(affected), win.LPARAM(styles))
+}
+
 func (me *_ListView) SetRedraw(allowRedraw bool) {
 	me.Hwnd().SendMessage(co.WM_SETREDRAW,
 		win.WPARAM(util.BoolToUintptr(allowRedraw)), 0)
@@ -132,12 +145,6 @@ func (me *_ListView) handledEvents() {
 		hasShift := (nmi.UKeyFlags & co.LVKF_SHIFT) != 0
 
 		me.showContextMenu(true, hasCtrl, hasShift)
-	})
-
-	me.Parent().internalOn().addMsgZero(co.WM_NCDESTROY, func(_ wm.Any) {
-		if me.hContextMenu != 0 {
-			me.hContextMenu.DestroyMenu()
-		}
 	})
 }
 
@@ -208,7 +215,7 @@ type ListViewRawOpts struct {
 	// Defaults to WS_EX_CLIENTEDGE.
 	ExStyles co.WS_EX
 
-	// Context menu for the list view. Will be automatically destroyed.
+	// Context menu for the list view. This menu is shared, the control won't destroy it.
 	// Defaults to none.
 	ContextMenu win.HMENU
 }
