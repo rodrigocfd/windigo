@@ -23,9 +23,7 @@ type IMFGetService struct {
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
-func (me *IMFGetService) GetService(
-	guidService, riid *win.GUID) (win.IUnknown, error) {
-
+func (me *IMFGetService) GetService(guidService, riid *win.GUID) win.IUnknown {
 	var ppQueried **win.IUnknownVtbl
 	ret, _, _ := syscall.Syscall6(
 		(*_IMFGetServiceVtbl)(unsafe.Pointer(*me.Ppv)).GetService, 4,
@@ -35,19 +33,17 @@ func (me *IMFGetService) GetService(
 		uintptr(unsafe.Pointer(&ppQueried)), 0, 0)
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return win.IUnknown{}, lerr
+		panic(lerr)
 	}
-	return win.IUnknown{Ppv: ppQueried}, nil
+	return win.IUnknown{Ppv: ppQueried}
 }
 
 // Calls IMFGetService.GetService() to return IMFVideoDisplayControl.
 //
 // ⚠️ You must defer Release().
-func (me *IMFGetService) GetServiceIMFVideoDisplayControl() (IMFVideoDisplayControl, error) {
-	iUnk, lerr := me.GetService(win.NewGuidFromClsid(CLSID.MR_VideoRenderService),
+func (me *IMFGetService) GetServiceIMFVideoDisplayControl() IMFVideoDisplayControl {
+	iUnk := me.GetService(
+		win.NewGuidFromClsid(CLSID.MR_VideoRenderService),
 		win.NewGuidFromIid(IID.IMFVideoDisplayControl))
-	if lerr != nil {
-		return IMFVideoDisplayControl{}, lerr
-	}
-	return IMFVideoDisplayControl{IUnknown: iUnk}, nil
+	return IMFVideoDisplayControl{IUnknown: iUnk}
 }

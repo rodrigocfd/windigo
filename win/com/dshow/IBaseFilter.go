@@ -58,10 +58,7 @@ func CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) IBaseFilter {
 // Calls IUnknown.QueryInterface() to return IMFGetService.
 //
 // ⚠️ You must defer Release().
-func (me *IBaseFilter) QueryIMFGetService() (IMFGetService, error) {
-	iUnk, lerr := me.QueryInterface(IID.IMFGetService)
-	if lerr != nil {
-		return IMFGetService{}, lerr
-	}
-	return IMFGetService{IUnknown: iUnk}, nil
+func (me *IBaseFilter) QueryIMFGetService() IMFGetService {
+	iUnk := me.QueryInterface(IID.IMFGetService)
+	return IMFGetService{IUnknown: iUnk}
 }

@@ -70,38 +70,29 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 // ⚠️ You must defer Release().
 //
 // Calls IUnknown.QueryInterface() to return IBasicAudio.
-func (me *IGraphBuilder) QueryIBasicAudio() (IBasicAudio, error) {
-	iUnk, lerr := me.QueryInterface(IID.IBasicAudio)
-	if lerr != nil {
-		return IBasicAudio{}, lerr
-	}
+func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
+	iUnk := me.QueryInterface(IID.IBasicAudio)
 	return IBasicAudio{
 		win.IDispatch{IUnknown: iUnk},
-	}, nil
+	}
 }
 
 // ⚠️ You must defer Release().
 //
 // Calls IUnknown.QueryInterface() to return IMediaControl.
-func (me *IGraphBuilder) QueryIMediaControl() (IMediaControl, error) {
-	iUnk, lerr := me.QueryInterface(IID.IMediaControl)
-	if lerr != nil {
-		return IMediaControl{}, lerr
-	}
+func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
+	iUnk := me.QueryInterface(IID.IMediaControl)
 	return IMediaControl{
 		win.IDispatch{IUnknown: iUnk},
-	}, nil
+	}
 }
 
 // ⚠️ You must defer Release().
 //
 // Calls IUnknown.QueryInterface() to return IMediaSeeking.
-func (me *IGraphBuilder) QueryIMediaSeeking() (IMediaSeeking, error) {
-	iUnk, lerr := me.QueryInterface(IID.IMediaSeeking)
-	if lerr != nil {
-		return IMediaSeeking{}, lerr
-	}
-	return IMediaSeeking{IUnknown: iUnk}, nil
+func (me *IGraphBuilder) QueryIMediaSeeking() IMediaSeeking {
+	iUnk := me.QueryInterface(IID.IMediaSeeking)
+	return IMediaSeeking{IUnknown: iUnk}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-render

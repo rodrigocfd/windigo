@@ -65,7 +65,7 @@ func CoCreateInstance(
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
-func (me *IUnknown) QueryInterface(riid co.IID) (IUnknown, error) {
+func (me *IUnknown) QueryInterface(riid co.IID) IUnknown {
 	var ppvQueried **IUnknownVtbl
 	ret, _, _ := syscall.Syscall((*me.Ppv).QueryInterface, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -73,9 +73,9 @@ func (me *IUnknown) QueryInterface(riid co.IID) (IUnknown, error) {
 		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return IUnknown{}, lerr
+		panic(lerr)
 	}
-	return IUnknown{ppvQueried}, nil
+	return IUnknown{ppvQueried}
 }
 
 // Releases the COM pointer. Never fails, can be called any number of times.
