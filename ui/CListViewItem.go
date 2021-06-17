@@ -22,6 +22,7 @@ type ListViewItem interface {
 	SetSelected(doSelect bool)
 	SetText(columnIndex int, text string)
 	Text(columnIndex int) string
+	Update()
 }
 
 //------------------------------------------------------------------------------
@@ -177,4 +178,11 @@ func (me *_ListViewItem) Text(columnIndex int) string {
 			index, columnIndex))
 	}
 	return win.Str.FromUint16Slice(buf[:])
+}
+
+func (me *_ListViewItem) Update() {
+	index := me.Index()
+	if me.pHwnd.SendMessage(co.LVM_UPDATE, win.WPARAM(index), 0) == 0 {
+		panic(fmt.Sprintf("LVM_UPDATE %d failed.", index))
+	}
 }

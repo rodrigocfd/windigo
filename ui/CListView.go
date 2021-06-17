@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/util"
@@ -23,11 +24,15 @@ type ListView interface {
 
 	ContextMenu() win.HMENU                                           // Returns the associated context menu, if any.
 	Columns() *_ListViewColumns                                       // Column methods.
+	EditControl() win.HWND                                            // Retrieves a handle to the edit control being used.
+	ExtendedStyle() co.LVS_EX                                         // Retrieves the extended style flags.
 	ImageList(which co.LVSIL) win.HIMAGELIST                          // Retrieves one of the current image lists.
 	Items() *_ListViewItems                                           // Item methods.
 	SetExtendedStyle(doSet bool, styles co.LVS_EX)                    // Sets or unsets extended style flags.
 	SetImageList(which co.LVSIL, himgl win.HIMAGELIST) win.HIMAGELIST // Sets one of the current image lists.
 	SetRedraw(allowRedraw bool)                                       // Sends WM_SETREDRAW to enable or disable UI updates.
+	SetView(view co.LV_VIEW)                                          // Sets current view.
+	View() co.LV_VIEW                                                 // Retrieves current view.
 }
 
 //------------------------------------------------------------------------------
@@ -113,6 +118,14 @@ func (me *_ListView) Columns() *_ListViewColumns {
 	return &me.columns
 }
 
+func (me *_ListView) EditControl() win.HWND {
+	return win.HWND(me.Hwnd().SendMessage(co.LVM_GETEDITCONTROL, 0, 0))
+}
+
+func (me *_ListView) ExtendedStyle() co.LVS_EX {
+	return co.LVS_EX(me.Hwnd().SendMessage(co.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0))
+}
+
 func (me *_ListView) ImageList(which co.LVSIL) win.HIMAGELIST {
 	return win.HIMAGELIST(me.Hwnd().
 		SendMessage(co.LVM_GETIMAGELIST, win.WPARAM(which), 0))
@@ -141,6 +154,17 @@ func (me *_ListView) SetImageList(
 func (me *_ListView) SetRedraw(allowRedraw bool) {
 	me.Hwnd().SendMessage(co.WM_SETREDRAW,
 		win.WPARAM(util.BoolToUintptr(allowRedraw)), 0)
+}
+
+func (me *_ListView) SetView(view co.LV_VIEW) {
+	ret := me.Hwnd().SendMessage(co.LVM_SETVIEW, win.WPARAM(view), 0)
+	if int(ret) == -1 {
+		panic(fmt.Sprintf("LVM_SETVIEW failed for %d.", view))
+	}
+}
+
+func (me *_ListView) View() co.LV_VIEW {
+	return co.LV_VIEW(me.Hwnd().SendMessage(co.LVM_GETVIEW, 0, 0))
 }
 
 func (me *_ListView) handledEvents() {

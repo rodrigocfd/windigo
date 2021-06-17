@@ -60,15 +60,6 @@ func (me *_ListViewColumns) Count() int {
 	return count
 }
 
-// Retrieves information about a column.
-func (me *_ListViewColumns) Info(lvc *win.LVCOLUMN) {
-	ret := me.pHwnd.SendMessage(co.LVM_GETCOLUMN,
-		win.WPARAM(lvc.ISubItem), win.LPARAM(unsafe.Pointer(lvc)))
-	if ret == 0 {
-		panic(fmt.Sprintf("LVM_GETCOLUMN %d failed.", lvc.ISubItem))
-	}
-}
-
 // Sets the title of this column.
 func (me *_ListViewColumns) SetTitle(columnIndex int, text string) {
 	titleBuf := win.Str.ToUint16Slice(text)
@@ -123,7 +114,12 @@ func (me *_ListViewColumns) Title(columnIndex int) string {
 		CchTextMax: int32(len(titleBuf)),
 	}
 
-	me.Info(&lvc)
+	ret := me.pHwnd.SendMessage(co.LVM_GETCOLUMN,
+		win.WPARAM(columnIndex), win.LPARAM(unsafe.Pointer(&lvc)))
+	if ret == 0 {
+		panic(fmt.Sprintf("LVM_GETCOLUMN %d failed.", lvc.ISubItem))
+	}
+
 	return win.Str.FromUint16Slice(titleBuf[:])
 }
 

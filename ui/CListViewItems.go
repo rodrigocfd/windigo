@@ -72,6 +72,24 @@ func (me *_ListViewItems) DeleteAll() {
 	me.pHwnd.SendMessage(co.LVM_DELETEALLITEMS, 0, 0)
 }
 
+// Deletes all selected items at once.
+func (me *_ListViewItems) DeleteSelected() {
+	for {
+		idx := -1 // always search the first one
+		idx = int(
+			me.pHwnd.SendMessage(co.LVM_GETNEXTITEM,
+				win.WPARAM(idx), win.LPARAM(co.LVNI_SELECTED)),
+		)
+		if idx == -1 {
+			break
+		}
+
+		if me.pHwnd.SendMessage(co.LVM_DELETEITEM, win.WPARAM(idx), 0) == 0 {
+			panic(fmt.Sprintf("LVM_DELETEITEM %d failed.", idx))
+		}
+	}
+}
+
 // Retrieves the focused item, if any.
 func (me *_ListViewItems) Focused() (ListViewItem, bool) {
 	startIdx := -1

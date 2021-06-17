@@ -46,6 +46,19 @@ const (
 	LR_SHARED           LR = 0x00008000
 )
 
+// LVM_GETVIEW return value.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getview
+type LV_VIEW uint32
+
+const (
+	LV_VIEW_ICON      LV_VIEW = 0x0000
+	LV_VIEW_DETAILS   LV_VIEW = 0x0001
+	LV_VIEW_SMALLICON LV_VIEW = 0x0002
+	LV_VIEW_LIST      LV_VIEW = 0x0003
+	LV_VIEW_TILE      LV_VIEW = 0x0004
+)
+
 // NMLVCUSTOMDRAW dwItemType.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvcustomdraw
