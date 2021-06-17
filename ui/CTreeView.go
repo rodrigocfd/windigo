@@ -37,7 +37,7 @@ type _TreeView struct {
 func NewTreeViewRaw(parent AnyParent, opts TreeViewRawOpts) TreeView {
 	opts.fillBlankValuesWithDefault()
 
-	me := _TreeView{}
+	me := &_TreeView{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 	me.items.new(&me._NativeControlBase)
@@ -56,12 +56,12 @@ func NewTreeViewRaw(parent AnyParent, opts TreeViewRawOpts) TreeView {
 		}
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new TreeView from a dialog resource.
 func NewTreeViewDlg(parent AnyParent, ctrlId int) TreeView {
-	me := _TreeView{}
+	me := &_TreeView{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 	me.items.new(&me._NativeControlBase)
@@ -70,7 +70,7 @@ func NewTreeViewDlg(parent AnyParent, ctrlId int) TreeView {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_TreeView) On() *_TreeViewEvents {

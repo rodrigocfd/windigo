@@ -18,7 +18,7 @@ type _WindowRawControl struct {
 func NewWindowControlRaw(parent AnyParent, opts WindowControlRawOpts) WindowControl {
 	opts.fillBlankValuesWithDefault()
 
-	me := _WindowRawControl{}
+	me := &_WindowRawControl{}
 	me._WindowRaw.new()
 	me.opts = opts
 	me.parent = parent
@@ -38,7 +38,7 @@ func NewWindowControlRaw(parent AnyParent, opts WindowControlRawOpts) WindowCont
 	})
 
 	me.defaultMessages()
-	return &me
+	return me
 }
 
 // Implements AnyControl.

@@ -37,7 +37,7 @@ type _Button struct {
 func NewButtonRaw(parent AnyParent, opts ButtonRawOpts) Button {
 	opts.fillBlankValuesWithDefault()
 
-	me := _Button{}
+	me := &_Button{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -51,12 +51,12 @@ func NewButtonRaw(parent AnyParent, opts ButtonRawOpts) Button {
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new Button from a dialog resource.
 func NewButtonDlg(parent AnyParent, ctrlId int) Button {
-	me := _Button{}
+	me := &_Button{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -64,7 +64,7 @@ func NewButtonDlg(parent AnyParent, ctrlId int) Button {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_Button) isButton() {}

@@ -40,7 +40,7 @@ type _Edit struct {
 func NewEditRaw(parent AnyParent, opts EditRawOpts) Edit {
 	opts.fillBlankValuesWithDefault()
 
-	me := _Edit{}
+	me := &_Edit{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -54,12 +54,12 @@ func NewEditRaw(parent AnyParent, opts EditRawOpts) Edit {
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new Edit from a dialog resource.
 func NewEditDlg(parent AnyParent, ctrlId int) Edit {
-	me := _Edit{}
+	me := &_Edit{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -67,7 +67,7 @@ func NewEditDlg(parent AnyParent, ctrlId int) Edit {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_Edit) On() *_EditEvents {

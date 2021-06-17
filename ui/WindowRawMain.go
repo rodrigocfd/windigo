@@ -18,13 +18,13 @@ type _WindowRawMain struct {
 func NewWindowMainRaw(opts WindowMainRawOpts) WindowMain {
 	opts.fillBlankValuesWithDefault()
 
-	me := _WindowRawMain{}
+	me := &_WindowRawMain{}
 	me._WindowRaw.new()
 	me.opts = opts
 	me.hChildPrevFocus = win.HWND(0)
 
 	me.defaultMessages()
-	return &me
+	return me
 }
 
 // Implements WindowMain.

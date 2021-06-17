@@ -37,7 +37,7 @@ type _MonthCalendar struct {
 func NewMonthCalendarRaw(parent AnyParent, opts MonthCalendarRawOpts) MonthCalendar {
 	opts.fillBlankValuesWithDefault()
 
-	me := _MonthCalendar{}
+	me := &_MonthCalendar{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -55,12 +55,12 @@ func NewMonthCalendarRaw(parent AnyParent, opts MonthCalendarRawOpts) MonthCalen
 			co.SWP_NOZORDER|co.SWP_NOMOVE)
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new MonthCalendar from a dialog resource.
 func NewMonthCalendarDlg(parent AnyParent, ctrlId int) MonthCalendar {
-	me := _MonthCalendar{}
+	me := &_MonthCalendar{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -68,7 +68,7 @@ func NewMonthCalendarDlg(parent AnyParent, ctrlId int) MonthCalendar {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_MonthCalendar) On() *_MonthCalendarEvents {

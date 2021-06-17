@@ -34,7 +34,7 @@ type _ComboBox struct {
 func NewComboBoxRaw(parent AnyParent, opts ComboBoxRawOpts) ComboBox {
 	opts.fillBlankValuesWithDefault()
 
-	me := _ComboBox{}
+	me := &_ComboBox{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 	me.items.new(&me._NativeControlBase)
@@ -54,12 +54,12 @@ func NewComboBoxRaw(parent AnyParent, opts ComboBoxRawOpts) ComboBox {
 		}
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new ComboBox from a dialog resource.
 func NewComboBoxDlg(parent AnyParent, ctrlId int) ComboBox {
-	me := _ComboBox{}
+	me := &_ComboBox{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 	me.items.new(&me._NativeControlBase)
@@ -68,7 +68,7 @@ func NewComboBoxDlg(parent AnyParent, ctrlId int) ComboBox {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_ComboBox) On() *_ComboBoxEvents {

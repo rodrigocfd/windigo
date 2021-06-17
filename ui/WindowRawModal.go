@@ -18,13 +18,13 @@ type _WindowRawModal struct {
 func NewWindowModalRaw(opts WindowModalRawOpts) WindowModal {
 	opts.fillBlankValuesWithDefault()
 
-	me := _WindowRawModal{}
+	me := &_WindowRawModal{}
 	me._WindowRaw.new()
 	me.opts = opts
 	me.hPrevFocusParent = win.HWND(0)
 
 	me.defaultMessages()
-	return &me
+	return me
 }
 
 // Implements WindowModal.

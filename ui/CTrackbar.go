@@ -42,7 +42,7 @@ type _Trackbar struct {
 func NewTrackbarRaw(parent AnyParent, opts TrackbarRawOpts) Trackbar {
 	opts.fillBlankValuesWithDefault()
 
-	me := _Trackbar{}
+	me := &_Trackbar{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -64,12 +64,12 @@ func NewTrackbarRaw(parent AnyParent, opts TrackbarRawOpts) Trackbar {
 		}
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new Trackbar from a dialog resource.
 func NewTrackbarDlg(parent AnyParent, ctrlId int) Trackbar {
-	me := _Trackbar{}
+	me := &_Trackbar{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -77,7 +77,7 @@ func NewTrackbarDlg(parent AnyParent, ctrlId int) Trackbar {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_Trackbar) On() *_TrackbarEvents {

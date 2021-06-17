@@ -29,11 +29,11 @@ type _File struct {
 //
 // ⚠️ You must defer Close().
 func OpenFile(filePath string, behavior co.OPEN_FILE) (File, error) {
-	me := _File{}
+	me := &_File{}
 	if lerr := me.openFile(filePath, behavior); lerr != nil {
 		return nil, lerr
 	}
-	return &me, nil
+	return me, nil
 }
 
 func (me *_File) openFile(filePath string, behavior co.OPEN_FILE) error {

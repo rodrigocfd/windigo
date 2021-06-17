@@ -33,7 +33,7 @@ type _Static struct {
 func NewStaticRaw(parent AnyParent, opts StaticRawOpts) Static {
 	opts.fillBlankValuesWithDefault()
 
-	me := _Static{}
+	me := &_Static{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -48,12 +48,12 @@ func NewStaticRaw(parent AnyParent, opts StaticRawOpts) Static {
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new Static from a dialog resource.
 func NewStaticDlg(parent AnyParent, ctrlId int) Static {
-	me := _Static{}
+	me := &_Static{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -61,7 +61,7 @@ func NewStaticDlg(parent AnyParent, ctrlId int) Static {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_Static) On() *_StaticEvents {

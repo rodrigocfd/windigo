@@ -40,7 +40,7 @@ type _RadioButton struct {
 func NewRadioButtonRaw(parent AnyParent, opts RadioButtonRawOpts) RadioButton {
 	opts.fillBlankValuesWithDefault()
 
-	me := _RadioButton{}
+	me := &_RadioButton{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -59,12 +59,12 @@ func NewRadioButtonRaw(parent AnyParent, opts RadioButtonRawOpts) RadioButton {
 		}
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new RadioButton from a dialog resource.
 func NewRadioButtonDlg(parent AnyParent, ctrlId int) RadioButton {
-	me := _RadioButton{}
+	me := &_RadioButton{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -72,7 +72,7 @@ func NewRadioButtonDlg(parent AnyParent, ctrlId int) RadioButton {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_RadioButton) isRadioButton() {}

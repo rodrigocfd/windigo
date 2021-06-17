@@ -35,7 +35,7 @@ type _StatusBar struct {
 
 // Creates a new StatusBar.
 func NewStatusBar(parent AnyParent) StatusBar {
-	me := _StatusBar{}
+	me := &_StatusBar{}
 	me._NativeControlBase.new(parent, _NextCtrlId()) // always automatic
 	me.events.new(&me._NativeControlBase)
 	me.parts.new(&me._NativeControlBase)
@@ -59,7 +59,7 @@ func NewStatusBar(parent AnyParent) StatusBar {
 		me.parts.resizeToFitParent(wm.Size{Msg: p})
 	})
 
-	return &me
+	return me
 }
 
 func (me *_StatusBar) On() *_StatusBarEvents {

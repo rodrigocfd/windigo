@@ -11,11 +11,11 @@ type _WindowDlgModal struct {
 
 // Creates a new WindowModal by loading a dialog resource.
 func NewWindowModalDlg(dialogId int) WindowModal {
-	me := _WindowDlgModal{}
+	me := &_WindowDlgModal{}
 	me._WindowDlg.new(dialogId)
 
 	me.defaultMessages()
-	return &me
+	return me
 }
 
 // Implements WindowModal.

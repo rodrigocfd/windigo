@@ -38,7 +38,7 @@ type _CheckBox struct {
 func NewCheckBoxRaw(parent AnyParent, opts CheckBoxRawOpts) CheckBox {
 	opts.fillBlankValuesWithDefault()
 
-	me := _CheckBox{}
+	me := &_CheckBox{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -54,12 +54,12 @@ func NewCheckBoxRaw(parent AnyParent, opts CheckBoxRawOpts) CheckBox {
 		me.SetCheckState(opts.State)
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new CheckBox from a dialog resource.
 func NewCheckBoxDlg(parent AnyParent, ctrlId int) CheckBox {
-	me := _CheckBox{}
+	me := &_CheckBox{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -67,7 +67,7 @@ func NewCheckBoxDlg(parent AnyParent, ctrlId int) CheckBox {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_CheckBox) isCheckBox() {}

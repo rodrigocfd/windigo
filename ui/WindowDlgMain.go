@@ -17,13 +17,13 @@ type _WindowDlgMain struct {
 //
 // Parameters iconId and accelTableId are optional.
 func NewWindowMainDlg(dialogId, iconId, accelTableId int) WindowMain {
-	me := _WindowDlgMain{}
+	me := &_WindowDlgMain{}
 	me._WindowDlg.new(dialogId)
 	me.iconId = iconId
 	me.accelTableId = accelTableId
 
 	me.defaultMessages()
-	return &me
+	return me
 }
 
 // Implements WindowMain.

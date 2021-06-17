@@ -37,7 +37,7 @@ type _DateTimePicker struct {
 func NewDateTimePickerRaw(parent AnyParent, opts DateTimePickerRawOpts) DateTimePicker {
 	opts.fillBlankValuesWithDefault()
 
-	me := _DateTimePicker{}
+	me := &_DateTimePicker{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -51,12 +51,12 @@ func NewDateTimePickerRaw(parent AnyParent, opts DateTimePickerRawOpts) DateTime
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new DateTimePicker from a dialog resource.
 func NewDateTimePickerDlg(parent AnyParent, ctrlId int) DateTimePicker {
-	me := _DateTimePicker{}
+	me := &_DateTimePicker{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -64,7 +64,7 @@ func NewDateTimePickerDlg(parent AnyParent, ctrlId int) DateTimePicker {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_DateTimePicker) On() *_DateTimePickerEvents {

@@ -34,7 +34,7 @@ func NewWindowControlDlgWithId(
 func _NewWindowControlDlg(
 	parent AnyParent, dialogId int, position win.POINT, ctrlId int) WindowControl {
 
-	me := _WindowDlgControl{}
+	me := &_WindowDlgControl{}
 	me._WindowDlg.new(dialogId)
 	me.parent = parent
 	me.ctrlId = 0
@@ -52,7 +52,7 @@ func _NewWindowControlDlg(
 	})
 
 	me.defaultMessages()
-	return &me
+	return me
 }
 
 // Implements AnyControl.

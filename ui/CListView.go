@@ -50,7 +50,7 @@ type _ListView struct {
 func NewListViewRaw(parent AnyParent, opts ListViewRawOpts) ListView {
 	opts.fillBlankValuesWithDefault()
 
-	me := _ListView{}
+	me := &_ListView{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 	me.columns.new(&me._NativeControlBase)
@@ -70,7 +70,7 @@ func NewListViewRaw(parent AnyParent, opts ListViewRawOpts) ListView {
 	})
 
 	me.handledEvents()
-	return &me
+	return me
 }
 
 // Creates a new ListView from a dialog resource.
@@ -85,7 +85,7 @@ func NewListViewDlg(parent AnyParent, ctrlId, contextMenuId int) ListView {
 		hContextMenu = hResMenu // menu resources are automatically freed by the system
 	}
 
-	me := _ListView{}
+	me := &_ListView{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 	me.columns.new(&me._NativeControlBase)
@@ -100,7 +100,7 @@ func NewListViewDlg(parent AnyParent, ctrlId, contextMenuId int) ListView {
 	})
 
 	me.handledEvents()
-	return &me
+	return me
 }
 
 func (me *_ListView) On() *_ListViewEvents {

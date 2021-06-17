@@ -64,7 +64,7 @@ func OpenFileMapped(
 		readOnly = false
 	}
 
-	me := _FileMapped{
+	me := &_FileMapped{
 		objFile:  _File{},
 		hMap:     HFILEMAP(0),
 		pMem:     HFILEMAPVIEW(0),
@@ -78,7 +78,7 @@ func OpenFileMapped(
 	if lerr := me.mapInMemory(); lerr != nil {
 		return nil, lerr
 	}
-	return &me, nil
+	return me, nil
 }
 
 func (me *_FileMapped) Close() {

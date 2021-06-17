@@ -41,9 +41,10 @@ type _Resizer struct {
 	szOrig win.SIZE // Original client area of parent.
 }
 
-// Creates a new Resizer.
+// Creates a new Resizer. This function must be called after all controls are
+// created themselves.
 func NewResizer(parent AnyParent) Resizer {
-	me := _Resizer{
+	me := &_Resizer{
 		parent: parent,
 	}
 
@@ -51,7 +52,7 @@ func NewResizer(parent AnyParent) Resizer {
 		rcParent := me.parent.Hwnd().GetClientRect()
 		me.szOrig = win.SIZE{Cx: rcParent.Right, Cy: rcParent.Bottom} // save parent client area
 
-		for i, _ := range me.ctrls {
+		for i := range me.ctrls {
 			me.ctrls[i].rcOrig = me.ctrls[i].hChild.Hwnd().GetWindowRect() // relative to screen
 			parent.Hwnd().ScreenToClientRc(&me.ctrls[i].rcOrig)            // now relative to parent
 		}
@@ -61,7 +62,7 @@ func NewResizer(parent AnyParent) Resizer {
 		me.adjustToParent(wm.Size{Msg: p})
 	})
 
-	return &me
+	return me
 }
 
 func (me *_Resizer) Add(

@@ -34,7 +34,7 @@ type _ProgressBar struct {
 func NewProgressBarRaw(parent AnyParent, opts ProgressBarRawOpts) ProgressBar {
 	opts.fillBlankValuesWithDefault()
 
-	me := _ProgressBar{}
+	me := &_ProgressBar{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.isMarquee = false
 
@@ -46,12 +46,12 @@ func NewProgressBarRaw(parent AnyParent, opts ProgressBarRawOpts) ProgressBar {
 			opts.Position, opts.Size, win.HMENU(opts.CtrlId))
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new ProgressBar from a dialog resource.
 func NewProgressBarDlg(parent AnyParent, ctrlId int) ProgressBar {
-	me := _ProgressBar{}
+	me := &_ProgressBar{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.isMarquee = false
 
@@ -59,7 +59,7 @@ func NewProgressBarDlg(parent AnyParent, ctrlId int) ProgressBar {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_ProgressBar) isProgressBar() {}

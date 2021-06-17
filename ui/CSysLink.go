@@ -35,7 +35,7 @@ type _SysLink struct {
 func NewSysLinkRaw(parent AnyParent, opts SysLinkRawOpts) SysLink {
 	opts.fillBlankValuesWithDefault()
 
-	me := _SysLink{}
+	me := &_SysLink{}
 	me._NativeControlBase.new(parent, opts.CtrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -50,12 +50,12 @@ func NewSysLinkRaw(parent AnyParent, opts SysLinkRawOpts) SysLink {
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
 
-	return &me
+	return me
 }
 
 // Creates a new SysLink from a dialog resource.
 func NewSysLinkDlg(parent AnyParent, ctrlId int) SysLink {
-	me := _SysLink{}
+	me := &_SysLink{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
@@ -63,7 +63,7 @@ func NewSysLinkDlg(parent AnyParent, ctrlId int) SysLink {
 		me._NativeControlBase.assignDlgItem()
 	})
 
-	return &me
+	return me
 }
 
 func (me *_SysLink) On() *_SysLinkEvents {

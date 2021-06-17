@@ -32,10 +32,10 @@ func NewRadioGroupRaw(parent AnyParent, opts []RadioButtonRawOpts) RadioGroup {
 		radios = append(radios, NewRadioButtonRaw(parent, opts[i]))
 	}
 
-	me := _RadioGroup{}
+	me := &_RadioGroup{}
 	me.radios = radios
 	me.events.new(&me.radios)
-	return &me
+	return me
 }
 
 // Creates a new RadioGroup, where each RadioButton is from a dialog resource.
@@ -45,10 +45,10 @@ func NewRadioGroupDlg(parent AnyParent, ctrlIds []int) RadioGroup {
 		radios = append(radios, NewRadioButtonDlg(parent, ctrlId))
 	}
 
-	me := _RadioGroup{}
+	me := &_RadioGroup{}
 	me.radios = radios
 	me.events.new(&me.radios)
-	return &me
+	return me
 }
 
 func (me *_RadioGroup) Item(index int) RadioButton {
