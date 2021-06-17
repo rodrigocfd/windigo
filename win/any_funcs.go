@@ -31,16 +31,6 @@ func AllowSetForegroundWindow(dwProcessId uint32) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-begindeferwindowpos
-func BeginDeferWindowPos(numWindows int32) HDWP {
-	ret, _, lerr := syscall.Syscall(proc.BeginDeferWindowPos.Addr(), 1,
-		uintptr(numWindows), 0, 0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HDWP(ret)
-}
-
 // Loads the COM module. This needs to be done only once in your application.
 // Typically uses COINIT_APARTMENTTHREADED.
 //
@@ -67,19 +57,6 @@ func CoUninitialize() {
 	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)
 }
 
-// ⚠️ You must defer DestroyAcceleratorTable().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createacceleratortablew
-func CreateAcceleratorTable(accelList []ACCEL) HACCEL {
-	ret, _, lerr := syscall.Syscall(proc.CreateAcceleratorTable.Addr(), 2,
-		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)),
-		0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HACCEL(ret)
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw
 func CreateDirectory(
 	pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
@@ -91,123 +68,6 @@ func CreateDirectory(
 		return err.ERROR(lerr)
 	}
 	return nil
-}
-
-// ⚠️ You must defer CloseHandle().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
-func CreateFile(fileName string, desiredAccess co.GENERIC,
-	shareMode co.FILE_SHARE, securityAttributes *SECURITY_ATTRIBUTES,
-	creationDisposition co.DISPOSITION, attributes co.FILE_ATTRIBUTE,
-	flags co.FILE_FLAG, security co.SECURITY,
-	hTemplateFile HFILE) (HFILE, error) {
-
-	ret, _, lerr := syscall.Syscall9(proc.CreateFile.Addr(), 7,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
-		uintptr(desiredAccess), uintptr(shareMode),
-		uintptr(unsafe.Pointer(securityAttributes)),
-		uintptr(creationDisposition),
-		uintptr(uint32(attributes)|uint32(flags)|uint32(security)),
-		uintptr(hTemplateFile), 0, 0)
-
-	if int(ret) == _INVALID_HANDLE_VALUE {
-		return HFILE(0), err.ERROR(lerr)
-	}
-	return HFILE(ret), nil
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontindirectw
-func CreateFontIndirect(lf *LOGFONT) HFONT {
-	ret, _, lerr := syscall.Syscall(proc.CreateFontIndirect.Addr(), 1,
-		uintptr(unsafe.Pointer(lf)), 0, 0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HFONT(ret)
-}
-
-// ⚠️ You must defer DestroyMenu().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createmenu
-func CreateMenu() HMENU {
-	ret, _, lerr := syscall.Syscall(proc.CreateMenu.Addr(), 0,
-		0, 0, 0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HMENU(ret)
-}
-
-// ⚠️ You must defer DestroyMenu().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createpopupmenu
-func CreatePopupMenu() HMENU {
-	ret, _, lerr := syscall.Syscall(proc.CreatePopupMenu.Addr(), 0,
-		0, 0, 0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HMENU(ret)
-}
-
-// ⚠️ You must defer DeleteObject().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
-func CreateRectRgnIndirect(lprect *RECT) HRGN {
-	ret, _, lerr := syscall.Syscall(proc.CreateRectRgnIndirect.Addr(), 1,
-		uintptr(unsafe.Pointer(lprect)), 0, 0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HRGN(ret)
-}
-
-// ⚠️ You must defer DeleteObject().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createroundrectrgn
-func CreateRoundRectRgn(x1, y1, x2, y2, w, h int32) HRGN {
-	ret, _, lerr := syscall.Syscall6(proc.CreateRoundRectRgn.Addr(), 6,
-		uintptr(x1), uintptr(y1), uintptr(x2), uintptr(y2),
-		uintptr(w), uintptr(h))
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HRGN(ret)
-}
-
-// ⚠️ You must defer DeleteObject().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createsolidbrush
-func CreateSolidBrush(color COLORREF) HBRUSH {
-	ret, _, lerr := syscall.Syscall(proc.CreateSolidBrush.Addr(), 1,
-		uintptr(color), 0, 0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HBRUSH(ret)
-}
-
-// Not an actual Win32 function, just a tricky conversion to create a brush from
-// a system color, particularly used when registering a window class.
-func CreateSysColorBrush(sysColor co.COLOR) HBRUSH {
-	return HBRUSH(sysColor + 1)
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
-func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
-	x, y, width, height int32, parent HWND, menu HMENU,
-	instance HINSTANCE, param LPARAM) HWND {
-
-	ret, _, lerr := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
-		uintptr(exStyle),
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(className))),
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(title))),
-		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
-		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HWND(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
@@ -270,35 +130,6 @@ func EnumWindows(
 	}
 }
 
-// Extracts all icons: big and small.
-//
-// ⚠️ You must defer DestroyIcon() on each icon returned in both slices.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-extracticonexw
-func ExtractIconEx(lpszFile string) ([]HICON, []HICON) {
-	retrieveIdx := -1
-	ret, _, lerr := syscall.Syscall6(proc.ExtractIconEx.Addr(), 5,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpszFile))),
-		uintptr(retrieveIdx), 0, 0, 0, 0)
-	if ret == _UINT_MAX {
-		panic(err.ERROR(lerr))
-	}
-
-	numIcons := int(ret)
-	largeIcons := make([]HICON, numIcons)
-	smallIcons := make([]HICON, numIcons)
-
-	ret, _, lerr = syscall.Syscall6(proc.ExtractIconEx.Addr(), 5,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpszFile))), 0,
-		uintptr(unsafe.Pointer(&largeIcons[0])),
-		uintptr(unsafe.Pointer(&smallIcons[0])), uintptr(numIcons), 0)
-	if ret == _UINT_MAX {
-		panic(err.ERROR(lerr))
-	}
-
-	return largeIcons, smallIcons
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
 func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
 	ret, _, lerr := syscall.Syscall(proc.FileTimeToSystemTime.Addr(), 2,
@@ -307,27 +138,6 @@ func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
 	if ret == 0 {
 		panic(err.ERROR(lerr))
 	}
-}
-
-// Returns true if a file was found.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
-func FindFirstFile(lpFileName string,
-	lpFindFileData *WIN32_FIND_DATA) (HFIND, bool, error) {
-
-	ret, _, lerr := syscall.Syscall(proc.FindFirstFile.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))),
-		uintptr(unsafe.Pointer(lpFindFileData)), 0)
-
-	errCode := err.ERROR(lerr)
-	if int(ret) == _INVALID_HANDLE_VALUE {
-		if errCode == err.FILE_NOT_FOUND || errCode == err.PATH_NOT_FOUND { // no matching files, not an error
-			return HFIND(0), false, nil
-		} else {
-			return HFIND(0), false, errCode
-		}
-	}
-	return HFIND(ret), true, nil // a file was found
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getasynckeystate
@@ -373,12 +183,6 @@ func GetCursorPos() POINT {
 	return pt
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdesktopwindow
-func GetDesktopWindow() HWND {
-	ret, _, _ := syscall.Syscall(proc.GetDesktopWindow.Addr(), 0, 0, 0, 0)
-	return HWND(ret)
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-getdynamictimezoneinformation
 func GetDynamicTimeZoneInformation(
 	pTimeZoneInformation *DYNAMIC_TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
@@ -400,19 +204,6 @@ func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
 	return retAttr, nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getfocus
-func GetFocus() HWND {
-	ret, _, _ := syscall.Syscall(proc.GetFocus.Addr(), 0, 0, 0, 0)
-	return HWND(ret)
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow
-func GetForegroundWindow() HWND {
-	ret, _, _ := syscall.Syscall(proc.GetForegroundWindow.Addr(), 0,
-		0, 0, 0)
-	return HWND(ret)
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagew
 func GetMessage(
 	msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) (int32, error) {
@@ -425,17 +216,6 @@ func GetMessage(
 		return 0, err.ERROR(lerr)
 	}
 	return int32(ret), nil
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
-func GetModuleHandle(moduleName string) HINSTANCE {
-	ret, _, lerr := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(moduleName))),
-		0, 0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HINSTANCE(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos
@@ -454,16 +234,6 @@ func GetSysColor(nIndex co.COLOR) COLORREF {
 	ret, _, _ := syscall.Syscall(proc.GetSysColor.Addr(), 1,
 		uintptr(nIndex), 0, 0)
 	return COLORREF(ret)
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolorbrush
-func GetSysColorBrush(nIndex co.COLOR) HBRUSH {
-	ret, _, lerr := syscall.Syscall(proc.GetSysColorBrush.Addr(), 1,
-		uintptr(nIndex), 0, 0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HBRUSH(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
@@ -532,21 +302,6 @@ func HIBYTE(value uint16) uint8 {
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632657(v=vs.85)
 func HIWORD(value uint32) uint16 {
 	return uint16(value >> 16 & 0xffff)
-}
-
-// Usually flags is ILC_COLOR32.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
-func ImageListCreate(cx, cy uint32, flags co.ILC,
-	cInitial, cGrow uint32) HIMAGELIST {
-
-	ret, _, lerr := syscall.Syscall6(proc.ImageList_Create.Addr(), 5,
-		uintptr(cx), uintptr(cy), uintptr(flags),
-		uintptr(cInitial), uintptr(cGrow), 0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HIMAGELIST(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
@@ -647,19 +402,6 @@ func IsWindowsVersionOrGreater(
 		co.VER_MAJORVERSION|co.VER_MINORVERSION|co.VER_SERVICEPACKMAJOR,
 		conditionMask)
 	return ret
-}
-
-// ⚠️ You must defer FreeLibrary().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
-func LoadLibrary(lpLibFileName string) HINSTANCE {
-	ret, _, lerr := syscall.Syscall(proc.LoadLibrary.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpLibFileName))),
-		0, 0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HINSTANCE(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632658(v=vs.85)
@@ -777,20 +519,6 @@ func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 	if ret == 0 {
 		panic(err.ERROR(lerr))
 	}
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
-func SetWindowsHookEx(idHook co.WH,
-	lpfn func(code int32, wp WPARAM, lp LPARAM) uintptr,
-	hmod HINSTANCE, dwThreadId uint32) HHOOK {
-
-	ret, _, lerr := syscall.Syscall6(proc.SetWindowsHookEx.Addr(), 4,
-		uintptr(idHook), syscall.NewCallback(lpfn),
-		uintptr(hmod), uintptr(dwThreadId), 0, 0)
-	if ret == 0 {
-		panic(err.ERROR(lerr))
-	}
-	return HHOOK(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw

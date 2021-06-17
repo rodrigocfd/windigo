@@ -14,6 +14,29 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HFILE HANDLE
 
+// ⚠️ You must defer CloseHandle().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+func CreateFile(fileName string, desiredAccess co.GENERIC,
+	shareMode co.FILE_SHARE, securityAttributes *SECURITY_ATTRIBUTES,
+	creationDisposition co.DISPOSITION, attributes co.FILE_ATTRIBUTE,
+	flags co.FILE_FLAG, security co.SECURITY,
+	hTemplateFile HFILE) (HFILE, error) {
+
+	ret, _, lerr := syscall.Syscall9(proc.CreateFile.Addr(), 7,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
+		uintptr(desiredAccess), uintptr(shareMode),
+		uintptr(unsafe.Pointer(securityAttributes)),
+		uintptr(creationDisposition),
+		uintptr(uint32(attributes)|uint32(flags)|uint32(security)),
+		uintptr(hTemplateFile), 0, 0)
+
+	if int(ret) == _INVALID_HANDLE_VALUE {
+		return HFILE(0), err.ERROR(lerr)
+	}
+	return HFILE(ret), nil
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hFile HFILE) CloseHandle() error {
 	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,

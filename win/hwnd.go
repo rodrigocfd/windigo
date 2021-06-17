@@ -15,6 +15,42 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hwnd
 type HWND HANDLE
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
+func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
+	x, y, width, height int32, parent HWND, menu HMENU,
+	instance HINSTANCE, param LPARAM) HWND {
+
+	ret, _, lerr := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
+		uintptr(exStyle),
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(className))),
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(title))),
+		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
+		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return HWND(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdesktopwindow
+func GetDesktopWindow() HWND {
+	ret, _, _ := syscall.Syscall(proc.GetDesktopWindow.Addr(), 0, 0, 0, 0)
+	return HWND(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getfocus
+func GetFocus() HWND {
+	ret, _, _ := syscall.Syscall(proc.GetFocus.Addr(), 0, 0, 0, 0)
+	return HWND(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow
+func GetForegroundWindow() HWND {
+	ret, _, _ := syscall.Syscall(proc.GetForegroundWindow.Addr(), 0,
+		0, 0, 0)
+	return HWND(ret)
+}
+
 // ⚠️ You must defer EndPaint().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint

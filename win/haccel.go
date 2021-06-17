@@ -13,6 +13,19 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#haccel
 type HACCEL HANDLE
 
+// ⚠️ You must defer DestroyAcceleratorTable().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createacceleratortablew
+func CreateAcceleratorTable(accelList []ACCEL) HACCEL {
+	ret, _, lerr := syscall.Syscall(proc.CreateAcceleratorTable.Addr(), 2,
+		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)),
+		0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return HACCEL(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyacceleratortablew
 func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
 	szRet, _, _ := syscall.Syscall(proc.CopyAcceleratorTable.Addr(), 3,

@@ -14,6 +14,23 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/image-lists
 type HIMAGELIST HANDLE
 
+// Usually flags is ILC_COLOR32.
+//
+// ⚠️ You must defer Destroy().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
+func ImageListCreate(cx, cy uint32, flags co.ILC,
+	cInitial, cGrow uint32) HIMAGELIST {
+
+	ret, _, lerr := syscall.Syscall6(proc.ImageList_Create.Addr(), 5,
+		uintptr(cx), uintptr(cy), uintptr(flags),
+		uintptr(cInitial), uintptr(cGrow), 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return HIMAGELIST(ret)
+}
+
 // If icon was loaded from resource with LoadIcon(), it doesn't need to be
 // destroyed, because all icon resources are automatically freed.
 // Otherwise, if loaded with CreateIcon(), it must be destroyed.

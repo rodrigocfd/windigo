@@ -14,6 +14,30 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
 type HINSTANCE HANDLE
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
+func GetModuleHandle(moduleName string) HINSTANCE {
+	ret, _, lerr := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(moduleName))),
+		0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return HINSTANCE(ret)
+}
+
+// ⚠️ You must defer FreeLibrary().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
+func LoadLibrary(lpLibFileName string) HINSTANCE {
+	ret, _, lerr := syscall.Syscall(proc.LoadLibrary.Addr(), 1,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpLibFileName))),
+		0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return HINSTANCE(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
 func (hInst HINSTANCE) CreateDialogParam(
 	lpTemplateName int32, hWndParent HWND,

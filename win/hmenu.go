@@ -15,6 +15,30 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hmenu
 type HMENU HANDLE
 
+// ⚠️ You must defer DestroyMenu().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createmenu
+func CreateMenu() HMENU {
+	ret, _, lerr := syscall.Syscall(proc.CreateMenu.Addr(), 0,
+		0, 0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return HMENU(ret)
+}
+
+// ⚠️ You must defer DestroyMenu().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createpopupmenu
+func CreatePopupMenu() HMENU {
+	ret, _, lerr := syscall.Syscall(proc.CreatePopupMenu.Addr(), 0,
+		0, 0, 0)
+	if ret == 0 {
+		panic(err.ERROR(lerr))
+	}
+	return HMENU(ret)
+}
+
 // Appends a new item to the menu.
 func (hMenu HMENU) AddItem(cmdId int, text string) {
 	hMenu.AppendMenu(co.MF_STRING, uintptr(cmdId),
