@@ -14,15 +14,21 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes
 type ERROR uint32
 
-// Calls FormatMessage() and returns a full error description.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-formatmessagew
+// Implements error interface.
 func (err ERROR) Error() string {
-	return fmt.Sprintf("[%d 0x%02x] %s",
-		uint32(err), uint32(err), err.Unwrap().Error())
+	return err.String()
 }
 
 // Returns the contained syscall.Errno.
 func (err ERROR) Unwrap() error {
 	return syscall.Errno(err)
+}
+
+// Implements fmt.Stringer; calls FormatMessage() and returns a full error
+// description.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-formatmessagew
+func (err ERROR) String() string {
+	return fmt.Sprintf("[%d 0x%02x] %s",
+		uint32(err), uint32(err), err.Unwrap().Error())
 }
