@@ -60,21 +60,17 @@ func (me *_WindowBase) RunUiThread(userFunc func()) {
 	_globalUiThreadCache[_globalUiThreadCount] = userFunc // cache
 	_globalUiThreadMutex.Unlock()
 
-	me.hWnd.SendMessage(_WM_UI_THREAD,
-		win.WPARAM(_WM_UI_THREAD), win.LPARAM(_globalUiThreadCount))
+	me.hWnd.SendMessage(_WM_UI_THREAD, 0, win.LPARAM(_globalUiThreadCount))
 }
 
 func (me *_WindowBase) defaultMessages() {
-	me.events.Wm(_WM_UI_THREAD, func(p wm.Any) uintptr { // handle our custom thread UI message
-		if p.WParam == win.WPARAM(_WM_UI_THREAD) {
-			_globalUiThreadMutex.Lock()
-			userFunc, _ := _globalUiThreadCache[int(p.LParam)] // retrieve from cache
-			delete(_globalUiThreadCache, int(p.LParam))        // clear from cache
-			_globalUiThreadMutex.Unlock()
+	me.internalOn().addMsgZero(_WM_UI_THREAD, func(p wm.Any) { // handle our custom thread UI message
+		_globalUiThreadMutex.Lock()
+		userFunc, _ := _globalUiThreadCache[int(p.LParam)] // retrieve from cache
+		delete(_globalUiThreadCache, int(p.LParam))        // clear from cache
+		_globalUiThreadMutex.Unlock()
 
-			userFunc()
-		}
-		return 0
+		userFunc()
 	})
 }
 
