@@ -151,7 +151,7 @@ func (me *_ListView) handledEvents() {
 
 		if hasCtrl && nmk.WVKey == 'A' { // Ctrl+A pressed?
 			me.Items().SetSelectedAll(true)
-		} else if nmk.WVKey == co.VK_APPS { // context meny key
+		} else if nmk.WVKey == co.VK_APPS { // context menu key
 			me.showContextMenu(false, hasCtrl, hasShift)
 		}
 	})
@@ -177,14 +177,13 @@ func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		me.Hwnd().ScreenToClientPt(&menuPos) // now relative to list view
 		lvhti := me.Items().HitTest(menuPos) // to find item below cursor, if any
 
-		if lvhti.IItem != -1 { // an item was right-clicked
+		if clickedItem, hasItem := me.Items().Get(int(lvhti.IItem)); hasItem { // an item was right-clicked
 			if !hasCtrl && !hasShift {
-				clickedIdx := int(lvhti.IItem)
-				if !me.Items().IsSelected(clickedIdx) {
+				if clickedItem.IsSelected() {
 					me.Items().SetSelectedAll(false)
-					me.Items().SetSelected(true, clickedIdx)
+					clickedItem.SetSelected(true)
 				}
-				me.Items().SetFocused(clickedIdx)
+				clickedItem.SetFocused()
 			}
 		} else if !hasCtrl && !hasShift { // no item was right-clicked
 			me.Items().SetSelectedAll(false)
@@ -192,12 +191,12 @@ func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		me.Hwnd().SetFocus() // because a right-click won't set the focus by itself
 
 	} else { // usually fired with the context keyboard key
-		if focusedIdx, hasFocused := me.Items().Focused(); hasFocused && me.Items().IsVisible(focusedIdx) {
-			rcItem := me.Items().Rect(focusedIdx, co.LVIR_BOUNDS)
+		if focusItem, hasFocused := me.Items().Focused(); hasFocused && focusItem.IsVisible() {
+			rcItem := focusItem.Rect(co.LVIR_BOUNDS)
 			menuPos.X = rcItem.Left + 16 // arbitrary
 			menuPos.Y = rcItem.Top + (rcItem.Bottom-rcItem.Top)/2
 		} else { // no item is focused and visible
-			menuPos.X = 6 // arbitrary
+			menuPos.X = 6 // arbitrary anchor coords
 			menuPos.Y = 10
 		}
 	}

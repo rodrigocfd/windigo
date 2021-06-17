@@ -46,31 +46,6 @@ func (me *_ListViewColumns) Add(widths []int, titles ...string) {
 	}
 }
 
-// Retrieves the texts of all items at the given column.
-func (me *_ListViewColumns) AllTexts(columnIndex int) []string {
-	count := int(me.pHwnd.SendMessage(co.LVM_GETITEMCOUNT, 0, 0))
-	texts := make([]string, 0, count)
-
-	textBuf := [256]uint16{} // arbitrary
-	lvi := win.LVITEM{
-		ISubItem:   int32(columnIndex),
-		PszText:    &textBuf[0],
-		CchTextMax: int32(len(textBuf)),
-	}
-
-	for i := 0; i < count; i++ {
-		ret := me.pHwnd.SendMessage(co.LVM_GETITEMTEXT,
-			win.WPARAM(i), win.LPARAM(unsafe.Pointer(&lvi)))
-		if ret < 0 {
-			panic(fmt.Sprintf("LVM_GETITEMTEXT %d/%d failed.", i, columnIndex))
-		}
-
-		texts = append(texts, win.Str.FromUint16Slice(textBuf[:]))
-	}
-
-	return texts
-}
-
 // Retrieves the number of columns.
 func (me *_ListViewColumns) Count() int {
 	hHeader := win.HWND(me.pHwnd.SendMessage(co.LVM_GETHEADER, 0, 0))
@@ -92,40 +67,6 @@ func (me *_ListViewColumns) Info(lvc *win.LVCOLUMN) {
 	if ret == 0 {
 		panic(fmt.Sprintf("LVM_GETCOLUMN %d failed.", lvc.ISubItem))
 	}
-}
-
-// Retrieves the texts of the selected items at the given column.
-func (me *_ListViewColumns) SelectedTexts(columnIndex int) []string {
-	selCount := int(me.pHwnd.SendMessage(co.LVM_GETSELECTEDCOUNT, 0, 0))
-	texts := make([]string, 0, selCount)
-
-	textBuf := [256]uint16{} // arbitrary
-	lvi := win.LVITEM{
-		ISubItem:   int32(columnIndex),
-		PszText:    &textBuf[0],
-		CchTextMax: int32(len(textBuf)),
-	}
-
-	i := -1
-	for {
-		i = int(
-			me.pHwnd.SendMessage(co.LVM_GETNEXTITEM,
-				win.WPARAM(i), win.LPARAM(co.LVNI_SELECTED)),
-		)
-		if i == -1 {
-			break
-		}
-
-		ret := me.pHwnd.SendMessage(co.LVM_GETITEMTEXT,
-			win.WPARAM(i), win.LPARAM(unsafe.Pointer(&lvi)))
-		if ret < 0 {
-			panic(fmt.Sprintf("LVM_GETITEMTEXT %d/%d failed.", i, columnIndex))
-		}
-
-		texts = append(texts, win.Str.FromUint16Slice(textBuf[:]))
-	}
-
-	return texts
 }
 
 // Sets the title of this column.

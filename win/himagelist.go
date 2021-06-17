@@ -25,7 +25,7 @@ func (hImg HIMAGELIST) AddIcon(hIcons ...HICON) {
 	}
 }
 
-// Loads icosn from the shell, used by Windows Explorer to represent the given
+// Loads icons from the shell, used by Windows Explorer to represent the given
 // file extensions, like "mp3".
 func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) {
 	sz := hImg.GetIconSize()
