@@ -7,7 +7,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IMediaSeekingVtbl struct {
@@ -47,8 +47,8 @@ func (me *IMediaSeeking) CheckCapabilities(
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&capabilities)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return capabilities
 }
@@ -65,8 +65,8 @@ func (me *IMediaSeeking) ConvertTimeFormat(
 		uintptr(unsafe.Pointer(&source)), uintptr(unsafe.Pointer(sourceFormat)),
 		0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return target
 }
@@ -79,8 +79,8 @@ func (me *IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&iEarliest)), uintptr(unsafe.Pointer(&iLatest)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	earliest, latest = _Nanosec100ToDuration(iEarliest), _Nanosec100ToDuration(iLatest)
 	return
@@ -94,8 +94,8 @@ func (me *IMediaSeeking) GetCapabilities() dshowco.SEEKING_CAPABILITIES {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&capabilities)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return capabilities
 }
@@ -108,8 +108,8 @@ func (me *IMediaSeeking) GetCurrentPosition() time.Duration {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&pos)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return _Nanosec100ToDuration(pos)
 }
@@ -122,8 +122,8 @@ func (me *IMediaSeeking) GetDuration() time.Duration {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&duration)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return _Nanosec100ToDuration(duration)
 }
@@ -138,8 +138,8 @@ func (me *IMediaSeeking) GetPositions() (current, stop time.Duration) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&iCurrent)), uintptr(unsafe.Pointer(&iStop)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	current, stop = _Nanosec100ToDuration(iCurrent), _Nanosec100ToDuration(iStop)
 	return
@@ -153,8 +153,8 @@ func (me *IMediaSeeking) GetPreroll() time.Duration {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&preroll)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return _Nanosec100ToDuration(preroll)
 }
@@ -167,8 +167,8 @@ func (me *IMediaSeeking) GetRate() float64 {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&rate)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return rate
 }
@@ -181,8 +181,8 @@ func (me *IMediaSeeking) GetStopPosition() time.Duration {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&stop)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return _Nanosec100ToDuration(stop)
 }
@@ -195,8 +195,8 @@ func (me *IMediaSeeking) GetTimeFormat() *win.GUID {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&format)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return &format
 }
@@ -208,13 +208,13 @@ func (me *IMediaSeeking) IsFormatSupported(format *win.GUID) bool {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(format)), 0)
 
-	lerr := err.ERROR(ret)
-	if lerr == err.S_OK {
+	err := errco.ERROR(ret)
+	if err == errco.S_OK {
 		return true
-	} else if lerr == err.S_FALSE {
+	} else if err == errco.S_FALSE {
 		return false
 	}
-	panic(lerr)
+	panic(err)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isusingtimeformat
@@ -224,13 +224,13 @@ func (me *IMediaSeeking) IsUsingTimeFormat(format *win.GUID) bool {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(format)), 0)
 
-	lerr := err.ERROR(ret)
-	if lerr == err.S_OK {
+	err := errco.ERROR(ret)
+	if err == errco.S_OK {
 		return true
-	} else if lerr == err.S_FALSE {
+	} else if err == errco.S_FALSE {
 		return false
 	}
-	panic(lerr)
+	panic(err)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-querypreferredformat
@@ -241,8 +241,8 @@ func (me *IMediaSeeking) QueryPreferredFormat() *win.GUID {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&format)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return &format
 }
@@ -259,8 +259,8 @@ func (me *IMediaSeeking) SetPositions(
 		uintptr(unsafe.Pointer(&iCurrent)), uintptr(currentFlags),
 		uintptr(unsafe.Pointer(&iStop)), uintptr(stopFlags), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return err
 	}
 	return nil
 }
@@ -272,10 +272,10 @@ func (me *IMediaSeeking) SetRate(rate float64) error {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(rate), 0)
 
-	if lerr := err.ERROR(ret); lerr == err.E_INVALIDARG || lerr == err.VFW_E_UNSUPPORTED_AUDIO {
-		return lerr
-	} else if lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err == errco.E_INVALIDARG || err == errco.VFW_E_UNSUPPORTED_AUDIO {
+		return err
+	} else if err != errco.S_OK {
+		panic(err)
 	}
 
 	return nil
@@ -288,8 +288,8 @@ func (me *IMediaSeeking) SetTimeFormat(format *win.GUID) error {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(format)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return err
 	}
 	return nil
 }

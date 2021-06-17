@@ -5,7 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // A handle to an accelerator table.
@@ -17,11 +17,11 @@ type HACCEL HANDLE
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createacceleratortablew
 func CreateAcceleratorTable(accelList []ACCEL) HACCEL {
-	ret, _, lerr := syscall.Syscall(proc.CreateAcceleratorTable.Addr(), 2,
+	ret, _, err := syscall.Syscall(proc.CreateAcceleratorTable.Addr(), 2,
 		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)),
 		0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return HACCEL(ret)
 }
@@ -41,9 +41,9 @@ func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyacceleratortable
 func (hAccel HACCEL) DestroyAcceleratorTable() {
-	ret, _, lerr := syscall.Syscall(proc.DestroyAcceleratorTable.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.DestroyAcceleratorTable.Addr(), 1,
 		uintptr(hAccel), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }

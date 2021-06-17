@@ -5,7 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IEnumMediaTypesVtbl struct {
@@ -33,8 +33,8 @@ func (me *IEnumMediaTypes) Clone() (IEnumMediaTypes, error) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return IEnumMediaTypes{}, lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return IEnumMediaTypes{}, err
 	}
 	return IEnumMediaTypes{
 		win.IUnknown{Ppv: ppQueried},

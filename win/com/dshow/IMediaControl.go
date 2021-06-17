@@ -6,7 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IMediaControlVtbl struct {
@@ -39,11 +39,11 @@ func (me *IMediaControl) GetState(msTimeout int) (dshowco.FILTER_STATE, error) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(msTimeout), uintptr(unsafe.Pointer(&state)))
 
-	lerr := err.ERROR(ret)
-	if lerr == err.S_OK {
+	err := errco.ERROR(ret)
+	if err == errco.S_OK {
 		return state, nil
 	}
-	return dshowco.FILTER_STATE(0), lerr
+	return dshowco.FILTER_STATE(0), err
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-pause
@@ -53,8 +53,8 @@ func (me *IMediaControl) Pause() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK && lerr != err.S_FALSE {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK && err != errco.S_FALSE {
+		panic(err)
 	}
 }
 
@@ -65,8 +65,8 @@ func (me *IMediaControl) RenderFile(strFilename string) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(strFilename))), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -77,8 +77,8 @@ func (me *IMediaControl) Run() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK && lerr != err.S_FALSE {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK && err != errco.S_FALSE {
+		panic(err)
 	}
 }
 
@@ -89,7 +89,7 @@ func (me *IMediaControl) Stop() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }

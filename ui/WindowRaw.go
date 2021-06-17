@@ -7,7 +7,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // Base to all windows created by specifying all options, which will be passed
@@ -57,8 +57,8 @@ func (me *_WindowRaw) generateWcx(
 func (me *_WindowRaw) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 	atom, fail := win.RegisterClassEx(wcx)
 	if fail != nil {
-		lerr, _ := fail.(err.ERROR)
-		if lerr == err.CLASS_ALREADY_EXISTS {
+		err, _ := fail.(errco.ERROR)
+		if err == errco.CLASS_ALREADY_EXISTS {
 			// https://devblogs.microsoft.com/oldnewthing/20150429-00/?p=44984
 			// https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
 			atom, fail = wcx.HInstance.GetClassInfoEx( // retrieve atom from existing window class
@@ -66,8 +66,8 @@ func (me *_WindowRaw) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 			if fail != nil {
 				panic(fail) // GetClassInfoEx failed
 			}
-		} else if lerr != err.SUCCESS {
-			panic(lerr) // RegisterClassEx failed
+		} else if err != errco.SUCCESS {
+			panic(err) // RegisterClassEx failed
 		}
 	}
 	return atom

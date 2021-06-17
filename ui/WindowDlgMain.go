@@ -3,7 +3,7 @@ package ui
 import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // Implements WindowMain interface.
@@ -60,7 +60,7 @@ func (me *_WindowDlgMain) defaultMessages() {
 	})
 
 	me.On().WmNcDestroy(func() {
-		win.PostQuitMessage(int32(err.SUCCESS))
+		win.PostQuitMessage(int32(errco.SUCCESS))
 	})
 }
 

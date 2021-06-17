@@ -7,7 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _ITaskbarList3Vtbl struct {
@@ -58,8 +58,8 @@ func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwndTab), uintptr(hwndMDI))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -73,8 +73,8 @@ func (me *ITaskbarList3) SetOverlayIcon(
 		uintptr(hwnd), uintptr(hIcon),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszDescription))), 0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -87,8 +87,8 @@ func (me *ITaskbarList3) SetProgressState(
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), uintptr(tbpFlags))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -101,8 +101,8 @@ func (me *ITaskbarList3) SetProgressValue(
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), uintptr(ullCompleted), uintptr(ullTotal), 0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -113,8 +113,8 @@ func (me *ITaskbarList3) SetTabActive(hwndTab, hwndMDI win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwndTab), uintptr(hwndMDI))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -125,8 +125,8 @@ func (me *ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwndTab), uintptr(hwndInsertBefore))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -137,8 +137,8 @@ func (me *ITaskbarList3) SetThumbnailClip(hwnd win.HWND, prcClip *win.RECT) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), uintptr(unsafe.Pointer(prcClip)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -149,8 +149,8 @@ func (me *ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, pszTip string) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszTip))))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -163,8 +163,8 @@ func (me *ITaskbarList3) ThumbBarAddButtons(
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -177,8 +177,8 @@ func (me *ITaskbarList3) ThumbBarSetImageList(
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), uintptr(himl))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -191,8 +191,8 @@ func (me *ITaskbarList3) ThumbBarUpdateButtons(
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -203,7 +203,7 @@ func (me *ITaskbarList3) UnregisterTab(hwndTab win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwndTab), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }

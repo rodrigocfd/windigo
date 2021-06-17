@@ -4,7 +4,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IMediaFilterVtbl struct {
@@ -31,8 +31,8 @@ func (me *IMediaFilter) Pause() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK && lerr != err.S_FALSE {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK && err != errco.S_FALSE {
+		panic(err)
 	}
 }
 
@@ -43,7 +43,7 @@ func (me *IMediaFilter) Stop() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK && lerr != err.S_FALSE {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK && err != errco.S_FALSE {
+		panic(err)
 	}
 }

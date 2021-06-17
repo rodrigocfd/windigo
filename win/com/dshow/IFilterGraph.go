@@ -7,7 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IFilterGraphVtbl struct {
@@ -51,8 +51,8 @@ func (me *IFilterGraph) AddFilter(pFilter *IBaseFilter, name string) error {
 		uintptr(unsafe.Pointer(pFilter.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(name))))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return err
 	}
 	return nil
 }
@@ -64,8 +64,8 @@ func (me *IFilterGraph) Disconnect(ppin *IPin) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(ppin.Ppv)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -79,8 +79,8 @@ func (me *IFilterGraph) EnumFilters() IEnumFilters {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return IEnumFilters{
 		win.IUnknown{Ppv: ppvQueried},
@@ -99,10 +99,10 @@ func (me *IFilterGraph) FindFilterByName(pName string) (IBaseFilter, bool) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
-	if lerr := err.ERROR(ret); lerr == err.VFW_E_NOT_FOUND {
+	if err := errco.ERROR(ret); err == errco.VFW_E_NOT_FOUND {
 		return IBaseFilter{}, false
-	} else if lerr != err.S_OK {
-		panic(lerr)
+	} else if err != errco.S_OK {
+		panic(err)
 	}
 
 	return IBaseFilter{
@@ -121,8 +121,8 @@ func (me *IFilterGraph) Reconnect(ppin *IPin) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(ppin.Ppv)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -133,8 +133,8 @@ func (me *IFilterGraph) RemoveFilter(pFilter *IBaseFilter) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(pFilter.Ppv)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -145,7 +145,7 @@ func (me *IFilterGraph) SetDefaultSyncSource() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }

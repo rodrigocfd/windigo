@@ -8,7 +8,7 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IShellItemVtbl struct {
@@ -40,8 +40,8 @@ func NewShellItem(thePath string) (IShellItem, error) {
 		uintptr(unsafe.Pointer(&ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return IShellItem{}, lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return IShellItem{}, err
 	}
 	return IShellItem{
 		win.IUnknown{Ppv: ppv},
@@ -57,12 +57,12 @@ func (me *IShellItem) Compare(psi IShellItem, hint shellco.SICHINT) bool {
 		uintptr(hint),
 		uintptr(unsafe.Pointer(&piOrder)), 0, 0)
 
-	if lerr := err.ERROR(ret); lerr == err.S_OK {
+	if err := errco.ERROR(ret); err == errco.S_OK {
 		return true
-	} else if lerr == err.S_FALSE {
+	} else if err == errco.S_FALSE {
 		return false
 	} else {
-		panic(lerr)
+		panic(err)
 	}
 }
 
@@ -75,8 +75,8 @@ func (me *IShellItem) GetAttributes(sfgaoMask co.SFGAO) co.SFGAO {
 		uintptr(unsafe.Pointer(&sfgaoMask)),
 		uintptr(unsafe.Pointer(&attribs)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK && lerr != err.S_FALSE {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK && err != errco.S_FALSE {
+		panic(err)
 	}
 	return attribs
 }
@@ -91,8 +91,8 @@ func (me *IShellItem) GetParent() IShellItem {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return IShellItem{
 		win.IUnknown{Ppv: ppvQueried},
@@ -107,8 +107,8 @@ func (me *IShellItem) GetDisplayName(sigdnName shellco.SIGDN) string {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(sigdnName), uintptr(unsafe.Pointer(&pv)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	name := win.Str.FromUint16Ptr(pv)
 	win.CoTaskMemFree(unsafe.Pointer(pv))

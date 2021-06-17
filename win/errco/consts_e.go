@@ -1,4 +1,4 @@
-package err
+package errco
 
 const (
 	E_UNEXPECTED           ERROR = 0x8000ffff

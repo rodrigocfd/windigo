@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // A handle to an internal drop structure.
@@ -25,11 +25,11 @@ func (hDrop HDROP) DragFinish() {
 func (hDrop HDROP) DragQueryFile(
 	iFile uint32, lpszFile *uint16, cch uint32) uint32 {
 
-	ret, _, lerr := syscall.Syscall6(proc.DragQueryFile.Addr(), 4,
+	ret, _, err := syscall.Syscall6(proc.DragQueryFile.Addr(), 4,
 		uintptr(hDrop), uintptr(iFile), uintptr(unsafe.Pointer(lpszFile)),
 		uintptr(cch), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return uint32(ret)
 }

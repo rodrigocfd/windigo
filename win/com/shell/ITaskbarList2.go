@@ -8,7 +8,7 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _ITaskbarList2Vtbl struct {
@@ -46,7 +46,7 @@ func (me *ITaskbarList2) MarkFullscreenWindow(hwnd win.HWND, fFullScreen bool) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), util.BoolToUintptr(fFullScreen))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }

@@ -5,7 +5,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // A handle to a hook.
@@ -18,11 +18,11 @@ func SetWindowsHookEx(idHook co.WH,
 	lpfn func(code int32, wp WPARAM, lp LPARAM) uintptr,
 	hmod HINSTANCE, dwThreadId uint32) HHOOK {
 
-	ret, _, lerr := syscall.Syscall6(proc.SetWindowsHookEx.Addr(), 4,
+	ret, _, err := syscall.Syscall6(proc.SetWindowsHookEx.Addr(), 4,
 		uintptr(idHook), syscall.NewCallback(lpfn),
 		uintptr(hmod), uintptr(dwThreadId), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return HHOOK(ret)
 }
@@ -36,9 +36,9 @@ func (hHook HHOOK) CallNextHookEx(nCode int32, wp WPARAM, lp LPARAM) uintptr {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unhookwindowshookex
 func (hHook HHOOK) UnhookWindowsHookEx() {
-	ret, _, lerr := syscall.Syscall(proc.UnhookWindowsHookEx.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.UnhookWindowsHookEx.Addr(), 1,
 		uintptr(hHook), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }

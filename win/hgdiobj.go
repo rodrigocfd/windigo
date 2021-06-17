@@ -6,7 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // A handle to a GDI object.
@@ -16,10 +16,10 @@ type HGDIOBJ HANDLE
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hGdiObj HGDIOBJ) DeleteObject() {
-	ret, _, lerr := syscall.Syscall(proc.DeleteObject.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.DeleteObject.Addr(), 1,
 		uintptr(hGdiObj), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
@@ -46,10 +46,10 @@ type HBRUSH HGDIOBJ
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createsolidbrush
 func CreateSolidBrush(color COLORREF) HBRUSH {
-	ret, _, lerr := syscall.Syscall(proc.CreateSolidBrush.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.CreateSolidBrush.Addr(), 1,
 		uintptr(color), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return HBRUSH(ret)
 }
@@ -62,10 +62,10 @@ func CreateSysColorBrush(sysColor co.COLOR) HBRUSH {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolorbrush
 func GetSysColorBrush(nIndex co.COLOR) HBRUSH {
-	ret, _, lerr := syscall.Syscall(proc.GetSysColorBrush.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.GetSysColorBrush.Addr(), 1,
 		uintptr(nIndex), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return HBRUSH(ret)
 }
@@ -86,10 +86,10 @@ type HFONT HGDIOBJ
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontindirectw
 func CreateFontIndirect(lf *LOGFONT) HFONT {
-	ret, _, lerr := syscall.Syscall(proc.CreateFontIndirect.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.CreateFontIndirect.Addr(), 1,
 		uintptr(unsafe.Pointer(lf)), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return HFONT(ret)
 }
@@ -122,10 +122,10 @@ type HRGN HGDIOBJ
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
 func CreateRectRgnIndirect(lprect *RECT) HRGN {
-	ret, _, lerr := syscall.Syscall(proc.CreateRectRgnIndirect.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.CreateRectRgnIndirect.Addr(), 1,
 		uintptr(unsafe.Pointer(lprect)), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return HRGN(ret)
 }
@@ -134,11 +134,11 @@ func CreateRectRgnIndirect(lprect *RECT) HRGN {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createroundrectrgn
 func CreateRoundRectRgn(x1, y1, x2, y2, w, h int32) HRGN {
-	ret, _, lerr := syscall.Syscall6(proc.CreateRoundRectRgn.Addr(), 6,
+	ret, _, err := syscall.Syscall6(proc.CreateRoundRectRgn.Addr(), 6,
 		uintptr(x1), uintptr(y1), uintptr(x2), uintptr(y2),
 		uintptr(w), uintptr(h))
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return HRGN(ret)
 }
@@ -152,10 +152,10 @@ func (hRgn HRGN) DeleteObject() {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
 func (hRgn HRGN) CombineRgn(hrgnSrc1, hrgnSrc2 HRGN, iMode co.RGN) co.REGION {
-	ret, _, lerr := syscall.Syscall6(proc.CombineRgn.Addr(), 4,
+	ret, _, err := syscall.Syscall6(proc.CombineRgn.Addr(), 4,
 		uintptr(hRgn), uintptr(hrgnSrc1), uintptr(hrgnSrc2), uintptr(iMode), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return co.REGION(ret)
 }

@@ -6,7 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // IUnknown virtual table.
@@ -53,8 +53,8 @@ func CoCreateInstance(
 		uintptr(unsafe.Pointer(NewGuidFromIid(riid))),
 		uintptr(unsafe.Pointer(&ppv)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return IUnknown{ppv}
 }
@@ -72,8 +72,8 @@ func (me *IUnknown) QueryInterface(riid co.IID) IUnknown {
 		uintptr(unsafe.Pointer(NewGuidFromIid(riid))),
 		uintptr(unsafe.Pointer(&ppvQueried)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return IUnknown{ppvQueried}
 }

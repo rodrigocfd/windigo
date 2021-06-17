@@ -2,7 +2,7 @@ package win
 
 import (
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
@@ -310,7 +310,7 @@ type NMTREEVIEW struct {
 type NMTVASYNCDRAW struct {
 	Hdr            NMHDR
 	Pimldp         *IMAGELISTDRAWPARAMS
-	Hr             err.ERROR // HRESULT
+	Hr             errco.ERROR // HRESULT
 	Hitem          HTREEITEM
 	LParam         LPARAM
 	DwRetFlags     co.ADRF

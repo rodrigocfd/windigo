@@ -6,7 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // A handle to an image list.
@@ -22,11 +22,11 @@ type HIMAGELIST HANDLE
 func ImageListCreate(cx, cy uint32, flags co.ILC,
 	cInitial, cGrow uint32) HIMAGELIST {
 
-	ret, _, lerr := syscall.Syscall6(proc.ImageList_Create.Addr(), 5,
+	ret, _, err := syscall.Syscall6(proc.ImageList_Create.Addr(), 5,
 		uintptr(cx), uintptr(cy), uintptr(flags),
 		uintptr(cInitial), uintptr(cGrow), 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return HIMAGELIST(ret)
 }
@@ -69,21 +69,21 @@ func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) {
 func (hImg HIMAGELIST) Destroy() {
 	// http://www.catch22.net/tuts/win32/system-image-list
 	// https://www.autohotkey.com/docs/commands/ListView.htm
-	ret, _, lerr := syscall.Syscall(proc.ImageList_Destroy.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.ImageList_Destroy.Addr(), 1,
 		uintptr(hImg), 0, 0)
-	if ret == 0 && err.ERROR(lerr) != err.SUCCESS {
-		panic(err.ERROR(lerr))
+	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
+		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticonsize
 func (hImg HIMAGELIST) GetIconSize() SIZE {
 	sz := SIZE{}
-	ret, _, lerr := syscall.Syscall(proc.ImageList_GetIconSize.Addr(), 3,
+	ret, _, err := syscall.Syscall(proc.ImageList_GetIconSize.Addr(), 3,
 		uintptr(hImg),
 		uintptr(unsafe.Pointer(&sz.Cx)), uintptr(unsafe.Pointer(&sz.Cy)))
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return sz
 }
@@ -101,10 +101,10 @@ func (hImg HIMAGELIST) GetImageCount() uint32 {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_replaceicon
 func (hImg HIMAGELIST) ReplaceIcon(i int32, hIcon HICON) int32 {
-	ret, _, lerr := syscall.Syscall(proc.ImageList_ReplaceIcon.Addr(), 3,
+	ret, _, err := syscall.Syscall(proc.ImageList_ReplaceIcon.Addr(), 3,
 		uintptr(hImg), uintptr(i), uintptr(hIcon))
 	if int(ret) == -1 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return int32(ret)
 }

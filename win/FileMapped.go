@@ -72,11 +72,11 @@ func OpenFileMapped(
 		readOnly: readOnly,
 	}
 
-	if lerr := me.objFile.openFile(filePath, mapOpts); lerr != nil {
-		return nil, lerr
+	if err := me.objFile.openFile(filePath, mapOpts); err != nil {
+		return nil, err
 	}
-	if lerr := me.mapInMemory(); lerr != nil {
-		return nil, lerr
+	if err := me.mapInMemory(); err != nil {
+		return nil, err
 	}
 	return me, nil
 }
@@ -120,8 +120,8 @@ func (me *_FileMapped) ReadChunk(offset, length int) []byte {
 func (me *_FileMapped) Resize(numBytes int) error {
 	me.pMem.UnmapViewOfFile()
 	me.hMap.CloseHandle()
-	if lerr := me.objFile.Resize(numBytes); lerr != nil {
-		return lerr
+	if err := me.objFile.Resize(numBytes); err != nil {
+		return err
 	}
 	return me.mapInMemory()
 }
@@ -138,10 +138,10 @@ func (me *_FileMapped) mapInMemory() error {
 		pageFlags = co.PAGE_READONLY
 	}
 
-	var lerr error
-	if me.hMap, lerr = me.objFile.hFile.CreateFileMapping(
-		nil, pageFlags, co.SEC_NONE, 0, ""); lerr != nil {
-		return lerr
+	var err error
+	if me.hMap, err = me.objFile.hFile.CreateFileMapping(
+		nil, pageFlags, co.SEC_NONE, 0, ""); err != nil {
+		return err
 	}
 
 	// Get pointer to data block.
@@ -150,8 +150,8 @@ func (me *_FileMapped) mapInMemory() error {
 		mapFlags = co.FILE_MAP_READ
 	}
 
-	if me.pMem, lerr = me.hMap.MapViewOfFile(mapFlags, 0, 0); lerr != nil {
-		return lerr
+	if me.pMem, err = me.hMap.MapViewOfFile(mapFlags, 0, 0); err != nil {
+		return err
 	}
 
 	// Cache file size.

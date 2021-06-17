@@ -6,7 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IFileDialogVtbl struct {
@@ -50,20 +50,20 @@ func (me *IFileDialog) ClearClientData() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-close
-func (me *IFileDialog) Close(hr err.ERROR) {
+func (me *IFileDialog) Close(hr errco.ERROR) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).Close, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hr), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -77,8 +77,8 @@ func (me *IFileDialog) GetCurrentSelection() IShellItem {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return IShellItem{
 		win.IUnknown{Ppv: ppvQueried},
@@ -93,8 +93,8 @@ func (me *IFileDialog) GetFileName() string {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&pv)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	name := win.Str.FromUint16Ptr(pv)
 	win.CoTaskMemFree(unsafe.Pointer(pv))
@@ -109,8 +109,8 @@ func (me *IFileDialog) GetFileTypeIndex() int {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&idx)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return int(idx)
 }
@@ -125,8 +125,8 @@ func (me *IFileDialog) GetFolder() IShellItem {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return IShellItem{
 		win.IUnknown{Ppv: ppvQueried},
@@ -141,8 +141,8 @@ func (me *IFileDialog) GetOptions() shellco.FOS {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&fos)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return fos
 }
@@ -157,8 +157,8 @@ func (me *IFileDialog) GetResult() IShellItem {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return IShellItem{
 		IUnknown: win.IUnknown{Ppv: ppvQueried},
@@ -172,8 +172,8 @@ func (me *IFileDialog) SetClientGuid(guid *win.GUID) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(guid)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -184,8 +184,8 @@ func (me *IFileDialog) SetFileName(pszName string) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszName))), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -196,8 +196,8 @@ func (me *IFileDialog) SetFileNameLabel(pszLabel string) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszLabel))), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -208,8 +208,8 @@ func (me *IFileDialog) SetFileTypeIndex(iFileType int) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(iFileType), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -230,8 +230,8 @@ func (me *IFileDialog) SetFileTypes(rgFilterSpec []FilterSpec) {
 		uintptr(len(comdlgFiSp)),
 		uintptr(unsafe.Pointer(&comdlgFiSp[0])))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -242,8 +242,8 @@ func (me *IFileDialog) SetFolder(psi *IShellItem) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(psi.Ppv)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -254,8 +254,8 @@ func (me *IFileDialog) SetOkButtonLabel(pszText string) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszText))), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -266,8 +266,8 @@ func (me *IFileDialog) SetOptions(fos shellco.FOS) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(fos), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -278,7 +278,7 @@ func (me *IFileDialog) SetTitle(pszTitle string) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszTitle))), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }

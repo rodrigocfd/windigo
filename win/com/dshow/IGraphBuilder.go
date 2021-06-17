@@ -7,7 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IGraphBuilderVtbl struct {
@@ -51,8 +51,8 @@ func (me *IGraphBuilder) Abort() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -64,8 +64,8 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 		uintptr(unsafe.Pointer(pinOut.Ppv)),
 		uintptr(unsafe.Pointer(pinIn.Ppv)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -104,8 +104,8 @@ func (me *IGraphBuilder) Render(pinOut *IPin) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(pinOut.Ppv)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -116,8 +116,8 @@ func (me *IGraphBuilder) RenderFile(file string) error {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(file))), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return err
 	}
 	return nil
 }
@@ -129,7 +129,7 @@ func (me *IGraphBuilder) SetLogFile(hFile win.HFILE) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hFile), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }

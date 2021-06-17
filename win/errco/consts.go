@@ -1,4 +1,4 @@
-package err
+package errco
 
 const (
 	SUCCESS                                                             ERROR = 0 // The operation completed successfully.
@@ -2338,7 +2338,7 @@ const (
 	SXS_XML_E_EXPECTINGTAGEND                                           ERROR = 14038
 	SXS_XML_E_MISSINGSEMICOLON                                          ERROR = 14039
 	SXS_XML_E_UNBALANCEDPAREN                                           ERROR = 14040
-	SXS_XML_E_INTERNALERROR                                             ERROR = 14041
+	SXS_XML_E_INTERNAerrOR                                              ERROR = 14041
 	SXS_XML_E_UNEXPECTED_WHITESPACE                                     ERROR = 14042
 	SXS_XML_E_INCOMPLETE_ENCODING                                       ERROR = 14043
 	SXS_XML_E_MISSING_PAREN                                             ERROR = 14044

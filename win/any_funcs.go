@@ -7,27 +7,27 @@ import (
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-adjustwindowrectex
 func AdjustWindowRectEx(
 	lpRect *RECT, dwStyle co.WS, bMenu bool, dwExStyle co.WS_EX) {
 
-	ret, _, lerr := syscall.Syscall6(proc.AdjustWindowRectEx.Addr(), 4,
+	ret, _, err := syscall.Syscall6(proc.AdjustWindowRectEx.Addr(), 4,
 		uintptr(unsafe.Pointer(lpRect)), uintptr(dwStyle),
 		util.BoolToUintptr(bMenu), uintptr(dwExStyle), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-allowsetforegroundwindow
 func AllowSetForegroundWindow(dwProcessId uint32) {
-	ret, _, lerr := syscall.Syscall(proc.AllowSetForegroundWindow.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.AllowSetForegroundWindow.Addr(), 1,
 		uintptr(dwProcessId), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
@@ -40,8 +40,8 @@ func AllowSetForegroundWindow(dwProcessId uint32) {
 func CoInitializeEx(dwCoInit co.COINIT) {
 	ret, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
 		0, uintptr(dwCoInit), 0)
-	hr := err.ERROR(ret)
-	if hr != err.S_OK && hr != err.S_FALSE {
+	hr := errco.ERROR(ret)
+	if hr != errco.S_OK && hr != errco.S_FALSE {
 		panic(hr)
 	}
 }
@@ -61,31 +61,31 @@ func CoUninitialize() {
 func CreateDirectory(
 	pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
 
-	ret, _, lerr := syscall.Syscall(proc.CreateDirectory.Addr(), 2,
+	ret, _, err := syscall.Syscall(proc.CreateDirectory.Addr(), 2,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pathName))),
 		uintptr(unsafe.Pointer(securityAttributes)), 0)
 	if ret == 0 {
-		return err.ERROR(lerr)
+		return errco.ERROR(err)
 	}
 	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
 func DeleteFile(fileName string) error {
-	ret, _, lerr := syscall.Syscall(proc.DeleteFile.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.DeleteFile.Addr(), 1,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))), 0, 0)
 	if ret == 0 {
-		return err.ERROR(lerr)
+		return errco.ERROR(err)
 	}
 	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycaret
 func DestroyCaret() {
-	ret, _, lerr := syscall.Syscall(proc.DestroyCaret.Addr(), 0,
+	ret, _, err := syscall.Syscall(proc.DestroyCaret.Addr(), 0,
 		0, 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
@@ -98,19 +98,19 @@ func DispatchMessage(msg *MSG) uintptr {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-emptyclipboard
 func EmptyClipboard() {
-	ret, _, lerr := syscall.Syscall(proc.EmptyClipboard.Addr(), 0,
+	ret, _, err := syscall.Syscall(proc.EmptyClipboard.Addr(), 0,
 		0, 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endmenu
 func EndMenu() {
-	ret, _, lerr := syscall.Syscall(proc.EndMenu.Addr(), 0,
+	ret, _, err := syscall.Syscall(proc.EndMenu.Addr(), 0,
 		0, 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
@@ -119,24 +119,24 @@ func EnumWindows(
 	lpEnumFunc func(hwnd HWND, lParam LPARAM) bool,
 	lParam LPARAM) {
 
-	ret, _, lerr := syscall.Syscall(proc.EnumWindows.Addr(), 2,
+	ret, _, err := syscall.Syscall(proc.EnumWindows.Addr(), 2,
 		syscall.NewCallback(
 			func(hwnd HWND, lParam LPARAM) uintptr {
 				return util.BoolToUintptr(lpEnumFunc(hwnd, lParam))
 			}),
 		uintptr(lParam), 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
 func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
-	ret, _, lerr := syscall.Syscall(proc.FileTimeToSystemTime.Addr(), 2,
+	ret, _, err := syscall.Syscall(proc.FileTimeToSystemTime.Addr(), 2,
 		uintptr(unsafe.Pointer(inFileTime)),
 		uintptr(unsafe.Pointer(outSystemTime)), 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
@@ -150,10 +150,10 @@ func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcaretpos
 func GetCaretPos() RECT {
 	rc := RECT{}
-	ret, _, lerr := syscall.Syscall(proc.GetCaretPos.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.GetCaretPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&rc)), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return rc
 }
@@ -175,10 +175,10 @@ func GetCurrentThreadId() uint32 {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcursorpos
 func GetCursorPos() POINT {
 	pt := POINT{}
-	ret, _, lerr := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return pt
 }
@@ -194,12 +194,12 @@ func GetDynamicTimeZoneInformation(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
-	ret, _, lerr := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))), 0, 0)
 
 	retAttr := co.FILE_ATTRIBUTE(ret)
 	if retAttr == co.FILE_ATTRIBUTE_INVALID {
-		return retAttr, err.ERROR(lerr)
+		return retAttr, errco.ERROR(err)
 	}
 	return retAttr, nil
 }
@@ -208,12 +208,12 @@ func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
 func GetMessage(
 	msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) (int32, error) {
 
-	ret, _, lerr := syscall.Syscall6(proc.GetMessage.Addr(), 4,
+	ret, _, err := syscall.Syscall6(proc.GetMessage.Addr(), 4,
 		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
 		uintptr(msgFilterMin), uintptr(msgFilterMax),
 		0, 0)
 	if int(ret) == -1 {
-		return 0, err.ERROR(lerr)
+		return 0, errco.ERROR(err)
 	}
 	return int32(ret), nil
 }
@@ -221,10 +221,10 @@ func GetMessage(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos
 func GetPhysicalCursorPos() POINT {
 	pt := POINT{}
-	ret, _, lerr := syscall.Syscall(proc.GetPhysicalCursorPos.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.GetPhysicalCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return pt
 }
@@ -286,11 +286,11 @@ func GetTimeZoneInformationForYear(
 	wYear uint16,
 	pdtzi *DYNAMIC_TIME_ZONE_INFORMATION, ptzi *TIME_ZONE_INFORMATION) {
 
-	ret, _, lerr := syscall.Syscall(proc.GetTimeZoneInformationForYear.Addr(), 3,
+	ret, _, err := syscall.Syscall(proc.GetTimeZoneInformationForYear.Addr(), 3,
 		uintptr(wYear),
 		uintptr(unsafe.Pointer(pdtzi)), uintptr(unsafe.Pointer(ptzi)))
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
@@ -320,8 +320,8 @@ func IsAppThemed() bool {
 func IsGUIThread(bConvertToGuiThread bool) (bool, error) {
 	ret, _, _ := syscall.Syscall(proc.IsGUIThread.Addr(), 1,
 		util.BoolToUintptr(bConvertToGuiThread), 0, 0)
-	if bConvertToGuiThread && err.ERROR(ret) == err.NOT_ENOUGH_MEMORY {
-		return false, err.NOT_ENOUGH_MEMORY
+	if bConvertToGuiThread && errco.ERROR(ret) == errco.NOT_ENOUGH_MEMORY {
+		return false, errco.NOT_ENOUGH_MEMORY
 	}
 	return ret != 0, nil
 }
@@ -453,21 +453,21 @@ func PostQuitMessage(exitCode int32) {
 func PostThreadMessage(
 	idThread uint32, Msg co.WM, wParam WPARAM, lParam LPARAM) {
 
-	ret, _, lerr := syscall.Syscall6(proc.PostThreadMessage.Addr(), 4,
+	ret, _, err := syscall.Syscall6(proc.PostThreadMessage.Addr(), 4,
 		uintptr(idThread), uintptr(Msg), uintptr(wParam), uintptr(lParam),
 		0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter
 func QueryPerformanceCounter() int64 {
 	lpPerformanceCount := int64(0)
-	ret, _, lerr := syscall.Syscall(proc.QueryPerformanceCounter.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.QueryPerformanceCounter.Addr(), 1,
 		uintptr(unsafe.Pointer(&lpPerformanceCount)), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return lpPerformanceCount
 }
@@ -475,10 +475,10 @@ func QueryPerformanceCounter() int64 {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancefrequency
 func QueryPerformanceFrequency() int64 {
 	lpFrequency := int64(0)
-	ret, _, lerr := syscall.Syscall(proc.QueryPerformanceFrequency.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.QueryPerformanceFrequency.Addr(), 1,
 		uintptr(unsafe.Pointer(&lpFrequency)), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 	return lpFrequency
 }
@@ -486,10 +486,10 @@ func QueryPerformanceFrequency() int64 {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassexw
 func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, error) {
 	wcx.CbSize = uint32(unsafe.Sizeof(*wcx)) // safety
-	ret, _, lerr := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
 		uintptr(unsafe.Pointer(wcx)), 0, 0)
 	if ret == 0 {
-		return ATOM(0), err.ERROR(lerr)
+		return ATOM(0), errco.ERROR(err)
 	}
 	return ATOM(ret), nil
 }
@@ -514,19 +514,19 @@ func SetProcessDPIAware() {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
 func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
-	ret, _, lerr := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
 		uintptr(value), 0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
 func ShellNotifyIcon(dwMessage co.NIM, lpData *NOTIFYICONDATA) {
-	ret, _, lerr := syscall.Syscall(proc.Shell_NotifyIcon.Addr(), 2,
+	ret, _, err := syscall.Syscall(proc.Shell_NotifyIcon.Addr(), 2,
 		uintptr(dwMessage), uintptr(unsafe.Pointer(lpData)), 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
@@ -538,20 +538,20 @@ func SHGetFileInfo(
 	uFlags co.SHGFI) *SHFILEINFO {
 
 	shfi := SHFILEINFO{}
-	ret, _, lerr := syscall.Syscall6(proc.SHGetFileInfo.Addr(), 5,
+	ret, _, err := syscall.Syscall6(proc.SHGetFileInfo.Addr(), 5,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pszPath))),
 		uintptr(dwFileAttributes), uintptr(unsafe.Pointer(&shfi)),
 		unsafe.Sizeof(shfi), uintptr(uFlags), 0)
 
 	if (uFlags&co.SHGFI_EXETYPE) == 0 || (uFlags&co.SHGFI_SYSICONINDEX) == 0 {
 		if ret == 0 {
-			panic(err.ERROR(lerr))
+			panic(errco.ERROR(err))
 		}
 	}
 
 	if (uFlags & co.SHGFI_EXETYPE) != 0 {
 		if ret == 0 {
-			panic(err.ERROR(lerr))
+			panic(errco.ERROR(err))
 		}
 	}
 
@@ -568,21 +568,21 @@ func Sleep(dwMilliseconds uint32) {
 func SystemParametersInfo(
 	uiAction co.SPI, uiParam uint32, pvParam unsafe.Pointer, fWinIni co.SPIF) {
 
-	ret, _, lerr := syscall.Syscall6(proc.SystemParametersInfo.Addr(), 4,
+	ret, _, err := syscall.Syscall6(proc.SystemParametersInfo.Addr(), 4,
 		uintptr(uiAction), uintptr(uiParam), uintptr(pvParam), uintptr(fWinIni),
 		0, 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetofiletime
 func SystemTimeToFileTime(inSystemTime *SYSTEMTIME, outFileTime *FILETIME) {
-	ret, _, lerr := syscall.Syscall(proc.SystemTimeToFileTime.Addr(), 2,
+	ret, _, err := syscall.Syscall(proc.SystemTimeToFileTime.Addr(), 2,
 		uintptr(unsafe.Pointer(inSystemTime)),
 		uintptr(unsafe.Pointer(outFileTime)), 0)
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
@@ -591,12 +591,12 @@ func SystemTimeToTzSpecificLocalTime(
 	lpTimeZoneInformation *TIME_ZONE_INFORMATION,
 	inUniversalTime *SYSTEMTIME, outLocalTime *SYSTEMTIME) {
 
-	ret, _, lerr := syscall.Syscall(proc.SystemTimeToTzSpecificLocalTime.Addr(), 3,
+	ret, _, err := syscall.Syscall(proc.SystemTimeToTzSpecificLocalTime.Addr(), 3,
 		uintptr(unsafe.Pointer(lpTimeZoneInformation)),
 		uintptr(unsafe.Pointer(inUniversalTime)),
 		uintptr(unsafe.Pointer(outLocalTime)))
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
@@ -612,24 +612,24 @@ func TzSpecificLocalTimeToSystemTime(
 	lpTimeZoneInformation *TIME_ZONE_INFORMATION,
 	inLocalTime *SYSTEMTIME, outUniversalTime *SYSTEMTIME) {
 
-	ret, _, lerr := syscall.Syscall(proc.TzSpecificLocalTimeToSystemTime.Addr(), 3,
+	ret, _, err := syscall.Syscall(proc.TzSpecificLocalTimeToSystemTime.Addr(), 3,
 		uintptr(unsafe.Pointer(lpTimeZoneInformation)),
 		uintptr(unsafe.Pointer(inLocalTime)),
 		uintptr(unsafe.Pointer(outUniversalTime)))
 	if ret == 0 {
-		panic(err.ERROR(lerr))
+		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
 func VerifyVersionInfo(
 	ovi *OSVERSIONINFOEX,
-	typeMask co.VER, conditionMask uint64) (bool, err.ERROR) {
+	typeMask co.VER, conditionMask uint64) (bool, errco.ERROR) {
 
-	ret, _, lerr := syscall.Syscall(proc.VerifyVersionInfo.Addr(), 3,
+	ret, _, err := syscall.Syscall(proc.VerifyVersionInfo.Addr(), 3,
 		uintptr(unsafe.Pointer(ovi)),
 		uintptr(typeMask), uintptr(conditionMask))
-	return ret != 0, err.ERROR(lerr)
+	return ret != 0, errco.ERROR(err)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-versetconditionmask

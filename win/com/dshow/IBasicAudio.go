@@ -5,7 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IBasicAudioVtbl struct {
@@ -31,8 +31,8 @@ func (me *IBasicAudio) GetBalance() int {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&balance)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return balance
 }
@@ -45,8 +45,8 @@ func (me *IBasicAudio) GetVolume() int {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&volume)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return volume
 }
@@ -58,8 +58,8 @@ func (me *IBasicAudio) PutBalance(balance int) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(balance), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -70,7 +70,7 @@ func (me *IBasicAudio) PutVolume(volume int) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(volume), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }

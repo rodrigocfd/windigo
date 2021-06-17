@@ -5,7 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IModalWindowVtbl struct {
@@ -29,10 +29,10 @@ func (me *IModalWindow) Show(hwndOwner win.HWND) bool {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwndOwner), 0)
 
-	if lerr := err.ERROR(ret & 0xffff); lerr == err.CANCELLED { // HRESULT_FROM_WIN32()
+	if err := errco.ERROR(ret & 0xffff); err == errco.CANCELLED { // HRESULT_FROM_WIN32()
 		return false
-	} else if lerr != err.S_OK {
-		panic(lerr)
+	} else if err != errco.S_OK {
+		panic(err)
 	}
 	return true
 }

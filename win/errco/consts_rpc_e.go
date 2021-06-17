@@ -1,4 +1,4 @@
-package err
+package errco
 
 const (
 	RPC_E_CALL_REJECTED               ERROR = 0x80010001

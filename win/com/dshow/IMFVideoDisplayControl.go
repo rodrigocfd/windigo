@@ -6,7 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IMFVideoDisplayControlVtbl struct {
@@ -44,8 +44,8 @@ func (me *IMFVideoDisplayControl) GetAspectRatioMode() dshowco.MFVideoARMode {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&aspectRatioMode)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return aspectRatioMode
 }
@@ -60,8 +60,8 @@ func (me *IMFVideoDisplayControl) GetIdealVideoSize() (min, max win.SIZE) {
 		uintptr(unsafe.Pointer(&min)),
 		uintptr(unsafe.Pointer(&max)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return
 }
@@ -76,8 +76,8 @@ func (me *IMFVideoDisplayControl) GetNativeVideoSize() (size, aspectRatio win.SI
 		uintptr(unsafe.Pointer(&size)),
 		uintptr(unsafe.Pointer(&aspectRatio)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return
 }
@@ -90,8 +90,8 @@ func (me *IMFVideoDisplayControl) GetVideoPosition() (source MFVideoNormalizedRe
 		uintptr(unsafe.Pointer(&source)),
 		uintptr(unsafe.Pointer(&dest)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return
 }
@@ -104,8 +104,8 @@ func (me *IMFVideoDisplayControl) GetVideoWindow() win.HWND {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&hwndVideo)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return hwndVideo
 }
@@ -117,8 +117,8 @@ func (me *IMFVideoDisplayControl) RepaintVideo() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -131,8 +131,8 @@ func (me *IMFVideoDisplayControl) SetAspectRatioMode(
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(mode), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return err
 	}
 	return nil
 }
@@ -147,8 +147,8 @@ func (me *IMFVideoDisplayControl) SetVideoPosition(
 		uintptr(unsafe.Pointer(pnrcSource)),
 		uintptr(unsafe.Pointer(prcDest)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -159,8 +159,8 @@ func (me *IMFVideoDisplayControl) SetVideoWindow(hwndVideo win.HWND) error {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwndVideo), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return err
 	}
 	return nil
 }

@@ -97,10 +97,10 @@ func (_StrT) FromUint16Slice(s []uint16) string {
 //
 // Wrapper to syscall.UTF16PtrFromString(). Panics on error.
 func (_StrT) ToUint16Ptr(s string) *uint16 {
-	pstr, lerr := syscall.UTF16PtrFromString(s)
-	if lerr != nil {
+	pstr, err := syscall.UTF16PtrFromString(s)
+	if err != nil {
 		panic(fmt.Sprintf("StrToPtr failed \"%s\": %s",
-			s, lerr))
+			s, err))
 	}
 	return pstr
 }
@@ -127,10 +127,10 @@ func (_StrT) ToUint16PtrMulti(ss []string) *uint16 {
 //
 // Wrapper to syscall.UTF16FromString(). Panics on error.
 func (_StrT) ToUint16Slice(s string) []uint16 {
-	sli, lerr := syscall.UTF16FromString(s)
-	if lerr != nil {
+	sli, err := syscall.UTF16FromString(s)
+	if err != nil {
 		panic(fmt.Sprintf("StrToSlice failed \"%s\": %s",
-			s, lerr))
+			s, err))
 	}
 	return sli
 }

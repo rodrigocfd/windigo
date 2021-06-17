@@ -6,7 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IShellItemArrayVtbl struct {
@@ -37,8 +37,8 @@ func (me *IShellItemArray) GetItemAt(index int) IShellItem {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(index), uintptr(unsafe.Pointer(&ppvQueried)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return IShellItem{
 		win.IUnknown{Ppv: ppvQueried},
@@ -53,8 +53,8 @@ func (me *IShellItemArray) GetCount() int {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&count)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return int(count)
 }

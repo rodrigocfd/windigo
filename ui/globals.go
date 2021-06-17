@@ -230,7 +230,7 @@ func _PaintThemedBorders(hWnd win.HWND, p wm.NcPaint) {
 	hdc := hWnd.GetWindowDC()
 	defer hWnd.ReleaseDC(hdc)
 
-	if hTheme, lerr := hWnd.OpenThemeData("LISTVIEW"); lerr == nil { // borrow style from listview
+	if hTheme, err := hWnd.OpenThemeData("LISTVIEW"); err == nil { // borrow style from listview
 		defer hTheme.CloseThemeData()
 
 		// Clipping region; will draw only within this rectangle.

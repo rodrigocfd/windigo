@@ -5,7 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IPinVtbl struct {
@@ -41,8 +41,8 @@ func (me *IPin) BeginFlush() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -57,8 +57,8 @@ func (me *IPin) Connect(pmt *AM_MEDIA_TYPE) (IPin, error) {
 		uintptr(unsafe.Pointer(&ppQueried)),
 		uintptr(unsafe.Pointer(pmt)))
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return IPin{}, lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return IPin{}, err
 	}
 	return IPin{
 		win.IUnknown{Ppv: ppQueried},
@@ -75,8 +75,8 @@ func (me *IPin) ConnectedTo() (IPin, error) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return IPin{}, lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return IPin{}, err
 	}
 	return IPin{
 		win.IUnknown{Ppv: ppQueried},
@@ -90,8 +90,8 @@ func (me *IPin) ConnectionMediaType(pmt *AM_MEDIA_TYPE) error {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(pmt)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return err
 	}
 	return nil
 }
@@ -103,8 +103,8 @@ func (me *IPin) Disconnect() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -115,8 +115,8 @@ func (me *IPin) EndFlush() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -127,8 +127,8 @@ func (me *IPin) EndOfStream() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -142,8 +142,8 @@ func (me *IPin) EnumMediaTypes() (IEnumMediaTypes, error) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		return IEnumMediaTypes{}, lerr
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		return IEnumMediaTypes{}, err
 	}
 	return IEnumMediaTypes{
 		win.IUnknown{Ppv: ppQueried},
@@ -157,9 +157,9 @@ func (me *IPin) QueryAccept(pmt *AM_MEDIA_TYPE) (bool, error) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(pmt)), 0)
 
-	lerr := err.ERROR(ret)
-	if lerr != err.S_OK && lerr != err.S_FALSE {
-		return false, lerr
+	err := errco.ERROR(ret)
+	if err != errco.S_OK && err != errco.S_FALSE {
+		return false, err
 	}
-	return lerr == err.S_OK, nil
+	return err == errco.S_OK, nil
 }

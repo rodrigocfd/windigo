@@ -7,7 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _ITaskbarListVtbl struct {
@@ -47,8 +47,8 @@ func (me *ITaskbarList) ActivateTab(hwnd win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -59,8 +59,8 @@ func (me *ITaskbarList) AddTab(hwnd win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -71,8 +71,8 @@ func (me *ITaskbarList) DeleteTab(hwnd win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }
 
@@ -91,7 +91,7 @@ func (me *ITaskbarList) SetActiveAlt(hwnd win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 }

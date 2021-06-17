@@ -13,9 +13,9 @@ var Ini _IniT
 
 // Lods an INI file from a file.
 func (_IniT) FromFile(filePath string) (map[string]map[string]string, error) {
-	fin, lerr := OpenFileMapped(filePath, co.OPEN_FILEMAP_MODE_READ)
-	if lerr != nil {
-		return nil, lerr
+	fin, err := OpenFileMapped(filePath, co.OPEN_FILEMAP_MODE_READ)
+	if err != nil {
+		return nil, err
 	}
 	defer fin.Close()
 
@@ -83,9 +83,9 @@ func (_IniT) ToStr(iniMap map[string]map[string]string) string {
 func (_IniT) ToFile(iniMap map[string]map[string]string, filePath string) error {
 	serialized := Ini.ToStr(iniMap)
 
-	fout, lerr := OpenFile(filePath, co.OPEN_FILE_RW_OPEN_OR_CREATE)
-	if lerr != nil {
-		return lerr
+	fout, err := OpenFile(filePath, co.OPEN_FILE_RW_OPEN_OR_CREATE)
+	if err != nil {
+		return err
 	}
 	defer fout.Close()
 

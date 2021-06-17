@@ -6,7 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // A handle to a file.
@@ -23,7 +23,7 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 	flags co.FILE_FLAG, security co.SECURITY,
 	hTemplateFile HFILE) (HFILE, error) {
 
-	ret, _, lerr := syscall.Syscall9(proc.CreateFile.Addr(), 7,
+	ret, _, err := syscall.Syscall9(proc.CreateFile.Addr(), 7,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
 		uintptr(desiredAccess), uintptr(shareMode),
 		uintptr(unsafe.Pointer(securityAttributes)),
@@ -32,17 +32,17 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 		uintptr(hTemplateFile), 0, 0)
 
 	if int(ret) == _INVALID_HANDLE_VALUE {
-		return HFILE(0), err.ERROR(lerr)
+		return HFILE(0), errco.ERROR(err)
 	}
 	return HFILE(ret), nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hFile HFILE) CloseHandle() error {
-	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.CloseHandle.Addr(), 1,
 		uintptr(hFile), 0, 0)
 	if ret == 0 {
-		return err.ERROR(lerr)
+		return errco.ERROR(err)
 	}
 	return nil
 }
@@ -50,10 +50,10 @@ func (hFile HFILE) CloseHandle() error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex
 func (hFile HFILE) GetFileSizeEx() (uint64, error) {
 	retSz := int64(0)
-	ret, _, lerr := syscall.Syscall(proc.GetFileSizeEx.Addr(), 2,
+	ret, _, err := syscall.Syscall(proc.GetFileSizeEx.Addr(), 2,
 		uintptr(hFile), uintptr(unsafe.Pointer(&retSz)), 0)
 
-	if errCode := err.ERROR(lerr); ret == 0 && errCode != err.SUCCESS {
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
 		return 0, errCode
 	}
 	return uint64(retSz), nil
@@ -66,14 +66,14 @@ func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 	protectPage co.PAGE, protectSec co.SEC, maxSize uint32,
 	objectName string) (HFILEMAP, error) {
 
-	ret, _, lerr := syscall.Syscall6(proc.CreateFileMapping.Addr(), 6,
+	ret, _, err := syscall.Syscall6(proc.CreateFileMapping.Addr(), 6,
 		uintptr(hFile), uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
 		0, uintptr(maxSize),
 		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(objectName))))
 
 	if ret == 0 {
-		return HFILEMAP(0), err.ERROR(lerr)
+		return HFILEMAP(0), errco.ERROR(err)
 	}
 	return HFILEMAP(ret), nil
 }
@@ -81,23 +81,23 @@ func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hFile HFILE) ReadFile(buf []byte, numBytesToRead uint32) error {
 	numRead := uint32(0) // not used for anything, but must be passed to the call
-	ret, _, lerr := syscall.Syscall6(proc.ReadFile.Addr(), 5,
+	ret, _, err := syscall.Syscall6(proc.ReadFile.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(numBytesToRead), uintptr(unsafe.Pointer(&numRead)), 0, 0) // OVERLAPPED not even considered
 
-	if errCode := err.ERROR(lerr); ret == 0 && errCode != err.SUCCESS {
-		return lerr
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		return err
 	}
 	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setendoffile
 func (hFile HFILE) SetEndOfFile() error {
-	ret, _, lerr := syscall.Syscall(proc.SetEndOfFile.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.SetEndOfFile.Addr(), 1,
 		uintptr(hFile), 0, 0)
 
-	if errCode := err.ERROR(lerr); ret == 0 && errCode != err.SUCCESS {
-		return lerr
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		return err
 	}
 	return nil
 }
@@ -109,12 +109,12 @@ func (hFile HFILE) SetFilePointerEx(
 	distanceToMove int64, moveMethod co.FILE_FROM) (uint64, error) {
 
 	newOff := int64(0)
-	ret, _, lerr := syscall.Syscall6(proc.SetFilePointerEx.Addr(), 4,
+	ret, _, err := syscall.Syscall6(proc.SetFilePointerEx.Addr(), 4,
 		uintptr(hFile), uintptr(distanceToMove),
 		uintptr(unsafe.Pointer(&newOff)), uintptr(moveMethod), 0, 0)
 
-	if errCode := err.ERROR(lerr); ret == 0 && errCode != err.SUCCESS {
-		return 0, lerr
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		return 0, err
 	}
 	return uint64(newOff), nil
 }
@@ -122,12 +122,12 @@ func (hFile HFILE) SetFilePointerEx(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
 func (hFile HFILE) WriteFile(buf []byte) error {
 	written := uint32(0)
-	ret, _, lerr := syscall.Syscall6(proc.WriteFile.Addr(), 5,
+	ret, _, err := syscall.Syscall6(proc.WriteFile.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(len(buf)), uintptr(unsafe.Pointer(&written)), 0, 0) // OVERLAPPED not even considered
 
-	if errCode := err.ERROR(lerr); ret == 0 && errCode != err.SUCCESS {
-		return lerr
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		return err
 	}
 	return nil
 }
@@ -141,10 +141,10 @@ type HFILEMAP HANDLE
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hMap HFILEMAP) CloseHandle() error {
-	ret, _, lerr := syscall.Syscall(proc.CloseHandle.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.CloseHandle.Addr(), 1,
 		uintptr(hMap), 0, 0)
 	if ret == 0 {
-		return err.ERROR(lerr)
+		return errco.ERROR(err)
 	}
 	return nil
 }
@@ -155,11 +155,11 @@ func (hMap HFILEMAP) CloseHandle() error {
 func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 	offset uint32, numBytesToMap uintptr) (HFILEMAPVIEW, error) {
 
-	ret, _, lerr := syscall.Syscall6(proc.MapViewOfFile.Addr(), 5,
+	ret, _, err := syscall.Syscall6(proc.MapViewOfFile.Addr(), 5,
 		uintptr(hMap), uintptr(desiredAccess), 0, uintptr(offset),
 		numBytesToMap, 0)
 	if ret == 0 {
-		return HFILEMAPVIEW(0), err.ERROR(lerr)
+		return HFILEMAPVIEW(0), errco.ERROR(err)
 	}
 	return HFILEMAPVIEW(ret), nil
 }
@@ -179,10 +179,10 @@ func (hMem HFILEMAPVIEW) Ptr() *byte {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
 func (hMem HFILEMAPVIEW) UnmapViewOfFile() error {
-	ret, _, lerr := syscall.Syscall(proc.UnmapViewOfFile.Addr(), 1,
+	ret, _, err := syscall.Syscall(proc.UnmapViewOfFile.Addr(), 1,
 		uintptr(hMem), 0, 0)
 	if ret == 0 {
-		return err.ERROR(lerr)
+		return errco.ERROR(err)
 	}
 	return nil
 }

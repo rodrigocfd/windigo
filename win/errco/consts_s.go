@@ -1,4 +1,4 @@
-package err
+package errco
 
 const (
 	S_OK    ERROR = 0

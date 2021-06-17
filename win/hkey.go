@@ -6,7 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // A handle to a registry key.
@@ -33,18 +33,18 @@ func (hKey HKEY) ReadBinary(lpSubKey, lpValue string) []byte {
 	pdwType := co.REG_BINARY
 	pcbData := uint32(0)
 
-	lerr := hKey.RegGetValue(lpSubKey, lpValue, co.RRF_RT_REG_BINARY, // retrieve length
+	err := hKey.RegGetValue(lpSubKey, lpValue, co.RRF_RT_REG_BINARY, // retrieve length
 		&pdwType, nil, &pcbData)
-	if lerr != nil {
-		panic(lerr)
+	if err != nil {
+		panic(err)
 	}
 
 	pvData := make([]byte, pcbData)
 
-	lerr = hKey.RegGetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve string
+	err = hKey.RegGetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve string
 		&pdwType, unsafe.Pointer(&pvData[0]), &pcbData)
-	if lerr != nil {
-		panic(lerr)
+	if err != nil {
+		panic(err)
 	}
 
 	return pvData
@@ -56,10 +56,10 @@ func (hKey HKEY) ReadDword(lpSubKey, lpValue string) uint32 {
 	pvData := uint32(0)
 	pcbData := uint32(unsafe.Sizeof(pvData))
 
-	lerr := hKey.RegGetValue(lpSubKey, lpValue, co.RRF_RT_REG_DWORD,
+	err := hKey.RegGetValue(lpSubKey, lpValue, co.RRF_RT_REG_DWORD,
 		&pdwType, unsafe.Pointer(&pvData), &pcbData)
-	if lerr != nil {
-		panic(lerr)
+	if err != nil {
+		panic(err)
 	}
 	return pvData
 }
@@ -69,18 +69,18 @@ func (hKey HKEY) ReadString(lpSubKey, lpValue string) string {
 	pdwType := co.REG_SZ
 	pcbData := uint32(0)
 
-	lerr := hKey.RegGetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve length
+	err := hKey.RegGetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve length
 		&pdwType, nil, &pcbData)
-	if lerr != nil {
-		panic(lerr)
+	if err != nil {
+		panic(err)
 	}
 
 	pvData := make([]uint16, pcbData/2) // pcbData is in bytes; terminating null included
 
-	lerr = hKey.RegGetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve string
+	err = hKey.RegGetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve string
 		&pdwType, unsafe.Pointer(&pvData[0]), &pcbData)
-	if lerr != nil {
-		panic(lerr)
+	if err != nil {
+		panic(err)
 	}
 
 	return Str.FromUint16Slice(pvData)
@@ -90,8 +90,8 @@ func (hKey HKEY) ReadString(lpSubKey, lpValue string) string {
 func (hKey HKEY) RegCloseKey() error {
 	ret, _, _ := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
 		uintptr(hKey), 0, 0)
-	if lerr := err.ERROR(ret); lerr != err.SUCCESS {
-		return lerr
+	if err := errco.ERROR(ret); err != errco.SUCCESS {
+		return err
 	}
 	return nil
 }
@@ -107,8 +107,8 @@ func (hKey HKEY) RegGetValue(
 		uintptr(dwFlags), uintptr(unsafe.Pointer(pdwType)),
 		uintptr(pvData), uintptr(unsafe.Pointer(pcbData)), 0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.SUCCESS {
-		return lerr
+	if err := errco.ERROR(ret); err != errco.SUCCESS {
+		return err
 	}
 	return nil
 }
@@ -123,36 +123,36 @@ func (hKey HKEY) RegSetKeyValue(
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValueName))),
 		uintptr(dwType), uintptr(lpData), uintptr(cbData))
 
-	if lerr := err.ERROR(ret); lerr != err.SUCCESS {
-		return lerr
+	if err := errco.ERROR(ret); err != errco.SUCCESS {
+		return err
 	}
 	return nil
 }
 
 // Writes a REG_BINARY value with RegSetKeyValue().
 func (hKey HKEY) WriteBinary(lpSubKey, lpValueName string, lpData []byte) {
-	lerr := hKey.RegSetKeyValue(lpSubKey, lpValueName, co.REG_BINARY,
+	err := hKey.RegSetKeyValue(lpSubKey, lpValueName, co.REG_BINARY,
 		unsafe.Pointer(&lpData[0]), uint32(len(lpData)))
-	if lerr != nil {
-		panic(lerr)
+	if err != nil {
+		panic(err)
 	}
 }
 
 // Writes a REG_DWORD value with RegSetKeyValue().
 func (hKey HKEY) WriteDword(lpSubKey, lpValueName string, lpData uint32) {
-	lerr := hKey.RegSetKeyValue(lpSubKey, lpValueName, co.REG_DWORD,
+	err := hKey.RegSetKeyValue(lpSubKey, lpValueName, co.REG_DWORD,
 		unsafe.Pointer(&lpData), uint32(unsafe.Sizeof(lpData)))
-	if lerr != nil {
-		panic(lerr)
+	if err != nil {
+		panic(err)
 	}
 }
 
 // Writes a REG_SZ value with RegSetKeyValue().
 func (hKey HKEY) WriteString(lpSubKey, lpValueName string, lpData string) {
 	slice := Str.ToUint16Slice(lpData)
-	lerr := hKey.RegSetKeyValue(lpSubKey, lpValueName, co.REG_SZ,
+	err := hKey.RegSetKeyValue(lpSubKey, lpValueName, co.REG_SZ,
 		unsafe.Pointer(&slice[0]), uint32(len(slice)*2)) // pass size in bytes, including terminating null
-	if lerr != nil {
-		panic(lerr)
+	if err != nil {
+		panic(err)
 	}
 }

@@ -30,8 +30,8 @@ type _File struct {
 // ⚠️ You must defer Close().
 func OpenFile(filePath string, behavior co.OPEN_FILE) (File, error) {
 	me := &_File{}
-	if lerr := me.openFile(filePath, behavior); lerr != nil {
-		return nil, lerr
+	if err := me.openFile(filePath, behavior); err != nil {
+		return nil, err
 	}
 	return me, nil
 }
@@ -56,11 +56,11 @@ func (me *_File) openFile(filePath string, behavior co.OPEN_FILE) error {
 		creationDisposition = co.DISPOSITION_OPEN_ALWAYS
 	}
 
-	hFile, lerr := CreateFile(filePath, desiredAccess, shareMode, nil,
+	hFile, err := CreateFile(filePath, desiredAccess, shareMode, nil,
 		creationDisposition, co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE,
 		co.SECURITY_NONE, 0)
-	if lerr != nil {
-		return lerr
+	if err != nil {
+		return err
 	}
 
 	me.hFile = hFile
@@ -75,73 +75,73 @@ func (me *_File) Close() {
 }
 
 func (me *_File) CurrentPointerOffset() int {
-	off, lerr := me.hFile.SetFilePointerEx(0, co.FILE_FROM_CURRENT) // https://stackoverflow.com/a/17707021/6923555
-	if lerr != nil {
-		panic(lerr)
+	off, err := me.hFile.SetFilePointerEx(0, co.FILE_FROM_CURRENT) // https://stackoverflow.com/a/17707021/6923555
+	if err != nil {
+		panic(err)
 	}
 	return int(off)
 }
 
 func (me *_File) EraseAndWrite(data []byte) error {
-	if lerr := me.Resize(len(data)); lerr != nil {
-		return lerr
+	if err := me.Resize(len(data)); err != nil {
+		return err
 	}
-	if lerr := me.hFile.WriteFile(data); lerr != nil {
-		return lerr
+	if err := me.hFile.WriteFile(data); err != nil {
+		return err
 	}
 	return me.RewindPointerOffset()
 }
 
 func (me *_File) Read(numBytes int) ([]byte, error) {
 	buf := make([]byte, numBytes)
-	if lerr := me.hFile.ReadFile(buf, uint32(numBytes)); lerr != nil {
-		return nil, lerr
+	if err := me.hFile.ReadFile(buf, uint32(numBytes)); err != nil {
+		return nil, err
 	}
 	return buf, nil
 }
 
 func (me *_File) ReadAll() ([]byte, error) {
-	if lerr := me.RewindPointerOffset(); lerr != nil {
-		return nil, lerr
+	if err := me.RewindPointerOffset(); err != nil {
+		return nil, err
 	}
 	fileSize := me.Size()
 	buf := make([]byte, fileSize)
 
 	// Read the contents into our allocated buffer.
 	// Will truncate if file data overflows uint32.
-	if lerr := me.hFile.ReadFile(buf, uint32(fileSize)); lerr != nil {
-		return nil, lerr
+	if err := me.hFile.ReadFile(buf, uint32(fileSize)); err != nil {
+		return nil, err
 	}
 
-	if lerr := me.RewindPointerOffset(); lerr != nil {
-		return nil, lerr
+	if err := me.RewindPointerOffset(); err != nil {
+		return nil, err
 	}
 	return buf, nil
 }
 
 func (me *_File) Resize(numBytes int) error {
 	// Simply go beyond file limits.
-	if _, lerr := me.hFile.SetFilePointerEx(
-		int64(numBytes), co.FILE_FROM_BEGIN); lerr != nil {
-		return lerr
+	if _, err := me.hFile.SetFilePointerEx(
+		int64(numBytes), co.FILE_FROM_BEGIN); err != nil {
+		return err
 	}
 
-	if lerr := me.hFile.SetEndOfFile(); lerr != nil {
-		return lerr
+	if err := me.hFile.SetEndOfFile(); err != nil {
+		return err
 	}
 
 	return me.RewindPointerOffset()
 }
 
 func (me *_File) RewindPointerOffset() error {
-	_, lerr := me.hFile.SetFilePointerEx(0, co.FILE_FROM_BEGIN)
-	return lerr
+	_, err := me.hFile.SetFilePointerEx(0, co.FILE_FROM_BEGIN)
+	return err
 }
 
 func (me *_File) Size() int {
-	sz, lerr := me.hFile.GetFileSizeEx()
-	if lerr != nil {
-		panic(lerr)
+	sz, err := me.hFile.GetFileSizeEx()
+	if err != nil {
+		panic(err)
 	}
 	return int(sz)
 }

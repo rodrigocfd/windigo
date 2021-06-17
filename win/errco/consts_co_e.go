@@ -1,4 +1,4 @@
-package err
+package errco
 
 const (
 	CO_E_NOTINITIALIZED     ERROR = 0x800401f0

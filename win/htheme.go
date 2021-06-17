@@ -6,7 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // Handle to a theme.
@@ -30,7 +30,7 @@ func (hTheme HTHEME) DrawThemeBackground(
 	hr, _, _ := syscall.Syscall6(proc.DrawThemeBackground.Addr(), 6,
 		uintptr(hTheme), uintptr(hdc), uintptr(partId), uintptr(stateId),
 		uintptr(unsafe.Pointer(rect)), uintptr(unsafe.Pointer(clipRect)))
-	if err.ERROR(hr) != err.S_OK {
-		panic(err.ERROR(hr))
+	if errco.ERROR(hr) != errco.S_OK {
+		panic(errco.ERROR(hr))
 	}
 }

@@ -6,7 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
-	"github.com/rodrigocfd/windigo/win/err"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IMFGetServiceVtbl struct {
@@ -33,8 +33,8 @@ func (me *IMFGetService) GetService(guidService, riid *win.GUID) win.IUnknown {
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppQueried)), 0, 0)
 
-	if lerr := err.ERROR(ret); lerr != err.S_OK {
-		panic(lerr)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
 	}
 	return win.IUnknown{Ppv: ppQueried}
 }

@@ -1,4 +1,4 @@
-package err
+package errco
 
 const (
 	VFW_S_NO_MORE_ITEMS                      ERROR = 0x00040103

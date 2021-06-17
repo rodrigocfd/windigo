@@ -9,24 +9,36 @@ Win32 API and GUI in idiomatic Go.
 
 ## Overview
 
-The library is divided in the following packages:
+The UI library is divided in the following packages:
 
 | Package | Description |
 | - | - |
-| `ui` | High-level GUI wrappers for windows and controls. |
-| `ui/wm` | High-level message parameters. |
+| `ui` | High-level UI wrappers for windows and controls. |
+| `ui/wm` | High-level event parameters (Windows message callbacks). |
+
+For the Win32 API bindings:
+
+| Package | Description |
+| - | - |
 | `win` | Native Win32 structs, handles and functions. |
 | `win/co` | Native Win32 constants, all typed. |
+| `win/errco` | Native Win32 [error codes](https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes), all typed as `errco.ERROR`. |
+
+And for the COM bindings:
+
+| Package | Description |
+| - | - |
 | `win/com/dshow` | Native Win32 DirectShow COM interfaces. |
+| `win/com/dshow/dshowco` | DirectShow constants, all typed. |
 | `win/com/shell` | Native Win32 Shell COM interfaces. |
-| `win/err` | Native Win32 error codes, all typed as `err.ERROR`. |
+| `win/com/shell/shellco` | Shell constants, all typed. |
 
 Windigo is designed to be familiar to Win32 programmers, using the same concepts, so most C/C++ Win32 tutorials should be applicable.
 
 Windows and controls can be created in two ways:
 
 * programmatically, by specifying the options used in the underlying [CreateWindowEx](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw);
-* by loading resources from a `.rc` file.
+* by loading resources from a `.rc` or a `.res` file.
 
 CGo is **not** used, just syscalls.
 
@@ -34,7 +46,7 @@ CGo is **not** used, just syscalls.
 
 The native Win32 functions deal with errors in two ways:
 
-* Recoverable errors will return an `err.ERROR` value, which implements the [`error`](https://golang.org/pkg/builtin/#error) interface;
+* Recoverable errors will return an `errco.ERROR` value, which implements the [`error`](https://golang.org/pkg/builtin/#error) interface;
 
 * Unrecoverable errors will simply **panic**. This avoids the excess of `if err != nil` with errors that cannot be recovered anyway, like internal Windows errors.
 
@@ -49,6 +61,7 @@ package main
 
 import (
     "fmt"
+    "runtime"
 
     "github.com/rodrigocfd/windigo/ui"
     "github.com/rodrigocfd/windigo/win"
@@ -56,6 +69,8 @@ import (
 )
 
 func main() {
+    runtime.LockOSThread()
+
     myWindow := NewMyWindow() // instantiate
     myWindow.wnd.RunAsMain()  // ...and run
 }
@@ -73,10 +88,10 @@ func NewMyWindow() *MyWindow {
     wnd := ui.NewWindowMainRaw(ui.WindowMainRawOpts{
         Title:          "Hello you",
         ClientAreaSize: win.SIZE{Cx: 340, Cy: 80},
-        IconId:         101, // see resources folder to understand why ID is 101
+        IconId:         101, // ID of icon resource, see resources folder
     })
 
-    me := MyWindow{
+    me := &MyWindow{
         wnd: wnd,
         lblName: ui.NewStaticRaw(wnd, ui.StaticRawOpts{
             Text:     "Your name",
@@ -97,7 +112,7 @@ func NewMyWindow() *MyWindow {
         me.wnd.Hwnd().MessageBox(msg, "Saying hello", co.MB_ICONINFORMATION)
     })
 
-    return &me
+    return me
 }
 ```
 

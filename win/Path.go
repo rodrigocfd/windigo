@@ -29,9 +29,9 @@ func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 	dirPath := filepath.Dir(pathAndPattern) // path without file name
 
 	wfd := WIN32_FIND_DATA{}
-	hFind, found, lerr := FindFirstFile(pathAndPattern, &wfd)
-	if lerr != nil {
-		return nil, lerr
+	hFind, found, err := FindFirstFile(pathAndPattern, &wfd)
+	if err != nil {
+		return nil, err
 	}
 	defer hFind.FindClose()
 
@@ -41,8 +41,8 @@ func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 			retFiles = append(retFiles, dirPath+"\\"+fileNameFound)
 		}
 
-		if found, lerr = hFind.FindNextFile(&wfd); lerr != nil {
-			return nil, lerr
+		if found, err = hFind.FindNextFile(&wfd); err != nil {
+			return nil, err
 		}
 	}
 
