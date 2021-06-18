@@ -87,7 +87,7 @@ type WindowControlRawOpts struct {
 	// Defaults to WS_CHILD | WS_TABSTOP | WS_GROUP | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS.
 	Styles co.WS
 	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_CLIENTEDGE.
+	// Defaults to WS_EX_NONE.
 	ExStyles co.WS_EX
 	// Position within parent's client area in pixels.
 	// Defaults to 0x0. Will be adjusted to the current system DPI.
@@ -117,7 +117,7 @@ func (opts *WindowControlRawOpts) fillBlankValuesWithDefault() {
 			co.WS_CLIPCHILDREN | co.WS_CLIPSIBLINGS
 	}
 	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_CLIENTEDGE
+		opts.ExStyles = co.WS_EX_NONE
 	}
 
 	if opts.Size.Cx == 0 {
