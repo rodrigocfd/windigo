@@ -34,7 +34,7 @@ type _MonthCalendar struct {
 
 // Creates a new MonthCalendar specifying all options, which will be passed to
 // the underlying CreateWindowEx().
-func NewMonthCalendarRaw(parent AnyParent, opts MonthCalendarRawOpts) MonthCalendar {
+func NewMonthCalendar(parent AnyParent, opts MonthCalendarOpts) MonthCalendar {
 	opts.fillBlankValuesWithDefault()
 
 	me := &_MonthCalendar{}
@@ -92,8 +92,8 @@ func (me *_MonthCalendar) SetSelected(date time.Time) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewMonthCalendarRaw().
-type MonthCalendarRawOpts struct {
+// Options for NewMonthCalendar().
+type MonthCalendarOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -112,7 +112,7 @@ type MonthCalendarRawOpts struct {
 	ExStyles co.WS_EX
 }
 
-func (opts *MonthCalendarRawOpts) fillBlankValuesWithDefault() {
+func (opts *MonthCalendarOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

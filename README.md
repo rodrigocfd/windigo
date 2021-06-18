@@ -85,7 +85,7 @@ type MyWindow struct {
 
 // Creates a new instance of our main window.
 func NewMyWindow() *MyWindow {
-    wnd := ui.NewWindowMainRaw(ui.WindowMainRawOpts{
+    wnd := ui.NewWindowMain(ui.WindowMainOpts{
         Title:          "Hello you",
         ClientAreaSize: win.SIZE{Cx: 340, Cy: 80},
         IconId:         101, // ID of icon resource, see resources folder
@@ -93,15 +93,15 @@ func NewMyWindow() *MyWindow {
 
     me := &MyWindow{
         wnd: wnd,
-        lblName: ui.NewStaticRaw(wnd, ui.StaticRawOpts{
+        lblName: ui.NewStatic(wnd, ui.StaticOpts{
             Text:     "Your name",
             Position: win.POINT{X: 10, Y: 22},
         }),
-        txtName: ui.NewEditRaw(wnd, ui.EditRawOpts{
+        txtName: ui.NewEdit(wnd, ui.EditOpts{
             Position: win.POINT{X: 80, Y: 20},
             Size:     win.SIZE{Cx: 150},
         }),
-        btnShow: ui.NewButtonRaw(wnd, ui.ButtonRawOpts{
+        btnShow: ui.NewButton(wnd, ui.ButtonOpts{
             Text:     "&Show",
             Position: win.POINT{X: 240, Y: 19},
         }),

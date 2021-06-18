@@ -35,7 +35,7 @@ type _CheckBox struct {
 
 // Creates a new CheckBox specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewCheckBoxRaw(parent AnyParent, opts CheckBoxRawOpts) CheckBox {
+func NewCheckBox(parent AnyParent, opts CheckBoxOpts) CheckBox {
 	opts.fillBlankValuesWithDefault()
 
 	me := &_CheckBox{}
@@ -100,8 +100,8 @@ func (me *_CheckBox) SetText(text string) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewCheckBoxRaw().
-type CheckBoxRawOpts struct {
+// Options for NewCheckBox().
+type CheckBoxOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -127,7 +127,7 @@ type CheckBoxRawOpts struct {
 	State co.BST
 }
 
-func (opts *CheckBoxRawOpts) fillBlankValuesWithDefault() {
+func (opts *CheckBoxOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

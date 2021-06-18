@@ -22,14 +22,14 @@ type _RadioGroup struct {
 
 // Creates a new RadioButton specifying all options for each RadioButton, which
 // will be passed to the underlying CreateWindowEx().
-func NewRadioGroupRaw(parent AnyParent, opts []RadioButtonRawOpts) RadioGroup {
+func NewRadioGroup(parent AnyParent, opts []RadioButtonOpts) RadioGroup {
 	if len(opts) == 0 {
 		panic("A RadioGroup must have at least 1 RadioButton.")
 	}
 
 	radios := make([]RadioButton, 0, len(opts))
 	for i := range opts {
-		radios = append(radios, NewRadioButtonRaw(parent, opts[i]))
+		radios = append(radios, NewRadioButton(parent, opts[i]))
 	}
 
 	me := &_RadioGroup{}

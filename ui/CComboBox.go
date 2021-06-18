@@ -31,7 +31,7 @@ type _ComboBox struct {
 
 // Creates a new ComboBox specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewComboBoxRaw(parent AnyParent, opts ComboBoxRawOpts) ComboBox {
+func NewComboBox(parent AnyParent, opts ComboBoxOpts) ComboBox {
 	opts.fillBlankValuesWithDefault()
 
 	me := &_ComboBox{}
@@ -84,8 +84,8 @@ func (me *_ComboBox) Items() *_ComboBoxItems {
 
 //------------------------------------------------------------------------------
 
-// Options for NewComboBoxRaw().
-type ComboBoxRawOpts struct {
+// Options for NewComboBox().
+type ComboBoxOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -111,7 +111,7 @@ type ComboBoxRawOpts struct {
 	Texts []string
 }
 
-func (opts *ComboBoxRawOpts) fillBlankValuesWithDefault() {
+func (opts *ComboBoxOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

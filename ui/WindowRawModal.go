@@ -9,13 +9,13 @@ import (
 // Implements WindowModal interface.
 type _WindowRawModal struct {
 	_WindowRaw
-	opts             WindowModalRawOpts
+	opts             WindowModalOpts
 	hPrevFocusParent win.HWND // child control last focused on parent
 }
 
 // Creates a new WindowModal specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewWindowModalRaw(opts WindowModalRawOpts) WindowModal {
+func NewWindowModal(opts WindowModalOpts) WindowModal {
 	opts.fillBlankValuesWithDefault()
 
 	me := &_WindowRawModal{}
@@ -76,8 +76,8 @@ func (me *_WindowRawModal) defaultMessages() {
 
 //------------------------------------------------------------------------------
 
-// Options for NewWindowModalRaw().
-type WindowModalRawOpts struct {
+// Options for NewWindowModal().
+type WindowModalOpts struct {
 	// Class name registered with RegisterClassEx().
 	// Defaults to a computed hash.
 	ClassName string
@@ -105,7 +105,7 @@ type WindowModalRawOpts struct {
 	ClientAreaSize win.SIZE
 }
 
-func (opts *WindowModalRawOpts) fillBlankValuesWithDefault() {
+func (opts *WindowModalOpts) fillBlankValuesWithDefault() {
 	if opts.ClassStyles == 0 {
 		opts.ClassStyles = co.CS_DBLCLKS
 	}

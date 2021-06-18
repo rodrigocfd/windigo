@@ -31,7 +31,7 @@ type _ProgressBar struct {
 
 // Creates a new ProgressBar specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewProgressBarRaw(parent AnyParent, opts ProgressBarRawOpts) ProgressBar {
+func NewProgressBar(parent AnyParent, opts ProgressBarOpts) ProgressBar {
 	opts.fillBlankValuesWithDefault()
 
 	me := &_ProgressBar{}
@@ -103,8 +103,8 @@ func (me *_ProgressBar) SetState(state co.PBST) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewProgressBarRaw().
-type ProgressBarRawOpts struct {
+// Options for NewProgressBar().
+type ProgressBarOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -126,7 +126,7 @@ type ProgressBarRawOpts struct {
 	ExStyles co.WS_EX
 }
 
-func (opts *ProgressBarRawOpts) fillBlankValuesWithDefault() {
+func (opts *ProgressBarOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

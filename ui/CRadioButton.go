@@ -37,7 +37,7 @@ type _RadioButton struct {
 
 // Creates a new RadioButton specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewRadioButtonRaw(parent AnyParent, opts RadioButtonRawOpts) RadioButton {
+func NewRadioButton(parent AnyParent, opts RadioButtonOpts) RadioButton {
 	opts.fillBlankValuesWithDefault()
 
 	me := &_RadioButton{}
@@ -106,8 +106,8 @@ func (me *_RadioButton) SetText(text string) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewRadioButtonRaw().
-type RadioButtonRawOpts struct {
+// Options for NewRadioButton().
+type RadioButtonOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -134,7 +134,7 @@ type RadioButtonRawOpts struct {
 	Checked bool
 }
 
-func (opts *RadioButtonRawOpts) fillBlankValuesWithDefault() {
+func (opts *RadioButtonOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

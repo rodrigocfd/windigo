@@ -39,7 +39,7 @@ type _Trackbar struct {
 
 // Creates a new Trackbar specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewTrackbarRaw(parent AnyParent, opts TrackbarRawOpts) Trackbar {
+func NewTrackbar(parent AnyParent, opts TrackbarOpts) Trackbar {
 	opts.fillBlankValuesWithDefault()
 
 	me := &_Trackbar{}
@@ -121,8 +121,8 @@ func (me *_Trackbar) SetRangeMin(min int) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewTrackbarRaw().
-type TrackbarRawOpts struct {
+// Options for NewTrackbar().
+type TrackbarOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -154,7 +154,7 @@ type TrackbarRawOpts struct {
 	RangeMax int
 }
 
-func (opts *TrackbarRawOpts) fillBlankValuesWithDefault() {
+func (opts *TrackbarOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

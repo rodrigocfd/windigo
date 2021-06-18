@@ -9,13 +9,13 @@ import (
 // Implements WindowMain interface.
 type _WindowRawMain struct {
 	_WindowRaw
-	opts            WindowMainRawOpts
+	opts            WindowMainOpts
 	hChildPrevFocus win.HWND // when window is inactivated
 }
 
 // Creates a new WindowMain specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewWindowMainRaw(opts WindowMainRawOpts) WindowMain {
+func NewWindowMain(opts WindowMainOpts) WindowMain {
 	opts.fillBlankValuesWithDefault()
 
 	me := &_WindowRawMain{}
@@ -96,8 +96,8 @@ func (me *_WindowRawMain) defaultMessages() {
 
 //------------------------------------------------------------------------------
 
-// Options for NewWindowMainRaw().
-type WindowMainRawOpts struct {
+// Options for NewWindowMain().
+type WindowMainOpts struct {
 	// Class name registered with RegisterClassEx().
 	// Defaults to a computed hash.
 	ClassName string
@@ -138,7 +138,7 @@ type WindowMainRawOpts struct {
 	CmdShow co.SW
 }
 
-func (opts *WindowMainRawOpts) fillBlankValuesWithDefault() {
+func (opts *WindowMainOpts) fillBlankValuesWithDefault() {
 	if opts.ClassStyles == 0 {
 		opts.ClassStyles = co.CS_DBLCLKS
 	}

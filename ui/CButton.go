@@ -34,7 +34,7 @@ type _Button struct {
 
 // Creates a new Button specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewButtonRaw(parent AnyParent, opts ButtonRawOpts) Button {
+func NewButton(parent AnyParent, opts ButtonOpts) Button {
 	opts.fillBlankValuesWithDefault()
 
 	me := &_Button{}
@@ -82,8 +82,8 @@ func (me *_Button) EmulateClick() {
 
 //------------------------------------------------------------------------------
 
-// Options for NewButtonRaw().
-type ButtonRawOpts struct {
+// Options for NewButton().
+type ButtonOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -108,7 +108,7 @@ type ButtonRawOpts struct {
 	ExStyles co.WS_EX
 }
 
-func (opts *ButtonRawOpts) fillBlankValuesWithDefault() {
+func (opts *ButtonOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

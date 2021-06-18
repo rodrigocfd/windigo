@@ -34,7 +34,7 @@ type _DateTimePicker struct {
 
 // Creates a new DateTimePicker specifying all options, which will be passed to
 // the underlying CreateWindowEx().
-func NewDateTimePickerRaw(parent AnyParent, opts DateTimePickerRawOpts) DateTimePicker {
+func NewDateTimePicker(parent AnyParent, opts DateTimePickerOpts) DateTimePicker {
 	opts.fillBlankValuesWithDefault()
 
 	me := &_DateTimePicker{}
@@ -95,8 +95,8 @@ func (me *_DateTimePicker) Time() time.Time {
 
 //------------------------------------------------------------------------------
 
-// Options for NewDateTimePickerRaw().
-type DateTimePickerRawOpts struct {
+// Options for NewDateTimePicker().
+type DateTimePickerOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -118,7 +118,7 @@ type DateTimePickerRawOpts struct {
 	ExStyles co.WS_EX
 }
 
-func (opts *DateTimePickerRawOpts) fillBlankValuesWithDefault() {
+func (opts *DateTimePickerOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

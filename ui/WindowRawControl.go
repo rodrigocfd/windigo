@@ -9,13 +9,13 @@ import (
 // Implements WindowControl interface.
 type _WindowRawControl struct {
 	_WindowRaw
-	opts   WindowControlRawOpts
+	opts   WindowControlOpts
 	parent AnyParent
 }
 
 // Creates a new WindowControl specifying all options, which will be passed to
 // the underlying CreateWindowEx().
-func NewWindowControlRaw(parent AnyParent, opts WindowControlRawOpts) WindowControl {
+func NewWindowControl(parent AnyParent, opts WindowControlOpts) WindowControl {
 	opts.fillBlankValuesWithDefault()
 
 	me := &_WindowRawControl{}
@@ -64,8 +64,8 @@ func (me *_WindowRawControl) defaultMessages() {
 
 //------------------------------------------------------------------------------
 
-// Options for NewWindowControlRaw().
-type WindowControlRawOpts struct {
+// Options for NewWindowControl().
+type WindowControlOpts struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
 	CtrlId int
@@ -97,7 +97,7 @@ type WindowControlRawOpts struct {
 	Size win.SIZE
 }
 
-func (opts *WindowControlRawOpts) fillBlankValuesWithDefault() {
+func (opts *WindowControlOpts) fillBlankValuesWithDefault() {
 	if opts.CtrlId == 0 {
 		opts.CtrlId = _NextCtrlId()
 	}

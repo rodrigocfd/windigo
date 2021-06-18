@@ -36,7 +36,7 @@ type _StatusBar struct {
 // Creates a new StatusBar.
 func NewStatusBar(parent AnyParent) StatusBar {
 	me := &_StatusBar{}
-	me._NativeControlBase.new(parent, _NextCtrlId()) // always automatic
+	me._NativeControlBase.new(parent, _NextCtrlId()) // always auto ID
 	me.events.new(&me._NativeControlBase)
 	me.parts.new(&me._NativeControlBase)
 
