@@ -180,6 +180,15 @@ func (hdc HDC) GetTextMetrics(lptm *TEXTMETRIC) {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invertrect
+func (hdc HDC) InvertRect(lprc RECT) {
+	ret, _, err := syscall.Syscall(proc.InvertRect.Addr(), 2,
+		uintptr(hdc), uintptr(unsafe.Pointer(&lprc)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-invertrgn
 func (hdc HDC) InvertRgn(hrgn HRGN) {
 	ret, _, err := syscall.Syscall(proc.InvertRgn.Addr(), 2,
@@ -212,6 +221,16 @@ func (hdc HDC) MoveToEx(x, y int32, lppt *POINT) {
 func (hdc HDC) PaintRgn(hrgn HRGN) {
 	ret, _, err := syscall.Syscall(proc.PaintRgn.Addr(), 2,
 		uintptr(hdc), uintptr(hrgn), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-pie
+func (hdc HDC) Pie(left, top, right, bottom, xr1, yr1, xr2, yr2 int32) {
+	ret, _, err := syscall.Syscall9(proc.Pie.Addr(), 9,
+		uintptr(hdc), uintptr(left), uintptr(top), uintptr(right), uintptr(bottom),
+		uintptr(xr1), uintptr(yr1), uintptr(xr2), uintptr(yr2))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -259,10 +278,40 @@ func (hdc HDC) PolylineTo(apt []POINT) {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-ptvisible
+func (hdc HDC) PtVisible(x, y int32) bool {
+	ret, _, err := syscall.Syscall(proc.PtVisible.Addr(), 3,
+		uintptr(hdc), uintptr(x), uintptr(y))
+	if int(ret) == -1 {
+		panic(errco.ERROR(err))
+	}
+	return ret != 0
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-rectangle
+func (hdc HDC) Rectangle(left, top, right, bottom int32) {
+	ret, _, err := syscall.Syscall6(proc.Rectangle.Addr(), 5,
+		uintptr(hdc), uintptr(left), uintptr(top), uintptr(right), uintptr(bottom),
+		0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-restoredc
 func (hdc HDC) RestoreDC(nSavedDC int32) {
 	ret, _, err := syscall.Syscall(proc.RestoreDC.Addr(), 2,
 		uintptr(hdc), uintptr(nSavedDC), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-roundrect
+func (hdc HDC) RoundRect(left, top, right, bottom, width, height int32) {
+	ret, _, err := syscall.Syscall9(proc.RoundRect.Addr(), 7,
+		uintptr(hdc), uintptr(left), uintptr(top), uintptr(right), uintptr(bottom),
+		uintptr(width), uintptr(height), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
