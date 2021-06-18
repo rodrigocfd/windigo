@@ -447,6 +447,40 @@ type TITLEBARINFOEX struct {
 	Rgrect     [_CCHILDREN_TITLEBAR + 1]RECT
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
+type VS_FIXEDFILEINFO struct {
+	DwSignature        uint32
+	DwStrucVersion     uint32
+	DwFileVersionMS    uint32
+	DwFileVersionLS    uint32
+	DwProductVersionMS uint32
+	DwProductVersionLS uint32
+	DwFileFlagsMask    co.VS_FF
+	DwFileFlags        co.VS_FF
+	DwFileOS           co.VOS
+	DwFileType         co.VFT
+	DwFileSubtype      co.VFT2
+	DwFileDateMS       uint32
+	DwFileDateLS       uint32
+}
+
+// Returns the parsed DwFileVersion fields.
+func (vfi *VS_FIXEDFILEINFO) FileVersion() [4]uint16 {
+	return [4]uint16{Bytes.Hi16(vfi.DwFileVersionMS), Bytes.Lo16(vfi.DwFileVersionMS),
+		Bytes.Hi16(vfi.DwFileVersionLS), Bytes.Lo16(vfi.DwFileVersionLS)}
+}
+
+// Returns the parsed DwProductVersion fields.
+func (vfi *VS_FIXEDFILEINFO) ProductVersion() [4]uint16 {
+	return [4]uint16{Bytes.Hi16(vfi.DwProductVersionMS), Bytes.Lo16(vfi.DwProductVersionMS),
+		Bytes.Hi16(vfi.DwProductVersionLS), Bytes.Lo16(vfi.DwProductVersionLS)}
+}
+
+// Returns the parsed DwFileDate fields.
+func (vfi *VS_FIXEDFILEINFO) FileDate() uint64 {
+	return Bytes.Make64(vfi.DwFileDateLS, vfi.DwFileDateMS)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw
 type WIN32_FIND_DATA struct {
 	DwFileAttributes   co.FILE_ATTRIBUTE

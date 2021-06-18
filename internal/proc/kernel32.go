@@ -22,6 +22,7 @@ var (
 	GetDynamicTimeZoneInformation   = kernel32.NewProc("GetDynamicTimeZoneInformation")
 	GetFileAttributes               = kernel32.NewProc("GetFileAttributesW")
 	GetFileSizeEx                   = kernel32.NewProc("GetFileSizeEx")
+	GetModuleFileName               = kernel32.NewProc("GetModuleFileNameW")
 	GetModuleHandle                 = kernel32.NewProc("GetModuleHandleW")
 	GetProcAddress                  = kernel32.NewProc("GetProcAddress")
 	GetSystemTime                   = kernel32.NewProc("GetSystemTime")

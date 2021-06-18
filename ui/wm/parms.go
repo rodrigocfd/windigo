@@ -9,16 +9,16 @@ import (
 
 type Activate struct{ Msg Any }
 
-func (p Activate) Event() co.WA                         { return co.WA(p.Msg.WParam.LoWord()) }
-func (p Activate) IsMinimized() bool                    { return p.Msg.WParam.HiWord() != 0 }
+func (p Activate) Event() co.WA                         { return co.WA(p.Msg.WParam.Lo16()) }
+func (p Activate) IsMinimized() bool                    { return p.Msg.WParam.Hi16() != 0 }
 func (p Activate) HwndActivatedOrDeactivated() win.HWND { return win.HWND(p.Msg.LParam) }
 
 type AppCommand struct{ Msg Any }
 
 func (p AppCommand) OwnerWindow() win.HWND     { return win.HWND(p.Msg.WParam) }
-func (p AppCommand) AppCommand() co.APPCOMMAND { return co.APPCOMMAND(p.Msg.LParam.HiWord() &^ 0xf000) }
-func (p AppCommand) UDevice() co.FAPPCOMMAND   { return co.FAPPCOMMAND(p.Msg.LParam.HiWord() & 0xf000) }
-func (p AppCommand) Keys() co.MK               { return co.MK(p.Msg.LParam.LoWord()) }
+func (p AppCommand) AppCommand() co.APPCOMMAND { return co.APPCOMMAND(p.Msg.LParam.Hi16() &^ 0xf000) }
+func (p AppCommand) UDevice() co.FAPPCOMMAND   { return co.FAPPCOMMAND(p.Msg.LParam.Hi16() & 0xf000) }
+func (p AppCommand) Keys() co.MK               { return co.MK(p.Msg.LParam.Lo16()) }
 
 type AskCbFormatName struct{ Msg Any }
 
@@ -38,28 +38,28 @@ func (p ChangeCbChain) IsLastWindow() bool           { return p.Msg.LParam == 0 
 type Char struct{ Msg Any }
 
 func (p Char) CharCode() rune            { return rune(p.Msg.WParam) }
-func (p Char) RepeatCount() uint         { return uint(p.Msg.LParam.LoWord()) }
-func (p Char) ScanCode() uint            { return uint(p.Msg.LParam.LoByteHiWord()) }
-func (p Char) IsExtendedKey() bool       { return (p.Msg.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
-func (p Char) HasAltKey() bool           { return (p.Msg.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
-func (p Char) IsKeyDownBeforeSend() bool { return (p.Msg.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
-func (p Char) IsKeyBeingReleased() bool  { return (p.Msg.LParam.HiByteHiWord() & 0b1000_0000) != 0 }
+func (p Char) RepeatCount() uint         { return uint(p.Msg.LParam.Lo16()) }
+func (p Char) ScanCode() uint            { return uint(p.Msg.LParam.Lo8Hi16()) }
+func (p Char) IsExtendedKey() bool       { return (p.Msg.LParam.Hi8Hi16() & 0b0000_0001) != 0 }
+func (p Char) HasAltKey() bool           { return (p.Msg.LParam.Hi8Hi16() & 0b0010_0000) != 0 }
+func (p Char) IsKeyDownBeforeSend() bool { return (p.Msg.LParam.Hi8Hi16() & 0b0100_0000) != 0 }
+func (p Char) IsKeyBeingReleased() bool  { return (p.Msg.LParam.Hi8Hi16() & 0b1000_0000) != 0 }
 
 type CharToItem struct{ Msg Any }
 
-func (p CharToItem) CharCode() rune        { return rune(p.Msg.WParam.LoWord()) }
-func (p CharToItem) CurrentCaretPos() int  { return int(p.Msg.WParam.HiWord()) }
+func (p CharToItem) CharCode() rune        { return rune(p.Msg.WParam.Lo16()) }
+func (p CharToItem) CurrentCaretPos() int  { return int(p.Msg.WParam.Hi16()) }
 func (p CharToItem) HwndListBox() win.HWND { return win.HWND(p.Msg.LParam) }
 
 type Command struct{ Msg Any }
 
-func (p Command) IsFromMenu() bool        { return p.Msg.WParam.HiWord() == 0 }
-func (p Command) IsFromAccelerator() bool { return p.Msg.WParam.HiWord() == 1 }
+func (p Command) IsFromMenu() bool        { return p.Msg.WParam.Hi16() == 0 }
+func (p Command) IsFromAccelerator() bool { return p.Msg.WParam.Hi16() == 1 }
 func (p Command) IsFromControl() bool     { return !p.IsFromMenu() && !p.IsFromAccelerator() }
 func (p Command) MenuId() int             { return p.ControlId() }
 func (p Command) AcceleratorId() int      { return p.ControlId() }
-func (p Command) ControlId() int          { return int(p.Msg.WParam.LoWord()) }
-func (p Command) ControlNotifCode() int   { return int(p.Msg.WParam.HiWord()) }
+func (p Command) ControlId() int          { return int(p.Msg.WParam.Lo16()) }
+func (p Command) ControlNotifCode() int   { return int(p.Msg.WParam.Hi16()) }
 func (p Command) ControlHwnd() win.HWND   { return win.HWND(p.Msg.LParam) }
 
 type CompareItem struct{ Msg Any }
@@ -170,19 +170,19 @@ func (p Help) HelpInfo() *win.HELPINFO { return (*win.HELPINFO)(unsafe.Pointer(p
 type HotKey struct{ Msg Any }
 
 func (p HotKey) HotKey() co.IDHOT      { return co.IDHOT(p.Msg.WParam) }
-func (p HotKey) OtherKeys() co.MOD     { return co.MOD(p.Msg.LParam.LoWord()) }
-func (p HotKey) VirtualKeyCode() co.VK { return co.VK(p.Msg.LParam.HiWord()) }
+func (p HotKey) OtherKeys() co.MOD     { return co.MOD(p.Msg.LParam.Lo16()) }
+func (p HotKey) VirtualKeyCode() co.VK { return co.VK(p.Msg.LParam.Hi16()) }
 
 type HScroll struct{ Msg Any }
 
-func (p HScroll) ScrollBoxPos() uint      { return uint(p.Msg.WParam.HiWord()) }
-func (p HScroll) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.LoWord()) }
+func (p HScroll) ScrollBoxPos() uint      { return uint(p.Msg.WParam.Hi16()) }
+func (p HScroll) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.Lo16()) }
 func (p HScroll) HwndScrollbar() win.HWND { return win.HWND(p.Msg.LParam) }
 
 type HScrollClipboard struct{ Msg Any }
 
-func (p HScrollClipboard) ScrollBoxPos() uint      { return uint(p.Msg.WParam.HiWord()) }
-func (p HScrollClipboard) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.LoWord()) }
+func (p HScrollClipboard) ScrollBoxPos() uint      { return uint(p.Msg.WParam.Hi16()) }
+func (p HScrollClipboard) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.Lo16()) }
 func (p HScrollClipboard) HwndScrollbar() win.HWND { return win.HWND(p.Msg.LParam) }
 
 type InitDialog struct{ Msg Any }
@@ -192,18 +192,18 @@ func (p InitDialog) HwndFocused() win.HWND { return win.HWND(p.Msg.WParam) }
 type InitMenuPopup struct{ Msg Any }
 
 func (p InitMenuPopup) Hmenu() win.HMENU   { return win.HMENU(p.Msg.WParam) }
-func (p InitMenuPopup) Pos() int           { return int(p.Msg.LParam.LoWord()) }
-func (p InitMenuPopup) IsWindowMenu() bool { return p.Msg.LParam.HiWord() != 0 }
+func (p InitMenuPopup) Pos() int           { return int(p.Msg.LParam.Lo16()) }
+func (p InitMenuPopup) IsWindowMenu() bool { return p.Msg.LParam.Hi16() != 0 }
 
 type Key struct{ Msg Any }
 
 func (p Key) VirtualKeyCode() co.VK     { return co.VK(p.Msg.WParam) }
-func (p Key) RepeatCount() uint         { return uint(p.Msg.LParam.LoWord()) }
-func (p Key) ScanCode() uint            { return uint(p.Msg.LParam.LoByteHiWord()) }
-func (p Key) IsExtendedKey() bool       { return (p.Msg.LParam.HiByteHiWord() & 0b0000_0001) != 0 }
-func (p Key) HasAltKey() bool           { return (p.Msg.LParam.HiByteHiWord() & 0b0010_0000) != 0 }
-func (p Key) IsKeyDownBeforeSend() bool { return (p.Msg.LParam.HiByteHiWord() & 0b0100_0000) != 0 }
-func (p Key) IsReleasingKey() bool      { return (p.Msg.LParam.HiByteHiWord() & 0b1000_0000) != 0 }
+func (p Key) RepeatCount() uint         { return uint(p.Msg.LParam.Lo16()) }
+func (p Key) ScanCode() uint            { return uint(p.Msg.LParam.Lo8Hi16()) }
+func (p Key) IsExtendedKey() bool       { return (p.Msg.LParam.Hi8Hi16() & 0b0000_0001) != 0 }
+func (p Key) HasAltKey() bool           { return (p.Msg.LParam.Hi8Hi16() & 0b0010_0000) != 0 }
+func (p Key) IsKeyDownBeforeSend() bool { return (p.Msg.LParam.Hi8Hi16() & 0b0100_0000) != 0 }
+func (p Key) IsReleasingKey() bool      { return (p.Msg.LParam.Hi8Hi16() & 0b1000_0000) != 0 }
 
 type KillFocus struct{ Msg Any }
 
@@ -216,8 +216,8 @@ func (p Menu) Hmenu() win.HMENU { return win.HMENU(p.Msg.LParam) }
 
 type MenuChar struct{ Msg Any }
 
-func (p MenuChar) CharCode() rune          { return rune(p.Msg.WParam.LoWord()) }
-func (p MenuChar) ActiveMenuType() co.MFMC { return co.MFMC(p.Msg.WParam.HiWord()) }
+func (p MenuChar) CharCode() rune          { return rune(p.Msg.WParam.Lo16()) }
+func (p MenuChar) ActiveMenuType() co.MFMC { return co.MFMC(p.Msg.WParam.Hi16()) }
 func (p MenuChar) ActiveMenu() win.HMENU   { return win.HMENU(p.Msg.LParam) }
 
 type MenuGetObject struct{ Msg Any }
@@ -228,13 +228,13 @@ func (p MenuGetObject) MenuGetObjectInfo() *win.MENUGETOBJECTINFO {
 
 type MenuSelect struct{ Msg Any }
 
-func (p MenuSelect) Item() int        { return int(p.Msg.WParam.LoWord()) }
-func (p MenuSelect) Flags() co.MF     { return co.MF(p.Msg.WParam.HiWord()) }
+func (p MenuSelect) Item() int        { return int(p.Msg.WParam.Lo16()) }
+func (p MenuSelect) Flags() co.MF     { return co.MF(p.Msg.WParam.Hi16()) }
 func (p MenuSelect) Hmenu() win.HMENU { return win.HMENU(p.Msg.LParam) }
 
 type Mouse struct{ Msg Any }
 
-func (p Mouse) VirtualKeys() co.MK { return co.MK(p.Msg.WParam.LoWord()) }
+func (p Mouse) VirtualKeys() co.MK { return co.MK(p.Msg.WParam.Lo16()) }
 func (p Mouse) HasCtrl() bool      { return (p.VirtualKeys() & co.MK_CONTROL) != 0 }
 func (p Mouse) HasShift() bool     { return (p.VirtualKeys() & co.MK_SHIFT) != 0 }
 func (p Mouse) IsLeftBtn() bool    { return (p.VirtualKeys() & co.MK_LBUTTON) != 0 }
@@ -277,9 +277,9 @@ func (p NcMouse) Pos() win.POINT { return p.Msg.LParam.MakePoint() }
 
 type NcMouseX struct{ Msg Any }
 
-func (p NcMouseX) HitTest() co.HT { return co.HT(p.Msg.WParam.LoWord()) }
-func (p NcMouseX) IsXBtn1() bool  { return p.Msg.WParam.HiWord() == 0x0001 }
-func (p NcMouseX) IsXBtn2() bool  { return p.Msg.WParam.HiWord() == 0x0002 }
+func (p NcMouseX) HitTest() co.HT { return co.HT(p.Msg.WParam.Lo16()) }
+func (p NcMouseX) IsXBtn1() bool  { return p.Msg.WParam.Hi16() == 0x0001 }
+func (p NcMouseX) IsXBtn2() bool  { return p.Msg.WParam.Hi16() == 0x0002 }
 func (p NcMouseX) Pos() win.POINT { return p.Msg.LParam.MakePoint() }
 
 type NextMenu struct{ Msg Any }
@@ -354,12 +354,12 @@ func (p UnInitMenuPopup) Hmenu() win.HMENU { return win.HMENU(p.Msg.WParam) }
 
 type VScroll struct{ Msg Any }
 
-func (p VScroll) ScrollBoxPos() uint      { return uint(p.Msg.WParam.HiWord()) }
-func (p VScroll) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.LoWord()) }
+func (p VScroll) ScrollBoxPos() uint      { return uint(p.Msg.WParam.Hi16()) }
+func (p VScroll) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.Lo16()) }
 func (p VScroll) HwndScrollbar() win.HWND { return win.HWND(p.Msg.LParam) }
 
 type VScrollClipboard struct{ Msg Any }
 
-func (p VScrollClipboard) ScrollBoxPos() uint      { return uint(p.Msg.WParam.HiWord()) }
-func (p VScrollClipboard) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.LoWord()) }
+func (p VScrollClipboard) ScrollBoxPos() uint      { return uint(p.Msg.WParam.Hi16()) }
+func (p VScrollClipboard) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.Lo16()) }
 func (p VScrollClipboard) HwndScrollbar() win.HWND { return win.HWND(p.Msg.LParam) }

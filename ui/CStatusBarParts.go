@@ -179,7 +179,7 @@ func (me *_StatusBarParts) SetIcon(index int, hIcon win.HICON) {
 // Sets the text of the part.
 func (me *_StatusBarParts) SetText(index int, text string) {
 	ret := me.pHwnd.SendMessage(co.SB_SETTEXT,
-		win.MAKEWPARAM(win.MAKEWORD(uint8(index), 0), 0),
+		win.MAKEWPARAM(win.Bytes.Make16(uint8(index), 0), 0),
 		win.LPARAM(unsafe.Pointer(win.Str.ToUint16Ptr(text))))
 	if ret == 0 {
 		panic(fmt.Sprintf("SB_SETTEXT %d failed \"%s\".", index, text))

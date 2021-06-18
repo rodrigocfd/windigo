@@ -204,6 +204,33 @@ func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
 	return retAttr, nil
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
+func GetFileVersionInfo(lptstrFilename string) []byte {
+	visz := GetFileVersionInfoSize(lptstrFilename)
+	buf := make([]byte, visz)
+
+	ret, _, err := syscall.Syscall6(proc.GetFileVersionInfo.Addr(), 4,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lptstrFilename))),
+		0, uintptr(visz), uintptr(unsafe.Pointer(&buf[0])), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return buf
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
+func GetFileVersionInfoSize(lptstrFilename string) uint32 {
+	lpdwHandle := uint32(0)
+
+	ret, _, err := syscall.Syscall(proc.GetFileVersionInfoSize.Addr(), 2,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lptstrFilename))),
+		uintptr(unsafe.Pointer(&lpdwHandle)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return uint32(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagew
 func GetMessage(
 	msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) (int32, error) {
@@ -294,16 +321,6 @@ func GetTimeZoneInformationForYear(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632656(v=vs.85)
-func HIBYTE(value uint16) uint8 {
-	return uint8(value >> 8 & 0xff)
-}
-
-// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632657(v=vs.85)
-func HIWORD(value uint32) uint16 {
-	return uint16(value >> 16 & 0xffff)
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
 func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
@@ -336,48 +353,48 @@ func IsThemeActive() bool {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows10orgreater
 func IsWindows10OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(HIBYTE(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
-		uint32(LOBYTE(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
+		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
+		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
 		0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows7orgreater
 func IsWindows7OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(HIBYTE(uint16(co.WIN32_WINNT_WIN7))),
-		uint32(LOBYTE(uint16(co.WIN32_WINNT_WIN7))),
+		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_WIN7))),
+		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_WIN7))),
 		0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8orgreater
 func IsWindows8OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(HIBYTE(uint16(co.WIN32_WINNT_WIN8))),
-		uint32(LOBYTE(uint16(co.WIN32_WINNT_WIN8))),
+		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_WIN8))),
+		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_WIN8))),
 		0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8point1orgreater
 func IsWindows8Point1OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(HIBYTE(uint16(co.WIN32_WINNT_WINBLUE))),
-		uint32(LOBYTE(uint16(co.WIN32_WINNT_WINBLUE))),
+		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_WINBLUE))),
+		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_WINBLUE))),
 		0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsvistaorgreater
 func IsWindowsVistaOrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(HIBYTE(uint16(co.WIN32_WINNT_VISTA))),
-		uint32(LOBYTE(uint16(co.WIN32_WINNT_VISTA))),
+		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_VISTA))),
+		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_VISTA))),
 		0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsxporgreater
 func IsWindowsXpOrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(HIBYTE(uint16(co.WIN32_WINNT_WINXP))),
-		uint32(LOBYTE(uint16(co.WIN32_WINNT_WINXP))),
+		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_WINXP))),
+		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_WINXP))),
 		0)
 }
 
@@ -402,31 +419,6 @@ func IsWindowsVersionOrGreater(
 		co.VER_MAJORVERSION|co.VER_MINORVERSION|co.VER_SERVICEPACKMAJOR,
 		conditionMask)
 	return ret
-}
-
-// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632658(v=vs.85)
-func LOBYTE(value uint16) uint8 {
-	return uint8(value & 0xff)
-}
-
-// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632659(v=vs.85)
-func LOWORD(value uint32) uint16 {
-	return uint16(value & 0xffff)
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makelparam
-func MAKELPARAM(lo, hi uint16) LPARAM {
-	return LPARAM((uint32(lo) & 0xffff) | ((uint32(hi) & 0xffff) << 16))
-}
-
-// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632663(v=vs.85)
-func MAKEWORD(lo, hi uint8) uint16 {
-	return (uint16(lo) & 0xff) | ((uint16(hi) & 0xff) << 8)
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makewparam
-func MAKEWPARAM(lo, hi uint16) WPARAM {
-	return WPARAM((uint32(lo) & 0xffff) | ((uint32(hi) & 0xffff) << 16))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
@@ -619,6 +611,22 @@ func TzSpecificLocalTimeToSystemTime(
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
+func VerQueryValue(pBlock []byte, lpSubBlock string) ([]byte, bool) {
+	lplpBuffer := uintptr(0)
+	puLen := uint32(0)
+
+	ret, _, _ := syscall.Syscall6(proc.VerQueryValue.Addr(), 4,
+		uintptr(unsafe.Pointer(&pBlock[0])),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubBlock))),
+		uintptr(unsafe.Pointer(&lplpBuffer)), uintptr(unsafe.Pointer(&puLen)),
+		0, 0)
+	if ret == 0 {
+		return nil, false
+	}
+	return util.PtrToSlice(lplpBuffer, int(puLen)), true
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow

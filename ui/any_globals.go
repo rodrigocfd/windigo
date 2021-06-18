@@ -1,9 +1,9 @@
 package ui
 
 import (
-	"strings"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/ui/wm"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -77,7 +77,7 @@ func _CalcTextBoundBox(text string, considerAccelerators bool) win.SIZE {
 	}
 
 	if considerAccelerators {
-		text = _RemoveAccelAmpersands(text)
+		text = util.RemoveAccelAmpersands(text)
 	}
 
 	hwndDesktop := win.GetDesktopWindow()
@@ -112,24 +112,6 @@ func _CalcTextBoundBoxWithCheck(
 		boundBox.Cy = cyCheck // if the check is taller than the font, use its height
 	}
 	return boundBox
-}
-
-// "&He && she" becomes "He & she".
-func _RemoveAccelAmpersands(text string) string {
-	runes := []rune(text)
-	buf := strings.Builder{}
-	buf.Grow(len(text)) // prealloc for performance
-
-	for i := 0; i < len(runes)-1; i++ {
-		if runes[i] == '&' && runes[i+1] != '&' {
-			continue
-		}
-		buf.WriteRune(runes[i])
-	}
-	if runes[len(runes)-1] != '&' {
-		buf.WriteRune(runes[len(runes)-1])
-	}
-	return buf.String()
 }
 
 //------------------------------------------------------------------------------

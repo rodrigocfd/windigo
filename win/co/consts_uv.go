@@ -32,7 +32,7 @@ const (
 	VER_COND_OR  VER_COND = 7
 )
 
-// OSVERSIONINFOEX wSuiteMask. Includes values with VER_NT prefix.
+// OSVERSIONINFOEX WSuiteMask. Includes values with VER_NT prefix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
 type VER_SUITE uint16
@@ -55,6 +55,46 @@ const (
 	VER_SUITE_NT_DOMAIN_CONTROLLER VER_SUITE = 0x0000002
 	VER_SUITE_NT_SERVER            VER_SUITE = 0x0000003
 	VER_SUITE_NT_WORKSTATION       VER_SUITE = 0x0000001
+)
+
+// VS_FIXEDFILEINFO DwFileType.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
+type VFT uint32
+
+const (
+	VFT_UNKNOWN    VFT = 0x00000000
+	VFT_APP        VFT = 0x00000001
+	VFT_DLL        VFT = 0x00000002
+	VFT_DRV        VFT = 0x00000003
+	VFT_FONT       VFT = 0x00000004
+	VFT_VXD        VFT = 0x00000005
+	VFT_STATIC_LIB VFT = 0x00000007
+)
+
+// VS_FIXEDFILEINFO DwFileSubType.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
+type VFT2 uint32
+
+const (
+	VFT2_UNKNOWN               VFT2 = 0x00000000
+	VFT2_DRV_PRINTER           VFT2 = 0x00000001
+	VFT2_DRV_KEYBOARD          VFT2 = 0x00000002
+	VFT2_DRV_LANGUAGE          VFT2 = 0x00000003
+	VFT2_DRV_DISPLAY           VFT2 = 0x00000004
+	VFT2_DRV_MOUSE             VFT2 = 0x00000005
+	VFT2_DRV_NETWORK           VFT2 = 0x00000006
+	VFT2_DRV_SYSTEM            VFT2 = 0x00000007
+	VFT2_DRV_INSTALLABLE       VFT2 = 0x00000008
+	VFT2_DRV_SOUND             VFT2 = 0x00000009
+	VFT2_DRV_COMM              VFT2 = 0x0000000a
+	VFT2_DRV_INPUTMETHOD       VFT2 = 0x0000000b
+	VFT2_DRV_VERSIONED_PRINTER VFT2 = 0x0000000c
+
+	VFT2_FONT_RASTER   VFT2 = 0x00000001
+	VFT2_FONT_VECTOR   VFT2 = 0x00000002
+	VFT2_FONT_TRUETYPE VFT2 = 0x00000003
 )
 
 // Virtual key codes.
@@ -223,6 +263,46 @@ const (
 	VK_NONAME              VK = 0xfc
 	VK_PA1                 VK = 0xfd
 	VK_OEM_CLEAR           VK = 0xfe
+)
+
+// VS_FIXEDFILEINFO DwFileOS.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
+type VOS uint32
+
+const (
+	VOS_UNKNOWN VOS = 0x00000000
+	VOS_DOS     VOS = 0x00010000
+	VOS_OS216   VOS = 0x00020000
+	VOS_OS232   VOS = 0x00030000
+	VOS_NT      VOS = 0x00040000
+	VOS_WINCE   VOS = 0x00050000
+
+	VOS_BASE      VOS = 0x00000000
+	VOS_WINDOWS16 VOS = 0x00000001
+	VOS_PM16      VOS = 0x00000002
+	VOS_PM32      VOS = 0x00000003
+	VOS_WINDOWS32 VOS = 0x00000004
+
+	VOS_DOS_WINDOWS16 VOS = 0x00010001
+	VOS_DOS_WINDOWS32 VOS = 0x00010004
+	VOS_OS216_PM16    VOS = 0x00020002
+	VOS_OS232_PM32    VOS = 0x00030003
+	VOS_NT_WINDOWS32  VOS = 0x00040004
+)
+
+// VS_FIXEDFILEINFO DwFileFlagsMask and DwFileFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
+type VS_FF uint32
+
+const (
+	VS_FF_DEBUG        VS_FF = 0x00000001
+	VS_FF_PRERELEASE   VS_FF = 0x00000002
+	VS_FF_PATCHED      VS_FF = 0x00000004
+	VS_FF_PRIVATEBUILD VS_FF = 0x00000008
+	VS_FF_INFOINFERRED VS_FF = 0x00000010
+	VS_FF_SPECIALBUILD VS_FF = 0x00000020
 )
 
 // Parts of standard controls and windows.

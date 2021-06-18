@@ -1,8 +1,7 @@
 package win
 
 import (
-	"unsafe"
-
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -95,15 +94,7 @@ func (me *_FileMapped) Close() {
 }
 
 func (me *_FileMapped) HotSlice() []byte {
-	// https://stackoverflow.com/a/43592538
-	// https://golang.org/pkg/internal/unsafeheader/#Slice
-	var sliceMem = struct { // slice memory layout
-		addr unsafe.Pointer
-		len  int
-		cap  int
-	}{unsafe.Pointer(me.pMem), int(me.sz), int(me.sz)}
-
-	return *(*[]byte)(unsafe.Pointer(&sliceMem))
+	return util.PtrToSlice(uintptr(me.pMem), me.sz)
 }
 
 func (me *_FileMapped) ReadAll() []byte {
