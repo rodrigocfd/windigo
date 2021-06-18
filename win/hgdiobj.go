@@ -106,6 +106,26 @@ func (hFont HFONT) DeleteObject() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hpen
 type HPEN HGDIOBJ
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
+func CreatePen(iStyle co.PS, cWidth int32, color COLORREF) HPEN {
+	ret, _, err := syscall.Syscall(proc.CreatePen.Addr(), 3,
+		uintptr(iStyle), uintptr(cWidth), uintptr(color))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return HPEN(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpenindirect
+func CreatePenIndirect(plpen *LOGPEN) HPEN {
+	ret, _, err := syscall.Syscall(proc.CreatePenIndirect.Addr(), 1,
+		uintptr(unsafe.Pointer(plpen)), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return HPEN(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hPen HPEN) DeleteObject() {
 	HGDIOBJ(hPen).DeleteObject()
@@ -154,6 +174,16 @@ func (hRgn HRGN) DeleteObject() {
 func (hRgn HRGN) CombineRgn(hrgnSrc1, hrgnSrc2 HRGN, iMode co.RGN) co.REGION {
 	ret, _, err := syscall.Syscall6(proc.CombineRgn.Addr(), 4,
 		uintptr(hRgn), uintptr(hrgnSrc1), uintptr(hrgnSrc2), uintptr(iMode), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return co.REGION(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-offsetrgn
+func (hRgn HRGN) OffsetRgn(x, y int32) co.REGION {
+	ret, _, err := syscall.Syscall(proc.OffsetRgn.Addr(), 3,
+		uintptr(hRgn), uintptr(x), uintptr(y))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

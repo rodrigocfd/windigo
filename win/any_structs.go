@@ -166,6 +166,13 @@ type LOGFONT struct {
 	LfFaceName       [_LF_FACESIZE]uint16
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logpen
+type LOGPEN struct {
+	LopnStyle co.PS
+	LopnWidth POINT
+	LopnColor COLORREF
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-mdinextmenu
 type MDINEXTMENU struct {
 	HmenuIn   HMENU

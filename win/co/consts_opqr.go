@@ -194,6 +194,21 @@ const (
 	PRF_OWNED        PRF = 0x00000020
 )
 
+// CreatePen() iStyle.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
+type PS int32
+
+const (
+	PS_SOLID       PS = 0
+	PS_DASH        PS = 1
+	PS_DOT         PS = 2
+	PS_DASHDOT     PS = 3
+	PS_DASHDOTDOT  PS = 4
+	PS_NULL        PS = 5
+	PS_INSIDEFRAME PS = 6
+)
+
 // PolyDraw() aj.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polydraw
@@ -249,7 +264,7 @@ const (
 	RGN_COPY RGN = 5
 )
 
-// IMAGELISTDRAWPARAMS dwRop.
+// BitBlt() rop, IMAGELISTDRAWPARAMS dwRop.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
 type ROP uint32
