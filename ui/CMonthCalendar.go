@@ -32,21 +32,21 @@ type _MonthCalendar struct {
 	events _MonthCalendarEvents
 }
 
-// Creates a new MonthCalendar specifying all options, which will be passed to
-// the underlying CreateWindowEx().
-func NewMonthCalendar(parent AnyParent, opts MonthCalendarOpts) MonthCalendar {
-	opts.fillBlankValuesWithDefault()
+// Creates a new MonthCalendar. Call MonthCalendarOpts() to define the options
+// to be passed to the underlying CreateWindowEx().
+func NewMonthCalendar(parent AnyParent, opts *_MonthCalendarO) MonthCalendar {
+	opts.lateDefaults()
 
 	me := &_MonthCalendar{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, nil)
+		_MultiplyDpi(&opts.position, nil)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"SysMonthCal32", "", opts.Styles|co.WS(opts.MonthCalendarStyles),
-			opts.Position, win.SIZE{}, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"SysMonthCal32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, win.SIZE{}, win.HMENU(opts.ctrlId))
 
 		rcBound := win.RECT{}
 		me.Hwnd().SendMessage(co.MCM_GETMINREQRECT,
@@ -92,39 +92,46 @@ func (me *_MonthCalendar) SetSelected(date time.Time) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewMonthCalendar().
-type MonthCalendarOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _MonthCalendarO struct {
+	ctrlId int
 
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// MonthCalendar control styles, passed to CreateWindowEx().
-	// Defaults to MCS_NONE.
-	MonthCalendarStyles co.MCS
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_GROUP | WS_TABSTOP | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
+	position    win.POINT
+	ctrlStyles  co.MCS
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
 }
 
-func (opts *MonthCalendarOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_MonthCalendarO) CtrlId(i int) *_MonthCalendarO { o.ctrlId = i; return o }
 
-	if opts.MonthCalendarStyles == 0 {
-		opts.MonthCalendarStyles = co.MCS_NONE
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_MonthCalendarO) Position(p win.POINT) *_MonthCalendarO { _OwPt(&o.position, p); return o }
+
+// MonthCalendar control styles, passed to CreateWindowEx().
+// Defaults to MCS_NONE.
+func (o *_MonthCalendarO) CtrlStyles(s co.MCS) *_MonthCalendarO { o.ctrlStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
+func (o *_MonthCalendarO) WndStyles(s co.WS) *_MonthCalendarO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_NONE.
+func (o *_MonthCalendarO) WndExStyles(s co.WS_EX) *_MonthCalendarO { o.wndExStyles = s; return o }
+
+func (o *_MonthCalendarO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_NONE
+}
+
+// Options for NewMonthCalendar().
+func MonthCalendarOpts() *_MonthCalendarO {
+	return &_MonthCalendarO{
+		ctrlStyles: co.MCS_NONE,
+		wndStyles:  co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 	}
 }
 

@@ -32,21 +32,21 @@ type _DateTimePicker struct {
 	events _DateTimePickerEvents
 }
 
-// Creates a new DateTimePicker specifying all options, which will be passed to
-// the underlying CreateWindowEx().
-func NewDateTimePicker(parent AnyParent, opts DateTimePickerOpts) DateTimePicker {
-	opts.fillBlankValuesWithDefault()
+// Creates a new DateTimePicker. Call DateTimePickerOpts() to define the options
+// to be passed to the underlying CreateWindowEx().
+func NewDateTimePicker(parent AnyParent, opts *_DateTimePickerO) DateTimePicker {
+	opts.lateDefaults()
 
 	me := &_DateTimePicker{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, &opts.Size)
+		_MultiplyDpi(&opts.position, &opts.size)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"SysDateTimePick32", "", opts.Styles|co.WS(opts.DateTimePickerStyles),
-			opts.Position, opts.Size, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"SysDateTimePick32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
@@ -95,49 +95,55 @@ func (me *_DateTimePicker) Time() time.Time {
 
 //------------------------------------------------------------------------------
 
-// Options for NewDateTimePicker().
-type DateTimePickerOpts struct {
+type _DateTimePickerO struct {
 	// Control ID.
 	// Defaults to an auto-generated ID.
-	CtrlId int
+	ctrlId int
 
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Control size in pixels.
-	// Defaults to 230x21. Will be adjusted to the current system DPI.
-	Size win.SIZE
-	// DateTimePicker control styles, passed to CreateWindowEx().
-	// Defaults to DTS_LONGDATEFORMAT.
-	DateTimePickerStyles co.DTS
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_GROUP | WS_TABSTOP | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_CLIENTEDGE.
-	ExStyles co.WS_EX
+	position    win.POINT
+	size        win.SIZE
+	ctrlStyles  co.DTS
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
 }
 
-func (opts *DateTimePickerOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_DateTimePickerO) CtrlId(i int) *_DateTimePickerO { o.ctrlId = i; return o }
 
-	if opts.Size.Cx == 0 {
-		opts.Size.Cx = 230
-	}
-	if opts.Size.Cy == 0 {
-		opts.Size.Cy = 21
-	}
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_DateTimePickerO) Position(p win.POINT) *_DateTimePickerO { _OwPt(&o.position, p); return o }
 
-	if opts.DateTimePickerStyles == 0 {
-		opts.DateTimePickerStyles = co.DTS_LONGDATEFORMAT
+// Control size in pixels.
+// Defaults to 230x21. Will be adjusted to the current system DPI.
+func (o *_DateTimePickerO) Size(s win.SIZE) *_DateTimePickerO { _OwSz(&o.size, s); return o }
+
+// DateTimePicker control styles, passed to CreateWindowEx().
+// Defaults to DTS_LONGDATEFORMAT.
+func (o *_DateTimePickerO) CtrlStyles(s co.DTS) *_DateTimePickerO { o.ctrlStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
+func (o *_DateTimePickerO) WndStyles(s co.WS) *_DateTimePickerO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_CLIENTEDGE.
+func (o *_DateTimePickerO) WndExStyles(s co.WS_EX) *_DateTimePickerO { o.wndExStyles = s; return o }
+
+func (o *_DateTimePickerO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_CLIENTEDGE
+}
+
+// Options for NewDateTimePicker().
+func DateTimePickerOpts() *_DateTimePickerO {
+	return &_DateTimePickerO{
+		size:        win.SIZE{Cx: 230, Cy: 21},
+		ctrlStyles:  co.DTS_LONGDATEFORMAT,
+		wndStyles:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
+		wndExStyles: co.WS_EX_CLIENTEDGE,
 	}
 }
 

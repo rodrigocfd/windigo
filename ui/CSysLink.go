@@ -30,22 +30,22 @@ type _SysLink struct {
 	events _SysLinkEvents
 }
 
-// Creates a new SysLink specifying all options, which will be passed to the
-// underlying CreateWindowEx().
-func NewSysLink(parent AnyParent, opts SysLinkOpts) SysLink {
-	opts.fillBlankValuesWithDefault()
+// Creates a new SysLink. Call SysLinkOpts() to define the options to be passed
+// to the underlying CreateWindowEx().
+func NewSysLink(parent AnyParent, opts *_SysLinkO) SysLink {
+	opts.lateDefaults()
 
 	me := &_SysLink{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, nil)
-		boundBox := _CalcTextBoundBox(opts.Text, true)
+		_MultiplyDpi(&opts.position, nil)
+		boundBox := _CalcTextBoundBox(opts.text, true)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"SysLink", opts.Text, opts.Styles|co.WS(opts.SysLinkStyles),
-			opts.Position, boundBox, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"SysLink", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, boundBox, win.HMENU(opts.ctrlId))
 
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
@@ -82,42 +82,51 @@ func (me *_SysLink) SetText(text string) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewSysLink().
-type SysLinkOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _SysLinkO struct {
+	ctrlId int
 
-	// Text to appear in the control, passed to CreateWindowEx().
-	// Defaults to empty string.
-	Text string
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// SysLink control styles, passed to CreateWindowEx().
-	// Defaults to LWS_TRANSPARENT.
-	SysLinkStyles co.LWS
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
+	text        string
+	position    win.POINT
+	ctrlStyles  co.LWS
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
 }
 
-func (opts *SysLinkOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_SysLinkO) CtrlId(i int) *_SysLinkO { o.ctrlId = i; return o }
 
-	if opts.SysLinkStyles == 0 {
-		opts.SysLinkStyles = co.LWS_TRANSPARENT
+// Text to appear in the control, passed to CreateWindowEx().
+// Defaults to empty string.
+func (o *_SysLinkO) Text(t string) *_SysLinkO { o.text = t; return o }
+
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_SysLinkO) Position(p win.POINT) *_SysLinkO { _OwPt(&o.position, p); return o }
+
+// SysLink control styles, passed to CreateWindowEx().
+// Defaults to LWS_TRANSPARENT.
+func (o *_SysLinkO) CtrlStyles(s co.LWS) *_SysLinkO { o.ctrlStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_VISIBLE.
+func (o *_SysLinkO) WndStyles(s co.WS) *_SysLinkO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_NONE.
+func (o *_SysLinkO) WndExStyles(s co.WS_EX) *_SysLinkO { o.wndExStyles = s; return o }
+
+func (o *_SysLinkO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_NONE
+}
+
+// Options for NewSysLink().
+func SysLinkOpts() *_SysLinkO {
+	return &_SysLinkO{
+		ctrlStyles: co.LWS_TRANSPARENT,
+		wndStyles:  co.WS_CHILD | co.WS_VISIBLE,
 	}
 }
 

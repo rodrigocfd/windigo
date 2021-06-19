@@ -32,21 +32,21 @@ type _Button struct {
 	events _ButtonEvents
 }
 
-// Creates a new Button specifying all options, which will be passed to the
-// underlying CreateWindowEx().
-func NewButton(parent AnyParent, opts ButtonOpts) Button {
-	opts.fillBlankValuesWithDefault()
+// Creates a new Button. Call ButtonOpts() to define the options to be passed to
+// the underlying CreateWindowEx().
+func NewButton(parent AnyParent, opts *_ButtonO) Button {
+	opts.lateDefaults()
 
 	me := &_Button{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, &opts.Size)
+		_MultiplyDpi(&opts.position, &opts.size)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"BUTTON", opts.Text, opts.Styles|co.WS(opts.ButtonStyles),
-			opts.Position, opts.Size, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"BUTTON", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
@@ -82,52 +82,57 @@ func (me *_Button) EmulateClick() {
 
 //------------------------------------------------------------------------------
 
-// Options for NewButton().
-type ButtonOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _ButtonO struct {
+	ctrlId int
 
-	// Text to appear in the control, passed to CreateWindowEx().
-	// Defaults to empty string.
-	Text string
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Control size in pixels.
-	// Defaults to 80x23. Will be adjusted to the current system DPI.
-	Size win.SIZE
-	// Button control styles, passed to CreateWindowEx().
-	// Defaults to BS_PUSHBUTTON.
-	ButtonStyles co.BS
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_GROUP | WS_TABSTOP | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
+	text        string
+	position    win.POINT
+	size        win.SIZE
+	ctrlStyles  co.BS
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
 }
 
-func (opts *ButtonOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_ButtonO) CtrlId(i int) *_ButtonO { o.ctrlId = i; return o }
 
-	if opts.Size.Cx == 0 {
-		opts.Size.Cx = 80
-	}
-	if opts.Size.Cy == 0 {
-		opts.Size.Cy = 23
-	}
+// Text to appear in the control, passed to CreateWindowEx().
+// Defaults to empty string.
+func (o *_ButtonO) Text(t string) *_ButtonO { o.text = t; return o }
 
-	if opts.ButtonStyles == 0 {
-		opts.ButtonStyles = co.BS_PUSHBUTTON
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_ButtonO) Position(p win.POINT) *_ButtonO { _OwPt(&o.position, p); return o }
+
+// Control size in pixels.
+// Defaults to 80x23. Will be adjusted to the current system DPI.
+func (o *_ButtonO) Size(s win.SIZE) *_ButtonO { _OwSz(&o.size, s); return o }
+
+// Button control styles, passed to CreateWindowEx().
+// Defaults to BS_PUSHBUTTON.
+func (o *_ButtonO) CtrlStyles(s co.BS) *_ButtonO { o.ctrlStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
+func (o *_ButtonO) WndStyles(s co.WS) *_ButtonO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_NONE.
+func (o *_ButtonO) WndExStyles(s co.WS_EX) *_ButtonO { o.wndExStyles = s; return o }
+
+func (o *_ButtonO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_NONE
+}
+
+// Options for NewButton().
+func ButtonOpts() *_ButtonO {
+	return &_ButtonO{
+		size:       win.SIZE{Cx: 80, Cy: 23},
+		ctrlStyles: co.BS_PUSHBUTTON,
+		wndStyles:  co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 	}
 }
 

@@ -33,25 +33,25 @@ type _CheckBox struct {
 	events _ButtonEvents
 }
 
-// Creates a new CheckBox specifying all options, which will be passed to the
-// underlying CreateWindowEx().
-func NewCheckBox(parent AnyParent, opts CheckBoxOpts) CheckBox {
-	opts.fillBlankValuesWithDefault()
+// Creates a new CheckBox. Call CheckBoxOpts() to define the options to be
+// passed to the underlying CreateWindowEx().
+func NewCheckBox(parent AnyParent, opts *_CheckBoxO) CheckBox {
+	opts.lateDefaults()
 
 	me := &_CheckBox{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, nil)
-		boundBox := _CalcTextBoundBoxWithCheck(opts.Text, true)
+		_MultiplyDpi(&opts.position, nil)
+		boundBox := _CalcTextBoundBoxWithCheck(opts.text, true)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"BUTTON", opts.Text, opts.Styles|co.WS(opts.ButtonStyles),
-			opts.Position, boundBox, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"BUTTON", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, boundBox, win.HMENU(opts.ctrlId))
 
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
-		me.SetCheckState(opts.State)
+		me.SetCheckState(opts.state)
 	})
 
 	return me
@@ -100,49 +100,57 @@ func (me *_CheckBox) SetText(text string) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewCheckBox().
-type CheckBoxOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _CheckBoxO struct {
+	ctrlId int
 
-	// Text to appear in the control, passed to CreateWindowEx().
-	// Defaults to empty string.
-	Text string
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Button control styles, passed to CreateWindowEx().
-	// Defaults to BS_AUTOCHECKBOX.
-	ButtonStyles co.BS
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_GROUP | WS_TABSTOP | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
+	text        string
+	position    win.POINT
+	ctrlStyles  co.BS
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
 
-	// CheckBox initial state.
-	// Defaults to BST_UNCHECKED.
-	State co.BST
+	state co.BST
 }
 
-func (opts *CheckBoxOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_CheckBoxO) CtrlId(i int) *_CheckBoxO { o.ctrlId = i; return o }
 
-	if opts.ButtonStyles == 0 {
-		opts.ButtonStyles = co.BS_AUTOCHECKBOX
-	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_VISIBLE | co.WS_TABSTOP | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_NONE
-	}
+// Text to appear in the control, passed to CreateWindowEx().
+// Defaults to empty string.
+func (o *_CheckBoxO) Text(t string) *_CheckBoxO { o.text = t; return o }
 
-	if opts.State == 0 {
-		opts.State = co.BST_UNCHECKED
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_CheckBoxO) Position(p win.POINT) *_CheckBoxO { _OwPt(&o.position, p); return o }
+
+// CheckBox control styles, passed to CreateWindowEx().
+// Defaults to BS_AUTOCHECKBOX.
+func (o *_CheckBoxO) CtrlStyles(s co.BS) *_CheckBoxO { o.ctrlStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
+func (o *_CheckBoxO) WndStyles(s co.WS) *_CheckBoxO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_NONE.
+func (o *_CheckBoxO) WndExStyles(s co.WS_EX) *_CheckBoxO { o.wndExStyles = s; return o }
+
+// CheckBox initial state.
+// Defaults to BST_UNCHECKED.
+func (o *_CheckBoxO) State(s co.BST) *_CheckBoxO { o.state = s; return o }
+
+func (o *_CheckBoxO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
+	}
+}
+
+// Options for NewCheckBox().
+func CheckBoxOpts() *_CheckBoxO {
+	return &_CheckBoxO{
+		ctrlStyles: co.BS_AUTOCHECKBOX,
+		wndStyles:  co.WS_CHILD | co.WS_VISIBLE | co.WS_TABSTOP | co.WS_VISIBLE,
+		state:      co.BST_UNCHECKED,
 	}
 }

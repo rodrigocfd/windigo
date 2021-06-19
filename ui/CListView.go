@@ -45,27 +45,27 @@ type _ListView struct {
 	hContextMenu win.HMENU
 }
 
-// Creates a new ListView specifying all options, which will be passed to the
-// underlying CreateWindowEx().
-func NewListView(parent AnyParent, opts ListViewOpts) ListView {
-	opts.fillBlankValuesWithDefault()
+// Creates a new ListView. Call ListViewOpts() to define the options to be
+// passed to the underlying CreateWindowEx().
+func NewListView(parent AnyParent, opts *_ListViewO) ListView {
+	opts.lateDefaults()
 
 	me := &_ListView{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 	me.columns.new(&me._NativeControlBase)
 	me.items.new(&me._NativeControlBase)
-	me.hContextMenu = opts.ContextMenu
+	me.hContextMenu = opts.contextMenu
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, &opts.Size)
+		_MultiplyDpi(&opts.position, &opts.size)
 
-		me._NativeControlBase.createWindow(opts.ExStyles, "SysListView32", "",
-			opts.Styles|co.WS(opts.ListViewStyles|co.LVS_SHAREIMAGELISTS), // force LVS_SHAREIMAGELISTS
-			opts.Position, opts.Size, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles, "SysListView32", "",
+			opts.wndStyles|co.WS(opts.ctrlStyles|co.LVS_SHAREIMAGELISTS), // force LVS_SHAREIMAGELISTS
+			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
-		if opts.ListViewExStyles != co.LVS_EX_NONE {
-			me.SetExtendedStyle(true, opts.ListViewExStyles)
+		if opts.ctrlExStyles != co.LVS_EX_NONE {
+			me.SetExtendedStyle(true, opts.ctrlExStyles)
 		}
 	})
 
@@ -230,61 +230,66 @@ func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewListView().
-type ListViewOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _ListViewO struct {
+	ctrlId int
 
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Control size in pixels.
-	// Defaults to 120x120. Will be adjusted to the current system DPI.
-	Size win.SIZE
-	// ListView control styles, passed to CreateWindowEx().
-	// Defaults to LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS.
-	// LVS_SHAREIMAGELISTS will always be added.
-	ListViewStyles co.LVS
-	// ListView extended control styles, passed to CreateWindowEx().
-	// Defaults to LVS_EX_NONE.
-	ListViewExStyles co.LVS_EX
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_GROUP | WS_TABSTOP | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_CLIENTEDGE.
-	ExStyles co.WS_EX
+	position     win.POINT
+	size         win.SIZE
+	ctrlStyles   co.LVS
+	ctrlExStyles co.LVS_EX
+	wndStyles    co.WS
+	wndExStyles  co.WS_EX
 
-	// Context menu for the list view. This handle is shared, the control won't destroy it.
-	// Defaults to none.
-	ContextMenu win.HMENU
+	contextMenu win.HMENU
 }
 
-func (opts *ListViewOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_ListViewO) CtrlId(i int) *_ListViewO { o.ctrlId = i; return o }
 
-	if opts.Size.Cx == 0 {
-		opts.Size.Cx = 120
-	}
-	if opts.Size.Cy == 0 {
-		opts.Size.Cy = 120
-	}
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_ListViewO) Position(p win.POINT) *_ListViewO { _OwPt(&o.position, p); return o }
 
-	if opts.ListViewStyles == 0 {
-		opts.ListViewStyles = co.LVS_REPORT | co.LVS_NOSORTHEADER |
-			co.LVS_SHOWSELALWAYS | co.LVS_SHAREIMAGELISTS
+// Control size in pixels.
+// Defaults to 120x120. Will be adjusted to the current system DPI.
+func (o *_ListViewO) Size(s win.SIZE) *_ListViewO { _OwSz(&o.size, s); return o }
+
+// ListView control styles, passed to CreateWindowEx().
+// Defaults to LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS.
+// LVS_SHAREIMAGELISTS will always be added.
+func (o *_ListViewO) CtrlStyles(s co.LVS) *_ListViewO { o.ctrlStyles = s; return o }
+
+// ListView extended control styles, passed to CreateWindowEx().
+// Defaults to LVS_EX_NONE.
+func (o *_ListViewO) CtrlExStyles(s co.LVS_EX) *_ListViewO { o.ctrlExStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
+func (o *_ListViewO) WndStyles(s co.WS) *_ListViewO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_CLIENTEDGE.
+func (o *_ListViewO) WndExStyles(s co.WS_EX) *_ListViewO { o.wndExStyles = s; return o }
+
+// Context menu for the list view. This handle is shared, the control won't destroy it.
+// Defaults to none.
+func (o *_ListViewO) ContextMenu(m win.HMENU) *_ListViewO { o.contextMenu = m; return o }
+
+func (o *_ListViewO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.ListViewExStyles == 0 {
-		opts.ListViewExStyles = co.LVS_EX_NONE
-	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_CLIENTEDGE
+}
+
+// Options for NewListView().
+func NewListViewOpts() *_ListViewO {
+	return &_ListViewO{
+		size: win.SIZE{Cx: 120, Cy: 120},
+		ctrlStyles: co.LVS_REPORT | co.LVS_NOSORTHEADER | co.LVS_SHOWSELALWAYS |
+			co.LVS_SHAREIMAGELISTS,
+		wndStyles:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
+		wndExStyles: co.WS_EX_CLIENTEDGE,
 	}
 }
 

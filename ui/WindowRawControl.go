@@ -9,14 +9,14 @@ import (
 // Implements WindowControl interface.
 type _WindowRawControl struct {
 	_WindowRaw
-	opts   WindowControlOpts
+	opts   *_WindowControlO
 	parent AnyParent
 }
 
-// Creates a new WindowControl specifying all options, which will be passed to
-// the underlying CreateWindowEx().
-func NewWindowControl(parent AnyParent, opts WindowControlOpts) WindowControl {
-	opts.fillBlankValuesWithDefault()
+// Creates a new WindowControl. Call WindowControlOpts() to define the options
+// to be passed to the underlying CreateWindowEx().
+func NewWindowControl(parent AnyParent, opts *_WindowControlO) WindowControl {
+	opts.lateDefaults()
 
 	me := &_WindowRawControl{}
 	me._WindowRaw.new()
@@ -26,15 +26,15 @@ func NewWindowControl(parent AnyParent, opts WindowControlOpts) WindowControl {
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		hInst := parent.Hwnd().Hinstance()
 		wcx := win.WNDCLASSEX{}
-		me.opts.ClassName = me._WindowRaw.generateWcx(&wcx, hInst,
-			me.opts.ClassName, me.opts.ClassStyles, me.opts.HCursor,
-			me.opts.HBrushBackground, 0)
+		me.opts.className = me._WindowRaw.generateWcx(&wcx, hInst,
+			me.opts.className, me.opts.classStyles, me.opts.hCursor,
+			me.opts.hBrushBkgnd, 0)
 		me._WindowRaw.registerClass(&wcx)
 
-		_MultiplyDpi(&me.opts.Position, &me.opts.Size)
-		me._WindowRaw.createWindow(me.opts.ExStyles, me.opts.ClassName,
-			"", me.opts.Styles, me.opts.Position, me.opts.Size, parent.Hwnd(),
-			win.HMENU(me.opts.CtrlId), hInst)
+		_MultiplyDpi(&me.opts.position, &me.opts.size)
+		me._WindowRaw.createWindow(me.opts.wndExStyles, me.opts.className,
+			"", me.opts.wndStyles, me.opts.position, me.opts.size, parent.Hwnd(),
+			win.HMENU(me.opts.ctrlId), hInst)
 	})
 
 	me.defaultMessages()
@@ -43,7 +43,7 @@ func NewWindowControl(parent AnyParent, opts WindowControlOpts) WindowControl {
 
 // Implements AnyControl.
 func (me *_WindowRawControl) CtrlId() int {
-	return me.opts.CtrlId
+	return me.opts.ctrlId
 }
 
 // Implements AnyControl.
@@ -64,66 +64,73 @@ func (me *_WindowRawControl) defaultMessages() {
 
 //------------------------------------------------------------------------------
 
-// Options for NewWindowControl().
-type WindowControlOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _WindowControlO struct {
+	ctrlId int
 
-	// Class name registered with RegisterClassEx().
-	// Defaults to a computed hash.
-	ClassName string
-	// Window class styles, passed to RegisterClassEx().
-	// Defaults to CS_DBLCLKS.
-	ClassStyles co.CS
-	// Window cursor, passed to RegisterClassEx().
-	// Defaults to stock IDC_ARROW.
-	HCursor win.HCURSOR
-	// Window background brush, passed to RegisterClassEx().
-	// Defaults to COLOR_BTNFACE color.
-	HBrushBackground win.HBRUSH
+	className   string // define in NewWindowControl()
+	classStyles co.CS
+	hCursor     win.HCURSOR
+	hBrushBkgnd win.HBRUSH
 
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_TABSTOP | WS_GROUP | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Control size in pixels.
-	// Defaults to 300x200. Will be adjusted to the current system DPI.
-	Size win.SIZE
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
+	position    win.POINT
+	size        win.SIZE
 }
 
-func (opts *WindowControlOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_WindowControlO) CtrlId(i int) *_WindowControlO { o.ctrlId = i; return o }
 
-	if opts.ClassStyles == 0 {
-		opts.ClassStyles = co.CS_DBLCLKS
-	}
-	if opts.HCursor == 0 {
-		opts.HCursor = win.HINSTANCE(0).LoadCursor(co.IDC_ARROW)
-	}
-	if opts.HBrushBackground == 0 {
-		opts.HBrushBackground = win.CreateSysColorBrush(co.COLOR_WINDOW)
-	}
+// Class name registered with RegisterClassEx().
+// Defaults to a computed hash.
+func (o *_WindowControlO) ClassName(n string) *_WindowControlO { o.className = n; return o }
 
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_TABSTOP | co.WS_GROUP | co.WS_VISIBLE |
-			co.WS_CLIPCHILDREN | co.WS_CLIPSIBLINGS
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_NONE
-	}
+// Window class styles, passed to RegisterClassEx().
+// Defaults to CS_DBLCLKS.
+func (o *_WindowControlO) ClassStyles(s co.CS) *_WindowControlO { o.classStyles = s; return o }
 
-	if opts.Size.Cx == 0 {
-		opts.Size.Cx = 300
+// Window cursor, passed to RegisterClassEx().
+// Defaults to stock IDC_ARROW.
+func (o *_WindowControlO) HCursor(h win.HCURSOR) *_WindowControlO { o.hCursor = h; return o }
+
+// Window background brush, passed to RegisterClassEx().
+// Defaults to COLOR_BTNFACE color.
+func (o *_WindowControlO) HBrushBkgnd(h win.HBRUSH) *_WindowControlO { o.hBrushBkgnd = h; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to WS_CHILD | WS_TABSTOP | WS_GROUP | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS.
+func (o *_WindowControlO) WndStyles(s co.WS) *_WindowControlO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_CLIENTEDGE.
+func (o *_WindowControlO) WndExStyles(s co.WS_EX) *_WindowControlO { o.wndExStyles = s; return o }
+
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_WindowControlO) Position(p win.POINT) *_WindowControlO { _OwPt(&o.position, p); return o }
+
+// Control size in pixels.
+// Defaults to 300x200. Will be adjusted to the current system DPI.
+func (o *_WindowControlO) Size(s win.SIZE) *_WindowControlO { _OwSz(&o.size, s); return o }
+
+func (o *_WindowControlO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.Size.Cy == 0 {
-		opts.Size.Cy = 200
+	if o.hCursor == 0 {
+		o.hCursor = win.HINSTANCE(0).LoadCursor(co.IDC_ARROW)
+	}
+}
+
+// Options for NewWindowControl().
+func WindowControlOpts() *_WindowControlO {
+	return &_WindowControlO{
+		classStyles: co.CS_DBLCLKS,
+		hBrushBkgnd: win.CreateSysColorBrush(co.COLOR_WINDOW),
+		wndStyles: co.WS_CHILD | co.WS_TABSTOP | co.WS_GROUP | co.WS_VISIBLE |
+			co.WS_CLIPCHILDREN | co.WS_CLIPSIBLINGS,
+		wndExStyles: co.WS_EX_CLIENTEDGE,
+		size:        win.SIZE{Cx: 300, Cy: 200},
 	}
 }

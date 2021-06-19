@@ -35,26 +35,26 @@ type _RadioButton struct {
 	events _ButtonEvents
 }
 
-// Creates a new RadioButton specifying all options, which will be passed to the
-// underlying CreateWindowEx().
-func NewRadioButton(parent AnyParent, opts RadioButtonOpts) RadioButton {
-	opts.fillBlankValuesWithDefault()
+// Creates a new RadioButton. Call RadioButtonOpts() to define the options to be
+// passed to the underlying CreateWindowEx().
+func NewRadioButton(parent AnyParent, opts *_RadioButtonO) RadioButton {
+	opts.lateDefaults()
 
 	me := &_RadioButton{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, nil)
-		boundBox := _CalcTextBoundBoxWithCheck(opts.Text, true)
+		_MultiplyDpi(&opts.position, nil)
+		boundBox := _CalcTextBoundBoxWithCheck(opts.text, true)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"BUTTON", opts.Text, opts.Styles|co.WS(opts.ButtonStyles),
-			opts.Position, boundBox, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"BUTTON", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, boundBox, win.HMENU(opts.ctrlId))
 
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 
-		if opts.Checked {
+		if opts.checked {
 			me.SetChecked()
 		}
 	})
@@ -106,46 +106,53 @@ func (me *_RadioButton) SetText(text string) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewRadioButton().
-type RadioButtonOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _RadioButtonO struct {
+	ctrlId int
 
-	// Text to appear in the control, passed to CreateWindowEx().
-	// Defaults to empty string.
-	Text string
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Button control styles, passed to CreateWindowEx().
-	// Defaults to BS_AUTORADIOBUTTON.
-	ButtonStyles co.BS
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_VISIBLE.
-	// Note that the first radio button of a group should have WS_TABSTOP | WS_GROUP too.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
+	text        string
+	position    win.POINT
+	ctrlStyles  co.BS
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
 
-	// RadioButton initial checked state.
-	// Defaults to false.
-	Checked bool
+	checked bool
 }
 
-func (opts *RadioButtonOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_RadioButtonO) CtrlId(i int) *_RadioButtonO { o.ctrlId = i; return o }
 
-	if opts.ButtonStyles == 0 {
-		opts.ButtonStyles = co.BS_AUTORADIOBUTTON
+// Text to appear in the control, passed to CreateWindowEx().
+// Defaults to empty string.
+func (o *_RadioButtonO) Text(t string) *_RadioButtonO { o.text = t; return o }
+
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_RadioButtonO) Position(p win.POINT) *_RadioButtonO { _OwPt(&o.position, p); return o }
+
+// Button control styles, passed to CreateWindowEx().
+// Defaults to BS_AUTORADIOBUTTON.
+func (o *_RadioButtonO) CtrlStyles(s co.BS) *_RadioButtonO { o.ctrlStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_VISIBLE.
+// Note that the first radio button of a group should also have WS_TABSTOP | WS_GROUP.
+func (o *_RadioButtonO) WndStyles(s co.WS) *_RadioButtonO { o.wndStyles = s; return o }
+
+// RadioButton initial checked state.
+// Defaults to false.
+func (o *_RadioButtonO) Checked(c bool) *_RadioButtonO { o.checked = c; return o }
+
+func (o *_RadioButtonO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_NONE
+}
+
+// Options for NewRadioButton().
+func RadioButtonOpts() *_RadioButtonO {
+	return &_RadioButtonO{
+		ctrlStyles: co.BS_AUTORADIOBUTTON,
+		wndStyles:  co.WS_CHILD | co.WS_VISIBLE,
 	}
 }

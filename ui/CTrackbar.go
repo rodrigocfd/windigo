@@ -39,28 +39,28 @@ type _Trackbar struct {
 
 // Creates a new Trackbar specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewTrackbar(parent AnyParent, opts TrackbarOpts) Trackbar {
-	opts.fillBlankValuesWithDefault()
+func NewTrackbar(parent AnyParent, opts *_TrackbarO) Trackbar {
+	opts.lateDefaults()
 
 	me := &_Trackbar{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, &opts.Size)
+		_MultiplyDpi(&opts.position, &opts.size)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"msctls_trackbar32", "", opts.Styles|co.WS(opts.TrackbarStyles),
-			opts.Position, opts.Size, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"msctls_trackbar32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
-		if opts.RangeMin != 0 {
-			me.SetRangeMin(opts.RangeMin)
+		if opts.rangeMin != 0 {
+			me.SetRangeMin(opts.rangeMin)
 		}
-		if opts.RangeMax != 0 {
-			me.SetRangeMax(opts.RangeMax)
+		if opts.rangeMax != 0 {
+			me.SetRangeMax(opts.rangeMax)
 		}
-		if opts.PageSize != 0 {
-			me.SetPageSize(opts.PageSize)
+		if opts.pageSize != 0 {
+			me.SetPageSize(opts.pageSize)
 		}
 	})
 
@@ -121,59 +121,64 @@ func (me *_Trackbar) SetRangeMin(min int) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewTrackbar().
-type TrackbarOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _TrackbarO struct {
+	ctrlId int
 
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Control size in pixels.
-	// Defaults to 120x23. Will be adjusted to the current system DPI.
-	Size win.SIZE
-	// Trackbar control styles, passed to CreateWindowEx().
-	// Defauls to TBS_HORZ | TBS_AUTOTICKS.
-	TrackbarStyles co.TBS
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_GROUP | WS_TABSTOP | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
+	position    win.POINT
+	size        win.SIZE
+	ctrlStyles  co.TBS
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
 
-	// Number of positions of page up/down.
-	// Defaults to RangeMax / 5.
-	PageSize int
-	// Minimum position value.
-	// Defaults to 0.
-	RangeMin int
-	// Maximum position value.
-	// Defaults to 100.
-	RangeMax int
+	pageSize int
+	rangeMin int
+	rangeMax int
 }
 
-func (opts *TrackbarOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_TrackbarO) CtrlId(i int) *_TrackbarO { o.ctrlId = i; return o }
 
-	if opts.Size.Cx == 0 {
-		opts.Size.Cx = 120
-	}
-	if opts.Size.Cy == 0 {
-		opts.Size.Cy = 23
-	}
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_TrackbarO) Position(p win.POINT) *_TrackbarO { _OwPt(&o.position, p); return o }
 
-	if opts.TrackbarStyles == 0 {
-		opts.TrackbarStyles = co.TBS_HORZ | co.TBS_AUTOTICKS
+// Control size in pixels.
+// Defaults to 120x23. Will be adjusted to the current system DPI.
+func (o *_TrackbarO) Size(s win.SIZE) *_TrackbarO { _OwSz(&o.size, s); return o }
+
+// Trackbar control styles, passed to CreateWindowEx().
+// Defauls to TBS_HORZ | TBS_AUTOTICKS.
+func (o *_TrackbarO) CtrlStyles(s co.TBS) *_TrackbarO { o.ctrlStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
+func (o *_TrackbarO) WndStyles(s co.WS) *_TrackbarO { o.wndStyles = s; return o }
+
+// Number of positions of page up/down.
+// Defaults to RangeMax / 5.
+func (o *_TrackbarO) PageSize(p int) *_TrackbarO { o.pageSize = p; return o }
+
+// Minimum position value.
+// Defaults to 0.
+func (o *_TrackbarO) RangeMin(r int) *_TrackbarO { o.rangeMin = r; return o }
+
+// Maximum position value.
+// Defaults to 100.
+func (o *_TrackbarO) RangeMax(r int) *_TrackbarO { o.rangeMax = r; return o }
+
+func (o *_TrackbarO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_NONE
+}
+
+// Options for NewTrackbar().
+func NewTrackbarOpts() *_TrackbarO {
+	return &_TrackbarO{
+		size:       win.SIZE{Cx: 120, Cy: 23},
+		ctrlStyles: co.TBS_HORZ | co.TBS_AUTOTICKS,
+		wndStyles:  co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 	}
 }
 

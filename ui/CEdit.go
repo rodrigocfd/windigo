@@ -35,21 +35,21 @@ type _Edit struct {
 	events _EditEvents
 }
 
-// Creates a new Edit specifying all options, which will be passed to the
-// underlying CreateWindowEx().
-func NewEdit(parent AnyParent, opts EditOpts) Edit {
-	opts.fillBlankValuesWithDefault()
+// Creates a new Edit. Call EditOpts() to define the options to be passed to
+// the underlying CreateWindowEx().
+func NewEdit(parent AnyParent, opts *_EditO) Edit {
+	opts.lateDefaults()
 
 	me := &_Edit{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, &opts.Size)
+		_MultiplyDpi(&opts.position, &opts.size)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"EDIT", opts.Text, opts.Styles|co.WS(opts.EditStyles),
-			opts.Position, opts.Size, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"EDIT", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
@@ -109,52 +109,58 @@ func (me *_Edit) Text() string {
 
 //------------------------------------------------------------------------------
 
-// Options for NewEdit().
-type EditOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _EditO struct {
+	ctrlId int
 
-	// Text to appear in the edit, passed to CreateWindowEx().
-	// Defaults to empty string.
-	Text string
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Control size in pixels.
-	// Defaults to 100x21. Will be adjusted to the current system DPI.
-	Size win.SIZE
-	// Edit control styles, passed to CreateWindowEx().
-	// Defaults to ES_AUTOHSCROLL | ES_NOHIDESEL.
-	EditStyles co.ES
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_GROUP | WS_TABSTOP | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_CLIENTEDGE.
-	ExStyles co.WS_EX
+	text        string
+	position    win.POINT
+	size        win.SIZE
+	ctrlStyles  co.ES
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
 }
 
-func (opts *EditOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_EditO) CtrlId(i int) *_EditO { o.ctrlId = i; return o }
 
-	if opts.Size.Cx == 0 {
-		opts.Size.Cx = 100
-	}
-	if opts.Size.Cy == 0 {
-		opts.Size.Cy = 21
-	}
+// Text to appear in the control, passed to CreateWindowEx().
+// Defaults to empty string.
+func (o *_EditO) Text(t string) *_EditO { o.text = t; return o }
 
-	if opts.EditStyles == 0 {
-		opts.EditStyles = co.ES_AUTOHSCROLL | co.ES_NOHIDESEL
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_EditO) Position(p win.POINT) *_EditO { _OwPt(&o.position, p); return o }
+
+// Control size in pixels.
+// Defaults to 100x21. Will be adjusted to the current system DPI.
+func (o *_EditO) Size(s win.SIZE) *_EditO { _OwSz(&o.size, s); return o }
+
+// Edit control styles, passed to CreateWindowEx().
+// Defaults to ES_AUTOHSCROLL | ES_NOHIDESEL.
+func (o *_EditO) CtrlStyles(s co.ES) *_EditO { o.ctrlStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
+func (o *_EditO) WndStyles(s co.WS) *_EditO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_CLIENTEDGE.
+func (o *_EditO) WndExStyles(s co.WS_EX) *_EditO { o.wndExStyles = s; return o }
+
+func (o *_EditO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_CLIENTEDGE
+}
+
+// Options for NewEdit().
+func NewEditOpts() *_EditO {
+	return &_EditO{
+		size:        win.SIZE{Cx: 100, Cy: 21},
+		ctrlStyles:  co.ES_AUTOHSCROLL | co.ES_NOHIDESEL,
+		wndStyles:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
+		wndExStyles: co.WS_EX_CLIENTEDGE,
 	}
 }
 

@@ -9,14 +9,14 @@ import (
 // Implements WindowMain interface.
 type _WindowRawMain struct {
 	_WindowRaw
-	opts            WindowMainOpts
+	opts            *_WindowMainO
 	hChildPrevFocus win.HWND // when window is inactivated
 }
 
-// Creates a new WindowMain specifying all options, which will be passed to the
-// underlying CreateWindowEx().
-func NewWindowMain(opts WindowMainOpts) WindowMain {
-	opts.fillBlankValuesWithDefault()
+// Creates a new WindowMain. Call WindowMainOpts() to define the options to be
+// passed to the underlying CreateWindowEx().
+func NewWindowMain(opts *_WindowMainO) WindowMain {
+	opts.lateDefaults()
 
 	me := &_WindowRawMain{}
 	me._WindowRaw.new()
@@ -38,24 +38,24 @@ func (me *_WindowRawMain) RunAsMain() int {
 
 	hInst := win.GetModuleHandle("")
 	wcx := win.WNDCLASSEX{}
-	me.opts.ClassName = me._WindowRaw.generateWcx(&wcx, hInst,
-		me.opts.ClassName, me.opts.ClassStyles, me.opts.HCursor,
-		me.opts.HBrushBackground, me.opts.IconId)
+	me.opts.className = me._WindowRaw.generateWcx(&wcx, hInst,
+		me.opts.className, me.opts.classStyles, me.opts.hCursor,
+		me.opts.hBrushBkgnd, me.opts.iconId)
 	me._WindowRaw.registerClass(&wcx)
 
-	pos, size := me._WindowRaw.calcWndCoords(&me.opts.ClientAreaSize,
-		me.opts.MainMenu, me.opts.Styles, me.opts.ExStyles)
-	me._WindowRaw.createWindow(me.opts.ExStyles, me.opts.ClassName,
-		me.opts.Title, me.opts.Styles, pos, size, win.HWND(0),
-		me.opts.MainMenu, hInst)
+	pos, size := me._WindowRaw.calcWndCoords(&me.opts.clientArea,
+		me.opts.mainMenu, me.opts.wndStyles, me.opts.wndExStyles)
+	me._WindowRaw.createWindow(me.opts.wndExStyles, me.opts.className,
+		me.opts.title, me.opts.wndStyles, pos, size, win.HWND(0),
+		me.opts.mainMenu, hInst)
 
-	me.Hwnd().ShowWindow(me.opts.CmdShow)
+	me.Hwnd().ShowWindow(me.opts.cmdShow)
 	me.Hwnd().UpdateWindow()
 
 	hAccel := win.HACCEL(0)
-	if me.opts.AccelTable != nil {
-		defer me.opts.AccelTable.Destroy()
-		hAccel = me.opts.AccelTable.Haccel()
+	if me.opts.accelTable != nil {
+		defer me.opts.accelTable.Destroy()
+		hAccel = me.opts.accelTable.Haccel()
 	}
 
 	return _RunMainLoop(me.Hwnd(), hAccel)
@@ -96,75 +96,85 @@ func (me *_WindowRawMain) defaultMessages() {
 
 //------------------------------------------------------------------------------
 
-// Options for NewWindowMain().
-type WindowMainOpts struct {
-	// Class name registered with RegisterClassEx().
-	// Defaults to a computed hash.
-	ClassName string
-	// Window class styles, passed to RegisterClassEx().
-	// Defaults to CS_DBLCLKS.
-	ClassStyles co.CS
-	// Window cursor, passed to RegisterClassEx().
-	// Defaults to stock IDC_ARROW.
-	HCursor win.HCURSOR
-	// Window background brush, passed to RegisterClassEx().
-	// Defaults to COLOR_BTNFACE color.
-	HBrushBackground win.HBRUSH
-	// ID of the icon resource associated with the window, passed to RegisterClassEx().
-	// Defaults to none.
-	IconId int
+type _WindowMainO struct {
+	className   string // defined in RunAsMain()
+	classStyles co.CS
+	hCursor     win.HCURSOR
+	hBrushBkgnd win.HBRUSH
+	iconId      int
 
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER | WS_VISIBLE | WS_MINIMIZEBOX.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
-	// The title of the window, passed to CreateWindowEx().
-	// Defaults to empty string.
-	Title string
-	// Size of client area in pixels, passed to CreateWindowEx().
-	// Defaults to 500x400. Will be adjusted to the current system DPI.
-	ClientAreaSize win.SIZE
-	// Horizontal main window menu, passed to CreateWindowEx().
-	// Defaults to none.
-	MainMenu win.HMENU
-	// Accelerator table. Will be automatically destroyed.
-	// Defaults to none.
-	AccelTable AcceleratorTable
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
+	title       string
+	clientArea  win.SIZE
+	mainMenu    win.HMENU
+	accelTable  AcceleratorTable
 
-	// Initial window exhibition state, passed to ShowWindow().
-	// Defaults to SW_SHOW.
-	CmdShow co.SW
+	cmdShow co.SW
 }
 
-func (opts *WindowMainOpts) fillBlankValuesWithDefault() {
-	if opts.ClassStyles == 0 {
-		opts.ClassStyles = co.CS_DBLCLKS
-	}
-	if opts.HCursor == 0 {
-		opts.HCursor = win.HINSTANCE(0).LoadCursor(co.IDC_ARROW)
-	}
-	if opts.HBrushBackground == 0 {
-		opts.HBrushBackground = win.CreateSysColorBrush(co.COLOR_BTNFACE)
-	}
+// Class name registered with RegisterClassEx().
+// Defaults to a computed hash.
+func (o *_WindowMainO) ClassName(n string) *_WindowMainO { o.className = n; return o }
 
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN |
-			co.WS_BORDER | co.WS_VISIBLE | co.WS_MINIMIZEBOX
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_NONE
-	}
+// Window class styles, passed to RegisterClassEx().
+// Defaults to CS_DBLCLKS.
+func (o *_WindowMainO) ClassStyles(s co.CS) *_WindowMainO { o.classStyles = s; return o }
 
-	if opts.ClientAreaSize.Cx == 0 {
-		opts.ClientAreaSize.Cx = 500
-	}
-	if opts.ClientAreaSize.Cy == 0 {
-		opts.ClientAreaSize.Cy = 400
-	}
+// Window cursor, passed to RegisterClassEx().
+// Defaults to stock IDC_ARROW.
+func (o *_WindowMainO) HCursor(h win.HCURSOR) *_WindowMainO { o.hCursor = h; return o }
 
-	if opts.CmdShow == 0 { // note that SW_HIDE (zero) is not supported
-		opts.CmdShow = co.SW_SHOW
+// Window background brush, passed to RegisterClassEx().
+// Defaults to COLOR_BTNFACE color.
+func (o *_WindowMainO) HBrushBkgnd(h win.HBRUSH) *_WindowMainO { o.hBrushBkgnd = h; return o }
+
+// ID of the icon resource associated with the window, passed to RegisterClassEx().
+// Defaults to none.
+func (o *_WindowMainO) IconId(i int) *_WindowMainO { o.iconId = i; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_BORDER | WS_VISIBLE | WS_MINIMIZEBOX.
+func (o *_WindowMainO) WndStyles(s co.WS) *_WindowMainO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_NONE.
+func (o *_WindowMainO) WndExStyles(s co.WS_EX) *_WindowMainO { o.wndExStyles = s; return o }
+
+// The title of the window, passed to CreateWindowEx().
+// Defaults to empty string.
+func (o *_WindowMainO) Title(t string) *_WindowMainO { o.title = t; return o }
+
+// Size of client area in pixels, passed to CreateWindowEx().
+// Defaults to 500x400. Will be adjusted to the current system DPI.
+func (o *_WindowMainO) ClientArea(c win.SIZE) *_WindowMainO { _OwSz(&o.clientArea, c); return o }
+
+// Horizontal main window menu, passed to CreateWindowEx().
+// Defaults to none.
+func (o *_WindowMainO) MainMenu(m win.HMENU) *_WindowMainO { o.mainMenu = m; return o }
+
+// Accelerator table. Will be automatically destroyed.
+// Defaults to none.
+func (o *_WindowMainO) AccelTable(a AcceleratorTable) *_WindowMainO { o.accelTable = a; return o }
+
+// Initial window exhibition state, passed to ShowWindow().
+// Defaults to SW_SHOW.
+func (o *_WindowMainO) CmdShow(c co.SW) *_WindowMainO { o.cmdShow = c; return o }
+
+func (o *_WindowMainO) lateDefaults() {
+	if o.hCursor == 0 {
+		o.hCursor = win.HINSTANCE(0).LoadCursor(co.IDC_ARROW)
+	}
+}
+
+// Options for NewWindowMain().
+func WindowMainOpts() *_WindowMainO {
+	return &_WindowMainO{
+		classStyles: co.CS_DBLCLKS,
+		hBrushBkgnd: win.CreateSysColorBrush(co.COLOR_BTNFACE),
+		wndStyles: co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN |
+			co.WS_BORDER | co.WS_VISIBLE | co.WS_MINIMIZEBOX,
+		clientArea: win.SIZE{Cx: 500, Cy: 400},
+		cmdShow:    co.SW_SHOW,
 	}
 }

@@ -29,21 +29,21 @@ type _ProgressBar struct {
 	isMarquee bool
 }
 
-// Creates a new ProgressBar specifying all options, which will be passed to the
-// underlying CreateWindowEx().
-func NewProgressBar(parent AnyParent, opts ProgressBarOpts) ProgressBar {
-	opts.fillBlankValuesWithDefault()
+// Creates a new ProgressBar. Call ProgressBarOpts() to define the options to be
+// passed to the underlying CreateWindowEx().
+func NewProgressBar(parent AnyParent, opts *_ProgressBarO) ProgressBar {
+	opts.lateDefaults()
 
 	me := &_ProgressBar{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.isMarquee = false
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, &opts.Size)
+		_MultiplyDpi(&opts.position, &opts.size)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"msctls_progress32", "", opts.Styles|co.WS(opts.ProgressBarStyles),
-			opts.Position, opts.Size, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"msctls_progress32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, opts.size, win.HMENU(opts.ctrlId))
 	})
 
 	return me
@@ -103,48 +103,51 @@ func (me *_ProgressBar) SetState(state co.PBST) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewProgressBar().
-type ProgressBarOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _ProgressBarO struct {
+	ctrlId int
 
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Control size in pixels.
-	// Defaults to 120x23. Will be adjusted to the current system DPI.
-	Size win.SIZE
-	// ProgressBar control styles, passed to CreateWindowEx().
-	// Defaults to PBS_SMOOTH.
-	ProgressBarStyles co.PBS
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
+	position    win.POINT
+	size        win.SIZE
+	ctrlStyles  co.PBS
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
 }
 
-func (opts *ProgressBarOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_ProgressBarO) CtrlId(i int) *_ProgressBarO { o.ctrlId = i; return o }
 
-	if opts.Size.Cx == 0 {
-		opts.Size.Cx = 120
-	}
-	if opts.Size.Cy == 0 {
-		opts.Size.Cy = 23
-	}
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_ProgressBarO) Position(p win.POINT) *_ProgressBarO { _OwPt(&o.position, p); return o }
 
-	if opts.ProgressBarStyles == 0 {
-		opts.ProgressBarStyles = co.PBS_SMOOTH
+// Control size in pixels.
+// Defaults to 120x23. Will be adjusted to the current system DPI.
+func (o *_ProgressBarO) Size(s win.SIZE) *_ProgressBarO { _OwSz(&o.size, s); return o }
+
+// ProgressBar control styles, passed to CreateWindowEx().
+// Defaults to PBS_SMOOTH.
+func (o *_ProgressBarO) CtrlStyles(s co.PBS) *_ProgressBarO { o.ctrlStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_VISIBLE.
+func (o *_ProgressBarO) WndStyles(s co.WS) *_ProgressBarO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_NONE.
+func (o *_ProgressBarO) WndExStyles(s co.WS_EX) *_ProgressBarO { o.wndExStyles = s; return o }
+
+func (o *_ProgressBarO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_NONE
+}
+
+// Options for NewProgressBar().
+func ProgressBarOpts() *_ProgressBarO {
+	return &_ProgressBarO{
+		size:       win.SIZE{Cx: 120, Cy: 23},
+		ctrlStyles: co.PBS_SMOOTH,
+		wndStyles:  co.WS_CHILD | co.WS_VISIBLE,
 	}
 }

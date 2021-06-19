@@ -68,6 +68,28 @@ func _MultiplyDpi(pos *win.POINT, size *win.SIZE) {
 
 //------------------------------------------------------------------------------
 
+// Overwrites X and Y if they are different from zero.
+func _OwPt(point *win.POINT, newVal win.POINT) {
+	if newVal.X != 0 {
+		point.X = newVal.X
+	}
+	if newVal.Y != 0 {
+		point.Y = newVal.Y
+	}
+}
+
+// Overwrites Cx and Cy if they are different from zero.
+func _OwSz(size *win.SIZE, newVal win.SIZE) {
+	if newVal.Cx != 0 {
+		size.Cx = newVal.Cx
+	}
+	if newVal.Cy != 0 {
+		size.Cy = newVal.Cy
+	}
+}
+
+//------------------------------------------------------------------------------
+
 // Calculates the bound rectangle to fit the text with current system font.
 func _CalcTextBoundBox(text string, considerAccelerators bool) win.SIZE {
 	isTextEmpty := false

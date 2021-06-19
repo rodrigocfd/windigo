@@ -28,22 +28,22 @@ type _Static struct {
 	events _StaticEvents
 }
 
-// Creates a new Static specifying all options, which will be passed to the
-// underlying CreateWindowEx().
-func NewStatic(parent AnyParent, opts StaticOpts) Static {
-	opts.fillBlankValuesWithDefault()
+// Creates a new Static. Call StaticOpts() to define the options to be passed to
+// the underlying CreateWindowEx().
+func NewStatic(parent AnyParent, opts *_StaticO) Static {
+	opts.lateDefaults()
 
 	me := &_Static{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, nil)
-		boundBox := _CalcTextBoundBox(opts.Text, true)
+		_MultiplyDpi(&opts.position, nil)
+		boundBox := _CalcTextBoundBox(opts.text, true)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"STATIC", opts.Text, opts.Styles|co.WS(opts.StaticStyles),
-			opts.Position, boundBox, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"STATIC", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, boundBox, win.HMENU(opts.ctrlId))
 
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
@@ -80,42 +80,51 @@ func (me *_Static) SetText(text string) {
 
 //------------------------------------------------------------------------------
 
-// Options for NewStatic().
-type StaticOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _StaticO struct {
+	ctrlId int
 
-	// Text to appear in the control, passed to CreateWindowEx().
-	// Defaults to empty string.
-	Text string
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Static control styles, passed to CreateWindowEx().
-	// Defaults to SS_LEFT | SS_NOTIFY.
-	StaticStyles co.SS
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
+	text        string
+	position    win.POINT
+	ctrlStyles  co.SS
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
 }
 
-func (opts *StaticOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_StaticO) CtrlId(i int) *_StaticO { o.ctrlId = i; return o }
 
-	if opts.StaticStyles == 0 {
-		opts.StaticStyles = co.SS_LEFT | co.SS_NOTIFY
+// Text to appear in the control, passed to CreateWindowEx().
+// Defaults to empty string.
+func (o *_StaticO) Text(t string) *_StaticO { o.text = t; return o }
+
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_StaticO) Position(p win.POINT) *_StaticO { _OwPt(&o.position, p); return o }
+
+// Static control styles, passed to CreateWindowEx().
+// Defaults to SS_LEFT | SS_NOTIFY.
+func (o *_StaticO) CtrlStyles(s co.SS) *_StaticO { o.ctrlStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_VISIBLE.
+func (o *_StaticO) WndStyles(s co.WS) *_StaticO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_NONE.
+func (o *_StaticO) WndExStyles(s co.WS_EX) *_StaticO { o.wndExStyles = s; return o }
+
+func (o *_StaticO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_NONE
+}
+
+// Options for NewStatic().
+func StaticOpts() *_StaticO {
+	return &_StaticO{
+		ctrlStyles: co.SS_LEFT | co.SS_NOTIFY,
+		wndStyles:  co.WS_CHILD | co.WS_VISIBLE,
 	}
 }
 

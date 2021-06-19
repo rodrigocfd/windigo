@@ -22,7 +22,7 @@ type _RadioGroup struct {
 
 // Creates a new RadioButton specifying all options for each RadioButton, which
 // will be passed to the underlying CreateWindowEx().
-func NewRadioGroup(parent AnyParent, opts ...RadioButtonOpts) RadioGroup {
+func NewRadioGroup(parent AnyParent, opts ...*_RadioButtonO) RadioGroup {
 	if len(opts) == 0 {
 		panic("A RadioGroup must have at least 1 RadioButton.")
 	}

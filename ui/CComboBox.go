@@ -29,28 +29,28 @@ type _ComboBox struct {
 	items  _ComboBoxItems
 }
 
-// Creates a new ComboBox specifying all options, which will be passed to the
-// underlying CreateWindowEx().
-func NewComboBox(parent AnyParent, opts ComboBoxOpts) ComboBox {
-	opts.fillBlankValuesWithDefault()
+// Creates a new ComboBox. Call ComboBox() to define the options to be passed to
+// the underlying CreateWindowEx().
+func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
+	opts.lateDefaults()
 
 	me := &_ComboBox{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 	me.items.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		size := win.SIZE{Cx: int32(opts.Width), Cy: 0}
-		_MultiplyDpi(&opts.Position, &size)
+		size := win.SIZE{Cx: int32(opts.width), Cy: 0}
+		_MultiplyDpi(&opts.position, &size)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"COMBOBOX", "", opts.Styles|co.WS(opts.ComboBoxStyles),
-			opts.Position, size, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"COMBOBOX", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, size, win.HMENU(opts.ctrlId))
 
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 
-		if opts.Texts != nil {
-			me.Items().Add(opts.Texts...)
+		if opts.texts != nil {
+			me.Items().Add(opts.texts...)
 		}
 	})
 
@@ -84,50 +84,58 @@ func (me *_ComboBox) Items() *_ComboBoxItems {
 
 //------------------------------------------------------------------------------
 
-// Options for NewComboBox().
-type ComboBoxOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _ComboBoxO struct {
+	ctrlId int
 
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Control width in pixels.
-	// Defaults to 100. Will be adjusted to the current system DPI.
-	Width int
-	// ComboBox control styles, passed to CreateWindowEx().
-	// Defaults to CBS_DROPDOWNLIST.
-	ComboBoxStyles co.CBS
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_GROUP | WS_TABSTOP | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_NONE.
-	ExStyles co.WS_EX
+	position    win.POINT
+	width       int
+	ctrlStyles  co.CBS
+	wndStyles   co.WS
+	wndExStyles co.WS_EX
 
-	// Texts to be added to the ComboBox.
-	// Defaults to none.
-	Texts []string
+	texts []string
 }
 
-func (opts *ComboBoxOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_ComboBoxO) CtrlId(i int) *_ComboBoxO { o.ctrlId = i; return o }
 
-	if opts.Width == 0 {
-		opts.Width = 100
-	}
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_ComboBoxO) Position(p win.POINT) *_ComboBoxO { _OwPt(&o.position, p); return o }
 
-	if opts.ComboBoxStyles == 0 {
-		opts.ComboBoxStyles = co.CBS_DROPDOWNLIST
+// Control width in pixels.
+// Defaults to 100. Will be adjusted to the current system DPI.
+func (o *_ComboBoxO) Width(w int) *_ComboBoxO { o.width = w; return o }
+
+// ComboBox control styles, passed to CreateWindowEx().
+// Defaults to CBS_DROPDOWNLIST.
+func (o *_ComboBoxO) CtrlStyles(s co.CBS) *_ComboBoxO { o.ctrlStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
+func (o *_ComboBoxO) WndStyles(s co.WS) *_ComboBoxO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_NONE.
+func (o *_ComboBoxO) WndExStyles(s co.WS_EX) *_ComboBoxO { o.wndExStyles = s; return o }
+
+// Texts to be added to the ComboBox.
+// Defaults to none.
+func (o *_ComboBoxO) Texts(t ...string) *_ComboBoxO { o.texts = t; return o }
+
+func (o *_ComboBoxO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_NONE
+}
+
+// Options for NewComboBox().
+func ComboBoxOpts() *_ComboBoxO {
+	return &_ComboBoxO{
+		width:      100,
+		ctrlStyles: co.CBS_DROPDOWNLIST,
+		wndStyles:  co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 	}
 }
 

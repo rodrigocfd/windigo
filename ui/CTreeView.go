@@ -34,25 +34,25 @@ type _TreeView struct {
 
 // Creates a new TreeView specifying all options, which will be passed to the
 // underlying CreateWindowEx().
-func NewTreeView(parent AnyParent, opts TreeViewOpts) TreeView {
-	opts.fillBlankValuesWithDefault()
+func NewTreeView(parent AnyParent, opts *_TreeViewO) TreeView {
+	opts.lateDefaults()
 
 	me := &_TreeView{}
-	me._NativeControlBase.new(parent, opts.CtrlId)
+	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 	me.items.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.Position, &opts.Size)
+		_MultiplyDpi(&opts.position, &opts.size)
 
-		me._NativeControlBase.createWindow(opts.ExStyles,
-			"SysTreeView32", "", opts.Styles|co.WS(opts.TreeViewStyles),
-			opts.Position, opts.Size, win.HMENU(opts.CtrlId))
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			"SysTreeView32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
-		if opts.TreeViewExStyles != co.TVS_EX_NONE {
+		if opts.ctrlExStyles != co.TVS_EX_NONE {
 			me.Hwnd().SendMessage(co.TVM_SETEXTENDEDSTYLE,
-				win.WPARAM(opts.TreeViewExStyles),
-				win.LPARAM(opts.TreeViewExStyles))
+				win.WPARAM(opts.ctrlExStyles),
+				win.LPARAM(opts.ctrlExStyles))
 		}
 	})
 
@@ -86,56 +86,59 @@ func (me *_TreeView) Items() *_TreeViewItems {
 
 //------------------------------------------------------------------------------
 
-// Options for NewTreeView().
-type TreeViewOpts struct {
-	// Control ID.
-	// Defaults to an auto-generated ID.
-	CtrlId int
+type _TreeViewO struct {
+	ctrlId int
 
-	// Position within parent's client area in pixels.
-	// Defaults to 0x0. Will be adjusted to the current system DPI.
-	Position win.POINT
-	// Control size in pixels.
-	// Defaults to 120x120. Will be adjusted to the current system DPI.
-	Size win.SIZE
-	// TreeView control styles, passed to CreateWindowEx().
-	// Defaults to TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_HASBUTTONS.
-	TreeViewStyles co.TVS
-	// TreeView extended control styles, passed to CreateWindowEx().
-	// Defaults to LVS_EX_NONE.
-	TreeViewExStyles co.TVS_EX
-	// Window styles, passed to CreateWindowEx().
-	// Defaults to WS_CHILD | WS_GROUP | WS_TABSTOP | WS_VISIBLE.
-	Styles co.WS
-	// Extended window styles, passed to CreateWindowEx().
-	// Defaults to WS_EX_CLIENTEDGE.
-	ExStyles co.WS_EX
+	position     win.POINT
+	size         win.SIZE
+	ctrlStyles   co.TVS
+	ctrlExStyles co.TVS_EX
+	wndStyles    co.WS
+	wndExStyles  co.WS_EX
 }
 
-func (opts *TreeViewOpts) fillBlankValuesWithDefault() {
-	if opts.CtrlId == 0 {
-		opts.CtrlId = _NextCtrlId()
-	}
+// Control ID.
+// Defaults to an auto-generated ID.
+func (o *_TreeViewO) CtrlId(i int) *_TreeViewO { o.ctrlId = i; return o }
 
-	if opts.Size.Cx == 0 {
-		opts.Size.Cx = 120
-	}
-	if opts.Size.Cy == 0 {
-		opts.Size.Cy = 120
-	}
+// Position within parent's client area in pixels.
+// Defaults to 0x0. Will be adjusted to the current system DPI.
+func (o *_TreeViewO) Position(p win.POINT) *_TreeViewO { _OwPt(&o.position, p); return o }
 
-	if opts.TreeViewStyles == 0 {
-		opts.TreeViewStyles = co.TVS_HASLINES | co.TVS_LINESATROOT |
-			co.TVS_SHOWSELALWAYS | co.TVS_HASBUTTONS
+// Control size in pixels.
+// Defaults to 120x120. Will be adjusted to the current system DPI.
+func (o *_TreeViewO) Size(s win.SIZE) *_TreeViewO { _OwSz(&o.size, s); return o }
+
+// TreeView control styles, passed to CreateWindowEx().
+// Defaults to TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_HASBUTTONS.
+func (o *_TreeViewO) CtrlStyles(s co.TVS) *_TreeViewO { o.ctrlStyles = s; return o }
+
+// TreeView extended control styles, passed to CreateWindowEx().
+// Defaults to LVS_EX_NONE.
+func (o *_TreeViewO) CtrlExStyles(s co.TVS_EX) *_TreeViewO { o.ctrlExStyles = s; return o }
+
+// Window styles, passed to CreateWindowEx().
+// Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
+func (o *_TreeViewO) WndStyles(s co.WS) *_TreeViewO { o.wndStyles = s; return o }
+
+// Extended window styles, passed to CreateWindowEx().
+// Defaults to WS_EX_CLIENTEDGE.
+func (o *_TreeViewO) WndExStyles(s co.WS_EX) *_TreeViewO { o.wndExStyles = s; return o }
+
+func (o *_TreeViewO) lateDefaults() {
+	if o.ctrlId == 0 {
+		o.ctrlId = _NextCtrlId()
 	}
-	if opts.TreeViewExStyles == 0 {
-		opts.TreeViewExStyles = co.TVS_EX_NONE
-	}
-	if opts.Styles == 0 {
-		opts.Styles = co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE
-	}
-	if opts.ExStyles == 0 {
-		opts.ExStyles = co.WS_EX_CLIENTEDGE
+}
+
+// Options for NewTreeView().
+func TreeViewOpts() *_TreeViewO {
+	return &_TreeViewO{
+		size: win.SIZE{Cx: 120, Cy: 120},
+		ctrlStyles: co.TVS_HASLINES | co.TVS_LINESATROOT |
+			co.TVS_SHOWSELALWAYS | co.TVS_HASBUTTONS,
+		wndStyles:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
+		wndExStyles: co.WS_EX_CLIENTEDGE,
 	}
 }
 
