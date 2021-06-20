@@ -153,17 +153,14 @@ func (hWnd HWND) EndPaint(lpPaint *PAINTSTRUCT) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumchildwindows
-func (hWnd HWND) EnumChildWindows(
-	lpEnumFunc func(hChild HWND, lParam LPARAM) bool,
-	lParam LPARAM) {
-
+func (hWnd HWND) EnumChildWindows(lpEnumFunc func(hChild HWND) bool) {
 	syscall.Syscall(proc.EnumChildWindows.Addr(), 3,
 		uintptr(hWnd),
 		syscall.NewCallback(
 			func(hChild HWND, lParam LPARAM) uintptr {
-				return util.BoolToUintptr(lpEnumFunc(hChild, lParam))
+				return util.BoolToUintptr(lpEnumFunc(hChild))
 			}),
-		uintptr(lParam))
+		0) // no need to use LPARAM, Go automatically allocs closure contexts in the heap
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getancestor

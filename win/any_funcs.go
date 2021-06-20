@@ -115,16 +115,13 @@ func EndMenu() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
-func EnumWindows(
-	lpEnumFunc func(hwnd HWND, lParam LPARAM) bool,
-	lParam LPARAM) {
-
+func EnumWindows(lpEnumFunc func(hwnd HWND) bool) {
 	ret, _, err := syscall.Syscall(proc.EnumWindows.Addr(), 2,
 		syscall.NewCallback(
 			func(hwnd HWND, lParam LPARAM) uintptr {
-				return util.BoolToUintptr(lpEnumFunc(hwnd, lParam))
+				return util.BoolToUintptr(lpEnumFunc(hwnd))
 			}),
-		uintptr(lParam), 0)
+		0, 0) // no need to use LPARAM, Go automatically allocs closure contexts in the heap
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -221,7 +218,6 @@ func GetFileVersionInfo(lptstrFilename string) []byte {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
 func GetFileVersionInfoSize(lptstrFilename string) uint32 {
 	lpdwHandle := uint32(0)
-
 	ret, _, err := syscall.Syscall(proc.GetFileVersionInfoSize.Addr(), 2,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lptstrFilename))),
 		uintptr(unsafe.Pointer(&lpdwHandle)), 0)
@@ -527,13 +523,12 @@ func ShellNotifyIcon(dwMessage co.NIM, lpData *NOTIFYICONDATA) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
 func SHGetFileInfo(
 	pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
-	uFlags co.SHGFI) *SHFILEINFO {
+	psfi *SHFILEINFO, uFlags co.SHGFI) {
 
-	shfi := SHFILEINFO{}
 	ret, _, err := syscall.Syscall6(proc.SHGetFileInfo.Addr(), 5,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pszPath))),
-		uintptr(dwFileAttributes), uintptr(unsafe.Pointer(&shfi)),
-		unsafe.Sizeof(shfi), uintptr(uFlags), 0)
+		uintptr(dwFileAttributes), uintptr(unsafe.Pointer(psfi)),
+		unsafe.Sizeof(*psfi), uintptr(uFlags), 0)
 
 	if (uFlags&co.SHGFI_EXETYPE) == 0 || (uFlags&co.SHGFI_SYSICONINDEX) == 0 {
 		if ret == 0 {
@@ -546,8 +541,6 @@ func SHGetFileInfo(
 			panic(errco.ERROR(err))
 		}
 	}
-
-	return &shfi
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep

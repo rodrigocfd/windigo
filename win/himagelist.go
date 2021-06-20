@@ -19,8 +19,8 @@ type HIMAGELIST HANDLE
 // ⚠️ You must defer Destroy().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
-func ImageListCreate(cx, cy uint32, flags co.ILC,
-	cInitial, cGrow uint32) HIMAGELIST {
+func ImageListCreate(
+	cx, cy uint32, flags co.ILC, cInitial, cGrow uint32) HIMAGELIST {
 
 	ret, _, err := syscall.Syscall6(proc.ImageList_Create.Addr(), 5,
 		uintptr(cx), uintptr(cy), uintptr(flags),
@@ -57,11 +57,12 @@ func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) {
 		shgfi = co.SHGFI_LARGEICON
 	}
 
+	fi := SHFILEINFO{}
 	for _, fileExt := range fileExtensions {
-		shfi := SHGetFileInfo("*."+fileExt, co.FILE_ATTRIBUTE_NORMAL,
-			co.SHGFI_USEFILEATTRIBUTES|co.SHGFI_ICON|shgfi)
-		hImg.AddIcon(shfi.HIcon)
-		shfi.HIcon.DestroyIcon()
+		SHGetFileInfo("*."+fileExt, co.FILE_ATTRIBUTE_NORMAL,
+			&fi, co.SHGFI_USEFILEATTRIBUTES|co.SHGFI_ICON|shgfi)
+		hImg.AddIcon(fi.HIcon)
+		fi.HIcon.DestroyIcon()
 	}
 }
 

@@ -65,10 +65,10 @@ func _DlgProc(
 		// system font only after running them.
 		if uMsg == co.WM_INITDIALOG {
 			hDlg.SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 0)
-			hDlg.EnumChildWindows(func(hChild win.HWND, _ win.LPARAM) bool {
+			hDlg.EnumChildWindows(func(hChild win.HWND) bool {
 				hChild.SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 0)
 				return true
-			}, 0)
+			})
 		}
 
 		// Try to process the message with an user handler.
