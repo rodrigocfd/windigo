@@ -56,6 +56,32 @@ func (me *IGraphBuilder) Abort() {
 	}
 }
 
+// ⚠️ You must defer Release().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-addsourcefilter
+func (me *IGraphBuilder) AddSourceFilter(
+	fileName, filterName string) IBaseFilter {
+
+	var ppvQueried **win.IUnknownVtbl
+	ret, _, _ := syscall.Syscall6(
+		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).AddSourceFilter, 4,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(fileName))),
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(filterName))),
+		uintptr(unsafe.Pointer(&ppvQueried)), 0, 0)
+
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
+	}
+	return IBaseFilter{
+		IMediaFilter{
+			IPersist{
+				win.IUnknown{Ppv: ppvQueried},
+			},
+		},
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-connect
 func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 	ret, _, _ := syscall.Syscall(
@@ -132,4 +158,20 @@ func (me *IGraphBuilder) SetLogFile(hFile win.HFILE) {
 	if err := errco.ERROR(ret); err != errco.S_OK {
 		panic(err)
 	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-shouldoperationcontinue
+func (me *IGraphBuilder) ShouldOperationContinue() bool {
+	ret, _, _ := syscall.Syscall(
+		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).ShouldOperationContinue, 1,
+		uintptr(unsafe.Pointer(me.Ppv)), 0, 0)
+
+	err := errco.ERROR(ret)
+	if err == errco.S_OK {
+		return true
+	} else if err == errco.S_FALSE {
+		return false
+	}
+
+	panic(err)
 }

@@ -44,11 +44,11 @@ func CoCreateIFilterGraph(dwClsContext co.CLSCTX) IFilterGraph {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-addfilter
-func (me *IFilterGraph) AddFilter(pFilter *IBaseFilter, name string) error {
+func (me *IFilterGraph) AddFilter(filter *IBaseFilter, name string) error {
 	ret, _, _ := syscall.Syscall(
 		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).AddFilter, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(pFilter.Ppv)),
+		uintptr(unsafe.Pointer(filter.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(name))))
 
 	if err := errco.ERROR(ret); err != errco.S_OK {
@@ -57,12 +57,26 @@ func (me *IFilterGraph) AddFilter(pFilter *IBaseFilter, name string) error {
 	return nil
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-connectdirect
+func (me *IFilterGraph) ConnectDirect(pinOut, pinIn *IPin, pmt *AM_MEDIA_TYPE) {
+	ret, _, _ := syscall.Syscall6(
+		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).AddFilter, 4,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(pinOut.Ppv)),
+		uintptr(unsafe.Pointer(pinIn.Ppv)),
+		uintptr(unsafe.Pointer(pmt)), 0, 0)
+
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-disconnect
-func (me *IFilterGraph) Disconnect(ppin *IPin) {
+func (me *IFilterGraph) Disconnect(pin *IPin) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).Disconnect, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(ppin.Ppv)), 0)
+		uintptr(unsafe.Pointer(pin.Ppv)), 0)
 
 	if err := errco.ERROR(ret); err != errco.S_OK {
 		panic(err)
@@ -115,11 +129,11 @@ func (me *IFilterGraph) FindFilterByName(pName string) (IBaseFilter, bool) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-reconnect
-func (me *IFilterGraph) Reconnect(ppin *IPin) {
+func (me *IFilterGraph) Reconnect(pin *IPin) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).Reconnect, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(ppin.Ppv)), 0)
+		uintptr(unsafe.Pointer(pin.Ppv)), 0)
 
 	if err := errco.ERROR(ret); err != errco.S_OK {
 		panic(err)
@@ -127,11 +141,11 @@ func (me *IFilterGraph) Reconnect(ppin *IPin) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-removefilter
-func (me *IFilterGraph) RemoveFilter(pFilter *IBaseFilter) {
+func (me *IFilterGraph) RemoveFilter(filter *IBaseFilter) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).RemoveFilter, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(pFilter.Ppv)), 0)
+		uintptr(unsafe.Pointer(filter.Ppv)), 0)
 
 	if err := errco.ERROR(ret); err != errco.S_OK {
 		panic(err)
