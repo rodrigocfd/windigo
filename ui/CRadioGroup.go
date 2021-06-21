@@ -8,6 +8,7 @@ type RadioGroup interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_RadioButtonEvents
 
+	AsCtrls() []AnyControl         // Returns all radios buttons as AnyControl.
 	Item(index int) RadioButton    // Returns the RadioButton at the given index.
 	Parent() AnyParent             // Returns the parent of the radio buttons.
 	Selected() (RadioButton, bool) // Returns the currently selected RadioButton, if any.
@@ -50,6 +51,14 @@ func NewRadioGroupDlg(parent AnyParent, ctrlIds ...int) RadioGroup {
 	me.radios = radios
 	me.events.new(&me.radios)
 	return me
+}
+
+func (me *_RadioGroup) AsCtrls() []AnyControl {
+	ctrls := make([]AnyControl, 0, len(me.radios))
+	for _, rad := range me.radios {
+		ctrls = append(ctrls, rad)
+	}
+	return ctrls
 }
 
 func (me *_RadioGroup) Item(index int) RadioButton {
