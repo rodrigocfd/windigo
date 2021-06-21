@@ -48,6 +48,7 @@ const (
 // COMPAREITEMSTRUCT and DELETEITEMSTRUCT CtlType. Originally with ODT prefix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-deleteitemstruct
 type ODT_I uint32
 
@@ -192,6 +193,61 @@ const (
 	PRF_ERASEBKGND   PRF = 0x00000008
 	PRF_CHILDREN     PRF = 0x00000010
 	PRF_OWNED        PRF = 0x00000020
+)
+
+// SYSTEM_INFO dwProcessorType.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
+type PROCESSOR uint32
+
+const (
+	INTEL_386     PROCESSOR = 386
+	INTEL_486     PROCESSOR = 486
+	INTEL_PENTIUM PROCESSOR = 586
+	INTEL_IA64    PROCESSOR = 2200
+	AMD_X8664     PROCESSOR = 8664
+	MIPS_R4000    PROCESSOR = 4000
+	ALPHA_21064   PROCESSOR = 21064
+	PPC_601       PROCESSOR = 601
+	PPC_603       PROCESSOR = 603
+	PPC_604       PROCESSOR = 604
+	PPC_620       PROCESSOR = 620
+	HITACHI_SH3   PROCESSOR = 10003
+	HITACHI_SH3E  PROCESSOR = 10004
+	HITACHI_SH4   PROCESSOR = 10005
+	MOTOROLA_821  PROCESSOR = 821
+	SHx_SH3       PROCESSOR = 103
+	SHx_SH4       PROCESSOR = 104
+	STRONGARM     PROCESSOR = 2577
+	ARM720        PROCESSOR = 1824
+	ARM820        PROCESSOR = 2080
+	ARM920        PROCESSOR = 2336
+	ARM_7TDMI     PROCESSOR = 70001
+	OPTIL         PROCESSOR = 0x494f
+)
+
+// SYSTEM_INFO wProcessorArchitecture.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
+type PROCESSOR_ARCHITECTURE uint16
+
+const (
+	INTEL          PROCESSOR_ARCHITECTURE = 0
+	MIPS           PROCESSOR_ARCHITECTURE = 1
+	ALPHA          PROCESSOR_ARCHITECTURE = 2
+	PPC            PROCESSOR_ARCHITECTURE = 3
+	SHX            PROCESSOR_ARCHITECTURE = 4
+	ARM            PROCESSOR_ARCHITECTURE = 5
+	IA64           PROCESSOR_ARCHITECTURE = 6
+	ALPHA64        PROCESSOR_ARCHITECTURE = 7
+	MSIL           PROCESSOR_ARCHITECTURE = 8
+	AMD64          PROCESSOR_ARCHITECTURE = 9
+	IA32_ON_WIN64  PROCESSOR_ARCHITECTURE = 10
+	NEUTRAL        PROCESSOR_ARCHITECTURE = 11
+	ARM64          PROCESSOR_ARCHITECTURE = 12
+	ARM32_ON_WIN64 PROCESSOR_ARCHITECTURE = 13
+	IA32_ON_ARM64  PROCESSOR_ARCHITECTURE = 14
+	UNKNOWN        PROCESSOR_ARCHITECTURE = 0xffff
 )
 
 // CreatePen() iStyle.

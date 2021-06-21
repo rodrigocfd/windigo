@@ -25,6 +25,7 @@ var (
 	GetModuleFileName               = kernel32.NewProc("GetModuleFileNameW")
 	GetModuleHandle                 = kernel32.NewProc("GetModuleHandleW")
 	GetProcAddress                  = kernel32.NewProc("GetProcAddress")
+	GetSystemInfo                   = kernel32.NewProc("GetSystemInfo")
 	GetSystemTime                   = kernel32.NewProc("GetSystemTime")
 	GetSystemTimeAsFileTime         = kernel32.NewProc("GetSystemTimeAsFileTime")
 	GetSystemTimePreciseAsFileTime  = kernel32.NewProc("GetSystemTimePreciseAsFileTime")

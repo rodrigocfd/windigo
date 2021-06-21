@@ -367,6 +367,21 @@ type SIZE struct {
 	Cx, Cy int32
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
+type SYSTEM_INFO struct {
+	WProcessorArchitecture      co.PROCESSOR_ARCHITECTURE
+	WReserved                   uint16
+	DwPageSize                  uint32
+	LpMinimumApplicationAddress uintptr
+	LpMaximumApplicationAddress uintptr
+	DwActiveProcessorMask       uintptr
+	DwNumberOfProcessors        uint32
+	DwProcessorType             co.PROCESSOR
+	DwAllocationGranularity     uint32
+	WProcessorLevel             uint16
+	WProcessorRevision          uint16
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime
 type SYSTEMTIME struct {
 	WYear         uint16

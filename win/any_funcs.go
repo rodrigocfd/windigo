@@ -259,6 +259,12 @@ func GetSysColor(nIndex co.COLOR) COLORREF {
 	return COLORREF(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsysteminfo
+func GetSystemInfo(lpSystemInfo *SYSTEM_INFO) {
+	syscall.Syscall(proc.GetSystemInfo.Addr(), 1,
+		uintptr(unsafe.Pointer(lpSystemInfo)), 0, 0)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
 func GetSystemMetrics(index co.SM) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetSystemMetrics.Addr(), 1,
