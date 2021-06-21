@@ -13,6 +13,11 @@ func (p Activate) Event() co.WA                         { return co.WA(p.Msg.WPa
 func (p Activate) IsMinimized() bool                    { return p.Msg.WParam.Hi16() != 0 }
 func (p Activate) HwndActivatedOrDeactivated() win.HWND { return win.HWND(p.Msg.LParam) }
 
+type ActivateApp struct{ Msg Any }
+
+func (p ActivateApp) IsBeingActivated() bool { return p.Msg.WParam != 0 }
+func (p ActivateApp) ThreadId() uint32       { return uint32(p.Msg.LParam) }
+
 type AppCommand struct{ Msg Any }
 
 func (p AppCommand) OwnerWindow() win.HWND     { return win.HWND(p.Msg.WParam) }
@@ -157,15 +162,24 @@ func (p GetDlgCode) HasAlt() bool          { return (win.GetAsyncKeyState(co.VK_
 func (p GetDlgCode) HasCtrl() bool         { return (win.GetAsyncKeyState(co.VK_CONTROL) & 0x8000) != 0 }
 func (p GetDlgCode) HasShift() bool        { return (win.GetAsyncKeyState(co.VK_SHIFT) & 0x8000) != 0 }
 
+type GetIcon struct{ Msg Any }
+
+func (p GetIcon) Type() co.ICON_SZ { return co.ICON_SZ(p.Msg.WParam) }
+func (p GetIcon) Dpi() uint32      { return uint32(p.Msg.LParam) }
+
+type GetMinMaxInfo struct{ Msg Any }
+
+func (p GetMinMaxInfo) Info() *win.MINMAXINFO { return (*win.MINMAXINFO)(unsafe.Pointer(p.Msg.LParam)) }
+
 type GetTitleBarInfoEx struct{ Msg Any }
 
-func (p GetTitleBarInfoEx) TitlebarInfoEx() *win.TITLEBARINFOEX {
+func (p GetTitleBarInfoEx) Info() *win.TITLEBARINFOEX {
 	return (*win.TITLEBARINFOEX)(unsafe.Pointer(p.Msg.LParam))
 }
 
 type Help struct{ Msg Any }
 
-func (p Help) HelpInfo() *win.HELPINFO { return (*win.HELPINFO)(unsafe.Pointer(p.Msg.LParam)) }
+func (p Help) Info() *win.HELPINFO { return (*win.HELPINFO)(unsafe.Pointer(p.Msg.LParam)) }
 
 type HotKey struct{ Msg Any }
 
@@ -222,7 +236,7 @@ func (p MenuChar) ActiveMenu() win.HMENU   { return win.HMENU(p.Msg.LParam) }
 
 type MenuGetObject struct{ Msg Any }
 
-func (p MenuGetObject) MenuGetObjectInfo() *win.MENUGETOBJECTINFO {
+func (p MenuGetObject) Info() *win.MENUGETOBJECTINFO {
 	return (*win.MENUGETOBJECTINFO)(unsafe.Pointer(p.Msg.LParam))
 }
 

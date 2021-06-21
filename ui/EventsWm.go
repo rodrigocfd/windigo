@@ -78,12 +78,19 @@ func (me *_EventsWm) WmTimer(nIDEvent int, userFunc func()) {
 	me.timers[nIDEvent] = userFunc
 }
 
-// Note: default handled in opt WindowMain.
+// ⚠️ By handling this message, you'll overwrite the default behavior in WindowMain.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-activate
 func (me *_EventsWm) WmActivate(userFunc func(p wm.Activate)) {
 	me.addMsgZero(co.WM_ACTIVATE, func(p wm.Any) {
 		userFunc(wm.Activate{Msg: p})
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-activateapp
+func (me *_EventsWm) WmActivateApp(userFunc func(p wm.ActivateApp)) {
+	me.addMsgZero(co.WM_ACTIVATEAPP, func(p wm.Any) {
+		userFunc(wm.ActivateApp{Msg: p})
 	})
 }
 
@@ -151,7 +158,7 @@ func (me *_EventsWm) WmClipboardUpdate(userFunc func()) {
 	})
 }
 
-// Note: default handled in dlg WindowMain/WindowModal.
+// ⚠️ By handling this message, you'll overwrite the default behavior in WindowMain and WindowModal
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-close
 func (me *_EventsWm) WmClose(userFunc func()) {
@@ -375,6 +382,20 @@ func (me *_EventsWm) WmGetFont(userFunc func() win.HFONT) {
 	})
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-geticon
+func (me *_EventsWm) WmGetIcon(userFunc func(p wm.GetIcon) win.HICON) {
+	me.addMsgRet(co.WM_GETICON, func(p wm.Any) uintptr {
+		return uintptr(userFunc(wm.GetIcon{Msg: p}))
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-getminmaxinfo
+func (me *_EventsWm) WmGetMinMaxInfo(userFunc func(p wm.GetMinMaxInfo)) {
+	me.addMsgZero(co.WM_GETMINMAXINFO, func(p wm.Any) {
+		userFunc(wm.GetMinMaxInfo{Msg: p})
+	})
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-gettitlebarinfoex
 func (me *_EventsWm) WmGetTitleBarInfoEx(userFunc func(p wm.GetTitleBarInfoEx)) {
 	me.addMsgZero(co.WM_GETTITLEBARINFOEX, func(p wm.Any) {
@@ -584,7 +605,14 @@ func (me *_EventsWm) WmNcCalcSize(userFunc func(p wm.NcCalcSize) co.WVR) {
 	})
 }
 
-// Note: default handled in opt/dlg WindowMain.
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-nccreate
+func (me *_EventsWm) WmNcCreate(userFunc func(p wm.Create) bool) {
+	me.addMsgRet(co.WM_NCCREATE, func(p wm.Any) uintptr {
+		return util.BoolToUintptr(userFunc(wm.Create{Msg: p}))
+	})
+}
+
+// ⚠️ By handling this message, you'll overwrite the default behavior in WindowMain.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-ncdestroy
 func (me *_EventsWm) WmNcDestroy(userFunc func()) {
@@ -663,7 +691,7 @@ func (me *_EventsWm) WmNcMouseMove(userFunc func(p wm.NcMouse)) {
 	})
 }
 
-// Note: default handled in opt/dlg WindowControl.
+// ⚠️ By handling this message, you'll overwrite the default behavior in WindowControl.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/gdi/wm-ncpaint
 func (me *_EventsWm) WmNcPaint(userFunc func(p wm.NcPaint)) {
@@ -790,7 +818,7 @@ func (me *_EventsWm) WmRenderFormat(userFunc func(p wm.RenderFormat)) {
 	})
 }
 
-// Note: default handled in opt/dlg WindowMain.
+// ⚠️ By handling this message, you'll overwrite the default behavior in WindowMain.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-setfocus
 func (me *_EventsWm) WmSetFocus(userFunc func(p wm.SetFocus)) {

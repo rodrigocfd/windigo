@@ -258,8 +258,9 @@ const (
 type ICON_SZ uint8
 
 const (
-	ICON_SZ_SMALL ICON_SZ = 0
-	ICON_SZ_BIG   ICON_SZ = 1
+	ICON_SZ_SMALL  ICON_SZ = 0
+	ICON_SZ_BIG    ICON_SZ = 1
+	ICON_SZ_SMALL2 ICON_SZ = 2
 )
 
 // Dialog codes returned by MessageBox().
