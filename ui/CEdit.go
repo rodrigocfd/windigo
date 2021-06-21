@@ -155,7 +155,7 @@ func (o *_EditO) lateDefaults() {
 }
 
 // Options for NewEdit().
-func NewEditOpts() *_EditO {
+func EditOpts() *_EditO {
 	return &_EditO{
 		size:        win.SIZE{Cx: 100, Cy: 21},
 		ctrlStyles:  co.ES_AUTOHSCROLL | co.ES_NOHIDESEL,

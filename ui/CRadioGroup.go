@@ -20,8 +20,9 @@ type _RadioGroup struct {
 	events _RadioButtonEvents
 }
 
-// Creates a new RadioButton specifying all options for each RadioButton, which
-// will be passed to the underlying CreateWindowEx().
+// Creates a new RadioGroup, with one or more RadioButton controls. Call
+// RadioButtonOpts() to define the options of each RadioButton to be passed to
+// the underlying CreateWindowEx().
 func NewRadioGroup(parent AnyParent, opts ...*_RadioButtonO) RadioGroup {
 	if len(opts) == 0 {
 		panic("A RadioGroup must have at least 1 RadioButton.")

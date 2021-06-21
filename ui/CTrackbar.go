@@ -174,7 +174,7 @@ func (o *_TrackbarO) lateDefaults() {
 }
 
 // Options for NewTrackbar().
-func NewTrackbarOpts() *_TrackbarO {
+func TrackbarOpts() *_TrackbarO {
 	return &_TrackbarO{
 		size:       win.SIZE{Cx: 120, Cy: 23},
 		ctrlStyles: co.TBS_HORZ | co.TBS_AUTOTICKS,

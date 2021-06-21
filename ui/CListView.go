@@ -283,7 +283,7 @@ func (o *_ListViewO) lateDefaults() {
 }
 
 // Options for NewListView().
-func NewListViewOpts() *_ListViewO {
+func ListViewOpts() *_ListViewO {
 	return &_ListViewO{
 		size: win.SIZE{Cx: 120, Cy: 120},
 		ctrlStyles: co.LVS_REPORT | co.LVS_NOSORTHEADER | co.LVS_SHOWSELALWAYS |
