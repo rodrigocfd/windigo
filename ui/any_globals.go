@@ -23,7 +23,7 @@ var _globalUiFont win.HFONT // Global font, usually Segoe UI.
 
 func _CreateGlobalUiFont() {
 	ncm := win.NONCLIENTMETRICS{}
-	ncm.CbSize = uint32(unsafe.Sizeof(ncm))
+	ncm.SetCbSize()
 
 	if !win.IsWindowsVistaOrGreater() {
 		ncm.CbSize -= uint32(unsafe.Sizeof(ncm.IBorderWidth))

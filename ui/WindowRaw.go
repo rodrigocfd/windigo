@@ -27,7 +27,7 @@ func (me *_WindowRaw) generateWcx(
 	hInst win.HINSTANCE, className string, classStyles co.CS,
 	hCursor win.HCURSOR, hBrushBg win.HBRUSH, iconId int) string {
 
-	wcx.CbSize = uint32(unsafe.Sizeof(wcx))
+	wcx.SetCbSize()
 	wcx.LpfnWndProc = syscall.NewCallback(_WndProc)
 	wcx.HInstance = hInst
 	wcx.Style = classStyles

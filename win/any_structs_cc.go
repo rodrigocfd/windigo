@@ -1,6 +1,8 @@
 package win
 
 import (
+	"unsafe"
+
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -25,6 +27,8 @@ type IMAGELISTDRAWPARAMS struct {
 	Frame    uint32
 	CrEffect COLORREF
 }
+
+func (s *IMAGELISTDRAWPARAMS) SetCbSize() { s.CbSize = uint32(unsafe.Sizeof(*s)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
 type LITEM struct {

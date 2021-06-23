@@ -9,6 +9,7 @@ type RadioGroup interface {
 	On() *_RadioButtonEvents
 
 	AsCtrls() []AnyControl         // Returns all radios buttons as AnyControl.
+	EnableWindow(bEnable bool)     // Calls EnableWindow on all radio buttons.
 	Item(index int) RadioButton    // Returns the RadioButton at the given index.
 	Parent() AnyParent             // Returns the parent of the radio buttons.
 	Selected() (RadioButton, bool) // Returns the currently selected RadioButton, if any.
@@ -59,6 +60,12 @@ func (me *_RadioGroup) AsCtrls() []AnyControl {
 		ctrls = append(ctrls, rad)
 	}
 	return ctrls
+}
+
+func (me *_RadioGroup) EnableWindow(bEnable bool) {
+	for _, radio := range me.radios {
+		radio.Hwnd().EnableWindow(bEnable)
+	}
 }
 
 func (me *_RadioGroup) Item(index int) RadioButton {

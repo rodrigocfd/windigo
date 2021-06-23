@@ -11,6 +11,16 @@ const (
 	WA_CLICKACTIVE WA = 2
 )
 
+// WaitForSingleObject() return value.
+type WAIT uint32
+
+const (
+	WAIT_ABANDONED WAIT = 0x00000080
+	WAIT_OBJECT_0  WAIT = 0x00000000
+	WAIT_TIMEOUT   WAIT = 0x00000102
+	WAIT_FAILED    WAIT = 0xffffffff
+)
+
 // SetWindowsHookEx() idHook.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw

@@ -70,6 +70,37 @@ func CreateDirectory(
 	return nil
 }
 
+// ⚠️ You must defer CloseHandle() on HProcess and HThread members of PROCESS_INFORMATION.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw
+func CreateProcess(
+	lpApplicationName, lpCommandLine string,
+	lpProcessAttributes, lpThreadAttributes *SECURITY_ATTRIBUTES,
+	bInheritHandles bool,
+	dwCreationFlags co.CREATE,
+	lpEnvironment uintptr,
+	lpCurrentDirectory string,
+	lpStartupInfo *STARTUPINFO,
+	lpProcessInformation *PROCESS_INFORMATION) {
+
+	ret, _, err := syscall.Syscall12(proc.CreateProcess.Addr(), 10,
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(lpApplicationName))),
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(lpCommandLine))),
+		uintptr(unsafe.Pointer(lpProcessAttributes)),
+		uintptr(unsafe.Pointer(lpThreadAttributes)),
+		util.BoolToUintptr(bInheritHandles),
+		uintptr(dwCreationFlags),
+		lpEnvironment,
+		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(lpCurrentDirectory))),
+		uintptr(unsafe.Pointer(lpStartupInfo)),
+		uintptr(unsafe.Pointer(lpProcessInformation)),
+		0, 0)
+
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
 func DeleteFile(fileName string) error {
 	ret, _, err := syscall.Syscall(proc.DeleteFile.Addr(), 1,
@@ -125,6 +156,12 @@ func EnumWindows(lpEnumFunc func(hwnd HWND) bool) {
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess
+func ExitProcess(uExitCode uint32) {
+	syscall.Syscall(proc.ExitProcess.Addr(), 1,
+		uintptr(uExitCode), 0, 0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
@@ -252,6 +289,12 @@ func GetPhysicalCursorPos() POINT {
 	return pt
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getstartupinfow
+func GetStartupInfo(lpStartupInfo *STARTUPINFO) {
+	syscall.Syscall(proc.GetStartupInfo.Addr(), 1,
+		uintptr(unsafe.Pointer(lpStartupInfo)), 0, 0)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolor
 func GetSysColor(nIndex co.COLOR) COLORREF {
 	ret, _, _ := syscall.Syscall(proc.GetSysColor.Addr(), 1,
@@ -276,6 +319,16 @@ func GetSystemMetrics(index co.SM) int32 {
 func GetSystemTime(lpSystemTime *SYSTEMTIME) {
 	syscall.Syscall(proc.GetSystemTime.Addr(), 1,
 		uintptr(unsafe.Pointer(lpSystemTime)), 0, 0)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getsystemtimes
+func GetSystemTimes(lpIdleTime, lpKernelTime, lpUserTime *FILETIME) {
+	ret, _, err := syscall.Syscall(proc.GetSystemTimes.Addr(), 3,
+		uintptr(unsafe.Pointer(lpIdleTime)), uintptr(unsafe.Pointer(lpKernelTime)),
+		uintptr(unsafe.Pointer(lpUserTime)))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimeasfiletime
@@ -409,7 +462,7 @@ func IsWindowsVersionOrGreater(
 		DwMinorVersion:    minorVersion,
 		WServicePackMajor: servicePackMajor,
 	}
-	ovi.DwOsVersionInfoSize = uint32(unsafe.Sizeof(ovi))
+	ovi.SetDwOsVersionInfoSize()
 
 	conditionMask := VerSetConditionMask(
 		VerSetConditionMask(
@@ -479,7 +532,7 @@ func QueryPerformanceFrequency() int64 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassexw
 func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, error) {
-	wcx.CbSize = uint32(unsafe.Sizeof(*wcx)) // safety
+	wcx.SetCbSize() // safety
 	ret, _, err := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
 		uintptr(unsafe.Pointer(wcx)), 0, 0)
 	if ret == 0 {

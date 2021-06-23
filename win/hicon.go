@@ -76,7 +76,7 @@ func (hIcon HICON) GetIconInfo(piconinfo *ICONINFO) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfoexw
 func (hIcon HICON) GetIconInfoEx(piconinfo *ICONINFOEX) {
-	piconinfo.CbSize = uint32(unsafe.Sizeof(*piconinfo)) // safety
+	piconinfo.SetCbSize() // safety
 	ret, _, err := syscall.Syscall(proc.GetIconInfoEx.Addr(), 2,
 		uintptr(hIcon), uintptr(unsafe.Pointer(piconinfo)), 0)
 	if ret == 0 {

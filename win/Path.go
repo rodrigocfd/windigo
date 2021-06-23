@@ -58,6 +58,18 @@ func (_PathT) Exists(path string) bool {
 	return attr != co.FILE_ATTRIBUTE_INVALID
 }
 
+// Retrieves the file name of the path.
+func (_PathT) GetFileName(path string) string {
+	slashIdx := strings.LastIndex(path, "\\")
+	return path[slashIdx+1:]
+}
+
+// Retrieves the path without the file name itself, and without trailing slash.
+func (_PathT) GetPath(path string) string {
+	slashIdx := strings.LastIndex(path, "\\")
+	return path[0:slashIdx]
+}
+
 // Tells if a given path is a folder, and not a file.
 func (_PathT) IsFolder(path string) bool {
 	attr, _ := GetFileAttributes(path)
