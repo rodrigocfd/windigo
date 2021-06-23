@@ -85,25 +85,29 @@ type MyWindow struct {
 
 // Creates a new instance of our main window.
 func NewMyWindow() *MyWindow {
-    wnd := ui.NewWindowMain(ui.WindowMainOpts{
-        Title:          "Hello you",
-        ClientAreaSize: win.SIZE{Cx: 340, Cy: 80},
-        IconId:         101, // ID of icon resource, see resources folder
+    wnd := ui.NewWindowMain(
+        ui.WindowMainOpts().
+            Title("Hello you").
+            ClientArea(win.SIZE{Cx: 340, Cy: 80}).
+            IconId(101), // ID of icon resource, see resources folder
     })
 
     me := &MyWindow{
         wnd: wnd,
-        lblName: ui.NewStatic(wnd, ui.StaticOpts{
-            Text:     "Your name",
-            Position: win.POINT{X: 10, Y: 22},
+        lblName: ui.NewStatic(wnd,
+            ui.StaticOpts().
+                Text("Your name").
+                Position(win.POINT{X: 10, Y: 22}),
         }),
-        txtName: ui.NewEdit(wnd, ui.EditOpts{
-            Position: win.POINT{X: 80, Y: 20},
-            Size:     win.SIZE{Cx: 150},
+        txtName: ui.NewEdit(wnd,
+            ui.EditOpts().
+                Position(win.POINT{X: 80, Y: 20}).
+                Size(win.SIZE{Cx: 150}),
         }),
-        btnShow: ui.NewButton(wnd, ui.ButtonOpts{
-            Text:     "&Show",
-            Position: win.POINT{X: 240, Y: 19},
+        btnShow: ui.NewButton(wnd,
+            ui.ButtonOpts().
+                Text("&Show").
+                Position(win.POINT{X: 240, Y: 19}),
         }),
     }
 
