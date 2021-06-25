@@ -129,7 +129,7 @@ func (me *_ListViewItems) Find(text string) (ListViewItem, bool) {
 
 // Returns the item at the given index, if any.
 func (me *_ListViewItems) Get(index int) (ListViewItem, bool) {
-	if index >= me.Count() {
+	if index < 0 || index >= me.Count() {
 		return nil, false
 	}
 	return me.getUnchecked(index), true
