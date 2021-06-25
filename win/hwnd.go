@@ -393,6 +393,13 @@ func (hWnd HWND) IsIconic() bool {
 	return ret != 0
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemedialogtextureenabled
+func (hWnd HWND) IsThemeDialogTextureEnabled() bool {
+	ret, _, _ := syscall.Syscall(proc.IsThemeDialogTextureEnabled.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	return ret != 0
+}
+
 // Allegedly undocumented Win32 function; implemented here.
 //
 // https://stackoverflow.com/a/16975012

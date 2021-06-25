@@ -388,6 +388,13 @@ func IsAppThemed() bool {
 	return ret != 0
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-iscompositionactive
+func IsCompositionActive() bool {
+	ret, _, _ := syscall.Syscall(proc.IsCompositionActive.Addr(), 0,
+		0, 0, 0)
+	return ret != 0
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isguithread
 func IsGUIThread(bConvertToGuiThread bool) (bool, error) {
 	ret, _, _ := syscall.Syscall(proc.IsGUIThread.Addr(), 1,
