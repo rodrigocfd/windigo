@@ -240,15 +240,15 @@ func _PaintThemedBorders(hWnd win.HWND, p wm.NcPaint) {
 		// Clipping region; will draw only within this rectangle.
 		// Draw only the borders to avoid flickering.
 		rc2 := win.RECT{Left: rc.Left, Top: rc.Top, Right: rc.Left + 2, Bottom: rc.Bottom}
-		hTheme.DrawThemeBackground(hdc, co.VS_PART_LVP_LISTGROUP, co.VS_STATE_NONE, &rc, &rc2) // draw themed left border
+		hTheme.DrawThemeBackground(hdc, co.VS_LISTVIEW_LISTGROUP, &rc, &rc2) // draw themed left border
 
 		rc2 = win.RECT{Left: rc.Left, Top: rc.Top, Right: rc.Right, Bottom: rc.Top + 2}
-		hTheme.DrawThemeBackground(hdc, co.VS_PART_LVP_LISTGROUP, co.VS_STATE_NONE, &rc, &rc2) // draw themed top border
+		hTheme.DrawThemeBackground(hdc, co.VS_LISTVIEW_LISTGROUP, &rc, &rc2) // draw themed top border
 
 		rc2 = win.RECT{Left: rc.Right - 2, Top: rc.Top, Right: rc.Right, Bottom: rc.Bottom}
-		hTheme.DrawThemeBackground(hdc, co.VS_PART_LVP_LISTGROUP, co.VS_STATE_NONE, &rc, &rc2) // draw themed right border
+		hTheme.DrawThemeBackground(hdc, co.VS_LISTVIEW_LISTGROUP, &rc, &rc2) // draw themed right border
 
 		rc2 = win.RECT{Left: rc.Left, Top: rc.Bottom - 2, Right: rc.Right, Bottom: rc.Bottom}
-		hTheme.DrawThemeBackground(hdc, co.VS_PART_LVP_LISTGROUP, co.VS_STATE_NONE, &rc, &rc2) // draw themed bottom border
+		hTheme.DrawThemeBackground(hdc, co.VS_LISTVIEW_LISTGROUP, &rc, &rc2) // draw themed bottom border
 	}
 }

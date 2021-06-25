@@ -24,11 +24,11 @@ func (hTheme HTHEME) CloseThemeData() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-drawthemebackground
 func (hTheme HTHEME) DrawThemeBackground(
-	hdc HDC, partId co.VS_PART, stateId co.VS_STATE,
-	rect *RECT, clipRect *RECT) {
+	hdc HDC, partStateId co.VS, rect *RECT, clipRect *RECT) {
 
 	hr, _, _ := syscall.Syscall6(proc.DrawThemeBackground.Addr(), 6,
-		uintptr(hTheme), uintptr(hdc), uintptr(partId), uintptr(stateId),
+		uintptr(hTheme), uintptr(hdc),
+		uintptr(partStateId.Part()), uintptr(partStateId.State()),
 		uintptr(unsafe.Pointer(rect)), uintptr(unsafe.Pointer(clipRect)))
 	if errco.ERROR(hr) != errco.S_OK {
 		panic(errco.ERROR(hr))
