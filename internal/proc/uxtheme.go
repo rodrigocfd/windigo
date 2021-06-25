@@ -9,7 +9,11 @@ var (
 
 	CloseThemeData                        = uxtheme.NewProc("CloseThemeData")
 	DrawThemeBackground                   = uxtheme.NewProc("DrawThemeBackground")
+	GetThemeColor                         = uxtheme.NewProc("GetThemeColor")
+	GetThemeInt                           = uxtheme.NewProc("GetThemeInt")
+	GetThemeMetric                        = uxtheme.NewProc("GetThemeMetric")
 	GetThemePosition                      = uxtheme.NewProc("GetThemePosition")
+	GetThemeRect                          = uxtheme.NewProc("GetThemeRect")
 	GetThemeSysColorBrush                 = uxtheme.NewProc("GetThemeSysColorBrush")
 	GetThemeSysFont                       = uxtheme.NewProc("GetThemeSysFont")
 	GetThemeTextMetrics                   = uxtheme.NewProc("GetThemeTextMetrics")
