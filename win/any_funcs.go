@@ -127,6 +127,17 @@ func DispatchMessage(msg *MSG) uintptr {
 	return ret
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmiscompositionenabled
+func DwmIsCompositionEnabled() bool {
+	pfEnabled := BOOL(0)
+	hr, _, _ := syscall.Syscall(proc.DwmIsCompositionEnabled.Addr(), 1,
+		uintptr(unsafe.Pointer(&pfEnabled)), 0, 0)
+	if errco.ERROR(hr) != errco.S_OK {
+		panic(errco.ERROR(hr))
+	}
+	return pfEnabled != 0
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-emptyclipboard
 func EmptyClipboard() {
 	ret, _, err := syscall.Syscall(proc.EmptyClipboard.Addr(), 0,
