@@ -127,6 +127,16 @@ func DispatchMessage(msg *MSG) uintptr {
 	return ret
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmgetcolorizationcolor
+func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool) {
+	hr, _, _ := syscall.Syscall(proc.DwmGetColorizationColor.Addr(), 2,
+		uintptr(unsafe.Pointer(&color)), uintptr(unsafe.Pointer(&isOpaqueBlend)), 0)
+	if errco.ERROR(hr) != errco.S_OK {
+		panic(errco.ERROR(hr))
+	}
+	return
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmiscompositionenabled
 func DwmIsCompositionEnabled() bool {
 	pfEnabled := BOOL(0)

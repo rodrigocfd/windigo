@@ -127,6 +127,23 @@ type DropFiles struct{ Msg Any }
 
 func (p DropFiles) Hdrop() win.HDROP { return win.HDROP(p.Msg.WParam) }
 
+type DwmColorizationColorChanged struct{ Msg Any }
+
+func (p DwmColorizationColorChanged) Color() win.COLORREF      { return win.COLORREF(p.Msg.WParam) }
+func (p DwmColorizationColorChanged) BlendedWithOpacity() bool { return p.Msg.LParam != 0 }
+
+type DwmNcRenderingChanged struct{ Msg Any }
+
+func (p DwmNcRenderingChanged) IsEnabled() bool { return p.Msg.WParam != 0 }
+
+type DwmSendIconicThumbnail struct{ Msg Any }
+
+func (p DwmSendIconicThumbnail) MaxCoords() win.POINT { return p.Msg.LParam.MakePoint() }
+
+type DwmWindowMaximizedChange struct{ Msg Any }
+
+func (p DwmWindowMaximizedChange) IsMaximized() bool { return p.Msg.WParam != 0 }
+
 type Enable struct{ Msg Any }
 
 func (p Enable) HasBeenEnabled() bool { return p.Msg.WParam != 0 }

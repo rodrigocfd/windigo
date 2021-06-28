@@ -130,6 +130,36 @@ func (hWnd HWND) DrawMenuBar() {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea
+func (hWnd HWND) DwmExtendFrameIntoClientArea(pMarInset *MARGINS) {
+	hr, _, _ := syscall.Syscall(proc.DwmExtendFrameIntoClientArea.Addr(), 2,
+		uintptr(hWnd), uintptr(unsafe.Pointer(pMarInset)), 0)
+	if errco.ERROR(hr) != errco.S_OK {
+		panic(errco.ERROR(hr))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticoniclivepreviewbitmap
+func (hWnd HWND) DwmSetIconicLivePreviewBitmap(
+	hbmp HBITMAP, pptClient POINT, dwSITFlags co.DWM_SIT) {
+
+	hr, _, _ := syscall.Syscall6(proc.DwmSetIconicLivePreviewBitmap.Addr(), 4,
+		uintptr(hWnd), uintptr(hbmp), uintptr(unsafe.Pointer(&pptClient)),
+		uintptr(dwSITFlags), 0, 0)
+	if errco.ERROR(hr) != errco.S_OK {
+		panic(errco.ERROR(hr))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticonicthumbnail
+func (hWnd HWND) DwmSetIconicThumbnail(hbmp HBITMAP, dwSITFlags co.DWM_SIT) {
+	hr, _, _ := syscall.Syscall(proc.DwmSetIconicThumbnail.Addr(), 3,
+		uintptr(hWnd), uintptr(hbmp), uintptr(dwSITFlags))
+	if errco.ERROR(hr) != errco.S_OK {
+		panic(errco.ERROR(hr))
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablewindow
 func (hWnd HWND) EnableWindow(bEnable bool) bool {
 	ret, _, _ := syscall.Syscall(proc.EnableWindow.Addr(), 2,

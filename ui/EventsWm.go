@@ -305,6 +305,48 @@ func (me *_EventsWm) WmDropFiles(userFunc func(p wm.DropFiles)) {
 	})
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/dwm/wm-dwmcolorizationcolorchanged
+func (me *_EventsWm) WmDwmColorizationColorChanged(userFunc func(p wm.DwmColorizationColorChanged)) {
+	me.addMsgZero(co.WM_DWMCOLORIZATIONCOLORCHANGED, func(p wm.Any) {
+		userFunc(wm.DwmColorizationColorChanged{Msg: p})
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/dwm/wm-dwmcompositionchanged
+func (me *_EventsWm) WmDwmCompositionChanged(userFunc func()) {
+	me.addMsgZero(co.WM_DWMCOMPOSITIONCHANGED, func(_ wm.Any) {
+		userFunc()
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/dwm/wm-dwmncrenderingchanged
+func (me *_EventsWm) WmDwmNcRenderingChanged(userFunc func(p wm.DwmNcRenderingChanged)) {
+	me.addMsgZero(co.WM_DWMNCRENDERINGCHANGED, func(p wm.Any) {
+		userFunc(wm.DwmNcRenderingChanged{Msg: p})
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/dwm/wm-dwmsendiconiclivepreviewbitmap
+func (me *_EventsWm) WmDwmSendIconicLivePreviewBitmap(userFunc func()) {
+	me.addMsgZero(co.WM_DWMSENDICONICLIVEPREVIEWBITMAP, func(_ wm.Any) {
+		userFunc()
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/dwm/wm-dwmsendiconicthumbnail
+func (me *_EventsWm) WmDwmSendIconicThumbnail(userFunc func(p wm.DwmSendIconicThumbnail)) {
+	me.addMsgZero(co.WM_DWMSENDICONICTHUMBNAIL, func(p wm.Any) {
+		userFunc(wm.DwmSendIconicThumbnail{Msg: p})
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/dwm/wm-dwmwindowmaximizedchange
+func (me *_EventsWm) WmDwmWindowMaximizedChange(userFunc func(p wm.DwmWindowMaximizedChange)) {
+	me.addMsgZero(co.WM_DWMWINDOWMAXIMIZEDCHANGE, func(p wm.Any) {
+		userFunc(wm.DwmWindowMaximizedChange{Msg: p})
+	})
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-enable
 func (me *_EventsWm) WmEnable(userFunc func(p wm.Enable)) {
 	me.addMsgZero(co.WM_ENABLE, func(p wm.Any) {

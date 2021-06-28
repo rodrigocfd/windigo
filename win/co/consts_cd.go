@@ -460,3 +460,13 @@ const (
 	DTS_APPCANPARSE            DTS = 0x0010
 	DTS_RIGHTALIGN             DTS = 0x0020
 )
+
+// DwmSetIconicLivePreviewBitmap() dwSITFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticoniclivepreviewbitmap
+type DWM_SIT uint32
+
+const (
+	DWM_SIT_NONE         DWM_SIT = 0
+	DWM_SIT_DISPLAYFRAME DWM_SIT = 0x00000001
+)

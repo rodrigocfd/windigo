@@ -7,5 +7,9 @@ import (
 var (
 	dwmapi = syscall.NewLazyDLL("dwmapi.dll")
 
-	DwmIsCompositionEnabled = dwmapi.NewProc("DwmIsCompositionEnabled")
+	DwmExtendFrameIntoClientArea  = dwmapi.NewProc("DwmExtendFrameIntoClientArea")
+	DwmGetColorizationColor       = dwmapi.NewProc("DwmGetColorizationColor")
+	DwmIsCompositionEnabled       = dwmapi.NewProc("DwmIsCompositionEnabled")
+	DwmSetIconicLivePreviewBitmap = dwmapi.NewProc("DwmSetIconicLivePreviewBitmap")
+	DwmSetIconicThumbnail         = dwmapi.NewProc("DwmSetIconicThumbnail")
 )
