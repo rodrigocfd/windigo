@@ -1,7 +1,6 @@
 package win
 
 import (
-	"path/filepath"
 	"sort"
 	"strings"
 
@@ -25,15 +24,17 @@ func (_PathT) HasExtension(path string, extensions ...string) bool {
 
 // Returns all the file names that match a pattern like "C:\\foo\\*.txt".
 func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
-	retFiles := make([]string, 0, 5)        // arbitrary
-	dirPath := filepath.Dir(pathAndPattern) // path without file name
-
 	wfd := WIN32_FIND_DATA{}
 	hFind, found, err := FindFirstFile(pathAndPattern, &wfd)
 	if err != nil {
 		return nil, err
+	} else if !found {
+		return []string{}, nil
 	}
 	defer hFind.FindClose()
+
+	retFiles := make([]string, 0, 5)        // arbitrary
+	dirPath := Path.GetPath(pathAndPattern) // path without file name
 
 	for found {
 		fileNameFound := Str.FromUint16Slice(wfd.CFileName[:])
