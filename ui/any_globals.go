@@ -25,12 +25,8 @@ func _CreateGlobalUiFont() {
 	ncm := win.NONCLIENTMETRICS{}
 	ncm.SetCbSize()
 
-	if !win.IsWindowsVistaOrGreater() {
-		ncm.CbSize -= uint32(unsafe.Sizeof(ncm.IBorderWidth))
-	}
-
 	win.SystemParametersInfo(co.SPI_GETNONCLIENTMETRICS,
-		ncm.CbSize, unsafe.Pointer(&ncm), 0)
+		ncm.CbSize(), unsafe.Pointer(&ncm), 0)
 	_globalUiFont = win.CreateFontIndirect(&ncm.LfMenuFont)
 }
 

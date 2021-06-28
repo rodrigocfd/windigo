@@ -14,9 +14,11 @@ type ACCEL struct {
 	Cmd   uint16    // LOWORD(wParam) value.
 }
 
+// ⚠️ You must call SetBiSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
 type BITMAPINFOHEADER struct {
-	BiSize          uint32
+	biSize          uint32
 	BiWidth         int32
 	BiHeight        int32
 	BiPlanes        uint16
@@ -28,6 +30,8 @@ type BITMAPINFOHEADER struct {
 	BiClrUsed       uint32
 	BiClrImportant  uint32
 }
+
+func (bih *BITMAPINFOHEADER) SetBiSize() { bih.biSize = uint32(unsafe.Sizeof(*bih)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
 type COMPAREITEMSTRUCT struct {
@@ -117,9 +121,11 @@ func (ft *FILETIME) ToTime() time.Time {
 	return st.ToTime()
 }
 
+// ⚠️ You must call SetCbSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
 type HELPINFO struct {
-	CbSize       uint32
+	cbSize       uint32
 	IContextType co.HELPINFO
 	ICtrlId      int32
 	HItemHandle  HANDLE
@@ -127,7 +133,7 @@ type HELPINFO struct {
 	MousePos     POINT
 }
 
-func (s *HELPINFO) SetCbSize() { s.CbSize = uint32(unsafe.Sizeof(*s)) }
+func (hi *HELPINFO) SetCbSize() { hi.cbSize = uint32(unsafe.Sizeof(*hi)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfo
 type ICONINFO struct {
@@ -138,9 +144,11 @@ type ICONINFO struct {
 	HbmColor HBITMAP
 }
 
+// ⚠️ You must call SetCbSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfoexw
 type ICONINFOEX struct {
-	CbSize    uint32
+	cbSize    uint32
 	FIcon     BOOL
 	XHotspot  uint32
 	YHotspot  uint32
@@ -151,7 +159,7 @@ type ICONINFOEX struct {
 	SzResName [_MAX_PATH]uint16
 }
 
-func (s *ICONINFOEX) SetCbSize() { s.CbSize = uint32(unsafe.Sizeof(*s)) }
+func (iix *ICONINFOEX) SetCbSize() { iix.cbSize = uint32(unsafe.Sizeof(*iix)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type LOGFONT struct {
@@ -202,9 +210,11 @@ type MENUGETOBJECTINFO struct {
 	PvObj   uintptr // PVOID
 }
 
+// ⚠️ You must call SetCbSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
 type MENUINFO struct {
-	CbSize          uint32
+	cbSize          uint32
 	FMask           co.MIM
 	DwStyle         co.MNS
 	CyMax           uint32
@@ -213,11 +223,13 @@ type MENUINFO struct {
 	DwMenuData      uintptr // ULONG_PTR
 }
 
-func (s *MENUINFO) SetCbSize() { s.CbSize = uint32(unsafe.Sizeof(*s)) }
+func (mi *MENUINFO) SetCbSize() { mi.cbSize = uint32(unsafe.Sizeof(*mi)) }
 
+// ⚠️ You must call SetCbSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
 type MENUITEMINFO struct {
-	CbSize        uint32
+	cbSize        uint32
 	FMask         co.MIIM
 	FType         co.MFT
 	FState        co.MFS
@@ -231,11 +243,11 @@ type MENUITEMINFO struct {
 	HBmpItem      HBITMAP
 }
 
-func (s *MENUITEMINFO) SetCbSize() { s.CbSize = uint32(unsafe.Sizeof(*s)) }
+func (mii *MENUITEMINFO) SetCbSize() { mii.cbSize = uint32(unsafe.Sizeof(*mii)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-minmaxinfo
 type MINMAXINFO struct {
-	PtReserved     POINT
+	ptReserved     POINT
 	PtMaxSize      POINT
 	PtMaxPosition  POINT
 	PtMinTrackSize POINT
@@ -265,9 +277,11 @@ type NMHDR struct {
 	Code     uint32  // in fact it should be int32
 }
 
+// ⚠️ You must call SetCbSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nonclientmetricsw
 type NONCLIENTMETRICS struct {
-	CbSize             uint32
+	cbSize             uint32
 	IBorderWidth       int32
 	IScrollWidth       int32
 	IScrollHeight      int32
@@ -285,11 +299,20 @@ type NONCLIENTMETRICS struct {
 	IPaddedBorderWidth int32
 }
 
-func (s *NONCLIENTMETRICS) SetCbSize() { s.CbSize = uint32(unsafe.Sizeof(*s)) }
+func (ncm *NONCLIENTMETRICS) CbSize() uint32 { return ncm.cbSize }
 
+func (ncm *NONCLIENTMETRICS) SetCbSize() {
+	ncm.cbSize = uint32(unsafe.Sizeof(*ncm))
+	if !IsWindowsVistaOrGreater() {
+		ncm.cbSize -= uint32(unsafe.Sizeof(ncm.IBorderWidth))
+	}
+}
+
+// ⚠️ You must call SetCbSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
 type NOTIFYICONDATA struct {
-	CbSize           uint32
+	cbSize           uint32
 	Hwnd             HWND
 	UID              uint32
 	UFlags           co.NIF
@@ -306,7 +329,7 @@ type NOTIFYICONDATA struct {
 	HBalloonIcon     HICON
 }
 
-func (s *NOTIFYICONDATA) SetCbSize() { s.CbSize = uint32(unsafe.Sizeof(*s)) }
+func (nid *NOTIFYICONDATA) SetCbSize() { nid.cbSize = uint32(unsafe.Sizeof(*nid)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
 type OSVERSIONINFOEX struct {
@@ -320,7 +343,7 @@ type OSVERSIONINFOEX struct {
 	WServicePackMinor   uint16
 	WSuiteMask          co.VER_SUITE
 	WProductType        uint8
-	WReserved           uint8
+	wReserved           uint8
 }
 
 func (s *OSVERSIONINFOEX) SetDwOsVersionInfoSize() { s.DwOsVersionInfoSize = uint32(unsafe.Sizeof(*s)) }
@@ -332,7 +355,7 @@ type PAINTSTRUCT struct {
 	RcPaint     RECT
 	FRestore    BOOL
 	FIncUpdate  BOOL
-	RgbReserved [32]byte
+	rgbReserved [32]byte
 }
 
 // Basic point structure, with x and y coordinates.
@@ -364,9 +387,11 @@ type RECT struct {
 	Left, Top, Right, Bottom int32
 }
 
+// ⚠️ You must call SetCbSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-scrollinfo
 type SCROLLINFO struct {
-	CbSize    uint32
+	cbSize    uint32
 	FMask     co.SIF
 	NMin      uint32
 	NMax      uint32
@@ -375,16 +400,18 @@ type SCROLLINFO struct {
 	NTrackPos int32
 }
 
-func (s *SCROLLINFO) SetCbSize() { s.CbSize = uint32(unsafe.Sizeof(*s)) }
+func (si *SCROLLINFO) SetCbSize() { si.cbSize = uint32(unsafe.Sizeof(*si)) }
 
+// ⚠️ You must call SetNLength().
+//
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/aa379560(v=vs.85)
 type SECURITY_ATTRIBUTES struct {
-	NLength              uint32
+	nLength              uint32
 	LpSecurityDescriptor uintptr // LPVOID
 	BInheritHandle       BOOL
 }
 
-func (s *SECURITY_ATTRIBUTES) SetNLength() { s.NLength = uint32(unsafe.Sizeof(*s)) }
+func (sa *SECURITY_ATTRIBUTES) SetNLength() { sa.nLength = uint32(unsafe.Sizeof(*sa)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
 type SHFILEINFO struct {
@@ -402,10 +429,12 @@ type SIZE struct {
 	Cx, Cy int32
 }
 
+// ⚠️ You must call SetCb().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
 type STARTUPINFO struct {
-	Cb              uint32
-	LpReserved      *uint16
+	cb              uint32
+	lpReserved      *uint16
 	LpDesktop       *uint16
 	LpTitle         *uint16
 	DwX             uint32
@@ -416,20 +445,20 @@ type STARTUPINFO struct {
 	DwYCountChars   uint32
 	DwFillAttribute uint32
 	DwFlags         co.STARTF
-	WShowWindow     uint16 // co::SW, should be uint16
-	CbReserved2     uint16
-	LpReserved2     *uint8
+	WShowWindow     uint16 // co.SW, should be uint16.
+	cbReserved2     uint16
+	lpReserved2     *uint8
 	HStdInput       uintptr
 	HStdOutput      uintptr
 	HStdError       uintptr
 }
 
-func (s *STARTUPINFO) SetCb() { s.Cb = uint32(unsafe.Sizeof(*s)) }
+func (si *STARTUPINFO) SetCb() { si.cb = uint32(unsafe.Sizeof(*si)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
 type SYSTEM_INFO struct {
 	WProcessorArchitecture      co.PROCESSOR_ARCHITECTURE
-	WReserved                   uint16
+	wReserved                   uint16
 	DwPageSize                  uint32
 	LpMinimumApplicationAddress uintptr
 	LpMaximumApplicationAddress uintptr
@@ -529,15 +558,17 @@ type TIME_ZONE_INFORMATION struct {
 	DaylightBias int32
 }
 
+// ⚠️ You must call SetCbSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-titlebarinfoex
 type TITLEBARINFOEX struct {
-	CbSize     uint32
+	cbSize     uint32
 	RcTitleBar RECT
 	Rgstate    [_CCHILDREN_TITLEBAR + 1]uint32
 	Rgrect     [_CCHILDREN_TITLEBAR + 1]RECT
 }
 
-func (s *TITLEBARINFOEX) SetCbSize() { s.CbSize = uint32(unsafe.Sizeof(*s)) }
+func (tix *TITLEBARINFOEX) SetCbSize() { tix.cbSize = uint32(unsafe.Sizeof(*tix)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
 type VS_FIXEDFILEINFO struct {
@@ -581,8 +612,8 @@ type WIN32_FIND_DATA struct {
 	FtLastWriteTime    FILETIME
 	NFileSizeHigh      uint32
 	NFileSizeLow       uint32
-	DwReserved0        uint32
-	DwReserved1        uint32
+	dwReserved0        uint32
+	dwReserved1        uint32
 	CFileName          [_MAX_PATH]uint16
 	CAlternateFileName [14]uint16
 	DwFileType         uint32
@@ -598,9 +629,11 @@ type WINDOWPOS struct {
 	Flags           co.SWP
 }
 
+// ⚠️ You must call SetCbSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassexw
 type WNDCLASSEX struct {
-	CbSize        uint32
+	cbSize        uint32
 	Style         co.CS
 	LpfnWndProc   uintptr // Pointer to WNDPROC callback.
 	CbClsExtra    int32
@@ -614,4 +647,4 @@ type WNDCLASSEX struct {
 	HIconSm       HICON
 }
 
-func (s *WNDCLASSEX) SetCbSize() { s.CbSize = uint32(unsafe.Sizeof(*s)) }
+func (wcx *WNDCLASSEX) SetCbSize() { wcx.cbSize = uint32(unsafe.Sizeof(*wcx)) }

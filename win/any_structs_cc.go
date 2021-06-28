@@ -7,9 +7,11 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
+// ⚠️ You must call SetCbSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
 type IMAGELISTDRAWPARAMS struct {
-	CbSize   uint32
+	cbSize   uint32
 	Himl     HIMAGELIST
 	I        int32
 	HdcDst   HDC
@@ -28,7 +30,7 @@ type IMAGELISTDRAWPARAMS struct {
 	CrEffect COLORREF
 }
 
-func (s *IMAGELISTDRAWPARAMS) SetCbSize() { s.CbSize = uint32(unsafe.Sizeof(*s)) }
+func (ildp *IMAGELISTDRAWPARAMS) SetCbSize() { ildp.cbSize = uint32(unsafe.Sizeof(*ildp)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
 type LITEM struct {
@@ -405,5 +407,5 @@ type TVITEMEX struct {
 	UStateEx       co.TVIS_EX
 	Hwnd           HWND
 	IExpandedImage int32
-	IReserved      int32
+	iReserved      int32
 }
