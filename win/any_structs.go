@@ -35,7 +35,7 @@ func (bih *BITMAPINFOHEADER) SetBiSize() { bih.biSize = uint32(unsafe.Sizeof(*bi
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
 type COMPAREITEMSTRUCT struct {
-	CtlType    co.ODT_I
+	CtlType    co.ODT_C
 	CtlID      uint32
 	HwndItem   HWND
 	ItemID1    uint32
@@ -68,7 +68,7 @@ type CREATESTRUCT struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-deleteitemstruct
 type DELETEITEMSTRUCT struct {
-	CtlType  co.ODT_I
+	CtlType  co.ODT_C
 	CtlID    uint32
 	ItemID   uint32
 	HwndItem HWND
@@ -77,7 +77,7 @@ type DELETEITEMSTRUCT struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
 type DRAWITEMSTRUCT struct {
-	CtlType    co.ODT_D
+	CtlType    co.ODT
 	CtlID      uint32
 	ItemID     uint32
 	ItemAction co.ODA

@@ -20,7 +20,7 @@ type SysLink interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-syslink-control-reference-notifications
 	On() *_SysLinkEvents
 
-	SetText(text string) // Sets the text and resizes the control to fit it exactly.
+	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
 }
 
 //------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ func (me *_SysLink) On() *_SysLinkEvents {
 	return &me.events
 }
 
-func (me *_SysLink) SetText(text string) {
+func (me *_SysLink) SetTextAndResize(text string) {
 	me.Hwnd().SetWindowText(text)
 	boundBox := _CalcTextBoundBox(text, true)
 	me.Hwnd().SetWindowPos(win.HWND(0), 0, 0,

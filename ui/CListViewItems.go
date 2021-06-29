@@ -62,6 +62,16 @@ func (me *_ListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewIt
 	return me.getUnchecked(newIdx)
 }
 
+// Retrieves all the items.
+func (me *_ListViewItems) All() []ListViewItem {
+	numItems := me.Count()
+	items := make([]ListViewItem, 0, numItems)
+	for i := 0; i < numItems; i++ {
+		items = append(items, me.getUnchecked(i))
+	}
+	return items
+}
+
 // Retrieves the number of items.
 func (me *_ListViewItems) Count() int {
 	return int(me.pHwnd.SendMessage(co.LVM_GETITEMCOUNT, 0, 0))

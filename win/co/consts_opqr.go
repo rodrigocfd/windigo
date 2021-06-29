@@ -30,19 +30,19 @@ const (
 	ODS_NOFOCUSRECT  ODS = 0x0200
 )
 
-// DRAWITEMSTRUCT CtlType. Originally with ODT prefix.
+// DRAWITEMSTRUCT CtlType.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
-type ODT_D uint32
+type ODT uint32
 
 const (
-	ODT_D_MENU     ODT_D = 1
-	ODT_D_LISTBOX  ODT_D = 2
-	ODT_D_COMBOBOX ODT_D = 3
-	ODT_D_BUTTON   ODT_D = 4
-	ODT_D_STATIC   ODT_D = 5
-	ODT_D_TAB      ODT_D = 101
-	ODT_D_LISTVIEW ODT_D = 102
+	ODT_MENU     ODT = 1
+	ODT_LISTBOX  ODT = 2
+	ODT_COMBOBOX ODT = 3
+	ODT_BUTTON   ODT = 4
+	ODT_STATIC   ODT = 5
+	ODT_TAB      ODT = 101
+	ODT_LISTVIEW ODT = 102
 )
 
 // COMPAREITEMSTRUCT and DELETEITEMSTRUCT CtlType. Originally with ODT prefix.
@@ -50,11 +50,11 @@ const (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-deleteitemstruct
-type ODT_I uint32
+type ODT_C uint32
 
 const (
-	ODT_I_LISTBOX  ODT_I = ODT_I(ODT_D_LISTBOX)
-	ODT_I_COMBOBOX ODT_I = ODT_I(ODT_D_COMBOBOX)
+	ODT_C_LISTBOX  ODT_C = ODT_C(ODT_LISTBOX)
+	ODT_C_COMBOBOX ODT_C = ODT_C(ODT_COMBOBOX)
 )
 
 // Used in OpenFile().
