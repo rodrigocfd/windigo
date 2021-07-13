@@ -126,6 +126,32 @@ const (
 	TDCBF_CLOSE  TDCBF = 0x0020
 )
 
+// TASKDIALOGCONFIG dwFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/Commctrl/ns-commctrl-taskdialogconfig
+type TDF int32
+
+const (
+	TDF_ENABLE_HYPERLINKS           TDF = 0x0001
+	TDF_USE_HICON_MAIN              TDF = 0x0002
+	TDF_USE_HICON_FOOTER            TDF = 0x0004
+	TDF_ALLOW_DIALOG_CANCELLATION   TDF = 0x0008
+	TDF_USE_COMMAND_LINKS           TDF = 0x0010
+	TDF_USE_COMMAND_LINKS_NO_ICON   TDF = 0x0020
+	TDF_EXPAND_FOOTER_AREA          TDF = 0x0040
+	TDF_EXPANDED_BY_DEFAULT         TDF = 0x0080
+	TDF_VERIFICATION_FLAG_CHECKED   TDF = 0x0100
+	TDF_SHOW_PROGRESS_BAR           TDF = 0x0200
+	TDF_SHOW_MARQUEE_PROGRESS_BAR   TDF = 0x0400
+	TDF_CALLBACK_TIMER              TDF = 0x0800
+	TDF_POSITION_RELATIVE_TO_WINDOW TDF = 0x1000
+	TDF_RTL_LAYOUT                  TDF = 0x2000
+	TDF_NO_DEFAULT_RADIO_BUTTON     TDF = 0x4000
+	TDF_CAN_BE_MINIMIZED            TDF = 0x8000
+	TDF_NO_SET_FOREGROUND           TDF = 0x00010000
+	TDF_SIZE_TO_CONTENT             TDF = 0x01000000
+)
+
 // GetTimeZoneInformation() return value.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation

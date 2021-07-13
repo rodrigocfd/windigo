@@ -422,6 +422,76 @@ type SHFILEINFO struct {
 	SzTypeName    [80]uint16
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialog_button
+type TASKDIALOG_BUTTON struct {
+	data [12]byte
+}
+
+func (tdb *TASKDIALOG_BUTTON) NButtonID() *int32 { return (*int32)(unsafe.Pointer(&tdb.data[0])) }
+func (tdb *TASKDIALOG_BUTTON) PszButtonText() **uint16 {
+	return (**uint16)(unsafe.Pointer(&tdb.data[4]))
+}
+
+// ⚠️ You must call SetCbSize().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig
+type TASKDIALOGCONFIG struct {
+	data [160]byte
+}
+
+func (tdc *TASKDIALOGCONFIG) SetCbSize() {
+	*(*uint32)(unsafe.Pointer(&tdc.data[0])) = uint32(unsafe.Sizeof(*tdc))
+}
+func (tdc *TASKDIALOGCONFIG) HwndParent() *HWND { return (*HWND)(unsafe.Pointer(&tdc.data[4])) }
+func (tdc *TASKDIALOGCONFIG) HInstance() *HINSTANCE {
+	return (*HINSTANCE)(unsafe.Pointer(&tdc.data[12]))
+}
+func (tdc *TASKDIALOGCONFIG) DwFlags() *co.TDF { return (*co.TDF)(unsafe.Pointer(&tdc.data[20])) }
+func (tdc *TASKDIALOGCONFIG) DwCommonButtons() *co.TDCBF {
+	return (*co.TDCBF)(unsafe.Pointer(&tdc.data[24]))
+}
+func (tdc *TASKDIALOGCONFIG) PszWindowTitle() **uint16 {
+	return (**uint16)(unsafe.Pointer(&tdc.data[28]))
+}
+func (tdc *TASKDIALOGCONFIG) HMainIcon() *co.TD_ICON { // also accepts HICON
+	return (*co.TD_ICON)(unsafe.Pointer(&tdc.data[36]))
+}
+func (tdc *TASKDIALOGCONFIG) PszMainInstruction() **uint16 {
+	return (**uint16)(unsafe.Pointer(&tdc.data[44]))
+}
+func (tdc *TASKDIALOGCONFIG) PszContent() **uint16 { return (**uint16)(unsafe.Pointer(&tdc.data[52])) }
+func (tdc *TASKDIALOGCONFIG) CButtons() *uint32    { return (*uint32)(unsafe.Pointer(&tdc.data[60])) }
+func (tdc *TASKDIALOGCONFIG) PButtons() **TASKDIALOG_BUTTON {
+	return (**TASKDIALOG_BUTTON)(unsafe.Pointer(&tdc.data[64]))
+}
+func (tdc *TASKDIALOGCONFIG) NDefaultButton() *int32 { return (*int32)(unsafe.Pointer(&tdc.data[72])) }
+func (tdc *TASKDIALOGCONFIG) CRadioButtons() *uint32 { return (*uint32)(unsafe.Pointer(&tdc.data[76])) }
+func (tdc *TASKDIALOGCONFIG) PRadioButtons() **TASKDIALOG_BUTTON {
+	return (**TASKDIALOG_BUTTON)(unsafe.Pointer(&tdc.data[80]))
+}
+func (tdc *TASKDIALOGCONFIG) NDefaultRadioButton() *int32 {
+	return (*int32)(unsafe.Pointer(&tdc.data[88]))
+}
+func (tdc *TASKDIALOGCONFIG) PszVerificationText() **uint16 {
+	return (**uint16)(unsafe.Pointer(&tdc.data[92]))
+}
+func (tdc *TASKDIALOGCONFIG) PszExpandedInformation() **uint16 {
+	return (**uint16)(unsafe.Pointer(&tdc.data[100]))
+}
+func (tdc *TASKDIALOGCONFIG) PszExpandedControlText() **uint16 {
+	return (**uint16)(unsafe.Pointer(&tdc.data[108]))
+}
+func (tdc *TASKDIALOGCONFIG) PszCollapsedControlText() **uint16 {
+	return (**uint16)(unsafe.Pointer(&tdc.data[116]))
+}
+func (tdc *TASKDIALOGCONFIG) HFooterIcon() *HICON  { return (*HICON)(unsafe.Pointer(&tdc.data[124])) }
+func (tdc *TASKDIALOGCONFIG) PszFooter() **uint16  { return (**uint16)(unsafe.Pointer(&tdc.data[132])) }
+func (tdc *TASKDIALOGCONFIG) PfCallback() *uintptr { return (*uintptr)(unsafe.Pointer(&tdc.data[140])) }
+func (tdc *TASKDIALOGCONFIG) LpCallbackData() *uintptr {
+	return (*uintptr)(unsafe.Pointer(&tdc.data[148]))
+}
+func (tdc *TASKDIALOGCONFIG) CxWidth() *uint32 { return (*uint32)(unsafe.Pointer(&tdc.data[156])) }
+
 // Basic area size structure, with cx and cy values.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-size

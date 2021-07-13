@@ -672,6 +672,18 @@ func SystemTimeToTzSpecificLocalTime(
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
+func TaskDialogIndirect(pTaskConfig *TASKDIALOGCONFIG) co.ID {
+	pnButton := co.ID(0)
+	ret, _, _ := syscall.Syscall6(proc.TaskDialogIndirect.Addr(), 4,
+		uintptr(unsafe.Pointer(pTaskConfig)), uintptr(unsafe.Pointer(&pnButton)),
+		uintptr(0), uintptr(0), 0, 0)
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
+	}
+	return co.ID(pnButton)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translatemessage
 func TranslateMessage(msg *MSG) bool {
 	ret, _, _ := syscall.Syscall(proc.TranslateMessage.Addr(), 1,
