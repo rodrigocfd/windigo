@@ -1,6 +1,7 @@
 package win
 
 import (
+	"strings"
 	"syscall"
 	"unsafe"
 
@@ -245,6 +246,31 @@ func GetDynamicTimeZoneInformation(
 	ret, _, _ := syscall.Syscall(proc.GetDynamicTimeZoneInformation.Addr(), 1,
 		uintptr(unsafe.Pointer(pTimeZoneInformation)), 0, 0)
 	return co.TIME_ZONE_ID(ret)
+}
+
+// You don't need to call FreeEnvironmentStrings(), it's automatically called.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getenvironmentstringsw
+func GetEnvironmentStrings() map[string]string {
+	ret, _, err := syscall.Syscall(proc.GetEnvironmentStrings.Addr(), 0,
+		0, 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	rawEntries := Str.FromUint16PtrMulti((*uint16)(unsafe.Pointer(ret)))
+
+	ret, _, err = syscall.Syscall(proc.FreeEnvironmentStrings.Addr(), 1,
+		ret, 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+
+	mapEntries := make(map[string]string, len(rawEntries))
+	for _, entry := range rawEntries {
+		keyVal := strings.SplitN(entry, "=", 2)
+		mapEntries[keyVal[0]] = keyVal[1]
+	}
+	return mapEntries
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
