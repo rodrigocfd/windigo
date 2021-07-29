@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"syscall"
 	"unsafe"
+
+	"github.com/rodrigocfd/windigo/internal/util"
 )
 
 type _StrT struct{}
@@ -43,7 +45,7 @@ func (_StrT) FromUint16Ptr(p *uint16) string {
 		sLen++
 	}
 
-	slice := Str.ptrToSlice(p, sLen) // create slice without terminating null
+	slice := util.PtrToSliceUint16(p, sLen) // create slice without terminating null
 	return Str.FromUint16Slice(slice)
 }
 
@@ -64,7 +66,7 @@ func (_StrT) FromUint16PtrMulti(p *uint16) []string {
 				break // two terminating nulls
 			}
 
-			slice := Str.ptrToSlice(p, sLen) // create slice without terminating null
+			slice := util.PtrToSliceUint16(p, sLen) // create slice without terminating null
 			values = append(values, Str.FromUint16Slice(slice))
 
 			pRun = unsafe.Pointer(uintptr(pRun) + unsafe.Sizeof(*p)) // pRun++
@@ -152,17 +154,4 @@ func (_StrT) ToUint16SliceMulti(ss []string) []uint16 {
 	buf = append(buf, 0) // 2nd terminating null
 
 	return buf
-}
-
-// Converts *uint16 to []uint16, with the given length.
-func (_StrT) ptrToSlice(ptr *uint16, length int) []uint16 {
-	// https://stackoverflow.com/a/43592538
-	// https://golang.org/pkg/internal/unsafeheader/#Slice
-	var sliceMem = struct { // slice memory layout
-		addr unsafe.Pointer
-		len  int
-		cap  int
-	}{unsafe.Pointer(ptr), length, length}
-
-	return *(*[]uint16)(unsafe.Pointer(&sliceMem)) // convert to slice itself
 }

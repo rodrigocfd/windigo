@@ -7,6 +7,7 @@ import (
 var (
 	shell32 = syscall.NewLazyDLL("shell32.dll")
 
+	CommandLineToArgv           = shell32.NewProc("CommandLineToArgvW")
 	DragAcceptFiles             = shell32.NewProc("DragAcceptFiles")
 	DragFinish                  = shell32.NewProc("DragFinish")
 	DragQueryFile               = shell32.NewProc("DragQueryFileW")

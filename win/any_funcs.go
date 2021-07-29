@@ -47,6 +47,27 @@ func CoInitializeEx(dwCoInit co.COINIT) {
 	}
 }
 
+// Typically used with GetCommandLine().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw
+func CommandLineToArgv(lpCmdLine string) []string {
+	pNumArgs := int32(0)
+	ret, _, err := syscall.Syscall(proc.CommandLineToArgv.Addr(), 2,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpCmdLine))),
+		uintptr(unsafe.Pointer(&pNumArgs)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+
+	lpPtrs := util.PtrToSliceUint16Ptr((**uint16)(unsafe.Pointer(ret)), int(pNumArgs)) // []*uint16
+	strs := make([]string, 0, pNumArgs)
+
+	for _, lpPtr := range lpPtrs {
+		strs = append(strs, Str.FromUint16Ptr(lpPtr))
+	}
+	return strs
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
 func CoTaskMemFree(pv unsafe.Pointer) {
 	syscall.Syscall(proc.CoTaskMemFree.Addr(), 1,
@@ -186,6 +207,21 @@ func ExitProcess(uExitCode uint32) {
 		uintptr(uExitCode), 0, 0)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
+func ExpandEnvironmentStrings(lpSrc string) string {
+	ret, _, _ := syscall.Syscall(proc.ExpandEnvironmentStrings.Addr(), 3,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSrc))), 0, 0)
+
+	buf := make([]uint16, ret)
+	ret, _, err := syscall.Syscall(proc.ExpandEnvironmentStrings.Addr(), 3,
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSrc))),
+		uintptr(unsafe.Pointer(&buf[0])), ret)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return Str.FromUint16Slice(buf)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
 func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
 	ret, _, err := syscall.Syscall(proc.FileTimeToSystemTime.Addr(), 2,
@@ -212,6 +248,13 @@ func GetCaretPos() RECT {
 		panic(errco.ERROR(err))
 	}
 	return rc
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getcommandlinew
+func GetCommandLine() string {
+	ret, _, _ := syscall.Syscall(proc.GetCommandLine.Addr(), 0,
+		0, 0, 0)
+	return Str.FromUint16Ptr((*uint16)(unsafe.Pointer(ret)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
@@ -744,7 +787,7 @@ func VerQueryValue(pBlock []byte, lpSubBlock string) ([]byte, bool) {
 	if ret == 0 {
 		return nil, false
 	}
-	return util.PtrToSlice(lplpBuffer, int(puLen)), true
+	return util.PtrToSliceByte((*byte)(unsafe.Pointer(lplpBuffer)), int(puLen)), true
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
