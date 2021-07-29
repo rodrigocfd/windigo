@@ -2,6 +2,7 @@ package win
 
 import (
 	"encoding/binary"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -29,7 +30,14 @@ func NewGuidFromIid(iid co.IID) *GUID {
 }
 
 func _NewGuidFromStr(strGuid string) *GUID {
+	if len(strGuid) != 36 {
+		panic(fmt.Sprintf("Malformed GUID: %s", strGuid))
+	}
+
 	strs := strings.Split(strGuid, "-")
+	if len(strs) != 5 {
+		panic(fmt.Sprintf("Malformed GUID parts: %s", strGuid))
+	}
 
 	num1, e := strconv.ParseUint(strs[0], 16, 32)
 	if e != nil {
