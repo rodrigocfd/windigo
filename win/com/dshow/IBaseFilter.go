@@ -22,14 +22,12 @@ type IBaseFilter struct {
 	IMediaFilter // Base IMediaFilter > IPersist > IUnknown.
 }
 
-// Calls IUnknown.CoCreateInstance() to return IBaseFilter.
-//
-// Typically uses CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/medfound/using-the-directshow-evr-filter
-func CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) IBaseFilter {
+func NewEnhancedVideoRenderer(dwClsContext co.CLSCTX) IBaseFilter {
 	iUnk := win.CoCreateInstance(
 		dshowco.CLSID_EnhancedVideoRenderer, nil, dwClsContext,
 		dshowco.IID_IBaseFilter)
@@ -40,14 +38,12 @@ func CoCreateEnhancedVideoRenderer(dwClsContext co.CLSCTX) IBaseFilter {
 	}
 }
 
-// Calls IUnknown.CoCreateInstance() to return IBaseFilter.
-//
-// Typically uses CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/directshow/video-mixing-renderer-filter-9
-func CoCreateVideoMixingRenderer9(dwClsContext co.CLSCTX) IBaseFilter {
+func NewVideoMixingRenderer9(dwClsContext co.CLSCTX) IBaseFilter {
 	iUnk := win.CoCreateInstance(
 		dshowco.CLSID_VideoMixingRenderer9, nil, dwClsContext,
 		dshowco.IID_IBaseFilter)

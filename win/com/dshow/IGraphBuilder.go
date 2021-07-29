@@ -28,14 +28,12 @@ type IGraphBuilder struct {
 	IFilterGraph // Base IFilterGraph > IUnknown.
 }
 
-// Calls IUnknown.CoCreateInstance() to return IGraphBuilder.
-//
-// Typically uses CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateIGraphBuilder(dwClsContext co.CLSCTX) IGraphBuilder {
+func NewIGraphBuilder(dwClsContext co.CLSCTX) IGraphBuilder {
 	iUnk := win.CoCreateInstance(
 		dshowco.CLSID_FilterGraph, nil, dwClsContext,
 		dshowco.IID_IGraphBuilder)
@@ -95,9 +93,11 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 	}
 }
 
+// Calls QueryInterface().
+//
 // ⚠️ You must defer Release().
 //
-// Calls IUnknown.QueryInterface() to return IBasicAudio.
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
 	iUnk := me.QueryInterface(dshowco.IID_IBasicAudio)
 	return IBasicAudio{
@@ -105,9 +105,11 @@ func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
 	}
 }
 
+// Calls QueryInterface().
+//
 // ⚠️ You must defer Release().
 //
-// Calls IUnknown.QueryInterface() to return IMediaControl.
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
 	iUnk := me.QueryInterface(dshowco.IID_IMediaControl)
 	return IMediaControl{
@@ -115,9 +117,11 @@ func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
 	}
 }
 
+// Calls QueryInterface().
+//
 // ⚠️ You must defer Release().
 //
-// Calls IUnknown.QueryInterface() to return IMediaSeeking.
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IGraphBuilder) QueryIMediaSeeking() IMediaSeeking {
 	iUnk := me.QueryInterface(dshowco.IID_IMediaSeeking)
 	return IMediaSeeking{IUnknown: iUnk}

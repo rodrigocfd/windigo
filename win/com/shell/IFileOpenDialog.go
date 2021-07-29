@@ -23,14 +23,12 @@ type IFileOpenDialog struct {
 	IFileDialog // Base IFileDialog > IModalWindow > IUnknown.
 }
 
-// Calls IUnknown.CoCreateInstance() to return IFileOpenDialog.
-//
-// Typically uses CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateIFileOpenDialog(dwClsContext co.CLSCTX) IFileOpenDialog {
+func NewIFileOpenDialog(dwClsContext co.CLSCTX) IFileOpenDialog {
 	iUnk := win.CoCreateInstance(
 		shellco.CLSID_FileOpenDialog, nil, dwClsContext,
 		shellco.IID_IFileOpenDialog)

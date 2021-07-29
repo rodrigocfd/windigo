@@ -33,14 +33,12 @@ type ITaskbarList3 struct {
 	ITaskbarList2 // Base ITaskbarList2 > ITaskbarList > IUnknown.
 }
 
-// Calls IUnknown.CoCreateInstance() to return ITaskbarList3.
-//
-// Typically uses CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateITaskbarList3(dwClsContext co.CLSCTX) ITaskbarList3 {
+func NewITaskbarList3(dwClsContext co.CLSCTX) ITaskbarList3 {
 	iUnk := win.CoCreateInstance(
 		shellco.CLSID_TaskbarList, nil, dwClsContext,
 		shellco.IID_ITaskbarList3)

@@ -39,10 +39,12 @@ func (me *IMFGetService) GetService(guidService, riid *win.GUID) win.IUnknown {
 	return win.IUnknown{Ppv: ppQueried}
 }
 
-// Calls IMFGetService.GetService() to return IMFVideoDisplayControl.
+// Calls GetService() to return IMFVideoDisplayControl.
 //
 // ⚠️ You must defer Release().
-func (me *IMFGetService) GetServiceIMFVideoDisplayControl() IMFVideoDisplayControl {
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
+func (me *IMFGetService) GetIMFVideoDisplayControl() IMFVideoDisplayControl {
 	iUnk := me.GetService(
 		win.NewGuidFromClsid(dshowco.CLSID_MR_VideoRenderService),
 		win.NewGuidFromIid(dshowco.IID_IMFVideoDisplayControl))
