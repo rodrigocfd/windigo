@@ -18,7 +18,9 @@ type Static interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-static-control-reference-notifications
 	On() *_StaticEvents
 
+	SetText(text string)          // Sets the text.
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
+	Text() string                 // Retrieves the text.
 }
 
 //------------------------------------------------------------------------------
@@ -71,11 +73,19 @@ func (me *_Static) On() *_StaticEvents {
 	return &me.events
 }
 
+func (me *_Static) SetText(text string) {
+	me.Hwnd().SetWindowText(text)
+}
+
 func (me *_Static) SetTextAndResize(text string) {
 	me.Hwnd().SetWindowText(text)
 	boundBox := _CalcTextBoundBox(text, true)
 	me.Hwnd().SetWindowPos(win.HWND(0), 0, 0,
 		boundBox.Cx, boundBox.Cy, co.SWP_NOZORDER|co.SWP_NOMOVE)
+}
+
+func (me *_Static) Text() string {
+	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------
