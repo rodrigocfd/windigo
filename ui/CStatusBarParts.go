@@ -157,6 +157,8 @@ func (me *_StatusBarParts) Icon(index int) win.HICON {
 }
 
 // Sets the texts of all parts at once.
+//
+// Panics if the number of texts is greater than the number of parts.
 func (me *_StatusBarParts) SetAllTexts(texts ...string) {
 	if len(texts) > len(me.partsData) {
 		panic(

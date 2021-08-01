@@ -26,10 +26,10 @@ type ListView interface {
 	Columns() *_ListViewColumns                                       // Column methods.
 	EditControl() win.HWND                                            // Retrieves a handle to the edit control being used.
 	ExtendedStyle() co.LVS_EX                                         // Retrieves the extended style flags.
-	ImageList(which co.LVSIL) win.HIMAGELIST                          // Retrieves one of the current image lists.
+	ImageList(which co.LVSIL) win.HIMAGELIST                          // Retrieves one of the current image lists. If the list has LVS_SHAREIMAGELISTS, it's shared, otherwise it will be automatically destroyed.
 	Items() *_ListViewItems                                           // Item methods.
 	SetExtendedStyle(doSet bool, styles co.LVS_EX)                    // Sets or unsets extended style flags.
-	SetImageList(which co.LVSIL, himgl win.HIMAGELIST) win.HIMAGELIST // Sets one of the current image lists.
+	SetImageList(which co.LVSIL, himgl win.HIMAGELIST) win.HIMAGELIST // Sets one of the current image lists. If the list has LVS_SHAREIMAGELISTS, it's shared, otherwise it will be automatically destroyed.
 	SetRedraw(allowRedraw bool)                                       // Sends WM_SETREDRAW to enable or disable UI updates.
 	SetView(view co.LV_VIEW)                                          // Sets current view.
 	View() co.LV_VIEW                                                 // Retrieves current view.
@@ -61,7 +61,7 @@ func NewListView(parent AnyParent, opts *_ListViewO) ListView {
 		_MultiplyDpi(&opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles, "SysListView32", "",
-			opts.wndStyles|co.WS(opts.ctrlStyles|co.LVS_SHAREIMAGELISTS), // force LVS_SHAREIMAGELISTS
+			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
 		if opts.ctrlExStyles != co.LVS_EX_NONE {
@@ -94,9 +94,6 @@ func NewListViewDlg(parent AnyParent, ctrlId, contextMenuId int) ListView {
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
-		me.Hwnd().SetWindowLongPtr(co.GWLP_STYLE,
-			uintptr(me.Hwnd().GetWindowLongPtr(co.GWLP_STYLE))|
-				uintptr(co.LVS_SHAREIMAGELISTS)) // force LVS_SHAREIMAGELISTS
 	})
 
 	me.handledEvents()
@@ -256,8 +253,7 @@ func (o *_ListViewO) Position(p win.POINT) *_ListViewO { _OwPt(&o.position, p); 
 func (o *_ListViewO) Size(s win.SIZE) *_ListViewO { _OwSz(&o.size, s); return o }
 
 // ListView control styles, passed to CreateWindowEx().
-// Defaults to LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS.
-// LVS_SHAREIMAGELISTS will always be added.
+// Defaults to LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS.
 func (o *_ListViewO) CtrlStyles(s co.LVS) *_ListViewO { o.ctrlStyles = s; return o }
 
 // ListView extended control styles, passed to CreateWindowEx().
@@ -285,9 +281,8 @@ func (o *_ListViewO) lateDefaults() {
 // Options for NewListView().
 func ListViewOpts() *_ListViewO {
 	return &_ListViewO{
-		size: win.SIZE{Cx: 120, Cy: 120},
-		ctrlStyles: co.LVS_REPORT | co.LVS_NOSORTHEADER | co.LVS_SHOWSELALWAYS |
-			co.LVS_SHAREIMAGELISTS,
+		size:        win.SIZE{Cx: 120, Cy: 120},
+		ctrlStyles:  co.LVS_REPORT | co.LVS_NOSORTHEADER | co.LVS_SHOWSELALWAYS,
 		wndStyles:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 		wndExStyles: co.WS_EX_CLIENTEDGE,
 	}
