@@ -518,6 +518,16 @@ const (
 	LVSIL_GROUPHEADER LVSIL = 3
 )
 
+// LockSetForegroundWindow() uLockCode.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-locksetforegroundwindow
+type LSFW uint32
+
+const (
+	LSFW_LOCK   LSFW = 1
+	LSFW_UNLOCK LSFW = 2
+)
+
 // SysLink control styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/syslink-control-styles

@@ -3,6 +3,7 @@ package win
 import (
 	"strings"
 	"syscall"
+	"time"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
@@ -368,6 +369,23 @@ func GetMessage(
 	return int32(ret), nil
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagepos
+func GetMessagePos() POINT {
+	ret, _, _ := syscall.Syscall(proc.GetMessagePos.Addr(), 0,
+		0, 0, 0)
+	return POINT{
+		X: int32(Bytes.Lo16(uint32(ret))),
+		Y: int32(Bytes.Hi16(uint32(ret))),
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagetime
+func GetMessageTime() time.Duration {
+	ret, _, _ := syscall.Syscall(proc.GetMessageTime.Addr(), 0,
+		0, 0, 0)
+	return time.Duration(ret * 1000000)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos
 func GetPhysicalCursorPos() POINT {
 	pt := POINT{}
@@ -377,6 +395,13 @@ func GetPhysicalCursorPos() POINT {
 		panic(errco.ERROR(err))
 	}
 	return pt
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getqueuestatus
+func GetQueueStatus(flags co.QS) uint32 {
+	ret, _, _ := syscall.Syscall(proc.GetQueueStatus.Addr(), 1,
+		uintptr(flags), 0, 0)
+	return uint32(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getstartupinfow
@@ -573,6 +598,15 @@ func IsWindowsVersionOrGreater(
 	return ret
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-locksetforegroundwindow
+func LockSetForegroundWindow(uLockCode co.LSFW) {
+	ret, _, err := syscall.Syscall(proc.LockSetForegroundWindow.Addr(), 1,
+		uintptr(uLockCode), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
 func MonitorFromPoint(pt POINT, dwFlags co.MONITOR) HMONITOR {
 	ret, _, _ := syscall.Syscall(proc.MonitorFromPoint.Addr(), 3,
@@ -585,6 +619,17 @@ func MulDiv(number, numerator, denominator int32) int32 {
 	ret, _, _ := syscall.Syscall(proc.MulDiv.Addr(), 3,
 		uintptr(number), uintptr(numerator), uintptr(denominator))
 	return int32(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew
+func PeekMessage(
+	lpMsg *MSG, hWnd HWND,
+	wMsgFilterMin, wMsgFilterMax co.WM, wRemoveMsg co.PM) bool {
+
+	ret, _, _ := syscall.Syscall6(proc.PeekMessageW.Addr(), 5,
+		uintptr(unsafe.Pointer(lpMsg)), uintptr(hWnd),
+		uintptr(wMsgFilterMin), uintptr(wMsgFilterMax), uintptr(wRemoveMsg), 0)
+	return ret != 0
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postquitmessage

@@ -171,6 +171,22 @@ const (
 	PBT_POWERSETTINGCHANGE    PBT = 0x8013
 )
 
+// PeekMessage() wRemoveMsg.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew
+type PM uint32
+
+const (
+	PM_NOREMOVE PM = 0x0000
+	PM_REMOVE   PM = 0x0001
+	PM_NOYIELD  PM = 0x0002
+
+	PM_QS_INPUT       PM = PM(QS_INPUT << 16)
+	PM_QS_PAINT       PM = PM(QS_PAINT << 16)
+	PM_QS_POSTMESSAGE PM = PM((QS_POSTMESSAGE | QS_HOTKEY | QS_TIMER) << 16)
+	PM_QS_SENDMESSAGE PM = PM(QS_SENDMESSAGE << 16)
+)
+
 // SetPolyFillMode() mode. Originally has no prefix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setpolyfillmode
@@ -275,6 +291,29 @@ const (
 	PT_LINETO      PT = 0x02
 	PT_BEZIERTO    PT = 0x04
 	PT_MOVETO      PT = 0x06
+)
+
+// GetQueueStatus() flags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getqueuestatus
+type QS uint32
+
+const (
+	QS_KEY            QS = 0x0001
+	QS_MOUSEMOVE      QS = 0x0002
+	QS_MOUSEBUTTON    QS = 0x0004
+	QS_POSTMESSAGE    QS = 0x0008
+	QS_TIMER          QS = 0x0010
+	QS_PAINT          QS = 0x0020
+	QS_SENDMESSAGE    QS = 0x0040
+	QS_HOTKEY         QS = 0x0080
+	QS_ALLPOSTMESSAGE QS = 0x0100
+	QS_RAWINPUT       QS = 0x0400
+	QS_TOUCH          QS = 0x0800
+	QS_POINTER        QS = 0x1000
+	QS_MOUSE          QS = QS_MOUSEMOVE | QS_MOUSEBUTTON
+	QS_INPUT          QS = QS_MOUSE | QS_KEY | QS_RAWINPUT | QS_TOUCH | QS_POINTER
+	QS_ALLINPUT       QS = QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY | QS_SENDMESSAGE
 )
 
 // Registry value types.

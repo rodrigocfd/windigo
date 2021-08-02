@@ -51,6 +51,13 @@ func GetForegroundWindow() HWND {
 	return HWND(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getshellwindow
+func GetShellWindow() HWND {
+	ret, _, _ := syscall.Syscall(proc.GetShellWindow.Addr(), 0,
+		0, 0, 0)
+	return HWND(ret)
+}
+
 // ⚠️ You must defer EndPaint().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint
@@ -451,6 +458,13 @@ func (hWnd HWND) IsWindowEnabled() bool {
 	return ret != 0
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-iswindowvisible
+func (hWnd HWND) IsWindowVisible() bool {
+	ret, _, _ := syscall.Syscall(proc.IsWindowVisible.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	return ret != 0
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-iszoomed
 func (hWnd HWND) IsZoomed() bool {
 	ret, _, _ := syscall.Syscall(proc.IsZoomed.Addr(), 1,
@@ -463,6 +477,15 @@ func (hWnd HWND) KillTimer(uIDEvent uintptr) {
 	ret, _, err := syscall.Syscall(proc.KillTimer.Addr(), 2,
 		uintptr(hWnd), uIDEvent, 0)
 	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
+		panic(errco.ERROR(err))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-logicaltophysicalpoint
+func (hWnd HWND) LogicalToPhysicalPoint(lpPoint *POINT) {
+	ret, _, err := syscall.Syscall(proc.LogicalToPhysicalPoint.Addr(), 2,
+		uintptr(hWnd), uintptr(unsafe.Pointer(lpPoint)), 0)
+	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
