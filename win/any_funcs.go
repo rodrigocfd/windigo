@@ -33,6 +33,21 @@ func AllowSetForegroundWindow(dwProcessId uint32) {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms646912(v=vs.85)
+func ChooseColor(lpcc *CHOOSECOLOR) bool {
+	ret, _, _ := syscall.Syscall(proc.ChooseColor.Addr(), 1,
+		uintptr(unsafe.Pointer(lpcc)), 0, 0)
+	if ret == 0 {
+		dlgErr := CommDlgExtendedError()
+		if dlgErr == errco.CDERR(0) {
+			return false
+		} else {
+			panic(dlgErr)
+		}
+	}
+	return true
+}
+
 // Loads the COM module. This needs to be done only once in your application.
 // Typically uses COINIT_APARTMENTTHREADED.
 //
@@ -46,6 +61,13 @@ func CoInitializeEx(dwCoInit co.COINIT) {
 	if hr != errco.S_OK && hr != errco.S_FALSE {
 		panic(hr)
 	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-commdlgextendederror
+func CommDlgExtendedError() errco.CDERR {
+	ret, _, _ := syscall.Syscall(proc.CommDlgExtendedError.Addr(), 0,
+		0, 0, 0)
+	return errco.CDERR(ret)
 }
 
 // Typically used with GetCommandLine().

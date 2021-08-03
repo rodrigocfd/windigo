@@ -22,7 +22,7 @@ For the Win32 API bindings:
 | - | - |
 | `win` | Native Win32 structs, handles and functions. |
 | `win/co` | Native Win32 constants, all typed. |
-| `win/errco` | Native Win32 [error codes](https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes), all typed as `errco.ERROR`. |
+| `win/errco` | Native Win32 [error codes](https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes), with types `errco.ERROR` and `errco.CDERR`. |
 
 And for the COM bindings:
 

@@ -42,6 +42,23 @@ const (
 	CB_MSGMAX                WM = 0x0165
 )
 
+// CHOOSECOLOR Flags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolorw-r1
+type CC uint32
+
+const (
+	CC_RGBINIT              CC = 0x00000001
+	CC_FULLOPEN             CC = 0x00000002
+	CC_PREVENTFULLOPEN      CC = 0x00000004
+	CC_SHOWHELP             CC = 0x00000008
+	CC_ENABLEHOOK           CC = 0x00000010
+	CC_ENABLETEMPLATE       CC = 0x00000020
+	CC_ENABLETEMPLATEHANDLE CC = 0x00000040
+	CC_SOLIDCOLOR           CC = 0x00000080
+	CC_ANYCOLOR             CC = 0x00000100
+)
+
 // ComboBox control notifications, sent via WM_COMMAND.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-notifications

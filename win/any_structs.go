@@ -33,6 +33,23 @@ type BITMAPINFOHEADER struct {
 
 func (bih *BITMAPINFOHEADER) SetBiSize() { bih.biSize = uint32(unsafe.Sizeof(*bih)) }
 
+// ⚠️ You must call SetLStructSize().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolorw-r1
+type CHOOSECOLOR struct {
+	lStructSize    uint32
+	HwndOwner      HWND
+	HInstance      HWND
+	RgbResult      COLORREF
+	LpCustColors   *COLORREF
+	Flags          co.CC
+	LCustData      uintptr // LPARAM
+	LpfnHook       uintptr // LPCCHOOKPROC
+	LpTemplateName *uint16
+}
+
+func (cc *CHOOSECOLOR) SetLStructSize() { cc.lStructSize = uint32(unsafe.Sizeof(*cc)) }
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
 type COMPAREITEMSTRUCT struct {
 	CtlType    co.ODT_C
@@ -705,7 +722,7 @@ type WINDOWPOS struct {
 type WNDCLASSEX struct {
 	cbSize        uint32
 	Style         co.CS
-	LpfnWndProc   uintptr // Pointer to WNDPROC callback.
+	LpfnWndProc   uintptr // WNDPROC
 	CbClsExtra    int32
 	CbWndExtra    int32
 	HInstance     HINSTANCE
