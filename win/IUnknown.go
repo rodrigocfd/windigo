@@ -59,6 +59,15 @@ func CoCreateInstance(
 	return IUnknown{ppv}
 }
 
+// ⚠️ You must defer Release().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IUnknown) AddRef() IUnknown {
+	syscall.Syscall((*me.Ppv).AddRef, 1,
+		uintptr(unsafe.Pointer(me.Ppv)), 0, 0)
+	return IUnknown{me.Ppv} // imply copy the pointer into a new object
+}
+
 // Returns a pointer to a pointer to the IUnknown virtual table, which can be
 // cast into the specific virtual table type.
 //
