@@ -1,6 +1,7 @@
 package win
 
 import (
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -40,29 +41,45 @@ func CreatePopupMenu() HMENU {
 }
 
 // Appends a new item to the menu.
+//
+// Wrapper to AppendMenu().
 func (hMenu HMENU) AddItem(cmdId int, text string) {
-	hMenu.AppendMenu(co.MF_STRING, uintptr(cmdId),
-		unsafe.Pointer(Str.ToUint16Ptr(text)))
+	hMenu.AppendMenu(co.MF_STRING, uint16(cmdId), text)
 }
 
 // Appends a new separator to the menu.
+//
+// Wrapper to AppendMenu().
 func (hMenu HMENU) AddSeparator() {
-	hMenu.AppendMenu(co.MF_SEPARATOR, 0, nil)
+	hMenu.AppendMenu(co.MF_SEPARATOR, HMENU(0), LPARAM(0))
 }
 
 // Appends a new submenu to the menu.
+//
+// Wrapper to AppendMenu().
 func (hMenu HMENU) AddSubmenu(text string, hSubMenu HMENU) {
-	hMenu.AppendMenu(co.MF_STRING|co.MF_POPUP, uintptr(hSubMenu),
-		unsafe.Pointer(Str.ToUint16Ptr(text)))
+	hMenu.AppendMenu(co.MF_STRING|co.MF_POPUP, hSubMenu, text)
 }
 
+// ⚠️ uIDNewItem must be uint16 or HMENU.
+//
+// ⚠️ lpNewItem must be HBITMAP, LPARAM or string.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-appendmenuw
 func (hMenu HMENU) AppendMenu(
-	uFlags co.MF, uIDNewItem uintptr, lpNewItem unsafe.Pointer) {
+	uFlags co.MF, uIDNewItem interface{}, lpNewItem interface{}) {
+
+	pIdNew := _UintptrConv{val: uIDNewItem}
+	pContt := _UintptrConv{val: lpNewItem}
 
 	ret, _, err := syscall.Syscall6(proc.AppendMenu.Addr(), 4,
-		uintptr(hMenu), uintptr(uFlags), uIDNewItem, uintptr(lpNewItem),
+		uintptr(hMenu), uintptr(uFlags),
+		pIdNew.uint16Hmenu(), pContt.hbitmapLparamString(),
 		0, 0)
+
+	runtime.KeepAlive(uIDNewItem)
+	runtime.KeepAlive(lpNewItem)
+
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
