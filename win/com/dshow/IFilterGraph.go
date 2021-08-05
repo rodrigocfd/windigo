@@ -101,7 +101,7 @@ func (me *IFilterGraph) EnumFilters() IEnumFilters {
 	}
 }
 
-// ⚠️ You must defer Release() if true.
+// ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-findfilterbyname
 func (me *IFilterGraph) FindFilterByName(pName string) (IBaseFilter, bool) {

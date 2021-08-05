@@ -29,7 +29,7 @@ type IShellItem struct {
 
 // Creates an IShellItem from a string path.
 //
-// ⚠️ You must defer Release() if non-error.
+// ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 func NewShellItem(thePath string) (IShellItem, error) {

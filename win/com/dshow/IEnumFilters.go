@@ -73,7 +73,7 @@ func (me *IEnumFilters) GetAll() []IBaseFilter {
 	}
 }
 
-// ⚠️ You must defer Release() if true.
+// ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-next
 func (me *IEnumFilters) Next() (IBaseFilter, bool) {

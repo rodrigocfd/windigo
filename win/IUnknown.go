@@ -91,7 +91,7 @@ func (me *IUnknown) QueryInterface(riid co.IID) IUnknown {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 func (me *IUnknown) Release() uint32 {
-	ret := uintptr(0)
+	var ret uintptr
 	if me.Ppv != nil {
 		ret, _, _ = syscall.Syscall((*me.Ppv).Release, 1,
 			uintptr(unsafe.Pointer(me.Ppv)), 0, 0)

@@ -77,7 +77,7 @@ func (me *IBaseFilter) EnumPins() IEnumPins {
 	}
 }
 
-// ⚠️ You must defer Release() if true.
+// ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-findpin
 func (me *IBaseFilter) FindPin(id string) (IPin, bool) {
@@ -116,7 +116,7 @@ func (me *IBaseFilter) JoinFilterGraph(
 	}
 }
 
-// ⚠️ You must defer Release() on PGraph field, if non-nil.
+// ⚠️ You must defer Release() on PGraph field.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
 func (me *IBaseFilter) QueryFilterInfo(pInfo *FILTER_INFO) {
