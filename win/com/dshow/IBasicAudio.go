@@ -31,10 +31,11 @@ func (me *IBasicAudio) GetBalance() int {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&balance)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return balance
+	} else {
+		panic(hr)
 	}
-	return balance
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_volume
@@ -45,10 +46,11 @@ func (me *IBasicAudio) GetVolume() int {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&volume)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return volume
+	} else {
+		panic(hr)
 	}
-	return volume
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_balance
@@ -58,8 +60,8 @@ func (me *IBasicAudio) PutBalance(balance int) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(balance), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -70,7 +72,7 @@ func (me *IBasicAudio) PutVolume(volume int) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(volume), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }

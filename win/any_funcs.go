@@ -57,8 +57,7 @@ func ChooseColor(lpcc *CHOOSECOLOR) bool {
 func CoInitializeEx(dwCoInit co.COINIT) {
 	ret, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
 		0, uintptr(dwCoInit), 0)
-	hr := errco.ERROR(ret)
-	if hr != errco.S_OK && hr != errco.S_FALSE {
+	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
 		panic(hr)
 	}
 }
@@ -174,10 +173,10 @@ func DispatchMessage(msg *MSG) uintptr {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmgetcolorizationcolor
 func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool) {
-	hr, _, _ := syscall.Syscall(proc.DwmGetColorizationColor.Addr(), 2,
+	ret, _, _ := syscall.Syscall(proc.DwmGetColorizationColor.Addr(), 2,
 		uintptr(unsafe.Pointer(&color)), uintptr(unsafe.Pointer(&isOpaqueBlend)), 0)
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 	return
 }
@@ -185,10 +184,10 @@ func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmiscompositionenabled
 func DwmIsCompositionEnabled() bool {
 	pfEnabled := BOOL(0)
-	hr, _, _ := syscall.Syscall(proc.DwmIsCompositionEnabled.Addr(), 1,
+	ret, _, _ := syscall.Syscall(proc.DwmIsCompositionEnabled.Addr(), 1,
 		uintptr(unsafe.Pointer(&pfEnabled)), 0, 0)
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 	return pfEnabled != 0
 }
@@ -344,11 +343,11 @@ func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
 	ret, _, err := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))), 0, 0)
 
-	retAttr := co.FILE_ATTRIBUTE(ret)
-	if retAttr == co.FILE_ATTRIBUTE_INVALID {
+	if retAttr := co.FILE_ATTRIBUTE(ret); retAttr == co.FILE_ATTRIBUTE_INVALID {
 		return retAttr, errco.ERROR(err)
+	} else {
+		return retAttr, nil
 	}
-	return retAttr, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow

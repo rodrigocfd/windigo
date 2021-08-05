@@ -44,7 +44,7 @@ func (me *ITaskbarList2) MarkFullscreenWindow(hwnd win.HWND, fFullScreen bool) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), util.BoolToUintptr(fFullScreen))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }

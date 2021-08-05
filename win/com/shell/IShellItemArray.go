@@ -37,11 +37,12 @@ func (me *IShellItemArray) GetItemAt(index int) IShellItem {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(index), uintptr(unsafe.Pointer(&ppvQueried)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
-	}
-	return IShellItem{
-		win.IUnknown{Ppv: ppvQueried},
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IShellItem{
+			win.IUnknown{Ppv: ppvQueried},
+		}
+	} else {
+		panic(hr)
 	}
 }
 
@@ -53,10 +54,11 @@ func (me *IShellItemArray) GetCount() int {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&count)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return int(count)
+	} else {
+		panic(hr)
 	}
-	return int(count)
 }
 
 // Calls GetDisplayName() on each IShellItem, retrieving the names as strings.

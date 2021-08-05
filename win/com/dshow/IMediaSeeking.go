@@ -47,10 +47,11 @@ func (me *IMediaSeeking) CheckCapabilities(
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&capabilities)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return capabilities
+	} else {
+		panic(hr)
 	}
-	return capabilities
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-converttimeformat
@@ -65,10 +66,11 @@ func (me *IMediaSeeking) ConvertTimeFormat(
 		uintptr(unsafe.Pointer(&source)), uintptr(unsafe.Pointer(sourceFormat)),
 		0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return target
+	} else {
+		panic(hr)
 	}
-	return target
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getavailable
@@ -79,11 +81,12 @@ func (me *IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&iEarliest)), uintptr(unsafe.Pointer(&iLatest)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		earliest, latest = _Nanosec100ToDuration(iEarliest), _Nanosec100ToDuration(iLatest)
+		return
+	} else {
+		panic(hr)
 	}
-	earliest, latest = _Nanosec100ToDuration(iEarliest), _Nanosec100ToDuration(iLatest)
-	return
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcapabilities
@@ -94,10 +97,11 @@ func (me *IMediaSeeking) GetCapabilities() dshowco.SEEKING_CAPABILITIES {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&capabilities)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return capabilities
+	} else {
+		panic(hr)
 	}
-	return capabilities
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcurrentposition
@@ -108,10 +112,11 @@ func (me *IMediaSeeking) GetCurrentPosition() time.Duration {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&pos)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return _Nanosec100ToDuration(pos)
+	} else {
+		panic(hr)
 	}
-	return _Nanosec100ToDuration(pos)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getduration
@@ -122,10 +127,11 @@ func (me *IMediaSeeking) GetDuration() time.Duration {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&duration)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return _Nanosec100ToDuration(duration)
+	} else {
+		panic(hr)
 	}
-	return _Nanosec100ToDuration(duration)
 }
 
 // Returns current and stop positions.
@@ -138,11 +144,12 @@ func (me *IMediaSeeking) GetPositions() (current, stop time.Duration) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&iCurrent)), uintptr(unsafe.Pointer(&iStop)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		current, stop = _Nanosec100ToDuration(iCurrent), _Nanosec100ToDuration(iStop)
+		return
+	} else {
+		panic(hr)
 	}
-	current, stop = _Nanosec100ToDuration(iCurrent), _Nanosec100ToDuration(iStop)
-	return
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getpreroll
@@ -153,10 +160,11 @@ func (me *IMediaSeeking) GetPreroll() time.Duration {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&preroll)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return _Nanosec100ToDuration(preroll)
+	} else {
+		panic(hr)
 	}
-	return _Nanosec100ToDuration(preroll)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getrate
@@ -167,10 +175,11 @@ func (me *IMediaSeeking) GetRate() float64 {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&rate)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return rate
+	} else {
+		panic(hr)
 	}
-	return rate
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getstopposition
@@ -181,10 +190,11 @@ func (me *IMediaSeeking) GetStopPosition() time.Duration {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&stop)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return _Nanosec100ToDuration(stop)
+	} else {
+		panic(hr)
 	}
-	return _Nanosec100ToDuration(stop)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-gettimeformat
@@ -195,10 +205,11 @@ func (me *IMediaSeeking) GetTimeFormat() *win.GUID {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&format)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return &format
+	} else {
+		panic(hr)
 	}
-	return &format
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isformatsupported
@@ -208,13 +219,13 @@ func (me *IMediaSeeking) IsFormatSupported(format *win.GUID) bool {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(format)), 0)
 
-	err := errco.ERROR(ret)
-	if err == errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
-	} else if err == errco.S_FALSE {
+	} else if hr == errco.S_FALSE {
 		return false
+	} else {
+		panic(hr)
 	}
-	panic(err)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isusingtimeformat
@@ -224,13 +235,13 @@ func (me *IMediaSeeking) IsUsingTimeFormat(format *win.GUID) bool {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(format)), 0)
 
-	err := errco.ERROR(ret)
-	if err == errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
-	} else if err == errco.S_FALSE {
+	} else if hr == errco.S_FALSE {
 		return false
+	} else {
+		panic(hr)
 	}
-	panic(err)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-querypreferredformat
@@ -241,10 +252,11 @@ func (me *IMediaSeeking) QueryPreferredFormat() *win.GUID {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&format)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return &format
+	} else {
+		panic(hr)
 	}
-	return &format
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
@@ -259,10 +271,11 @@ func (me *IMediaSeeking) SetPositions(
 		uintptr(unsafe.Pointer(&iCurrent)), uintptr(currentFlags),
 		uintptr(unsafe.Pointer(&iStop)), uintptr(stopFlags), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return nil
+	} else {
+		return hr
 	}
-	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setrate
@@ -272,13 +285,13 @@ func (me *IMediaSeeking) SetRate(rate float64) error {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(rate), 0)
 
-	if err := errco.ERROR(ret); err == errco.E_INVALIDARG || err == errco.VFW_E_UNSUPPORTED_AUDIO {
-		return err
-	} else if err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return nil
+	} else if hr == errco.E_INVALIDARG || hr == errco.VFW_E_UNSUPPORTED_AUDIO {
+		return hr
+	} else {
+		panic(hr)
 	}
-
-	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-settimeformat
@@ -288,8 +301,9 @@ func (me *IMediaSeeking) SetTimeFormat(format *win.GUID) error {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(format)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return nil
+	} else {
+		return hr
 	}
-	return nil
 }

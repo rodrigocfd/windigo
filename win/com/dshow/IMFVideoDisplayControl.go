@@ -44,10 +44,11 @@ func (me *IMFVideoDisplayControl) GetAspectRatioMode() dshowco.MFVideoARMode {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&aspectRatioMode)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return aspectRatioMode
+	} else {
+		panic(hr)
 	}
-	return aspectRatioMode
 }
 
 // Returns the minimum and maximum ideal sizes.
@@ -60,10 +61,11 @@ func (me *IMFVideoDisplayControl) GetIdealVideoSize() (min, max win.SIZE) {
 		uintptr(unsafe.Pointer(&min)),
 		uintptr(unsafe.Pointer(&max)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return
+	} else {
+		panic(hr)
 	}
-	return
 }
 
 // Returns video rectangle and aspect ratio.
@@ -76,10 +78,11 @@ func (me *IMFVideoDisplayControl) GetNativeVideoSize() (size, aspectRatio win.SI
 		uintptr(unsafe.Pointer(&size)),
 		uintptr(unsafe.Pointer(&aspectRatio)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return
+	} else {
+		panic(hr)
 	}
-	return
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideoposition
@@ -90,10 +93,11 @@ func (me *IMFVideoDisplayControl) GetVideoPosition() (source MFVideoNormalizedRe
 		uintptr(unsafe.Pointer(&source)),
 		uintptr(unsafe.Pointer(&dest)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return
+	} else {
+		panic(hr)
 	}
-	return
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideowindow
@@ -104,10 +108,11 @@ func (me *IMFVideoDisplayControl) GetVideoWindow() win.HWND {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&hwndVideo)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return hwndVideo
+	} else {
+		panic(hr)
 	}
-	return hwndVideo
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-repaintvideo
@@ -117,8 +122,8 @@ func (me *IMFVideoDisplayControl) RepaintVideo() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -131,10 +136,11 @@ func (me *IMFVideoDisplayControl) SetAspectRatioMode(
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(mode), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return nil
+	} else {
+		return hr
 	}
-	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideoposition
@@ -147,8 +153,8 @@ func (me *IMFVideoDisplayControl) SetVideoPosition(
 		uintptr(unsafe.Pointer(pnrcSource)),
 		uintptr(unsafe.Pointer(prcDest)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -159,8 +165,9 @@ func (me *IMFVideoDisplayControl) SetVideoWindow(hwndVideo win.HWND) error {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwndVideo), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return nil
+	} else {
+		return hr
 	}
-	return nil
 }

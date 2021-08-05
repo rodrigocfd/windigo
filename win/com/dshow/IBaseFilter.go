@@ -68,11 +68,12 @@ func (me *IBaseFilter) EnumPins() IEnumPins {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
-	}
-	return IEnumPins{
-		win.IUnknown{Ppv: ppQueried},
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IEnumPins{
+			win.IUnknown{Ppv: ppQueried},
+		}
+	} else {
+		panic(hr)
 	}
 }
 
@@ -87,14 +88,14 @@ func (me *IBaseFilter) FindPin(id string) (IPin, bool) {
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(id))),
 		uintptr(unsafe.Pointer(&ppQueried)))
 
-	if err := errco.ERROR(ret); err == errco.VFW_E_NOT_FOUND {
-		return IPin{}, false
-	} else if err == errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return IPin{
 			win.IUnknown{Ppv: ppQueried},
 		}, true
+	} else if hr == errco.VFW_E_NOT_FOUND {
+		return IPin{}, false
 	} else {
-		panic(err)
+		panic(hr)
 	}
 }
 
@@ -108,10 +109,10 @@ func (me *IBaseFilter) JoinFilterGraph(
 		uintptr(unsafe.Pointer(pGraph.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pName))))
 
-	if err := errco.ERROR(ret); err == errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil
 	} else {
-		return err
+		return hr
 	}
 }
 
@@ -124,8 +125,8 @@ func (me *IBaseFilter) QueryFilterInfo(pInfo *FILTER_INFO) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(pInfo)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -147,13 +148,13 @@ func (me *IBaseFilter) QueryVendorInfo() (string, bool) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&pv)), 0)
 
-	if err := errco.ERROR(ret); err == errco.E_NOTIMPL {
-		return "", false
-	} else if err == errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		name := win.Str.FromUint16Ptr(pv)
 		win.CoTaskMemFree(unsafe.Pointer(pv))
 		return name, true
+	} else if hr == errco.E_NOTIMPL {
+		return "", false
 	} else {
-		panic(err)
+		panic(hr)
 	}
 }

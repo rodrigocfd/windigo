@@ -41,8 +41,8 @@ func (me *IPin) BeginFlush() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -57,12 +57,13 @@ func (me *IPin) Connect(pmt *AM_MEDIA_TYPE) (IPin, error) {
 		uintptr(unsafe.Pointer(&ppQueried)),
 		uintptr(unsafe.Pointer(pmt)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return IPin{}, err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IPin{
+			win.IUnknown{Ppv: ppQueried},
+		}, nil
+	} else {
+		return IPin{}, hr
 	}
-	return IPin{
-		win.IUnknown{Ppv: ppQueried},
-	}, nil
 }
 
 // ⚠️ You must defer Release() if non-error.
@@ -75,12 +76,13 @@ func (me *IPin) ConnectedTo() (IPin, error) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return IPin{}, err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IPin{
+			win.IUnknown{Ppv: ppQueried},
+		}, nil
+	} else {
+		return IPin{}, hr
 	}
-	return IPin{
-		win.IUnknown{Ppv: ppQueried},
-	}, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connectionmediatype
@@ -90,10 +92,11 @@ func (me *IPin) ConnectionMediaType(pmt *AM_MEDIA_TYPE) error {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(pmt)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return nil
+	} else {
+		return hr
 	}
-	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-disconnect
@@ -103,8 +106,8 @@ func (me *IPin) Disconnect() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -115,8 +118,8 @@ func (me *IPin) EndFlush() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -127,8 +130,8 @@ func (me *IPin) EndOfStream() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -142,12 +145,13 @@ func (me *IPin) EnumMediaTypes() (IEnumMediaTypes, error) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return IEnumMediaTypes{}, err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IEnumMediaTypes{
+			win.IUnknown{Ppv: ppQueried},
+		}, nil
+	} else {
+		return IEnumMediaTypes{}, hr
 	}
-	return IEnumMediaTypes{
-		win.IUnknown{Ppv: ppQueried},
-	}, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-queryaccept
@@ -157,9 +161,9 @@ func (me *IPin) QueryAccept(pmt *AM_MEDIA_TYPE) (bool, error) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(pmt)), 0)
 
-	err := errco.ERROR(ret)
-	if err != errco.S_OK && err != errco.S_FALSE {
-		return false, err
+	if hr := errco.ERROR(ret); hr == errco.S_OK || hr == errco.S_FALSE {
+		return hr == errco.S_OK, nil
+	} else {
+		return false, hr
 	}
-	return err == errco.S_OK, nil
 }

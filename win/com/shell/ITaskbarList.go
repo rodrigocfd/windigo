@@ -45,8 +45,8 @@ func (me *ITaskbarList) ActivateTab(hwnd win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -57,8 +57,8 @@ func (me *ITaskbarList) AddTab(hwnd win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -69,8 +69,8 @@ func (me *ITaskbarList) DeleteTab(hwnd win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -89,7 +89,7 @@ func (me *ITaskbarList) SetActiveAlt(hwnd win.HWND) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwnd), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }

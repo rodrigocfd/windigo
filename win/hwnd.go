@@ -139,10 +139,10 @@ func (hWnd HWND) DrawMenuBar() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea
 func (hWnd HWND) DwmExtendFrameIntoClientArea(pMarInset *MARGINS) {
-	hr, _, _ := syscall.Syscall(proc.DwmExtendFrameIntoClientArea.Addr(), 2,
+	ret, _, _ := syscall.Syscall(proc.DwmExtendFrameIntoClientArea.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(pMarInset)), 0)
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -150,20 +150,20 @@ func (hWnd HWND) DwmExtendFrameIntoClientArea(pMarInset *MARGINS) {
 func (hWnd HWND) DwmSetIconicLivePreviewBitmap(
 	hbmp HBITMAP, pptClient POINT, dwSITFlags co.DWM_SIT) {
 
-	hr, _, _ := syscall.Syscall6(proc.DwmSetIconicLivePreviewBitmap.Addr(), 4,
+	ret, _, _ := syscall.Syscall6(proc.DwmSetIconicLivePreviewBitmap.Addr(), 4,
 		uintptr(hWnd), uintptr(hbmp), uintptr(unsafe.Pointer(&pptClient)),
 		uintptr(dwSITFlags), 0, 0)
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticonicthumbnail
 func (hWnd HWND) DwmSetIconicThumbnail(hbmp HBITMAP, dwSITFlags co.DWM_SIT) {
-	hr, _, _ := syscall.Syscall(proc.DwmSetIconicThumbnail.Addr(), 3,
+	ret, _, _ := syscall.Syscall(proc.DwmSetIconicThumbnail.Addr(), 3,
 		uintptr(hWnd), uintptr(hbmp), uintptr(dwSITFlags))
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -223,8 +223,8 @@ func (hWnd HWND) GetClassName() string {
 
 	ret, _, err := syscall.Syscall(proc.GetClassName.Addr(), 3,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(256+1))
-	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
-		panic(errco.ERROR(err))
+	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
+		panic(err)
 	}
 	return Str.FromUint16Slice(buf[:])
 }
@@ -283,8 +283,8 @@ func (hWnd HWND) GetMenu() HMENU {
 func (hWnd HWND) GetNextDlgTabItem(hChild HWND, bPrevious bool) HWND {
 	ret, _, err := syscall.Syscall(proc.GetNextDlgTabItem.Addr(), 3,
 		uintptr(hWnd), uintptr(hChild), util.BoolToUintptr(bPrevious))
-	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
-		panic(errco.ERROR(err))
+	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
+		panic(err)
 	}
 	return HWND(ret)
 }
@@ -293,8 +293,8 @@ func (hWnd HWND) GetNextDlgTabItem(hChild HWND, bPrevious bool) HWND {
 func (hWnd HWND) GetParent() HWND {
 	ret, _, err := syscall.Syscall(proc.GetParent.Addr(), 1,
 		uintptr(hWnd), 0, 0)
-	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
-		panic(errco.ERROR(err))
+	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
+		panic(err)
 	}
 	return HWND(ret)
 }
@@ -319,8 +319,8 @@ func (hWnd HWND) GetSystemMenu(bRevert bool) HMENU {
 func (hWnd HWND) GetWindow(uCmd co.GW) HWND {
 	ret, _, err := syscall.Syscall(proc.GetWindow.Addr(), 2,
 		uintptr(hWnd), uintptr(uCmd), 0)
-	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
-		panic(errco.ERROR(err))
+	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
+		panic(err)
 	}
 	return HWND(ret)
 }
@@ -341,8 +341,8 @@ func (hWnd HWND) GetWindowDC() HDC {
 func (hWnd HWND) GetWindowLongPtr(index co.GWLP) uintptr {
 	ret, _, err := syscall.Syscall(proc.GetWindowLongPtr.Addr(), 2,
 		uintptr(hWnd), uintptr(index), 0)
-	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
-		panic(errco.ERROR(err))
+	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
+		panic(err)
 	}
 	return ret
 }
@@ -365,8 +365,8 @@ func (hWnd HWND) GetWindowText() string {
 
 	ret, _, err := syscall.Syscall(proc.GetWindowText.Addr(), 3,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(len))
-	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
-		panic(errco.ERROR(err))
+	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
+		panic(err)
 	}
 	return Str.FromUint16Slice(buf)
 }
@@ -642,8 +642,8 @@ func (hWnd HWND) SetTimer(
 
 	ret, _, err := syscall.Syscall6(proc.SetTimer.Addr(), 4,
 		uintptr(hWnd), nIDEvent, uElapse, cbTimer, 0, 0)
-	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
-		panic(errco.ERROR(err))
+	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
+		panic(err)
 	}
 }
 
@@ -651,8 +651,8 @@ func (hWnd HWND) SetTimer(
 func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
 	ret, _, err := syscall.Syscall(proc.SetWindowLongPtr.Addr(), 3,
 		uintptr(hWnd), uintptr(index), newLong)
-	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
-		panic(errco.ERROR(err))
+	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
+		panic(err)
 	}
 	return ret
 }

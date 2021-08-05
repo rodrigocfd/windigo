@@ -49,8 +49,8 @@ func (me *IGraphBuilder) Abort() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -68,15 +68,16 @@ func (me *IGraphBuilder) AddSourceFilter(
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(filterName))),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
-	}
-	return IBaseFilter{
-		IMediaFilter{
-			IPersist{
-				win.IUnknown{Ppv: ppvQueried},
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IBaseFilter{
+			IMediaFilter{
+				IPersist{
+					win.IUnknown{Ppv: ppvQueried},
+				},
 			},
-		},
+		}
+	} else {
+		panic(hr)
 	}
 }
 
@@ -88,8 +89,8 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 		uintptr(unsafe.Pointer(pinOut.Ppv)),
 		uintptr(unsafe.Pointer(pinIn.Ppv)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -134,8 +135,8 @@ func (me *IGraphBuilder) Render(pinOut *IPin) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(pinOut.Ppv)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -146,10 +147,11 @@ func (me *IGraphBuilder) RenderFile(file string) error {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(file))), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return nil
+	} else {
+		return hr
 	}
-	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-setlogfile
@@ -159,8 +161,8 @@ func (me *IGraphBuilder) SetLogFile(hFile win.HFILE) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hFile), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -170,12 +172,11 @@ func (me *IGraphBuilder) ShouldOperationContinue() bool {
 		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).ShouldOperationContinue, 1,
 		uintptr(unsafe.Pointer(me.Ppv)), 0, 0)
 
-	err := errco.ERROR(ret)
-	if err == errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
-	} else if err == errco.S_FALSE {
+	} else if hr == errco.S_FALSE {
 		return false
+	} else {
+		panic(hr)
 	}
-
-	panic(err)
 }

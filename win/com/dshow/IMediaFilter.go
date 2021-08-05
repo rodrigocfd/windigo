@@ -31,8 +31,8 @@ func (me *IMediaFilter) Pause() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK && err != errco.S_FALSE {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
+		panic(hr)
 	}
 }
 
@@ -43,7 +43,7 @@ func (me *IMediaFilter) Stop() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK && err != errco.S_FALSE {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
+		panic(hr)
 	}
 }

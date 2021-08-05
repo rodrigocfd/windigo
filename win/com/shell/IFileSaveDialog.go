@@ -49,7 +49,7 @@ func (me *IFileSaveDialog) SetSaveAsItem(psi *IShellItem) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(psi.Ppv)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }

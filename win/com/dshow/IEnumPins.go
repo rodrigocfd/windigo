@@ -33,11 +33,12 @@ func (me *IEnumPins) Clone() IEnumPins {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
-	}
-	return IEnumPins{
-		win.IUnknown{Ppv: ppQueried},
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IEnumPins{
+			win.IUnknown{Ppv: ppQueried},
+		}
+	} else {
+		panic(hr)
 	}
 }
 
@@ -82,14 +83,14 @@ func (me *IEnumPins) Next() (IPin, bool) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		1, uintptr(unsafe.Pointer(&ppQueried)), 0, 0, 0)
 
-	if err := errco.ERROR(ret); err == errco.S_FALSE {
-		return IPin{}, false
-	} else if err == errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return IPin{
 			win.IUnknown{Ppv: ppQueried},
 		}, true
+	} else if hr == errco.S_FALSE {
+		return IPin{}, false
 	} else {
-		panic(err)
+		panic(hr)
 	}
 }
 
@@ -108,11 +109,11 @@ func (me *IEnumPins) Skip(cPins int) bool {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(cPins), 0)
 
-	if err := errco.ERROR(ret); err == errco.S_FALSE {
-		return false
-	} else if err == errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
+	} else if hr == errco.S_FALSE {
+		return false
 	} else {
-		panic(err)
+		panic(hr)
 	}
 }

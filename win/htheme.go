@@ -26,12 +26,12 @@ func (hTheme HTHEME) CloseThemeData() {
 func (hTheme HTHEME) DrawThemeBackground(
 	hdc HDC, partStateId co.VS, rect *RECT, clipRect *RECT) {
 
-	hr, _, _ := syscall.Syscall6(proc.DrawThemeBackground.Addr(), 6,
+	ret, _, _ := syscall.Syscall6(proc.DrawThemeBackground.Addr(), 6,
 		uintptr(hTheme), uintptr(hdc),
 		uintptr(partStateId.Part()), uintptr(partStateId.State()),
 		uintptr(unsafe.Pointer(rect)), uintptr(unsafe.Pointer(clipRect)))
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -40,11 +40,11 @@ func (hTheme HTHEME) GetThemeColor(
 	iPartStateId co.VS, iPropId co.TMT_COLOR) COLORREF {
 
 	pColor := COLORREF(0)
-	hr, _, _ := syscall.Syscall6(proc.GetThemeColor.Addr(), 5,
+	ret, _, _ := syscall.Syscall6(proc.GetThemeColor.Addr(), 5,
 		uintptr(hTheme), uintptr(iPartStateId.Part()), uintptr(iPartStateId.State()),
 		uintptr(iPropId), uintptr(unsafe.Pointer(&pColor)), 0)
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 	return pColor
 }
@@ -52,11 +52,11 @@ func (hTheme HTHEME) GetThemeColor(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemeint
 func (hTheme HTHEME) GetThemeInt(iPartStateId co.VS, iPropId co.TMT_INT) int32 {
 	piVal := int32(0)
-	hr, _, _ := syscall.Syscall6(proc.GetThemeInt.Addr(), 5,
+	ret, _, _ := syscall.Syscall6(proc.GetThemeInt.Addr(), 5,
 		uintptr(hTheme), uintptr(iPartStateId.Part()), uintptr(iPartStateId.State()),
 		uintptr(iPropId), uintptr(unsafe.Pointer(&piVal)), 0)
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 	return piVal
 }
@@ -66,12 +66,12 @@ func (hTheme HTHEME) GetThemeMetric(
 	hdc HDC, iPartStateId co.VS, iPropId co.TMT_INT) int32 {
 
 	piVal := int32(0)
-	hr, _, _ := syscall.Syscall6(proc.GetThemeMetric.Addr(), 6,
+	ret, _, _ := syscall.Syscall6(proc.GetThemeMetric.Addr(), 6,
 		uintptr(hTheme), uintptr(hdc),
 		uintptr(iPartStateId.Part()), uintptr(iPartStateId.State()),
 		uintptr(iPropId), uintptr(unsafe.Pointer(&piVal)))
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 	return piVal
 }
@@ -81,11 +81,11 @@ func (hTheme HTHEME) GetThemePosition(
 	iPartStateId co.VS, iPropId co.TMT_POSITION) POINT {
 
 	pPoint := POINT{}
-	hr, _, _ := syscall.Syscall6(proc.GetThemePosition.Addr(), 5,
+	ret, _, _ := syscall.Syscall6(proc.GetThemePosition.Addr(), 5,
 		uintptr(hTheme), uintptr(iPartStateId.Part()), uintptr(iPartStateId.State()),
 		uintptr(iPropId), uintptr(unsafe.Pointer(&pPoint)), 0)
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 	return pPoint
 }
@@ -95,11 +95,11 @@ func (hTheme HTHEME) GetThemeRect(
 	iPartStateId co.VS, iPropId co.TMT_RECT) RECT {
 
 	pRect := RECT{}
-	hr, _, _ := syscall.Syscall6(proc.GetThemeRect.Addr(), 5,
+	ret, _, _ := syscall.Syscall6(proc.GetThemeRect.Addr(), 5,
 		uintptr(hTheme), uintptr(iPartStateId.Part()), uintptr(iPartStateId.State()),
 		uintptr(iPropId), uintptr(unsafe.Pointer(&pRect)), 0)
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 	return pRect
 }
@@ -118,10 +118,10 @@ func (hTheme HTHEME) GetThemeSysColorBrush(iColorId co.TMT_COLOR) HBRUSH {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemesysfont
 func (hTheme HTHEME) GetThemeSysFont(iFontId co.TMT_FONT, plf *LOGFONT) {
-	hr, _, _ := syscall.Syscall(proc.GetThemeSysFont.Addr(), 3,
+	ret, _, _ := syscall.Syscall(proc.GetThemeSysFont.Addr(), 3,
 		uintptr(hTheme), uintptr(iFontId), uintptr(unsafe.Pointer(plf)))
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -129,12 +129,12 @@ func (hTheme HTHEME) GetThemeSysFont(iFontId co.TMT_FONT, plf *LOGFONT) {
 func (hTheme HTHEME) GetThemeTextMetrics(
 	hdc HDC, iPartStateId co.VS, ptm *TEXTMETRIC) {
 
-	hr, _, _ := syscall.Syscall6(proc.GetThemeTextMetrics.Addr(), 5,
+	ret, _, _ := syscall.Syscall6(proc.GetThemeTextMetrics.Addr(), 5,
 		uintptr(hTheme), uintptr(hdc),
 		uintptr(iPartStateId.Part()), uintptr(iPartStateId.State()),
 		uintptr(unsafe.Pointer(ptm)), 0)
-	if errco.ERROR(hr) != errco.S_OK {
-		panic(errco.ERROR(hr))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 

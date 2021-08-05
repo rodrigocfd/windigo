@@ -40,12 +40,13 @@ func NewShellItem(thePath string) (IShellItem, error) {
 		uintptr(unsafe.Pointer(&ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return IShellItem{}, err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IShellItem{
+			win.IUnknown{Ppv: ppv},
+		}, nil
+	} else {
+		return IShellItem{}, hr
 	}
-	return IShellItem{
-		win.IUnknown{Ppv: ppv},
-	}, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-compare
@@ -58,12 +59,12 @@ func (me *IShellItem) Compare(psi IShellItem, hint shellco.SICHINT) bool {
 		uintptr(hint),
 		uintptr(unsafe.Pointer(&piOrder)), 0, 0)
 
-	if err := errco.ERROR(ret); err == errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
-	} else if err == errco.S_FALSE {
+	} else if hr == errco.S_FALSE {
 		return false
 	} else {
-		panic(err)
+		panic(hr)
 	}
 }
 
@@ -76,10 +77,11 @@ func (me *IShellItem) GetAttributes(sfgaoMask co.SFGAO) co.SFGAO {
 		uintptr(unsafe.Pointer(&sfgaoMask)),
 		uintptr(unsafe.Pointer(&attribs)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK && err != errco.S_FALSE {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK || hr == errco.S_FALSE {
+		return attribs
+	} else {
+		panic(hr)
 	}
-	return attribs
 }
 
 // ⚠️ You must defer Release().
@@ -92,11 +94,12 @@ func (me *IShellItem) GetParent() IShellItem {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
-	}
-	return IShellItem{
-		win.IUnknown{Ppv: ppvQueried},
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IShellItem{
+			win.IUnknown{Ppv: ppvQueried},
+		}
+	} else {
+		panic(hr)
 	}
 }
 
@@ -108,10 +111,11 @@ func (me *IShellItem) GetDisplayName(sigdnName shellco.SIGDN) string {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(sigdnName), uintptr(unsafe.Pointer(&pv)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		name := win.Str.FromUint16Ptr(pv)
+		win.CoTaskMemFree(unsafe.Pointer(pv))
+		return name
+	} else {
+		panic(hr)
 	}
-	name := win.Str.FromUint16Ptr(pv)
-	win.CoTaskMemFree(unsafe.Pointer(pv))
-	return name
 }

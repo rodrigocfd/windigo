@@ -33,10 +33,11 @@ func (me *IMFGetService) GetService(guidService, riid *win.GUID) win.IUnknown {
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppQueried)), 0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return win.IUnknown{Ppv: ppQueried}
+	} else {
+		panic(hr)
 	}
-	return win.IUnknown{Ppv: ppQueried}
 }
 
 // Calls GetService() to return IMFVideoDisplayControl.

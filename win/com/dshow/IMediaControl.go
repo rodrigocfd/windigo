@@ -39,11 +39,11 @@ func (me *IMediaControl) GetState(msTimeout int) (dshowco.FILTER_STATE, error) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(msTimeout), uintptr(unsafe.Pointer(&state)))
 
-	err := errco.ERROR(ret)
-	if err == errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return state, nil
+	} else {
+		return dshowco.FILTER_STATE(0), hr
 	}
-	return dshowco.FILTER_STATE(0), err
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-pause
@@ -53,8 +53,8 @@ func (me *IMediaControl) Pause() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK && err != errco.S_FALSE {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
+		panic(hr)
 	}
 }
 
@@ -65,8 +65,8 @@ func (me *IMediaControl) RenderFile(strFilename string) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(strFilename))), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -77,8 +77,8 @@ func (me *IMediaControl) Run() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK && err != errco.S_FALSE {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
+		panic(hr)
 	}
 }
 
@@ -89,7 +89,7 @@ func (me *IMediaControl) Stop() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }

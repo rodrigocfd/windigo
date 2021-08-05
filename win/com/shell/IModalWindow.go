@@ -29,10 +29,11 @@ func (me *IModalWindow) Show(hwndOwner win.HWND) bool {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hwndOwner), 0)
 
-	if err := errco.ERROR(ret & 0xffff); err == errco.CANCELLED { // HRESULT_FROM_WIN32()
+	if hr := errco.ERROR(ret & 0xffff); hr == errco.S_OK { // HRESULT_FROM_WIN32()
+		return true
+	} else if hr == errco.CANCELLED {
 		return false
-	} else if err != errco.S_OK {
-		panic(err)
+	} else {
+		panic(hr)
 	}
-	return true
 }

@@ -33,12 +33,13 @@ func (me *IEnumMediaTypes) Clone() (IEnumMediaTypes, error) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return IEnumMediaTypes{}, err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IEnumMediaTypes{
+			win.IUnknown{Ppv: ppQueried},
+		}, nil
+	} else {
+		return IEnumMediaTypes{}, hr
 	}
-	return IEnumMediaTypes{
-		win.IUnknown{Ppv: ppQueried},
-	}, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-reset

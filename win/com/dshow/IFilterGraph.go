@@ -49,10 +49,11 @@ func (me *IFilterGraph) AddFilter(filter *IBaseFilter, name string) error {
 		uintptr(unsafe.Pointer(filter.Ppv)),
 		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(name))))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		return err
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return nil
+	} else {
+		return hr
 	}
-	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-connectdirect
@@ -64,8 +65,8 @@ func (me *IFilterGraph) ConnectDirect(pinOut, pinIn *IPin, pmt *AM_MEDIA_TYPE) {
 		uintptr(unsafe.Pointer(pinIn.Ppv)),
 		uintptr(unsafe.Pointer(pmt)), 0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -76,8 +77,8 @@ func (me *IFilterGraph) Disconnect(pin *IPin) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(pin.Ppv)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -91,11 +92,12 @@ func (me *IFilterGraph) EnumFilters() IEnumFilters {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
-	}
-	return IEnumFilters{
-		win.IUnknown{Ppv: ppvQueried},
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IEnumFilters{
+			win.IUnknown{Ppv: ppvQueried},
+		}
+	} else {
+		panic(hr)
 	}
 }
 
@@ -109,19 +111,19 @@ func (me *IFilterGraph) FindFilterByName(pName string) (IBaseFilter, bool) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
-	if err := errco.ERROR(ret); err == errco.VFW_E_NOT_FOUND {
-		return IBaseFilter{}, false
-	} else if err != errco.S_OK {
-		panic(err)
-	}
-
-	return IBaseFilter{
-		IMediaFilter{
-			IPersist{
-				win.IUnknown{Ppv: ppvQueried},
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IBaseFilter{
+			IMediaFilter{
+				IPersist{
+					win.IUnknown{Ppv: ppvQueried},
+				},
 			},
-		},
-	}, true
+		}, true
+	} else if hr == errco.VFW_E_NOT_FOUND {
+		return IBaseFilter{}, false
+	} else {
+		panic(hr)
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-reconnect
@@ -131,8 +133,8 @@ func (me *IFilterGraph) Reconnect(pin *IPin) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(pin.Ppv)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -143,8 +145,8 @@ func (me *IFilterGraph) RemoveFilter(filter *IBaseFilter) {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(filter.Ppv)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }
 
@@ -155,7 +157,7 @@ func (me *IFilterGraph) SetDefaultSyncSource() {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
 	}
 }

@@ -49,11 +49,12 @@ func (me *IFileOpenDialog) GetResults() IShellItemArray {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
-	}
-	return IShellItemArray{
-		win.IUnknown{Ppv: ppvQueried},
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IShellItemArray{
+			win.IUnknown{Ppv: ppvQueried},
+		}
+	} else {
+		panic(hr)
 	}
 }
 
@@ -67,10 +68,11 @@ func (me *IFileOpenDialog) GetSelectedItems() IShellItemArray {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
-	}
-	return IShellItemArray{
-		win.IUnknown{Ppv: ppvQueried},
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IShellItemArray{
+			win.IUnknown{Ppv: ppvQueried},
+		}
+	} else {
+		panic(hr)
 	}
 }
