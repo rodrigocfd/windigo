@@ -79,7 +79,7 @@ func (hImg HIMAGELIST) Destroy() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticonsize
 func (hImg HIMAGELIST) GetIconSize() SIZE {
-	sz := SIZE{}
+	var sz SIZE
 	ret, _, err := syscall.Syscall(proc.ImageList_GetIconSize.Addr(), 3,
 		uintptr(hImg),
 		uintptr(unsafe.Pointer(&sz.Cx)), uintptr(unsafe.Pointer(&sz.Cy)))

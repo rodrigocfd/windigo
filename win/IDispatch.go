@@ -29,7 +29,7 @@ type IDispatch struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
 func (me *IDispatch) GetTypeInfoCount() int {
-	pctinfo := uint32(0)
+	var pctinfo uint32
 	ret, _, _ := syscall.Syscall(
 		(*IDispatchVtbl)(unsafe.Pointer(*me.Ppv)).GetTypeInfoCount, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),

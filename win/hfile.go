@@ -49,7 +49,7 @@ func (hFile HFILE) CloseHandle() error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex
 func (hFile HFILE) GetFileSizeEx() (uint64, error) {
-	retSz := int64(0)
+	var retSz int64
 	ret, _, err := syscall.Syscall(proc.GetFileSizeEx.Addr(), 2,
 		uintptr(hFile), uintptr(unsafe.Pointer(&retSz)), 0)
 
@@ -80,7 +80,7 @@ func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hFile HFILE) ReadFile(buf []byte, numBytesToRead uint32) error {
-	numRead := uint32(0) // not used for anything, but must be passed to the call
+	var numRead uint32 // not used for anything, but must be passed to the call
 	ret, _, err := syscall.Syscall6(proc.ReadFile.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(numBytesToRead), uintptr(unsafe.Pointer(&numRead)), 0, 0) // OVERLAPPED not even considered
@@ -108,7 +108,7 @@ func (hFile HFILE) SetEndOfFile() error {
 func (hFile HFILE) SetFilePointerEx(
 	distanceToMove int64, moveMethod co.FILE_FROM) (uint64, error) {
 
-	newOff := int64(0)
+	var newOff int64
 	ret, _, err := syscall.Syscall6(proc.SetFilePointerEx.Addr(), 4,
 		uintptr(hFile), uintptr(distanceToMove),
 		uintptr(unsafe.Pointer(&newOff)), uintptr(moveMethod), 0, 0)
@@ -121,7 +121,7 @@ func (hFile HFILE) SetFilePointerEx(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
 func (hFile HFILE) WriteFile(buf []byte) error {
-	written := uint32(0)
+	var written uint32
 	ret, _, err := syscall.Syscall6(proc.WriteFile.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(len(buf)), uintptr(unsafe.Pointer(&written)), 0, 0) // OVERLAPPED not even considered

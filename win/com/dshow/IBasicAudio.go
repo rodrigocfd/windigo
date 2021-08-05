@@ -25,14 +25,14 @@ type IBasicAudio struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_balance
 func (me *IBasicAudio) GetBalance() int {
-	balance := int(0)
+	var balance int32
 	ret, _, _ := syscall.Syscall(
 		(*_IBasicAudioVtbl)(unsafe.Pointer(*me.Ppv)).GetBalance, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&balance)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return balance
+		return int(balance)
 	} else {
 		panic(hr)
 	}
@@ -40,14 +40,14 @@ func (me *IBasicAudio) GetBalance() int {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_volume
 func (me *IBasicAudio) GetVolume() int {
-	volume := int(0)
+	var volume int32
 	ret, _, _ := syscall.Syscall(
 		(*_IBasicAudioVtbl)(unsafe.Pointer(*me.Ppv)).GetVolume, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&volume)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return volume
+		return int(volume)
 	} else {
 		panic(hr)
 	}
@@ -58,7 +58,7 @@ func (me *IBasicAudio) PutBalance(balance int) {
 	ret, _, _ := syscall.Syscall(
 		(*_IBasicAudioVtbl)(unsafe.Pointer(*me.Ppv)).PutBalance, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(balance), 0)
+		uintptr(int32(balance)), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -70,7 +70,7 @@ func (me *IBasicAudio) PutVolume(volume int) {
 	ret, _, _ := syscall.Syscall(
 		(*_IBasicAudioVtbl)(unsafe.Pointer(*me.Ppv)).PutVolume, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(volume), 0)
+		uintptr(int32(volume)), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

@@ -1,5 +1,32 @@
 package dshowco
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-pin_direction
+type PIN_DIRECTION uint32
+
+const (
+	PIN_DIRECTION_INPUT  PIN_DIRECTION = 0
+	PIN_DIRECTION_OUTOUT PIN_DIRECTION = 1
+)
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-filter_state
+type FILTER_STATE uint32
+
+const (
+	FILTER_STATE_State_Stopped FILTER_STATE = 0
+	FILTER_STATE_State_Paused  FILTER_STATE = 1
+	FILTER_STATE_State_Running FILTER_STATE = 2
+)
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/ne-evr-mfvideoaspectratiomode
+type MFVideoARMode uint32
+
+const (
+	MFVideoARMode_None             MFVideoARMode = 0   // Do not maintain the aspect ratio of the video. Stretch the video to fit the output rectangle.
+	MFVideoARMode_PreservePicture  MFVideoARMode = 0x1 // Preserve the aspect ratio of the video by letterboxing or within the output rectangle.
+	MFVideoARMode_PreservePixel    MFVideoARMode = 0x2 // Currently the EVR ignores this flag.
+	MFVideoARMode_NonLinearStretch MFVideoARMode = 0x4 // Apply a non-linear horizontal stretch if the aspect ratio of the destination rectangle does not match the aspect ratio of the source rectangle.
+)
+
 // Originally AM_SEEKING_SeekingCapabilities enum.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-SEEKING_FLAGS_capabilities
@@ -31,23 +58,4 @@ const (
 	SEEKING_FLAGS_ReturnTime             SEEKING_FLAGS = 0x8
 	SEEKING_FLAGS_Segment                SEEKING_FLAGS = 0x10
 	SEEKING_FLAGS_NoFlush                SEEKING_FLAGS = 0x20
-)
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-filter_state
-type FILTER_STATE int
-
-const (
-	FILTER_STATE_State_Stopped FILTER_STATE = 0
-	FILTER_STATE_State_Paused  FILTER_STATE = 1
-	FILTER_STATE_State_Running FILTER_STATE = 2
-)
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/ne-evr-mfvideoaspectratiomode
-type MFVideoARMode uint32
-
-const (
-	MFVideoARMode_None             MFVideoARMode = 0   // Do not maintain the aspect ratio of the video. Stretch the video to fit the output rectangle.
-	MFVideoARMode_PreservePicture  MFVideoARMode = 0x1 // Preserve the aspect ratio of the video by letterboxing or within the output rectangle.
-	MFVideoARMode_PreservePixel    MFVideoARMode = 0x2 // Currently the EVR ignores this flag.
-	MFVideoARMode_NonLinearStretch MFVideoARMode = 0x4 // Apply a non-linear horizontal stretch if the aspect ratio of the destination rectangle does not match the aspect ratio of the source rectangle.
 )

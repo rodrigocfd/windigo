@@ -220,7 +220,6 @@ func (hWnd HWND) GetClassLongPtr(nIndex co.GCL) uint32 {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassnamew
 func (hWnd HWND) GetClassName() string {
 	var buf [256 + 1]uint16
-
 	ret, _, err := syscall.Syscall(proc.GetClassName.Addr(), 3,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(256+1))
 	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
@@ -231,7 +230,7 @@ func (hWnd HWND) GetClassName() string {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclientrect
 func (hWnd HWND) GetClientRect() RECT {
-	rc := RECT{}
+	var rc RECT
 	ret, _, err := syscall.Syscall(proc.GetClientRect.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&rc)), 0)
 	if ret == 0 {
@@ -349,7 +348,7 @@ func (hWnd HWND) GetWindowLongPtr(index co.GWLP) uintptr {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowrect
 func (hWnd HWND) GetWindowRect() RECT {
-	rc := RECT{}
+	var rc RECT
 	ret, _, err := syscall.Syscall(proc.GetWindowRect.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&rc)), 0)
 	if ret == 0 {
@@ -716,7 +715,7 @@ func (hWnd HWND) TaskDialog(
 	pszWindowTitle, pszMainInstruction, pszContent string,
 	dwCommonButtons co.TDCBF, pszIcon co.TD_ICON) co.ID {
 
-	pnButton := int32(0)
+	var pnButton int32
 	ret, _, _ := syscall.Syscall9(proc.TaskDialog.Addr(), 8,
 		uintptr(hWnd), uintptr(hInstance),
 		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(pszWindowTitle))),

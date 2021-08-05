@@ -33,7 +33,7 @@ type IMediaControl struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-getstate
 func (me *IMediaControl) GetState(msTimeout int) (dshowco.FILTER_STATE, error) {
-	state := dshowco.FILTER_STATE(0)
+	var state dshowco.FILTER_STATE
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaControlVtbl)(unsafe.Pointer(*me.Ppv)).GetState, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),

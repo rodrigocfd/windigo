@@ -24,7 +24,7 @@ func (hThread HTHREAD) CloseHandle() error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodethread
 func (hThread HTHREAD) GetExitCodeThread() uint32 {
-	lpExitCode := uint32(0)
+	var lpExitCode uint32
 	ret, _, err := syscall.Syscall(proc.GetExitCodeThread.Addr(), 2,
 		uintptr(hThread), uintptr(unsafe.Pointer(&lpExitCode)), 0)
 	if ret == 0 {

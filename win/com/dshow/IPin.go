@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -165,5 +166,20 @@ func (me *IPin) QueryAccept(pmt *AM_MEDIA_TYPE) (bool, error) {
 		return hr == errco.S_OK, nil
 	} else {
 		return false, hr
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-querydirection
+func (me *IPin) QueryDirection() dshowco.PIN_DIRECTION {
+	var pPinDir dshowco.PIN_DIRECTION
+	ret, _, _ := syscall.Syscall(
+		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).QueryDirection, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&pPinDir)), 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return pPinDir
+	} else {
+		panic(hr)
 	}
 }

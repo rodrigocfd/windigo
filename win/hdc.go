@@ -248,7 +248,7 @@ func (hdc HDC) GetPolyFillMode() co.POLYF {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextextentpoint32w
 func (hdc HDC) GetTextExtentPoint32(lpString string) SIZE {
-	sz := SIZE{}
+	var sz SIZE
 	ret, _, err := syscall.Syscall6(proc.GetTextExtentPoint32.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpString))),
 		uintptr(len(lpString)), uintptr(unsafe.Pointer(&sz)), 0, 0)
