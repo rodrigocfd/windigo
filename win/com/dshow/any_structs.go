@@ -29,6 +29,12 @@ type AM_MEDIA_TYPE struct {
 	PbFormat             *byte
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ns-strmif-filter_info
+type FILTER_INFO struct {
+	AchName [128]uint16
+	PGraph  IFilterGraph
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/ns-evr-mfvideonormalizedrect
 type MFVideoNormalizedRect struct {
 	Left, Top, Right, Bottom float32

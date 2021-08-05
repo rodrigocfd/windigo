@@ -115,10 +115,45 @@ func (me *IBaseFilter) JoinFilterGraph(
 	}
 }
 
+// ⚠️ You must defer Release() on PGraph field, if non-nil.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
+func (me *IBaseFilter) QueryFilterInfo(pInfo *FILTER_INFO) {
+	ret, _, _ := syscall.Syscall(
+		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ppv)).QueryFilterInfo, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(pInfo)), 0)
+
+	if err := errco.ERROR(ret); err != errco.S_OK {
+		panic(err)
+	}
+}
+
 // Calls IUnknown.QueryInterface() to return IMFGetService.
 //
 // ⚠️ You must defer Release().
 func (me *IBaseFilter) QueryIMFGetService() IMFGetService {
 	iUnk := me.QueryInterface(dshowco.IID_IMFGetService)
 	return IMFGetService{IUnknown: iUnk}
+}
+
+// Returns false if the method is not supported.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryvendorinfo
+func (me *IBaseFilter) QueryVendorInfo() (string, bool) {
+	var pv *uint16
+	ret, _, _ := syscall.Syscall(
+		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ppv)).QueryVendorInfo, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(unsafe.Pointer(&pv)), 0)
+
+	if err := errco.ERROR(ret); err == errco.E_NOTIMPL {
+		return "", false
+	} else if err == errco.S_OK {
+		name := win.Str.FromUint16Ptr(pv)
+		win.CoTaskMemFree(unsafe.Pointer(pv))
+		return name, true
+	} else {
+		panic(err)
+	}
 }
