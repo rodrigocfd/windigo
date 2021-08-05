@@ -66,6 +66,17 @@ const (
 	SIGDN_PARENTRELATIVEFORUI         SIGDN = 0x80094001
 )
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-stpflag
+type STPFLAG uint32
+
+const (
+	STPFLAG_NONE                      STPFLAG = 0
+	STPFLAG_USEAPPTHUMBNAILALWAYS     STPFLAG = 0x1
+	STPFLAG_USEAPPTHUMBNAILWHENACTIVE STPFLAG = 0x2
+	STPFLAG_USEAPPPEEKALWAYS          STPFLAG = 0x4
+	STPFLAG_USEAPPPEEKWHENACTIVE      STPFLAG = 0x8
+)
+
 // ITaskbarList3::SetProgressState() tbpFlags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
