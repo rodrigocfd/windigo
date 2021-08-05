@@ -4,11 +4,12 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IMediaFilterVtbl struct {
-	_IPersistVtbl
+	win.IPersistVtbl
 	Stop          uintptr
 	Pause         uintptr
 	Run           uintptr
@@ -21,7 +22,7 @@ type _IMediaFilterVtbl struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
 type IMediaFilter struct {
-	IPersist // Base IPersist > IUnknown.
+	win.IPersist // Base IPersist > IUnknown.
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-pause

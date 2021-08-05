@@ -35,8 +35,9 @@ func (me *IDispatch) GetTypeInfoCount() int {
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&pctinfo)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return int(pctinfo)
+	} else {
+		panic(hr)
 	}
-	return int(pctinfo)
 }

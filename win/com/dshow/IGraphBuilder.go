@@ -71,8 +71,8 @@ func (me *IGraphBuilder) AddSourceFilter(
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return IBaseFilter{
 			IMediaFilter{
-				IPersist{
-					win.IUnknown{Ppv: ppvQueried},
+				win.IPersist{
+					IUnknown: win.IUnknown{Ppv: ppvQueried},
 				},
 			},
 		}

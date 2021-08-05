@@ -37,7 +37,7 @@ func NewEnhancedVideoRenderer(dwClsContext co.CLSCTX) IBaseFilter {
 		dshowco.IID_IBaseFilter)
 	return IBaseFilter{
 		IMediaFilter{
-			IPersist{IUnknown: iUnk},
+			win.IPersist{IUnknown: iUnk},
 		},
 	}
 }
@@ -53,7 +53,7 @@ func NewVideoMixingRenderer9(dwClsContext co.CLSCTX) IBaseFilter {
 		dshowco.IID_IBaseFilter)
 	return IBaseFilter{
 		IMediaFilter{
-			IPersist{IUnknown: iUnk},
+			win.IPersist{IUnknown: iUnk},
 		},
 	}
 }

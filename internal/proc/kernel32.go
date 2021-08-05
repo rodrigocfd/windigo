@@ -55,6 +55,7 @@ var (
 	ReadFile                        = kernel32.NewProc("ReadFile")
 	SetEndOfFile                    = kernel32.NewProc("SetEndOfFile")
 	SetFilePointerEx                = kernel32.NewProc("SetFilePointerEx")
+	SetLastError                    = kernel32.NewProc("SetLastError")
 	Sleep                           = kernel32.NewProc("Sleep")
 	SystemTimeToFileTime            = kernel32.NewProc("SystemTimeToFileTime")
 	SystemTimeToTzSpecificLocalTime = kernel32.NewProc("SystemTimeToTzSpecificLocalTime")

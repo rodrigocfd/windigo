@@ -54,7 +54,7 @@ type HMONITOR HANDLE
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
 type HTREEITEM HANDLE
 
-// A message parameter.
+// First message parameter.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#wparam
 type WPARAM uintptr
@@ -71,7 +71,7 @@ func (wp WPARAM) Hi8Lo16() uint8 { return Bytes.Hi8(wp.Lo16()) }
 func (wp WPARAM) Lo8Hi16() uint8 { return Bytes.Lo8(wp.Hi16()) }
 func (wp WPARAM) Hi8Hi16() uint8 { return Bytes.Hi8(wp.Hi16()) }
 
-// A message parameter.
+// Second message parameter.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#lparam
 type LPARAM uintptr

@@ -86,8 +86,8 @@ func (me *IEnumFilters) Next() (IBaseFilter, bool) {
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return IBaseFilter{
 			IMediaFilter{
-				IPersist{
-					win.IUnknown{Ppv: ppQueried},
+				win.IPersist{
+					IUnknown: win.IUnknown{Ppv: ppQueried},
 				},
 			},
 		}, true

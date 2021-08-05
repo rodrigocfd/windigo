@@ -27,7 +27,7 @@ func BeginDeferWindowPos(numWindows int32) HDWP {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deferwindowpos
 func (hDwp HDWP) DeferWindowPos(
-	hWnd HWND, hWndInsertAfter HWND, x, y, cx, cy int32, uFlags co.SWP) HDWP {
+	hWnd, hWndInsertAfter HWND, x, y, cx, cy int32, uFlags co.SWP) HDWP {
 
 	ret, _, err := syscall.Syscall9(proc.DeferWindowPos.Addr(), 8,
 		uintptr(hDwp), uintptr(hWnd), uintptr(hWndInsertAfter),

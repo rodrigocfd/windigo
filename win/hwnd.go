@@ -34,13 +34,15 @@ func CreateWindowEx(exStyle co.WS_EX, className, title string, style co.WS,
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdesktopwindow
 func GetDesktopWindow() HWND {
-	ret, _, _ := syscall.Syscall(proc.GetDesktopWindow.Addr(), 0, 0, 0, 0)
+	ret, _, _ := syscall.Syscall(proc.GetDesktopWindow.Addr(), 0,
+		0, 0, 0)
 	return HWND(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getfocus
 func GetFocus() HWND {
-	ret, _, _ := syscall.Syscall(proc.GetFocus.Addr(), 0, 0, 0, 0)
+	ret, _, _ := syscall.Syscall(proc.GetFocus.Addr(), 0,
+		0, 0, 0)
 	return HWND(ret)
 }
 
@@ -221,7 +223,7 @@ func (hWnd HWND) GetClassLongPtr(nIndex co.GCL) uint32 {
 func (hWnd HWND) GetClassName() string {
 	var buf [256 + 1]uint16
 	ret, _, err := syscall.Syscall(proc.GetClassName.Addr(), 3,
-		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(256+1))
+		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
 	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
 		panic(err)
 	}
@@ -585,35 +587,43 @@ func (hWnd HWND) SendMessage(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	return ret
 }
 
+// Returns a handle to the previously focused window.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setfocus
 func (hWnd HWND) SetFocus() (HWND, error) {
 	ret, _, err := syscall.Syscall(proc.SetFocus.Addr(), 1,
 		uintptr(hWnd), 0, 0)
-	if ret == 0 {
-		return HWND(0), errco.ERROR(err)
+	if hPrev, err := HWND(ret), errco.ERROR(err); hPrev == 0 && err != errco.S_OK {
+		return hPrev, err
+	} else {
+		return hPrev, nil
 	}
-	return HWND(ret), nil
 }
 
+// Returns true if the window was brought to the foreground.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow
-func (hWnd HWND) SetForegroundWindow() {
-	ret, _, err := syscall.Syscall(proc.SetForegroundWindow.Addr(), 1,
+func (hWnd HWND) SetForegroundWindow() bool {
+	ret, _, _ := syscall.Syscall(proc.SetForegroundWindow.Addr(), 1,
 		uintptr(hWnd), 0, 0)
-	if ret == 0 {
-		panic(errco.ERROR(err))
-	}
+	return ret != 0
 }
 
+// Returns the handle of the previous parent window.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setparent
 func (hWnd HWND) SetParent(hWndNewParent HWND) HWND {
 	ret, _, err := syscall.Syscall(proc.SetParent.Addr(), 2,
 		uintptr(hWnd), uintptr(hWndNewParent), 0)
-	if ret == 0 {
-		panic(errco.ERROR(err))
+	if hPrev, err := HWND(ret), errco.ERROR(err); hPrev == 0 && err != errco.S_OK {
+		panic(err)
+	} else {
+		return hPrev
 	}
-	return HWND(ret)
 }
 
+// Returns the current position of the scroll box.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setscrollinfo
 func (hWnd HWND) SetScrollInfo(
 	nBar co.SB_TYPE, lpsi *SCROLLINFO, redraw bool) int32 {
@@ -633,7 +643,7 @@ func (hWnd HWND) SetTimer(
 	cbTimer := uintptr(0)
 	if lpTimerFunc != nil {
 		cbTimer = syscall.NewCallback(
-			func(hWnd HWND, nIDEvent uintptr, wmTimer uint32, msElapsed uint32) uintptr {
+			func(hWnd HWND, nIDEvent uintptr, wmTimer co.WM, msElapsed uint32) uintptr {
 				lpTimerFunc(msElapsed)
 				return 0
 			})
@@ -646,8 +656,11 @@ func (hWnd HWND) SetTimer(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowlongptrw
 func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
+	syscall.Syscall(proc.SetLastError.Addr(), 0,
+		0, 0, 0)
+
 	ret, _, err := syscall.Syscall(proc.SetWindowLongPtr.Addr(), 3,
 		uintptr(hWnd), uintptr(index), newLong)
 	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {

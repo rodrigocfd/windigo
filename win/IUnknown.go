@@ -9,7 +9,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// IUnknown virtual table.
+// IUnknown virtual table, base to all COM virtual tables.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 type IUnknownVtbl struct {
@@ -20,7 +20,7 @@ type IUnknownVtbl struct {
 
 //------------------------------------------------------------------------------
 
-// IUnknown COM interface, ase to all COM interfaces.
+// IUnknown COM interface, base to all COM interfaces.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 type IUnknown struct {
@@ -53,10 +53,11 @@ func CoCreateInstance(
 		uintptr(unsafe.Pointer(NewGuidFromIid(riid))),
 		uintptr(unsafe.Pointer(&ppv)), 0)
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
+	if err := errco.ERROR(ret); err == errco.S_OK {
+		return IUnknown{ppv}
+	} else {
 		panic(err)
 	}
-	return IUnknown{ppv}
 }
 
 // ⚠️ You must defer Release().
@@ -65,7 +66,7 @@ func CoCreateInstance(
 func (me *IUnknown) AddRef() IUnknown {
 	syscall.Syscall((*me.Ppv).AddRef, 1,
 		uintptr(unsafe.Pointer(me.Ppv)), 0, 0)
-	return IUnknown{me.Ppv} // imply copy the pointer into a new object
+	return IUnknown{me.Ppv} // simply copy the pointer into a new object
 }
 
 // Returns a pointer to a pointer to the IUnknown virtual table, which can be
@@ -81,10 +82,11 @@ func (me *IUnknown) QueryInterface(riid co.IID) IUnknown {
 		uintptr(unsafe.Pointer(NewGuidFromIid(riid))),
 		uintptr(unsafe.Pointer(&ppvQueried)))
 
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return IUnknown{ppvQueried}
+	} else {
+		panic(hr)
 	}
-	return IUnknown{ppvQueried}
 }
 
 // Releases the COM pointer. Never fails, can be called any number of times.
