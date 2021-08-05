@@ -18,6 +18,7 @@ const (
 	IID_IBasicAudio            co.IID = "56a868b3-0ad4-11ce-b03a-0020af0ba770"
 	IID_IEnumFilters           co.IID = "56a86893-0ad4-11ce-b03a-0020af0ba770"
 	IID_IEnumMediaTypes        co.IID = "89c31040-846b-11ce-97d3-00aa0055595a"
+	IID_IEnumPins              co.IID = "56a86892-0ad4-11ce-b03a-0020af0ba770"
 	IID_IFilterGraph           co.IID = "56a8689f-0ad4-11ce-b03a-0020af0ba770"
 	IID_IGraphBuilder          co.IID = "56a868a9-0ad4-11ce-b03a-0020af0ba770"
 	IID_IMediaControl          co.IID = "56a868b1-0ad4-11ce-b03a-0020af0ba770"

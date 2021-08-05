@@ -59,7 +59,7 @@ func (me *IShellItemArray) GetCount() int {
 	return int(count)
 }
 
-// Syntactic sugar, calls GetDisplayName() on each IShellItem.
+// Calls GetDisplayName() on each IShellItem, retrieving the names as strings.
 func (me *IShellItemArray) GetDisplayNames(sigdnName shellco.SIGDN) []string {
 	count := me.GetCount()
 	files := make([]string, 0, count)

@@ -405,7 +405,7 @@ func GetMessagePos() POINT {
 func GetMessageTime() time.Duration {
 	ret, _, _ := syscall.Syscall(proc.GetMessageTime.Addr(), 0,
 		0, 0, 0)
-	return time.Duration(ret * 1000000)
+	return time.Duration(ret * uintptr(time.Millisecond))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos

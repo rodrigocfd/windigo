@@ -46,7 +46,7 @@ func (me *IPin) BeginFlush() {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer Release() if non-error.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connect
 func (me *IPin) Connect(pmt *AM_MEDIA_TYPE) (IPin, error) {
@@ -65,7 +65,7 @@ func (me *IPin) Connect(pmt *AM_MEDIA_TYPE) (IPin, error) {
 	}, nil
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer Release() if non-error.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connectedto
 func (me *IPin) ConnectedTo() (IPin, error) {
@@ -132,7 +132,7 @@ func (me *IPin) EndOfStream() {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer Release() if non-error.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-enummediatypes
 func (me *IPin) EnumMediaTypes() (IEnumMediaTypes, error) {

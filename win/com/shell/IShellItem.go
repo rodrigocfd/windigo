@@ -29,7 +29,7 @@ type IShellItem struct {
 
 // Creates an IShellItem from a string path.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer Release() if non-error.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 func NewShellItem(thePath string) (IShellItem, error) {
@@ -48,6 +48,7 @@ func NewShellItem(thePath string) (IShellItem, error) {
 	}, nil
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-compare
 func (me *IShellItem) Compare(psi IShellItem, hint shellco.SICHINT) bool {
 	piOrder := uint32(0)
 	ret, _, _ := syscall.Syscall6(
