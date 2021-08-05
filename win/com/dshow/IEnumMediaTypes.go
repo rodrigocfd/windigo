@@ -23,10 +23,10 @@ type IEnumMediaTypes struct {
 	win.IUnknown // Base IUnknown.
 }
 
-// ⚠️ You must defer Release() if non-error.
+// ⚠️ You must defer Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-clone
-func (me *IEnumMediaTypes) Clone() (IEnumMediaTypes, error) {
+func (me *IEnumMediaTypes) Clone() IEnumMediaTypes {
 	var ppQueried **win.IUnknownVtbl
 	ret, _, _ := syscall.Syscall(
 		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ppv)).Clone, 2,
@@ -36,9 +36,40 @@ func (me *IEnumMediaTypes) Clone() (IEnumMediaTypes, error) {
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return IEnumMediaTypes{
 			win.IUnknown{Ppv: ppQueried},
-		}, nil
+		}
 	} else {
-		return IEnumMediaTypes{}, hr
+		panic(hr)
+	}
+}
+
+// Calls Skip() until the end of the enum to retrieve the actual number of media
+// types, then calls Reset().
+func (me *IEnumMediaTypes) Count() int {
+	count := int(0)
+	for {
+		gotOne := me.Skip(1)
+		if gotOne {
+			count++
+		} else {
+			me.Reset()
+			return count
+		}
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-next
+func (me *IEnumMediaTypes) Next(ppMediaType *AM_MEDIA_TYPE) bool {
+	ret, _, _ := syscall.Syscall6(
+		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ppv)).Next, 4,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		1, uintptr(unsafe.Pointer(&ppMediaType)), 0, 0, 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return true
+	} else if hr == errco.S_FALSE {
+		return false
+	} else {
+		panic(hr)
 	}
 }
 
@@ -48,4 +79,20 @@ func (me *IEnumMediaTypes) Reset() {
 		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ppv)).Reset, 1,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-skip
+func (me *IEnumMediaTypes) Skip(cMediaTypes int) bool {
+	ret, _, _ := syscall.Syscall(
+		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ppv)).Skip, 2,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		uintptr(uint32(cMediaTypes)), 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return true
+	} else if hr == errco.S_FALSE {
+		return false
+	} else {
+		panic(hr)
+	}
 }
