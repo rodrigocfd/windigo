@@ -107,7 +107,7 @@ func (me *IEnumPins) Skip(cPins int) bool {
 	ret, _, _ := syscall.Syscall(
 		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ppv)).Skip, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(cPins), 0)
+		uintptr(uint32(cPins)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
