@@ -8,12 +8,12 @@ import (
 
 // Converts time.Duration to 100 nanoseconds.
 func _DurationTo100Nanosec(duration time.Duration) int64 {
-	return int64(duration) * 10000 / int64(time.Millisecond)
+	return int64(duration) * 10_000 / int64(time.Millisecond)
 }
 
 // Converts 100 nanoseconds to time.Duration.
 func _Nanosec100ToDuration(nanosec100 int64) time.Duration {
-	return time.Duration(nanosec100 / 10000 * int64(time.Millisecond))
+	return time.Duration(nanosec100 / 10_000 * int64(time.Millisecond))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ns-strmif-am_media_type

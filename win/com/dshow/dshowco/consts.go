@@ -10,14 +10,6 @@ const (
 	AM_FILE_OVERWRITE AM_FILE = 0x1
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-pin_direction
-type PIN_DIRECTION uint32
-
-const (
-	PIN_DIRECTION_INPUT  PIN_DIRECTION = 0
-	PIN_DIRECTION_OUTOUT PIN_DIRECTION = 1
-)
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-filter_state
 type FILTER_STATE uint32
 
@@ -35,6 +27,14 @@ const (
 	MFVideoARMode_PreservePicture  MFVideoARMode = 0x1 // Preserve the aspect ratio of the video by letterboxing or within the output rectangle.
 	MFVideoARMode_PreservePixel    MFVideoARMode = 0x2 // Currently the EVR ignores this flag.
 	MFVideoARMode_NonLinearStretch MFVideoARMode = 0x4 // Apply a non-linear horizontal stretch if the aspect ratio of the destination rectangle does not match the aspect ratio of the source rectangle.
+)
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-pin_direction
+type PIN_DIRECTION uint32
+
+const (
+	PIN_DIRECTION_INPUT  PIN_DIRECTION = 0
+	PIN_DIRECTION_OUTOUT PIN_DIRECTION = 1
 )
 
 // Originally AM_SEEKING_SeekingCapabilities enum.

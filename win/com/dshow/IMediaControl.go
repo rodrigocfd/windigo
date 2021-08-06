@@ -37,23 +37,29 @@ func (me *IMediaControl) GetState(msTimeout int) (dshowco.FILTER_STATE, error) {
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaControlVtbl)(unsafe.Pointer(*me.Ppv)).GetState, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(msTimeout), uintptr(unsafe.Pointer(&state)))
+		uintptr(int32(msTimeout)), uintptr(unsafe.Pointer(&state)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return state, nil
+	} else if hr == errco.VFW_S_STATE_INTERMEDIATE || hr == errco.VFW_S_CANT_CUE {
+		return state, hr
 	} else {
-		return dshowco.FILTER_STATE(0), hr
+		panic(hr)
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-pause
-func (me *IMediaControl) Pause() {
+func (me *IMediaControl) Pause() bool {
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaControlVtbl)(unsafe.Pointer(*me.Ppv)).Pause, 1,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return true
+	} else if hr == errco.S_FALSE {
+		return false
+	} else {
 		panic(hr)
 	}
 }
@@ -71,13 +77,17 @@ func (me *IMediaControl) RenderFile(strFilename string) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-run
-func (me *IMediaControl) Run() {
+func (me *IMediaControl) Run() bool {
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaControlVtbl)(unsafe.Pointer(*me.Ppv)).Run, 1,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		0, 0)
 
-	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return true
+	} else if hr == errco.S_FALSE {
+		return false
+	} else {
 		panic(hr)
 	}
 }
@@ -90,6 +100,22 @@ func (me *IMediaControl) Stop() {
 		0, 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-stopwhenready
+func (me *IMediaControl) StopWhenReady() bool {
+	ret, _, _ := syscall.Syscall(
+		(*_IMediaControlVtbl)(unsafe.Pointer(*me.Ppv)).StopWhenReady, 1,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return true
+	} else if hr == errco.S_FALSE {
+		return false
+	} else {
 		panic(hr)
 	}
 }

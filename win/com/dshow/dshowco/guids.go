@@ -21,6 +21,7 @@ const (
 	IID_IEnumPins              co.IID = "56a86892-0ad4-11ce-b03a-0020af0ba770"
 	IID_IFileSinkFilter        co.IID = "a2104830-7c70-11cf-8bce-00aa00a3f1a6"
 	IID_IFileSinkFilter2       co.IID = "00855b90-ce1b-11d0-bd4f-00a0c911ce86"
+	IID_IFileSourceFilter      co.IID = "56a868a6-0ad4-11ce-b03a-0020af0ba770"
 	IID_IFilterGraph           co.IID = "56a8689f-0ad4-11ce-b03a-0020af0ba770"
 	IID_IGraphBuilder          co.IID = "56a868a9-0ad4-11ce-b03a-0020af0ba770"
 	IID_IMediaControl          co.IID = "56a868b1-0ad4-11ce-b03a-0020af0ba770"
