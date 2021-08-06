@@ -1,5 +1,15 @@
 package dshowco
 
+// IFileSinkFilter2 modes.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-setmode
+type AM_FILE uint32
+
+const (
+	AM_FILE_NONE      AM_FILE = 0
+	AM_FILE_OVERWRITE AM_FILE = 0x1
+)
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-pin_direction
 type PIN_DIRECTION uint32
 
