@@ -11,8 +11,8 @@ import (
 // Events added only internally by the library, cannot be added by the user.
 // Supports multiple events for the same message, all will be executed.
 type _EventsInternal struct {
-	msgsZero map[co.WM][]func(p wm.Any)
-	nfysZero map[_HashNfy][]func(p unsafe.Pointer)
+	msgsZero map[co.WM][]func(p wm.Any)            // ordinary WM messages
+	nfysZero map[_HashNfy][]func(p unsafe.Pointer) // WM_NOTIFY messages
 }
 
 func (me *_EventsInternal) new() {
@@ -23,9 +23,9 @@ func (me *_EventsInternal) new() {
 // Adds a WM event.
 func (me *_EventsInternal) addMsgZero(uMsg co.WM, userFunc func(p wm.Any)) {
 	var slice []func(p wm.Any)
-	if existingSlice, hasSlice := me.msgsZero[uMsg]; hasSlice {
+	if existingSlice, hasSlice := me.msgsZero[uMsg]; hasSlice { // at least 1 handle exists?
 		slice = existingSlice
-	} else {
+	} else { // no handlers for this message yet
 		capacity := 1
 		if uMsg == co.WM_CREATE || uMsg == co.WM_INITDIALOG { // special optimization cases
 			capacity = 10
@@ -45,14 +45,15 @@ func (me *_EventsInternal) addNfyZero(
 	hash := _HashNfy{idFrom, code}
 	var slice []func(p unsafe.Pointer)
 
-	if existingSlice, hasSlice := me.nfysZero[hash]; hasSlice {
+	if existingSlice, hasSlice := me.nfysZero[hash]; hasSlice { // at least 1 handle exists?
 		slice = existingSlice
-	} else {
-		slice = make([]func(p unsafe.Pointer), 0)
+	} else { // no handlers for this message yet
+		slice = make([]func(p unsafe.Pointer), 0, 1)
 	}
 	me.nfysZero[hash] = append(slice, userFunc)
 }
 
+// Executes all handlers for the given message.
 func (me *_EventsInternal) processMessages(
 	uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) {
 
@@ -70,7 +71,7 @@ func (me *_EventsInternal) processMessages(
 			}
 		}
 
-	} else {
+	} else { // ordinary WM message
 		if slice, hasSlice := me.msgsZero[uMsg]; hasSlice {
 			for _, userFunc := range slice {
 				userFunc(wm.Any{WParam: wParam, LParam: lParam})
