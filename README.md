@@ -60,63 +60,63 @@ The example below creates a window programmatically, and handles the button clic
 package main
 
 import (
-    "fmt"
-    "runtime"
+	"fmt"
+	"runtime"
 
-    "github.com/rodrigocfd/windigo/ui"
-    "github.com/rodrigocfd/windigo/win"
-    "github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/ui"
+	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/co"
 )
 
 func main() {
-    runtime.LockOSThread()
+	runtime.LockOSThread()
 
-    myWindow := NewMyWindow() // instantiate
-    myWindow.wnd.RunAsMain()  // ...and run
+	myWindow := NewMyWindow() // instantiate
+	myWindow.wnd.RunAsMain()  // ...and run
 }
 
 // This struct represents our main window.
 type MyWindow struct {
-    wnd     ui.WindowMain
-    lblName ui.Static
-    txtName ui.Edit
-    btnShow ui.Button
+	wnd     ui.WindowMain
+	lblName ui.Static
+	txtName ui.Edit
+	btnShow ui.Button
 }
 
 // Creates a new instance of our main window.
 func NewMyWindow() *MyWindow {
-    wnd := ui.NewWindowMain(
-        ui.WindowMainOpts().
-            Title("Hello you").
-            ClientArea(win.SIZE{Cx: 340, Cy: 80}).
-            IconId(101), // ID of icon resource, see resources folder
-    })
+	wnd := ui.NewWindowMain(
+		ui.WindowMainOpts().
+			Title("Hello you").
+			ClientArea(win.SIZE{Cx: 340, Cy: 80}).
+			IconId(101), // ID of icon resource, see resources folder
+	)
 
-    me := &MyWindow{
-        wnd: wnd,
-        lblName: ui.NewStatic(wnd,
-            ui.StaticOpts().
-                Text("Your name").
-                Position(win.POINT{X: 10, Y: 22}),
-        }),
-        txtName: ui.NewEdit(wnd,
-            ui.EditOpts().
-                Position(win.POINT{X: 80, Y: 20}).
-                Size(win.SIZE{Cx: 150}),
-        }),
-        btnShow: ui.NewButton(wnd,
-            ui.ButtonOpts().
-                Text("&Show").
-                Position(win.POINT{X: 240, Y: 19}),
-        }),
-    }
+	me := &MyWindow{
+		wnd: wnd,
+		lblName: ui.NewStatic(wnd,
+			ui.StaticOpts().
+				Text("Your name").
+				Position(win.POINT{X: 10, Y: 22}),
+		),
+		txtName: ui.NewEdit(wnd,
+			ui.EditOpts().
+				Position(win.POINT{X: 80, Y: 20}).
+				Size(win.SIZE{Cx: 150}),
+		),
+		btnShow: ui.NewButton(wnd,
+			ui.ButtonOpts().
+				Text("&Show").
+				Position(win.POINT{X: 240, Y: 19}),
+		),
+	}
 
-    me.btnShow.On().BnClicked(func() {
-        msg := fmt.Sprintf("Hello, %s!", me.txtName.Text())
-        me.wnd.Hwnd().MessageBox(msg, "Saying hello", co.MB_ICONINFORMATION)
-    })
+	me.btnShow.On().BnClicked(func() {
+		msg := fmt.Sprintf("Hello, %s!", me.txtName.Text())
+		me.wnd.Hwnd().MessageBox(msg, "Saying hello", co.MB_ICONINFORMATION)
+	})
 
-    return me
+	return me
 }
 ```
 
