@@ -396,6 +396,7 @@ const (
 type DLGC uint32
 
 const (
+	DLGC_NONE            DLGC = 0
 	DLGC_WANTARROWS      DLGC = 0x0001
 	DLGC_WANTTAB         DLGC = 0x0002
 	DLGC_WANTALLKEYS     DLGC = 0x0004

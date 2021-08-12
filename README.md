@@ -90,7 +90,7 @@ func NewMyWindow() *MyWindow {
             Title("Hello you").
             ClientArea(win.SIZE{Cx: 340, Cy: 80}).
             IconId(101), // ID of icon resource, see resources folder
-    })
+    )
 
     me := &MyWindow{
         wnd: wnd,
@@ -98,17 +98,17 @@ func NewMyWindow() *MyWindow {
             ui.StaticOpts().
                 Text("Your name").
                 Position(win.POINT{X: 10, Y: 22}),
-        }),
+        ),
         txtName: ui.NewEdit(wnd,
             ui.EditOpts().
                 Position(win.POINT{X: 80, Y: 20}).
                 Size(win.SIZE{Cx: 150}),
-        }),
+        ),
         btnShow: ui.NewButton(wnd,
             ui.ButtonOpts().
                 Text("&Show").
                 Position(win.POINT{X: 240, Y: 19}),
-        }),
+        ),
     }
 
     me.btnShow.On().BnClicked(func() {
