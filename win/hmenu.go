@@ -154,9 +154,9 @@ func (hMenu HMENU) EnableByPos(isEnabled bool, indexes ...int) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablemenuitem
-func (hMenu HMENU) EnableMenuItem(uIDEnableItem uint32, uEnable co.MF) co.MF {
+func (hMenu HMENU) EnableMenuItem(idOrPos uint32, uEnable co.MF) co.MF {
 	ret, _, err := syscall.Syscall(proc.EnableMenuItem.Addr(), 3,
-		uintptr(hMenu), uintptr(uIDEnableItem), uintptr(uEnable))
+		uintptr(hMenu), uintptr(idOrPos), uintptr(uEnable))
 	if int(ret) == -1 {
 		panic(errco.ERROR(err))
 	}
@@ -180,6 +180,18 @@ func (hMenu HMENU) GetMenuItemID(nPos uint32) int32 {
 	return int32(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuiteminfow
+func (hMenu HMENU) GetMenuItemInfo(
+	idOrPos uint32, fByPosition bool, lpmii *MENUITEMINFO) {
+
+	ret, _, err := syscall.Syscall6(proc.GetMenuItemInfo.Addr(), 4,
+		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(fByPosition),
+		uintptr(unsafe.Pointer(lpmii)), 0, 0)
+	if ret == 0 {
+		panic(err)
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsubmenu
 func (hMenu HMENU) GetSubMenu(nPos uint32) (HMENU, bool) {
 	ret, _, _ := syscall.Syscall(proc.GetSubMenu.Addr(), 2,
@@ -192,10 +204,10 @@ func (hMenu HMENU) GetSubMenu(nPos uint32) (HMENU, bool) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenuitemw
 func (hMenu HMENU) InsertMenuItem(
-	item uint32, fByPosition bool, lpmi *MENUITEMINFO) {
+	idOrPos uint32, fByPosition bool, lpmi *MENUITEMINFO) {
 
 	ret, _, err := syscall.Syscall6(proc.InsertMenuItem.Addr(), 4,
-		uintptr(hMenu), uintptr(item), util.BoolToUintptr(fByPosition),
+		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmi)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -203,9 +215,9 @@ func (hMenu HMENU) InsertMenuItem(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenudefaultitem
-func (hMenu HMENU) SetMenuDefaultItem(uItem uint32, fByPos bool) {
+func (hMenu HMENU) SetMenuDefaultItem(idOrPos uint32, fByPos bool) {
 	ret, _, err := syscall.Syscall(proc.SetMenuDefaultItem.Addr(), 3,
-		uintptr(hMenu), uintptr(uItem), util.BoolToUintptr(fByPos))
+		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(fByPos))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

@@ -64,6 +64,7 @@ var (
 	GetMenu                       = user32.NewProc("GetMenu")
 	GetMenuItemCount              = user32.NewProc("GetMenuItemCount")
 	GetMenuItemID                 = user32.NewProc("GetMenuItemID")
+	GetMenuItemInfo               = user32.NewProc("GetMenuItemInfoW")
 	GetMessage                    = user32.NewProc("GetMessageW")
 	GetMessagePos                 = user32.NewProc("GetMessagePos")
 	GetMessageTime                = user32.NewProc("GetMessageTime")

@@ -129,7 +129,7 @@ type NMDATETIMEFORMAT struct {
 	Nmhdr      NMHDR
 	PszFormat  *uint16
 	St         SYSTEMTIME
-	pszDisplay *uint16
+	PszDisplay *uint16
 	SzDisplay  [64]uint16
 }
 
