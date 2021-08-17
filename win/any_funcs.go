@@ -81,7 +81,7 @@ func CommandLineToArgv(lpCmdLine string) []string {
 		panic(errco.ERROR(err))
 	}
 
-	lpPtrs := util.PtrToSliceUint16Ptr((**uint16)(unsafe.Pointer(ret)), int(pNumArgs)) // []*uint16
+	lpPtrs := unsafe.Slice((**uint16)(unsafe.Pointer(ret)), pNumArgs) // []*uint16
 	strs := make([]string, 0, pNumArgs)
 
 	for _, lpPtr := range lpPtrs {
@@ -862,7 +862,7 @@ func VerQueryValue(pBlock []byte, lpSubBlock string) ([]byte, bool) {
 	if ret == 0 {
 		return nil, false
 	}
-	return util.PtrToSliceByte((*byte)(unsafe.Pointer(lplpBuffer)), int(puLen)), true
+	return unsafe.Slice((*byte)(unsafe.Pointer(lplpBuffer)), puLen), true
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow

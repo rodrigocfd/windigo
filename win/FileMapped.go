@@ -3,7 +3,6 @@ package win
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -96,7 +95,7 @@ func (me *_FileMapped) Close() {
 }
 
 func (me *_FileMapped) HotSlice() []byte {
-	return util.PtrToSliceByte((*byte)(unsafe.Pointer(me.pMem)), me.sz)
+	return unsafe.Slice((*byte)(unsafe.Pointer(me.pMem)), me.sz)
 }
 
 func (me *_FileMapped) ReadAll() []byte {

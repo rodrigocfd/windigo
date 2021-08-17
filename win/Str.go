@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"syscall"
 	"unsafe"
-
-	"github.com/rodrigocfd/windigo/internal/util"
 )
 
 type _StrT struct{}
@@ -45,7 +43,7 @@ func (_StrT) FromUint16Ptr(p *uint16) string {
 		sLen++
 	}
 
-	slice := util.PtrToSliceUint16(p, sLen) // create slice without terminating null
+	slice := unsafe.Slice(p, sLen) // create slice without terminating null
 	return Str.FromUint16Slice(slice)
 }
 
@@ -66,7 +64,7 @@ func (_StrT) FromUint16PtrMulti(p *uint16) []string {
 				break // two terminating nulls
 			}
 
-			slice := util.PtrToSliceUint16(p, sLen) // create slice without terminating null
+			slice := unsafe.Slice(p, sLen) // create slice without terminating null
 			values = append(values, Str.FromUint16Slice(slice))
 
 			pRun = unsafe.Pointer(uintptr(pRun) + unsafe.Sizeof(*p)) // pRun++
