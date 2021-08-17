@@ -196,10 +196,8 @@ func (hMenu HMENU) GetMenuItemInfo(
 func (hMenu HMENU) GetSubMenu(nPos uint32) (HMENU, bool) {
 	ret, _, _ := syscall.Syscall(proc.GetSubMenu.Addr(), 2,
 		uintptr(hMenu), uintptr(nPos), 0)
-	if ret == 0 {
-		return HMENU(0), false
-	}
-	return HMENU(ret), true
+	hSub := HMENU(ret)
+	return hSub, hSub != 0
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenuitemw

@@ -11,6 +11,28 @@ const (
 	ODA_FOCUS      ODA = 0x0004
 )
 
+// SetSystemCursor() id.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setsystemcursor
+type OCR uint32
+
+const (
+	OCR_APPSTARTING OCR = 32650
+	OCR_NORMAL      OCR = 32512
+	OCR_CROSS       OCR = 32515
+	OCR_HAND        OCR = 32649
+	OCR_HELP        OCR = 32651
+	OCR_IBEAM       OCR = 32513
+	OCR_NO          OCR = 32648
+	OCR_SIZEALL     OCR = 32646
+	OCR_SIZENESW    OCR = 32643
+	OCR_SIZENS      OCR = 32645
+	OCR_SIZENWSE    OCR = 32642
+	OCR_SIZEWE      OCR = 32644
+	OCR_UP          OCR = 32516
+	OCR_WAIT        OCR = 32514
+)
+
 // DRAWITEMSTRUCT itemState.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct

@@ -39,11 +39,6 @@ func (c COLORREF) GetBValue() uint8 {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HANDLE syscall.Handle
 
-// A handle to a cursor.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hcursor
-type HCURSOR HANDLE
-
 // Handle to a display monitor.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hmonitor
