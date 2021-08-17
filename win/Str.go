@@ -67,12 +67,12 @@ func (_StrT) FromUint16PtrMulti(p *uint16) []string {
 			slice := unsafe.Slice(p, sLen) // create slice without terminating null
 			values = append(values, Str.FromUint16Slice(slice))
 
-			pRun = unsafe.Pointer(uintptr(pRun) + unsafe.Sizeof(*p)) // pRun++
+			pRun = unsafe.Add(pRun, unsafe.Sizeof(*p)) // pRun++
 			p = (*uint16)(pRun)
 			sLen = 0
 
 		} else {
-			pRun = unsafe.Pointer(uintptr(pRun) + unsafe.Sizeof(*p)) // pRun++
+			pRun = unsafe.Add(pRun, unsafe.Sizeof(*p)) // pRun++
 			sLen++
 		}
 	}
@@ -144,7 +144,7 @@ func (_StrT) ToUint16SliceMulti(ss []string) []uint16 {
 		totalLen += len(s) + 1 // also count terminating null
 	}
 
-	buf := make([]uint16, 0, totalLen)
+	buf := make([]uint16, 0, totalLen+1) // room for two terminating nulls
 
 	for _, s := range ss {
 		buf = append(buf, Str.ToUint16Slice(s)...)
