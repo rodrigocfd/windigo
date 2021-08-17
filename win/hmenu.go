@@ -42,25 +42,28 @@ func CreatePopupMenu() HMENU {
 
 // Appends a new item to the menu.
 //
-// Wrapper to AppendMenu().
+// Wrapper to HMENU.AppendMenu().
 func (hMenu HMENU) AddItem(cmdId int, text string) {
 	hMenu.AppendMenu(co.MF_STRING, uint16(cmdId), text)
 }
 
 // Appends a new separator to the menu.
 //
-// Wrapper to AppendMenu().
+// Wrapper to HMENU.AppendMenu().
 func (hMenu HMENU) AddSeparator() {
 	hMenu.AppendMenu(co.MF_SEPARATOR, HMENU(0), LPARAM(0))
 }
 
 // Appends a new submenu to the menu.
 //
-// Wrapper to AppendMenu().
+// Wrapper to HMENU.AppendMenu().
 func (hMenu HMENU) AddSubmenu(text string, hSubMenu HMENU) {
 	hMenu.AppendMenu(co.MF_STRING|co.MF_POPUP, hSubMenu, text)
 }
 
+// This function is rather tricky. Prefer using HMENU.AddItem(),
+// HMENU.AddSeparator() or HMENU.AddSubmenu().
+//
 // ⚠️ uIDNewItem must be uint16 or HMENU.
 //
 // ⚠️ lpNewItem must be HBITMAP, LPARAM or string.

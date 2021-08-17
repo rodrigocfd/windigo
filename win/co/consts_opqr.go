@@ -357,6 +357,22 @@ const (
 	REG_QWORD_LITTLE_ENDIAN REG = 11 // 64-bit number (same as REG_QWORD).
 )
 
+// RegOpenKeyEx() ulOptions
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
+type REG_OPTION uint32
+
+const (
+	REG_OPTION_NONE            REG_OPTION = 0
+	REG_OPTION_RESERVED        REG_OPTION = 0x00000000
+	REG_OPTION_NON_VOLATILE    REG_OPTION = 0x00000000
+	REG_OPTION_VOLATILE        REG_OPTION = 0x00000001
+	REG_OPTION_CREATE_LINK     REG_OPTION = 0x00000002
+	REG_OPTION_BACKUP_RESTORE  REG_OPTION = 0x00000004
+	REG_OPTION_OPEN_LINK       REG_OPTION = 0x00000008
+	REG_OPTION_DONT_VIRTUALIZE REG_OPTION = 0x00000010
+)
+
 // SelectObject() return value. Originally with REGION suffix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject

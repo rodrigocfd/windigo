@@ -232,8 +232,8 @@ func (hWnd HWND) GetClassName() string {
 	var buf [256 + 1]uint16
 	ret, _, err := syscall.Syscall(proc.GetClassName.Addr(), 3,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
-	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
-		panic(err)
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		panic(errCode)
 	}
 	return Str.FromUint16Slice(buf[:])
 }
@@ -292,8 +292,8 @@ func (hWnd HWND) GetMenu() HMENU {
 func (hWnd HWND) GetNextDlgGroupItem(hChild HWND, bPrevious bool) HWND {
 	ret, _, err := syscall.Syscall(proc.GetNextDlgGroupItem.Addr(), 3,
 		uintptr(hWnd), uintptr(hChild), util.BoolToUintptr(bPrevious))
-	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
-		panic(err)
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		panic(errCode)
 	}
 	return HWND(ret)
 }
@@ -302,8 +302,8 @@ func (hWnd HWND) GetNextDlgGroupItem(hChild HWND, bPrevious bool) HWND {
 func (hWnd HWND) GetNextDlgTabItem(hChild HWND, bPrevious bool) HWND {
 	ret, _, err := syscall.Syscall(proc.GetNextDlgTabItem.Addr(), 3,
 		uintptr(hWnd), uintptr(hChild), util.BoolToUintptr(bPrevious))
-	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
-		panic(err)
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		panic(errCode)
 	}
 	return HWND(ret)
 }
@@ -312,8 +312,8 @@ func (hWnd HWND) GetNextDlgTabItem(hChild HWND, bPrevious bool) HWND {
 func (hWnd HWND) GetParent() HWND {
 	ret, _, err := syscall.Syscall(proc.GetParent.Addr(), 1,
 		uintptr(hWnd), 0, 0)
-	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
-		panic(err)
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		panic(errCode)
 	}
 	return HWND(ret)
 }
@@ -338,8 +338,8 @@ func (hWnd HWND) GetSystemMenu(bRevert bool) HMENU {
 func (hWnd HWND) GetWindow(uCmd co.GW) HWND {
 	ret, _, err := syscall.Syscall(proc.GetWindow.Addr(), 2,
 		uintptr(hWnd), uintptr(uCmd), 0)
-	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
-		panic(err)
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		panic(errCode)
 	}
 	return HWND(ret)
 }
@@ -360,8 +360,8 @@ func (hWnd HWND) GetWindowDC() HDC {
 func (hWnd HWND) GetWindowLongPtr(index co.GWLP) uintptr {
 	ret, _, err := syscall.Syscall(proc.GetWindowLongPtr.Addr(), 2,
 		uintptr(hWnd), uintptr(index), 0)
-	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
-		panic(err)
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		panic(errCode)
 	}
 	return ret
 }
@@ -384,8 +384,8 @@ func (hWnd HWND) GetWindowText() string {
 
 	ret, _, err := syscall.Syscall(proc.GetWindowText.Addr(), 3,
 		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(len))
-	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
-		panic(err)
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		panic(errCode)
 	}
 	return Str.FromUint16Slice(buf)
 }
@@ -678,8 +678,8 @@ func (hWnd HWND) SetTimer(
 
 	ret, _, err := syscall.Syscall6(proc.SetTimer.Addr(), 4,
 		uintptr(hWnd), nIDEvent, uElapse, cbTimer, 0, 0)
-	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
-		panic(err)
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		panic(errCode)
 	}
 }
 
@@ -690,8 +690,8 @@ func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
 
 	ret, _, err := syscall.Syscall(proc.SetWindowLongPtr.Addr(), 3,
 		uintptr(hWnd), uintptr(index), newLong)
-	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
-		panic(err)
+	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+		panic(errCode)
 	}
 	return ret
 }
@@ -763,8 +763,8 @@ func (hWnd HWND) TaskDialog(
 		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(pszContent))),
 		uintptr(dwCommonButtons), uintptr(pszIcon),
 		uintptr(unsafe.Pointer(&pnButton)), 0)
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if errCode := errco.ERROR(ret); errCode != errco.S_OK {
+		panic(errCode)
 	}
 	return co.ID(pnButton)
 }

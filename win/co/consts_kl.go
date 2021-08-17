@@ -1,5 +1,27 @@
 package co
 
+// Registry key security and access rights
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/sysinfo/registry-key-security-and-access-rights
+type KEY uint32
+
+const (
+	KEY_QUERY_VALUE        KEY = 0x0001
+	KEY_SET_VALUE          KEY = 0x0002
+	KEY_CREATE_SUB_KEY     KEY = 0x0004
+	KEY_ENUMERATE_SUB_KEYS KEY = 0x0008
+	KEY_NOTIFY             KEY = 0x0010
+	KEY_CREATE_LINK        KEY = 0x0020
+	KEY_WOW64_32KEY        KEY = 0x0200
+	KEY_WOW64_64KEY        KEY = 0x0100
+	KEY_WOW64_RES          KEY = 0x0300
+
+	KEY_READ       KEY = (KEY(ACCESS_RIGHTS_STANDARD_READ) | KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY) & ^KEY(ACCESS_RIGHTS_SYNCHRONIZE)
+	KEY_WRITE      KEY = (KEY(ACCESS_RIGHTS_STANDARD_WRITE) | KEY_SET_VALUE | KEY_CREATE_SUB_KEY) & ^KEY(ACCESS_RIGHTS_SYNCHRONIZE)
+	KEY_EXECUTE    KEY = KEY_READ & ^KEY(ACCESS_RIGHTS_SYNCHRONIZE)
+	KEY_ALL_ACCESS KEY = (KEY(ACCESS_RIGHTS_STANDARD_ALL) | KEY_QUERY_VALUE | KEY_SET_VALUE | KEY_CREATE_SUB_KEY | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY | KEY_CREATE_LINK) & ^KEY(ACCESS_RIGHTS_SYNCHRONIZE)
+)
+
 // LITEM mask.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
