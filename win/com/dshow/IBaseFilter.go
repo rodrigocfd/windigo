@@ -28,7 +28,7 @@ type IBaseFilter struct {
 
 // Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IBaseFilter.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/medfound/using-the-directshow-evr-filter
 func NewEnhancedVideoRenderer(dwClsContext co.CLSCTX) IBaseFilter {
@@ -44,7 +44,7 @@ func NewEnhancedVideoRenderer(dwClsContext co.CLSCTX) IBaseFilter {
 
 // Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IBaseFilter.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/directshow/video-mixing-renderer-filter-9
 func NewVideoMixingRenderer9(dwClsContext co.CLSCTX) IBaseFilter {
@@ -58,7 +58,7 @@ func NewVideoMixingRenderer9(dwClsContext co.CLSCTX) IBaseFilter {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IEnumPins.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-enumpins
 func (me *IBaseFilter) EnumPins() IEnumPins {
@@ -77,7 +77,7 @@ func (me *IBaseFilter) EnumPins() IEnumPins {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IPin.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-findpin
 func (me *IBaseFilter) FindPin(id string) (IPin, bool) {
@@ -116,7 +116,7 @@ func (me *IBaseFilter) JoinFilterGraph(
 	}
 }
 
-// ⚠️ You must defer Release() on PGraph field.
+// ⚠️ You must defer IFilterGraph.Release() on PGraph field.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
 func (me *IBaseFilter) QueryFilterInfo(pInfo *FILTER_INFO) {
@@ -132,7 +132,7 @@ func (me *IBaseFilter) QueryFilterInfo(pInfo *FILTER_INFO) {
 
 // Calls IUnknown.QueryInterface() to return IMFGetService.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IMFGetService.Release().
 func (me *IBaseFilter) QueryIMFGetService() IMFGetService {
 	iUnk := me.QueryInterface(dshowco.IID_IMFGetService)
 	return IMFGetService{IUnknown: iUnk}

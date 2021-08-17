@@ -23,7 +23,7 @@ type IEnumFilters struct {
 	win.IUnknown // Base IUnknown.
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IEnumFilters.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-clone
 func (me *IEnumFilters) Clone() IEnumFilters {
@@ -59,7 +59,7 @@ func (me *IEnumFilters) Count() int {
 
 // Calls Next() to retrieve all filters, then calls Reset().
 //
-// ⚠️ You must defer Release() on each filter.
+// ⚠️ You must defer IBaseFilter.Release() on each filter.
 func (me *IEnumFilters) GetAll() []IBaseFilter {
 	filters := make([]IBaseFilter, 0, 10) // arbitrary
 	for {
@@ -73,7 +73,7 @@ func (me *IEnumFilters) GetAll() []IBaseFilter {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IBaseFilter.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-next
 func (me *IEnumFilters) Next() (IBaseFilter, bool) {

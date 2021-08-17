@@ -67,7 +67,7 @@ func (me *IFileDialog) Close(hr errco.ERROR) {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IShellItem.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getcurrentselection
 func (me *IFileDialog) GetCurrentSelection() IShellItem {
@@ -118,7 +118,7 @@ func (me *IFileDialog) GetFileTypeIndex() int {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IShellItem.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfolder
 func (me *IFileDialog) GetFolder() IShellItem {
@@ -152,7 +152,7 @@ func (me *IFileDialog) GetOptions() shellco.FOS {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IShellItem.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getresult
 func (me *IFileDialog) GetResult() IShellItem {

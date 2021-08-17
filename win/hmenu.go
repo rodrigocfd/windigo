@@ -16,7 +16,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hmenu
 type HMENU HANDLE
 
-// ⚠️ You must defer DestroyMenu().
+// ⚠️ You must defer HMENU.DestroyMenu(), unless it's attached to a window.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createmenu
 func CreateMenu() HMENU {
@@ -28,7 +28,7 @@ func CreateMenu() HMENU {
 	return HMENU(ret)
 }
 
-// ⚠️ You must defer DestroyMenu().
+// ⚠️ You must defer HMENU.DestroyMenu(), unless it's attached to a window.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createpopupmenu
 func CreatePopupMenu() HMENU {

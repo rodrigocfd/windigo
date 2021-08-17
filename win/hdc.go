@@ -55,7 +55,7 @@ func (hdc HDC) ArcTo(left, top, right, bottom, xr1, yr1, xr2, yr2 int32) {
 	}
 }
 
-// ⚠️ You must defer EndPath().
+// ⚠️ You must defer HDC.EndPath().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-beginpath
 func (hdc HDC) BeginPath() {
@@ -107,7 +107,7 @@ func (hdc HDC) CloseFigure() {
 	}
 }
 
-// ⚠️ You must defer DeleteDC().
+// ⚠️ You must defer HDC.DeleteDC().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createcompatibledc
 func (hdc HDC) CreateCompatibleDC() HDC {
@@ -333,7 +333,7 @@ func (hdc HDC) PaintRgn(hrgn HRGN) {
 	}
 }
 
-// ⚠️ You must defer DeleteObject().
+// ⚠️ You must defer HRGN.DeleteObject().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-pathtoregion
 func (hdc HDC) PathToRegion() HRGN {

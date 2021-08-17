@@ -14,7 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HFILE HANDLE
 
-// ⚠️ You must defer CloseHandle().
+// ⚠️ You must defer HFILE.CloseHandle().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 func CreateFile(fileName string, desiredAccess co.GENERIC,
@@ -59,7 +59,7 @@ func (hFile HFILE) GetFileSizeEx() (uint64, error) {
 	return uint64(retSz), nil
 }
 
-// ⚠️ You must defer CloseHandle().
+// ⚠️ You must defer HFILEMAP.CloseHandle().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
 func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
@@ -149,7 +149,7 @@ func (hMap HFILEMAP) CloseHandle() error {
 	return nil
 }
 
-// ⚠️ You must defer UnmapViewOfFile().
+// ⚠️ You must defer HFILEMAPVIEW.UnmapViewOfFile().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,

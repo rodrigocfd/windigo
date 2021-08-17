@@ -114,7 +114,8 @@ func CreateDirectory(
 	return nil
 }
 
-// ⚠️ You must defer CloseHandle() on HProcess and HThread members of PROCESS_INFORMATION.
+// ⚠️ You must defer HPROCESS.CloseHandle() and HTHREAD.CloseHandle() on
+// HProcess and HThread members of PROCESS_INFORMATION.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw
 func CreateProcess(

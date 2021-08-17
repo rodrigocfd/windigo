@@ -29,7 +29,7 @@ type IShellItem struct {
 
 // Creates an IShellItem from a string path.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IShellItem.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 func NewShellItem(thePath string) (IShellItem, error) {
@@ -84,7 +84,7 @@ func (me *IShellItem) GetAttributes(sfgaoMask co.SFGAO) co.SFGAO {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IShellItem.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
 func (me *IShellItem) GetParent() IShellItem {

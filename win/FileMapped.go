@@ -48,7 +48,7 @@ type _FileMapped struct {
 
 // Opens a memory-mapped file, returning a new high-level FileMapped object.
 //
-// ⚠️ You must defer Close().
+// ⚠️ You must defer FileMapped.Close().
 func OpenFileMapped(
 	filePath string, behavior co.OPEN_FILEMAP) (FileMapped, error) {
 

@@ -60,7 +60,7 @@ func GetShellWindow() HWND {
 	return HWND(ret)
 }
 
-// ⚠️ You must defer EndPaint().
+// ⚠️ You must defer HWND.EndPaint().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint
 func (hWnd HWND) BeginPaint(lpPaint *PAINTSTRUCT) HDC {
@@ -249,7 +249,7 @@ func (hWnd HWND) GetClientRect() RECT {
 	return rc
 }
 
-// ⚠️ You must defer ReleaseDC().
+// ⚠️ You must defer HDC.ReleaseDC().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdc
 func (hWnd HWND) GetDC() HDC {
@@ -344,7 +344,7 @@ func (hWnd HWND) GetWindow(uCmd co.GW) HWND {
 	return HWND(ret)
 }
 
-// ⚠️ You must defer ReleaseDC().
+// ⚠️ You must defer HDC.ReleaseDC().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowdc
 func (hWnd HWND) GetWindowDC() HDC {
@@ -540,7 +540,7 @@ func (hWnd HWND) MoveWindow(x, y, width, height int32, bRepaint bool) {
 	}
 }
 
-// ⚠️ You must defer CloseThemeData().
+// ⚠️ You must defer HTHEME.CloseThemeData().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
 func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {
@@ -661,7 +661,7 @@ func (hWnd HWND) SetScrollInfo(
 	return int32(ret)
 }
 
-// ⚠️ You must defer KillTimer().
+// ⚠️ You must defer HWND.KillTimer().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
 func (hWnd HWND) SetTimer(

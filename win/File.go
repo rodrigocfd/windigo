@@ -27,7 +27,7 @@ type _File struct {
 
 // Opens a file, returning a new high-level File object.
 //
-// ⚠️ You must defer Close().
+// ⚠️ You must defer File.Close().
 func OpenFile(filePath string, behavior co.OPEN_FILE) (File, error) {
 	me := &_File{}
 	if err := me.openFile(filePath, behavior); err != nil {

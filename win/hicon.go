@@ -15,10 +15,10 @@ type HICON HANDLE
 
 // Extracts all icons: big and small.
 //
-// ⚠️ You must defer DestroyIcon() on each icon returned in both slices.
+// ⚠️ You must defer HICON.DestroyIcon() on each icon returned in both slices.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-extracticonexw
-func ExtractIconEx(lpszFile string) ([]HICON, []HICON) {
+func ExtractIconEx(lpszFile string) (largeIcons, smallIcons []HICON) {
 	retrieveIdx := -1
 	ret, _, err := syscall.Syscall6(proc.ExtractIconEx.Addr(), 5,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpszFile))),
@@ -28,18 +28,19 @@ func ExtractIconEx(lpszFile string) ([]HICON, []HICON) {
 	}
 
 	numIcons := int(ret)
-	largeIcons := make([]HICON, numIcons)
-	smallIcons := make([]HICON, numIcons)
+	largeIcons = make([]HICON, numIcons)
+	smallIcons = make([]HICON, numIcons)
 
 	ret, _, err = syscall.Syscall6(proc.ExtractIconEx.Addr(), 5,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpszFile))), 0,
 		uintptr(unsafe.Pointer(&largeIcons[0])),
-		uintptr(unsafe.Pointer(&smallIcons[0])), uintptr(numIcons), 0)
+		uintptr(unsafe.Pointer(&smallIcons[0])),
+		uintptr(numIcons), 0)
 	if ret == _UINT_MAX {
 		panic(errco.ERROR(err))
 	}
 
-	return largeIcons, smallIcons
+	return
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyicon
@@ -61,7 +62,7 @@ func (hIcon HICON) DestroyIcon() {
 	}
 }
 
-// ⚠️ You must defer DeleteObject() in HbmMask and HbmColor fields.
+// ⚠️ You must defer HBITMAP.DeleteObject() in HbmMask and HbmColor fields.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfo
 func (hIcon HICON) GetIconInfo(piconinfo *ICONINFO) {
@@ -72,7 +73,7 @@ func (hIcon HICON) GetIconInfo(piconinfo *ICONINFO) {
 	}
 }
 
-// ⚠️ You must defer DeleteObject() in HbmMask and HbmColor fields.
+// ⚠️ You must defer HBITMAP.DeleteObject() in HbmMask and HbmColor fields.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfoexw
 func (hIcon HICON) GetIconInfoEx(piconinfo *ICONINFOEX) {

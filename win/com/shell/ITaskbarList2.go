@@ -25,7 +25,7 @@ type ITaskbarList2 struct {
 
 // Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer ITaskbarList2.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func NewITaskbarList2(dwClsContext co.CLSCTX) ITaskbarList2 {

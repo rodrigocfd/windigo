@@ -30,7 +30,7 @@ type IGraphBuilder struct {
 
 // Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IGraphBuilder.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func NewIGraphBuilder(dwClsContext co.CLSCTX) IGraphBuilder {
@@ -54,7 +54,7 @@ func (me *IGraphBuilder) Abort() {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IBaseFilter.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-addsourcefilter
 func (me *IGraphBuilder) AddSourceFilter(
@@ -96,7 +96,7 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 
 // Calls QueryInterface().
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IBasicAudio.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
@@ -108,7 +108,7 @@ func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
 
 // Calls QueryInterface().
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IMediaControl.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
@@ -120,7 +120,7 @@ func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
 
 // Calls QueryInterface().
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IMediaSeeking.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IGraphBuilder) QueryIMediaSeeking() IMediaSeeking {

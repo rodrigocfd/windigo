@@ -23,7 +23,7 @@ type IEnumMediaTypes struct {
 	win.IUnknown // Base IUnknown.
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IEnumMediaTypes.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-clone
 func (me *IEnumMediaTypes) Clone() IEnumMediaTypes {

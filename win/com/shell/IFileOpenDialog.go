@@ -25,7 +25,7 @@ type IFileOpenDialog struct {
 
 // Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IFileOpenDialog.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func NewIFileOpenDialog(dwClsContext co.CLSCTX) IFileOpenDialog {
@@ -39,7 +39,7 @@ func NewIFileOpenDialog(dwClsContext co.CLSCTX) IFileOpenDialog {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IShellItemArray.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
 func (me *IFileOpenDialog) GetResults() IShellItemArray {
@@ -58,7 +58,7 @@ func (me *IFileOpenDialog) GetResults() IShellItemArray {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IShellItemArray.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
 func (me *IFileOpenDialog) GetSelectedItems() IShellItemArray {

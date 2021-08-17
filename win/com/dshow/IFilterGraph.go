@@ -31,7 +31,7 @@ type IFilterGraph struct {
 
 // Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IFilterGraph.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func NewIFilterGraph(dwClsContext co.CLSCTX) IFilterGraph {
@@ -82,7 +82,7 @@ func (me *IFilterGraph) Disconnect(pin *IPin) {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IEnumFilters.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-enumfilters
 func (me *IFilterGraph) EnumFilters() IEnumFilters {
@@ -101,7 +101,7 @@ func (me *IFilterGraph) EnumFilters() IEnumFilters {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IBaseFilter.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-findfilterbyname
 func (me *IFilterGraph) FindFilterByName(pName string) (IBaseFilter, bool) {

@@ -15,7 +15,7 @@ type HFIND HANDLE
 
 // Returns true if a file was found.
 //
-// ⚠️ You must defer FindClose().
+// ⚠️ You must defer HFIND.FindClose().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
 func FindFirstFile(lpFileName string,

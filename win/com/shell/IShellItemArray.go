@@ -27,7 +27,7 @@ type IShellItemArray struct {
 	win.IUnknown // Base IUnknown.
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IShellItem.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
 func (me *IShellItemArray) GetItemAt(index int) IShellItem {

@@ -23,7 +23,7 @@ type IEnumPins struct {
 	win.IUnknown // Base IUnknown.
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IEnumPins.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-clone
 func (me *IEnumPins) Clone() IEnumPins {
@@ -59,7 +59,7 @@ func (me *IEnumPins) Count() int {
 
 // Calls Next() to retrieve all pins, then calls Reset().
 //
-// ⚠️ You must defer Release() on each pin.
+// ⚠️ You must defer IPin.Release() on each pin.
 func (me *IEnumPins) GetAll() []IPin {
 	pins := make([]IPin, 0, 10) // arbitrary
 	for {
@@ -73,7 +73,7 @@ func (me *IEnumPins) GetAll() []IPin {
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IPin.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-next
 func (me *IEnumPins) Next() (IPin, bool) {

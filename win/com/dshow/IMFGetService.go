@@ -21,7 +21,7 @@ type IMFGetService struct {
 	win.IUnknown // Base IUnknown.
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IUnknown.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
 func (me *IMFGetService) GetService(guidService, riid *win.GUID) win.IUnknown {
@@ -42,7 +42,7 @@ func (me *IMFGetService) GetService(guidService, riid *win.GUID) win.IUnknown {
 
 // Calls GetService() to return IMFVideoDisplayControl.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IMFVideoDisplayControl.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
 func (me *IMFGetService) GetIMFVideoDisplayControl() IMFVideoDisplayControl {

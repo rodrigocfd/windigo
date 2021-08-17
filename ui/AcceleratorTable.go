@@ -35,7 +35,7 @@ type _AccelTable struct {
 
 // Creates a new AcceleratorTable.
 //
-// ⚠️ You must defer Destroy().
+// ⚠️ You must defer AcceleratorTable.Destroy().
 func NewAcceleratorTable() AcceleratorTable {
 	return &_AccelTable{
 		accels: nil,

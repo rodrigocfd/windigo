@@ -28,7 +28,7 @@ type IFileSaveDialog struct {
 
 // Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IFileSaveDialog.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func NewIFileSaveDialog(dwClsContext co.CLSCTX) IFileSaveDialog {

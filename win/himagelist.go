@@ -16,7 +16,7 @@ type HIMAGELIST HANDLE
 
 // Usually flags is ILC_COLOR32.
 //
-// ⚠️ You must defer Destroy().
+// ⚠️ You must defer HIMAGELIST.Destroy().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
 func ImageListCreate(

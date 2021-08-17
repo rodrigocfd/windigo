@@ -32,7 +32,7 @@ type IUnknown struct {
 //
 // Typically uses CLSCTX_INPROC_SERVER.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IUnknown.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
@@ -60,7 +60,7 @@ func CoCreateInstance(
 	}
 }
 
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IUnknown.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *IUnknown) AddRef() IUnknown {
@@ -72,7 +72,7 @@ func (me *IUnknown) AddRef() IUnknown {
 // Returns a pointer to a pointer to the IUnknown virtual table, which can be
 // cast into the specific virtual table type.
 //
-// ⚠️ You must defer Release().
+// ⚠️ You must defer IUnknown.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IUnknown) QueryInterface(riid co.IID) IUnknown {

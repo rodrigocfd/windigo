@@ -42,7 +42,7 @@ func (hBmp HBITMAP) DeleteObject() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbrush
 type HBRUSH HGDIOBJ
 
-// ⚠️ You must defer DeleteObject().
+// ⚠️ You must defer HBRUSH.DeleteObject().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createsolidbrush
 func CreateSolidBrush(color COLORREF) HBRUSH {
@@ -82,7 +82,7 @@ func (hBrush HBRUSH) DeleteObject() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hfont
 type HFONT HGDIOBJ
 
-// ⚠️ You must defer DeleteObject().
+// ⚠️ You must defer HFONT.DeleteObject().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontindirectw
 func CreateFontIndirect(lf *LOGFONT) HFONT {
@@ -138,7 +138,7 @@ func (hPen HPEN) DeleteObject() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hrgn
 type HRGN HGDIOBJ
 
-// ⚠️ You must defer DeleteObject().
+// ⚠️ You must defer HRGN.DeleteObject().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
 func CreateRectRgnIndirect(lprect *RECT) HRGN {
@@ -150,7 +150,7 @@ func CreateRectRgnIndirect(lprect *RECT) HRGN {
 	return HRGN(ret)
 }
 
-// ⚠️ You must defer DeleteObject().
+// ⚠️ You must defer HRGN.DeleteObject().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createroundrectrgn
 func CreateRoundRectRgn(x1, y1, x2, y2, w, h int32) HRGN {

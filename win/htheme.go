@@ -104,7 +104,7 @@ func (hTheme HTHEME) GetThemeRect(
 	return pRect
 }
 
-// ⚠️ You must defer DeleteObject().
+// ⚠️ You must defer HBRUSH.DeleteObject().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemesyscolorbrush
 func (hTheme HTHEME) GetThemeSysColorBrush(iColorId co.TMT_COLOR) HBRUSH {

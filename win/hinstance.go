@@ -26,7 +26,7 @@ func GetModuleHandle(moduleName string) HINSTANCE {
 	return HINSTANCE(ret)
 }
 
-// ⚠️ You must defer FreeLibrary().
+// ⚠️ You must defer HINSTANCE.FreeLibrary().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
 func LoadLibrary(lpLibFileName string) HINSTANCE {
