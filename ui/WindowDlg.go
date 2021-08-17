@@ -26,7 +26,7 @@ func (me *_WindowDlg) createDialog(hParent win.HWND, hInst win.HINSTANCE) {
 		panic(fmt.Sprintf("Dialog already created: %d.", me.dialogId))
 	}
 
-	hInst.CreateDialogParam(int32(me.dialogId), hParent,
+	hInst.CreateDialogParam(uint16(me.dialogId), hParent,
 		syscall.NewCallback(_DlgProc), win.LPARAM(unsafe.Pointer(me))) // pass pointer to object itself
 }
 
