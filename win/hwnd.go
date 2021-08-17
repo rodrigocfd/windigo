@@ -95,6 +95,14 @@ func (hWnd HWND) ClientToScreenRc(rect *RECT) {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-defdlgprocw
+func (hWnd HWND) DefDlgProc(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
+	ret, _, _ := syscall.Syscall6(proc.DefDlgProc.Addr(), 4,
+		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
+		0, 0)
+	return ret
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-defsubclassproc
 func (hWnd HWND) DefSubclassProc(
 	msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
@@ -278,6 +286,16 @@ func (hWnd HWND) GetMenu() HMENU {
 	ret, _, _ := syscall.Syscall(proc.GetMenu.Addr(), 1,
 		uintptr(hWnd), 0, 0)
 	return HMENU(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getnextdlggroupitem
+func (hWnd HWND) GetNextDlgGroupItem(hChild HWND, bPrevious bool) HWND {
+	ret, _, err := syscall.Syscall(proc.GetNextDlgGroupItem.Addr(), 3,
+		uintptr(hWnd), uintptr(hChild), util.BoolToUintptr(bPrevious))
+	if err := errco.ERROR(err); ret == 0 && err != errco.SUCCESS {
+		panic(err)
+	}
+	return HWND(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getnextdlgtabitem
@@ -486,6 +504,15 @@ func (hWnd HWND) KillTimer(uIDEvent uintptr) {
 func (hWnd HWND) LogicalToPhysicalPoint(lpPoint *POINT) {
 	ret, _, err := syscall.Syscall(proc.LogicalToPhysicalPoint.Addr(), 2,
 		uintptr(hWnd), uintptr(unsafe.Pointer(lpPoint)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mapdialogrect
+func (hWnd HWND) MapDialogRect(lpRect *RECT) {
+	ret, _, err := syscall.Syscall(proc.MapDialogRect.Addr(), 2,
+		uintptr(hWnd), uintptr(unsafe.Pointer(lpRect)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

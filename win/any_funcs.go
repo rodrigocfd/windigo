@@ -304,6 +304,15 @@ func GetCursorPos() POINT {
 	return pt
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdialogbaseunits
+func GetDialogBaseUnits() (horz, vert uint16) {
+	ret, _, _ := syscall.Syscall(proc.GetDialogBaseUnits.Addr(), 0,
+		0, 0, 0)
+	horz = Bytes.Lo16(uint32(ret))
+	vert = Bytes.Hi16(uint32(ret))
+	return
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-getdynamictimezoneinformation
 func GetDynamicTimeZoneInformation(
 	pTimeZoneInformation *DYNAMIC_TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
