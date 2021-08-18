@@ -1,6 +1,7 @@
 package win
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 
@@ -83,4 +84,18 @@ func (_PathT) IsHidden(path string) bool {
 	attr, _ := GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID &&
 		(attr&co.FILE_ATTRIBUTE_HIDDEN) != 0
+}
+
+// Replaces the current extension by the new one, which must start with a dot.
+func (_PathT) SwapExtension(path, newExtension string) string {
+	if !strings.HasPrefix(newExtension, ".") {
+		panic(fmt.Sprintf("New extension must start with a dot: \"%s\"", newExtension))
+	}
+
+	idxDot := strings.LastIndex(path, ".")
+	if idxDot == -1 {
+		panic(fmt.Sprintf("Path has no extension to be swapped: \"%s\"", path))
+	}
+
+	return path[:idxDot] + newExtension
 }
