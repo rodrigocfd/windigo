@@ -57,7 +57,7 @@ func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) {
 		shgfi = co.SHGFI_LARGEICON
 	}
 
-	fi := SHFILEINFO{}
+	var fi SHFILEINFO
 	for _, fileExt := range fileExtensions {
 		SHGetFileInfo("*."+fileExt, co.FILE_ATTRIBUTE_NORMAL,
 			&fi, co.SHGFI_USEFILEATTRIBUTES|co.SHGFI_ICON|shgfi)

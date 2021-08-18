@@ -13,7 +13,7 @@ var Bytes _BytesT
 func (_BytesT) Append16(
 	dest []byte, encoding binary.ByteOrder, val uint16) []byte {
 
-	buf := [2]byte{}
+	var buf [2]byte
 	encoding.PutUint16(buf[:], val)
 	return append(dest, buf[:]...)
 }
@@ -22,7 +22,7 @@ func (_BytesT) Append16(
 func (_BytesT) Append32(
 	dest []byte, encoding binary.ByteOrder, val uint32) []byte {
 
-	buf := [4]byte{}
+	var buf [4]byte
 	encoding.PutUint32(buf[:], val)
 	return append(dest, buf[:]...)
 }
@@ -31,7 +31,7 @@ func (_BytesT) Append32(
 func (_BytesT) Append64(
 	dest []byte, encoding binary.ByteOrder, val uint64) []byte {
 
-	buf := [8]byte{}
+	var buf [8]byte
 	encoding.PutUint64(buf[:], val)
 	return append(dest, buf[:]...)
 }

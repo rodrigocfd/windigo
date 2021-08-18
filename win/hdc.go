@@ -260,7 +260,7 @@ func (hdc HDC) GetTextExtentPoint32(lpString string) SIZE {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextfacew
 func (hdc HDC) GetTextFace() string {
-	buf := [_LF_FACESIZE]uint16{}
+	var buf [_LF_FACESIZE]uint16
 	ret, _, err := syscall.Syscall(proc.GetTextFace.Addr(), 3,
 		uintptr(hdc), uintptr(len(buf)), uintptr(unsafe.Pointer(&buf[0])))
 	if ret == 0 {

@@ -18,8 +18,7 @@ type HACCEL HANDLE
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createacceleratortablew
 func CreateAcceleratorTable(accelList []ACCEL) HACCEL {
 	ret, _, err := syscall.Syscall(proc.CreateAcceleratorTable.Addr(), 2,
-		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)),
-		0)
+		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
