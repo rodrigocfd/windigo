@@ -191,7 +191,7 @@ func (hMenu HMENU) GetMenuItemInfo(
 		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(fByPosition),
 		uintptr(unsafe.Pointer(lpmii)), 0, 0)
 	if ret == 0 {
-		panic(err)
+		panic(errco.ERROR(err))
 	}
 }
 

@@ -53,10 +53,10 @@ func CoCreateInstance(
 		uintptr(unsafe.Pointer(NewGuidFromIid(riid))),
 		uintptr(unsafe.Pointer(&ppv)), 0)
 
-	if err := errco.ERROR(ret); err == errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return IUnknown{ppv}
 	} else {
-		panic(err)
+		panic(hr)
 	}
 }
 

@@ -98,6 +98,20 @@ const (
 	GDC_COLORMGMTCAPS   GDC = 121
 )
 
+// GlobalAlloc() uFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
+type GMEM uint32
+
+const (
+	GMEM_FIXED    GMEM = 0x0000
+	GMEM_MOVEABLE GMEM = 0x0002
+	GMEM_ZEROINIT GMEM = 0x0040
+	GMEM_MODIFY   GMEM = 0x0080
+	GMEM_GHND     GMEM = GMEM_MOVEABLE | GMEM_ZEROINIT
+	GMEM_GPTR     GMEM = GMEM_FIXED | GMEM_ZEROINIT
+)
+
 // GetWindow() uCmd.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindow

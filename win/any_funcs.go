@@ -193,15 +193,6 @@ func DwmIsCompositionEnabled() bool {
 	return pfEnabled != 0
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-emptyclipboard
-func EmptyClipboard() {
-	ret, _, err := syscall.Syscall(proc.EmptyClipboard.Addr(), 0,
-		0, 0, 0)
-	if ret == 0 {
-		panic(errco.ERROR(err))
-	}
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endmenu
 func EndMenu() {
 	ret, _, err := syscall.Syscall(proc.EndMenu.Addr(), 0,
@@ -823,8 +814,8 @@ func TaskDialogIndirect(pTaskConfig *TASKDIALOGCONFIG) co.ID {
 	ret, _, _ := syscall.Syscall6(proc.TaskDialogIndirect.Addr(), 4,
 		uintptr(unsafe.Pointer(pTaskConfig)), uintptr(unsafe.Pointer(&pnButton)),
 		uintptr(0), uintptr(0), 0, 0)
-	if err := errco.ERROR(ret); err != errco.S_OK {
-		panic(err)
+	if errCode := errco.ERROR(ret); errCode != errco.S_OK {
+		panic(errCode)
 	}
 	return co.ID(pnButton)
 }

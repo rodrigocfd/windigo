@@ -540,6 +540,18 @@ func (hWnd HWND) MoveWindow(x, y, width, height int32, bRepaint bool) {
 	}
 }
 
+// ⚠️ You must defer HCLIPBOARD.CloseClipboard().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-openclipboard
+func (hWnd HWND) OpenClipboard() HCLIPBOARD {
+	ret, _, err := syscall.Syscall(proc.OpenClipboard.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return HCLIPBOARD{}
+}
+
 // ⚠️ You must defer HTHEME.CloseThemeData().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
@@ -642,8 +654,8 @@ func (hWnd HWND) SetForegroundWindow() bool {
 func (hWnd HWND) SetParent(hWndNewParent HWND) HWND {
 	ret, _, err := syscall.Syscall(proc.SetParent.Addr(), 2,
 		uintptr(hWnd), uintptr(hWndNewParent), 0)
-	if hPrev, err := HWND(ret), errco.ERROR(err); hPrev == 0 && err != errco.S_OK {
-		panic(err)
+	if hPrev, errCode := HWND(ret), errco.ERROR(err); hPrev == 0 && errCode != errco.S_OK {
+		panic(errCode)
 	} else {
 		return hPrev
 	}
