@@ -28,64 +28,6 @@ const (
 	HKEY_CURRENT_CONFIG      HKEY = 0x80000005
 )
 
-// Reads a REG_BINARY value with HKEY.GetValue().
-func (hKey HKEY) ReadBinary(lpSubKey, lpValue string) []byte {
-	pdwType := co.REG_BINARY
-	pcbData := uint32(0)
-
-	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_BINARY, // retrieve length
-		&pdwType, nil, &pcbData)
-	if err != nil {
-		panic(err)
-	}
-
-	pvData := make([]byte, pcbData)
-
-	err = hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve string
-		&pdwType, unsafe.Pointer(&pvData[0]), &pcbData)
-	if err != nil {
-		panic(err)
-	}
-
-	return pvData
-}
-
-// Reads a REG_DWORD value with HKEY.GetValue().
-func (hKey HKEY) ReadDword(lpSubKey, lpValue string) uint32 {
-	pdwType := co.REG_DWORD
-	pvData := uint32(0)
-	pcbData := uint32(unsafe.Sizeof(pvData))
-
-	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_DWORD,
-		&pdwType, unsafe.Pointer(&pvData), &pcbData)
-	if err != nil {
-		panic(err)
-	}
-	return pvData
-}
-
-// Reads a REG_SZ value with HKEY.GetValue().
-func (hKey HKEY) ReadString(lpSubKey, lpValue string) string {
-	pdwType := co.REG_SZ
-	pcbData := uint32(0)
-
-	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve length
-		&pdwType, nil, &pcbData)
-	if err != nil {
-		panic(err)
-	}
-
-	pvData := make([]uint16, pcbData/2) // pcbData is in bytes; terminating null included
-
-	err = hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve string
-		&pdwType, unsafe.Pointer(&pvData[0]), &pcbData)
-	if err != nil {
-		panic(err)
-	}
-
-	return Str.FromUint16Slice(pvData)
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regclosekey
 func (hKey HKEY) CloseKey() error {
 	ret, _, _ := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
@@ -181,7 +123,9 @@ func (hKey HKEY) EnumKeyEx() ([]string, error) {
 // Returned valueNames and valueTypes have the same length.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumvaluew
-func (hKey HKEY) EnumValue() (valueNames []string, valueTypes []co.REG, err error) {
+func (hKey HKEY) EnumValue() (
+	valueNames []string, valueTypes []co.REG, err error) {
+
 	var cValues, cbMaxValueNameLen uint32
 	err = hKey.QueryInfoKey(nil, nil, nil, nil, &cValues, &cbMaxValueNameLen,
 		nil, nil, nil)
@@ -230,7 +174,7 @@ func (hKey HKEY) FlushKey() error {
 }
 
 // This function is rather tricky. Prefer using HKEY.ReadBinary(),
-// HKEY.ReadDword() or HKEY.ReadString().
+// HKEY.ReadDword(), HKEY.ReadQword() or HKEY.ReadString().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-reggetvaluew
 func (hKey HKEY) GetValue(
@@ -341,8 +285,80 @@ func (hKey HKEY) QueryInfoKey(
 	return nil
 }
 
+// Reads a REG_BINARY value with HKEY.GetValue().
+func (hKey HKEY) ReadBinary(lpSubKey, lpValue string) []byte {
+	var pcbData uint32
+	pdwType := co.REG_BINARY
+
+	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_BINARY, // retrieve length
+		&pdwType, nil, &pcbData)
+	if err != nil {
+		panic(err)
+	}
+
+	pvData := make([]byte, pcbData)
+
+	err = hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve string
+		&pdwType, unsafe.Pointer(&pvData[0]), &pcbData)
+	if err != nil {
+		panic(err)
+	}
+
+	return pvData
+}
+
+// Reads a REG_DWORD value with HKEY.GetValue().
+func (hKey HKEY) ReadDword(lpSubKey, lpValue string) uint32 {
+	var pvData uint32
+	pcbData := uint32(unsafe.Sizeof(pvData))
+	pdwType := co.REG_DWORD
+
+	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_DWORD,
+		&pdwType, unsafe.Pointer(&pvData), &pcbData)
+	if err != nil {
+		panic(err)
+	}
+	return pvData
+}
+
+// Reads a REG_QWORD value with HKEY.GetValue().
+func (hKey HKEY) ReadQword(lpSubKey, lpValue string) uint64 {
+	var pvData uint64
+	pcbData := uint32(unsafe.Sizeof(pvData))
+	pdwType := co.REG_QWORD
+
+	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_QWORD,
+		&pdwType, unsafe.Pointer(&pvData), &pcbData)
+	if err != nil {
+		panic(err)
+	}
+	return pvData
+}
+
+// Reads a REG_SZ value with HKEY.GetValue().
+func (hKey HKEY) ReadString(lpSubKey, lpValue string) string {
+	var pcbData uint32
+	pdwType := co.REG_SZ
+
+	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve length
+		&pdwType, nil, &pcbData)
+	if err != nil {
+		panic(err)
+	}
+
+	pvData := make([]uint16, pcbData/2) // pcbData is in bytes; terminating null included
+
+	err = hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve string
+		&pdwType, unsafe.Pointer(&pvData[0]), &pcbData)
+	if err != nil {
+		panic(err)
+	}
+
+	return Str.FromUint16Slice(pvData)
+}
+
 // This function is rather tricky. Prefer using HKEY.WriteBinary(),
-// HKEY.WriteDword() or HKEY.WriteString().
+// HKEY.WriteDword(), HKEY.WriteQword() or HKEY.WriteString().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetkeyvaluew
 func (hKey HKEY) SetKeyValue(
@@ -372,6 +388,15 @@ func (hKey HKEY) WriteBinary(lpSubKey, lpValueName string, lpData []byte) {
 // Writes a REG_DWORD value with HKEY.SetKeyValue().
 func (hKey HKEY) WriteDword(lpSubKey, lpValueName string, lpData uint32) {
 	err := hKey.SetKeyValue(lpSubKey, lpValueName, co.REG_DWORD,
+		unsafe.Pointer(&lpData), uint32(unsafe.Sizeof(lpData)))
+	if err != nil {
+		panic(err)
+	}
+}
+
+// Writes a REG_QWORD value with HKEY.SetKeyValue().
+func (hKey HKEY) WriteQword(lpSubKey, lpValueName string, lpData uint64) {
+	err := hKey.SetKeyValue(lpSubKey, lpValueName, co.REG_QWORD,
 		unsafe.Pointer(&lpData), uint32(unsafe.Sizeof(lpData)))
 	if err != nil {
 		panic(err)
