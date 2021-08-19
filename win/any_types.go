@@ -19,6 +19,11 @@ type BOOL int32
 // 📑 https://docs.microsoft.com/en-us/windows/win32/gdi/colorref
 type COLORREF uint32
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-rgb
+func RGB(r, g, b uint8) COLORREF {
+	return COLORREF(uint32(r) | (uint32(g) << 8) | (uint32(b) << 16))
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getrvalue
 func (c COLORREF) GetRValue() uint8 {
 	return Bytes.Lo8(Bytes.Lo16(uint32(c)))

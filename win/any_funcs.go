@@ -705,11 +705,6 @@ func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, error) {
 	return ATOM(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-rgb
-func RGB(r, g, b uint8) COLORREF {
-	return COLORREF(uint32(r) | (uint32(g) << 8) | (uint32(b) << 16))
-}
-
 // Available in Windows Vista.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiaware

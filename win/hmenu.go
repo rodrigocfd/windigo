@@ -91,7 +91,7 @@ func (hMenu HMENU) AppendMenu(
 	case LPARAM:
 		pItem = uintptr(v)
 	case string:
-		pId = uintptr(unsafe.Pointer(Str.ToUint16Ptr(v))) // runtime.KeepAlive()
+		pItem = uintptr(unsafe.Pointer(Str.ToUint16Ptr(v))) // runtime.KeepAlive()
 	default:
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(lpNewItem)))
 	}
