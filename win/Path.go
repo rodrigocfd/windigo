@@ -38,7 +38,7 @@ func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 	dirPath := Path.GetPath(pathAndPattern) // path without file name
 
 	for found {
-		fileNameFound := Str.FromUint16Slice(wfd.CFileName[:])
+		fileNameFound := wfd.CFileName()
 		if fileNameFound != ".." {
 			retFiles = append(retFiles, dirPath+"\\"+fileNameFound)
 		}

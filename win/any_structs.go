@@ -592,8 +592,6 @@ func (tdc *TASKDIALOGCONFIG) SetPszCollapsedControlText(val string) {
 	*(**uint16)(unsafe.Pointer(&tdc.data[116])) = Str.ToUint16Ptr(val)
 }
 
-// func (tdc *TASKDIALOGCONFIG) HFooterIcon() *HICON  { return (*HICON)(unsafe.Pointer(&tdc.data[124])) }
-
 // Return type can be uint16 or HICON.
 func (tdc *TASKDIALOGCONFIG) HFooterIcon() interface{} {
 	raw := *(*uintptr)(unsafe.Pointer(&tdc.data[124]))
@@ -604,12 +602,12 @@ func (tdc *TASKDIALOGCONFIG) HFooterIcon() interface{} {
 	}
 }
 
-// ⚠️ val must be uint16 or HMENU.
+// ⚠️ val must be uint16 or HICON.
 func (tdc *TASKDIALOGCONFIG) SetHFooterIcon(val interface{}) {
 	switch v := val.(type) {
 	case uint16:
 		*(*uintptr)(unsafe.Pointer(&tdc.data[124])) = uintptr(v)
-	case HMENU:
+	case HICON:
 		*(*uintptr)(unsafe.Pointer(&tdc.data[124])) = uintptr(v)
 	default:
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(val)))
@@ -822,19 +820,29 @@ func (vfi *VS_FIXEDFILEINFO) FileDate() uint64 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw
 type WIN32_FIND_DATA struct {
-	DwFileAttributes   co.FILE_ATTRIBUTE
-	FtCreationTime     FILETIME
-	FtLastAccessTime   FILETIME
-	FtLastWriteTime    FILETIME
-	NFileSizeHigh      uint32
-	NFileSizeLow       uint32
-	dwReserved0        uint32
-	dwReserved1        uint32
-	CFileName          [_MAX_PATH]uint16
-	CAlternateFileName [14]uint16
-	DwFileType         uint32
-	DwCreatorType      uint32
-	WFinderFlags       uint16
+	DwFileAttributes    co.FILE_ATTRIBUTE
+	FtCreationTime      FILETIME
+	FtLastAccessTime    FILETIME
+	FtLastWriteTime     FILETIME
+	NFileSizeHigh       uint32
+	NFileSizeLow        uint32
+	dwReserved0         uint32
+	dwReserved1         uint32
+	cFileName           [_MAX_PATH]uint16
+	cCAlternateFileName [14]uint16
+	DwFileType          uint32
+	DwCreatorType       uint32
+	WFinderFlags        uint16
+}
+
+func (wfd *WIN32_FIND_DATA) CFileName() string       { return Str.FromUint16Slice(wfd.cFileName[:]) }
+func (wfd *WIN32_FIND_DATA) SetCFileName(val string) { copy(wfd.cFileName[:], Str.ToUint16Slice(val)) }
+
+func (wfd *WIN32_FIND_DATA) CAlternateFileName() string {
+	return Str.FromUint16Slice(wfd.cCAlternateFileName[:])
+}
+func (wfd *WIN32_FIND_DATA) SetCAlternateFileName(val string) {
+	copy(wfd.cCAlternateFileName[:], Str.ToUint16Slice(val))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowpos
