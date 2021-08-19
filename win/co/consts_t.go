@@ -17,21 +17,120 @@ const (
 	TA_RTLREADING TA = 256
 )
 
-// Trackbar's WM_HSCROLL and WM_VSCROLL request.
+// Toolbar control messages.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-toolbar-control-reference-messages
+const (
+	TB_ENABLEBUTTON          WM = WM_USER + 1
+	TB_CHECKBUTTON           WM = WM_USER + 2
+	TB_PRESSBUTTON           WM = WM_USER + 3
+	TB_HIDEBUTTON            WM = WM_USER + 4
+	TB_INDETERMINATE         WM = WM_USER + 5
+	TB_MARKBUTTON            WM = WM_USER + 6
+	TB_ISBUTTONENABLED       WM = WM_USER + 9
+	TB_ISBUTTONCHECKED       WM = WM_USER + 10
+	TB_ISBUTTONPRESSED       WM = WM_USER + 11
+	TB_ISBUTTONHIDDEN        WM = WM_USER + 12
+	TB_ISBUTTONINDETERMINATE WM = WM_USER + 13
+	TB_ISBUTTONHIGHLIGHTED   WM = WM_USER + 14
+	TB_SETSTATE              WM = WM_USER + 17
+	TB_GETSTATE              WM = WM_USER + 18
+	TB_ADDBITMAP             WM = WM_USER + 19
+	TB_DELETEBUTTON          WM = WM_USER + 22
+	TB_GETBUTTON             WM = WM_USER + 23
+	TB_BUTTONCOUNT           WM = WM_USER + 24
+	TB_COMMANDTOINDEX        WM = WM_USER + 25
+	TB_SAVERESTORE           WM = WM_USER + 76
+	TB_CUSTOMIZE             WM = WM_USER + 27
+	TB_ADDSTRING             WM = WM_USER + 77
+	TB_GETITEMRECT           WM = WM_USER + 29
+	TB_BUTTONSTRUCTSIZE      WM = WM_USER + 30
+	TB_SETBUTTONSIZE         WM = WM_USER + 31
+	TB_SETBITMAPSIZE         WM = WM_USER + 32
+	TB_AUTOSIZE              WM = WM_USER + 33
+	TB_GETTOOLTIPS           WM = WM_USER + 35
+	TB_SETTOOLTIPS           WM = WM_USER + 36
+	TB_SETPARENT             WM = WM_USER + 37
+	TB_SETROWS               WM = WM_USER + 39
+	TB_GETROWS               WM = WM_USER + 40
+	TB_SETCMDID              WM = WM_USER + 42
+	TB_CHANGEBITMAP          WM = WM_USER + 43
+	TB_GETBITMAP             WM = WM_USER + 44
+	TB_GETBUTTONTEXT         WM = WM_USER + 75
+	TB_REPLACEBITMAP         WM = WM_USER + 46
+	TB_SETINDENT             WM = WM_USER + 47
+	TB_SETIMAGELIST          WM = WM_USER + 48
+	TB_GETIMAGELIST          WM = WM_USER + 49
+	TB_LOADIMAGES            WM = WM_USER + 50
+	TB_GETRECT               WM = WM_USER + 51
+	TB_SETHOTIMAGELIST       WM = WM_USER + 52
+	TB_GETHOTIMAGELIST       WM = WM_USER + 53
+	TB_SETDISABLEDIMAGELIST  WM = WM_USER + 54
+	TB_GETDISABLEDIMAGELIST  WM = WM_USER + 55
+	TB_SETSTYLE              WM = WM_USER + 56
+	TB_GETSTYLE              WM = WM_USER + 57
+	TB_GETBUTTONSIZE         WM = WM_USER + 58
+	TB_SETBUTTONWIDTH        WM = WM_USER + 59
+	TB_SETMAXTEXTROWS        WM = WM_USER + 60
+	TB_GETTEXTROWS           WM = WM_USER + 61
+	TB_GETOBJECT             WM = WM_USER + 62
+	TB_GETHOTITEM            WM = WM_USER + 71
+	TB_SETHOTITEM            WM = WM_USER + 72
+	TB_SETANCHORHIGHLIGHT    WM = WM_USER + 73
+	TB_GETANCHORHIGHLIGHT    WM = WM_USER + 74
+	TB_GETINSERTMARK         WM = WM_USER + 79
+	TB_SETINSERTMARK         WM = WM_USER + 80
+	TB_INSERTMARKHITTEST     WM = WM_USER + 81
+	TB_MOVEBUTTON            WM = WM_USER + 82
+	TB_GETMAXSIZE            WM = WM_USER + 83
+	TB_SETEXTENDEDSTYLE      WM = WM_USER + 84
+	TB_GETEXTENDEDSTYLE      WM = WM_USER + 85
+	TB_GETPADDING            WM = WM_USER + 86
+	TB_SETPADDING            WM = WM_USER + 87
+	TB_SETINSERTMARKCOLOR    WM = WM_USER + 88
+	TB_GETINSERTMARKCOLOR    WM = WM_USER + 89
+	TB_SETCOLORSCHEME        WM = CCM_SETCOLORSCHEME
+	TB_GETCOLORSCHEME        WM = CCM_GETCOLORSCHEME
+	TB_SETUNICODEFORMAT      WM = CCM_SETUNICODEFORMAT
+	TB_GETUNICODEFORMAT      WM = CCM_GETUNICODEFORMAT
+	TB_MAPACCELERATOR        WM = WM_USER + 90
+	TB_GETBITMAPFLAGS        WM = WM_USER + 41
+	TB_GETBUTTONINFO         WM = WM_USER + 63
+	TB_SETBUTTONINFO         WM = WM_USER + 64
+	TB_INSERTBUTTON          WM = WM_USER + 67
+	TB_ADDBUTTONS            WM = WM_USER + 68
+	TB_HITTEST               WM = WM_USER + 69
+	TB_SETDRAWTEXTFLAGS      WM = WM_USER + 70
+	TB_GETSTRING             WM = WM_USER + 91
+	TB_SETBOUNDINGSIZE       WM = WM_USER + 93
+	TB_SETHOTITEM2           WM = WM_USER + 94
+	TB_HASACCELERATOR        WM = WM_USER + 95
+	TB_SETLISTGAP            WM = WM_USER + 96
+	TB_GETIMAGELISTCOUNT     WM = WM_USER + 98
+	TB_GETIDEALSIZE          WM = WM_USER + 99
+	TB_GETMETRICS            WM = WM_USER + 101
+	TB_SETMETRICS            WM = WM_USER + 102
+	TB_GETITEMDROPDOWNRECT   WM = WM_USER + 103
+	TB_SETPRESSEDIMAGELIST   WM = WM_USER + 104
+	TB_GETPRESSEDIMAGELIST   WM = WM_USER + 105
+	TB_SETWINDOWTHEME        WM = CCM_SETWINDOWTHEME
+)
+
+// Trackbar's WM_HSCROLL and WM_VSCROLL request. Originally has TB prefix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/wm-hscroll--trackbar-
-type TB uint16
+type TB_REQ uint16
 
 const (
-	TB_LINEUP        TB = 0
-	TB_LINEDOWN      TB = 1
-	TB_PAGEUP        TB = 2
-	TB_PAGEDOWN      TB = 3
-	TB_THUMBPOSITION TB = 4
-	TB_THUMBTRACK    TB = 5
-	TB_TOP           TB = 6
-	TB_BOTTOM        TB = 7
-	TB_ENDTRACK      TB = 8
+	TB_REQ_LINEUP        TB_REQ = 0
+	TB_REQ_LINEDOWN      TB_REQ = 1
+	TB_REQ_PAGEUP        TB_REQ = 2
+	TB_REQ_PAGEDOWN      TB_REQ = 3
+	TB_REQ_THUMBPOSITION TB_REQ = 4
+	TB_REQ_THUMBTRACK    TB_REQ = 5
+	TB_REQ_TOP           TB_REQ = 6
+	TB_REQ_BOTTOM        TB_REQ = 7
+	TB_REQ_ENDTRACK      TB_REQ = 8
 )
 
 // Trackbar control messages.
@@ -100,7 +199,23 @@ const (
 	TBS_TRANSPARENTBKGND TBS = 0x1000 // Background is painted by the parent via the WM_PRINTCLIENT message.
 )
 
-// TaskDialog() pszIcon; originally with TD prefix and ICON suffix.
+// Toolbar control states.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/toolbar-button-states
+type TBSTATE uint8
+
+const (
+	TBSTATE_CHECKED       TBSTATE = 0x01
+	TBSTATE_PRESSED       TBSTATE = 0x02
+	TBSTATE_ENABLED       TBSTATE = 0x04
+	TBSTATE_HIDDEN        TBSTATE = 0x08
+	TBSTATE_INDETERMINATE TBSTATE = 0x10
+	TBSTATE_WRAP          TBSTATE = 0x20
+	TBSTATE_ELLIPSES      TBSTATE = 0x40
+	TBSTATE_MARKED        TBSTATE = 0x80
+)
+
+// TaskDialog() pszIcon. Originally with TD prefix and ICON suffix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
 type TD_ICON uint16

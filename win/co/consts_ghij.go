@@ -50,7 +50,7 @@ const (
 	GCL_WNDPROC       GCL = -24
 )
 
-// GetDeviceCaps() index; originally has no prefix.
+// GetDeviceCaps() index. Originally has no prefix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdevicecaps
 type GDC int32

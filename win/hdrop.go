@@ -15,12 +15,16 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdrop
 type HDROP HANDLE
 
+// Prefer using HDROP.GetFilesAndFinish().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragfinish
 func (hDrop HDROP) DragFinish() {
 	syscall.Syscall(proc.DragFinish.Addr(), 1,
 		uintptr(hDrop), 0, 0)
 }
 
+// Prefer using HDROP.GetFilesAndFinish().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragqueryfilew
 func (hDrop HDROP) DragQueryFile(
 	iFile uint32, lpszFile *uint16, cch uint32) uint32 {

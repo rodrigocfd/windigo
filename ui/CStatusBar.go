@@ -9,7 +9,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native status bar control
+// Native status bar control.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/status-bars
 type StatusBar interface {
@@ -83,7 +83,7 @@ type _StatusBarEvents struct {
 
 func (me *_StatusBarEvents) new(ctrl *_NativeControlBase) {
 	me.ctrlId = ctrl.CtrlId()
-	me.events = ctrl.parent.On()
+	me.events = ctrl.Parent().On()
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-click-status-bar

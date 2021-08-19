@@ -149,7 +149,7 @@ type _ComboBoxEvents struct {
 
 func (me *_ComboBoxEvents) new(ctrl *_NativeControlBase) {
 	me.ctrlId = ctrl.CtrlId()
-	me.events = ctrl.parent.On()
+	me.events = ctrl.Parent().On()
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-closeup

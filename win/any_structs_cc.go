@@ -300,7 +300,7 @@ type NMSELCHANGE struct {
 type NMTRBTHUMBPOSCHANGING struct {
 	Hdr     NMHDR
 	DwPos   uint32
-	NReason co.TB
+	NReason co.TB_REQ
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtreevieww

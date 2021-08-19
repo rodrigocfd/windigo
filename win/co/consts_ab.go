@@ -244,3 +244,21 @@ const (
 	BST_PUSHED        BST = 0x0004
 	BST_FOCUS         BST = 0x0008
 )
+
+// Toolbar control styles.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/toolbar-control-and-button-styles
+type BTNS WS
+
+const (
+	BTNS_BUTTON        BTNS = 0x0000
+	BTNS_SEP           BTNS = 0x0001
+	BTNS_CHECK         BTNS = 0x0002
+	BTNS_GROUP         BTNS = 0x0004
+	BTNS_CHECKGROUP    BTNS = BTNS_GROUP | BTNS_CHECK
+	BTNS_DROPDOWN      BTNS = 0x0008
+	BTNS_AUTOSIZE      BTNS = 0x0010
+	BTNS_NOPREFIX      BTNS = 0x0020
+	BTNS_SHOWTEXT      BTNS = 0x0040
+	BTNS_WHOLEDROPDOWN BTNS = 0x0080
+)

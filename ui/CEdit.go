@@ -174,7 +174,7 @@ type _EditEvents struct {
 
 func (me *_EditEvents) new(ctrl *_NativeControlBase) {
 	me.ctrlId = ctrl.CtrlId()
-	me.events = ctrl.parent.On()
+	me.events = ctrl.Parent().On()
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/en-align-ltr-ec
