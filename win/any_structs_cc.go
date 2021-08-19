@@ -106,6 +106,14 @@ type NMBCHOTITEM struct {
 	DwFlags co.HICF
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmchar
+type NMCHAR struct {
+	Hdr        NMHDR
+	Ch         uint32
+	DwItemPrev uint32
+	DwItemNext uint32
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcustomdraw
 type NMCUSTOMDRAW struct {
 	Hdr         NMHDR
@@ -296,6 +304,24 @@ type NMSELCHANGE struct {
 	StSelEnd   SYSTEMTIME
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbcustomdraw
+type NMTBCUSTOMDRAW struct {
+	Nmcd                 NMCUSTOMDRAW
+	HbrMonoDither        HBRUSH
+	HbrLines             HBRUSH
+	HpenLines            HPEN
+	ClrText              COLORREF
+	ClrMark              COLORREF
+	ClrTextHighlight     COLORREF
+	ClrBtnFace           COLORREF
+	ClrBtnHighlight      COLORREF
+	ClrHighlightHotTrack COLORREF
+	RcText               RECT
+	NStringBkMode        co.BKMODE
+	NHLStringBkMode      co.BKMODE
+	IListGap             int32
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtrbthumbposchanging
 type NMTRBTHUMBPOSCHANGING struct {
 	Hdr     NMHDR
@@ -369,6 +395,24 @@ type NMVIEWCHANGE struct {
 	DwOldView co.MCMV
 	DwNewView co.MCMV
 }
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbutton
+type TBBUTTON struct {
+	IBitmap   int32
+	idCommand int32 // uint16 command ID.
+	FsState   co.TBSTATE
+	fsStyle   uint8
+	bReserved [6]uint8 // this padding is 2 in 32-bit environments
+	DwData    uintptr
+	iString   *uint16 // can also be the index in the string list
+}
+
+func (tbb *TBBUTTON) IdCommand() int         { return int(tbb.idCommand) }
+func (tbb *TBBUTTON) SetIdCommand(val int)   { tbb.idCommand = int32(val) }
+func (tbb *TBBUTTON) FsStyle() co.BTNS       { return co.BTNS(tbb.fsStyle) }
+func (tbb *TBBUTTON) SetFsStyle(val co.BTNS) { tbb.fsStyle = uint8(val) }
+func (tbb *TBBUTTON) IString() string        { return Str.FromUint16Ptr(tbb.iString) }
+func (tbb *TBBUTTON) SetIString(val string)  { tbb.iString = Str.ToUint16Ptr(val) }
 
 // 📑 https://www.google.com/search?client=firefox-b-d&q=TVINSERTSTRUCTW
 type TVINSERTSTRUCT struct {

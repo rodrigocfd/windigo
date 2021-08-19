@@ -129,8 +129,7 @@ func (_StrT) ToUint16PtrMulti(ss []string) *uint16 {
 func (_StrT) ToUint16Slice(s string) []uint16 {
 	sli, err := syscall.UTF16FromString(s)
 	if err != nil {
-		panic(fmt.Sprintf("StrToSlice failed \"%s\": %s",
-			s, err))
+		panic(fmt.Sprintf("StrToSlice failed \"%s\": %s", s, err))
 	}
 	return sli
 }
