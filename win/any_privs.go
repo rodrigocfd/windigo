@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"reflect"
 	"unsafe"
-
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 // Private constants.
@@ -23,89 +21,14 @@ const (
 	_UINT_MAX             = 4294967295
 )
 
-// Converts interface{}, from a restrict set of types, to uintptr.
-// Don't forget to call runtime.KeepAlive() on the original variable.
-type _UintptrConv struct {
-	val interface{}
-}
-
-func (me *_UintptrConv) hbitmapLparamString() uintptr {
-	var raw uintptr
-
-	switch v := me.val.(type) {
-	case HBITMAP:
-		raw = uintptr(v)
-	case LPARAM:
-		raw = uintptr(v)
-	case string:
-		raw = uintptr(unsafe.Pointer(Str.ToUint16Ptr(v)))
-	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(me.val)))
-	}
-
-	return raw
-}
-
-func (me *_UintptrConv) uint16Hmenu() uintptr {
-	var raw uintptr
-
-	switch v := me.val.(type) {
+// Converts val to uint16 or string, or panics.
+func _PullUint16String(val interface{}) uintptr {
+	switch v := val.(type) {
 	case uint16:
-		raw = uintptr(v)
-	case HMENU:
-		raw = uintptr(v)
-	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(me.val)))
-	}
-
-	return raw
-}
-
-func (me *_UintptrConv) uint16String() uintptr {
-	var raw uintptr
-
-	switch v := me.val.(type) {
-	case uint16:
-		raw = uintptr(v)
+		return uintptr(v)
 	case string:
-		raw = uintptr(unsafe.Pointer(Str.ToUint16Ptr(v)))
+		return uintptr(unsafe.Pointer(Str.ToUint16Ptr(v))) // runtime.KeepAlive()
 	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(me.val)))
+		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(val)))
 	}
-
-	return raw
-}
-
-func (me *_UintptrConv) uint16IdcString() uintptr {
-	var raw uintptr
-
-	switch v := me.val.(type) {
-	case uint16:
-		raw = uintptr(v)
-	case co.IDC:
-		raw = uintptr(v)
-	case string:
-		raw = uintptr(unsafe.Pointer(Str.ToUint16Ptr(v)))
-	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(me.val)))
-	}
-
-	return raw
-}
-
-func (me *_UintptrConv) uint16IdiString() uintptr {
-	var raw uintptr
-
-	switch v := me.val.(type) {
-	case uint16:
-		raw = uintptr(v)
-	case co.IDI:
-		raw = uintptr(v)
-	case string:
-		raw = uintptr(unsafe.Pointer(Str.ToUint16Ptr(v)))
-	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(me.val)))
-	}
-
-	return raw
 }

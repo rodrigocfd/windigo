@@ -1,6 +1,8 @@
 package win
 
 import (
+	"fmt"
+	"reflect"
 	"runtime"
 	"syscall"
 	"unsafe"
@@ -72,15 +74,32 @@ func (hMenu HMENU) AddSubmenu(text string, hSubMenu HMENU) {
 func (hMenu HMENU) AppendMenu(
 	uFlags co.MF, uIDNewItem interface{}, lpNewItem interface{}) {
 
-	pIdNew := _UintptrConv{val: uIDNewItem}
-	pContt := _UintptrConv{val: lpNewItem}
+	var pId uintptr
+	switch v := uIDNewItem.(type) {
+	case uint16:
+		pId = uintptr(v)
+	case HMENU:
+		pId = uintptr(v)
+	default:
+		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(uIDNewItem)))
+	}
+
+	var pItem uintptr
+	switch v := lpNewItem.(type) {
+	case HBITMAP:
+		pItem = uintptr(v)
+	case LPARAM:
+		pItem = uintptr(v)
+	case string:
+		pId = uintptr(unsafe.Pointer(Str.ToUint16Ptr(v))) // runtime.KeepAlive()
+	default:
+		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(lpNewItem)))
+	}
 
 	ret, _, err := syscall.Syscall6(proc.AppendMenu.Addr(), 4,
-		uintptr(hMenu), uintptr(uFlags),
-		pIdNew.uint16Hmenu(), pContt.hbitmapLparamString(),
+		uintptr(hMenu), uintptr(uFlags), pId, pItem,
 		0, 0)
 
-	runtime.KeepAlive(uIDNewItem)
 	runtime.KeepAlive(lpNewItem)
 
 	if ret == 0 {

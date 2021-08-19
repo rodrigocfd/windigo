@@ -126,14 +126,14 @@ type FILETIME struct {
 
 // Fills this FILETIME with the value of a time.Time.
 func (ft *FILETIME) FromTime(t time.Time) {
-	st := SYSTEMTIME{}
+	var st SYSTEMTIME
 	st.FromTime(t)
 	SystemTimeToFileTime(&st, ft)
 }
 
 // Converts this FILETIME to time.Time.
 func (ft *FILETIME) ToTime() time.Time {
-	st := SYSTEMTIME{}
+	var st SYSTEMTIME
 	FileTimeToSystemTime(ft, &st)
 	return st.ToTime()
 }
