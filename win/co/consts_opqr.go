@@ -126,28 +126,6 @@ const (
 	PAGE_ENCLAVE_DECOMMIT       PAGE = 0x10000000
 )
 
-// ProgressBar messages.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-progress-bar-control-reference-messages
-const (
-	PBM_SETRANGE    WM = WM_USER + 1
-	PBM_SETPOS      WM = WM_USER + 2
-	PBM_DELTAPOS    WM = WM_USER + 3
-	PBM_SETSTEP     WM = WM_USER + 4
-	PBM_STEPIT      WM = WM_USER + 5
-	PBM_SETRANGE32  WM = WM_USER + 6
-	PBM_GETRANGE    WM = WM_USER + 7
-	PBM_GETPOS      WM = WM_USER + 8
-	PBM_SETBARCOLOR WM = WM_USER + 9
-	PBM_SETBKCOLOR  WM = CCM_SETBKCOLOR
-	PBM_SETMARQUEE  WM = WM_USER + 10
-	PBM_GETSTEP     WM = WM_USER + 13
-	PBM_GETBKCOLOR  WM = WM_USER + 14
-	PBM_GETBARCOLOR WM = WM_USER + 15
-	PBM_SETSTATE    WM = WM_USER + 16
-	PBM_GETSTATE    WM = WM_USER + 17
-)
-
 // ProgressBar control styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/progress-bar-control-styles

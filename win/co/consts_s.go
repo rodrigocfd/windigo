@@ -1,27 +1,5 @@
 package co
 
-// Status bar control messages.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-status-bars-reference-messages
-const (
-	SB_SETTEXT          WM = WM_USER + 11
-	SB_GETTEXT          WM = WM_USER + 13
-	SB_GETTEXTLENGTH    WM = WM_USER + 12
-	SB_SETPARTS         WM = WM_USER + 4
-	SB_GETPARTS         WM = WM_USER + 6
-	SB_GETBORDERS       WM = WM_USER + 7
-	SB_SETMINHEIGHT     WM = WM_USER + 8
-	SB_SIMPLE           WM = WM_USER + 9
-	SB_GETRECT          WM = WM_USER + 10
-	SB_ISSIMPLE         WM = WM_USER + 14
-	SB_SETICON          WM = WM_USER + 15
-	SB_SETTIPTEXT       WM = WM_USER + 17
-	SB_GETTIPTEXT       WM = WM_USER + 19
-	SB_GETICON          WM = WM_USER + 20
-	SB_SETUNICODEFORMAT WM = CCM_SETUNICODEFORMAT
-	SB_GETUNICODEFORMAT WM = CCM_GETUNICODEFORMAT
-)
-
 // WM_HSCROLL, WM_HSCROLL, WM_HSCROLLCLIPBOARD and WM_VSCROLLCLIPBOARD request.
 // Originally with SB prefix.
 //
@@ -552,6 +530,9 @@ const (
 	SS_ELLIPSISMASK    SS = 0x0000c000
 )
 
+// STARTUPINFO dwFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
 type STARTF uint32
 
 const (

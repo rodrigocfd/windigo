@@ -110,26 +110,6 @@ const (
 	APPCOMMAND_DWM_FLIP3D                        APPCOMMAND = 54
 )
 
-// Button control messages.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-messages
-const (
-	_BCM_FIRST WM = 0x1600
-
-	BCM_GETIDEALSIZE     WM = _BCM_FIRST + 1
-	BCM_SETIMAGELIST     WM = _BCM_FIRST + 2
-	BCM_GETIMAGELIST     WM = _BCM_FIRST + 3
-	BCM_SETTEXTMARGIN    WM = _BCM_FIRST + 4
-	BCM_GETTEXTMARGIN    WM = _BCM_FIRST + 5
-	BCM_SETDROPDOWNSTATE WM = _BCM_FIRST + 6
-	BCM_SETSPLITINFO     WM = _BCM_FIRST + 7
-	BCM_GETSPLITINFO     WM = _BCM_FIRST + 8
-	BCM_SETNOTE          WM = _BCM_FIRST + 9
-	BCM_GETNOTE          WM = _BCM_FIRST + 10
-	BCM_GETNOTELENGTH    WM = _BCM_FIRST + 11
-	BCM_SETSHIELD        WM = _BCM_FIRST + 12
-)
-
 // Button control notifications, sent via WM_NOTIFY.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
@@ -162,21 +142,6 @@ type BKMODE int32
 const (
 	BKMODE_TRANSPARENT BKMODE = 1
 	BKMODE_OPAQUE      BKMODE = 2
-)
-
-// Button control messages.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-messages
-const (
-	BM_GETCHECK     WM = 0x00f0
-	BM_SETCHECK     WM = 0x00f1
-	BM_GETSTATE     WM = 0x00f2
-	BM_SETSTATE     WM = 0x00f3
-	BM_SETSTYLE     WM = 0x00f4
-	BM_CLICK        WM = 0x00f5
-	BM_GETIMAGE     WM = 0x00f6
-	BM_SETIMAGE     WM = 0x00f7
-	BM_SETDONTCLICK WM = 0x00f8
 )
 
 // Button control notifications, sent via WM_COMMAND.

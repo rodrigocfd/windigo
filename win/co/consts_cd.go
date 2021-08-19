@@ -1,47 +1,5 @@
 package co
 
-// ComboBox control messages.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-messages
-const (
-	CB_GETEDITSEL            WM = 0x0140
-	CB_LIMITTEXT             WM = 0x0141
-	CB_SETEDITSEL            WM = 0x0142
-	CB_ADDSTRING             WM = 0x0143
-	CB_DELETESTRING          WM = 0x0144
-	CB_DIR                   WM = 0x0145
-	CB_GETCOUNT              WM = 0x0146
-	CB_GETCURSEL             WM = 0x0147
-	CB_GETLBTEXT             WM = 0x0148
-	CB_GETLBTEXTLEN          WM = 0x0149
-	CB_INSERTSTRING          WM = 0x014a
-	CB_RESETCONTENT          WM = 0x014b
-	CB_FINDSTRING            WM = 0x014c
-	CB_SELECTSTRING          WM = 0x014d
-	CB_SETCURSEL             WM = 0x014e
-	CB_SHOWDROPDOWN          WM = 0x014f
-	CB_GETITEMDATA           WM = 0x0150
-	CB_SETITEMDATA           WM = 0x0151
-	CB_GETDROPPEDCONTROLRECT WM = 0x0152
-	CB_SETITEMHEIGHT         WM = 0x0153
-	CB_GETITEMHEIGHT         WM = 0x0154
-	CB_SETEXTENDEDUI         WM = 0x0155
-	CB_GETEXTENDEDUI         WM = 0x0156
-	CB_GETDROPPEDSTATE       WM = 0x0157
-	CB_FINDSTRINGEXACT       WM = 0x0158
-	CB_SETLOCALE             WM = 0x0159
-	CB_GETLOCALE             WM = 0x015a
-	CB_GETTOPINDEX           WM = 0x015b
-	CB_SETTOPINDEX           WM = 0x015c
-	CB_GETHORIZONTALEXTENT   WM = 0x015d
-	CB_SETHORIZONTALEXTENT   WM = 0x015e
-	CB_GETDROPPEDWIDTH       WM = 0x015f
-	CB_SETDROPPEDWIDTH       WM = 0x0160
-	CB_INITSTORAGE           WM = 0x0161
-	CB_GETCOMBOBOXINFO       WM = 0x0164
-	CB_MSGMAX                WM = 0x0165
-)
-
 // CHOOSECOLOR Flags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolorw-r1
@@ -95,25 +53,6 @@ const (
 	CBS_DISABLENOSCROLL   CBS = 0x0800
 	CBS_UPPERCASE         CBS = 0x2000
 	CBS_LOWERCASE         CBS = 0x4000
-)
-
-// Common controls messages.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-general-control-reference-messages
-const (
-	_CCM_FIRST WM = 0x2000
-
-	CCM_SETBKCOLOR       WM = _CCM_FIRST + 1
-	CCM_SETCOLORSCHEME   WM = _CCM_FIRST + 2
-	CCM_GETCOLORSCHEME   WM = _CCM_FIRST + 3
-	CCM_GETDROPTARGET    WM = _CCM_FIRST + 4
-	CCM_SETUNICODEFORMAT WM = _CCM_FIRST + 5
-	CCM_GETUNICODEFORMAT WM = _CCM_FIRST + 6
-	CCM_SETVERSION       WM = _CCM_FIRST + 0x7
-	CCM_GETVERSION       WM = _CCM_FIRST + 0x8
-	CCM_SETNOTIFYWINDOW  WM = _CCM_FIRST + 0x9
-	CCM_SETWINDOWTHEME   WM = _CCM_FIRST + 0xb
-	CCM_DPISCALE         WM = _CCM_FIRST + 0xc
 )
 
 // NMCUSTOMDRAW dwDrawStage.
@@ -421,29 +360,6 @@ const (
 	DPI_AWARE_CTX_PER_MON_AWARE     DPI_AWARE_CTX = -3
 	DPI_AWARE_CTX_PER_MON_AWARE_V2  DPI_AWARE_CTX = -4
 	DPI_AWARE_CTX_UNAWARE_GDISCALED DPI_AWARE_CTX = -5
-)
-
-// DateTimePicker control messages.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-date-and-time-picker-control-reference-messages
-const (
-	_DTM_FIRST WM = 0x1000
-
-	DTM_GETSYSTEMTIME         WM = _DTM_FIRST + 1
-	DTM_SETSYSTEMTIME         WM = _DTM_FIRST + 2
-	DTM_GETRANGE              WM = _DTM_FIRST + 3
-	DTM_SETRANGE              WM = _DTM_FIRST + 4
-	DTM_SETFORMAT             WM = _DTM_FIRST + 50
-	DTM_SETMCCOLOR            WM = _DTM_FIRST + 6
-	DTM_GETMCCOLOR            WM = _DTM_FIRST + 7
-	DTM_GETMONTHCAL           WM = _DTM_FIRST + 8
-	DTM_SETMCFONT             WM = _DTM_FIRST + 9
-	DTM_GETMCFONT             WM = _DTM_FIRST + 10
-	DTM_SETMCSTYLE            WM = _DTM_FIRST + 11
-	DTM_GETMCSTYLE            WM = _DTM_FIRST + 12
-	DTM_CLOSEMONTHCAL         WM = _DTM_FIRST + 13
-	DTM_GETDATETIMEPICKERINFO WM = _DTM_FIRST + 14
-	DTM_GETIDEALSIZE          WM = _DTM_FIRST + 15
 )
 
 // DateTimePicker control notifications, sent via WM_NOTIFY.

@@ -1,50 +1,5 @@
 package co
 
-// Edit control messages.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-messages
-const (
-	EM_GETSEL              WM = 0x00b0
-	EM_SETSEL              WM = 0x00b1
-	EM_GETRECT             WM = 0x00b2
-	EM_SETRECT             WM = 0x00b3
-	EM_SETRECTNP           WM = 0x00b4
-	EM_SCROLL              WM = 0x00b5
-	EM_LINESCROLL          WM = 0x00b6
-	EM_SCROLLCARET         WM = 0x00b7
-	EM_GETMODIFY           WM = 0x00b8
-	EM_SETMODIFY           WM = 0x00b9
-	EM_GETLINECOUNT        WM = 0x00ba
-	EM_LINEINDEX           WM = 0x00bb
-	EM_SETHANDLE           WM = 0x00bc
-	EM_GETHANDLE           WM = 0x00bd
-	EM_GETTHUMB            WM = 0x00be
-	EM_LINELENGTH          WM = 0x00c1
-	EM_REPLACESEL          WM = 0x00c2
-	EM_GETLINE             WM = 0x00c4
-	EM_LIMITTEXT           WM = 0x00c5
-	EM_CANUNDO             WM = 0x00c6
-	EM_UNDO                WM = 0x00c7
-	EM_FMTLINES            WM = 0x00c8
-	EM_LINEFROMCHAR        WM = 0x00c9
-	EM_SETTABSTOPS         WM = 0x00cb
-	EM_SETPASSWORDCHAR     WM = 0x00cc
-	EM_EMPTYUNDOBUFFER     WM = 0x00cd
-	EM_GETFIRSTVISIBLELINE WM = 0x00ce
-	EM_SETREADONLY         WM = 0x00cf
-	EM_SETWORDBREAKPROC    WM = 0x00d0
-	EM_GETWORDBREAKPROC    WM = 0x00d1
-	EM_GETPASSWORDCHAR     WM = 0x00d2
-	EM_SETMARGINS          WM = 0x00d3
-	EM_GETMARGINS          WM = 0x00d4
-	EM_SETLIMITTEXT        WM = EM_LIMITTEXT
-	EM_GETLIMITTEXT        WM = 0x00d5
-	EM_POSFROMCHAR         WM = 0x00d6
-	EM_CHARFROMPOS         WM = 0x00d7
-	EM_SETIMESTATUS        WM = 0x00d8
-	EM_GETIMESTATUS        WM = 0x00d9
-)
-
 // NMLVEMPTYMARKUP dwFlags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvemptymarkup

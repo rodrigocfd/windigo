@@ -163,20 +163,6 @@ const (
 	HCBT_SETFOCUS     HCBT = 9
 )
 
-// Header control messages.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-header-control-reference-messages
-const (
-	_HDM_FIRST WM = 0x1200
-
-	HDM_GETITEMCOUNT WM = _HDM_FIRST + 0
-	HDM_INSERTITEM   WM = _HDM_FIRST + 10
-	HDM_DELETEITEM   WM = _HDM_FIRST + 2
-	HDM_GETITEM      WM = _HDM_FIRST + 11
-	HDM_SETITEM      WM = _HDM_FIRST + 12
-	HDM_LAYOUT       WM = _HDM_FIRST + 5
-)
-
 // HELPINFO iContextType.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
