@@ -1,11 +1,5 @@
 package win
 
-import (
-	"fmt"
-	"reflect"
-	"unsafe"
-)
-
 // Private constants.
 const (
 	_CCHILDREN_TITLEBAR   = 5
@@ -20,15 +14,3 @@ const (
 	_MAX_PATH             = 260
 	_UINT_MAX             = 4294967295
 )
-
-// Converts val to uint16 or string, or panics.
-func _PullUint16String(val interface{}) uintptr {
-	switch v := val.(type) {
-	case uint16:
-		return uintptr(v)
-	case string:
-		return uintptr(unsafe.Pointer(Str.ToUint16Ptr(v))) // runtime.KeepAlive()
-	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(val)))
-	}
-}

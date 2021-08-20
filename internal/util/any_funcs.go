@@ -1,7 +1,11 @@
 package util
 
 import (
+	"fmt"
+	"reflect"
 	"strings"
+	"syscall"
+	"unsafe"
 )
 
 // Syntactic sugar; converts bool to 0 or 1.
@@ -12,11 +16,32 @@ func BoolToUintptr(b bool) uintptr {
 	return 0
 }
 
+// Converts val to *uint16 or string; any other type will panic.
+//
+// Use runtime.KeepAlive() to make sure an eventual string will stay reachable.
+func PullUint16String(val interface{}) uintptr {
+	switch v := val.(type) {
+	case uint16:
+		return uintptr(v)
+
+	case string:
+		pStr, err := syscall.UTF16PtrFromString(v)
+		if err != nil {
+			panic(fmt.Sprintf("PullUint16String() failed \"%s\": %s", v, err))
+		}
+		return uintptr(unsafe.Pointer(pStr)) // runtime.KeepAlive()
+
+	default:
+		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(val)))
+	}
+}
+
 // "&He && she" becomes "He & she".
 func RemoveAccelAmpersands(text string) string {
-	runes := []rune(text)
-	buf := strings.Builder{}
+	var buf strings.Builder
 	buf.Grow(len(text)) // prealloc for performance
+
+	runes := []rune(text)
 
 	for i := 0; i < len(runes)-1; i++ {
 		if runes[i] == '&' && runes[i+1] != '&' {

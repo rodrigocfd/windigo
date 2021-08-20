@@ -8,6 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -49,8 +50,8 @@ func (hInst HINSTANCE) CreateDialogParam(
 	lpDialogFunc uintptr, dwInitParam LPARAM) HWND {
 
 	ret, _, err := syscall.Syscall6(proc.CreateDialogParam.Addr(), 5,
-		uintptr(hInst), _PullUint16String(lpTemplateName), uintptr(hWndParent),
-		lpDialogFunc, uintptr(dwInitParam), 0)
+		uintptr(hInst), util.PullUint16String(lpTemplateName),
+		uintptr(hWndParent), lpDialogFunc, uintptr(dwInitParam), 0)
 
 	runtime.KeepAlive(lpTemplateName)
 
@@ -68,8 +69,8 @@ func (hInst HINSTANCE) DialogBoxParam(
 	lpDialogFunc uintptr, dwInitParam LPARAM) uintptr {
 
 	ret, _, err := syscall.Syscall6(proc.DialogBoxParam.Addr(), 5,
-		uintptr(hInst), _PullUint16String(lpTemplateName), uintptr(hWndParent),
-		lpDialogFunc, uintptr(dwInitParam), 0)
+		uintptr(hInst), util.PullUint16String(lpTemplateName),
+		uintptr(hWndParent), lpDialogFunc, uintptr(dwInitParam), 0)
 
 	runtime.KeepAlive(lpTemplateName)
 
@@ -141,7 +142,7 @@ func (hInst HINSTANCE) GetProcAddress(lpProcName string) uintptr {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
 func (hInst HINSTANCE) LoadAccelerators(lpTableName interface{}) HACCEL {
 	ret, _, err := syscall.Syscall(proc.LoadAccelerators.Addr(), 2,
-		uintptr(hInst), _PullUint16String(lpTableName), 0)
+		uintptr(hInst), util.PullUint16String(lpTableName), 0)
 
 	runtime.KeepAlive(lpTableName)
 
@@ -225,7 +226,7 @@ func (hInst HINSTANCE) LoadImage(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
 func (hInst HINSTANCE) LoadMenu(lpMenuName interface{}) HMENU {
 	ret, _, err := syscall.Syscall(proc.LoadMenu.Addr(), 2,
-		uintptr(hInst), _PullUint16String(lpMenuName), 0)
+		uintptr(hInst), util.PullUint16String(lpMenuName), 0)
 
 	runtime.KeepAlive(lpMenuName)
 

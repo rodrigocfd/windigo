@@ -116,8 +116,7 @@ func (_StrT) Substr(s string, start, length int) string {
 func (_StrT) ToUint16Ptr(s string) *uint16 {
 	pstr, err := syscall.UTF16PtrFromString(s)
 	if err != nil {
-		panic(fmt.Sprintf("StrToPtr failed \"%s\": %s",
-			s, err))
+		panic(fmt.Sprintf("Str.ToUint16Ptr() failed \"%s\": %s", s, err))
 	}
 	return pstr
 }
@@ -146,7 +145,7 @@ func (_StrT) ToUint16PtrMulti(ss []string) *uint16 {
 func (_StrT) ToUint16Slice(s string) []uint16 {
 	sli, err := syscall.UTF16FromString(s)
 	if err != nil {
-		panic(fmt.Sprintf("StrToSlice failed \"%s\": %s", s, err))
+		panic(fmt.Sprintf("Str.ToUint16Slice() failed \"%s\": %s", s, err))
 	}
 	return sli
 }
