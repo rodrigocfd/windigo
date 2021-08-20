@@ -38,8 +38,18 @@ type LITEM struct {
 	ILink     int32
 	State     co.LIS
 	StateMask co.LIS
-	SzID      [_MAX_LINKID_TEXT]uint16
-	SzUrl     [_L_MAX_URL_LENGTH]uint16
+	szID      [_MAX_LINKID_TEXT]uint16
+	szUrl     [_L_MAX_URL_LENGTH]uint16
+}
+
+func (li *LITEM) SzID() string { return Str.FromUint16Slice(li.szID[:]) }
+func (li *LITEM) SetSzID(val string) {
+	copy(li.szID[:], Str.ToUint16Slice(Str.Substr(val, 0, _MAX_LINKID_TEXT-1)))
+}
+
+func (li *LITEM) SzUrl() string { return Str.FromUint16Slice(li.szUrl[:]) }
+func (li *LITEM) SetSzUrl(val string) {
+	copy(li.szUrl[:], Str.ToUint16Slice(Str.Substr(val, 0, _L_MAX_URL_LENGTH-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
@@ -47,14 +57,20 @@ type LVCOLUMN struct {
 	Mask       co.LVCF
 	Fmt        co.LVCFMT_C
 	Cx         int32
-	PszText    *uint16
-	CchTextMax int32
+	pszText    *uint16
+	cchTextMax int32
 	ISubItem   int32
 	IImage     int32
 	IOrder     int32
 	CxMin      int32
 	CxDefault  int32
 	CxIdeal    int32
+}
+
+func (lvc *LVCOLUMN) PszText() []uint16 { return unsafe.Slice(lvc.pszText, lvc.cchTextMax) }
+func (lvc *LVCOLUMN) SetPszText(val []uint16) {
+	lvc.cchTextMax = int32(len(val))
+	lvc.pszText = &val[0]
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvfindinfow
@@ -82,8 +98,8 @@ type LVITEM struct {
 	ISubItem   int32
 	State      co.LVIS
 	StateMask  co.LVIS
-	PszText    *uint16
-	CchTextMax int32
+	pszText    *uint16
+	cchTextMax int32
 	IImage     int32
 	LParam     LPARAM
 	IIndent    int32
@@ -92,6 +108,12 @@ type LVITEM struct {
 	PuColumns  *uint32
 	PiColFmt   *co.LVCFMT_I
 	IGroup     int32
+}
+
+func (lvi *LVITEM) PszText() []uint16 { return unsafe.Slice(lvi.pszText, lvi.cchTextMax) }
+func (lvi *LVITEM) SetPszText(val []uint16) {
+	lvi.cchTextMax = int32(len(val))
+	lvi.pszText = &val[0]
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbcdropdown
@@ -236,7 +258,12 @@ type NMLVDISPINFO struct {
 type NMLVEMPTYMARKUP struct {
 	Hdr      NMHDR
 	DwFlags  co.EMF
-	SzMarkup [_L_MAX_URL_LENGTH]uint16
+	szMarkup [_L_MAX_URL_LENGTH]uint16
+}
+
+func (lve *NMLVEMPTYMARKUP) SzMarkup() string { return Str.FromUint16Slice(lve.szMarkup[:]) }
+func (lve *NMLVEMPTYMARKUP) SetSzMarkup(val string) {
+	copy(lve.szMarkup[:], Str.ToUint16Slice(Str.Substr(val, 0, _L_MAX_URL_LENGTH-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvfinditemw
@@ -250,11 +277,17 @@ type NMLVFINDITEM struct {
 type NMLVGETINFOTIP struct {
 	Hdr        NMHDR
 	DwFlags    co.LVGIT
-	PszText    *uint16
-	CchTextMax int32
+	pszText    *uint16
+	cchTextMax int32
 	IItem      int32
 	ISubItem   int32
 	LParam     LPARAM
+}
+
+func (git *NMLVGETINFOTIP) PszText() []uint16 { return unsafe.Slice(git.pszText, git.cchTextMax) }
+func (git *NMLVGETINFOTIP) SetPszText(val []uint16) {
+	git.cchTextMax = int32(len(val))
+	git.pszText = &val[0]
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvkeydown
@@ -366,10 +399,16 @@ type NMTVDISPINFO struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvgetinfotipw
 type NMTVGETINFOTIP struct {
 	Hdr        NMHDR
-	PszText    *uint16
-	CchTextMax int32
+	pszText    *uint16
+	cchTextMax int32
 	HItem      HTREEITEM
 	LParam     LPARAM
+}
+
+func (git *NMTVGETINFOTIP) PszText() []uint16 { return unsafe.Slice(git.pszText, git.cchTextMax) }
+func (git *NMTVGETINFOTIP) SetPszText(val []uint16) {
+	git.cchTextMax = int32(len(val))
+	git.pszText = &val[0]
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvitemchange
@@ -427,12 +466,18 @@ type TVITEM struct {
 	HItem          HTREEITEM
 	State          co.TVIS
 	StateMask      co.TVIS
-	PszText        *uint16
-	CchTextMax     int32
+	pszText        *uint16
+	cchTextMax     int32
 	IImage         int32
 	ISelectedImage int32
 	CChildren      co.TVI_CHILDREN
 	LParam         LPARAM
+}
+
+func (tvi *TVITEM) PszText() []uint16 { return unsafe.Slice(tvi.pszText, tvi.cchTextMax) }
+func (tvi *TVITEM) SetPszText(val []uint16) {
+	tvi.cchTextMax = int32(len(val))
+	tvi.pszText = &val[0]
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
@@ -441,8 +486,8 @@ type TVITEMEX struct {
 	HItem          HTREEITEM
 	State          co.TVIS
 	StateMask      co.TVIS
-	PszText        *uint16
-	CchTextMax     int32
+	pszText        *uint16
+	cchTextMax     int32
 	IImage         int32
 	ISelectedImage int32
 	CChildren      co.TVI_CHILDREN
@@ -452,4 +497,10 @@ type TVITEMEX struct {
 	Hwnd           HWND
 	IExpandedImage int32
 	iReserved      int32
+}
+
+func (tvx *TVITEMEX) PszText() []uint16 { return unsafe.Slice(tvx.pszText, tvx.cchTextMax) }
+func (tvx *TVITEMEX) SetPszText(val []uint16) {
+	tvx.cchTextMax = int32(len(val))
+	tvx.pszText = &val[0]
 }

@@ -30,12 +30,12 @@ func (me *_ListViewItems) Add(texts ...string) ListViewItem {
 // Adds an item, specifying its icon and the texts under each column, returning the new item.
 func (me *_ListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewItem {
 	textBuf := win.Str.ToUint16Slice(texts[0])
-	lvi := win.LVITEM{
-		Mask:    co.LVIF_TEXT | co.LVIF_IMAGE,
-		IItem:   0x0fff_ffff, // insert as last one
-		PszText: &textBuf[0],
-		IImage:  int32(iconIndex),
-	}
+
+	var lvi win.LVITEM
+	lvi.Mask = co.LVIF_TEXT | co.LVIF_IMAGE
+	lvi.IItem = 0x0fff_ffff // insert as last one
+	lvi.IImage = int32(iconIndex)
+	lvi.SetPszText(textBuf)
 
 	newIdx := int(
 		me.pHwnd.SendMessage(co.LVM_INSERTITEM,
@@ -49,7 +49,7 @@ func (me *_ListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewIt
 		if i > 0 {
 			textBuf = win.Str.ToUint16Slice(text)
 			lvi.ISubItem = int32(i)
-			lvi.PszText = &textBuf[0]
+			lvi.SetPszText(textBuf)
 
 			ret := me.pHwnd.SendMessage(co.LVM_SETITEMTEXT,
 				win.WPARAM(newIdx), win.LPARAM(unsafe.Pointer(&lvi)))

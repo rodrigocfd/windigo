@@ -148,10 +148,10 @@ func (me *_ListViewItem) SetSelected(doSelect bool) {
 
 func (me *_ListViewItem) SetText(columnIndex int, text string) {
 	textBuf := win.Str.ToUint16Slice(text)
-	lvi := win.LVITEM{
-		ISubItem: int32(columnIndex),
-		PszText:  &textBuf[0],
-	}
+
+	var lvi win.LVITEM
+	lvi.ISubItem = int32(columnIndex)
+	lvi.SetPszText(textBuf)
 
 	index := me.Index()
 	ret := me.pHwnd.SendMessage(co.LVM_SETITEMTEXT,
@@ -163,12 +163,11 @@ func (me *_ListViewItem) SetText(columnIndex int, text string) {
 }
 
 func (me *_ListViewItem) Text(columnIndex int) string {
-	buf := [256]uint16{} // arbitrary
-	lvi := win.LVITEM{
-		ISubItem:   int32(columnIndex),
-		PszText:    &buf[0],
-		CchTextMax: int32(len(buf)),
-	}
+	var buf [256]uint16 // arbitrary
+
+	var lvi win.LVITEM
+	lvi.ISubItem = int32(columnIndex)
+	lvi.SetPszText(buf[:])
 
 	index := me.Index()
 	ret := me.pHwnd.SendMessage(co.LVM_GETITEMTEXT,

@@ -41,14 +41,12 @@ func (me *_TreeViewItem) new(pHwnd *win.HWND, hItem win.HTREEITEM) {
 
 func (me *_TreeViewItem) AddChild(text string) TreeViewItem {
 	textBuf := win.Str.ToUint16Slice(text)
-	tvi := win.TVINSERTSTRUCT{
-		HParent:      me.hItem,
-		HInsertAfter: win.HTREEITEM(co.HTREEITEM_LAST),
-		Itemex: win.TVITEMEX{
-			Mask:    co.TVIF_TEXT,
-			PszText: &textBuf[0],
-		},
-	}
+
+	var tvi win.TVINSERTSTRUCT
+	tvi.HParent = me.hItem
+	tvi.HInsertAfter = win.HTREEITEM(co.HTREEITEM_LAST)
+	tvi.Itemex.Mask = co.TVIF_TEXT
+	tvi.Itemex.SetPszText(textBuf)
 
 	hNewItem := win.HTREEITEM(
 		me.pHwnd.SendMessage(co.TVM_INSERTITEM,
@@ -197,11 +195,11 @@ func (me *_TreeViewItem) SetLParam(lp win.LPARAM) {
 
 func (me *_TreeViewItem) SetText(text string) {
 	textBuf := win.Str.ToUint16Slice(text)
-	tvi := win.TVITEMEX{
-		HItem:   me.hItem,
-		Mask:    co.TVIF_TEXT,
-		PszText: &textBuf[0],
-	}
+
+	var tvi win.TVITEMEX
+	tvi.HItem = me.hItem
+	tvi.Mask = co.TVIF_TEXT
+	tvi.SetPszText(textBuf)
 
 	ret := me.pHwnd.SendMessage(co.TVM_SETITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))
@@ -211,13 +209,12 @@ func (me *_TreeViewItem) SetText(text string) {
 }
 
 func (me *_TreeViewItem) Text() string {
-	buf := [256]uint16{} // arbitrary
-	tvi := win.TVITEMEX{
-		HItem:      me.hItem,
-		Mask:       co.TVIF_TEXT,
-		PszText:    &buf[0],
-		CchTextMax: int32(len(buf)),
-	}
+	var buf [256]uint16 // arbitrary
+
+	var tvi win.TVITEMEX
+	tvi.HItem = me.hItem
+	tvi.Mask = co.TVIF_TEXT
+	tvi.SetPszText(buf[:])
 
 	ret := me.pHwnd.SendMessage(co.TVM_GETITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))

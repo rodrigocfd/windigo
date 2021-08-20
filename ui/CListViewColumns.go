@@ -33,8 +33,8 @@ func (me *_ListViewColumns) Add(widths []int, titles ...string) {
 		_MultiplyDpi(nil, &colWidth)
 
 		textBuf := win.Str.ToUint16Slice(titles[i])
-		lvc.PszText = &textBuf[0]
 		lvc.Cx = colWidth.Cx
+		lvc.SetPszText(textBuf)
 
 		newIdx := int(
 			me.pHwnd.SendMessage(co.LVM_INSERTCOLUMN,
@@ -63,11 +63,11 @@ func (me *_ListViewColumns) Count() int {
 // Sets the title of this column.
 func (me *_ListViewColumns) SetTitle(columnIndex int, text string) {
 	titleBuf := win.Str.ToUint16Slice(text)
-	lvc := win.LVCOLUMN{
-		ISubItem: int32(columnIndex),
-		Mask:     co.LVCF_TEXT,
-		PszText:  &titleBuf[0],
-	}
+
+	var lvc win.LVCOLUMN
+	lvc.ISubItem = int32(columnIndex)
+	lvc.Mask = co.LVCF_TEXT
+	lvc.SetPszText(titleBuf)
 
 	ret := me.pHwnd.SendMessage(co.LVM_SETCOLUMN,
 		win.WPARAM(columnIndex), win.LPARAM(unsafe.Pointer(&lvc)))
@@ -106,13 +106,12 @@ func (me *_ListViewColumns) SetWidthToFill(columnIndex int) {
 
 // Retrieves the title of the column at the given index.
 func (me *_ListViewColumns) Title(columnIndex int) string {
-	titleBuf := [128]uint16{} // arbitrary
-	lvc := win.LVCOLUMN{
-		ISubItem:   int32(columnIndex),
-		Mask:       co.LVCF_TEXT,
-		PszText:    &titleBuf[0],
-		CchTextMax: int32(len(titleBuf)),
-	}
+	var titleBuf [128]uint16 // arbitrary
+
+	var lvc win.LVCOLUMN
+	lvc.ISubItem = int32(columnIndex)
+	lvc.Mask = co.LVCF_TEXT
+	lvc.SetPszText(titleBuf[:])
 
 	ret := me.pHwnd.SendMessage(co.LVM_GETCOLUMN,
 		win.WPARAM(columnIndex), win.LPARAM(unsafe.Pointer(&lvc)))

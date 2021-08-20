@@ -25,13 +25,11 @@ func (me *_TreeViewItems) getUnchecked(hItem win.HTREEITEM) TreeViewItem {
 // Adds a new root item, returning it.
 func (me *_TreeViewItems) AddRoot(text string) TreeViewItem {
 	textBuf := win.Str.ToUint16Slice(text)
-	tvi := win.TVINSERTSTRUCT{
-		HInsertAfter: win.HTREEITEM(co.HTREEITEM_LAST),
-		Itemex: win.TVITEMEX{
-			Mask:    co.TVIF_TEXT,
-			PszText: &textBuf[0],
-		},
-	}
+
+	var tvi win.TVINSERTSTRUCT
+	tvi.HInsertAfter = win.HTREEITEM(co.HTREEITEM_LAST)
+	tvi.Itemex.Mask = co.TVIF_TEXT
+	tvi.Itemex.SetPszText(textBuf)
 
 	hNewItem := win.HTREEITEM(
 		me.pHwnd.SendMessage(co.TVM_INSERTITEM,
