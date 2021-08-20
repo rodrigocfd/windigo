@@ -81,7 +81,7 @@ func (me *_Toolbar) AutoSize() {
 
 func (me *_Toolbar) ExtendedStyle() co.TBSTYLE_EX {
 	return co.TBSTYLE_EX(
-		me.Hwnd().SendMessage(co.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0),
+		me.Hwnd().SendMessage(co.TB_GETEXTENDEDSTYLE, 0, 0),
 	)
 }
 
@@ -89,8 +89,7 @@ func (me *_Toolbar) SetExtendedStyle(doSet bool, styles co.TBSTYLE_EX) {
 	curStyles := me.ExtendedStyle()
 	newStyles := util.Iif(doSet, curStyles|styles, curStyles & ^styles).(co.TBSTYLE_EX)
 
-	me.Hwnd().SendMessage(co.LVM_SETEXTENDEDLISTVIEWSTYLE,
-		0, win.LPARAM(newStyles))
+	me.Hwnd().SendMessage(co.TB_SETEXTENDEDSTYLE, 0, win.LPARAM(newStyles))
 }
 
 func (me *_Toolbar) SetImageList(
