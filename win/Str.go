@@ -87,6 +87,23 @@ func (_StrT) FromUint16Slice(s []uint16) string {
 	return syscall.UTF16ToString(s)
 }
 
+// Extracts a substring from a string, UTF-8-aware.
+//
+// https://stackoverflow.com/a/56129336/6923555
+func (_StrT) Substr(s string, start, length int) string {
+	asRunes := []rune(s)
+
+	if start >= len(asRunes) {
+		return ""
+	}
+
+	if start+length > len(asRunes) {
+		length = len(asRunes) - start
+	}
+
+	return string(asRunes[start : start+length])
+}
+
 // Converts string to null-terminated *uint16.
 //
 // Ideal to pass strings to syscalls. We won't return an uintptr right away
