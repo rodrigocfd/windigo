@@ -207,6 +207,46 @@ type NMITEMACTIVATE struct {
 	UKeyFlags co.LVKF
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmkey
+type NMKEY struct {
+	Hdr    NMHDR
+	nVKey  uint32
+	uFlags uint32
+}
+
+func (nmk *NMKEY) NVKey() co.VK       { return co.VK(nmk.nVKey) }
+func (nmk *NMKEY) SetNVKey(val co.VK) { nmk.nVKey = uint32(val) }
+
+func (nmk *NMKEY) ScanCode() uint { return uint(Bytes.Lo8(Bytes.Hi16(nmk.uFlags))) }
+
+// func (nmk *NMKEY) SetScanCode(val uint) {
+// 	nmk.uFlags |= uint32(uint8(val)) << 24
+
+// 	nmk.uFlags = Bytes.Make32(
+// 		Bytes.Lo16(nmk.uFlags),
+// 		Bytes.Make16(uint8(val), Bytes.Hi8(Bytes.Hi16(nmk.uFlags))),
+// 	)
+// }
+
+func (nmk *NMKEY) IsExtendedKey() bool { return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b0000_0001) != 0 }
+
+// func (nmk *NMKEY) SetIsExtendedKey(val bool) {
+// 	nmk.uFlags = Bytes.Make32(
+// 		Bytes.Lo16(nmk.uFlags),
+// 		Bytes.Make16(Bytes.Lo8(Bytes.Hi16(nmk.uFlags)),   ),
+// 	)
+// }
+
+func (nmk *NMKEY) HasAltKey() bool { return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b0010_0000) != 0 }
+
+func (nmk *NMKEY) IsKeyDownBeforeSend() bool {
+	return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b0100_0000) != 0
+}
+
+func (nmk *NMKEY) IsReleasingKey() bool {
+	return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b1000_0000) != 0
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlink
 type NMLINK struct {
 	Hdr  NMHDR
@@ -437,21 +477,26 @@ type NMVIEWCHANGE struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbutton
 type TBBUTTON struct {
-	IBitmap   int32
-	idCommand int32 // uint16 command ID.
+	iBitmap   int32
+	IdCommand int32
 	FsState   co.TBSTATE
-	fsStyle   uint8
+	FsStyle   co.BTNS
 	bReserved [6]uint8 // this padding is 2 in 32-bit environments
 	DwData    uintptr
 	iString   *uint16 // can also be the index in the string list
 }
 
-func (tbb *TBBUTTON) IdCommand() int         { return int(tbb.idCommand) }
-func (tbb *TBBUTTON) SetIdCommand(val int)   { tbb.idCommand = int32(val) }
-func (tbb *TBBUTTON) FsStyle() co.BTNS       { return co.BTNS(tbb.fsStyle) }
-func (tbb *TBBUTTON) SetFsStyle(val co.BTNS) { tbb.fsStyle = uint8(val) }
-func (tbb *TBBUTTON) IString() string        { return Str.FromUint16Ptr(tbb.iString) }
-func (tbb *TBBUTTON) SetIString(val string)  { tbb.iString = Str.ToUint16Ptr(val) }
+func (tbb *TBBUTTON) IBitmap() (icon, imgList int) {
+	icon = int(Bytes.Lo16(uint32(tbb.iBitmap)))
+	imgList = int(Bytes.Hi16(uint32(tbb.iBitmap)))
+	return
+}
+func (tbb *TBBUTTON) SetIBitmap(icon, imgList int) {
+	tbb.iBitmap = int32(Bytes.Make32(uint16(icon), uint16(imgList)))
+}
+
+func (tbb *TBBUTTON) IString() string       { return Str.FromUint16Ptr(tbb.iString) }
+func (tbb *TBBUTTON) SetIString(val string) { tbb.iString = Str.ToUint16Ptr(val) }
 
 // 📑 https://www.google.com/search?client=firefox-b-d&q=TVINSERTSTRUCTW
 type TVINSERTSTRUCT struct {

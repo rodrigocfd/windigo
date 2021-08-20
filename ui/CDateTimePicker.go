@@ -84,8 +84,10 @@ func (me *_DateTimePicker) SetTime(newTime time.Time) {
 
 func (me *_DateTimePicker) Time() time.Time {
 	st := win.SYSTEMTIME{}
-	ret := co.GDT(me.Hwnd().SendMessage(co.DTM_GETSYSTEMTIME,
-		0, win.LPARAM(unsafe.Pointer(&st))))
+	ret := co.GDT(
+		me.Hwnd().SendMessage(co.DTM_GETSYSTEMTIME,
+			0, win.LPARAM(unsafe.Pointer(&st))),
+	)
 
 	if ret != co.GDT_VALID {
 		panic("DTM_GETSYSTEMTIME failed.")

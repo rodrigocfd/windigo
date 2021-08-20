@@ -66,10 +66,10 @@ func MAKEWPARAM(lo, hi uint16) WPARAM {
 
 func (wp WPARAM) Lo16() uint16   { return Bytes.Lo16(uint32(wp)) }
 func (wp WPARAM) Hi16() uint16   { return Bytes.Hi16(uint32(wp)) }
-func (wp WPARAM) Lo8Lo16() uint8 { return Bytes.Lo8(wp.Lo16()) }
-func (wp WPARAM) Hi8Lo16() uint8 { return Bytes.Hi8(wp.Lo16()) }
-func (wp WPARAM) Lo8Hi16() uint8 { return Bytes.Lo8(wp.Hi16()) }
-func (wp WPARAM) Hi8Hi16() uint8 { return Bytes.Hi8(wp.Hi16()) }
+func (wp WPARAM) Lo16Lo8() uint8 { return Bytes.Lo8(wp.Lo16()) }
+func (wp WPARAM) Lo16Hi8() uint8 { return Bytes.Hi8(wp.Lo16()) }
+func (wp WPARAM) Hi16Lo8() uint8 { return Bytes.Lo8(wp.Hi16()) }
+func (wp WPARAM) Hi16Hi8() uint8 { return Bytes.Hi8(wp.Hi16()) }
 
 // Second message parameter.
 //
@@ -83,10 +83,10 @@ func MAKELPARAM(lo, hi uint16) LPARAM {
 
 func (lp LPARAM) Lo16() uint16   { return Bytes.Lo16(uint32(lp)) }
 func (lp LPARAM) Hi16() uint16   { return Bytes.Hi16(uint32(lp)) }
-func (lp LPARAM) Lo8Lo16() uint8 { return Bytes.Lo8(lp.Lo16()) }
-func (lp LPARAM) Hi8Lo16() uint8 { return Bytes.Hi8(lp.Lo16()) }
-func (lp LPARAM) Lo8Hi16() uint8 { return Bytes.Lo8(lp.Hi16()) }
-func (lp LPARAM) Hi8Hi16() uint8 { return Bytes.Hi8(lp.Hi16()) }
+func (lp LPARAM) Lo16Lo8() uint8 { return Bytes.Lo8(lp.Lo16()) }
+func (lp LPARAM) Lo16Hi8() uint8 { return Bytes.Hi8(lp.Lo16()) }
+func (lp LPARAM) Hi16Lo8() uint8 { return Bytes.Lo8(lp.Hi16()) }
+func (lp LPARAM) Hi16Hi8() uint8 { return Bytes.Hi8(lp.Hi16()) }
 
 func (lp LPARAM) MakePoint() POINT {
 	return POINT{

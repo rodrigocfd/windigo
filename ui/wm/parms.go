@@ -44,11 +44,11 @@ type Char struct{ Msg Any }
 
 func (p Char) CharCode() rune            { return rune(p.Msg.WParam) }
 func (p Char) RepeatCount() uint         { return uint(p.Msg.LParam.Lo16()) }
-func (p Char) ScanCode() uint            { return uint(p.Msg.LParam.Lo8Hi16()) }
-func (p Char) IsExtendedKey() bool       { return (p.Msg.LParam.Hi8Hi16() & 0b0000_0001) != 0 }
-func (p Char) HasAltKey() bool           { return (p.Msg.LParam.Hi8Hi16() & 0b0010_0000) != 0 }
-func (p Char) IsKeyDownBeforeSend() bool { return (p.Msg.LParam.Hi8Hi16() & 0b0100_0000) != 0 }
-func (p Char) IsKeyBeingReleased() bool  { return (p.Msg.LParam.Hi8Hi16() & 0b1000_0000) != 0 }
+func (p Char) ScanCode() uint            { return uint(p.Msg.LParam.Hi16Lo8()) }
+func (p Char) IsExtendedKey() bool       { return (p.Msg.LParam.Hi16Hi8() & 0b0000_0001) != 0 }
+func (p Char) HasAltKey() bool           { return (p.Msg.LParam.Hi16Hi8() & 0b0010_0000) != 0 }
+func (p Char) IsKeyDownBeforeSend() bool { return (p.Msg.LParam.Hi16Hi8() & 0b0100_0000) != 0 }
+func (p Char) IsKeyBeingReleased() bool  { return (p.Msg.LParam.Hi16Hi8() & 0b1000_0000) != 0 }
 
 type CharToItem struct{ Msg Any }
 
@@ -230,11 +230,11 @@ type Key struct{ Msg Any }
 
 func (p Key) VirtualKeyCode() co.VK     { return co.VK(p.Msg.WParam) }
 func (p Key) RepeatCount() uint         { return uint(p.Msg.LParam.Lo16()) }
-func (p Key) ScanCode() uint            { return uint(p.Msg.LParam.Lo8Hi16()) }
-func (p Key) IsExtendedKey() bool       { return (p.Msg.LParam.Hi8Hi16() & 0b0000_0001) != 0 }
-func (p Key) HasAltKey() bool           { return (p.Msg.LParam.Hi8Hi16() & 0b0010_0000) != 0 }
-func (p Key) IsKeyDownBeforeSend() bool { return (p.Msg.LParam.Hi8Hi16() & 0b0100_0000) != 0 }
-func (p Key) IsReleasingKey() bool      { return (p.Msg.LParam.Hi8Hi16() & 0b1000_0000) != 0 }
+func (p Key) ScanCode() uint            { return uint(p.Msg.LParam.Hi16Lo8()) }
+func (p Key) IsExtendedKey() bool       { return (p.Msg.LParam.Hi16Hi8() & 0b0000_0001) != 0 }
+func (p Key) HasAltKey() bool           { return (p.Msg.LParam.Hi16Hi8() & 0b0010_0000) != 0 }
+func (p Key) IsKeyDownBeforeSend() bool { return (p.Msg.LParam.Hi16Hi8() & 0b0100_0000) != 0 }
+func (p Key) IsReleasingKey() bool      { return (p.Msg.LParam.Hi16Hi8() & 0b1000_0000) != 0 }
 
 type KillFocus struct{ Msg Any }
 

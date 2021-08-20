@@ -120,12 +120,15 @@ func (me *_ListView) EditControl() win.HWND {
 }
 
 func (me *_ListView) ExtendedStyle() co.LVS_EX {
-	return co.LVS_EX(me.Hwnd().SendMessage(co.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0))
+	return co.LVS_EX(
+		me.Hwnd().SendMessage(co.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0),
+	)
 }
 
 func (me *_ListView) ImageList(which co.LVSIL) win.HIMAGELIST {
-	return win.HIMAGELIST(me.Hwnd().
-		SendMessage(co.LVM_GETIMAGELIST, win.WPARAM(which), 0))
+	return win.HIMAGELIST(
+		me.Hwnd().SendMessage(co.LVM_GETIMAGELIST, win.WPARAM(which), 0),
+	)
 }
 
 func (me *_ListView) Items() *_ListViewItems {
@@ -133,10 +136,7 @@ func (me *_ListView) Items() *_ListViewItems {
 }
 
 func (me *_ListView) SetExtendedStyle(doSet bool, styles co.LVS_EX) {
-	affected := styles
-	if doSet {
-		affected = 0
-	}
+	affected := util.Iif(doSet, styles, 0).(co.LVS_EX)
 	me.Hwnd().SendMessage(co.LVM_SETEXTENDEDLISTVIEWSTYLE,
 		win.WPARAM(affected), win.LPARAM(styles))
 }
@@ -144,8 +144,10 @@ func (me *_ListView) SetExtendedStyle(doSet bool, styles co.LVS_EX) {
 func (me *_ListView) SetImageList(
 	which co.LVSIL, himgl win.HIMAGELIST) win.HIMAGELIST {
 
-	return win.HIMAGELIST(me.Hwnd().
-		SendMessage(co.LVM_SETIMAGELIST, win.WPARAM(which), win.LPARAM(himgl)))
+	return win.HIMAGELIST(
+		me.Hwnd().SendMessage(co.LVM_SETIMAGELIST,
+			win.WPARAM(which), win.LPARAM(himgl)),
+	)
 }
 
 func (me *_ListView) SetRedraw(allowRedraw bool) {
@@ -534,28 +536,28 @@ func (me *_ListViewEvents) NmRClick(userFunc func(p *win.NMITEMACTIVATE)) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-list-view
-func (me *_ListViewEvents) LvnRDblClk(userFunc func(p *win.NMITEMACTIVATE)) {
+func (me *_ListViewEvents) NmRDblClk(userFunc func(p *win.NMITEMACTIVATE)) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RDBLCLK, func(p unsafe.Pointer) {
 		userFunc((*win.NMITEMACTIVATE)(p))
 	})
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-list-view-
-func (me *_ListViewEvents) LvnReleasedCapture(userFunc func()) {
+func (me *_ListViewEvents) NmReleasedCapture(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-return-list-view-
-func (me *_ListViewEvents) LvnReturn(userFunc func()) {
+func (me *_ListViewEvents) NmReturn(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RETURN, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-setfocus-list-view-
-func (me *_ListViewEvents) LvnSetFocus(userFunc func()) {
+func (me *_ListViewEvents) NmSetFocus(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_SETFOCUS, func(_ unsafe.Pointer) {
 		userFunc()
 	})

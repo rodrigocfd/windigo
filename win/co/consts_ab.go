@@ -210,20 +210,20 @@ const (
 	BST_FOCUS         BST = 0x0008
 )
 
-// Toolbar control styles.
+// Toolbar button styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/toolbar-control-and-button-styles
-type BTNS WS
+type BTNS uint8
 
 const (
-	BTNS_BUTTON        BTNS = 0x0000
-	BTNS_SEP           BTNS = 0x0001
-	BTNS_CHECK         BTNS = 0x0002
-	BTNS_GROUP         BTNS = 0x0004
-	BTNS_CHECKGROUP    BTNS = BTNS_GROUP | BTNS_CHECK
-	BTNS_DROPDOWN      BTNS = 0x0008
-	BTNS_AUTOSIZE      BTNS = 0x0010
-	BTNS_NOPREFIX      BTNS = 0x0020
+	BTNS_BUTTON        BTNS = BTNS(TBSTYLE_BUTTON)
+	BTNS_SEP           BTNS = BTNS(TBSTYLE_SEP)
+	BTNS_CHECK         BTNS = BTNS(TBSTYLE_CHECK)
+	BTNS_GROUP         BTNS = BTNS(TBSTYLE_GROUP)
+	BTNS_CHECKGROUP    BTNS = BTNS(TBSTYLE_CHECKGROUP)
+	BTNS_DROPDOWN      BTNS = BTNS(TBSTYLE_DROPDOWN)
+	BTNS_AUTOSIZE      BTNS = BTNS(TBSTYLE_AUTOSIZE)
+	BTNS_NOPREFIX      BTNS = BTNS(TBSTYLE_NOPREFIX)
 	BTNS_SHOWTEXT      BTNS = 0x0040
 	BTNS_WHOLEDROPDOWN BTNS = 0x0080
 )

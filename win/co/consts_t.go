@@ -75,6 +75,45 @@ const (
 	TBSTATE_MARKED        TBSTATE = 0x80
 )
 
+// Toolbar control styles.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/toolbar-control-and-button-styles
+type TBSTYLE WS
+
+const (
+	TBSTYLE_BUTTON       TBSTYLE = 0x0000
+	TBSTYLE_SEP          TBSTYLE = 0x0001
+	TBSTYLE_CHECK        TBSTYLE = 0x0002
+	TBSTYLE_GROUP        TBSTYLE = 0x0004
+	TBSTYLE_CHECKGROUP   TBSTYLE = TBSTYLE_GROUP | TBSTYLE_CHECK
+	TBSTYLE_DROPDOWN     TBSTYLE = 0x0008
+	TBSTYLE_AUTOSIZE     TBSTYLE = 0x0010
+	TBSTYLE_NOPREFIX     TBSTYLE = 0x0020
+	TBSTYLE_TOOLTIPS     TBSTYLE = 0x0100
+	TBSTYLE_WRAPABLE     TBSTYLE = 0x0200
+	TBSTYLE_ALTDRAG      TBSTYLE = 0x0400
+	TBSTYLE_FLAT         TBSTYLE = 0x0800
+	TBSTYLE_LIST         TBSTYLE = 0x1000
+	TBSTYLE_CUSTOMERASE  TBSTYLE = 0x2000
+	TBSTYLE_REGISTERDROP TBSTYLE = 0x4000
+	TBSTYLE_TRANSPARENT  TBSTYLE = 0x8000
+)
+
+// Toolbar control extended styles.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/toolbar-extended-styles
+type TBSTYLE_EX uint32
+
+const (
+	TBSTYLE_EX_NONE               TBSTYLE_EX = 0
+	TBSTYLE_EX_DRAWDDARROWS       TBSTYLE_EX = 0x00000001
+	TBSTYLE_EX_MIXEDBUTTONS       TBSTYLE_EX = 0x00000008
+	TBSTYLE_EX_HIDECLIPPEDBUTTONS TBSTYLE_EX = 0x00000010
+	TBSTYLE_EX_MULTICOLUMN        TBSTYLE_EX = 0x00000002
+	TBSTYLE_EX_VERTICAL           TBSTYLE_EX = 0x00000004
+	TBSTYLE_EX_DOUBLEBUFFER       TBSTYLE_EX = 0x00000080
+)
+
 // TaskDialog() pszIcon. Originally with TD prefix and ICON suffix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog

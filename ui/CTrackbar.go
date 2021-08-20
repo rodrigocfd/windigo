@@ -104,7 +104,9 @@ func (me *_Trackbar) RangeMin() int {
 }
 
 func (me *_Trackbar) SetPageSize(pageSize int) int {
-	return int(me.Hwnd().SendMessage(co.TBM_SETPAGESIZE, 1, win.LPARAM(pageSize)))
+	return int(
+		me.Hwnd().SendMessage(co.TBM_SETPAGESIZE, 1, win.LPARAM(pageSize)),
+	)
 }
 
 func (me *_Trackbar) SetPos(pos int) {

@@ -89,8 +89,8 @@ func (me *_RadioButton) EmulateClick() {
 }
 
 func (me *_RadioButton) IsChecked() bool {
-	return (co.BST(me.Hwnd().SendMessage(co.BM_GETSTATE, 0, 0)) &
-		co.BST_CHECKED) != 0
+	bst := co.BST(me.Hwnd().SendMessage(co.BM_GETSTATE, 0, 0))
+	return (bst & co.BST_CHECKED) != 0
 }
 
 func (me *_RadioButton) SetChecked() {
