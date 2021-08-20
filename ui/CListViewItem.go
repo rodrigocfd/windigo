@@ -166,7 +166,7 @@ func (me *_ListViewItem) Text(columnIndex int) string {
 	const BLOCK int = 64 // arbitrary
 	bufSz := BLOCK
 	buf := []uint16{}
-	itemIdx := me.Index()
+	index := me.Index()
 
 	lvi := win.LVITEM{
 		ISubItem: int32(columnIndex),
@@ -178,7 +178,7 @@ func (me *_ListViewItem) Text(columnIndex int) string {
 
 		nChars := int(
 			me.pHwnd.SendMessage(co.LVM_GETITEMTEXT,
-				win.WPARAM(itemIdx), win.LPARAM(unsafe.Pointer(&lvi))),
+				win.WPARAM(index), win.LPARAM(unsafe.Pointer(&lvi))),
 		)
 
 		if nChars+1 < bufSz { // to break, must have at least 1 char gap

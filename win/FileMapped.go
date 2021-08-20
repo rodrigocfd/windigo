@@ -3,6 +3,7 @@ package win
 import (
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -52,25 +53,16 @@ type _FileMapped struct {
 func OpenFileMapped(
 	filePath string, behavior co.OPEN_FILEMAP) (FileMapped, error) {
 
-	mapOpts := co.OPEN_FILE(0)
-	readOnly := false
-
-	switch behavior {
-	case co.OPEN_FILEMAP_MODE_READ:
-		mapOpts = co.OPEN_FILE_READ_EXISTING
-		readOnly = true
-	case co.OPEN_FILEMAP_MODE_RW:
-		mapOpts = co.OPEN_FILE_RW_EXISTING
-		readOnly = false
-	}
-
 	me := &_FileMapped{
 		objFile:  _File{},
 		hMap:     HFILEMAP(0),
 		pMem:     HFILEMAPVIEW(0),
 		sz:       0,
-		readOnly: readOnly,
+		readOnly: behavior == co.OPEN_FILEMAP_MODE_READ,
 	}
+
+	mapOpts := util.Iif(me.readOnly,
+		co.OPEN_FILE_READ_EXISTING, co.OPEN_FILE_RW_EXISTING).(co.OPEN_FILE)
 
 	if err := me.objFile.openFile(filePath, mapOpts); err != nil {
 		return nil, err
@@ -125,10 +117,8 @@ func (me *_FileMapped) Size() int {
 
 func (me *_FileMapped) mapInMemory() error {
 	// Mapping into memory.
-	pageFlags := co.PAGE_READWRITE
-	if me.readOnly {
-		pageFlags = co.PAGE_READONLY
-	}
+	pageFlags := util.Iif(me.readOnly,
+		co.PAGE_READONLY, co.PAGE_READWRITE).(co.PAGE)
 
 	var err error
 	me.hMap, err = me.objFile.hFile.
@@ -138,10 +128,8 @@ func (me *_FileMapped) mapInMemory() error {
 	}
 
 	// Get pointer to data block.
-	mapFlags := co.FILE_MAP_WRITE
-	if me.readOnly {
-		mapFlags = co.FILE_MAP_READ
-	}
+	mapFlags := util.Iif(me.readOnly,
+		co.FILE_MAP_READ, co.FILE_MAP_WRITE).(co.FILE_MAP)
 
 	if me.pMem, err = me.hMap.MapViewOfFile(mapFlags, 0, 0); err != nil {
 		return err

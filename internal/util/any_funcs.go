@@ -16,6 +16,17 @@ func BoolToUintptr(b bool) uintptr {
 	return 0
 }
 
+// Returns first value if condition is true, otherwise returns second.
+//
+// Return type must be cast accordingly.
+func Iif(cond bool, ifTrue, ifFalse interface{}) interface{} {
+	if cond {
+		return ifTrue
+	} else {
+		return ifFalse
+	}
+}
+
 // Converts val to *uint16 or string; any other type will panic.
 //
 // Use runtime.KeepAlive() to make sure an eventual string will stay reachable.
