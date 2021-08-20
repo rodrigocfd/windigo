@@ -79,10 +79,8 @@ func (me *_WindowBase) loadIcons(
 
 	// Resource icons are automatically released by the system.
 	hIcon16 = win.HICON(
-		hInst.LoadImage(int32(iconId),
-			co.IMAGE_ICON, 16, 16, co.LR_DEFAULTCOLOR))
+		hInst.LoadImage(int32(iconId), co.IMAGE_ICON, 16, 16, co.LR_DEFAULTCOLOR))
 	hIcon32 = win.HICON(
-		hInst.LoadImage(int32(iconId),
-			co.IMAGE_ICON, 32, 32, co.LR_DEFAULTCOLOR))
+		hInst.LoadImage(int32(iconId), co.IMAGE_ICON, 32, 32, co.LR_DEFAULTCOLOR))
 	return
 }

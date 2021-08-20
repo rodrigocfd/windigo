@@ -57,16 +57,16 @@ func (me *_WindowRaw) generateWcx(
 func (me *_WindowRaw) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 	atom, err := win.RegisterClassEx(wcx)
 	if err != nil {
-		if errCode, _ := err.(errco.ERROR); errCode == errco.CLASS_ALREADY_EXISTS {
+		if wErr, _ := err.(errco.ERROR); wErr == errco.CLASS_ALREADY_EXISTS {
 			// https://devblogs.microsoft.com/oldnewthing/20150429-00/?p=44984
 			// https://devblogs.microsoft.com/oldnewthing/20041011-00/?p=37603
-			atom, err = wcx.HInstance.GetClassInfoEx( // retrieve atom from existing window class
-				(*uint16)(unsafe.Pointer(wcx.LpszClassName)), wcx)
+			// Retrieve atom from existing window class.
+			atom, err = wcx.HInstance.GetClassInfoEx(wcx.LpszClassName, wcx)
 			if err != nil {
 				panic(err) // GetClassInfoEx failed
 			}
-		} else if errCode != errco.SUCCESS {
-			panic(errCode) // RegisterClassEx failed
+		} else if wErr != errco.SUCCESS {
+			panic(wErr) // RegisterClassEx failed
 		}
 	}
 	return atom

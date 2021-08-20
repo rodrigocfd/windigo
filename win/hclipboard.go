@@ -43,10 +43,10 @@ func (HCLIPBOARD) EnumClipboardFormats() []co.CF {
 			uintptr(thisFormat), 0, 0)
 
 		if ret == 0 {
-			if errCode := errco.ERROR(err); errCode == errco.SUCCESS {
+			if wErr := errco.ERROR(err); wErr == errco.SUCCESS {
 				return formats
 			} else {
-				panic(errCode)
+				panic(wErr)
 			}
 		} else {
 			thisFormat = co.CF(ret)

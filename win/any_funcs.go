@@ -809,8 +809,8 @@ func TaskDialogIndirect(pTaskConfig *TASKDIALOGCONFIG) co.ID {
 	ret, _, _ := syscall.Syscall6(proc.TaskDialogIndirect.Addr(), 4,
 		uintptr(unsafe.Pointer(pTaskConfig)), uintptr(unsafe.Pointer(&pnButton)),
 		uintptr(0), uintptr(0), 0, 0)
-	if errCode := errco.ERROR(ret); errCode != errco.S_OK {
-		panic(errCode)
+	if wErr := errco.ERROR(ret); wErr != errco.S_OK {
+		panic(wErr)
 	}
 	return co.ID(pnButton)
 }

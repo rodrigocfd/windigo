@@ -25,12 +25,11 @@ func FindFirstFile(lpFileName string,
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))),
 		uintptr(unsafe.Pointer(lpFindFileData)), 0)
 
-	errCode := errco.ERROR(err)
 	if int(ret) == _INVALID_HANDLE_VALUE {
-		if errCode == errco.FILE_NOT_FOUND || errCode == errco.PATH_NOT_FOUND { // no matching files, not an error
-			return HFIND(0), false, nil
+		if wErr := errco.ERROR(err); wErr == errco.FILE_NOT_FOUND || wErr == errco.PATH_NOT_FOUND {
+			return HFIND(0), false, nil // no matching files, not an error
 		} else {
-			return HFIND(0), false, errCode
+			return HFIND(0), false, wErr
 		}
 	}
 	return HFIND(ret), true, nil // a file was found
@@ -52,12 +51,11 @@ func (hFind HFIND) FindNextFile(lpFindFileData *WIN32_FIND_DATA) (bool, error) {
 	ret, _, err := syscall.Syscall(proc.FindNextFile.Addr(), 2,
 		uintptr(hFind), uintptr(unsafe.Pointer(lpFindFileData)), 0)
 
-	errCode := errco.ERROR(err)
 	if ret == 0 {
-		if errCode == errco.NO_MORE_FILES { // not an error, search ended
-			return false, nil
+		if wErr := errco.ERROR(err); wErr == errco.NO_MORE_FILES {
+			return false, nil // not an error, search ended
 		} else {
-			return false, errCode
+			return false, wErr
 		}
 	}
 	return true, nil // a file was found

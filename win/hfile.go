@@ -53,8 +53,8 @@ func (hFile HFILE) GetFileSizeEx() (uint64, error) {
 	ret, _, err := syscall.Syscall(proc.GetFileSizeEx.Addr(), 2,
 		uintptr(hFile), uintptr(unsafe.Pointer(&retSz)), 0)
 
-	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
-		return 0, errCode
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		return 0, wErr
 	}
 	return uint64(retSz), nil
 }
@@ -85,7 +85,7 @@ func (hFile HFILE) ReadFile(buf []byte, numBytesToRead uint32) error {
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(numBytesToRead), uintptr(unsafe.Pointer(&numRead)), 0, 0) // OVERLAPPED not even considered
 
-	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		return err
 	}
 	return nil
@@ -96,7 +96,7 @@ func (hFile HFILE) SetEndOfFile() error {
 	ret, _, err := syscall.Syscall(proc.SetEndOfFile.Addr(), 1,
 		uintptr(hFile), 0, 0)
 
-	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		return err
 	}
 	return nil
@@ -113,7 +113,7 @@ func (hFile HFILE) SetFilePointerEx(
 		uintptr(hFile), uintptr(distanceToMove),
 		uintptr(unsafe.Pointer(&newOff)), uintptr(moveMethod), 0, 0)
 
-	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		return 0, err
 	}
 	return uint64(newOff), nil
@@ -126,7 +126,7 @@ func (hFile HFILE) WriteFile(buf []byte) error {
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(len(buf)), uintptr(unsafe.Pointer(&written)), 0, 0) // OVERLAPPED not even considered
 
-	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		return err
 	}
 	return nil

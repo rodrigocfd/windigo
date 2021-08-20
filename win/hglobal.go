@@ -83,7 +83,7 @@ func (hGlobal HGLOBAL) GlobalSize() uint64 {
 func (hGlobal HGLOBAL) GlobalUnlock() {
 	ret, _, err := syscall.Syscall(proc.GlobalUnlock.Addr(), 1,
 		uintptr(hGlobal), 0, 0)
-	if errCode := errco.ERROR(err); ret == 0 && errCode != errco.SUCCESS {
-		panic(errCode)
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		panic(wErr)
 	}
 }

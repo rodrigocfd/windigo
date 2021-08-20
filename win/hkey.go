@@ -32,8 +32,8 @@ const (
 func (hKey HKEY) CloseKey() error {
 	ret, _, _ := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
 		uintptr(hKey), 0, 0)
-	if err := errco.ERROR(ret); err != errco.SUCCESS {
-		return err
+	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+		return wErr
 	}
 	return nil
 }
@@ -43,8 +43,8 @@ func (hKey HKEY) DeleteKey(lpSubKey string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteKey.Addr(), 2,
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))), 0)
 
-	if err := errco.ERROR(ret); err != errco.SUCCESS {
-		return err
+	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+		return wErr
 	}
 	return nil
 }
@@ -57,8 +57,8 @@ func (hKey HKEY) DeleteKeyEx(lpSubKey string, samDesired co.KEY) error {
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
 		uintptr(samDesired), 0, 0, 0)
 
-	if err := errco.ERROR(ret); err != errco.SUCCESS {
-		return err
+	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+		return wErr
 	}
 	return nil
 }
@@ -69,8 +69,8 @@ func (hKey HKEY) DeleteKeyValue(lpSubKey, lpValueName string) error {
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValueName))))
 
-	if err := errco.ERROR(ret); err != errco.SUCCESS {
-		return err
+	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+		return wErr
 	}
 	return nil
 }
@@ -80,8 +80,8 @@ func (hKey HKEY) DeleteTree(lpSubKey string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteTree.Addr(), 2,
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))), 0)
 
-	if err := errco.ERROR(ret); err != errco.SUCCESS {
-		return err
+	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+		return wErr
 	}
 	return nil
 }
@@ -110,8 +110,8 @@ func (hKey HKEY) EnumKeyEx() ([]string, error) {
 			uintptr(unsafe.Pointer(&keyNameBufLen)),
 			0, 0, 0, 0, 0)
 
-		if errCode := errco.ERROR(ret); errCode != errco.SUCCESS {
-			return nil, errCode
+		if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+			return nil, wErr
 		}
 
 		keyNames = append(keyNames, Str.FromUint16Slice(keyNameBuf))
@@ -150,8 +150,8 @@ func (hKey HKEY) EnumValue() (
 			uintptr(unsafe.Pointer(&valueNameBufLen)),
 			0, uintptr(unsafe.Pointer(&valueTypeBuf)), 0, 0, 0)
 
-		if errCode := errco.ERROR(ret); errCode != errco.SUCCESS {
-			valueNames, valueTypes, err = nil, nil, errCode
+		if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+			valueNames, valueTypes, err = nil, nil, wErr
 			return
 		}
 
@@ -167,8 +167,8 @@ func (hKey HKEY) FlushKey() error {
 	ret, _, _ := syscall.Syscall(proc.RegFlushKey.Addr(), 1,
 		uintptr(hKey), 0, 0)
 
-	if err := errco.ERROR(ret); err != errco.SUCCESS {
-		return err
+	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+		return wErr
 	}
 	return nil
 }
@@ -187,8 +187,8 @@ func (hKey HKEY) GetValue(
 		uintptr(dwFlags), uintptr(unsafe.Pointer(pdwType)),
 		uintptr(pvData), uintptr(unsafe.Pointer(pcbData)), 0, 0)
 
-	if err := errco.ERROR(ret); err != errco.SUCCESS {
-		return err
+	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+		return wErr
 	}
 	return nil
 }
@@ -205,8 +205,8 @@ func (hKey HKEY) OpenKeyEx(
 		uintptr(ulOptions), uintptr(samDesired),
 		uintptr(unsafe.Pointer(&openedKey)), 0)
 
-	if err := errco.ERROR(ret); err != errco.SUCCESS {
-		return HKEY(0), err
+	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+		return HKEY(0), wErr
 	}
 	return openedKey, nil
 }
@@ -275,8 +275,8 @@ func (hKey HKEY) QueryInfoKey(
 		uintptr(unsafe.Pointer(cbSecurityDescriptorP)),
 		uintptr(unsafe.Pointer(ftLastWriteTimeP)))
 
-	if err := errco.ERROR(ret); err != errco.SUCCESS {
-		return err
+	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+		return wErr
 	}
 
 	if lpClass != nil {
@@ -370,8 +370,8 @@ func (hKey HKEY) SetKeyValue(
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValueName))),
 		uintptr(dwType), uintptr(lpData), uintptr(cbData))
 
-	if err := errco.ERROR(ret); err != errco.SUCCESS {
-		return err
+	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+		return wErr
 	}
 	return nil
 }
