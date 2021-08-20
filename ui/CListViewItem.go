@@ -163,20 +163,31 @@ func (me *_ListViewItem) SetText(columnIndex int, text string) {
 }
 
 func (me *_ListViewItem) Text(columnIndex int) string {
-	var buf [256]uint16 // arbitrary
+	const BLOCK int = 64 // arbitrary
+	var buf []uint16
+	bufSz := BLOCK
+	itemIdx := me.Index()
 
 	var lvi win.LVITEM
 	lvi.ISubItem = int32(columnIndex)
-	lvi.SetPszText(buf[:])
 
-	index := me.Index()
-	ret := me.pHwnd.SendMessage(co.LVM_GETITEMTEXT,
-		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&lvi)))
-	if ret < 0 {
-		panic(fmt.Sprintf("LVM_GETITEMTEXT %d/%d failed.",
-			index, columnIndex))
+	for {
+		buf = make([]uint16, bufSz)
+		lvi.SetPszText(buf)
+
+		nChars := int(
+			me.pHwnd.SendMessage(co.LVM_GETITEMTEXT,
+				win.WPARAM(itemIdx), win.LPARAM(unsafe.Pointer(&lvi))),
+		)
+
+		if nChars+1 < bufSz { // to break, must have at least 1 char gap
+			break
+		}
+
+		bufSz += BLOCK // increase buffer size to try again
 	}
-	return win.Str.FromUint16Slice(buf[:])
+
+	return win.Str.FromUint16Slice(buf)
 }
 
 func (me *_ListViewItem) Update() {
