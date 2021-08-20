@@ -26,7 +26,7 @@ type IPersist struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ipersist-getclassid
 func (me *IPersist) GetClassID() *GUID {
-	var clsid GUID
+	clsid := GUID{}
 	ret, _, _ := syscall.Syscall(
 		(*IPersistVtbl)(unsafe.Pointer(*me.Ppv)).GetClassID, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),

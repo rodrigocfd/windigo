@@ -149,7 +149,7 @@ func (me *_ListViewItem) SetSelected(doSelect bool) {
 func (me *_ListViewItem) SetText(columnIndex int, text string) {
 	textBuf := win.Str.ToUint16Slice(text)
 
-	var lvi win.LVITEM
+	lvi := win.LVITEM{}
 	lvi.ISubItem = int32(columnIndex)
 	lvi.SetPszText(textBuf)
 
@@ -164,12 +164,13 @@ func (me *_ListViewItem) SetText(columnIndex int, text string) {
 
 func (me *_ListViewItem) Text(columnIndex int) string {
 	const BLOCK int = 64 // arbitrary
-	var buf []uint16
 	bufSz := BLOCK
+	buf := []uint16{}
 	itemIdx := me.Index()
 
-	var lvi win.LVITEM
-	lvi.ISubItem = int32(columnIndex)
+	lvi := win.LVITEM{
+		ISubItem: int32(columnIndex),
+	}
 
 	for {
 		buf = make([]uint16, bufSz)

@@ -23,6 +23,7 @@ func (me *_EventsInternal) new() {
 // Adds a WM event.
 func (me *_EventsInternal) addMsgZero(uMsg co.WM, userFunc func(p wm.Any)) {
 	var slice []func(p wm.Any)
+
 	if existingSlice, hasSlice := me.msgsZero[uMsg]; hasSlice { // at least 1 handle exists?
 		slice = existingSlice
 	} else { // no handlers for this message yet

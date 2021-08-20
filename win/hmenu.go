@@ -74,7 +74,7 @@ func (hMenu HMENU) AddSubmenu(text string, hSubMenu HMENU) {
 func (hMenu HMENU) AppendMenu(
 	uFlags co.MF, uIDNewItem interface{}, lpNewItem interface{}) {
 
-	var pId uintptr
+	pId := uintptr(0)
 	switch v := uIDNewItem.(type) {
 	case uint16:
 		pId = uintptr(v)
@@ -84,7 +84,7 @@ func (hMenu HMENU) AppendMenu(
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(uIDNewItem)))
 	}
 
-	var pItem uintptr
+	pItem := uintptr(0)
 	switch v := lpNewItem.(type) {
 	case HBITMAP:
 		pItem = uintptr(v)

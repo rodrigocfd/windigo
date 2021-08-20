@@ -38,10 +38,9 @@ func PullUint16String(val interface{}) uintptr {
 
 // "&He && she" becomes "He & she".
 func RemoveAccelAmpersands(text string) string {
-	var buf strings.Builder
-	buf.Grow(len(text)) // prealloc for performance
-
 	runes := []rune(text)
+	buf := strings.Builder{}
+	buf.Grow(len(text)) // prealloc for performance
 
 	for i := 0; i < len(runes)-1; i++ {
 		if runes[i] == '&' && runes[i+1] != '&' {

@@ -52,8 +52,8 @@ type _FileMapped struct {
 func OpenFileMapped(
 	filePath string, behavior co.OPEN_FILEMAP) (FileMapped, error) {
 
-	var mapOpts co.OPEN_FILE
-	var readOnly bool
+	mapOpts := co.OPEN_FILE(0)
+	readOnly := false
 
 	switch behavior {
 	case co.OPEN_FILEMAP_MODE_READ:
@@ -131,8 +131,9 @@ func (me *_FileMapped) mapInMemory() error {
 	}
 
 	var err error
-	if me.hMap, err = me.objFile.hFile.CreateFileMapping(
-		nil, pageFlags, co.SEC_NONE, 0, ""); err != nil {
+	me.hMap, err = me.objFile.hFile.
+		CreateFileMapping(nil, pageFlags, co.SEC_NONE, 0, "")
+	if err != nil {
 		return err
 	}
 

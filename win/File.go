@@ -37,9 +37,9 @@ func OpenFile(filePath string, behavior co.OPEN_FILE) (File, error) {
 }
 
 func (me *_File) openFile(filePath string, behavior co.OPEN_FILE) error {
-	var desiredAccess co.GENERIC
-	var shareMode co.FILE_SHARE
-	var creationDisposition co.DISPOSITION
+	desiredAccess := co.GENERIC(0)
+	shareMode := co.FILE_SHARE(0)
+	creationDisposition := co.DISPOSITION(0)
 
 	switch behavior {
 	case co.OPEN_FILE_READ_EXISTING:

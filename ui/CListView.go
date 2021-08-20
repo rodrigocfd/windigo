@@ -191,14 +191,17 @@ func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		return
 	}
 
-	var menuPos win.POINT // menu anchor coords, relative to list view
+	menuPos := win.POINT{} // menu anchor coords, relative to list view
 
 	if followCursor { // usually when fired by a right-click
 		menuPos = win.GetCursorPos()         // relative to screen
 		me.Hwnd().ScreenToClientPt(&menuPos) // now relative to list view
 		lvhti := me.Items().HitTest(menuPos) // to find item below cursor, if any
 
-		if clickedItem, hasItem := me.Items().Get(int(lvhti.IItem)); hasItem { // an item was right-clicked
+		if lvhti.IItem == -1 { // no item was right-clicked
+			me.Items().SetSelectedAll(false)
+		} else {
+			clickedItem := me.Items().Get(int(lvhti.IItem))
 			if !hasCtrl && !hasShift {
 				if clickedItem.IsSelected() {
 					me.Items().SetSelectedAll(false)
@@ -206,8 +209,6 @@ func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 				}
 				clickedItem.SetFocused()
 			}
-		} else if !hasCtrl && !hasShift { // no item was right-clicked
-			me.Items().SetSelectedAll(false)
 		}
 		me.Hwnd().SetFocus() // because a right-click won't set the focus by itself
 

@@ -88,7 +88,7 @@ func (hKey HKEY) DeleteTree(lpSubKey string) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumkeyexw
 func (hKey HKEY) EnumKeyEx() ([]string, error) {
-	var cSubKeys, cbMaxSubKeyLen uint32
+	cSubKeys, cbMaxSubKeyLen := uint32(0), uint32(0)
 	err := hKey.QueryInfoKey(nil, &cSubKeys, &cbMaxSubKeyLen,
 		nil, nil, nil, nil, nil, nil)
 	if err != nil {
@@ -99,7 +99,7 @@ func (hKey HKEY) EnumKeyEx() ([]string, error) {
 	keyNames := make([]string, 0, cSubKeys)
 
 	keyNameBuf := make([]uint16, cbMaxSubKeyLen+1)
-	var keyNameBufLen int
+	keyNameBufLen := int(0)
 
 	for i := 0; i < int(cSubKeys); i++ {
 		keyNameBufLen = len(keyNameBuf)
@@ -126,7 +126,7 @@ func (hKey HKEY) EnumKeyEx() ([]string, error) {
 func (hKey HKEY) EnumValue() (
 	valueNames []string, valueTypes []co.REG, err error) {
 
-	var cValues, cbMaxValueNameLen uint32
+	cValues, cbMaxValueNameLen := uint32(0), uint32(0)
 	err = hKey.QueryInfoKey(nil, nil, nil, nil, &cValues, &cbMaxValueNameLen,
 		nil, nil, nil)
 	if err != nil {
@@ -138,8 +138,8 @@ func (hKey HKEY) EnumValue() (
 	valueTypes = make([]co.REG, 0, cValues)
 
 	valueNameBuf := make([]uint16, cbMaxValueNameLen+2)
-	var valueNameBufLen int
-	var valueTypeBuf co.REG
+	valueNameBufLen := int(0)
+	valueTypeBuf := co.REG(0)
 
 	for i := 0; i < int(cValues); i++ {
 		valueNameBufLen = len(valueNameBuf)
@@ -199,7 +199,7 @@ func (hKey HKEY) GetValue(
 func (hKey HKEY) OpenKeyEx(
 	lpSubKey string, ulOptions co.REG_OPTION, samDesired co.KEY) (HKEY, error) {
 
-	var openedKey HKEY
+	openedKey := HKEY(0)
 	ret, _, _ := syscall.Syscall6(proc.RegOpenKeyEx.Addr(), 5,
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
 		uintptr(ulOptions), uintptr(samDesired),
@@ -220,8 +220,8 @@ func (hKey HKEY) QueryInfoKey(
 	cbMaxValueNameLen, cbMaxValueLen, cbSecurityDescriptor *uint32,
 	ftLastWriteTime *FILETIME) error {
 
-	var classBuf []uint16
-	var cchClassBuf uint32
+	classBuf := []uint16{}
+	cchClassBuf := uint32(0)
 
 	var ( // all retrievable values, nil by default
 		classP                *uint16
@@ -287,7 +287,7 @@ func (hKey HKEY) QueryInfoKey(
 
 // Reads a REG_BINARY value with HKEY.GetValue().
 func (hKey HKEY) ReadBinary(lpSubKey, lpValue string) []byte {
-	var pcbData uint32
+	pcbData := uint32(0)
 	pdwType := co.REG_BINARY
 
 	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_BINARY, // retrieve length
@@ -309,7 +309,7 @@ func (hKey HKEY) ReadBinary(lpSubKey, lpValue string) []byte {
 
 // Reads a REG_DWORD value with HKEY.GetValue().
 func (hKey HKEY) ReadDword(lpSubKey, lpValue string) uint32 {
-	var pvData uint32
+	pvData := uint32(0)
 	pcbData := uint32(unsafe.Sizeof(pvData))
 	pdwType := co.REG_DWORD
 
@@ -323,7 +323,7 @@ func (hKey HKEY) ReadDword(lpSubKey, lpValue string) uint32 {
 
 // Reads a REG_QWORD value with HKEY.GetValue().
 func (hKey HKEY) ReadQword(lpSubKey, lpValue string) uint64 {
-	var pvData uint64
+	pvData := uint64(0)
 	pcbData := uint32(unsafe.Sizeof(pvData))
 	pdwType := co.REG_QWORD
 
@@ -337,7 +337,7 @@ func (hKey HKEY) ReadQword(lpSubKey, lpValue string) uint64 {
 
 // Reads a REG_SZ value with HKEY.GetValue().
 func (hKey HKEY) ReadString(lpSubKey, lpValue string) string {
-	var pcbData uint32
+	pcbData := uint32(0)
 	pdwType := co.REG_SZ
 
 	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve length

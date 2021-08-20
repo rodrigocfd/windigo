@@ -36,7 +36,7 @@ func (HCLIPBOARD) EmptyClipboard() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumclipboardformats
 func (HCLIPBOARD) EnumClipboardFormats() []co.CF {
 	formats := make([]co.CF, 0, 30) // arbitrary
-	var thisFormat co.CF
+	thisFormat := co.CF(0)
 
 	for {
 		ret, _, err := syscall.Syscall(proc.EnumClipboardFormats.Addr(), 1,

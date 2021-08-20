@@ -26,7 +26,7 @@ func (me *_TreeViewItems) getUnchecked(hItem win.HTREEITEM) TreeViewItem {
 func (me *_TreeViewItems) AddRoot(text string) TreeViewItem {
 	textBuf := win.Str.ToUint16Slice(text)
 
-	var tvi win.TVINSERTSTRUCT
+	tvi := win.TVINSERTSTRUCT{}
 	tvi.HInsertAfter = win.HTREEITEM(co.HTREEITEM_LAST)
 	tvi.Itemex.Mask = co.TVIF_TEXT
 	tvi.Itemex.SetPszText(textBuf)

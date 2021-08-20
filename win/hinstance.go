@@ -156,7 +156,7 @@ func (hInst HINSTANCE) LoadAccelerators(lpTableName interface{}) HACCEL {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(lpCursorName interface{}) HCURSOR {
-	var pName uintptr
+	pName := uintptr(0)
 	switch v := lpCursorName.(type) {
 	case uint16:
 		pName = uintptr(v)
@@ -183,7 +183,7 @@ func (hInst HINSTANCE) LoadCursor(lpCursorName interface{}) HCURSOR {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hInst HINSTANCE) LoadIcon(lpIconName interface{}) HICON {
-	var pName uintptr
+	pName := uintptr(0)
 	switch v := lpIconName.(type) {
 	case uint16:
 		pName = uintptr(v)

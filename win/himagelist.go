@@ -57,7 +57,7 @@ func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) {
 		shgfi = co.SHGFI_LARGEICON
 	}
 
-	var fi SHFILEINFO
+	fi := SHFILEINFO{}
 	for _, fileExt := range fileExtensions {
 		SHGetFileInfo("*."+fileExt, co.FILE_ATTRIBUTE_NORMAL,
 			&fi, co.SHGFI_USEFILEATTRIBUTES|co.SHGFI_ICON|shgfi)
@@ -79,7 +79,7 @@ func (hImg HIMAGELIST) Destroy() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticonsize
 func (hImg HIMAGELIST) GetIconSize() SIZE {
-	var sz SIZE
+	sz := SIZE{}
 	ret, _, err := syscall.Syscall(proc.ImageList_GetIconSize.Addr(), 3,
 		uintptr(hImg),
 		uintptr(unsafe.Pointer(&sz.Cx)), uintptr(unsafe.Pointer(&sz.Cy)))

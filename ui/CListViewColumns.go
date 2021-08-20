@@ -64,7 +64,7 @@ func (me *_ListViewColumns) Count() int {
 func (me *_ListViewColumns) SetTitle(columnIndex int, text string) {
 	titleBuf := win.Str.ToUint16Slice(text)
 
-	var lvc win.LVCOLUMN
+	lvc := win.LVCOLUMN{}
 	lvc.ISubItem = int32(columnIndex)
 	lvc.Mask = co.LVCF_TEXT
 	lvc.SetPszText(titleBuf)
@@ -106,9 +106,9 @@ func (me *_ListViewColumns) SetWidthToFill(columnIndex int) {
 
 // Retrieves the title of the column at the given index.
 func (me *_ListViewColumns) Title(columnIndex int) string {
-	var titleBuf [128]uint16 // arbitrary
+	titleBuf := [128]uint16{} // arbitrary
 
-	var lvc win.LVCOLUMN
+	lvc := win.LVCOLUMN{}
 	lvc.ISubItem = int32(columnIndex)
 	lvc.Mask = co.LVCF_TEXT
 	lvc.SetPszText(titleBuf[:])

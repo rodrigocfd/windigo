@@ -31,7 +31,7 @@ func (me *_ListViewItems) Add(texts ...string) ListViewItem {
 func (me *_ListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewItem {
 	textBuf := win.Str.ToUint16Slice(texts[0])
 
-	var lvi win.LVITEM
+	lvi := win.LVITEM{}
 	lvi.Mask = co.LVIF_TEXT | co.LVIF_IMAGE
 	lvi.IItem = 0x0fff_ffff // insert as last one
 	lvi.IImage = int32(iconIndex)
@@ -137,12 +137,13 @@ func (me *_ListViewItems) Find(text string) (ListViewItem, bool) {
 	return me.getUnchecked(idx), true
 }
 
-// Returns the item at the given index, if any.
-func (me *_ListViewItems) Get(index int) (ListViewItem, bool) {
+// Returns the item at the given index; panics if the item does not exist.
+func (me *_ListViewItems) Get(index int) ListViewItem {
 	if index < 0 || index >= me.Count() {
-		return nil, false
+		panic(fmt.Sprintf("Trying to retrieve item %d, there are %d.",
+			index, me.Count()))
 	}
-	return me.getUnchecked(index), true
+	return me.getUnchecked(index)
 }
 
 // Sends LVM_HITTEST to determine the item at specified position, if any. Pos

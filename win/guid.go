@@ -67,7 +67,7 @@ func _NewGuidFromStr(strGuid string) *GUID {
 		Data4: (uint64(num4) << 48) | num5,
 	}
 
-	var buf64 [8]byte
+	buf64 := [8]byte{}
 	binary.BigEndian.PutUint64(buf64[:], newGuid.Data4)
 	newGuid.Data4 = binary.LittleEndian.Uint64(buf64[:]) // reverse bytes of Data4
 	return &newGuid

@@ -25,7 +25,7 @@ type IBasicAudio struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_balance
 func (me *IBasicAudio) GetBalance() int {
-	var balance int32
+	balance := int32(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IBasicAudioVtbl)(unsafe.Pointer(*me.Ppv)).GetBalance, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -40,7 +40,7 @@ func (me *IBasicAudio) GetBalance() int {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_volume
 func (me *IBasicAudio) GetVolume() int {
-	var volume int32
+	volume := int32(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IBasicAudioVtbl)(unsafe.Pointer(*me.Ppv)).GetVolume, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),

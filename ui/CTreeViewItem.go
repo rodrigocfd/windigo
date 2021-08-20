@@ -42,7 +42,7 @@ func (me *_TreeViewItem) new(pHwnd *win.HWND, hItem win.HTREEITEM) {
 func (me *_TreeViewItem) AddChild(text string) TreeViewItem {
 	textBuf := win.Str.ToUint16Slice(text)
 
-	var tvi win.TVINSERTSTRUCT
+	tvi := win.TVINSERTSTRUCT{}
 	tvi.HParent = me.hItem
 	tvi.HInsertAfter = win.HTREEITEM(co.HTREEITEM_LAST)
 	tvi.Itemex.Mask = co.TVIF_TEXT
@@ -196,7 +196,7 @@ func (me *_TreeViewItem) SetLParam(lp win.LPARAM) {
 func (me *_TreeViewItem) SetText(text string) {
 	textBuf := win.Str.ToUint16Slice(text)
 
-	var tvi win.TVITEMEX
+	tvi := win.TVITEMEX{}
 	tvi.HItem = me.hItem
 	tvi.Mask = co.TVIF_TEXT
 	tvi.SetPszText(textBuf)
@@ -209,9 +209,9 @@ func (me *_TreeViewItem) SetText(text string) {
 }
 
 func (me *_TreeViewItem) Text() string {
-	var buf [256]uint16 // arbitrary
+	buf := [256]uint16{} // arbitrary
 
-	var tvi win.TVITEMEX
+	tvi := win.TVITEMEX{}
 	tvi.HItem = me.hItem
 	tvi.Mask = co.TVIF_TEXT
 	tvi.SetPszText(buf[:])

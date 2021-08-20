@@ -31,7 +31,7 @@ type IMediaFilter struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-getstate
 func (me *IMediaFilter) GetState(msTimeout int) (dshowco.FILTER_STATE, error) {
-	var state dshowco.FILTER_STATE
+	state := dshowco.FILTER_STATE(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaFilterVtbl)(unsafe.Pointer(*me.Ppv)).GetState, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
