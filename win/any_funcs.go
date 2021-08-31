@@ -345,7 +345,7 @@ func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
 		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))), 0, 0)
 
 	if retAttr := co.FILE_ATTRIBUTE(ret); retAttr == co.FILE_ATTRIBUTE_INVALID {
-		return retAttr, errco.ERROR(err)
+		return retAttr, errco.ERROR(err) // err is extended error information
 	} else {
 		return retAttr, nil
 	}

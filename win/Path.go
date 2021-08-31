@@ -30,7 +30,7 @@ func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	} else if !found {
-		return []string{}, nil
+		return []string{}, nil // empty array, no error
 	}
 	defer hFind.FindClose()
 
@@ -48,8 +48,8 @@ func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 		}
 	}
 
-	sort.Slice(retFiles, func(i, j int) bool { // case insensitive
-		return strings.ToUpper(retFiles[i]) < strings.ToUpper(retFiles[j])
+	sort.Slice(retFiles, func(a, b int) bool { // case insensitive
+		return strings.ToUpper(retFiles[a]) < strings.ToUpper(retFiles[b])
 	})
 	return retFiles, nil // search finished successfully
 }

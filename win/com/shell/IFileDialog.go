@@ -207,6 +207,8 @@ func (me *IFileDialog) SetFileNameLabel(pszLabel string) {
 	}
 }
 
+// The index is one-based.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypeindex
 func (me *IFileDialog) SetFileTypeIndex(iFileType int) {
 	ret, _, _ := syscall.Syscall(
