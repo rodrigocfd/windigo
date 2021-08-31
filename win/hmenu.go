@@ -42,18 +42,20 @@ func CreatePopupMenu() HMENU {
 	return HMENU(ret)
 }
 
-// Appends a new item to the menu.
+// Appends a new item to the menu. Returns the same menu, so you can chain multiple calls.
 //
 // Wrapper to HMENU.AppendMenu().
-func (hMenu HMENU) AddItem(cmdId int, text string) {
+func (hMenu HMENU) AddItem(cmdId int, text string) HMENU {
 	hMenu.AppendMenu(co.MF_STRING, uint16(cmdId), text)
+	return hMenu
 }
 
-// Appends a new separator to the menu.
+// Appends a new separator to the menu. Returns the same menu, so you can chain multiple calls.
 //
 // Wrapper to HMENU.AppendMenu().
-func (hMenu HMENU) AddSeparator() {
+func (hMenu HMENU) AddSeparator() HMENU {
 	hMenu.AppendMenu(co.MF_SEPARATOR, HMENU(0), LPARAM(0))
+	return hMenu
 }
 
 // Appends a new submenu to the menu.
