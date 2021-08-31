@@ -10,7 +10,7 @@ import (
 
 type _PathT struct{}
 
-// File and folder path functions.
+// File and folder path utilities.
 var Path _PathT
 
 // Returns whether the path ends with at least one of the given extensions.
@@ -84,6 +84,13 @@ func (_PathT) IsHidden(path string) bool {
 	attr, _ := GetFileAttributes(path)
 	return attr != co.FILE_ATTRIBUTE_INVALID &&
 		(attr&co.FILE_ATTRIBUTE_HIDDEN) != 0
+}
+
+// Sorts the paths alphabetically.
+func (_PathT) Sort(paths []string) {
+	sort.Slice(paths, func(a, b int) bool {
+		return strings.ToUpper(paths[a]) < strings.ToUpper(paths[b]) // case insensitive
+	})
 }
 
 // Replaces the current extension by the new one, which must start with a dot.

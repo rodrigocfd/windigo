@@ -1,8 +1,6 @@
 package win
 
 import (
-	"sort"
-	"strings"
 	"syscall"
 	"unsafe"
 
@@ -61,8 +59,6 @@ func (hDrop HDROP) GetFilesAndFinish() []string {
 	}
 	hDrop.DragFinish()
 
-	sort.Slice(paths, func(a, b int) bool {
-		return strings.ToUpper(paths[a]) < strings.ToUpper(paths[b]) // case insensitive
-	})
+	Path.Sort(paths)
 	return paths
 }
