@@ -152,6 +152,8 @@ func (me *IFileDialog) GetOptions() shellco.FOS {
 	}
 }
 
+// Prefer using IFileDialog.GetResultDisplayName().
+//
 // ⚠️ You must defer IShellItem.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getresult
@@ -169,6 +171,15 @@ func (me *IFileDialog) GetResult() IShellItem {
 	} else {
 		panic(hr)
 	}
+}
+
+// Calls IFileDialog.GetResult() and IShellItem.GetDisplayName(), returning the
+// file selected by the user.
+func (me *IFileDialog) GetResultDisplayName(sigdnName shellco.SIGDN) string {
+	ish := me.GetResult()
+	defer ish.Release()
+
+	return ish.GetDisplayName(sigdnName)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setclientguid

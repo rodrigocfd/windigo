@@ -39,6 +39,8 @@ func NewIFileOpenDialog(dwClsContext co.CLSCTX) IFileOpenDialog {
 	}
 }
 
+// Prefer using IFileOpenDialog.GetResultsDisplayNames().
+//
 // ⚠️ You must defer IShellItemArray.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
@@ -56,6 +58,17 @@ func (me *IFileOpenDialog) GetResults() IShellItemArray {
 	} else {
 		panic(hr)
 	}
+}
+
+// Calls IFileOpenDialog.GetResults() and IShellItemArray.GetDisplayNames(),
+// returning the files selected by the user.
+func (me *IFileOpenDialog) GetResultsDisplayNames(
+	sigdnName shellco.SIGDN) []string {
+
+	isha := me.GetResults()
+	defer isha.Release()
+
+	return isha.GetDisplayNames(sigdnName)
 }
 
 // ⚠️ You must defer IShellItemArray.Release().
