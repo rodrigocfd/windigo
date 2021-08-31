@@ -50,19 +50,19 @@ func (hDrop HDROP) DragQueryPoint() (POINT, bool) {
 
 // Retrieves all file names with DragQueryFile() and calls DragFinish().
 func (hDrop HDROP) GetFilesAndFinish() []string {
+	pathBuf := [_MAX_PATH + 1]uint16{} // buffer to receive all paths
 	count := hDrop.DragQueryFile(0xffff_ffff, nil, 0)
-	files := make([]string, 0, count)
+	paths := make([]string, 0, count) // paths to be returned
 
 	for i := uint32(0); i < count; i++ {
 		pathLen := hDrop.DragQueryFile(i, nil, 0) + 1 // room for terminating null
-		pathBuf := make([]uint16, pathLen)
 		hDrop.DragQueryFile(i, &pathBuf[0], pathLen)
-		files = append(files, Str.FromUint16Slice(pathBuf))
+		paths = append(paths, Str.FromUint16Slice(pathBuf[:]))
 	}
 	hDrop.DragFinish()
 
-	sort.Slice(files, func(i, j int) bool {
-		return strings.ToUpper(files[i]) < strings.ToUpper(files[j]) // case insensitive
+	sort.Slice(paths, func(a, b int) bool {
+		return strings.ToUpper(paths[a]) < strings.ToUpper(paths[b]) // case insensitive
 	})
-	return files
+	return paths
 }
