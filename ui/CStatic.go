@@ -11,6 +11,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-static-controls
 type Static interface {
 	AnyNativeControl
+	isStatic() // prevent public implementation
 
 	// Exposes all the Static notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -65,6 +66,8 @@ func NewStaticDlg(parent AnyParent, ctrlId int) Static {
 
 	return me
 }
+
+func (me *_Static) isStatic() {}
 
 func (me *_Static) On() *_StaticEvents {
 	if me.Hwnd() != 0 {

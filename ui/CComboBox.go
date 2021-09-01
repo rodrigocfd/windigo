@@ -11,6 +11,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-combo-boxes
 type ComboBox interface {
 	AnyNativeControl
+	isComboBox() // prevent public implementation
 
 	// Exposes all the ComboBox notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -70,6 +71,8 @@ func NewComboBoxDlg(parent AnyParent, ctrlId int) ComboBox {
 
 	return me
 }
+
+func (me *_ComboBox) isComboBox() {}
 
 func (me *_ComboBox) On() *_ComboBoxEvents {
 	if me.Hwnd() != 0 {

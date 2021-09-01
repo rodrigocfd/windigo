@@ -11,14 +11,13 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#check-boxes
 type CheckBox interface {
 	AnyNativeControl
+	isCheckBox() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
 	// Cannot be called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_ButtonEvents
-
-	isCheckBox() // disambiguate
 
 	CheckState() co.BST           // Retrieves the current check state.
 	EmulateClick()                // Emulates an user click.

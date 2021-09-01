@@ -14,6 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/month-calendar-controls
 type MonthCalendar interface {
 	AnyNativeControl
+	isMonthCalendar() // prevent public implementation
 
 	// Exposes all the MonthCalendar notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -70,6 +71,8 @@ func NewMonthCalendarDlg(parent AnyParent, ctrlId int) MonthCalendar {
 
 	return me
 }
+
+func (me *_MonthCalendar) isMonthCalendar() {}
 
 func (me *_MonthCalendar) On() *_MonthCalendarEvents {
 	if me.Hwnd() != 0 {

@@ -14,6 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-controls
 type DateTimePicker interface {
 	AnyNativeControl
+	isDateTimePicker() // prevent public implementation
 
 	// Exposes all the DateTimePicker notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -66,6 +67,8 @@ func NewDateTimePickerDlg(parent AnyParent, ctrlId int) DateTimePicker {
 
 	return me
 }
+
+func (me *_DateTimePicker) isDateTimePicker() {}
 
 func (me *_DateTimePicker) On() *_DateTimePickerEvents {
 	if me.Hwnd() != 0 {

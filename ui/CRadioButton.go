@@ -13,14 +13,13 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioButton interface {
 	AnyNativeControl
+	isRadioButton() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
 	// Cannot be called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_ButtonEvents
-
-	isRadioButton() // disambiguate
 
 	EmulateClick()                // Emulates an user click.
 	IsChecked() bool              // Retrieves the current check state.

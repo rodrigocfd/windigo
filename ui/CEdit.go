@@ -13,6 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-edit-controls
 type Edit interface {
 	AnyNativeControl
+	isEdit() // prevent public implementation
 
 	// Exposes all the Edit notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -69,6 +70,8 @@ func NewEditDlg(parent AnyParent, ctrlId int) Edit {
 
 	return me
 }
+
+func (me *_Edit) isEdit() {}
 
 func (me *_Edit) On() *_EditEvents {
 	if me.Hwnd() != 0 {

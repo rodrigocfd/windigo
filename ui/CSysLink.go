@@ -13,6 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/syslink-control-entry
 type SysLink interface {
 	AnyNativeControl
+	isSysLink() // prevent public implementation
 
 	// Exposes all the SysLink notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -65,6 +66,8 @@ func NewSysLinkDlg(parent AnyParent, ctrlId int) SysLink {
 
 	return me
 }
+
+func (me *_SysLink) isSysLink() {}
 
 func (me *_SysLink) On() *_SysLinkEvents {
 	if me.Hwnd() != 0 {

@@ -12,8 +12,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/progress-bar-control
 type ProgressBar interface {
 	AnyNativeControl
-
-	isProgressBar() // disambiguate
+	isProgressBar() // prevent public implementation
 
 	Pos() int                  // Retrieves the current position.
 	SetMarquee(isMarquee bool) // Sets indeterminate state, a graphic animation going back and forth.

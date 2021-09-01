@@ -15,6 +15,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/list-view-controls-overview
 type ListView interface {
 	AnyNativeControl
+	isListView() // prevent public implementation
 
 	// Exposes all the ListView notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -99,6 +100,8 @@ func NewListViewDlg(parent AnyParent, ctrlId, contextMenuId int) ListView {
 	me.handledEvents()
 	return me
 }
+
+func (me *_ListView) isListView() {}
 
 func (me *_ListView) On() *_ListViewEvents {
 	if me.Hwnd() != 0 {

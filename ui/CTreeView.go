@@ -14,6 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls
 type TreeView interface {
 	AnyNativeControl
+	isTreeView() // prevent public implementation
 
 	// Exposes all the TreeView notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -72,6 +73,8 @@ func NewTreeViewDlg(parent AnyParent, ctrlId int) TreeView {
 
 	return me
 }
+
+func (me *_TreeView) isTreeView() {}
 
 func (me *_TreeView) On() *_TreeViewEvents {
 	if me.Hwnd() != 0 {

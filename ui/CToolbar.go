@@ -14,6 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/toolbar-controls-overview
 type Toolbar interface {
 	AnyNativeControl
+	isToolbar() // prevent public implementation
 
 	// Exposes all the Toolbar notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -62,6 +63,8 @@ func NewToolbar(parent AnyParent, opts *_ToolbarO) Toolbar {
 
 	return me
 }
+
+func (me *_Toolbar) isToolbar() {}
 
 func (me *_Toolbar) On() *_ToolbarEvents {
 	if me.Hwnd() != 0 {

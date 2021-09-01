@@ -20,6 +20,8 @@ const (
 //------------------------------------------------------------------------------
 
 type Resizer interface {
+	isResizer() // prevent public implementation
+
 	// Adds child controls, and their behavior when the parent is resized.
 	//
 	// Should be called before the window is created.
@@ -64,6 +66,8 @@ func NewResizer(parent AnyParent) Resizer {
 
 	return me
 }
+
+func (me *_Resizer) isResizer() {}
 
 func (me *_Resizer) Add(
 	horzBehavior, vertBehavior RESZ, ctrls ...AnyControl) Resizer {

@@ -13,6 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/trackbar-controls
 type Trackbar interface {
 	AnyNativeControl
+	isTrackbar() // prevent public implementation
 
 	// Exposes all the Trackbar notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -79,6 +80,8 @@ func NewTrackbarDlg(parent AnyParent, ctrlId int) Trackbar {
 
 	return me
 }
+
+func (me *_Trackbar) isTrackbar() {}
 
 func (me *_Trackbar) On() *_TrackbarEvents {
 	if me.Hwnd() != 0 {

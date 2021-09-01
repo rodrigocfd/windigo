@@ -2,6 +2,8 @@ package ui
 
 // Manages a group of native radio button controls.
 type RadioGroup interface {
+	isRadioGroup() // prevent public implementation
+
 	// Exposes all the Button messages the can be handled by all radios in the group.
 	// Cannot be called after the control was created.
 	//
@@ -53,6 +55,8 @@ func NewRadioGroupDlg(parent AnyParent, ctrlIds ...int) RadioGroup {
 	me.events.new(&me.radios)
 	return me
 }
+
+func (me *_RadioGroup) isRadioGroup() {}
 
 func (me *_RadioGroup) AsCtrls() []AnyControl {
 	ctrls := make([]AnyControl, 0, len(me.radios))

@@ -13,14 +13,13 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#push-buttons
 type Button interface {
 	AnyNativeControl
+	isButton() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
 	// Cannot be called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_ButtonEvents
-
-	isButton() // disambiguate
 
 	EmulateClick() // Emulates an user click.
 }
