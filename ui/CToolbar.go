@@ -15,14 +15,13 @@ import (
 type Toolbar interface {
 	AnyNativeControl
 
-	// Exposes all the StatusBar notifications the can be handled.
+	// Exposes all the Toolbar notifications the can be handled.
 	// Cannot be called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-toolbar-control-reference-notifications
 	On() *_ToolbarEvents
 
-	AutoSize() // Sends a TB_AUTOSIZE message to resize the toolbar.
-
+	AutoSize()                                                   // Sends a TB_AUTOSIZE message to resize the toolbar.
 	ExtendedStyle() co.TBSTYLE_EX                                // Retrieves the extended style flags.
 	Items() *_ToolbarItems                                       // Item methods.
 	SetExtendedStyle(doSet bool, styles co.TBSTYLE_EX)           // Sets or unsets extended style flags.
@@ -87,7 +86,8 @@ func (me *_Toolbar) ExtendedStyle() co.TBSTYLE_EX {
 
 func (me *_Toolbar) SetExtendedStyle(doSet bool, styles co.TBSTYLE_EX) {
 	curStyles := me.ExtendedStyle()
-	newStyles := util.Iif(doSet, curStyles|styles, curStyles & ^styles).(co.TBSTYLE_EX)
+	newStyles := util.Iif(doSet,
+		curStyles|styles, curStyles & ^styles).(co.TBSTYLE_EX)
 
 	me.Hwnd().SendMessage(co.TB_SETEXTENDEDSTYLE, 0, win.LPARAM(newStyles))
 }
@@ -219,5 +219,12 @@ func (me *_ToolbarEvents) NmRDblClk(userFunc func(p *win.NMMOUSE) bool) {
 func (me *_ToolbarEvents) NmReleasedCapture(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) {
 		userFunc()
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-tooltipscreated-toolbar-
+func (me *_ToolbarEvents) NmTooltipsCreated(userFunc func(p *win.NMTOOLTIPSCREATED)) {
+	me.events.addNfyZero(me.ctrlId, co.NM_TOOLTIPSCREATED, func(p unsafe.Pointer) {
+		userFunc((*win.NMTOOLTIPSCREATED)(p))
 	})
 }

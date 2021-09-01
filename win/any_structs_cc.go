@@ -395,6 +395,12 @@ type NMTBCUSTOMDRAW struct {
 	IListGap             int32
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtooltipscreated
+type NMTOOLTIPSCREATED struct {
+	Hdr          NMHDR
+	HwndToolTips HWND
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtrbthumbposchanging
 type NMTRBTHUMBPOSCHANGING struct {
 	Hdr     NMHDR
