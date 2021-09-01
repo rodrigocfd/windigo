@@ -614,9 +614,12 @@ func IsWindowsVersionOrGreater(
 			co.VER_MINORVERSION, co.VER_COND_GREATER_EQUAL),
 		co.VER_SERVICEPACKMAJOR, co.VER_COND_GREATER_EQUAL)
 
-	ret, _ := VerifyVersionInfo(&ovi,
+	ret, err := VerifyVersionInfo(&ovi,
 		co.VER_MAJORVERSION|co.VER_MINORVERSION|co.VER_SERVICEPACKMAJOR,
 		conditionMask)
+	if err != nil {
+		panic(err)
+	}
 	return ret
 }
 
@@ -836,6 +839,8 @@ func TzSpecificLocalTimeToSystemTime(
 	}
 }
 
+// Returns false if the structure does not exist.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
 func VerQueryValue(pBlock []byte, lpSubBlock string) ([]byte, bool) {
 	lplpBuffer, puLen := uintptr(0), uint32(0)
@@ -852,13 +857,19 @@ func VerQueryValue(pBlock []byte, lpSubBlock string) ([]byte, bool) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
 func VerifyVersionInfo(
-	ovi *OSVERSIONINFOEX,
-	typeMask co.VER, conditionMask uint64) (bool, errco.ERROR) {
+	ovi *OSVERSIONINFOEX, typeMask co.VER, conditionMask uint64) (bool, error) {
 
 	ret, _, err := syscall.Syscall(proc.VerifyVersionInfo.Addr(), 3,
 		uintptr(unsafe.Pointer(ovi)),
 		uintptr(typeMask), uintptr(conditionMask))
-	return ret != 0, errco.ERROR(err)
+
+	if wErr := errco.ERROR(err); ret == 0 && wErr == errco.OLD_WIN_VERSION {
+		return false, nil
+	} else if ret == 0 {
+		return false, wErr // actual error
+	} else {
+		return true, nil
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-versetconditionmask
