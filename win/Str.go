@@ -154,12 +154,12 @@ func (_StrT) ToUint16Slice(s string) []uint16 {
 //
 // Returned slice will have 2 terminating nulls.
 func (_StrT) ToUint16SliceMulti(ss []string) []uint16 {
-	totalLen := 0
+	estimatedLen := 0
 	for _, s := range ss {
-		totalLen += len(s) + 1 // also count terminating null
+		estimatedLen += len(s) + 1 // also count terminating null; can be more than needed
 	}
 
-	buf := make([]uint16, 0, totalLen+1) // room for two terminating nulls
+	buf := make([]uint16, 0, estimatedLen+1) // prealloc; room for two terminating nulls
 
 	for _, s := range ss {
 		buf = append(buf, Str.ToUint16Slice(s)...)

@@ -405,9 +405,9 @@ func (hKey HKEY) WriteQword(lpSubKey, lpValueName string, lpData uint64) {
 
 // Writes a REG_SZ value with HKEY.SetKeyValue().
 func (hKey HKEY) WriteString(lpSubKey, lpValueName string, lpData string) {
-	slice := Str.ToUint16Slice(lpData)
+	lpData16 := Str.ToUint16Slice(lpData)
 	err := hKey.SetKeyValue(lpSubKey, lpValueName, co.REG_SZ,
-		unsafe.Pointer(&slice[0]), uint32(len(slice)*2)) // pass size in bytes, including terminating null
+		unsafe.Pointer(&lpData16[0]), uint32(len(lpData16)*2)) // pass size in bytes, including terminating null
 	if err != nil {
 		panic(err)
 	}

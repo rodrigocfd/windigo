@@ -51,7 +51,7 @@ func PullUint16String(val interface{}) uintptr {
 func RemoveAccelAmpersands(text string) string {
 	runes := []rune(text)
 	buf := strings.Builder{}
-	buf.Grow(len(text)) // prealloc for performance
+	buf.Grow(len(runes)) // prealloc for performance
 
 	for i := 0; i < len(runes)-1; i++ {
 		if runes[i] == '&' && runes[i+1] != '&' {
