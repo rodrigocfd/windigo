@@ -42,12 +42,14 @@ func NewCheckBox(parent AnyParent, opts *_CheckBoxO) CheckBox {
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, nil)
-		boundBox := _CalcTextBoundBoxWithCheck(opts.text, true)
+		_MultiplyDpi(&opts.position, &opts.size)
+		if opts.size.Cx == 0 && opts.size.Cy == 0 {
+			opts.size = _CalcTextBoundBox(opts.text, true)
+		}
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			"BUTTON", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
-			opts.position, boundBox, win.HMENU(opts.ctrlId))
+			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 		me.SetCheckState(opts.state)
@@ -104,6 +106,7 @@ type _CheckBoxO struct {
 
 	text        string
 	position    win.POINT
+	size        win.SIZE
 	ctrlStyles  co.BS
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
@@ -122,6 +125,10 @@ func (o *_CheckBoxO) Text(t string) *_CheckBoxO { o.text = t; return o }
 // Position within parent's client area in pixels.
 // Defaults to 0x0. Will be adjusted to the current system DPI.
 func (o *_CheckBoxO) Position(p win.POINT) *_CheckBoxO { _OwPt(&o.position, p); return o }
+
+// Control size in pixels.
+// Defaults to fit current text. Will be adjusted to the current system DPI.
+func (o *_CheckBoxO) Size(s win.SIZE) *_CheckBoxO { _OwSz(&o.size, s); return o }
 
 // CheckBox control styles, passed to CreateWindowEx().
 // Defaults to BS_AUTOCHECKBOX.
