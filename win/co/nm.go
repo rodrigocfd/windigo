@@ -81,6 +81,20 @@ const (
 	CBN_SELENDCANCEL CMD = 10
 )
 
+// ComboBoxEx control notifications (CBEN).
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-comboboxex-control-reference-notifications
+const (
+	_CBEN_FIRST NM = -800
+
+	CBEN_INSERTITEM  NM = _CBEN_FIRST - 1
+	CBEN_DELETEITEM  NM = _CBEN_FIRST - 2
+	CBEN_BEGINEDIT   NM = _CBEN_FIRST - 4
+	CBEN_ENDEDIT     NM = _CBEN_FIRST - 6
+	CBEN_GETDISPINFO NM = _CBEN_FIRST - 7
+	CBEN_DRAGBEGIN   NM = _CBEN_FIRST - 9
+)
+
 // DateTimePicker control notifications (DTN).
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-date-and-time-picker-control-reference-notifications
