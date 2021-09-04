@@ -162,6 +162,27 @@ const (
 	MCN_VIEWCHANGE  NM = _MCN_FIRST - 4
 )
 
+// Rebar control notifications (RBN).
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-rebar-control-reference-notifications
+const (
+	_RBN_FIRST NM = -831
+
+	RBN_HEIGHTCHANGE  NM = _RBN_FIRST - 0
+	RBN_GETOBJECT     NM = _RBN_FIRST - 1
+	RBN_LAYOUTCHANGED NM = _RBN_FIRST - 2
+	RBN_AUTOSIZE      NM = _RBN_FIRST - 3
+	RBN_BEGINDRAG     NM = _RBN_FIRST - 4
+	RBN_ENDDRAG       NM = _RBN_FIRST - 5
+	RBN_DELETINGBAND  NM = _RBN_FIRST - 6
+	RBN_DELETEDBAND   NM = _RBN_FIRST - 7
+	RBN_CHILDSIZE     NM = _RBN_FIRST - 8
+	RBN_CHEVRONPUSHED NM = _RBN_FIRST - 10
+	RBN_SPLITTERDRAG  NM = _RBN_FIRST - 11
+	RBN_MINMAX        NM = _RBN_FIRST - 21
+	RBN_AUTOBREAK     NM = _RBN_FIRST - 22
+)
+
 // StatusBar control notifications (SBN).
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-status-bars-reference-notifications
