@@ -281,3 +281,12 @@ const (
 	TVN_ITEMCHANGED    NM = _TVN_FIRST - 19
 	TVN_ASYNCDRAW      NM = _TVN_FIRST - 20
 )
+
+// UpDown control notifications (UDN).
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-up-down-control-reference-notifications
+const (
+	_UDN_FIRST NM = -721
+
+	UDN_DELTAPOS NM = _UDN_FIRST - 1
+)
