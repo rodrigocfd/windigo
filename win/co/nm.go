@@ -171,6 +171,39 @@ const (
 	STN_DISABLE CMD = 3
 )
 
+// Toolbar control notifications (TBN).
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-toolbar-control-reference-notifications
+const (
+	_TBN_FIRST NM = -700
+
+	TBN_BEGINDRAG       NM = _TBN_FIRST - 1
+	TBN_ENDDRAG         NM = _TBN_FIRST - 2
+	TBN_BEGINADJUST     NM = _TBN_FIRST - 3
+	TBN_ENDADJUST       NM = _TBN_FIRST - 4
+	TBN_RESET           NM = _TBN_FIRST - 5
+	TBN_QUERYINSERT     NM = _TBN_FIRST - 6
+	TBN_QUERYDELETE     NM = _TBN_FIRST - 7
+	TBN_TOOLBARCHANGE   NM = _TBN_FIRST - 8
+	TBN_CUSTHELP        NM = _TBN_FIRST - 9
+	TBN_DROPDOWN        NM = _TBN_FIRST - 10
+	TBN_GETOBJECT       NM = _TBN_FIRST - 12
+	TBN_HOTITEMCHANGE   NM = _TBN_FIRST - 13
+	TBN_DRAGOUT         NM = _TBN_FIRST - 14
+	TBN_DELETINGBUTTON  NM = _TBN_FIRST - 15
+	TBN_GETDISPINFO     NM = _TBN_FIRST - 17
+	TBN_GETINFOTIP      NM = _TBN_FIRST - 19
+	TBN_GETBUTTONINFO   NM = _TBN_FIRST - 20
+	TBN_RESTORE         NM = _TBN_FIRST - 21
+	TBN_SAVE            NM = _TBN_FIRST - 22
+	TBN_INITCUSTOMIZE   NM = _TBN_FIRST - 23
+	TBN_WRAPHOTITEM     NM = _TBN_FIRST - 24
+	TBN_DUPACCELERATOR  NM = _TBN_FIRST - 25
+	TBN_WRAPACCELERATOR NM = _TBN_FIRST - 26
+	TBN_DRAGOVER        NM = _TBN_FIRST - 27
+	TBN_MAPACCELERATOR  NM = _TBN_FIRST - 28
+)
+
 // Trackbar control notifications (TRBN).
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-notifications
