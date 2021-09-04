@@ -156,9 +156,9 @@ const (
 const (
 	_MCN_FIRST NM = -746
 
-	MCN_SELECT      NM = _MCN_FIRST
-	MCN_GETDAYSTATE NM = _MCN_FIRST - 1
 	MCN_SELCHANGE   NM = _MCN_FIRST - 3
+	MCN_GETDAYSTATE NM = _MCN_FIRST - 1
+	MCN_SELECT      NM = _MCN_FIRST
 	MCN_VIEWCHANGE  NM = _MCN_FIRST - 4
 )
 
@@ -233,6 +233,19 @@ const (
 	TBN_WRAPACCELERATOR NM = _TBN_FIRST - 26
 	TBN_DRAGOVER        NM = _TBN_FIRST - 27
 	TBN_MAPACCELERATOR  NM = _TBN_FIRST - 28
+)
+
+// Tab control notifications (TCN).
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-tab-control-reference-notifications
+const (
+	_TCN_FIRST NM = -550
+
+	TCN_KEYDOWN     NM = _TCN_FIRST - 0
+	TCN_SELCHANGE   NM = _TCN_FIRST - 1
+	TCN_SELCHANGING NM = _TCN_FIRST - 2
+	TCN_GETOBJECT   NM = _TCN_FIRST - 3
+	TCN_FOCUSCHANGE NM = _TCN_FIRST - 4
 )
 
 // Trackbar control notifications (TRBN).
