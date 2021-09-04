@@ -187,16 +187,6 @@ const (
 	CLSCTX_SERVER                 CLSCTX = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER
 )
 
-// WM_COMMAND notification codes.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
-type CMD int32
-
-const (
-	CMD_MENU        CMD = 0 // Message originated from a menu.
-	CMD_ACCELERATOR CMD = 1 // Message originated from an accelerator.
-)
-
 // CoInitializeEx() dwCoInit.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex

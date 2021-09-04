@@ -1,6 +1,16 @@
 package co
 
-// Common control notifications.
+// WM_COMMAND notification codes.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
+type CMD uint16
+
+const (
+	CMD_MENU        CMD = 0 // Message originated from a menu.
+	CMD_ACCELERATOR CMD = 1 // Message originated from an accelerator.
+)
+
+// WM_NOTIFY common control notifications.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/common-control-reference#notifications
 type NM int32
@@ -58,7 +68,7 @@ const (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-notifications
 const (
-	CBN_ERRSPACE     CMD = -1
+	CBN_ERRSPACE     CMD = 0xffff
 	CBN_SELCHANGE    CMD = 1
 	CBN_DBLCLK       CMD = 2
 	CBN_SETFOCUS     CMD = 3
