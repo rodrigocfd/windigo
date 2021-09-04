@@ -177,15 +177,6 @@ const (
 	TIME_ZONE_ID_DAYLIGHT TIME_ZONE_ID = 2
 )
 
-// Trackbar control notifications, sent via WM_NOTIFY.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-notifications
-const (
-	_TRBN_FIRST NM = -1501
-
-	TRBN_THUMBPOSCHANGING NM = _TRBN_FIRST - 1
-)
-
 // TrackPopupMenu() uFlags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
@@ -304,31 +295,6 @@ const (
 	TVIS_EX_FLAT     TVIS_EX = 0x0001
 	TVIS_EX_DISABLED TVIS_EX = 0x0002
 	TVIS_EX_ALL      TVIS_EX = 0x0002
-)
-
-// TreeView control notifications, sent via WM_NOTIFY.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-tree-view-control-reference-notifications
-const (
-	_TVN_FIRST NM = -400
-
-	TVN_SELCHANGING    NM = _TVN_FIRST - 50
-	TVN_SELCHANGED     NM = _TVN_FIRST - 51
-	TVN_GETDISPINFO    NM = _TVN_FIRST - 52
-	TVN_SETDISPINFO    NM = _TVN_FIRST - 53
-	TVN_ITEMEXPANDING  NM = _TVN_FIRST - 54
-	TVN_ITEMEXPANDED   NM = _TVN_FIRST - 55
-	TVN_BEGINDRAG      NM = _TVN_FIRST - 56
-	TVN_BEGINRDRAG     NM = _TVN_FIRST - 57
-	TVN_DELETEITEM     NM = _TVN_FIRST - 58
-	TVN_BEGINLABELEDIT NM = _TVN_FIRST - 59
-	TVN_ENDLABELEDIT   NM = _TVN_FIRST - 60
-	TVN_KEYDOWN        NM = _TVN_FIRST - 12
-	TVN_GETINFOTIP     NM = _TVN_FIRST - 14
-	TVN_SINGLEEXPAND   NM = _TVN_FIRST - 15
-	TVN_ITEMCHANGING   NM = _TVN_FIRST - 17
-	TVN_ITEMCHANGED    NM = _TVN_FIRST - 19
-	TVN_ASYNCDRAW      NM = _TVN_FIRST - 20
 )
 
 // TVN_SINGLEEXPAND return value.

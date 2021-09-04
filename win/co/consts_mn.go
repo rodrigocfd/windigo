@@ -53,18 +53,6 @@ const (
 	MCMV_CENTURY MCMV = 3
 )
 
-// MonthCalendar control notifications, sent via WM_NOTIFY.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-notifications
-const (
-	_MCN_FIRST NM = -746
-
-	MCN_SELECT      NM = _MCN_FIRST
-	MCN_GETDAYSTATE NM = _MCN_FIRST - 1
-	MCN_SELCHANGE   NM = _MCN_FIRST - 3
-	MCN_VIEWCHANGE  NM = _MCN_FIRST - 4
-)
-
 // MonthCalendar control styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/month-calendar-control-styles
@@ -348,36 +336,4 @@ type NIS uint32
 const (
 	NIS_HIDDEN     NIS = 0x00000001
 	NIS_SHAREDICON NIS = 0x00000002
-)
-
-// Common control notifications.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/common-control-reference#notifications
-type NM int32
-
-const (
-	_NM_FIRST NM = 0
-
-	NM_OUTOFMEMORY          NM = _NM_FIRST - 1
-	NM_CLICK                NM = _NM_FIRST - 2
-	NM_DBLCLK               NM = _NM_FIRST - 3
-	NM_RETURN               NM = _NM_FIRST - 4
-	NM_RCLICK               NM = _NM_FIRST - 5
-	NM_RDBLCLK              NM = _NM_FIRST - 6
-	NM_SETFOCUS             NM = _NM_FIRST - 7
-	NM_KILLFOCUS            NM = _NM_FIRST - 8
-	NM_CUSTOMDRAW           NM = _NM_FIRST - 12
-	NM_HOVER                NM = _NM_FIRST - 13
-	NM_NCHITTEST            NM = _NM_FIRST - 14
-	NM_KEYDOWN              NM = _NM_FIRST - 15
-	NM_RELEASEDCAPTURE      NM = _NM_FIRST - 16
-	NM_SETCURSOR            NM = _NM_FIRST - 17
-	NM_CHAR                 NM = _NM_FIRST - 18
-	NM_TOOLTIPSCREATED      NM = _NM_FIRST - 19
-	NM_LDOWN                NM = _NM_FIRST - 20
-	NM_RDOWN                NM = _NM_FIRST - 21
-	NM_THEMECHANGED         NM = _NM_FIRST - 22
-	NM_FONTCHANGED          NM = _NM_FIRST - 23
-	NM_CUSTOMTEXT           NM = _NM_FIRST - 24
-	NM_TVSTATEIMAGECHANGING NM = _NM_FIRST - 24
 )

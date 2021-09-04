@@ -110,16 +110,6 @@ const (
 	APPCOMMAND_DWM_FLIP3D                        APPCOMMAND = 54
 )
 
-// Button control notifications, sent via WM_NOTIFY.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
-const (
-	_BCN_FIRST NM = -1250
-
-	BCN_HOTITEMCHANGE NM = _BCN_FIRST + 0x0001
-	BCN_DROPDOWN      NM = _BCN_FIRST + 0x0002
-)
-
 // BITMAPINFOHEADER biCompression.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
@@ -142,23 +132,6 @@ type BKMODE int32
 const (
 	BKMODE_TRANSPARENT BKMODE = 1
 	BKMODE_OPAQUE      BKMODE = 2
-)
-
-// Button control notifications, sent via WM_COMMAND.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
-const (
-	BN_CLICKED       CMD = 0
-	BN_PAINT         CMD = 1
-	BN_HILITE        CMD = 2
-	BN_UNHILITE      CMD = 3
-	BN_DISABLE       CMD = 4
-	BN_DOUBLECLICKED CMD = 5
-	BN_PUSHED        CMD = BN_HILITE
-	BN_UNPUSHED      CMD = BN_UNHILITE
-	BN_DBLCLK        CMD = BN_DOUBLECLICKED
-	BN_SETFOCUS      CMD = 6
-	BN_KILLFOCUS     CMD = 7
 )
 
 // Button control styles.

@@ -17,23 +17,6 @@ const (
 	CC_ANYCOLOR             CC = 0x00000100
 )
 
-// ComboBox control notifications, sent via WM_COMMAND.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-notifications
-const (
-	CBN_ERRSPACE     CMD = -1
-	CBN_SELCHANGE    CMD = 1
-	CBN_DBLCLK       CMD = 2
-	CBN_SETFOCUS     CMD = 3
-	CBN_KILLFOCUS    CMD = 4
-	CBN_EDITCHANGE   CMD = 5
-	CBN_EDITUPDATE   CMD = 6
-	CBN_DROPDOWN     CMD = 7
-	CBN_CLOSEUP      CMD = 8
-	CBN_SELENDOK     CMD = 9
-	CBN_SELENDCANCEL CMD = 10
-)
-
 // ComboBox styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/combo-box-styles
@@ -360,22 +343,6 @@ const (
 	DPI_AWARE_CTX_PER_MON_AWARE     DPI_AWARE_CTX = -3
 	DPI_AWARE_CTX_PER_MON_AWARE_V2  DPI_AWARE_CTX = -4
 	DPI_AWARE_CTX_UNAWARE_GDISCALED DPI_AWARE_CTX = -5
-)
-
-// DateTimePicker control notifications, sent via WM_NOTIFY.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-date-and-time-picker-control-reference-notifications
-const (
-	_DTN_FIRST  NM = -740
-	_DTN_FIRST2 NM = -753
-
-	DTN_CLOSEUP        NM = _DTN_FIRST2 - 0
-	DTN_DROPDOWN       NM = _DTN_FIRST2 - 1
-	DTN_DATETIMECHANGE NM = _DTN_FIRST2 - 6
-	DTN_FORMATQUERY    NM = _DTN_FIRST - 2
-	DTN_FORMAT         NM = _DTN_FIRST - 3
-	DTN_WMKEYDOWN      NM = _DTN_FIRST - 4
-	DTN_USERSTRING     NM = _DTN_FIRST - 5
 )
 
 // DateTimePicker control styles.

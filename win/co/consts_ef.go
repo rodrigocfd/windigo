@@ -10,24 +10,6 @@ const (
 	EMF_CENTERED EMF = 0x00000001
 )
 
-// Edit control notifications, sent via WM_COMMAND.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-notifications
-const (
-	EN_SETFOCUS     CMD = 0x0100
-	EN_KILLFOCUS    CMD = 0x0200
-	EN_CHANGE       CMD = 0x0300
-	EN_UPDATE       CMD = 0x0400
-	EN_ERRSPACE     CMD = 0x0500
-	EN_MAXTEXT      CMD = 0x0501
-	EN_HSCROLL      CMD = 0x0601
-	EN_VSCROLL      CMD = 0x0602
-	EN_ALIGN_LTR_EC CMD = 0x0700
-	EN_ALIGN_RTL_EC CMD = 0x0701
-	EN_BEFORE_PASTE CMD = 0x0800
-	EN_AFTER_PASTE  CMD = 0x0801
-)
-
 // WM_ENDSESSION event.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/shutdown/wm-endsession

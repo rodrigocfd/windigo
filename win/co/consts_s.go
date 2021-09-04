@@ -45,15 +45,6 @@ const (
 	SBARS_TOOLTIPS SBARS = 0x0800 // Use this style to enable tooltips.
 )
 
-// StatusBar control notifications, sent via WM_NOTIFY.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-status-bars-reference-notifications
-const (
-	_SBN_FIRST NM = -880
-
-	SBN_SIMPLEMODECHANGE NM = _SBN_FIRST - 0
-)
-
 // WM_SYSCOMMAND type of requested command.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-syscommand
@@ -550,16 +541,6 @@ const (
 	STARTF_USESHOWWINDOW    STARTF = 0x00000001
 	STARTF_USESIZE          STARTF = 0x00000002
 	STARTF_USESTDHANDLES    STARTF = 0x00000100
-)
-
-// Static control notifications, sent via WM_COMMAND.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-static-control-reference-notifications
-const (
-	STN_CLICKED CMD = 0
-	STN_DBLCLK  CMD = 1
-	STN_ENABLE  CMD = 2
-	STN_DISABLE CMD = 3
 )
 
 // ShowWindow() nCmdShow.

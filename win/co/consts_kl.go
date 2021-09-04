@@ -243,41 +243,6 @@ const (
 	LVKF_SHIFT   LVKF = 0x0004
 )
 
-// ListView control notifications, sent via WM_NOTIFY.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-list-view-control-reference-notifications
-const (
-	_LVN_FIRST NM = -100
-
-	LVN_ITEMCHANGING        NM = _LVN_FIRST - 0
-	LVN_ITEMCHANGED         NM = _LVN_FIRST - 1
-	LVN_INSERTITEM          NM = _LVN_FIRST - 2
-	LVN_DELETEITEM          NM = _LVN_FIRST - 3
-	LVN_DELETEALLITEMS      NM = _LVN_FIRST - 4
-	LVN_BEGINLABELEDIT      NM = _LVN_FIRST - 75
-	LVN_ENDLABELEDIT        NM = _LVN_FIRST - 76
-	LVN_COLUMNCLICK         NM = _LVN_FIRST - 8
-	LVN_BEGINDRAG           NM = _LVN_FIRST - 9
-	LVN_BEGINRDRAG          NM = _LVN_FIRST - 11
-	LVN_ODCACHEHINT         NM = _LVN_FIRST - 13
-	LVN_ODFINDITEM          NM = _LVN_FIRST - 79
-	LVN_ITEMACTIVATE        NM = _LVN_FIRST - 14
-	LVN_ODSTATECHANGED      NM = _LVN_FIRST - 15
-	LVN_HOTTRACK            NM = _LVN_FIRST - 21
-	LVN_GETDISPINFO         NM = _LVN_FIRST - 77
-	LVN_SETDISPINFO         NM = _LVN_FIRST - 78
-	LVN_KEYDOWN             NM = _LVN_FIRST - 55
-	LVN_MARQUEEBEGIN        NM = _LVN_FIRST - 56
-	LVN_GETINFOTIP          NM = _LVN_FIRST - 58
-	LVN_INCREMENTALSEARCH   NM = _LVN_FIRST - 63
-	LVN_COLUMNDROPDOWN      NM = _LVN_FIRST - 64
-	LVN_COLUMNOVERFLOWCLICK NM = _LVN_FIRST - 66
-	LVN_BEGINSCROLL         NM = _LVN_FIRST - 80
-	LVN_ENDSCROLL           NM = _LVN_FIRST - 81
-	LVN_LINKCLICK           NM = _LVN_FIRST - 84
-	LVN_GETEMPTYMARKUP      NM = _LVN_FIRST - 87
-)
-
 // LVHITTESTINFO flags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvhittestinfo
