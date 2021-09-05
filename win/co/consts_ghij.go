@@ -173,13 +173,14 @@ const (
 	HELPINFO_MENUITEM HELPINFO = 0x0002
 )
 
-// NMBCHOTITEM dwFlags.
+// NMBCHOTITEM and NMTBHOTITEM dwFlags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbchotitem
 type HICF uint32
 
 const (
 	HICF_OTHER          HICF = 0x00000000
+	HICF_MOUSE          HICF = 0x00000001
 	HICF_ARROWKEYS      HICF = 0x00000002
 	HICF_ACCELERATOR    HICF = 0x00000004
 	HICF_DUPACCEL       HICF = 0x00000008

@@ -3,6 +3,7 @@ package win
 import (
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -393,6 +394,40 @@ type NMTBCUSTOMDRAW struct {
 	NStringBkMode        co.BKMODE
 	NHLStringBkMode      co.BKMODE
 	IListGap             int32
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-dupaccelerator
+type NMTBDUPACCELERATOR struct {
+	Hdr  NMHDR
+	Ch   uint32
+	fDup BOOL
+}
+
+func (da *NMTBDUPACCELERATOR) FDup() bool       { return da.fDup != 0 }
+func (da *NMTBDUPACCELERATOR) SetFDup(val bool) { da.fDup = BOOL(util.BoolToUintptr(val)) }
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbhotitem
+type NMTBHOTITEM struct {
+	Hdr     NMHDR
+	IdOld   int32
+	IdNew   int32
+	DwFlags co.HICF
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtoolbarw
+type NMTOOLBAR struct {
+	Hdr      NMHDR
+	IItem    int32
+	TbButton TBBUTTON
+	cchText  int32
+	pszText  *uint16
+	RcButton RECT
+}
+
+func (git *NMTOOLBAR) PszText() []uint16 { return unsafe.Slice(git.pszText, git.cchText) }
+func (git *NMTOOLBAR) SetPszText(val []uint16) {
+	git.cchText = int32(len(val))
+	git.pszText = &val[0]
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtooltipscreated

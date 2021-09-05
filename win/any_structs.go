@@ -6,6 +6,7 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -177,19 +178,22 @@ func (hi *HELPINFO) SetCbSize() { hi.cbSize = uint32(unsafe.Sizeof(*hi)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfo
 type ICONINFO struct {
-	FIcon    BOOL
+	fIcon    BOOL
 	XHotspot uint32
 	YHotspot uint32
 	HbmMask  HBITMAP
 	HbmColor HBITMAP
 }
 
+func (ii *ICONINFO) FIcon() bool       { return ii.fIcon != 0 }
+func (ii *ICONINFO) SetFIcon(val bool) { ii.fIcon = BOOL(util.BoolToUintptr(val)) }
+
 // ⚠️ You must call SetCbSize().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfoexw
 type ICONINFOEX struct {
 	cbSize    uint32
-	FIcon     BOOL
+	fIcon     BOOL
 	XHotspot  uint32
 	YHotspot  uint32
 	HbmMask   HBITMAP
@@ -200,6 +204,9 @@ type ICONINFOEX struct {
 }
 
 func (iix *ICONINFOEX) SetCbSize() { iix.cbSize = uint32(unsafe.Sizeof(*iix)) }
+
+func (iix *ICONINFOEX) FIcon() bool       { return iix.fIcon != 0 }
+func (iix *ICONINFOEX) SetFIcon(val bool) { iix.fIcon = BOOL(util.BoolToUintptr(val)) }
 
 func (iix *ICONINFOEX) SzModName() string { return Str.FromUint16Slice(iix.szModName[:]) }
 func (iix *ICONINFOEX) SetSzModName(val string) {
@@ -429,12 +436,15 @@ func (osv *OSVERSIONINFOEX) SetSzCSDVersion(val string) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-paintstruct
 type PAINTSTRUCT struct {
 	Hdc         HDC
-	FErase      BOOL
+	fErase      BOOL
 	RcPaint     RECT
-	FRestore    BOOL
-	FIncUpdate  BOOL
+	fRestore    BOOL
+	fIncUpdate  BOOL
 	rgbReserved [32]byte
 }
+
+func (ps *PAINTSTRUCT) FErase() bool       { return ps.fErase != 0 }
+func (ps *PAINTSTRUCT) SetFErase(val bool) { ps.fErase = BOOL(util.BoolToUintptr(val)) }
 
 // Basic point structure, with x and y coordinates.
 //
@@ -486,10 +496,15 @@ func (si *SCROLLINFO) SetCbSize() { si.cbSize = uint32(unsafe.Sizeof(*si)) }
 type SECURITY_ATTRIBUTES struct {
 	nLength              uint32
 	LpSecurityDescriptor uintptr // LPVOID
-	BInheritHandle       BOOL
+	bInheritHandle       BOOL
 }
 
 func (sa *SECURITY_ATTRIBUTES) SetNLength() { sa.nLength = uint32(unsafe.Sizeof(*sa)) }
+
+func (sa *SECURITY_ATTRIBUTES) BInheritHandle() bool { return sa.bInheritHandle != 0 }
+func (sa *SECURITY_ATTRIBUTES) SetBInheritHandle(val bool) {
+	sa.bInheritHandle = BOOL(util.BoolToUintptr(val))
+}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
 type SHFILEINFO struct {

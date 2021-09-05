@@ -34,6 +34,17 @@ const (
 	TB_REQ_ENDTRACK      TB_REQ = 8
 )
 
+// TBN_DROPDOWN return values.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-dropdown
+type TBDDRET uint8
+
+const (
+	TBDDRET_DEFAULT      TBDDRET = 0
+	TBDDRET_NODEFAULT    TBDDRET = 1
+	TBDDRET_TREATPRESSED TBDDRET = 2
+)
+
 // Trackbar control styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/trackbar-control-styles
