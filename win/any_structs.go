@@ -397,7 +397,7 @@ func (nid *NOTIFYICONDATA) SetSzInfo(val string) {
 
 func (nid *NOTIFYICONDATA) SzInfoTitle() string { return Str.FromUint16Slice(nid.szInfoTitle[:]) }
 func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
-	copy(nid.szInfoTitle[:], Str.ToUint16Slice(Str.Substr(val, 0, 256-1)))
+	copy(nid.szInfoTitle[:], Str.ToUint16Slice(Str.Substr(val, 0, 64-1)))
 }
 
 // ⚠️ You must call SetDwOsVersionInfoSize().

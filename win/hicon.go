@@ -1,6 +1,7 @@
 package win
 
 import (
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -19,10 +20,10 @@ type HICON HANDLE
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-extracticonexw
 func ExtractIconEx(lpszFile string) (largeIcons, smallIcons []HICON) {
+	lpszFile16 := Str.ToUint16Slice(lpszFile)
 	retrieveIdx := -1
 	ret, _, err := syscall.Syscall6(proc.ExtractIconEx.Addr(), 5,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpszFile))),
-		uintptr(retrieveIdx), 0, 0, 0, 0)
+		uintptr(unsafe.Pointer(&lpszFile16[0])), uintptr(retrieveIdx), 0, 0, 0, 0)
 	if ret == _UINT_MAX {
 		panic(errco.ERROR(err))
 	}
@@ -32,10 +33,11 @@ func ExtractIconEx(lpszFile string) (largeIcons, smallIcons []HICON) {
 	smallIcons = make([]HICON, numIcons)
 
 	ret, _, err = syscall.Syscall6(proc.ExtractIconEx.Addr(), 5,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpszFile))), 0,
+		uintptr(unsafe.Pointer(&lpszFile16[0])), 0,
 		uintptr(unsafe.Pointer(&largeIcons[0])),
 		uintptr(unsafe.Pointer(&smallIcons[0])),
 		uintptr(numIcons), 0)
+	runtime.KeepAlive(lpszFile16)
 	if ret == _UINT_MAX {
 		panic(errco.ERROR(err))
 	}

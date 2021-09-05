@@ -25,8 +25,8 @@ func (me *_ToolbarItems) AddButton(
 	tbb.IdCommand = int32(cmdId)
 	tbb.FsStyle = co.BTNS(co.TBSTYLE_AUTOSIZE)
 	tbb.FsState = co.TBSTATE_ENABLED
+	tbb.IString = win.Str.ToUint16Ptr(text)
 	tbb.SetIBitmap(iconIndex, imgListIndex)
-	tbb.SetIString(text)
 
 	if me.pHwnd.SendMessage(co.TB_ADDBUTTONS, 1, win.LPARAM(unsafe.Pointer(&tbb))) == 0 {
 		panic(fmt.Sprintf("TB_ADDBUTTONS \"%s\" failed.", text))

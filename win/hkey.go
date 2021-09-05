@@ -1,6 +1,7 @@
 package win
 
 import (
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -408,6 +409,7 @@ func (hKey HKEY) WriteString(lpSubKey, lpValueName string, lpData string) {
 	lpData16 := Str.ToUint16Slice(lpData)
 	err := hKey.SetKeyValue(lpSubKey, lpValueName, co.REG_SZ,
 		unsafe.Pointer(&lpData16[0]), uint32(len(lpData16)*2)) // pass size in bytes, including terminating null
+	runtime.KeepAlive(lpData16)
 	if err != nil {
 		panic(err)
 	}

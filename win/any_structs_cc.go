@@ -489,7 +489,7 @@ type TBBUTTON struct {
 	FsStyle   co.BTNS
 	bReserved [6]uint8 // this padding is 2 in 32-bit environments
 	DwData    uintptr
-	iString   *uint16 // can also be the index in the string list
+	IString   *uint16 // can also be the index in the string list
 }
 
 func (tbb *TBBUTTON) IBitmap() (icon, imgList int) {
@@ -500,9 +500,6 @@ func (tbb *TBBUTTON) IBitmap() (icon, imgList int) {
 func (tbb *TBBUTTON) SetIBitmap(icon, imgList int) {
 	tbb.iBitmap = int32(Bytes.Make32(uint16(icon), uint16(imgList)))
 }
-
-func (tbb *TBBUTTON) IString() string       { return Str.FromUint16Ptr(tbb.iString) }
-func (tbb *TBBUTTON) SetIString(val string) { tbb.iString = Str.ToUint16Ptr(val) }
 
 // 📑 https://www.google.com/search?client=firefox-b-d&q=TVINSERTSTRUCTW
 type TVINSERTSTRUCT struct {

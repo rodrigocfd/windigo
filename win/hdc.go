@@ -2,6 +2,7 @@ package win
 
 import (
 	"fmt"
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -253,6 +254,7 @@ func (hdc HDC) GetTextExtentPoint32(lpString string) SIZE {
 	ret, _, err := syscall.Syscall6(proc.GetTextExtentPoint32.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(&lpString16[0])),
 		uintptr(len(lpString16)-1), uintptr(unsafe.Pointer(&sz)), 0, 0)
+	runtime.KeepAlive(lpString16)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -607,6 +609,7 @@ func (hdc HDC) TextOut(x, y int32, lpString string) {
 		uintptr(hdc), uintptr(x), uintptr(y),
 		uintptr(unsafe.Pointer(&lpString16[0])),
 		uintptr(len(lpString16)-1), 0)
+	runtime.KeepAlive(lpString16)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
