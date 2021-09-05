@@ -239,6 +239,20 @@ func (me *_ToolbarEvents) TbnGetButtonInfo(userFunc func(p *win.NMTOOLBAR) bool)
 	})
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-getdispinfo
+func (me *_ToolbarEvents) TbnGetDispInfo(userFunc func(p *win.NMTBDISPINFO)) {
+	me.events.addNfyZero(me.ctrlId, co.TBN_GETDISPINFO, func(p unsafe.Pointer) {
+		userFunc((*win.NMTBDISPINFO)(p))
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-getinfotip
+func (me *_ToolbarEvents) TbnGetInfoTip(userFunc func(p *win.NMTBGETINFOTIP)) {
+	me.events.addNfyZero(me.ctrlId, co.TBN_GETINFOTIP, func(p unsafe.Pointer) {
+		userFunc((*win.NMTBGETINFOTIP)(p))
+	})
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-char-toolbar
 func (me *_ToolbarEvents) NmChar(userFunc func(p *win.NMCHAR) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_CHAR, func(p unsafe.Pointer) uintptr {

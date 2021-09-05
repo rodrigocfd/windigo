@@ -45,6 +45,17 @@ const (
 	TBDDRET_TREATPRESSED TBDDRET = 2
 )
 
+// NMTBDISPINFO dwMask.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbdispinfow
+type TBNF uint32
+
+const (
+	TBNF_IMAGE      TBNF = 0x1
+	TBNF_TEXT       TBNF = 0x2
+	TBNF_DI_SETITEM TBNF = 0x10000000
+)
+
 // Trackbar control styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/trackbar-control-styles

@@ -396,6 +396,23 @@ type NMTBCUSTOMDRAW struct {
 	IListGap             int32
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbdispinfow
+type NMTBDISPINFO struct {
+	Hdr       NMHDR
+	DwMask    co.TBNF
+	IdCommand int32
+	LParam    LPARAM
+	IImage    int32
+	pszText   *uint16
+	cchText   int32
+}
+
+func (tdi *NMTBDISPINFO) PszText() []uint16 { return unsafe.Slice(tdi.pszText, tdi.cchText) }
+func (tdi *NMTBDISPINFO) SetPszText(val []uint16) {
+	tdi.cchText = int32(len(val))
+	tdi.pszText = &val[0]
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-dupaccelerator
 type NMTBDUPACCELERATOR struct {
 	Hdr  NMHDR
@@ -405,6 +422,21 @@ type NMTBDUPACCELERATOR struct {
 
 func (da *NMTBDUPACCELERATOR) FDup() bool       { return da.fDup != 0 }
 func (da *NMTBDUPACCELERATOR) SetFDup(val bool) { da.fDup = BOOL(util.BoolToUintptr(val)) }
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbgetinfotipw
+type NMTBGETINFOTIP struct {
+	Hdr        NMHDR
+	pszText    *uint16
+	cchTextMax int32
+	IItem      int32
+	LParam     LPARAM
+}
+
+func (git *NMTBGETINFOTIP) PszText() []uint16 { return unsafe.Slice(git.pszText, git.cchTextMax) }
+func (git *NMTBGETINFOTIP) SetPszText(val []uint16) {
+	git.cchTextMax = int32(len(val))
+	git.pszText = &val[0]
+}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbhotitem
 type NMTBHOTITEM struct {
