@@ -44,7 +44,7 @@ type CHOOSECOLOR struct {
 	HwndOwner      HWND
 	HInstance      HWND
 	RgbResult      COLORREF
-	LpCustColors   *COLORREF
+	LpCustColors   *COLORREF // Slice must have 16 values.
 	Flags          co.CC
 	LCustData      uintptr // LPARAM
 	LpfnHook       uintptr // LPCCHOOKPROC

@@ -39,7 +39,7 @@ func (_StrT) FromUint16Ptr(p *uint16) string {
 	pRun := unsafe.Pointer(p)
 	sLen := 0
 	for *(*uint16)(pRun) != 0 {
-		pRun = unsafe.Pointer(uintptr(pRun) + unsafe.Sizeof(*p)) // pRun++
+		pRun = unsafe.Add(pRun, unsafe.Sizeof(*p)) // pRun++
 		sLen++
 	}
 
