@@ -74,8 +74,8 @@ func (me *_EventsWmNfy) processMessage(
 
 	if uMsg == co.WM_COMMAND {
 		hash := _HashCmd{
-			cmdId:     int(wParam.Lo16()),
-			notifCode: co.CMD(wParam.Hi16()),
+			cmdId:     int(wParam.LoWord()),
+			notifCode: co.CMD(wParam.HiWord()),
 		}
 		if userFunc, hasFunc := me.cmdsZero[hash]; hasFunc {
 			msgObj := wm.Any{WParam: wParam, LParam: lParam}

@@ -581,9 +581,9 @@ func (tdc *TASKDIALOGCONFIG) SetPszWindowTitle(val string) {
 // Return type can be uint16, TD_ICON or HICON.
 func (tdc *TASKDIALOGCONFIG) HMainIcon() interface{} {
 	raw := *(*uintptr)(unsafe.Pointer(&tdc.data[36]))
-	if Bytes.Hi16(uint32(raw)) != 0 {
+	if HIWORD(uint32(raw)) != 0 {
 		return HICON(raw)
-	} else if Bytes.Lo16(uint32(raw)) >= 0xfffc {
+	} else if LOWORD(uint32(raw)) >= 0xfffc {
 		return co.TD_ICON(raw)
 	} else {
 		return uint16(raw)
@@ -679,7 +679,7 @@ func (tdc *TASKDIALOGCONFIG) SetPszCollapsedControlText(val string) {
 // Return type can be uint16 or HICON.
 func (tdc *TASKDIALOGCONFIG) HFooterIcon() interface{} {
 	raw := *(*uintptr)(unsafe.Pointer(&tdc.data[124]))
-	if Bytes.Hi16(uint32(raw)) != 0 {
+	if HIWORD(uint32(raw)) != 0 {
 		return HICON(raw)
 	} else {
 		return uint16(raw)
@@ -901,19 +901,23 @@ type VS_FIXEDFILEINFO struct {
 
 // Returns the parsed DwFileVersion fields.
 func (vfi *VS_FIXEDFILEINFO) FileVersion() [4]uint16 {
-	return [4]uint16{Bytes.Hi16(vfi.DwFileVersionMS), Bytes.Lo16(vfi.DwFileVersionMS),
-		Bytes.Hi16(vfi.DwFileVersionLS), Bytes.Lo16(vfi.DwFileVersionLS)}
+	return [4]uint16{
+		HIWORD(vfi.DwFileVersionMS), LOWORD(vfi.DwFileVersionMS),
+		HIWORD(vfi.DwFileVersionLS), LOWORD(vfi.DwFileVersionLS),
+	}
 }
 
 // Returns the parsed DwProductVersion fields.
 func (vfi *VS_FIXEDFILEINFO) ProductVersion() [4]uint16 {
-	return [4]uint16{Bytes.Hi16(vfi.DwProductVersionMS), Bytes.Lo16(vfi.DwProductVersionMS),
-		Bytes.Hi16(vfi.DwProductVersionLS), Bytes.Lo16(vfi.DwProductVersionLS)}
+	return [4]uint16{
+		HIWORD(vfi.DwProductVersionMS), LOWORD(vfi.DwProductVersionMS),
+		HIWORD(vfi.DwProductVersionLS), LOWORD(vfi.DwProductVersionLS),
+	}
 }
 
 // Returns the parsed DwFileDate fields.
 func (vfi *VS_FIXEDFILEINFO) FileDate() uint64 {
-	return Bytes.Make64(vfi.DwFileDateLS, vfi.DwFileDateMS)
+	return util.Make64(vfi.DwFileDateLS, vfi.DwFileDateMS)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw

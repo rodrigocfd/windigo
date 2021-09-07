@@ -218,59 +218,55 @@ type NMKEY struct {
 func (nmk *NMKEY) NVKey() co.VK       { return co.VK(nmk.nVKey) }
 func (nmk *NMKEY) SetNVKey(val co.VK) { nmk.nVKey = uint32(val) }
 
-func (nmk *NMKEY) ScanCode() uint8 { return Bytes.Lo8(Bytes.Lo16(nmk.uFlags)) }
+func (nmk *NMKEY) ScanCode() uint8 { return LOBYTE(LOWORD(nmk.uFlags)) }
 func (nmk *NMKEY) SetScanCode(val uint8) {
-	nmk.uFlags = Bytes.Make32(
-		Bytes.Make16(val, Bytes.Hi8(Bytes.Lo16(nmk.uFlags))),
-		Bytes.Hi16(nmk.uFlags),
+	nmk.uFlags = MAKELONG(
+		MAKEWORD(val, HIBYTE(LOWORD(nmk.uFlags))),
+		HIWORD(nmk.uFlags),
 	)
 }
 
-func (nmk *NMKEY) IsExtendedKey() bool { return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 0) }
+func (nmk *NMKEY) IsExtendedKey() bool { return util.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 0) }
 func (nmk *NMKEY) SetIsExtendedKey(val bool) {
-	nmk.uFlags = Bytes.Make32(
-		Bytes.Make16(
-			Bytes.Lo8(Bytes.Lo16(nmk.uFlags)),
-			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 0, val),
+	nmk.uFlags = MAKELONG(
+		MAKEWORD(
+			LOBYTE(LOWORD(nmk.uFlags)),
+			util.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 0, val),
 		),
-		Bytes.Hi16(nmk.uFlags),
+		HIWORD(nmk.uFlags),
 	)
 }
 
-func (nmk *NMKEY) ContextCode() bool { return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 5) }
+func (nmk *NMKEY) ContextCode() bool { return util.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 5) }
 func (nmk *NMKEY) SetContextCode(val bool) {
-	nmk.uFlags = Bytes.Make32(
-		Bytes.Make16(
-			Bytes.Lo8(Bytes.Lo16(nmk.uFlags)),
-			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 5, val),
+	nmk.uFlags = MAKELONG(
+		MAKEWORD(
+			LOBYTE(LOWORD(nmk.uFlags)),
+			util.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 5, val),
 		),
-		Bytes.Hi16(nmk.uFlags),
+		HIWORD(nmk.uFlags),
 	)
 }
 
-func (nmk *NMKEY) IsKeyDownBeforeSend() bool {
-	return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 6)
-}
+func (nmk *NMKEY) IsKeyDownBeforeSend() bool { return util.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 6) }
 func (nmk *NMKEY) SetIsKeyDownBeforeSend(val bool) {
-	nmk.uFlags = Bytes.Make32(
-		Bytes.Make16(
-			Bytes.Lo8(Bytes.Lo16(nmk.uFlags)),
-			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 6, val),
+	nmk.uFlags = MAKELONG(
+		MAKEWORD(
+			LOBYTE(LOWORD(nmk.uFlags)),
+			util.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 6, val),
 		),
-		Bytes.Hi16(nmk.uFlags),
+		HIWORD(nmk.uFlags),
 	)
 }
 
-func (nmk *NMKEY) TransitionState() bool {
-	return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 7)
-}
+func (nmk *NMKEY) TransitionState() bool { return util.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 7) }
 func (nmk *NMKEY) SetTransitionState(val bool) {
-	nmk.uFlags = Bytes.Make32(
-		Bytes.Make16(
-			Bytes.Lo8(Bytes.Lo16(nmk.uFlags)),
-			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 7, val),
+	nmk.uFlags = MAKELONG(
+		MAKEWORD(
+			LOBYTE(LOWORD(nmk.uFlags)),
+			util.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 7, val),
 		),
-		Bytes.Hi16(nmk.uFlags),
+		HIWORD(nmk.uFlags),
 	)
 }
 
@@ -586,12 +582,12 @@ type TBBUTTON struct {
 }
 
 func (tbb *TBBUTTON) IBitmap() (icon, imgList int) {
-	icon = int(Bytes.Lo16(uint32(tbb.iBitmap)))
-	imgList = int(Bytes.Hi16(uint32(tbb.iBitmap)))
+	icon = int(LOWORD(uint32(tbb.iBitmap)))
+	imgList = int(HIWORD(uint32(tbb.iBitmap)))
 	return
 }
 func (tbb *TBBUTTON) SetIBitmap(icon, imgList int) {
-	tbb.iBitmap = int32(Bytes.Make32(uint16(icon), uint16(imgList)))
+	tbb.iBitmap = int32(MAKELONG(uint16(icon), uint16(imgList)))
 }
 
 // 📑 https://www.google.com/search?client=firefox-b-d&q=TVINSERTSTRUCTW

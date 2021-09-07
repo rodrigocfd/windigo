@@ -55,9 +55,8 @@ func (me *_ToolbarItems) Count() int {
 func (me *_ToolbarItems) EnableButton(isEnabled bool, cmdId int) {
 	if me.pHwnd.SendMessage(co.TB_ENABLEBUTTON,
 		win.WPARAM(cmdId),
-		win.LPARAM(
-			win.Bytes.Make32(uint16(util.BoolToUintptr(isEnabled)), 0),
-		)) == 0 {
+		win.MAKELPARAM(uint16(util.BoolToUintptr(isEnabled)), 0),
+	) == 0 {
 		panic(fmt.Sprintf("TB_ENABLEBUTTON \"%d\" failed.", cmdId))
 	}
 }

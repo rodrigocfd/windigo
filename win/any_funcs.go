@@ -300,8 +300,7 @@ func GetCursorPos() POINT {
 func GetDialogBaseUnits() (horz, vert uint16) {
 	ret, _, _ := syscall.Syscall(proc.GetDialogBaseUnits.Addr(), 0,
 		0, 0, 0)
-	horz = Bytes.Lo16(uint32(ret))
-	vert = Bytes.Hi16(uint32(ret))
+	horz, vert = LOWORD(uint32(ret)), HIWORD(uint32(ret))
 	return
 }
 
@@ -396,8 +395,8 @@ func GetMessagePos() POINT {
 	ret, _, _ := syscall.Syscall(proc.GetMessagePos.Addr(), 0,
 		0, 0, 0)
 	return POINT{
-		X: int32(Bytes.Lo16(uint32(ret))),
-		Y: int32(Bytes.Hi16(uint32(ret))),
+		X: int32(LOWORD(uint32(ret))),
+		Y: int32(HIWORD(uint32(ret))),
 	}
 }
 
@@ -513,6 +512,16 @@ func GetTimeZoneInformationForYear(
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632656(v=vs.85)
+func HIBYTE(val uint16) uint8 {
+	return uint8(val >> 8 & 0xff)
+}
+
+// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632657(v=vs.85)
+func HIWORD(val uint32) uint16 {
+	return uint16(val >> 16 & 0xffff)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
 func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
@@ -552,48 +561,48 @@ func IsThemeActive() bool {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows10orgreater
 func IsWindows10OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
-		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
+		uint32(HIBYTE(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
+		uint32(LOBYTE(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
 		0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows7orgreater
 func IsWindows7OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_WIN7))),
-		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_WIN7))),
+		uint32(HIBYTE(uint16(co.WIN32_WINNT_WIN7))),
+		uint32(LOBYTE(uint16(co.WIN32_WINNT_WIN7))),
 		0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8orgreater
 func IsWindows8OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_WIN8))),
-		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_WIN8))),
+		uint32(HIBYTE(uint16(co.WIN32_WINNT_WIN8))),
+		uint32(LOBYTE(uint16(co.WIN32_WINNT_WIN8))),
 		0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8point1orgreater
 func IsWindows8Point1OrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_WINBLUE))),
-		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_WINBLUE))),
+		uint32(HIBYTE(uint16(co.WIN32_WINNT_WINBLUE))),
+		uint32(LOBYTE(uint16(co.WIN32_WINNT_WINBLUE))),
 		0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsvistaorgreater
 func IsWindowsVistaOrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_VISTA))),
-		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_VISTA))),
+		uint32(HIBYTE(uint16(co.WIN32_WINNT_VISTA))),
+		uint32(LOBYTE(uint16(co.WIN32_WINNT_VISTA))),
 		0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsxporgreater
 func IsWindowsXpOrGreater() bool {
 	return IsWindowsVersionOrGreater(
-		uint32(Bytes.Hi8(uint16(co.WIN32_WINNT_WINXP))),
-		uint32(Bytes.Lo8(uint16(co.WIN32_WINNT_WINXP))),
+		uint32(HIBYTE(uint16(co.WIN32_WINNT_WINXP))),
+		uint32(LOBYTE(uint16(co.WIN32_WINNT_WINXP))),
 		0)
 }
 
@@ -623,6 +632,11 @@ func IsWindowsVersionOrGreater(
 	return ret
 }
 
+// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632658(v=vs.85)
+func LOBYTE(val uint16) uint8 {
+	return uint8(val & 0xff)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-locksetforegroundwindow
 func LockSetForegroundWindow(uLockCode co.LSFW) {
 	ret, _, err := syscall.Syscall(proc.LockSetForegroundWindow.Addr(), 1,
@@ -630,6 +644,21 @@ func LockSetForegroundWindow(uLockCode co.LSFW) {
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632659(v=vs.85)
+func LOWORD(val uint32) uint16 {
+	return uint16(val & 0xffff)
+}
+
+// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632660(v=vs.85)
+func MAKELONG(lo, hi uint16) uint32 {
+	return (uint32(lo) & 0xffff) | ((uint32(hi) & 0xffff) << 16)
+}
+
+// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632663(v=vs.85)
+func MAKEWORD(lo, hi uint8) uint16 {
+	return (uint16(lo) & 0xff) | ((uint16(hi) & 0xff) << 8)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint

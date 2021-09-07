@@ -8,6 +8,24 @@ import (
 	"unsafe"
 )
 
+// Tells whether the number has the nth bit set.
+//
+// bitPosition must be in the range 0-7.
+func BitIsSet(number, bitPosition uint8) bool {
+	return (number & (1 << bitPosition)) > 0
+}
+
+// Returns a new number with the nth bit set or clear.
+//
+// bitPosition must be in the range 0-7.
+func BitSet(number, bitPosition uint8, doSet bool) uint8 {
+	if doSet {
+		return number | (1 << bitPosition)
+	} else {
+		return number &^ (1 << bitPosition)
+	}
+}
+
 // Syntactic sugar; converts bool to 0 or 1.
 func BoolToUintptr(b bool) uintptr {
 	if b {
@@ -25,6 +43,11 @@ func Iif(cond bool, ifTrue, ifFalse interface{}) interface{} {
 	} else {
 		return ifFalse
 	}
+}
+
+// Assembles an uint64 from two uint32.
+func Make64(lo, hi uint32) uint64 {
+	return (uint64(lo) & 0xffff_ffff) | ((uint64(hi) & 0xffff_ffff) << 32)
 }
 
 // Converts val to *uint16 or string; any other type will panic.

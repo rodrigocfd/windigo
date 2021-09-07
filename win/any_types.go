@@ -26,17 +26,17 @@ func RGB(r, g, b uint8) COLORREF {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getrvalue
 func (c COLORREF) GetRValue() uint8 {
-	return Bytes.Lo8(Bytes.Lo16(uint32(c)))
+	return LOBYTE(LOWORD(uint32(c)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getgvalue
 func (c COLORREF) GetGValue() uint8 {
-	return Bytes.Lo8(Bytes.Lo16(uint32(c) >> 8))
+	return LOBYTE(LOWORD(uint32(c) >> 8))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getbvalue
 func (c COLORREF) GetBValue() uint8 {
-	return Bytes.Lo8(Bytes.Lo16(uint32(c) >> 16))
+	return LOBYTE(LOWORD(uint32(c) >> 16))
 }
 
 // A handle to an object.
@@ -61,15 +61,11 @@ type WPARAM uintptr
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makewparam
 func MAKEWPARAM(lo, hi uint16) WPARAM {
-	return WPARAM(Bytes.Make32(lo, hi))
+	return WPARAM(MAKELONG(lo, hi))
 }
 
-func (wp WPARAM) Lo16() uint16   { return Bytes.Lo16(uint32(wp)) }
-func (wp WPARAM) Hi16() uint16   { return Bytes.Hi16(uint32(wp)) }
-func (wp WPARAM) Lo16Lo8() uint8 { return Bytes.Lo8(wp.Lo16()) }
-func (wp WPARAM) Lo16Hi8() uint8 { return Bytes.Hi8(wp.Lo16()) }
-func (wp WPARAM) Hi16Lo8() uint8 { return Bytes.Lo8(wp.Hi16()) }
-func (wp WPARAM) Hi16Hi8() uint8 { return Bytes.Hi8(wp.Hi16()) }
+func (wp WPARAM) LoWord() uint16 { return LOWORD(uint32(wp)) }
+func (wp WPARAM) HiWord() uint16 { return HIWORD(uint32(wp)) }
 
 // Second message parameter.
 //
@@ -78,26 +74,22 @@ type LPARAM uintptr
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makelparam
 func MAKELPARAM(lo, hi uint16) LPARAM {
-	return LPARAM(Bytes.Make32(lo, hi))
+	return LPARAM(MAKELONG(lo, hi))
 }
 
-func (lp LPARAM) Lo16() uint16   { return Bytes.Lo16(uint32(lp)) }
-func (lp LPARAM) Hi16() uint16   { return Bytes.Hi16(uint32(lp)) }
-func (lp LPARAM) Lo16Lo8() uint8 { return Bytes.Lo8(lp.Lo16()) }
-func (lp LPARAM) Lo16Hi8() uint8 { return Bytes.Hi8(lp.Lo16()) }
-func (lp LPARAM) Hi16Lo8() uint8 { return Bytes.Lo8(lp.Hi16()) }
-func (lp LPARAM) Hi16Hi8() uint8 { return Bytes.Hi8(lp.Hi16()) }
+func (lp LPARAM) LoWord() uint16 { return LOWORD(uint32(lp)) }
+func (lp LPARAM) HiWord() uint16 { return HIWORD(uint32(lp)) }
 
 func (lp LPARAM) MakePoint() POINT {
 	return POINT{
-		X: int32(lp.Lo16()),
-		Y: int32(lp.Hi16()),
+		X: int32(lp.LoWord()),
+		Y: int32(lp.HiWord()),
 	}
 }
 
 func (lp LPARAM) MakeSize() SIZE {
 	return SIZE{
-		Cx: int32(lp.Lo16()),
-		Cy: int32(lp.Hi16()),
+		Cx: int32(lp.LoWord()),
+		Cy: int32(lp.HiWord()),
 	}
 }
