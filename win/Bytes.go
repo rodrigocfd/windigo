@@ -92,3 +92,21 @@ func (_BytesT) Make32(lo, hi uint16) uint32 {
 func (_BytesT) Make64(lo, hi uint32) uint64 {
 	return (uint64(lo) & 0xffff_ffff) | ((uint64(hi) & 0xffff_ffff) << 32)
 }
+
+// Tells whether the number has the nth bit set.
+//
+// bitPosition must be in the range 0-7.
+func (_BytesT) HasBit(number, bitPosition uint8) bool {
+	return (number & (1 << bitPosition)) > 0
+}
+
+// Returns a new number with the nth bit set or clear.
+//
+// bitPosition must be in the range 0-7.
+func (_BytesT) SetBit(number, bitPosition uint8, doSet bool) uint8 {
+	if doSet {
+		return number | (1 << bitPosition)
+	} else {
+		return number &^ (1 << bitPosition)
+	}
+}

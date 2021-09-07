@@ -226,23 +226,53 @@ func (nmk *NMKEY) SetNVKey(val co.VK) { nmk.nVKey = uint32(val) }
 // 	)
 // }
 
-func (nmk *NMKEY) IsExtendedKey() bool { return (Bytes.Hi8(Bytes.Lo16(nmk.UFlags)) & 0b0000_0001) != 0 }
+func (nmk *NMKEY) IsExtendedKey() bool { return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 0) }
+func (nmk *NMKEY) SetIsExtendedKey(val bool) {
+	nmk.UFlags = Bytes.Make32(
+		Bytes.Make16(
+			Bytes.Lo8(Bytes.Lo16(nmk.UFlags)),
+			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 0, val),
+		),
+		Bytes.Hi16(nmk.UFlags),
+	)
+}
 
-// func (nmk *NMKEY) SetIsExtendedKey(val bool) {
-// 	nmk.UFlags = Bytes.Make32(
+func (nmk *NMKEY) ContextCode() bool { return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 5) }
+func (nmk *NMKEY) SetContextCode(val bool) {
+	nmk.UFlags = Bytes.Make32(
+		Bytes.Make16(
+			Bytes.Lo8(Bytes.Lo16(nmk.UFlags)),
+			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 5, val),
+		),
+		Bytes.Hi16(nmk.UFlags),
+	)
+}
 
-// 	)
-// }
+func (nmk *NMKEY) IsKeyDownBeforeSend() bool {
+	return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 6)
+}
+func (nmk *NMKEY) SetIsKeyDownBeforeSend(val bool) {
+	nmk.UFlags = Bytes.Make32(
+		Bytes.Make16(
+			Bytes.Lo8(Bytes.Lo16(nmk.UFlags)),
+			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 6, val),
+		),
+		Bytes.Hi16(nmk.UFlags),
+	)
+}
 
-// func (nmk *NMKEY) HasAltKey() bool { return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b0010_0000) != 0 }
-
-// func (nmk *NMKEY) IsKeyDownBeforeSend() bool {
-// 	return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b0100_0000) != 0
-// }
-
-// func (nmk *NMKEY) IsReleasingKey() bool {
-// 	return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b1000_0000) != 0
-// }
+func (nmk *NMKEY) TransitionState() bool {
+	return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 7)
+}
+func (nmk *NMKEY) SetTransitionState(val bool) {
+	nmk.UFlags = Bytes.Make32(
+		Bytes.Make16(
+			Bytes.Lo8(Bytes.Lo16(nmk.UFlags)),
+			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 7, val),
+		),
+		Bytes.Hi16(nmk.UFlags),
+	)
+}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlink
 type NMLINK struct {
