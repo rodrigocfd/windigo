@@ -212,41 +212,37 @@ type NMITEMACTIVATE struct {
 type NMKEY struct {
 	Hdr    NMHDR
 	nVKey  uint32
-	uFlags uint32
+	UFlags uint32
 }
 
 func (nmk *NMKEY) NVKey() co.VK       { return co.VK(nmk.nVKey) }
 func (nmk *NMKEY) SetNVKey(val co.VK) { nmk.nVKey = uint32(val) }
 
-func (nmk *NMKEY) ScanCode() uint { return uint(Bytes.Lo8(Bytes.Hi16(nmk.uFlags))) }
-
-// func (nmk *NMKEY) SetScanCode(val uint) {
-// 	nmk.uFlags |= uint32(uint8(val)) << 24
-
+// func (nmk *NMKEY) ScanCode() uint8 { return Bytes.Lo8(Bytes.Lo16(nmk.uFlags)) }
+// func (nmk *NMKEY) SetScanCode(val uint8) {
 // 	nmk.uFlags = Bytes.Make32(
-// 		Bytes.Lo16(nmk.uFlags),
-// 		Bytes.Make16(uint8(val), Bytes.Hi8(Bytes.Hi16(nmk.uFlags))),
+// 		Bytes.Make16(val, Bytes.Hi8(Bytes.Lo16(nmk.uFlags))),
+// 		Bytes.Hi16(nmk.uFlags),
 // 	)
 // }
 
-func (nmk *NMKEY) IsExtendedKey() bool { return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b0000_0001) != 0 }
+func (nmk *NMKEY) IsExtendedKey() bool { return (Bytes.Hi8(Bytes.Lo16(nmk.UFlags)) & 0b0000_0001) != 0 }
 
 // func (nmk *NMKEY) SetIsExtendedKey(val bool) {
-// 	nmk.uFlags = Bytes.Make32(
-// 		Bytes.Lo16(nmk.uFlags),
-// 		Bytes.Make16(Bytes.Lo8(Bytes.Hi16(nmk.uFlags)),   ),
+// 	nmk.UFlags = Bytes.Make32(
+
 // 	)
 // }
 
-func (nmk *NMKEY) HasAltKey() bool { return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b0010_0000) != 0 }
+// func (nmk *NMKEY) HasAltKey() bool { return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b0010_0000) != 0 }
 
-func (nmk *NMKEY) IsKeyDownBeforeSend() bool {
-	return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b0100_0000) != 0
-}
+// func (nmk *NMKEY) IsKeyDownBeforeSend() bool {
+// 	return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b0100_0000) != 0
+// }
 
-func (nmk *NMKEY) IsReleasingKey() bool {
-	return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b1000_0000) != 0
-}
+// func (nmk *NMKEY) IsReleasingKey() bool {
+// 	return (Bytes.Hi8(Bytes.Hi16(nmk.uFlags)) & 0b1000_0000) != 0
+// }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlink
 type NMLINK struct {
