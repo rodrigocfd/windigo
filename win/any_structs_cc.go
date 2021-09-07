@@ -212,65 +212,65 @@ type NMITEMACTIVATE struct {
 type NMKEY struct {
 	Hdr    NMHDR
 	nVKey  uint32
-	UFlags uint32
+	uFlags uint32
 }
 
 func (nmk *NMKEY) NVKey() co.VK       { return co.VK(nmk.nVKey) }
 func (nmk *NMKEY) SetNVKey(val co.VK) { nmk.nVKey = uint32(val) }
 
-// func (nmk *NMKEY) ScanCode() uint8 { return Bytes.Lo8(Bytes.Lo16(nmk.uFlags)) }
-// func (nmk *NMKEY) SetScanCode(val uint8) {
-// 	nmk.uFlags = Bytes.Make32(
-// 		Bytes.Make16(val, Bytes.Hi8(Bytes.Lo16(nmk.uFlags))),
-// 		Bytes.Hi16(nmk.uFlags),
-// 	)
-// }
-
-func (nmk *NMKEY) IsExtendedKey() bool { return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 0) }
-func (nmk *NMKEY) SetIsExtendedKey(val bool) {
-	nmk.UFlags = Bytes.Make32(
-		Bytes.Make16(
-			Bytes.Lo8(Bytes.Lo16(nmk.UFlags)),
-			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 0, val),
-		),
-		Bytes.Hi16(nmk.UFlags),
+func (nmk *NMKEY) ScanCode() uint8 { return Bytes.Lo8(Bytes.Lo16(nmk.uFlags)) }
+func (nmk *NMKEY) SetScanCode(val uint8) {
+	nmk.uFlags = Bytes.Make32(
+		Bytes.Make16(val, Bytes.Hi8(Bytes.Lo16(nmk.uFlags))),
+		Bytes.Hi16(nmk.uFlags),
 	)
 }
 
-func (nmk *NMKEY) ContextCode() bool { return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 5) }
-func (nmk *NMKEY) SetContextCode(val bool) {
-	nmk.UFlags = Bytes.Make32(
+func (nmk *NMKEY) IsExtendedKey() bool { return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 0) }
+func (nmk *NMKEY) SetIsExtendedKey(val bool) {
+	nmk.uFlags = Bytes.Make32(
 		Bytes.Make16(
-			Bytes.Lo8(Bytes.Lo16(nmk.UFlags)),
-			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 5, val),
+			Bytes.Lo8(Bytes.Lo16(nmk.uFlags)),
+			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 0, val),
 		),
-		Bytes.Hi16(nmk.UFlags),
+		Bytes.Hi16(nmk.uFlags),
+	)
+}
+
+func (nmk *NMKEY) ContextCode() bool { return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 5) }
+func (nmk *NMKEY) SetContextCode(val bool) {
+	nmk.uFlags = Bytes.Make32(
+		Bytes.Make16(
+			Bytes.Lo8(Bytes.Lo16(nmk.uFlags)),
+			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 5, val),
+		),
+		Bytes.Hi16(nmk.uFlags),
 	)
 }
 
 func (nmk *NMKEY) IsKeyDownBeforeSend() bool {
-	return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 6)
+	return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 6)
 }
 func (nmk *NMKEY) SetIsKeyDownBeforeSend(val bool) {
-	nmk.UFlags = Bytes.Make32(
+	nmk.uFlags = Bytes.Make32(
 		Bytes.Make16(
-			Bytes.Lo8(Bytes.Lo16(nmk.UFlags)),
-			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 6, val),
+			Bytes.Lo8(Bytes.Lo16(nmk.uFlags)),
+			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 6, val),
 		),
-		Bytes.Hi16(nmk.UFlags),
+		Bytes.Hi16(nmk.uFlags),
 	)
 }
 
 func (nmk *NMKEY) TransitionState() bool {
-	return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 7)
+	return Bytes.HasBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 7)
 }
 func (nmk *NMKEY) SetTransitionState(val bool) {
-	nmk.UFlags = Bytes.Make32(
+	nmk.uFlags = Bytes.Make32(
 		Bytes.Make16(
-			Bytes.Lo8(Bytes.Lo16(nmk.UFlags)),
-			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.UFlags)), 7, val),
+			Bytes.Lo8(Bytes.Lo16(nmk.uFlags)),
+			Bytes.SetBit(Bytes.Hi8(Bytes.Lo16(nmk.uFlags)), 7, val),
 		),
-		Bytes.Hi16(nmk.UFlags),
+		Bytes.Hi16(nmk.uFlags),
 	)
 }
 
