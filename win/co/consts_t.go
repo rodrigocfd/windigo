@@ -56,6 +56,17 @@ const (
 	TBNF_DI_SETITEM TBNF = 0x10000000
 )
 
+// TBN_INITCUSTOMIZE and TBN_RESET return value.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-initcustomize
+type TBNRF uint32
+
+const (
+	TBNRF_NONE         TBNRF = 0
+	TBNRF_HIDEHELP     TBNRF = 0x0000_0001
+	TBNRF_ENDCUSTOMIZE TBNRF = 0x0000_0002
+)
+
 // Trackbar control styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/trackbar-control-styles

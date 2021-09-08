@@ -253,6 +253,90 @@ func (me *_ToolbarEvents) TbnGetInfoTip(userFunc func(p *win.NMTBGETINFOTIP)) {
 	})
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-getobject
+func (me *_ToolbarEvents) TbnGetObject(userFunc func(p *win.NMOBJECTNOTIFY)) {
+	me.events.addNfyZero(me.ctrlId, co.TBN_GETOBJECT, func(p unsafe.Pointer) {
+		userFunc((*win.NMOBJECTNOTIFY)(p))
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-hotitemchange
+func (me *_ToolbarEvents) TbnHotItemChange(userFunc func(*win.NMTBHOTITEM) int) {
+	me.events.addNfyRet(me.ctrlId, co.TBN_HOTITEMCHANGE, func(p unsafe.Pointer) uintptr {
+		return uintptr(userFunc((*win.NMTBHOTITEM)(p)))
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-initcustomize
+func (me *_ToolbarEvents) TbnInitCustomize(userFunc func() co.TBNRF) {
+	me.events.addNfyRet(me.ctrlId, co.TBN_INITCUSTOMIZE, func(p unsafe.Pointer) uintptr {
+		return uintptr(userFunc())
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-mapaccelerator
+func (me *_ToolbarEvents) TbnMapAccelerator(userFunc func(p *win.NMCHAR) bool) {
+	me.events.addNfyRet(me.ctrlId, co.TBN_MAPACCELERATOR, func(p unsafe.Pointer) uintptr {
+		return util.BoolToUintptr(userFunc((*win.NMCHAR)(p)))
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-querydelete
+func (me *_ToolbarEvents) TbnQueryDelete(userFunc func(p *win.NMTOOLBAR) bool) {
+	me.events.addNfyRet(me.ctrlId, co.TBN_QUERYDELETE, func(p unsafe.Pointer) uintptr {
+		return util.BoolToUintptr(userFunc((*win.NMTOOLBAR)(p)))
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-queryinsert
+func (me *_ToolbarEvents) TbnQueryInsert(userFunc func(p *win.NMTOOLBAR) bool) {
+	me.events.addNfyRet(me.ctrlId, co.TBN_QUERYINSERT, func(p unsafe.Pointer) uintptr {
+		return util.BoolToUintptr(userFunc((*win.NMTOOLBAR)(p)))
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-reset
+func (me *_ToolbarEvents) TbnReset(userFunc func() co.TBNRF) {
+	me.events.addNfyRet(me.ctrlId, co.TBN_RESET, func(p unsafe.Pointer) uintptr {
+		return uintptr(userFunc())
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-restore
+func (me *_ToolbarEvents) TbnRestore(userFunc func(p *win.NMTBRESTORE) int) {
+	me.events.addNfyRet(me.ctrlId, co.TBN_RESTORE, func(p unsafe.Pointer) uintptr {
+		return uintptr(userFunc((*win.NMTBRESTORE)(p)))
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-save
+func (me *_ToolbarEvents) TbnSave(userFunc func(p *win.NMTBSAVE)) {
+	me.events.addNfyZero(me.ctrlId, co.TBN_SAVE, func(p unsafe.Pointer) {
+		userFunc((*win.NMTBSAVE)(p))
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-toolbarchange
+func (me *_ToolbarEvents) TbnToolbarChange(userFunc func()) {
+	me.events.addNfyZero(me.ctrlId, co.TBN_TOOLBARCHANGE, func(p unsafe.Pointer) {
+		userFunc()
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-wrapaccelerator
+func (me *_ToolbarEvents) TbnWrapAccelerator(userFunc func(p *win.NMTBWRAPACCELERATOR) bool) {
+	me.events.addNfyRet(me.ctrlId, co.TBN_WRAPACCELERATOR, func(p unsafe.Pointer) uintptr {
+		return util.BoolToUintptr(userFunc((*win.NMTBWRAPACCELERATOR)(p)))
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-wraphotitem
+func (me *_ToolbarEvents) TbnWrapHotItem(userFunc func(p *win.NMTBWRAPHOTITEM) bool) {
+	me.events.addNfyRet(me.ctrlId, co.TBN_WRAPHOTITEM, func(p unsafe.Pointer) uintptr {
+		return util.BoolToUintptr(userFunc((*win.NMTBWRAPHOTITEM)(p)))
+	})
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-char-toolbar
 func (me *_ToolbarEvents) NmChar(userFunc func(p *win.NMCHAR) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_CHAR, func(p unsafe.Pointer) uintptr {

@@ -173,7 +173,7 @@ const (
 	HELPINFO_MENUITEM HELPINFO = 0x0002
 )
 
-// NMBCHOTITEM and NMTBHOTITEM dwFlags.
+// NMBCHOTITEM and NMTBHOTITEM dwFlags, NMTBWRAPHOTITEM iReason.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbchotitem
 type HICF uint32

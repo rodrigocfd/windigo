@@ -393,6 +393,16 @@ type NMMOUSE struct {
 	DwHitInfo  LPARAM
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmobjectnotify
+type NMOBJECTNOTIFY struct {
+	Hdr     NMHDR
+	IItem   int32
+	Piid    *GUID
+	PObject uintptr // *IUnknown
+	HResult errco.ERROR
+	DwFlags uint32
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmselchange
 type NMSELCHANGE struct {
 	Nmhdr      NMHDR
@@ -466,6 +476,44 @@ type NMTBHOTITEM struct {
 	IdOld   int32
 	IdNew   int32
 	DwFlags co.HICF
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbrestore
+type NMTBRESTORE struct {
+	Hdr              NMHDR
+	PData            *uint32
+	PCurrent         *uint32
+	CbData           uint32
+	IItem            int32
+	CButtons         int32
+	CbBytesPerRecord int32
+	TbButton         TBBUTTON
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbsave
+type NMTBSAVE struct {
+	Hdr      NMHDR
+	PData    *uint32
+	PCurrent *uint32
+	CbData   uint32
+	IItem    int32
+	CButtons int32
+	TbButton TBBUTTON
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-wrapaccelerator
+type NMTBWRAPACCELERATOR struct {
+	Hdr     NMHDR
+	Ch      uint32
+	IButton int32
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-wraphotitem
+type NMTBWRAPHOTITEM struct {
+	Hdr     NMHDR
+	IStart  int32
+	IDir    int32
+	NReason co.HICF
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtoolbarw
