@@ -246,6 +246,13 @@ func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gdiflush
+func GdiFlush() bool {
+	ret, _, _ := syscall.Syscall(proc.GdiFlush.Addr(), 0,
+		0, 0, 0)
+	return ret == 0
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getasynckeystate
 func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
 	ret, _, _ := syscall.Syscall(proc.GetAsyncKeyState.Addr(), 1,

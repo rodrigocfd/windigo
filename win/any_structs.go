@@ -17,6 +17,14 @@ type ACCEL struct {
 	Cmd   uint16    // LOWORD(wParam) value.
 }
 
+// ⚠️ You must call BmiHeader.SetBiSize().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfo
+type BITMAPINFO struct {
+	BmiHeader BITMAPINFOHEADER
+	BmiColors [1]RGBQUAD
+}
+
 // ⚠️ You must call SetBiSize().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
@@ -474,6 +482,22 @@ type PROCESS_INFORMATION struct {
 type RECT struct {
 	Left, Top, Right, Bottom int32
 }
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-rgbquad
+type RGBQUAD struct {
+	data [4]byte
+}
+
+func (rq *RGBQUAD) Blue() uint8       { return *(*uint8)(unsafe.Pointer(&rq.data[0])) }
+func (rq *RGBQUAD) SetBlue(val uint8) { *(*uint8)(unsafe.Pointer(&rq.data[0])) = val }
+
+func (rq *RGBQUAD) Green() uint8       { return *(*uint8)(unsafe.Pointer(&rq.data[1])) }
+func (rq *RGBQUAD) SetGreen(val uint8) { *(*uint8)(unsafe.Pointer(&rq.data[1])) = val }
+
+func (rq *RGBQUAD) Red() uint8       { return *(*uint8)(unsafe.Pointer(&rq.data[2])) }
+func (rq *RGBQUAD) SetRed(val uint8) { *(*uint8)(unsafe.Pointer(&rq.data[2])) = val }
+
+func (rq *RGBQUAD) ToColorref() COLORREF { return RGB(rq.Red(), rq.Green(), rq.Blue()) }
 
 // ⚠️ You must call SetCbSize().
 //

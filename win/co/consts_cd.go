@@ -289,6 +289,16 @@ const (
 	CS_DROPSHADOW      CS = 0x0002_0000
 )
 
+// CreateDIBSection() usage.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
+type DIB uint32
+
+const (
+	DIB_RGB_COLORS DIB = 0 // Color table in RGBs.
+	DIB_PAL_COLORS DIB = 1 // Color table in palette indices.
+)
+
 // CreateFile() dwCreationDisposition. Originally without prefix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew

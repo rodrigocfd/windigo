@@ -120,6 +120,23 @@ func (hdc HDC) CreateCompatibleDC() HDC {
 	return HDC(ret)
 }
 
+// ⚠️ You must defer HBITMAP.DeleteObject().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
+func (hdc HDC) CreateDIBSection(
+	pbmi *BITMAPINFO, usage co.DIB,
+	hSection HFILEMAP, offset uint32) (HBITMAP, *byte) {
+
+	var ppvBits *byte
+	ret, _, err := syscall.Syscall6(proc.CreateDIBSection.Addr(), 6,
+		uintptr(hdc), uintptr(unsafe.Pointer(pbmi)), uintptr(usage),
+		uintptr(unsafe.Pointer(&ppvBits)), uintptr(hSection), uintptr(offset))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return HBITMAP(ret), ppvBits
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deletedc
 func (hdc HDC) DeleteDC() {
 	ret, _, err := syscall.Syscall(proc.DeleteDC.Addr(), 1,

@@ -39,6 +39,14 @@ func (c COLORREF) GetBValue() uint8 {
 	return LOBYTE(LOWORD(uint32(c) >> 16))
 }
 
+func (c COLORREF) ToRgbquad() RGBQUAD {
+	rq := RGBQUAD{}
+	rq.SetBlue(c.GetBValue())
+	rq.SetGreen(c.GetGValue())
+	rq.SetRed(c.GetRValue())
+	return rq
+}
+
 // A handle to an object.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle

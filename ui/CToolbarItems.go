@@ -71,8 +71,8 @@ func (me *_ToolbarItems) EnableButton(isEnabled bool, cmdId int) {
 // Retrieves information about a button.
 func (me *_ToolbarItems) GetButton(index int, info *win.TBBUTTON) {
 	if me.pHwnd.SendMessage(co.TB_GETBUTTON,
-		win.WPARAM(index), win.LPARAM(unsafe.Pointer(info))) == 0 {
-
+		win.WPARAM(index), win.LPARAM(unsafe.Pointer(info)),
+	) == 0 {
 		panic(fmt.Sprintf("TB_GETBUTTON \"%d\" failed.", index))
 	}
 }
