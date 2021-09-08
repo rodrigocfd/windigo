@@ -27,6 +27,7 @@ type Toolbar interface {
 	Items() *_ToolbarItems                                       // Item methods.
 	SetExtendedStyle(doSet bool, styles co.TBSTYLE_EX)           // Sets or unsets extended style flags.
 	SetImageList(index int, himgl win.HIMAGELIST) win.HIMAGELIST // Sets the nth image list for the control.
+	SetParent(hNewParent win.HWND) win.HWND                      // Sets the window to which the toolbar control sends notification messages.
 }
 
 //------------------------------------------------------------------------------
@@ -102,6 +103,11 @@ func (me *_Toolbar) SetImageList(
 		me.Hwnd().SendMessage(co.TB_SETIMAGELIST,
 			win.WPARAM(index), win.LPARAM(himgl)),
 	)
+}
+
+func (me *_Toolbar) SetParent(hNewParent win.HWND) win.HWND {
+	return win.HWND(me.Hwnd().
+		SendMessage(co.TB_SETPARENT, win.WPARAM(hNewParent), 0))
 }
 
 //------------------------------------------------------------------------------

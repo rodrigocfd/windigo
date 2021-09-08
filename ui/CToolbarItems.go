@@ -51,6 +51,13 @@ func (me *_ToolbarItems) Count() int {
 	return int(me.pHwnd.SendMessage(co.TB_BUTTONCOUNT, 0, 0))
 }
 
+// Deletes a button.
+func (me *_ToolbarItems) DeleteButton(index int) {
+	if me.pHwnd.SendMessage(co.TB_DELETEBUTTON, win.WPARAM(index), 0) == 0 {
+		panic(fmt.Sprintf("TB_DELETEBUTTON \"%d\" failed.", index))
+	}
+}
+
 // Enables or disables a button.
 func (me *_ToolbarItems) EnableButton(isEnabled bool, cmdId int) {
 	if me.pHwnd.SendMessage(co.TB_ENABLEBUTTON,
@@ -59,4 +66,38 @@ func (me *_ToolbarItems) EnableButton(isEnabled bool, cmdId int) {
 	) == 0 {
 		panic(fmt.Sprintf("TB_ENABLEBUTTON \"%d\" failed.", cmdId))
 	}
+}
+
+// Retrieves information about a button.
+func (me *_ToolbarItems) GetButton(index int, info *win.TBBUTTON) {
+	if me.pHwnd.SendMessage(co.TB_GETBUTTON,
+		win.WPARAM(index), win.LPARAM(unsafe.Pointer(info))) == 0 {
+
+		panic(fmt.Sprintf("TB_GETBUTTON \"%d\" failed.", index))
+	}
+}
+
+// Tells whether a button is enabled.
+func (me *_ToolbarItems) IsButtonEnabled(cmdId int) bool {
+	return me.pHwnd.SendMessage(co.TB_ISBUTTONENABLED, win.WPARAM(cmdId), 0) != 0
+}
+
+// Tells whether a button is hidden.
+func (me *_ToolbarItems) IsButtonHidden(cmdId int) bool {
+	return me.pHwnd.SendMessage(co.TB_ISBUTTONHIDDEN, win.WPARAM(cmdId), 0) != 0
+}
+
+// Tells whether a button is highlighted.
+func (me *_ToolbarItems) IsButtonHighlighted(cmdId int) bool {
+	return me.pHwnd.SendMessage(co.TB_ISBUTTONHIGHLIGHTED, win.WPARAM(cmdId), 0) != 0
+}
+
+// Tells whether a button is indeterminate.
+func (me *_ToolbarItems) IsButtonIndeterminate(cmdId int) bool {
+	return me.pHwnd.SendMessage(co.TB_ISBUTTONINDETERMINATE, win.WPARAM(cmdId), 0) != 0
+}
+
+// Tells whether a button is pressed.
+func (me *_ToolbarItems) IsButtonPressed(cmdId int) bool {
+	return me.pHwnd.SendMessage(co.TB_ISBUTTONPRESSED, win.WPARAM(cmdId), 0) != 0
 }
