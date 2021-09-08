@@ -129,6 +129,42 @@ const (
 	EN_AFTER_PASTE  CMD = 0x0801
 )
 
+// Header control notifications (HDN).
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-header-control-reference-notifications
+const (
+	_HDN_FIRST NM = -300
+
+	HDN_ITEMCHANGING       NM = _HDN_FIRST - 20
+	HDN_ITEMCHANGED        NM = _HDN_FIRST - 21
+	HDN_ITEMCLICK          NM = _HDN_FIRST - 22
+	HDN_ITEMDBLCLICK       NM = _HDN_FIRST - 23
+	HDN_DIVIDERDBLCLICK    NM = _HDN_FIRST - 25
+	HDN_BEGINTRACK         NM = _HDN_FIRST - 26
+	HDN_ENDTRACK           NM = _HDN_FIRST - 27
+	HDN_TRACK              NM = _HDN_FIRST - 28
+	HDN_GETDISPINFO        NM = _HDN_FIRST - 29
+	HDN_BEGINDRAG          NM = _HDN_FIRST - 10
+	HDN_ENDDRAG            NM = _HDN_FIRST - 11
+	HDN_FILTERCHANGE       NM = _HDN_FIRST - 12
+	HDN_FILTERBTNCLICK     NM = _HDN_FIRST - 13
+	HDN_BEGINFILTEREDIT    NM = _HDN_FIRST - 14
+	HDN_ENDFILTEREDIT      NM = _HDN_FIRST - 15
+	HDN_ITEMSTATEICONCLICK NM = _HDN_FIRST - 16
+	HDN_ITEMKEYDOWN        NM = _HDN_FIRST - 17
+	HDN_DROPDOWN           NM = _HDN_FIRST - 18
+	HDN_OVERFLOWCLICK      NM = _HDN_FIRST - 19
+)
+
+// IpAddress notifications (IPN).
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-ip-address-control-reference-notifications
+const (
+	_IPN_FIRST NM = -860
+
+	IPN_FIELDCHANGED NM = _IPN_FIRST - 0
+)
+
 // ListView control notifications (LVN).
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-list-view-control-reference-notifications
@@ -269,6 +305,19 @@ const (
 	_TRBN_FIRST NM = -1501
 
 	TRBN_THUMBPOSCHANGING NM = _TRBN_FIRST - 1
+)
+
+// Tooltip control notifications (TTN).
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-tooltip-control-reference-notifications
+const (
+	_TTN_FIRST NM = -520
+
+	TTN_GETDISPINFO NM = _TTN_FIRST - 10
+	TTN_SHOW        NM = _TTN_FIRST - 1
+	TTN_POP         NM = _TTN_FIRST - 2
+	TTN_LINKCLICK   NM = _TTN_FIRST - 3
+	TTN_NEEDTEXT    NM = TTN_GETDISPINFO
 )
 
 // TreeView control notifications (TVN).
