@@ -60,9 +60,9 @@ func (HCLIPBOARD) EnumClipboardFormats() []co.CF {
 // Unless you're doing something specific, prefer HCLIPBOARD.WriteString().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setclipboarddata
-func (HCLIPBOARD) SetClipboardData(uFormat co.CF, hMem HGLOBAL) {
+func (HCLIPBOARD) SetClipboardData(format co.CF, hMem HGLOBAL) {
 	ret, _, err := syscall.Syscall(proc.SetClipboardData.Addr(), 2,
-		uintptr(uFormat), uintptr(hMem), 0)
+		uintptr(format), uintptr(hMem), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

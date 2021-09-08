@@ -45,12 +45,12 @@ func (hProcess HPROCESS) GetProcessId() uint32 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
 func (hProcess HPROCESS) GetProcessTimes(
-	lpCreationTime, lpExitTime, lpKernelTime, lpUserTime *FILETIME) {
+	creationTime, exitTime, kernelTime, userTime *FILETIME) {
 
 	ret, _, err := syscall.Syscall6(proc.GetProcessTimes.Addr(), 5,
-		uintptr(hProcess), uintptr(unsafe.Pointer(lpCreationTime)),
-		uintptr(unsafe.Pointer(lpExitTime)), uintptr(unsafe.Pointer(lpKernelTime)),
-		uintptr(unsafe.Pointer(lpUserTime)), 0)
+		uintptr(hProcess), uintptr(unsafe.Pointer(creationTime)),
+		uintptr(unsafe.Pointer(exitTime)), uintptr(unsafe.Pointer(kernelTime)),
+		uintptr(unsafe.Pointer(userTime)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -59,9 +59,9 @@ func (hProcess HPROCESS) GetProcessTimes(
 // Pass -1 for infinite timeout.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
-func (hProcess HPROCESS) WaitForSingleObject(dwMilliseconds uint32) co.WAIT {
+func (hProcess HPROCESS) WaitForSingleObject(milliseconds uint32) co.WAIT {
 	ret, _, err := syscall.Syscall(proc.WaitForSingleObject.Addr(), 2,
-		uintptr(hProcess), uintptr(dwMilliseconds), 0)
+		uintptr(hProcess), uintptr(milliseconds), 0)
 	if co.WAIT(ret) == co.WAIT_FAILED {
 		panic(errco.ERROR(err))
 	}

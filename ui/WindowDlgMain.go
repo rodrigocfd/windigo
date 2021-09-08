@@ -35,7 +35,7 @@ func (me *_WindowDlgMain) RunAsMain() int {
 	_CreateGlobalUiFont()
 	defer _globalUiFont.DeleteObject()
 
-	hInst := win.GetModuleHandle("")
+	hInst := win.GetModuleHandle(nil)
 	me._WindowDlg.createDialog(win.HWND(0), hInst)
 
 	me.setIcon(me.iconId, hInst)

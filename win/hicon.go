@@ -19,8 +19,8 @@ type HICON HANDLE
 // ⚠️ You must defer HICON.DestroyIcon() on each icon returned in both slices.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-extracticonexw
-func ExtractIconEx(lpszFile string) (largeIcons, smallIcons []HICON) {
-	lpszFile16 := Str.ToUint16Slice(lpszFile)
+func ExtractIconEx(fileName string) (largeIcons, smallIcons []HICON) {
+	lpszFile16 := Str.ToUint16Slice(fileName)
 	retrieveIdx := -1
 	ret, _, err := syscall.Syscall6(proc.ExtractIconEx.Addr(), 5,
 		uintptr(unsafe.Pointer(&lpszFile16[0])), uintptr(retrieveIdx), 0, 0, 0, 0)
@@ -67,9 +67,9 @@ func (hIcon HICON) DestroyIcon() {
 // ⚠️ You must defer HBITMAP.DeleteObject() in HbmMask and HbmColor fields.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfo
-func (hIcon HICON) GetIconInfo(piconinfo *ICONINFO) {
+func (hIcon HICON) GetIconInfo(iconInfo *ICONINFO) {
 	ret, _, err := syscall.Syscall(proc.GetIconInfo.Addr(), 2,
-		uintptr(hIcon), uintptr(unsafe.Pointer(piconinfo)), 0)
+		uintptr(hIcon), uintptr(unsafe.Pointer(iconInfo)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -78,10 +78,10 @@ func (hIcon HICON) GetIconInfo(piconinfo *ICONINFO) {
 // ⚠️ You must defer HBITMAP.DeleteObject() in HbmMask and HbmColor fields.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfoexw
-func (hIcon HICON) GetIconInfoEx(piconinfo *ICONINFOEX) {
-	piconinfo.SetCbSize() // safety
+func (hIcon HICON) GetIconInfoEx(iconInfoEx *ICONINFOEX) {
+	iconInfoEx.SetCbSize() // safety
 	ret, _, err := syscall.Syscall(proc.GetIconInfoEx.Addr(), 2,
-		uintptr(hIcon), uintptr(unsafe.Pointer(piconinfo)), 0)
+		uintptr(hIcon), uintptr(unsafe.Pointer(iconInfoEx)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

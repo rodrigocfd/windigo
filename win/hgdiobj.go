@@ -61,9 +61,9 @@ func CreateSysColorBrush(sysColor co.COLOR) HBRUSH {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolorbrush
-func GetSysColorBrush(nIndex co.COLOR) HBRUSH {
+func GetSysColorBrush(index co.COLOR) HBRUSH {
 	ret, _, err := syscall.Syscall(proc.GetSysColorBrush.Addr(), 1,
-		uintptr(nIndex), 0, 0)
+		uintptr(index), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -107,9 +107,9 @@ func (hFont HFONT) DeleteObject() {
 type HPEN HGDIOBJ
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
-func CreatePen(iStyle co.PS, cWidth int32, color COLORREF) HPEN {
+func CreatePen(style co.PS, width int32, color COLORREF) HPEN {
 	ret, _, err := syscall.Syscall(proc.CreatePen.Addr(), 3,
-		uintptr(iStyle), uintptr(cWidth), uintptr(color))
+		uintptr(style), uintptr(width), uintptr(color))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -117,9 +117,9 @@ func CreatePen(iStyle co.PS, cWidth int32, color COLORREF) HPEN {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpenindirect
-func CreatePenIndirect(plpen *LOGPEN) HPEN {
+func CreatePenIndirect(lp *LOGPEN) HPEN {
 	ret, _, err := syscall.Syscall(proc.CreatePenIndirect.Addr(), 1,
-		uintptr(unsafe.Pointer(plpen)), 0, 0)
+		uintptr(unsafe.Pointer(lp)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -141,9 +141,9 @@ type HRGN HGDIOBJ
 // ⚠️ You must defer HRGN.DeleteObject().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
-func CreateRectRgnIndirect(lprect *RECT) HRGN {
+func CreateRectRgnIndirect(rc *RECT) HRGN {
 	ret, _, err := syscall.Syscall(proc.CreateRectRgnIndirect.Addr(), 1,
-		uintptr(unsafe.Pointer(lprect)), 0, 0)
+		uintptr(unsafe.Pointer(rc)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -171,9 +171,9 @@ func (hRgn HRGN) DeleteObject() {
 // Combines the two regions and stores the result in current region.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
-func (hRgn HRGN) CombineRgn(hrgnSrc1, hrgnSrc2 HRGN, iMode co.RGN) co.REGION {
+func (hRgn HRGN) CombineRgn(hrgnSrc1, hrgnSrc2 HRGN, mode co.RGN) co.REGION {
 	ret, _, err := syscall.Syscall6(proc.CombineRgn.Addr(), 4,
-		uintptr(hRgn), uintptr(hrgnSrc1), uintptr(hrgnSrc2), uintptr(iMode), 0, 0)
+		uintptr(hRgn), uintptr(hrgnSrc1), uintptr(hrgnSrc2), uintptr(mode), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

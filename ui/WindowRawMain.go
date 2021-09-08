@@ -36,7 +36,7 @@ func (me *_WindowRawMain) RunAsMain() int {
 	_CreateGlobalUiFont()
 	defer _globalUiFont.DeleteObject()
 
-	hInst := win.GetModuleHandle("")
+	hInst := win.GetModuleHandle(nil)
 	wcx := win.WNDCLASSEX{}
 	me.opts.className = me._WindowRaw.generateWcx(&wcx, hInst,
 		me.opts.className, me.opts.classStyles, me.opts.hCursor,

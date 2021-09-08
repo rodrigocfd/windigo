@@ -121,16 +121,6 @@ func (_StrT) ToUint16Ptr(s string) *uint16 {
 	return pstr
 }
 
-// Converts string to null-terminated *uint16, or nil if source is empty.
-//
-// Wrapper to syscall.UTF16PtrFromString(). Panics on error.
-func (_StrT) ToUint16PtrBlankIsNil(s string) *uint16 {
-	if s != "" {
-		return Str.ToUint16Ptr(s)
-	}
-	return nil
-}
-
 // Converts []string to multi null-terminated *uint16.
 //
 // Memory block will have 2 terminating nulls.

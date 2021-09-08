@@ -40,9 +40,9 @@ func (hKey HKEY) CloseKey() error {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyw
-func (hKey HKEY) DeleteKey(lpSubKey string) error {
+func (hKey HKEY) DeleteKey(subKey string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteKey.Addr(), 2,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))), 0)
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))), 0)
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
@@ -53,11 +53,10 @@ func (hKey HKEY) DeleteKey(lpSubKey string) error {
 // samDesired must be KEY_WOW64_32KEY or KEY_WOW64_64KEY.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyexw
-func (hKey HKEY) DeleteKeyEx(lpSubKey string, samDesired co.KEY) error {
+func (hKey HKEY) DeleteKeyEx(subKey string, samDesired co.KEY) error {
 	ret, _, _ := syscall.Syscall6(proc.RegDeleteKeyEx.Addr(), 4,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))),
 		uintptr(samDesired), 0, 0, 0)
-
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -65,11 +64,10 @@ func (hKey HKEY) DeleteKeyEx(lpSubKey string, samDesired co.KEY) error {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyvaluew
-func (hKey HKEY) DeleteKeyValue(lpSubKey, lpValueName string) error {
+func (hKey HKEY) DeleteKeyValue(subKey, valueName string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteKeyValue.Addr(), 3,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValueName))))
-
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(valueName))))
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -77,10 +75,9 @@ func (hKey HKEY) DeleteKeyValue(lpSubKey, lpValueName string) error {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletetreew
-func (hKey HKEY) DeleteTree(lpSubKey string) error {
+func (hKey HKEY) DeleteTree(subKey string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteTree.Addr(), 2,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))), 0)
-
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))), 0)
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -179,14 +176,14 @@ func (hKey HKEY) FlushKey() error {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-reggetvaluew
 func (hKey HKEY) GetValue(
-	lpSubKey, lpValue string, dwFlags co.RRF, pdwType *co.REG,
-	pvData unsafe.Pointer, pcbData *uint32) error {
+	subKey, value string, flags co.RRF, pdwType *co.REG,
+	pData unsafe.Pointer, pDataLen *uint32) error {
 
 	ret, _, _ := syscall.Syscall9(proc.RegGetValue.Addr(), 7,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValue))),
-		uintptr(dwFlags), uintptr(unsafe.Pointer(pdwType)),
-		uintptr(pvData), uintptr(unsafe.Pointer(pcbData)), 0, 0)
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(value))),
+		uintptr(flags), uintptr(unsafe.Pointer(pdwType)),
+		uintptr(pData), uintptr(unsafe.Pointer(pDataLen)), 0, 0)
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
@@ -198,11 +195,11 @@ func (hKey HKEY) GetValue(
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
 func (hKey HKEY) OpenKeyEx(
-	lpSubKey string, ulOptions co.REG_OPTION, samDesired co.KEY) (HKEY, error) {
+	subKey string, ulOptions co.REG_OPTION, samDesired co.KEY) (HKEY, error) {
 
 	openedKey := HKEY(0)
 	ret, _, _ := syscall.Syscall6(proc.RegOpenKeyEx.Addr(), 5,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))),
 		uintptr(ulOptions), uintptr(samDesired),
 		uintptr(unsafe.Pointer(&openedKey)), 0)
 
@@ -287,75 +284,75 @@ func (hKey HKEY) QueryInfoKey(
 }
 
 // Reads a REG_BINARY value with HKEY.GetValue().
-func (hKey HKEY) ReadBinary(lpSubKey, lpValue string) []byte {
-	pcbData := uint32(0)
+func (hKey HKEY) ReadBinary(subKey, value string) []byte {
+	pDataLen := uint32(0)
 	pdwType := co.REG_BINARY
 
-	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_BINARY, // retrieve length
-		&pdwType, nil, &pcbData)
+	err := hKey.GetValue(subKey, value, co.RRF_RT_REG_BINARY, // retrieve length
+		&pdwType, nil, &pDataLen)
 	if err != nil {
 		panic(err)
 	}
 
-	pvData := make([]byte, pcbData)
+	pData := make([]byte, pDataLen)
 
-	err = hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve string
-		&pdwType, unsafe.Pointer(&pvData[0]), &pcbData)
+	err = hKey.GetValue(subKey, value, co.RRF_RT_REG_SZ, // retrieve string
+		&pdwType, unsafe.Pointer(&pData[0]), &pDataLen)
 	if err != nil {
 		panic(err)
 	}
 
-	return pvData
+	return pData
 }
 
 // Reads a REG_DWORD value with HKEY.GetValue().
-func (hKey HKEY) ReadDword(lpSubKey, lpValue string) uint32 {
-	pvData := uint32(0)
-	pcbData := uint32(unsafe.Sizeof(pvData))
+func (hKey HKEY) ReadDword(subKey, value string) uint32 {
+	pData := uint32(0)
+	pDataLen := uint32(unsafe.Sizeof(pData))
 	pdwType := co.REG_DWORD
 
-	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_DWORD,
-		&pdwType, unsafe.Pointer(&pvData), &pcbData)
+	err := hKey.GetValue(subKey, value, co.RRF_RT_REG_DWORD,
+		&pdwType, unsafe.Pointer(&pData), &pDataLen)
 	if err != nil {
 		panic(err)
 	}
-	return pvData
+	return pData
 }
 
 // Reads a REG_QWORD value with HKEY.GetValue().
-func (hKey HKEY) ReadQword(lpSubKey, lpValue string) uint64 {
-	pvData := uint64(0)
-	pcbData := uint32(unsafe.Sizeof(pvData))
+func (hKey HKEY) ReadQword(subKey, value string) uint64 {
+	pData := uint64(0)
+	pDataLen := uint32(unsafe.Sizeof(pData))
 	pdwType := co.REG_QWORD
 
-	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_QWORD,
-		&pdwType, unsafe.Pointer(&pvData), &pcbData)
+	err := hKey.GetValue(subKey, value, co.RRF_RT_REG_QWORD,
+		&pdwType, unsafe.Pointer(&pData), &pDataLen)
 	if err != nil {
 		panic(err)
 	}
-	return pvData
+	return pData
 }
 
 // Reads a REG_SZ value with HKEY.GetValue().
-func (hKey HKEY) ReadString(lpSubKey, lpValue string) string {
-	pcbData := uint32(0)
+func (hKey HKEY) ReadString(subKey, value string) string {
+	pDataLen := uint32(0)
 	pdwType := co.REG_SZ
 
-	err := hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve length
-		&pdwType, nil, &pcbData)
+	err := hKey.GetValue(subKey, value, co.RRF_RT_REG_SZ, // retrieve length
+		&pdwType, nil, &pDataLen)
 	if err != nil {
 		panic(err)
 	}
 
-	pvData := make([]uint16, pcbData/2) // pcbData is in bytes; terminating null included
+	pData := make([]uint16, pDataLen/2) // pcbData is in bytes; terminating null included
 
-	err = hKey.GetValue(lpSubKey, lpValue, co.RRF_RT_REG_SZ, // retrieve string
-		&pdwType, unsafe.Pointer(&pvData[0]), &pcbData)
+	err = hKey.GetValue(subKey, value, co.RRF_RT_REG_SZ, // retrieve string
+		&pdwType, unsafe.Pointer(&pData[0]), &pDataLen)
 	if err != nil {
 		panic(err)
 	}
 
-	return Str.FromUint16Slice(pvData)
+	return Str.FromUint16Slice(pData)
 }
 
 // This function is rather tricky. Prefer using HKEY.WriteBinary(),
@@ -363,13 +360,13 @@ func (hKey HKEY) ReadString(lpSubKey, lpValue string) string {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetkeyvaluew
 func (hKey HKEY) SetKeyValue(
-	lpSubKey, lpValueName string, dwType co.REG,
-	lpData unsafe.Pointer, cbData uint32) error {
+	subKey, valueName string, dwType co.REG,
+	pData unsafe.Pointer, dataLen uint32) error {
 
 	ret, _, _ := syscall.Syscall6(proc.RegSetKeyValue.Addr(), 6,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubKey))),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpValueName))),
-		uintptr(dwType), uintptr(lpData), uintptr(cbData))
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(valueName))),
+		uintptr(dwType), uintptr(pData), uintptr(dataLen))
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
@@ -378,36 +375,36 @@ func (hKey HKEY) SetKeyValue(
 }
 
 // Writes a REG_BINARY value with HKEY.SetKeyValue().
-func (hKey HKEY) WriteBinary(lpSubKey, lpValueName string, lpData []byte) {
-	err := hKey.SetKeyValue(lpSubKey, lpValueName, co.REG_BINARY,
-		unsafe.Pointer(&lpData[0]), uint32(len(lpData)))
+func (hKey HKEY) WriteBinary(subKey, valueName string, data []byte) {
+	err := hKey.SetKeyValue(subKey, valueName, co.REG_BINARY,
+		unsafe.Pointer(&data[0]), uint32(len(data)))
 	if err != nil {
 		panic(err)
 	}
 }
 
 // Writes a REG_DWORD value with HKEY.SetKeyValue().
-func (hKey HKEY) WriteDword(lpSubKey, lpValueName string, lpData uint32) {
-	err := hKey.SetKeyValue(lpSubKey, lpValueName, co.REG_DWORD,
-		unsafe.Pointer(&lpData), uint32(unsafe.Sizeof(lpData)))
+func (hKey HKEY) WriteDword(subKey, valueName string, data uint32) {
+	err := hKey.SetKeyValue(subKey, valueName, co.REG_DWORD,
+		unsafe.Pointer(&data), uint32(unsafe.Sizeof(data)))
 	if err != nil {
 		panic(err)
 	}
 }
 
 // Writes a REG_QWORD value with HKEY.SetKeyValue().
-func (hKey HKEY) WriteQword(lpSubKey, lpValueName string, lpData uint64) {
-	err := hKey.SetKeyValue(lpSubKey, lpValueName, co.REG_QWORD,
-		unsafe.Pointer(&lpData), uint32(unsafe.Sizeof(lpData)))
+func (hKey HKEY) WriteQword(subKey, valueName string, data uint64) {
+	err := hKey.SetKeyValue(subKey, valueName, co.REG_QWORD,
+		unsafe.Pointer(&data), uint32(unsafe.Sizeof(data)))
 	if err != nil {
 		panic(err)
 	}
 }
 
 // Writes a REG_SZ value with HKEY.SetKeyValue().
-func (hKey HKEY) WriteString(lpSubKey, lpValueName string, lpData string) {
-	lpData16 := Str.ToUint16Slice(lpData)
-	err := hKey.SetKeyValue(lpSubKey, lpValueName, co.REG_SZ,
+func (hKey HKEY) WriteString(subKey, valueName string, data string) {
+	lpData16 := Str.ToUint16Slice(data)
+	err := hKey.SetKeyValue(subKey, valueName, co.REG_SZ,
 		unsafe.Pointer(&lpData16[0]), uint32(len(lpData16)*2)) // pass size in bytes, including terminating null
 	runtime.KeepAlive(lpData16)
 	if err != nil {

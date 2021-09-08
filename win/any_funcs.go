@@ -13,30 +13,28 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-adjustwindowrectex
-func AdjustWindowRectEx(
-	lpRect *RECT, dwStyle co.WS, bMenu bool, dwExStyle co.WS_EX) {
-
+func AdjustWindowRectEx(rc *RECT, style co.WS, hasMenu bool, exStyle co.WS_EX) {
 	ret, _, err := syscall.Syscall6(proc.AdjustWindowRectEx.Addr(), 4,
-		uintptr(unsafe.Pointer(lpRect)), uintptr(dwStyle),
-		util.BoolToUintptr(bMenu), uintptr(dwExStyle), 0, 0)
+		uintptr(unsafe.Pointer(rc)), uintptr(style),
+		util.BoolToUintptr(hasMenu), uintptr(exStyle), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-allowsetforegroundwindow
-func AllowSetForegroundWindow(dwProcessId uint32) {
+func AllowSetForegroundWindow(processId uint32) {
 	ret, _, err := syscall.Syscall(proc.AllowSetForegroundWindow.Addr(), 1,
-		uintptr(dwProcessId), 0, 0)
+		uintptr(processId), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms646912(v=vs.85)
-func ChooseColor(lpcc *CHOOSECOLOR) bool {
+func ChooseColor(cc *CHOOSECOLOR) bool {
 	ret, _, _ := syscall.Syscall(proc.ChooseColor.Addr(), 1,
-		uintptr(unsafe.Pointer(lpcc)), 0, 0)
+		uintptr(unsafe.Pointer(cc)), 0, 0)
 	if ret == 0 {
 		dlgErr := CommDlgExtendedError()
 		if dlgErr == errco.CDERR(0) {
@@ -54,9 +52,9 @@ func ChooseColor(lpcc *CHOOSECOLOR) bool {
 // ⚠️ You must defer CoUninitialize().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
-func CoInitializeEx(dwCoInit co.COINIT) {
+func CoInitializeEx(coInit co.COINIT) {
 	ret, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
-		0, uintptr(dwCoInit), 0)
+		0, uintptr(coInit), 0)
 	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
 		panic(hr)
 	}
@@ -72,10 +70,10 @@ func CommDlgExtendedError() errco.CDERR {
 // Typically used with GetCommandLine().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw
-func CommandLineToArgv(lpCmdLine string) []string {
+func CommandLineToArgv(cmdLine string) []string {
 	pNumArgs := int32(0)
 	ret, _, err := syscall.Syscall(proc.CommandLineToArgv.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpCmdLine))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(cmdLine))),
 		uintptr(unsafe.Pointer(&pNumArgs)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -114,31 +112,37 @@ func CreateDirectory(
 	return nil
 }
 
+// ⚠️ applicationName must be string or nil.
+//
+// ⚠️ commandLine must be string or nil.
+//
+// ⚠️ currentDirectory must be string or nil.
+//
 // ⚠️ You must defer HPROCESS.CloseHandle() and HTHREAD.CloseHandle() on
 // HProcess and HThread members of PROCESS_INFORMATION.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw
 func CreateProcess(
-	lpApplicationName, lpCommandLine string,
-	lpProcessAttributes, lpThreadAttributes *SECURITY_ATTRIBUTES,
-	bInheritHandles bool,
-	dwCreationFlags co.CREATE,
-	lpEnvironment uintptr,
-	lpCurrentDirectory string,
-	lpStartupInfo *STARTUPINFO,
-	lpProcessInformation *PROCESS_INFORMATION) {
+	applicationName, commandLine interface{},
+	processAttributes, threadAttributes *SECURITY_ATTRIBUTES,
+	inheritHandles bool,
+	creationFlags co.CREATE,
+	ptrEnvironment uintptr,
+	currentDirectory interface{},
+	startupInfo *STARTUPINFO,
+	processInformation *PROCESS_INFORMATION) {
 
 	ret, _, err := syscall.Syscall12(proc.CreateProcess.Addr(), 10,
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(lpApplicationName))),
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(lpCommandLine))),
-		uintptr(unsafe.Pointer(lpProcessAttributes)),
-		uintptr(unsafe.Pointer(lpThreadAttributes)),
-		util.BoolToUintptr(bInheritHandles),
-		uintptr(dwCreationFlags),
-		lpEnvironment,
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(lpCurrentDirectory))),
-		uintptr(unsafe.Pointer(lpStartupInfo)),
-		uintptr(unsafe.Pointer(lpProcessInformation)),
+		uintptr(util.VariantNilString(applicationName)),
+		uintptr(util.VariantNilString(commandLine)),
+		uintptr(unsafe.Pointer(processAttributes)),
+		uintptr(unsafe.Pointer(threadAttributes)),
+		util.BoolToUintptr(inheritHandles),
+		uintptr(creationFlags),
+		ptrEnvironment,
+		uintptr(util.VariantNilString(currentDirectory)),
+		uintptr(unsafe.Pointer(startupInfo)),
+		uintptr(unsafe.Pointer(processInformation)),
 		0, 0)
 
 	if ret == 0 {
@@ -203,11 +207,11 @@ func EndMenu() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
-func EnumWindows(lpEnumFunc func(hwnd HWND) bool) {
+func EnumWindows(enumFunc func(hWnd HWND) bool) {
 	ret, _, err := syscall.Syscall(proc.EnumWindows.Addr(), 2,
 		syscall.NewCallback(
-			func(hwnd HWND, lParam LPARAM) uintptr {
-				return util.BoolToUintptr(lpEnumFunc(hwnd))
+			func(hWnd HWND, _ LPARAM) uintptr {
+				return util.BoolToUintptr(enumFunc(hWnd))
 			}),
 		0, 0) // no need to use LPARAM, Go automatically allocs closure contexts in the heap
 	if ret == 0 {
@@ -216,19 +220,19 @@ func EnumWindows(lpEnumFunc func(hwnd HWND) bool) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess
-func ExitProcess(uExitCode uint32) {
+func ExitProcess(exitCode uint32) {
 	syscall.Syscall(proc.ExitProcess.Addr(), 1,
-		uintptr(uExitCode), 0, 0)
+		uintptr(exitCode), 0, 0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
-func ExpandEnvironmentStrings(lpSrc string) string {
+func ExpandEnvironmentStrings(src string) string {
 	ret, _, _ := syscall.Syscall(proc.ExpandEnvironmentStrings.Addr(), 3,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSrc))), 0, 0)
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(src))), 0, 0)
 
 	buf := make([]uint16, ret)
 	ret, _, err := syscall.Syscall(proc.ExpandEnvironmentStrings.Addr(), 3,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSrc))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(src))),
 		uintptr(unsafe.Pointer(&buf[0])), ret)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -313,10 +317,10 @@ func GetDialogBaseUnits() (horz, vert uint16) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-getdynamictimezoneinformation
 func GetDynamicTimeZoneInformation(
-	pTimeZoneInformation *DYNAMIC_TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
+	timeZoneInfo *DYNAMIC_TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
 
 	ret, _, _ := syscall.Syscall(proc.GetDynamicTimeZoneInformation.Addr(), 1,
-		uintptr(unsafe.Pointer(pTimeZoneInformation)), 0, 0)
+		uintptr(unsafe.Pointer(timeZoneInfo)), 0, 0)
 	return co.TIME_ZONE_ID(ret)
 }
 
@@ -346,9 +350,9 @@ func GetEnvironmentStrings() map[string]string {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
-func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
+func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
 	ret, _, err := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))), 0, 0)
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))), 0, 0)
 
 	if retAttr := co.FILE_ATTRIBUTE(ret); retAttr == co.FILE_ATTRIBUTE_INVALID {
 		return retAttr, errco.ERROR(err) // err is extended error information
@@ -358,12 +362,12 @@ func GetFileAttributes(lpFileName string) (co.FILE_ATTRIBUTE, error) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
-func GetFileVersionInfo(lptstrFilename string) []byte {
-	visz := GetFileVersionInfoSize(lptstrFilename)
+func GetFileVersionInfo(fileName string) []byte {
+	visz := GetFileVersionInfoSize(fileName)
 	buf := make([]byte, visz)
 
 	ret, _, err := syscall.Syscall6(proc.GetFileVersionInfo.Addr(), 4,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lptstrFilename))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
 		0, uintptr(visz), uintptr(unsafe.Pointer(&buf[0])), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -372,10 +376,10 @@ func GetFileVersionInfo(lptstrFilename string) []byte {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
-func GetFileVersionInfoSize(lptstrFilename string) uint32 {
+func GetFileVersionInfoSize(fileName string) uint32 {
 	lpdwHandle := uint32(0)
 	ret, _, err := syscall.Syscall(proc.GetFileVersionInfoSize.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lptstrFilename))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
 		uintptr(unsafe.Pointer(&lpdwHandle)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -433,22 +437,22 @@ func GetQueueStatus(flags co.QS) uint32 {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getstartupinfow
-func GetStartupInfo(lpStartupInfo *STARTUPINFO) {
+func GetStartupInfo(startupInfo *STARTUPINFO) {
 	syscall.Syscall(proc.GetStartupInfo.Addr(), 1,
-		uintptr(unsafe.Pointer(lpStartupInfo)), 0, 0)
+		uintptr(unsafe.Pointer(startupInfo)), 0, 0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolor
-func GetSysColor(nIndex co.COLOR) COLORREF {
+func GetSysColor(index co.COLOR) COLORREF {
 	ret, _, _ := syscall.Syscall(proc.GetSysColor.Addr(), 1,
-		uintptr(nIndex), 0, 0)
+		uintptr(index), 0, 0)
 	return COLORREF(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsysteminfo
-func GetSystemInfo(lpSystemInfo *SYSTEM_INFO) {
+func GetSystemInfo(systemInfo *SYSTEM_INFO) {
 	syscall.Syscall(proc.GetSystemInfo.Addr(), 1,
-		uintptr(unsafe.Pointer(lpSystemInfo)), 0, 0)
+		uintptr(unsafe.Pointer(systemInfo)), 0, 0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
@@ -459,16 +463,16 @@ func GetSystemMetrics(index co.SM) int32 {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtime
-func GetSystemTime(lpSystemTime *SYSTEMTIME) {
+func GetSystemTime(systemTime *SYSTEMTIME) {
 	syscall.Syscall(proc.GetSystemTime.Addr(), 1,
-		uintptr(unsafe.Pointer(lpSystemTime)), 0, 0)
+		uintptr(unsafe.Pointer(systemTime)), 0, 0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getsystemtimes
-func GetSystemTimes(lpIdleTime, lpKernelTime, lpUserTime *FILETIME) {
+func GetSystemTimes(idleTime, kernelTime, userTime *FILETIME) {
 	ret, _, err := syscall.Syscall(proc.GetSystemTimes.Addr(), 3,
-		uintptr(unsafe.Pointer(lpIdleTime)), uintptr(unsafe.Pointer(lpKernelTime)),
-		uintptr(unsafe.Pointer(lpUserTime)))
+		uintptr(unsafe.Pointer(idleTime)), uintptr(unsafe.Pointer(kernelTime)),
+		uintptr(unsafe.Pointer(userTime)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -499,21 +503,21 @@ func GetTickCount64() uint64 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation
 func GetTimeZoneInformation(
-	lpTimeZoneInformation *TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
+	timeZoneInfo *TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
 
 	ret, _, _ := syscall.Syscall(proc.GetTimeZoneInformation.Addr(), 1,
-		uintptr(unsafe.Pointer(lpTimeZoneInformation)), 0, 0)
+		uintptr(unsafe.Pointer(timeZoneInfo)), 0, 0)
 	return co.TIME_ZONE_ID(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformationforyear
 func GetTimeZoneInformationForYear(
 	wYear uint16,
-	pdtzi *DYNAMIC_TIME_ZONE_INFORMATION, ptzi *TIME_ZONE_INFORMATION) {
+	dtzi *DYNAMIC_TIME_ZONE_INFORMATION, tzi *TIME_ZONE_INFORMATION) {
 
 	ret, _, err := syscall.Syscall(proc.GetTimeZoneInformationForYear.Addr(), 3,
 		uintptr(wYear),
-		uintptr(unsafe.Pointer(pdtzi)), uintptr(unsafe.Pointer(ptzi)))
+		uintptr(unsafe.Pointer(dtzi)), uintptr(unsafe.Pointer(tzi)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -549,10 +553,10 @@ func IsCompositionActive() bool {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isguithread
-func IsGUIThread(bConvertToGuiThread bool) (bool, error) {
+func IsGUIThread(convertToGuiThread bool) (bool, error) {
 	ret, _, _ := syscall.Syscall(proc.IsGUIThread.Addr(), 1,
-		util.BoolToUintptr(bConvertToGuiThread), 0, 0)
-	if bConvertToGuiThread && errco.ERROR(ret) == errco.NOT_ENOUGH_MEMORY {
+		util.BoolToUintptr(convertToGuiThread), 0, 0)
+	if convertToGuiThread && errco.ERROR(ret) == errco.NOT_ENOUGH_MEMORY {
 		return false, errco.NOT_ENOUGH_MEMORY
 	}
 	return ret != 0, nil
@@ -645,9 +649,9 @@ func LOBYTE(val uint16) uint8 {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-locksetforegroundwindow
-func LockSetForegroundWindow(uLockCode co.LSFW) {
+func LockSetForegroundWindow(lockCode co.LSFW) {
 	ret, _, err := syscall.Syscall(proc.LockSetForegroundWindow.Addr(), 1,
-		uintptr(uLockCode), 0, 0)
+		uintptr(lockCode), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -669,9 +673,9 @@ func MAKEWORD(lo, hi uint8) uint16 {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
-func MonitorFromPoint(pt POINT, dwFlags co.MONITOR) HMONITOR {
+func MonitorFromPoint(pt POINT, flags co.MONITOR) HMONITOR {
 	ret, _, _ := syscall.Syscall(proc.MonitorFromPoint.Addr(), 3,
-		uintptr(pt.X), uintptr(pt.Y), uintptr(dwFlags))
+		uintptr(pt.X), uintptr(pt.Y), uintptr(flags))
 	return HMONITOR(ret)
 }
 
@@ -684,12 +688,12 @@ func MulDiv(number, numerator, denominator int32) int32 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew
 func PeekMessage(
-	lpMsg *MSG, hWnd HWND,
-	wMsgFilterMin, wMsgFilterMax co.WM, wRemoveMsg co.PM) bool {
+	msg *MSG, hWnd HWND,
+	msgFilterMin, msgFilterMax co.WM, removeMsg co.PM) bool {
 
 	ret, _, _ := syscall.Syscall6(proc.PeekMessageW.Addr(), 5,
-		uintptr(unsafe.Pointer(lpMsg)), uintptr(hWnd),
-		uintptr(wMsgFilterMin), uintptr(wMsgFilterMax), uintptr(wRemoveMsg), 0)
+		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
+		uintptr(msgFilterMin), uintptr(msgFilterMax), uintptr(removeMsg), 0)
 	return ret != 0
 }
 
@@ -701,10 +705,10 @@ func PostQuitMessage(exitCode int32) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postthreadmessagew
 func PostThreadMessage(
-	idThread uint32, Msg co.WM, wParam WPARAM, lParam LPARAM) {
+	idThread uint32, msg co.WM, wParam WPARAM, lParam LPARAM) {
 
 	ret, _, err := syscall.Syscall6(proc.PostThreadMessage.Addr(), 4,
-		uintptr(idThread), uintptr(Msg), uintptr(wParam), uintptr(lParam),
+		uintptr(idThread), uintptr(msg), uintptr(wParam), uintptr(lParam),
 		0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -767,9 +771,9 @@ func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-func ShellNotifyIcon(dwMessage co.NIM, lpData *NOTIFYICONDATA) {
+func ShellNotifyIcon(message co.NIM, data *NOTIFYICONDATA) {
 	ret, _, err := syscall.Syscall(proc.Shell_NotifyIcon.Addr(), 2,
-		uintptr(dwMessage), uintptr(unsafe.Pointer(lpData)), 0)
+		uintptr(message), uintptr(unsafe.Pointer(data)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -779,21 +783,21 @@ func ShellNotifyIcon(dwMessage co.NIM, lpData *NOTIFYICONDATA) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
 func SHGetFileInfo(
-	pszPath string, dwFileAttributes co.FILE_ATTRIBUTE,
-	psfi *SHFILEINFO, uFlags co.SHGFI) {
+	path string, fileAttributes co.FILE_ATTRIBUTE,
+	sfi *SHFILEINFO, flags co.SHGFI) {
 
 	ret, _, err := syscall.Syscall6(proc.SHGetFileInfo.Addr(), 5,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pszPath))),
-		uintptr(dwFileAttributes), uintptr(unsafe.Pointer(psfi)),
-		unsafe.Sizeof(*psfi), uintptr(uFlags), 0)
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(path))),
+		uintptr(fileAttributes), uintptr(unsafe.Pointer(sfi)),
+		unsafe.Sizeof(*sfi), uintptr(flags), 0)
 
-	if (uFlags&co.SHGFI_EXETYPE) == 0 || (uFlags&co.SHGFI_SYSICONINDEX) == 0 {
+	if (flags&co.SHGFI_EXETYPE) == 0 || (flags&co.SHGFI_SYSICONINDEX) == 0 {
 		if ret == 0 {
 			panic(errco.ERROR(err))
 		}
 	}
 
-	if (uFlags & co.SHGFI_EXETYPE) != 0 {
+	if (flags & co.SHGFI_EXETYPE) != 0 {
 		if ret == 0 {
 			panic(errco.ERROR(err))
 		}
@@ -801,9 +805,9 @@ func SHGetFileInfo(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
-func Sleep(dwMilliseconds uint32) {
+func Sleep(milliseconds uint32) {
 	syscall.Syscall(proc.Sleep.Addr(), 1,
-		uintptr(dwMilliseconds), 0, 0)
+		uintptr(milliseconds), 0, 0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
@@ -830,11 +834,11 @@ func SystemTimeToFileTime(inSystemTime *SYSTEMTIME, outFileTime *FILETIME) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetotzspecificlocaltime
 func SystemTimeToTzSpecificLocalTime(
-	lpTimeZoneInformation *TIME_ZONE_INFORMATION,
+	timeZoneInfo *TIME_ZONE_INFORMATION,
 	inUniversalTime *SYSTEMTIME, outLocalTime *SYSTEMTIME) {
 
 	ret, _, err := syscall.Syscall(proc.SystemTimeToTzSpecificLocalTime.Addr(), 3,
-		uintptr(unsafe.Pointer(lpTimeZoneInformation)),
+		uintptr(unsafe.Pointer(timeZoneInfo)),
 		uintptr(unsafe.Pointer(inUniversalTime)),
 		uintptr(unsafe.Pointer(outLocalTime)))
 	if ret == 0 {
@@ -843,10 +847,10 @@ func SystemTimeToTzSpecificLocalTime(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
-func TaskDialogIndirect(pTaskConfig *TASKDIALOGCONFIG) co.ID {
+func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 	pnButton := co.ID(0)
 	ret, _, _ := syscall.Syscall6(proc.TaskDialogIndirect.Addr(), 4,
-		uintptr(unsafe.Pointer(pTaskConfig)), uintptr(unsafe.Pointer(&pnButton)),
+		uintptr(unsafe.Pointer(taskConfig)), uintptr(unsafe.Pointer(&pnButton)),
 		uintptr(0), uintptr(0), 0, 0)
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {
 		panic(wErr)
@@ -863,11 +867,11 @@ func TranslateMessage(msg *MSG) bool {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-tzspecificlocaltimetosystemtime
 func TzSpecificLocalTimeToSystemTime(
-	lpTimeZoneInformation *TIME_ZONE_INFORMATION,
+	timeZoneInfo *TIME_ZONE_INFORMATION,
 	inLocalTime *SYSTEMTIME, outUniversalTime *SYSTEMTIME) {
 
 	ret, _, err := syscall.Syscall(proc.TzSpecificLocalTimeToSystemTime.Addr(), 3,
-		uintptr(unsafe.Pointer(lpTimeZoneInformation)),
+		uintptr(unsafe.Pointer(timeZoneInfo)),
 		uintptr(unsafe.Pointer(inLocalTime)),
 		uintptr(unsafe.Pointer(outUniversalTime)))
 	if ret == 0 {
@@ -878,11 +882,11 @@ func TzSpecificLocalTimeToSystemTime(
 // Returns false if the structure does not exist.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
-func VerQueryValue(pBlock []byte, lpSubBlock string) ([]byte, bool) {
+func VerQueryValue(block []byte, subBlock string) ([]byte, bool) {
 	lplpBuffer, puLen := uintptr(0), uint32(0)
 	ret, _, _ := syscall.Syscall6(proc.VerQueryValue.Addr(), 4,
-		uintptr(unsafe.Pointer(&pBlock[0])),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpSubBlock))),
+		uintptr(unsafe.Pointer(&block[0])),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(subBlock))),
 		uintptr(unsafe.Pointer(&lplpBuffer)), uintptr(unsafe.Pointer(&puLen)),
 		0, 0)
 	if ret == 0 {

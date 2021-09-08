@@ -3,7 +3,6 @@ package win
 import (
 	"fmt"
 	"reflect"
-	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -86,24 +85,21 @@ func (hMenu HMENU) AppendMenu(
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(uIDNewItem)))
 	}
 
-	pItem := uintptr(0)
+	var pItem unsafe.Pointer
 	switch v := lpNewItem.(type) {
 	case HBITMAP:
-		pItem = uintptr(v)
+		pItem = unsafe.Pointer(uintptr(v))
 	case LPARAM:
-		pItem = uintptr(v)
+		pItem = unsafe.Pointer(uintptr(v))
 	case string:
-		pItem = uintptr(unsafe.Pointer(Str.ToUint16Ptr(v))) // runtime.KeepAlive()
+		pItem = unsafe.Pointer(Str.ToUint16Ptr(v))
 	default:
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(lpNewItem)))
 	}
 
 	ret, _, err := syscall.Syscall6(proc.AppendMenu.Addr(), 4,
-		uintptr(hMenu), uintptr(uFlags), pId, pItem,
+		uintptr(hMenu), uintptr(uFlags), pId, uintptr(pItem),
 		0, 0)
-
-	runtime.KeepAlive(lpNewItem)
-
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -132,9 +128,9 @@ func (hMenu HMENU) CheckMenuRadioItem(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deletemenu
-func (hMenu HMENU) DeleteMenu(idOrPos uint32, uFlags co.MF) {
+func (hMenu HMENU) DeleteMenu(idOrPos uint32, flags co.MF) {
 	ret, _, err := syscall.Syscall(proc.DeleteMenu.Addr(), 3,
-		uintptr(hMenu), uintptr(idOrPos), uintptr(uFlags))
+		uintptr(hMenu), uintptr(idOrPos), uintptr(flags))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -178,9 +174,9 @@ func (hMenu HMENU) EnableByPos(isEnabled bool, indexes ...int) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablemenuitem
-func (hMenu HMENU) EnableMenuItem(idOrPos uint32, uEnable co.MF) co.MF {
+func (hMenu HMENU) EnableMenuItem(idOrPos uint32, enable co.MF) co.MF {
 	ret, _, err := syscall.Syscall(proc.EnableMenuItem.Addr(), 3,
-		uintptr(hMenu), uintptr(idOrPos), uintptr(uEnable))
+		uintptr(hMenu), uintptr(idOrPos), uintptr(enable))
 	if int(ret) == -1 {
 		panic(errco.ERROR(err))
 	}
@@ -198,48 +194,48 @@ func (hMenu HMENU) GetMenuItemCount() uint32 {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuitemid
-func (hMenu HMENU) GetMenuItemID(nPos uint32) int32 {
+func (hMenu HMENU) GetMenuItemID(pos uint32) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetMenuItemID.Addr(), 2,
-		uintptr(hMenu), uintptr(nPos), 0)
+		uintptr(hMenu), uintptr(pos), 0)
 	return int32(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuiteminfow
 func (hMenu HMENU) GetMenuItemInfo(
-	idOrPos uint32, fByPosition bool, lpmii *MENUITEMINFO) {
+	idOrPos uint32, byPosition bool, mii *MENUITEMINFO) {
 
 	ret, _, err := syscall.Syscall6(proc.GetMenuItemInfo.Addr(), 4,
-		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(fByPosition),
-		uintptr(unsafe.Pointer(lpmii)), 0, 0)
+		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(byPosition),
+		uintptr(unsafe.Pointer(mii)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsubmenu
-func (hMenu HMENU) GetSubMenu(nPos uint32) (HMENU, bool) {
+func (hMenu HMENU) GetSubMenu(pos uint32) (HMENU, bool) {
 	ret, _, _ := syscall.Syscall(proc.GetSubMenu.Addr(), 2,
-		uintptr(hMenu), uintptr(nPos), 0)
+		uintptr(hMenu), uintptr(pos), 0)
 	hSub := HMENU(ret)
 	return hSub, hSub != 0
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenuitemw
 func (hMenu HMENU) InsertMenuItem(
-	idOrPos uint32, fByPosition bool, lpmi *MENUITEMINFO) {
+	idOrPos uint32, byPosition bool, mii *MENUITEMINFO) {
 
 	ret, _, err := syscall.Syscall6(proc.InsertMenuItem.Addr(), 4,
-		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(fByPosition),
-		uintptr(unsafe.Pointer(lpmi)), 0, 0)
+		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(byPosition),
+		uintptr(unsafe.Pointer(mii)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenudefaultitem
-func (hMenu HMENU) SetMenuDefaultItem(idOrPos uint32, fByPos bool) {
+func (hMenu HMENU) SetMenuDefaultItem(idOrPos uint32, byPosition bool) {
 	ret, _, err := syscall.Syscall(proc.SetMenuDefaultItem.Addr(), 3,
-		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(fByPos))
+		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(byPosition))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -265,12 +261,12 @@ func (hMenu HMENU) ShowAtPoint(pos POINT, hParent, hCoordsRelativeTo HWND) {
 // If TPM_RETURNCMD is passed, returns the selected command ID.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
-func (hMenu HMENU) TrackPopupMenu(uFlags co.TPM, x, y int32, hWnd HWND) int {
+func (hMenu HMENU) TrackPopupMenu(flags co.TPM, x, y int32, hWnd HWND) int {
 	ret, _, err := syscall.Syscall9(proc.TrackPopupMenu.Addr(), 7,
-		uintptr(hMenu), uintptr(uFlags), uintptr(x), uintptr(y), 0, uintptr(hWnd),
+		uintptr(hMenu), uintptr(flags), uintptr(x), uintptr(y), 0, uintptr(hWnd),
 		0, 0, 0)
 
-	if (uFlags & co.TPM_RETURNCMD) != 0 {
+	if (flags & co.TPM_RETURNCMD) != 0 {
 		if ret == 0 && err != 0 {
 			panic(errco.ERROR(err))
 		} else {

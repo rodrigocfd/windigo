@@ -176,15 +176,14 @@ func (hdc HDC) EndPath() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
 func (hdc HDC) EnumDisplayMonitors(
-	lprcClip *RECT,
-	lpfnEnum func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lp LPARAM) bool,
-	dwData LPARAM) {
+	rcClip *RECT,
+	enumFunc func(hMon HMONITOR, hdcMon HDC, rcMon *RECT) bool) {
 
 	ret, _, err := syscall.Syscall6(proc.EnumDisplayMonitors.Addr(), 4,
-		uintptr(hdc), uintptr(unsafe.Pointer(lprcClip)),
+		uintptr(hdc), uintptr(unsafe.Pointer(rcClip)),
 		syscall.NewCallback(
-			func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lp LPARAM) uintptr {
-				return util.BoolToUintptr(lpfnEnum(hMon, hdcMon, rcMon, lp))
+			func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, _ LPARAM) uintptr {
+				return util.BoolToUintptr(enumFunc(hMon, hdcMon, rcMon))
 			}),
 		0, 0, 0)
 	if ret == 0 {
@@ -202,18 +201,18 @@ func (hdc HDC) FillPath() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-fillrect
-func (hdc HDC) FillRect(lprc *RECT, hbr HBRUSH) {
+func (hdc HDC) FillRect(rc *RECT, hBrush HBRUSH) {
 	ret, _, err := syscall.Syscall(proc.FillRect.Addr(), 3,
-		uintptr(hdc), uintptr(unsafe.Pointer(lprc)), uintptr(hbr))
+		uintptr(hdc), uintptr(unsafe.Pointer(rc)), uintptr(hBrush))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-fillrgn
-func (hdc HDC) FillRgn(hrgn HRGN, hbr HBRUSH) {
+func (hdc HDC) FillRgn(hRgn HRGN, hBrush HBRUSH) {
 	ret, _, err := syscall.Syscall(proc.FillRgn.Addr(), 3,
-		uintptr(hdc), uintptr(hrgn), uintptr(hbr))
+		uintptr(hdc), uintptr(hRgn), uintptr(hBrush))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

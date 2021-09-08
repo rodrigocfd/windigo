@@ -15,12 +15,12 @@ type HHOOK HANDLE
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
 func SetWindowsHookEx(idHook co.WH,
-	lpfn func(code int32, wp WPARAM, lp LPARAM) uintptr,
-	hmod HINSTANCE, dwThreadId uint32) HHOOK {
+	userFunc func(code int32, wp WPARAM, lp LPARAM) uintptr,
+	hMod HINSTANCE, threadId uint32) HHOOK {
 
 	ret, _, err := syscall.Syscall6(proc.SetWindowsHookEx.Addr(), 4,
-		uintptr(idHook), syscall.NewCallback(lpfn),
-		uintptr(hmod), uintptr(dwThreadId), 0, 0)
+		uintptr(idHook), syscall.NewCallback(userFunc),
+		uintptr(hMod), uintptr(threadId), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

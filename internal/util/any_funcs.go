@@ -1,11 +1,7 @@
 package util
 
 import (
-	"fmt"
-	"reflect"
 	"strings"
-	"syscall"
-	"unsafe"
 )
 
 // Tells whether the number has the nth bit set.
@@ -48,26 +44,6 @@ func Iif(cond bool, ifTrue, ifFalse interface{}) interface{} {
 // Assembles an uint64 from two uint32.
 func Make64(lo, hi uint32) uint64 {
 	return (uint64(lo) & 0xffff_ffff) | ((uint64(hi) & 0xffff_ffff) << 32)
-}
-
-// Converts val to *uint16 or string; any other type will panic.
-//
-// Use runtime.KeepAlive() to make sure an eventual string will stay reachable.
-func PullUint16String(val interface{}) uintptr {
-	switch v := val.(type) {
-	case uint16:
-		return uintptr(v)
-
-	case string:
-		pStr, err := syscall.UTF16PtrFromString(v)
-		if err != nil {
-			panic(fmt.Sprintf("PullUint16String() failed \"%s\": %s", v, err))
-		}
-		return uintptr(unsafe.Pointer(pStr)) // runtime.KeepAlive()
-
-	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(val)))
-	}
 }
 
 // "&He && she" becomes "He & she".

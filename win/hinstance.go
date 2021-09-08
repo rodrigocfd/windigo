@@ -3,7 +3,6 @@ package win
 import (
 	"fmt"
 	"reflect"
-	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -18,11 +17,12 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
 type HINSTANCE HANDLE
 
+// ⚠️ lpModuleName must be string or nil.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
-func GetModuleHandle(moduleName string) HINSTANCE {
+func GetModuleHandle(moduleName interface{}) HINSTANCE {
 	ret, _, err := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(moduleName))),
-		0, 0)
+		uintptr(util.VariantNilString(moduleName)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -32,9 +32,9 @@ func GetModuleHandle(moduleName string) HINSTANCE {
 // ⚠️ You must defer HINSTANCE.FreeLibrary().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
-func LoadLibrary(lpLibFileName string) HINSTANCE {
+func LoadLibrary(libFileName string) HINSTANCE {
 	ret, _, err := syscall.Syscall(proc.LoadLibrary.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpLibFileName))),
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(libFileName))),
 		0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -46,15 +46,12 @@ func LoadLibrary(lpLibFileName string) HINSTANCE {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
 func (hInst HINSTANCE) CreateDialogParam(
-	lpTemplateName interface{}, hWndParent HWND,
-	lpDialogFunc uintptr, dwInitParam LPARAM) HWND {
+	templateName interface{}, hwndParent HWND,
+	dialogFunc uintptr, dwInitParam LPARAM) HWND {
 
 	ret, _, err := syscall.Syscall6(proc.CreateDialogParam.Addr(), 5,
-		uintptr(hInst), util.PullUint16String(lpTemplateName),
-		uintptr(hWndParent), lpDialogFunc, uintptr(dwInitParam), 0)
-
-	runtime.KeepAlive(lpTemplateName)
-
+		uintptr(hInst), uintptr(util.VariantUint16String(templateName)),
+		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -65,15 +62,12 @@ func (hInst HINSTANCE) CreateDialogParam(
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparamw
 func (hInst HINSTANCE) DialogBoxParam(
-	lpTemplateName interface{}, hWndParent HWND,
-	lpDialogFunc uintptr, dwInitParam LPARAM) uintptr {
+	templateName interface{}, hwndParent HWND,
+	dialogFunc uintptr, dwInitParam LPARAM) uintptr {
 
 	ret, _, err := syscall.Syscall6(proc.DialogBoxParam.Addr(), 5,
-		uintptr(hInst), util.PullUint16String(lpTemplateName),
-		uintptr(hWndParent), lpDialogFunc, uintptr(dwInitParam), 0)
-
-	runtime.KeepAlive(lpTemplateName)
-
+		uintptr(hInst), uintptr(util.VariantUint16String(templateName)),
+		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam), 0)
 	if int(ret) == -1 && errco.ERROR(err) != errco.SUCCESS {
 		panic(errco.ERROR(err))
 	}
@@ -125,8 +119,8 @@ func (hInst HINSTANCE) GetModuleFileName() string {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress
-func (hInst HINSTANCE) GetProcAddress(lpProcName string) uintptr {
-	ascii := []byte(lpProcName)
+func (hInst HINSTANCE) GetProcAddress(procName string) uintptr {
+	ascii := []byte(procName)
 	ascii = append(ascii, 0x00) // terminating null
 
 	ret, _, err := syscall.Syscall(proc.GetProcAddress.Addr(), 2,
@@ -140,12 +134,9 @@ func (hInst HINSTANCE) GetProcAddress(lpProcName string) uintptr {
 // ⚠️ lpTableName must be uint16 or string.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
-func (hInst HINSTANCE) LoadAccelerators(lpTableName interface{}) HACCEL {
+func (hInst HINSTANCE) LoadAccelerators(tableName interface{}) HACCEL {
 	ret, _, err := syscall.Syscall(proc.LoadAccelerators.Addr(), 2,
-		uintptr(hInst), util.PullUint16String(lpTableName), 0)
-
-	runtime.KeepAlive(lpTableName)
-
+		uintptr(hInst), uintptr(util.VariantUint16String(tableName)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -155,24 +146,21 @@ func (hInst HINSTANCE) LoadAccelerators(lpTableName interface{}) HACCEL {
 // ⚠️ lpCursorName must be uint16, co.IDC or string.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
-func (hInst HINSTANCE) LoadCursor(lpCursorName interface{}) HCURSOR {
-	pName := uintptr(0)
-	switch v := lpCursorName.(type) {
+func (hInst HINSTANCE) LoadCursor(cursorName interface{}) HCURSOR {
+	var pName unsafe.Pointer
+	switch v := cursorName.(type) {
 	case uint16:
-		pName = uintptr(v)
+		pName = unsafe.Pointer(uintptr(v))
 	case co.IDC:
-		pName = uintptr(v)
+		pName = unsafe.Pointer(uintptr(v))
 	case string:
-		pName = uintptr(unsafe.Pointer(Str.ToUint16Ptr(v))) // runtime.KeepAlive()
+		pName = unsafe.Pointer(Str.ToUint16Ptr(v))
 	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(lpCursorName)))
+		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(cursorName)))
 	}
 
 	ret, _, err := syscall.Syscall(proc.LoadCursor.Addr(), 2,
-		uintptr(hInst), pName, 0)
-
-	runtime.KeepAlive(lpCursorName)
-
+		uintptr(hInst), uintptr(pName), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -182,24 +170,21 @@ func (hInst HINSTANCE) LoadCursor(lpCursorName interface{}) HCURSOR {
 // ⚠️ lpIconName must be uint16, co.IDI or string.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
-func (hInst HINSTANCE) LoadIcon(lpIconName interface{}) HICON {
-	pName := uintptr(0)
-	switch v := lpIconName.(type) {
+func (hInst HINSTANCE) LoadIcon(iconName interface{}) HICON {
+	var pName unsafe.Pointer
+	switch v := iconName.(type) {
 	case uint16:
-		pName = uintptr(v)
+		pName = unsafe.Pointer(uintptr(v))
 	case co.IDI:
-		pName = uintptr(v)
+		pName = unsafe.Pointer(uintptr(v))
 	case string:
-		pName = uintptr(unsafe.Pointer(Str.ToUint16Ptr(v))) // runtime.KeepAlive()
+		pName = unsafe.Pointer(Str.ToUint16Ptr(v))
 	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(lpIconName)))
+		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(iconName)))
 	}
 
 	ret, _, err := syscall.Syscall(proc.LoadIcon.Addr(), 2,
-		uintptr(hInst), pName, 0)
-
-	runtime.KeepAlive(lpIconName)
-
+		uintptr(hInst), uintptr(pName), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -224,12 +209,9 @@ func (hInst HINSTANCE) LoadImage(
 // ⚠️ lpMenuName must be uint16 or string.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
-func (hInst HINSTANCE) LoadMenu(lpMenuName interface{}) HMENU {
+func (hInst HINSTANCE) LoadMenu(menuName interface{}) HMENU {
 	ret, _, err := syscall.Syscall(proc.LoadMenu.Addr(), 2,
-		uintptr(hInst), util.PullUint16String(lpMenuName), 0)
-
-	runtime.KeepAlive(lpMenuName)
-
+		uintptr(hInst), uintptr(util.VariantUint16String(menuName)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

@@ -49,6 +49,7 @@ var (
 	EnumClipboardFormats          = user32.NewProc("EnumClipboardFormats")
 	EnumDisplayMonitors           = user32.NewProc("EnumDisplayMonitors")
 	EnumWindows                   = user32.NewProc("EnumWindows")
+	FindWindow                    = user32.NewProc("FindWindowW")
 	GetAncestor                   = user32.NewProc("GetAncestor")
 	GetAsyncKeyState              = user32.NewProc("GetAsyncKeyState")
 	GetCaretPos                   = user32.NewProc("GetCaretPos")

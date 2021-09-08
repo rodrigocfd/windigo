@@ -18,12 +18,12 @@ type HFIND HANDLE
 // ⚠️ You must defer HFIND.FindClose().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
-func FindFirstFile(lpFileName string,
-	lpFindFileData *WIN32_FIND_DATA) (HFIND, bool, error) {
+func FindFirstFile(fileName string,
+	findFileData *WIN32_FIND_DATA) (HFIND, bool, error) {
 
 	ret, _, err := syscall.Syscall(proc.FindFirstFile.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(lpFileName))),
-		uintptr(unsafe.Pointer(lpFindFileData)), 0)
+		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
+		uintptr(unsafe.Pointer(findFileData)), 0)
 
 	if int(ret) == _INVALID_HANDLE_VALUE {
 		if wErr := errco.ERROR(err); wErr == errco.FILE_NOT_FOUND || wErr == errco.PATH_NOT_FOUND {
@@ -47,9 +47,9 @@ func (hFind HFIND) FindClose() {
 // Returns true if a file was found.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
-func (hFind HFIND) FindNextFile(lpFindFileData *WIN32_FIND_DATA) (bool, error) {
+func (hFind HFIND) FindNextFile(findFileData *WIN32_FIND_DATA) (bool, error) {
 	ret, _, err := syscall.Syscall(proc.FindNextFile.Addr(), 2,
-		uintptr(hFind), uintptr(unsafe.Pointer(lpFindFileData)), 0)
+		uintptr(hFind), uintptr(unsafe.Pointer(findFileData)), 0)
 
 	if ret == 0 {
 		if wErr := errco.ERROR(err); wErr == errco.NO_MORE_FILES {

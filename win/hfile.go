@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -59,19 +60,21 @@ func (hFile HFILE) GetFileSizeEx() (uint64, error) {
 	return uint64(retSz), nil
 }
 
+// ⚠️ objectName must be string or nil.
+//
 // ⚠️ You must defer HFILEMAP.CloseHandle().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
-func (hFile HFILE) CreateFileMapping(securityAttributes *SECURITY_ATTRIBUTES,
-	protectPage co.PAGE, protectSec co.SEC, maxSize uint32,
-	objectName string) (HFILEMAP, error) {
+func (hFile HFILE) CreateFileMapping(
+	securityAttributes *SECURITY_ATTRIBUTES,
+	protectPage co.PAGE, protectSec co.SEC,
+	maxSize uint32, objectName interface{}) (HFILEMAP, error) {
 
 	ret, _, err := syscall.Syscall6(proc.CreateFileMapping.Addr(), 6,
 		uintptr(hFile), uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
 		0, uintptr(maxSize),
-		uintptr(unsafe.Pointer(Str.ToUint16PtrBlankIsNil(objectName))))
-
+		uintptr(util.VariantNilString(objectName)))
 	if ret == 0 {
 		return HFILEMAP(0), errco.ERROR(err)
 	}
