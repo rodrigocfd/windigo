@@ -46,7 +46,7 @@ func NewRadioButton(parent AnyParent, opts *_RadioButtonO) RadioButton {
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_MultiplyDpi(&opts.position, &opts.size)
 		if opts.size.Cx == 0 && opts.size.Cy == 0 {
-			opts.size = _CalcTextBoundBox(opts.text, true)
+			opts.size = _CalcTextBoundBoxWithCheck(opts.text, true)
 		}
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
