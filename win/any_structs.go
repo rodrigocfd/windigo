@@ -237,6 +237,13 @@ func (iix *ICONINFOEX) SetSzResName(val string) {
 	copy(iix.szResName[:], Str.ToUint16Slice(Str.Substr(val, 0, _MAX_PATH-1)))
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
+type LOGBRUSH struct {
+	LbStyle co.BRS
+	LbColor COLORREF
+	LbHatch uintptr // ULONG_PTR
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type LOGFONT struct {
 	LfHeight         int32

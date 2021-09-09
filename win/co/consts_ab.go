@@ -134,6 +134,25 @@ const (
 	BKMODE_OPAQUE      BKMODE = 2
 )
 
+// LOGBRUSH lbStyle. Originally with BS prefix.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
+type BRS uint32
+
+const (
+	BRS_SOLID         BRS = 0
+	BRS_NULL          BRS = 1
+	BRS_HOLLOW        BRS = BRS_NULL
+	BRS_HATCHED       BRS = 2
+	BRS_PATTERN       BRS = 3
+	BRS_INDEXED       BRS = 4
+	BRS_DIBPATTERN    BRS = 5
+	BRS_DIBPATTERNPT  BRS = 6
+	BRS_PATTERN8X8    BRS = 7
+	BRS_DIBPATTERN8X8 BRS = 8
+	BRS_MONOPATTERN   BRS = 9
+)
+
 // Button control styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-styles

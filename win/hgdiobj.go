@@ -71,6 +71,18 @@ type HBRUSH HGDIOBJ
 
 // ⚠️ You must defer HBRUSH.DeleteObject().
 //
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbrushindirect
+func CreateBrushIndirect(lb *LOGBRUSH) HBRUSH {
+	ret, _, err := syscall.Syscall(proc.CreateBrushIndirect.Addr(), 1,
+		uintptr(unsafe.Pointer(lb)), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return HBRUSH(ret)
+}
+
+// ⚠️ You must defer HBRUSH.DeleteObject().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createhatchbrush
 func CreateHatchBrush(hatch co.HS, color COLORREF) HBRUSH {
 	ret, _, err := syscall.Syscall(proc.CreateHatchBrush.Addr(), 2,

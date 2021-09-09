@@ -258,6 +258,37 @@ func (hdc HDC) FrameRgn(hrgn HRGN, hbr HBRUSH, w, h int32) {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getcurrentpositionex
+func (hdc HDC) GetCurrentPositionEx() POINT {
+	pt := POINT{}
+	ret, _, err := syscall.Syscall(proc.GetCurrentPositionEx.Addr(), 2,
+		uintptr(hdc), uintptr(unsafe.Pointer(&pt)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return pt
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdcbrushcolor
+func (hdc HDC) GetDCBrushColor() COLORREF {
+	ret, _, err := syscall.Syscall(proc.GetDCBrushColor.Addr(), 1,
+		uintptr(hdc), 0, 0)
+	if ret == _CLR_INVALID {
+		panic(errco.ERROR(err))
+	}
+	return COLORREF(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdcpencolor
+func (hdc HDC) GetDCPenColor() COLORREF {
+	ret, _, err := syscall.Syscall(proc.GetDCPenColor.Addr(), 1,
+		uintptr(hdc), 0, 0)
+	if ret == _CLR_INVALID {
+		panic(errco.ERROR(err))
+	}
+	return COLORREF(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdevicecaps
 func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 	ret, _, _ := syscall.Syscall(proc.GetDeviceCaps.Addr(), 2,
