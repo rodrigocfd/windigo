@@ -27,9 +27,9 @@ func (hdc HDC) AbortPath() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-anglearc
-func (hdc HDC) AngleArc(x, y int32, r uint32, startAngle, sweepAngle float32) {
+func (hdc HDC) AngleArc(center POINT, r uint32, startAngle, sweepAngle float32) {
 	ret, _, err := syscall.Syscall6(proc.AngleArc.Addr(), 6,
-		uintptr(hdc), uintptr(x), uintptr(y), uintptr(r),
+		uintptr(hdc), uintptr(center.X), uintptr(center.Y), uintptr(r),
 		uintptr(startAngle), uintptr(sweepAngle))
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -37,20 +37,24 @@ func (hdc HDC) AngleArc(x, y int32, r uint32, startAngle, sweepAngle float32) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-arc
-func (hdc HDC) Arc(left, top, right, bottom, xr1, yr1, xr2, yr2 int32) {
+func (hdc HDC) Arc(bound RECT, radialStart, radialEnd POINT) {
 	ret, _, err := syscall.Syscall9(proc.Arc.Addr(), 9,
-		uintptr(hdc), uintptr(left), uintptr(top), uintptr(right), uintptr(bottom),
-		uintptr(xr1), uintptr(yr1), uintptr(xr2), uintptr(yr2))
+		uintptr(hdc), uintptr(bound.Left), uintptr(bound.Top),
+		uintptr(bound.Right), uintptr(bound.Bottom),
+		uintptr(radialStart.X), uintptr(radialStart.Y),
+		uintptr(radialEnd.X), uintptr(radialEnd.Y))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-arcto
-func (hdc HDC) ArcTo(left, top, right, bottom, xr1, yr1, xr2, yr2 int32) {
+func (hdc HDC) ArcTo(bound RECT, radialStart, radialEnd POINT) {
 	ret, _, err := syscall.Syscall9(proc.ArcTo.Addr(), 9,
-		uintptr(hdc), uintptr(left), uintptr(top), uintptr(right), uintptr(bottom),
-		uintptr(xr1), uintptr(yr1), uintptr(xr2), uintptr(yr2))
+		uintptr(hdc), uintptr(bound.Left), uintptr(bound.Top),
+		uintptr(bound.Right), uintptr(bound.Bottom),
+		uintptr(radialStart.X), uintptr(radialStart.Y),
+		uintptr(radialEnd.X), uintptr(radialEnd.Y))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -70,10 +74,14 @@ func (hdc HDC) BeginPath() {
 // This method is called from the destination HDC.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-bitblt
-func (hdc HDC) BitBlt(x, y, cx, cy, hdcSrc HDC, x1, y1 int32, rop co.ROP) {
+func (hdc HDC) BitBlt(
+	destTopLeft POINT, sz SIZE, hdcSrc HDC, srcTopLeft POINT, rop co.ROP) {
+
 	ret, _, err := syscall.Syscall9(proc.BitBlt.Addr(), 9,
-		uintptr(hdc), uintptr(x), uintptr(y), uintptr(cx), uintptr(cy),
-		uintptr(hdcSrc), uintptr(x1), uintptr(y1), uintptr(rop))
+		uintptr(hdc), uintptr(destTopLeft.X), uintptr(destTopLeft.Y),
+		uintptr(sz.Cx), uintptr(sz.Cy),
+		uintptr(hdcSrc), uintptr(srcTopLeft.X), uintptr(srcTopLeft.Y),
+		uintptr(rop))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -89,11 +97,12 @@ func (hdc HDC) CancelDC() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-chord
-func (hdc HDC) Chord(x1, y1, x2, y2, x3, y3, x4, y4 int32) {
+func (hdc HDC) Chord(bound RECT, radialStart, radialEnd POINT) {
 	ret, _, err := syscall.Syscall9(proc.Chord.Addr(), 9,
-		uintptr(hdc),
-		uintptr(x1), uintptr(y1), uintptr(x2), uintptr(y2),
-		uintptr(x3), uintptr(y3), uintptr(x4), uintptr(y4))
+		uintptr(hdc), uintptr(bound.Left), uintptr(bound.Top),
+		uintptr(bound.Right), uintptr(bound.Bottom),
+		uintptr(radialStart.X), uintptr(radialStart.Y),
+		uintptr(radialEnd.X), uintptr(radialEnd.Y))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -136,12 +145,12 @@ func (hdc HDC) CreateCompatibleDC() HDC {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
 func (hdc HDC) CreateDIBSection(
-	pbmi *BITMAPINFO, usage co.DIB,
+	bmi *BITMAPINFO, usage co.DIB,
 	hSection HFILEMAP, offset uint32) (HBITMAP, *byte) {
 
 	var ppvBits *byte
 	ret, _, err := syscall.Syscall6(proc.CreateDIBSection.Addr(), 6,
-		uintptr(hdc), uintptr(unsafe.Pointer(pbmi)), uintptr(usage),
+		uintptr(hdc), uintptr(unsafe.Pointer(bmi)), uintptr(usage),
 		uintptr(unsafe.Pointer(&ppvBits)), uintptr(hSection), uintptr(offset))
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -168,10 +177,10 @@ func (hdc HDC) DrawIcon(x, y int32, hIcon HICON) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-ellipse
-func (hdc HDC) Ellipse(left, top, right, bottom int32) {
+func (hdc HDC) Ellipse(bound RECT) {
 	ret, _, err := syscall.Syscall6(proc.Ellipse.Addr(), 5,
-		uintptr(hdc), uintptr(left), uintptr(top),
-		uintptr(right), uintptr(bottom), 0)
+		uintptr(hdc), uintptr(bound.Left), uintptr(bound.Top),
+		uintptr(bound.Right), uintptr(bound.Bottom), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -240,18 +249,18 @@ func (hdc HDC) FlattenPath() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-framerect
-func (hdc HDC) FrameRect(lprc *RECT, hbr HBRUSH) {
+func (hdc HDC) FrameRect(rc *RECT, hBrush HBRUSH) {
 	ret, _, err := syscall.Syscall(proc.FrameRect.Addr(), 3,
-		uintptr(hdc), uintptr(unsafe.Pointer(lprc)), uintptr(hbr))
+		uintptr(hdc), uintptr(unsafe.Pointer(rc)), uintptr(hBrush))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-framergn
-func (hdc HDC) FrameRgn(hrgn HRGN, hbr HBRUSH, w, h int32) {
+func (hdc HDC) FrameRgn(hRgn HRGN, hBrush HBRUSH, w, h int32) {
 	ret, _, err := syscall.Syscall6(proc.FrameRgn.Addr(), 5,
-		uintptr(hdc), uintptr(hrgn), uintptr(hbr), uintptr(w), uintptr(h),
+		uintptr(hdc), uintptr(hRgn), uintptr(hBrush), uintptr(w), uintptr(h),
 		0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -307,9 +316,9 @@ func (hdc HDC) GetPolyFillMode() co.POLYF {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextextentpoint32w
-func (hdc HDC) GetTextExtentPoint32(lpString string) SIZE {
+func (hdc HDC) GetTextExtentPoint32(text string) SIZE {
 	sz := SIZE{}
-	lpString16 := Str.ToUint16Slice(lpString)
+	lpString16 := Str.ToUint16Slice(text)
 	ret, _, err := syscall.Syscall6(proc.GetTextExtentPoint32.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(&lpString16[0])),
 		uintptr(len(lpString16)-1), uintptr(unsafe.Pointer(&sz)), 0, 0)
@@ -332,27 +341,27 @@ func (hdc HDC) GetTextFace() string {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextmetricsw
-func (hdc HDC) GetTextMetrics(lptm *TEXTMETRIC) {
+func (hdc HDC) GetTextMetrics(tm *TEXTMETRIC) {
 	ret, _, err := syscall.Syscall(proc.GetTextMetrics.Addr(), 2,
-		uintptr(hdc), uintptr(unsafe.Pointer(lptm)), 0)
+		uintptr(hdc), uintptr(unsafe.Pointer(tm)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invertrect
-func (hdc HDC) InvertRect(lprc RECT) {
+func (hdc HDC) InvertRect(rc *RECT) {
 	ret, _, err := syscall.Syscall(proc.InvertRect.Addr(), 2,
-		uintptr(hdc), uintptr(unsafe.Pointer(&lprc)), 0)
+		uintptr(hdc), uintptr(unsafe.Pointer(rc)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-invertrgn
-func (hdc HDC) InvertRgn(hrgn HRGN) {
+func (hdc HDC) InvertRgn(hRgn HRGN) {
 	ret, _, err := syscall.Syscall(proc.InvertRgn.Addr(), 2,
-		uintptr(hdc), uintptr(hrgn), 0)
+		uintptr(hdc), uintptr(hRgn), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -368,18 +377,18 @@ func (hdc HDC) LineTo(x, y int32) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-lptodp
-func (hdc HDC) LPtoDP(lppt []POINT) {
+func (hdc HDC) LPtoDP(pts []POINT) {
 	ret, _, err := syscall.Syscall(proc.LPtoDP.Addr(), 3,
-		uintptr(hdc), uintptr(unsafe.Pointer(&lppt[0])), uintptr(len(lppt)))
+		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])), uintptr(len(pts)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-movetoex
-func (hdc HDC) MoveToEx(x, y int32, lppt *POINT) {
+func (hdc HDC) MoveToEx(x, y int32, pt *POINT) {
 	ret, _, err := syscall.Syscall6(proc.MoveToEx.Addr(), 4,
-		uintptr(hdc), uintptr(x), uintptr(y), uintptr(unsafe.Pointer(lppt)),
+		uintptr(hdc), uintptr(x), uintptr(y), uintptr(unsafe.Pointer(pt)),
 		0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -387,9 +396,9 @@ func (hdc HDC) MoveToEx(x, y int32, lppt *POINT) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-paintrgn
-func (hdc HDC) PaintRgn(hrgn HRGN) {
+func (hdc HDC) PaintRgn(hRgn HRGN) {
 	ret, _, err := syscall.Syscall(proc.PaintRgn.Addr(), 2,
-		uintptr(hdc), uintptr(hrgn), 0)
+		uintptr(hdc), uintptr(hRgn), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -408,24 +417,26 @@ func (hdc HDC) PathToRegion() HRGN {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-pie
-func (hdc HDC) Pie(left, top, right, bottom, xr1, yr1, xr2, yr2 int32) {
+func (hdc HDC) Pie(bound RECT, endPointRadial1, endPointRadial2 POINT) {
 	ret, _, err := syscall.Syscall9(proc.Pie.Addr(), 9,
-		uintptr(hdc), uintptr(left), uintptr(top), uintptr(right), uintptr(bottom),
-		uintptr(xr1), uintptr(yr1), uintptr(xr2), uintptr(yr2))
+		uintptr(hdc), uintptr(bound.Left), uintptr(bound.Top),
+		uintptr(bound.Right), uintptr(bound.Bottom),
+		uintptr(endPointRadial1.X), uintptr(endPointRadial1.Y),
+		uintptr(endPointRadial2.X), uintptr(endPointRadial2.Y))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polydraw
-func (hdc HDC) PolyDraw(apt []POINT, aj []co.PT) {
-	if len(apt) != len(aj) {
+func (hdc HDC) PolyDraw(pts []POINT, usage []co.PT) {
+	if len(pts) != len(usage) {
 		panic(fmt.Sprintf("PolyDraw different slice sizes: %d, %d.",
-			len(apt), len(aj)))
+			len(pts), len(usage)))
 	}
 	ret, _, err := syscall.Syscall6(proc.PolyDraw.Addr(), 4,
-		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])),
-		uintptr(unsafe.Pointer(&aj[0])), uintptr(len(apt)),
+		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])),
+		uintptr(unsafe.Pointer(&usage[0])), uintptr(len(pts)),
 		0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -433,42 +444,42 @@ func (hdc HDC) PolyDraw(apt []POINT, aj []co.PT) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polygon
-func (hdc HDC) Polygon(apt []POINT) {
+func (hdc HDC) Polygon(pts []POINT) {
 	ret, _, err := syscall.Syscall(proc.Polygon.Addr(), 3,
-		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
+		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])), uintptr(len(pts)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polyline
-func (hdc HDC) Polyline(apt []POINT) {
+func (hdc HDC) Polyline(pts []POINT) {
 	ret, _, err := syscall.Syscall(proc.Polyline.Addr(), 3,
-		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
+		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])), uintptr(len(pts)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polylineto
-func (hdc HDC) PolylineTo(apt []POINT) {
+func (hdc HDC) PolylineTo(pts []POINT) {
 	ret, _, err := syscall.Syscall(proc.PolylineTo.Addr(), 3,
-		uintptr(hdc), uintptr(unsafe.Pointer(&apt[0])), uintptr(len(apt)))
+		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])), uintptr(len(pts)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polypolygon
-func (hdc HDC) PolyPolygon(apt [][]POINT) {
+func (hdc HDC) PolyPolygon(pts [][]POINT) {
 	totalPoints := 0
-	for _, block := range apt {
+	for _, block := range pts {
 		totalPoints += len(block)
 	}
 
 	flat := make([]POINT, 0, totalPoints)    // flat slice of all points
-	blockCount := make([]int32, 0, len(apt)) // lengths of each block of points
-	for _, block := range apt {
+	blockCount := make([]int32, 0, len(pts)) // lengths of each block of points
+	for _, block := range pts {
 		flat = append(flat, block...)
 		blockCount = append(blockCount, int32(len(block)))
 	}
@@ -483,15 +494,15 @@ func (hdc HDC) PolyPolygon(apt [][]POINT) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polypolyline
-func (hdc HDC) PolyPolyline(apt [][]POINT) {
+func (hdc HDC) PolyPolyline(pts [][]POINT) {
 	totalPoints := 0
-	for _, block := range apt {
+	for _, block := range pts {
 		totalPoints += len(block)
 	}
 
 	flat := make([]POINT, 0, totalPoints)     // flat slice of all points
-	blockCount := make([]uint32, 0, len(apt)) // lengths of each block of points
-	for _, block := range apt {
+	blockCount := make([]uint32, 0, len(pts)) // lengths of each block of points
+	for _, block := range pts {
 		flat = append(flat, block...)
 		blockCount = append(blockCount, uint32(len(block)))
 	}
@@ -516,29 +527,30 @@ func (hdc HDC) PtVisible(x, y int32) bool {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-rectangle
-func (hdc HDC) Rectangle(left, top, right, bottom int32) {
+func (hdc HDC) Rectangle(bound RECT) {
 	ret, _, err := syscall.Syscall6(proc.Rectangle.Addr(), 5,
-		uintptr(hdc), uintptr(left), uintptr(top), uintptr(right), uintptr(bottom),
-		0)
+		uintptr(hdc), uintptr(bound.Left), uintptr(bound.Top),
+		uintptr(bound.Right), uintptr(bound.Bottom), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-restoredc
-func (hdc HDC) RestoreDC(nSavedDC int32) {
+func (hdc HDC) RestoreDC(savedDC int32) {
 	ret, _, err := syscall.Syscall(proc.RestoreDC.Addr(), 2,
-		uintptr(hdc), uintptr(nSavedDC), 0)
+		uintptr(hdc), uintptr(savedDC), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-roundrect
-func (hdc HDC) RoundRect(left, top, right, bottom, width, height int32) {
+func (hdc HDC) RoundRect(bound RECT, sz SIZE) {
 	ret, _, err := syscall.Syscall9(proc.RoundRect.Addr(), 7,
-		uintptr(hdc), uintptr(left), uintptr(top), uintptr(right), uintptr(bottom),
-		uintptr(width), uintptr(height), 0, 0)
+		uintptr(hdc), uintptr(bound.Left), uintptr(bound.Top),
+		uintptr(bound.Right), uintptr(bound.Bottom),
+		uintptr(sz.Cx), uintptr(sz.Cy), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -555,9 +567,9 @@ func (hdc HDC) SaveDC() int32 {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
-func (hdc HDC) SelectObjectBitmap(b HBITMAP) HBITMAP {
+func (hdc HDC) SelectObjectBitmap(hBmp HBITMAP) HBITMAP {
 	ret, _, err := syscall.Syscall(proc.SelectObject.Addr(), 2,
-		uintptr(hdc), uintptr(b), 0)
+		uintptr(hdc), uintptr(hBmp), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -565,9 +577,9 @@ func (hdc HDC) SelectObjectBitmap(b HBITMAP) HBITMAP {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
-func (hdc HDC) SelectObjectBrush(b HBRUSH) HBRUSH {
+func (hdc HDC) SelectObjectBrush(hBrush HBRUSH) HBRUSH {
 	ret, _, err := syscall.Syscall(proc.SelectObject.Addr(), 2,
-		uintptr(hdc), uintptr(b), 0)
+		uintptr(hdc), uintptr(hBrush), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -575,9 +587,9 @@ func (hdc HDC) SelectObjectBrush(b HBRUSH) HBRUSH {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
-func (hdc HDC) SelectObjectFont(f HFONT) HFONT {
+func (hdc HDC) SelectObjectFont(hFont HFONT) HFONT {
 	ret, _, err := syscall.Syscall(proc.SelectObject.Addr(), 2,
-		uintptr(hdc), uintptr(f), 0)
+		uintptr(hdc), uintptr(hFont), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -585,9 +597,9 @@ func (hdc HDC) SelectObjectFont(f HFONT) HFONT {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
-func (hdc HDC) SelectObjectPen(p HPEN) HPEN {
+func (hdc HDC) SelectObjectPen(hPen HPEN) HPEN {
 	ret, _, err := syscall.Syscall(proc.SelectObject.Addr(), 2,
-		uintptr(hdc), uintptr(p), 0)
+		uintptr(hdc), uintptr(hPen), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -595,9 +607,9 @@ func (hdc HDC) SelectObjectPen(p HPEN) HPEN {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
-func (hdc HDC) SelectObjectRgn(r HRGN) co.REGION {
+func (hdc HDC) SelectObjectRgn(hRgn HRGN) co.REGION {
 	ret, _, err := syscall.Syscall(proc.SelectObject.Addr(), 2,
-		uintptr(hdc), uintptr(r), 0)
+		uintptr(hdc), uintptr(hRgn), 0)
 	if ret == _HGDI_ERROR {
 		panic(errco.ERROR(err))
 	}
@@ -625,9 +637,9 @@ func (hdc HDC) SetBkMode(mode co.BKMODE) co.BKMODE {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setpolyfillmode
-func (hdc HDC) SetPolyFillMode(iMode co.POLYF) co.POLYF {
+func (hdc HDC) SetPolyFillMode(mode co.POLYF) co.POLYF {
 	ret, _, err := syscall.Syscall(proc.SetPolyFillMode.Addr(), 2,
-		uintptr(hdc), uintptr(iMode), 0)
+		uintptr(hdc), uintptr(mode), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -662,8 +674,8 @@ func (hdc HDC) StrokePath() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-textoutw
-func (hdc HDC) TextOut(x, y int32, lpString string) {
-	lpString16 := Str.ToUint16Slice(lpString)
+func (hdc HDC) TextOut(x, y int32, text string) {
+	lpString16 := Str.ToUint16Slice(text)
 	ret, _, err := syscall.Syscall6(proc.TextOut.Addr(), 5,
 		uintptr(hdc), uintptr(x), uintptr(y),
 		uintptr(unsafe.Pointer(&lpString16[0])),
@@ -678,14 +690,18 @@ func (hdc HDC) TextOut(x, y int32, lpString string) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-transparentblt
 func (hdc HDC) TransparentBlt(
-	xoriginDest, yoriginDest, wDest, hDest,
-	hdcSrc HDC, xoriginSrc, yoriginSrc, wSrc, hSrc int32,
-	crTransparent COLORREF) {
+	destTopLeft POINT, destSz SIZE,
+	hdcSrc HDC, srcTopLeft POINT, srcSz SIZE,
+	colorTransparent COLORREF) {
 
 	ret, _, err := syscall.Syscall12(proc.TransparentBlt.Addr(), 11,
-		uintptr(hdc), uintptr(xoriginDest), uintptr(yoriginDest), uintptr(wDest), uintptr(hDest),
-		uintptr(hdcSrc), uintptr(xoriginSrc), uintptr(yoriginSrc), uintptr(wSrc), uintptr(hSrc),
-		uintptr(crTransparent), 0)
+		uintptr(hdc),
+		uintptr(destTopLeft.X), uintptr(destTopLeft.Y),
+		uintptr(destSz.Cx), uintptr(destSz.Cy),
+		uintptr(hdcSrc),
+		uintptr(srcTopLeft.X), uintptr(srcTopLeft.Y),
+		uintptr(srcSz.Cx), uintptr(srcSz.Cy),
+		uintptr(colorTransparent), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

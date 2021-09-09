@@ -105,9 +105,9 @@ func (hFile HFILE) SetEndOfFile() error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
-//
 // Returns the new pointer offset.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
 func (hFile HFILE) SetFilePointerEx(
 	distanceToMove int64, moveMethod co.FILE_FROM) (uint64, error) {
 
