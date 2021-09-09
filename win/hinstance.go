@@ -17,7 +17,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
 type HINSTANCE HANDLE
 
-// ⚠️ lpModuleName must be string or nil.
+// ⚠️ moduleName must be string or nil.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
 func GetModuleHandle(moduleName interface{}) HINSTANCE {
@@ -42,7 +42,7 @@ func LoadLibrary(libFileName string) HINSTANCE {
 	return HINSTANCE(ret)
 }
 
-// ⚠️ lpTemplateName must be uint16 or string.
+// ⚠️ templateName must be uint16 or string.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
 func (hInst HINSTANCE) CreateDialogParam(
@@ -58,7 +58,7 @@ func (hInst HINSTANCE) CreateDialogParam(
 	return HWND(ret)
 }
 
-// ⚠️ lpTemplateName must be uint16 or string.
+// ⚠️ templateName must be uint16 or string.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparamw
 func (hInst HINSTANCE) DialogBoxParam(
@@ -131,7 +131,7 @@ func (hInst HINSTANCE) GetProcAddress(procName string) uintptr {
 	return ret
 }
 
-// ⚠️ lpTableName must be uint16 or string.
+// ⚠️ tableName must be uint16 or string.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
 func (hInst HINSTANCE) LoadAccelerators(tableName interface{}) HACCEL {
@@ -143,7 +143,7 @@ func (hInst HINSTANCE) LoadAccelerators(tableName interface{}) HACCEL {
 	return HACCEL(ret)
 }
 
-// ⚠️ lpCursorName must be uint16, co.IDC or string.
+// ⚠️ cursorName must be uint16, co.IDC or string.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(cursorName interface{}) HCURSOR {
@@ -167,7 +167,7 @@ func (hInst HINSTANCE) LoadCursor(cursorName interface{}) HCURSOR {
 	return HCURSOR(ret)
 }
 
-// ⚠️ lpIconName must be uint16, co.IDI or string.
+// ⚠️ iconName must be uint16, co.IDI or string.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hInst HINSTANCE) LoadIcon(iconName interface{}) HICON {
@@ -206,7 +206,7 @@ func (hInst HINSTANCE) LoadImage(
 	return HANDLE(ret)
 }
 
-// ⚠️ lpMenuName must be uint16 or string.
+// ⚠️ menuName must be uint16 or string.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
 func (hInst HINSTANCE) LoadMenu(menuName interface{}) HMENU {

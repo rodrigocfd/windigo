@@ -646,11 +646,38 @@ func (hdc HDC) SetPolyFillMode(mode co.POLYF) co.POLYF {
 	return co.POLYF(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setstretchbltmode
+func (hdc HDC) SetStretchBltMode(mode co.STRETCH) co.STRETCH {
+	ret, _, err := syscall.Syscall(proc.SetStretchBltMode.Addr(), 2,
+		uintptr(hdc), uintptr(mode), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return co.STRETCH(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-settextalign
 func (hdc HDC) SetTextAlign(align co.TA) {
 	ret, _, err := syscall.Syscall(proc.SetTextAlign.Addr(), 2,
 		uintptr(hdc), uintptr(align), 0)
 	if ret == _GDI_ERR {
+		panic(errco.ERROR(err))
+	}
+}
+
+// This method is called from the destination HDC.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-stretchblt
+func (hdc HDC) StretchBlt(
+	destTopLeft POINT, destSz SIZE,
+	hdcSrc HDC, srcTopLeft POINT, srcSz SIZE, rop co.ROP) {
+
+	ret, _, err := syscall.Syscall12(proc.StretchBlt.Addr(), 11,
+		uintptr(hdc), uintptr(destTopLeft.X), uintptr(destTopLeft.Y),
+		uintptr(destSz.Cx), uintptr(destSz.Cy),
+		uintptr(hdcSrc), uintptr(srcTopLeft.X), uintptr(srcTopLeft.Y),
+		uintptr(srcSz.Cx), uintptr(srcSz.Cy), uintptr(rop), 0)
+	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }

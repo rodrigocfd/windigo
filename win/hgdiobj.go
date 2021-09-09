@@ -62,6 +62,15 @@ func (hBmp HBITMAP) DeleteObject() {
 	HGDIOBJ(hBmp).DeleteObject()
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
+func (hBmp HBITMAP) GetObject(bmp *BITMAP) {
+	ret, _, err := syscall.Syscall(proc.GetObject.Addr(), 3,
+		uintptr(hBmp), unsafe.Sizeof(*bmp), uintptr(unsafe.Pointer(bmp)))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
 //------------------------------------------------------------------------------
 
 // A handle to a brush.
@@ -138,6 +147,15 @@ func (hBrush HBRUSH) DeleteObject() {
 	HGDIOBJ(hBrush).DeleteObject()
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
+func (hBrush HBRUSH) GetObject(lb *LOGBRUSH) {
+	ret, _, err := syscall.Syscall(proc.GetObject.Addr(), 3,
+		uintptr(hBrush), unsafe.Sizeof(*lb), uintptr(unsafe.Pointer(lb)))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
 //------------------------------------------------------------------------------
 
 // A handle to a font.
@@ -160,6 +178,15 @@ func CreateFontIndirect(lf *LOGFONT) HFONT {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hFont HFONT) DeleteObject() {
 	HGDIOBJ(hFont).DeleteObject()
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
+func (hFont HFONT) GetObject(lf *LOGFONT) {
+	ret, _, err := syscall.Syscall(proc.GetObject.Addr(), 3,
+		uintptr(hFont), unsafe.Sizeof(*lf), uintptr(unsafe.Pointer(lf)))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -192,6 +219,15 @@ func CreatePenIndirect(lp *LOGPEN) HPEN {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hPen HPEN) DeleteObject() {
 	HGDIOBJ(hPen).DeleteObject()
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
+func (hPen HPEN) GetObject(lp *LOGPEN) {
+	ret, _, err := syscall.Syscall(proc.GetObject.Addr(), 3,
+		uintptr(hPen), unsafe.Sizeof(*lp), uintptr(unsafe.Pointer(lp)))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
 }
 
 //------------------------------------------------------------------------------

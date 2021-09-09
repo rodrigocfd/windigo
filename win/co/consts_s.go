@@ -543,6 +543,21 @@ const (
 	STARTF_USESTDHANDLES    STARTF = 0x0000_0100
 )
 
+// SetStretchBltMode() mode.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setstretchbltmode
+type STRETCH int32
+
+const (
+	STRETCH_BLACKONWHITE STRETCH = 1
+	STRETCH_WHITEONBLACK STRETCH = 2
+	STRETCH_COLORONCOLOR STRETCH = 3
+	STRETCH_HALFTONE     STRETCH = 4
+	STRETCH_ANDSCANS     STRETCH = STRETCH_BLACKONWHITE
+	STRETCH_ORSCANS      STRETCH = STRETCH_WHITEONBLACK
+	STRETCH_DELETESCANS  STRETCH = STRETCH_COLORONCOLOR
+)
+
 // ShowWindow() nCmdShow.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
