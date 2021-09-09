@@ -191,6 +191,20 @@ const (
 	HICF_TOGGLEDROPDOWN HICF = 0x0000_0100
 )
 
+// CreateHatchBrush() iHatch.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createhatchbrush
+type HS int32
+
+const (
+	HS_HORIZONTAL HS = 0 // Pattern: -----
+	HS_VERTICAL   HS = 1 // Pattern: |||||
+	HS_FDIAGONAL  HS = 2 // Pattern: \\\\\
+	HS_BDIAGONAL  HS = 3 // Pattern: /////
+	HS_CROSS      HS = 4 // Pattern: +++++
+	HS_DIAGCROSS  HS = 5 // Pattern: xxxxx
+)
+
 // WM_NCHITTEST return value.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest

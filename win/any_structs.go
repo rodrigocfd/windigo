@@ -17,6 +17,17 @@ type ACCEL struct {
 	Cmd   uint16    // LOWORD(wParam) value.
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmap
+type BITMAP struct {
+	bmType       int32
+	BmWidth      int32
+	BmHeight     int32
+	BmWidthBytes int32
+	BmPlanes     uint16
+	BmBitsPixel  uint16
+	BmBits       *byte
+}
+
 // ⚠️ You must call BmiHeader.SetBiSize().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfo

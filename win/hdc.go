@@ -108,6 +108,18 @@ func (hdc HDC) CloseFigure() {
 	}
 }
 
+// ⚠️ You must defer HBITMAP.DeleteObject().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createcompatiblebitmap
+func (hdc HDC) CreateCompatibleBitmap(cx, cy int32) HBITMAP {
+	ret, _, err := syscall.Syscall(proc.CreateCompatibleBitmap.Addr(), 3,
+		uintptr(hdc), uintptr(cx), uintptr(cy))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return HBITMAP(ret)
+}
+
 // ⚠️ You must defer HDC.DeleteDC().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createcompatibledc
