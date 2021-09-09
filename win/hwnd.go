@@ -450,9 +450,9 @@ func (hWnd HWND) Hinstance() HINSTANCE {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invalidaterect
-func (hWnd HWND) InvalidateRect(rc RECT, erase bool) {
+func (hWnd HWND) InvalidateRect(rc *RECT, erase bool) {
 	ret, _, err := syscall.Syscall(proc.InvalidateRect.Addr(), 3,
-		uintptr(hWnd), uintptr(unsafe.Pointer(&rc)),
+		uintptr(hWnd), uintptr(unsafe.Pointer(rc)),
 		util.BoolToUintptr(erase))
 	if ret == 0 {
 		panic(errco.ERROR(err))

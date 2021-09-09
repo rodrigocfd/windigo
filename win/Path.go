@@ -86,10 +86,10 @@ func (_PathT) IsHidden(path string) bool {
 		(attr&co.FILE_ATTRIBUTE_HIDDEN) != 0
 }
 
-// Sorts the paths alphabetically.
+// Sorts the paths alphabetically, case insensitive.
 func (_PathT) Sort(paths []string) {
 	sort.Slice(paths, func(a, b int) bool {
-		return strings.ToUpper(paths[a]) < strings.ToUpper(paths[b]) // case insensitive
+		return strings.ToUpper(paths[a]) < strings.ToUpper(paths[b])
 	})
 }
 

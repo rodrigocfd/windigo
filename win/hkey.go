@@ -2,7 +2,10 @@ package win
 
 import (
 	"runtime"
+	"sort"
+	"strings"
 	"syscall"
+	"time"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
@@ -86,26 +89,22 @@ func (hKey HKEY) DeleteTree(subKey string) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumkeyexw
 func (hKey HKEY) EnumKeyEx() ([]string, error) {
-	cSubKeys, cbMaxSubKeyLen := uint32(0), uint32(0)
-	err := hKey.QueryInfoKey(nil, &cSubKeys, &cbMaxSubKeyLen,
-		nil, nil, nil, nil, nil, nil)
+	keyInfo, err := hKey.QueryInfoKey()
 	if err != nil {
 		return nil, err
 	}
 
-	err = nil
-	keyNames := make([]string, 0, cSubKeys)
+	keyNames := make([]string, 0, keyInfo.NumSubKeys)        // key names to be returned
+	keyNameBuf := make([]uint16, keyInfo.MaxSubKeyNameLen+1) // to receive the names of the keys
+	keyNameBufLen := uint32(0)
 
-	keyNameBuf := make([]uint16, cbMaxSubKeyLen+1)
-	keyNameBufLen := int(0)
-
-	for i := 0; i < int(cSubKeys); i++ {
-		keyNameBufLen = len(keyNameBuf)
+	for i := 0; i < int(keyInfo.NumSubKeys); i++ {
+		keyNameBufLen = uint32(len(keyNameBuf)) // reset available buffer size
 
 		ret, _, _ := syscall.Syscall9(proc.RegEnumKeyEx.Addr(), 8,
 			uintptr(hKey), uintptr(i),
 			uintptr(unsafe.Pointer(&keyNameBuf[0])),
-			uintptr(unsafe.Pointer(&keyNameBufLen)),
+			uintptr(unsafe.Pointer(&keyNameBufLen)), // receives the number of chars without null
 			0, 0, 0, 0, 0)
 
 		if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
@@ -115,49 +114,56 @@ func (hKey HKEY) EnumKeyEx() ([]string, error) {
 		keyNames = append(keyNames, Str.FromUint16Slice(keyNameBuf))
 	}
 
+	Path.Sort(keyNames)
 	return keyNames, nil
 }
 
-// Returned valueNames and valueTypes have the same length.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumvaluew
-func (hKey HKEY) EnumValue() (
-	valueNames []string, valueTypes []co.REG, err error) {
+func (hKey HKEY) EnumValue() ([]struct {
+	Name string
+	Type co.REG
+}, error) {
 
-	cValues, cbMaxValueNameLen := uint32(0), uint32(0)
-	err = hKey.QueryInfoKey(nil, nil, nil, nil, &cValues, &cbMaxValueNameLen,
-		nil, nil, nil)
+	keyInfo, err := hKey.QueryInfoKey()
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	err = nil
-	valueNames = make([]string, 0, cValues)
-	valueTypes = make([]co.REG, 0, cValues)
+	values := make([]struct { // to be returned
+		Name string
+		Type co.REG
+	}, 0, keyInfo.NumValues)
 
-	valueNameBuf := make([]uint16, cbMaxValueNameLen+2)
-	valueNameBufLen := int(0)
+	valueNameBuf := make([]uint16, keyInfo.MaxValueNameLen+2) // room to avoid "more data" error
+	valueNameBufLen := uint32(0)
 	valueTypeBuf := co.REG(0)
 
-	for i := 0; i < int(cValues); i++ {
-		valueNameBufLen = len(valueNameBuf)
+	for i := 0; i < int(keyInfo.NumValues); i++ {
+		valueNameBufLen = uint32(len(valueNameBuf)) // reset available buffer size
 
 		ret, _, _ := syscall.Syscall9(proc.RegEnumValue.Addr(), 8,
 			uintptr(hKey), uintptr(i),
 			uintptr(unsafe.Pointer(&valueNameBuf[0])),
-			uintptr(unsafe.Pointer(&valueNameBufLen)),
+			uintptr(unsafe.Pointer(&valueNameBufLen)), // receives the number of chars without null
 			0, uintptr(unsafe.Pointer(&valueTypeBuf)), 0, 0, 0)
 
 		if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
-			valueNames, valueTypes, err = nil, nil, wErr
-			return
+			return nil, wErr
 		}
 
-		valueNames = append(valueNames, Str.FromUint16Slice(valueNameBuf))
-		valueTypes = append(valueTypes, valueTypeBuf)
+		values = append(values, struct {
+			Name string
+			Type co.REG
+		}{
+			Name: Str.FromUint16Slice(valueNameBuf),
+			Type: valueTypeBuf,
+		})
 	}
 
-	return
+	sort.Slice(values, func(a, b int) bool {
+		return strings.ToUpper(values[a].Name) < strings.ToUpper(values[b].Name) // case insensitive
+	})
+	return values, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regflushkey
@@ -209,78 +215,54 @@ func (hKey HKEY) OpenKeyEx(
 	return openedKey, nil
 }
 
-// Pass pointers for the values you want to retrieve, pass the others as nil.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryinfokeyw
-func (hKey HKEY) QueryInfoKey(
-	lpClass *string,
-	cSubKeys, cbMaxSubKeyLen, cbMaxClassLen, cValues,
-	cbMaxValueNameLen, cbMaxValueLen, cbSecurityDescriptor *uint32,
-	ftLastWriteTime *FILETIME) error {
+func (hKey HKEY) QueryInfoKey() (struct {
+	Class                 string
+	NumSubKeys            uint32
+	MaxSubKeyNameLen      uint32
+	MaxSubKeyClassLen     uint32
+	NumValues             uint32
+	MaxValueNameLen       uint32
+	MaxValueDataLen       uint32
+	SecurityDescriptorLen uint32
+	LastWriteTime         time.Time
+}, error) {
 
-	classBuf := []uint16{}
-	cchClassBuf := uint32(0)
+	info := struct {
+		Class                 string
+		NumSubKeys            uint32
+		MaxSubKeyNameLen      uint32
+		MaxSubKeyClassLen     uint32
+		NumValues             uint32
+		MaxValueNameLen       uint32
+		MaxValueDataLen       uint32
+		SecurityDescriptorLen uint32
+		LastWriteTime         time.Time
+	}{}
 
-	var ( // all retrievable values, nil by default
-		classP                *uint16
-		cchClassP             *uint32
-		cSubKeysP             *uint32
-		cbMaxSubKeyLenP       *uint32
-		cbMaxClassLenP        *uint32
-		cValuesP              *uint32
-		cbMaxValueNameLenP    *uint32
-		cbMaxValueLenP        *uint32
-		cbSecurityDescriptorP *uint32
-		ftLastWriteTimeP      *FILETIME
-	)
-	if lpClass != nil {
-		classBuf = make([]uint16, 255+1) // arbitrary
-		classP = &classBuf[0]
-		cchClassBuf = uint32(len(classBuf))
-		cchClassP = &cchClassBuf
-	}
-	if cSubKeys != nil {
-		cSubKeysP = cSubKeys
-	}
-	if cbMaxSubKeyLen != nil {
-		cbMaxSubKeyLenP = cbMaxSubKeyLen
-	}
-	if cbMaxClassLen != nil {
-		cbMaxClassLenP = cbMaxClassLen
-	}
-	if cValues != nil {
-		cValuesP = cValues
-	}
-	if cbMaxValueNameLen != nil {
-		cbMaxValueNameLenP = cbMaxValueNameLen
-	}
-	if cbMaxValueLen != nil {
-		cbMaxValueLenP = cbMaxValueLen
-	}
-	if cbSecurityDescriptor != nil {
-		cbSecurityDescriptorP = cbSecurityDescriptor
-	}
-	if ftLastWriteTime != nil {
-		ftLastWriteTimeP = ftLastWriteTime
-	}
+	classBuf := [_MAX_PATH + 1]uint16{} // arbitrary
+	classBufLen := uint32(len(classBuf))
+	ft := FILETIME{}
 
 	ret, _, _ := syscall.Syscall12(proc.RegQueryInfoKey.Addr(), 12,
 		uintptr(hKey),
-		uintptr(unsafe.Pointer(classP)), uintptr(unsafe.Pointer(cchClassP)), 0,
-		uintptr(unsafe.Pointer(cSubKeysP)), uintptr(unsafe.Pointer(cbMaxSubKeyLenP)),
-		uintptr(unsafe.Pointer(cbMaxClassLenP)), uintptr(unsafe.Pointer(cValuesP)),
-		uintptr(unsafe.Pointer(cbMaxValueNameLenP)), uintptr(unsafe.Pointer(cbMaxValueLenP)),
-		uintptr(unsafe.Pointer(cbSecurityDescriptorP)),
-		uintptr(unsafe.Pointer(ftLastWriteTimeP)))
+		uintptr(unsafe.Pointer(&classBuf[0])), uintptr(unsafe.Pointer(&classBufLen)), 0,
+		uintptr(unsafe.Pointer(&info.NumSubKeys)),
+		uintptr(unsafe.Pointer(&info.MaxSubKeyNameLen)),
+		uintptr(unsafe.Pointer(&info.MaxSubKeyClassLen)),
+		uintptr(unsafe.Pointer(&info.NumValues)),
+		uintptr(unsafe.Pointer(&info.MaxValueNameLen)),
+		uintptr(unsafe.Pointer(&info.MaxValueDataLen)),
+		uintptr(unsafe.Pointer(&info.SecurityDescriptorLen)),
+		uintptr(unsafe.Pointer(&ft)))
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
-		return wErr
+		return info, wErr
 	}
 
-	if lpClass != nil {
-		*lpClass = Str.FromUint16Slice(classBuf[:])
-	}
-	return nil
+	info.Class = Str.FromUint16Slice(classBuf[:])
+	info.LastWriteTime = ft.ToTime()
+	return info, nil
 }
 
 // Reads a REG_BINARY value with HKEY.GetValue().
