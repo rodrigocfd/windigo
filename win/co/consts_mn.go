@@ -194,6 +194,20 @@ const (
 	MK_XBUTTON2 MK = 0x0040
 )
 
+// MoveFileEx() dwFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw
+type MOVEFILE uint32
+
+const (
+	MOVEFILE_COPY_ALLOWED          MOVEFILE = 0x2
+	MOVEFILE_CREATE_HARDLINK       MOVEFILE = 0x10
+	MOVEFILE_DELAY_UNTIL_REBOOT    MOVEFILE = 0x4
+	MOVEFILE_FAIL_IF_NOT_TRACKABLE MOVEFILE = 0x20
+	MOVEFILE_REPLACE_EXISTING      MOVEFILE = 0x1
+	MOVEFILE_WRITE_THROUGH         MOVEFILE = 0x8
+)
+
 // WM_MENUCHAR return value.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menuchar

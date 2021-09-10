@@ -24,6 +24,8 @@ func (_PathT) HasExtension(path string, extensions ...string) bool {
 }
 
 // Returns all the file names that match a pattern like "C:\\foo\\*.txt".
+//
+// Uses FindFirstFile() and related functions.
 func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 	wfd := WIN32_FIND_DATA{}
 	hFind, found, err := FindFirstFile(pathAndPattern, &wfd)

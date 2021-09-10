@@ -362,6 +362,18 @@ const (
 	REGION_COMPLEX REGION = 3
 )
 
+// ReplaceFile() dwReplaceFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew
+type REPLACEFILE uint32
+
+const (
+	REPLACEFILE_NONE                REPLACEFILE = 0
+	REPLACEFILE_WRITE_THROUGH       REPLACEFILE = 0x0000_0001
+	REPLACEFILE_IGNORE_MERGE_ERRORS REPLACEFILE = 0x0000_0002
+	REPLACEFILE_IGNORE_ACL_ERRORS   REPLACEFILE = 0x0000_0004
+)
+
 // CombineRgn() iMode.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
