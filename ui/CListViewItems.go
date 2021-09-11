@@ -29,33 +29,28 @@ func (me *_ListViewItems) Add(texts ...string) ListViewItem {
 
 // Adds an item, specifying its icon and the texts under each column, returning the new item.
 func (me *_ListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewItem {
-	textBuf := win.Str.ToUint16Slice(texts[0])
-
 	lvi := win.LVITEM{}
 	lvi.Mask = co.LVIF_TEXT | co.LVIF_IMAGE
 	lvi.IItem = 0x0fff_ffff // insert as last one
 	lvi.IImage = int32(iconIndex)
-	lvi.SetPszText(textBuf)
+	lvi.SetPszText(win.Str.ToUint16Slice(texts[0])) // first column is inserted right away
 
 	newIdx := int(
 		me.pHwnd.SendMessage(co.LVM_INSERTITEM,
 			0, win.LPARAM(unsafe.Pointer(&lvi))),
 	)
 	if newIdx == -1 {
-		panic(fmt.Sprintf("LVM_INSERTITEM \"%s\" failed.", texts[0]))
+		panic(fmt.Sprintf("LVM_INSERTITEM col %d, \"%s\" failed.", 0, texts[0]))
 	}
 
-	for i, text := range texts {
-		if i > 0 {
-			textBuf = win.Str.ToUint16Slice(text)
-			lvi.ISubItem = int32(i)
-			lvi.SetPszText(textBuf)
+	for i := 1; i < len(texts); i++ { // each subsequent column
+		lvi.ISubItem = int32(i)
+		lvi.SetPszText(win.Str.ToUint16Slice(texts[i]))
 
-			ret := me.pHwnd.SendMessage(co.LVM_SETITEMTEXT,
-				win.WPARAM(newIdx), win.LPARAM(unsafe.Pointer(&lvi)))
-			if ret == 0 {
-				panic(fmt.Sprintf("LVM_SETITEMTEXT \"%s\" failed.", text))
-			}
+		ret := me.pHwnd.SendMessage(co.LVM_SETITEMTEXT,
+			win.WPARAM(newIdx), win.LPARAM(unsafe.Pointer(&lvi)))
+		if ret == 0 {
+			panic(fmt.Sprintf("LVM_SETITEMTEXT col %d, \"%s\" failed.", i, texts[i]))
 		}
 	}
 
@@ -119,10 +114,9 @@ func (me *_ListViewItems) Focused() (ListViewItem, bool) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/lvm-finditem
 func (me *_ListViewItems) Find(text string) (ListViewItem, bool) {
-	textBuf := win.Str.ToUint16Slice(text)
 	lvfi := win.LVFINDINFO{
 		Flags: co.LVFI_STRING,
-		Psz:   &textBuf[0],
+		Psz:   win.Str.ToUint16Ptr(text),
 	}
 
 	wp := -1

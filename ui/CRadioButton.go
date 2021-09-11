@@ -24,7 +24,9 @@ type RadioButton interface {
 	EmulateClick()                // Emulates an user click.
 	IsChecked() bool              // Retrieves the current check state.
 	SetChecked()                  // Checks the radio button.
+	SetText(text string)          // Sets the text.
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
+	Text() string                 // Retrieves the text.
 }
 
 //------------------------------------------------------------------------------
@@ -98,11 +100,19 @@ func (me *_RadioButton) SetChecked() {
 	me.Hwnd().SendMessage(co.BM_SETCHECK, win.WPARAM(co.BST_CHECKED), 0)
 }
 
-func (me *_RadioButton) SetTextAndResize(text string) {
+func (me *_RadioButton) SetText(text string) {
 	me.Hwnd().SetWindowText(text)
+}
+
+func (me *_RadioButton) SetTextAndResize(text string) {
+	me.SetText(text)
 	boundBox := _CalcTextBoundBoxWithCheck(text, true)
 	me.Hwnd().SetWindowPos(win.HWND(0), 0, 0,
 		boundBox.Cx, boundBox.Cy, co.SWP_NOZORDER|co.SWP_NOMOVE)
+}
+
+func (me *_RadioButton) Text() string {
+	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------

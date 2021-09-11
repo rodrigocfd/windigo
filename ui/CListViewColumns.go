@@ -32,9 +32,8 @@ func (me *_ListViewColumns) Add(widths []int, titles ...string) {
 		colWidth := win.SIZE{Cx: int32(widths[i]), Cy: 0}
 		_MultiplyDpi(nil, &colWidth)
 
-		textBuf := win.Str.ToUint16Slice(titles[i])
 		lvc.Cx = colWidth.Cx
-		lvc.SetPszText(textBuf)
+		lvc.SetPszText(win.Str.ToUint16Slice(titles[i]))
 
 		newIdx := int(
 			me.pHwnd.SendMessage(co.LVM_INSERTCOLUMN,
@@ -62,12 +61,10 @@ func (me *_ListViewColumns) Count() int {
 
 // Sets the title of this column.
 func (me *_ListViewColumns) SetTitle(columnIndex int, text string) {
-	titleBuf := win.Str.ToUint16Slice(text)
-
 	lvc := win.LVCOLUMN{}
 	lvc.ISubItem = int32(columnIndex)
 	lvc.Mask = co.LVCF_TEXT
-	lvc.SetPszText(titleBuf)
+	lvc.SetPszText(win.Str.ToUint16Slice(text))
 
 	ret := me.pHwnd.SendMessage(co.LVM_SETCOLUMN,
 		win.WPARAM(columnIndex), win.LPARAM(unsafe.Pointer(&lvc)))

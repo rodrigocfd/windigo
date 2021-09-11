@@ -22,7 +22,9 @@ type CheckBox interface {
 	CheckState() co.BST           // Retrieves the current check state.
 	EmulateClick()                // Emulates an user click.
 	SetCheckState(state co.BST)   // Sets the current check state.
+	SetText(text string)          // Sets the text.
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
+	Text() string                 // Retrieves the text.
 }
 
 //------------------------------------------------------------------------------
@@ -92,11 +94,19 @@ func (me *_CheckBox) SetCheckState(state co.BST) {
 	me.Hwnd().SendMessage(co.BM_SETCHECK, win.WPARAM(state), 0)
 }
 
-func (me *_CheckBox) SetTextAndResize(text string) {
+func (me *_CheckBox) SetText(text string) {
 	me.Hwnd().SetWindowText(text)
+}
+
+func (me *_CheckBox) SetTextAndResize(text string) {
+	me.SetText(text)
 	boundBox := _CalcTextBoundBoxWithCheck(text, true)
 	me.Hwnd().SetWindowPos(win.HWND(0), 0, 0,
 		boundBox.Cx, boundBox.Cy, co.SWP_NOZORDER|co.SWP_NOMOVE)
+}
+
+func (me *_CheckBox) Text() string {
+	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------

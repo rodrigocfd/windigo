@@ -40,13 +40,11 @@ func (me *_TreeViewItem) new(pHwnd *win.HWND, hItem win.HTREEITEM) {
 }
 
 func (me *_TreeViewItem) AddChild(text string) TreeViewItem {
-	textBuf := win.Str.ToUint16Slice(text)
-
 	tvi := win.TVINSERTSTRUCT{}
 	tvi.HParent = me.hItem
 	tvi.HInsertAfter = win.HTREEITEM(co.HTREEITEM_LAST)
 	tvi.Itemex.Mask = co.TVIF_TEXT
-	tvi.Itemex.SetPszText(textBuf)
+	tvi.Itemex.SetPszText(win.Str.ToUint16Slice(text))
 
 	hNewItem := win.HTREEITEM(
 		me.pHwnd.SendMessage(co.TVM_INSERTITEM,
@@ -194,12 +192,10 @@ func (me *_TreeViewItem) SetLParam(lp win.LPARAM) {
 }
 
 func (me *_TreeViewItem) SetText(text string) {
-	textBuf := win.Str.ToUint16Slice(text)
-
 	tvi := win.TVITEMEX{}
 	tvi.HItem = me.hItem
 	tvi.Mask = co.TVIF_TEXT
-	tvi.SetPszText(textBuf)
+	tvi.SetPszText(win.Str.ToUint16Slice(text))
 
 	ret := me.pHwnd.SendMessage(co.TVM_SETITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))

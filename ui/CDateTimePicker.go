@@ -77,7 +77,6 @@ func (me *_DateTimePicker) On() *_DateTimePickerEvents {
 	return &me.events
 }
 
-// Sets the current time.
 func (me *_DateTimePicker) SetTime(newTime time.Time) {
 	st := win.SYSTEMTIME{}
 	st.FromTime(newTime)
