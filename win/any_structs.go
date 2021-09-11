@@ -344,12 +344,13 @@ type MINMAXINFO struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msg
 type MSG struct {
-	HWnd   HWND
-	Msg    uint32
-	WParam WPARAM
-	LParam LPARAM
-	Time   uint32
-	Pt     POINT
+	HWnd     HWND
+	Msg      uint32
+	WParam   WPARAM
+	LParam   LPARAM
+	Time     uint32
+	Pt       POINT
+	lPrivate uint32
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nccalcsize_params

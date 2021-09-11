@@ -138,9 +138,8 @@ func _CalcTextBoundBoxWithCheck(
 func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
 	msg := win.MSG{}
 	for {
-		res, fail := win.GetMessage(&msg, win.HWND(0), 0, 0)
-		if fail != nil {
-			panic(fail)
+		if res, err := win.GetMessage(&msg, win.HWND(0), 0, 0); err != nil {
+			panic(err)
 		} else if res == 0 {
 			// WM_QUIT was sent, gracefully terminate the program.
 			// If it returned -1, it will simply panic.
@@ -174,9 +173,8 @@ func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
 func _RunModalLoop(hWnd win.HWND) {
 	msg := win.MSG{}
 	for {
-		res, fail := win.GetMessage(&msg, win.HWND(0), 0, 0)
-		if fail != nil {
-			panic(fail)
+		if res, err := win.GetMessage(&msg, win.HWND(0), 0, 0); err != nil {
+			panic(err)
 		} else if res == 0 {
 			// WM_QUIT was sent, exit modal loop now and signal parent.
 			// If it returned -1, it will simply panic.
