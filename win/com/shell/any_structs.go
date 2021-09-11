@@ -23,6 +23,11 @@ type THUMBBUTTON struct {
 	IId     uint32
 	IBitmap uint32
 	HIcon   win.HICON
-	SzTip   [260]uint16
+	szTip   [260]uint16
 	DwFlags shellco.THBF
+}
+
+func (tb *THUMBBUTTON) SzTip() string { return win.Str.FromUint16Slice(tb.szTip[:]) }
+func (tb *THUMBBUTTON) SetSzTip(val string) {
+	copy(tb.szTip[:], win.Str.ToUint16Slice(win.Str.Substr(val, 0, len(tb.szTip)-1)))
 }

@@ -26,14 +26,14 @@ type IFileSaveDialog struct {
 	IFileDialog // Base IFileDialog > IModalWindow > IUnknown.
 }
 
-// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(). Usually context is CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer IFileSaveDialog.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func NewIFileSaveDialog(dwClsContext co.CLSCTX) IFileSaveDialog {
+func NewIFileSaveDialog(context co.CLSCTX) IFileSaveDialog {
 	iUnk := win.CoCreateInstance(
-		shellco.CLSID_FileSaveDialog, nil, dwClsContext,
+		shellco.CLSID_FileSaveDialog, nil, context,
 		shellco.IID_IFileSaveDialog)
 	return IFileSaveDialog{
 		IFileDialog{
@@ -43,11 +43,11 @@ func NewIFileSaveDialog(dwClsContext co.CLSCTX) IFileSaveDialog {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem
-func (me *IFileSaveDialog) SetSaveAsItem(psi *IShellItem) {
+func (me *IFileSaveDialog) SetSaveAsItem(si *IShellItem) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileSaveDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetSaveAsItem, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(psi.Ppv)), 0)
+		uintptr(unsafe.Pointer(si.Ppv)), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

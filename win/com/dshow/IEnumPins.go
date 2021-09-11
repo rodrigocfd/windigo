@@ -103,11 +103,11 @@ func (me *IEnumPins) Reset() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-skip
-func (me *IEnumPins) Skip(cPins int) bool {
+func (me *IEnumPins) Skip(numPins int) bool {
 	ret, _, _ := syscall.Syscall(
 		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ppv)).Skip, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(uint32(cPins)), 0)
+		uintptr(uint32(numPins)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true

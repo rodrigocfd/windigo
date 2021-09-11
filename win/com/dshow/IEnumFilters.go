@@ -107,11 +107,11 @@ func (me *IEnumFilters) Reset() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-skip
-func (me *IEnumFilters) Skip(cFilters int) bool {
+func (me *IEnumFilters) Skip(numFilters int) bool {
 	ret, _, _ := syscall.Syscall(
 		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ppv)).Skip, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(uint32(cFilters)), 0)
+		uintptr(uint32(numFilters)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true

@@ -26,14 +26,14 @@ type IBaseFilter struct {
 	IMediaFilter // Base IMediaFilter > IPersist > IUnknown.
 }
 
-// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(). Usually context is CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer IBaseFilter.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/medfound/using-the-directshow-evr-filter
-func NewEnhancedVideoRenderer(dwClsContext co.CLSCTX) IBaseFilter {
+func NewEnhancedVideoRenderer(context co.CLSCTX) IBaseFilter {
 	iUnk := win.CoCreateInstance(
-		dshowco.CLSID_EnhancedVideoRenderer, nil, dwClsContext,
+		dshowco.CLSID_EnhancedVideoRenderer, nil, context,
 		dshowco.IID_IBaseFilter)
 	return IBaseFilter{
 		IMediaFilter{
@@ -42,14 +42,14 @@ func NewEnhancedVideoRenderer(dwClsContext co.CLSCTX) IBaseFilter {
 	}
 }
 
-// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(). Usually with CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer IBaseFilter.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/directshow/video-mixing-renderer-filter-9
-func NewVideoMixingRenderer9(dwClsContext co.CLSCTX) IBaseFilter {
+func NewVideoMixingRenderer9(context co.CLSCTX) IBaseFilter {
 	iUnk := win.CoCreateInstance(
-		dshowco.CLSID_VideoMixingRenderer9, nil, dwClsContext,
+		dshowco.CLSID_VideoMixingRenderer9, nil, context,
 		dshowco.IID_IBaseFilter)
 	return IBaseFilter{
 		IMediaFilter{
@@ -101,13 +101,13 @@ func (me *IBaseFilter) FindPin(id string) (IPin, bool) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-joinfiltergraph
 func (me *IBaseFilter) JoinFilterGraph(
-	pGraph *IFilterGraph, pName string) error {
+	graph *IFilterGraph, name string) error {
 
 	ret, _, _ := syscall.Syscall(
 		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ppv)).JoinFilterGraph, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(pGraph.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pName))))
+		uintptr(unsafe.Pointer(graph.Ppv)),
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(name))))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil
@@ -119,11 +119,11 @@ func (me *IBaseFilter) JoinFilterGraph(
 // ⚠️ You must defer IFilterGraph.Release() on PGraph field.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
-func (me *IBaseFilter) QueryFilterInfo(pInfo *FILTER_INFO) {
+func (me *IBaseFilter) QueryFilterInfo(info *FILTER_INFO) {
 	ret, _, _ := syscall.Syscall(
 		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ppv)).QueryFilterInfo, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(pInfo)), 0)
+		uintptr(unsafe.Pointer(info)), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

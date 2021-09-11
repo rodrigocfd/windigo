@@ -50,12 +50,12 @@ func NewShellItem(thePath string) (IShellItem, error) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-compare
-func (me *IShellItem) Compare(psi IShellItem, hint shellco.SICHINT) bool {
+func (me *IShellItem) Compare(si IShellItem, hint shellco.SICHINT) bool {
 	piOrder := uint32(0)
 	ret, _, _ := syscall.Syscall6(
 		(*_IShellItemVtbl)(unsafe.Pointer(*me.Ppv)).Compare, 4,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(psi.Ppv)),
+		uintptr(unsafe.Pointer(si.Ppv)),
 		uintptr(hint),
 		uintptr(unsafe.Pointer(&piOrder)), 0, 0)
 
@@ -69,12 +69,12 @@ func (me *IShellItem) Compare(psi IShellItem, hint shellco.SICHINT) bool {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getattributes
-func (me *IShellItem) GetAttributes(sfgaoMask co.SFGAO) co.SFGAO {
+func (me *IShellItem) GetAttributes(mask co.SFGAO) co.SFGAO {
 	attribs := co.SFGAO(0)
 	ret, _, _ := syscall.Syscall(
 		(*_IShellItemVtbl)(unsafe.Pointer(*me.Ppv)).GetAttributes, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&sfgaoMask)),
+		uintptr(unsafe.Pointer(&mask)),
 		uintptr(unsafe.Pointer(&attribs)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK || hr == errco.S_FALSE {

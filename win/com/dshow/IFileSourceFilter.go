@@ -24,12 +24,12 @@ type IFileSourceFilter struct {
 // Returns false if no file is opened.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-getcurfile
-func (me *IFileSourceFilter) GetCurFile(pmt *AM_MEDIA_TYPE) (string, bool) {
+func (me *IFileSourceFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 	var pv *uint16
 	ret, _, _ := syscall.Syscall(
 		(*_IFileSourceFilterVtbl)(unsafe.Pointer(*me.Ppv)).GetCurFile, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&pv)), uintptr(unsafe.Pointer(pmt)))
+		uintptr(unsafe.Pointer(&pv)), uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		name := win.Str.FromUint16Ptr(pv)
@@ -43,12 +43,12 @@ func (me *IFileSourceFilter) GetCurFile(pmt *AM_MEDIA_TYPE) (string, bool) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-load
-func (me *IFileSourceFilter) Load(pszFileName string, pmt *AM_MEDIA_TYPE) {
+func (me *IFileSourceFilter) Load(fileName string, mt *AM_MEDIA_TYPE) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileSourceFilterVtbl)(unsafe.Pointer(*me.Ppv)).Load, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszFileName))),
-		uintptr(unsafe.Pointer(pmt)))
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(fileName))),
+		uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

@@ -58,11 +58,11 @@ func (me *IEnumMediaTypes) Count() int {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-next
-func (me *IEnumMediaTypes) Next(ppMediaType *AM_MEDIA_TYPE) bool {
+func (me *IEnumMediaTypes) Next(mt *AM_MEDIA_TYPE) bool {
 	ret, _, _ := syscall.Syscall6(
 		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ppv)).Next, 4,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		1, uintptr(unsafe.Pointer(&ppMediaType)), 0, 0, 0)
+		1, uintptr(unsafe.Pointer(&mt)), 0, 0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
@@ -82,11 +82,11 @@ func (me *IEnumMediaTypes) Reset() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-skip
-func (me *IEnumMediaTypes) Skip(cMediaTypes int) bool {
+func (me *IEnumMediaTypes) Skip(numMediaTypes int) bool {
 	ret, _, _ := syscall.Syscall(
 		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ppv)).Skip, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(uint32(cMediaTypes)), 0)
+		uintptr(uint32(numMediaTypes)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true

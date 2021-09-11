@@ -50,13 +50,13 @@ func (me *IPin) BeginFlush() {
 // ⚠️ You must defer IPin.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connect
-func (me *IPin) Connect(pmt *AM_MEDIA_TYPE) (IPin, error) {
+func (me *IPin) Connect(mt *AM_MEDIA_TYPE) (IPin, error) {
 	var ppQueried **win.IUnknownVtbl
 	ret, _, _ := syscall.Syscall(
 		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).Connect, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&ppQueried)),
-		uintptr(unsafe.Pointer(pmt)))
+		uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return IPin{
@@ -87,11 +87,11 @@ func (me *IPin) ConnectedTo() (IPin, error) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connectionmediatype
-func (me *IPin) ConnectionMediaType(pmt *AM_MEDIA_TYPE) error {
+func (me *IPin) ConnectionMediaType(mt *AM_MEDIA_TYPE) error {
 	ret, _, _ := syscall.Syscall(
 		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).ConnectionMediaType, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(pmt)), 0)
+		uintptr(unsafe.Pointer(mt)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil
@@ -156,11 +156,11 @@ func (me *IPin) EnumMediaTypes() (IEnumMediaTypes, error) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-queryaccept
-func (me *IPin) QueryAccept(pmt *AM_MEDIA_TYPE) (bool, error) {
+func (me *IPin) QueryAccept(mt *AM_MEDIA_TYPE) (bool, error) {
 	ret, _, _ := syscall.Syscall(
 		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).QueryAccept, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(pmt)), 0)
+		uintptr(unsafe.Pointer(mt)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK || hr == errco.S_FALSE {
 		return hr == errco.S_OK, nil

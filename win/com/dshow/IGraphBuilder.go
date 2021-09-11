@@ -28,14 +28,14 @@ type IGraphBuilder struct {
 	IFilterGraph // Base IFilterGraph > IUnknown.
 }
 
-// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(). Usually context is CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer IGraphBuilder.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func NewIGraphBuilder(dwClsContext co.CLSCTX) IGraphBuilder {
+func NewIGraphBuilder(context co.CLSCTX) IGraphBuilder {
 	iUnk := win.CoCreateInstance(
-		dshowco.CLSID_FilterGraph, nil, dwClsContext,
+		dshowco.CLSID_FilterGraph, nil, context,
 		dshowco.IID_IGraphBuilder)
 	return IGraphBuilder{
 		IFilterGraph{IUnknown: iUnk},

@@ -22,14 +22,14 @@ type ITaskbarList4 struct {
 	ITaskbarList3 // Base ITaskbarList3 > ITaskbarList2 > ITaskbarList > IUnknown.
 }
 
-// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(). Usually context is CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer ITaskbarList4.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func NewITaskbarList4(dwClsContext co.CLSCTX) ITaskbarList4 {
+func NewITaskbarList4(context co.CLSCTX) ITaskbarList4 {
 	iUnk := win.CoCreateInstance(
-		shellco.CLSID_TaskbarList, nil, dwClsContext,
+		shellco.CLSID_TaskbarList, nil, context,
 		shellco.IID_ITaskbarList4)
 	return ITaskbarList4{
 		ITaskbarList3{
@@ -42,12 +42,12 @@ func NewITaskbarList4(dwClsContext co.CLSCTX) ITaskbarList4 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist4-settabproperties
 func (me *ITaskbarList4) SetProperties(
-	hwndTab win.HWND, stpFlags shellco.STPFLAG) {
+	hwndTab win.HWND, flags shellco.STPFLAG) {
 
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarList4Vtbl)(unsafe.Pointer(*me.Ppv)).SetTabProperties, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwndTab), uintptr(stpFlags))
+		uintptr(hwndTab), uintptr(flags))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

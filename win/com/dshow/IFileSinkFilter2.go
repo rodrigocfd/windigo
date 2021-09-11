@@ -37,11 +37,11 @@ func (me *IFileSinkFilter2) GetMode() dshowco.AM_FILE {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-setmode
-func (me *IFileSinkFilter2) SetMode(dwFlags dshowco.AM_FILE) {
+func (me *IFileSinkFilter2) SetMode(flags dshowco.AM_FILE) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileSinkFilter2Vtbl)(unsafe.Pointer(*me.Ppv)).SetMode, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(dwFlags), 0)
+		uintptr(flags), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

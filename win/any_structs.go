@@ -144,21 +144,21 @@ func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) StandardName() string {
 	return Str.FromUint16Slice(dtz.standardName[:])
 }
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetStandardName(val string) {
-	copy(dtz.standardName[:], Str.ToUint16Slice(Str.Substr(val, 0, 32-1)))
+	copy(dtz.standardName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(dtz.standardName)-1)))
 }
 
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) DaylightName() string {
 	return Str.FromUint16Slice(dtz.daylightName[:])
 }
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetDaylightName(val string) {
-	copy(dtz.daylightName[:], Str.ToUint16Slice(Str.Substr(val, 0, 32-1)))
+	copy(dtz.daylightName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(dtz.daylightName)-1)))
 }
 
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) TimeZoneKeyName() string {
 	return Str.FromUint16Slice(dtz.timeZoneKeyName[:])
 }
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetTimeZoneKeyName(val string) {
-	copy(dtz.timeZoneKeyName[:], Str.ToUint16Slice(Str.Substr(val, 0, 128-1)))
+	copy(dtz.timeZoneKeyName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(dtz.timeZoneKeyName)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
@@ -229,12 +229,12 @@ func (iix *ICONINFOEX) SetFIcon(val bool) { iix.fIcon = BOOL(util.BoolToUintptr(
 
 func (iix *ICONINFOEX) SzModName() string { return Str.FromUint16Slice(iix.szModName[:]) }
 func (iix *ICONINFOEX) SetSzModName(val string) {
-	copy(iix.szModName[:], Str.ToUint16Slice(Str.Substr(val, 0, _MAX_PATH-1)))
+	copy(iix.szModName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(iix.szModName)-1)))
 }
 
 func (iix *ICONINFOEX) SzResName() string { return Str.FromUint16Slice(iix.szResName[:]) }
 func (iix *ICONINFOEX) SetSzResName(val string) {
-	copy(iix.szResName[:], Str.ToUint16Slice(Str.Substr(val, 0, _MAX_PATH-1)))
+	copy(iix.szResName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(iix.szResName)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
@@ -264,7 +264,7 @@ type LOGFONT struct {
 
 func (lf *LOGFONT) LfFaceName() string { return Str.FromUint16Slice(lf.lfFaceName[:]) }
 func (lf *LOGFONT) SetLfFaceName(val string) {
-	copy(lf.lfFaceName[:], Str.ToUint16Slice(Str.Substr(val, 0, _LF_FACESIZE-1)))
+	copy(lf.lfFaceName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(lf.lfFaceName)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logpen
@@ -420,17 +420,17 @@ func (nid *NOTIFYICONDATA) SetCbSize() { nid.cbSize = uint32(unsafe.Sizeof(*nid)
 
 func (nid *NOTIFYICONDATA) SzTip() string { return Str.FromUint16Slice(nid.szTip[:]) }
 func (nid *NOTIFYICONDATA) SetSzTip(val string) {
-	copy(nid.szTip[:], Str.ToUint16Slice(Str.Substr(val, 0, 128-1)))
+	copy(nid.szTip[:], Str.ToUint16Slice(Str.Substr(val, 0, len(nid.szTip)-1)))
 }
 
 func (nid *NOTIFYICONDATA) SzInfo() string { return Str.FromUint16Slice(nid.szInfo[:]) }
 func (nid *NOTIFYICONDATA) SetSzInfo(val string) {
-	copy(nid.szInfo[:], Str.ToUint16Slice(Str.Substr(val, 0, 256-1)))
+	copy(nid.szInfo[:], Str.ToUint16Slice(Str.Substr(val, 0, len(nid.szInfo)-1)))
 }
 
 func (nid *NOTIFYICONDATA) SzInfoTitle() string { return Str.FromUint16Slice(nid.szInfoTitle[:]) }
 func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
-	copy(nid.szInfoTitle[:], Str.ToUint16Slice(Str.Substr(val, 0, 64-1)))
+	copy(nid.szInfoTitle[:], Str.ToUint16Slice(Str.Substr(val, 0, len(nid.szInfoTitle)-1)))
 }
 
 // ⚠️ You must call SetDwOsVersionInfoSize().
@@ -456,7 +456,7 @@ func (osv *OSVERSIONINFOEX) SetDwOsVersionInfoSize() {
 
 func (osv *OSVERSIONINFOEX) SzCSDVersion() string { return Str.FromUint16Slice(osv.szCSDVersion[:]) }
 func (osv *OSVERSIONINFOEX) SetSzCSDVersion(val string) {
-	copy(osv.szCSDVersion[:], Str.ToUint16Slice(Str.Substr(val, 0, 128-1)))
+	copy(osv.szCSDVersion[:], Str.ToUint16Slice(Str.Substr(val, 0, len(osv.szCSDVersion)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-paintstruct
@@ -559,12 +559,12 @@ type SHFILEINFO struct {
 
 func (shf *SHFILEINFO) SzDisplayName() string { return Str.FromUint16Slice(shf.szDisplayName[:]) }
 func (shf *SHFILEINFO) SetSzDisplayName(val string) {
-	copy(shf.szDisplayName[:], Str.ToUint16Slice(Str.Substr(val, 0, _MAX_PATH-1)))
+	copy(shf.szDisplayName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(shf.szDisplayName)-1)))
 }
 
 func (shf *SHFILEINFO) SzTypeName() string { return Str.FromUint16Slice(shf.szTypeName[:]) }
 func (shf *SHFILEINFO) SetSzTypeName(val string) {
-	copy(shf.szTypeName[:], Str.ToUint16Slice(Str.Substr(val, 0, 80-1)))
+	copy(shf.szTypeName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(shf.szTypeName)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialog_button
@@ -902,14 +902,14 @@ func (tzi *TIME_ZONE_INFORMATION) StandardName() string {
 	return Str.FromUint16Slice(tzi.standardName[:])
 }
 func (tzi *TIME_ZONE_INFORMATION) SetStandardName(val string) {
-	copy(tzi.standardName[:], Str.ToUint16Slice(Str.Substr(val, 0, 32-1)))
+	copy(tzi.standardName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(tzi.standardName)-1)))
 }
 
 func (tzi *TIME_ZONE_INFORMATION) DaylightName() string {
 	return Str.FromUint16Slice(tzi.daylightName[:])
 }
 func (tzi *TIME_ZONE_INFORMATION) SetDaylightName(val string) {
-	copy(tzi.daylightName[:], Str.ToUint16Slice(Str.Substr(val, 0, 32-1)))
+	copy(tzi.daylightName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(tzi.daylightName)-1)))
 }
 
 // ⚠️ You must call SetCbSize().
@@ -981,14 +981,14 @@ type WIN32_FIND_DATA struct {
 
 func (wfd *WIN32_FIND_DATA) CFileName() string { return Str.FromUint16Slice(wfd.cFileName[:]) }
 func (wfd *WIN32_FIND_DATA) SetCFileName(val string) {
-	copy(wfd.cFileName[:], Str.ToUint16Slice(Str.Substr(val, 0, _MAX_PATH-1)))
+	copy(wfd.cFileName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(wfd.cFileName)-1)))
 }
 
 func (wfd *WIN32_FIND_DATA) CAlternateFileName() string {
 	return Str.FromUint16Slice(wfd.cCAlternateFileName[:])
 }
 func (wfd *WIN32_FIND_DATA) SetCAlternateFileName(val string) {
-	copy(wfd.cCAlternateFileName[:], Str.ToUint16Slice(Str.Substr(val, 0, 14-1)))
+	copy(wfd.cCAlternateFileName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(wfd.cCAlternateFileName)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowpos

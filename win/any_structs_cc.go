@@ -45,12 +45,12 @@ type LITEM struct {
 
 func (li *LITEM) SzID() string { return Str.FromUint16Slice(li.szID[:]) }
 func (li *LITEM) SetSzID(val string) {
-	copy(li.szID[:], Str.ToUint16Slice(Str.Substr(val, 0, _MAX_LINKID_TEXT-1)))
+	copy(li.szID[:], Str.ToUint16Slice(Str.Substr(val, 0, len(li.szID)-1)))
 }
 
 func (li *LITEM) SzUrl() string { return Str.FromUint16Slice(li.szUrl[:]) }
 func (li *LITEM) SetSzUrl(val string) {
-	copy(li.szUrl[:], Str.ToUint16Slice(Str.Substr(val, 0, _L_MAX_URL_LENGTH-1)))
+	copy(li.szUrl[:], Str.ToUint16Slice(Str.Substr(val, 0, len(li.szUrl)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
@@ -161,7 +161,12 @@ type NMDATETIMEFORMAT struct {
 	PszFormat  *uint16
 	St         SYSTEMTIME
 	PszDisplay *uint16
-	SzDisplay  [64]uint16
+	szDisplay  [64]uint16
+}
+
+func (dtf *NMDATETIMEFORMAT) SzDisplay() string { return Str.FromUint16Slice(dtf.szDisplay[:]) }
+func (dtf *NMDATETIMEFORMAT) SetSzDisplay(val string) {
+	copy(dtf.szDisplay[:], Str.ToUint16Slice(Str.Substr(val, 0, len(dtf.szDisplay)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatqueryw
@@ -326,7 +331,7 @@ type NMLVEMPTYMARKUP struct {
 
 func (lve *NMLVEMPTYMARKUP) SzMarkup() string { return Str.FromUint16Slice(lve.szMarkup[:]) }
 func (lve *NMLVEMPTYMARKUP) SetSzMarkup(val string) {
-	copy(lve.szMarkup[:], Str.ToUint16Slice(Str.Substr(val, 0, _L_MAX_URL_LENGTH-1)))
+	copy(lve.szMarkup[:], Str.ToUint16Slice(Str.Substr(val, 0, len(lve.szMarkup)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvfinditemw

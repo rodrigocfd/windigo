@@ -145,13 +145,13 @@ func (me *IMFVideoDisplayControl) SetAspectRatioMode(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideoposition
 func (me *IMFVideoDisplayControl) SetVideoPosition(
-	pnrcSource *MFVideoNormalizedRect, prcDest *win.RECT) {
+	nrcSource *MFVideoNormalizedRect, rcDest *win.RECT) {
 
 	ret, _, _ := syscall.Syscall(
 		(*_IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).SetVideoPosition, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(pnrcSource)),
-		uintptr(unsafe.Pointer(prcDest)))
+		uintptr(unsafe.Pointer(nrcSource)),
+		uintptr(unsafe.Pointer(rcDest)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

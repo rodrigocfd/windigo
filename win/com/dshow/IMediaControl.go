@@ -65,11 +65,11 @@ func (me *IMediaControl) Pause() bool {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-renderfile
-func (me *IMediaControl) RenderFile(strFilename string) {
+func (me *IMediaControl) RenderFile(fileName string) {
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaControlVtbl)(unsafe.Pointer(*me.Ppv)).RenderFile, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(strFilename))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(fileName))), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

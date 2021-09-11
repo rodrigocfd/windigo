@@ -195,11 +195,11 @@ func (me *IFileDialog) SetClientGuid(guid *win.GUID) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilename
-func (me *IFileDialog) SetFileName(pszName string) {
+func (me *IFileDialog) SetFileName(name string) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetFileName, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszName))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(name))), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -207,11 +207,11 @@ func (me *IFileDialog) SetFileName(pszName string) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilenamelabel
-func (me *IFileDialog) SetFileNameLabel(pszLabel string) {
+func (me *IFileDialog) SetFileNameLabel(label string) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetFileNameLabel, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszLabel))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(label))), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -221,11 +221,11 @@ func (me *IFileDialog) SetFileNameLabel(pszLabel string) {
 // The index is one-based.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypeindex
-func (me *IFileDialog) SetFileTypeIndex(iFileType int) {
+func (me *IFileDialog) SetFileTypeIndex(index int) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetFileTypeIndex, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(iFileType), 0)
+		uintptr(index), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -233,9 +233,9 @@ func (me *IFileDialog) SetFileTypeIndex(iFileType int) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypes
-func (me *IFileDialog) SetFileTypes(rgFilterSpec []FilterSpec) {
-	comdlgFiSp := make([]COMDLG_FILTERSPEC, 0, len(rgFilterSpec))
-	for _, fiSp := range rgFilterSpec {
+func (me *IFileDialog) SetFileTypes(filterSpec []FilterSpec) {
+	comdlgFiSp := make([]COMDLG_FILTERSPEC, 0, len(filterSpec))
+	for _, fiSp := range filterSpec {
 		comdlgFiSp = append(comdlgFiSp, // convert FilterSpec to COMDLG_FILTERSPEC
 			COMDLG_FILTERSPEC{
 				PszName: win.Str.ToUint16Ptr(fiSp.Name),
@@ -255,11 +255,11 @@ func (me *IFileDialog) SetFileTypes(rgFilterSpec []FilterSpec) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfolder
-func (me *IFileDialog) SetFolder(psi *IShellItem) {
+func (me *IFileDialog) SetFolder(si *IShellItem) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetFolder, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(psi.Ppv)), 0)
+		uintptr(unsafe.Pointer(si.Ppv)), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -267,11 +267,11 @@ func (me *IFileDialog) SetFolder(psi *IShellItem) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setokbuttonlabel
-func (me *IFileDialog) SetOkButtonLabel(pszText string) {
+func (me *IFileDialog) SetOkButtonLabel(text string) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetOkButtonLabel, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszText))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(text))), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -291,11 +291,11 @@ func (me *IFileDialog) SetOptions(fos shellco.FOS) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-settitle
-func (me *IFileDialog) SetTitle(pszTitle string) {
+func (me *IFileDialog) SetTitle(title string) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetTitle, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszTitle))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(title))), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

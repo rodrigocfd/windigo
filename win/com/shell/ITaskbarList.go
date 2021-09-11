@@ -26,24 +26,24 @@ type ITaskbarList struct {
 	win.IUnknown // Base IUnknown.
 }
 
-// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(). Usually context is CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer ITaskbarList.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func NewITaskbarList(dwClsContext co.CLSCTX) ITaskbarList {
+func NewITaskbarList(context co.CLSCTX) ITaskbarList {
 	iUnk := win.CoCreateInstance(
-		shellco.CLSID_TaskbarList, nil, dwClsContext,
+		shellco.CLSID_TaskbarList, nil, context,
 		shellco.IID_ITaskbarList)
 	return ITaskbarList{IUnknown: iUnk}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
-func (me *ITaskbarList) ActivateTab(hwnd win.HWND) {
+func (me *ITaskbarList) ActivateTab(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarListVtbl)(unsafe.Pointer(*me.Ppv)).ActivateTab, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), 0)
+		uintptr(hWnd), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -51,11 +51,11 @@ func (me *ITaskbarList) ActivateTab(hwnd win.HWND) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-addtab
-func (me *ITaskbarList) AddTab(hwnd win.HWND) {
+func (me *ITaskbarList) AddTab(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarListVtbl)(unsafe.Pointer(*me.Ppv)).AddTab, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), 0)
+		uintptr(hWnd), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -63,11 +63,11 @@ func (me *ITaskbarList) AddTab(hwnd win.HWND) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-deletetab
-func (me *ITaskbarList) DeleteTab(hwnd win.HWND) {
+func (me *ITaskbarList) DeleteTab(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarListVtbl)(unsafe.Pointer(*me.Ppv)).DeleteTab, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), 0)
+		uintptr(hWnd), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -83,11 +83,11 @@ func (me *ITaskbarList) HrInit() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-setactivealt
-func (me *ITaskbarList) SetActiveAlt(hwnd win.HWND) {
+func (me *ITaskbarList) SetActiveAlt(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarListVtbl)(unsafe.Pointer(*me.Ppv)).SetActiveAlt, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), 0)
+		uintptr(hWnd), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

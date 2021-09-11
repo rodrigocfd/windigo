@@ -63,8 +63,8 @@ func (me *IMediaFilter) Pause() bool {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-run
-func (me *IMediaFilter) Run(tStart time.Duration) bool {
-	iStart := _DurationTo100Nanosec(tStart)
+func (me *IMediaFilter) Run(start time.Duration) bool {
+	iStart := _DurationTo100Nanosec(start)
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaFilterVtbl)(unsafe.Pointer(*me.Ppv)).Run, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),

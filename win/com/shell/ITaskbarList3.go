@@ -33,14 +33,14 @@ type ITaskbarList3 struct {
 	ITaskbarList2 // Base ITaskbarList2 > ITaskbarList > IUnknown.
 }
 
-// Calls CoCreateInstance(), typically with CLSCTX_INPROC_SERVER.
+// Calls CoCreateInstance(). Usually context is CLSCTX_INPROC_SERVER.
 //
 // ⚠️ You must defer ITaskbarList3.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func NewITaskbarList3(dwClsContext co.CLSCTX) ITaskbarList3 {
+func NewITaskbarList3(context co.CLSCTX) ITaskbarList3 {
 	iUnk := win.CoCreateInstance(
-		shellco.CLSID_TaskbarList, nil, dwClsContext,
+		shellco.CLSID_TaskbarList, nil, context,
 		shellco.IID_ITaskbarList3)
 	return ITaskbarList3{
 		ITaskbarList2{
@@ -63,13 +63,13 @@ func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setoverlayicon
 func (me *ITaskbarList3) SetOverlayIcon(
-	hwnd win.HWND, hIcon win.HICON, pszDescription string) {
+	hWnd win.HWND, hIcon win.HICON, description string) {
 
 	ret, _, _ := syscall.Syscall6(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetOverlayIcon, 4,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(hIcon),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszDescription))), 0, 0)
+		uintptr(hWnd), uintptr(hIcon),
+		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(description))), 0, 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -77,13 +77,11 @@ func (me *ITaskbarList3) SetOverlayIcon(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
-func (me *ITaskbarList3) SetProgressState(
-	hwnd win.HWND, tbpFlags shellco.TBPF) {
-
+func (me *ITaskbarList3) SetProgressState(hWnd win.HWND, flags shellco.TBPF) {
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetProgressState, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(tbpFlags))
+		uintptr(hWnd), uintptr(flags))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -92,12 +90,12 @@ func (me *ITaskbarList3) SetProgressState(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue
 func (me *ITaskbarList3) SetProgressValue(
-	hwnd win.HWND, ullCompleted, ullTotal uint64) {
+	hWnd win.HWND, completed, total uint64) {
 
 	ret, _, _ := syscall.Syscall6(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetProgressValue, 4,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(ullCompleted), uintptr(ullTotal), 0, 0)
+		uintptr(hWnd), uintptr(completed), uintptr(total), 0, 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -129,11 +127,11 @@ func (me *ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore win.HWND) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailclip
-func (me *ITaskbarList3) SetThumbnailClip(hwnd win.HWND, prcClip *win.RECT) {
+func (me *ITaskbarList3) SetThumbnailClip(hWnd win.HWND, rcClip *win.RECT) {
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetThumbnailClip, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(unsafe.Pointer(prcClip)))
+		uintptr(hWnd), uintptr(unsafe.Pointer(rcClip)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -141,11 +139,11 @@ func (me *ITaskbarList3) SetThumbnailClip(hwnd win.HWND, prcClip *win.RECT) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
-func (me *ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, pszTip string) {
+func (me *ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, tip string) {
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetThumbnailTooltip, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(pszTip))))
+		uintptr(hwnd), uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(tip))))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -154,12 +152,13 @@ func (me *ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, pszTip string) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbaraddbuttons
 func (me *ITaskbarList3) ThumbBarAddButtons(
-	hwnd win.HWND, cButtons uint32, pButton *THUMBBUTTON) {
+	hWnd win.HWND, buttons []THUMBBUTTON) {
 
 	ret, _, _ := syscall.Syscall6(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarAddButtons, 4,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
+		uintptr(hWnd), uintptr(len(buttons)), uintptr(unsafe.Pointer(&buttons[0])),
+		0, 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -168,12 +167,12 @@ func (me *ITaskbarList3) ThumbBarAddButtons(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarsetimagelist
 func (me *ITaskbarList3) ThumbBarSetImageList(
-	hwnd win.HWND, himl win.HIMAGELIST) {
+	hWnd win.HWND, hImgl win.HIMAGELIST) {
 
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarSetImageList, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(himl))
+		uintptr(hWnd), uintptr(hImgl))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -182,12 +181,13 @@ func (me *ITaskbarList3) ThumbBarSetImageList(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarupdatebuttons
 func (me *ITaskbarList3) ThumbBarUpdateButtons(
-	hwnd win.HWND, cButtons uint32, pButton *THUMBBUTTON) {
+	hWnd win.HWND, buttons []THUMBBUTTON) {
 
 	ret, _, _ := syscall.Syscall6(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).ThumbBarUpdateButtons, 4,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(cButtons), uintptr(unsafe.Pointer(pButton)), 0, 0)
+		uintptr(hWnd), uintptr(len(buttons)), uintptr(unsafe.Pointer(&buttons[0])),
+		0, 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
