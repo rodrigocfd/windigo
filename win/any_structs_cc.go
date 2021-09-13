@@ -12,23 +12,20 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
 type IMAGELISTDRAWPARAMS struct {
-	cbSize   uint32
-	Himl     HIMAGELIST
-	I        int32
-	HdcDst   HDC
-	X        int32
-	Y        int32
-	Cx       int32
-	Cy       int32
-	XBitmap  int32
-	YBitmap  int32
-	RgbBk    COLORREF
-	RgbFg    COLORREF
-	FStyle   co.ILD
-	DwRop    co.ROP
-	FState   co.ILS
-	Frame    uint32
-	CrEffect COLORREF
+	cbSize       uint32
+	Himl         HIMAGELIST
+	I            int32
+	HdcDst       HDC
+	X, Y, Cx, Cy int32
+	XBitmap      int32
+	YBitmap      int32
+	RgbBk        COLORREF
+	RgbFg        COLORREF
+	FStyle       co.ILD
+	DwRop        co.ROP
+	FState       co.ILS
+	Frame        uint32
+	CrEffect     COLORREF
 }
 
 func (ildp *IMAGELISTDRAWPARAMS) SetCbSize() { ildp.cbSize = uint32(unsafe.Sizeof(*ildp)) }
@@ -80,8 +77,11 @@ type LVFINDINFO struct {
 	Psz         *uint16
 	LParam      LPARAM
 	Pt          POINT
-	VkDirection uint32
+	vkDirection uint32 // should bt uint16
 }
+
+func (fi *LVFINDINFO) VkDirection() co.VK       { return co.VK(fi.vkDirection) }
+func (fi *LVFINDINFO) SetVkDirection(val co.VK) { fi.vkDirection = uint32(val) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvhittestinfo
 type LVHITTESTINFO struct {
@@ -187,10 +187,13 @@ type NMDATETIMESTRING struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimewmkeydownw
 type NMDATETIMEWMKEYDOWN struct {
 	Nmhdr     NMHDR
-	NVirtKey  int32
+	nVirtKey  int32 // should be uint16
 	PszFormat *uint16
 	St        SYSTEMTIME
 }
+
+func (dtk *NMDATETIMEWMKEYDOWN) NVirtKey() co.VK       { return co.VK(dtk.nVirtKey) }
+func (dtk *NMDATETIMEWMKEYDOWN) SetNVirtKey(val co.VK) { dtk.nVirtKey = int32(val) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdaystate
 type NMDAYSTATE struct {
@@ -216,7 +219,7 @@ type NMITEMACTIVATE struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmkey
 type NMKEY struct {
 	Hdr    NMHDR
-	nVKey  uint32
+	nVKey  uint32 // should be uint16
 	uFlags uint32
 }
 
@@ -310,10 +313,18 @@ type NMLVCUSTOMDRAW struct {
 	ClrFace     COLORREF
 	IIconEffect int32
 	IIconPhase  int32
-	IPartId     int32
-	IStateId    int32
+	iPartId     int32
+	iStateId    int32
 	RcText      RECT
 	UAlign      co.LVGA_HEADER
+}
+
+func (lcd *NMLVCUSTOMDRAW) PartStateId() co.VS {
+	return co.VS(util.Make32(uint16(lcd.iStateId), uint16(lcd.iPartId)))
+}
+func (lcd *NMLVCUSTOMDRAW) SetPartStateId(val co.VS) {
+	lcd.iPartId = val.Part()
+	lcd.iStateId = val.State()
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvdispinfow
@@ -384,9 +395,8 @@ type NMLVODSTATECHANGE struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvscroll
 type NMLVSCROLL struct {
-	Hdr NMHDR
-	Dx  int32
-	Dy  int32
+	Hdr    NMHDR
+	Dx, Dy int32
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmmouse
@@ -454,11 +464,11 @@ func (tdi *NMTBDISPINFO) SetPszText(val []uint16) {
 type NMTBDUPACCELERATOR struct {
 	Hdr  NMHDR
 	Ch   uint32
-	fDup BOOL
+	fDup int32 // BOOL
 }
 
 func (da *NMTBDUPACCELERATOR) FDup() bool       { return da.fDup != 0 }
-func (da *NMTBDUPACCELERATOR) SetFDup(val bool) { da.fDup = BOOL(util.BoolToUintptr(val)) }
+func (da *NMTBDUPACCELERATOR) SetFDup(val bool) { da.fDup = int32(util.BoolToUintptr(val)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbgetinfotipw
 type NMTBGETINFOTIP struct {

@@ -62,6 +62,16 @@ func RemoveAccelAmpersands(text string) string {
 
 //------------------------------------------------------------------------------
 
+// Assembles an uint16 from two uint8.
+func Make16(lo, hi uint8) uint16 {
+	return (uint16(lo) & 0xff) | ((uint16(hi) & 0xff) << 8)
+}
+
+// Assembles an uint32 from two uint16.
+func Make32(lo, hi uint16) uint32 {
+	return (uint32(lo) & 0xffff) | ((uint32(hi) & 0xffff) << 16)
+}
+
 // Assembles an uint64 from two uint32.
 func Make64(lo, hi uint32) uint64 {
 	return (uint64(lo) & 0xffff_ffff) | ((uint64(hi) & 0xffff_ffff) << 32)

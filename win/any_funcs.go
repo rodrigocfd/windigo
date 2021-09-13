@@ -200,7 +200,7 @@ func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmiscompositionenabled
 func DwmIsCompositionEnabled() bool {
-	pfEnabled := BOOL(0)
+	pfEnabled := int32(0) // BOOL
 	ret, _, _ := syscall.Syscall(proc.DwmIsCompositionEnabled.Addr(), 1,
 		uintptr(unsafe.Pointer(&pfEnabled)), 0, 0)
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
@@ -698,12 +698,12 @@ func LOWORD(val uint32) uint16 {
 
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632660(v=vs.85)
 func MAKELONG(lo, hi uint16) uint32 {
-	return (uint32(lo) & 0xffff) | ((uint32(hi) & 0xffff) << 16)
+	return util.Make32(lo, hi)
 }
 
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632663(v=vs.85)
 func MAKEWORD(lo, hi uint8) uint16 {
-	return (uint16(lo) & 0xff) | ((uint16(hi) & 0xff) << 8)
+	return util.Make16(lo, hi)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint

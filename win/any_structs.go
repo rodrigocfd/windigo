@@ -137,7 +137,7 @@ type DYNAMIC_TIME_ZONE_INFORMATION struct {
 	DaylightDate                SYSTEMTIME
 	DaylightBias                int32
 	timeZoneKeyName             [128]uint16
-	DynamicDaylightTimeDisabled uint8 // BOOLEAN
+	dynamicDaylightTimeDisabled uint8 // BOOLEAN
 }
 
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) StandardName() string {
@@ -159,6 +159,13 @@ func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) TimeZoneKeyName() string {
 }
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetTimeZoneKeyName(val string) {
 	copy(dtz.timeZoneKeyName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(dtz.timeZoneKeyName)-1)))
+}
+
+func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) DynamicDaylightTimeDisabled() bool {
+	return dtz.dynamicDaylightTimeDisabled != 0
+}
+func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetDynamicDaylightTimeDisabled(val bool) {
+	dtz.dynamicDaylightTimeDisabled = uint8(util.BoolToUintptr(val))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
@@ -198,7 +205,7 @@ func (hi *HELPINFO) SetCbSize() { hi.cbSize = uint32(unsafe.Sizeof(*hi)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfo
 type ICONINFO struct {
-	fIcon    BOOL
+	fIcon    int32 // BOOL
 	XHotspot uint32
 	YHotspot uint32
 	HbmMask  HBITMAP
@@ -206,14 +213,14 @@ type ICONINFO struct {
 }
 
 func (ii *ICONINFO) FIcon() bool       { return ii.fIcon != 0 }
-func (ii *ICONINFO) SetFIcon(val bool) { ii.fIcon = BOOL(util.BoolToUintptr(val)) }
+func (ii *ICONINFO) SetFIcon(val bool) { ii.fIcon = int32(util.BoolToUintptr(val)) }
 
 // ⚠️ You must call SetCbSize().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfoexw
 type ICONINFOEX struct {
 	cbSize    uint32
-	fIcon     BOOL
+	fIcon     int32 // BOOL
 	XHotspot  uint32
 	YHotspot  uint32
 	HbmMask   HBITMAP
@@ -226,7 +233,7 @@ type ICONINFOEX struct {
 func (iix *ICONINFOEX) SetCbSize() { iix.cbSize = uint32(unsafe.Sizeof(*iix)) }
 
 func (iix *ICONINFOEX) FIcon() bool       { return iix.fIcon != 0 }
-func (iix *ICONINFOEX) SetFIcon(val bool) { iix.fIcon = BOOL(util.BoolToUintptr(val)) }
+func (iix *ICONINFOEX) SetFIcon(val bool) { iix.fIcon = int32(util.BoolToUintptr(val)) }
 
 func (iix *ICONINFOEX) SzModName() string { return Str.FromUint16Slice(iix.szModName[:]) }
 func (iix *ICONINFOEX) SetSzModName(val string) {
@@ -464,15 +471,15 @@ func (osv *OSVERSIONINFOEX) SetSzCSDVersion(val string) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-paintstruct
 type PAINTSTRUCT struct {
 	Hdc         HDC
-	fErase      BOOL
+	fErase      int32 // BOOL
 	RcPaint     RECT
-	fRestore    BOOL
-	fIncUpdate  BOOL
+	fRestore    int32 // BOOL
+	fIncUpdate  int32 // BOOL
 	rgbReserved [32]byte
 }
 
 func (ps *PAINTSTRUCT) FErase() bool       { return ps.fErase != 0 }
-func (ps *PAINTSTRUCT) SetFErase(val bool) { ps.fErase = BOOL(util.BoolToUintptr(val)) }
+func (ps *PAINTSTRUCT) SetFErase(val bool) { ps.fErase = int32(util.BoolToUintptr(val)) }
 
 // Basic point structure, with x and y coordinates.
 //
@@ -540,14 +547,14 @@ func (si *SCROLLINFO) SetCbSize() { si.cbSize = uint32(unsafe.Sizeof(*si)) }
 type SECURITY_ATTRIBUTES struct {
 	nLength              uint32
 	LpSecurityDescriptor uintptr // LPVOID
-	bInheritHandle       BOOL
+	bInheritHandle       int32   // BOOL
 }
 
 func (sa *SECURITY_ATTRIBUTES) SetNLength() { sa.nLength = uint32(unsafe.Sizeof(*sa)) }
 
 func (sa *SECURITY_ATTRIBUTES) BInheritHandle() bool { return sa.bInheritHandle != 0 }
 func (sa *SECURITY_ATTRIBUTES) SetBInheritHandle(val bool) {
-	sa.bInheritHandle = BOOL(util.BoolToUintptr(val))
+	sa.bInheritHandle = int32(util.BoolToUintptr(val))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
@@ -840,9 +847,9 @@ func (st *SYSTEMTIME) FromDuration(dur time.Duration) {
 }
 
 // Fills this SYSTEMTIME with the value of a time.Time.
-func (st *SYSTEMTIME) FromTime(t time.Time) {
+func (st *SYSTEMTIME) FromTime(val time.Time) {
 	ft := FILETIME{}
-	ft.FromTime(t)
+	ft.FromTime(val)
 
 	stUtc := SYSTEMTIME{}
 	FileTimeToSystemTime(&ft, &stUtc)
@@ -926,38 +933,42 @@ func (tix *TITLEBARINFOEX) SetCbSize() { tix.cbSize = uint32(unsafe.Sizeof(*tix)
 type VS_FIXEDFILEINFO struct {
 	DwSignature        uint32
 	DwStrucVersion     uint32
-	DwFileVersionMS    uint32
-	DwFileVersionLS    uint32
-	DwProductVersionMS uint32
-	DwProductVersionLS uint32
+	dwFileVersionMS    uint32
+	dwFileVersionLS    uint32
+	dwProductVersionMS uint32
+	dwProductVersionLS uint32
 	DwFileFlagsMask    co.VS_FF
 	DwFileFlags        co.VS_FF
 	DwFileOS           co.VOS
 	DwFileType         co.VFT
 	DwFileSubtype      co.VFT2
-	DwFileDateMS       uint32
-	DwFileDateLS       uint32
+	dwFileDateMS       uint32
+	dwFileDateLS       uint32
 }
 
-// Returns the parsed DwFileVersion fields.
-func (vfi *VS_FIXEDFILEINFO) FileVersion() [4]uint16 {
-	return [4]uint16{
-		HIWORD(vfi.DwFileVersionMS), LOWORD(vfi.DwFileVersionMS),
-		HIWORD(vfi.DwFileVersionLS), LOWORD(vfi.DwFileVersionLS),
-	}
+func (ffi *VS_FIXEDFILEINFO) FileVersion() (major, minor, patch, build uint16) {
+	return HIWORD(ffi.dwFileVersionMS), LOWORD(ffi.dwFileVersionMS),
+		HIWORD(ffi.dwFileVersionLS), LOWORD(ffi.dwFileVersionLS)
+}
+func (ffi *VS_FIXEDFILEINFO) SetFileVersion(major, minor, patch, build uint16) {
+	ffi.dwFileVersionMS = MAKELONG(minor, major)
+	ffi.dwFileVersionLS = MAKELONG(build, patch)
 }
 
-// Returns the parsed DwProductVersion fields.
-func (vfi *VS_FIXEDFILEINFO) ProductVersion() [4]uint16 {
-	return [4]uint16{
-		HIWORD(vfi.DwProductVersionMS), LOWORD(vfi.DwProductVersionMS),
-		HIWORD(vfi.DwProductVersionLS), LOWORD(vfi.DwProductVersionLS),
-	}
+func (ffi *VS_FIXEDFILEINFO) ProductVersion() (major, minor, patch, build uint16) {
+	return HIWORD(ffi.dwProductVersionMS), LOWORD(ffi.dwProductVersionMS),
+		HIWORD(ffi.dwProductVersionLS), LOWORD(ffi.dwProductVersionLS)
+}
+func (ffi *VS_FIXEDFILEINFO) SetProductVersion(major, minor, patch, build uint16) {
+	ffi.dwProductVersionMS = MAKELONG(minor, major)
+	ffi.dwProductVersionLS = MAKELONG(build, patch)
 }
 
-// Returns the parsed DwFileDate fields.
-func (vfi *VS_FIXEDFILEINFO) FileDate() uint64 {
-	return util.Make64(vfi.DwFileDateLS, vfi.DwFileDateMS)
+func (ffi *VS_FIXEDFILEINFO) FileDate() uint64 {
+	return util.Make64(ffi.dwFileDateLS, ffi.dwFileDateMS)
+}
+func (ffi *VS_FIXEDFILEINFO) SetFileDate(val uint64) {
+	ffi.dwFileDateLS, ffi.dwFileDateMS = util.Break64(val)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw

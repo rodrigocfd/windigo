@@ -9,11 +9,6 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#atom
 type ATOM uint16
 
-// A Boolean variable (should be TRUE or FALSE).
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#bool
-type BOOL int32
-
 // Specifies an RGB color.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/gdi/colorref
