@@ -136,7 +136,7 @@ func (o *_EditO) Text(t string) *_EditO { o.text = t; return o }
 func (o *_EditO) Position(p win.POINT) *_EditO { _OwPt(&o.position, p); return o }
 
 // Control size in pixels.
-// Defaults to 100x21. Will be adjusted to the current system DPI.
+// Defaults to 100x23. Will be adjusted to the current system DPI.
 func (o *_EditO) Size(s win.SIZE) *_EditO { _OwSz(&o.size, s); return o }
 
 // Edit control styles, passed to CreateWindowEx().
@@ -160,7 +160,7 @@ func (o *_EditO) lateDefaults() {
 // Options for NewEdit().
 func EditOpts() *_EditO {
 	return &_EditO{
-		size:        win.SIZE{Cx: 100, Cy: 21},
+		size:        win.SIZE{Cx: 100, Cy: 23},
 		ctrlStyles:  co.ES_AUTOHSCROLL | co.ES_NOHIDESEL,
 		wndStyles:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 		wndExStyles: co.WS_EX_CLIENTEDGE,

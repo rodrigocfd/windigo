@@ -149,7 +149,7 @@ func (o *_TrackbarO) CtrlId(i int) *_TrackbarO { o.ctrlId = i; return o }
 func (o *_TrackbarO) Position(p win.POINT) *_TrackbarO { _OwPt(&o.position, p); return o }
 
 // Control size in pixels.
-// Defaults to 120x23. Will be adjusted to the current system DPI.
+// Defaults to 175x28. Will be adjusted to the current system DPI.
 func (o *_TrackbarO) Size(s win.SIZE) *_TrackbarO { _OwSz(&o.size, s); return o }
 
 // Trackbar control styles, passed to CreateWindowEx().
@@ -181,7 +181,7 @@ func (o *_TrackbarO) lateDefaults() {
 // Options for NewTrackbar().
 func TrackbarOpts() *_TrackbarO {
 	return &_TrackbarO{
-		size:       win.SIZE{Cx: 120, Cy: 23},
+		size:       win.SIZE{Cx: 175, Cy: 28},
 		ctrlStyles: co.TBS_HORZ | co.TBS_AUTOTICKS,
 		wndStyles:  co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 	}

@@ -105,7 +105,7 @@ func (o *_ButtonO) Text(t string) *_ButtonO { o.text = t; return o }
 func (o *_ButtonO) Position(p win.POINT) *_ButtonO { _OwPt(&o.position, p); return o }
 
 // Control size in pixels.
-// Defaults to 80x23. Will be adjusted to the current system DPI.
+// Defaults to 88x26. Will be adjusted to the current system DPI.
 func (o *_ButtonO) Size(s win.SIZE) *_ButtonO { _OwSz(&o.size, s); return o }
 
 // Button control styles, passed to CreateWindowEx().
@@ -129,7 +129,7 @@ func (o *_ButtonO) lateDefaults() {
 // Options for NewButton().
 func ButtonOpts() *_ButtonO {
 	return &_ButtonO{
-		size:       win.SIZE{Cx: 80, Cy: 23},
+		size:       win.SIZE{Cx: 88, Cy: 26},
 		ctrlStyles: co.BS_PUSHBUTTON,
 		wndStyles:  co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 	}

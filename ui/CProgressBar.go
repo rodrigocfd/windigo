@@ -121,7 +121,7 @@ func (o *_ProgressBarO) CtrlId(i int) *_ProgressBarO { o.ctrlId = i; return o }
 func (o *_ProgressBarO) Position(p win.POINT) *_ProgressBarO { _OwPt(&o.position, p); return o }
 
 // Control size in pixels.
-// Defaults to 120x23. Will be adjusted to the current system DPI.
+// Defaults to 140x26. Will be adjusted to the current system DPI.
 func (o *_ProgressBarO) Size(s win.SIZE) *_ProgressBarO { _OwSz(&o.size, s); return o }
 
 // ProgressBar control styles, passed to CreateWindowEx().
@@ -145,7 +145,7 @@ func (o *_ProgressBarO) lateDefaults() {
 // Options for NewProgressBar().
 func ProgressBarOpts() *_ProgressBarO {
 	return &_ProgressBarO{
-		size:       win.SIZE{Cx: 120, Cy: 23},
+		size:       win.SIZE{Cx: 140, Cy: 26},
 		ctrlStyles: co.PBS_SMOOTH,
 		wndStyles:  co.WS_CHILD | co.WS_VISIBLE,
 	}

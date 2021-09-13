@@ -120,7 +120,7 @@ func (o *_DateTimePickerO) CtrlId(i int) *_DateTimePickerO { o.ctrlId = i; retur
 func (o *_DateTimePickerO) Position(p win.POINT) *_DateTimePickerO { _OwPt(&o.position, p); return o }
 
 // Control size in pixels.
-// Defaults to 230x21. Will be adjusted to the current system DPI.
+// Defaults to 230x23. Will be adjusted to the current system DPI.
 func (o *_DateTimePickerO) Size(s win.SIZE) *_DateTimePickerO { _OwSz(&o.size, s); return o }
 
 // DateTimePicker control styles, passed to CreateWindowEx().
@@ -144,7 +144,7 @@ func (o *_DateTimePickerO) lateDefaults() {
 // Options for NewDateTimePicker().
 func DateTimePickerOpts() *_DateTimePickerO {
 	return &_DateTimePickerO{
-		size:        win.SIZE{Cx: 230, Cy: 21},
+		size:        win.SIZE{Cx: 230, Cy: 23},
 		ctrlStyles:  co.DTS_LONGDATEFORMAT,
 		wndStyles:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 		wndExStyles: co.WS_EX_CLIENTEDGE,
