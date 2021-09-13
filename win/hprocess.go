@@ -24,13 +24,13 @@ func (hProcess HPROCESS) CloseHandle() error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess
 func (hProcess HPROCESS) GetExitCodeProcess() uint32 {
-	lpExitCode := uint32(0)
+	exitCode := uint32(0)
 	ret, _, err := syscall.Syscall(proc.GetExitCodeProcess.Addr(), 2,
-		uintptr(hProcess), uintptr(unsafe.Pointer(&lpExitCode)), 0)
+		uintptr(hProcess), uintptr(unsafe.Pointer(&exitCode)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	return lpExitCode
+	return exitCode
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessid

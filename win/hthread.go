@@ -24,13 +24,13 @@ func (hThread HTHREAD) CloseHandle() error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodethread
 func (hThread HTHREAD) GetExitCodeThread() uint32 {
-	lpExitCode := uint32(0)
+	exitCode := uint32(0)
 	ret, _, err := syscall.Syscall(proc.GetExitCodeThread.Addr(), 2,
-		uintptr(hThread), uintptr(unsafe.Pointer(&lpExitCode)), 0)
+		uintptr(hThread), uintptr(unsafe.Pointer(&exitCode)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	return lpExitCode
+	return exitCode
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessidofthread

@@ -39,67 +39,67 @@ func (hTheme HTHEME) DrawThemeBackground(
 func (hTheme HTHEME) GetThemeColor(
 	partStateId co.VS, propId co.TMT_COLOR) COLORREF {
 
-	pColor := COLORREF(0)
+	color := COLORREF(0)
 	ret, _, _ := syscall.Syscall6(proc.GetThemeColor.Addr(), 5,
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
-		uintptr(propId), uintptr(unsafe.Pointer(&pColor)), 0)
+		uintptr(propId), uintptr(unsafe.Pointer(&color)), 0)
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
-	return pColor
+	return color
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemeint
 func (hTheme HTHEME) GetThemeInt(partStateId co.VS, propId co.TMT_INT) int32 {
-	piVal := int32(0)
+	intVal := int32(0)
 	ret, _, _ := syscall.Syscall6(proc.GetThemeInt.Addr(), 5,
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
-		uintptr(propId), uintptr(unsafe.Pointer(&piVal)), 0)
+		uintptr(propId), uintptr(unsafe.Pointer(&intVal)), 0)
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
-	return piVal
+	return intVal
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthememetric
 func (hTheme HTHEME) GetThemeMetric(
 	hdc HDC, partStateId co.VS, propId co.TMT_INT) int32 {
 
-	piVal := int32(0)
+	intVal := int32(0)
 	ret, _, _ := syscall.Syscall6(proc.GetThemeMetric.Addr(), 6,
 		uintptr(hTheme), uintptr(hdc),
 		uintptr(partStateId.Part()), uintptr(partStateId.State()),
-		uintptr(propId), uintptr(unsafe.Pointer(&piVal)))
+		uintptr(propId), uintptr(unsafe.Pointer(&intVal)))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
-	return piVal
+	return intVal
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemeposition
 func (hTheme HTHEME) GetThemePosition(
 	partStateId co.VS, propId co.TMT_POSITION) POINT {
 
-	pPoint := POINT{}
+	pt := POINT{}
 	ret, _, _ := syscall.Syscall6(proc.GetThemePosition.Addr(), 5,
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
-		uintptr(propId), uintptr(unsafe.Pointer(&pPoint)), 0)
+		uintptr(propId), uintptr(unsafe.Pointer(&pt)), 0)
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
-	return pPoint
+	return pt
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemerect
 func (hTheme HTHEME) GetThemeRect(partStateId co.VS, propId co.TMT_RECT) RECT {
-	pRect := RECT{}
+	rc := RECT{}
 	ret, _, _ := syscall.Syscall6(proc.GetThemeRect.Addr(), 5,
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
-		uintptr(propId), uintptr(unsafe.Pointer(&pRect)), 0)
+		uintptr(propId), uintptr(unsafe.Pointer(&rc)), 0)
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
-	return pRect
+	return rc
 }
 
 // ⚠️ You must defer HBRUSH.DeleteObject().

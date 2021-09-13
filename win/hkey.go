@@ -46,7 +46,6 @@ func (hKey HKEY) CloseKey() error {
 func (hKey HKEY) DeleteKey(subKey string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteKey.Addr(), 2,
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))), 0)
-
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
