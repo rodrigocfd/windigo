@@ -5,6 +5,7 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/errco"
@@ -64,7 +65,7 @@ func (me *IMediaFilter) Pause() bool {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-run
 func (me *IMediaFilter) Run(start time.Duration) bool {
-	iStart := _DurationTo100Nanosec(start)
+	iStart := util.DurationToNano100(start)
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaFilterVtbl)(unsafe.Pointer(*me.Ppv)).Run, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),

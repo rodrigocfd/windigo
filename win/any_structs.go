@@ -163,22 +163,23 @@ func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetTimeZoneKeyName(val string) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
 type FILETIME struct {
-	DwLowDateTime  uint32
-	DwHighDateTime uint32
+	dwLowDateTime  uint32
+	dwHighDateTime uint32
 }
 
-// Fills this FILETIME with the value of a time.Time.
-func (ft *FILETIME) FromTime(t time.Time) {
-	st := SYSTEMTIME{}
-	st.FromTime(t)
-	SystemTimeToFileTime(&st, ft)
+func (ft *FILETIME) EpochNano100() uint64 { return util.Make64(ft.dwLowDateTime, ft.dwHighDateTime) }
+func (ft *FILETIME) SetEpochNano100(val uint64) {
+	ft.dwLowDateTime, ft.dwHighDateTime = util.Break64(val)
 }
 
-// Converts this FILETIME to time.Time.
 func (ft *FILETIME) ToTime() time.Time {
-	st := SYSTEMTIME{}
-	FileTimeToSystemTime(ft, &st)
-	return st.ToTime()
+	// https://stackoverflow.com/a/4135003/6923555
+	return time.Unix(0, int64(util.Make64(ft.dwLowDateTime, ft.dwHighDateTime)-116_444_736_000_000_000)*100)
+}
+func (ft *FILETIME) FromTime(val time.Time) {
+	ft.dwLowDateTime, ft.dwHighDateTime = util.Break64(
+		uint64(val.UnixNano()/100 + 116_444_736_000_000_000),
+	)
 }
 
 // ⚠️ You must call SetCbSize().
@@ -840,12 +841,8 @@ func (st *SYSTEMTIME) FromDuration(dur time.Duration) {
 
 // Fills this SYSTEMTIME with the value of a time.Time.
 func (st *SYSTEMTIME) FromTime(t time.Time) {
-	// https://support.microsoft.com/en-ca/help/167296/how-to-convert-a-unix-time-t-to-a-win32-filetime-or-systemtime
-	epoch := t.UnixNano()/100 + 116_444_736_000_000_000
-
 	ft := FILETIME{}
-	ft.DwLowDateTime = uint32(epoch & 0xffff_ffff)
-	ft.DwHighDateTime = uint32(epoch >> 32)
+	ft.FromTime(t)
 
 	stUtc := SYSTEMTIME{}
 	FileTimeToSystemTime(&ft, &stUtc)

@@ -5,6 +5,7 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/errco"
@@ -82,7 +83,7 @@ func (me *IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
 		uintptr(unsafe.Pointer(&iEarliest)), uintptr(unsafe.Pointer(&iLatest)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		earliest, latest = _Nanosec100ToDuration(iEarliest), _Nanosec100ToDuration(iLatest)
+		earliest, latest = util.Nano100ToDuration(iEarliest), util.Nano100ToDuration(iLatest)
 		return
 	} else {
 		panic(hr)
@@ -113,7 +114,7 @@ func (me *IMediaSeeking) GetCurrentPosition() time.Duration {
 		uintptr(unsafe.Pointer(&pos)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return _Nanosec100ToDuration(pos)
+		return util.Nano100ToDuration(pos)
 	} else {
 		panic(hr)
 	}
@@ -128,7 +129,7 @@ func (me *IMediaSeeking) GetDuration() time.Duration {
 		uintptr(unsafe.Pointer(&duration)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return _Nanosec100ToDuration(duration)
+		return util.Nano100ToDuration(duration)
 	} else {
 		panic(hr)
 	}
@@ -145,7 +146,7 @@ func (me *IMediaSeeking) GetPositions() (current, stop time.Duration) {
 		uintptr(unsafe.Pointer(&iCurrent)), uintptr(unsafe.Pointer(&iStop)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		current, stop = _Nanosec100ToDuration(iCurrent), _Nanosec100ToDuration(iStop)
+		current, stop = util.Nano100ToDuration(iCurrent), util.Nano100ToDuration(iStop)
 		return
 	} else {
 		panic(hr)
@@ -161,7 +162,7 @@ func (me *IMediaSeeking) GetPreroll() time.Duration {
 		uintptr(unsafe.Pointer(&preRoll)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return _Nanosec100ToDuration(preRoll)
+		return util.Nano100ToDuration(preRoll)
 	} else {
 		panic(hr)
 	}
@@ -191,7 +192,7 @@ func (me *IMediaSeeking) GetStopPosition() time.Duration {
 		uintptr(unsafe.Pointer(&stop)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return _Nanosec100ToDuration(stop)
+		return util.Nano100ToDuration(stop)
 	} else {
 		panic(hr)
 	}
@@ -264,7 +265,7 @@ func (me *IMediaSeeking) SetPositions(
 	current time.Duration, currentFlags dshowco.SEEKING_FLAGS,
 	stop time.Duration, stopFlags dshowco.SEEKING_FLAGS) error {
 
-	iCurrent, iStop := _DurationTo100Nanosec(current), _DurationTo100Nanosec(stop)
+	iCurrent, iStop := util.DurationToNano100(current), util.DurationToNano100(stop)
 	ret, _, _ := syscall.Syscall6(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).SetPositions, 5,
 		uintptr(unsafe.Pointer(me.Ppv)),

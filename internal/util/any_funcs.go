@@ -2,6 +2,7 @@ package util
 
 import (
 	"strings"
+	"time"
 )
 
 // Tells whether the number has the nth bit set.
@@ -41,11 +42,6 @@ func Iif(cond bool, ifTrue, ifFalse interface{}) interface{} {
 	}
 }
 
-// Assembles an uint64 from two uint32.
-func Make64(lo, hi uint32) uint64 {
-	return (uint64(lo) & 0xffff_ffff) | ((uint64(hi) & 0xffff_ffff) << 32)
-}
-
 // "&He && she" becomes "He & she".
 func RemoveAccelAmpersands(text string) string {
 	runes := []rune(text)
@@ -62,4 +58,28 @@ func RemoveAccelAmpersands(text string) string {
 		buf.WriteRune(runes[len(runes)-1])
 	}
 	return buf.String()
+}
+
+//------------------------------------------------------------------------------
+
+// Assembles an uint64 from two uint32.
+func Make64(lo, hi uint32) uint64 {
+	return (uint64(lo) & 0xffff_ffff) | ((uint64(hi) & 0xffff_ffff) << 32)
+}
+
+// Breaks an uint64 into low and high uint32.
+func Break64(val uint64) (lo, hi uint32) {
+	return uint32(val & 0xffff_ffff), uint32(val >> 32 & 0xffff_ffff)
+}
+
+//------------------------------------------------------------------------------
+
+// Converts time.Duration to 100 nanoseconds.
+func DurationToNano100(duration time.Duration) int64 {
+	return int64(duration) * 10_000 / int64(time.Millisecond)
+}
+
+// Converts 100 nanoseconds to time.Duration.
+func Nano100ToDuration(nanosec100 int64) time.Duration {
+	return time.Duration(nanosec100 / 10_000 * int64(time.Millisecond))
 }
