@@ -92,6 +92,8 @@ func (me *_NativeControlBase) installSubclassIfNeeded() {
 		_globalBaseSubclassId++
 		me.subclassId = _globalBaseSubclassId
 
+		_globalNativeControlBasePtrs[me] = me // store pointer in the map, so we're accessible from subclassProc
+
 		// Subclass is installed after window creation, thus WM_CREATE can never
 		// be handled for a subclassed control.
 		me.hWnd.SetWindowSubclass(_globalSubclassProcPtr,
@@ -100,25 +102,25 @@ func (me *_NativeControlBase) installSubclassIfNeeded() {
 }
 
 // Keeps all *_NativeControlBase that were retrieved in _SubclassProc.
-var _globalNativeControlBasePtrs = make(map[win.HWND]*_NativeControlBase, 10)
+var _globalNativeControlBasePtrs = make(map[*_NativeControlBase]*_NativeControlBase, 10)
 
 // Default window procedure for subclassed child controls.
 func _SubclassProc(
 	hWnd win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM,
 	uIdSubclass, dwRefData uintptr) uintptr {
 
-	// Retrieve passed pointer.
-	pMe := (*_NativeControlBase)(unsafe.Pointer(dwRefData))
-	_globalNativeControlBasePtrs[hWnd] = pMe
+	pMe := (*_NativeControlBase)(unsafe.Pointer(dwRefData)) // retrieve passed pointer
 
-	if pMe, hasPtr := _globalNativeControlBasePtrs[hWnd]; hasPtr {
+	// If object pointer is not stored, then no processing is done.
+	// Prevents processing after WM_NCDESTROY.
+	if pMe, isStored := _globalNativeControlBasePtrs[pMe]; isStored {
 		// Try to process the message with an user handler.
 		retVal, meaningfulRet, wasHandled :=
 			pMe.eventsSubcl.processMessage(uMsg, wParam, lParam)
 
 		if uMsg == co.WM_NCDESTROY { // even if the user handles WM_NCDESTROY, we must ensure cleanup
 			hWnd.RemoveWindowSubclass(_globalSubclassProcPtr, pMe.subclassId)
-			delete(_globalNativeControlBasePtrs, hWnd) // clear our pointer
+			delete(_globalNativeControlBasePtrs, pMe) // remove from map
 		}
 
 		if wasHandled {

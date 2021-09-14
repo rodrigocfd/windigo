@@ -82,6 +82,8 @@ func (me *_WindowRaw) createWindow(
 		panic(fmt.Sprintf("Window already created: \"%s\".", className))
 	}
 
+	_globalWindowRawPtrs[me] = me // store pointer in the map, so we're accessible from wndProc
+
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
 	win.CreateWindowEx(exStyle, className, title, style,
 		pos.X, pos.Y, size.Cx, size.Cy, hParent, hMenu, hInst,
@@ -119,24 +121,27 @@ func (me *_WindowRaw) calcWndCoords(
 }
 
 // Keeps all *_WindowRaw that were retrieved in _WndProc.
-var _globalWindowRawPtrs = make(map[win.HWND]*_WindowRaw, 10)
+var _globalWindowRawPtrs = make(map[*_WindowRaw]*_WindowRaw, 10)
 
 // Default window procedure.
 func _WndProc(
 	hWnd win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
+	var pMe *_WindowRaw
+
 	// https://devblogs.microsoft.com/oldnewthing/20050422-08/?p=35813
 	if uMsg == co.WM_NCCREATE {
 		cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
-		pMe := (*_WindowRaw)(unsafe.Pointer(cs.LpCreateParams))
-		_globalWindowRawPtrs[hWnd] = pMe
+		pMe = (*_WindowRaw)(unsafe.Pointer(cs.LpCreateParams))
 		pMe._WindowBase.hWnd = hWnd // assign actual HWND
+		hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
+	} else {
+		pMe = (*_WindowRaw)(unsafe.Pointer(hWnd.GetWindowLongPtr(co.GWLP_USERDATA)))
 	}
 
-	// Retrieve passed pointer.
-	// If no pointer stored, then no processing is done.
+	// If object pointer is not stored, then no processing is done.
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
-	if pMe, hasPtr := _globalWindowRawPtrs[hWnd]; hasPtr {
+	if pMe, isStored := _globalWindowRawPtrs[pMe]; isStored {
 		// Process all internal events.
 		pMe.internalEvents.processMessages(uMsg, wParam, lParam)
 
@@ -146,7 +151,8 @@ func _WndProc(
 
 		// No further messages processed after this one.
 		if uMsg == co.WM_NCDESTROY {
-			delete(_globalWindowRawPtrs, hWnd) // clear our pointer
+			delete(_globalWindowRawPtrs, pMe) // remove from map
+			hWnd.SetWindowLongPtr(co.GWLP_USERDATA, 0)
 			pMe._WindowBase.hWnd = win.HWND(0)
 		}
 
