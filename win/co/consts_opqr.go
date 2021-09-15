@@ -79,9 +79,7 @@ const (
 	ODT_C_COMBOBOX ODT_C = ODT_C(ODT_COMBOBOX)
 )
 
-// Used in OpenFile().
-//
-// Behavior of the file opening.
+// OpenFile() behavior.
 type OPEN_FILE uint8
 
 const (
@@ -90,9 +88,7 @@ const (
 	OPEN_FILE_RW_OPEN_OR_CREATE                  // Open a file or create if it doesn't exist, for read and write.
 )
 
-// Used in OpenFileMapped().
-//
-// Behavior of the memory-mapped file opening.
+// OpenFileMapped() behavior.
 type OPEN_FILEMAP uint8
 
 const (

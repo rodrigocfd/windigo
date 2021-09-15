@@ -8,15 +8,38 @@ import (
 //
 // Created with OpenFile().
 type File interface {
-	Close()                            // Releases the file resource.
-	CurrentPointerOffset() int         // Retrieves the current file pointer offset.
-	EraseAndWrite(data []byte) error   // Replaces all file contents, possibly resizing the file.
-	Read(numBytes int) ([]byte, error) // Reads data from file at current pointer offset. The pointer will then advance.
-	ReadAll() ([]byte, error)          // Rewinds the file pointer and reads all the raw file contents.
-	Resize(numBytes int) error         // Truncates or expands the file, according to the new size. Zero will empty the file.
-	RewindPointerOffset() error        // Rewinds the internal pointer back to the beginning of the file.
-	Size() int                         // Retrieves the files size. This value is not cached.
-	Write(data []byte) error           // Writes the bytes at current internal pointer offset, which then advances.
+	// Releases the file resource.
+	Close()
+
+	// Replaces all file contents, possibly resizing the file.
+	EraseAndWrite(data []byte) error
+
+	// Returns the underlying HFILE.
+	Hfile() HFILE
+
+	// Retrieves the current file pointer offset.
+	PtrOffset() int
+
+	// Rewinds the internal pointer back to the beginning of the file.
+	PtrOffsetRewind() error
+
+	// Reads data from file at current pointer offset. The pointer will then
+	// advance.
+	Read(numBytes int) ([]byte, error)
+
+	// Rewinds the file pointer and reads all the raw file contents. Then
+	// rewinds the pointer again.
+	ReadAll() ([]byte, error)
+
+	// Truncates or expands the file, according to the new size. Zero will empty
+	// the file.
+	Resize(numBytes int) error
+
+	// Retrieves the files size. This value is not cached.
+	Size() int
+
+	// Writes the bytes at current internal pointer offset, which then advances.
+	Write(data []byte) error
 }
 
 //------------------------------------------------------------------------------
@@ -29,42 +52,33 @@ type _File struct {
 //
 // ⚠️ You must defer File.Close().
 func OpenFile(filePath string, behavior co.OPEN_FILE) (File, error) {
-	me := &_File{}
-	if err := me.openFile(filePath, behavior); err != nil {
-		return nil, err
-	}
-	return me, nil
-}
-
-func (me *_File) openFile(filePath string, behavior co.OPEN_FILE) error {
-	desiredAccess := co.GENERIC(0)
-	shareMode := co.FILE_SHARE(0)
-	creationDisposition := co.DISPOSITION(0)
+	access := co.GENERIC(0)
+	share := co.FILE_SHARE(0)
+	disposition := co.DISPOSITION(0)
 
 	switch behavior {
 	case co.OPEN_FILE_READ_EXISTING:
-		desiredAccess = co.GENERIC_READ
-		shareMode = co.FILE_SHARE_READ
-		creationDisposition = co.DISPOSITION_OPEN_EXISTING
+		access = co.GENERIC_READ
+		share = co.FILE_SHARE_READ
+		disposition = co.DISPOSITION_OPEN_EXISTING
 	case co.OPEN_FILE_RW_EXISTING:
-		desiredAccess = co.GENERIC_READ | co.GENERIC_WRITE
-		shareMode = co.FILE_SHARE_NONE
-		creationDisposition = co.DISPOSITION_OPEN_EXISTING
+		access = co.GENERIC_READ | co.GENERIC_WRITE
+		share = co.FILE_SHARE_NONE
+		disposition = co.DISPOSITION_OPEN_EXISTING
 	case co.OPEN_FILE_RW_OPEN_OR_CREATE:
-		desiredAccess = co.GENERIC_READ | co.GENERIC_WRITE
-		shareMode = co.FILE_SHARE_NONE
-		creationDisposition = co.DISPOSITION_OPEN_ALWAYS
+		access = co.GENERIC_READ | co.GENERIC_WRITE
+		share = co.FILE_SHARE_NONE
+		disposition = co.DISPOSITION_OPEN_ALWAYS
 	}
 
-	hFile, err := CreateFile(filePath, desiredAccess, shareMode, nil,
-		creationDisposition, co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE,
+	hFile, err := CreateFile(filePath, access, share, nil,
+		disposition, co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE,
 		co.SECURITY_NONE, 0)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	me.hFile = hFile
-	return nil
+	return &_File{hFile: hFile}, nil
 }
 
 func (me *_File) Close() {
@@ -74,14 +88,6 @@ func (me *_File) Close() {
 	}
 }
 
-func (me *_File) CurrentPointerOffset() int {
-	off, err := me.hFile.SetFilePointerEx(0, co.FILE_FROM_CURRENT) // https://stackoverflow.com/a/17707021/6923555
-	if err != nil {
-		panic(err)
-	}
-	return int(off)
-}
-
 func (me *_File) EraseAndWrite(data []byte) error {
 	if err := me.Resize(len(data)); err != nil {
 		return err
@@ -89,7 +95,24 @@ func (me *_File) EraseAndWrite(data []byte) error {
 	if err := me.hFile.WriteFile(data); err != nil {
 		return err
 	}
-	return me.RewindPointerOffset()
+	return me.PtrOffsetRewind()
+}
+
+func (me *_File) Hfile() HFILE {
+	return me.hFile
+}
+
+func (me *_File) PtrOffset() int {
+	off, err := me.hFile.SetFilePointerEx(0, co.FILE_FROM_CURRENT) // https://stackoverflow.com/a/17707021/6923555
+	if err != nil {
+		panic(err)
+	}
+	return int(off)
+}
+
+func (me *_File) PtrOffsetRewind() error {
+	_, err := me.hFile.SetFilePointerEx(0, co.FILE_FROM_BEGIN)
+	return err
 }
 
 func (me *_File) Read(numBytes int) ([]byte, error) {
@@ -101,7 +124,7 @@ func (me *_File) Read(numBytes int) ([]byte, error) {
 }
 
 func (me *_File) ReadAll() ([]byte, error) {
-	if err := me.RewindPointerOffset(); err != nil {
+	if err := me.PtrOffsetRewind(); err != nil {
 		return nil, err
 	}
 	fileSize := me.Size()
@@ -113,7 +136,7 @@ func (me *_File) ReadAll() ([]byte, error) {
 		return nil, err
 	}
 
-	if err := me.RewindPointerOffset(); err != nil {
+	if err := me.PtrOffsetRewind(); err != nil {
 		return nil, err
 	}
 	return buf, nil
@@ -130,12 +153,7 @@ func (me *_File) Resize(numBytes int) error {
 		return err
 	}
 
-	return me.RewindPointerOffset()
-}
-
-func (me *_File) RewindPointerOffset() error {
-	_, err := me.hFile.SetFilePointerEx(0, co.FILE_FROM_BEGIN)
-	return err
+	return me.PtrOffsetRewind()
 }
 
 func (me *_File) Size() int {

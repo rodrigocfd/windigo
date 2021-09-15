@@ -27,8 +27,8 @@ type FileMapped interface {
 	// given length.
 	ReadChunk(offset, length int) []byte
 
-	// Truncates or expands the file, according to the new size. Zero will empty the
-	// file.
+	// Truncates or expands the file, according to the new size. Zero will empty
+	// the file.
 	//
 	// Internally, the file is unmapped, then remapped back into memory.
 	Resize(numBytes int) error
@@ -40,7 +40,7 @@ type FileMapped interface {
 //------------------------------------------------------------------------------
 
 type _FileMapped struct {
-	objFile  _File
+	objFile  File
 	hMap     HFILEMAP
 	pMem     HFILEMAPVIEW
 	sz       int
@@ -53,21 +53,25 @@ type _FileMapped struct {
 func OpenFileMapped(
 	filePath string, behavior co.OPEN_FILEMAP) (FileMapped, error) {
 
+	readOnly := behavior == co.OPEN_FILEMAP_MODE_READ
+	openOpts := util.Iif(readOnly,
+		co.OPEN_FILE_READ_EXISTING, co.OPEN_FILE_RW_EXISTING).(co.OPEN_FILE)
+
+	objFile, err := OpenFile(filePath, openOpts)
+	if err != nil {
+		return nil, err
+	}
+
 	me := &_FileMapped{
-		objFile:  _File{},
+		objFile:  objFile,
 		hMap:     HFILEMAP(0),
 		pMem:     HFILEMAPVIEW(0),
 		sz:       0,
-		readOnly: behavior == co.OPEN_FILEMAP_MODE_READ,
+		readOnly: readOnly,
 	}
 
-	mapOpts := util.Iif(me.readOnly,
-		co.OPEN_FILE_READ_EXISTING, co.OPEN_FILE_RW_EXISTING).(co.OPEN_FILE)
-
-	if err := me.objFile.openFile(filePath, mapOpts); err != nil {
-		return nil, err
-	}
 	if err := me.mapInMemory(); err != nil {
+		me.Close()
 		return nil, err
 	}
 	return me, nil
@@ -110,7 +114,6 @@ func (me *_FileMapped) Resize(numBytes int) error {
 	return me.mapInMemory()
 }
 
-// Retrieves the file size. This value is cached.
 func (me *_FileMapped) Size() int {
 	return me.sz
 }
@@ -121,7 +124,7 @@ func (me *_FileMapped) mapInMemory() error {
 		co.PAGE_READONLY, co.PAGE_READWRITE).(co.PAGE)
 
 	var err error
-	me.hMap, err = me.objFile.hFile.
+	me.hMap, err = me.objFile.Hfile().
 		CreateFileMapping(nil, pageFlags, co.SEC_NONE, 0, "")
 	if err != nil {
 		return err
