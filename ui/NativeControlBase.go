@@ -92,7 +92,7 @@ func (me *_NativeControlBase) installSubclassIfNeeded() {
 		_globalBaseSubclassId++
 		me.subclassId = _globalBaseSubclassId
 
-		_globalNativeControlBasePtrs[me] = me // store pointer in the map, so we're accessible from subclassProc
+		_globalNativeControlBasePtrs[me] = struct{}{} // store pointer in the set
 
 		// Subclass is installed after window creation, thus WM_CREATE can never
 		// be handled for a subclassed control.
@@ -102,7 +102,7 @@ func (me *_NativeControlBase) installSubclassIfNeeded() {
 }
 
 // Keeps all *_NativeControlBase that were retrieved in _SubclassProc.
-var _globalNativeControlBasePtrs = make(map[*_NativeControlBase]*_NativeControlBase, 10)
+var _globalNativeControlBasePtrs = make(map[*_NativeControlBase]struct{}, 10)
 
 // Default window procedure for subclassed child controls.
 func _SubclassProc(
@@ -113,7 +113,7 @@ func _SubclassProc(
 
 	// If object pointer is not stored, then no processing is done.
 	// Prevents processing after WM_NCDESTROY.
-	if pMe, isStored := _globalNativeControlBasePtrs[pMe]; isStored {
+	if _, isStored := _globalNativeControlBasePtrs[pMe]; isStored {
 		// Try to process the message with an user handler.
 		retVal, meaningfulRet, wasHandled :=
 			pMe.eventsSubcl.processMessage(uMsg, wParam, lParam)

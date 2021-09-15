@@ -82,7 +82,7 @@ func (me *_WindowRaw) createWindow(
 		panic(fmt.Sprintf("Window already created: \"%s\".", className))
 	}
 
-	_globalWindowRawPtrs[me] = me // store pointer in the map, so we're accessible from wndProc
+	_globalWindowRawPtrs[me] = struct{}{} // store pointer in the set
 
 	// The hwnd member is saved in WM_NCCREATE processing in wndProc.
 	win.CreateWindowEx(exStyle, className, title, style,
@@ -121,7 +121,7 @@ func (me *_WindowRaw) calcWndCoords(
 }
 
 // Keeps all *_WindowRaw that were retrieved in _WndProc.
-var _globalWindowRawPtrs = make(map[*_WindowRaw]*_WindowRaw, 10)
+var _globalWindowRawPtrs = make(map[*_WindowRaw]struct{}, 10)
 
 // Default window procedure.
 func _WndProc(
@@ -141,7 +141,7 @@ func _WndProc(
 
 	// If object pointer is not stored, then no processing is done.
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
-	if pMe, isStored := _globalWindowRawPtrs[pMe]; isStored {
+	if _, isStored := _globalWindowRawPtrs[pMe]; isStored {
 		// Process all internal events.
 		pMe.internalEvents.processMessages(uMsg, wParam, lParam)
 

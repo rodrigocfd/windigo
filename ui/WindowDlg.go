@@ -26,7 +26,7 @@ func (me *_WindowDlg) createDialog(hParent win.HWND, hInst win.HINSTANCE) {
 		panic(fmt.Sprintf("Dialog already created: %d.", me.dialogId))
 	}
 
-	_globalWindowDlgPtrs[me] = me // store pointer in the map, so we're accessible from dlgProc
+	_globalWindowDlgPtrs[me] = struct{}{} // store pointer in the set
 
 	// The hwnd member is saved in WM_INITDIALOG processing in dlgProc.
 	hInst.CreateDialogParam(uint16(me.dialogId), hParent,
@@ -39,7 +39,7 @@ func (me *_WindowDlg) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
 		panic(fmt.Sprintf("Dialog already created: %d.", me.dialogId))
 	}
 
-	_globalWindowDlgPtrs[me] = me // store pointer in the map, so we're accessible from dlgProc
+	_globalWindowDlgPtrs[me] = struct{}{} // store pointer in the set
 
 	// The hwnd member is saved in WM_INITDIALOG processing in dlgProc.
 	hInst.DialogBoxParam(int32(me.dialogId), hParent,
@@ -47,7 +47,7 @@ func (me *_WindowDlg) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
 }
 
 // Keeps all *_WindowDlg that were retrieved in _DlgProc.
-var _globalWindowDlgPtrs = make(map[*_WindowDlg]*_WindowDlg, 10)
+var _globalWindowDlgPtrs = make(map[*_WindowDlg]struct{}, 10)
 
 // Default dialog procedure.
 func _DlgProc(
@@ -66,7 +66,7 @@ func _DlgProc(
 
 	// If object pointer is not stored, then no processing is done.
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
-	if pMe, isStored := _globalWindowDlgPtrs[pMe]; isStored {
+	if _, isStored := _globalWindowDlgPtrs[pMe]; isStored {
 		// Process all internal events.
 		pMe.internalEvents.processMessages(uMsg, wParam, lParam)
 
