@@ -92,8 +92,8 @@ const (
 type OPEN_FILEMAP uint8
 
 const (
-	OPEN_FILEMAP_MODE_READ OPEN_FILEMAP = iota // Open an existing file for read only.
-	OPEN_FILEMAP_MODE_RW                       // Open an existing file for read and write.
+	OPEN_FILEMAP_READ OPEN_FILEMAP = iota // Open an existing file for read only.
+	OPEN_FILEMAP_RW                       // Open an existing file for read and write.
 )
 
 // CreateFileMapping() flProtect.

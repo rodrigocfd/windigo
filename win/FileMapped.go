@@ -53,7 +53,7 @@ type _FileMapped struct {
 func OpenFileMapped(
 	filePath string, behavior co.OPEN_FILEMAP) (FileMapped, error) {
 
-	readOnly := behavior == co.OPEN_FILEMAP_MODE_READ
+	readOnly := behavior == co.OPEN_FILEMAP_READ
 	openOpts := util.Iif(readOnly,
 		co.OPEN_FILE_READ_EXISTING, co.OPEN_FILE_RW_EXISTING).(co.OPEN_FILE)
 
