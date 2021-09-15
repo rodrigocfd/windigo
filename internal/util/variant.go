@@ -7,7 +7,7 @@ import (
 	"unsafe"
 )
 
-func _ToUint16Ptr(s string) unsafe.Pointer {
+func _ToNativePtr(s string) unsafe.Pointer {
 	pStr, err := syscall.UTF16PtrFromString(s)
 	if err != nil {
 		panic(fmt.Sprintf("Variant conversion from string failed \"%s\": %s",
@@ -21,7 +21,7 @@ func VariantNilString(val interface{}) unsafe.Pointer {
 	if val != nil {
 		switch v := val.(type) {
 		case string:
-			return _ToUint16Ptr(v)
+			return _ToNativePtr(v)
 		default:
 			panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(val)))
 		}
@@ -35,7 +35,7 @@ func VariantUint16String(val interface{}) unsafe.Pointer {
 	case uint16:
 		return unsafe.Pointer(uintptr(v))
 	case string:
-		return _ToUint16Ptr(v)
+		return _ToNativePtr(v)
 	default:
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(val)))
 	}

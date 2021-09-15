@@ -86,7 +86,7 @@ func (me *_Edit) LimitText(maxChars int) {
 
 func (me *_Edit) ReplaceSelection(replacementText string) {
 	me.Hwnd().SendMessage(co.EM_REPLACESEL,
-		1, win.LPARAM(unsafe.Pointer(win.Str.ToUint16Ptr(replacementText))))
+		1, win.LPARAM(unsafe.Pointer(win.Str.ToNativePtr(replacementText))))
 }
 
 func (me *_Edit) SelectedRange() (int, int) {

@@ -27,7 +27,7 @@ func (me *_TreeViewItems) AddRoot(text string) TreeViewItem {
 	tvi := win.TVINSERTSTRUCT{}
 	tvi.HInsertAfter = win.HTREEITEM(co.HTREEITEM_LAST)
 	tvi.Itemex.Mask = co.TVIF_TEXT
-	tvi.Itemex.SetPszText(win.Str.ToUint16Slice(text))
+	tvi.Itemex.SetPszText(win.Str.ToNativeSlice(text))
 
 	hNewItem := win.HTREEITEM(
 		me.pHwnd.SendMessage(co.TVM_INSERTITEM,

@@ -85,7 +85,7 @@ func (me *IBaseFilter) FindPin(id string) (IPin, bool) {
 	ret, _, _ := syscall.Syscall(
 		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ppv)).FindPin, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(id))),
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(id))),
 		uintptr(unsafe.Pointer(&ppQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -107,7 +107,7 @@ func (me *IBaseFilter) JoinFilterGraph(
 		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ppv)).JoinFilterGraph, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(graph.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(name))))
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(name))))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil
@@ -149,7 +149,7 @@ func (me *IBaseFilter) QueryVendorInfo() (string, bool) {
 		uintptr(unsafe.Pointer(&pv)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		name := win.Str.FromUint16Ptr(pv)
+		name := win.Str.FromNativePtr(pv)
 		win.CoTaskMemFree(unsafe.Pointer(pv))
 		return name, true
 	} else if hr == errco.E_NOTIMPL {

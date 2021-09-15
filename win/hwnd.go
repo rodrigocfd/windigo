@@ -31,7 +31,7 @@ func CreateWindowEx(exStyle co.WS_EX, className, title interface{},
 	case ATOM:
 		pClass = unsafe.Pointer(uintptr(v))
 	case string:
-		pClass = unsafe.Pointer(Str.ToUint16Ptr(v))
+		pClass = unsafe.Pointer(Str.ToNativePtr(v))
 	default:
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(className)))
 	}
@@ -59,7 +59,7 @@ func FindWindow(className, title interface{}) (HWND, bool) {
 		case ATOM:
 			pClass = unsafe.Pointer(uintptr(v))
 		case string:
-			pClass = unsafe.Pointer(Str.ToUint16Ptr(v))
+			pClass = unsafe.Pointer(Str.ToNativePtr(v))
 		default:
 			panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(className)))
 		}
@@ -273,7 +273,7 @@ func (hWnd HWND) GetClassName() string {
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		panic(wErr)
 	}
-	return Str.FromUint16Slice(buf[:])
+	return Str.FromNativeSlice(buf[:])
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclientrect
@@ -425,7 +425,7 @@ func (hWnd HWND) GetWindowText() string {
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		panic(wErr)
 	}
-	return Str.FromUint16Slice(buf)
+	return Str.FromNativeSlice(buf)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextlengthw
@@ -559,8 +559,8 @@ func (hWnd HWND) MapDialogRect(rc *RECT) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
 func (hWnd HWND) MessageBox(text, caption string, uType co.MB) co.ID {
 	ret, _, err := syscall.Syscall6(proc.MessageBox.Addr(), 4,
-		uintptr(hWnd), uintptr(unsafe.Pointer(Str.ToUint16Ptr(text))),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(caption))), uintptr(uType),
+		uintptr(hWnd), uintptr(unsafe.Pointer(Str.ToNativePtr(text))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(caption))), uintptr(uType),
 		0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -595,7 +595,7 @@ func (hWnd HWND) OpenClipboard() HCLIPBOARD {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
 func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {
 	ret, _, err := syscall.Syscall(proc.OpenThemeData.Addr(), 2,
-		uintptr(hWnd), uintptr(unsafe.Pointer(Str.ToUint16Ptr(classNames))),
+		uintptr(hWnd), uintptr(unsafe.Pointer(Str.ToNativePtr(classNames))),
 		0)
 	if ret == 0 {
 		return HTHEME(0), errco.ERROR(err)
@@ -779,7 +779,7 @@ func (hWnd HWND) SetWindowSubclass(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowtextw
 func (hWnd HWND) SetWindowText(text string) {
 	syscall.Syscall(proc.SetWindowText.Addr(), 2,
-		uintptr(hWnd), uintptr(unsafe.Pointer(Str.ToUint16Ptr(text))),
+		uintptr(hWnd), uintptr(unsafe.Pointer(Str.ToNativePtr(text))),
 		0)
 }
 

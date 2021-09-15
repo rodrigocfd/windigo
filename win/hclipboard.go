@@ -70,7 +70,7 @@ func (HCLIPBOARD) SetClipboardData(format co.CF, hMem HGLOBAL) {
 
 // Writes a string to the clipboard with HCLIPBOARD.SetClipboardData().
 func (hClip HCLIPBOARD) WriteString(text string) {
-	text16 := Str.ToUint16Slice(text)
+	text16 := Str.ToNativeSlice(text)
 	text8 := unsafe.Slice((*byte)(unsafe.Pointer(&text16[0])), len(text16)*2) // direct pointer conversion
 
 	hGlob := GlobalAlloc(co.GMEM_MOVEABLE, uint64(len(text8)))

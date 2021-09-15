@@ -69,7 +69,7 @@ func (me *IMediaControl) RenderFile(fileName string) {
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaControlVtbl)(unsafe.Pointer(*me.Ppv)).RenderFile, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(fileName))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

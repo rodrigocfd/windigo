@@ -35,7 +35,7 @@ type IShellItem struct {
 func NewShellItem(thePath string) (IShellItem, error) {
 	var ppv **win.IUnknownVtbl
 	ret, _, _ := syscall.Syscall6(proc.SHCreateItemFromParsingName.Addr(), 4,
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(thePath))),
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(thePath))),
 		0, uintptr(unsafe.Pointer(win.NewGuidFromIid(shellco.IID_IShellItem))),
 		uintptr(unsafe.Pointer(&ppv)),
 		0, 0)
@@ -112,7 +112,7 @@ func (me *IShellItem) GetDisplayName(sigdnName shellco.SIGDN) string {
 		uintptr(sigdnName), uintptr(unsafe.Pointer(&pv)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		name := win.Str.FromUint16Ptr(pv)
+		name := win.Str.FromNativePtr(pv)
 		win.CoTaskMemFree(unsafe.Pointer(pv))
 		return name
 	} else {

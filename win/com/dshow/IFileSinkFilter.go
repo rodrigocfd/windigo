@@ -32,7 +32,7 @@ func (me *IFileSinkFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 		uintptr(unsafe.Pointer(&pv)), uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		name := win.Str.FromUint16Ptr(pv)
+		name := win.Str.FromNativePtr(pv)
 		win.CoTaskMemFree(unsafe.Pointer(pv))
 		return name, true
 	} else if hr == errco.E_FAIL {
@@ -47,7 +47,7 @@ func (me *IFileSinkFilter) SetFileName(fileName string, mt *AM_MEDIA_TYPE) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileSinkFilterVtbl)(unsafe.Pointer(*me.Ppv)).SetFileName, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(fileName))),
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {

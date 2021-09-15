@@ -69,7 +69,7 @@ func (me *ITaskbarList3) SetOverlayIcon(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetOverlayIcon, 4,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(hWnd), uintptr(hIcon),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(description))), 0, 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(description))), 0, 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -143,7 +143,7 @@ func (me *ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, tip string) {
 	ret, _, _ := syscall.Syscall(
 		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ppv)).SetThumbnailTooltip, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(hwnd), uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(tip))))
+		uintptr(hwnd), uintptr(unsafe.Pointer(win.Str.ToNativePtr(tip))))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

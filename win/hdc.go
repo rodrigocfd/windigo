@@ -318,7 +318,7 @@ func (hdc HDC) GetPolyFillMode() co.POLYF {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextextentpoint32w
 func (hdc HDC) GetTextExtentPoint32(text string) SIZE {
 	sz := SIZE{}
-	lpString16 := Str.ToUint16Slice(text)
+	lpString16 := Str.ToNativeSlice(text)
 	ret, _, err := syscall.Syscall6(proc.GetTextExtentPoint32.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(&lpString16[0])),
 		uintptr(len(lpString16)-1), uintptr(unsafe.Pointer(&sz)), 0, 0)
@@ -337,7 +337,7 @@ func (hdc HDC) GetTextFace() string {
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	return Str.FromUint16Slice(buf[:])
+	return Str.FromNativeSlice(buf[:])
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextmetricsw
@@ -702,7 +702,7 @@ func (hdc HDC) StrokePath() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-textoutw
 func (hdc HDC) TextOut(x, y int32, text string) {
-	lpString16 := Str.ToUint16Slice(text)
+	lpString16 := Str.ToNativeSlice(text)
 	ret, _, err := syscall.Syscall6(proc.TextOut.Addr(), 5,
 		uintptr(hdc), uintptr(x), uintptr(y),
 		uintptr(unsafe.Pointer(&lpString16[0])),

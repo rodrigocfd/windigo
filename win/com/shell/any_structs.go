@@ -27,7 +27,7 @@ type THUMBBUTTON struct {
 	DwFlags shellco.THBF
 }
 
-func (tb *THUMBBUTTON) SzTip() string { return win.Str.FromUint16Slice(tb.szTip[:]) }
+func (tb *THUMBBUTTON) SzTip() string { return win.Str.FromNativeSlice(tb.szTip[:]) }
 func (tb *THUMBBUTTON) SetSzTip(val string) {
-	copy(tb.szTip[:], win.Str.ToUint16Slice(win.Str.Substr(val, 0, len(tb.szTip)-1)))
+	copy(tb.szTip[:], win.Str.ToNativeSlice(win.Str.Substr(val, 0, len(tb.szTip)-1)))
 }

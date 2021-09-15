@@ -33,7 +33,7 @@ func (me *_ListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewIt
 	lvi.Mask = co.LVIF_TEXT | co.LVIF_IMAGE
 	lvi.IItem = 0x0fff_ffff // insert as last one
 	lvi.IImage = int32(iconIndex)
-	lvi.SetPszText(win.Str.ToUint16Slice(texts[0])) // first column is inserted right away
+	lvi.SetPszText(win.Str.ToNativeSlice(texts[0])) // first column is inserted right away
 
 	newIdx := int(
 		me.pHwnd.SendMessage(co.LVM_INSERTITEM,
@@ -45,7 +45,7 @@ func (me *_ListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewIt
 
 	for i := 1; i < len(texts); i++ { // each subsequent column
 		lvi.ISubItem = int32(i)
-		lvi.SetPszText(win.Str.ToUint16Slice(texts[i]))
+		lvi.SetPszText(win.Str.ToNativeSlice(texts[i]))
 
 		ret := me.pHwnd.SendMessage(co.LVM_SETITEMTEXT,
 			win.WPARAM(newIdx), win.LPARAM(unsafe.Pointer(&lvi)))
@@ -116,7 +116,7 @@ func (me *_ListViewItems) Focused() (ListViewItem, bool) {
 func (me *_ListViewItems) Find(text string) (ListViewItem, bool) {
 	lvfi := win.LVFINDINFO{
 		Flags: co.LVFI_STRING,
-		Psz:   win.Str.ToUint16Ptr(text),
+		Psz:   win.Str.ToNativePtr(text),
 	}
 
 	wp := -1

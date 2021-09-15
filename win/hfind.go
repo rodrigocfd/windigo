@@ -22,7 +22,7 @@ func FindFirstFile(fileName string,
 	findFileData *WIN32_FIND_DATA) (HFIND, bool, error) {
 
 	ret, _, err := syscall.Syscall(proc.FindFirstFile.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(findFileData)), 0)
 
 	if int(ret) == _INVALID_HANDLE_VALUE {

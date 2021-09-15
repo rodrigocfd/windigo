@@ -54,7 +54,7 @@ func (hDrop HDROP) GetFilesAndFinish() []string {
 
 	for i := uint32(0); i < count; i++ {
 		hDrop.DragQueryFile(i, &pathBuf[0], uint32(len(pathBuf)))
-		paths = append(paths, Str.FromUint16Slice(pathBuf[:]))
+		paths = append(paths, Str.FromNativeSlice(pathBuf[:]))
 	}
 	hDrop.DragFinish()
 

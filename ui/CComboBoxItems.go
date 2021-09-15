@@ -20,7 +20,7 @@ func (me *_ComboBoxItems) new(ctrl *_NativeControlBase) {
 func (me *_ComboBoxItems) Add(texts ...string) {
 	for _, text := range texts {
 		me.pHwnd.SendMessage(co.CB_ADDSTRING, 0,
-			win.LPARAM(unsafe.Pointer(win.Str.ToUint16Ptr(text))))
+			win.LPARAM(unsafe.Pointer(win.Str.ToNativePtr(text))))
 	}
 }
 
@@ -71,5 +71,5 @@ func (me *_ComboBoxItems) Text(index int) string {
 	textBuf := make([]uint16, nChars+1)
 	me.pHwnd.SendMessage(co.CB_GETLBTEXT,
 		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&textBuf[0])))
-	return win.Str.FromUint16Slice(textBuf)
+	return win.Str.FromNativeSlice(textBuf)
 }

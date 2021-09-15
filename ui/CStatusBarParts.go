@@ -182,7 +182,7 @@ func (me *_StatusBarParts) SetIcon(index int, hIcon win.HICON) {
 func (me *_StatusBarParts) SetText(index int, text string) {
 	ret := me.pHwnd.SendMessage(co.SB_SETTEXT,
 		win.MAKEWPARAM(win.MAKEWORD(uint8(index), 0), 0),
-		win.LPARAM(unsafe.Pointer(win.Str.ToUint16Ptr(text))))
+		win.LPARAM(unsafe.Pointer(win.Str.ToNativePtr(text))))
 	if ret == 0 {
 		panic(fmt.Sprintf("SB_SETTEXT %d failed \"%s\".", index, text))
 	}
@@ -200,5 +200,5 @@ func (me *_StatusBarParts) Text(index int) string {
 	buf := make([]uint16, len+1)
 	me.pHwnd.SendMessage(co.SB_GETTEXT,
 		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&buf[0])))
-	return win.Str.FromUint16Slice(buf)
+	return win.Str.FromNativeSlice(buf)
 }

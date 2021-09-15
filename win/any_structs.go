@@ -141,24 +141,24 @@ type DYNAMIC_TIME_ZONE_INFORMATION struct {
 }
 
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) StandardName() string {
-	return Str.FromUint16Slice(dtz.standardName[:])
+	return Str.FromNativeSlice(dtz.standardName[:])
 }
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetStandardName(val string) {
-	copy(dtz.standardName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(dtz.standardName)-1)))
+	copy(dtz.standardName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(dtz.standardName)-1)))
 }
 
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) DaylightName() string {
-	return Str.FromUint16Slice(dtz.daylightName[:])
+	return Str.FromNativeSlice(dtz.daylightName[:])
 }
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetDaylightName(val string) {
-	copy(dtz.daylightName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(dtz.daylightName)-1)))
+	copy(dtz.daylightName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(dtz.daylightName)-1)))
 }
 
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) TimeZoneKeyName() string {
-	return Str.FromUint16Slice(dtz.timeZoneKeyName[:])
+	return Str.FromNativeSlice(dtz.timeZoneKeyName[:])
 }
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetTimeZoneKeyName(val string) {
-	copy(dtz.timeZoneKeyName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(dtz.timeZoneKeyName)-1)))
+	copy(dtz.timeZoneKeyName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(dtz.timeZoneKeyName)-1)))
 }
 
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) DynamicDaylightTimeDisabled() bool {
@@ -235,14 +235,14 @@ func (iix *ICONINFOEX) SetCbSize() { iix.cbSize = uint32(unsafe.Sizeof(*iix)) }
 func (iix *ICONINFOEX) FIcon() bool       { return iix.fIcon != 0 }
 func (iix *ICONINFOEX) SetFIcon(val bool) { iix.fIcon = int32(util.BoolToUintptr(val)) }
 
-func (iix *ICONINFOEX) SzModName() string { return Str.FromUint16Slice(iix.szModName[:]) }
+func (iix *ICONINFOEX) SzModName() string { return Str.FromNativeSlice(iix.szModName[:]) }
 func (iix *ICONINFOEX) SetSzModName(val string) {
-	copy(iix.szModName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(iix.szModName)-1)))
+	copy(iix.szModName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(iix.szModName)-1)))
 }
 
-func (iix *ICONINFOEX) SzResName() string { return Str.FromUint16Slice(iix.szResName[:]) }
+func (iix *ICONINFOEX) SzResName() string { return Str.FromNativeSlice(iix.szResName[:]) }
 func (iix *ICONINFOEX) SetSzResName(val string) {
-	copy(iix.szResName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(iix.szResName)-1)))
+	copy(iix.szResName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(iix.szResName)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
@@ -270,9 +270,9 @@ type LOGFONT struct {
 	lfFaceName       [_LF_FACESIZE]uint16
 }
 
-func (lf *LOGFONT) LfFaceName() string { return Str.FromUint16Slice(lf.lfFaceName[:]) }
+func (lf *LOGFONT) LfFaceName() string { return Str.FromNativeSlice(lf.lfFaceName[:]) }
 func (lf *LOGFONT) SetLfFaceName(val string) {
-	copy(lf.lfFaceName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(lf.lfFaceName)-1)))
+	copy(lf.lfFaceName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(lf.lfFaceName)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logpen
@@ -427,19 +427,19 @@ type NOTIFYICONDATA struct {
 
 func (nid *NOTIFYICONDATA) SetCbSize() { nid.cbSize = uint32(unsafe.Sizeof(*nid)) }
 
-func (nid *NOTIFYICONDATA) SzTip() string { return Str.FromUint16Slice(nid.szTip[:]) }
+func (nid *NOTIFYICONDATA) SzTip() string { return Str.FromNativeSlice(nid.szTip[:]) }
 func (nid *NOTIFYICONDATA) SetSzTip(val string) {
-	copy(nid.szTip[:], Str.ToUint16Slice(Str.Substr(val, 0, len(nid.szTip)-1)))
+	copy(nid.szTip[:], Str.ToNativeSlice(Str.Substr(val, 0, len(nid.szTip)-1)))
 }
 
-func (nid *NOTIFYICONDATA) SzInfo() string { return Str.FromUint16Slice(nid.szInfo[:]) }
+func (nid *NOTIFYICONDATA) SzInfo() string { return Str.FromNativeSlice(nid.szInfo[:]) }
 func (nid *NOTIFYICONDATA) SetSzInfo(val string) {
-	copy(nid.szInfo[:], Str.ToUint16Slice(Str.Substr(val, 0, len(nid.szInfo)-1)))
+	copy(nid.szInfo[:], Str.ToNativeSlice(Str.Substr(val, 0, len(nid.szInfo)-1)))
 }
 
-func (nid *NOTIFYICONDATA) SzInfoTitle() string { return Str.FromUint16Slice(nid.szInfoTitle[:]) }
+func (nid *NOTIFYICONDATA) SzInfoTitle() string { return Str.FromNativeSlice(nid.szInfoTitle[:]) }
 func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
-	copy(nid.szInfoTitle[:], Str.ToUint16Slice(Str.Substr(val, 0, len(nid.szInfoTitle)-1)))
+	copy(nid.szInfoTitle[:], Str.ToNativeSlice(Str.Substr(val, 0, len(nid.szInfoTitle)-1)))
 }
 
 // ⚠️ You must call SetDwOsVersionInfoSize().
@@ -463,9 +463,9 @@ func (osv *OSVERSIONINFOEX) SetDwOsVersionInfoSize() {
 	osv.DwOsVersionInfoSize = uint32(unsafe.Sizeof(*osv))
 }
 
-func (osv *OSVERSIONINFOEX) SzCSDVersion() string { return Str.FromUint16Slice(osv.szCSDVersion[:]) }
+func (osv *OSVERSIONINFOEX) SzCSDVersion() string { return Str.FromNativeSlice(osv.szCSDVersion[:]) }
 func (osv *OSVERSIONINFOEX) SetSzCSDVersion(val string) {
-	copy(osv.szCSDVersion[:], Str.ToUint16Slice(Str.Substr(val, 0, len(osv.szCSDVersion)-1)))
+	copy(osv.szCSDVersion[:], Str.ToNativeSlice(Str.Substr(val, 0, len(osv.szCSDVersion)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-paintstruct
@@ -566,14 +566,14 @@ type SHFILEINFO struct {
 	szTypeName    [80]uint16
 }
 
-func (shf *SHFILEINFO) SzDisplayName() string { return Str.FromUint16Slice(shf.szDisplayName[:]) }
+func (shf *SHFILEINFO) SzDisplayName() string { return Str.FromNativeSlice(shf.szDisplayName[:]) }
 func (shf *SHFILEINFO) SetSzDisplayName(val string) {
-	copy(shf.szDisplayName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(shf.szDisplayName)-1)))
+	copy(shf.szDisplayName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(shf.szDisplayName)-1)))
 }
 
-func (shf *SHFILEINFO) SzTypeName() string { return Str.FromUint16Slice(shf.szTypeName[:]) }
+func (shf *SHFILEINFO) SzTypeName() string { return Str.FromNativeSlice(shf.szTypeName[:]) }
 func (shf *SHFILEINFO) SetSzTypeName(val string) {
-	copy(shf.szTypeName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(shf.szTypeName)-1)))
+	copy(shf.szTypeName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(shf.szTypeName)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialog_button
@@ -585,10 +585,10 @@ func (tdb *TASKDIALOG_BUTTON) NButtonID() int32       { return *(*int32)(unsafe.
 func (tdb *TASKDIALOG_BUTTON) SetNButtonID(val int32) { *(*int32)(unsafe.Pointer(&tdb.data[0])) = val }
 
 func (tdc *TASKDIALOG_BUTTON) PszButtonText() string {
-	return Str.FromUint16Ptr(*(**uint16)(unsafe.Pointer(&tdc.data[4])))
+	return Str.FromNativePtr(*(**uint16)(unsafe.Pointer(&tdc.data[4])))
 }
 func (tdc *TASKDIALOG_BUTTON) SetPszButtonText(val string) {
-	*(**uint16)(unsafe.Pointer(&tdc.data[4])) = Str.ToUint16Ptr(val)
+	*(**uint16)(unsafe.Pointer(&tdc.data[4])) = Str.ToNativePtr(val)
 }
 
 // ⚠️ You must call SetCbSize().
@@ -623,10 +623,10 @@ func (tdc *TASKDIALOGCONFIG) SetDwCommonButtons(val co.TDCBF) {
 }
 
 func (tdc *TASKDIALOGCONFIG) PszWindowTitle() string {
-	return Str.FromUint16Ptr(*(**uint16)(unsafe.Pointer(&tdc.data[28])))
+	return Str.FromNativePtr(*(**uint16)(unsafe.Pointer(&tdc.data[28])))
 }
 func (tdc *TASKDIALOGCONFIG) SetPszWindowTitle(val string) {
-	*(**uint16)(unsafe.Pointer(&tdc.data[28])) = Str.ToUint16Ptr(val)
+	*(**uint16)(unsafe.Pointer(&tdc.data[28])) = Str.ToNativePtr(val)
 }
 
 // Return type can be uint16, TD_ICON or HICON.
@@ -656,17 +656,17 @@ func (tdc *TASKDIALOGCONFIG) SetHMainIcon(val interface{}) {
 }
 
 func (tdc *TASKDIALOGCONFIG) PszMainInstruction() string {
-	return Str.FromUint16Ptr(*(**uint16)(unsafe.Pointer(&tdc.data[44])))
+	return Str.FromNativePtr(*(**uint16)(unsafe.Pointer(&tdc.data[44])))
 }
 func (tdc *TASKDIALOGCONFIG) SetPszMainInstruction(val string) {
-	*(**uint16)(unsafe.Pointer(&tdc.data[44])) = Str.ToUint16Ptr(val)
+	*(**uint16)(unsafe.Pointer(&tdc.data[44])) = Str.ToNativePtr(val)
 }
 
 func (tdc *TASKDIALOGCONFIG) PszContent() string {
-	return Str.FromUint16Ptr(*(**uint16)(unsafe.Pointer(&tdc.data[52])))
+	return Str.FromNativePtr(*(**uint16)(unsafe.Pointer(&tdc.data[52])))
 }
 func (tdc *TASKDIALOGCONFIG) SetPszContent(val string) {
-	*(**uint16)(unsafe.Pointer(&tdc.data[52])) = Str.ToUint16Ptr(val)
+	*(**uint16)(unsafe.Pointer(&tdc.data[52])) = Str.ToNativePtr(val)
 }
 
 func (tdc *TASKDIALOGCONFIG) PButtons() []TASKDIALOG_BUTTON {
@@ -700,31 +700,31 @@ func (tdc *TASKDIALOGCONFIG) SetNDefaultRadioButton(val int32) {
 }
 
 func (tdc *TASKDIALOGCONFIG) PszVerificationText() string {
-	return Str.FromUint16Ptr(*(**uint16)(unsafe.Pointer(&tdc.data[92])))
+	return Str.FromNativePtr(*(**uint16)(unsafe.Pointer(&tdc.data[92])))
 }
 func (tdc *TASKDIALOGCONFIG) SetPszVerificationText(val string) {
-	*(**uint16)(unsafe.Pointer(&tdc.data[92])) = Str.ToUint16Ptr(val)
+	*(**uint16)(unsafe.Pointer(&tdc.data[92])) = Str.ToNativePtr(val)
 }
 
 func (tdc *TASKDIALOGCONFIG) PszExpandedInformation() string {
-	return Str.FromUint16Ptr(*(**uint16)(unsafe.Pointer(&tdc.data[100])))
+	return Str.FromNativePtr(*(**uint16)(unsafe.Pointer(&tdc.data[100])))
 }
 func (tdc *TASKDIALOGCONFIG) SetPszExpandedInformation(val string) {
-	*(**uint16)(unsafe.Pointer(&tdc.data[100])) = Str.ToUint16Ptr(val)
+	*(**uint16)(unsafe.Pointer(&tdc.data[100])) = Str.ToNativePtr(val)
 }
 
 func (tdc *TASKDIALOGCONFIG) PszExpandedControlText() string {
-	return Str.FromUint16Ptr(*(**uint16)(unsafe.Pointer(&tdc.data[108])))
+	return Str.FromNativePtr(*(**uint16)(unsafe.Pointer(&tdc.data[108])))
 }
 func (tdc *TASKDIALOGCONFIG) SetPszExpandedControlText(val string) {
-	*(**uint16)(unsafe.Pointer(&tdc.data[108])) = Str.ToUint16Ptr(val)
+	*(**uint16)(unsafe.Pointer(&tdc.data[108])) = Str.ToNativePtr(val)
 }
 
 func (tdc *TASKDIALOGCONFIG) PszCollapsedControlText() string {
-	return Str.FromUint16Ptr(*(**uint16)(unsafe.Pointer(&tdc.data[116])))
+	return Str.FromNativePtr(*(**uint16)(unsafe.Pointer(&tdc.data[116])))
 }
 func (tdc *TASKDIALOGCONFIG) SetPszCollapsedControlText(val string) {
-	*(**uint16)(unsafe.Pointer(&tdc.data[116])) = Str.ToUint16Ptr(val)
+	*(**uint16)(unsafe.Pointer(&tdc.data[116])) = Str.ToNativePtr(val)
 }
 
 // Return type can be uint16 or HICON.
@@ -750,10 +750,10 @@ func (tdc *TASKDIALOGCONFIG) SetHFooterIcon(val interface{}) {
 }
 
 func (tdc *TASKDIALOGCONFIG) PszFooter() string {
-	return Str.FromUint16Ptr(*(**uint16)(unsafe.Pointer(&tdc.data[132])))
+	return Str.FromNativePtr(*(**uint16)(unsafe.Pointer(&tdc.data[132])))
 }
 func (tdc *TASKDIALOGCONFIG) SetPszFooter(val string) {
-	*(**uint16)(unsafe.Pointer(&tdc.data[132])) = Str.ToUint16Ptr(val)
+	*(**uint16)(unsafe.Pointer(&tdc.data[132])) = Str.ToNativePtr(val)
 }
 
 func (tdc *TASKDIALOGCONFIG) PfCallback() uintptr { return *(*uintptr)(unsafe.Pointer(&tdc.data[140])) }
@@ -904,17 +904,17 @@ type TIME_ZONE_INFORMATION struct {
 }
 
 func (tzi *TIME_ZONE_INFORMATION) StandardName() string {
-	return Str.FromUint16Slice(tzi.standardName[:])
+	return Str.FromNativeSlice(tzi.standardName[:])
 }
 func (tzi *TIME_ZONE_INFORMATION) SetStandardName(val string) {
-	copy(tzi.standardName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(tzi.standardName)-1)))
+	copy(tzi.standardName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(tzi.standardName)-1)))
 }
 
 func (tzi *TIME_ZONE_INFORMATION) DaylightName() string {
-	return Str.FromUint16Slice(tzi.daylightName[:])
+	return Str.FromNativeSlice(tzi.daylightName[:])
 }
 func (tzi *TIME_ZONE_INFORMATION) SetDaylightName(val string) {
-	copy(tzi.daylightName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(tzi.daylightName)-1)))
+	copy(tzi.daylightName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(tzi.daylightName)-1)))
 }
 
 // ⚠️ You must call SetCbSize().
@@ -988,16 +988,16 @@ type WIN32_FIND_DATA struct {
 	WFinderFlags        uint16
 }
 
-func (wfd *WIN32_FIND_DATA) CFileName() string { return Str.FromUint16Slice(wfd.cFileName[:]) }
+func (wfd *WIN32_FIND_DATA) CFileName() string { return Str.FromNativeSlice(wfd.cFileName[:]) }
 func (wfd *WIN32_FIND_DATA) SetCFileName(val string) {
-	copy(wfd.cFileName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(wfd.cFileName)-1)))
+	copy(wfd.cFileName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(wfd.cFileName)-1)))
 }
 
 func (wfd *WIN32_FIND_DATA) CAlternateFileName() string {
-	return Str.FromUint16Slice(wfd.cCAlternateFileName[:])
+	return Str.FromNativeSlice(wfd.cCAlternateFileName[:])
 }
 func (wfd *WIN32_FIND_DATA) SetCAlternateFileName(val string) {
-	copy(wfd.cCAlternateFileName[:], Str.ToUint16Slice(Str.Substr(val, 0, len(wfd.cCAlternateFileName)-1)))
+	copy(wfd.cCAlternateFileName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(wfd.cCAlternateFileName)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowpos

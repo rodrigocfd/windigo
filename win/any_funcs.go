@@ -73,7 +73,7 @@ func CommDlgExtendedError() errco.CDERR {
 func CommandLineToArgv(cmdLine string) []string {
 	pNumArgs := int32(0)
 	ret, _, err := syscall.Syscall(proc.CommandLineToArgv.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(cmdLine))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(cmdLine))),
 		uintptr(unsafe.Pointer(&pNumArgs)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -83,7 +83,7 @@ func CommandLineToArgv(cmdLine string) []string {
 	strs := make([]string, 0, pNumArgs)
 
 	for _, lpPtr := range lpPtrs {
-		strs = append(strs, Str.FromUint16Ptr(lpPtr))
+		strs = append(strs, Str.FromNativePtr(lpPtr))
 	}
 	return strs
 }
@@ -91,8 +91,8 @@ func CommandLineToArgv(cmdLine string) []string {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-copyfilew
 func CopyFile(existingFile, newFile string, failIfExists bool) error {
 	ret, _, err := syscall.Syscall(proc.CopyFile.Addr(), 3,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(existingFile))),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(newFile))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(existingFile))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(newFile))),
 		util.BoolToUintptr(failIfExists))
 	if ret == 0 {
 		return errco.ERROR(err)
@@ -116,7 +116,7 @@ func CreateDirectory(
 	pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
 
 	ret, _, err := syscall.Syscall(proc.CreateDirectory.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pathName))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(pathName))),
 		uintptr(unsafe.Pointer(securityAttributes)), 0)
 	if ret == 0 {
 		return errco.ERROR(err)
@@ -165,7 +165,7 @@ func CreateProcess(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
 func DeleteFile(fileName string) error {
 	ret, _, err := syscall.Syscall(proc.DeleteFile.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))), 0, 0)
+		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))), 0, 0)
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -240,16 +240,16 @@ func ExitProcess(exitCode uint32) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
 func ExpandEnvironmentStrings(src string) string {
 	ret, _, _ := syscall.Syscall(proc.ExpandEnvironmentStrings.Addr(), 3,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(src))), 0, 0)
+		uintptr(unsafe.Pointer(Str.ToNativePtr(src))), 0, 0)
 
 	buf := make([]uint16, ret)
 	ret, _, err := syscall.Syscall(proc.ExpandEnvironmentStrings.Addr(), 3,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(src))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(src))),
 		uintptr(unsafe.Pointer(&buf[0])), ret)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	return Str.FromUint16Slice(buf)
+	return Str.FromNativeSlice(buf)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
@@ -291,7 +291,7 @@ func GetCaretPos() RECT {
 func GetCommandLine() string {
 	ret, _, _ := syscall.Syscall(proc.GetCommandLine.Addr(), 0,
 		0, 0, 0)
-	return Str.FromUint16Ptr((*uint16)(unsafe.Pointer(ret)))
+	return Str.FromNativePtr((*uint16)(unsafe.Pointer(ret)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getcurrentdirectory
@@ -302,7 +302,7 @@ func GetCurrentDirectory() string {
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	return Str.FromUint16Slice(buf[:])
+	return Str.FromNativeSlice(buf[:])
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
@@ -356,7 +356,7 @@ func GetEnvironmentStrings() map[string]string {
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	rawEntries := Str.FromUint16PtrMulti((*uint16)(unsafe.Pointer(ret)))
+	rawEntries := Str.FromNativePtrMulti((*uint16)(unsafe.Pointer(ret)))
 
 	ret, _, err = syscall.Syscall(proc.FreeEnvironmentStrings.Addr(), 1,
 		ret, 0, 0)
@@ -375,7 +375,7 @@ func GetEnvironmentStrings() map[string]string {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
 	ret, _, err := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))), 0, 0)
+		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))), 0, 0)
 
 	if retAttr := co.FILE_ATTRIBUTE(ret); retAttr == co.FILE_ATTRIBUTE_INVALID {
 		return retAttr, errco.ERROR(err) // err is extended error information
@@ -390,7 +390,7 @@ func GetFileVersionInfo(fileName string) []byte {
 	buf := make([]byte, visz) // alloc the buffer
 
 	ret, _, err := syscall.Syscall6(proc.GetFileVersionInfo.Addr(), 4,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))),
 		0, uintptr(visz), uintptr(unsafe.Pointer(&buf[0])), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -402,7 +402,7 @@ func GetFileVersionInfo(fileName string) []byte {
 func GetFileVersionInfoSize(fileName string) uint32 {
 	lpdwHandle := uint32(0)
 	ret, _, err := syscall.Syscall(proc.GetFileVersionInfoSize.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(&lpdwHandle)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -554,7 +554,7 @@ func GetWindowsDirectory() string {
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	return Str.FromUint16Slice(buf[:])
+	return Str.FromNativeSlice(buf[:])
 }
 
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632656(v=vs.85)
@@ -716,8 +716,8 @@ func MonitorFromPoint(pt POINT, flags co.MONITOR) HMONITOR {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefilew
 func MoveFile(existingFile, newFile string) error {
 	ret, _, err := syscall.Syscall(proc.MoveFile.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(existingFile))),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(newFile))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(existingFile))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(newFile))),
 		0)
 	if ret == 0 {
 		return errco.ERROR(err)
@@ -728,8 +728,8 @@ func MoveFile(existingFile, newFile string) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw
 func MoveFileEx(existingFile, newFile string, flags co.MOVEFILE) error {
 	ret, _, err := syscall.Syscall(proc.MoveFile.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(existingFile))),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(newFile))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(existingFile))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(newFile))),
 		uintptr(flags))
 	if ret == 0 {
 		return errco.ERROR(err)
@@ -809,7 +809,7 @@ func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, error) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw
 func RemoveDirectory(pathName string) error {
 	ret, _, err := syscall.Syscall(proc.RemoveDirectory.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pathName))), 0, 0)
+		uintptr(unsafe.Pointer(Str.ToNativePtr(pathName))), 0, 0)
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -824,8 +824,8 @@ func ReplaceFile(
 	backup interface{}, replaceFlags co.REPLACEFILE) error {
 
 	ret, _, err := syscall.Syscall6(proc.ReplaceFile.Addr(), 6,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(replaced))),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(replacement))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(replaced))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(replacement))),
 		uintptr(util.VariantNilString(backup)),
 		uintptr(replaceFlags), 0, 0)
 	if ret == 0 {
@@ -837,7 +837,7 @@ func ReplaceFile(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setcurrentdirectory
 func SetCurrentDirectory(pathName string) error {
 	ret, _, err := syscall.Syscall(proc.SetCurrentDirectory.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(pathName))), 0, 0)
+		uintptr(unsafe.Pointer(Str.ToNativePtr(pathName))), 0, 0)
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -847,7 +847,7 @@ func SetCurrentDirectory(pathName string) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfileattributesw
 func SetFileAttributes(fileName string, attrs co.FILE_ATTRIBUTE) error {
 	ret, _, err := syscall.Syscall(proc.SetFileAttributes.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))), uintptr(attrs), 0)
+		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))), uintptr(attrs), 0)
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -893,7 +893,7 @@ func SHGetFileInfo(
 	sfi *SHFILEINFO, flags co.SHGFI) {
 
 	ret, _, err := syscall.Syscall6(proc.SHGetFileInfo.Addr(), 5,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(path))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(path))),
 		uintptr(fileAttributes), uintptr(unsafe.Pointer(sfi)),
 		unsafe.Sizeof(*sfi), uintptr(flags), 0)
 
@@ -992,7 +992,7 @@ func VerQueryValue(block []byte, subBlock string) ([]byte, bool) {
 	lplpBuffer, puLen := uintptr(0), uint32(0)
 	ret, _, _ := syscall.Syscall6(proc.VerQueryValue.Addr(), 4,
 		uintptr(unsafe.Pointer(&block[0])),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(subBlock))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(subBlock))),
 		uintptr(unsafe.Pointer(&lplpBuffer)), uintptr(unsafe.Pointer(&puLen)),
 		0, 0)
 	if ret == 0 {

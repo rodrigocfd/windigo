@@ -40,14 +40,14 @@ type LITEM struct {
 	szUrl     [_L_MAX_URL_LENGTH]uint16
 }
 
-func (li *LITEM) SzID() string { return Str.FromUint16Slice(li.szID[:]) }
+func (li *LITEM) SzID() string { return Str.FromNativeSlice(li.szID[:]) }
 func (li *LITEM) SetSzID(val string) {
-	copy(li.szID[:], Str.ToUint16Slice(Str.Substr(val, 0, len(li.szID)-1)))
+	copy(li.szID[:], Str.ToNativeSlice(Str.Substr(val, 0, len(li.szID)-1)))
 }
 
-func (li *LITEM) SzUrl() string { return Str.FromUint16Slice(li.szUrl[:]) }
+func (li *LITEM) SzUrl() string { return Str.FromNativeSlice(li.szUrl[:]) }
 func (li *LITEM) SetSzUrl(val string) {
-	copy(li.szUrl[:], Str.ToUint16Slice(Str.Substr(val, 0, len(li.szUrl)-1)))
+	copy(li.szUrl[:], Str.ToNativeSlice(Str.Substr(val, 0, len(li.szUrl)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
@@ -164,9 +164,9 @@ type NMDATETIMEFORMAT struct {
 	szDisplay  [64]uint16
 }
 
-func (dtf *NMDATETIMEFORMAT) SzDisplay() string { return Str.FromUint16Slice(dtf.szDisplay[:]) }
+func (dtf *NMDATETIMEFORMAT) SzDisplay() string { return Str.FromNativeSlice(dtf.szDisplay[:]) }
 func (dtf *NMDATETIMEFORMAT) SetSzDisplay(val string) {
-	copy(dtf.szDisplay[:], Str.ToUint16Slice(Str.Substr(val, 0, len(dtf.szDisplay)-1)))
+	copy(dtf.szDisplay[:], Str.ToNativeSlice(Str.Substr(val, 0, len(dtf.szDisplay)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatqueryw
@@ -340,9 +340,9 @@ type NMLVEMPTYMARKUP struct {
 	szMarkup [_L_MAX_URL_LENGTH]uint16
 }
 
-func (lve *NMLVEMPTYMARKUP) SzMarkup() string { return Str.FromUint16Slice(lve.szMarkup[:]) }
+func (lve *NMLVEMPTYMARKUP) SzMarkup() string { return Str.FromNativeSlice(lve.szMarkup[:]) }
 func (lve *NMLVEMPTYMARKUP) SetSzMarkup(val string) {
-	copy(lve.szMarkup[:], Str.ToUint16Slice(Str.Substr(val, 0, len(lve.szMarkup)-1)))
+	copy(lve.szMarkup[:], Str.ToNativeSlice(Str.Substr(val, 0, len(lve.szMarkup)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvfinditemw

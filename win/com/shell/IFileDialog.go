@@ -95,7 +95,7 @@ func (me *IFileDialog) GetFileName() string {
 		uintptr(unsafe.Pointer(&pv)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		name := win.Str.FromUint16Ptr(pv)
+		name := win.Str.FromNativePtr(pv)
 		win.CoTaskMemFree(unsafe.Pointer(pv))
 		return name
 	} else {
@@ -199,7 +199,7 @@ func (me *IFileDialog) SetFileName(name string) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetFileName, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(name))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(name))), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -211,7 +211,7 @@ func (me *IFileDialog) SetFileNameLabel(label string) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetFileNameLabel, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(label))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(label))), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -238,8 +238,8 @@ func (me *IFileDialog) SetFileTypes(filterSpec []FilterSpec) {
 	for _, fiSp := range filterSpec {
 		comdlgFiSp = append(comdlgFiSp, // convert FilterSpec to COMDLG_FILTERSPEC
 			COMDLG_FILTERSPEC{
-				PszName: win.Str.ToUint16Ptr(fiSp.Name),
-				PszSpec: win.Str.ToUint16Ptr(fiSp.Spec),
+				PszName: win.Str.ToNativePtr(fiSp.Name),
+				PszSpec: win.Str.ToNativePtr(fiSp.Spec),
 			})
 	}
 
@@ -271,7 +271,7 @@ func (me *IFileDialog) SetOkButtonLabel(text string) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetOkButtonLabel, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(text))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(text))), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -295,7 +295,7 @@ func (me *IFileDialog) SetTitle(title string) {
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetTitle, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(title))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(title))), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

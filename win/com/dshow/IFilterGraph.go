@@ -47,7 +47,7 @@ func (me *IFilterGraph) AddFilter(filter *IBaseFilter, name string) error {
 		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ppv)).AddFilter, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(filter.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(name))))
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(name))))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil

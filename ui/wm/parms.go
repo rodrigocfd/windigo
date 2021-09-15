@@ -108,7 +108,7 @@ func (p DeleteItem) DeleteItemStruct() *win.DELETEITEMSTRUCT {
 type DevModeChange struct{ Msg Any }
 
 func (p DevModeChange) DeviceName() string {
-	return win.Str.FromUint16Ptr((*uint16)(unsafe.Pointer(p.Msg.LParam)))
+	return win.Str.FromNativePtr((*uint16)(unsafe.Pointer(p.Msg.LParam)))
 }
 
 type DisplayChange struct{ Msg Any }

@@ -20,7 +20,7 @@ type HICON HANDLE
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-extracticonexw
 func ExtractIconEx(fileName string) (largeIcons, smallIcons []HICON) {
-	lpszFile16 := Str.ToUint16Slice(fileName)
+	lpszFile16 := Str.ToNativeSlice(fileName)
 	retrieveIdx := -1
 	ret, _, err := syscall.Syscall6(proc.ExtractIconEx.Addr(), 5,
 		uintptr(unsafe.Pointer(&lpszFile16[0])), uintptr(retrieveIdx), 0, 0, 0, 0)

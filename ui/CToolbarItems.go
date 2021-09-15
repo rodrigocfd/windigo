@@ -23,9 +23,9 @@ func (me *_ToolbarItems) AddButton(
 
 	tbb := win.TBBUTTON{}
 	tbb.IdCommand = int32(cmdId)
-	tbb.FsStyle = co.BTNS(co.TBSTYLE_AUTOSIZE)
+	tbb.FsStyle = co.BTNS_AUTOSIZE
 	tbb.FsState = co.TBSTATE_ENABLED
-	tbb.IString = win.Str.ToUint16Ptr(text)
+	tbb.IString = win.Str.ToNativePtr(text)
 	tbb.SetIBitmap(iconIndex, imgListIndex)
 
 	if me.pHwnd.SendMessage(co.TB_ADDBUTTONS, 1, win.LPARAM(unsafe.Pointer(&tbb))) == 0 {
@@ -44,6 +44,15 @@ func (me *_ToolbarItems) AddSeparator() {
 		panic("TB_ADDBUTTONS failed for separator.")
 	}
 	me.pHwnd.SendMessage(co.TB_AUTOSIZE, 0, 0)
+}
+
+// Retrieves information about a button.
+func (me *_ToolbarItems) ButtonInfo(index int, info *win.TBBUTTON) {
+	if me.pHwnd.SendMessage(co.TB_GETBUTTON,
+		win.WPARAM(index), win.LPARAM(unsafe.Pointer(info)),
+	) == 0 {
+		panic(fmt.Sprintf("TB_GETBUTTON \"%d\" failed.", index))
+	}
 }
 
 // Retrieves the number of buttons.
@@ -65,15 +74,6 @@ func (me *_ToolbarItems) EnableButton(isEnabled bool, cmdId int) {
 		win.MAKELPARAM(uint16(util.BoolToUintptr(isEnabled)), 0),
 	) == 0 {
 		panic(fmt.Sprintf("TB_ENABLEBUTTON \"%d\" failed.", cmdId))
-	}
-}
-
-// Retrieves information about a button.
-func (me *_ToolbarItems) GetButton(index int, info *win.TBBUTTON) {
-	if me.pHwnd.SendMessage(co.TB_GETBUTTON,
-		win.WPARAM(index), win.LPARAM(unsafe.Pointer(info)),
-	) == 0 {
-		panic(fmt.Sprintf("TB_GETBUTTON \"%d\" failed.", index))
 	}
 }
 

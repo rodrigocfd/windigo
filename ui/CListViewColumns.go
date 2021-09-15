@@ -33,7 +33,7 @@ func (me *_ListViewColumns) Add(widths []int, titles ...string) {
 		_MultiplyDpi(nil, &colWidth)
 
 		lvc.Cx = colWidth.Cx
-		lvc.SetPszText(win.Str.ToUint16Slice(titles[i]))
+		lvc.SetPszText(win.Str.ToNativeSlice(titles[i]))
 
 		newIdx := int(
 			me.pHwnd.SendMessage(co.LVM_INSERTCOLUMN,
@@ -64,7 +64,7 @@ func (me *_ListViewColumns) SetTitle(columnIndex int, text string) {
 	lvc := win.LVCOLUMN{}
 	lvc.ISubItem = int32(columnIndex)
 	lvc.Mask = co.LVCF_TEXT
-	lvc.SetPszText(win.Str.ToUint16Slice(text))
+	lvc.SetPszText(win.Str.ToNativeSlice(text))
 
 	ret := me.pHwnd.SendMessage(co.LVM_SETCOLUMN,
 		win.WPARAM(columnIndex), win.LPARAM(unsafe.Pointer(&lvc)))
@@ -116,7 +116,7 @@ func (me *_ListViewColumns) Title(columnIndex int) string {
 		panic(fmt.Sprintf("LVM_GETCOLUMN %d failed.", lvc.ISubItem))
 	}
 
-	return win.Str.FromUint16Slice(titleBuf[:])
+	return win.Str.FromNativeSlice(titleBuf[:])
 }
 
 // Retrieves the width of the column.

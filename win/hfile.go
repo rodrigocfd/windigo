@@ -25,7 +25,7 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 	hTemplateFile HFILE) (HFILE, error) {
 
 	ret, _, err := syscall.Syscall9(proc.CreateFile.Addr(), 7,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(fileName))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))),
 		uintptr(desiredAccess), uintptr(shareMode),
 		uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(creationDisposition),

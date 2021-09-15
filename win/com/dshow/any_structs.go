@@ -34,9 +34,9 @@ type FILTER_INFO struct {
 	PGraph  IFilterGraph
 }
 
-func (fi *FILTER_INFO) AchName() string { return win.Str.FromUint16Slice(fi.achName[:]) }
+func (fi *FILTER_INFO) AchName() string { return win.Str.FromNativeSlice(fi.achName[:]) }
 func (fi *FILTER_INFO) SetAchName(val string) {
-	copy(fi.achName[:], win.Str.ToUint16Slice(win.Str.Substr(val, 0, len(fi.achName)-1)))
+	copy(fi.achName[:], win.Str.ToNativeSlice(win.Str.Substr(val, 0, len(fi.achName)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/ns-evr-mfvideonormalizedrect

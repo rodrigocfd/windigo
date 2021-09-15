@@ -64,8 +64,8 @@ func (me *IGraphBuilder) AddSourceFilter(
 	ret, _, _ := syscall.Syscall6(
 		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).AddSourceFilter, 4,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(fileName))),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(filterName))),
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))),
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(filterName))),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -145,7 +145,7 @@ func (me *IGraphBuilder) RenderFile(file string) error {
 	ret, _, _ := syscall.Syscall(
 		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).RenderFile, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(win.Str.ToUint16Ptr(file))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(file))), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil

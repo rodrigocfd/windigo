@@ -47,7 +47,7 @@ func (me *_WindowRaw) generateWcx(
 			wcx.HInstance, wcx.HIcon, wcx.HCursor, wcx.HbrBackground,
 			wcx.LpszMenuName, wcx.HIconSm)
 	}
-	actualClassNameSlice := win.Str.ToUint16Slice(actualClassName)
+	actualClassNameSlice := win.Str.ToNativeSlice(actualClassName)
 	wcx.LpszClassName = &actualClassNameSlice[0]
 
 	return actualClassName

@@ -45,7 +45,7 @@ func (hKey HKEY) CloseKey() error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyw
 func (hKey HKEY) DeleteKey(subKey string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteKey.Addr(), 2,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))), 0)
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))), 0)
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -57,7 +57,7 @@ func (hKey HKEY) DeleteKey(subKey string) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyexw
 func (hKey HKEY) DeleteKeyEx(subKey string, samDesired co.KEY) error {
 	ret, _, _ := syscall.Syscall6(proc.RegDeleteKeyEx.Addr(), 4,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))),
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
 		uintptr(samDesired), 0, 0, 0)
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
@@ -68,8 +68,8 @@ func (hKey HKEY) DeleteKeyEx(subKey string, samDesired co.KEY) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyvaluew
 func (hKey HKEY) DeleteKeyValue(subKey, valueName string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteKeyValue.Addr(), 3,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(valueName))))
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(valueName))))
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -79,7 +79,7 @@ func (hKey HKEY) DeleteKeyValue(subKey, valueName string) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletetreew
 func (hKey HKEY) DeleteTree(subKey string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteTree.Addr(), 2,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))), 0)
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))), 0)
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -110,7 +110,7 @@ func (hKey HKEY) EnumKeyEx() ([]string, error) {
 			return nil, wErr
 		}
 
-		keyNames = append(keyNames, Str.FromUint16Slice(keyNameBuf))
+		keyNames = append(keyNames, Str.FromNativeSlice(keyNameBuf))
 	}
 
 	Path.Sort(keyNames)
@@ -154,7 +154,7 @@ func (hKey HKEY) EnumValue() ([]struct {
 			Name string
 			Type co.REG
 		}{
-			Name: Str.FromUint16Slice(valueNameBuf),
+			Name: Str.FromNativeSlice(valueNameBuf),
 			Type: valueTypeBuf,
 		})
 	}
@@ -185,8 +185,8 @@ func (hKey HKEY) GetValue(
 	pData unsafe.Pointer, pDataLen *uint32) error {
 
 	ret, _, _ := syscall.Syscall9(proc.RegGetValue.Addr(), 7,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(value))),
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(value))),
 		uintptr(flags), uintptr(unsafe.Pointer(pdwType)),
 		uintptr(pData), uintptr(unsafe.Pointer(pDataLen)), 0, 0)
 
@@ -204,7 +204,7 @@ func (hKey HKEY) OpenKeyEx(
 
 	openedKey := HKEY(0)
 	ret, _, _ := syscall.Syscall6(proc.RegOpenKeyEx.Addr(), 5,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))),
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
 		uintptr(ulOptions), uintptr(samDesired),
 		uintptr(unsafe.Pointer(&openedKey)), 0)
 
@@ -259,7 +259,7 @@ func (hKey HKEY) QueryInfoKey() (struct {
 		return info, wErr
 	}
 
-	info.Class = Str.FromUint16Slice(classBuf[:])
+	info.Class = Str.FromNativeSlice(classBuf[:])
 	info.LastWriteTime = ft.ToTime()
 	return info, nil
 }
@@ -333,7 +333,7 @@ func (hKey HKEY) ReadString(subKey, value string) string {
 		panic(err)
 	}
 
-	return Str.FromUint16Slice(pData)
+	return Str.FromNativeSlice(pData)
 }
 
 // This function is rather tricky. Prefer using HKEY.WriteBinary(),
@@ -345,8 +345,8 @@ func (hKey HKEY) SetKeyValue(
 	pData unsafe.Pointer, dataLen uint32) error {
 
 	ret, _, _ := syscall.Syscall6(proc.RegSetKeyValue.Addr(), 6,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToUint16Ptr(subKey))),
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(valueName))),
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(valueName))),
 		uintptr(dwType), uintptr(pData), uintptr(dataLen))
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
@@ -384,7 +384,7 @@ func (hKey HKEY) WriteQword(subKey, valueName string, data uint64) {
 
 // Writes a REG_SZ value with HKEY.SetKeyValue().
 func (hKey HKEY) WriteString(subKey, valueName string, data string) {
-	lpData16 := Str.ToUint16Slice(data)
+	lpData16 := Str.ToNativeSlice(data)
 	err := hKey.SetKeyValue(subKey, valueName, co.REG_SZ,
 		unsafe.Pointer(&lpData16[0]), uint32(len(lpData16)*2)) // pass size in bytes, including terminating null
 	runtime.KeepAlive(lpData16)

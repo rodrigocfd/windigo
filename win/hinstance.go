@@ -34,7 +34,7 @@ func GetModuleHandle(moduleName interface{}) HINSTANCE {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
 func LoadLibrary(libFileName string) HINSTANCE {
 	ret, _, err := syscall.Syscall(proc.LoadLibrary.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToUint16Ptr(libFileName))),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(libFileName))),
 		0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -115,7 +115,7 @@ func (hInst HINSTANCE) GetModuleFileName() string {
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	return Str.FromUint16Slice(buf[:])
+	return Str.FromNativeSlice(buf[:])
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress
@@ -154,7 +154,7 @@ func (hInst HINSTANCE) LoadCursor(cursorName interface{}) HCURSOR {
 	case co.IDC:
 		pName = unsafe.Pointer(uintptr(v))
 	case string:
-		pName = unsafe.Pointer(Str.ToUint16Ptr(v))
+		pName = unsafe.Pointer(Str.ToNativePtr(v))
 	default:
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(cursorName)))
 	}
@@ -178,7 +178,7 @@ func (hInst HINSTANCE) LoadIcon(iconName interface{}) HICON {
 	case co.IDI:
 		pName = unsafe.Pointer(uintptr(v))
 	case string:
-		pName = unsafe.Pointer(Str.ToUint16Ptr(v))
+		pName = unsafe.Pointer(Str.ToNativePtr(v))
 	default:
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(iconName)))
 	}

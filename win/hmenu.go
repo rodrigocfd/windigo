@@ -92,7 +92,7 @@ func (hMenu HMENU) AppendMenu(
 	case LPARAM:
 		pItem = unsafe.Pointer(uintptr(v))
 	case string:
-		pItem = unsafe.Pointer(Str.ToUint16Ptr(v))
+		pItem = unsafe.Pointer(Str.ToNativePtr(v))
 	default:
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(lpNewItem)))
 	}

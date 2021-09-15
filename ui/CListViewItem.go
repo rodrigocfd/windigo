@@ -149,7 +149,7 @@ func (me *_ListViewItem) SetSelected(doSelect bool) {
 func (me *_ListViewItem) SetText(columnIndex int, text string) {
 	lvi := win.LVITEM{}
 	lvi.ISubItem = int32(columnIndex)
-	lvi.SetPszText(win.Str.ToUint16Slice(text))
+	lvi.SetPszText(win.Str.ToNativeSlice(text))
 
 	index := me.Index()
 	ret := me.pHwnd.SendMessage(co.LVM_SETITEMTEXT,
@@ -186,7 +186,7 @@ func (me *_ListViewItem) Text(columnIndex int) string {
 		bufSz += BLOCK // increase buffer size to try again
 	}
 
-	return win.Str.FromUint16Slice(buf)
+	return win.Str.FromNativeSlice(buf)
 }
 
 func (me *_ListViewItem) Update() {

@@ -30,7 +30,7 @@ func (_StrT) FmtBytes(numBytes uint64) string {
 // Converts a null-terminated *uint16 to string.
 //
 // Copied from syscall_windows.go, utf16PtrToString() private function.
-func (_StrT) FromUint16Ptr(p *uint16) string {
+func (_StrT) FromNativePtr(p *uint16) string {
 	if p == nil {
 		return ""
 	}
@@ -44,13 +44,13 @@ func (_StrT) FromUint16Ptr(p *uint16) string {
 	}
 
 	slice := unsafe.Slice(p, sLen) // create slice without terminating null
-	return Str.FromUint16Slice(slice)
+	return Str.FromNativeSlice(slice)
 }
 
 // Converts a multi null-terminated *uint16 to []string.
 //
 // Source must have 2 terminating nulls.
-func (_StrT) FromUint16PtrMulti(p *uint16) []string {
+func (_StrT) FromNativePtrMulti(p *uint16) []string {
 	values := make([]string, 0)
 	if p == nil {
 		return values
@@ -65,7 +65,7 @@ func (_StrT) FromUint16PtrMulti(p *uint16) []string {
 			}
 
 			slice := unsafe.Slice(p, sLen) // create slice without terminating null
-			values = append(values, Str.FromUint16Slice(slice))
+			values = append(values, Str.FromNativeSlice(slice))
 
 			pRun = unsafe.Add(pRun, unsafe.Sizeof(*p)) // pRun++
 			p = (*uint16)(pRun)
@@ -83,7 +83,7 @@ func (_StrT) FromUint16PtrMulti(p *uint16) []string {
 // Converts a null-terminated []uint16 to string.
 //
 // Simple wrapper to syscall.UTF16ToString().
-func (_StrT) FromUint16Slice(s []uint16) string {
+func (_StrT) FromNativeSlice(s []uint16) string {
 	return syscall.UTF16ToString(s)
 }
 
@@ -113,10 +113,10 @@ func (_StrT) Substr(s string, start, length int) string {
 // https://stackoverflow.com/a/51188315
 //
 // Wrapper to syscall.UTF16PtrFromString(). Panics on error.
-func (_StrT) ToUint16Ptr(s string) *uint16 {
+func (_StrT) ToNativePtr(s string) *uint16 {
 	pstr, err := syscall.UTF16PtrFromString(s)
 	if err != nil {
-		panic(fmt.Sprintf("Str.ToUint16Ptr() failed \"%s\": %s", s, err))
+		panic(fmt.Sprintf("Str.ToNativePtr() failed \"%s\": %s", s, err))
 	}
 	return pstr
 }
@@ -124,18 +124,18 @@ func (_StrT) ToUint16Ptr(s string) *uint16 {
 // Converts []string to multi null-terminated *uint16.
 //
 // Memory block will have 2 terminating nulls.
-func (_StrT) ToUint16PtrMulti(ss []string) *uint16 {
-	slice := Str.ToUint16SliceMulti(ss)
+func (_StrT) ToNativePtrMulti(ss []string) *uint16 {
+	slice := Str.ToNativeSliceMulti(ss)
 	return &slice[0]
 }
 
 // Converts string to null-terminated []uint16.
 //
 // Wrapper to syscall.UTF16FromString(). Panics on error.
-func (_StrT) ToUint16Slice(s string) []uint16 {
+func (_StrT) ToNativeSlice(s string) []uint16 {
 	sli, err := syscall.UTF16FromString(s)
 	if err != nil {
-		panic(fmt.Sprintf("Str.ToUint16Slice() failed \"%s\": %s", s, err))
+		panic(fmt.Sprintf("Str.ToNativeSlice() failed \"%s\": %s", s, err))
 	}
 	return sli
 }
@@ -143,7 +143,7 @@ func (_StrT) ToUint16Slice(s string) []uint16 {
 // Converts []string to multi null-terminated []uint16.
 //
 // Returned slice will have 2 terminating nulls.
-func (_StrT) ToUint16SliceMulti(ss []string) []uint16 {
+func (_StrT) ToNativeSliceMulti(ss []string) []uint16 {
 	estimatedLen := 0
 	for _, s := range ss {
 		estimatedLen += len(s) + 1 // also count terminating null; can be more than needed
@@ -152,7 +152,7 @@ func (_StrT) ToUint16SliceMulti(ss []string) []uint16 {
 	buf := make([]uint16, 0, estimatedLen+1) // prealloc; room for two terminating nulls
 
 	for _, s := range ss {
-		buf = append(buf, Str.ToUint16Slice(s)...)
+		buf = append(buf, Str.ToNativeSlice(s)...)
 	}
 	buf = append(buf, 0) // 2nd terminating null
 
