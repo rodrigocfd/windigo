@@ -45,6 +45,22 @@ const (
 	TBDDRET_TREATPRESSED TBDDRET = 2
 )
 
+// TBBUTTONINFO dwMask.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbuttoninfow
+type TBIF uint32
+
+const (
+	TBIF_IMAGE   TBIF = 0x0000_0001
+	TBIF_TEXT    TBIF = 0x0000_0002
+	TBIF_STATE   TBIF = 0x0000_0004
+	TBIF_STYLE   TBIF = 0x0000_0008
+	TBIF_LPARAM  TBIF = 0x0000_0010
+	TBIF_COMMAND TBIF = 0x0000_0020
+	TBIF_SIZE    TBIF = 0x0000_0040
+	TBIF_BYINDEX TBIF = 0x8000_0000
+)
+
 // NMTBDISPINFO dwMask.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbdispinfow
@@ -53,7 +69,7 @@ type TBNF uint32
 const (
 	TBNF_IMAGE      TBNF = 0x1
 	TBNF_TEXT       TBNF = 0x2
-	TBNF_DI_SETITEM TBNF = 0x10000000
+	TBNF_DI_SETITEM TBNF = 0x1000_0000
 )
 
 // TBN_INITCUSTOMIZE and TBN_RESET return value.

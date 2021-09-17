@@ -24,7 +24,7 @@ type Toolbar interface {
 
 	AutoSize()                                                   // Sends a TB_AUTOSIZE message to resize the toolbar.
 	ExtendedStyle() co.TBSTYLE_EX                                // Retrieves the extended style flags.
-	Items() *_ToolbarItems                                       // Item methods.
+	Buttons() *_ToolbarButtons                                   // Button methods.
 	SetExtendedStyle(doSet bool, styles co.TBSTYLE_EX)           // Sets or unsets extended style flags.
 	SetImageList(index int, himgl win.HIMAGELIST) win.HIMAGELIST // Sets the nth image list for the control.
 	SetParent(hNewParent win.HWND) win.HWND                      // Sets the window to which the toolbar control sends notification messages.
@@ -34,8 +34,8 @@ type Toolbar interface {
 
 type _Toolbar struct {
 	_NativeControlBase
-	events _ToolbarEvents
-	items  _ToolbarItems
+	events  _ToolbarEvents
+	buttons _ToolbarButtons
 }
 
 // Creates a new Toolbar. Call ToolbarOpts() to define the options to be passed
@@ -46,7 +46,7 @@ func NewToolbar(parent AnyParent, opts *_ToolbarO) Toolbar {
 	me := &_Toolbar{}
 	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
-	me.items.new(&me._NativeControlBase)
+	me.buttons.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		me._NativeControlBase.createWindow(opts.wndExStyles,
@@ -74,8 +74,8 @@ func (me *_Toolbar) On() *_ToolbarEvents {
 	return &me.events
 }
 
-func (me *_Toolbar) Items() *_ToolbarItems {
-	return &me.items
+func (me *_Toolbar) Buttons() *_ToolbarButtons {
+	return &me.buttons
 }
 
 func (me *_Toolbar) AutoSize() {

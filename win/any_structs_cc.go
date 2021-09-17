@@ -28,7 +28,7 @@ type IMAGELISTDRAWPARAMS struct {
 	CrEffect     COLORREF
 }
 
-func (ildp *IMAGELISTDRAWPARAMS) SetCbSize() { ildp.cbSize = uint32(unsafe.Sizeof(*ildp)) }
+func (idp *IMAGELISTDRAWPARAMS) SetCbSize() { idp.cbSize = uint32(unsafe.Sizeof(*idp)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
 type LITEM struct {
@@ -651,6 +651,30 @@ func (tbb *TBBUTTON) IBitmap() (icon, imgList int) {
 }
 func (tbb *TBBUTTON) SetIBitmap(icon, imgList int) {
 	tbb.iBitmap = int32(MAKELONG(uint16(icon), uint16(imgList)))
+}
+
+// ⚠️ You must call SetCbSize().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbuttoninfow
+type TBBUTTONINFO struct {
+	cbSize    uint32
+	DwMask    co.TBIF
+	IdCommand int32
+	IImage    int32
+	FsState   co.TBSTATE
+	FsStyle   co.BTNS
+	Cx        uint16
+	LParam    uintptr // DWORD_PTR
+	pszText   *uint16
+	cchText   int32
+}
+
+func (tbi *TBBUTTONINFO) SetCbSize() { tbi.cbSize = uint32(unsafe.Sizeof(*tbi)) }
+
+func (tbi *TBBUTTONINFO) PszText() []uint16 { return unsafe.Slice(tbi.pszText, tbi.cchText) }
+func (tbi *TBBUTTONINFO) SetPszText(val []uint16) {
+	tbi.cchText = int32(len(val))
+	tbi.pszText = &val[0]
 }
 
 // 📑 https://www.google.com/search?client=firefox-b-d&q=TVINSERTSTRUCTW
