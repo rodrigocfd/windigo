@@ -206,12 +206,8 @@ func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		if lvhti.IItem == -1 { // no item was right-clicked
 			me.Items().SetSelectedAll(false)
 		} else {
-			clickedItem := me.Items().Get(int(lvhti.IItem))
+			clickedItem := me.Items().Get(int(lvhti.IItem)) // item that was clicked
 			if !hasCtrl && !hasShift {
-				if clickedItem.IsSelected() {
-					me.Items().SetSelectedAll(false)
-					clickedItem.SetSelected(true)
-				}
 				clickedItem.SetFocused()
 			}
 		}
