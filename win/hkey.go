@@ -117,21 +117,19 @@ func (hKey HKEY) EnumKeyEx() ([]string, error) {
 	return keyNames, nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumvaluew
-func (hKey HKEY) EnumValue() ([]struct {
+type _ValueEnum struct {
 	Name string
 	Type co.REG
-}, error) {
+}
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumvaluew
+func (hKey HKEY) EnumValue() ([]_ValueEnum, error) {
 	keyInfo, err := hKey.QueryInfoKey()
 	if err != nil {
 		return nil, err
 	}
 
-	values := make([]struct { // to be returned
-		Name string
-		Type co.REG
-	}, 0, keyInfo.NumValues)
+	values := make([]_ValueEnum, 0, keyInfo.NumValues) // to be returned
 
 	valueNameBuf := make([]uint16, keyInfo.MaxValueNameLen+2) // room to avoid "more data" error
 	valueNameBufLen := uint32(0)
@@ -214,8 +212,7 @@ func (hKey HKEY) OpenKeyEx(
 	return openedKey, nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryinfokeyw
-func (hKey HKEY) QueryInfoKey() (struct {
+type _KeyInfo struct {
 	Class                 string
 	NumSubKeys            uint32
 	MaxSubKeyNameLen      uint32
@@ -225,20 +222,11 @@ func (hKey HKEY) QueryInfoKey() (struct {
 	MaxValueDataLen       uint32
 	SecurityDescriptorLen uint32
 	LastWriteTime         time.Time
-}, error) {
+}
 
-	info := struct {
-		Class                 string
-		NumSubKeys            uint32
-		MaxSubKeyNameLen      uint32
-		MaxSubKeyClassLen     uint32
-		NumValues             uint32
-		MaxValueNameLen       uint32
-		MaxValueDataLen       uint32
-		SecurityDescriptorLen uint32
-		LastWriteTime         time.Time
-	}{}
-
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryinfokeyw
+func (hKey HKEY) QueryInfoKey() (_KeyInfo, error) {
+	info := _KeyInfo{}
 	classBuf := [_MAX_PATH + 1]uint16{} // arbitrary
 	classBufLen := uint32(len(classBuf))
 	ft := FILETIME{}

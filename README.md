@@ -122,4 +122,4 @@ func NewMyWindow() *MyWindow {
 
 ## License
 
-Licensed under [MIT license](https://opensource.org/licenses/MIT), see [LICENSE.txt](LICENSE.txt) for details.
+Licensed under [MIT license](https://opensource.org/licenses/MIT), see [LICENSE.md](LICENSE.md) for details.
