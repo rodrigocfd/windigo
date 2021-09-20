@@ -55,9 +55,10 @@ func (HCLIPBOARD) EnumClipboardFormats() []co.CF {
 	}
 }
 
-// hMem will be owned by the clipboard, do not call HGLOBAL.Free().
+// ⚠️ hMem will be owned by the clipboard, do not call HGLOBAL.Free() anymore.
 //
-// Unless you're doing something specific, prefer HCLIPBOARD.WriteString().
+// Unless you're doing something specific, prefer HCLIPBOARD.WriteBitmap() or
+// HCLIPBOARD.WriteString().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setclipboarddata
 func (HCLIPBOARD) SetClipboardData(format co.CF, hMem HGLOBAL) {
@@ -66,6 +67,13 @@ func (HCLIPBOARD) SetClipboardData(format co.CF, hMem HGLOBAL) {
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
+}
+
+// ⚠️ hBmp will be owned by the clipboard, do not call HBITMAP.DeleteObject() anymore.
+//
+// Writes a bitmap to the clipboard with HCLIPBOARD.SetClipboardData().
+func (hClip HCLIPBOARD) WriteBitmap(hBmp HBITMAP) {
+	hClip.SetClipboardData(co.CF_BITMAP, HGLOBAL(hBmp))
 }
 
 // Writes a string to the clipboard with HCLIPBOARD.SetClipboardData().
