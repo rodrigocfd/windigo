@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -52,15 +53,12 @@ func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) {
 		panic("AddIconFromShell can load only 16x16 or 32x32 icons.")
 	}
 
-	shgfi := co.SHGFI_SMALLICON
-	if isIco32 {
-		shgfi = co.SHGFI_LARGEICON
-	}
+	shgfi := co.SHGFI_USEFILEATTRIBUTES | co.SHGFI_ICON |
+		util.Iif(isIco32, co.SHGFI_LARGEICON, co.SHGFI_SMALLICON).(co.SHGFI)
 
 	fi := SHFILEINFO{}
 	for _, fileExt := range fileExtensions {
-		SHGetFileInfo("*."+fileExt, co.FILE_ATTRIBUTE_NORMAL,
-			&fi, co.SHGFI_USEFILEATTRIBUTES|co.SHGFI_ICON|shgfi)
+		SHGetFileInfo("*."+fileExt, co.FILE_ATTRIBUTE_NORMAL, &fi, shgfi)
 		hImg.AddIcon(fi.HIcon)
 		fi.HIcon.DestroyIcon()
 	}

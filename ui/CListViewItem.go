@@ -108,7 +108,7 @@ func (me *_ListViewItem) SetFocused() {
 	index := me.Index()
 	ret := me.pHwnd.SendMessage(co.LVM_SETITEMSTATE,
 		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&lvi)))
-	if ret == 0 {
+	if int(ret) == -1 {
 		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", index))
 	}
 }

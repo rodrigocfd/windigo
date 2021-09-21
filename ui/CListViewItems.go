@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -181,13 +182,8 @@ func (me *_ListViewItems) SelectedCount() int {
 
 // Selects or deselects all items at once.
 func (me *_ListViewItems) SetSelectedAll(doSelect bool) {
-	state := co.LVIS_NONE
-	if doSelect {
-		state = co.LVIS_SELECTED
-	}
-
 	lvi := win.LVITEM{
-		State:     state,
+		State:     util.Iif(doSelect, co.LVIS_SELECTED, co.LVIS_NONE).(co.LVIS),
 		StateMask: co.LVIS_SELECTED,
 	}
 

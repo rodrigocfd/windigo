@@ -161,15 +161,11 @@ func (hMenu HMENU) EnableByCmdId(isEnabled bool, cmdIds ...int) {
 
 // Enables or disables many items at once, by zero-based position.
 func (hMenu HMENU) EnableByPos(isEnabled bool, indexes ...int) {
-	flags := co.MF_BYCOMMAND
-	if isEnabled {
-		flags |= co.MF_ENABLED
-	} else {
-		flags |= co.MF_GRAYED
-	}
+	mf := co.MF_BYCOMMAND |
+		util.Iif(isEnabled, co.MF_ENABLED, co.MF_GRAYED).(co.MF)
 
 	for _, index := range indexes {
-		hMenu.EnableMenuItem(uint32(index), flags)
+		hMenu.EnableMenuItem(uint32(index), mf)
 	}
 }
 
