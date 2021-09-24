@@ -568,6 +568,13 @@ func (hWnd HWND) MessageBox(text, caption string, uType co.MB) co.ID {
 	return co.ID(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromwindow
+func (hWnd HWND) MonitorFromWindow(flags co.MONITOR) HMONITOR {
+	ret, _, _ := syscall.Syscall(proc.MonitorFromWindow.Addr(), 2,
+		uintptr(hWnd), uintptr(flags), 0)
+	return HMONITOR(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-movewindow
 func (hWnd HWND) MoveWindow(x, y, width, height int32, repaint bool) {
 	ret, _, err := syscall.Syscall6(proc.MoveWindow.Addr(), 6,

@@ -47,11 +47,6 @@ func (c COLORREF) ToRgbquad() RGBQUAD {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HANDLE syscall.Handle
 
-// Handle to a display monitor.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hmonitor
-type HMONITOR HANDLE
-
 // A handle to a tree view control item.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items

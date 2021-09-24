@@ -350,6 +350,18 @@ type MINMAXINFO struct {
 	PtMaxTrackSize POINT
 }
 
+// ⚠️ You must call SetCbSize().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfo
+type MONITORINFO struct {
+	cbSize    uint32
+	RcMonitor RECT
+	RcWork    RECT
+	DwFlags   co.MONITORINFOF
+}
+
+func (mi *MONITORINFO) SetCbSize() { mi.cbSize = uint32(unsafe.Sizeof(*mi)) }
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msg
 type MSG struct {
 	HWnd   HWND

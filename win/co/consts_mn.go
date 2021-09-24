@@ -194,6 +194,16 @@ const (
 	MK_XBUTTON2 MK = 0x0040
 )
 
+// MONITORINFO dwFlags
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfo
+type MONITORINFOF uint32
+
+const (
+	MONITORINFOF_OTHER   MONITORINFOF = 0
+	MONITORINFOF_PRIMARY MONITORINFOF = 0x0000_0001
+)
+
 // MoveFileEx() dwFlags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw
