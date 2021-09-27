@@ -48,14 +48,6 @@ func (me *_ToolbarButtons) AddSeparator() *_ToolbarButtons {
 	return me
 }
 
-// Changes the button icon.
-func (me *_ToolbarButtons) ChangeIcon(cmdId, iconIdex int) {
-	if me.pHwnd.SendMessage(co.TB_CHANGEBITMAP,
-		win.WPARAM(cmdId), win.LPARAM(iconIdex)) == 0 {
-		panic(fmt.Sprintf("TB_CHANGEBITMAP \"%d\" failed.", cmdId))
-	}
-}
-
 // Retrieves the number of buttons.
 func (me *_ToolbarButtons) Count() int {
 	return int(me.pHwnd.SendMessage(co.TB_BUTTONCOUNT, 0, 0))
@@ -76,6 +68,20 @@ func (me *_ToolbarButtons) Enable(isEnabled bool, cmdId int) {
 	) == 0 {
 		panic(fmt.Sprintf("TB_ENABLEBUTTON \"%d\" failed.", cmdId))
 	}
+}
+
+// Retrieves the icon index of the button.
+func (me *_ToolbarButtons) Icon(cmdId int) int {
+	tbi := win.TBBUTTONINFO{}
+	tbi.SetCbSize()
+	tbi.DwMask = co.TBIF_IMAGE
+
+	if int(me.pHwnd.SendMessage(co.TB_GETBUTTONINFO,
+		win.WPARAM(cmdId), win.LPARAM(unsafe.Pointer(&tbi)))) == -1 {
+		panic(fmt.Sprintf("TB_GETBUTTONINFO \"%d\" failed.", cmdId))
+	}
+
+	return int(tbi.IImage)
 }
 
 // Tells whether a button is enabled.
@@ -103,6 +109,46 @@ func (me *_ToolbarButtons) IsPressed(cmdId int) bool {
 	return me.pHwnd.SendMessage(co.TB_ISBUTTONPRESSED, win.WPARAM(cmdId), 0) != 0
 }
 
+// Retrieves the custom data associated with the button.
+func (me *_ToolbarButtons) LParam(cmdId int) win.LPARAM {
+	tbi := win.TBBUTTONINFO{}
+	tbi.SetCbSize()
+	tbi.DwMask = co.TBIF_LPARAM
+
+	if int(me.pHwnd.SendMessage(co.TB_GETBUTTONINFO,
+		win.WPARAM(cmdId), win.LPARAM(unsafe.Pointer(&tbi)))) == -1 {
+		panic(fmt.Sprintf("TB_GETBUTTONINFO \"%d\" failed.", cmdId))
+	}
+
+	return tbi.LParam
+}
+
+// Sets the icon index of the button.
+func (me *_ToolbarButtons) SetIcon(cmdId, iconIdex int) {
+	tbi := win.TBBUTTONINFO{}
+	tbi.SetCbSize()
+	tbi.DwMask = co.TBIF_IMAGE
+	tbi.IImage = int32(iconIdex)
+
+	if me.pHwnd.SendMessage(co.TB_SETBUTTONINFO,
+		win.WPARAM(cmdId), win.LPARAM(unsafe.Pointer(&tbi))) == 0 {
+		panic(fmt.Sprintf("TB_SETBUTTONINFO \"%d\" failed.", cmdId))
+	}
+}
+
+// Sets the custom data associated with the button.
+func (me *_ToolbarButtons) SetLParam(cmdId, lp win.LPARAM) {
+	tbi := win.TBBUTTONINFO{}
+	tbi.SetCbSize()
+	tbi.DwMask = co.TBIF_LPARAM
+	tbi.LParam = lp
+
+	if me.pHwnd.SendMessage(co.TB_SETBUTTONINFO,
+		win.WPARAM(cmdId), win.LPARAM(unsafe.Pointer(&tbi))) == 0 {
+		panic(fmt.Sprintf("TB_SETBUTTONINFO \"%d\" failed.", cmdId))
+	}
+}
+
 // Sets the text of the button.
 func (me *_ToolbarButtons) SetText(cmdId int, text string) {
 	tbi := win.TBBUTTONINFO{}
@@ -127,7 +173,7 @@ func (me *_ToolbarButtons) Text(cmdId int) string {
 
 	if int(me.pHwnd.SendMessage(co.TB_GETBUTTONINFO,
 		win.WPARAM(cmdId), win.LPARAM(unsafe.Pointer(&tbi)))) == -1 {
-		panic(fmt.Sprintf("TB_SETBUTTONINFO \"%d\" failed.", cmdId))
+		panic(fmt.Sprintf("TB_GETBUTTONINFO \"%d\" failed.", cmdId))
 	}
 
 	return win.Str.FromNativeSlice(buf[:])

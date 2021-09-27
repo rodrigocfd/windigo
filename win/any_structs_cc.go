@@ -664,7 +664,7 @@ type TBBUTTONINFO struct {
 	FsState   co.TBSTATE
 	FsStyle   co.BTNS
 	Cx        uint16
-	LParam    uintptr // DWORD_PTR
+	LParam    LPARAM // DWORD_PTR
 	pszText   *uint16
 	cchText   int32
 }
