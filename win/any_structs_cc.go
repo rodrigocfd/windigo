@@ -117,6 +117,12 @@ func (lvi *LVITEM) SetPszText(val []uint16) {
 	lvi.pszText = &val[0]
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemindex
+type LVITEMINDEX struct {
+	IItem  int32
+	IGroup int32
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbcdropdown
 type NMBCDROPDOWN struct {
 	Hdr      NMHDR

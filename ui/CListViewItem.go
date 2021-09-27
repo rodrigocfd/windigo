@@ -10,19 +10,19 @@ import (
 
 // A single item of a ListView.
 type ListViewItem interface {
-	Delete()
-	EnsureVisible()
-	Index() int
-	IsSelected() bool
-	IsVisible() bool
-	LParam() win.LPARAM
-	Rect(portion co.LVIR) win.RECT
-	SetFocused()
-	SetLParam(lp win.LPARAM)
-	SetSelected(doSelect bool)
-	SetText(columnIndex int, text string)
-	Text(columnIndex int) string
-	Update()
+	Delete()                              // Deletes the item.
+	EnsureVisible()                       // Makes sure the item is visible, scrolling the ListView if needed.
+	Index() int                           // Returns the zero based index of the item.
+	IsSelected() bool                     // Tells whether the item is currently selected.
+	IsVisible() bool                      // Tells whether the item is currently visible.
+	LParam() win.LPARAM                   // Retrieves the custom data associated with the item.
+	Rect(portion co.LVIR) win.RECT        // Retrieves the coordinates of the rectangle surrounding the item.
+	SetFocused()                          // Sets the item as the focused one.
+	SetLParam(lp win.LPARAM)              // Sets the custom data associated with the item.
+	SetSelected(doSelect bool)            // Selects the item.
+	SetText(columnIndex int, text string) // Sets the text of the item.
+	Text(columnIndex int) string          // Retrieves the text of the item.
+	Update()                              // Sends an LVM_UPDATE message to the item.
 }
 
 //------------------------------------------------------------------------------
@@ -47,10 +47,50 @@ func (me *_ListViewItem) Delete() {
 
 func (me *_ListViewItem) EnsureVisible() {
 	index := me.Index()
-	ret := me.pHwnd.SendMessage(co.LVM_ENSUREVISIBLE,
-		win.WPARAM(index), win.LPARAM(1)) // always entirely visible
-	if ret == 0 {
-		panic(fmt.Sprintf("LVM_ENSUREVISIBLE %d failed.", index))
+
+	if co.LV_VIEW(me.pHwnd.SendMessage(co.LVM_GETVIEW, 0, 0)) == co.LV_VIEW_DETAILS {
+		// In details view, LVM_ENSUREVISIBLE won't center the item vertically.
+		// That's what we do here.
+		rc := me.pHwnd.GetClientRect()
+		cyList := rc.Bottom // total height of the listview
+
+		lvii := win.LVITEMINDEX{}
+		lvii.IItem = int32(me.pHwnd.SendMessage(co.LVM_GETTOPINDEX, 0, 0)) // 1st visible item
+
+		rc = win.RECT{}
+		rc.Left = int32(co.LVIR_BOUNDS)
+
+		ret := me.pHwnd.SendMessage(co.LVM_GETITEMINDEXRECT,
+			win.WPARAM(unsafe.Pointer(&lvii)), win.LPARAM(unsafe.Pointer(&rc)))
+		if ret == 0 {
+			panic(fmt.Sprintf("LVM_GETITEMINDEXRECT %d failed.", lvii.IItem))
+		}
+		cyItem := rc.Bottom - rc.Top // height of a single item
+		xTop := rc.Top               // topmost X of 1st visible item
+
+		lvii = win.LVITEMINDEX{}
+		lvii.IItem = int32(index)
+
+		rc = win.RECT{}
+
+		ret = me.pHwnd.SendMessage(co.LVM_GETITEMINDEXRECT,
+			win.WPARAM(unsafe.Pointer(&lvii)), win.LPARAM(unsafe.Pointer(&rc)))
+		if ret == 0 {
+			panic(fmt.Sprintf("LVM_GETITEMINDEXRECT %d failed.", lvii.IItem))
+		}
+		xUs := rc.Top // our current X
+
+		if xUs < xTop || xUs > xTop+cyList { // if we're not visible
+			me.pHwnd.SendMessage(co.LVM_SCROLL,
+				0, win.LPARAM(xUs-xTop-cyList/2+cyItem*2))
+		}
+
+	} else {
+		ret := me.pHwnd.SendMessage(co.LVM_ENSUREVISIBLE,
+			win.WPARAM(index), win.LPARAM(1)) // always entirely visible
+		if ret == 0 {
+			panic(fmt.Sprintf("LVM_ENSUREVISIBLE %d failed.", index))
+		}
 	}
 }
 
