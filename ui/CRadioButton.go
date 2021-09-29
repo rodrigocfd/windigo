@@ -24,6 +24,7 @@ type RadioButton interface {
 	EmulateClick()                // Emulates an user click.
 	IsChecked() bool              // Retrieves the current check state.
 	SetChecked()                  // Checks the radio button.
+	SetCheckedAndTrigger()        // Checks the radio button and triggers the click event.
 	SetText(text string)          // Sets the text.
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
 	Text() string                 // Retrieves the text.
@@ -98,6 +99,13 @@ func (me *_RadioButton) IsChecked() bool {
 
 func (me *_RadioButton) SetChecked() {
 	me.Hwnd().SendMessage(co.BM_SETCHECK, win.WPARAM(co.BST_CHECKED), 0)
+}
+
+func (me *_RadioButton) SetCheckedAndTrigger() {
+	me.SetChecked()
+	me.Hwnd().GetParent().SendMessage(co.WM_COMMAND,
+		win.MAKEWPARAM(uint16(me.CtrlId()), uint16(co.BN_CLICKED)),
+		win.LPARAM(me.Hwnd()))
 }
 
 func (me *_RadioButton) SetText(text string) {
