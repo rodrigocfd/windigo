@@ -384,30 +384,36 @@ func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
 	}
 }
 
+// Automatically allocs the buffer with GetFileVersionInfoSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
-func GetFileVersionInfo(fileName string) []byte {
-	visz := GetFileVersionInfoSize(fileName)
+func GetFileVersionInfo(fileName string) ([]byte, error) {
+	visz, errSz := GetFileVersionInfoSize(fileName)
+	if errSz != nil {
+		return nil, errSz
+	}
+
 	buf := make([]byte, visz) // alloc the buffer
 
 	ret, _, err := syscall.Syscall6(proc.GetFileVersionInfo.Addr(), 4,
 		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))),
 		0, uintptr(visz), uintptr(unsafe.Pointer(&buf[0])), 0, 0)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return nil, errco.ERROR(err)
 	}
-	return buf
+	return buf, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
-func GetFileVersionInfoSize(fileName string) uint32 {
+func GetFileVersionInfoSize(fileName string) (uint32, error) {
 	lpdwHandle := uint32(0)
 	ret, _, err := syscall.Syscall(proc.GetFileVersionInfoSize.Addr(), 2,
 		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(&lpdwHandle)), 0)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return 0, errco.ERROR(err)
 	}
-	return uint32(ret)
+	return uint32(ret), nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagew
@@ -978,10 +984,15 @@ func TzSpecificLocalTimeToSystemTime(
 	}
 }
 
-// Returns false if the structure does not exist.
+// Returns a pointer to the block and its size, which varies according to the
+// data type. Returns false if the block doesn't exist.
+//
+// This function is rather tricky. Prefer using ResourceInfo.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
-func VerQueryValue(block []byte, subBlock string) ([]byte, bool) {
+func VerQueryValue(
+	block []byte, subBlock string) (ptr unsafe.Pointer, sz uint32, exists bool) {
+
 	lplpBuffer, puLen := uintptr(0), uint32(0)
 	ret, _, _ := syscall.Syscall6(proc.VerQueryValue.Addr(), 4,
 		uintptr(unsafe.Pointer(&block[0])),
@@ -989,9 +1000,9 @@ func VerQueryValue(block []byte, subBlock string) ([]byte, bool) {
 		uintptr(unsafe.Pointer(&lplpBuffer)), uintptr(unsafe.Pointer(&puLen)),
 		0, 0)
 	if ret == 0 {
-		return nil, false
+		return nil, 0, false
 	}
-	return unsafe.Slice((*byte)(unsafe.Pointer(lplpBuffer)), puLen), true
+	return unsafe.Pointer(lplpBuffer), puLen, true
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow

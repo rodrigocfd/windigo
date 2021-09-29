@@ -243,6 +243,36 @@ const (
 	COLOR_BTNHILIGHT              COLOR = COLOR_BTNHIGHLIGHT
 )
 
+// Code page identifiers.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
+type CP uint16
+
+const (
+	CP_ACP        CP = 0  // The system default Windows ANSI code page.
+	CP_OEMCP      CP = 1  // The current system OEM code page.
+	CP_MACCP      CP = 2  // The current system Macintosh code page.
+	CP_THREAD_ACP CP = 3  // The Windows ANSI code page for the current thread.
+	CP_SYMBOL     CP = 42 // Symbol code page (42).
+
+	CP_UTF16        CP = 1200  // Unicode UTF-16, little endian byte order (BMP of ISO 10646).
+	CP_UNICODE_FFFE CP = 1201  // Unicode UTF-16, big endian byte order.
+	CP_WINDOWS_1250 CP = 1250  // ANSI Central European; Central European (Windows).
+	CP_WINDOWS_1251 CP = 1251  // ANSI Cyrillic; Cyrillic (Windows).
+	CP_WINDOWS_1252 CP = 1252  // ANSI Latin 1; Western European (Windows).
+	CP_WINDOWS_1253 CP = 1253  // ANSI Greek; Greek (Windows).
+	CP_WINDOWS_1254 CP = 1254  // ANSI Turkish; Turkish (Windows).
+	CP_WINDOWS_1255 CP = 1255  // ANSI Hebrew; Hebrew (Windows).
+	CP_WINDOWS_1256 CP = 1256  // ANSI Arabic; Arabic (Windows).
+	CP_WINDOWS_1257 CP = 1257  // ANSI Baltic; Baltic (Windows).
+	CP_WINDOWS_1258 CP = 1258  // ANSI/OEM Vietnamese; Vietnamese (Windows).
+	CP_JOHAB        CP = 1361  // Korean (Johab).
+	CP_MACINTOSH    CP = 10000 // MAC Roman; Western European (Mac).
+
+	CP_UTF7 CP = 65000 // Unicode (UTF-7).
+	CP_UTF8 CP = 65001 // Unicode (UTF-8).
+)
+
 // CreateProcess() dwCreationFlags.
 type CREATE uint32
 
