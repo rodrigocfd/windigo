@@ -35,7 +35,7 @@ type _Ini struct {
 
 // Loads the sections and keys of an INI file.
 func LoadIni(filePath string) (Ini, error) {
-	fin, err := OpenFileMapped(filePath, co.OPEN_FILEMAP_READ)
+	fin, err := OpenFileMapped(filePath, co.OPEN_FILE_READ_EXISTING)
 	if err != nil {
 		return nil, err
 	}

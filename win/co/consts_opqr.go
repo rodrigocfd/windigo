@@ -79,21 +79,13 @@ const (
 	ODT_C_COMBOBOX ODT_C = ODT_C(ODT_COMBOBOX)
 )
 
-// OpenFile() behavior.
+// OpenFile() desired access.
 type OPEN_FILE uint8
 
 const (
 	OPEN_FILE_READ_EXISTING     OPEN_FILE = iota // Open an existing file for read only.
 	OPEN_FILE_RW_EXISTING                        // Open an existing file for read and write.
 	OPEN_FILE_RW_OPEN_OR_CREATE                  // Open a file or create if it doesn't exist, for read and write.
-)
-
-// OpenFileMapped() behavior.
-type OPEN_FILEMAP uint8
-
-const (
-	OPEN_FILEMAP_READ OPEN_FILEMAP = iota // Open an existing file for read only.
-	OPEN_FILEMAP_RW                       // Open an existing file for read and write.
 )
 
 // CreateFileMapping() flProtect.

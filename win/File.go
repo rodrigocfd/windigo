@@ -18,10 +18,7 @@ type File interface {
 	Hfile() HFILE
 
 	// Retrieves the current file pointer offset.
-	PtrOffset() int
-
-	// Rewinds the internal pointer back to the beginning of the file.
-	PtrOffsetRewind() error
+	PointerOffset() int
 
 	// Reads data from file at current pointer offset. The pointer will then
 	// advance.
@@ -34,6 +31,9 @@ type File interface {
 	// Truncates or expands the file, according to the new size. Zero will empty
 	// the file.
 	Resize(numBytes int) error
+
+	// Rewinds the internal pointer back to the beginning of the file.
+	RewindPointer() error
 
 	// Retrieves the files size. This value is not cached.
 	Size() int
@@ -51,12 +51,12 @@ type _File struct {
 // Opens a file, returning a new high-level File object.
 //
 // ⚠️ You must defer File.Close().
-func OpenFile(filePath string, behavior co.OPEN_FILE) (File, error) {
+func OpenFile(filePath string, desiredAccess co.OPEN_FILE) (File, error) {
 	access := co.GENERIC(0)
 	share := co.FILE_SHARE(0)
 	disposition := co.DISPOSITION(0)
 
-	switch behavior {
+	switch desiredAccess {
 	case co.OPEN_FILE_READ_EXISTING:
 		access = co.GENERIC_READ
 		share = co.FILE_SHARE_READ
@@ -95,24 +95,19 @@ func (me *_File) EraseAndWrite(data []byte) error {
 	if err := me.hFile.WriteFile(data); err != nil {
 		return err
 	}
-	return me.PtrOffsetRewind()
+	return me.RewindPointer()
 }
 
 func (me *_File) Hfile() HFILE {
 	return me.hFile
 }
 
-func (me *_File) PtrOffset() int {
+func (me *_File) PointerOffset() int {
 	off, err := me.hFile.SetFilePointerEx(0, co.FILE_FROM_CURRENT) // https://stackoverflow.com/a/17707021/6923555
 	if err != nil {
 		panic(err)
 	}
 	return int(off)
-}
-
-func (me *_File) PtrOffsetRewind() error {
-	_, err := me.hFile.SetFilePointerEx(0, co.FILE_FROM_BEGIN)
-	return err
 }
 
 func (me *_File) Read(numBytes int) ([]byte, error) {
@@ -124,7 +119,7 @@ func (me *_File) Read(numBytes int) ([]byte, error) {
 }
 
 func (me *_File) ReadAll() ([]byte, error) {
-	if err := me.PtrOffsetRewind(); err != nil {
+	if err := me.RewindPointer(); err != nil {
 		return nil, err
 	}
 	fileSize := me.Size()
@@ -136,7 +131,7 @@ func (me *_File) ReadAll() ([]byte, error) {
 		return nil, err
 	}
 
-	if err := me.PtrOffsetRewind(); err != nil {
+	if err := me.RewindPointer(); err != nil {
 		return nil, err
 	}
 	return buf, nil
@@ -153,7 +148,12 @@ func (me *_File) Resize(numBytes int) error {
 		return err
 	}
 
-	return me.PtrOffsetRewind()
+	return me.RewindPointer()
+}
+
+func (me *_File) RewindPointer() error {
+	_, err := me.hFile.SetFilePointerEx(0, co.FILE_FROM_BEGIN)
+	return err
 }
 
 func (me *_File) Size() int {

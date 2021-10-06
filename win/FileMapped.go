@@ -44,20 +44,16 @@ type _FileMapped struct {
 	hMap     HFILEMAP
 	pMem     HFILEMAPVIEW
 	sz       int
-	readOnly bool // necessary for SetSize()
+	readOnly bool
 }
 
 // Opens a memory-mapped file, returning a new high-level FileMapped object.
 //
 // ⚠️ You must defer FileMapped.Close().
 func OpenFileMapped(
-	filePath string, behavior co.OPEN_FILEMAP) (FileMapped, error) {
+	filePath string, desiredAccess co.OPEN_FILE) (FileMapped, error) {
 
-	readOnly := behavior == co.OPEN_FILEMAP_READ
-	openOpts := util.Iif(readOnly,
-		co.OPEN_FILE_READ_EXISTING, co.OPEN_FILE_RW_EXISTING).(co.OPEN_FILE)
-
-	objFile, err := OpenFile(filePath, openOpts)
+	objFile, err := OpenFile(filePath, desiredAccess)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +63,7 @@ func OpenFileMapped(
 		hMap:     HFILEMAP(0),
 		pMem:     HFILEMAPVIEW(0),
 		sz:       0,
-		readOnly: readOnly,
+		readOnly: desiredAccess == co.OPEN_FILE_READ_EXISTING,
 	}
 
 	if err := me.mapInMemory(); err != nil {
