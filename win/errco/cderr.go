@@ -1,11 +1,29 @@
 package errco
 
+import (
+	"fmt"
+)
+
 // Common dialog box error codes.
+//
+// These error codes are unrelated to the ordinary system error codes,
+// represented by the errco.ERROR type.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-commdlgextendederror
 type CDERR uint32
 
+// Implements error interface.
+func (err CDERR) Error() string {
+	return err.String()
+}
+
+// Implements fmt.Stringer.
+func (err CDERR) String() string {
+	return fmt.Sprintf("[%d 0x%02x]", uint32(err), uint32(err))
+}
+
 const (
+	CDERR_OK                  CDERR = 0
 	CDERR_DIALOGFAILURE       CDERR = 0xffff
 	CDERR_FINDRESFAILURE      CDERR = 0x0006
 	CDERR_INITIALIZATION      CDERR = 0x0002

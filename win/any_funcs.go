@@ -37,7 +37,7 @@ func ChooseColor(cc *CHOOSECOLOR) bool {
 		uintptr(unsafe.Pointer(cc)), 0, 0)
 	if ret == 0 {
 		dlgErr := CommDlgExtendedError()
-		if dlgErr == errco.CDERR(0) {
+		if dlgErr == errco.CDERR_OK {
 			return false
 		} else {
 			panic(dlgErr)
