@@ -49,6 +49,7 @@ func NewDateTimePicker(parent AnyParent, opts *_DateTimePickerO) DateTimePicker 
 			"SysDateTimePick32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
+		parent.addResizerChild(me, opts.horz, opts.vert)
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
 
@@ -56,13 +57,17 @@ func NewDateTimePicker(parent AnyParent, opts *_DateTimePickerO) DateTimePicker 
 }
 
 // Creates a new DateTimePicker from a dialog resource.
-func NewDateTimePickerDlg(parent AnyParent, ctrlId int) DateTimePicker {
+func NewDateTimePickerDlg(
+	parent AnyParent, ctrlId int,
+	horz HORZ, vert VERT) DateTimePicker {
+
 	me := &_DateTimePicker{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	return me
@@ -106,6 +111,8 @@ type _DateTimePickerO struct {
 
 	position    win.POINT
 	size        win.SIZE
+	horz        HORZ
+	vert        VERT
 	ctrlStyles  co.DTS
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
@@ -122,6 +129,14 @@ func (o *_DateTimePickerO) Position(p win.POINT) *_DateTimePickerO { _OwPt(&o.po
 // Control size in pixels.
 // Defaults to 230x23. Will be adjusted to the current system DPI.
 func (o *_DateTimePickerO) Size(s win.SIZE) *_DateTimePickerO { _OwSz(&o.size, s); return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_DateTimePickerO) Horz(s HORZ) *_DateTimePickerO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_DateTimePickerO) Vert(s VERT) *_DateTimePickerO { o.vert = s; return o }
 
 // DateTimePicker control styles, passed to CreateWindowEx().
 // Defaults to DTS_LONGDATEFORMAT.
@@ -145,6 +160,8 @@ func (o *_DateTimePickerO) lateDefaults() {
 func DateTimePickerOpts() *_DateTimePickerO {
 	return &_DateTimePickerO{
 		size:        win.SIZE{Cx: 230, Cy: 23},
+		horz:        HORZ_NONE,
+		vert:        VERT_NONE,
 		ctrlStyles:  co.DTS_LONGDATEFORMAT,
 		wndStyles:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 		wndExStyles: co.WS_EX_CLIENTEDGE,

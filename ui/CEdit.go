@@ -52,6 +52,7 @@ func NewEdit(parent AnyParent, opts *_EditO) Edit {
 			"EDIT", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
+		parent.addResizerChild(me, opts.horz, opts.vert)
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
 
@@ -59,13 +60,14 @@ func NewEdit(parent AnyParent, opts *_EditO) Edit {
 }
 
 // Creates a new Edit from a dialog resource.
-func NewEditDlg(parent AnyParent, ctrlId int) Edit {
+func NewEditDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Edit {
 	me := &_Edit{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	return me
@@ -118,6 +120,8 @@ type _EditO struct {
 	text        string
 	position    win.POINT
 	size        win.SIZE
+	horz        HORZ
+	vert        VERT
 	ctrlStyles  co.ES
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
@@ -138,6 +142,14 @@ func (o *_EditO) Position(p win.POINT) *_EditO { _OwPt(&o.position, p); return o
 // Control size in pixels.
 // Defaults to 100x23. Will be adjusted to the current system DPI.
 func (o *_EditO) Size(s win.SIZE) *_EditO { _OwSz(&o.size, s); return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_EditO) Horz(s HORZ) *_EditO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_EditO) Vert(s VERT) *_EditO { o.vert = s; return o }
 
 // Edit control styles, passed to CreateWindowEx().
 // Defaults to ES_AUTOHSCROLL | ES_NOHIDESEL.
@@ -161,6 +173,8 @@ func (o *_EditO) lateDefaults() {
 func EditOpts() *_EditO {
 	return &_EditO{
 		size:        win.SIZE{Cx: 100, Cy: 23},
+		horz:        HORZ_NONE,
+		vert:        VERT_NONE,
 		ctrlStyles:  co.ES_AUTOHSCROLL | co.ES_NOHIDESEL,
 		wndStyles:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 		wndExStyles: co.WS_EX_CLIENTEDGE,

@@ -54,6 +54,8 @@ func NewTrackbar(parent AnyParent, opts *_TrackbarO) Trackbar {
 			"msctls_trackbar32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
+		parent.addResizerChild(me, opts.horz, opts.vert)
+
 		if opts.rangeMin != 0 {
 			me.SetRangeMin(opts.rangeMin)
 		}
@@ -69,13 +71,17 @@ func NewTrackbar(parent AnyParent, opts *_TrackbarO) Trackbar {
 }
 
 // Creates a new Trackbar from a dialog resource.
-func NewTrackbarDlg(parent AnyParent, ctrlId int) Trackbar {
+func NewTrackbarDlg(
+	parent AnyParent, ctrlId int,
+	horz HORZ, vert VERT) Trackbar {
+
 	me := &_Trackbar{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	return me
@@ -131,6 +137,8 @@ type _TrackbarO struct {
 
 	position    win.POINT
 	size        win.SIZE
+	horz        HORZ
+	vert        VERT
 	ctrlStyles  co.TBS
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
@@ -151,6 +159,14 @@ func (o *_TrackbarO) Position(p win.POINT) *_TrackbarO { _OwPt(&o.position, p); 
 // Control size in pixels.
 // Defaults to 175x28. Will be adjusted to the current system DPI.
 func (o *_TrackbarO) Size(s win.SIZE) *_TrackbarO { _OwSz(&o.size, s); return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_TrackbarO) Horz(s HORZ) *_TrackbarO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_TrackbarO) Vert(s VERT) *_TrackbarO { o.vert = s; return o }
 
 // Trackbar control styles, passed to CreateWindowEx().
 // Defauls to TBS_HORZ | TBS_AUTOTICKS.
@@ -182,6 +198,8 @@ func (o *_TrackbarO) lateDefaults() {
 func TrackbarOpts() *_TrackbarO {
 	return &_TrackbarO{
 		size:       win.SIZE{Cx: 175, Cy: 28},
+		horz:       HORZ_NONE,
+		vert:       VERT_NONE,
 		ctrlStyles: co.TBS_HORZ | co.TBS_AUTOTICKS,
 		wndStyles:  co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 	}

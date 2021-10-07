@@ -44,10 +44,12 @@ func NewRadioGroup(parent AnyParent, opts ...*_RadioButtonO) RadioGroup {
 }
 
 // Creates a new RadioGroup, where each RadioButton is from a dialog resource.
-func NewRadioGroupDlg(parent AnyParent, ctrlIds ...int) RadioGroup {
+func NewRadioGroupDlg(
+	parent AnyParent, horz HORZ, vert VERT, ctrlIds ...int) RadioGroup {
+
 	radios := make([]RadioButton, 0, len(ctrlIds))
 	for _, ctrlId := range ctrlIds {
-		radios = append(radios, NewRadioButtonDlg(parent, ctrlId))
+		radios = append(radios, NewRadioButtonDlg(parent, ctrlId, horz, vert))
 	}
 
 	me := &_RadioGroup{}

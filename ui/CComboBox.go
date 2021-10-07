@@ -48,6 +48,7 @@ func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
 			"COMBOBOX", "", opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, size, win.HMENU(opts.ctrlId))
 
+		parent.addResizerChild(me, opts.horz, opts.vert)
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 
 		if opts.texts != nil {
@@ -59,7 +60,10 @@ func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
 }
 
 // Creates a new ComboBox from a dialog resource.
-func NewComboBoxDlg(parent AnyParent, ctrlId int) ComboBox {
+func NewComboBoxDlg(
+	parent AnyParent, ctrlId int,
+	horz HORZ, vert VERT) ComboBox {
+
 	me := &_ComboBox{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
@@ -67,6 +71,7 @@ func NewComboBoxDlg(parent AnyParent, ctrlId int) ComboBox {
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	return me
@@ -92,6 +97,8 @@ type _ComboBoxO struct {
 
 	position    win.POINT
 	width       int
+	horz        HORZ
+	vert        VERT
 	ctrlStyles  co.CBS
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
@@ -110,6 +117,14 @@ func (o *_ComboBoxO) Position(p win.POINT) *_ComboBoxO { _OwPt(&o.position, p); 
 // Control width in pixels.
 // Defaults to 100. Will be adjusted to the current system DPI.
 func (o *_ComboBoxO) Width(w int) *_ComboBoxO { o.width = w; return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_ComboBoxO) Horz(s HORZ) *_ComboBoxO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_ComboBoxO) Vert(s VERT) *_ComboBoxO { o.vert = s; return o }
 
 // ComboBox control styles, passed to CreateWindowEx().
 // Defaults to CBS_DROPDOWNLIST.
@@ -137,6 +152,8 @@ func (o *_ComboBoxO) lateDefaults() {
 func ComboBoxOpts() *_ComboBoxO {
 	return &_ComboBoxO{
 		width:      100,
+		horz:       HORZ_NONE,
+		vert:       VERT_NONE,
 		ctrlStyles: co.CBS_DROPDOWNLIST,
 		wndStyles:  co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 	}

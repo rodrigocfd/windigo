@@ -43,19 +43,25 @@ func NewProgressBar(parent AnyParent, opts *_ProgressBarO) ProgressBar {
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			"msctls_progress32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
+
+		parent.addResizerChild(me, opts.horz, opts.vert)
 	})
 
 	return me
 }
 
 // Creates a new ProgressBar from a dialog resource.
-func NewProgressBarDlg(parent AnyParent, ctrlId int) ProgressBar {
+func NewProgressBarDlg(
+	parent AnyParent, ctrlId int,
+	horz HORZ, vert VERT) ProgressBar {
+
 	me := &_ProgressBar{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.isMarquee = false
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	return me
@@ -107,6 +113,8 @@ type _ProgressBarO struct {
 
 	position    win.POINT
 	size        win.SIZE
+	horz        HORZ
+	vert        VERT
 	ctrlStyles  co.PBS
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
@@ -123,6 +131,14 @@ func (o *_ProgressBarO) Position(p win.POINT) *_ProgressBarO { _OwPt(&o.position
 // Control size in pixels.
 // Defaults to 140x26. Will be adjusted to the current system DPI.
 func (o *_ProgressBarO) Size(s win.SIZE) *_ProgressBarO { _OwSz(&o.size, s); return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_ProgressBarO) Horz(s HORZ) *_ProgressBarO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_ProgressBarO) Vert(s VERT) *_ProgressBarO { o.vert = s; return o }
 
 // ProgressBar control styles, passed to CreateWindowEx().
 // Defaults to PBS_SMOOTH.
@@ -146,6 +162,8 @@ func (o *_ProgressBarO) lateDefaults() {
 func ProgressBarOpts() *_ProgressBarO {
 	return &_ProgressBarO{
 		size:       win.SIZE{Cx: 140, Cy: 26},
+		horz:       HORZ_NONE,
+		vert:       VERT_NONE,
 		ctrlStyles: co.PBS_SMOOTH,
 		wndStyles:  co.WS_CHILD | co.WS_VISIBLE,
 	}

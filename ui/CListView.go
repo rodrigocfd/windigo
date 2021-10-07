@@ -65,6 +65,8 @@ func NewListView(parent AnyParent, opts *_ListViewO) ListView {
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
+		parent.addResizerChild(me, opts.horz, opts.vert)
+
 		if opts.ctrlExStyles != co.LVS_EX_NONE {
 			me.SetExtendedStyle(true, opts.ctrlExStyles)
 		}
@@ -75,7 +77,10 @@ func NewListView(parent AnyParent, opts *_ListViewO) ListView {
 }
 
 // Creates a new ListView from a dialog resource.
-func NewListViewDlg(parent AnyParent, ctrlId, contextMenuId int) ListView {
+func NewListViewDlg(
+	parent AnyParent, ctrlId int,
+	horz HORZ, vert VERT, contextMenuId int) ListView {
+
 	hContextMenu := win.HMENU(0)
 	if contextMenuId != 0 {
 		hResMenu, found := win.HINSTANCE(0).
@@ -95,6 +100,7 @@ func NewListViewDlg(parent AnyParent, ctrlId, contextMenuId int) ListView {
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	me.handledEvents()
@@ -234,6 +240,8 @@ type _ListViewO struct {
 
 	position     win.POINT
 	size         win.SIZE
+	horz         HORZ
+	vert         VERT
 	ctrlStyles   co.LVS
 	ctrlExStyles co.LVS_EX
 	wndStyles    co.WS
@@ -253,6 +261,14 @@ func (o *_ListViewO) Position(p win.POINT) *_ListViewO { _OwPt(&o.position, p); 
 // Control size in pixels.
 // Defaults to 120x120. Will be adjusted to the current system DPI.
 func (o *_ListViewO) Size(s win.SIZE) *_ListViewO { _OwSz(&o.size, s); return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_ListViewO) Horz(s HORZ) *_ListViewO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_ListViewO) Vert(s VERT) *_ListViewO { o.vert = s; return o }
 
 // ListView control styles, passed to CreateWindowEx().
 // Defaults to LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS.
@@ -284,6 +300,8 @@ func (o *_ListViewO) lateDefaults() {
 func ListViewOpts() *_ListViewO {
 	return &_ListViewO{
 		size:        win.SIZE{Cx: 120, Cy: 120},
+		horz:        HORZ_NONE,
+		vert:        VERT_NONE,
 		ctrlStyles:  co.LVS_REPORT | co.LVS_NOSORTHEADER | co.LVS_SHOWSELALWAYS,
 		wndStyles:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 		wndExStyles: co.WS_EX_CLIENTEDGE,

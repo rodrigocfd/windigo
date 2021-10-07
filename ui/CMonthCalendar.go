@@ -49,6 +49,8 @@ func NewMonthCalendar(parent AnyParent, opts *_MonthCalendarO) MonthCalendar {
 			"SysMonthCal32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, win.SIZE{}, win.HMENU(opts.ctrlId))
 
+		parent.addResizerChild(me, opts.horz, opts.vert)
+
 		rcBound := win.RECT{}
 		me.Hwnd().SendMessage(co.MCM_GETMINREQRECT,
 			0, win.LPARAM(unsafe.Pointer(&rcBound)))
@@ -60,13 +62,17 @@ func NewMonthCalendar(parent AnyParent, opts *_MonthCalendarO) MonthCalendar {
 }
 
 // Creates a new MonthCalendar from a dialog resource.
-func NewMonthCalendarDlg(parent AnyParent, ctrlId int) MonthCalendar {
+func NewMonthCalendarDlg(
+	parent AnyParent, ctrlId int,
+	horz HORZ, vert VERT) MonthCalendar {
+
 	me := &_MonthCalendar{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	return me
@@ -99,6 +105,8 @@ type _MonthCalendarO struct {
 	ctrlId int
 
 	position    win.POINT
+	horz        HORZ
+	vert        VERT
 	ctrlStyles  co.MCS
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
@@ -111,6 +119,14 @@ func (o *_MonthCalendarO) CtrlId(i int) *_MonthCalendarO { o.ctrlId = i; return 
 // Position within parent's client area in pixels.
 // Defaults to 0x0. Will be adjusted to the current system DPI.
 func (o *_MonthCalendarO) Position(p win.POINT) *_MonthCalendarO { _OwPt(&o.position, p); return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_MonthCalendarO) Horz(s HORZ) *_MonthCalendarO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_MonthCalendarO) Vert(s VERT) *_MonthCalendarO { o.vert = s; return o }
 
 // MonthCalendar control styles, passed to CreateWindowEx().
 // Defaults to MCS_NONE.
@@ -133,6 +149,8 @@ func (o *_MonthCalendarO) lateDefaults() {
 // Options for NewMonthCalendar().
 func MonthCalendarOpts() *_MonthCalendarO {
 	return &_MonthCalendarO{
+		horz:       HORZ_NONE,
+		vert:       VERT_NONE,
 		ctrlStyles: co.MCS_NONE,
 		wndStyles:  co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 	}

@@ -47,6 +47,7 @@ func NewButton(parent AnyParent, opts *_ButtonO) Button {
 			"BUTTON", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
+		parent.addResizerChild(me, opts.horz, opts.vert)
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
 
@@ -54,13 +55,14 @@ func NewButton(parent AnyParent, opts *_ButtonO) Button {
 }
 
 // Creates a new Button from a dialog resource.
-func NewButtonDlg(parent AnyParent, ctrlId int) Button {
+func NewButtonDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Button {
 	me := &_Button{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	return me
@@ -87,6 +89,8 @@ type _ButtonO struct {
 	text        string
 	position    win.POINT
 	size        win.SIZE
+	horz        HORZ
+	vert        VERT
 	ctrlStyles  co.BS
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
@@ -107,6 +111,14 @@ func (o *_ButtonO) Position(p win.POINT) *_ButtonO { _OwPt(&o.position, p); retu
 // Control size in pixels.
 // Defaults to 88x26. Will be adjusted to the current system DPI.
 func (o *_ButtonO) Size(s win.SIZE) *_ButtonO { _OwSz(&o.size, s); return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_ButtonO) Horz(s HORZ) *_ButtonO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_ButtonO) Vert(s VERT) *_ButtonO { o.vert = s; return o }
 
 // Button control styles, passed to CreateWindowEx().
 // Defaults to BS_PUSHBUTTON.
@@ -130,6 +142,8 @@ func (o *_ButtonO) lateDefaults() {
 func ButtonOpts() *_ButtonO {
 	return &_ButtonO{
 		size:       win.SIZE{Cx: 88, Cy: 26},
+		horz:       HORZ_NONE,
+		vert:       VERT_NONE,
 		ctrlStyles: co.BS_PUSHBUTTON,
 		wndStyles:  co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 	}

@@ -50,6 +50,7 @@ func NewStatic(parent AnyParent, opts *_StaticO) Static {
 			"STATIC", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
+		parent.addResizerChild(me, opts.horz, opts.vert)
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
 
@@ -57,13 +58,14 @@ func NewStatic(parent AnyParent, opts *_StaticO) Static {
 }
 
 // Creates a new Static from a dialog resource.
-func NewStaticDlg(parent AnyParent, ctrlId int) Static {
+func NewStaticDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Static {
 	me := &_Static{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	return me
@@ -101,6 +103,8 @@ type _StaticO struct {
 	text        string
 	position    win.POINT
 	size        win.SIZE
+	horz        HORZ
+	vert        VERT
 	ctrlStyles  co.SS
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
@@ -121,6 +125,14 @@ func (o *_StaticO) Position(p win.POINT) *_StaticO { _OwPt(&o.position, p); retu
 // Control size in pixels.
 // Defaults to fit current text. Will be adjusted to the current system DPI.
 func (o *_StaticO) Size(s win.SIZE) *_StaticO { _OwSz(&o.size, s); return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_StaticO) Horz(s HORZ) *_StaticO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_StaticO) Vert(s VERT) *_StaticO { o.vert = s; return o }
 
 // Static control styles, passed to CreateWindowEx().
 // Defaults to SS_LEFT | SS_NOTIFY.
@@ -143,6 +155,8 @@ func (o *_StaticO) lateDefaults() {
 // Options for NewStatic().
 func StaticOpts() *_StaticO {
 	return &_StaticO{
+		horz:       HORZ_NONE,
+		vert:       VERT_NONE,
 		ctrlStyles: co.SS_LEFT | co.SS_NOTIFY,
 		wndStyles:  co.WS_CHILD | co.WS_VISIBLE,
 	}

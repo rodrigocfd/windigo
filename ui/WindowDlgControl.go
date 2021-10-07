@@ -17,22 +17,25 @@ type _WindowDlgControl struct {
 //
 // Position will be adjusted to the current system DPI.
 func NewWindowControlDlg(
-	parent AnyParent, dialogId int, position win.POINT) WindowControl {
+	parent AnyParent, dialogId int,
+	position win.POINT, horz HORZ, vert VERT) WindowControl {
 
-	return _NewWindowControlDlg(parent, dialogId, position, 0)
+	return _NewWindowControlDlg(parent, dialogId, position, 0, horz, vert)
 }
 
 // Creates a new WindowControl by loading a dialog resource, specifying a control ID.
 //
 // Position will be adjusted to the current system DPI.
 func NewWindowControlDlgWithId(
-	parent AnyParent, dialogId int, position win.POINT, ctrlId int) WindowControl {
+	parent AnyParent, dialogId int,
+	position win.POINT, ctrlId int, horz HORZ, vert VERT) WindowControl {
 
-	return _NewWindowControlDlg(parent, dialogId, position, ctrlId)
+	return _NewWindowControlDlg(parent, dialogId, position, ctrlId, horz, vert)
 }
 
 func _NewWindowControlDlg(
-	parent AnyParent, dialogId int, position win.POINT, ctrlId int) WindowControl {
+	parent AnyParent, dialogId int,
+	position win.POINT, ctrlId int, horz HORZ, vert VERT) WindowControl {
 
 	me := &_WindowDlgControl{}
 	me._WindowDlg.new(dialogId)
@@ -49,6 +52,7 @@ func _NewWindowControlDlg(
 		me._WindowDlg.createDialog(parent.Hwnd(), parent.Hwnd().Hinstance())
 		me.Hwnd().SetWindowPos(win.HWND(0), position.X, position.Y, 0, 0,
 			co.SWP_NOZORDER|co.SWP_NOSIZE)
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	me.defaultMessages()

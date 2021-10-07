@@ -35,6 +35,8 @@ func NewWindowControl(parent AnyParent, opts *_WindowControlO) WindowControl {
 		me._WindowRaw.createWindow(me.opts.wndExStyles, me.opts.className,
 			"", me.opts.wndStyles, me.opts.position, me.opts.size, parent.Hwnd(),
 			win.HMENU(me.opts.ctrlId), hInst)
+
+		parent.addResizerChild(me, opts.horz, opts.vert)
 	})
 
 	me.defaultMessages()
@@ -76,6 +78,8 @@ type _WindowControlO struct {
 	wndExStyles co.WS_EX
 	position    win.POINT
 	size        win.SIZE
+	horz        HORZ
+	vert        VERT
 }
 
 // Control ID.
@@ -114,6 +118,14 @@ func (o *_WindowControlO) Position(p win.POINT) *_WindowControlO { _OwPt(&o.posi
 // Defaults to 300x200. Will be adjusted to the current system DPI.
 func (o *_WindowControlO) Size(s win.SIZE) *_WindowControlO { _OwSz(&o.size, s); return o }
 
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_WindowControlO) Horz(s HORZ) *_WindowControlO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_WindowControlO) Vert(s VERT) *_WindowControlO { o.vert = s; return o }
+
 func (o *_WindowControlO) lateDefaults() {
 	if o.ctrlId == 0 {
 		o.ctrlId = _NextCtrlId()
@@ -132,5 +144,7 @@ func WindowControlOpts() *_WindowControlO {
 			co.WS_CLIPCHILDREN | co.WS_CLIPSIBLINGS,
 		wndExStyles: co.WS_EX_CLIENTEDGE,
 		size:        win.SIZE{Cx: 300, Cy: 200},
+		horz:        HORZ_NONE,
+		vert:        VERT_NONE,
 	}
 }

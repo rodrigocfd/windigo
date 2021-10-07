@@ -50,6 +50,7 @@ func NewSysLink(parent AnyParent, opts *_SysLinkO) SysLink {
 			"SysLink", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, boundBox, win.HMENU(opts.ctrlId))
 
+		parent.addResizerChild(me, opts.horz, opts.vert)
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
 
@@ -57,13 +58,14 @@ func NewSysLink(parent AnyParent, opts *_SysLinkO) SysLink {
 }
 
 // Creates a new SysLink from a dialog resource.
-func NewSysLinkDlg(parent AnyParent, ctrlId int) SysLink {
+func NewSysLinkDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) SysLink {
 	me := &_SysLink{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	return me
@@ -100,6 +102,8 @@ type _SysLinkO struct {
 
 	text        string
 	position    win.POINT
+	horz        HORZ
+	vert        VERT
 	ctrlStyles  co.LWS
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
@@ -116,6 +120,14 @@ func (o *_SysLinkO) Text(t string) *_SysLinkO { o.text = t; return o }
 // Position within parent's client area in pixels.
 // Defaults to 0x0. Will be adjusted to the current system DPI.
 func (o *_SysLinkO) Position(p win.POINT) *_SysLinkO { _OwPt(&o.position, p); return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_SysLinkO) Horz(s HORZ) *_SysLinkO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_SysLinkO) Vert(s VERT) *_SysLinkO { o.vert = s; return o }
 
 // SysLink control styles, passed to CreateWindowEx().
 // Defaults to LWS_TRANSPARENT.
@@ -138,6 +150,8 @@ func (o *_SysLinkO) lateDefaults() {
 // Options for NewSysLink().
 func SysLinkOpts() *_SysLinkO {
 	return &_SysLinkO{
+		horz:       HORZ_NONE,
+		vert:       VERT_NONE,
 		ctrlStyles: co.LWS_TRANSPARENT,
 		wndStyles:  co.WS_CHILD | co.WS_VISIBLE,
 	}

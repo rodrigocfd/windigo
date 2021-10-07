@@ -15,17 +15,19 @@ var (
 	_globalUiThreadMutex = sync.Mutex{}
 )
 
-// Base to _WindowRaw and _WindowDlg.
+// Base to _WindowRaw and _WindowDlg; the root of all parent windows.
 type _WindowBase struct {
-	hWnd           win.HWND
-	events         _EventsWmNfy    // Ordinary window events, added by user.
-	internalEvents _EventsInternal // Events added internally by the library.
+	hWnd            win.HWND
+	events          _EventsWmNfy    // Ordinary window events, added by user.
+	internalEvents  _EventsInternal // Events added internally by the library.
+	resizerChildren _ResizerChildren
 }
 
 func (me *_WindowBase) new() {
 	me.hWnd = win.HWND(0)
 	me.events.new()
 	me.internalEvents.new()
+	me.resizerChildren.new()
 
 	me.defaultMessages()
 }
@@ -49,6 +51,12 @@ func (me *_WindowBase) internalOn() *_EventsInternal {
 }
 
 // Implements AnyParent.
+func (me *_WindowBase) addResizerChild(ctrl AnyControl, horz HORZ, vert VERT) {
+	// Must be called after the control was created, because its HWND is used.
+	me.resizerChildren.add(me.Hwnd(), ctrl, horz, vert)
+}
+
+// Implements AnyParent.
 func (me *_WindowBase) RunUiThread(userFunc func()) {
 	// This method is analog to SendMessage (synchronous), but intended to be
 	// called from another thread, so a callback function can, tunelled by
@@ -66,11 +74,15 @@ func (me *_WindowBase) RunUiThread(userFunc func()) {
 func (me *_WindowBase) defaultMessages() {
 	me.internalOn().addMsgZero(_WM_UI_THREAD, func(p wm.Any) { // handle our custom thread UI message
 		_globalUiThreadMutex.Lock()
-		userFunc, _ := _globalUiThreadCache[int(p.LParam)] // retrieve from cache
-		delete(_globalUiThreadCache, int(p.LParam))        // clear from cache
+		userFunc := _globalUiThreadCache[int(p.LParam)] // retrieve from cache
+		delete(_globalUiThreadCache, int(p.LParam))     // clear from cache
 		_globalUiThreadMutex.Unlock()
 
 		userFunc()
+	})
+
+	me.internalOn().addMsgZero(co.WM_SIZE, func(p wm.Any) {
+		me.resizerChildren.resizeChildren(wm.Size{Msg: p})
 	})
 }
 

@@ -55,6 +55,7 @@ func NewCheckBox(parent AnyParent, opts *_CheckBoxO) CheckBox {
 			"BUTTON", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
+		parent.addResizerChild(me, opts.horz, opts.vert)
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 		me.SetCheckState(opts.state)
 	})
@@ -63,13 +64,17 @@ func NewCheckBox(parent AnyParent, opts *_CheckBoxO) CheckBox {
 }
 
 // Creates a new CheckBox from a dialog resource.
-func NewCheckBoxDlg(parent AnyParent, ctrlId int) CheckBox {
+func NewCheckBoxDlg(
+	parent AnyParent, ctrlId int,
+	horz HORZ, vert VERT) CheckBox {
+
 	me := &_CheckBox{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	return me
@@ -130,6 +135,8 @@ type _CheckBoxO struct {
 	text        string
 	position    win.POINT
 	size        win.SIZE
+	horz        HORZ
+	vert        VERT
 	ctrlStyles  co.BS
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
@@ -152,6 +159,14 @@ func (o *_CheckBoxO) Position(p win.POINT) *_CheckBoxO { _OwPt(&o.position, p); 
 // Control size in pixels.
 // Defaults to fit current text. Will be adjusted to the current system DPI.
 func (o *_CheckBoxO) Size(s win.SIZE) *_CheckBoxO { _OwSz(&o.size, s); return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_CheckBoxO) Horz(s HORZ) *_CheckBoxO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_CheckBoxO) Vert(s VERT) *_CheckBoxO { o.vert = s; return o }
 
 // CheckBox control styles, passed to CreateWindowEx().
 // Defaults to BS_AUTOCHECKBOX.
@@ -178,6 +193,8 @@ func (o *_CheckBoxO) lateDefaults() {
 // Options for NewCheckBox().
 func CheckBoxOpts() *_CheckBoxO {
 	return &_CheckBoxO{
+		horz:       HORZ_NONE,
+		vert:       VERT_NONE,
 		ctrlStyles: co.BS_AUTOCHECKBOX,
 		wndStyles:  co.WS_CHILD | co.WS_VISIBLE | co.WS_TABSTOP | co.WS_VISIBLE,
 		state:      co.BST_UNCHECKED,

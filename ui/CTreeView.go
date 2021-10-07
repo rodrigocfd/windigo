@@ -50,6 +50,8 @@ func NewTreeView(parent AnyParent, opts *_TreeViewO) TreeView {
 			"SysTreeView32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
+		parent.addResizerChild(me, opts.horz, opts.vert)
+
 		if opts.ctrlExStyles != co.TVS_EX_NONE {
 			me.Hwnd().SendMessage(co.TVM_SETEXTENDEDSTYLE,
 				win.WPARAM(opts.ctrlExStyles),
@@ -61,7 +63,10 @@ func NewTreeView(parent AnyParent, opts *_TreeViewO) TreeView {
 }
 
 // Creates a new TreeView from a dialog resource.
-func NewTreeViewDlg(parent AnyParent, ctrlId int) TreeView {
+func NewTreeViewDlg(
+	parent AnyParent, ctrlId int,
+	horz HORZ, vert VERT) TreeView {
+
 	me := &_TreeView{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
@@ -69,6 +74,7 @@ func NewTreeViewDlg(parent AnyParent, ctrlId int) TreeView {
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
+		parent.addResizerChild(me, horz, vert)
 	})
 
 	return me
@@ -94,6 +100,8 @@ type _TreeViewO struct {
 
 	position     win.POINT
 	size         win.SIZE
+	horz         HORZ
+	vert         VERT
 	ctrlStyles   co.TVS
 	ctrlExStyles co.TVS_EX
 	wndStyles    co.WS
@@ -111,6 +119,14 @@ func (o *_TreeViewO) Position(p win.POINT) *_TreeViewO { _OwPt(&o.position, p); 
 // Control size in pixels.
 // Defaults to 120x120. Will be adjusted to the current system DPI.
 func (o *_TreeViewO) Size(s win.SIZE) *_TreeViewO { _OwSz(&o.size, s); return o }
+
+// Horizontal behavior when the parent is resized.
+// Defaults to HORZ_NONE.
+func (o *_TreeViewO) Horz(s HORZ) *_TreeViewO { o.horz = s; return o }
+
+// Vertical behavior when the parent is resized.
+// Defaults to VERT_NONE.
+func (o *_TreeViewO) Vert(s VERT) *_TreeViewO { o.vert = s; return o }
 
 // TreeView control styles, passed to CreateWindowEx().
 // Defaults to TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_HASBUTTONS.
@@ -138,6 +154,8 @@ func (o *_TreeViewO) lateDefaults() {
 func TreeViewOpts() *_TreeViewO {
 	return &_TreeViewO{
 		size: win.SIZE{Cx: 120, Cy: 120},
+		horz: HORZ_NONE,
+		vert: VERT_NONE,
 		ctrlStyles: co.TVS_HASLINES | co.TVS_LINESATROOT |
 			co.TVS_SHOWSELALWAYS | co.TVS_HASBUTTONS,
 		wndStyles:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
