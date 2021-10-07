@@ -21,6 +21,7 @@ type CheckBox interface {
 
 	CheckState() co.BST                   // Retrieves the current check state.
 	EmulateClick()                        // Emulates an user click.
+	IsChecked() bool                      // Tells whether the check box state is checked.
 	SetCheckState(state co.BST)           // Sets the current check state.
 	SetCheckStateAndTrigger(state co.BST) // Sets the current check state and triggers the click event.
 	SetText(text string)                  // Sets the text.
@@ -89,6 +90,10 @@ func (me *_CheckBox) CheckState() co.BST {
 
 func (me *_CheckBox) EmulateClick() {
 	me.Hwnd().SendMessage(co.BM_CLICK, 0, 0)
+}
+
+func (me *_CheckBox) IsChecked() bool {
+	return me.CheckState() == co.BST_CHECKED
 }
 
 func (me *_CheckBox) SetCheckState(state co.BST) {

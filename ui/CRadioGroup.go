@@ -82,7 +82,7 @@ func (me *_RadioGroup) Parent() AnyParent {
 
 func (me *_RadioGroup) Selected() (RadioButton, bool) {
 	for _, radio := range me.radios {
-		if radio.IsChecked() {
+		if radio.IsSelected() {
 			return radio, true
 		}
 	}

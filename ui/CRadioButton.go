@@ -22,9 +22,9 @@ type RadioButton interface {
 	On() *_ButtonEvents
 
 	EmulateClick()                // Emulates an user click.
-	IsChecked() bool              // Retrieves the current check state.
-	SetChecked()                  // Checks the radio button.
-	SetCheckedAndTrigger()        // Checks the radio button and triggers the click event.
+	IsSelected() bool             // Tells whether this radio button is the selected one in its group.
+	Select()                      // Selects the radio button.
+	SelectAndTrigger()            // Selects the radio button and triggers the click event.
 	SetText(text string)          // Sets the text.
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
 	Text() string                 // Retrieves the text.
@@ -58,8 +58,8 @@ func NewRadioButton(parent AnyParent, opts *_RadioButtonO) RadioButton {
 
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 
-		if opts.checked {
-			me.SetChecked()
+		if opts.selected {
+			me.Select()
 		}
 	})
 
@@ -92,17 +92,17 @@ func (me *_RadioButton) EmulateClick() {
 	me.Hwnd().SendMessage(co.BM_CLICK, 0, 0)
 }
 
-func (me *_RadioButton) IsChecked() bool {
+func (me *_RadioButton) IsSelected() bool {
 	bst := co.BST(me.Hwnd().SendMessage(co.BM_GETSTATE, 0, 0))
 	return (bst & co.BST_CHECKED) != 0
 }
 
-func (me *_RadioButton) SetChecked() {
+func (me *_RadioButton) Select() {
 	me.Hwnd().SendMessage(co.BM_SETCHECK, win.WPARAM(co.BST_CHECKED), 0)
 }
 
-func (me *_RadioButton) SetCheckedAndTrigger() {
-	me.SetChecked()
+func (me *_RadioButton) SelectAndTrigger() {
+	me.Select()
 	me.Hwnd().GetParent().SendMessage(co.WM_COMMAND,
 		win.MAKEWPARAM(uint16(me.CtrlId()), uint16(co.BN_CLICKED)),
 		win.LPARAM(me.Hwnd()))
@@ -135,7 +135,7 @@ type _RadioButtonO struct {
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
 
-	checked bool
+	selected bool
 }
 
 // Control ID.
@@ -163,9 +163,9 @@ func (o *_RadioButtonO) CtrlStyles(s co.BS) *_RadioButtonO { o.ctrlStyles = s; r
 // Note that the first radio button of a group should also have WS_TABSTOP | WS_GROUP.
 func (o *_RadioButtonO) WndStyles(s co.WS) *_RadioButtonO { o.wndStyles = s; return o }
 
-// RadioButton initial checked state.
+// RadioButton initial selection state.
 // Defaults to false.
-func (o *_RadioButtonO) Checked(c bool) *_RadioButtonO { o.checked = c; return o }
+func (o *_RadioButtonO) Selected(c bool) *_RadioButtonO { o.selected = c; return o }
 
 func (o *_RadioButtonO) lateDefaults() {
 	if o.ctrlId == 0 {
