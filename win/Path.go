@@ -15,8 +15,9 @@ var Path _PathT
 
 // Returns whether the path ends with at least one of the given extensions.
 func (_PathT) HasExtension(path string, extensions ...string) bool {
+	pathUpper := strings.ToUpper(path)
 	for _, extension := range extensions {
-		if strings.HasSuffix(strings.ToUpper(path), strings.ToUpper(extension)) {
+		if strings.HasSuffix(pathUpper, strings.ToUpper(extension)) {
 			return true
 		}
 	}
@@ -64,14 +65,20 @@ func (_PathT) Exists(path string) bool {
 
 // Retrieves the file name of the path.
 func (_PathT) GetFileName(path string) string {
-	slashIdx := strings.LastIndex(path, "\\")
-	return path[slashIdx+1:]
+	if slashIdx := strings.LastIndex(path, "\\"); slashIdx == -1 {
+		return path
+	} else {
+		return path[slashIdx+1:]
+	}
 }
 
 // Retrieves the path without the file name itself, and without trailing slash.
 func (_PathT) GetPath(path string) string {
-	slashIdx := strings.LastIndex(path, "\\")
-	return path[0:slashIdx]
+	if slashIdx := strings.LastIndex(path, "\\"); slashIdx == -1 {
+		return path
+	} else {
+		return path[0:slashIdx]
+	}
 }
 
 // Tells if a given path is a folder, and not a file.
