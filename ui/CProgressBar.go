@@ -41,7 +41,8 @@ func NewProgressBar(parent AnyParent, opts *_ProgressBarO) ProgressBar {
 		_MultiplyDpi(&opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			"msctls_progress32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			win.ClassNameStr("msctls_progress32"), nil,
+			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
 		parent.addResizerChild(me, opts.horz, opts.vert)

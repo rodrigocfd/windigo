@@ -46,7 +46,8 @@ func NewMonthCalendar(parent AnyParent, opts *_MonthCalendarO) MonthCalendar {
 		_MultiplyDpi(&opts.position, nil)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			"SysMonthCal32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			win.ClassNameStr("SysMonthCal32"), nil,
+			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, win.SIZE{}, win.HMENU(opts.ctrlId))
 
 		parent.addResizerChild(me, opts.horz, opts.vert)

@@ -1,8 +1,6 @@
 package win
 
 import (
-	"fmt"
-	"reflect"
 	"syscall"
 	"unsafe"
 
@@ -17,28 +15,14 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hwnd
 type HWND HANDLE
 
-// ⚠️ className must be ATOM or string.
-//
-// ⚠️ title must be string or nil.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
-func CreateWindowEx(exStyle co.WS_EX, className, title interface{},
+func CreateWindowEx(exStyle co.WS_EX, className ClassName, title StrOrNil,
 	style co.WS, x, y, width, height int32,
 	parent HWND, menu HMENU, instance HINSTANCE, param LPARAM) HWND {
 
-	var pClass unsafe.Pointer
-	switch v := className.(type) {
-	case ATOM:
-		pClass = unsafe.Pointer(uintptr(v))
-	case string:
-		pClass = unsafe.Pointer(Str.ToNativePtr(v))
-	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(className)))
-	}
-
 	ret, _, err := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
-		uintptr(exStyle), uintptr(pClass),
-		uintptr(util.VariantNilString(title)),
+		uintptr(exStyle), uintptr(variantClassName(className)),
+		uintptr(variantStrOrNil(title)),
 		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
 		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
 	if ret == 0 {
@@ -47,26 +31,10 @@ func CreateWindowEx(exStyle co.WS_EX, className, title interface{},
 	return HWND(ret)
 }
 
-// ⚠️ className must be ATOM, string or nil.
-//
-// ⚠️ title must be string or nil.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-findwindoww
-func FindWindow(className, title interface{}) (HWND, bool) {
-	var pClass unsafe.Pointer
-	if className != nil {
-		switch v := className.(type) {
-		case ATOM:
-			pClass = unsafe.Pointer(uintptr(v))
-		case string:
-			pClass = unsafe.Pointer(Str.ToNativePtr(v))
-		default:
-			panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(className)))
-		}
-	}
-
+func FindWindow(className ClassName, title StrOrNil) (HWND, bool) {
 	ret, _, _ := syscall.Syscall(proc.FindWindow.Addr(), 2,
-		uintptr(pClass), uintptr(util.VariantNilString(title)), 0)
+		uintptr(variantClassName(className)), uintptr(variantStrOrNil(title)), 0)
 	return HWND(ret), ret != 0
 }
 
@@ -806,24 +774,18 @@ func (hWnd HWND) ShowWindow(cmdShow co.SW) bool {
 	return ret != 0
 }
 
-// ⚠️ windowTitle must be string or nil.
-//
-// ⚠️ mainInstruction must be string or nil.
-//
-// ⚠️ content must be string or nil.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
 func (hWnd HWND) TaskDialog(
 	hInstance HINSTANCE,
-	windowTitle, mainInstruction, content interface{},
+	windowTitle, mainInstruction, content StrOrNil,
 	commonButtons co.TDCBF, icon co.TD_ICON) co.ID {
 
 	pnButton := int32(0)
 	ret, _, _ := syscall.Syscall9(proc.TaskDialog.Addr(), 8,
 		uintptr(hWnd), uintptr(hInstance),
-		uintptr(util.VariantNilString(windowTitle)),
-		uintptr(util.VariantNilString(mainInstruction)),
-		uintptr(util.VariantNilString(content)),
+		uintptr(variantStrOrNil(windowTitle)),
+		uintptr(variantStrOrNil(mainInstruction)),
+		uintptr(variantStrOrNil(content)),
 		uintptr(commonButtons), uintptr(icon),
 		uintptr(unsafe.Pointer(&pnButton)), 0)
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {

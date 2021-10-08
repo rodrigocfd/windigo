@@ -47,7 +47,8 @@ func NewStatic(parent AnyParent, opts *_StaticO) Static {
 		}
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			"STATIC", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
+			win.ClassNameStr("STATIC"), win.StrVal(opts.text),
+			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
 		parent.addResizerChild(me, opts.horz, opts.vert)

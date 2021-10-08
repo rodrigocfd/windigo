@@ -1,13 +1,10 @@
 package win
 
 import (
-	"fmt"
-	"reflect"
 	"syscall"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
-	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -17,12 +14,10 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
 type HINSTANCE HANDLE
 
-// ⚠️ moduleName must be string or nil.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
-func GetModuleHandle(moduleName interface{}) HINSTANCE {
+func GetModuleHandle(moduleName StrOrNil) HINSTANCE {
 	ret, _, err := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
-		uintptr(util.VariantNilString(moduleName)), 0, 0)
+		uintptr(variantStrOrNil(moduleName)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -42,15 +37,13 @@ func LoadLibrary(libFileName string) HINSTANCE {
 	return HINSTANCE(ret)
 }
 
-// ⚠️ templateName must be uint16 or string.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
 func (hInst HINSTANCE) CreateDialogParam(
-	templateName interface{}, hwndParent HWND,
+	templateName ResId, hwndParent HWND,
 	dialogFunc uintptr, dwInitParam LPARAM) HWND {
 
 	ret, _, err := syscall.Syscall6(proc.CreateDialogParam.Addr(), 5,
-		uintptr(hInst), uintptr(util.VariantUint16String(templateName)),
+		uintptr(hInst), uintptr(variantResId(templateName)),
 		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -58,15 +51,13 @@ func (hInst HINSTANCE) CreateDialogParam(
 	return HWND(ret)
 }
 
-// ⚠️ templateName must be uint16 or string.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparamw
 func (hInst HINSTANCE) DialogBoxParam(
-	templateName interface{}, hwndParent HWND,
+	templateName ResId, hwndParent HWND,
 	dialogFunc uintptr, dwInitParam LPARAM) uintptr {
 
 	ret, _, err := syscall.Syscall6(proc.DialogBoxParam.Addr(), 5,
-		uintptr(hInst), uintptr(util.VariantUint16String(templateName)),
+		uintptr(hInst), uintptr(variantResId(templateName)),
 		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam), 0)
 	if int(ret) == -1 && errco.ERROR(err) != errco.SUCCESS {
 		panic(errco.ERROR(err))
@@ -131,60 +122,30 @@ func (hInst HINSTANCE) GetProcAddress(procName string) uintptr {
 	return ret
 }
 
-// ⚠️ tableName must be uint16 or string.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
-func (hInst HINSTANCE) LoadAccelerators(tableName interface{}) HACCEL {
+func (hInst HINSTANCE) LoadAccelerators(tableName ResId) HACCEL {
 	ret, _, err := syscall.Syscall(proc.LoadAccelerators.Addr(), 2,
-		uintptr(hInst), uintptr(util.VariantUint16String(tableName)), 0)
+		uintptr(hInst), uintptr(variantResId(tableName)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 	return HACCEL(ret)
 }
 
-// ⚠️ cursorName must be uint16, co.IDC or string.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
-func (hInst HINSTANCE) LoadCursor(cursorName interface{}) HCURSOR {
-	var pName unsafe.Pointer
-	switch v := cursorName.(type) {
-	case uint16:
-		pName = unsafe.Pointer(uintptr(v))
-	case co.IDC:
-		pName = unsafe.Pointer(uintptr(v))
-	case string:
-		pName = unsafe.Pointer(Str.ToNativePtr(v))
-	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(cursorName)))
-	}
-
+func (hInst HINSTANCE) LoadCursor(cursorName CursorResId) HCURSOR {
 	ret, _, err := syscall.Syscall(proc.LoadCursor.Addr(), 2,
-		uintptr(hInst), uintptr(pName), 0)
+		uintptr(hInst), uintptr(variantCursorResId(cursorName)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 	return HCURSOR(ret)
 }
 
-// ⚠️ iconName must be uint16, co.IDI or string.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
-func (hInst HINSTANCE) LoadIcon(iconName interface{}) HICON {
-	var pName unsafe.Pointer
-	switch v := iconName.(type) {
-	case uint16:
-		pName = unsafe.Pointer(uintptr(v))
-	case co.IDI:
-		pName = unsafe.Pointer(uintptr(v))
-	case string:
-		pName = unsafe.Pointer(Str.ToNativePtr(v))
-	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(iconName)))
-	}
-
+func (hInst HINSTANCE) LoadIcon(iconName IconResId) HICON {
 	ret, _, err := syscall.Syscall(proc.LoadIcon.Addr(), 2,
-		uintptr(hInst), uintptr(pName), 0)
+		uintptr(hInst), uintptr(variantIconResId(iconName)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -206,12 +167,10 @@ func (hInst HINSTANCE) LoadImage(
 	return HANDLE(ret)
 }
 
-// ⚠️ menuName must be uint16 or string.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
-func (hInst HINSTANCE) LoadMenu(menuName interface{}) HMENU {
+func (hInst HINSTANCE) LoadMenu(menuName ResId) HMENU {
 	ret, _, err := syscall.Syscall(proc.LoadMenu.Addr(), 2,
-		uintptr(hInst), uintptr(util.VariantUint16String(menuName)), 0)
+		uintptr(hInst), uintptr(variantResId(menuName)), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

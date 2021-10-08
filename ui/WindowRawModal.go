@@ -34,15 +34,15 @@ func (me *_WindowRawModal) ShowModal(parent AnyParent) {
 	me.opts.className = me._WindowRaw.generateWcx(&wcx, hInst,
 		me.opts.className, me.opts.classStyles, me.opts.hCursor,
 		me.opts.hBrushBkgnd, 0)
-	me._WindowRaw.registerClass(&wcx)
+	atom := me._WindowRaw.registerClass(&wcx)
 
 	me.hPrevFocusParent = win.GetFocus() // currently focused control in parent
 	parent.Hwnd().EnableWindow(false)    // https://devblogs.microsoft.com/oldnewthing/20040227-00/?p=40463
 
 	pos, size := me._WindowRaw.calcWndCoords(&me.opts.clientArea,
 		win.HMENU(0), me.opts.wndStyles, me.opts.wndExStyles)
-	me._WindowRaw.createWindow(me.opts.wndExStyles, me.opts.className,
-		me.opts.title, me.opts.wndStyles, pos, size, parent.Hwnd(),
+	me._WindowRaw.createWindow(me.opts.wndExStyles, win.ClassNameAtom(atom),
+		win.StrVal(me.opts.title), me.opts.wndStyles, pos, size, parent.Hwnd(),
 		win.HMENU(0), hInst)
 
 	_RunModalLoop(me.Hwnd())
@@ -122,7 +122,7 @@ func (o *_WindowModalO) ClientArea(c win.SIZE) *_WindowModalO { _OwSz(&o.clientA
 
 func (o *_WindowModalO) lateDefaults() {
 	if o.hCursor == 0 {
-		o.hCursor = win.HINSTANCE(0).LoadCursor(co.IDC_ARROW)
+		o.hCursor = win.HINSTANCE(0).LoadCursor(win.CursorResIdIdc(co.IDC_ARROW))
 	}
 }
 

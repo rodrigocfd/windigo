@@ -74,7 +74,7 @@ func (me *_WindowRaw) registerClass(wcx *win.WNDCLASSEX) win.ATOM {
 
 // Calls CreateWindowEx().
 func (me *_WindowRaw) createWindow(
-	exStyle co.WS_EX, className, title string, style co.WS,
+	exStyle co.WS_EX, className win.ClassName, title win.StrOrNil, style co.WS,
 	pos win.POINT, size win.SIZE, hParent win.HWND, hMenu win.HMENU,
 	hInst win.HINSTANCE) {
 

@@ -29,7 +29,7 @@ func (me *_WindowDlg) createDialog(hParent win.HWND, hInst win.HINSTANCE) {
 	_globalWindowDlgPtrs[me] = struct{}{} // store pointer in the set
 
 	// The hwnd member is saved in WM_INITDIALOG processing in dlgProc.
-	hInst.CreateDialogParam(uint16(me.dialogId), hParent,
+	hInst.CreateDialogParam(win.ResIdInt(me.dialogId), hParent,
 		syscall.NewCallback(_DlgProc), win.LPARAM(unsafe.Pointer(me))) // pass pointer to object itself
 }
 
@@ -42,7 +42,7 @@ func (me *_WindowDlg) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
 	_globalWindowDlgPtrs[me] = struct{}{} // store pointer in the set
 
 	// The hwnd member is saved in WM_INITDIALOG processing in dlgProc.
-	hInst.DialogBoxParam(int32(me.dialogId), hParent,
+	hInst.DialogBoxParam(win.ResIdInt(me.dialogId), hParent,
 		syscall.NewCallback(_DlgProc), win.LPARAM(unsafe.Pointer(me))) // pass pointer to object itself
 }
 

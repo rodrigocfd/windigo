@@ -41,12 +41,12 @@ func (me *_WindowRawMain) RunAsMain() int {
 	me.opts.className = me._WindowRaw.generateWcx(&wcx, hInst,
 		me.opts.className, me.opts.classStyles, me.opts.hCursor,
 		me.opts.hBrushBkgnd, me.opts.iconId)
-	me._WindowRaw.registerClass(&wcx)
+	atom := me._WindowRaw.registerClass(&wcx)
 
 	pos, size := me._WindowRaw.calcWndCoords(&me.opts.clientArea,
 		me.opts.mainMenu, me.opts.wndStyles, me.opts.wndExStyles)
-	me._WindowRaw.createWindow(me.opts.wndExStyles, me.opts.className,
-		me.opts.title, me.opts.wndStyles, pos, size, win.HWND(0),
+	me._WindowRaw.createWindow(me.opts.wndExStyles, win.ClassNameAtom(atom),
+		win.StrVal(me.opts.title), me.opts.wndStyles, pos, size, win.HWND(0),
 		me.opts.mainMenu, hInst)
 
 	me.Hwnd().ShowWindow(me.opts.cmdShow)
@@ -163,7 +163,7 @@ func (o *_WindowMainO) CmdShow(c co.SW) *_WindowMainO { o.cmdShow = c; return o 
 
 func (o *_WindowMainO) lateDefaults() {
 	if o.hCursor == 0 {
-		o.hCursor = win.HINSTANCE(0).LoadCursor(co.IDC_ARROW)
+		o.hCursor = win.HINSTANCE(0).LoadCursor(win.CursorResIdIdc(co.IDC_ARROW))
 	}
 }
 

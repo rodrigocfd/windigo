@@ -29,11 +29,11 @@ func NewWindowControl(parent AnyParent, opts *_WindowControlO) WindowControl {
 		me.opts.className = me._WindowRaw.generateWcx(&wcx, hInst,
 			me.opts.className, me.opts.classStyles, me.opts.hCursor,
 			me.opts.hBrushBkgnd, 0)
-		me._WindowRaw.registerClass(&wcx)
+		atom := me._WindowRaw.registerClass(&wcx)
 
 		_MultiplyDpi(&me.opts.position, &me.opts.size)
-		me._WindowRaw.createWindow(me.opts.wndExStyles, me.opts.className,
-			"", me.opts.wndStyles, me.opts.position, me.opts.size, parent.Hwnd(),
+		me._WindowRaw.createWindow(me.opts.wndExStyles, win.ClassNameAtom(atom),
+			nil, me.opts.wndStyles, me.opts.position, me.opts.size, parent.Hwnd(),
 			win.HMENU(me.opts.ctrlId), hInst)
 
 		parent.addResizerChild(me, opts.horz, opts.vert)
@@ -131,7 +131,7 @@ func (o *_WindowControlO) lateDefaults() {
 		o.ctrlId = _NextCtrlId()
 	}
 	if o.hCursor == 0 {
-		o.hCursor = win.HINSTANCE(0).LoadCursor(co.IDC_ARROW)
+		o.hCursor = win.HINSTANCE(0).LoadCursor(win.CursorResIdIdc(co.IDC_ARROW))
 	}
 }
 

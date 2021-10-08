@@ -57,7 +57,7 @@ func (me *_NativeControlBase) OnSubclass() *_EventsWm {
 
 // Calls CreateWindowEx() and installs subclass.
 func (me *_NativeControlBase) createWindow(
-	exStyle co.WS_EX, className, title string, style co.WS,
+	exStyle co.WS_EX, className win.ClassName, title win.StrOrNil, style co.WS,
 	pos win.POINT, size win.SIZE, hMenu win.HMENU) {
 
 	if me.hWnd != 0 {

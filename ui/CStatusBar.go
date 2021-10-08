@@ -52,7 +52,8 @@ func NewStatusBar(parent AnyParent) StatusBar {
 			sbStyles |= co.WS(co.SBARS_SIZEGRIP)
 		}
 
-		me._NativeControlBase.createWindow(co.WS_EX(0), "msctls_statusbar32", "",
+		me._NativeControlBase.createWindow(co.WS_EX(0),
+			win.ClassNameStr("msctls_statusbar32"), nil,
 			sbStyles, win.POINT{}, win.SIZE{}, win.HMENU(me.CtrlId()))
 	})
 

@@ -45,7 +45,8 @@ func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
 		_MultiplyDpi(&opts.position, &size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			"COMBOBOX", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			win.ClassNameStr("COMBOBOX"), nil,
+			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, size, win.HMENU(opts.ctrlId))
 
 		parent.addResizerChild(me, opts.horz, opts.vert)

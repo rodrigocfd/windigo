@@ -50,7 +50,8 @@ func NewToolbar(parent AnyParent, opts *_ToolbarO) Toolbar {
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			"ToolbarWindow32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			win.ClassNameStr("ToolbarWindow32"), nil,
+			opts.wndStyles|co.WS(opts.ctrlStyles),
 			win.POINT{}, win.SIZE{}, win.HMENU(opts.ctrlId))
 
 		me.Hwnd().SendMessage(co.TB_BUTTONSTRUCTSIZE,

@@ -43,7 +43,7 @@ func (me *_WindowDlgMain) RunAsMain() int {
 
 	hAccel := win.HACCEL(0)
 	if me.accelTableId != 0 {
-		hAccel = hInst.LoadAccelerators(uint16(me.accelTableId)) // automatically freed by system
+		hAccel = hInst.LoadAccelerators(win.ResIdInt(me.accelTableId)) // automatically freed by system
 	}
 
 	return _RunMainLoop(me.Hwnd(), hAccel)

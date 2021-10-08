@@ -47,7 +47,8 @@ func NewSysLink(parent AnyParent, opts *_SysLinkO) SysLink {
 		boundBox := _CalcTextBoundBox(opts.text, true)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			"SysLink", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
+			win.ClassNameStr("SysLink"), win.StrVal(opts.text),
+			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, boundBox, win.HMENU(opts.ctrlId))
 
 		parent.addResizerChild(me, opts.horz, opts.vert)

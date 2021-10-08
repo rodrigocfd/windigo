@@ -51,7 +51,8 @@ func NewTrackbar(parent AnyParent, opts *_TrackbarO) Trackbar {
 		_MultiplyDpi(&opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			"msctls_trackbar32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			win.ClassNameStr("msctls_trackbar32"), nil,
+			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
 		parent.addResizerChild(me, opts.horz, opts.vert)

@@ -61,7 +61,8 @@ func NewListView(parent AnyParent, opts *_ListViewO) ListView {
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_MultiplyDpi(&opts.position, &opts.size)
 
-		me._NativeControlBase.createWindow(opts.wndExStyles, "SysListView32", "",
+		me._NativeControlBase.createWindow(opts.wndExStyles,
+			win.ClassNameStr("SysListView32"), nil,
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
@@ -84,7 +85,7 @@ func NewListViewDlg(
 	hContextMenu := win.HMENU(0)
 	if contextMenuId != 0 {
 		hResMenu, found := win.HINSTANCE(0).
-			LoadMenu(int32(contextMenuId)).GetSubMenu(0) // usually this is how it's set in the resources
+			LoadMenu(win.ResIdInt(contextMenuId)).GetSubMenu(0) // usually this is how it's set in the resources
 		if !found {
 			panic("ListView context menu not found.")
 		}

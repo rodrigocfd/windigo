@@ -121,7 +121,7 @@ func (me *_FileMapped) mapInMemory() error {
 
 	var err error
 	me.hMap, err = me.objFile.Hfile().
-		CreateFileMapping(nil, pageFlags, co.SEC_NONE, 0, "")
+		CreateFileMapping(nil, pageFlags, co.SEC_NONE, 0, nil)
 	if err != nil {
 		return err
 	}

@@ -47,7 +47,8 @@ func NewTreeView(parent AnyParent, opts *_TreeViewO) TreeView {
 		_MultiplyDpi(&opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			"SysTreeView32", "", opts.wndStyles|co.WS(opts.ctrlStyles),
+			win.ClassNameStr("SysTreeView32"), nil,
+			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
 		parent.addResizerChild(me, opts.horz, opts.vert)

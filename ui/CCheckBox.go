@@ -52,7 +52,8 @@ func NewCheckBox(parent AnyParent, opts *_CheckBoxO) CheckBox {
 		}
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			"BUTTON", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
+			win.ClassNameStr("BUTTON"), win.StrVal(opts.text),
+			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
 		parent.addResizerChild(me, opts.horz, opts.vert)

@@ -1,8 +1,6 @@
 package win
 
 import (
-	"fmt"
-	"reflect"
 	"time"
 	"unsafe"
 
@@ -641,29 +639,19 @@ func (tdc *TASKDIALOGCONFIG) SetPszWindowTitle(val string) {
 }
 
 // Return type can be uint16, TD_ICON or HICON.
-func (tdc *TASKDIALOGCONFIG) HMainIcon() interface{} {
+func (tdc *TASKDIALOGCONFIG) HMainIcon() TdcIcon {
 	raw := *(*uintptr)(unsafe.Pointer(&tdc.data[36]))
 	if HIWORD(uint32(raw)) != 0 {
-		return HICON(raw)
+		return TdcIconInt(raw)
 	} else if LOWORD(uint32(raw)) >= 0xfffc {
-		return co.TD_ICON(raw)
+		return TdcIconTdi(raw)
 	} else {
-		return uint16(raw)
+		return TdcIconHicon(raw)
 	}
 }
 
-// ⚠️ val must be uint16, TD_ICON or HMENU.
-func (tdc *TASKDIALOGCONFIG) SetHMainIcon(val interface{}) {
-	switch v := val.(type) {
-	case uint16:
-		*(*uintptr)(unsafe.Pointer(&tdc.data[36])) = uintptr(v)
-	case co.TD_ICON:
-		*(*uintptr)(unsafe.Pointer(&tdc.data[36])) = uintptr(v)
-	case HMENU:
-		*(*uintptr)(unsafe.Pointer(&tdc.data[36])) = uintptr(v)
-	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(val)))
-	}
+func (tdc *TASKDIALOGCONFIG) SetHMainIcon(val TdcIcon) {
+	*(*uintptr)(unsafe.Pointer(&tdc.data[36])) = variantTdcIcon(val)
 }
 
 func (tdc *TASKDIALOGCONFIG) PszMainInstruction() string {
@@ -738,26 +726,19 @@ func (tdc *TASKDIALOGCONFIG) SetPszCollapsedControlText(val string) {
 	*(**uint16)(unsafe.Pointer(&tdc.data[116])) = Str.ToNativePtr(val)
 }
 
-// Return type can be uint16 or HICON.
-func (tdc *TASKDIALOGCONFIG) HFooterIcon() interface{} {
+func (tdc *TASKDIALOGCONFIG) HFooterIcon() TdcIcon {
 	raw := *(*uintptr)(unsafe.Pointer(&tdc.data[124]))
 	if HIWORD(uint32(raw)) != 0 {
-		return HICON(raw)
+		return TdcIconInt(raw)
+	} else if LOWORD(uint32(raw)) >= 0xfffc {
+		return TdcIconTdi(raw) // apparently never happens
 	} else {
-		return uint16(raw)
+		return TdcIconHicon(raw)
 	}
 }
 
-// ⚠️ val must be uint16 or HICON.
-func (tdc *TASKDIALOGCONFIG) SetHFooterIcon(val interface{}) {
-	switch v := val.(type) {
-	case uint16:
-		*(*uintptr)(unsafe.Pointer(&tdc.data[124])) = uintptr(v)
-	case HICON:
-		*(*uintptr)(unsafe.Pointer(&tdc.data[124])) = uintptr(v)
-	default:
-		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(val)))
-	}
+func (tdc *TASKDIALOGCONFIG) SetHFooterIcon(val TdcIcon) {
+	*(*uintptr)(unsafe.Pointer(&tdc.data[124])) = variantTdcIcon(val)
 }
 
 func (tdc *TASKDIALOGCONFIG) PszFooter() string {

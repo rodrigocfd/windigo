@@ -124,35 +124,29 @@ func CreateDirectory(
 	return nil
 }
 
-// ⚠️ applicationName must be string or nil.
-//
-// ⚠️ commandLine must be string or nil.
-//
-// ⚠️ currentDirectory must be string or nil.
-//
 // ⚠️ You must defer HPROCESS.CloseHandle() and HTHREAD.CloseHandle() on
 // HProcess and HThread members of PROCESS_INFORMATION.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw
 func CreateProcess(
-	applicationName, commandLine interface{},
+	applicationName, commandLine StrOrNil,
 	processAttributes, threadAttributes *SECURITY_ATTRIBUTES,
 	inheritHandles bool,
 	creationFlags co.CREATE,
 	ptrEnvironment uintptr,
-	currentDirectory interface{},
+	currentDirectory StrOrNil,
 	startupInfo *STARTUPINFO,
 	processInformation *PROCESS_INFORMATION) {
 
 	ret, _, err := syscall.Syscall12(proc.CreateProcess.Addr(), 10,
-		uintptr(util.VariantNilString(applicationName)),
-		uintptr(util.VariantNilString(commandLine)),
+		uintptr(variantStrOrNil(applicationName)),
+		uintptr(variantStrOrNil(commandLine)),
 		uintptr(unsafe.Pointer(processAttributes)),
 		uintptr(unsafe.Pointer(threadAttributes)),
 		util.BoolToUintptr(inheritHandles),
 		uintptr(creationFlags),
 		ptrEnvironment,
-		uintptr(util.VariantNilString(currentDirectory)),
+		uintptr(variantStrOrNil(currentDirectory)),
 		uintptr(unsafe.Pointer(startupInfo)),
 		uintptr(unsafe.Pointer(processInformation)),
 		0, 0)
@@ -815,18 +809,15 @@ func RemoveDirectory(pathName string) error {
 	return nil
 }
 
-// ⚠️ backup must be string or nil.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew
 func ReplaceFile(
 	replaced, replacement string,
-	backup interface{}, replaceFlags co.REPLACEFILE) error {
+	backup StrOrNil, replaceFlags co.REPLACEFILE) error {
 
 	ret, _, err := syscall.Syscall6(proc.ReplaceFile.Addr(), 6,
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replaced))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replacement))),
-		uintptr(util.VariantNilString(backup)),
-		uintptr(replaceFlags), 0, 0)
+		uintptr(variantStrOrNil(backup)), uintptr(replaceFlags), 0, 0)
 	if ret == 0 {
 		return errco.ERROR(err)
 	}

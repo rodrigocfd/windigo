@@ -49,7 +49,8 @@ func NewEdit(parent AnyParent, opts *_EditO) Edit {
 		_MultiplyDpi(&opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			"EDIT", opts.text, opts.wndStyles|co.WS(opts.ctrlStyles),
+			win.ClassNameStr("EDIT"), win.StrVal(opts.text),
+			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
 		parent.addResizerChild(me, opts.horz, opts.vert)
