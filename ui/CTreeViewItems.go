@@ -16,12 +16,6 @@ func (me *_TreeViewItems) new(ctrl *_NativeControlBase) {
 	me.pHwnd = &ctrl.hWnd
 }
 
-func (me *_TreeViewItems) getUnchecked(hItem win.HTREEITEM) TreeViewItem {
-	item := _TreeViewItem{}
-	item.new(me.pHwnd, hItem)
-	return &item
-}
-
 // Adds a new root item, returning it.
 func (me *_TreeViewItems) AddRoot(text string) TreeViewItem {
 	tvi := win.TVINSERTSTRUCT{}
@@ -36,7 +30,7 @@ func (me *_TreeViewItems) AddRoot(text string) TreeViewItem {
 	if hNewItem == 0 {
 		panic(fmt.Sprintf("TVM_INSERTITEM failed \"%s\".", text))
 	}
-	return me.getUnchecked(hNewItem)
+	return me.Get(hNewItem)
 }
 
 // Retrieves the number of items.
@@ -60,27 +54,23 @@ func (me *_TreeViewItems) FirstVisible() (TreeViewItem, bool) {
 	if hVisible == 0 {
 		return nil, false
 	}
-	return me.getUnchecked(hVisible), true
+	return me.Get(hVisible), true
 }
 
-// Returns the item with the given handle, if any.
-func (me *_TreeViewItems) Get(hItem win.HTREEITEM) (TreeViewItem, bool) {
-	tvi := win.TVITEMEX{
-		HItem: hItem,
-		Mask:  co.TVIF_HANDLE,
-	}
-
-	ret := me.pHwnd.SendMessage(co.TVM_GETITEM,
-		0, win.LPARAM(unsafe.Pointer(&tvi)))
-	if ret == 0 {
-		return nil, false
-	}
-	return me.getUnchecked(hItem), true
+// Returns the item with the given handle.
+//
+// Note that this method is dumb: no validation is made, the given handle is
+// simply kept. If the handle is invalid (or becomes invalid), subsequent
+// operations on the TreeViewItem will fail.
+func (me *_TreeViewItems) Get(hItem win.HTREEITEM) TreeViewItem {
+	item := &_TreeViewItem{}
+	item.new(me.pHwnd, hItem)
+	return item
 }
 
 // Retrieves all the root items.
 func (me *_TreeViewItems) Roots() []TreeViewItem {
-	return me.getUnchecked(win.HTREEITEM(0)).Children()
+	return me.Get(win.HTREEITEM(0)).Children()
 }
 
 // Retrieves the selected item, if any.
@@ -93,5 +83,5 @@ func (me *_TreeViewItems) Selected() (TreeViewItem, bool) {
 	if hItem == 0 {
 		return nil, false
 	}
-	return me.getUnchecked(hItem), true
+	return me.Get(hItem), true
 }

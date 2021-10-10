@@ -10,21 +10,21 @@ import (
 
 // A single item of a TreeView.
 type TreeViewItem interface {
-	AddChild(text string) TreeViewItem
-	Children() []TreeViewItem
-	Delete()
-	EnsureVisible()
-	Expand(doExpand bool)
-	Htreeitem() win.HTREEITEM
-	IsExpanded() bool
-	IsRoot() bool
-	LParam() win.LPARAM
-	NextSibling() (TreeViewItem, bool)
-	Parent() (TreeViewItem, bool)
-	PrevSibling() (TreeViewItem, bool)
-	SetLParam(lp win.LPARAM)
-	SetText(text string)
-	Text() string
+	AddChild(text string) TreeViewItem // Adds a child to this item.
+	Children() []TreeViewItem          // Retrieves all the children of this item.
+	Delete()                           // Deletes the item and all its children.
+	EnsureVisible()                    // Makes sure the item is visible, scrolling the TreeView if needed.
+	Expand(doExpand bool)              // Expands the item.
+	Htreeitem() win.HTREEITEM          // Returns the unique handle of the item.
+	IsExpanded() bool                  // Tells whether the item is currently expanded.
+	IsRoot() bool                      // Tells whether the item is a root item (has no parent).
+	LParam() win.LPARAM                // Retrieves the custom data associated with the item.
+	NextSibling() (TreeViewItem, bool) // Retrieves the next item, if any.
+	Parent() (TreeViewItem, bool)      // Retrieves the parent item, if any.
+	PrevSibling() (TreeViewItem, bool) // Retrieves the previous item, if any.
+	SetLParam(lp win.LPARAM)           // Sets the custom data associated with the item.
+	SetText(text string)               // Sets the text of the item.
+	Text() string                      // Retrieves the text of the item.
 }
 
 //------------------------------------------------------------------------------

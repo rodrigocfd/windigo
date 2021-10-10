@@ -29,25 +29,22 @@ type ListViewItem interface {
 
 type _ListViewItem struct {
 	pHwnd *win.HWND
-	id    uint32
+	index uint32
 }
 
 func (me *_ListViewItem) new(pHwnd *win.HWND, index int) {
 	me.pHwnd = pHwnd
-	me.id = uint32(pHwnd.SendMessage(co.LVM_MAPINDEXTOID, win.WPARAM(index), 0))
+	me.index = uint32(index)
 }
 
 func (me *_ListViewItem) Delete() {
-	index := me.Index()
-	ret := me.pHwnd.SendMessage(co.LVM_DELETEITEM, win.WPARAM(index), 0)
-	if ret == 0 {
-		panic(fmt.Sprintf("LVM_DELETEITEM %d failed.", index))
+	ret := me.pHwnd.SendMessage(co.LVM_DELETEITEM, win.WPARAM(me.index), 0)
+	if ret != 0 {
+		panic(fmt.Sprintf("LVM_DELETEITEM %d failed.", me.index))
 	}
 }
 
 func (me *_ListViewItem) EnsureVisible() {
-	index := me.Index()
-
 	if co.LV_VIEW(me.pHwnd.SendMessage(co.LVM_GETVIEW, 0, 0)) == co.LV_VIEW_DETAILS {
 		// In details view, LVM_ENSUREVISIBLE won't center the item vertically.
 		// That's what we do here.
@@ -69,7 +66,7 @@ func (me *_ListViewItem) EnsureVisible() {
 		xTop := rc.Top               // topmost X of 1st visible item
 
 		lvii = win.LVITEMINDEX{}
-		lvii.IItem = int32(index)
+		lvii.IItem = int32(me.index)
 
 		rc = win.RECT{}
 
@@ -87,39 +84,39 @@ func (me *_ListViewItem) EnsureVisible() {
 
 	} else {
 		ret := me.pHwnd.SendMessage(co.LVM_ENSUREVISIBLE,
-			win.WPARAM(index), win.LPARAM(1)) // always entirely visible
+			win.WPARAM(me.index), win.LPARAM(1)) // always entirely visible
 		if ret == 0 {
-			panic(fmt.Sprintf("LVM_ENSUREVISIBLE %d failed.", index))
+			panic(fmt.Sprintf("LVM_ENSUREVISIBLE %d failed.", me.index))
 		}
 	}
 }
 
 func (me *_ListViewItem) Index() int {
-	return int(me.pHwnd.SendMessage(co.LVM_MAPIDTOINDEX, win.WPARAM(me.id), 0))
+	return int(me.index)
 }
 
 func (me *_ListViewItem) IsSelected() bool {
 	return co.LVIS(
 		me.pHwnd.SendMessage(co.LVM_GETITEMSTATE,
-			win.WPARAM(me.Index()), win.LPARAM(co.LVIS_SELECTED)),
+			win.WPARAM(me.index), win.LPARAM(co.LVIS_SELECTED)),
 	) == co.LVIS_SELECTED
 }
 
 func (me *_ListViewItem) IsVisible() bool {
 	return me.pHwnd.SendMessage(co.LVM_ISITEMVISIBLE,
-		win.WPARAM(me.Index()), 0) != 0
+		win.WPARAM(me.index), 0) != 0
 }
 
 func (me *_ListViewItem) LParam() win.LPARAM {
 	lvi := win.LVITEM{
-		IItem: int32(me.Index()),
+		IItem: int32(me.index),
 		Mask:  co.LVIF_PARAM,
 	}
 
 	ret := me.pHwnd.SendMessage(co.LVM_GETITEM,
 		0, win.LPARAM(unsafe.Pointer(&lvi)))
 	if ret == 0 {
-		panic(fmt.Sprintf("LVM_GETITEM %d failed.", lvi.IItem))
+		panic(fmt.Sprintf("LVM_GETITEM %d failed.", me.index))
 	}
 
 	return lvi.LParam
@@ -130,11 +127,10 @@ func (me *_ListViewItem) Rect(portion co.LVIR) win.RECT {
 		Left: int32(portion),
 	}
 
-	index := me.Index()
 	ret := me.pHwnd.SendMessage(co.LVM_GETITEMRECT,
-		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&rcItem)))
+		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&rcItem)))
 	if ret == 0 {
-		panic(fmt.Sprintf("LVM_GETITEMRECT %d failed.", index))
+		panic(fmt.Sprintf("LVM_GETITEMRECT %d failed.", me.index))
 	}
 	return rcItem // coordinates relative to the ListView
 }
@@ -145,17 +141,16 @@ func (me *_ListViewItem) SetFocused() {
 		StateMask: co.LVIS_FOCUSED,
 	}
 
-	index := me.Index()
 	ret := me.pHwnd.SendMessage(co.LVM_SETITEMSTATE,
-		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&lvi)))
+		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
 	if int(ret) == -1 {
-		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", index))
+		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", me.index))
 	}
 }
 
 func (me *_ListViewItem) SetLParam(lp win.LPARAM) {
 	lvi := win.LVITEM{
-		IItem:  int32(me.Index()),
+		IItem:  int32(me.index),
 		Mask:   co.LVIF_PARAM,
 		LParam: lp,
 	}
@@ -163,7 +158,7 @@ func (me *_ListViewItem) SetLParam(lp win.LPARAM) {
 	ret := me.pHwnd.SendMessage(co.LVM_SETITEM,
 		0, win.LPARAM(unsafe.Pointer(&lvi)))
 	if ret == 0 {
-		panic(fmt.Sprintf("LVM_SETITEM %d failed.", lvi.IItem))
+		panic(fmt.Sprintf("LVM_SETITEM %d failed.", me.index))
 	}
 }
 
@@ -178,11 +173,10 @@ func (me *_ListViewItem) SetSelected(doSelect bool) {
 		StateMask: co.LVIS_SELECTED,
 	}
 
-	index := me.Index()
 	ret := me.pHwnd.SendMessage(co.LVM_SETITEMSTATE,
-		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&lvi)))
+		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
 	if ret == 0 {
-		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", index))
+		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", me.index))
 	}
 }
 
@@ -191,12 +185,11 @@ func (me *_ListViewItem) SetText(columnIndex int, text string) {
 	lvi.ISubItem = int32(columnIndex)
 	lvi.SetPszText(win.Str.ToNativeSlice(text))
 
-	index := me.Index()
 	ret := me.pHwnd.SendMessage(co.LVM_SETITEMTEXT,
-		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&lvi)))
+		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
 	if ret == 0 {
 		panic(fmt.Sprintf("LVM_SETITEMTEXT %d/%d failed \"%s\".",
-			index, columnIndex, text))
+			me.index, columnIndex, text))
 	}
 }
 
@@ -204,7 +197,6 @@ func (me *_ListViewItem) Text(columnIndex int) string {
 	const BLOCK int = 64 // arbitrary
 	bufSz := BLOCK
 	buf := []uint16{}
-	index := me.Index()
 
 	lvi := win.LVITEM{
 		ISubItem: int32(columnIndex),
@@ -216,7 +208,7 @@ func (me *_ListViewItem) Text(columnIndex int) string {
 
 		nChars := int(
 			me.pHwnd.SendMessage(co.LVM_GETITEMTEXT,
-				win.WPARAM(index), win.LPARAM(unsafe.Pointer(&lvi))),
+				win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi))),
 		)
 
 		if nChars+1 < bufSz { // to break, must have at least 1 char gap
@@ -230,8 +222,7 @@ func (me *_ListViewItem) Text(columnIndex int) string {
 }
 
 func (me *_ListViewItem) Update() {
-	index := me.Index()
-	if me.pHwnd.SendMessage(co.LVM_UPDATE, win.WPARAM(index), 0) == 0 {
-		panic(fmt.Sprintf("LVM_UPDATE %d failed.", index))
+	if me.pHwnd.SendMessage(co.LVM_UPDATE, win.WPARAM(me.index), 0) == 0 {
+		panic(fmt.Sprintf("LVM_UPDATE %d failed.", me.index))
 	}
 }

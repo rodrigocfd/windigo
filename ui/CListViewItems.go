@@ -17,12 +17,6 @@ func (me *_ListViewItems) new(ctrl *_NativeControlBase) {
 	me.pHwnd = &ctrl.hWnd
 }
 
-func (me *_ListViewItems) getUnchecked(index int) ListViewItem {
-	item := _ListViewItem{}
-	item.new(me.pHwnd, index)
-	return &item
-}
-
 // Adds an item, specifying the texts under each column, returning the new item.
 func (me *_ListViewItems) Add(texts ...string) ListViewItem {
 	return me.AddWithIcon(-1, texts...)
@@ -55,7 +49,7 @@ func (me *_ListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewIt
 		}
 	}
 
-	return me.getUnchecked(newIdx)
+	return me.Get(newIdx)
 }
 
 // Retrieves all the items.
@@ -63,7 +57,7 @@ func (me *_ListViewItems) All() []ListViewItem {
 	numItems := me.Count()
 	items := make([]ListViewItem, 0, numItems)
 	for i := 0; i < numItems; i++ {
-		items = append(items, me.getUnchecked(i))
+		items = append(items, me.Get(i))
 	}
 	return items
 }
@@ -107,7 +101,7 @@ func (me *_ListViewItems) Focused() (ListViewItem, bool) {
 		return nil, false
 	}
 
-	return me.getUnchecked(idx), true
+	return me.Get(idx), true
 }
 
 // Sends LVM_FINDITEM to search for an item with the given exact text,
@@ -129,16 +123,18 @@ func (me *_ListViewItems) Find(text string) (ListViewItem, bool) {
 		return nil, false // not found
 	}
 
-	return me.getUnchecked(idx), true
+	return me.Get(idx), true
 }
 
-// Returns the item at the given index; panics if the item does not exist.
+// Returns the item at the given index.
+//
+// Note that this method is dumb: no validation is made, the given index is
+// simply kept. If the index is invalid (or becomes invalid), subsequent
+// operations on the ListViewItem will fail.
 func (me *_ListViewItems) Get(index int) ListViewItem {
-	if index < 0 || index >= me.Count() {
-		panic(fmt.Sprintf("Trying to retrieve item %d, there are %d.",
-			index, me.Count()))
-	}
-	return me.getUnchecked(index)
+	item := &_ListViewItem{}
+	item.new(me.pHwnd, index)
+	return item
 }
 
 // Sends LVM_HITTEST to determine the item at specified position, if any. Pos
@@ -169,7 +165,7 @@ func (me *_ListViewItems) Selected() []ListViewItem {
 		if idx == -1 {
 			break
 		}
-		items = append(items, me.getUnchecked(idx))
+		items = append(items, me.Get(idx))
 	}
 
 	return items
@@ -202,5 +198,5 @@ func (me *_ListViewItems) TopmostVisible() (ListViewItem, bool) {
 		return nil, false
 	}
 
-	return me.getUnchecked(idx), true
+	return me.Get(idx), true
 }

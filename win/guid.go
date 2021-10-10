@@ -60,7 +60,7 @@ func _NewGuidFromStr(strGuid string) *GUID {
 		panic(e)
 	}
 
-	newGuid := GUID{
+	newGuid := &GUID{
 		Data1: uint32(num1),
 		Data2: uint16(num2),
 		Data3: uint16(num3),
@@ -70,5 +70,5 @@ func _NewGuidFromStr(strGuid string) *GUID {
 	buf64 := [8]byte{}
 	binary.BigEndian.PutUint64(buf64[:], newGuid.Data4)
 	newGuid.Data4 = binary.LittleEndian.Uint64(buf64[:]) // reverse bytes of Data4
-	return &newGuid
+	return newGuid
 }

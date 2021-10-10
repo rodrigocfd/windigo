@@ -200,14 +200,14 @@ func (me *IMediaSeeking) GetStopPosition() time.Duration {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-gettimeformat
 func (me *IMediaSeeking) GetTimeFormat() *win.GUID {
-	format := win.GUID{}
+	format := &win.GUID{}
 	ret, _, _ := syscall.Syscall(
 		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetTimeFormat, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&format)), 0)
+		uintptr(unsafe.Pointer(format)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return &format
+		return format
 	} else {
 		panic(hr)
 	}
