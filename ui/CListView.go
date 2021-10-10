@@ -208,12 +208,11 @@ func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 	if followCursor { // usually when fired by a right-click
 		menuPos = win.GetCursorPos()         // relative to screen
 		me.Hwnd().ScreenToClientPt(&menuPos) // now relative to list view
-		lvhti := me.Items().HitTest(menuPos) // to find item below cursor, if any
+		clickedItem, hasClickedItem := me.Items().HitTest(menuPos)
 
-		if lvhti.IItem == -1 { // no item was right-clicked
+		if !hasClickedItem {
 			me.Items().SetSelectedAll(false)
 		} else {
-			clickedItem := me.Items().Get(int(lvhti.IItem)) // item that was clicked
 			if !hasCtrl && !hasShift {
 				clickedItem.SetFocused()
 			}

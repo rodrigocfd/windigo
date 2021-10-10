@@ -137,11 +137,10 @@ func (me *_ListViewItems) Get(index int) ListViewItem {
 	return item
 }
 
-// Sends LVM_HITTEST to determine the item at specified position, if any. Pos
-// coordinates must be relative to list view.
+// Retrieves the item below the given coordinates, if any.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/lvm-hittest
-func (me *_ListViewItems) HitTest(pos win.POINT) *win.LVHITTESTINFO {
+// The coordinates must be relative to the ListView.
+func (me *_ListViewItems) HitTest(pos win.POINT) (ListViewItem, bool) {
 	lvhti := win.LVHITTESTINFO{
 		Pt: pos,
 	}
@@ -149,7 +148,11 @@ func (me *_ListViewItems) HitTest(pos win.POINT) *win.LVHITTESTINFO {
 	wp := -1 // Vista: retrieve iGroup and iSubItem
 	me.pHwnd.SendMessage(co.LVM_HITTEST,
 		win.WPARAM(wp), win.LPARAM(unsafe.Pointer(&lvhti)))
-	return &lvhti
+
+	if lvhti.IItem == -1 {
+		return nil, false
+	}
+	return me.Get(int(lvhti.IItem)), true
 }
 
 // Retrieves the selected items.
