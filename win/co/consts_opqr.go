@@ -199,6 +199,30 @@ const (
 	PRF_OWNED        PRF = 0x0000_0020
 )
 
+// Process access rights.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
+type PROCESS uint32
+
+const (
+	PROCESS_ALL_ACCESS                PROCESS = PROCESS(STANDARD_RIGHTS_REQUIRED|STANDARD_RIGHTS_SYNCHRONIZE) | 0xffff
+	PROCESS_CREATE_PROCESS            PROCESS = 0x0080
+	PROCESS_CREATE_THREAD             PROCESS = 0x0002
+	PROCESS_DUP_HANDLE                PROCESS = 0x0040
+	PROCESS_QUERY_INFORMATION         PROCESS = 0x0400
+	PROCESS_QUERY_LIMITED_INFORMATION PROCESS = 0x1000
+	PROCESS_SET_LIMITED_INFORMATION   PROCESS = 0x2000
+	PROCESS_SET_INFORMATION           PROCESS = 0x0200
+	PROCESS_SET_QUOTA                 PROCESS = 0x0100
+	PROCESS_SET_SESSIONID             PROCESS = 0x0004
+	PROCESS_SUSPEND_RESUME            PROCESS = 0x0800
+	PROCESS_TERMINATE                 PROCESS = 0x0001
+	PROCESS_VM_OPERATION              PROCESS = 0x0008
+	PROCESS_VM_READ                   PROCESS = 0x0010
+	PROCESS_VM_WRITE                  PROCESS = 0x0020
+	PROCESS_SYNCHRONIZE               PROCESS = PROCESS(STANDARD_RIGHTS_SYNCHRONIZE)
+)
+
 // SYSTEM_INFO dwProcessorType.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
