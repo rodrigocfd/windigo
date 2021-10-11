@@ -166,6 +166,34 @@ const (
 	BS_RIGHTBUTTON     BS = BS_LEFTTEXT
 )
 
+// BroadcastSystemMessage() lpInfo.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
+type BSM uint32
+
+const (
+	BSM_ALLCOMPONENTS BSM = 0x00000000
+	BSM_ALLDESKTOPS   BSM = 0x00000010
+	BSM_APPLICATIONS  BSM = 0x00000008
+)
+
+// BroadcastSystemMessage() flags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
+type BSF uint32
+
+const (
+	BSF_ALLOWSFW           BSF = 0x0000_0080
+	BSF_FLUSHDISK          BSF = 0x0000_0004
+	BSF_FORCEIFHUNG        BSF = 0x0000_0020
+	BSF_IGNORECURRENTTASK  BSF = 0x0000_0002
+	BSF_NOHANG             BSF = 0x0000_0008
+	BSF_NOTIMEOUTIFNOTHUNG BSF = 0x0000_0040
+	BSF_POSTMESSAGE        BSF = 0x0000_0010
+	BSF_QUERY              BSF = 0x0000_0001
+	BSF_SENDNOTIFYMESSAGE  BSF = 0x0000_0100
+)
+
 // IsDlgButtonChecked() return value, among others.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isdlgbuttonchecked

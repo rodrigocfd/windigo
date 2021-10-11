@@ -31,6 +31,27 @@ func AllowSetForegroundWindow(processId uint32) {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
+func BroadcastSystemMessage(
+	flags co.BSF,
+	recipients co.BSM,
+	msg co.WM,
+	wParam WPARAM,
+	lParam LPARAM) (broadcastSuccessful bool, receivers co.BSM, e error) {
+
+	receivers = recipients
+
+	ret, _, err := syscall.Syscall6(proc.BroadcastSystemMessage.Addr(), 5,
+		uintptr(flags), uintptr(unsafe.Pointer(&receivers)),
+		uintptr(msg), uintptr(wParam), uintptr(lParam), 0)
+
+	broadcastSuccessful = int(ret) > 1
+	if ret == 0 {
+		e = errco.ERROR(err)
+	}
+	return
+}
+
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms646912(v=vs.85)
 func ChooseColor(cc *CHOOSECOLOR) bool {
 	ret, _, _ := syscall.Syscall(proc.ChooseColor.Addr(), 1,
@@ -742,7 +763,7 @@ func PeekMessage(
 	msg *MSG, hWnd HWND,
 	msgFilterMin, msgFilterMax co.WM, removeMsg co.PM) bool {
 
-	ret, _, _ := syscall.Syscall6(proc.PeekMessageW.Addr(), 5,
+	ret, _, _ := syscall.Syscall6(proc.PeekMessage.Addr(), 5,
 		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
 		uintptr(msgFilterMin), uintptr(msgFilterMax), uintptr(removeMsg), 0)
 	return ret != 0
