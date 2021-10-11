@@ -13,6 +13,38 @@ import (
 // Handle to a process.
 type HPROCESS HANDLE
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocesses
+func EnumProcesses() []uint32 {
+	const BLOCK int = 256 // arbitrary
+	bufSz := BLOCK
+
+	var processIds []uint32
+	bytesNeeded := uint32(0)
+	numReturned := uint32(0)
+
+	for {
+		processIds = make([]uint32, bufSz)
+
+		ret, _, err := syscall.Syscall(proc.EnumProcesses.Addr(), 3,
+			uintptr(unsafe.Pointer(&processIds[0])),
+			uintptr(len(processIds))*unsafe.Sizeof(uint32(0)), // array size in bytes
+			uintptr(unsafe.Pointer(&bytesNeeded)))
+
+		if ret == 0 {
+			panic(errco.ERROR(err))
+		}
+
+		numReturned = bytesNeeded / uint32(unsafe.Sizeof(uint32(0)))
+		if numReturned < uint32(len(processIds)) { // to break, must have at least 1 element gap
+			break
+		}
+
+		bufSz += BLOCK // increase buffer size to try again
+	}
+
+	return processIds[:numReturned]
+}
+
 // ⚠️ You must defer HPROCESS.CloseHandle().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocess
@@ -47,6 +79,30 @@ func (hProcess HPROCESS) CloseHandle() error {
 	return nil
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocessmodules
+func (hProcess HPROCESS) EnumProcessModules() []HINSTANCE {
+	bytesNeeded := uint32(0)
+	ret, _, err := syscall.Syscall6(proc.EnumProcessModules.Addr(), 4,
+		uintptr(hProcess), 0, 0, uintptr(unsafe.Pointer(&bytesNeeded)),
+		0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+
+	hModules := make([]HINSTANCE, bytesNeeded*uint32(unsafe.Sizeof(HINSTANCE(0))))
+	ret, _, err = syscall.Syscall6(proc.EnumProcessModules.Addr(), 4,
+		uintptr(hProcess),
+		uintptr(unsafe.Pointer(&hModules[0])),
+		uintptr(len(hModules))*unsafe.Sizeof(HINSTANCE(0)), // array size in bytes
+		uintptr(unsafe.Pointer(&bytesNeeded)),
+		0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+
+	return hModules
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess
 func (hProcess HPROCESS) GetExitCodeProcess() uint32 {
 	exitCode := uint32(0)
@@ -56,6 +112,19 @@ func (hProcess HPROCESS) GetExitCodeProcess() uint32 {
 		panic(errco.ERROR(err))
 	}
 	return exitCode
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
+func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
+	processName := [_MAX_PATH + 1]uint16{}
+	ret, _, err := syscall.Syscall6(proc.GetModuleBaseName.Addr(), 4,
+		uintptr(hProcess), uintptr(hModule),
+		uintptr(unsafe.Pointer(&processName[0])),
+		uintptr(len(processName)), 0, 0)
+	if ret == 0 {
+		return "", errco.ERROR(err)
+	}
+	return Str.FromNativeSlice(processName[:]), nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessid

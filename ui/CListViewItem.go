@@ -195,7 +195,7 @@ func (me *_ListViewItem) SetText(columnIndex int, text string) {
 func (me *_ListViewItem) Text(columnIndex int) string {
 	const BLOCK int = 64 // arbitrary
 	bufSz := BLOCK
-	buf := []uint16{}
+	var buf []uint16
 
 	lvi := win.LVITEM{
 		ISubItem: int32(columnIndex),
