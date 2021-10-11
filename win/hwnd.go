@@ -78,6 +78,26 @@ func (hWnd HWND) BeginPaint(ps *PAINTSTRUCT) HDC {
 	return HDC(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-childwindowfrompoint
+func (hWnd HWND) ChildWindowFromPoint(pt POINT) (HWND, bool) {
+	ret, _, _ := syscall.Syscall(proc.ChildWindowFromPoint.Addr(), 3,
+		uintptr(hWnd), uintptr(pt.X), uintptr(pt.Y))
+	if ret == 0 {
+		return HWND(0), false
+	}
+	return HWND(ret), true
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-childwindowfrompointex
+func (hWnd HWND) ChildWindowFromPointEx(pt POINT, flags co.CWP) (HWND, bool) {
+	ret, _, _ := syscall.Syscall6(proc.ChildWindowFromPointEx.Addr(), 4,
+		uintptr(hWnd), uintptr(pt.X), uintptr(pt.Y), uintptr(flags), 0, 0)
+	if ret == 0 {
+		return HWND(0), false
+	}
+	return HWND(ret), true
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clienttoscreen
 func (hWnd HWND) ClientToScreenPt(pt *POINT) {
 	ret, _, err := syscall.Syscall(proc.ClientToScreen.Addr(), 2,

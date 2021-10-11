@@ -16,6 +16,8 @@ var (
 	CallNextHookEx                = user32.NewProc("CallNextHookEx")
 	CheckMenuItem                 = user32.NewProc("CheckMenuItem")
 	CheckMenuRadioItem            = user32.NewProc("CheckMenuRadioItem")
+	ChildWindowFromPoint          = user32.NewProc("ChildWindowFromPoint")
+	ChildWindowFromPointEx        = user32.NewProc("ChildWindowFromPointEx")
 	ClientToScreen                = user32.NewProc("ClientToScreen")
 	CloseClipboard                = user32.NewProc("CloseClipboard")
 	CopyAcceleratorTable          = user32.NewProc("CopyAcceleratorTableW")

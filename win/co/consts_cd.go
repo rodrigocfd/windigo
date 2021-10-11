@@ -319,6 +319,18 @@ const (
 	CS_DROPSHADOW      CS = 0x0002_0000
 )
 
+// ChildWindowFromPointEx() flags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-childwindowfrompointex
+type CWP uint32
+
+const (
+	CWP_ALL             CWP = 0x0000
+	CWP_SKIPDISABLED    CWP = 0x0002
+	CWP_SKIPINVISIBLE   CWP = 0x0001
+	CWP_SKIPTRANSPARENT CWP = 0x0004
+)
+
 // CreateDIBSection() usage.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
