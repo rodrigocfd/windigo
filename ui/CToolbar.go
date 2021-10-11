@@ -46,7 +46,7 @@ func NewToolbar(parent AnyParent, opts *_ToolbarO) Toolbar {
 	me := &_Toolbar{}
 	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
-	me.buttons.new(&me._NativeControlBase)
+	me.buttons.new(me)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		me._NativeControlBase.createWindow(opts.wndExStyles,

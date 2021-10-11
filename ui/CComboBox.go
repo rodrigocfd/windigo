@@ -38,7 +38,7 @@ func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
 	me := &_ComboBox{}
 	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
-	me.items.new(&me._NativeControlBase)
+	me.items.new(me)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		size := win.SIZE{Cx: int32(opts.width), Cy: 0}
@@ -68,7 +68,7 @@ func NewComboBoxDlg(
 	me := &_ComboBox{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
-	me.items.new(&me._NativeControlBase)
+	me.items.new(me)
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()

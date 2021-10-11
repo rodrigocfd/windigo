@@ -29,6 +29,7 @@ type ListView interface {
 	ExtendedStyle() co.LVS_EX                                         // Retrieves the extended style flags.
 	ImageList(which co.LVSIL) win.HIMAGELIST                          // Retrieves one of the current image lists. If the list has LVS_SHAREIMAGELISTS, it's shared, otherwise it will be automatically destroyed.
 	Items() *_ListViewItems                                           // Item methods.
+	Scroll(horz, vert int)                                            // Scrolls the list view horizontally and vertically, in pixels, from its current position.
 	SetExtendedStyle(doSet bool, styles co.LVS_EX)                    // Sets or unsets extended style flags.
 	SetImageList(which co.LVSIL, himgl win.HIMAGELIST) win.HIMAGELIST // Sets one of the current image lists. If the list has LVS_SHAREIMAGELISTS, it's shared, otherwise it will be automatically destroyed.
 	SetRedraw(allowRedraw bool)                                       // Sends WM_SETREDRAW to enable or disable UI updates.
@@ -54,8 +55,8 @@ func NewListView(parent AnyParent, opts *_ListViewO) ListView {
 	me := &_ListView{}
 	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
-	me.columns.new(&me._NativeControlBase)
-	me.items.new(&me._NativeControlBase)
+	me.columns.new(me)
+	me.items.new(me)
 	me.hContextMenu = opts.contextMenu
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
@@ -95,8 +96,8 @@ func NewListViewDlg(
 	me := &_ListView{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
-	me.columns.new(&me._NativeControlBase)
-	me.items.new(&me._NativeControlBase)
+	me.columns.new(me)
+	me.items.new(me)
 	me.hContextMenu = hContextMenu
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
@@ -143,6 +144,12 @@ func (me *_ListView) ImageList(which co.LVSIL) win.HIMAGELIST {
 
 func (me *_ListView) Items() *_ListViewItems {
 	return &me.items
+}
+
+func (me *_ListView) Scroll(horz, vert int) {
+	if me.Hwnd().SendMessage(co.LVM_SCROLL, win.WPARAM(horz), win.LPARAM(vert)) == 0 {
+		panic(fmt.Sprintf("ListView scrolling failed: %d, %d.", horz, vert))
+	}
 }
 
 func (me *_ListView) SetExtendedStyle(doSet bool, styles co.LVS_EX) {
@@ -199,7 +206,7 @@ func (me *_ListView) handledEvents() {
 }
 
 func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
-	if me.hContextMenu == 0 { // no menu, nothing to do
+	if me.hContextMenu == win.HMENU(0) { // no menu, nothing to do
 		return
 	}
 
@@ -208,9 +215,8 @@ func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 	if followCursor { // usually when fired by a right-click
 		menuPos = win.GetCursorPos()         // relative to screen
 		me.Hwnd().ScreenToClientPt(&menuPos) // now relative to list view
-		clickedItem, hasClickedItem := me.Items().HitTest(menuPos)
 
-		if !hasClickedItem {
+		if clickedItem, hasClickedItem := me.Items().HitTest(menuPos); !hasClickedItem {
 			me.Items().SetSelectedAll(false)
 		} else {
 			if !hasCtrl && !hasShift {

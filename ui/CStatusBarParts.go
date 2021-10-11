@@ -21,14 +21,14 @@ func (me *_StatusBarPartData) IsFixedWidth() bool {
 //------------------------------------------------------------------------------
 
 type _StatusBarParts struct {
-	pHwnd           *win.HWND
+	sb              StatusBar
 	partsData       []_StatusBarPartData
 	rightEdges      []int32 // buffer to speed up ResizeToFitParent() calls
 	initialParentCx int     // cache used when adding parts
 }
 
-func (me *_StatusBarParts) new(ctrl *_NativeControlBase) {
-	me.pHwnd = &ctrl.hWnd
+func (me *_StatusBarParts) new(ctrl StatusBar) {
+	me.sb = ctrl
 	me.partsData = make([]_StatusBarPartData, 0, 5)
 	me.rightEdges = make([]int32, 0, 5)
 	me.initialParentCx = 0
@@ -36,18 +36,18 @@ func (me *_StatusBarParts) new(ctrl *_NativeControlBase) {
 
 func (me *_StatusBarParts) cacheInitialParentCx() {
 	if me.initialParentCx == 0 { // not cached yet?
-		rc := me.pHwnd.GetClientRect()
+		rc := me.sb.Hwnd().GetClientRect()
 		me.initialParentCx = int(rc.Right) // initial width of parent's client area
 	}
 }
 
 func (me *_StatusBarParts) resizeToFitParent(parm wm.Size) {
-	if parm.Request() == co.SIZE_REQ_MINIMIZED || *me.pHwnd == 0 {
+	if parm.Request() == co.SIZE_REQ_MINIMIZED || me.sb.Hwnd() == 0 {
 		return
 	}
 
-	cx := int(parm.ClientAreaSize().Cx)    // available width
-	me.pHwnd.SendMessage(co.WM_SIZE, 0, 0) // tell status bar to fit parent
+	cx := int(parm.ClientAreaSize().Cx)        // available width
+	me.sb.Hwnd().SendMessage(co.WM_SIZE, 0, 0) // tell status bar to fit parent
 
 	// Find the space to be divided among variable-width parts,
 	// and total weight of variable-width parts.
@@ -71,7 +71,7 @@ func (me *_StatusBarParts) resizeToFitParent(parm wm.Size) {
 			cxTotal -= (cxVariable / totalWeight) * me.partsData[i].resizeWeight
 		}
 	}
-	me.pHwnd.SendMessage(co.SB_SETPARTS,
+	me.sb.Hwnd().SendMessage(co.SB_SETPARTS,
 		win.WPARAM(len(me.rightEdges)),
 		win.LPARAM(unsafe.Pointer(&me.rightEdges[0])))
 }
@@ -150,9 +150,9 @@ func (me *_StatusBarParts) Count() int {
 // Retrieves the HICON of the part.
 //
 // The icon is shared, the StatusBar doesn't own it.
-func (me *_StatusBarParts) Icon(index int) win.HICON {
+func (me *_StatusBarParts) Icon(partIndex int) win.HICON {
 	return win.HICON(
-		me.pHwnd.SendMessage(co.SB_GETICON, win.WPARAM(index), 0),
+		me.sb.Hwnd().SendMessage(co.SB_GETICON, win.WPARAM(partIndex), 0),
 	)
 }
 
@@ -174,31 +174,32 @@ func (me *_StatusBarParts) SetAllTexts(texts ...string) {
 // Puts the HICON on the part.
 //
 // The icon is shared, the StatusBar doesn't own it.
-func (me *_StatusBarParts) SetIcon(index int, hIcon win.HICON) {
-	me.pHwnd.SendMessage(co.SB_SETICON, win.WPARAM(index), win.LPARAM(hIcon))
+func (me *_StatusBarParts) SetIcon(partIndex int, hIcon win.HICON) {
+	me.sb.Hwnd().SendMessage(co.SB_SETICON,
+		win.WPARAM(partIndex), win.LPARAM(hIcon))
 }
 
 // Sets the text of the part.
-func (me *_StatusBarParts) SetText(index int, text string) {
-	ret := me.pHwnd.SendMessage(co.SB_SETTEXT,
-		win.MAKEWPARAM(win.MAKEWORD(uint8(index), 0), 0),
+func (me *_StatusBarParts) SetText(partIndex int, text string) {
+	ret := me.sb.Hwnd().SendMessage(co.SB_SETTEXT,
+		win.MAKEWPARAM(win.MAKEWORD(uint8(partIndex), 0), 0),
 		win.LPARAM(unsafe.Pointer(win.Str.ToNativePtr(text))))
 	if ret == 0 {
-		panic(fmt.Sprintf("SB_SETTEXT %d failed \"%s\".", index, text))
+		panic(fmt.Sprintf("SB_SETTEXT %d failed \"%s\".", partIndex, text))
 	}
 }
 
 // Retrieves the text of the part.
-func (me *_StatusBarParts) Text(index int) string {
+func (me *_StatusBarParts) Text(partIndex int) string {
 	len := uint16(
-		me.pHwnd.SendMessage(co.SB_GETTEXTLENGTH, win.WPARAM(index), 0),
+		me.sb.Hwnd().SendMessage(co.SB_GETTEXTLENGTH, win.WPARAM(partIndex), 0),
 	)
 	if len == 0 {
 		return ""
 	}
 
 	buf := make([]uint16, len+1)
-	me.pHwnd.SendMessage(co.SB_GETTEXT,
-		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&buf[0])))
+	me.sb.Hwnd().SendMessage(co.SB_GETTEXT,
+		win.WPARAM(partIndex), win.LPARAM(unsafe.Pointer(&buf[0])))
 	return win.Str.FromNativeSlice(buf)
 }

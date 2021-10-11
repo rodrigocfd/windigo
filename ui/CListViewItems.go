@@ -10,11 +10,11 @@ import (
 )
 
 type _ListViewItems struct {
-	pHwnd *win.HWND
+	lv ListView
 }
 
-func (me *_ListViewItems) new(ctrl *_NativeControlBase) {
-	me.pHwnd = &ctrl.hWnd
+func (me *_ListViewItems) new(ctrl ListView) {
+	me.lv = ctrl
 }
 
 // Adds an item, specifying the texts under each column, returning the new item.
@@ -31,7 +31,7 @@ func (me *_ListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewIt
 	lvi.SetPszText(win.Str.ToNativeSlice(texts[0])) // first column is inserted right away
 
 	newIdx := int(
-		me.pHwnd.SendMessage(co.LVM_INSERTITEM,
+		me.lv.Hwnd().SendMessage(co.LVM_INSERTITEM,
 			0, win.LPARAM(unsafe.Pointer(&lvi))),
 	)
 	if newIdx == -1 {
@@ -42,7 +42,7 @@ func (me *_ListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewIt
 		lvi.ISubItem = int32(i)
 		lvi.SetPszText(win.Str.ToNativeSlice(texts[i]))
 
-		ret := me.pHwnd.SendMessage(co.LVM_SETITEMTEXT,
+		ret := me.lv.Hwnd().SendMessage(co.LVM_SETITEMTEXT,
 			win.WPARAM(newIdx), win.LPARAM(unsafe.Pointer(&lvi)))
 		if ret == 0 {
 			panic(fmt.Sprintf("LVM_SETITEMTEXT col %d, \"%s\" failed.", i, texts[i]))
@@ -64,12 +64,12 @@ func (me *_ListViewItems) All() []ListViewItem {
 
 // Retrieves the number of items.
 func (me *_ListViewItems) Count() int {
-	return int(me.pHwnd.SendMessage(co.LVM_GETITEMCOUNT, 0, 0))
+	return int(me.lv.Hwnd().SendMessage(co.LVM_GETITEMCOUNT, 0, 0))
 }
 
 // Deletes all items at once.
 func (me *_ListViewItems) DeleteAll() {
-	me.pHwnd.SendMessage(co.LVM_DELETEALLITEMS, 0, 0)
+	me.lv.Hwnd().SendMessage(co.LVM_DELETEALLITEMS, 0, 0)
 }
 
 // Deletes all selected items at once.
@@ -77,14 +77,14 @@ func (me *_ListViewItems) DeleteSelected() {
 	for {
 		idx := -1 // always search the first one
 		idx = int(
-			me.pHwnd.SendMessage(co.LVM_GETNEXTITEM,
+			me.lv.Hwnd().SendMessage(co.LVM_GETNEXTITEM,
 				win.WPARAM(idx), win.LPARAM(co.LVNI_SELECTED)),
 		)
 		if idx == -1 {
 			break
 		}
 
-		if me.pHwnd.SendMessage(co.LVM_DELETEITEM, win.WPARAM(idx), 0) == 0 {
+		if me.lv.Hwnd().SendMessage(co.LVM_DELETEITEM, win.WPARAM(idx), 0) == 0 {
 			panic(fmt.Sprintf("LVM_DELETEITEM %d failed.", idx))
 		}
 	}
@@ -94,7 +94,7 @@ func (me *_ListViewItems) DeleteSelected() {
 func (me *_ListViewItems) Focused() (ListViewItem, bool) {
 	startIdx := -1
 	idx := int(
-		me.pHwnd.SendMessage(co.LVM_GETNEXTITEM,
+		me.lv.Hwnd().SendMessage(co.LVM_GETNEXTITEM,
 			win.WPARAM(startIdx), win.LPARAM(co.LVNI_FOCUSED)),
 	)
 	if idx == -1 {
@@ -116,7 +116,7 @@ func (me *_ListViewItems) Find(text string) (ListViewItem, bool) {
 
 	wp := -1
 	idx := int(
-		me.pHwnd.SendMessage(co.LVM_FINDITEM,
+		me.lv.Hwnd().SendMessage(co.LVM_FINDITEM,
 			win.WPARAM(wp), win.LPARAM(unsafe.Pointer(&lvfi))),
 	)
 	if idx == -1 {
@@ -133,7 +133,7 @@ func (me *_ListViewItems) Find(text string) (ListViewItem, bool) {
 // operations on the ListViewItem will fail.
 func (me *_ListViewItems) Get(index int) ListViewItem {
 	item := &_ListViewItem{}
-	item.new(me.pHwnd, index)
+	item.new(me.lv, index)
 	return item
 }
 
@@ -146,7 +146,7 @@ func (me *_ListViewItems) HitTest(pos win.POINT) (ListViewItem, bool) {
 	}
 
 	wp := -1 // Vista: retrieve iGroup and iSubItem
-	me.pHwnd.SendMessage(co.LVM_HITTEST,
+	me.lv.Hwnd().SendMessage(co.LVM_HITTEST,
 		win.WPARAM(wp), win.LPARAM(unsafe.Pointer(&lvhti)))
 
 	if lvhti.IItem == -1 {
@@ -162,7 +162,7 @@ func (me *_ListViewItems) Selected() []ListViewItem {
 	idx := -1
 	for {
 		idx = int(
-			me.pHwnd.SendMessage(co.LVM_GETNEXTITEM,
+			me.lv.Hwnd().SendMessage(co.LVM_GETNEXTITEM,
 				win.WPARAM(idx), win.LPARAM(co.LVNI_SELECTED)),
 		)
 		if idx == -1 {
@@ -176,7 +176,7 @@ func (me *_ListViewItems) Selected() []ListViewItem {
 
 // Retrieves the number of selected items.
 func (me *_ListViewItems) SelectedCount() int {
-	return int(me.pHwnd.SendMessage(co.LVM_GETSELECTEDCOUNT, 0, 0))
+	return int(me.lv.Hwnd().SendMessage(co.LVM_GETSELECTEDCOUNT, 0, 0))
 }
 
 // Selects or deselects all items at once.
@@ -187,7 +187,7 @@ func (me *_ListViewItems) SetSelectedAll(doSelect bool) {
 	}
 
 	idx := -1
-	ret := me.pHwnd.SendMessage(co.LVM_SETITEMSTATE,
+	ret := me.lv.Hwnd().SendMessage(co.LVM_SETITEMSTATE,
 		win.WPARAM(idx), win.LPARAM(unsafe.Pointer(&lvi)))
 	if ret == 0 {
 		panic("LVM_SETITEMSTATE failed.")
@@ -196,7 +196,7 @@ func (me *_ListViewItems) SetSelectedAll(doSelect bool) {
 
 // Retrieves the topmost visible item, if any.
 func (me *_ListViewItems) TopmostVisible() (ListViewItem, bool) {
-	idx := int(me.pHwnd.SendMessage(co.LVM_GETTOPINDEX, 0, 0))
+	idx := int(me.lv.Hwnd().SendMessage(co.LVM_GETTOPINDEX, 0, 0))
 	if idx == -1 {
 		return nil, false
 	}

@@ -39,7 +39,7 @@ func NewStatusBar(parent AnyParent) StatusBar {
 	me := &_StatusBar{}
 	me._NativeControlBase.new(parent, _NextCtrlId()) // always auto ID
 	me.events.new(&me._NativeControlBase)
-	me.parts.new(&me._NativeControlBase)
+	me.parts.new(me)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		sbStyles := co.WS_CHILD | co.WS_VISIBLE | co.WS(co.SBARS_TOOLTIPS)

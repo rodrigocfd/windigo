@@ -41,7 +41,7 @@ func NewTreeView(parent AnyParent, opts *_TreeViewO) TreeView {
 	me := &_TreeView{}
 	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
-	me.items.new(&me._NativeControlBase)
+	me.items.new(me)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_MultiplyDpi(&opts.position, &opts.size)
@@ -71,7 +71,7 @@ func NewTreeViewDlg(
 	me := &_TreeView{}
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
-	me.items.new(&me._NativeControlBase)
+	me.items.new(me)
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()

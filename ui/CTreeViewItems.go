@@ -1,46 +1,32 @@
 package ui
 
 import (
-	"fmt"
-	"unsafe"
-
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
 type _TreeViewItems struct {
-	pHwnd *win.HWND
+	tv TreeView
 }
 
-func (me *_TreeViewItems) new(ctrl *_NativeControlBase) {
-	me.pHwnd = &ctrl.hWnd
+func (me *_TreeViewItems) new(ctrl TreeView) {
+	me.tv = ctrl
 }
 
 // Adds a new root item, returning it.
 func (me *_TreeViewItems) AddRoot(text string) TreeViewItem {
-	tvi := win.TVINSERTSTRUCT{}
-	tvi.HInsertAfter = win.HTREEITEM(co.HTREEITEM_LAST)
-	tvi.Itemex.Mask = co.TVIF_TEXT
-	tvi.Itemex.SetPszText(win.Str.ToNativeSlice(text))
-
-	hNewItem := win.HTREEITEM(
-		me.pHwnd.SendMessage(co.TVM_INSERTITEM,
-			0, win.LPARAM(unsafe.Pointer(&tvi))),
-	)
-	if hNewItem == 0 {
-		panic(fmt.Sprintf("TVM_INSERTITEM failed \"%s\".", text))
-	}
-	return me.Get(hNewItem)
+	return me.Get(win.HTREEITEM(0)).
+		AddChild(text)
 }
 
 // Retrieves the number of items.
 func (me *_TreeViewItems) Count() int {
-	return int(me.pHwnd.SendMessage(co.TVM_GETCOUNT, 0, 0))
+	return int(me.tv.Hwnd().SendMessage(co.TVM_GETCOUNT, 0, 0))
 }
 
 // Deletes all items at once.
 func (me *_TreeViewItems) DeleteAll() {
-	if me.pHwnd.SendMessage(co.TVM_DELETEITEM, 0, win.LPARAM(win.HTREEITEM(0))) == 0 {
+	if me.tv.Hwnd().SendMessage(co.TVM_DELETEITEM, 0, win.LPARAM(win.HTREEITEM(0))) == 0 {
 		panic("TVM_DELETEITEM for all items failed.")
 	}
 }
@@ -48,7 +34,7 @@ func (me *_TreeViewItems) DeleteAll() {
 // Retrieves the first visible item, if any.
 func (me *_TreeViewItems) FirstVisible() (TreeViewItem, bool) {
 	hVisible := win.HTREEITEM(
-		me.pHwnd.SendMessage(co.TVM_GETNEXTITEM,
+		me.tv.Hwnd().SendMessage(co.TVM_GETNEXTITEM,
 			win.WPARAM(co.TVGN_FIRSTVISIBLE), win.LPARAM(win.HTREEITEM(0))),
 	)
 	if hVisible == 0 {
@@ -64,7 +50,7 @@ func (me *_TreeViewItems) FirstVisible() (TreeViewItem, bool) {
 // operations on the TreeViewItem will fail.
 func (me *_TreeViewItems) Get(hItem win.HTREEITEM) TreeViewItem {
 	item := &_TreeViewItem{}
-	item.new(me.pHwnd, hItem)
+	item.new(me.tv, hItem)
 	return item
 }
 
@@ -76,7 +62,7 @@ func (me *_TreeViewItems) Roots() []TreeViewItem {
 // Retrieves the selected item, if any.
 func (me *_TreeViewItems) Selected() (TreeViewItem, bool) {
 	hItem := win.HTREEITEM(
-		me.pHwnd.SendMessage(co.TVM_GETNEXTITEM,
+		me.tv.Hwnd().SendMessage(co.TVM_GETNEXTITEM,
 			win.WPARAM(co.TVGN_CARET), win.LPARAM(win.HTREEITEM(0))),
 	)
 
