@@ -5,12 +5,37 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // Handle to a process.
 type HPROCESS HANDLE
+
+// ⚠️ You must defer HPROCESS.CloseHandle().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocess
+func GetCurrentProcess() HPROCESS {
+	ret, _, _ := syscall.Syscall(proc.GetCurrentProcess.Addr(), 0,
+		0, 0, 0)
+	return HPROCESS(ret)
+}
+
+// ⚠️ You must defer HPROCESS.CloseHandle().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
+func OpenProcess(
+	desiredAccess co.PROCESS,
+	inheritHandle bool, processId uint32) (HPROCESS, error) {
+
+	ret, _, err := syscall.Syscall(proc.OpenProcess.Addr(), 3,
+		uintptr(desiredAccess), util.BoolToUintptr(inheritHandle), uintptr(processId))
+	if ret == 0 {
+		return HPROCESS(0), errco.ERROR(err)
+	}
+	return HPROCESS(ret), nil
+}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hProcess HPROCESS) CloseHandle() error {
