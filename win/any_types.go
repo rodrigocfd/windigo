@@ -17,30 +17,30 @@ type ATOM uint16
 type COLORREF uint32
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-rgb
-func RGB(r, g, b uint8) COLORREF {
-	return COLORREF(uint32(r) | (uint32(g) << 8) | (uint32(b) << 16))
+func RGB(red, green, blue uint8) COLORREF {
+	return COLORREF(uint32(red) | (uint32(green) << 8) | (uint32(blue) << 16))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getrvalue
-func (c COLORREF) GetRValue() uint8 {
+func (c COLORREF) Red() uint8 {
 	return LOBYTE(LOWORD(uint32(c)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getgvalue
-func (c COLORREF) GetGValue() uint8 {
+func (c COLORREF) Green() uint8 {
 	return LOBYTE(LOWORD(uint32(c) >> 8))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getbvalue
-func (c COLORREF) GetBValue() uint8 {
+func (c COLORREF) Blue() uint8 {
 	return LOBYTE(LOWORD(uint32(c) >> 16))
 }
 
 func (c COLORREF) ToRgbquad() RGBQUAD {
 	rq := RGBQUAD{}
-	rq.SetBlue(c.GetBValue())
-	rq.SetGreen(c.GetGValue())
-	rq.SetRed(c.GetRValue())
+	rq.SetBlue(c.Blue())
+	rq.SetGreen(c.Green())
+	rq.SetRed(c.Red())
 	return rq
 }
 
@@ -61,7 +61,7 @@ type LANGID uint16
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-makelangid
 func MAKELANGID(lang co.LANG, subLang co.SUBLANG) LANGID {
-	return LANGID(uint16(subLang)<<10 | uint16(lang))
+	return LANGID((uint16(subLang) << 10) | uint16(lang))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-primarylangid
@@ -69,6 +69,22 @@ func (lid LANGID) Lang() co.LANG { return co.LANG(uint16(lid) & 0x3ff) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-sublangid
 func (lid LANGID) SubLang() co.SUBLANG { return co.SUBLANG(uint16(lid) >> 10) }
+
+// Locale identifier.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/locale-identifiers
+type LCID uint32
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-makelcid
+func MAKELCID(langId LANGID, sortId co.SORT) LCID {
+	return LCID((uint32(sortId) << 16) | uint32(langId))
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-langidfromlcid
+func (lcid LCID) LangId() LANGID { return LANGID(uint16(lcid)) }
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-sortidfromlcid
+func (lcid LCID) SortId() co.SORT { return co.SORT((uint32(lcid) >> 16) & 0xf) }
 
 // First message parameter.
 //

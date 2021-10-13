@@ -321,6 +321,32 @@ const (
 	SM_SYSTEMDOCKED                SM = 0x2004
 )
 
+// Sort order identifier for locales.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/sort-order-identifiers
+type SORT uint16
+
+const (
+	SORT_DEFAULT                SORT = 0x0
+	SORT_INVARIANT_MATH         SORT = 0x1
+	SORT_JAPANESE_XJIS          SORT = 0x0
+	SORT_JAPANESE_UNICODE       SORT = 0x1
+	SORT_JAPANESE_RADICALSTROKE SORT = 0x4
+	SORT_CHINESE_BIG5           SORT = 0x0
+	SORT_CHINESE_PRCP           SORT = 0x0
+	SORT_CHINESE_UNICODE        SORT = 0x1
+	SORT_CHINESE_PRC            SORT = 0x2
+	SORT_CHINESE_BOPOMOFO       SORT = 0x3
+	SORT_CHINESE_RADICALSTROKE  SORT = 0x4
+	SORT_KOREAN_KSC             SORT = 0x0
+	SORT_KOREAN_UNICODE         SORT = 0x1
+	SORT_GERMAN_PHONE_BOOK      SORT = 0x1
+	SORT_HUNGARIAN_DEFAULT      SORT = 0x0
+	SORT_HUNGARIAN_TECHNICAL    SORT = 0x1
+	SORT_GEORGIAN_TRADITIONAL   SORT = 0x0
+	SORT_GEORGIAN_MODERN        SORT = 0x1
+)
+
 // SystemParametersInfo() uiAction.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
