@@ -28,8 +28,10 @@ And for the COM bindings:
 
 | Package | Description |
 | - | - |
+| `win/com/autom` | Native Win32 Automation COM interfaces. |
 | `win/com/dshow` | Native Win32 DirectShow COM interfaces. |
 | `win/com/dshow/dshowco` | DirectShow constants, all typed. |
+| `win/com/oidl` | Native Win32 Object IDL COM interfaces. |
 | `win/com/shell` | Native Win32 Shell COM interfaces. |
 | `win/com/shell/shellco` | Shell constants, all typed. |
 

@@ -6,13 +6,13 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/util"
-	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
+	"github.com/rodrigocfd/windigo/win/com/oidl"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IMediaFilterVtbl struct {
-	win.IPersistVtbl
+	oidl.IPersistVtbl
 	Stop          uintptr
 	Pause         uintptr
 	Run           uintptr
@@ -25,7 +25,7 @@ type _IMediaFilterVtbl struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
 type IMediaFilter struct {
-	win.IPersist // Base IPersist > IUnknown.
+	oidl.IPersist // Base IPersist > IUnknown.
 }
 
 // Pass -1 for infinite timeout.

@@ -7,6 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
+	"github.com/rodrigocfd/windigo/win/com/oidl"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -37,7 +38,7 @@ func NewEnhancedVideoRenderer(context co.CLSCTX) IBaseFilter {
 		dshowco.IID_IBaseFilter)
 	return IBaseFilter{
 		IMediaFilter{
-			win.IPersist{IUnknown: iUnk},
+			oidl.IPersist{IUnknown: iUnk},
 		},
 	}
 }
@@ -53,7 +54,7 @@ func NewVideoMixingRenderer9(context co.CLSCTX) IBaseFilter {
 		dshowco.IID_IBaseFilter)
 	return IBaseFilter{
 		IMediaFilter{
-			win.IPersist{IUnknown: iUnk},
+			oidl.IPersist{IUnknown: iUnk},
 		},
 	}
 }

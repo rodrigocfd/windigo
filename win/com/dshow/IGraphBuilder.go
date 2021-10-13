@@ -6,7 +6,9 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/autom"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
+	"github.com/rodrigocfd/windigo/win/com/oidl"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -71,7 +73,7 @@ func (me *IGraphBuilder) AddSourceFilter(
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return IBaseFilter{
 			IMediaFilter{
-				win.IPersist{
+				oidl.IPersist{
 					IUnknown: win.IUnknown{Ppv: ppvQueried},
 				},
 			},
@@ -102,7 +104,7 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
 	iUnk := me.QueryInterface(dshowco.IID_IBasicAudio)
 	return IBasicAudio{
-		win.IDispatch{IUnknown: iUnk},
+		autom.IDispatch{IUnknown: iUnk},
 	}
 }
 
@@ -114,7 +116,7 @@ func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
 func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
 	iUnk := me.QueryInterface(dshowco.IID_IMediaControl)
 	return IMediaControl{
-		win.IDispatch{IUnknown: iUnk},
+		autom.IDispatch{IUnknown: iUnk},
 	}
 }
 

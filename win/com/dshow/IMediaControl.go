@@ -5,12 +5,13 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/autom"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 type _IMediaControlVtbl struct {
-	win.IDispatchVtbl
+	autom.IDispatchVtbl
 	Run                    uintptr
 	Pause                  uintptr
 	Stop                   uintptr
@@ -26,7 +27,7 @@ type _IMediaControlVtbl struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
 type IMediaControl struct {
-	win.IDispatch // Base IDispatch > IUnknown.
+	autom.IDispatch // Base IDispatch > IUnknown.
 }
 
 // Pass -1 for infinite timeout.

@@ -7,6 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
+	"github.com/rodrigocfd/windigo/win/com/oidl"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -114,7 +115,7 @@ func (me *IFilterGraph) FindFilterByName(name string) (IBaseFilter, bool) {
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return IBaseFilter{
 			IMediaFilter{
-				win.IPersist{
+				oidl.IPersist{
 					IUnknown: win.IUnknown{Ppv: ppvQueried},
 				},
 			},

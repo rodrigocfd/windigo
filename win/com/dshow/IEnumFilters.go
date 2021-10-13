@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/oidl"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -86,7 +87,7 @@ func (me *IEnumFilters) Next() (IBaseFilter, bool) {
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return IBaseFilter{
 			IMediaFilter{
-				win.IPersist{
+				oidl.IPersist{
 					IUnknown: win.IUnknown{Ppv: ppQueried},
 				},
 			},

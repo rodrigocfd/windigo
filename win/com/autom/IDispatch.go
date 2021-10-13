@@ -1,9 +1,10 @@
-package win
+package autom
 
 import (
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -11,7 +12,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 type IDispatchVtbl struct {
-	IUnknownVtbl
+	win.IUnknownVtbl
 	GetTypeInfoCount uintptr
 	GetTypeInfo      uintptr
 	GetIDsOfNames    uintptr
@@ -24,7 +25,7 @@ type IDispatchVtbl struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 type IDispatch struct {
-	IUnknown // Base IUnknown.
+	win.IUnknown // Base IUnknown.
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
