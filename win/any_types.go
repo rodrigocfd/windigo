@@ -59,6 +59,14 @@ type HTREEITEM HANDLE
 // 📑 https://docs.microsoft.com/en-us/windows/win32/intl/language-identifiers
 type LANGID uint16
 
+// Predefined language identifier.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/language-identifiers
+const (
+	LANGID_SYSTEM_DEFAULT LANGID = LANGID((uint16(co.SUBLANG_SYS_DEFAULT) << 10) | uint16(co.LANG_NEUTRAL))
+	LANGID_USER_DEFAULT   LANGID = LANGID((uint16(co.SUBLANG_DEFAULT) << 10) | uint16(co.LANG_NEUTRAL))
+)
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-makelangid
 func MAKELANGID(lang co.LANG, subLang co.SUBLANG) LANGID {
 	return LANGID((uint16(subLang) << 10) | uint16(lang))
@@ -74,6 +82,14 @@ func (lid LANGID) SubLang() co.SUBLANG { return co.SUBLANG(uint16(lid) >> 10) }
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/intl/locale-identifiers
 type LCID uint32
+
+// Predefined locale identifier.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/locale-identifiers
+const (
+	LCID_SYSTEM_DEFAULT LCID = LCID((uint32(co.SORT_DEFAULT) << 16) | uint32(LANGID_SYSTEM_DEFAULT))
+	LCID_USER_DEFAULT   LCID = LCID((uint32(co.SORT_DEFAULT) << 16) | uint32(LANGID_USER_DEFAULT))
+)
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-makelcid
 func MAKELCID(langId LANGID, sortId co.SORT) LCID {
