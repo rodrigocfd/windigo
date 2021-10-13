@@ -121,10 +121,34 @@ func CopyFile(existingFile, newFile string, failIfExists bool) error {
 	return nil
 }
 
+// ⚠️ You must defer CoTaskMemFree().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
+func CoTaskMemAlloc(size int) unsafe.Pointer {
+	ret, _, _ := syscall.Syscall(proc.CoTaskMemAlloc.Addr(), 1,
+		uintptr(size), 0, 0)
+	if ret == 0 {
+		panic("CoTaskMemAlloc() failed.")
+	}
+	return unsafe.Pointer(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
 func CoTaskMemFree(pv unsafe.Pointer) {
 	syscall.Syscall(proc.CoTaskMemFree.Addr(), 1,
 		uintptr(pv), 0, 0)
+}
+
+// ⚠️ You must defer CoTaskMemFree().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
+func CoTaskMemRealloc(pv unsafe.Pointer, size int) unsafe.Pointer {
+	ret, _, _ := syscall.Syscall(proc.CoTaskMemRealloc.Addr(), 2,
+		uintptr(pv), uintptr(size), 0)
+	if ret == 0 {
+		panic("CoTaskMemRealloc() failed.")
+	}
+	return unsafe.Pointer(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
