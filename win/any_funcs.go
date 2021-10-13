@@ -124,31 +124,31 @@ func CopyFile(existingFile, newFile string, failIfExists bool) error {
 // ⚠️ You must defer CoTaskMemFree().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
-func CoTaskMemAlloc(size int) unsafe.Pointer {
+func CoTaskMemAlloc(size int) uintptr {
 	ret, _, _ := syscall.Syscall(proc.CoTaskMemAlloc.Addr(), 1,
 		uintptr(size), 0, 0)
 	if ret == 0 {
 		panic("CoTaskMemAlloc() failed.")
 	}
-	return unsafe.Pointer(ret)
+	return ret
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
-func CoTaskMemFree(pv unsafe.Pointer) {
+func CoTaskMemFree(pv uintptr) {
 	syscall.Syscall(proc.CoTaskMemFree.Addr(), 1,
-		uintptr(pv), 0, 0)
+		pv, 0, 0)
 }
 
 // ⚠️ You must defer CoTaskMemFree().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
-func CoTaskMemRealloc(pv unsafe.Pointer, size int) unsafe.Pointer {
+func CoTaskMemRealloc(pv uintptr, size int) uintptr {
 	ret, _, _ := syscall.Syscall(proc.CoTaskMemRealloc.Addr(), 2,
-		uintptr(pv), uintptr(size), 0)
+		pv, uintptr(size), 0)
 	if ret == 0 {
 		panic("CoTaskMemRealloc() failed.")
 	}
-	return unsafe.Pointer(ret)
+	return ret
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
@@ -604,12 +604,14 @@ func GetWindowsDirectory() string {
 
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632656(v=vs.85)
 func HIBYTE(val uint16) uint8 {
-	return uint8(val >> 8 & 0xff)
+	_, hi := util.Break16(val)
+	return hi
 }
 
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632657(v=vs.85)
 func HIWORD(val uint32) uint16 {
-	return uint16(val >> 16 & 0xffff)
+	_, hi := util.Break32(val)
+	return hi
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
@@ -724,7 +726,8 @@ func IsWindowsVersionOrGreater(
 
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632658(v=vs.85)
 func LOBYTE(val uint16) uint8 {
-	return uint8(val & 0xff)
+	lo, _ := util.Break16(val)
+	return lo
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-locksetforegroundwindow
@@ -738,7 +741,8 @@ func LockSetForegroundWindow(lockCode co.LSFW) {
 
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632659(v=vs.85)
 func LOWORD(val uint32) uint16 {
-	return uint16(val & 0xffff)
+	lo, _ := util.Break32(val)
+	return lo
 }
 
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632660(v=vs.85)
@@ -896,7 +900,7 @@ func SetProcessDPIAware() {
 	ret, _, _ := syscall.Syscall(proc.SetProcessDPIAware.Addr(), 0,
 		0, 0, 0)
 	if ret == 0 {
-		panic("SetProcessDPIAware failed.")
+		panic("SetProcessDPIAware() failed.")
 	}
 }
 

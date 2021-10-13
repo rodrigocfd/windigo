@@ -77,6 +77,16 @@ func Make64(lo, hi uint32) uint64 {
 	return (uint64(lo) & 0xffff_ffff) | ((uint64(hi) & 0xffff_ffff) << 32)
 }
 
+// Breaks an uint16 into low and high uint8.
+func Break16(val uint16) (lo, hi uint8) {
+	return uint8(val & 0xff), uint8(val >> 8 & 0xff)
+}
+
+// Breaks an uint32 into low and high uint16.
+func Break32(val uint32) (lo, hi uint16) {
+	return uint16(val & 0xffff), uint16(val >> 16 & 0xffff)
+}
+
 // Breaks an uint64 into low and high uint32.
 func Break64(val uint64) (lo, hi uint32) {
 	return uint32(val & 0xffff_ffff), uint32(val >> 32 & 0xffff_ffff)

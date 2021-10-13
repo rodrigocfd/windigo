@@ -14,9 +14,9 @@ const (
 type FILTER_STATE uint32
 
 const (
-	FILTER_STATE_State_Stopped FILTER_STATE = 0
-	FILTER_STATE_State_Paused  FILTER_STATE = 1
-	FILTER_STATE_State_Running FILTER_STATE = 2
+	FILTER_STATE_State_Stopped FILTER_STATE = iota
+	FILTER_STATE_State_Paused
+	FILTER_STATE_State_Running
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/ne-evr-mfvideoaspectratiomode
@@ -33,8 +33,8 @@ const (
 type PIN_DIRECTION uint32
 
 const (
-	PIN_DIRECTION_INPUT  PIN_DIRECTION = 0
-	PIN_DIRECTION_OUTOUT PIN_DIRECTION = 1
+	PIN_DIRECTION_INPUT PIN_DIRECTION = iota
+	PIN_DIRECTION_OUTOUT
 )
 
 // Originally AM_SEEKING_SeekingCapabilities enum.

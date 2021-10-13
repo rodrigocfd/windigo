@@ -25,15 +25,15 @@ type IFileSourceFilter struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-getcurfile
 func (me *IFileSourceFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
-	var pv *uint16
+	var pv uintptr
 	ret, _, _ := syscall.Syscall(
 		(*_IFileSourceFilterVtbl)(unsafe.Pointer(*me.Ppv)).GetCurFile, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(unsafe.Pointer(&pv)), uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		name := win.Str.FromNativePtr(pv)
-		win.CoTaskMemFree(unsafe.Pointer(pv))
+		name := win.Str.FromNativePtr((*uint16)(unsafe.Pointer(pv)))
+		win.CoTaskMemFree(pv)
 		return name, true
 	} else if hr == errco.E_FAIL {
 		return "", false

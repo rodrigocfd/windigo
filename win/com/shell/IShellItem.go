@@ -105,15 +105,15 @@ func (me *IShellItem) GetParent() IShellItem {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
 func (me *IShellItem) GetDisplayName(sigdnName shellco.SIGDN) string {
-	var pv *uint16
+	var pv uintptr
 	ret, _, _ := syscall.Syscall(
 		(*_IShellItemVtbl)(unsafe.Pointer(*me.Ppv)).GetDisplayName, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),
 		uintptr(sigdnName), uintptr(unsafe.Pointer(&pv)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		name := win.Str.FromNativePtr(pv)
-		win.CoTaskMemFree(unsafe.Pointer(pv))
+		name := win.Str.FromNativePtr((*uint16)(unsafe.Pointer(pv)))
+		win.CoTaskMemFree(pv)
 		return name
 	} else {
 		panic(hr)
