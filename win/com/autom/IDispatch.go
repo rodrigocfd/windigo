@@ -28,6 +28,26 @@ type IDispatch struct {
 	win.IUnknown // Base IUnknown.
 }
 
+// ⚠️ You must defer ITypeInfo.Release().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
+func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
+	var ppQueried **win.IUnknownVtbl
+	ret, _, _ := syscall.Syscall6(
+		(*IDispatchVtbl)(unsafe.Pointer(*me.Ppv)).GetTypeInfo, 4,
+		uintptr(unsafe.Pointer(me.Ppv)),
+		0, uintptr(lcid),
+		uintptr(unsafe.Pointer(&ppQueried)), 0, 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return ITypeInfo{
+			win.IUnknown{Ppv: ppQueried},
+		}
+	} else {
+		panic(hr)
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
 func (me *IDispatch) GetTypeInfoCount() int {
 	pctinfo := uint32(0)
