@@ -2,6 +2,8 @@ package win
 
 import (
 	"syscall"
+
+	"github.com/rodrigocfd/windigo/win/co"
 )
 
 // An atom.
@@ -51,6 +53,22 @@ type HANDLE syscall.Handle
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
 type HTREEITEM HANDLE
+
+// Language and sublanguage identifier.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/language-identifiers
+type LANGID uint16
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-makelangid
+func MAKELANGID(lang co.LANG, subLang co.SUBLANG) LANGID {
+	return LANGID(uint16(subLang)<<10 | uint16(lang))
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-primarylangid
+func (lid LANGID) Lang() co.LANG { return co.LANG(uint16(lid) & 0x3ff) }
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-sublangid
+func (lid LANGID) SubLang() co.SUBLANG { return co.SUBLANG(uint16(lid) >> 10) }
 
 // First message parameter.
 //

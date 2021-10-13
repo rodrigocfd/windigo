@@ -15,18 +15,18 @@ type ResourceInfo interface {
 	FixedFileInfo() (*VS_FIXEDFILEINFO, bool)
 	Blocks() []_ResourceInfoBlock
 
-	Comments(langId uint16, codePage co.CP) (string, bool)
-	CompanyName(langId uint16, codePage co.CP) (string, bool)
-	FileDescription(langId uint16, codePage co.CP) (string, bool)
-	FileVersion(langId uint16, codePage co.CP) (string, bool)
-	InternalName(langId uint16, codePage co.CP) (string, bool)
-	LegalCopyright(langId uint16, codePage co.CP) (string, bool)
-	LegalTrademarks(langId uint16, codePage co.CP) (string, bool)
-	OriginalFilename(langId uint16, codePage co.CP) (string, bool)
-	ProductName(langId uint16, codePage co.CP) (string, bool)
-	ProductVersion(langId uint16, codePage co.CP) (string, bool)
-	PrivateBuild(langId uint16, codePage co.CP) (string, bool)
-	SpecialBuild(langId uint16, codePage co.CP) (string, bool)
+	Comments(langId LANGID, codePage co.CP) (string, bool)
+	CompanyName(langId LANGID, codePage co.CP) (string, bool)
+	FileDescription(langId LANGID, codePage co.CP) (string, bool)
+	FileVersion(langId LANGID, codePage co.CP) (string, bool)
+	InternalName(langId LANGID, codePage co.CP) (string, bool)
+	LegalCopyright(langId LANGID, codePage co.CP) (string, bool)
+	LegalTrademarks(langId LANGID, codePage co.CP) (string, bool)
+	OriginalFilename(langId LANGID, codePage co.CP) (string, bool)
+	ProductName(langId LANGID, codePage co.CP) (string, bool)
+	ProductVersion(langId LANGID, codePage co.CP) (string, bool)
+	PrivateBuild(langId LANGID, codePage co.CP) (string, bool)
+	SpecialBuild(langId LANGID, codePage co.CP) (string, bool)
 }
 
 //------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ func (me *_ResourceInfo) FixedFileInfo() (*VS_FIXEDFILEINFO, bool) {
 }
 
 type _ResourceInfoBlock struct {
-	LangId   uint16
+	LangId   LANGID
 	CodePage co.CP
 }
 
@@ -68,45 +68,45 @@ func (me *_ResourceInfo) Blocks() []_ResourceInfoBlock {
 	return unsafe.Slice((*_ResourceInfoBlock)(ptr), sz)
 }
 
-func (me *_ResourceInfo) Comments(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) Comments(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "Comments")
 }
-func (me *_ResourceInfo) CompanyName(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) CompanyName(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "CompanyName")
 }
-func (me *_ResourceInfo) FileDescription(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) FileDescription(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "FileDescription")
 }
-func (me *_ResourceInfo) FileVersion(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) FileVersion(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "FileVersion")
 }
-func (me *_ResourceInfo) InternalName(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) InternalName(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "InternalName")
 }
-func (me *_ResourceInfo) LegalCopyright(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) LegalCopyright(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "LegalCopyright")
 }
-func (me *_ResourceInfo) LegalTrademarks(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) LegalTrademarks(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "LegalTrademarks")
 }
-func (me *_ResourceInfo) OriginalFilename(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) OriginalFilename(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "OriginalFilename")
 }
-func (me *_ResourceInfo) ProductName(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) ProductName(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "ProductName")
 }
-func (me *_ResourceInfo) ProductVersion(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) ProductVersion(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "ProductVersion")
 }
-func (me *_ResourceInfo) PrivateBuild(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) PrivateBuild(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "PrivateBuild")
 }
-func (me *_ResourceInfo) SpecialBuild(langId uint16, codePage co.CP) (string, bool) {
+func (me *_ResourceInfo) SpecialBuild(langId LANGID, codePage co.CP) (string, bool) {
 	return me.genericStringInfo(langId, codePage, "SpecialBuild")
 }
 
 func (me *_ResourceInfo) genericStringInfo(
-	langId uint16, codePage co.CP, info string) (string, bool) {
+	langId LANGID, codePage co.CP, info string) (string, bool) {
 
 	ptr, sz, ok := VerQueryValue(me.resBuf,
 		fmt.Sprintf("\\StringFileInfo\\%04x%04x\\%s", langId, codePage, info))
