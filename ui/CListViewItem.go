@@ -12,14 +12,14 @@ import (
 type ListViewItem interface {
 	Delete()                              // Deletes the item.
 	EnsureVisible()                       // Makes sure the item is visible, scrolling the ListView if needed.
-	Index() int                           // Returns the zero based index of the item.
+	Focus()                               // Sets the item as the focused one.
+	Index() int                           // Returns the zero-based index of the item.
 	IsSelected() bool                     // Tells whether the item is currently selected.
 	IsVisible() bool                      // Tells whether the item is currently visible.
 	LParam() win.LPARAM                   // Retrieves the custom data associated with the item.
 	Rect(portion co.LVIR) win.RECT        // Retrieves the coordinates of the rectangle surrounding the item.
-	SetFocused()                          // Sets the item as the focused one.
+	Select(isSelected bool)               // Selects the item.
 	SetLParam(lp win.LPARAM)              // Sets the custom data associated with the item.
-	SetSelected(doSelect bool)            // Selects the item.
 	SetText(columnIndex int, text string) // Sets the text of the item.
 	Text(columnIndex int) string          // Retrieves the text of the item.
 	Update()                              // Sends an LVM_UPDATE message to the item.
@@ -90,6 +90,19 @@ func (me *_ListViewItem) EnsureVisible() {
 	}
 }
 
+func (me *_ListViewItem) Focus() {
+	lvi := win.LVITEM{
+		State:     co.LVIS_FOCUSED,
+		StateMask: co.LVIS_FOCUSED,
+	}
+
+	ret := me.lv.Hwnd().SendMessage(co.LVM_SETITEMSTATE,
+		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
+	if int(ret) == -1 {
+		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", me.index))
+	}
+}
+
 func (me *_ListViewItem) Index() int {
 	return int(me.index)
 }
@@ -134,15 +147,20 @@ func (me *_ListViewItem) Rect(portion co.LVIR) win.RECT {
 	return rcItem // coordinates relative to the ListView
 }
 
-func (me *_ListViewItem) SetFocused() {
+func (me *_ListViewItem) Select(isSelected bool) {
+	state := co.LVIS_NONE
+	if isSelected {
+		state = co.LVIS_SELECTED
+	}
+
 	lvi := win.LVITEM{
-		State:     co.LVIS_FOCUSED,
-		StateMask: co.LVIS_FOCUSED,
+		State:     state,
+		StateMask: co.LVIS_SELECTED,
 	}
 
 	ret := me.lv.Hwnd().SendMessage(co.LVM_SETITEMSTATE,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
-	if int(ret) == -1 {
+	if ret == 0 {
 		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", me.index))
 	}
 }
@@ -158,24 +176,6 @@ func (me *_ListViewItem) SetLParam(lp win.LPARAM) {
 		0, win.LPARAM(unsafe.Pointer(&lvi)))
 	if ret == 0 {
 		panic(fmt.Sprintf("LVM_SETITEM %d failed.", me.index))
-	}
-}
-
-func (me *_ListViewItem) SetSelected(doSelect bool) {
-	state := co.LVIS_NONE
-	if doSelect {
-		state = co.LVIS_SELECTED
-	}
-
-	lvi := win.LVITEM{
-		State:     state,
-		StateMask: co.LVIS_SELECTED,
-	}
-
-	ret := me.lv.Hwnd().SendMessage(co.LVM_SETITEMSTATE,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
-	if ret == 0 {
-		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", me.index))
 	}
 }
 

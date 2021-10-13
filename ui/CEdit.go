@@ -21,12 +21,12 @@ type Edit interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-notifications
 	On() *_EditEvents
 
-	LimitText(maxChars int)                 // Limits the length of the text.
-	ReplaceSelection(text string)           // Replaces the current text selection with the given text.
-	SelectedRange() (int, int)              // Retrieves the index of first and last selected chars.
-	SetSelectedRange(idxFirst, idxLast int) // Sets the currently selected chars.
-	SetText(text string)                    // Sets the text.
-	Text() string                           // Retrieves the text.
+	LimitText(maxChars int)            // Limits the length of the text.
+	ReplaceSelection(text string)      // Replaces the current text selection with the given text.
+	SelectedRange() (int, int)         // Retrieves the index of first and last selected chars.
+	SelectRange(idxFirst, idxLast int) // Sets the currently selected chars.
+	SetText(text string)               // Sets the text.
+	Text() string                      // Retrieves the text.
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ func (me *_Edit) SelectedRange() (int, int) {
 	return int(idxFirst), int(idxLast)
 }
 
-func (me *_Edit) SetSelectedRange(idxFirst, idxLast int) {
+func (me *_Edit) SelectRange(idxFirst, idxLast int) {
 	me.Hwnd().SendMessage(co.EM_SETSEL,
 		win.WPARAM(idxFirst), win.LPARAM(idxLast))
 }

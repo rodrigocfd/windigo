@@ -155,6 +155,21 @@ func (me *_ListViewItems) HitTest(pos win.POINT) (ListViewItem, bool) {
 	return me.Get(int(lvhti.IItem)), true
 }
 
+// Selects or deselects all items at once.
+func (me *_ListViewItems) SelectAll(doSelect bool) {
+	lvi := win.LVITEM{
+		State:     util.Iif(doSelect, co.LVIS_SELECTED, co.LVIS_NONE).(co.LVIS),
+		StateMask: co.LVIS_SELECTED,
+	}
+
+	idx := -1
+	ret := me.lv.Hwnd().SendMessage(co.LVM_SETITEMSTATE,
+		win.WPARAM(idx), win.LPARAM(unsafe.Pointer(&lvi)))
+	if ret == 0 {
+		panic("LVM_SETITEMSTATE failed.")
+	}
+}
+
 // Retrieves the selected items.
 func (me *_ListViewItems) Selected() []ListViewItem {
 	items := make([]ListViewItem, 0, me.SelectedCount())
@@ -177,21 +192,6 @@ func (me *_ListViewItems) Selected() []ListViewItem {
 // Retrieves the number of selected items.
 func (me *_ListViewItems) SelectedCount() int {
 	return int(me.lv.Hwnd().SendMessage(co.LVM_GETSELECTEDCOUNT, 0, 0))
-}
-
-// Selects or deselects all items at once.
-func (me *_ListViewItems) SetSelectedAll(doSelect bool) {
-	lvi := win.LVITEM{
-		State:     util.Iif(doSelect, co.LVIS_SELECTED, co.LVIS_NONE).(co.LVIS),
-		StateMask: co.LVIS_SELECTED,
-	}
-
-	idx := -1
-	ret := me.lv.Hwnd().SendMessage(co.LVM_SETITEMSTATE,
-		win.WPARAM(idx), win.LPARAM(unsafe.Pointer(&lvi)))
-	if ret == 0 {
-		panic("LVM_SETITEMSTATE failed.")
-	}
 }
 
 // Retrieves the topmost visible item, if any.

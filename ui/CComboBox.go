@@ -55,6 +55,9 @@ func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
 		if opts.texts != nil {
 			me.Items().Add(opts.texts...)
 		}
+		if opts.selected != -1 {
+			me.Items().Select(opts.selected)
+		}
 	})
 
 	return me
@@ -104,7 +107,8 @@ type _ComboBoxO struct {
 	wndStyles   co.WS
 	wndExStyles co.WS_EX
 
-	texts []string
+	texts    []string
+	selected int
 }
 
 // Control ID.
@@ -143,6 +147,10 @@ func (o *_ComboBoxO) WndExStyles(s co.WS_EX) *_ComboBoxO { o.wndExStyles = s; re
 // Defaults to none.
 func (o *_ComboBoxO) Texts(t ...string) *_ComboBoxO { o.texts = t; return o }
 
+// Sets the index of the item initially selected.
+// Defaults to none.
+func (o *_ComboBoxO) Select(s int) *_ComboBoxO { o.selected = s; return o }
+
 func (o *_ComboBoxO) lateDefaults() {
 	if o.ctrlId == 0 {
 		o.ctrlId = _NextCtrlId()
@@ -157,6 +165,7 @@ func ComboBoxOpts() *_ComboBoxO {
 		vert:       VERT_NONE,
 		ctrlStyles: co.CBS_DROPDOWNLIST,
 		wndStyles:  co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
+		selected:   -1,
 	}
 }
 

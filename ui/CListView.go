@@ -190,7 +190,7 @@ func (me *_ListView) handledEvents() {
 		hasShift := (win.GetAsyncKeyState(co.VK_SHIFT) & 0x8000) != 0
 
 		if hasCtrl && nmk.WVKey == 'A' { // Ctrl+A pressed?
-			me.Items().SetSelectedAll(true)
+			me.Items().SelectAll(true)
 		} else if nmk.WVKey == co.VK_APPS { // context menu key
 			me.showContextMenu(false, hasCtrl, hasShift)
 		}
@@ -217,10 +217,10 @@ func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		me.Hwnd().ScreenToClientPt(&menuPos) // now relative to list view
 
 		if clickedItem, hasClickedItem := me.Items().HitTest(menuPos); !hasClickedItem {
-			me.Items().SetSelectedAll(false)
+			me.Items().SelectAll(false)
 		} else {
 			if !hasCtrl && !hasShift {
-				clickedItem.SetFocused()
+				clickedItem.Focus()
 			}
 		}
 		me.Hwnd().SetFocus() // because a right-click won't set the focus by itself

@@ -39,6 +39,11 @@ func (me *_ComboBoxItems) DeleteAll() {
 	me.cmb.Hwnd().SendMessage(co.CB_RESETCONTENT, 0, 0)
 }
 
+// Sets the selected item.
+func (me *_ComboBoxItems) Select(index int) {
+	me.cmb.Hwnd().SendMessage(co.CB_SETCURSEL, win.WPARAM(index), 0)
+}
+
 // Retrieves the selected index, if any.
 func (me *_ComboBoxItems) Selected() (int, bool) {
 	idx := int(me.cmb.Hwnd().SendMessage(co.CB_GETCURSEL, 0, 0))
@@ -54,11 +59,6 @@ func (me *_ComboBoxItems) SelectedText() (string, bool) {
 		return me.Text(idx), true
 	}
 	return "", false
-}
-
-// Sets the selected item.
-func (me *_ComboBoxItems) SetSelected(index int) {
-	me.cmb.Hwnd().SendMessage(co.CB_SETCURSEL, win.WPARAM(index), 0)
 }
 
 // Retrieves the text of the item at the given index.

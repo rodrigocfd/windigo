@@ -179,9 +179,9 @@ func (o *_RadioButtonO) CtrlStyles(s co.BS) *_RadioButtonO { o.ctrlStyles = s; r
 // Note that the first radio button of a group should also have WS_TABSTOP | WS_GROUP.
 func (o *_RadioButtonO) WndStyles(s co.WS) *_RadioButtonO { o.wndStyles = s; return o }
 
-// RadioButton initial selection state.
+// Defines this radio button as the one initially selected.
 // Defaults to false.
-func (o *_RadioButtonO) Selected(c bool) *_RadioButtonO { o.selected = c; return o }
+func (o *_RadioButtonO) Select(c bool) *_RadioButtonO { o.selected = c; return o }
 
 func (o *_RadioButtonO) lateDefaults() {
 	if o.ctrlId == 0 {

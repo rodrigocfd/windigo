@@ -22,8 +22,8 @@ type MonthCalendar interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-notifications
 	On() *_MonthCalendarEvents
 
-	Selected() time.Time        // Retrieves the selected date.
-	SetSelected(date time.Time) // Sets the selected date.
+	SelectDate(date time.Time) // Sets the selected date.
+	SelectedDate() time.Time   // Retrieves the selected date.
 }
 
 //------------------------------------------------------------------------------
@@ -88,16 +88,16 @@ func (me *_MonthCalendar) On() *_MonthCalendarEvents {
 	return &me.events
 }
 
-func (me *_MonthCalendar) Selected() time.Time {
-	st := win.SYSTEMTIME{}
-	me.Hwnd().SendMessage(co.MCM_GETCURSEL, 0, win.LPARAM(unsafe.Pointer(&st)))
-	return st.ToTime()
-}
-
-func (me *_MonthCalendar) SetSelected(date time.Time) {
+func (me *_MonthCalendar) SelectDate(date time.Time) {
 	st := win.SYSTEMTIME{}
 	st.FromTime(date)
 	me.Hwnd().SendMessage(co.MCM_SETCURSEL, 0, win.LPARAM(unsafe.Pointer(&st)))
+}
+
+func (me *_MonthCalendar) SelectedDate() time.Time {
+	st := win.SYSTEMTIME{}
+	me.Hwnd().SendMessage(co.MCM_GETCURSEL, 0, win.LPARAM(unsafe.Pointer(&st)))
+	return st.ToTime()
 }
 
 //------------------------------------------------------------------------------
