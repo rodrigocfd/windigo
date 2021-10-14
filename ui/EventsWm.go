@@ -9,6 +9,7 @@ import (
 
 // Ordinary events for WM messages and WM_TIMER.
 // If an event for the given message already exists, it will be overwritten.
+// Used in native control subclassing.
 type _EventsWm struct {
 	msgsRet  map[co.WM]func(p wm.Any) uintptr // meaningful return value
 	msgsZero map[co.WM]func(p wm.Any)         // just returns zero (or TRUE if dialog)

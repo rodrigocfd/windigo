@@ -54,6 +54,13 @@ func GetCurrentProcess() HPROCESS {
 	return HPROCESS(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
+func GetCurrentProcessId() uint32 {
+	ret, _, _ := syscall.Syscall(proc.GetCurrentProcessId.Addr(), 0,
+		0, 0, 0)
+	return uint32(ret)
+}
+
 // ⚠️ You must defer HPROCESS.CloseHandle().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess

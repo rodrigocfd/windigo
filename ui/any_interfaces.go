@@ -16,7 +16,7 @@ type AnyWindow interface {
 type AnyParent interface {
 	AnyWindow
 	internalOn() *_EventsInternal
-	addResizerChild(ctrl AnyControl, horz HORZ, vert VERT)
+	addResizingChild(ctrl AnyControl, horz HORZ, vert VERT)
 	isDialog() bool
 
 	// Exposes all the window notifications the can be handled.

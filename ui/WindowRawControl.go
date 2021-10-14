@@ -36,7 +36,7 @@ func NewWindowControl(parent AnyParent, opts *_WindowControlO) WindowControl {
 			nil, me.opts.wndStyles, me.opts.position, me.opts.size, parent.Hwnd(),
 			win.HMENU(me.opts.ctrlId), hInst)
 
-		parent.addResizerChild(me, opts.horz, opts.vert)
+		parent.addResizingChild(me, opts.horz, opts.vert)
 	})
 
 	me.defaultMessages()

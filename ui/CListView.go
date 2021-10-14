@@ -67,7 +67,7 @@ func NewListView(parent AnyParent, opts *_ListViewO) ListView {
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
-		parent.addResizerChild(me, opts.horz, opts.vert)
+		parent.addResizingChild(me, opts.horz, opts.vert)
 
 		if opts.ctrlExStyles != co.LVS_EX_NONE {
 			me.SetExtendedStyle(true, opts.ctrlExStyles)
@@ -102,7 +102,7 @@ func NewListViewDlg(
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
-		parent.addResizerChild(me, horz, vert)
+		parent.addResizingChild(me, horz, vert)
 	})
 
 	me.handledEvents()

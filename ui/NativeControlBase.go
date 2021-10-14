@@ -101,7 +101,7 @@ func (me *_NativeControlBase) installSubclassIfNeeded() {
 	}
 }
 
-// Keeps all *_NativeControlBase that were retrieved in _SubclassProc.
+// A set keeping all *_NativeControlBase that were retrieved in _SubclassProc.
 var _globalNativeControlBasePtrs = make(map[*_NativeControlBase]struct{}, 10)
 
 // Default window procedure for subclassed child controls.
@@ -119,8 +119,8 @@ func _SubclassProc(
 			pMe.eventsSubcl.processMessage(uMsg, wParam, lParam)
 
 		if uMsg == co.WM_NCDESTROY { // even if the user handles WM_NCDESTROY, we must ensure cleanup
+			delete(_globalNativeControlBasePtrs, pMe) // remove from set
 			hWnd.RemoveWindowSubclass(_globalSubclassProcPtr, pMe.subclassId)
-			delete(_globalNativeControlBasePtrs, pMe) // remove from map
 		}
 
 		if wasHandled {
@@ -131,6 +131,7 @@ func _SubclassProc(
 		}
 	} else if uMsg == co.WM_NCDESTROY {
 		// https://devblogs.microsoft.com/oldnewthing/20031111-00/?p=41883
+		delete(_globalNativeControlBasePtrs, pMe) // remove from set
 		hWnd.RemoveWindowSubclass(_globalSubclassProcPtr, pMe.subclassId)
 	}
 

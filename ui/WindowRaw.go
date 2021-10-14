@@ -120,7 +120,7 @@ func (me *_WindowRaw) calcWndCoords(
 		win.SIZE{Cx: rc.Right - rc.Left, Cy: rc.Bottom - rc.Top}
 }
 
-// Keeps all *_WindowRaw that were retrieved in _WndProc.
+// A set keeping all *_WindowRaw that were retrieved in _WndProc.
 var _globalWindowRawPtrs = make(map[*_WindowRaw]struct{}, 10)
 
 // Default window procedure.
@@ -151,7 +151,7 @@ func _WndProc(
 
 		// No further messages processed after this one.
 		if uMsg == co.WM_NCDESTROY {
-			delete(_globalWindowRawPtrs, pMe) // remove from map
+			delete(_globalWindowRawPtrs, pMe) // remove from set
 			hWnd.SetWindowLongPtr(co.GWLP_USERDATA, 0)
 			pMe._WindowBase.hWnd = win.HWND(0)
 		}

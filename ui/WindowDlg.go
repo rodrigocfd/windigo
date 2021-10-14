@@ -46,7 +46,7 @@ func (me *_WindowDlg) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
 		syscall.NewCallback(_DlgProc), win.LPARAM(unsafe.Pointer(me))) // pass pointer to object itself
 }
 
-// Keeps all *_WindowDlg that were retrieved in _DlgProc.
+// A set keeping all *_WindowDlg that were retrieved in _DlgProc.
 var _globalWindowDlgPtrs = make(map[*_WindowDlg]struct{}, 10)
 
 // Default dialog procedure.
@@ -70,7 +70,7 @@ func _DlgProc(
 		// Process all internal events.
 		pMe.internalEvents.processMessages(uMsg, wParam, lParam)
 
-		// Child controls are created in internalEvents closures, so we set the
+		// Child controls are created in internalEvents closures, so we put the
 		// system font only after running them.
 		if uMsg == co.WM_INITDIALOG {
 			hDlg.SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 0)
@@ -86,7 +86,7 @@ func _DlgProc(
 
 		// No further messages processed after this one.
 		if uMsg == co.WM_NCDESTROY {
-			delete(_globalWindowDlgPtrs, pMe) // remove from map
+			delete(_globalWindowDlgPtrs, pMe) // remove from set
 			hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, 0)
 			pMe._WindowBase.hWnd = win.HWND(0)
 		}

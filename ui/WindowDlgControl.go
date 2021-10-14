@@ -52,7 +52,7 @@ func _NewWindowControlDlg(
 		me._WindowDlg.createDialog(parent.Hwnd(), parent.Hwnd().Hinstance())
 		me.Hwnd().SetWindowPos(win.HWND(0), position.X, position.Y, 0, 0,
 			co.SWP_NOZORDER|co.SWP_NOSIZE)
-		parent.addResizerChild(me, horz, vert)
+		parent.addResizingChild(me, horz, vert)
 	})
 
 	me.defaultMessages()

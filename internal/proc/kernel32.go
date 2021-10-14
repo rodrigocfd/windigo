@@ -26,6 +26,7 @@ var (
 	GetCurrentDirectory             = kernel32.NewProc("GetCurrentDirectoryW")
 	GetCurrentProcess               = kernel32.NewProc("GetCurrentProcess")
 	GetCurrentProcessId             = kernel32.NewProc("GetCurrentProcessId")
+	GetCurrentThread                = kernel32.NewProc("GetCurrentThread")
 	GetCurrentThreadId              = kernel32.NewProc("GetCurrentThreadId")
 	GetDynamicTimeZoneInformation   = kernel32.NewProc("GetDynamicTimeZoneInformation")
 	GetEnvironmentStrings           = kernel32.NewProc("GetEnvironmentStringsW")

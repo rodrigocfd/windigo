@@ -12,6 +12,22 @@ import (
 // Handle to a thread.
 type HTHREAD HANDLE
 
+// ⚠️ You must defer HTHREAD.CloseHandle().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthread
+func GetCurrentThread() HTHREAD {
+	ret, _, _ := syscall.Syscall(proc.GetCurrentThread.Addr(), 0,
+		0, 0, 0)
+	return HTHREAD(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthreadid
+func GetCurrentThreadId() uint32 {
+	ret, _, _ := syscall.Syscall(proc.GetCurrentThreadId.Addr(), 0,
+		0, 0, 0)
+	return uint32(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hThread HTHREAD) CloseHandle() error {
 	ret, _, err := syscall.Syscall(proc.CloseHandle.Addr(), 1,

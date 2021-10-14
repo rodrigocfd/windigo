@@ -344,20 +344,6 @@ func GetCurrentDirectory() string {
 	return Str.FromNativeSlice(buf[:])
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
-func GetCurrentProcessId() uint32 {
-	ret, _, _ := syscall.Syscall(proc.GetCurrentProcessId.Addr(), 0,
-		0, 0, 0)
-	return uint32(ret)
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthreadid
-func GetCurrentThreadId() uint32 {
-	ret, _, _ := syscall.Syscall(proc.GetCurrentThreadId.Addr(), 0,
-		0, 0, 0)
-	return uint32(ret)
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcursorpos
 func GetCursorPos() POINT {
 	pt := POINT{}
@@ -805,14 +791,15 @@ func PostQuitMessage(exitCode int32) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postthreadmessagew
 func PostThreadMessage(
-	idThread uint32, msg co.WM, wParam WPARAM, lParam LPARAM) {
+	idThread uint32, msg co.WM, wParam WPARAM, lParam LPARAM) error {
 
 	ret, _, err := syscall.Syscall6(proc.PostThreadMessage.Addr(), 4,
 		uintptr(idThread), uintptr(msg), uintptr(wParam), uintptr(lParam),
 		0, 0)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter
@@ -907,21 +894,23 @@ func SetProcessDPIAware() {
 // Available in Windows 10, version 1703.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
-func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) {
+func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) error {
 	ret, _, err := syscall.Syscall(proc.SetProcessDpiAwarenessContext.Addr(), 1,
 		uintptr(value), 0, 0)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-func ShellNotifyIcon(message co.NIM, data *NOTIFYICONDATA) {
+func ShellNotifyIcon(message co.NIM, data *NOTIFYICONDATA) error {
 	ret, _, err := syscall.Syscall(proc.Shell_NotifyIcon.Addr(), 2,
 		uintptr(message), uintptr(unsafe.Pointer(data)), 0)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // Depends of CoInitializeEx().

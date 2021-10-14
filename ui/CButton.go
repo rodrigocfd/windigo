@@ -48,7 +48,7 @@ func NewButton(parent AnyParent, opts *_ButtonO) Button {
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 
-		parent.addResizerChild(me, opts.horz, opts.vert)
+		parent.addResizingChild(me, opts.horz, opts.vert)
 		me.Hwnd().SendMessage(co.WM_SETFONT, win.WPARAM(_globalUiFont), 1)
 	})
 
@@ -63,7 +63,7 @@ func NewButtonDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Button {
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
-		parent.addResizerChild(me, horz, vert)
+		parent.addResizingChild(me, horz, vert)
 	})
 
 	return me

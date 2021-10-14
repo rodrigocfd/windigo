@@ -23,6 +23,7 @@ type (
 
 // Ordinary events for WM messages and WM_TIMER, plus WM_COMMAND and WM_NOTIFY.
 // If an event for the given message already exists, it will be overwritten.
+// Used in parent window user events.
 type _EventsWmNfy struct {
 	_EventsWm
 	cmdsZero map[_HashCmd]func(p wm.Command)

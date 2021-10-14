@@ -50,7 +50,7 @@ func NewMonthCalendar(parent AnyParent, opts *_MonthCalendarO) MonthCalendar {
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, win.SIZE{}, win.HMENU(opts.ctrlId))
 
-		parent.addResizerChild(me, opts.horz, opts.vert)
+		parent.addResizingChild(me, opts.horz, opts.vert)
 
 		rcBound := win.RECT{}
 		me.Hwnd().SendMessage(co.MCM_GETMINREQRECT,
@@ -73,7 +73,7 @@ func NewMonthCalendarDlg(
 
 	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
-		parent.addResizerChild(me, horz, vert)
+		parent.addResizingChild(me, horz, vert)
 	})
 
 	return me

@@ -18,15 +18,15 @@ var (
 // Base to _WindowRaw and _WindowDlg; the root of all parent windows.
 type _WindowBase struct {
 	hWnd            win.HWND
-	events          _EventsWmNfy    // Ordinary window events, added by user.
 	internalEvents  _EventsInternal // Events added internally by the library.
+	events          _EventsWmNfy    // Ordinary window events, added by user.
 	resizerChildren _ResizerChildren
 }
 
 func (me *_WindowBase) new() {
 	me.hWnd = win.HWND(0)
-	me.events.new()
 	me.internalEvents.new()
+	me.events.new()
 	me.resizerChildren.new()
 
 	me.defaultMessages()
@@ -51,7 +51,7 @@ func (me *_WindowBase) internalOn() *_EventsInternal {
 }
 
 // Implements AnyParent.
-func (me *_WindowBase) addResizerChild(ctrl AnyControl, horz HORZ, vert VERT) {
+func (me *_WindowBase) addResizingChild(ctrl AnyControl, horz HORZ, vert VERT) {
 	// Must be called after the control was created, because its HWND is used.
 	me.resizerChildren.add(me.Hwnd(), ctrl, horz, vert)
 }
