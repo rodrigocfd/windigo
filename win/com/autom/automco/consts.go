@@ -65,7 +65,7 @@ const (
 	INVOKEKIND_PROPERTYPUTREF INVOKEKIND = 8
 )
 
-// Specifies parameter flags.
+// Parameter flags.
 //
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/automat/paramflags
 type PARAMFLAG uint16
@@ -79,6 +79,39 @@ const (
 	PARAMFLAG_FOPT         PARAMFLAG = 0x10
 	PARAMFLAG_FHASDEFAULT  PARAMFLAG = 0x20
 	PARAMFLAG_FHASCUSTDATA PARAMFLAG = 0x40
+)
+
+// Variable flags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-varflags
+type VARFLAG uint16
+
+const (
+	VARFLAG_FREADONLY        VARFLAG = 0x1
+	VARFLAG_FSOURCE          VARFLAG = 0x2
+	VARFLAG_FBINDABLE        VARFLAG = 0x4
+	VARFLAG_FREQUESTEDIT     VARFLAG = 0x8
+	VARFLAG_FDISPLAYBIND     VARFLAG = 0x10
+	VARFLAG_FDEFAULTBIND     VARFLAG = 0x20
+	VARFLAG_FHIDDEN          VARFLAG = 0x40
+	VARFLAG_FRESTRICTED      VARFLAG = 0x80
+	VARFLAG_FDEFAULTCOLLELEM VARFLAG = 0x100
+	VARFLAG_FUIDEFAULT       VARFLAG = 0x200
+	VARFLAG_FNONBROWSABLE    VARFLAG = 0x400
+	VARFLAG_FREPLACEABLE     VARFLAG = 0x800
+	VARFLAG_FIMMEDIATEBIND   VARFLAG = 0x1000
+)
+
+// VARDESC varkind.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-vardesc
+type VARKIND uint32
+
+const (
+	VARKIND_PERINSTANCE VARKIND = iota
+	VARKIND_STATIC
+	VARKIND_CONST
+	VARKIND_DISPATCH
 )
 
 // VARIANT types.

@@ -43,3 +43,13 @@ type TYPEDESC struct {
 	Lptdesc *TYPEDESC // union *TYPEDESC | *ARRAYDESC | HREFTYPE
 	Vt      VARIANT
 }
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-vardesc
+type VARDESC struct {
+	Memid       int32
+	LpstrSchema *uint16
+	LpvarValue  *VARIANT // union ULONG | *VARIANT
+	ElemdescVar ELEMDESC
+	WVarFlags   automco.VARFLAG
+	Varkind     automco.VARKIND
+}
