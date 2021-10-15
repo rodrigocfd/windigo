@@ -57,6 +57,11 @@ func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 	return retFiles, nil // search finished successfully
 }
 
+// Returns the path of the current executable, without trailing slash.
+func (_PathT) ExePath() string {
+	return Path.GetPath(HINSTANCE(0).GetModuleFileName())
+}
+
 // Tells if a given file or folder exists.
 func (_PathT) Exists(path string) bool {
 	attr, _ := GetFileAttributes(path)
