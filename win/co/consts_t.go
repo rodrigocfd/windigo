@@ -215,6 +215,21 @@ const (
 	TDF_SIZE_TO_CONTENT             TDF = 0x0100_0000
 )
 
+// CreateToolhelp32Snapshot() dwFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-createtoolhelp32snapshot
+type TH32CS uint32
+
+const (
+	TH32CS_SNAPHEAPLIST TH32CS = 0x0000_0001
+	TH32CS_SNAPPROCESS  TH32CS = 0x0000_0002
+	TH32CS_SNAPTHREAD   TH32CS = 0x0000_0004
+	TH32CS_SNAPMODULE   TH32CS = 0x0000_0008
+	TH32CS_SNAPMODULE32 TH32CS = 0x0000_0010
+	TH32CS_SNAPALL      TH32CS = (TH32CS_SNAPHEAPLIST | TH32CS_SNAPPROCESS | TH32CS_SNAPTHREAD | TH32CS_SNAPMODULE)
+	TH32CS_INHERIT      TH32CS = 0x8000_0000
+)
+
 // GetTimeZoneInformation() return value.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation

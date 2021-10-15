@@ -14,7 +14,9 @@ import (
 type HPROCESS HANDLE
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocesses
-func EnumProcesses() []uint32 {
+func EnumProcesses() ([]uint32, error) {
+	const UINT32_SZ = unsafe.Sizeof(uint32(0)) // in bytes
+
 	const BLOCK int = 256 // arbitrary
 	bufSz := BLOCK
 
@@ -27,14 +29,14 @@ func EnumProcesses() []uint32 {
 
 		ret, _, err := syscall.Syscall(proc.EnumProcesses.Addr(), 3,
 			uintptr(unsafe.Pointer(&processIds[0])),
-			uintptr(len(processIds))*unsafe.Sizeof(uint32(0)), // array size in bytes
+			uintptr(len(processIds))*UINT32_SZ, // array size in bytes
 			uintptr(unsafe.Pointer(&bytesNeeded)))
 
 		if ret == 0 {
-			panic(errco.ERROR(err))
+			return nil, errco.ERROR(err)
 		}
 
-		numReturned = bytesNeeded / uint32(unsafe.Sizeof(uint32(0)))
+		numReturned = bytesNeeded / uint32(UINT32_SZ)
 		if numReturned < uint32(len(processIds)) { // to break, must have at least 1 element gap
 			break
 		}
@@ -42,7 +44,7 @@ func EnumProcesses() []uint32 {
 		bufSz += BLOCK // increase buffer size to try again
 	}
 
-	return processIds[:numReturned]
+	return processIds[:numReturned], nil
 }
 
 // ⚠️ You must defer HPROCESS.CloseHandle().
@@ -69,7 +71,8 @@ func OpenProcess(
 	inheritHandle bool, processId uint32) (HPROCESS, error) {
 
 	ret, _, err := syscall.Syscall(proc.OpenProcess.Addr(), 3,
-		uintptr(desiredAccess), util.BoolToUintptr(inheritHandle), uintptr(processId))
+		uintptr(desiredAccess), util.BoolToUintptr(inheritHandle),
+		uintptr(processId))
 	if ret == 0 {
 		return HPROCESS(0), errco.ERROR(err)
 	}
@@ -87,38 +90,40 @@ func (hProcess HPROCESS) CloseHandle() error {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocessmodules
-func (hProcess HPROCESS) EnumProcessModules() []HINSTANCE {
+func (hProcess HPROCESS) EnumProcessModules() ([]HINSTANCE, error) {
+	const HINSTANCE_SZ = unsafe.Sizeof(HINSTANCE(0)) // in bytes
+
 	bytesNeeded := uint32(0)
 	ret, _, err := syscall.Syscall6(proc.EnumProcessModules.Addr(), 4,
 		uintptr(hProcess), 0, 0, uintptr(unsafe.Pointer(&bytesNeeded)),
 		0, 0)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return nil, errco.ERROR(err)
 	}
 
-	hModules := make([]HINSTANCE, bytesNeeded*uint32(unsafe.Sizeof(HINSTANCE(0))))
+	hModules := make([]HINSTANCE, uintptr(bytesNeeded)/HINSTANCE_SZ)
 	ret, _, err = syscall.Syscall6(proc.EnumProcessModules.Addr(), 4,
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&hModules[0])),
-		uintptr(len(hModules))*unsafe.Sizeof(HINSTANCE(0)), // array size in bytes
+		uintptr(len(hModules))*HINSTANCE_SZ, // array size in bytes
 		uintptr(unsafe.Pointer(&bytesNeeded)),
 		0, 0)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return nil, errco.ERROR(err)
 	}
 
-	return hModules
+	return hModules, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess
-func (hProcess HPROCESS) GetExitCodeProcess() uint32 {
+func (hProcess HPROCESS) GetExitCodeProcess() (uint32, error) {
 	exitCode := uint32(0)
 	ret, _, err := syscall.Syscall(proc.GetExitCodeProcess.Addr(), 2,
 		uintptr(hProcess), uintptr(unsafe.Pointer(&exitCode)), 0)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return 0, errco.ERROR(err)
 	}
-	return exitCode
+	return exitCode, nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
@@ -135,36 +140,35 @@ func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessid
-func (hProcess HPROCESS) GetProcessId() uint32 {
+func (hProcess HPROCESS) GetProcessId() (uint32, error) {
 	ret, _, err := syscall.Syscall(proc.GetProcessId.Addr(), 1,
 		uintptr(hProcess), 0, 0)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return 0, errco.ERROR(err)
 	}
-	return uint32(ret)
+	return uint32(ret), nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
-func (hProcess HPROCESS) GetProcessTimes(
-	creationTime, exitTime, kernelTime, userTime *FILETIME) {
-
+func (hProcess HPROCESS) GetProcessTimes() (creationTime, exitTime, kernelTime, userTime FILETIME, e error) {
 	ret, _, err := syscall.Syscall6(proc.GetProcessTimes.Addr(), 5,
-		uintptr(hProcess), uintptr(unsafe.Pointer(creationTime)),
-		uintptr(unsafe.Pointer(exitTime)), uintptr(unsafe.Pointer(kernelTime)),
-		uintptr(unsafe.Pointer(userTime)), 0)
+		uintptr(hProcess), uintptr(unsafe.Pointer(&creationTime)),
+		uintptr(unsafe.Pointer(&exitTime)), uintptr(unsafe.Pointer(&kernelTime)),
+		uintptr(unsafe.Pointer(&userTime)), 0)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		e = errco.ERROR(err)
 	}
+	return
 }
 
 // Pass -1 for infinite timeout.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
-func (hProcess HPROCESS) WaitForSingleObject(milliseconds uint32) co.WAIT {
+func (hProcess HPROCESS) WaitForSingleObject(milliseconds uint32) (co.WAIT, error) {
 	ret, _, err := syscall.Syscall(proc.WaitForSingleObject.Addr(), 2,
 		uintptr(hProcess), uintptr(milliseconds), 0)
 	if co.WAIT(ret) == co.WAIT_FAILED {
-		panic(errco.ERROR(err))
+		return co.WAIT_FAILED, errco.ERROR(err)
 	}
-	return co.WAIT(ret)
+	return co.WAIT(ret), nil
 }

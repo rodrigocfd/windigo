@@ -348,6 +348,34 @@ type MINMAXINFO struct {
 	PtMaxTrackSize POINT
 }
 
+// ⚠️ You must call SetDwSize().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-moduleentry32w
+type MODULEENTRY32 struct {
+	dwSize        uint32
+	Th32ModuleID  uint32
+	Th32ProcessID uint32
+	GlblcntUsage  uint32
+	ProccntUsage  uint32
+	ModBaseAddr   uintptr
+	ModBaseSize   uint32
+	HModule       HINSTANCE
+	szModule      [_MAX_MODULE_NAME32 + 1]uint16
+	szExePath     [_MAX_PATH]uint16
+}
+
+func (me *MODULEENTRY32) SetDwSize() { me.dwSize = uint32(unsafe.Sizeof(*me)) }
+
+func (me *MODULEENTRY32) SzModule() string { return Str.FromNativeSlice(me.szModule[:]) }
+func (me *MODULEENTRY32) SetSzModule(val string) {
+	copy(me.szModule[:], Str.ToNativeSlice(Str.Substr(val, 0, len(me.szModule)-1)))
+}
+
+func (me *MODULEENTRY32) SzExePath() string { return Str.FromNativeSlice(me.szExePath[:]) }
+func (me *MODULEENTRY32) SetSzExePath(val string) {
+	copy(me.szExePath[:], Str.ToNativeSlice(Str.Substr(val, 0, len(me.szExePath)-1)))
+}
+
 // ⚠️ You must call SetCbSize().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfo
@@ -502,6 +530,29 @@ type POWERBROADCAST_SETTING struct {
 	PowerSetting GUID
 	DataLength   uint32
 	Data         [1]uint16
+}
+
+// ⚠️ You must call SetDwSize().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-processentry32w
+type PROCESSENTRY32 struct {
+	dwSize              uint32
+	cntUsage            uint32
+	Th32ProcessID       uint32
+	th32DefaultHeapID   uintptr
+	th32ModuleID        uint32
+	CntThreads          uint32
+	Th32ParentProcessID uint32
+	PcPriClassBase      int32
+	dwFlags             uint32
+	szExeFile           [_MAX_PATH]uint16
+}
+
+func (pe *PROCESSENTRY32) SetDwSize() { pe.dwSize = uint32(unsafe.Sizeof(*pe)) }
+
+func (me *PROCESSENTRY32) SzExeFile() string { return Str.FromNativeSlice(me.szExeFile[:]) }
+func (me *PROCESSENTRY32) SetSzExeFile(val string) {
+	copy(me.szExeFile[:], Str.ToNativeSlice(Str.Substr(val, 0, len(me.szExeFile)-1)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-process_information

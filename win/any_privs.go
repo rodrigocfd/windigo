@@ -11,6 +11,7 @@ const (
 	_L_MAX_URL_LENGTH     = 2048 + 32 + 4
 	_LF_FACESIZE          = 32
 	_MAX_LINKID_TEXT      = 48
+	_MAX_MODULE_NAME32    = 255
 	_MAX_PATH             = 260
 	_UINT_MAX             = 4294967295
 )
