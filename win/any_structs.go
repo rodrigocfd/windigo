@@ -814,6 +814,21 @@ func (tdc *TASKDIALOGCONFIG) SetLpCallbackData(val uintptr) {
 func (tdc *TASKDIALOGCONFIG) CxWidth() uint32       { return *(*uint32)(unsafe.Pointer(&tdc.data[156])) }
 func (tdc *TASKDIALOGCONFIG) SetCxWidth(val uint32) { *(*uint32)(unsafe.Pointer(&tdc.data[156])) = val }
 
+// ⚠️ You must call SetDwSize().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-threadentry32
+type THREADENTRY32 struct {
+	dwSize             uint32
+	cntUsage           uint32
+	Th32ThreadID       uint32
+	Th32OwnerProcessID uint32
+	TpBasePri          int32
+	tpDeltaPri         int32
+	dwFlags            uint32
+}
+
+func (te *THREADENTRY32) SetDwSize() { te.dwSize = uint32(unsafe.Sizeof(*te)) }
+
 // Basic area size structure, with cx and cy values.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-size

@@ -82,6 +82,8 @@ var (
 	Sleep                           = kernel32.NewProc("Sleep")
 	SystemTimeToFileTime            = kernel32.NewProc("SystemTimeToFileTime")
 	SystemTimeToTzSpecificLocalTime = kernel32.NewProc("SystemTimeToTzSpecificLocalTime")
+	Thread32First                   = kernel32.NewProc("Thread32First")
+	Thread32Next                    = kernel32.NewProc("Thread32Next")
 	TzSpecificLocalTimeToSystemTime = kernel32.NewProc("TzSpecificLocalTimeToSystemTime")
 	UnmapViewOfFile                 = kernel32.NewProc("UnmapViewOfFile")
 	VerifyVersionInfo               = kernel32.NewProc("VerifyVersionInfoW")
