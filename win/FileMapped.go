@@ -1,6 +1,7 @@
 package win
 
 import (
+	"strings"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/util"
@@ -26,6 +27,9 @@ type FileMapped interface {
 	// Returns a new []byte with a copy of data, start with offset, and with the
 	// given length.
 	ReadChunk(offset, length int) []byte
+
+	// Parses the file content as text and returns the lines.
+	ReadLines() []string
 
 	// Truncates or expands the file, according to the new size. Zero will empty
 	// the file.
@@ -99,6 +103,16 @@ func (me *_FileMapped) ReadChunk(offset, length int) []byte {
 	buf := make([]byte, length)
 	copy(buf, hotSlice[offset:offset+length])
 	return buf
+}
+
+func (me *_FileMapped) ReadLines() []string {
+	allText := string(me.HotSlice())
+	lines := strings.Split(allText, "\n")
+
+	for i := 0; i < len(lines); i++ {
+		lines[i] = strings.TrimSpace(lines[i])
+	}
+	return lines
 }
 
 func (me *_FileMapped) Resize(numBytes int) error {

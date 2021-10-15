@@ -40,14 +40,13 @@ func LoadIni(filePath string) (Ini, error) {
 		return nil, err
 	}
 
-	src := string(fin.ReadAll())
+	lines := fin.ReadLines()
 	fin.Close()
 
 	sections := make([]_IniSection, 0, 4) // arbitrary
 	curSection := _IniSection{}
 
-	for _, line := range strings.Split(src, "\n") {
-		line := strings.TrimSpace(line)
+	for _, line := range lines {
 		if len(line) == 0 {
 			continue // skip blank lines
 		}
