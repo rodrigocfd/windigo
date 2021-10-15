@@ -29,10 +29,11 @@ func MonitorFromRect(rc RECT, flags co.MONITOR) HMONITOR {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmonitorinfow
-func (hMon HMONITOR) GetMonitorInfo(mi *MONITORINFO) {
+func (hMon HMONITOR) GetMonitorInfo(mi *MONITORINFO) error {
 	ret, _, err := syscall.Syscall(proc.GetMonitorInfo.Addr(), 2,
 		uintptr(hMon), uintptr(unsafe.Pointer(mi)), 0)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }

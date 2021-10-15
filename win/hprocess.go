@@ -150,7 +150,9 @@ func (hProcess HPROCESS) GetProcessId() (uint32, error) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
-func (hProcess HPROCESS) GetProcessTimes() (creationTime, exitTime, kernelTime, userTime FILETIME, e error) {
+func (hProcess HPROCESS) GetProcessTimes() (
+	creationTime, exitTime, kernelTime, userTime FILETIME, e error) {
+
 	ret, _, err := syscall.Syscall6(proc.GetProcessTimes.Addr(), 5,
 		uintptr(hProcess), uintptr(unsafe.Pointer(&creationTime)),
 		uintptr(unsafe.Pointer(&exitTime)), uintptr(unsafe.Pointer(&kernelTime)),
@@ -159,6 +161,16 @@ func (hProcess HPROCESS) GetProcessTimes() (creationTime, exitTime, kernelTime, 
 		e = errco.ERROR(err)
 	}
 	return
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess
+func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
+	ret, _, err := syscall.Syscall(proc.TerminateProcess.Addr(), 2,
+		uintptr(hProcess), uintptr(exitCode), 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
 }
 
 // Pass -1 for infinite timeout.
