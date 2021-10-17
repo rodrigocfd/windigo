@@ -43,7 +43,7 @@ func NewMonthCalendar(parent AnyParent, opts *_MonthCalendarO) MonthCalendar {
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, nil)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, nil)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			win.ClassNameStr("SysMonthCal32"), nil,
@@ -114,30 +114,41 @@ type _MonthCalendarO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_MonthCalendarO) CtrlId(i int) *_MonthCalendarO { o.ctrlId = i; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_MonthCalendarO) Position(p win.POINT) *_MonthCalendarO { _OwPt(&o.position, p); return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_MonthCalendarO) Horz(s HORZ) *_MonthCalendarO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_MonthCalendarO) Vert(s VERT) *_MonthCalendarO { o.vert = s; return o }
 
 // MonthCalendar control styles, passed to CreateWindowEx().
+//
 // Defaults to MCS_NONE.
 func (o *_MonthCalendarO) CtrlStyles(s co.MCS) *_MonthCalendarO { o.ctrlStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
 func (o *_MonthCalendarO) WndStyles(s co.WS) *_MonthCalendarO { o.wndStyles = s; return o }
 
 // Extended window styles, passed to CreateWindowEx().
+//
 // Defaults to WS_EX_NONE.
 func (o *_MonthCalendarO) WndExStyles(s co.WS_EX) *_MonthCalendarO { o.wndExStyles = s; return o }
 

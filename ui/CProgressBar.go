@@ -38,7 +38,7 @@ func NewProgressBar(parent AnyParent, opts *_ProgressBarO) ProgressBar {
 	me.isMarquee = false
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, &opts.size)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			win.ClassNameStr("msctls_progress32"), nil,
@@ -122,34 +122,50 @@ type _ProgressBarO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_ProgressBarO) CtrlId(i int) *_ProgressBarO { o.ctrlId = i; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_ProgressBarO) Position(p win.POINT) *_ProgressBarO { _OwPt(&o.position, p); return o }
 
-// Control size in pixels.
-// Defaults to 140x26. Will be adjusted to the current system DPI.
+// Control size.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 140x26.
 func (o *_ProgressBarO) Size(s win.SIZE) *_ProgressBarO { _OwSz(&o.size, s); return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_ProgressBarO) Horz(s HORZ) *_ProgressBarO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_ProgressBarO) Vert(s VERT) *_ProgressBarO { o.vert = s; return o }
 
 // ProgressBar control styles, passed to CreateWindowEx().
+//
 // Defaults to PBS_SMOOTH.
 func (o *_ProgressBarO) CtrlStyles(s co.PBS) *_ProgressBarO { o.ctrlStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_VISIBLE.
 func (o *_ProgressBarO) WndStyles(s co.WS) *_ProgressBarO { o.wndStyles = s; return o }
 
 // Extended window styles, passed to CreateWindowEx().
+//
 // Defaults to WS_EX_NONE.
 func (o *_ProgressBarO) WndExStyles(s co.WS_EX) *_ProgressBarO { o.wndExStyles = s; return o }
 

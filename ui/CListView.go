@@ -60,7 +60,7 @@ func NewListView(parent AnyParent, opts *_ListViewO) ListView {
 	me.hContextMenu = opts.contextMenu
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, &opts.size)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			win.ClassNameStr("SysListView32"), nil,
@@ -257,38 +257,55 @@ type _ListViewO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_ListViewO) CtrlId(i int) *_ListViewO { o.ctrlId = i; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_ListViewO) Position(p win.POINT) *_ListViewO { _OwPt(&o.position, p); return o }
 
-// Control size in pixels.
-// Defaults to 120x120. Will be adjusted to the current system DPI.
+// Control size.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 120x120.
 func (o *_ListViewO) Size(s win.SIZE) *_ListViewO { _OwSz(&o.size, s); return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_ListViewO) Horz(s HORZ) *_ListViewO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_ListViewO) Vert(s VERT) *_ListViewO { o.vert = s; return o }
 
 // ListView control styles, passed to CreateWindowEx().
+//
 // Defaults to LVS_REPORT | LVS_NOSORTHEADER | LVS_SHOWSELALWAYS.
 func (o *_ListViewO) CtrlStyles(s co.LVS) *_ListViewO { o.ctrlStyles = s; return o }
 
 // ListView extended control styles, passed to CreateWindowEx().
+//
 // Defaults to LVS_EX_NONE.
 func (o *_ListViewO) CtrlExStyles(s co.LVS_EX) *_ListViewO { o.ctrlExStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
 func (o *_ListViewO) WndStyles(s co.WS) *_ListViewO { o.wndStyles = s; return o }
 
 // Extended window styles, passed to CreateWindowEx().
+//
 // Defaults to WS_EX_CLIENTEDGE.
 func (o *_ListViewO) WndExStyles(s co.WS_EX) *_ListViewO { o.wndExStyles = s; return o }
 

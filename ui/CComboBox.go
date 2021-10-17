@@ -42,7 +42,7 @@ func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		size := win.SIZE{Cx: int32(opts.width), Cy: 0}
-		_MultiplyDpi(&opts.position, &size)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			win.ClassNameStr("COMBOBOX"), nil,
@@ -112,42 +112,60 @@ type _ComboBoxO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_ComboBoxO) CtrlId(i int) *_ComboBoxO { o.ctrlId = i; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_ComboBoxO) Position(p win.POINT) *_ComboBoxO { _OwPt(&o.position, p); return o }
 
-// Control width in pixels.
-// Defaults to 100. Will be adjusted to the current system DPI.
+// Control width.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 100.
 func (o *_ComboBoxO) Width(w int) *_ComboBoxO { o.width = w; return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_ComboBoxO) Horz(s HORZ) *_ComboBoxO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_ComboBoxO) Vert(s VERT) *_ComboBoxO { o.vert = s; return o }
 
 // ComboBox control styles, passed to CreateWindowEx().
+//
 // Defaults to CBS_DROPDOWNLIST.
 func (o *_ComboBoxO) CtrlStyles(s co.CBS) *_ComboBoxO { o.ctrlStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
 func (o *_ComboBoxO) WndStyles(s co.WS) *_ComboBoxO { o.wndStyles = s; return o }
 
 // Extended window styles, passed to CreateWindowEx().
+//
 // Defaults to WS_EX_NONE.
 func (o *_ComboBoxO) WndExStyles(s co.WS_EX) *_ComboBoxO { o.wndExStyles = s; return o }
 
 // Texts to be added to the ComboBox.
+//
 // Defaults to none.
 func (o *_ComboBoxO) Texts(t ...string) *_ComboBoxO { o.texts = t; return o }
 
 // Sets the index of the item initially selected.
+//
 // Defaults to none.
 func (o *_ComboBoxO) Select(s int) *_ComboBoxO { o.selected = s; return o }
 

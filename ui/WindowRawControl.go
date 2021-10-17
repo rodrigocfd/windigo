@@ -31,7 +31,7 @@ func NewWindowControl(parent AnyParent, opts *_WindowControlO) WindowControl {
 			me.opts.hBrushBkgnd, 0)
 		atom := me._WindowRaw.registerClass(&wcx)
 
-		_MultiplyDpi(&me.opts.position, &me.opts.size)
+		_ConvertDtuOrMultiplyDpi(parent, &me.opts.position, &me.opts.size)
 		me._WindowRaw.createWindow(me.opts.wndExStyles, win.ClassNameAtom(atom),
 			nil, me.opts.wndStyles, me.opts.position, me.opts.size, parent.Hwnd(),
 			win.HMENU(me.opts.ctrlId), hInst)

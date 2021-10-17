@@ -62,6 +62,30 @@ func _MultiplyDpi(pos *win.POINT, size *win.SIZE) {
 	}
 }
 
+// If parent is a dialog, converts Dialog Template Units to pixels; otherwise
+// multiplies by current DPI factor.
+func _ConvertDtuOrMultiplyDpi(parent AnyParent, pos *win.POINT, size *win.SIZE) {
+	if parent.isDialog() {
+		rc := win.RECT{}
+		if pos != nil {
+			rc.Left, rc.Top = pos.X, pos.Y
+		}
+		if size != nil {
+			rc.Right, rc.Bottom = size.Cx, size.Cy
+		}
+
+		parent.Hwnd().MapDialogRect(&rc)
+		if pos != nil {
+			pos.X, pos.Y = rc.Left, rc.Top
+		}
+		if size != nil {
+			size.Cx, size.Cy = rc.Right, rc.Bottom
+		}
+	} else {
+		_MultiplyDpi(pos, size)
+	}
+}
+
 //------------------------------------------------------------------------------
 
 // Overwrites X and Y if they are different from zero.

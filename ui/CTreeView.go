@@ -44,7 +44,7 @@ func NewTreeView(parent AnyParent, opts *_TreeViewO) TreeView {
 	me.items.new(me)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, &opts.size)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			win.ClassNameStr("SysTreeView32"), nil,
@@ -110,38 +110,55 @@ type _TreeViewO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_TreeViewO) CtrlId(i int) *_TreeViewO { o.ctrlId = i; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_TreeViewO) Position(p win.POINT) *_TreeViewO { _OwPt(&o.position, p); return o }
 
-// Control size in pixels.
-// Defaults to 120x120. Will be adjusted to the current system DPI.
+// Control size.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 120x120.
 func (o *_TreeViewO) Size(s win.SIZE) *_TreeViewO { _OwSz(&o.size, s); return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_TreeViewO) Horz(s HORZ) *_TreeViewO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_TreeViewO) Vert(s VERT) *_TreeViewO { o.vert = s; return o }
 
 // TreeView control styles, passed to CreateWindowEx().
+//
 // Defaults to TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_HASBUTTONS.
 func (o *_TreeViewO) CtrlStyles(s co.TVS) *_TreeViewO { o.ctrlStyles = s; return o }
 
 // TreeView extended control styles, passed to CreateWindowEx().
+//
 // Defaults to LVS_EX_NONE.
 func (o *_TreeViewO) CtrlExStyles(s co.TVS_EX) *_TreeViewO { o.ctrlExStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
 func (o *_TreeViewO) WndStyles(s co.WS) *_TreeViewO { o.wndStyles = s; return o }
 
 // Extended window styles, passed to CreateWindowEx().
+//
 // Defaults to WS_EX_CLIENTEDGE.
 func (o *_TreeViewO) WndExStyles(s co.WS_EX) *_TreeViewO { o.wndExStyles = s; return o }
 

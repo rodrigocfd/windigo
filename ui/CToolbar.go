@@ -123,22 +123,27 @@ type _ToolbarO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_ToolbarO) CtrlId(i int) *_ToolbarO { o.ctrlId = i; return o }
 
 // Toolbar control styles, passed to CreateWindowEx().
+//
 // Defaults to TBSTYLE_BUTTON | TBSTYLE_FLAT
 func (o *_ToolbarO) CtrlStyles(s co.TBSTYLE) *_ToolbarO { o.ctrlStyles = s; return o }
 
 // Toolbar extended control styles, passed to CreateWindowEx().
+//
 // Defaults to TBSTYLE_EX_NONE.
 func (o *_ToolbarO) CtrlExStyles(s co.TBSTYLE_EX) *_ToolbarO { o.ctrlExStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_VISIBLE.
 func (o *_ToolbarO) WndStyles(s co.WS) *_ToolbarO { o.wndStyles = s; return o }
 
 // Extended window styles, passed to CreateWindowEx().
+//
 // Defaults to WS_EX_NONE.
 func (o *_ToolbarO) WndExStyles(s co.WS_EX) *_ToolbarO { o.wndExStyles = s; return o }
 

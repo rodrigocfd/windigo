@@ -46,7 +46,7 @@ func NewEdit(parent AnyParent, opts *_EditO) Edit {
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, &opts.size)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			win.ClassNameStr("EDIT"), win.StrVal(opts.text),
@@ -129,38 +129,55 @@ type _EditO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_EditO) CtrlId(i int) *_EditO { o.ctrlId = i; return o }
 
 // Text to appear in the control, passed to CreateWindowEx().
+//
 // Defaults to empty string.
 func (o *_EditO) Text(t string) *_EditO { o.text = t; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_EditO) Position(p win.POINT) *_EditO { _OwPt(&o.position, p); return o }
 
 // Control size in pixels.
-// Defaults to 100x23. Will be adjusted to the current system DPI.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 100x23.
 func (o *_EditO) Size(s win.SIZE) *_EditO { _OwSz(&o.size, s); return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_EditO) Horz(s HORZ) *_EditO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_EditO) Vert(s VERT) *_EditO { o.vert = s; return o }
 
 // Edit control styles, passed to CreateWindowEx().
+//
 // Defaults to ES_AUTOHSCROLL | ES_NOHIDESEL.
 func (o *_EditO) CtrlStyles(s co.ES) *_EditO { o.ctrlStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
 func (o *_EditO) WndStyles(s co.WS) *_EditO { o.wndStyles = s; return o }
 
 // Extended window styles, passed to CreateWindowEx().
+//
 // Defaults to WS_EX_CLIENTEDGE.
 func (o *_EditO) WndExStyles(s co.WS_EX) *_EditO { o.wndExStyles = s; return o }
 

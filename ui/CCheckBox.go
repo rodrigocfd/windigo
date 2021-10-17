@@ -46,7 +46,7 @@ func NewCheckBox(parent AnyParent, opts *_CheckBoxO) CheckBox {
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, &opts.size)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 		if opts.size.Cx == 0 && opts.size.Cy == 0 {
 			opts.size = _CalcTextBoundBoxWithCheck(opts.text, true)
 		}
@@ -146,42 +146,60 @@ type _CheckBoxO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_CheckBoxO) CtrlId(i int) *_CheckBoxO { o.ctrlId = i; return o }
 
 // Text to appear in the control, passed to CreateWindowEx().
+//
 // Defaults to empty string.
 func (o *_CheckBoxO) Text(t string) *_CheckBoxO { o.text = t; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_CheckBoxO) Position(p win.POINT) *_CheckBoxO { _OwPt(&o.position, p); return o }
 
-// Control size in pixels.
-// Defaults to fit current text. Will be adjusted to the current system DPI.
+// Control size.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to fit current text.
 func (o *_CheckBoxO) Size(s win.SIZE) *_CheckBoxO { _OwSz(&o.size, s); return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_CheckBoxO) Horz(s HORZ) *_CheckBoxO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_CheckBoxO) Vert(s VERT) *_CheckBoxO { o.vert = s; return o }
 
 // CheckBox control styles, passed to CreateWindowEx().
+//
 // Defaults to BS_AUTOCHECKBOX.
 func (o *_CheckBoxO) CtrlStyles(s co.BS) *_CheckBoxO { o.ctrlStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
 func (o *_CheckBoxO) WndStyles(s co.WS) *_CheckBoxO { o.wndStyles = s; return o }
 
 // Extended window styles, passed to CreateWindowEx().
+//
 // Defaults to WS_EX_NONE.
 func (o *_CheckBoxO) WndExStyles(s co.WS_EX) *_CheckBoxO { o.wndExStyles = s; return o }
 
 // CheckBox initial state.
+//
 // Defaults to BST_UNCHECKED.
 func (o *_CheckBoxO) State(s co.BST) *_CheckBoxO { o.state = s; return o }
 

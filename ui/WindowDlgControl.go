@@ -15,7 +15,9 @@ type _WindowDlgControl struct {
 
 // Creates a new WindowControl by loading a dialog resource, with an auto-generated control ID.
 //
-// Position will be adjusted to the current system DPI.
+// If parent is a dialog box, position coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
 func NewWindowControlDlg(
 	parent AnyParent, dialogId int,
 	position win.POINT, horz HORZ, vert VERT) WindowControl {
@@ -25,7 +27,9 @@ func NewWindowControlDlg(
 
 // Creates a new WindowControl by loading a dialog resource, specifying a control ID.
 //
-// Position will be adjusted to the current system DPI.
+// If parent is a dialog box, position coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
 func NewWindowControlDlgWithId(
 	parent AnyParent, dialogId int,
 	position win.POINT, ctrlId int, horz HORZ, vert VERT) WindowControl {
@@ -47,7 +51,7 @@ func _NewWindowControlDlg(
 	}
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&position, nil)
+		_ConvertDtuOrMultiplyDpi(parent, &position, nil)
 
 		me._WindowDlg.createDialog(parent.Hwnd(), parent.Hwnd().Hinstance())
 		me.Hwnd().SetWindowPos(win.HWND(0), position.X, position.Y, 0, 0,

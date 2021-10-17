@@ -43,7 +43,7 @@ func NewDateTimePicker(parent AnyParent, opts *_DateTimePickerO) DateTimePicker 
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, &opts.size)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			win.ClassNameStr("SysDateTimePick32"), nil,
@@ -120,34 +120,50 @@ type _DateTimePickerO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_DateTimePickerO) CtrlId(i int) *_DateTimePickerO { o.ctrlId = i; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_DateTimePickerO) Position(p win.POINT) *_DateTimePickerO { _OwPt(&o.position, p); return o }
 
-// Control size in pixels.
-// Defaults to 230x23. Will be adjusted to the current system DPI.
+// Control size.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 230x23.
 func (o *_DateTimePickerO) Size(s win.SIZE) *_DateTimePickerO { _OwSz(&o.size, s); return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_DateTimePickerO) Horz(s HORZ) *_DateTimePickerO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_DateTimePickerO) Vert(s VERT) *_DateTimePickerO { o.vert = s; return o }
 
 // DateTimePicker control styles, passed to CreateWindowEx().
+//
 // Defaults to DTS_LONGDATEFORMAT.
 func (o *_DateTimePickerO) CtrlStyles(s co.DTS) *_DateTimePickerO { o.ctrlStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
 func (o *_DateTimePickerO) WndStyles(s co.WS) *_DateTimePickerO { o.wndStyles = s; return o }
 
 // Extended window styles, passed to CreateWindowEx().
+//
 // Defaults to WS_EX_CLIENTEDGE.
 func (o *_DateTimePickerO) WndExStyles(s co.WS_EX) *_DateTimePickerO { o.wndExStyles = s; return o }
 

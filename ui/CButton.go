@@ -41,7 +41,7 @@ func NewButton(parent AnyParent, opts *_ButtonO) Button {
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, &opts.size)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			win.ClassNameStr("BUTTON"), win.StrVal(opts.text),
@@ -98,38 +98,55 @@ type _ButtonO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_ButtonO) CtrlId(i int) *_ButtonO { o.ctrlId = i; return o }
 
 // Text to appear in the control, passed to CreateWindowEx().
+//
 // Defaults to empty string.
 func (o *_ButtonO) Text(t string) *_ButtonO { o.text = t; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_ButtonO) Position(p win.POINT) *_ButtonO { _OwPt(&o.position, p); return o }
 
-// Control size in pixels.
-// Defaults to 88x26. Will be adjusted to the current system DPI.
+// Control size.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 88x26.
 func (o *_ButtonO) Size(s win.SIZE) *_ButtonO { _OwSz(&o.size, s); return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_ButtonO) Horz(s HORZ) *_ButtonO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_ButtonO) Vert(s VERT) *_ButtonO { o.vert = s; return o }
 
 // Button control styles, passed to CreateWindowEx().
+//
 // Defaults to BS_PUSHBUTTON.
 func (o *_ButtonO) CtrlStyles(s co.BS) *_ButtonO { o.ctrlStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
 func (o *_ButtonO) WndStyles(s co.WS) *_ButtonO { o.wndStyles = s; return o }
 
 // Extended window styles, passed to CreateWindowEx().
+//
 // Defaults to WS_EX_NONE.
 func (o *_ButtonO) WndExStyles(s co.WS_EX) *_ButtonO { o.wndExStyles = s; return o }
 

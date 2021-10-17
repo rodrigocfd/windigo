@@ -43,7 +43,7 @@ func NewSysLink(parent AnyParent, opts *_SysLinkO) SysLink {
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, nil)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, nil)
 		boundBox := _CalcTextBoundBox(opts.text, true)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
@@ -111,34 +111,46 @@ type _SysLinkO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_SysLinkO) CtrlId(i int) *_SysLinkO { o.ctrlId = i; return o }
 
 // Text to appear in the control, passed to CreateWindowEx().
+//
 // Defaults to empty string.
 func (o *_SysLinkO) Text(t string) *_SysLinkO { o.text = t; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_SysLinkO) Position(p win.POINT) *_SysLinkO { _OwPt(&o.position, p); return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_SysLinkO) Horz(s HORZ) *_SysLinkO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_SysLinkO) Vert(s VERT) *_SysLinkO { o.vert = s; return o }
 
 // SysLink control styles, passed to CreateWindowEx().
+//
 // Defaults to LWS_TRANSPARENT.
 func (o *_SysLinkO) CtrlStyles(s co.LWS) *_SysLinkO { o.ctrlStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_VISIBLE.
 func (o *_SysLinkO) WndStyles(s co.WS) *_SysLinkO { o.wndStyles = s; return o }
 
 // Extended window styles, passed to CreateWindowEx().
+//
 // Defaults to WS_EX_NONE.
 func (o *_SysLinkO) WndExStyles(s co.WS_EX) *_SysLinkO { o.wndExStyles = s; return o }
 

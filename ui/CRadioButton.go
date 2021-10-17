@@ -47,7 +47,7 @@ func NewRadioButton(parent AnyParent, opts *_RadioButtonO) RadioButton {
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, &opts.size)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 		if opts.size.Cx == 0 && opts.size.Cy == 0 {
 			opts.size = _CalcTextBoundBoxWithCheck(opts.text, true)
 		}
@@ -147,39 +147,57 @@ type _RadioButtonO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_RadioButtonO) CtrlId(i int) *_RadioButtonO { o.ctrlId = i; return o }
 
 // Text to appear in the control, passed to CreateWindowEx().
+//
 // Defaults to empty string.
 func (o *_RadioButtonO) Text(t string) *_RadioButtonO { o.text = t; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_RadioButtonO) Position(p win.POINT) *_RadioButtonO { _OwPt(&o.position, p); return o }
 
-// Control size in pixels.
-// Defaults to fit current text. Will be adjusted to the current system DPI.
+// Control size.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to fit current text.
 func (o *_RadioButtonO) Size(s win.SIZE) *_RadioButtonO { _OwSz(&o.size, s); return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_RadioButtonO) Horz(s HORZ) *_RadioButtonO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_RadioButtonO) Vert(s VERT) *_RadioButtonO { o.vert = s; return o }
 
 // Button control styles, passed to CreateWindowEx().
+//
 // Defaults to BS_AUTORADIOBUTTON.
 func (o *_RadioButtonO) CtrlStyles(s co.BS) *_RadioButtonO { o.ctrlStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_VISIBLE.
+//
 // Note that the first radio button of a group should also have WS_TABSTOP | WS_GROUP.
 func (o *_RadioButtonO) WndStyles(s co.WS) *_RadioButtonO { o.wndStyles = s; return o }
 
 // Defines this radio button as the one initially selected.
+//
 // Defaults to false.
 func (o *_RadioButtonO) Select(c bool) *_RadioButtonO { o.selected = c; return o }
 

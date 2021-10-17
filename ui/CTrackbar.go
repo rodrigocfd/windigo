@@ -48,7 +48,7 @@ func NewTrackbar(parent AnyParent, opts *_TrackbarO) Trackbar {
 	me.events.new(&me._NativeControlBase)
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
-		_MultiplyDpi(&opts.position, &opts.size)
+		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			win.ClassNameStr("msctls_trackbar32"), nil,
@@ -150,42 +150,60 @@ type _TrackbarO struct {
 }
 
 // Control ID.
+//
 // Defaults to an auto-generated ID.
 func (o *_TrackbarO) CtrlId(i int) *_TrackbarO { o.ctrlId = i; return o }
 
-// Position within parent's client area in pixels.
-// Defaults to 0x0. Will be adjusted to the current system DPI.
+// Position within parent's client area.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 0x0.
 func (o *_TrackbarO) Position(p win.POINT) *_TrackbarO { _OwPt(&o.position, p); return o }
 
-// Control size in pixels.
-// Defaults to 175x28. Will be adjusted to the current system DPI.
+// Control size.
+//
+// If parent is a dialog box, coordinates are in Dialog Template Units;
+// otherwise, they are in pixels and they will be adjusted to the current system
+// DPI.
+//
+// Defaults to 175x28.
 func (o *_TrackbarO) Size(s win.SIZE) *_TrackbarO { _OwSz(&o.size, s); return o }
 
 // Horizontal behavior when the parent is resized.
+//
 // Defaults to HORZ_NONE.
 func (o *_TrackbarO) Horz(s HORZ) *_TrackbarO { o.horz = s; return o }
 
 // Vertical behavior when the parent is resized.
+//
 // Defaults to VERT_NONE.
 func (o *_TrackbarO) Vert(s VERT) *_TrackbarO { o.vert = s; return o }
 
 // Trackbar control styles, passed to CreateWindowEx().
+//
 // Defauls to TBS_HORZ | TBS_AUTOTICKS.
 func (o *_TrackbarO) CtrlStyles(s co.TBS) *_TrackbarO { o.ctrlStyles = s; return o }
 
 // Window styles, passed to CreateWindowEx().
+//
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
 func (o *_TrackbarO) WndStyles(s co.WS) *_TrackbarO { o.wndStyles = s; return o }
 
 // Number of positions of page up/down.
+//
 // Defaults to RangeMax / 5.
 func (o *_TrackbarO) PageSize(p int) *_TrackbarO { o.pageSize = p; return o }
 
 // Minimum position value.
+//
 // Defaults to 0.
 func (o *_TrackbarO) RangeMin(r int) *_TrackbarO { o.rangeMin = r; return o }
 
 // Maximum position value.
+//
 // Defaults to 100.
 func (o *_TrackbarO) RangeMax(r int) *_TrackbarO { o.rangeMax = r; return o }
 
