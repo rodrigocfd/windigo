@@ -131,7 +131,7 @@ func (o *_WindowControlO) lateDefaults() {
 		o.ctrlId = _NextCtrlId()
 	}
 	if o.hCursor == 0 {
-		o.hCursor = win.HINSTANCE(0).LoadCursor(win.CursorResIdIdc(co.IDC_ARROW))
+		o.hCursor = win.HINSTANCE(0).LoadCursor(win.CursorResIdc(co.IDC_ARROW))
 	}
 }
 

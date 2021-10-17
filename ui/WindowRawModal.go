@@ -122,7 +122,7 @@ func (o *_WindowModalO) ClientArea(c win.SIZE) *_WindowModalO { _OwSz(&o.clientA
 
 func (o *_WindowModalO) lateDefaults() {
 	if o.hCursor == 0 {
-		o.hCursor = win.HINSTANCE(0).LoadCursor(win.CursorResIdIdc(co.IDC_ARROW))
+		o.hCursor = win.HINSTANCE(0).LoadCursor(win.CursorResIdc(co.IDC_ARROW))
 	}
 }
 

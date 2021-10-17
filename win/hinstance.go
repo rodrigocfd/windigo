@@ -133,7 +133,7 @@ func (hInst HINSTANCE) LoadAccelerators(tableName ResId) HACCEL {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
-func (hInst HINSTANCE) LoadCursor(cursorName CursorResId) HCURSOR {
+func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) HCURSOR {
 	ret, _, err := syscall.Syscall(proc.LoadCursor.Addr(), 2,
 		uintptr(hInst), uintptr(variantCursorResId(cursorName)), 0)
 	if ret == 0 {
@@ -143,7 +143,7 @@ func (hInst HINSTANCE) LoadCursor(cursorName CursorResId) HCURSOR {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
-func (hInst HINSTANCE) LoadIcon(iconName IconResId) HICON {
+func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 	ret, _, err := syscall.Syscall(proc.LoadIcon.Addr(), 2,
 		uintptr(hInst), uintptr(variantIconResId(iconName)), 0)
 	if ret == 0 {

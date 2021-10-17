@@ -9,7 +9,12 @@ import (
 type (
 	// An interface which accepts a string or a nil value.
 	//
-	// You can pass StrVal("text") or nil.
+	// Example:
+	//
+	//  func Foo(s win.StrOrNil) {}
+	//
+	//  Foo(win.StrVal("some text"))
+	//  Foo(nil)
 	StrOrNil interface{ isStrOrNil() }
 	StrVal   string // A string value for StrOrNil interface.
 )
@@ -29,7 +34,13 @@ func variantStrOrNil(v StrOrNil) unsafe.Pointer {
 type (
 	// A window class name identifier.
 	//
-	// You can pass ClassNameAtom(atom), ClassNameStr("NAME") or nil.
+	// Example:
+	//
+	//  func Foo(cn win.ClassName) {}
+	//
+	//  Foo(ClassNameAtom(ATOM(100)))
+	//  Foo(ClassNameStr("MY_CLASS_NAME"))
+	//  Foo(nil)
 	ClassName     interface{ isClassName() }
 	ClassNameAtom ATOM   // An atom window class name identifier for ClassName interface.
 	ClassNameStr  string // A string window class name identifier for ClassName interface.
@@ -54,23 +65,30 @@ func variantClassName(v ClassName) unsafe.Pointer {
 type (
 	// A cursor resource identifier.
 	//
-	CursorResId    interface{ isCursorResId() }
-	CursorResIdIdc co.IDC // A co.IDC cursor resource identifier for CursorResId interface.
-	CursorResIdInt uint16 // A number cursor resource identifier for CursorResId interface.
-	CursorResIdStr string // A string cursor resource identifier for CursorResId interface.
+	// Example:
+	//
+	//  func Foo(c win.CursorRes) {}
+	//
+	//  Foo(win.CursorResIdc(co.IDC_ARROW))
+	//  Foo(win.CursorResInt(301))
+	//  Foo(win.CursorResStr("MY_CURSOR"))
+	CursorRes    interface{ isCursorRes() }
+	CursorResIdc co.IDC // A co.IDC cursor resource identifier for CursorResId interface.
+	CursorResInt uint16 // A number cursor resource identifier for CursorResId interface.
+	CursorResStr string // A string cursor resource identifier for CursorResId interface.
 )
 
-func (CursorResIdIdc) isCursorResId() {}
-func (CursorResIdInt) isCursorResId() {}
-func (CursorResIdStr) isCursorResId() {}
+func (CursorResIdc) isCursorRes() {}
+func (CursorResInt) isCursorRes() {}
+func (CursorResStr) isCursorRes() {}
 
-func variantCursorResId(v CursorResId) unsafe.Pointer {
+func variantCursorResId(v CursorRes) unsafe.Pointer {
 	switch v := v.(type) {
-	case CursorResIdIdc:
+	case CursorResIdc:
 		return unsafe.Pointer(uintptr(v))
-	case CursorResIdInt:
+	case CursorResInt:
 		return unsafe.Pointer(uintptr(v))
-	case CursorResIdStr:
+	case CursorResStr:
 		return unsafe.Pointer(Str.ToNativePtr(string(v)))
 	default:
 		panic("CursorResId does not accept a nil value.")
@@ -82,23 +100,30 @@ func variantCursorResId(v CursorResId) unsafe.Pointer {
 type (
 	// An icon resource identifier.
 	//
-	IconResId    interface{ isIconResId() }
-	IconResIdIdc co.IDI // A co.IDI icon resource identifier for IconResId interface.
-	IconResIdInt uint16 // A number icon resource identifier for IconResId interface.
-	IconResIdStr string // A string icon resource identifier for IconResId interface.
+	// Example:
+	//
+	//  func Foo(i win.IconRes) {}
+	//
+	//  Foo(win.IconResIdc(co.IDI_ERROR))
+	//  Foo(win.IconResInt(201))
+	//  Foo(win.IconResStr("MY_ICON"))
+	IconRes    interface{ isIconRes() }
+	IconResIdc co.IDI // A co.IDI icon resource identifier for IconResId interface.
+	IconResInt uint16 // A number icon resource identifier for IconResId interface.
+	IconResStr string // A string icon resource identifier for IconResId interface.
 )
 
-func (IconResIdIdc) isIconResId() {}
-func (IconResIdInt) isIconResId() {}
-func (IconResIdStr) isIconResId() {}
+func (IconResIdc) isIconRes() {}
+func (IconResInt) isIconRes() {}
+func (IconResStr) isIconRes() {}
 
-func variantIconResId(v IconResId) unsafe.Pointer {
+func variantIconResId(v IconRes) unsafe.Pointer {
 	switch v := v.(type) {
-	case IconResIdIdc:
+	case IconResIdc:
 		return unsafe.Pointer(uintptr(v))
-	case IconResIdInt:
+	case IconResInt:
 		return unsafe.Pointer(uintptr(v))
-	case IconResIdStr:
+	case IconResStr:
 		return unsafe.Pointer(Str.ToNativePtr(string(v)))
 	default:
 		panic("CursorResId does not accept a nil value.")
@@ -110,7 +135,12 @@ func variantIconResId(v IconResId) unsafe.Pointer {
 type (
 	// A resource identifier.
 	//
-	// You can pass ResIdStr("ABC") or ResIdInt(100).
+	// Example:
+	//
+	//  func Foo(r win.ResId) {}
+	//
+	//  Foo(win.ResIdInt(101))
+	//  Foo(win.ResIdStr("MY_RESOURCE"))
 	ResId    interface{ isResId() }
 	ResIdInt uint16 // A number resource identifier for ResId interface.
 	ResIdStr string // A string resource identifier for ResId interface.
@@ -135,8 +165,13 @@ func variantResId(v ResId) unsafe.Pointer {
 type (
 	// Icon identifier for TASKDIALOGCONFIG.
 	//
-	// You can pass TdcIconHicon(hicon), TdcIconInt(100),
-	// TdcIconTdi(co.TD_ICON_ERROR) or nil.
+	// Example:
+	//
+	//  func Foo(i win.TdcIcon) {}
+	//
+	//  Foo(win.TdcIconHicon(win.HICON(0)))
+	//  Foo(win.TdcIconInt(301))
+	//  Foo(win.TdcIconTdi(co.TD_ICON_ERROR))
 	TdcIcon      interface{ isTdcIcon() }
 	TdcIconHicon HICON      // An HICON identifier for TdcIcon interface.
 	TdcIconInt   uint16     // A number identifier for TdcIcon interface.

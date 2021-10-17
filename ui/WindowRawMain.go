@@ -163,7 +163,7 @@ func (o *_WindowMainO) CmdShow(c co.SW) *_WindowMainO { o.cmdShow = c; return o 
 
 func (o *_WindowMainO) lateDefaults() {
 	if o.hCursor == 0 {
-		o.hCursor = win.HINSTANCE(0).LoadCursor(win.CursorResIdIdc(co.IDC_ARROW))
+		o.hCursor = win.HINSTANCE(0).LoadCursor(win.CursorResIdc(co.IDC_ARROW))
 	}
 }
 
