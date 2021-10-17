@@ -2,16 +2,17 @@ package win
 
 import (
 	"fmt"
+	"strings"
 	"syscall"
 	"unsafe"
 )
 
 type _StrT struct{}
 
-// Wide char UTF-16 string conversion functions.
+// String utilities, including wide char UTF-16 string conversion functions.
 var Str _StrT
 
-// Formats bytes into KB, MB, GB or TB.
+// Formats a number of bytes into KB, MB, GB or TB.
 func (_StrT) FmtBytes(numBytes uint64) string {
 	switch {
 	case numBytes < 1024:
@@ -85,6 +86,30 @@ func (_StrT) FromNativePtrMulti(p *uint16) []string {
 // Simple wrapper to syscall.UTF16ToString().
 func (_StrT) FromNativeSlice(s []uint16) string {
 	return syscall.UTF16ToString(s)
+}
+
+// Returns a new string with all diacritics removed.
+func (_StrT) RemoveDiacritics(s string) string {
+	diacs := []rune("ÁáÀàÃãÂâÄäÉéÈèÊêËëÍíÌìÎîÏïÓóÒòÕõÔôÖöÚúÙùÛûÜüÇçÅåÐðÑñØøÝý")
+	repls := []rune("AaAaAaAaAaEeEeEeEeIiIiIiIiOoOoOoOoOoUuUuUuUuCcAaDdNnOoYy")
+
+	strBuf := strings.Builder{}
+	strBuf.Grow(len(s))
+
+	for _, ch := range []rune(s) {
+		replaced := false
+		for i, diac := range diacs {
+			if ch == diac {
+				strBuf.WriteRune(repls[i])
+				replaced = true
+				break
+			}
+		}
+		if !replaced {
+			strBuf.WriteRune(ch)
+		}
+	}
+	return strBuf.String()
 }
 
 // Extracts a substring from a string, UTF-8-aware.
