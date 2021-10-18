@@ -75,7 +75,7 @@ func (hMenu HMENU) AddSubmenu(text string, hSubMenu HMENU) {
 func (hMenu HMENU) AppendMenu(
 	uFlags co.MF, uIDNewItem interface{}, lpNewItem interface{}) {
 
-	pId := uintptr(0)
+	var pId uintptr
 	switch v := uIDNewItem.(type) {
 	case uint16:
 		pId = uintptr(v)

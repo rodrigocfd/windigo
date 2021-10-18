@@ -84,7 +84,7 @@ func NewVariantDate(v time.Time) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_DATE
 
-	double := float64(0)
+	var double float64
 	st := win.SYSTEMTIME{}
 	st.FromTime(v)
 

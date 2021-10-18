@@ -800,7 +800,7 @@ func (hWnd HWND) TaskDialog(
 	windowTitle, mainInstruction, content StrOrNil,
 	commonButtons co.TDCBF, icon co.TD_ICON) co.ID {
 
-	pnButton := int32(0)
+	var pnButton int32
 	ret, _, _ := syscall.Syscall9(proc.TaskDialog.Addr(), 8,
 		uintptr(hWnd), uintptr(hInstance),
 		uintptr(variantStrOrNil(windowTitle)),

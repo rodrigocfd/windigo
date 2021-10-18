@@ -171,7 +171,7 @@ func (me *IPin) QueryAccept(mt *AM_MEDIA_TYPE) (bool, error) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-querydirection
 func (me *IPin) QueryDirection() dshowco.PIN_DIRECTION {
-	pPinDir := dshowco.PIN_DIRECTION(0)
+	var pPinDir dshowco.PIN_DIRECTION
 	ret, _, _ := syscall.Syscall(
 		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).QueryDirection, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),

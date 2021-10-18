@@ -23,7 +23,7 @@ type IFileSinkFilter2 struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-getmode
 func (me *IFileSinkFilter2) GetMode() dshowco.AM_FILE {
-	pdwFlags := dshowco.AM_FILE(0)
+	var pdwFlags dshowco.AM_FILE
 	ret, _, _ := syscall.Syscall(
 		(*_IFileSinkFilter2Vtbl)(unsafe.Pointer(*me.Ppv)).GetMode, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),

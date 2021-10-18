@@ -92,12 +92,13 @@ func (me *_Edit) ReplaceSelection(replacementText string) {
 		1, win.LPARAM(unsafe.Pointer(win.Str.ToNativePtr(replacementText))))
 }
 
-func (me *_Edit) SelectedRange() (int, int) {
-	idxFirst, idxLast := uint32(0), uint32(0)
+func (me *_Edit) SelectedRange() (idxFirst, idxLast int) {
+	var idxFirstU, idxLastU uint32
 	me.Hwnd().SendMessage(co.EM_GETSEL,
-		win.WPARAM(unsafe.Pointer(&idxFirst)),
-		win.LPARAM(unsafe.Pointer(&idxLast)))
-	return int(idxFirst), int(idxLast)
+		win.WPARAM(unsafe.Pointer(&idxFirstU)),
+		win.LPARAM(unsafe.Pointer(&idxLastU)))
+	idxFirst, idxLast = int(idxFirstU), int(idxLastU)
+	return
 }
 
 func (me *_Edit) SelectRange(idxFirst, idxLast int) {

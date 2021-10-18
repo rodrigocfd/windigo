@@ -38,7 +38,7 @@ type IMFVideoDisplayControl struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getaspectratiomode
 func (me *IMFVideoDisplayControl) GetAspectRatioMode() dshowco.MFVideoARMode {
-	aspectRatioMode := dshowco.MFVideoARMode(0)
+	var aspectRatioMode dshowco.MFVideoARMode
 	ret, _, _ := syscall.Syscall(
 		(*_IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).GetAspectRatioMode, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -102,7 +102,7 @@ func (me *IMFVideoDisplayControl) GetVideoPosition() (source MFVideoNormalizedRe
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideowindow
 func (me *IMFVideoDisplayControl) GetVideoWindow() win.HWND {
-	hwndVideo := win.HWND(0)
+	var hwndVideo win.HWND
 	ret, _, _ := syscall.Syscall(
 		(*_IMFVideoDisplayControlVtbl)(unsafe.Pointer(*me.Ppv)).GetVideoWindow, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),

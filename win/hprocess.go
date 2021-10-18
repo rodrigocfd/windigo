@@ -21,8 +21,7 @@ func EnumProcesses() ([]uint32, error) {
 	bufSz := BLOCK
 
 	var processIds []uint32
-	bytesNeeded := uint32(0)
-	numReturned := uint32(0)
+	var bytesNeeded, numReturned uint32
 
 	for {
 		processIds = make([]uint32, bufSz)
@@ -93,7 +92,7 @@ func (hProcess HPROCESS) CloseHandle() error {
 func (hProcess HPROCESS) EnumProcessModules() ([]HINSTANCE, error) {
 	const HINSTANCE_SZ = unsafe.Sizeof(HINSTANCE(0)) // in bytes
 
-	bytesNeeded := uint32(0)
+	var bytesNeeded uint32
 	ret, _, err := syscall.Syscall6(proc.EnumProcessModules.Addr(), 4,
 		uintptr(hProcess), 0, 0, uintptr(unsafe.Pointer(&bytesNeeded)),
 		0, 0)
@@ -117,7 +116,7 @@ func (hProcess HPROCESS) EnumProcessModules() ([]HINSTANCE, error) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess
 func (hProcess HPROCESS) GetExitCodeProcess() (uint32, error) {
-	exitCode := uint32(0)
+	var exitCode uint32
 	ret, _, err := syscall.Syscall(proc.GetExitCodeProcess.Addr(), 2,
 		uintptr(hProcess), uintptr(unsafe.Pointer(&exitCode)), 0)
 	if ret == 0 {

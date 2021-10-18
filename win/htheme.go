@@ -39,7 +39,7 @@ func (hTheme HTHEME) DrawThemeBackground(
 func (hTheme HTHEME) GetThemeColor(
 	partStateId co.VS, propId co.TMT_COLOR) COLORREF {
 
-	color := COLORREF(0)
+	var color COLORREF
 	ret, _, _ := syscall.Syscall6(proc.GetThemeColor.Addr(), 5,
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
 		uintptr(propId), uintptr(unsafe.Pointer(&color)), 0)
@@ -51,7 +51,7 @@ func (hTheme HTHEME) GetThemeColor(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemeint
 func (hTheme HTHEME) GetThemeInt(partStateId co.VS, propId co.TMT_INT) int32 {
-	intVal := int32(0)
+	var intVal int32
 	ret, _, _ := syscall.Syscall6(proc.GetThemeInt.Addr(), 5,
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
 		uintptr(propId), uintptr(unsafe.Pointer(&intVal)), 0)
@@ -65,7 +65,7 @@ func (hTheme HTHEME) GetThemeInt(partStateId co.VS, propId co.TMT_INT) int32 {
 func (hTheme HTHEME) GetThemeMetric(
 	hdc HDC, partStateId co.VS, propId co.TMT_INT) int32 {
 
-	intVal := int32(0)
+	var intVal int32
 	ret, _, _ := syscall.Syscall6(proc.GetThemeMetric.Addr(), 6,
 		uintptr(hTheme), uintptr(hdc),
 		uintptr(partStateId.Part()), uintptr(partStateId.State()),

@@ -92,7 +92,7 @@ func CommDlgExtendedError() errco.CDERR {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw
 func CommandLineToArgv(cmdLine string) []string {
-	pNumArgs := int32(0)
+	var pNumArgs int32
 	ret, _, err := syscall.Syscall(proc.CommandLineToArgv.Addr(), 2,
 		uintptr(unsafe.Pointer(Str.ToNativePtr(cmdLine))),
 		uintptr(unsafe.Pointer(&pNumArgs)), 0)
@@ -239,7 +239,7 @@ func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmiscompositionenabled
 func DwmIsCompositionEnabled() bool {
-	pfEnabled := int32(0) // BOOL
+	var pfEnabled int32 // BOOL
 	ret, _, _ := syscall.Syscall(proc.DwmIsCompositionEnabled.Addr(), 1,
 		uintptr(unsafe.Pointer(&pfEnabled)), 0, 0)
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
@@ -431,7 +431,7 @@ func GetFileVersionInfo(fileName string) ([]byte, error) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
 func GetFileVersionInfoSize(fileName string) (uint32, error) {
-	lpdwHandle := uint32(0)
+	var lpdwHandle uint32
 	ret, _, err := syscall.Syscall(proc.GetFileVersionInfoSize.Addr(), 2,
 		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(&lpdwHandle)), 0)
@@ -808,7 +808,7 @@ func PostThreadMessage(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter
 func QueryPerformanceCounter() int64 {
-	lpPerformanceCount := int64(0)
+	var lpPerformanceCount int64
 	ret, _, err := syscall.Syscall(proc.QueryPerformanceCounter.Addr(), 1,
 		uintptr(unsafe.Pointer(&lpPerformanceCount)), 0, 0)
 	if ret == 0 {
@@ -819,7 +819,7 @@ func QueryPerformanceCounter() int64 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancefrequency
 func QueryPerformanceFrequency() int64 {
-	lpFrequency := int64(0)
+	var lpFrequency int64
 	ret, _, err := syscall.Syscall(proc.QueryPerformanceFrequency.Addr(), 1,
 		uintptr(unsafe.Pointer(&lpFrequency)), 0, 0)
 	if ret == 0 {
@@ -986,7 +986,7 @@ func SystemTimeToTzSpecificLocalTime(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
-	pnButton := co.ID(0)
+	var pnButton co.ID
 	ret, _, _ := syscall.Syscall6(proc.TaskDialogIndirect.Addr(), 4,
 		uintptr(unsafe.Pointer(taskConfig)), uintptr(unsafe.Pointer(&pnButton)),
 		uintptr(0), uintptr(0), 0, 0)
@@ -1026,7 +1026,8 @@ func TzSpecificLocalTimeToSystemTime(
 func VerQueryValue(
 	block []byte, subBlock string) (ptr unsafe.Pointer, sz uint32, exists bool) {
 
-	lplpBuffer, puLen := uintptr(0), uint32(0)
+	var lplpBuffer uintptr
+	var puLen uint32
 	ret, _, _ := syscall.Syscall6(proc.VerQueryValue.Addr(), 4,
 		uintptr(unsafe.Pointer(&block[0])),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(subBlock))),

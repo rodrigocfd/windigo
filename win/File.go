@@ -52,9 +52,9 @@ type _File struct {
 //
 // ⚠️ You must defer File.Close().
 func OpenFile(filePath string, desiredAccess co.OPEN_FILE) (File, error) {
-	access := co.GENERIC(0)
-	share := co.FILE_SHARE(0)
-	disposition := co.DISPOSITION(0)
+	var access co.GENERIC
+	var share co.FILE_SHARE
+	var disposition co.DISPOSITION
 
 	switch desiredAccess {
 	case co.OPEN_FILE_READ_EXISTING:

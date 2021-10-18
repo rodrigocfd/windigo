@@ -48,7 +48,7 @@ func (me *IShellItemArray) GetItemAt(index int) IShellItem {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getcount
 func (me *IShellItemArray) GetCount() int {
-	count := uint32(0)
+	var count uint32
 	ret, _, _ := syscall.Syscall(
 		(*_IShellItemArrayVtbl)(unsafe.Pointer(*me.Ppv)).GetCount, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),

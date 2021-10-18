@@ -51,7 +51,7 @@ func NewShellItem(thePath string) (IShellItem, error) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-compare
 func (me *IShellItem) Compare(si IShellItem, hint shellco.SICHINT) bool {
-	piOrder := uint32(0)
+	var piOrder uint32
 	ret, _, _ := syscall.Syscall6(
 		(*_IShellItemVtbl)(unsafe.Pointer(*me.Ppv)).Compare, 4,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -70,7 +70,7 @@ func (me *IShellItem) Compare(si IShellItem, hint shellco.SICHINT) bool {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getattributes
 func (me *IShellItem) GetAttributes(mask co.SFGAO) co.SFGAO {
-	attribs := co.SFGAO(0)
+	var attribs co.SFGAO
 	ret, _, _ := syscall.Syscall(
 		(*_IShellItemVtbl)(unsafe.Pointer(*me.Ppv)).GetAttributes, 3,
 		uintptr(unsafe.Pointer(me.Ppv)),

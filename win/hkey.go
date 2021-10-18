@@ -95,7 +95,7 @@ func (hKey HKEY) EnumKeyEx() ([]string, error) {
 
 	keyNames := make([]string, 0, keyInfo.NumSubKeys)        // key names to be returned
 	keyNameBuf := make([]uint16, keyInfo.MaxSubKeyNameLen+1) // to receive the names of the keys
-	keyNameBufLen := uint32(0)
+	var keyNameBufLen uint32
 
 	for i := 0; i < int(keyInfo.NumSubKeys); i++ {
 		keyNameBufLen = uint32(len(keyNameBuf)) // reset available buffer size
@@ -132,8 +132,8 @@ func (hKey HKEY) EnumValue() ([]_ValueEnum, error) {
 	values := make([]_ValueEnum, 0, keyInfo.NumValues) // to be returned
 
 	valueNameBuf := make([]uint16, keyInfo.MaxValueNameLen+2) // room to avoid "more data" error
-	valueNameBufLen := uint32(0)
-	valueTypeBuf := co.REG(0)
+	var valueNameBufLen uint32
+	var valueTypeBuf co.REG
 
 	for i := 0; i < int(keyInfo.NumValues); i++ {
 		valueNameBufLen = uint32(len(valueNameBuf)) // reset available buffer size
@@ -200,7 +200,7 @@ func (hKey HKEY) GetValue(
 func (hKey HKEY) OpenKeyEx(
 	subKey string, ulOptions co.REG_OPTION, samDesired co.KEY) (HKEY, error) {
 
-	openedKey := HKEY(0)
+	var openedKey HKEY
 	ret, _, _ := syscall.Syscall6(proc.RegOpenKeyEx.Addr(), 5,
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
 		uintptr(ulOptions), uintptr(samDesired),
@@ -254,7 +254,7 @@ func (hKey HKEY) QueryInfoKey() (_KeyInfo, error) {
 
 // Reads a REG_BINARY value with HKEY.GetValue().
 func (hKey HKEY) ReadBinary(subKey, value string) []byte {
-	pDataLen := uint32(0)
+	var pDataLen uint32
 	pdwType := co.REG_BINARY
 
 	err := hKey.GetValue(subKey, value, co.RRF_RT_REG_BINARY, // retrieve length
@@ -276,7 +276,7 @@ func (hKey HKEY) ReadBinary(subKey, value string) []byte {
 
 // Reads a REG_DWORD value with HKEY.GetValue().
 func (hKey HKEY) ReadDword(subKey, value string) uint32 {
-	pData := uint32(0)
+	var pData uint32
 	pDataLen := uint32(unsafe.Sizeof(pData))
 	pdwType := co.REG_DWORD
 
@@ -290,7 +290,7 @@ func (hKey HKEY) ReadDword(subKey, value string) uint32 {
 
 // Reads a REG_QWORD value with HKEY.GetValue().
 func (hKey HKEY) ReadQword(subKey, value string) uint64 {
-	pData := uint64(0)
+	var pData uint64
 	pDataLen := uint32(unsafe.Sizeof(pData))
 	pdwType := co.REG_QWORD
 
@@ -304,7 +304,7 @@ func (hKey HKEY) ReadQword(subKey, value string) uint64 {
 
 // Reads a REG_SZ value with HKEY.GetValue().
 func (hKey HKEY) ReadString(subKey, value string) string {
-	pDataLen := uint32(0)
+	var pDataLen uint32
 	pdwType := co.REG_SZ
 
 	err := hKey.GetValue(subKey, value, co.RRF_RT_REG_SZ, // retrieve length

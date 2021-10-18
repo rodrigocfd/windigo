@@ -105,7 +105,7 @@ func (me *IFileDialog) GetFileName() string {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfiletypeindex
 func (me *IFileDialog) GetFileTypeIndex() int {
-	idx := uint32(0)
+	var idx uint32
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).GetFileTypeIndex, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
@@ -139,7 +139,7 @@ func (me *IFileDialog) GetFolder() IShellItem {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getoptions
 func (me *IFileDialog) GetOptions() shellco.FOS {
-	fos := shellco.FOS(0)
+	var fos shellco.FOS
 	ret, _, _ := syscall.Syscall(
 		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ppv)).GetOptions, 2,
 		uintptr(unsafe.Pointer(me.Ppv)),
