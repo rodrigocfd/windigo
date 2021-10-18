@@ -53,12 +53,12 @@ func _MultiplyDpi(pos *win.POINT, size *win.SIZE) {
 	}
 
 	if pos != nil {
-		pos.X = win.MulDiv(pos.X, _globalDpi.X, 96)
-		pos.Y = win.MulDiv(pos.Y, _globalDpi.Y, 96)
+		pos.X = int32((int64(pos.X) * int64(_globalDpi.X)) / int64(96)) // MulDiv
+		pos.Y = int32((int64(pos.Y) * int64(_globalDpi.Y)) / int64(96))
 	}
 	if size != nil {
-		size.Cx = win.MulDiv(size.Cx, _globalDpi.X, 96)
-		size.Cy = win.MulDiv(size.Cy, _globalDpi.Y, 96)
+		size.Cx = int32((int64(size.Cx) * int64(_globalDpi.X)) / int64(96))
+		size.Cy = int32((int64(size.Cy) * int64(_globalDpi.Y)) / int64(96))
 	}
 }
 

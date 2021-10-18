@@ -765,6 +765,10 @@ func MoveFileEx(existingFile, newFile string, flags co.MOVEFILE) error {
 	return nil
 }
 
+// Note: You'll achieve a much better performance with ordinary Go code:
+//
+//  res := int32((int64(n) * int64(num)) / int64(den))
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-muldiv
 func MulDiv(number, numerator, denominator int32) int32 {
 	ret, _, _ := syscall.Syscall(proc.MulDiv.Addr(), 3,
