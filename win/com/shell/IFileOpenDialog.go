@@ -5,7 +5,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -19,23 +18,24 @@ type _IFileOpenDialogVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileopendialog
-type IFileOpenDialog struct {
-	IFileDialog // Base IFileDialog > IModalWindow > IUnknown.
-}
+type IFileOpenDialog struct{ IFileDialog }
 
-// Calls CoCreateInstance(). Usually context is CLSCTX_INPROC_SERVER.
+// Constructs a COM object from a pointer to its COM virtual table.
 //
 // ⚠️ You must defer IFileOpenDialog.Release().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func NewIFileOpenDialog(context co.CLSCTX) IFileOpenDialog {
-	iUnk := win.CoCreateInstance(
-		shellco.CLSID_FileOpenDialog, nil, context,
-		shellco.IID_IFileOpenDialog)
+// Example:
+//
+//  fod := shell.NewIFileOpenDialog(
+//      win.CoCreateInstance(
+//          shellco.CLSID_FileOpenDialog, nil,
+//          co.CLSCTX_INPROC_SERVER,
+//          shellco.IID_IFileOpenDialog),
+//  )
+//  defer fod.Release()
+func NewIFileOpenDialog(ptr win.IUnknownPtr) IFileOpenDialog {
 	return IFileOpenDialog{
-		IFileDialog{
-			IModalWindow{IUnknown: iUnk},
-		},
+		IFileDialog: NewIFileDialog(ptr),
 	}
 }
 
@@ -45,16 +45,14 @@ func NewIFileOpenDialog(context co.CLSCTX) IFileOpenDialog {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
 func (me *IFileOpenDialog) GetResults() IShellItemArray {
-	var ppvQueried **win.IUnknownVtbl
+	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IFileOpenDialogVtbl)(unsafe.Pointer(*me.Ppv)).GetResults, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IFileOpenDialogVtbl)(unsafe.Pointer(*me.Ptr())).GetResults, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IShellItemArray{
-			win.IUnknown{Ppv: ppvQueried},
-		}
+		return NewIShellItemArray(ppvQueried)
 	} else {
 		panic(hr)
 	}
@@ -75,16 +73,14 @@ func (me *IFileOpenDialog) GetResultsDisplayNames(
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
 func (me *IFileOpenDialog) GetSelectedItems() IShellItemArray {
-	var ppvQueried **win.IUnknownVtbl
+	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IFileOpenDialogVtbl)(unsafe.Pointer(*me.Ppv)).GetSelectedItems, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IFileOpenDialogVtbl)(unsafe.Pointer(*me.Ptr())).GetSelectedItems, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IShellItemArray{
-			win.IUnknown{Ppv: ppvQueried},
-		}
+		return NewIShellItemArray(ppvQueried)
 	} else {
 		panic(hr)
 	}

@@ -17,8 +17,15 @@ type _IFileSinkFilterVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter
-type IFileSinkFilter struct {
-	win.IUnknown // Base IUnknown.
+type IFileSinkFilter struct{ win.IUnknown }
+
+// Constructs a COM object from a pointer to its COM virtual table.
+//
+// ⚠️ You must defer IFileSinkFilter.Release().
+func NewIFileSinkFilter(ptr win.IUnknownPtr) IFileSinkFilter {
+	return IFileSinkFilter{
+		IUnknown: win.NewIUnknown(ptr),
+	}
 }
 
 // Returns false if no file is opened.
@@ -27,8 +34,8 @@ type IFileSinkFilter struct {
 func (me *IFileSinkFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
-		(*_IFileSinkFilterVtbl)(unsafe.Pointer(*me.Ppv)).GetCurFile, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IFileSinkFilterVtbl)(unsafe.Pointer(*me.Ptr())).GetCurFile, 3,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pv)), uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -45,8 +52,8 @@ func (me *IFileSinkFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter-setfilename
 func (me *IFileSinkFilter) SetFileName(fileName string, mt *AM_MEDIA_TYPE) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileSinkFilterVtbl)(unsafe.Pointer(*me.Ppv)).SetFileName, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IFileSinkFilterVtbl)(unsafe.Pointer(*me.Ptr())).SetFileName, 3,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(mt)))
 

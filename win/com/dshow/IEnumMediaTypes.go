@@ -19,24 +19,29 @@ type _IEnumMediaTypesVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienummediatypes
-type IEnumMediaTypes struct {
-	win.IUnknown // Base IUnknown.
+type IEnumMediaTypes struct{ win.IUnknown }
+
+// Constructs a COM object from a pointer to its COM virtual table.
+//
+// ⚠️ You must defer IEnumMediaTypes.Release().
+func NewIEnumMediaTypes(ptr win.IUnknownPtr) IEnumMediaTypes {
+	return IEnumMediaTypes{
+		IUnknown: win.NewIUnknown(ptr),
+	}
 }
 
 // ⚠️ You must defer IEnumMediaTypes.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-clone
 func (me *IEnumMediaTypes) Clone() IEnumMediaTypes {
-	var ppQueried **win.IUnknownVtbl
+	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ppv)).Clone, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ptr())).Clone, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IEnumMediaTypes{
-			win.IUnknown{Ppv: ppQueried},
-		}
+		return NewIEnumMediaTypes(ppQueried)
 	} else {
 		panic(hr)
 	}
@@ -60,8 +65,8 @@ func (me *IEnumMediaTypes) Count() int {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-next
 func (me *IEnumMediaTypes) Next(mt *AM_MEDIA_TYPE) bool {
 	ret, _, _ := syscall.Syscall6(
-		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ppv)).Next, 4,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ptr())).Next, 4,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		1, uintptr(unsafe.Pointer(&mt)), 0, 0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -76,16 +81,16 @@ func (me *IEnumMediaTypes) Next(mt *AM_MEDIA_TYPE) bool {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-reset
 func (me *IEnumMediaTypes) Reset() {
 	syscall.Syscall(
-		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ppv)).Reset, 1,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ptr())).Reset, 1,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-skip
 func (me *IEnumMediaTypes) Skip(numMediaTypes int) bool {
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ppv)).Skip, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ptr())).Skip, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(uint32(numMediaTypes)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {

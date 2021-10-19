@@ -5,9 +5,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
-	"github.com/rodrigocfd/windigo/win/com/oidl"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -23,39 +20,34 @@ type _IBaseFilterVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
-type IBaseFilter struct {
-	IMediaFilter // Base IMediaFilter > IPersist > IUnknown.
-}
+type IBaseFilter struct{ IMediaFilter }
 
-// Calls CoCreateInstance(). Usually context is CLSCTX_INPROC_SERVER.
+// Constructs a COM object from a pointer to its COM virtual table.
 //
 // ⚠️ You must defer IBaseFilter.Release().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/medfound/using-the-directshow-evr-filter
-func NewEnhancedVideoRenderer(context co.CLSCTX) IBaseFilter {
-	iUnk := win.CoCreateInstance(
-		dshowco.CLSID_EnhancedVideoRenderer, nil, context,
-		dshowco.IID_IBaseFilter)
-	return IBaseFilter{
-		IMediaFilter{
-			oidl.IPersist{IUnknown: iUnk},
-		},
-	}
-}
-
-// Calls CoCreateInstance(). Usually with CLSCTX_INPROC_SERVER.
+// Example for an Enhanced Video Renderer:
 //
-// ⚠️ You must defer IBaseFilter.Release().
+//  evh := dshow.NewIBaseFilter(
+//      win.CoCreateInstance(
+//          dshowco.CLSID_EnhancedVideoRenderer, nil,
+//          co.CLSCTX_INPROC_SERVER,
+//          dshowco.IID_IBaseFilter),
+//  )
+//  defer evh.Release()
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/directshow/video-mixing-renderer-filter-9
-func NewVideoMixingRenderer9(context co.CLSCTX) IBaseFilter {
-	iUnk := win.CoCreateInstance(
-		dshowco.CLSID_VideoMixingRenderer9, nil, context,
-		dshowco.IID_IBaseFilter)
+// Example for a Video Media Renderer 9:
+//
+//  vmr9 := dshow.NewIBaseFilter(
+//      win.CoCreateInstance(
+//          dshowco.CLSID_VideoMixingRenderer9, nil,
+//          co.CLSCTX_INPROC_SERVER,
+//          dshowco.IID_IBaseFilter),
+//  )
+//  defer vmr9.Release()
+func NewIBaseFilter(ptr win.IUnknownPtr) IBaseFilter {
 	return IBaseFilter{
-		IMediaFilter{
-			oidl.IPersist{IUnknown: iUnk},
-		},
+		IMediaFilter: NewIMediaFilter(ptr),
 	}
 }
 
@@ -63,16 +55,14 @@ func NewVideoMixingRenderer9(context co.CLSCTX) IBaseFilter {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-enumpins
 func (me *IBaseFilter) EnumPins() IEnumPins {
-	var ppQueried **win.IUnknownVtbl
+	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ppv)).EnumPins, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ptr())).EnumPins, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IEnumPins{
-			win.IUnknown{Ppv: ppQueried},
-		}
+		return NewIEnumPins(ppQueried)
 	} else {
 		panic(hr)
 	}
@@ -82,17 +72,15 @@ func (me *IBaseFilter) EnumPins() IEnumPins {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-findpin
 func (me *IBaseFilter) FindPin(id string) (IPin, bool) {
-	var ppQueried **win.IUnknownVtbl
+	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ppv)).FindPin, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ptr())).FindPin, 3,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(id))),
 		uintptr(unsafe.Pointer(&ppQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IPin{
-			win.IUnknown{Ppv: ppQueried},
-		}, true
+		return NewIPin(ppQueried), true
 	} else if hr == errco.VFW_E_NOT_FOUND {
 		return IPin{}, false
 	} else {
@@ -105,9 +93,9 @@ func (me *IBaseFilter) JoinFilterGraph(
 	graph *IFilterGraph, name string) error {
 
 	ret, _, _ := syscall.Syscall(
-		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ppv)).JoinFilterGraph, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(graph.Ppv)),
+		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ptr())).JoinFilterGraph, 3,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(graph.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(name))))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -122,21 +110,13 @@ func (me *IBaseFilter) JoinFilterGraph(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
 func (me *IBaseFilter) QueryFilterInfo(info *FILTER_INFO) {
 	ret, _, _ := syscall.Syscall(
-		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ppv)).QueryFilterInfo, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ptr())).QueryFilterInfo, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(info)), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
-}
-
-// Calls IUnknown.QueryInterface() to return IMFGetService.
-//
-// ⚠️ You must defer IMFGetService.Release().
-func (me *IBaseFilter) QueryIMFGetService() IMFGetService {
-	iUnk := me.QueryInterface(dshowco.IID_IMFGetService)
-	return IMFGetService{IUnknown: iUnk}
 }
 
 // Returns false if the method is not supported.
@@ -145,8 +125,8 @@ func (me *IBaseFilter) QueryIMFGetService() IMFGetService {
 func (me *IBaseFilter) QueryVendorInfo() (string, bool) {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
-		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ppv)).QueryVendorInfo, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ptr())).QueryVendorInfo, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pv)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {

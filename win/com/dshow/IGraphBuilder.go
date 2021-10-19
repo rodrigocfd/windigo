@@ -5,10 +5,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/com/autom"
-	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
-	"github.com/rodrigocfd/windigo/win/com/oidl"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -26,29 +22,32 @@ type _IGraphBuilderVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-igraphbuilder
-type IGraphBuilder struct {
-	IFilterGraph // Base IFilterGraph > IUnknown.
-}
+type IGraphBuilder struct{ IFilterGraph }
 
-// Calls CoCreateInstance(). Usually context is CLSCTX_INPROC_SERVER.
+// Constructs a COM object from a pointer to its COM virtual table.
 //
 // ⚠️ You must defer IGraphBuilder.Release().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func NewIGraphBuilder(context co.CLSCTX) IGraphBuilder {
-	iUnk := win.CoCreateInstance(
-		dshowco.CLSID_FilterGraph, nil, context,
-		dshowco.IID_IGraphBuilder)
+// Example:
+//
+//  gb := dshow.NewIGraphBuilder(
+//      win.CoCreateInstance(
+//          dshowco.CLSID_FilterGraph, nil,
+//          co.CLSCTX_INPROC_SERVER,
+//          dshowco.IID_IGraphBuilder),
+//  )
+//  defer gb.Release()
+func NewIGraphBuilder(ptr win.IUnknownPtr) IGraphBuilder {
 	return IGraphBuilder{
-		IFilterGraph{IUnknown: iUnk},
+		IFilterGraph: NewIFilterGraph(ptr),
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
 func (me *IGraphBuilder) Abort() {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).Abort, 1,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).Abort, 1,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
@@ -62,22 +61,16 @@ func (me *IGraphBuilder) Abort() {
 func (me *IGraphBuilder) AddSourceFilter(
 	fileName, filterName string) IBaseFilter {
 
-	var ppvQueried **win.IUnknownVtbl
+	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall6(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).AddSourceFilter, 4,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).AddSourceFilter, 4,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(filterName))),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IBaseFilter{
-			IMediaFilter{
-				oidl.IPersist{
-					IUnknown: win.IUnknown{Ppv: ppvQueried},
-				},
-			},
-		}
+		return NewIBaseFilter(ppvQueried)
 	} else {
 		panic(hr)
 	}
@@ -86,56 +79,22 @@ func (me *IGraphBuilder) AddSourceFilter(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-connect
 func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).Connect, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(pinOut.Ppv)),
-		uintptr(unsafe.Pointer(pinIn.Ppv)))
+		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).Connect, 3,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(pinOut.Ptr())),
+		uintptr(unsafe.Pointer(pinIn.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
 }
 
-// Calls QueryInterface().
-//
-// ⚠️ You must defer IBasicAudio.Release().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
-func (me *IGraphBuilder) QueryIBasicAudio() IBasicAudio {
-	iUnk := me.QueryInterface(dshowco.IID_IBasicAudio)
-	return IBasicAudio{
-		autom.IDispatch{IUnknown: iUnk},
-	}
-}
-
-// Calls QueryInterface().
-//
-// ⚠️ You must defer IMediaControl.Release().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
-func (me *IGraphBuilder) QueryIMediaControl() IMediaControl {
-	iUnk := me.QueryInterface(dshowco.IID_IMediaControl)
-	return IMediaControl{
-		autom.IDispatch{IUnknown: iUnk},
-	}
-}
-
-// Calls QueryInterface().
-//
-// ⚠️ You must defer IMediaSeeking.Release().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
-func (me *IGraphBuilder) QueryIMediaSeeking() IMediaSeeking {
-	iUnk := me.QueryInterface(dshowco.IID_IMediaSeeking)
-	return IMediaSeeking{IUnknown: iUnk}
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-render
 func (me *IGraphBuilder) Render(pinOut *IPin) {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).Render, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(pinOut.Ppv)), 0)
+		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).Render, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(pinOut.Ptr())), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -145,8 +104,8 @@ func (me *IGraphBuilder) Render(pinOut *IPin) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-renderfile
 func (me *IGraphBuilder) RenderFile(file string) error {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).RenderFile, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).RenderFile, 3,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(file))), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -159,8 +118,8 @@ func (me *IGraphBuilder) RenderFile(file string) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-setlogfile
 func (me *IGraphBuilder) SetLogFile(hFile win.HFILE) {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).SetLogFile, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).SetLogFile, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hFile), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
@@ -171,8 +130,8 @@ func (me *IGraphBuilder) SetLogFile(hFile win.HFILE) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-shouldoperationcontinue
 func (me *IGraphBuilder) ShouldOperationContinue() bool {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ppv)).ShouldOperationContinue, 1,
-		uintptr(unsafe.Pointer(me.Ppv)), 0, 0)
+		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).ShouldOperationContinue, 1,
+		uintptr(unsafe.Pointer(me.Ptr())), 0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true

@@ -19,24 +19,29 @@ type _IEnumPinsVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
-type IEnumPins struct {
-	win.IUnknown // Base IUnknown.
+type IEnumPins struct{ win.IUnknown }
+
+// Constructs a COM object from a pointer to its COM virtual table.
+//
+// ⚠️ You must defer IEnumPins.Release().
+func NewIEnumPins(ptr win.IUnknownPtr) IEnumPins {
+	return IEnumPins{
+		IUnknown: win.NewIUnknown(ptr),
+	}
 }
 
 // ⚠️ You must defer IEnumPins.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-clone
 func (me *IEnumPins) Clone() IEnumPins {
-	var ppQueried **win.IUnknownVtbl
+	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ppv)).Clone, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ptr())).Clone, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IEnumPins{
-			win.IUnknown{Ppv: ppQueried},
-		}
+		return NewIEnumPins(ppQueried)
 	} else {
 		panic(hr)
 	}
@@ -77,16 +82,14 @@ func (me *IEnumPins) GetAll() []IPin {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-next
 func (me *IEnumPins) Next() (IPin, bool) {
-	var ppQueried **win.IUnknownVtbl
+	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall6(
-		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ppv)).Next, 4,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ptr())).Next, 4,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		1, uintptr(unsafe.Pointer(&ppQueried)), 0, 0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IPin{
-			win.IUnknown{Ppv: ppQueried},
-		}, true
+		return NewIPin(ppQueried), true
 	} else if hr == errco.S_FALSE {
 		return IPin{}, false
 	} else {
@@ -97,16 +100,16 @@ func (me *IEnumPins) Next() (IPin, bool) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-reset
 func (me *IEnumPins) Reset() {
 	syscall.Syscall(
-		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ppv)).Reset, 1,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ptr())).Reset, 1,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-skip
 func (me *IEnumPins) Skip(numPins int) bool {
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ppv)).Skip, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ptr())).Skip, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(uint32(numPins)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {

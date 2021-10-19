@@ -35,8 +35,15 @@ type _IMediaSeekingVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediaseeking
-type IMediaSeeking struct {
-	win.IUnknown // Base IUnknown.
+type IMediaSeeking struct{ win.IUnknown }
+
+// Constructs a COM object from a pointer to its COM virtual table.
+//
+// ⚠️ You must defer IMediaSeeking.Release().
+func NewIMediaSeeking(ptr win.IUnknownPtr) IMediaSeeking {
+	return IMediaSeeking{
+		IUnknown: win.NewIUnknown(ptr),
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-checkcapabilities
@@ -44,8 +51,8 @@ func (me *IMediaSeeking) CheckCapabilities(
 	capabilities dshowco.SEEKING_CAPABILITIES) dshowco.SEEKING_CAPABILITIES {
 
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).CheckCapabilities, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).CheckCapabilities, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&capabilities)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -61,8 +68,8 @@ func (me *IMediaSeeking) ConvertTimeFormat(
 
 	var target int64
 	ret, _, _ := syscall.Syscall6(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).ConvertTimeFormat, 5,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).ConvertTimeFormat, 5,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&target)), uintptr(unsafe.Pointer(targetFormat)),
 		uintptr(unsafe.Pointer(&source)), uintptr(unsafe.Pointer(sourceFormat)),
 		0)
@@ -78,8 +85,8 @@ func (me *IMediaSeeking) ConvertTimeFormat(
 func (me *IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
 	var iEarliest, iLatest int64
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetAvailable, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).GetAvailable, 3,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&iEarliest)), uintptr(unsafe.Pointer(&iLatest)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -94,8 +101,8 @@ func (me *IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
 func (me *IMediaSeeking) GetCapabilities() dshowco.SEEKING_CAPABILITIES {
 	var capabilities dshowco.SEEKING_CAPABILITIES
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetCapabilities, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).GetCapabilities, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&capabilities)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -109,8 +116,8 @@ func (me *IMediaSeeking) GetCapabilities() dshowco.SEEKING_CAPABILITIES {
 func (me *IMediaSeeking) GetCurrentPosition() time.Duration {
 	var pos int64
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetCurrentPosition, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).GetCurrentPosition, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pos)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -124,8 +131,8 @@ func (me *IMediaSeeking) GetCurrentPosition() time.Duration {
 func (me *IMediaSeeking) GetDuration() time.Duration {
 	var duration int64
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetDuration, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).GetDuration, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&duration)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -141,8 +148,8 @@ func (me *IMediaSeeking) GetDuration() time.Duration {
 func (me *IMediaSeeking) GetPositions() (current, stop time.Duration) {
 	var iCurrent, iStop int64
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetPositions, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).GetPositions, 3,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&iCurrent)), uintptr(unsafe.Pointer(&iStop)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -157,8 +164,8 @@ func (me *IMediaSeeking) GetPositions() (current, stop time.Duration) {
 func (me *IMediaSeeking) GetPreroll() time.Duration {
 	var preRoll int64
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetPreroll, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).GetPreroll, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&preRoll)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -172,8 +179,8 @@ func (me *IMediaSeeking) GetPreroll() time.Duration {
 func (me *IMediaSeeking) GetRate() float64 {
 	var rate float64
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetStopPosition, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).GetStopPosition, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&rate)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -187,8 +194,8 @@ func (me *IMediaSeeking) GetRate() float64 {
 func (me *IMediaSeeking) GetStopPosition() time.Duration {
 	var stop int64
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetStopPosition, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).GetStopPosition, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&stop)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -202,8 +209,8 @@ func (me *IMediaSeeking) GetStopPosition() time.Duration {
 func (me *IMediaSeeking) GetTimeFormat() *win.GUID {
 	format := &win.GUID{}
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).GetTimeFormat, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).GetTimeFormat, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(format)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -216,8 +223,8 @@ func (me *IMediaSeeking) GetTimeFormat() *win.GUID {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isformatsupported
 func (me *IMediaSeeking) IsFormatSupported(format *win.GUID) bool {
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).IsFormatSupported, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).IsFormatSupported, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(format)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -232,8 +239,8 @@ func (me *IMediaSeeking) IsFormatSupported(format *win.GUID) bool {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isusingtimeformat
 func (me *IMediaSeeking) IsUsingTimeFormat(format *win.GUID) bool {
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).IsUsingTimeFormat, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).IsUsingTimeFormat, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(format)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -249,8 +256,8 @@ func (me *IMediaSeeking) IsUsingTimeFormat(format *win.GUID) bool {
 func (me *IMediaSeeking) QueryPreferredFormat() *win.GUID {
 	format := win.GUID{}
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).QueryPreferredFormat, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).QueryPreferredFormat, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&format)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -267,8 +274,8 @@ func (me *IMediaSeeking) SetPositions(
 
 	iCurrent, iStop := util.DurationToNano100(current), util.DurationToNano100(stop)
 	ret, _, _ := syscall.Syscall6(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).SetPositions, 5,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).SetPositions, 5,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&iCurrent)), uintptr(currentFlags),
 		uintptr(unsafe.Pointer(&iStop)), uintptr(stopFlags), 0)
 
@@ -282,8 +289,8 @@ func (me *IMediaSeeking) SetPositions(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setrate
 func (me *IMediaSeeking) SetRate(rate float64) error {
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).SetRate, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).SetRate, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(rate), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -298,8 +305,8 @@ func (me *IMediaSeeking) SetRate(rate float64) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-settimeformat
 func (me *IMediaSeeking) SetTimeFormat(format *win.GUID) error {
 	ret, _, _ := syscall.Syscall(
-		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ppv)).SetTimeFormat, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IMediaSeekingVtbl)(unsafe.Pointer(*me.Ptr())).SetTimeFormat, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(format)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {

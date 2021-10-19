@@ -31,15 +31,22 @@ type _IPinVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
-type IPin struct {
-	win.IUnknown // Base IUnknown.
+type IPin struct{ win.IUnknown }
+
+// Constructs a COM object from a pointer to its COM virtual table.
+//
+// ⚠️ You must defer IPin.Release().
+func NewIPin(ptr win.IUnknownPtr) IPin {
+	return IPin{
+		IUnknown: win.NewIUnknown(ptr),
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-beginflush
 func (me *IPin) BeginFlush() {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).BeginFlush, 1,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).BeginFlush, 1,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
@@ -51,17 +58,15 @@ func (me *IPin) BeginFlush() {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connect
 func (me *IPin) Connect(mt *AM_MEDIA_TYPE) (IPin, error) {
-	var ppQueried **win.IUnknownVtbl
+	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).Connect, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).Connect, 3,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)),
 		uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IPin{
-			win.IUnknown{Ppv: ppQueried},
-		}, nil
+		return NewIPin(ppQueried), nil
 	} else {
 		return IPin{}, hr
 	}
@@ -71,16 +76,14 @@ func (me *IPin) Connect(mt *AM_MEDIA_TYPE) (IPin, error) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connectedto
 func (me *IPin) ConnectedTo() (IPin, error) {
-	var ppQueried **win.IUnknownVtbl
+	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).ConnectedTo, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).ConnectedTo, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IPin{
-			win.IUnknown{Ppv: ppQueried},
-		}, nil
+		return NewIPin(ppQueried), nil
 	} else {
 		return IPin{}, hr
 	}
@@ -89,8 +92,8 @@ func (me *IPin) ConnectedTo() (IPin, error) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connectionmediatype
 func (me *IPin) ConnectionMediaType(mt *AM_MEDIA_TYPE) error {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).ConnectionMediaType, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).ConnectionMediaType, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(mt)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -103,8 +106,8 @@ func (me *IPin) ConnectionMediaType(mt *AM_MEDIA_TYPE) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-disconnect
 func (me *IPin) Disconnect() {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).Disconnect, 1,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).Disconnect, 1,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
@@ -115,8 +118,8 @@ func (me *IPin) Disconnect() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endflush
 func (me *IPin) EndFlush() {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).EndFlush, 1,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).EndFlush, 1,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
@@ -127,8 +130,8 @@ func (me *IPin) EndFlush() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endofstream
 func (me *IPin) EndOfStream() {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).EndOfStream, 1,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).EndOfStream, 1,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
@@ -140,16 +143,14 @@ func (me *IPin) EndOfStream() {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-enummediatypes
 func (me *IPin) EnumMediaTypes() (IEnumMediaTypes, error) {
-	var ppQueried **win.IUnknownVtbl
+	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).EnumMediaTypes, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).EnumMediaTypes, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IEnumMediaTypes{
-			win.IUnknown{Ppv: ppQueried},
-		}, nil
+		return NewIEnumMediaTypes(ppQueried), nil
 	} else {
 		return IEnumMediaTypes{}, hr
 	}
@@ -158,8 +159,8 @@ func (me *IPin) EnumMediaTypes() (IEnumMediaTypes, error) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-queryaccept
 func (me *IPin) QueryAccept(mt *AM_MEDIA_TYPE) (bool, error) {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).QueryAccept, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).QueryAccept, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(mt)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK || hr == errco.S_FALSE {
@@ -173,8 +174,8 @@ func (me *IPin) QueryAccept(mt *AM_MEDIA_TYPE) (bool, error) {
 func (me *IPin) QueryDirection() dshowco.PIN_DIRECTION {
 	var pPinDir dshowco.PIN_DIRECTION
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ppv)).QueryDirection, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).QueryDirection, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pPinDir)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {

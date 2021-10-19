@@ -5,8 +5,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -22,32 +20,33 @@ type _IFileSaveDialogVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifilesavedialog
-type IFileSaveDialog struct {
-	IFileDialog // Base IFileDialog > IModalWindow > IUnknown.
-}
+type IFileSaveDialog struct{ IFileDialog }
 
-// Calls CoCreateInstance(). Usually context is CLSCTX_INPROC_SERVER.
+// Constructs a COM object from a pointer to its COM virtual table.
 //
 // ⚠️ You must defer IFileSaveDialog.Release().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func NewIFileSaveDialog(context co.CLSCTX) IFileSaveDialog {
-	iUnk := win.CoCreateInstance(
-		shellco.CLSID_FileSaveDialog, nil, context,
-		shellco.IID_IFileSaveDialog)
+// Example:
+//
+//  fsd := shell.NewIFileSaveDialog(
+//      win.CoCreateInstance(
+//          shellco.CLSID_FileSaveDialog, nil,
+//          co.CLSCTX_INPROC_SERVER,
+//          shellco.IID_IFileSaveDialog),
+//  )
+//  defer fsd.Release()
+func NewIFileSaveDialog(ptr win.IUnknownPtr) IFileSaveDialog {
 	return IFileSaveDialog{
-		IFileDialog{
-			IModalWindow{IUnknown: iUnk},
-		},
+		IFileDialog: NewIFileDialog(ptr),
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem
 func (me *IFileSaveDialog) SetSaveAsItem(si *IShellItem) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileSaveDialogVtbl)(unsafe.Pointer(*me.Ppv)).SetSaveAsItem, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(si.Ppv)), 0)
+		(*_IFileSaveDialogVtbl)(unsafe.Pointer(*me.Ptr())).SetSaveAsItem, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(si.Ptr())), 0)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

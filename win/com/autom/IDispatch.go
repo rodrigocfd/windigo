@@ -24,24 +24,31 @@ type IDispatchVtbl struct {
 // IDispatch COM interface.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
-type IDispatch struct {
-	win.IUnknown // Base IUnknown.
+type IDispatch struct{ win.IUnknown }
+
+// Constructs a COM object from a pointer to its COM virtual table.
+//
+// ⚠️ You must defer IDispatch.Release().
+func NewIDispatch(ptr win.IUnknownPtr) IDispatch {
+	return IDispatch{
+		IUnknown: win.NewIUnknown(ptr),
+	}
 }
 
 // ⚠️ You must defer ITypeInfo.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
 func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
-	var ppQueried **win.IUnknownVtbl
+	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall6(
-		(*IDispatchVtbl)(unsafe.Pointer(*me.Ppv)).GetTypeInfo, 4,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*IDispatchVtbl)(unsafe.Pointer(*me.Ptr())).GetTypeInfo, 4,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		0, uintptr(lcid),
 		uintptr(unsafe.Pointer(&ppQueried)), 0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return ITypeInfo{
-			win.IUnknown{Ppv: ppQueried},
+			win.NewIUnknown(ppQueried),
 		}
 	} else {
 		panic(hr)
@@ -50,14 +57,14 @@ func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
 func (me *IDispatch) GetTypeInfoCount() int {
-	var pctinfo uint32
+	var pctInfo uint32
 	ret, _, _ := syscall.Syscall(
-		(*IDispatchVtbl)(unsafe.Pointer(*me.Ppv)).GetTypeInfoCount, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
-		uintptr(unsafe.Pointer(&pctinfo)), 0)
+		(*IDispatchVtbl)(unsafe.Pointer(*me.Ptr())).GetTypeInfoCount, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(&pctInfo)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return int(pctinfo)
+		return int(pctInfo)
 	} else {
 		panic(hr)
 	}

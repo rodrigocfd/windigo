@@ -5,7 +5,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/com/oidl"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -20,24 +19,29 @@ type _IEnumFiltersVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
-type IEnumFilters struct {
-	win.IUnknown // Base IUnknown.
+type IEnumFilters struct{ win.IUnknown }
+
+// Constructs a COM object from a pointer to its COM virtual table.
+//
+// ⚠️ You must defer IEnumFilters.Release().
+func NewIEnumFilters(ptr win.IUnknownPtr) IEnumFilters {
+	return IEnumFilters{
+		IUnknown: win.NewIUnknown(ptr),
+	}
 }
 
 // ⚠️ You must defer IEnumFilters.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-clone
 func (me *IEnumFilters) Clone() IEnumFilters {
-	var ppQueried **win.IUnknownVtbl
+	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ppv)).Clone, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ptr())).Clone, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IEnumFilters{
-			win.IUnknown{Ppv: ppQueried},
-		}
+		return NewIEnumFilters(ppQueried)
 	} else {
 		panic(hr)
 	}
@@ -78,20 +82,14 @@ func (me *IEnumFilters) GetAll() []IBaseFilter {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-next
 func (me *IEnumFilters) Next() (IBaseFilter, bool) {
-	var ppQueried **win.IUnknownVtbl
+	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall6(
-		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ppv)).Next, 4,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ptr())).Next, 4,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		1, uintptr(unsafe.Pointer(&ppQueried)), 0, 0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IBaseFilter{
-			IMediaFilter{
-				oidl.IPersist{
-					IUnknown: win.IUnknown{Ppv: ppQueried},
-				},
-			},
-		}, true
+		return NewIBaseFilter(ppQueried), true
 	} else if hr == errco.S_FALSE {
 		return IBaseFilter{}, false
 	} else {
@@ -102,16 +100,16 @@ func (me *IEnumFilters) Next() (IBaseFilter, bool) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-reset
 func (me *IEnumFilters) Reset() {
 	syscall.Syscall(
-		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ppv)).Reset, 1,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ptr())).Reset, 1,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-skip
 func (me *IEnumFilters) Skip(numFilters int) bool {
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ppv)).Skip, 2,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ptr())).Skip, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(uint32(numFilters)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {

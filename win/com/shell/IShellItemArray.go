@@ -23,24 +23,29 @@ type _IShellItemArrayVtbl struct {
 //------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
-type IShellItemArray struct {
-	win.IUnknown // Base IUnknown.
+type IShellItemArray struct{ win.IUnknown }
+
+// Constructs a COM object from a pointer to its COM virtual table.
+//
+// ⚠️ You must defer IShellItemArray.Release().
+func NewIShellItemArray(ptr win.IUnknownPtr) IShellItemArray {
+	return IShellItemArray{
+		IUnknown: win.NewIUnknown(ptr),
+	}
 }
 
 // ⚠️ You must defer IShellItem.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
 func (me *IShellItemArray) GetItemAt(index int) IShellItem {
-	var ppvQueried **win.IUnknownVtbl
+	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IShellItemArrayVtbl)(unsafe.Pointer(*me.Ppv)).GetItemAt, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IShellItemArrayVtbl)(unsafe.Pointer(*me.Ptr())).GetItemAt, 3,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(index), uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IShellItem{
-			win.IUnknown{Ppv: ppvQueried},
-		}
+		return NewIShellItem(ppvQueried)
 	} else {
 		panic(hr)
 	}
@@ -50,8 +55,8 @@ func (me *IShellItemArray) GetItemAt(index int) IShellItem {
 func (me *IShellItemArray) GetCount() int {
 	var count uint32
 	ret, _, _ := syscall.Syscall(
-		(*_IShellItemArrayVtbl)(unsafe.Pointer(*me.Ppv)).GetCount, 3,
-		uintptr(unsafe.Pointer(me.Ppv)),
+		(*_IShellItemArrayVtbl)(unsafe.Pointer(*me.Ptr())).GetCount, 3,
+		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&count)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
