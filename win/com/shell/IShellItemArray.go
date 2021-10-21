@@ -34,6 +34,9 @@ func NewIShellItemArray(ptr win.IUnknownPtr) IShellItemArray {
 	}
 }
 
+// Prefer using IShellItemArray.GetDisplayNames(), which directly retrieves all
+// full paths at once.
+//
 // ⚠️ You must defer IShellItem.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
@@ -67,6 +70,12 @@ func (me *IShellItemArray) GetCount() int {
 }
 
 // Calls GetDisplayName() on each IShellItem, retrieving the names as strings.
+//
+// Example:
+//
+//  var shia shell.IShellItemArray // initialized somewhere
+//
+//  fullPaths := shia.GetDisplayNames(shellco.SIGDN_FILESYSPATH)
 func (me *IShellItemArray) GetDisplayNames(sigdnName shellco.SIGDN) []string {
 	count := me.GetCount()
 	files := make([]string, 0, count)

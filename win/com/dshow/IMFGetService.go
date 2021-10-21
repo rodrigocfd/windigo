@@ -20,6 +20,15 @@ type IMFGetService struct{ win.IUnknown }
 
 // Constructs a COM object from a pointer to its COM virtual table.
 //
+// Example:
+//
+//  var vmr dshow.IBaseFilter // initialized somewhere
+//
+//  gs := dshow.NewIMFGetService(
+//      vmr.QueryInterface(dshowco.IID_IMFGetService),
+//  )
+//  defer gs.Release()
+//
 // ⚠️ You must defer IMFGetService.Release().
 func NewIMFGetService(ptr win.IUnknownPtr) IMFGetService {
 	return IMFGetService{
@@ -32,7 +41,7 @@ func NewIMFGetService(ptr win.IUnknownPtr) IMFGetService {
 //
 // Example for IMFVideoDisplayControl:
 //
-//  var gs dshow.IMFGetService
+//  var gs dshow.IMFGetService // initialized somewhere
 //
 //  vdc := dshow.NewIMFVideoDisplayControl(
 //      gs.GetService(

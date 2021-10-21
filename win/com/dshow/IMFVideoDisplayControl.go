@@ -36,6 +36,18 @@ type IMFVideoDisplayControl struct{ win.IUnknown }
 
 // Constructs a COM object from a pointer to its COM virtual table.
 //
+// Example:
+//
+//  var gs dshow.IMFGetService // initialized somewhere
+//
+//  vdc := dshow.NewIMFVideoDisplayControl(
+//      gs.GetService(
+//          win.NewGuidFromClsid(dshowco.CLSID_MR_VideoRenderService),
+//          win.NewGuidFromIid(dshowco.IID_IMFVideoDisplayControl),
+//      ),
+//  )
+//  defer vdc.Release()
+//
 // ⚠️ You must defer IMFVideoDisplayControl.Release().
 func NewIMFVideoDisplayControl(ptr win.IUnknownPtr) IMFVideoDisplayControl {
 	return IMFVideoDisplayControl{

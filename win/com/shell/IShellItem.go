@@ -111,6 +111,12 @@ func (me *IShellItem) GetParent() IShellItem {
 	}
 }
 
+// Example:
+//
+//  var shi shell.IShellItem // initialized somewhere
+//
+//  fullPath := shi.GetDisplayName(shellco.SIGDN_FILESYSPATH)
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
 func (me *IShellItem) GetDisplayName(sigdnName shellco.SIGDN) string {
 	var pv uintptr
