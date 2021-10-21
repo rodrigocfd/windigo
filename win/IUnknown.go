@@ -80,11 +80,6 @@ func NewIUnknown(ptr IUnknownPtr) IUnknown {
 	return IUnknown{ppv: ptr}
 }
 
-// Returns whether the underlying COM pointer is nil.
-func (me *IUnknown) IsNull() bool {
-	return me.ppv == nil
-}
-
 // Returns the underlying pointer to the COM virtual table.
 func (me *IUnknown) Ptr() IUnknownPtr {
 	return me.ppv
@@ -122,7 +117,7 @@ func (me *IUnknown) QueryInterface(riid co.IID) IUnknownPtr {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 func (me *IUnknown) Release() uint32 {
 	ret := uintptr(0)
-	if !me.IsNull() {
+	if me.Ptr() != nil {
 		ret, _, _ = syscall.Syscall((*me.ppv).Release, 1,
 			uintptr(unsafe.Pointer(me.ppv)), 0, 0)
 		if ret == 0 { // COM pointer was released
