@@ -5,19 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _ITaskbarListVtbl struct {
-	win.IUnknownVtbl
-	HrInit       uintptr
-	AddTab       uintptr
-	DeleteTab    uintptr
-	ActivateTab  uintptr
-	SetActiveAlt uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
 type ITaskbarList struct{ win.IUnknown }
@@ -44,7 +34,7 @@ func NewITaskbarList(ptr win.IUnknownPtr) ITaskbarList {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
 func (me *ITaskbarList) ActivateTab(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarListVtbl)(unsafe.Pointer(*me.Ptr())).ActivateTab, 2,
+		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).ActivateTab, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), 0)
 
@@ -56,7 +46,7 @@ func (me *ITaskbarList) ActivateTab(hWnd win.HWND) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-addtab
 func (me *ITaskbarList) AddTab(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarListVtbl)(unsafe.Pointer(*me.Ptr())).AddTab, 2,
+		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).AddTab, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), 0)
 
@@ -68,7 +58,7 @@ func (me *ITaskbarList) AddTab(hWnd win.HWND) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-deletetab
 func (me *ITaskbarList) DeleteTab(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarListVtbl)(unsafe.Pointer(*me.Ptr())).DeleteTab, 2,
+		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).DeleteTab, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), 0)
 
@@ -80,7 +70,7 @@ func (me *ITaskbarList) DeleteTab(hWnd win.HWND) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-hrinit
 func (me *ITaskbarList) HrInit() {
 	syscall.Syscall(
-		(*_ITaskbarListVtbl)(unsafe.Pointer(*me.Ptr())).HrInit, 1,
+		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).HrInit, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 }
@@ -88,7 +78,7 @@ func (me *ITaskbarList) HrInit() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-setactivealt
 func (me *ITaskbarList) SetActiveAlt(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarListVtbl)(unsafe.Pointer(*me.Ptr())).SetActiveAlt, 2,
+		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).SetActiveAlt, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), 0)
 

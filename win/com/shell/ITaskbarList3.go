@@ -6,26 +6,9 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _ITaskbarList3Vtbl struct {
-	_ITaskbarList2Vtbl
-	SetProgressValue      uintptr
-	SetProgressState      uintptr
-	RegisterTab           uintptr
-	UnregisterTab         uintptr
-	SetTabOrder           uintptr
-	SetTabActive          uintptr
-	ThumbBarAddButtons    uintptr
-	ThumbBarUpdateButtons uintptr
-	ThumbBarSetImageList  uintptr
-	SetOverlayIcon        uintptr
-	SetThumbnailTooltip   uintptr
-	SetThumbnailClip      uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
 type ITaskbarList3 struct{ ITaskbarList2 }
@@ -52,7 +35,7 @@ func NewITaskbarList3(ptr win.IUnknownPtr) ITaskbarList3 {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-registertab
 func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).RegisterTab, 3,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).RegisterTab, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwndTab), uintptr(hwndMDI))
 
@@ -66,7 +49,7 @@ func (me *ITaskbarList3) SetOverlayIcon(
 	hWnd win.HWND, hIcon win.HICON, description string) {
 
 	ret, _, _ := syscall.Syscall6(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).SetOverlayIcon, 4,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetOverlayIcon, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), uintptr(hIcon),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(description))), 0, 0)
@@ -79,7 +62,7 @@ func (me *ITaskbarList3) SetOverlayIcon(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
 func (me *ITaskbarList3) SetProgressState(hWnd win.HWND, flags shellco.TBPF) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).SetProgressState, 3,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetProgressState, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), uintptr(flags))
 
@@ -93,7 +76,7 @@ func (me *ITaskbarList3) SetProgressValue(
 	hWnd win.HWND, completed, total uint64) {
 
 	ret, _, _ := syscall.Syscall6(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).SetProgressValue, 4,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetProgressValue, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), uintptr(completed), uintptr(total), 0, 0)
 
@@ -105,7 +88,7 @@ func (me *ITaskbarList3) SetProgressValue(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settabactive
 func (me *ITaskbarList3) SetTabActive(hwndTab, hwndMDI win.HWND) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).SetTabActive, 3,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetTabActive, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwndTab), uintptr(hwndMDI))
 
@@ -117,7 +100,7 @@ func (me *ITaskbarList3) SetTabActive(hwndTab, hwndMDI win.HWND) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settaborder
 func (me *ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore win.HWND) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).SetTabOrder, 3,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetTabOrder, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwndTab), uintptr(hwndInsertBefore))
 
@@ -129,7 +112,7 @@ func (me *ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore win.HWND) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailclip
 func (me *ITaskbarList3) SetThumbnailClip(hWnd win.HWND, rcClip *win.RECT) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).SetThumbnailClip, 3,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetThumbnailClip, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), uintptr(unsafe.Pointer(rcClip)))
 
@@ -141,7 +124,7 @@ func (me *ITaskbarList3) SetThumbnailClip(hWnd win.HWND, rcClip *win.RECT) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
 func (me *ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, tip string) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).SetThumbnailTooltip, 3,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetThumbnailTooltip, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwnd), uintptr(unsafe.Pointer(win.Str.ToNativePtr(tip))))
 
@@ -155,7 +138,7 @@ func (me *ITaskbarList3) ThumbBarAddButtons(
 	hWnd win.HWND, buttons []THUMBBUTTON) {
 
 	ret, _, _ := syscall.Syscall6(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).ThumbBarAddButtons, 4,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).ThumbBarAddButtons, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), uintptr(len(buttons)), uintptr(unsafe.Pointer(&buttons[0])),
 		0, 0)
@@ -170,7 +153,7 @@ func (me *ITaskbarList3) ThumbBarSetImageList(
 	hWnd win.HWND, hImgl win.HIMAGELIST) {
 
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).ThumbBarSetImageList, 3,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).ThumbBarSetImageList, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), uintptr(hImgl))
 
@@ -184,7 +167,7 @@ func (me *ITaskbarList3) ThumbBarUpdateButtons(
 	hWnd win.HWND, buttons []THUMBBUTTON) {
 
 	ret, _, _ := syscall.Syscall6(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).ThumbBarUpdateButtons, 4,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).ThumbBarUpdateButtons, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), uintptr(len(buttons)), uintptr(unsafe.Pointer(&buttons[0])),
 		0, 0)
@@ -197,7 +180,7 @@ func (me *ITaskbarList3) ThumbBarUpdateButtons(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-unregistertab
 func (me *ITaskbarList3) UnregisterTab(hwndTab win.HWND) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarList3Vtbl)(unsafe.Pointer(*me.Ptr())).UnregisterTab, 2,
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).UnregisterTab, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwndTab), 0)
 

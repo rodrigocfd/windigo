@@ -5,18 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IEnumMediaTypesVtbl struct {
-	win.IUnknownVtbl
-	Next  uintptr
-	Skip  uintptr
-	Reset uintptr
-	Clone uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienummediatypes
 type IEnumMediaTypes struct{ win.IUnknown }
@@ -36,7 +27,7 @@ func NewIEnumMediaTypes(ptr win.IUnknownPtr) IEnumMediaTypes {
 func (me *IEnumMediaTypes) Clone() IEnumMediaTypes {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ptr())).Clone, 2,
+		(*dshowvt.IEnumMediaTypes)(unsafe.Pointer(*me.Ptr())).Clone, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
@@ -65,7 +56,7 @@ func (me *IEnumMediaTypes) Count() int {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-next
 func (me *IEnumMediaTypes) Next(mt *AM_MEDIA_TYPE) bool {
 	ret, _, _ := syscall.Syscall6(
-		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ptr())).Next, 4,
+		(*dshowvt.IEnumMediaTypes)(unsafe.Pointer(*me.Ptr())).Next, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		1, uintptr(unsafe.Pointer(&mt)), 0, 0, 0)
 
@@ -81,7 +72,7 @@ func (me *IEnumMediaTypes) Next(mt *AM_MEDIA_TYPE) bool {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-reset
 func (me *IEnumMediaTypes) Reset() {
 	syscall.Syscall(
-		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ptr())).Reset, 1,
+		(*dshowvt.IEnumMediaTypes)(unsafe.Pointer(*me.Ptr())).Reset, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 }
@@ -89,7 +80,7 @@ func (me *IEnumMediaTypes) Reset() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-skip
 func (me *IEnumMediaTypes) Skip(numMediaTypes int) bool {
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumMediaTypesVtbl)(unsafe.Pointer(*me.Ptr())).Skip, 2,
+		(*dshowvt.IEnumMediaTypes)(unsafe.Pointer(*me.Ptr())).Skip, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(uint32(numMediaTypes)), 0)
 

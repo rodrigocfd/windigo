@@ -6,37 +6,9 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IFileDialogVtbl struct {
-	_IModalWindowVtbl
-	SetFileTypes        uintptr
-	SetFileTypeIndex    uintptr
-	GetFileTypeIndex    uintptr
-	Advise              uintptr
-	Unadvise            uintptr
-	SetOptions          uintptr
-	GetOptions          uintptr
-	SetDefaultFolder    uintptr
-	SetFolder           uintptr
-	GetFolder           uintptr
-	GetCurrentSelection uintptr
-	SetFileName         uintptr
-	GetFileName         uintptr
-	SetTitle            uintptr
-	SetOkButtonLabel    uintptr
-	SetFileNameLabel    uintptr
-	GetResult           uintptr
-	AddPlace            uintptr
-	SetDefaultExtension uintptr
-	Close               uintptr
-	SetClientGuid       uintptr
-	ClearClientData     uintptr
-	SetFilter           uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialog
 type IFileDialog struct{ IModalWindow }
@@ -53,7 +25,7 @@ func NewIFileDialog(ptr win.IUnknownPtr) IFileDialog {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-clearclientdata
 func (me *IFileDialog) ClearClientData() {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).ClearClientData, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).ClearClientData, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 
@@ -65,7 +37,7 @@ func (me *IFileDialog) ClearClientData() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-close
 func (me *IFileDialog) Close(hr errco.ERROR) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).Close, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).Close, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hr), 0)
 
@@ -80,7 +52,7 @@ func (me *IFileDialog) Close(hr errco.ERROR) {
 func (me *IFileDialog) GetCurrentSelection() IShellItem {
 	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).GetCurrentSelection, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetCurrentSelection, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
@@ -95,7 +67,7 @@ func (me *IFileDialog) GetCurrentSelection() IShellItem {
 func (me *IFileDialog) GetFileName() string {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).GetFileName, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetFileName, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pv)), 0)
 
@@ -112,7 +84,7 @@ func (me *IFileDialog) GetFileName() string {
 func (me *IFileDialog) GetFileTypeIndex() int {
 	var idx uint32
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).GetFileTypeIndex, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetFileTypeIndex, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&idx)), 0)
 
@@ -129,7 +101,7 @@ func (me *IFileDialog) GetFileTypeIndex() int {
 func (me *IFileDialog) GetFolder() IShellItem {
 	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).GetFolder, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetFolder, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
@@ -144,7 +116,7 @@ func (me *IFileDialog) GetFolder() IShellItem {
 func (me *IFileDialog) GetOptions() shellco.FOS {
 	var fos shellco.FOS
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).GetOptions, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetOptions, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&fos)), 0)
 
@@ -163,7 +135,7 @@ func (me *IFileDialog) GetOptions() shellco.FOS {
 func (me *IFileDialog) GetResult() IShellItem {
 	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).GetResult, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetResult, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
@@ -186,7 +158,7 @@ func (me *IFileDialog) GetResultDisplayName(sigdnName shellco.SIGDN) string {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setclientguid
 func (me *IFileDialog) SetClientGuid(guid *win.GUID) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).SetClientGuid, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetClientGuid, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(guid)), 0)
 
@@ -198,7 +170,7 @@ func (me *IFileDialog) SetClientGuid(guid *win.GUID) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilename
 func (me *IFileDialog) SetFileName(name string) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).SetFileName, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileName, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(name))), 0)
 
@@ -210,7 +182,7 @@ func (me *IFileDialog) SetFileName(name string) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilenamelabel
 func (me *IFileDialog) SetFileNameLabel(label string) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).SetFileNameLabel, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileNameLabel, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(label))), 0)
 
@@ -224,7 +196,7 @@ func (me *IFileDialog) SetFileNameLabel(label string) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypeindex
 func (me *IFileDialog) SetFileTypeIndex(index int) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).SetFileTypeIndex, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileTypeIndex, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(index), 0)
 
@@ -245,7 +217,7 @@ func (me *IFileDialog) SetFileTypes(filterSpec []FilterSpec) {
 	}
 
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).SetFileTypes, 3,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileTypes, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(len(comdlgFiSp)),
 		uintptr(unsafe.Pointer(&comdlgFiSp[0])))
@@ -258,7 +230,7 @@ func (me *IFileDialog) SetFileTypes(filterSpec []FilterSpec) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfolder
 func (me *IFileDialog) SetFolder(si *IShellItem) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).SetFolder, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFolder, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(si.Ptr())), 0)
 
@@ -270,7 +242,7 @@ func (me *IFileDialog) SetFolder(si *IShellItem) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setokbuttonlabel
 func (me *IFileDialog) SetOkButtonLabel(text string) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).SetOkButtonLabel, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetOkButtonLabel, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(text))), 0)
 
@@ -282,7 +254,7 @@ func (me *IFileDialog) SetOkButtonLabel(text string) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setoptions
 func (me *IFileDialog) SetOptions(fos shellco.FOS) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).SetOptions, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetOptions, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(fos), 0)
 
@@ -294,7 +266,7 @@ func (me *IFileDialog) SetOptions(fos shellco.FOS) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-settitle
 func (me *IFileDialog) SetTitle(title string) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileDialogVtbl)(unsafe.Pointer(*me.Ptr())).SetTitle, 2,
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetTitle, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(title))), 0)
 

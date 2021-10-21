@@ -5,22 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IFilterGraphVtbl struct {
-	win.IUnknownVtbl
-	AddFilter            uintptr
-	RemoveFilter         uintptr
-	EnumFilters          uintptr
-	FindFilterByName     uintptr
-	ConnectDirect        uintptr
-	Reconnect            uintptr
-	Disconnect           uintptr
-	SetDefaultSyncSource uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
 type IFilterGraph struct{ win.IUnknown }
@@ -47,7 +34,7 @@ func NewIFilterGraph(ptr win.IUnknownPtr) IFilterGraph {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-addfilter
 func (me *IFilterGraph) AddFilter(filter *IBaseFilter, name string) error {
 	ret, _, _ := syscall.Syscall(
-		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ptr())).AddFilter, 3,
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).AddFilter, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(filter.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(name))))
@@ -62,7 +49,7 @@ func (me *IFilterGraph) AddFilter(filter *IBaseFilter, name string) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-connectdirect
 func (me *IFilterGraph) ConnectDirect(pinOut, pinIn *IPin, mt *AM_MEDIA_TYPE) {
 	ret, _, _ := syscall.Syscall6(
-		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ptr())).AddFilter, 4,
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).AddFilter, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(pinOut.Ptr())),
 		uintptr(unsafe.Pointer(pinIn.Ptr())),
@@ -76,7 +63,7 @@ func (me *IFilterGraph) ConnectDirect(pinOut, pinIn *IPin, mt *AM_MEDIA_TYPE) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-disconnect
 func (me *IFilterGraph) Disconnect(pin *IPin) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ptr())).Disconnect, 2,
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).Disconnect, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(pin.Ptr())), 0)
 
@@ -91,7 +78,7 @@ func (me *IFilterGraph) Disconnect(pin *IPin) {
 func (me *IFilterGraph) EnumFilters() IEnumFilters {
 	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ptr())).EnumFilters, 2,
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).EnumFilters, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
@@ -108,7 +95,7 @@ func (me *IFilterGraph) EnumFilters() IEnumFilters {
 func (me *IFilterGraph) FindFilterByName(name string) (IBaseFilter, bool) {
 	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ptr())).FindFilterByName, 2,
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).FindFilterByName, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
@@ -124,7 +111,7 @@ func (me *IFilterGraph) FindFilterByName(name string) (IBaseFilter, bool) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-reconnect
 func (me *IFilterGraph) Reconnect(pin *IPin) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ptr())).Reconnect, 2,
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).Reconnect, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(pin.Ptr())), 0)
 
@@ -136,7 +123,7 @@ func (me *IFilterGraph) Reconnect(pin *IPin) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-removefilter
 func (me *IFilterGraph) RemoveFilter(filter *IBaseFilter) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ptr())).RemoveFilter, 2,
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).RemoveFilter, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(filter.Ptr())), 0)
 
@@ -148,7 +135,7 @@ func (me *IFilterGraph) RemoveFilter(filter *IBaseFilter) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-setdefaultsyncsource
 func (me *IFilterGraph) SetDefaultSyncSource() {
 	ret, _, _ := syscall.Syscall(
-		(*_IFilterGraphVtbl)(unsafe.Pointer(*me.Ptr())).SetDefaultSyncSource, 1,
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).SetDefaultSyncSource, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 

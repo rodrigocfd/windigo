@@ -5,18 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IEnumFiltersVtbl struct {
-	win.IUnknownVtbl
-	Next  uintptr
-	Skip  uintptr
-	Reset uintptr
-	Clone uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
 type IEnumFilters struct{ win.IUnknown }
@@ -36,7 +27,7 @@ func NewIEnumFilters(ptr win.IUnknownPtr) IEnumFilters {
 func (me *IEnumFilters) Clone() IEnumFilters {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ptr())).Clone, 2,
+		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Clone, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
@@ -84,7 +75,7 @@ func (me *IEnumFilters) GetAll() []IBaseFilter {
 func (me *IEnumFilters) Next() (IBaseFilter, bool) {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall6(
-		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ptr())).Next, 4,
+		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Next, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		1, uintptr(unsafe.Pointer(&ppQueried)), 0, 0, 0)
 
@@ -100,7 +91,7 @@ func (me *IEnumFilters) Next() (IBaseFilter, bool) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-reset
 func (me *IEnumFilters) Reset() {
 	syscall.Syscall(
-		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ptr())).Reset, 1,
+		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Reset, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 }
@@ -108,7 +99,7 @@ func (me *IEnumFilters) Reset() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-skip
 func (me *IEnumFilters) Skip(numFilters int) bool {
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumFiltersVtbl)(unsafe.Pointer(*me.Ptr())).Skip, 2,
+		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Skip, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(uint32(numFilters)), 0)
 

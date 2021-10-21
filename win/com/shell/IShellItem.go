@@ -8,19 +8,9 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IShellItemVtbl struct {
-	win.IUnknownVtbl
-	BindToHandler  uintptr
-	GetParent      uintptr
-	GetDisplayName uintptr
-	GetAttributes  uintptr
-	Compare        uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 type IShellItem struct{ win.IUnknown }
@@ -63,7 +53,7 @@ func NewShellItemFromPath(folderOrFilePath string) (IShellItem, error) {
 func (me *IShellItem) Compare(si IShellItem, hint shellco.SICHINT) bool {
 	var piOrder uint32
 	ret, _, _ := syscall.Syscall6(
-		(*_IShellItemVtbl)(unsafe.Pointer(*me.Ptr())).Compare, 4,
+		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).Compare, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(si.Ptr())),
 		uintptr(hint),
@@ -82,7 +72,7 @@ func (me *IShellItem) Compare(si IShellItem, hint shellco.SICHINT) bool {
 func (me *IShellItem) GetAttributes(mask co.SFGAO) co.SFGAO {
 	var attribs co.SFGAO
 	ret, _, _ := syscall.Syscall(
-		(*_IShellItemVtbl)(unsafe.Pointer(*me.Ptr())).GetAttributes, 3,
+		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).GetAttributes, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&mask)),
 		uintptr(unsafe.Pointer(&attribs)))
@@ -100,7 +90,7 @@ func (me *IShellItem) GetAttributes(mask co.SFGAO) co.SFGAO {
 func (me *IShellItem) GetParent() IShellItem {
 	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IShellItemVtbl)(unsafe.Pointer(*me.Ptr())).GetParent, 2,
+		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).GetParent, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
@@ -121,7 +111,7 @@ func (me *IShellItem) GetParent() IShellItem {
 func (me *IShellItem) GetDisplayName(sigdnName shellco.SIGDN) string {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
-		(*_IShellItemVtbl)(unsafe.Pointer(*me.Ptr())).GetDisplayName, 3,
+		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).GetDisplayName, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(sigdnName), uintptr(unsafe.Pointer(&pv)))
 

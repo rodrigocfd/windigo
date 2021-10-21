@@ -5,16 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IFileSinkFilterVtbl struct {
-	win.IUnknownVtbl
-	SetFileName uintptr
-	GetCurFile  uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter
 type IFileSinkFilter struct{ win.IUnknown }
@@ -34,7 +27,7 @@ func NewIFileSinkFilter(ptr win.IUnknownPtr) IFileSinkFilter {
 func (me *IFileSinkFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
-		(*_IFileSinkFilterVtbl)(unsafe.Pointer(*me.Ptr())).GetCurFile, 3,
+		(*dshowvt.IFileSinkFilter)(unsafe.Pointer(*me.Ptr())).GetCurFile, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pv)), uintptr(unsafe.Pointer(mt)))
 
@@ -52,7 +45,7 @@ func (me *IFileSinkFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter-setfilename
 func (me *IFileSinkFilter) SetFileName(fileName string, mt *AM_MEDIA_TYPE) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileSinkFilterVtbl)(unsafe.Pointer(*me.Ptr())).SetFileName, 3,
+		(*dshowvt.IFileSinkFilter)(unsafe.Pointer(*me.Ptr())).SetFileName, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(mt)))

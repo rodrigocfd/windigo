@@ -5,19 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IFileSaveDialogVtbl struct {
-	_IFileDialogVtbl
-	SetSaveAsItem          uintptr
-	SetProperties          uintptr
-	SetCollectedProperties uintptr
-	GetProperties          uintptr
-	ApplyProperties        uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifilesavedialog
 type IFileSaveDialog struct{ IFileDialog }
@@ -44,7 +34,7 @@ func NewIFileSaveDialog(ptr win.IUnknownPtr) IFileSaveDialog {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem
 func (me *IFileSaveDialog) SetSaveAsItem(si *IShellItem) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileSaveDialogVtbl)(unsafe.Pointer(*me.Ptr())).SetSaveAsItem, 2,
+		(*shellvt.IFileSaveDialog)(unsafe.Pointer(*me.Ptr())).SetSaveAsItem, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(si.Ptr())), 0)
 

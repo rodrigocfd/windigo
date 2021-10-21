@@ -5,21 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-// IDispatch virtual table.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
-type IDispatchVtbl struct {
-	win.IUnknownVtbl
-	GetTypeInfoCount uintptr
-	GetTypeInfo      uintptr
-	GetIDsOfNames    uintptr
-	Invoke           uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // IDispatch COM interface.
 //
@@ -41,7 +29,7 @@ func NewIDispatch(ptr win.IUnknownPtr) IDispatch {
 func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall6(
-		(*IDispatchVtbl)(unsafe.Pointer(*me.Ptr())).GetTypeInfo, 4,
+		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetTypeInfo, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, uintptr(lcid),
 		uintptr(unsafe.Pointer(&ppQueried)), 0, 0)
@@ -59,7 +47,7 @@ func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
 func (me *IDispatch) GetTypeInfoCount() int {
 	var pctInfo uint32
 	ret, _, _ := syscall.Syscall(
-		(*IDispatchVtbl)(unsafe.Pointer(*me.Ptr())).GetTypeInfoCount, 2,
+		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetTypeInfoCount, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pctInfo)), 0)
 

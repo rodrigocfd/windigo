@@ -30,11 +30,15 @@ And for the COM bindings:
 | - | - |
 | `win/com/autom` | Native Win32 Automation COM interfaces. |
 | `win/com/autom/automco` | Automation constants, all typed. |
+| `win/com/autom/automvt` | Automation virtual tables. |
 | `win/com/dshow` | Native Win32 DirectShow COM interfaces. |
 | `win/com/dshow/dshowco` | DirectShow constants, all typed. |
-| `win/com/oidl` | Native Win32 Object IDL COM interfaces. |
+| `win/com/dshow/dshowvt` | DirectShow virtual tables. |
+| `win/com/idl` | Native Win32 Object IDL COM interfaces. |
+| `win/com/idl/idlvt` | IDL virtual tables. |
 | `win/com/shell` | Native Win32 Shell COM interfaces. |
 | `win/com/shell/shellco` | Shell constants, all typed. |
+| `win/com/shell/shellvt` | Shell virtual tables. |
 
 Windigo is designed to be familiar to Win32 programmers, using the same concepts, so most C/C++ Win32 tutorials should be applicable.
 

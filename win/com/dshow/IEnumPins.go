@@ -5,18 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IEnumPinsVtbl struct {
-	win.IUnknownVtbl
-	Next  uintptr
-	Skip  uintptr
-	Reset uintptr
-	Clone uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
 type IEnumPins struct{ win.IUnknown }
@@ -36,7 +27,7 @@ func NewIEnumPins(ptr win.IUnknownPtr) IEnumPins {
 func (me *IEnumPins) Clone() IEnumPins {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ptr())).Clone, 2,
+		(*dshowvt.IEnumPins)(unsafe.Pointer(*me.Ptr())).Clone, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
@@ -84,7 +75,7 @@ func (me *IEnumPins) GetAll() []IPin {
 func (me *IEnumPins) Next() (IPin, bool) {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall6(
-		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ptr())).Next, 4,
+		(*dshowvt.IEnumPins)(unsafe.Pointer(*me.Ptr())).Next, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		1, uintptr(unsafe.Pointer(&ppQueried)), 0, 0, 0)
 
@@ -100,7 +91,7 @@ func (me *IEnumPins) Next() (IPin, bool) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-reset
 func (me *IEnumPins) Reset() {
 	syscall.Syscall(
-		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ptr())).Reset, 1,
+		(*dshowvt.IEnumPins)(unsafe.Pointer(*me.Ptr())).Reset, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 }
@@ -108,7 +99,7 @@ func (me *IEnumPins) Reset() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-skip
 func (me *IEnumPins) Skip(numPins int) bool {
 	ret, _, _ := syscall.Syscall(
-		(*_IEnumPinsVtbl)(unsafe.Pointer(*me.Ptr())).Skip, 2,
+		(*dshowvt.IEnumPins)(unsafe.Pointer(*me.Ptr())).Skip, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(uint32(numPins)), 0)
 

@@ -6,21 +6,9 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IShellItemArrayVtbl struct {
-	win.IUnknownVtbl
-	BindToHandler              uintptr
-	GetPropertyStore           uintptr
-	GetPropertyDescriptionList uintptr
-	GetAttributes              uintptr
-	GetCount                   uintptr
-	GetItemAt                  uintptr
-	EnumItems                  uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
 type IShellItemArray struct{ win.IUnknown }
@@ -43,7 +31,7 @@ func NewIShellItemArray(ptr win.IUnknownPtr) IShellItemArray {
 func (me *IShellItemArray) GetItemAt(index int) IShellItem {
 	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IShellItemArrayVtbl)(unsafe.Pointer(*me.Ptr())).GetItemAt, 3,
+		(*shellvt.IShellItemArray)(unsafe.Pointer(*me.Ptr())).GetItemAt, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(index), uintptr(unsafe.Pointer(&ppvQueried)))
 
@@ -58,7 +46,7 @@ func (me *IShellItemArray) GetItemAt(index int) IShellItem {
 func (me *IShellItemArray) GetCount() int {
 	var count uint32
 	ret, _, _ := syscall.Syscall(
-		(*_IShellItemArrayVtbl)(unsafe.Pointer(*me.Ptr())).GetCount, 3,
+		(*shellvt.IShellItemArray)(unsafe.Pointer(*me.Ptr())).GetCount, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&count)), 0)
 

@@ -6,15 +6,9 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _ITaskbarList2Vtbl struct {
-	_ITaskbarListVtbl
-	MarkFullscreenWindow uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist2
 type ITaskbarList2 struct{ ITaskbarList }
@@ -41,7 +35,7 @@ func NewITaskbarList2(ptr win.IUnknownPtr) ITaskbarList2 {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow
 func (me *ITaskbarList2) MarkFullscreenWindow(hwnd win.HWND, fullScreen bool) {
 	ret, _, _ := syscall.Syscall(
-		(*_ITaskbarList2Vtbl)(unsafe.Pointer(*me.Ptr())).MarkFullscreenWindow, 3,
+		(*shellvt.ITaskbarList2)(unsafe.Pointer(*me.Ptr())).MarkFullscreenWindow, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwnd), util.BoolToUintptr(fullScreen))
 

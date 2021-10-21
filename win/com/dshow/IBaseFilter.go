@@ -5,19 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IBaseFilterVtbl struct {
-	_IMediaFilterVtbl
-	EnumPins        uintptr
-	FindPin         uintptr
-	QueryFilterInfo uintptr
-	JoinFilterGraph uintptr
-	QueryVendorInfo uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
 type IBaseFilter struct{ IMediaFilter }
@@ -57,7 +47,7 @@ func NewIBaseFilter(ptr win.IUnknownPtr) IBaseFilter {
 func (me *IBaseFilter) EnumPins() IEnumPins {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ptr())).EnumPins, 2,
+		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).EnumPins, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
@@ -74,7 +64,7 @@ func (me *IBaseFilter) EnumPins() IEnumPins {
 func (me *IBaseFilter) FindPin(id string) (IPin, bool) {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ptr())).FindPin, 3,
+		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).FindPin, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(id))),
 		uintptr(unsafe.Pointer(&ppQueried)))
@@ -93,7 +83,7 @@ func (me *IBaseFilter) JoinFilterGraph(
 	graph *IFilterGraph, name string) error {
 
 	ret, _, _ := syscall.Syscall(
-		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ptr())).JoinFilterGraph, 3,
+		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).JoinFilterGraph, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(graph.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(name))))
@@ -110,7 +100,7 @@ func (me *IBaseFilter) JoinFilterGraph(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
 func (me *IBaseFilter) QueryFilterInfo(info *FILTER_INFO) {
 	ret, _, _ := syscall.Syscall(
-		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ptr())).QueryFilterInfo, 2,
+		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).QueryFilterInfo, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(info)), 0)
 
@@ -125,7 +115,7 @@ func (me *IBaseFilter) QueryFilterInfo(info *FILTER_INFO) {
 func (me *IBaseFilter) QueryVendorInfo() (string, bool) {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
-		(*_IBaseFilterVtbl)(unsafe.Pointer(*me.Ptr())).QueryVendorInfo, 2,
+		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).QueryVendorInfo, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pv)), 0)
 

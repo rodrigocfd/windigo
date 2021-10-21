@@ -5,21 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IGraphBuilderVtbl struct {
-	_IFilterGraphVtbl
-	Connect                 uintptr
-	Render                  uintptr
-	RenderFile              uintptr
-	AddSourceFilter         uintptr
-	SetLogFile              uintptr
-	Abort                   uintptr
-	ShouldOperationContinue uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-igraphbuilder
 type IGraphBuilder struct{ IFilterGraph }
@@ -46,7 +34,7 @@ func NewIGraphBuilder(ptr win.IUnknownPtr) IGraphBuilder {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
 func (me *IGraphBuilder) Abort() {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).Abort, 1,
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).Abort, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 
@@ -63,7 +51,7 @@ func (me *IGraphBuilder) AddSourceFilter(
 
 	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall6(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).AddSourceFilter, 4,
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).AddSourceFilter, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(filterName))),
@@ -79,7 +67,7 @@ func (me *IGraphBuilder) AddSourceFilter(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-connect
 func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).Connect, 3,
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).Connect, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(pinOut.Ptr())),
 		uintptr(unsafe.Pointer(pinIn.Ptr())))
@@ -92,7 +80,7 @@ func (me *IGraphBuilder) Connect(pinOut, pinIn *IPin) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-render
 func (me *IGraphBuilder) Render(pinOut *IPin) {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).Render, 2,
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).Render, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(pinOut.Ptr())), 0)
 
@@ -104,7 +92,7 @@ func (me *IGraphBuilder) Render(pinOut *IPin) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-renderfile
 func (me *IGraphBuilder) RenderFile(file string) error {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).RenderFile, 3,
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).RenderFile, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(file))), 0)
 
@@ -118,7 +106,7 @@ func (me *IGraphBuilder) RenderFile(file string) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-setlogfile
 func (me *IGraphBuilder) SetLogFile(hFile win.HFILE) {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).SetLogFile, 2,
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).SetLogFile, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hFile), 0)
 
@@ -130,7 +118,7 @@ func (me *IGraphBuilder) SetLogFile(hFile win.HFILE) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-shouldoperationcontinue
 func (me *IGraphBuilder) ShouldOperationContinue() bool {
 	ret, _, _ := syscall.Syscall(
-		(*_IGraphBuilderVtbl)(unsafe.Pointer(*me.Ptr())).ShouldOperationContinue, 1,
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).ShouldOperationContinue, 1,
 		uintptr(unsafe.Pointer(me.Ptr())), 0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {

@@ -5,16 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IFileSourceFilterVtbl struct {
-	win.IUnknownVtbl
-	Load       uintptr
-	GetCurFile uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
 type IFileSourceFilter struct{ win.IUnknown }
@@ -34,7 +27,7 @@ func NewIFileSourceFilter(ptr win.IUnknownPtr) IFileSourceFilter {
 func (me *IFileSourceFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
-		(*_IFileSourceFilterVtbl)(unsafe.Pointer(*me.Ptr())).GetCurFile, 3,
+		(*dshowvt.IFileSourceFilter)(unsafe.Pointer(*me.Ptr())).GetCurFile, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pv)), uintptr(unsafe.Pointer(mt)))
 
@@ -52,7 +45,7 @@ func (me *IFileSourceFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-load
 func (me *IFileSourceFilter) Load(fileName string, mt *AM_MEDIA_TYPE) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileSourceFilterVtbl)(unsafe.Pointer(*me.Ptr())).Load, 3,
+		(*dshowvt.IFileSourceFilter)(unsafe.Pointer(*me.Ptr())).Load, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(mt)))

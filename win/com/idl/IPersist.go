@@ -1,22 +1,13 @@
-package oidl
+package idl
 
 import (
 	"syscall"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/idl/idlvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-// IPersist virtual table.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
-type IPersistVtbl struct {
-	win.IUnknownVtbl
-	GetClassID uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // IPersist COM interface.
 //
@@ -36,7 +27,7 @@ func NewIPersist(ptr win.IUnknownPtr) IPersist {
 func (me *IPersist) GetClassID() *win.GUID {
 	clsid := &win.GUID{}
 	ret, _, _ := syscall.Syscall(
-		(*IPersistVtbl)(unsafe.Pointer(*me.Ptr())).GetClassID, 2,
+		(*idlvt.IPersist)(unsafe.Pointer(*me.Ptr())).GetClassID, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(clsid)), 0)
 

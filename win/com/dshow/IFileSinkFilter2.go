@@ -6,16 +6,9 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IFileSinkFilter2Vtbl struct {
-	_IFileSinkFilterVtbl
-	SetMode uintptr
-	GetMode uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter2
 type IFileSinkFilter2 struct{ IFileSinkFilter }
@@ -33,7 +26,7 @@ func NewIFileSinkFilter2(ptr win.IUnknownPtr) IFileSinkFilter2 {
 func (me *IFileSinkFilter2) GetMode() dshowco.AM_FILE {
 	var pdwFlags dshowco.AM_FILE
 	ret, _, _ := syscall.Syscall(
-		(*_IFileSinkFilter2Vtbl)(unsafe.Pointer(*me.Ptr())).GetMode, 2,
+		(*dshowvt.IFileSinkFilter2)(unsafe.Pointer(*me.Ptr())).GetMode, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pdwFlags)), 0)
 
@@ -47,7 +40,7 @@ func (me *IFileSinkFilter2) GetMode() dshowco.AM_FILE {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-setmode
 func (me *IFileSinkFilter2) SetMode(flags dshowco.AM_FILE) {
 	ret, _, _ := syscall.Syscall(
-		(*_IFileSinkFilter2Vtbl)(unsafe.Pointer(*me.Ptr())).SetMode, 2,
+		(*dshowvt.IFileSinkFilter2)(unsafe.Pointer(*me.Ptr())).SetMode, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(flags), 0)
 

@@ -5,15 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IModalWindowVtbl struct {
-	win.IUnknownVtbl
-	Show uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
 type IModalWindow struct{ win.IUnknown }
@@ -32,7 +26,7 @@ func NewIModalWindow(ptr win.IUnknownPtr) IModalWindow {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-imodalwindow-show
 func (me *IModalWindow) Show(hwndOwner win.HWND) bool {
 	ret, _, _ := syscall.Syscall(
-		(*_IModalWindowVtbl)(unsafe.Pointer(*me.Ptr())).Show, 2,
+		(*shellvt.IModalWindow)(unsafe.Pointer(*me.Ptr())).Show, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwndOwner), 0)
 
