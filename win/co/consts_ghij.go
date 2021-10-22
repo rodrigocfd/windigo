@@ -98,6 +98,16 @@ const (
 	GDC_COLORMGMTCAPS   GDC = 121
 )
 
+// GetMenuDefaultItem() gmdiFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenudefaultitem
+type GMDI uint32
+
+const (
+	GMDI_GOINTOPOPUPS GMDI = 0x0002
+	GMDI_USEDISABLED  GMDI = 0x0001
+)
+
 // GlobalAlloc() uFlags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc

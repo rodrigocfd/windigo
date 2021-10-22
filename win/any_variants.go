@@ -133,6 +133,36 @@ func variantIconResId(v IconRes) unsafe.Pointer {
 //------------------------------------------------------------------------------
 
 type (
+	// A menu item identifier.
+	//
+	// Example:
+	//
+	//  func Foo(i win.MenuItem) {}
+	//
+	//  Foo(win.MenuItemCmd(4001))
+	//  Foo(win.MenuItemPos(2))
+	MenuItem    interface{ isIdPos() }
+	MenuItemCmd uint16 // A command ID for MenuItem interface.
+	MenuItemPos uint16 // A zero-based index for MenuItem interface.
+)
+
+func (MenuItemCmd) isIdPos() {}
+func (MenuItemPos) isIdPos() {}
+
+func variantMenuItem(v MenuItem) (uintptr, co.MF) {
+	switch v := v.(type) {
+	case MenuItemCmd:
+		return uintptr(v), co.MF_BYCOMMAND
+	case MenuItemPos:
+		return uintptr(v), co.MF_BYPOSITION
+	default:
+		panic("MenuItem does not accept a nil value.")
+	}
+}
+
+//------------------------------------------------------------------------------
+
+type (
 	// A resource identifier.
 	//
 	// Example:

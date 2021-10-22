@@ -432,6 +432,16 @@ func (hWnd HWND) HideCaret() {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-hilitemenuitem
+func (hWnd HWND) HiliteMenuItem(hMenu HMENU, item MenuItem, hilite bool) bool {
+	idPos, mf := variantMenuItem(item)
+	flags := util.Iif(hilite, co.MFS_HILITE, co.MFS_UNHILITE).(co.MF) | mf
+
+	ret, _, _ := syscall.Syscall6(proc.HiliteMenuItem.Addr(), 4,
+		uintptr(hWnd), uintptr(hMenu), idPos, uintptr((flags)), 0, 0)
+	return ret != 0
+}
+
 // Returns the window instance with GetWindowLongPtr().
 func (hWnd HWND) Hinstance() HINSTANCE {
 	return HINSTANCE(hWnd.GetWindowLongPtr(co.GWLP_HINSTANCE))
@@ -542,6 +552,13 @@ func (hWnd HWND) MapDialogRect(rc *RECT) {
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-menuitemfrompoint
+func (hWnd HWND) MenuItemFromPoint(hMenu HMENU, pt POINT) (int, bool) {
+	ret, _, _ := syscall.Syscall6(proc.MenuItemFromPoint.Addr(), 4,
+		uintptr(hWnd), uintptr(hMenu), uintptr(pt.X), uintptr(pt.Y), 0, 0)
+	return int(ret), int(ret) != -1
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
@@ -691,6 +708,15 @@ func (hWnd HWND) SetParent(hwndNewParent HWND) HWND {
 		panic(wErr)
 	} else {
 		return hPrev
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenu
+func (hWnd HWND) SetMenu(hMenu HMENU) {
+	ret, _, err := syscall.Syscall(proc.SetMenu.Addr(), 2,
+		uintptr(hWnd), uintptr(hMenu), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
 	}
 }
 

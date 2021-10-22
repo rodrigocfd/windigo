@@ -106,31 +106,45 @@ func (hMenu HMENU) AppendMenu(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuitem
-func (hMenu HMENU) CheckMenuItem(idOrPos uint32, uCheck co.MF) co.MF {
+func (hMenu HMENU) CheckMenuItem(item MenuItem, check bool) bool {
+	idPos, mf := variantMenuItem(item)
+	flags := util.Iif(check, co.MF_CHECKED, co.MF_UNCHECKED).(co.MF) | mf
+
 	ret, _, err := syscall.Syscall(proc.CheckMenuItem.Addr(), 3,
-		uintptr(hMenu), uintptr(idOrPos), uintptr(uCheck))
+		uintptr(hMenu), idPos, uintptr(flags))
 	if int(ret) == -1 {
 		panic(errco.ERROR(err))
 	}
-	return co.MF(ret)
+	return co.MF(ret) == co.MF_CHECKED
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuradioitem
 func (hMenu HMENU) CheckMenuRadioItem(
-	firstIdOrPos, lastIdOrPos, checkedIdOrPos uint32, flags co.MF) {
+	firstItem, lastItem, checkedItem MenuItem) {
+
+	idPosFirst, mfFirst := variantMenuItem(firstItem)
+	idPosLast, mfLast := variantMenuItem(lastItem)
+	idPosChecked, mfChecked := variantMenuItem(checkedItem)
+
+	if mfFirst != mfLast {
+		panic("firstItem and lastItem have different variant types.")
+	} else if mfFirst != mfChecked {
+		panic("firstItem and checkedItem have different variant types.")
+	}
 
 	ret, _, err := syscall.Syscall6(proc.CheckMenuRadioItem.Addr(), 5,
-		uintptr(hMenu), uintptr(firstIdOrPos), uintptr(lastIdOrPos),
-		uintptr(checkedIdOrPos), uintptr(flags), 0)
+		uintptr(hMenu), idPosFirst, idPosLast, idPosChecked,
+		uintptr(mfFirst), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deletemenu
-func (hMenu HMENU) DeleteMenu(idOrPos uint32, flags co.MF) {
+func (hMenu HMENU) DeleteMenu(item MenuItem) {
+	idPos, mf := variantMenuItem(item)
 	ret, _, err := syscall.Syscall(proc.DeleteMenu.Addr(), 3,
-		uintptr(hMenu), uintptr(idOrPos), uintptr(flags))
+		uintptr(hMenu), idPos, uintptr(mf))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -145,38 +159,27 @@ func (hMenu HMENU) DestroyMenu() {
 	}
 }
 
-// Enables or disables many items at once, by command ID.
-func (hMenu HMENU) EnableByCmdId(isEnabled bool, cmdIds ...int) {
-	flags := co.MF_BYCOMMAND
-	if isEnabled {
-		flags |= co.MF_ENABLED
-	} else {
-		flags |= co.MF_GRAYED
-	}
-
-	for _, cmdId := range cmdIds {
-		hMenu.EnableMenuItem(uint32(cmdId), flags)
-	}
-}
-
-// Enables or disables many items at once, by zero-based position.
-func (hMenu HMENU) EnableByPos(isEnabled bool, indexes ...int) {
-	mf := co.MF_BYCOMMAND |
-		util.Iif(isEnabled, co.MF_ENABLED, co.MF_GRAYED).(co.MF)
-
-	for _, index := range indexes {
-		hMenu.EnableMenuItem(uint32(index), mf)
-	}
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablemenuitem
-func (hMenu HMENU) EnableMenuItem(idOrPos uint32, enable co.MF) co.MF {
+func (hMenu HMENU) EnableMenuItem(item MenuItem, enable bool) bool {
+	idPos, mf := variantMenuItem(item)
+	flags := util.Iif(enable, co.MF_ENABLED, co.MF_DISABLED).(co.MF) | mf
+
 	ret, _, err := syscall.Syscall(proc.EnableMenuItem.Addr(), 3,
-		uintptr(hMenu), uintptr(idOrPos), uintptr(enable))
+		uintptr(hMenu), idPos, uintptr(flags))
 	if int(ret) == -1 {
 		panic(errco.ERROR(err))
 	}
-	return co.MF(ret)
+	return co.MF(ret) == co.MF_CHECKED
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenudefaultitem
+func (hMenu HMENU) GetMenuDefaultItem(gmdiFlags co.GMDI) (pos MenuItem) {
+	ret, _, err := syscall.Syscall(proc.GetMenuDefaultItem.Addr(), 3,
+		uintptr(hMenu), 1, uintptr(gmdiFlags))
+	if int(ret) == -1 {
+		panic(errco.ERROR(err))
+	}
+	return MenuItemPos(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuitemcount
@@ -197,11 +200,10 @@ func (hMenu HMENU) GetMenuItemID(pos uint32) int32 {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuiteminfow
-func (hMenu HMENU) GetMenuItemInfo(
-	idOrPos uint32, byPosition bool, mii *MENUITEMINFO) {
-
+func (hMenu HMENU) GetMenuItemInfo(item MenuItem, mii *MENUITEMINFO) {
+	idPos, mf := variantMenuItem(item)
 	ret, _, err := syscall.Syscall6(proc.GetMenuItemInfo.Addr(), 4,
-		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(byPosition),
+		uintptr(hMenu), idPos, util.BoolToUintptr(mf == co.MF_BYPOSITION),
 		uintptr(unsafe.Pointer(mii)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -217,21 +219,53 @@ func (hMenu HMENU) GetSubMenu(pos uint32) (HMENU, bool) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenuitemw
-func (hMenu HMENU) InsertMenuItem(
-	idOrPos uint32, byPosition bool, mii *MENUITEMINFO) {
-
+func (hMenu HMENU) InsertMenuItem(itemBefore MenuItem, mii *MENUITEMINFO) {
+	idPos, mf := variantMenuItem(itemBefore)
 	ret, _, err := syscall.Syscall6(proc.InsertMenuItem.Addr(), 4,
-		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(byPosition),
+		uintptr(hMenu), idPos, util.BoolToUintptr(mf == co.MF_BYPOSITION),
 		uintptr(unsafe.Pointer(mii)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-removemenu
+func (hMenu HMENU) RemoveMenu(item MenuItem) {
+	idPos, mf := variantMenuItem(item)
+	ret, _, err := syscall.Syscall(proc.RemoveMenu.Addr(), 3,
+		uintptr(hMenu), idPos, uintptr(mf))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenudefaultitem
-func (hMenu HMENU) SetMenuDefaultItem(idOrPos uint32, byPosition bool) {
+func (hMenu HMENU) SetMenuDefaultItem(item MenuItem) {
+	idPos, mf := variantMenuItem(item)
 	ret, _, err := syscall.Syscall(proc.SetMenuDefaultItem.Addr(), 3,
-		uintptr(hMenu), uintptr(idOrPos), util.BoolToUintptr(byPosition))
+		uintptr(hMenu), idPos, util.BoolToUintptr(mf == co.MF_BYPOSITION))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuinfo
+func (hMenu HMENU) SetMenuInfo(info *MENUINFO) {
+	ret, _, err := syscall.Syscall(proc.SetMenuInfo.Addr(), 2,
+		uintptr(hMenu), uintptr(unsafe.Pointer(info)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuitembitmaps
+func (hMenu HMENU) SetMenuItemBitmaps(
+	item MenuItem, hBmpUnchecked, hBmpChecked HBITMAP) {
+
+	idPos, mf := variantMenuItem(item)
+	ret, _, err := syscall.Syscall6(proc.SetMenuItemBitmaps.Addr(), 5,
+		uintptr(hMenu), idPos, uintptr(mf),
+		uintptr(hBmpUnchecked), uintptr(hBmpChecked), 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
