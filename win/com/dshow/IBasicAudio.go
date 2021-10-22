@@ -15,6 +15,8 @@ type IBasicAudio struct{ autom.IDispatch }
 
 // Constructs a COM object from a pointer to its COM virtual table.
 //
+// ⚠️ You must defer IBasicAudio.Release().
+//
 // Example:
 //
 //  var gb dshow.IGraphBuilder // initialized somewhere
@@ -23,8 +25,6 @@ type IBasicAudio struct{ autom.IDispatch }
 //      gb.QueryInterface(dshowco.IID_IBasicAudio),
 //  )
 //  defer ba.Release()
-//
-// ⚠️ You must defer IBasicAudio.Release().
 func NewIBasicAudio(ptr win.IUnknownPtr) IBasicAudio {
 	return IBasicAudio{
 		IDispatch: autom.NewIDispatch(ptr),

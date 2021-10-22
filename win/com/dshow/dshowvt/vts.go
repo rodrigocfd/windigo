@@ -201,3 +201,25 @@ type IMFVideoDisplayControl struct {
 	SetFullscreen      uintptr
 	GetFullscreen      uintptr
 }
+
+// IPin virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
+type IPin struct {
+	win.IUnknownVtbl
+	Connect                  uintptr
+	ReceiveConnection        uintptr
+	Disconnect               uintptr
+	ConnectedTo              uintptr
+	ConnectionMediaType      uintptr
+	QueryPinInfo             uintptr
+	QueryDirection           uintptr
+	QueryId                  uintptr
+	QueryAccept              uintptr
+	EnumMediaTypes           uintptr
+	QueryInternalConnections uintptr
+	EndOfStream              uintptr
+	BeginFlush               uintptr
+	EndFlush                 uintptr
+	NewSegment               uintptr
+}

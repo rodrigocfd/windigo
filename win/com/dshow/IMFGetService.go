@@ -14,6 +14,8 @@ type IMFGetService struct{ win.IUnknown }
 
 // Constructs a COM object from a pointer to its COM virtual table.
 //
+// ⚠️ You must defer IMFGetService.Release().
+//
 // Example:
 //
 //  var vmr dshow.IBaseFilter // initialized somewhere
@@ -22,14 +24,15 @@ type IMFGetService struct{ win.IUnknown }
 //      vmr.QueryInterface(dshowco.IID_IMFGetService),
 //  )
 //  defer gs.Release()
-//
-// ⚠️ You must defer IMFGetService.Release().
 func NewIMFGetService(ptr win.IUnknownPtr) IMFGetService {
 	return IMFGetService{
 		IUnknown: win.NewIUnknown(ptr),
 	}
 }
 
+// ⚠️ The returned pointer must be used to construct a COM object; you must
+// defer its Release().
+//
 // Example for IMFVideoDisplayControl:
 //
 //  var gs dshow.IMFGetService // initialized somewhere
@@ -41,9 +44,6 @@ func NewIMFGetService(ptr win.IUnknownPtr) IMFGetService {
 //      ),
 //  )
 //  defer vdc.Release()
-//
-// ⚠️ The returned pointer must be used to construct a COM object; you must
-// defer its Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
 func (me *IMFGetService) GetService(

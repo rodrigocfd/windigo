@@ -6,29 +6,9 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
+	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-type _IPinVtbl struct {
-	win.IUnknownVtbl
-	Connect                  uintptr
-	ReceiveConnection        uintptr
-	Disconnect               uintptr
-	ConnectedTo              uintptr
-	ConnectionMediaType      uintptr
-	QueryPinInfo             uintptr
-	QueryDirection           uintptr
-	QueryId                  uintptr
-	QueryAccept              uintptr
-	EnumMediaTypes           uintptr
-	QueryInternalConnections uintptr
-	EndOfStream              uintptr
-	BeginFlush               uintptr
-	EndFlush                 uintptr
-	NewSegment               uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
 type IPin struct{ win.IUnknown }
@@ -45,7 +25,7 @@ func NewIPin(ptr win.IUnknownPtr) IPin {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-beginflush
 func (me *IPin) BeginFlush() {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).BeginFlush, 1,
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).BeginFlush, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 
@@ -60,7 +40,7 @@ func (me *IPin) BeginFlush() {
 func (me *IPin) Connect(mt *AM_MEDIA_TYPE) (IPin, error) {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).Connect, 3,
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).Connect, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)),
 		uintptr(unsafe.Pointer(mt)))
@@ -78,7 +58,7 @@ func (me *IPin) Connect(mt *AM_MEDIA_TYPE) (IPin, error) {
 func (me *IPin) ConnectedTo() (IPin, error) {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).ConnectedTo, 2,
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).ConnectedTo, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
@@ -92,7 +72,7 @@ func (me *IPin) ConnectedTo() (IPin, error) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connectionmediatype
 func (me *IPin) ConnectionMediaType(mt *AM_MEDIA_TYPE) error {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).ConnectionMediaType, 2,
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).ConnectionMediaType, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(mt)), 0)
 
@@ -106,7 +86,7 @@ func (me *IPin) ConnectionMediaType(mt *AM_MEDIA_TYPE) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-disconnect
 func (me *IPin) Disconnect() {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).Disconnect, 1,
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).Disconnect, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 
@@ -118,7 +98,7 @@ func (me *IPin) Disconnect() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endflush
 func (me *IPin) EndFlush() {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).EndFlush, 1,
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).EndFlush, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 
@@ -130,7 +110,7 @@ func (me *IPin) EndFlush() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endofstream
 func (me *IPin) EndOfStream() {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).EndOfStream, 1,
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).EndOfStream, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
 
@@ -145,7 +125,7 @@ func (me *IPin) EndOfStream() {
 func (me *IPin) EnumMediaTypes() (IEnumMediaTypes, error) {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).EnumMediaTypes, 2,
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).EnumMediaTypes, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
@@ -159,7 +139,7 @@ func (me *IPin) EnumMediaTypes() (IEnumMediaTypes, error) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-queryaccept
 func (me *IPin) QueryAccept(mt *AM_MEDIA_TYPE) (bool, error) {
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).QueryAccept, 2,
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).QueryAccept, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(mt)), 0)
 
@@ -174,7 +154,7 @@ func (me *IPin) QueryAccept(mt *AM_MEDIA_TYPE) (bool, error) {
 func (me *IPin) QueryDirection() dshowco.PIN_DIRECTION {
 	var pPinDir dshowco.PIN_DIRECTION
 	ret, _, _ := syscall.Syscall(
-		(*_IPinVtbl)(unsafe.Pointer(*me.Ptr())).QueryDirection, 2,
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).QueryDirection, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pPinDir)), 0)
 

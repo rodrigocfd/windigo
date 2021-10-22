@@ -16,6 +16,8 @@ type IMediaControl struct{ autom.IDispatch }
 
 // Constructs a COM object from a pointer to its COM virtual table.
 //
+// ⚠️ You must defer IMediaControl.Release().
+//
 // Example:
 //
 //  var gb dshow.IGraphBuilder // initialized somewhere
@@ -24,8 +26,6 @@ type IMediaControl struct{ autom.IDispatch }
 //      gb.QueryInterface(dshowco.IID_IMediaControl),
 //  )
 //  defer mc.Release()
-//
-// ⚠️ You must defer IMediaControl.Release().
 func NewIMediaControl(ptr win.IUnknownPtr) IMediaControl {
 	return IMediaControl{
 		IDispatch: autom.NewIDispatch(ptr),

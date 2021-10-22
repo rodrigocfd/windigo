@@ -17,6 +17,8 @@ type IMediaSeeking struct{ win.IUnknown }
 
 // Constructs a COM object from a pointer to its COM virtual table.
 //
+// ⚠️ You must defer IMediaSeeking.Release().
+//
 // Example:
 //
 //  var gb dshow.IGraphBuilder // initialized somewhere
@@ -25,8 +27,6 @@ type IMediaSeeking struct{ win.IUnknown }
 //      gb.QueryInterface(dshowco.IID_IMediaSeeking),
 //  )
 //  defer ms.Release()
-//
-// ⚠️ You must defer IMediaSeeking.Release().
 func NewIMediaSeeking(ptr win.IUnknownPtr) IMediaSeeking {
 	return IMediaSeeking{
 		IUnknown: win.NewIUnknown(ptr),
