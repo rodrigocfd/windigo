@@ -70,8 +70,8 @@ func (me *IShellItemArray) GetDisplayNames(sigdnName shellco.SIGDN) []string {
 
 	for i := 0; i < count; i++ {
 		shellItem := me.GetItemAt(i)
+		defer shellItem.Release() // will pile up at the end of the function, but that's fine
 		files = append(files, shellItem.GetDisplayName(sigdnName))
-		shellItem.Release()
 	}
 
 	return files

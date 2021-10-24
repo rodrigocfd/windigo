@@ -14,6 +14,7 @@ type Ini interface {
 	Get(sectionName, keyName string) (string, bool)  // Retrieves the specific section/key value, if existing.
 	SaveToFile(filePath string) error                // Saves the INI to a file.
 	Section(sectionName string) (*_IniSection, bool) // Returns the specific section, if existing.
+	Sections() []_IniSection                         // Returns all the sections.
 }
 
 //------------------------------------------------------------------------------
@@ -30,20 +31,18 @@ type (
 )
 
 type _Ini struct {
-	Sections []_IniSection
+	sections []_IniSection
 }
 
 // Loads the sections and keys of an INI file.
 func LoadIni(filePath string) (Ini, error) {
-	fin, err := OpenFileMapped(filePath, co.OPEN_FILE_READ_EXISTING)
+	me := &_Ini{}
+	lines, err := me.loadLines(filePath)
 	if err != nil {
 		return nil, err
 	}
 
-	lines := fin.ReadLines()
-	fin.Close()
-
-	sections := make([]_IniSection, 0, 4) // arbitrary
+	me.sections = make([]_IniSection, 0, 4) // arbitrary
 	curSection := _IniSection{}
 
 	for _, line := range lines {
@@ -53,7 +52,7 @@ func LoadIni(filePath string) (Ini, error) {
 
 		if line[0] == '[' && line[len(line)-1] == ']' { // [section] ?
 			if curSection.Name != "" {
-				sections = append(sections, curSection)
+				me.sections = append(me.sections, curSection)
 			}
 			curSection = _IniSection{ // create a new section with the given name
 				Name: strings.TrimSpace(line[1 : len(line)-1]),
@@ -70,21 +69,31 @@ func LoadIni(filePath string) (Ini, error) {
 	}
 
 	if curSection.Name != "" { // for the last section
-		sections = append(sections, curSection)
+		me.sections = append(me.sections, curSection)
 	}
 
-	return &_Ini{Sections: sections}, nil
+	return me, nil
+}
+
+func (me *_Ini) loadLines(filePath string) ([]string, error) {
+	fin, err := OpenFileMapped(filePath, co.OPEN_FILE_READ_EXISTING)
+	if err != nil {
+		return nil, err
+	}
+	defer fin.Close()
+
+	return fin.ReadLines(), nil
 }
 
 func (me *_Ini) AddSection(sectionName string) *_IniSection {
 	if section, exists := me.Section(sectionName); exists {
 		return section
 	} else {
-		me.Sections = append(me.Sections, _IniSection{
+		me.sections = append(me.sections, _IniSection{
 			Name: sectionName,
 			Keys: make([]_IniKey, 0),
 		})
-		return &me.Sections[len(me.Sections)-1]
+		return &me.sections[len(me.sections)-1]
 	}
 }
 
@@ -105,13 +114,13 @@ func (me *_Ini) Get(sectionName, keyName string) (string, bool) {
 func (me *_Ini) SaveToFile(filePath string) error {
 	serialized := strings.Builder{}
 
-	for i, section := range me.Sections {
+	for i, section := range me.sections {
 		serialized.WriteString("[" + section.Name + "]\r\n")
 		for _, key := range section.Keys {
 			serialized.WriteString(key.Name + "=" + key.Value + "\r\n")
 		}
 
-		isLast := i == len(me.Sections)-1
+		isLast := i == len(me.sections)-1
 		if !isLast {
 			serialized.WriteString("\r\n")
 		}
@@ -127,12 +136,16 @@ func (me *_Ini) SaveToFile(filePath string) error {
 }
 
 func (me *_Ini) Section(sectionName string) (*_IniSection, bool) {
-	for i := range me.Sections {
-		if me.Sections[i].Name == sectionName {
-			return &me.Sections[i], true
+	for i := range me.sections {
+		if me.sections[i].Name == sectionName {
+			return &me.sections[i], true
 		}
 	}
 	return nil, false
+}
+
+func (me *_Ini) Sections() []_IniSection {
+	return me.sections
 }
 
 // Adds a new key, if it doesn't exist yet.

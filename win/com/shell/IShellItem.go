@@ -116,8 +116,8 @@ func (me *IShellItem) GetDisplayName(sigdnName shellco.SIGDN) string {
 		uintptr(sigdnName), uintptr(unsafe.Pointer(&pv)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		defer win.CoTaskMemFree(pv)
 		name := win.Str.FromNativePtr((*uint16)(unsafe.Pointer(pv)))
-		win.CoTaskMemFree(pv)
 		return name
 	} else {
 		panic(hr)
