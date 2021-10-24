@@ -14,6 +14,12 @@ type _PathT struct{}
 var Path _PathT
 
 // Returns whether the path ends with at least one of the given extensions.
+//
+// Example:
+//
+//  var docPath string // initialized somewhere
+//
+//  isDocument := win.Path.HasExtension(docPath, "txt", "doc")
 func (_PathT) HasExtension(path string, extensions ...string) bool {
 	pathUpper := strings.ToUpper(path)
 	for _, extension := range extensions {
@@ -24,9 +30,17 @@ func (_PathT) HasExtension(path string, extensions ...string) bool {
 	return false
 }
 
-// Returns all the file names that match a pattern like "C:\\foo\\*.txt".
+// Returns all the file names that match a pattern.
 //
-// Uses FindFirstFile() and related functions.
+// Uses FindFirstFile() and HFIND functions.
+//
+// Example:
+//
+//  files, err := win.Path.ListFilesInFolder("C:\\Temp\\*.txt")
+//
+//  for _, file := range files {
+//      println(file)
+//  }
 func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 	wfd := WIN32_FIND_DATA{}
 	hFind, found, err := FindFirstFile(pathAndPattern, &wfd)
@@ -57,7 +71,11 @@ func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 	return retFiles, nil // search finished successfully
 }
 
-// Returns the path of the current executable, without trailing slash.
+// Returns the path of the current executable, without trailing backslash.
+//
+// Example, loading a file which is the same folder of the EXE:
+//
+//  namesPath := win.Path.ExePath() + "\\names.txt"
 func (_PathT) ExePath() string {
 	return Path.GetPath(HINSTANCE(0).GetModuleFileName())
 }
@@ -71,16 +89,17 @@ func (_PathT) Exists(path string) bool {
 // Retrieves the file name of the path.
 func (_PathT) GetFileName(path string) string {
 	if slashIdx := strings.LastIndex(path, "\\"); slashIdx == -1 {
-		return path
+		return path // path contains just the file name
 	} else {
 		return path[slashIdx+1:]
 	}
 }
 
-// Retrieves the path without the file name itself, and without trailing slash.
+// Retrieves the path without the file name itself, and without trailing
+// backslash.
 func (_PathT) GetPath(path string) string {
 	if slashIdx := strings.LastIndex(path, "\\"); slashIdx == -1 {
-		return path
+		return "" // path contains just the file name
 	} else {
 		return path[0:slashIdx]
 	}
@@ -107,16 +126,19 @@ func (_PathT) Sort(paths []string) {
 	})
 }
 
-// Replaces the current extension by the new one, which must start with a dot.
+// Replaces the current extension by the new one.
 func (_PathT) SwapExtension(path, newExtension string) string {
 	if !strings.HasPrefix(newExtension, ".") {
-		panic(fmt.Sprintf("New extension must start with a dot: \"%s\"", newExtension))
+		newExtension = "." + newExtension // must start with a dot
 	}
 
-	idxDot := strings.LastIndex(path, ".")
-	if idxDot == -1 {
-		panic(fmt.Sprintf("Path has no extension to be swapped: \"%s\"", path))
+	if strings.HasSuffix(path, "\\") {
+		panic(fmt.Sprintf("Path doesn't have a file name: %s", path))
 	}
 
-	return path[:idxDot] + newExtension
+	if idxDot := strings.LastIndex(path, "."); idxDot == -1 {
+		return path + newExtension
+	} else {
+		return path[:idxDot] + newExtension
+	}
 }
