@@ -11,6 +11,18 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#atom
 type ATOM uint16
 
+// A handle to an object.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
+type HANDLE syscall.Handle
+
+// A handle to a tree view control item.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
+type HTREEITEM HANDLE
+
+//------------------------------------------------------------------------------
+
 // Specifies an RGB color.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/gdi/colorref
@@ -36,6 +48,7 @@ func (c COLORREF) Blue() uint8 {
 	return LOBYTE(LOWORD(uint32(c) >> 16))
 }
 
+// Converts the COLORREF to an RGBQUAD struct.
 func (c COLORREF) ToRgbquad() RGBQUAD {
 	rq := RGBQUAD{}
 	rq.SetBlue(c.Blue())
@@ -44,15 +57,7 @@ func (c COLORREF) ToRgbquad() RGBQUAD {
 	return rq
 }
 
-// A handle to an object.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
-type HANDLE syscall.Handle
-
-// A handle to a tree view control item.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
-type HTREEITEM HANDLE
+//------------------------------------------------------------------------------
 
 // Language and sublanguage identifier.
 //
@@ -78,6 +83,8 @@ func (lid LANGID) Lang() co.LANG { return co.LANG(uint16(lid) & 0x3ff) }
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-sublangid
 func (lid LANGID) SubLang() co.SUBLANG { return co.SUBLANG(uint16(lid) >> 10) }
 
+//------------------------------------------------------------------------------
+
 // Locale identifier.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/intl/locale-identifiers
@@ -101,6 +108,8 @@ func (lcid LCID) LangId() LANGID { return LANGID(uint16(lcid)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-sortidfromlcid
 func (lcid LCID) SortId() co.SORT { return co.SORT((uint32(lcid) >> 16) & 0xf) }
+
+//------------------------------------------------------------------------------
 
 // First message parameter.
 //
