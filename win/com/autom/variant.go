@@ -85,7 +85,7 @@ func NewVariantDate(v time.Time) VARIANT {
 	vt.vt = automco.VT_DATE
 
 	var double float64
-	st := win.SYSTEMTIME{}
+	var st win.SYSTEMTIME
 	st.FromTime(v)
 
 	ret, _, _ := syscall.Syscall(proc.SystemTimeToVariantTime.Addr(), 2,
@@ -103,7 +103,7 @@ func (vt *VARIANT) Date() time.Time {
 	}
 
 	double := math.Float64frombits(binary.LittleEndian.Uint64(vt.data[:]))
-	st := win.SYSTEMTIME{}
+	var st win.SYSTEMTIME
 
 	ret, _, _ := syscall.Syscall(proc.VariantTimeToSystemTime.Addr(), 2,
 		uintptr(math.Float64bits(double)), uintptr(unsafe.Pointer(&st)), 0)

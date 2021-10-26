@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/binary"
 	"strings"
 	"time"
 )
@@ -58,6 +59,13 @@ func RemoveAccelAmpersands(text string) string {
 		buf.WriteRune(runes[len(runes)-1])
 	}
 	return buf.String()
+}
+
+// Reverses the bytes, not the bits.
+func ReverseBytes64(n uint64) uint64 {
+	var buf64 [8]byte
+	binary.LittleEndian.PutUint64(buf64[:], n)
+	return binary.BigEndian.Uint64(buf64[:])
 }
 
 //------------------------------------------------------------------------------

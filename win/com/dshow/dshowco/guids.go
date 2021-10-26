@@ -29,6 +29,5 @@ const (
 	IID_IMediaSeeking          co.IID = "36b73880-c2c8-11cf-8b46-00805f6cef60"
 	IID_IMFGetService          co.IID = "fa993888-4383-415a-a930-dd472a8cf6f7"
 	IID_IMFVideoDisplayControl co.IID = "a490b1e4-ab84-4d31-a1b2-181e03b1077a"
-	IID_IPersist               co.IID = "0000010c-0000-0000-c000-000000000046"
 	IID_IPin                   co.IID = "56a86891-0ad4-11ce-b03a-0020af0ba770"
 )

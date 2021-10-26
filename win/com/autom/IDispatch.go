@@ -26,6 +26,13 @@ func NewIDispatch(ptr win.IUnknownPtr) IDispatch {
 // ⚠️ You must defer ITypeInfo.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
+//
+// Example:
+//
+//  var iDisp autom.IDispatch // initialized somewhere
+//
+//  tyInfo := iDisp.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
+//  defer tyInfo.Release()
 func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall6(
@@ -43,6 +50,9 @@ func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
 	}
 }
 
+// If the object provides type information, this number is 1; otherwise the
+// number is 0.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
 func (me *IDispatch) GetTypeInfoCount() int {
 	var pctInfo uint32

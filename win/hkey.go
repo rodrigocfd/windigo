@@ -226,10 +226,10 @@ type _KeyInfo struct {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryinfokeyw
 func (hKey HKEY) QueryInfoKey() (_KeyInfo, error) {
-	info := _KeyInfo{}
-	classBuf := [_MAX_PATH + 1]uint16{} // arbitrary
+	var info _KeyInfo
+	var classBuf [_MAX_PATH + 1]uint16 // arbitrary
 	classBufLen := uint32(len(classBuf))
-	ft := FILETIME{}
+	var ft FILETIME
 
 	ret, _, _ := syscall.Syscall12(proc.RegQueryInfoKey.Addr(), 12,
 		uintptr(hKey),

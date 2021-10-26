@@ -1,11 +1,11 @@
 package win
 
 import (
-	"encoding/binary"
 	"fmt"
 	"strconv"
 	"strings"
 
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -29,11 +29,15 @@ func NewGuidFromIid(iid co.IID) *GUID {
 	return _NewGuidFromStr(string(iid))
 }
 
-func _NewGuidFromStr(strGuid string) *GUID {
-	if len(strGuid) != 36 {
-		panic(fmt.Sprintf("Malformed GUID: %s", strGuid))
-	}
+// Formats the GUID as a string.
+func (g *GUID) String() string {
+	data4 := util.ReverseBytes64(g.Data4)
+	return fmt.Sprintf("%08x-%04x-%04x-%04x-%012x",
+		g.Data1, g.Data2, g.Data3,
+		data4>>48, data4&0xffff_ffff_ffff)
+}
 
+func _NewGuidFromStr(strGuid string) *GUID {
 	strs := strings.Split(strGuid, "-")
 	if len(strs) != 5 {
 		panic(fmt.Sprintf("Malformed GUID parts: %s", strGuid))
@@ -43,32 +47,34 @@ func _NewGuidFromStr(strGuid string) *GUID {
 	if e != nil {
 		panic(e)
 	}
-	num2, e := strconv.ParseUint(strs[1], 16, 16)
-	if e != nil {
-		panic(e)
+	if num1 > 0xffff_ffff {
+		panic(fmt.Sprintf("GUID part 1 overflow: %x", num1))
 	}
-	num3, e := strconv.ParseUint(strs[2], 16, 16)
-	if e != nil {
-		panic(e)
+
+	var nums16 [3]uint16
+	for p := 1; p <= 3; p++ {
+		num, e := strconv.ParseUint(strs[p], 16, 16)
+		if e != nil {
+			panic(e)
+		}
+		if num > 0xffff {
+			panic(fmt.Sprintf("GUID part %d overflows: %x", p, num))
+		}
+		nums16[p-1] = uint16(num)
 	}
-	num4, e := strconv.ParseUint(strs[3], 16, 16)
-	if e != nil {
-		panic(e)
-	}
+
 	num5, e := strconv.ParseUint(strs[4], 16, 64)
 	if e != nil {
 		panic(e)
 	}
-
-	newGuid := &GUID{
-		Data1: uint32(num1),
-		Data2: uint16(num2),
-		Data3: uint16(num3),
-		Data4: (uint64(num4) << 48) | num5,
+	if num5 > 0xffff_ffff_ffff {
+		panic(fmt.Sprintf("GUID part 5 overflow: %x", num5))
 	}
 
-	buf64 := [8]byte{}
-	binary.BigEndian.PutUint64(buf64[:], newGuid.Data4)
-	newGuid.Data4 = binary.LittleEndian.Uint64(buf64[:]) // reverse bytes of Data4
-	return newGuid
+	return &GUID{
+		Data1: uint32(num1),
+		Data2: nums16[0],
+		Data3: nums16[1],
+		Data4: util.ReverseBytes64((uint64(nums16[2]) << 48) | num5),
+	}
 }

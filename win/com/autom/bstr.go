@@ -45,7 +45,7 @@ func (bstr BSTR) SysReAllocString(s string) BSTR {
 	return BSTR(ret)
 }
 
-// Creates a string from the BSTR pointer.
-func (bstr BSTR) ToString() string {
+// Converts the BSTR pointer to a string.
+func (bstr BSTR) String() string {
 	return win.Str.FromNativePtr((*uint16)(unsafe.Pointer(bstr)))
 }
