@@ -25,14 +25,14 @@ func NewIDispatch(ptr win.IUnknownPtr) IDispatch {
 
 // ⚠️ You must defer ITypeInfo.Release().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
-//
 // Example:
 //
 //  var iDisp autom.IDispatch // initialized somewhere
 //
 //  tyInfo := iDisp.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
 //  defer tyInfo.Release()
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
 func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
 	var ppQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall6(

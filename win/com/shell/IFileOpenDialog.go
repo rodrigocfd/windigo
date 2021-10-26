@@ -53,6 +53,12 @@ func (me *IFileOpenDialog) GetResults() IShellItemArray {
 
 // Calls IFileOpenDialog.GetResults() and IShellItemArray.GetDisplayNames(),
 // returning the files selected by the user.
+//
+// Example:
+//
+//  var fod shell.IFileOpenDialog // initialized somewhere
+//
+//  chosenFiles := fod.GetResultsDisplayNames(shellco.SIGDN_FILESYSPATH)
 func (me *IFileOpenDialog) GetResultsDisplayNames(
 	sigdnName shellco.SIGDN) []string {
 

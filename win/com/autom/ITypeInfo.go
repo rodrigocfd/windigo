@@ -30,8 +30,6 @@ type _TypeDoc struct {
 	HelpFile    string
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdocumentation
-//
 // Example:
 //
 //  var info autom.ITypeInfo // initialized somewhere
@@ -39,6 +37,8 @@ type _TypeDoc struct {
 //
 //  docum := info.GetDocumentation(funDesc.Memid)
 //  fmt.Printf("Method name: %s\n", docum.Name)
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdocumentation
 func (me *ITypeInfo) GetDocumentation(memId MEMBERID) _TypeDoc {
 	var name, docString, helpContext, helpFile uintptr
 	ret, _, _ := syscall.Syscall6(
@@ -76,8 +76,6 @@ func (me *ITypeInfo) GetDocumentation(memId MEMBERID) _TypeDoc {
 
 // ⚠️ You must defer ITypeInfo.ReleaseFuncDesc() on the returned object.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getfuncdesc
-//
 // Example:
 //
 //  var info autom.ITypeInfo // initialized somewhere
@@ -90,6 +88,8 @@ func (me *ITypeInfo) GetDocumentation(memId MEMBERID) _TypeDoc {
 //      fmt.Printf("Member ID: %d, invoke kind: %d\n",
 //          funDesc.Memid, funDesc.Invkind)
 //  }
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getfuncdesc
 func (me *ITypeInfo) GetFuncDesc(index int) *FUNCDESC {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
@@ -106,8 +106,6 @@ func (me *ITypeInfo) GetFuncDesc(index int) *FUNCDESC {
 
 // ⚠️ You must defer ITypeInfo.ReleaseTypeAttr() on the returned object.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-gettypeattr
-//
 // Example:
 //
 //  var info autom.ITypeInfo // initialized somewhere
@@ -117,6 +115,8 @@ func (me *ITypeInfo) GetFuncDesc(index int) *FUNCDESC {
 //
 //  fmt.Printf("Num funcs: %d, GUID: %s\n",
 //      attr.CFuncs, attr.Guid.String())
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-gettypeattr
 func (me *ITypeInfo) GetTypeAttr() *TYPEATTR {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(

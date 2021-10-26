@@ -148,6 +148,12 @@ func (me *IFileDialog) GetResult() IShellItem {
 
 // Calls IFileDialog.GetResult() and IShellItem.GetDisplayName(), returning the
 // file selected by the user.
+//
+// Example:
+//
+//  var fd shell.IFileDialog // initialized somewhere
+//
+//  chosenPath := fd.GetResultDisplayName(shellco.SIGDN_FILESYSPATH)
 func (me *IFileDialog) GetResultDisplayName(sigdnName shellco.SIGDN) string {
 	ish := me.GetResult()
 	defer ish.Release()
@@ -205,6 +211,15 @@ func (me *IFileDialog) SetFileTypeIndex(index int) {
 	}
 }
 
+// Example:
+//
+//  var fd shell.IFileDialog // initialized somewhere
+//
+//  fd.SetFileTypes([]shell.FilterSpec{
+//      {Name: "MP3 audio files", Spec: "*.mp3"},
+//      {Name: "All files", Spec: "*.*"},
+//  })
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypes
 func (me *IFileDialog) SetFileTypes(filterSpec []FilterSpec) {
 	comdlgFiSp := make([]COMDLG_FILTERSPEC, 0, len(filterSpec))
@@ -251,6 +266,15 @@ func (me *IFileDialog) SetOkButtonLabel(text string) {
 	}
 }
 
+// Example:
+//
+//  var fd shell.IFileDialog // initialized somewhere
+//
+//  fd.SetOptions(
+//      fd.GetOptions() |
+//      shellco.FOS_FORCEFILESYSTEM |
+//      shellco.FOS_FILEMUSTEXIST)
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setoptions
 func (me *IFileDialog) SetOptions(fos shellco.FOS) {
 	ret, _, _ := syscall.Syscall(
