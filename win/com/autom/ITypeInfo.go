@@ -5,36 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
-
-// ITypeInfo virtual table.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
-type ITypeInfoVtbl struct {
-	win.IUnknownVtbl
-	GetTypeAttr          uintptr
-	GetTypeComp          uintptr
-	GetFuncDesc          uintptr
-	GetVarDesc           uintptr
-	GetNames             uintptr
-	GetRefTypeOfImplType uintptr
-	GetImplTypeFlags     uintptr
-	GetIDsOfNames        uintptr
-	Invoke               uintptr
-	GetDocumentation     uintptr
-	GetDllEntry          uintptr
-	GetRefTypeInfo       uintptr
-	AddressOfMember      uintptr
-	CreateInstance       uintptr
-	GetMops              uintptr
-	GetContainingTypeLib uintptr
-	ReleaseTypeAttr      uintptr
-	ReleaseFuncDesc      uintptr
-	ReleaseVarDesc       uintptr
-}
-
-//------------------------------------------------------------------------------
 
 // ITypeInfo COM interface.
 //
@@ -56,7 +29,7 @@ func NewITypeInfo(ptr win.IUnknownPtr) ITypeInfo {
 func (me *ITypeInfo) GetFuncDesc(index int) *FUNCDESC {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
-		(*ITypeInfoVtbl)(unsafe.Pointer(*me.Ptr())).GetFuncDesc, 3,
+		(*automvt.ITypeInfoVtbl)(unsafe.Pointer(*me.Ptr())).GetFuncDesc, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(index), uintptr(unsafe.Pointer(&pv)))
 
@@ -73,7 +46,7 @@ func (me *ITypeInfo) GetFuncDesc(index int) *FUNCDESC {
 func (me *ITypeInfo) GetVarDesc(index int) *VARDESC {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
-		(*ITypeInfoVtbl)(unsafe.Pointer(*me.Ptr())).GetVarDesc, 3,
+		(*automvt.ITypeInfoVtbl)(unsafe.Pointer(*me.Ptr())).GetVarDesc, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(index), uintptr(unsafe.Pointer(&pv)))
 
@@ -87,7 +60,7 @@ func (me *ITypeInfo) GetVarDesc(index int) *VARDESC {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasefuncdesc
 func (me *ITypeInfo) ReleaseFuncDesc(funcDesc *FUNCDESC) {
 	ret, _, _ := syscall.Syscall(
-		(*ITypeInfoVtbl)(unsafe.Pointer(*me.Ptr())).ReleaseFuncDesc, 2,
+		(*automvt.ITypeInfoVtbl)(unsafe.Pointer(*me.Ptr())).ReleaseFuncDesc, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(funcDesc)), 0)
 
@@ -99,7 +72,7 @@ func (me *ITypeInfo) ReleaseFuncDesc(funcDesc *FUNCDESC) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasevardesc
 func (me *ITypeInfo) ReleaseVarDesc(varDesc *VARDESC) {
 	ret, _, _ := syscall.Syscall(
-		(*ITypeInfoVtbl)(unsafe.Pointer(*me.Ptr())).ReleaseVarDesc, 2,
+		(*automvt.ITypeInfoVtbl)(unsafe.Pointer(*me.Ptr())).ReleaseVarDesc, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(varDesc)), 0)
 
