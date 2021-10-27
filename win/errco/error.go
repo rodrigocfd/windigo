@@ -24,8 +24,7 @@ func (err ERROR) Unwrap() error {
 	return syscall.Errno(err)
 }
 
-// Implements fmt.Stringer; calls FormatMessage() and returns a full error
-// description.
+// Calls FormatMessage() and returns a full error description.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-formatmessagew
 func (err ERROR) String() string {

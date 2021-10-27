@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -20,6 +21,32 @@ type IDispatch struct{ win.IUnknown }
 func NewIDispatch(ptr win.IUnknownPtr) IDispatch {
 	return IDispatch{
 		IUnknown: win.NewIUnknown(ptr),
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-getidsofnames
+func (me *IDispatch) GetIDsOfNames(
+	lcid win.LCID, names []string) ([]MEMBERID, error) {
+
+	memberIds := make([]MEMBERID, len(names))
+	oleStrs := make([]*uint16, 0, len(names))
+	for _, name := range names {
+		oleStrs = append(oleStrs, win.Str.ToNativePtr(name))
+	}
+
+	ret, _, _ := syscall.Syscall6(
+		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetIDsOfNames, 6,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(win.NewGuidFromIid(co.IID_NULL))),
+		uintptr(unsafe.Pointer(&oleStrs[0])), uintptr(len(names)),
+		uintptr(lcid), uintptr(unsafe.Pointer(&memberIds[0])))
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return memberIds, nil
+	} else if hr == errco.DISP_E_UNKNOWNNAME || hr == errco.DISP_E_UNKNOWNLCID {
+		return nil, hr
+	} else {
+		panic(hr)
 	}
 }
 
