@@ -20,12 +20,12 @@ type GUID struct {
 }
 
 // Returns a GUID struct from a CLSID string.
-func NewGuidFromClsid(clsid co.CLSID) *GUID {
+func GuidFromClsid(clsid co.CLSID) *GUID {
 	return _NewGuidFromStr(string(clsid))
 }
 
 // Returns a GUID struct from an IID string.
-func NewGuidFromIid(iid co.IID) *GUID {
+func GuidFromIid(iid co.IID) *GUID {
 	return _NewGuidFromStr(string(iid))
 }
 

@@ -8,7 +8,7 @@ import (
 
 // High-level abstraction to an INI file.
 //
-// Created with LoadIni().
+// Created with IniLoad().
 type Ini interface {
 	AddSection(sectionName string) *_IniSection      // Adds a new section, if it doesn't exist yet.
 	Get(sectionName, keyName string) (string, bool)  // Retrieves the specific section/key value, if existing.
@@ -35,7 +35,7 @@ type _Ini struct {
 }
 
 // Loads the sections and keys of an INI file.
-func LoadIni(filePath string) (Ini, error) {
+func IniLoad(filePath string) (Ini, error) {
 	me := &_Ini{}
 	lines, err := me.loadLines(filePath)
 	if err != nil {
@@ -76,7 +76,7 @@ func LoadIni(filePath string) (Ini, error) {
 }
 
 func (me *_Ini) loadLines(filePath string) ([]string, error) {
-	fin, err := OpenFileMapped(filePath, co.OPEN_FILE_READ_EXISTING)
+	fin, err := FileMappedOpen(filePath, co.FILE_OPEN_READ_EXISTING)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +126,7 @@ func (me *_Ini) SaveToFile(filePath string) error {
 		}
 	}
 
-	fout, err := OpenFile(filePath, co.OPEN_FILE_RW_OPEN_OR_CREATE)
+	fout, err := FileOpen(filePath, co.FILE_OPEN_RW_OPEN_OR_CREATE)
 	if err != nil {
 		return err
 	}

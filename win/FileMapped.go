@@ -10,7 +10,7 @@ import (
 
 // High-level abstraction to HFILEMAP, providing several operations.
 //
-// Created with OpenFileMapped().
+// Created with FileMappedOpen().
 type FileMapped interface {
 	// Unmaps and releases the file resource.
 	Close()
@@ -54,10 +54,10 @@ type _FileMapped struct {
 // Opens a memory-mapped file, returning a new high-level FileMapped object.
 //
 // ⚠️ You must defer FileMapped.Close().
-func OpenFileMapped(
-	filePath string, desiredAccess co.OPEN_FILE) (FileMapped, error) {
+func FileMappedOpen(
+	filePath string, desiredAccess co.FILE_OPEN) (FileMapped, error) {
 
-	objFile, err := OpenFile(filePath, desiredAccess)
+	objFile, err := FileOpen(filePath, desiredAccess)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func OpenFileMapped(
 		hMap:     HFILEMAP(0),
 		pMem:     HFILEMAPVIEW(0),
 		sz:       0,
-		readOnly: desiredAccess == co.OPEN_FILE_READ_EXISTING,
+		readOnly: desiredAccess == co.FILE_OPEN_READ_EXISTING,
 	}
 
 	if err := me.mapInMemory(); err != nil {

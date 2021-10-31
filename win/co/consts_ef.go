@@ -143,6 +143,15 @@ const (
 	FILE_MAP_LARGE_PAGES     FILE_MAP = 0x2000_0000
 )
 
+// FileOpen() and FileMappedOpen() desired access.
+type FILE_OPEN uint8
+
+const (
+	FILE_OPEN_READ_EXISTING     FILE_OPEN = iota // Open an existing file for read only.
+	FILE_OPEN_RW_EXISTING                        // Open an existing file for read and write.
+	FILE_OPEN_RW_OPEN_OR_CREATE                  // Open a file or create if it doesn't exist, for read and write.
+)
+
 // CreateFile() dwShareMode.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew

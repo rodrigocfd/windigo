@@ -44,10 +44,10 @@ func CoCreateInstance(
 	}
 
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
-		uintptr(unsafe.Pointer(NewGuidFromClsid(rclsid))),
+		uintptr(unsafe.Pointer(GuidFromClsid(rclsid))),
 		uintptr(unsafe.Pointer(ppvOuter)),
 		uintptr(dwClsContext),
-		uintptr(unsafe.Pointer(NewGuidFromIid(riid))),
+		uintptr(unsafe.Pointer(GuidFromIid(riid))),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -102,7 +102,7 @@ func (me *IUnknown) QueryInterface(riid co.IID) IUnknownPtr {
 	var ppvQueried IUnknownPtr
 	ret, _, _ := syscall.Syscall((*me.ppv).QueryInterface, 3,
 		uintptr(unsafe.Pointer(me.ppv)),
-		uintptr(unsafe.Pointer(NewGuidFromIid(riid))),
+		uintptr(unsafe.Pointer(GuidFromIid(riid))),
 		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {

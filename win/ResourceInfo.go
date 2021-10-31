@@ -10,7 +10,7 @@ import (
 // High-level abstraction to an embedded resource, which can be loaded from an
 // executable of DLL file.
 //
-// Created with LoadResourceInfo().
+// Created with ResourceInfoLoad().
 type ResourceInfo interface {
 	FixedFileInfo() (*VS_FIXEDFILEINFO, bool)
 	Blocks() []_ResourceInfoBlock
@@ -36,7 +36,7 @@ type _ResourceInfo struct {
 }
 
 // Reads and stores an embedded resource from an executable or DLL file.
-func LoadResourceInfo(exePath string) (ResourceInfo, error) {
+func ResourceInfoLoad(exePath string) (ResourceInfo, error) {
 	resBuf, err := GetFileVersionInfo(exePath)
 	if err != nil {
 		return nil, err

@@ -37,7 +37,7 @@ func (me *IDispatch) GetIDsOfNames(
 	ret, _, _ := syscall.Syscall6(
 		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetIDsOfNames, 6,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(win.NewGuidFromIid(co.IID_NULL))),
+		uintptr(unsafe.Pointer(win.GuidFromIid(co.IID_NULL))),
 		uintptr(unsafe.Pointer(&oleStrs[0])), uintptr(len(names)),
 		uintptr(lcid), uintptr(unsafe.Pointer(&memberIds[0])))
 

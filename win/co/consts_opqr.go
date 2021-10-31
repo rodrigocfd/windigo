@@ -79,15 +79,6 @@ const (
 	ODT_C_COMBOBOX ODT_C = ODT_C(ODT_COMBOBOX)
 )
 
-// OpenFile() desired access.
-type OPEN_FILE uint8
-
-const (
-	OPEN_FILE_READ_EXISTING     OPEN_FILE = iota // Open an existing file for read only.
-	OPEN_FILE_RW_EXISTING                        // Open an existing file for read and write.
-	OPEN_FILE_RW_OPEN_OR_CREATE                  // Open a file or create if it doesn't exist, for read and write.
-)
-
 // CreateFileMapping() flProtect.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw

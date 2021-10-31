@@ -38,7 +38,7 @@ func NewShellItemFromPath(folderOrFilePath string) (IShellItem, error) {
 	var ppvQueried win.IUnknownPtr
 	ret, _, _ := syscall.Syscall6(proc.SHCreateItemFromParsingName.Addr(), 4,
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(folderOrFilePath))),
-		0, uintptr(unsafe.Pointer(win.NewGuidFromIid(shellco.IID_IShellItem))),
+		0, uintptr(unsafe.Pointer(win.GuidFromIid(shellco.IID_IShellItem))),
 		uintptr(unsafe.Pointer(&ppvQueried)),
 		0, 0)
 

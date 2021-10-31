@@ -6,7 +6,7 @@ import (
 
 // High-level abstraction to HFILE, providing several operations.
 //
-// Created with OpenFile().
+// Created with FileOpen().
 type File interface {
 	// Releases the file resource.
 	Close()
@@ -51,21 +51,21 @@ type _File struct {
 // Opens a file, returning a new high-level File object.
 //
 // ⚠️ You must defer File.Close().
-func OpenFile(filePath string, desiredAccess co.OPEN_FILE) (File, error) {
+func FileOpen(filePath string, desiredAccess co.FILE_OPEN) (File, error) {
 	var access co.GENERIC
 	var share co.FILE_SHARE
 	var disposition co.DISPOSITION
 
 	switch desiredAccess {
-	case co.OPEN_FILE_READ_EXISTING:
+	case co.FILE_OPEN_READ_EXISTING:
 		access = co.GENERIC_READ
 		share = co.FILE_SHARE_READ
 		disposition = co.DISPOSITION_OPEN_EXISTING
-	case co.OPEN_FILE_RW_EXISTING:
+	case co.FILE_OPEN_RW_EXISTING:
 		access = co.GENERIC_READ | co.GENERIC_WRITE
 		share = co.FILE_SHARE_NONE
 		disposition = co.DISPOSITION_OPEN_EXISTING
-	case co.OPEN_FILE_RW_OPEN_OR_CREATE:
+	case co.FILE_OPEN_RW_OPEN_OR_CREATE:
 		access = co.GENERIC_READ | co.GENERIC_WRITE
 		share = co.FILE_SHARE_NONE
 		disposition = co.DISPOSITION_OPEN_ALWAYS
