@@ -49,14 +49,16 @@ type (
 func (ClassNameAtom) isClassName() {}
 func (ClassNameStr) isClassName()  {}
 
-func variantClassName(v ClassName) unsafe.Pointer {
+func variantClassName(v ClassName) (uintptr, unsafe.Pointer) { // pointer must be kept alive
+	var buf unsafe.Pointer
 	switch v := v.(type) {
 	case ClassNameAtom:
-		return unsafe.Pointer(uintptr(v))
+		return uintptr(v), nil
 	case ClassNameStr:
-		return unsafe.Pointer(Str.ToNativePtr(string(v)))
+		buf = unsafe.Pointer(Str.ToNativePtr(string(v)))
+		return uintptr(buf), buf
 	default:
-		return nil
+		return 0, nil
 	}
 }
 
@@ -82,14 +84,16 @@ func (CursorResIdc) isCursorRes() {}
 func (CursorResInt) isCursorRes() {}
 func (CursorResStr) isCursorRes() {}
 
-func variantCursorResId(v CursorRes) unsafe.Pointer {
+func variantCursorResId(v CursorRes) (uintptr, unsafe.Pointer) { // pointer must be kept alive
+	var buf unsafe.Pointer
 	switch v := v.(type) {
 	case CursorResIdc:
-		return unsafe.Pointer(uintptr(v))
+		return uintptr(v), nil
 	case CursorResInt:
-		return unsafe.Pointer(uintptr(v))
+		return uintptr(v), nil
 	case CursorResStr:
-		return unsafe.Pointer(Str.ToNativePtr(string(v)))
+		buf = unsafe.Pointer(Str.ToNativePtr(string(v)))
+		return uintptr(buf), buf
 	default:
 		panic("CursorResId does not accept a nil value.")
 	}
@@ -117,14 +121,16 @@ func (IconResIdc) isIconRes() {}
 func (IconResInt) isIconRes() {}
 func (IconResStr) isIconRes() {}
 
-func variantIconResId(v IconRes) unsafe.Pointer {
+func variantIconResId(v IconRes) (uintptr, unsafe.Pointer) { // pointer must be kept alive
+	var buf unsafe.Pointer
 	switch v := v.(type) {
 	case IconResIdc:
-		return unsafe.Pointer(uintptr(v))
+		return uintptr(v), nil
 	case IconResInt:
-		return unsafe.Pointer(uintptr(v))
+		return uintptr(v), nil
 	case IconResStr:
-		return unsafe.Pointer(Str.ToNativePtr(string(v)))
+		buf = unsafe.Pointer(Str.ToNativePtr(string(v)))
+		return uintptr(buf), buf
 	default:
 		panic("CursorResId does not accept a nil value.")
 	}
@@ -179,12 +185,14 @@ type (
 func (ResIdInt) isResId() {}
 func (ResIdStr) isResId() {}
 
-func variantResId(v ResId) unsafe.Pointer {
+func variantResId(v ResId) (uintptr, unsafe.Pointer) { // pointer must be kept alive
+	var buf unsafe.Pointer
 	switch v := v.(type) {
 	case ResIdInt:
-		return unsafe.Pointer(uintptr(v))
+		return uintptr(v), nil
 	case ResIdStr:
-		return unsafe.Pointer(Str.ToNativePtr(string(v)))
+		buf = unsafe.Pointer(Str.ToNativePtr(string(v)))
+		return uintptr(buf), buf
 	default:
 		panic("ResId does not accept a nil value.")
 	}

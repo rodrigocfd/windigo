@@ -1,6 +1,7 @@
 package win
 
 import (
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -42,9 +43,11 @@ func (hInst HINSTANCE) CreateDialogParam(
 	templateName ResId, hwndParent HWND,
 	dialogFunc uintptr, dwInitParam LPARAM) HWND {
 
+	templateNameVal, templateNameBuf := variantResId(templateName)
 	ret, _, err := syscall.Syscall6(proc.CreateDialogParam.Addr(), 5,
-		uintptr(hInst), uintptr(variantResId(templateName)),
+		uintptr(hInst), templateNameVal,
 		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam), 0)
+	runtime.KeepAlive(templateNameBuf)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -56,9 +59,11 @@ func (hInst HINSTANCE) DialogBoxParam(
 	templateName ResId, hwndParent HWND,
 	dialogFunc uintptr, dwInitParam LPARAM) uintptr {
 
+	templateNameVal, templateNameBuf := variantResId(templateName)
 	ret, _, err := syscall.Syscall6(proc.DialogBoxParam.Addr(), 5,
-		uintptr(hInst), uintptr(variantResId(templateName)),
+		uintptr(hInst), templateNameVal,
 		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam), 0)
+	runtime.KeepAlive(templateNameBuf)
 	if int(ret) == -1 && errco.ERROR(err) != errco.SUCCESS {
 		panic(errco.ERROR(err))
 	}
@@ -124,8 +129,10 @@ func (hInst HINSTANCE) GetProcAddress(procName string) uintptr {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
 func (hInst HINSTANCE) LoadAccelerators(tableName ResId) HACCEL {
+	tableNameVal, tableNameBuf := variantResId(tableName)
 	ret, _, err := syscall.Syscall(proc.LoadAccelerators.Addr(), 2,
-		uintptr(hInst), uintptr(variantResId(tableName)), 0)
+		uintptr(hInst), tableNameVal, 0)
+	runtime.KeepAlive(tableNameBuf)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -134,8 +141,10 @@ func (hInst HINSTANCE) LoadAccelerators(tableName ResId) HACCEL {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) HCURSOR {
+	cursorNameVal, cursorNameBuf := variantCursorResId(cursorName)
 	ret, _, err := syscall.Syscall(proc.LoadCursor.Addr(), 2,
-		uintptr(hInst), uintptr(variantCursorResId(cursorName)), 0)
+		uintptr(hInst), cursorNameVal, 0)
+	runtime.KeepAlive(cursorNameBuf)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -144,8 +153,10 @@ func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) HCURSOR {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
+	iconNameVal, iconNameBuf := variantIconResId(iconName)
 	ret, _, err := syscall.Syscall(proc.LoadIcon.Addr(), 2,
-		uintptr(hInst), uintptr(variantIconResId(iconName)), 0)
+		uintptr(hInst), iconNameVal, 0)
+	runtime.KeepAlive(iconNameBuf)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -169,8 +180,10 @@ func (hInst HINSTANCE) LoadImage(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
 func (hInst HINSTANCE) LoadMenu(menuName ResId) HMENU {
+	menuNameVal, menuNameBuf := variantResId(menuName)
 	ret, _, err := syscall.Syscall(proc.LoadMenu.Addr(), 2,
-		uintptr(hInst), uintptr(variantResId(menuName)), 0)
+		uintptr(hInst), menuNameVal, 0)
+	runtime.KeepAlive(menuNameBuf)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
