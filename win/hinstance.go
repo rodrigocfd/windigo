@@ -105,7 +105,7 @@ func (hInst HINSTANCE) GetClassInfoEx(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew
 func (hInst HINSTANCE) GetModuleFileName() string {
-	buf := [_MAX_PATH + 1]uint16{}
+	var buf [_MAX_PATH + 1]uint16
 	ret, _, err := syscall.Syscall(proc.GetModuleFileName.Addr(), 3,
 		uintptr(hInst), uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
 	if ret == 0 {

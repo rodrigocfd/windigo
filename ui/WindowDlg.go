@@ -61,9 +61,7 @@ func _DlgProc(
 		pMe._WindowBase.hWnd = hDlg // assign actual HWND
 		hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, uintptr(unsafe.Pointer(pMe)))
 	} else {
-		if rawPtr := hDlg.GetWindowLongPtr(co.GWLP_DWLP_USER); rawPtr != 0 {
-			pMe = (*_WindowDlg)(unsafe.Pointer(rawPtr))
-		}
+		pMe = (*_WindowDlg)(unsafe.Pointer(hDlg.GetWindowLongPtr(co.GWLP_DWLP_USER)))
 	}
 
 	// If object pointer is not stored, then no processing is done.

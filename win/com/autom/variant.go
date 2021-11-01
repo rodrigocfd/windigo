@@ -41,7 +41,7 @@ func (vt *VARIANT) Type() automco.VT {
 
 // ⚠️ You must defer VARIANT.VariantClear().
 func NewVariantEmpty() VARIANT {
-	vt := VARIANT{}
+	var vt VARIANT
 	syscall.Syscall(proc.VariantInit.Addr(), 1,
 		uintptr(unsafe.Pointer(&vt)), 0, 0)
 	return vt

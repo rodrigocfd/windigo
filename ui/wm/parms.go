@@ -28,8 +28,9 @@ func (p AppCommand) Keys() co.MK               { return co.MK(p.Msg.LParam.LoWor
 
 type AskCbFormatName struct{ Msg Any }
 
-func (p AskCbFormatName) BufferSize() int { return int(p.Msg.WParam) }
-func (p AskCbFormatName) Buffer() *uint16 { return (*uint16)(unsafe.Pointer(p.Msg.LParam)) }
+func (p AskCbFormatName) Buffer() []uint16 {
+	return unsafe.Slice((*uint16)(unsafe.Pointer(p.Msg.LParam)), p.Msg.WParam)
+}
 
 type CaptureChanged struct{ Msg Any }
 

@@ -127,7 +127,7 @@ func (hProcess HPROCESS) GetExitCodeProcess() (uint32, error) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
 func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
-	processName := [_MAX_PATH + 1]uint16{}
+	var processName [_MAX_PATH + 1]uint16
 	ret, _, err := syscall.Syscall6(proc.GetModuleBaseName.Addr(), 4,
 		uintptr(hProcess), uintptr(hModule),
 		uintptr(unsafe.Pointer(&processName[0])),

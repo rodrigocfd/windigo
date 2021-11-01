@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"runtime"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/ui/wm"
@@ -88,8 +89,10 @@ func (me *_Edit) LimitText(maxChars int) {
 }
 
 func (me *_Edit) ReplaceSelection(replacementText string) {
+	pText := win.Str.ToNativePtr(replacementText)
 	me.Hwnd().SendMessage(co.EM_REPLACESEL,
-		1, win.LPARAM(unsafe.Pointer(win.Str.ToNativePtr(replacementText))))
+		1, win.LPARAM(unsafe.Pointer(pText)))
+	runtime.KeepAlive(pText)
 }
 
 func (me *_Edit) SelectedRange() (idxFirst, idxLast int) {

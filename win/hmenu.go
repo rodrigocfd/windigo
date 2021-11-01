@@ -3,6 +3,7 @@ package win
 import (
 	"fmt"
 	"reflect"
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -85,21 +86,24 @@ func (hMenu HMENU) AppendMenu(
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(uIDNewItem)))
 	}
 
-	var pItem unsafe.Pointer
+	var pItem uintptr
+	var pLpNewItem *uint16
 	switch v := lpNewItem.(type) {
 	case HBITMAP:
-		pItem = unsafe.Pointer(uintptr(v))
+		pItem = uintptr(v)
 	case LPARAM:
-		pItem = unsafe.Pointer(uintptr(v))
+		pItem = uintptr(v)
 	case string:
-		pItem = unsafe.Pointer(Str.ToNativePtr(v))
+		pLpNewItem = Str.ToNativePtr(v) // keep the buffer
+		pItem = uintptr(unsafe.Pointer(pLpNewItem))
 	default:
 		panic(fmt.Sprintf("Invalid type: %s", reflect.TypeOf(lpNewItem)))
 	}
 
 	ret, _, err := syscall.Syscall6(proc.AppendMenu.Addr(), 4,
-		uintptr(hMenu), uintptr(uFlags), pId, uintptr(pItem),
+		uintptr(hMenu), uintptr(uFlags), pId, pItem,
 		0, 0)
+	runtime.KeepAlive(pLpNewItem)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

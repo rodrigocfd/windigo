@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"runtime"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
@@ -19,8 +20,10 @@ func (me *_ComboBoxItems) new(ctrl ComboBox) {
 // Adds one or more items.
 func (me *_ComboBoxItems) Add(texts ...string) {
 	for _, text := range texts {
-		me.cmb.Hwnd().SendMessage(co.CB_ADDSTRING, 0,
-			win.LPARAM(unsafe.Pointer(win.Str.ToNativePtr(text))))
+		pText := win.Str.ToNativePtr(text)
+		me.cmb.Hwnd().SendMessage(co.CB_ADDSTRING,
+			0, win.LPARAM(unsafe.Pointer(pText)))
+		runtime.KeepAlive(pText)
 	}
 }
 

@@ -80,7 +80,7 @@ func (hTheme HTHEME) GetThemeMetric(
 func (hTheme HTHEME) GetThemePosition(
 	partStateId co.VS, propId co.TMT_POSITION) POINT {
 
-	pt := POINT{}
+	var pt POINT
 	ret, _, _ := syscall.Syscall6(proc.GetThemePosition.Addr(), 5,
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
 		uintptr(propId), uintptr(unsafe.Pointer(&pt)), 0)
@@ -92,7 +92,7 @@ func (hTheme HTHEME) GetThemePosition(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemerect
 func (hTheme HTHEME) GetThemeRect(partStateId co.VS, propId co.TMT_RECT) RECT {
-	rc := RECT{}
+	var rc RECT
 	ret, _, _ := syscall.Syscall6(proc.GetThemeRect.Addr(), 5,
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
 		uintptr(propId), uintptr(unsafe.Pointer(&rc)), 0)

@@ -136,9 +136,7 @@ func _WndProc(
 		pMe._WindowBase.hWnd = hWnd // assign actual HWND
 		hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 	} else {
-		if rawPtr := hWnd.GetWindowLongPtr(co.GWLP_USERDATA); rawPtr != 0 {
-			pMe = (*_WindowRaw)(unsafe.Pointer(rawPtr))
-		}
+		pMe = (*_WindowRaw)(unsafe.Pointer(hWnd.GetWindowLongPtr(co.GWLP_USERDATA)))
 	}
 
 	// If object pointer is not stored, then no processing is done.

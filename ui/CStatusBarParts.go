@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"runtime"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/ui/wm"
@@ -181,9 +182,11 @@ func (me *_StatusBarParts) SetIcon(partIndex int, hIcon win.HICON) {
 
 // Sets the text of the part.
 func (me *_StatusBarParts) SetText(partIndex int, text string) {
+	pText := win.Str.ToNativePtr(text)
 	ret := me.sb.Hwnd().SendMessage(co.SB_SETTEXT,
 		win.MAKEWPARAM(win.MAKEWORD(uint8(partIndex), 0), 0),
-		win.LPARAM(unsafe.Pointer(win.Str.ToNativePtr(text))))
+		win.LPARAM(unsafe.Pointer(pText)))
+	runtime.KeepAlive(pText)
 	if ret == 0 {
 		panic(fmt.Sprintf("SB_SETTEXT %d failed \"%s\".", partIndex, text))
 	}

@@ -317,7 +317,7 @@ func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcaretpos
 func GetCaretPos() RECT {
-	rc := RECT{}
+	var rc RECT
 	ret, _, err := syscall.Syscall(proc.GetCaretPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&rc)), 0, 0)
 	if ret == 0 {
@@ -335,7 +335,7 @@ func GetCommandLine() string {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getcurrentdirectory
 func GetCurrentDirectory() string {
-	buf := [_MAX_PATH + 1]uint16{}
+	var buf [_MAX_PATH + 1]uint16
 	ret, _, err := syscall.Syscall(proc.GetCurrentDirectory.Addr(), 2,
 		uintptr(len(buf)), uintptr(unsafe.Pointer(&buf[0])), 0)
 	if ret == 0 {
@@ -346,7 +346,7 @@ func GetCurrentDirectory() string {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcursorpos
 func GetCursorPos() POINT {
-	pt := POINT{}
+	var pt POINT
 	ret, _, err := syscall.Syscall(proc.GetCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
@@ -474,7 +474,7 @@ func GetMessageTime() time.Duration {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos
 func GetPhysicalCursorPos() POINT {
-	pt := POINT{}
+	var pt POINT
 	ret, _, err := syscall.Syscall(proc.GetPhysicalCursorPos.Addr(), 1,
 		uintptr(unsafe.Pointer(&pt)), 0, 0)
 	if ret == 0 {
@@ -534,7 +534,7 @@ func GetSystemTimes(idleTime, kernelTime, userTime *FILETIME) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimeasfiletime
 func GetSystemTimeAsFileTime() FILETIME {
-	ft := FILETIME{}
+	var ft FILETIME
 	syscall.Syscall(proc.GetSystemTimeAsFileTime.Addr(), 1,
 		uintptr(unsafe.Pointer(&ft)), 0, 0)
 	return ft
@@ -542,7 +542,7 @@ func GetSystemTimeAsFileTime() FILETIME {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimepreciseasfiletime
 func GetSystemTimePreciseAsFileTime() FILETIME {
-	ft := FILETIME{}
+	var ft FILETIME
 	syscall.Syscall(proc.GetSystemTimePreciseAsFileTime.Addr(), 1,
 		uintptr(unsafe.Pointer(&ft)), 0, 0)
 	return ft
@@ -579,7 +579,7 @@ func GetTimeZoneInformationForYear(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getwindowsdirectoryw
 func GetWindowsDirectory() string {
-	buf := [_MAX_PATH + 1]uint16{}
+	var buf [_MAX_PATH + 1]uint16
 	ret, _, err := syscall.Syscall(proc.GetWindowsDirectory.Addr(), 2,
 		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)), 0)
 	if ret == 0 {

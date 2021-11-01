@@ -109,10 +109,7 @@ func _SubclassProc(
 	hWnd win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM,
 	uIdSubclass, dwRefData uintptr) uintptr {
 
-	var pMe *_NativeControlBase
-	if rawPtr := dwRefData; rawPtr != 0 {
-		pMe = (*_NativeControlBase)(unsafe.Pointer(rawPtr)) // retrieve passed pointer
-	}
+	pMe := (*_NativeControlBase)(unsafe.Pointer(dwRefData)) // retrieve passed pointer
 
 	// If object pointer is not stored, then no processing is done.
 	// Prevents processing after WM_NCDESTROY.
