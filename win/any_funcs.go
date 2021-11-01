@@ -1,6 +1,7 @@
 package win
 
 import (
+	"runtime"
 	"strings"
 	"syscall"
 	"time"
@@ -229,11 +230,14 @@ func DispatchMessage(msg *MSG) uintptr {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmgetcolorizationcolor
 func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool) {
+	bOpaqueBlend := int32(util.BoolToUintptr(isOpaqueBlend)) // BOOL
 	ret, _, _ := syscall.Syscall(proc.DwmGetColorizationColor.Addr(), 2,
-		uintptr(unsafe.Pointer(&color)), uintptr(unsafe.Pointer(&isOpaqueBlend)), 0)
+		uintptr(unsafe.Pointer(&color)), uintptr(unsafe.Pointer(&bOpaqueBlend)),
+		0)
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
+	isOpaqueBlend = bOpaqueBlend != 0
 	return
 }
 
@@ -278,13 +282,15 @@ func ExitProcess(exitCode uint32) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
 func ExpandEnvironmentStrings(src string) string {
+	pSrc := Str.ToNativePtr(src)
 	ret, _, _ := syscall.Syscall(proc.ExpandEnvironmentStrings.Addr(), 3,
-		uintptr(unsafe.Pointer(Str.ToNativePtr(src))), 0, 0)
+		uintptr(unsafe.Pointer(pSrc)), 0, 0)
 
 	buf := make([]uint16, ret)
 	ret, _, err := syscall.Syscall(proc.ExpandEnvironmentStrings.Addr(), 3,
-		uintptr(unsafe.Pointer(Str.ToNativePtr(src))),
+		uintptr(unsafe.Pointer(pSrc)),
 		uintptr(unsafe.Pointer(&buf[0])), ret)
+	runtime.KeepAlive(pSrc)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

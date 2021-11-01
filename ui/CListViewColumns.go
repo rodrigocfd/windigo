@@ -72,9 +72,10 @@ func (me *_ListViewColumns) SelectedTexts(columnIndex int) []string {
 
 // Sets the title of this column.
 func (me *_ListViewColumns) SetTitle(columnIndex int, text string) {
-	lvc := win.LVCOLUMN{}
-	lvc.ISubItem = int32(columnIndex)
-	lvc.Mask = co.LVCF_TEXT
+	lvc := win.LVCOLUMN{
+		ISubItem: int32(columnIndex),
+		Mask:     co.LVCF_TEXT,
+	}
 	lvc.SetPszText(win.Str.ToNativeSlice(text))
 
 	ret := me.lv.Hwnd().SendMessage(co.LVM_SETCOLUMN,
@@ -125,11 +126,12 @@ func (me *_ListViewColumns) Texts(columnIndex int) []string {
 
 // Retrieves the title of the column at the given index.
 func (me *_ListViewColumns) Title(columnIndex int) string {
-	titleBuf := [128]uint16{} // arbitrary
+	var titleBuf [128]uint16 // arbitrary
 
-	lvc := win.LVCOLUMN{}
-	lvc.ISubItem = int32(columnIndex)
-	lvc.Mask = co.LVCF_TEXT
+	lvc := win.LVCOLUMN{
+		ISubItem: int32(columnIndex),
+		Mask:     co.LVCF_TEXT,
+	}
 	lvc.SetPszText(titleBuf[:])
 
 	ret := me.lv.Hwnd().SendMessage(co.LVM_GETCOLUMN,

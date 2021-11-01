@@ -22,7 +22,7 @@ func _CreateOrInitDialog(parent AnyParent) co.WM {
 var _globalUiFont win.HFONT // Global font, usually Segoe UI.
 
 func _CreateGlobalUiFont() {
-	ncm := win.NONCLIENTMETRICS{}
+	var ncm win.NONCLIENTMETRICS
 	ncm.SetCbSize()
 
 	win.SystemParametersInfo(co.SPI_GETNONCLIENTMETRICS,

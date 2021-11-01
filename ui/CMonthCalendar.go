@@ -52,7 +52,7 @@ func NewMonthCalendar(parent AnyParent, opts *_MonthCalendarO) MonthCalendar {
 
 		parent.addResizingChild(me, opts.horz, opts.vert)
 
-		rcBound := win.RECT{}
+		var rcBound win.RECT
 		me.Hwnd().SendMessage(co.MCM_GETMINREQRECT,
 			0, win.LPARAM(unsafe.Pointer(&rcBound)))
 		me.Hwnd().SetWindowPos(win.HWND(0), 0, 0, rcBound.Right, rcBound.Bottom,
@@ -89,13 +89,13 @@ func (me *_MonthCalendar) On() *_MonthCalendarEvents {
 }
 
 func (me *_MonthCalendar) SelectDate(date time.Time) {
-	st := win.SYSTEMTIME{}
+	var st win.SYSTEMTIME
 	st.FromTime(date)
 	me.Hwnd().SendMessage(co.MCM_SETCURSEL, 0, win.LPARAM(unsafe.Pointer(&st)))
 }
 
 func (me *_MonthCalendar) SelectedDate() time.Time {
-	st := win.SYSTEMTIME{}
+	var st win.SYSTEMTIME
 	me.Hwnd().SendMessage(co.MCM_GETCURSEL, 0, win.LPARAM(unsafe.Pointer(&st)))
 	return st.ToTime()
 }

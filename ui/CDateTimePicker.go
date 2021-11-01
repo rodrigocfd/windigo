@@ -84,14 +84,14 @@ func (me *_DateTimePicker) On() *_DateTimePickerEvents {
 }
 
 func (me *_DateTimePicker) SetTime(newTime time.Time) {
-	st := win.SYSTEMTIME{}
+	var st win.SYSTEMTIME
 	st.FromTime(newTime)
 	me.Hwnd().SendMessage(co.DTM_SETSYSTEMTIME,
 		win.WPARAM(co.GDT_VALID), win.LPARAM(unsafe.Pointer(&st)))
 }
 
 func (me *_DateTimePicker) Time() time.Time {
-	st := win.SYSTEMTIME{}
+	var st win.SYSTEMTIME
 	ret := co.GDT(
 		me.Hwnd().SendMessage(co.DTM_GETSYSTEMTIME,
 			0, win.LPARAM(unsafe.Pointer(&st))),

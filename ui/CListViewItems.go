@@ -24,10 +24,11 @@ func (me *_ListViewItems) Add(texts ...string) ListViewItem {
 
 // Adds an item, specifying its icon and the texts under each column, returning the new item.
 func (me *_ListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewItem {
-	lvi := win.LVITEM{}
-	lvi.Mask = co.LVIF_TEXT | co.LVIF_IMAGE
-	lvi.IItem = 0x0fff_ffff // insert as last one
-	lvi.IImage = int32(iconIndex)
+	lvi := win.LVITEM{
+		Mask:   co.LVIF_TEXT | co.LVIF_IMAGE,
+		IItem:  0x0fff_ffff, // insert as last one
+		IImage: int32(iconIndex),
+	}
 	lvi.SetPszText(win.Str.ToNativeSlice(texts[0])) // first column is inserted right away
 
 	newIdx := int(

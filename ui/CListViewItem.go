@@ -51,11 +51,12 @@ func (me *_ListViewItem) EnsureVisible() {
 		rc := me.lv.Hwnd().GetClientRect()
 		cyList := rc.Bottom // total height of the listview
 
-		lvii := win.LVITEMINDEX{}
-		lvii.IItem = int32(me.lv.Hwnd().SendMessage(co.LVM_GETTOPINDEX, 0, 0)) // 1st visible item
-
-		rc = win.RECT{}
-		rc.Left = int32(co.LVIR_BOUNDS)
+		lvii := win.LVITEMINDEX{
+			IItem: int32(me.lv.Hwnd().SendMessage(co.LVM_GETTOPINDEX, 0, 0)), // 1st visible item
+		}
+		rc = win.RECT{
+			Left: int32(co.LVIR_BOUNDS),
+		}
 
 		ret := me.lv.Hwnd().SendMessage(co.LVM_GETITEMINDEXRECT,
 			win.WPARAM(unsafe.Pointer(&lvii)), win.LPARAM(unsafe.Pointer(&rc)))
@@ -65,9 +66,9 @@ func (me *_ListViewItem) EnsureVisible() {
 		cyItem := rc.Bottom - rc.Top // height of a single item
 		xTop := rc.Top               // topmost X of 1st visible item
 
-		lvii = win.LVITEMINDEX{}
-		lvii.IItem = int32(me.index)
-
+		lvii = win.LVITEMINDEX{
+			IItem: int32(me.index),
+		}
 		rc = win.RECT{}
 
 		ret = me.lv.Hwnd().SendMessage(co.LVM_GETITEMINDEXRECT,
@@ -180,8 +181,9 @@ func (me *_ListViewItem) SetLParam(lp win.LPARAM) {
 }
 
 func (me *_ListViewItem) SetText(columnIndex int, text string) {
-	lvi := win.LVITEM{}
-	lvi.ISubItem = int32(columnIndex)
+	lvi := win.LVITEM{
+		ISubItem: int32(columnIndex),
+	}
 	lvi.SetPszText(win.Str.ToNativeSlice(text))
 
 	ret := me.lv.Hwnd().SendMessage(co.LVM_SETITEMTEXT,

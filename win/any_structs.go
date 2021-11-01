@@ -906,10 +906,10 @@ func (st *SYSTEMTIME) FromDuration(dur time.Duration) {
 
 // Fills this SYSTEMTIME with the value of a time.Time.
 func (st *SYSTEMTIME) FromTime(val time.Time) {
-	ft := FILETIME{}
+	var ft FILETIME
 	ft.FromTime(val)
 
-	stUtc := SYSTEMTIME{}
+	var stUtc SYSTEMTIME
 	FileTimeToSystemTime(&ft, &stUtc)
 
 	// When converted, SYSTEMTIME will receive UTC values, so we need to convert

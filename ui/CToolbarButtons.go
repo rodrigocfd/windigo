@@ -21,11 +21,12 @@ func (me *_ToolbarButtons) new(ctrl Toolbar) {
 func (me *_ToolbarButtons) Add(
 	imgListIndex, iconIndex, cmdId int, text string) *_ToolbarButtons {
 
-	tbb := win.TBBUTTON{}
-	tbb.IdCommand = int32(cmdId)
-	tbb.FsStyle = co.BTNS_AUTOSIZE
-	tbb.FsState = co.TBSTATE_ENABLED
-	tbb.IString = win.Str.ToNativePtr(text)
+	tbb := win.TBBUTTON{
+		IdCommand: int32(cmdId),
+		FsStyle:   co.BTNS_AUTOSIZE,
+		FsState:   co.TBSTATE_ENABLED,
+		IString:   win.Str.ToNativePtr(text),
+	}
 	tbb.SetIBitmap(iconIndex, imgListIndex)
 
 	ret := me.tb.Hwnd().SendMessage(co.TB_ADDBUTTONS,
@@ -77,7 +78,7 @@ func (me *_ToolbarButtons) Enable(isEnabled bool, cmdId int) {
 
 // Retrieves the icon index of the button.
 func (me *_ToolbarButtons) Icon(cmdId int) int {
-	tbi := win.TBBUTTONINFO{}
+	var tbi win.TBBUTTONINFO
 	tbi.SetCbSize()
 	tbi.DwMask = co.TBIF_IMAGE
 
@@ -122,7 +123,7 @@ func (me *_ToolbarButtons) IsPressed(cmdId int) bool {
 
 // Retrieves the custom data associated with the button.
 func (me *_ToolbarButtons) LParam(cmdId int) win.LPARAM {
-	tbi := win.TBBUTTONINFO{}
+	var tbi win.TBBUTTONINFO
 	tbi.SetCbSize()
 	tbi.DwMask = co.TBIF_LPARAM
 
@@ -137,7 +138,7 @@ func (me *_ToolbarButtons) LParam(cmdId int) win.LPARAM {
 
 // Sets the icon index of the button.
 func (me *_ToolbarButtons) SetIcon(cmdId, iconIdex int) {
-	tbi := win.TBBUTTONINFO{}
+	var tbi win.TBBUTTONINFO
 	tbi.SetCbSize()
 	tbi.DwMask = co.TBIF_IMAGE
 	tbi.IImage = int32(iconIdex)
@@ -151,7 +152,7 @@ func (me *_ToolbarButtons) SetIcon(cmdId, iconIdex int) {
 
 // Sets the custom data associated with the button.
 func (me *_ToolbarButtons) SetLParam(cmdId, lp win.LPARAM) {
-	tbi := win.TBBUTTONINFO{}
+	var tbi win.TBBUTTONINFO
 	tbi.SetCbSize()
 	tbi.DwMask = co.TBIF_LPARAM
 	tbi.LParam = lp
@@ -165,7 +166,7 @@ func (me *_ToolbarButtons) SetLParam(cmdId, lp win.LPARAM) {
 
 // Sets the text of the button.
 func (me *_ToolbarButtons) SetText(cmdId int, text string) {
-	tbi := win.TBBUTTONINFO{}
+	var tbi win.TBBUTTONINFO
 	tbi.SetCbSize()
 	tbi.DwMask = co.TBIF_TEXT
 	tbi.SetPszText(win.Str.ToNativeSlice(text))
@@ -179,9 +180,9 @@ func (me *_ToolbarButtons) SetText(cmdId int, text string) {
 
 // Retrieves the text of the button.
 func (me *_ToolbarButtons) Text(cmdId int) string {
-	buf := [60]uint16{} // arbitrary
+	var buf [60]uint16 // arbitrary
 
-	tbi := win.TBBUTTONINFO{}
+	var tbi win.TBBUTTONINFO
 	tbi.SetCbSize()
 	tbi.DwMask = co.TBIF_TEXT
 	tbi.SetPszText(buf[:])
