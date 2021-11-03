@@ -82,9 +82,9 @@ func (hClip HCLIPBOARD) WriteString(text string) {
 	text8 := unsafe.Slice((*byte)(unsafe.Pointer(&text16[0])), len(text16)*2) // direct pointer conversion
 
 	hGlob := GlobalAlloc(co.GMEM_MOVEABLE, uint64(len(text8)))
-	pMem := hGlob.Lock()
+	pMem := hGlob.GlobalLock()
 	copy(pMem, text8)
-	hGlob.Unlock()
+	hGlob.GlobalUnlock()
 
 	hClip.SetClipboardData(co.CF_UNICODETEXT, hGlob)
 }

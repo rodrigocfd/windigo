@@ -178,7 +178,7 @@ func _FirstMainStuff() {
 func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
 	msgMem := win.GlobalAlloc(co.GMEM_FIXED, uint64(unsafe.Sizeof(win.MSG{})))
 	pMsg := (*win.MSG)(unsafe.Pointer(msgMem))
-	defer msgMem.Free()
+	defer msgMem.GlobalFree()
 
 	for {
 		if res, err := win.GetMessage(pMsg, win.HWND(0), 0, 0); err != nil {
@@ -216,7 +216,7 @@ func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
 func _RunModalLoop(hWnd win.HWND) {
 	msgMem := win.GlobalAlloc(co.GMEM_FIXED, uint64(unsafe.Sizeof(win.MSG{})))
 	pMsg := (*win.MSG)(unsafe.Pointer(msgMem))
-	defer msgMem.Free()
+	defer msgMem.GlobalFree()
 
 	for {
 		if res, err := win.GetMessage(pMsg, win.HWND(0), 0, 0); err != nil {

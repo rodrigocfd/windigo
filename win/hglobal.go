@@ -15,9 +15,10 @@ import (
 type HGLOBAL HANDLE
 
 // With co.GMEM_FIXED, the handle itself is the pointer to the memory block.
-// With co.GMEM_MOVEABLE, you must call HGLOBAL.Lock() to retrieve the pointer.
+// With co.GMEM_MOVEABLE, you must call HGLOBAL.GlobalLock() to retrieve the
+// pointer.
 //
-// ⚠️ You must defer HGLOBAL.Free().
+// ⚠️ You must defer HGLOBAL.GlobalFree().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
 func GlobalAlloc(uFlags co.GMEM, dwBytes uint64) HGLOBAL {
@@ -30,7 +31,7 @@ func GlobalAlloc(uFlags co.GMEM, dwBytes uint64) HGLOBAL {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalflags
-func (hGlobal HGLOBAL) Flags() co.GMEM {
+func (hGlobal HGLOBAL) GlobalFlags() co.GMEM {
 	ret, _, err := syscall.Syscall(proc.GlobalFlags.Addr(), 1,
 		uintptr(hGlobal), 0, 0)
 	if ret == _GMEM_INVALID_HANDLE {
@@ -40,7 +41,7 @@ func (hGlobal HGLOBAL) Flags() co.GMEM {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalfree
-func (hGlobal HGLOBAL) Free() {
+func (hGlobal HGLOBAL) GlobalFree() {
 	ret, _, err := syscall.Syscall(proc.GlobalFree.Addr(), 1,
 		uintptr(hGlobal), 0, 0)
 	if ret != 0 {
@@ -48,22 +49,23 @@ func (hGlobal HGLOBAL) Free() {
 	}
 }
 
-// ⚠️ You must defer HGLOBAL.Unlock(). After that, the slice must not be used.
+// ⚠️ You must defer HGLOBAL.GlobalUnlock(). After that, the slice must not be
+// used.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globallock
-func (hGlobal HGLOBAL) Lock() []byte {
+func (hGlobal HGLOBAL) GlobalLock() []byte {
 	ret, _, err := syscall.Syscall(proc.GlobalLock.Addr(), 1,
 		uintptr(hGlobal), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	return unsafe.Slice((*byte)(unsafe.Pointer(ret)), hGlobal.Size())
+	return unsafe.Slice((*byte)(unsafe.Pointer(ret)), hGlobal.GlobalSize())
 }
 
-// ⚠️ You must defer HGLOBAL.Free().
+// ⚠️ You must defer HGLOBAL.GlobalFree().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalrealloc
-func (hGlobal HGLOBAL) ReAlloc(dwBytes uint64, uFlags co.GMEM) HGLOBAL {
+func (hGlobal HGLOBAL) GlobalReAlloc(dwBytes uint64, uFlags co.GMEM) HGLOBAL {
 	ret, _, err := syscall.Syscall(proc.GlobalReAlloc.Addr(), 3,
 		uintptr(hGlobal), uintptr(dwBytes), uintptr(uFlags))
 	if ret == 0 {
@@ -73,7 +75,7 @@ func (hGlobal HGLOBAL) ReAlloc(dwBytes uint64, uFlags co.GMEM) HGLOBAL {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalsize
-func (hGlobal HGLOBAL) Size() uint64 {
+func (hGlobal HGLOBAL) GlobalSize() uint64 {
 	ret, _, err := syscall.Syscall(proc.GlobalSize.Addr(), 1,
 		uintptr(hGlobal), 0, 0)
 	if ret == 0 {
@@ -83,7 +85,7 @@ func (hGlobal HGLOBAL) Size() uint64 {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalunlock
-func (hGlobal HGLOBAL) Unlock() {
+func (hGlobal HGLOBAL) GlobalUnlock() {
 	ret, _, err := syscall.Syscall(proc.GlobalUnlock.Addr(), 1,
 		uintptr(hGlobal), 0, 0)
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
