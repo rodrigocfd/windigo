@@ -705,8 +705,13 @@ func (td *TASKDIALOGCONFIG) SetPszCollapsedControlText(v string) {
 func (td *TASKDIALOGCONFIG) SetPszFooter(v string) { td.pszFooter = Str.ToNativePtr(v) }
 
 // This struct is originally packed, so we must serialize it before using.
-func (td *TASKDIALOGCONFIG) serializePacked() ([]byte, *byte, *byte) { // pointers must be kept alive
-	var data [160]byte
+func (td *TASKDIALOGCONFIG) serializePacked() (HGLOBAL, *byte, *byte) { // pointers must be kept alive
+	hMem := GlobalAlloc(co.GMEM_FIXED, 160)
+	data := unsafe.Slice((*byte)(unsafe.Pointer(hMem)), 160)
+	for i := range data {
+		data[i] = 0x00
+	}
+
 	binary.LittleEndian.PutUint32(data[0:], 160) // cbSize
 	binary.LittleEndian.PutUint64(data[4:], uint64(td.HwndParent))
 	binary.LittleEndian.PutUint64(data[12:], uint64(td.HInstance))
@@ -752,7 +757,7 @@ func (td *TASKDIALOGCONFIG) serializePacked() ([]byte, *byte, *byte) { // pointe
 	binary.LittleEndian.PutUint64(data[148:], uint64(td.LpCallbackData))
 	binary.LittleEndian.PutUint32(data[156:], td.CxWidth)
 
-	return data[:], pButtonsPtr, pRadioButtonsPtr
+	return hMem, pButtonsPtr, pRadioButtonsPtr
 }
 
 // ⚠️ You must call SetDwSize().
