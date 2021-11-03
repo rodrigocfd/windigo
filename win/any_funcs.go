@@ -1018,10 +1018,11 @@ func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 
 	ret, _, _ := syscall.Syscall6(proc.TaskDialogIndirect.Addr(), 4,
 		uintptr(unsafe.Pointer(&packed[0])), uintptr(unsafe.Pointer(&pnButton)),
-		uintptr(0), uintptr(0), 0, 0)
-	runtime.KeepAlive(packed)
-	runtime.KeepAlive(buf1)
+		0, 0, 0, 0)
+
 	runtime.KeepAlive(buf2)
+	runtime.KeepAlive(buf1)
+	runtime.KeepAlive(packed)
 
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {
 		panic(wErr)

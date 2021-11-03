@@ -645,7 +645,7 @@ type TASKDIALOG_BUTTON struct {
 
 func (tdb *TASKDIALOG_BUTTON) SetPszButtonText(v string) { tdb.pszButtonText = Str.ToNativePtr(v) }
 
-// This struct is originally packed, so we must serialized it before using.
+// This struct is originally packed, so we must serialize it before using.
 func (tdb *TASKDIALOG_BUTTON) serializePacked() []byte {
 	var data [12]byte
 	binary.LittleEndian.PutUint32(data[0:], uint32(tdb.NButtonID))
@@ -704,7 +704,7 @@ func (td *TASKDIALOGCONFIG) SetPszCollapsedControlText(v string) {
 
 func (td *TASKDIALOGCONFIG) SetPszFooter(v string) { td.pszFooter = Str.ToNativePtr(v) }
 
-// This struct is originally packed, so we must serialized it before using.
+// This struct is originally packed, so we must serialize it before using.
 func (td *TASKDIALOGCONFIG) serializePacked() ([]byte, *byte, *byte) { // pointers must be kept alive
 	var data [160]byte
 	binary.LittleEndian.PutUint32(data[0:], 160) // cbSize
@@ -719,7 +719,7 @@ func (td *TASKDIALOGCONFIG) serializePacked() ([]byte, *byte, *byte) { // pointe
 
 	var pButtonsPtr *byte
 	if len(td.PButtons) > 0 {
-		pButtonsBuf := make([]byte, 0, len(td.PButtons)*12) // sizeof(TASKDIALOG_BUTTON)
+		pButtonsBuf := make([]byte, 0, len(td.PButtons)*12) // sizeof(TASKDIALOG_BUTTON) packed
 		for i := range td.PButtons {
 			pButtonsBuf = append(pButtonsBuf, td.PButtons[i].serializePacked()...)
 		}
@@ -732,7 +732,7 @@ func (td *TASKDIALOGCONFIG) serializePacked() ([]byte, *byte, *byte) { // pointe
 
 	var pRadioButtonsPtr *byte
 	if len(td.PRadioButtons) > 0 {
-		pRadioButtonsBuf := make([]byte, 0, len(td.PRadioButtons)*12) // sizeof(TASKDIALOG_BUTTON)
+		pRadioButtonsBuf := make([]byte, 0, len(td.PRadioButtons)*12) // sizeof(TASKDIALOG_BUTTON) packed
 		for i := range td.PRadioButtons {
 			pRadioButtonsBuf = append(pRadioButtonsBuf, td.PRadioButtons[i].serializePacked()...)
 		}
