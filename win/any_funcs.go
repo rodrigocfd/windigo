@@ -992,9 +992,11 @@ func SystemTimeToTzSpecificLocalTime(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
+	packed := taskConfig.serializePacked()
 	var pnButton co.ID
+
 	ret, _, _ := syscall.Syscall6(proc.TaskDialogIndirect.Addr(), 4,
-		uintptr(unsafe.Pointer(taskConfig)), uintptr(unsafe.Pointer(&pnButton)),
+		uintptr(unsafe.Pointer(&packed[0])), uintptr(unsafe.Pointer(&pnButton)),
 		uintptr(0), uintptr(0), 0, 0)
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {
 		panic(wErr)
