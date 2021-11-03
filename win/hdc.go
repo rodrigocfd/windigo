@@ -200,16 +200,39 @@ func (hdc HDC) EnumDisplayMonitors(
 	rcClip *RECT,
 	enumFunc func(hMon HMONITOR, hdcMon HDC, rcMon *RECT) bool) {
 
+	pPack := &_EnumMonitorPack{f: enumFunc}
+	if _globalEnumMonitorFuncs == nil {
+		_globalEnumMonitorFuncs = make(map[*_EnumMonitorPack]struct{}, 2)
+	}
+	_globalEnumMonitorFuncs[pPack] = struct{}{} // store pointer in the set
+
 	ret, _, err := syscall.Syscall6(proc.EnumDisplayMonitors.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(rcClip)),
-		syscall.NewCallback(
-			func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, _ LPARAM) uintptr {
-				return util.BoolToUintptr(enumFunc(hMon, hdcMon, rcMon))
-			}),
-		0, 0, 0)
+		_globalEnumMonitorCallback, uintptr(unsafe.Pointer(pPack)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
+}
+
+type _EnumMonitorPack struct {
+	f func(hMon HMONITOR, hdcMon HDC, rcMon *RECT) bool
+}
+
+var (
+	_globalEnumMonitorCallback uintptr = syscall.NewCallback(_EnumMonitorProc)
+	_globalEnumMonitorFuncs    map[*_EnumMonitorPack]struct{}
+)
+
+func _EnumMonitorProc(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lParam LPARAM) uintptr {
+	pPack := (*_EnumMonitorPack)(unsafe.Pointer(lParam))
+	retVal := uintptr(0)
+	if _, isStored := _globalEnumMonitorFuncs[pPack]; isStored {
+		retVal = util.BoolToUintptr(pPack.f(hMon, hdcMon, rcMon))
+		if retVal == 0 {
+			delete(_globalEnumMonitorFuncs, pPack) // remove from set
+		}
+	}
+	return retVal
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-fillpath

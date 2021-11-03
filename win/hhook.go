@@ -10,6 +10,9 @@ import (
 
 // A handle to a hook.
 //
+// Note that this callback is recreated each function call, and the number of
+// system callbacks is limited somewhere by the Go runtime.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hhook
 type HHOOK HANDLE
 

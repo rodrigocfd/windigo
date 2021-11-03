@@ -231,13 +231,34 @@ func (hWnd HWND) EndPaint(ps *PAINTSTRUCT) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumchildwindows
 func (hWnd HWND) EnumChildWindows(enumFunc func(hChild HWND) bool) {
+	pPack := &_EnumChildPack{f: enumFunc}
+	if _globalEnumChildFuncs == nil {
+		_globalEnumChildFuncs = make(map[*_EnumChildPack]struct{}, 2)
+	}
+	_globalEnumChildFuncs[pPack] = struct{}{} // store pointer in the set
+
 	syscall.Syscall(proc.EnumChildWindows.Addr(), 3,
-		uintptr(hWnd),
-		syscall.NewCallback(
-			func(hChild HWND, _ LPARAM) uintptr {
-				return util.BoolToUintptr(enumFunc(hChild))
-			}),
-		0) // no need to use LPARAM, Go automatically allocs closure contexts in the heap
+		uintptr(hWnd), _globalEnumChildCallback,
+		uintptr(unsafe.Pointer(pPack)))
+}
+
+type _EnumChildPack struct{ f func(hChild HWND) bool }
+
+var (
+	_globalEnumChildCallback uintptr = syscall.NewCallback(_EnumChildProc)
+	_globalEnumChildFuncs    map[*_EnumChildPack]struct{}
+)
+
+func _EnumChildProc(hChild HWND, lParam LPARAM) uintptr {
+	pPack := (*_EnumChildPack)(unsafe.Pointer(lParam))
+	retVal := uintptr(0)
+	if _, isStored := _globalEnumChildFuncs[pPack]; isStored {
+		retVal = util.BoolToUintptr(pPack.f(hChild))
+		if retVal == 0 {
+			delete(_globalEnumChildFuncs, pPack) // remove from set
+		}
+	}
+	return retVal
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getancestor
@@ -535,6 +556,15 @@ func (hWnd HWND) IsZoomed() bool {
 func (hWnd HWND) KillTimer(id uintptr) {
 	ret, _, err := syscall.Syscall(proc.KillTimer.Addr(), 2,
 		uintptr(hWnd), id, 0)
+
+	if id > 0xffff { // guess: Win32 pointers are greater than WORDs
+		delete(_globalTimerFuncs, (*_TimerPack)(unsafe.Pointer(id))) // remove from set
+		// At this moment, the callback pointer has no more references. If
+		// KillTimer() is called from within the callback itself, it's unsure
+		// whether the running function will be enough to keep its pointer from
+		// being collected by the GC, but it's reasonable to think so.
+	}
+
 	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
 		panic(errco.ERROR(err))
 	}
@@ -736,26 +766,73 @@ func (hWnd HWND) SetScrollInfo(
 	return int32(ret)
 }
 
-// ⚠️ You must defer HWND.KillTimer().
+// This method will create a timer that will post WM_TIMER messages, instead of
+// running a callback.
+//
+// The method returns the timer ID.
+//
+// ⚠️ You must call HWND.KillTimer() to stop the timer.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
-func (hWnd HWND) SetTimer(
-	id uintptr, msElapse uint32, timerFunc func(msElapsed uint32)) {
-
-	var cbTimer uintptr
-	if timerFunc != nil {
-		cbTimer = syscall.NewCallback(
-			func(_ HWND, _ uintptr, _ co.WM, msElapsed uint32) uintptr {
-				timerFunc(msElapsed)
-				return 0
-			})
-	}
-
+func (hWnd HWND) SetTimer(msElapse uint32, id uintptr) uintptr {
 	ret, _, err := syscall.Syscall6(proc.SetTimer.Addr(), 4,
-		uintptr(hWnd), id, uintptr(msElapse), cbTimer, 0, 0)
+		uintptr(hWnd), id, uintptr(msElapse), 0, 0, 0)
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		panic(wErr)
 	}
+	return id
+}
+
+// Creates a timer with SetTimer(), which runs the given callback instead of
+// posting WM_TIMER messages.
+//
+// The method returns the timer ID, which is also sent to the callback.
+//
+// ⚠️ You must call HWND.KillTimer() to stop the timer and free the allocated
+// resources.
+//
+// Example:
+//
+//  var hWnd HWND // initialized somewhere
+//
+//  hWnd.SetTimerCallback(2000, func(id uintptr) {
+//      println("Run once")
+//      hWnd.KillTimer(id)
+//  })
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
+func (hWnd HWND) SetTimerCallback(
+	msElapse uint32, timerFunc func(id uintptr)) uintptr {
+
+	pPack := &_TimerPack{f: timerFunc}
+	if _globalTimerFuncs == nil {
+		_globalTimerFuncs = make(map[*_TimerPack]struct{}, 1)
+	}
+	_globalTimerFuncs[pPack] = struct{}{} // store pointer in the set
+
+	id := uintptr(unsafe.Pointer(pPack)) // use the pointer as the timer ID
+
+	ret, _, err := syscall.Syscall6(proc.SetTimer.Addr(), 4,
+		uintptr(hWnd), id, uintptr(msElapse), _globalTimerCallback, 0, 0)
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		panic(wErr)
+	}
+	return id
+}
+
+type _TimerPack struct{ f func(id uintptr) }
+
+var (
+	_globalTimerCallback uintptr = syscall.NewCallback(_TimerProc)
+	_globalTimerFuncs    map[*_TimerPack]struct{}
+)
+
+func _TimerProc(_ HWND, _ co.WM, id uintptr, _ uint32) uintptr {
+	pPack := (*_TimerPack)(unsafe.Pointer(id))
+	if _, isStored := _globalTimerFuncs[pPack]; isStored {
+		pPack.f(id)
+	}
+	return 0
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowlongptrw
@@ -786,9 +863,6 @@ func (hWnd HWND) SetWindowPos(
 	}
 }
 
-// Use syscall.NewCallback() to convert the closure to uintptr, and keep this
-// uintptr to pass to RemoveWindowSubclass().
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-setwindowsubclass
 func (hWnd HWND) SetWindowSubclass(
 	subclassProc uintptr, idSubclass uint32, refData unsafe.Pointer) {
