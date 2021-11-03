@@ -28,7 +28,7 @@ func (me *_WindowRaw) generateWcx(
 	hCursor win.HCURSOR, hBrushBg win.HBRUSH, iconId int) string {
 
 	wcx.SetCbSize()
-	wcx.LpfnWndProc = syscall.NewCallback(_WndProc)
+	wcx.LpfnWndProc = _globalWndProc
 	wcx.HInstance = hInst
 	wcx.Style = classStyles
 	wcx.HCursor = hCursor
@@ -120,10 +120,14 @@ func (me *_WindowRaw) calcWndCoords(
 		win.SIZE{Cx: rc.Right - rc.Left, Cy: rc.Bottom - rc.Top}
 }
 
-// A set keeping all *_WindowRaw that were retrieved in _WndProc.
-var _globalWindowRawPtrs = make(map[*_WindowRaw]struct{}, 10)
+var (
+	// A set keeping all *_WindowRaw that were retrieved in _WndProc.
+	_globalWindowRawPtrs = make(map[*_WindowRaw]struct{}, 10)
 
-// Default window procedure.
+	// Default window procedure.
+	_globalWndProc uintptr = syscall.NewCallback(_WndProc)
+)
+
 func _WndProc(
 	hWnd win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
 

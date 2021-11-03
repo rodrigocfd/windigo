@@ -9,19 +9,14 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-var (
-	_globalBaseSubclassId  = uint32(0)  // incremented at each subclass installed
-	_globalSubclassProcPtr = uintptr(0) // necessary for RemoveWindowSubclass()
-)
-
-//------------------------------------------------------------------------------
-
+// Base to all native controls.
 type _NativeControlBase struct {
-	hWnd        win.HWND
-	ctrlId      int
-	parent      AnyParent
-	eventsSubcl _EventsWm // subclass events
-	subclassId  uint32
+	hWnd         win.HWND
+	ctrlId       int
+	parent       AnyParent
+	eventsSubcl  _EventsWm // subclass events
+	subclassId   uint32
+	subclassProc uintptr // necessary to circumvent InvalidInitCycle error
 }
 
 func (me *_NativeControlBase) new(parent AnyParent, ctrlId int) {
@@ -86,25 +81,30 @@ func (me *_NativeControlBase) assignDlgItem() {
 
 func (me *_NativeControlBase) installSubclassIfNeeded() {
 	if me.eventsSubcl.hasMessages() {
-		if _globalSubclassProcPtr == 0 {
-			_globalSubclassProcPtr = syscall.NewCallback(_SubclassProc)
-		}
-		_globalBaseSubclassId++
-		me.subclassId = _globalBaseSubclassId
+		_globalSubclassId++
+		me.subclassId = _globalSubclassId
+		me.subclassProc = _globalSubclassProc
 
 		_globalNativeControlBasePtrs[me] = struct{}{} // store pointer in the set
 
 		// Subclass is installed after window creation, thus WM_CREATE can never
 		// be handled for a subclassed control.
-		me.hWnd.SetWindowSubclass(_globalSubclassProcPtr,
+		me.hWnd.SetWindowSubclass(me.subclassProc,
 			me.subclassId, unsafe.Pointer(me)) // pass pointer to object itself
 	}
 }
 
-// A set keeping all *_NativeControlBase that were retrieved in _SubclassProc.
-var _globalNativeControlBasePtrs = make(map[*_NativeControlBase]struct{}, 10)
+var (
+	// incremented at each subclass installed
+	_globalSubclassId = uint32(0)
 
-// Default window procedure for subclassed child controls.
+	// A set keeping all *_NativeControlBase that were retrieved in _SubclassProc.
+	_globalNativeControlBasePtrs = make(map[*_NativeControlBase]struct{}, 10)
+
+	// Default window procedure for subclassed child controls.
+	_globalSubclassProc uintptr = syscall.NewCallback(_SubclassProc)
+)
+
 func _SubclassProc(
 	hWnd win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM,
 	uIdSubclass, dwRefData uintptr) uintptr {
@@ -120,7 +120,7 @@ func _SubclassProc(
 
 		if uMsg == co.WM_NCDESTROY { // even if the user handles WM_NCDESTROY, we must ensure cleanup
 			delete(_globalNativeControlBasePtrs, pMe) // remove from set
-			hWnd.RemoveWindowSubclass(_globalSubclassProcPtr, pMe.subclassId)
+			hWnd.RemoveWindowSubclass(pMe.subclassProc, pMe.subclassId)
 		}
 
 		if wasHandled {
@@ -132,7 +132,7 @@ func _SubclassProc(
 	} else if uMsg == co.WM_NCDESTROY {
 		// https://devblogs.microsoft.com/oldnewthing/20031111-00/?p=41883
 		delete(_globalNativeControlBasePtrs, pMe) // remove from set
-		hWnd.RemoveWindowSubclass(_globalSubclassProcPtr, pMe.subclassId)
+		hWnd.RemoveWindowSubclass(pMe.subclassProc, pMe.subclassId)
 	}
 
 	return hWnd.DefSubclassProc(uMsg, wParam, lParam) // message was not processed

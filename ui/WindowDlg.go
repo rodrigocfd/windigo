@@ -30,7 +30,7 @@ func (me *_WindowDlg) createDialog(hParent win.HWND, hInst win.HINSTANCE) {
 
 	// The hwnd member is saved in WM_INITDIALOG processing in dlgProc.
 	hInst.CreateDialogParam(win.ResIdInt(me.dialogId), hParent,
-		syscall.NewCallback(_DlgProc), win.LPARAM(unsafe.Pointer(me))) // pass pointer to object itself
+		_globalDlgProc, win.LPARAM(unsafe.Pointer(me))) // pass pointer to object itself
 }
 
 // Calls DialogBoxParam().
@@ -43,13 +43,17 @@ func (me *_WindowDlg) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
 
 	// The hwnd member is saved in WM_INITDIALOG processing in dlgProc.
 	hInst.DialogBoxParam(win.ResIdInt(me.dialogId), hParent,
-		syscall.NewCallback(_DlgProc), win.LPARAM(unsafe.Pointer(me))) // pass pointer to object itself
+		_globalDlgProc, win.LPARAM(unsafe.Pointer(me))) // pass pointer to object itself
 }
 
-// A set keeping all *_WindowDlg that were retrieved in _DlgProc.
-var _globalWindowDlgPtrs = make(map[*_WindowDlg]struct{}, 10)
+var (
+	// A set keeping all *_WindowDlg that were retrieved in _DlgProc.
+	_globalWindowDlgPtrs = make(map[*_WindowDlg]struct{}, 10)
 
-// Default dialog procedure.
+	// Default dialog procedure.
+	_globalDlgProc uintptr = syscall.NewCallback(_DlgProc)
+)
+
 func _DlgProc(
 	hDlg win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
 
