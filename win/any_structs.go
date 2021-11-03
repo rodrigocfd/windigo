@@ -706,11 +706,8 @@ func (td *TASKDIALOGCONFIG) SetPszFooter(v string) { td.pszFooter = Str.ToNative
 
 // This struct is originally packed, so we must serialize it before using.
 func (td *TASKDIALOGCONFIG) serializePacked() (HGLOBAL, *byte, *byte) { // pointers must be kept alive
-	hMem := GlobalAlloc(co.GMEM_FIXED, 160)
+	hMem := GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 160)
 	data := unsafe.Slice((*byte)(unsafe.Pointer(hMem)), 160)
-	for i := range data {
-		data[i] = 0x00
-	}
 
 	binary.LittleEndian.PutUint32(data[0:], 160) // cbSize
 	binary.LittleEndian.PutUint64(data[4:], uint64(td.HwndParent))

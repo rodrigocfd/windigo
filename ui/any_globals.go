@@ -176,7 +176,7 @@ func _FirstMainStuff() {
 
 // Runs the main window loop synchronously.
 func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
-	msgMem := win.GlobalAlloc(co.GMEM_FIXED, uint64(unsafe.Sizeof(win.MSG{})))
+	msgMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, uint64(unsafe.Sizeof(win.MSG{})))
 	pMsg := (*win.MSG)(unsafe.Pointer(msgMem))
 	defer msgMem.GlobalFree()
 
@@ -214,7 +214,7 @@ func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
 
 // Runs the modal window loop synchronously.
 func _RunModalLoop(hWnd win.HWND) {
-	msgMem := win.GlobalAlloc(co.GMEM_FIXED, uint64(unsafe.Sizeof(win.MSG{})))
+	msgMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, uint64(unsafe.Sizeof(win.MSG{})))
 	pMsg := (*win.MSG)(unsafe.Pointer(msgMem))
 	defer msgMem.GlobalFree()
 
