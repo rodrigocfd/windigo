@@ -1023,7 +1023,7 @@ type WNDCLASSEX struct {
 	HIcon         HICON
 	HCursor       HCURSOR
 	HbrBackground HBRUSH
-	LpszMenuName  *uint16
+	LpszMenuName  uintptr
 	LpszClassName *uint16
 	HIconSm       HICON
 }

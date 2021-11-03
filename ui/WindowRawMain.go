@@ -29,15 +29,12 @@ func NewWindowMain(opts *_WindowMainO) WindowMain {
 
 // Implements WindowMain.
 func (me *_WindowRawMain) RunAsMain() int {
-	if win.IsWindowsVistaOrGreater() {
-		win.SetProcessDPIAware()
-	}
-	win.InitCommonControls()
+	_FirstMainStuff()
 	_CreateGlobalUiFont()
 	defer _globalUiFont.DeleteObject()
 
 	hInst := win.GetModuleHandle(nil)
-	wcx := win.WNDCLASSEX{}
+	var wcx win.WNDCLASSEX
 	me.opts.className = me._WindowRaw.generateWcx(&wcx, hInst,
 		me.opts.className, me.opts.classStyles, me.opts.hCursor,
 		me.opts.hBrushBkgnd, me.opts.iconId)

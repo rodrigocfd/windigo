@@ -30,7 +30,7 @@ func NewWindowModal(opts *_WindowModalO) WindowModal {
 // Implements WindowModal.
 func (me *_WindowRawModal) ShowModal(parent AnyParent) {
 	hInst := parent.Hwnd().Hinstance()
-	wcx := win.WNDCLASSEX{}
+	var wcx win.WNDCLASSEX
 	me.opts.className = me._WindowRaw.generateWcx(&wcx, hInst,
 		me.opts.className, me.opts.classStyles, me.opts.hCursor,
 		me.opts.hBrushBkgnd, 0)

@@ -162,6 +162,19 @@ func (hProcess HPROCESS) GetProcessTimes() (
 	return
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setuserobjectinformationw
+func (hProcess HPROCESS) SetUserObjectInformation(
+	index co.UOI, info unsafe.Pointer, infoLen uintptr) error {
+
+	ret, _, err := syscall.Syscall6(proc.SetUserObjectInformation.Addr(), 4,
+		uintptr(hProcess), uintptr(index), uintptr(info), uintptr(infoLen),
+		0, 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess
 func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
 	ret, _, err := syscall.Syscall(proc.TerminateProcess.Addr(), 2,

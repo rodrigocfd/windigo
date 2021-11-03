@@ -742,7 +742,7 @@ func (hWnd HWND) SetScrollInfo(
 func (hWnd HWND) SetTimer(
 	id uintptr, msElapse uint32, timerFunc func(msElapsed uint32)) {
 
-	cbTimer := uintptr(0)
+	var cbTimer uintptr
 	if timerFunc != nil {
 		cbTimer = syscall.NewCallback(
 			func(_ HWND, _ uintptr, _ co.WM, msElapsed uint32) uintptr {

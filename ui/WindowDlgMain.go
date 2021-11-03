@@ -28,10 +28,7 @@ func NewWindowMainDlg(dialogId, iconId, accelTableId int) WindowMain {
 
 // Implements WindowMain.
 func (me *_WindowDlgMain) RunAsMain() int {
-	if win.IsWindowsVistaOrGreater() {
-		win.SetProcessDPIAware()
-	}
-	win.InitCommonControls()
+	_FirstMainStuff()
 	_CreateGlobalUiFont()
 	defer _globalUiFont.DeleteObject()
 

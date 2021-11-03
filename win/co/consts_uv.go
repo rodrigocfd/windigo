@@ -1,5 +1,15 @@
 package co
 
+// SetUserObjectInformation() nIndex.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setuserobjectinformationw
+type UOI int32
+
+const (
+	UOI_FLAGS                           UOI = 1
+	UOI_TIMERPROC_EXCEPTION_SUPPRESSION UOI = 7
+)
+
 // VerifyVersionInfo() dwTypeMask.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow

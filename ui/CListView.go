@@ -210,7 +210,7 @@ func (me *_ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		return
 	}
 
-	menuPos := win.POINT{} // menu anchor coords, relative to list view
+	var menuPos win.POINT // menu anchor coords, relative to list view
 
 	if followCursor { // usually when fired by a right-click
 		menuPos = win.GetCursorPos()         // relative to screen

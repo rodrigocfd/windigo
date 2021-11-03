@@ -25,7 +25,7 @@ func NewWindowControl(parent AnyParent, opts *_WindowControlO) WindowControl {
 
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		hInst := parent.Hwnd().Hinstance()
-		wcx := win.WNDCLASSEX{}
+		var wcx win.WNDCLASSEX
 		me.opts.className = me._WindowRaw.generateWcx(&wcx, hInst,
 			me.opts.className, me.opts.classStyles, me.opts.hCursor,
 			me.opts.hBrushBkgnd, 0)

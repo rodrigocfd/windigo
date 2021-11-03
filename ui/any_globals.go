@@ -158,9 +158,25 @@ func _CalcTextBoundBoxWithCheck(
 
 //------------------------------------------------------------------------------
 
+// First initializations for a main window.
+func _FirstMainStuff() {
+	if win.IsWindowsVistaOrGreater() {
+		win.SetProcessDPIAware()
+	}
+
+	win.InitCommonControls()
+
+	bVal := int32(0) // BOOL=FALSE; SetTimer() safety
+	err := win.GetCurrentProcess().SetUserObjectInformation(
+		co.UOI_TIMERPROC_EXCEPTION_SUPPRESSION, unsafe.Pointer(&bVal), unsafe.Sizeof(bVal))
+	if err != nil {
+		panic(err)
+	}
+}
+
 // Runs the main window loop synchronously.
 func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
-	msg := win.MSG{}
+	var msg win.MSG
 	for {
 		if res, err := win.GetMessage(&msg, win.HWND(0), 0, 0); err != nil {
 			panic(err)
@@ -195,7 +211,7 @@ func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
 
 // Runs the modal window loop synchronously.
 func _RunModalLoop(hWnd win.HWND) {
-	msg := win.MSG{}
+	var msg win.MSG
 	for {
 		if res, err := win.GetMessage(&msg, win.HWND(0), 0, 0); err != nil {
 			panic(err)
