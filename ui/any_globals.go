@@ -176,56 +176,62 @@ func _FirstMainStuff() {
 
 // Runs the main window loop synchronously.
 func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
-	var msg win.MSG
+	msgMem := win.GlobalAlloc(co.GMEM_FIXED, uint64(unsafe.Sizeof(win.MSG{})))
+	pMsg := (*win.MSG)(unsafe.Pointer(msgMem))
+	defer msgMem.Free()
+
 	for {
-		if res, err := win.GetMessage(&msg, win.HWND(0), 0, 0); err != nil {
+		if res, err := win.GetMessage(pMsg, win.HWND(0), 0, 0); err != nil {
 			panic(err)
 		} else if res == 0 {
 			// WM_QUIT was sent, gracefully terminate the program.
 			// If it returned -1, it will simply panic.
 			// WParam has the program exit code.
 			// https://docs.microsoft.com/en-us/windows/win32/winmsg/using-messages-and-message-queues
-			return int(msg.WParam)
+			return int(pMsg.WParam)
 		}
 
 		// Check if modeless...
 
 		// If a child window, will retrieve its top-level parent.
 		// If a top-level, use itself.
-		hTopLevel := msg.HWnd.GetAncestor(co.GA_ROOT)
+		hTopLevel := pMsg.HWnd.GetAncestor(co.GA_ROOT)
 
 		// If we have an accelerator table, try to translate the message.
-		if hAccel != 0 && hTopLevel.TranslateAccelerator(hAccel, &msg) == nil {
+		if hAccel != 0 && hTopLevel.TranslateAccelerator(hAccel, pMsg) == nil {
 			continue // message translated, no further processing is done
 		}
 
-		if hTopLevel.IsDialogMessage(&msg) {
+		if hTopLevel.IsDialogMessage(pMsg) {
 			// Processed all keyboard actions for child controls.
 			continue
 		}
 
-		win.TranslateMessage(&msg)
-		win.DispatchMessage(&msg)
+		win.TranslateMessage(pMsg)
+		win.DispatchMessage(pMsg)
 	}
 }
 
 // Runs the modal window loop synchronously.
 func _RunModalLoop(hWnd win.HWND) {
-	var msg win.MSG
+	msgMem := win.GlobalAlloc(co.GMEM_FIXED, uint64(unsafe.Sizeof(win.MSG{})))
+	pMsg := (*win.MSG)(unsafe.Pointer(msgMem))
+	defer msgMem.Free()
+
 	for {
-		if res, err := win.GetMessage(&msg, win.HWND(0), 0, 0); err != nil {
+		if res, err := win.GetMessage(pMsg, win.HWND(0), 0, 0); err != nil {
 			panic(err)
 		} else if res == 0 {
 			// WM_QUIT was sent, exit modal loop now and signal parent.
 			// If it returned -1, it will simply panic.
 			// https://devblogs.microsoft.com/oldnewthing/20050222-00/?p=36393
-			win.PostQuitMessage(int32(msg.WParam))
+			win.PostQuitMessage(int32(pMsg.WParam))
 			break
 		}
 
 		// If a child window, will retrieve its top-level parent.
 		// If a top-level, use itself.
-		if msg.HWnd.GetAncestor(co.GA_ROOT).IsDialogMessage(&msg) {
+		if pMsg.HWnd.GetAncestor(co.GA_ROOT).IsDialogMessage(pMsg) {
 			// Processed all keyboard actions for child controls.
 			if hWnd == 0 {
 				break // our modal was destroyed, terminate loop
@@ -234,8 +240,8 @@ func _RunModalLoop(hWnd win.HWND) {
 			}
 		}
 
-		win.TranslateMessage(&msg)
-		win.DispatchMessage(&msg)
+		win.TranslateMessage(pMsg)
+		win.DispatchMessage(pMsg)
 
 		if hWnd == 0 {
 			break // our modal was destroyed, terminate loop

@@ -14,6 +14,9 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hglobal
 type HGLOBAL HANDLE
 
+// With co.GMEM_FIXED, the handle itself is the pointer to the memory block.
+// With co.GMEM_MOVEABLE, you must call HGLOBAL.Lock() to retrieve the pointer.
+//
 // ⚠️ You must defer HGLOBAL.Free().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
