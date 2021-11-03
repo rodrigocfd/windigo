@@ -660,20 +660,18 @@ type TASKDIALOGCONFIG struct {
 	DwFlags                 co.TDF
 	DwCommonButtons         co.TDCBF
 	pszWindowTitle          *uint16
-	hMainIcon               uintptr // union PCWSTR + HICON, but string resource won't be considered
+	HMainIcon               TdcIcon // Union PCWSTR + HICON, but string resource won't be considered.
 	pszMainInstruction      *uint16
 	pszContent              *uint16
-	cButtons                uint32
-	pButtons                *byte // *TASKDIALOG_BUTTON
+	PButtons                []TASKDIALOG_BUTTON
 	NDefaultButton          int32
-	cRadioButtons           uint32
-	pRadioButtons           *byte // *TASKDIALOG_BUTTON
+	PRadioButtons           []TASKDIALOG_BUTTON
 	NDefaultRadioButton     int32
 	pszVerificationText     *uint16
 	pszExpandedInformation  *uint16
 	pszExpandedControlText  *uint16
 	pszCollapsedControlText *uint16
-	hFooterIcon             uintptr // union PCWSTR + HICON, but string resource won't be considered
+	HFooterIcon             TdcIcon // Union PCWSTR + HICON, but string resource won't be considered.
 	pszFooter               *uint16
 	PfCallback              uintptr
 	LpCallbackData          uintptr
@@ -682,31 +680,11 @@ type TASKDIALOGCONFIG struct {
 
 func (td *TASKDIALOGCONFIG) SetPszWindowTitle(v string) { td.pszWindowTitle = Str.ToNativePtr(v) }
 
-func (td *TASKDIALOGCONFIG) SetHMainIcon(v TdcIcon) { td.hMainIcon = variantTdcIcon(v) }
-
 func (td *TASKDIALOGCONFIG) SetPszMainInstruction(v string) {
 	td.pszMainInstruction = Str.ToNativePtr(v)
 }
 
 func (td *TASKDIALOGCONFIG) SetPszContent(v string) { td.pszContent = Str.ToNativePtr(v) }
-
-func (td *TASKDIALOGCONFIG) SetPButtons(v []TASKDIALOG_BUTTON) {
-	td.cButtons = uint32(len(v))
-	buf := make([]byte, 0, len(v)*12) // sizeof(TASKDIALOG_BUTTON)
-	for i := range v {
-		buf = append(buf, v[i].serializePacked()...)
-	}
-	td.pButtons = &buf[0]
-}
-
-func (td *TASKDIALOGCONFIG) SetPRadioButtons(v []TASKDIALOG_BUTTON) {
-	td.cRadioButtons = uint32(len(v))
-	buf := make([]byte, 0, len(v)*12) // sizeof(TASKDIALOG_BUTTON)
-	for i := range v {
-		buf = append(buf, v[i].serializePacked()...)
-	}
-	td.pRadioButtons = &buf[0]
-}
 
 func (td *TASKDIALOGCONFIG) SetPszVerificationText(v string) {
 	td.pszVerificationText = Str.ToNativePtr(v)
@@ -724,12 +702,10 @@ func (td *TASKDIALOGCONFIG) SetPszCollapsedControlText(v string) {
 	td.pszCollapsedControlText = Str.ToNativePtr(v)
 }
 
-func (td *TASKDIALOGCONFIG) SetHFooterIcon(v TdcIcon) { td.hFooterIcon = variantTdcIcon(v) }
-
 func (td *TASKDIALOGCONFIG) SetPszFooter(v string) { td.pszFooter = Str.ToNativePtr(v) }
 
 // This struct is originally packed, so we must serialized it before using.
-func (td *TASKDIALOGCONFIG) serializePacked() []byte {
+func (td *TASKDIALOGCONFIG) serializePacked() ([]byte, *byte, *byte) { // pointers must be kept alive
 	var data [160]byte
 	binary.LittleEndian.PutUint32(data[0:], 160) // cbSize
 	binary.LittleEndian.PutUint64(data[4:], uint64(td.HwndParent))
@@ -737,25 +713,46 @@ func (td *TASKDIALOGCONFIG) serializePacked() []byte {
 	binary.LittleEndian.PutUint32(data[20:], uint32(td.DwFlags))
 	binary.LittleEndian.PutUint32(data[24:], uint32(td.DwCommonButtons))
 	binary.LittleEndian.PutUint64(data[28:], uint64(uintptr(unsafe.Pointer(td.pszWindowTitle))))
-	binary.LittleEndian.PutUint64(data[36:], uint64(td.hMainIcon))
+	binary.LittleEndian.PutUint64(data[36:], uint64(variantTdcIcon(td.HMainIcon)))
 	binary.LittleEndian.PutUint64(data[44:], uint64(uintptr(unsafe.Pointer(td.pszMainInstruction))))
 	binary.LittleEndian.PutUint64(data[52:], uint64(uintptr(unsafe.Pointer(td.pszContent))))
-	binary.LittleEndian.PutUint32(data[60:], td.cButtons)
-	binary.LittleEndian.PutUint64(data[64:], uint64(uintptr(unsafe.Pointer(td.pButtons))))
+
+	var pButtonsPtr *byte
+	if len(td.PButtons) > 0 {
+		pButtonsBuf := make([]byte, 0, len(td.PButtons)*12) // sizeof(TASKDIALOG_BUTTON)
+		for i := range td.PButtons {
+			pButtonsBuf = append(pButtonsBuf, td.PButtons[i].serializePacked()...)
+		}
+		pButtonsPtr = &pButtonsBuf[0]
+		binary.LittleEndian.PutUint32(data[60:], uint32(len(td.PButtons)))
+		binary.LittleEndian.PutUint64(data[64:], uint64(uintptr(unsafe.Pointer(&pButtonsBuf[0]))))
+	}
+
 	binary.LittleEndian.PutUint32(data[72:], uint32(td.NDefaultButton))
-	binary.LittleEndian.PutUint32(data[76:], td.cRadioButtons)
-	binary.LittleEndian.PutUint64(data[80:], uint64(uintptr(unsafe.Pointer(td.pRadioButtons))))
+
+	var pRadioButtonsPtr *byte
+	if len(td.PRadioButtons) > 0 {
+		pRadioButtonsBuf := make([]byte, 0, len(td.PRadioButtons)*12) // sizeof(TASKDIALOG_BUTTON)
+		for i := range td.PRadioButtons {
+			pRadioButtonsBuf = append(pRadioButtonsBuf, td.PRadioButtons[i].serializePacked()...)
+		}
+		pRadioButtonsPtr = &pRadioButtonsBuf[0]
+		binary.LittleEndian.PutUint32(data[76:], uint32(len(td.PRadioButtons)))
+		binary.LittleEndian.PutUint64(data[80:], uint64(uintptr(unsafe.Pointer(&pRadioButtonsBuf[0]))))
+	}
+
 	binary.LittleEndian.PutUint32(data[88:], uint32(td.NDefaultRadioButton))
 	binary.LittleEndian.PutUint64(data[92:], uint64(uintptr(unsafe.Pointer(td.pszVerificationText))))
 	binary.LittleEndian.PutUint64(data[100:], uint64(uintptr(unsafe.Pointer(td.pszExpandedInformation))))
 	binary.LittleEndian.PutUint64(data[108:], uint64(uintptr(unsafe.Pointer(td.pszExpandedControlText))))
 	binary.LittleEndian.PutUint64(data[116:], uint64(uintptr(unsafe.Pointer(td.pszCollapsedControlText))))
-	binary.LittleEndian.PutUint64(data[124:], uint64(td.hFooterIcon))
+	binary.LittleEndian.PutUint64(data[124:], uint64(variantTdcIcon(td.HFooterIcon)))
 	binary.LittleEndian.PutUint64(data[132:], uint64(uintptr(unsafe.Pointer(td.pszFooter))))
 	binary.LittleEndian.PutUint64(data[140:], uint64(td.PfCallback))
 	binary.LittleEndian.PutUint64(data[148:], uint64(td.LpCallbackData))
 	binary.LittleEndian.PutUint32(data[156:], td.CxWidth)
-	return data[:]
+
+	return data[:], pButtonsPtr, pRadioButtonsPtr
 }
 
 // ⚠️ You must call SetDwSize().
