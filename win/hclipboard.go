@@ -83,7 +83,8 @@ func (hClip HCLIPBOARD) WriteString(text string) {
 
 	hGlob := GlobalAlloc(co.GMEM_MOVEABLE, uint64(len(text8)))
 	pMem := hGlob.GlobalLock()
-	copy(pMem, text8)
+	pMemSlice := unsafe.Slice((*byte)(pMem), len(text8))
+	copy(pMemSlice, text8)
 	hGlob.GlobalUnlock()
 
 	hClip.SetClipboardData(co.CF_UNICODETEXT, hGlob)

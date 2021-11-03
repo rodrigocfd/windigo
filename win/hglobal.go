@@ -20,6 +20,13 @@ type HGLOBAL HANDLE
 //
 // ⚠️ You must defer HGLOBAL.GlobalFree().
 //
+// Example:
+//
+//  hMem := win.GlobalAlloc(co.GMEM_FIXED, 50)
+//  defer hMem.GlobalFree()
+//
+//  sliceMem := unsafe.Slice((*byte)(unsafe.Pointer(hMem)), 50)
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
 func GlobalAlloc(uFlags co.GMEM, dwBytes uint64) HGLOBAL {
 	ret, _, err := syscall.Syscall(proc.GlobalAlloc.Addr(), 2,
@@ -49,17 +56,30 @@ func (hGlobal HGLOBAL) GlobalFree() {
 	}
 }
 
+// If you called GlobalAlloc() with co.GMEM_FIXED, you don't need to call this
+// function. The handle itself is the pointer to the memory block.
+//
 // ⚠️ You must defer HGLOBAL.GlobalUnlock(). After that, the slice must not be
 // used.
 //
+// Example:
+//
+//  hMem := win.GlobalAlloc(co.GMEM_FIXED, 50)
+//  defer hMem.GlobalFree()
+//
+//  lockedPtr := hMem.GlobalLock()
+//  defer hMem.GlobalUnlock()
+//
+//  sliceMem := unsafe.Slice((*byte)(lockedPtr), 50)
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globallock
-func (hGlobal HGLOBAL) GlobalLock() []byte {
+func (hGlobal HGLOBAL) GlobalLock() unsafe.Pointer {
 	ret, _, err := syscall.Syscall(proc.GlobalLock.Addr(), 1,
 		uintptr(hGlobal), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	return unsafe.Slice((*byte)(unsafe.Pointer(ret)), hGlobal.GlobalSize())
+	return unsafe.Pointer(ret)
 }
 
 // ⚠️ You must defer HGLOBAL.GlobalFree().
