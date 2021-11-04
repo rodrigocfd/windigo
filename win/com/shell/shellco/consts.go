@@ -83,11 +83,34 @@ const (
 type TBPF uint32
 
 const (
-	TBPF_NOPROGRESS    TBPF = 0
+	// Stops displaying progress and returns the button to its normal state.
+	// Call the method with this flag to dismiss the progress bar when the
+	// operation is complete or canceled.
+	TBPF_NOPROGRESS TBPF = 0
+	// The progress indicator does not grow in size, but cycles repeatedly along
+	// the length of the taskbar button. This indicates activity without
+	// specifying what proportion of the progress is complete. Progress is
+	// taking place, but there is no prediction as to how long the operation
+	// will take.
 	TBPF_INDETERMINATE TBPF = 0x1
-	TBPF_NORMAL        TBPF = 0x2
-	TBPF_ERROR         TBPF = 0x4
-	TBPF_PAUSED        TBPF = 0x8
+	// The progress indicator grows in size from left to right in proportion to
+	// the estimated amount of the operation completed. This is a determinate
+	// progress indicator; a prediction is being made as to the duration of the
+	// operation.
+	TBPF_NORMAL TBPF = 0x2
+	// The progress indicator turns red to show that an error has occurred in
+	// one of the windows that is broadcasting progress. This is a determinate
+	// state. If the progress indicator is in the indeterminate state, it
+	// switches to a red determinate display of a generic percentage not
+	// indicative of actual progress.
+	TBPF_ERROR TBPF = 0x4
+	// The progress indicator turns yellow to show that progress is currently
+	// stopped in one of the windows but can be resumed by the user. No error
+	// condition exists and nothing is preventing the progress from continuing.
+	// This is a determinate state. If the progress indicator is in the
+	// indeterminate state, it switches to a yellow determinate display of a
+	// generic percentage not indicative of actual progress.
+	TBPF_PAUSED TBPF = 0x8
 )
 
 // THUMBBUTTON dwMask.
