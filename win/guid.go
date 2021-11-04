@@ -4,9 +4,13 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"syscall"
+	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // Can be created with NewGuidFromClsid() or NewGuidFromIid().
@@ -17,6 +21,35 @@ type GUID struct {
 	Data2 uint16
 	Data3 uint16
 	Data4 uint64
+}
+
+// Used to retrieve class IDs to create COM Automation objects.
+//
+// If the progId is invalid, error returns errco.CO_E_CLASSSTRING.
+//
+// Example:
+//
+//  clsId, _ := win.CLSIDFromProgID("Excel.Application")
+//
+//  mainObj := win.CoCreateInstance(
+//      clsId, nil, co.CLSCTX_SERVER, co.IID_IUNKNOWN)
+//  defer mainObj.Release()
+//
+//  excel := mainObj.QueryInterface(automco.IID_IDispatch)
+//  defer excel.Release()
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
+func CLSIDFromProgID(progId string) (co.CLSID, error) {
+	var guid GUID
+	ret, _, _ := syscall.Syscall(proc.CLSIDFromProgID.Addr(), 2,
+		uintptr(unsafe.Pointer(Str.ToNativePtr(progId))),
+		uintptr(unsafe.Pointer(&guid)), 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return co.CLSID(guid.String()), nil
+	} else {
+		return "", hr
+	}
 }
 
 // Returns a GUID struct from a CLSID string.

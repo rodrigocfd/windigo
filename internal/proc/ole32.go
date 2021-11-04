@@ -7,6 +7,7 @@ import (
 var (
 	ole32 = syscall.NewLazyDLL("ole32.dll")
 
+	CLSIDFromProgID  = ole32.NewProc("CLSIDFromProgID")
 	CoCreateInstance = ole32.NewProc("CoCreateInstance")
 	CoInitializeEx   = ole32.NewProc("CoInitializeEx")
 	CoTaskMemAlloc   = ole32.NewProc("CoTaskMemAlloc")
