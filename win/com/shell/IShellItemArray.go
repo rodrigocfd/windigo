@@ -20,7 +20,7 @@ func NewIShellItemArray(base win.IUnknown) IShellItemArray {
 	return IShellItemArray{IUnknown: base}
 }
 
-// Prefer using IShellItemArray.GetDisplayNames(), which directly retrieves all
+// Prefer using IShellItemArray.ListDisplayNames(), which directly retrieves all
 // full paths at once.
 //
 // ⚠️ You must defer IShellItem.Release().
@@ -61,16 +61,16 @@ func (me *IShellItemArray) GetCount() int {
 //
 //  var shia shell.IShellItemArray // initialized somewhere
 //
-//  fullPaths := shia.GetDisplayNames(shellco.SIGDN_FILESYSPATH)
-func (me *IShellItemArray) GetDisplayNames(sigdnName shellco.SIGDN) []string {
+//  fullPaths := shia.ListDisplayNames(shellco.SIGDN_FILESYSPATH)
+func (me *IShellItemArray) ListDisplayNames(sigdnName shellco.SIGDN) []string {
 	count := me.GetCount()
-	files := make([]string, 0, count)
+	names := make([]string, 0, count)
 
 	for i := 0; i < count; i++ {
 		shellItem := me.GetItemAt(i)
 		defer shellItem.Release() // will pile up at the end of the function, but that's fine
-		files = append(files, shellItem.GetDisplayName(sigdnName))
+		names = append(names, shellItem.GetDisplayName(sigdnName))
 	}
 
-	return files
+	return names
 }

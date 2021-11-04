@@ -13,7 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdrop
 type HDROP HANDLE
 
-// Prefer using HDROP.GetFilesAndFinish().
+// Prefer using HDROP.ListFilesAndFinish().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragfinish
 func (hDrop HDROP) DragFinish() {
@@ -21,7 +21,7 @@ func (hDrop HDROP) DragFinish() {
 		uintptr(hDrop), 0, 0)
 }
 
-// Prefer using HDROP.GetFilesAndFinish().
+// Prefer using HDROP.ListFilesAndFinish().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragqueryfilew
 func (hDrop HDROP) DragQueryFile(
@@ -47,7 +47,7 @@ func (hDrop HDROP) DragQueryPoint() (POINT, bool) {
 }
 
 // Retrieves all file names with DragQueryFile() and calls DragFinish().
-func (hDrop HDROP) GetFilesAndFinish() []string {
+func (hDrop HDROP) ListFilesAndFinish() []string {
 	var pathBuf [_MAX_PATH + 1]uint16 // buffer to receive all paths
 	count := hDrop.DragQueryFile(0xffff_ffff, nil, 0)
 	paths := make([]string, 0, count) // paths to be returned

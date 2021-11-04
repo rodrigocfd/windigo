@@ -30,7 +30,7 @@ func NewIFileOpenDialog(base win.IUnknown) IFileOpenDialog {
 	return IFileOpenDialog{IFileDialog: NewIFileDialog(base)}
 }
 
-// Prefer using IFileOpenDialog.GetResultsDisplayNames().
+// Prefer using IFileOpenDialog.ListResultDisplayNames().
 //
 // ⚠️ You must defer IShellItemArray.Release().
 //
@@ -49,23 +49,6 @@ func (me *IFileOpenDialog) GetResults() IShellItemArray {
 	}
 }
 
-// Calls IFileOpenDialog.GetResults() and IShellItemArray.GetDisplayNames(),
-// returning the files selected by the user.
-//
-// Example:
-//
-//  var fod shell.IFileOpenDialog // initialized somewhere
-//
-//  chosenFiles := fod.GetResultsDisplayNames(shellco.SIGDN_FILESYSPATH)
-func (me *IFileOpenDialog) GetResultsDisplayNames(
-	sigdnName shellco.SIGDN) []string {
-
-	isha := me.GetResults()
-	defer isha.Release()
-
-	return isha.GetDisplayNames(sigdnName)
-}
-
 // ⚠️ You must defer IShellItemArray.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
@@ -81,4 +64,21 @@ func (me *IFileOpenDialog) GetSelectedItems() IShellItemArray {
 	} else {
 		panic(hr)
 	}
+}
+
+// Calls IFileOpenDialog.GetResults() and IShellItemArray.ListDisplayNames(),
+// returning the files selected by the user.
+//
+// Example:
+//
+//  var fod shell.IFileOpenDialog // initialized somewhere
+//
+//  chosenFiles := fod.ListResultDisplayNames(shellco.SIGDN_FILESYSPATH)
+func (me *IFileOpenDialog) ListResultDisplayNames(
+	sigdnName shellco.SIGDN) []string {
+
+	isha := me.GetResults()
+	defer isha.Release()
+
+	return isha.ListDisplayNames(sigdnName)
 }
