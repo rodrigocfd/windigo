@@ -12,13 +12,11 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
 type IModalWindow struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IModalWindow.Release().
-func NewIModalWindow(ptr win.IUnknownPtr) IModalWindow {
-	return IModalWindow{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIModalWindow(base win.IUnknown) IModalWindow {
+	return IModalWindow{IUnknown: base}
 }
 
 // Returns false if user cancelled.

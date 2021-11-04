@@ -13,13 +13,11 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
 type IShellItemArray struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IShellItemArray.Release().
-func NewIShellItemArray(ptr win.IUnknownPtr) IShellItemArray {
-	return IShellItemArray{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIShellItemArray(base win.IUnknown) IShellItemArray {
+	return IShellItemArray{IUnknown: base}
 }
 
 // Prefer using IShellItemArray.GetDisplayNames(), which directly retrieves all
@@ -29,7 +27,7 @@ func NewIShellItemArray(ptr win.IUnknownPtr) IShellItemArray {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
 func (me *IShellItemArray) GetItemAt(index int) IShellItem {
-	var ppvQueried win.IUnknownPtr
+	var ppvQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellItemArray)(unsafe.Pointer(*me.Ptr())).GetItemAt, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),

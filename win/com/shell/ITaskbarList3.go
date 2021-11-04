@@ -13,7 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
 type ITaskbarList3 struct{ ITaskbarList2 }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer ITaskbarList3.Release().
 //
@@ -26,10 +26,8 @@ type ITaskbarList3 struct{ ITaskbarList2 }
 //          shellco.IID_ITaskbarList3),
 //  )
 //  defer taskbl3.Release()
-func NewITaskbarList3(ptr win.IUnknownPtr) ITaskbarList3 {
-	return ITaskbarList3{
-		ITaskbarList2: NewITaskbarList2(ptr),
-	}
+func NewITaskbarList3(base win.IUnknown) ITaskbarList3 {
+	return ITaskbarList3{ITaskbarList2: NewITaskbarList2(base)}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-registertab

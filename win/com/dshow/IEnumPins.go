@@ -12,20 +12,18 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
 type IEnumPins struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IEnumPins.Release().
-func NewIEnumPins(ptr win.IUnknownPtr) IEnumPins {
-	return IEnumPins{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIEnumPins(base win.IUnknown) IEnumPins {
+	return IEnumPins{IUnknown: base}
 }
 
 // ⚠️ You must defer IEnumPins.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-clone
 func (me *IEnumPins) Clone() IEnumPins {
-	var ppQueried win.IUnknownPtr
+	var ppQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IEnumPins)(unsafe.Pointer(*me.Ptr())).Clone, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -73,7 +71,7 @@ func (me *IEnumPins) GetAll() []IPin {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-next
 func (me *IEnumPins) Next() (IPin, bool) {
-	var ppQueried win.IUnknownPtr
+	var ppQueried win.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*dshowvt.IEnumPins)(unsafe.Pointer(*me.Ptr())).Next, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),

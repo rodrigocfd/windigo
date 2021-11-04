@@ -15,13 +15,11 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 type IShellItem struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IShellItem.Release().
-func NewIShellItem(ptr win.IUnknownPtr) IShellItem {
-	return IShellItem{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIShellItem(base win.IUnknown) IShellItem {
+	return IShellItem{IUnknown: base}
 }
 
 // Creates an IShellItem from a string path.
@@ -35,7 +33,7 @@ func NewIShellItem(ptr win.IUnknownPtr) IShellItem {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 func NewShellItemFromPath(folderOrFilePath string) (IShellItem, error) {
-	var ppvQueried win.IUnknownPtr
+	var ppvQueried win.IUnknown
 	ret, _, _ := syscall.Syscall6(proc.SHCreateItemFromParsingName.Addr(), 4,
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(folderOrFilePath))),
 		0, uintptr(unsafe.Pointer(win.GuidFromIid(shellco.IID_IShellItem))),
@@ -88,7 +86,7 @@ func (me *IShellItem) GetAttributes(mask co.SFGAO) co.SFGAO {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
 func (me *IShellItem) GetParent() IShellItem {
-	var ppvQueried win.IUnknownPtr
+	var ppvQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).GetParent, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

@@ -12,7 +12,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
 type ITaskbarList struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer ITaskbarList.Release().
 //
@@ -25,10 +25,8 @@ type ITaskbarList struct{ win.IUnknown }
 //          shellco.IID_ITaskbarList),
 //  )
 //  defer taskbl.Release()
-func NewITaskbarList(ptr win.IUnknownPtr) ITaskbarList {
-	return ITaskbarList{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewITaskbarList(base win.IUnknown) ITaskbarList {
+	return ITaskbarList{IUnknown: base}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab

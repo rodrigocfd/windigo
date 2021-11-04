@@ -12,20 +12,18 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
 type IEnumFilters struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IEnumFilters.Release().
-func NewIEnumFilters(ptr win.IUnknownPtr) IEnumFilters {
-	return IEnumFilters{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIEnumFilters(base win.IUnknown) IEnumFilters {
+	return IEnumFilters{IUnknown: base}
 }
 
 // ⚠️ You must defer IEnumFilters.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-clone
 func (me *IEnumFilters) Clone() IEnumFilters {
-	var ppQueried win.IUnknownPtr
+	var ppQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Clone, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -73,7 +71,7 @@ func (me *IEnumFilters) GetAll() []IBaseFilter {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-next
 func (me *IEnumFilters) Next() (IBaseFilter, bool) {
-	var ppQueried win.IUnknownPtr
+	var ppQueried win.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Next, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),

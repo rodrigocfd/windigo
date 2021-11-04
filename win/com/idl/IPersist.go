@@ -14,13 +14,11 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
 type IPersist struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IPersist.Release().
-func NewIPersist(ptr win.IUnknownPtr) IPersist {
-	return IPersist{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIPersist(base win.IUnknown) IPersist {
+	return IPersist{IUnknown: base}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ipersist-getclassid

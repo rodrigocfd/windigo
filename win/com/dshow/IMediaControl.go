@@ -14,7 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
 type IMediaControl struct{ autom.IDispatch }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IMediaControl.Release().
 //
@@ -26,10 +26,8 @@ type IMediaControl struct{ autom.IDispatch }
 //      gb.QueryInterface(dshowco.IID_IMediaControl),
 //  )
 //  defer mc.Release()
-func NewIMediaControl(ptr win.IUnknownPtr) IMediaControl {
-	return IMediaControl{
-		IDispatch: autom.NewIDispatch(ptr),
-	}
+func NewIMediaControl(base win.IUnknown) IMediaControl {
+	return IMediaControl{IDispatch: autom.NewIDispatch(base)}
 }
 
 // Pass -1 for infinite timeout.

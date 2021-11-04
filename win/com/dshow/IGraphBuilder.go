@@ -12,7 +12,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-igraphbuilder
 type IGraphBuilder struct{ IFilterGraph }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IGraphBuilder.Release().
 //
@@ -25,10 +25,8 @@ type IGraphBuilder struct{ IFilterGraph }
 //          dshowco.IID_IGraphBuilder),
 //  )
 //  defer gb.Release()
-func NewIGraphBuilder(ptr win.IUnknownPtr) IGraphBuilder {
-	return IGraphBuilder{
-		IFilterGraph: NewIFilterGraph(ptr),
-	}
+func NewIGraphBuilder(base win.IUnknown) IGraphBuilder {
+	return IGraphBuilder{IFilterGraph: NewIFilterGraph(base)}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
@@ -49,7 +47,7 @@ func (me *IGraphBuilder) Abort() {
 func (me *IGraphBuilder) AddSourceFilter(
 	fileName, filterName string) IBaseFilter {
 
-	var ppvQueried win.IUnknownPtr
+	var ppvQueried win.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).AddSourceFilter, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),

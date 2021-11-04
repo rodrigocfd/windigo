@@ -13,7 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist2
 type ITaskbarList2 struct{ ITaskbarList }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer ITaskbarList2.Release().
 //
@@ -26,10 +26,8 @@ type ITaskbarList2 struct{ ITaskbarList }
 //          shellco.IID_ITaskbarList2),
 //  )
 //  defer taskbl2.Release()
-func NewITaskbarList2(ptr win.IUnknownPtr) ITaskbarList2 {
-	return ITaskbarList2{
-		ITaskbarList: NewITaskbarList(ptr),
-	}
+func NewITaskbarList2(base win.IUnknown) ITaskbarList2 {
+	return ITaskbarList2{ITaskbarList: NewITaskbarList(base)}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow

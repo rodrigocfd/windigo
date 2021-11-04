@@ -12,7 +12,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
 type IMFGetService struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IMFGetService.Release().
 //
@@ -24,10 +24,8 @@ type IMFGetService struct{ win.IUnknown }
 //      vmr.QueryInterface(dshowco.IID_IMFGetService),
 //  )
 //  defer gs.Release()
-func NewIMFGetService(ptr win.IUnknownPtr) IMFGetService {
-	return IMFGetService{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIMFGetService(base win.IUnknown) IMFGetService {
+	return IMFGetService{IUnknown: base}
 }
 
 // ⚠️ The returned pointer must be used to construct a COM object; you must
@@ -47,9 +45,9 @@ func NewIMFGetService(ptr win.IUnknownPtr) IMFGetService {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
 func (me *IMFGetService) GetService(
-	guidService, riid *win.GUID) win.IUnknownPtr {
+	guidService, riid *win.GUID) win.IUnknown {
 
-	var ppQueried win.IUnknownPtr
+	var ppQueried win.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*dshowvt.IMFGetService)(unsafe.Pointer(*me.Ptr())).GetService, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),

@@ -12,7 +12,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
 type IFilterGraph struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IFilterGraph.Release().
 //
@@ -25,10 +25,8 @@ type IFilterGraph struct{ win.IUnknown }
 //          dshowco.IID_IFilterGraph),
 //  )
 //  defer fg.Release()
-func NewIFilterGraph(ptr win.IUnknownPtr) IFilterGraph {
-	return IFilterGraph{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIFilterGraph(base win.IUnknown) IFilterGraph {
+	return IFilterGraph{IUnknown: base}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-addfilter
@@ -76,7 +74,7 @@ func (me *IFilterGraph) Disconnect(pin *IPin) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-enumfilters
 func (me *IFilterGraph) EnumFilters() IEnumFilters {
-	var ppvQueried win.IUnknownPtr
+	var ppvQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).EnumFilters, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -93,7 +91,7 @@ func (me *IFilterGraph) EnumFilters() IEnumFilters {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-findfilterbyname
 func (me *IFilterGraph) FindFilterByName(name string) (IBaseFilter, bool) {
-	var ppvQueried win.IUnknownPtr
+	var ppvQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).FindFilterByName, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

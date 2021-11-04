@@ -12,7 +12,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifilesavedialog
 type IFileSaveDialog struct{ IFileDialog }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IFileSaveDialog.Release().
 //
@@ -25,10 +25,8 @@ type IFileSaveDialog struct{ IFileDialog }
 //          shellco.IID_IFileSaveDialog),
 //  )
 //  defer fsd.Release()
-func NewIFileSaveDialog(ptr win.IUnknownPtr) IFileSaveDialog {
-	return IFileSaveDialog{
-		IFileDialog: NewIFileDialog(ptr),
-	}
+func NewIFileSaveDialog(base win.IUnknown) IFileSaveDialog {
+	return IFileSaveDialog{IFileDialog: NewIFileDialog(base)}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem

@@ -13,7 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
 type IMFVideoDisplayControl struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IMFVideoDisplayControl.Release().
 //
@@ -28,10 +28,8 @@ type IMFVideoDisplayControl struct{ win.IUnknown }
 //      ),
 //  )
 //  defer vdc.Release()
-func NewIMFVideoDisplayControl(ptr win.IUnknownPtr) IMFVideoDisplayControl {
-	return IMFVideoDisplayControl{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIMFVideoDisplayControl(base win.IUnknown) IMFVideoDisplayControl {
+	return IMFVideoDisplayControl{IUnknown: base}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getaspectratiomode

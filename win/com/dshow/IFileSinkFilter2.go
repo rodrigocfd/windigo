@@ -13,13 +13,11 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter2
 type IFileSinkFilter2 struct{ IFileSinkFilter }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IFileSinkFilter2.Release().
-func NewIFileSinkFilter2(ptr win.IUnknownPtr) IFileSinkFilter2 {
-	return IFileSinkFilter2{
-		IFileSinkFilter: NewIFileSinkFilter(ptr),
-	}
+func NewIFileSinkFilter2(base win.IUnknown) IFileSinkFilter2 {
+	return IFileSinkFilter2{IFileSinkFilter: NewIFileSinkFilter(base)}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-getmode

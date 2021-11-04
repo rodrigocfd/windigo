@@ -15,7 +15,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediaseeking
 type IMediaSeeking struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IMediaSeeking.Release().
 //
@@ -27,10 +27,8 @@ type IMediaSeeking struct{ win.IUnknown }
 //      gb.QueryInterface(dshowco.IID_IMediaSeeking),
 //  )
 //  defer ms.Release()
-func NewIMediaSeeking(ptr win.IUnknownPtr) IMediaSeeking {
-	return IMediaSeeking{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIMediaSeeking(base win.IUnknown) IMediaSeeking {
+	return IMediaSeeking{IUnknown: base}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-checkcapabilities

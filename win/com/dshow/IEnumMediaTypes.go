@@ -12,20 +12,18 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienummediatypes
 type IEnumMediaTypes struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IEnumMediaTypes.Release().
-func NewIEnumMediaTypes(ptr win.IUnknownPtr) IEnumMediaTypes {
-	return IEnumMediaTypes{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIEnumMediaTypes(base win.IUnknown) IEnumMediaTypes {
+	return IEnumMediaTypes{IUnknown: base}
 }
 
 // ⚠️ You must defer IEnumMediaTypes.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-clone
 func (me *IEnumMediaTypes) Clone() IEnumMediaTypes {
-	var ppQueried win.IUnknownPtr
+	var ppQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IEnumMediaTypes)(unsafe.Pointer(*me.Ptr())).Clone, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

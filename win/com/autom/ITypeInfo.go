@@ -14,13 +14,11 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
 type ITypeInfo struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer ITypeInfo.Release().
-func NewITypeInfo(ptr win.IUnknownPtr) ITypeInfo {
-	return ITypeInfo{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewITypeInfo(base win.IUnknown) ITypeInfo {
+	return ITypeInfo{IUnknown: base}
 }
 
 type _TypeDoc struct {

@@ -12,13 +12,11 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter
 type IFileSinkFilter struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IFileSinkFilter.Release().
-func NewIFileSinkFilter(ptr win.IUnknownPtr) IFileSinkFilter {
-	return IFileSinkFilter{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIFileSinkFilter(base win.IUnknown) IFileSinkFilter {
+	return IFileSinkFilter{IUnknown: base}
 }
 
 // Returns false if no file is opened.

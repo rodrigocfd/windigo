@@ -12,13 +12,11 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
 type IFileSourceFilter struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IFileSourceFilter.Release().
-func NewIFileSourceFilter(ptr win.IUnknownPtr) IFileSourceFilter {
-	return IFileSourceFilter{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIFileSourceFilter(base win.IUnknown) IFileSourceFilter {
+	return IFileSourceFilter{IUnknown: base}
 }
 
 // Returns false if no file is opened.

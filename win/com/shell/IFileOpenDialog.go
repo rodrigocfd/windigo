@@ -13,7 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileopendialog
 type IFileOpenDialog struct{ IFileDialog }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IFileOpenDialog.Release().
 //
@@ -26,10 +26,8 @@ type IFileOpenDialog struct{ IFileDialog }
 //          shellco.IID_IFileOpenDialog),
 //  )
 //  defer fod.Release()
-func NewIFileOpenDialog(ptr win.IUnknownPtr) IFileOpenDialog {
-	return IFileOpenDialog{
-		IFileDialog: NewIFileDialog(ptr),
-	}
+func NewIFileOpenDialog(base win.IUnknown) IFileOpenDialog {
+	return IFileOpenDialog{IFileDialog: NewIFileDialog(base)}
 }
 
 // Prefer using IFileOpenDialog.GetResultsDisplayNames().
@@ -38,7 +36,7 @@ func NewIFileOpenDialog(ptr win.IUnknownPtr) IFileOpenDialog {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
 func (me *IFileOpenDialog) GetResults() IShellItemArray {
-	var ppvQueried win.IUnknownPtr
+	var ppvQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IFileOpenDialog)(unsafe.Pointer(*me.Ptr())).GetResults, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -72,7 +70,7 @@ func (me *IFileOpenDialog) GetResultsDisplayNames(
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
 func (me *IFileOpenDialog) GetSelectedItems() IShellItemArray {
-	var ppvQueried win.IUnknownPtr
+	var ppvQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IFileOpenDialog)(unsafe.Pointer(*me.Ptr())).GetSelectedItems, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

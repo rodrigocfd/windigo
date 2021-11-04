@@ -13,13 +13,11 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialog
 type IFileDialog struct{ IModalWindow }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IFileDialog.Release().
-func NewIFileDialog(ptr win.IUnknownPtr) IFileDialog {
-	return IFileDialog{
-		IModalWindow: NewIModalWindow(ptr),
-	}
+func NewIFileDialog(base win.IUnknown) IFileDialog {
+	return IFileDialog{IModalWindow: NewIModalWindow(base)}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-clearclientdata
@@ -50,7 +48,7 @@ func (me *IFileDialog) Close(hr errco.ERROR) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getcurrentselection
 func (me *IFileDialog) GetCurrentSelection() IShellItem {
-	var ppvQueried win.IUnknownPtr
+	var ppvQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetCurrentSelection, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -99,7 +97,7 @@ func (me *IFileDialog) GetFileTypeIndex() int {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfolder
 func (me *IFileDialog) GetFolder() IShellItem {
-	var ppvQueried win.IUnknownPtr
+	var ppvQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetFolder, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -133,7 +131,7 @@ func (me *IFileDialog) GetOptions() shellco.FOS {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getresult
 func (me *IFileDialog) GetResult() IShellItem {
-	var ppvQueried win.IUnknownPtr
+	var ppvQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetResult, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

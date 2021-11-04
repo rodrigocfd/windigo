@@ -9,16 +9,11 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// Raw pointer to IUnknown COM virtual table.
-//
-// ⚠️ Must be used to construct a COM object; you must defer its Release().
-type IUnknownPtr **IUnknownVtbl
-
 // Typically uses CLSCTX_INPROC_SERVER. Panics if the COM object cannot be
 // created.
 //
-// ⚠️ The returned pointer must be used to construct a COM object; you must
-// defer its Release().
+// ⚠️ The returned IUnknown can be used to construct another COM object; either
+// way you must defer Release().
 //
 // Example:
 //
@@ -33,11 +28,11 @@ type IUnknownPtr **IUnknownVtbl
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
 	rclsid co.CLSID, pUnkOuter *IUnknown,
-	dwClsContext co.CLSCTX, riid co.IID) IUnknownPtr {
+	dwClsContext co.CLSCTX, riid co.IID) IUnknown {
 
-	var ppvQueried IUnknownPtr
+	var ppvQueried **IUnknownVtbl
 
-	var ppvOuter *IUnknownPtr
+	var ppvOuter ***IUnknownVtbl
 	if pUnkOuter != nil { // was the outer pointer requested?
 		pUnkOuter.Release()
 		ppvOuter = &pUnkOuter.ppv
@@ -51,7 +46,7 @@ func CoCreateInstance(
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return ppvQueried
+		return IUnknown{ppv: ppvQueried}
 	} else {
 		panic(hr)
 	}
@@ -71,42 +66,35 @@ type IUnknownVtbl struct {
 // IUnknown COM interface, base to all COM interfaces.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
-type IUnknown struct{ ppv IUnknownPtr }
-
-// Constructs a COM object from a pointer to its COM virtual table.
-//
-// ⚠️ You must defer IUnknown.Release().
-func NewIUnknown(ptr IUnknownPtr) IUnknown {
-	return IUnknown{ppv: ptr}
-}
+type IUnknown struct{ ppv **IUnknownVtbl }
 
 // Returns the underlying pointer to the COM virtual table.
-func (me *IUnknown) Ptr() IUnknownPtr {
+func (me *IUnknown) Ptr() **IUnknownVtbl {
 	return me.ppv
 }
 
-// ⚠️ You must defer IUnknown.Release().
+// ⚠️ You must defer IUnknown.Release() on the new object.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *IUnknown) AddRef() IUnknown {
 	syscall.Syscall((*me.ppv).AddRef, 1,
 		uintptr(unsafe.Pointer(me.ppv)), 0, 0)
-	return NewIUnknown(me.ppv) // simply copy the pointer into a new object
+	return IUnknown{ppv: me.ppv} // simply copy the pointer into a new object
 }
 
 // ⚠️ The returned pointer must be used to construct a COM object; you must
 // defer its Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
-func (me *IUnknown) QueryInterface(riid co.IID) IUnknownPtr {
-	var ppvQueried IUnknownPtr
+func (me *IUnknown) QueryInterface(riid co.IID) IUnknown {
+	var ppvQueried **IUnknownVtbl
 	ret, _, _ := syscall.Syscall((*me.ppv).QueryInterface, 3,
 		uintptr(unsafe.Pointer(me.ppv)),
 		uintptr(unsafe.Pointer(GuidFromIid(riid))),
 		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return ppvQueried
+		return IUnknown{ppv: ppvQueried}
 	} else {
 		panic(hr)
 	}

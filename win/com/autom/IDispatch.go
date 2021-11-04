@@ -15,13 +15,11 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 type IDispatch struct{ win.IUnknown }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IDispatch.Release().
-func NewIDispatch(ptr win.IUnknownPtr) IDispatch {
-	return IDispatch{
-		IUnknown: win.NewIUnknown(ptr),
-	}
+func NewIDispatch(base win.IUnknown) IDispatch {
+	return IDispatch{IUnknown: base}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-getidsofnames
@@ -61,7 +59,7 @@ func (me *IDispatch) GetIDsOfNames(
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
 func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
-	var ppQueried win.IUnknownPtr
+	var ppQueried win.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetTypeInfo, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -69,9 +67,7 @@ func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
 		uintptr(unsafe.Pointer(&ppQueried)), 0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return ITypeInfo{
-			win.NewIUnknown(ppQueried),
-		}
+		return NewITypeInfo(ppQueried)
 	} else {
 		panic(hr)
 	}

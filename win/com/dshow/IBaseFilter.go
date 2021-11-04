@@ -12,7 +12,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
 type IBaseFilter struct{ IMediaFilter }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IBaseFilter.Release().
 //
@@ -35,17 +35,15 @@ type IBaseFilter struct{ IMediaFilter }
 //          dshowco.IID_IBaseFilter),
 //  )
 //  defer vmr9.Release()
-func NewIBaseFilter(ptr win.IUnknownPtr) IBaseFilter {
-	return IBaseFilter{
-		IMediaFilter: NewIMediaFilter(ptr),
-	}
+func NewIBaseFilter(base win.IUnknown) IBaseFilter {
+	return IBaseFilter{IMediaFilter: NewIMediaFilter(base)}
 }
 
 // ⚠️ You must defer IEnumPins.Release().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-enumpins
 func (me *IBaseFilter) EnumPins() IEnumPins {
-	var ppQueried win.IUnknownPtr
+	var ppQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).EnumPins, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -62,7 +60,7 @@ func (me *IBaseFilter) EnumPins() IEnumPins {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-findpin
 func (me *IBaseFilter) FindPin(id string) (IPin, bool) {
-	var ppQueried win.IUnknownPtr
+	var ppQueried win.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).FindPin, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),

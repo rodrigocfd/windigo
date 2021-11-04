@@ -16,13 +16,11 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
 type IMediaFilter struct{ idl.IPersist }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IMediaFilter.Release().
-func NewIMediaFilter(ptr win.IUnknownPtr) IMediaFilter {
-	return IMediaFilter{
-		IPersist: idl.NewIPersist(ptr),
-	}
+func NewIMediaFilter(base win.IUnknown) IMediaFilter {
+	return IMediaFilter{IPersist: idl.NewIPersist(base)}
 }
 
 // Pass -1 for infinite timeout.

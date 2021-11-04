@@ -13,7 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-ibasicaudio
 type IBasicAudio struct{ autom.IDispatch }
 
-// Constructs a COM object from a pointer to its COM virtual table.
+// Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IBasicAudio.Release().
 //
@@ -25,10 +25,8 @@ type IBasicAudio struct{ autom.IDispatch }
 //      gb.QueryInterface(dshowco.IID_IBasicAudio),
 //  )
 //  defer ba.Release()
-func NewIBasicAudio(ptr win.IUnknownPtr) IBasicAudio {
-	return IBasicAudio{
-		IDispatch: autom.NewIDispatch(ptr),
-	}
+func NewIBasicAudio(base win.IUnknown) IBasicAudio {
+	return IBasicAudio{IDispatch: autom.NewIDispatch(base)}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_balance
