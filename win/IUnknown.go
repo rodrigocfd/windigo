@@ -15,7 +15,7 @@ import (
 // ⚠️ The returned IUnknown can be used to construct another COM object; either
 // way you must defer Release().
 //
-// Example:
+// Example for an ordinary COM object:
 //
 //  comObject := shell.NewITaskbarList(
 //      win.CoCreateInstance(
@@ -24,6 +24,21 @@ import (
 //          shellco.IID_ITaskbarList),
 //  )
 //  defer comObject.Release()
+//
+// Example for COM Automation:
+//
+//  clsId, _ := win.CLSIDFromProgID("Excel.Application")
+//  root := win.CoCreateInstance(
+//      clsId, nil, co.CLSCTX_SERVER, co.IID_IUNKNOWN)
+//  defer root.Release()
+//
+//  excel := autom.NewIDispatch(
+//      root.QueryInterface(automco.IID_IDispatch))
+//  defer excel.Release()
+//
+//  for _, f := range excel.ListFunctions() {
+//      println(f.Name, f.NumParams, f.FuncKind, f.Flags)
+//  }
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(

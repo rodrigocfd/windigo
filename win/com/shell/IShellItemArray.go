@@ -68,7 +68,7 @@ func (me *IShellItemArray) ListDisplayNames(sigdnName shellco.SIGDN) []string {
 
 	for i := 0; i < count; i++ {
 		shellItem := me.GetItemAt(i)
-		defer shellItem.Release() // will pile up at the end of the function, but that's fine
+		defer shellItem.Release() // will pile up at the end of the function, but it's fine
 		names = append(names, shellItem.GetDisplayName(sigdnName))
 	}
 

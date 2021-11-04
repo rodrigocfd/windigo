@@ -19,6 +19,18 @@ const (
 	CALLCONV_MAX
 )
 
+// IDispatch::Invoke() flags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
+type DISPATCH uint16
+
+const (
+	DISPATCH_METHOD         DISPATCH = 0x1
+	DISPATCH_PROPERTYGET    DISPATCH = 0x2
+	DISPATCH_PROPERTYPUT    DISPATCH = 0x4
+	DISPATCH_PROPERTYPUTREF DISPATCH = 0x8
+)
+
 // FUNCDESC wFuncFlags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc

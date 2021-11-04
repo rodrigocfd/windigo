@@ -6,6 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/autom/automco"
 	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -89,4 +90,44 @@ func (me *IDispatch) GetTypeInfoCount() int {
 	} else {
 		panic(hr)
 	}
+}
+
+type _InvokeRet struct {
+	VarResult VARIANT
+	ExcepInfo EXCEPINFO
+	ArgErr    uint32
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
+func (me *IDispatch) Invoke(
+	dispIdMember MEMBERID, lcid win.LCID,
+	flags automco.DISPATCH, dispParams *DISPPARAMS) (_InvokeRet, error) {
+
+	var invokeRet _InvokeRet
+
+	ret, _, _ := syscall.Syscall9(
+		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).Invoke, 9,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(dispIdMember),
+		uintptr(unsafe.Pointer(win.GuidFromIid(co.IID_NULL))),
+		uintptr(lcid), uintptr(flags),
+		uintptr(unsafe.Pointer(dispParams)),
+		uintptr(unsafe.Pointer(&invokeRet.VarResult)),
+		uintptr(unsafe.Pointer(&invokeRet.ExcepInfo)),
+		uintptr(unsafe.Pointer(&invokeRet.ArgErr)))
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return invokeRet, nil
+	} else {
+		panic(hr)
+	}
+}
+
+// Calls IDispatch.GetTypeInfo() with win.LCID_SYSTEM_DEFAULT, then calls
+// ITypeInfo.ListFunctions().
+func (me *IDispatch) ListFunctions() []_FuncDescResume {
+	info := me.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
+	defer info.Release()
+
+	return info.ListFunctions()
 }

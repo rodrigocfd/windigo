@@ -14,6 +14,24 @@ type ARRAYDESC struct {
 	Rgbounds  [1]SAFEARRAYBOUND
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-dispparams
+type DISPPARAMS struct {
+	rgvarg            *VARIANT
+	rgdispidNamedArgs *MEMBERID
+	cArgs             uint32
+	cNamedArgs        uint32
+}
+
+func (dp *DISPPARAMS) SetArgs(v []VARIANT) {
+	dp.cArgs = uint32(len(v))
+	dp.rgvarg = &v[0]
+}
+
+func (dp *DISPPARAMS) SetNamedArgs(v []MEMBERID) {
+	dp.cNamedArgs = uint32(len(v))
+	dp.rgdispidNamedArgs = &v[0]
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-elemdesc-r1
 type ELEMDESC struct {
 	TDesc TYPEDESC
@@ -22,6 +40,19 @@ type ELEMDESC struct {
 
 func (ed *ELEMDESC) IdlDesc() *IDLDESC    { return (*IDLDESC)(unsafe.Pointer(&ed.union[0])) }
 func (ed *ELEMDESC) ParmDesc() *PARAMDESC { return (*PARAMDESC)(unsafe.Pointer(&ed.union[0])) }
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
+type EXCEPINFO struct {
+	WCode             uint16
+	wReserved         uint16
+	BstrSource        *uint16
+	BstrDescription   *uint16
+	BstrHelpFile      *uint16
+	DwHelpContext     uint16
+	pvReserved        uintptr
+	PfnDeferredFillIn uintptr
+	Scode             int32
+}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type FUNCDESC struct {

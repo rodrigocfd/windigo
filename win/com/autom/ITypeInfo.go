@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/autom/automco"
 	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -34,7 +35,7 @@ type _TypeDoc struct {
 //  var funDesc *autom.FUNCDESC
 //
 //  docum := info.GetDocumentation(funDesc.Memid)
-//  fmt.Printf("Method name: %s\n", docum.Name)
+//  fmt.Printf("Function name: %s\n", docum.Name)
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdocumentation
 func (me *ITypeInfo) GetDocumentation(memId MEMBERID) _TypeDoc {
@@ -59,7 +60,8 @@ func (me *ITypeInfo) GetDocumentation(memId MEMBERID) _TypeDoc {
 			ret.DocString = bstr.String()
 		}
 		if helpContext != 0 {
-			ret.HelpContext = *(*uint32)(unsafe.Pointer(helpContext))
+			// Documented as *uint32, but apparently returned as the value itself.
+			ret.HelpContext = uint32(helpContext)
 		}
 		if helpFile != 0 {
 			bstr := BSTR(helpFile)
@@ -144,6 +146,45 @@ func (me *ITypeInfo) GetVarDesc(index int) *VARDESC {
 	} else {
 		panic(hr)
 	}
+}
+
+type _FuncDescResume struct {
+	MemberId     MEMBERID
+	Name         string
+	FuncKind     automco.FUNCKIND
+	InvokeKind   automco.INVOKEKIND
+	NumParams    int
+	NumOptParams int
+	Flags        automco.FUNCFLAG
+}
+
+// Retrieves a resumed information of all functions of this COM interface, by
+// calling ITypeInfo.GetTypeAttr(), ITypeInfo.GetFuncDesc() and
+// ITypeInfo.GetDocumentation().
+func (me *ITypeInfo) ListFunctions() []_FuncDescResume {
+	attr := me.GetTypeAttr()
+	defer me.ReleaseTypeAttr(attr)
+
+	resumes := make([]_FuncDescResume, 0, attr.CFuncs)
+
+	for i := 0; i < int(attr.CFuncs); i++ {
+		funDesc := me.GetFuncDesc(i)
+		defer me.ReleaseFuncDesc(funDesc) // will pile up at the end of the function, but it's fine
+
+		docum := me.GetDocumentation(funDesc.Memid)
+
+		resumes = append(resumes, _FuncDescResume{
+			MemberId:     funDesc.Memid,
+			Name:         docum.Name,
+			FuncKind:     funDesc.Funckind,
+			InvokeKind:   funDesc.Invkind,
+			NumParams:    int(funDesc.CParams),
+			NumOptParams: int(funDesc.CParamsOpt),
+			Flags:        funDesc.WFuncFlags,
+		})
+	}
+
+	return resumes
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasefuncdesc
