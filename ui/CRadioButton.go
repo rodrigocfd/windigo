@@ -13,6 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioButton interface {
 	AnyNativeControl
+	AnyTextControl
 	isRadioButton() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
@@ -25,9 +26,7 @@ type RadioButton interface {
 	IsSelected() bool             // Tells whether this radio button is the selected one in its group.
 	Select()                      // Selects the radio button.
 	SelectAndTrigger()            // Selects the radio button and triggers the click event.
-	SetText(text string)          // Sets the text.
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
-	Text() string                 // Retrieves the text.
 }
 
 //------------------------------------------------------------------------------

@@ -11,6 +11,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#check-boxes
 type CheckBox interface {
 	AnyNativeControl
+	AnyTextControl
 	isCheckBox() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
@@ -24,9 +25,7 @@ type CheckBox interface {
 	IsChecked() bool                      // Tells whether the check box state is checked.
 	SetCheckState(state co.BST)           // Sets the current check state.
 	SetCheckStateAndTrigger(state co.BST) // Sets the current check state and triggers the click event.
-	SetText(text string)                  // Sets the text.
 	SetTextAndResize(text string)         // Sets the text and resizes the control to fit it exactly.
-	Text() string                         // Retrieves the text.
 }
 
 //------------------------------------------------------------------------------

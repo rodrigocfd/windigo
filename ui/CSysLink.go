@@ -13,6 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/syslink-control-entry
 type SysLink interface {
 	AnyNativeControl
+	AnyTextControl
 	isSysLink() // prevent public implementation
 
 	// Exposes all the SysLink notifications the can be handled.
@@ -21,9 +22,7 @@ type SysLink interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-syslink-control-reference-notifications
 	On() *_SysLinkEvents
 
-	SetText(text string)          // Sets the text.
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
-	Text() string                 // Retrieves the text.
 }
 
 //------------------------------------------------------------------------------

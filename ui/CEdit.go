@@ -14,6 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-edit-controls
 type Edit interface {
 	AnyNativeControl
+	AnyTextControl
 	isEdit() // prevent public implementation
 
 	// Exposes all the Edit notifications the can be handled.
@@ -26,8 +27,6 @@ type Edit interface {
 	ReplaceSelection(text string)      // Replaces the current text selection with the given text.
 	SelectedRange() (int, int)         // Retrieves the index of first and last selected chars.
 	SelectRange(idxFirst, idxLast int) // Sets the currently selected chars.
-	SetText(text string)               // Sets the text.
-	Text() string                      // Retrieves the text.
 }
 
 //------------------------------------------------------------------------------

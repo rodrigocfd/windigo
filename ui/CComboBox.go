@@ -11,6 +11,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-combo-boxes
 type ComboBox interface {
 	AnyNativeControl
+	AnyTextControl
 	isComboBox() // prevent public implementation
 
 	// Exposes all the ComboBox notifications the can be handled.
@@ -92,6 +93,14 @@ func (me *_ComboBox) On() *_ComboBoxEvents {
 
 func (me *_ComboBox) Items() *_ComboBoxItems {
 	return &me.items
+}
+
+func (me *_ComboBox) SetText(text string) {
+	me.Hwnd().SetWindowText(text)
+}
+
+func (me *_ComboBox) Text() string {
+	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------

@@ -55,6 +55,17 @@ type AnyNativeControl interface {
 	OnSubclass() *_EventsWm
 }
 
+// Any child window control which can get/set text.
+type AnyTextControl interface {
+	AnyControl
+
+	// Sets the text of the control.
+	SetText(text string)
+
+	// Retrieves the text of the control.
+	Text() string
+}
+
 // User-custom main application window.
 type WindowMain interface {
 	AnyParent

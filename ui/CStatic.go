@@ -11,6 +11,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-static-controls
 type Static interface {
 	AnyNativeControl
+	AnyTextControl
 	isStatic() // prevent public implementation
 
 	// Exposes all the Static notifications the can be handled.
@@ -19,9 +20,7 @@ type Static interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-static-control-reference-notifications
 	On() *_StaticEvents
 
-	SetText(text string)          // Sets the text.
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
-	Text() string                 // Retrieves the text.
 }
 
 //------------------------------------------------------------------------------

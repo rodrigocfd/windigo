@@ -13,6 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#push-buttons
 type Button interface {
 	AnyNativeControl
+	AnyTextControl
 	isButton() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
@@ -80,6 +81,14 @@ func (me *_Button) On() *_ButtonEvents {
 
 func (me *_Button) EmulateClick() {
 	me.Hwnd().SendMessage(co.BM_CLICK, 0, 0)
+}
+
+func (me *_Button) SetText(text string) {
+	me.Hwnd().SetWindowText(text)
+}
+
+func (me *_Button) Text() string {
+	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------
