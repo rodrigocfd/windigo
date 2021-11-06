@@ -13,6 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/syslink-control-entry
 type SysLink interface {
 	AnyNativeControl
+	AnyEnabledControl
 	AnyTextControl
 	isSysLink() // prevent public implementation
 
@@ -71,7 +72,23 @@ func NewSysLinkDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) SysLink {
 	return me
 }
 
+// Implements SysLink.
 func (me *_SysLink) isSysLink() {}
+
+// Implements AnyEnabledControl.
+func (me *_SysLink) Enable(enable bool) {
+	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyTextControl.
+func (me *_SysLink) SetText(text string) {
+	me.Hwnd().SetWindowText(text)
+}
+
+// Implements AnyTextControl.
+func (me *_SysLink) Text() string {
+	return me.Hwnd().GetWindowText()
+}
 
 func (me *_SysLink) On() *_SysLinkEvents {
 	if me.Hwnd() != 0 {
@@ -80,19 +97,11 @@ func (me *_SysLink) On() *_SysLinkEvents {
 	return &me.events
 }
 
-func (me *_SysLink) SetText(text string) {
-	me.Hwnd().SetWindowText(text)
-}
-
 func (me *_SysLink) SetTextAndResize(text string) {
 	me.SetText(text)
 	boundBox := _CalcTextBoundBox(text, true)
 	me.Hwnd().SetWindowPos(win.HWND(0), 0, 0,
 		boundBox.Cx, boundBox.Cy, co.SWP_NOZORDER|co.SWP_NOMOVE)
-}
-
-func (me *_SysLink) Text() string {
-	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------

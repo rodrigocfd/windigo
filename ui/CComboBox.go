@@ -11,6 +11,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-combo-boxes
 type ComboBox interface {
 	AnyNativeControl
+	AnyEnabledControl
 	AnyTextControl
 	isComboBox() // prevent public implementation
 
@@ -82,7 +83,23 @@ func NewComboBoxDlg(
 	return me
 }
 
+// Implements ComboBox.
 func (me *_ComboBox) isComboBox() {}
+
+// Implements AnyEnabledControl.
+func (me *_ComboBox) Enable(enable bool) {
+	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyTextControl.
+func (me *_ComboBox) SetText(text string) {
+	me.Hwnd().SetWindowText(text)
+}
+
+// Implements AnyTextControl.
+func (me *_ComboBox) Text() string {
+	return me.Hwnd().GetWindowText()
+}
 
 func (me *_ComboBox) On() *_ComboBoxEvents {
 	if me.Hwnd() != 0 {
@@ -93,14 +110,6 @@ func (me *_ComboBox) On() *_ComboBoxEvents {
 
 func (me *_ComboBox) Items() *_ComboBoxItems {
 	return &me.items
-}
-
-func (me *_ComboBox) SetText(text string) {
-	me.Hwnd().SetWindowText(text)
-}
-
-func (me *_ComboBox) Text() string {
-	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------

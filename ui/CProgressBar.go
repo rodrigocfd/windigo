@@ -68,6 +68,7 @@ func NewProgressBarDlg(
 	return me
 }
 
+// Implements ProgressBar.
 func (me *_ProgressBar) isProgressBar() {}
 
 func (me *_ProgressBar) Pos() int {

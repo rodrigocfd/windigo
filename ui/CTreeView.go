@@ -14,6 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls
 type TreeView interface {
 	AnyNativeControl
+	AnyEnabledControl
 	isTreeView() // prevent public implementation
 
 	// Exposes all the TreeView notifications the can be handled.
@@ -81,7 +82,13 @@ func NewTreeViewDlg(
 	return me
 }
 
+// Implements TreeView.
 func (me *_TreeView) isTreeView() {}
+
+// Implements AnyEnabledControl.
+func (me *_TreeView) Enable(enable bool) {
+	me.Hwnd().EnableWindow(enable)
+}
 
 func (me *_TreeView) On() *_TreeViewEvents {
 	if me.Hwnd() != 0 {

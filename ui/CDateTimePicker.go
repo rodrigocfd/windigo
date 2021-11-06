@@ -14,6 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-controls
 type DateTimePicker interface {
 	AnyNativeControl
+	AnyEnabledControl
 	isDateTimePicker() // prevent public implementation
 
 	// Exposes all the DateTimePicker notifications the can be handled.
@@ -74,7 +75,13 @@ func NewDateTimePickerDlg(
 	return me
 }
 
+// Implements DateTimePicker.
 func (me *_DateTimePicker) isDateTimePicker() {}
+
+// Implements AnyEnabledControl.
+func (me *_DateTimePicker) Enable(enable bool) {
+	me.Hwnd().EnableWindow(enable)
+}
 
 func (me *_DateTimePicker) On() *_DateTimePickerEvents {
 	if me.Hwnd() != 0 {

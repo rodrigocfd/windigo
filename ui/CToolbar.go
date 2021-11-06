@@ -66,6 +66,7 @@ func NewToolbar(parent AnyParent, opts *_ToolbarO) Toolbar {
 	return me
 }
 
+// Implements Toolbar.
 func (me *_Toolbar) isToolbar() {}
 
 func (me *_Toolbar) On() *_ToolbarEvents {

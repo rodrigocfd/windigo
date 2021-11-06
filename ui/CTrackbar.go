@@ -13,6 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/trackbar-controls
 type Trackbar interface {
 	AnyNativeControl
+	AnyEnabledControl
 	isTrackbar() // prevent public implementation
 
 	// Exposes all the Trackbar notifications the can be handled.
@@ -88,7 +89,13 @@ func NewTrackbarDlg(
 	return me
 }
 
+// Implements Trackbar.
 func (me *_Trackbar) isTrackbar() {}
+
+// Implements AnyEnabledControl.
+func (me *_Trackbar) Enable(enable bool) {
+	me.Hwnd().EnableWindow(enable)
+}
 
 func (me *_Trackbar) On() *_TrackbarEvents {
 	if me.Hwnd() != 0 {

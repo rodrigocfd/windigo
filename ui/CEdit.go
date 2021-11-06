@@ -14,6 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-edit-controls
 type Edit interface {
 	AnyNativeControl
+	AnyEnabledControl
 	AnyTextControl
 	isEdit() // prevent public implementation
 
@@ -74,7 +75,23 @@ func NewEditDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Edit {
 	return me
 }
 
+// Implements Edit.
 func (me *_Edit) isEdit() {}
+
+// Implements AnyEnabledControl.
+func (me *_Edit) Enable(enable bool) {
+	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyTextControl.
+func (me *_Edit) SetText(text string) {
+	me.Hwnd().SetWindowText(text)
+}
+
+// Implements AnyTextControl.
+func (me *_Edit) Text() string {
+	return me.Hwnd().GetWindowText()
+}
 
 func (me *_Edit) On() *_EditEvents {
 	if me.Hwnd() != 0 {
@@ -106,14 +123,6 @@ func (me *_Edit) SelectedRange() (idxFirst, idxLast int) {
 func (me *_Edit) SelectRange(idxFirst, idxLast int) {
 	me.Hwnd().SendMessage(co.EM_SETSEL,
 		win.WPARAM(idxFirst), win.LPARAM(idxLast))
-}
-
-func (me *_Edit) SetText(text string) {
-	me.Hwnd().SetWindowText(text)
-}
-
-func (me *_Edit) Text() string {
-	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------

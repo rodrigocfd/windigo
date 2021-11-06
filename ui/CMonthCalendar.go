@@ -14,6 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/month-calendar-controls
 type MonthCalendar interface {
 	AnyNativeControl
+	AnyEnabledControl
 	isMonthCalendar() // prevent public implementation
 
 	// Exposes all the MonthCalendar notifications the can be handled.
@@ -79,7 +80,13 @@ func NewMonthCalendarDlg(
 	return me
 }
 
+// Implements MonthCalendar.
 func (me *_MonthCalendar) isMonthCalendar() {}
+
+// Implements AnyEnabledControl.
+func (me *_MonthCalendar) Enable(enable bool) {
+	me.Hwnd().EnableWindow(enable)
+}
 
 func (me *_MonthCalendar) On() *_MonthCalendarEvents {
 	if me.Hwnd() != 0 {

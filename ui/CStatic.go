@@ -11,6 +11,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-static-controls
 type Static interface {
 	AnyNativeControl
+	AnyEnabledControl
 	AnyTextControl
 	isStatic() // prevent public implementation
 
@@ -71,7 +72,23 @@ func NewStaticDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Static {
 	return me
 }
 
+// Implements Static.
 func (me *_Static) isStatic() {}
+
+// Implements AnyEnabledControl.
+func (me *_Static) Enable(enable bool) {
+	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyTextControl.
+func (me *_Static) SetText(text string) {
+	me.Hwnd().SetWindowText(text)
+}
+
+// Implements AnyTextControl.
+func (me *_Static) Text() string {
+	return me.Hwnd().GetWindowText()
+}
 
 func (me *_Static) On() *_StaticEvents {
 	if me.Hwnd() != 0 {
@@ -80,19 +97,11 @@ func (me *_Static) On() *_StaticEvents {
 	return &me.events
 }
 
-func (me *_Static) SetText(text string) {
-	me.Hwnd().SetWindowText(text)
-}
-
 func (me *_Static) SetTextAndResize(text string) {
 	me.SetText(text)
 	boundBox := _CalcTextBoundBox(text, true)
 	me.Hwnd().SetWindowPos(win.HWND(0), 0, 0,
 		boundBox.Cx, boundBox.Cy, co.SWP_NOZORDER|co.SWP_NOMOVE)
-}
-
-func (me *_Static) Text() string {
-	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------

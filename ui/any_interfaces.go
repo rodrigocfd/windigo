@@ -55,6 +55,15 @@ type AnyNativeControl interface {
 	OnSubclass() *_EventsWm
 }
 
+// Any child window which can be enabled/disabled.
+type AnyEnabledControl interface {
+	AnyControl
+
+	// Enables or disables the control. A disabled control appears grayed, and
+	// cannot receive user input.
+	Enable(enable bool)
+}
+
 // Any child window control which can get/set text.
 type AnyTextControl interface {
 	AnyControl

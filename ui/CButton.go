@@ -13,6 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#push-buttons
 type Button interface {
 	AnyNativeControl
+	AnyEnabledControl
 	AnyTextControl
 	isButton() // prevent public implementation
 
@@ -70,7 +71,23 @@ func NewButtonDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Button {
 	return me
 }
 
+// Implements button.
 func (me *_Button) isButton() {}
+
+// Implements AnyEnabledControl.
+func (me *_Button) Enable(enable bool) {
+	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyTextControl.
+func (me *_Button) SetText(text string) {
+	me.Hwnd().SetWindowText(text)
+}
+
+// Implements AnyTextControl.
+func (me *_Button) Text() string {
+	return me.Hwnd().GetWindowText()
+}
 
 func (me *_Button) On() *_ButtonEvents {
 	if me.Hwnd() != 0 {
@@ -81,14 +98,6 @@ func (me *_Button) On() *_ButtonEvents {
 
 func (me *_Button) EmulateClick() {
 	me.Hwnd().SendMessage(co.BM_CLICK, 0, 0)
-}
-
-func (me *_Button) SetText(text string) {
-	me.Hwnd().SetWindowText(text)
-}
-
-func (me *_Button) Text() string {
-	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------

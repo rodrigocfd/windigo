@@ -11,6 +11,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#check-boxes
 type CheckBox interface {
 	AnyNativeControl
+	AnyEnabledControl
 	AnyTextControl
 	isCheckBox() // prevent public implementation
 
@@ -80,7 +81,23 @@ func NewCheckBoxDlg(
 	return me
 }
 
+// Implements CheckBox.
 func (me *_CheckBox) isCheckBox() {}
+
+// Implements AnyEnabledControl.
+func (me *_CheckBox) Enable(enable bool) {
+	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyTextControl.
+func (me *_CheckBox) SetText(text string) {
+	me.Hwnd().SetWindowText(text)
+}
+
+// Implements AnyTextControl.
+func (me *_CheckBox) Text() string {
+	return me.Hwnd().GetWindowText()
+}
 
 func (me *_CheckBox) On() *_ButtonEvents {
 	if me.Hwnd() != 0 {
@@ -112,19 +129,11 @@ func (me *_CheckBox) SetCheckStateAndTrigger(state co.BST) {
 		win.LPARAM(me.Hwnd()))
 }
 
-func (me *_CheckBox) SetText(text string) {
-	me.Hwnd().SetWindowText(text)
-}
-
 func (me *_CheckBox) SetTextAndResize(text string) {
 	me.SetText(text)
 	boundBox := _CalcTextBoundBoxWithCheck(text, true)
 	me.Hwnd().SetWindowPos(win.HWND(0), 0, 0,
 		boundBox.Cx, boundBox.Cy, co.SWP_NOZORDER|co.SWP_NOMOVE)
-}
-
-func (me *_CheckBox) Text() string {
-	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------

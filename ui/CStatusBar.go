@@ -64,6 +64,7 @@ func NewStatusBar(parent AnyParent) StatusBar {
 	return me
 }
 
+// Implements StatusBar.
 func (me *_StatusBar) isStatusBar() {}
 
 func (me *_StatusBar) On() *_StatusBarEvents {

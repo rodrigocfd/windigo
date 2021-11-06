@@ -13,6 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioButton interface {
 	AnyNativeControl
+	AnyEnabledControl
 	AnyTextControl
 	isRadioButton() // prevent public implementation
 
@@ -84,7 +85,23 @@ func NewRadioButtonDlg(
 	return me
 }
 
+// Implements RadioButton.
 func (me *_RadioButton) isRadioButton() {}
+
+// Implements AnyEnabledControl.
+func (me *_RadioButton) Enable(enable bool) {
+	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyTextControl.
+func (me *_RadioButton) SetText(text string) {
+	me.Hwnd().SetWindowText(text)
+}
+
+// Implements AnyTextControl.
+func (me *_RadioButton) Text() string {
+	return me.Hwnd().GetWindowText()
+}
 
 func (me *_RadioButton) On() *_ButtonEvents {
 	if me.Hwnd() != 0 {
@@ -113,19 +130,11 @@ func (me *_RadioButton) SelectAndTrigger() {
 		win.LPARAM(me.Hwnd()))
 }
 
-func (me *_RadioButton) SetText(text string) {
-	me.Hwnd().SetWindowText(text)
-}
-
 func (me *_RadioButton) SetTextAndResize(text string) {
 	me.SetText(text)
 	boundBox := _CalcTextBoundBoxWithCheck(text, true)
 	me.Hwnd().SetWindowPos(win.HWND(0), 0, 0,
 		boundBox.Cx, boundBox.Cy, co.SWP_NOZORDER|co.SWP_NOMOVE)
-}
-
-func (me *_RadioButton) Text() string {
-	return me.Hwnd().GetWindowText()
 }
 
 //------------------------------------------------------------------------------
