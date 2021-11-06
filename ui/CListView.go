@@ -16,6 +16,7 @@ import (
 type ListView interface {
 	AnyNativeControl
 	AnyEnabledControl
+	AnyFocusControl
 	isListView() // prevent public implementation
 
 	// Exposes all the ListView notifications the can be handled.
@@ -116,6 +117,11 @@ func (me *_ListView) isListView() {}
 // Implements AnyEnabledControl.
 func (me *_ListView) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyFocusControl.
+func (me *_ListView) Focus() {
+	me._NativeControlBase.focus()
 }
 
 func (me *_ListView) On() *_ListViewEvents {

@@ -15,6 +15,7 @@ import (
 type MonthCalendar interface {
 	AnyNativeControl
 	AnyEnabledControl
+	AnyFocusControl
 	isMonthCalendar() // prevent public implementation
 
 	// Exposes all the MonthCalendar notifications the can be handled.
@@ -86,6 +87,11 @@ func (me *_MonthCalendar) isMonthCalendar() {}
 // Implements AnyEnabledControl.
 func (me *_MonthCalendar) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyFocusControl.
+func (me *_MonthCalendar) Focus() {
+	me._NativeControlBase.focus()
 }
 
 func (me *_MonthCalendar) On() *_MonthCalendarEvents {

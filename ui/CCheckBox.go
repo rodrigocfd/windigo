@@ -12,6 +12,7 @@ import (
 type CheckBox interface {
 	AnyNativeControl
 	AnyEnabledControl
+	AnyFocusControl
 	AnyTextControl
 	isCheckBox() // prevent public implementation
 
@@ -87,6 +88,11 @@ func (me *_CheckBox) isCheckBox() {}
 // Implements AnyEnabledControl.
 func (me *_CheckBox) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyFocusControl.
+func (me *_CheckBox) Focus() {
+	me._NativeControlBase.focus()
 }
 
 // Implements AnyTextControl.

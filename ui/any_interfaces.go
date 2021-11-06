@@ -64,6 +64,14 @@ type AnyEnabledControl interface {
 	Enable(enable bool)
 }
 
+// Any child window wich can receive the focus.
+type AnyFocusControl interface {
+	AnyControl
+
+	// Puts the focus on the control.
+	Focus()
+}
+
 // Any child window control which can get/set text.
 type AnyTextControl interface {
 	AnyControl

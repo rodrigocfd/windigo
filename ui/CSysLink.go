@@ -14,6 +14,7 @@ import (
 type SysLink interface {
 	AnyNativeControl
 	AnyEnabledControl
+	AnyFocusControl
 	AnyTextControl
 	isSysLink() // prevent public implementation
 
@@ -78,6 +79,11 @@ func (me *_SysLink) isSysLink() {}
 // Implements AnyEnabledControl.
 func (me *_SysLink) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyFocusControl.
+func (me *_SysLink) Focus() {
+	me._NativeControlBase.focus()
 }
 
 // Implements AnyTextControl.

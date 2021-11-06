@@ -14,6 +14,7 @@ import (
 type RadioButton interface {
 	AnyNativeControl
 	AnyEnabledControl
+	AnyFocusControl
 	AnyTextControl
 	isRadioButton() // prevent public implementation
 
@@ -91,6 +92,11 @@ func (me *_RadioButton) isRadioButton() {}
 // Implements AnyEnabledControl.
 func (me *_RadioButton) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyFocusControl.
+func (me *_RadioButton) Focus() {
+	me._NativeControlBase.focus()
 }
 
 // Implements AnyTextControl.

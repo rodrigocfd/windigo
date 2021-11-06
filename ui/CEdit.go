@@ -15,6 +15,7 @@ import (
 type Edit interface {
 	AnyNativeControl
 	AnyEnabledControl
+	AnyFocusControl
 	AnyTextControl
 	isEdit() // prevent public implementation
 
@@ -81,6 +82,11 @@ func (me *_Edit) isEdit() {}
 // Implements AnyEnabledControl.
 func (me *_Edit) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyFocusControl.
+func (me *_Edit) Focus() {
+	me._NativeControlBase.focus()
 }
 
 // Implements AnyTextControl.

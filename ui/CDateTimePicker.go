@@ -15,6 +15,7 @@ import (
 type DateTimePicker interface {
 	AnyNativeControl
 	AnyEnabledControl
+	AnyFocusControl
 	isDateTimePicker() // prevent public implementation
 
 	// Exposes all the DateTimePicker notifications the can be handled.
@@ -81,6 +82,11 @@ func (me *_DateTimePicker) isDateTimePicker() {}
 // Implements AnyEnabledControl.
 func (me *_DateTimePicker) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyFocusControl.
+func (me *_DateTimePicker) Focus() {
+	me._NativeControlBase.focus()
 }
 
 func (me *_DateTimePicker) On() *_DateTimePickerEvents {

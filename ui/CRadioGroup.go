@@ -12,6 +12,7 @@ type RadioGroup interface {
 
 	AsCtrls() []AnyControl         // Returns all radios buttons as AnyControl.
 	EnableAll(enable bool)         // Calls EnableWindow on all radio buttons.
+	FocusSelected()                // Puts the focus on the currently selected radio button, if any.
 	Item(index int) RadioButton    // Returns the RadioButton at the given index.
 	Parent() AnyParent             // Returns the parent of the radio buttons.
 	Selected() (RadioButton, bool) // Returns the currently selected RadioButton, if any.
@@ -72,6 +73,12 @@ func (me *_RadioGroup) AsCtrls() []AnyControl {
 func (me *_RadioGroup) EnableAll(enable bool) {
 	for _, radio := range me.radios {
 		radio.Hwnd().EnableWindow(enable)
+	}
+}
+
+func (me *_RadioGroup) FocusSelected() {
+	if rad, ok := me.Selected(); ok {
+		rad.Focus()
 	}
 }
 

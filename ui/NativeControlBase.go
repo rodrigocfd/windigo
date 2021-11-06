@@ -94,6 +94,11 @@ func (me *_NativeControlBase) installSubclassIfNeeded() {
 	}
 }
 
+func (me *_NativeControlBase) focus() {
+	// Will draw the borders correctly in a button.
+	me.hWnd.GetParent().SendMessage(co.WM_NEXTDLGCTL, win.WPARAM(me.hWnd), 1)
+}
+
 var (
 	// incremented at each subclass installed
 	_globalSubclassId = uint32(0)

@@ -15,6 +15,7 @@ import (
 type TreeView interface {
 	AnyNativeControl
 	AnyEnabledControl
+	AnyFocusControl
 	isTreeView() // prevent public implementation
 
 	// Exposes all the TreeView notifications the can be handled.
@@ -88,6 +89,11 @@ func (me *_TreeView) isTreeView() {}
 // Implements AnyEnabledControl.
 func (me *_TreeView) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyFocusControl.
+func (me *_TreeView) Focus() {
+	me._NativeControlBase.focus()
 }
 
 func (me *_TreeView) On() *_TreeViewEvents {

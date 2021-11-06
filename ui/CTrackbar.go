@@ -14,6 +14,7 @@ import (
 type Trackbar interface {
 	AnyNativeControl
 	AnyEnabledControl
+	AnyFocusControl
 	isTrackbar() // prevent public implementation
 
 	// Exposes all the Trackbar notifications the can be handled.
@@ -95,6 +96,11 @@ func (me *_Trackbar) isTrackbar() {}
 // Implements AnyEnabledControl.
 func (me *_Trackbar) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyFocusControl.
+func (me *_Trackbar) Focus() {
+	me._NativeControlBase.focus()
 }
 
 func (me *_Trackbar) On() *_TrackbarEvents {

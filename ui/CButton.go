@@ -14,6 +14,7 @@ import (
 type Button interface {
 	AnyNativeControl
 	AnyEnabledControl
+	AnyFocusControl
 	AnyTextControl
 	isButton() // prevent public implementation
 
@@ -77,6 +78,11 @@ func (me *_Button) isButton() {}
 // Implements AnyEnabledControl.
 func (me *_Button) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyFocusControl.
+func (me *_Button) Focus() {
+	me._NativeControlBase.focus()
 }
 
 // Implements AnyTextControl.

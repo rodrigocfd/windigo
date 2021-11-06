@@ -12,6 +12,7 @@ import (
 type ComboBox interface {
 	AnyNativeControl
 	AnyEnabledControl
+	AnyFocusControl
 	AnyTextControl
 	isComboBox() // prevent public implementation
 
@@ -89,6 +90,11 @@ func (me *_ComboBox) isComboBox() {}
 // Implements AnyEnabledControl.
 func (me *_ComboBox) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
+}
+
+// Implements AnyFocusControl.
+func (me *_ComboBox) Focus() {
+	me._NativeControlBase.focus()
 }
 
 // Implements AnyTextControl.
