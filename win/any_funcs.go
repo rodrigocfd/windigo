@@ -1013,16 +1013,20 @@ func SystemTimeToTzSpecificLocalTime(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
-	hMem, buf1, buf2 := taskConfig.serializePacked()
+	buf, buf1, buf2 := taskConfig.serializePacked()
 	var pnButton co.ID
 
 	ret, _, _ := syscall.Syscall6(proc.TaskDialogIndirect.Addr(), 4,
-		uintptr(unsafe.Pointer(hMem)), uintptr(unsafe.Pointer(&pnButton)),
+		uintptr(unsafe.Pointer(&buf[0])), uintptr(unsafe.Pointer(&pnButton)),
 		0, 0, 0, 0)
 
-	hMem.GlobalFree()
-	runtime.KeepAlive(buf2)
 	runtime.KeepAlive(buf1)
+	runtime.KeepAlive(buf2)
+
+	// It's necessary to force the struct to be kept alive in order to keep its
+	// *uint16 fields alive. If the instruction below is removed, the GC will
+	// collect the *uint16 fields, which have been serialized into []byte.
+	runtime.KeepAlive(taskConfig)
 
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {
 		panic(wErr)

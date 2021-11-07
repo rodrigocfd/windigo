@@ -705,19 +705,18 @@ func (td *TASKDIALOGCONFIG) SetPszCollapsedControlText(v string) {
 func (td *TASKDIALOGCONFIG) SetPszFooter(v string) { td.pszFooter = Str.ToNativePtr(v) }
 
 // This struct is originally packed, so we must serialize it before using.
-func (td *TASKDIALOGCONFIG) serializePacked() (HGLOBAL, *byte, *byte) { // pointers must be kept alive
-	hMem := GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 160)
-	data := unsafe.Slice((*byte)(unsafe.Pointer(hMem)), 160)
+func (td *TASKDIALOGCONFIG) serializePacked() ([]byte, *byte, *byte) { // pointers must be kept alive
+	buf := make([]byte, 160)
 
-	binary.LittleEndian.PutUint32(data[0:], 160) // cbSize
-	binary.LittleEndian.PutUint64(data[4:], uint64(td.HwndParent))
-	binary.LittleEndian.PutUint64(data[12:], uint64(td.HInstance))
-	binary.LittleEndian.PutUint32(data[20:], uint32(td.DwFlags))
-	binary.LittleEndian.PutUint32(data[24:], uint32(td.DwCommonButtons))
-	binary.LittleEndian.PutUint64(data[28:], uint64(uintptr(unsafe.Pointer(td.pszWindowTitle))))
-	binary.LittleEndian.PutUint64(data[36:], uint64(variantTdcIcon(td.HMainIcon)))
-	binary.LittleEndian.PutUint64(data[44:], uint64(uintptr(unsafe.Pointer(td.pszMainInstruction))))
-	binary.LittleEndian.PutUint64(data[52:], uint64(uintptr(unsafe.Pointer(td.pszContent))))
+	binary.LittleEndian.PutUint32(buf[0:], 160) // cbSize
+	binary.LittleEndian.PutUint64(buf[4:], uint64(td.HwndParent))
+	binary.LittleEndian.PutUint64(buf[12:], uint64(td.HInstance))
+	binary.LittleEndian.PutUint32(buf[20:], uint32(td.DwFlags))
+	binary.LittleEndian.PutUint32(buf[24:], uint32(td.DwCommonButtons))
+	binary.LittleEndian.PutUint64(buf[28:], uint64(uintptr(unsafe.Pointer(td.pszWindowTitle))))
+	binary.LittleEndian.PutUint64(buf[36:], uint64(variantTdcIcon(td.HMainIcon)))
+	binary.LittleEndian.PutUint64(buf[44:], uint64(uintptr(unsafe.Pointer(td.pszMainInstruction))))
+	binary.LittleEndian.PutUint64(buf[52:], uint64(uintptr(unsafe.Pointer(td.pszContent))))
 
 	var pButtonsPtr *byte
 	if len(td.PButtons) > 0 {
@@ -726,11 +725,11 @@ func (td *TASKDIALOGCONFIG) serializePacked() (HGLOBAL, *byte, *byte) { // point
 			pButtonsBuf = append(pButtonsBuf, td.PButtons[i].serializePacked()...)
 		}
 		pButtonsPtr = &pButtonsBuf[0]
-		binary.LittleEndian.PutUint32(data[60:], uint32(len(td.PButtons)))
-		binary.LittleEndian.PutUint64(data[64:], uint64(uintptr(unsafe.Pointer(&pButtonsBuf[0]))))
+		binary.LittleEndian.PutUint32(buf[60:], uint32(len(td.PButtons)))
+		binary.LittleEndian.PutUint64(buf[64:], uint64(uintptr(unsafe.Pointer(&pButtonsBuf[0]))))
 	}
 
-	binary.LittleEndian.PutUint32(data[72:], uint32(td.NDefaultButton))
+	binary.LittleEndian.PutUint32(buf[72:], uint32(td.NDefaultButton))
 
 	var pRadioButtonsPtr *byte
 	if len(td.PRadioButtons) > 0 {
@@ -739,22 +738,22 @@ func (td *TASKDIALOGCONFIG) serializePacked() (HGLOBAL, *byte, *byte) { // point
 			pRadioButtonsBuf = append(pRadioButtonsBuf, td.PRadioButtons[i].serializePacked()...)
 		}
 		pRadioButtonsPtr = &pRadioButtonsBuf[0]
-		binary.LittleEndian.PutUint32(data[76:], uint32(len(td.PRadioButtons)))
-		binary.LittleEndian.PutUint64(data[80:], uint64(uintptr(unsafe.Pointer(&pRadioButtonsBuf[0]))))
+		binary.LittleEndian.PutUint32(buf[76:], uint32(len(td.PRadioButtons)))
+		binary.LittleEndian.PutUint64(buf[80:], uint64(uintptr(unsafe.Pointer(&pRadioButtonsBuf[0]))))
 	}
 
-	binary.LittleEndian.PutUint32(data[88:], uint32(td.NDefaultRadioButton))
-	binary.LittleEndian.PutUint64(data[92:], uint64(uintptr(unsafe.Pointer(td.pszVerificationText))))
-	binary.LittleEndian.PutUint64(data[100:], uint64(uintptr(unsafe.Pointer(td.pszExpandedInformation))))
-	binary.LittleEndian.PutUint64(data[108:], uint64(uintptr(unsafe.Pointer(td.pszExpandedControlText))))
-	binary.LittleEndian.PutUint64(data[116:], uint64(uintptr(unsafe.Pointer(td.pszCollapsedControlText))))
-	binary.LittleEndian.PutUint64(data[124:], uint64(variantTdcIcon(td.HFooterIcon)))
-	binary.LittleEndian.PutUint64(data[132:], uint64(uintptr(unsafe.Pointer(td.pszFooter))))
-	binary.LittleEndian.PutUint64(data[140:], uint64(td.PfCallback))
-	binary.LittleEndian.PutUint64(data[148:], uint64(td.LpCallbackData))
-	binary.LittleEndian.PutUint32(data[156:], td.CxWidth)
+	binary.LittleEndian.PutUint32(buf[88:], uint32(td.NDefaultRadioButton))
+	binary.LittleEndian.PutUint64(buf[92:], uint64(uintptr(unsafe.Pointer(td.pszVerificationText))))
+	binary.LittleEndian.PutUint64(buf[100:], uint64(uintptr(unsafe.Pointer(td.pszExpandedInformation))))
+	binary.LittleEndian.PutUint64(buf[108:], uint64(uintptr(unsafe.Pointer(td.pszExpandedControlText))))
+	binary.LittleEndian.PutUint64(buf[116:], uint64(uintptr(unsafe.Pointer(td.pszCollapsedControlText))))
+	binary.LittleEndian.PutUint64(buf[124:], uint64(variantTdcIcon(td.HFooterIcon)))
+	binary.LittleEndian.PutUint64(buf[132:], uint64(uintptr(unsafe.Pointer(td.pszFooter))))
+	binary.LittleEndian.PutUint64(buf[140:], uint64(td.PfCallback))
+	binary.LittleEndian.PutUint64(buf[148:], uint64(td.LpCallbackData))
+	binary.LittleEndian.PutUint32(buf[156:], td.CxWidth)
 
-	return hMem, pButtonsPtr, pRadioButtonsPtr
+	return buf, pButtonsPtr, pRadioButtonsPtr
 }
 
 // ⚠️ You must call SetDwSize().
