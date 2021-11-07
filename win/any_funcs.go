@@ -1014,13 +1014,13 @@ func SystemTimeToTzSpecificLocalTime(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 	hMem, buf1, buf2 := taskConfig.serializePacked()
-	defer hMem.GlobalFree()
 	var pnButton co.ID
 
 	ret, _, _ := syscall.Syscall6(proc.TaskDialogIndirect.Addr(), 4,
 		uintptr(unsafe.Pointer(hMem)), uintptr(unsafe.Pointer(&pnButton)),
 		0, 0, 0, 0)
 
+	hMem.GlobalFree()
 	runtime.KeepAlive(buf2)
 	runtime.KeepAlive(buf1)
 
