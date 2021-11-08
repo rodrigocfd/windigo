@@ -15,6 +15,9 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
 type HINSTANCE HANDLE
 
+// If moduleName is nil, returns a handle to the file used to create the calling
+// process (.exe file).
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
 func GetModuleHandle(moduleName StrOrNil) HINSTANCE {
 	ret, _, err := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
@@ -163,19 +166,49 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 	return HICON(ret)
 }
 
-// Returned HANDLE can be cast into HBITMAP, HCURSOR or HICON.
+// Returned HGDIOBJ must be cast into HBITMAP, HCURSOR or HICON.
+//
+// ⚠️ If the object is not being loaded from the application resources, you must
+// defer its respective DeleteObject().
+//
+// Example loading a 16x16 icon resource:
+//
+//  const MY_ICON_ID int = 101
+//
+//  hIcon := win.HICON(
+//      win.GetModuleHandle(nil).LoadImage(
+//          win.ResIdInt(MY_ICON_ID),
+//          co.IMAGE_ICON,
+//          16, 16,
+//          co.LR_DEFAULTCOLOR,
+//      ),
+//  )
+//
+// Example loading a bitmap from file:
+//
+//  hBmp := win.HBITMAP(
+//      win.HINSTANCE(0).LoadImage(
+//          win.ResIdStr("C:\\Temp\\image.bmp"),
+//          co.IMAGE_BITMAP,
+//          0, 0,
+//          co.LR_LOADFROMFILE,
+//      ),
+//  )
+//  defer hBmp.DeleteObject()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
 func (hInst HINSTANCE) LoadImage(
-	name int32, imgType co.IMAGE, cx, cy int32, fuLoad co.LR) HANDLE {
+	name ResId, imgType co.IMAGE, cx, cy int32, fuLoad co.LR) HGDIOBJ {
 
+	nameVal, nameBuf := variantResId(name)
 	ret, _, err := syscall.Syscall6(proc.LoadImage.Addr(), 6,
-		uintptr(hInst), uintptr(name), uintptr(imgType),
+		uintptr(hInst), nameVal, uintptr(imgType),
 		uintptr(cx), uintptr(cy), uintptr(fuLoad))
+	runtime.KeepAlive(nameBuf)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	return HANDLE(ret)
+	return HGDIOBJ(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
