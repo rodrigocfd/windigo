@@ -6,19 +6,39 @@ package co
 type KEY uint32
 
 const (
-	KEY_QUERY_VALUE        KEY = 0x0001
-	KEY_SET_VALUE          KEY = 0x0002
-	KEY_CREATE_SUB_KEY     KEY = 0x0004
+	// Required to query the values of a registry key.
+	KEY_QUERY_VALUE KEY = 0x0001
+	// Required to create, delete, or set a registry value.
+	KEY_SET_VALUE KEY = 0x0002
+	// Required to create a subkey of a registry key.
+	KEY_CREATE_SUB_KEY KEY = 0x0004
+	// Required to enumerate the subkeys of a registry key.
 	KEY_ENUMERATE_SUB_KEYS KEY = 0x0008
-	KEY_NOTIFY             KEY = 0x0010
-	KEY_CREATE_LINK        KEY = 0x0020
-	KEY_WOW64_32KEY        KEY = 0x0200
-	KEY_WOW64_64KEY        KEY = 0x0100
-	KEY_WOW64_RES          KEY = 0x0300
+	// Required to request change notifications for a registry key or for
+	// subkeys of a registry key.
+	KEY_NOTIFY KEY = 0x0010
+	// Reserved for system use.
+	KEY_CREATE_LINK KEY = 0x0020
+	// Indicates that an application on 64-bit Windows should operate on the
+	// 32-bit registry view.
+	KEY_WOW64_32KEY KEY = 0x0200
+	// Indicates that an application on 64-bit Windows should operate on the
+	// 64-bit registry view.
+	KEY_WOW64_64KEY KEY = 0x0100
+	// Undocumented flag.
+	KEY_WOW64_RES KEY = 0x0300
 
-	KEY_READ       KEY = (KEY(STANDARD_RIGHTS_READ) | KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
-	KEY_WRITE      KEY = (KEY(STANDARD_RIGHTS_WRITE) | KEY_SET_VALUE | KEY_CREATE_SUB_KEY) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
-	KEY_EXECUTE    KEY = KEY_READ & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
+	// Combines the STANDARD_RIGHTS_READ, KEY_QUERY_VALUE,
+	// KEY_ENUMERATE_SUB_KEYS, and KEY_NOTIFY values.
+	KEY_READ KEY = (KEY(STANDARD_RIGHTS_READ) | KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
+	// Combines the STANDARD_RIGHTS_WRITE, KEY_SET_VALUE, and KEY_CREATE_SUB_KEY
+	// access rights.
+	KEY_WRITE KEY = (KEY(STANDARD_RIGHTS_WRITE) | KEY_SET_VALUE | KEY_CREATE_SUB_KEY) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
+	// Equivalent to KEY_READ.
+	KEY_EXECUTE KEY = KEY_READ & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
+	// Combines the STANDARD_RIGHTS_REQUIRED, KEY_QUERY_VALUE, KEY_SET_VALUE,
+	// KEY_CREATE_SUB_KEY, KEY_ENUMERATE_SUB_KEYS, KEY_NOTIFY, and
+	// KEY_CREATE_LINK access rights.
 	KEY_ALL_ACCESS KEY = (KEY(STANDARD_RIGHTS_ALL) | KEY_QUERY_VALUE | KEY_SET_VALUE | KEY_CREATE_SUB_KEY | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY | KEY_CREATE_LINK) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
 )
 
