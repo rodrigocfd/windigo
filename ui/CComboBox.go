@@ -11,7 +11,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-combo-boxes
 type ComboBox interface {
 	AnyNativeControl
-	AnyEnabledControl
+	AnyEnableControl
 	AnyFocusControl
 	AnyTextControl
 	isComboBox() // prevent public implementation
@@ -87,7 +87,7 @@ func NewComboBoxDlg(
 // Implements ComboBox.
 func (me *_ComboBox) isComboBox() {}
 
-// Implements AnyEnabledControl.
+// Implements AnyEnableControl.
 func (me *_ComboBox) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
 }

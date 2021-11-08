@@ -13,7 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/syslink-control-entry
 type SysLink interface {
 	AnyNativeControl
-	AnyEnabledControl
+	AnyEnableControl
 	AnyFocusControl
 	AnyTextControl
 	isSysLink() // prevent public implementation
@@ -76,7 +76,7 @@ func NewSysLinkDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) SysLink {
 // Implements SysLink.
 func (me *_SysLink) isSysLink() {}
 
-// Implements AnyEnabledControl.
+// Implements AnyEnableControl.
 func (me *_SysLink) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
 }

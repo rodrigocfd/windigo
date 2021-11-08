@@ -14,7 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-edit-controls
 type Edit interface {
 	AnyNativeControl
-	AnyEnabledControl
+	AnyEnableControl
 	AnyFocusControl
 	AnyTextControl
 	isEdit() // prevent public implementation
@@ -79,7 +79,7 @@ func NewEditDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Edit {
 // Implements Edit.
 func (me *_Edit) isEdit() {}
 
-// Implements AnyEnabledControl.
+// Implements AnyEnableControl.
 func (me *_Edit) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
 }

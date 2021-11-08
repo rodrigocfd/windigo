@@ -56,7 +56,7 @@ type AnyNativeControl interface {
 }
 
 // Any child window which can be enabled/disabled.
-type AnyEnabledControl interface {
+type AnyEnableControl interface {
 	AnyControl
 
 	// Enables or disables the control. A disabled control appears grayed, and

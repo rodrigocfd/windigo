@@ -11,7 +11,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-static-controls
 type Static interface {
 	AnyNativeControl
-	AnyEnabledControl
+	AnyEnableControl
 	AnyTextControl
 	isStatic() // prevent public implementation
 
@@ -75,7 +75,7 @@ func NewStaticDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Static {
 // Implements Static.
 func (me *_Static) isStatic() {}
 
-// Implements AnyEnabledControl.
+// Implements AnyEnableControl.
 func (me *_Static) Enable(enable bool) {
 	me.Hwnd().EnableWindow(enable)
 }
