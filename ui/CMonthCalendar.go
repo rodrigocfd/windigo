@@ -14,7 +14,6 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/month-calendar-controls
 type MonthCalendar interface {
 	AnyNativeControl
-	AnyEnableControl
 	AnyFocusControl
 	isMonthCalendar() // prevent public implementation
 
@@ -83,11 +82,6 @@ func NewMonthCalendarDlg(
 
 // Implements MonthCalendar.
 func (me *_MonthCalendar) isMonthCalendar() {}
-
-// Implements AnyEnableControl.
-func (me *_MonthCalendar) Enable(enable bool) {
-	me.Hwnd().EnableWindow(enable)
-}
 
 // Implements AnyFocusControl.
 func (me *_MonthCalendar) Focus() {

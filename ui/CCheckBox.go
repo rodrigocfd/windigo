@@ -11,7 +11,6 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#check-boxes
 type CheckBox interface {
 	AnyNativeControl
-	AnyEnableControl
 	AnyFocusControl
 	AnyTextControl
 	isCheckBox() // prevent public implementation
@@ -84,11 +83,6 @@ func NewCheckBoxDlg(
 
 // Implements CheckBox.
 func (me *_CheckBox) isCheckBox() {}
-
-// Implements AnyEnableControl.
-func (me *_CheckBox) Enable(enable bool) {
-	me.Hwnd().EnableWindow(enable)
-}
 
 // Implements AnyFocusControl.
 func (me *_CheckBox) Focus() {

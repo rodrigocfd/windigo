@@ -13,7 +13,6 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioButton interface {
 	AnyNativeControl
-	AnyEnableControl
 	AnyFocusControl
 	AnyTextControl
 	isRadioButton() // prevent public implementation
@@ -88,11 +87,6 @@ func NewRadioButtonDlg(
 
 // Implements RadioButton.
 func (me *_RadioButton) isRadioButton() {}
-
-// Implements AnyEnableControl.
-func (me *_RadioButton) Enable(enable bool) {
-	me.Hwnd().EnableWindow(enable)
-}
 
 // Implements AnyFocusControl.
 func (me *_RadioButton) Focus() {

@@ -14,7 +14,6 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-controls
 type DateTimePicker interface {
 	AnyNativeControl
-	AnyEnableControl
 	AnyFocusControl
 	isDateTimePicker() // prevent public implementation
 
@@ -78,11 +77,6 @@ func NewDateTimePickerDlg(
 
 // Implements DateTimePicker.
 func (me *_DateTimePicker) isDateTimePicker() {}
-
-// Implements AnyEnableControl.
-func (me *_DateTimePicker) Enable(enable bool) {
-	me.Hwnd().EnableWindow(enable)
-}
 
 // Implements AnyFocusControl.
 func (me *_DateTimePicker) Focus() {

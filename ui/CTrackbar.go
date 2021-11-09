@@ -13,7 +13,6 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/trackbar-controls
 type Trackbar interface {
 	AnyNativeControl
-	AnyEnableControl
 	AnyFocusControl
 	isTrackbar() // prevent public implementation
 
@@ -92,11 +91,6 @@ func NewTrackbarDlg(
 
 // Implements Trackbar.
 func (me *_Trackbar) isTrackbar() {}
-
-// Implements AnyEnableControl.
-func (me *_Trackbar) Enable(enable bool) {
-	me.Hwnd().EnableWindow(enable)
-}
 
 // Implements AnyFocusControl.
 func (me *_Trackbar) Focus() {

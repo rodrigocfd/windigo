@@ -14,7 +14,6 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls
 type TreeView interface {
 	AnyNativeControl
-	AnyEnableControl
 	AnyFocusControl
 	isTreeView() // prevent public implementation
 
@@ -85,11 +84,6 @@ func NewTreeViewDlg(
 
 // Implements TreeView.
 func (me *_TreeView) isTreeView() {}
-
-// Implements AnyEnableControl.
-func (me *_TreeView) Enable(enable bool) {
-	me.Hwnd().EnableWindow(enable)
-}
 
 // Implements AnyFocusControl.
 func (me *_TreeView) Focus() {

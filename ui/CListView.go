@@ -15,7 +15,6 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/list-view-controls-overview
 type ListView interface {
 	AnyNativeControl
-	AnyEnableControl
 	AnyFocusControl
 	isListView() // prevent public implementation
 
@@ -113,11 +112,6 @@ func NewListViewDlg(
 
 // Implements ListView.
 func (me *_ListView) isListView() {}
-
-// Implements AnyEnableControl.
-func (me *_ListView) Enable(enable bool) {
-	me.Hwnd().EnableWindow(enable)
-}
 
 // Implements AnyFocusControl.
 func (me *_ListView) Focus() {

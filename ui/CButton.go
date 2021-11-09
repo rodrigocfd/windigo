@@ -13,7 +13,6 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#push-buttons
 type Button interface {
 	AnyNativeControl
-	AnyEnableControl
 	AnyFocusControl
 	AnyTextControl
 	isButton() // prevent public implementation
@@ -74,11 +73,6 @@ func NewButtonDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Button {
 
 // Implements Button.
 func (me *_Button) isButton() {}
-
-// Implements AnyEnableControl.
-func (me *_Button) Enable(enable bool) {
-	me.Hwnd().EnableWindow(enable)
-}
 
 // Implements AnyFocusControl.
 func (me *_Button) Focus() {

@@ -55,20 +55,12 @@ type AnyNativeControl interface {
 	OnSubclass() *_EventsWm
 }
 
-// Any child window which can be enabled/disabled.
-type AnyEnableControl interface {
-	AnyControl
-
-	// Enables or disables the control. A disabled control appears grayed, and
-	// cannot receive user input.
-	Enable(enable bool)
-}
-
 // Any child window wich can receive the focus.
 type AnyFocusControl interface {
 	AnyControl
 
-	// Puts the focus on the control.
+	// Puts the focus on the control by sending a WM_NEXTDLGCTL message. This
+	// ensures that the borders will be correctly drawn.
 	Focus()
 }
 
