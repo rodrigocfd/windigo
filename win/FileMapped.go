@@ -87,7 +87,10 @@ func (me *FileMapped) ReadLines() []string {
 	lines := strings.Split(allText, "\n")
 
 	for i := 0; i < len(lines); i++ {
-		lines[i] = strings.TrimSpace(lines[i])
+		line := lines[i]
+		if line[len(line)-1] == '\r' {
+			lines[i] = line[:len(line)-1] // trim trailing \r
+		}
 	}
 	return lines
 }
