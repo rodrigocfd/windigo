@@ -1,45 +1,30 @@
 package win
 
 import (
+	"io"
+
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
 // High-level abstraction to HFILE, providing several operations.
 //
+// Note that it implements several standard io interfaces, being interchangeable
+// with functions that accept them.
+//
 // Created with FileOpen().
 type File interface {
-	// Releases the file resource.
-	Close()
+	io.ByteReader
+	io.ByteWriter
+	io.Closer
+	io.Reader
+	io.Seeker
+	io.StringWriter
+	io.Writer
 
-	// Replaces all file contents, possibly resizing the file.
-	EraseAndWrite(data []byte) error
-
-	// Returns the underlying HFILE.
-	Hfile() HFILE
-
-	// Retrieves the current file pointer offset.
-	PointerOffset() int
-
-	// Reads data from file at current pointer offset. The pointer will then
-	// advance.
-	Read(numBytes int) ([]byte, error)
-
-	// Rewinds the file pointer and reads all the raw file contents. Then
-	// rewinds the pointer again.
-	ReadAll() ([]byte, error)
-
-	// Truncates or expands the file, according to the new size. Zero will empty
-	// the file.
-	Resize(numBytes int) error
-
-	// Rewinds the internal pointer back to the beginning of the file.
-	RewindPointer() error
-
-	// Retrieves the files size. This value is not cached.
-	Size() int
-
-	// Writes the bytes at current internal pointer offset, which then advances.
-	Write(data []byte) error
+	Hfile() HFILE              // Returns the underlying HFILE.
+	ReadAll() ([]byte, error)  // Rewinds the internal file pointer and reads all contents at once, then rewinds the pointer again.
+	Resize(numBytes int) error // Truncates or expands the file, according to the new size. Zero will empty the file. The internal file pointer will rewind.
+	Size() int                 // Retrieves the file size. This value is not cached.
 }
 
 //------------------------------------------------------------------------------
@@ -81,66 +66,102 @@ func FileOpen(filePath string, desiredAccess co.FILE_OPEN) (File, error) {
 	return &_File{hFile: hFile}, nil
 }
 
-func (me *_File) Close() {
+// Implements io.ByteReader.
+func (me *_File) ReadByte() (byte, error) {
+	var buf [1]byte
+	_, err := me.Read(buf[:])
+	return buf[0], err
+}
+
+// Implements io.ByteWriter.
+func (me *_File) WriteByte(c byte) error {
+	_, err := me.Write([]byte{c})
+	return err
+}
+
+// Implements io.Closer.
+func (me *_File) Close() error {
+	var e error
 	if me.hFile != 0 {
-		me.hFile.CloseHandle()
+		e = me.hFile.CloseHandle()
 		me.hFile = 0
+	}
+	return e
+}
+
+// Implements io.Reader.
+func (me *_File) Read(p []byte) (int, error) {
+	numRead, err := me.hFile.ReadFile(p, uint32(len(p)))
+	if err != nil {
+		return 0, err
+	}
+
+	if numRead < len(p) { // surely there's no more to read
+		return numRead, io.EOF
+	} else if numRead == 0 { // EOF found
+		return 0, io.EOF
+	} else {
+		return numRead, nil
 	}
 }
 
-func (me *_File) EraseAndWrite(data []byte) error {
-	if err := me.Resize(len(data)); err != nil {
-		return err
+// Implements io.Seeker.
+func (me *_File) Seek(offset int64, whence int) (int64, error) {
+	var moveMethod co.FILE_FROM
+	switch whence {
+	case io.SeekCurrent:
+		moveMethod = co.FILE_FROM_CURRENT
+	case io.SeekStart:
+		moveMethod = co.FILE_FROM_BEGIN
+	case io.SeekEnd:
+		moveMethod = co.FILE_FROM_END
 	}
-	if err := me.hFile.WriteFile(data); err != nil {
-		return err
-	}
-	return me.RewindPointer()
+
+	newOff, err := me.hFile.SetFilePointerEx(offset, moveMethod)
+	return int64(newOff), err
+}
+
+// Implements io.StringWriter.
+func (me *_File) WriteString(s string) (int, error) {
+	serialized := []byte(s)
+	return me.Write(serialized)
+}
+
+// Implements io.Writer.
+func (me *_File) Write(p []byte) (int, error) {
+	written, err := me.hFile.WriteFile(p)
+	return written, err
 }
 
 func (me *_File) Hfile() HFILE {
 	return me.hFile
 }
 
-func (me *_File) PointerOffset() int {
-	off, err := me.hFile.SetFilePointerEx(0, co.FILE_FROM_CURRENT) // https://stackoverflow.com/a/17707021/6923555
-	if err != nil {
-		panic(err)
-	}
-	return int(off)
-}
-
-func (me *_File) Read(numBytes int) ([]byte, error) {
-	buf := make([]byte, numBytes)
-	if err := me.hFile.ReadFile(buf, uint32(numBytes)); err != nil {
-		return nil, err
-	}
-	return buf, nil
-}
-
 func (me *_File) ReadAll() ([]byte, error) {
-	if err := me.RewindPointer(); err != nil {
+	if _, err := me.Seek(0, io.SeekStart); err != nil {
 		return nil, err
 	}
+
 	fileSize := me.Size()
 	buf := make([]byte, fileSize)
-
-	// Read the contents into our allocated buffer.
-	// Will truncate if file data overflows uint32.
-	if err := me.hFile.ReadFile(buf, uint32(fileSize)); err != nil {
+	if _, err := me.Read(buf); err != nil {
 		return nil, err
 	}
 
-	if err := me.RewindPointer(); err != nil {
+	if _, err := me.Seek(0, io.SeekStart); err != nil {
 		return nil, err
 	}
+
 	return buf, nil
 }
 
 func (me *_File) Resize(numBytes int) error {
+	if _, err := me.Seek(0, io.SeekStart); err != nil {
+		return err
+	}
+
 	// Simply go beyond file limits.
-	if _, err := me.hFile.SetFilePointerEx(
-		int64(numBytes), co.FILE_FROM_BEGIN); err != nil {
+	if _, err := me.Seek(int64(numBytes), io.SeekStart); err != nil {
 		return err
 	}
 
@@ -148,12 +169,11 @@ func (me *_File) Resize(numBytes int) error {
 		return err
 	}
 
-	return me.RewindPointer()
-}
+	if _, err := me.Seek(0, io.SeekStart); err != nil {
+		return err
+	}
 
-func (me *_File) RewindPointer() error {
-	_, err := me.hFile.SetFilePointerEx(0, co.FILE_FROM_BEGIN)
-	return err
+	return nil
 }
 
 func (me *_File) Size() int {
@@ -162,8 +182,4 @@ func (me *_File) Size() int {
 		panic(err)
 	}
 	return int(sz)
-}
-
-func (me *_File) Write(data []byte) error {
-	return me.hFile.WriteFile(data)
 }

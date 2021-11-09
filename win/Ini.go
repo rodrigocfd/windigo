@@ -112,7 +112,7 @@ func (me *_Ini) Get(sectionName, keyName string) (string, bool) {
 }
 
 func (me *_Ini) SaveToFile(filePath string) error {
-	serialized := strings.Builder{}
+	var serialized strings.Builder
 
 	for i, section := range me.sections {
 		serialized.WriteString("[" + section.Name + "]\r\n")
@@ -132,7 +132,10 @@ func (me *_Ini) SaveToFile(filePath string) error {
 	}
 	defer fout.Close()
 
-	return fout.EraseAndWrite([]byte(serialized.String()))
+	blob := []byte(serialized.String())
+	fout.Resize(len(blob))
+	_, err = fout.Write(blob)
+	return err
 }
 
 func (me *_Ini) Section(sectionName string) (*_IniSection, bool) {

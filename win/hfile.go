@@ -78,16 +78,18 @@ func (hFile HFILE) CreateFileMapping(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
-func (hFile HFILE) ReadFile(buf []byte, numBytesToRead uint32) error {
-	var numRead uint32 // not used for anything, but must be passed to the call
+func (hFile HFILE) ReadFile(
+	buf []byte, numBytesToRead uint32) (numBytesRead int, e error) {
+
+	var numRead uint32
 	ret, _, err := syscall.Syscall6(proc.ReadFile.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(numBytesToRead), uintptr(unsafe.Pointer(&numRead)), 0, 0) // OVERLAPPED not even considered
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
-		return err
+		return 0, err
 	}
-	return nil
+	return int(numRead), nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setendoffile
@@ -119,16 +121,16 @@ func (hFile HFILE) SetFilePointerEx(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
-func (hFile HFILE) WriteFile(buf []byte) error {
+func (hFile HFILE) WriteFile(buf []byte) (numBytesWritten int, e error) {
 	var written uint32
 	ret, _, err := syscall.Syscall6(proc.WriteFile.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(len(buf)), uintptr(unsafe.Pointer(&written)), 0, 0) // OVERLAPPED not even considered
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
-		return err
+		return 0, err
 	}
-	return nil
+	return int(written), nil
 }
 
 //------------------------------------------------------------------------------
