@@ -6,44 +6,26 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// High-level abstraction to an INI file.
+// High-level abstraction to a .ini file.
+//
+// Contains a slice of sections, which can be freely modified.
 //
 // Created with IniLoad().
-type Ini interface {
-	AddSection(sectionName string) *_IniSection      // Adds a new section, if it doesn't exist yet.
-	Get(sectionName, keyName string) (string, bool)  // Retrieves the specific section/key value, if existing.
-	SaveToFile(filePath string) error                // Saves the INI to a file.
-	Section(sectionName string) (*_IniSection, bool) // Returns the specific section, if existing.
-	Sections() []_IniSection                         // Returns all the sections.
-}
-
-//------------------------------------------------------------------------------
-
-type (
-	_IniSection struct {
-		Name string
-		Keys []_IniKey
-	}
-	_IniKey struct {
-		Name  string
-		Value string
-	}
-)
-
-type _Ini struct {
-	sections []_IniSection
+type Ini struct {
+	Sections   []IniSection // All sections of this .ini file.
+	sourcePath string
 }
 
 // Loads the sections and keys of an INI file.
-func IniLoad(filePath string) (Ini, error) {
-	me := &_Ini{}
+func IniLoad(filePath string) (*Ini, error) {
+	me := &Ini{}
 	lines, err := me.loadLines(filePath)
 	if err != nil {
 		return nil, err
 	}
 
-	me.sections = make([]_IniSection, 0, 4) // arbitrary
-	curSection := _IniSection{}
+	me.Sections = make([]IniSection, 0, 4) // arbitrary
+	var curSection IniSection
 
 	for _, line := range lines {
 		if len(line) == 0 {
@@ -52,16 +34,16 @@ func IniLoad(filePath string) (Ini, error) {
 
 		if line[0] == '[' && line[len(line)-1] == ']' { // [section] ?
 			if curSection.Name != "" {
-				me.sections = append(me.sections, curSection)
+				me.Sections = append(me.Sections, curSection)
 			}
-			curSection = _IniSection{ // create a new section with the given name
-				Name: strings.TrimSpace(line[1 : len(line)-1]),
-				Keys: make([]_IniKey, 0, 4), // arbitrary
+			curSection = IniSection{ // create a new section with the given name
+				Name:   strings.TrimSpace(line[1 : len(line)-1]),
+				Values: make([]IniKey, 0, 4), // arbitrary
 			}
 
 		} else if curSection.Name != "" {
 			keyVal := strings.SplitN(line, "=", 2)
-			curSection.Keys = append(curSection.Keys, _IniKey{
+			curSection.Values = append(curSection.Values, IniKey{
 				Name:  strings.TrimSpace(keyVal[0]),
 				Value: strings.TrimSpace(keyVal[1]),
 			})
@@ -69,13 +51,14 @@ func IniLoad(filePath string) (Ini, error) {
 	}
 
 	if curSection.Name != "" { // for the last section
-		me.sections = append(me.sections, curSection)
+		me.Sections = append(me.Sections, curSection)
 	}
 
+	me.sourcePath = filePath // keep
 	return me, nil
 }
 
-func (me *_Ini) loadLines(filePath string) ([]string, error) {
+func (me *Ini) loadLines(filePath string) ([]string, error) {
 	fin, err := FileMappedOpen(filePath, co.FILE_OPEN_READ_EXISTING)
 	if err != nil {
 		return nil, err
@@ -85,42 +68,30 @@ func (me *_Ini) loadLines(filePath string) ([]string, error) {
 	return fin.ReadLines(), nil
 }
 
-func (me *_Ini) AddSection(sectionName string) *_IniSection {
-	if section, exists := me.Section(sectionName); exists {
-		return section
-	} else {
-		me.sections = append(me.sections, _IniSection{
-			Name: sectionName,
-			Keys: make([]_IniKey, 0),
-		})
-		return &me.sections[len(me.sections)-1]
-	}
-}
-
-func (me *_Ini) Get(sectionName, keyName string) (string, bool) {
-	section, exists := me.Section(sectionName)
-	if !exists {
-		return "", false
-	}
-
-	for i := range section.Keys {
-		if section.Keys[i].Name == keyName {
-			return section.Keys[i].Name, true
+// Returns the IniSection with the given name, if any.
+func (me *Ini) Section(name string) (*IniSection, bool) {
+	for i := range me.Sections {
+		section := &me.Sections[i]
+		if section.Name == name {
+			return section, true
 		}
 	}
-	return "", false
+	return nil, false
 }
 
-func (me *_Ini) SaveToFile(filePath string) error {
+// Saves the contents to a .ini file.
+func (me *Ini) SaveToFile(filePath string) error {
 	var serialized strings.Builder
 
-	for i, section := range me.sections {
+	for s := range me.Sections {
+		section := &me.Sections[s]
 		serialized.WriteString("[" + section.Name + "]\r\n")
-		for _, key := range section.Keys {
-			serialized.WriteString(key.Name + "=" + key.Value + "\r\n")
+		for v := range section.Values {
+			value := &section.Values[v]
+			serialized.WriteString(value.Name + "=" + value.Value + "\r\n")
 		}
 
-		isLast := i == len(me.sections)-1
+		isLast := s == len(me.Sections)-1
 		if !isLast {
 			serialized.WriteString("\r\n")
 		}
@@ -135,41 +106,79 @@ func (me *_Ini) SaveToFile(filePath string) error {
 	blob := []byte(serialized.String())
 	fout.Resize(len(blob))
 	_, err = fout.Write(blob)
+
+	me.sourcePath = filePath // update
 	return err
 }
 
-func (me *_Ini) Section(sectionName string) (*_IniSection, bool) {
-	for i := range me.sections {
-		if me.sections[i].Name == sectionName {
-			return &me.sections[i], true
+// Returns the latest source path of the .ini file.
+//
+// When IniLoad() is called, this path is stored. When Ini.SaveToFile() is
+// called, this new path is stored.
+//
+// This is useful when you load an .ini file, and you need to update it later.
+// When you first open, you pass the file path; on subsequent saves, you just
+// call Ini.SourcePath() to retrieve the path, instead of manually saving it
+// somewhere.
+//
+// Example:
+//
+//  ini, _ := win.IniLoad("C:\\Temp\\foo.ini")
+//
+//  // modify ini...
+//
+//  ini.SaveToFile(ini.SourcePath())
+func (me *Ini) SourcePath() string {
+	return me.sourcePath
+}
+
+// Returns the specific value, if existing.
+//
+// Note that a pointer to the string is returned, so that the value can be
+// directly modified.
+//
+// Example:
+//
+//  ini, _ := win.IniLoad("C:\\Temp\\foo.ini")
+//
+//  if val, ok := ini.Value("my section", "my value"); ok {
+//      fmt.Printf("Old value: %s\n", *val)
+//      *val = "new value"
+//  }
+func (me *Ini) Value(sectionName, valueName string) (*string, bool) {
+	if section, ok := me.Section(sectionName); ok {
+		if value, ok := section.Value(valueName); ok {
+			return &value.Value, true
 		}
 	}
 	return nil, false
 }
 
-func (me *_Ini) Sections() []_IniSection {
-	return me.sections
+//------------------------------------------------------------------------------
+
+// A single section of an Ini.
+//
+// Contains a slice of keys, which can be freely modified.
+type IniSection struct {
+	Name   string   // The name of this section.
+	Values []IniKey // All values of this section.
 }
 
-// Adds a new key, if it doesn't exist yet.
-func (me *_IniSection) AddKey(keyName, value string) *_IniKey {
-	if key, exists := me.Key(keyName); exists {
-		return key
-	} else {
-		me.Keys = append(me.Keys, _IniKey{
-			Name:  keyName,
-			Value: value,
-		})
-		return &me.Keys[len(me.Keys)-1]
-	}
-}
-
-// Returns the specific key, if existing.
-func (me *_IniSection) Key(keyName string) (*_IniKey, bool) {
-	for i := range me.Keys {
-		if me.Keys[i].Name == keyName {
-			return &me.Keys[i], true
+// Returns the IniKey with the given name, if any.
+func (me *IniSection) Value(name string) (*IniKey, bool) {
+	for i := range me.Values {
+		value := &me.Values[i]
+		if value.Name == name {
+			return value, true
 		}
 	}
 	return nil, false
+}
+
+//------------------------------------------------------------------------------
+
+// A single key of an IniSection.
+type IniKey struct {
+	Name  string // The name of this key.
+	Value string // The value of this key.
 }

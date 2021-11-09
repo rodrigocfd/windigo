@@ -11,14 +11,7 @@ import (
 // executable of DLL file.
 //
 // Created with ResourceInfoLoad().
-type ResourceInfo interface {
-	FixedFileInfo() (*VS_FIXEDFILEINFO, bool) // Returns the VS_FIXEDFILEINFO struct, which contains version information.
-	Blocks() []ResourceInfoBlock              // Returns the string information blocks, one per language and code page, which contain several strings.
-}
-
-//------------------------------------------------------------------------------
-
-type _ResourceInfo struct {
+type ResourceInfo struct {
 	resBuf []byte
 }
 
@@ -33,16 +26,17 @@ type _ResourceInfo struct {
 //  blocks := resNfo.Blocks() // each block contains one language
 //  productName, _ := blocks[0].ProductName()
 //  companyName, _ := blocks[0].CompanyName()
-func ResourceInfoLoad(exePath string) (ResourceInfo, error) {
+func ResourceInfoLoad(exePath string) (*ResourceInfo, error) {
 	resBuf, err := GetFileVersionInfo(exePath)
 	if err != nil {
 		return nil, err
 	}
 
-	return &_ResourceInfo{resBuf: resBuf}, nil
+	return &ResourceInfo{resBuf: resBuf}, nil
 }
 
-func (me *_ResourceInfo) FixedFileInfo() (*VS_FIXEDFILEINFO, bool) {
+// Returns the VS_FIXEDFILEINFO struct, which contains version information.
+func (me *ResourceInfo) FixedFileInfo() (*VS_FIXEDFILEINFO, bool) {
 	ptr, _, ok := VerQueryValue(me.resBuf, "\\")
 	if !ok {
 		return nil, false
@@ -51,7 +45,8 @@ func (me *_ResourceInfo) FixedFileInfo() (*VS_FIXEDFILEINFO, bool) {
 	return (*VS_FIXEDFILEINFO)(ptr), true
 }
 
-func (me *_ResourceInfo) Blocks() []ResourceInfoBlock {
+// Returns the string information blocks, one per language and code page, which contain several strings.
+func (me *ResourceInfo) Blocks() []ResourceInfoBlock {
 	type _RawBlock struct {
 		langId   LANGID
 		codePage co.CP
@@ -77,7 +72,7 @@ func (me *_ResourceInfo) Blocks() []ResourceInfoBlock {
 
 // A block of information retrieved by ResourceInfo.
 type ResourceInfoBlock struct {
-	resNfo   *_ResourceInfo
+	resNfo   *ResourceInfo
 	langId   LANGID
 	codePage co.CP
 }

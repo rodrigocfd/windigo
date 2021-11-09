@@ -8,35 +8,25 @@ import (
 
 // High-level abstraction to HFILE, providing several operations.
 //
-// Note that it implements several standard io interfaces, being interchangeable
-// with functions that accept them.
+// Implements the following standard io interfaces:
+//
+//  io.ByteReader
+//  io.ByteWriter
+//  io.Closer
+//  io.Reader
+//  io.Seeker
+//  io.StringWriter
+//  io.Writer
 //
 // Created with FileOpen().
-type File interface {
-	io.ByteReader
-	io.ByteWriter
-	io.Closer
-	io.Reader
-	io.Seeker
-	io.StringWriter
-	io.Writer
-
-	Hfile() HFILE              // Returns the underlying HFILE.
-	ReadAll() ([]byte, error)  // Rewinds the internal file pointer and reads all contents at once, then rewinds the pointer again.
-	Resize(numBytes int) error // Truncates or expands the file, according to the new size. Zero will empty the file. The internal file pointer will rewind.
-	Size() int                 // Retrieves the file size. This value is not cached.
-}
-
-//------------------------------------------------------------------------------
-
-type _File struct {
+type File struct {
 	hFile HFILE
 }
 
 // Opens a file, returning a new high-level File object.
 //
 // ⚠️ You must defer File.Close().
-func FileOpen(filePath string, desiredAccess co.FILE_OPEN) (File, error) {
+func FileOpen(filePath string, desiredAccess co.FILE_OPEN) (*File, error) {
 	var access co.GENERIC
 	var share co.FILE_SHARE
 	var disposition co.DISPOSITION
@@ -63,24 +53,11 @@ func FileOpen(filePath string, desiredAccess co.FILE_OPEN) (File, error) {
 		return nil, err
 	}
 
-	return &_File{hFile: hFile}, nil
-}
-
-// Implements io.ByteReader.
-func (me *_File) ReadByte() (byte, error) {
-	var buf [1]byte
-	_, err := me.Read(buf[:])
-	return buf[0], err
-}
-
-// Implements io.ByteWriter.
-func (me *_File) WriteByte(c byte) error {
-	_, err := me.Write([]byte{c})
-	return err
+	return &File{hFile: hFile}, nil
 }
 
 // Implements io.Closer.
-func (me *_File) Close() error {
+func (me *File) Close() error {
 	var e error
 	if me.hFile != 0 {
 		e = me.hFile.CloseHandle()
@@ -89,8 +66,13 @@ func (me *_File) Close() error {
 	return e
 }
 
+// Returns the underlying handle.
+func (me *File) Hfile() HFILE {
+	return me.hFile
+}
+
 // Implements io.Reader.
-func (me *_File) Read(p []byte) (int, error) {
+func (me *File) Read(p []byte) (int, error) {
 	numRead, err := me.hFile.ReadFile(p, uint32(len(p)))
 	if err != nil {
 		return 0, err
@@ -105,39 +87,9 @@ func (me *_File) Read(p []byte) (int, error) {
 	}
 }
 
-// Implements io.Seeker.
-func (me *_File) Seek(offset int64, whence int) (int64, error) {
-	var moveMethod co.FILE_FROM
-	switch whence {
-	case io.SeekCurrent:
-		moveMethod = co.FILE_FROM_CURRENT
-	case io.SeekStart:
-		moveMethod = co.FILE_FROM_BEGIN
-	case io.SeekEnd:
-		moveMethod = co.FILE_FROM_END
-	}
-
-	newOff, err := me.hFile.SetFilePointerEx(offset, moveMethod)
-	return int64(newOff), err
-}
-
-// Implements io.StringWriter.
-func (me *_File) WriteString(s string) (int, error) {
-	serialized := []byte(s)
-	return me.Write(serialized)
-}
-
-// Implements io.Writer.
-func (me *_File) Write(p []byte) (int, error) {
-	written, err := me.hFile.WriteFile(p)
-	return written, err
-}
-
-func (me *_File) Hfile() HFILE {
-	return me.hFile
-}
-
-func (me *_File) ReadAll() ([]byte, error) {
+// Rewinds the internal file pointer and reads all contents at once, then
+// rewinds the pointer again.
+func (me *File) ReadAll() ([]byte, error) {
 	if _, err := me.Seek(0, io.SeekStart); err != nil {
 		return nil, err
 	}
@@ -155,7 +107,16 @@ func (me *_File) ReadAll() ([]byte, error) {
 	return buf, nil
 }
 
-func (me *_File) Resize(numBytes int) error {
+// Implements io.ByteReader.
+func (me *File) ReadByte() (byte, error) {
+	var buf [1]byte
+	_, err := me.Read(buf[:])
+	return buf[0], err
+}
+
+// Truncates or expands the file, according to the new size. Zero will empty the
+// file. The internal file pointer will rewind.
+func (me *File) Resize(numBytes int) error {
 	if _, err := me.Seek(0, io.SeekStart); err != nil {
 		return err
 	}
@@ -176,10 +137,45 @@ func (me *_File) Resize(numBytes int) error {
 	return nil
 }
 
-func (me *_File) Size() int {
+// Implements io.Seeker.
+func (me *File) Seek(offset int64, whence int) (int64, error) {
+	var moveMethod co.FILE_FROM
+	switch whence {
+	case io.SeekCurrent:
+		moveMethod = co.FILE_FROM_CURRENT
+	case io.SeekStart:
+		moveMethod = co.FILE_FROM_BEGIN
+	case io.SeekEnd:
+		moveMethod = co.FILE_FROM_END
+	}
+
+	newOff, err := me.hFile.SetFilePointerEx(offset, moveMethod)
+	return int64(newOff), err
+}
+
+// Retrieves the file size. This value is not cached.
+func (me *File) Size() int {
 	sz, err := me.hFile.GetFileSizeEx()
 	if err != nil {
 		panic(err)
 	}
 	return int(sz)
+}
+
+// Implements io.Writer.
+func (me *File) Write(p []byte) (int, error) {
+	written, err := me.hFile.WriteFile(p)
+	return written, err
+}
+
+// Implements io.ByteWriter.
+func (me *File) WriteByte(c byte) error {
+	_, err := me.Write([]byte{c})
+	return err
+}
+
+// Implements io.StringWriter.
+func (me *File) WriteString(s string) (int, error) {
+	serialized := []byte(s)
+	return me.Write(serialized)
 }
