@@ -62,13 +62,6 @@ func (me *_EventsWmNfy) addNfyZero(idFrom int, code co.NM, userFunc func(p unsaf
 	}] = userFunc
 }
 
-func (me *_EventsWmNfy) hasMessages() bool {
-	return len(me.cmdsZero) > 0 ||
-		len(me.nfysRet) > 0 ||
-		len(me.nfysZero) > 0 ||
-		me._EventsWm.hasMessages()
-}
-
 func (me *_EventsWmNfy) processMessage(
 	uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM,
 ) (retVal uintptr, meaningfulRet bool, wasHandled bool) {
