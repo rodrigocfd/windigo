@@ -10,18 +10,18 @@ import (
 type HORZ uint8
 
 const (
-	HORZ_NONE   HORZ = iota // When parent is resize, nothing happens to the control.
+	HORZ_NONE   HORZ = iota // When parent is resized, nothing happens to the control.
 	HORZ_REPOS              // When parent is resized, control moves anchored at right.
-	HORZ_RESIZE             // When parent is resized, control is resized accordingly.
+	HORZ_RESIZE             // When parent is resized, control is resized together.
 )
 
 // Vertical action to be performed when the parent window is resized.
 type VERT uint8
 
 const (
-	VERT_NONE   VERT = iota // When parent is resize, nothing happens to the control.
+	VERT_NONE   VERT = iota // When parent is resized, nothing happens to the control.
 	VERT_REPOS              // When parent is resized, control moves anchored at bottom.
-	VERT_RESIZE             // When parent is resized, control is resized accordingly.
+	VERT_RESIZE             // When parent is resized, control is resized together.
 )
 
 //------------------------------------------------------------------------------

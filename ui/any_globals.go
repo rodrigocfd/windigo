@@ -66,7 +66,7 @@ func _MultiplyDpi(pos *win.POINT, size *win.SIZE) {
 // multiplies by current DPI factor.
 func _ConvertDtuOrMultiplyDpi(parent AnyParent, pos *win.POINT, size *win.SIZE) {
 	if parent.isDialog() {
-		rc := win.RECT{}
+		var rc win.RECT
 		if pos != nil {
 			rc.Left, rc.Top = pos.X, pos.Y
 		}

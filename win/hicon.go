@@ -14,6 +14,18 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hicon
 type HICON HANDLE
 
+// ⚠️ You must defer HICON.DestroyIcon().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconindirect
+func CreateIconIndirect(info *ICONINFO) HICON {
+	ret, _, err := syscall.Syscall(proc.CreateIconIndirect.Addr(), 1,
+		uintptr(unsafe.Pointer(info)), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return HICON(ret)
+}
+
 // Extracts all icons: big and small.
 //
 // ⚠️ You must defer HICON.DestroyIcon() on each icon returned in both slices.
@@ -45,6 +57,8 @@ func ExtractIconEx(fileName string) (largeIcons, smallIcons []HICON) {
 	return
 }
 
+// ⚠️ You must defer HICON.DestroyIcon().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyicon
 func (hIcon HICON) CopyIcon() HICON {
 	ret, _, err := syscall.Syscall(proc.CopyIcon.Addr(), 1,

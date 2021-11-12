@@ -13,6 +13,8 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hcursor
 type HCURSOR HANDLE
 
+// ⚠️ You must defer HCURSOR.DestroyCursor().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copycursor
 func (hCursor HCURSOR) CopyCursor() HCURSOR {
 	return (HCURSOR)(((HICON)(hCursor)).CopyIcon())

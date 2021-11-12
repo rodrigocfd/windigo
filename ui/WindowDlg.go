@@ -69,7 +69,7 @@ func _DlgProc(
 	}
 
 	// If object pointer is not stored, then no processing is done.
-	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
+	// Prevents processing before WM_INITDIALOG and after WM_NCDESTROY.
 	if _, isStored := _globalWindowDlgPtrs[pMe]; isStored {
 		// Process all internal events.
 		pMe.internalEvents.processMessages(uMsg, wParam, lParam)
