@@ -39,30 +39,27 @@ func (me *_EventsWm) hasMessages() bool {
 }
 
 func (me *_EventsWm) processMessage(
-	uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM,
-) (retVal uintptr, meaningfulRet bool, wasHandled bool) {
+	uMsg co.WM,
+	wParam win.WPARAM,
+	lParam win.LPARAM) (retVal uintptr, meaningfulRet, wasHandled bool) {
 
 	msgObj := wm.Any{WParam: wParam, LParam: lParam}
 
 	if uMsg == co.WM_TIMER {
 		if userFunc, hasFunc := me.timers[int(wParam)]; hasFunc {
 			userFunc()
-			retVal, meaningfulRet, wasHandled = 0, false, true
-			return
+			return 0, false, true
 		}
 
 	} else if userFunc, hasFunc := me.msgsZero[uMsg]; hasFunc {
 		userFunc(msgObj)
-		retVal, meaningfulRet, wasHandled = 0, false, true
-		return
+		return 0, false, true
 
 	} else if userFunc, hasFunc := me.msgsRet[uMsg]; hasFunc {
-		retVal, meaningfulRet, wasHandled = userFunc(msgObj), true, true
-		return
+		return userFunc(msgObj), true, true
 	}
 
-	retVal, meaningfulRet, wasHandled = 0, false, false
-	return
+	return 0, false, false
 }
 
 // Generic message handler.

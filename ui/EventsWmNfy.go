@@ -63,8 +63,9 @@ func (me *_EventsWmNfy) addNfyZero(idFrom int, code co.NM, userFunc func(p unsaf
 }
 
 func (me *_EventsWmNfy) processMessage(
-	uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM,
-) (retVal uintptr, meaningfulRet bool, wasHandled bool) {
+	uMsg co.WM,
+	wParam win.WPARAM,
+	lParam win.LPARAM) (retVal uintptr, meaningfulRet, wasHandled bool) {
 
 	if uMsg == co.WM_COMMAND {
 		hash := _HashCmd{
@@ -74,25 +75,23 @@ func (me *_EventsWmNfy) processMessage(
 		if userFunc, hasFunc := me.cmdsZero[hash]; hasFunc {
 			msgObj := wm.Any{WParam: wParam, LParam: lParam}
 			userFunc(wm.Command{Msg: msgObj})
-			retVal, meaningfulRet, wasHandled = 0, false, true
+			return 0, false, true
 		}
 
 	} else if uMsg == co.WM_NOTIFY {
-		nmhdrPtr := unsafe.Pointer(lParam)
-		nmhdr := (*win.NMHDR)(nmhdrPtr)
+		pHdr := unsafe.Pointer(lParam)
+		hdr := (*win.NMHDR)(pHdr)
 		hash := _HashNfy{
-			idFrom: int(nmhdr.IdFrom),
-			code:   co.NM(nmhdr.Code),
+			idFrom: int(hdr.IdFrom),
+			code:   co.NM(hdr.Code),
 		}
 
 		if userFunc, hasFunc := me.nfysZero[hash]; hasFunc {
-			userFunc(nmhdrPtr)
-			retVal, meaningfulRet, wasHandled = 0, false, true
-			return
+			userFunc(pHdr)
+			return 0, false, true
 
 		} else if userFunc, hasFunc := me.nfysRet[hash]; hasFunc {
-			retVal, meaningfulRet, wasHandled = userFunc(nmhdrPtr), true, true
-			return
+			return userFunc(pHdr), true, true
 		}
 	}
 
