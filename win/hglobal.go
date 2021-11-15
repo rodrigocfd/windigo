@@ -22,7 +22,7 @@ type HGLOBAL HANDLE
 //
 // Example:
 //
-//  hMem := win.GlobalAlloc(co.GMEM_FIXED, 50)
+//  hMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 50)
 //  defer hMem.GlobalFree()
 //
 //  sliceMem := unsafe.Slice((*byte)(unsafe.Pointer(hMem)), 50)
@@ -37,6 +37,32 @@ func GlobalAlloc(uFlags co.GMEM, dwBytes uint64) HGLOBAL {
 	return HGLOBAL(ret)
 }
 
+// Allocs a null-terminated *uint16.
+//
+// With co.GMEM_FIXED, the handle itself is the pointer to the memory block.
+// With co.GMEM_MOVEABLE, you must call HGLOBAL.GlobalLock() to retrieve the
+// pointer.
+//
+// ⚠️ You must defer HGLOBAL.GlobalFree().
+//
+// Example:
+//
+//  hMem := win.GlobalAllocStr(co.GMEM_FIXED, "my text")
+//  defer hMem.GlobalFree()
+//
+//  pChars := (*uint16)(unsafe.Pointer(hMem))
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
+func GlobalAllocStr(uFlags co.GMEM, s string) HGLOBAL {
+	sliceStr := Str.ToNativeSlice(s)
+	numBytesSliceStr := len(sliceStr) * int(unsafe.Sizeof(sliceStr[0]))
+
+	hMem := GlobalAlloc(uFlags, uint64(numBytesSliceStr))
+	sliceMem := unsafe.Slice((*uint16)(unsafe.Pointer(hMem)), len(sliceStr))
+	copy(sliceMem, sliceStr)
+	return hMem
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalflags
 func (hGlobal HGLOBAL) GlobalFlags() co.GMEM {
 	ret, _, err := syscall.Syscall(proc.GlobalFlags.Addr(), 1,
@@ -47,6 +73,8 @@ func (hGlobal HGLOBAL) GlobalFlags() co.GMEM {
 	return co.GMEM(ret)
 }
 
+// This method is safe to be called if hGlobal is zero.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalfree
 func (hGlobal HGLOBAL) GlobalFree() {
 	ret, _, err := syscall.Syscall(proc.GlobalFree.Addr(), 1,
