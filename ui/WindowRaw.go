@@ -95,29 +95,27 @@ func (me *_WindowRaw) calcWndCoords(
 	pClientArea *win.SIZE, hMenu win.HMENU,
 	styles co.WS, exStyles co.WS_EX) (win.POINT, win.SIZE) {
 
+	_MultiplyDpi(nil, pClientArea) // in-place correct for DPI
+	rc := win.RECT{
+		Right:  pClientArea.Cx,
+		Bottom: pClientArea.Cy,
+	}
+	win.AdjustWindowRectEx(&rc, styles,
+		hMenu != 0 && hMenu.GetMenuItemCount() > 0, exStyles)
+
+	pClientArea.Cx = rc.Right - rc.Left // as if top corner is 0,0
+	pClientArea.Cy = rc.Bottom - rc.Top
+
 	screenSize := win.SIZE{
 		Cx: win.GetSystemMetrics(co.SM_CXSCREEN),
 		Cy: win.GetSystemMetrics(co.SM_CYSCREEN),
 	}
-
-	_MultiplyDpi(nil, pClientArea) // in-place correct for DPI
-
 	pos := win.POINT{
 		X: screenSize.Cx/2 - pClientArea.Cx/2, // center on screen
 		Y: screenSize.Cy/2 - pClientArea.Cy/2,
 	}
 
-	rc := win.RECT{
-		Left:   pos.X,
-		Top:    pos.Y,
-		Right:  pClientArea.Cx + pos.X,
-		Bottom: pClientArea.Cy + pos.Y,
-	}
-	win.AdjustWindowRectEx(&rc, styles,
-		hMenu != 0 && hMenu.GetMenuItemCount() > 0, exStyles)
-
-	return win.POINT{X: rc.Left, Y: rc.Top},
-		win.SIZE{Cx: rc.Right - rc.Left, Cy: rc.Bottom - rc.Top}
+	return pos, *pClientArea
 }
 
 var (
