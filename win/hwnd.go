@@ -70,6 +70,13 @@ func GetShellWindow() HWND {
 	return HWND(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-gettopwindow
+func GetTopWindow(hwnd HWND) HWND {
+	ret, _, _ := syscall.Syscall(proc.GetTopWindow.Addr(), 1,
+		uintptr(hwnd), 0, 0)
+	return HWND(ret)
+}
+
 // ⚠️ You must defer HWND.EndPaint().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint
