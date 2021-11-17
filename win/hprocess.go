@@ -62,6 +62,16 @@ func GetCurrentProcessId() uint32 {
 	return uint32(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowthreadprocessid
+func GetWindowThreadProcessId(hwnd HWND) (HANDLE, uint32) {
+	var processId uint32
+	ret, _, _ := syscall.Syscall(proc.GetWindowThreadProcessId.Addr(), 2,
+		uintptr(hwnd),
+		uintptr(unsafe.Pointer(&processId)), 0)
+
+	return HANDLE(ret), processId
+}
+
 // ⚠️ You must defer HPROCESS.CloseHandle().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
