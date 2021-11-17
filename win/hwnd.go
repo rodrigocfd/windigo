@@ -424,6 +424,13 @@ func (hWnd HWND) GetWindowLongPtr(index co.GWLP) uintptr {
 	return ret
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowthreadprocessid
+func (hWnd HWND) GetWindowThreadProcessId() uint32 {
+	ret, _, _ := syscall.Syscall(proc.GetWindowThreadProcessId.Addr(), 2,
+		uintptr(hWnd), 0, 0)
+	return uint32(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowrect
 func (hWnd HWND) GetWindowRect() RECT {
 	var rc RECT
