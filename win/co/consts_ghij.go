@@ -425,3 +425,16 @@ const (
 	IMAGE_CURSOR      IMAGE = 2
 	IMAGE_ENHMETAFILE IMAGE = 3
 )
+
+// InSendMessageEx() return value.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessageex
+type ISMEX uint32
+
+const (
+	ISMEX_NOSEND   ISMEX = 0x0000_0000
+	ISMEX_CALLBACK ISMEX = 0x0000_0004
+	ISMEX_NOTIFY   ISMEX = 0x0000_0002
+	ISMEX_REPLIED  ISMEX = 0x0000_0008
+	ISMEX_SEND     ISMEX = 0x0000_0001
+)

@@ -632,6 +632,20 @@ func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessage
+func InSendMessage() bool {
+	ret, _, _ := syscall.Syscall(proc.InSendMessage.Addr(), 0,
+		0, 0, 0)
+	return ret != 0
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessageex
+func InSendMessageEx() co.ISMEX {
+	ret, _, _ := syscall.Syscall(proc.InSendMessageEx.Addr(), 0,
+		0, 0, 0)
+	return co.ISMEX(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isappthemed
 func IsAppThemed() bool {
 	ret, _, _ := syscall.Syscall(proc.IsAppThemed.Addr(), 0,

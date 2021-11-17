@@ -102,6 +102,8 @@ var (
 	GetWindowThreadProcessId      = user32.NewProc("GetWindowThreadProcessId")
 	HideCaret                     = user32.NewProc("HideCaret")
 	HiliteMenuItem                = user32.NewProc("HiliteMenuItem")
+	InSendMessage                 = user32.NewProc("InSendMessage")
+	InSendMessageEx               = user32.NewProc("InSendMessageEx")
 	InsertMenuItem                = user32.NewProc("InsertMenuItemW")
 	InvalidateRect                = user32.NewProc("InvalidateRect")
 	IsChild                       = user32.NewProc("IsChild")
