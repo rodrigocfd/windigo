@@ -70,13 +70,6 @@ func GetShellWindow() HWND {
 	return HWND(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-gettopwindow
-func GetTopWindow(hwnd HWND) HWND {
-	ret, _, _ := syscall.Syscall(proc.GetTopWindow.Addr(), 1,
-		uintptr(hwnd), 0, 0)
-	return HWND(ret)
-}
-
 // ⚠️ You must defer HWND.EndPaint().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint
@@ -390,6 +383,16 @@ func (hWnd HWND) GetSystemMenu(revert bool) HMENU {
 	ret, _, _ := syscall.Syscall(proc.GetSystemMenu.Addr(), 2,
 		uintptr(hWnd), util.BoolToUintptr(revert), 0)
 	return HMENU(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-gettopwindow
+func (hWnd HWND) GetTopWindow() HWND {
+	ret, _, err := syscall.Syscall(proc.GetTopWindow.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		panic(wErr)
+	}
+	return HWND(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindow
