@@ -428,10 +428,10 @@ func (hWnd HWND) GetWindowLongPtr(index co.GWLP) uintptr {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowthreadprocessid
-func (hWnd HWND) GetWindowThreadProcessId() uint32 {
+func (hWnd HWND) GetWindowThreadProcessId() (threadId, processId uint32) {
 	ret, _, _ := syscall.Syscall(proc.GetWindowThreadProcessId.Addr(), 2,
-		uintptr(hWnd), 0, 0)
-	return uint32(ret)
+		uintptr(hWnd), uintptr(unsafe.Pointer(&processId)), 0)
+	return uint32(ret), processId
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowrect
