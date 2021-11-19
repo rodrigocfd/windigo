@@ -68,17 +68,23 @@ func (me *_WindowBase) RunUiThread(userFunc func()) {
 	_globalUiThreadCache[_globalUiThreadCount] = userFunc // cache
 	_globalUiThreadMutex.Unlock()
 
-	me.hWnd.SendMessage(_WM_UI_THREAD, 0, win.LPARAM(_globalUiThreadCount))
+	// Bypass any modals and send straight to main window. This avoids any blind
+	// spots of unhandled messages by a modal being created/destroyed.
+	me.hWnd.GetAncestor(co.GA_ROOTOWNER).
+		SendMessage(_WM_UI_THREAD,
+			win.WPARAM(_WM_UI_THREAD), win.LPARAM(_globalUiThreadCount))
 }
 
 func (me *_WindowBase) defaultMessages() {
 	me.internalOn().addMsgZero(_WM_UI_THREAD, func(p wm.Any) { // handle our custom thread UI message
-		_globalUiThreadMutex.Lock()
-		userFunc := _globalUiThreadCache[int(p.LParam)] // retrieve from cache
-		delete(_globalUiThreadCache, int(p.LParam))     // clear from cache
-		_globalUiThreadMutex.Unlock()
+		if p.WParam == win.WPARAM(_WM_UI_THREAD) { // additional safety check
+			_globalUiThreadMutex.Lock()
+			userFunc := _globalUiThreadCache[int(p.LParam)] // retrieve from cache
+			delete(_globalUiThreadCache, int(p.LParam))     // clear from cache
+			_globalUiThreadMutex.Unlock()
 
-		userFunc()
+			userFunc()
+		}
 	})
 
 	me.internalOn().addMsgZero(co.WM_SIZE, func(p wm.Any) {

@@ -6,8 +6,21 @@ package co
 type GA uint32
 
 const (
-	GA_PARENT    GA = 1
-	GA_ROOT      GA = 2
+	// Retrieves the parent window. This does not include the owner as it does
+	// with the win.HWND.GetParent() function.
+	GA_PARENT GA = 1
+	// Retrieves the root window by walking the chain of parent windows. Returns
+	// the closest parent with WS_OVERLAPPED or WS_POPUP.
+	//
+	// https://groups.google.com/a/chromium.org/g/chromium-dev/c/Hirr_DkuZdw/m/N0pSoJBhAAAJ
+	GA_ROOT GA = 2
+	// Retrieves the owned root window by walking the chain of parent and owner
+	// windows returned by win.HWND.GetParent().
+	//
+	// Returns the furthest parent with WS_OVERLAPPED or WS_POPUP which usually
+	// is the main application window.
+	//
+	// https://groups.google.com/a/chromium.org/g/chromium-dev/c/Hirr_DkuZdw/m/N0pSoJBhAAAJ
 	GA_ROOTOWNER GA = 3
 )
 
