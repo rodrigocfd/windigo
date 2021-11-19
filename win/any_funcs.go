@@ -468,6 +468,23 @@ func GetFileVersionInfoSize(fileName string) (uint32, error) {
 	return uint32(ret), nil
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getguithreadinfo
+func GetGUIThreadInfo(thread_id uint32, info *GUITHREADINFO) {
+	info.SetCbSize() // safety
+	ret, _, err := syscall.Syscall(proc.GetGUIThreadInfo.Addr(), 2,
+		uintptr(thread_id), uintptr(unsafe.Pointer(info)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getinputstate
+func GetInputState() bool {
+	ret, _, _ := syscall.Syscall(proc.GetInputState.Addr(), 0,
+		0, 0, 0)
+	return ret != 0
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagew
 func GetMessage(
 	msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) (int32, error) {

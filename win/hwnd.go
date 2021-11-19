@@ -332,6 +332,13 @@ func (hWnd HWND) GetDlgItem(dlgId int32) HWND {
 	return HWND(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getlastactivepopup
+func (hWnd HWND) GetLastActivePopup() HWND {
+	ret, _, _ := syscall.Syscall(proc.GetLastActivePopup.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	return HWND(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenu
 func (hWnd HWND) GetMenu() HMENU {
 	ret, _, _ := syscall.Syscall(proc.GetMenu.Addr(), 1,

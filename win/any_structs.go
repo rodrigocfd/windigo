@@ -190,6 +190,23 @@ func (ft *FILETIME) FromTime(val time.Time) {
 
 // ⚠️ You must call SetCbSize().
 //
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-guithreadinfo
+type GUITHREADINFO struct {
+	cbSize        uint32
+	Flags         co.GUI
+	HwndActive    HWND
+	HwndFocus     HWND
+	HwndCapture   HWND
+	HwndMenuOwner HWND
+	HwndMoveSize  HWND
+	HwndCaret     HWND
+	RcCaret       RECT
+}
+
+func (gti *GUITHREADINFO) SetCbSize() { gti.cbSize = uint32(unsafe.Sizeof(*gti)) }
+
+// ⚠️ You must call SetCbSize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
 type HELPINFO struct {
 	cbSize       uint32

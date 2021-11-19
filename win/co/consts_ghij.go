@@ -135,6 +135,19 @@ const (
 	GMEM_GPTR     GMEM = GMEM_FIXED | GMEM_ZEROINIT
 )
 
+// GUITHREADINFO flags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-guithreadinfo
+type GUI uint32
+
+const (
+	GUI_CARETBLINKING  GUI = 0x0000_0001
+	GUI_INMENUMODE     GUI = 0x0000_0004
+	GUI_INMOVESIZE     GUI = 0x0000_0002
+	GUI_POPUPMENUMODE  GUI = 0x0000_0010
+	GUI_SYSTEMMENUMODE GUI = 0x0000_0008
+)
+
 // GetWindow() uCmd.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindow
