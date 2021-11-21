@@ -1054,6 +1054,8 @@ func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 		uintptr(hMems[0]), uintptr(unsafe.Pointer(&pnButton)),
 		0, 0, 0, 0)
 
+	runtime.KeepAlive(taskConfig)
+
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {
 		panic(wErr)
 	}
