@@ -654,6 +654,119 @@ func (shf *SHFILEINFO) SetSzTypeName(val string) {
 	copy(shf.szTypeName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(shf.szTypeName)-1)))
 }
 
+// Basic area size structure, with cx and cy values.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-size
+type SIZE struct {
+	Cx, Cy int32
+}
+
+// ⚠️ You must call SetCb().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
+type STARTUPINFO struct {
+	cb              uint32
+	lpReserved      *uint16
+	LpDesktop       *uint16
+	LpTitle         *uint16
+	DwX             uint32
+	DwY             uint32
+	DwXSize         uint32
+	DwYSize         uint32
+	DwXCountChars   uint32
+	DwYCountChars   uint32
+	DwFillAttribute uint32
+	DwFlags         co.STARTF
+	WShowWindow     uint16 // co.SW, should be uint16.
+	cbReserved2     uint16
+	lpReserved2     *uint8
+	HStdInput       uintptr
+	HStdOutput      uintptr
+	HStdError       uintptr
+}
+
+func (si *STARTUPINFO) SetCb() { si.cb = uint32(unsafe.Sizeof(*si)) }
+
+// STYLESTRUCT for WS styles.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-stylestruct
+type STYLESTRUCT_WS struct {
+	StyleOld co.WS
+	StyleNew co.WS
+}
+
+// STYLESTRUCT for WS_EX styles.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-stylestruct
+type STYLESTRUCT_WSEX struct {
+	StyleOld co.WS_EX
+	StyleNew co.WS_EX
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
+type SYSTEM_INFO struct {
+	WProcessorArchitecture      co.PROCESSOR_ARCHITECTURE
+	wReserved                   uint16
+	DwPageSize                  uint32
+	LpMinimumApplicationAddress uintptr
+	LpMaximumApplicationAddress uintptr
+	DwActiveProcessorMask       uintptr
+	DwNumberOfProcessors        uint32
+	DwProcessorType             co.PROCESSOR
+	DwAllocationGranularity     uint32
+	WProcessorLevel             uint16
+	WProcessorRevision          uint16
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime
+type SYSTEMTIME struct {
+	WYear         uint16
+	WMonth        uint16
+	WDayOfWeek    uint16
+	WDay          uint16
+	WHour         uint16
+	WMinute       uint16
+	WSecond       uint16
+	WMilliseconds uint16
+}
+
+// Decomposes a time.Duration into this SYSTEMTIME fields.
+func (st *SYSTEMTIME) FromDuration(dur time.Duration) {
+	*st = SYSTEMTIME{}
+	st.WHour = uint16(dur / time.Hour)
+	st.WMinute = uint16((dur -
+		time.Duration(st.WHour)*time.Hour) / time.Minute)
+	st.WSecond = uint16((dur -
+		time.Duration(st.WHour)*time.Hour -
+		time.Duration(st.WMinute)*time.Minute) / time.Second)
+	st.WMilliseconds = uint16((dur -
+		time.Duration(st.WHour)*time.Hour -
+		time.Duration(st.WMinute)*time.Minute -
+		time.Duration(st.WSecond)*time.Second) / time.Millisecond)
+}
+
+// Fills this SYSTEMTIME with the value of a time.Time.
+func (st *SYSTEMTIME) FromTime(val time.Time) {
+	var ft FILETIME
+	ft.FromTime(val)
+
+	var stUtc SYSTEMTIME
+	FileTimeToSystemTime(&ft, &stUtc)
+
+	// When converted, SYSTEMTIME will receive UTC values, so we need to convert
+	// the fields to current timezone.
+	SystemTimeToTzSpecificLocalTime(nil, &stUtc, st)
+}
+
+// Converts this SYSTEMTIME to time.Time.
+func (st *SYSTEMTIME) ToTime() time.Time {
+	return time.Date(int(st.WYear),
+		time.Month(st.WMonth), int(st.WDay),
+		int(st.WHour), int(st.WMinute), int(st.WSecond),
+		int(st.WMilliseconds)*1_000_000,
+		time.Local)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialog_button
 type TASKDIALOG_BUTTON struct {
 	NButtonID     int32
@@ -803,118 +916,6 @@ func (td *TASKDIALOGCONFIG) serializePacked() []HGLOBAL {
 	return hMems
 }
 
-// ⚠️ You must call SetDwSize().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-threadentry32
-type THREADENTRY32 struct {
-	dwSize             uint32
-	cntUsage           uint32
-	Th32ThreadID       uint32
-	Th32OwnerProcessID uint32
-	TpBasePri          int32
-	tpDeltaPri         int32
-	dwFlags            uint32
-}
-
-func (te *THREADENTRY32) SetDwSize() { te.dwSize = uint32(unsafe.Sizeof(*te)) }
-
-// Basic area size structure, with cx and cy values.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-size
-type SIZE struct {
-	Cx, Cy int32
-}
-
-// ⚠️ You must call SetCb().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
-type STARTUPINFO struct {
-	cb              uint32
-	lpReserved      *uint16
-	LpDesktop       *uint16
-	LpTitle         *uint16
-	DwX             uint32
-	DwY             uint32
-	DwXSize         uint32
-	DwYSize         uint32
-	DwXCountChars   uint32
-	DwYCountChars   uint32
-	DwFillAttribute uint32
-	DwFlags         co.STARTF
-	WShowWindow     uint16 // co.SW, should be uint16.
-	cbReserved2     uint16
-	lpReserved2     *uint8
-	HStdInput       uintptr
-	HStdOutput      uintptr
-	HStdError       uintptr
-}
-
-func (si *STARTUPINFO) SetCb() { si.cb = uint32(unsafe.Sizeof(*si)) }
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
-type SYSTEM_INFO struct {
-	WProcessorArchitecture      co.PROCESSOR_ARCHITECTURE
-	wReserved                   uint16
-	DwPageSize                  uint32
-	LpMinimumApplicationAddress uintptr
-	LpMaximumApplicationAddress uintptr
-	DwActiveProcessorMask       uintptr
-	DwNumberOfProcessors        uint32
-	DwProcessorType             co.PROCESSOR
-	DwAllocationGranularity     uint32
-	WProcessorLevel             uint16
-	WProcessorRevision          uint16
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime
-type SYSTEMTIME struct {
-	WYear         uint16
-	WMonth        uint16
-	WDayOfWeek    uint16
-	WDay          uint16
-	WHour         uint16
-	WMinute       uint16
-	WSecond       uint16
-	WMilliseconds uint16
-}
-
-// Decomposes a time.Duration into this SYSTEMTIME fields.
-func (st *SYSTEMTIME) FromDuration(dur time.Duration) {
-	*st = SYSTEMTIME{}
-	st.WHour = uint16(dur / time.Hour)
-	st.WMinute = uint16((dur -
-		time.Duration(st.WHour)*time.Hour) / time.Minute)
-	st.WSecond = uint16((dur -
-		time.Duration(st.WHour)*time.Hour -
-		time.Duration(st.WMinute)*time.Minute) / time.Second)
-	st.WMilliseconds = uint16((dur -
-		time.Duration(st.WHour)*time.Hour -
-		time.Duration(st.WMinute)*time.Minute -
-		time.Duration(st.WSecond)*time.Second) / time.Millisecond)
-}
-
-// Fills this SYSTEMTIME with the value of a time.Time.
-func (st *SYSTEMTIME) FromTime(val time.Time) {
-	var ft FILETIME
-	ft.FromTime(val)
-
-	var stUtc SYSTEMTIME
-	FileTimeToSystemTime(&ft, &stUtc)
-
-	// When converted, SYSTEMTIME will receive UTC values, so we need to convert
-	// the fields to current timezone.
-	SystemTimeToTzSpecificLocalTime(nil, &stUtc, st)
-}
-
-// Converts this SYSTEMTIME to time.Time.
-func (st *SYSTEMTIME) ToTime() time.Time {
-	return time.Date(int(st.WYear),
-		time.Month(st.WMonth), int(st.WDay),
-		int(st.WHour), int(st.WMinute), int(st.WSecond),
-		int(st.WMilliseconds)*1_000_000,
-		time.Local)
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-textmetricw
 type TEXTMETRIC struct {
 	TmHeight           uint32
@@ -938,6 +939,21 @@ type TEXTMETRIC struct {
 	TmPitchAndFamily   uint8
 	TmCharSet          co.CHARSET
 }
+
+// ⚠️ You must call SetDwSize().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-threadentry32
+type THREADENTRY32 struct {
+	dwSize             uint32
+	cntUsage           uint32
+	Th32ThreadID       uint32
+	Th32OwnerProcessID uint32
+	TpBasePri          int32
+	tpDeltaPri         int32
+	dwFlags            uint32
+}
+
+func (te *THREADENTRY32) SetDwSize() { te.dwSize = uint32(unsafe.Sizeof(*te)) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-time_zone_information
 type TIME_ZONE_INFORMATION struct {

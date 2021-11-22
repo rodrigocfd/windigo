@@ -65,6 +65,20 @@ const (
 	WIN32_WINNT_WIN10        WIN32_WINNT = 0x0a00
 )
 
+// WM_SIZING window edge.
+type WMSZ uint8
+
+const (
+	WMSZ_BOTTOM      WMSZ = 6
+	WMSZ_BOTTOMLEFT  WMSZ = 7
+	WMSZ_BOTTOMRIGHT WMSZ = 8
+	WMSZ_LEFT        WMSZ = 1
+	WMSZ_RIGHT       WMSZ = 2
+	WMSZ_TOP         WMSZ = 3
+	WMSZ_TOPLEFT     WMSZ = 4
+	WMSZ_TOPRIGHT    WMSZ = 5
+)
+
 // Window styles.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/window-styles

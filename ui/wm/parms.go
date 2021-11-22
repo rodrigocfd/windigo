@@ -366,6 +366,11 @@ type SetIcon struct{ Msg Any }
 func (p SetIcon) Size() co.ICON_SZ { return co.ICON_SZ(p.Msg.WParam) }
 func (p SetIcon) Hicon() win.HICON { return win.HICON(p.Msg.LParam) }
 
+type ShowWindow struct{ Msg Any }
+
+func (p ShowWindow) IsBeingShown() bool { return p.Msg.WParam != 0 }
+func (p ShowWindow) Status() co.SWS     { return co.SWS(p.Msg.LParam) }
+
 type Size struct{ Msg Any }
 
 func (p Size) Request() co.SIZE_REQ     { return co.SIZE_REQ(p.Msg.WParam) }
@@ -375,6 +380,26 @@ type SizeClipboard struct{ Msg Any }
 
 func (p SizeClipboard) CbViewerWindow() win.HWND { return win.HWND(p.Msg.WParam) }
 func (p SizeClipboard) NewDimensions() *win.RECT { return (*win.RECT)(unsafe.Pointer(p.Msg.LParam)) }
+
+type Sizing struct{ Msg Any }
+
+func (p Sizing) WindowEdge() co.WMSZ { return co.WMSZ(p.Msg.WParam) }
+func (p Sizing) DragRect() *win.RECT { return (*win.RECT)(unsafe.Pointer(p.Msg.LParam)) }
+
+type Styles struct{ Msg Any }
+
+func (p Styles) StylesWs() *win.STYLESTRUCT_WS {
+	if co.GWLP(p.Msg.WParam) == co.GWLP_STYLE {
+		return (*win.STYLESTRUCT_WS)(unsafe.Pointer(p.Msg.LParam))
+	}
+	return nil
+}
+func (p Styles) StylesWsEx() *win.STYLESTRUCT_WSEX {
+	if co.GWLP(p.Msg.WParam) == co.GWLP_EXSTYLE {
+		return (*win.STYLESTRUCT_WSEX)(unsafe.Pointer(p.Msg.LParam))
+	}
+	return nil
+}
 
 type SysCommand struct{ Msg Any }
 
@@ -396,3 +421,7 @@ type VScrollClipboard struct{ Msg Any }
 func (p VScrollClipboard) ScrollBoxPos() uint      { return uint(p.Msg.WParam.HiWord()) }
 func (p VScrollClipboard) Request() co.SB_REQ      { return co.SB_REQ(p.Msg.WParam.LoWord()) }
 func (p VScrollClipboard) HwndScrollbar() win.HWND { return win.HWND(p.Msg.LParam) }
+
+type WindowPos struct{ Msg Any }
+
+func (p WindowPos) WindowPos() *win.WINDOWPOS { return (*win.WINDOWPOS)(unsafe.Pointer(p.Msg.LParam)) }

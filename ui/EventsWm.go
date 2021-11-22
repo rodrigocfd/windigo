@@ -823,6 +823,20 @@ func (me *_EventsWm) WmPrint(userFunc func(p wm.Print)) {
 	})
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-querydragicon
+func (me *_EventsWm) WmQueryDragIcon(userFunc func() win.HICON) {
+	me.addMsgRet(co.WM_QUERYDRAGICON, func(p wm.Any) uintptr {
+		return uintptr(userFunc())
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-queryopen
+func (me *_EventsWm) WmQueryOpen(userFunc func() bool) {
+	me.addMsgRet(co.WM_QUERYOPEN, func(p wm.Any) uintptr {
+		return util.BoolToUintptr(userFunc())
+	})
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-rbuttondblclk
 func (me *_EventsWm) WmRButtonDblClk(userFunc func(p wm.Mouse)) {
 	me.addMsgZero(co.WM_RBUTTONDBLCLK, func(p wm.Any) {
@@ -881,6 +895,13 @@ func (me *_EventsWm) WmSetIcon(userFunc func(p wm.SetIcon) win.HICON) {
 	})
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-showwindow
+func (me *_EventsWm) WmShowWindow(userFunc func(p wm.ShowWindow)) {
+	me.addMsgZero(co.WM_SHOWWINDOW, func(p wm.Any) {
+		userFunc(wm.ShowWindow{Msg: p})
+	})
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-size
 func (me *_EventsWm) WmSize(userFunc func(p wm.Size)) {
 	me.addMsgZero(co.WM_SIZE, func(p wm.Any) {
@@ -892,6 +913,28 @@ func (me *_EventsWm) WmSize(userFunc func(p wm.Size)) {
 func (me *_EventsWm) WmSizeClipboard(userFunc func(p wm.SizeClipboard)) {
 	me.addMsgZero(co.WM_SIZECLIPBOARD, func(p wm.Any) {
 		userFunc(wm.SizeClipboard{Msg: p})
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-sizing
+func (me *_EventsWm) WmSizing(userFunc func(p wm.Sizing)) {
+	me.addMsgRet(co.WM_SIZING, func(p wm.Any) uintptr {
+		userFunc(wm.Sizing{Msg: p})
+		return 1
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-stylechanged
+func (me *_EventsWm) WmStyleChanged(userFunc func(p wm.Styles)) {
+	me.addMsgZero(co.WM_STYLECHANGED, func(p wm.Any) {
+		userFunc(wm.Styles{Msg: p})
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-stylechanging
+func (me *_EventsWm) WmStyleChanging(userFunc func(p wm.Styles)) {
+	me.addMsgZero(co.WM_STYLECHANGING, func(p wm.Any) {
+		userFunc(wm.Styles{Msg: p})
 	})
 }
 
@@ -930,6 +973,13 @@ func (me *_EventsWm) WmSysKeyUp(userFunc func(p wm.Key)) {
 	})
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-themechanged
+func (me *_EventsWm) WmThemeChanged(userFunc func()) {
+	me.addMsgZero(co.WM_THEMECHANGED, func(p wm.Any) {
+		userFunc()
+	})
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/sysinfo/wm-timechange
 func (me *_EventsWm) WmTimeChange(userFunc func()) {
 	me.addMsgZero(co.WM_TIMECHANGE, func(_ wm.Any) {
@@ -955,6 +1005,20 @@ func (me *_EventsWm) WmVScroll(userFunc func(p wm.VScroll)) {
 func (me *_EventsWm) WmVScrollClipboard(userFunc func(p wm.VScrollClipboard)) {
 	me.addMsgZero(co.WM_VSCROLLCLIPBOARD, func(p wm.Any) {
 		userFunc(wm.VScrollClipboard{Msg: p})
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-windowposchanged
+func (me *_EventsWm) WmWindowPosChanged(userFunc func(p wm.WindowPos)) {
+	me.addMsgZero(co.WM_WINDOWPOSCHANGED, func(p wm.Any) {
+		userFunc(wm.WindowPos{Msg: p})
+	})
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-windowposchanging
+func (me *_EventsWm) WmWindowPosChanging(userFunc func(p wm.WindowPos)) {
+	me.addMsgZero(co.WM_WINDOWPOSCHANGING, func(p wm.Any) {
+		userFunc(wm.WindowPos{Msg: p})
 	})
 }
 

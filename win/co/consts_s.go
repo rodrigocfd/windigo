@@ -902,3 +902,13 @@ const (
 	SWP_DEFERERASE     SWP = 0x2000
 	SWP_ASYNCWINDOWPOS SWP = 0x4000
 )
+
+// WM_SHOWWINDOW return value. Originally has SW prefix.
+type SWS uint8
+
+const (
+	SWS_OTHERUNZOOM   SWS = 4 // The window is being uncovered because a maximize window was restored or minimized.
+	SWS_OTHERZOOM     SWS = 2 // The window is being covered by another window that has been maximized.
+	SWS_PARENTCLOSING SWS = 1 // The window's owner window is being minimized.
+	SWS_PARENTOPENING SWS = 3 // The window's owner window is being restored.
+)
