@@ -39,7 +39,7 @@ func (me *_ListViewItem) new(ctrl ListView, index int) {
 
 func (me *_ListViewItem) Delete() {
 	ret := me.lv.Hwnd().SendMessage(co.LVM_DELETEITEM, win.WPARAM(me.index), 0)
-	if ret != 0 {
+	if ret == 0 {
 		panic(fmt.Sprintf("LVM_DELETEITEM %d failed.", me.index))
 	}
 }
