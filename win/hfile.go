@@ -101,21 +101,19 @@ func (hFile HFILE) SetEndOfFile() error {
 	return nil
 }
 
-// Returns the new pointer offset.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
 func (hFile HFILE) SetFilePointerEx(
-	distanceToMove int64, moveMethod co.FILE_FROM) (uint64, error) {
+	distanceToMove int64,
+	moveMethod co.FILE_FROM) (newPointerOffset int64, e error) {
 
-	var newOff int64
 	ret, _, err := syscall.Syscall6(proc.SetFilePointerEx.Addr(), 4,
 		uintptr(hFile), uintptr(distanceToMove),
-		uintptr(unsafe.Pointer(&newOff)), uintptr(moveMethod), 0, 0)
+		uintptr(unsafe.Pointer(&newPointerOffset)), uintptr(moveMethod), 0, 0)
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
-		return 0, err
+		newPointerOffset, e = 0, wErr
 	}
-	return uint64(newOff), nil
+	return
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
@@ -152,11 +150,11 @@ func (hMap HFILEMAP) CloseHandle() error {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
-	offset uint32, numBytesToMap uintptr) (HFILEMAPVIEW, error) {
+	offset uint32, numBytesToMap uint64) (HFILEMAPVIEW, error) {
 
 	ret, _, err := syscall.Syscall6(proc.MapViewOfFile.Addr(), 5,
 		uintptr(hMap), uintptr(desiredAccess), 0, uintptr(offset),
-		numBytesToMap, 0)
+		uintptr(numBytesToMap), 0)
 	if ret == 0 {
 		return HFILEMAPVIEW(0), errco.ERROR(err)
 	}
@@ -174,6 +172,16 @@ type HFILEMAPVIEW HANDLE
 // Returns a pointer to the beginning of the mapped memory block.
 func (hMem HFILEMAPVIEW) Ptr() *byte {
 	return (*byte)(unsafe.Pointer(hMem))
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-flushviewoffile
+func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes uint64) error {
+	ret, _, err := syscall.Syscall(proc.FlushViewOfFile.Addr(), 2,
+		uintptr(hMem), uintptr(numBytes), 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile

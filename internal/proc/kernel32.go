@@ -21,6 +21,7 @@ var (
 	FindClose                       = kernel32.NewProc("FindClose")
 	FindFirstFile                   = kernel32.NewProc("FindFirstFileW")
 	FindNextFile                    = kernel32.NewProc("FindNextFileW")
+	FlushViewOfFile                 = kernel32.NewProc("FlushViewOfFile")
 	FreeEnvironmentStrings          = kernel32.NewProc("FreeEnvironmentStringsW")
 	FreeLibrary                     = kernel32.NewProc("FreeLibrary")
 	GetCommandLine                  = kernel32.NewProc("GetCommandLineW")
