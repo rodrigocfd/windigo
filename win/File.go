@@ -72,18 +72,18 @@ func (me *File) Hfile() HFILE {
 }
 
 // Implements io.Reader.
-func (me *File) Read(p []byte) (int, error) {
-	numRead, err := me.hFile.ReadFile(p, uint32(len(p)))
+func (me *File) Read(p []byte) (n int, err error) {
+	numRead, err := me.hFile.ReadFile(p)
 	if err != nil {
 		return 0, err
 	}
 
-	if numRead < len(p) { // surely there's no more to read
-		return numRead, io.EOF
+	if numRead < uint32(len(p)) { // surely there's no more to read
+		return int(numRead), io.EOF
 	} else if numRead == 0 { // EOF found
 		return 0, io.EOF
 	} else {
-		return numRead, nil
+		return int(numRead), nil
 	}
 }
 
@@ -163,9 +163,9 @@ func (me *File) Size() int {
 }
 
 // Implements io.Writer.
-func (me *File) Write(p []byte) (int, error) {
+func (me *File) Write(p []byte) (n int, err error) {
 	written, err := me.hFile.WriteFile(p)
-	return written, err
+	return int(written), err
 }
 
 // Implements io.ByteWriter.

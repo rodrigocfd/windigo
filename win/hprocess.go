@@ -162,6 +162,19 @@ func (hProcess HPROCESS) GetProcessTimes() (
 	return
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory
+func (hProcess HPROCESS) ReadProcessMemory(
+	baseAddress uintptr, buffer []byte) (numBytesRead uint64, e error) {
+
+	ret, _, err := syscall.Syscall6(proc.ReadProcessMemory.Addr(), 5,
+		uintptr(hProcess), baseAddress, uintptr(unsafe.Pointer(&buffer[0])),
+		uintptr(len(buffer)), uintptr(unsafe.Pointer(&numBytesRead)), 0)
+	if ret == 0 {
+		numBytesRead, e = 0, errco.ERROR(err)
+	}
+	return
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setuserobjectinformationw
 func (hProcess HPROCESS) SetUserObjectInformation(
 	index co.UOI, info unsafe.Pointer, infoLen uintptr) error {
@@ -197,37 +210,15 @@ func (hProcess HPROCESS) WaitForSingleObject(milliseconds uint32) (co.WAIT, erro
 	return co.WAIT(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory
-func (hProcess HPROCESS) ReadProcessMemory(lpBaseAddress uint32, size uint32) ([]byte, error) {
-	var lpNumberOfBytesRead uintptr
-	data := make([]byte, size)
-
-	ret, _, err := syscall.Syscall6(proc.ReadProcessMemory.Addr(), 5,
-		uintptr(hProcess),
-		uintptr(lpBaseAddress),
-		uintptr(unsafe.Pointer(&data[0])),
-		uintptr(size),
-		uintptr(unsafe.Pointer(&lpNumberOfBytesRead)), 0)
-
-	if ret == 0 {
-		return nil, errco.ERROR(err)
-	}
-	return data, nil
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
-func (hProcess HPROCESS) WriteProcessMemory(lpBaseAddress uint32, data []byte, size uint) error {
-	var lpNumberOfBytesWritten uintptr
+func (hProcess HPROCESS) WriteProcessMemory(
+	baseAddress uintptr, data []byte) (numBytesWritten uint64, e error) {
 
 	ret, _, err := syscall.Syscall6(proc.WriteProcessMemory.Addr(), 5,
-		uintptr(hProcess),
-		uintptr(lpBaseAddress),
-		uintptr(unsafe.Pointer(&data[0])),
-		uintptr(size),
-		uintptr(unsafe.Pointer(&lpNumberOfBytesWritten)), 0)
-
+		uintptr(hProcess), baseAddress, uintptr(unsafe.Pointer(&data[0])),
+		uintptr(len(data)), uintptr(unsafe.Pointer(&numBytesWritten)), 0)
 	if ret == 0 {
-		return errco.ERROR(err)
+		numBytesWritten, e = 0, errco.ERROR(err)
 	}
-	return nil
+	return
 }

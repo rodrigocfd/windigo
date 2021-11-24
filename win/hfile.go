@@ -78,18 +78,16 @@ func (hFile HFILE) CreateFileMapping(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
-func (hFile HFILE) ReadFile(
-	buf []byte, numBytesToRead uint32) (numBytesRead int, e error) {
-
-	var numRead uint32
+func (hFile HFILE) ReadFile(buffer []byte) (numBytesRead uint32, e error) {
 	ret, _, err := syscall.Syscall6(proc.ReadFile.Addr(), 5,
-		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(numBytesToRead), uintptr(unsafe.Pointer(&numRead)), 0, 0) // OVERLAPPED not even considered
+		uintptr(hFile), uintptr(unsafe.Pointer(&buffer[0])),
+		uintptr(uint32(len(buffer))), uintptr(unsafe.Pointer(&numBytesRead)), 0, // OVERLAPPED not even considered
+		0)
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
-		return 0, err
+		numBytesRead, e = 0, wErr
 	}
-	return int(numRead), nil
+	return
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setendoffile
@@ -121,16 +119,16 @@ func (hFile HFILE) SetFilePointerEx(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
-func (hFile HFILE) WriteFile(buf []byte) (numBytesWritten int, e error) {
-	var written uint32
+func (hFile HFILE) WriteFile(data []byte) (numBytesWritten uint32, e error) {
 	ret, _, err := syscall.Syscall6(proc.WriteFile.Addr(), 5,
-		uintptr(hFile), uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(len(buf)), uintptr(unsafe.Pointer(&written)), 0, 0) // OVERLAPPED not even considered
+		uintptr(hFile), uintptr(unsafe.Pointer(&data[0])),
+		uintptr(uint32(len(data))), uintptr(unsafe.Pointer(&numBytesWritten)), 0, // OVERLAPPED not even considered
+		0)
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
-		return 0, err
+		numBytesWritten, e = 0, wErr
 	}
-	return int(written), nil
+	return
 }
 
 //------------------------------------------------------------------------------
