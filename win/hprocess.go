@@ -227,7 +227,7 @@ func (hProcess HPROCESS) WriteProcessMemory(lpBaseAddress uint32, data []byte, s
 		uintptr(unsafe.Pointer(&lpNumberOfBytesWritten)), 0)
 
 	if ret == 0 {
-		return err
+		return errco.ERROR(err)
 	}
 	return nil
 }
