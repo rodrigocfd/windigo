@@ -72,6 +72,7 @@ var (
 	QueryPerformanceCounter         = kernel32.NewProc("QueryPerformanceCounter")
 	QueryPerformanceFrequency       = kernel32.NewProc("QueryPerformanceFrequency")
 	ReadFile                        = kernel32.NewProc("ReadFile")
+	ReadProcessMemory               = kernel32.NewProc("ReadProcessMemory")
 	RemoveDirectory                 = kernel32.NewProc("RemoveDirectoryW")
 	ReplaceFile                     = kernel32.NewProc("ReplaceFileW")
 	ResumeThread                    = kernel32.NewProc("ResumeThread")
@@ -94,4 +95,5 @@ var (
 	VerSetConditionMask             = kernel32.NewProc("VerSetConditionMask")
 	WaitForSingleObject             = kernel32.NewProc("WaitForSingleObject")
 	WriteFile                       = kernel32.NewProc("WriteFile")
+	WriteProcessMemory              = kernel32.NewProc("WriteProcessMemory")
 )

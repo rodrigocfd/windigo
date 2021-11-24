@@ -196,3 +196,38 @@ func (hProcess HPROCESS) WaitForSingleObject(milliseconds uint32) (co.WAIT, erro
 	}
 	return co.WAIT(ret), nil
 }
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory
+func (hProcess HPROCESS) ReadProcessMemory(lpBaseAddress uint32, size uint32) ([]byte, error) {
+	var lpNumberOfBytesRead uintptr
+	data := make([]byte, size)
+
+	ret, _, err := syscall.Syscall6(proc.ReadProcessMemory.Addr(), 5,
+		uintptr(hProcess),
+		uintptr(lpBaseAddress),
+		uintptr(unsafe.Pointer(&data[0])),
+		uintptr(size),
+		uintptr(unsafe.Pointer(&lpNumberOfBytesRead)), 0)
+
+	if ret == 0 {
+		return nil, errco.ERROR(err)
+	}
+	return data, nil
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
+func (hProcess HPROCESS) WriteProcessMemory(lpBaseAddress uint32, data []byte, size uint) error {
+	var lpNumberOfBytesWritten uintptr
+
+	ret, _, err := syscall.Syscall6(proc.WriteProcessMemory.Addr(), 5,
+		uintptr(hProcess),
+		uintptr(lpBaseAddress),
+		uintptr(unsafe.Pointer(&data[0])),
+		uintptr(size),
+		uintptr(unsafe.Pointer(&lpNumberOfBytesWritten)), 0)
+
+	if ret == 0 {
+		return err
+	}
+	return nil
+}
