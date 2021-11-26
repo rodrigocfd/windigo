@@ -157,6 +157,7 @@ var (
 	SetSystemCursor               = user32.NewProc("SetSystemCursor")
 	SetTimer                      = user32.NewProc("SetTimer")
 	SetUserObjectInformation      = user32.NewProc("SetUserObjectInformationW")
+	SetWindowDisplayAffinity      = user32.NewProc("SetWindowDisplayAffinity")
 	SetWindowLongPtr              = user32.NewProc("SetWindowLongPtrW")
 	SetWindowPos                  = user32.NewProc("SetWindowPos")
 	SetWindowsHookEx              = user32.NewProc("SetWindowsHookExW")

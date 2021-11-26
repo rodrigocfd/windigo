@@ -12,6 +12,8 @@ const (
 )
 
 // WaitForSingleObject() return value.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 type WAIT uint32
 
 const (
@@ -19,6 +21,17 @@ const (
 	WAIT_OBJECT_0  WAIT = 0x0000_0000
 	WAIT_TIMEOUT   WAIT = 0x0000_0102
 	WAIT_FAILED    WAIT = 0xffff_ffff
+)
+
+// SetWindowDisplayAffinity() dwAffinity
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity
+type WDA uint32
+
+const (
+	WDA_NONE               WDA = 0x0000_0000
+	WDA_MONITOR            WDA = 0x0000_0001
+	WDA_EXCLUDEFROMCAPTURE WDA = 0x0000_0011
 )
 
 // SetWindowsHookEx() idHook.
@@ -66,6 +79,8 @@ const (
 )
 
 // WM_SIZING window edge.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-sizing
 type WMSZ uint8
 
 const (

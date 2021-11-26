@@ -859,6 +859,15 @@ func _TimerProc(_ HWND, _ co.WM, id uintptr, _ uint32) uintptr {
 	return 0
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity
+func (hWnd HWND) SetWindowDisplayAffinity(affinity co.WDA) {
+	ret, _, err := syscall.Syscall(proc.SetWindowDisplayAffinity.Addr(), 2,
+		uintptr(hWnd), uintptr(affinity), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowlongptrw
 func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
 	syscall.Syscall(proc.SetLastError.Addr(), 0,
