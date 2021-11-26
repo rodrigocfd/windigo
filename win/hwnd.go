@@ -2,6 +2,7 @@ package win
 
 import (
 	"runtime"
+	"sync"
 	"syscall"
 	"unsafe"
 
@@ -582,7 +583,9 @@ func (hWnd HWND) KillTimer(id uintptr) {
 		uintptr(hWnd), id, 0)
 
 	if id > 0xffff { // guess: Win32 pointers are greater than WORDs
+		_globalTimerMutex.Lock()
 		delete(_globalTimerFuncs, (*_TimerPack)(unsafe.Pointer(id))) // remove from set
+		_globalTimerMutex.Unlock()
 		// At this moment, the callback pointer has no more references. If
 		// KillTimer() is called from within the callback itself, it's unsure
 		// whether the running function will be enough to keep its pointer from
@@ -829,10 +832,12 @@ func (hWnd HWND) SetTimerCallback(
 	msElapse uint32, timerFunc func(id uintptr)) uintptr {
 
 	pPack := &_TimerPack{f: timerFunc}
+	_globalTimerMutex.Lock()
 	if _globalTimerFuncs == nil {
 		_globalTimerFuncs = make(map[*_TimerPack]struct{}, 1)
 	}
 	_globalTimerFuncs[pPack] = struct{}{} // store pointer in the set
+	_globalTimerMutex.Unlock()
 
 	id := uintptr(unsafe.Pointer(pPack)) // use the pointer as the timer ID
 
@@ -849,11 +854,17 @@ type _TimerPack struct{ f func(id uintptr) }
 var (
 	_globalTimerCallback uintptr = syscall.NewCallback(_TimerProc)
 	_globalTimerFuncs    map[*_TimerPack]struct{}
+	_globalTimerMutex    = sync.Mutex{}
 )
 
 func _TimerProc(_ HWND, _ co.WM, id uintptr, _ uint32) uintptr {
 	pPack := (*_TimerPack)(unsafe.Pointer(id))
-	if _, isStored := _globalTimerFuncs[pPack]; isStored {
+
+	_globalTimerMutex.Lock()
+	_, isStored := _globalTimerFuncs[pPack]
+	_globalTimerMutex.Unlock()
+
+	if isStored {
 		pPack.f(id)
 	}
 	return 0
