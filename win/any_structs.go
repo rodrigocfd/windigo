@@ -167,6 +167,18 @@ func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetDynamicDaylightTimeDisabled(val boo
 	dtz.dynamicDaylightTimeDisabled = uint8(util.BoolToUintptr(val))
 }
 
+// ⚠️ You must call SetCbStruct().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-editballoontip
+type EDITBALLOONTIP struct {
+	cbStruct uint32
+	PszTitle *uint16
+	PszText  *uint16
+	TtiIcon  co.TTI
+}
+
+func (eb *EDITBALLOONTIP) SetCbStruct() { eb.cbStruct = uint32(unsafe.Sizeof(*eb)) }
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
 type FILETIME struct {
 	dwLowDateTime  uint32

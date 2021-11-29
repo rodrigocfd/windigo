@@ -269,6 +269,21 @@ const (
 	TPM_WORKAREA        TPM = 0x1_0000
 )
 
+// EDITBALLOONTIP ttiIcon.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-editballoontip
+type TTI int32
+
+const (
+	ERROR         TTI = 3
+	INFO          TTI = 1
+	NONE          TTI = 0
+	WARNING       TTI = 2
+	INFO_LARGE    TTI = 4
+	WARNING_LARGE TTI = 5
+	ERROR_LARGE   TTI = 6
+)
+
 // TVM_EXPAND action flag.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvm-expand

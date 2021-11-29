@@ -24,10 +24,12 @@ type Edit interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-notifications
 	On() *_EditEvents
 
-	LimitText(maxChars int)            // Limits the length of the text.
-	ReplaceSelection(text string)      // Replaces the current text selection with the given text.
-	SelectedRange() (int, int)         // Retrieves the index of first and last selected chars.
-	SelectRange(idxFirst, idxLast int) // Sets the currently selected chars.
+	HideBalloonTip()                                // Hides a balloon tip, if any.
+	LimitText(maxChars int)                         // Limits the length of the text.
+	ReplaceSelection(text string)                   // Replaces the current text selection with the given text.
+	SelectedRange() (int, int)                      // Retrieves the index of first and last selected chars.
+	SelectRange(idxFirst, idxLast int)              // Sets the currently selected chars.
+	ShowBalloonTip(title, text string, icon co.TTI) // Displays a balloon tip.
 }
 
 //------------------------------------------------------------------------------
@@ -100,6 +102,10 @@ func (me *_Edit) On() *_EditEvents {
 	return &me.events
 }
 
+func (me *_Edit) HideBalloonTip() {
+	me.Hwnd().SendMessage(co.EM_HIDEBALLOONTIP, 0, 0)
+}
+
 func (me *_Edit) LimitText(maxChars int) {
 	me.Hwnd().SendMessage(co.EM_LIMITTEXT, win.WPARAM(maxChars), 0)
 }
@@ -123,6 +129,18 @@ func (me *_Edit) SelectedRange() (idxFirst, idxLast int) {
 func (me *_Edit) SelectRange(idxFirst, idxLast int) {
 	me.Hwnd().SendMessage(co.EM_SETSEL,
 		win.WPARAM(idxFirst), win.LPARAM(idxLast))
+}
+
+func (me *_Edit) ShowBalloonTip(title, text string, icon co.TTI) {
+	info := win.EDITBALLOONTIP{
+		PszTitle: win.Str.ToNativePtr(title),
+		PszText:  win.Str.ToNativePtr(text),
+		TtiIcon:  icon,
+	}
+	info.SetCbStruct()
+
+	me.Hwnd().SendMessage(co.EM_SHOWBALLOONTIP,
+		0, win.LPARAM(unsafe.Pointer(&info)))
 }
 
 //------------------------------------------------------------------------------
