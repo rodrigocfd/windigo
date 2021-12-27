@@ -649,6 +649,13 @@ func InitCommonControls() {
 	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrolsex
+func InitCommonControlsEx(icce *INITCOMMONCONTROLSEX) bool {
+	ret, _, _ := syscall.Syscall(proc.InitCommonControlsEx.Addr(), 1,
+		uintptr(unsafe.Pointer(icce)), 0, 0)
+	return ret != 0
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessage
 func InSendMessage() bool {
 	ret, _, _ := syscall.Syscall(proc.InSendMessage.Addr(), 0,

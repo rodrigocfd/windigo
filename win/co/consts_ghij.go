@@ -303,6 +303,31 @@ const (
 	HWND_IA_TOPMOST   HWND_IA = -1
 )
 
+// INITCOMMONCONTROLSEX dwIcc.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
+type ICC uint32
+
+const (
+	ICC_ANIMATE_CLASS      ICC = 0x0000_0080 // Load animate control class.
+	ICC_BAR_CLASSES        ICC = 0x0000_0004 // Load toolbar, status bar, trackbar, and tooltip control classes.
+	ICC_COOL_CLASSES       ICC = 0x0000_0400 // Load rebar control class.
+	ICC_DATE_CLASSES       ICC = 0x0000_0100 // Load date and time picker control class.
+	ICC_HOTKEY_CLASS       ICC = 0x0000_0040 // Load hot key control class.
+	ICC_INTERNET_CLASSES   ICC = 0x0000_0800 // Load IP address class.
+	ICC_LINK_CLASS         ICC = 0x0000_8000 // Load a hyperlink control class.
+	ICC_LISTVIEW_CLASSES   ICC = 0x0000_0001 // Load list-view and header control classes.
+	ICC_NATIVEFNTCTL_CLASS ICC = 0x0000_2000 // Load a native font control class.
+	ICC_PAGESCROLLER_CLASS ICC = 0x0000_1000 // Load pager control class.
+	ICC_PROGRESS_CLASS     ICC = 0x0000_0020 // Load progress bar control class.
+	ICC_STANDARD_CLASSES   ICC = 0x0000_4000 // Load one of the intrinsic User32 control classes. The user controls include button, edit, static, listbox, combobox, and scroll bar.
+	ICC_TAB_CLASSES        ICC = 0x0000_0008 // Load tab and tooltip control classes.
+	ICC_TREEVIEW_CLASSES   ICC = 0x0000_0002 // Load tree-view and tooltip control classes.
+	ICC_UPDOWN_CLASS       ICC = 0x0000_0010 // Load up-down control class.
+	ICC_USEREX_CLASSES     ICC = 0x0000_0200 // Load ComboBoxEx class.
+	ICC_WIN95_CLASSES      ICC = 0x0000_00ff // Load animate control, header, hot key, list-view, progress bar, status bar, tab, tooltip, toolbar, trackbar, tree-view, and up-down control classes.
+)
+
 // WM_SETICON icon size. Originally with ICON prefix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-seticon

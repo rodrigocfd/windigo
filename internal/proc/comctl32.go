@@ -14,6 +14,7 @@ var (
 	ImageList_GetImageCount = comctl32.NewProc("ImageList_GetImageCount")
 	ImageList_ReplaceIcon   = comctl32.NewProc("ImageList_ReplaceIcon")
 	InitCommonControls      = comctl32.NewProc("InitCommonControls")
+	InitCommonControlsEx    = comctl32.NewProc("InitCommonControlsEx")
 	RemoveWindowSubclass    = comctl32.NewProc("RemoveWindowSubclass")
 	SetWindowSubclass       = comctl32.NewProc("SetWindowSubclass")
 	TaskDialog              = comctl32.NewProc("TaskDialog")

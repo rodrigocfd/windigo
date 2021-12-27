@@ -30,6 +30,16 @@ type IMAGELISTDRAWPARAMS struct {
 
 func (idp *IMAGELISTDRAWPARAMS) SetCbSize() { idp.cbSize = uint32(unsafe.Sizeof(*idp)) }
 
+// ⚠️ You must call SetDwSize().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
+type INITCOMMONCONTROLSEX struct {
+	dwSize uint32
+	DwICC  co.ICC
+}
+
+func (icx *INITCOMMONCONTROLSEX) SetDwSize() { icx.dwSize = uint32(unsafe.Sizeof(*icx)) }
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
 type LITEM struct {
 	Mask      co.LIF
