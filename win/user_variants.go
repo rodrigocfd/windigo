@@ -7,31 +7,6 @@ import (
 )
 
 type (
-	// Variant type which accepts string or a nil.
-	//
-	// Example:
-	//
-	//  func Foo(s win.StrOrNil) {}
-	//
-	//  Foo(win.StrVal("some text"))
-	//  Foo(nil)
-	StrOrNil interface{ isStrOrNil() }
-	StrVal   string // StrOrNil variant: string.
-)
-
-func (StrVal) isStrOrNil() {}
-
-func variantStrOrNil(v StrOrNil) unsafe.Pointer {
-	if v != nil {
-		s := v.(StrVal)
-		return unsafe.Pointer(Str.ToNativePtr(string(s)))
-	}
-	return nil
-}
-
-//------------------------------------------------------------------------------
-
-type (
 	// Variant type for a class name identifier.
 	//
 	// Example:
@@ -61,8 +36,6 @@ func variantClassName(v ClassName) (uintptr, *uint16) { // pointer must be kept 
 		return 0, nil
 	}
 }
-
-//------------------------------------------------------------------------------
 
 type (
 	// Variant type for a resource identifier.
@@ -99,8 +72,6 @@ func variantCursorResId(v CursorRes) (uintptr, *uint16) { // pointer must be kep
 	}
 }
 
-//------------------------------------------------------------------------------
-
 type (
 	// Variant type for an icon resource identifier.
 	//
@@ -136,8 +107,6 @@ func variantIconResId(v IconRes) (uintptr, *uint16) { // pointer must be kept al
 	}
 }
 
-//------------------------------------------------------------------------------
-
 type (
 	// Variant type for a menu item identifier.
 	//
@@ -166,8 +135,6 @@ func variantMenuItem(v MenuItem) (uintptr, co.MF) {
 	}
 }
 
-//------------------------------------------------------------------------------
-
 type (
 	// Variant type for a resource identifier.
 	//
@@ -195,40 +162,5 @@ func variantResId(v ResId) (uintptr, *uint16) { // pointer must be kept alive
 		return uintptr(unsafe.Pointer(buf)), buf
 	default:
 		panic("ResId does not accept a nil value.")
-	}
-}
-
-//------------------------------------------------------------------------------
-
-type (
-	// Variant type for an icon identifier for TASKDIALOGCONFIG.
-	//
-	// Example:
-	//
-	//  func Foo(i win.TdcIcon) {}
-	//
-	//  Foo(win.TdcIconHicon(win.HICON(0)))
-	//  Foo(win.TdcIconInt(301))
-	//  Foo(win.TdcIconTdi(co.TD_ICON_ERROR))
-	TdcIcon      interface{ isTdcIcon() }
-	TdcIconHicon HICON      // TdcIcon variant: HICON.
-	TdcIconInt   uint16     // TdcIcon variant: uint16.
-	TdcIconTdi   co.TD_ICON // TdcIcon variant: co.TD_ICON.
-)
-
-func (TdcIconHicon) isTdcIcon() {}
-func (TdcIconInt) isTdcIcon()   {}
-func (TdcIconTdi) isTdcIcon()   {}
-
-func variantTdcIcon(v TdcIcon) uintptr {
-	switch v := v.(type) {
-	case TdcIconHicon:
-		return uintptr(v)
-	case TdcIconInt:
-		return uintptr(v)
-	case TdcIconTdi:
-		return uintptr(v)
-	default:
-		return 0
 	}
 }
