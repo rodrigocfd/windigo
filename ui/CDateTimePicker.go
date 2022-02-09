@@ -36,7 +36,21 @@ type _DateTimePicker struct {
 
 // Creates a new DateTimePicker. Call DateTimePickerOpts() to define the options
 // to be passed to the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myDtp := ui.NewDateTimePicker(
+//      owner,
+//      ui.DateTimePickerOpts(
+//          Position(win.POINT{X: 10, Y: 210}),
+//      ),
+//  )
 func NewDateTimePicker(parent AnyParent, opts *_DateTimePickerO) DateTimePicker {
+	if opts == nil {
+		opts = DateTimePickerOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_DateTimePicker{}

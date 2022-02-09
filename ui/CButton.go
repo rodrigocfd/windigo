@@ -35,7 +35,22 @@ type _Button struct {
 
 // Creates a new Button. Call ButtonOpts() to define the options to be passed to
 // the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myButton := ui.NewButton(
+//      owner,
+//      ui.ButtonOpts(
+//          Text("Click me").
+//          Position(win.POINT{X: 20, Y: 10}),
+//      ),
+//  )
 func NewButton(parent AnyParent, opts *_ButtonO) Button {
+	if opts == nil {
+		opts = ButtonOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_Button{}

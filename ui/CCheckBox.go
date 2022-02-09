@@ -38,7 +38,23 @@ type _CheckBox struct {
 
 // Creates a new CheckBox. Call CheckBoxOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myCheck := ui.NewCheckBox(
+//      owner,
+//      ui.CheckBoxOpts(
+//          Text("Some option").
+//          Position(win.POINT{X: 20, Y: 10}).
+//          State(co.BST_CHECKED),
+//      ),
+//  )
 func NewCheckBox(parent AnyParent, opts *_CheckBoxO) CheckBox {
+	if opts == nil {
+		opts = CheckBoxOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_CheckBox{}

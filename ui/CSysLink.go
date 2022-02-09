@@ -35,7 +35,22 @@ type _SysLink struct {
 
 // Creates a new SysLink. Call SysLinkOpts() to define the options to be passed
 // to the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myLink := ui.NewSysLink(
+//      owner,
+//      ui.SysLinkOpts(
+//          Text("Click <a href=\"123\">here</a>.").
+//          Position(win.POINT{X: 20, Y: 10}),
+//      ),
+//  )
 func NewSysLink(parent AnyParent, opts *_SysLinkO) SysLink {
+	if opts == nil {
+		opts = SysLinkOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_SysLink{}

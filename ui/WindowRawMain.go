@@ -15,7 +15,22 @@ type _WindowRawMain struct {
 
 // Creates a new WindowMain. Call WindowMainOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
+//
+// Example:
+//
+//  myWindow := ui.NewWindowMain(
+//      ui.WindowMainOpts(
+//          Title("Hello world").
+//          ClientArea(win.SIZE{Cx: 500, Cy: 400}).
+//          WndStyles(co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN |
+//              co.WS_BORDER | co.WS_VISIBLE | co.WS_MINIMIZEBOX |
+//              co.WS_MAXIMIZEBOX | co.WS_SIZEBOX),
+//      ),
+//  )
 func NewWindowMain(opts *_WindowMainO) WindowMain {
+	if opts == nil {
+		opts = WindowMainOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_WindowRawMain{}

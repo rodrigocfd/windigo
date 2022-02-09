@@ -34,7 +34,23 @@ type _ComboBox struct {
 
 // Creates a new ComboBox. Call ComboBox() to define the options to be passed to
 // the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myCombo := ui.NewComboBox(
+//      owner,
+//      ui.ComboBoxOpts(
+//          Text("Some option").
+//          Position(win.POINT{X: 20, Y: 10}).
+//          State(co.BST_CHECKED),
+//      ),
+//  )
 func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
+	if opts == nil {
+		opts = ComboBoxOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_ComboBox{}

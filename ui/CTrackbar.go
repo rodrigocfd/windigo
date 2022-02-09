@@ -41,7 +41,22 @@ type _Trackbar struct {
 
 // Creates a new Trackbar specifying all options, which will be passed to the
 // underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  mySlider := ui.NewTrackbar(
+//      owner,
+//      ui.TrackbarOpts(
+//          Position(win.POINT{X: 10, Y: 250}).
+//          RangeMax(4),
+//      ),
+//  )
 func NewTrackbar(parent AnyParent, opts *_TrackbarO) Trackbar {
+	if opts == nil {
+		opts = TrackbarOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_Trackbar{}

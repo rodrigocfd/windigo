@@ -25,10 +25,10 @@ func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) {
 //  var hwnd win.HWND // initialized somewhere
 //
 //  isEnabled := hwnd.DwmGetWindowAttribute(
-//    co.DWMWA_GET_NCRENDERING_ENABLED).(bool)
+//      co.DWMWA_GET_NCRENDERING_ENABLED).(bool)
 //
 //  rect := hwnd.DwmGetWindowAttribute(
-//    co.DWMWA_GET_CAPTION_BUTTON_BOUNDS).(win.RECT)
+//      co.DWMWA_GET_CAPTION_BUTTON_BOUNDS).(win.RECT)
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmgetwindowattribute
 func (hWnd HWND) DwmGetWindowAttribute(attr co.DWMWA_GET) interface{} {
@@ -101,10 +101,10 @@ func (hWnd HWND) DwmSetIconicThumbnail(hBmp HBITMAP, sitFlags co.DWM_SIT) {
 //  var hwnd win.HWND // initialized somewhere
 //
 //  hwnd.DwmSetWindowAttribute(
-//    co.DWMWA_SET_NCRENDERING_POLICY, co.DWMNCRP_DISABLED)
+//      co.DWMWA_SET_NCRENDERING_POLICY, co.DWMNCRP_DISABLED)
 //
 //  hwnd.DwmSetWindowAttribute(
-//    co.DWMWA_SET_TRANSITIONS_FORCEDISABLED, true)
+//      co.DWMWA_SET_TRANSITIONS_FORCEDISABLED, true)
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmsetwindowattribute
 func (hWnd HWND) DwmSetWindowAttribute(attr co.DWMWA_SET, val interface{}) {

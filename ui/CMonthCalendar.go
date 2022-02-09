@@ -36,7 +36,21 @@ type _MonthCalendar struct {
 
 // Creates a new MonthCalendar. Call MonthCalendarOpts() to define the options
 // to be passed to the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myCal := ui.NewMonthCalendar(
+//      owner,
+//      ui.MonthCalendarOpts(
+//          Position(win.POINT{X: 50, Y: 50}),
+//      ),
+//  )
 func NewMonthCalendar(parent AnyParent, opts *_MonthCalendarO) MonthCalendar {
+	if opts == nil {
+		opts = MonthCalendarOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_MonthCalendar{}

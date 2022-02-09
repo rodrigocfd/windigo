@@ -40,7 +40,21 @@ type _Toolbar struct {
 
 // Creates a new Toolbar. Call ToolbarOpts() to define the options to be passed
 // to the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myBar := ui.NewToolbar(
+//      owner,
+//      ui.ToolbarOpts(
+//          CtrlStyles(co.TBSTYLE_BUTTON|co.TBSTYLE_LIST|co.TBSTYLE_FLAT),
+//      ),
+//  )
 func NewToolbar(parent AnyParent, opts *_ToolbarO) Toolbar {
+	if opts == nil {
+		opts = ToolbarOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_Toolbar{}

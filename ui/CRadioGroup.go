@@ -28,6 +28,28 @@ type _RadioGroup struct {
 // Creates a new RadioGroup, with one or more RadioButton controls. Call
 // RadioButtonOpts() to define the options of each RadioButton to be passed to
 // the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myRadios := ui.NewRadioGroup(
+//      owner,
+//      ui.RadioButtonOpts(
+//          Text("First option").
+//          Position(win.POINT{X: 10, Y: 40}).
+//          WndStyles(co.WS_VISIBLE|co.WS_CHILD|co.WS_TABSTOP|co.WS_GROUP),
+//      ),
+//      ui.RadioButtonOpts(
+//          Text("Second option").
+//          Position(win.POINT{X: 10, Y: 80}).
+//          Select(true),
+//      ),
+//      ui.RadioButtonOpts(
+//          Text("Third option").
+//          Position(win.POINT{X: 10, Y: 120}),
+//      ),
+//  )
 func NewRadioGroup(parent AnyParent, opts ...*_RadioButtonO) RadioGroup {
 	if len(opts) == 0 {
 		panic("A RadioGroup must have at least 1 RadioButton.")

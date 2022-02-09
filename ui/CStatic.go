@@ -32,7 +32,22 @@ type _Static struct {
 
 // Creates a new Static. Call StaticOpts() to define the options to be passed to
 // the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myLabel := ui.NewStatic(
+//      owner,
+//      ui.StaticOpts(
+//          Text("Some label").
+//          Position(win.POINT{X: 20, Y: 10}),
+//      ),
+//  )
 func NewStatic(parent AnyParent, opts *_StaticO) Static {
+	if opts == nil {
+		opts = StaticOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_Static{}

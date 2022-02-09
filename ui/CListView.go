@@ -50,7 +50,23 @@ type _ListView struct {
 
 // Creates a new ListView. Call ListViewOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myList := ui.NewListView(
+//      owner,
+//      ui.ListViewOpts(
+//          Position(win.POINT{X: 10, Y: 20}).
+//          Size(win.SIZE{Cx: 120}).
+//          CtrlExStyles(co.LVS_EX_FULLROWSELECT),
+//      ),
+//  )
 func NewListView(parent AnyParent, opts *_ListViewO) ListView {
+	if opts == nil {
+		opts = ListViewOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_ListView{}

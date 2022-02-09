@@ -39,7 +39,25 @@ type _RadioButton struct {
 
 // Creates a new RadioButton. Call RadioButtonOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
+//
+// Prefer using the RadioGroup, which manages multiple radio buttons at once.
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myRadio := ui.NewRadioButton(
+//      owner,
+//      ui.RadioButtonOpts(
+//          Text("Some option").
+//          Position(win.POINT{X: 10, Y: 40}).
+//          WndStyles(co.WS_VISIBLE|co.WS_CHILD|co.WS_TABSTOP|co.WS_GROUP),
+//      ),
+//  )
 func NewRadioButton(parent AnyParent, opts *_RadioButtonO) RadioButton {
+	if opts == nil {
+		opts = RadioButtonOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_RadioButton{}

@@ -30,7 +30,21 @@ type _ProgressBar struct {
 
 // Creates a new ProgressBar. Call ProgressBarOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myProg := ui.NewProgressBar(
+//      owner,
+//      ui.ProgressBarOpts(
+//          Position(win.POINT{X: 350, Y: 80}),
+//      ),
+//  )
 func NewProgressBar(parent AnyParent, opts *_ProgressBarO) ProgressBar {
+	if opts == nil {
+		opts = ProgressBarOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_ProgressBar{}

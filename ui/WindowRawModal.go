@@ -15,7 +15,18 @@ type _WindowRawModal struct {
 
 // Creates a new WindowModal. Call WindowModalOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
+//
+// Example:
+//
+//  myModal := ui.NewWindowModal(
+//      ui.WindowModalOpts(
+//          Title("My modal window"),
+//      ),
+//  )
 func NewWindowModal(opts *_WindowModalO) WindowModal {
+	if opts == nil {
+		opts = WindowModalOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_WindowRawModal{}

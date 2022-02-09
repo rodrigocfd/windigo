@@ -41,7 +41,22 @@ type _Edit struct {
 
 // Creates a new Edit. Call EditOpts() to define the options to be passed to
 // the underlying CreateWindowEx().
+//
+// Example:
+//
+//  var owner AnyParent // initialized somewhere
+//
+//  myTxt := ui.NewEdit(
+//      owner,
+//      ui.EditOpts(
+//          Position(win.POINT{X: 10, Y: 20}).
+//          Size(win.SIZE{Cx: 120}),
+//      ),
+//  )
 func NewEdit(parent AnyParent, opts *_EditO) Edit {
+	if opts == nil {
+		opts = EditOpts()
+	}
 	opts.lateDefaults()
 
 	me := &_Edit{}
