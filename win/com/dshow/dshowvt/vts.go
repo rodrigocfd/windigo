@@ -3,7 +3,6 @@ package dshowvt
 import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
-	"github.com/rodrigocfd/windigo/win/com/idl/idlvt"
 )
 
 // IBaseFilter virtual table.
@@ -138,7 +137,7 @@ type IMediaControl struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
 type IMediaFilter struct {
-	idlvt.IPersist
+	automvt.IPersist
 	Stop          uintptr
 	Pause         uintptr
 	Run           uintptr

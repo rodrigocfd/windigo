@@ -1,11 +1,11 @@
-package idl
+package autom
 
 import (
 	"syscall"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/com/idl/idlvt"
+	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -25,7 +25,7 @@ func NewIPersist(base win.IUnknown) IPersist {
 func (me *IPersist) GetClassID() *win.GUID {
 	clsid := &win.GUID{}
 	ret, _, _ := syscall.Syscall(
-		(*idlvt.IPersist)(unsafe.Pointer(*me.Ptr())).GetClassID, 2,
+		(*automvt.IPersist)(unsafe.Pointer(*me.Ptr())).GetClassID, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(clsid)), 0)
 

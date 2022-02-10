@@ -7,20 +7,20 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/autom"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
-	"github.com/rodrigocfd/windigo/win/com/idl"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
-type IMediaFilter struct{ idl.IPersist }
+type IMediaFilter struct{ autom.IPersist }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IMediaFilter.Release().
 func NewIMediaFilter(base win.IUnknown) IMediaFilter {
-	return IMediaFilter{IPersist: idl.NewIPersist(base)}
+	return IMediaFilter{IPersist: autom.NewIPersist(base)}
 }
 
 // Pass -1 for infinite timeout.

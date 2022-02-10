@@ -34,9 +34,6 @@ And for the [COM](win/com/) bindings:
 | `win/com/dshow` | Native Win32 DirectShow COM interfaces. |
 | `win/com/dshow/dshowco` | DirectShow constants, all typed. |
 | `win/com/dshow/dshowvt` | DirectShow virtual tables. |
-| `win/com/idl` | Native Win32 Object IDL COM interfaces. |
-| `win/com/idl/idlco` | IDL constants, all typed. |
-| `win/com/idl/idlvt` | IDL virtual tables. |
 | `win/com/shell` | Native Win32 Shell COM interfaces. |
 | `win/com/shell/shellco` | Shell constants, all typed. |
 | `win/com/shell/shellvt` | Shell virtual tables. |
