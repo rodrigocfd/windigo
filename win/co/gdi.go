@@ -1,5 +1,15 @@
 package co
 
+// SetArcDirection() dir.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setarcdirection
+type AD int32
+
+const (
+	AD_COUNTERCLOCKWISE AD = 1
+	AD_CLOCKWISE        AD = 2
+)
+
 // BITMAPINFOHEADER biCompression.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
@@ -227,7 +237,7 @@ const (
 	REGION_COMPLEX REGION = 3
 )
 
-// CombineRgn() iMode.
+// CombineRgn() and SelectClipPath() mode.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
 type RGN int32

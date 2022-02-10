@@ -491,6 +491,8 @@ func (hdc HDC) Rectangle(bound RECT) {
 	}
 }
 
+// Used together with HDC.SaveDC().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-restoredc
 func (hdc HDC) RestoreDC(savedDC int32) {
 	ret, _, err := syscall.Syscall(proc.RestoreDC.Addr(), 2,
@@ -511,6 +513,8 @@ func (hdc HDC) RoundRect(bound RECT, sz SIZE) {
 	}
 }
 
+// Used together with HDC.RestoreDC().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-savedc
 func (hdc HDC) SaveDC() int32 {
 	ret, _, err := syscall.Syscall(proc.SaveDC.Addr(), 1,
@@ -519,6 +523,25 @@ func (hdc HDC) SaveDC() int32 {
 		panic(errco.ERROR(err))
 	}
 	return int32(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectclippath
+func (hdc HDC) SelectClipPath(mode co.RGN) {
+	ret, _, err := syscall.Syscall(proc.SelectClipPath.Addr(), 2,
+		uintptr(hdc), uintptr(mode), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectcliprgn
+func (hdc HDC) SelectClipRgn(hRgn HRGN) co.REGION {
+	ret, _, err := syscall.Syscall(proc.SelectClipRgn.Addr(), 2,
+		uintptr(hdc), uintptr(hRgn), 0)
+	if ret == _REGION_ERROR {
+		panic(errco.ERROR(err))
+	}
+	return co.REGION(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
@@ -565,10 +588,20 @@ func (hdc HDC) SelectObjectPen(hPen HPEN) HPEN {
 func (hdc HDC) SelectObjectRgn(hRgn HRGN) co.REGION {
 	ret, _, err := syscall.Syscall(proc.SelectObject.Addr(), 2,
 		uintptr(hdc), uintptr(hRgn), 0)
-	if ret == _HGDI_ERROR {
+	if ret == _HGDI_ERROR || ret == _REGION_ERROR {
 		panic(errco.ERROR(err))
 	}
 	return co.REGION(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setarcdirection
+func (hdc HDC) SetArcDirection(direction co.AD) co.AD {
+	ret, _, err := syscall.Syscall(proc.SetArcDirection.Addr(), 2,
+		uintptr(hdc), uintptr(direction), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return co.AD(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setbkcolor
