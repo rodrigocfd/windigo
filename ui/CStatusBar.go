@@ -14,7 +14,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/status-bars
 type StatusBar interface {
 	AnyNativeControl
-	isStatusBar() // prevent public implementation
+	implStatusBar() // prevent public implementation
 
 	// Exposes all the StatusBar notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -65,7 +65,7 @@ func NewStatusBar(parent AnyParent) StatusBar {
 }
 
 // Implements StatusBar.
-func (me *_StatusBar) isStatusBar() {}
+func (*_StatusBar) implStatusBar() {}
 
 func (me *_StatusBar) On() *_StatusBarEvents {
 	if me.Hwnd() != 0 {

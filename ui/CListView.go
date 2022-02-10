@@ -16,7 +16,7 @@ import (
 type ListView interface {
 	AnyNativeControl
 	AnyFocusControl
-	isListView() // prevent public implementation
+	implListView() // prevent public implementation
 
 	// Exposes all the ListView notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -127,7 +127,7 @@ func NewListViewDlg(
 }
 
 // Implements ListView.
-func (me *_ListView) isListView() {}
+func (*_ListView) implListView() {}
 
 // Implements AnyFocusControl.
 func (me *_ListView) Focus() {

@@ -13,7 +13,7 @@ type ComboBox interface {
 	AnyNativeControl
 	AnyFocusControl
 	AnyTextControl
-	isComboBox() // prevent public implementation
+	implComboBox() // prevent public implementation
 
 	// Exposes all the ComboBox notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -100,7 +100,7 @@ func NewComboBoxDlg(
 }
 
 // Implements ComboBox.
-func (me *_ComboBox) isComboBox() {}
+func (*_ComboBox) implComboBox() {}
 
 // Implements AnyFocusControl.
 func (me *_ComboBox) Focus() {

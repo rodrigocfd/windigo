@@ -15,7 +15,7 @@ type RadioButton interface {
 	AnyNativeControl
 	AnyFocusControl
 	AnyTextControl
-	isRadioButton() // prevent public implementation
+	implRadioButton() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -104,7 +104,7 @@ func NewRadioButtonDlg(
 }
 
 // Implements RadioButton.
-func (me *_RadioButton) isRadioButton() {}
+func (*_RadioButton) implRadioButton() {}
 
 // Implements AnyFocusControl.
 func (me *_RadioButton) Focus() {

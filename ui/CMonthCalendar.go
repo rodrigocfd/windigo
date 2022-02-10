@@ -15,7 +15,7 @@ import (
 type MonthCalendar interface {
 	AnyNativeControl
 	AnyFocusControl
-	isMonthCalendar() // prevent public implementation
+	implMonthCalendar() // prevent public implementation
 
 	// Exposes all the MonthCalendar notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -95,7 +95,7 @@ func NewMonthCalendarDlg(
 }
 
 // Implements MonthCalendar.
-func (me *_MonthCalendar) isMonthCalendar() {}
+func (*_MonthCalendar) implMonthCalendar() {}
 
 // Implements AnyFocusControl.
 func (me *_MonthCalendar) Focus() {

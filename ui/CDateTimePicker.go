@@ -15,7 +15,7 @@ import (
 type DateTimePicker interface {
 	AnyNativeControl
 	AnyFocusControl
-	isDateTimePicker() // prevent public implementation
+	implDateTimePicker() // prevent public implementation
 
 	// Exposes all the DateTimePicker notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -90,7 +90,7 @@ func NewDateTimePickerDlg(
 }
 
 // Implements DateTimePicker.
-func (me *_DateTimePicker) isDateTimePicker() {}
+func (*_DateTimePicker) implDateTimePicker() {}
 
 // Implements AnyFocusControl.
 func (me *_DateTimePicker) Focus() {

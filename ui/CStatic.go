@@ -12,7 +12,7 @@ import (
 type Static interface {
 	AnyNativeControl
 	AnyTextControl
-	isStatic() // prevent public implementation
+	implStatic() // prevent public implementation
 
 	// Exposes all the Static notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -87,7 +87,7 @@ func NewStaticDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Static {
 }
 
 // Implements Static.
-func (me *_Static) isStatic() {}
+func (*_Static) implStatic() {}
 
 // Implements AnyTextControl.
 func (me *_Static) SetText(text string) {

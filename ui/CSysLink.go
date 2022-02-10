@@ -15,7 +15,7 @@ type SysLink interface {
 	AnyNativeControl
 	AnyFocusControl
 	AnyTextControl
-	isSysLink() // prevent public implementation
+	implSysLink() // prevent public implementation
 
 	// Exposes all the SysLink notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -88,7 +88,7 @@ func NewSysLinkDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) SysLink {
 }
 
 // Implements SysLink.
-func (me *_SysLink) isSysLink() {}
+func (*_SysLink) implSysLink() {}
 
 // Implements AnyFocusControl.
 func (me *_SysLink) Focus() {

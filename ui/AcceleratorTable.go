@@ -11,7 +11,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/learnwin32/accelerator-tables
 type AcceleratorTable interface {
-	isAcceleratorTable() // prevent public implementation
+	implAcceleratorTable() // prevent public implementation
 
 	// Adds a new character accelerator, with a specific command ID.
 	AddChar(character rune, modifiers co.ACCELF, cmdId int) AcceleratorTable
@@ -45,7 +45,8 @@ func NewAcceleratorTable() AcceleratorTable {
 	}
 }
 
-func (me *_AccelTable) isAcceleratorTable() {}
+// Implements AcceleratorTable.
+func (*_AccelTable) implAcceleratorTable() {}
 
 func (me *_AccelTable) AddChar(
 	character rune, modifiers co.ACCELF, cmdId int) AcceleratorTable {

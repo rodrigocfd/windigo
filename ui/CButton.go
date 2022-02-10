@@ -15,7 +15,7 @@ type Button interface {
 	AnyNativeControl
 	AnyFocusControl
 	AnyTextControl
-	isButton() // prevent public implementation
+	implButton() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -87,7 +87,7 @@ func NewButtonDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Button {
 }
 
 // Implements Button.
-func (me *_Button) isButton() {}
+func (*_Button) implButton() {}
 
 // Implements AnyFocusControl.
 func (me *_Button) Focus() {

@@ -16,7 +16,7 @@ type Edit interface {
 	AnyNativeControl
 	AnyFocusControl
 	AnyTextControl
-	isEdit() // prevent public implementation
+	implEdit() // prevent public implementation
 
 	// Exposes all the Edit notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -93,7 +93,7 @@ func NewEditDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Edit {
 }
 
 // Implements Edit.
-func (me *_Edit) isEdit() {}
+func (*_Edit) implEdit() {}
 
 // Implements AnyFocusControl.
 func (me *_Edit) Focus() {

@@ -12,7 +12,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/progress-bar-control
 type ProgressBar interface {
 	AnyNativeControl
-	isProgressBar() // prevent public implementation
+	implProgressBar() // prevent public implementation
 
 	Pos() int                  // Retrieves the current position.
 	SetMarquee(isMarquee bool) // Sets indeterminate state, a graphic animation going back and forth.
@@ -83,7 +83,7 @@ func NewProgressBarDlg(
 }
 
 // Implements ProgressBar.
-func (me *_ProgressBar) isProgressBar() {}
+func (*_ProgressBar) implProgressBar() {}
 
 func (me *_ProgressBar) Pos() int {
 	return int(me.Hwnd().SendMessage(co.PBM_GETPOS, 0, 0))

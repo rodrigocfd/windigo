@@ -15,7 +15,7 @@ import (
 type TreeView interface {
 	AnyNativeControl
 	AnyFocusControl
-	isTreeView() // prevent public implementation
+	implTreeView() // prevent public implementation
 
 	// Exposes all the TreeView notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -98,7 +98,7 @@ func NewTreeViewDlg(
 }
 
 // Implements TreeView.
-func (me *_TreeView) isTreeView() {}
+func (*_TreeView) implTreeView() {}
 
 // Implements AnyFocusControl.
 func (me *_TreeView) Focus() {

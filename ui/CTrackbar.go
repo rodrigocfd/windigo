@@ -14,7 +14,7 @@ import (
 type Trackbar interface {
 	AnyNativeControl
 	AnyFocusControl
-	isTrackbar() // prevent public implementation
+	implTrackbar() // prevent public implementation
 
 	// Exposes all the Trackbar notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -105,7 +105,7 @@ func NewTrackbarDlg(
 }
 
 // Implements Trackbar.
-func (me *_Trackbar) isTrackbar() {}
+func (*_Trackbar) implTrackbar() {}
 
 // Implements AnyFocusControl.
 func (me *_Trackbar) Focus() {

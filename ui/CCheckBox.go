@@ -13,7 +13,7 @@ type CheckBox interface {
 	AnyNativeControl
 	AnyFocusControl
 	AnyTextControl
-	isCheckBox() // prevent public implementation
+	implCheckBox() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
 	// Cannot be called after the control was created.
@@ -98,7 +98,7 @@ func NewCheckBoxDlg(
 }
 
 // Implements CheckBox.
-func (me *_CheckBox) isCheckBox() {}
+func (*_CheckBox) implCheckBox() {}
 
 // Implements AnyFocusControl.
 func (me *_CheckBox) Focus() {
