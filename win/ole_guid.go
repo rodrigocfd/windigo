@@ -4,52 +4,19 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"syscall"
-	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // Can be created with NewGuidFromClsid() or NewGuidFromIid().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
 type GUID struct {
-	Data1 uint32
-	Data2 uint16
-	Data3 uint16
-	Data4 uint64
-}
-
-// Used to retrieve class IDs to create COM Automation objects.
-//
-// If the progId is invalid, error returns errco.CO_E_CLASSSTRING.
-//
-// Example:
-//
-//  clsId, _ := win.CLSIDFromProgID("Excel.Application")
-//
-//  mainObj := win.CoCreateInstance(
-//      clsId, nil, co.CLSCTX_SERVER, co.IID_IUNKNOWN)
-//  defer mainObj.Release()
-//
-//  excel := mainObj.QueryInterface(automco.IID_IDispatch)
-//  defer excel.Release()
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
-func CLSIDFromProgID(progId string) (co.CLSID, error) {
-	var guid GUID
-	ret, _, _ := syscall.Syscall(proc.CLSIDFromProgID.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToNativePtr(progId))),
-		uintptr(unsafe.Pointer(&guid)), 0)
-
-	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return co.CLSID(guid.String()), nil
-	} else {
-		return "", hr
-	}
+	data1 uint32
+	data2 uint16
+	data3 uint16
+	data4 uint64
 }
 
 // Returns a GUID struct from a CLSID string.
@@ -64,9 +31,9 @@ func GuidFromIid(iid co.IID) *GUID {
 
 // Formats the GUID as a string.
 func (g *GUID) String() string {
-	data4 := util.ReverseBytes64(g.Data4)
+	data4 := util.ReverseBytes64(g.data4)
 	return fmt.Sprintf("%08x-%04x-%04x-%04x-%012x",
-		g.Data1, g.Data2, g.Data3,
+		g.data1, g.data2, g.data3,
 		data4>>48, data4&0xffff_ffff_ffff)
 }
 
@@ -105,9 +72,9 @@ func _NewGuidFromStr(strGuid string) *GUID {
 	}
 
 	return &GUID{
-		Data1: uint32(num1),
-		Data2: nums16[0],
-		Data3: nums16[1],
-		Data4: util.ReverseBytes64((uint64(nums16[2]) << 48) | num5),
+		data1: uint32(num1),
+		data2: nums16[0],
+		data3: nums16[1],
+		data4: util.ReverseBytes64((uint64(nums16[2]) << 48) | num5),
 	}
 }
