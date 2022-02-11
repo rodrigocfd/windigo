@@ -30,8 +30,8 @@ func (me *IFileSinkFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 		uintptr(unsafe.Pointer(&pv)), uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		defer win.HTASKMEM(pv).CoTaskMemFree()
 		name := win.Str.FromNativePtr((*uint16)(unsafe.Pointer(pv)))
-		win.CoTaskMemFree(pv)
 		return name, true
 	} else if hr == errco.E_FAIL {
 		return "", false

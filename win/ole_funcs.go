@@ -52,36 +52,6 @@ func CoInitializeEx(coInit co.COINIT) {
 	}
 }
 
-// ⚠️ You must defer CoTaskMemFree().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
-func CoTaskMemAlloc(size int) uintptr {
-	ret, _, _ := syscall.Syscall(proc.CoTaskMemAlloc.Addr(), 1,
-		uintptr(size), 0, 0)
-	if ret == 0 {
-		panic("CoTaskMemAlloc() failed.")
-	}
-	return ret
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
-func CoTaskMemFree(pv uintptr) {
-	syscall.Syscall(proc.CoTaskMemFree.Addr(), 1,
-		pv, 0, 0)
-}
-
-// ⚠️ You must defer CoTaskMemFree().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
-func CoTaskMemRealloc(pv uintptr, size int) uintptr {
-	ret, _, _ := syscall.Syscall(proc.CoTaskMemRealloc.Addr(), 2,
-		pv, uintptr(size), 0)
-	if ret == 0 {
-		panic("CoTaskMemRealloc() failed.")
-	}
-	return ret
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
 func CoUninitialize() {
 	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)

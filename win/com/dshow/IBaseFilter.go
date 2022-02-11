@@ -118,8 +118,8 @@ func (me *IBaseFilter) QueryVendorInfo() (string, bool) {
 		uintptr(unsafe.Pointer(&pv)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		defer win.HTASKMEM(pv).CoTaskMemFree()
 		name := win.Str.FromNativePtr((*uint16)(unsafe.Pointer(pv)))
-		win.CoTaskMemFree(pv)
 		return name, true
 	} else if hr == errco.E_NOTIMPL {
 		return "", false
