@@ -18,13 +18,14 @@ import (
 type HWND HANDLE
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
-func CreateWindowEx(exStyle co.WS_EX, className ClassName, title StrOrNil,
+func CreateWindowEx(
+	exStyle co.WS_EX, className ClassName, title StrOpt,
 	style co.WS, x, y, width, height int32,
 	parent HWND, menu HMENU, instance HINSTANCE, param LPARAM) HWND {
 
 	classNameVal, classNameBuf := variantClassName(className)
 	ret, _, err := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
-		uintptr(exStyle), classNameVal, uintptr(variantStrOrNil(title)),
+		uintptr(exStyle), classNameVal, uintptr(variantStrOpt(title)),
 		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
 		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
 	runtime.KeepAlive(classNameBuf)
@@ -35,10 +36,10 @@ func CreateWindowEx(exStyle co.WS_EX, className ClassName, title StrOrNil,
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-findwindoww
-func FindWindow(className ClassName, title StrOrNil) (HWND, bool) {
+func FindWindow(className ClassName, title StrOpt) (HWND, bool) {
 	classNameVal, classNameBuf := variantClassName(className)
 	ret, _, _ := syscall.Syscall(proc.FindWindow.Addr(), 2,
-		classNameVal, uintptr(variantStrOrNil(title)), 0)
+		classNameVal, uintptr(variantStrOpt(title)), 0)
 	runtime.KeepAlive(classNameBuf)
 	return HWND(ret), ret != 0
 }

@@ -67,7 +67,7 @@ func NewEdit(parent AnyParent, opts *_EditO) Edit {
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			win.ClassNameStr("EDIT"), win.StrVal(opts.text),
+			win.ClassNameStr("EDIT"), win.StrOptVal(opts.text),
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 

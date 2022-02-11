@@ -42,24 +42,24 @@ func CreateDirectory(
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw
 func CreateProcess(
-	applicationName, commandLine StrOrNil,
+	applicationName, commandLine StrOpt,
 	processAttributes, threadAttributes *SECURITY_ATTRIBUTES,
 	inheritHandles bool,
 	creationFlags co.CREATE,
 	ptrEnvironment uintptr,
-	currentDirectory StrOrNil,
+	currentDirectory StrOpt,
 	startupInfo *STARTUPINFO,
 	processInformation *PROCESS_INFORMATION) {
 
 	ret, _, err := syscall.Syscall12(proc.CreateProcess.Addr(), 10,
-		uintptr(variantStrOrNil(applicationName)),
-		uintptr(variantStrOrNil(commandLine)),
+		uintptr(variantStrOpt(applicationName)),
+		uintptr(variantStrOpt(commandLine)),
 		uintptr(unsafe.Pointer(processAttributes)),
 		uintptr(unsafe.Pointer(threadAttributes)),
 		util.BoolToUintptr(inheritHandles),
 		uintptr(creationFlags),
 		ptrEnvironment,
-		uintptr(variantStrOrNil(currentDirectory)),
+		uintptr(variantStrOpt(currentDirectory)),
 		uintptr(unsafe.Pointer(startupInfo)),
 		uintptr(unsafe.Pointer(processInformation)),
 		0, 0)
@@ -438,12 +438,12 @@ func RemoveDirectory(pathName string) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew
 func ReplaceFile(
 	replaced, replacement string,
-	backup StrOrNil, replaceFlags co.REPLACEFILE) error {
+	backup StrOpt, replaceFlags co.REPLACEFILE) error {
 
 	ret, _, err := syscall.Syscall6(proc.ReplaceFile.Addr(), 6,
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replaced))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replacement))),
-		uintptr(variantStrOrNil(backup)), uintptr(replaceFlags), 0, 0)
+		uintptr(variantStrOpt(backup)), uintptr(replaceFlags), 0, 0)
 	if ret == 0 {
 		return errco.ERROR(err)
 	}

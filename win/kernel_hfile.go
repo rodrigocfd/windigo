@@ -65,12 +65,12 @@ func (hFile HFILE) GetFileSizeEx() (uint64, error) {
 func (hFile HFILE) CreateFileMapping(
 	securityAttributes *SECURITY_ATTRIBUTES,
 	protectPage co.PAGE, protectSec co.SEC,
-	maxSize uint32, objectName StrOrNil) (HFILEMAP, error) {
+	maxSize uint32, objectName StrOpt) (HFILEMAP, error) {
 
 	ret, _, err := syscall.Syscall6(proc.CreateFileMapping.Addr(), 6,
 		uintptr(hFile), uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
-		0, uintptr(maxSize), uintptr(variantStrOrNil(objectName)))
+		0, uintptr(maxSize), uintptr(variantStrOpt(objectName)))
 	if ret == 0 {
 		return HFILEMAP(0), errco.ERROR(err)
 	}

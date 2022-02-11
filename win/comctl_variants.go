@@ -9,20 +9,25 @@ type (
 	//
 	// Example:
 	//
-	//  func Foo(i win.TdcIcon) {}
+	//  func Foo(i win.TdcIcon) {
+	//      // ...
+	//  }
 	//
 	//  Foo(win.TdcIconHicon(win.HICON(0)))
 	//  Foo(win.TdcIconInt(301))
 	//  Foo(win.TdcIconTdi(co.TD_ICON_ERROR))
-	TdcIcon      interface{ isTdcIcon() }
+	//  Foo(win.TdcIconNone{})
+	TdcIcon      interface{ implTdcIcon() }
 	TdcIconHicon HICON      // TdcIcon variant: HICON.
 	TdcIconInt   uint16     // TdcIcon variant: uint16.
 	TdcIconTdi   co.TD_ICON // TdcIcon variant: co.TD_ICON.
+	TdcIconNone  struct{}   // TdcIcon variant: no value.
 )
 
-func (TdcIconHicon) isTdcIcon() {}
-func (TdcIconInt) isTdcIcon()   {}
-func (TdcIconTdi) isTdcIcon()   {}
+func (TdcIconHicon) implTdcIcon() {}
+func (TdcIconInt) implTdcIcon()   {}
+func (TdcIconTdi) implTdcIcon()   {}
+func (TdcIconNone) implTdcIcon()  {}
 
 func variantTdcIcon(v TdcIcon) uintptr {
 	switch v := v.(type) {
@@ -32,7 +37,9 @@ func variantTdcIcon(v TdcIcon) uintptr {
 		return uintptr(v)
 	case TdcIconTdi:
 		return uintptr(v)
-	default:
+	case TdcIconNone:
 		return 0
+	default:
+		panic("TdcIconNone cannot be nil.")
 	}
 }

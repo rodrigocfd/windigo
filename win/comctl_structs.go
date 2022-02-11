@@ -726,7 +726,9 @@ func (td *TASKDIALOGCONFIG) serializePacked() []HGLOBAL {
 		hMems = append(hMems, hTxt)
 	}
 
-	binary.LittleEndian.PutUint64(buf[36:], uint64(variantTdcIcon(td.HMainIcon)))
+	if td.HMainIcon != nil {
+		binary.LittleEndian.PutUint64(buf[36:], uint64(variantTdcIcon(td.HMainIcon)))
+	}
 
 	if td.PszMainInstruction != "" {
 		hTxt := GlobalAllocStr(co.GMEM_FIXED, td.PszMainInstruction)
@@ -796,7 +798,9 @@ func (td *TASKDIALOGCONFIG) serializePacked() []HGLOBAL {
 		hMems = append(hMems, hTxt)
 	}
 
-	binary.LittleEndian.PutUint64(buf[124:], uint64(variantTdcIcon(td.HFooterIcon)))
+	if td.HFooterIcon != nil {
+		binary.LittleEndian.PutUint64(buf[124:], uint64(variantTdcIcon(td.HFooterIcon)))
+	}
 
 	if td.PszFooter != "" {
 		hTxt := GlobalAllocStr(co.GMEM_FIXED, td.PszFooter)

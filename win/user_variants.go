@@ -11,29 +11,34 @@ type (
 	//
 	// Example:
 	//
-	//  func Foo(cn win.ClassName) {}
+	//  func Foo(cn win.ClassName) {
+	//      // ...
+	//  }
 	//
-	//  Foo(ClassNameAtom(ATOM(100)))
-	//  Foo(ClassNameStr("MY_CLASS_NAME"))
-	//  Foo(nil)
-	ClassName     interface{ isClassName() }
-	ClassNameAtom ATOM   // ClassName variant: ATOM.
-	ClassNameStr  string // ClassName variant: string.
+	//  Foo(win.ClassNameAtom(ATOM(100)))
+	//  Foo(win.ClassNameStr("MY_CLASS_NAME"))
+	//  Foo(win.ClassNameNone{})
+	ClassName     interface{ implClassName() }
+	ClassNameAtom ATOM     // ClassName variant: ATOM.
+	ClassNameStr  string   // ClassName variant: string.
+	ClassNameNone struct{} // ClassName variant: no value.
 )
 
-func (ClassNameAtom) isClassName() {}
-func (ClassNameStr) isClassName()  {}
+func (ClassNameAtom) implClassName() {}
+func (ClassNameStr) implClassName()  {}
+func (ClassNameNone) implClassName() {}
 
 func variantClassName(v ClassName) (uintptr, *uint16) { // pointer must be kept alive
-	var buf *uint16
 	switch v := v.(type) {
 	case ClassNameAtom:
 		return uintptr(v), nil
 	case ClassNameStr:
-		buf = Str.ToNativePtr(string(v))
+		buf := Str.ToNativePtr(string(v))
 		return uintptr(unsafe.Pointer(buf)), buf
-	default:
+	case ClassNameNone:
 		return 0, nil
+	default:
+		panic("ClassName cannot be nil.")
 	}
 }
 
@@ -42,33 +47,34 @@ type (
 	//
 	// Example:
 	//
-	//  func Foo(c win.CursorRes) {}
+	//  func Foo(c win.CursorRes) {
+	//      // ...
+	//  }
 	//
 	//  Foo(win.CursorResIdc(co.IDC_ARROW))
 	//  Foo(win.CursorResInt(301))
 	//  Foo(win.CursorResStr("MY_CURSOR"))
-	CursorRes    interface{ isCursorRes() }
+	CursorRes    interface{ implCursorRes() }
 	CursorResIdc co.IDC // CursorRes variant: co.IDC.
 	CursorResInt uint16 // CursorRes variant: uint16.
 	CursorResStr string // CursorRes variant: string.
 )
 
-func (CursorResIdc) isCursorRes() {}
-func (CursorResInt) isCursorRes() {}
-func (CursorResStr) isCursorRes() {}
+func (CursorResIdc) implCursorRes() {}
+func (CursorResInt) implCursorRes() {}
+func (CursorResStr) implCursorRes() {}
 
 func variantCursorResId(v CursorRes) (uintptr, *uint16) { // pointer must be kept alive
-	var buf *uint16
 	switch v := v.(type) {
 	case CursorResIdc:
 		return uintptr(v), nil
 	case CursorResInt:
 		return uintptr(v), nil
 	case CursorResStr:
-		buf = Str.ToNativePtr(string(v))
+		buf := Str.ToNativePtr(string(v))
 		return uintptr(unsafe.Pointer(buf)), buf
 	default:
-		panic("CursorResId does not accept a nil value.")
+		panic("CursorResId cannot be nil.")
 	}
 }
 
@@ -77,33 +83,34 @@ type (
 	//
 	// Example:
 	//
-	//  func Foo(i win.IconRes) {}
+	//  func Foo(i win.IconRes) {
+	//      // ...
+	//  }
 	//
 	//  Foo(win.IconResIdc(co.IDI_ERROR))
 	//  Foo(win.IconResInt(201))
 	//  Foo(win.IconResStr("MY_ICON"))
-	IconRes    interface{ isIconRes() }
+	IconRes    interface{ implIconRes() }
 	IconResIdc co.IDI // IconRes variant: co.IDI.
 	IconResInt uint16 // IconRes variant: uint16.
 	IconResStr string // IconRes variant: string.
 )
 
-func (IconResIdc) isIconRes() {}
-func (IconResInt) isIconRes() {}
-func (IconResStr) isIconRes() {}
+func (IconResIdc) implIconRes() {}
+func (IconResInt) implIconRes() {}
+func (IconResStr) implIconRes() {}
 
 func variantIconResId(v IconRes) (uintptr, *uint16) { // pointer must be kept alive
-	var buf *uint16
 	switch v := v.(type) {
 	case IconResIdc:
 		return uintptr(v), nil
 	case IconResInt:
 		return uintptr(v), nil
 	case IconResStr:
-		buf = Str.ToNativePtr(string(v))
+		buf := Str.ToNativePtr(string(v))
 		return uintptr(unsafe.Pointer(buf)), buf
 	default:
-		panic("CursorResId does not accept a nil value.")
+		panic("CursorResId cannot be nil.")
 	}
 }
 
@@ -112,17 +119,19 @@ type (
 	//
 	// Example:
 	//
-	//  func Foo(i win.MenuItem) {}
+	//  func Foo(i win.MenuItem) {
+	//      // ...
+	//  }
 	//
 	//  Foo(win.MenuItemCmd(4001))
 	//  Foo(win.MenuItemPos(2))
-	MenuItem    interface{ isIdPos() }
+	MenuItem    interface{ implMenuItem() }
 	MenuItemCmd uint16 // MenuItem variant: uint16 command ID.
 	MenuItemPos uint16 // MenuItem variant: uint16 zero-based item index.
 )
 
-func (MenuItemCmd) isIdPos() {}
-func (MenuItemPos) isIdPos() {}
+func (MenuItemCmd) implMenuItem() {}
+func (MenuItemPos) implMenuItem() {}
 
 func variantMenuItem(v MenuItem) (uintptr, co.MF) {
 	switch v := v.(type) {
@@ -131,7 +140,7 @@ func variantMenuItem(v MenuItem) (uintptr, co.MF) {
 	case MenuItemPos:
 		return uintptr(v), co.MF_BYPOSITION
 	default:
-		panic("MenuItem does not accept a nil value.")
+		panic("MenuItem cannot be nil.")
 	}
 }
 
@@ -140,27 +149,28 @@ type (
 	//
 	// Example:
 	//
-	//  func Foo(r win.ResId) {}
+	//  func Foo(r win.ResId) {
+	//      // ...
+	//  }
 	//
 	//  Foo(win.ResIdInt(101))
 	//  Foo(win.ResIdStr("MY_RESOURCE"))
-	ResId    interface{ isResId() }
+	ResId    interface{ implResId() }
 	ResIdInt uint16 // ResId variant: uint16.
 	ResIdStr string // ResId variant: string.
 )
 
-func (ResIdInt) isResId() {}
-func (ResIdStr) isResId() {}
+func (ResIdInt) implResId() {}
+func (ResIdStr) implResId() {}
 
 func variantResId(v ResId) (uintptr, *uint16) { // pointer must be kept alive
-	var buf *uint16
 	switch v := v.(type) {
 	case ResIdInt:
 		return uintptr(v), nil
 	case ResIdStr:
-		buf = Str.ToNativePtr(string(v))
+		buf := Str.ToNativePtr(string(v))
 		return uintptr(unsafe.Pointer(buf)), buf
 	default:
-		panic("ResId does not accept a nil value.")
+		panic("ResId cannot be nil.")
 	}
 }

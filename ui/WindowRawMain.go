@@ -48,7 +48,7 @@ func (me *_WindowRawMain) RunAsMain() int {
 	_CreateGlobalUiFont()
 	defer _globalUiFont.DeleteObject()
 
-	hInst := win.GetModuleHandle(nil)
+	hInst := win.GetModuleHandle(win.StrOptNone{})
 	var wcx win.WNDCLASSEX
 	me.opts.className = me._WindowRaw.generateWcx(&wcx, hInst,
 		me.opts.className, me.opts.classStyles, me.opts.hCursor,
@@ -58,7 +58,7 @@ func (me *_WindowRawMain) RunAsMain() int {
 	pos, size := me._WindowRaw.calcWndCoords(&me.opts.clientArea,
 		me.opts.mainMenu, me.opts.wndStyles, me.opts.wndExStyles)
 	me._WindowRaw.createWindow(me.opts.wndExStyles, win.ClassNameAtom(atom),
-		win.StrVal(me.opts.title), me.opts.wndStyles, pos, size, win.HWND(0),
+		win.StrOptVal(me.opts.title), me.opts.wndStyles, pos, size, win.HWND(0),
 		me.opts.mainMenu, hInst)
 
 	me.Hwnd().ShowWindow(me.opts.cmdShow)

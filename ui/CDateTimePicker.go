@@ -61,7 +61,7 @@ func NewDateTimePicker(parent AnyParent, opts *_DateTimePickerO) DateTimePicker 
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			win.ClassNameStr("SysDateTimePick32"), nil,
+			win.ClassNameStr("SysDateTimePick32"), win.StrOptNone{},
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 

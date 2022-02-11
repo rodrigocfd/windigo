@@ -17,9 +17,9 @@ type HINSTANCE HANDLE
 // process (.exe file).
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
-func GetModuleHandle(moduleName StrOrNil) HINSTANCE {
+func GetModuleHandle(moduleName StrOpt) HINSTANCE {
 	ret, _, err := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
-		uintptr(variantStrOrNil(moduleName)), 0, 0)
+		uintptr(variantStrOpt(moduleName)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

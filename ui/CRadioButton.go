@@ -71,7 +71,7 @@ func NewRadioButton(parent AnyParent, opts *_RadioButtonO) RadioButton {
 		}
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			win.ClassNameStr("BUTTON"), win.StrVal(opts.text),
+			win.ClassNameStr("BUTTON"), win.StrOptVal(opts.text),
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 

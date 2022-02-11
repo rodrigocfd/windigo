@@ -45,15 +45,15 @@ func (hWnd HWND) SetWindowSubclass(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
 func (hWnd HWND) TaskDialog(
 	hInstance HINSTANCE,
-	windowTitle, mainInstruction, content StrOrNil,
+	windowTitle, mainInstruction, content StrOpt,
 	commonButtons co.TDCBF, icon co.TD_ICON) co.ID {
 
 	var pnButton int32
 	ret, _, _ := syscall.Syscall9(proc.TaskDialog.Addr(), 8,
 		uintptr(hWnd), uintptr(hInstance),
-		uintptr(variantStrOrNil(windowTitle)),
-		uintptr(variantStrOrNil(mainInstruction)),
-		uintptr(variantStrOrNil(content)),
+		uintptr(variantStrOpt(windowTitle)),
+		uintptr(variantStrOpt(mainInstruction)),
+		uintptr(variantStrOpt(content)),
 		uintptr(commonButtons), uintptr(icon),
 		uintptr(unsafe.Pointer(&pnButton)), 0)
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {

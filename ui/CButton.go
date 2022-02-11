@@ -61,7 +61,7 @@ func NewButton(parent AnyParent, opts *_ButtonO) Button {
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			win.ClassNameStr("BUTTON"), win.StrVal(opts.text),
+			win.ClassNameStr("BUTTON"), win.StrOptVal(opts.text),
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 

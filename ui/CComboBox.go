@@ -63,7 +63,7 @@ func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			win.ClassNameStr("COMBOBOX"), nil,
+			win.ClassNameStr("COMBOBOX"), win.StrOptNone{},
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, size, win.HMENU(opts.ctrlId))
 

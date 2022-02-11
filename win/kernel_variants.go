@@ -5,24 +5,31 @@ import (
 )
 
 type (
-	// Variant type which accepts string or nil.
+	// Variant type for an optional string value.
 	//
 	// Example:
 	//
-	//  func Foo(s win.StrOrNil) {}
+	//  func Foo(maybeName win.StrOpt) {
+	//      // ...
+	//  }
 	//
-	//  Foo(win.StrVal("some text"))
-	//  Foo(nil)
-	StrOrNil interface{ isStrOrNil() }
-	StrVal   string // StrOrNil variant: string.
+	//  Foo(win.StrOptVal("some name"))
+	//  Foo(win.StrOptNone{})
+	StrOpt     interface{ implStrOpt() }
+	StrOptVal  string   // StrOpt variant: string value.
+	StrOptNone struct{} // StrOpt variant: no value.
 )
 
-func (StrVal) isStrOrNil() {}
+func (StrOptVal) implStrOpt()  {}
+func (StrOptNone) implStrOpt() {}
 
-func variantStrOrNil(v StrOrNil) unsafe.Pointer {
-	if v != nil {
-		s := v.(StrVal)
-		return unsafe.Pointer(Str.ToNativePtr(string(s)))
+func variantStrOpt(v StrOpt) unsafe.Pointer {
+	switch v := v.(type) {
+	case StrOptVal:
+		return unsafe.Pointer(Str.ToNativePtr(string(v)))
+	case StrOptNone:
+		return nil
+	default:
+		panic("StrOpt cannot be nil.")
 	}
-	return nil
 }
