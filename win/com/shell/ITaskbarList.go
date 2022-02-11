@@ -67,10 +67,14 @@ func (me *ITaskbarList) DeleteTab(hWnd win.HWND) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-hrinit
 func (me *ITaskbarList) HrInit() {
-	syscall.Syscall(
+	ret, _, _ := syscall.Syscall(
 		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).HrInit, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, 0)
+
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-setactivealt

@@ -4,6 +4,23 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 )
 
+// IBindCtx virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ibindctx
+type IBindCtx struct {
+	win.IUnknownVtbl
+	RegisterObjectBound   uintptr
+	RevokeObjectBound     uintptr
+	ReleaseBoundObjects   uintptr
+	SetBindOptions        uintptr
+	GetBindOptions        uintptr
+	GetRunningObjectTable uintptr
+	RegisterObjectParam   uintptr
+	GetObjectParam        uintptr
+	EnumObjectParam       uintptr
+	RevokeObjectParam     uintptr
+}
+
 // IFileDialog virtual table.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialog
