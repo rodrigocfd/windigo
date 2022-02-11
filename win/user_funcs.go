@@ -77,8 +77,8 @@ func EndMenu() {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
-func EnumWindows(enumFunc func(hWnd HWND) bool) {
-	pPack := &_EnumWindowsPack{f: enumFunc}
+func EnumWindows(callback func(hWnd HWND) bool) {
+	pPack := &_EnumWindowsPack{f: callback}
 	if _globalEnumWindowsFuncs == nil {
 		_globalEnumWindowsFuncs = make(map[*_EnumWindowsPack]struct{}, 2)
 	}

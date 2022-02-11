@@ -21,9 +21,9 @@ func (hdc HDC) DrawIcon(x, y int32, hIcon HICON) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
 func (hdc HDC) EnumDisplayMonitors(
 	rcClip *RECT,
-	enumFunc func(hMon HMONITOR, hdcMon HDC, rcMon *RECT) bool) {
+	callback func(hMon HMONITOR, hdcMon HDC, rcMon *RECT) bool) {
 
-	pPack := &_EnumMonitorPack{f: enumFunc}
+	pPack := &_EnumMonitorPack{f: callback}
 	if _globalEnumMonitorFuncs == nil {
 		_globalEnumMonitorFuncs = make(map[*_EnumMonitorPack]struct{}, 2)
 	}

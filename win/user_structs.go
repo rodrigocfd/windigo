@@ -47,6 +47,15 @@ type CREATESTRUCT struct {
 	ExStyle        co.WS_EX
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-cwpretstruct
+type CWPRETSTRUCT struct {
+	LResult uintptr // LRESULT
+	LParam  LPARAM
+	WParam  WPARAM
+	Message co.WM
+	Hwnd    HWND
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-deleteitemstruct
 type DELETEITEMSTRUCT struct {
 	CtlType  co.ODT_C
