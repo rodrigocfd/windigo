@@ -66,6 +66,37 @@ const (
 	SIGDN_PARENTRELATIVEFORUI         SIGDN = 0x80094001
 )
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getpath
+type SLGP uint32
+
+const (
+	SLGP_SHORTPATH        SLGP = 0x1
+	SLGP_UNCPRIORITY      SLGP = 0x2
+	SLGP_RAWPATH          SLGP = 0x4
+	SLGP_RELATIVEPRIORITY SLGP = 0x8
+)
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-resolve
+type SLR uint32
+
+const (
+	SLR_NONE                      SLR = 0
+	SLR_NO_UI                     SLR = 0x1
+	SLR_ANY_MATCH                 SLR = 0x2
+	SLR_UPDATE                    SLR = 0x4
+	SLR_NOUPDATE                  SLR = 0x8
+	SLR_NOSEARCH                  SLR = 0x10
+	SLR_NOTRACK                   SLR = 0x20
+	SLR_NOLINKINFO                SLR = 0x40
+	SLR_INVOKE_MSI                SLR = 0x80
+	SLR_NO_UI_WITH_MSG_PUMP       SLR = 0x101
+	SLR_OFFER_DELETE_WITHOUT_FILE SLR = 0x200
+	SLR_KNOWNFOLDER               SLR = 0x400
+	SLR_MACHINE_IN_LOCAL_TARGET   SLR = 0x800
+	SLR_UPDATE_MACHINE_AND_SID    SLR = 0x1000
+	SLR_NO_OBJECT_ID              SLR = 0x2000
+)
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-stpflag
 type STPFLAG uint32
 
