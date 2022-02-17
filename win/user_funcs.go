@@ -1,6 +1,7 @@
 package win
 
 import (
+	"sync"
 	"syscall"
 	"time"
 	"unsafe"
@@ -79,10 +80,12 @@ func EndMenu() {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
 func EnumWindows(callback func(hWnd HWND) bool) {
 	pPack := &_EnumWindowsPack{f: callback}
-	if _globalEnumWindowsFuncs == nil {
-		_globalEnumWindowsFuncs = make(map[*_EnumWindowsPack]struct{}, 2)
+	_globalEnumWindowsMutex.Lock()
+	if _globalEnumWindowsFuncs == nil { // the set was not initialized yet?
+		_globalEnumWindowsFuncs = make(map[*_EnumWindowsPack]struct{}, 1)
 	}
 	_globalEnumWindowsFuncs[pPack] = struct{}{} // store pointer in the set
+	_globalEnumWindowsMutex.Unlock()
 
 	ret, _, err := syscall.Syscall(proc.EnumWindows.Addr(), 2,
 		_globalEnumWindowsCallback, uintptr(unsafe.Pointer(pPack)), 0)
@@ -96,15 +99,23 @@ type _EnumWindowsPack struct{ f func(hWnd HWND) bool }
 var (
 	_globalEnumWindowsCallback uintptr = syscall.NewCallback(_EnumWindowsProc)
 	_globalEnumWindowsFuncs    map[*_EnumWindowsPack]struct{}
+	_globalEnumWindowsMutex    = sync.Mutex{}
 )
 
 func _EnumWindowsProc(hWnd HWND, lParam LPARAM) uintptr {
 	pPack := (*_EnumWindowsPack)(unsafe.Pointer(lParam))
 	retVal := uintptr(0)
-	if _, isStored := _globalEnumWindowsFuncs[pPack]; isStored {
+
+	_globalEnumWindowsMutex.Lock()
+	_, isStored := _globalEnumWindowsFuncs[pPack]
+	_globalEnumWindowsMutex.Unlock()
+
+	if isStored {
 		retVal = util.BoolToUintptr(pPack.f(hWnd))
 		if retVal == 0 {
-			delete(_globalEnumWindowsFuncs, pPack) // remove from set
+			_globalEnumWindowsMutex.Lock()
+			delete(_globalEnumWindowsFuncs, pPack) // remove from the set
+			_globalEnumWindowsMutex.Unlock()
 		}
 	}
 	return retVal

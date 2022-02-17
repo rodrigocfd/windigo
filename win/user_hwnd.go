@@ -208,10 +208,12 @@ func (hWnd HWND) EndPaint(ps *PAINTSTRUCT) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumchildwindows
 func (hWnd HWND) EnumChildWindows(callback func(hChild HWND) bool) {
 	pPack := &_EnumChildPack{f: callback}
-	if _globalEnumChildFuncs == nil {
-		_globalEnumChildFuncs = make(map[*_EnumChildPack]struct{}, 2)
+	_globalEnumChildMutex.Lock()
+	if _globalEnumChildFuncs == nil { // the set was not initialized yet?
+		_globalEnumChildFuncs = make(map[*_EnumChildPack]struct{}, 1)
 	}
 	_globalEnumChildFuncs[pPack] = struct{}{} // store pointer in the set
+	_globalEnumChildMutex.Unlock()
 
 	syscall.Syscall(proc.EnumChildWindows.Addr(), 3,
 		uintptr(hWnd), _globalEnumChildCallback,
@@ -223,15 +225,23 @@ type _EnumChildPack struct{ f func(hChild HWND) bool }
 var (
 	_globalEnumChildCallback uintptr = syscall.NewCallback(_EnumChildProc)
 	_globalEnumChildFuncs    map[*_EnumChildPack]struct{}
+	_globalEnumChildMutex    = sync.Mutex{}
 )
 
 func _EnumChildProc(hChild HWND, lParam LPARAM) uintptr {
 	pPack := (*_EnumChildPack)(unsafe.Pointer(lParam))
 	retVal := uintptr(0)
-	if _, isStored := _globalEnumChildFuncs[pPack]; isStored {
+
+	_globalEnumChildMutex.Lock()
+	_, isStored := _globalEnumChildFuncs[pPack]
+	_globalEnumChildMutex.Unlock()
+
+	if isStored {
 		retVal = util.BoolToUintptr(pPack.f(hChild))
 		if retVal == 0 {
-			delete(_globalEnumChildFuncs, pPack) // remove from set
+			_globalEnumChildMutex.Lock()
+			delete(_globalEnumChildFuncs, pPack) // remove from the set
+			_globalEnumChildMutex.Unlock()
 		}
 	}
 	return retVal
@@ -767,8 +777,8 @@ func (hWnd HWND) SetTimer(msElapse uint32, id uintptr) uintptr {
 //  var hWnd HWND // initialized somewhere
 //
 //  hWnd.SetTimerCallback(2000, func(id uintptr) {
-//      println("Run once")
 //      hWnd.KillTimer(id)
+//      println("This callback will run once.")
 //  })
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
@@ -777,13 +787,13 @@ func (hWnd HWND) SetTimerCallback(
 
 	pPack := &_TimerPack{f: timerFunc}
 	_globalTimerMutex.Lock()
-	if _globalTimerFuncs == nil {
+	if _globalTimerFuncs == nil { // the set was not initialized yet?
 		_globalTimerFuncs = make(map[*_TimerPack]struct{}, 1)
 	}
 	_globalTimerFuncs[pPack] = struct{}{} // store pointer in the set
 	_globalTimerMutex.Unlock()
 
-	id := uintptr(unsafe.Pointer(pPack)) // use the pointer as the timer ID
+	id := uintptr(unsafe.Pointer(pPack)) // use the pack pointer as the timer ID
 
 	ret, _, err := syscall.Syscall6(proc.SetTimer.Addr(), 4,
 		uintptr(hWnd), id, uintptr(msElapse), _globalTimerCallback, 0, 0)

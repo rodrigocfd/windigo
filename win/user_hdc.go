@@ -1,6 +1,7 @@
 package win
 
 import (
+	"sync"
 	"syscall"
 	"unsafe"
 
@@ -23,36 +24,46 @@ func (hdc HDC) EnumDisplayMonitors(
 	rcClip *RECT,
 	callback func(hMon HMONITOR, hdcMon HDC, rcMon *RECT) bool) {
 
-	pPack := &_EnumMonitorPack{f: callback}
-	if _globalEnumMonitorFuncs == nil {
-		_globalEnumMonitorFuncs = make(map[*_EnumMonitorPack]struct{}, 2)
+	pPack := &_EnumMonitorsPack{f: callback}
+	_globalEnumMonitorsMutex.Lock()
+	if _globalEnumMonitorsFuncs == nil { // the set was not initialized yet?
+		_globalEnumMonitorsFuncs = make(map[*_EnumMonitorsPack]struct{}, 1)
 	}
-	_globalEnumMonitorFuncs[pPack] = struct{}{} // store pointer in the set
+	_globalEnumMonitorsFuncs[pPack] = struct{}{} // store pointer in the set
+	_globalEnumMonitorsMutex.Unlock()
 
 	ret, _, err := syscall.Syscall6(proc.EnumDisplayMonitors.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(rcClip)),
-		_globalEnumMonitorCallback, uintptr(unsafe.Pointer(pPack)), 0, 0)
+		_globalEnumMonitorsCallback, uintptr(unsafe.Pointer(pPack)), 0, 0)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 }
 
-type _EnumMonitorPack struct {
+type _EnumMonitorsPack struct {
 	f func(hMon HMONITOR, hdcMon HDC, rcMon *RECT) bool
 }
 
 var (
-	_globalEnumMonitorCallback uintptr = syscall.NewCallback(_EnumMonitorProc)
-	_globalEnumMonitorFuncs    map[*_EnumMonitorPack]struct{}
+	_globalEnumMonitorsCallback uintptr = syscall.NewCallback(_EnumMonitorProc)
+	_globalEnumMonitorsFuncs    map[*_EnumMonitorsPack]struct{}
+	_globalEnumMonitorsMutex    = sync.Mutex{}
 )
 
 func _EnumMonitorProc(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lParam LPARAM) uintptr {
-	pPack := (*_EnumMonitorPack)(unsafe.Pointer(lParam))
+	pPack := (*_EnumMonitorsPack)(unsafe.Pointer(lParam))
 	retVal := uintptr(0)
-	if _, isStored := _globalEnumMonitorFuncs[pPack]; isStored {
+
+	_globalEnumMonitorsMutex.Lock()
+	_, isStored := _globalEnumMonitorsFuncs[pPack]
+	_globalEnumMonitorsMutex.Unlock()
+
+	if isStored {
 		retVal = util.BoolToUintptr(pPack.f(hMon, hdcMon, rcMon))
 		if retVal == 0 {
-			delete(_globalEnumMonitorFuncs, pPack) // remove from set
+			_globalEnumMonitorsMutex.Lock()
+			delete(_globalEnumMonitorsFuncs, pPack) // remove from the set
+			_globalEnumMonitorsMutex.Unlock()
 		}
 	}
 	return retVal
