@@ -23,6 +23,16 @@ func (HCLIPBOARD) CloseClipboard() {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-countclipboardformats
+func (HCLIPBOARD) CountClipboardFormats() int32 {
+	ret, _, err := syscall.Syscall(proc.CountClipboardFormats.Addr(), 0,
+		0, 0, 0)
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		panic(wErr)
+	}
+	return int32(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-emptyclipboard
 func (HCLIPBOARD) EmptyClipboard() {
 	ret, _, err := syscall.Syscall(proc.EmptyClipboard.Addr(), 0,
@@ -52,6 +62,23 @@ func (HCLIPBOARD) EnumClipboardFormats() []co.CF {
 			formats = append(formats, thisFormat)
 		}
 	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardsequencenumber
+func (HCLIPBOARD) GetClipboardSequenceNumber() uint32 {
+	ret, _, _ := syscall.Syscall(proc.GetClipboardSequenceNumber.Addr(), 0,
+		0, 0, 0)
+	return uint32(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isclipboardformatavailable
+func (HCLIPBOARD) IsClipboardFormatAvailable(format co.CF) bool {
+	ret, _, err := syscall.Syscall(proc.IsClipboardFormatAvailable.Addr(), 1,
+		uintptr(format), 0, 0)
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		panic(wErr)
+	}
+	return ret != 0
 }
 
 // ⚠️ hMem will be owned by the clipboard, do not call HGLOBAL.Free() anymore.

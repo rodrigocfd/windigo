@@ -44,6 +44,16 @@ func FindWindow(className ClassName, title StrOpt) (HWND, bool) {
 	return HWND(ret), ret != 0
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardowner
+func GetClipboardOwner() HWND {
+	ret, _, err := syscall.Syscall(proc.GetClipboardOwner.Addr(), 0,
+		0, 0, 0)
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		panic(wErr)
+	}
+	return HWND(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdesktopwindow
 func GetDesktopWindow() HWND {
 	ret, _, _ := syscall.Syscall(proc.GetDesktopWindow.Addr(), 0,
@@ -62,6 +72,16 @@ func GetFocus() HWND {
 func GetForegroundWindow() HWND {
 	ret, _, _ := syscall.Syscall(proc.GetForegroundWindow.Addr(), 0,
 		0, 0, 0)
+	return HWND(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getopenclipboardwindow
+func GetOpenClipboardWindow() HWND {
+	ret, _, err := syscall.Syscall(proc.GetOpenClipboardWindow.Addr(), 0,
+		0, 0, 0)
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		panic(wErr)
+	}
 	return HWND(ret)
 }
 
