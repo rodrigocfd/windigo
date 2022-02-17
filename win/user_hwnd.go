@@ -286,6 +286,8 @@ func (hWnd HWND) GetClientRect() RECT {
 	return rc
 }
 
+// Call HWND(0).GetDC() to retrieve the DC for the entire screen.
+//
 // ⚠️ You must defer HDC.ReleaseDC().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdc

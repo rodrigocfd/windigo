@@ -42,3 +42,44 @@ const (
 	COINIT_DISABLE_OLE1DDE   COINIT = 0x4
 	COINIT_SPEED_OVER_MEMORY COINIT = 0x8
 )
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-locktype
+type LOCKTYPE uint32
+
+const (
+	LOCKTYPE_WRITE     LOCKTYPE = 1
+	LOCKTYPE_EXCLUSIVE LOCKTYPE = 2
+	LOCKTYPE_ONLYONCE  LOCKTYPE = 4
+)
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/com/pictype-constants
+type PICTYPE int16
+
+const (
+	PICTYPE_UNINITIALIZED PICTYPE = -1
+	PICTYPE_NONE          PICTYPE = 0
+	PICTYPE_BITMAP        PICTYPE = 1
+	PICTYPE_METAFILE      PICTYPE = 2
+	PICTYPE_ICON          PICTYPE = 3
+	PICTYPE_ENHMETAFILE   PICTYPE = 4
+)
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-stgc
+type STGC uint32
+
+const (
+	STGC_DEFAULT                            STGC = 0
+	STGC_OVERWRITE                          STGC = 1
+	STGC_ONLYIFCURRENT                      STGC = 2
+	STGC_DANGEROUSLYCOMMITMERELYTODISKCACHE STGC = 4
+	STGC_CONSOLIDATE                        STGC = 8
+)
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-stream_seek
+type STREAM_SEEK uint32
+
+const (
+	STREAM_SEEK_SET STREAM_SEEK = 0
+	STREAM_SEEK_CUR STREAM_SEEK = 1
+	STREAM_SEEK_END STREAM_SEEK = 2
+)

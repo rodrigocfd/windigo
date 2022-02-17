@@ -25,6 +25,52 @@ type IPersist struct {
 	GetClassID uintptr
 }
 
+// IPicture virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nn-ocidl-ipicture
+type IPicture struct {
+	IUnknown
+	Get_Handle             uintptr
+	Get_hPal               uintptr
+	Get_Type               uintptr
+	Get_Width              uintptr
+	Get_Height             uintptr
+	Render                 uintptr
+	Set_hPal               uintptr
+	Get_CurDC              uintptr
+	SelectPicture          uintptr
+	Get_KeepOriginalFormat uintptr
+	Put_KeepOriginalFormat uintptr
+	PictureChanged         uintptr
+	SaveAsFile             uintptr
+	Get_Attributes         uintptr
+}
+
+// ISequentialStream virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-isequentialstream
+type ISequentialStream struct {
+	IUnknown
+	Read  uintptr
+	Write uintptr
+}
+
+// IStream virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
+type IStream struct {
+	ISequentialStream
+	Seek         uintptr
+	SetSize      uintptr
+	CopyTo       uintptr
+	Commit       uintptr
+	Revert       uintptr
+	LockRegion   uintptr
+	UnlockRegion uintptr
+	Stat         uintptr
+	Clone        uintptr
+}
+
 // IUnknown virtual table, base to all COM virtual tables.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
