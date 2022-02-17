@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -19,9 +20,9 @@ type IBaseFilter struct{ IMediaFilter }
 // Example for an Enhanced Video Renderer:
 //
 //  evh := dshow.NewIBaseFilter(
-//      win.CoCreateInstance(
+//      com.CoCreateInstance(
 //          dshowco.CLSID_EnhancedVideoRenderer, nil,
-//          co.CLSCTX_INPROC_SERVER,
+//          comco.CLSCTX_INPROC_SERVER,
 //          dshowco.IID_IBaseFilter),
 //  )
 //  defer evh.Release()
@@ -29,13 +30,13 @@ type IBaseFilter struct{ IMediaFilter }
 // Example for a Video Media Renderer 9:
 //
 //  vmr9 := dshow.NewIBaseFilter(
-//      win.CoCreateInstance(
+//      com.CoCreateInstance(
 //          dshowco.CLSID_VideoMixingRenderer9, nil,
-//          co.CLSCTX_INPROC_SERVER,
+//          comco.CLSCTX_INPROC_SERVER,
 //          dshowco.IID_IBaseFilter),
 //  )
 //  defer vmr9.Release()
-func NewIBaseFilter(base win.IUnknown) IBaseFilter {
+func NewIBaseFilter(base com.IUnknown) IBaseFilter {
 	return IBaseFilter{IMediaFilter: NewIMediaFilter(base)}
 }
 
@@ -43,7 +44,7 @@ func NewIBaseFilter(base win.IUnknown) IBaseFilter {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-enumpins
 func (me *IBaseFilter) EnumPins() IEnumPins {
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).EnumPins, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -60,7 +61,7 @@ func (me *IBaseFilter) EnumPins() IEnumPins {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-findpin
 func (me *IBaseFilter) FindPin(id string) (IPin, bool) {
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).FindPin, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),

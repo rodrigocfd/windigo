@@ -4,19 +4,19 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
-type IPin struct{ win.IUnknown }
+type IPin struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IPin.Release().
-func NewIPin(base win.IUnknown) IPin {
+func NewIPin(base com.IUnknown) IPin {
 	return IPin{IUnknown: base}
 }
 
@@ -36,7 +36,7 @@ func (me *IPin) BeginFlush() {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connect
 func (me *IPin) Connect(mt *AM_MEDIA_TYPE) (IPin, error) {
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).Connect, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -54,7 +54,7 @@ func (me *IPin) Connect(mt *AM_MEDIA_TYPE) (IPin, error) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connectedto
 func (me *IPin) ConnectedTo() (IPin, error) {
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).ConnectedTo, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -121,7 +121,7 @@ func (me *IPin) EndOfStream() {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-enummediatypes
 func (me *IPin) EnumMediaTypes() (IEnumMediaTypes, error) {
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).EnumMediaTypes, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

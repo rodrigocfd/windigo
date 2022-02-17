@@ -14,7 +14,6 @@ const (
 
 // Shell COM IIDs.
 const (
-	IID_IBindCtx        co.IID = "0000000e-0000-0000-c000-000000000046"
 	IID_IFileDialog     co.IID = "42f85136-db7e-439c-85f1-e4075d135fc8"
 	IID_IFileOpenDialog co.IID = "d57c7288-d4ad-4768-be02-9d969532d960"
 	IID_IFileSaveDialog co.IID = "84bccd23-5fde-4cdb-aea4-af64b83d78ab"

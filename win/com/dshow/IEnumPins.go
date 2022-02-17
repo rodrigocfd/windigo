@@ -4,18 +4,18 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
-type IEnumPins struct{ win.IUnknown }
+type IEnumPins struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IEnumPins.Release().
-func NewIEnumPins(base win.IUnknown) IEnumPins {
+func NewIEnumPins(base com.IUnknown) IEnumPins {
 	return IEnumPins{IUnknown: base}
 }
 
@@ -23,7 +23,7 @@ func NewIEnumPins(base win.IUnknown) IEnumPins {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-clone
 func (me *IEnumPins) Clone() IEnumPins {
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IEnumPins)(unsafe.Pointer(*me.Ptr())).Clone, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -71,7 +71,7 @@ func (me *IEnumPins) GetAll() []IPin {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-next
 func (me *IEnumPins) Next() (IPin, bool) {
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*dshowvt.IEnumPins)(unsafe.Pointer(*me.Ptr())).Next, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),

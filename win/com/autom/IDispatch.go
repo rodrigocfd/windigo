@@ -5,21 +5,22 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/com/autom/automco"
 	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
+	"github.com/rodrigocfd/windigo/win/com/com"
+	"github.com/rodrigocfd/windigo/win/com/com/comco"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // IDispatch COM interface.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
-type IDispatch struct{ win.IUnknown }
+type IDispatch struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IDispatch.Release().
-func NewIDispatch(base win.IUnknown) IDispatch {
+func NewIDispatch(base com.IUnknown) IDispatch {
 	return IDispatch{IUnknown: base}
 }
 
@@ -36,7 +37,7 @@ func (me *IDispatch) GetIDsOfNames(
 	ret, _, _ := syscall.Syscall6(
 		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetIDsOfNames, 6,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(win.GuidFromIid(co.IID_NULL))),
+		uintptr(unsafe.Pointer(win.GuidFromIid(comco.IID_NULL))),
 		uintptr(unsafe.Pointer(&oleStrs[0])), uintptr(len(names)),
 		uintptr(lcid), uintptr(unsafe.Pointer(&memberIds[0])))
 
@@ -60,7 +61,7 @@ func (me *IDispatch) GetIDsOfNames(
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
 func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetTypeInfo, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -109,7 +110,7 @@ func (me *IDispatch) Invoke(
 		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).Invoke, 9,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(dispIdMember),
-		uintptr(unsafe.Pointer(win.GuidFromIid(co.IID_NULL))),
+		uintptr(unsafe.Pointer(win.GuidFromIid(comco.IID_NULL))),
 		uintptr(lcid), uintptr(flags),
 		uintptr(unsafe.Pointer(dispParams)),
 		uintptr(unsafe.Pointer(&invokeRet.VarResult)),

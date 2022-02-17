@@ -4,8 +4,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/autom"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -25,7 +25,7 @@ type IBasicAudio struct{ autom.IDispatch }
 //      gb.QueryInterface(dshowco.IID_IBasicAudio),
 //  )
 //  defer ba.Release()
-func NewIBasicAudio(base win.IUnknown) IBasicAudio {
+func NewIBasicAudio(base com.IUnknown) IBasicAudio {
 	return IBasicAudio{IDispatch: autom.NewIDispatch(base)}
 }
 

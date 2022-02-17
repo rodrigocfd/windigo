@@ -5,17 +5,18 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
-type IFileSourceFilter struct{ win.IUnknown }
+type IFileSourceFilter struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IFileSourceFilter.Release().
-func NewIFileSourceFilter(base win.IUnknown) IFileSourceFilter {
+func NewIFileSourceFilter(base com.IUnknown) IFileSourceFilter {
 	return IFileSourceFilter{IUnknown: base}
 }
 

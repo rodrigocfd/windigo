@@ -5,12 +5,13 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
-type ITaskbarList struct{ win.IUnknown }
+type ITaskbarList struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -19,13 +20,13 @@ type ITaskbarList struct{ win.IUnknown }
 // Example:
 //
 //  taskbl := shell.NewITaskbarList(
-//      win.CoCreateInstance(
+//      com.CoCreateInstance(
 //          shellco.CLSID_TaskbarList, nil,
-//          co.CLSCTX_INPROC_SERVER,
+//          comco.CLSCTX_INPROC_SERVER,
 //          shellco.IID_ITaskbarList),
 //  )
 //  defer taskbl.Release()
-func NewITaskbarList(base win.IUnknown) ITaskbarList {
+func NewITaskbarList(base com.IUnknown) ITaskbarList {
 	return ITaskbarList{IUnknown: base}
 }
 

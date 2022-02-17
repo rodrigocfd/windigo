@@ -5,17 +5,18 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
-type IModalWindow struct{ win.IUnknown }
+type IModalWindow struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IModalWindow.Release().
-func NewIModalWindow(base win.IUnknown) IModalWindow {
+func NewIModalWindow(base com.IUnknown) IModalWindow {
 	return IModalWindow{IUnknown: base}
 }
 

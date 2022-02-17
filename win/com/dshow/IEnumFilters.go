@@ -4,18 +4,18 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
-type IEnumFilters struct{ win.IUnknown }
+type IEnumFilters struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IEnumFilters.Release().
-func NewIEnumFilters(base win.IUnknown) IEnumFilters {
+func NewIEnumFilters(base com.IUnknown) IEnumFilters {
 	return IEnumFilters{IUnknown: base}
 }
 
@@ -23,7 +23,7 @@ func NewIEnumFilters(base win.IUnknown) IEnumFilters {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-clone
 func (me *IEnumFilters) Clone() IEnumFilters {
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Clone, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -71,7 +71,7 @@ func (me *IEnumFilters) GetAll() []IBaseFilter {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-next
 func (me *IEnumFilters) Next() (IBaseFilter, bool) {
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Next, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),

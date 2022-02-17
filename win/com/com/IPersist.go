@@ -1,23 +1,23 @@
-package autom
+package com
 
 import (
 	"syscall"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
+	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // IPersist COM interface.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
-type IPersist struct{ win.IUnknown }
+type IPersist struct{ IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IPersist.Release().
-func NewIPersist(base win.IUnknown) IPersist {
+func NewIPersist(base IUnknown) IPersist {
 	return IPersist{IUnknown: base}
 }
 
@@ -25,7 +25,7 @@ func NewIPersist(base win.IUnknown) IPersist {
 func (me *IPersist) GetClassID() *win.GUID {
 	clsid := &win.GUID{}
 	ret, _, _ := syscall.Syscall(
-		(*automvt.IPersist)(unsafe.Pointer(*me.Ptr())).GetClassID, 2,
+		(*comvt.IPersist)(unsafe.Pointer(*me.Ptr())).GetClassID, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(clsid)), 0)
 

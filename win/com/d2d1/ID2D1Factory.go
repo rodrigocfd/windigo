@@ -6,18 +6,19 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/d2d1/d2d1co"
 	"github.com/rodrigocfd/windigo/win/com/d2d1/d2d1vt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1factory
-type ID2D1Factory struct{ win.IUnknown }
+type ID2D1Factory struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer ID2D1Factory.Release().
-func NewID2D1Factory(base win.IUnknown) ID2D1Factory {
+func NewID2D1Factory(base com.IUnknown) ID2D1Factory {
 	return ID2D1Factory{IUnknown: base}
 }
 
@@ -32,7 +33,7 @@ func D2D1CreateFactory(
 		DebugLevel: debugLevel,
 	}
 
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall6(proc.D2D1CreateFactory.Addr(), 4,
 		uintptr(factoryType),
 		uintptr(unsafe.Pointer(win.GuidFromIid(d2d1co.IID_ID2D1Factory))),
@@ -53,7 +54,7 @@ func (me *ID2D1Factory) CreateHwndRenderTarget(
 	targetProps *RENDER_TARGET_PROPERTIES,
 	hwndTargetProps *HWND_RENDER_TARGET_PROPERTIES) ID2D1HwndRenderTarget {
 
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*d2d1vt.ID2D1Factory)(unsafe.Pointer(*me.Ptr())).CreateHwndRenderTarget, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),

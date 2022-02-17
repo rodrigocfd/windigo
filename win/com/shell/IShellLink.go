@@ -6,13 +6,14 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishelllinkw
-type IShellLink struct{ win.IUnknown }
+type IShellLink struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -21,13 +22,13 @@ type IShellLink struct{ win.IUnknown }
 // Example:
 //
 //  lnk := shell.NewIShellLink(
-//      win.CoCreateInstance(
+//      com.CoCreateInstance(
 //          shellco.CLSID_ShellLink, nil,
-//          co.CLSCTX_INPROC_SERVER,
+//          comco.CLSCTX_INPROC_SERVER,
 //          shellco.IID_IShellLink),
 //  )
 //  defer lnk.Release()
-func NewIShellLink(base win.IUnknown) IShellLink {
+func NewIShellLink(base com.IUnknown) IShellLink {
 	return IShellLink{IUnknown: base}
 }
 

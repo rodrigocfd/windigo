@@ -4,7 +4,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
@@ -20,13 +20,13 @@ type IFileOpenDialog struct{ IFileDialog }
 // Example:
 //
 //  fod := shell.NewIFileOpenDialog(
-//      win.CoCreateInstance(
+//      com.CoCreateInstance(
 //          shellco.CLSID_FileOpenDialog, nil,
-//          co.CLSCTX_INPROC_SERVER,
+//          comco.CLSCTX_INPROC_SERVER,
 //          shellco.IID_IFileOpenDialog),
 //  )
 //  defer fod.Release()
-func NewIFileOpenDialog(base win.IUnknown) IFileOpenDialog {
+func NewIFileOpenDialog(base com.IUnknown) IFileOpenDialog {
 	return IFileOpenDialog{IFileDialog: NewIFileDialog(base)}
 }
 
@@ -36,7 +36,7 @@ func NewIFileOpenDialog(base win.IUnknown) IFileOpenDialog {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
 func (me *IFileOpenDialog) GetResults() IShellItemArray {
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IFileOpenDialog)(unsafe.Pointer(*me.Ptr())).GetResults, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -53,7 +53,7 @@ func (me *IFileOpenDialog) GetResults() IShellItemArray {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
 func (me *IFileOpenDialog) GetSelectedItems() IShellItemArray {
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IFileOpenDialog)(unsafe.Pointer(*me.Ptr())).GetSelectedItems, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

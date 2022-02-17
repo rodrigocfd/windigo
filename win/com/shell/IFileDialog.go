@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
@@ -16,7 +17,7 @@ type IFileDialog struct{ IModalWindow }
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IFileDialog.Release().
-func NewIFileDialog(base win.IUnknown) IFileDialog {
+func NewIFileDialog(base com.IUnknown) IFileDialog {
 	return IFileDialog{IModalWindow: NewIModalWindow(base)}
 }
 
@@ -48,7 +49,7 @@ func (me *IFileDialog) Close(hr errco.ERROR) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getcurrentselection
 func (me *IFileDialog) GetCurrentSelection() IShellItem {
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetCurrentSelection, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -97,7 +98,7 @@ func (me *IFileDialog) GetFileTypeIndex() int {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfolder
 func (me *IFileDialog) GetFolder() IShellItem {
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetFolder, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -131,7 +132,7 @@ func (me *IFileDialog) GetOptions() shellco.FOS {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getresult
 func (me *IFileDialog) GetResult() IShellItem {
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetResult, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

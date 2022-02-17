@@ -1,25 +1,8 @@
 package shellvt
 
 import (
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 )
-
-// IBindCtx virtual table.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ibindctx
-type IBindCtx struct {
-	win.IUnknownVtbl
-	RegisterObjectBound   uintptr
-	RevokeObjectBound     uintptr
-	ReleaseBoundObjects   uintptr
-	SetBindOptions        uintptr
-	GetBindOptions        uintptr
-	GetRunningObjectTable uintptr
-	RegisterObjectParam   uintptr
-	GetObjectParam        uintptr
-	EnumObjectParam       uintptr
-	RevokeObjectParam     uintptr
-}
 
 // IFileDialog virtual table.
 //
@@ -76,7 +59,7 @@ type IFileSaveDialog struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
 type IModalWindow struct {
-	win.IUnknownVtbl
+	comvt.IUnknown
 	Show uintptr
 }
 
@@ -84,7 +67,7 @@ type IModalWindow struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 type IShellItem struct {
-	win.IUnknownVtbl
+	comvt.IUnknown
 	BindToHandler  uintptr
 	GetParent      uintptr
 	GetDisplayName uintptr
@@ -96,7 +79,7 @@ type IShellItem struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
 type IShellItemArray struct {
-	win.IUnknownVtbl
+	comvt.IUnknown
 	BindToHandler              uintptr
 	GetPropertyStore           uintptr
 	GetPropertyDescriptionList uintptr
@@ -110,7 +93,7 @@ type IShellItemArray struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishelllinkw
 type IShellLink struct {
-	win.IUnknownVtbl
+	comvt.IUnknown
 	GetPath             uintptr
 	GetIDList           uintptr
 	SetIDList           uintptr
@@ -135,7 +118,7 @@ type IShellLink struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
 type ITaskbarList struct {
-	win.IUnknownVtbl
+	comvt.IUnknown
 	HrInit       uintptr
 	AddTab       uintptr
 	DeleteTab    uintptr

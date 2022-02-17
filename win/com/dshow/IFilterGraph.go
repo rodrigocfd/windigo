@@ -5,12 +5,13 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
-type IFilterGraph struct{ win.IUnknown }
+type IFilterGraph struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -19,13 +20,13 @@ type IFilterGraph struct{ win.IUnknown }
 // Example:
 //
 //  fg := dshow.NewIFilterGraph(
-//      win.CoCreateInstance(
+//      com.CoCreateInstance(
 //          dshowco.CLSID_FilterGraph, nil,
-//          co.CLSCTX_INPROC_SERVER,
+//          comco.CLSCTX_INPROC_SERVER,
 //          dshowco.IID_IFilterGraph),
 //  )
 //  defer fg.Release()
-func NewIFilterGraph(base win.IUnknown) IFilterGraph {
+func NewIFilterGraph(base com.IUnknown) IFilterGraph {
 	return IFilterGraph{IUnknown: base}
 }
 
@@ -74,7 +75,7 @@ func (me *IFilterGraph) Disconnect(pin *IPin) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-enumfilters
 func (me *IFilterGraph) EnumFilters() IEnumFilters {
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).EnumFilters, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -91,7 +92,7 @@ func (me *IFilterGraph) EnumFilters() IEnumFilters {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-findfilterbyname
 func (me *IFilterGraph) FindFilterByName(name string) (IBaseFilter, bool) {
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).FindFilterByName, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

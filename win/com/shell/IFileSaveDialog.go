@@ -4,7 +4,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -19,13 +19,13 @@ type IFileSaveDialog struct{ IFileDialog }
 // Example:
 //
 //  fsd := shell.NewIFileSaveDialog(
-//      win.CoCreateInstance(
+//      com.CoCreateInstance(
 //          shellco.CLSID_FileSaveDialog, nil,
-//          co.CLSCTX_INPROC_SERVER,
+//          comco.CLSCTX_INPROC_SERVER,
 //          shellco.IID_IFileSaveDialog),
 //  )
 //  defer fsd.Release()
-func NewIFileSaveDialog(base win.IUnknown) IFileSaveDialog {
+func NewIFileSaveDialog(base com.IUnknown) IFileSaveDialog {
 	return IFileSaveDialog{IFileDialog: NewIFileDialog(base)}
 }
 

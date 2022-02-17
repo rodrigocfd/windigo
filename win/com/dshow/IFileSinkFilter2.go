@@ -4,7 +4,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
@@ -16,7 +16,7 @@ type IFileSinkFilter2 struct{ IFileSinkFilter }
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IFileSinkFilter2.Release().
-func NewIFileSinkFilter2(base win.IUnknown) IFileSinkFilter2 {
+func NewIFileSinkFilter2(base com.IUnknown) IFileSinkFilter2 {
 	return IFileSinkFilter2{IFileSinkFilter: NewIFileSinkFilter(base)}
 }
 

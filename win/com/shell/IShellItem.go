@@ -7,18 +7,19 @@ import (
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
-type IShellItem struct{ win.IUnknown }
+type IShellItem struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IShellItem.Release().
-func NewIShellItem(base win.IUnknown) IShellItem {
+func NewIShellItem(base com.IUnknown) IShellItem {
 	return IShellItem{IUnknown: base}
 }
 
@@ -33,7 +34,7 @@ func NewIShellItem(base win.IUnknown) IShellItem {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 func NewShellItemFromPath(folderOrFilePath string) (IShellItem, error) {
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall6(proc.SHCreateItemFromParsingName.Addr(), 4,
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(folderOrFilePath))),
 		0, uintptr(unsafe.Pointer(win.GuidFromIid(shellco.IID_IShellItem))),
@@ -86,7 +87,7 @@ func (me *IShellItem) GetAttributes(mask co.SFGAO) co.SFGAO {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
 func (me *IShellItem) GetParent() IShellItem {
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).GetParent, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

@@ -6,6 +6,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -20,13 +21,13 @@ type ITaskbarList2 struct{ ITaskbarList }
 // Example:
 //
 //  taskbl2 := shell.NewITaskbarList2(
-//      win.CoCreateInstance(
+//      com.CoCreateInstance(
 //          shellco.CLSID_TaskbarList, nil,
-//          co.CLSCTX_INPROC_SERVER,
+//          comco.CLSCTX_INPROC_SERVER,
 //          shellco.IID_ITaskbarList2),
 //  )
 //  defer taskbl2.Release()
-func NewITaskbarList2(base win.IUnknown) ITaskbarList2 {
+func NewITaskbarList2(base com.IUnknown) ITaskbarList2 {
 	return ITaskbarList2{ITaskbarList: NewITaskbarList(base)}
 }
 

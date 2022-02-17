@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/d2d1/d2d1vt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -15,7 +16,7 @@ type ID2D1HwndRenderTarget struct{ ID2D1RenderTarget }
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer ID2D1HwndRenderTarget.Release().
-func NewID2D1HwndRenderTarget(base win.IUnknown) ID2D1HwndRenderTarget {
+func NewID2D1HwndRenderTarget(base com.IUnknown) ID2D1HwndRenderTarget {
 	return ID2D1HwndRenderTarget{ID2D1RenderTarget: NewID2D1RenderTarget(base)}
 }
 

@@ -5,13 +5,14 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
-type IMFVideoDisplayControl struct{ win.IUnknown }
+type IMFVideoDisplayControl struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -28,7 +29,7 @@ type IMFVideoDisplayControl struct{ win.IUnknown }
 //      ),
 //  )
 //  defer vdc.Release()
-func NewIMFVideoDisplayControl(base win.IUnknown) IMFVideoDisplayControl {
+func NewIMFVideoDisplayControl(base com.IUnknown) IMFVideoDisplayControl {
 	return IMFVideoDisplayControl{IUnknown: base}
 }
 

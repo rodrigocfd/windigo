@@ -4,19 +4,19 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
-type IShellItemArray struct{ win.IUnknown }
+type IShellItemArray struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IShellItemArray.Release().
-func NewIShellItemArray(base win.IUnknown) IShellItemArray {
+func NewIShellItemArray(base com.IUnknown) IShellItemArray {
 	return IShellItemArray{IUnknown: base}
 }
 
@@ -27,7 +27,7 @@ func NewIShellItemArray(base win.IUnknown) IShellItemArray {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
 func (me *IShellItemArray) GetItemAt(index int) IShellItem {
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellItemArray)(unsafe.Pointer(*me.Ptr())).GetItemAt, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),

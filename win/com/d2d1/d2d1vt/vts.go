@@ -1,14 +1,15 @@
 package d2d1vt
 
 import (
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
+	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 )
 
 // ID2D1Factory virtual table.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1factory
 type ID2D1Factory struct {
-	win.IUnknownVtbl
+	comvt.IUnknown
 	ReloadSystemMetrics            uintptr
 	GetDesktopDpi                  uintptr
 	CreateRectangleGeometry        uintptr
@@ -149,6 +150,6 @@ type ID2D1RenderTarget struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1resource
 type ID2D1Resource struct {
-	win.IUnknownVtbl
+	com.IUnknown
 	GetFactory uintptr
 }

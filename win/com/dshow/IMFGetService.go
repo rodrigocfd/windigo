@@ -5,12 +5,13 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
-type IMFGetService struct{ win.IUnknown }
+type IMFGetService struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -24,7 +25,7 @@ type IMFGetService struct{ win.IUnknown }
 //      vmr.QueryInterface(dshowco.IID_IMFGetService),
 //  )
 //  defer gs.Release()
-func NewIMFGetService(base win.IUnknown) IMFGetService {
+func NewIMFGetService(base com.IUnknown) IMFGetService {
 	return IMFGetService{IUnknown: base}
 }
 
@@ -45,9 +46,9 @@ func NewIMFGetService(base win.IUnknown) IMFGetService {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
 func (me *IMFGetService) GetService(
-	guidService, riid *win.GUID) win.IUnknown {
+	guidService, riid *win.GUID) com.IUnknown {
 
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*dshowvt.IMFGetService)(unsafe.Pointer(*me.Ptr())).GetService, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),

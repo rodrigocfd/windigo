@@ -7,13 +7,14 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediaseeking
-type IMediaSeeking struct{ win.IUnknown }
+type IMediaSeeking struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -27,7 +28,7 @@ type IMediaSeeking struct{ win.IUnknown }
 //      gb.QueryInterface(dshowco.IID_IMediaSeeking),
 //  )
 //  defer ms.Release()
-func NewIMediaSeeking(base win.IUnknown) IMediaSeeking {
+func NewIMediaSeeking(base com.IUnknown) IMediaSeeking {
 	return IMediaSeeking{IUnknown: base}
 }
 

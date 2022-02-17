@@ -31,6 +31,9 @@ And for the [COM](win/com/) bindings:
 | `win/com/autom` | Native Win32 [Automation](https://docs.microsoft.com/en-us/windows/win32/api/_automat/) COM interfaces. |
 | `win/com/autom/automco` | Automation constants, all typed. |
 | `win/com/autom/automvt` | Automation virtual tables. |
+| `win/com/com` | Native Win32 [COM API base](https://docs.microsoft.com/en-us/windows/win32/api/_com/). |
+| `win/com/com/comco` | COM API base constants, all typed. |
+| `win/com/com/comvt` | COM API base virtual tables. |
 | `win/com/d2d1` | Native Win32 [Direct2D](https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-portal) COM interfaces. |
 | `win/com/d2d1/d2d1co` | Direct2D constants, all typed. |
 | `win/com/d2d1/d2d1vt` | Direct2D virtual tables. |

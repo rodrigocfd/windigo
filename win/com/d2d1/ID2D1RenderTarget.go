@@ -4,7 +4,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/d2d1/d2d1vt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -15,7 +15,7 @@ type ID2D1RenderTarget struct{ ID2D1Resource }
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer ID2D1RenderTarget.Release().
-func NewID2D1RenderTarget(base win.IUnknown) ID2D1RenderTarget {
+func NewID2D1RenderTarget(base com.IUnknown) ID2D1RenderTarget {
 	return ID2D1RenderTarget{ID2D1Resource: NewID2D1Resource(base)}
 }
 

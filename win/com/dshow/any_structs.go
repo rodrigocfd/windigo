@@ -3,6 +3,7 @@ package dshow
 import (
 	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ns-strmif-am_media_type
@@ -13,7 +14,7 @@ type AM_MEDIA_TYPE struct {
 	bTemporalCompression int32 // BOOL
 	LSampleSize          uint32
 	Formattype           win.GUID
-	IUnknown             win.IUnknown
+	IUnknown             com.IUnknown
 	CbFormat             uint32
 	PbFormat             *byte
 }

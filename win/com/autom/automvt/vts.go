@@ -1,33 +1,25 @@
 package automvt
 
 import (
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 )
 
 // IDispatch virtual table.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 type IDispatch struct {
-	win.IUnknownVtbl
+	comvt.IUnknown
 	GetTypeInfoCount uintptr
 	GetTypeInfo      uintptr
 	GetIDsOfNames    uintptr
 	Invoke           uintptr
 }
 
-// IPersist virtual table.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
-type IPersist struct {
-	win.IUnknownVtbl
-	GetClassID uintptr
-}
-
 // ITypeInfo virtual table.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
-type ITypeInfoVtbl struct {
-	win.IUnknownVtbl
+type ITypeInfo struct {
+	comvt.IUnknown
 	GetTypeAttr          uintptr
 	GetTypeComp          uintptr
 	GetFuncDesc          uintptr

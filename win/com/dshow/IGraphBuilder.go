@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -19,13 +20,13 @@ type IGraphBuilder struct{ IFilterGraph }
 // Example:
 //
 //  gb := dshow.NewIGraphBuilder(
-//      win.CoCreateInstance(
+//      com.CoCreateInstance(
 //          dshowco.CLSID_FilterGraph, nil,
-//          co.CLSCTX_INPROC_SERVER,
+//          comco.CLSCTX_INPROC_SERVER,
 //          dshowco.IID_IGraphBuilder),
 //  )
 //  defer gb.Release()
-func NewIGraphBuilder(base win.IUnknown) IGraphBuilder {
+func NewIGraphBuilder(base com.IUnknown) IGraphBuilder {
 	return IGraphBuilder{IFilterGraph: NewIFilterGraph(base)}
 }
 
@@ -47,7 +48,7 @@ func (me *IGraphBuilder) Abort() {
 func (me *IGraphBuilder) AddSourceFilter(
 	fileName, filterName string) IBaseFilter {
 
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).AddSourceFilter, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),

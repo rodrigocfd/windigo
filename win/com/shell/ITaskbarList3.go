@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellvt"
 	"github.com/rodrigocfd/windigo/win/errco"
@@ -20,13 +21,13 @@ type ITaskbarList3 struct{ ITaskbarList2 }
 // Example:
 //
 //  taskbl3 := shell.NewITaskbarList3(
-//      win.CoCreateInstance(
+//      com.CoCreateInstance(
 //          shellco.CLSID_TaskbarList, nil,
-//          co.CLSCTX_INPROC_SERVER,
+//          comco.CLSCTX_INPROC_SERVER,
 //          shellco.IID_ITaskbarList3),
 //  )
 //  defer taskbl3.Release()
-func NewITaskbarList3(base win.IUnknown) ITaskbarList3 {
+func NewITaskbarList3(base com.IUnknown) ITaskbarList3 {
 	return ITaskbarList3{ITaskbarList2: NewITaskbarList2(base)}
 }
 

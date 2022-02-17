@@ -4,18 +4,18 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/d2d1/d2d1vt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1resource
-type ID2D1Resource struct{ win.IUnknown }
+type ID2D1Resource struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer ID2D1Resource.Release().
-func NewID2D1Resource(base win.IUnknown) ID2D1Resource {
+func NewID2D1Resource(base com.IUnknown) ID2D1Resource {
 	return ID2D1Resource{IUnknown: base}
 }
 
@@ -23,7 +23,7 @@ func NewID2D1Resource(base win.IUnknown) ID2D1Resource {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1resource-getfactory
 func (me *ID2D1Resource) GetFactory() ID2D1Factory {
-	var ppvQueried win.IUnknown
+	var ppvQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*d2d1vt.ID2D1Resource)(unsafe.Pointer(*me.Ptr())).GetFactory, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

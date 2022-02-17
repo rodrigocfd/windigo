@@ -4,18 +4,18 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienummediatypes
-type IEnumMediaTypes struct{ win.IUnknown }
+type IEnumMediaTypes struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IEnumMediaTypes.Release().
-func NewIEnumMediaTypes(base win.IUnknown) IEnumMediaTypes {
+func NewIEnumMediaTypes(base com.IUnknown) IEnumMediaTypes {
 	return IEnumMediaTypes{IUnknown: base}
 }
 
@@ -23,7 +23,7 @@ func NewIEnumMediaTypes(base win.IUnknown) IEnumMediaTypes {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-clone
 func (me *IEnumMediaTypes) Clone() IEnumMediaTypes {
-	var ppQueried win.IUnknown
+	var ppQueried com.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IEnumMediaTypes)(unsafe.Pointer(*me.Ptr())).Clone, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
