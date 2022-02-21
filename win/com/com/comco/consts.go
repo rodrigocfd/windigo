@@ -52,6 +52,14 @@ const (
 	LOCKTYPE_ONLYONCE  LOCKTYPE = 4
 )
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/ne-ocidl-pictureattributes
+type PICATTR uint32
+
+const (
+	PICATTR_SCALABLE    PICATTR = 0x01
+	PICATTR_TRANSPARENT PICATTR = 0x02
+)
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/com/pictype-constants
 type PICTYPE int16
 

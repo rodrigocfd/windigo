@@ -83,6 +83,21 @@ func NewIPictureFromStream(
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_attributes
+func (me *IPicture) Attributes() comco.PICATTR {
+	var attr comco.PICATTR
+	ret, _, _ := syscall.Syscall(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_Attributes, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(&attr)), 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return attr
+	} else {
+		panic(hr)
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_curdc
 func (me *IPicture) CurDC() win.HDC {
 	var hdc win.HDC
@@ -157,6 +172,25 @@ func (me *IPicture) Render(
 		uintptr(srcSz.Cx), uintptr(srcSz.Cy),
 		uintptr(unsafe.Pointer(&metafileBounds)),
 		0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return
+	} else {
+		panic(hr)
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-saveasfile
+func (me *IPicture) SaveAsFile(
+	stream *IStream, saveCopy bool) (numBytesWritten int) {
+
+	ret, _, _ := syscall.Syscall6(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).SaveAsFile, 4,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(stream.Ptr())),
+		util.BoolToUintptr(saveCopy),
+		uintptr(unsafe.Pointer(&numBytesWritten)),
+		0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return
