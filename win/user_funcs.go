@@ -77,6 +77,33 @@ func EndMenu() {
 	}
 }
 
+// Example:
+//
+//  dide := win.DISPLAY_DEVICE{}
+//  dide.SetCb()
+//
+//  devNum := 0
+//  for {
+//      ok, _ := win.EnumDisplayDevices(
+//          win.StrOptNone{}, devNum, &dide, co.EDD_NONE)
+//      if !ok {
+//          break
+//      }
+//      println(dide.DeviceName(), dide.DeviceString())
+//      devNum++
+//  }
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw
+func EnumDisplayDevices(
+	device StrOpt, devNum int, info *DISPLAY_DEVICE, flags co.EDD) (bool, error) {
+
+	ret, _, err := syscall.Syscall6(proc.EnumDisplayDevices.Addr(), 4,
+		uintptr(variantStrOpt(device)), uintptr(devNum),
+		uintptr(unsafe.Pointer(info)), uintptr(flags),
+		0, 0)
+	return ret != 0, errco.ERROR(err)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
 func EnumWindows(callback func(hWnd HWND) bool) {
 	pPack := &_EnumWindowsPack{f: callback}

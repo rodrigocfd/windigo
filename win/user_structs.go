@@ -65,6 +65,30 @@ type DELETEITEMSTRUCT struct {
 	ItemData uintptr // ULONG_PTR
 }
 
+// ⚠️ You must call SetCb().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-display_devicew
+type DISPLAY_DEVICE struct {
+	cb           uint32
+	deviceName   [32]uint16
+	deviceString [128]uint16
+	StateFlags   co.DISPLAY_DEVICE
+	deviceID     [128]uint16
+	deviceKey    [128]int16
+}
+
+func (dd *DISPLAY_DEVICE) SetCb() { dd.cb = uint32(unsafe.Sizeof(*dd)) }
+
+func (dd *DISPLAY_DEVICE) DeviceName() string { return Str.FromNativeSlice(dd.deviceName[:]) }
+func (dd *DISPLAY_DEVICE) SetDeviceName(val string) {
+	copy(dd.deviceName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(dd.deviceName)-1)))
+}
+
+func (dd *DISPLAY_DEVICE) DeviceString() string { return Str.FromNativeSlice(dd.deviceString[:]) }
+func (dd *DISPLAY_DEVICE) SetDeviceString(val string) {
+	copy(dd.deviceString[:], Str.ToNativeSlice(Str.Substr(val, 0, len(dd.deviceString)-1)))
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
 type DRAWITEMSTRUCT struct {
 	CtlType    co.ODT

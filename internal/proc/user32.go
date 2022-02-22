@@ -52,6 +52,7 @@ var (
 	EndPaint                      = user32.NewProc("EndPaint")
 	EnumChildWindows              = user32.NewProc("EnumChildWindows")
 	EnumClipboardFormats          = user32.NewProc("EnumClipboardFormats")
+	EnumDisplayDevices            = user32.NewProc("EnumDisplayDevicesW")
 	EnumDisplayMonitors           = user32.NewProc("EnumDisplayMonitors")
 	EnumWindows                   = user32.NewProc("EnumWindows")
 	FindWindow                    = user32.NewProc("FindWindowW")
