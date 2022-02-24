@@ -1,6 +1,7 @@
 package win
 
 import (
+	"runtime"
 	"sync"
 	"syscall"
 	"time"
@@ -77,33 +78,46 @@ func EndMenu() {
 	}
 }
 
-// Example:
-//
-//  dide := win.DISPLAY_DEVICE{}
-//  dide.SetCb()
-//
-//  devNum := 0
-//  for {
-//      ok, _ := win.EnumDisplayDevices(
-//          win.StrOptNone{}, devNum, &dide, co.EDD_NONE)
-//      if !ok {
-//          break
-//      }
-//      println(dide.DeviceName(), dide.DeviceString())
-//      devNum++
-//  }
+// To continue enumeration, the callback function must return true; to stop
+// enumeration, it must return false.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw
 func EnumDisplayDevices(
-	device StrOpt, devNum int, info *DISPLAY_DEVICE, flags co.EDD) (bool, error) {
+	device StrOpt, flags co.EDD,
+	callback func(devNum int, info *DISPLAY_DEVICE) bool) {
 
-	ret, _, err := syscall.Syscall6(proc.EnumDisplayDevices.Addr(), 4,
-		uintptr(device.raw()), uintptr(devNum),
-		uintptr(unsafe.Pointer(info)), uintptr(flags),
-		0, 0)
-	return ret != 0, errco.ERROR(err)
+	devicePtr := device.raw()
+	devNum := 0
+
+	dide := DISPLAY_DEVICE{}
+	dide.SetCb()
+
+	for {
+		ret, _, err := syscall.Syscall6(proc.EnumDisplayDevices.Addr(), 4,
+			uintptr(devicePtr), uintptr(devNum),
+			uintptr(unsafe.Pointer(&dide)), uintptr(flags),
+			0, 0)
+
+		if ret == 0 {
+			if wErr := errco.ERROR(err); wErr != errco.SUCCESS {
+				panic(wErr)
+			} else {
+				break
+			}
+		}
+
+		if !callback(devNum, &dide) {
+			break
+		}
+		devNum++
+	}
+
+	runtime.KeepAlive(devicePtr)
 }
 
+// To continue enumeration, the callback function must return true; to stop
+// enumeration, it must return false.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
 func EnumWindows(callback func(hWnd HWND) bool) {
 	pPack := &_EnumWindowsPack{f: callback}

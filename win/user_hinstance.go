@@ -102,7 +102,7 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 //  const MY_ICON_ID int = 101
 //
 //  hIcon := win.HICON(
-//      win.GetModuleHandle(win.StrOptNone{}).LoadImage(
+//      win.GetModuleHandle(win.StrOptNone()).LoadImage(
 //          win.ResIdInt(MY_ICON_ID),
 //          co.IMAGE_ICON,
 //          16, 16,

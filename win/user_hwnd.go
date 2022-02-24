@@ -205,6 +205,9 @@ func (hWnd HWND) EndPaint(ps *PAINTSTRUCT) {
 		uintptr(hWnd), uintptr(unsafe.Pointer(ps)), 0)
 }
 
+// To continue enumeration, the callback function must return true; to stop
+// enumeration, it must return false.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumchildwindows
 func (hWnd HWND) EnumChildWindows(callback func(hChild HWND) bool) {
 	pPack := &_EnumChildPack{f: callback}

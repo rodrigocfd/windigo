@@ -19,6 +19,9 @@ func (hdc HDC) DrawIcon(x, y int32, hIcon HICON) {
 	}
 }
 
+// To continue enumeration, the callback function must return true; to stop
+// enumeration, it must return false.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
 func (hdc HDC) EnumDisplayMonitors(
 	rcClip *RECT,
