@@ -53,7 +53,7 @@ func (me *_WindowRawModal) ShowModal(parent AnyParent) {
 	pos, size := me._WindowRaw.calcWndCoords(&me.opts.clientArea,
 		win.HMENU(0), me.opts.wndStyles, me.opts.wndExStyles)
 	me._WindowRaw.createWindow(me.opts.wndExStyles, win.ClassNameAtom(atom),
-		win.StrOptVal(me.opts.title), me.opts.wndStyles, pos, size, parent.Hwnd(),
+		win.StrOptSome(me.opts.title), me.opts.wndStyles, pos, size, parent.Hwnd(),
 		win.HMENU(0), hInst)
 
 	_RunModalLoop(me.Hwnd())

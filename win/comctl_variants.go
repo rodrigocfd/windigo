@@ -4,42 +4,59 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-type (
-	// Variant type for an icon identifier for TASKDIALOGCONFIG.
-	//
-	// Example:
-	//
-	//  func Foo(i win.TdcIcon) {
-	//      // ...
-	//  }
-	//
-	//  Foo(win.TdcIconHicon(win.HICON(0)))
-	//  Foo(win.TdcIconInt(301))
-	//  Foo(win.TdcIconTdi(co.TD_ICON_ERROR))
-	//  Foo(win.TdcIconNone{})
-	TdcIcon      interface{ implTdcIcon() }
-	TdcIconHicon HICON      // TdcIcon variant: HICON.
-	TdcIconInt   uint16     // TdcIcon variant: uint16.
-	TdcIconTdi   co.TD_ICON // TdcIcon variant: co.TD_ICON.
-	TdcIconNone  struct{}   // TdcIcon variant: no value.
-)
+// Variant type for an icon identifier for TASKDIALOGCONFIG.
+type TdcIcon struct {
+	curType uint8      // 0: none
+	hIcon   HICON      // 1
+	id      uint16     // 2
+	tdIcon  co.TD_ICON // 3
+}
 
-func (TdcIconHicon) implTdcIcon() {}
-func (TdcIconInt) implTdcIcon()   {}
-func (TdcIconTdi) implTdcIcon()   {}
-func (TdcIconNone) implTdcIcon()  {}
+// Creates a new TdcIcon variant with an empty value.
+func TdcIconNone() TdcIcon {
+	return TdcIcon{}
+}
 
-func variantTdcIcon(v TdcIcon) uintptr {
-	switch v := v.(type) {
-	case TdcIconHicon:
-		return uintptr(v)
-	case TdcIconInt:
-		return uintptr(v)
-	case TdcIconTdi:
-		return uintptr(v)
-	case TdcIconNone:
+// Creates a new TdcIcon variant with an HICON value.
+func TdcIconHicon(hIcon HICON) TdcIcon {
+	return TdcIcon{
+		curType: 1,
+		hIcon:   hIcon,
+	}
+}
+
+// Creates a new TdcIcon variant with an int value.
+func TdcIconInt(id int) TdcIcon {
+	return TdcIcon{
+		curType: 2,
+		id:      uint16(id),
+	}
+}
+
+// Creates a new TdcIcon variant with a co.TD_ICON value.
+func TdcIconTdi(tdIcon co.TD_ICON) TdcIcon {
+	return TdcIcon{
+		curType: 3,
+		tdIcon:  tdIcon,
+	}
+}
+
+func (me *TdcIcon) IsNone() bool            { return me.curType == 0 }
+func (me *TdcIcon) HIcon() (HICON, bool)    { return me.hIcon, me.curType == 1 }
+func (me *TdcIcon) Id() (int, bool)         { return int(me.id), me.curType == 2 }
+func (me *TdcIcon) Tdi() (co.TD_ICON, bool) { return me.tdIcon, me.curType == 3 }
+
+func (me *TdcIcon) raw() uint64 {
+	switch me.curType {
+	case 0:
 		return 0
+	case 1:
+		return uint64(me.hIcon)
+	case 2:
+		return uint64(me.id)
+	case 3:
+		return uint64(me.tdIcon)
 	default:
-		panic("TdcIconNone cannot be nil.")
+		panic("Invalid TdcIcon value.")
 	}
 }

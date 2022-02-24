@@ -61,7 +61,7 @@ func NewStatic(parent AnyParent, opts *_StaticO) Static {
 		}
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			win.ClassNameStr("STATIC"), win.StrOptVal(opts.text),
+			win.ClassNameStr("STATIC"), win.StrOptSome(opts.text),
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 

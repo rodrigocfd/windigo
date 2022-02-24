@@ -15,7 +15,7 @@ func (hInst HINSTANCE) CreateDialogParam(
 	templateName ResId, hwndParent HWND,
 	dialogFunc uintptr, dwInitParam LPARAM) HWND {
 
-	templateNameVal, templateNameBuf := variantResId(templateName)
+	templateNameVal, templateNameBuf := templateName.raw()
 	ret, _, err := syscall.Syscall6(proc.CreateDialogParam.Addr(), 5,
 		uintptr(hInst), templateNameVal,
 		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam), 0)
@@ -31,7 +31,7 @@ func (hInst HINSTANCE) DialogBoxParam(
 	templateName ResId, hwndParent HWND,
 	dialogFunc uintptr, dwInitParam LPARAM) uintptr {
 
-	templateNameVal, templateNameBuf := variantResId(templateName)
+	templateNameVal, templateNameBuf := templateName.raw()
 	ret, _, err := syscall.Syscall6(proc.DialogBoxParam.Addr(), 5,
 		uintptr(hInst), templateNameVal,
 		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam), 0)
@@ -58,7 +58,7 @@ func (hInst HINSTANCE) GetClassInfoEx(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
 func (hInst HINSTANCE) LoadAccelerators(tableName ResId) HACCEL {
-	tableNameVal, tableNameBuf := variantResId(tableName)
+	tableNameVal, tableNameBuf := tableName.raw()
 	ret, _, err := syscall.Syscall(proc.LoadAccelerators.Addr(), 2,
 		uintptr(hInst), tableNameVal, 0)
 	runtime.KeepAlive(tableNameBuf)
@@ -70,7 +70,7 @@ func (hInst HINSTANCE) LoadAccelerators(tableName ResId) HACCEL {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) HCURSOR {
-	cursorNameVal, cursorNameBuf := variantCursorResId(cursorName)
+	cursorNameVal, cursorNameBuf := cursorName.raw()
 	ret, _, err := syscall.Syscall(proc.LoadCursor.Addr(), 2,
 		uintptr(hInst), cursorNameVal, 0)
 	runtime.KeepAlive(cursorNameBuf)
@@ -82,7 +82,7 @@ func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) HCURSOR {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
-	iconNameVal, iconNameBuf := variantIconResId(iconName)
+	iconNameVal, iconNameBuf := iconName.raw()
 	ret, _, err := syscall.Syscall(proc.LoadIcon.Addr(), 2,
 		uintptr(hInst), iconNameVal, 0)
 	runtime.KeepAlive(iconNameBuf)
@@ -126,7 +126,7 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 func (hInst HINSTANCE) LoadImage(
 	name ResId, imgType co.IMAGE, cx, cy int32, fuLoad co.LR) HGDIOBJ {
 
-	nameVal, nameBuf := variantResId(name)
+	nameVal, nameBuf := name.raw()
 	ret, _, err := syscall.Syscall6(proc.LoadImage.Addr(), 6,
 		uintptr(hInst), nameVal, uintptr(imgType),
 		uintptr(cx), uintptr(cy), uintptr(fuLoad))
@@ -139,7 +139,7 @@ func (hInst HINSTANCE) LoadImage(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
 func (hInst HINSTANCE) LoadMenu(menuName ResId) HMENU {
-	menuNameVal, menuNameBuf := variantResId(menuName)
+	menuNameVal, menuNameBuf := menuName.raw()
 	ret, _, err := syscall.Syscall(proc.LoadMenu.Addr(), 2,
 		uintptr(hInst), menuNameVal, 0)
 	runtime.KeepAlive(menuNameBuf)

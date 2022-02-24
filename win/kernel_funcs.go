@@ -52,14 +52,14 @@ func CreateProcess(
 	processInformation *PROCESS_INFORMATION) {
 
 	ret, _, err := syscall.Syscall12(proc.CreateProcess.Addr(), 10,
-		uintptr(variantStrOpt(applicationName)),
-		uintptr(variantStrOpt(commandLine)),
+		uintptr(applicationName.raw()),
+		uintptr(commandLine.raw()),
 		uintptr(unsafe.Pointer(processAttributes)),
 		uintptr(unsafe.Pointer(threadAttributes)),
 		util.BoolToUintptr(inheritHandles),
 		uintptr(creationFlags),
 		ptrEnvironment,
-		uintptr(variantStrOpt(currentDirectory)),
+		uintptr(currentDirectory.raw()),
 		uintptr(unsafe.Pointer(startupInfo)),
 		uintptr(unsafe.Pointer(processInformation)),
 		0, 0)
@@ -443,7 +443,7 @@ func ReplaceFile(
 	ret, _, err := syscall.Syscall6(proc.ReplaceFile.Addr(), 6,
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replaced))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replacement))),
-		uintptr(variantStrOpt(backup)), uintptr(replaceFlags), 0, 0)
+		uintptr(backup.raw()), uintptr(replaceFlags), 0, 0)
 	if ret == 0 {
 		return errco.ERROR(err)
 	}

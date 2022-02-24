@@ -61,7 +61,7 @@ func NewMonthCalendar(parent AnyParent, opts *_MonthCalendarO) MonthCalendar {
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, nil)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			win.ClassNameStr("SysMonthCal32"), win.StrOptNone{},
+			win.ClassNameStr("SysMonthCal32"), win.StrOptNone(),
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, win.SIZE{}, win.HMENU(opts.ctrlId))
 

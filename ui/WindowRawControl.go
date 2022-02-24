@@ -49,7 +49,7 @@ func NewWindowControl(parent AnyParent, opts *_WindowControlO) WindowControl {
 
 		_ConvertDtuOrMultiplyDpi(parent, &me.opts.position, &me.opts.size)
 		me._WindowRaw.createWindow(me.opts.wndExStyles, win.ClassNameAtom(atom),
-			win.StrOptNone{}, me.opts.wndStyles, me.opts.position, me.opts.size,
+			win.StrOptNone(), me.opts.wndStyles, me.opts.position, me.opts.size,
 			parent.Hwnd(), win.HMENU(me.opts.ctrlId), hInst)
 
 		parent.addResizingChild(me, opts.horz, opts.vert)

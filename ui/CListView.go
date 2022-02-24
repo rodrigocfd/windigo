@@ -80,7 +80,7 @@ func NewListView(parent AnyParent, opts *_ListViewO) ListView {
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			win.ClassNameStr("SysListView32"), win.StrOptNone{},
+			win.ClassNameStr("SysListView32"), win.StrOptNone(),
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 

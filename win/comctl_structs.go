@@ -738,8 +738,8 @@ func (td *TASKDIALOGCONFIG) serializePacked() ([160]byte, []unsafe.Pointer) {
 
 	serializeString(td.PszWindowTitle, 28)
 
-	if td.HMainIcon != nil {
-		binary.LittleEndian.PutUint64(buf[36:], uint64(variantTdcIcon(td.HMainIcon)))
+	if !td.HMainIcon.IsNone() {
+		binary.LittleEndian.PutUint64(buf[36:], td.HMainIcon.raw())
 	}
 
 	serializeString(td.PszMainInstruction, 44)
@@ -758,8 +758,8 @@ func (td *TASKDIALOGCONFIG) serializePacked() ([160]byte, []unsafe.Pointer) {
 	serializeString(td.PszExpandedControlText, 108)
 	serializeString(td.PszCollapsedControlText, 116)
 
-	if td.HFooterIcon != nil {
-		binary.LittleEndian.PutUint64(buf[124:], uint64(variantTdcIcon(td.HFooterIcon)))
+	if !td.HFooterIcon.IsNone() {
+		binary.LittleEndian.PutUint64(buf[124:], td.HFooterIcon.raw())
 	}
 
 	serializeString(td.PszFooter, 132)

@@ -4,32 +4,34 @@ import (
 	"unsafe"
 )
 
-type (
-	// Variant type for an optional string value.
-	//
-	// Example:
-	//
-	//  func Foo(maybeName win.StrOpt) {
-	//      // ...
-	//  }
-	//
-	//  Foo(win.StrOptVal("some name"))
-	//  Foo(win.StrOptNone{})
-	StrOpt     interface{ implStrOpt() }
-	StrOptVal  string   // StrOpt variant: string value.
-	StrOptNone struct{} // StrOpt variant: no value.
-)
+// Variant type for an optional string value.
+type StrOpt struct {
+	isSome bool
+	str    string
+}
 
-func (StrOptVal) implStrOpt()  {}
-func (StrOptNone) implStrOpt() {}
+// Creates a new StrOpt with an empty value.
+func StrOptNone() StrOpt {
+	return StrOpt{}
+}
 
-func variantStrOpt(v StrOpt) unsafe.Pointer {
-	switch v := v.(type) {
-	case StrOptVal:
-		return unsafe.Pointer(Str.ToNativePtr(string(v)))
-	case StrOptNone:
+// Creates a new StrOpt with a string value.
+func StrOptSome(str string) StrOpt {
+	return StrOpt{
+		isSome: true,
+		str:    str,
+	}
+}
+
+func (me *StrOpt) IsSome() bool        { return me.isSome }
+func (me *StrOpt) IsNone() bool        { return !me.isSome }
+func (me *StrOpt) Str() (string, bool) { return me.str, me.isSome }
+
+func (me *StrOpt) raw() unsafe.Pointer {
+	if me.isSome {
+		buf := Str.ToNativePtr(me.str)
+		return unsafe.Pointer(buf)
+	} else {
 		return nil
-	default:
-		panic("StrOpt cannot be nil.")
 	}
 }

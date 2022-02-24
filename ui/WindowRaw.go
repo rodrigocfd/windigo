@@ -79,7 +79,7 @@ func (me *_WindowRaw) createWindow(
 	hInst win.HINSTANCE) {
 
 	if me._WindowBase.hWnd != 0 {
-		panic(fmt.Sprintf("Window already created: \"%s\".", className))
+		panic("Window already created.")
 	}
 
 	_globalWindowRawPtrs[me] = struct{}{} // store pointer in the set

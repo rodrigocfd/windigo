@@ -22,7 +22,8 @@ func NewWindowControlDlg(
 	parent AnyParent, dialogId int,
 	position win.POINT, horz HORZ, vert VERT) WindowControl {
 
-	return _NewWindowControlDlg(parent, dialogId, position, 0, horz, vert)
+	return _NewWindowControlDlg(
+		parent, dialogId, position, 0, horz, vert)
 }
 
 // Creates a new WindowControl by loading a dialog resource, specifying a control ID.
@@ -34,7 +35,8 @@ func NewWindowControlDlgWithId(
 	parent AnyParent, dialogId int,
 	position win.POINT, ctrlId int, horz HORZ, vert VERT) WindowControl {
 
-	return _NewWindowControlDlg(parent, dialogId, position, ctrlId, horz, vert)
+	return _NewWindowControlDlg(
+		parent, dialogId, position, ctrlId, horz, vert)
 }
 
 func _NewWindowControlDlg(

@@ -56,7 +56,7 @@ func (me *_NativeControlBase) createWindow(
 	pos win.POINT, size win.SIZE, hMenu win.HMENU) {
 
 	if me.hWnd != 0 {
-		panic(fmt.Sprintf("Control already created: \"%s\".", className))
+		panic("Native control already created.")
 	}
 
 	me.hWnd = win.CreateWindowEx(exStyle, className, title, style,

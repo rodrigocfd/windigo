@@ -70,7 +70,7 @@ func (hFile HFILE) CreateFileMapping(
 	ret, _, err := syscall.Syscall6(proc.CreateFileMapping.Addr(), 6,
 		uintptr(hFile), uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
-		0, uintptr(maxSize), uintptr(variantStrOpt(objectName)))
+		0, uintptr(maxSize), uintptr(objectName.raw()))
 	if ret == 0 {
 		return HFILEMAP(0), errco.ERROR(err)
 	}

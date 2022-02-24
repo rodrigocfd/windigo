@@ -63,7 +63,7 @@ func NewTreeView(parent AnyParent, opts *_TreeViewO) TreeView {
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			win.ClassNameStr("SysTreeView32"), win.StrOptNone{},
+			win.ClassNameStr("SysTreeView32"), win.StrOptNone(),
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 

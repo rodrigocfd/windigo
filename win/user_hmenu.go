@@ -88,7 +88,7 @@ func (hMenu HMENU) AppendMenu(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuitem
 func (hMenu HMENU) CheckMenuItem(item MenuItem, check bool) bool {
-	idPos, mf := variantMenuItem(item)
+	idPos, mf := item.raw()
 	flags := util.Iif(check, co.MF_CHECKED, co.MF_UNCHECKED).(co.MF) | mf
 
 	ret, _, err := syscall.Syscall(proc.CheckMenuItem.Addr(), 3,
@@ -103,9 +103,9 @@ func (hMenu HMENU) CheckMenuItem(item MenuItem, check bool) bool {
 func (hMenu HMENU) CheckMenuRadioItem(
 	firstItem, lastItem, checkedItem MenuItem) {
 
-	idPosFirst, mfFirst := variantMenuItem(firstItem)
-	idPosLast, mfLast := variantMenuItem(lastItem)
-	idPosChecked, mfChecked := variantMenuItem(checkedItem)
+	idPosFirst, mfFirst := firstItem.raw()
+	idPosLast, mfLast := lastItem.raw()
+	idPosChecked, mfChecked := checkedItem.raw()
 
 	if mfFirst != mfLast {
 		panic("firstItem and lastItem have different variant types.")
@@ -123,7 +123,7 @@ func (hMenu HMENU) CheckMenuRadioItem(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deletemenu
 func (hMenu HMENU) DeleteMenu(item MenuItem) {
-	idPos, mf := variantMenuItem(item)
+	idPos, mf := item.raw()
 	ret, _, err := syscall.Syscall(proc.DeleteMenu.Addr(), 3,
 		uintptr(hMenu), idPos, uintptr(mf))
 	if ret == 0 {
@@ -142,7 +142,7 @@ func (hMenu HMENU) DestroyMenu() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablemenuitem
 func (hMenu HMENU) EnableMenuItem(item MenuItem, enable bool) bool {
-	idPos, mf := variantMenuItem(item)
+	idPos, mf := item.raw()
 	flags := util.Iif(enable, co.MF_ENABLED, co.MF_DISABLED).(co.MF) | mf
 
 	ret, _, err := syscall.Syscall(proc.EnableMenuItem.Addr(), 3,
@@ -160,7 +160,7 @@ func (hMenu HMENU) GetMenuDefaultItem(gmdiFlags co.GMDI) (pos MenuItem) {
 	if int(ret) == -1 {
 		panic(errco.ERROR(err))
 	}
-	return MenuItemPos(ret)
+	return MenuItemPos(int(ret))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuitemcount
@@ -182,7 +182,7 @@ func (hMenu HMENU) GetMenuItemID(pos uint32) int32 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuiteminfow
 func (hMenu HMENU) GetMenuItemInfo(item MenuItem, mii *MENUITEMINFO) {
-	idPos, mf := variantMenuItem(item)
+	idPos, mf := item.raw()
 	ret, _, err := syscall.Syscall6(proc.GetMenuItemInfo.Addr(), 4,
 		uintptr(hMenu), idPos, util.BoolToUintptr(mf == co.MF_BYPOSITION),
 		uintptr(unsafe.Pointer(mii)), 0, 0)
@@ -201,7 +201,7 @@ func (hMenu HMENU) GetSubMenu(pos uint32) (HMENU, bool) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenuitemw
 func (hMenu HMENU) InsertMenuItem(itemBefore MenuItem, mii *MENUITEMINFO) {
-	idPos, mf := variantMenuItem(itemBefore)
+	idPos, mf := itemBefore.raw()
 	ret, _, err := syscall.Syscall6(proc.InsertMenuItem.Addr(), 4,
 		uintptr(hMenu), idPos, util.BoolToUintptr(mf == co.MF_BYPOSITION),
 		uintptr(unsafe.Pointer(mii)), 0, 0)
@@ -212,7 +212,7 @@ func (hMenu HMENU) InsertMenuItem(itemBefore MenuItem, mii *MENUITEMINFO) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-removemenu
 func (hMenu HMENU) RemoveMenu(item MenuItem) {
-	idPos, mf := variantMenuItem(item)
+	idPos, mf := item.raw()
 	ret, _, err := syscall.Syscall(proc.RemoveMenu.Addr(), 3,
 		uintptr(hMenu), idPos, uintptr(mf))
 	if ret == 0 {
@@ -222,7 +222,7 @@ func (hMenu HMENU) RemoveMenu(item MenuItem) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenudefaultitem
 func (hMenu HMENU) SetMenuDefaultItem(item MenuItem) {
-	idPos, mf := variantMenuItem(item)
+	idPos, mf := item.raw()
 	ret, _, err := syscall.Syscall(proc.SetMenuDefaultItem.Addr(), 3,
 		uintptr(hMenu), idPos, util.BoolToUintptr(mf == co.MF_BYPOSITION))
 	if ret == 0 {
@@ -243,7 +243,7 @@ func (hMenu HMENU) SetMenuInfo(info *MENUINFO) {
 func (hMenu HMENU) SetMenuItemBitmaps(
 	item MenuItem, hBmpUnchecked, hBmpChecked HBITMAP) {
 
-	idPos, mf := variantMenuItem(item)
+	idPos, mf := item.raw()
 	ret, _, err := syscall.Syscall6(proc.SetMenuItemBitmaps.Addr(), 5,
 		uintptr(hMenu), idPos, uintptr(mf),
 		uintptr(hBmpUnchecked), uintptr(hBmpChecked), 0)

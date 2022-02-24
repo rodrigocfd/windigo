@@ -98,7 +98,7 @@ func EnumDisplayDevices(
 	device StrOpt, devNum int, info *DISPLAY_DEVICE, flags co.EDD) (bool, error) {
 
 	ret, _, err := syscall.Syscall6(proc.EnumDisplayDevices.Addr(), 4,
-		uintptr(variantStrOpt(device)), uintptr(devNum),
+		uintptr(device.raw()), uintptr(devNum),
 		uintptr(unsafe.Pointer(info)), uintptr(flags),
 		0, 0)
 	return ret != 0, errco.ERROR(err)

@@ -68,7 +68,7 @@ func NewCheckBox(parent AnyParent, opts *_CheckBoxO) CheckBox {
 		}
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
-			win.ClassNameStr("BUTTON"), win.StrOptVal(opts.text),
+			win.ClassNameStr("BUTTON"), win.StrOptSome(opts.text),
 			opts.wndStyles|co.WS(opts.ctrlStyles),
 			opts.position, opts.size, win.HMENU(opts.ctrlId))
 

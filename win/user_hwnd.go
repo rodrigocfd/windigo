@@ -23,9 +23,9 @@ func CreateWindowEx(
 	style co.WS, x, y, width, height int32,
 	parent HWND, menu HMENU, instance HINSTANCE, param LPARAM) HWND {
 
-	classNameVal, classNameBuf := variantClassName(className)
+	classNameVal, classNameBuf := className.raw()
 	ret, _, err := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
-		uintptr(exStyle), classNameVal, uintptr(variantStrOpt(title)),
+		uintptr(exStyle), classNameVal, uintptr(title.raw()),
 		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
 		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
 	runtime.KeepAlive(classNameBuf)
@@ -37,9 +37,9 @@ func CreateWindowEx(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-findwindoww
 func FindWindow(className ClassName, title StrOpt) (HWND, bool) {
-	classNameVal, classNameBuf := variantClassName(className)
+	classNameVal, classNameBuf := className.raw()
 	ret, _, _ := syscall.Syscall(proc.FindWindow.Addr(), 2,
-		classNameVal, uintptr(variantStrOpt(title)), 0)
+		classNameVal, uintptr(title.raw()), 0)
 	runtime.KeepAlive(classNameBuf)
 	return HWND(ret), ret != 0
 }
@@ -471,7 +471,7 @@ func (hWnd HWND) HideCaret() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-hilitemenuitem
 func (hWnd HWND) HiliteMenuItem(hMenu HMENU, item MenuItem, hilite bool) bool {
-	idPos, mf := variantMenuItem(item)
+	idPos, mf := item.raw()
 	flags := util.Iif(hilite, co.MFS_HILITE, co.MFS_UNHILITE).(co.MF) | mf
 
 	ret, _, _ := syscall.Syscall6(proc.HiliteMenuItem.Addr(), 4,
