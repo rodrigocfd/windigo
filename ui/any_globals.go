@@ -176,9 +176,9 @@ func _FirstMainStuff() {
 
 // Runs the main window loop synchronously.
 func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
-	msgMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, uint64(unsafe.Sizeof(win.MSG{})))
-	pMsg := (*win.MSG)(unsafe.Pointer(msgMem))
-	defer msgMem.GlobalFree()
+	allocMsg := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, int(unsafe.Sizeof(win.MSG{})))
+	defer allocMsg.GlobalFree()
+	pMsg := (*win.MSG)(unsafe.Pointer(allocMsg))
 
 	for {
 		if res, err := win.GetMessage(pMsg, win.HWND(0), 0, 0); err != nil {
@@ -214,9 +214,9 @@ func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
 
 // Runs the modal window loop synchronously.
 func _RunModalLoop(hWnd win.HWND) {
-	msgMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, uint64(unsafe.Sizeof(win.MSG{})))
-	pMsg := (*win.MSG)(unsafe.Pointer(msgMem))
-	defer msgMem.GlobalFree()
+	allocMsg := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, int(unsafe.Sizeof(win.MSG{})))
+	defer allocMsg.GlobalFree()
+	pMsg := (*win.MSG)(unsafe.Pointer(allocMsg))
 
 	for {
 		if res, err := win.GetMessage(pMsg, win.HWND(0), 0, 0); err != nil {

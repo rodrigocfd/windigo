@@ -1,8 +1,6 @@
 package win
 
 import (
-	"unsafe"
-
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -15,14 +13,6 @@ func (hClip HCLIPBOARD) WriteBitmap(hBmp HBITMAP) {
 
 // Writes a string to the clipboard with HCLIPBOARD.SetClipboardData().
 func (hClip HCLIPBOARD) WriteString(text string) {
-	text16 := Str.ToNativeSlice(text)
-	text8 := unsafe.Slice((*byte)(unsafe.Pointer(&text16[0])), len(text16)*2) // direct pointer conversion
-
-	hGlob := GlobalAlloc(co.GMEM_MOVEABLE, uint64(len(text8)))
-	pMem := hGlob.GlobalLock()
-	pMemSlice := unsafe.Slice((*byte)(pMem), len(text8))
-	copy(pMemSlice, text8)
-	hGlob.GlobalUnlock()
-
-	hClip.SetClipboardData(co.CF_UNICODETEXT, hGlob)
+	hMem := GlobalAllocStr(co.GMEM_MOVEABLE, text)
+	hClip.SetClipboardData(co.CF_UNICODETEXT, hMem) // pass pointer ownership
 }
