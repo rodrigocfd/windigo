@@ -673,8 +673,11 @@ func (tdb *TASKDIALOG_BUTTON) serializedPacked() ([12]byte, unsafe.Pointer) {
 	var buf [12]byte // sizeof(TASKDIALOG_BUTTON) packed
 	binary.LittleEndian.PutUint32(buf[0:], uint32(tdb.NButtonID))
 
-	pTxt := unsafe.Pointer(Str.ToNativePtr(tdb.PszButtonText))
-	binary.LittleEndian.PutUint64(buf[4:], uint64(uintptr(pTxt)))
+	var pTxt unsafe.Pointer
+	if tdb.PszButtonText != "" {
+		pTxt = unsafe.Pointer(Str.ToNativePtr(tdb.PszButtonText))
+		binary.LittleEndian.PutUint64(buf[4:], uint64(uintptr(pTxt)))
+	}
 	return buf, pTxt
 }
 
