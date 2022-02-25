@@ -61,7 +61,7 @@ func (me *_ListViewColumns) Count() int {
 
 // Retrieves all selected texts under this column.
 func (me *_ListViewColumns) SelectedTexts(columnIndex int) []string {
-	selItems := me.lv.Items().Selected()
+	selItems := me.lv.Items().SelectedItems()
 	selTexts := make([]string, 0, len(selItems))
 
 	for _, selItem := range selItems {

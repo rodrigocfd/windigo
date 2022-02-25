@@ -171,8 +171,32 @@ func (me *_ListViewItems) SelectAll(doSelect bool) {
 	}
 }
 
+// Retrieves the number of selected items.
+func (me *_ListViewItems) SelectedCount() int {
+	return int(me.lv.Hwnd().SendMessage(co.LVM_GETSELECTEDCOUNT, 0, 0))
+}
+
+// Retrieves the indexes of the selected items.
+func (me *_ListViewItems) SelectedIndexes() []int {
+	indexes := make([]int, 0, me.SelectedCount())
+
+	idx := -1
+	for {
+		idx = int(
+			me.lv.Hwnd().SendMessage(co.LVM_GETNEXTITEM,
+				win.WPARAM(idx), win.LPARAM(co.LVNI_SELECTED)),
+		)
+		if idx == -1 {
+			break
+		}
+		indexes = append(indexes, idx)
+	}
+
+	return indexes
+}
+
 // Retrieves the selected items.
-func (me *_ListViewItems) Selected() []ListViewItem {
+func (me *_ListViewItems) SelectedItems() []ListViewItem {
 	items := make([]ListViewItem, 0, me.SelectedCount())
 
 	idx := -1
@@ -188,11 +212,6 @@ func (me *_ListViewItems) Selected() []ListViewItem {
 	}
 
 	return items
-}
-
-// Retrieves the number of selected items.
-func (me *_ListViewItems) SelectedCount() int {
-	return int(me.lv.Hwnd().SendMessage(co.LVM_GETSELECTEDCOUNT, 0, 0))
 }
 
 // Retrieves the topmost visible item, if any.
