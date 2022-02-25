@@ -696,6 +696,24 @@ func (hWnd HWND) SendMessage(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	return ret
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessagetimeoutw
+func (hWnd HWND) SendMessageTimeout(
+	msg co.WM, wParam WPARAM, lParam LPARAM,
+	flags co.SMTO, msTimeout int) (uintptr, error) {
+
+	var procRet uintptr
+	ret, _, err := syscall.Syscall9(proc.SendMessageTimeout.Addr(), 7,
+		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
+		uintptr(flags), uintptr(msTimeout), uintptr(unsafe.Pointer(&procRet)),
+		0, 0)
+
+	if ret == 0 {
+		return procRet, errco.ERROR(err)
+	} else {
+		return procRet, nil
+	}
+}
+
 // Returns a handle to the previously focused window.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setfocus

@@ -149,6 +149,7 @@ var (
 	RemoveMenu                    = user32.NewProc("RemoveMenu")
 	ScreenToClient                = user32.NewProc("ScreenToClient")
 	SendMessage                   = user32.NewProc("SendMessageW")
+	SendMessageTimeout            = user32.NewProc("SendMessageTimeoutW")
 	SetClipboardData              = user32.NewProc("SetClipboardData")
 	SetFocus                      = user32.NewProc("SetFocus")
 	SetForegroundWindow           = user32.NewProc("SetForegroundWindow")

@@ -1243,6 +1243,19 @@ const (
 	SM_SYSTEMDOCKED                SM = 0x2004
 )
 
+// SendMessageTimeout() flags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessagetimeoutw
+type SMTO uint32
+
+const (
+	SMTO_ABORTIFHUNG        SMTO = 0x0002
+	SMTO_BLOCK              SMTO = 0x0001
+	SMTO_NORMAL             SMTO = 0x0000
+	SMTO_NOTIMEOUTIFNOTHUNG SMTO = 0x0008
+	SMTO_ERRORONEXIT        SMTO = 0x0020
+)
+
 // SystemParametersInfo() uiAction.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
