@@ -75,6 +75,15 @@ func (hWnd HWND) DwmGetWindowAttribute(attr co.DWMWA_GET) interface{} {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwminvalidateiconicbitmaps
+func (hWnd HWND) DwmInvalidateIconicBitmaps() {
+	ret, _, _ := syscall.Syscall(proc.DwmInvalidateIconicBitmaps.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticoniclivepreviewbitmap
 func (hWnd HWND) DwmSetIconicLivePreviewBitmap(
 	hBmp HBITMAP, ptClient POINT, sitFlags co.DWM_SIT) {

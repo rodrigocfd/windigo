@@ -9,6 +9,30 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmenablemmcss
+func DwmEnableMMCSS(enable bool) error {
+	ret, _, _ := syscall.Syscall(proc.DwmEnableMMCSS.Addr(), 1,
+		util.BoolToUintptr(enable), 0, 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return nil
+	} else {
+		return hr
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmflush
+func DwmFlush() error {
+	ret, _, _ := syscall.Syscall(proc.DwmFlush.Addr(), 0,
+		0, 0, 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return nil
+	} else {
+		return hr
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmgetcolorizationcolor
 func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool) {
 	bOpaqueBlend := int32(util.BoolToUintptr(isOpaqueBlend)) // BOOL
