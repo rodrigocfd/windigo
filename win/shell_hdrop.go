@@ -13,7 +13,7 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdrop
 type HDROP HANDLE
 
-// Prefer using HDROP.ListFilesAndFinish().
+// This function is rather tricky. Prefer using HDROP.ListFilesAndFinish().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragfinish
 func (hDrop HDROP) DragFinish() {
@@ -21,7 +21,7 @@ func (hDrop HDROP) DragFinish() {
 		uintptr(hDrop), 0, 0)
 }
 
-// Prefer using HDROP.ListFilesAndFinish().
+// This function is rather tricky. Prefer using HDROP.ListFilesAndFinish().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragqueryfilew
 func (hDrop HDROP) DragQueryFile(

@@ -36,7 +36,7 @@ func (hProcSnap HPROCSNAPSHOT) CloseHandle() error {
 	return nil
 }
 
-// Prefer using HPROCSNAPSHOT.EnumModules().
+// This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumModules().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32firstw
 func (hProcSnap HPROCSNAPSHOT) Module32First(buf *MODULEENTRY32) (bool, error) {
@@ -52,7 +52,7 @@ func (hProcSnap HPROCSNAPSHOT) Module32First(buf *MODULEENTRY32) (bool, error) {
 	return true, nil // a module was found
 }
 
-// Prefer using HPROCSNAPSHOT.EnumModules().
+// This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumModules().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32nextw
 func (hProcSnap HPROCSNAPSHOT) Module32Next(buf *MODULEENTRY32) (bool, error) {
@@ -68,7 +68,7 @@ func (hProcSnap HPROCSNAPSHOT) Module32Next(buf *MODULEENTRY32) (bool, error) {
 	return true, nil // a module was found
 }
 
-// Prefer using HPROCSNAPSHOT.EnumProcesses().
+// This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumProcesses().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
 func (hProcSnap HPROCSNAPSHOT) Process32First(
@@ -86,7 +86,7 @@ func (hProcSnap HPROCSNAPSHOT) Process32First(
 	return true, nil // a process was found
 }
 
-// Prefer using HPROCSNAPSHOT.EnumProcesses().
+// This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumProcesses().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
 func (hProcSnap HPROCSNAPSHOT) Process32Next(
@@ -104,7 +104,7 @@ func (hProcSnap HPROCSNAPSHOT) Process32Next(
 	return true, nil // a process was found
 }
 
-// Prefer using HPROCSNAPSHOT.EnumThreads().
+// This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumThreads().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32first
 func (hProcSnap HPROCSNAPSHOT) Thread32First(buf *THREADENTRY32) (bool, error) {
@@ -120,7 +120,7 @@ func (hProcSnap HPROCSNAPSHOT) Thread32First(buf *THREADENTRY32) (bool, error) {
 	return true, nil // a thread was found
 }
 
-// Prefer using HPROCSNAPSHOT.EnumThreads().
+// This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumThreads().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32next
 func (hProcSnap HPROCSNAPSHOT) Thread32Next(buf *THREADENTRY32) (bool, error) {

@@ -126,7 +126,8 @@ func (me *IFileDialog) GetOptions() shellco.FOS {
 	}
 }
 
-// Prefer using IFileDialog.GetResultDisplayName().
+// Prefer using IFileDialog.GetResultDisplayName(), which retrieves the path
+// directly.
 //
 // ⚠️ You must defer IShellItem.Release().
 //

@@ -21,7 +21,7 @@ func NewIShellItemArray(base com.IUnknown) IShellItemArray {
 }
 
 // Prefer using IShellItemArray.ListDisplayNames(), which directly retrieves all
-// full paths at once.
+// paths at once.
 //
 // ⚠️ You must defer IShellItem.Release().
 //

@@ -30,7 +30,8 @@ func NewIFileOpenDialog(base com.IUnknown) IFileOpenDialog {
 	return IFileOpenDialog{IFileDialog: NewIFileDialog(base)}
 }
 
-// Prefer using IFileOpenDialog.ListResultDisplayNames().
+// Prefer using IFileOpenDialog.ListResultDisplayNames(), which retrieves the
+// paths directly.
 //
 // ⚠️ You must defer IShellItemArray.Release().
 //
