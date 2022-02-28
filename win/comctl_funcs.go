@@ -25,11 +25,13 @@ func InitCommonControlsEx(icce *INITCOMMONCONTROLSEX) bool {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 	serialized, ptrs := taskConfig.serializePacked()
-	var pnButton co.ID
+
+	memPnButton := GlobalAlloc(co.GMEM_FIXED, 4) // sizeof(int)
+	defer memPnButton.GlobalFree()
 
 	ret, _, _ := syscall.Syscall6(proc.TaskDialogIndirect.Addr(), 4,
 		uintptr(unsafe.Pointer(&serialized[0])),
-		uintptr(unsafe.Pointer(&pnButton)),
+		uintptr(unsafe.Pointer(memPnButton)),
 		0, 0, 0, 0)
 
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {
@@ -39,5 +41,5 @@ func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 	runtime.KeepAlive(serialized)
 	runtime.KeepAlive(ptrs)
 
-	return co.ID(pnButton)
+	return co.ID(*(*int32)(unsafe.Pointer(memPnButton)))
 }
