@@ -49,7 +49,7 @@ Windigo is designed to be familiar to Win32 programmers, using the same concepts
 Windows and controls can be created in two ways:
 
 * programmatically, by specifying the options used in the underlying [CreateWindowEx](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw);
-* by loading resources from a `.rc` or a `.res` file.
+* by loading [resources](https://en.wikipedia.org/wiki/Resource_(Windows)#Resource_software) from a `.rc` or a `.res` file.
 
 CGo is **not** used, just syscalls.
 
