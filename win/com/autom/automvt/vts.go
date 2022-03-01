@@ -15,6 +15,23 @@ type IDispatch struct {
 	Invoke           uintptr
 }
 
+// IErrorLog virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ierrorlog
+type IErrorLog struct {
+	comvt.IUnknown
+	AddError uintptr
+}
+
+// IPropertyBag virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ipropertybag
+type IPropertyBag struct {
+	comvt.IUnknown
+	Read  uintptr
+	Write uintptr
+}
+
 // ITypeInfo virtual table.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
