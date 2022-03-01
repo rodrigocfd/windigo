@@ -2,7 +2,6 @@ package dshowvt
 
 import (
 	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
-	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 )
 
@@ -33,7 +32,7 @@ type IBasicAudio struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
 type IEnumFilters struct {
-	com.IUnknown
+	comvt.IUnknown
 	Next  uintptr
 	Skip  uintptr
 	Reset uintptr
@@ -44,7 +43,7 @@ type IEnumFilters struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienummediatypes
 type IEnumMediaTypes struct {
-	com.IUnknown
+	comvt.IUnknown
 	Next  uintptr
 	Skip  uintptr
 	Reset uintptr
@@ -55,7 +54,7 @@ type IEnumMediaTypes struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
 type IEnumPins struct {
-	com.IUnknown
+	comvt.IUnknown
 	Next  uintptr
 	Skip  uintptr
 	Reset uintptr
@@ -66,7 +65,7 @@ type IEnumPins struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter
 type IFileSinkFilter struct {
-	com.IUnknown
+	comvt.IUnknown
 	SetFileName uintptr
 	GetCurFile  uintptr
 }
@@ -84,7 +83,7 @@ type IFileSinkFilter2 struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
 type IFileSourceFilter struct {
-	com.IUnknown
+	comvt.IUnknown
 	Load       uintptr
 	GetCurFile uintptr
 }
@@ -93,7 +92,7 @@ type IFileSourceFilter struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
 type IFilterGraph struct {
-	com.IUnknown
+	comvt.IUnknown
 	AddFilter            uintptr
 	RemoveFilter         uintptr
 	EnumFilters          uintptr
@@ -151,7 +150,7 @@ type IMediaFilter struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediaseeking
 type IMediaSeeking struct {
-	com.IUnknown
+	comvt.IUnknown
 	GetCapabilities      uintptr
 	CheckCapabilities    uintptr
 	IsFormatSupported    uintptr
@@ -175,7 +174,7 @@ type IMediaSeeking struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
 type IMFGetService struct {
-	com.IUnknown
+	comvt.IUnknown
 	GetService uintptr
 }
 
@@ -183,7 +182,7 @@ type IMFGetService struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
 type IMFVideoDisplayControl struct {
-	com.IUnknown
+	comvt.IUnknown
 	GetNativeVideoSize uintptr
 	GetIdealVideoSize  uintptr
 	SetVideoPosition   uintptr
@@ -206,7 +205,7 @@ type IMFVideoDisplayControl struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
 type IPin struct {
-	com.IUnknown
+	comvt.IUnknown
 	Connect                  uintptr
 	ReceiveConnection        uintptr
 	Disconnect               uintptr

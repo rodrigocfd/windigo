@@ -1,7 +1,6 @@
 package d2d1vt
 
 import (
-	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 )
 
@@ -150,6 +149,6 @@ type ID2D1RenderTarget struct {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1resource
 type ID2D1Resource struct {
-	com.IUnknown
+	comvt.IUnknown
 	GetFactory uintptr
 }

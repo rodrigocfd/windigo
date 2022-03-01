@@ -59,10 +59,10 @@ func (me *FileMapped) Close() {
 	me.sz = 0
 }
 
-// Returns a slice to the memory-mapped bytes. The FileMapped object must remain
-// open while the slice is being used.
+// Returns a slice to the memory-mapped bytes.
 //
-// If you need to close the file right away, use CopyToBuffer() instead.
+// The FileMapped object must remain open while the slice is being used. If you
+// need to close the file right away, use ReadAll() instead.
 func (me *FileMapped) HotSlice() []byte {
 	return unsafe.Slice((*byte)(unsafe.Pointer(me.pMem)), me.sz)
 }
