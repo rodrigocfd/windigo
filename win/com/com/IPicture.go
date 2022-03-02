@@ -29,8 +29,8 @@ type IPicture interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_height
 	Height() int32
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-put_keeporiginalformat
-	KeepOriginalFormat(keep bool)
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_keeporiginalformat
+	KeepOriginalFormat() bool
 
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-picturechanged
 	PictureChanged()
@@ -44,6 +44,9 @@ type IPicture interface {
 
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-selectpicture
 	SelectPicture(hdc win.HDC) (win.HDC, win.HBITMAP)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-put_keeporiginalformat
+	SetKeepOriginalFormat(keep bool)
 
 	// Calls Width() and Height(), then convers from HIMETRIC units to pixels
 	// with HDC.HiMetricToPixel().
@@ -175,13 +178,16 @@ func (me *_IPicture) Height() int32 {
 	}
 }
 
-func (me *_IPicture) KeepOriginalFormat(keep bool) {
+func (me *_IPicture) KeepOriginalFormat() bool {
+	var keep int32 // BOOL
 	ret, _, _ := syscall.Syscall(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Put_KeepOriginalFormat, 2,
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_KeepOriginalFormat, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		util.BoolToUintptr(keep), 0)
+		uintptr(unsafe.Pointer(&keep)), 0)
 
-	if hr := errco.ERROR(ret); hr != errco.S_OK {
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return keep != 0
+	} else {
 		panic(hr)
 	}
 }
@@ -253,6 +259,17 @@ func (me *_IPicture) SelectPicture(hdc win.HDC) (win.HDC, win.HBITMAP) {
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return hdcOut, hBmp
 	} else {
+		panic(hr)
+	}
+}
+
+func (me *_IPicture) SetKeepOriginalFormat(keep bool) {
+	ret, _, _ := syscall.Syscall(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Put_KeepOriginalFormat, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		util.BoolToUintptr(keep), 0)
+
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
 }
