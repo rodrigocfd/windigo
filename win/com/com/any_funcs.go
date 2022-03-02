@@ -41,11 +41,10 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	}
 }
 
-// Typically uses CLSCTX_INPROC_SERVER. Panics if the COM object cannot be
-// created.
+// Panics if the COM object cannot be created.
 //
-// ⚠️ The returned IUnknown can be used to construct another COM object; either
-// way you must defer Release().
+// ⚠️ You must defer IUnknown.Release() on the returned COM object. If iUnkOuter
+// is not null, you must defer IUnknown.Release() on it too.
 //
 // Example for an ordinary COM object:
 //
@@ -74,15 +73,16 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
-	rclsid co.CLSID, pUnkOuter *IUnknown,
+	rclsid co.CLSID, iUnkOuter IUnknown,
 	dwClsContext comco.CLSCTX, riid co.IID) IUnknown {
 
 	var ppvQueried **comvt.IUnknown
 
 	var ppvOuter ***comvt.IUnknown
-	if pUnkOuter != nil { // was the outer pointer requested?
-		pUnkOuter.Release()
-		ppvOuter = &pUnkOuter.ppv
+	if iUnkOuter != nil { // was the outer pointer requested?
+		iUnkOuter.Release() // release if existing
+		ppvFromOuter := iUnkOuter.Ptr()
+		ppvOuter = &ppvFromOuter
 	}
 
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
@@ -93,7 +93,7 @@ func CoCreateInstance(
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return IUnknown{ppv: ppvQueried}
+		return NewIUnknown(ppvQueried)
 	} else {
 		panic(hr)
 	}
@@ -116,4 +116,10 @@ func CoInitializeEx(coInit comco.COINIT) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
 func CoUninitialize() {
 	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)
+}
+
+// Returns true if the COM object is not nil, and contains an initialized
+// internal pointer.
+func IsObj(obj IUnknown) bool {
+	return obj != nil && obj.Ptr() != nil
 }

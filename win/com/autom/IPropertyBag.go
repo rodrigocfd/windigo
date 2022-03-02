@@ -10,26 +10,29 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// IPropertyBag COM interface.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ipropertybag
-type IPropertyBag struct{ com.IUnknown }
+type IPropertyBag interface {
+	com.IUnknown
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ipropertybag-write
+	Write(propName string, value *VARIANT)
+}
+
+type _IPropertyBag struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IPropertyBag.Release().
 func NewIPropertyBag(base com.IUnknown) IPropertyBag {
-	return IPropertyBag{IUnknown: base}
+	return &_IPropertyBag{IUnknown: base}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ipropertybag-write
-func (me *IPropertyBag) Write(propName string, value *VARIANT) {
+func (me *_IPropertyBag) Write(propName string, value *VARIANT) {
 	ret, _, _ := syscall.Syscall(
 		(*automvt.IPropertyBag)(unsafe.Pointer(*me.Ptr())).Write, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(propName))),
-		uintptr(unsafe.Pointer(value)),
-	)
+		uintptr(unsafe.Pointer(value)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

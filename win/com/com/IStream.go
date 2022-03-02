@@ -11,13 +11,40 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
-type IStream struct{ ISequentialStream }
+type IStream interface {
+	ISequentialStream
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-commit
+	Commit(flags comco.STGC)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-copyto
+	CopyTo(dest IStream, numBytes uint64) (numBytesRead, numBytesWritten uint64)
+
+	// ⚠️ You must defer IStream.UnlockRegion().
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-lockregion
+	LockRegion(offset, length uint64, lockType comco.LOCKTYPE)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-revert
+	Revert()
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-seek
+	Seek(displacement int64, origin comco.STREAM_SEEK) (newOffset uint64)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-setsize
+	SetSize(newSize uint64)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-unlockregion
+	UnlockRegion(offset, length uint64, lockType comco.LOCKTYPE)
+}
+
+type _IStream struct{ ISequentialStream }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IStream.Release().
 func NewIStream(base IUnknown) IStream {
-	return IStream{ISequentialStream: NewISequentialStream(base)}
+	return &_IStream{ISequentialStream: NewISequentialStream(base)}
 }
 
 // Calls SHCreateMemStream() to create a new stream over a slice, which must
@@ -32,11 +59,10 @@ func NewIStreamFromSlice(src []byte) IStream {
 	if ret == 0 {
 		panic(errco.E_OUTOFMEMORY)
 	}
-	return NewIStream(IUnknown{ppv: (**comvt.IUnknown)(unsafe.Pointer(ret))})
+	return NewIStream(NewIUnknown((**comvt.IUnknown)(unsafe.Pointer(ret))))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-commit
-func (me *IStream) Commit(flags comco.STGC) {
+func (me *_IStream) Commit(flags comco.STGC) {
 	ret, _, _ := syscall.Syscall(
 		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).Commit, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -47,9 +73,8 @@ func (me *IStream) Commit(flags comco.STGC) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-copyto
-func (me *IStream) CopyTo(
-	dest *IStream, numBytes uint64) (numBytesRead, numBytesWritten uint64) {
+func (me *_IStream) CopyTo(
+	dest IStream, numBytes uint64) (numBytesRead, numBytesWritten uint64) {
 
 	ret, _, _ := syscall.Syscall6(
 		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).CopyTo, 5,
@@ -67,8 +92,7 @@ func (me *IStream) CopyTo(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-lockregion
-func (me *IStream) LockRegion(offset, length uint64, lockType comco.LOCKTYPE) {
+func (me *_IStream) LockRegion(offset, length uint64, lockType comco.LOCKTYPE) {
 	ret, _, _ := syscall.Syscall6(
 		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).LockRegion, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -80,8 +104,7 @@ func (me *IStream) LockRegion(offset, length uint64, lockType comco.LOCKTYPE) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-revert
-func (me *IStream) Revert() {
+func (me *_IStream) Revert() {
 	ret, _, _ := syscall.Syscall(
 		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).Revert, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -92,8 +115,7 @@ func (me *IStream) Revert() {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-seek
-func (me *IStream) Seek(
+func (me *_IStream) Seek(
 	displacement int64, origin comco.STREAM_SEEK) (newOffset uint64) {
 
 	ret, _, _ := syscall.Syscall6(
@@ -110,8 +132,7 @@ func (me *IStream) Seek(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-setsize
-func (me *IStream) SetSize(newSize uint64) {
+func (me *_IStream) SetSize(newSize uint64) {
 	ret, _, _ := syscall.Syscall(
 		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).SetSize, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -122,8 +143,7 @@ func (me *IStream) SetSize(newSize uint64) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-unlockregion
-func (me *IStream) UnlockRegion(
+func (me *_IStream) UnlockRegion(
 	offset, length uint64, lockType comco.LOCKTYPE) {
 
 	ret, _, _ := syscall.Syscall6(

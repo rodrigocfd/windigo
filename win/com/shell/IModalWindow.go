@@ -11,19 +11,25 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
-type IModalWindow struct{ com.IUnknown }
+type IModalWindow interface {
+	com.IUnknown
+
+	// Returns false if user cancelled.
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-imodalwindow-show
+	Show(hwndOwner win.HWND) bool
+}
+
+type _IModalWindow struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IModalWindow.Release().
 func NewIModalWindow(base com.IUnknown) IModalWindow {
-	return IModalWindow{IUnknown: base}
+	return &_IModalWindow{IUnknown: base}
 }
 
-// Returns false if user cancelled.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-imodalwindow-show
-func (me *IModalWindow) Show(hwndOwner win.HWND) bool {
+func (me *_IModalWindow) Show(hwndOwner win.HWND) bool {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IModalWindow)(unsafe.Pointer(*me.Ptr())).Show, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

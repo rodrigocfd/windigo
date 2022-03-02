@@ -12,7 +12,14 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist2
-type ITaskbarList2 struct{ ITaskbarList }
+type ITaskbarList2 interface {
+	ITaskbarList
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow
+	MarkFullscreenWindow(hwnd win.HWND, fullScreen bool)
+}
+
+type _ITaskbarList2 struct{ ITaskbarList }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -20,19 +27,18 @@ type ITaskbarList2 struct{ ITaskbarList }
 //
 // Example:
 //
-//  taskbl2 := shell.NewITaskbarList2(
+//  taskbl := shell.NewITaskbarList2(
 //      com.CoCreateInstance(
 //          shellco.CLSID_TaskbarList, nil,
 //          comco.CLSCTX_INPROC_SERVER,
 //          shellco.IID_ITaskbarList2),
 //  )
-//  defer taskbl2.Release()
+//  defer taskbl.Release()
 func NewITaskbarList2(base com.IUnknown) ITaskbarList2 {
-	return ITaskbarList2{ITaskbarList: NewITaskbarList(base)}
+	return &_ITaskbarList2{ITaskbarList: NewITaskbarList(base)}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow
-func (me *ITaskbarList2) MarkFullscreenWindow(hwnd win.HWND, fullScreen bool) {
+func (me *_ITaskbarList2) MarkFullscreenWindow(hwnd win.HWND, fullScreen bool) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.ITaskbarList2)(unsafe.Pointer(*me.Ptr())).MarkFullscreenWindow, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),

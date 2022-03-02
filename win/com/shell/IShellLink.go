@@ -13,7 +13,53 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishelllinkw
-type IShellLink struct{ com.IUnknown }
+type IShellLink interface {
+	com.IUnknown
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getarguments
+	GetArguments() string
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getdescription
+	GetDescription() string
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-geticonlocation
+	GetIconLocation() (path string, index int32)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getpath
+	GetPath(fd *win.WIN32_FIND_DATA, flags shellco.SLGP) string
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getshowcmd
+	GetShowCmd() co.SW
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getworkingdirectory
+	GetWorkingDirectory() string
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-resolve
+	Resolve(hWnd win.HWND, flags shellco.SLR)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setarguments
+	SetArguments(args string)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setdescription
+	SetDescription(descr string)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-seticonlocation
+	SetIconLocation(path string, index int32)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setpath
+	SetPath(path string)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setrelativepath
+	SetRelativePath(path string)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setshowcmd
+	SetShowCmd(cmd co.SW)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setworkingdirectory
+	SetWorkingDirectory(path string)
+}
+
+type _IShellLink struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -29,11 +75,10 @@ type IShellLink struct{ com.IUnknown }
 //  )
 //  defer lnk.Release()
 func NewIShellLink(base com.IUnknown) IShellLink {
-	return IShellLink{IUnknown: base}
+	return &_IShellLink{IUnknown: base}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getarguments
-func (me *IShellLink) GetArguments() string {
+func (me *_IShellLink) GetArguments() string {
 	buf := make([]uint16, 1024) // arbitrary
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).GetArguments, 3,
@@ -47,8 +92,7 @@ func (me *IShellLink) GetArguments() string {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getdescription
-func (me *IShellLink) GetDescription() string {
+func (me *_IShellLink) GetDescription() string {
 	buf := make([]uint16, 1024) // arbitrary
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).GetDescription, 3,
@@ -62,8 +106,7 @@ func (me *IShellLink) GetDescription() string {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-geticonlocation
-func (me *IShellLink) GetIconLocation() (path string, index int32) {
+func (me *_IShellLink) GetIconLocation() (path string, index int32) {
 	buf := make([]uint16, 256) // arbitrary
 	iconIndex := int32(0)
 
@@ -80,8 +123,7 @@ func (me *IShellLink) GetIconLocation() (path string, index int32) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getpath
-func (me *IShellLink) GetPath(
+func (me *_IShellLink) GetPath(
 	fd *win.WIN32_FIND_DATA, flags shellco.SLGP) string {
 
 	buf := make([]uint16, 256) // arbitrary
@@ -98,8 +140,7 @@ func (me *IShellLink) GetPath(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getshowcmd
-func (me *IShellLink) GetShowCmd() co.SW {
+func (me *_IShellLink) GetShowCmd() co.SW {
 	cmd := co.SW(0)
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).GetShowCmd, 2,
@@ -113,8 +154,7 @@ func (me *IShellLink) GetShowCmd() co.SW {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getworkingdirectory
-func (me *IShellLink) GetWorkingDirectory() string {
+func (me *_IShellLink) GetWorkingDirectory() string {
 	buf := make([]uint16, 256) // arbitrary
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).GetWorkingDirectory, 3,
@@ -128,8 +168,7 @@ func (me *IShellLink) GetWorkingDirectory() string {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-resolve
-func (me *IShellLink) Resolve(hWnd win.HWND, flags shellco.SLR) {
+func (me *_IShellLink) Resolve(hWnd win.HWND, flags shellco.SLR) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).Resolve, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -140,8 +179,7 @@ func (me *IShellLink) Resolve(hWnd win.HWND, flags shellco.SLR) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setarguments
-func (me *IShellLink) SetArguments(args string) {
+func (me *_IShellLink) SetArguments(args string) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).SetArguments, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -152,8 +190,7 @@ func (me *IShellLink) SetArguments(args string) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setdescription
-func (me *IShellLink) SetDescription(descr string) {
+func (me *_IShellLink) SetDescription(descr string) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).SetDescription, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -164,8 +201,7 @@ func (me *IShellLink) SetDescription(descr string) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-seticonlocation
-func (me *IShellLink) SetIconLocation(path string, index int32) {
+func (me *_IShellLink) SetIconLocation(path string, index int32) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).SetDescription, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -177,8 +213,7 @@ func (me *IShellLink) SetIconLocation(path string, index int32) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setpath
-func (me *IShellLink) SetPath(path string) {
+func (me *_IShellLink) SetPath(path string) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).SetPath, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -189,8 +224,7 @@ func (me *IShellLink) SetPath(path string) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setrelativepath
-func (me *IShellLink) SetRelativePath(path string) {
+func (me *_IShellLink) SetRelativePath(path string) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).SetRelativePath, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -201,8 +235,7 @@ func (me *IShellLink) SetRelativePath(path string) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setshowcmd
-func (me *IShellLink) SetShowCmd(cmd co.SW) {
+func (me *_IShellLink) SetShowCmd(cmd co.SW) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).SetShowCmd, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -213,8 +246,7 @@ func (me *IShellLink) SetShowCmd(cmd co.SW) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setworkingdirectory
-func (me *IShellLink) SetWorkingDirectory(path string) {
+func (me *_IShellLink) SetWorkingDirectory(path string) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).SetWorkingDirectory, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

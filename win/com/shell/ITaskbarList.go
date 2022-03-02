@@ -11,7 +11,26 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
-type ITaskbarList struct{ com.IUnknown }
+type ITaskbarList interface {
+	com.IUnknown
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
+	ActivateTab(hWnd win.HWND)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-addtab
+	AddTab(hWnd win.HWND)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-deletetab
+	DeleteTab(hWnd win.HWND)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-hrinit
+	HrInit()
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-setactivealt
+	SetActiveAlt(hWnd win.HWND)
+}
+
+type _ITaskbarList struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -27,11 +46,10 @@ type ITaskbarList struct{ com.IUnknown }
 //  )
 //  defer taskbl.Release()
 func NewITaskbarList(base com.IUnknown) ITaskbarList {
-	return ITaskbarList{IUnknown: base}
+	return &_ITaskbarList{IUnknown: base}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
-func (me *ITaskbarList) ActivateTab(hWnd win.HWND) {
+func (me *_ITaskbarList) ActivateTab(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).ActivateTab, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -42,8 +60,7 @@ func (me *ITaskbarList) ActivateTab(hWnd win.HWND) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-addtab
-func (me *ITaskbarList) AddTab(hWnd win.HWND) {
+func (me *_ITaskbarList) AddTab(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).AddTab, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -54,8 +71,7 @@ func (me *ITaskbarList) AddTab(hWnd win.HWND) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-deletetab
-func (me *ITaskbarList) DeleteTab(hWnd win.HWND) {
+func (me *_ITaskbarList) DeleteTab(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).DeleteTab, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -66,8 +82,7 @@ func (me *ITaskbarList) DeleteTab(hWnd win.HWND) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-hrinit
-func (me *ITaskbarList) HrInit() {
+func (me *_ITaskbarList) HrInit() {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).HrInit, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -78,8 +93,7 @@ func (me *ITaskbarList) HrInit() {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-setactivealt
-func (me *ITaskbarList) SetActiveAlt(hWnd win.HWND) {
+func (me *_ITaskbarList) SetActiveAlt(hWnd win.HWND) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).SetActiveAlt, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

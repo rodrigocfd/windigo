@@ -9,23 +9,54 @@ import (
 	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
 	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/com/comco"
+	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// IDispatch COM interface.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
-type IDispatch struct{ com.IUnknown }
+type IDispatch interface {
+	com.IUnknown
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-getidsofnames
+	GetIDsOfNames(lcid win.LCID, names []string) ([]MEMBERID, error)
+
+	// ⚠️ You must defer ITypeInfo.Release() on the returned object.
+	//
+	// Example:
+	//
+	//  var iDisp autom.IDispatch // initialized somewhere
+	//
+	//  tyInfo := iDisp.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
+	//  defer tyInfo.Release()
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
+	GetTypeInfo(lcid win.LCID) ITypeInfo
+
+	// If the object provides type information, this number is 1; otherwise the
+	// number is 0.
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
+	GetTypeInfoCount() int
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
+	Invoke(dispIdMember MEMBERID, lcid win.LCID,
+		flags automco.DISPATCH, dispParams *DISPPARAMS) (_InvokeRet, error)
+
+	// Calls IDispatch.GetTypeInfo() with win.LCID_SYSTEM_DEFAULT, then calls
+	// ITypeInfo.ListFunctions().
+	ListFunctions() []FuncDescResume
+}
+
+type _IDispatch struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IDispatch.Release().
 func NewIDispatch(base com.IUnknown) IDispatch {
-	return IDispatch{IUnknown: base}
+	return &_IDispatch{IUnknown: base}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-getidsofnames
-func (me *IDispatch) GetIDsOfNames(
+func (me *_IDispatch) GetIDsOfNames(
 	lcid win.LCID, names []string) ([]MEMBERID, error) {
 
 	memberIds := make([]MEMBERID, len(names))
@@ -50,18 +81,8 @@ func (me *IDispatch) GetIDsOfNames(
 	}
 }
 
-// ⚠️ You must defer ITypeInfo.Release().
-//
-// Example:
-//
-//  var iDisp autom.IDispatch // initialized somewhere
-//
-//  tyInfo := iDisp.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
-//  defer tyInfo.Release()
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
-func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
-	var ppQueried com.IUnknown
+func (me *_IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
+	var ppQueried **comvt.IUnknown
 	ret, _, _ := syscall.Syscall6(
 		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetTypeInfo, 4,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -69,17 +90,13 @@ func (me *IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
 		uintptr(unsafe.Pointer(&ppQueried)), 0, 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return NewITypeInfo(ppQueried)
+		return NewITypeInfo(com.NewIUnknown(ppQueried))
 	} else {
 		panic(hr)
 	}
 }
 
-// If the object provides type information, this number is 1; otherwise the
-// number is 0.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
-func (me *IDispatch) GetTypeInfoCount() int {
+func (me *_IDispatch) GetTypeInfoCount() int {
 	var pctInfo uint32
 	ret, _, _ := syscall.Syscall(
 		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetTypeInfoCount, 2,
@@ -99,8 +116,7 @@ type _InvokeRet struct {
 	ArgErr    uint32
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
-func (me *IDispatch) Invoke(
+func (me *_IDispatch) Invoke(
 	dispIdMember MEMBERID, lcid win.LCID,
 	flags automco.DISPATCH, dispParams *DISPPARAMS) (_InvokeRet, error) {
 
@@ -124,9 +140,7 @@ func (me *IDispatch) Invoke(
 	}
 }
 
-// Calls IDispatch.GetTypeInfo() with win.LCID_SYSTEM_DEFAULT, then calls
-// ITypeInfo.ListFunctions().
-func (me *IDispatch) ListFunctions() []_FuncDescResume {
+func (me *_IDispatch) ListFunctions() []FuncDescResume {
 	info := me.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
 	defer info.Release()
 

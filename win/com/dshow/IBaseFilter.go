@@ -6,12 +6,41 @@ import (
 
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/com"
+	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
-type IBaseFilter struct{ IMediaFilter }
+type IBaseFilter interface {
+	IMediaFilter
+
+	// ⚠️ You must defer IEnumPins.Release() on the returned object.
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-enumpins
+	EnumPins() IEnumPins
+
+	// ⚠️ You must defer IPin.Release() on the returned object.
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-findpin
+	FindPin(id string) (IPin, bool)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-joinfiltergraph
+	JoinFilterGraph(graph IFilterGraph, name string) error
+
+	// ⚠️ You must defer IFilterGraph.Release() on PGraph field of the info
+	// object.
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
+	QueryFilterInfo(info *FILTER_INFO)
+
+	// Returns false if the method is not supported.
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryvendorinfo
+	QueryVendorInfo() (string, bool)
+}
+
+type _IBaseFilter struct{ IMediaFilter }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -37,31 +66,25 @@ type IBaseFilter struct{ IMediaFilter }
 //  )
 //  defer vmr9.Release()
 func NewIBaseFilter(base com.IUnknown) IBaseFilter {
-	return IBaseFilter{IMediaFilter: NewIMediaFilter(base)}
+	return &_IBaseFilter{IMediaFilter: NewIMediaFilter(base)}
 }
 
-// ⚠️ You must defer IEnumPins.Release().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-enumpins
-func (me *IBaseFilter) EnumPins() IEnumPins {
-	var ppQueried com.IUnknown
+func (me *_IBaseFilter) EnumPins() IEnumPins {
+	var ppQueried **comvt.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).EnumPins, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return NewIEnumPins(ppQueried)
+		return NewIEnumPins(com.NewIUnknown(ppQueried))
 	} else {
 		panic(hr)
 	}
 }
 
-// ⚠️ You must defer IPin.Release().
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-findpin
-func (me *IBaseFilter) FindPin(id string) (IPin, bool) {
-	var ppQueried com.IUnknown
+func (me *_IBaseFilter) FindPin(id string) (IPin, bool) {
+	var ppQueried **comvt.IUnknown
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).FindPin, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -69,18 +92,15 @@ func (me *IBaseFilter) FindPin(id string) (IPin, bool) {
 		uintptr(unsafe.Pointer(&ppQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return NewIPin(ppQueried), true
+		return NewIPin(com.NewIUnknown(ppQueried)), true
 	} else if hr == errco.VFW_E_NOT_FOUND {
-		return IPin{}, false
+		return nil, false
 	} else {
 		panic(hr)
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-joinfiltergraph
-func (me *IBaseFilter) JoinFilterGraph(
-	graph *IFilterGraph, name string) error {
-
+func (me *_IBaseFilter) JoinFilterGraph(graph IFilterGraph, name string) error {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).JoinFilterGraph, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -94,10 +114,7 @@ func (me *IBaseFilter) JoinFilterGraph(
 	}
 }
 
-// ⚠️ You must defer IFilterGraph.Release() on PGraph field.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
-func (me *IBaseFilter) QueryFilterInfo(info *FILTER_INFO) {
+func (me *_IBaseFilter) QueryFilterInfo(info *FILTER_INFO) {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).QueryFilterInfo, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -108,10 +125,7 @@ func (me *IBaseFilter) QueryFilterInfo(info *FILTER_INFO) {
 	}
 }
 
-// Returns false if the method is not supported.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryvendorinfo
-func (me *IBaseFilter) QueryVendorInfo() (string, bool) {
+func (me *_IBaseFilter) QueryVendorInfo() (string, bool) {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).QueryVendorInfo, 2,

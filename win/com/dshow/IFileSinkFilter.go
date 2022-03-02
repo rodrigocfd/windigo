@@ -11,19 +11,28 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter
-type IFileSinkFilter struct{ com.IUnknown }
+type IFileSinkFilter interface {
+	com.IUnknown
+
+	// Returns false if no file is opened.
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter-getcurfile
+	GetCurFile(mt *AM_MEDIA_TYPE) (string, bool)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter-setfilename
+	SetFileName(fileName string, mt *AM_MEDIA_TYPE)
+}
+
+type _IFileSinkFilter struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IFileSinkFilter.Release().
 func NewIFileSinkFilter(base com.IUnknown) IFileSinkFilter {
-	return IFileSinkFilter{IUnknown: base}
+	return &_IFileSinkFilter{IUnknown: base}
 }
 
-// Returns false if no file is opened.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter-getcurfile
-func (me *IFileSinkFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
+func (me *_IFileSinkFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 	var pv uintptr
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IFileSinkFilter)(unsafe.Pointer(*me.Ptr())).GetCurFile, 3,
@@ -41,8 +50,7 @@ func (me *IFileSinkFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter-setfilename
-func (me *IFileSinkFilter) SetFileName(fileName string, mt *AM_MEDIA_TYPE) {
+func (me *_IFileSinkFilter) SetFileName(fileName string, mt *AM_MEDIA_TYPE) {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IFileSinkFilter)(unsafe.Pointer(*me.Ptr())).SetFileName, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),

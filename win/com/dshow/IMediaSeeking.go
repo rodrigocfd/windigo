@@ -14,7 +14,67 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediaseeking
-type IMediaSeeking struct{ com.IUnknown }
+type IMediaSeeking interface {
+	com.IUnknown
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-checkcapabilities
+	CheckCapabilities(
+		capabilities dshowco.SEEKING_CAPABILITIES) dshowco.SEEKING_CAPABILITIES
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-converttimeformat
+	ConvertTimeFormat(targetFormat, sourceFormat *win.GUID, source int64) int64
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getavailable
+	GetAvailable() (earliest, latest time.Duration)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcapabilities
+	GetCapabilities() dshowco.SEEKING_CAPABILITIES
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcurrentposition
+	GetCurrentPosition() time.Duration
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getduration
+	GetDuration() time.Duration
+
+	// Returns current and stop positions.
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getpositions
+	GetPositions() (current, stop time.Duration)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getpreroll
+	GetPreroll() time.Duration
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getrate
+	GetRate() float64
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getstopposition
+	GetStopPosition() time.Duration
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-gettimeformat
+	GetTimeFormat() *win.GUID
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isformatsupported
+	IsFormatSupported(format *win.GUID) bool
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isusingtimeformat
+	IsUsingTimeFormat(format *win.GUID) bool
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-querypreferredformat
+	QueryPreferredFormat() *win.GUID
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
+	SetPositions(
+		current time.Duration, currentFlags dshowco.SEEKING_FLAGS,
+		stop time.Duration, stopFlags dshowco.SEEKING_FLAGS) error
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setrate
+	SetRate(rate float64) error
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-settimeformat
+	SetTimeFormat(format *win.GUID) error
+}
+
+type _IMediaSeeking struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -29,11 +89,10 @@ type IMediaSeeking struct{ com.IUnknown }
 //  )
 //  defer ms.Release()
 func NewIMediaSeeking(base com.IUnknown) IMediaSeeking {
-	return IMediaSeeking{IUnknown: base}
+	return &_IMediaSeeking{IUnknown: base}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-checkcapabilities
-func (me *IMediaSeeking) CheckCapabilities(
+func (me *_IMediaSeeking) CheckCapabilities(
 	capabilities dshowco.SEEKING_CAPABILITIES) dshowco.SEEKING_CAPABILITIES {
 
 	ret, _, _ := syscall.Syscall(
@@ -48,8 +107,7 @@ func (me *IMediaSeeking) CheckCapabilities(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-converttimeformat
-func (me *IMediaSeeking) ConvertTimeFormat(
+func (me *_IMediaSeeking) ConvertTimeFormat(
 	targetFormat, sourceFormat *win.GUID, source int64) int64 {
 
 	var target int64
@@ -67,8 +125,7 @@ func (me *IMediaSeeking) ConvertTimeFormat(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getavailable
-func (me *IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
+func (me *_IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
 	var iEarliest, iLatest int64
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetAvailable, 3,
@@ -83,8 +140,7 @@ func (me *IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcapabilities
-func (me *IMediaSeeking) GetCapabilities() dshowco.SEEKING_CAPABILITIES {
+func (me *_IMediaSeeking) GetCapabilities() dshowco.SEEKING_CAPABILITIES {
 	var capabilities dshowco.SEEKING_CAPABILITIES
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetCapabilities, 2,
@@ -98,8 +154,7 @@ func (me *IMediaSeeking) GetCapabilities() dshowco.SEEKING_CAPABILITIES {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcurrentposition
-func (me *IMediaSeeking) GetCurrentPosition() time.Duration {
+func (me *_IMediaSeeking) GetCurrentPosition() time.Duration {
 	var pos int64
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetCurrentPosition, 2,
@@ -113,8 +168,7 @@ func (me *IMediaSeeking) GetCurrentPosition() time.Duration {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getduration
-func (me *IMediaSeeking) GetDuration() time.Duration {
+func (me *_IMediaSeeking) GetDuration() time.Duration {
 	var duration int64
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetDuration, 2,
@@ -128,10 +182,7 @@ func (me *IMediaSeeking) GetDuration() time.Duration {
 	}
 }
 
-// Returns current and stop positions.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getpositions
-func (me *IMediaSeeking) GetPositions() (current, stop time.Duration) {
+func (me *_IMediaSeeking) GetPositions() (current, stop time.Duration) {
 	var iCurrent, iStop int64
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetPositions, 3,
@@ -146,8 +197,7 @@ func (me *IMediaSeeking) GetPositions() (current, stop time.Duration) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getpreroll
-func (me *IMediaSeeking) GetPreroll() time.Duration {
+func (me *_IMediaSeeking) GetPreroll() time.Duration {
 	var preRoll int64
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetPreroll, 2,
@@ -161,8 +211,7 @@ func (me *IMediaSeeking) GetPreroll() time.Duration {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getrate
-func (me *IMediaSeeking) GetRate() float64 {
+func (me *_IMediaSeeking) GetRate() float64 {
 	var rate float64
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetStopPosition, 2,
@@ -176,8 +225,7 @@ func (me *IMediaSeeking) GetRate() float64 {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getstopposition
-func (me *IMediaSeeking) GetStopPosition() time.Duration {
+func (me *_IMediaSeeking) GetStopPosition() time.Duration {
 	var stop int64
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetStopPosition, 2,
@@ -191,8 +239,7 @@ func (me *IMediaSeeking) GetStopPosition() time.Duration {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-gettimeformat
-func (me *IMediaSeeking) GetTimeFormat() *win.GUID {
+func (me *_IMediaSeeking) GetTimeFormat() *win.GUID {
 	format := &win.GUID{}
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetTimeFormat, 2,
@@ -206,8 +253,7 @@ func (me *IMediaSeeking) GetTimeFormat() *win.GUID {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isformatsupported
-func (me *IMediaSeeking) IsFormatSupported(format *win.GUID) bool {
+func (me *_IMediaSeeking) IsFormatSupported(format *win.GUID) bool {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).IsFormatSupported, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -222,8 +268,7 @@ func (me *IMediaSeeking) IsFormatSupported(format *win.GUID) bool {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isusingtimeformat
-func (me *IMediaSeeking) IsUsingTimeFormat(format *win.GUID) bool {
+func (me *_IMediaSeeking) IsUsingTimeFormat(format *win.GUID) bool {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).IsUsingTimeFormat, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -238,8 +283,7 @@ func (me *IMediaSeeking) IsUsingTimeFormat(format *win.GUID) bool {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-querypreferredformat
-func (me *IMediaSeeking) QueryPreferredFormat() *win.GUID {
+func (me *_IMediaSeeking) QueryPreferredFormat() *win.GUID {
 	format := win.GUID{}
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).QueryPreferredFormat, 2,
@@ -253,8 +297,7 @@ func (me *IMediaSeeking) QueryPreferredFormat() *win.GUID {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
-func (me *IMediaSeeking) SetPositions(
+func (me *_IMediaSeeking) SetPositions(
 	current time.Duration, currentFlags dshowco.SEEKING_FLAGS,
 	stop time.Duration, stopFlags dshowco.SEEKING_FLAGS) error {
 
@@ -272,8 +315,7 @@ func (me *IMediaSeeking) SetPositions(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setrate
-func (me *IMediaSeeking) SetRate(rate float64) error {
+func (me *_IMediaSeeking) SetRate(rate float64) error {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).SetRate, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -288,8 +330,7 @@ func (me *IMediaSeeking) SetRate(rate float64) error {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-settimeformat
-func (me *IMediaSeeking) SetTimeFormat(format *win.GUID) error {
+func (me *_IMediaSeeking) SetTimeFormat(format *win.GUID) error {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).SetTimeFormat, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

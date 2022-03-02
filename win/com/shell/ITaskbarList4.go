@@ -12,7 +12,14 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist4
-type ITaskbarList4 struct{ ITaskbarList3 }
+type ITaskbarList4 interface {
+	ITaskbarList3
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist4-settabproperties
+	SetProperties(hwndTab win.HWND, flags shellco.STPFLAG)
+}
+
+type _ITaskbarList4 struct{ ITaskbarList3 }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -20,19 +27,18 @@ type ITaskbarList4 struct{ ITaskbarList3 }
 //
 // Example:
 //
-//  taskbl4 := shell.NewITaskbarList4(
+//  taskbl := shell.NewITaskbarList4(
 //      com.CoCreateInstance(
 //          shellco.CLSID_TaskbarList, nil,
 //          comco.CLSCTX_INPROC_SERVER,
 //          shellco.IID_ITaskbarList4),
 //  )
-//  defer taskbl4.Release()
+//  defer taskbl.Release()
 func NewITaskbarList4(base com.IUnknown) ITaskbarList4 {
-	return ITaskbarList4{ITaskbarList3: NewITaskbarList3(base)}
+	return &_ITaskbarList4{ITaskbarList3: NewITaskbarList3(base)}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist4-settabproperties
-func (me *ITaskbarList4) SetProperties(
+func (me *_ITaskbarList4) SetProperties(
 	hwndTab win.HWND, flags shellco.STPFLAG) {
 
 	ret, _, _ := syscall.Syscall(

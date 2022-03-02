@@ -11,12 +11,6 @@ type COMDLG_FILTERSPEC struct {
 	PszSpec *uint16
 }
 
-// COMDLG_FILTERSPEC syntactic sugar.
-type FilterSpec struct {
-	Name string
-	Spec string
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ns-shobjidl_core-thumbbutton
 type THUMBBUTTON struct {
 	DwMask  shellco.THB

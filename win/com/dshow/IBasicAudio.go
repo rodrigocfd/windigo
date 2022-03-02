@@ -11,7 +11,23 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-ibasicaudio
-type IBasicAudio struct{ autom.IDispatch }
+type IBasicAudio interface {
+	autom.IDispatch
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_balance
+	GetBalance() int
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_volume
+	GetVolume() int
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_balance
+	PutBalance(balance int)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_volume
+	PutVolume(volume int)
+}
+
+type _IBasicAudio struct{ autom.IDispatch }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -26,11 +42,10 @@ type IBasicAudio struct{ autom.IDispatch }
 //  )
 //  defer ba.Release()
 func NewIBasicAudio(base com.IUnknown) IBasicAudio {
-	return IBasicAudio{IDispatch: autom.NewIDispatch(base)}
+	return &_IBasicAudio{IDispatch: autom.NewIDispatch(base)}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_balance
-func (me *IBasicAudio) GetBalance() int {
+func (me *_IBasicAudio) GetBalance() int {
 	var balance int32
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).GetBalance, 2,
@@ -44,8 +59,7 @@ func (me *IBasicAudio) GetBalance() int {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_volume
-func (me *IBasicAudio) GetVolume() int {
+func (me *_IBasicAudio) GetVolume() int {
 	var volume int32
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).GetVolume, 2,
@@ -59,8 +73,7 @@ func (me *IBasicAudio) GetVolume() int {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_balance
-func (me *IBasicAudio) PutBalance(balance int) {
+func (me *_IBasicAudio) PutBalance(balance int) {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).PutBalance, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -71,8 +84,7 @@ func (me *IBasicAudio) PutBalance(balance int) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_volume
-func (me *IBasicAudio) PutVolume(volume int) {
+func (me *_IBasicAudio) PutVolume(volume int) {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).PutVolume, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

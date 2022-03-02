@@ -9,20 +9,24 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// IPersist COM interface.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
-type IPersist struct{ IUnknown }
+type IPersist interface {
+	IUnknown
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ipersist-getclassid
+	GetClassID() *win.GUID
+}
+
+type _IPersist struct{ IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
 // ⚠️ You must defer IPersist.Release().
 func NewIPersist(base IUnknown) IPersist {
-	return IPersist{IUnknown: base}
+	return &_IPersist{IUnknown: base}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ipersist-getclassid
-func (me *IPersist) GetClassID() *win.GUID {
+func (me *_IPersist) GetClassID() *win.GUID {
 	clsid := &win.GUID{}
 	ret, _, _ := syscall.Syscall(
 		(*comvt.IPersist)(unsafe.Pointer(*me.Ptr())).GetClassID, 2,

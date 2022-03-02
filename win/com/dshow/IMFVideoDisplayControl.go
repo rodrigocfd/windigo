@@ -12,7 +12,42 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
-type IMFVideoDisplayControl struct{ com.IUnknown }
+type IMFVideoDisplayControl interface {
+	com.IUnknown
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getaspectratiomode
+	GetAspectRatioMode() dshowco.MFVideoARMode
+
+	// Returns the minimum and maximum ideal sizes.
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getidealvideosize
+	GetIdealVideoSize() (min, max win.SIZE)
+
+	// Returns video rectangle and aspect ratio.
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getnativevideosize
+	GetNativeVideoSize() (size, aspectRatio win.SIZE)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideoposition
+	GetVideoPosition() (source MFVideoNormalizedRect, dest win.RECT)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideowindow
+	GetVideoWindow() win.HWND
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-repaintvideo
+	RepaintVideo()
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setaspectratiomode
+	SetAspectRatioMode(mode dshowco.MFVideoARMode) error
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideoposition
+	SetVideoPosition(nrcSource *MFVideoNormalizedRect, rcDest *win.RECT)
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideowindow
+	SetVideoWindow(hwndVideo win.HWND) error
+}
+
+type _IMFVideoDisplayControl struct{ com.IUnknown }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -30,11 +65,10 @@ type IMFVideoDisplayControl struct{ com.IUnknown }
 //  )
 //  defer vdc.Release()
 func NewIMFVideoDisplayControl(base com.IUnknown) IMFVideoDisplayControl {
-	return IMFVideoDisplayControl{IUnknown: base}
+	return &_IMFVideoDisplayControl{IUnknown: base}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getaspectratiomode
-func (me *IMFVideoDisplayControl) GetAspectRatioMode() dshowco.MFVideoARMode {
+func (me *_IMFVideoDisplayControl) GetAspectRatioMode() dshowco.MFVideoARMode {
 	var aspectRatioMode dshowco.MFVideoARMode
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMFVideoDisplayControl)(unsafe.Pointer(*me.Ptr())).GetAspectRatioMode, 2,
@@ -48,10 +82,7 @@ func (me *IMFVideoDisplayControl) GetAspectRatioMode() dshowco.MFVideoARMode {
 	}
 }
 
-// Returns the minimum and maximum ideal sizes.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getidealvideosize
-func (me *IMFVideoDisplayControl) GetIdealVideoSize() (min, max win.SIZE) {
+func (me *_IMFVideoDisplayControl) GetIdealVideoSize() (min, max win.SIZE) {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMFVideoDisplayControl)(unsafe.Pointer(*me.Ptr())).GetIdealVideoSize, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -65,10 +96,7 @@ func (me *IMFVideoDisplayControl) GetIdealVideoSize() (min, max win.SIZE) {
 	}
 }
 
-// Returns video rectangle and aspect ratio.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getnativevideosize
-func (me *IMFVideoDisplayControl) GetNativeVideoSize() (size, aspectRatio win.SIZE) {
+func (me *_IMFVideoDisplayControl) GetNativeVideoSize() (size, aspectRatio win.SIZE) {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMFVideoDisplayControl)(unsafe.Pointer(*me.Ptr())).GetNativeVideoSize, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -82,8 +110,7 @@ func (me *IMFVideoDisplayControl) GetNativeVideoSize() (size, aspectRatio win.SI
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideoposition
-func (me *IMFVideoDisplayControl) GetVideoPosition() (source MFVideoNormalizedRect, dest win.RECT) {
+func (me *_IMFVideoDisplayControl) GetVideoPosition() (source MFVideoNormalizedRect, dest win.RECT) {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMFVideoDisplayControl)(unsafe.Pointer(*me.Ptr())).GetVideoPosition, 3,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -97,8 +124,7 @@ func (me *IMFVideoDisplayControl) GetVideoPosition() (source MFVideoNormalizedRe
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideowindow
-func (me *IMFVideoDisplayControl) GetVideoWindow() win.HWND {
+func (me *_IMFVideoDisplayControl) GetVideoWindow() win.HWND {
 	var hwndVideo win.HWND
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMFVideoDisplayControl)(unsafe.Pointer(*me.Ptr())).GetVideoWindow, 2,
@@ -112,8 +138,7 @@ func (me *IMFVideoDisplayControl) GetVideoWindow() win.HWND {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-repaintvideo
-func (me *IMFVideoDisplayControl) RepaintVideo() {
+func (me *_IMFVideoDisplayControl) RepaintVideo() {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMFVideoDisplayControl)(unsafe.Pointer(*me.Ptr())).RepaintVideo, 1,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -124,8 +149,7 @@ func (me *IMFVideoDisplayControl) RepaintVideo() {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setaspectratiomode
-func (me *IMFVideoDisplayControl) SetAspectRatioMode(
+func (me *_IMFVideoDisplayControl) SetAspectRatioMode(
 	mode dshowco.MFVideoARMode) error {
 
 	ret, _, _ := syscall.Syscall(
@@ -140,8 +164,7 @@ func (me *IMFVideoDisplayControl) SetAspectRatioMode(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideoposition
-func (me *IMFVideoDisplayControl) SetVideoPosition(
+func (me *_IMFVideoDisplayControl) SetVideoPosition(
 	nrcSource *MFVideoNormalizedRect, rcDest *win.RECT) {
 
 	ret, _, _ := syscall.Syscall(
@@ -155,8 +178,7 @@ func (me *IMFVideoDisplayControl) SetVideoPosition(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideowindow
-func (me *IMFVideoDisplayControl) SetVideoWindow(hwndVideo win.HWND) error {
+func (me *_IMFVideoDisplayControl) SetVideoWindow(hwndVideo win.HWND) error {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IMFVideoDisplayControl)(unsafe.Pointer(*me.Ptr())).SetVideoWindow, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),

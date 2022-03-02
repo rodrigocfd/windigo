@@ -11,6 +11,8 @@ import (
 	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/autom/automco"
+	"github.com/rodrigocfd/windigo/win/com/com"
+	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 )
 
 // OLE Automation VARIANT type.
@@ -178,26 +180,27 @@ func (vt *VARIANT) Float64() (float64, bool) {
 //
 //  var idisp autom.IDispatch // initialized somewhere
 //
-//  vari := autom.NewVariantIDispatch(&idisp)
+//  vari := autom.NewVariantIDispatch(idisp)
 //  defer vari.VariantClear()
-func NewVariantIDispatch(v *IDispatch) VARIANT {
+func NewVariantIDispatch(v IDispatch) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_DISPATCH
 	cloned := v.AddRef()
-	binary.LittleEndian.PutUint64(vt.data[:], uint64(uintptr(unsafe.Pointer(cloned.Ptr()))))
+	clonedPpv := cloned.Ptr()
+	binary.LittleEndian.PutUint64(vt.data[:], uint64(uintptr(unsafe.Pointer(clonedPpv))))
 	return vt
 }
 
 // If the VARIANT object has type VT_DISPATCH, returns the value and true.
 // Otherwise, returns a default value and false.
 //
-// ⚠️ You must defer IDispatch.Release().
+// ⚠️ You must defer IDispatch.Release() on the returned object.
 //
 // Example:
 //
 //  var idisp autom.IDispatch // initialized somewhere
 //
-//  vari := autom.NewVariantIDispatch(&idisp)
+//  vari := autom.NewVariantIDispatch(idisp)
 //  defer vari.VariantClear()
 //
 //  if idispVal, ok := vari.IDispatch(); ok {
@@ -207,11 +210,12 @@ func NewVariantIDispatch(v *IDispatch) VARIANT {
 func (vt *VARIANT) IDispatch() (IDispatch, bool) {
 	switch vt.vt {
 	case automco.VT_DISPATCH:
-		ptr := uintptr(binary.LittleEndian.Uint64(vt.data[:]))
-		idisp := *(*IDispatch)(unsafe.Pointer(&ptr))
-		return NewIDispatch(idisp.AddRef()), true
+		ppvData := uintptr(binary.LittleEndian.Uint64(vt.data[:]))
+		ppv := (**comvt.IUnknown)(unsafe.Pointer(ppvData))
+		iDisp := NewIDispatch(com.NewIUnknown(ppv))
+		return NewIDispatch(iDisp.AddRef()), true
 	default:
-		return IDispatch{}, false
+		return nil, false
 	}
 }
 

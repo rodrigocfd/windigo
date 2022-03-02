@@ -10,7 +10,14 @@ import (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifilesavedialog
-type IFileSaveDialog struct{ IFileDialog }
+type IFileSaveDialog interface {
+	IFileDialog
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem
+	SetSaveAsItem(si IShellItem)
+}
+
+type _IFileSaveDialog struct{ IFileDialog }
 
 // Constructs a COM object from the base IUnknown.
 //
@@ -26,11 +33,10 @@ type IFileSaveDialog struct{ IFileDialog }
 //  )
 //  defer fsd.Release()
 func NewIFileSaveDialog(base com.IUnknown) IFileSaveDialog {
-	return IFileSaveDialog{IFileDialog: NewIFileDialog(base)}
+	return &_IFileSaveDialog{IFileDialog: NewIFileDialog(base)}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem
-func (me *IFileSaveDialog) SetSaveAsItem(si *IShellItem) {
+func (me *_IFileSaveDialog) SetSaveAsItem(si IShellItem) {
 	ret, _, _ := syscall.Syscall(
 		(*shellvt.IFileSaveDialog)(unsafe.Pointer(*me.Ptr())).SetSaveAsItem, 2,
 		uintptr(unsafe.Pointer(me.Ptr())),
