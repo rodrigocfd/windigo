@@ -19,7 +19,8 @@ type ListView interface {
 	implListView() // prevent public implementation
 
 	// Exposes all the ListView notifications the can be handled.
-	// Cannot be called after the control was created.
+	//
+	// Panics if called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-list-view-control-reference-notifications
 	On() *_ListViewEvents
@@ -48,12 +49,12 @@ type _ListView struct {
 	hContextMenu win.HMENU
 }
 
-// Creates a new ListView. Call ListViewOpts() to define the options to be
+// Creates a new ListView. Call ui.ListViewOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
 //
 // Example:
 //
-//  var owner AnyParent // initialized somewhere
+//  var owner ui.AnyParent // initialized somewhere
 //
 //  myList := ui.NewListView(
 //      owner,

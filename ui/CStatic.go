@@ -15,7 +15,8 @@ type Static interface {
 	implStatic() // prevent public implementation
 
 	// Exposes all the Static notifications the can be handled.
-	// Cannot be called after the control was created.
+	//
+	// Panics if called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-static-control-reference-notifications
 	On() *_StaticEvents
@@ -30,12 +31,12 @@ type _Static struct {
 	events _StaticEvents
 }
 
-// Creates a new Static. Call StaticOpts() to define the options to be passed to
-// the underlying CreateWindowEx().
+// Creates a new Static. Call ui.StaticOpts() to define the options to be passed
+// to the underlying CreateWindowEx().
 //
 // Example:
 //
-//  var owner AnyParent // initialized somewhere
+//  var owner ui.AnyParent // initialized somewhere
 //
 //  myLabel := ui.NewStatic(
 //      owner,

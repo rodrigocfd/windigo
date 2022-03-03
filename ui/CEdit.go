@@ -19,7 +19,8 @@ type Edit interface {
 	implEdit() // prevent public implementation
 
 	// Exposes all the Edit notifications the can be handled.
-	// Cannot be called after the control was created.
+	//
+	// Panics if called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-notifications
 	On() *_EditEvents
@@ -39,12 +40,12 @@ type _Edit struct {
 	events _EditEvents
 }
 
-// Creates a new Edit. Call EditOpts() to define the options to be passed to
+// Creates a new Edit. Call ui.EditOpts() to define the options to be passed to
 // the underlying CreateWindowEx().
 //
 // Example:
 //
-//  var owner AnyParent // initialized somewhere
+//  var owner ui.AnyParent // initialized somewhere
 //
 //  myTxt := ui.NewEdit(
 //      owner,

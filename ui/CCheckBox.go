@@ -16,7 +16,8 @@ type CheckBox interface {
 	implCheckBox() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
-	// Cannot be called after the control was created.
+	//
+	// Panics if called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_ButtonEvents
@@ -36,12 +37,12 @@ type _CheckBox struct {
 	events _ButtonEvents
 }
 
-// Creates a new CheckBox. Call CheckBoxOpts() to define the options to be
+// Creates a new CheckBox. Call ui.CheckBoxOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
 //
 // Example:
 //
-//  var owner AnyParent // initialized somewhere
+//  var owner ui.AnyParent // initialized somewhere
 //
 //  myCheck := ui.NewCheckBox(
 //      owner,

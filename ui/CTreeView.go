@@ -18,7 +18,8 @@ type TreeView interface {
 	implTreeView() // prevent public implementation
 
 	// Exposes all the TreeView notifications the can be handled.
-	// Cannot be called after the control was created.
+	//
+	// Panics if called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-tree-view-control-reference-notifications
 	On() *_TreeViewEvents
@@ -34,8 +35,8 @@ type _TreeView struct {
 	items  _TreeViewItems
 }
 
-// Creates a new TreeView specifying all options, which will be passed to the
-// underlying CreateWindowEx().
+// Creates a new TreView. Call ui.TreeViewOpts() to define the options to be
+// passed to the underlying CreateWindowEx().
 //
 // Example:
 //

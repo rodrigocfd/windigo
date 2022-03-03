@@ -18,7 +18,8 @@ type Button interface {
 	implButton() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
-	// Cannot be called after the control was created.
+	//
+	// Panics if called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_ButtonEvents
@@ -33,12 +34,12 @@ type _Button struct {
 	events _ButtonEvents
 }
 
-// Creates a new Button. Call ButtonOpts() to define the options to be passed to
-// the underlying CreateWindowEx().
+// Creates a new Button. Call ui.ButtonOpts() to define the options to be passed
+// to the underlying CreateWindowEx().
 //
 // Example:
 //
-//  var owner AnyParent // initialized somewhere
+//  var owner ui.AnyParent // initialized somewhere
 //
 //  myButton := ui.NewButton(
 //      owner,

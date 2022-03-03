@@ -28,12 +28,12 @@ type _ProgressBar struct {
 	isMarquee bool
 }
 
-// Creates a new ProgressBar. Call ProgressBarOpts() to define the options to be
-// passed to the underlying CreateWindowEx().
+// Creates a new ProgressBar. Call ui.ProgressBarOpts() to define the options to
+// be passed to the underlying CreateWindowEx().
 //
 // Example:
 //
-//  var owner AnyParent // initialized somewhere
+//  var owner ui.AnyParent // initialized somewhere
 //
 //  myProg := ui.NewProgressBar(
 //      owner,

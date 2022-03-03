@@ -17,7 +17,8 @@ type Toolbar interface {
 	implToolbar() // prevent public implementation
 
 	// Exposes all the Toolbar notifications the can be handled.
-	// Cannot be called after the control was created.
+	//
+	// Panics if called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-toolbar-control-reference-notifications
 	On() *_ToolbarEvents
@@ -38,12 +39,12 @@ type _Toolbar struct {
 	buttons _ToolbarButtons
 }
 
-// Creates a new Toolbar. Call ToolbarOpts() to define the options to be passed
-// to the underlying CreateWindowEx().
+// Creates a new Toolbar. Call ui.ToolbarOpts() to define the options to be
+// passed to the underlying CreateWindowEx().
 //
 // Example:
 //
-//  var owner AnyParent // initialized somewhere
+//  var owner ui.AnyParent // initialized somewhere
 //
 //  myBar := ui.NewToolbar(
 //      owner,

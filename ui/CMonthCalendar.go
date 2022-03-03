@@ -18,7 +18,8 @@ type MonthCalendar interface {
 	implMonthCalendar() // prevent public implementation
 
 	// Exposes all the MonthCalendar notifications the can be handled.
-	// Cannot be called after the control was created.
+	//
+	// Panics if called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-notifications
 	On() *_MonthCalendarEvents
@@ -34,12 +35,12 @@ type _MonthCalendar struct {
 	events _MonthCalendarEvents
 }
 
-// Creates a new MonthCalendar. Call MonthCalendarOpts() to define the options
-// to be passed to the underlying CreateWindowEx().
+// Creates a new MonthCalendar. Call ui.MonthCalendarOpts() to define the
+// options to be passed to the underlying CreateWindowEx().
 //
 // Example:
 //
-//  var owner AnyParent // initialized somewhere
+//  var owner ui.AnyParent // initialized somewhere
 //
 //  myCal := ui.NewMonthCalendar(
 //      owner,

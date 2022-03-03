@@ -17,7 +17,8 @@ type StatusBar interface {
 	implStatusBar() // prevent public implementation
 
 	// Exposes all the StatusBar notifications the can be handled.
-	// Cannot be called after the control was created.
+	//
+	// Panics if called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-status-bars-reference-notifications
 	On() *_StatusBarEvents

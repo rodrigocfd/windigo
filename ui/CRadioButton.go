@@ -18,7 +18,8 @@ type RadioButton interface {
 	implRadioButton() // prevent public implementation
 
 	// Exposes all the Button notifications the can be handled.
-	// Cannot be called after the control was created.
+	//
+	// Panics if called after the control was created.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_ButtonEvents
@@ -37,14 +38,14 @@ type _RadioButton struct {
 	events _ButtonEvents
 }
 
-// Creates a new RadioButton. Call RadioButtonOpts() to define the options to be
-// passed to the underlying CreateWindowEx().
+// Creates a new RadioButton. Call ui.RadioButtonOpts() to define the options to
+// be passed to the underlying CreateWindowEx().
 //
 // Prefer using the RadioGroup, which manages multiple radio buttons at once.
 //
 // Example:
 //
-//  var owner AnyParent // initialized somewhere
+//  var owner ui.AnyParent // initialized somewhere
 //
 //  myRadio := ui.NewRadioButton(
 //      owner,
