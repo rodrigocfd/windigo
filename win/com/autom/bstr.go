@@ -14,7 +14,7 @@ import (
 type BSTR uintptr
 
 // ⚠️ You must defer BSTR.SysFreeString(), unless you call
-// BSTR.SysReAllocString() or pass it to NewVariantBstr().
+// BSTR.SysReAllocString().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysallocstring
 func SysAllocString(s string) BSTR {
@@ -33,7 +33,7 @@ func (bstr BSTR) SysFreeString() {
 }
 
 // ⚠️ You must defer BSTR.SysFreeString(), unless you call
-// BSTR.SysReAllocString() or pass it to NewVariantBstr().
+// BSTR.SysReAllocString().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysreallocstring
 func (bstr BSTR) SysReAllocString(s string) BSTR {

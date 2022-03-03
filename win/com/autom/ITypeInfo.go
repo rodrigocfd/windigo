@@ -4,14 +4,27 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/autom/automco"
 	"github.com/rodrigocfd/windigo/win/com/autom/automvt"
 	"github.com/rodrigocfd/windigo/win/com/com"
+	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
 type ITypeInfo interface {
 	com.IUnknown
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-addressofmember
+	AddressOfMember(memberId MEMBERID, invokeKind automco.INVOKEKIND) uintptr
+
+	// ⚠️ You must defer IUnknown.Release() on the returned COM object. If
+	// iUnkOuter is not null, you must defer IUnknown.Release() on it too.
+	//
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-createinstance
+	CreateInstance(iUnkOuter *com.IUnknown, riid co.IID) com.IUnknown
 
 	// Example:
 	//
@@ -41,6 +54,9 @@ type ITypeInfo interface {
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getfuncdesc
 	GetFuncDesc(index int) *FUNCDESC
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getidsofnames
+	GetIDsOfNames(names []string) []MEMBERID
 
 	// ⚠️ You must defer ITypeInfo.ReleaseTypeAttr() on the returned object.
 	//
@@ -86,12 +102,60 @@ func NewITypeInfo(base com.IUnknown) ITypeInfo {
 	return &_ITypeInfo{IUnknown: base}
 }
 
-func (me *_ITypeInfo) GetDocumentation(memId MEMBERID) TypeDoc {
+func (me *_ITypeInfo) AddressOfMember(
+	memberId MEMBERID, invokeKind automco.INVOKEKIND) uintptr {
+
+	var pv uintptr
+	ret, _, _ := syscall.Syscall6(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).AddressOfMember, 4,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(memberId), uintptr(invokeKind),
+		uintptr(unsafe.Pointer(&pv)),
+		0, 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return pv
+	} else {
+		panic(hr)
+	}
+}
+
+func (me *_ITypeInfo) CreateInstance(
+	iUnkOuter *com.IUnknown, riid co.IID) com.IUnknown {
+
+	var ppvQueried **comvt.IUnknown
+
+	var pppvOuter ***comvt.IUnknown
+	if iUnkOuter != nil { // was the outer pointer requested?
+		(*iUnkOuter).Release() // release if existing
+		var ppvOuterBuf **comvt.IUnknown
+		pppvOuter = &ppvOuterBuf // we'll request the outer pointer
+	}
+
+	ret, _, _ := syscall.Syscall6(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).CreateInstance, 4,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(pppvOuter)),
+		uintptr(unsafe.Pointer(win.GuidFromIid(riid))),
+		uintptr(unsafe.Pointer(&ppvQueried)),
+		0, 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		if iUnkOuter != nil {
+			*iUnkOuter = com.NewIUnknown(*pppvOuter)
+		}
+		return com.NewIUnknown(ppvQueried)
+	} else {
+		panic(hr)
+	}
+}
+
+func (me *_ITypeInfo) GetDocumentation(memberId MEMBERID) TypeDoc {
 	var name, docString, helpContext, helpFile uintptr
 	ret, _, _ := syscall.Syscall6(
 		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetDocumentation, 6,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(memId),
+		uintptr(memberId),
 		uintptr(unsafe.Pointer(&name)), uintptr(unsafe.Pointer(&docString)),
 		uintptr(unsafe.Pointer(&helpContext)), uintptr(unsafe.Pointer(&helpFile)))
 
@@ -131,6 +195,29 @@ func (me *_ITypeInfo) GetFuncDesc(index int) *FUNCDESC {
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return (*FUNCDESC)(unsafe.Pointer(pv))
+	} else {
+		panic(hr)
+	}
+}
+
+func (me *_ITypeInfo) GetIDsOfNames(names []string) []MEMBERID {
+	pNames := make([]*uint16, 0, len(names))
+	for _, name := range names {
+		pNames = append(pNames, win.Str.ToNativePtr(name))
+	}
+
+	memberIds := make([]MEMBERID, len(names))
+
+	ret, _, _ := syscall.Syscall6(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetTypeAttr, 4,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(&pNames[0])),
+		uintptr(len(names)),
+		uintptr(unsafe.Pointer(&memberIds[0])),
+		0, 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return memberIds
 	} else {
 		panic(hr)
 	}

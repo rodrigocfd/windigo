@@ -41,6 +41,8 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	}
 }
 
+// Creates a COM object from its CLSID + IID. The iUnkOuter is usually nil.
+//
 // Panics if the COM object cannot be created.
 //
 // ⚠️ You must defer IUnknown.Release() on the returned COM object. If iUnkOuter
@@ -73,26 +75,29 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
-	rclsid co.CLSID, iUnkOuter IUnknown,
+	rclsid co.CLSID, iUnkOuter *IUnknown,
 	dwClsContext comco.CLSCTX, riid co.IID) IUnknown {
 
 	var ppvQueried **comvt.IUnknown
 
-	var ppvOuter ***comvt.IUnknown
+	var pppvOuter ***comvt.IUnknown
 	if iUnkOuter != nil { // was the outer pointer requested?
-		iUnkOuter.Release() // release if existing
-		ppvFromOuter := iUnkOuter.Ptr()
-		ppvOuter = &ppvFromOuter
+		(*iUnkOuter).Release() // release if existing
+		var ppvOuterBuf **comvt.IUnknown
+		pppvOuter = &ppvOuterBuf // we'll request the outer pointer
 	}
 
 	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
 		uintptr(unsafe.Pointer(win.GuidFromClsid(rclsid))),
-		uintptr(unsafe.Pointer(ppvOuter)),
+		uintptr(unsafe.Pointer(pppvOuter)),
 		uintptr(dwClsContext),
 		uintptr(unsafe.Pointer(win.GuidFromIid(riid))),
 		uintptr(unsafe.Pointer(&ppvQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		if iUnkOuter != nil {
+			*iUnkOuter = NewIUnknown(*pppvOuter)
+		}
 		return NewIUnknown(ppvQueried)
 	} else {
 		panic(hr)
