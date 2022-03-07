@@ -2,8 +2,11 @@ package dshow
 
 import (
 	"syscall"
+	"time"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
@@ -45,11 +48,17 @@ type IPin interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-enummediatypes
 	EnumMediaTypes() (IEnumMediaTypes, error)
 
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-newsegment
+	NewSegment(start, stop time.Duration, rate float64)
+
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-queryaccept
 	QueryAccept(mt *AM_MEDIA_TYPE) (bool, error)
 
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-querydirection
 	QueryDirection() dshowco.PIN_DIRECTION
+
+	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-queryid
+	QueryId() string
 }
 
 type _IPin struct{ com.IUnknown }
@@ -161,6 +170,19 @@ func (me *_IPin) EnumMediaTypes() (IEnumMediaTypes, error) {
 	}
 }
 
+func (me *_IPin) NewSegment(start, stop time.Duration, rate float64) {
+	iStart, iStop := util.DurationToNano100(start), util.DurationToNano100(stop)
+	ret, _, _ := syscall.Syscall6(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).NewSegment, 4,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(iStart), uintptr(iStop), uintptr(rate),
+		0, 0)
+
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
+	}
+}
+
 func (me *_IPin) QueryAccept(mt *AM_MEDIA_TYPE) (bool, error) {
 	ret, _, _ := syscall.Syscall(
 		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).QueryAccept, 2,
@@ -183,6 +205,22 @@ func (me *_IPin) QueryDirection() dshowco.PIN_DIRECTION {
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return pPinDir
+	} else {
+		panic(hr)
+	}
+}
+
+func (me *_IPin) QueryId() string {
+	var pv uintptr
+	ret, _, _ := syscall.Syscall(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).QueryId, 2,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(&pv)), 0)
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		defer win.HTASKMEM(pv).CoTaskMemFree()
+		name := win.Str.FromNativePtr((*uint16)(unsafe.Pointer(pv)))
+		return name
 	} else {
 		panic(hr)
 	}
