@@ -247,7 +247,7 @@ func (hKey HKEY) QueryInfoKey() (_KeyInfo, error) {
 		uintptr(unsafe.Pointer(&ft)))
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
-		return info, wErr
+		return _KeyInfo{}, wErr
 	}
 
 	info.Class = Str.FromNativeSlice(classBuf[:])

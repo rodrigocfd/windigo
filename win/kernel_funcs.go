@@ -249,6 +249,50 @@ func GetTimeZoneInformationForYear(
 	}
 }
 
+type _VolumeInfo struct {
+	Name               string
+	SerialNumber       uint32
+	MaxComponentLength uint32
+	FileSystemFlags    co.FILE_VOL
+	FileSystemName     string
+}
+
+// Example:
+//
+//  nfo, err := win.GetVolumeInformation(win.StrOptSome("C:\\"))
+//  if err != nil {
+//      panic(err)
+//  }
+//
+//  fmt.Printf("Name: %s\n", nfo.Name)
+//  fmt.Printf("File system name: %s\n", nfo.FileSystemName)
+//  fmt.Printf("Max component length: %d\n", nfo.MaxComponentLength)
+//  fmt.Printf("Serial number: 0x08%x\n", nfo.SerialNumber)
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getvolumeinformationw
+func GetVolumeInformation(rootPathName StrOpt) (_VolumeInfo, error) {
+	var info _VolumeInfo
+	var nameBuf [_MAX_PATH + 1]uint16
+	var sysNameBuf [_MAX_PATH + 1]uint16
+
+	ret, _, err := syscall.Syscall9(proc.GetVolumeInformation.Addr(), 8,
+		uintptr(rootPathName.raw()),
+		uintptr(unsafe.Pointer(&nameBuf[0])), _MAX_PATH+1,
+		uintptr(unsafe.Pointer(&info.SerialNumber)),
+		uintptr(unsafe.Pointer(&info.MaxComponentLength)),
+		uintptr(unsafe.Pointer(&info.FileSystemFlags)),
+		uintptr(unsafe.Pointer(&sysNameBuf[0])), _MAX_PATH+1,
+		0)
+
+	if ret == 0 {
+		return _VolumeInfo{}, errco.ERROR(err)
+	}
+
+	info.Name = Str.FromNativeSlice(nameBuf[:])
+	info.FileSystemName = Str.FromNativeSlice(sysNameBuf[:])
+	return info, nil
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getwindowsdirectoryw
 func GetWindowsDirectory() string {
 	var buf [_MAX_PATH + 1]uint16

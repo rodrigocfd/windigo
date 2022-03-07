@@ -53,6 +53,7 @@ var (
 	GetTickCount64                  = kernel32.NewProc("GetTickCount64")
 	GetTimeZoneInformation          = kernel32.NewProc("GetTimeZoneInformation")
 	GetTimeZoneInformationForYear   = kernel32.NewProc("GetTimeZoneInformationForYear")
+	GetVolumeInformation            = kernel32.NewProc("GetVolumeInformationW")
 	GetWindowsDirectory             = kernel32.NewProc("GetWindowsDirectoryW")
 	GlobalAlloc                     = kernel32.NewProc("GlobalAlloc")
 	GlobalFlags                     = kernel32.NewProc("GlobalFlags")
