@@ -7,6 +7,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/proc"
 	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
@@ -14,6 +15,20 @@ import (
 func (hdc HDC) DrawIcon(x, y int32, hIcon HICON) {
 	ret, _, err := syscall.Syscall6(proc.DrawIcon.Addr(), 4,
 		uintptr(hdc), uintptr(x), uintptr(y), uintptr(hIcon), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawiconex
+func (hdc HDC) DrawIconEx(
+	pos POINT, hIcon HICON, size SIZE, frameIndex uint32,
+	hbrFlickerFree HBRUSH, diFlags co.DI) {
+
+	ret, _, err := syscall.Syscall9(proc.DrawIconEx.Addr(), 9,
+		uintptr(hdc), uintptr(pos.X), uintptr(pos.Y), uintptr(hIcon),
+		uintptr(size.Cx), uintptr(size.Cy), uintptr(frameIndex),
+		uintptr(hbrFlickerFree), uintptr(diFlags))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

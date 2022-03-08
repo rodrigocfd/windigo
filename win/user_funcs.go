@@ -347,10 +347,24 @@ func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, error) {
 	wcx.SetCbSize() // safety
 	ret, _, err := syscall.Syscall(proc.RegisterClassEx.Addr(), 1,
 		uintptr(unsafe.Pointer(wcx)), 0, 0)
-	if ret == 0 {
-		return ATOM(0), errco.ERROR(err)
+
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		return ATOM(0), wErr
+	} else {
+		return ATOM(ret), nil
 	}
-	return ATOM(ret), nil
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerwindowmessagew
+func RegisterWindowMessage(message string) (co.WM, error) {
+	ret, _, err := syscall.Syscall(proc.RegisterWindowMessage.Addr(), 1,
+		uintptr(unsafe.Pointer(Str.ToNativePtr(message))), 0, 0)
+
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		return co.WM(0), wErr
+	} else {
+		return co.WM(ret), nil
+	}
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translatemessage
@@ -380,5 +394,19 @@ func SetProcessDPIAware() {
 		0, 0, 0)
 	if ret == 0 {
 		panic("SetProcessDPIAware() failed.")
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unregisterclassw
+func UnregisterClass(className ClassName, hInst HINSTANCE) error {
+	classNameVal, classNameBuf := className.raw()
+	ret, _, err := syscall.Syscall(proc.UnregisterClass.Addr(), 2,
+		classNameVal, uintptr(hInst), 0)
+	runtime.KeepAlive(classNameBuf)
+
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		return wErr
+	} else {
+		return nil
 	}
 }

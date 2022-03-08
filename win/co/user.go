@@ -249,6 +249,20 @@ const (
 	CWP_SKIPTRANSPARENT CWP = 0x0004
 )
 
+// DrawIconEx() diFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawiconex
+type DI uint32
+
+const (
+	DI_COMPAT      DI = 0x0004
+	DI_DEFAULTSIZE DI = 0x0008
+	DI_IMAGE       DI = 0x0002
+	DI_MASK        DI = 0x0001
+	DI_NOMIRROR    DI = 0x0010
+	DI_NORMAL      DI = 0x0003
+)
+
 // EnumDisplayDevices flags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-display_devicew

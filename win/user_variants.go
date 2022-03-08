@@ -7,7 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Variant type for a class name identifier.
+// Variant type for a class name identifier, which can be a string or an ATOM.
 type ClassName struct {
 	curType uint8  // 0: none
 	atom    ATOM   // 1
@@ -159,7 +159,8 @@ func (me *IconRes) raw() (uintptr, *uint16) { // pointer must be kept alive
 
 //------------------------------------------------------------------------------
 
-// Variant type for a menu item identifier.
+// Variant type for a menu item identifier, which can be specified by command ID
+// or zero-based position.
 type MenuItem struct {
 	curType uint8
 	n       uint16 // 1: cmd, 2: pos
