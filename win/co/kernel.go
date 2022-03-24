@@ -27,6 +27,18 @@ const (
 	CP_THREAD_ACP CP = 3  // The Windows ANSI code page for the current thread.
 	CP_SYMBOL     CP = 42 // Symbol code page (42).
 
+	CP_IBM1026      CP = 1026  // IBM EBCDIC Turkish (Latin 5).
+	CP_IBM01047     CP = 1047  // IBM EBCDIC Latin 1/Open System.
+	CP_IBM01140     CP = 1140  // IBM EBCDIC US-Canada (037 + Euro symbol); IBM EBCDIC (US-Canada-Euro).
+	CP_IBM01141     CP = 1141  // IBM EBCDIC Germany (20273 + Euro symbol); IBM EBCDIC (Germany-Euro).
+	CP_IBM01142     CP = 1142  // IBM EBCDIC Denmark-Norway (20277 + Euro symbol); IBM EBCDIC (Denmark-Norway-Euro).
+	CP_IBM01143     CP = 1143  // IBM EBCDIC Finland-Sweden (20278 + Euro symbol); IBM EBCDIC (Finland-Sweden-Euro).
+	CP_IBM01144     CP = 1144  // IBM EBCDIC Italy (20280 + Euro symbol); IBM EBCDIC (Italy-Euro).
+	CP_IBM01145     CP = 1145  // IBM EBCDIC Latin America-Spain (20284 + Euro symbol); IBM EBCDIC (Spain-Euro).
+	CP_IBM01146     CP = 1146  // IBM EBCDIC United Kingdom (20285 + Euro symbol); IBM EBCDIC (UK-Euro).
+	CP_IBM01147     CP = 1147  // IBM EBCDIC France (20297 + Euro symbol); IBM EBCDIC (France-Euro).
+	CP_IBM01148     CP = 1148  // IBM EBCDIC International (500 + Euro symbol); IBM EBCDIC (International-Euro).
+	CP_IBM01149     CP = 1149  // IBM EBCDIC Icelandic (20871 + Euro symbol); IBM EBCDIC (Icelandic-Euro).
 	CP_UTF16        CP = 1200  // Unicode UTF-16, little endian byte order (BMP of ISO 10646).
 	CP_UNICODE_FFFE CP = 1201  // Unicode UTF-16, big endian byte order.
 	CP_WINDOWS_1250 CP = 1250  // ANSI Central European; Central European (Windows).
