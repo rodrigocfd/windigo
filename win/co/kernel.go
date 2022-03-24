@@ -1,5 +1,20 @@
 package co
 
+// CONSOLE_READCONSOLE_CONTROL DwControlKeyState.
+type CKS uint32
+
+const (
+	CAPSLOCK_ON        CKS = 0x0080
+	ENHANCED_KEY       CKS = 0x0100
+	LEFT_ALT_PRESSED   CKS = 0x0002
+	LEFT_CTRL_PRESSED  CKS = 0x0008
+	NUMLOCK_ON         CKS = 0x0020
+	RIGHT_ALT_PRESSED  CKS = 0x0001
+	RIGHT_CTRL_PRESSED CKS = 0x0004
+	SCROLLLOCK_ON      CKS = 0x0040
+	SHIFT_PRESSED      CKS = 0x0010
+)
+
 // Code page identifiers.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
@@ -67,6 +82,28 @@ const (
 	DISPOSITION_OPEN_ALWAYS       DISPOSITION = 4
 	DISPOSITION_OPEN_EXISTING     DISPOSITION = 3
 	DISPOSITION_TRUNCATE_EXISTING DISPOSITION = 5
+)
+
+// SetConsoleMode() mode.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/console/setconsolemode
+type ENABLE uint32
+
+const (
+	ENABLE_ECHO_INPUT             ENABLE = 0x0004
+	ENABLE_INSERT_MODE            ENABLE = 0x0020
+	ENABLE_LINE_INPUT             ENABLE = 0x0002
+	ENABLE_MOUSE_INPUT            ENABLE = 0x0010
+	ENABLE_PROCESSED_INPUT        ENABLE = 0x0001
+	ENABLE_QUICK_EDIT_MODE        ENABLE = 0x0040
+	ENABLE_WINDOW_INPUT           ENABLE = 0x0008
+	ENABLE_VIRTUAL_TERMINAL_INPUT ENABLE = 0x0200
+
+	ENABLE_PROCESSED_OUTPUT            ENABLE = 0x0001
+	ENABLE_WRAP_AT_EOL_OUTPUT          ENABLE = 0x0002
+	ENABLE_VIRTUAL_TERMINAL_PROCESSING ENABLE = 0x0004
+	ENABLE_DISABLE_NEWLINE_AUTO_RETURN ENABLE = 0x0008
+	ENABLE_LVB_GRID_WORLDWIDE          ENABLE = 0x0010
 )
 
 // WM_ENDSESSION event.
@@ -647,6 +684,17 @@ const (
 	STARTF_USESHOWWINDOW    STARTF = 0x0000_0001
 	STARTF_USESIZE          STARTF = 0x0000_0002
 	STARTF_USESTDHANDLES    STARTF = 0x0000_0100
+)
+
+// Standard devices.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/console/getstdhandle
+type STD int32
+
+const (
+	STD_INPUT_HANDLE  STD = -10
+	STD_OUTPUT_HANDLE STD = -11
+	STD_ERROR_HANDLE  STD = -12
 )
 
 // Sub-language identifier.

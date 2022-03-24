@@ -8,6 +8,18 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// ⚠️ You must call SetNLength().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/console/console-readconsole-control
+type CONSOLE_READCONSOLE_CONTROL struct {
+	nLength           uint32
+	NInitialChars     uint32
+	DwCtrlWakeupMask  uint32
+	DwControlKeyState co.CKS
+}
+
+func (c *CONSOLE_READCONSOLE_CONTROL) SetNLength() { c.nLength = uint32(unsafe.Sizeof(*c)) }
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-dynamic_time_zone_information
 type DYNAMIC_TIME_ZONE_INFORMATION struct {
 	Bias                        int32

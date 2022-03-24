@@ -12,6 +12,30 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
+// ⚠️ You must defer FreeConsole().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/console/allocconsole
+func AllocConsole() error {
+	ret, _, err := syscall.Syscall(proc.AllocConsole.Addr(), 0,
+		0, 0, 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
+// ⚠️ You must defer FreeConsole().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/console/attachconsole
+func AttachConsole(processId uint32) error {
+	ret, _, err := syscall.Syscall(proc.AttachConsole.Addr(), 1,
+		uintptr(processId), 0, 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-copyfilew
 func CopyFile(existingFile, newFile string, failIfExists bool) error {
 	ret, _, err := syscall.Syscall(proc.CopyFile.Addr(), 3,
@@ -112,11 +136,44 @@ func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/console/freeconsole
+func FreeConsole() error {
+	ret, _, err := syscall.Syscall(proc.FreeConsole.Addr(), 0,
+		0, 0, 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getcommandlinew
 func GetCommandLine() string {
 	ret, _, _ := syscall.Syscall(proc.GetCommandLine.Addr(), 0,
 		0, 0, 0)
 	return Str.FromNativePtr((*uint16)(unsafe.Pointer(ret)))
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/console/getconsolecp
+func GetConsoleCP() (co.CP, error) {
+	ret, _, err := syscall.Syscall(proc.GetConsoleCP.Addr(), 0,
+		0, 0, 0)
+	if ret == 0 {
+		return co.CP(0), errco.ERROR(err)
+	}
+	return co.CP(ret), nil
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/console/getconsoletitle
+func GetConsoleTitle() (string, error) {
+	const BUF_SZ = _MAX_PATH * 2
+	buf := make([]uint16, BUF_SZ)
+
+	ret, _, err := syscall.Syscall(proc.GetConsoleTitle.Addr(), 2,
+		uintptr(unsafe.Pointer(&buf[0])), uintptr(BUF_SZ), 0)
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		return "", wErr
+	}
+	return Str.FromNativeSlice(buf), nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getcurrentdirectory
@@ -488,6 +545,26 @@ func ReplaceFile(
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replaced))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replacement))),
 		uintptr(backup.raw()), uintptr(replaceFlags), 0, 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/console/setconsoleoutputcp
+func SetConsoleOutputCP(codePage co.CP) error {
+	ret, _, err := syscall.Syscall(proc.SetConsoleOutputCP.Addr(), 1,
+		uintptr(codePage), 0, 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/console/setconsoletitle
+func SetConsoleTitle(title string) error {
+	ret, _, err := syscall.Syscall(proc.SetConsoleTitle.Addr(), 1,
+		uintptr(unsafe.Pointer(Str.ToNativePtr(title))), 0, 0)
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
