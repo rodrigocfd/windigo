@@ -65,7 +65,7 @@ type DELETEITEMSTRUCT struct {
 	ItemData uintptr // ULONG_PTR
 }
 
-// ⚠️ You must call SetCb().
+// ⚠️ You must call SetCb() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-display_devicew
 type DISPLAY_DEVICE struct {
@@ -102,7 +102,7 @@ type DRAWITEMSTRUCT struct {
 	ItemData   uintptr // ULONG_PTR
 }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-guithreadinfo
 type GUITHREADINFO struct {
@@ -119,7 +119,7 @@ type GUITHREADINFO struct {
 
 func (gti *GUITHREADINFO) SetCbSize() { gti.cbSize = uint32(unsafe.Sizeof(*gti)) }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
 type HELPINFO struct {
@@ -145,7 +145,7 @@ type ICONINFO struct {
 func (ii *ICONINFO) FIcon() bool       { return ii.fIcon != 0 }
 func (ii *ICONINFO) SetFIcon(val bool) { ii.fIcon = int32(util.BoolToUintptr(val)) }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfoexw
 type ICONINFOEX struct {
@@ -191,7 +191,7 @@ type MENUGETOBJECTINFO struct {
 	PvObj   uintptr // PVOID
 }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
 type MENUINFO struct {
@@ -206,7 +206,7 @@ type MENUINFO struct {
 
 func (mi *MENUINFO) SetCbSize() { mi.cbSize = uint32(unsafe.Sizeof(*mi)) }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
 type MENUITEMINFO struct {
@@ -235,7 +235,7 @@ type MINMAXINFO struct {
 	PtMaxTrackSize POINT
 }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfo
 type MONITORINFO struct {
@@ -270,7 +270,7 @@ type NMHDR struct {
 	Code     uint32  // in fact it should be int32
 }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nonclientmetricsw
 type NONCLIENTMETRICS struct {
@@ -334,7 +334,7 @@ type RECT struct {
 	Left, Top, Right, Bottom int32
 }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-scrollinfo
 type SCROLLINFO struct {
@@ -372,7 +372,7 @@ type STYLESTRUCT_WSEX struct {
 	StyleNew co.WS_EX
 }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-titlebarinfoex
 type TITLEBARINFOEX struct {
@@ -392,7 +392,7 @@ type WINDOWPOS struct {
 	Flags           co.SWP
 }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassexw
 type WNDCLASSEX struct {

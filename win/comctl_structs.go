@@ -9,7 +9,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// ⚠️ You must call SetCbStruct().
+// ⚠️ You must call SetCbStruct() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-editballoontip
 type EDITBALLOONTIP struct {
@@ -21,7 +21,7 @@ type EDITBALLOONTIP struct {
 
 func (eb *EDITBALLOONTIP) SetCbStruct() { eb.cbStruct = uint32(unsafe.Sizeof(*eb)) }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
 type IMAGELISTDRAWPARAMS struct {
@@ -43,7 +43,7 @@ type IMAGELISTDRAWPARAMS struct {
 
 func (idp *IMAGELISTDRAWPARAMS) SetCbSize() { idp.cbSize = uint32(unsafe.Sizeof(*idp)) }
 
-// ⚠️ You must call SetDwSize().
+// ⚠️ You must call SetDwSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
 type INITCOMMONCONTROLSEX struct {
@@ -794,7 +794,7 @@ func (tbb *TBBUTTON) SetIBitmap(icon, imgList int) {
 	tbb.iBitmap = int32(MAKELONG(uint16(icon), uint16(imgList)))
 }
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbuttoninfow
 type TBBUTTONINFO struct {

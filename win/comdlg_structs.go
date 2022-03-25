@@ -6,7 +6,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// ⚠️ You must call SetLStructSize().
+// ⚠️ You must call SetLStructSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolorw-r1
 type CHOOSECOLOR struct {

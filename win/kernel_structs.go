@@ -23,7 +23,7 @@ type CONSOLE_FONT_INFO struct {
 	DwFontSize COORD
 }
 
-// ⚠️ You must call SetNLength().
+// ⚠️ You must call SetNLength() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/console/console-readconsole-control
 type CONSOLE_READCONSOLE_CONTROL struct {
@@ -102,7 +102,7 @@ func (ft *FILETIME) FromTime(val time.Time) {
 	)
 }
 
-// ⚠️ You must call SetDwSize().
+// ⚠️ You must call SetDwSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-moduleentry32w
 type MODULEENTRY32 struct {
@@ -130,11 +130,11 @@ func (me *MODULEENTRY32) SetSzExePath(val string) {
 	copy(me.szExePath[:], Str.ToNativeSlice(Str.Substr(val, 0, len(me.szExePath)-1)))
 }
 
-// ⚠️ You must call SetDwOsVersionInfoSize().
+// ⚠️ You must call SetDwOsVersionInfoSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
 type OSVERSIONINFOEX struct {
-	DwOsVersionInfoSize uint32
+	dwOsVersionInfoSize uint32
 	DwMajorVersion      uint32
 	DwMinorVersion      uint32
 	DwBuildNumber       uint32
@@ -148,7 +148,7 @@ type OSVERSIONINFOEX struct {
 }
 
 func (osv *OSVERSIONINFOEX) SetDwOsVersionInfoSize() {
-	osv.DwOsVersionInfoSize = uint32(unsafe.Sizeof(*osv))
+	osv.dwOsVersionInfoSize = uint32(unsafe.Sizeof(*osv))
 }
 
 func (osv *OSVERSIONINFOEX) SzCSDVersion() string { return Str.FromNativeSlice(osv.szCSDVersion[:]) }
@@ -156,7 +156,7 @@ func (osv *OSVERSIONINFOEX) SetSzCSDVersion(val string) {
 	copy(osv.szCSDVersion[:], Str.ToNativeSlice(Str.Substr(val, 0, len(osv.szCSDVersion)-1)))
 }
 
-// ⚠️ You must call SetDwSize().
+// ⚠️ You must call SetDwSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-processentry32w
 type PROCESSENTRY32 struct {
@@ -187,7 +187,7 @@ type PROCESS_INFORMATION struct {
 	DwThreadId  uint32
 }
 
-// ⚠️ You must call SetNLength().
+// ⚠️ You must call SetNLength() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/aa379560(v=vs.85)
 type SECURITY_ATTRIBUTES struct {
@@ -203,7 +203,7 @@ func (sa *SECURITY_ATTRIBUTES) SetBInheritHandle(val bool) {
 	sa.bInheritHandle = int32(util.BoolToUintptr(val))
 }
 
-// ⚠️ You must call SetCb().
+// ⚠️ You must call SetCb() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
 type STARTUPINFO struct {
@@ -293,7 +293,7 @@ func (st *SYSTEMTIME) ToTime() time.Time {
 		time.Local)
 }
 
-// ⚠️ You must call SetDwSize().
+// ⚠️ You must call SetDwSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-threadentry32
 type THREADENTRY32 struct {

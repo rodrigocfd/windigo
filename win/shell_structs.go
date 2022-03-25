@@ -6,7 +6,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// ⚠️ You must call SetCbSize().
+// ⚠️ You must call SetCbSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
 type NOTIFYICONDATA struct {

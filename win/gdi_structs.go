@@ -17,7 +17,7 @@ type BITMAP struct {
 	BmBits       *byte
 }
 
-// ⚠️ You must call BmiHeader.SetBiSize().
+// ⚠️ You must call BmiHeader.SetBiSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfo
 type BITMAPINFO struct {
@@ -25,7 +25,7 @@ type BITMAPINFO struct {
 	BmiColors [1]RGBQUAD
 }
 
-// ⚠️ You must call SetBiSize().
+// ⚠️ You must call SetBiSize() to initialize the struct.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
 type BITMAPINFOHEADER struct {
