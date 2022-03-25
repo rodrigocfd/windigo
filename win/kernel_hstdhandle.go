@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -14,6 +15,20 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/console/getstdhandle
 type HSTDHANDLE HANDLE
+
+// 📑 https://docs.microsoft.com/en-us/windows/console/getcurrentconsolefont
+func (hStd HSTDHANDLE) GetCurrentConsoleFont(
+	maximumWindow bool,
+	info *CONSOLE_FONT_INFO) error {
+
+	ret, _, err := syscall.Syscall(proc.GetCurrentConsoleFont.Addr(), 3,
+		uintptr(hStd), util.BoolToUintptr(maximumWindow),
+		uintptr(unsafe.Pointer(info)))
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
 
 // 📑 https://docs.microsoft.com/en-us/windows/console/getstdhandle
 func GetStdHandle(handle co.STD) HSTDHANDLE {
@@ -43,10 +58,51 @@ func (hStd HSTDHANDLE) ReadConsole(
 	return Str.FromNativeSlice(buf), nil
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/console/setconsolecursorinfo
+func (hStd HSTDHANDLE) SetConsoleCursorInfo(info *CONSOLE_CURSOR_INFO) error {
+	ret, _, err := syscall.Syscall(proc.SetConsoleCursorInfo.Addr(), 2,
+		uintptr(hStd), uintptr(unsafe.Pointer(info)), 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/console/coord-str
+func (hStd HSTDHANDLE) SetConsoleCursorPosition(x, y int) error {
+	ret, _, err := syscall.Syscall(proc.SetConsoleCursorPosition.Addr(), 3,
+		uintptr(hStd), uintptr(x), uintptr(y))
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/console/setconsoledisplaymode
+func (hStd HSTDHANDLE) SetConsoleDisplayMode(mode co.CONSOLE) (SIZE, error) {
+	var coord COORD
+	ret, _, err := syscall.Syscall(proc.SetConsoleDisplayMode.Addr(), 3,
+		uintptr(hStd), uintptr(mode), uintptr(unsafe.Pointer(&coord)))
+	if ret == 0 {
+		return SIZE{}, errco.ERROR(err)
+	}
+	return SIZE{Cx: int32(coord.X), Cy: int32(coord.Y)}, nil
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/console/setconsolemode
 func (hStd HSTDHANDLE) SetConsoleMode(mode co.ENABLE) error {
 	ret, _, err := syscall.Syscall(proc.SetConsoleMode.Addr(), 2,
 		uintptr(hStd), uintptr(mode), 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/console/setconsolescreenbuffersize
+func (hStd HSTDHANDLE) SetConsoleScreenBufferSize(x, y int) error {
+	ret, _, err := syscall.Syscall(proc.SetConsoleScreenBufferSize.Addr(), 3,
+		uintptr(hStd), uintptr(x), uintptr(y))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}

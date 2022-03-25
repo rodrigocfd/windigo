@@ -176,6 +176,13 @@ func GetConsoleTitle() (string, error) {
 	return Str.FromNativeSlice(buf), nil
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/console/getconsolewindow
+func GetConsoleWindow() HWND {
+	ret, _, _ := syscall.Syscall(proc.GetConsoleWindow.Addr(), 0,
+		0, 0, 0)
+	return HWND(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getcurrentdirectory
 func GetCurrentDirectory() string {
 	var buf [_MAX_PATH + 1]uint16

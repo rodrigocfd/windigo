@@ -8,6 +8,21 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// 📑 https://docs.microsoft.com/en-us/windows/console/console-cursor-info-str
+type CONSOLE_CURSOR_INFO struct {
+	DwSize   uint32
+	bVisible int32 // BOOL
+}
+
+func (cc *CONSOLE_CURSOR_INFO) BVisible() bool       { return cc.bVisible != 0 }
+func (cc *CONSOLE_CURSOR_INFO) SetBVisible(val bool) { cc.bVisible = int32(util.BoolToUintptr(val)) }
+
+// 📑 https://docs.microsoft.com/en-us/windows/console/console-font-info-str
+type CONSOLE_FONT_INFO struct {
+	NFont      uint32
+	DwFontSize COORD
+}
+
 // ⚠️ You must call SetNLength().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/console/console-readconsole-control
@@ -19,6 +34,11 @@ type CONSOLE_READCONSOLE_CONTROL struct {
 }
 
 func (c *CONSOLE_READCONSOLE_CONTROL) SetNLength() { c.nLength = uint32(unsafe.Sizeof(*c)) }
+
+// 📑 https://docs.microsoft.com/en-us/windows/console/coord-str
+type COORD struct {
+	X, Y int16
+}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-dynamic_time_zone_information
 type DYNAMIC_TIME_ZONE_INFORMATION struct {

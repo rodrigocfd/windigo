@@ -15,6 +15,16 @@ const (
 	SHIFT_PRESSED      CKS = 0x0010
 )
 
+// SetConsoleDisplayMode() mode.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/console/setconsoledisplaymode
+type CONSOLE uint32
+
+const (
+	CONSOLE_FULLSCREEN_MODE CONSOLE = 1
+	CONSOLE_WINDOWED_MODE   CONSOLE = 2
+)
+
 // Code page identifiers.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
