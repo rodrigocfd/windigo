@@ -450,6 +450,17 @@ const (
 	LANG_ZULU                LANG = 0x35
 )
 
+// LockFileEx() dwFlags.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex
+type LOCKFILE uint32
+
+const (
+	LOCKFILE_NONE             LOCKFILE = 0
+	LOCKFILE_FAIL_IMMEDIATELY LOCKFILE = 0x0000_0001
+	LOCKFILE_EXCLUSIVE_LOCK   LOCKFILE = 0x0000_0002
+)
+
 // MoveFileEx() dwFlags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw

@@ -16,6 +16,16 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/console/getstdhandle
 type HSTDHANDLE HANDLE
 
+// 📑 https://docs.microsoft.com/en-us/windows/console/getstdhandle
+func GetStdHandle(handle co.STD) HSTDHANDLE {
+	ret, _, err := syscall.Syscall(proc.GetStdHandle.Addr(), 1,
+		uintptr(handle), 0, 0)
+	if int(ret) == _INVALID_HANDLE_VALUE {
+		panic(errco.ERROR(err))
+	}
+	return HSTDHANDLE(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/console/getcurrentconsolefont
 func (hStd HSTDHANDLE) GetCurrentConsoleFont(
 	maximumWindow bool,
@@ -28,16 +38,6 @@ func (hStd HSTDHANDLE) GetCurrentConsoleFont(
 		return errco.ERROR(err)
 	}
 	return nil
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/console/getstdhandle
-func GetStdHandle(handle co.STD) HSTDHANDLE {
-	ret, _, err := syscall.Syscall(proc.GetStdHandle.Addr(), 1,
-		uintptr(handle), 0, 0)
-	if int(ret) == _INVALID_HANDLE_VALUE {
-		panic(errco.ERROR(err))
-	}
-	return HSTDHANDLE(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/console/readconsole

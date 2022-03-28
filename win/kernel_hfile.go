@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -77,6 +78,39 @@ func (hFile HFILE) CreateFileMapping(
 	return HFILEMAP(ret), nil
 }
 
+// ⚠️ You must defer HFILE.UnlockFile().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfile
+func (hFile HFILE) LockFile(offset, numBytes uint64) error {
+	offsetLo, offsetHi := util.Break64(offset)
+	numBytesLo, numBytesHi := util.Break64(numBytes)
+
+	ret, _, err := syscall.Syscall6(proc.LockFile.Addr(), 5,
+		uintptr(hFile), uintptr(offsetLo), uintptr(offsetHi),
+		uintptr(numBytesLo), uintptr(numBytesHi), 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
+// ⚠️ You must defer HFILE.UnlockFileEx().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex
+func (hFile HFILE) LockFileEx(
+	flags co.LOCKFILE, numBytes uint64, overlapped *OVERLAPPED) error {
+
+	numBytesLo, numBytesHi := util.Break64(numBytes)
+	ret, _, err := syscall.Syscall6(proc.LockFileEx.Addr(), 6,
+		uintptr(hFile), uintptr(flags), 0,
+		uintptr(numBytesLo), uintptr(numBytesHi),
+		uintptr(unsafe.Pointer(overlapped)))
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hFile HFILE) ReadFile(buffer []byte) (numBytesRead uint32, e error) {
 	ret, _, err := syscall.Syscall6(proc.ReadFile.Addr(), 5,
@@ -114,6 +148,32 @@ func (hFile HFILE) SetFilePointerEx(
 		newPointerOffset, e = 0, wErr
 	}
 	return
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfile
+func (hFile HFILE) UnlockFile(offset, numBytes uint64) error {
+	offsetLo, offsetHi := util.Break64(offset)
+	numBytesLo, numBytesHi := util.Break64(numBytes)
+
+	ret, _, err := syscall.Syscall6(proc.UnlockFile.Addr(), 5,
+		uintptr(hFile), uintptr(offsetLo), uintptr(offsetHi),
+		uintptr(numBytesLo), uintptr(numBytesHi), 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfileex
+func (hFile HFILE) UnlockFileEx(numBytes uint64, overlapped *OVERLAPPED) error {
+	numBytesLo, numBytesHi := util.Break64(numBytes)
+	ret, _, err := syscall.Syscall6(proc.UnlockFileEx.Addr(), 5,
+		uintptr(hFile), 0, uintptr(numBytesLo), uintptr(numBytesHi),
+		uintptr(unsafe.Pointer(overlapped)), 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
