@@ -25,7 +25,7 @@ func CreateWindowEx(
 
 	classNameVal, classNameBuf := className.raw()
 	ret, _, err := syscall.Syscall12(proc.CreateWindowEx.Addr(), 12,
-		uintptr(exStyle), classNameVal, uintptr(title.raw()),
+		uintptr(exStyle), classNameVal, uintptr(title.Raw()),
 		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
 		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
 	runtime.KeepAlive(classNameBuf)
@@ -39,7 +39,7 @@ func CreateWindowEx(
 func FindWindow(className ClassName, title StrOpt) (HWND, bool) {
 	classNameVal, classNameBuf := className.raw()
 	ret, _, _ := syscall.Syscall(proc.FindWindow.Addr(), 2,
-		classNameVal, uintptr(title.raw()), 0)
+		classNameVal, uintptr(title.Raw()), 0)
 	runtime.KeepAlive(classNameBuf)
 	return HWND(ret), ret != 0
 }

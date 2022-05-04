@@ -27,7 +27,8 @@ func (me *StrOpt) IsSome() bool        { return me.isSome }
 func (me *StrOpt) IsNone() bool        { return !me.isSome }
 func (me *StrOpt) Str() (string, bool) { return me.str, me.isSome }
 
-func (me *StrOpt) raw() unsafe.Pointer {
+// Returns the *uint16 of the string converted to a native pointer, or nil.
+func (me *StrOpt) Raw() unsafe.Pointer {
 	if me.isSome {
 		buf := Str.ToNativePtr(me.str)
 		return unsafe.Pointer(buf)

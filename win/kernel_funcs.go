@@ -76,14 +76,14 @@ func CreateProcess(
 	processInformation *PROCESS_INFORMATION) {
 
 	ret, _, err := syscall.Syscall12(proc.CreateProcess.Addr(), 10,
-		uintptr(applicationName.raw()),
-		uintptr(commandLine.raw()),
+		uintptr(applicationName.Raw()),
+		uintptr(commandLine.Raw()),
 		uintptr(unsafe.Pointer(processAttributes)),
 		uintptr(unsafe.Pointer(threadAttributes)),
 		util.BoolToUintptr(inheritHandles),
 		uintptr(creationFlags),
 		ptrEnvironment,
-		uintptr(currentDirectory.raw()),
+		uintptr(currentDirectory.Raw()),
 		uintptr(unsafe.Pointer(startupInfo)),
 		uintptr(unsafe.Pointer(processInformation)),
 		0, 0)
@@ -340,7 +340,7 @@ func GetVolumeInformation(rootPathName StrOpt) (_VolumeInfo, error) {
 	var sysNameBuf [_MAX_PATH + 1]uint16
 
 	ret, _, err := syscall.Syscall9(proc.GetVolumeInformation.Addr(), 8,
-		uintptr(rootPathName.raw()),
+		uintptr(rootPathName.Raw()),
 		uintptr(unsafe.Pointer(&nameBuf[0])), _MAX_PATH+1,
 		uintptr(unsafe.Pointer(&info.SerialNumber)),
 		uintptr(unsafe.Pointer(&info.MaxComponentLength)),
@@ -551,7 +551,7 @@ func ReplaceFile(
 	ret, _, err := syscall.Syscall6(proc.ReplaceFile.Addr(), 6,
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replaced))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replacement))),
-		uintptr(backup.raw()), uintptr(replaceFlags), 0, 0)
+		uintptr(backup.Raw()), uintptr(replaceFlags), 0, 0)
 	if ret == 0 {
 		return errco.ERROR(err)
 	}

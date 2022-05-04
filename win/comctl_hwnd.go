@@ -51,9 +51,9 @@ func (hWnd HWND) TaskDialog(
 	var pnButton int32
 	ret, _, _ := syscall.Syscall9(proc.TaskDialog.Addr(), 8,
 		uintptr(hWnd), uintptr(hInstance),
-		uintptr(windowTitle.raw()),
-		uintptr(mainInstruction.raw()),
-		uintptr(content.raw()),
+		uintptr(windowTitle.Raw()),
+		uintptr(mainInstruction.Raw()),
+		uintptr(content.Raw()),
 		uintptr(commonButtons), uintptr(icon),
 		uintptr(unsafe.Pointer(&pnButton)), 0)
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {

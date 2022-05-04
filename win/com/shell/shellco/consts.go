@@ -1,5 +1,42 @@
 package shellco
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-advanceslideshow
+type DSD uint32
+
+const (
+	DSD_FORWARD  DSD = 0
+	DSD_BACKWARD DSD = 1
+)
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-getslideshowoptions
+type DSO uint32
+
+const (
+	DSO_DISABLED      DSO = 0
+	DSO_SHUFFLEIMAGES DSO = 0x01
+)
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-getstatus
+type DSS uint32
+
+const (
+	DSS_ENABLED                    DSS = 0x01
+	DSS_SLIDESHOW                  DSS = 0x02
+	DSS_DISABLED_BY_REMOTE_SESSION DSS = 0x04
+)
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-desktop_wallpaper_position
+type DWPOS uint32
+
+const (
+	DWPOS_CENTER  DWPOS = 0
+	DWPOS_TILE    DWPOS = 1
+	DWPOS_STRETCH DWPOS = 2
+	DWPOS_FIT     DWPOS = 3
+	DWPOS_FILL    DWPOS = 4
+	DWPOS_SPAN    DWPOS = 5
+)
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/com/dropeffect-constants
 type DROPEFFECT uint32
 
@@ -8,7 +45,7 @@ const (
 	DROPEFFECT_COPY   DROPEFFECT = 1
 	DROPEFFECT_MOVE   DROPEFFECT = 2
 	DROPEFFECT_LINK   DROPEFFECT = 4
-	DROPEFFECT_SCROLL DROPEFFECT = 0x80000000
+	DROPEFFECT_SCROLL DROPEFFECT = 0x8000_0000
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_fileopendialogoptions
@@ -28,16 +65,16 @@ const (
 	FOS_CREATEPROMPT             FOS = 0x2000
 	FOS_SHAREAWARE               FOS = 0x4000
 	FOS_NOREADONLYRETURN         FOS = 0x8000
-	FOS_NOTESTFILECREATE         FOS = 0x10000
-	FOS_HIDEMRUPLACES            FOS = 0x20000
-	FOS_HIDEPINNEDPLACES         FOS = 0x40000
-	FOS_NODEREFERENCELINKS       FOS = 0x100000
-	FOS_OKBUTTONNEEDSINTERACTION FOS = 0x200000
-	FOS_DONTADDTORECENT          FOS = 0x2000000
-	FOS_FORCESHOWHIDDEN          FOS = 0x10000000
-	FOS_DEFAULTNOMINIMODE        FOS = 0x20000000
-	FOS_FORCEPREVIEWPANEON       FOS = 0x40000000
-	FOS_SUPPORTSTREAMABLEITEMS   FOS = 0x80000000
+	FOS_NOTESTFILECREATE         FOS = 0x1_0000
+	FOS_HIDEMRUPLACES            FOS = 0x2_0000
+	FOS_HIDEPINNEDPLACES         FOS = 0x4_0000
+	FOS_NODEREFERENCELINKS       FOS = 0x10_0000
+	FOS_OKBUTTONNEEDSINTERACTION FOS = 0x20_0000
+	FOS_DONTADDTORECENT          FOS = 0x200_0000
+	FOS_FORCESHOWHIDDEN          FOS = 0x1000_0000
+	FOS_DEFAULTNOMINIMODE        FOS = 0x2000_0000
+	FOS_FORCEPREVIEWPANEON       FOS = 0x4000_0000
+	FOS_SUPPORTSTREAMABLEITEMS   FOS = 0x8000_0000
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_sichintf
@@ -45,9 +82,9 @@ type SICHINT uint32
 
 const (
 	SICHINT_DISPLAY                       SICHINT = 0
-	SICHINT_ALLFIELDS                     SICHINT = 0x80000000
-	SICHINT_CANONICAL                     SICHINT = 0x10000000
-	SICHINT_TEST_FILESYSPATH_IF_NOT_EQUAL SICHINT = 0x20000000
+	SICHINT_ALLFIELDS                     SICHINT = 0x8000_0000
+	SICHINT_CANONICAL                     SICHINT = 0x1000_0000
+	SICHINT_TEST_FILESYSPATH_IF_NOT_EQUAL SICHINT = 0x2000_0000
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-sigdn
@@ -55,15 +92,15 @@ type SIGDN uint32
 
 const (
 	SIGDN_NORMALDISPLAY               SIGDN = 0
-	SIGDN_PARENTRELATIVEPARSING       SIGDN = 0x80018001
-	SIGDN_DESKTOPABSOLUTEPARSING      SIGDN = 0x80028000
-	SIGDN_PARENTRELATIVEEDITING       SIGDN = 0x80031001
-	SIGDN_DESKTOPABSOLUTEEDITING      SIGDN = 0x8004c000
-	SIGDN_FILESYSPATH                 SIGDN = 0x80058000
-	SIGDN_URL                         SIGDN = 0x80068000
-	SIGDN_PARENTRELATIVEFORADDRESSBAR SIGDN = 0x8007c001
-	SIGDN_PARENTRELATIVE              SIGDN = 0x80080001
-	SIGDN_PARENTRELATIVEFORUI         SIGDN = 0x80094001
+	SIGDN_PARENTRELATIVEPARSING       SIGDN = 0x8001_8001
+	SIGDN_DESKTOPABSOLUTEPARSING      SIGDN = 0x8002_8000
+	SIGDN_PARENTRELATIVEEDITING       SIGDN = 0x8003_1001
+	SIGDN_DESKTOPABSOLUTEEDITING      SIGDN = 0x8004_c000
+	SIGDN_FILESYSPATH                 SIGDN = 0x8005_8000
+	SIGDN_URL                         SIGDN = 0x8006_8000
+	SIGDN_PARENTRELATIVEFORADDRESSBAR SIGDN = 0x8007_c001
+	SIGDN_PARENTRELATIVE              SIGDN = 0x8008_0001
+	SIGDN_PARENTRELATIVEFORUI         SIGDN = 0x8009_4001
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getpath

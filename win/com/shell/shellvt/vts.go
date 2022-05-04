@@ -4,6 +4,29 @@ import (
 	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 )
 
+// IDesktopWallpaper virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-idesktopwallpaper
+type IDesktopWallpaper struct {
+	comvt.IUnknown
+	SetWallpaper              uintptr
+	GetWallpaper              uintptr
+	GetMonitorDevicePathAt    uintptr
+	GetMonitorDevicePathCount uintptr
+	GetMonitorRECT            uintptr
+	SetBackgroundColor        uintptr
+	GetBackgroundColor        uintptr
+	SetPosition               uintptr
+	GetPosition               uintptr
+	SetSlideshow              uintptr
+	GetSlideshow              uintptr
+	SetSlideshowOptions       uintptr
+	GetSlideshowOptions       uintptr
+	AdvanceSlideshow          uintptr
+	GetStatus                 uintptr
+	Enable                    uintptr
+}
+
 // IFileDialog virtual table.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialog

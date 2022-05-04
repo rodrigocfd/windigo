@@ -86,7 +86,7 @@ func EnumDisplayDevices(
 	device StrOpt, flags co.EDD,
 	callback func(devNum int, info *DISPLAY_DEVICE) bool) {
 
-	devicePtr := device.raw()
+	devicePtr := device.Raw()
 	devNum := 0
 
 	dide := DISPLAY_DEVICE{}
