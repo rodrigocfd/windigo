@@ -313,6 +313,61 @@ func (hdc HDC) GetTextMetrics(tm *TEXTMETRIC) {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getviewportextex
+func (hdc HDC) GetViewportExtEx() SIZE {
+	var sz SIZE
+	ret, _, err := syscall.Syscall(proc.GetViewportExtEx.Addr(), 2,
+		uintptr(hdc), uintptr(unsafe.Pointer(&sz)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return sz
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getviewportorgex
+func (hdc HDC) GetViewportOrgEx() POINT {
+	var pt POINT
+	ret, _, err := syscall.Syscall(proc.GetViewportOrgEx.Addr(), 2,
+		uintptr(hdc), uintptr(unsafe.Pointer(&pt)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return pt
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getwindowextex
+func (hdc HDC) GetWindowExtEx() SIZE {
+	var sz SIZE
+	ret, _, err := syscall.Syscall(proc.GetWindowExtEx.Addr(), 2,
+		uintptr(hdc), uintptr(unsafe.Pointer(&sz)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return sz
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getwindoworgex
+func (hdc HDC) GetWindowOrgEx() POINT {
+	var pt POINT
+	ret, _, err := syscall.Syscall(proc.GetWindowOrgEx.Addr(), 2,
+		uintptr(hdc), uintptr(unsafe.Pointer(&pt)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return pt
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-intersectcliprect
+func (hdc HDC) IntersectClipRect(coords RECT) co.REGION {
+	ret, _, err := syscall.Syscall6(proc.IntersectClipRect.Addr(), 5,
+		uintptr(hdc), uintptr(coords.Left), uintptr(coords.Top),
+		uintptr(coords.Right), uintptr((coords.Bottom)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return co.REGION(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-invertrgn
 func (hdc HDC) InvertRgn(hRgn HRGN) {
 	ret, _, err := syscall.Syscall(proc.InvertRgn.Addr(), 2,
@@ -335,6 +390,22 @@ func (hdc HDC) LineTo(x, y int32) {
 func (hdc HDC) LPtoDP(pts []POINT) {
 	ret, _, err := syscall.Syscall(proc.LPtoDP.Addr(), 3,
 		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])), uintptr(len(pts)))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-maskblt
+func (hdc HDC) MaskBlt(
+	destTopLeft POINT, sz SIZE, hdcSrc HDC, srcTopLeft POINT,
+	hbmMask HBITMAP, maskOffset POINT, rop co.ROP) {
+
+	ret, _, err := syscall.Syscall12(proc.MaskBlt.Addr(), 12,
+		uintptr(hdc), uintptr(destTopLeft.X), uintptr(destTopLeft.Y),
+		uintptr(sz.Cx), uintptr(sz.Cy),
+		uintptr(hdcSrc), uintptr(srcTopLeft.X), uintptr(srcTopLeft.Y),
+		uintptr(hbmMask), uintptr(maskOffset.X), uintptr(maskOffset.Y),
+		uintptr(rop))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
