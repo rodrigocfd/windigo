@@ -24,25 +24,15 @@ For the Win32 API bindings:
 | [`win/co`](win/co/) | Native Win32 constants, all typed. |
 | `win/errco` | Native Win32 [error codes](https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes), with types `errco.ERROR` and `errco.CDERR`. |
 
-And for the [COM](win/com/) bindings:
+For the [COM](win/com/) bindings, there is the main package, and two subpackages – the `co` suffix contains the constants, and the `vt` contains the virtual tables:
 
-| Package | Description |
+| Packages | Description |
 | - | - |
-| `win/com/autom` | Native Win32 [Automation](https://docs.microsoft.com/en-us/windows/win32/api/_automat/) COM interfaces. |
-| `win/com/autom/automco` | Automation constants, all typed. |
-| `win/com/autom/automvt` | Automation virtual tables. |
-| `win/com/com` | Native Win32 [COM API base](https://docs.microsoft.com/en-us/windows/win32/api/_com/). |
-| `win/com/com/comco` | COM API base constants, all typed. |
-| `win/com/com/comvt` | COM API base virtual tables. |
-| `win/com/d2d1` | Native Win32 [Direct2D](https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-portal) COM interfaces. |
-| `win/com/d2d1/d2d1co` | Direct2D constants, all typed. |
-| `win/com/d2d1/d2d1vt` | Direct2D virtual tables. |
-| `win/com/dshow` | Native Win32 [DirectShow](https://docs.microsoft.com/en-us/windows/win32/directshow/directshow) COM interfaces. |
-| `win/com/dshow/dshowco` | DirectShow constants, all typed. |
-| `win/com/dshow/dshowvt` | DirectShow virtual tables. |
-| `win/com/shell` | Native Win32 [Shell](https://docs.microsoft.com/en-us/windows/win32/api/_shell/) COM interfaces. |
-| `win/com/shell/shellco` | Shell constants, all typed. |
-| `win/com/shell/shellvt` | Shell virtual tables. |
+| `win/com/autom`<br>`win/com/autom/automco`<br>`win/com/autom/automvt` | Native Win32 [Automation](https://docs.microsoft.com/en-us/windows/win32/api/_automat/) COM interfaces. |
+| `win/com/com`<br>`win/com/com/comco`<br>`win/com/com/comvt` | Native Win32 [COM API base](https://docs.microsoft.com/en-us/windows/win32/api/_com/). |
+| `win/com/d2d1`<br>`win/com/d2d1/d2d1co`<br>`win/com/d2d1/d2d1vt` | Native Win32 [Direct2D](https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-portal) COM interfaces. |
+| `win/com/dshow`<br>`win/com/dshow/dshowco`<br>`win/com/dshow/dshowvt` | Native Win32 [DirectShow](https://docs.microsoft.com/en-us/windows/win32/directshow/directshow) COM interfaces. |
+| `win/com/shell`<br>`win/com/shell/shellco`<br>`win/com/shell/shellvt` | Native Win32 [Shell](https://docs.microsoft.com/en-us/windows/win32/api/_shell/) COM interfaces. |
 
 Windigo is designed to be familiar to Win32 programmers, using the same concepts, so most C/C++ Win32 tutorials should be applicable.
 
