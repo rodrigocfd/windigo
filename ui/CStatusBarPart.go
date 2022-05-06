@@ -15,11 +15,6 @@ type StatusBarPart struct {
 	index uint32
 }
 
-func (me *StatusBarPart) new(ctrl StatusBar, index int) {
-	me.sb = ctrl
-	me.index = uint32(index)
-}
-
 // Retrieves the HICON.
 //
 // The icon is shared, the StatusBar doesn't own it.

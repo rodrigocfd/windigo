@@ -153,9 +153,7 @@ func (me *_StatusBarParts) Count() int {
 // simply kept. If the index is invalid (or becomes invalid), subsequent
 // operations on the StatusBarPart will fail.
 func (me *_StatusBarParts) Get(index int) StatusBarPart {
-	var part StatusBarPart
-	part.new(me.sb, index)
-	return part
+	return StatusBarPart{sb: me.sb, index: uint32(index)}
 }
 
 // Sets the texts of all parts at once.

@@ -133,9 +133,7 @@ func (me *_ListViewItems) Find(text string) (ListViewItem, bool) {
 // simply kept. If the index is invalid (or becomes invalid), subsequent
 // operations on the ListViewItem will fail.
 func (me *_ListViewItems) Get(index int) ListViewItem {
-	var item ListViewItem
-	item.new(me.lv, index)
-	return item
+	return ListViewItem{lv: me.lv, index: uint32(index)}
 }
 
 // Retrieves the item below the given coordinates, if any.

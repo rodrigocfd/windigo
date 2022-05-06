@@ -15,11 +15,6 @@ type TreeViewItem struct {
 	hItem win.HTREEITEM
 }
 
-func (me *TreeViewItem) new(ctrl TreeView, hItem win.HTREEITEM) {
-	me.tv = ctrl
-	me.hItem = hItem
-}
-
 // Adds a child to this item.
 func (me TreeViewItem) AddChild(text string) TreeViewItem {
 	tvi := win.TVINSERTSTRUCT{

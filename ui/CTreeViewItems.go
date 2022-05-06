@@ -46,9 +46,7 @@ func (me *_TreeViewItems) FirstVisible() (TreeViewItem, bool) {
 // simply kept. If the handle is invalid (or becomes invalid), subsequent
 // operations on the TreeViewItem will fail.
 func (me *_TreeViewItems) Get(hItem win.HTREEITEM) TreeViewItem {
-	var item TreeViewItem
-	item.new(me.tv, hItem)
-	return item
+	return TreeViewItem{tv: me.tv, hItem: hItem}
 }
 
 // Retrieves all the root items.

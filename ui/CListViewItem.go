@@ -14,11 +14,6 @@ type ListViewItem struct {
 	index uint32
 }
 
-func (me *ListViewItem) new(ctrl ListView, index int) {
-	me.lv = ctrl
-	me.index = uint32(index)
-}
-
 // Deletes the item.
 func (me ListViewItem) Delete() {
 	ret := me.lv.Hwnd().SendMessage(co.LVM_DELETEITEM, win.WPARAM(me.index), 0)

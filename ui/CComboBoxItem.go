@@ -14,11 +14,6 @@ type ComboBoxItem struct {
 	index uint32
 }
 
-func (me *ComboBoxItem) new(ctrl ComboBox, index int) {
-	me.cmb = ctrl
-	me.index = uint32(index)
-}
-
 // Deletes the item.
 func (me *ComboBoxItem) Delete() {
 	me.cmb.Hwnd().SendMessage(co.CB_DELETESTRING, win.WPARAM(me.index), 0)

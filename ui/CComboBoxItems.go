@@ -42,9 +42,7 @@ func (me *_ComboBoxItems) DeleteAll() {
 // simply kept. If the index is invalid (or becomes invalid), subsequent
 // operations on the ComboBoxItem will fail.
 func (me *_ComboBoxItems) Get(index int) ComboBoxItem {
-	var item ComboBoxItem
-	item.new(me.cmb, index)
-	return item
+	return ComboBoxItem{cmb: me.cmb, index: uint32(index)}
 }
 
 // Retrieves the selected item, if any.
