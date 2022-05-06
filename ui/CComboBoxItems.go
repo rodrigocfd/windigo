@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"fmt"
 	"runtime"
 	"unsafe"
 
@@ -32,47 +31,35 @@ func (me *_ComboBoxItems) Count() int {
 	return int(me.cmb.Hwnd().SendMessage(co.CB_GETCOUNT, 0, 0))
 }
 
-// Deletes the item at the given index.
-func (me *_ComboBoxItems) Delete(index int) {
-	me.cmb.Hwnd().SendMessage(co.CB_DELETESTRING, win.WPARAM(index), 0)
-}
-
 // Deletes all items.
 func (me *_ComboBoxItems) DeleteAll() {
 	me.cmb.Hwnd().SendMessage(co.CB_RESETCONTENT, 0, 0)
 }
 
-// Sets the selected item.
-func (me *_ComboBoxItems) Select(index int) {
-	me.cmb.Hwnd().SendMessage(co.CB_SETCURSEL, win.WPARAM(index), 0)
+// Returns the item at the given index.
+//
+// Note that this method is dumb: no validation is made, the given index is
+// simply kept. If the index is invalid (or becomes invalid), subsequent
+// operations on the ComboBoxItem will fail.
+func (me *_ComboBoxItems) Get(index int) ComboBoxItem {
+	var item ComboBoxItem
+	item.new(me.cmb, index)
+	return item
 }
 
-// Retrieves the selected index, if any.
-func (me *_ComboBoxItems) Selected() (int, bool) {
+// Retrieves the selected item, if any.
+func (me *_ComboBoxItems) Selected() (ComboBoxItem, bool) {
 	idx := int(me.cmb.Hwnd().SendMessage(co.CB_GETCURSEL, 0, 0))
 	if idx == -1 {
-		return -1, false
+		return me.Get(-1), false
 	}
-	return idx, true
+	return me.Get(idx), true
 }
 
 // Retrieves the selected text, if any.
 func (me *_ComboBoxItems) SelectedText() (string, bool) {
-	if idx, hasSel := me.Selected(); hasSel {
-		return me.Text(idx), true
+	if selItem, hasSel := me.Selected(); hasSel {
+		return selItem.Text(), true
 	}
 	return "", false
-}
-
-// Retrieves the text of the item at the given index.
-func (me *_ComboBoxItems) Text(index int) string {
-	nChars := me.cmb.Hwnd().SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(index), 0)
-	if int(nChars) == -1 {
-		panic(fmt.Sprintf("CB_GETLBTEXTLEN failed at item %d.", index))
-	}
-
-	textBuf := make([]uint16, nChars+1)
-	me.cmb.Hwnd().SendMessage(co.CB_GETLBTEXT,
-		win.WPARAM(index), win.LPARAM(unsafe.Pointer(&textBuf[0])))
-	return win.Str.FromNativeSlice(textBuf)
 }

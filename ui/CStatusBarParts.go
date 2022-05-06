@@ -2,7 +2,6 @@ package ui
 
 import (
 	"fmt"
-	"runtime"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/ui/wm"
@@ -138,7 +137,7 @@ func (me *_StatusBarParts) AddResizable(resizeWeights ...int) {
 func (me *_StatusBarParts) AllTexts() []string {
 	texts := make([]string, 0, me.Count())
 	for i := 0; i < me.Count(); i++ {
-		texts = append(texts, me.Text(i))
+		texts = append(texts, me.Get(i).Text())
 	}
 	return texts
 }
@@ -148,13 +147,15 @@ func (me *_StatusBarParts) Count() int {
 	return len(me.partsData)
 }
 
-// Retrieves the HICON of the part.
+// Returns the part at the given index.
 //
-// The icon is shared, the StatusBar doesn't own it.
-func (me *_StatusBarParts) Icon(partIndex int) win.HICON {
-	return win.HICON(
-		me.sb.Hwnd().SendMessage(co.SB_GETICON, win.WPARAM(partIndex), 0),
-	)
+// Note that this method is dumb: no validation is made, the given index is
+// simply kept. If the index is invalid (or becomes invalid), subsequent
+// operations on the StatusBarPart will fail.
+func (me *_StatusBarParts) Get(index int) StatusBarPart {
+	var part StatusBarPart
+	part.new(me.sb, index)
+	return part
 }
 
 // Sets the texts of all parts at once.
@@ -168,41 +169,6 @@ func (me *_StatusBarParts) SetAllTexts(texts ...string) {
 	}
 
 	for i, text := range texts {
-		me.SetText(i, text)
+		me.Get(i).SetText(text)
 	}
-}
-
-// Puts the HICON on the part.
-//
-// The icon is shared, the StatusBar doesn't own it.
-func (me *_StatusBarParts) SetIcon(partIndex int, hIcon win.HICON) {
-	me.sb.Hwnd().SendMessage(co.SB_SETICON,
-		win.WPARAM(partIndex), win.LPARAM(hIcon))
-}
-
-// Sets the text of the part.
-func (me *_StatusBarParts) SetText(partIndex int, text string) {
-	pText := win.Str.ToNativePtr(text)
-	ret := me.sb.Hwnd().SendMessage(co.SB_SETTEXT,
-		win.MAKEWPARAM(win.MAKEWORD(uint8(partIndex), 0), 0),
-		win.LPARAM(unsafe.Pointer(pText)))
-	runtime.KeepAlive(pText)
-	if ret == 0 {
-		panic(fmt.Sprintf("SB_SETTEXT %d failed \"%s\".", partIndex, text))
-	}
-}
-
-// Retrieves the text of the part.
-func (me *_StatusBarParts) Text(partIndex int) string {
-	len := uint16(
-		me.sb.Hwnd().SendMessage(co.SB_GETTEXTLENGTH, win.WPARAM(partIndex), 0),
-	)
-	if len == 0 {
-		return ""
-	}
-
-	buf := make([]uint16, len+1)
-	me.sb.Hwnd().SendMessage(co.SB_GETTEXT,
-		win.WPARAM(partIndex), win.LPARAM(unsafe.Pointer(&buf[0])))
-	return win.Str.FromNativeSlice(buf)
 }

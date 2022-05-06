@@ -9,42 +9,26 @@ import (
 )
 
 // A single item of a ListView.
-type ListViewItem interface {
-	Delete()                              // Deletes the item.
-	EnsureVisible()                       // Makes sure the item is visible, scrolling the ListView if needed.
-	Focus()                               // Sets the item as the focused one.
-	Index() int                           // Returns the zero-based index of the item.
-	IsSelected() bool                     // Tells whether the item is currently selected.
-	IsVisible() bool                      // Tells whether the item is currently visible.
-	LParam() win.LPARAM                   // Retrieves the custom data associated with the item.
-	Rect(portion co.LVIR) win.RECT        // Retrieves the coordinates of the rectangle surrounding the item.
-	Select(isSelected bool)               // Selects the item.
-	SetLParam(lp win.LPARAM)              // Sets the custom data associated with the item.
-	SetText(columnIndex int, text string) // Sets the text of the item.
-	Text(columnIndex int) string          // Retrieves the text of the item.
-	Update()                              // Sends an LVM_UPDATE message to the item.
-}
-
-//------------------------------------------------------------------------------
-
-type _ListViewItem struct {
+type ListViewItem struct {
 	lv    ListView
 	index uint32
 }
 
-func (me *_ListViewItem) new(ctrl ListView, index int) {
+func (me *ListViewItem) new(ctrl ListView, index int) {
 	me.lv = ctrl
 	me.index = uint32(index)
 }
 
-func (me *_ListViewItem) Delete() {
+// Deletes the item.
+func (me ListViewItem) Delete() {
 	ret := me.lv.Hwnd().SendMessage(co.LVM_DELETEITEM, win.WPARAM(me.index), 0)
 	if ret == 0 {
 		panic(fmt.Sprintf("LVM_DELETEITEM %d failed.", me.index))
 	}
 }
 
-func (me *_ListViewItem) EnsureVisible() {
+// Makes sure the item is visible, scrolling the ListView if needed.
+func (me ListViewItem) EnsureVisible() {
 	if me.lv.View() == co.LV_VIEW_DETAILS {
 		// In details view, LVM_ENSUREVISIBLE won't center the item vertically.
 		// That's what we do here.
@@ -91,7 +75,8 @@ func (me *_ListViewItem) EnsureVisible() {
 	}
 }
 
-func (me *_ListViewItem) Focus() {
+// Sets the item as the focused one.
+func (me ListViewItem) Focus() {
 	lvi := win.LVITEM{
 		State:     co.LVIS_FOCUSED,
 		StateMask: co.LVIS_FOCUSED,
@@ -104,23 +89,27 @@ func (me *_ListViewItem) Focus() {
 	}
 }
 
-func (me *_ListViewItem) Index() int {
+// Returns the zero-based index of the item.
+func (me ListViewItem) Index() int {
 	return int(me.index)
 }
 
-func (me *_ListViewItem) IsSelected() bool {
+// Tells whether the item is currently selected.
+func (me ListViewItem) IsSelected() bool {
 	return co.LVIS(
 		me.lv.Hwnd().SendMessage(co.LVM_GETITEMSTATE,
 			win.WPARAM(me.index), win.LPARAM(co.LVIS_SELECTED)),
 	) == co.LVIS_SELECTED
 }
 
-func (me *_ListViewItem) IsVisible() bool {
+// Tells whether the item is currently visible.
+func (me ListViewItem) IsVisible() bool {
 	return me.lv.Hwnd().SendMessage(co.LVM_ISITEMVISIBLE,
 		win.WPARAM(me.index), 0) != 0
 }
 
-func (me *_ListViewItem) LParam() win.LPARAM {
+// Retrieves the custom data associated with the item.
+func (me ListViewItem) LParam() win.LPARAM {
 	lvi := win.LVITEM{
 		IItem: int32(me.index),
 		Mask:  co.LVIF_PARAM,
@@ -135,7 +124,8 @@ func (me *_ListViewItem) LParam() win.LPARAM {
 	return lvi.LParam
 }
 
-func (me *_ListViewItem) Rect(portion co.LVIR) win.RECT {
+// Retrieves the coordinates of the rectangle surrounding the item.
+func (me ListViewItem) Rect(portion co.LVIR) win.RECT {
 	rcItem := win.RECT{
 		Left: int32(portion),
 	}
@@ -148,7 +138,8 @@ func (me *_ListViewItem) Rect(portion co.LVIR) win.RECT {
 	return rcItem // coordinates relative to the ListView
 }
 
-func (me *_ListViewItem) Select(isSelected bool) {
+// Selects the item.
+func (me ListViewItem) Select(isSelected bool) {
 	state := co.LVIS_NONE
 	if isSelected {
 		state = co.LVIS_SELECTED
@@ -166,7 +157,8 @@ func (me *_ListViewItem) Select(isSelected bool) {
 	}
 }
 
-func (me *_ListViewItem) SetLParam(lp win.LPARAM) {
+// Sets the custom data associated with the item.
+func (me ListViewItem) SetLParam(lp win.LPARAM) {
 	lvi := win.LVITEM{
 		IItem:  int32(me.index),
 		Mask:   co.LVIF_PARAM,
@@ -180,7 +172,8 @@ func (me *_ListViewItem) SetLParam(lp win.LPARAM) {
 	}
 }
 
-func (me *_ListViewItem) SetText(columnIndex int, text string) {
+// Sets the text of the item.
+func (me ListViewItem) SetText(columnIndex int, text string) {
 	lvi := win.LVITEM{
 		ISubItem: int32(columnIndex),
 	}
@@ -194,7 +187,8 @@ func (me *_ListViewItem) SetText(columnIndex int, text string) {
 	}
 }
 
-func (me *_ListViewItem) Text(columnIndex int) string {
+// Retrieves the text of the item.
+func (me ListViewItem) Text(columnIndex int) string {
 	const BLOCK int = 64 // arbitrary
 	bufSz := BLOCK
 	var buf []uint16
@@ -222,7 +216,8 @@ func (me *_ListViewItem) Text(columnIndex int) string {
 	return win.Str.FromNativeSlice(buf)
 }
 
-func (me *_ListViewItem) Update() {
+// Sends an LVM_UPDATE message to the item.
+func (me ListViewItem) Update() {
 	if me.lv.Hwnd().SendMessage(co.LVM_UPDATE, win.WPARAM(me.index), 0) == 0 {
 		panic(fmt.Sprintf("LVM_UPDATE %d failed.", me.index))
 	}

@@ -37,10 +37,7 @@ func (me *_TreeViewItems) FirstVisible() (TreeViewItem, bool) {
 		me.tv.Hwnd().SendMessage(co.TVM_GETNEXTITEM,
 			win.WPARAM(co.TVGN_FIRSTVISIBLE), win.LPARAM(win.HTREEITEM(0))),
 	)
-	if hVisible == 0 {
-		return nil, false
-	}
-	return me.Get(hVisible), true
+	return me.tv.Items().Get(hVisible), hVisible != 0
 }
 
 // Returns the item with the given handle.
@@ -49,7 +46,7 @@ func (me *_TreeViewItems) FirstVisible() (TreeViewItem, bool) {
 // simply kept. If the handle is invalid (or becomes invalid), subsequent
 // operations on the TreeViewItem will fail.
 func (me *_TreeViewItems) Get(hItem win.HTREEITEM) TreeViewItem {
-	item := &_TreeViewItem{}
+	var item TreeViewItem
 	item.new(me.tv, hItem)
 	return item
 }
@@ -65,9 +62,5 @@ func (me *_TreeViewItems) Selected() (TreeViewItem, bool) {
 		me.tv.Hwnd().SendMessage(co.TVM_GETNEXTITEM,
 			win.WPARAM(co.TVGN_CARET), win.LPARAM(win.HTREEITEM(0))),
 	)
-
-	if hItem == 0 {
-		return nil, false
-	}
-	return me.Get(hItem), true
+	return me.tv.Items().Get(hItem), hItem != 0
 }

@@ -75,7 +75,7 @@ func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
 			me.Items().Add(opts.texts...)
 		}
 		if opts.selected != -1 {
-			me.Items().Select(opts.selected)
+			me.Items().Get(opts.selected).Select()
 		}
 	})
 

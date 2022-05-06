@@ -99,7 +99,7 @@ func (me *_ListViewItems) Focused() (ListViewItem, bool) {
 			win.WPARAM(startIdx), win.LPARAM(co.LVNI_FOCUSED)),
 	)
 	if idx == -1 {
-		return nil, false
+		return me.Get(-1), false
 	}
 
 	return me.Get(idx), true
@@ -121,7 +121,7 @@ func (me *_ListViewItems) Find(text string) (ListViewItem, bool) {
 			win.WPARAM(wp), win.LPARAM(unsafe.Pointer(&lvfi))),
 	)
 	if idx == -1 {
-		return nil, false // not found
+		return me.Get(-1), false // not found
 	}
 
 	return me.Get(idx), true
@@ -133,7 +133,7 @@ func (me *_ListViewItems) Find(text string) (ListViewItem, bool) {
 // simply kept. If the index is invalid (or becomes invalid), subsequent
 // operations on the ListViewItem will fail.
 func (me *_ListViewItems) Get(index int) ListViewItem {
-	item := &_ListViewItem{}
+	var item ListViewItem
 	item.new(me.lv, index)
 	return item
 }
@@ -151,7 +151,7 @@ func (me *_ListViewItems) HitTest(pos win.POINT) (ListViewItem, bool) {
 		win.WPARAM(wp), win.LPARAM(unsafe.Pointer(&lvhti)))
 
 	if lvhti.IItem == -1 {
-		return nil, false
+		return me.Get(-1), false
 	}
 	return me.Get(int(lvhti.IItem)), true
 }
@@ -218,7 +218,7 @@ func (me *_ListViewItems) SelectedItems() []ListViewItem {
 func (me *_ListViewItems) TopmostVisible() (ListViewItem, bool) {
 	idx := int(me.lv.Hwnd().SendMessage(co.LVM_GETTOPINDEX, 0, 0))
 	if idx == -1 {
-		return nil, false
+		return me.Get(-1), false
 	}
 
 	return me.Get(idx), true
