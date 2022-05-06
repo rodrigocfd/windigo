@@ -719,7 +719,7 @@ func (td *TASKDIALOGCONFIG) serializePacked() ([160]byte, []unsafe.Pointer) {
 		}
 	}
 	serializeButtons := func(btns []TASKDIALOG_BUTTON, offsetC, offsetP int) {
-		if len(btns) > 0 {
+		if btns != nil && len(btns) > 0 {
 			serializedBtns := make([]byte, 0, len(btns)*12) // sizeof(TASKDIALOG_BUTTON) packed
 			for i := range btns {
 				serializedBtn, pTxt := btns[i].serializedPacked()
