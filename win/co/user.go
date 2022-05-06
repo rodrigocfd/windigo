@@ -645,6 +645,16 @@ const (
 	ISMEX_SEND     ISMEX = 0x0000_0001
 )
 
+// SetProcessDefaultLayout() dwDefaultLayout.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdefaultlayout
+type LAYOUT uint32
+
+const (
+	LAYOUT_NORMAL LAYOUT = 0
+	LAYOUT_RTL    LAYOUT = 0x0000_0001
+)
+
 // LoadImage fuLoad.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew

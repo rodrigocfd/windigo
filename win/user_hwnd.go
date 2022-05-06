@@ -646,6 +646,15 @@ func (hWnd HWND) OpenClipboard() HCLIPBOARD {
 	return HCLIPBOARD{}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-physicaltologicalpoint
+func (hWnd HWND) PhysicalToLogicalPoint(pt *POINT) {
+	ret, _, err := syscall.Syscall(proc.PhysicalToLogicalPoint.Addr(), 2,
+		uintptr(hWnd), uintptr(unsafe.Pointer(pt)), 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postmessagew
 func (hWnd HWND) PostMessage(msg co.WM, wParam WPARAM, lParam LPARAM) {
 	ret, _, err := syscall.Syscall6(proc.PostMessage.Addr(), 4,
@@ -654,6 +663,27 @@ func (hWnd HWND) PostMessage(msg co.WM, wParam WPARAM, lParam LPARAM) {
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-realchildwindowfrompoint
+func (hWnd HWND) RealChildWindowFromPoint(
+	parentClientCoords POINT) (HWND, bool) {
+
+	ret, _, _ := syscall.Syscall(proc.RealChildWindowFromPoint.Addr(), 3,
+		uintptr(hWnd),
+		uintptr(parentClientCoords.X), uintptr(parentClientCoords.Y))
+	return HWND(ret), ret != 0
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-realgetwindowclassw
+func (hWnd HWND) RealGetWindowClass() string {
+	var buf [256 + 1]uint16
+	ret, _, err := syscall.Syscall(proc.RealGetWindowClass.Addr(), 3,
+		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		panic(wErr)
+	}
+	return Str.FromNativeSlice(buf[:])
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-releasedc

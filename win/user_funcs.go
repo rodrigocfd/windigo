@@ -230,6 +230,13 @@ func GetMessage(
 	return int32(ret), nil
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessageextrainfo
+func GetMessageExtraInfo() LPARAM {
+	ret, _, _ := syscall.Syscall(proc.GetMessageExtraInfo.Addr(), 0,
+		0, 0, 0)
+	return LPARAM(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagepos
 func GetMessagePos() POINT {
 	ret, _, _ := syscall.Syscall(proc.GetMessagePos.Addr(), 0,
@@ -256,6 +263,17 @@ func GetPhysicalCursorPos() POINT {
 		panic(errco.ERROR(err))
 	}
 	return pt
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getprocessdefaultlayout
+func GetProcessDefaultLayout() co.LAYOUT {
+	var defaultLayout co.LAYOUT
+	ret, _, err := syscall.Syscall(proc.GetProcessDefaultLayout.Addr(), 1,
+		uintptr(unsafe.Pointer(&defaultLayout)), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+	return defaultLayout
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getqueuestatus
@@ -367,6 +385,13 @@ func RegisterWindowMessage(message string) (co.WM, error) {
 	}
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-replymessage
+func ReplyMessage(result uintptr) bool {
+	ret, _, _ := syscall.Syscall(proc.ReplyMessage.Addr(), 1,
+		result, 0, 0)
+	return ret != 0
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translatemessage
 func TranslateMessage(msg *MSG) bool {
 	ret, _, _ := syscall.Syscall(proc.TranslateMessage.Addr(), 1,
@@ -394,6 +419,22 @@ func SetProcessDPIAware() {
 		0, 0, 0)
 	if ret == 0 {
 		panic("SetProcessDPIAware() failed.")
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmessageextrainfo
+func SetMessageExtraInfo(lp LPARAM) LPARAM {
+	ret, _, _ := syscall.Syscall(proc.SetMessageExtraInfo.Addr(), 1,
+		uintptr(lp), 0, 0)
+	return LPARAM(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdefaultlayout
+func SetProcessDefaultLayout(defaultLayout co.LAYOUT) {
+	ret, _, err := syscall.Syscall(proc.SetProcessDefaultLayout.Addr(), 1,
+		uintptr(defaultLayout), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
 	}
 }
 
