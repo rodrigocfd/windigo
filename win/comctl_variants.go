@@ -5,6 +5,14 @@ import (
 )
 
 // Variant type for an icon identifier for TASKDIALOGCONFIG.
+//
+// Example:
+//
+//  ico := TdcIconTdi(co.TD_ICON_ERROR)
+//
+//  if tdi, ok := ico.Tdi(); ok {
+//      println(tdi)
+//  }
 type TdcIcon struct {
 	curType uint8      // 0: none
 	hIcon   HICON      // 1

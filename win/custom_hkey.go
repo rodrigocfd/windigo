@@ -7,7 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Reads a REG_BINARY key value with HKEY.GetValue().
+// This helper method reads a REG_BINARY key value with HKEY.GetValue().
 func (hKey HKEY) ReadBinary(subKey, value string) []byte {
 	var pDataLen uint32
 	pdwType := co.REG_BINARY
@@ -29,7 +29,7 @@ func (hKey HKEY) ReadBinary(subKey, value string) []byte {
 	return pData
 }
 
-// Reads a REG_DWORD key value with HKEY.GetValue().
+// This helper method reads a REG_DWORD key value with HKEY.GetValue().
 func (hKey HKEY) ReadDword(subKey, value string) uint32 {
 	var pData uint32
 	pDataLen := uint32(unsafe.Sizeof(pData))
@@ -43,7 +43,7 @@ func (hKey HKEY) ReadDword(subKey, value string) uint32 {
 	return pData
 }
 
-// Reads a REG_QWORD key value with HKEY.GetValue().
+// This helper method reads a REG_QWORD key value with HKEY.GetValue().
 func (hKey HKEY) ReadQword(subKey, value string) uint64 {
 	var pData uint64
 	pDataLen := uint32(unsafe.Sizeof(pData))
@@ -57,7 +57,7 @@ func (hKey HKEY) ReadQword(subKey, value string) uint64 {
 	return pData
 }
 
-// Reads a REG_SZ key value with HKEY.GetValue().
+// This helper method reads a REG_SZ key value with HKEY.GetValue().
 func (hKey HKEY) ReadString(subKey, value string) string {
 	var pDataLen uint32
 	pdwType := co.REG_SZ
@@ -79,7 +79,7 @@ func (hKey HKEY) ReadString(subKey, value string) string {
 	return Str.FromNativeSlice(pData)
 }
 
-// Writes a REG_BINARY key value with HKEY.SetKeyValue().
+// This helper method writes a REG_BINARY key value with HKEY.SetKeyValue().
 func (hKey HKEY) WriteBinary(subKey, valueName string, data []byte) {
 	err := hKey.SetKeyValue(subKey, valueName, co.REG_BINARY,
 		unsafe.Pointer(&data[0]), uint32(len(data)))
@@ -88,7 +88,7 @@ func (hKey HKEY) WriteBinary(subKey, valueName string, data []byte) {
 	}
 }
 
-// Writes a REG_DWORD key value with HKEY.SetKeyValue().
+// This helper method writes a REG_DWORD key value with HKEY.SetKeyValue().
 func (hKey HKEY) WriteDword(subKey, valueName string, data uint32) {
 	err := hKey.SetKeyValue(subKey, valueName, co.REG_DWORD,
 		unsafe.Pointer(&data), uint32(unsafe.Sizeof(data)))
@@ -97,7 +97,7 @@ func (hKey HKEY) WriteDword(subKey, valueName string, data uint32) {
 	}
 }
 
-// Writes a REG_QWORD key value with HKEY.SetKeyValue().
+// This helper method writes a REG_QWORD key value with HKEY.SetKeyValue().
 func (hKey HKEY) WriteQword(subKey, valueName string, data uint64) {
 	err := hKey.SetKeyValue(subKey, valueName, co.REG_QWORD,
 		unsafe.Pointer(&data), uint32(unsafe.Sizeof(data)))
@@ -106,7 +106,7 @@ func (hKey HKEY) WriteQword(subKey, valueName string, data uint64) {
 	}
 }
 
-// Writes a REG_SZ key value with HKEY.SetKeyValue().
+// This helper method writes a REG_SZ key value with HKEY.SetKeyValue().
 func (hKey HKEY) WriteString(subKey, valueName string, data string) {
 	lpData16 := Str.ToNativeSlice(data)
 	err := hKey.SetKeyValue(subKey, valueName, co.REG_SZ,

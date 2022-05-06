@@ -4,30 +4,28 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Appends a new item to the menu. Returns the same menu, so you can chain multiple calls.
-//
-// Wrapper to HMENU.AppendMenu().
+// This helper method appends a new item to the menu, by calling
+// HMENU.AppendMenu(). Returns the same menu, so you can chain multiple calls.
 func (hMenu HMENU) AddItem(cmdId int, text string) HMENU {
 	hMenu.AppendMenu(co.MF_STRING, uint16(cmdId), text)
 	return hMenu
 }
 
-// Appends a new separator to the menu. Returns the same menu, so you can chain multiple calls.
-//
-// Wrapper to HMENU.AppendMenu().
+// This helper method appends a new separator to the menu, by calling
+// HMENU.AppendMenu(). Returns the same menu, so you can chain multiple calls.
 func (hMenu HMENU) AddSeparator() HMENU {
 	hMenu.AppendMenu(co.MF_SEPARATOR, HMENU(0), LPARAM(0))
 	return hMenu
 }
 
-// Appends a new submenu to the menu.
-//
-// Wrapper to HMENU.AppendMenu().
+// This helper method appends a new submenu to the menu, by calling
+// HMENU.AppendMenu().
 func (hMenu HMENU) AddSubmenu(text string, hSubMenu HMENU) {
 	hMenu.AppendMenu(co.MF_STRING|co.MF_POPUP, hSubMenu, text)
 }
 
-// Shows the popup menu anchored at the given coordinates, using TrackPopupMenu().
+// This helper method shows the popup menu anchored at the given coordinates,
+// using HMENU.TrackPopupMenu().
 //
 // If hCoordsRelativeTo is zero, coordinates must be relative to hParent.
 //

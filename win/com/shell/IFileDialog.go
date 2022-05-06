@@ -49,8 +49,9 @@ type IFileDialog interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getresult
 	GetResult() IShellItem
 
-	// Calls IFileDialog.GetResult() and IShellItem.GetDisplayName(), returning the
-	// file selected by the user.
+	// This helper method calls IFileDialog.GetResult() and
+	// IShellItem.GetDisplayName(), returning the single file selected by the
+	// user.
 	//
 	// Example:
 	//

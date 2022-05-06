@@ -1,9 +1,9 @@
 package win
 
-// Enumerates all modules.
+// This helper method enumerates all modules.
 //
 // To continue enumeration, the callback function must return true; to stop
-// enumeration, it must return false.
+// enumeration, return false.
 func (hProcSnap HPROCSNAPSHOT) EnumModules(
 	callback func(me32 *MODULEENTRY32) bool) error {
 
@@ -25,10 +25,10 @@ func (hProcSnap HPROCSNAPSHOT) EnumModules(
 	return nil
 }
 
-// Enumerates all processes.
+// This helper method enumerates all processes.
 //
 // To continue enumeration, the callback function must return true; to stop
-// enumeration, it must return false.
+// enumeration, return false.
 func (hProcSnap HPROCSNAPSHOT) EnumProcesses(
 	callback func(me32 *PROCESSENTRY32) bool) error {
 
@@ -50,10 +50,10 @@ func (hProcSnap HPROCSNAPSHOT) EnumProcesses(
 	return nil
 }
 
-// Enumerates all threads.
+// This helper method enumerates all threads.
 //
 // To continue enumeration, the callback function must return true; to stop
-// enumeration, it must return false.
+// enumeration, return false.
 func (hProcSnap HPROCSNAPSHOT) EnumThreads(
 	callback func(me32 *THREADENTRY32) bool) error {
 

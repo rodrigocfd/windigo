@@ -23,8 +23,8 @@ type IPicture interface {
 	CurDC() win.HDC
 
 	// Note that this method returns the height in HIMETRIC units. To convert it
-	// to pixels, use HDC.HiMetricToPixel(), or simply call SizePixels() method,
-	// which already performs the conversion.
+	// to pixels, use HDC.HiMetricToPixel(), or simply call
+	// IPicture.SizePixels() method, which already performs the conversion.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_height
 	Height() int32
@@ -48,8 +48,8 @@ type IPicture interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-put_keeporiginalformat
 	SetKeepOriginalFormat(keep bool)
 
-	// Calls Width() and Height(), then convers from HIMETRIC units to pixels
-	// with HDC.HiMetricToPixel().
+	// This helper method calls IPicture.Width() and IPicture.Height(), then
+	// convers from HIMETRIC units to pixels with HDC.HiMetricToPixel().
 	//
 	// If hdc is zero, calls win.HWND(0).GetDC() to retrieve the DC for the
 	// entire screen.
@@ -59,8 +59,8 @@ type IPicture interface {
 	Type() comco.PICTYPE
 
 	// Note that this method returns the width in HIMETRIC units. To convert it
-	// to pixels, use HDC.HiMetricToPixel(), or simply call SizePixels() method,
-	// which already performs the conversion.
+	// to pixels, use HDC.HiMetricToPixel(), or simply call
+	// IPicture.SizePixels() method, which already performs the conversion.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_width
 	Width() int32

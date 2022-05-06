@@ -19,8 +19,8 @@ type IEnumFilters interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-clone
 	Clone() IEnumFilters
 
-	// Calls Skip() until the end of the enum to retrieve the actual number of
-	// filters, then calls Reset().
+	// This helper method calls IEnumFilters.Skip() until the end of the enum to
+	// retrieve the actual number of filters, then calls IEnumFilters.Reset().
 	Count() int
 
 	// Calls Next() to retrieve all filters, then calls Reset().

@@ -28,9 +28,9 @@ type IFileOpenDialog interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
 	GetSelectedItems() IShellItemArray
 
-	// Calls IFileOpenDialog.GetResults() and
-	// IShellItemArray.ListDisplayNames(), returning the files selected by the
-	// user.
+	// This helper method calls IFileOpenDialog.GetResults() and
+	// IShellItemArray.ListDisplayNames(), returning the multiple files selected
+	// by the user.
 	//
 	// Example:
 	//

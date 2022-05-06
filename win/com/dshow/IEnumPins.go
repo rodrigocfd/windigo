@@ -19,8 +19,8 @@ type IEnumPins interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-clone
 	Clone() IEnumPins
 
-	// Calls Skip() until the end of the enum to retrieve the actual number of
-	// pins, then calls Reset().
+	// Calls IEnumPins.Skip() until the end of the enum to retrieve the actual
+	// number of pins, then calls IEnumPins.Reset().
 	Count() int
 
 	// Calls Next() to retrieve all pins, then calls Reset().

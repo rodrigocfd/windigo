@@ -5,6 +5,14 @@ import (
 )
 
 // Variant type for an optional string value.
+//
+// Example:
+//
+//  maybeStr := StrOptSome("foo")
+//
+//  if s, ok := maybeStr.Str(); ok {
+//      println(s)
+//  }
 type StrOpt struct {
 	isSome bool
 	str    string

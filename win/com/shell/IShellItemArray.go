@@ -26,8 +26,9 @@ type IShellItemArray interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getcount
 	GetCount() int
 
-	// Calls GetDisplayName() on each IShellItem, retrieving the names as
-	// strings.
+	// This helper method calls IShellItemArray.GetItemAt() to retrieve all
+	// IShellItem objects, then calls IShellItem.GetDisplayName() on each one,
+	// retrieving the names as strings.
 	//
 	// Example:
 	//

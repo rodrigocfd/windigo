@@ -5,8 +5,8 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Loads icons from the shell, used by Windows Explorer to represent the given
-// file extensions, like "mp3".
+// This helper method loads icons from the shell, used by Windows Explorer to
+// represent the given file extensions, like "mp3".
 func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) {
 	sz := hImg.GetIconSize()
 	isIco16 := sz.Cx == 16 && sz.Cy == 16

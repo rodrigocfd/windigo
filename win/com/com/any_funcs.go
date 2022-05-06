@@ -123,8 +123,8 @@ func CoUninitialize() {
 	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)
 }
 
-// Returns true if the COM object is not nil, and contains an initialized
-// internal pointer.
+// This helper function returns true if the COM object is not nil, and contains
+// an initialized internal pointer.
 func IsObj(obj IUnknown) bool {
 	return obj != nil && obj.Ptr() != nil
 }

@@ -42,8 +42,14 @@ type IUnknown interface {
 
 	// Returns the underlying pointer to pointer to the COM virtual table.
 	//
+	// If you want to check whether the object contains a valid, initialized
+	// pointer, prefer using the com.IsObj() function, which is safer.
+	//
 	// Don't use this pointer to create a new COM object, this can cause a
 	// resource leak.
+	//
+	// This method is used internally by the library, don't use unless you know
+	// what you're doing.
 	Ptr() **comvt.IUnknown
 }
 

@@ -19,8 +19,9 @@ type IEnumMediaTypes interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-clone
 	Clone() IEnumMediaTypes
 
-	// Calls Skip() until the end of the enum to retrieve the actual number of
-	// media types, then calls Reset().
+	// This helper method calls IEnumMediaTypes.Skip() until the end of the enum
+	// to retrieve the actual number of media types, then calls
+	// IEnumMediaTypes.Reset().
 	Count() int
 
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-next

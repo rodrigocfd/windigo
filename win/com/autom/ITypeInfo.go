@@ -78,9 +78,9 @@ type ITypeInfo interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getvardesc
 	GetVarDesc(index int) *VARDESC
 
-	// Retrieves a resumed information of all functions of this COM interface,
-	// by calling ITypeInfo.GetTypeAttr(), ITypeInfo.GetFuncDesc() and
-	// ITypeInfo.GetDocumentation().
+	// This helper method retrieves a resumed information of all functions of
+	// this COM interface, by calling ITypeInfo.GetTypeAttr(),
+	// ITypeInfo.GetFuncDesc() and ITypeInfo.GetDocumentation().
 	ListFunctions() []FuncDescResume
 
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasefuncdesc

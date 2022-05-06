@@ -42,8 +42,8 @@ type IDispatch interface {
 	Invoke(dispIdMember MEMBERID, lcid win.LCID,
 		flags automco.DISPATCH, dispParams *DISPPARAMS) (_InvokeRet, error)
 
-	// Calls IDispatch.GetTypeInfo() with win.LCID_SYSTEM_DEFAULT, then calls
-	// ITypeInfo.ListFunctions().
+	// This helper method calls IDispatch.GetTypeInfo() with
+	// win.LCID_SYSTEM_DEFAULT, then calls ITypeInfo.ListFunctions().
 	ListFunctions() []FuncDescResume
 }
 
