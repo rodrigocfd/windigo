@@ -45,7 +45,7 @@ func NewStatusBar(parent AnyParent) StatusBar {
 	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		sbStyles := co.WS_CHILD | co.WS_VISIBLE | co.WS(co.SBARS_TOOLTIPS)
 
-		parentStyle := co.WS(parent.Hwnd().GetWindowLongPtr(co.GWLP_STYLE))
+		parentStyle := co.WS(parent.Hwnd().GetWindowLongPtr(co.GWL_STYLE))
 		isParentResizable := (parentStyle&co.WS_MAXIMIZEBOX) != 0 ||
 			(parentStyle&co.WS_SIZEBOX) != 0
 

@@ -444,24 +444,6 @@ const (
 	GW_ENABLEDPOPUP GW = 6
 )
 
-// Get/SetWindowLongPtr() nIndex. Also includes constants with GWL prefix.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
-type GWLP int32
-
-const (
-	GWLP_STYLE          GWLP = -16
-	GWLP_EXSTYLE        GWLP = -20
-	GWLP_WNDPROC        GWLP = -4
-	GWLP_HINSTANCE      GWLP = -6
-	GWLP_HWNDPARENT     GWLP = -8
-	GWLP_USERDATA       GWLP = -21
-	GWLP_ID             GWLP = -12
-	GWLP_DWLP_DLGPROC   GWLP = 8 // sizeof(LRESULT) on x64
-	GWLP_DWLP_MSGRESULT GWLP = 0
-	GWLP_DWLP_USER      GWLP = GWLP_DWLP_DLGPROC + 8 // sizeof(LRESULT) on x64
-)
-
 // SetWindowsHookEx() callback CBT hook codes.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw

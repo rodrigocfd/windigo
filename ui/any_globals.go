@@ -255,7 +255,7 @@ func _RunModalLoop(hWnd win.HWND) {
 func _PaintThemedBorders(hWnd win.HWND, p wm.NcPaint) {
 	hWnd.DefWindowProc(co.WM_NCPAINT, p.Msg.WParam, p.Msg.LParam) // make system draw the scrollbar for us
 
-	exStyle := co.WS_EX(hWnd.GetWindowLongPtr(co.GWLP_EXSTYLE))
+	exStyle := co.WS_EX(hWnd.GetWindowLongPtr(co.GWL_EXSTYLE))
 
 	if (exStyle&co.WS_EX_CLIENTEDGE) == 0 || // has no border
 		!win.IsThemeActive() ||

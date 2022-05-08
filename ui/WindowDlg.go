@@ -63,9 +63,9 @@ func _DlgProc(
 	if uMsg == co.WM_INITDIALOG {
 		pMe = (*_WindowDlg)(unsafe.Pointer(lParam))
 		pMe._WindowBase.hWnd = hDlg // assign actual HWND
-		hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, uintptr(unsafe.Pointer(pMe)))
+		hDlg.SetWindowLongPtr(co.GWL_DWL_USER, uintptr(unsafe.Pointer(pMe)))
 	} else {
-		pMe = (*_WindowDlg)(unsafe.Pointer(hDlg.GetWindowLongPtr(co.GWLP_DWLP_USER)))
+		pMe = (*_WindowDlg)(unsafe.Pointer(hDlg.GetWindowLongPtr(co.GWL_DWL_USER)))
 	}
 
 	// If object pointer is not stored, then no processing is done.
@@ -91,7 +91,7 @@ func _DlgProc(
 		// No further messages processed after this one.
 		if uMsg == co.WM_NCDESTROY {
 			delete(_globalWindowDlgPtrs, pMe) // remove from set
-			hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, 0)
+			hDlg.SetWindowLongPtr(co.GWL_DWL_USER, 0)
 			pMe._WindowBase.hWnd = win.HWND(0)
 		}
 
