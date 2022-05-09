@@ -1,6 +1,7 @@
 package win
 
 import (
+	"encoding/binary"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win/co"
@@ -16,6 +17,30 @@ type BITMAP struct {
 	BmBitsPixel  uint16
 	BmBits       *byte
 }
+
+func (bm *BITMAP) CalcBitmapSize(bitCount uint16) int {
+	// https://docs.microsoft.com/en-gb/windows/win32/gdi/capturing-an-image
+	return int(((bm.BmWidth*int32(bitCount) + 31) / 32) * 4 * bm.BmHeight)
+}
+
+// ⚠️ You must call SetBfType() to initialize the struct.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapfileheader
+type BITMAPFILEHEADER struct {
+	data [14]byte // sizeof(BITMAPFILEHEADER) packed
+}
+
+func (bfh *BITMAPFILEHEADER) SetBfType() { binary.LittleEndian.PutUint32(bfh.data[0:], 0x4d42) } // https://docs.microsoft.com/en-gb/windows/win32/gdi/capturing-an-image
+
+func (bfh *BITMAPFILEHEADER) BfSize() uint32       { return binary.LittleEndian.Uint32(bfh.data[2:]) }
+func (bfh *BITMAPFILEHEADER) SetBfSize(val uint32) { binary.LittleEndian.PutUint32(bfh.data[2:], val) }
+
+func (bfh *BITMAPFILEHEADER) BfOffBits() uint32 { return binary.LittleEndian.Uint32(bfh.data[10:]) }
+func (bfh *BITMAPFILEHEADER) SetBfOffBits(val uint32) {
+	binary.LittleEndian.PutUint32(bfh.data[10:], val)
+}
+
+func (bfh *BITMAPFILEHEADER) Serialize() []byte { return bfh.data[:] }
 
 // ⚠️ You must call BmiHeader.SetBiSize() to initialize the struct.
 //
@@ -43,6 +68,10 @@ type BITMAPINFOHEADER struct {
 }
 
 func (bih *BITMAPINFOHEADER) SetBiSize() { bih.biSize = uint32(unsafe.Sizeof(*bih)) }
+
+func (bih *BITMAPINFOHEADER) Serialize() []byte {
+	return unsafe.Slice((*byte)(unsafe.Pointer(bih)), unsafe.Sizeof(*bih))
+}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
 type LOGBRUSH struct {

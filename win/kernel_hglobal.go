@@ -98,11 +98,12 @@ func (hGlobal HGLOBAL) GlobalFree() {
 	}
 }
 
-// If you called GlobalAlloc() with co.GMEM_FIXED, you don't need to call this
-// function. The handle itself is the pointer to the memory block.
+// If you called GlobalAlloc() with co.GMEM_FIXED, technically you don't need to
+// call this method, because the handle itself is the pointer to the memory
+// block; however, this method is easier to use.
 //
-// Make sure that numBytes doesn't overlap, or you'll have a segfault. The
-// safest way is simply call HGLOBAL.GlobalSize().
+// Make sure that numBytes isn't greater than the memory block size, or you'll
+// have a segfault. The safest way is simply call HGLOBAL.GlobalSize().
 //
 // ⚠️ You must defer HGLOBAL.GlobalUnlock(). After that, the slice must not be
 // used.

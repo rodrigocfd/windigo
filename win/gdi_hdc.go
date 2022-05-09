@@ -269,6 +269,90 @@ func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 	return int32(ret)
 }
 
+// Note that this method fails if bitmapDataBuffer is an ordinary Go slice; it
+// must be allocated directly from the OS heap.
+//
+// Example taking a screenshot:
+//
+//  cxScreen := win.GetSystemMetrics(co.SM_CXSCREEN)
+//  cyScreen := win.GetSystemMetrics(co.SM_CYSCREEN)
+//
+//  hdc := win.HWND(0).GetDC()
+//  defer win.HWND(0).ReleaseDC(hdc)
+//
+//  hBmp := hdc.CreateCompatibleBitmap(cxScreen, cyScreen)
+//  defer hBmp.DeleteObject()
+//
+//  hdcMem := hdc.CreateCompatibleDC()
+//  defer hdcMem.DeleteDC()
+//
+//  hBmpOld := hdcMem.SelectObjectBitmap(hBmp)
+//  defer hdcMem.SelectObjectBitmap(hBmpOld)
+//
+//  hdcMem.BitBlt(
+//      win.POINT{X: 0, Y: 0},
+//      win.SIZE{Cx: cxScreen, Cy: cyScreen},
+//      hdc,
+//      win.POINT{X: 0, Y: 0},
+//      co.ROP_SRCCOPY,
+//  )
+//
+//  bmpObj := win.BITMAP{}
+//  hBmp.GetObject(&bmpObj)
+//
+//  bi := win.BITMAPINFO{
+//      BmiHeader: win.BITMAPINFOHEADER{
+//          BiWidth:       cxScreen,
+//          BiHeight:      cyScreen,
+//          BiPlanes:      1,
+//          BiBitCount:    32,
+//          BiCompression: co.BI_RGB,
+//      },
+//  }
+//  bi.BmiHeader.SetBiSize()
+//
+//  bmpSize := bmpObj.CalcBitmapSize(bi.BmiHeader.BiBitCount)
+//
+//  rawMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, bmpSize)
+//  defer rawMem.GlobalFree()
+//
+//  bmpSlice := rawMem.GlobalLock(int(bmpSize))
+//  defer rawMem.GlobalUnlock()
+//
+//  hdc.GetDIBits(hBmp, 0, int(cyScreen), bmpSlice, &bi, co.DIB_RGB_COLORS)
+//
+//  bfh := win.BITMAPFILEHEADER{}
+//  bfh.SetBfType()
+//  bfh.SetBfOffBits(uint32(unsafe.Sizeof(bfh) + unsafe.Sizeof(bi.BmiHeader)))
+//  bfh.SetBfSize(bfh.BfOffBits() + uint32(bmpSize))
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibits
+func (hdc HDC) GetDIBits(
+	hbm HBITMAP,
+	firstScanLine, numScanLines int,
+	bitmapDataBuffer []byte, bmi *BITMAPINFO, usage co.DIB) int {
+
+	var dataBufPtr *byte
+	if bitmapDataBuffer != nil {
+		dataBufPtr = &bitmapDataBuffer[0]
+	}
+
+	bmi.BmiHeader.SetBiSize() // safety
+
+	ret, _, err := syscall.Syscall9(proc.GetDIBits.Addr(), 7,
+		uintptr(hdc), uintptr(hbm), uintptr(firstScanLine), uintptr(numScanLines),
+		uintptr(unsafe.Pointer(dataBufPtr)), uintptr(unsafe.Pointer(bmi)),
+		uintptr(usage), 0, 0)
+
+	if wErr := errco.ERROR(ret); wErr == errco.INVALID_PARAMETER {
+		panic(wErr)
+	} else if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+
+	return int(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getpolyfillmode
 func (hdc HDC) GetPolyFillMode() co.POLYF {
 	ret, _, err := syscall.Syscall(proc.GetPolyFillMode.Addr(), 1,
