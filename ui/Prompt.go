@@ -21,8 +21,7 @@ func (_PromptT) Error(
 	title string, header win.StrOpt, body string) {
 
 	Prompt.generate(parent, title, header, body,
-		co.TDCBF_OK, co.TD_ICON_ERROR,
-		win.StrOptNone(), win.StrOptNone())
+		co.TDCBF_OK, co.TD_ICON_ERROR, nil)
 }
 
 // Displays an information modal prompt with an OK button.
@@ -31,8 +30,7 @@ func (_PromptT) Info(
 	title string, header win.StrOpt, body string) {
 
 	Prompt.generate(parent, title, header, body,
-		co.TDCBF_OK, co.TD_ICON_INFORMATION,
-		win.StrOptNone(), win.StrOptNone())
+		co.TDCBF_OK, co.TD_ICON_INFORMATION, nil)
 }
 
 // Displays a question modal prompt with OK and Cancel buttons.
@@ -43,8 +41,7 @@ func (_PromptT) OkCancel(
 	title string, header win.StrOpt, body string) bool {
 
 	return Prompt.generate(parent, title, header, body,
-		co.TDCBF_OK|co.TDCBF_CANCEL, co.TD_ICON_WARNING,
-		win.StrOptNone(), win.StrOptNone()) == co.ID_OK
+		co.TDCBF_OK|co.TDCBF_CANCEL, co.TD_ICON_WARNING, nil) == co.ID_OK
 }
 
 // Displays a question modal prompt with OK and Cancel buttons. Custom texts may
@@ -55,40 +52,9 @@ func (_PromptT) OkCancelEx(
 	parent AnyParent, title string, header win.StrOpt, body string,
 	okText, cancelText win.StrOpt) bool {
 
-	return Prompt.generate(parent, title, header, body,
-		co.TDCBF(0), co.TD_ICON_WARNING,
-		okText, cancelText) == co.ID_OK
-}
-
-// Displays a question modal prompt with Yes and No buttons.
-//
-// Returns true if the user clicked Yes.
-func (_PromptT) YesNo(
-	parent AnyParent,
-	title string, header win.StrOpt, body string) bool {
-
-	return Prompt.generate(parent, title, header, body,
-		co.TDCBF_YES|co.TDCBF_NO, co.TD_ICON_WARNING,
-		win.StrOptNone(), win.StrOptNone()) == co.ID_YES
-}
-
-// Displays a question modal prompt with Yes, No and Cancel buttons.
-func (_PromptT) YesNoCancel(
-	parent AnyParent,
-	title string, header win.StrOpt, body string) co.ID {
-
-	return Prompt.generate(parent, title, header, body,
-		co.TDCBF_YES|co.TDCBF_NO|co.TDCBF_CANCEL, co.TD_ICON_WARNING,
-		win.StrOptNone(), win.StrOptNone())
-}
-
-func (_PromptT) generate(
-	parent AnyParent,
-	title string, header win.StrOpt, body string,
-	btns co.TDCBF, ico co.TD_ICON,
-	okText, cancelText win.StrOpt) co.ID {
-
+	var btns co.TDCBF
 	var customBtns []win.TASKDIALOG_BUTTON
+
 	if text, has := okText.Str(); has {
 		customBtns = append(customBtns, win.TASKDIALOG_BUTTON{
 			PszButtonText: text,
@@ -105,6 +71,35 @@ func (_PromptT) generate(
 	} else {
 		btns |= co.TDCBF_CANCEL
 	}
+
+	return Prompt.generate(parent, title, header, body,
+		btns, co.TD_ICON_WARNING, customBtns) == co.ID_OK
+}
+
+// Displays a question modal prompt with Yes and No buttons.
+//
+// Returns true if the user clicked Yes.
+func (_PromptT) YesNo(
+	parent AnyParent,
+	title string, header win.StrOpt, body string) bool {
+
+	return Prompt.generate(parent, title, header, body,
+		co.TDCBF_YES|co.TDCBF_NO, co.TD_ICON_WARNING, nil) == co.ID_YES
+}
+
+// Displays a question modal prompt with Yes, No and Cancel buttons.
+func (_PromptT) YesNoCancel(
+	parent AnyParent,
+	title string, header win.StrOpt, body string) co.ID {
+
+	return Prompt.generate(parent, title, header, body,
+		co.TDCBF_YES|co.TDCBF_NO|co.TDCBF_CANCEL, co.TD_ICON_WARNING, nil)
+}
+
+func (_PromptT) generate(
+	parent AnyParent,
+	title string, header win.StrOpt, body string,
+	btns co.TDCBF, ico co.TD_ICON, customBtns []win.TASKDIALOG_BUTTON) co.ID {
 
 	tdc := win.TASKDIALOGCONFIG{
 		DwFlags:         co.TDF_ALLOW_DIALOG_CANCELLATION | co.TDF_POSITION_RELATIVE_TO_WINDOW,
