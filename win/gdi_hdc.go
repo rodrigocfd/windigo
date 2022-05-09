@@ -274,57 +274,63 @@ func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 //
 // Example taking a screenshot:
 //
-//  cxScreen := win.GetSystemMetrics(co.SM_CXSCREEN)
-//  cyScreen := win.GetSystemMetrics(co.SM_CYSCREEN)
+//		cxScreen := win.GetSystemMetrics(co.SM_CXSCREEN)
+//		cyScreen := win.GetSystemMetrics(co.SM_CYSCREEN)
 //
-//  hdc := win.HWND(0).GetDC()
-//  defer win.HWND(0).ReleaseDC(hdc)
+//		hdcScreen := win.HWND(0).GetDC()
+//		defer win.HWND(0).ReleaseDC(hdcScreen)
 //
-//  hBmp := hdc.CreateCompatibleBitmap(cxScreen, cyScreen)
-//  defer hBmp.DeleteObject()
+//		hBmp := hdcScreen.CreateCompatibleBitmap(cxScreen, cyScreen)
+//		defer hBmp.DeleteObject()
 //
-//  hdcMem := hdc.CreateCompatibleDC()
-//  defer hdcMem.DeleteDC()
+//		hdcMem := hdcScreen.CreateCompatibleDC()
+//		defer hdcMem.DeleteDC()
 //
-//  hBmpOld := hdcMem.SelectObjectBitmap(hBmp)
-//  defer hdcMem.SelectObjectBitmap(hBmpOld)
+//		hBmpOld := hdcMem.SelectObjectBitmap(hBmp)
+//		defer hdcMem.SelectObjectBitmap(hBmpOld)
 //
-//  hdcMem.BitBlt(
-//      win.POINT{X: 0, Y: 0},
-//      win.SIZE{Cx: cxScreen, Cy: cyScreen},
-//      hdc,
-//      win.POINT{X: 0, Y: 0},
-//      co.ROP_SRCCOPY,
-//  )
+//		hdcMem.BitBlt(
+//			win.POINT{X: 0, Y: 0},
+//			win.SIZE{Cx: cxScreen, Cy: cyScreen},
+//			hdcScreen,
+//			win.POINT{X: 0, Y: 0},
+//			co.ROP_SRCCOPY,
+//		)
 //
-//  bmpObj := win.BITMAP{}
-//  hBmp.GetObject(&bmpObj)
+//		bi := win.BITMAPINFO{
+//			BmiHeader: win.BITMAPINFOHEADER{
+//				BiWidth:       cxScreen,
+//				BiHeight:      cyScreen,
+//				BiPlanes:      1,
+//				BiBitCount:    32,
+//				BiCompression: co.BI_RGB,
+//			},
+//		}
+//		bi.BmiHeader.SetBiSize()
 //
-//  bi := win.BITMAPINFO{
-//      BmiHeader: win.BITMAPINFOHEADER{
-//          BiWidth:       cxScreen,
-//          BiHeight:      cyScreen,
-//          BiPlanes:      1,
-//          BiBitCount:    32,
-//          BiCompression: co.BI_RGB,
-//      },
-//  }
-//  bi.BmiHeader.SetBiSize()
+//		bmpObj := win.BITMAP{}
+//		hBmp.GetObject(&bmpObj)
+//		bmpSize := bmpObj.CalcBitmapSize(bi.BmiHeader.BiBitCount)
 //
-//  bmpSize := bmpObj.CalcBitmapSize(bi.BmiHeader.BiBitCount)
+//		rawMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, bmpSize)
+//		defer rawMem.GlobalFree()
 //
-//  rawMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, bmpSize)
-//  defer rawMem.GlobalFree()
+//		bmpSlice := rawMem.GlobalLock(bmpSize)
+//		defer rawMem.GlobalUnlock()
 //
-//  bmpSlice := rawMem.GlobalLock(int(bmpSize))
-//  defer rawMem.GlobalUnlock()
+//		hdcScreen.GetDIBits(hBmp, 0, int(cyScreen), bmpSlice, &bi, co.DIB_RGB_COLORS)
 //
-//  hdc.GetDIBits(hBmp, 0, int(cyScreen), bmpSlice, &bi, co.DIB_RGB_COLORS)
+//		bfh := win.BITMAPFILEHEADER{}
+//		bfh.SetBfType()
+//		bfh.SetBfOffBits(uint32(unsafe.Sizeof(bfh) + unsafe.Sizeof(bi.BmiHeader)))
+//		bfh.SetBfSize(bfh.BfOffBits() + uint32(bmpSize))
 //
-//  bfh := win.BITMAPFILEHEADER{}
-//  bfh.SetBfType()
-//  bfh.SetBfOffBits(uint32(unsafe.Sizeof(bfh) + unsafe.Sizeof(bi.BmiHeader)))
-//  bfh.SetBfSize(bfh.BfOffBits() + uint32(bmpSize))
+//		fo, _ := win.FileOpen("C:\\Temp\\foo.bmp", co.FILE_OPEN_RW_OPEN_OR_CREATE)
+//		defer fo.Close()
+//
+//		fo.Write(bfh.Serialize())
+//		fo.Write(bi.BmiHeader.Serialize())
+//		fo.Write(bmpSlice)
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibits
 func (hdc HDC) GetDIBits(

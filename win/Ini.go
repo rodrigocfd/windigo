@@ -123,11 +123,11 @@ func (me *Ini) SaveToFile(filePath string) error {
 //
 // Example:
 //
-//  ini, _ := win.IniLoad("C:\\Temp\\foo.ini")
+//		ini, _ := win.IniLoad("C:\\Temp\\foo.ini")
 //
-//  // modify ini...
+//		// modify ini...
 //
-//  ini.SaveToFile(ini.SourcePath())
+//		ini.SaveToFile(ini.SourcePath())
 func (me *Ini) SourcePath() string {
 	return me.sourcePath
 }
@@ -139,12 +139,12 @@ func (me *Ini) SourcePath() string {
 //
 // Example:
 //
-//  ini, _ := win.IniLoad("C:\\Temp\\foo.ini")
+//		ini, _ := win.IniLoad("C:\\Temp\\foo.ini")
 //
-//  if val, ok := ini.Value("my section", "my value"); ok {
-//      fmt.Printf("Old value: %s\n", *val)
-//      *val = "new value"
-//  }
+//		if val, ok := ini.Value("my section", "my value"); ok {
+//			fmt.Printf("Old value: %s\n", *val)
+//			*val = "new value"
+//		}
 func (me *Ini) Value(sectionName, valueName string) (*string, bool) {
 	if section, ok := me.Section(sectionName); ok {
 		if value, ok := section.Value(valueName); ok {

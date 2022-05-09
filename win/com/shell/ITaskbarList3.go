@@ -60,13 +60,13 @@ type _ITaskbarList3 struct{ ITaskbarList2 }
 //
 // Example:
 //
-//  taskbl := shell.NewITaskbarList3(
-//      com.CoCreateInstance(
-//          shellco.CLSID_TaskbarList, nil,
-//          comco.CLSCTX_INPROC_SERVER,
-//          shellco.IID_ITaskbarList3),
-//  )
-//  defer taskbl.Release()
+//		taskbl := shell.NewITaskbarList3(
+//			com.CoCreateInstance(
+//				shellco.CLSID_TaskbarList, nil,
+//				comco.CLSCTX_INPROC_SERVER,
+//				shellco.IID_ITaskbarList3),
+//		)
+//		defer taskbl.Release()
 func NewITaskbarList3(base com.IUnknown) ITaskbarList3 {
 	return &_ITaskbarList3{ITaskbarList2: NewITaskbarList2(base)}
 }

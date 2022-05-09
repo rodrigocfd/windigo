@@ -33,14 +33,14 @@ type _ProgressBar struct {
 //
 // Example:
 //
-//  var owner ui.AnyParent // initialized somewhere
+//		var owner ui.AnyParent // initialized somewhere
 //
-//  myProg := ui.NewProgressBar(
-//      owner,
-//      ui.ProgressBarOpts(
-//          Position(win.POINT{X: 350, Y: 80}),
-//      ),
-//  )
+//		myProg := ui.NewProgressBar(
+//			owner,
+//			ui.ProgressBarOpts(
+//				Position(win.POINT{X: 350, Y: 80}),
+//			),
+//		)
 func NewProgressBar(parent AnyParent, opts *_ProgressBarO) ProgressBar {
 	if opts == nil {
 		opts = ProgressBarOpts()

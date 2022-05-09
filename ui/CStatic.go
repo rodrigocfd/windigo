@@ -36,15 +36,15 @@ type _Static struct {
 //
 // Example:
 //
-//  var owner ui.AnyParent // initialized somewhere
+//		var owner ui.AnyParent // initialized somewhere
 //
-//  myLabel := ui.NewStatic(
-//      owner,
-//      ui.StaticOpts(
-//          Text("Some label").
-//          Position(win.POINT{X: 20, Y: 10}),
-//      ),
-//  )
+//		myLabel := ui.NewStatic(
+//			owner,
+//			ui.StaticOpts(
+//				Text("Some label").
+//				Position(win.POINT{X: 20, Y: 10}),
+//			),
+//		)
 func NewStatic(parent AnyParent, opts *_StaticO) Static {
 	if opts == nil {
 		opts = StaticOpts()

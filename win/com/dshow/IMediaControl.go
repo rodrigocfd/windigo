@@ -45,12 +45,12 @@ type _IMediaControl struct{ autom.IDispatch }
 //
 // Example:
 //
-//  var gb dshow.IGraphBuilder // initialized somewhere
+//		var gb dshow.IGraphBuilder // initialized somewhere
 //
-//  mc := dshow.NewIMediaControl(
-//      gb.QueryInterface(dshowco.IID_IMediaControl),
-//  )
-//  defer mc.Release()
+//		mc := dshow.NewIMediaControl(
+//			gb.QueryInterface(dshowco.IID_IMediaControl),
+//		)
+//		defer mc.Release()
 func NewIMediaControl(base com.IUnknown) IMediaControl {
 	return &_IMediaControl{IDispatch: autom.NewIDispatch(base)}
 }

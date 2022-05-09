@@ -55,15 +55,15 @@ type _IMFVideoDisplayControl struct{ com.IUnknown }
 //
 // Example:
 //
-//  var gs dshow.IMFGetService // initialized somewhere
+//		var gs dshow.IMFGetService // initialized somewhere
 //
-//  vdc := dshow.NewIMFVideoDisplayControl(
-//      gs.GetService(
-//          win.NewGuidFromClsid(dshowco.CLSID_MR_VideoRenderService),
-//          win.NewGuidFromIid(dshowco.IID_IMFVideoDisplayControl),
-//      ),
-//  )
-//  defer vdc.Release()
+//		vdc := dshow.NewIMFVideoDisplayControl(
+//			gs.GetService(
+//				win.NewGuidFromClsid(dshowco.CLSID_MR_VideoRenderService),
+//				win.NewGuidFromIid(dshowco.IID_IMFVideoDisplayControl),
+//			),
+//		)
+//		defer vdc.Release()
 func NewIMFVideoDisplayControl(base com.IUnknown) IMFVideoDisplayControl {
 	return &_IMFVideoDisplayControl{IUnknown: base}
 }

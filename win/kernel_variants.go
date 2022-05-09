@@ -8,11 +8,11 @@ import (
 //
 // Example:
 //
-//  maybeStr := StrOptSome("foo")
+//		maybeStr := StrOptSome("foo")
 //
-//  if s, ok := maybeStr.Str(); ok {
-//      println(s)
-//  }
+//		if s, ok := maybeStr.Str(); ok {
+//			println(s)
+//		}
 type StrOpt struct {
 	isSome bool
 	str    string

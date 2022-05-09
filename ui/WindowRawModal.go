@@ -18,11 +18,11 @@ type _WindowRawModal struct {
 //
 // Example:
 //
-//  myModal := ui.NewWindowModal(
-//      ui.WindowModalOpts(
-//          Title("My modal window"),
-//      ),
-//  )
+//		myModal := ui.NewWindowModal(
+//			ui.WindowModalOpts(
+//				Title("My modal window"),
+//			),
+//		)
 func NewWindowModal(opts *_WindowModalO) WindowModal {
 	if opts == nil {
 		opts = WindowModalOpts()

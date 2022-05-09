@@ -52,14 +52,13 @@ type _IFilterGraph struct{ com.IUnknown }
 //
 // Example:
 //
-//  fg := dshow.NewIFilterGraph(
-//      com.CoCreateInstance(
-//          dshowco.CLSID_FilterGraph, nil,
-//          comco.CLSCTX_INPROC_SERVER,
-//          dshowco.IID_IFilterGraph),
-//  )
-//
-//  defer fg.Release()
+//		fg := dshow.NewIFilterGraph(
+//			com.CoCreateInstance(
+//				dshowco.CLSID_FilterGraph, nil,
+//				comco.CLSCTX_INPROC_SERVER,
+//				dshowco.IID_IFilterGraph),
+//		)
+//		defer fg.Release()
 func NewIFilterGraph(base com.IUnknown) IFilterGraph {
 	return &_IFilterGraph{IUnknown: base}
 }

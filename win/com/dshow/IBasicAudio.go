@@ -35,12 +35,12 @@ type _IBasicAudio struct{ autom.IDispatch }
 //
 // Example:
 //
-//  var gb dshow.IGraphBuilder // initialized somewhere
+//		var gb dshow.IGraphBuilder // initialized somewhere
 //
-//  ba := dshow.NewIBasicAudio(
-//      gb.QueryInterface(dshowco.IID_IBasicAudio),
-//  )
-//  defer ba.Release()
+//		ba := dshow.NewIBasicAudio(
+//			gb.QueryInterface(dshowco.IID_IBasicAudio),
+//		)
+//		defer ba.Release()
 func NewIBasicAudio(base com.IUnknown) IBasicAudio {
 	return &_IBasicAudio{IDispatch: autom.NewIDispatch(base)}
 }

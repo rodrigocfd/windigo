@@ -19,15 +19,15 @@ type IMFGetService interface {
 	//
 	// Example for IMFVideoDisplayControl:
 	//
-	//  var gs dshow.IMFGetService // initialized somewhere
+	//		var gs dshow.IMFGetService // initialized somewhere
 	//
-	//  vdc := dshow.NewIMFVideoDisplayControl(
-	//      gs.GetService(
-	//          win.NewGuidFromClsid(dshowco.CLSID_MR_VideoRenderService),
-	//          win.NewGuidFromIid(dshowco.IID_IMFVideoDisplayControl),
-	//      ),
-	//  )
-	//  defer vdc.Release()
+	//		vdc := dshow.NewIMFVideoDisplayControl(
+	//			gs.GetService(
+	//				win.NewGuidFromClsid(dshowco.CLSID_MR_VideoRenderService),
+	//				win.NewGuidFromIid(dshowco.IID_IMFVideoDisplayControl),
+	//			),
+	//		)
+	//		defer vdc.Release()
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
 	GetService(guidService, riid *win.GUID) com.IUnknown
@@ -41,12 +41,12 @@ type _IMFGetService struct{ com.IUnknown }
 //
 // Example:
 //
-//  var vmr dshow.IBaseFilter // initialized somewhere
+//		var vmr dshow.IBaseFilter // initialized somewhere
 //
-//  gs := dshow.NewIMFGetService(
-//      vmr.QueryInterface(dshowco.IID_IMFGetService),
-//  )
-//  defer gs.Release()
+//		gs := dshow.NewIMFGetService(
+//			vmr.QueryInterface(dshowco.IID_IMFGetService),
+//		)
+//		defer gs.Release()
 func NewIMFGetService(base com.IUnknown) IMFGetService {
 	return &_IMFGetService{IUnknown: base}
 }

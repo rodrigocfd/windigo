@@ -47,13 +47,13 @@ type _IGraphBuilder struct{ IFilterGraph }
 //
 // Example:
 //
-//  gb := dshow.NewIGraphBuilder(
-//      com.CoCreateInstance(
-//          dshowco.CLSID_FilterGraph, nil,
-//          comco.CLSCTX_INPROC_SERVER,
-//          dshowco.IID_IGraphBuilder),
-//  )
-//  defer gb.Release()
+//		gb := dshow.NewIGraphBuilder(
+//			com.CoCreateInstance(
+//				dshowco.CLSID_FilterGraph, nil,
+//				comco.CLSCTX_INPROC_SERVER,
+//				dshowco.IID_IGraphBuilder),
+//		)
+//		defer gb.Release()
 func NewIGraphBuilder(base com.IUnknown) IGraphBuilder {
 	return &_IGraphBuilder{IFilterGraph: NewIFilterGraph(base)}
 }

@@ -48,23 +48,23 @@ type _IBaseFilter struct{ IMediaFilter }
 //
 // Example for an Enhanced Video Renderer:
 //
-//  evh := dshow.NewIBaseFilter(
-//      com.CoCreateInstance(
-//          dshowco.CLSID_EnhancedVideoRenderer, nil,
-//          comco.CLSCTX_INPROC_SERVER,
-//          dshowco.IID_IBaseFilter),
-//  )
-//  defer evh.Release()
+//		evh := dshow.NewIBaseFilter(
+//			com.CoCreateInstance(
+//				dshowco.CLSID_EnhancedVideoRenderer, nil,
+//				comco.CLSCTX_INPROC_SERVER,
+//				dshowco.IID_IBaseFilter),
+//		)
+//		defer evh.Release()
 //
 // Example for a Video Media Renderer 9:
 //
-//  vmr9 := dshow.NewIBaseFilter(
-//      com.CoCreateInstance(
-//          dshowco.CLSID_VideoMixingRenderer9, nil,
-//          comco.CLSCTX_INPROC_SERVER,
-//          dshowco.IID_IBaseFilter),
-//  )
-//  defer vmr9.Release()
+//		vmr9 := dshow.NewIBaseFilter(
+//			com.CoCreateInstance(
+//				dshowco.CLSID_VideoMixingRenderer9, nil,
+//				comco.CLSCTX_INPROC_SERVER,
+//				dshowco.IID_IBaseFilter),
+//		)
+//		defer vmr9.Release()
 func NewIBaseFilter(base com.IUnknown) IBaseFilter {
 	return &_IBaseFilter{IMediaFilter: NewIMediaFilter(base)}
 }

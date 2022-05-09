@@ -55,9 +55,9 @@ type IFileDialog interface {
 	//
 	// Example:
 	//
-	//  var fd shell.IFileDialog // initialized somewhere
+	//		var fd shell.IFileDialog // initialized somewhere
 	//
-	//  chosenPath := fd.GetResultDisplayName(shellco.SIGDN_FILESYSPATH)
+	//		chosenPath := fd.GetResultDisplayName(shellco.SIGDN_FILESYSPATH)
 	GetResultDisplayName(sigdnName shellco.SIGDN) string
 
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setclientguid
@@ -76,12 +76,12 @@ type IFileDialog interface {
 
 	// Example:
 	//
-	//  var fd shell.IFileDialog // initialized somewhere
+	//		var fd shell.IFileDialog // initialized somewhere
 	//
-	//  fd.SetFileTypes([]shell.FilterSpec{
-	//      {Name: "MP3 audio files", Spec: "*.mp3"},
-	//      {Name: "All files", Spec: "*.*"},
-	//  })
+	//		fd.SetFileTypes([]shell.FilterSpec{
+	//			{Name: "MP3 audio files", Spec: "*.mp3"},
+	//			{Name: "All files", Spec: "*.*"},
+	//		})
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypes
 	SetFileTypes(filterSpec []FilterSpec)
@@ -94,12 +94,12 @@ type IFileDialog interface {
 
 	// Example:
 	//
-	//  var fd shell.IFileDialog // initialized somewhere
+	//		var fd shell.IFileDialog // initialized somewhere
 	//
-	//  fd.SetOptions(
-	//      fd.GetOptions() |
-	//      shellco.FOS_FORCEFILESYSTEM |
-	//      shellco.FOS_FILEMUSTEXIST)
+	//		fd.SetOptions(
+	//			fd.GetOptions() |
+	//			shellco.FOS_FORCEFILESYSTEM |
+	//			shellco.FOS_FILEMUSTEXIST)
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setoptions
 	SetOptions(fos shellco.FOS)

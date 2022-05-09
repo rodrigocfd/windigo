@@ -827,12 +827,12 @@ func (hWnd HWND) SetTimer(msElapse uint32, id uintptr) uintptr {
 //
 // Example:
 //
-//  var hWnd HWND // initialized somewhere
+//		var hWnd HWND // initialized somewhere
 //
-//  hWnd.SetTimerCallback(2000, func(id uintptr) {
-//      hWnd.KillTimer(id)
-//      println("This callback will run once.")
-//  })
+//		hWnd.SetTimerCallback(2000, func(id uintptr) {
+//			hWnd.KillTimer(id)
+//			println("This callback will run once.")
+//		})
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
 func (hWnd HWND) SetTimerCallback(

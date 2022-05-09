@@ -39,15 +39,15 @@ type _Button struct {
 //
 // Example:
 //
-//  var owner ui.AnyParent // initialized somewhere
+//		var owner ui.AnyParent // initialized somewhere
 //
-//  myButton := ui.NewButton(
-//      owner,
-//      ui.ButtonOpts(
-//          Text("Click me").
-//          Position(win.POINT{X: 20, Y: 10}),
-//      ),
-//  )
+//		myButton := ui.NewButton(
+//			owner,
+//			ui.ButtonOpts(
+//				Text("Click me").
+//				Position(win.POINT{X: 20, Y: 10}),
+//			),
+//		)
 func NewButton(parent AnyParent, opts *_ButtonO) Button {
 	if opts == nil {
 		opts = ButtonOpts()

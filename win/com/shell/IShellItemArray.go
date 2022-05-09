@@ -32,9 +32,9 @@ type IShellItemArray interface {
 	//
 	// Example:
 	//
-	//  var shia shell.IShellItemArray // initialized somewhere
+	//		var shia shell.IShellItemArray // initialized somewhere
 	//
-	//  fullPaths := shia.ListDisplayNames(shellco.SIGDN_FILESYSPATH)
+	//		fullPaths := shia.ListDisplayNames(shellco.SIGDN_FILESYSPATH)
 	ListDisplayNames(sigdnName shellco.SIGDN) []string
 }
 

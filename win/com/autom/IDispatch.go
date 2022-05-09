@@ -24,10 +24,10 @@ type IDispatch interface {
 	//
 	// Example:
 	//
-	//  var iDisp autom.IDispatch // initialized somewhere
+	//		var iDisp autom.IDispatch // initialized somewhere
 	//
-	//  tyInfo := iDisp.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
-	//  defer tyInfo.Release()
+	//		tyInfo := iDisp.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
+	//		defer tyInfo.Release()
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
 	GetTypeInfo(lcid win.LCID) ITypeInfo

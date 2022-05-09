@@ -50,8 +50,8 @@ func (hInst HINSTANCE) FreeLibrary() {
 
 // Example retrieving own .exe path:
 //
-//  exePath := win.HINSTANCE(0).GetModuleFileName()
-//  fmt.Printf("Current .exe path: %s\n", exePath)
+//		exePath := win.HINSTANCE(0).GetModuleFileName()
+//		fmt.Printf("Current .exe path: %s\n", exePath)
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew
 func (hInst HINSTANCE) GetModuleFileName() string {

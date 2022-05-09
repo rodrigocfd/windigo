@@ -45,16 +45,16 @@ type _RadioButton struct {
 //
 // Example:
 //
-//  var owner ui.AnyParent // initialized somewhere
+//		var owner ui.AnyParent // initialized somewhere
 //
-//  myRadio := ui.NewRadioButton(
-//      owner,
-//      ui.RadioButtonOpts(
-//          Text("Some option").
-//          Position(win.POINT{X: 10, Y: 40}).
-//          WndStyles(co.WS_VISIBLE|co.WS_CHILD|co.WS_TABSTOP|co.WS_GROUP),
-//      ),
-//  )
+//		myRadio := ui.NewRadioButton(
+//			owner,
+//			ui.RadioButtonOpts(
+//				Text("Some option").
+//				Position(win.POINT{X: 10, Y: 40}).
+//				WndStyles(co.WS_VISIBLE|co.WS_CHILD|co.WS_TABSTOP|co.WS_GROUP),
+//			),
+//		)
 func NewRadioButton(parent AnyParent, opts *_RadioButtonO) RadioButton {
 	if opts == nil {
 		opts = RadioButtonOpts()

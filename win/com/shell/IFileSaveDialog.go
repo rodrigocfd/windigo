@@ -25,13 +25,13 @@ type _IFileSaveDialog struct{ IFileDialog }
 //
 // Example:
 //
-//  fsd := shell.NewIFileSaveDialog(
-//      com.CoCreateInstance(
-//          shellco.CLSID_FileSaveDialog, nil,
-//          comco.CLSCTX_INPROC_SERVER,
-//          shellco.IID_IFileSaveDialog),
-//  )
-//  defer fsd.Release()
+//		fsd := shell.NewIFileSaveDialog(
+//			com.CoCreateInstance(
+//				shellco.CLSID_FileSaveDialog, nil,
+//				comco.CLSCTX_INPROC_SERVER,
+//				shellco.IID_IFileSaveDialog),
+//		)
+//		defer fsd.Release()
 func NewIFileSaveDialog(base com.IUnknown) IFileSaveDialog {
 	return &_IFileSaveDialog{IFileDialog: NewIFileDialog(base)}
 }

@@ -10,13 +10,13 @@ import (
 //
 // Implements the following standard io interfaces:
 //
-//  io.ByteReader
-//  io.ByteWriter
-//  io.Closer
-//  io.Reader
-//  io.Seeker
-//  io.StringWriter
-//  io.Writer
+//		io.ByteReader
+//		io.ByteWriter
+//		io.Closer
+//		io.Reader
+//		io.Seeker
+//		io.StringWriter
+//		io.Writer
 //
 // Created with FileOpen().
 type File struct {

@@ -38,13 +38,13 @@ type _ITaskbarList struct{ com.IUnknown }
 //
 // Example:
 //
-//  taskbl := shell.NewITaskbarList(
-//      com.CoCreateInstance(
-//          shellco.CLSID_TaskbarList, nil,
-//          comco.CLSCTX_INPROC_SERVER,
-//          shellco.IID_ITaskbarList),
-//  )
-//  defer taskbl.Release()
+//		taskbl := shell.NewITaskbarList(
+//			com.CoCreateInstance(
+//				shellco.CLSID_TaskbarList, nil,
+//				comco.CLSCTX_INPROC_SERVER,
+//				shellco.IID_ITaskbarList),
+//		)
+//		defer taskbl.Release()
 func NewITaskbarList(base com.IUnknown) ITaskbarList {
 	return &_ITaskbarList{IUnknown: base}
 }

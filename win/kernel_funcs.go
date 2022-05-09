@@ -316,15 +316,15 @@ type _VolumeInfo struct {
 
 // Example:
 //
-//  nfo, err := win.GetVolumeInformation(win.StrOptSome("C:\\"))
-//  if err != nil {
-//      panic(err)
-//  }
+//		nfo, err := win.GetVolumeInformation(win.StrOptSome("C:\\"))
+//		if err != nil {
+//			panic(err)
+//		}
 //
-//  fmt.Printf("Name: %s\n", nfo.Name)
-//  fmt.Printf("File system name: %s\n", nfo.FileSystemName)
-//  fmt.Printf("Max component length: %d\n", nfo.MaxComponentLength)
-//  fmt.Printf("Serial number: 0x08%x\n", nfo.SerialNumber)
+//		fmt.Printf("Name: %s\n", nfo.Name)
+//		fmt.Printf("File system name: %s\n", nfo.FileSystemName)
+//		fmt.Printf("Max component length: %d\n", nfo.MaxComponentLength)
+//		fmt.Printf("Serial number: 0x08%x\n", nfo.SerialNumber)
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getvolumeinformationw
 func GetVolumeInformation(rootPathName StrOpt) (_VolumeInfo, error) {
@@ -495,7 +495,7 @@ func MoveFileEx(existingFile, newFile string, flags co.MOVEFILE) error {
 
 // Note: You'll achieve a much better performance with ordinary Go code:
 //
-//  res := int32((int64(n) * int64(num)) / int64(den))
+//		res := int32((int64(n) * int64(num)) / int64(den))
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-muldiv
 func MulDiv(number, numerator, denominator int32) int32 {

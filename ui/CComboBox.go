@@ -38,16 +38,16 @@ type _ComboBox struct {
 //
 // Example:
 //
-//  var owner ui.AnyParent // initialized somewhere
+//		var owner ui.AnyParent // initialized somewhere
 //
-//  myCombo := ui.NewComboBox(
-//      owner,
-//      ui.ComboBoxOpts(
-//          Text("Some option").
-//          Position(win.POINT{X: 20, Y: 10}).
-//          State(co.BST_CHECKED),
-//      ),
-//  )
+//		myCombo := ui.NewComboBox(
+//			owner,
+//			ui.ComboBoxOpts(
+//				Text("Some option").
+//				Position(win.POINT{X: 20, Y: 10}).
+//				State(co.BST_CHECKED),
+//			),
+//		)
 func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
 	if opts == nil {
 		opts = ComboBoxOpts()

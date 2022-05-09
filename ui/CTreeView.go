@@ -40,15 +40,15 @@ type _TreeView struct {
 //
 // Example:
 //
-//  var owner AnyParent // initialized somewhere
+//		var owner AnyParent // initialized somewhere
 //
-//  myTree := ui.NewTreeView(
-//      owner,
-//      ui.TreeViewOpts(
-//          Position(win.POINT{X: 10, Y: 240}).
-//          Size(win.SIZE{Cx: 150, Cy: 100}),
-//      ),
-//  )
+//		myTree := ui.NewTreeView(
+//			owner,
+//			ui.TreeViewOpts(
+//				Position(win.POINT{X: 10, Y: 240}).
+//				Size(win.SIZE{Cx: 150, Cy: 100}),
+//			),
+//		)
 func NewTreeView(parent AnyParent, opts *_TreeViewO) TreeView {
 	if opts == nil {
 		opts = TreeViewOpts()

@@ -18,16 +18,16 @@ type _WindowRawControl struct {
 //
 // Example:
 //
-//  var owner AnyParent // initialized somewhere
+//		var owner AnyParent // initialized somewhere
 //
-//  myControl := ui.NewWindowControl(
-//      owner,
-//      ui.WindowControlOpts(
-//          Position(win.POINT{X: 100, Y: 100}).
-//          Size(win.SIZE{Cx: 300, Cy: 200}).
-//          RangeMax(4),
-//      ),
-//  )
+//		myControl := ui.NewWindowControl(
+//			owner,
+//			ui.WindowControlOpts(
+//				Position(win.POINT{X: 100, Y: 100}).
+//				Size(win.SIZE{Cx: 300, Cy: 200}).
+//				RangeMax(4),
+//			),
+//		)
 func NewWindowControl(parent AnyParent, opts *_WindowControlO) WindowControl {
 	if opts == nil {
 		opts = WindowControlOpts()

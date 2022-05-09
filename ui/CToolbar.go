@@ -44,14 +44,14 @@ type _Toolbar struct {
 //
 // Example:
 //
-//  var owner ui.AnyParent // initialized somewhere
+//		var owner ui.AnyParent // initialized somewhere
 //
-//  myBar := ui.NewToolbar(
-//      owner,
-//      ui.ToolbarOpts(
-//          CtrlStyles(co.TBSTYLE_BUTTON|co.TBSTYLE_LIST|co.TBSTYLE_FLAT),
-//      ),
-//  )
+//		myBar := ui.NewToolbar(
+//			owner,
+//			ui.ToolbarOpts(
+//				CtrlStyles(co.TBSTYLE_BUTTON|co.TBSTYLE_LIST|co.TBSTYLE_FLAT),
+//			),
+//		)
 func NewToolbar(parent AnyParent, opts *_ToolbarO) Toolbar {
 	if opts == nil {
 		opts = ToolbarOpts()

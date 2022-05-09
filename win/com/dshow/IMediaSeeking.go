@@ -82,12 +82,12 @@ type _IMediaSeeking struct{ com.IUnknown }
 //
 // Example:
 //
-//  var gb dshow.IGraphBuilder // initialized somewhere
+//		var gb dshow.IGraphBuilder // initialized somewhere
 //
-//  ms := dshow.NewIMediaSeeking(
-//      gb.QueryInterface(dshowco.IID_IMediaSeeking),
-//  )
-//  defer ms.Release()
+//		ms := dshow.NewIMediaSeeking(
+//			gb.QueryInterface(dshowco.IID_IMediaSeeking),
+//		)
+//		defer ms.Release()
 func NewIMediaSeeking(base com.IUnknown) IMediaSeeking {
 	return &_IMediaSeeking{IUnknown: base}
 }

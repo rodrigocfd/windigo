@@ -67,13 +67,13 @@ type _IDesktopWallpaper struct{ com.IUnknown }
 //
 // Example:
 //
-//  deskWp := shell.NewIDesktopWallpaper(
-//      com.CoCreateInstance(
-//          shellco.CLSID_DesktopWallpaper, nil,
-//          comco.CLSCTX_LOCAL_SERVER,
-//          shellco.IID_IDesktopWallpaper),
-//  )
-//  defer deskWp.Release()
+//		deskWp := shell.NewIDesktopWallpaper(
+//			com.CoCreateInstance(
+//				shellco.CLSID_DesktopWallpaper, nil,
+//				comco.CLSCTX_LOCAL_SERVER,
+//				shellco.IID_IDesktopWallpaper),
+//		)
+//		defer deskWp.Release()
 func NewIDesktopWallpaper(base com.IUnknown) IDesktopWallpaper {
 	return &_IDesktopWallpaper{IUnknown: base}
 }

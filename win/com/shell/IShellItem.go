@@ -31,9 +31,9 @@ type IShellItem interface {
 
 	// Example:
 	//
-	//  var shi shell.IShellItem // initialized somewhere
+	//		var shi shell.IShellItem // initialized somewhere
 	//
-	//  fullPath := shi.GetDisplayName(shellco.SIGDN_FILESYSPATH)
+	//		fullPath := shi.GetDisplayName(shellco.SIGDN_FILESYSPATH)
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
 	GetDisplayName(sigdnName shellco.SIGDN) string
@@ -55,8 +55,8 @@ func NewIShellItem(base com.IUnknown) IShellItem {
 //
 // Example:
 //
-//  ish := shell.NewShellItemFromPath("C:\\Temp\\file.txt")
-//  defer ish.Release()
+//		ish := shell.NewShellItemFromPath("C:\\Temp\\file.txt")
+//		defer ish.Release()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 func NewShellItemFromPath(folderOrFilePath string) (IShellItem, error) {

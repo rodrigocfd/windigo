@@ -25,10 +25,10 @@ type IUnknown interface {
 	//
 	// Example:
 	//
-	//  var myObj IUnknown // initialized somewhere
+	//		var myObj IUnknown // initialized somewhere
 	//
-	//  otherObj := myObj.AddRef()
-	//  defer otherObj.Release()
+	//		otherObj := myObj.AddRef()
+	//		defer otherObj.Release()
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 	AddRef() IUnknown

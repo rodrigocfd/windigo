@@ -25,11 +25,11 @@ type HGLOBAL HANDLE
 //
 // Example:
 //
-//  hMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 50)
-//  defer hMem.GlobalFree()
+//		hMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 50)
+//		defer hMem.GlobalFree()
 //
-//  sliceMem := hMem.GlobalLock(50)
-//  defer hMem.GlobalUnlock()
+//		sliceMem := hMem.GlobalLock(50)
+//		defer hMem.GlobalUnlock()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
 func GlobalAlloc(uFlags co.GMEM, numBytes int) HGLOBAL {
@@ -54,11 +54,11 @@ func GlobalAlloc(uFlags co.GMEM, numBytes int) HGLOBAL {
 //
 // Example:
 //
-//  hMem := win.GlobalAllocStr(co.GMEM_FIXED, "my text")
-//  defer hMem.GlobalFree()
+//		hMem := win.GlobalAllocStr(co.GMEM_FIXED, "my text")
+//		defer hMem.GlobalFree()
 //
-//  charSlice := hMem.GlobalLock(hMem.GlobalSize())
-//  defer hMem.GlobalUnlock()
+//		charSlice := hMem.GlobalLock(hMem.GlobalSize())
+//		defer hMem.GlobalUnlock()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
 func GlobalAllocStr(uFlags co.GMEM, s string) HGLOBAL {
@@ -110,11 +110,11 @@ func (hGlobal HGLOBAL) GlobalFree() {
 //
 // Example:
 //
-//  hMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 50)
-//  defer hMem.GlobalFree()
+//		hMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 50)
+//		defer hMem.GlobalFree()
 //
-//  sliceMem := hMem.GlobalLock(hMem.GlobalSize())
-//  defer hMem.GlobalUnlock()
+//		sliceMem := hMem.GlobalLock(hMem.GlobalSize())
+//		defer hMem.GlobalUnlock()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globallock
 func (hGlobal HGLOBAL) GlobalLock(numBytes int) []byte {

@@ -34,9 +34,9 @@ type IFileOpenDialog interface {
 	//
 	// Example:
 	//
-	//  var fod shell.IFileOpenDialog // initialized somewhere
+	//		var fod shell.IFileOpenDialog // initialized somewhere
 	//
-	//  chosenFiles := fod.ListResultDisplayNames(shellco.SIGDN_FILESYSPATH)
+	//		chosenFiles := fod.ListResultDisplayNames(shellco.SIGDN_FILESYSPATH)
 	ListResultDisplayNames(sigdnName shellco.SIGDN) []string
 }
 
@@ -48,13 +48,13 @@ type _IFileOpenDialog struct{ IFileDialog }
 //
 // Example:
 //
-//  fod := shell.NewIFileOpenDialog(
-//      com.CoCreateInstance(
-//          shellco.CLSID_FileOpenDialog, nil,
-//          comco.CLSCTX_INPROC_SERVER,
-//          shellco.IID_IFileOpenDialog),
-//  )
-//  defer fod.Release()
+//		fod := shell.NewIFileOpenDialog(
+//			com.CoCreateInstance(
+//				shellco.CLSID_FileOpenDialog, nil,
+//				comco.CLSCTX_INPROC_SERVER,
+//				shellco.IID_IFileOpenDialog),
+//		)
+//		defer fod.Release()
 func NewIFileOpenDialog(base com.IUnknown) IFileOpenDialog {
 	return &_IFileOpenDialog{IFileDialog: NewIFileDialog(base)}
 }

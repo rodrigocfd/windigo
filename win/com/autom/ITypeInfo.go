@@ -28,11 +28,11 @@ type ITypeInfo interface {
 
 	// Example:
 	//
-	//  var info autom.ITypeInfo // initialized somewhere
-	//  var funDesc *autom.FUNCDESC
+	//		var info autom.ITypeInfo // initialized somewhere
+	//		var funDesc *autom.FUNCDESC
 	//
-	//  docum := info.GetDocumentation(funDesc.Memid)
-	//  fmt.Printf("Function name: %s\n", docum.Name)
+	//		docum := info.GetDocumentation(funDesc.Memid)
+	//		fmt.Printf("Function name: %s\n", docum.Name)
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdocumentation
 	GetDocumentation(memId MEMBERID) TypeDoc
@@ -41,16 +41,16 @@ type ITypeInfo interface {
 	//
 	// Example:
 	//
-	//  var info autom.ITypeInfo // initialized somewhere
-	//  var attr *autom.TYPEATTR
+	//		var info autom.ITypeInfo // initialized somewhere
+	//		var attr *autom.TYPEATTR
 	//
-	//  for i := 0; i < int(attr.CFuncs); i++ {
-	//      funDesc := info.GetFuncDesc(i)
-	//      defer info.ReleaseFuncDesc(funDesc)
+	//		for i := 0; i < int(attr.CFuncs); i++ {
+	//			funDesc := info.GetFuncDesc(i)
+	//			defer info.ReleaseFuncDesc(funDesc)
 	//
-	//      fmt.Printf("Member ID: %d, invoke kind: %d\n",
-	//          funDesc.Memid, funDesc.Invkind)
-	//  }
+	//			fmt.Printf("Member ID: %d, invoke kind: %d\n",
+	//				funDesc.Memid, funDesc.Invkind)
+	//		}
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getfuncdesc
 	GetFuncDesc(index int) *FUNCDESC
@@ -62,13 +62,13 @@ type ITypeInfo interface {
 	//
 	// Example:
 	//
-	//  var info autom.ITypeInfo // initialized somewhere
+	//		var info autom.ITypeInfo // initialized somewhere
 	//
-	//  attr := tyInfo.GetTypeAttr()
-	//  defer info.ReleaseTypeAttr(attr)
+	//		attr := tyInfo.GetTypeAttr()
+	//		defer info.ReleaseTypeAttr(attr)
 	//
-	//  fmt.Printf("Num funcs: %d, GUID: %s\n",
-	//      attr.CFuncs, attr.Guid.String())
+	//		fmt.Printf("Num funcs: %d, GUID: %s\n",
+	//			attr.CFuncs, attr.Guid.String())
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-gettypeattr
 	GetTypeAttr() *TYPEATTR

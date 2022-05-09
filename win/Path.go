@@ -17,9 +17,9 @@ var Path _PathT
 //
 // Example:
 //
-//  var docPath string // initialized somewhere
+//		var docPath string // initialized somewhere
 //
-//  isDocument := win.Path.HasExtension(docPath, "txt", "doc")
+//		isDocument := win.Path.HasExtension(docPath, "txt", "doc")
 func (_PathT) HasExtension(path string, extensions ...string) bool {
 	pathUpper := strings.ToUpper(path)
 	for _, extension := range extensions {
@@ -36,11 +36,11 @@ func (_PathT) HasExtension(path string, extensions ...string) bool {
 //
 // Example:
 //
-//  files, err := win.Path.ListFilesInFolder("C:\\Temp\\*.txt")
+//		files, err := win.Path.ListFilesInFolder("C:\\Temp\\*.txt")
 //
-//  for _, file := range files {
-//      println(file)
-//  }
+//		for _, file := range files {
+//			println(file)
+//		}
 func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 	wfd := WIN32_FIND_DATA{}
 	hFind, found, err := FindFirstFile(pathAndPattern, &wfd)
@@ -73,9 +73,9 @@ func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 
 // Returns the path of the current executable, without trailing backslash.
 //
-// Example, loading a file which is the same folder of the EXE:
+// Example loading a file which is the same folder of the EXE:
 //
-//  namesPath := win.Path.ExePath() + "\\names.txt"
+//		namesPath := win.Path.ExePath() + "\\names.txt"
 func (_PathT) ExePath() string {
 	return Path.GetPath(HINSTANCE(0).GetModuleFileName())
 }

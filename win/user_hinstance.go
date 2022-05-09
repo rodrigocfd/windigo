@@ -99,28 +99,28 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 //
 // Example loading a 16x16 icon resource:
 //
-//  const MY_ICON_ID int = 101
+//		const MY_ICON_ID int = 101
 //
-//  hIcon := win.HICON(
-//      win.GetModuleHandle(win.StrOptNone()).LoadImage(
-//          win.ResIdInt(MY_ICON_ID),
-//          co.IMAGE_ICON,
-//          16, 16,
-//          co.LR_DEFAULTCOLOR,
-//      ),
-//  )
+//		hIcon := win.HICON(
+//			win.GetModuleHandle(win.StrOptNone()).LoadImage(
+//				win.ResIdInt(MY_ICON_ID),
+//				co.IMAGE_ICON,
+//				16, 16,
+//				co.LR_DEFAULTCOLOR,
+//			),
+//		)
 //
 // Example loading a bitmap from file:
 //
-//  hBmp := win.HBITMAP(
-//      win.HINSTANCE(0).LoadImage(
-//          win.ResIdStr("C:\\Temp\\image.bmp"),
-//          co.IMAGE_BITMAP,
-//          0, 0,
-//          co.LR_LOADFROMFILE,
-//      ),
-//  )
-//  defer hBmp.DeleteObject()
+//		hBmp := win.HBITMAP(
+//			win.HINSTANCE(0).LoadImage(
+//				win.ResIdStr("C:\\Temp\\image.bmp"),
+//				co.IMAGE_BITMAP,
+//				0, 0,
+//				co.LR_LOADFROMFILE,
+//			),
+//		)
+//		defer hBmp.DeleteObject()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
 func (hInst HINSTANCE) LoadImage(

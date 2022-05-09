@@ -18,14 +18,14 @@ import (
 //
 // Example:
 //
-//  clsId, _ := com.CLSIDFromProgID("Excel.Application")
+//		clsId, _ := com.CLSIDFromProgID("Excel.Application")
 //
-//  mainObj := com.CoCreateInstance(
-//      clsId, nil, comco.CLSCTX_SERVER, comco.IID_IUnknown)
-//  defer mainObj.Release()
+//		mainObj := com.CoCreateInstance(
+//			clsId, nil, comco.CLSCTX_SERVER, comco.IID_IUnknown)
+//		defer mainObj.Release()
 //
-//  excel := mainObj.QueryInterface(automco.IID_IDispatch)
-//  defer excel.Release()
+//		excel := mainObj.QueryInterface(automco.IID_IDispatch)
+//		defer excel.Release()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func CLSIDFromProgID(progId string) (co.CLSID, error) {
@@ -50,28 +50,28 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 //
 // Example for an ordinary COM object:
 //
-//  comObject := shell.NewITaskbarList(
-//      com.CoCreateInstance(
-//          shellco.CLSID_TaskbarList, nil,
-//          comco.CLSCTX_INPROC_SERVER,
-//          shellco.IID_ITaskbarList),
-//  )
-//  defer comObject.Release()
+//		comObject := shell.NewITaskbarList(
+//			com.CoCreateInstance(
+//				shellco.CLSID_TaskbarList, nil,
+//				comco.CLSCTX_INPROC_SERVER,
+//				shellco.IID_ITaskbarList),
+//		)
+//		defer comObject.Release()
 //
 // Example for COM Automation:
 //
-//  clsId, _ := com.CLSIDFromProgID("Excel.Application")
-//  root := com.CoCreateInstance(
-//      clsId, nil, comco.CLSCTX_SERVER, comco.IID_IUnknown)
-//  defer root.Release()
+//		clsId, _ := com.CLSIDFromProgID("Excel.Application")
+//		root := com.CoCreateInstance(
+//			clsId, nil, comco.CLSCTX_SERVER, comco.IID_IUnknown)
+//		defer root.Release()
 //
-//  excel := autom.NewIDispatch(
-//      root.QueryInterface(automco.IID_IDispatch))
-//  defer excel.Release()
+//		excel := autom.NewIDispatch(
+//			root.QueryInterface(automco.IID_IDispatch))
+//		defer excel.Release()
 //
-//  for _, f := range excel.ListFunctions() {
-//      println(f.Name, f.NumParams, f.FuncKind, f.Flags)
-//  }
+//		for _, f := range excel.ListFunctions() {
+//			println(f.Name, f.NumParams, f.FuncKind, f.Flags)
+//		}
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(

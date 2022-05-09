@@ -8,11 +8,11 @@ import (
 //
 // Example:
 //
-//  ico := TdcIconTdi(co.TD_ICON_ERROR)
+//		ico := TdcIconTdi(co.TD_ICON_ERROR)
 //
-//  if tdi, ok := ico.Tdi(); ok {
-//      println(tdi)
-//  }
+//		if tdi, ok := ico.Tdi(); ok {
+//			println(tdi)
+//		}
 type TdcIcon struct {
 	curType uint8      // 0: none
 	hIcon   HICON      // 1

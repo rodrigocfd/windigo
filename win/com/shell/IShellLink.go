@@ -67,13 +67,13 @@ type _IShellLink struct{ com.IUnknown }
 //
 // Example:
 //
-//  lnk := shell.NewIShellLink(
-//      com.CoCreateInstance(
-//          shellco.CLSID_ShellLink, nil,
-//          comco.CLSCTX_INPROC_SERVER,
-//          shellco.IID_IShellLink),
-//  )
-//  defer lnk.Release()
+//		lnk := shell.NewIShellLink(
+//			com.CoCreateInstance(
+//				shellco.CLSID_ShellLink, nil,
+//				comco.CLSCTX_INPROC_SERVER,
+//				shellco.IID_IShellLink),
+//		)
+//		defer lnk.Release()
 func NewIShellLink(base com.IUnknown) IShellLink {
 	return &_IShellLink{IUnknown: base}
 }
