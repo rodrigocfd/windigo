@@ -1,3 +1,5 @@
+//go:build windows
+
 package co
 
 // NMTVASYNCDRAW dwRetFlags, don't seem to be defined anywhere, values are unconfirmed.

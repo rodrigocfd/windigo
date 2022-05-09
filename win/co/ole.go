@@ -1,3 +1,5 @@
+//go:build windows
+
 package co
 
 // A COM interface class ID, represented as a string.

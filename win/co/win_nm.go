@@ -1,3 +1,5 @@
+//go:build windows
+
 package co
 
 // WM_COMMAND notification codes.

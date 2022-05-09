@@ -1,3 +1,5 @@
+//go:build windows
+
 package win
 
 // This helper method enumerates all modules.

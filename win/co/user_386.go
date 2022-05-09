@@ -1,3 +1,5 @@
+//go:build windows
+
 package co
 
 // Get/SetWindowLongPtr() nIndex. Also includes constants with GWL prefix.

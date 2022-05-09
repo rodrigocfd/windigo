@@ -1,3 +1,5 @@
+//go:build windows
+
 package ui
 
 // Manages a group of native radio button controls.

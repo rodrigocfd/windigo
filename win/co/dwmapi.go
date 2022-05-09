@@ -1,3 +1,5 @@
+//go:build windows
+
 package co
 
 // DWMWA_GET_CLOAKED return values.

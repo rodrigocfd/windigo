@@ -1,3 +1,5 @@
+//go:build windows
+
 package d2d1
 
 import (

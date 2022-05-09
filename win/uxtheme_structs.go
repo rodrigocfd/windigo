@@ -1,3 +1,5 @@
+//go:build windows
+
 package win
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/ns-uxtheme-margins

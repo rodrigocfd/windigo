@@ -1,3 +1,5 @@
+//go:build windows
+
 package co
 
 // Registry key security and access rights

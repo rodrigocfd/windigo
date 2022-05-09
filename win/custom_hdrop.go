@@ -1,3 +1,5 @@
+//go:build windows
+
 package win
 
 // This helper method retrieves all file names with DragQueryFile() and calls

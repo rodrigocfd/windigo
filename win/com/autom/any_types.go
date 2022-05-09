@@ -1,3 +1,5 @@
+//go:build windows
+
 package autom
 
 // Identifiers a member in a type description.

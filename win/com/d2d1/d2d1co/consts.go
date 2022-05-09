@@ -1,3 +1,5 @@
+//go:build windows
+
 package d2d1co
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dcommon/ne-dcommon-d2d1_alpha_mode

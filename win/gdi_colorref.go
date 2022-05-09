@@ -1,3 +1,5 @@
+//go:build windows
+
 package win
 
 // Specifies an RGB color.

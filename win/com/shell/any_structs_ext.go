@@ -1,3 +1,5 @@
+//go:build windows
+
 package shell
 
 // COMDLG_FILTERSPEC syntactic sugar.

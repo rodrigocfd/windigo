@@ -1,3 +1,5 @@
+//go:build windows
+
 package co
 
 // CONSOLE_READCONSOLE_CONTROL DwControlKeyState.

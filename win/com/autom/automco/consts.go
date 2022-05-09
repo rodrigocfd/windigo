@@ -1,3 +1,5 @@
+//go:build windows
+
 package automco
 
 // FUNCDESC callconv.
