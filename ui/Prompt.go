@@ -63,6 +63,7 @@ func (_PromptT) OkCancelEx(
 	} else {
 		btns |= co.TDCBF_OK
 	}
+
 	if text, has := cancelText.Str(); has {
 		customBtns = append(customBtns, win.TASKDIALOG_BUTTON{
 			PszButtonText: text,

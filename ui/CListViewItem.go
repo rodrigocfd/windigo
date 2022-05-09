@@ -121,6 +121,13 @@ func (me ListViewItem) LParam() win.LPARAM {
 	return lvi.LParam
 }
 
+// Returns a ID which uniquely identifies the item.
+func (me ListViewItem) MapIndexToId() int {
+	return int(
+		me.lv.Hwnd().SendMessage(co.LVM_MAPINDEXTOID, win.WPARAM(me.index), 0),
+	)
+}
+
 // Retrieves the coordinates of the rectangle surrounding the item.
 func (me ListViewItem) Rect(portion co.LVIR) win.RECT {
 	rcItem := win.RECT{
@@ -152,6 +159,14 @@ func (me ListViewItem) Select(isSelected bool) {
 	if ret == 0 {
 		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", me.index))
 	}
+}
+
+// Sets the item as hot, returning the previous one, if any.
+func (me ListViewItem) SetHot() (previous ListViewItem, hasPrevious bool) {
+	idxPrev := int(
+		me.lv.Hwnd().SendMessage(co.LVM_SETHOTITEM, win.WPARAM(me.index), 0),
+	)
+	return me.lv.Items().Get(idxPrev), idxPrev != -1
 }
 
 // Sets the custom data associated with the item.

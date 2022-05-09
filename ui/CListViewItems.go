@@ -156,6 +156,19 @@ func (me *_ListViewItems) HitTest(pos win.POINT) (ListViewItem, bool) {
 	return me.Get(int(lvhti.IItem)), true
 }
 
+// Returns the currently hot item, if any.
+func (me *_ListViewItems) Hot() (ListViewItem, bool) {
+	idx := int(me.lv.Hwnd().SendMessage(co.LVM_GETHOTITEM, 0, 0))
+	return me.Get(idx), idx != -1
+}
+
+// From an unique ID returned by ListViewItem.MapIndexToId(), retrieves the
+// corresponding ListViewItem.
+func (me *_ListViewItems) MapIdToItem(itemId int) ListViewItem {
+	idx := me.lv.Hwnd().SendMessage(co.LVM_MAPIDTOINDEX, win.WPARAM(itemId), 0)
+	return me.Get(int(idx))
+}
+
 // Selects or deselects all items at once.
 func (me *_ListViewItems) SelectAll(doSelect bool) {
 	lvi := win.LVITEM{
