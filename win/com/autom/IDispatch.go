@@ -20,7 +20,8 @@ type IDispatch interface {
 	com.IUnknown
 
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-getidsofnames
-	GetIDsOfNames(lcid win.LCID, names []string) ([]MEMBERID, error)
+	GetIDsOfNames(lcid win.LCID,
+		member string, parameters ...string) ([]MEMBERID, error)
 
 	// ⚠️ You must defer ITypeInfo.Release() on the returned object.
 	//
@@ -40,9 +41,36 @@ type IDispatch interface {
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
 	GetTypeInfoCount() int
 
+	// This is a low-level method, prefer using IDispatch.InvokePut(),
+	// IDispatch.InvokeMethod() or IDispatch.InvokeGet().
+	//
+	// ⚠️ You must defer VARIANT.VariantClear() on the VarResult member of the
+	// returned object.
+	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 	Invoke(dispIdMember MEMBERID, lcid win.LCID,
 		flags automco.DISPATCH, dispParams *DISPPARAMS) (_InvokeRet, error)
+
+	// This helper method calls IDispatch.GetIDsOfNames(), builds the DISPPARAMS
+	// array and calls IDispatch.Invoke() with automco.DISPATCH_PROPERTYGET.
+	//
+	// ⚠️ You must defer VARIANT.VariantClear() on the VarResult member of the
+	// returned object.
+	InvokeGet(methodName string, params ...VARIANT) (_InvokeRet, error)
+
+	// This helper method calls IDispatch.GetIDsOfNames(), builds the DISPPARAMS
+	// array and calls IDispatch.Invoke() with automco.DISPATCH_METHOD.
+	//
+	// ⚠️ You must defer VARIANT.VariantClear() on the VarResult member of the
+	// returned object.
+	InvokeMethod(methodName string, params ...VARIANT) (_InvokeRet, error)
+
+	// This helper method calls IDispatch.GetIDsOfNames(), builds the DISPPARAMS
+	// array and calls IDispatch.Invoke() with automco.DISPATCH_PROPERTYPUT.
+	//
+	// ⚠️ You must defer VARIANT.VariantClear() on the VarResult member of the
+	// returned object.
+	InvokePut(methodName string, params ...VARIANT) (_InvokeRet, error)
 
 	// This helper method calls IDispatch.GetTypeInfo() with
 	// win.LCID_SYSTEM_DEFAULT, then calls ITypeInfo.ListFunctions().
@@ -58,20 +86,47 @@ func NewIDispatch(base com.IUnknown) IDispatch {
 	return &_IDispatch{IUnknown: base}
 }
 
-func (me *_IDispatch) GetIDsOfNames(
-	lcid win.LCID, names []string) ([]MEMBERID, error) {
+// Constructs an automation IDispatch object by calling CLSIDFromProgID().
+//
+// Panics if progId is invalid.
+//
+// ⚠️ You must defer IDispatch.Release().
+//
+// Example:
+//
+//		excelApp := autom.NewIDispatchFromProgId("Excel.Application")
+//		defer excelApp.Release()
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
+func NewIDispatchFromProgId(progId string) IDispatch {
+	clsId, err := com.CLSIDFromProgID("Excel.Application")
+	if err != nil {
+		panic(err)
+	}
 
-	memberIds := make([]MEMBERID, len(names))
-	oleStrs := make([]*uint16, 0, len(names))
-	for _, name := range names {
-		oleStrs = append(oleStrs, win.Str.ToNativePtr(name))
+	return NewIDispatch(
+		com.CoCreateInstance(clsId, nil,
+			comco.CLSCTX_LOCAL_SERVER, automco.IID_IDispatch),
+	)
+}
+
+func (me *_IDispatch) GetIDsOfNames(
+	lcid win.LCID, member string, parameters ...string) ([]MEMBERID, error) {
+
+	numStrs := 1 + len(parameters)
+	memberIds := make([]MEMBERID, numStrs)
+
+	oleStrs := make([]*uint16, 0, numStrs)
+	oleStrs = append(oleStrs, win.Str.ToNativePtr(member))
+	for _, parameter := range parameters {
+		oleStrs = append(oleStrs, win.Str.ToNativePtr(parameter))
 	}
 
 	ret, _, _ := syscall.Syscall6(
 		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetIDsOfNames, 6,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.GuidFromIid(comco.IID_NULL))),
-		uintptr(unsafe.Pointer(&oleStrs[0])), uintptr(len(names)),
+		uintptr(unsafe.Pointer(&oleStrs[0])), uintptr(numStrs),
 		uintptr(lcid), uintptr(unsafe.Pointer(&memberIds[0])))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
@@ -140,6 +195,46 @@ func (me *_IDispatch) Invoke(
 	} else {
 		panic(hr)
 	}
+}
+
+func (me *_IDispatch) invokeCall(
+	methodName string,
+	flags automco.DISPATCH, params ...VARIANT) (_InvokeRet, error) {
+
+	// https://docs.microsoft.com/en-us/previous-versions/office/troubleshoot/office-developer/automate-excel-from-c
+
+	memIds, err := me.GetIDsOfNames(win.LCID_USER_DEFAULT, methodName)
+	if err != nil {
+		return _InvokeRet{}, err
+	}
+
+	var dp DISPPARAMS
+	if len(params) > 0 {
+		dp.SetArgs(params...)
+	}
+	if (flags & automco.DISPATCH_PROPERTYPUT) != 0 {
+		dp.SetNamedArgs(automco.DISPID_PROPERTYPUT)
+	}
+
+	return me.Invoke(memIds[0], win.LCID_SYSTEM_DEFAULT, flags, &dp)
+}
+
+func (me *_IDispatch) InvokeGet(
+	methodName string, params ...VARIANT) (_InvokeRet, error) {
+
+	return me.invokeCall(methodName, automco.DISPATCH_PROPERTYGET, params...)
+}
+
+func (me *_IDispatch) InvokeMethod(
+	methodName string, params ...VARIANT) (_InvokeRet, error) {
+
+	return me.invokeCall(methodName, automco.DISPATCH_METHOD, params...)
+}
+
+func (me *_IDispatch) InvokePut(
+	methodName string, params ...VARIANT) (_InvokeRet, error) {
+
+	return me.invokeCall(methodName, automco.DISPATCH_PROPERTYPUT, params...)
 }
 
 func (me *_IDispatch) ListFunctions() []FuncDescResume {

@@ -19,17 +19,17 @@ type ARRAYDESC struct {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-dispparams
 type DISPPARAMS struct {
 	rgvarg            *VARIANT
-	rgdispidNamedArgs *MEMBERID
+	rgdispidNamedArgs *automco.DISPID
 	cArgs             uint32
 	cNamedArgs        uint32
 }
 
-func (dp *DISPPARAMS) SetArgs(v []VARIANT) {
+func (dp *DISPPARAMS) SetArgs(v ...VARIANT) {
 	dp.cArgs = uint32(len(v))
 	dp.rgvarg = &v[0]
 }
 
-func (dp *DISPPARAMS) SetNamedArgs(v []MEMBERID) {
+func (dp *DISPPARAMS) SetNamedArgs(v ...automco.DISPID) {
 	dp.cNamedArgs = uint32(len(v))
 	dp.rgdispidNamedArgs = &v[0]
 }

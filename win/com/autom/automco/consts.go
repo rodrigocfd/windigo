@@ -2,6 +2,22 @@
 
 package automco
 
+// DISPPARAMS named args.
+//
+// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/automat/dispid-constants
+type DISPID int32
+
+const (
+	DISPID_UNKNOWN     DISPID = -1
+	DISPID_VALUE       DISPID = 0
+	DISPID_PROPERTYPUT DISPID = -3
+	DISPID_NEWENUM     DISPID = -4
+	DISPID_EVALUATE    DISPID = -5
+	DISPID_CONSTRUCTOR DISPID = -5
+	DISPID_DESTRUCTOR  DISPID = -7
+	DISPID_COLLECT     DISPID = -8
+)
+
 // FUNCDESC callconv.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
