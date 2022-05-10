@@ -95,7 +95,7 @@ func (_StrT) RemoveDiacritics(s string) string {
 	diacs := []rune("ÁáÀàÃãÂâÄäÉéÈèÊêËëÍíÌìÎîÏïÓóÒòÕõÔôÖöÚúÙùÛûÜüÇçÅåÐðÑñØøÝý")
 	repls := []rune("AaAaAaAaAaEeEeEeEeIiIiIiIiOoOoOoOoOoUuUuUuUuCcAaDdNnOoYy")
 
-	strBuf := strings.Builder{}
+	var strBuf strings.Builder
 	strBuf.Grow(len(s))
 
 	for _, ch := range []rune(s) {

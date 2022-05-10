@@ -44,33 +44,100 @@ type IDispatch interface {
 	// This is a low-level method, prefer using IDispatch.InvokePut(),
 	// IDispatch.InvokeMethod() or IDispatch.InvokeGet().
 	//
-	// ⚠️ You must defer VARIANT.VariantClear() on the VarResult member of the
-	// returned object.
+	// If the Invoke() call itself fails, an ordinary HRESULT is returned in the
+	// form of an errco.ERROR.
+	//
+	// If the remote call fails, an *autom.ExceptionInfo is returned.
+	//
+	// ⚠️ You must defer VARIANT.VariantClear() on the returned VARIANT.
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 	Invoke(dispIdMember MEMBERID, lcid win.LCID,
-		flags automco.DISPATCH, dispParams *DISPPARAMS) (_InvokeRet, error)
+		flags automco.DISPATCH, dispParams *DISPPARAMS) (VARIANT, error)
 
 	// This helper method calls IDispatch.GetIDsOfNames(), builds the DISPPARAMS
 	// array and calls IDispatch.Invoke() with automco.DISPATCH_PROPERTYGET.
 	//
-	// ⚠️ You must defer VARIANT.VariantClear() on the VarResult member of the
-	// returned object.
-	InvokeGet(methodName string, params ...VARIANT) (_InvokeRet, error)
+	// If the Invoke() call itself fails, an ordinary HRESULT is returned in the
+	// form of an errco.ERROR.
+	//
+	// If the remote call fails, an *autom.ExceptionInfo is returned.
+	//
+	// ⚠️ You must defer VARIANT.VariantClear() on the returned VARIANT.
+	//
+	// Example:
+	//
+	//		xlApp := autom.NewIDispatchFromProgId("Excel.Application")
+	//		defer xlApp.Release()
+	//
+	//		variRet, err := xlApp.InvokeGet("Workbooks")
+	//		if err != nil {
+	//			switch realErr := err.(type) {
+	//			case *autom.ExceptionInfo:
+	//				println("Invoke error", realErr.Code, realErr.Description)
+	//			default:
+	//				println("Ordinary error", realErr.Error())
+	//			}
+	//		}
+	//		defer variRet.VariantClear()
+	InvokeGet(methodName string, params ...VARIANT) (VARIANT, error)
 
 	// This helper method calls IDispatch.GetIDsOfNames(), builds the DISPPARAMS
 	// array and calls IDispatch.Invoke() with automco.DISPATCH_METHOD.
 	//
-	// ⚠️ You must defer VARIANT.VariantClear() on the VarResult member of the
-	// returned object.
-	InvokeMethod(methodName string, params ...VARIANT) (_InvokeRet, error)
+	// If the Invoke() call itself fails, an ordinary HRESULT is returned in the
+	// form of an errco.ERROR.
+	//
+	// If the remote call fails, an *autom.ExceptionInfo is returned.
+	//
+	// ⚠️ You must defer VARIANT.VariantClear() on the returned VARIANT.
+	//
+	// Example:
+	//
+	//		xlApp := autom.NewIDispatchFromProgId("Excel.Application")
+	//		defer xlApp.Release()
+	//
+	//		ret, err := xlApp.InvokeMethod("Quit")
+	//		if err != nil {
+	//			switch realErr := err.(type) {
+	//			case *autom.ExceptionInfo:
+	//				println("Invoke error", realErr.Code, realErr.Description)
+	//			default:
+	//				println("Ordinary error", realErr.Error())
+	//			}
+	//		}
+	//		defer variRet.VariantClear()
+	InvokeMethod(methodName string, params ...VARIANT) (VARIANT, error)
 
 	// This helper method calls IDispatch.GetIDsOfNames(), builds the DISPPARAMS
 	// array and calls IDispatch.Invoke() with automco.DISPATCH_PROPERTYPUT.
 	//
-	// ⚠️ You must defer VARIANT.VariantClear() on the VarResult member of the
-	// returned object.
-	InvokePut(methodName string, params ...VARIANT) (_InvokeRet, error)
+	// If the Invoke() call itself fails, an ordinary HRESULT is returned in the
+	// form of an errco.ERROR.
+	//
+	// If the remote call fails, an *autom.ExceptionInfo is returned.
+	//
+	// ⚠️ You must defer VARIANT.VariantClear() on the returned VARIANT.
+	//
+	// Example:
+	//
+	//		xlApp := autom.NewIDispatchFromProgId("Excel.Application")
+	//		defer xlApp.Release()
+	//
+	//		trueVal := autom.NewVariantInt32(1)
+	//		defer trueVal.VariantClear()
+	//
+	//		ret, err := xlApp.InvokePut("Visible", trueVal)
+	//		if err != nil {
+	//			switch realErr := err.(type) {
+	//			case *autom.ExceptionInfo:
+	//				println("Invoke error", realErr.Code, realErr.Description)
+	//			default:
+	//				println("Ordinary error", realErr.Error())
+	//			}
+	//		}
+	//		defer variRet.VariantClear()
+	InvokePut(methodName string, params ...VARIANT) (VARIANT, error)
 
 	// This helper method calls IDispatch.GetTypeInfo() with
 	// win.LCID_SYSTEM_DEFAULT, then calls ITypeInfo.ListFunctions().
@@ -167,17 +234,12 @@ func (me *_IDispatch) GetTypeInfoCount() int {
 	}
 }
 
-type _InvokeRet struct {
-	VarResult VARIANT
-	ExcepInfo EXCEPINFO
-	ArgErr    uint32
-}
-
 func (me *_IDispatch) Invoke(
 	dispIdMember MEMBERID, lcid win.LCID,
-	flags automco.DISPATCH, dispParams *DISPPARAMS) (_InvokeRet, error) {
+	flags automco.DISPATCH, dispParams *DISPPARAMS) (VARIANT, error) {
 
-	var invokeRet _InvokeRet
+	var retExcep EXCEPINFO
+	var retVari VARIANT
 
 	ret, _, _ := syscall.Syscall9(
 		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).Invoke, 9,
@@ -186,26 +248,41 @@ func (me *_IDispatch) Invoke(
 		uintptr(unsafe.Pointer(win.GuidFromIid(comco.IID_NULL))),
 		uintptr(lcid), uintptr(flags),
 		uintptr(unsafe.Pointer(dispParams)),
-		uintptr(unsafe.Pointer(&invokeRet.VarResult)),
-		uintptr(unsafe.Pointer(&invokeRet.ExcepInfo)),
-		uintptr(unsafe.Pointer(&invokeRet.ArgErr)))
+		uintptr(unsafe.Pointer(&retVari)),
+		uintptr(unsafe.Pointer(&retExcep)),
+		0) // puArgErr is not retrieved
 
-	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return invokeRet, nil
-	} else {
-		panic(hr)
+	if hr := errco.ERROR(ret); hr == errco.S_OK { // Invoke() call succeeded
+		if retExcep.BstrSource == 0 && retExcep.BstrDescription == 0 && retExcep.BstrHelpFile == 0 { // all good
+			return retVari, nil
+		} else { // Invoke() call succeeded, remote call returned error
+			defer retVari.VariantClear() // if any; not returned to user
+			e0, e1, e2 := retExcep.ReleaseStrings()
+			userExcep := &ExceptionInfo{
+				Code:        int32(retExcep.WCode),
+				Source:      e0,
+				Description: e1,
+				HelpFile:    e2,
+			}
+			if userExcep.Code == 0 {
+				userExcep.Code = retExcep.Scode
+			}
+			return VARIANT{}, userExcep
+		}
+	} else { // Invoke() call failed
+		return VARIANT{}, errco.ERROR(ret)
 	}
 }
 
 func (me *_IDispatch) invokeCall(
 	methodName string,
-	flags automco.DISPATCH, params ...VARIANT) (_InvokeRet, error) {
+	flags automco.DISPATCH, params ...VARIANT) (VARIANT, error) {
 
 	// https://docs.microsoft.com/en-us/previous-versions/office/troubleshoot/office-developer/automate-excel-from-c
 
 	memIds, err := me.GetIDsOfNames(win.LCID_USER_DEFAULT, methodName)
 	if err != nil {
-		return _InvokeRet{}, err
+		return VARIANT{}, err
 	}
 
 	var dp DISPPARAMS
@@ -220,19 +297,19 @@ func (me *_IDispatch) invokeCall(
 }
 
 func (me *_IDispatch) InvokeGet(
-	methodName string, params ...VARIANT) (_InvokeRet, error) {
+	methodName string, params ...VARIANT) (VARIANT, error) {
 
 	return me.invokeCall(methodName, automco.DISPATCH_PROPERTYGET, params...)
 }
 
 func (me *_IDispatch) InvokeMethod(
-	methodName string, params ...VARIANT) (_InvokeRet, error) {
+	methodName string, params ...VARIANT) (VARIANT, error) {
 
 	return me.invokeCall(methodName, automco.DISPATCH_METHOD, params...)
 }
 
 func (me *_IDispatch) InvokePut(
-	methodName string, params ...VARIANT) (_InvokeRet, error) {
+	methodName string, params ...VARIANT) (VARIANT, error) {
 
 	return me.invokeCall(methodName, automco.DISPATCH_PROPERTYPUT, params...)
 }

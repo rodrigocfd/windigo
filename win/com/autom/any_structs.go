@@ -47,13 +47,33 @@ func (ed *ELEMDESC) ParmDesc() *PARAMDESC { return (*PARAMDESC)(unsafe.Pointer(&
 type EXCEPINFO struct {
 	WCode             uint16
 	wReserved         uint16
-	BstrSource        *uint16
-	BstrDescription   *uint16
-	BstrHelpFile      *uint16
+	BstrSource        uintptr
+	BstrDescription   uintptr
+	BstrHelpFile      uintptr
 	DwHelpContext     uint16
 	pvReserved        uintptr
 	PfnDeferredFillIn uintptr
 	Scode             int32
+}
+
+func (e *EXCEPINFO) ReleaseStrings() (string, string, string) {
+	s0, s1, s2 := "", "", ""
+	if e.BstrSource != 0 {
+		bstr := BSTR(e.BstrSource)
+		defer bstr.SysFreeString()
+		s0 = bstr.String()
+	}
+	if e.BstrDescription != 0 {
+		bstr := BSTR(e.BstrDescription)
+		defer bstr.SysFreeString()
+		s1 = bstr.String()
+	}
+	if e.BstrHelpFile != 0 {
+		bstr := BSTR(e.BstrHelpFile)
+		defer bstr.SysFreeString()
+		s2 = bstr.String()
+	}
+	return s0, s1, s2
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc

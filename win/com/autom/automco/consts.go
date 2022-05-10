@@ -37,7 +37,7 @@ const (
 	CALLCONV_MAX
 )
 
-// IDispatch::Invoke() flags.
+// IDispatch.Invoke() flags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 type DISPATCH uint16

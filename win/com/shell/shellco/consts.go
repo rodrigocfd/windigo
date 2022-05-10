@@ -147,7 +147,7 @@ const (
 	STPFLAG_USEAPPPEEKWHENACTIVE      STPFLAG = 0x8
 )
 
-// ITaskbarList3::SetProgressState() tbpFlags.
+// ITaskbarList3.SetProgressState() tbpFlags.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
 type TBPF uint32
