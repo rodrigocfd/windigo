@@ -6,6 +6,22 @@ import (
 	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 )
 
+// IDataObject virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
+type IDataObject struct {
+	comvt.IUnknown
+	GetData               uintptr
+	GetDataHere           uintptr
+	QueryGetData          uintptr
+	GetCanonicalFormatEtc uintptr
+	SetData               uintptr
+	EnumFormatEtc         uintptr
+	DAdvise               uintptr
+	DUnadvise             uintptr
+	EnumDAdvise           uintptr
+}
+
 // IDesktopWallpaper virtual table.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-idesktopwallpaper
@@ -27,6 +43,17 @@ type IDesktopWallpaper struct {
 	AdvanceSlideshow          uintptr
 	GetStatus                 uintptr
 	Enable                    uintptr
+}
+
+// IDropTarget virtual table.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
+type IDropTarget struct {
+	comvt.IUnknown
+	DragEnter uintptr
+	DragOver  uintptr
+	DragLeave uintptr
+	Drop      uintptr
 }
 
 // IFileDialog virtual table.

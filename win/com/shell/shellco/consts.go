@@ -2,6 +2,17 @@
 
 package shellco
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/com/dropeffect-constants
+type DROPEFFECT uint32
+
+const (
+	DROPEFFECT_NONE   DROPEFFECT = 0
+	DROPEFFECT_COPY   DROPEFFECT = 1
+	DROPEFFECT_MOVE   DROPEFFECT = 2
+	DROPEFFECT_LINK   DROPEFFECT = 4
+	DROPEFFECT_SCROLL DROPEFFECT = 0x8000_0000
+)
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-advanceslideshow
 type DSD uint32
 
@@ -37,17 +48,6 @@ const (
 	DWPOS_FIT     DWPOS = 3
 	DWPOS_FILL    DWPOS = 4
 	DWPOS_SPAN    DWPOS = 5
-)
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/com/dropeffect-constants
-type DROPEFFECT uint32
-
-const (
-	DROPEFFECT_NONE   DROPEFFECT = 0
-	DROPEFFECT_COPY   DROPEFFECT = 1
-	DROPEFFECT_MOVE   DROPEFFECT = 2
-	DROPEFFECT_LINK   DROPEFFECT = 4
-	DROPEFFECT_SCROLL DROPEFFECT = 0x8000_0000
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_fileopendialogoptions
