@@ -67,7 +67,10 @@ type IDispatch interface {
 	//
 	// Example:
 	//
-	//		xlApp := autom.NewIDispatchFromProgId("Excel.Application")
+	//		xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
+	//		if err != nil {
+	//			panic(err)
+	//		}
 	//		defer xlApp.Release()
 	//
 	//		variRet, err := xlApp.InvokeGet("Workbooks")
@@ -94,7 +97,10 @@ type IDispatch interface {
 	//
 	// Example:
 	//
-	//		xlApp := autom.NewIDispatchFromProgId("Excel.Application")
+	//		xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
+	//		if err != nil {
+	//			panic(err)
+	//		}
 	//		defer xlApp.Release()
 	//
 	//		ret, err := xlApp.InvokeMethod("Quit")
@@ -121,8 +127,10 @@ type IDispatch interface {
 	//
 	// Example:
 	//
-	//		xlApp := autom.NewIDispatchFromProgId("Excel.Application")
-	//		defer xlApp.Release()
+	//		xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
+	//		if err != nil {
+	//			panic(err)
+	//		}
 	//
 	//		trueVal := autom.NewVariantInt32(1)
 	//		defer trueVal.VariantClear()
@@ -155,26 +163,30 @@ func NewIDispatch(base com.IUnknown) IDispatch {
 
 // Constructs an automation IDispatch object by calling CLSIDFromProgID().
 //
-// Panics if progId is invalid.
+// Note that the target application must be installed, otherwise the call will
+// fail.
 //
 // ⚠️ You must defer IDispatch.Release().
 //
 // Example:
 //
-//		excelApp := autom.NewIDispatchFromProgId("Excel.Application")
+//		excelApp, err := autom.NewIDispatchFromProgId("Excel.Application")
+//		if err != nil {
+//			panic(err)
+//		}
 //		defer excelApp.Release()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
-func NewIDispatchFromProgId(progId string) IDispatch {
+func NewIDispatchFromProgId(progId string) (IDispatch, error) {
 	clsId, err := com.CLSIDFromProgID("Excel.Application")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	return NewIDispatch(
 		com.CoCreateInstance(clsId, nil,
 			comco.CLSCTX_LOCAL_SERVER, automco.IID_IDispatch),
-	)
+	), nil
 }
 
 func (me *_IDispatch) GetIDsOfNames(

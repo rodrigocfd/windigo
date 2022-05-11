@@ -50,7 +50,7 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 // ⚠️ You must defer IUnknown.Release() on the returned COM object. If iUnkOuter
 // is not null, you must defer IUnknown.Release() on it too.
 //
-// Example for an ordinary COM object:
+// Example:
 //
 //		comObject := shell.NewITaskbarList(
 //			com.CoCreateInstance(
@@ -59,21 +59,6 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 //				shellco.IID_ITaskbarList),
 //		)
 //		defer comObject.Release()
-//
-// Example for COM Automation:
-//
-//		clsId, _ := com.CLSIDFromProgID("Excel.Application")
-//		root := com.CoCreateInstance(
-//			clsId, nil, comco.CLSCTX_SERVER, comco.IID_IUnknown)
-//		defer root.Release()
-//
-//		excel := autom.NewIDispatch(
-//			root.QueryInterface(automco.IID_IDispatch))
-//		defer excel.Release()
-//
-//		for _, f := range excel.ListFunctions() {
-//			println(f.Name, f.NumParams, f.FuncKind, f.Flags)
-//		}
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
