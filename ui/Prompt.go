@@ -114,7 +114,7 @@ func (_PromptT) generate(
 		tdc.HwndParent = parent.Hwnd()
 	}
 	if header, ok := header.Str(); ok {
-		tdc.PszMainInstruction = string(header)
+		tdc.PszMainInstruction = header
 	}
 
 	return win.TaskDialogIndirect(&tdc)

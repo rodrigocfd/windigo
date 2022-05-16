@@ -16,4 +16,8 @@ var (
 	CoTaskMemFree    = ole32.NewProc("CoTaskMemFree")
 	CoTaskMemRealloc = ole32.NewProc("CoTaskMemRealloc")
 	CoUninitialize   = ole32.NewProc("CoUninitialize")
+	OleInitialize    = ole32.NewProc("OleInitialize")
+	OleUninitialize  = ole32.NewProc("OleUninitialize")
+	RegisterDragDrop = ole32.NewProc("RegisterDragDrop")
+	RevokeDragDrop   = ole32.NewProc("RevokeDragDrop")
 )

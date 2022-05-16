@@ -115,3 +115,18 @@ func CoUninitialize() {
 func IsObj(obj IUnknown) bool {
 	return obj != nil && obj.Ptr() != nil
 }
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleinitialize
+func OleInitialize() {
+	ret, _, _ := syscall.Syscall(proc.OleInitialize.Addr(), 1,
+		0, 0, 0)
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
+	}
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleuninitialize
+func OleUninitialize() {
+	syscall.Syscall(proc.OleUninitialize.Addr(), 0,
+		0, 0, 0)
+}
