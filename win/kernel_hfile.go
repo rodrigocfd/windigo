@@ -68,12 +68,12 @@ func (hFile HFILE) GetFileSizeEx() (uint64, error) {
 func (hFile HFILE) CreateFileMapping(
 	securityAttributes *SECURITY_ATTRIBUTES,
 	protectPage co.PAGE, protectSec co.SEC,
-	maxSize uint32, objectName StrOpt) (HFILEMAP, error) {
+	maxSize uint64, objectName StrOpt) (HFILEMAP, error) {
 
-	ret, _, err := syscall.Syscall6(proc.CreateFileMapping.Addr(), 6,
+	ret, _, err := syscall.Syscall6(proc.CreateFileMappingFromApp.Addr(), 5,
 		uintptr(hFile), uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
-		0, uintptr(maxSize), uintptr(objectName.Raw()))
+		uintptr(maxSize), uintptr(objectName.Raw()), 0)
 	if ret == 0 {
 		return HFILEMAP(0), errco.ERROR(err)
 	}
@@ -212,11 +212,11 @@ func (hMap HFILEMAP) CloseHandle() error {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
-	offset uint32, numBytesToMap uint64) (HFILEMAPVIEW, error) {
+	offset uint64, numBytesToMap uint64) (HFILEMAPVIEW, error) {
 
-	ret, _, err := syscall.Syscall6(proc.MapViewOfFile.Addr(), 5,
-		uintptr(hMap), uintptr(desiredAccess), 0, uintptr(offset),
-		uintptr(numBytesToMap), 0)
+	ret, _, err := syscall.Syscall6(proc.MapViewOfFileFromApp.Addr(), 4,
+		uintptr(hMap), uintptr(desiredAccess), uintptr(offset),
+		uintptr(numBytesToMap), 0, 0)
 	if ret == 0 {
 		return HFILEMAPVIEW(0), errco.ERROR(err)
 	}
