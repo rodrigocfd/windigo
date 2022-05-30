@@ -418,7 +418,7 @@ func (hWnd HWND) GetWindowDC() HDC {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
-func (hWnd HWND) GetWindowLongPtr(index co.GWL) uintptr {
+func (hWnd HWND) GetWindowLongPtr(index co.GWLP) uintptr {
 	ret, _, err := syscall.Syscall(proc.GetWindowLongPtr.Addr(), 2,
 		uintptr(hWnd), uintptr(index), 0)
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
@@ -486,7 +486,7 @@ func (hWnd HWND) HiliteMenuItem(hMenu HMENU, item MenuItem, hilite bool) bool {
 
 // Returns the window instance with GetWindowLongPtr().
 func (hWnd HWND) Hinstance() HINSTANCE {
-	return HINSTANCE(hWnd.GetWindowLongPtr(co.GWL_HINSTANCE))
+	return HINSTANCE(hWnd.GetWindowLongPtr(co.GWLP_HINSTANCE))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invalidaterect
@@ -889,7 +889,7 @@ func (hWnd HWND) SetWindowDisplayAffinity(affinity co.WDA) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowlongptrw
-func (hWnd HWND) SetWindowLongPtr(index co.GWL, newLong uintptr) uintptr {
+func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
 	syscall.Syscall(proc.SetLastError.Addr(), 0,
 		0, 0, 0)
 

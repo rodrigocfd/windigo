@@ -93,16 +93,16 @@ func (me *_ProgressBar) Pos() int {
 
 func (me *_ProgressBar) SetMarquee(isMarquee bool) {
 	if isMarquee {
-		me.Hwnd().SetWindowLongPtr(co.GWL_STYLE,
-			me.Hwnd().GetWindowLongPtr(co.GWL_STYLE)|uintptr(co.PBS_MARQUEE))
+		me.Hwnd().SetWindowLongPtr(co.GWLP_STYLE,
+			me.Hwnd().GetWindowLongPtr(co.GWLP_STYLE)|uintptr(co.PBS_MARQUEE))
 	}
 
 	me.Hwnd().SendMessage(co.PBM_SETMARQUEE,
 		win.WPARAM(util.BoolToUintptr(isMarquee)), 0)
 
 	if !isMarquee {
-		me.Hwnd().SetWindowLongPtr(co.GWL_STYLE,
-			me.Hwnd().GetWindowLongPtr(co.GWL_STYLE)&^uintptr(co.PBS_MARQUEE))
+		me.Hwnd().SetWindowLongPtr(co.GWLP_STYLE,
+			me.Hwnd().GetWindowLongPtr(co.GWLP_STYLE)&^uintptr(co.PBS_MARQUEE))
 	}
 
 	me.isMarquee = isMarquee

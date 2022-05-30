@@ -138,9 +138,9 @@ func _WndProc(
 		cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
 		pMe = (*_WindowRaw)(unsafe.Pointer(cs.LpCreateParams))
 		pMe._WindowBase.hWnd = hWnd // assign actual HWND
-		hWnd.SetWindowLongPtr(co.GWL_USERDATA, uintptr(unsafe.Pointer(pMe)))
+		hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 	} else {
-		pMe = (*_WindowRaw)(unsafe.Pointer(hWnd.GetWindowLongPtr(co.GWL_USERDATA)))
+		pMe = (*_WindowRaw)(unsafe.Pointer(hWnd.GetWindowLongPtr(co.GWLP_USERDATA)))
 	}
 
 	// If object pointer is not stored, then no processing is done.
@@ -156,7 +156,7 @@ func _WndProc(
 		// No further messages processed after this one.
 		if uMsg == co.WM_NCDESTROY {
 			delete(_globalWindowRawPtrs, pMe) // remove from set
-			hWnd.SetWindowLongPtr(co.GWL_USERDATA, 0)
+			hWnd.SetWindowLongPtr(co.GWLP_USERDATA, 0)
 			pMe._WindowBase.hWnd = win.HWND(0)
 		}
 

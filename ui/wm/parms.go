@@ -391,13 +391,13 @@ func (p Sizing) DragRect() *win.RECT { return (*win.RECT)(unsafe.Pointer(p.Msg.L
 type Styles struct{ Msg Any }
 
 func (p Styles) StylesWs() *win.STYLESTRUCT_WS {
-	if co.GWL(p.Msg.WParam) == co.GWL_STYLE {
+	if co.GWLP(p.Msg.WParam) == co.GWLP_STYLE {
 		return (*win.STYLESTRUCT_WS)(unsafe.Pointer(p.Msg.LParam))
 	}
 	return nil
 }
 func (p Styles) StylesWsEx() *win.STYLESTRUCT_WSEX {
-	if co.GWL(p.Msg.WParam) == co.GWL_EXSTYLE {
+	if co.GWLP(p.Msg.WParam) == co.GWLP_EXSTYLE {
 		return (*win.STYLESTRUCT_WSEX)(unsafe.Pointer(p.Msg.LParam))
 	}
 	return nil

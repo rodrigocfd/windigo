@@ -5,18 +5,18 @@ package co
 // Get/SetWindowLongPtr() nIndex. Also includes constants with GWL prefix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
-type GWL int32
+type GWLP int32
 
 const (
-	GWL_WNDPROC    GWL = -4
-	GWL_HINSTANCE  GWL = -6
-	GWL_HWNDPARENT GWL = -8
-	GWL_ID         GWL = -12
-	GWL_STYLE      GWL = -16
-	GWL_EXSTYLE    GWL = -20
-	GWL_USERDATA   GWL = -21
+	GWLP_WNDPROC    GWLP = -4  // Originally with GWL prefix.
+	GWLP_HINSTANCE  GWLP = -6  // Originally with GWL prefix.
+	GWLP_HWNDPARENT GWLP = -8  // Originally with GWL prefix.
+	GWLP_ID         GWLP = -12 // Originally with GWL prefix.
+	GWLP_STYLE      GWLP = -16 // Originally with GWL prefix.
+	GWLP_EXSTYLE    GWLP = -20 // Originally with GWL prefix.
+	GWLP_USERDATA   GWLP = -21 // Originally with GWL prefix.
 
-	GWL_DWL_MSGRESULT GWL = 0 // Originally with DWL prefix.
-	GWL_DWL_DLGPROC   GWL = 4 // Originally with DWL prefix.
-	GWL_DWL_USER      GWL = 8 // Originally with DWL prefix.
+	GWLP_DWLP_MSGRESULT GWLP = 0 // Originally with DWL prefix.
+	GWLP_DWLP_DLGPROC   GWLP = 4 // Originally with DWL prefix.
+	GWLP_DWLP_USER      GWLP = 8 // Originally with DWL prefix.
 )
