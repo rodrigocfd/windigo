@@ -7,40 +7,40 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-type _PromptT struct{}
+type _TaskDlgT struct{}
 
 // Displays various modal prompts which the user must interact to.
 //
 // The methods are high-level wrappers to win.TaskDialogIndirect() function,
 // which is a modern replacement to the old HWND.MessageBox() method.
-var Prompt _PromptT
+var TaskDlg _TaskDlgT
 
 // Displays an error modal prompt with an OK button.
-func (_PromptT) Error(
+func (_TaskDlgT) Error(
 	parent AnyParent,
 	title string, header win.StrOpt, body string) {
 
-	Prompt.generate(parent, title, header, body,
+	TaskDlg.generate(parent, title, header, body,
 		co.TDCBF_OK, co.TD_ICON_ERROR, nil)
 }
 
 // Displays an information modal prompt with an OK button.
-func (_PromptT) Info(
+func (_TaskDlgT) Info(
 	parent AnyParent,
 	title string, header win.StrOpt, body string) {
 
-	Prompt.generate(parent, title, header, body,
+	TaskDlg.generate(parent, title, header, body,
 		co.TDCBF_OK, co.TD_ICON_INFORMATION, nil)
 }
 
 // Displays a question modal prompt with OK and Cancel buttons.
 //
 // Returns true if the user clicked OK.
-func (_PromptT) OkCancel(
+func (_TaskDlgT) OkCancel(
 	parent AnyParent,
 	title string, header win.StrOpt, body string) bool {
 
-	return Prompt.generate(parent, title, header, body,
+	return TaskDlg.generate(parent, title, header, body,
 		co.TDCBF_OK|co.TDCBF_CANCEL, co.TD_ICON_WARNING, nil) == co.ID_OK
 }
 
@@ -48,7 +48,7 @@ func (_PromptT) OkCancel(
 // be specified for the buttons.
 //
 // Returns true if the user clicked OK.
-func (_PromptT) OkCancelEx(
+func (_TaskDlgT) OkCancelEx(
 	parent AnyParent, title string, header win.StrOpt, body string,
 	okText, cancelText win.StrOpt) bool {
 
@@ -73,31 +73,31 @@ func (_PromptT) OkCancelEx(
 		btns |= co.TDCBF_CANCEL
 	}
 
-	return Prompt.generate(parent, title, header, body,
+	return TaskDlg.generate(parent, title, header, body,
 		btns, co.TD_ICON_WARNING, customBtns) == co.ID_OK
 }
 
 // Displays a question modal prompt with Yes and No buttons.
 //
 // Returns true if the user clicked Yes.
-func (_PromptT) YesNo(
+func (_TaskDlgT) YesNo(
 	parent AnyParent,
 	title string, header win.StrOpt, body string) bool {
 
-	return Prompt.generate(parent, title, header, body,
+	return TaskDlg.generate(parent, title, header, body,
 		co.TDCBF_YES|co.TDCBF_NO, co.TD_ICON_WARNING, nil) == co.ID_YES
 }
 
 // Displays a question modal prompt with Yes, No and Cancel buttons.
-func (_PromptT) YesNoCancel(
+func (_TaskDlgT) YesNoCancel(
 	parent AnyParent,
 	title string, header win.StrOpt, body string) co.ID {
 
-	return Prompt.generate(parent, title, header, body,
+	return TaskDlg.generate(parent, title, header, body,
 		co.TDCBF_YES|co.TDCBF_NO|co.TDCBF_CANCEL, co.TD_ICON_WARNING, nil)
 }
 
-func (_PromptT) generate(
+func (_TaskDlgT) generate(
 	parent AnyParent,
 	title string, header win.StrOpt, body string,
 	btns co.TDCBF, ico co.TD_ICON, customBtns []win.TASKDIALOG_BUTTON) co.ID {

@@ -24,6 +24,9 @@ func InitCommonControlsEx(icce *INITCOMMONCONTROLSEX) bool {
 	return ret != 0
 }
 
+// Prefer using ui.TaskDlg wrappers, which deals with the most commons cases of
+// this function in a safer, easier way.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 	serialized, ptrs := taskConfig.serializePacked()
