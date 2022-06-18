@@ -178,18 +178,6 @@ const (
 	HICF_TOGGLEDROPDOWN HICF = 0x0000_0100
 )
 
-// TVINSERTSTRUCT hInsertAfter.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvinsertstructw
-type HTREEITEM uintptr
-
-const (
-	HTREEITEM_ROOT  HTREEITEM = 0x1_0000
-	HTREEITEM_FIRST HTREEITEM = 0x0_ffff
-	HTREEITEM_LAST  HTREEITEM = 0x0_fffe
-	HTREEITEM_SORT  HTREEITEM = 0x0_fffd
-)
-
 // INITCOMMONCONTROLSEX dwIcc.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex

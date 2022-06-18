@@ -21,7 +21,7 @@ type TreeViewItem struct {
 func (me TreeViewItem) AddChild(text string) TreeViewItem {
 	tvi := win.TVINSERTSTRUCT{
 		HParent:      me.hItem,
-		HInsertAfter: win.HTREEITEM(co.HTREEITEM_LAST),
+		HInsertAfter: win.HTREEITEM_LAST,
 		Itemex: win.TVITEMEX{
 			Mask: co.TVIF_TEXT,
 		},

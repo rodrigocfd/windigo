@@ -8,20 +8,10 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// An atom.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#atom
-type ATOM uint16
-
 // A handle to an object.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HANDLE syscall.Handle
-
-// A handle to a tree view control item.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
-type HTREEITEM HANDLE
 
 //------------------------------------------------------------------------------
 

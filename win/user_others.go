@@ -2,6 +2,30 @@
 
 package win
 
+// An atom.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#atom
+type ATOM uint16
+
+//------------------------------------------------------------------------------
+
+// A handle to a tree view control item.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
+type HTREEITEM HANDLE
+
+// Predefined tree view control item handle.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
+const (
+	HTREEITEM_ROOT  HTREEITEM = 0x1_0000
+	HTREEITEM_FIRST HTREEITEM = 0x0_ffff
+	HTREEITEM_LAST  HTREEITEM = 0x0_fffe
+	HTREEITEM_SORT  HTREEITEM = 0x0_fffd
+)
+
+//------------------------------------------------------------------------------
+
 // First message parameter.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#wparam
