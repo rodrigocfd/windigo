@@ -5,4 +5,5 @@ package win
 // Private constants.
 const (
 	_CCHILDREN_TITLEBAR = 5
+	_CP_WINUNICODE      = 1200
 )
