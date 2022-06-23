@@ -28,6 +28,27 @@ type COMPAREITEMSTRUCT struct {
 	DwLocaleId uint32
 }
 
+// ⚠️ You must call SetCb() to initialize the struct.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/ns-ddeml-convcontext
+type CONVCONTEXT struct {
+	cb         uint32
+	wFlags     uint32
+	WCountryID uint32
+	iCodePage  int32
+	dwLangId   uint32 // LANGID
+	DwSecurity uint32
+	Qos        SECURITY_QUALITY_OF_SERVICE
+}
+
+func (cc *CONVCONTEXT) SetCb() {
+	cc.cb = uint32(unsafe.Sizeof(*cc))
+	cc.iCodePage = _CP_WINUNICODE
+}
+
+func (cc *CONVCONTEXT) DwLangId() LANGID       { return LANGID(cc.dwLangId) }
+func (cc *CONVCONTEXT) SetDwLangId(val LANGID) { cc.dwLangId = uint32(val) }
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-copydatastruct
 type COPYDATASTRUCT struct {
 	DwData uintptr // ULONG_PTR
@@ -145,7 +166,7 @@ type ICONINFO struct {
 }
 
 func (ii *ICONINFO) FIcon() bool       { return ii.fIcon != 0 }
-func (ii *ICONINFO) SetFIcon(val bool) { ii.fIcon = int32(util.BoolToUintptr(val)) }
+func (ii *ICONINFO) SetFIcon(val bool) { ii.fIcon = util.BoolToInt32(val) }
 
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
@@ -165,7 +186,7 @@ type ICONINFOEX struct {
 func (iix *ICONINFOEX) SetCbSize() { iix.cbSize = uint32(unsafe.Sizeof(*iix)) }
 
 func (iix *ICONINFOEX) FIcon() bool       { return iix.fIcon != 0 }
-func (iix *ICONINFOEX) SetFIcon(val bool) { iix.fIcon = int32(util.BoolToUintptr(val)) }
+func (iix *ICONINFOEX) SetFIcon(val bool) { iix.fIcon = util.BoolToInt32(val) }
 
 func (iix *ICONINFOEX) SzModName() string { return Str.FromNativeSlice(iix.szModName[:]) }
 func (iix *ICONINFOEX) SetSzModName(val string) {
@@ -313,7 +334,7 @@ type PAINTSTRUCT struct {
 }
 
 func (ps *PAINTSTRUCT) FErase() bool       { return ps.fErase != 0 }
-func (ps *PAINTSTRUCT) SetFErase(val bool) { ps.fErase = int32(util.BoolToUintptr(val)) }
+func (ps *PAINTSTRUCT) SetFErase(val bool) { ps.fErase = util.BoolToInt32(val) }
 
 // Basic point structure, with x and y coordinates.
 //
@@ -350,6 +371,28 @@ type SCROLLINFO struct {
 }
 
 func (si *SCROLLINFO) SetCbSize() { si.cbSize = uint32(unsafe.Sizeof(*si)) }
+
+// ⚠️ You must call SetLength() to initialize the struct.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-security_quality_of_service
+type SECURITY_QUALITY_OF_SERVICE struct {
+	length              uint32
+	ImpersonationLevel  co.SECURITY_IMPERSONATION_LEVEL
+	contextTrackingMode uint8 // BOOLEAN
+	effectiveOnly       uint8 // BOOLEAN
+}
+
+func (qs *SECURITY_QUALITY_OF_SERVICE) SetLength() { qs.length = uint32(unsafe.Sizeof(*qs)) }
+
+func (qs *SECURITY_QUALITY_OF_SERVICE) ContextTrackingMode() bool { return qs.contextTrackingMode != 0 }
+func (qs *SECURITY_QUALITY_OF_SERVICE) SetContextTrackingMode(val bool) {
+	qs.contextTrackingMode = util.BoolToUint8(val)
+}
+
+func (qs *SECURITY_QUALITY_OF_SERVICE) EffectiveOnly() bool { return qs.effectiveOnly != 0 }
+func (qs *SECURITY_QUALITY_OF_SERVICE) SetEffectiveOnly(val bool) {
+	qs.effectiveOnly = util.BoolToUint8(val)
+}
 
 // Basic area size structure, with cx and cy values.
 //

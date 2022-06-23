@@ -1148,6 +1148,16 @@ const (
 	SC_SEPARATOR    SC = 0xf00f
 )
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/ne-winnt-security_impersonation_level
+type SECURITY_IMPERSONATION_LEVEL uint32
+
+const (
+	SECURITY_IMPERSONATION_LEVEL_ANONYMOUS SECURITY_IMPERSONATION_LEVEL = iota
+	SECURITY_IMPERSONATION_LEVEL_IDENTIFICATION
+	SECURITY_IMPERSONATION_LEVEL_IMPERSONATION
+	SECURITY_IMPERSONATION_LEVEL_DELAGATION
+)
+
 // SCROLLINFO fMask.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-scrollinfo

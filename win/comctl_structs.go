@@ -499,7 +499,7 @@ type NMTBDUPACCELERATOR struct {
 }
 
 func (da *NMTBDUPACCELERATOR) FDup() bool       { return da.fDup != 0 }
-func (da *NMTBDUPACCELERATOR) SetFDup(val bool) { da.fDup = int32(util.BoolToUintptr(val)) }
+func (da *NMTBDUPACCELERATOR) SetFDup(val bool) { da.fDup = util.BoolToInt32(val) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbgetinfotipw
 type NMTBGETINFOTIP struct {

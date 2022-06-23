@@ -9,7 +9,8 @@ import (
 // This helper method writes a bitmap to the clipboard with
 // HCLIPBOARD.SetClipboardData().
 //
-// ⚠️ hBmp will be owned by the clipboard, do not call HBITMAP.DeleteObject() anymore.
+// ⚠️ hBmp will be owned by the clipboard, do not call HBITMAP.DeleteObject()
+// anymore.
 func (hClip HCLIPBOARD) WriteBitmap(hBmp HBITMAP) {
 	hClip.SetClipboardData(co.CF_BITMAP, HGLOBAL(hBmp))
 }

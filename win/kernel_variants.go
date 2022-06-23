@@ -10,11 +10,13 @@ import (
 //
 // Example:
 //
-//		maybeStr := StrOptSome("foo")
+//		realStr := win.StrOptSome("foo")
 //
-//		if s, ok := maybeStr.Str(); ok {
+//		if s, ok := realStr.Str(); ok {
 //			println(s)
 //		}
+//
+//		fakeStr := win.StrOptNone()
 type StrOpt struct {
 	isSome bool
 	str    string

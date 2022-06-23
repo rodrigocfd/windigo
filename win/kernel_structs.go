@@ -17,7 +17,7 @@ type CONSOLE_CURSOR_INFO struct {
 }
 
 func (cc *CONSOLE_CURSOR_INFO) BVisible() bool       { return cc.bVisible != 0 }
-func (cc *CONSOLE_CURSOR_INFO) SetBVisible(val bool) { cc.bVisible = int32(util.BoolToUintptr(val)) }
+func (cc *CONSOLE_CURSOR_INFO) SetBVisible(val bool) { cc.bVisible = util.BoolToInt32(val) }
 
 // 📑 https://docs.microsoft.com/en-us/windows/console/console-font-info-str
 type CONSOLE_FONT_INFO struct {
@@ -80,7 +80,7 @@ func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) DynamicDaylightTimeDisabled() bool {
 	return dtz.dynamicDaylightTimeDisabled != 0
 }
 func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetDynamicDaylightTimeDisabled(val bool) {
-	dtz.dynamicDaylightTimeDisabled = uint8(util.BoolToUintptr(val))
+	dtz.dynamicDaylightTimeDisabled = util.BoolToUint8(val)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
@@ -212,10 +212,8 @@ type SECURITY_ATTRIBUTES struct {
 
 func (sa *SECURITY_ATTRIBUTES) SetNLength() { sa.nLength = uint32(unsafe.Sizeof(*sa)) }
 
-func (sa *SECURITY_ATTRIBUTES) BInheritHandle() bool { return sa.bInheritHandle != 0 }
-func (sa *SECURITY_ATTRIBUTES) SetBInheritHandle(val bool) {
-	sa.bInheritHandle = int32(util.BoolToUintptr(val))
-}
+func (sa *SECURITY_ATTRIBUTES) BInheritHandle() bool       { return sa.bInheritHandle != 0 }
+func (sa *SECURITY_ATTRIBUTES) SetBInheritHandle(val bool) { sa.bInheritHandle = util.BoolToInt32(val) }
 
 // ⚠️ You must call SetCb() to initialize the struct.
 //

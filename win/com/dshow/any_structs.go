@@ -21,14 +21,12 @@ type AM_MEDIA_TYPE struct {
 	PbFormat             *byte
 }
 
-func (mt *AM_MEDIA_TYPE) BFixedSizeSamples() bool { return mt.bFixedSizeSamples != 0 }
-func (mt *AM_MEDIA_TYPE) SetBFixedSizeSamples(val bool) {
-	mt.bFixedSizeSamples = int32(util.BoolToUintptr(val))
-}
+func (mt *AM_MEDIA_TYPE) BFixedSizeSamples() bool       { return mt.bFixedSizeSamples != 0 }
+func (mt *AM_MEDIA_TYPE) SetBFixedSizeSamples(val bool) { mt.bFixedSizeSamples = util.BoolToInt32(val) }
 
 func (mt *AM_MEDIA_TYPE) BTemporalCompression() bool { return mt.bTemporalCompression != 0 }
 func (mt *AM_MEDIA_TYPE) SetBTemporalCompression(val bool) {
-	mt.bTemporalCompression = int32(util.BoolToUintptr(val))
+	mt.bTemporalCompression = util.BoolToInt32(val)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ns-strmif-filter_info

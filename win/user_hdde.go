@@ -89,6 +89,48 @@ func (hDde HDDE) DdeUninitialize() error {
 
 //------------------------------------------------------------------------------
 
+// DDE conversation handle.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeconnect
+type HCONV HANDLE
+
+// ⚠️ You must defer HDDE.DdeDisconnect().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeconnect
+func (hDde HDDE) DdeConnect(serviceName, topic StrOpt, cc *CONVCONTEXT) HCONV {
+	var serviceNameHsz HSZ
+	if s, ok := serviceName.Str(); ok {
+		serviceNameHsz = hDde.DdeCreateStringHandle(s)
+		defer hDde.DdeFreeStringHandle(serviceNameHsz)
+	}
+
+	var topicHsz HSZ
+	if s, ok := topic.Str(); ok {
+		topicHsz = hDde.DdeCreateStringHandle(s)
+		defer hDde.DdeFreeStringHandle(topicHsz)
+	}
+
+	ret, _, _ := syscall.Syscall6(proc.DdeConnect.Addr(), 4,
+		uintptr(hDde), uintptr(serviceNameHsz), uintptr(topicHsz),
+		uintptr(unsafe.Pointer(cc)),
+		0, 0)
+	if ret == 0 {
+		panic(hDde.DdeGetLastError())
+	}
+	return HCONV(ret)
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddedisconnect
+func (hDde HDDE) DdeDisconnect(hConv HCONV) {
+	ret, _, _ := syscall.Syscall(proc.DdeDisconnect.Addr(), 1,
+		uintptr(hConv), 0, 0)
+	if ret == 0 {
+		panic(hDde.DdeGetLastError())
+	}
+}
+
+//------------------------------------------------------------------------------
+
 // String type used in DDE.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecreatestringhandlew

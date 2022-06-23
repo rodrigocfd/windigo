@@ -134,7 +134,7 @@ func (hWnd HWND) DwmSetWindowAttribute(attr co.DWMWA_SET, val interface{}) {
 		if val, ok := val.(bool); !ok {
 			panic("DWMWA_SET_TRANSITIONS_FORCEDISABLED must have a bool.")
 		} else {
-			boolBuf := int32(util.BoolToUintptr(val))
+			boolBuf := util.BoolToInt32(val)
 			ptrRaw = unsafe.Pointer(&boolBuf)
 			cbSize = unsafe.Sizeof(boolBuf)
 		}
@@ -142,7 +142,7 @@ func (hWnd HWND) DwmSetWindowAttribute(attr co.DWMWA_SET, val interface{}) {
 		if val, ok := val.(bool); !ok {
 			panic("DWMWA_SET_ALLOW_NCPAINT must have a bool.")
 		} else {
-			boolBuf := int32(util.BoolToUintptr(val))
+			boolBuf := util.BoolToInt32(val)
 			ptrRaw = unsafe.Pointer(&boolBuf)
 			cbSize = unsafe.Sizeof(boolBuf)
 		}
@@ -150,7 +150,7 @@ func (hWnd HWND) DwmSetWindowAttribute(attr co.DWMWA_SET, val interface{}) {
 		if val, ok := val.(bool); !ok {
 			panic("DWMWA_SET_FORCE_ICONIC_REPRESENTATION must have a bool.")
 		} else {
-			boolBuf := int32(util.BoolToUintptr(val))
+			boolBuf := util.BoolToInt32(val)
 			ptrRaw = unsafe.Pointer(&boolBuf)
 			cbSize = unsafe.Sizeof(boolBuf)
 		}
@@ -165,7 +165,7 @@ func (hWnd HWND) DwmSetWindowAttribute(attr co.DWMWA_SET, val interface{}) {
 		if val, ok := val.(bool); !ok {
 			panic("DWMWA_SET_HAS_ICONIC_BITMAP must have a bool.")
 		} else {
-			boolBuf := int32(util.BoolToUintptr(val))
+			boolBuf := util.BoolToInt32(val)
 			ptrRaw = unsafe.Pointer(&boolBuf)
 			cbSize = unsafe.Sizeof(boolBuf)
 		}
@@ -173,7 +173,7 @@ func (hWnd HWND) DwmSetWindowAttribute(attr co.DWMWA_SET, val interface{}) {
 		if val, ok := val.(bool); !ok {
 			panic("DWMWA_SET_DISALLOW_PEEK must have a bool.")
 		} else {
-			boolBuf := int32(util.BoolToUintptr(val))
+			boolBuf := util.BoolToInt32(val)
 			ptrRaw = unsafe.Pointer(&boolBuf)
 			cbSize = unsafe.Sizeof(boolBuf)
 		}
@@ -181,7 +181,7 @@ func (hWnd HWND) DwmSetWindowAttribute(attr co.DWMWA_SET, val interface{}) {
 		if val, ok := val.(bool); !ok {
 			panic("DWMWA_SET_EXCLUDED_FROM_PEEK must have a bool.")
 		} else {
-			boolBuf := int32(util.BoolToUintptr(val))
+			boolBuf := util.BoolToInt32(val)
 			ptrRaw = unsafe.Pointer(&boolBuf)
 			cbSize = unsafe.Sizeof(boolBuf)
 		}
