@@ -563,13 +563,13 @@ func (hWnd HWND) IsZoomed() bool {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-killtimer
-func (hWnd HWND) KillTimer(id uintptr) {
+func (hWnd HWND) KillTimer(timerId uintptr) {
 	ret, _, err := syscall.Syscall(proc.KillTimer.Addr(), 2,
-		uintptr(hWnd), id, 0)
+		uintptr(hWnd), timerId, 0)
 
-	if id > 0xffff { // guess: Win32 pointers are greater than WORDs
+	if timerId > 0xffff { // guess: Win32 pointers are greater than WORDs
 		_globalTimerMutex.Lock()
-		delete(_globalTimerFuncs, (*_TimerPack)(unsafe.Pointer(id))) // remove from set
+		delete(_globalTimerFuncs, (*_TimerPack)(unsafe.Pointer(timerId))) // remove from set
 		_globalTimerMutex.Unlock()
 		// At this moment, the callback pointer has no more references. If
 		// KillTimer() is called from within the callback itself, it's unsure
@@ -810,13 +810,13 @@ func (hWnd HWND) SetScrollInfo(
 // ⚠️ You must call HWND.KillTimer() to stop the timer.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
-func (hWnd HWND) SetTimer(msElapse uint32, id uintptr) uintptr {
+func (hWnd HWND) SetTimer(msElapse int, timerId uintptr) uintptr {
 	ret, _, err := syscall.Syscall6(proc.SetTimer.Addr(), 4,
-		uintptr(hWnd), id, uintptr(msElapse), 0, 0, 0)
+		uintptr(hWnd), timerId, uintptr(msElapse), 0, 0, 0)
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		panic(wErr)
 	}
-	return id
+	return ret
 }
 
 // Creates a timer with SetTimer(), which runs the given callback instead of
@@ -831,14 +831,14 @@ func (hWnd HWND) SetTimer(msElapse uint32, id uintptr) uintptr {
 //
 //		var hWnd HWND // initialized somewhere
 //
-//		hWnd.SetTimerCallback(2000, func(id uintptr) {
-//			hWnd.KillTimer(id)
+//		hWnd.SetTimerCallback(2000, func(timerId uintptr) {
+//			hWnd.KillTimer(timerId)
 //			println("This callback will run once.")
 //		})
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
 func (hWnd HWND) SetTimerCallback(
-	msElapse uint32, timerFunc func(id uintptr)) uintptr {
+	msElapse int, timerFunc func(timerId uintptr)) uintptr {
 
 	pPack := &_TimerPack{f: timerFunc}
 	_globalTimerMutex.Lock()
@@ -848,17 +848,17 @@ func (hWnd HWND) SetTimerCallback(
 	_globalTimerFuncs[pPack] = struct{}{} // store pointer in the set
 	_globalTimerMutex.Unlock()
 
-	id := uintptr(unsafe.Pointer(pPack)) // use the pack pointer as the timer ID
+	timerId := uintptr(unsafe.Pointer(pPack)) // use the pack pointer as the timer ID
 
 	ret, _, err := syscall.Syscall6(proc.SetTimer.Addr(), 4,
-		uintptr(hWnd), id, uintptr(msElapse), _globalTimerCallback, 0, 0)
+		uintptr(hWnd), timerId, uintptr(msElapse), _globalTimerCallback, 0, 0)
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		panic(wErr)
 	}
-	return id
+	return ret
 }
 
-type _TimerPack struct{ f func(id uintptr) }
+type _TimerPack struct{ f func(timerId uintptr) }
 
 var (
 	_globalTimerCallback uintptr = syscall.NewCallback(_TimerProc)
@@ -866,15 +866,15 @@ var (
 	_globalTimerMutex    = sync.Mutex{}
 )
 
-func _TimerProc(_ HWND, _ co.WM, id uintptr, _ uint32) uintptr {
-	pPack := (*_TimerPack)(unsafe.Pointer(id))
+func _TimerProc(_ HWND, _ co.WM, timerId uintptr, _ uint32) uintptr {
+	pPack := (*_TimerPack)(unsafe.Pointer(timerId))
 
 	_globalTimerMutex.Lock()
 	_, isStored := _globalTimerFuncs[pPack]
 	_globalTimerMutex.Unlock()
 
 	if isStored {
-		pPack.f(id)
+		pPack.f(timerId) // invoke user callback
 	}
 	return 0
 }

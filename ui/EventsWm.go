@@ -15,13 +15,13 @@ import (
 type _EventsWm struct {
 	msgsRet  map[co.WM]func(p wm.Any) uintptr // meaningful return value
 	msgsZero map[co.WM]func(p wm.Any)         // just returns zero (or TRUE if dialog)
-	timers   map[int]func()                   // WM_TIMER
+	timers   map[uintptr]func()               // WM_TIMER
 }
 
 func (me *_EventsWm) new() {
 	me.msgsRet = make(map[co.WM]func(p wm.Any) uintptr, 10) // arbitrary
 	me.msgsZero = make(map[co.WM]func(p wm.Any), 10)
-	me.timers = make(map[int]func(), 5)
+	me.timers = make(map[uintptr]func(), 5)
 }
 
 // Adds a new WM message with a meaningful return value.
@@ -48,7 +48,7 @@ func (me *_EventsWm) processMessage(
 	msgObj := wm.Any{WParam: wParam, LParam: lParam}
 
 	if uMsg == co.WM_TIMER {
-		if userFunc, hasFunc := me.timers[int(wParam)]; hasFunc {
+		if userFunc, hasFunc := me.timers[uintptr(wParam)]; hasFunc {
 			userFunc()
 			return 0, false, true
 		}
@@ -74,8 +74,8 @@ func (me *_EventsWm) Wm(uMsg co.WM, userFunc func(p wm.Any) uintptr) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-timer
-func (me *_EventsWm) WmTimer(nIDEvent int, userFunc func()) {
-	me.timers[nIDEvent] = userFunc
+func (me *_EventsWm) WmTimer(timerId uintptr, userFunc func()) {
+	me.timers[timerId] = userFunc
 }
 
 // ⚠️ By handling this message, you'll overwrite the default behavior in WindowMain.
