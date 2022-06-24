@@ -88,6 +88,12 @@ func (hMenu HMENU) AppendMenu(
 	}
 }
 
+// Example:
+//
+//		var hMenu win.HMENU // initialized somewhere
+//
+//		hMenu.CheckMenuItem(win.MenuItemPos(0), true)
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuitem
 func (hMenu HMENU) CheckMenuItem(item MenuItem, check bool) bool {
 	idPos, mf := item.raw()
@@ -101,6 +107,15 @@ func (hMenu HMENU) CheckMenuItem(item MenuItem, check bool) bool {
 	return co.MF(ret) == co.MF_CHECKED
 }
 
+// Panics if the three item identifiers don't have the same variant type.
+//
+// Example:
+//
+//		var hMenu win.HMENU // initialized somewhere
+//
+//		p.Hmenu().CheckMenuRadioItem(
+//			win.MenuItemPos(0), win.MenuItemPos(4), win.MenuItemPos(1))
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuradioitem
 func (hMenu HMENU) CheckMenuRadioItem(
 	firstItem, lastItem, checkedItem MenuItem) {
@@ -123,6 +138,12 @@ func (hMenu HMENU) CheckMenuRadioItem(
 	}
 }
 
+// Example:
+//
+//		var hMenu win.HMENU // initialized somewhere
+//
+//		hMenu.DeleteMenu(win.MenuItemPos(3))
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deletemenu
 func (hMenu HMENU) DeleteMenu(item MenuItem) {
 	idPos, mf := item.raw()
@@ -142,6 +163,12 @@ func (hMenu HMENU) DestroyMenu() {
 	}
 }
 
+// Example:
+//
+//		var hMenu win.HMENU // initialized somewhere
+//
+//		hMenu.EnableMenuItem(win.MenuItemPos(0), false)
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablemenuitem
 func (hMenu HMENU) EnableMenuItem(item MenuItem, enable bool) bool {
 	idPos, mf := item.raw()

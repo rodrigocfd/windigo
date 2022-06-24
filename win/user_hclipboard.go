@@ -13,6 +13,8 @@ import (
 // A handle to the clipboard. Actually this handle does not exist, it only
 // serves the purpose of logically group the clipboard functions.
 //
+// This handle is returned by HWND.OpenClipboard().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/dataxchg/clipboard
 type HCLIPBOARD struct{}
 

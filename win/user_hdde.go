@@ -15,6 +15,8 @@ import (
 // A handle to a DDE instance. Actually this handle does not exist, it's just a
 // number identifying the instance.
 //
+// This handle is returned by win.DdeInitialize().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeinitializew
 type HDDE uint32
 

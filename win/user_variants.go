@@ -70,7 +70,7 @@ func (me *ClassName) raw() (uintptr, *uint16) { // pointer must be kept alive
 //
 // Example:
 //
-//		curId := CursorResIdc(co.IDC_ARROW)
+//		curId := win.CursorResIdc(co.IDC_ARROW)
 //
 //		if idc, ok := curId.Idc(); ok {
 //			println(idc)
@@ -130,7 +130,7 @@ func (me *CursorRes) raw() (uintptr, *uint16) { // pointer must be kept alive
 //
 // Example:
 //
-//		icoId := IconResIdi(co.IDI_HAND)
+//		icoId := win.IconResIdi(co.IDI_HAND)
 //
 //		if idi, ok := icoId.Idi(); ok {
 //			println(idi)
@@ -191,7 +191,7 @@ func (me *IconRes) raw() (uintptr, *uint16) { // pointer must be kept alive
 //
 // Example:
 //
-//		item := MenuItemPos(2)
+//		item := win.MenuItemPos(2)
 //
 //		if pos, ok := item.Pos(); ok {
 //			println(pos)
@@ -240,7 +240,7 @@ func (me *MenuItem) raw() (uintptr, co.MF) {
 //
 // Example:
 //
-//		resId := ResIdInt(0x400)
+//		resId := win.ResIdInt(0x400)
 //
 //		if id, ok := resId.Id(); ok {
 //			println(id)
