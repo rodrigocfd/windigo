@@ -222,6 +222,9 @@ func (hDde HDDE) DdeFreeStringHandle(hsz HSZ) error {
 	return nil
 }
 
+// ⚠️ You must defer HDDE.DdeFreeStringHandle() on the hsz, because a clone of
+// it has been made.
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddekeepstringhandle
 func (hDde HDDE) DdeKeepStringHandle(hsz HSZ) error {
 	ret, _, _ := syscall.Syscall(proc.DdeKeepStringHandle.Addr(), 2,
