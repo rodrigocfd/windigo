@@ -156,11 +156,15 @@ type HDDEDATA HANDLE
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeclienttransaction
 func (hDde HDDE) DdeClientTransaction(
 	data []byte, hConv HCONV, item StrOpt,
-	fmt co.CF, xType co.XTYP, timeout int) (HDDEDATA, error) {
+	fmt co.CF, xType co.XTYP, msTimeout int) (HDDEDATA, error) {
 
-	timeout32 := uint32(_TIMEOUT_ASYNC)
-	if timeout != -1 {
-		timeout32 = uint32(timeout)
+	var pData unsafe.Pointer
+	if data != nil {
+		pData = unsafe.Pointer(&data[0])
+	}
+	var szData int
+	if data != nil {
+		szData = len(data)
 	}
 
 	var itemHsz HSZ
@@ -173,9 +177,14 @@ func (hDde HDDE) DdeClientTransaction(
 		defer hDde.DdeFreeStringHandle(itemHsz)
 	}
 
+	timeout32 := uint32(_TIMEOUT_ASYNC)
+	if msTimeout != -1 {
+		timeout32 = uint32(msTimeout)
+	}
+
 	ret, _, _ := syscall.Syscall9(proc.DdeClientTransaction.Addr(), 8,
-		uintptr(unsafe.Pointer(&data[0])), uintptr(len(data)), uintptr(hConv),
-		uintptr(itemHsz), uintptr(fmt), uintptr(xType), uintptr(timeout32), 0, 0)
+		uintptr(pData), uintptr(szData), uintptr(hConv), uintptr(itemHsz),
+		uintptr(fmt), uintptr(xType), uintptr(timeout32), 0, 0)
 	if ret == 0 {
 		return HDDEDATA(0), hDde.DdeGetLastError()
 	}
