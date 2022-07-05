@@ -2,13 +2,6 @@
 
 package win
 
-// An atom.
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#atom
-type ATOM uint16
-
-//------------------------------------------------------------------------------
-
 // A handle to a tree view control item.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
