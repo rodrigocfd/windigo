@@ -149,6 +149,21 @@ func (hDde HDDE) DdeDisconnect(hConv HCONV) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeclienttransaction
 type HDDEDATA HANDLE
 
+// ⚠️ You must defer HDDE.DdeFreeDataHandle().
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeadddata
+func (hDde HDDE) DdeAddData(
+	hData HDDEDATA, data []byte, offset int) (HDDEDATA, error) {
+
+	ret, _, _ := syscall.Syscall6(proc.DdeAddData.Addr(), 4,
+		uintptr(hData), uintptr(unsafe.Pointer(&data[0])), uintptr(len(data)),
+		uintptr(offset), 0, 0)
+	if ret == 0 {
+		return HDDEDATA(0), hDde.DdeGetLastError()
+	}
+	return HDDEDATA(ret), nil
+}
+
 // For an async operation, pass -1 to timeout.
 //
 // ⚠️ You must defer HDDE.DdeFreeDataHandle().
@@ -204,9 +219,9 @@ func (hDde HDDE) DdeFreeDataHandle(hData HDDEDATA) error {
 // The buffer size is automatically determined.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddegetdata
-func (hDde HDDE) DdeGetData(hData HDDEDATA) ([]byte, error) {
+func (hDde HDDE) DdeGetData(hData HDDEDATA, offset int) ([]byte, error) {
 	ret, _, _ := syscall.Syscall6(proc.DdeGetData.Addr(), 4,
-		uintptr(hData), 0, 0, 0,
+		uintptr(hData), 0, 0, uintptr(offset),
 		0, 0)
 	if ret == 0 {
 		return nil, hDde.DdeGetLastError()
@@ -216,7 +231,8 @@ func (hDde HDDE) DdeGetData(hData HDDEDATA) ([]byte, error) {
 	retBuf := make([]byte, numBytes)
 
 	ret, _, _ = syscall.Syscall6(proc.DdeGetData.Addr(), 4,
-		uintptr(hData), uintptr(unsafe.Pointer(&retBuf[0])), uintptr(numBytes), 0,
+		uintptr(hData), uintptr(unsafe.Pointer(&retBuf[0])),
+		uintptr(numBytes), uintptr(offset),
 		0, 0)
 	if ret == 0 {
 		return nil, hDde.DdeGetLastError()
@@ -231,6 +247,13 @@ func (hDde HDDE) DdeGetData(hData HDDEDATA) ([]byte, error) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecreatestringhandlew
 type HSZ HANDLE
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecmpstringhandles
+func (hDde HDDE) DdeCmpStringHandles(hsz1, hsz2 HSZ) int {
+	ret, _, _ := syscall.Syscall(proc.DdeCmpStringHandles.Addr(), 2,
+		uintptr(hsz1), uintptr(hsz2), 0)
+	return int(ret)
+}
 
 // ⚠️ You must defer HDDE.DdeFreeStringHandle().
 //

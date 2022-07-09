@@ -44,6 +44,7 @@ type CONVCONTEXT struct {
 func (cc *CONVCONTEXT) SetCb() {
 	cc.cb = uint32(unsafe.Sizeof(*cc))
 	cc.iCodePage = _CP_WINUNICODE
+	cc.Qos.SetLength()
 }
 
 func (cc *CONVCONTEXT) DwLangId() LANGID       { return LANGID(cc.dwLangId) }
