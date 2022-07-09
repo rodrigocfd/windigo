@@ -201,6 +201,30 @@ func (hDde HDDE) DdeFreeDataHandle(hData HDDEDATA) error {
 	return nil
 }
 
+// The buffer size is automatically determined.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddegetdata
+func (hDde HDDE) DdeGetData(hData HDDEDATA) ([]byte, error) {
+	ret, _, _ := syscall.Syscall6(proc.DdeGetData.Addr(), 4,
+		uintptr(hData), 0, 0, 0,
+		0, 0)
+	if ret == 0 {
+		return nil, hDde.DdeGetLastError()
+	}
+
+	numBytes := int(ret)
+	retBuf := make([]byte, numBytes)
+
+	ret, _, _ = syscall.Syscall6(proc.DdeGetData.Addr(), 4,
+		uintptr(hData), uintptr(unsafe.Pointer(&retBuf[0])), uintptr(numBytes), 0,
+		0, 0)
+	if ret == 0 {
+		return nil, hDde.DdeGetLastError()
+	}
+
+	return retBuf, nil
+}
+
 //------------------------------------------------------------------------------
 
 // DDE string handle.

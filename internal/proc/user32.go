@@ -37,6 +37,7 @@ var (
 	DdeDisconnect                 = user32.NewProc("DdeDisconnect")
 	DdeFreeDataHandle             = user32.NewProc("DdeFreeDataHandle")
 	DdeFreeStringHandle           = user32.NewProc("DdeFreeStringHandle")
+	DdeGetData                    = user32.NewProc("DdeGetData")
 	DdeGetLastError               = user32.NewProc("DdeGetLastError")
 	DdeInitialize                 = user32.NewProc("DdeInitializeW")
 	DdeKeepStringHandle           = user32.NewProc("DdeKeepStringHandle")
