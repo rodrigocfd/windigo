@@ -43,6 +43,7 @@ var (
 	DdeGetLastError               = user32.NewProc("DdeGetLastError")
 	DdeInitialize                 = user32.NewProc("DdeInitializeW")
 	DdeKeepStringHandle           = user32.NewProc("DdeKeepStringHandle")
+	DdeNameService                = user32.NewProc("DdeNameService")
 	DdeQueryString                = user32.NewProc("DdeQueryStringW")
 	DdeUninitialize               = user32.NewProc("DdeUninitialize")
 	DefDlgProc                    = user32.NewProc("DefDlgProcW")

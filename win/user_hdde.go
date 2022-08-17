@@ -77,6 +77,27 @@ func (hDde HDDE) DdeGetLastError() errco.DMLERR {
 	return errco.DMLERR(ret)
 }
 
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddenameservice
+func (hDde HDDE) DdeNameService(serviceName StrOpt, opts co.DDENS) error {
+	var serviceNameHsz HSZ
+	if s, ok := serviceName.Str(); ok {
+		hsz, err := hDde.DdeCreateStringHandle(s)
+		if err != nil {
+			return err
+		}
+		serviceNameHsz = hsz
+		defer hDde.DdeFreeStringHandle(serviceNameHsz)
+	}
+
+	ret, _, _ := syscall.Syscall6(proc.DdeNameService.Addr(), 4,
+		uintptr(hDde), uintptr(serviceNameHsz), 0, uintptr(opts),
+		0, 0)
+	if ret == 0 {
+		return hDde.DdeGetLastError()
+	}
+	return nil
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeuninitialize
 func (hDde HDDE) DdeUninitialize() error {
 	ret, _, _ := syscall.Syscall(proc.DdeUninitialize.Addr(), 1,

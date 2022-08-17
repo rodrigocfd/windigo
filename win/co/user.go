@@ -342,6 +342,18 @@ const (
 	DLGC_BUTTON          DLGC = 0x2000
 )
 
+// DdeNameService() opts. Originally with DNS prefix.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddenameservice
+type DDENS uint32
+
+const (
+	DDENS_REGISTER   DDENS = 0x0001
+	DDENS_UNREGISTER DDENS = 0x0002
+	DDENS_FILTERON   DDENS = 0x0003
+	DDENS_FILTEROFF  DDENS = 0x0004
+)
+
 // SetProcessDpiAwarenessContext() value.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
