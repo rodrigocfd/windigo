@@ -44,6 +44,7 @@ var (
 	DdeInitialize                 = user32.NewProc("DdeInitializeW")
 	DdeKeepStringHandle           = user32.NewProc("DdeKeepStringHandle")
 	DdeNameService                = user32.NewProc("DdeNameService")
+	DdePostAdvise                 = user32.NewProc("DdePostAdvise")
 	DdeQueryString                = user32.NewProc("DdeQueryStringW")
 	DdeUninitialize               = user32.NewProc("DdeUninitialize")
 	DefDlgProc                    = user32.NewProc("DefDlgProcW")

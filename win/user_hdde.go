@@ -79,19 +79,37 @@ func (hDde HDDE) DdeGetLastError() errco.DMLERR {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddenameservice
 func (hDde HDDE) DdeNameService(serviceName StrOpt, opts co.DDENS) error {
-	var serviceNameHsz HSZ
-	if s, ok := serviceName.Str(); ok {
-		hsz, err := hDde.DdeCreateStringHandle(s)
-		if err != nil {
-			return err
-		}
-		serviceNameHsz = hsz
-		defer hDde.DdeFreeStringHandle(serviceNameHsz)
+	serviceNameHsz, err := hDde._strOptToHsz(serviceName)
+	if err != nil {
+		return err
 	}
+	defer hDde.DdeFreeStringHandle(serviceNameHsz)
 
 	ret, _, _ := syscall.Syscall6(proc.DdeNameService.Addr(), 4,
 		uintptr(hDde), uintptr(serviceNameHsz), 0, uintptr(opts),
 		0, 0)
+	if ret == 0 {
+		return hDde.DdeGetLastError()
+	}
+	return nil
+}
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddepostadvise
+func (hDde HDDE) DdePostAdvise(topic, item StrOpt) error {
+	topicHsz, err := hDde._strOptToHsz(topic)
+	if err != nil {
+		return err
+	}
+	defer hDde.DdeFreeStringHandle(topicHsz)
+
+	itemHsz, err := hDde._strOptToHsz(item)
+	if err != nil {
+		return err
+	}
+	defer hDde.DdeFreeStringHandle(itemHsz)
+
+	ret, _, _ := syscall.Syscall(proc.DdePostAdvise.Addr(), 3,
+		uintptr(hDde), uintptr(topicHsz), uintptr(itemHsz))
 	if ret == 0 {
 		return hDde.DdeGetLastError()
 	}
@@ -123,25 +141,17 @@ type HCONV HANDLE
 func (hDde HDDE) DdeConnect(
 	serviceName, topic StrOpt, cc *CONVCONTEXT) (HCONV, error) {
 
-	var serviceNameHsz HSZ
-	if s, ok := serviceName.Str(); ok {
-		hsz, err := hDde.DdeCreateStringHandle(s)
-		if err != nil {
-			return HCONV(0), err
-		}
-		serviceNameHsz = hsz
-		defer hDde.DdeFreeStringHandle(serviceNameHsz)
+	serviceNameHsz, err := hDde._strOptToHsz(serviceName)
+	if err != nil {
+		return HCONV(0), err
 	}
+	defer hDde.DdeFreeStringHandle(serviceNameHsz)
 
-	var topicHsz HSZ
-	if s, ok := topic.Str(); ok {
-		hsz, err := hDde.DdeCreateStringHandle(s)
-		if err != nil {
-			return HCONV(0), err
-		}
-		topicHsz = hsz
-		defer hDde.DdeFreeStringHandle(topicHsz)
+	topicHsz, err := hDde._strOptToHsz(topic)
+	if err != nil {
+		return HCONV(0), err
 	}
+	defer hDde.DdeFreeStringHandle(topicHsz)
 
 	ret, _, _ := syscall.Syscall6(proc.DdeConnect.Addr(), 4,
 		uintptr(hDde), uintptr(serviceNameHsz), uintptr(topicHsz),
@@ -203,15 +213,11 @@ func (hDde HDDE) DdeClientTransaction(
 		szData = len(data)
 	}
 
-	var itemHsz HSZ
-	if s, ok := item.Str(); ok {
-		hsz, err := hDde.DdeCreateStringHandle(s)
-		if err != nil {
-			return HDDEDATA(0), err
-		}
-		itemHsz = hsz
-		defer hDde.DdeFreeStringHandle(itemHsz)
+	itemHsz, err := hDde._strOptToHsz(item)
+	if err != nil {
+		return HDDEDATA(0), err
 	}
+	defer hDde.DdeFreeStringHandle(itemHsz)
 
 	timeout32 := uint32(_TIMEOUT_ASYNC)
 	if msTimeout != -1 {
@@ -329,4 +335,18 @@ func (hDde HDDE) DdeQueryString(hsz HSZ) (string, error) {
 	}
 
 	return Str.FromNativeSlice(buf), nil
+}
+
+//------------------------------------------------------------------------------
+
+func (hDde HDDE) _strOptToHsz(s StrOpt) (HSZ, error) {
+	var hszVal HSZ
+	if strVal, ok := s.Str(); ok {
+		hsz, err := hDde.DdeCreateStringHandle(strVal)
+		if err != nil {
+			return HSZ(0), err
+		}
+		hszVal = hsz
+	}
+	return hszVal, nil
 }
