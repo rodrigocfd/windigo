@@ -34,7 +34,7 @@ const (
 )
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regclosekey
-func (hKey HKEY) CloseKey() error {
+func (hKey HKEY) RegCloseKey() error {
 	ret, _, _ := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
 		uintptr(hKey), 0, 0)
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
@@ -44,7 +44,7 @@ func (hKey HKEY) CloseKey() error {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyw
-func (hKey HKEY) DeleteKey(subKey string) error {
+func (hKey HKEY) RegDeleteKey(subKey string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteKey.Addr(), 2,
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))), 0)
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
@@ -56,7 +56,7 @@ func (hKey HKEY) DeleteKey(subKey string) error {
 // samDesired must be KEY_WOW64_32KEY or KEY_WOW64_64KEY.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyexw
-func (hKey HKEY) DeleteKeyEx(subKey string, samDesired co.KEY) error {
+func (hKey HKEY) RegDeleteKeyEx(subKey string, samDesired co.KEY) error {
 	ret, _, _ := syscall.Syscall6(proc.RegDeleteKeyEx.Addr(), 4,
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
 		uintptr(samDesired), 0, 0, 0)
@@ -67,7 +67,7 @@ func (hKey HKEY) DeleteKeyEx(subKey string, samDesired co.KEY) error {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyvaluew
-func (hKey HKEY) DeleteKeyValue(subKey, valueName string) error {
+func (hKey HKEY) RegDeleteKeyValue(subKey, valueName string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteKeyValue.Addr(), 3,
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(valueName))))
@@ -78,7 +78,7 @@ func (hKey HKEY) DeleteKeyValue(subKey, valueName string) error {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletetreew
-func (hKey HKEY) DeleteTree(subKey string) error {
+func (hKey HKEY) RegDeleteTree(subKey string) error {
 	ret, _, _ := syscall.Syscall(proc.RegDeleteTree.Addr(), 2,
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))), 0)
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
@@ -90,8 +90,8 @@ func (hKey HKEY) DeleteTree(subKey string) error {
 // Returns the names of all subkeys within a key.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumkeyexw
-func (hKey HKEY) EnumKeyEx() ([]string, error) {
-	keyInfo, err := hKey.QueryInfoKey()
+func (hKey HKEY) RegEnumKeyEx() ([]string, error) {
+	keyInfo, err := hKey.RegQueryInfoKey()
 	if err != nil {
 		return nil, err
 	}
@@ -128,8 +128,8 @@ type _ValueEnum struct {
 // Returns the names and types of all values within a key.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumvaluew
-func (hKey HKEY) EnumValue() ([]_ValueEnum, error) {
-	keyInfo, err := hKey.QueryInfoKey()
+func (hKey HKEY) RegEnumValue() ([]_ValueEnum, error) {
+	keyInfo, err := hKey.RegQueryInfoKey()
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +169,7 @@ func (hKey HKEY) EnumValue() ([]_ValueEnum, error) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regflushkey
-func (hKey HKEY) FlushKey() error {
+func (hKey HKEY) RegFlushKey() error {
 	ret, _, _ := syscall.Syscall(proc.RegFlushKey.Addr(), 1,
 		uintptr(hKey), 0, 0)
 
@@ -183,7 +183,7 @@ func (hKey HKEY) FlushKey() error {
 // HKEY.ReadDword(), HKEY.ReadQword() or HKEY.ReadString().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-reggetvaluew
-func (hKey HKEY) GetValue(
+func (hKey HKEY) RegGetValue(
 	subKey, value string, flags co.RRF, pdwType *co.REG,
 	pData unsafe.Pointer, pDataLen *uint32) error {
 
@@ -199,10 +199,10 @@ func (hKey HKEY) GetValue(
 	return nil
 }
 
-// ⚠️ You must defer HKEY.CloseKey().
+// ⚠️ You must defer HKEY.RegCloseKey().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
-func (hKey HKEY) OpenKeyEx(
+func (hKey HKEY) RegOpenKeyEx(
 	subKey string, ulOptions co.REG_OPTION, samDesired co.KEY) (HKEY, error) {
 
 	var openedKey HKEY
@@ -230,7 +230,7 @@ type _KeyInfo struct {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryinfokeyw
-func (hKey HKEY) QueryInfoKey() (_KeyInfo, error) {
+func (hKey HKEY) RegQueryInfoKey() (_KeyInfo, error) {
 	var info _KeyInfo
 	var classBuf [_MAX_PATH + 1]uint16 // arbitrary
 	classBufLen := uint32(len(classBuf))
@@ -261,7 +261,7 @@ func (hKey HKEY) QueryInfoKey() (_KeyInfo, error) {
 // HKEY.WriteDword(), HKEY.WriteQword() or HKEY.WriteString().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetkeyvaluew
-func (hKey HKEY) SetKeyValue(
+func (hKey HKEY) RegSetKeyValue(
 	subKey, valueName string, dwType co.REG,
 	pData unsafe.Pointer, dataLen uint32) error {
 
