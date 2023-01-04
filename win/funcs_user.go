@@ -132,6 +132,11 @@ func EnumWindows(callback func(hWnd HWND) bool) {
 
 	ret, _, err := syscall.Syscall(proc.EnumWindows.Addr(), 2,
 		_globalEnumWindowsCallback, uintptr(unsafe.Pointer(pPack)), 0)
+
+	_globalEnumWindowsMutex.Lock()
+	delete(_globalEnumWindowsFuncs, pPack) // remove from the set
+	_globalEnumWindowsMutex.Unlock()
+
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -145,21 +150,7 @@ var (
 	_globalEnumWindowsCallback = syscall.NewCallback(
 		func(hWnd HWND, lParam LPARAM) uintptr {
 			pPack := (*_EnumWindowsPack)(unsafe.Pointer(lParam))
-			retVal := uintptr(0)
-
-			_globalEnumWindowsMutex.Lock()
-			_, isStored := _globalEnumWindowsFuncs[pPack]
-			_globalEnumWindowsMutex.Unlock()
-
-			if isStored {
-				retVal = util.BoolToUintptr(pPack.f(hWnd))
-				if retVal == 0 {
-					_globalEnumWindowsMutex.Lock()
-					delete(_globalEnumWindowsFuncs, pPack) // remove from the set
-					_globalEnumWindowsMutex.Unlock()
-				}
-			}
-			return retVal
+			return util.BoolToUintptr(pPack.f(hWnd))
 		})
 )
 

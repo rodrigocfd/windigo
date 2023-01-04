@@ -55,6 +55,11 @@ func (hdc HDC) EnumDisplayMonitors(
 	ret, _, err := syscall.Syscall6(proc.EnumDisplayMonitors.Addr(), 4,
 		uintptr(hdc), uintptr(unsafe.Pointer(rcClip)),
 		_globalEnumMonitorsCallback, uintptr(unsafe.Pointer(pPack)), 0, 0)
+
+	_globalEnumMonitorsMutex.Lock()
+	delete(_globalEnumMonitorsFuncs, pPack) // remove from the set
+	_globalEnumMonitorsMutex.Unlock()
+
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -70,21 +75,7 @@ var (
 	_globalEnumMonitorsCallback = syscall.NewCallback(
 		func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lParam LPARAM) uintptr {
 			pPack := (*_EnumMonitorsPack)(unsafe.Pointer(lParam))
-			retVal := uintptr(0)
-
-			_globalEnumMonitorsMutex.Lock()
-			_, isStored := _globalEnumMonitorsFuncs[pPack]
-			_globalEnumMonitorsMutex.Unlock()
-
-			if isStored {
-				retVal = util.BoolToUintptr(pPack.f(hMon, hdcMon, rcMon))
-				if retVal == 0 {
-					_globalEnumMonitorsMutex.Lock()
-					delete(_globalEnumMonitorsFuncs, pPack) // remove from the set
-					_globalEnumMonitorsMutex.Unlock()
-				}
-			}
-			return retVal
+			return util.BoolToUintptr(pPack.f(hMon, hdcMon, rcMon))
 		})
 )
 

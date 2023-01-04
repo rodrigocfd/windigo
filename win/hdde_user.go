@@ -57,7 +57,7 @@ type _DdeInitializePack struct {
 }
 
 var (
-	_globalDdeInitializeFunc     *_DdeInitializePack
+	_globalDdeInitializeFunc     *_DdeInitializePack // DdeInitialize() should be called only once
 	_globalDdeInitizeMutex       = sync.Mutex{}
 	_globalDdeInitializeCallback = syscall.NewCallback(
 		func(wType, wFmt uint32, hConv HCONV,

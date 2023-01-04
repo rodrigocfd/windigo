@@ -223,6 +223,10 @@ func (hWnd HWND) EnumChildWindows(callback func(hChild HWND) bool) {
 	syscall.Syscall(proc.EnumChildWindows.Addr(), 3,
 		uintptr(hWnd), _globalEnumChildCallback,
 		uintptr(unsafe.Pointer(pPack)))
+
+	_globalEnumChildMutex.Lock()
+	delete(_globalEnumChildFuncs, pPack) // remove from the set
+	_globalEnumChildMutex.Unlock()
 }
 
 type _EnumChildPack struct{ f func(hChild HWND) bool }
@@ -233,21 +237,7 @@ var (
 	_globalEnumChildCallback = syscall.NewCallback(
 		func(hChild HWND, lParam LPARAM) uintptr {
 			pPack := (*_EnumChildPack)(unsafe.Pointer(lParam))
-			retVal := uintptr(0)
-
-			_globalEnumChildMutex.Lock()
-			_, isStored := _globalEnumChildFuncs[pPack]
-			_globalEnumChildMutex.Unlock()
-
-			if isStored {
-				retVal = util.BoolToUintptr(pPack.f(hChild))
-				if retVal == 0 {
-					_globalEnumChildMutex.Lock()
-					delete(_globalEnumChildFuncs, pPack) // remove from the set
-					_globalEnumChildMutex.Unlock()
-				}
-			}
-			return retVal
+			return util.BoolToUintptr(pPack.f(hChild))
 		})
 )
 
