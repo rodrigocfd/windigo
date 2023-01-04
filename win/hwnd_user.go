@@ -571,6 +571,16 @@ func (hWnd HWND) KillTimer(timerId uintptr) {
 	}
 }
 
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-lockwindowupdate
+func (hWnd HWND) LockWindowUpdate() error {
+	ret, _, err := syscall.Syscall(proc.LockWindowUpdate.Addr(), 1,
+		uintptr(hWnd), 0, 0)
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-logicaltophysicalpoint
 func (hWnd HWND) LogicalToPhysicalPoint(pt *POINT) {
 	ret, _, err := syscall.Syscall(proc.LogicalToPhysicalPoint.Addr(), 2,
@@ -587,6 +597,21 @@ func (hWnd HWND) MapDialogRect(rc *RECT) {
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
+}
+
+// Returns the number of pixels added horizontally and vertically to the passed
+// points.
+//
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mapwindowpoints
+func (hWnd HWND) MapWindowPoints(hWndTo HWND, points []POINT) (int, int) {
+	syscall.Syscall(proc.SetLastError.Addr(), 0,
+		0, 0, 0)
+
+	ret, _, _ := syscall.Syscall6(proc.MapWindowPoints.Addr(), 4,
+		uintptr(hWnd), uintptr(hWndTo),
+		uintptr(unsafe.Pointer(&points[0])), uintptr(len(points)),
+		0, 0)
+	return int(LOWORD(uint32(ret))), int(HIWORD(uint32(ret)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-menuitemfrompoint
@@ -899,6 +924,15 @@ func (hWnd HWND) SetWindowPos(
 		uintptr(hWnd), uintptr(hwndInsertAfter),
 		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy),
 		uintptr(flags), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowrgn
+func (hWnd HWND) SetWindowRgn(hRgn HRGN, redraw bool) {
+	ret, _, err := syscall.Syscall(proc.SetWindowRgn.Addr(), 3,
+		uintptr(hWnd), uintptr(hRgn), util.BoolToUintptr(redraw))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

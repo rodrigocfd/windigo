@@ -261,15 +261,21 @@ type MINMAXINFO struct {
 
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfo
-type MONITORINFO struct {
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfoexw
+type MONITORINFOEX struct {
 	cbSize    uint32
 	RcMonitor RECT
 	RcWork    RECT
 	DwFlags   co.MONITORINFOF
+	szDevice  [_CCHDEVICENAME]uint16
 }
 
-func (mi *MONITORINFO) SetCbSize() { mi.cbSize = uint32(unsafe.Sizeof(*mi)) }
+func (mi *MONITORINFOEX) SetCbSize() { mi.cbSize = uint32(unsafe.Sizeof(*mi)) }
+
+func (dtf *MONITORINFOEX) SzDevice() string { return Str.FromNativeSlice(dtf.szDevice[:]) }
+func (dtf *MONITORINFOEX) SetSzDevice(val string) {
+	copy(dtf.szDevice[:], Str.ToNativeSlice(Str.Substr(val, 0, len(dtf.szDevice)-1)))
+}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msg
 type MSG struct {

@@ -96,3 +96,12 @@ func (hdc HDC) InvertRect(rc *RECT) {
 		panic(errco.ERROR(err))
 	}
 }
+
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-paintdesktop
+func (hdc HDC) PaintDesktop() {
+	ret, _, err := syscall.Syscall(proc.PaintDesktop.Addr(), 1,
+		uintptr(hdc), 0, 0)
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
