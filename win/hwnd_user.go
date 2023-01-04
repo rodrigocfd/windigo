@@ -228,29 +228,28 @@ func (hWnd HWND) EnumChildWindows(callback func(hChild HWND) bool) {
 type _EnumChildPack struct{ f func(hChild HWND) bool }
 
 var (
-	_globalEnumChildCallback uintptr = syscall.NewCallback(_EnumChildProc)
 	_globalEnumChildFuncs    map[*_EnumChildPack]struct{}
 	_globalEnumChildMutex    = sync.Mutex{}
-)
+	_globalEnumChildCallback = syscall.NewCallback(
+		func(hChild HWND, lParam LPARAM) uintptr {
+			pPack := (*_EnumChildPack)(unsafe.Pointer(lParam))
+			retVal := uintptr(0)
 
-func _EnumChildProc(hChild HWND, lParam LPARAM) uintptr {
-	pPack := (*_EnumChildPack)(unsafe.Pointer(lParam))
-	retVal := uintptr(0)
-
-	_globalEnumChildMutex.Lock()
-	_, isStored := _globalEnumChildFuncs[pPack]
-	_globalEnumChildMutex.Unlock()
-
-	if isStored {
-		retVal = util.BoolToUintptr(pPack.f(hChild))
-		if retVal == 0 {
 			_globalEnumChildMutex.Lock()
-			delete(_globalEnumChildFuncs, pPack) // remove from the set
+			_, isStored := _globalEnumChildFuncs[pPack]
 			_globalEnumChildMutex.Unlock()
-		}
-	}
-	return retVal
-}
+
+			if isStored {
+				retVal = util.BoolToUintptr(pPack.f(hChild))
+				if retVal == 0 {
+					_globalEnumChildMutex.Lock()
+					delete(_globalEnumChildFuncs, pPack) // remove from the set
+					_globalEnumChildMutex.Unlock()
+				}
+			}
+			return retVal
+		})
+)
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getancestor
 func (hWnd HWND) GetAncestor(gaFlags co.GA) HWND {
@@ -829,12 +828,12 @@ func (hWnd HWND) SetTimer(msElapse int, timerId uintptr) uintptr {
 //
 // Example:
 //
-//		var hWnd HWND // initialized somewhere
+//	var hWnd HWND // initialized somewhere
 //
-//		hWnd.SetTimerCallback(2000, func(timerId uintptr) {
-//			hWnd.KillTimer(timerId)
-//			println("This callback will run once.")
-//		})
+//	hWnd.SetTimerCallback(2000, func(timerId uintptr) {
+//		hWnd.KillTimer(timerId)
+//		println("This callback will run once.")
+//	})
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
 func (hWnd HWND) SetTimerCallback(
@@ -861,23 +860,22 @@ func (hWnd HWND) SetTimerCallback(
 type _TimerPack struct{ f func(timerId uintptr) }
 
 var (
-	_globalTimerCallback uintptr = syscall.NewCallback(_TimerProc)
 	_globalTimerFuncs    map[*_TimerPack]struct{}
 	_globalTimerMutex    = sync.Mutex{}
+	_globalTimerCallback = syscall.NewCallback(
+		func(_ HWND, _ co.WM, timerId uintptr, _ uint32) uintptr {
+			pPack := (*_TimerPack)(unsafe.Pointer(timerId))
+
+			_globalTimerMutex.Lock()
+			_, isStored := _globalTimerFuncs[pPack]
+			_globalTimerMutex.Unlock()
+
+			if isStored {
+				pPack.f(timerId) // invoke user callback
+			}
+			return 0
+		})
 )
-
-func _TimerProc(_ HWND, _ co.WM, timerId uintptr, _ uint32) uintptr {
-	pPack := (*_TimerPack)(unsafe.Pointer(timerId))
-
-	_globalTimerMutex.Lock()
-	_, isStored := _globalTimerFuncs[pPack]
-	_globalTimerMutex.Unlock()
-
-	if isStored {
-		pPack.f(timerId) // invoke user callback
-	}
-	return 0
-}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity
 func (hWnd HWND) SetWindowDisplayAffinity(affinity co.WDA) {

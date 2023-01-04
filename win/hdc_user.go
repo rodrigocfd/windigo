@@ -65,29 +65,28 @@ type _EnumMonitorsPack struct {
 }
 
 var (
-	_globalEnumMonitorsCallback uintptr = syscall.NewCallback(_EnumMonitorProc)
 	_globalEnumMonitorsFuncs    map[*_EnumMonitorsPack]struct{}
 	_globalEnumMonitorsMutex    = sync.Mutex{}
-)
+	_globalEnumMonitorsCallback = syscall.NewCallback(
+		func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lParam LPARAM) uintptr {
+			pPack := (*_EnumMonitorsPack)(unsafe.Pointer(lParam))
+			retVal := uintptr(0)
 
-func _EnumMonitorProc(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lParam LPARAM) uintptr {
-	pPack := (*_EnumMonitorsPack)(unsafe.Pointer(lParam))
-	retVal := uintptr(0)
-
-	_globalEnumMonitorsMutex.Lock()
-	_, isStored := _globalEnumMonitorsFuncs[pPack]
-	_globalEnumMonitorsMutex.Unlock()
-
-	if isStored {
-		retVal = util.BoolToUintptr(pPack.f(hMon, hdcMon, rcMon))
-		if retVal == 0 {
 			_globalEnumMonitorsMutex.Lock()
-			delete(_globalEnumMonitorsFuncs, pPack) // remove from the set
+			_, isStored := _globalEnumMonitorsFuncs[pPack]
 			_globalEnumMonitorsMutex.Unlock()
-		}
-	}
-	return retVal
-}
+
+			if isStored {
+				retVal = util.BoolToUintptr(pPack.f(hMon, hdcMon, rcMon))
+				if retVal == 0 {
+					_globalEnumMonitorsMutex.Lock()
+					delete(_globalEnumMonitorsFuncs, pPack) // remove from the set
+					_globalEnumMonitorsMutex.Unlock()
+				}
+			}
+			return retVal
+		})
+)
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-framerect
 func (hdc HDC) FrameRect(rc *RECT, hBrush HBRUSH) {

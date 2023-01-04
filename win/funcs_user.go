@@ -140,29 +140,28 @@ func EnumWindows(callback func(hWnd HWND) bool) {
 type _EnumWindowsPack struct{ f func(hWnd HWND) bool }
 
 var (
-	_globalEnumWindowsCallback uintptr = syscall.NewCallback(_EnumWindowsProc)
 	_globalEnumWindowsFuncs    map[*_EnumWindowsPack]struct{}
 	_globalEnumWindowsMutex    = sync.Mutex{}
-)
+	_globalEnumWindowsCallback = syscall.NewCallback(
+		func(hWnd HWND, lParam LPARAM) uintptr {
+			pPack := (*_EnumWindowsPack)(unsafe.Pointer(lParam))
+			retVal := uintptr(0)
 
-func _EnumWindowsProc(hWnd HWND, lParam LPARAM) uintptr {
-	pPack := (*_EnumWindowsPack)(unsafe.Pointer(lParam))
-	retVal := uintptr(0)
-
-	_globalEnumWindowsMutex.Lock()
-	_, isStored := _globalEnumWindowsFuncs[pPack]
-	_globalEnumWindowsMutex.Unlock()
-
-	if isStored {
-		retVal = util.BoolToUintptr(pPack.f(hWnd))
-		if retVal == 0 {
 			_globalEnumWindowsMutex.Lock()
-			delete(_globalEnumWindowsFuncs, pPack) // remove from the set
+			_, isStored := _globalEnumWindowsFuncs[pPack]
 			_globalEnumWindowsMutex.Unlock()
-		}
-	}
-	return retVal
-}
+
+			if isStored {
+				retVal = util.BoolToUintptr(pPack.f(hWnd))
+				if retVal == 0 {
+					_globalEnumWindowsMutex.Lock()
+					delete(_globalEnumWindowsFuncs, pPack) // remove from the set
+					_globalEnumWindowsMutex.Unlock()
+				}
+			}
+			return retVal
+		})
+)
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getasynckeystate
 func GetAsyncKeyState(virtKeyCode co.VK) uint16 {

@@ -57,18 +57,16 @@ type _DdeInitializePack struct {
 }
 
 var (
-	_globalDdeInitializeCallback uintptr = syscall.NewCallback(_DdeInitializeCallback)
 	_globalDdeInitializeFunc     *_DdeInitializePack
 	_globalDdeInitizeMutex       = sync.Mutex{}
+	_globalDdeInitializeCallback = syscall.NewCallback(
+		func(wType, wFmt uint32, hConv HCONV,
+			hsz1, hsz2 HSZ, hData, dwData1, dwData2 uintptr) uintptr {
+
+			return _globalDdeInitializeFunc.f(
+				co.XTYP(wType), wFmt, hConv, hsz1, hsz2, hData, dwData1, dwData2)
+		})
 )
-
-func _DdeInitializeCallback(
-	wType, wFmt uint32, hConv HCONV,
-	hsz1, hsz2 HSZ, hData, dwData1, dwData2 uintptr) uintptr {
-
-	return _globalDdeInitializeFunc.f(
-		co.XTYP(wType), wFmt, hConv, hsz1, hsz2, hData, dwData1, dwData2)
-}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddegetlasterror
 func (hDde HDDE) DdeGetLastError() errco.DMLERR {
