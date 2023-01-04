@@ -17,6 +17,15 @@ type _EventsInternal struct {
 	nfysZero map[_HashNfy][]func(p unsafe.Pointer) // WM_NOTIFY messages
 }
 
+func (me *_EventsInternal) clear() {
+	for key := range me.msgsZero {
+		delete(me.msgsZero, key)
+	}
+	for key := range me.nfysZero {
+		delete(me.nfysZero, key)
+	}
+}
+
 func (me *_EventsInternal) new() {
 	me.msgsZero = make(map[co.WM][]func(p wm.Any), 5) // arbitrary
 	me.nfysZero = make(map[_HashNfy][]func(p unsafe.Pointer), 10)

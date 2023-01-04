@@ -95,6 +95,7 @@ func _DlgProc(
 			delete(_globalWindowDlgPtrs, pMe) // remove from set
 			hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, 0)
 			pMe._WindowBase.hWnd = win.HWND(0)
+			pMe._WindowBase.clearMessages() // prevents circular references
 		}
 
 		if wasHandled {

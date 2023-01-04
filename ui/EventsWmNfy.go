@@ -40,6 +40,19 @@ func (me *_EventsWmNfy) new() {
 	me.nfysZero = make(map[_HashNfy]func(p unsafe.Pointer), 10)
 }
 
+func (me *_EventsWmNfy) clear() {
+	me._EventsWm.clear()
+	for key := range me.cmdsZero {
+		delete(me.cmdsZero, key)
+	}
+	for key := range me.nfysRet {
+		delete(me.nfysRet, key)
+	}
+	for key := range me.nfysZero {
+		delete(me.nfysZero, key)
+	}
+}
+
 // Adds a WM_COMMAND event with no meaningful return value, always returning zero.
 func (me *_EventsWmNfy) addCmdZero(cmdId int, notifCode co.CMD, userFunc func(p wm.Command)) {
 	me.cmdsZero[_HashCmd{

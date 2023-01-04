@@ -158,6 +158,7 @@ func _WndProc(
 			delete(_globalWindowRawPtrs, pMe) // remove from set
 			hWnd.SetWindowLongPtr(co.GWLP_USERDATA, 0)
 			pMe._WindowBase.hWnd = win.HWND(0)
+			pMe._WindowBase.clearMessages() // prevents circular references
 		}
 
 		if wasHandled {

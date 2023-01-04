@@ -77,6 +77,11 @@ func (me *_WindowBase) RunUiThread(userFunc func()) {
 			win.WPARAM(_WM_UI_THREAD), win.LPARAM(_globalUiThreadCount))
 }
 
+func (me *_WindowBase) clearMessages() {
+	me.internalEvents.clear()
+	me.events.clear()
+}
+
 func (me *_WindowBase) defaultMessages() {
 	me.internalOn().addMsgZero(_WM_UI_THREAD, func(p wm.Any) { // handle our custom thread UI message
 		if p.WParam == win.WPARAM(_WM_UI_THREAD) { // additional safety check

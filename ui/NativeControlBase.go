@@ -128,6 +128,7 @@ func _SubclassProc(
 		if uMsg == co.WM_NCDESTROY { // even if the user handles WM_NCDESTROY, we must ensure cleanup
 			delete(_globalNativeControlBasePtrs, pMe) // remove from set
 			hWnd.RemoveWindowSubclass(pMe.subclassProc, pMe.subclassId)
+			pMe.eventsSubcl.clear() // prevents circular references
 		}
 
 		if wasHandled {
@@ -140,6 +141,7 @@ func _SubclassProc(
 		// https://devblogs.microsoft.com/oldnewthing/20031111-00/?p=41883
 		delete(_globalNativeControlBasePtrs, pMe) // remove from set
 		hWnd.RemoveWindowSubclass(pMe.subclassProc, pMe.subclassId)
+		pMe.eventsSubcl.clear() // prevents circular references
 	}
 
 	return hWnd.DefSubclassProc(uMsg, wParam, lParam) // message was not processed

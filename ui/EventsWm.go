@@ -24,6 +24,18 @@ func (me *_EventsWm) new() {
 	me.timers = make(map[uintptr]func(), 5)
 }
 
+func (me *_EventsWm) clear() {
+	for key := range me.msgsRet {
+		delete(me.msgsRet, key)
+	}
+	for key := range me.msgsZero {
+		delete(me.msgsZero, key)
+	}
+	for key := range me.timers {
+		delete(me.timers, key)
+	}
+}
+
 // Adds a new WM message with a meaningful return value.
 func (me *_EventsWm) addMsgRet(uMsg co.WM, userFunc func(p wm.Any) uintptr) {
 	me.msgsRet[uMsg] = userFunc
