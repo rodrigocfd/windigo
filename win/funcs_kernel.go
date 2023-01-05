@@ -72,10 +72,22 @@ func CreateProcess(
 	processAttributes, threadAttributes *SECURITY_ATTRIBUTES,
 	inheritHandles bool,
 	creationFlags co.CREATE,
-	ptrEnvironment uintptr,
+	environment []struct {
+		name string
+		val  string
+	},
 	currentDirectory StrOpt,
 	startupInfo *STARTUPINFO,
 	processInformation *PROCESS_INFORMATION) {
+
+	var envStrsPtr unsafe.Pointer
+	if environment != nil {
+		envStrs := make([]string, 0, len(environment))
+		for _, pair := range environment {
+			envStrs = append(envStrs, pair.name+"="+pair.val)
+		}
+		envStrsPtr = unsafe.Pointer(Str.ToNativePtrMulti(envStrs))
+	}
 
 	ret, _, err := syscall.Syscall12(proc.CreateProcess.Addr(), 10,
 		uintptr(applicationName.Raw()),
@@ -84,7 +96,7 @@ func CreateProcess(
 		uintptr(unsafe.Pointer(threadAttributes)),
 		util.BoolToUintptr(inheritHandles),
 		uintptr(creationFlags),
-		ptrEnvironment,
+		uintptr(envStrsPtr),
 		uintptr(currentDirectory.Raw()),
 		uintptr(unsafe.Pointer(startupInfo)),
 		uintptr(unsafe.Pointer(processInformation)),
@@ -318,15 +330,15 @@ type _VolumeInfo struct {
 
 // Example:
 //
-//		nfo, err := win.GetVolumeInformation(win.StrOptSome("C:\\"))
-//		if err != nil {
-//			panic(err)
-//		}
+//	nfo, err := win.GetVolumeInformation(win.StrOptSome("C:\\"))
+//	if err != nil {
+//		panic(err)
+//	}
 //
-//		fmt.Printf("Name: %s\n", nfo.Name)
-//		fmt.Printf("File system name: %s\n", nfo.FileSystemName)
-//		fmt.Printf("Max component length: %d\n", nfo.MaxComponentLength)
-//		fmt.Printf("Serial number: 0x08%x\n", nfo.SerialNumber)
+//	fmt.Printf("Name: %s\n", nfo.Name)
+//	fmt.Printf("File system name: %s\n", nfo.FileSystemName)
+//	fmt.Printf("Max component length: %d\n", nfo.MaxComponentLength)
+//	fmt.Printf("Serial number: 0x08%x\n", nfo.SerialNumber)
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getvolumeinformationw
 func GetVolumeInformation(rootPathName StrOpt) (_VolumeInfo, error) {
@@ -497,7 +509,7 @@ func MoveFileEx(existingFile, newFile string, flags co.MOVEFILE) error {
 
 // Note: You'll achieve a much better performance with ordinary Go code:
 //
-//		res := int32((int64(n) * int64(num)) / int64(den))
+//	res := int32((int64(n) * int64(num)) / int64(den))
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-muldiv
 func MulDiv(number, numerator, denominator int32) int32 {
