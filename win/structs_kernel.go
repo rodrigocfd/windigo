@@ -162,13 +162,9 @@ func (osv *OSVERSIONINFOEX) SetSzCSDVersion(val string) {
 type OVERLAPPED struct {
 	Internal     uintptr
 	InternalHigh uintptr
-	offset       uint32
-	offsetHigh   uint32
-	HEvent       HANDLE
+	Pointer      uintptr
+	HEvent       HEVENT
 }
-
-func (ol *OVERLAPPED) Offset() uint64       { return util.Make64(ol.offset, ol.offsetHigh) }
-func (ol *OVERLAPPED) SetOffset(val uint64) { ol.offset, ol.offsetHigh = util.Break64(val) }
 
 // ⚠️ You must call SetDwSize() to initialize the struct.
 //

@@ -114,10 +114,13 @@ func (hFile HFILE) LockFileEx(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
-func (hFile HFILE) ReadFile(buffer []byte) (numBytesRead uint32, e error) {
+func (hFile HFILE) ReadFile(
+	buffer []byte, overlapped *OVERLAPPED) (numBytesRead uint32, e error) {
+
 	ret, _, err := syscall.SyscallN(proc.ReadFile.Addr(),
 		uintptr(hFile), uintptr(unsafe.Pointer(&buffer[0])),
-		uintptr(uint32(len(buffer))), uintptr(unsafe.Pointer(&numBytesRead)), 0) // OVERLAPPED not even considered
+		uintptr(uint32(len(buffer))), uintptr(unsafe.Pointer(&numBytesRead)),
+		uintptr(unsafe.Pointer(overlapped)))
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		numBytesRead, e = 0, wErr

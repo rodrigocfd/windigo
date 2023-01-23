@@ -75,7 +75,7 @@ func (me *File) Hfile() HFILE {
 
 // Implements io.Reader.
 func (me *File) Read(p []byte) (n int, err error) {
-	numRead, err := me.hFile.ReadFile(p)
+	numRead, err := me.hFile.ReadFile(p, nil)
 	if err != nil {
 		return 0, err
 	}

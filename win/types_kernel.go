@@ -59,6 +59,11 @@ func (atom ATOM) GlobalGetAtomName() string {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HANDLE syscall.Handle
 
+// A handle to an event.
+//
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-createeventw
+type HEVENT HANDLE
+
 //------------------------------------------------------------------------------
 
 // Language and sublanguage identifier.
