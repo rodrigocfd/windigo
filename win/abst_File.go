@@ -166,7 +166,7 @@ func (me *File) Size() int {
 
 // Implements io.Writer.
 func (me *File) Write(p []byte) (n int, err error) {
-	written, err := me.hFile.WriteFile(p)
+	written, err := me.hFile.WriteFile(p, nil)
 	return int(written), err
 }
 

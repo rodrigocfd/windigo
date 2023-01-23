@@ -181,10 +181,13 @@ func (hFile HFILE) UnlockFileEx(numBytes uint64, overlapped *OVERLAPPED) error {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
-func (hFile HFILE) WriteFile(data []byte) (numBytesWritten uint32, e error) {
+func (hFile HFILE) WriteFile(
+	data []byte, overlapped *OVERLAPPED) (numBytesWritten uint32, e error) {
+
 	ret, _, err := syscall.SyscallN(proc.WriteFile.Addr(),
 		uintptr(hFile), uintptr(unsafe.Pointer(&data[0])),
-		uintptr(uint32(len(data))), uintptr(unsafe.Pointer(&numBytesWritten)), 0) // OVERLAPPED not even considered
+		uintptr(uint32(len(data))), uintptr(unsafe.Pointer(&numBytesWritten)),
+		uintptr(unsafe.Pointer(overlapped)))
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		numBytesWritten, e = 0, wErr
