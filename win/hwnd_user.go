@@ -296,10 +296,13 @@ func (hWnd HWND) GetDC() HDC {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgctrlid
 func (hWnd HWND) GetDlgCtrlID() int32 {
+	syscall.Syscall(proc.SetLastError.Addr(), 0,
+		0, 0, 0)
+
 	ret, _, err := syscall.Syscall(proc.GetDlgCtrlID.Addr(), 1,
 		uintptr(hWnd), 0, 0)
-	if ret == 0 {
-		panic(errco.ERROR(err))
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		panic(wErr)
 	}
 	return int32(ret)
 }

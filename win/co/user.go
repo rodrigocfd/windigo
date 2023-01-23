@@ -354,7 +354,7 @@ const (
 	DDENS_FILTEROFF  DDENS = 0x0004
 )
 
-// SetProcessDpiAwarenessContext() value.
+// DPI context awareness.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
 type DPI_AWARE_CTX int32

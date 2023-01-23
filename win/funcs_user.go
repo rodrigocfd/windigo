@@ -289,6 +289,8 @@ func GetSystemMetrics(index co.SM) int32 {
 	return int32(ret)
 }
 
+// Available in Windows 10, version 1607.
+//
 // 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetricsfordpi
 func GetSystemMetricsForDpi(index co.SM, dpi uint32) int32 {
 	ret, _, err := syscall.Syscall(proc.GetSystemMetricsForDpi.Addr(), 2,
