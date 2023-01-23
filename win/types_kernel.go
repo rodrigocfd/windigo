@@ -29,14 +29,15 @@ func GlobalAddAtom(s string) ATOM {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globaldeleteatom
-func (atom ATOM) GlobalDeleteAtom() {
+func (atom ATOM) GlobalDeleteAtom() error {
 	syscall.SyscallN(proc.SetLastError.Addr())
 
 	_, _, err := syscall.SyscallN(proc.GlobalDeleteAtom.Addr(),
 		uintptr(atom))
 	if wErr := errco.ERROR(err); wErr != errco.SUCCESS {
-		panic(wErr)
+		return wErr
 	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalgetatomnamew

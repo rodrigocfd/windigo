@@ -26,15 +26,15 @@ type HHOOK HANDLE
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
 func SetWindowsHookEx(idHook co.WH,
 	callback func(code int32, wp WPARAM, lp LPARAM) uintptr,
-	hMod HINSTANCE, threadId uint32) HHOOK {
+	hMod HINSTANCE, threadId uint32) (HHOOK, error) {
 
 	ret, _, err := syscall.SyscallN(proc.SetWindowsHookEx.Addr(),
 		uintptr(idHook), syscall.NewCallback(callback),
 		uintptr(hMod), uintptr(threadId))
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return HHOOK(0), errco.ERROR(err)
 	}
-	return HHOOK(ret)
+	return HHOOK(ret), nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-callnexthookex
@@ -45,10 +45,11 @@ func (hHook HHOOK) CallNextHookEx(nCode int32, wp WPARAM, lp LPARAM) uintptr {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unhookwindowshookex
-func (hHook HHOOK) UnhookWindowsHookEx() {
+func (hHook HHOOK) UnhookWindowsHookEx() error {
 	ret, _, err := syscall.SyscallN(proc.UnhookWindowsHookEx.Addr(),
 		uintptr(hHook))
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }

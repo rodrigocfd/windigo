@@ -41,12 +41,13 @@ func LoadLibrary(libFileName string) HINSTANCE {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
-func (hInst HINSTANCE) FreeLibrary() {
+func (hInst HINSTANCE) FreeLibrary() error {
 	ret, _, err := syscall.SyscallN(proc.FreeLibrary.Addr(),
 		uintptr(hInst))
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // Example retrieving own .exe path:
@@ -66,14 +67,14 @@ func (hInst HINSTANCE) GetModuleFileName() string {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress
-func (hInst HINSTANCE) GetProcAddress(procName string) uintptr {
+func (hInst HINSTANCE) GetProcAddress(procName string) (uintptr, error) {
 	ascii := []byte(procName)
 	ascii = append(ascii, 0x00) // terminating null
 
 	ret, _, err := syscall.SyscallN(proc.GetProcAddress.Addr(),
 		uintptr(hInst), uintptr(unsafe.Pointer(&ascii[0])))
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return 0, errco.ERROR(err)
 	}
-	return ret
+	return ret, nil
 }

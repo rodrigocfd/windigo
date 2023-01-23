@@ -37,8 +37,8 @@ func CreatePenIndirect(lp *LOGPEN) HPEN {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
-func (hPen HPEN) DeleteObject() {
-	HGDIOBJ(hPen).DeleteObject()
+func (hPen HPEN) DeleteObject() error {
+	return HGDIOBJ(hPen).DeleteObject()
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject

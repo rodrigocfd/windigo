@@ -48,17 +48,26 @@ func FileMappedOpen(
 }
 
 // Unmaps and releases the file resource.
-func (me *FileMapped) Close() {
+func (me *FileMapped) Close() error {
+	var e1, e2, e3 error
 	if me.pMem != 0 {
-		me.pMem.UnmapViewOfFile()
+		e1 = me.pMem.UnmapViewOfFile()
 		me.pMem = 0
 	}
 	if me.hMap != 0 {
-		me.hMap.CloseHandle()
+		e2 = me.hMap.CloseHandle()
 		me.hMap = 0
 	}
-	me.objFile.Close()
+	e3 = me.objFile.Close()
 	me.sz = 0
+
+	if e1 != nil {
+		return e1
+	} else if e2 != nil {
+		return e2
+	} else {
+		return e3
+	}
 }
 
 // Returns a slice to the memory-mapped bytes.

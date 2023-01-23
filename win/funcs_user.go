@@ -55,12 +55,13 @@ func BroadcastSystemMessage(
 	return
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycaret
-func DestroyCaret() {
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycarret
+func DestroyCaret() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyCaret.Addr())
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dispatchmessage

@@ -92,12 +92,13 @@ func (hGlobal HGLOBAL) GlobalFlags() co.GMEM {
 // This method is safe to be called if hGlobal is zero.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalfree
-func (hGlobal HGLOBAL) GlobalFree() {
+func (hGlobal HGLOBAL) GlobalFree() error {
 	ret, _, err := syscall.SyscallN(proc.GlobalFree.Addr(),
 		uintptr(hGlobal))
 	if ret != 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // If you called GlobalAlloc() with co.GMEM_FIXED, technically you don't need to
@@ -151,10 +152,11 @@ func (hGlobal HGLOBAL) GlobalSize() int {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalunlock
-func (hGlobal HGLOBAL) GlobalUnlock() {
+func (hGlobal HGLOBAL) GlobalUnlock() error {
 	ret, _, err := syscall.SyscallN(proc.GlobalUnlock.Addr(),
 		uintptr(hGlobal))
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
-		panic(wErr)
+		return wErr
 	}
+	return nil
 }

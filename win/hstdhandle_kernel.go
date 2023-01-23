@@ -19,13 +19,13 @@ import (
 type HSTDHANDLE HANDLE
 
 // 📑 https://docs.microsoft.com/en-us/windows/console/getstdhandle
-func GetStdHandle(handle co.STD) HSTDHANDLE {
+func GetStdHandle(handle co.STD) (HSTDHANDLE, error) {
 	ret, _, err := syscall.SyscallN(proc.GetStdHandle.Addr(),
 		uintptr(handle))
 	if int(ret) == _INVALID_HANDLE_VALUE {
-		panic(errco.ERROR(err))
+		return HSTDHANDLE(0), errco.ERROR(err)
 	}
-	return HSTDHANDLE(ret)
+	return HSTDHANDLE(ret), nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/console/getcurrentconsolefont

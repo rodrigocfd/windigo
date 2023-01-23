@@ -28,8 +28,8 @@ func CreateFontIndirect(lf *LOGFONT) HFONT {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
-func (hFont HFONT) DeleteObject() {
-	HGDIOBJ(hFont).DeleteObject()
+func (hFont HFONT) DeleteObject() error {
+	return HGDIOBJ(hFont).DeleteObject()
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject

@@ -40,12 +40,13 @@ func (hIcon HICON) CopyIcon() HICON {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyicon
-func (hIcon HICON) DestroyIcon() {
+func (hIcon HICON) DestroyIcon() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyIcon.Addr(),
 		uintptr(hIcon))
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // ⚠️ You must defer HBITMAP.DeleteObject() in HbmMask and HbmColor fields.

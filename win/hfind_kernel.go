@@ -38,12 +38,13 @@ func FindFirstFile(fileName string,
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
-func (hFind HFIND) FindClose() {
+func (hFind HFIND) FindClose() error {
 	ret, _, err := syscall.SyscallN(proc.FindClose.Addr(),
 		uintptr(hFind))
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // Returns true if a file was found.

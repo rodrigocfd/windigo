@@ -43,8 +43,8 @@ func CreateBitmapIndirect(bmp *BITMAP) HBITMAP {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
-func (hBmp HBITMAP) DeleteObject() {
-	HGDIOBJ(hBmp).DeleteObject()
+func (hBmp HBITMAP) DeleteObject() error {
+	return HGDIOBJ(hBmp).DeleteObject()
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject

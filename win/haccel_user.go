@@ -41,10 +41,11 @@ func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyacceleratortable
-func (hAccel HACCEL) DestroyAcceleratorTable() {
+func (hAccel HACCEL) DestroyAcceleratorTable() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyAcceleratorTable.Addr(),
 		uintptr(hAccel))
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }

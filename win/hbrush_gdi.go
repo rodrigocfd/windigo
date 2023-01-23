@@ -71,8 +71,8 @@ func CreateSysColorBrush(sysColor co.COLOR) HBRUSH {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
-func (hBrush HBRUSH) DeleteObject() {
-	HGDIOBJ(hBrush).DeleteObject()
+func (hBrush HBRUSH) DeleteObject() error {
+	return HGDIOBJ(hBrush).DeleteObject()
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject

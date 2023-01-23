@@ -42,7 +42,7 @@ func (hdc HDC) DrawIconEx(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
 func (hdc HDC) EnumDisplayMonitors(
 	rcClip *RECT,
-	callback func(hMon HMONITOR, hdcMon HDC, rcMon *RECT) bool) {
+	callback func(hMon HMONITOR, hdcMon HDC, rcMon *RECT) bool) error {
 
 	pPack := &_EnumMonitorsPack{f: callback}
 	_globalEnumMonitorsMutex.Lock()
@@ -61,8 +61,9 @@ func (hdc HDC) EnumDisplayMonitors(
 	_globalEnumMonitorsMutex.Unlock()
 
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 type _EnumMonitorsPack struct {

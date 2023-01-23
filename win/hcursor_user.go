@@ -23,12 +23,13 @@ func (hCursor HCURSOR) CopyCursor() HCURSOR {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycursor
-func (hCursor HCURSOR) DestroyCursor() {
+func (hCursor HCURSOR) DestroyCursor() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyCursor.Addr(),
 		uintptr(hCursor))
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setsystemcursor

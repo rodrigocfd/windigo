@@ -160,12 +160,13 @@ func (hWnd HWND) DefWindowProc(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroywindow
-func (hWnd HWND) DestroyWindow() {
+func (hWnd HWND) DestroyWindow() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyWindow.Addr(),
 		uintptr(hWnd))
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawmenubar
@@ -185,12 +186,13 @@ func (hWnd HWND) EnableWindow(enable bool) bool {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enddialog
-func (hWnd HWND) EndDialog(result uintptr) {
+func (hWnd HWND) EndDialog(result uintptr) error {
 	ret, _, err := syscall.SyscallN(proc.EndDialog.Addr(),
 		uintptr(hWnd), result)
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endpaint

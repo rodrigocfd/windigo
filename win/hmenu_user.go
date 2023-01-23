@@ -152,12 +152,13 @@ func (hMenu HMENU) DeleteMenu(item MenuItem) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroymenu
-func (hMenu HMENU) DestroyMenu() {
+func (hMenu HMENU) DestroyMenu() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyMenu.Addr(),
 		uintptr(hMenu))
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // Example:

@@ -45,14 +45,15 @@ func (hImg HIMAGELIST) AddIcon(hIcons ...HICON) {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_destroy
-func (hImg HIMAGELIST) Destroy() {
+func (hImg HIMAGELIST) Destroy() error {
 	// http://www.catch22.net/tuts/win32/system-image-list
 	// https://www.autohotkey.com/docs/commands/ListView.htm
 	ret, _, err := syscall.SyscallN(proc.ImageList_Destroy.Addr(),
 		uintptr(hImg))
 	if ret == 0 && errco.ERROR(err) != errco.SUCCESS {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticonsize

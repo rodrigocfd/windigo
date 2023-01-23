@@ -18,10 +18,8 @@ type HTHEME HANDLE
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-closethemedata
 func (hTheme HTHEME) CloseThemeData() {
-	if hTheme != 0 {
-		syscall.SyscallN(proc.CloseThemeData.Addr(),
-			uintptr(hTheme))
-	}
+	syscall.SyscallN(proc.CloseThemeData.Addr(),
+		uintptr(hTheme))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-drawthemebackground

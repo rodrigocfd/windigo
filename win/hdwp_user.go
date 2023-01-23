@@ -41,10 +41,11 @@ func (hDwp HDWP) DeferWindowPos(
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enddeferwindowpos
-func (hDwp HDWP) EndDeferWindowPos() {
+func (hDwp HDWP) EndDeferWindowPos() error {
 	ret, _, err := syscall.SyscallN(proc.EndDeferWindowPos.Addr(),
 		uintptr(hDwp))
 	if ret == 0 {
-		panic(errco.ERROR(err))
+		return errco.ERROR(err)
 	}
+	return nil
 }

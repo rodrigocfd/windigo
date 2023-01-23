@@ -56,8 +56,8 @@ func CreateRoundRectRgn(topLeft, bottomRight POINT, szEllipse SIZE) HRGN {
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
-func (hRgn HRGN) DeleteObject() {
-	HGDIOBJ(hRgn).DeleteObject()
+func (hRgn HRGN) DeleteObject() error {
+	return HGDIOBJ(hRgn).DeleteObject()
 }
 
 // Combines the two regions and stores the result in current region.
