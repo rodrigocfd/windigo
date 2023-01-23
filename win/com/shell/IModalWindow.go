@@ -32,10 +32,10 @@ func NewIModalWindow(base com.IUnknown) IModalWindow {
 }
 
 func (me *_IModalWindow) Show(hwndOwner win.HWND) bool {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IModalWindow)(unsafe.Pointer(*me.Ptr())).Show, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IModalWindow)(unsafe.Pointer(*me.Ptr())).Show,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(hwndOwner), 0)
+		uintptr(hwndOwner))
 
 	if hr := errco.ERROR(ret & 0xffff); hr == errco.S_OK { // HRESULT_FROM_WIN32()
 		return true

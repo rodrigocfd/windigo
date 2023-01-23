@@ -37,22 +37,22 @@ type _IBasicAudio struct{ autom.IDispatch }
 //
 // Example:
 //
-//		var gb dshow.IGraphBuilder // initialized somewhere
+//	var gb dshow.IGraphBuilder // initialized somewhere
 //
-//		ba := dshow.NewIBasicAudio(
-//			gb.QueryInterface(dshowco.IID_IBasicAudio),
-//		)
-//		defer ba.Release()
+//	ba := dshow.NewIBasicAudio(
+//		gb.QueryInterface(dshowco.IID_IBasicAudio),
+//	)
+//	defer ba.Release()
 func NewIBasicAudio(base com.IUnknown) IBasicAudio {
 	return &_IBasicAudio{IDispatch: autom.NewIDispatch(base)}
 }
 
 func (me *_IBasicAudio) GetBalance() int {
 	var balance int32
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).GetBalance, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).GetBalance,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&balance)), 0)
+		uintptr(unsafe.Pointer(&balance)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return int(balance)
@@ -63,10 +63,10 @@ func (me *_IBasicAudio) GetBalance() int {
 
 func (me *_IBasicAudio) GetVolume() int {
 	var volume int32
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).GetVolume, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).GetVolume,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&volume)), 0)
+		uintptr(unsafe.Pointer(&volume)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return int(volume)
@@ -76,10 +76,10 @@ func (me *_IBasicAudio) GetVolume() int {
 }
 
 func (me *_IBasicAudio) PutBalance(balance int) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).PutBalance, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).PutBalance,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(int32(balance)), 0)
+		uintptr(int32(balance)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -87,10 +87,10 @@ func (me *_IBasicAudio) PutBalance(balance int) {
 }
 
 func (me *_IBasicAudio) PutVolume(volume int) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).PutVolume, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IBasicAudio)(unsafe.Pointer(*me.Ptr())).PutVolume,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(int32(volume)), 0)
+		uintptr(int32(volume)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

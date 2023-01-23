@@ -21,9 +21,9 @@ func GetFileVersionInfo(fileName string) ([]byte, error) {
 
 	buf := make([]byte, visz) // alloc the buffer
 
-	ret, _, err := syscall.Syscall6(proc.GetFileVersionInfo.Addr(), 4,
+	ret, _, err := syscall.SyscallN(proc.GetFileVersionInfo.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))),
-		0, uintptr(visz), uintptr(unsafe.Pointer(&buf[0])), 0, 0)
+		0, uintptr(visz), uintptr(unsafe.Pointer(&buf[0])))
 	if ret == 0 {
 		return nil, errco.ERROR(err)
 	}
@@ -33,9 +33,9 @@ func GetFileVersionInfo(fileName string) ([]byte, error) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
 func GetFileVersionInfoSize(fileName string) (uint32, error) {
 	var lpdwHandle uint32
-	ret, _, err := syscall.Syscall(proc.GetFileVersionInfoSize.Addr(), 2,
+	ret, _, err := syscall.SyscallN(proc.GetFileVersionInfoSize.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))),
-		uintptr(unsafe.Pointer(&lpdwHandle)), 0)
+		uintptr(unsafe.Pointer(&lpdwHandle)))
 	if ret == 0 {
 		return 0, errco.ERROR(err)
 	}
@@ -53,11 +53,10 @@ func VerQueryValue(
 
 	var lplpBuffer uintptr
 	var puLen uint32
-	ret, _, _ := syscall.Syscall6(proc.VerQueryValue.Addr(), 4,
+	ret, _, _ := syscall.SyscallN(proc.VerQueryValue.Addr(),
 		uintptr(unsafe.Pointer(&block[0])),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(subBlock))),
-		uintptr(unsafe.Pointer(&lplpBuffer)), uintptr(unsafe.Pointer(&puLen)),
-		0, 0)
+		uintptr(unsafe.Pointer(&lplpBuffer)), uintptr(unsafe.Pointer(&puLen)))
 	if ret == 0 {
 		return nil, 0, false
 	}

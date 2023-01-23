@@ -33,8 +33,8 @@ type VARIANT struct {
 
 // Frees the internal object of the VARIANT.
 func (vt *VARIANT) VariantClear() {
-	syscall.Syscall(proc.VariantClear.Addr(), 1,
-		uintptr(unsafe.Pointer(vt)), 0, 0)
+	syscall.SyscallN(proc.VariantClear.Addr(),
+		uintptr(unsafe.Pointer(vt)))
 }
 
 // Returns the type of the VARIANT.
@@ -50,12 +50,12 @@ func (vt *VARIANT) Type() automco.VT {
 //
 // Example:
 //
-//		vari := autom.NewVariantEmpty()
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantEmpty()
+//	defer vari.VariantClear()
 func NewVariantEmpty() VARIANT {
 	var vt VARIANT
-	syscall.Syscall(proc.VariantInit.Addr(), 1,
-		uintptr(unsafe.Pointer(&vt)), 0, 0)
+	syscall.SyscallN(proc.VariantInit.Addr(),
+		uintptr(unsafe.Pointer(&vt)))
 	return vt
 }
 
@@ -70,8 +70,8 @@ func (vt *VARIANT) IsEmpty() bool {
 //
 // Example:
 //
-//		vari := autom.NewVariantBool(true)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantBool(true)
+//	defer vari.VariantClear()
 func NewVariantBool(v bool) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_BOOL
@@ -85,12 +85,12 @@ func NewVariantBool(v bool) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantBool(true)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantBool(true)
+//	defer vari.VariantClear()
 //
-//		if boolVal, ok := vari.Bool(); ok {
-//			println(boolVal)
-//		}
+//	if boolVal, ok := vari.Bool(); ok {
+//		println(boolVal)
+//	}
 func (vt *VARIANT) Bool() (actualValue, isBool bool) {
 	switch vt.vt {
 	case automco.VT_BOOL:
@@ -107,8 +107,8 @@ func (vt *VARIANT) Bool() (actualValue, isBool bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantFloat32(40.5)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantFloat32(40.5)
+//	defer vari.VariantClear()
 func NewVariantFloat32(v float32) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_R4
@@ -121,12 +121,12 @@ func NewVariantFloat32(v float32) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantFloat32(40.5)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantFloat32(40.5)
+//	defer vari.VariantClear()
 //
-//		if floatVal, ok := vari.Float32(); ok {
-//			println(floatVal)
-//		}
+//	if floatVal, ok := vari.Float32(); ok {
+//		println(floatVal)
+//	}
 func (vt *VARIANT) Float32() (float32, bool) {
 	switch vt.vt {
 	case automco.VT_R4:
@@ -142,8 +142,8 @@ func (vt *VARIANT) Float32() (float32, bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantFloat64(40.5)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantFloat64(40.5)
+//	defer vari.VariantClear()
 func NewVariantFloat64(v float64) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_R8
@@ -156,12 +156,12 @@ func NewVariantFloat64(v float64) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantFloat64(40.5)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantFloat64(40.5)
+//	defer vari.VariantClear()
 //
-//		if floatVal, ok := vari.Float64(); ok {
-//			println(floatVal)
-//		}
+//	if floatVal, ok := vari.Float64(); ok {
+//		println(floatVal)
+//	}
 func (vt *VARIANT) Float64() (float64, bool) {
 	switch vt.vt {
 	case automco.VT_R8:
@@ -180,10 +180,10 @@ func (vt *VARIANT) Float64() (float64, bool) {
 //
 // Example:
 //
-//		var idisp autom.IDispatch // initialized somewhere
+//	var idisp autom.IDispatch // initialized somewhere
 //
-//		vari := autom.NewVariantIDispatch(idisp)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantIDispatch(idisp)
+//	defer vari.VariantClear()
 func NewVariantIDispatch(v IDispatch) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_DISPATCH
@@ -200,15 +200,15 @@ func NewVariantIDispatch(v IDispatch) VARIANT {
 //
 // Example:
 //
-//		var idisp autom.IDispatch // initialized somewhere
+//	var idisp autom.IDispatch // initialized somewhere
 //
-//		vari := autom.NewVariantIDispatch(idisp)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantIDispatch(idisp)
+//	defer vari.VariantClear()
 //
-//		if idispVal, ok := vari.IDispatch(); ok {
-//			defer idispVal.Release()
-//			println(idispVal.Ptr())
-//		}
+//	if idispVal, ok := vari.IDispatch(); ok {
+//		defer idispVal.Release()
+//		println(idispVal.Ptr())
+//	}
 func (vt *VARIANT) IDispatch() (IDispatch, bool) {
 	switch vt.vt {
 	case automco.VT_DISPATCH:
@@ -227,8 +227,8 @@ func (vt *VARIANT) IDispatch() (IDispatch, bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantInt8(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantInt8(50)
+//	defer vari.VariantClear()
 func NewVariantInt8(v int8) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_I1
@@ -241,12 +241,12 @@ func NewVariantInt8(v int8) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantInt8(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantInt8(50)
+//	defer vari.VariantClear()
 //
-//		if intVal, ok := vari.Int8(); ok {
-//			println(intVal)
-//		}
+//	if intVal, ok := vari.Int8(); ok {
+//		println(intVal)
+//	}
 func (vt *VARIANT) Int8() (int8, bool) {
 	switch vt.vt {
 	case automco.VT_I1:
@@ -262,8 +262,8 @@ func (vt *VARIANT) Int8() (int8, bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantInt16(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantInt16(50)
+//	defer vari.VariantClear()
 func NewVariantInt16(v int16) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_I2
@@ -276,12 +276,12 @@ func NewVariantInt16(v int16) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantInt16(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantInt16(50)
+//	defer vari.VariantClear()
 //
-//		if intVal, ok := vari.Int16(); ok {
-//			println(intVal)
-//		}
+//	if intVal, ok := vari.Int16(); ok {
+//		println(intVal)
+//	}
 func (vt *VARIANT) Int16() (int16, bool) {
 	switch vt.vt {
 	case automco.VT_I2:
@@ -297,8 +297,8 @@ func (vt *VARIANT) Int16() (int16, bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantInt32(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantInt32(50)
+//	defer vari.VariantClear()
 func NewVariantInt32(v int32) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_I4
@@ -311,12 +311,12 @@ func NewVariantInt32(v int32) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantInt32(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantInt32(50)
+//	defer vari.VariantClear()
 //
-//		if intVal, ok := vari.Int32(); ok {
-//			println(intVal)
-//		}
+//	if intVal, ok := vari.Int32(); ok {
+//		println(intVal)
+//	}
 func (vt *VARIANT) Int32() (int32, bool) {
 	switch vt.vt {
 	case automco.VT_I4:
@@ -332,8 +332,8 @@ func (vt *VARIANT) Int32() (int32, bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantInt64(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantInt64(50)
+//	defer vari.VariantClear()
 func NewVariantInt64(v int64) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_I8
@@ -346,12 +346,12 @@ func NewVariantInt64(v int64) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantInt64(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantInt64(50)
+//	defer vari.VariantClear()
 //
-//		if intVal, ok := vari.Int64(); ok {
-//			println(intVal)
-//		}
+//	if intVal, ok := vari.Int64(); ok {
+//		println(intVal)
+//	}
 func (vt *VARIANT) Int64() (int64, bool) {
 	switch vt.vt {
 	case automco.VT_I8:
@@ -367,8 +367,8 @@ func (vt *VARIANT) Int64() (int64, bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantStr("foo")
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantStr("foo")
+//	defer vari.VariantClear()
 func NewVariantStr(v string) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_BSTR
@@ -382,12 +382,12 @@ func NewVariantStr(v string) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantStr("foo")
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantStr("foo")
+//	defer vari.VariantClear()
 //
-//		if strVal, ok := vari.Str(); ok {
-//			println(strVal)
-//		}
+//	if strVal, ok := vari.Str(); ok {
+//		println(strVal)
+//	}
 func (vt *VARIANT) Str() (string, bool) {
 	switch vt.vt {
 	case automco.VT_BSTR:
@@ -404,8 +404,8 @@ func (vt *VARIANT) Str() (string, bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantTime(time.Now())
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantTime(time.Now())
+//	defer vari.VariantClear()
 func NewVariantTime(v time.Time) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_DATE
@@ -414,8 +414,8 @@ func NewVariantTime(v time.Time) VARIANT {
 	var st win.SYSTEMTIME
 	st.FromTime(v)
 
-	ret, _, _ := syscall.Syscall(proc.SystemTimeToVariantTime.Addr(), 2,
-		uintptr(unsafe.Pointer(&st)), uintptr(unsafe.Pointer(&double)), 0)
+	ret, _, _ := syscall.SyscallN(proc.SystemTimeToVariantTime.Addr(),
+		uintptr(unsafe.Pointer(&st)), uintptr(unsafe.Pointer(&double)))
 	if ret == 0 {
 		panic("SystemTimeToVariantTime() failed.")
 	}
@@ -429,20 +429,20 @@ func NewVariantTime(v time.Time) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantTime(true)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantTime(true)
+//	defer vari.VariantClear()
 //
-//		if timeVal, ok := vari.Time(); ok {
-//			println(timeVal.Format(time.ANSIC))
-//		}
+//	if timeVal, ok := vari.Time(); ok {
+//		println(timeVal.Format(time.ANSIC))
+//	}
 func (vt *VARIANT) Time() (time.Time, bool) {
 	switch vt.vt {
 	case automco.VT_DATE:
 		double := math.Float64frombits(binary.LittleEndian.Uint64(vt.data[:]))
 		var st win.SYSTEMTIME
 
-		ret, _, _ := syscall.Syscall(proc.VariantTimeToSystemTime.Addr(), 2,
-			uintptr(math.Float64bits(double)), uintptr(unsafe.Pointer(&st)), 0)
+		ret, _, _ := syscall.SyscallN(proc.VariantTimeToSystemTime.Addr(),
+			uintptr(math.Float64bits(double)), uintptr(unsafe.Pointer(&st)))
 		if ret == 0 {
 			panic("VariantTimeToSystemTime() failed.")
 		}
@@ -459,8 +459,8 @@ func (vt *VARIANT) Time() (time.Time, bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantUint8(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantUint8(50)
+//	defer vari.VariantClear()
 func NewVariantUint8(v uint8) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_UI1
@@ -473,12 +473,12 @@ func NewVariantUint8(v uint8) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantUint8(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantUint8(50)
+//	defer vari.VariantClear()
 //
-//		if intVal, ok := vari.Uint8(); ok {
-//			println(intVal)
-//		}
+//	if intVal, ok := vari.Uint8(); ok {
+//		println(intVal)
+//	}
 func (vt *VARIANT) Uint8() (uint8, bool) {
 	switch vt.vt {
 	case automco.VT_UI1:
@@ -494,8 +494,8 @@ func (vt *VARIANT) Uint8() (uint8, bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantUint16(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantUint16(50)
+//	defer vari.VariantClear()
 func NewVariantUint16(v uint16) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_UI2
@@ -508,12 +508,12 @@ func NewVariantUint16(v uint16) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantUint16(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantUint16(50)
+//	defer vari.VariantClear()
 //
-//		if intVal, ok := vari.Uint16(); ok {
-//			println(intVal)
-//		}
+//	if intVal, ok := vari.Uint16(); ok {
+//		println(intVal)
+//	}
 func (vt *VARIANT) Uint16() (uint16, bool) {
 	switch vt.vt {
 	case automco.VT_UI2:
@@ -529,8 +529,8 @@ func (vt *VARIANT) Uint16() (uint16, bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantUint32(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantUint32(50)
+//	defer vari.VariantClear()
 func NewVariantUint32(v uint32) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_UI4
@@ -543,12 +543,12 @@ func NewVariantUint32(v uint32) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantUint32(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantUint32(50)
+//	defer vari.VariantClear()
 //
-//		if intVal, ok := vari.Uint32(); ok {
-//			println(intVal)
-//		}
+//	if intVal, ok := vari.Uint32(); ok {
+//		println(intVal)
+//	}
 func (vt *VARIANT) Uint32() (uint32, bool) {
 	switch vt.vt {
 	case automco.VT_UI4:
@@ -564,8 +564,8 @@ func (vt *VARIANT) Uint32() (uint32, bool) {
 //
 // Example:
 //
-//		vari := autom.NewVariantUint64(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantUint64(50)
+//	defer vari.VariantClear()
 func NewVariantUint64(v uint64) VARIANT {
 	vt := NewVariantEmpty()
 	vt.vt = automco.VT_UI8
@@ -578,12 +578,12 @@ func NewVariantUint64(v uint64) VARIANT {
 //
 // Example:
 //
-//		vari := autom.NewVariantUint64(50)
-//		defer vari.VariantClear()
+//	vari := autom.NewVariantUint64(50)
+//	defer vari.VariantClear()
 //
-//		if intVal, ok := vari.Uint64(); ok {
-//			println(intVal)
-//		}
+//	if intVal, ok := vari.Uint64(); ok {
+//		println(intVal)
+//	}
 func (vt *VARIANT) Uint64() (uint64, bool) {
 	switch vt.vt {
 	case automco.VT_UI8:

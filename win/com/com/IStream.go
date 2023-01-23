@@ -56,8 +56,8 @@ func NewIStream(base IUnknown) IStream {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shlwapi/nf-shlwapi-shcreatememstream
 func NewIStreamFromSlice(src []byte) IStream {
-	ret, _, _ := syscall.Syscall(proc.SHCreateMemStream.Addr(), 2,
-		uintptr(unsafe.Pointer(&src[0])), uintptr(len(src)), 0)
+	ret, _, _ := syscall.SyscallN(proc.SHCreateMemStream.Addr(),
+		uintptr(unsafe.Pointer(&src[0])), uintptr(len(src)))
 	if ret == 0 {
 		panic(errco.E_OUTOFMEMORY)
 	}
@@ -65,10 +65,10 @@ func NewIStreamFromSlice(src []byte) IStream {
 }
 
 func (me *_IStream) Commit(flags comco.STGC) {
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).Commit, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).Commit,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(flags), 0)
+		uintptr(flags))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -78,14 +78,13 @@ func (me *_IStream) Commit(flags comco.STGC) {
 func (me *_IStream) CopyTo(
 	dest IStream, numBytes uint64) (numBytesRead, numBytesWritten uint64) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).CopyTo, 5,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).CopyTo,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(dest.Ptr())),
 		uintptr(numBytes),
 		uintptr(unsafe.Pointer(&numBytesRead)),
-		uintptr(unsafe.Pointer(&numBytesWritten)),
-		0)
+		uintptr(unsafe.Pointer(&numBytesWritten)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return
@@ -95,11 +94,10 @@ func (me *_IStream) CopyTo(
 }
 
 func (me *_IStream) LockRegion(offset, length uint64, lockType comco.LOCKTYPE) {
-	ret, _, _ := syscall.Syscall6(
-		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).LockRegion, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).LockRegion,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(offset), uintptr(length), uintptr(lockType),
-		0, 0)
+		uintptr(offset), uintptr(length), uintptr(lockType))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -107,10 +105,9 @@ func (me *_IStream) LockRegion(offset, length uint64, lockType comco.LOCKTYPE) {
 }
 
 func (me *_IStream) Revert() {
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).Revert, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).Revert,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -120,12 +117,11 @@ func (me *_IStream) Revert() {
 func (me *_IStream) Seek(
 	displacement int64, origin comco.STREAM_SEEK) (newOffset uint64) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).Seek, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).Seek,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(displacement), uintptr(origin),
-		uintptr(unsafe.Pointer(&newOffset)),
-		0, 0)
+		uintptr(unsafe.Pointer(&newOffset)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return
@@ -135,10 +131,10 @@ func (me *_IStream) Seek(
 }
 
 func (me *_IStream) SetSize(newSize uint64) {
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).SetSize, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).SetSize,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(newSize), 0)
+		uintptr(newSize))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -148,11 +144,10 @@ func (me *_IStream) SetSize(newSize uint64) {
 func (me *_IStream) UnlockRegion(
 	offset, length uint64, lockType comco.LOCKTYPE) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).UnlockRegion, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IStream)(unsafe.Pointer(*me.Ptr())).UnlockRegion,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(offset), uintptr(length), uintptr(lockType),
-		0, 0)
+		uintptr(offset), uintptr(length), uintptr(lockType))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

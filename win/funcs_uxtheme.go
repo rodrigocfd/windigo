@@ -10,21 +10,18 @@ import (
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isappthemed
 func IsAppThemed() bool {
-	ret, _, _ := syscall.Syscall(proc.IsAppThemed.Addr(), 0,
-		0, 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.IsAppThemed.Addr())
 	return ret != 0
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-iscompositionactive
 func IsCompositionActive() bool {
-	ret, _, _ := syscall.Syscall(proc.IsCompositionActive.Addr(), 0,
-		0, 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.IsCompositionActive.Addr())
 	return ret != 0
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemeactive
 func IsThemeActive() bool {
-	ret, _, _ := syscall.Syscall(proc.IsThemeActive.Addr(), 0,
-		0, 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.IsThemeActive.Addr())
 	return ret != 0
 }

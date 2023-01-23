@@ -42,14 +42,14 @@ type _MonthCalendar struct {
 //
 // Example:
 //
-//		var owner ui.AnyParent // initialized somewhere
+//	var owner ui.AnyParent // initialized somewhere
 //
-//		myCal := ui.NewMonthCalendar(
-//			owner,
-//			ui.MonthCalendarOpts(
-//				Position(win.POINT{X: 50, Y: 50}),
-//			),
-//		)
+//	myCal := ui.NewMonthCalendar(
+//		owner,
+//		ui.MonthCalendarOpts(
+//			Position(win.POINT{X: 50, Y: 50}),
+//		),
+//	)
 func NewMonthCalendar(parent AnyParent, opts *_MonthCalendarO) MonthCalendar {
 	if opts == nil {
 		opts = MonthCalendarOpts()

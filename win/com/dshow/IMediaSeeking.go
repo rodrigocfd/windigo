@@ -84,12 +84,12 @@ type _IMediaSeeking struct{ com.IUnknown }
 //
 // Example:
 //
-//		var gb dshow.IGraphBuilder // initialized somewhere
+//	var gb dshow.IGraphBuilder // initialized somewhere
 //
-//		ms := dshow.NewIMediaSeeking(
-//			gb.QueryInterface(dshowco.IID_IMediaSeeking),
-//		)
-//		defer ms.Release()
+//	ms := dshow.NewIMediaSeeking(
+//		gb.QueryInterface(dshowco.IID_IMediaSeeking),
+//	)
+//	defer ms.Release()
 func NewIMediaSeeking(base com.IUnknown) IMediaSeeking {
 	return &_IMediaSeeking{IUnknown: base}
 }
@@ -97,10 +97,10 @@ func NewIMediaSeeking(base com.IUnknown) IMediaSeeking {
 func (me *_IMediaSeeking) CheckCapabilities(
 	capabilities dshowco.SEEKING_CAPABILITIES) dshowco.SEEKING_CAPABILITIES {
 
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).CheckCapabilities, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).CheckCapabilities,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&capabilities)), 0)
+		uintptr(unsafe.Pointer(&capabilities)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return capabilities
@@ -113,12 +113,11 @@ func (me *_IMediaSeeking) ConvertTimeFormat(
 	targetFormat, sourceFormat *win.GUID, source int64) int64 {
 
 	var target int64
-	ret, _, _ := syscall.Syscall6(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).ConvertTimeFormat, 5,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).ConvertTimeFormat,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&target)), uintptr(unsafe.Pointer(targetFormat)),
-		uintptr(unsafe.Pointer(&source)), uintptr(unsafe.Pointer(sourceFormat)),
-		0)
+		uintptr(unsafe.Pointer(&source)), uintptr(unsafe.Pointer(sourceFormat)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return target
@@ -129,8 +128,8 @@ func (me *_IMediaSeeking) ConvertTimeFormat(
 
 func (me *_IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
 	var iEarliest, iLatest int64
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetAvailable, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetAvailable,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&iEarliest)), uintptr(unsafe.Pointer(&iLatest)))
 
@@ -144,10 +143,10 @@ func (me *_IMediaSeeking) GetAvailable() (earliest, latest time.Duration) {
 
 func (me *_IMediaSeeking) GetCapabilities() dshowco.SEEKING_CAPABILITIES {
 	var capabilities dshowco.SEEKING_CAPABILITIES
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetCapabilities, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetCapabilities,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&capabilities)), 0)
+		uintptr(unsafe.Pointer(&capabilities)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return capabilities
@@ -158,10 +157,10 @@ func (me *_IMediaSeeking) GetCapabilities() dshowco.SEEKING_CAPABILITIES {
 
 func (me *_IMediaSeeking) GetCurrentPosition() time.Duration {
 	var pos int64
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetCurrentPosition, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetCurrentPosition,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&pos)), 0)
+		uintptr(unsafe.Pointer(&pos)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return util.Nano100ToDuration(pos)
@@ -172,10 +171,10 @@ func (me *_IMediaSeeking) GetCurrentPosition() time.Duration {
 
 func (me *_IMediaSeeking) GetDuration() time.Duration {
 	var duration int64
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetDuration, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetDuration,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&duration)), 0)
+		uintptr(unsafe.Pointer(&duration)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return util.Nano100ToDuration(duration)
@@ -186,8 +185,8 @@ func (me *_IMediaSeeking) GetDuration() time.Duration {
 
 func (me *_IMediaSeeking) GetPositions() (current, stop time.Duration) {
 	var iCurrent, iStop int64
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetPositions, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetPositions,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&iCurrent)), uintptr(unsafe.Pointer(&iStop)))
 
@@ -201,10 +200,10 @@ func (me *_IMediaSeeking) GetPositions() (current, stop time.Duration) {
 
 func (me *_IMediaSeeking) GetPreroll() time.Duration {
 	var preRoll int64
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetPreroll, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetPreroll,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&preRoll)), 0)
+		uintptr(unsafe.Pointer(&preRoll)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return util.Nano100ToDuration(preRoll)
@@ -215,10 +214,10 @@ func (me *_IMediaSeeking) GetPreroll() time.Duration {
 
 func (me *_IMediaSeeking) GetRate() float64 {
 	var rate float64
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetStopPosition, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetStopPosition,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&rate)), 0)
+		uintptr(unsafe.Pointer(&rate)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return rate
@@ -229,10 +228,10 @@ func (me *_IMediaSeeking) GetRate() float64 {
 
 func (me *_IMediaSeeking) GetStopPosition() time.Duration {
 	var stop int64
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetStopPosition, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetStopPosition,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&stop)), 0)
+		uintptr(unsafe.Pointer(&stop)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return util.Nano100ToDuration(stop)
@@ -243,10 +242,10 @@ func (me *_IMediaSeeking) GetStopPosition() time.Duration {
 
 func (me *_IMediaSeeking) GetTimeFormat() *win.GUID {
 	format := &win.GUID{}
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetTimeFormat, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).GetTimeFormat,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(format)), 0)
+		uintptr(unsafe.Pointer(format)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return format
@@ -256,10 +255,10 @@ func (me *_IMediaSeeking) GetTimeFormat() *win.GUID {
 }
 
 func (me *_IMediaSeeking) IsFormatSupported(format *win.GUID) bool {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).IsFormatSupported, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).IsFormatSupported,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(format)), 0)
+		uintptr(unsafe.Pointer(format)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
@@ -271,10 +270,10 @@ func (me *_IMediaSeeking) IsFormatSupported(format *win.GUID) bool {
 }
 
 func (me *_IMediaSeeking) IsUsingTimeFormat(format *win.GUID) bool {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).IsUsingTimeFormat, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).IsUsingTimeFormat,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(format)), 0)
+		uintptr(unsafe.Pointer(format)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
@@ -287,10 +286,10 @@ func (me *_IMediaSeeking) IsUsingTimeFormat(format *win.GUID) bool {
 
 func (me *_IMediaSeeking) QueryPreferredFormat() *win.GUID {
 	format := win.GUID{}
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).QueryPreferredFormat, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).QueryPreferredFormat,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&format)), 0)
+		uintptr(unsafe.Pointer(&format)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return &format
@@ -304,11 +303,11 @@ func (me *_IMediaSeeking) SetPositions(
 	stop time.Duration, stopFlags dshowco.SEEKING_FLAGS) error {
 
 	iCurrent, iStop := util.DurationToNano100(current), util.DurationToNano100(stop)
-	ret, _, _ := syscall.Syscall6(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).SetPositions, 5,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).SetPositions,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&iCurrent)), uintptr(currentFlags),
-		uintptr(unsafe.Pointer(&iStop)), uintptr(stopFlags), 0)
+		uintptr(unsafe.Pointer(&iStop)), uintptr(stopFlags))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil
@@ -318,10 +317,10 @@ func (me *_IMediaSeeking) SetPositions(
 }
 
 func (me *_IMediaSeeking) SetRate(rate float64) error {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).SetRate, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).SetRate,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(rate), 0)
+		uintptr(rate))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil
@@ -333,10 +332,10 @@ func (me *_IMediaSeeking) SetRate(rate float64) error {
 }
 
 func (me *_IMediaSeeking) SetTimeFormat(format *win.GUID) error {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).SetTimeFormat, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaSeeking)(unsafe.Pointer(*me.Ptr())).SetTimeFormat,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(format)), 0)
+		uintptr(unsafe.Pointer(format)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil

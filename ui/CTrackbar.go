@@ -47,15 +47,15 @@ type _Trackbar struct {
 //
 // Example:
 //
-//		var owner ui.AnyParent // initialized somewhere
+//	var owner ui.AnyParent // initialized somewhere
 //
-//		mySlider := ui.NewTrackbar(
-//			owner,
-//			ui.TrackbarOpts(
-//				Position(win.POINT{X: 10, Y: 250}).
-//				RangeMax(4),
-//			),
-//		)
+//	mySlider := ui.NewTrackbar(
+//		owner,
+//		ui.TrackbarOpts(
+//			Position(win.POINT{X: 10, Y: 250}).
+//			RangeMax(4),
+//		),
+//	)
 func NewTrackbar(parent AnyParent, opts *_TrackbarO) Trackbar {
 	if opts == nil {
 		opts = TrackbarOpts()

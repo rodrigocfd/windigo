@@ -19,8 +19,8 @@ type HICON HANDLE
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconindirect
 func CreateIconIndirect(info *ICONINFO) HICON {
-	ret, _, err := syscall.Syscall(proc.CreateIconIndirect.Addr(), 1,
-		uintptr(unsafe.Pointer(info)), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CreateIconIndirect.Addr(),
+		uintptr(unsafe.Pointer(info)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -31,8 +31,8 @@ func CreateIconIndirect(info *ICONINFO) HICON {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyicon
 func (hIcon HICON) CopyIcon() HICON {
-	ret, _, err := syscall.Syscall(proc.CopyIcon.Addr(), 1,
-		uintptr(hIcon), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CopyIcon.Addr(),
+		uintptr(hIcon))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -41,8 +41,8 @@ func (hIcon HICON) CopyIcon() HICON {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyicon
 func (hIcon HICON) DestroyIcon() {
-	ret, _, err := syscall.Syscall(proc.DestroyIcon.Addr(), 1,
-		uintptr(hIcon), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.DestroyIcon.Addr(),
+		uintptr(hIcon))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -52,8 +52,8 @@ func (hIcon HICON) DestroyIcon() {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfo
 func (hIcon HICON) GetIconInfo(iconInfo *ICONINFO) {
-	ret, _, err := syscall.Syscall(proc.GetIconInfo.Addr(), 2,
-		uintptr(hIcon), uintptr(unsafe.Pointer(iconInfo)), 0)
+	ret, _, err := syscall.SyscallN(proc.GetIconInfo.Addr(),
+		uintptr(hIcon), uintptr(unsafe.Pointer(iconInfo)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -64,8 +64,8 @@ func (hIcon HICON) GetIconInfo(iconInfo *ICONINFO) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfoexw
 func (hIcon HICON) GetIconInfoEx(iconInfoEx *ICONINFOEX) {
 	iconInfoEx.SetCbSize() // safety
-	ret, _, err := syscall.Syscall(proc.GetIconInfoEx.Addr(), 2,
-		uintptr(hIcon), uintptr(unsafe.Pointer(iconInfoEx)), 0)
+	ret, _, err := syscall.SyscallN(proc.GetIconInfoEx.Addr(),
+		uintptr(hIcon), uintptr(unsafe.Pointer(iconInfoEx)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

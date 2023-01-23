@@ -16,9 +16,9 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw
 func CommandLineToArgv(cmdLine string) []string {
 	var pNumArgs int32
-	ret, _, err := syscall.Syscall(proc.CommandLineToArgv.Addr(), 2,
+	ret, _, err := syscall.SyscallN(proc.CommandLineToArgv.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(cmdLine))),
-		uintptr(unsafe.Pointer(&pNumArgs)), 0)
+		uintptr(unsafe.Pointer(&pNumArgs)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -34,8 +34,8 @@ func CommandLineToArgv(cmdLine string) []string {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
 func ShellNotifyIcon(message co.NIM, data *NOTIFYICONDATA) error {
-	ret, _, err := syscall.Syscall(proc.Shell_NotifyIcon.Addr(), 2,
-		uintptr(message), uintptr(unsafe.Pointer(data)), 0)
+	ret, _, err := syscall.SyscallN(proc.Shell_NotifyIcon.Addr(),
+		uintptr(message), uintptr(unsafe.Pointer(data)))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -49,10 +49,10 @@ func SHGetFileInfo(
 	path string, fileAttributes co.FILE_ATTRIBUTE,
 	sfi *SHFILEINFO, flags co.SHGFI) {
 
-	ret, _, err := syscall.Syscall6(proc.SHGetFileInfo.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.SHGetFileInfo.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(path))),
 		uintptr(fileAttributes), uintptr(unsafe.Pointer(sfi)),
-		unsafe.Sizeof(*sfi), uintptr(flags), 0)
+		unsafe.Sizeof(*sfi), uintptr(flags))
 
 	if (flags&co.SHGFI_EXETYPE) == 0 || (flags&co.SHGFI_SYSICONINDEX) == 0 {
 		if ret == 0 {

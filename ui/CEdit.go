@@ -47,15 +47,15 @@ type _Edit struct {
 //
 // Example:
 //
-//		var owner ui.AnyParent // initialized somewhere
+//	var owner ui.AnyParent // initialized somewhere
 //
-//		myTxt := ui.NewEdit(
-//			owner,
-//			ui.EditOpts(
-//				Position(win.POINT{X: 10, Y: 20}).
-//				Size(win.SIZE{Cx: 120}),
-//			),
-//		)
+//	myTxt := ui.NewEdit(
+//		owner,
+//		ui.EditOpts(
+//			Position(win.POINT{X: 10, Y: 20}).
+//			Size(win.SIZE{Cx: 120}),
+//		),
+//	)
 func NewEdit(parent AnyParent, opts *_EditO) Edit {
 	if opts == nil {
 		opts = EditOpts()

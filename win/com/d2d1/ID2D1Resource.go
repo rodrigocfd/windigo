@@ -33,11 +33,10 @@ func NewID2D1Resource(base com.IUnknown) ID2D1Resource {
 
 func (me *_ID2D1Resource) GetFactory() ID2D1Factory {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*d2d1vt.ID2D1Resource)(unsafe.Pointer(*me.Ptr())).GetFactory, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1Resource)(unsafe.Pointer(*me.Ptr())).GetFactory,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppvQueried)),
-		0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewID2D1Factory(com.NewIUnknown(ppvQueried))

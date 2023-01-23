@@ -47,12 +47,12 @@ type _IMediaControl struct{ autom.IDispatch }
 //
 // Example:
 //
-//		var gb dshow.IGraphBuilder // initialized somewhere
+//	var gb dshow.IGraphBuilder // initialized somewhere
 //
-//		mc := dshow.NewIMediaControl(
-//			gb.QueryInterface(dshowco.IID_IMediaControl),
-//		)
-//		defer mc.Release()
+//	mc := dshow.NewIMediaControl(
+//		gb.QueryInterface(dshowco.IID_IMediaControl),
+//	)
+//	defer mc.Release()
 func NewIMediaControl(base com.IUnknown) IMediaControl {
 	return &_IMediaControl{IDispatch: autom.NewIDispatch(base)}
 }
@@ -61,8 +61,8 @@ func (me *_IMediaControl) GetState(
 	msTimeout int) (dshowco.FILTER_STATE, error) {
 
 	var state dshowco.FILTER_STATE
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).GetState, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).GetState,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(int32(msTimeout)), uintptr(unsafe.Pointer(&state)))
 
@@ -76,10 +76,9 @@ func (me *_IMediaControl) GetState(
 }
 
 func (me *_IMediaControl) Pause() bool {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).Pause, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).Pause,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
@@ -91,10 +90,10 @@ func (me *_IMediaControl) Pause() bool {
 }
 
 func (me *_IMediaControl) RenderFile(fileName string) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).RenderFile, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).RenderFile,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -102,10 +101,9 @@ func (me *_IMediaControl) RenderFile(fileName string) {
 }
 
 func (me *_IMediaControl) Run() bool {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).Run, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).Run,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
@@ -117,10 +115,9 @@ func (me *_IMediaControl) Run() bool {
 }
 
 func (me *_IMediaControl) Stop() {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).Stop, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).Stop,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -128,10 +125,9 @@ func (me *_IMediaControl) Stop() {
 }
 
 func (me *_IMediaControl) StopWhenReady() bool {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).StopWhenReady, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).StopWhenReady,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true

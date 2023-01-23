@@ -20,9 +20,8 @@ type ATOM uint16
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globaladdatomw
 func GlobalAddAtom(s string) ATOM {
-	ret, _, err := syscall.Syscall(proc.GlobalAddAtom.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToNativePtr(s))),
-		0, 0)
+	ret, _, err := syscall.SyscallN(proc.GlobalAddAtom.Addr(),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(s))))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -31,11 +30,10 @@ func GlobalAddAtom(s string) ATOM {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globaldeleteatom
 func (atom ATOM) GlobalDeleteAtom() {
-	syscall.Syscall(proc.SetLastError.Addr(), 0,
-		0, 0, 0)
+	syscall.SyscallN(proc.SetLastError.Addr())
 
-	_, _, err := syscall.Syscall(proc.GlobalDeleteAtom.Addr(), 1,
-		uintptr(atom), 0, 0)
+	_, _, err := syscall.SyscallN(proc.GlobalDeleteAtom.Addr(),
+		uintptr(atom))
 	if wErr := errco.ERROR(err); wErr != errco.SUCCESS {
 		panic(wErr)
 	}
@@ -45,7 +43,7 @@ func (atom ATOM) GlobalDeleteAtom() {
 func (atom ATOM) GlobalGetAtomName() string {
 	buf := make([]uint16, _MAX_PATH+1) // arbitrary
 
-	ret, _, err := syscall.Syscall(proc.GlobalGetAtomName.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.GlobalGetAtomName.Addr(),
 		uintptr(atom), uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
 	if ret == 0 {
 		panic(errco.ERROR(err))

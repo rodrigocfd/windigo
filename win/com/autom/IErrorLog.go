@@ -30,8 +30,8 @@ func NewIErrorLog(base com.IUnknown) IErrorLog {
 }
 
 func (me *_IErrorLog) AddError(propName string, exceps []EXCEPINFO) {
-	ret, _, _ := syscall.Syscall(
-		(*automvt.IPropertyBag)(unsafe.Pointer(*me.Ptr())).Write, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.IPropertyBag)(unsafe.Pointer(*me.Ptr())).Write,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(propName))),
 		uintptr(unsafe.Pointer(&exceps[0])))

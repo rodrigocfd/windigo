@@ -73,10 +73,9 @@ func NewIPin(base com.IUnknown) IPin {
 }
 
 func (me *_IPin) BeginFlush() {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).BeginFlush, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).BeginFlush,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -85,8 +84,8 @@ func (me *_IPin) BeginFlush() {
 
 func (me *_IPin) Connect(mt *AM_MEDIA_TYPE) (IPin, error) {
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).Connect, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).Connect,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&ppQueried)),
 		uintptr(unsafe.Pointer(mt)))
@@ -100,10 +99,10 @@ func (me *_IPin) Connect(mt *AM_MEDIA_TYPE) (IPin, error) {
 
 func (me *_IPin) ConnectedTo() (IPin, error) {
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).ConnectedTo, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).ConnectedTo,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppQueried)), 0)
+		uintptr(unsafe.Pointer(&ppQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIPin(com.NewIUnknown(ppQueried)), nil
@@ -113,10 +112,10 @@ func (me *_IPin) ConnectedTo() (IPin, error) {
 }
 
 func (me *_IPin) ConnectionMediaType(mt *AM_MEDIA_TYPE) error {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).ConnectionMediaType, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).ConnectionMediaType,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(mt)), 0)
+		uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil
@@ -126,10 +125,9 @@ func (me *_IPin) ConnectionMediaType(mt *AM_MEDIA_TYPE) error {
 }
 
 func (me *_IPin) Disconnect() {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).Disconnect, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).Disconnect,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -137,10 +135,9 @@ func (me *_IPin) Disconnect() {
 }
 
 func (me *_IPin) EndFlush() {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).EndFlush, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).EndFlush,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -148,10 +145,9 @@ func (me *_IPin) EndFlush() {
 }
 
 func (me *_IPin) EndOfStream() {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).EndOfStream, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).EndOfStream,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -160,10 +156,10 @@ func (me *_IPin) EndOfStream() {
 
 func (me *_IPin) EnumMediaTypes() (IEnumMediaTypes, error) {
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).EnumMediaTypes, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).EnumMediaTypes,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppQueried)), 0)
+		uintptr(unsafe.Pointer(&ppQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIEnumMediaTypes(com.NewIUnknown(ppQueried)), nil
@@ -174,11 +170,10 @@ func (me *_IPin) EnumMediaTypes() (IEnumMediaTypes, error) {
 
 func (me *_IPin) NewSegment(start, stop time.Duration, rate float64) {
 	iStart, iStop := util.DurationToNano100(start), util.DurationToNano100(stop)
-	ret, _, _ := syscall.Syscall6(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).NewSegment, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).NewSegment,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(iStart), uintptr(iStop), uintptr(rate),
-		0, 0)
+		uintptr(iStart), uintptr(iStop), uintptr(rate))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -186,10 +181,10 @@ func (me *_IPin) NewSegment(start, stop time.Duration, rate float64) {
 }
 
 func (me *_IPin) QueryAccept(mt *AM_MEDIA_TYPE) (bool, error) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).QueryAccept, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).QueryAccept,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(mt)), 0)
+		uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK || hr == errco.S_FALSE {
 		return hr == errco.S_OK, nil
@@ -200,10 +195,10 @@ func (me *_IPin) QueryAccept(mt *AM_MEDIA_TYPE) (bool, error) {
 
 func (me *_IPin) QueryDirection() dshowco.PIN_DIRECTION {
 	var pPinDir dshowco.PIN_DIRECTION
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).QueryDirection, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).QueryDirection,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&pPinDir)), 0)
+		uintptr(unsafe.Pointer(&pPinDir)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return pPinDir
@@ -214,10 +209,10 @@ func (me *_IPin) QueryDirection() dshowco.PIN_DIRECTION {
 
 func (me *_IPin) QueryId() string {
 	var pv uintptr
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).QueryId, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IPin)(unsafe.Pointer(*me.Ptr())).QueryId,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&pv)), 0)
+		uintptr(unsafe.Pointer(&pv)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		defer win.HTASKMEM(pv).CoTaskMemFree()

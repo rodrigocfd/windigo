@@ -27,10 +27,10 @@ type IUnknown interface {
 	//
 	// Example:
 	//
-	//		var myObj IUnknown // initialized somewhere
+	//	var myObj IUnknown // initialized somewhere
 	//
-	//		otherObj := myObj.AddRef()
-	//		defer otherObj.Release()
+	//	otherObj := myObj.AddRef()
+	//	defer otherObj.Release()
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 	AddRef() IUnknown
@@ -71,7 +71,7 @@ func NewIUnknown(ppv **comvt.IUnknown) IUnknown {
 
 func (me *_IUnknown) QueryInterface(riid co.IID) IUnknown {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall((*me.ppv).QueryInterface, 3,
+	ret, _, _ := syscall.SyscallN((*me.ppv).QueryInterface,
 		uintptr(unsafe.Pointer(me.ppv)),
 		uintptr(unsafe.Pointer(win.GuidFromIid(riid))),
 		uintptr(unsafe.Pointer(&ppvQueried)))
@@ -84,16 +84,16 @@ func (me *_IUnknown) QueryInterface(riid co.IID) IUnknown {
 }
 
 func (me *_IUnknown) AddRef() IUnknown {
-	syscall.Syscall((*me.ppv).AddRef, 1,
-		uintptr(unsafe.Pointer(me.ppv)), 0, 0)
+	syscall.SyscallN((*me.ppv).AddRef,
+		uintptr(unsafe.Pointer(me.ppv)))
 	return NewIUnknown(me.ppv) // simply copy the pointer into a new object
 }
 
 func (me *_IUnknown) Release() uint32 {
 	ret := uintptr(0)
 	if me.Ptr() != nil {
-		ret, _, _ = syscall.Syscall((*me.ppv).Release, 1,
-			uintptr(unsafe.Pointer(me.ppv)), 0, 0)
+		ret, _, _ = syscall.SyscallN((*me.ppv).Release,
+			uintptr(unsafe.Pointer(me.ppv)))
 		if ret == 0 { // COM pointer was released
 			me.ppv = nil
 		}

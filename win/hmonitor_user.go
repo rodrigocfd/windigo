@@ -18,22 +18,22 @@ type HMONITOR HANDLE
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
 func MonitorFromPoint(pt POINT, flags co.MONITOR) HMONITOR {
-	ret, _, _ := syscall.Syscall(proc.MonitorFromPoint.Addr(), 3,
+	ret, _, _ := syscall.SyscallN(proc.MonitorFromPoint.Addr(),
 		uintptr(pt.X), uintptr(pt.Y), uintptr(flags))
 	return HMONITOR(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromrect
 func MonitorFromRect(rc RECT, flags co.MONITOR) HMONITOR {
-	ret, _, _ := syscall.Syscall(proc.MonitorFromRect.Addr(), 2,
-		uintptr(unsafe.Pointer(&rc)), uintptr(flags), 0)
+	ret, _, _ := syscall.SyscallN(proc.MonitorFromRect.Addr(),
+		uintptr(unsafe.Pointer(&rc)), uintptr(flags))
 	return HMONITOR(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmonitorinfow
 func (hMon HMONITOR) GetMonitorInfo(mi *MONITORINFOEX) error {
-	ret, _, err := syscall.Syscall(proc.GetMonitorInfo.Addr(), 2,
-		uintptr(hMon), uintptr(unsafe.Pointer(mi)), 0)
+	ret, _, err := syscall.SyscallN(proc.GetMonitorInfo.Addr(),
+		uintptr(hMon), uintptr(unsafe.Pointer(mi)))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}

@@ -18,9 +18,9 @@ func (hInst HINSTANCE) CreateDialogParam(
 	dialogFunc uintptr, dwInitParam LPARAM) HWND {
 
 	templateNameVal, templateNameBuf := templateName.raw()
-	ret, _, err := syscall.Syscall6(proc.CreateDialogParam.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.CreateDialogParam.Addr(),
 		uintptr(hInst), templateNameVal,
-		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam), 0)
+		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam))
 	runtime.KeepAlive(templateNameBuf)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -34,9 +34,9 @@ func (hInst HINSTANCE) DialogBoxParam(
 	dialogFunc uintptr, dwInitParam LPARAM) uintptr {
 
 	templateNameVal, templateNameBuf := templateName.raw()
-	ret, _, err := syscall.Syscall6(proc.DialogBoxParam.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.DialogBoxParam.Addr(),
 		uintptr(hInst), templateNameVal,
-		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam), 0)
+		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam))
 	runtime.KeepAlive(templateNameBuf)
 	if int(ret) == -1 && errco.ERROR(err) != errco.SUCCESS {
 		panic(errco.ERROR(err))
@@ -48,7 +48,7 @@ func (hInst HINSTANCE) DialogBoxParam(
 func (hInst HINSTANCE) GetClassInfoEx(
 	className *uint16, destBuf *WNDCLASSEX) (ATOM, error) {
 
-	ret, _, err := syscall.Syscall(proc.GetClassInfoEx.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.GetClassInfoEx.Addr(),
 		uintptr(hInst),
 		uintptr(unsafe.Pointer(className)),
 		uintptr(unsafe.Pointer(destBuf)))
@@ -61,8 +61,8 @@ func (hInst HINSTANCE) GetClassInfoEx(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
 func (hInst HINSTANCE) LoadAccelerators(tableName ResId) HACCEL {
 	tableNameVal, tableNameBuf := tableName.raw()
-	ret, _, err := syscall.Syscall(proc.LoadAccelerators.Addr(), 2,
-		uintptr(hInst), tableNameVal, 0)
+	ret, _, err := syscall.SyscallN(proc.LoadAccelerators.Addr(),
+		uintptr(hInst), tableNameVal)
 	runtime.KeepAlive(tableNameBuf)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -73,8 +73,8 @@ func (hInst HINSTANCE) LoadAccelerators(tableName ResId) HACCEL {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) HCURSOR {
 	cursorNameVal, cursorNameBuf := cursorName.raw()
-	ret, _, err := syscall.Syscall(proc.LoadCursor.Addr(), 2,
-		uintptr(hInst), cursorNameVal, 0)
+	ret, _, err := syscall.SyscallN(proc.LoadCursor.Addr(),
+		uintptr(hInst), cursorNameVal)
 	runtime.KeepAlive(cursorNameBuf)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -85,8 +85,8 @@ func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) HCURSOR {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 	iconNameVal, iconNameBuf := iconName.raw()
-	ret, _, err := syscall.Syscall(proc.LoadIcon.Addr(), 2,
-		uintptr(hInst), iconNameVal, 0)
+	ret, _, err := syscall.SyscallN(proc.LoadIcon.Addr(),
+		uintptr(hInst), iconNameVal)
 	runtime.KeepAlive(iconNameBuf)
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -101,35 +101,35 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 //
 // Example loading a 16x16 icon resource:
 //
-//		const MY_ICON_ID int = 101
+//	const MY_ICON_ID int = 101
 //
-//		hIcon := win.HICON(
-//			win.GetModuleHandle(win.StrOptNone()).LoadImage(
-//				win.ResIdInt(MY_ICON_ID),
-//				co.IMAGE_ICON,
-//				16, 16,
-//				co.LR_DEFAULTCOLOR,
-//			),
-//		)
+//	hIcon := win.HICON(
+//		win.GetModuleHandle(win.StrOptNone()).LoadImage(
+//			win.ResIdInt(MY_ICON_ID),
+//			co.IMAGE_ICON,
+//			16, 16,
+//			co.LR_DEFAULTCOLOR,
+//		),
+//	)
 //
 // Example loading a bitmap from file:
 //
-//		hBmp := win.HBITMAP(
-//			win.HINSTANCE(0).LoadImage(
-//				win.ResIdStr("C:\\Temp\\image.bmp"),
-//				co.IMAGE_BITMAP,
-//				0, 0,
-//				co.LR_LOADFROMFILE,
-//			),
-//		)
-//		defer hBmp.DeleteObject()
+//	hBmp := win.HBITMAP(
+//		win.HINSTANCE(0).LoadImage(
+//			win.ResIdStr("C:\\Temp\\image.bmp"),
+//			co.IMAGE_BITMAP,
+//			0, 0,
+//			co.LR_LOADFROMFILE,
+//		),
+//	)
+//	defer hBmp.DeleteObject()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
 func (hInst HINSTANCE) LoadImage(
 	name ResId, imgType co.IMAGE, cx, cy int32, fuLoad co.LR) HGDIOBJ {
 
 	nameVal, nameBuf := name.raw()
-	ret, _, err := syscall.Syscall6(proc.LoadImage.Addr(), 6,
+	ret, _, err := syscall.SyscallN(proc.LoadImage.Addr(),
 		uintptr(hInst), nameVal, uintptr(imgType),
 		uintptr(cx), uintptr(cy), uintptr(fuLoad))
 	runtime.KeepAlive(nameBuf)
@@ -142,8 +142,8 @@ func (hInst HINSTANCE) LoadImage(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
 func (hInst HINSTANCE) LoadMenu(menuName ResId) HMENU {
 	menuNameVal, menuNameBuf := menuName.raw()
-	ret, _, err := syscall.Syscall(proc.LoadMenu.Addr(), 2,
-		uintptr(hInst), menuNameVal, 0)
+	ret, _, err := syscall.SyscallN(proc.LoadMenu.Addr(),
+		uintptr(hInst), menuNameVal)
 	runtime.KeepAlive(menuNameBuf)
 	if ret == 0 {
 		panic(errco.ERROR(err))

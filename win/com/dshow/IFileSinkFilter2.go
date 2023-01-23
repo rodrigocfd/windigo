@@ -34,10 +34,10 @@ func NewIFileSinkFilter2(base com.IUnknown) IFileSinkFilter2 {
 
 func (me *_IFileSinkFilter2) GetMode() dshowco.AM_FILE {
 	var pdwFlags dshowco.AM_FILE
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFileSinkFilter2)(unsafe.Pointer(*me.Ptr())).GetMode, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFileSinkFilter2)(unsafe.Pointer(*me.Ptr())).GetMode,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&pdwFlags)), 0)
+		uintptr(unsafe.Pointer(&pdwFlags)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return pdwFlags
@@ -47,10 +47,10 @@ func (me *_IFileSinkFilter2) GetMode() dshowco.AM_FILE {
 }
 
 func (me *_IFileSinkFilter2) SetMode(flags dshowco.AM_FILE) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFileSinkFilter2)(unsafe.Pointer(*me.Ptr())).SetMode, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFileSinkFilter2)(unsafe.Pointer(*me.Ptr())).SetMode,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(flags), 0)
+		uintptr(flags))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

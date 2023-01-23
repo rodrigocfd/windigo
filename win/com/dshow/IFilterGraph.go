@@ -54,20 +54,20 @@ type _IFilterGraph struct{ com.IUnknown }
 //
 // Example:
 //
-//		fg := dshow.NewIFilterGraph(
-//			com.CoCreateInstance(
-//				dshowco.CLSID_FilterGraph, nil,
-//				comco.CLSCTX_INPROC_SERVER,
-//				dshowco.IID_IFilterGraph),
-//		)
-//		defer fg.Release()
+//	fg := dshow.NewIFilterGraph(
+//		com.CoCreateInstance(
+//			dshowco.CLSID_FilterGraph, nil,
+//			comco.CLSCTX_INPROC_SERVER,
+//			dshowco.IID_IFilterGraph),
+//	)
+//	defer fg.Release()
 func NewIFilterGraph(base com.IUnknown) IFilterGraph {
 	return &_IFilterGraph{IUnknown: base}
 }
 
 func (me *_IFilterGraph) AddFilter(filter IBaseFilter, name string) error {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).AddFilter, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).AddFilter,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(filter.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(name))))
@@ -80,12 +80,12 @@ func (me *_IFilterGraph) AddFilter(filter IBaseFilter, name string) error {
 }
 
 func (me *_IFilterGraph) ConnectDirect(pinOut, pinIn IPin, mt *AM_MEDIA_TYPE) {
-	ret, _, _ := syscall.Syscall6(
-		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).AddFilter, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).AddFilter,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(pinOut.Ptr())),
 		uintptr(unsafe.Pointer(pinIn.Ptr())),
-		uintptr(unsafe.Pointer(mt)), 0, 0)
+		uintptr(unsafe.Pointer(mt)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -93,10 +93,10 @@ func (me *_IFilterGraph) ConnectDirect(pinOut, pinIn IPin, mt *AM_MEDIA_TYPE) {
 }
 
 func (me *_IFilterGraph) Disconnect(pin IPin) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).Disconnect, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).Disconnect,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(pin.Ptr())), 0)
+		uintptr(unsafe.Pointer(pin.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -105,10 +105,10 @@ func (me *_IFilterGraph) Disconnect(pin IPin) {
 
 func (me *_IFilterGraph) EnumFilters() IEnumFilters {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).EnumFilters, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).EnumFilters,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIEnumFilters(com.NewIUnknown(ppvQueried))
@@ -119,10 +119,10 @@ func (me *_IFilterGraph) EnumFilters() IEnumFilters {
 
 func (me *_IFilterGraph) FindFilterByName(name string) (IBaseFilter, bool) {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).FindFilterByName, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).FindFilterByName,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIBaseFilter(com.NewIUnknown(ppvQueried)), true
@@ -134,10 +134,10 @@ func (me *_IFilterGraph) FindFilterByName(name string) (IBaseFilter, bool) {
 }
 
 func (me *_IFilterGraph) Reconnect(pin IPin) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).Reconnect, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).Reconnect,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(pin.Ptr())), 0)
+		uintptr(unsafe.Pointer(pin.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -145,10 +145,10 @@ func (me *_IFilterGraph) Reconnect(pin IPin) {
 }
 
 func (me *_IFilterGraph) RemoveFilter(filter IBaseFilter) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).RemoveFilter, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).RemoveFilter,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(filter.Ptr())), 0)
+		uintptr(unsafe.Pointer(filter.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -156,10 +156,9 @@ func (me *_IFilterGraph) RemoveFilter(filter IBaseFilter) {
 }
 
 func (me *_IFilterGraph) SetDefaultSyncSource() {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).SetDefaultSyncSource, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFilterGraph)(unsafe.Pointer(*me.Ptr())).SetDefaultSyncSource,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

@@ -42,14 +42,14 @@ type _DateTimePicker struct {
 //
 // Example:
 //
-//		var owner ui.AnyParent // initialized somewhere
+//	var owner ui.AnyParent // initialized somewhere
 //
-//		myDtp := ui.NewDateTimePicker(
-//			owner,
-//			ui.DateTimePickerOpts(
-//				Position(win.POINT{X: 10, Y: 210}),
-//			),
-//		)
+//	myDtp := ui.NewDateTimePicker(
+//		owner,
+//		ui.DateTimePickerOpts(
+//			Position(win.POINT{X: 10, Y: 210}),
+//		),
+//	)
 func NewDateTimePicker(parent AnyParent, opts *_DateTimePickerO) DateTimePicker {
 	if opts == nil {
 		opts = DateTimePickerOpts()

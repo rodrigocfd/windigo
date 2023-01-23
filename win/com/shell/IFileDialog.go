@@ -57,9 +57,9 @@ type IFileDialog interface {
 	//
 	// Example:
 	//
-	//		var fd shell.IFileDialog // initialized somewhere
+	//	var fd shell.IFileDialog // initialized somewhere
 	//
-	//		chosenPath := fd.GetResultDisplayName(shellco.SIGDN_FILESYSPATH)
+	//	chosenPath := fd.GetResultDisplayName(shellco.SIGDN_FILESYSPATH)
 	GetResultDisplayName(sigdnName shellco.SIGDN) string
 
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setclientguid
@@ -78,12 +78,12 @@ type IFileDialog interface {
 
 	// Example:
 	//
-	//		var fd shell.IFileDialog // initialized somewhere
+	//	var fd shell.IFileDialog // initialized somewhere
 	//
-	//		fd.SetFileTypes([]shell.FilterSpec{
-	//			{Name: "MP3 audio files", Spec: "*.mp3"},
-	//			{Name: "All files", Spec: "*.*"},
-	//		})
+	//	fd.SetFileTypes([]shell.FilterSpec{
+	//		{Name: "MP3 audio files", Spec: "*.mp3"},
+	//		{Name: "All files", Spec: "*.*"},
+	//	})
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypes
 	SetFileTypes(filterSpec []FilterSpec)
@@ -96,12 +96,12 @@ type IFileDialog interface {
 
 	// Example:
 	//
-	//		var fd shell.IFileDialog // initialized somewhere
+	//	var fd shell.IFileDialog // initialized somewhere
 	//
-	//		fd.SetOptions(
-	//			fd.GetOptions() |
-	//			shellco.FOS_FORCEFILESYSTEM |
-	//			shellco.FOS_FILEMUSTEXIST)
+	//	fd.SetOptions(
+	//		fd.GetOptions() |
+	//		shellco.FOS_FORCEFILESYSTEM |
+	//		shellco.FOS_FILEMUSTEXIST)
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setoptions
 	SetOptions(fos shellco.FOS)
@@ -120,10 +120,9 @@ func NewIFileDialog(base com.IUnknown) IFileDialog {
 }
 
 func (me *_IFileDialog) ClearClientData() {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).ClearClientData, 2,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).ClearClientData,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -131,10 +130,10 @@ func (me *_IFileDialog) ClearClientData() {
 }
 
 func (me *_IFileDialog) Close(hr errco.ERROR) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).Close, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).Close,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(hr), 0)
+		uintptr(hr))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -143,10 +142,10 @@ func (me *_IFileDialog) Close(hr errco.ERROR) {
 
 func (me *_IFileDialog) GetCurrentSelection() IShellItem {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetCurrentSelection, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetCurrentSelection,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIShellItem(com.NewIUnknown(ppvQueried))
@@ -157,10 +156,10 @@ func (me *_IFileDialog) GetCurrentSelection() IShellItem {
 
 func (me *_IFileDialog) GetFileName() string {
 	var pv uintptr
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetFileName, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetFileName,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&pv)), 0)
+		uintptr(unsafe.Pointer(&pv)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		defer win.HTASKMEM(pv).CoTaskMemFree()
@@ -173,10 +172,10 @@ func (me *_IFileDialog) GetFileName() string {
 
 func (me *_IFileDialog) GetFileTypeIndex() int {
 	var idx uint32
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetFileTypeIndex, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetFileTypeIndex,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&idx)), 0)
+		uintptr(unsafe.Pointer(&idx)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return int(idx)
@@ -187,10 +186,10 @@ func (me *_IFileDialog) GetFileTypeIndex() int {
 
 func (me *_IFileDialog) GetFolder() IShellItem {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetFolder, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetFolder,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIShellItem(com.NewIUnknown(ppvQueried))
@@ -201,10 +200,10 @@ func (me *_IFileDialog) GetFolder() IShellItem {
 
 func (me *_IFileDialog) GetOptions() shellco.FOS {
 	var fos shellco.FOS
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetOptions, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetOptions,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&fos)), 0)
+		uintptr(unsafe.Pointer(&fos)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return fos
@@ -215,10 +214,10 @@ func (me *_IFileDialog) GetOptions() shellco.FOS {
 
 func (me *_IFileDialog) GetResult() IShellItem {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetResult, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).GetResult,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIShellItem(com.NewIUnknown(ppvQueried))
@@ -235,10 +234,10 @@ func (me *_IFileDialog) GetResultDisplayName(sigdnName shellco.SIGDN) string {
 }
 
 func (me *_IFileDialog) SetClientGuid(guid *win.GUID) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetClientGuid, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetClientGuid,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(guid)), 0)
+		uintptr(unsafe.Pointer(guid)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -246,10 +245,10 @@ func (me *_IFileDialog) SetClientGuid(guid *win.GUID) {
 }
 
 func (me *_IFileDialog) SetFileName(name string) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileName, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileName,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(win.Str.ToNativePtr(name))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(name))))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -257,10 +256,10 @@ func (me *_IFileDialog) SetFileName(name string) {
 }
 
 func (me *_IFileDialog) SetFileNameLabel(label string) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileNameLabel, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileNameLabel,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(win.Str.ToNativePtr(label))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(label))))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -268,10 +267,10 @@ func (me *_IFileDialog) SetFileNameLabel(label string) {
 }
 
 func (me *_IFileDialog) SetFileTypeIndex(index int) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileTypeIndex, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileTypeIndex,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(index), 0)
+		uintptr(index))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -288,8 +287,8 @@ func (me *_IFileDialog) SetFileTypes(filterSpec []FilterSpec) {
 			})
 	}
 
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileTypes, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFileTypes,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(len(comdlgFiSp)),
 		uintptr(unsafe.Pointer(&comdlgFiSp[0])))
@@ -300,10 +299,10 @@ func (me *_IFileDialog) SetFileTypes(filterSpec []FilterSpec) {
 }
 
 func (me *_IFileDialog) SetFolder(si IShellItem) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFolder, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetFolder,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(si.Ptr())), 0)
+		uintptr(unsafe.Pointer(si.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -311,10 +310,10 @@ func (me *_IFileDialog) SetFolder(si IShellItem) {
 }
 
 func (me *_IFileDialog) SetOkButtonLabel(text string) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetOkButtonLabel, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetOkButtonLabel,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(win.Str.ToNativePtr(text))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(text))))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -322,10 +321,10 @@ func (me *_IFileDialog) SetOkButtonLabel(text string) {
 }
 
 func (me *_IFileDialog) SetOptions(fos shellco.FOS) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetOptions, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetOptions,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(fos), 0)
+		uintptr(fos))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -333,10 +332,10 @@ func (me *_IFileDialog) SetOptions(fos shellco.FOS) {
 }
 
 func (me *_IFileDialog) SetTitle(title string) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetTitle, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileDialog)(unsafe.Pointer(*me.Ptr())).SetTitle,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(win.Str.ToNativePtr(title))), 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(title))))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

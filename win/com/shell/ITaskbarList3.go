@@ -62,20 +62,20 @@ type _ITaskbarList3 struct{ ITaskbarList2 }
 //
 // Example:
 //
-//		taskbl := shell.NewITaskbarList3(
-//			com.CoCreateInstance(
-//				shellco.CLSID_TaskbarList, nil,
-//				comco.CLSCTX_INPROC_SERVER,
-//				shellco.IID_ITaskbarList3),
-//		)
-//		defer taskbl.Release()
+//	taskbl := shell.NewITaskbarList3(
+//		com.CoCreateInstance(
+//			shellco.CLSID_TaskbarList, nil,
+//			comco.CLSCTX_INPROC_SERVER,
+//			shellco.IID_ITaskbarList3),
+//	)
+//	defer taskbl.Release()
 func NewITaskbarList3(base com.IUnknown) ITaskbarList3 {
 	return &_ITaskbarList3{ITaskbarList2: NewITaskbarList2(base)}
 }
 
 func (me *_ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).RegisterTab, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).RegisterTab,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwndTab), uintptr(hwndMDI))
 
@@ -87,11 +87,11 @@ func (me *_ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) {
 func (me *_ITaskbarList3) SetOverlayIcon(
 	hWnd win.HWND, hIcon win.HICON, description string) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetOverlayIcon, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetOverlayIcon,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), uintptr(hIcon),
-		uintptr(unsafe.Pointer(win.Str.ToNativePtr(description))), 0, 0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(description))))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -99,8 +99,8 @@ func (me *_ITaskbarList3) SetOverlayIcon(
 }
 
 func (me *_ITaskbarList3) SetProgressState(hWnd win.HWND, flags shellco.TBPF) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetProgressState, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetProgressState,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), uintptr(flags))
 
@@ -112,10 +112,10 @@ func (me *_ITaskbarList3) SetProgressState(hWnd win.HWND, flags shellco.TBPF) {
 func (me *_ITaskbarList3) SetProgressValue(
 	hWnd win.HWND, completed, total uint64) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetProgressValue, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetProgressValue,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(hWnd), uintptr(completed), uintptr(total), 0, 0)
+		uintptr(hWnd), uintptr(completed), uintptr(total))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -123,8 +123,8 @@ func (me *_ITaskbarList3) SetProgressValue(
 }
 
 func (me *_ITaskbarList3) SetTabActive(hwndTab, hwndMDI win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetTabActive, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetTabActive,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwndTab), uintptr(hwndMDI))
 
@@ -134,8 +134,8 @@ func (me *_ITaskbarList3) SetTabActive(hwndTab, hwndMDI win.HWND) {
 }
 
 func (me *_ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetTabOrder, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetTabOrder,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwndTab), uintptr(hwndInsertBefore))
 
@@ -145,8 +145,8 @@ func (me *_ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore win.HWND) {
 }
 
 func (me *_ITaskbarList3) SetThumbnailClip(hWnd win.HWND, rcClip *win.RECT) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetThumbnailClip, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetThumbnailClip,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), uintptr(unsafe.Pointer(rcClip)))
 
@@ -156,8 +156,8 @@ func (me *_ITaskbarList3) SetThumbnailClip(hWnd win.HWND, rcClip *win.RECT) {
 }
 
 func (me *_ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, tip string) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetThumbnailTooltip, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).SetThumbnailTooltip,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwnd), uintptr(unsafe.Pointer(win.Str.ToNativePtr(tip))))
 
@@ -169,11 +169,10 @@ func (me *_ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, tip string) {
 func (me *_ITaskbarList3) ThumbBarAddButtons(
 	hWnd win.HWND, buttons []THUMBBUTTON) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).ThumbBarAddButtons, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).ThumbBarAddButtons,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(hWnd), uintptr(len(buttons)), uintptr(unsafe.Pointer(&buttons[0])),
-		0, 0)
+		uintptr(hWnd), uintptr(len(buttons)), uintptr(unsafe.Pointer(&buttons[0])))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -183,8 +182,8 @@ func (me *_ITaskbarList3) ThumbBarAddButtons(
 func (me *_ITaskbarList3) ThumbBarSetImageList(
 	hWnd win.HWND, hImgl win.HIMAGELIST) {
 
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).ThumbBarSetImageList, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).ThumbBarSetImageList,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hWnd), uintptr(hImgl))
 
@@ -196,11 +195,10 @@ func (me *_ITaskbarList3) ThumbBarSetImageList(
 func (me *_ITaskbarList3) ThumbBarUpdateButtons(
 	hWnd win.HWND, buttons []THUMBBUTTON) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).ThumbBarUpdateButtons, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).ThumbBarUpdateButtons,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(hWnd), uintptr(len(buttons)), uintptr(unsafe.Pointer(&buttons[0])),
-		0, 0)
+		uintptr(hWnd), uintptr(len(buttons)), uintptr(unsafe.Pointer(&buttons[0])))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -208,10 +206,10 @@ func (me *_ITaskbarList3) ThumbBarUpdateButtons(
 }
 
 func (me *_ITaskbarList3) UnregisterTab(hwndTab win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).UnregisterTab, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList3)(unsafe.Pointer(*me.Ptr())).UnregisterTab,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(hwndTab), 0)
+		uintptr(hwndTab))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

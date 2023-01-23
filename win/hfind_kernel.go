@@ -23,9 +23,9 @@ type HFIND HANDLE
 func FindFirstFile(fileName string,
 	findFileData *WIN32_FIND_DATA) (HFIND, bool, error) {
 
-	ret, _, err := syscall.Syscall(proc.FindFirstFile.Addr(), 2,
+	ret, _, err := syscall.SyscallN(proc.FindFirstFile.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))),
-		uintptr(unsafe.Pointer(findFileData)), 0)
+		uintptr(unsafe.Pointer(findFileData)))
 
 	if int(ret) == _INVALID_HANDLE_VALUE {
 		if wErr := errco.ERROR(err); wErr == errco.FILE_NOT_FOUND || wErr == errco.PATH_NOT_FOUND {
@@ -39,8 +39,8 @@ func FindFirstFile(fileName string,
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
 func (hFind HFIND) FindClose() {
-	ret, _, err := syscall.Syscall(proc.FindClose.Addr(), 1,
-		uintptr(hFind), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.FindClose.Addr(),
+		uintptr(hFind))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -50,8 +50,8 @@ func (hFind HFIND) FindClose() {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
 func (hFind HFIND) FindNextFile(findFileData *WIN32_FIND_DATA) (bool, error) {
-	ret, _, err := syscall.Syscall(proc.FindNextFile.Addr(), 2,
-		uintptr(hFind), uintptr(unsafe.Pointer(findFileData)), 0)
+	ret, _, err := syscall.SyscallN(proc.FindNextFile.Addr(),
+		uintptr(hFind), uintptr(unsafe.Pointer(findFileData)))
 
 	if ret == 0 {
 		if wErr := errco.ERROR(err); wErr == errco.NO_MORE_FILES {

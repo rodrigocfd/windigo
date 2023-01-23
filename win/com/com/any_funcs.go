@@ -20,21 +20,21 @@ import (
 //
 // Example:
 //
-//		clsId, _ := com.CLSIDFromProgID("Excel.Application")
+//	clsId, _ := com.CLSIDFromProgID("Excel.Application")
 //
-//		mainObj := com.CoCreateInstance(
-//			clsId, nil, comco.CLSCTX_SERVER, comco.IID_IUnknown)
-//		defer mainObj.Release()
+//	mainObj := com.CoCreateInstance(
+//		clsId, nil, comco.CLSCTX_SERVER, comco.IID_IUnknown)
+//	defer mainObj.Release()
 //
-//		excel := mainObj.QueryInterface(automco.IID_IDispatch)
-//		defer excel.Release()
+//	excel := mainObj.QueryInterface(automco.IID_IDispatch)
+//	defer excel.Release()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	var guid win.GUID
-	ret, _, _ := syscall.Syscall(proc.CLSIDFromProgID.Addr(), 2,
+	ret, _, _ := syscall.SyscallN(proc.CLSIDFromProgID.Addr(),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(progId))),
-		uintptr(unsafe.Pointer(&guid)), 0)
+		uintptr(unsafe.Pointer(&guid)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return co.CLSID(guid.String()), nil
@@ -52,13 +52,13 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 //
 // Example:
 //
-//		comObject := shell.NewITaskbarList(
-//			com.CoCreateInstance(
-//				shellco.CLSID_TaskbarList, nil,
-//				comco.CLSCTX_INPROC_SERVER,
-//				shellco.IID_ITaskbarList),
-//		)
-//		defer comObject.Release()
+//	comObject := shell.NewITaskbarList(
+//		com.CoCreateInstance(
+//			shellco.CLSID_TaskbarList, nil,
+//			comco.CLSCTX_INPROC_SERVER,
+//			shellco.IID_ITaskbarList),
+//	)
+//	defer comObject.Release()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
@@ -74,12 +74,12 @@ func CoCreateInstance(
 		pppvOuter = &ppvOuterBuf // we'll request the outer pointer
 	}
 
-	ret, _, _ := syscall.Syscall6(proc.CoCreateInstance.Addr(), 5,
+	ret, _, _ := syscall.SyscallN(proc.CoCreateInstance.Addr(),
 		uintptr(unsafe.Pointer(win.GuidFromClsid(rclsid))),
 		uintptr(unsafe.Pointer(pppvOuter)),
 		uintptr(dwClsContext),
 		uintptr(unsafe.Pointer(win.GuidFromIid(riid))),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		if iUnkOuter != nil {
@@ -98,8 +98,8 @@ func CoCreateInstance(
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 func CoInitializeEx(coInit comco.COINIT) {
-	ret, _, _ := syscall.Syscall(proc.CoInitializeEx.Addr(), 2,
-		0, uintptr(coInit), 0)
+	ret, _, _ := syscall.SyscallN(proc.CoInitializeEx.Addr(),
+		0, uintptr(coInit))
 	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
 		panic(hr)
 	}
@@ -107,7 +107,7 @@ func CoInitializeEx(coInit comco.COINIT) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
 func CoUninitialize() {
-	syscall.Syscall(proc.CoUninitialize.Addr(), 0, 0, 0, 0)
+	syscall.SyscallN(proc.CoUninitialize.Addr())
 }
 
 // This helper function returns true if the COM object is not nil, and contains
@@ -118,8 +118,8 @@ func IsObj(obj IUnknown) bool {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleinitialize
 func OleInitialize() {
-	ret, _, _ := syscall.Syscall(proc.OleInitialize.Addr(), 1,
-		0, 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.OleInitialize.Addr(),
+		0)
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
@@ -127,6 +127,5 @@ func OleInitialize() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleuninitialize
 func OleUninitialize() {
-	syscall.Syscall(proc.OleUninitialize.Addr(), 0,
-		0, 0, 0)
+	syscall.SyscallN(proc.OleUninitialize.Addr())
 }

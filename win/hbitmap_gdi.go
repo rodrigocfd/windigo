@@ -21,9 +21,9 @@ type HBITMAP HGDIOBJ
 func CreateBitmap(width, height int32,
 	numPlanes, bitCount uint32, bits *byte) HBITMAP {
 
-	ret, _, err := syscall.Syscall6(proc.CreateBitmap.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.CreateBitmap.Addr(),
 		uintptr(width), uintptr(height), uintptr(numPlanes), uintptr(bitCount),
-		uintptr(unsafe.Pointer(bits)), 0)
+		uintptr(unsafe.Pointer(bits)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -34,8 +34,8 @@ func CreateBitmap(width, height int32,
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmapindirect
 func CreateBitmapIndirect(bmp *BITMAP) HBITMAP {
-	ret, _, err := syscall.Syscall(proc.CreateBitmapIndirect.Addr(), 1,
-		uintptr(unsafe.Pointer(bmp)), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CreateBitmapIndirect.Addr(),
+		uintptr(unsafe.Pointer(bmp)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -49,7 +49,7 @@ func (hBmp HBITMAP) DeleteObject() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
 func (hBmp HBITMAP) GetObject(bmp *BITMAP) {
-	ret, _, err := syscall.Syscall(proc.GetObject.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.GetObject.Addr(),
 		uintptr(hBmp), unsafe.Sizeof(*bmp), uintptr(unsafe.Pointer(bmp)))
 	if ret == 0 {
 		panic(errco.ERROR(err))

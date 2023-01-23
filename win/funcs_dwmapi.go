@@ -13,8 +13,8 @@ import (
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmenablemmcss
 func DwmEnableMMCSS(enable bool) error {
-	ret, _, _ := syscall.Syscall(proc.DwmEnableMMCSS.Addr(), 1,
-		util.BoolToUintptr(enable), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DwmEnableMMCSS.Addr(),
+		util.BoolToUintptr(enable))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil
@@ -25,9 +25,7 @@ func DwmEnableMMCSS(enable bool) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmflush
 func DwmFlush() error {
-	ret, _, _ := syscall.Syscall(proc.DwmFlush.Addr(), 0,
-		0, 0, 0)
-
+	ret, _, _ := syscall.SyscallN(proc.DwmFlush.Addr())
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return nil
 	} else {
@@ -38,9 +36,8 @@ func DwmFlush() error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmgetcolorizationcolor
 func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool) {
 	bOpaqueBlend := int32(util.BoolToUintptr(isOpaqueBlend)) // BOOL
-	ret, _, _ := syscall.Syscall(proc.DwmGetColorizationColor.Addr(), 2,
-		uintptr(unsafe.Pointer(&color)), uintptr(unsafe.Pointer(&bOpaqueBlend)),
-		0)
+	ret, _, _ := syscall.SyscallN(proc.DwmGetColorizationColor.Addr(),
+		uintptr(unsafe.Pointer(&color)), uintptr(unsafe.Pointer(&bOpaqueBlend)))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
@@ -51,8 +48,8 @@ func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmiscompositionenabled
 func DwmIsCompositionEnabled() bool {
 	var pfEnabled int32 // BOOL
-	ret, _, _ := syscall.Syscall(proc.DwmIsCompositionEnabled.Addr(), 1,
-		uintptr(unsafe.Pointer(&pfEnabled)), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DwmIsCompositionEnabled.Addr(),
+		uintptr(unsafe.Pointer(&pfEnabled)))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}

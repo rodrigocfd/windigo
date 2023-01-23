@@ -34,13 +34,12 @@ func NewISequentialStream(base IUnknown) ISequentialStream {
 }
 
 func (me *_ISequentialStream) Read(buffer []byte) (numBytesRead uint32) {
-	ret, _, _ := syscall.Syscall6(
-		(*comvt.ISequentialStream)(unsafe.Pointer(*me.Ptr())).Read, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.ISequentialStream)(unsafe.Pointer(*me.Ptr())).Read,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&buffer[0])),
 		uintptr(len(buffer)),
-		uintptr(unsafe.Pointer(&numBytesRead)),
-		0, 0)
+		uintptr(unsafe.Pointer(&numBytesRead)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return
@@ -50,13 +49,12 @@ func (me *_ISequentialStream) Read(buffer []byte) (numBytesRead uint32) {
 }
 
 func (me *_ISequentialStream) Write(data []byte) (numBytesWritten uint32) {
-	ret, _, _ := syscall.Syscall6(
-		(*comvt.ISequentialStream)(unsafe.Pointer(*me.Ptr())).Write, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.ISequentialStream)(unsafe.Pointer(*me.Ptr())).Write,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&data[0])),
 		uintptr(len(data)),
-		uintptr(unsafe.Pointer(&numBytesWritten)),
-		0, 0)
+		uintptr(unsafe.Pointer(&numBytesWritten)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return

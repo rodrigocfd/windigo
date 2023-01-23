@@ -32,10 +32,9 @@ func NewIBindCtx(base IUnknown) IBindCtx {
 }
 
 func (me *_IBindCtx) ReleaseBoundObjects() {
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IBindCtx)(unsafe.Pointer(*me.Ptr())).ReleaseBoundObjects, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IBindCtx)(unsafe.Pointer(*me.Ptr())).ReleaseBoundObjects,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -43,11 +42,10 @@ func (me *_IBindCtx) ReleaseBoundObjects() {
 }
 
 func (me *_IBindCtx) RevokeObjectParam(key string) {
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IBindCtx)(unsafe.Pointer(*me.Ptr())).RevokeObjectParam, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IBindCtx)(unsafe.Pointer(*me.Ptr())).RevokeObjectParam,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(win.Str.ToNativePtr(key))),
-		0)
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(key))))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

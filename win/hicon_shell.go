@@ -19,8 +19,8 @@ import (
 func ExtractIconEx(fileName string) (largeIcons, smallIcons []HICON) {
 	lpszFile16 := Str.ToNativeSlice(fileName)
 	retrieveIdx := -1
-	ret, _, err := syscall.Syscall6(proc.ExtractIconEx.Addr(), 5,
-		uintptr(unsafe.Pointer(&lpszFile16[0])), uintptr(retrieveIdx), 0, 0, 0, 0)
+	ret, _, err := syscall.SyscallN(proc.ExtractIconEx.Addr(),
+		uintptr(unsafe.Pointer(&lpszFile16[0])), uintptr(retrieveIdx), 0, 0, 0)
 	if ret == _UINT_MAX {
 		panic(errco.ERROR(err))
 	}
@@ -29,11 +29,11 @@ func ExtractIconEx(fileName string) (largeIcons, smallIcons []HICON) {
 	largeIcons = make([]HICON, numIcons)
 	smallIcons = make([]HICON, numIcons)
 
-	ret, _, err = syscall.Syscall6(proc.ExtractIconEx.Addr(), 5,
+	ret, _, err = syscall.SyscallN(proc.ExtractIconEx.Addr(),
 		uintptr(unsafe.Pointer(&lpszFile16[0])), 0,
 		uintptr(unsafe.Pointer(&largeIcons[0])),
 		uintptr(unsafe.Pointer(&smallIcons[0])),
-		uintptr(numIcons), 0)
+		uintptr(numIcons))
 	runtime.KeepAlive(lpszFile16)
 	if ret == _UINT_MAX {
 		panic(errco.ERROR(err))

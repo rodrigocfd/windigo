@@ -37,26 +37,24 @@ func NewID2D1HwndRenderTarget(base com.IUnknown) ID2D1HwndRenderTarget {
 }
 
 func (me *_ID2D1HwndRenderTarget) CheckWindowState() d2d1co.WINDOW_STATE {
-	ret, _, _ := syscall.Syscall(
-		(*d2d1vt.ID2D1HwndRenderTarget)(unsafe.Pointer(*me.Ptr())).GetHwnd, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1HwndRenderTarget)(unsafe.Pointer(*me.Ptr())).GetHwnd,
+		uintptr(unsafe.Pointer(me.Ptr())))
 	return d2d1co.WINDOW_STATE(ret)
 }
 
 func (me *_ID2D1HwndRenderTarget) GetHwnd() win.HWND {
-	ret, _, _ := syscall.Syscall(
-		(*d2d1vt.ID2D1HwndRenderTarget)(unsafe.Pointer(*me.Ptr())).GetHwnd, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1HwndRenderTarget)(unsafe.Pointer(*me.Ptr())).GetHwnd,
+		uintptr(unsafe.Pointer(me.Ptr())))
 	return win.HWND(ret)
 }
 
 func (me *_ID2D1HwndRenderTarget) Resize(pixelSize SIZE_U) {
-	ret, _, _ := syscall.Syscall(
-		(*d2d1vt.ID2D1HwndRenderTarget)(unsafe.Pointer(*me.Ptr())).Resize, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1HwndRenderTarget)(unsafe.Pointer(*me.Ptr())).Resize,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&pixelSize)), 0)
+		uintptr(unsafe.Pointer(&pixelSize)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

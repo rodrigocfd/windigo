@@ -56,16 +56,16 @@ type _ListView struct {
 //
 // Example:
 //
-//		var owner ui.AnyParent // initialized somewhere
+//	var owner ui.AnyParent // initialized somewhere
 //
-//		myList := ui.NewListView(
-//			owner,
-//			ui.ListViewOpts(
-//				Position(win.POINT{X: 10, Y: 20}).
-//				Size(win.SIZE{Cx: 120}).
-//				CtrlExStyles(co.LVS_EX_FULLROWSELECT),
-//			),
-//		)
+//	myList := ui.NewListView(
+//		owner,
+//		ui.ListViewOpts(
+//			Position(win.POINT{X: 10, Y: 20}).
+//			Size(win.SIZE{Cx: 120}).
+//			CtrlExStyles(co.LVS_EX_FULLROWSELECT),
+//		),
+//	)
 func NewListView(parent AnyParent, opts *_ListViewO) ListView {
 	if opts == nil {
 		opts = ListViewOpts()

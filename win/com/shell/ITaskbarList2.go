@@ -29,20 +29,20 @@ type _ITaskbarList2 struct{ ITaskbarList }
 //
 // Example:
 //
-//		taskbl := shell.NewITaskbarList2(
-//			com.CoCreateInstance(
-//				shellco.CLSID_TaskbarList, nil,
-//				comco.CLSCTX_INPROC_SERVER,
-//				shellco.IID_ITaskbarList2),
-//		)
-//		defer taskbl.Release()
+//	taskbl := shell.NewITaskbarList2(
+//		com.CoCreateInstance(
+//			shellco.CLSID_TaskbarList, nil,
+//			comco.CLSCTX_INPROC_SERVER,
+//			shellco.IID_ITaskbarList2),
+//	)
+//	defer taskbl.Release()
 func NewITaskbarList2(base com.IUnknown) ITaskbarList2 {
 	return &_ITaskbarList2{ITaskbarList: NewITaskbarList(base)}
 }
 
 func (me *_ITaskbarList2) MarkFullscreenWindow(hwnd win.HWND, fullScreen bool) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList2)(unsafe.Pointer(*me.Ptr())).MarkFullscreenWindow, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList2)(unsafe.Pointer(*me.Ptr())).MarkFullscreenWindow,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwnd), util.BoolToUintptr(fullScreen))
 

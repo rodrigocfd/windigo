@@ -12,8 +12,8 @@ import (
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolorbrush
 func GetSysColorBrush(index co.COLOR) HBRUSH {
-	ret, _, err := syscall.Syscall(proc.GetSysColorBrush.Addr(), 1,
-		uintptr(index), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.GetSysColorBrush.Addr(),
+		uintptr(index))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

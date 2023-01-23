@@ -30,10 +30,10 @@ func NewIPersist(base IUnknown) IPersist {
 
 func (me *_IPersist) GetClassID() *win.GUID {
 	clsid := &win.GUID{}
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IPersist)(unsafe.Pointer(*me.Ptr())).GetClassID, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPersist)(unsafe.Pointer(*me.Ptr())).GetClassID,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(clsid)), 0)
+		uintptr(unsafe.Pointer(clsid)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return clsid

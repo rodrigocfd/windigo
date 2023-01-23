@@ -11,8 +11,8 @@ import (
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-duplicateicon
 func (hInst HINSTANCE) DuplicateIcon(hIcon HICON) HICON {
-	ret, _, err := syscall.Syscall(proc.DuplicateIcon.Addr(), 2,
-		uintptr(hInst), uintptr(hIcon), 0)
+	ret, _, err := syscall.SyscallN(proc.DuplicateIcon.Addr(),
+		uintptr(hInst), uintptr(hIcon))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

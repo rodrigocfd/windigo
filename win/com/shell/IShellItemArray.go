@@ -34,9 +34,9 @@ type IShellItemArray interface {
 	//
 	// Example:
 	//
-	//		var shia shell.IShellItemArray // initialized somewhere
+	//	var shia shell.IShellItemArray // initialized somewhere
 	//
-	//		fullPaths := shia.ListDisplayNames(shellco.SIGDN_FILESYSPATH)
+	//	fullPaths := shia.ListDisplayNames(shellco.SIGDN_FILESYSPATH)
 	ListDisplayNames(sigdnName shellco.SIGDN) []string
 }
 
@@ -51,8 +51,8 @@ func NewIShellItemArray(base com.IUnknown) IShellItemArray {
 
 func (me *_IShellItemArray) GetItemAt(index int) IShellItem {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IShellItemArray)(unsafe.Pointer(*me.Ptr())).GetItemAt, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IShellItemArray)(unsafe.Pointer(*me.Ptr())).GetItemAt,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(index), uintptr(unsafe.Pointer(&ppvQueried)))
 
@@ -65,8 +65,8 @@ func (me *_IShellItemArray) GetItemAt(index int) IShellItem {
 
 func (me *_IShellItemArray) GetCount() int {
 	var count uint32
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IShellItemArray)(unsafe.Pointer(*me.Ptr())).GetCount, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IShellItemArray)(unsafe.Pointer(*me.Ptr())).GetCount,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&count)), 0)
 

@@ -37,9 +37,9 @@ func NewID2D1RenderTarget(base com.IUnknown) ID2D1RenderTarget {
 }
 
 func (me *_ID2D1RenderTarget) BeginDraw() {
-	ret, _, _ := syscall.Syscall(
-		(*d2d1vt.ID2D1RenderTarget)(unsafe.Pointer(*me.Ptr())).BeginDraw, 1,
-		uintptr(unsafe.Pointer(me.Ptr())), 0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1RenderTarget)(unsafe.Pointer(*me.Ptr())).BeginDraw,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -47,8 +47,8 @@ func (me *_ID2D1RenderTarget) BeginDraw() {
 }
 
 func (me *_ID2D1RenderTarget) EndDraw() (tag1, tag2 uint64) {
-	ret, _, _ := syscall.Syscall(
-		(*d2d1vt.ID2D1RenderTarget)(unsafe.Pointer(*me.Ptr())).EndDraw, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1RenderTarget)(unsafe.Pointer(*me.Ptr())).EndDraw,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&tag1)), uintptr(unsafe.Pointer(&tag2)))
 
@@ -60,8 +60,8 @@ func (me *_ID2D1RenderTarget) EndDraw() (tag1, tag2 uint64) {
 }
 
 func (me *_ID2D1RenderTarget) Flush() (tag1, tag2 uint64) {
-	ret, _, _ := syscall.Syscall(
-		(*d2d1vt.ID2D1RenderTarget)(unsafe.Pointer(*me.Ptr())).Flush, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1RenderTarget)(unsafe.Pointer(*me.Ptr())).Flush,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&tag1)), uintptr(unsafe.Pointer(&tag2)))
 

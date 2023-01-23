@@ -30,11 +30,11 @@ type ITypeInfo interface {
 
 	// Example:
 	//
-	//		var info autom.ITypeInfo // initialized somewhere
-	//		var funDesc *autom.FUNCDESC
+	//	var info autom.ITypeInfo // initialized somewhere
+	//	var funDesc *autom.FUNCDESC
 	//
-	//		docum := info.GetDocumentation(funDesc.Memid)
-	//		fmt.Printf("Function name: %s\n", docum.Name)
+	//	docum := info.GetDocumentation(funDesc.Memid)
+	//	fmt.Printf("Function name: %s\n", docum.Name)
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdocumentation
 	GetDocumentation(memId MEMBERID) TypeDoc
@@ -43,16 +43,16 @@ type ITypeInfo interface {
 	//
 	// Example:
 	//
-	//		var info autom.ITypeInfo // initialized somewhere
-	//		var attr *autom.TYPEATTR
+	//	var info autom.ITypeInfo // initialized somewhere
+	//	var attr *autom.TYPEATTR
 	//
-	//		for i := 0; i < int(attr.CFuncs); i++ {
-	//			funDesc := info.GetFuncDesc(i)
-	//			defer info.ReleaseFuncDesc(funDesc)
+	//	for i := 0; i < int(attr.CFuncs); i++ {
+	//		funDesc := info.GetFuncDesc(i)
+	//		defer info.ReleaseFuncDesc(funDesc)
 	//
-	//			fmt.Printf("Member ID: %d, invoke kind: %d\n",
-	//				funDesc.Memid, funDesc.Invkind)
-	//		}
+	//		fmt.Printf("Member ID: %d, invoke kind: %d\n",
+	//			funDesc.Memid, funDesc.Invkind)
+	//	}
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getfuncdesc
 	GetFuncDesc(index int) *FUNCDESC
@@ -64,13 +64,13 @@ type ITypeInfo interface {
 	//
 	// Example:
 	//
-	//		var info autom.ITypeInfo // initialized somewhere
+	//	var info autom.ITypeInfo // initialized somewhere
 	//
-	//		attr := tyInfo.GetTypeAttr()
-	//		defer info.ReleaseTypeAttr(attr)
+	//	attr := tyInfo.GetTypeAttr()
+	//	defer info.ReleaseTypeAttr(attr)
 	//
-	//		fmt.Printf("Num funcs: %d, GUID: %s\n",
-	//			attr.CFuncs, attr.Guid.String())
+	//	fmt.Printf("Num funcs: %d, GUID: %s\n",
+	//		attr.CFuncs, attr.Guid.String())
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-gettypeattr
 	GetTypeAttr() *TYPEATTR
@@ -108,12 +108,11 @@ func (me *_ITypeInfo) AddressOfMember(
 	memberId MEMBERID, invokeKind automco.INVOKEKIND) uintptr {
 
 	var pv uintptr
-	ret, _, _ := syscall.Syscall6(
-		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).AddressOfMember, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).AddressOfMember,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(memberId), uintptr(invokeKind),
-		uintptr(unsafe.Pointer(&pv)),
-		0, 0)
+		uintptr(unsafe.Pointer(&pv)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return pv
@@ -134,13 +133,12 @@ func (me *_ITypeInfo) CreateInstance(
 		pppvOuter = &ppvOuterBuf // we'll request the outer pointer
 	}
 
-	ret, _, _ := syscall.Syscall6(
-		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).CreateInstance, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).CreateInstance,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(pppvOuter)),
 		uintptr(unsafe.Pointer(win.GuidFromIid(riid))),
-		uintptr(unsafe.Pointer(&ppvQueried)),
-		0, 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		if iUnkOuter != nil {
@@ -154,8 +152,8 @@ func (me *_ITypeInfo) CreateInstance(
 
 func (me *_ITypeInfo) GetDocumentation(memberId MEMBERID) TypeDoc {
 	var name, docString, helpContext, helpFile uintptr
-	ret, _, _ := syscall.Syscall6(
-		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetDocumentation, 6,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetDocumentation,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(memberId),
 		uintptr(unsafe.Pointer(&name)), uintptr(unsafe.Pointer(&docString)),
@@ -190,8 +188,8 @@ func (me *_ITypeInfo) GetDocumentation(memberId MEMBERID) TypeDoc {
 
 func (me *_ITypeInfo) GetFuncDesc(index int) *FUNCDESC {
 	var pv uintptr
-	ret, _, _ := syscall.Syscall(
-		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetFuncDesc, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetFuncDesc,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(index), uintptr(unsafe.Pointer(&pv)))
 
@@ -210,13 +208,12 @@ func (me *_ITypeInfo) GetIDsOfNames(names []string) []MEMBERID {
 
 	memberIds := make([]MEMBERID, len(names))
 
-	ret, _, _ := syscall.Syscall6(
-		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetTypeAttr, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetTypeAttr,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pNames[0])),
 		uintptr(len(names)),
-		uintptr(unsafe.Pointer(&memberIds[0])),
-		0, 0)
+		uintptr(unsafe.Pointer(&memberIds[0])))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return memberIds
@@ -227,8 +224,8 @@ func (me *_ITypeInfo) GetIDsOfNames(names []string) []MEMBERID {
 
 func (me *_ITypeInfo) GetTypeAttr() *TYPEATTR {
 	var pv uintptr
-	ret, _, _ := syscall.Syscall(
-		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetTypeAttr, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetTypeAttr,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pv)), 0)
 
@@ -241,8 +238,8 @@ func (me *_ITypeInfo) GetTypeAttr() *TYPEATTR {
 
 func (me *_ITypeInfo) GetVarDesc(index int) *VARDESC {
 	var pv uintptr
-	ret, _, _ := syscall.Syscall(
-		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetVarDesc, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetVarDesc,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(index), uintptr(unsafe.Pointer(&pv)))
 
@@ -280,10 +277,10 @@ func (me *_ITypeInfo) ListFunctions() []FuncDescResume {
 }
 
 func (me *_ITypeInfo) ReleaseFuncDesc(funcDesc *FUNCDESC) {
-	ret, _, _ := syscall.Syscall(
-		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).ReleaseFuncDesc, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).ReleaseFuncDesc,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(funcDesc)), 0)
+		uintptr(unsafe.Pointer(funcDesc)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
 		panic(hr)
@@ -291,10 +288,10 @@ func (me *_ITypeInfo) ReleaseFuncDesc(funcDesc *FUNCDESC) {
 }
 
 func (me *_ITypeInfo) ReleaseTypeAttr(typeAttr *TYPEATTR) {
-	ret, _, _ := syscall.Syscall(
-		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).ReleaseTypeAttr, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).ReleaseTypeAttr,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(typeAttr)), 0)
+		uintptr(unsafe.Pointer(typeAttr)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
 		panic(hr)
@@ -302,10 +299,10 @@ func (me *_ITypeInfo) ReleaseTypeAttr(typeAttr *TYPEATTR) {
 }
 
 func (me *_ITypeInfo) ReleaseVarDesc(varDesc *VARDESC) {
-	ret, _, _ := syscall.Syscall(
-		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).ReleaseVarDesc, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).ReleaseVarDesc,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(varDesc)), 0)
+		uintptr(unsafe.Pointer(varDesc)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK && hr != errco.S_FALSE {
 		panic(hr)

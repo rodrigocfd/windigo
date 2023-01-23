@@ -53,10 +53,10 @@ func NewIEnumFilters(base com.IUnknown) IEnumFilters {
 
 func (me *_IEnumFilters) Clone() IEnumFilters {
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Clone, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Clone,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppQueried)), 0)
+		uintptr(unsafe.Pointer(&ppQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIEnumFilters(com.NewIUnknown(ppQueried))
@@ -93,10 +93,10 @@ func (me *_IEnumFilters) GetAll() []IBaseFilter {
 
 func (me *_IEnumFilters) Next() (IBaseFilter, bool) {
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall6(
-		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Next, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Next,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		1, uintptr(unsafe.Pointer(&ppQueried)), 0, 0, 0)
+		1, uintptr(unsafe.Pointer(&ppQueried)), 0)
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIBaseFilter(com.NewIUnknown(ppQueried)), true
@@ -108,17 +108,16 @@ func (me *_IEnumFilters) Next() (IBaseFilter, bool) {
 }
 
 func (me *_IEnumFilters) Reset() {
-	syscall.Syscall(
-		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Reset, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	syscall.SyscallN(
+		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Reset,
+		uintptr(unsafe.Pointer(me.Ptr())))
 }
 
 func (me *_IEnumFilters) Skip(numFilters int) bool {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Skip, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IEnumFilters)(unsafe.Pointer(*me.Ptr())).Skip,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(uint32(numFilters)), 0)
+		uintptr(uint32(numFilters)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true

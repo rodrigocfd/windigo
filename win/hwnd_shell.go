@@ -11,6 +11,6 @@ import (
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragacceptfiles
 func (hWnd HWND) DragAcceptFiles(accept bool) {
-	syscall.Syscall(proc.DragAcceptFiles.Addr(), 2,
-		uintptr(hWnd), util.BoolToUintptr(accept), 0)
+	syscall.SyscallN(proc.DragAcceptFiles.Addr(),
+		uintptr(hWnd), util.BoolToUintptr(accept))
 }

@@ -15,8 +15,8 @@ import (
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea
 func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) {
-	ret, _, _ := syscall.Syscall(proc.DwmExtendFrameIntoClientArea.Addr(), 2,
-		uintptr(hWnd), uintptr(unsafe.Pointer(marginsInset)), 0)
+	ret, _, _ := syscall.SyscallN(proc.DwmExtendFrameIntoClientArea.Addr(),
+		uintptr(hWnd), uintptr(unsafe.Pointer(marginsInset)))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
@@ -24,13 +24,13 @@ func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) {
 
 // Example:
 //
-//		var hwnd win.HWND // initialized somewhere
+//	var hwnd win.HWND // initialized somewhere
 //
-//		isEnabled := hwnd.DwmGetWindowAttribute(
-//			co.DWMWA_GET_NCRENDERING_ENABLED).(bool)
+//	isEnabled := hwnd.DwmGetWindowAttribute(
+//		co.DWMWA_GET_NCRENDERING_ENABLED).(bool)
 //
-//		rect := hwnd.DwmGetWindowAttribute(
-//			co.DWMWA_GET_CAPTION_BUTTON_BOUNDS).(win.RECT)
+//	rect := hwnd.DwmGetWindowAttribute(
+//		co.DWMWA_GET_CAPTION_BUTTON_BOUNDS).(win.RECT)
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmgetwindowattribute
 func (hWnd HWND) DwmGetWindowAttribute(attr co.DWMWA_GET) interface{} {
@@ -56,9 +56,8 @@ func (hWnd HWND) DwmGetWindowAttribute(attr co.DWMWA_GET) interface{} {
 	}
 	defer runtime.KeepAlive(ptrRaw)
 
-	ret, _, _ := syscall.Syscall6(proc.DwmGetWindowAttribute.Addr(), 4,
-		uintptr(hWnd), uintptr(attr), uintptr(ptrRaw), cbSize,
-		0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DwmGetWindowAttribute.Addr(),
+		uintptr(hWnd), uintptr(attr), uintptr(ptrRaw), cbSize)
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
@@ -79,8 +78,8 @@ func (hWnd HWND) DwmGetWindowAttribute(attr co.DWMWA_GET) interface{} {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwminvalidateiconicbitmaps
 func (hWnd HWND) DwmInvalidateIconicBitmaps() {
-	ret, _, _ := syscall.Syscall(proc.DwmInvalidateIconicBitmaps.Addr(), 1,
-		uintptr(hWnd), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DwmInvalidateIconicBitmaps.Addr(),
+		uintptr(hWnd))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
@@ -90,9 +89,9 @@ func (hWnd HWND) DwmInvalidateIconicBitmaps() {
 func (hWnd HWND) DwmSetIconicLivePreviewBitmap(
 	hBmp HBITMAP, ptClient POINT, sitFlags co.DWM_SIT) {
 
-	ret, _, _ := syscall.Syscall6(proc.DwmSetIconicLivePreviewBitmap.Addr(), 4,
+	ret, _, _ := syscall.SyscallN(proc.DwmSetIconicLivePreviewBitmap.Addr(),
 		uintptr(hWnd), uintptr(hBmp), uintptr(unsafe.Pointer(&ptClient)),
-		uintptr(sitFlags), 0, 0)
+		uintptr(sitFlags))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
@@ -100,7 +99,7 @@ func (hWnd HWND) DwmSetIconicLivePreviewBitmap(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticonicthumbnail
 func (hWnd HWND) DwmSetIconicThumbnail(hBmp HBITMAP, sitFlags co.DWM_SIT) {
-	ret, _, _ := syscall.Syscall(proc.DwmSetIconicThumbnail.Addr(), 3,
+	ret, _, _ := syscall.SyscallN(proc.DwmSetIconicThumbnail.Addr(),
 		uintptr(hWnd), uintptr(hBmp), uintptr(sitFlags))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -109,13 +108,13 @@ func (hWnd HWND) DwmSetIconicThumbnail(hBmp HBITMAP, sitFlags co.DWM_SIT) {
 
 // Example:
 //
-//		var hwnd win.HWND // initialized somewhere
+//	var hwnd win.HWND // initialized somewhere
 //
-//		hwnd.DwmSetWindowAttribute(
-//			co.DWMWA_SET_NCRENDERING_POLICY, co.DWMNCRP_DISABLED)
+//	hwnd.DwmSetWindowAttribute(
+//		co.DWMWA_SET_NCRENDERING_POLICY, co.DWMNCRP_DISABLED)
 //
-//		hwnd.DwmSetWindowAttribute(
-//			co.DWMWA_SET_TRANSITIONS_FORCEDISABLED, true)
+//	hwnd.DwmSetWindowAttribute(
+//		co.DWMWA_SET_TRANSITIONS_FORCEDISABLED, true)
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmsetwindowattribute
 func (hWnd HWND) DwmSetWindowAttribute(attr co.DWMWA_SET, val interface{}) {
@@ -193,9 +192,8 @@ func (hWnd HWND) DwmSetWindowAttribute(attr co.DWMWA_SET, val interface{}) {
 		cbSize = 0
 	}
 
-	ret, _, _ := syscall.Syscall6(proc.DwmSetWindowAttribute.Addr(), 4,
-		uintptr(hWnd), uintptr(attr), uintptr(ptrRaw), cbSize,
-		0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DwmSetWindowAttribute.Addr(),
+		uintptr(hWnd), uintptr(attr), uintptr(ptrRaw), cbSize)
 	runtime.KeepAlive(ptrRaw)
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {

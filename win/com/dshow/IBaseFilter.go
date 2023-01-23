@@ -50,33 +50,33 @@ type _IBaseFilter struct{ IMediaFilter }
 //
 // Example for an Enhanced Video Renderer:
 //
-//		evh := dshow.NewIBaseFilter(
-//			com.CoCreateInstance(
-//				dshowco.CLSID_EnhancedVideoRenderer, nil,
-//				comco.CLSCTX_INPROC_SERVER,
-//				dshowco.IID_IBaseFilter),
-//		)
-//		defer evh.Release()
+//	evh := dshow.NewIBaseFilter(
+//		com.CoCreateInstance(
+//			dshowco.CLSID_EnhancedVideoRenderer, nil,
+//			comco.CLSCTX_INPROC_SERVER,
+//			dshowco.IID_IBaseFilter),
+//	)
+//	defer evh.Release()
 //
 // Example for a Video Media Renderer 9:
 //
-//		vmr9 := dshow.NewIBaseFilter(
-//			com.CoCreateInstance(
-//				dshowco.CLSID_VideoMixingRenderer9, nil,
-//				comco.CLSCTX_INPROC_SERVER,
-//				dshowco.IID_IBaseFilter),
-//		)
-//		defer vmr9.Release()
+//	vmr9 := dshow.NewIBaseFilter(
+//		com.CoCreateInstance(
+//			dshowco.CLSID_VideoMixingRenderer9, nil,
+//			comco.CLSCTX_INPROC_SERVER,
+//			dshowco.IID_IBaseFilter),
+//	)
+//	defer vmr9.Release()
 func NewIBaseFilter(base com.IUnknown) IBaseFilter {
 	return &_IBaseFilter{IMediaFilter: NewIMediaFilter(base)}
 }
 
 func (me *_IBaseFilter) EnumPins() IEnumPins {
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).EnumPins, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).EnumPins,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppQueried)), 0)
+		uintptr(unsafe.Pointer(&ppQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIEnumPins(com.NewIUnknown(ppQueried))
@@ -87,8 +87,8 @@ func (me *_IBaseFilter) EnumPins() IEnumPins {
 
 func (me *_IBaseFilter) FindPin(id string) (IPin, bool) {
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).FindPin, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).FindPin,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(id))),
 		uintptr(unsafe.Pointer(&ppQueried)))
@@ -103,8 +103,8 @@ func (me *_IBaseFilter) FindPin(id string) (IPin, bool) {
 }
 
 func (me *_IBaseFilter) JoinFilterGraph(graph IFilterGraph, name string) error {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).JoinFilterGraph, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).JoinFilterGraph,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(graph.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(name))))
@@ -117,10 +117,10 @@ func (me *_IBaseFilter) JoinFilterGraph(graph IFilterGraph, name string) error {
 }
 
 func (me *_IBaseFilter) QueryFilterInfo(info *FILTER_INFO) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).QueryFilterInfo, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).QueryFilterInfo,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(info)), 0)
+		uintptr(unsafe.Pointer(info)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -129,10 +129,10 @@ func (me *_IBaseFilter) QueryFilterInfo(info *FILTER_INFO) {
 
 func (me *_IBaseFilter) QueryVendorInfo() (string, bool) {
 	var pv uintptr
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).QueryVendorInfo, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IBaseFilter)(unsafe.Pointer(*me.Ptr())).QueryVendorInfo,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&pv)), 0)
+		uintptr(unsafe.Pointer(&pv)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		defer win.HTASKMEM(pv).CoTaskMemFree()

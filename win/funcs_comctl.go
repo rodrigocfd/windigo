@@ -14,13 +14,13 @@ import (
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
 func InitCommonControls() {
-	syscall.Syscall(proc.InitCommonControls.Addr(), 0, 0, 0, 0)
+	syscall.SyscallN(proc.InitCommonControls.Addr())
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrolsex
 func InitCommonControlsEx(icce *INITCOMMONCONTROLSEX) bool {
-	ret, _, _ := syscall.Syscall(proc.InitCommonControlsEx.Addr(), 1,
-		uintptr(unsafe.Pointer(icce)), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.InitCommonControlsEx.Addr(),
+		uintptr(unsafe.Pointer(icce)))
 	return ret != 0
 }
 
@@ -34,10 +34,9 @@ func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 	memPnButton := GlobalAlloc(co.GMEM_FIXED, 4) // sizeof(int)
 	defer memPnButton.GlobalFree()
 
-	ret, _, _ := syscall.Syscall6(proc.TaskDialogIndirect.Addr(), 4,
+	ret, _, _ := syscall.SyscallN(proc.TaskDialogIndirect.Addr(),
 		uintptr(unsafe.Pointer(&serialized[0])),
-		uintptr(unsafe.Pointer(memPnButton)),
-		0, 0, 0, 0)
+		uintptr(unsafe.Pointer(memPnButton)))
 
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {
 		panic(wErr)

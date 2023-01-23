@@ -36,8 +36,8 @@ func NewIFileSourceFilter(base com.IUnknown) IFileSourceFilter {
 
 func (me *_IFileSourceFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 	var pv uintptr
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFileSourceFilter)(unsafe.Pointer(*me.Ptr())).GetCurFile, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFileSourceFilter)(unsafe.Pointer(*me.Ptr())).GetCurFile,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pv)), uintptr(unsafe.Pointer(mt)))
 
@@ -53,8 +53,8 @@ func (me *_IFileSourceFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 }
 
 func (me *_IFileSourceFilter) Load(fileName string, mt *AM_MEDIA_TYPE) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFileSourceFilter)(unsafe.Pointer(*me.Ptr())).Load, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFileSourceFilter)(unsafe.Pointer(*me.Ptr())).Load,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(mt)))

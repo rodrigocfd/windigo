@@ -46,8 +46,8 @@ func (me *_IDropTarget) DragEnter(
 	dataObj IDataObject, keyState co.MK,
 	pt win.POINT, effect *shellco.DROPEFFECT) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*shellvt.IDropTarget)(unsafe.Pointer(*me.Ptr())).DragEnter, 6,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDropTarget)(unsafe.Pointer(*me.Ptr())).DragEnter,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(dataObj.Ptr())),
 		uintptr(keyState), uintptr(pt.X), uintptr(pt.Y),
@@ -59,10 +59,9 @@ func (me *_IDropTarget) DragEnter(
 }
 
 func (me *_IDropTarget) DragLeave() {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDropTarget)(unsafe.Pointer(*me.Ptr())).DragLeave, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDropTarget)(unsafe.Pointer(*me.Ptr())).DragLeave,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -72,11 +71,11 @@ func (me *_IDropTarget) DragLeave() {
 func (me *_IDropTarget) DragOver(
 	keyState co.MK, pt win.POINT, effect *shellco.DROPEFFECT) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*shellvt.IDropTarget)(unsafe.Pointer(*me.Ptr())).DragOver, 5,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDropTarget)(unsafe.Pointer(*me.Ptr())).DragOver,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(keyState), uintptr(pt.X), uintptr(pt.Y),
-		uintptr(unsafe.Pointer(effect)), 0)
+		uintptr(unsafe.Pointer(effect)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -87,8 +86,8 @@ func (me *_IDropTarget) Drop(
 	dataObj IDataObject, keyState co.MK,
 	pt win.POINT, effect *shellco.DROPEFFECT) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*shellvt.IDropTarget)(unsafe.Pointer(*me.Ptr())).Drop, 6,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDropTarget)(unsafe.Pointer(*me.Ptr())).Drop,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(dataObj.Ptr())),
 		uintptr(keyState), uintptr(pt.X), uintptr(pt.Y),

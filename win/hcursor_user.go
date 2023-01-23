@@ -24,8 +24,8 @@ func (hCursor HCURSOR) CopyCursor() HCURSOR {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycursor
 func (hCursor HCURSOR) DestroyCursor() {
-	ret, _, err := syscall.Syscall(proc.DestroyCursor.Addr(), 1,
-		uintptr(hCursor), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.DestroyCursor.Addr(),
+		uintptr(hCursor))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -33,8 +33,8 @@ func (hCursor HCURSOR) DestroyCursor() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setsystemcursor
 func (hCursor HCURSOR) SetSystemCursor(id co.OCR) {
-	ret, _, err := syscall.Syscall(proc.SetSystemCursor.Addr(), 2,
-		uintptr(hCursor), uintptr(id), 0)
+	ret, _, err := syscall.SyscallN(proc.SetSystemCursor.Addr(),
+		uintptr(hCursor), uintptr(id))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

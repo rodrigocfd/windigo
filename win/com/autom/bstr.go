@@ -20,8 +20,8 @@ type BSTR uintptr
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysallocstring
 func SysAllocString(s string) BSTR {
-	ret, _, _ := syscall.Syscall(proc.SysAllocString.Addr(), 1,
-		uintptr(unsafe.Pointer(win.Str.ToNativePtr(s))), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.SysAllocString.Addr(),
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(s))))
 	if ret == 0 {
 		panic("SysAllocString() failed.")
 	}
@@ -30,8 +30,8 @@ func SysAllocString(s string) BSTR {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysfreestring
 func (bstr BSTR) SysFreeString() {
-	syscall.Syscall(proc.SysFreeString.Addr(), 1,
-		uintptr(bstr), 0, 0)
+	syscall.SyscallN(proc.SysFreeString.Addr(),
+		uintptr(bstr))
 }
 
 // ⚠️ You must defer BSTR.SysFreeString(), unless you call
@@ -39,8 +39,8 @@ func (bstr BSTR) SysFreeString() {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysreallocstring
 func (bstr BSTR) SysReAllocString(s string) BSTR {
-	ret, _, _ := syscall.Syscall(proc.SysReAllocString.Addr(), 2,
-		uintptr(bstr), uintptr(unsafe.Pointer(win.Str.ToNativePtr(s))), 0)
+	ret, _, _ := syscall.SyscallN(proc.SysReAllocString.Addr(),
+		uintptr(bstr), uintptr(unsafe.Pointer(win.Str.ToNativePtr(s))))
 	if ret == 0 {
 		panic("SysReAllocString() failed.")
 	}

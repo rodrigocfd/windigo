@@ -27,22 +27,22 @@ type _IFileSaveDialog struct{ IFileDialog }
 //
 // Example:
 //
-//		fsd := shell.NewIFileSaveDialog(
-//			com.CoCreateInstance(
-//				shellco.CLSID_FileSaveDialog, nil,
-//				comco.CLSCTX_INPROC_SERVER,
-//				shellco.IID_IFileSaveDialog),
-//		)
-//		defer fsd.Release()
+//	fsd := shell.NewIFileSaveDialog(
+//		com.CoCreateInstance(
+//			shellco.CLSID_FileSaveDialog, nil,
+//			comco.CLSCTX_INPROC_SERVER,
+//			shellco.IID_IFileSaveDialog),
+//	)
+//	defer fsd.Release()
 func NewIFileSaveDialog(base com.IUnknown) IFileSaveDialog {
 	return &_IFileSaveDialog{IFileDialog: NewIFileDialog(base)}
 }
 
 func (me *_IFileSaveDialog) SetSaveAsItem(si IShellItem) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileSaveDialog)(unsafe.Pointer(*me.Ptr())).SetSaveAsItem, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileSaveDialog)(unsafe.Pointer(*me.Ptr())).SetSaveAsItem,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(si.Ptr())), 0)
+		uintptr(unsafe.Pointer(si.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

@@ -20,10 +20,9 @@ type HRGN HGDIOBJ
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createellipticrgn
 func CreateEllipticRgn(boundTopLeft, boundBottomRight POINT) HRGN {
-	ret, _, err := syscall.Syscall6(proc.CreateEllipticRgn.Addr(), 4,
+	ret, _, err := syscall.SyscallN(proc.CreateEllipticRgn.Addr(),
 		uintptr(boundTopLeft.X), uintptr(boundTopLeft.Y),
-		uintptr(boundBottomRight.X), uintptr(boundBottomRight.Y),
-		0, 0)
+		uintptr(boundBottomRight.X), uintptr(boundBottomRight.Y))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -34,8 +33,8 @@ func CreateEllipticRgn(boundTopLeft, boundBottomRight POINT) HRGN {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
 func CreateRectRgnIndirect(rc *RECT) HRGN {
-	ret, _, err := syscall.Syscall(proc.CreateRectRgnIndirect.Addr(), 1,
-		uintptr(unsafe.Pointer(rc)), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CreateRectRgnIndirect.Addr(),
+		uintptr(unsafe.Pointer(rc)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -46,7 +45,7 @@ func CreateRectRgnIndirect(rc *RECT) HRGN {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createroundrectrgn
 func CreateRoundRectRgn(topLeft, bottomRight POINT, szEllipse SIZE) HRGN {
-	ret, _, err := syscall.Syscall6(proc.CreateRoundRectRgn.Addr(), 6,
+	ret, _, err := syscall.SyscallN(proc.CreateRoundRectRgn.Addr(),
 		uintptr(topLeft.X), uintptr(topLeft.Y),
 		uintptr(bottomRight.X), uintptr(bottomRight.Y),
 		uintptr(szEllipse.Cx), uintptr(szEllipse.Cy))
@@ -65,8 +64,8 @@ func (hRgn HRGN) DeleteObject() {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
 func (hRgn HRGN) CombineRgn(hrgnSrc1, hrgnSrc2 HRGN, mode co.RGN) co.REGION {
-	ret, _, err := syscall.Syscall6(proc.CombineRgn.Addr(), 4,
-		uintptr(hRgn), uintptr(hrgnSrc1), uintptr(hrgnSrc2), uintptr(mode), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CombineRgn.Addr(),
+		uintptr(hRgn), uintptr(hrgnSrc1), uintptr(hrgnSrc2), uintptr(mode))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -75,7 +74,7 @@ func (hRgn HRGN) CombineRgn(hrgnSrc1, hrgnSrc2 HRGN, mode co.RGN) co.REGION {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-offsetrgn
 func (hRgn HRGN) OffsetRgn(x, y int32) co.REGION {
-	ret, _, err := syscall.Syscall(proc.OffsetRgn.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.OffsetRgn.Addr(),
 		uintptr(hRgn), uintptr(x), uintptr(y))
 	if ret == 0 {
 		panic(errco.ERROR(err))

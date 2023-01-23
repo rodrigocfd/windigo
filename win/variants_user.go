@@ -14,11 +14,11 @@ import (
 //
 // Example:
 //
-//		clsName := win.ClassNameStr("FOO")
+//	clsName := win.ClassNameStr("FOO")
 //
-//		if s, ok := clsName.Str(); ok {
-//			println(s)
-//		}
+//	if s, ok := clsName.Str(); ok {
+//		println(s)
+//	}
 type ClassName struct {
 	curType uint8  // 0: none
 	atom    ATOM   // 1
@@ -70,11 +70,11 @@ func (me *ClassName) raw() (uintptr, *uint16) { // pointer must be kept alive
 //
 // Example:
 //
-//		curId := win.CursorResIdc(co.IDC_ARROW)
+//	curId := win.CursorResIdc(co.IDC_ARROW)
 //
-//		if idc, ok := curId.Idc(); ok {
-//			println(idc)
-//		}
+//	if idc, ok := curId.Idc(); ok {
+//		println(idc)
+//	}
 type CursorRes struct {
 	curType uint8
 	idc     co.IDC // 1
@@ -130,11 +130,11 @@ func (me *CursorRes) raw() (uintptr, *uint16) { // pointer must be kept alive
 //
 // Example:
 //
-//		icoId := win.IconResIdi(co.IDI_HAND)
+//	icoId := win.IconResIdi(co.IDI_HAND)
 //
-//		if idi, ok := icoId.Idi(); ok {
-//			println(idi)
-//		}
+//	if idi, ok := icoId.Idi(); ok {
+//		println(idi)
+//	}
 type IconRes struct {
 	curType uint8
 	idi     co.IDI // 1
@@ -191,11 +191,11 @@ func (me *IconRes) raw() (uintptr, *uint16) { // pointer must be kept alive
 //
 // Example:
 //
-//		item := win.MenuItemPos(2)
+//	item := win.MenuItemPos(2)
 //
-//		if pos, ok := item.Pos(); ok {
-//			println(pos)
-//		}
+//	if pos, ok := item.Pos(); ok {
+//		println(pos)
+//	}
 type MenuItem struct {
 	curType uint8
 	n       uint16 // 1: cmd, 2: pos
@@ -240,11 +240,11 @@ func (me *MenuItem) raw() (uintptr, co.MF) {
 //
 // Example:
 //
-//		resId := win.ResIdInt(0x400)
+//	resId := win.ResIdInt(0x400)
 //
-//		if id, ok := resId.Id(); ok {
-//			println(id)
-//		}
+//	if id, ok := resId.Id(); ok {
+//		println(id)
+//	}
 type ResId struct {
 	curType uint8
 	id      uint16 // 1

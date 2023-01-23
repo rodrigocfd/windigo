@@ -15,9 +15,8 @@ import (
 func (hWnd HWND) DefSubclassProc(
 	msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 
-	ret, _, _ := syscall.Syscall6(proc.DefSubclassProc.Addr(), 4,
-		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DefSubclassProc.Addr(),
+		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam))
 	return ret
 }
 
@@ -25,7 +24,7 @@ func (hWnd HWND) DefSubclassProc(
 func (hWnd HWND) RemoveWindowSubclass(
 	subclassProc uintptr, idSubclass uint32) {
 
-	ret, _, err := syscall.Syscall(proc.RemoveWindowSubclass.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.RemoveWindowSubclass.Addr(),
 		uintptr(hWnd), subclassProc, uintptr(idSubclass))
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -36,9 +35,8 @@ func (hWnd HWND) RemoveWindowSubclass(
 func (hWnd HWND) SetWindowSubclass(
 	subclassProc uintptr, idSubclass uint32, refData unsafe.Pointer) {
 
-	ret, _, err := syscall.Syscall6(proc.SetWindowSubclass.Addr(), 4,
-		uintptr(hWnd), subclassProc, uintptr(idSubclass), uintptr(refData),
-		0, 0)
+	ret, _, err := syscall.SyscallN(proc.SetWindowSubclass.Addr(),
+		uintptr(hWnd), subclassProc, uintptr(idSubclass), uintptr(refData))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -51,13 +49,13 @@ func (hWnd HWND) TaskDialog(
 	commonButtons co.TDCBF, icon co.TD_ICON) co.ID {
 
 	var pnButton int32
-	ret, _, _ := syscall.Syscall9(proc.TaskDialog.Addr(), 8,
+	ret, _, _ := syscall.SyscallN(proc.TaskDialog.Addr(),
 		uintptr(hWnd), uintptr(hInstance),
 		uintptr(windowTitle.Raw()),
 		uintptr(mainInstruction.Raw()),
 		uintptr(content.Raw()),
 		uintptr(commonButtons), uintptr(icon),
-		uintptr(unsafe.Pointer(&pnButton)), 0)
+		uintptr(unsafe.Pointer(&pnButton)))
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {
 		panic(wErr)
 	}

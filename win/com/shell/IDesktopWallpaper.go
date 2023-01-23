@@ -69,22 +69,22 @@ type _IDesktopWallpaper struct{ com.IUnknown }
 //
 // Example:
 //
-//		deskWp := shell.NewIDesktopWallpaper(
-//			com.CoCreateInstance(
-//				shellco.CLSID_DesktopWallpaper, nil,
-//				comco.CLSCTX_LOCAL_SERVER,
-//				shellco.IID_IDesktopWallpaper),
-//		)
-//		defer deskWp.Release()
+//	deskWp := shell.NewIDesktopWallpaper(
+//		com.CoCreateInstance(
+//			shellco.CLSID_DesktopWallpaper, nil,
+//			comco.CLSCTX_LOCAL_SERVER,
+//			shellco.IID_IDesktopWallpaper),
+//	)
+//	defer deskWp.Release()
 func NewIDesktopWallpaper(base com.IUnknown) IDesktopWallpaper {
 	return &_IDesktopWallpaper{IUnknown: base}
 }
 
 func (me *_IDesktopWallpaper) AdvanceSlideshow(direction shellco.DSD) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).AdvanceSlideshow, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).AdvanceSlideshow,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(direction), 0)
+		uintptr(direction))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -92,10 +92,10 @@ func (me *_IDesktopWallpaper) AdvanceSlideshow(direction shellco.DSD) {
 }
 
 func (me *_IDesktopWallpaper) Enable(enable bool) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).Enable, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).Enable,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		util.BoolToUintptr(enable), 0)
+		util.BoolToUintptr(enable))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -104,10 +104,10 @@ func (me *_IDesktopWallpaper) Enable(enable bool) {
 
 func (me *_IDesktopWallpaper) GetBackgroundColor() win.COLORREF {
 	var color win.COLORREF
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetBackgroundColor, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetBackgroundColor,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&color)), 0)
+		uintptr(unsafe.Pointer(&color)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return color
@@ -118,8 +118,8 @@ func (me *_IDesktopWallpaper) GetBackgroundColor() win.COLORREF {
 
 func (me *_IDesktopWallpaper) GetMonitorDevicePathAt(monitorIndex int) string {
 	var pv uintptr
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetMonitorDevicePathAt, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetMonitorDevicePathAt,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(monitorIndex), uintptr(unsafe.Pointer(&pv)))
 
@@ -134,10 +134,10 @@ func (me *_IDesktopWallpaper) GetMonitorDevicePathAt(monitorIndex int) string {
 
 func (me *_IDesktopWallpaper) GetMonitorDevicePathCount() int {
 	var count uint32
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetMonitorDevicePathCount, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetMonitorDevicePathCount,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&count)), 0)
+		uintptr(unsafe.Pointer(&count)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return int(count)
@@ -148,8 +148,8 @@ func (me *_IDesktopWallpaper) GetMonitorDevicePathCount() int {
 
 func (me *_IDesktopWallpaper) GetMonitorRECT(monitorId string) win.RECT {
 	var rc win.RECT
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetMonitorRECT, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetMonitorRECT,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(monitorId))),
 		uintptr(unsafe.Pointer(&rc)))
@@ -163,10 +163,10 @@ func (me *_IDesktopWallpaper) GetMonitorRECT(monitorId string) win.RECT {
 
 func (me *_IDesktopWallpaper) GetPosition() shellco.DWPOS {
 	var pos shellco.DWPOS
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetPosition, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetPosition,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&pos)), 0)
+		uintptr(unsafe.Pointer(&pos)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return pos
@@ -177,8 +177,8 @@ func (me *_IDesktopWallpaper) GetPosition() shellco.DWPOS {
 
 func (me *_IDesktopWallpaper) GetSlideshowOptions() (opts shellco.DSO, msTransition int) {
 	var transition uint32
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetSlideshowOptions, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetSlideshowOptions,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&opts)), uintptr(unsafe.Pointer(&transition)))
 
@@ -191,10 +191,10 @@ func (me *_IDesktopWallpaper) GetSlideshowOptions() (opts shellco.DSO, msTransit
 
 func (me *_IDesktopWallpaper) GetStatus() shellco.DSS {
 	var status shellco.DSS
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetStatus, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetStatus,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&status)), 0)
+		uintptr(unsafe.Pointer(&status)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return status
@@ -205,8 +205,8 @@ func (me *_IDesktopWallpaper) GetStatus() shellco.DSS {
 
 func (me *_IDesktopWallpaper) GetWallpaper(monitorId win.StrOpt) string {
 	var pv uintptr
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetWallpaper, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).GetWallpaper,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(monitorId.Raw()), uintptr(unsafe.Pointer(&pv)))
 
@@ -220,10 +220,10 @@ func (me *_IDesktopWallpaper) GetWallpaper(monitorId win.StrOpt) string {
 }
 
 func (me *_IDesktopWallpaper) SetBackgroundColor(color win.COLORREF) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).SetBackgroundColor, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).SetBackgroundColor,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(color), 0)
+		uintptr(color))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -231,10 +231,10 @@ func (me *_IDesktopWallpaper) SetBackgroundColor(color win.COLORREF) {
 }
 
 func (me *_IDesktopWallpaper) SetPosition(position shellco.DWPOS) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).SetPosition, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).SetPosition,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(position), 0)
+		uintptr(position))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -245,8 +245,8 @@ func (me *_IDesktopWallpaper) SetSlideshowOptions(
 	opts shellco.DSO,
 	msTransition int) {
 
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).SetSlideshowOptions, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).SetSlideshowOptions,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(opts), uintptr(msTransition))
 
@@ -259,8 +259,8 @@ func (me *_IDesktopWallpaper) SetWallpaper(
 	monitorId win.StrOpt,
 	imagePath string) {
 
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).SetWallpaper, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IDesktopWallpaper)(unsafe.Pointer(*me.Ptr())).SetWallpaper,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(monitorId.Raw()),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(imagePath))))

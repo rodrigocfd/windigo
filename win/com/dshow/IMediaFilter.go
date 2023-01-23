@@ -44,8 +44,8 @@ func NewIMediaFilter(base com.IUnknown) IMediaFilter {
 
 func (me *_IMediaFilter) GetState(msTimeout int) (dshowco.FILTER_STATE, error) {
 	var state dshowco.FILTER_STATE
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaFilter)(unsafe.Pointer(*me.Ptr())).GetState, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaFilter)(unsafe.Pointer(*me.Ptr())).GetState,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(int32(msTimeout)), uintptr(unsafe.Pointer(&state)))
 
@@ -59,10 +59,9 @@ func (me *_IMediaFilter) GetState(msTimeout int) (dshowco.FILTER_STATE, error) {
 }
 
 func (me *_IMediaFilter) Pause() bool {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaFilter)(unsafe.Pointer(*me.Ptr())).Pause, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaFilter)(unsafe.Pointer(*me.Ptr())).Pause,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
@@ -75,10 +74,10 @@ func (me *_IMediaFilter) Pause() bool {
 
 func (me *_IMediaFilter) Run(start time.Duration) bool {
 	iStart := util.DurationToNano100(start)
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaFilter)(unsafe.Pointer(*me.Ptr())).Run, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaFilter)(unsafe.Pointer(*me.Ptr())).Run,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(iStart), 0)
+		uintptr(iStart))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
@@ -90,10 +89,9 @@ func (me *_IMediaFilter) Run(start time.Duration) bool {
 }
 
 func (me *_IMediaFilter) Stop() bool {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IMediaFilter)(unsafe.Pointer(*me.Ptr())).Stop, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IMediaFilter)(unsafe.Pointer(*me.Ptr())).Stop,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true

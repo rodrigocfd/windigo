@@ -20,8 +20,8 @@ type HBRUSH HGDIOBJ
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbrushindirect
 func CreateBrushIndirect(lb *LOGBRUSH) HBRUSH {
-	ret, _, err := syscall.Syscall(proc.CreateBrushIndirect.Addr(), 1,
-		uintptr(unsafe.Pointer(lb)), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CreateBrushIndirect.Addr(),
+		uintptr(unsafe.Pointer(lb)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -32,8 +32,8 @@ func CreateBrushIndirect(lb *LOGBRUSH) HBRUSH {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createhatchbrush
 func CreateHatchBrush(hatch co.HS, color COLORREF) HBRUSH {
-	ret, _, err := syscall.Syscall(proc.CreateHatchBrush.Addr(), 2,
-		uintptr(hatch), uintptr(color), 0)
+	ret, _, err := syscall.SyscallN(proc.CreateHatchBrush.Addr(),
+		uintptr(hatch), uintptr(color))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -44,8 +44,8 @@ func CreateHatchBrush(hatch co.HS, color COLORREF) HBRUSH {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpatternbrush
 func CreatePatternBrush(hBmp HBITMAP) HBRUSH {
-	ret, _, err := syscall.Syscall(proc.CreatePatternBrush.Addr(), 1,
-		uintptr(hBmp), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CreatePatternBrush.Addr(),
+		uintptr(hBmp))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -56,8 +56,8 @@ func CreatePatternBrush(hBmp HBITMAP) HBRUSH {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createsolidbrush
 func CreateSolidBrush(color COLORREF) HBRUSH {
-	ret, _, err := syscall.Syscall(proc.CreateSolidBrush.Addr(), 1,
-		uintptr(color), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CreateSolidBrush.Addr(),
+		uintptr(color))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -77,7 +77,7 @@ func (hBrush HBRUSH) DeleteObject() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
 func (hBrush HBRUSH) GetObject(lb *LOGBRUSH) {
-	ret, _, err := syscall.Syscall(proc.GetObject.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.GetObject.Addr(),
 		uintptr(hBrush), unsafe.Sizeof(*lb), uintptr(unsafe.Pointer(lb)))
 	if ret == 0 {
 		panic(errco.ERROR(err))

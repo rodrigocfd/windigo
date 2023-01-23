@@ -19,8 +19,8 @@ type HGDIOBJ HANDLE
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hGdiObj HGDIOBJ) DeleteObject() {
-	ret, _, err := syscall.Syscall(proc.DeleteObject.Addr(), 1,
-		uintptr(hGdiObj), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.DeleteObject.Addr(),
+		uintptr(hGdiObj))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

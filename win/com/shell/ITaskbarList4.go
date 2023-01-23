@@ -29,13 +29,13 @@ type _ITaskbarList4 struct{ ITaskbarList3 }
 //
 // Example:
 //
-//		taskbl := shell.NewITaskbarList4(
-//			com.CoCreateInstance(
-//				shellco.CLSID_TaskbarList, nil,
-//				comco.CLSCTX_INPROC_SERVER,
-//				shellco.IID_ITaskbarList4),
-//		)
-//		defer taskbl.Release()
+//	taskbl := shell.NewITaskbarList4(
+//		com.CoCreateInstance(
+//			shellco.CLSID_TaskbarList, nil,
+//			comco.CLSCTX_INPROC_SERVER,
+//			shellco.IID_ITaskbarList4),
+//	)
+//	defer taskbl.Release()
 func NewITaskbarList4(base com.IUnknown) ITaskbarList4 {
 	return &_ITaskbarList4{ITaskbarList3: NewITaskbarList3(base)}
 }
@@ -43,8 +43,8 @@ func NewITaskbarList4(base com.IUnknown) ITaskbarList4 {
 func (me *_ITaskbarList4) SetProperties(
 	hwndTab win.HWND, flags shellco.STPFLAG) {
 
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList4)(unsafe.Pointer(*me.Ptr())).SetTabProperties, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList4)(unsafe.Pointer(*me.Ptr())).SetTabProperties,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hwndTab), uintptr(flags))
 

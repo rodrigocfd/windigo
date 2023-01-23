@@ -50,11 +50,11 @@ func D2D1CreateFactory(
 	}
 
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall6(proc.D2D1CreateFactory.Addr(), 4,
+	ret, _, _ := syscall.SyscallN(proc.D2D1CreateFactory.Addr(),
 		uintptr(factoryType),
 		uintptr(unsafe.Pointer(win.GuidFromIid(d2d1co.IID_ID2D1Factory))),
 		uintptr(unsafe.Pointer(&options)),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0, 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewID2D1Factory(com.NewIUnknown(ppvQueried))
@@ -68,12 +68,12 @@ func (me *_ID2D1Factory) CreateHwndRenderTarget(
 	hwndTargetProps *HWND_RENDER_TARGET_PROPERTIES) ID2D1HwndRenderTarget {
 
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall6(
-		(*d2d1vt.ID2D1Factory)(unsafe.Pointer(*me.Ptr())).CreateHwndRenderTarget, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1Factory)(unsafe.Pointer(*me.Ptr())).CreateHwndRenderTarget,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(targetProps)),
 		uintptr(unsafe.Pointer(hwndTargetProps)),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0, 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewID2D1HwndRenderTarget(com.NewIUnknown(ppvQueried))
@@ -83,10 +83,9 @@ func (me *_ID2D1Factory) CreateHwndRenderTarget(
 }
 
 func (me *_ID2D1Factory) ReloadSystemMetrics() {
-	ret, _, _ := syscall.Syscall(
-		(*d2d1vt.ID2D1Factory)(unsafe.Pointer(*me.Ptr())).ReloadSystemMetrics, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1Factory)(unsafe.Pointer(*me.Ptr())).ReloadSystemMetrics,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

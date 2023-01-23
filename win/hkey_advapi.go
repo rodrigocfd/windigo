@@ -35,8 +35,8 @@ const (
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regclosekey
 func (hKey HKEY) RegCloseKey() error {
-	ret, _, _ := syscall.Syscall(proc.RegCloseKey.Addr(), 1,
-		uintptr(hKey), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.RegCloseKey.Addr(),
+		uintptr(hKey))
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -45,8 +45,8 @@ func (hKey HKEY) RegCloseKey() error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyw
 func (hKey HKEY) RegDeleteKey(subKey string) error {
-	ret, _, _ := syscall.Syscall(proc.RegDeleteKey.Addr(), 2,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))), 0)
+	ret, _, _ := syscall.SyscallN(proc.RegDeleteKey.Addr(),
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))))
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -57,9 +57,9 @@ func (hKey HKEY) RegDeleteKey(subKey string) error {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyexw
 func (hKey HKEY) RegDeleteKeyEx(subKey string, samDesired co.KEY) error {
-	ret, _, _ := syscall.Syscall6(proc.RegDeleteKeyEx.Addr(), 4,
+	ret, _, _ := syscall.SyscallN(proc.RegDeleteKeyEx.Addr(),
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
-		uintptr(samDesired), 0, 0, 0)
+		uintptr(samDesired), 0)
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -68,7 +68,7 @@ func (hKey HKEY) RegDeleteKeyEx(subKey string, samDesired co.KEY) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyvaluew
 func (hKey HKEY) RegDeleteKeyValue(subKey, valueName string) error {
-	ret, _, _ := syscall.Syscall(proc.RegDeleteKeyValue.Addr(), 3,
+	ret, _, _ := syscall.SyscallN(proc.RegDeleteKeyValue.Addr(),
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(valueName))))
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
@@ -79,8 +79,8 @@ func (hKey HKEY) RegDeleteKeyValue(subKey, valueName string) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletetreew
 func (hKey HKEY) RegDeleteTree(subKey string) error {
-	ret, _, _ := syscall.Syscall(proc.RegDeleteTree.Addr(), 2,
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))), 0)
+	ret, _, _ := syscall.SyscallN(proc.RegDeleteTree.Addr(),
+		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))))
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -103,11 +103,11 @@ func (hKey HKEY) RegEnumKeyEx() ([]string, error) {
 	for i := 0; i < int(keyInfo.NumSubKeys); i++ {
 		keyNameBufLen = uint32(len(keyNameBuf)) // reset available buffer size
 
-		ret, _, _ := syscall.Syscall9(proc.RegEnumKeyEx.Addr(), 8,
+		ret, _, _ := syscall.SyscallN(proc.RegEnumKeyEx.Addr(),
 			uintptr(hKey), uintptr(i),
 			uintptr(unsafe.Pointer(&keyNameBuf[0])),
 			uintptr(unsafe.Pointer(&keyNameBufLen)), // receives the number of chars without null
-			0, 0, 0, 0, 0)
+			0, 0, 0, 0)
 
 		if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 			return nil, wErr
@@ -143,11 +143,11 @@ func (hKey HKEY) RegEnumValue() ([]_ValueEnum, error) {
 	for i := 0; i < int(keyInfo.NumValues); i++ {
 		valueNameBufLen = uint32(len(valueNameBuf)) // reset available buffer size
 
-		ret, _, _ := syscall.Syscall9(proc.RegEnumValue.Addr(), 8,
+		ret, _, _ := syscall.SyscallN(proc.RegEnumValue.Addr(),
 			uintptr(hKey), uintptr(i),
 			uintptr(unsafe.Pointer(&valueNameBuf[0])),
 			uintptr(unsafe.Pointer(&valueNameBufLen)), // receives the number of chars without null
-			0, uintptr(unsafe.Pointer(&valueTypeBuf)), 0, 0, 0)
+			0, uintptr(unsafe.Pointer(&valueTypeBuf)), 0, 0)
 
 		if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 			return nil, wErr
@@ -170,8 +170,8 @@ func (hKey HKEY) RegEnumValue() ([]_ValueEnum, error) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regflushkey
 func (hKey HKEY) RegFlushKey() error {
-	ret, _, _ := syscall.Syscall(proc.RegFlushKey.Addr(), 1,
-		uintptr(hKey), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.RegFlushKey.Addr(),
+		uintptr(hKey))
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
@@ -187,11 +187,11 @@ func (hKey HKEY) RegGetValue(
 	subKey, value string, flags co.RRF, pdwType *co.REG,
 	pData unsafe.Pointer, pDataLen *uint32) error {
 
-	ret, _, _ := syscall.Syscall9(proc.RegGetValue.Addr(), 7,
+	ret, _, _ := syscall.SyscallN(proc.RegGetValue.Addr(),
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(value))),
 		uintptr(flags), uintptr(unsafe.Pointer(pdwType)),
-		uintptr(pData), uintptr(unsafe.Pointer(pDataLen)), 0, 0)
+		uintptr(pData), uintptr(unsafe.Pointer(pDataLen)))
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
@@ -206,10 +206,10 @@ func (hKey HKEY) RegOpenKeyEx(
 	subKey string, ulOptions co.REG_OPTION, samDesired co.KEY) (HKEY, error) {
 
 	var openedKey HKEY
-	ret, _, _ := syscall.Syscall6(proc.RegOpenKeyEx.Addr(), 5,
+	ret, _, _ := syscall.SyscallN(proc.RegOpenKeyEx.Addr(),
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
 		uintptr(ulOptions), uintptr(samDesired),
-		uintptr(unsafe.Pointer(&openedKey)), 0)
+		uintptr(unsafe.Pointer(&openedKey)))
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return HKEY(0), wErr
@@ -236,7 +236,7 @@ func (hKey HKEY) RegQueryInfoKey() (_KeyInfo, error) {
 	classBufLen := uint32(len(classBuf))
 	var ft FILETIME
 
-	ret, _, _ := syscall.Syscall12(proc.RegQueryInfoKey.Addr(), 12,
+	ret, _, _ := syscall.SyscallN(proc.RegQueryInfoKey.Addr(),
 		uintptr(hKey),
 		uintptr(unsafe.Pointer(&classBuf[0])), uintptr(unsafe.Pointer(&classBufLen)), 0,
 		uintptr(unsafe.Pointer(&info.NumSubKeys)),
@@ -265,7 +265,7 @@ func (hKey HKEY) RegSetKeyValue(
 	subKey, valueName string, dwType co.REG,
 	pData unsafe.Pointer, dataLen uint32) error {
 
-	ret, _, _ := syscall.Syscall6(proc.RegSetKeyValue.Addr(), 6,
+	ret, _, _ := syscall.SyscallN(proc.RegSetKeyValue.Addr(),
 		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(valueName))),
 		uintptr(dwType), uintptr(pData), uintptr(dataLen))

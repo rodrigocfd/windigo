@@ -33,9 +33,9 @@ type IShellItem interface {
 
 	// Example:
 	//
-	//		var shi shell.IShellItem // initialized somewhere
+	//	var shi shell.IShellItem // initialized somewhere
 	//
-	//		fullPath := shi.GetDisplayName(shellco.SIGDN_FILESYSPATH)
+	//	fullPath := shi.GetDisplayName(shellco.SIGDN_FILESYSPATH)
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
 	GetDisplayName(sigdnName shellco.SIGDN) string
@@ -57,17 +57,16 @@ func NewIShellItem(base com.IUnknown) IShellItem {
 //
 // Example:
 //
-//		ish := shell.NewShellItemFromPath("C:\\Temp\\file.txt")
-//		defer ish.Release()
+//	ish := shell.NewShellItemFromPath("C:\\Temp\\file.txt")
+//	defer ish.Release()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 func NewShellItemFromPath(folderOrFilePath string) (IShellItem, error) {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall6(proc.SHCreateItemFromParsingName.Addr(), 4,
+	ret, _, _ := syscall.SyscallN(proc.SHCreateItemFromParsingName.Addr(),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(folderOrFilePath))),
 		0, uintptr(unsafe.Pointer(win.GuidFromIid(shellco.IID_IShellItem))),
-		uintptr(unsafe.Pointer(&ppvQueried)),
-		0, 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIShellItem(com.NewIUnknown(ppvQueried)), nil
@@ -78,12 +77,12 @@ func NewShellItemFromPath(folderOrFilePath string) (IShellItem, error) {
 
 func (me *_IShellItem) Compare(si IShellItem, hint shellco.SICHINT) bool {
 	var piOrder uint32
-	ret, _, _ := syscall.Syscall6(
-		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).Compare, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).Compare,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(si.Ptr())),
 		uintptr(hint),
-		uintptr(unsafe.Pointer(&piOrder)), 0, 0)
+		uintptr(unsafe.Pointer(&piOrder)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true
@@ -96,8 +95,8 @@ func (me *_IShellItem) Compare(si IShellItem, hint shellco.SICHINT) bool {
 
 func (me *_IShellItem) GetAttributes(mask co.SFGAO) co.SFGAO {
 	var attribs co.SFGAO
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).GetAttributes, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).GetAttributes,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&mask)),
 		uintptr(unsafe.Pointer(&attribs)))
@@ -111,10 +110,10 @@ func (me *_IShellItem) GetAttributes(mask co.SFGAO) co.SFGAO {
 
 func (me *_IShellItem) GetParent() IShellItem {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).GetParent, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).GetParent,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIShellItem(com.NewIUnknown(ppvQueried))
@@ -125,8 +124,8 @@ func (me *_IShellItem) GetParent() IShellItem {
 
 func (me *_IShellItem) GetDisplayName(sigdnName shellco.SIGDN) string {
 	var pv uintptr
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).GetDisplayName, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IShellItem)(unsafe.Pointer(*me.Ptr())).GetDisplayName,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(sigdnName), uintptr(unsafe.Pointer(&pv)))
 

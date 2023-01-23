@@ -21,13 +21,13 @@ type ResourceInfo struct {
 //
 // Example:
 //
-//		resNfo, _ := win.ResourceInfoLoad(win.HINSTANCE(0).GetModuleFileName())
-//		verNfo, _ := resNfo.FixedFileInfo()
-//		vMaj, vMin, vPat, _ := verNfo.ProductVersion() // like 1.0.0
+//	resNfo, _ := win.ResourceInfoLoad(win.HINSTANCE(0).GetModuleFileName())
+//	verNfo, _ := resNfo.FixedFileInfo()
+//	vMaj, vMin, vPat, _ := verNfo.ProductVersion() // like 1.0.0
 //
-//		blocks := resNfo.Blocks() // each block contains one language
-//		productName, _ := blocks[0].ProductName()
-//		companyName, _ := blocks[0].CompanyName()
+//	blocks := resNfo.Blocks() // each block contains one language
+//	productName, _ := blocks[0].ProductName()
+//	companyName, _ := blocks[0].CompanyName()
 func ResourceInfoLoad(exePath string) (*ResourceInfo, error) {
 	resBuf, err := GetFileVersionInfo(exePath)
 	if err != nil {

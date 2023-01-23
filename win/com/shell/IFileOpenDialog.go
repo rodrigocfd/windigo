@@ -36,9 +36,9 @@ type IFileOpenDialog interface {
 	//
 	// Example:
 	//
-	//		var fod shell.IFileOpenDialog // initialized somewhere
+	//	var fod shell.IFileOpenDialog // initialized somewhere
 	//
-	//		chosenFiles := fod.ListResultDisplayNames(shellco.SIGDN_FILESYSPATH)
+	//	chosenFiles := fod.ListResultDisplayNames(shellco.SIGDN_FILESYSPATH)
 	ListResultDisplayNames(sigdnName shellco.SIGDN) []string
 }
 
@@ -50,23 +50,23 @@ type _IFileOpenDialog struct{ IFileDialog }
 //
 // Example:
 //
-//		fod := shell.NewIFileOpenDialog(
-//			com.CoCreateInstance(
-//				shellco.CLSID_FileOpenDialog, nil,
-//				comco.CLSCTX_INPROC_SERVER,
-//				shellco.IID_IFileOpenDialog),
-//		)
-//		defer fod.Release()
+//	fod := shell.NewIFileOpenDialog(
+//		com.CoCreateInstance(
+//			shellco.CLSID_FileOpenDialog, nil,
+//			comco.CLSCTX_INPROC_SERVER,
+//			shellco.IID_IFileOpenDialog),
+//	)
+//	defer fod.Release()
 func NewIFileOpenDialog(base com.IUnknown) IFileOpenDialog {
 	return &_IFileOpenDialog{IFileDialog: NewIFileDialog(base)}
 }
 
 func (me *_IFileOpenDialog) GetResults() IShellItemArray {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileOpenDialog)(unsafe.Pointer(*me.Ptr())).GetResults, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileOpenDialog)(unsafe.Pointer(*me.Ptr())).GetResults,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIShellItemArray(com.NewIUnknown(ppvQueried))
@@ -77,10 +77,10 @@ func (me *_IFileOpenDialog) GetResults() IShellItemArray {
 
 func (me *_IFileOpenDialog) GetSelectedItems() IShellItemArray {
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.IFileOpenDialog)(unsafe.Pointer(*me.Ptr())).GetSelectedItems, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.IFileOpenDialog)(unsafe.Pointer(*me.Ptr())).GetSelectedItems,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIShellItemArray(com.NewIUnknown(ppvQueried))

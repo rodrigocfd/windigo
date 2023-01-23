@@ -82,6 +82,7 @@ var (
 	Module32First                   = kernel32.NewProc("Module32FirstW")
 	Module32Next                    = kernel32.NewProc("Module32NextW")
 	MoveFile                        = kernel32.NewProc("MoveFileW")
+	MoveFileEx                      = kernel32.NewProc("MoveFileExW")
 	MulDiv                          = kernel32.NewProc("MulDiv")
 	OpenProcess                     = kernel32.NewProc("OpenProcess")
 	Process32First                  = kernel32.NewProc("Process32FirstW")

@@ -20,8 +20,7 @@ type HCLIPBOARD struct{}
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-closeclipboard
 func (HCLIPBOARD) CloseClipboard() {
-	ret, _, err := syscall.Syscall(proc.CloseClipboard.Addr(), 0,
-		0, 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CloseClipboard.Addr())
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -29,8 +28,7 @@ func (HCLIPBOARD) CloseClipboard() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-countclipboardformats
 func (HCLIPBOARD) CountClipboardFormats() int32 {
-	ret, _, err := syscall.Syscall(proc.CountClipboardFormats.Addr(), 0,
-		0, 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CountClipboardFormats.Addr())
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		panic(wErr)
 	}
@@ -39,8 +37,7 @@ func (HCLIPBOARD) CountClipboardFormats() int32 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-emptyclipboard
 func (HCLIPBOARD) EmptyClipboard() {
-	ret, _, err := syscall.Syscall(proc.EmptyClipboard.Addr(), 0,
-		0, 0, 0)
+	ret, _, err := syscall.SyscallN(proc.EmptyClipboard.Addr())
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -52,8 +49,8 @@ func (HCLIPBOARD) EnumClipboardFormats() []co.CF {
 	thisFormat := co.CF(0)
 
 	for {
-		ret, _, err := syscall.Syscall(proc.EnumClipboardFormats.Addr(), 1,
-			uintptr(thisFormat), 0, 0)
+		ret, _, err := syscall.SyscallN(proc.EnumClipboardFormats.Addr(),
+			uintptr(thisFormat))
 
 		if ret == 0 {
 			if wErr := errco.ERROR(err); wErr == errco.SUCCESS {
@@ -70,15 +67,14 @@ func (HCLIPBOARD) EnumClipboardFormats() []co.CF {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardsequencenumber
 func (HCLIPBOARD) GetClipboardSequenceNumber() uint32 {
-	ret, _, _ := syscall.Syscall(proc.GetClipboardSequenceNumber.Addr(), 0,
-		0, 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.GetClipboardSequenceNumber.Addr())
 	return uint32(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isclipboardformatavailable
 func (HCLIPBOARD) IsClipboardFormatAvailable(format co.CF) bool {
-	ret, _, err := syscall.Syscall(proc.IsClipboardFormatAvailable.Addr(), 1,
-		uintptr(format), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.IsClipboardFormatAvailable.Addr(),
+		uintptr(format))
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		panic(wErr)
 	}
@@ -92,8 +88,8 @@ func (HCLIPBOARD) IsClipboardFormatAvailable(format co.CF) bool {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setclipboarddata
 func (HCLIPBOARD) SetClipboardData(format co.CF, hMem HGLOBAL) {
-	ret, _, err := syscall.Syscall(proc.SetClipboardData.Addr(), 2,
-		uintptr(format), uintptr(hMem), 0)
+	ret, _, err := syscall.SyscallN(proc.SetClipboardData.Addr(),
+		uintptr(format), uintptr(hMem))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

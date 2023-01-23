@@ -49,22 +49,21 @@ type _IGraphBuilder struct{ IFilterGraph }
 //
 // Example:
 //
-//		gb := dshow.NewIGraphBuilder(
-//			com.CoCreateInstance(
-//				dshowco.CLSID_FilterGraph, nil,
-//				comco.CLSCTX_INPROC_SERVER,
-//				dshowco.IID_IGraphBuilder),
-//		)
-//		defer gb.Release()
+//	gb := dshow.NewIGraphBuilder(
+//		com.CoCreateInstance(
+//			dshowco.CLSID_FilterGraph, nil,
+//			comco.CLSCTX_INPROC_SERVER,
+//			dshowco.IID_IGraphBuilder),
+//	)
+//	defer gb.Release()
 func NewIGraphBuilder(base com.IUnknown) IGraphBuilder {
 	return &_IGraphBuilder{IFilterGraph: NewIFilterGraph(base)}
 }
 
 func (me *_IGraphBuilder) Abort() {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).Abort, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).Abort,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -75,12 +74,12 @@ func (me *_IGraphBuilder) AddSourceFilter(
 	fileName, filterName string) IBaseFilter {
 
 	var ppvQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall6(
-		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).AddSourceFilter, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).AddSourceFilter,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(filterName))),
-		uintptr(unsafe.Pointer(&ppvQueried)), 0, 0)
+		uintptr(unsafe.Pointer(&ppvQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIBaseFilter(com.NewIUnknown(ppvQueried))
@@ -90,8 +89,8 @@ func (me *_IGraphBuilder) AddSourceFilter(
 }
 
 func (me *_IGraphBuilder) Connect(pinOut, pinIn IPin) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).Connect, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).Connect,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(pinOut.Ptr())),
 		uintptr(unsafe.Pointer(pinIn.Ptr())))
@@ -102,10 +101,10 @@ func (me *_IGraphBuilder) Connect(pinOut, pinIn IPin) {
 }
 
 func (me *_IGraphBuilder) Render(pinOut IPin) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).Render, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).Render,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(pinOut.Ptr())), 0)
+		uintptr(unsafe.Pointer(pinOut.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -113,8 +112,8 @@ func (me *_IGraphBuilder) Render(pinOut IPin) {
 }
 
 func (me *_IGraphBuilder) RenderFile(file string) error {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).RenderFile, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).RenderFile,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(file))), 0)
 
@@ -126,10 +125,10 @@ func (me *_IGraphBuilder) RenderFile(file string) error {
 }
 
 func (me *_IGraphBuilder) SetLogFile(hFile win.HFILE) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).SetLogFile, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).SetLogFile,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(hFile), 0)
+		uintptr(hFile))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -137,9 +136,9 @@ func (me *_IGraphBuilder) SetLogFile(hFile win.HFILE) {
 }
 
 func (me *_IGraphBuilder) ShouldOperationContinue() bool {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).ShouldOperationContinue, 1,
-		uintptr(unsafe.Pointer(me.Ptr())), 0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IGraphBuilder)(unsafe.Pointer(*me.Ptr())).ShouldOperationContinue,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return true

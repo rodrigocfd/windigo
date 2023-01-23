@@ -19,8 +19,8 @@ type HDROP HANDLE
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragfinish
 func (hDrop HDROP) DragFinish() {
-	syscall.Syscall(proc.DragFinish.Addr(), 1,
-		uintptr(hDrop), 0, 0)
+	syscall.SyscallN(proc.DragFinish.Addr(),
+		uintptr(hDrop))
 }
 
 // This function is rather tricky. Prefer using HDROP.ListFilesAndFinish().
@@ -29,9 +29,9 @@ func (hDrop HDROP) DragFinish() {
 func (hDrop HDROP) DragQueryFile(
 	iFile uint32, lpszFile *uint16, cch uint32) uint32 {
 
-	ret, _, err := syscall.Syscall6(proc.DragQueryFile.Addr(), 4,
+	ret, _, err := syscall.SyscallN(proc.DragQueryFile.Addr(),
 		uintptr(hDrop), uintptr(iFile), uintptr(unsafe.Pointer(lpszFile)),
-		uintptr(cch), 0, 0)
+		uintptr(cch))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -43,7 +43,7 @@ func (hDrop HDROP) DragQueryFile(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragquerypoint
 func (hDrop HDROP) DragQueryPoint() (POINT, bool) {
 	var pt POINT
-	ret, _, _ := syscall.Syscall(proc.DragQueryPoint.Addr(), 2,
-		uintptr(hDrop), uintptr(unsafe.Pointer(&pt)), 0)
+	ret, _, _ := syscall.SyscallN(proc.DragQueryPoint.Addr(),
+		uintptr(hDrop), uintptr(unsafe.Pointer(&pt)))
 	return pt, ret != 0
 }

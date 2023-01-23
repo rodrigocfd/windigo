@@ -13,8 +13,7 @@ import (
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-gettickcount64
 func GetTickCount64() uint64 {
-	ret, _, _ := syscall.Syscall(proc.GetTickCount64.Addr(), 0,
-		0, 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.GetTickCount64.Addr())
 	return uint64(ret)
 }
 
@@ -24,7 +23,7 @@ func VerifyVersionInfo(
 
 	ovi.SetDwOsVersionInfoSize() // safety
 
-	ret, _, err := syscall.Syscall(proc.VerifyVersionInfo.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.VerifyVersionInfo.Addr(),
 		uintptr(unsafe.Pointer(ovi)),
 		uintptr(typeMask), uintptr(conditionMask))
 
@@ -41,7 +40,7 @@ func VerifyVersionInfo(
 func VerSetConditionMask(
 	conditionMask uint64, typeMask co.VER, condition co.VER_COND) uint64 {
 
-	ret, _, _ := syscall.Syscall(proc.VerSetConditionMask.Addr(), 3,
+	ret, _, _ := syscall.SyscallN(proc.VerSetConditionMask.Addr(),
 		uintptr(conditionMask), uintptr(typeMask), uintptr(condition))
 	return uint64(ret)
 }

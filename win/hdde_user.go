@@ -39,10 +39,9 @@ func DdeInitialize(
 	_globalDdeInitializeFunc = pPack // store pointer
 	_globalDdeInitizeMutex.Unlock()
 
-	ret, _, _ := syscall.Syscall6(proc.DdeInitialize.Addr(), 4,
+	ret, _, _ := syscall.SyscallN(proc.DdeInitialize.Addr(),
 		uintptr(unsafe.Pointer(&idInst)), _globalDdeInitializeCallback,
-		uintptr(afCmd), 0,
-		0, 0)
+		uintptr(afCmd), 0)
 
 	if dmlErr := errco.DMLERR(ret); dmlErr != errco.DMLERR_NO_ERROR {
 		return 0, dmlErr
@@ -70,8 +69,8 @@ var (
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddegetlasterror
 func (hDde HDDE) DdeGetLastError() errco.DMLERR {
-	ret, _, _ := syscall.Syscall(proc.DdeGetLastError.Addr(), 1,
-		uintptr(hDde), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DdeGetLastError.Addr(),
+		uintptr(hDde))
 	return errco.DMLERR(ret)
 }
 
@@ -83,9 +82,8 @@ func (hDde HDDE) DdeNameService(serviceName StrOpt, opts co.DDENS) error {
 	}
 	defer hDde.DdeFreeStringHandle(serviceNameHsz)
 
-	ret, _, _ := syscall.Syscall6(proc.DdeNameService.Addr(), 4,
-		uintptr(hDde), uintptr(serviceNameHsz), 0, uintptr(opts),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DdeNameService.Addr(),
+		uintptr(hDde), uintptr(serviceNameHsz), 0, uintptr(opts))
 	if ret == 0 {
 		return hDde.DdeGetLastError()
 	}
@@ -106,7 +104,7 @@ func (hDde HDDE) DdePostAdvise(topic, item StrOpt) error {
 	}
 	defer hDde.DdeFreeStringHandle(itemHsz)
 
-	ret, _, _ := syscall.Syscall(proc.DdePostAdvise.Addr(), 3,
+	ret, _, _ := syscall.SyscallN(proc.DdePostAdvise.Addr(),
 		uintptr(hDde), uintptr(topicHsz), uintptr(itemHsz))
 	if ret == 0 {
 		return hDde.DdeGetLastError()
@@ -116,8 +114,8 @@ func (hDde HDDE) DdePostAdvise(topic, item StrOpt) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeuninitialize
 func (hDde HDDE) DdeUninitialize() error {
-	ret, _, _ := syscall.Syscall(proc.DdeUninitialize.Addr(), 1,
-		uintptr(hDde), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DdeUninitialize.Addr(),
+		uintptr(hDde))
 
 	if ret == 0 {
 		return errco.DMLERR_SYS_ERROR // no return error is actually specified
@@ -151,10 +149,9 @@ func (hDde HDDE) DdeConnect(
 	}
 	defer hDde.DdeFreeStringHandle(topicHsz)
 
-	ret, _, _ := syscall.Syscall6(proc.DdeConnect.Addr(), 4,
+	ret, _, _ := syscall.SyscallN(proc.DdeConnect.Addr(),
 		uintptr(hDde), uintptr(serviceNameHsz), uintptr(topicHsz),
-		uintptr(unsafe.Pointer(cc)),
-		0, 0)
+		uintptr(unsafe.Pointer(cc)))
 	if ret == 0 {
 		return HCONV(0), hDde.DdeGetLastError()
 	}
@@ -163,8 +160,8 @@ func (hDde HDDE) DdeConnect(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddedisconnect
 func (hDde HDDE) DdeDisconnect(hConv HCONV) error {
-	ret, _, _ := syscall.Syscall(proc.DdeDisconnect.Addr(), 1,
-		uintptr(hConv), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DdeDisconnect.Addr(),
+		uintptr(hConv))
 	if ret == 0 {
 		return hDde.DdeGetLastError()
 	}
@@ -184,9 +181,9 @@ type HDDEDATA HANDLE
 func (hDde HDDE) DdeAddData(
 	hData HDDEDATA, data []byte, offset int) (HDDEDATA, error) {
 
-	ret, _, _ := syscall.Syscall6(proc.DdeAddData.Addr(), 4,
+	ret, _, _ := syscall.SyscallN(proc.DdeAddData.Addr(),
 		uintptr(hData), uintptr(unsafe.Pointer(&data[0])), uintptr(len(data)),
-		uintptr(offset), 0, 0)
+		uintptr(offset))
 	if ret == 0 {
 		return HDDEDATA(0), hDde.DdeGetLastError()
 	}
@@ -222,9 +219,9 @@ func (hDde HDDE) DdeClientTransaction(
 		timeout32 = uint32(msTimeout)
 	}
 
-	ret, _, _ := syscall.Syscall9(proc.DdeClientTransaction.Addr(), 8,
+	ret, _, _ := syscall.SyscallN(proc.DdeClientTransaction.Addr(),
 		uintptr(pData), uintptr(szData), uintptr(hConv), uintptr(itemHsz),
-		uintptr(fmt), uintptr(xType), uintptr(timeout32), 0, 0)
+		uintptr(fmt), uintptr(xType), uintptr(timeout32), 0)
 	if ret == 0 {
 		return HDDEDATA(0), hDde.DdeGetLastError()
 	}
@@ -233,8 +230,8 @@ func (hDde HDDE) DdeClientTransaction(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddefreedatahandle
 func (hDde HDDE) DdeFreeDataHandle(hData HDDEDATA) error {
-	ret, _, _ := syscall.Syscall(proc.DdeFreeDataHandle.Addr(), 1,
-		uintptr(hData), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DdeFreeDataHandle.Addr(),
+		uintptr(hData))
 	if ret == 0 {
 		return hDde.DdeGetLastError()
 	}
@@ -245,9 +242,8 @@ func (hDde HDDE) DdeFreeDataHandle(hData HDDEDATA) error {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddegetdata
 func (hDde HDDE) DdeGetData(hData HDDEDATA, offset int) ([]byte, error) {
-	ret, _, _ := syscall.Syscall6(proc.DdeGetData.Addr(), 4,
-		uintptr(hData), 0, 0, uintptr(offset),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(proc.DdeGetData.Addr(),
+		uintptr(hData), 0, 0, uintptr(offset))
 	if ret == 0 {
 		return nil, hDde.DdeGetLastError()
 	}
@@ -255,10 +251,9 @@ func (hDde HDDE) DdeGetData(hData HDDEDATA, offset int) ([]byte, error) {
 	numBytes := int(ret)
 	retBuf := make([]byte, numBytes)
 
-	ret, _, _ = syscall.Syscall6(proc.DdeGetData.Addr(), 4,
+	ret, _, _ = syscall.SyscallN(proc.DdeGetData.Addr(),
 		uintptr(hData), uintptr(unsafe.Pointer(&retBuf[0])),
-		uintptr(numBytes), uintptr(offset),
-		0, 0)
+		uintptr(numBytes), uintptr(offset))
 	if ret == 0 {
 		return nil, hDde.DdeGetLastError()
 	}
@@ -275,8 +270,8 @@ type HSZ HANDLE
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecmpstringhandles
 func (hDde HDDE) DdeCmpStringHandles(hsz1, hsz2 HSZ) int {
-	ret, _, _ := syscall.Syscall(proc.DdeCmpStringHandles.Addr(), 2,
-		uintptr(hsz1), uintptr(hsz2), 0)
+	ret, _, _ := syscall.SyscallN(proc.DdeCmpStringHandles.Addr(),
+		uintptr(hsz1), uintptr(hsz2))
 	return int(ret)
 }
 
@@ -284,7 +279,7 @@ func (hDde HDDE) DdeCmpStringHandles(hsz1, hsz2 HSZ) int {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecreatestringhandlew
 func (hDde HDDE) DdeCreateStringHandle(text string) (HSZ, error) {
-	ret, _, _ := syscall.Syscall(proc.DdeCreateStringHandle.Addr(), 3,
+	ret, _, _ := syscall.SyscallN(proc.DdeCreateStringHandle.Addr(),
 		uintptr(hDde), uintptr(unsafe.Pointer(Str.ToNativePtr(text))),
 		_CP_WINUNICODE)
 	if ret == 0 {
@@ -295,8 +290,8 @@ func (hDde HDDE) DdeCreateStringHandle(text string) (HSZ, error) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddefreestringhandle
 func (hDde HDDE) DdeFreeStringHandle(hsz HSZ) error {
-	ret, _, _ := syscall.Syscall(proc.DdeFreeStringHandle.Addr(), 2,
-		uintptr(hDde), uintptr(hsz), 0)
+	ret, _, _ := syscall.SyscallN(proc.DdeFreeStringHandle.Addr(),
+		uintptr(hDde), uintptr(hsz))
 	if ret == 0 {
 		return hDde.DdeGetLastError()
 	}
@@ -308,8 +303,8 @@ func (hDde HDDE) DdeFreeStringHandle(hsz HSZ) error {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddekeepstringhandle
 func (hDde HDDE) DdeKeepStringHandle(hsz HSZ) error {
-	ret, _, _ := syscall.Syscall(proc.DdeKeepStringHandle.Addr(), 2,
-		uintptr(hDde), uintptr(hsz), 0)
+	ret, _, _ := syscall.SyscallN(proc.DdeKeepStringHandle.Addr(),
+		uintptr(hDde), uintptr(hsz))
 	if ret == 0 {
 		return hDde.DdeGetLastError()
 	}
@@ -318,16 +313,16 @@ func (hDde HDDE) DdeKeepStringHandle(hsz HSZ) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddequerystringw
 func (hDde HDDE) DdeQueryString(hsz HSZ) (string, error) {
-	strLen, _, _ := syscall.Syscall6(proc.DdeQueryString.Addr(), 5,
-		uintptr(hDde), uintptr(hsz), 0, 0, _CP_WINUNICODE, 0)
+	strLen, _, _ := syscall.SyscallN(proc.DdeQueryString.Addr(),
+		uintptr(hDde), uintptr(hsz), 0, 0, _CP_WINUNICODE)
 	if strLen == 0 {
 		return "", hDde.DdeGetLastError()
 	}
 
 	buf := make([]uint16, strLen+1)
-	ret, _, _ := syscall.Syscall6(proc.DdeQueryString.Addr(), 5,
+	ret, _, _ := syscall.SyscallN(proc.DdeQueryString.Addr(),
 		uintptr(hDde), uintptr(hsz), uintptr(unsafe.Pointer(&buf[0])),
-		strLen+1, _CP_WINUNICODE, 0)
+		strLen+1, _CP_WINUNICODE)
 	if ret == 0 {
 		return "", hDde.DdeGetLastError()
 	}

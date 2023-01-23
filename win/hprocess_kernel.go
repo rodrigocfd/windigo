@@ -28,7 +28,7 @@ func EnumProcesses() ([]uint32, error) {
 	for {
 		processIds = make([]uint32, bufSz)
 
-		ret, _, err := syscall.Syscall(proc.EnumProcesses.Addr(), 3,
+		ret, _, err := syscall.SyscallN(proc.EnumProcesses.Addr(),
 			uintptr(unsafe.Pointer(&processIds[0])),
 			uintptr(len(processIds))*UINT32_SZ, // array size in bytes
 			uintptr(unsafe.Pointer(&bytesNeeded)))
@@ -52,15 +52,13 @@ func EnumProcesses() ([]uint32, error) {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocess
 func GetCurrentProcess() HPROCESS {
-	ret, _, _ := syscall.Syscall(proc.GetCurrentProcess.Addr(), 0,
-		0, 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.GetCurrentProcess.Addr())
 	return HPROCESS(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
 func GetCurrentProcessId() uint32 {
-	ret, _, _ := syscall.Syscall(proc.GetCurrentProcessId.Addr(), 0,
-		0, 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.GetCurrentProcessId.Addr())
 	return uint32(ret)
 }
 
@@ -71,7 +69,7 @@ func OpenProcess(
 	desiredAccess co.PROCESS,
 	inheritHandle bool, processId uint32) (HPROCESS, error) {
 
-	ret, _, err := syscall.Syscall(proc.OpenProcess.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.OpenProcess.Addr(),
 		uintptr(desiredAccess), util.BoolToUintptr(inheritHandle),
 		uintptr(processId))
 	if ret == 0 {
@@ -82,8 +80,8 @@ func OpenProcess(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hProcess HPROCESS) CloseHandle() error {
-	ret, _, err := syscall.Syscall(proc.CloseHandle.Addr(), 1,
-		uintptr(hProcess), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CloseHandle.Addr(),
+		uintptr(hProcess))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -95,20 +93,18 @@ func (hProcess HPROCESS) EnumProcessModules() ([]HINSTANCE, error) {
 	const HINSTANCE_SZ = unsafe.Sizeof(HINSTANCE(0)) // in bytes
 
 	var bytesNeeded uint32
-	ret, _, err := syscall.Syscall6(proc.EnumProcessModules.Addr(), 4,
-		uintptr(hProcess), 0, 0, uintptr(unsafe.Pointer(&bytesNeeded)),
-		0, 0)
+	ret, _, err := syscall.SyscallN(proc.EnumProcessModules.Addr(),
+		uintptr(hProcess), 0, 0, uintptr(unsafe.Pointer(&bytesNeeded)))
 	if ret == 0 {
 		return nil, errco.ERROR(err)
 	}
 
 	hModules := make([]HINSTANCE, uintptr(bytesNeeded)/HINSTANCE_SZ)
-	ret, _, err = syscall.Syscall6(proc.EnumProcessModules.Addr(), 4,
+	ret, _, err = syscall.SyscallN(proc.EnumProcessModules.Addr(),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&hModules[0])),
 		uintptr(len(hModules))*HINSTANCE_SZ, // array size in bytes
-		uintptr(unsafe.Pointer(&bytesNeeded)),
-		0, 0)
+		uintptr(unsafe.Pointer(&bytesNeeded)))
 	if ret == 0 {
 		return nil, errco.ERROR(err)
 	}
@@ -119,8 +115,8 @@ func (hProcess HPROCESS) EnumProcessModules() ([]HINSTANCE, error) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess
 func (hProcess HPROCESS) GetExitCodeProcess() (uint32, error) {
 	var exitCode uint32
-	ret, _, err := syscall.Syscall(proc.GetExitCodeProcess.Addr(), 2,
-		uintptr(hProcess), uintptr(unsafe.Pointer(&exitCode)), 0)
+	ret, _, err := syscall.SyscallN(proc.GetExitCodeProcess.Addr(),
+		uintptr(hProcess), uintptr(unsafe.Pointer(&exitCode)))
 	if ret == 0 {
 		return 0, errco.ERROR(err)
 	}
@@ -130,10 +126,10 @@ func (hProcess HPROCESS) GetExitCodeProcess() (uint32, error) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
 func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
 	var processName [_MAX_PATH + 1]uint16
-	ret, _, err := syscall.Syscall6(proc.GetModuleBaseName.Addr(), 4,
+	ret, _, err := syscall.SyscallN(proc.GetModuleBaseName.Addr(),
 		uintptr(hProcess), uintptr(hModule),
 		uintptr(unsafe.Pointer(&processName[0])),
-		uintptr(len(processName)), 0, 0)
+		uintptr(len(processName)))
 	if ret == 0 {
 		return "", errco.ERROR(err)
 	}
@@ -142,8 +138,8 @@ func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessid
 func (hProcess HPROCESS) GetProcessId() (uint32, error) {
-	ret, _, err := syscall.Syscall(proc.GetProcessId.Addr(), 1,
-		uintptr(hProcess), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.GetProcessId.Addr(),
+		uintptr(hProcess))
 	if ret == 0 {
 		return 0, errco.ERROR(err)
 	}
@@ -154,10 +150,10 @@ func (hProcess HPROCESS) GetProcessId() (uint32, error) {
 func (hProcess HPROCESS) GetProcessTimes() (
 	creationTime, exitTime, kernelTime, userTime FILETIME, e error) {
 
-	ret, _, err := syscall.Syscall6(proc.GetProcessTimes.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.GetProcessTimes.Addr(),
 		uintptr(hProcess), uintptr(unsafe.Pointer(&creationTime)),
 		uintptr(unsafe.Pointer(&exitTime)), uintptr(unsafe.Pointer(&kernelTime)),
-		uintptr(unsafe.Pointer(&userTime)), 0)
+		uintptr(unsafe.Pointer(&userTime)))
 	if ret == 0 {
 		e = errco.ERROR(err)
 	}
@@ -168,9 +164,9 @@ func (hProcess HPROCESS) GetProcessTimes() (
 func (hProcess HPROCESS) ReadProcessMemory(
 	baseAddress uintptr, buffer []byte) (numBytesRead uint64, e error) {
 
-	ret, _, err := syscall.Syscall6(proc.ReadProcessMemory.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.ReadProcessMemory.Addr(),
 		uintptr(hProcess), baseAddress, uintptr(unsafe.Pointer(&buffer[0])),
-		uintptr(len(buffer)), uintptr(unsafe.Pointer(&numBytesRead)), 0)
+		uintptr(len(buffer)), uintptr(unsafe.Pointer(&numBytesRead)))
 	if ret == 0 {
 		numBytesRead, e = 0, errco.ERROR(err)
 	}
@@ -181,9 +177,8 @@ func (hProcess HPROCESS) ReadProcessMemory(
 func (hProcess HPROCESS) SetUserObjectInformation(
 	index co.UOI, info unsafe.Pointer, infoLen uintptr) error {
 
-	ret, _, err := syscall.Syscall6(proc.SetUserObjectInformation.Addr(), 4,
-		uintptr(hProcess), uintptr(index), uintptr(info), uintptr(infoLen),
-		0, 0)
+	ret, _, err := syscall.SyscallN(proc.SetUserObjectInformation.Addr(),
+		uintptr(hProcess), uintptr(index), uintptr(info), uintptr(infoLen))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -192,8 +187,8 @@ func (hProcess HPROCESS) SetUserObjectInformation(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess
 func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
-	ret, _, err := syscall.Syscall(proc.TerminateProcess.Addr(), 2,
-		uintptr(hProcess), uintptr(exitCode), 0)
+	ret, _, err := syscall.SyscallN(proc.TerminateProcess.Addr(),
+		uintptr(hProcess), uintptr(exitCode))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -204,8 +199,8 @@ func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 func (hProcess HPROCESS) WaitForSingleObject(milliseconds uint32) (co.WAIT, error) {
-	ret, _, err := syscall.Syscall(proc.WaitForSingleObject.Addr(), 2,
-		uintptr(hProcess), uintptr(milliseconds), 0)
+	ret, _, err := syscall.SyscallN(proc.WaitForSingleObject.Addr(),
+		uintptr(hProcess), uintptr(milliseconds))
 	if co.WAIT(ret) == co.WAIT_FAILED {
 		return co.WAIT_FAILED, errco.ERROR(err)
 	}
@@ -216,9 +211,9 @@ func (hProcess HPROCESS) WaitForSingleObject(milliseconds uint32) (co.WAIT, erro
 func (hProcess HPROCESS) WriteProcessMemory(
 	baseAddress uintptr, data []byte) (numBytesWritten uint64, e error) {
 
-	ret, _, err := syscall.Syscall6(proc.WriteProcessMemory.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.WriteProcessMemory.Addr(),
 		uintptr(hProcess), baseAddress, uintptr(unsafe.Pointer(&data[0])),
-		uintptr(len(data)), uintptr(unsafe.Pointer(&numBytesWritten)), 0)
+		uintptr(len(data)), uintptr(unsafe.Pointer(&numBytesWritten)))
 	if ret == 0 {
 		numBytesWritten, e = 0, errco.ERROR(err)
 	}

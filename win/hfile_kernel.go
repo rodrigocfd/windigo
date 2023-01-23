@@ -26,13 +26,13 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 	flags co.FILE_FLAG, security co.SECURITY,
 	hTemplateFile HFILE) (HFILE, error) {
 
-	ret, _, err := syscall.Syscall9(proc.CreateFile.Addr(), 7,
+	ret, _, err := syscall.SyscallN(proc.CreateFile.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))),
 		uintptr(desiredAccess), uintptr(shareMode),
 		uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(creationDisposition),
 		uintptr(uint32(attributes)|uint32(flags)|uint32(security)),
-		uintptr(hTemplateFile), 0, 0)
+		uintptr(hTemplateFile))
 
 	if int(ret) == _INVALID_HANDLE_VALUE {
 		return HFILE(0), errco.ERROR(err)
@@ -42,8 +42,8 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hFile HFILE) CloseHandle() error {
-	ret, _, err := syscall.Syscall(proc.CloseHandle.Addr(), 1,
-		uintptr(hFile), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CloseHandle.Addr(),
+		uintptr(hFile))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -53,8 +53,8 @@ func (hFile HFILE) CloseHandle() error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex
 func (hFile HFILE) GetFileSizeEx() (uint64, error) {
 	var retSz int64
-	ret, _, err := syscall.Syscall(proc.GetFileSizeEx.Addr(), 2,
-		uintptr(hFile), uintptr(unsafe.Pointer(&retSz)), 0)
+	ret, _, err := syscall.SyscallN(proc.GetFileSizeEx.Addr(),
+		uintptr(hFile), uintptr(unsafe.Pointer(&retSz)))
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		return 0, wErr
@@ -70,10 +70,10 @@ func (hFile HFILE) CreateFileMapping(
 	protectPage co.PAGE, protectSec co.SEC,
 	maxSize uint64, objectName StrOpt) (HFILEMAP, error) {
 
-	ret, _, err := syscall.Syscall6(proc.CreateFileMappingFromApp.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.CreateFileMappingFromApp.Addr(),
 		uintptr(hFile), uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
-		uintptr(maxSize), uintptr(objectName.Raw()), 0)
+		uintptr(maxSize), uintptr(objectName.Raw()))
 	if ret == 0 {
 		return HFILEMAP(0), errco.ERROR(err)
 	}
@@ -87,9 +87,9 @@ func (hFile HFILE) LockFile(offset, numBytes uint64) error {
 	offsetLo, offsetHi := util.Break64(offset)
 	numBytesLo, numBytesHi := util.Break64(numBytes)
 
-	ret, _, err := syscall.Syscall6(proc.LockFile.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.LockFile.Addr(),
 		uintptr(hFile), uintptr(offsetLo), uintptr(offsetHi),
-		uintptr(numBytesLo), uintptr(numBytesHi), 0)
+		uintptr(numBytesLo), uintptr(numBytesHi))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -103,7 +103,7 @@ func (hFile HFILE) LockFileEx(
 	flags co.LOCKFILE, numBytes uint64, overlapped *OVERLAPPED) error {
 
 	numBytesLo, numBytesHi := util.Break64(numBytes)
-	ret, _, err := syscall.Syscall6(proc.LockFileEx.Addr(), 6,
+	ret, _, err := syscall.SyscallN(proc.LockFileEx.Addr(),
 		uintptr(hFile), uintptr(flags), 0,
 		uintptr(numBytesLo), uintptr(numBytesHi),
 		uintptr(unsafe.Pointer(overlapped)))
@@ -115,10 +115,9 @@ func (hFile HFILE) LockFileEx(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hFile HFILE) ReadFile(buffer []byte) (numBytesRead uint32, e error) {
-	ret, _, err := syscall.Syscall6(proc.ReadFile.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.ReadFile.Addr(),
 		uintptr(hFile), uintptr(unsafe.Pointer(&buffer[0])),
-		uintptr(uint32(len(buffer))), uintptr(unsafe.Pointer(&numBytesRead)), 0, // OVERLAPPED not even considered
-		0)
+		uintptr(uint32(len(buffer))), uintptr(unsafe.Pointer(&numBytesRead)), 0) // OVERLAPPED not even considered
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		numBytesRead, e = 0, wErr
@@ -128,8 +127,8 @@ func (hFile HFILE) ReadFile(buffer []byte) (numBytesRead uint32, e error) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setendoffile
 func (hFile HFILE) SetEndOfFile() error {
-	ret, _, err := syscall.Syscall(proc.SetEndOfFile.Addr(), 1,
-		uintptr(hFile), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.SetEndOfFile.Addr(),
+		uintptr(hFile))
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		return err
@@ -142,9 +141,9 @@ func (hFile HFILE) SetFilePointerEx(
 	distanceToMove int64,
 	moveMethod co.FILE_FROM) (newPointerOffset int64, e error) {
 
-	ret, _, err := syscall.Syscall6(proc.SetFilePointerEx.Addr(), 4,
+	ret, _, err := syscall.SyscallN(proc.SetFilePointerEx.Addr(),
 		uintptr(hFile), uintptr(distanceToMove),
-		uintptr(unsafe.Pointer(&newPointerOffset)), uintptr(moveMethod), 0, 0)
+		uintptr(unsafe.Pointer(&newPointerOffset)), uintptr(moveMethod))
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		newPointerOffset, e = 0, wErr
@@ -157,9 +156,9 @@ func (hFile HFILE) UnlockFile(offset, numBytes uint64) error {
 	offsetLo, offsetHi := util.Break64(offset)
 	numBytesLo, numBytesHi := util.Break64(numBytes)
 
-	ret, _, err := syscall.Syscall6(proc.UnlockFile.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.UnlockFile.Addr(),
 		uintptr(hFile), uintptr(offsetLo), uintptr(offsetHi),
-		uintptr(numBytesLo), uintptr(numBytesHi), 0)
+		uintptr(numBytesLo), uintptr(numBytesHi))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -169,9 +168,9 @@ func (hFile HFILE) UnlockFile(offset, numBytes uint64) error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfileex
 func (hFile HFILE) UnlockFileEx(numBytes uint64, overlapped *OVERLAPPED) error {
 	numBytesLo, numBytesHi := util.Break64(numBytes)
-	ret, _, err := syscall.Syscall6(proc.UnlockFileEx.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.UnlockFileEx.Addr(),
 		uintptr(hFile), 0, uintptr(numBytesLo), uintptr(numBytesHi),
-		uintptr(unsafe.Pointer(overlapped)), 0)
+		uintptr(unsafe.Pointer(overlapped)))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -180,10 +179,9 @@ func (hFile HFILE) UnlockFileEx(numBytes uint64, overlapped *OVERLAPPED) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
 func (hFile HFILE) WriteFile(data []byte) (numBytesWritten uint32, e error) {
-	ret, _, err := syscall.Syscall6(proc.WriteFile.Addr(), 5,
+	ret, _, err := syscall.SyscallN(proc.WriteFile.Addr(),
 		uintptr(hFile), uintptr(unsafe.Pointer(&data[0])),
-		uintptr(uint32(len(data))), uintptr(unsafe.Pointer(&numBytesWritten)), 0, // OVERLAPPED not even considered
-		0)
+		uintptr(uint32(len(data))), uintptr(unsafe.Pointer(&numBytesWritten)), 0) // OVERLAPPED not even considered
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		numBytesWritten, e = 0, wErr
@@ -200,8 +198,8 @@ type HFILEMAP HANDLE
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hMap HFILEMAP) CloseHandle() error {
-	ret, _, err := syscall.Syscall(proc.CloseHandle.Addr(), 1,
-		uintptr(hMap), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CloseHandle.Addr(),
+		uintptr(hMap))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -214,9 +212,9 @@ func (hMap HFILEMAP) CloseHandle() error {
 func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
 	offset uint64, numBytesToMap uint64) (HFILEMAPVIEW, error) {
 
-	ret, _, err := syscall.Syscall6(proc.MapViewOfFileFromApp.Addr(), 4,
+	ret, _, err := syscall.SyscallN(proc.MapViewOfFileFromApp.Addr(),
 		uintptr(hMap), uintptr(desiredAccess), uintptr(offset),
-		uintptr(numBytesToMap), 0, 0)
+		uintptr(numBytesToMap))
 	if ret == 0 {
 		return HFILEMAPVIEW(0), errco.ERROR(err)
 	}
@@ -238,8 +236,8 @@ func (hMem HFILEMAPVIEW) Ptr() *byte {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-flushviewoffile
 func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes uint64) error {
-	ret, _, err := syscall.Syscall(proc.FlushViewOfFile.Addr(), 2,
-		uintptr(hMem), uintptr(numBytes), 0)
+	ret, _, err := syscall.SyscallN(proc.FlushViewOfFile.Addr(),
+		uintptr(hMem), uintptr(numBytes))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -248,8 +246,8 @@ func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes uint64) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
 func (hMem HFILEMAPVIEW) UnmapViewOfFile() error {
-	ret, _, err := syscall.Syscall(proc.UnmapViewOfFile.Addr(), 1,
-		uintptr(hMem), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.UnmapViewOfFile.Addr(),
+		uintptr(hMem))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}

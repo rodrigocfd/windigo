@@ -19,8 +19,8 @@ type HDWP HANDLE
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-begindeferwindowpos
 func BeginDeferWindowPos(numWindows int32) HDWP {
-	ret, _, err := syscall.Syscall(proc.BeginDeferWindowPos.Addr(), 1,
-		uintptr(numWindows), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.BeginDeferWindowPos.Addr(),
+		uintptr(numWindows))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -31,10 +31,9 @@ func BeginDeferWindowPos(numWindows int32) HDWP {
 func (hDwp HDWP) DeferWindowPos(
 	hWnd, hwndInsertAfter HWND, x, y, cx, cy int32, uFlags co.SWP) HDWP {
 
-	ret, _, err := syscall.Syscall9(proc.DeferWindowPos.Addr(), 8,
+	ret, _, err := syscall.SyscallN(proc.DeferWindowPos.Addr(),
 		uintptr(hDwp), uintptr(hWnd), uintptr(hwndInsertAfter),
-		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy), uintptr(uFlags),
-		0)
+		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy), uintptr(uFlags))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -43,8 +42,8 @@ func (hDwp HDWP) DeferWindowPos(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enddeferwindowpos
 func (hDwp HDWP) EndDeferWindowPos() {
-	ret, _, err := syscall.Syscall(proc.EndDeferWindowPos.Addr(), 1,
-		uintptr(hDwp), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.EndDeferWindowPos.Addr(),
+		uintptr(hDwp))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

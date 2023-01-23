@@ -19,8 +19,8 @@ type HTHEME HANDLE
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-closethemedata
 func (hTheme HTHEME) CloseThemeData() {
 	if hTheme != 0 {
-		syscall.Syscall(proc.CloseThemeData.Addr(), 1,
-			uintptr(hTheme), 0, 0)
+		syscall.SyscallN(proc.CloseThemeData.Addr(),
+			uintptr(hTheme))
 	}
 }
 
@@ -28,7 +28,7 @@ func (hTheme HTHEME) CloseThemeData() {
 func (hTheme HTHEME) DrawThemeBackground(
 	hdc HDC, partStateId co.VS, rc *RECT, clipRc *RECT) {
 
-	ret, _, _ := syscall.Syscall6(proc.DrawThemeBackground.Addr(), 6,
+	ret, _, _ := syscall.SyscallN(proc.DrawThemeBackground.Addr(),
 		uintptr(hTheme), uintptr(hdc),
 		uintptr(partStateId.Part()), uintptr(partStateId.State()),
 		uintptr(unsafe.Pointer(rc)), uintptr(unsafe.Pointer(clipRc)))
@@ -42,9 +42,9 @@ func (hTheme HTHEME) GetThemeColor(
 	partStateId co.VS, propId co.TMT_COLOR) COLORREF {
 
 	var color COLORREF
-	ret, _, _ := syscall.Syscall6(proc.GetThemeColor.Addr(), 5,
+	ret, _, _ := syscall.SyscallN(proc.GetThemeColor.Addr(),
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
-		uintptr(propId), uintptr(unsafe.Pointer(&color)), 0)
+		uintptr(propId), uintptr(unsafe.Pointer(&color)))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
@@ -54,9 +54,9 @@ func (hTheme HTHEME) GetThemeColor(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemeint
 func (hTheme HTHEME) GetThemeInt(partStateId co.VS, propId co.TMT_INT) int32 {
 	var intVal int32
-	ret, _, _ := syscall.Syscall6(proc.GetThemeInt.Addr(), 5,
+	ret, _, _ := syscall.SyscallN(proc.GetThemeInt.Addr(),
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
-		uintptr(propId), uintptr(unsafe.Pointer(&intVal)), 0)
+		uintptr(propId), uintptr(unsafe.Pointer(&intVal)))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
@@ -68,7 +68,7 @@ func (hTheme HTHEME) GetThemeMetric(
 	hdc HDC, partStateId co.VS, propId co.TMT_INT) int32 {
 
 	var intVal int32
-	ret, _, _ := syscall.Syscall6(proc.GetThemeMetric.Addr(), 6,
+	ret, _, _ := syscall.SyscallN(proc.GetThemeMetric.Addr(),
 		uintptr(hTheme), uintptr(hdc),
 		uintptr(partStateId.Part()), uintptr(partStateId.State()),
 		uintptr(propId), uintptr(unsafe.Pointer(&intVal)))
@@ -83,9 +83,9 @@ func (hTheme HTHEME) GetThemePosition(
 	partStateId co.VS, propId co.TMT_POSITION) POINT {
 
 	var pt POINT
-	ret, _, _ := syscall.Syscall6(proc.GetThemePosition.Addr(), 5,
+	ret, _, _ := syscall.SyscallN(proc.GetThemePosition.Addr(),
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
-		uintptr(propId), uintptr(unsafe.Pointer(&pt)), 0)
+		uintptr(propId), uintptr(unsafe.Pointer(&pt)))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
@@ -95,9 +95,9 @@ func (hTheme HTHEME) GetThemePosition(
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemerect
 func (hTheme HTHEME) GetThemeRect(partStateId co.VS, propId co.TMT_RECT) RECT {
 	var rc RECT
-	ret, _, _ := syscall.Syscall6(proc.GetThemeRect.Addr(), 5,
+	ret, _, _ := syscall.SyscallN(proc.GetThemeRect.Addr(),
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
-		uintptr(propId), uintptr(unsafe.Pointer(&rc)), 0)
+		uintptr(propId), uintptr(unsafe.Pointer(&rc)))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
@@ -108,8 +108,8 @@ func (hTheme HTHEME) GetThemeRect(partStateId co.VS, propId co.TMT_RECT) RECT {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemesyscolorbrush
 func (hTheme HTHEME) GetThemeSysColorBrush(colorId co.TMT_COLOR) HBRUSH {
-	ret, _, err := syscall.Syscall(proc.GetThemeSysColorBrush.Addr(), 2,
-		uintptr(hTheme), uintptr(colorId), 0)
+	ret, _, err := syscall.SyscallN(proc.GetThemeSysColorBrush.Addr(),
+		uintptr(hTheme), uintptr(colorId))
 	if ret == 0 {
 		panic(errco.ERROR(err)) // uncertain?
 	}
@@ -118,7 +118,7 @@ func (hTheme HTHEME) GetThemeSysColorBrush(colorId co.TMT_COLOR) HBRUSH {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemesysfont
 func (hTheme HTHEME) GetThemeSysFont(fontId co.TMT_FONT, lf *LOGFONT) {
-	ret, _, _ := syscall.Syscall(proc.GetThemeSysFont.Addr(), 3,
+	ret, _, _ := syscall.SyscallN(proc.GetThemeSysFont.Addr(),
 		uintptr(hTheme), uintptr(fontId), uintptr(unsafe.Pointer(lf)))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -129,10 +129,10 @@ func (hTheme HTHEME) GetThemeSysFont(fontId co.TMT_FONT, lf *LOGFONT) {
 func (hTheme HTHEME) GetThemeTextMetrics(
 	hdc HDC, partStateId co.VS, tm *TEXTMETRIC) {
 
-	ret, _, _ := syscall.Syscall6(proc.GetThemeTextMetrics.Addr(), 5,
+	ret, _, _ := syscall.SyscallN(proc.GetThemeTextMetrics.Addr(),
 		uintptr(hTheme), uintptr(hdc),
 		uintptr(partStateId.Part()), uintptr(partStateId.State()),
-		uintptr(unsafe.Pointer(tm)), 0)
+		uintptr(unsafe.Pointer(tm)))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
 	}
@@ -140,14 +140,14 @@ func (hTheme HTHEME) GetThemeTextMetrics(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemebackgroundpartiallytransparent
 func (hTheme HTHEME) IsThemeBackgroundPartiallyTransparent(partStateId co.VS) bool {
-	ret, _, _ := syscall.Syscall(proc.IsThemeBackgroundPartiallyTransparent.Addr(), 3,
+	ret, _, _ := syscall.SyscallN(proc.IsThemeBackgroundPartiallyTransparent.Addr(),
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()))
 	return ret != 0
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemepartdefined
 func (hTheme HTHEME) IsThemePartDefined(partStateId co.VS) bool {
-	ret, _, _ := syscall.Syscall(proc.IsThemePartDefined.Addr(), 3,
+	ret, _, _ := syscall.SyscallN(proc.IsThemePartDefined.Addr(),
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()))
 	return ret != 0
 }

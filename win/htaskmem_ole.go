@@ -17,8 +17,8 @@ type HTASKMEM HANDLE
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
 func CoTaskMemAlloc(numBytes int) HTASKMEM {
-	ret, _, _ := syscall.Syscall(proc.CoTaskMemAlloc.Addr(), 1,
-		uintptr(numBytes), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.CoTaskMemAlloc.Addr(),
+		uintptr(numBytes))
 	if ret == 0 {
 		panic("CoTaskMemAlloc() failed.")
 	}
@@ -27,16 +27,16 @@ func CoTaskMemAlloc(numBytes int) HTASKMEM {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
 func (hMem HTASKMEM) CoTaskMemFree() {
-	syscall.Syscall(proc.CoTaskMemFree.Addr(), 1,
-		uintptr(hMem), 0, 0)
+	syscall.SyscallN(proc.CoTaskMemFree.Addr(),
+		uintptr(hMem))
 }
 
 // ⚠️ You must defer CoTaskMemFree().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
 func (hMem HTASKMEM) CoTaskMemRealloc(numBytes int) HTASKMEM {
-	ret, _, _ := syscall.Syscall(proc.CoTaskMemRealloc.Addr(), 2,
-		uintptr(hMem), uintptr(numBytes), 0)
+	ret, _, _ := syscall.SyscallN(proc.CoTaskMemRealloc.Addr(),
+		uintptr(hMem), uintptr(numBytes))
 	if ret == 0 {
 		panic("CoTaskMemRealloc() failed.")
 	}

@@ -98,7 +98,7 @@ func NewIPictureFromSlice(src []byte, keepOriginalFormat bool) IPicture {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/olectl/nf-olectl-oleloadpicturepath
 func NewIPictureFromFile(path string, transparentColor win.COLORREF) IPicture {
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall6(proc.OleLoadPicturePath.Addr(), 6,
+	ret, _, _ := syscall.SyscallN(proc.OleLoadPicturePath.Addr(),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(path))),
 		0, 0, uintptr(transparentColor),
 		uintptr(unsafe.Pointer(win.GuidFromIid(comco.IID_IPicture))),
@@ -123,13 +123,12 @@ func NewIPictureFromStream(
 	stream IStream, size uint32, keepOriginalFormat bool) IPicture {
 
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall6(proc.OleLoadPicture.Addr(), 5,
+	ret, _, _ := syscall.SyscallN(proc.OleLoadPicture.Addr(),
 		uintptr(unsafe.Pointer(stream.Ptr())),
 		uintptr(size),
 		util.BoolToUintptr(!keepOriginalFormat), // note: reversed
 		uintptr(unsafe.Pointer(win.GuidFromIid(comco.IID_IPicture))),
-		uintptr(unsafe.Pointer(&ppQueried)),
-		0)
+		uintptr(unsafe.Pointer(&ppQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewIPicture(NewIUnknown(ppQueried))
@@ -140,10 +139,10 @@ func NewIPictureFromStream(
 
 func (me *_IPicture) Attributes() comco.PICATTR {
 	var attr comco.PICATTR
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_Attributes, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_Attributes,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&attr)), 0)
+		uintptr(unsafe.Pointer(&attr)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return attr
@@ -154,10 +153,10 @@ func (me *_IPicture) Attributes() comco.PICATTR {
 
 func (me *_IPicture) CurDC() win.HDC {
 	var hdc win.HDC
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_CurDC, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_CurDC,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&hdc)), 0)
+		uintptr(unsafe.Pointer(&hdc)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return hdc
@@ -168,10 +167,10 @@ func (me *_IPicture) CurDC() win.HDC {
 
 func (me *_IPicture) Height() int32 {
 	var cy int32
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_Height, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_Height,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&cy)), 0)
+		uintptr(unsafe.Pointer(&cy)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return cy
@@ -182,10 +181,10 @@ func (me *_IPicture) Height() int32 {
 
 func (me *_IPicture) KeepOriginalFormat() bool {
 	var keep int32 // BOOL
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_KeepOriginalFormat, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_KeepOriginalFormat,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&keep)), 0)
+		uintptr(unsafe.Pointer(&keep)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return keep != 0
@@ -195,10 +194,9 @@ func (me *_IPicture) KeepOriginalFormat() bool {
 }
 
 func (me *_IPicture) PictureChanged() {
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).PictureChanged, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).PictureChanged,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -210,16 +208,15 @@ func (me *_IPicture) Render(
 	destOffset win.POINT, destSz win.SIZE,
 	srcOffset win.POINT, srcSz win.SIZE) (metafileBounds win.RECT) {
 
-	ret, _, _ := syscall.Syscall12(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Render, 11,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Render,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hdc),
 		uintptr(destOffset.X), uintptr(destOffset.Y),
 		uintptr(destSz.Cx), uintptr(destSz.Cy),
 		uintptr(srcOffset.X), uintptr(srcOffset.Y),
 		uintptr(srcSz.Cx), uintptr(srcSz.Cy),
-		uintptr(unsafe.Pointer(&metafileBounds)),
-		0)
+		uintptr(unsafe.Pointer(&metafileBounds)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return
@@ -231,13 +228,12 @@ func (me *_IPicture) Render(
 func (me *_IPicture) SaveAsFile(
 	stream IStream, saveCopy bool) (numBytesWritten int) {
 
-	ret, _, _ := syscall.Syscall6(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).SaveAsFile, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).SaveAsFile,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(stream.Ptr())),
 		util.BoolToUintptr(saveCopy),
-		uintptr(unsafe.Pointer(&numBytesWritten)),
-		0, 0)
+		uintptr(unsafe.Pointer(&numBytesWritten)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return
@@ -250,13 +246,12 @@ func (me *_IPicture) SelectPicture(hdc win.HDC) (win.HDC, win.HBITMAP) {
 	var hdcOut win.HDC
 	var hBmp win.HBITMAP
 
-	ret, _, _ := syscall.Syscall6(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).SelectPicture, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).SelectPicture,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&hdcOut)),
-		uintptr(unsafe.Pointer(&hBmp)),
-		0, 0)
+		uintptr(unsafe.Pointer(&hBmp)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return hdcOut, hBmp
@@ -266,10 +261,10 @@ func (me *_IPicture) SelectPicture(hdc win.HDC) (win.HDC, win.HBITMAP) {
 }
 
 func (me *_IPicture) SetKeepOriginalFormat(keep bool) {
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Put_KeepOriginalFormat, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Put_KeepOriginalFormat,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		util.BoolToUintptr(keep), 0)
+		util.BoolToUintptr(keep))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -290,10 +285,10 @@ func (me *_IPicture) SizePixels(hdc win.HDC) win.SIZE {
 
 func (me *_IPicture) Type() comco.PICTYPE {
 	var picty comco.PICTYPE
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_Type, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_Type,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&picty)), 0)
+		uintptr(unsafe.Pointer(&picty)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return picty
@@ -304,10 +299,10 @@ func (me *_IPicture) Type() comco.PICTYPE {
 
 func (me *_IPicture) Width() int32 {
 	var cx int32
-	ret, _, _ := syscall.Syscall(
-		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_Width, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*comvt.IPicture)(unsafe.Pointer(*me.Ptr())).Get_Width,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&cx)), 0)
+		uintptr(unsafe.Pointer(&cx)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return cx

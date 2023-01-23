@@ -38,13 +38,12 @@ func NewIPropertyBag(base com.IUnknown) IPropertyBag {
 
 func (me *_IPropertyBag) Read(propName string, errorLog IErrorLog) VARIANT {
 	buf := NewVariantEmpty()
-	ret, _, _ := syscall.Syscall6(
-		(*automvt.IPropertyBag)(unsafe.Pointer(*me.Ptr())).Read, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.IPropertyBag)(unsafe.Pointer(*me.Ptr())).Read,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(propName))),
 		uintptr(unsafe.Pointer(&buf)),
-		uintptr(unsafe.Pointer(errorLog.Ptr())),
-		0, 0)
+		uintptr(unsafe.Pointer(errorLog.Ptr())))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return buf
@@ -54,8 +53,8 @@ func (me *_IPropertyBag) Read(propName string, errorLog IErrorLog) VARIANT {
 }
 
 func (me *_IPropertyBag) Write(propName string, value *VARIANT) {
-	ret, _, _ := syscall.Syscall(
-		(*automvt.IPropertyBag)(unsafe.Pointer(*me.Ptr())).Write, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.IPropertyBag)(unsafe.Pointer(*me.Ptr())).Write,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(propName))),
 		uintptr(unsafe.Pointer(value)))

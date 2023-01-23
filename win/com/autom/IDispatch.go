@@ -27,10 +27,10 @@ type IDispatch interface {
 	//
 	// Example:
 	//
-	//		var iDisp autom.IDispatch // initialized somewhere
+	//	var iDisp autom.IDispatch // initialized somewhere
 	//
-	//		tyInfo := iDisp.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
-	//		defer tyInfo.Release()
+	//	tyInfo := iDisp.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
+	//	defer tyInfo.Release()
 	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
 	GetTypeInfo(lcid win.LCID) ITypeInfo
@@ -67,22 +67,22 @@ type IDispatch interface {
 	//
 	// Example:
 	//
-	//		xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
-	//		if err != nil {
-	//			panic(err)
-	//		}
-	//		defer xlApp.Release()
+	//	xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//	defer xlApp.Release()
 	//
-	//		variRet, err := xlApp.InvokeGet("Workbooks")
-	//		if err != nil {
-	//			switch realErr := err.(type) {
-	//			case *autom.ExceptionInfo:
-	//				println("Invoke error", realErr.Code, realErr.Description)
-	//			default:
-	//				println("Ordinary error", realErr.Error())
-	//			}
+	//	variRet, err := xlApp.InvokeGet("Workbooks")
+	//	if err != nil {
+	//		switch realErr := err.(type) {
+	//		case *autom.ExceptionInfo:
+	//			println("Invoke error", realErr.Code, realErr.Description)
+	//		default:
+	//			println("Ordinary error", realErr.Error())
 	//		}
-	//		defer variRet.VariantClear()
+	//	}
+	//	defer variRet.VariantClear()
 	InvokeGet(methodName string, params ...VARIANT) (VARIANT, error)
 
 	// This helper method calls IDispatch.GetIDsOfNames(), builds the DISPPARAMS
@@ -97,22 +97,22 @@ type IDispatch interface {
 	//
 	// Example:
 	//
-	//		xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
-	//		if err != nil {
-	//			panic(err)
-	//		}
-	//		defer xlApp.Release()
+	//	xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//	defer xlApp.Release()
 	//
-	//		ret, err := xlApp.InvokeMethod("Quit")
-	//		if err != nil {
-	//			switch realErr := err.(type) {
-	//			case *autom.ExceptionInfo:
-	//				println("Invoke error", realErr.Code, realErr.Description)
-	//			default:
-	//				println("Ordinary error", realErr.Error())
-	//			}
+	//	ret, err := xlApp.InvokeMethod("Quit")
+	//	if err != nil {
+	//		switch realErr := err.(type) {
+	//		case *autom.ExceptionInfo:
+	//			println("Invoke error", realErr.Code, realErr.Description)
+	//		default:
+	//			println("Ordinary error", realErr.Error())
 	//		}
-	//		defer variRet.VariantClear()
+	//	}
+	//	defer variRet.VariantClear()
 	InvokeMethod(methodName string, params ...VARIANT) (VARIANT, error)
 
 	// This helper method calls IDispatch.GetIDsOfNames(), builds the DISPPARAMS
@@ -127,24 +127,24 @@ type IDispatch interface {
 	//
 	// Example:
 	//
-	//		xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
-	//		if err != nil {
-	//			panic(err)
-	//		}
+	//	xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
+	//	if err != nil {
+	//		panic(err)
+	//	}
 	//
-	//		trueVal := autom.NewVariantInt32(1)
-	//		defer trueVal.VariantClear()
+	//	trueVal := autom.NewVariantInt32(1)
+	//	defer trueVal.VariantClear()
 	//
-	//		ret, err := xlApp.InvokePut("Visible", trueVal)
-	//		if err != nil {
-	//			switch realErr := err.(type) {
-	//			case *autom.ExceptionInfo:
-	//				println("Invoke error", realErr.Code, realErr.Description)
-	//			default:
-	//				println("Ordinary error", realErr.Error())
-	//			}
+	//	ret, err := xlApp.InvokePut("Visible", trueVal)
+	//	if err != nil {
+	//		switch realErr := err.(type) {
+	//		case *autom.ExceptionInfo:
+	//			println("Invoke error", realErr.Code, realErr.Description)
+	//		default:
+	//			println("Ordinary error", realErr.Error())
 	//		}
-	//		defer variRet.VariantClear()
+	//	}
+	//	defer variRet.VariantClear()
 	InvokePut(methodName string, params ...VARIANT) (VARIANT, error)
 
 	// This helper method calls IDispatch.GetTypeInfo() with
@@ -170,11 +170,11 @@ func NewIDispatch(base com.IUnknown) IDispatch {
 //
 // Example:
 //
-//		excelApp, err := autom.NewIDispatchFromProgId("Excel.Application")
-//		if err != nil {
-//			panic(err)
-//		}
-//		defer excelApp.Release()
+//	excelApp, err := autom.NewIDispatchFromProgId("Excel.Application")
+//	if err != nil {
+//		panic(err)
+//	}
+//	defer excelApp.Release()
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func NewIDispatchFromProgId(progId string) (IDispatch, error) {
@@ -201,8 +201,8 @@ func (me *_IDispatch) GetIDsOfNames(
 		oleStrs = append(oleStrs, win.Str.ToNativePtr(parameter))
 	}
 
-	ret, _, _ := syscall.Syscall6(
-		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetIDsOfNames, 6,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetIDsOfNames,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.GuidFromIid(comco.IID_NULL))),
 		uintptr(unsafe.Pointer(&oleStrs[0])), uintptr(numStrs),
@@ -219,11 +219,11 @@ func (me *_IDispatch) GetIDsOfNames(
 
 func (me *_IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.Syscall6(
-		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetTypeInfo, 4,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetTypeInfo,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		0, uintptr(lcid),
-		uintptr(unsafe.Pointer(&ppQueried)), 0, 0)
+		uintptr(unsafe.Pointer(&ppQueried)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return NewITypeInfo(com.NewIUnknown(ppQueried))
@@ -234,10 +234,9 @@ func (me *_IDispatch) GetTypeInfo(lcid win.LCID) ITypeInfo {
 
 func (me *_IDispatch) GetTypeInfoCount() int {
 	var pctInfo uint32
-	ret, _, _ := syscall.Syscall(
-		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetTypeInfoCount, 2,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(unsafe.Pointer(&pctInfo)), 0)
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).GetTypeInfoCount,
+		uintptr(unsafe.Pointer(me.Ptr())), uintptr(unsafe.Pointer(&pctInfo)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return int(pctInfo)
@@ -253,8 +252,8 @@ func (me *_IDispatch) Invoke(
 	var retExcep EXCEPINFO
 	var retVari VARIANT
 
-	ret, _, _ := syscall.Syscall9(
-		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).Invoke, 9,
+	ret, _, _ := syscall.SyscallN(
+		(*automvt.IDispatch)(unsafe.Pointer(*me.Ptr())).Invoke,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(dispIdMember),
 		uintptr(unsafe.Pointer(win.GuidFromIid(comco.IID_NULL))),

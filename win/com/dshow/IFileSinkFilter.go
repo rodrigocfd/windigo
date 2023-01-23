@@ -36,8 +36,8 @@ func NewIFileSinkFilter(base com.IUnknown) IFileSinkFilter {
 
 func (me *_IFileSinkFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 	var pv uintptr
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFileSinkFilter)(unsafe.Pointer(*me.Ptr())).GetCurFile, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFileSinkFilter)(unsafe.Pointer(*me.Ptr())).GetCurFile,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pv)), uintptr(unsafe.Pointer(mt)))
 
@@ -53,8 +53,8 @@ func (me *_IFileSinkFilter) GetCurFile(mt *AM_MEDIA_TYPE) (string, bool) {
 }
 
 func (me *_IFileSinkFilter) SetFileName(fileName string, mt *AM_MEDIA_TYPE) {
-	ret, _, _ := syscall.Syscall(
-		(*dshowvt.IFileSinkFilter)(unsafe.Pointer(*me.Ptr())).SetFileName, 3,
+	ret, _, _ := syscall.SyscallN(
+		(*dshowvt.IFileSinkFilter)(unsafe.Pointer(*me.Ptr())).SetFileName,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(fileName))),
 		uintptr(unsafe.Pointer(mt)))

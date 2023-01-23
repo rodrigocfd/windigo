@@ -20,8 +20,8 @@ type HINSTANCE HANDLE
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
 func GetModuleHandle(moduleName StrOpt) HINSTANCE {
-	ret, _, err := syscall.Syscall(proc.GetModuleHandle.Addr(), 1,
-		uintptr(moduleName.Raw()), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.GetModuleHandle.Addr(),
+		uintptr(moduleName.Raw()))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -32,9 +32,8 @@ func GetModuleHandle(moduleName StrOpt) HINSTANCE {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
 func LoadLibrary(libFileName string) HINSTANCE {
-	ret, _, err := syscall.Syscall(proc.LoadLibrary.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToNativePtr(libFileName))),
-		0, 0)
+	ret, _, err := syscall.SyscallN(proc.LoadLibrary.Addr(),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(libFileName))))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -43,8 +42,8 @@ func LoadLibrary(libFileName string) HINSTANCE {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
 func (hInst HINSTANCE) FreeLibrary() {
-	ret, _, err := syscall.Syscall(proc.FreeLibrary.Addr(), 1,
-		uintptr(hInst), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.FreeLibrary.Addr(),
+		uintptr(hInst))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -52,13 +51,13 @@ func (hInst HINSTANCE) FreeLibrary() {
 
 // Example retrieving own .exe path:
 //
-//		exePath := win.HINSTANCE(0).GetModuleFileName()
-//		fmt.Printf("Current .exe path: %s\n", exePath)
+//	exePath := win.HINSTANCE(0).GetModuleFileName()
+//	fmt.Printf("Current .exe path: %s\n", exePath)
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew
 func (hInst HINSTANCE) GetModuleFileName() string {
 	var buf [_MAX_PATH + 1]uint16
-	ret, _, err := syscall.Syscall(proc.GetModuleFileName.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.GetModuleFileName.Addr(),
 		uintptr(hInst), uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -71,8 +70,8 @@ func (hInst HINSTANCE) GetProcAddress(procName string) uintptr {
 	ascii := []byte(procName)
 	ascii = append(ascii, 0x00) // terminating null
 
-	ret, _, err := syscall.Syscall(proc.GetProcAddress.Addr(), 2,
-		uintptr(hInst), uintptr(unsafe.Pointer(&ascii[0])), 0)
+	ret, _, err := syscall.SyscallN(proc.GetProcAddress.Addr(),
+		uintptr(hInst), uintptr(unsafe.Pointer(&ascii[0])))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

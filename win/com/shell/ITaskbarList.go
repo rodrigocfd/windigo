@@ -40,22 +40,22 @@ type _ITaskbarList struct{ com.IUnknown }
 //
 // Example:
 //
-//		taskbl := shell.NewITaskbarList(
-//			com.CoCreateInstance(
-//				shellco.CLSID_TaskbarList, nil,
-//				comco.CLSCTX_INPROC_SERVER,
-//				shellco.IID_ITaskbarList),
-//		)
-//		defer taskbl.Release()
+//	taskbl := shell.NewITaskbarList(
+//		com.CoCreateInstance(
+//			shellco.CLSID_TaskbarList, nil,
+//			comco.CLSCTX_INPROC_SERVER,
+//			shellco.IID_ITaskbarList),
+//	)
+//	defer taskbl.Release()
 func NewITaskbarList(base com.IUnknown) ITaskbarList {
 	return &_ITaskbarList{IUnknown: base}
 }
 
 func (me *_ITaskbarList) ActivateTab(hWnd win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).ActivateTab, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).ActivateTab,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(hWnd), 0)
+		uintptr(hWnd))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -63,10 +63,10 @@ func (me *_ITaskbarList) ActivateTab(hWnd win.HWND) {
 }
 
 func (me *_ITaskbarList) AddTab(hWnd win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).AddTab, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).AddTab,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(hWnd), 0)
+		uintptr(hWnd))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -74,10 +74,10 @@ func (me *_ITaskbarList) AddTab(hWnd win.HWND) {
 }
 
 func (me *_ITaskbarList) DeleteTab(hWnd win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).DeleteTab, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).DeleteTab,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(hWnd), 0)
+		uintptr(hWnd))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -85,10 +85,9 @@ func (me *_ITaskbarList) DeleteTab(hWnd win.HWND) {
 }
 
 func (me *_ITaskbarList) HrInit() {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).HrInit, 1,
-		uintptr(unsafe.Pointer(me.Ptr())),
-		0, 0)
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).HrInit,
+		uintptr(unsafe.Pointer(me.Ptr())))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
@@ -96,10 +95,10 @@ func (me *_ITaskbarList) HrInit() {
 }
 
 func (me *_ITaskbarList) SetActiveAlt(hWnd win.HWND) {
-	ret, _, _ := syscall.Syscall(
-		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).SetActiveAlt, 2,
+	ret, _, _ := syscall.SyscallN(
+		(*shellvt.ITaskbarList)(unsafe.Pointer(*me.Ptr())).SetActiveAlt,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(hWnd), 0)
+		uintptr(hWnd))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)

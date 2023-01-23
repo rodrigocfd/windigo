@@ -14,8 +14,7 @@ import (
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-gettickcount64
 func GetTickCount64() uint64 {
-	retLo, retHi, _ := syscall.Syscall(proc.GetTickCount64.Addr(), 0,
-		0, 0, 0)
+	retLo, retHi, _ := syscall.SyscallN(proc.GetTickCount64.Addr())
 	return util.Make64(uint32(retLo), uint32(retHi))
 }
 
@@ -26,10 +25,9 @@ func VerifyVersionInfo(
 	ovi.SetDwOsVersionInfoSize() // safety
 	cMaskLo, cMaskHi := util.Break64(conditionMask)
 
-	ret, _, err := syscall.Syscall6(proc.VerifyVersionInfo.Addr(), 4,
+	ret, _, err := syscall.SyscallN(proc.VerifyVersionInfo.Addr(),
 		uintptr(unsafe.Pointer(ovi)),
-		uintptr(typeMask), uintptr(cMaskLo), uintptr(cMaskHi),
-		0, 0)
+		uintptr(typeMask), uintptr(cMaskLo), uintptr(cMaskHi))
 
 	if wErr := errco.ERROR(err); ret == 0 && wErr == errco.OLD_WIN_VERSION {
 		return false, nil
@@ -46,9 +44,8 @@ func VerSetConditionMask(
 
 	cMaskLo, cMaskHi := util.Break64(conditionMask)
 
-	retLo, retHi, _ := syscall.Syscall6(proc.VerSetConditionMask.Addr(), 4,
+	retLo, retHi, _ := syscall.SyscallN(proc.VerSetConditionMask.Addr(),
 		uintptr(cMaskLo), uintptr(cMaskHi),
-		uintptr(typeMask), uintptr(condition),
-		0, 0)
+		uintptr(typeMask), uintptr(condition))
 	return util.Make64(uint32(retLo), uint32(retHi))
 }

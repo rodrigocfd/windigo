@@ -19,8 +19,8 @@ type HFONT HGDIOBJ
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontindirectw
 func CreateFontIndirect(lf *LOGFONT) HFONT {
-	ret, _, err := syscall.Syscall(proc.CreateFontIndirect.Addr(), 1,
-		uintptr(unsafe.Pointer(lf)), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.CreateFontIndirect.Addr(),
+		uintptr(unsafe.Pointer(lf)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -34,7 +34,7 @@ func (hFont HFONT) DeleteObject() {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
 func (hFont HFONT) GetObject(lf *LOGFONT) {
-	ret, _, err := syscall.Syscall(proc.GetObject.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.GetObject.Addr(),
 		uintptr(hFont), unsafe.Sizeof(*lf), uintptr(unsafe.Pointer(lf)))
 	if ret == 0 {
 		panic(errco.ERROR(err))

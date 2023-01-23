@@ -18,8 +18,7 @@ import (
 //
 // 📑 https://docs.microsoft.com/en-us/windows/console/allocconsole
 func AllocConsole() error {
-	ret, _, err := syscall.Syscall(proc.AllocConsole.Addr(), 0,
-		0, 0, 0)
+	ret, _, err := syscall.SyscallN(proc.AllocConsole.Addr())
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -30,8 +29,8 @@ func AllocConsole() error {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/console/attachconsole
 func AttachConsole(processId uint32) error {
-	ret, _, err := syscall.Syscall(proc.AttachConsole.Addr(), 1,
-		uintptr(processId), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.AttachConsole.Addr(),
+		uintptr(processId))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -40,7 +39,7 @@ func AttachConsole(processId uint32) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-copyfilew
 func CopyFile(existingFile, newFile string, failIfExists bool) error {
-	ret, _, err := syscall.Syscall(proc.CopyFile.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.CopyFile.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(existingFile))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(newFile))),
 		util.BoolToUintptr(failIfExists))
@@ -54,9 +53,9 @@ func CopyFile(existingFile, newFile string, failIfExists bool) error {
 func CreateDirectory(
 	pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
 
-	ret, _, err := syscall.Syscall(proc.CreateDirectory.Addr(), 2,
+	ret, _, err := syscall.SyscallN(proc.CreateDirectory.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(pathName))),
-		uintptr(unsafe.Pointer(securityAttributes)), 0)
+		uintptr(unsafe.Pointer(securityAttributes)))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -89,7 +88,7 @@ func CreateProcess(
 		envStrsPtr = unsafe.Pointer(Str.ToNativePtrMulti(envStrs))
 	}
 
-	ret, _, err := syscall.Syscall12(proc.CreateProcess.Addr(), 10,
+	ret, _, err := syscall.SyscallN(proc.CreateProcess.Addr(),
 		uintptr(applicationName.Raw()),
 		uintptr(commandLine.Raw()),
 		uintptr(unsafe.Pointer(processAttributes)),
@@ -99,8 +98,7 @@ func CreateProcess(
 		uintptr(envStrsPtr),
 		uintptr(currentDirectory.Raw()),
 		uintptr(unsafe.Pointer(startupInfo)),
-		uintptr(unsafe.Pointer(processInformation)),
-		0, 0)
+		uintptr(unsafe.Pointer(processInformation)))
 
 	if ret == 0 {
 		panic(errco.ERROR(err))
@@ -109,8 +107,8 @@ func CreateProcess(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
 func DeleteFile(fileName string) error {
-	ret, _, err := syscall.Syscall(proc.DeleteFile.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.DeleteFile.Addr(),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -119,18 +117,18 @@ func DeleteFile(fileName string) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess
 func ExitProcess(exitCode uint32) {
-	syscall.Syscall(proc.ExitProcess.Addr(), 1,
-		uintptr(exitCode), 0, 0)
+	syscall.SyscallN(proc.ExitProcess.Addr(),
+		uintptr(exitCode))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
 func ExpandEnvironmentStrings(src string) string {
 	pSrc := Str.ToNativePtr(src)
-	ret, _, _ := syscall.Syscall(proc.ExpandEnvironmentStrings.Addr(), 3,
+	ret, _, _ := syscall.SyscallN(proc.ExpandEnvironmentStrings.Addr(),
 		uintptr(unsafe.Pointer(pSrc)), 0, 0)
 
 	buf := make([]uint16, ret)
-	ret, _, err := syscall.Syscall(proc.ExpandEnvironmentStrings.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.ExpandEnvironmentStrings.Addr(),
 		uintptr(unsafe.Pointer(pSrc)),
 		uintptr(unsafe.Pointer(&buf[0])), ret)
 	runtime.KeepAlive(pSrc)
@@ -142,9 +140,9 @@ func ExpandEnvironmentStrings(src string) string {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
 func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
-	ret, _, err := syscall.Syscall(proc.FileTimeToSystemTime.Addr(), 2,
+	ret, _, err := syscall.SyscallN(proc.FileTimeToSystemTime.Addr(),
 		uintptr(unsafe.Pointer(inFileTime)),
-		uintptr(unsafe.Pointer(outSystemTime)), 0)
+		uintptr(unsafe.Pointer(outSystemTime)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -152,8 +150,7 @@ func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/console/freeconsole
 func FreeConsole() error {
-	ret, _, err := syscall.Syscall(proc.FreeConsole.Addr(), 0,
-		0, 0, 0)
+	ret, _, err := syscall.SyscallN(proc.FreeConsole.Addr())
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -162,15 +159,13 @@ func FreeConsole() error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getcommandlinew
 func GetCommandLine() string {
-	ret, _, _ := syscall.Syscall(proc.GetCommandLine.Addr(), 0,
-		0, 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.GetCommandLine.Addr())
 	return Str.FromNativePtr((*uint16)(unsafe.Pointer(ret)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/console/getconsolecp
 func GetConsoleCP() (co.CP, error) {
-	ret, _, err := syscall.Syscall(proc.GetConsoleCP.Addr(), 0,
-		0, 0, 0)
+	ret, _, err := syscall.SyscallN(proc.GetConsoleCP.Addr())
 	if ret == 0 {
 		return co.CP(0), errco.ERROR(err)
 	}
@@ -182,8 +177,8 @@ func GetConsoleTitle() (string, error) {
 	const BUF_SZ = _MAX_PATH * 2
 	buf := make([]uint16, BUF_SZ)
 
-	ret, _, err := syscall.Syscall(proc.GetConsoleTitle.Addr(), 2,
-		uintptr(unsafe.Pointer(&buf[0])), uintptr(BUF_SZ), 0)
+	ret, _, err := syscall.SyscallN(proc.GetConsoleTitle.Addr(),
+		uintptr(unsafe.Pointer(&buf[0])), uintptr(BUF_SZ))
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
 		return "", wErr
 	}
@@ -192,16 +187,15 @@ func GetConsoleTitle() (string, error) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/console/getconsolewindow
 func GetConsoleWindow() HWND {
-	ret, _, _ := syscall.Syscall(proc.GetConsoleWindow.Addr(), 0,
-		0, 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.GetConsoleWindow.Addr())
 	return HWND(ret)
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getcurrentdirectory
 func GetCurrentDirectory() string {
 	var buf [_MAX_PATH + 1]uint16
-	ret, _, err := syscall.Syscall(proc.GetCurrentDirectory.Addr(), 2,
-		uintptr(len(buf)), uintptr(unsafe.Pointer(&buf[0])), 0)
+	ret, _, err := syscall.SyscallN(proc.GetCurrentDirectory.Addr(),
+		uintptr(len(buf)), uintptr(unsafe.Pointer(&buf[0])))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -212,8 +206,8 @@ func GetCurrentDirectory() string {
 func GetDynamicTimeZoneInformation(
 	timeZoneInfo *DYNAMIC_TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
 
-	ret, _, _ := syscall.Syscall(proc.GetDynamicTimeZoneInformation.Addr(), 1,
-		uintptr(unsafe.Pointer(timeZoneInfo)), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.GetDynamicTimeZoneInformation.Addr(),
+		uintptr(unsafe.Pointer(timeZoneInfo)))
 	return co.TIME_ZONE_ID(ret)
 }
 
@@ -221,15 +215,14 @@ func GetDynamicTimeZoneInformation(
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getenvironmentstringsw
 func GetEnvironmentStrings() map[string]string {
-	ret, _, err := syscall.Syscall(proc.GetEnvironmentStrings.Addr(), 0,
-		0, 0, 0)
+	ret, _, err := syscall.SyscallN(proc.GetEnvironmentStrings.Addr())
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
 	rawEntries := Str.FromNativePtrMulti((*uint16)(unsafe.Pointer(ret)))
 
-	ret, _, err = syscall.Syscall(proc.FreeEnvironmentStrings.Addr(), 1,
-		ret, 0, 0)
+	ret, _, err = syscall.SyscallN(proc.FreeEnvironmentStrings.Addr(),
+		ret)
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -244,8 +237,8 @@ func GetEnvironmentStrings() map[string]string {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
-	ret, _, err := syscall.Syscall(proc.GetFileAttributes.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.GetFileAttributes.Addr(),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))))
 
 	if retAttr := co.FILE_ATTRIBUTE(ret); retAttr == co.FILE_ATTRIBUTE_INVALID {
 		return retAttr, errco.ERROR(err) // err is extended error information
@@ -256,25 +249,25 @@ func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getstartupinfow
 func GetStartupInfo(startupInfo *STARTUPINFO) {
-	syscall.Syscall(proc.GetStartupInfo.Addr(), 1,
-		uintptr(unsafe.Pointer(startupInfo)), 0, 0)
+	syscall.SyscallN(proc.GetStartupInfo.Addr(),
+		uintptr(unsafe.Pointer(startupInfo)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsysteminfo
 func GetSystemInfo(systemInfo *SYSTEM_INFO) {
-	syscall.Syscall(proc.GetSystemInfo.Addr(), 1,
-		uintptr(unsafe.Pointer(systemInfo)), 0, 0)
+	syscall.SyscallN(proc.GetSystemInfo.Addr(),
+		uintptr(unsafe.Pointer(systemInfo)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtime
 func GetSystemTime(systemTime *SYSTEMTIME) {
-	syscall.Syscall(proc.GetSystemTime.Addr(), 1,
-		uintptr(unsafe.Pointer(systemTime)), 0, 0)
+	syscall.SyscallN(proc.GetSystemTime.Addr(),
+		uintptr(unsafe.Pointer(systemTime)))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getsystemtimes
 func GetSystemTimes(idleTime, kernelTime, userTime *FILETIME) {
-	ret, _, err := syscall.Syscall(proc.GetSystemTimes.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.GetSystemTimes.Addr(),
 		uintptr(unsafe.Pointer(idleTime)), uintptr(unsafe.Pointer(kernelTime)),
 		uintptr(unsafe.Pointer(userTime)))
 	if ret == 0 {
@@ -285,16 +278,16 @@ func GetSystemTimes(idleTime, kernelTime, userTime *FILETIME) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimeasfiletime
 func GetSystemTimeAsFileTime() FILETIME {
 	var ft FILETIME
-	syscall.Syscall(proc.GetSystemTimeAsFileTime.Addr(), 1,
-		uintptr(unsafe.Pointer(&ft)), 0, 0)
+	syscall.SyscallN(proc.GetSystemTimeAsFileTime.Addr(),
+		uintptr(unsafe.Pointer(&ft)))
 	return ft
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimepreciseasfiletime
 func GetSystemTimePreciseAsFileTime() FILETIME {
 	var ft FILETIME
-	syscall.Syscall(proc.GetSystemTimePreciseAsFileTime.Addr(), 1,
-		uintptr(unsafe.Pointer(&ft)), 0, 0)
+	syscall.SyscallN(proc.GetSystemTimePreciseAsFileTime.Addr(),
+		uintptr(unsafe.Pointer(&ft)))
 	return ft
 }
 
@@ -302,8 +295,8 @@ func GetSystemTimePreciseAsFileTime() FILETIME {
 func GetTimeZoneInformation(
 	timeZoneInfo *TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
 
-	ret, _, _ := syscall.Syscall(proc.GetTimeZoneInformation.Addr(), 1,
-		uintptr(unsafe.Pointer(timeZoneInfo)), 0, 0)
+	ret, _, _ := syscall.SyscallN(proc.GetTimeZoneInformation.Addr(),
+		uintptr(unsafe.Pointer(timeZoneInfo)))
 	return co.TIME_ZONE_ID(ret)
 }
 
@@ -312,7 +305,7 @@ func GetTimeZoneInformationForYear(
 	wYear uint16,
 	dtzi *DYNAMIC_TIME_ZONE_INFORMATION, tzi *TIME_ZONE_INFORMATION) {
 
-	ret, _, err := syscall.Syscall(proc.GetTimeZoneInformationForYear.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.GetTimeZoneInformationForYear.Addr(),
 		uintptr(wYear),
 		uintptr(unsafe.Pointer(dtzi)), uintptr(unsafe.Pointer(tzi)))
 	if ret == 0 {
@@ -346,14 +339,13 @@ func GetVolumeInformation(rootPathName StrOpt) (_VolumeInfo, error) {
 	var nameBuf [_MAX_PATH + 1]uint16
 	var sysNameBuf [_MAX_PATH + 1]uint16
 
-	ret, _, err := syscall.Syscall9(proc.GetVolumeInformation.Addr(), 8,
+	ret, _, err := syscall.SyscallN(proc.GetVolumeInformation.Addr(),
 		uintptr(rootPathName.Raw()),
 		uintptr(unsafe.Pointer(&nameBuf[0])), _MAX_PATH+1,
 		uintptr(unsafe.Pointer(&info.SerialNumber)),
 		uintptr(unsafe.Pointer(&info.MaxComponentLength)),
 		uintptr(unsafe.Pointer(&info.FileSystemFlags)),
-		uintptr(unsafe.Pointer(&sysNameBuf[0])), _MAX_PATH+1,
-		0)
+		uintptr(unsafe.Pointer(&sysNameBuf[0])), _MAX_PATH+1)
 
 	if ret == 0 {
 		return _VolumeInfo{}, errco.ERROR(err)
@@ -367,8 +359,8 @@ func GetVolumeInformation(rootPathName StrOpt) (_VolumeInfo, error) {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getwindowsdirectoryw
 func GetWindowsDirectory() string {
 	var buf [_MAX_PATH + 1]uint16
-	ret, _, err := syscall.Syscall(proc.GetWindowsDirectory.Addr(), 2,
-		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)), 0)
+	ret, _, err := syscall.SyscallN(proc.GetWindowsDirectory.Addr(),
+		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -485,10 +477,9 @@ func MAKEWORD(lo, hi uint8) uint16 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefilew
 func MoveFile(existingFile, newFile string) error {
-	ret, _, err := syscall.Syscall(proc.MoveFile.Addr(), 2,
+	ret, _, err := syscall.SyscallN(proc.MoveFile.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(existingFile))),
-		uintptr(unsafe.Pointer(Str.ToNativePtr(newFile))),
-		0)
+		uintptr(unsafe.Pointer(Str.ToNativePtr(newFile))))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -497,7 +488,7 @@ func MoveFile(existingFile, newFile string) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw
 func MoveFileEx(existingFile, newFile string, flags co.MOVEFILE) error {
-	ret, _, err := syscall.Syscall(proc.MoveFile.Addr(), 2,
+	ret, _, err := syscall.SyscallN(proc.MoveFileEx.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(existingFile))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(newFile))),
 		uintptr(flags))
@@ -513,7 +504,7 @@ func MoveFileEx(existingFile, newFile string, flags co.MOVEFILE) error {
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-muldiv
 func MulDiv(number, numerator, denominator int32) int32 {
-	ret, _, _ := syscall.Syscall(proc.MulDiv.Addr(), 3,
+	ret, _, _ := syscall.SyscallN(proc.MulDiv.Addr(),
 		uintptr(number), uintptr(numerator), uintptr(denominator))
 	return int32(ret)
 }
@@ -521,8 +512,8 @@ func MulDiv(number, numerator, denominator int32) int32 {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter
 func QueryPerformanceCounter() int64 {
 	var lpPerformanceCount int64
-	ret, _, err := syscall.Syscall(proc.QueryPerformanceCounter.Addr(), 1,
-		uintptr(unsafe.Pointer(&lpPerformanceCount)), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.QueryPerformanceCounter.Addr(),
+		uintptr(unsafe.Pointer(&lpPerformanceCount)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -532,8 +523,8 @@ func QueryPerformanceCounter() int64 {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancefrequency
 func QueryPerformanceFrequency() int64 {
 	var lpFrequency int64
-	ret, _, err := syscall.Syscall(proc.QueryPerformanceFrequency.Addr(), 1,
-		uintptr(unsafe.Pointer(&lpFrequency)), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.QueryPerformanceFrequency.Addr(),
+		uintptr(unsafe.Pointer(&lpFrequency)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -542,8 +533,8 @@ func QueryPerformanceFrequency() int64 {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw
 func RemoveDirectory(pathName string) error {
-	ret, _, err := syscall.Syscall(proc.RemoveDirectory.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToNativePtr(pathName))), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.RemoveDirectory.Addr(),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(pathName))))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -555,7 +546,7 @@ func ReplaceFile(
 	replaced, replacement string,
 	backup StrOpt, replaceFlags co.REPLACEFILE) error {
 
-	ret, _, err := syscall.Syscall6(proc.ReplaceFile.Addr(), 6,
+	ret, _, err := syscall.SyscallN(proc.ReplaceFile.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replaced))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(replacement))),
 		uintptr(backup.Raw()), uintptr(replaceFlags), 0, 0)
@@ -567,8 +558,8 @@ func ReplaceFile(
 
 // 📑 https://docs.microsoft.com/en-us/windows/console/setconsoleoutputcp
 func SetConsoleOutputCP(codePage co.CP) error {
-	ret, _, err := syscall.Syscall(proc.SetConsoleOutputCP.Addr(), 1,
-		uintptr(codePage), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.SetConsoleOutputCP.Addr(),
+		uintptr(codePage))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -577,8 +568,8 @@ func SetConsoleOutputCP(codePage co.CP) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/console/setconsoletitle
 func SetConsoleTitle(title string) error {
-	ret, _, err := syscall.Syscall(proc.SetConsoleTitle.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToNativePtr(title))), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.SetConsoleTitle.Addr(),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(title))))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -587,8 +578,8 @@ func SetConsoleTitle(title string) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setcurrentdirectory
 func SetCurrentDirectory(pathName string) error {
-	ret, _, err := syscall.Syscall(proc.SetCurrentDirectory.Addr(), 1,
-		uintptr(unsafe.Pointer(Str.ToNativePtr(pathName))), 0, 0)
+	ret, _, err := syscall.SyscallN(proc.SetCurrentDirectory.Addr(),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(pathName))))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -597,8 +588,8 @@ func SetCurrentDirectory(pathName string) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfileattributesw
 func SetFileAttributes(fileName string, attrs co.FILE_ATTRIBUTE) error {
-	ret, _, err := syscall.Syscall(proc.SetFileAttributes.Addr(), 2,
-		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))), uintptr(attrs), 0)
+	ret, _, err := syscall.SyscallN(proc.SetFileAttributes.Addr(),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))), uintptr(attrs))
 	if ret == 0 {
 		return errco.ERROR(err)
 	}
@@ -607,17 +598,16 @@ func SetFileAttributes(fileName string, attrs co.FILE_ATTRIBUTE) error {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
 func Sleep(milliseconds uint32) {
-	syscall.Syscall(proc.Sleep.Addr(), 1,
-		uintptr(milliseconds), 0, 0)
+	syscall.SyscallN(proc.Sleep.Addr(),
+		uintptr(milliseconds))
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
 func SystemParametersInfo(
 	uiAction co.SPI, uiParam uint32, pvParam unsafe.Pointer, fWinIni co.SPIF) {
 
-	ret, _, err := syscall.Syscall6(proc.SystemParametersInfo.Addr(), 4,
-		uintptr(uiAction), uintptr(uiParam), uintptr(pvParam), uintptr(fWinIni),
-		0, 0)
+	ret, _, err := syscall.SyscallN(proc.SystemParametersInfo.Addr(),
+		uintptr(uiAction), uintptr(uiParam), uintptr(pvParam), uintptr(fWinIni))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -625,9 +615,9 @@ func SystemParametersInfo(
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetofiletime
 func SystemTimeToFileTime(inSystemTime *SYSTEMTIME, outFileTime *FILETIME) {
-	ret, _, err := syscall.Syscall(proc.SystemTimeToFileTime.Addr(), 2,
+	ret, _, err := syscall.SyscallN(proc.SystemTimeToFileTime.Addr(),
 		uintptr(unsafe.Pointer(inSystemTime)),
-		uintptr(unsafe.Pointer(outFileTime)), 0)
+		uintptr(unsafe.Pointer(outFileTime)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
@@ -638,7 +628,7 @@ func SystemTimeToTzSpecificLocalTime(
 	timeZoneInfo *TIME_ZONE_INFORMATION,
 	inUniversalTime *SYSTEMTIME, outLocalTime *SYSTEMTIME) {
 
-	ret, _, err := syscall.Syscall(proc.SystemTimeToTzSpecificLocalTime.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.SystemTimeToTzSpecificLocalTime.Addr(),
 		uintptr(unsafe.Pointer(timeZoneInfo)),
 		uintptr(unsafe.Pointer(inUniversalTime)),
 		uintptr(unsafe.Pointer(outLocalTime)))
@@ -652,7 +642,7 @@ func TzSpecificLocalTimeToSystemTime(
 	timeZoneInfo *TIME_ZONE_INFORMATION,
 	inLocalTime *SYSTEMTIME, outUniversalTime *SYSTEMTIME) {
 
-	ret, _, err := syscall.Syscall(proc.TzSpecificLocalTimeToSystemTime.Addr(), 3,
+	ret, _, err := syscall.SyscallN(proc.TzSpecificLocalTimeToSystemTime.Addr(),
 		uintptr(unsafe.Pointer(timeZoneInfo)),
 		uintptr(unsafe.Pointer(inLocalTime)),
 		uintptr(unsafe.Pointer(outUniversalTime)))
