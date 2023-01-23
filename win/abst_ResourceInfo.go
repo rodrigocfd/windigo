@@ -47,6 +47,16 @@ func (me *ResourceInfo) FixedFileInfo() (*VS_FIXEDFILEINFO, bool) {
 	return (*VS_FIXEDFILEINFO)(ptr), true
 }
 
+// Calls ResourceInfo.FixedFileInfo() and automatically retrieves the product
+// version, or all zeros if not available.
+func (me *ResourceInfo) ProductVersion() (major, minor, patch, build uint16) {
+	if verNfo, ok := me.FixedFileInfo(); ok {
+		return verNfo.ProductVersion()
+	} else {
+		return 0, 0, 0, 0
+	}
+}
+
 // Returns the string information blocks, one per language and code page, which contain several strings.
 func (me *ResourceInfo) Blocks() []ResourceInfoBlock {
 	type _RawBlock struct {
