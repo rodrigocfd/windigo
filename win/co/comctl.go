@@ -853,13 +853,13 @@ const (
 type TTI int32
 
 const (
-	ERROR         TTI = 3
-	INFO          TTI = 1
-	NONE          TTI = 0
-	WARNING       TTI = 2
-	INFO_LARGE    TTI = 4
-	WARNING_LARGE TTI = 5
-	ERROR_LARGE   TTI = 6
+	TTI_ERROR         TTI = 3
+	TTI_INFO          TTI = 1
+	TTI_NONE          TTI = 0
+	TTI_WARNING       TTI = 2
+	TTI_INFO_LARGE    TTI = 4
+	TTI_WARNING_LARGE TTI = 5
+	TTI_ERROR_LARGE   TTI = 6
 )
 
 // TVM_EXPAND action flag.

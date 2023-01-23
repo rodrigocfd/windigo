@@ -64,6 +64,16 @@ type HANDLE syscall.Handle
 // 📑 https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-createeventw
 type HEVENT HANDLE
 
+// A handle to a resource.
+//
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-findresourcew
+type HRSRC HANDLE
+
+// A handle to a resource memory block.
+//
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadresource
+type HRSRCMEM HANDLE
+
 //------------------------------------------------------------------------------
 
 // Language and sublanguage identifier.

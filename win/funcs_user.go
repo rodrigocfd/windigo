@@ -55,6 +55,43 @@ func BroadcastSystemMessage(
 	return
 }
 
+// This function creates HCURSOR only. The HICON variation is
+// CreateIconFromResourceEx().
+//
+// ⚠️ You must defer HCURSOR.DestroyCursor().
+//
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconfromresourceex
+func CreateCursorFromResourceEx(
+	resBits []byte, fmtVersion int,
+	cxDesired, cyDesired int,
+	flags co.LR) (HCURSOR, error) {
+
+	hIcon, err := CreateIconFromResourceEx(
+		resBits, fmtVersion, cxDesired, cyDesired, flags)
+	return HCURSOR(hIcon), err
+}
+
+// This function creates HICON only. The HCURSOR variation is
+// CreateCursorFromResourceEx().
+//
+// ⚠️ You must defer HICON.DestroyIcon().
+//
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconfromresourceex
+func CreateIconFromResourceEx(
+	resBits []byte, fmtVersion int,
+	cxDesired, cyDesired int,
+	flags co.LR) (HICON, error) {
+
+	ret, _, err := syscall.SyscallN(proc.CreateIconFromResourceEx.Addr(),
+		uintptr(unsafe.Pointer(&resBits[0])), uintptr(len(resBits)),
+		1, uintptr(fmtVersion), uintptr(cxDesired), uintptr(cyDesired),
+		uintptr(flags))
+	if ret == 0 {
+		return HICON(0), errco.ERROR(err)
+	}
+	return HICON(ret), nil
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycarret
 func DestroyCaret() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyCaret.Addr())

@@ -50,7 +50,8 @@ func (me *ClassName) IsNone() bool        { return me.curType == 0 }
 func (me *ClassName) Atom() (ATOM, bool)  { return me.atom, me.curType == 1 }
 func (me *ClassName) Str() (string, bool) { return me.str, me.curType == 2 }
 
-func (me *ClassName) raw() (uintptr, *uint16) { // pointer must be kept alive
+// Converts the internal value to uintptr; pointer must be kept alive.
+func (me *ClassName) raw() (val uintptr, ptr *uint16) {
 	switch me.curType {
 	case 0:
 		return 0, nil
@@ -110,7 +111,8 @@ func (me *CursorRes) Idc() (co.IDC, bool) { return me.idc, me.curType == 1 }
 func (me *CursorRes) Id() (int, bool)     { return int(me.id), me.curType == 2 }
 func (me *CursorRes) Str() (string, bool) { return me.str, me.curType == 3 }
 
-func (me *CursorRes) raw() (uintptr, *uint16) { // pointer must be kept alive
+// Converts the internal value to uintptr; pointer must be kept alive.
+func (me *CursorRes) raw() (val uintptr, ptr *uint16) {
 	switch me.curType {
 	case 1:
 		return uintptr(me.idc), nil
@@ -170,7 +172,8 @@ func (me *IconRes) Idi() (co.IDI, bool) { return me.idi, me.curType == 1 }
 func (me *IconRes) Id() (int, bool)     { return int(me.id), me.curType == 2 }
 func (me *IconRes) Str() (string, bool) { return me.str, me.curType == 3 }
 
-func (me *IconRes) raw() (uintptr, *uint16) { // pointer must be kept alive
+// Converts the internal value to uintptr; pointer must be kept alive.
+func (me *IconRes) raw() (val uintptr, ptr *uint16) {
 	switch me.curType {
 	case 1:
 		return uintptr(me.idi), nil
@@ -223,6 +226,7 @@ func (me *MenuItem) Flag() co.MF {
 	return util.Iif(me.curType == 1, co.MF_BYCOMMAND, co.MF_BYPOSITION).(co.MF)
 }
 
+// Converts the internal value to uintptr and the corresponding co.MF.
 func (me *MenuItem) raw() (uintptr, co.MF) {
 	switch me.curType {
 	case 1:
@@ -270,7 +274,8 @@ func ResIdStr(str string) ResId {
 func (me *ResId) Id() (int, bool)     { return int(me.id), me.curType == 1 }
 func (me *ResId) Str() (string, bool) { return me.str, me.curType == 2 }
 
-func (me *ResId) raw() (uintptr, *uint16) { // pointer must be kept alive
+// Converts the internal value to uintptr; pointer must be kept alive.
+func (me *ResId) raw() (val uintptr, ptr *uint16) {
 	switch me.curType {
 	case 1:
 		return uintptr(me.id), nil

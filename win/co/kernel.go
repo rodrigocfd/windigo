@@ -616,6 +616,35 @@ const (
 	REPLACEFILE_IGNORE_ACL_ERRORS   REPLACEFILE = 0x0000_0004
 )
 
+// Predefined resource types.
+//
+// 📑 https://learn.microsoft.com/en-us/windows/win32/menurc/resource-types
+type RT uint16
+
+const (
+	RT_ACCELERATOR  RT = 9
+	RT_ANICURSOR    RT = 21
+	RT_ANIICON      RT = 22
+	RT_BITMAP       RT = 2
+	RT_CURSOR       RT = 1
+	RT_DIALOG       RT = 5
+	RT_DLGINCLUDE   RT = 17
+	RT_FONT         RT = 8
+	RT_FONTDIR      RT = 7
+	RT_GROUP_CURSOR RT = 12
+	RT_GROUP_ICON   RT = 14
+	RT_HTML         RT = 23
+	RT_ICON         RT = 3
+	RT_MANIFEST     RT = 24
+	RT_MENU         RT = 4
+	RT_MESSAGETABLE RT = 11
+	RT_PLUGPLAY     RT = 19
+	RT_RCDATA       RT = 10
+	RT_STRING       RT = 6
+	RT_VERSION      RT = 16
+	RT_VXD          RT = 20
+)
+
 // CreateFileMapping() flProtect.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw

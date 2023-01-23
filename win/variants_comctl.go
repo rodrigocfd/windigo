@@ -56,6 +56,7 @@ func (me *TdcIcon) HIcon() (HICON, bool)    { return me.hIcon, me.curType == 1 }
 func (me *TdcIcon) Id() (int, bool)         { return int(me.id), me.curType == 2 }
 func (me *TdcIcon) Tdi() (co.TD_ICON, bool) { return me.tdIcon, me.curType == 3 }
 
+// Converts the internal value to uintptr.
 func (me *TdcIcon) raw() uint64 {
 	switch me.curType {
 	case 0:

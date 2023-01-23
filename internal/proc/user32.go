@@ -27,6 +27,7 @@ var (
 	CountClipboardFormats         = user32.NewProc("CountClipboardFormats")
 	CreateAcceleratorTable        = user32.NewProc("CreateAcceleratorTableW")
 	CreateDialogParam             = user32.NewProc("CreateDialogParamW")
+	CreateIconFromResourceEx      = user32.NewProc("CreateIconFromResourceEx")
 	CreateIconIndirect            = user32.NewProc("CreateIconIndirect")
 	CreateMenu                    = user32.NewProc("CreateMenu")
 	CreatePopupMenu               = user32.NewProc("CreatePopupMenu")

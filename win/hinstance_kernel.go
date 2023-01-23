@@ -3,6 +3,7 @@
 package win
 
 import (
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -38,6 +39,42 @@ func LoadLibrary(libFileName string) HINSTANCE {
 		panic(errco.ERROR(err))
 	}
 	return HINSTANCE(ret)
+}
+
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-findresourcew
+func (hInst HINSTANCE) FindResource(
+	name ResId, rsrcType RsrcType) (HRSRC, error) {
+
+	nameVal, nameBuf := name.raw()
+	rsrcTypeVal, rsrcTypeBuf := rsrcType.raw()
+
+	ret, _, err := syscall.SyscallN(proc.FindResource.Addr(),
+		uintptr(hInst), nameVal, rsrcTypeVal)
+	runtime.KeepAlive(nameBuf)
+	runtime.KeepAlive(rsrcTypeBuf)
+
+	if ret == 0 {
+		return HRSRC(0), errco.ERROR(err)
+	}
+	return HRSRC(ret), nil
+}
+
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-findresourceexw
+func (hInst HINSTANCE) FindResourceEx(
+	name ResId, rsrcType RsrcType, language LANGID) (HRSRC, error) {
+
+	nameVal, nameBuf := name.raw()
+	rsrcTypeVal, rsrcTypeBuf := rsrcType.raw()
+
+	ret, _, err := syscall.SyscallN(proc.FindResourceEx.Addr(),
+		uintptr(hInst), nameVal, rsrcTypeVal, uintptr(language))
+	runtime.KeepAlive(nameBuf)
+	runtime.KeepAlive(rsrcTypeBuf)
+
+	if ret == 0 {
+		return HRSRC(0), errco.ERROR(err)
+	}
+	return HRSRC(ret), nil
 }
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
@@ -77,4 +114,45 @@ func (hInst HINSTANCE) GetProcAddress(procName string) (uintptr, error) {
 		return 0, errco.ERROR(err)
 	}
 	return ret, nil
+}
+
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadresource
+func (hInst HINSTANCE) LoadResource(hResInfo HRSRC) (HRSRCMEM, error) {
+	ret, _, err := syscall.SyscallN(proc.LoadResource.Addr(),
+		uintptr(hInst), uintptr(hResInfo))
+	if ret == 0 {
+		return HRSRCMEM(0), errco.ERROR(err)
+	}
+	return HRSRCMEM(ret), nil
+}
+
+// This method should belong to HRSRCMEM, but in order to make it safe, we
+// automatically call HINSTANCE.SizeofResource(), so it's implemented here.
+//
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-lockresource
+func (hInst HINSTANCE) LockResource(
+	hResInfo HRSRC, hResLoaded HRSRCMEM) ([]byte, error) {
+
+	sz, szErr := hInst.SizeofResource(hResInfo)
+	if szErr != nil {
+		return nil, szErr
+	}
+
+	ret, _, err := syscall.SyscallN(proc.LockResource.Addr(),
+		uintptr(hInst), uintptr(hResInfo), uintptr(hResLoaded))
+	if ret == 0 {
+		return nil, errco.ERROR(err)
+	}
+
+	return unsafe.Slice((*byte)(unsafe.Pointer(ret)), sz), nil
+}
+
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-sizeofresource
+func (hInst HINSTANCE) SizeofResource(hResInfo HRSRC) (int, error) {
+	ret, _, err := syscall.SyscallN(proc.SizeofResource.Addr(),
+		uintptr(hInst), uintptr(hResInfo))
+	if ret == 0 {
+		return 0, errco.ERROR(err)
+	}
+	return int(ret), nil
 }
