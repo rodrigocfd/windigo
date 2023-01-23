@@ -289,6 +289,16 @@ func GetSystemMetrics(index co.SM) int32 {
 	return int32(ret)
 }
 
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetricsfordpi
+func GetSystemMetricsForDpi(index co.SM, dpi uint32) int32 {
+	ret, _, err := syscall.Syscall(proc.GetSystemMetricsForDpi.Addr(), 2,
+		uintptr(index), 0, 0)
+	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
+		panic(wErr)
+	}
+	return int32(ret)
+}
+
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessage
 func InSendMessage() bool {
 	ret, _, _ := syscall.Syscall(proc.InSendMessage.Addr(), 0,

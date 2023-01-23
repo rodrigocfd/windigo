@@ -121,6 +121,7 @@ var (
 	GetSysColorBrush              = user32.NewProc("GetSysColorBrush")
 	GetSystemMenu                 = user32.NewProc("GetSystemMenu")
 	GetSystemMetrics              = user32.NewProc("GetSystemMetrics")
+	GetSystemMetricsForDpi        = user32.NewProc("GetSystemMetricsForDpi")
 	GetTopWindow                  = user32.NewProc("GetTopWindow")
 	GetWindow                     = user32.NewProc("GetWindow")
 	GetWindowDC                   = user32.NewProc("GetWindowDC")
