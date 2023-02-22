@@ -16,6 +16,8 @@ import (
 // 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hpen
 type HPEN HGDIOBJ
 
+// ⚠️ You must defer HPEN.DeleteObject().
+//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
 func CreatePen(style co.PS, width int32, color COLORREF) HPEN {
 	ret, _, err := syscall.SyscallN(proc.CreatePen.Addr(),
