@@ -58,3 +58,10 @@ func (hPipe HPIPE) ReadFile(
 	buffer []byte, overlapped *OVERLAPPED) (numBytesRead uint32, e error) {
 	return HFILE(hPipe).ReadFile(buffer, overlapped)
 }
+
+// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
+func (hPipe HPIPE) WriteFile(
+	data []byte, overlapped *OVERLAPPED) (numBytesWritten uint32, e error) {
+
+	return HFILE(hPipe).WriteFile(data, overlapped)
+}
