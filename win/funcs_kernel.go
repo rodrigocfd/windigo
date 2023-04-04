@@ -62,43 +62,6 @@ func CreateDirectory(
 	return nil
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
-func CreateNamedPipe(name string, dwOpenMode co.PIPE_OPEN, dwPipeMode co.PIPE_MODE, nMaxInstances uint, nOutBufferSize uint, nInBufferSize uint, nDefaultTimeOut uint, securityAttributes *SECURITY_ATTRIBUTES) (HFILE, error) {
-	ret, _, err := syscall.SyscallN(proc.CreateNamedPipe.Addr(),
-		uintptr(unsafe.Pointer(Str.ToNativePtr(name))),
-		uintptr(dwOpenMode),
-		uintptr(dwPipeMode),
-		uintptr(nMaxInstances),
-		uintptr(nOutBufferSize),
-		uintptr(nInBufferSize),
-		uintptr(nDefaultTimeOut),
-		uintptr(unsafe.Pointer(securityAttributes)))
-	if ret == 0 {
-		return 0, errco.ERROR(err)
-	}
-	return HFILE(ret), nil
-}
-
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-connectnamedpipe
-func ConnectNamedPipe(hNamedPipe HFILE) error {
-	ret, _, err := syscall.SyscallN(proc.ConnectNamedPipe.Addr(),
-		uintptr(hNamedPipe), uintptr(0))
-	if ret == 0 {
-		return errco.ERROR(err)
-	}
-	return nil
-}
-
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-disconnectnamedpipe
-func DisconnectNamedPipe(hNamedPipe HFILE) error {
-	ret, _, err := syscall.SyscallN(proc.DisconnectNamedPipe.Addr(),
-		uintptr(hNamedPipe), uintptr(0))
-	if ret == 0 {
-		return errco.ERROR(err)
-	}
-	return nil
-}
-
 // ⚠️ You must defer HPROCESS.CloseHandle() and HTHREAD.CloseHandle() on
 // HProcess and HThread members of PROCESS_INFORMATION.
 //
