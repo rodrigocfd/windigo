@@ -9,10 +9,19 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
+// A handle to a pipe.
+//
+// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HPIPE HANDLE
 
+// ⚠️ You must defer HPIPE.CloseHandle().
+//
 // 📑 https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
-func CreateNamedPipe(name string, dwOpenMode co.PIPE_ACCESS, dwPipeMode co.PIPE, nMaxInstances uint, nOutBufferSize uint, nInBufferSize uint, nDefaultTimeOut uint, securityAttributes *SECURITY_ATTRIBUTES) (HPIPE, error) {
+func CreateNamedPipe(
+	name string, dwOpenMode co.PIPE_ACCESS, dwPipeMode co.PIPE,
+	nMaxInstances uint, nOutBufferSize uint, nInBufferSize uint,
+	nDefaultTimeOut uint, securityAttributes *SECURITY_ATTRIBUTES) (HPIPE, error) {
+
 	ret, _, err := syscall.SyscallN(proc.CreateNamedPipe.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(name))),
 		uintptr(dwOpenMode),
@@ -22,6 +31,7 @@ func CreateNamedPipe(name string, dwOpenMode co.PIPE_ACCESS, dwPipeMode co.PIPE,
 		uintptr(nInBufferSize),
 		uintptr(nDefaultTimeOut),
 		uintptr(unsafe.Pointer(securityAttributes)))
+
 	if ret == 0 {
 		return 0, errco.ERROR(err)
 	}
@@ -56,6 +66,7 @@ func (hPipe HPIPE) CloseHandle() error {
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hPipe HPIPE) ReadFile(
 	buffer []byte, overlapped *OVERLAPPED) (numBytesRead uint32, e error) {
+
 	return HFILE(hPipe).ReadFile(buffer, overlapped)
 }
 

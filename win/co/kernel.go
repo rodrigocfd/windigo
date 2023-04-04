@@ -95,29 +95,6 @@ const (
 	CREATE_INHERIT_PARENT_AFFINITY      CREATE = 0x0001_0000
 )
 
-// CreateNamedPipe() dwOpenMode.
-type PIPE_ACCESS uint32
-
-const (
-	PIPE_ACCESS_INBOUND  PIPE_ACCESS = 0x00000001
-	PIPE_ACCESS_OUTBOUND PIPE_ACCESS = 0x00000002
-	PIPE_ACCESS_DUPLEX   PIPE_ACCESS = 0x00000003
-)
-
-// CreateNamedPipe() dwPipeMode.
-type PIPE uint32
-
-const (
-	PIPE_WAIT                  PIPE = 0x00000000
-	PIPE_NOWAIT                PIPE = 0x00000001
-	PIPE_READMODE_BYTE         PIPE = 0x00000000
-	PIPE_READMODE_MESSAGE      PIPE = 0x00000002
-	PIPE_TYPE_BYTE             PIPE = 0x00000000
-	PIPE_TYPE_MESSAGE          PIPE = 0x00000004
-	PIPE_ACCEPT_REMOTE_CLIENTS PIPE = 0x00000000
-	PIPE_REJECT_REMOTE_CLIENTS PIPE = 0x00000008
-)
-
 // CreateFile() dwCreationDisposition. Originally without prefix.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
@@ -546,6 +523,29 @@ const (
 	PBT_APMOEMEVENT           PBT = 0x000b
 	PBT_APMRESUMEAUTOMATIC    PBT = 0x0012
 	PBT_POWERSETTINGCHANGE    PBT = 0x8013
+)
+
+// CreateNamedPipe() dwPipeMode.
+type PIPE uint32
+
+const (
+	PIPE_WAIT                  PIPE = 0x0000_0000
+	PIPE_NOWAIT                PIPE = 0x0000_0001
+	PIPE_READMODE_BYTE         PIPE = 0x0000_0000
+	PIPE_READMODE_MESSAGE      PIPE = 0x0000_0002
+	PIPE_TYPE_BYTE             PIPE = 0x0000_0000
+	PIPE_TYPE_MESSAGE          PIPE = 0x0000_0004
+	PIPE_ACCEPT_REMOTE_CLIENTS PIPE = 0x0000_0000
+	PIPE_REJECT_REMOTE_CLIENTS PIPE = 0x0000_0008
+)
+
+// CreateNamedPipe() dwOpenMode.
+type PIPE_ACCESS uint32
+
+const (
+	PIPE_ACCESS_INBOUND  PIPE_ACCESS = 0x0000_0001
+	PIPE_ACCESS_OUTBOUND PIPE_ACCESS = 0x0000_0002
+	PIPE_ACCESS_DUPLEX   PIPE_ACCESS = 0x0000_0003
 )
 
 // Process access rights.
