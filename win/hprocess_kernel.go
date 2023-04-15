@@ -195,12 +195,10 @@ func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
 	return nil
 }
 
-// Pass -1 for infinite timeout.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
-func (hProcess HPROCESS) WaitForSingleObject(milliseconds uint32) (co.WAIT, error) {
+func (hProcess HPROCESS) WaitForSingleObject(milliseconds NumInf) (co.WAIT, error) {
 	ret, _, err := syscall.SyscallN(proc.WaitForSingleObject.Addr(),
-		uintptr(hProcess), uintptr(milliseconds))
+		uintptr(hProcess), milliseconds.Raw())
 	if co.WAIT(ret) == co.WAIT_FAILED {
 		return co.WAIT_FAILED, errco.ERROR(err)
 	}

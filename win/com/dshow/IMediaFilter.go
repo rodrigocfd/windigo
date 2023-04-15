@@ -8,6 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/com/com"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowvt"
@@ -18,10 +19,8 @@ import (
 type IMediaFilter interface {
 	com.IPersist
 
-	// Pass -1 for infinite timeout.
-	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-getstate
-	GetState(msTimeout int) (dshowco.FILTER_STATE, error)
+	GetState(msTimeout win.NumInf) (dshowco.FILTER_STATE, error)
 
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-pause
 	Pause() bool
@@ -42,12 +41,12 @@ func NewIMediaFilter(base com.IUnknown) IMediaFilter {
 	return &_IMediaFilter{IPersist: com.NewIPersist(base)}
 }
 
-func (me *_IMediaFilter) GetState(msTimeout int) (dshowco.FILTER_STATE, error) {
+func (me *_IMediaFilter) GetState(msTimeout win.NumInf) (dshowco.FILTER_STATE, error) {
 	var state dshowco.FILTER_STATE
 	ret, _, _ := syscall.SyscallN(
 		(*dshowvt.IMediaFilter)(unsafe.Pointer(*me.Ptr())).GetState,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(int32(msTimeout)), uintptr(unsafe.Pointer(&state)))
+		msTimeout.Raw(), uintptr(unsafe.Pointer(&state)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return state, nil

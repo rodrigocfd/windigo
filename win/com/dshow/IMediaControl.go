@@ -18,10 +18,8 @@ import (
 type IMediaControl interface {
 	autom.IDispatch
 
-	// Pass -1 for infinite timeout.
-	//
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-getstate
-	GetState(msTimeout int) (dshowco.FILTER_STATE, error)
+	GetState(msTimeout win.NumInf) (dshowco.FILTER_STATE, error)
 
 	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-pause
 	Pause() bool
@@ -58,13 +56,13 @@ func NewIMediaControl(base com.IUnknown) IMediaControl {
 }
 
 func (me *_IMediaControl) GetState(
-	msTimeout int) (dshowco.FILTER_STATE, error) {
+	msTimeout win.NumInf) (dshowco.FILTER_STATE, error) {
 
 	var state dshowco.FILTER_STATE
 	ret, _, _ := syscall.SyscallN(
 		(*dshowvt.IMediaControl)(unsafe.Pointer(*me.Ptr())).GetState,
 		uintptr(unsafe.Pointer(me.Ptr())),
-		uintptr(int32(msTimeout)), uintptr(unsafe.Pointer(&state)))
+		msTimeout.Raw(), uintptr(unsafe.Pointer(&state)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
 		return state, nil

@@ -113,12 +113,10 @@ func (hThread HTHREAD) SuspendThread() (uint32, error) {
 	return uint32(ret), nil
 }
 
-// Pass -1 for infinite timeout.
-//
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
-func (hThread HTHREAD) WaitForSingleObject(milliseconds uint32) (co.WAIT, error) {
+func (hThread HTHREAD) WaitForSingleObject(milliseconds NumInf) (co.WAIT, error) {
 	ret, _, err := syscall.SyscallN(proc.WaitForSingleObject.Addr(),
-		uintptr(hThread), uintptr(milliseconds))
+		uintptr(hThread), milliseconds.Raw())
 	if co.WAIT(ret) == co.WAIT_FAILED {
 		return co.WAIT_FAILED, errco.ERROR(err)
 	}

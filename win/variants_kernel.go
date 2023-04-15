@@ -8,6 +8,67 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// Variant type for a number which can be INFINITE (defined in Windows headers
+// as -1).
+//
+// Example:
+//
+//	num := win.NumInfNumeric(100)
+//
+//	inf := win.NumInfInfinite()
+type NumInf struct {
+	n uint32
+}
+
+// Creates a new NumInf variant with an INFINITE value.
+func NumInfInfinite() NumInf {
+	var inf int32 = -1
+	return NumInf{
+		n: uint32(inf),
+	}
+}
+
+// Creates a new NumInf variant with a numeric value.
+func NumInfNumeric(n int) NumInf {
+	return NumInf{
+		n: uint32(n),
+	}
+}
+
+// If the current value is numeric, returns the number and true; otherwise
+// returns zero and false.
+//
+// Example:
+//
+//	num := win.NumInfNumeric(100)
+//
+//	if val, ok := num.Numeric(); ok {
+//		println(val)
+//	}
+func (me *NumInf) Numeric() (int, bool) {
+	if me.IsNumeric() {
+		return int(me.n), true
+	} else {
+		return 0, false
+	}
+}
+
+// Returns true if the current value is numeric (not INFINITE).
+func (me *NumInf) IsNumeric() bool { return !me.IsInfinite() }
+
+// Returns true if the current value is INFINITE.
+func (me *NumInf) IsInfinite() bool {
+	var inf int32 = -1
+	return me.n == uint32(inf)
+}
+
+// Converts the internal value to uintptr.
+func (me *NumInf) Raw() uintptr {
+	return uintptr(me.n)
+}
+
+//------------------------------------------------------------------------------
+
 // Variant type for a resource type.
 //
 // Example:
