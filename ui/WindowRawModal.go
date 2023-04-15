@@ -21,7 +21,7 @@ type _WindowRawModal struct {
 // Example:
 //
 //	myModal := ui.NewWindowModal(
-//		ui.WindowModalOpts(
+//		ui.WindowModalOpts().
 //			Title("My modal window"),
 //		),
 //	)

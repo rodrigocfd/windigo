@@ -21,7 +21,7 @@ type _WindowRawMain struct {
 // Example:
 //
 //	myWindow := ui.NewWindowMain(
-//		ui.WindowMainOpts(
+//		ui.WindowMainOpts().
 //			Title("Hello world").
 //			ClientArea(win.SIZE{Cx: 500, Cy: 400}).
 //			WndStyles(co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN |

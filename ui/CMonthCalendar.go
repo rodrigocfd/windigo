@@ -46,7 +46,7 @@ type _MonthCalendar struct {
 //
 //	myCal := ui.NewMonthCalendar(
 //		owner,
-//		ui.MonthCalendarOpts(
+//		ui.MonthCalendarOpts().
 //			Position(win.POINT{X: 50, Y: 50}),
 //		),
 //	)

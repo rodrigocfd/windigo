@@ -44,7 +44,7 @@ type _ComboBox struct {
 //
 //	myCombo := ui.NewComboBox(
 //		owner,
-//		ui.ComboBoxOpts(
+//		ui.ComboBoxOpts().
 //			Text("Some option").
 //			Position(win.POINT{X: 20, Y: 10}).
 //			State(co.BST_CHECKED),

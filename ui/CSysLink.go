@@ -45,7 +45,7 @@ type _SysLink struct {
 //
 //	myLink := ui.NewSysLink(
 //		owner,
-//		ui.SysLinkOpts(
+//		ui.SysLinkOpts().
 //			Text("Click <a href=\"123\">here</a>.").
 //			Position(win.POINT{X: 20, Y: 10}),
 //		),

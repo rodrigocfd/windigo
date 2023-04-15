@@ -39,7 +39,7 @@ type _ProgressBar struct {
 //
 //	myProg := ui.NewProgressBar(
 //		owner,
-//		ui.ProgressBarOpts(
+//		ui.ProgressBarOpts().
 //			Position(win.POINT{X: 350, Y: 80}),
 //		),
 //	)

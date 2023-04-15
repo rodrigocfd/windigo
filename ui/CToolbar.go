@@ -50,7 +50,7 @@ type _Toolbar struct {
 //
 //	myBar := ui.NewToolbar(
 //		owner,
-//		ui.ToolbarOpts(
+//		ui.ToolbarOpts().
 //			CtrlStyles(co.TBSTYLE_BUTTON|co.TBSTYLE_LIST|co.TBSTYLE_FLAT),
 //		),
 //	)

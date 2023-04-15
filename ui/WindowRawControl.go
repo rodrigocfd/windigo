@@ -24,7 +24,7 @@ type _WindowRawControl struct {
 //
 //	myControl := ui.NewWindowControl(
 //		owner,
-//		ui.WindowControlOpts(
+//		ui.WindowControlOpts().
 //			Position(win.POINT{X: 100, Y: 100}).
 //			Size(win.SIZE{Cx: 300, Cy: 200}).
 //			RangeMax(4),
