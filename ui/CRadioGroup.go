@@ -38,17 +38,17 @@ type _RadioGroup struct {
 //
 //	myRadios := ui.NewRadioGroup(
 //		owner,
-//		ui.RadioButtonOpts(
+//		ui.RadioButtonOpts().
 //			Text("First option").
 //			Position(win.POINT{X: 10, Y: 40}).
 //			WndStyles(co.WS_VISIBLE|co.WS_CHILD|co.WS_TABSTOP|co.WS_GROUP),
 //		),
-//		ui.RadioButtonOpts(
+//		ui.RadioButtonOpts().
 //			Text("Second option").
 //			Position(win.POINT{X: 10, Y: 80}).
 //			Select(true),
 //		),
-//		ui.RadioButtonOpts(
+//		ui.RadioButtonOpts().
 //			Text("Third option").
 //			Position(win.POINT{X: 10, Y: 120}),
 //		),

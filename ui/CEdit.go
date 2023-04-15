@@ -51,7 +51,7 @@ type _Edit struct {
 //
 //	myTxt := ui.NewEdit(
 //		owner,
-//		ui.EditOpts(
+//		ui.EditOpts().
 //			Position(win.POINT{X: 10, Y: 20}).
 //			Size(win.SIZE{Cx: 120}),
 //		),

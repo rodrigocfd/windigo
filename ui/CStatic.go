@@ -42,7 +42,7 @@ type _Static struct {
 //
 //	myLabel := ui.NewStatic(
 //		owner,
-//		ui.StaticOpts(
+//		ui.StaticOpts().
 //			Text("Some label").
 //			Position(win.POINT{X: 20, Y: 10}),
 //		),

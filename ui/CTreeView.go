@@ -46,7 +46,7 @@ type _TreeView struct {
 //
 //	myTree := ui.NewTreeView(
 //		owner,
-//		ui.TreeViewOpts(
+//		ui.TreeViewOpts().
 //			Position(win.POINT{X: 10, Y: 240}).
 //			Size(win.SIZE{Cx: 150, Cy: 100}),
 //		),

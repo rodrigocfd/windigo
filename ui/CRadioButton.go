@@ -51,7 +51,7 @@ type _RadioButton struct {
 //
 //	myRadio := ui.NewRadioButton(
 //		owner,
-//		ui.RadioButtonOpts(
+//		ui.RadioButtonOpts().
 //			Text("Some option").
 //			Position(win.POINT{X: 10, Y: 40}).
 //			WndStyles(co.WS_VISIBLE|co.WS_CHILD|co.WS_TABSTOP|co.WS_GROUP),

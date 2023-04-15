@@ -48,7 +48,7 @@ type _CheckBox struct {
 //
 //	myCheck := ui.NewCheckBox(
 //		owner,
-//		ui.CheckBoxOpts(
+//		ui.CheckBoxOpts().
 //			Text("Some option").
 //			Position(win.POINT{X: 20, Y: 10}).
 //			State(co.BST_CHECKED),

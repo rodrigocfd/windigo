@@ -51,7 +51,7 @@ type _Trackbar struct {
 //
 //	mySlider := ui.NewTrackbar(
 //		owner,
-//		ui.TrackbarOpts(
+//		ui.TrackbarOpts().
 //			Position(win.POINT{X: 10, Y: 250}).
 //			RangeMax(4),
 //		),

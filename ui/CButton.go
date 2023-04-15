@@ -45,7 +45,7 @@ type _Button struct {
 //
 //	myButton := ui.NewButton(
 //		owner,
-//		ui.ButtonOpts(
+//		ui.ButtonOpts().
 //			Text("Click me").
 //			Position(win.POINT{X: 20, Y: 10}),
 //		),

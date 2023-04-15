@@ -46,7 +46,7 @@ type _DateTimePicker struct {
 //
 //	myDtp := ui.NewDateTimePicker(
 //		owner,
-//		ui.DateTimePickerOpts(
+//		ui.DateTimePickerOpts().
 //			Position(win.POINT{X: 10, Y: 210}),
 //		),
 //	)

@@ -60,7 +60,7 @@ type _ListView struct {
 //
 //	myList := ui.NewListView(
 //		owner,
-//		ui.ListViewOpts(
+//		ui.ListViewOpts().
 //			Position(win.POINT{X: 10, Y: 20}).
 //			Size(win.SIZE{Cx: 120}).
 //			CtrlExStyles(co.LVS_EX_FULLROWSELECT),
