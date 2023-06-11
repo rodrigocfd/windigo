@@ -231,6 +231,10 @@ func _RunModalLoop(hWnd win.HWND) {
 			break
 		}
 
+		if hWnd == 0 || !hWnd.IsWindow() {
+			break // our modal was destroyed, terminate loop
+		}
+
 		// If a child window, will retrieve its top-level parent.
 		// If a top-level, use itself.
 		if pMsg.HWnd.GetAncestor(co.GA_ROOT).IsDialogMessage(pMsg) {
@@ -245,7 +249,7 @@ func _RunModalLoop(hWnd win.HWND) {
 		win.TranslateMessage(pMsg)
 		win.DispatchMessage(pMsg)
 
-		if hWnd == 0 {
+		if hWnd == 0 || !hWnd.IsWindow() {
 			break // our modal was destroyed, terminate loop
 		}
 	}
