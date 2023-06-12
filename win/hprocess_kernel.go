@@ -15,51 +15,12 @@ import (
 // Handle to a process.
 type HPROCESS HANDLE
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocesses
-func EnumProcesses() ([]uint32, error) {
-	const UINT32_SZ = unsafe.Sizeof(uint32(0)) // in bytes
-
-	const BLOCK int = 256 // arbitrary
-	bufSz := BLOCK
-
-	var processIds []uint32
-	var bytesNeeded, numReturned uint32
-
-	for {
-		processIds = make([]uint32, bufSz)
-
-		ret, _, err := syscall.SyscallN(proc.EnumProcesses.Addr(),
-			uintptr(unsafe.Pointer(&processIds[0])),
-			uintptr(len(processIds))*UINT32_SZ, // array size in bytes
-			uintptr(unsafe.Pointer(&bytesNeeded)))
-
-		if ret == 0 {
-			return nil, errco.ERROR(err)
-		}
-
-		numReturned = bytesNeeded / uint32(UINT32_SZ)
-		if numReturned < uint32(len(processIds)) { // to break, must have at least 1 element gap
-			break
-		}
-
-		bufSz += BLOCK // increase buffer size to try again
-	}
-
-	return processIds[:numReturned], nil
-}
-
 // ⚠️ You must defer HPROCESS.CloseHandle().
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocess
 func GetCurrentProcess() HPROCESS {
 	ret, _, _ := syscall.SyscallN(proc.GetCurrentProcess.Addr())
 	return HPROCESS(ret)
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
-func GetCurrentProcessId() uint32 {
-	ret, _, _ := syscall.SyscallN(proc.GetCurrentProcessId.Addr())
-	return uint32(ret)
 }
 
 // ⚠️ You must defer HPROCESS.CloseHandle().
