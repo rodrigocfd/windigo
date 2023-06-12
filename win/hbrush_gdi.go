@@ -64,12 +64,6 @@ func CreateSolidBrush(color COLORREF) HBRUSH {
 	return HBRUSH(ret)
 }
 
-// Not an actual Win32 function, just a tricky conversion to create a brush from
-// a system color, particularly used when registering a window class.
-func CreateSysColorBrush(sysColor co.COLOR) HBRUSH {
-	return HBRUSH(sysColor + 1)
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hBrush HBRUSH) DeleteObject() error {
 	return HGDIOBJ(hBrush).DeleteObject()

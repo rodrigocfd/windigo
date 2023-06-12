@@ -178,7 +178,7 @@ func _FirstMainStuff() {
 
 // Runs the main window loop synchronously.
 func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
-	hHeap, _ := win.GetProcessHeap()
+	hHeap := win.GetProcessHeap()
 	block, _ := hHeap.HeapAlloc(co.HEAP_ALLOC_ZERO_MEMORY, uint(unsafe.Sizeof(win.MSG{})))
 	defer hHeap.HeapFree(0, block)
 	pMsg := (*win.MSG)(unsafe.Pointer(&block[0]))
@@ -217,7 +217,7 @@ func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
 
 // Runs the modal window loop synchronously.
 func _RunModalLoop(hWnd win.HWND) {
-	hHeap, _ := win.GetProcessHeap()
+	hHeap := win.GetProcessHeap()
 	block, _ := hHeap.HeapAlloc(co.HEAP_ALLOC_ZERO_MEMORY, uint(unsafe.Sizeof(win.MSG{})))
 	defer hHeap.HeapFree(0, block)
 	pMsg := (*win.MSG)(unsafe.Pointer(&block[0]))

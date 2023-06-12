@@ -31,7 +31,7 @@ func InitCommonControlsEx(icce *INITCOMMONCONTROLSEX) bool {
 func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 	serialized, ptrs := taskConfig.serializePacked()
 
-	hHeap, _ := GetProcessHeap()
+	hHeap := GetProcessHeap()
 	memPnButton, _ := hHeap.HeapAlloc(co.HEAP_ALLOC_ZERO_MEMORY, uint(unsafe.Sizeof(int32(0))))
 	defer hHeap.HeapFree(0, memPnButton)
 

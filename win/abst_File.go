@@ -12,13 +12,13 @@ import (
 //
 // Implements the following standard io interfaces:
 //
-//	io.ByteReader
-//	io.ByteWriter
-//	io.Closer
-//	io.Reader
-//	io.Seeker
-//	io.StringWriter
-//	io.Writer
+//   - [io.ByteReader]
+//   - [io.ByteWriter]
+//   - [io.Closer]
+//   - [io.Reader]
+//   - [io.Seeker]
+//   - [io.StringWriter]
+//   - [io.Writer]
 //
 // Created with FileOpen().
 type File struct {
@@ -58,7 +58,7 @@ func FileOpen(filePath string, desiredAccess co.FILE_OPEN) (*File, error) {
 	return &File{hFile: hFile}, nil
 }
 
-// Implements io.Closer.
+// Implements [io.Closer].
 func (me *File) Close() error {
 	var e error
 	if me.hFile != 0 {
@@ -73,7 +73,7 @@ func (me *File) Hfile() HFILE {
 	return me.hFile
 }
 
-// Implements io.Reader.
+// Implements [io.Reader].
 func (me *File) Read(p []byte) (n int, err error) {
 	numRead, err := me.hFile.ReadFile(p, nil)
 	if err != nil {
@@ -109,7 +109,7 @@ func (me *File) ReadAll() ([]byte, error) {
 	return buf, nil
 }
 
-// Implements io.ByteReader.
+// Implements [io.ByteReader].
 func (me *File) ReadByte() (byte, error) {
 	var buf [1]byte
 	_, err := me.Read(buf[:])
@@ -139,7 +139,7 @@ func (me *File) Resize(numBytes int) error {
 	return nil
 }
 
-// Implements io.Seeker.
+// Implements [io.Seeker].
 func (me *File) Seek(offset int64, whence int) (int64, error) {
 	var moveMethod co.FILE_FROM
 	switch whence {
@@ -164,19 +164,19 @@ func (me *File) Size() int {
 	return int(sz)
 }
 
-// Implements io.Writer.
+// Implements [io.Writer].
 func (me *File) Write(p []byte) (n int, err error) {
 	written, err := me.hFile.WriteFile(p, nil)
 	return int(written), err
 }
 
-// Implements io.ByteWriter.
+// Implements [io.ByteWriter].
 func (me *File) WriteByte(c byte) error {
 	_, err := me.Write([]byte{c})
 	return err
 }
 
-// Implements io.StringWriter.
+// Implements [io.StringWriter].
 func (me *File) WriteString(s string) (int, error) {
 	serialized := []byte(s)
 	return me.Write(serialized)

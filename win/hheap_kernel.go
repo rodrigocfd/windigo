@@ -15,12 +15,9 @@ import (
 type HHEAP HANDLE
 
 // 📑 https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-getprocessheap
-func GetProcessHeap() (HHEAP, error) {
-	ret, _, err := syscall.SyscallN(proc.GetProcessHeap.Addr())
-	if ret == 0 {
-		return 0, errco.ERROR(err)
-	}
-	return HHEAP(ret), nil
+func GetProcessHeap() HHEAP {
+	ret, _, _ := syscall.SyscallN(proc.GetProcessHeap.Addr())
+	return HHEAP(ret)
 }
 
 // ⚠️ You must defer HHEAP.HeapDestroy().
