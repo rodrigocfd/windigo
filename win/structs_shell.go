@@ -8,9 +8,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// [NOTIFYICONDATA] struct.
+//
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
+// Example:
+//
+//	nic := &NOTIFYICONDATA{}
+//	nic.SetCbSize()
+//
+// [NOTIFYICONDATA]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
 type NOTIFYICONDATA struct {
 	cbSize           uint32
 	Hwnd             HWND
@@ -46,7 +53,9 @@ func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
 	copy(nid.szInfoTitle[:], Str.ToNativeSlice(Str.Substr(val, 0, len(nid.szInfoTitle)-1)))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
+// [SHFILEINFO] struct.
+//
+// [SHFILEINFO]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
 type SHFILEINFO struct {
 	HIcon         HICON
 	IIcon         int32

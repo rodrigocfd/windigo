@@ -12,13 +12,17 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-gettickcount64
+// [GetTickCount64] function.
+//
+// [GetTickCount64]: https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-gettickcount64
 func GetTickCount64() uint64 {
 	retLo, retHi, _ := syscall.SyscallN(proc.GetTickCount64.Addr())
 	return util.Make64(uint32(retLo), uint32(retHi))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
+// [VerifyVersionInfo] function.
+//
+// [VerifyVersionInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
 func VerifyVersionInfo(
 	ovi *OSVERSIONINFOEX, typeMask co.VER, conditionMask uint64) (bool, error) {
 
@@ -38,7 +42,9 @@ func VerifyVersionInfo(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-versetconditionmask
+// [VerSetConditionMask] function.
+//
+// [VerSetConditionMask]: https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-versetconditionmask
 func VerSetConditionMask(
 	conditionMask uint64, typeMask co.VER, condition co.VER_COND) uint64 {
 

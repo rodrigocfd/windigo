@@ -11,15 +11,17 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// A handle to an instance. This is the base address of the module in memory.
+// A handle to an [instance]. This is the base address of the module in memory.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
+// [instance]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
 type HINSTANCE HANDLE
 
+// [GetModuleHandle] function.
+//
 // If moduleName is nil, returns a handle to the file used to create the calling
 // process (.exe file).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
+// [GetModuleHandle]: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
 func GetModuleHandle(moduleName StrOpt) HINSTANCE {
 	ret, _, err := syscall.SyscallN(proc.GetModuleHandle.Addr(),
 		uintptr(moduleName.Raw()))
@@ -29,9 +31,11 @@ func GetModuleHandle(moduleName StrOpt) HINSTANCE {
 	return HINSTANCE(ret)
 }
 
+// [LoadLibrary] function.
+//
 // ⚠️ You must defer HINSTANCE.FreeLibrary().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
+// [LoadLibrary]: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
 func LoadLibrary(libFileName string) HINSTANCE {
 	ret, _, err := syscall.SyscallN(proc.LoadLibrary.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(libFileName))))
@@ -41,7 +45,9 @@ func LoadLibrary(libFileName string) HINSTANCE {
 	return HINSTANCE(ret)
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-findresourcew
+// [FindResource] function.
+//
+// [FindResource]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-findresourcew
 func (hInst HINSTANCE) FindResource(
 	name ResId, rsrcType RsrcType) (HRSRC, error) {
 
@@ -59,7 +65,9 @@ func (hInst HINSTANCE) FindResource(
 	return HRSRC(ret), nil
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-findresourceexw
+// [FindResourceEx] function.
+//
+// [FindResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-findresourceexw
 func (hInst HINSTANCE) FindResourceEx(
 	name ResId, rsrcType RsrcType, language LANGID) (HRSRC, error) {
 
@@ -77,7 +85,9 @@ func (hInst HINSTANCE) FindResourceEx(
 	return HRSRC(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
+// [FreeLibrary] function.
+//
+// [FreeLibrary]: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
 func (hInst HINSTANCE) FreeLibrary() error {
 	ret, _, err := syscall.SyscallN(proc.FreeLibrary.Addr(),
 		uintptr(hInst))
@@ -87,12 +97,14 @@ func (hInst HINSTANCE) FreeLibrary() error {
 	return nil
 }
 
+// [GetModuleFileName] function.
+//
 // Example retrieving own .exe path:
 //
 //	exePath := win.HINSTANCE(0).GetModuleFileName()
 //	fmt.Printf("Current .exe path: %s\n", exePath)
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew
+// [GetModuleFileName]: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew
 func (hInst HINSTANCE) GetModuleFileName() string {
 	var buf [_MAX_PATH + 1]uint16
 	ret, _, err := syscall.SyscallN(proc.GetModuleFileName.Addr(),
@@ -103,7 +115,9 @@ func (hInst HINSTANCE) GetModuleFileName() string {
 	return Str.FromNativeSlice(buf[:])
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress
+// [GetProcAddress] function.
+//
+// [GetProcAddress]: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress
 func (hInst HINSTANCE) GetProcAddress(procName string) (uintptr, error) {
 	ascii := []byte(procName)
 	ascii = append(ascii, 0x00) // terminating null
@@ -116,7 +130,9 @@ func (hInst HINSTANCE) GetProcAddress(procName string) (uintptr, error) {
 	return ret, nil
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadresource
+// [LoadResource] function.
+//
+// [LoadResource]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadresource
 func (hInst HINSTANCE) LoadResource(hResInfo HRSRC) (HRSRCMEM, error) {
 	ret, _, err := syscall.SyscallN(proc.LoadResource.Addr(),
 		uintptr(hInst), uintptr(hResInfo))
@@ -126,10 +142,12 @@ func (hInst HINSTANCE) LoadResource(hResInfo HRSRC) (HRSRCMEM, error) {
 	return HRSRCMEM(ret), nil
 }
 
+// [LockResource] function.
+//
 // This method should belong to HRSRCMEM, but in order to make it safe, we
 // automatically call HINSTANCE.SizeofResource(), so it's implemented here.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-lockresource
+// [LockResource]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-lockresource
 func (hInst HINSTANCE) LockResource(
 	hResInfo HRSRC, hResLoaded HRSRCMEM) ([]byte, error) {
 
@@ -147,7 +165,9 @@ func (hInst HINSTANCE) LockResource(
 	return unsafe.Slice((*byte)(unsafe.Pointer(ret)), sz), nil
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-sizeofresource
+// [SizeofResource] function.
+//
+// [SizeofResource]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-sizeofresource
 func (hInst HINSTANCE) SizeofResource(hResInfo HRSRC) (int, error) {
 	ret, _, err := syscall.SyscallN(proc.SizeofResource.Addr(),
 		uintptr(hInst), uintptr(hResInfo))

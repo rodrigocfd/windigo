@@ -11,14 +11,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// A handle to a brush.
+// A handle to a [brush].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbrush
+// [brush]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbrush
 type HBRUSH HGDIOBJ
 
+// [CreateBrushIndirect] function.
+//
 // ⚠️ You must defer HBRUSH.DeleteObject().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbrushindirect
+// [CreateBrushIndirect]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbrushindirect
 func CreateBrushIndirect(lb *LOGBRUSH) HBRUSH {
 	ret, _, err := syscall.SyscallN(proc.CreateBrushIndirect.Addr(),
 		uintptr(unsafe.Pointer(lb)))
@@ -28,9 +30,11 @@ func CreateBrushIndirect(lb *LOGBRUSH) HBRUSH {
 	return HBRUSH(ret)
 }
 
+// [CreateHatchBrush] function.
+//
 // ⚠️ You must defer HBRUSH.DeleteObject().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createhatchbrush
+// [CreateHatchBrush]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createhatchbrush
 func CreateHatchBrush(hatch co.HS, color COLORREF) HBRUSH {
 	ret, _, err := syscall.SyscallN(proc.CreateHatchBrush.Addr(),
 		uintptr(hatch), uintptr(color))
@@ -40,9 +44,11 @@ func CreateHatchBrush(hatch co.HS, color COLORREF) HBRUSH {
 	return HBRUSH(ret)
 }
 
+// [CreatePatternBrush] function.
+//
 // ⚠️ You must defer HBRUSH.DeleteObject().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpatternbrush
+// [CreatePatternBrush]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpatternbrush
 func CreatePatternBrush(hBmp HBITMAP) HBRUSH {
 	ret, _, err := syscall.SyscallN(proc.CreatePatternBrush.Addr(),
 		uintptr(hBmp))
@@ -52,9 +58,11 @@ func CreatePatternBrush(hBmp HBITMAP) HBRUSH {
 	return HBRUSH(ret)
 }
 
+// [CreateSolidBrush] function.
+//
 // ⚠️ You must defer HBRUSH.DeleteObject().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createsolidbrush
+// [CreateSolidBrush]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createsolidbrush
 func CreateSolidBrush(color COLORREF) HBRUSH {
 	ret, _, err := syscall.SyscallN(proc.CreateSolidBrush.Addr(),
 		uintptr(color))
@@ -64,12 +72,16 @@ func CreateSolidBrush(color COLORREF) HBRUSH {
 	return HBRUSH(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
+// [DeleteObject] function.
+//
+// [DeleteObject]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hBrush HBRUSH) DeleteObject() error {
 	return HGDIOBJ(hBrush).DeleteObject()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
+// [GetObject] function.
+//
+// [GetObject]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
 func (hBrush HBRUSH) GetObject(lb *LOGBRUSH) {
 	ret, _, err := syscall.SyscallN(proc.GetObject.Addr(),
 		uintptr(hBrush), unsafe.Sizeof(*lb), uintptr(unsafe.Pointer(lb)))

@@ -10,7 +10,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/console-cursor-info-str
+// [CONSOLE_CURSOR_INFO] struct.
+//
+// [CONSOLE_CURSOR_INFO]: https://docs.microsoft.com/en-us/windows/console/console-cursor-info-str
 type CONSOLE_CURSOR_INFO struct {
 	DwSize   uint32
 	bVisible int32 // BOOL
@@ -19,15 +21,19 @@ type CONSOLE_CURSOR_INFO struct {
 func (cc *CONSOLE_CURSOR_INFO) BVisible() bool       { return cc.bVisible != 0 }
 func (cc *CONSOLE_CURSOR_INFO) SetBVisible(val bool) { cc.bVisible = util.BoolToInt32(val) }
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/console-font-info-str
+// [CONSOLE_FONT_INFO] struct.
+//
+// [CONSOLE_FONT_INFO]: https://docs.microsoft.com/en-us/windows/console/console-font-info-str
 type CONSOLE_FONT_INFO struct {
 	NFont      uint32
 	DwFontSize COORD
 }
 
+// [CONSOLE_READCONSOLE_CONTROL] struct.
+//
 // ⚠️ You must call SetNLength() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/console/console-readconsole-control
+// [CONSOLE_READCONSOLE_CONTROL]: https://docs.microsoft.com/en-us/windows/console/console-readconsole-control
 type CONSOLE_READCONSOLE_CONTROL struct {
 	nLength           uint32
 	NInitialChars     uint32
@@ -37,12 +43,16 @@ type CONSOLE_READCONSOLE_CONTROL struct {
 
 func (c *CONSOLE_READCONSOLE_CONTROL) SetNLength() { c.nLength = uint32(unsafe.Sizeof(*c)) }
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/coord-str
+// [COORD] struct.
+//
+// [COORD]: https://docs.microsoft.com/en-us/windows/console/coord-str
 type COORD struct {
 	X, Y int16
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-dynamic_time_zone_information
+// [DYNAMIC_TIME_ZONE_INFORMATION] struct.
+//
+// [DYNAMIC_TIME_ZONE_INFORMATION]: https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-dynamic_time_zone_information
 type DYNAMIC_TIME_ZONE_INFORMATION struct {
 	Bias                        int32
 	standardName                [32]uint16
@@ -83,30 +93,40 @@ func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetDynamicDaylightTimeDisabled(val boo
 	dtz.dynamicDaylightTimeDisabled = util.BoolToUint8(val)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
+// [FILETIME] struct.
+//
+// [FILETIME]: https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
 type FILETIME struct {
 	dwLowDateTime  uint32
 	dwHighDateTime uint32
 }
 
+// Returns the epoch in 100-nanoseconds unit.
 func (ft *FILETIME) EpochNano100() uint64 { return util.Make64(ft.dwLowDateTime, ft.dwHighDateTime) }
+
+// Sets the epoch in 100-nanoseconds unit.
 func (ft *FILETIME) SetEpochNano100(val uint64) {
 	ft.dwLowDateTime, ft.dwHighDateTime = util.Break64(val)
 }
 
+// Returns the [time.Time].
 func (ft *FILETIME) ToTime() time.Time {
 	// https://stackoverflow.com/a/4135003/6923555
 	return time.Unix(0, int64(util.Make64(ft.dwLowDateTime, ft.dwHighDateTime)-116_444_736_000_000_000)*100)
 }
+
+// Sets the [time.Time].
 func (ft *FILETIME) FromTime(val time.Time) {
 	ft.dwLowDateTime, ft.dwHighDateTime = util.Break64(
 		uint64(val.UnixNano()/100 + 116_444_736_000_000_000),
 	)
 }
 
+// [MODULEENTRY32] struct.
+//
 // ⚠️ You must call SetDwSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-moduleentry32w
+// [MODULEENTRY32]: https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-moduleentry32w
 type MODULEENTRY32 struct {
 	dwSize        uint32
 	Th32ModuleID  uint32
@@ -132,9 +152,11 @@ func (me *MODULEENTRY32) SetSzExePath(val string) {
 	copy(me.szExePath[:], Str.ToNativeSlice(Str.Substr(val, 0, len(me.szExePath)-1)))
 }
 
+// [OSVERSIONINFOEX] struct.
+//
 // ⚠️ You must call SetDwOsVersionInfoSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
+// [OSVERSIONINFOEX]: https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
 type OSVERSIONINFOEX struct {
 	dwOsVersionInfoSize uint32
 	DwMajorVersion      uint32
@@ -158,7 +180,9 @@ func (osv *OSVERSIONINFOEX) SetSzCSDVersion(val string) {
 	copy(osv.szCSDVersion[:], Str.ToNativeSlice(Str.Substr(val, 0, len(osv.szCSDVersion)-1)))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-overlapped
+// [OVERLAPPED] struct.
+//
+// [OVERLAPPED]: https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-overlapped
 type OVERLAPPED struct {
 	Internal     uintptr
 	InternalHigh uintptr
@@ -166,9 +190,11 @@ type OVERLAPPED struct {
 	HEvent       HEVENT
 }
 
+// [PROCESSENTRY32] struct.
+//
 // ⚠️ You must call SetDwSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-processentry32w
+// [PROCESSENTRY32]: https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-processentry32w
 type PROCESSENTRY32 struct {
 	dwSize              uint32
 	cntUsage            uint32
@@ -189,7 +215,9 @@ func (me *PROCESSENTRY32) SetSzExeFile(val string) {
 	copy(me.szExeFile[:], Str.ToNativeSlice(Str.Substr(val, 0, len(me.szExeFile)-1)))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-process_information
+// [PROCESS_INFORMATION] struct.
+//
+// [PROCESS_INFORMATION]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-process_information
 type PROCESS_INFORMATION struct {
 	HProcess    HPROCESS
 	HThread     HTHREAD
@@ -197,9 +225,11 @@ type PROCESS_INFORMATION struct {
 	DwThreadId  uint32
 }
 
+// [SECURITY_ATTRIBUTES] struct.
+//
 // ⚠️ You must call SetNLength() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/aa379560(v=vs.85)
+// [SECURITY_ATTRIBUTES]: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/aa379560(v=vs.85)
 type SECURITY_ATTRIBUTES struct {
 	nLength              uint32
 	LpSecurityDescriptor uintptr // LPVOID
@@ -211,9 +241,11 @@ func (sa *SECURITY_ATTRIBUTES) SetNLength() { sa.nLength = uint32(unsafe.Sizeof(
 func (sa *SECURITY_ATTRIBUTES) BInheritHandle() bool       { return sa.bInheritHandle != 0 }
 func (sa *SECURITY_ATTRIBUTES) SetBInheritHandle(val bool) { sa.bInheritHandle = util.BoolToInt32(val) }
 
+// [STARTUPINFO] struct.
+//
 // ⚠️ You must call SetCb() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
+// [STARTUPINFO]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
 type STARTUPINFO struct {
 	cb              uint32
 	lpReserved      *uint16
@@ -237,7 +269,9 @@ type STARTUPINFO struct {
 
 func (si *STARTUPINFO) SetCb() { si.cb = uint32(unsafe.Sizeof(*si)) }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
+// [SYSTEM_INFO] struct.
+//
+// [SYSTEM_INFO]: https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
 type SYSTEM_INFO struct {
 	WProcessorArchitecture      co.PROCESSOR_ARCHITECTURE
 	wReserved                   uint16
@@ -252,7 +286,9 @@ type SYSTEM_INFO struct {
 	WProcessorRevision          uint16
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime
+// [SYSTEMTIME] struct.
+//
+// [SYSTEMTIME]: https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime
 type SYSTEMTIME struct {
 	WYear         uint16
 	WMonth        uint16
@@ -301,9 +337,11 @@ func (st *SYSTEMTIME) ToTime() time.Time {
 		time.Local)
 }
 
+// [THREADENTRY32] struct.
+//
 // ⚠️ You must call SetDwSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-threadentry32
+// [THREADENTRY32]: https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-threadentry32
 type THREADENTRY32 struct {
 	dwSize             uint32
 	cntUsage           uint32
@@ -316,7 +354,9 @@ type THREADENTRY32 struct {
 
 func (te *THREADENTRY32) SetDwSize() { te.dwSize = uint32(unsafe.Sizeof(*te)) }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-time_zone_information
+// [TIME_ZONE_INFORMATION] struct.
+//
+// [TIME_ZONE_INFORMATION]: https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-time_zone_information
 type TIME_ZONE_INFORMATION struct {
 	Bias         int32
 	standardName [32]uint16
@@ -341,7 +381,9 @@ func (tzi *TIME_ZONE_INFORMATION) SetDaylightName(val string) {
 	copy(tzi.daylightName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(tzi.daylightName)-1)))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw
+// [WIN32_FIND_DATA] struct.
+//
+// [WIN32_FIND_DATA]: https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw
 type WIN32_FIND_DATA struct {
 	DwFileAttributes    co.FILE_ATTRIBUTE
 	FtCreationTime      FILETIME

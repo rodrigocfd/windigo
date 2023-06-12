@@ -12,7 +12,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
+// [CreateDialogParam] function.
+//
+// [CreateDialogParam]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
 func (hInst HINSTANCE) CreateDialogParam(
 	templateName ResId, hwndParent HWND,
 	dialogFunc uintptr, dwInitParam LPARAM) HWND {
@@ -28,7 +30,9 @@ func (hInst HINSTANCE) CreateDialogParam(
 	return HWND(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparamw
+// [DialogBoxParam] function.
+//
+// [DialogBoxParam]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparamw
 func (hInst HINSTANCE) DialogBoxParam(
 	templateName ResId, hwndParent HWND,
 	dialogFunc uintptr, dwInitParam LPARAM) uintptr {
@@ -44,7 +48,9 @@ func (hInst HINSTANCE) DialogBoxParam(
 	return ret
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassinfoexw
+// [GetClassInfoEx] function.
+//
+// [GetClassInfoEx]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassinfoexw
 func (hInst HINSTANCE) GetClassInfoEx(
 	className *uint16, destBuf *WNDCLASSEX) (ATOM, error) {
 
@@ -58,7 +64,9 @@ func (hInst HINSTANCE) GetClassInfoEx(
 	return ATOM(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
+// [LoadAccelerators] function.
+//
+// [LoadAccelerators]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
 func (hInst HINSTANCE) LoadAccelerators(tableName ResId) HACCEL {
 	tableNameVal, tableNameBuf := tableName.raw()
 	ret, _, err := syscall.SyscallN(proc.LoadAccelerators.Addr(),
@@ -70,7 +78,9 @@ func (hInst HINSTANCE) LoadAccelerators(tableName ResId) HACCEL {
 	return HACCEL(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
+// [LoadCursor] function.
+//
+// [LoadCursor]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) HCURSOR {
 	cursorNameVal, cursorNameBuf := cursorName.raw()
 	ret, _, err := syscall.SyscallN(proc.LoadCursor.Addr(),
@@ -82,7 +92,9 @@ func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) HCURSOR {
 	return HCURSOR(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
+// [LoadIcon] function.
+//
+// [LoadIcon]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 	iconNameVal, iconNameBuf := iconName.raw()
 	ret, _, err := syscall.SyscallN(proc.LoadIcon.Addr(),
@@ -94,6 +106,8 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 	return HICON(ret)
 }
 
+// [LoadImage] function.
+//
 // Returned HGDIOBJ must be cast into HBITMAP, HCURSOR or HICON.
 //
 // ⚠️ If the object is not being loaded from the application resources, you must
@@ -124,7 +138,7 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 //	)
 //	defer hBmp.DeleteObject()
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
+// [LoadImage]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
 func (hInst HINSTANCE) LoadImage(
 	name ResId, imgType co.IMAGE, cx, cy int32, fuLoad co.LR) HGDIOBJ {
 
@@ -139,7 +153,9 @@ func (hInst HINSTANCE) LoadImage(
 	return HGDIOBJ(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
+// [LoadMenu] function.
+//
+// [LoadMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
 func (hInst HINSTANCE) LoadMenu(menuName ResId) HMENU {
 	menuNameVal, menuNameBuf := menuName.raw()
 	ret, _, err := syscall.SyscallN(proc.LoadMenu.Addr(),

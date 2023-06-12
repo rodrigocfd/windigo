@@ -15,17 +15,21 @@ import (
 // Handle to a process.
 type HPROCESS HANDLE
 
+// [GetCurrentProcess] function.
+//
 // ⚠️ You must defer HPROCESS.CloseHandle().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocess
+// [GetCurrentProcess]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocess
 func GetCurrentProcess() HPROCESS {
 	ret, _, _ := syscall.SyscallN(proc.GetCurrentProcess.Addr())
 	return HPROCESS(ret)
 }
 
+// [OpenProcess] function.
+//
 // ⚠️ You must defer HPROCESS.CloseHandle().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
+// [OpenProcess]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
 func OpenProcess(
 	desiredAccess co.PROCESS,
 	inheritHandle bool, processId uint32) (HPROCESS, error) {
@@ -39,7 +43,9 @@ func OpenProcess(
 	return HPROCESS(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+// [CloseHandle] function.
+//
+// [CloseHandle]: https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hProcess HPROCESS) CloseHandle() error {
 	ret, _, err := syscall.SyscallN(proc.CloseHandle.Addr(),
 		uintptr(hProcess))
@@ -49,7 +55,9 @@ func (hProcess HPROCESS) CloseHandle() error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocessmodules
+// [EnumProcessModules] function.
+//
+// [EnumProcessModules]: https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocessmodules
 func (hProcess HPROCESS) EnumProcessModules() ([]HINSTANCE, error) {
 	const HINSTANCE_SZ = unsafe.Sizeof(HINSTANCE(0)) // in bytes
 
@@ -73,7 +81,9 @@ func (hProcess HPROCESS) EnumProcessModules() ([]HINSTANCE, error) {
 	return hModules, nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess
+// [GetExitCodeProcess] function.
+//
+// [GetExitCodeProcess]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess
 func (hProcess HPROCESS) GetExitCodeProcess() (uint32, error) {
 	var exitCode uint32
 	ret, _, err := syscall.SyscallN(proc.GetExitCodeProcess.Addr(),
@@ -84,7 +94,9 @@ func (hProcess HPROCESS) GetExitCodeProcess() (uint32, error) {
 	return exitCode, nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
+// [GetModuleBaseName] function.
+//
+// [GetModuleBaseName]: https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
 func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
 	var processName [_MAX_PATH + 1]uint16
 	ret, _, err := syscall.SyscallN(proc.GetModuleBaseName.Addr(),
@@ -97,7 +109,9 @@ func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
 	return Str.FromNativeSlice(processName[:]), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessid
+// [GetProcessId] function.
+//
+// [GetProcessId]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessid
 func (hProcess HPROCESS) GetProcessId() (uint32, error) {
 	ret, _, err := syscall.SyscallN(proc.GetProcessId.Addr(),
 		uintptr(hProcess))
@@ -107,7 +121,9 @@ func (hProcess HPROCESS) GetProcessId() (uint32, error) {
 	return uint32(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
+// [GetProcessTimes] function.
+//
+// [GetProcessTimes]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
 func (hProcess HPROCESS) GetProcessTimes() (
 	creationTime, exitTime, kernelTime, userTime FILETIME, e error) {
 
@@ -121,7 +137,9 @@ func (hProcess HPROCESS) GetProcessTimes() (
 	return
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory
+// [ReadProcessMemory] function.
+//
+// [ReadProcessMemory]: https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory
 func (hProcess HPROCESS) ReadProcessMemory(
 	baseAddress uintptr, buffer []byte) (numBytesRead uint64, e error) {
 
@@ -134,7 +152,9 @@ func (hProcess HPROCESS) ReadProcessMemory(
 	return
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess
+// [TerminateProcess] function.
+//
+// [TerminateProcess]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess
 func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
 	ret, _, err := syscall.SyscallN(proc.TerminateProcess.Addr(),
 		uintptr(hProcess), uintptr(exitCode))
@@ -144,7 +164,9 @@ func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+// [WaitForSingleObject] function.
+//
+// [WaitForSingleObject]: https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 func (hProcess HPROCESS) WaitForSingleObject(milliseconds NumInf) (co.WAIT, error) {
 	ret, _, err := syscall.SyscallN(proc.WaitForSingleObject.Addr(),
 		uintptr(hProcess), milliseconds.Raw())
@@ -154,7 +176,9 @@ func (hProcess HPROCESS) WaitForSingleObject(milliseconds NumInf) (co.WAIT, erro
 	return co.WAIT(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
+// [WriteProcessMemory] function.
+//
+// [WriteProcessMemory]: https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
 func (hProcess HPROCESS) WriteProcessMemory(
 	baseAddress uintptr, data []byte) (numBytesWritten uint64, e error) {
 

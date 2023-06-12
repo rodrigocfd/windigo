@@ -10,14 +10,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// A handle to a bitmap.
+// A handle to a [bitmap].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbitmap
+// [bitmap]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbitmap
 type HBITMAP HGDIOBJ
 
+// [CreateBitmap] function.
+//
 // ⚠️ You must defer HBITMAP.DeleteObject().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmap
+// [CreateBitmap]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmap
 func CreateBitmap(width, height int32,
 	numPlanes, bitCount uint32, bits *byte) HBITMAP {
 
@@ -30,9 +32,11 @@ func CreateBitmap(width, height int32,
 	return HBITMAP(ret)
 }
 
+// [CreateBitmapIndirect] function.
+//
 // ⚠️ You must defer HBITMAP.DeleteObject().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmapindirect
+// [CreateBitmapIndirect]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmapindirect
 func CreateBitmapIndirect(bmp *BITMAP) HBITMAP {
 	ret, _, err := syscall.SyscallN(proc.CreateBitmapIndirect.Addr(),
 		uintptr(unsafe.Pointer(bmp)))
@@ -42,12 +46,16 @@ func CreateBitmapIndirect(bmp *BITMAP) HBITMAP {
 	return HBITMAP(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
+// [DeleteObject] function.
+//
+// [DeleteObject]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hBmp HBITMAP) DeleteObject() error {
 	return HGDIOBJ(hBmp).DeleteObject()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
+// [GetObject] function.
+//
+// [GetObject]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
 func (hBmp HBITMAP) GetObject(bmp *BITMAP) {
 	ret, _, err := syscall.SyscallN(proc.GetObject.Addr(),
 		uintptr(hBmp), unsafe.Sizeof(*bmp), uintptr(unsafe.Pointer(bmp)))

@@ -11,9 +11,11 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// [GUID] struct.
+//
 // Can be created with NewGuidFromClsid() or NewGuidFromIid().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
+// [GUID]: https://docs.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
 type GUID struct {
 	data1 uint32
 	data2 uint16

@@ -11,7 +11,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setuserobjectinformationw
+// [SetUserObjectInformation] function.
+//
+// [SetUserObjectInformation]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setuserobjectinformationw
 func (hProcess HPROCESS) SetUserObjectInformation(
 	index co.UOI, info unsafe.Pointer, infoLen uintptr) error {
 

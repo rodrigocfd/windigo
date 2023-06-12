@@ -15,14 +15,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// A handle to a menu.
+// A handle to a [menu].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hmenu
+// [menu]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hmenu
 type HMENU HANDLE
 
+// [CreateMenu] function.
+//
 // ⚠️ You must defer HMENU.DestroyMenu(), unless it's attached to a window.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createmenu
+// [CreateMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createmenu
 func CreateMenu() HMENU {
 	ret, _, err := syscall.SyscallN(proc.CreateMenu.Addr())
 	if ret == 0 {
@@ -31,9 +33,11 @@ func CreateMenu() HMENU {
 	return HMENU(ret)
 }
 
+// [CreatePopupMenu] function.
+//
 // ⚠️ You must defer HMENU.DestroyMenu(), unless it's attached to a window.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createpopupmenu
+// [CreatePopupMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createpopupmenu
 func CreatePopupMenu() HMENU {
 	ret, _, err := syscall.SyscallN(proc.CreatePopupMenu.Addr())
 	if ret == 0 {
@@ -42,6 +46,8 @@ func CreatePopupMenu() HMENU {
 	return HMENU(ret)
 }
 
+// [AppendMenu] function.
+//
 // This function is rather tricky. Prefer using HMENU.AddItem(),
 // HMENU.AddSeparator() or HMENU.AddSubmenu().
 //
@@ -49,7 +55,7 @@ func CreatePopupMenu() HMENU {
 //
 // ⚠️ lpNewItem must be HBITMAP, LPARAM or string.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-appendmenuw
+// [AppendMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-appendmenuw
 func (hMenu HMENU) AppendMenu(
 	uFlags co.MF, uIDNewItem interface{}, lpNewItem interface{}) {
 
@@ -85,13 +91,15 @@ func (hMenu HMENU) AppendMenu(
 	}
 }
 
+// [CheckMenuItem] function.
+//
 // Example:
 //
 //	var hMenu win.HMENU // initialized somewhere
 //
 //	hMenu.CheckMenuItem(win.MenuItemPos(0), true)
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuitem
+// [CheckMenuItem]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuitem
 func (hMenu HMENU) CheckMenuItem(item MenuItem, check bool) bool {
 	idPos, mf := item.raw()
 	flags := util.Iif(check, co.MF_CHECKED, co.MF_UNCHECKED).(co.MF) | mf
@@ -104,6 +112,8 @@ func (hMenu HMENU) CheckMenuItem(item MenuItem, check bool) bool {
 	return co.MF(ret) == co.MF_CHECKED
 }
 
+// [CheckMenuRadioItem] function.
+//
 // Panics if the three item identifiers don't have the same variant type.
 //
 // Example:
@@ -113,7 +123,7 @@ func (hMenu HMENU) CheckMenuItem(item MenuItem, check bool) bool {
 //	p.Hmenu().CheckMenuRadioItem(
 //		win.MenuItemPos(0), win.MenuItemPos(4), win.MenuItemPos(1))
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuradioitem
+// [CheckMenuRadioItem]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuradioitem
 func (hMenu HMENU) CheckMenuRadioItem(
 	firstItem, lastItem, checkedItem MenuItem) {
 
@@ -135,13 +145,15 @@ func (hMenu HMENU) CheckMenuRadioItem(
 	}
 }
 
+// [DeleteMenu] function.
+//
 // Example:
 //
 //	var hMenu win.HMENU // initialized somewhere
 //
 //	hMenu.DeleteMenu(win.MenuItemPos(3))
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deletemenu
+// [DeleteMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deletemenu
 func (hMenu HMENU) DeleteMenu(item MenuItem) {
 	idPos, mf := item.raw()
 	ret, _, err := syscall.SyscallN(proc.DeleteMenu.Addr(),
@@ -151,7 +163,9 @@ func (hMenu HMENU) DeleteMenu(item MenuItem) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroymenu
+// [DestroyMenu] function.
+//
+// [DestroyMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroymenu
 func (hMenu HMENU) DestroyMenu() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyMenu.Addr(),
 		uintptr(hMenu))
@@ -161,13 +175,15 @@ func (hMenu HMENU) DestroyMenu() error {
 	return nil
 }
 
+// [EnableMenuItem] function.
+//
 // Example:
 //
 //	var hMenu win.HMENU // initialized somewhere
 //
 //	hMenu.EnableMenuItem(win.MenuItemPos(0), false)
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablemenuitem
+// [EnableMenuItem]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablemenuitem
 func (hMenu HMENU) EnableMenuItem(item MenuItem, enable bool) bool {
 	idPos, mf := item.raw()
 	flags := util.Iif(enable, co.MF_ENABLED, co.MF_DISABLED).(co.MF) | mf
@@ -180,7 +196,9 @@ func (hMenu HMENU) EnableMenuItem(item MenuItem, enable bool) bool {
 	return co.MF(ret) == co.MF_CHECKED
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenudefaultitem
+// [GetMenuDefaultItem] function.
+//
+// [GetMenuDefaultItem]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenudefaultitem
 func (hMenu HMENU) GetMenuDefaultItem(gmdiFlags co.GMDI) (pos MenuItem) {
 	ret, _, err := syscall.SyscallN(proc.GetMenuDefaultItem.Addr(),
 		uintptr(hMenu), 1, uintptr(gmdiFlags))
@@ -190,7 +208,9 @@ func (hMenu HMENU) GetMenuDefaultItem(gmdiFlags co.GMDI) (pos MenuItem) {
 	return MenuItemPos(int(ret))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuitemcount
+// [GetMenuItemCount] function.
+//
+// [GetMenuItemCount]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuitemcount
 func (hMenu HMENU) GetMenuItemCount() uint32 {
 	ret, _, err := syscall.SyscallN(proc.GetMenuItemCount.Addr(),
 		uintptr(hMenu))
@@ -200,14 +220,18 @@ func (hMenu HMENU) GetMenuItemCount() uint32 {
 	return uint32(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuitemid
+// [GetMenuItemID] function.
+//
+// [GetMenuItemID]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuitemid
 func (hMenu HMENU) GetMenuItemID(pos uint32) int32 {
 	ret, _, _ := syscall.SyscallN(proc.GetMenuItemID.Addr(),
 		uintptr(hMenu), uintptr(pos))
 	return int32(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuiteminfow
+// [GetMenuItemInfo] function.
+//
+// [GetMenuItemInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuiteminfow
 func (hMenu HMENU) GetMenuItemInfo(item MenuItem, mii *MENUITEMINFO) {
 	idPos, mf := item.raw()
 	ret, _, err := syscall.SyscallN(proc.GetMenuItemInfo.Addr(),
@@ -218,7 +242,9 @@ func (hMenu HMENU) GetMenuItemInfo(item MenuItem, mii *MENUITEMINFO) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsubmenu
+// [GetSubMenu] function.
+//
+// [GetSubMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsubmenu
 func (hMenu HMENU) GetSubMenu(pos uint32) (HMENU, bool) {
 	ret, _, _ := syscall.SyscallN(proc.GetSubMenu.Addr(),
 		uintptr(hMenu), uintptr(pos))
@@ -226,7 +252,9 @@ func (hMenu HMENU) GetSubMenu(pos uint32) (HMENU, bool) {
 	return hSub, hSub != 0
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenuitemw
+// [InsertMenuItem] function.
+//
+// [InsertMenuItem]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenuitemw
 func (hMenu HMENU) InsertMenuItem(itemBefore MenuItem, mii *MENUITEMINFO) {
 	idPos, mf := itemBefore.raw()
 	ret, _, err := syscall.SyscallN(proc.InsertMenuItem.Addr(),
@@ -237,7 +265,9 @@ func (hMenu HMENU) InsertMenuItem(itemBefore MenuItem, mii *MENUITEMINFO) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-removemenu
+// [RemoveMenu] function.
+//
+// [RemoveMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-removemenu
 func (hMenu HMENU) RemoveMenu(item MenuItem) {
 	idPos, mf := item.raw()
 	ret, _, err := syscall.SyscallN(proc.RemoveMenu.Addr(),
@@ -247,7 +277,9 @@ func (hMenu HMENU) RemoveMenu(item MenuItem) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenudefaultitem
+// [SetMenuDefaultItem] function.
+//
+// [SetMenuDefaultItem]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenudefaultitem
 func (hMenu HMENU) SetMenuDefaultItem(item MenuItem) {
 	idPos, mf := item.raw()
 	ret, _, err := syscall.SyscallN(proc.SetMenuDefaultItem.Addr(),
@@ -257,7 +289,9 @@ func (hMenu HMENU) SetMenuDefaultItem(item MenuItem) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuinfo
+// [SetMenuInfo] function.
+//
+// [SetMenuInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuinfo
 func (hMenu HMENU) SetMenuInfo(info *MENUINFO) {
 	ret, _, err := syscall.SyscallN(proc.SetMenuInfo.Addr(),
 		uintptr(hMenu), uintptr(unsafe.Pointer(info)))
@@ -266,7 +300,9 @@ func (hMenu HMENU) SetMenuInfo(info *MENUINFO) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuitembitmaps
+// [SetMenuItemBitmaps] function.
+//
+// [SetMenuItemBitmaps]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuitembitmaps
 func (hMenu HMENU) SetMenuItemBitmaps(
 	item MenuItem, hBmpUnchecked, hBmpChecked HBITMAP) {
 
@@ -279,7 +315,9 @@ func (hMenu HMENU) SetMenuItemBitmaps(
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuiteminfow
+// [SetMenuItemInfo] function.
+//
+// [SetMenuItemInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuiteminfow
 func (hMenu HMENU) SetMenuItemInfo(item MenuItem, info *MENUITEMINFO) {
 	info.SetCbSize() // safety
 	idPos, mf := item.raw()
@@ -292,10 +330,12 @@ func (hMenu HMENU) SetMenuItemInfo(item MenuItem, info *MENUITEMINFO) {
 	}
 }
 
+// [TrackPopupMenu] function.
+//
 // This function will block until the menu disappears.
 // If TPM_RETURNCMD is passed, returns the selected command ID.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
+// [TrackPopupMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
 func (hMenu HMENU) TrackPopupMenu(flags co.TPM, x, y int32, hWnd HWND) int {
 	ret, _, err := syscall.SyscallN(proc.TrackPopupMenu.Addr(),
 		uintptr(hMenu), uintptr(flags), uintptr(x), uintptr(y),

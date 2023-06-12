@@ -11,9 +11,11 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
+// [CommandLineToArgv] function.
+//
 // Typically used with GetCommandLine().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw
+// [CommandLineToArgv]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw
 func CommandLineToArgv(cmdLine string) []string {
 	var pNumArgs int32
 	ret, _, err := syscall.SyscallN(proc.CommandLineToArgv.Addr(),
@@ -32,7 +34,9 @@ func CommandLineToArgv(cmdLine string) []string {
 	return strs
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
+// [ShellNotifyIcon] function.
+//
+// [ShellNotifyIcon]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
 func ShellNotifyIcon(message co.NIM, data *NOTIFYICONDATA) error {
 	ret, _, err := syscall.SyscallN(proc.Shell_NotifyIcon.Addr(),
 		uintptr(message), uintptr(unsafe.Pointer(data)))
@@ -42,9 +46,11 @@ func ShellNotifyIcon(message co.NIM, data *NOTIFYICONDATA) error {
 	return nil
 }
 
+// [SHGetFileInfo] function.
+//
 // Depends of CoInitializeEx().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
+// [SHGetFileInfo]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
 func SHGetFileInfo(
 	path string, fileAttributes co.FILE_ATTRIBUTE,
 	sfi *SHFILEINFO, flags co.SHGFI) {

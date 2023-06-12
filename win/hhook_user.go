@@ -10,11 +10,13 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// A handle to a hook.
+// A handle to a [hook].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hhook
+// [hook]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hhook
 type HHOOK HANDLE
 
+// [SetWindowsHookEx] function.
+//
 // Note that the callback is recreated each function call, and the number of
 // system callbacks is limited somewhere by the Go runtime.
 //
@@ -23,7 +25,7 @@ type HHOOK HANDLE
 //
 // ⚠️ You must defer HHOOK.UnhookWindowsHookEx().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
+// [SetWindowsHookEx]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
 func SetWindowsHookEx(idHook co.WH,
 	callback func(code int32, wp WPARAM, lp LPARAM) uintptr,
 	hMod HINSTANCE, threadId uint32) (HHOOK, error) {
@@ -37,14 +39,18 @@ func SetWindowsHookEx(idHook co.WH,
 	return HHOOK(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-callnexthookex
+// [CallNextHookEx] function.
+//
+// [CallNextHookEx]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-callnexthookex
 func (hHook HHOOK) CallNextHookEx(nCode int32, wp WPARAM, lp LPARAM) uintptr {
 	ret, _, _ := syscall.SyscallN(proc.CallNextHookEx.Addr(),
 		uintptr(hHook), uintptr(nCode), uintptr(wp), uintptr(lp))
 	return uintptr(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unhookwindowshookex
+// [UnhookWindowsHookEx] function.
+//
+// [UnhookWindowsHookEx]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unhookwindowshookex
 func (hHook HHOOK) UnhookWindowsHookEx() error {
 	ret, _, err := syscall.SyscallN(proc.UnhookWindowsHookEx.Addr(),
 		uintptr(hHook))

@@ -10,14 +10,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// A handle to a deferred window position structure.
+// A handle to a deferred window position [structure].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdwp
+// [structure]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdwp
 type HDWP HANDLE
 
+// [BeginDeferWindowPos] function.
+//
 // ⚠️ You must defer HDWP.EndDeferWindowPos().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-begindeferwindowpos
+// [BeginDeferWindowPos]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-begindeferwindowpos
 func BeginDeferWindowPos(numWindows int32) HDWP {
 	ret, _, err := syscall.SyscallN(proc.BeginDeferWindowPos.Addr(),
 		uintptr(numWindows))
@@ -27,7 +29,9 @@ func BeginDeferWindowPos(numWindows int32) HDWP {
 	return HDWP(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deferwindowpos
+// [DeferWindowPos] function.
+//
+// [DeferWindowPos]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deferwindowpos
 func (hDwp HDWP) DeferWindowPos(
 	hWnd, hwndInsertAfter HWND, x, y, cx, cy int32, uFlags co.SWP) HDWP {
 
@@ -40,7 +44,9 @@ func (hDwp HDWP) DeferWindowPos(
 	return HDWP(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enddeferwindowpos
+// [EndDeferWindowPos] function.
+//
+// [EndDeferWindowPos]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enddeferwindowpos
 func (hDwp HDWP) EndDeferWindowPos() error {
 	ret, _, err := syscall.SyscallN(proc.EndDeferWindowPos.Addr(),
 		uintptr(hDwp))

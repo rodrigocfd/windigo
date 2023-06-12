@@ -11,14 +11,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// An atom.
+// An [atom].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#atom
+// [atom]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#atom
 type ATOM uint16
 
+// [GlobalAddAtom] function.
+//
 // ⚠️ You must defer ATOM.GlobalDeleteAtom().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globaladdatomw
+// [GlobalAddAtom]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globaladdatomw
 func GlobalAddAtom(s string) ATOM {
 	ret, _, err := syscall.SyscallN(proc.GlobalAddAtom.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(s))))
@@ -28,7 +30,9 @@ func GlobalAddAtom(s string) ATOM {
 	return ATOM(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globaldeleteatom
+// [GlobalDeleteAtom] function.
+//
+// [GlobalDeleteAtom]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globaldeleteatom
 func (atom ATOM) GlobalDeleteAtom() error {
 	syscall.SyscallN(proc.SetLastError.Addr(), 0)
 
@@ -40,88 +44,103 @@ func (atom ATOM) GlobalDeleteAtom() error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalgetatomnamew
+// [GlobalGetAtomName] function.
+//
+// [GlobalGetAtomName]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalgetatomnamew
 func (atom ATOM) GlobalGetAtomName() string {
-	buf := make([]uint16, _MAX_PATH+1) // arbitrary
+	var buf [_MAX_PATH + 1]uint16 // arbitrary
 
 	ret, _, err := syscall.SyscallN(proc.GlobalGetAtomName.Addr(),
 		uintptr(atom), uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
-	return Str.FromNativeSlice(buf)
+	return Str.FromNativeSlice(buf[:])
 }
 
 //------------------------------------------------------------------------------
 
-// A handle to an object.
+// A [handle] to an object. This generic handle is used throughout the whole
+// API, with different meanings.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
+// [handle]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HANDLE syscall.Handle
 
-// A handle to an event.
+// A handle to an [event].
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-createeventw
+// [event]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-createeventw
 type HEVENT HANDLE
 
-// A handle to a resource.
+// A handle to a [resource].
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-findresourcew
+// [resource]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-findresourcew
 type HRSRC HANDLE
 
-// A handle to a resource memory block.
+// A handle to a [resource memory block].
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadresource
+// [resource memory block]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadresource
 type HRSRCMEM HANDLE
 
 //------------------------------------------------------------------------------
 
-// Language and sublanguage identifier.
+// Language and sublanguage [identifier].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/language-identifiers
+// [identifier]: https://docs.microsoft.com/en-us/windows/win32/intl/language-identifiers
 type LANGID uint16
 
-// Predefined language identifier.
+// Predefined language [identifier].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/language-identifiers
+// [identifier]: https://docs.microsoft.com/en-us/windows/win32/intl/language-identifiers
 const (
 	LANGID_SYSTEM_DEFAULT LANGID = LANGID((uint16(co.SUBLANG_SYS_DEFAULT) << 10) | uint16(co.LANG_NEUTRAL))
 	LANGID_USER_DEFAULT   LANGID = LANGID((uint16(co.SUBLANG_DEFAULT) << 10) | uint16(co.LANG_NEUTRAL))
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-makelangid
+// [MAKELANGID] macro.
+//
+// [MAKELANGID]: https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-makelangid
 func MAKELANGID(lang co.LANG, subLang co.SUBLANG) LANGID {
 	return LANGID((uint16(subLang) << 10) | uint16(lang))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-primarylangid
+// [PRIMARYLANGID] macro.
+//
+// [PRIMARYLANGID]: https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-primarylangid
 func (lid LANGID) Lang() co.LANG { return co.LANG(uint16(lid) & 0x3ff) }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-sublangid
+// [SUBLANGID] macro.
+//
+// [SUBLANGID]: https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-sublangid
 func (lid LANGID) SubLang() co.SUBLANG { return co.SUBLANG(uint16(lid) >> 10) }
 
 //------------------------------------------------------------------------------
 
-// Locale identifier.
+// Locale [identifier].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/locale-identifiers
+// [identifier]: https://docs.microsoft.com/en-us/windows/win32/intl/locale-identifiers
 type LCID uint32
 
-// Predefined locale identifier.
+// Predefined locale [identifier].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/locale-identifiers
+// [identifier]: https://docs.microsoft.com/en-us/windows/win32/intl/locale-identifiers
 const (
 	LCID_SYSTEM_DEFAULT LCID = LCID((uint32(co.SORT_DEFAULT) << 16) | uint32(LANGID_SYSTEM_DEFAULT))
 	LCID_USER_DEFAULT   LCID = LCID((uint32(co.SORT_DEFAULT) << 16) | uint32(LANGID_USER_DEFAULT))
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-makelcid
+// [MAKELCID] macro.
+//
+// [MAKELCID]: https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-makelcid
 func MAKELCID(langId LANGID, sortId co.SORT) LCID {
 	return LCID((uint32(sortId) << 16) | uint32(langId))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-langidfromlcid
+// [LANGIDFROMLCID] macro.
+//
+// [LANGIDFROMLCID]: https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-langidfromlcid
 func (lcid LCID) LangId() LANGID { return LANGID(uint16(lcid)) }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-sortidfromlcid
+// [SORTIDFROMLCID] macro.
+//
+// [SORTIDFROMLCID]: https://docs.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-sortidfromlcid
 func (lcid LCID) SortId() co.SORT { return co.SORT((uint32(lcid) >> 16) & 0xf) }

@@ -9,7 +9,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-duplicateicon
+// [DuplicateIcon] function.
+//
+// [DuplicateIcon]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-duplicateicon
 func (hInst HINSTANCE) DuplicateIcon(hIcon HICON) HICON {
 	ret, _, err := syscall.SyscallN(proc.DuplicateIcon.Addr(),
 		uintptr(hInst), uintptr(hIcon))

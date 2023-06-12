@@ -9,14 +9,18 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-accel
+// [ACCEL] struct.
+//
+// [ACCEL]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-accel
 type ACCEL struct {
 	FVirt co.ACCELF // Modifiers.
 	Key   co.VK     // Virtual key code.
 	Cmd   uint16    // LOWORD(wParam) value.
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
+// [COMPAREITEMSTRUCT] struct.
+//
+// [COMPAREITEMSTRUCT]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
 type COMPAREITEMSTRUCT struct {
 	CtlType    co.ODT_C
 	CtlID      uint32
@@ -28,9 +32,11 @@ type COMPAREITEMSTRUCT struct {
 	DwLocaleId uint32
 }
 
+// [CONVCONTEXT] struct.
+//
 // ⚠️ You must call SetCb() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/ns-ddeml-convcontext
+// [CONVCONTEXT]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/ns-ddeml-convcontext
 type CONVCONTEXT struct {
 	cb         uint32
 	wFlags     uint32
@@ -50,14 +56,18 @@ func (cc *CONVCONTEXT) SetCb() {
 func (cc *CONVCONTEXT) DwLangId() LANGID       { return LANGID(cc.dwLangId) }
 func (cc *CONVCONTEXT) SetDwLangId(val LANGID) { cc.dwLangId = uint32(val) }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-copydatastruct
+// [COPYDATASTRUCT] struct.
+//
+// [COPYDATASTRUCT]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-copydatastruct
 type COPYDATASTRUCT struct {
 	DwData uintptr // ULONG_PTR
 	CbData uint32
 	LpData uintptr // PVOID
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-createstructw
+// [CREATESTRUCT] struct.
+//
+// [CREATESTRUCT]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-createstructw
 type CREATESTRUCT struct {
 	LpCreateParams uintptr // LPVOID
 	HInstance      HINSTANCE
@@ -71,7 +81,9 @@ type CREATESTRUCT struct {
 	ExStyle        co.WS_EX
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-cwpretstruct
+// [CWPRETSTRUCT] struct.
+//
+// [CWPRETSTRUCT]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-cwpretstruct
 type CWPRETSTRUCT struct {
 	LResult uintptr // LRESULT
 	LParam  LPARAM
@@ -80,7 +92,9 @@ type CWPRETSTRUCT struct {
 	Hwnd    HWND
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-deleteitemstruct
+// [DELETEITEMSTRUCT] struct.
+//
+// [DELETEITEMSTRUCT]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-deleteitemstruct
 type DELETEITEMSTRUCT struct {
 	CtlType  co.ODT_C
 	CtlID    uint32
@@ -89,9 +103,11 @@ type DELETEITEMSTRUCT struct {
 	ItemData uintptr // ULONG_PTR
 }
 
+// [DISPLAY_DEVICE] struct.
+//
 // ⚠️ You must call SetCb() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-display_devicew
+// [DISPLAY_DEVICE]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-display_devicew
 type DISPLAY_DEVICE struct {
 	cb           uint32
 	deviceName   [32]uint16
@@ -113,7 +129,9 @@ func (dd *DISPLAY_DEVICE) SetDeviceString(val string) {
 	copy(dd.deviceString[:], Str.ToNativeSlice(Str.Substr(val, 0, len(dd.deviceString)-1)))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
+// [DRAWITEMSTRUCT] struct.
+//
+// [DRAWITEMSTRUCT]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
 type DRAWITEMSTRUCT struct {
 	CtlType    co.ODT
 	CtlID      uint32
@@ -126,9 +144,11 @@ type DRAWITEMSTRUCT struct {
 	ItemData   uintptr // ULONG_PTR
 }
 
+// [GUITHREADINFO] struct.
+//
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-guithreadinfo
+// [GUITHREADINFO]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-guithreadinfo
 type GUITHREADINFO struct {
 	cbSize        uint32
 	Flags         co.GUI
@@ -143,9 +163,11 @@ type GUITHREADINFO struct {
 
 func (gti *GUITHREADINFO) SetCbSize() { gti.cbSize = uint32(unsafe.Sizeof(*gti)) }
 
+// [HELPINFO] struct.
+//
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
+// [HELPINFO]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
 type HELPINFO struct {
 	cbSize       uint32
 	IContextType co.HELPINFO
@@ -157,7 +179,9 @@ type HELPINFO struct {
 
 func (hi *HELPINFO) SetCbSize() { hi.cbSize = uint32(unsafe.Sizeof(*hi)) }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfo
+// [ICONINFO] struct.
+//
+// [ICONINFO]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfo
 type ICONINFO struct {
 	fIcon    int32 // BOOL
 	XHotspot uint32
@@ -169,9 +193,11 @@ type ICONINFO struct {
 func (ii *ICONINFO) FIcon() bool       { return ii.fIcon != 0 }
 func (ii *ICONINFO) SetFIcon(val bool) { ii.fIcon = util.BoolToInt32(val) }
 
+// [ICONINFOEX] struct.
+//
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfoexw
+// [ICONINFOEX]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfoexw
 type ICONINFOEX struct {
 	cbSize    uint32
 	fIcon     int32 // BOOL
@@ -199,14 +225,18 @@ func (iix *ICONINFOEX) SetSzResName(val string) {
 	copy(iix.szResName[:], Str.ToNativeSlice(Str.Substr(val, 0, len(iix.szResName)-1)))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-mdinextmenu
+// [MDINEXTMENU] struct.
+//
+// [MDINEXTMENU]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-mdinextmenu
 type MDINEXTMENU struct {
 	HmenuIn   HMENU
 	HmenuNext HMENU
 	HwndNext  HWND
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menugetobjectinfo
+// [MENUGETOBJECTINFO] struct.
+//
+// [MENUGETOBJECTINFO]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menugetobjectinfo
 type MENUGETOBJECTINFO struct {
 	DwFlags co.MNGOF
 	UPos    uint32
@@ -215,9 +245,11 @@ type MENUGETOBJECTINFO struct {
 	PvObj   uintptr // PVOID
 }
 
+// [MENUINFO] struct.
+//
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
+// [MENUINFO]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
 type MENUINFO struct {
 	cbSize          uint32
 	FMask           co.MIM
@@ -230,9 +262,11 @@ type MENUINFO struct {
 
 func (mi *MENUINFO) SetCbSize() { mi.cbSize = uint32(unsafe.Sizeof(*mi)) }
 
+// [MENUITEMINFO] struct.
+//
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
+// [MENUITEMINFO]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
 type MENUITEMINFO struct {
 	cbSize        uint32
 	FMask         co.MIIM
@@ -250,7 +284,9 @@ type MENUITEMINFO struct {
 
 func (mii *MENUITEMINFO) SetCbSize() { mii.cbSize = uint32(unsafe.Sizeof(*mii)) }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-minmaxinfo
+// [MINMAXINFO] struct.
+//
+// [MINMAXINFO]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-minmaxinfo
 type MINMAXINFO struct {
 	ptReserved     POINT
 	PtMaxSize      POINT
@@ -259,9 +295,11 @@ type MINMAXINFO struct {
 	PtMaxTrackSize POINT
 }
 
+// [MONITORINFOEX] struct.
+//
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfoexw
+// [MONITORINFOEX]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfoexw
 type MONITORINFOEX struct {
 	cbSize    uint32
 	RcMonitor RECT
@@ -277,7 +315,9 @@ func (dtf *MONITORINFOEX) SetSzDevice(val string) {
 	copy(dtf.szDevice[:], Str.ToNativeSlice(Str.Substr(val, 0, len(dtf.szDevice)-1)))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msg
+// [MSG] struct.
+//
+// [MSG]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msg
 type MSG struct {
 	HWnd   HWND
 	Msg    uint32
@@ -287,22 +327,28 @@ type MSG struct {
 	Pt     POINT
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nccalcsize_params
+// [NCCALCSIZE_PARAMS] struct.
+//
+// [NCCALCSIZE_PARAMS]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nccalcsize_params
 type NCCALCSIZE_PARAMS struct {
 	Rgrc  [3]RECT
 	Lppos *WINDOWPOS
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nmhdr
+// [NMHDR] struct.
+//
+// [NMHDR]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nmhdr
 type NMHDR struct {
 	HWndFrom HWND
 	IdFrom   uintptr // UINT_PTR, actually it's a simple control ID
 	Code     uint32  // in fact it should be int32
 }
 
+// [NONCLIENTMETRICS] struct.
+//
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nonclientmetricsw
+// [NONCLIENTMETRICS]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nonclientmetricsw
 type NONCLIENTMETRICS struct {
 	cbSize             uint32
 	IBorderWidth       int32
@@ -330,7 +376,9 @@ func (ncm *NONCLIENTMETRICS) SetCbSize() {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-paintstruct
+// [PAINTSTRUCT] struct.
+//
+// [PAINTSTRUCT]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-paintstruct
 type PAINTSTRUCT struct {
 	Hdc         HDC
 	fErase      int32 // BOOL
@@ -343,30 +391,38 @@ type PAINTSTRUCT struct {
 func (ps *PAINTSTRUCT) FErase() bool       { return ps.fErase != 0 }
 func (ps *PAINTSTRUCT) SetFErase(val bool) { ps.fErase = util.BoolToInt32(val) }
 
+// [POINT] struct.
+//
 // Basic point structure, with x and y coordinates.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-point
+// [POINT]: https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-point
 type POINT struct {
 	X, Y int32
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-powerbroadcast_setting
+// [POWERBROADCAST_SETTING] struct.
+//
+// [POWERBROADCAST_SETTING]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-powerbroadcast_setting
 type POWERBROADCAST_SETTING struct {
 	PowerSetting GUID
 	DataLength   uint32
 	Data         [1]uint16
 }
 
+// [RECT] struct.
+//
 // Basic rectangle structure, with left, top, right and bottom values.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-rect
+// [RECT]: https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-rect
 type RECT struct {
 	Left, Top, Right, Bottom int32
 }
 
+// [SCROLLINFO] struct.
+//
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-scrollinfo
+// [SCROLLINFO]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-scrollinfo
 type SCROLLINFO struct {
 	cbSize    uint32
 	FMask     co.SIF
@@ -379,9 +435,11 @@ type SCROLLINFO struct {
 
 func (si *SCROLLINFO) SetCbSize() { si.cbSize = uint32(unsafe.Sizeof(*si)) }
 
+// [SECURITY_QUALITY_OF_SERVICE] struct.
+//
 // ⚠️ You must call SetLength() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-security_quality_of_service
+// [SECURITY_QUALITY_OF_SERVICE]: https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-security_quality_of_service
 type SECURITY_QUALITY_OF_SERVICE struct {
 	length              uint32
 	ImpersonationLevel  co.SECURITY_IMPERSONATION_LEVEL
@@ -401,32 +459,36 @@ func (qs *SECURITY_QUALITY_OF_SERVICE) SetEffectiveOnly(val bool) {
 	qs.effectiveOnly = util.BoolToUint8(val)
 }
 
+// [SIZE] struct.
+//
 // Basic area size structure, with cx and cy values.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-size
+// [SIZE]: https://docs.microsoft.com/en-us/windows/win32/api/windef/ns-windef-size
 type SIZE struct {
 	Cx, Cy int32
 }
 
-// STYLESTRUCT for WS styles.
+// [STYLESTRUCT] for WS styles.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-stylestruct
+// [STYLESTRUCT]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-stylestruct
 type STYLESTRUCT_WS struct {
 	StyleOld co.WS
 	StyleNew co.WS
 }
 
-// STYLESTRUCT for WS_EX styles.
+// [STYLESTRUCT] for WS_EX styles.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-stylestruct
+// [STYLESTRUCT]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-stylestruct
 type STYLESTRUCT_WSEX struct {
 	StyleOld co.WS_EX
 	StyleNew co.WS_EX
 }
 
+// [TITLEBARINFOEX] struct.
+//
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-titlebarinfoex
+// [TITLEBARINFOEX]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-titlebarinfoex
 type TITLEBARINFOEX struct {
 	cbSize     uint32
 	RcTitleBar RECT
@@ -436,7 +498,9 @@ type TITLEBARINFOEX struct {
 
 func (tix *TITLEBARINFOEX) SetCbSize() { tix.cbSize = uint32(unsafe.Sizeof(*tix)) }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowpos
+// [WINDOWPOS] struct.
+//
+// [WINDOWPOS]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowpos
 type WINDOWPOS struct {
 	HwndInsertAfter HWND
 	Hwnd            HWND
@@ -444,9 +508,11 @@ type WINDOWPOS struct {
 	Flags           co.SWP
 }
 
+// [WNDCLASSEX] struct.
+//
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassexw
+// [WNDCLASSEX]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassexw
 type WNDCLASSEX struct {
 	cbSize        uint32
 	Style         co.CS

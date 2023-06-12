@@ -12,13 +12,15 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// A handle to a standard device (standard input, standard output, or standard
-// error).
+// A handle to a [standard device] – standard input, standard output, or
+// standard error.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/console/getstdhandle
+// [standard device]: https://docs.microsoft.com/en-us/windows/console/getstdhandle
 type HSTDHANDLE HANDLE
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/getstdhandle
+// [GetStdHandle] function.
+//
+// [GetStdHandle]: https://docs.microsoft.com/en-us/windows/console/getstdhandle
 func GetStdHandle(handle co.STD) (HSTDHANDLE, error) {
 	ret, _, err := syscall.SyscallN(proc.GetStdHandle.Addr(),
 		uintptr(handle))
@@ -28,7 +30,9 @@ func GetStdHandle(handle co.STD) (HSTDHANDLE, error) {
 	return HSTDHANDLE(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/getcurrentconsolefont
+// [GetCurrentConsoleFont] function.
+//
+// [GetCurrentConsoleFont]: https://docs.microsoft.com/en-us/windows/console/getcurrentconsolefont
 func (hStd HSTDHANDLE) GetCurrentConsoleFont(
 	maximumWindow bool,
 	info *CONSOLE_FONT_INFO) error {
@@ -42,7 +46,9 @@ func (hStd HSTDHANDLE) GetCurrentConsoleFont(
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/readconsole
+// [ReadConsole] function.
+//
+// [ReadConsole]: https://docs.microsoft.com/en-us/windows/console/readconsole
 func (hStd HSTDHANDLE) ReadConsole(
 	maxChars int,
 	inputControl *CONSOLE_READCONSOLE_CONTROL) (string, error) {
@@ -60,7 +66,9 @@ func (hStd HSTDHANDLE) ReadConsole(
 	return Str.FromNativeSlice(buf), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/setconsolecursorinfo
+// [SetConsoleCursorInfo] function.
+//
+// [SetConsoleCursorInfo]: https://docs.microsoft.com/en-us/windows/console/setconsolecursorinfo
 func (hStd HSTDHANDLE) SetConsoleCursorInfo(info *CONSOLE_CURSOR_INFO) error {
 	ret, _, err := syscall.SyscallN(proc.SetConsoleCursorInfo.Addr(),
 		uintptr(hStd), uintptr(unsafe.Pointer(info)))
@@ -70,7 +78,9 @@ func (hStd HSTDHANDLE) SetConsoleCursorInfo(info *CONSOLE_CURSOR_INFO) error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/coord-str
+// [SetConsoleCursorPosition] function.
+//
+// [SetConsoleCursorPosition]: https://docs.microsoft.com/en-us/windows/console/coord-str
 func (hStd HSTDHANDLE) SetConsoleCursorPosition(x, y int) error {
 	ret, _, err := syscall.SyscallN(proc.SetConsoleCursorPosition.Addr(),
 		uintptr(hStd), uintptr(x), uintptr(y))
@@ -80,7 +90,9 @@ func (hStd HSTDHANDLE) SetConsoleCursorPosition(x, y int) error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/setconsoledisplaymode
+// [SetConsoleDisplayMode] function.
+//
+// [SetConsoleDisplayMode]: https://docs.microsoft.com/en-us/windows/console/setconsoledisplaymode
 func (hStd HSTDHANDLE) SetConsoleDisplayMode(mode co.CONSOLE) (SIZE, error) {
 	var coord COORD
 	ret, _, err := syscall.SyscallN(proc.SetConsoleDisplayMode.Addr(),
@@ -91,7 +103,9 @@ func (hStd HSTDHANDLE) SetConsoleDisplayMode(mode co.CONSOLE) (SIZE, error) {
 	return SIZE{Cx: int32(coord.X), Cy: int32(coord.Y)}, nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/setconsolemode
+// [SetConsoleMode] function.
+//
+// [SetConsoleMode]: https://docs.microsoft.com/en-us/windows/console/setconsolemode
 func (hStd HSTDHANDLE) SetConsoleMode(mode co.ENABLE) error {
 	ret, _, err := syscall.SyscallN(proc.SetConsoleMode.Addr(),
 		uintptr(hStd), uintptr(mode))
@@ -101,7 +115,9 @@ func (hStd HSTDHANDLE) SetConsoleMode(mode co.ENABLE) error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/setconsolescreenbuffersize
+// [SetConsoleScreenBufferSize] function.
+//
+// [SetConsoleScreenBufferSize]: https://docs.microsoft.com/en-us/windows/console/setconsolescreenbuffersize
 func (hStd HSTDHANDLE) SetConsoleScreenBufferSize(x, y int) error {
 	ret, _, err := syscall.SyscallN(proc.SetConsoleScreenBufferSize.Addr(),
 		uintptr(hStd), uintptr(x), uintptr(y))
@@ -111,7 +127,9 @@ func (hStd HSTDHANDLE) SetConsoleScreenBufferSize(x, y int) error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/console/writeconsole
+// [WriteConsole] function.
+//
+// [WriteConsole]: https://docs.microsoft.com/en-us/windows/console/writeconsole
 func (hStd HSTDHANDLE) WriteConsole(text string) (numCharsWritten int, e error) {
 	ret, _, err := syscall.SyscallN(proc.WriteConsole.Addr(),
 		uintptr(hStd),

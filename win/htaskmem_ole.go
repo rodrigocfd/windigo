@@ -8,14 +8,16 @@ import (
 	"github.com/rodrigocfd/windigo/internal/proc"
 )
 
-// Handle to an OLE block of memory.
+// Handle to an OLE [block of memory].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
+// [block of memory]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
 type HTASKMEM HANDLE
 
+// [CoTaskMemAlloc] function.
+//
 // ⚠️ You must defer HTASKMEM.CoTaskMemFree().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
+// [CoTaskMemAlloc]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
 func CoTaskMemAlloc(numBytes int) HTASKMEM {
 	ret, _, _ := syscall.SyscallN(proc.CoTaskMemAlloc.Addr(),
 		uintptr(numBytes))
@@ -25,15 +27,19 @@ func CoTaskMemAlloc(numBytes int) HTASKMEM {
 	return HTASKMEM(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
+// [CoTaskMemFree] function.
+//
+// [CoTaskMemFree]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
 func (hMem HTASKMEM) CoTaskMemFree() {
 	syscall.SyscallN(proc.CoTaskMemFree.Addr(),
 		uintptr(hMem))
 }
 
+// [CoTaskMemRealloc] function.
+//
 // ⚠️ You must defer CoTaskMemFree().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
+// [CoTaskMemRealloc]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
 func (hMem HTASKMEM) CoTaskMemRealloc(numBytes int) HTASKMEM {
 	ret, _, _ := syscall.SyscallN(proc.CoTaskMemRealloc.Addr(),
 		uintptr(hMem), uintptr(numBytes))

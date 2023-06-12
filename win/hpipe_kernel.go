@@ -11,14 +11,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// A handle to a pipe.
+// A handle to a [pipe].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
+// [pipe]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HPIPE HANDLE
 
+// [CreateNamedPipe] function.
+//
 // ⚠️ You must defer HPIPE.CloseHandle().
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
+// [CreateNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
 func CreateNamedPipe(
 	name string, dwOpenMode co.PIPE_ACCESS, dwPipeMode co.PIPE,
 	nMaxInstances uint, nOutBufferSize uint, nInBufferSize uint,
@@ -40,7 +42,9 @@ func CreateNamedPipe(
 	return HPIPE(ret), nil
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-connectnamedpipe
+// [ConnectNamedPipe] function.
+//
+// [ConnectNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-connectnamedpipe
 func (hPipe HPIPE) ConnectNamedPipe() error {
 	ret, _, err := syscall.SyscallN(proc.ConnectNamedPipe.Addr(),
 		uintptr(hPipe), uintptr(0))
@@ -50,7 +54,9 @@ func (hPipe HPIPE) ConnectNamedPipe() error {
 	return nil
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-disconnectnamedpipe
+// [DisconnectNamedPipe] function.
+//
+// [DisconnectNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-disconnectnamedpipe
 func (hPipe HPIPE) DisconnectNamedPipe() error {
 	ret, _, err := syscall.SyscallN(proc.DisconnectNamedPipe.Addr(),
 		uintptr(hPipe), uintptr(0))
@@ -60,19 +66,25 @@ func (hPipe HPIPE) DisconnectNamedPipe() error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+// [CloseHandle] function.
+//
+// [CloseHandle]: https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hPipe HPIPE) CloseHandle() error {
 	return HFILE(hPipe).CloseHandle()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
+// [ReadFile] function.
+//
+// [ReadFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hPipe HPIPE) ReadFile(
 	buffer []byte, overlapped *OVERLAPPED) (numBytesRead uint32, e error) {
 
 	return HFILE(hPipe).ReadFile(buffer, overlapped)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
+// [WriteFile] function.
+//
+// [WriteFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
 func (hPipe HPIPE) WriteFile(
 	data []byte, overlapped *OVERLAPPED) (numBytesWritten uint32, e error) {
 

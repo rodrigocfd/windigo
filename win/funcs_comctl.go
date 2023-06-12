@@ -12,22 +12,28 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
+// [InitCommonControls] function.
+//
+// [InitCommonControls]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
 func InitCommonControls() {
 	syscall.SyscallN(proc.InitCommonControls.Addr())
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrolsex
+// [InitCommonControlsEx] function.
+//
+// [InitCommonControlsEx]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrolsex
 func InitCommonControlsEx(icce *INITCOMMONCONTROLSEX) bool {
 	ret, _, _ := syscall.SyscallN(proc.InitCommonControlsEx.Addr(),
 		uintptr(unsafe.Pointer(icce)))
 	return ret != 0
 }
 
+// [TaskDialogIndirect] function.
+//
 // Prefer using ui.TaskDlg wrappers, which deals with the most commons cases of
 // this function in a safer, easier way.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
+// [TaskDialogIndirect]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 	serialized, ptrs := taskConfig.serializePacked()
 

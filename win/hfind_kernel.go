@@ -10,16 +10,18 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// A handle returned by FindFirstFile() function.
+// A handle returned by [FindFirstFile] function.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
+// [FindFirstFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
 type HFIND HANDLE
 
+// [FindFirstFile] function.
+//
 // Returns true if a file was found.
 //
 // ⚠️ You must defer HFIND.FindClose().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
+// [FindFirstFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
 func FindFirstFile(fileName string,
 	findFileData *WIN32_FIND_DATA) (HFIND, bool, error) {
 
@@ -37,7 +39,9 @@ func FindFirstFile(fileName string,
 	return HFIND(ret), true, nil // a file was found
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
+// [FindClose] function.
+//
+// [FindClose]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
 func (hFind HFIND) FindClose() error {
 	ret, _, err := syscall.SyscallN(proc.FindClose.Addr(),
 		uintptr(hFind))
@@ -47,9 +51,11 @@ func (hFind HFIND) FindClose() error {
 	return nil
 }
 
+// [FindNextFile] function.
+//
 // Returns true if a file was found.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
+// [FindNextFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
 func (hFind HFIND) FindNextFile(findFileData *WIN32_FIND_DATA) (bool, error) {
 	ret, _, err := syscall.SyscallN(proc.FindNextFile.Addr(),
 		uintptr(hFind), uintptr(unsafe.Pointer(findFileData)))

@@ -10,9 +10,11 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
+// [GetFileVersionInfo] function.
+//
 // Automatically allocs the buffer with GetFileVersionInfoSize().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
+// [GetFileVersionInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
 func GetFileVersionInfo(fileName string) ([]byte, error) {
 	visz, errSz := GetFileVersionInfoSize(fileName)
 	if errSz != nil {
@@ -30,7 +32,9 @@ func GetFileVersionInfo(fileName string) ([]byte, error) {
 	return buf, nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
+// [GetFileVersionInfo] function.
+//
+// [GetFileVersionInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
 func GetFileVersionInfoSize(fileName string) (uint32, error) {
 	var lpdwHandle uint32
 	ret, _, err := syscall.SyscallN(proc.GetFileVersionInfoSize.Addr(),
@@ -42,12 +46,14 @@ func GetFileVersionInfoSize(fileName string) (uint32, error) {
 	return uint32(ret), nil
 }
 
+// [VerQueryValue] function.
+//
 // Returns a pointer to the block and its size, which varies according to the
 // data type. Returns false if the block doesn't exist.
 //
 // This function is rather tricky. Prefer using ResourceInfo.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
+// [VerQueryValue]: https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
 func VerQueryValue(
 	block []byte, subBlock string) (ptr unsafe.Pointer, sz uint32, exists bool) {
 

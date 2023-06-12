@@ -14,15 +14,19 @@ import (
 // Handle to a heap object.
 type HHEAP HANDLE
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-getprocessheap
+// [GetProcessHeap] function.
+//
+// [GetProcessHeap]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-getprocessheap
 func GetProcessHeap() HHEAP {
 	ret, _, _ := syscall.SyscallN(proc.GetProcessHeap.Addr())
 	return HHEAP(ret)
 }
 
+// [HeapCreate] function.
+//
 // ⚠️ You must defer HHEAP.HeapDestroy().
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcreate
+// [HeapCreate]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcreate
 func HeapCreate(
 	options co.HEAP_CREATE, initialSize, maximumSize uint) (HHEAP, error) {
 
@@ -34,9 +38,11 @@ func HeapCreate(
 	return HHEAP(ret), nil
 }
 
+// [HeapAlloc] function.
+//
 // ⚠️ You must defer HHEAP.HeapFree().
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapalloc
+// [HeapAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapalloc
 func (hHeap HHEAP) HeapAlloc(
 	flags co.HEAP_ALLOC, num_bytes uint) ([]byte, error) {
 
@@ -50,7 +56,9 @@ func (hHeap HHEAP) HeapAlloc(
 	return unsafe.Slice((*byte)(unsafe.Pointer(ret)), num_bytes), nil
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcompact
+// [HeapCompact] function.
+//
+// [HeapCompact]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcompact
 func (hHeap HHEAP) HeapCompact(flags co.HEAP_NS) (uint, error) {
 	ret, _, err := syscall.SyscallN(proc.HeapCompact.Addr(),
 		uintptr(hHeap), uintptr(flags))
@@ -60,7 +68,9 @@ func (hHeap HHEAP) HeapCompact(flags co.HEAP_NS) (uint, error) {
 	return uint(ret), nil
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapdestroy
+// [HeapDestroy] function.
+//
+// [HeapDestroy]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapdestroy
 func (hHeap HHEAP) HeapDestroy() error {
 	ret, _, err := syscall.SyscallN(proc.HeapDestroy.Addr(),
 		uintptr(hHeap))
@@ -70,7 +80,9 @@ func (hHeap HHEAP) HeapDestroy() error {
 	return nil
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapfree
+// [HeapFree] function.
+//
+// [HeapFree]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapfree
 func (hHeap HHEAP) HeapFree(flags co.HEAP_NS, block []byte) error {
 	ret, _, err := syscall.SyscallN(proc.HeapFree.Addr(),
 		uintptr(hHeap), uintptr(flags), uintptr(unsafe.Pointer(&block[0])))
@@ -80,9 +92,11 @@ func (hHeap HHEAP) HeapFree(flags co.HEAP_NS, block []byte) error {
 	return nil
 }
 
+// [HeapReAlloc] function.
+//
 // ⚠️ You must defer HHEAP.HeapFree().
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heaprealloc
+// [HeapReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heaprealloc
 func (hHeap HHEAP) HeapReAlloc(
 	flags co.HEAP_REALLOC, block []byte, num_bytes uint) ([]byte, error) {
 
@@ -97,7 +111,9 @@ func (hHeap HHEAP) HeapReAlloc(
 	return unsafe.Slice((*byte)(unsafe.Pointer(ret)), num_bytes), nil
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapsize
+// [HeapSize] function.
+//
+// [HeapSize]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapsize
 func (hHeap HHEAP) HeapSize(flags co.HEAP_NS, block []byte) (uint, error) {
 	syscall.SyscallN(proc.SetLastError.Addr(), 0)
 
@@ -109,7 +125,9 @@ func (hHeap HHEAP) HeapSize(flags co.HEAP_NS, block []byte) (uint, error) {
 	return uint(ret), nil
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapvalidate
+// [HeapValidate] function.
+//
+// [HeapValidate]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapvalidate
 func (hHeap HHEAP) HeapValidate(flags co.HEAP_NS, block []byte) bool {
 	syscall.SyscallN(proc.SetLastError.Addr(), 0)
 

@@ -84,7 +84,7 @@ func (me *FileMapped) ReadAll() []byte {
 }
 
 // Returns a new []byte with a copy of data, start with offset, and with the
-// undefined given undefined length.
+// given length.
 func (me *FileMapped) ReadChunk(offset, length int) []byte {
 	hotSlice := me.HotSlice()
 	buf := make([]byte, length)

@@ -10,19 +10,23 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// A handle to a cursor.
+// A handle to a [cursor].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hcursor
+// [cursor]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hcursor
 type HCURSOR HANDLE
 
+// [CopyCursor] function.
+//
 // ⚠️ You must defer HCURSOR.DestroyCursor().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copycursor
+// [CopyCursor]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copycursor
 func (hCursor HCURSOR) CopyCursor() HCURSOR {
 	return (HCURSOR)(((HICON)(hCursor)).CopyIcon())
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycursor
+// [DestroyCursor] function.
+//
+// [DestroyCursor]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycursor
 func (hCursor HCURSOR) DestroyCursor() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyCursor.Addr(),
 		uintptr(hCursor))
@@ -32,7 +36,9 @@ func (hCursor HCURSOR) DestroyCursor() error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setsystemcursor
+// [SetSystemCursor] function.
+//
+// [SetSystemCursor]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setsystemcursor
 func (hCursor HCURSOR) SetSystemCursor(id co.OCR) {
 	ret, _, err := syscall.SyscallN(proc.SetSystemCursor.Addr(),
 		uintptr(hCursor), uintptr(id))

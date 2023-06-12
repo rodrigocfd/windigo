@@ -14,21 +14,19 @@ import (
 // Handle to a thread.
 type HTHREAD HANDLE
 
+// [GetCurrentThread] function.
+//
 // ⚠️ You must defer HTHREAD.CloseHandle().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthread
+// [GetCurrentThread]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthread
 func GetCurrentThread() HTHREAD {
 	ret, _, _ := syscall.SyscallN(proc.GetCurrentThread.Addr())
 	return HTHREAD(ret)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthreadid
-func GetCurrentThreadId() uint32 {
-	ret, _, _ := syscall.SyscallN(proc.GetCurrentThreadId.Addr())
-	return uint32(ret)
-}
-
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+// [CloseHandle] function.
+//
+// [CloseHandle]: https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hThread HTHREAD) CloseHandle() error {
 	ret, _, err := syscall.SyscallN(proc.CloseHandle.Addr(),
 		uintptr(hThread))
@@ -38,7 +36,9 @@ func (hThread HTHREAD) CloseHandle() error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodethread
+// [GetExitCodeThread] function.
+//
+// [GetExitCodeThread]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodethread
 func (hThread HTHREAD) GetExitCodeThread() (uint32, error) {
 	var exitCode uint32
 	ret, _, err := syscall.SyscallN(proc.GetExitCodeThread.Addr(),
@@ -49,7 +49,9 @@ func (hThread HTHREAD) GetExitCodeThread() (uint32, error) {
 	return exitCode, nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessidofthread
+// [GetProcessIdOfThread] function.
+//
+// [GetProcessIdOfThread]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessidofthread
 func (hThread HTHREAD) GetProcessIdOfThread() (uint32, error) {
 	ret, _, err := syscall.SyscallN(proc.GetProcessIdOfThread.Addr(),
 		uintptr(hThread))
@@ -59,7 +61,9 @@ func (hThread HTHREAD) GetProcessIdOfThread() (uint32, error) {
 	return uint32(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadid
+// [GetThreadId] function.
+//
+// [GetThreadId]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadid
 func (hThread HTHREAD) GetThreadId() (uint32, error) {
 	ret, _, err := syscall.SyscallN(proc.GetThreadId.Addr(),
 		uintptr(hThread))
@@ -69,7 +73,9 @@ func (hThread HTHREAD) GetThreadId() (uint32, error) {
 	return uint32(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadtimes
+// [GetThreadTimes] function.
+//
+// [GetThreadTimes]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadtimes
 func (hThread HTHREAD) GetThreadTimes() (
 	creationTime, exitTime, kernelTime, userTime FILETIME, e error) {
 
@@ -83,7 +89,9 @@ func (hThread HTHREAD) GetThreadTimes() (
 	return
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-resumethread
+// [ResumeThread] function.
+//
+// [ResumeThread]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-resumethread
 func (hThread HTHREAD) ResumeThread() (uint32, error) {
 	ret, _, err := syscall.SyscallN(proc.ResumeThread.Addr(),
 		uintptr(hThread))
@@ -93,7 +101,9 @@ func (hThread HTHREAD) ResumeThread() (uint32, error) {
 	return uint32(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread
+// [TerminateThread] function.
+//
+// [TerminateThread]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread
 func (hThread HTHREAD) TerminateThread(exitCode uint32) error {
 	ret, _, err := syscall.SyscallN(proc.TerminateThread.Addr(),
 		uintptr(hThread), uintptr(exitCode))
@@ -103,7 +113,9 @@ func (hThread HTHREAD) TerminateThread(exitCode uint32) error {
 	return nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-suspendthread
+// [SuspendThread] function.
+//
+// [SuspendThread]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-suspendthread
 func (hThread HTHREAD) SuspendThread() (uint32, error) {
 	ret, _, err := syscall.SyscallN(proc.SuspendThread.Addr(),
 		uintptr(hThread))
@@ -113,7 +125,9 @@ func (hThread HTHREAD) SuspendThread() (uint32, error) {
 	return uint32(ret), nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+// [WaitForSingleObject] function.
+//
+// [WaitForSingleObject]: https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 func (hThread HTHREAD) WaitForSingleObject(milliseconds NumInf) (co.WAIT, error) {
 	ret, _, err := syscall.SyscallN(proc.WaitForSingleObject.Addr(),
 		uintptr(hThread), milliseconds.Raw())

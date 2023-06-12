@@ -8,9 +8,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// [CHOOSECOLOR] struct.
+//
 // ⚠️ You must call SetLStructSize() to initialize the struct.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolorw-r1
+// Example:
+//
+//	cc := &CHOOSECOLOR{}
+//	cc.SetLStructSize()
+//
+// [CHOOSECOLOR]: https://docs.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolorw-r1
 type CHOOSECOLOR struct {
 	lStructSize    uint32
 	HwndOwner      HWND

@@ -7,7 +7,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
+// [VS_FIXEDFILEINFO] struct.
+//
+// [VS_FIXEDFILEINFO]: https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
 type VS_FIXEDFILEINFO struct {
 	DwSignature        uint32
 	DwStrucVersion     uint32
