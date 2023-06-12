@@ -134,18 +134,6 @@ func (hProcess HPROCESS) ReadProcessMemory(
 	return
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setuserobjectinformationw
-func (hProcess HPROCESS) SetUserObjectInformation(
-	index co.UOI, info unsafe.Pointer, infoLen uintptr) error {
-
-	ret, _, err := syscall.SyscallN(proc.SetUserObjectInformation.Addr(),
-		uintptr(hProcess), uintptr(index), uintptr(info), uintptr(infoLen))
-	if ret == 0 {
-		return errco.ERROR(err)
-	}
-	return nil
-}
-
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess
 func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
 	ret, _, err := syscall.SyscallN(proc.TerminateProcess.Addr(),

@@ -290,7 +290,7 @@ func (hWnd HWND) GetDC() HDC {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgctrlid
 func (hWnd HWND) GetDlgCtrlID() int32 {
-	syscall.SyscallN(proc.SetLastError.Addr())
+	syscall.SyscallN(proc.SetLastError.Addr(), 0)
 
 	ret, _, err := syscall.SyscallN(proc.GetDlgCtrlID.Addr(),
 		uintptr(hWnd))
@@ -600,7 +600,7 @@ func (hWnd HWND) MapDialogRect(rc *RECT) {
 //
 // 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mapwindowpoints
 func (hWnd HWND) MapWindowPoints(hWndTo HWND, points []POINT) (int, int) {
-	syscall.SyscallN(proc.SetLastError.Addr())
+	syscall.SyscallN(proc.SetLastError.Addr(), 0)
 
 	ret, _, _ := syscall.SyscallN(proc.MapWindowPoints.Addr(),
 		uintptr(hWnd), uintptr(hWndTo),
@@ -893,7 +893,7 @@ func (hWnd HWND) SetWindowDisplayAffinity(affinity co.WDA) {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowlongptrw
 func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) uintptr {
-	syscall.SyscallN(proc.SetLastError.Addr())
+	syscall.SyscallN(proc.SetLastError.Addr(), 0)
 
 	ret, _, err := syscall.SyscallN(proc.SetWindowLongPtr.Addr(),
 		uintptr(hWnd), uintptr(index), newLong)

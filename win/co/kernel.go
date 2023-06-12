@@ -304,6 +304,41 @@ const (
 	GMEM_GPTR     GMEM = GMEM_FIXED | GMEM_ZEROINIT
 )
 
+// HeapAlloc() flags.
+type HEAP_ALLOC uint32
+
+const (
+	HEAP_ALLOC_GENERATE_EXCEPTIONS HEAP_ALLOC = 0x0000_0004
+	HEAP_ALLOC_NO_SERIALIZE        HEAP_ALLOC = 0x0000_0001
+	HEAP_ALLOC_ZERO_MEMORY         HEAP_ALLOC = 0x0000_0008
+)
+
+// HeapCreate() options.
+type HEAP_CREATE uint32
+
+const (
+	HEAP_CREATE_ENABLE_EXECUTE      HEAP_CREATE = 0x0004_0000
+	HEAP_CREATE_GENERATE_EXCEPTIONS HEAP_CREATE = 0x0000_0004
+	HEAP_CREATE_NO_SERIALIZE        HEAP_CREATE = 0x0000_0001
+)
+
+// HeapFree(), HeapSize() and HeapValidate() flags.
+type HEAP_NS uint32
+
+const (
+	HEAP_SER_NO_SERIALIZE HEAP_NS = 0x0000_0001
+)
+
+// HeapReAlloc() flags.
+type HEAP_REALLOC uint32
+
+const (
+	HEAP_REALLOC_GENERATE_EXCEPTIONS   HEAP_REALLOC = 0x0000_0004
+	HEAP_REALLOC_NO_SERIALIZE          HEAP_REALLOC = 0x0000_0001
+	HEAP_REALLOC_REALLOC_IN_PLACE_ONLY HEAP_REALLOC = 0x0000_0010
+	HEAP_REALLOC_ZERO_MEMORY           HEAP_REALLOC = 0x0000_0008
+)
+
 // Language identifier.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/intl/language-identifier-constants-and-strings

@@ -30,7 +30,7 @@ func GlobalAddAtom(s string) ATOM {
 
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globaldeleteatom
 func (atom ATOM) GlobalDeleteAtom() error {
-	syscall.SyscallN(proc.SetLastError.Addr())
+	syscall.SyscallN(proc.SetLastError.Addr(), 0)
 
 	_, _, err := syscall.SyscallN(proc.GlobalDeleteAtom.Addr(),
 		uintptr(atom))
