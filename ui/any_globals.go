@@ -178,9 +178,10 @@ func _FirstMainStuff() {
 
 // Runs the main window loop synchronously.
 func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
-	allocMsg := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, int(unsafe.Sizeof(win.MSG{})))
-	defer allocMsg.GlobalFree()
-	pMsg := (*win.MSG)(unsafe.Pointer(allocMsg))
+	hHeap, _ := win.GetProcessHeap()
+	block, _ := hHeap.HeapAlloc(co.HEAP_ALLOC_ZERO_MEMORY, uint(unsafe.Sizeof(win.MSG{})))
+	defer hHeap.HeapFree(0, block)
+	pMsg := (*win.MSG)(unsafe.Pointer(&block[0]))
 
 	for {
 		if res, err := win.GetMessage(pMsg, win.HWND(0), 0, 0); err != nil {
@@ -216,9 +217,10 @@ func _RunMainLoop(hWnd win.HWND, hAccel win.HACCEL) int {
 
 // Runs the modal window loop synchronously.
 func _RunModalLoop(hWnd win.HWND) {
-	allocMsg := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, int(unsafe.Sizeof(win.MSG{})))
-	defer allocMsg.GlobalFree()
-	pMsg := (*win.MSG)(unsafe.Pointer(allocMsg))
+	hHeap, _ := win.GetProcessHeap()
+	block, _ := hHeap.HeapAlloc(co.HEAP_ALLOC_ZERO_MEMORY, uint(unsafe.Sizeof(win.MSG{})))
+	defer hHeap.HeapFree(0, block)
+	pMsg := (*win.MSG)(unsafe.Pointer(&block[0]))
 
 	for {
 		if res, err := win.GetMessage(pMsg, win.HWND(0), 0, 0); err != nil {

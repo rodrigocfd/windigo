@@ -31,12 +31,13 @@ func InitCommonControlsEx(icce *INITCOMMONCONTROLSEX) bool {
 func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 	serialized, ptrs := taskConfig.serializePacked()
 
-	memPnButton := GlobalAlloc(co.GMEM_FIXED, 4) // sizeof(int)
-	defer memPnButton.GlobalFree()
+	hHeap, _ := GetProcessHeap()
+	memPnButton, _ := hHeap.HeapAlloc(co.HEAP_ALLOC_ZERO_MEMORY, uint(unsafe.Sizeof(int32(0))))
+	defer hHeap.HeapFree(0, memPnButton)
 
 	ret, _, _ := syscall.SyscallN(proc.TaskDialogIndirect.Addr(),
 		uintptr(unsafe.Pointer(&serialized[0])),
-		uintptr(unsafe.Pointer(memPnButton)))
+		uintptr(unsafe.Pointer(&memPnButton[0])))
 
 	if wErr := errco.ERROR(ret); wErr != errco.S_OK {
 		panic(wErr)
@@ -45,5 +46,5 @@ func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 	runtime.KeepAlive(serialized)
 	runtime.KeepAlive(ptrs)
 
-	return co.ID(*(*int32)(unsafe.Pointer(memPnButton)))
+	return co.ID(*(*int32)(unsafe.Pointer(&memPnButton[0])))
 }
