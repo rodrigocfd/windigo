@@ -223,6 +223,10 @@ func _RunModalLoop(hWnd win.HWND) {
 	pMsg := (*win.MSG)(unsafe.Pointer(&block[0]))
 
 	for {
+		if hWnd == 0 || !hWnd.IsWindow() {
+			break // our modal was destroyed, terminate loop
+		}
+
 		if res, err := win.GetMessage(pMsg, win.HWND(0), 0, 0); err != nil {
 			panic(err)
 		} else if res == 0 {
