@@ -11,19 +11,27 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1rendertarget
+// [ID2D1RenderTarget] COM interface.
+//
+// [ID2D1RenderTarget]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1rendertarget
 type ID2D1RenderTarget interface {
 	ID2D1Resource
 
+	// [BeginDraw] COM method.
+	//
 	// ⚠️ You must defer ID2D1RenderTarget.EndDraw().
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-begindraw
+	// [BeginDraw]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-begindraw
 	BeginDraw()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-enddraw
+	// [EndDraw] COM method.
+	//
+	// [EndDraw]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-enddraw
 	EndDraw() (tag1, tag2 uint64)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-flush
+	// [Flush] COM method.
+	//
+	// [Flush]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-flush
 	Flush() (tag1, tag2 uint64)
 }
 

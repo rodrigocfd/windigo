@@ -12,13 +12,17 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1resource
+// [ID2D1Resource] COM interface.
+//
+// [ID2D1Resource]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1resource
 type ID2D1Resource interface {
 	com.IUnknown
 
+	// [GetFactory] COM method.
+	//
 	// ⚠️ You must defer ID2D1Factory.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1resource-getfactory
+	// [GetFactory]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1resource-getfactory
 	GetFactory() ID2D1Factory
 }
 
