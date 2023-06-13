@@ -15,14 +15,20 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
+// [IDispatch] COM interface.
+//
+// [IDispatch]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 type IDispatch interface {
 	com.IUnknown
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-getidsofnames
+	// [GetIDsOfNames] COM method.
+	//
+	// [GetIDsOfNames]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-getidsofnames
 	GetIDsOfNames(lcid win.LCID,
 		member string, parameters ...string) ([]MEMBERID, error)
 
+	// [GetTypeInfo] COM method.
+	//
 	// ⚠️ You must defer ITypeInfo.Release() on the returned object.
 	//
 	// Example:
@@ -32,15 +38,19 @@ type IDispatch interface {
 	//	tyInfo := iDisp.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
 	//	defer tyInfo.Release()
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
+	// [GetTypeInfo]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
 	GetTypeInfo(lcid win.LCID) ITypeInfo
 
+	// [GetTypeInfoCount] COM method.
+	//
 	// If the object provides type information, this number is 1; otherwise the
 	// number is 0.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
+	// [GetTypeInfoCount]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
 	GetTypeInfoCount() int
 
+	// [Invoke] COM method.
+	//
 	// This is a low-level method, prefer using IDispatch.InvokePut(),
 	// IDispatch.InvokeMethod() or IDispatch.InvokeGet().
 	//
@@ -51,7 +61,7 @@ type IDispatch interface {
 	//
 	// ⚠️ You must defer VARIANT.VariantClear() on the returned VARIANT.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
+	// [Invoke]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 	Invoke(dispIdMember MEMBERID, lcid win.LCID,
 		flags automco.DISPATCH, dispParams *DISPPARAMS) (VARIANT, error)
 
@@ -161,7 +171,7 @@ func NewIDispatch(base com.IUnknown) IDispatch {
 	return &_IDispatch{IUnknown: base}
 }
 
-// Constructs an automation IDispatch object by calling CLSIDFromProgID().
+// Constructs an automation IDispatch object by calling [CLSIDFromProgID].
 //
 // Note that the target application must be installed, otherwise the call will
 // fail.
@@ -176,9 +186,9 @@ func NewIDispatch(base com.IUnknown) IDispatch {
 //	}
 //	defer excelApp.Release()
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
+// [CLSIDFromProgID]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func NewIDispatchFromProgId(progId string) (IDispatch, error) {
-	clsId, err := com.CLSIDFromProgID("Excel.Application")
+	clsId, err := com.CLSIDFromProgID(progId)
 	if err != nil {
 		return nil, err
 	}

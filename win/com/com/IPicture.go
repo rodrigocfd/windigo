@@ -14,40 +14,60 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nn-ocidl-ipicture
+// [IPicture] COM interface.
+//
+// [IPicture]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nn-ocidl-ipicture
 type IPicture interface {
 	IUnknown
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_attributes
+	// [Attributes] COM method.
+	//
+	// [Attributes]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_attributes
 	Attributes() comco.PICATTR
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_curdc
+	// [CurDC] COM method.
+	//
+	// [CurDC]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_curdc
 	CurDC() win.HDC
 
+	// [Height] COM method.
+	//
 	// Note that this method returns the height in HIMETRIC units. To convert it
 	// to pixels, use HDC.HiMetricToPixel(), or simply call
 	// IPicture.SizePixels() method, which already performs the conversion.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_height
+	// [Height]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_height
 	Height() int32
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_keeporiginalformat
+	// [KeepOriginalFormat] COM method.
+	//
+	// [KeepOriginalFormat]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_keeporiginalformat
 	KeepOriginalFormat() bool
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-picturechanged
+	// [PictureChanged] COM method.
+	//
+	// [PictureChanged]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-picturechanged
 	PictureChanged()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-render
+	// [Render] COM method.
+	//
+	// [Render]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-render
 	Render(hdc win.HDC, destOffset win.POINT, destSz win.SIZE,
 		srcOffset win.POINT, srcSz win.SIZE) (metafileBounds win.RECT)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-saveasfile
+	// [SaveAsFile] COM method.
+	//
+	// [SaveAsFile]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-saveasfile
 	SaveAsFile(stream IStream, saveCopy bool) (numBytesWritten int)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-selectpicture
+	// [SelectPicture] COM method.
+	//
+	// [SelectPicture]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-selectpicture
 	SelectPicture(hdc win.HDC) (win.HDC, win.HBITMAP)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-put_keeporiginalformat
+	// [SetKeepOriginalFormat] COM method.
+	//
+	// [SetKeepOriginalFormat]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-put_keeporiginalformat
 	SetKeepOriginalFormat(keep bool)
 
 	// This helper method calls IPicture.Width() and IPicture.Height(), then
@@ -57,14 +77,18 @@ type IPicture interface {
 	// entire screen.
 	SizePixels(hdc win.HDC) win.SIZE
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_type
+	// [Type] COM method.
+	//
+	// [Type]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_type
 	Type() comco.PICTYPE
 
+	// [Width] COM method.
+	//
 	// Note that this method returns the width in HIMETRIC units. To convert it
 	// to pixels, use HDC.HiMetricToPixel(), or simply call
 	// IPicture.SizePixels() method, which already performs the conversion.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_width
+	// [Width]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_width
 	Width() int32
 }
 

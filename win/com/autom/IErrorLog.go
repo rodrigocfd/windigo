@@ -12,11 +12,15 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ierrorlog
+// [IErrorLog] COM interface.
+//
+// [IErrorLog]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ierrorlog
 type IErrorLog interface {
 	com.IUnknown
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ierrorlog-adderror
+	// [AddError] COM method.
+	//
+	// [AddError]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ierrorlog-adderror
 	AddError(propName string, exceps []EXCEPINFO)
 }
 

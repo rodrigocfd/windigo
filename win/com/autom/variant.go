@@ -17,12 +17,12 @@ import (
 	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 )
 
-// OLE Automation VARIANT type.
+// OLE Automation [VARIANT] type.
 //
 // Can be created with one of the NewVariant*() functions, and must be freed
 // with VariantClear(). Values can be accessed with one of the accessor methods.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-variant
+// [VARIANT]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-variant
 type VARIANT struct {
 	vt         automco.VT
 	wReserved1 uint16
@@ -31,7 +31,9 @@ type VARIANT struct {
 	data       [16]byte
 }
 
-// Frees the internal object of the VARIANT.
+// Frees the internal object of the VARIANT with [VariantClear].
+//
+// [VariantClear]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantclear
 func (vt *VARIANT) VariantClear() {
 	syscall.SyscallN(proc.VariantClear.Addr(),
 		uintptr(unsafe.Pointer(vt)))
@@ -44,7 +46,7 @@ func (vt *VARIANT) Type() automco.VT {
 
 //------------------------------------------------------------------------------
 
-// Creates a new VARIANT object of type VT_EMPTY.
+// Creates a new VARIANT object of type VT_EMPTY with [VariantInit].
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
@@ -52,6 +54,8 @@ func (vt *VARIANT) Type() automco.VT {
 //
 //	vari := autom.NewVariantEmpty()
 //	defer vari.VariantClear()
+//
+// [VariantInit]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantinit
 func NewVariantEmpty() VARIANT {
 	var vt VARIANT
 	syscall.SyscallN(proc.VariantInit.Addr(),

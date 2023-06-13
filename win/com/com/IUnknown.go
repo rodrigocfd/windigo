@@ -12,15 +12,19 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// IUnknown COM interface, base to all COM interfaces.
+// [IUnknown] COM interface, base to all COM interfaces.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
+// [IUnknown]: https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 type IUnknown interface {
+	// [QueryInterface] COM method.
+	//
 	// ⚠️ You must defer IUnknown.Release() on the returned COM object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
+	// [QueryInterface]: https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 	QueryInterface(riid co.IID) IUnknown
 
+	// [AddRef] COM method.
+	//
 	// Creates a clone of the COM object.
 	//
 	// ⚠️ You must defer IUnknown.Release() on the returned COM object.
@@ -32,14 +36,16 @@ type IUnknown interface {
 	//	otherObj := myObj.AddRef()
 	//	defer otherObj.Release()
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+	// [AddRef]: https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 	AddRef() IUnknown
 
+	// [Release] COM method.
+	//
 	// Releases the COM pointer and sets the internal pointer to nil.
 	//
 	// Never fails, can be called any number of times.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
+	// [Release]: https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 	Release() uint32
 
 	// Returns the underlying pointer to pointer to the COM virtual table.

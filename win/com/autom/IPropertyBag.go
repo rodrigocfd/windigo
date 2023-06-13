@@ -12,18 +12,24 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ipropertybag
+// [IPropertyBag] COM interface.
+//
+// [IPropertyBag]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ipropertybag
 type IPropertyBag interface {
 	com.IUnknown
 
+	// [Read] COM method.
+	//
 	// The errorLog can be nil.
 	//
 	// ⚠️ You must defer VARIANT.VariantClear() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ipropertybag-read
+	// [Read]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ipropertybag-read
 	Read(propName string, errorLog IErrorLog) VARIANT
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ipropertybag-write
+	// [Write] COM method.
+	//
+	// [Write]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ipropertybag-write
 	Write(propName string, value *VARIANT)
 }
 

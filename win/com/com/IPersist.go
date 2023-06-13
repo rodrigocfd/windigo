@@ -11,11 +11,15 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
+// [IPersist] COM interface.
+//
+// [IPersist]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
 type IPersist interface {
 	IUnknown
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ipersist-getclassid
+	// [GetClassID] COM method.
+	//
+	// [GetClassID]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ipersist-getclassid
 	GetClassID() *win.GUID
 }
 

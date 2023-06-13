@@ -14,9 +14,10 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// Used to retrieve class IDs to create COM Automation objects.
+// [CLSIDFromProgID] function.
 //
-// If the progId is invalid, error returns errco.CO_E_CLASSSTRING.
+// Used to retrieve class IDs to create COM Automation objects. If the progId is
+// invalid, error returns errco.CO_E_CLASSSTRING.
 //
 // Example:
 //
@@ -29,7 +30,7 @@ import (
 //	excel := mainObj.QueryInterface(automco.IID_IDispatch)
 //	defer excel.Release()
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
+// [CLSIDFromProgID]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	var guid win.GUID
 	ret, _, _ := syscall.SyscallN(proc.CLSIDFromProgID.Addr(),
@@ -43,6 +44,8 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	}
 }
 
+// [CoCreateInstance] function.
+//
 // Creates a COM object from its CLSID + IID. The iUnkOuter is usually nil.
 //
 // Panics if the COM object cannot be created.
@@ -60,7 +63,7 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 //	)
 //	defer comObject.Release()
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
+// [CoCreateInstance]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
 	rclsid co.CLSID, iUnkOuter *IUnknown,
 	dwClsContext comco.CLSCTX, riid co.IID) IUnknown {
@@ -91,12 +94,14 @@ func CoCreateInstance(
 	}
 }
 
+// [CoInitializeEx] function.
+//
 // Loads the COM module. This needs to be done only once in your application.
 // Typically uses COINIT_APARTMENTTHREADED.
 //
 // ⚠️ You must defer CoUninitialize().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
+// [CoInitializeEx]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 func CoInitializeEx(coInit comco.COINIT) {
 	ret, _, _ := syscall.SyscallN(proc.CoInitializeEx.Addr(),
 		0, uintptr(coInit))
@@ -105,7 +110,9 @@ func CoInitializeEx(coInit comco.COINIT) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
+// [CoUninitialize] function.
+//
+// [CoUninitialize]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
 func CoUninitialize() {
 	syscall.SyscallN(proc.CoUninitialize.Addr())
 }
@@ -116,7 +123,11 @@ func IsObj(obj IUnknown) bool {
 	return obj != nil && obj.Ptr() != nil
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleinitialize
+// [OleInitialize] function.
+//
+// ⚠️ You must defer OleUninitialize().
+//
+// [OleInitialize]: https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleinitialize
 func OleInitialize() {
 	ret, _, _ := syscall.SyscallN(proc.OleInitialize.Addr(),
 		0)
@@ -125,7 +136,9 @@ func OleInitialize() {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleuninitialize
+// [OleUninitialize] function.
+//
+// [OleUninitialize]: https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleuninitialize
 func OleUninitialize() {
 	syscall.SyscallN(proc.OleUninitialize.Addr())
 }

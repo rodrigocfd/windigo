@@ -11,14 +11,20 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ibindctx
+// [IBindCtx] COM interface.
+//
+// [IBindCtx]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ibindctx
 type IBindCtx interface {
 	IUnknown
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-releaseboundobjects
+	// [ReleaseBoundObjects] COM method.
+	//
+	// [ReleaseBoundObjects]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-releaseboundobjects
 	ReleaseBoundObjects()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-revokeobjectparam
+	// [RevokeObjectParam] COM method.
+	//
+	// [RevokeObjectParam]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-revokeobjectparam
 	RevokeObjectParam(key string)
 }
 

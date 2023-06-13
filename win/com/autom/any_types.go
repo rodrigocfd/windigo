@@ -2,12 +2,12 @@
 
 package autom
 
-// Identifiers a member in a type description.
+// [MEMBERID] identifiers a member in a type description.
 //
-// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/automat/memberid
+// [MEMBERID]: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/automat/memberid
 type MEMBERID int32
 
-// Indicates an "unknown" name.
+// [MEMBERID_NIL] indicates an "unknown" name.
 //
-// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/automat/memberid
+// [MEMBERID_NIL]: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/automat/memberid
 const MEMBERID_NIL = MEMBERID(-1)
