@@ -121,6 +121,7 @@ var (
 	SetCurrentDirectory             = kernel32.NewProc("SetCurrentDirectoryW")
 	SetEndOfFile                    = kernel32.NewProc("SetEndOfFile")
 	SetFileAttributes               = kernel32.NewProc("SetFileAttributesW")
+	SetFilePointer                  = kernel32.NewProc("SetFilePointer")
 	SetFilePointerEx                = kernel32.NewProc("SetFilePointerEx")
 	SetLastError                    = kernel32.NewProc("SetLastError")
 	SizeofResource                  = kernel32.NewProc("SizeofResource")

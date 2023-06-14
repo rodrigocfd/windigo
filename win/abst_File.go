@@ -165,7 +165,10 @@ func (me *File) Seek(offset int64, whence int) (int64, error) {
 	}
 
 	newOff, err := me.hFile.SetFilePointerEx(offset, moveMethod)
-	return int64(newOff), fmt.Errorf("SetFilePointerEx: %w", err)
+	if err != nil {
+		return 0, fmt.Errorf("SetFilePointerEx: %w", err)
+	}
+	return int64(newOff), nil
 }
 
 // Retrieves the file size. This value is not cached.

@@ -3,6 +3,7 @@
 package win
 
 import (
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -157,12 +158,20 @@ func (hFile HFILE) SetEndOfFile() error {
 
 // [SetFilePointerEx] function.
 //
+// In x86 architecture, [SetFilePointer] will be called instead.
+//
 // [SetFilePointerEx]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
+// [SetFilePointer]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointer
 func (hFile HFILE) SetFilePointerEx(
 	distanceToMove int64,
 	moveMethod co.FILE_FROM) (newPointerOffset int64, e error) {
 
-	ret, _, err := syscall.SyscallN(proc.SetFilePointerEx.Addr(),
+	pfunc := proc.SetFilePointerEx
+	if runtime.GOARCH == "386" {
+		pfunc = proc.SetFilePointer
+	}
+
+	ret, _, err := syscall.SyscallN(pfunc.Addr(),
 		uintptr(hFile), uintptr(distanceToMove),
 		uintptr(unsafe.Pointer(&newPointerOffset)), uintptr(moveMethod))
 
