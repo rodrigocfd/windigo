@@ -243,8 +243,9 @@ func (hMap HFILEMAP) CloseHandle() error {
 // ⚠️ You must defer HFILEMAPVIEW.UnmapViewOfFile().
 //
 // [MapViewOfFile]: https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
-func (hMap HFILEMAP) MapViewOfFile(desiredAccess co.FILE_MAP,
-	offset uint64, numBytesToMap uint64) (HFILEMAPVIEW, error) {
+func (hMap HFILEMAP) MapViewOfFile(
+	desiredAccess co.FILE_MAP,
+	offset uint64, numBytesToMap uint) (HFILEMAPVIEW, error) {
 
 	ret, _, err := syscall.SyscallN(proc.MapViewOfFileFromApp.Addr(),
 		uintptr(hMap), uintptr(desiredAccess), uintptr(offset),
