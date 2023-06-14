@@ -3,6 +3,7 @@
 package win
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/rodrigocfd/windigo/win/co"
@@ -52,7 +53,7 @@ func FileOpen(filePath string, desiredAccess co.FILE_OPEN) (*File, error) {
 		disposition, co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE,
 		co.SECURITY_NONE, 0)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("CreateFile: %w", err)
 	}
 
 	return &File{hFile: hFile}, nil
@@ -77,7 +78,7 @@ func (me *File) Hfile() HFILE {
 func (me *File) Read(p []byte) (n int, err error) {
 	numRead, err := me.hFile.ReadFile(p, nil)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("ReadFile: %w", err)
 	}
 
 	if numRead < uint32(len(p)) { // surely there's no more to read
@@ -141,7 +142,7 @@ func (me *File) Resize(numBytes int) error {
 	}
 
 	if err := me.hFile.SetEndOfFile(); err != nil {
-		return err
+		return fmt.Errorf("SetEndOfFile: %w", err)
 	}
 
 	if _, err := me.Seek(0, io.SeekStart); err != nil {
@@ -164,7 +165,7 @@ func (me *File) Seek(offset int64, whence int) (int64, error) {
 	}
 
 	newOff, err := me.hFile.SetFilePointerEx(offset, moveMethod)
-	return int64(newOff), err
+	return int64(newOff), fmt.Errorf("SetFilePointerEx: %w", err)
 }
 
 // Retrieves the file size. This value is not cached.
@@ -179,7 +180,7 @@ func (me *File) Size() int {
 // Implements [io.Writer].
 func (me *File) Write(p []byte) (n int, err error) {
 	written, err := me.hFile.WriteFile(p, nil)
-	return int(written), err
+	return int(written), fmt.Errorf("WriteFile: %w", err)
 }
 
 // Implements [io.ByteWriter].

@@ -3,6 +3,7 @@
 package win
 
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/util"
@@ -127,7 +128,7 @@ func (me *FileMapped) mapInMemory() error {
 	me.hMap, err = me.objFile.Hfile().
 		CreateFileMapping(nil, pageFlags, co.SEC_NONE, 0, StrOptNone())
 	if err != nil {
-		return err
+		return fmt.Errorf("CreateFileMapping: %w", err)
 	}
 
 	// Get pointer to data block.
@@ -135,7 +136,7 @@ func (me *FileMapped) mapInMemory() error {
 		co.FILE_MAP_READ, co.FILE_MAP_WRITE).(co.FILE_MAP)
 
 	if me.pMem, err = me.hMap.MapViewOfFile(mapFlags, 0, 0); err != nil {
-		return err
+		return fmt.Errorf("MapViewOfFile: %w", err)
 	}
 
 	// Cache file size.
