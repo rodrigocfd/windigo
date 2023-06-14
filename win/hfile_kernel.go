@@ -240,12 +240,21 @@ func (hMap HFILEMAP) CloseHandle() error {
 
 // [MapViewOfFile] function.
 //
+// The offset will be rounded down to a multiple of the allocation granularity,
+// which is taken with GetSystemInfo().
+//
 // ⚠️ You must defer HFILEMAPVIEW.UnmapViewOfFile().
 //
 // [MapViewOfFile]: https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMap HFILEMAP) MapViewOfFile(
 	desiredAccess co.FILE_MAP,
 	offset uint64, numBytesToMap uint) (HFILEMAPVIEW, error) {
+
+	si := SYSTEM_INFO{}
+	GetSystemInfo(&si)
+	if (offset % uint64(si.DwAllocationGranularity)) != 0 {
+		offset -= offset % uint64(si.DwAllocationGranularity)
+	}
 
 	ret, _, err := syscall.SyscallN(proc.MapViewOfFileFromApp.Addr(),
 		uintptr(hMap), uintptr(desiredAccess), uintptr(offset),
