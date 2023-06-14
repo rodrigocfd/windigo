@@ -116,6 +116,18 @@ func (me *File) ReadByte() (byte, error) {
 	return buf[0], err
 }
 
+// Loads all the file content in memory with ReadAll(), then parses it as text
+// and returns the lines.
+func (me *File) ReadLines() ([]string, error) {
+	content, err := me.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+
+	allText := string(content)
+	return Str.AsLines(allText), nil
+}
+
 // Truncates or expands the file, according to the new size. Zero will empty the
 // file. The internal file pointer will rewind.
 func (me *File) Resize(numBytes int) error {

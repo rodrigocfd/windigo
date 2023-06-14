@@ -14,6 +14,21 @@ type _StrT struct{}
 // String utilities, including wide char UTF-16 string conversion functions.
 var Str _StrT
 
+// Breaks the string into lines, returning each line.
+func (_StrT) AsLines(s string) []string {
+	lines := strings.Split(s, "\n")
+	for i := 0; i < len(lines); i++ {
+		line := lines[i]
+		if len(line) == 0 { // empty line
+			continue
+		}
+		if line[len(line)-1] == '\r' {
+			lines[i] = line[:len(line)-1] // in-place trim trailing \r
+		}
+	}
+	return lines
+}
+
 // Formats a number of bytes into KB, MB, GB or TB.
 func (_StrT) FmtBytes(numBytes uint64) string {
 	switch {

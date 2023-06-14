@@ -3,7 +3,6 @@
 package win
 
 import (
-	"strings"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/util"
@@ -95,18 +94,7 @@ func (me *FileMapped) ReadChunk(offset, length int) []byte {
 // Parses the file content as text and returns the lines.
 func (me *FileMapped) ReadLines() []string {
 	allText := string(me.HotSlice())
-	lines := strings.Split(allText, "\n")
-
-	for i := 0; i < len(lines); i++ {
-		line := lines[i]
-		if len(line) == 0 {
-			continue
-		}
-		if line[len(line)-1] == '\r' {
-			lines[i] = line[:len(line)-1] // trim trailing \r
-		}
-	}
-	return lines
+	return Str.AsLines(allText)
 }
 
 // Truncates or expands the file, according to the new size. Zero will empty the

@@ -3,6 +3,7 @@
 package win
 
 import (
+	"runtime"
 	"strings"
 
 	"github.com/rodrigocfd/windigo/win/co"
@@ -61,13 +62,21 @@ func IniLoad(filePath string) (*Ini, error) {
 }
 
 func (me *Ini) loadLines(filePath string) ([]string, error) {
-	fin, err := FileMappedOpen(filePath, co.FILE_OPEN_READ_EXISTING)
-	if err != nil {
-		return nil, err
+	if runtime.GOARCH == "386" { // MapViewOfFile may have issues in x86
+		fin, err := FileOpen(filePath, co.FILE_OPEN_READ_EXISTING)
+		if err != nil {
+			return nil, err
+		}
+		defer fin.Close()
+		return fin.ReadLines()
+	} else {
+		fin, err := FileMappedOpen(filePath, co.FILE_OPEN_READ_EXISTING)
+		if err != nil {
+			return nil, err
+		}
+		defer fin.Close()
+		return fin.ReadLines(), nil
 	}
-	defer fin.Close()
-
-	return fin.ReadLines(), nil
 }
 
 // Returns the IniSection with the given name, if any.
