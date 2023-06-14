@@ -99,6 +99,9 @@ func (me *FileMapped) ReadLines() []string {
 
 	for i := 0; i < len(lines); i++ {
 		line := lines[i]
+		if len(line) == 0 {
+			continue
+		}
 		if line[len(line)-1] == '\r' {
 			lines[i] = line[:len(line)-1] // trim trailing \r
 		}
