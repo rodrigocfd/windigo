@@ -11,6 +11,9 @@ import (
 
 // High-level abstraction to HFILEMAP, providing several operations.
 //
+// Note that memory-mapped files may present issues in x86 architectures; if so,
+// just use the ordinary File.
+//
 // Created with FileMappedOpen().
 type FileMapped struct {
 	objFile  *File

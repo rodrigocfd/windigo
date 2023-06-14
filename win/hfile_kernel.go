@@ -243,6 +243,8 @@ func (hMap HFILEMAP) CloseHandle() error {
 // The offset will be rounded down to a multiple of the allocation granularity,
 // which is taken with GetSystemInfo().
 //
+// Note that this function may present issues in x86 architectures.
+//
 // ⚠️ You must defer HFILEMAPVIEW.UnmapViewOfFile().
 //
 // [MapViewOfFile]: https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
