@@ -16,50 +16,76 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
+// [IPin] COM interface.
+//
+// [IPin]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
 type IPin interface {
 	com.IUnknown
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-beginflush
+	// [BeginFlush] COM method.
+	//
+	// [BeginFlush]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-beginflush
 	BeginFlush()
 
+	// [Connect] COM method.
+	//
 	// ⚠️ You must defer IPin.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connect
+	// [Connect]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connect
 	Connect(mt *AM_MEDIA_TYPE) (IPin, error)
 
+	// [ConnectedTo] COM method.
+	//
 	// ⚠️ You must defer IPin.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connectedto
+	// [ConnectedTo]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connectedto
 	ConnectedTo() (IPin, error)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connectionmediatype
+	// [ConnectionMediaType] COM method.
+	//
+	// [ConnectionMediaType]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-connectionmediatype
 	ConnectionMediaType(mt *AM_MEDIA_TYPE) error
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-disconnect
+	// [Disconnect] COM method.
+	//
+	// [Disconnect]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-disconnect
 	Disconnect()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endflush
+	// [EndFlush] COM method.
+	//
+	// [EndFlush]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endflush
 	EndFlush()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endofstream
+	// [EndOfStream] COM method.
+	//
+	// [EndOfStream]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-endofstream
 	EndOfStream()
 
+	// [EnumMediaTypes] COM method.
+	//
 	// ⚠️ You must defer IEnumMediaTypes.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-enummediatypes
+	// [EnumMediaTypes]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-enummediatypes
 	EnumMediaTypes() (IEnumMediaTypes, error)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-newsegment
+	// [NewSegment] COM method.
+	//
+	// [NewSegment]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-newsegment
 	NewSegment(start, stop time.Duration, rate float64)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-queryaccept
+	// [QueryAccept] COM method.
+	//
+	// [QueryAccept]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-queryaccept
 	QueryAccept(mt *AM_MEDIA_TYPE) (bool, error)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-querydirection
+	// [QueryDirection] COM method.
+	//
+	// [QueryDirection]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-querydirection
 	QueryDirection() dshowco.PIN_DIRECTION
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-queryid
+	// [QueryId] COM method.
+	//
+	// [QueryId]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ipin-queryid
 	QueryId() string
 }
 

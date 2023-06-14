@@ -12,33 +12,44 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
+// [IEnumFilters] COM interface.
+//
+// [IEnumFilters]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
 type IEnumFilters interface {
 	com.IUnknown
 
+	// [Clone] COM method.
+	//
 	// ⚠️ You must defer IEnumFilters.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-clone
+	// [Clone]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-clone
 	Clone() IEnumFilters
 
 	// This helper method calls IEnumFilters.Skip() until the end of the enum to
 	// retrieve the actual number of filters, then calls IEnumFilters.Reset().
 	Count() int
 
-	// Calls Next() to retrieve all filters, then calls Reset().
+	// This helper method calls Next() to retrieve all filters, then calls
+	// Reset().
 	//
 	// ⚠️ You must defer IBaseFilter.Release() on each returned object.
 	GetAll() []IBaseFilter
 
+	// [Next] COM method.
+	//
 	// ⚠️ You must defer IBaseFilter.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-next
+	// [Next]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-next
 	Next() (IBaseFilter, bool)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-reset
+	// [Reset] COM method.
+	//
+	// [Reset]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-reset
 	Reset()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-skip
+	// [Skip] COM method.
+	//
+	// [Skip]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-skip
 	Skip(numFilters int) bool
 }
 

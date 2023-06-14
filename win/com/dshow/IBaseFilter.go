@@ -13,32 +13,44 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
+// [IBaseFilter] COM interface.
+//
+// [IBaseFilter]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
 type IBaseFilter interface {
 	IMediaFilter
 
+	// [EnumPins] COM method.
+	//
 	// ⚠️ You must defer IEnumPins.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-enumpins
+	// [EnumPins]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-enumpins
 	EnumPins() IEnumPins
 
+	// [FindPin] COM method.
+	//
 	// ⚠️ You must defer IPin.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-findpin
+	// [FindPin]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-findpin
 	FindPin(id string) (IPin, bool)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-joinfiltergraph
+	// [JoinFilterGraph] COM method.
+	//
+	// [JoinFilterGraph]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-joinfiltergraph
 	JoinFilterGraph(graph IFilterGraph, name string) error
 
+	// [QueryFilterInfo] COM method.
+	//
 	// ⚠️ You must defer IFilterGraph.Release() on PGraph field of the info
 	// object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
+	// [QueryFilterInfo]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
 	QueryFilterInfo(info *FILTER_INFO)
 
+	// [QueryVendorInfo] COM method.
+	//
 	// Returns false if the method is not supported.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryvendorinfo
+	// [QueryVendorInfo]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryvendorinfo
 	QueryVendorInfo() (string, bool)
 }
 

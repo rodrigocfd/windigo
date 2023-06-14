@@ -15,20 +15,30 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
+// [IMediaFilter] COM interface.
+//
+// [IMediaFilter]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
 type IMediaFilter interface {
 	com.IPersist
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-getstate
+	// [GetState] COM method.
+	//
+	// [GetState]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-getstate
 	GetState(msTimeout win.NumInf) (dshowco.FILTER_STATE, error)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-pause
+	// [Pause] COM method.
+	//
+	// [Pause]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-pause
 	Pause() bool
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-run
+	// [Run] COM method.
+	//
+	// [Run]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-run
 	Run(start time.Duration) bool
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-stop
+	// [Stop] COM method.
+	//
+	// [Stop]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-stop
 	Stop() bool
 }
 

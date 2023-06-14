@@ -12,16 +12,22 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
+// [IFileSourceFilter] COM interface.
+//
+// [IFileSourceFilter]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
 type IFileSourceFilter interface {
 	com.IUnknown
 
+	// [GetCurFile] COM method.
+	//
 	// Returns false if no file is opened.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-getcurfile
+	// [GetCurFile]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-getcurfile
 	GetCurFile(mt *AM_MEDIA_TYPE) (string, bool)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-load
+	// [Load] COM method.
+	//
+	// [Load]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-load
 	Load(fileName string, mt *AM_MEDIA_TYPE)
 }
 

@@ -12,13 +12,17 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienummediatypes
+// [IEnumMediaTypes] COM interface.
+//
+// [IEnumMediaTypes]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienummediatypes
 type IEnumMediaTypes interface {
 	com.IUnknown
 
+	// [Clone] COM method.
+	//
 	// ⚠️ You must defer IEnumMediaTypes.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-clone
+	// [Clone]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-clone
 	Clone() IEnumMediaTypes
 
 	// This helper method calls IEnumMediaTypes.Skip() until the end of the enum
@@ -26,13 +30,19 @@ type IEnumMediaTypes interface {
 	// IEnumMediaTypes.Reset().
 	Count() int
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-next
+	// [Next] COM method.
+	//
+	// [Next]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-next
 	Next(mt *AM_MEDIA_TYPE) bool
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-reset
+	// [Reset] COM method.
+	//
+	// [Reset]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-reset
 	Reset()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-skip
+	// [Skip] COM method.
+	//
+	// [Skip]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienummediatypes-skip
 	Skip(numMediaTypes int) bool
 }
 

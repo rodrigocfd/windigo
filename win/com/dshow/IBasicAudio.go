@@ -12,20 +12,30 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-ibasicaudio
+// [IBasicAudio] COM interface.
+//
+// [IBasicAudio]: https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-ibasicaudio
 type IBasicAudio interface {
 	autom.IDispatch
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_balance
+	// [GetBalance] COM method.
+	//
+	// [GetBalance]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_balance
 	GetBalance() int
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_volume
+	// [GetVolume] COM method.
+	//
+	// [GetVolume]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_volume
 	GetVolume() int
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_balance
+	// [PutBalance] COM method.
+	//
+	// [PutBalance]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_balance
 	PutBalance(balance int)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_volume
+	// [PutVolume] COM method.
+	//
+	// [PutVolume]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_volume
 	PutVolume(volume int)
 }
 

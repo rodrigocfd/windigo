@@ -15,64 +15,100 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediaseeking
+// [IMediaSeeking] COM interface.
+//
+// [IMediaSeeking]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediaseeking
 type IMediaSeeking interface {
 	com.IUnknown
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-checkcapabilities
+	// [CheckCapabilities] COM method.
+	//
+	// [CheckCapabilities]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-checkcapabilities
 	CheckCapabilities(
 		capabilities dshowco.SEEKING_CAPABILITIES) dshowco.SEEKING_CAPABILITIES
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-converttimeformat
+	// [ConvertTimeFormat] COM method.
+	//
+	// [ConvertTimeFormat]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-converttimeformat
 	ConvertTimeFormat(targetFormat, sourceFormat *win.GUID, source int64) int64
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getavailable
+	// [GetAvailable] COM method.
+	//
+	// [GetAvailable]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getavailable
 	GetAvailable() (earliest, latest time.Duration)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcapabilities
+	// [GetCapabilities] COM method.
+	//
+	// [GetCapabilities]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcapabilities
 	GetCapabilities() dshowco.SEEKING_CAPABILITIES
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcurrentposition
+	// [GetCurrentPosition] COM method.
+	//
+	// [GetCurrentPosition]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getcurrentposition
 	GetCurrentPosition() time.Duration
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getduration
+	// [GetDuration] COM method.
+	//
+	// [GetDuration]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getduration
 	GetDuration() time.Duration
 
+	// [GetPositions] COM method.
+	//
 	// Returns current and stop positions.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getpositions
+	// [GetPositions]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getpositions
 	GetPositions() (current, stop time.Duration)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getpreroll
+	// [GetPreroll] COM method.
+	//
+	// [GetPreroll]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getpreroll
 	GetPreroll() time.Duration
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getrate
+	// [GetRate] COM method.
+	//
+	// [GetRate]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getrate
 	GetRate() float64
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getstopposition
+	// [GetStopPosition] COM method.
+	//
+	// [GetStopPosition]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-getstopposition
 	GetStopPosition() time.Duration
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-gettimeformat
+	// [GetTimeFormat] COM method.
+	//
+	// [GetTimeFormat]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-gettimeformat
 	GetTimeFormat() *win.GUID
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isformatsupported
+	// [IsFormatSupported] COM method.
+	//
+	// [IsFormatSupported]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isformatsupported
 	IsFormatSupported(format *win.GUID) bool
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isusingtimeformat
+	// [IsUsingTimeFormat] COM method.
+	//
+	// [IsUsingTimeFormat]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-isusingtimeformat
 	IsUsingTimeFormat(format *win.GUID) bool
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-querypreferredformat
+	// [QueryPreferredFormat] COM method.
+	//
+	// [QueryPreferredFormat]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-querypreferredformat
 	QueryPreferredFormat() *win.GUID
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
+	// [SetPositions] COM method.
+	//
+	// [SetPositions]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
 	SetPositions(
 		current time.Duration, currentFlags dshowco.SEEKING_FLAGS,
 		stop time.Duration, stopFlags dshowco.SEEKING_FLAGS) error
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setrate
+	// [SetRate] COM method.
+	//
+	// [SetRate]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setrate
 	SetRate(rate float64) error
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-settimeformat
+	// [SetTimeFormat] COM method.
+	//
+	// [SetTimeFormat]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-settimeformat
 	SetTimeFormat(format *win.GUID) error
 }
 

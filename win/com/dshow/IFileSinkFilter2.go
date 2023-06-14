@@ -12,14 +12,20 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter2
+// [IFileSinkFilter2] COM interface.
+//
+// [IFileSinkFilter2]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter2
 type IFileSinkFilter2 interface {
 	IFileSinkFilter
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-getmode
+	// [GetMode] COM method.
+	//
+	// [GetMode]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-getmode
 	GetMode() dshowco.AM_FILE
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-setmode
+	// [SetMode] COM method.
+	//
+	// [SetMode]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-setmode
 	SetMode(flags dshowco.AM_FILE)
 }
 

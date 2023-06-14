@@ -14,26 +14,40 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
+// [IMediaControl] COM interface.
+//
+// [IMediaControl]: https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
 type IMediaControl interface {
 	autom.IDispatch
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-getstate
+	// [IMediaControl] COM method.
+	//
+	// [IMediaControl]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-getstate
 	GetState(msTimeout win.NumInf) (dshowco.FILTER_STATE, error)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-pause
+	// [Pause] COM method.
+	//
+	// [Pause]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-pause
 	Pause() bool
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-renderfile
+	// [RenderFile] COM method.
+	//
+	// [RenderFile]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-renderfile
 	RenderFile(fileName string)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-run
+	// [Run] COM method.
+	//
+	// [Run]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-run
 	Run() bool
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-stop
+	// [Stop] COM method.
+	//
+	// [Stop]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-stop
 	Stop()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-stopwhenready
+	// [StopWhenReady] COM method.
+	//
+	// [StopWhenReady]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-stopwhenready
 	StopWhenReady() bool
 }
 

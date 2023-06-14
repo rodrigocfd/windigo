@@ -12,33 +12,43 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
+// [IEnumPins] COM interface.
+//
+// [IEnumPins]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
 type IEnumPins interface {
 	com.IUnknown
 
+	// [Clone] COM method.
+	//
 	// ⚠️ You must defer IEnumPins.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-clone
+	// [Clone]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-clone
 	Clone() IEnumPins
 
-	// Calls IEnumPins.Skip() until the end of the enum to retrieve the actual
-	// number of pins, then calls IEnumPins.Reset().
+	// This helper method calls IEnumPins.Skip() until the end of the enum to
+	// retrieve the actual number of pins, then calls IEnumPins.Reset().
 	Count() int
 
-	// Calls Next() to retrieve all pins, then calls Reset().
+	// This helper method calls Next() to retrieve all pins, then calls Reset().
 	//
 	// ⚠️ You must defer IPin.Release() on each returned object.
 	GetAll() []IPin
 
+	// [Next] COM method.
+	//
 	// ⚠️ You must defer IPin.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-next
+	// [Next]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-next
 	Next() (IPin, bool)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-reset
+	// [Reset] COM method.
+	//
+	// [Reset]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-reset
 	Reset()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-skip
+	// [Skip] COM method.
+	//
+	// [Skip]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-skip
 	Skip(numPins int) bool
 }
 

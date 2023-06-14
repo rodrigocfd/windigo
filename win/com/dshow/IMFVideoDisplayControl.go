@@ -13,39 +13,59 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
+// [IMFVideoDisplayControl] COM interface.
+//
+// [IMFVideoDisplayControl]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
 type IMFVideoDisplayControl interface {
 	com.IUnknown
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getaspectratiomode
+	// [GetAspectRatioMode] COM method.
+	//
+	// [GetAspectRatioMode]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getaspectratiomode
 	GetAspectRatioMode() dshowco.MFVideoARMode
 
+	// [GetIdealVideoSize] COM method.
+	//
 	// Returns the minimum and maximum ideal sizes.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getidealvideosize
+	// [GetIdealVideoSize]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getidealvideosize
 	GetIdealVideoSize() (min, max win.SIZE)
 
+	// [GetNativeVideoSize] COM method.
+	//
 	// Returns video rectangle and aspect ratio.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getnativevideosize
+	// [GetNativeVideoSize]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getnativevideosize
 	GetNativeVideoSize() (size, aspectRatio win.SIZE)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideoposition
+	// [GetVideoPosition] COM method.
+	//
+	// [GetVideoPosition]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideoposition
 	GetVideoPosition() (source MFVideoNormalizedRect, dest win.RECT)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideowindow
+	// [GetVideoWindow] COM method.
+	//
+	// [GetVideoWindow]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideowindow
 	GetVideoWindow() win.HWND
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-repaintvideo
+	// [RepaintVideo] COM method.
+	//
+	// [RepaintVideo]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-repaintvideo
 	RepaintVideo()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setaspectratiomode
+	// [SetAspectRatioMode] COM method.
+	//
+	// [SetAspectRatioMode]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setaspectratiomode
 	SetAspectRatioMode(mode dshowco.MFVideoARMode) error
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideoposition
+	// [SetVideoPosition] COM method.
+	//
+	// [SetVideoPosition]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideoposition
 	SetVideoPosition(nrcSource *MFVideoNormalizedRect, rcDest *win.RECT)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideowindow
+	// [SetVideoWindow] COM method.
+	//
+	// [SetVideoWindow]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideowindow
 	SetVideoWindow(hwndVideo win.HWND) error
 }
 

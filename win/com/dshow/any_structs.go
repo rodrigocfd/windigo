@@ -8,7 +8,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/com/com"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ns-strmif-am_media_type
+// [AM_MEDIA_TYPE] struct.
+//
+// [AM_MEDIA_TYPE]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/ns-strmif-am_media_type
 type AM_MEDIA_TYPE struct {
 	Majortype            win.GUID
 	Subtype              win.GUID
@@ -29,7 +31,9 @@ func (mt *AM_MEDIA_TYPE) SetBTemporalCompression(val bool) {
 	mt.bTemporalCompression = util.BoolToInt32(val)
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ns-strmif-filter_info
+// [FILTER_INFO] struct.
+//
+// [FILTER_INFO]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/ns-strmif-filter_info
 type FILTER_INFO struct {
 	achName [128]uint16
 	PGraph  IFilterGraph
@@ -40,7 +44,9 @@ func (fi *FILTER_INFO) SetAchName(val string) {
 	copy(fi.achName[:], win.Str.ToNativeSlice(win.Str.Substr(val, 0, len(fi.achName)-1)))
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/ns-evr-mfvideonormalizedrect
+// [MFVideoNormalizedRect] struct.
+//
+// [MFVideoNormalizedRect]: https://docs.microsoft.com/en-us/windows/win32/api/evr/ns-evr-mfvideonormalizedrect
 type MFVideoNormalizedRect struct {
 	Left, Top, Right, Bottom float32
 }

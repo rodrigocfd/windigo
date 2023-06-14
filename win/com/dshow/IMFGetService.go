@@ -13,10 +13,14 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
+// [IMFGetService] COM interface.
+//
+// [IMFGetService]: https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
 type IMFGetService interface {
 	com.IUnknown
 
+	// [GetService] COM method.
+	//
 	// ⚠️ You must defer IUnknown.Release() on the returned object.
 	//
 	// Example for IMFVideoDisplayControl:
@@ -31,7 +35,7 @@ type IMFGetService interface {
 	//	)
 	//	defer vdc.Release()
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
+	// [GetService]: https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
 	GetService(guidService, riid *win.GUID) com.IUnknown
 }
 
