@@ -11,11 +11,15 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifilesavedialog
+// [IFileSaveDialog] COM interface.
+//
+// [IFileSaveDialog]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifilesavedialog
 type IFileSaveDialog interface {
 	IFileDialog
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem
+	// [SetSaveAsItem] COM method.
+	//
+	// [SetSaveAsItem]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem
 	SetSaveAsItem(si IShellItem)
 }
 

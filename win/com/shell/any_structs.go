@@ -7,13 +7,17 @@ import (
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-comdlg_filterspec
+// [COMDLG_FILTERSPEC] struct.
+//
+// [COMDLG_FILTERSPEC]: https://docs.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-comdlg_filterspec
 type COMDLG_FILTERSPEC struct {
 	PszName *uint16
 	PszSpec *uint16
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ns-shobjidl_core-thumbbutton
+// [THUMBBUTTON] struct.
+//
+// [THUMBBUTTON]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/ns-shobjidl_core-thumbbutton
 type THUMBBUTTON struct {
 	DwMask  shellco.THB
 	IId     uint32

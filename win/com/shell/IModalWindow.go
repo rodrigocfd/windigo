@@ -12,13 +12,17 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
+// [IModalWindow] COM interface.
+//
+// [IModalWindow]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
 type IModalWindow interface {
 	com.IUnknown
 
+	// [Show] COM method.
+	//
 	// Returns false if user cancelled.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-imodalwindow-show
+	// [Show]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-imodalwindow-show
 	Show(hwndOwner win.HWND) bool
 }
 

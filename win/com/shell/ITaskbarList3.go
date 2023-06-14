@@ -13,44 +13,70 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
+// [ITaskbarList3] COM interface.
+//
+// [ITaskbarList3]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
 type ITaskbarList3 interface {
 	ITaskbarList2
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-registertab
+	// [RegisterTab] COM method.
+	//
+	// [RegisterTab]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-registertab
 	RegisterTab(hwndTab, hwndMDI win.HWND)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setoverlayicon
+	// [SetOverlayIcon] COM method.
+	//
+	// [SetOverlayIcon]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setoverlayicon
 	SetOverlayIcon(hWnd win.HWND, hIcon win.HICON, description string)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
+	// [SetProgressState] COM method.
+	//
+	// [SetProgressState]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
 	SetProgressState(hWnd win.HWND, flags shellco.TBPF)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue
+	// [SetProgressValue] COM method.
+	//
+	// [SetProgressValue]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue
 	SetProgressValue(hWnd win.HWND, completed, total uint64)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settabactive
+	// [SetTabActive] COM method.
+	//
+	// [SetTabActive]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settabactive
 	SetTabActive(hwndTab, hwndMDI win.HWND)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settaborder
+	// [SetTabOrder] COM method.
+	//
+	// [SetTabOrder]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settaborder
 	SetTabOrder(hwndTab, hwndInsertBefore win.HWND)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailclip
+	// [SetThumbnailClip] COM method.
+	//
+	// [SetThumbnailClip]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailclip
 	SetThumbnailClip(hWnd win.HWND, rcClip *win.RECT)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
+	// [SetThumbnailTooltip] COM method.
+	//
+	// [SetThumbnailTooltip]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
 	SetThumbnailTooltip(hwnd win.HWND, tip string)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbaraddbuttons
+	// [ThumbBarAddButtons] COM method.
+	//
+	// [ThumbBarAddButtons]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbaraddbuttons
 	ThumbBarAddButtons(hWnd win.HWND, buttons []THUMBBUTTON)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarsetimagelist
+	// [ThumbBarSetImageList] COM method.
+	//
+	// [ThumbBarSetImageList]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarsetimagelist
 	ThumbBarSetImageList(hWnd win.HWND, hImgl win.HIMAGELIST)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarupdatebuttons
+	// [ThumbBarUpdateButtons] COM method.
+	//
+	// [ThumbBarUpdateButtons]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarupdatebuttons
 	ThumbBarUpdateButtons(hWnd win.HWND, buttons []THUMBBUTTON)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-unregistertab
+	// [UnregisterTab] COM method.
+	//
+	// [UnregisterTab]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-unregistertab
 	UnregisterTab(hwndTab win.HWND)
 }
 

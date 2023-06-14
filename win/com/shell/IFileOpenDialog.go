@@ -13,21 +13,27 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileopendialog
+// [IFileOpenDialog] COM interface.
+//
+// [IFileOpenDialog]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileopendialog
 type IFileOpenDialog interface {
 	IFileDialog
 
+	// [GetResults] COM method.
+	//
 	// Prefer using IFileOpenDialog.ListResultDisplayNames(), which retrieves
 	// the paths directly.
 	//
 	// ⚠️ You must defer IShellItemArray.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
+	// [GetResults]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
 	GetResults() IShellItemArray
 
+	// [GetSelectedItems] COM method.
+	//
 	// ⚠️ You must defer IShellItemArray.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
+	// [GetSelectedItems]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
 	GetSelectedItems() IShellItemArray
 
 	// This helper method calls IFileOpenDialog.GetResults() and

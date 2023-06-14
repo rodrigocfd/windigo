@@ -14,41 +14,59 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialog
+// [IFileDialog] COM interface.
+//
+// [IFileDialog]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialog
 type IFileDialog interface {
 	IModalWindow
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-clearclientdata
+	// [ClearClientData] COM method.
+	//
+	// [ClearClientData]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-clearclientdata
 	ClearClientData()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-close
+	// [Close] COM method.
+	//
+	// [Close]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-close
 	Close(hr errco.ERROR)
 
+	// [GetCurrentSelection] COM method.
+	//
 	// ⚠️ You must defer IShellItem.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getcurrentselection
+	// [GetCurrentSelection]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getcurrentselection
 	GetCurrentSelection() IShellItem
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfilename
+	// [GetFileName] COM method.
+	//
+	// [GetFileName]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfilename
 	GetFileName() string
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfiletypeindex
+	// [GetFileTypeIndex] COM method.
+	//
+	// [GetFileTypeIndex]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfiletypeindex
 	GetFileTypeIndex() int
 
+	// [GetFolder] COM method.
+	//
 	// ⚠️ You must defer IShellItem.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfolder
+	// [GetFolder]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfolder
 	GetFolder() IShellItem
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getoptions
+	// [GetOptions] COM method.
+	//
+	// [GetOptions]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getoptions
 	GetOptions() shellco.FOS
 
+	// [GetResult] COM method.
+	//
 	// Prefer using IFileDialog.GetResultDisplayName(), which retrieves the path
 	// directly.
 	//
 	// ⚠️ You must defer IShellItem.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getresult
+	// [GetResult]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getresult
 	GetResult() IShellItem
 
 	// This helper method calls IFileDialog.GetResult() and
@@ -62,20 +80,30 @@ type IFileDialog interface {
 	//	chosenPath := fd.GetResultDisplayName(shellco.SIGDN_FILESYSPATH)
 	GetResultDisplayName(sigdnName shellco.SIGDN) string
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setclientguid
+	// [SetClientGuid] COM method.
+	//
+	// [SetClientGuid]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setclientguid
 	SetClientGuid(guid *win.GUID)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilename
+	// [SetFileName] COM method.
+	//
+	// [SetFileName]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilename
 	SetFileName(name string)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilenamelabel
+	// [SetFileNameLabel] COM method.
+	//
+	// [SetFileNameLabel]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilenamelabel
 	SetFileNameLabel(label string)
 
+	// [SetFileTypeIndex] COM method.
+	//
 	// The index is one-based.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypeindex
+	// [SetFileTypeIndex]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypeindex
 	SetFileTypeIndex(index int)
 
+	// [SetFileTypes] COM method.
+	//
 	// Example:
 	//
 	//	var fd shell.IFileDialog // initialized somewhere
@@ -85,15 +113,21 @@ type IFileDialog interface {
 	//		{Name: "All files", Spec: "*.*"},
 	//	})
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypes
+	// [SetFileTypes]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypes
 	SetFileTypes(filterSpec []FilterSpec)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfolder
+	// [SetFolder] COM method.
+	//
+	// [SetFolder]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfolder
 	SetFolder(si IShellItem)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setokbuttonlabel
+	// [SetOkButtonLabel] COM method.
+	//
+	// [SetOkButtonLabel]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setokbuttonlabel
 	SetOkButtonLabel(text string)
 
+	// [SetOptions] COM method.
+	//
 	// Example:
 	//
 	//	var fd shell.IFileDialog // initialized somewhere
@@ -103,10 +137,12 @@ type IFileDialog interface {
 	//		shellco.FOS_FORCEFILESYSTEM |
 	//		shellco.FOS_FILEMUSTEXIST)
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setoptions
+	// [SetOptions]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setoptions
 	SetOptions(fos shellco.FOS)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-settitle
+	// [SetTitle] COM method.
+	//
+	// [SetTitle]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-settitle
 	SetTitle(title string)
 }
 

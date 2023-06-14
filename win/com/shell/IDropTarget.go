@@ -14,21 +14,31 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
+// [IDropTarget] COM interface.
+//
+// [IDropTarget]: https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
 type IDropTarget interface {
 	com.IUnknown
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragenter
+	// [DragEnter] COM method.
+	//
+	// [DragEnter]: https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragenter
 	DragEnter(dataObj IDataObject, keyState co.MK,
 		pt win.POINT, effect *shellco.DROPEFFECT)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragleave
+	// [DragLeave] COM method.
+	//
+	// [DragLeave]: https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragleave
 	DragLeave()
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragover
+	// [DragOver] COM method.
+	//
+	// [DragOver]: https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragover
 	DragOver(keyState co.MK, pt win.POINT, effect *shellco.DROPEFFECT)
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-drop
+	// [Drop] COM method.
+	//
+	// [Drop]: https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-drop
 	Drop(dataObj IDataObject, keyState co.MK,
 		pt win.POINT, effect *shellco.DROPEFFECT)
 }

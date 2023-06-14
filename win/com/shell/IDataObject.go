@@ -6,7 +6,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/com/com"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
+// [IDataObject] COM interface.
+//
+// [IDataObject]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
 type IDataObject interface {
 	com.IUnknown
 }

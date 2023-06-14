@@ -16,21 +16,31 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
+// [IShellItem] COM interface.
+//
+// [IShellItem]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 type IShellItem interface {
 	com.IUnknown
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-compare
+	// [Compare] COM method.
+	//
+	// [Compare]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-compare
 	Compare(si IShellItem, hint shellco.SICHINT) bool
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getattributes
+	// [GetAttributes] COM method.
+	//
+	// [GetAttributes]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getattributes
 	GetAttributes(mask co.SFGAO) co.SFGAO
 
+	// [GetParent] COM method.
+	//
 	// ⚠️ You must defer IShellItem.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
+	// [GetParent]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
 	GetParent() IShellItem
 
+	// [GetDisplayName] COM method.
+	//
 	// Example:
 	//
 	//	var shi shell.IShellItem // initialized somewhere

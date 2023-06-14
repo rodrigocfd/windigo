@@ -13,19 +13,25 @@ import (
 	"github.com/rodrigocfd/windigo/win/errco"
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
+// [IShellItemArray] COM interface.
+//
+// [IShellItemArray]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
 type IShellItemArray interface {
 	com.IUnknown
 
+	// [GetItemAt] COM method.
+	//
 	// Prefer using IShellItemArray.ListDisplayNames(), which directly retrieves
 	// all paths at once.
 	//
 	// ⚠️ You must defer IShellItem.Release() on the returned object.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
+	// [GetItemAt]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
 	GetItemAt(index int) IShellItem
 
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getcount
+	// [GetCount] COM method.
+	//
+	// [GetCount]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getcount
 	GetCount() int
 
 	// This helper method calls IShellItemArray.GetItemAt() to retrieve all
