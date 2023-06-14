@@ -171,6 +171,11 @@ func (me *_ListViewItems) MapIdToItem(itemId int) ListViewItem {
 
 // Selects or deselects all items at once.
 func (me *_ListViewItems) SelectAll(doSelect bool) {
+	lvStyles := co.LVS(me.lv.Hwnd().GetWindowLongPtr(co.GWLP_STYLE))
+	if (lvStyles & co.LVS_SINGLESEL) != 0 {
+		return // single-sel list views cannot have all items selected
+	}
+
 	lvi := win.LVITEM{
 		State:     util.Iif(doSelect, co.LVIS_SELECTED, co.LVIS_NONE).(co.LVIS),
 		StateMask: co.LVIS_SELECTED,
