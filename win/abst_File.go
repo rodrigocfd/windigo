@@ -183,7 +183,10 @@ func (me *File) Size() int {
 // Implements [io.Writer].
 func (me *File) Write(p []byte) (n int, err error) {
 	written, err := me.hFile.WriteFile(p, nil)
-	return int(written), fmt.Errorf("WriteFile: %w", err)
+	if err != nil {
+		return 0, fmt.Errorf("WriteFile: %w", err)
+	}
+	return int(written), nil
 }
 
 // Implements [io.ByteWriter].

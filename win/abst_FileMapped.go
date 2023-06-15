@@ -26,6 +26,9 @@ type FileMapped struct {
 
 // Opens a memory-mapped file, returning a new high-level FileMapped object.
 //
+// Note that memory-mapped files may present issues in x86 architectures; if so,
+// just use the ordinary FileOpen.
+//
 // ⚠️ You must defer FileMapped.Close().
 func FileMappedOpen(
 	filePath string, desiredAccess co.FILE_OPEN) (*FileMapped, error) {
