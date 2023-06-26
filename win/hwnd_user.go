@@ -967,6 +967,27 @@ func (hWnd HWND) SetScrollInfo(
 	return int32(ret)
 }
 
+// [SetScrollPos] function.
+//
+// [SetScrollPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setscrollpos
+func (hWnd HWND) SetScrollPos(bar co.SB_TYPE, pos int32, redraw bool) int32 {
+	ret, _, _ := syscall.SyscallN(proc.SetScrollPos.Addr(),
+		uintptr(hWnd), uintptr(bar), uintptr(pos), util.BoolToUintptr(redraw))
+	return int32(ret)
+}
+
+// [SetScrollRange] function.
+//
+// [SetScrollRange]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setscrollrange
+func (hWnd HWND) SetScrollRange(
+	bar co.SB_TYPE, minPos, maxPos int32, redraw bool) bool {
+
+	ret, _, _ := syscall.SyscallN(proc.SetScrollRange.Addr(),
+		uintptr(hWnd), uintptr(bar), uintptr(minPos), uintptr(maxPos),
+		util.BoolToUintptr(redraw))
+	return ret != 0
+}
+
 // [SetTimer] function.
 //
 // This method will create a timer that will post WM_TIMER messages, instead of

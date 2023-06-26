@@ -1140,6 +1140,7 @@ const (
 	SB_TYPE_HORZ SB_TYPE = 0
 	SB_TYPE_VERT SB_TYPE = 1
 	SB_TYPE_CTL  SB_TYPE = 2
+	SB_TYPE_BOTH SB_TYPE = 3
 )
 
 // WM_SYSCOMMAND type of requested command.

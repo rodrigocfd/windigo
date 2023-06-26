@@ -195,6 +195,8 @@ var (
 	SetProcessDPIAware            = user32.NewProc("SetProcessDPIAware")
 	SetProcessDpiAwarenessContext = user32.NewProc("SetProcessDpiAwarenessContext")
 	SetScrollInfo                 = user32.NewProc("SetScrollInfo")
+	SetScrollPos                  = user32.NewProc("SetScrollPos")
+	SetScrollRange                = user32.NewProc("SetScrollRange")
 	SetSystemCursor               = user32.NewProc("SetSystemCursor")
 	SetTimer                      = user32.NewProc("SetTimer")
 	SetUserObjectInformation      = user32.NewProc("SetUserObjectInformationW")
