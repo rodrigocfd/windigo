@@ -715,6 +715,16 @@ const (
 	LSFW_UNLOCK LSFW = 2
 )
 
+// SetLayeredWindowAttributes() flags.
+//
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setlayeredwindowattributes
+type LWA uint32
+
+const (
+	LWA_ALPHA    LWA = 0x0000_0002
+	LWA_COLORKEY LWA = 0x0000_0001
+)
+
 // MessageBox() uType.
 //
 // 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw

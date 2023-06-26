@@ -183,6 +183,7 @@ var (
 	SetClipboardData              = user32.NewProc("SetClipboardData")
 	SetFocus                      = user32.NewProc("SetFocus")
 	SetForegroundWindow           = user32.NewProc("SetForegroundWindow")
+	SetLayeredWindowAttributes    = user32.NewProc("SetLayeredWindowAttributes")
 	SetMenu                       = user32.NewProc("SetMenu")
 	SetMenuDefaultItem            = user32.NewProc("SetMenuDefaultItem")
 	SetMenuInfo                   = user32.NewProc("SetMenuInfo")

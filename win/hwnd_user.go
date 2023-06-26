@@ -913,6 +913,31 @@ func (hWnd HWND) SetForegroundWindow() bool {
 	return ret != 0
 }
 
+// [SetLayeredWindowAttributes] function.
+//
+// [SetLayeredWindowAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setlayeredwindowattributes
+func (hWnd HWND) SetLayeredWindowAttributes(
+	transparencyColorKey COLORREF, alpha uint8, flags co.LWA) {
+
+	ret, _, err := syscall.SyscallN(proc.SetLayeredWindowAttributes.Addr(),
+		uintptr(hWnd), uintptr(transparencyColorKey),
+		uintptr(alpha), uintptr(flags))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// [SetMenu] function.
+//
+// [SetMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenu
+func (hWnd HWND) SetMenu(hMenu HMENU) {
+	ret, _, err := syscall.SyscallN(proc.SetMenu.Addr(),
+		uintptr(hWnd), uintptr(hMenu))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
 // [SetParent] function.
 //
 // Returns the handle of the previous parent window.
@@ -925,17 +950,6 @@ func (hWnd HWND) SetParent(hwndNewParent HWND) HWND {
 		panic(wErr)
 	} else {
 		return hPrev
-	}
-}
-
-// [SetMenu] function.
-//
-// [SetMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenu
-func (hWnd HWND) SetMenu(hMenu HMENU) {
-	ret, _, err := syscall.SyscallN(proc.SetMenu.Addr(),
-		uintptr(hWnd), uintptr(hMenu))
-	if ret == 0 {
-		panic(errco.ERROR(err))
 	}
 }
 
