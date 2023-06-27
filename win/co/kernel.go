@@ -503,6 +503,20 @@ const (
 	LANG_ZULU                LANG = 0x35
 )
 
+// [LocalAlloc] uFlags.
+//
+// [LocalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-localalloc
+type LMEM uint32
+
+const (
+	LMEM_FIXED    LMEM = 0x0000
+	LMEM_MOVEABLE LMEM = 0x0002
+	LMEM_ZEROINIT LMEM = 0x0040
+	LMEM_MODIFY   LMEM = 0x0080
+	LMEM_GHND     LMEM = LMEM_MOVEABLE | LMEM_ZEROINIT
+	LMEM_GPTR     LMEM = LMEM_FIXED | LMEM_ZEROINIT
+)
+
 // [LockFileEx] dwFlags.
 //
 // [LockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex
