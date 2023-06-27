@@ -13,7 +13,7 @@ import (
 
 // Native month calendar control.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/month-calendar-controls
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/month-calendar-controls
 type MonthCalendar interface {
 	AnyNativeControl
 	AnyFocusControl
@@ -23,7 +23,7 @@ type MonthCalendar interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-notifications
 	On() *_MonthCalendarEvents
 
 	SelectDate(date time.Time) // Sets the selected date.
@@ -205,35 +205,35 @@ func (me *_MonthCalendarEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/mcn-getdaystate
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/mcn-getdaystate
 func (me *_MonthCalendarEvents) McnGetDayState(userFunc func(p *win.NMDAYSTATE)) {
 	me.events.addNfyZero(me.ctrlId, co.MCN_GETDAYSTATE, func(p unsafe.Pointer) {
 		userFunc((*win.NMDAYSTATE)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/mcn-selchange
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/mcn-selchange
 func (me *_MonthCalendarEvents) McnSelChange(userFunc func(p *win.NMSELCHANGE)) {
 	me.events.addNfyZero(me.ctrlId, co.MCN_SELCHANGE, func(p unsafe.Pointer) {
 		userFunc((*win.NMSELCHANGE)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/mcn-select
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/mcn-select
 func (me *_MonthCalendarEvents) McnSelect(userFunc func(p *win.NMSELCHANGE)) {
 	me.events.addNfyZero(me.ctrlId, co.MCN_SELECT, func(p unsafe.Pointer) {
 		userFunc((*win.NMSELCHANGE)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/mcn-viewchange
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/mcn-viewchange
 func (me *_MonthCalendarEvents) McnViewChange(userFunc func(p *win.NMVIEWCHANGE)) {
 	me.events.addNfyZero(me.ctrlId, co.MCN_VIEWCHANGE, func(p unsafe.Pointer) {
 		userFunc((*win.NMVIEWCHANGE)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-monthcal-
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-monthcal-
 func (me *_MonthCalendarEvents) NmReleasedCapture(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) {
 		userFunc()

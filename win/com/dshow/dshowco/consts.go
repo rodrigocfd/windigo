@@ -4,7 +4,7 @@ package dshowco
 
 // IFileSinkFilter2 modes.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-setmode
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-setmode
 type AM_FILE uint32
 
 const (
@@ -12,7 +12,7 @@ const (
 	AM_FILE_OVERWRITE AM_FILE = 0x1
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-filter_state
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-filter_state
 type FILTER_STATE uint32
 
 const (
@@ -21,7 +21,7 @@ const (
 	FILTER_STATE_State_Running
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/ne-evr-mfvideoaspectratiomode
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/evr/ne-evr-mfvideoaspectratiomode
 type MFVideoARMode uint32
 
 const (
@@ -31,7 +31,7 @@ const (
 	MFVideoARMode_NonLinearStretch MFVideoARMode = 0x4 // Apply a non-linear horizontal stretch if the aspect ratio of the destination rectangle does not match the aspect ratio of the source rectangle.
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-pin_direction
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-pin_direction
 type PIN_DIRECTION uint32
 
 const (
@@ -41,7 +41,7 @@ const (
 
 // Originally AM_SEEKING_SeekingCapabilities enum.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-SEEKING_FLAGS_capabilities
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-SEEKING_FLAGS_capabilities
 type SEEKING_CAPABILITIES uint32
 
 const (
@@ -58,7 +58,7 @@ const (
 
 // IMediaSeeking.SetPositions() flags. Originally AM_SEEKING_SeekingFlags enum.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
 type SEEKING_FLAGS uint32
 
 const (

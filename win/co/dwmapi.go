@@ -2,9 +2,9 @@
 
 package co
 
-// DWMWA_GET_CLOAKED return values.
+// [DWMWA_GET_CLOAKED] return values.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+// [DWMWA_GET_CLOAKED]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
 type DWM_CLOAKED uint32
 
 const (
@@ -13,9 +13,9 @@ const (
 	DWM_CLOAKED_INHERITED DWM_CLOAKED = 0x0000_0004
 )
 
-// DwmSetIconicLivePreviewBitmap() dwSITFlags.
+// [DwmSetIconicLivePreviewBitmap] dwSITFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticoniclivepreviewbitmap
+// [DwmSetIconicLivePreviewBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticoniclivepreviewbitmap
 type DWM_SIT uint32
 
 const (
@@ -23,9 +23,9 @@ const (
 	DWM_SIT_DISPLAYFRAME DWM_SIT = 0x0000_0001
 )
 
-// DWMNCRENDERINGPOLICY enumeration.
+// [DWMNCRENDERINGPOLICY] enumeration.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmncrenderingpolicy
+// [DWMNCRENDERINGPOLICY]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmncrenderingpolicy
 type DWMNCRP uint32
 
 const (
@@ -34,9 +34,9 @@ const (
 	DWMNCRP_ENABLED
 )
 
-// DWMFLIP3DWINDOWPOLICY enumeration.
+// [DWMFLIP3DWINDOWPOLICY] enumeration.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmflip3dwindowpolicy
+// [DWMFLIP3DWINDOWPOLICY]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmflip3dwindowpolicy
 type DWMFLIP3D uint32
 
 const (
@@ -45,9 +45,9 @@ const (
 	DWMFLIP3D_EXCLUDEABOVE
 )
 
-// DWMWINDOWATTRIBUTE get enumeration.
+// [DWMWINDOWATTRIBUTE] get enumeration.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+// [DWMWINDOWATTRIBUTE]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
 type DWMWA_GET uint32
 
 const (
@@ -57,9 +57,9 @@ const (
 	DWMWA_GET_CLOAKED               DWMWA_GET = 14 // Return type: co.DWM_CLOAKED.
 )
 
-// DWMWINDOWATTRIBUTE set enumeration.
+// [DWMWINDOWATTRIBUTE] set enumeration.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+// [DWMWINDOWATTRIBUTE]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
 type DWMWA_SET uint32
 
 const (

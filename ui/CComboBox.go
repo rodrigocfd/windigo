@@ -10,7 +10,7 @@ import (
 
 // Native combo box control.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-combo-boxes
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/about-combo-boxes
 type ComboBox interface {
 	AnyNativeControl
 	AnyFocusControl
@@ -21,7 +21,7 @@ type ComboBox interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-notifications
 	On() *_ComboBoxEvents
 
 	Items() *_ComboBoxItems // Item methods.
@@ -237,77 +237,77 @@ func (me *_ComboBoxEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-closeup
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-closeup
 func (me *_ComboBoxEvents) CbnCloseUp(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_CLOSEUP, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-dblclk
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-dblclk
 func (me *_ComboBoxEvents) CbnDblClk(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_DBLCLK, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-dropdown
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-dropdown
 func (me *_ComboBoxEvents) CbnDropDown(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_DROPDOWN, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-editchange
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-editchange
 func (me *_ComboBoxEvents) CbnEditChange(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_EDITCHANGE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-editupdate
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-editupdate
 func (me *_ComboBoxEvents) CbnEditUpdate(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_EDITUPDATE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-errspace
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-errspace
 func (me *_ComboBoxEvents) CbnErrSpace(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_ERRSPACE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-killfocus
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-killfocus
 func (me *_ComboBoxEvents) CbnKillFocus(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_KILLFOCUS, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-selchange
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selchange
 func (me *_ComboBoxEvents) CbnSelChange(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_SELCHANGE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-selendcancel
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selendcancel
 func (me *_ComboBoxEvents) CbnSelEndCancel(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_SELENDCANCEL, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-selendok
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selendok
 func (me *_ComboBoxEvents) CbnSelEndOk(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_SELENDOK, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/cbn-setfocus
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-setfocus
 func (me *_ComboBoxEvents) CbnSetFocus(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_SETFOCUS, func(_ wm.Command) {
 		userFunc()

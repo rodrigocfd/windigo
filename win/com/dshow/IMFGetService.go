@@ -15,7 +15,7 @@ import (
 
 // [IMFGetService] COM interface.
 //
-// [IMFGetService]: https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
+// [IMFGetService]: https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
 type IMFGetService interface {
 	com.IUnknown
 
@@ -35,7 +35,7 @@ type IMFGetService interface {
 	//	)
 	//	defer vdc.Release()
 	//
-	// [GetService]: https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
+	// [GetService]: https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
 	GetService(guidService, riid *win.GUID) com.IUnknown
 }
 

@@ -12,7 +12,7 @@ import (
 
 // Native SysLink control.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/syslink-control-entry
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/syslink-control-entry
 type SysLink interface {
 	AnyNativeControl
 	AnyFocusControl
@@ -23,7 +23,7 @@ type SysLink interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-syslink-control-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-syslink-control-reference-notifications
 	On() *_SysLinkEvents
 
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
@@ -209,7 +209,7 @@ func (me *_SysLinkEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-click-syslink
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-syslink
 func (me *_SysLinkEvents) NmClick(userFunc func(p *win.NMLINK)) {
 	me.events.addNfyZero(me.ctrlId, co.NM_CLICK, func(p unsafe.Pointer) {
 		userFunc((*win.NMLINK)(p))

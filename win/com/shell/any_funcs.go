@@ -14,7 +14,7 @@ import (
 
 // [RegisterDragDrop] function.
 //
-// [RegisterDragDrop]: https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-registerdragdrop
+// [RegisterDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-registerdragdrop
 func RegisterDragDrop(hWnd win.HWND, dropTarget *shellvt.IDropTarget) {
 	ret, _, _ := syscall.SyscallN(proc.RegisterDragDrop.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(&dropTarget)))
@@ -26,7 +26,7 @@ func RegisterDragDrop(hWnd win.HWND, dropTarget *shellvt.IDropTarget) {
 
 // [RevokeDragDrop] function.
 //
-// [RevokeDragDrop]: https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-revokedragdrop
+// [RevokeDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-revokedragdrop
 func RevokeDragDrop(hWnd win.HWND) {
 	ret, _, _ := syscall.SyscallN(proc.RevokeDragDrop.Addr(),
 		uintptr(hWnd))

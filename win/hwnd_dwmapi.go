@@ -15,7 +15,7 @@ import (
 
 // [DwmExtendFrameIntoClientArea] function.
 //
-// [DwmExtendFrameIntoClientArea]: https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea
+// [DwmExtendFrameIntoClientArea]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea
 func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) {
 	ret, _, _ := syscall.SyscallN(proc.DwmExtendFrameIntoClientArea.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(marginsInset)))
@@ -36,7 +36,7 @@ func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) {
 //	rect := hwnd.DwmGetWindowAttribute(
 //		co.DWMWA_GET_CAPTION_BUTTON_BOUNDS).(win.RECT)
 //
-// [DwmGetWindowAttribute]: https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmgetwindowattribute
+// [DwmGetWindowAttribute]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmgetwindowattribute
 func (hWnd HWND) DwmGetWindowAttribute(attr co.DWMWA_GET) interface{} {
 	var boolBuf int32
 	var rectBuf RECT
@@ -82,7 +82,7 @@ func (hWnd HWND) DwmGetWindowAttribute(attr co.DWMWA_GET) interface{} {
 
 // [DwmInvalidateIconicBitmaps] function.
 //
-// [DwmInvalidateIconicBitmaps]: https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwminvalidateiconicbitmaps
+// [DwmInvalidateIconicBitmaps]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwminvalidateiconicbitmaps
 func (hWnd HWND) DwmInvalidateIconicBitmaps() {
 	ret, _, _ := syscall.SyscallN(proc.DwmInvalidateIconicBitmaps.Addr(),
 		uintptr(hWnd))
@@ -93,7 +93,7 @@ func (hWnd HWND) DwmInvalidateIconicBitmaps() {
 
 // [DwmSetIconicLivePreviewBitmap] function.
 //
-// [DwmSetIconicLivePreviewBitmap]: https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticoniclivepreviewbitmap
+// [DwmSetIconicLivePreviewBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticoniclivepreviewbitmap
 func (hWnd HWND) DwmSetIconicLivePreviewBitmap(
 	hBmp HBITMAP, ptClient POINT, sitFlags co.DWM_SIT) {
 
@@ -107,7 +107,7 @@ func (hWnd HWND) DwmSetIconicLivePreviewBitmap(
 
 // [DwmSetIconicThumbnail] function.
 //
-// [DwmSetIconicThumbnail]: https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticonicthumbnail
+// [DwmSetIconicThumbnail]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticonicthumbnail
 func (hWnd HWND) DwmSetIconicThumbnail(hBmp HBITMAP, sitFlags co.DWM_SIT) {
 	ret, _, _ := syscall.SyscallN(proc.DwmSetIconicThumbnail.Addr(),
 		uintptr(hWnd), uintptr(hBmp), uintptr(sitFlags))
@@ -128,7 +128,7 @@ func (hWnd HWND) DwmSetIconicThumbnail(hBmp HBITMAP, sitFlags co.DWM_SIT) {
 //	hwnd.DwmSetWindowAttribute(
 //		co.DWMWA_SET_TRANSITIONS_FORCEDISABLED, true)
 //
-// [DwmSetWindowAttribute]: https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmsetwindowattribute
+// [DwmSetWindowAttribute]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmsetwindowattribute
 func (hWnd HWND) DwmSetWindowAttribute(attr co.DWMWA_SET, val interface{}) {
 	var ptrRaw unsafe.Pointer
 	var cbSize uintptr

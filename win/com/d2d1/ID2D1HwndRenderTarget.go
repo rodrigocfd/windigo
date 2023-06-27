@@ -15,23 +15,23 @@ import (
 
 // [ID2D1HwndRenderTarget] COM interface.
 //
-// [ID2D1HwndRenderTarget]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1hwndrendertarget
+// [ID2D1HwndRenderTarget]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1hwndrendertarget
 type ID2D1HwndRenderTarget interface {
 	ID2D1RenderTarget
 
 	// [CheckWindowState] COM method.
 	//
-	// [CheckWindowState]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1hwndrendertarget-checkwindowstate
+	// [CheckWindowState]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1hwndrendertarget-checkwindowstate
 	CheckWindowState() d2d1co.WINDOW_STATE
 
 	// [GetHwnd] COM method.
 	//
-	// [GetHwnd]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1hwndrendertarget-gethwnd
+	// [GetHwnd]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1hwndrendertarget-gethwnd
 	GetHwnd() win.HWND
 
 	// [Resize] COM method.
 	//
-	// [Resize]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1hwndrendertarget-resize(constd2d1_size_u)
+	// [Resize]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1hwndrendertarget-resize(constd2d1_size_u)
 	Resize(pixelSize SIZE_U)
 }
 

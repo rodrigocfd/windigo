@@ -17,7 +17,7 @@ import (
 //	nic := &NOTIFYICONDATA{}
 //	nic.SetCbSize()
 //
-// [NOTIFYICONDATA]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
+// [NOTIFYICONDATA]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
 type NOTIFYICONDATA struct {
 	cbSize           uint32
 	Hwnd             HWND
@@ -55,7 +55,7 @@ func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
 
 // [SHFILEINFO] struct.
 //
-// [SHFILEINFO]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
+// [SHFILEINFO]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
 type SHFILEINFO struct {
 	HIcon         HICON
 	IIcon         int32

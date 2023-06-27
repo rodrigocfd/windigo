@@ -4,12 +4,12 @@ package win
 
 // A handle to a tree view control [item].
 //
-// [item]: https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
+// [item]: https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
 type HTREEITEM HANDLE
 
 // Predefined tree view control [item handle].
 //
-// [item handle]: https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
+// [item handle]: https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-controls#parent-and-child-items
 const (
 	HTREEITEM_ROOT  HTREEITEM = 0x1_0000
 	HTREEITEM_FIRST HTREEITEM = 0x0_ffff
@@ -21,12 +21,12 @@ const (
 
 // First message [parameter].
 //
-// [parameter]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#wparam
+// [parameter]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#wparam
 type WPARAM uintptr
 
 // [MAKEWPARAM] macro.
 //
-// [MAKEWPARAM]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makewparam
+// [MAKEWPARAM]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makewparam
 func MAKEWPARAM(lo, hi uint16) WPARAM {
 	return WPARAM(MAKELONG(lo, hi))
 }
@@ -36,12 +36,12 @@ func (wp WPARAM) HiWord() uint16 { return HIWORD(uint32(wp)) }
 
 // Second message [parameter].
 //
-// [parameter]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#lparam
+// [parameter]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#lparam
 type LPARAM uintptr
 
 // [MAKELPARAM] macro.
 //
-// [MAKELPARAM]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makelparam
+// [MAKELPARAM]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-makelparam
 func MAKELPARAM(lo, hi uint16) LPARAM {
 	return LPARAM(MAKELONG(lo, hi))
 }

@@ -15,12 +15,12 @@ import (
 //
 // This handle is returned by HWND.OpenClipboard().
 //
-// [clipboard]: https://docs.microsoft.com/en-us/windows/win32/dataxchg/clipboard
+// [clipboard]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/clipboard
 type HCLIPBOARD struct{}
 
 // [CloseClipboard] function.
 //
-// [CloseClipboard]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-closeclipboard
+// [CloseClipboard]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-closeclipboard
 func (HCLIPBOARD) CloseClipboard() {
 	ret, _, err := syscall.SyscallN(proc.CloseClipboard.Addr())
 	if ret == 0 {
@@ -30,7 +30,7 @@ func (HCLIPBOARD) CloseClipboard() {
 
 // [CountClipboardFormats] function.
 //
-// [CountClipboardFormats]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-countclipboardformats
+// [CountClipboardFormats]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-countclipboardformats
 func (HCLIPBOARD) CountClipboardFormats() int32 {
 	ret, _, err := syscall.SyscallN(proc.CountClipboardFormats.Addr())
 	if wErr := errco.ERROR(err); ret == 0 && wErr != errco.SUCCESS {
@@ -41,7 +41,7 @@ func (HCLIPBOARD) CountClipboardFormats() int32 {
 
 // [EmptyClipboard] function.
 //
-// [EmptyClipboard]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-emptyclipboard
+// [EmptyClipboard]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-emptyclipboard
 func (HCLIPBOARD) EmptyClipboard() {
 	ret, _, err := syscall.SyscallN(proc.EmptyClipboard.Addr())
 	if ret == 0 {
@@ -51,7 +51,7 @@ func (HCLIPBOARD) EmptyClipboard() {
 
 // [EnumClipboardFormats] function.
 //
-// [EnumClipboardFormats]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumclipboardformats
+// [EnumClipboardFormats]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumclipboardformats
 func (HCLIPBOARD) EnumClipboardFormats() []co.CF {
 	formats := make([]co.CF, 0, 30) // arbitrary
 	thisFormat := co.CF(0)
@@ -75,7 +75,7 @@ func (HCLIPBOARD) EnumClipboardFormats() []co.CF {
 
 // [GetClipboardSequenceNumber] function.
 //
-// [GetClipboardSequenceNumber]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardsequencenumber
+// [GetClipboardSequenceNumber]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardsequencenumber
 func (HCLIPBOARD) GetClipboardSequenceNumber() uint32 {
 	ret, _, _ := syscall.SyscallN(proc.GetClipboardSequenceNumber.Addr())
 	return uint32(ret)
@@ -83,7 +83,7 @@ func (HCLIPBOARD) GetClipboardSequenceNumber() uint32 {
 
 // [IsClipboardFormatAvailable] function.
 //
-// [IsClipboardFormatAvailable]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isclipboardformatavailable
+// [IsClipboardFormatAvailable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isclipboardformatavailable
 func (HCLIPBOARD) IsClipboardFormatAvailable(format co.CF) bool {
 	ret, _, err := syscall.SyscallN(proc.IsClipboardFormatAvailable.Addr(),
 		uintptr(format))
@@ -100,7 +100,7 @@ func (HCLIPBOARD) IsClipboardFormatAvailable(format co.CF) bool {
 // Unless you're doing something specific, prefer HCLIPBOARD.WriteBitmap() or
 // HCLIPBOARD.WriteString().
 //
-// [SetClipboardData]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setclipboarddata
+// [SetClipboardData]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setclipboarddata
 func (HCLIPBOARD) SetClipboardData(format co.CF, hMem HGLOBAL) {
 	ret, _, err := syscall.SyscallN(proc.SetClipboardData.Addr(),
 		uintptr(format), uintptr(hMem))

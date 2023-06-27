@@ -15,13 +15,13 @@ import (
 
 // [ITaskbarList2] COM interface.
 //
-// [ITaskbarList2]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist2
+// [ITaskbarList2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist2
 type ITaskbarList2 interface {
 	ITaskbarList
 
 	// [MarkFullscreenWindow] COM method.
 	//
-	// [MarkFullscreenWindow]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow
+	// [MarkFullscreenWindow]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow
 	MarkFullscreenWindow(hwnd win.HWND, fullScreen bool)
 }
 

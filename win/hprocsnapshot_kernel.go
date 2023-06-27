@@ -18,7 +18,7 @@ type HPROCSNAPSHOT HANDLE
 //
 // ⚠️ You must defer HPROCSNAPSHOT.CloseHandle().
 //
-// [CreateToolhelp32Snapshot]: https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-createtoolhelp32snapshot
+// [CreateToolhelp32Snapshot]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-createtoolhelp32snapshot
 func CreateToolhelp32Snapshot(
 	flags co.TH32CS, processId uint32) (HPROCSNAPSHOT, error) {
 
@@ -32,7 +32,7 @@ func CreateToolhelp32Snapshot(
 
 // [CloseHandle] function.
 //
-// [CloseHandle]: https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+// [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hProcSnap HPROCSNAPSHOT) CloseHandle() error {
 	ret, _, err := syscall.SyscallN(proc.CloseHandle.Addr(),
 		uintptr(hProcSnap))
@@ -46,7 +46,7 @@ func (hProcSnap HPROCSNAPSHOT) CloseHandle() error {
 //
 // This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumModules().
 //
-// [Module32First]: https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32firstw
+// [Module32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32firstw
 func (hProcSnap HPROCSNAPSHOT) Module32First(buf *MODULEENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(proc.Module32First.Addr(),
 		uintptr(hProcSnap), uintptr(unsafe.Pointer(buf)))
@@ -64,7 +64,7 @@ func (hProcSnap HPROCSNAPSHOT) Module32First(buf *MODULEENTRY32) (bool, error) {
 //
 // This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumModules().
 //
-// [Module32Next]: https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32nextw
+// [Module32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32nextw
 func (hProcSnap HPROCSNAPSHOT) Module32Next(buf *MODULEENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(proc.Module32Next.Addr(),
 		uintptr(hProcSnap), uintptr(unsafe.Pointer(buf)))
@@ -82,7 +82,7 @@ func (hProcSnap HPROCSNAPSHOT) Module32Next(buf *MODULEENTRY32) (bool, error) {
 //
 // This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumProcesses().
 //
-// [Process32First]: https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
+// [Process32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
 func (hProcSnap HPROCSNAPSHOT) Process32First(
 	buf *PROCESSENTRY32) (bool, error) {
 
@@ -102,7 +102,7 @@ func (hProcSnap HPROCSNAPSHOT) Process32First(
 //
 // This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumProcesses().
 //
-// [Process32Next]: https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
+// [Process32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
 func (hProcSnap HPROCSNAPSHOT) Process32Next(
 	buf *PROCESSENTRY32) (bool, error) {
 
@@ -122,7 +122,7 @@ func (hProcSnap HPROCSNAPSHOT) Process32Next(
 //
 // This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumThreads().
 //
-// [Thread32First]: https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32first
+// [Thread32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32first
 func (hProcSnap HPROCSNAPSHOT) Thread32First(buf *THREADENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(proc.Thread32First.Addr(),
 		uintptr(hProcSnap), uintptr(unsafe.Pointer(buf)))
@@ -140,7 +140,7 @@ func (hProcSnap HPROCSNAPSHOT) Thread32First(buf *THREADENTRY32) (bool, error) {
 //
 // This function is rather tricky. Prefer using HPROCSNAPSHOT.EnumThreads().
 //
-// [Thread32Next]: https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32next
+// [Thread32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32next
 func (hProcSnap HPROCSNAPSHOT) Thread32Next(buf *THREADENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(proc.Thread32Next.Addr(),
 		uintptr(hProcSnap), uintptr(unsafe.Pointer(buf)))

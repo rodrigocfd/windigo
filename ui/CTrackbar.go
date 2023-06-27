@@ -12,7 +12,7 @@ import (
 
 // Native trackbar control.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/trackbar-controls
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/trackbar-controls
 type Trackbar interface {
 	AnyNativeControl
 	AnyFocusControl
@@ -22,7 +22,7 @@ type Trackbar interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-notifications
 	On() *_TrackbarEvents
 
 	PageSize() int                // Retrieves the number of positions of page up/down.
@@ -262,14 +262,14 @@ func (me *_TrackbarEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/trbn-thumbposchanging
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/trbn-thumbposchanging
 func (me *_TrackbarEvents) ThumbPosChanging(userFunc func(p *win.NMTRBTHUMBPOSCHANGING)) {
 	me.events.addNfyZero(me.ctrlId, co.TRBN_THUMBPOSCHANGING, func(p unsafe.Pointer) {
 		userFunc((*win.NMTRBTHUMBPOSCHANGING)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-trackbar-
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-trackbar-
 func (me *_TrackbarEvents) NmReleasedCapture(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) {
 		userFunc()

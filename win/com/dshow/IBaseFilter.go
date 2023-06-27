@@ -15,7 +15,7 @@ import (
 
 // [IBaseFilter] COM interface.
 //
-// [IBaseFilter]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
+// [IBaseFilter]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
 type IBaseFilter interface {
 	IMediaFilter
 
@@ -23,19 +23,19 @@ type IBaseFilter interface {
 	//
 	// ⚠️ You must defer IEnumPins.Release() on the returned object.
 	//
-	// [EnumPins]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-enumpins
+	// [EnumPins]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-enumpins
 	EnumPins() IEnumPins
 
 	// [FindPin] COM method.
 	//
 	// ⚠️ You must defer IPin.Release() on the returned object.
 	//
-	// [FindPin]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-findpin
+	// [FindPin]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-findpin
 	FindPin(id string) (IPin, bool)
 
 	// [JoinFilterGraph] COM method.
 	//
-	// [JoinFilterGraph]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-joinfiltergraph
+	// [JoinFilterGraph]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-joinfiltergraph
 	JoinFilterGraph(graph IFilterGraph, name string) error
 
 	// [QueryFilterInfo] COM method.
@@ -43,14 +43,14 @@ type IBaseFilter interface {
 	// ⚠️ You must defer IFilterGraph.Release() on PGraph field of the info
 	// object.
 	//
-	// [QueryFilterInfo]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
+	// [QueryFilterInfo]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryfilterinfo
 	QueryFilterInfo(info *FILTER_INFO)
 
 	// [QueryVendorInfo] COM method.
 	//
 	// Returns false if the method is not supported.
 	//
-	// [QueryVendorInfo]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryvendorinfo
+	// [QueryVendorInfo]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ibasefilter-queryvendorinfo
 	QueryVendorInfo() (string, bool)
 }
 

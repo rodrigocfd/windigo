@@ -14,14 +14,14 @@ import (
 
 // [InitCommonControls] function.
 //
-// [InitCommonControls]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
+// [InitCommonControls]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
 func InitCommonControls() {
 	syscall.SyscallN(proc.InitCommonControls.Addr())
 }
 
 // [InitCommonControlsEx] function.
 //
-// [InitCommonControlsEx]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrolsex
+// [InitCommonControlsEx]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrolsex
 func InitCommonControlsEx(icce *INITCOMMONCONTROLSEX) bool {
 	ret, _, _ := syscall.SyscallN(proc.InitCommonControlsEx.Addr(),
 		uintptr(unsafe.Pointer(icce)))
@@ -33,7 +33,7 @@ func InitCommonControlsEx(icce *INITCOMMONCONTROLSEX) bool {
 // Prefer using ui.TaskDlg wrappers, which deals with the most commons cases of
 // this function in a safer, easier way.
 //
-// [TaskDialogIndirect]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
+// [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func TaskDialogIndirect(taskConfig *TASKDIALOGCONFIG) co.ID {
 	serialized, ptrs := taskConfig.serializePacked()
 

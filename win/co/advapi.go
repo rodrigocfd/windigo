@@ -2,9 +2,9 @@
 
 package co
 
-// Registry key security and access rights
+// [Registry key] security and access rights.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/sysinfo/registry-key-security-and-access-rights
+// [Registry key]: https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-key-security-and-access-rights
 type KEY uint32
 
 const (
@@ -44,9 +44,9 @@ const (
 	KEY_ALL_ACCESS KEY = (KEY(STANDARD_RIGHTS_ALL) | KEY_QUERY_VALUE | KEY_SET_VALUE | KEY_CREATE_SUB_KEY | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY | KEY_CREATE_LINK) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
 )
 
-// Registry value types.
+// Registry value [types].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/sysinfo/registry-value-types
+// [types]: https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-value-types
 type REG uint32
 
 const (
@@ -63,9 +63,9 @@ const (
 	REG_QWORD_LITTLE_ENDIAN REG = 11 // 64-bit number (same as REG_QWORD).
 )
 
-// RegOpenKeyEx() ulOptions
+// [RegOpenKeyEx] ulOptions.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
+// [RegOpenKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
 type REG_OPTION uint32
 
 const (
@@ -79,9 +79,9 @@ const (
 	REG_OPTION_DONT_VIRTUALIZE REG_OPTION = 0x0000_0010
 )
 
-// RegGetValue() dwFlags.
+// [RegGetValue] dwFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-reggetvaluew
+// [RegGetValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-reggetvaluew
 type RRF uint32
 
 const (

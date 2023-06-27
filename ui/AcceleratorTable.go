@@ -11,7 +11,7 @@ import (
 
 // Native accelerator table resource.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/learnwin32/accelerator-tables
+// 📑 https://learn.microsoft.com/en-us/windows/win32/learnwin32/accelerator-tables
 type AcceleratorTable interface {
 	implAcceleratorTable() // prevent public implementation
 

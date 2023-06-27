@@ -2,14 +2,14 @@
 
 package co
 
-// Window messages.
+// Window [messages].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/learnwin32/window-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/learnwin32/window-messages
 type WM uint32
 
-// Standard window messages (WM).
+// Standard window [messages] (WM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/learnwin32/window-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/learnwin32/window-messages
 const (
 	WM_NULL                           WM = 0x0000
 	WM_CREATE                         WM = 0x0001
@@ -268,9 +268,9 @@ const (
 	WM_USER                           WM = 0x0400
 )
 
-// Button control messages (BCM).
+// Button control [messages] (BCM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-messages
 const (
 	_BCM_FIRST WM = 0x1600
 
@@ -288,9 +288,9 @@ const (
 	BCM_SETSHIELD        WM = _BCM_FIRST + 12
 )
 
-// Button control messages (BM).
+// Button control [messages] (BM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-messages
 const (
 	BM_GETCHECK     WM = 0x00f0
 	BM_SETCHECK     WM = 0x00f1
@@ -303,9 +303,9 @@ const (
 	BM_SETDONTCLICK WM = 0x00f8
 )
 
-// Common controls messages (CCM).
+// Common controls [messages] (CCM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-general-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-general-control-reference-messages
 const (
 	_CCM_FIRST WM = 0x2000
 
@@ -322,9 +322,9 @@ const (
 	CCM_DPISCALE         WM = _CCM_FIRST + 0xc
 )
 
-// ComboBox control messages (CB).
+// ComboBox control [messages] (CB).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-messages
 const (
 	CB_GETEDITSEL            WM = 0x0140
 	CB_LIMITTEXT             WM = 0x0141
@@ -364,9 +364,9 @@ const (
 	CB_MSGMAX                WM = 0x0165
 )
 
-// DateTimePicker control messages (DTM).
+// DateTimePicker control [messages] (DTM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-date-and-time-picker-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-date-and-time-picker-control-reference-messages
 const (
 	_DTM_FIRST WM = 0x1000
 
@@ -387,9 +387,9 @@ const (
 	DTM_GETIDEALSIZE          WM = _DTM_FIRST + 15
 )
 
-// Edit control messages (EM).
+// Edit control [messages] (EM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-messages
 const (
 	EM_GETSEL              WM = 0x00b0
 	EM_SETSEL              WM = 0x00b1
@@ -458,9 +458,9 @@ const (
 	EM_GETFILELINECOUNT WM = _ECM_FIRST + 23
 )
 
-// Header control messages (HDM).
+// Header control [messages] (HDM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-header-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-header-control-reference-messages
 const (
 	_HDM_FIRST WM = 0x1200
 
@@ -472,9 +472,9 @@ const (
 	HDM_LAYOUT       WM = _HDM_FIRST + 5
 )
 
-// ListView control messages (LVM).
+// ListView control [messages] (LVM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-list-view-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-list-view-control-reference-messages
 const (
 	_LVM_FIRST WM = 0x1000
 
@@ -604,9 +604,9 @@ const (
 	LVM_GETNEXTITEMINDEX         WM = _LVM_FIRST + 211
 )
 
-// MonthCalendar control messages (MCM).
+// MonthCalendar control [messages] (MCM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-messages
 const (
 	_MCM_FIRST WM = 0x1000
 
@@ -644,9 +644,9 @@ const (
 	MCM_SETCURRENTVIEW      WM = _MCM_FIRST + 32
 )
 
-// ProgressBar control messages (PBM).
+// ProgressBar control [messages] (PBM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-progress-bar-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-progress-bar-control-reference-messages
 const (
 	PBM_SETRANGE    WM = WM_USER + 1
 	PBM_SETPOS      WM = WM_USER + 2
@@ -666,9 +666,9 @@ const (
 	PBM_GETSTATE    WM = WM_USER + 17
 )
 
-// Status bar control messages (SB).
+// Status bar control [messages] (SB).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-status-bars-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-status-bars-reference-messages
 const (
 	SB_SETTEXT          WM = WM_USER + 11
 	SB_GETTEXT          WM = WM_USER + 13
@@ -688,9 +688,9 @@ const (
 	SB_GETUNICODEFORMAT WM = CCM_GETUNICODEFORMAT
 )
 
-// Toolbar control messages (TB).
+// Toolbar control [messages] (TB).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-toolbar-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-toolbar-control-reference-messages
 const (
 	TB_ENABLEBUTTON          WM = WM_USER + 1
 	TB_CHECKBUTTON           WM = WM_USER + 2
@@ -787,9 +787,9 @@ const (
 	TB_SETWINDOWTHEME        WM = CCM_SETWINDOWTHEME
 )
 
-// Trackbar control messages (TBM).
+// Trackbar control [messages] (TBM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-messages
 const (
 	TBM_GETPOS           WM = WM_USER
 	TBM_GETRANGEMIN      WM = WM_USER + 1
@@ -828,9 +828,9 @@ const (
 	TBM_GETUNICODEFORMAT WM = CCM_GETUNICODEFORMAT
 )
 
-// TreeView control messages (TVM).
+// TreeView control [messages] (TVM).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-tree-view-control-reference-messages
+// [messages]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-tree-view-control-reference-messages
 const (
 	_TVM_FIRST WM = 0x1100
 

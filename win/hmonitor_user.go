@@ -13,12 +13,12 @@ import (
 
 // Handle to a [display monitor].
 //
-// [display monitor]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hmonitor
+// [display monitor]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hmonitor
 type HMONITOR HANDLE
 
 // [MonitorFromPoint] function.
 //
-// [MonitorFromPoint]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
+// [MonitorFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
 func MonitorFromPoint(pt POINT, flags co.MONITOR) HMONITOR {
 	ret, _, _ := syscall.SyscallN(proc.MonitorFromPoint.Addr(),
 		uintptr(pt.X), uintptr(pt.Y), uintptr(flags))
@@ -27,7 +27,7 @@ func MonitorFromPoint(pt POINT, flags co.MONITOR) HMONITOR {
 
 // [MonitorFromRect] function.
 //
-// [MonitorFromRect]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromrect
+// [MonitorFromRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromrect
 func MonitorFromRect(rc RECT, flags co.MONITOR) HMONITOR {
 	ret, _, _ := syscall.SyscallN(proc.MonitorFromRect.Addr(),
 		uintptr(unsafe.Pointer(&rc)), uintptr(flags))
@@ -36,7 +36,7 @@ func MonitorFromRect(rc RECT, flags co.MONITOR) HMONITOR {
 
 // [GetMonitorInfo] function.
 //
-// [GetMonitorInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmonitorinfow
+// [GetMonitorInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmonitorinfow
 func (hMon HMONITOR) GetMonitorInfo(mi *MONITORINFOEX) error {
 	ret, _, err := syscall.SyscallN(proc.GetMonitorInfo.Addr(),
 		uintptr(hMon), uintptr(unsafe.Pointer(mi)))

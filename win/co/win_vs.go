@@ -2,13 +2,13 @@
 
 package co
 
-// Visual style parts and states.
+// Visual style [parts and states].
 //
 // These are originally two separated constant int32 types, but since they form
 // a hierarchy, one single constant type can represent both part and state (high
 // and low order, respectively).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/parts-and-states
+// [parts and states]: https://learn.microsoft.com/en-us/windows/win32/controls/parts-and-states
 type VS uint32
 
 func (vs VS) Part() int32  { return int32(vs >> 16 & 0xffff) }
@@ -1347,9 +1347,9 @@ const (
 	VS_MENUBAND_SEPERATOR VS = 0x0002_0000
 )
 
-// Visual style property types.
+// Visual style [property types].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property types]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_TYPE int32
 
 const (
@@ -1369,9 +1369,9 @@ const (
 	TMT_TYPE_STRING     TMT_TYPE = 201
 )
 
-// Visual style property IDs.
+// Visual style [property IDs].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property IDs]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_ID int32
 
 const (
@@ -1400,9 +1400,9 @@ const (
 	TMT_ID_USERPICTURE          TMT_ID = 5001
 )
 
-// Visual style property colors.
+// Visual style [property colors].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property colors]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_COLOR int32
 
 const (
@@ -1472,18 +1472,18 @@ const (
 	TMT_COLOR_WINDOWTEXT              TMT_COLOR = 1609
 )
 
-// Visual style property disk streams.
+// Visual style [property disk streams].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property disk streams]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_DISKSTREAM int32
 
 const (
 	TMT_DISKSTREAM_ATLASIMAGE TMT_DISKSTREAM = 8000
 )
 
-// Visual style property enums.
+// Visual style [property enums].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property enums]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_ENUM int32
 
 const (
@@ -1504,9 +1504,9 @@ const (
 	TMT_ENUM_VALIGN              TMT_ENUM = 4007
 )
 
-// Visual style property file names.
+// Visual style [property file names].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property file names]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_FILENAME int32
 
 const (
@@ -1521,9 +1521,9 @@ const (
 	TMT_FILENAME_IMAGEFILE7     TMT_FILENAME = 3010
 )
 
-// Visual style property fonts.
+// Visual style [property fonts].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property fonts]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_FONT int32
 
 const (
@@ -1539,9 +1539,9 @@ const (
 	TMT_FONT_STATUSFONT       TMT_FONT = 804
 )
 
-// Visual style property ints.
+// Visual style [property ints].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property ints]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_INT int32
 
 const (
@@ -1599,18 +1599,18 @@ const (
 	TMT_INT_WIDTH               TMT_INT = 2416
 )
 
-// Visual style property int lists.
+// Visual style [property int lists].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property int lists]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_INTLIST int32
 
 const (
 	TMT_INTLIST_TRANSITIONDURATIONS TMT_INTLIST = 6000
 )
 
-// Visual style property margins.
+// Visual style [property margins].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property margins]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_MARGINS int32
 
 const (
@@ -1619,9 +1619,9 @@ const (
 	TMT_MARGINS_SIZINGMARGINS  TMT_MARGINS = 3601
 )
 
-// Visual style property positions.
+// Visual style [property positions].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property positions]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_POSITION int32
 
 const (
@@ -1638,9 +1638,9 @@ const (
 	TMT_POSITION_TEXTSHADOWOFFSET TMT_POSITION = 3402
 )
 
-// Visual style property rects.
+// Visual style [property rects].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property rects]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_RECT int32
 
 const (
@@ -1650,9 +1650,9 @@ const (
 	TMT_RECT_DEFAULTPANESIZE     TMT_RECT = 5002
 )
 
-// Visual style property sizes.
+// Visual style [property sizes].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property sizes]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_SIZE int32
 
 const (
@@ -1668,9 +1668,9 @@ const (
 	TMT_SIZE_SMCAPTIONBARWIDTH  TMT_SIZE = 1206
 )
 
-// Visual style property strings.
+// Visual style [property strings].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/property-typedefs
+// [property strings]: https://learn.microsoft.com/en-us/windows/win32/controls/property-typedefs
 type TMT_STRING int32
 
 const (

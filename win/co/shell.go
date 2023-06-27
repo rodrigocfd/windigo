@@ -2,9 +2,9 @@
 
 package co
 
-// NOTIFYICONDATA uFlags.
+// [NOTIFYICONDATA] uFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
+// [NOTIFYICONDATA]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
 type NIF uint32
 
 const (
@@ -18,9 +18,9 @@ const (
 	NIF_SHOWTIP  NIF = 0x0000_0080
 )
 
-// NOTIFYICONDATA dwInfoFlags.
+// [NOTIFYICONDATA] dwInfoFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
+// [NOTIFYICONDATA]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
 type NIIF uint32
 
 const (
@@ -34,9 +34,9 @@ const (
 	NIIF_RESPECT_QUIET_TIME NIIF = 0x0000_0080
 )
 
-// Shell_NotifyIcon dwMessage.
+// [Shell_NotifyIcon] dwMessage.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
+// [Shell_NotifyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
 type NIM uint32
 
 const (
@@ -47,9 +47,9 @@ const (
 	NIM_SETVERSION NIM = 0x0000_0004
 )
 
-// NOTIFYICONDATA dwState and dwStateMask.
+// [NOTIFYICONDATA] dwState and dwStateMask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
+// [NOTIFYICONDATA]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
 type NIS uint32
 
 const (
@@ -57,9 +57,9 @@ const (
 	NIS_SHAREDICON NIS = 0x0000_0002
 )
 
-// SHFILEINFO dwAttributes.
+// [SHFILEINFO] dwAttributes.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
+// [SHFILEINFO]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
 type SFGAO uint32
 
 const (
@@ -107,9 +107,9 @@ const (
 	SFGAO_PKEYSFGAOMASK   SFGAO = 0x8104_4000
 )
 
-// SHGetFileInfo() uFlags.
+// [SHGetFileInfo] uFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
+// [SHGetFileInfo]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
 type SHGFI uint32
 
 const (

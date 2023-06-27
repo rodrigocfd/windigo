@@ -13,7 +13,7 @@ import (
 
 // Native tree view control.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-controls
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-controls
 type TreeView interface {
 	AnyNativeControl
 	AnyFocusControl
@@ -23,7 +23,7 @@ type TreeView interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-tree-view-control-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-tree-view-control-reference-notifications
 	On() *_TreeViewEvents
 
 	Items() *_TreeViewItems // Item methods.
@@ -219,182 +219,182 @@ func (me *_TreeViewEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-asyncdraw
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-asyncdraw
 func (me *_TreeViewEvents) TvnAsyncDraw(userFunc func(p *win.NMTVASYNCDRAW)) {
 	me.events.addNfyZero(me.ctrlId, co.TVN_ASYNCDRAW, func(p unsafe.Pointer) {
 		userFunc((*win.NMTVASYNCDRAW)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-begindrag
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-begindrag
 func (me *_TreeViewEvents) TvnBeginDrag(userFunc func(p *win.NMTREEVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.TVN_BEGINDRAG, func(p unsafe.Pointer) {
 		userFunc((*win.NMTREEVIEW)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-beginlabeledit
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-beginlabeledit
 func (me *_TreeViewEvents) TvnBeginLabelEdit(userFunc func(p *win.NMTVDISPINFO) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TVN_BEGINLABELEDIT, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTVDISPINFO)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-beginrdrag
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-beginrdrag
 func (me *_TreeViewEvents) TvnBeginRDrag(userFunc func(p *win.NMTREEVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.TVN_BEGINRDRAG, func(p unsafe.Pointer) {
 		userFunc((*win.NMTREEVIEW)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-deleteitem
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-deleteitem
 func (me *_TreeViewEvents) TvnDeleteItem(userFunc func(p *win.NMTREEVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.TVN_DELETEITEM, func(p unsafe.Pointer) {
 		userFunc((*win.NMTREEVIEW)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-endlabeledit
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-endlabeledit
 func (me *_TreeViewEvents) TvnEndLabelEdit(userFunc func(p *win.NMTVDISPINFO) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TVN_ENDLABELEDIT, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTVDISPINFO)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-getdispinfo
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-getdispinfo
 func (me *_TreeViewEvents) TvnGetDispInfo(userFunc func(p *win.NMTVDISPINFO)) {
 	me.events.addNfyZero(me.ctrlId, co.TVN_GETDISPINFO, func(p unsafe.Pointer) {
 		userFunc((*win.NMTVDISPINFO)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-getinfotip
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-getinfotip
 func (me *_TreeViewEvents) TvnGetInfoTip(userFunc func(p *win.NMTVGETINFOTIP)) {
 	me.events.addNfyZero(me.ctrlId, co.TVN_GETINFOTIP, func(p unsafe.Pointer) {
 		userFunc((*win.NMTVGETINFOTIP)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-itemchanged
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-itemchanged
 func (me *_TreeViewEvents) TvnItemChanged(userFunc func(p *win.NMTVITEMCHANGE)) {
 	me.events.addNfyZero(me.ctrlId, co.TVN_ITEMCHANGED, func(p unsafe.Pointer) {
 		userFunc((*win.NMTVITEMCHANGE)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-itemchanging
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-itemchanging
 func (me *_TreeViewEvents) TvnItemChanging(userFunc func(p *win.NMTVITEMCHANGE) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TVN_ITEMCHANGING, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTVITEMCHANGE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-itemexpanded
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-itemexpanded
 func (me *_TreeViewEvents) TvnItemExpanded(userFunc func(p *win.NMTREEVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.TVN_ITEMEXPANDED, func(p unsafe.Pointer) {
 		userFunc((*win.NMTREEVIEW)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-itemexpanding
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-itemexpanding
 func (me *_TreeViewEvents) TvnItemExpanding(userFunc func(p *win.NMTREEVIEW) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TVN_ITEMEXPANDING, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTREEVIEW)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-keydown
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-keydown
 func (me *_TreeViewEvents) TvnKeyDown(userFunc func(p *win.NMTVKEYDOWN) int) {
 	me.events.addNfyRet(me.ctrlId, co.TVN_KEYDOWN, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMTVKEYDOWN)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-selchanged
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-selchanged
 func (me *_TreeViewEvents) TvnSelChanged(userFunc func(p *win.NMTREEVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.TVN_SELCHANGED, func(p unsafe.Pointer) {
 		userFunc((*win.NMTREEVIEW)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-selchanging
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-selchanging
 func (me *_TreeViewEvents) TvnSelChanging(userFunc func(p *win.NMTREEVIEW) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TVN_SELCHANGING, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTREEVIEW)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-setdispinfo
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-setdispinfo
 func (me *_TreeViewEvents) TvnSetDispInfo(userFunc func(p *win.NMTVDISPINFO)) {
 	me.events.addNfyZero(me.ctrlId, co.TVN_SETDISPINFO, func(p unsafe.Pointer) {
 		userFunc((*win.NMTVDISPINFO)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-singleexpand
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tvn-singleexpand
 func (me *_TreeViewEvents) TvnSingleExpand(userFunc func(p *win.NMTREEVIEW) co.TVNRET) {
 	me.events.addNfyRet(me.ctrlId, co.TVN_SINGLEEXPAND, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMTREEVIEW)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-click-tree-view
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-tree-view
 func (me *_TreeViewEvents) NmClick(userFunc func() int) {
 	me.events.addNfyRet(me.ctrlId, co.NM_CLICK, func(_ unsafe.Pointer) uintptr {
 		return uintptr(userFunc())
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-customdraw-tree-view
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-customdraw-tree-view
 func (me *_TreeViewEvents) NmCustomDraw(userFunc func(p *win.NMTVCUSTOMDRAW) co.CDRF) {
 	me.events.addNfyRet(me.ctrlId, co.NM_CUSTOMDRAW, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMTVCUSTOMDRAW)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-dblclk-tree-view
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-dblclk-tree-view
 func (me *_TreeViewEvents) NmDblClk(userFunc func() int) {
 	me.events.addNfyRet(me.ctrlId, co.NM_DBLCLK, func(_ unsafe.Pointer) uintptr {
 		return uintptr(userFunc())
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-killfocus-tree-view
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-killfocus-tree-view
 func (me *_TreeViewEvents) NmKillFocus(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_KILLFOCUS, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-rclick-tree-view
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-rclick-tree-view
 func (me *_TreeViewEvents) NmRClick(userFunc func() int) {
 	me.events.addNfyRet(me.ctrlId, co.NM_RCLICK, func(_ unsafe.Pointer) uintptr {
 		return uintptr(userFunc())
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-tree-view
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-tree-view
 func (me *_TreeViewEvents) NmRDblClk(userFunc func() int) {
 	me.events.addNfyRet(me.ctrlId, co.NM_RDBLCLK, func(_ unsafe.Pointer) uintptr {
 		return uintptr(userFunc())
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-return-tree-view-
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-return-tree-view-
 func (me *_TreeViewEvents) NmReturn(userFunc func() int) {
 	me.events.addNfyRet(me.ctrlId, co.NM_RETURN, func(_ unsafe.Pointer) uintptr {
 		return uintptr(userFunc())
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-setcursor-tree-view-
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-setcursor-tree-view-
 func (me *_TreeViewEvents) NmSetCursor(userFunc func(p *win.NMMOUSE) int) {
 	me.events.addNfyRet(me.ctrlId, co.NM_SETCURSOR, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMMOUSE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-setfocus-tree-view-
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-setfocus-tree-view-
 func (me *_TreeViewEvents) NmSetFocus(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_SETFOCUS, func(_ unsafe.Pointer) {
 		userFunc()

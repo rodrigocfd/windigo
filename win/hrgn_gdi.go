@@ -13,14 +13,14 @@ import (
 
 // A handle to a [region].
 //
-// [region]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hrgn
+// [region]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hrgn
 type HRGN HGDIOBJ
 
 // [CreateEllipticRgn] function.
 //
 // ⚠️ You must defer HRGN.DeleteObject().
 //
-// [CreateEllipticRgn]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createellipticrgn
+// [CreateEllipticRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createellipticrgn
 func CreateEllipticRgn(boundTopLeft, boundBottomRight POINT) HRGN {
 	ret, _, err := syscall.SyscallN(proc.CreateEllipticRgn.Addr(),
 		uintptr(boundTopLeft.X), uintptr(boundTopLeft.Y),
@@ -35,7 +35,7 @@ func CreateEllipticRgn(boundTopLeft, boundBottomRight POINT) HRGN {
 //
 // ⚠️ You must defer HRGN.DeleteObject().
 //
-// [CreateRectRgnIndirect]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
+// [CreateRectRgnIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
 func CreateRectRgnIndirect(rc *RECT) HRGN {
 	ret, _, err := syscall.SyscallN(proc.CreateRectRgnIndirect.Addr(),
 		uintptr(unsafe.Pointer(rc)))
@@ -49,7 +49,7 @@ func CreateRectRgnIndirect(rc *RECT) HRGN {
 //
 // ⚠️ You must defer HRGN.DeleteObject().
 //
-// [CreateRoundRectRgn]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createroundrectrgn
+// [CreateRoundRectRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createroundrectrgn
 func CreateRoundRectRgn(topLeft, bottomRight POINT, szEllipse SIZE) HRGN {
 	ret, _, err := syscall.SyscallN(proc.CreateRoundRectRgn.Addr(),
 		uintptr(topLeft.X), uintptr(topLeft.Y),
@@ -63,7 +63,7 @@ func CreateRoundRectRgn(topLeft, bottomRight POINT, szEllipse SIZE) HRGN {
 
 // [DeleteObject] function.
 //
-// [DeleteObject]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
+// [DeleteObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hRgn HRGN) DeleteObject() error {
 	return HGDIOBJ(hRgn).DeleteObject()
 }
@@ -72,7 +72,7 @@ func (hRgn HRGN) DeleteObject() error {
 //
 // Combines the two regions and stores the result in current region.
 //
-// [CombineRgn]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
+// [CombineRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
 func (hRgn HRGN) CombineRgn(hrgnSrc1, hrgnSrc2 HRGN, mode co.RGN) co.REGION {
 	ret, _, err := syscall.SyscallN(proc.CombineRgn.Addr(),
 		uintptr(hRgn), uintptr(hrgnSrc1), uintptr(hrgnSrc2), uintptr(mode))
@@ -84,7 +84,7 @@ func (hRgn HRGN) CombineRgn(hrgnSrc1, hrgnSrc2 HRGN, mode co.RGN) co.REGION {
 
 // [OffsetRgn] function.
 //
-// [OffsetRgn]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-offsetrgn
+// [OffsetRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-offsetrgn
 func (hRgn HRGN) OffsetRgn(x, y int32) co.REGION {
 	ret, _, err := syscall.SyscallN(proc.OffsetRgn.Addr(),
 		uintptr(hRgn), uintptr(x), uintptr(y))

@@ -8,7 +8,7 @@ import (
 
 // IDataObject virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
 type IDataObject struct {
 	comvt.IUnknown
 	GetData               uintptr
@@ -24,7 +24,7 @@ type IDataObject struct {
 
 // IDesktopWallpaper virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-idesktopwallpaper
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-idesktopwallpaper
 type IDesktopWallpaper struct {
 	comvt.IUnknown
 	SetWallpaper              uintptr
@@ -47,7 +47,7 @@ type IDesktopWallpaper struct {
 
 // IDropTarget virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
 type IDropTarget struct {
 	comvt.IUnknown
 	DragEnter uintptr
@@ -58,7 +58,7 @@ type IDropTarget struct {
 
 // IFileDialog virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialog
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialog
 type IFileDialog struct {
 	IModalWindow
 	SetFileTypes        uintptr
@@ -88,7 +88,7 @@ type IFileDialog struct {
 
 // IFileOpenDialog virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileopendialog
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileopendialog
 type IFileOpenDialog struct {
 	IFileDialog
 	GetResults       uintptr
@@ -97,7 +97,7 @@ type IFileOpenDialog struct {
 
 // IFileSaveDialog virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifilesavedialog
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifilesavedialog
 type IFileSaveDialog struct {
 	IFileDialog
 	SetSaveAsItem          uintptr
@@ -109,7 +109,7 @@ type IFileSaveDialog struct {
 
 // IModalWindow virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
 type IModalWindow struct {
 	comvt.IUnknown
 	Show uintptr
@@ -117,7 +117,7 @@ type IModalWindow struct {
 
 // IShellItem virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 type IShellItem struct {
 	comvt.IUnknown
 	BindToHandler  uintptr
@@ -129,7 +129,7 @@ type IShellItem struct {
 
 // IShellItemArray virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
 type IShellItemArray struct {
 	comvt.IUnknown
 	BindToHandler              uintptr
@@ -143,7 +143,7 @@ type IShellItemArray struct {
 
 // IShellLink virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishelllinkw
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishelllinkw
 type IShellLink struct {
 	comvt.IUnknown
 	GetPath             uintptr
@@ -168,7 +168,7 @@ type IShellLink struct {
 
 // ITaskbarList virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
 type ITaskbarList struct {
 	comvt.IUnknown
 	HrInit       uintptr
@@ -180,7 +180,7 @@ type ITaskbarList struct {
 
 // ITaskbarList2 virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist2
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist2
 type ITaskbarList2 struct {
 	ITaskbarList
 	MarkFullscreenWindow uintptr
@@ -188,7 +188,7 @@ type ITaskbarList2 struct {
 
 // ITaskbarList3 virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
 type ITaskbarList3 struct {
 	ITaskbarList2
 	SetProgressValue      uintptr
@@ -207,7 +207,7 @@ type ITaskbarList3 struct {
 
 // ITaskbarList4 virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist4
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist4
 type ITaskbarList4 struct {
 	ITaskbarList3
 	SetTabProperties uintptr

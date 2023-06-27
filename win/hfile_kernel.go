@@ -15,14 +15,14 @@ import (
 
 // A handle to a [file].
 //
-// [file]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
+// [file]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HFILE HANDLE
 
 // [CreateFile] function.
 //
 // ⚠️ You must defer HFILE.CloseHandle().
 //
-// [CreateFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+// [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 func CreateFile(fileName string, desiredAccess co.GENERIC,
 	shareMode co.FILE_SHARE, securityAttributes *SECURITY_ATTRIBUTES,
 	creationDisposition co.DISPOSITION, attributes co.FILE_ATTRIBUTE,
@@ -45,7 +45,7 @@ func CreateFile(fileName string, desiredAccess co.GENERIC,
 
 // [CloseHandle] function.
 //
-// [CloseHandle]: https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+// [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hFile HFILE) CloseHandle() error {
 	ret, _, err := syscall.SyscallN(proc.CloseHandle.Addr(),
 		uintptr(hFile))
@@ -57,7 +57,7 @@ func (hFile HFILE) CloseHandle() error {
 
 // [GetFileSizeEx] function.
 //
-// [GetFileSizeEx]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex
+// [GetFileSizeEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex
 func (hFile HFILE) GetFileSizeEx() (uint64, error) {
 	var retSz int64
 	ret, _, err := syscall.SyscallN(proc.GetFileSizeEx.Addr(),
@@ -73,7 +73,7 @@ func (hFile HFILE) GetFileSizeEx() (uint64, error) {
 //
 // ⚠️ You must defer HFILEMAP.CloseHandle().
 //
-// [CreateFileMapping]: https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
+// [CreateFileMapping]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
 func (hFile HFILE) CreateFileMapping(
 	securityAttributes *SECURITY_ATTRIBUTES,
 	protectPage co.PAGE, protectSec co.SEC,
@@ -93,7 +93,7 @@ func (hFile HFILE) CreateFileMapping(
 //
 // ⚠️ You must defer HFILE.UnlockFile().
 //
-// [LockFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfile
+// [LockFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfile
 func (hFile HFILE) LockFile(offset, numBytes uint64) error {
 	offsetLo, offsetHi := util.Break64(offset)
 	numBytesLo, numBytesHi := util.Break64(numBytes)
@@ -111,7 +111,7 @@ func (hFile HFILE) LockFile(offset, numBytes uint64) error {
 //
 // ⚠️ You must defer HFILE.UnlockFileEx().
 //
-// [LockFileEx]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex
+// [LockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex
 func (hFile HFILE) LockFileEx(
 	flags co.LOCKFILE, numBytes uint64, overlapped *OVERLAPPED) error {
 
@@ -128,7 +128,7 @@ func (hFile HFILE) LockFileEx(
 
 // [ReadFile] function.
 //
-// [ReadFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
+// [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hFile HFILE) ReadFile(
 	buffer []byte, overlapped *OVERLAPPED) (numBytesRead uint32, e error) {
 
@@ -145,7 +145,7 @@ func (hFile HFILE) ReadFile(
 
 // [SetEndOfFile] function.
 //
-// [SetEndOfFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setendoffile
+// [SetEndOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setendoffile
 func (hFile HFILE) SetEndOfFile() error {
 	ret, _, err := syscall.SyscallN(proc.SetEndOfFile.Addr(),
 		uintptr(hFile))
@@ -160,7 +160,7 @@ func (hFile HFILE) SetEndOfFile() error {
 //
 // In x86 architecture, [SetFilePointer] will be called instead.
 //
-// [SetFilePointerEx]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
+// [SetFilePointerEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
 // [SetFilePointer]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointer
 func (hFile HFILE) SetFilePointerEx(
 	distanceToMove int64,
@@ -183,7 +183,7 @@ func (hFile HFILE) SetFilePointerEx(
 
 // [UnlockFile] function.
 //
-// [UnlockFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfile
+// [UnlockFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfile
 func (hFile HFILE) UnlockFile(offset, numBytes uint64) error {
 	offsetLo, offsetHi := util.Break64(offset)
 	numBytesLo, numBytesHi := util.Break64(numBytes)
@@ -199,7 +199,7 @@ func (hFile HFILE) UnlockFile(offset, numBytes uint64) error {
 
 // [UnlockFileEx] function.
 //
-// [UnlockFileEx]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfileex
+// [UnlockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfileex
 func (hFile HFILE) UnlockFileEx(numBytes uint64, overlapped *OVERLAPPED) error {
 	numBytesLo, numBytesHi := util.Break64(numBytes)
 	ret, _, err := syscall.SyscallN(proc.UnlockFileEx.Addr(),
@@ -213,7 +213,7 @@ func (hFile HFILE) UnlockFileEx(numBytes uint64, overlapped *OVERLAPPED) error {
 
 // [WriteFile] function.
 //
-// [WriteFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
+// [WriteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
 func (hFile HFILE) WriteFile(
 	data []byte, overlapped *OVERLAPPED) (numBytesWritten uint32, e error) {
 
@@ -232,12 +232,12 @@ func (hFile HFILE) WriteFile(
 
 // A handle to a memory-mapped [file].
 //
-// [file]: https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
+// [file]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
 type HFILEMAP HANDLE
 
 // [CloseHandle] function.
 //
-// [CloseHandle]: https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+// [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hMap HFILEMAP) CloseHandle() error {
 	ret, _, err := syscall.SyscallN(proc.CloseHandle.Addr(),
 		uintptr(hMap))
@@ -256,7 +256,7 @@ func (hMap HFILEMAP) CloseHandle() error {
 //
 // ⚠️ You must defer HFILEMAPVIEW.UnmapViewOfFile().
 //
-// [MapViewOfFile]: https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
+// [MapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMap HFILEMAP) MapViewOfFile(
 	desiredAccess co.FILE_MAP,
 	offset uint64, numBytesToMap uint) (HFILEMAPVIEW, error) {
@@ -281,7 +281,7 @@ func (hMap HFILEMAP) MapViewOfFile(
 // A handle to the memory block of a memory-mapped [file]. Actually, this is the
 // starting address of the mapped view.
 //
-// [file]: https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
+// [file]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 type HFILEMAPVIEW HANDLE
 
 // Returns a pointer to the beginning of the mapped memory block.
@@ -291,7 +291,7 @@ func (hMem HFILEMAPVIEW) Ptr() *byte {
 
 // [FlushViewOfFile] function.
 //
-// [FlushViewOfFile]: https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-flushviewoffile
+// [FlushViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-flushviewoffile
 func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes uint64) error {
 	ret, _, err := syscall.SyscallN(proc.FlushViewOfFile.Addr(),
 		uintptr(hMem), uintptr(numBytes))
@@ -303,7 +303,7 @@ func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes uint64) error {
 
 // [UnmapViewOfFile] function.
 //
-// [UnmapViewOfFile]: https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
+// [UnmapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
 func (hMem HFILEMAPVIEW) UnmapViewOfFile() error {
 	ret, _, err := syscall.SyscallN(proc.UnmapViewOfFile.Addr(),
 		uintptr(hMem))

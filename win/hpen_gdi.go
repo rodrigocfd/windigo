@@ -13,14 +13,14 @@ import (
 
 // A handle to a [pen].
 //
-// [pen]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hpen
+// [pen]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hpen
 type HPEN HGDIOBJ
 
 // [CreatePen] function.
 //
 // ⚠️ You must defer HPEN.DeleteObject().
 //
-// [CreatePen]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
+// [CreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
 func CreatePen(style co.PS, width int32, color COLORREF) HPEN {
 	ret, _, err := syscall.SyscallN(proc.CreatePen.Addr(),
 		uintptr(style), uintptr(width), uintptr(color))
@@ -32,7 +32,7 @@ func CreatePen(style co.PS, width int32, color COLORREF) HPEN {
 
 // [CreatePenIndirect] function.
 //
-// [CreatePenIndirect]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpenindirect
+// [CreatePenIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpenindirect
 func CreatePenIndirect(lp *LOGPEN) HPEN {
 	ret, _, err := syscall.SyscallN(proc.CreatePenIndirect.Addr(),
 		uintptr(unsafe.Pointer(lp)))
@@ -44,14 +44,14 @@ func CreatePenIndirect(lp *LOGPEN) HPEN {
 
 // [DeleteObject] function.
 //
-// [DeleteObject]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
+// [DeleteObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hPen HPEN) DeleteObject() error {
 	return HGDIOBJ(hPen).DeleteObject()
 }
 
 // [GetObject] function.
 //
-// [GetObject]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
+// [GetObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
 func (hPen HPEN) GetObject(lp *LOGPEN) {
 	ret, _, err := syscall.SyscallN(proc.GetObject.Addr(),
 		uintptr(hPen), unsafe.Sizeof(*lp), uintptr(unsafe.Pointer(lp)))

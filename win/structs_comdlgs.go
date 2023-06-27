@@ -17,7 +17,7 @@ import (
 //	cc := &CHOOSECOLOR{}
 //	cc.SetLStructSize()
 //
-// [CHOOSECOLOR]: https://docs.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolorw-r1
+// [CHOOSECOLOR]: https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolorw-r1
 type CHOOSECOLOR struct {
 	lStructSize    uint32
 	HwndOwner      HWND

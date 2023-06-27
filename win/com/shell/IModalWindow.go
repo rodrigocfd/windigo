@@ -14,7 +14,7 @@ import (
 
 // [IModalWindow] COM interface.
 //
-// [IModalWindow]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
+// [IModalWindow]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
 type IModalWindow interface {
 	com.IUnknown
 
@@ -22,7 +22,7 @@ type IModalWindow interface {
 	//
 	// Returns false if user cancelled.
 	//
-	// [Show]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-imodalwindow-show
+	// [Show]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-imodalwindow-show
 	Show(hwndOwner win.HWND) bool
 }
 

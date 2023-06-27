@@ -22,23 +22,23 @@ For the Win32 API bindings:
 | - | - |
 | [`win`](win/) | Native Win32 structs, handles and functions. |
 | [`win/co`](win/co/) | Native Win32 constants, all typed. |
-| `win/errco` | Native Win32 [error codes](https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes), with types `errco.ERROR` and `errco.CDERR`. |
+| `win/errco` | Native Win32 [error codes](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes), with types `errco.ERROR` and `errco.CDERR`. |
 
 For the [COM](win/com/) bindings, there is the main package, and two subpackages – the `co` suffix contains the constants, and the `vt` contains the virtual tables:
 
 | Packages | Description |
 | - | - |
-| `win/com/autom`<br>`win/com/autom/automco`<br>`win/com/autom/automvt` | Native Win32 [Automation](https://docs.microsoft.com/en-us/windows/win32/api/_automat/) COM interfaces. |
-| `win/com/com`<br>`win/com/com/comco`<br>`win/com/com/comvt` | Native Win32 [COM API base](https://docs.microsoft.com/en-us/windows/win32/api/_com/). |
-| `win/com/d2d1`<br>`win/com/d2d1/d2d1co`<br>`win/com/d2d1/d2d1vt` | Native Win32 [Direct2D](https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-portal) COM interfaces. |
-| `win/com/dshow`<br>`win/com/dshow/dshowco`<br>`win/com/dshow/dshowvt` | Native Win32 [DirectShow](https://docs.microsoft.com/en-us/windows/win32/directshow/directshow) COM interfaces. |
-| `win/com/shell`<br>`win/com/shell/shellco`<br>`win/com/shell/shellvt` | Native Win32 [Shell](https://docs.microsoft.com/en-us/windows/win32/api/_shell/) COM interfaces. |
+| `win/com/autom`<br>`win/com/autom/automco`<br>`win/com/autom/automvt` | Native Win32 [Automation](https://learn.microsoft.com/en-us/windows/win32/api/_automat/) COM interfaces. |
+| `win/com/com`<br>`win/com/com/comco`<br>`win/com/com/comvt` | Native Win32 [COM API base](https://learn.microsoft.com/en-us/windows/win32/api/_com/). |
+| `win/com/d2d1`<br>`win/com/d2d1/d2d1co`<br>`win/com/d2d1/d2d1vt` | Native Win32 [Direct2D](https://learn.microsoft.com/en-us/windows/win32/direct2d/direct2d-portal) COM interfaces. |
+| `win/com/dshow`<br>`win/com/dshow/dshowco`<br>`win/com/dshow/dshowvt` | Native Win32 [DirectShow](https://learn.microsoft.com/en-us/windows/win32/directshow/directshow) COM interfaces. |
+| `win/com/shell`<br>`win/com/shell/shellco`<br>`win/com/shell/shellvt` | Native Win32 [Shell](https://learn.microsoft.com/en-us/windows/win32/api/_shell/) COM interfaces. |
 
 Windigo is designed to be familiar to Win32 programmers, using the same concepts, so most C/C++ Win32 tutorials should be applicable.
 
 Windows and controls can be created in two ways:
 
-* programmatically, by specifying the options used in the underlying [CreateWindowEx](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw);
+* programmatically, by specifying the options used in the underlying [CreateWindowEx](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw);
 * by loading [resources](https://en.wikipedia.org/wiki/Resource_(Windows)#Resource_software) from a `.rc` or a `.res` file.
 
 CGo is **not** used, just syscalls.

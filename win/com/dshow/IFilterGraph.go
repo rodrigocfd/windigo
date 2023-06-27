@@ -15,52 +15,52 @@ import (
 
 // [IFilterGraph] COM interface.
 //
-// [IFilterGraph]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
+// [IFilterGraph]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
 type IFilterGraph interface {
 	com.IUnknown
 
 	// [AddFilter] COM method.
 	//
-	// [AddFilter]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-addfilter
+	// [AddFilter]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-addfilter
 	AddFilter(filter IBaseFilter, name string) error
 
 	// [ConnectDirect] COM method.
 	//
-	// [ConnectDirect]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-connectdirect
+	// [ConnectDirect]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-connectdirect
 	ConnectDirect(pinOut, pinIn IPin, mt *AM_MEDIA_TYPE)
 
 	// [Disconnect] COM method.
 	//
-	// [Disconnect]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-disconnect
+	// [Disconnect]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-disconnect
 	Disconnect(pin IPin)
 
 	// [EnumFilters] COM method.
 	//
 	// ⚠️ You must defer IEnumFilters.Release() on the returned object.
 	//
-	// [EnumFilters]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-enumfilters
+	// [EnumFilters]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-enumfilters
 	EnumFilters() IEnumFilters
 
 	// [FindFilterByName] COM method.
 	//
 	// ⚠️ You must defer IBaseFilter.Release() on the returned object.
 	//
-	// [FindFilterByName]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-findfilterbyname
+	// [FindFilterByName]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-findfilterbyname
 	FindFilterByName(name string) (IBaseFilter, bool)
 
 	// [Reconnect] COM method.
 	//
-	// [Reconnect]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-reconnect
+	// [Reconnect]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-reconnect
 	Reconnect(pin IPin)
 
 	// [RemoveFilter] COM method.
 	//
-	// [RemoveFilter]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-removefilter
+	// [RemoveFilter]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-removefilter
 	RemoveFilter(filter IBaseFilter)
 
 	// [SetDefaultSyncSource] COM method.
 	//
-	// [SetDefaultSyncSource]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-setdefaultsyncsource
+	// [SetDefaultSyncSource]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifiltergraph-setdefaultsyncsource
 	SetDefaultSyncSource()
 }
 

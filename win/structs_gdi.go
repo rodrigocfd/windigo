@@ -11,7 +11,7 @@ import (
 
 // [BITMAP] struct.
 //
-// [BITMAP]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmap
+// [BITMAP]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmap
 type BITMAP struct {
 	bmType       int32
 	BmWidth      int32
@@ -23,7 +23,7 @@ type BITMAP struct {
 }
 
 func (bm *BITMAP) CalcBitmapSize(bitCount uint16) int {
-	// https://docs.microsoft.com/en-gb/windows/win32/gdi/capturing-an-image
+	// https://learn.microsoft.com/en-gb/windows/win32/gdi/capturing-an-image
 	return int(((bm.BmWidth*int32(bitCount) + 31) / 32) * 4 * bm.BmHeight)
 }
 
@@ -36,12 +36,12 @@ func (bm *BITMAP) CalcBitmapSize(bitCount uint16) int {
 //	bfh := BITMAPFILEHEADER{}
 //	bfh.SetBfType()
 //
-// [BITMAPFILEHEADER]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapfileheader
+// [BITMAPFILEHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapfileheader
 type BITMAPFILEHEADER struct {
 	data [14]byte // sizeof(BITMAPFILEHEADER) packed
 }
 
-func (bfh *BITMAPFILEHEADER) SetBfType() { binary.LittleEndian.PutUint32(bfh.data[0:], 0x4d42) } // https://docs.microsoft.com/en-gb/windows/win32/gdi/capturing-an-image
+func (bfh *BITMAPFILEHEADER) SetBfType() { binary.LittleEndian.PutUint32(bfh.data[0:], 0x4d42) } // https://learn.microsoft.com/en-gb/windows/win32/gdi/capturing-an-image
 
 func (bfh *BITMAPFILEHEADER) BfSize() uint32       { return binary.LittleEndian.Uint32(bfh.data[2:]) }
 func (bfh *BITMAPFILEHEADER) SetBfSize(val uint32) { binary.LittleEndian.PutUint32(bfh.data[2:], val) }
@@ -57,7 +57,7 @@ func (bfh *BITMAPFILEHEADER) Serialize() []byte { return bfh.data[:] }
 //
 // ⚠️ You must call BmiHeader.SetBiSize() to initialize the struct.
 //
-// [BITMAPINFO]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfo
+// [BITMAPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfo
 type BITMAPINFO struct {
 	BmiHeader BITMAPINFOHEADER
 	BmiColors [1]RGBQUAD
@@ -72,7 +72,7 @@ type BITMAPINFO struct {
 //	bih := &BITMAPINFOHEADER{}
 //	bih.SetBiSize()
 //
-// [BITMAPINFOHEADER]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
+// [BITMAPINFOHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
 type BITMAPINFOHEADER struct {
 	biSize          uint32
 	BiWidth         int32
@@ -97,33 +97,33 @@ func (bih *BITMAPINFOHEADER) Serialize() []byte {
 //
 // Specifies an RGB color.
 //
-// [COLORREF]: https://docs.microsoft.com/en-us/windows/win32/gdi/colorref
+// [COLORREF]: https://learn.microsoft.com/en-us/windows/win32/gdi/colorref
 type COLORREF uint32
 
 // [RGB] macro.
 //
-// [RGB]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-rgb
+// [RGB]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-rgb
 func RGB(red, green, blue uint8) COLORREF {
 	return COLORREF(uint32(red) | (uint32(green) << 8) | (uint32(blue) << 16))
 }
 
 // [GetRValue] macro.
 //
-// [GetRValue]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getrvalue
+// [GetRValue]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getrvalue
 func (c COLORREF) Red() uint8 {
 	return LOBYTE(LOWORD(uint32(c)))
 }
 
 // [GetGValue] macro.
 //
-// [GetGValue]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getgvalue
+// [GetGValue]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getgvalue
 func (c COLORREF) Green() uint8 {
 	return LOBYTE(LOWORD(uint32(c) >> 8))
 }
 
 // [GetBValue] macro.
 //
-// [GetBValue]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getbvalue
+// [GetBValue]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getbvalue
 func (c COLORREF) Blue() uint8 {
 	return LOBYTE(LOWORD(uint32(c) >> 16))
 }
@@ -139,7 +139,7 @@ func (c COLORREF) ToRgbquad() RGBQUAD {
 
 // [LOGBRUSH] struct.
 //
-// [LOGBRUSH]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
+// [LOGBRUSH]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
 type LOGBRUSH struct {
 	LbStyle co.BRS
 	LbColor COLORREF
@@ -148,7 +148,7 @@ type LOGBRUSH struct {
 
 // [LOGFONT] struct.
 //
-// [LOGFONT]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
+// [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type LOGFONT struct {
 	LfHeight         int32
 	LfWidth          int32
@@ -173,7 +173,7 @@ func (lf *LOGFONT) SetLfFaceName(val string) {
 
 // [LOGPEN] struct.
 //
-// [LOGPEN]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logpen
+// [LOGPEN]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logpen
 type LOGPEN struct {
 	LopnStyle co.PS
 	LopnWidth POINT
@@ -182,7 +182,7 @@ type LOGPEN struct {
 
 // [RGBQUAD] struct.
 //
-// [RGBQUAD]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-rgbquad
+// [RGBQUAD]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-rgbquad
 type RGBQUAD struct {
 	data [4]byte
 }
@@ -200,7 +200,7 @@ func (rq *RGBQUAD) ToColorref() COLORREF { return RGB(rq.Red(), rq.Green(), rq.B
 
 // [TEXTMETRIC] struct.
 //
-// [TEXTMETRIC]: https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-textmetricw
+// [TEXTMETRIC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-textmetricw
 type TEXTMETRIC struct {
 	TmHeight           uint32
 	TmAscent           uint32

@@ -8,7 +8,7 @@ import (
 
 // Converts HIMETRIC units to pixels.
 //
-// 📑 https://docs.microsoft.com/en-us/cpp/atl/reference/pixel-himetric-conversion-global-functions?view=msvc-170#atlhimetrictopixel
+// 📑 https://learn.microsoft.com/en-us/cpp/atl/reference/pixel-himetric-conversion-global-functions?view=msvc-170#atlhimetrictopixel
 func (hdc HDC) HiMetricToPixel(
 	himetricX, himetricY int32) (pixelX, pixelY int32) {
 
@@ -28,7 +28,7 @@ func (hdc HDC) HiMetricToPixel(
 
 // Converts pixels to HIMETRIC units.
 //
-// 📑 https://docs.microsoft.com/en-us/cpp/atl/reference/pixel-himetric-conversion-global-functions?view=msvc-170#atlpixeltohimetric
+// 📑 https://learn.microsoft.com/en-us/cpp/atl/reference/pixel-himetric-conversion-global-functions?view=msvc-170#atlpixeltohimetric
 func (hdc HDC) PixelToHiMetric(
 	pixelX, pixelY int32) (himetricX, himetricY int32) {
 

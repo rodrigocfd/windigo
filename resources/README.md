@@ -1,6 +1,6 @@
 # Resources
 
-This folder contains several [resources](https://docs.microsoft.com/en-us/windows/win32/menurc/about-resource-files) that can be used to build your native Win32 application:
+This folder contains several [resources](https://learn.microsoft.com/en-us/windows/win32/menurc/about-resource-files) that can be used to build your native Win32 application:
 
 | Resource | Description |
 | - | - |
@@ -11,4 +11,4 @@ This folder contains several [resources](https://docs.microsoft.com/en-us/window
 If you wish, you can build your own syso:
 
 * with the [rsrc](https://github.com/akavel/rsrc) tool;
-* creating a `.rc` file from scratch and using a resource compiler, like [MSVC/RC](https://docs.microsoft.com/en-us/windows/win32/menurc/resource-compiler).
+* creating a `.rc` file from scratch and using a resource compiler, like [MSVC/RC](https://learn.microsoft.com/en-us/windows/win32/menurc/resource-compiler).

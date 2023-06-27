@@ -17,7 +17,7 @@ import (
 //
 // ⚠️ You must defer HICON.DestroyIcon() on each icon returned in both slices.
 //
-// [ExtractIconEx]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-extracticonexw
+// [ExtractIconEx]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-extracticonexw
 func ExtractIconEx(fileName string) (largeIcons, smallIcons []HICON) {
 	lpszFile16 := Str.ToNativeSlice(fileName)
 	retrieveIdx := -1

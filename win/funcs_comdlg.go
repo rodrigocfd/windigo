@@ -12,7 +12,7 @@ import (
 
 // [ChooseColor] function.
 //
-// [ChooseColor]: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms646912(v=vs.85)
+// [ChooseColor]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms646912(v=vs.85)
 func ChooseColor(cc *CHOOSECOLOR) bool {
 	ret, _, _ := syscall.SyscallN(proc.ChooseColor.Addr(),
 		uintptr(unsafe.Pointer(cc)))
@@ -29,7 +29,7 @@ func ChooseColor(cc *CHOOSECOLOR) bool {
 
 // [CommDlgExtendedError] function.
 //
-// [CommDlgExtendedError]: https://docs.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-commdlgextendederror
+// [CommDlgExtendedError]: https://learn.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-commdlgextendederror
 func CommDlgExtendedError() errco.CDERR {
 	ret, _, _ := syscall.SyscallN(proc.CommDlgExtendedError.Addr())
 	return errco.CDERR(ret)

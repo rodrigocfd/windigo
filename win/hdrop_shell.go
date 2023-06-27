@@ -12,14 +12,14 @@ import (
 
 // A handle to an [internal drop structure].
 //
-// [internal drop structure]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdrop
+// [internal drop structure]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdrop
 type HDROP HANDLE
 
 // [DragFinish] function.
 //
 // This function is rather tricky. Prefer using HDROP.ListFilesAndFinish().
 //
-// [DragFinish]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragfinish
+// [DragFinish]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragfinish
 func (hDrop HDROP) DragFinish() {
 	syscall.SyscallN(proc.DragFinish.Addr(),
 		uintptr(hDrop))
@@ -29,7 +29,7 @@ func (hDrop HDROP) DragFinish() {
 //
 // This function is rather tricky. Prefer using HDROP.ListFilesAndFinish().
 //
-// [DragQueryFile]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragqueryfilew
+// [DragQueryFile]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragqueryfilew
 func (hDrop HDROP) DragQueryFile(
 	iFile uint32, lpszFile *uint16, cch uint32) uint32 {
 
@@ -46,7 +46,7 @@ func (hDrop HDROP) DragQueryFile(
 //
 // Returns true if dropped within client area.
 //
-// [DragQueryPoint]: https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragquerypoint
+// [DragQueryPoint]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragquerypoint
 func (hDrop HDROP) DragQueryPoint() (POINT, bool) {
 	var pt POINT
 	ret, _, _ := syscall.SyscallN(proc.DragQueryPoint.Addr(),

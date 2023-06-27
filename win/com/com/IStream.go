@@ -14,45 +14,45 @@ import (
 
 // [IStream] COM interface.
 //
-// [IStream]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
+// [IStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
 type IStream interface {
 	ISequentialStream
 
 	// [Commit] COM method.
 	//
-	// [Commit]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-commit
+	// [Commit]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-commit
 	Commit(flags comco.STGC)
 
 	// [CopyTo] COM method.
 	//
-	// [CopyTo]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-copyto
+	// [CopyTo]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-copyto
 	CopyTo(dest IStream, numBytes uint64) (numBytesRead, numBytesWritten uint64)
 
 	// [LockRegion] COM method.
 	//
 	// ⚠️ You must defer IStream.UnlockRegion().
 	//
-	// [LockRegion]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-lockregion
+	// [LockRegion]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-lockregion
 	LockRegion(offset, length uint64, lockType comco.LOCKTYPE)
 
 	// [Revert] COM method.
 	//
-	// [Revert]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-revert
+	// [Revert]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-revert
 	Revert()
 
 	// [Seek] COM method.
 	//
-	// [Seek]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-seek
+	// [Seek]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-seek
 	Seek(displacement int64, origin comco.STREAM_SEEK) (newOffset uint64)
 
 	// [SetSize] COM method.
 	//
-	// [SetSize]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-setsize
+	// [SetSize]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-setsize
 	SetSize(newSize uint64)
 
 	// [UnlockRegion] COM method.
 	//
-	// [UnlockRegion]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-unlockregion
+	// [UnlockRegion]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-unlockregion
 	UnlockRegion(offset, length uint64, lockType comco.LOCKTYPE)
 }
 
@@ -70,7 +70,7 @@ func NewIStream(base IUnknown) IStream {
 //
 // ⚠️ You must defer IStream.Release().
 //
-// [SHCreateMemStream]: https://docs.microsoft.com/en-us/windows/win32/api/shlwapi/nf-shlwapi-shcreatememstream
+// [SHCreateMemStream]: https://learn.microsoft.com/en-us/windows/win32/api/shlwapi/nf-shlwapi-shcreatememstream
 func NewIStreamFromSlice(src []byte) IStream {
 	ret, _, _ := syscall.SyscallN(proc.SHCreateMemStream.Addr(),
 		uintptr(unsafe.Pointer(&src[0])), uintptr(len(src)))

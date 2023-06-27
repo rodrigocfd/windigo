@@ -11,7 +11,7 @@ import (
 
 // [ARRAYDESC] struct.
 //
-// [ARRAYDESC]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-arraydesc
+// [ARRAYDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-arraydesc
 type ARRAYDESC struct {
 	TdescElem TYPEDESC
 	CDims     uint16
@@ -20,7 +20,7 @@ type ARRAYDESC struct {
 
 // [DISPPARAMS] sruct.
 //
-// [DISPPARAMS]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-dispparams
+// [DISPPARAMS]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-dispparams
 type DISPPARAMS struct {
 	rgvarg            *VARIANT
 	rgdispidNamedArgs *automco.DISPID
@@ -40,7 +40,7 @@ func (dp *DISPPARAMS) SetNamedArgs(v ...automco.DISPID) {
 
 // [ELEMDESC] struct.
 //
-// [ELEMDESC]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-elemdesc-r1
+// [ELEMDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-elemdesc-r1
 type ELEMDESC struct {
 	TDesc TYPEDESC
 	union [16]byte
@@ -51,7 +51,7 @@ func (ed *ELEMDESC) ParmDesc() *PARAMDESC { return (*PARAMDESC)(unsafe.Pointer(&
 
 // [EXCEPINFO] struct.
 //
-// [EXCEPINFO]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
+// [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
 type EXCEPINFO struct {
 	WCode             uint16
 	wReserved         uint16
@@ -86,7 +86,7 @@ func (e *EXCEPINFO) ReleaseStrings() (string, string, string) {
 
 // [FUNCDESC] struct.
 //
-// [FUNCDESC]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
+// [FUNCDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type FUNCDESC struct {
 	Memid             MEMBERID
 	Lprgscode         *int32
@@ -110,7 +110,7 @@ type IDLDESC struct {
 
 // [PARAMDESC] struct.
 //
-// [PARAMDESC]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-paramdesc
+// [PARAMDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-paramdesc
 type PARAMDESC struct {
 	Pparamdescex *PARAMDESCEX
 	WParamFlags  automco.PARAMFLAG
@@ -118,7 +118,7 @@ type PARAMDESC struct {
 
 // [PARAMDESCEX] struct.
 //
-// [PARAMDESCEX]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-paramdescex
+// [PARAMDESCEX]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-paramdescex
 type PARAMDESCEX struct {
 	CBytes          uint32
 	VarDefaultValue VARIANT
@@ -126,7 +126,7 @@ type PARAMDESCEX struct {
 
 // [SAFEARRAYBOUND] struct.
 //
-// [SAFEARRAYBOUND]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-safearraybound
+// [SAFEARRAYBOUND]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-safearraybound
 type SAFEARRAYBOUND struct {
 	CElements uint32
 	LLbound   int32
@@ -134,7 +134,7 @@ type SAFEARRAYBOUND struct {
 
 // [TYPEATTR] struct.
 //
-// [TYPEATTR]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-typeattr
+// [TYPEATTR]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-typeattr
 type TYPEATTR struct {
 	Guid             win.GUID
 	Lcid             win.LCID
@@ -158,7 +158,7 @@ type TYPEATTR struct {
 
 // [TYPEDESC] struct.
 //
-// [TYPEDESC]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-typedesc
+// [TYPEDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-typedesc
 type TYPEDESC struct {
 	union uintptr
 	Vt    automco.VT
@@ -170,7 +170,7 @@ func (td *TYPEDESC) HRefType() uint32      { return uint32(td.union) }
 
 // [VARDESC] struct.
 //
-// [VARDESC]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-vardesc
+// [VARDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-vardesc
 type VARDESC struct {
 	Memid       MEMBERID
 	LpstrSchema *uint16

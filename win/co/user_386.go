@@ -2,9 +2,11 @@
 
 package co
 
-// Get/SetWindowLongPtr() nIndex. Also includes constants with GWL prefix.
+// [GetWindowLongPtr] and [SetWindowLongPtr] nIndex. Also includes constants
+// with GWL prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
+// [GetWindowLongPtr]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
+// [SetWindowLongPtr]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowlongptrw
 type GWLP int32
 
 const (

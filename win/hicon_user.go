@@ -12,14 +12,14 @@ import (
 
 // A handle to an [icon].
 //
-// [icon]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hicon
+// [icon]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hicon
 type HICON HANDLE
 
 // [CreateIconIndirect] function.
 //
 // ⚠️ You must defer HICON.DestroyIcon().
 //
-// [CreateIconIndirect]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconindirect
+// [CreateIconIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconindirect
 func CreateIconIndirect(info *ICONINFO) HICON {
 	ret, _, err := syscall.SyscallN(proc.CreateIconIndirect.Addr(),
 		uintptr(unsafe.Pointer(info)))
@@ -33,7 +33,7 @@ func CreateIconIndirect(info *ICONINFO) HICON {
 //
 // ⚠️ You must defer HICON.DestroyIcon().
 //
-// [CopyIcon]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyicon
+// [CopyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyicon
 func (hIcon HICON) CopyIcon() HICON {
 	ret, _, err := syscall.SyscallN(proc.CopyIcon.Addr(),
 		uintptr(hIcon))
@@ -45,7 +45,7 @@ func (hIcon HICON) CopyIcon() HICON {
 
 // [DestroyIcon] function.
 //
-// [DestroyIcon]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyicon
+// [DestroyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyicon
 func (hIcon HICON) DestroyIcon() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyIcon.Addr(),
 		uintptr(hIcon))
@@ -59,7 +59,7 @@ func (hIcon HICON) DestroyIcon() error {
 //
 // ⚠️ You must defer HBITMAP.DeleteObject() in HbmMask and HbmColor fields.
 //
-// [GetIconInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfo
+// [GetIconInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfo
 func (hIcon HICON) GetIconInfo(iconInfo *ICONINFO) {
 	ret, _, err := syscall.SyscallN(proc.GetIconInfo.Addr(),
 		uintptr(hIcon), uintptr(unsafe.Pointer(iconInfo)))
@@ -72,7 +72,7 @@ func (hIcon HICON) GetIconInfo(iconInfo *ICONINFO) {
 //
 // ⚠️ You must defer HBITMAP.DeleteObject() in HbmMask and HbmColor fields.
 //
-// [GetIconInfoEx]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfoexw
+// [GetIconInfoEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfoexw
 func (hIcon HICON) GetIconInfoEx(iconInfoEx *ICONINFOEX) {
 	iconInfoEx.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(proc.GetIconInfoEx.Addr(),

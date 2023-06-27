@@ -10,7 +10,7 @@ import (
 
 // Native static control.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-static-controls
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/about-static-controls
 type Static interface {
 	AnyNativeControl
 	AnyTextControl
@@ -20,7 +20,7 @@ type Static interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-static-control-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-static-control-reference-notifications
 	On() *_StaticEvents
 
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
@@ -213,28 +213,28 @@ func (me *_StaticEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/stn-clicked
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/stn-clicked
 func (me *_StaticEvents) StnClicked(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.STN_CLICKED, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/stn-dblclk
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/stn-dblclk
 func (me *_StaticEvents) StnDblClk(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.STN_DBLCLK, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/stn-disable
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/stn-disable
 func (me *_StaticEvents) StnDisable(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.STN_DISABLE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/stn-enable
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/stn-enable
 func (me *_StaticEvents) StnEnable(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.STN_ENABLE, func(_ wm.Command) {
 		userFunc()

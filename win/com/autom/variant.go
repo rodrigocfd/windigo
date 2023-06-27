@@ -22,7 +22,7 @@ import (
 // Can be created with one of the NewVariant*() functions, and must be freed
 // with VariantClear(). Values can be accessed with one of the accessor methods.
 //
-// [VARIANT]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-variant
+// [VARIANT]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-variant
 type VARIANT struct {
 	vt         automco.VT
 	wReserved1 uint16

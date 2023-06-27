@@ -10,7 +10,7 @@ import (
 
 // [IsAppThemed] function.
 //
-// [IsAppThemed]: https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isappthemed
+// [IsAppThemed]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isappthemed
 func IsAppThemed() bool {
 	ret, _, _ := syscall.SyscallN(proc.IsAppThemed.Addr())
 	return ret != 0
@@ -18,7 +18,7 @@ func IsAppThemed() bool {
 
 // [IsCompositionActive] function.
 //
-// [IsCompositionActive]: https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-iscompositionactive
+// [IsCompositionActive]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-iscompositionactive
 func IsCompositionActive() bool {
 	ret, _, _ := syscall.SyscallN(proc.IsCompositionActive.Addr())
 	return ret != 0
@@ -26,7 +26,7 @@ func IsCompositionActive() bool {
 
 // [IsThemeActive] function.
 //
-// [IsThemeActive]: https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemeactive
+// [IsThemeActive]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemeactive
 func IsThemeActive() bool {
 	ret, _, _ := syscall.SyscallN(proc.IsThemeActive.Addr())
 	return ret != 0

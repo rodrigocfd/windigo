@@ -13,7 +13,7 @@ import (
 
 // Native edit control.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/about-edit-controls
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/about-edit-controls
 type Edit interface {
 	AnyNativeControl
 	AnyFocusControl
@@ -24,7 +24,7 @@ type Edit interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-notifications
 	On() *_EditEvents
 
 	HideBalloonTip()                                // Hides a balloon tip, if any.
@@ -260,70 +260,70 @@ func (me *_EditEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/en-align-ltr-ec
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-align-ltr-ec
 func (me *_EditEvents) EnAlignLtrEc(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_ALIGN_LTR_EC, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/en-align-rtl-ec
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-align-rtl-ec
 func (me *_EditEvents) EnAlignRtlEc(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_ALIGN_RTL_EC, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/en-change
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-change
 func (me *_EditEvents) EnChange(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_CHANGE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/en-errspace
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-errspace
 func (me *_EditEvents) EnErrSpace(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_ERRSPACE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/en-hscroll
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-hscroll
 func (me *_EditEvents) EnHScroll(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_HSCROLL, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/en-killfocus
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-killfocus
 func (me *_EditEvents) EnKillFocus(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_KILLFOCUS, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/en-maxtext
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-maxtext
 func (me *_EditEvents) EnMaxText(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_MAXTEXT, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/en-setfocus
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-setfocus
 func (me *_EditEvents) EnSetFocus(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_SETFOCUS, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/en-update
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-update
 func (me *_EditEvents) EnUpdate(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_UPDATE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/en-vscroll
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-vscroll
 func (me *_EditEvents) EnVScroll(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_VSCROLL, func(_ wm.Command) {
 		userFunc()

@@ -16,38 +16,38 @@ import (
 
 // [IMediaControl] COM interface.
 //
-// [IMediaControl]: https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
+// [IMediaControl]: https://learn.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
 type IMediaControl interface {
 	autom.IDispatch
 
 	// [IMediaControl] COM method.
 	//
-	// [IMediaControl]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-getstate
+	// [IMediaControl]: https://learn.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-getstate
 	GetState(msTimeout win.NumInf) (dshowco.FILTER_STATE, error)
 
 	// [Pause] COM method.
 	//
-	// [Pause]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-pause
+	// [Pause]: https://learn.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-pause
 	Pause() bool
 
 	// [RenderFile] COM method.
 	//
-	// [RenderFile]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-renderfile
+	// [RenderFile]: https://learn.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-renderfile
 	RenderFile(fileName string)
 
 	// [Run] COM method.
 	//
-	// [Run]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-run
+	// [Run]: https://learn.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-run
 	Run() bool
 
 	// [Stop] COM method.
 	//
-	// [Stop]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-stop
+	// [Stop]: https://learn.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-stop
 	Stop()
 
 	// [StopWhenReady] COM method.
 	//
-	// [StopWhenReady]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-stopwhenready
+	// [StopWhenReady]: https://learn.microsoft.com/en-us/windows/win32/api/control/nf-control-imediacontrol-stopwhenready
 	StopWhenReady() bool
 }
 

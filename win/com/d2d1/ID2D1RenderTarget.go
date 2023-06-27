@@ -13,7 +13,7 @@ import (
 
 // [ID2D1RenderTarget] COM interface.
 //
-// [ID2D1RenderTarget]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1rendertarget
+// [ID2D1RenderTarget]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1rendertarget
 type ID2D1RenderTarget interface {
 	ID2D1Resource
 
@@ -21,17 +21,17 @@ type ID2D1RenderTarget interface {
 	//
 	// ⚠️ You must defer ID2D1RenderTarget.EndDraw().
 	//
-	// [BeginDraw]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-begindraw
+	// [BeginDraw]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-begindraw
 	BeginDraw()
 
 	// [EndDraw] COM method.
 	//
-	// [EndDraw]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-enddraw
+	// [EndDraw]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-enddraw
 	EndDraw() (tag1, tag2 uint64)
 
 	// [Flush] COM method.
 	//
-	// [Flush]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-flush
+	// [Flush]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-flush
 	Flush() (tag1, tag2 uint64)
 }
 

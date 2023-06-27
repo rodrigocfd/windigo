@@ -13,7 +13,7 @@ import (
 
 // A handle to an [instance]. This is the base address of the module in memory.
 //
-// [instance]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
+// [instance]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hinstance
 type HINSTANCE HANDLE
 
 // [GetModuleHandle] function.
@@ -21,7 +21,7 @@ type HINSTANCE HANDLE
 // If moduleName is nil, returns a handle to the file used to create the calling
 // process (.exe file).
 //
-// [GetModuleHandle]: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
+// [GetModuleHandle]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
 func GetModuleHandle(moduleName StrOpt) HINSTANCE {
 	ret, _, err := syscall.SyscallN(proc.GetModuleHandle.Addr(),
 		uintptr(moduleName.Raw()))
@@ -35,7 +35,7 @@ func GetModuleHandle(moduleName StrOpt) HINSTANCE {
 //
 // ⚠️ You must defer HINSTANCE.FreeLibrary().
 //
-// [LoadLibrary]: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
+// [LoadLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
 func LoadLibrary(libFileName string) HINSTANCE {
 	ret, _, err := syscall.SyscallN(proc.LoadLibrary.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(libFileName))))
@@ -87,7 +87,7 @@ func (hInst HINSTANCE) FindResourceEx(
 
 // [FreeLibrary] function.
 //
-// [FreeLibrary]: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
+// [FreeLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
 func (hInst HINSTANCE) FreeLibrary() error {
 	ret, _, err := syscall.SyscallN(proc.FreeLibrary.Addr(),
 		uintptr(hInst))
@@ -104,7 +104,7 @@ func (hInst HINSTANCE) FreeLibrary() error {
 //	exePath := win.HINSTANCE(0).GetModuleFileName()
 //	fmt.Printf("Current .exe path: %s\n", exePath)
 //
-// [GetModuleFileName]: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew
+// [GetModuleFileName]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew
 func (hInst HINSTANCE) GetModuleFileName() string {
 	var buf [_MAX_PATH + 1]uint16
 	ret, _, err := syscall.SyscallN(proc.GetModuleFileName.Addr(),
@@ -117,7 +117,7 @@ func (hInst HINSTANCE) GetModuleFileName() string {
 
 // [GetProcAddress] function.
 //
-// [GetProcAddress]: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress
+// [GetProcAddress]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress
 func (hInst HINSTANCE) GetProcAddress(procName string) (uintptr, error) {
 	ascii := []byte(procName)
 	ascii = append(ascii, 0x00) // terminating null

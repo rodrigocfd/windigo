@@ -14,7 +14,7 @@ import (
 
 // [IEnumFilters] COM interface.
 //
-// [IEnumFilters]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
+// [IEnumFilters]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
 type IEnumFilters interface {
 	com.IUnknown
 
@@ -22,7 +22,7 @@ type IEnumFilters interface {
 	//
 	// ⚠️ You must defer IEnumFilters.Release() on the returned object.
 	//
-	// [Clone]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-clone
+	// [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-clone
 	Clone() IEnumFilters
 
 	// This helper method calls IEnumFilters.Skip() until the end of the enum to
@@ -39,17 +39,17 @@ type IEnumFilters interface {
 	//
 	// ⚠️ You must defer IBaseFilter.Release() on the returned object.
 	//
-	// [Next]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-next
+	// [Next]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-next
 	Next() (IBaseFilter, bool)
 
 	// [Reset] COM method.
 	//
-	// [Reset]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-reset
+	// [Reset]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-reset
 	Reset()
 
 	// [Skip] COM method.
 	//
-	// [Skip]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-skip
+	// [Skip]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumfilters-skip
 	Skip(numFilters int) bool
 }
 

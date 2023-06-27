@@ -17,13 +17,13 @@ import (
 
 // [IDispatch] COM interface.
 //
-// [IDispatch]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
+// [IDispatch]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 type IDispatch interface {
 	com.IUnknown
 
 	// [GetIDsOfNames] COM method.
 	//
-	// [GetIDsOfNames]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-getidsofnames
+	// [GetIDsOfNames]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-getidsofnames
 	GetIDsOfNames(lcid win.LCID,
 		member string, parameters ...string) ([]MEMBERID, error)
 
@@ -38,7 +38,7 @@ type IDispatch interface {
 	//	tyInfo := iDisp.GetTypeInfo(win.LCID_SYSTEM_DEFAULT)
 	//	defer tyInfo.Release()
 	//
-	// [GetTypeInfo]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
+	// [GetTypeInfo]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
 	GetTypeInfo(lcid win.LCID) ITypeInfo
 
 	// [GetTypeInfoCount] COM method.
@@ -46,7 +46,7 @@ type IDispatch interface {
 	// If the object provides type information, this number is 1; otherwise the
 	// number is 0.
 	//
-	// [GetTypeInfoCount]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
+	// [GetTypeInfoCount]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
 	GetTypeInfoCount() int
 
 	// [Invoke] COM method.
@@ -61,7 +61,7 @@ type IDispatch interface {
 	//
 	// ⚠️ You must defer VARIANT.VariantClear() on the returned VARIANT.
 	//
-	// [Invoke]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
+	// [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 	Invoke(dispIdMember MEMBERID, lcid win.LCID,
 		flags automco.DISPATCH, dispParams *DISPPARAMS) (VARIANT, error)
 
@@ -186,7 +186,7 @@ func NewIDispatch(base com.IUnknown) IDispatch {
 //	}
 //	defer excelApp.Release()
 //
-// [CLSIDFromProgID]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
+// [CLSIDFromProgID]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func NewIDispatchFromProgId(progId string) (IDispatch, error) {
 	clsId, err := com.CLSIDFromProgID(progId)
 	if err != nil {
@@ -299,7 +299,7 @@ func (me *_IDispatch) invokeCall(
 	methodName string,
 	flags automco.DISPATCH, params ...VARIANT) (VARIANT, error) {
 
-	// https://docs.microsoft.com/en-us/previous-versions/office/troubleshoot/office-developer/automate-excel-from-c
+	// https://learn.microsoft.com/en-us/previous-versions/office/troubleshoot/office-developer/automate-excel-from-c
 
 	memIds, err := me.GetIDsOfNames(win.LCID_USER_DEFAULT, methodName)
 	if err != nil {

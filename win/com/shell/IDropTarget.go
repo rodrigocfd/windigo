@@ -16,29 +16,29 @@ import (
 
 // [IDropTarget] COM interface.
 //
-// [IDropTarget]: https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
+// [IDropTarget]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
 type IDropTarget interface {
 	com.IUnknown
 
 	// [DragEnter] COM method.
 	//
-	// [DragEnter]: https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragenter
+	// [DragEnter]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragenter
 	DragEnter(dataObj IDataObject, keyState co.MK,
 		pt win.POINT, effect *shellco.DROPEFFECT)
 
 	// [DragLeave] COM method.
 	//
-	// [DragLeave]: https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragleave
+	// [DragLeave]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragleave
 	DragLeave()
 
 	// [DragOver] COM method.
 	//
-	// [DragOver]: https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragover
+	// [DragOver]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragover
 	DragOver(keyState co.MK, pt win.POINT, effect *shellco.DROPEFFECT)
 
 	// [Drop] COM method.
 	//
-	// [Drop]: https://docs.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-drop
+	// [Drop]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-drop
 	Drop(dataObj IDataObject, keyState co.MK,
 		pt win.POINT, effect *shellco.DROPEFFECT)
 }

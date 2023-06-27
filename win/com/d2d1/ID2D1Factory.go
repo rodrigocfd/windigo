@@ -17,7 +17,7 @@ import (
 
 // [ID2D1Factory] COM interface.
 //
-// [ID2D1Factory]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1factory
+// [ID2D1Factory]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1factory
 type ID2D1Factory interface {
 	com.IUnknown
 
@@ -25,13 +25,13 @@ type ID2D1Factory interface {
 	//
 	// ⚠️ You must defer ID2D1HwndRenderTarget.Release() on the returned object.
 	//
-	// [CreateHwndRenderTarget]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1factory-createhwndrendertarget(constd2d1_render_target_properties_constd2d1_hwnd_render_target_properties_id2d1hwndrendertarget)
+	// [CreateHwndRenderTarget]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1factory-createhwndrendertarget(constd2d1_render_target_properties_constd2d1_hwnd_render_target_properties_id2d1hwndrendertarget)
 	CreateHwndRenderTarget(targetProps *RENDER_TARGET_PROPERTIES,
 		hwndTargetProps *HWND_RENDER_TARGET_PROPERTIES) ID2D1HwndRenderTarget
 
 	// [ReloadSystemMetrics] COM method.
 	//
-	// [ReloadSystemMetrics]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1factory-reloadsystemmetrics
+	// [ReloadSystemMetrics]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1factory-reloadsystemmetrics
 	ReloadSystemMetrics()
 }
 

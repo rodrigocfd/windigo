@@ -17,7 +17,7 @@ import (
 //
 // This handle is returned by win.DdeInitialize().
 //
-// [DDE instance]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeinitializew
+// [DDE instance]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeinitializew
 type HDDE uint32
 
 // [DdeInitialize] function.
@@ -27,7 +27,7 @@ type HDDE uint32
 //
 // ⚠️ You must defer HDDE.DdeUninitialize().
 //
-// [DdeInitialize]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeinitializew
+// [DdeInitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeinitializew
 func DdeInitialize(
 	callback func(
 		wType co.XTYP, wFmt uint32, hConv HCONV,
@@ -71,7 +71,7 @@ var (
 
 // [DdeGetLastError] function.
 //
-// [DdeGetLastError]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddegetlasterror
+// [DdeGetLastError]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddegetlasterror
 func (hDde HDDE) DdeGetLastError() errco.DMLERR {
 	ret, _, _ := syscall.SyscallN(proc.DdeGetLastError.Addr(),
 		uintptr(hDde))
@@ -80,7 +80,7 @@ func (hDde HDDE) DdeGetLastError() errco.DMLERR {
 
 // [DdeNameService] function.
 //
-// [DdeNameService]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddenameservice
+// [DdeNameService]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddenameservice
 func (hDde HDDE) DdeNameService(serviceName StrOpt, opts co.DDENS) error {
 	serviceNameHsz, err := hDde._strOptToHsz(serviceName)
 	if err != nil {
@@ -98,7 +98,7 @@ func (hDde HDDE) DdeNameService(serviceName StrOpt, opts co.DDENS) error {
 
 // [DdePostAdvise] function.
 //
-// [DdePostAdvise]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddepostadvise
+// [DdePostAdvise]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddepostadvise
 func (hDde HDDE) DdePostAdvise(topic, item StrOpt) error {
 	topicHsz, err := hDde._strOptToHsz(topic)
 	if err != nil {
@@ -122,7 +122,7 @@ func (hDde HDDE) DdePostAdvise(topic, item StrOpt) error {
 
 // [DdeUninitialize] function.
 //
-// [DdeUninitialize]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeuninitialize
+// [DdeUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeuninitialize
 func (hDde HDDE) DdeUninitialize() error {
 	ret, _, _ := syscall.SyscallN(proc.DdeUninitialize.Addr(),
 		uintptr(hDde))
@@ -138,14 +138,14 @@ func (hDde HDDE) DdeUninitialize() error {
 
 // DDE conversation [handle].
 //
-// [handle]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeconnect
+// [handle]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeconnect
 type HCONV HANDLE
 
 // [DdeConnect] function.
 //
 // ⚠️ You must defer HDDE.DdeDisconnect().
 //
-// [DdeConnect]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeconnect
+// [DdeConnect]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeconnect
 func (hDde HDDE) DdeConnect(
 	serviceName, topic StrOpt, cc *CONVCONTEXT) (HCONV, error) {
 
@@ -172,7 +172,7 @@ func (hDde HDDE) DdeConnect(
 
 // [DdeDisconnect] function.
 //
-// [DdeDisconnect]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddedisconnect
+// [DdeDisconnect]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddedisconnect
 func (hDde HDDE) DdeDisconnect(hConv HCONV) error {
 	ret, _, _ := syscall.SyscallN(proc.DdeDisconnect.Addr(),
 		uintptr(hConv))
@@ -186,14 +186,14 @@ func (hDde HDDE) DdeDisconnect(hConv HCONV) error {
 
 // DDE data [handle].
 //
-// [handle]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeclienttransaction
+// [handle]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeclienttransaction
 type HDDEDATA HANDLE
 
 // [DdeAddData] function.
 //
 // ⚠️ You must defer HDDE.DdeFreeDataHandle().
 //
-// [DdeAddData]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeadddata
+// [DdeAddData]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeadddata
 func (hDde HDDE) DdeAddData(
 	hData HDDEDATA, data []byte, offset int) (HDDEDATA, error) {
 
@@ -212,7 +212,7 @@ func (hDde HDDE) DdeAddData(
 //
 // ⚠️ You must defer HDDE.DdeFreeDataHandle().
 //
-// [DdeClientTransaction]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeclienttransaction
+// [DdeClientTransaction]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeclienttransaction
 func (hDde HDDE) DdeClientTransaction(
 	data []byte, hConv HCONV, item StrOpt,
 	fmt co.CF, xType co.XTYP, msTimeout int) (HDDEDATA, error) {
@@ -248,7 +248,7 @@ func (hDde HDDE) DdeClientTransaction(
 
 // [DdeFreeDataHandle] function.
 //
-// [DdeFreeDataHandle]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddefreedatahandle
+// [DdeFreeDataHandle]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddefreedatahandle
 func (hDde HDDE) DdeFreeDataHandle(hData HDDEDATA) error {
 	ret, _, _ := syscall.SyscallN(proc.DdeFreeDataHandle.Addr(),
 		uintptr(hData))
@@ -262,7 +262,7 @@ func (hDde HDDE) DdeFreeDataHandle(hData HDDEDATA) error {
 //
 // The buffer size is automatically determined.
 //
-// [DdeGetData]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddegetdata
+// [DdeGetData]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddegetdata
 func (hDde HDDE) DdeGetData(hData HDDEDATA, offset int) ([]byte, error) {
 	ret, _, _ := syscall.SyscallN(proc.DdeGetData.Addr(),
 		uintptr(hData), 0, 0, uintptr(offset))
@@ -287,10 +287,10 @@ func (hDde HDDE) DdeGetData(hData HDDEDATA, offset int) ([]byte, error) {
 
 // DDE string [handle].
 //
-// [handle]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecreatestringhandlew
+// [handle]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecreatestringhandlew
 type HSZ HANDLE
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecmpstringhandles
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecmpstringhandles
 func (hDde HDDE) DdeCmpStringHandles(hsz1, hsz2 HSZ) int {
 	ret, _, _ := syscall.SyscallN(proc.DdeCmpStringHandles.Addr(),
 		uintptr(hsz1), uintptr(hsz2))
@@ -301,7 +301,7 @@ func (hDde HDDE) DdeCmpStringHandles(hsz1, hsz2 HSZ) int {
 //
 // ⚠️ You must defer HDDE.DdeFreeStringHandle().
 //
-// [DdeCreateStringHandle]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecreatestringhandlew
+// [DdeCreateStringHandle]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecreatestringhandlew
 func (hDde HDDE) DdeCreateStringHandle(text string) (HSZ, error) {
 	ret, _, _ := syscall.SyscallN(proc.DdeCreateStringHandle.Addr(),
 		uintptr(hDde), uintptr(unsafe.Pointer(Str.ToNativePtr(text))),
@@ -314,7 +314,7 @@ func (hDde HDDE) DdeCreateStringHandle(text string) (HSZ, error) {
 
 // [DdeFreeStringHandle] function.
 //
-// [DdeFreeStringHandle]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddefreestringhandle
+// [DdeFreeStringHandle]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddefreestringhandle
 func (hDde HDDE) DdeFreeStringHandle(hsz HSZ) error {
 	ret, _, _ := syscall.SyscallN(proc.DdeFreeStringHandle.Addr(),
 		uintptr(hDde), uintptr(hsz))
@@ -329,7 +329,7 @@ func (hDde HDDE) DdeFreeStringHandle(hsz HSZ) error {
 // ⚠️ You must defer HDDE.DdeFreeStringHandle() on the hsz, because a clone of
 // it has been made.
 //
-// [DdeKeepStringHandle]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddekeepstringhandle
+// [DdeKeepStringHandle]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddekeepstringhandle
 func (hDde HDDE) DdeKeepStringHandle(hsz HSZ) error {
 	ret, _, _ := syscall.SyscallN(proc.DdeKeepStringHandle.Addr(),
 		uintptr(hDde), uintptr(hsz))
@@ -341,7 +341,7 @@ func (hDde HDDE) DdeKeepStringHandle(hsz HSZ) error {
 
 // [DdeQueryString] function.
 //
-// [DdeQueryString]: https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddequerystringw
+// [DdeQueryString]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddequerystringw
 func (hDde HDDE) DdeQueryString(hsz HSZ) (string, error) {
 	strLen, _, _ := syscall.SyscallN(proc.DdeQueryString.Addr(),
 		uintptr(hDde), uintptr(hsz), 0, 0, _CP_WINUNICODE)

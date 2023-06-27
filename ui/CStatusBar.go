@@ -13,7 +13,7 @@ import (
 
 // Native status bar control.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/status-bars
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/status-bars
 type StatusBar interface {
 	AnyNativeControl
 	implStatusBar() // prevent public implementation
@@ -22,7 +22,7 @@ type StatusBar interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-status-bars-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-status-bars-reference-notifications
 	On() *_StatusBarEvents
 
 	// Parts methods.
@@ -94,35 +94,35 @@ func (me *_StatusBarEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-click-status-bar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-status-bar
 func (me *_StatusBarEvents) NmClick(userFunc func(p *win.NMMOUSE) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_CLICK, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMMOUSE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-dblclk-status-bar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-dblclk-status-bar
 func (me *_StatusBarEvents) NmDblClk(userFunc func(p *win.NMMOUSE) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_DBLCLK, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMMOUSE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-rclick-status-bar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-rclick-status-bar
 func (me *_StatusBarEvents) NmRClick(userFunc func(p *win.NMMOUSE) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_RCLICK, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMMOUSE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-status-bar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-status-bar
 func (me *_StatusBarEvents) NmRDblClk(userFunc func(p *win.NMMOUSE) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_RDBLCLK, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMMOUSE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/sbn-simplemodechange
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/sbn-simplemodechange
 func (me *_StatusBarEvents) SbnSimpleModeChange(userFunc func(p *win.NMMOUSE)) {
 	me.events.addNfyZero(me.ctrlId, co.SBN_SIMPLEMODECHANGE, func(p unsafe.Pointer) {
 		userFunc((*win.NMMOUSE)(p))

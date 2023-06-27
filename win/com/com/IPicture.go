@@ -16,18 +16,18 @@ import (
 
 // [IPicture] COM interface.
 //
-// [IPicture]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nn-ocidl-ipicture
+// [IPicture]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nn-ocidl-ipicture
 type IPicture interface {
 	IUnknown
 
 	// [Attributes] COM method.
 	//
-	// [Attributes]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_attributes
+	// [Attributes]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_attributes
 	Attributes() comco.PICATTR
 
 	// [CurDC] COM method.
 	//
-	// [CurDC]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_curdc
+	// [CurDC]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_curdc
 	CurDC() win.HDC
 
 	// [Height] COM method.
@@ -36,38 +36,38 @@ type IPicture interface {
 	// to pixels, use HDC.HiMetricToPixel(), or simply call
 	// IPicture.SizePixels() method, which already performs the conversion.
 	//
-	// [Height]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_height
+	// [Height]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_height
 	Height() int32
 
 	// [KeepOriginalFormat] COM method.
 	//
-	// [KeepOriginalFormat]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_keeporiginalformat
+	// [KeepOriginalFormat]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_keeporiginalformat
 	KeepOriginalFormat() bool
 
 	// [PictureChanged] COM method.
 	//
-	// [PictureChanged]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-picturechanged
+	// [PictureChanged]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-picturechanged
 	PictureChanged()
 
 	// [Render] COM method.
 	//
-	// [Render]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-render
+	// [Render]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-render
 	Render(hdc win.HDC, destOffset win.POINT, destSz win.SIZE,
 		srcOffset win.POINT, srcSz win.SIZE) (metafileBounds win.RECT)
 
 	// [SaveAsFile] COM method.
 	//
-	// [SaveAsFile]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-saveasfile
+	// [SaveAsFile]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-saveasfile
 	SaveAsFile(stream IStream, saveCopy bool) (numBytesWritten int)
 
 	// [SelectPicture] COM method.
 	//
-	// [SelectPicture]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-selectpicture
+	// [SelectPicture]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-selectpicture
 	SelectPicture(hdc win.HDC) (win.HDC, win.HBITMAP)
 
 	// [SetKeepOriginalFormat] COM method.
 	//
-	// [SetKeepOriginalFormat]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-put_keeporiginalformat
+	// [SetKeepOriginalFormat]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-put_keeporiginalformat
 	SetKeepOriginalFormat(keep bool)
 
 	// This helper method calls IPicture.Width() and IPicture.Height(), then
@@ -79,7 +79,7 @@ type IPicture interface {
 
 	// [Type] COM method.
 	//
-	// [Type]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_type
+	// [Type]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_type
 	Type() comco.PICTYPE
 
 	// [Width] COM method.
@@ -88,7 +88,7 @@ type IPicture interface {
 	// to pixels, use HDC.HiMetricToPixel(), or simply call
 	// IPicture.SizePixels() method, which already performs the conversion.
 	//
-	// [Width]: https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_width
+	// [Width]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_width
 	Width() int32
 }
 
@@ -119,7 +119,7 @@ func NewIPictureFromSlice(src []byte, keepOriginalFormat bool) IPicture {
 //
 // ⚠️ You must defer IPicture.Release().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/olectl/nf-olectl-oleloadpicturepath
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/olectl/nf-olectl-oleloadpicturepath
 func NewIPictureFromFile(path string, transparentColor win.COLORREF) IPicture {
 	var ppQueried **comvt.IUnknown
 	ret, _, _ := syscall.SyscallN(proc.OleLoadPicturePath.Addr(),
@@ -142,7 +142,7 @@ func NewIPictureFromFile(path string, transparentColor win.COLORREF) IPicture {
 //
 // ⚠️ You must defer IPicture.Release().
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/olectl/nf-olectl-oleloadpicture
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/olectl/nf-olectl-oleloadpicture
 func NewIPictureFromStream(
 	stream IStream, size uint32, keepOriginalFormat bool) IPicture {
 

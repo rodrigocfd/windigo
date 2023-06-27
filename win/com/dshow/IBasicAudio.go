@@ -14,28 +14,28 @@ import (
 
 // [IBasicAudio] COM interface.
 //
-// [IBasicAudio]: https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-ibasicaudio
+// [IBasicAudio]: https://learn.microsoft.com/en-us/windows/win32/api/control/nn-control-ibasicaudio
 type IBasicAudio interface {
 	autom.IDispatch
 
 	// [GetBalance] COM method.
 	//
-	// [GetBalance]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_balance
+	// [GetBalance]: https://learn.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_balance
 	GetBalance() int
 
 	// [GetVolume] COM method.
 	//
-	// [GetVolume]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_volume
+	// [GetVolume]: https://learn.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-get_volume
 	GetVolume() int
 
 	// [PutBalance] COM method.
 	//
-	// [PutBalance]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_balance
+	// [PutBalance]: https://learn.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_balance
 	PutBalance(balance int)
 
 	// [PutVolume] COM method.
 	//
-	// [PutVolume]: https://docs.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_volume
+	// [PutVolume]: https://learn.microsoft.com/en-us/windows/win32/api/control/nf-control-ibasicaudio-put_volume
 	PutVolume(volume int)
 }
 

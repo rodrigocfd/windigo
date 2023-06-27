@@ -2,9 +2,9 @@
 
 package co
 
-// ACCELL fVirt.
+// [ACCELL] fVirt.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-accel
+// [ACCELL]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-accel
 type ACCELF uint8
 
 const (
@@ -15,7 +15,9 @@ const (
 	ACCELF_ALT     ACCELF = 0x10
 )
 
-// DdeInitialize() afCmd. Includes the prefixes APPCLASS, APPCMD, CBF and MF.
+// [DdeInitialize] afCmd. Includes the prefixes APPCLASS, APPCMD, CBF and MF.
+//
+// [DdeInitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeinitializew
 type AFCMD uint32
 
 const (
@@ -48,9 +50,9 @@ const (
 	AFCMD_MF_SENDMSGS  AFCMD = 0x02000000
 )
 
-// WM_APPCOMMAND command.
+// [WM_APPCOMMAND] command.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-appcommand
+// [WM_APPCOMMAND]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-appcommand
 type APPCOMMAND int16
 
 const (
@@ -110,9 +112,9 @@ const (
 	APPCOMMAND_DWM_FLIP3D                        APPCOMMAND = 54
 )
 
-// Button control styles.
+// Button control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/button-styles
 type BS WS
 
 const (
@@ -146,9 +148,9 @@ const (
 	BS_RIGHTBUTTON     BS = BS_LEFTTEXT
 )
 
-// BroadcastSystemMessage() lpInfo.
+// [BroadcastSystemMessage] lpInfo.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
+// [BroadcastSystemMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
 type BSM uint32
 
 const (
@@ -157,9 +159,9 @@ const (
 	BSM_APPLICATIONS  BSM = 0x00000008
 )
 
-// BroadcastSystemMessage() flags.
+// [BroadcastSystemMessage] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
+// [BroadcastSystemMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
 type BSF uint32
 
 const (
@@ -174,9 +176,9 @@ const (
 	BSF_SENDNOTIFYMESSAGE  BSF = 0x0000_0100
 )
 
-// IsDlgButtonChecked() return value, among others.
+// [IsDlgButtonChecked] return value, among others.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isdlgbuttonchecked
+// [IsDlgButtonChecked]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isdlgbuttonchecked
 type BST uint32
 
 const (
@@ -187,9 +189,9 @@ const (
 	BST_FOCUS         BST = 0x0008
 )
 
-// ComboBox styles.
+// ComboBox [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/combo-box-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/combo-box-styles
 type CBS WS
 
 const (
@@ -208,9 +210,9 @@ const (
 	CBS_LOWERCASE         CBS = 0x4000
 )
 
-// GetSysColor() nIndex.
+// [GetSysColor] nIndex.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolor
+// [GetSysColor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolor
 type COLOR uint32
 
 const (
@@ -252,9 +254,9 @@ const (
 	COLOR_BTNHILIGHT              COLOR = COLOR_BTNHIGHLIGHT
 )
 
-// Window class styles.
+// Window class [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/window-class-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/winmsg/window-class-styles
 type CS uint32
 
 const (
@@ -272,9 +274,9 @@ const (
 	CS_DROPSHADOW      CS = 0x0002_0000
 )
 
-// ChildWindowFromPointEx() flags.
+// [ChildWindowFromPointEx] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-childwindowfrompointex
+// [ChildWindowFromPointEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-childwindowfrompointex
 type CWP uint32
 
 const (
@@ -284,9 +286,9 @@ const (
 	CWP_SKIPTRANSPARENT CWP = 0x0004
 )
 
-// DrawIconEx() diFlags.
+// [DrawIconEx] diFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawiconex
+// [DrawIconEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawiconex
 type DI uint32
 
 const (
@@ -298,9 +300,9 @@ const (
 	DI_NORMAL      DI = 0x0003
 )
 
-// EnumDisplayDevices flags.
+// [EnumDisplayDevices] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-display_devicew
+// [EnumDisplayDevices]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-display_devicew
 type DISPLAY_DEVICE uint32
 
 const (
@@ -322,9 +324,9 @@ const (
 	DISPLAY_DEVICE_ATTACHED DISPLAY_DEVICE = 0x0000_0002
 )
 
-// WM_GETDLGCODE return value.
+// [WM_GETDLGCODE] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/dlgbox/wm-getdlgcode
+// [WM_GETDLGCODE]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-getdlgcode
 type DLGC uint32
 
 const (
@@ -342,9 +344,9 @@ const (
 	DLGC_BUTTON          DLGC = 0x2000
 )
 
-// DdeNameService() opts. Originally with DNS prefix.
+// [DdeNameService] opts. Originally with DNS prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddenameservice
+// [DdeNameService]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddenameservice
 type DDENS uint32
 
 const (
@@ -354,9 +356,9 @@ const (
 	DDENS_FILTEROFF  DDENS = 0x0004
 )
 
-// DPI context awareness.
+// [SetProcessDpiAwarenessContext] value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
+// [SetProcessDpiAwarenessContext]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
 type DPI_AWARE_CTX int32
 
 const (
@@ -367,9 +369,9 @@ const (
 	DPI_AWARE_CTX_UNAWARE_GDISCALED DPI_AWARE_CTX = -5
 )
 
-// EnumDisplayDevices() flags.
+// [EnumDisplayDevices] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw
+// [EnumDisplayDevices]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw
 type EDD uint32
 
 const (
@@ -377,9 +379,9 @@ const (
 	EDD_GET_DEVICE_INTERFACE_NAME EDD = 0x0000_0001
 )
 
-// Edit control styles.
+// Edit control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/edit-control-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/edit-control-styles
 type ES WS
 
 const (
@@ -399,9 +401,9 @@ const (
 	ES_NUMBER      ES = 0x2000
 )
 
-// WM_APPCOMMAND input event.
+// [WM_APPCOMMAND] input event.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-appcommand
+// [WM_APPCOMMAND]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-appcommand
 type FAPPCOMMAND uint32
 
 const (
@@ -410,9 +412,9 @@ const (
 	FAPPCOMMAND_OEM   FAPPCOMMAND = 0x1000
 )
 
-// GetAncestor() gaFlags.
+// [GetAncestor] gaFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getancestor
+// [GetAncestor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getancestor
 type GA uint32
 
 const (
@@ -434,9 +436,9 @@ const (
 	GA_ROOTOWNER GA = 3
 )
 
-// GetClassLong() nIndex. Includes values with GCW prefix.
+// [GetClassLong] nIndex. Includes values with GCW prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclasslongw
+// [GetClassLong]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclasslongw
 type GCL int32
 
 const (
@@ -453,9 +455,9 @@ const (
 	GCL_WNDPROC       GCL = -24
 )
 
-// GetMenuDefaultItem() gmdiFlags.
+// [GetMenuDefaultItem] gmdiFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenudefaultitem
+// [GetMenuDefaultItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenudefaultitem
 type GMDI uint32
 
 const (
@@ -463,9 +465,9 @@ const (
 	GMDI_USEDISABLED  GMDI = 0x0001
 )
 
-// GUITHREADINFO flags.
+// [GUITHREADINFO] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-guithreadinfo
+// [GUITHREADINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-guithreadinfo
 type GUI uint32
 
 const (
@@ -476,9 +478,9 @@ const (
 	GUI_SYSTEMMENUMODE GUI = 0x0000_0008
 )
 
-// GetWindow() uCmd.
+// [GetWindow] uCmd.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindow
+// [GetWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindow
 type GW uint32
 
 const (
@@ -491,9 +493,9 @@ const (
 	GW_ENABLEDPOPUP GW = 6
 )
 
-// SetWindowsHookEx() callback CBT hook codes.
+// [SetWindowsHookEx] callback CBT hook codes.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
+// [SetWindowsHookEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
 type HCBT int32
 
 const (
@@ -509,9 +511,9 @@ const (
 	HCBT_SETFOCUS     HCBT = 9
 )
 
-// HELPINFO iContextType.
+// [HELPINFO] iContextType.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
+// [HELPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
 type HELPINFO int32
 
 const (
@@ -519,9 +521,9 @@ const (
 	HELPINFO_MENUITEM HELPINFO = 0x0002
 )
 
-// WM_NCHITTEST return value.
+// [WM_NCHITTEST] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest
+// [WM_NCHITTEST]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest
 type HT int32
 
 const (
@@ -556,9 +558,9 @@ const (
 	HT_HELP        HT = 21
 )
 
-// SetWindowPos() hwndInsertAfter. Can be converted to HWND.
+// [SetWindowPos] hwndInsertAfter. Can be converted to HWND.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
+// [SetWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
 type HWND_IA int32
 
 const (
@@ -569,9 +571,9 @@ const (
 	HWND_IA_TOPMOST   HWND_IA = -1
 )
 
-// WM_SETICON icon size. Originally with ICON prefix.
+// [WM_SETICON] icon size. Originally with ICON prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-seticon
+// [WM_SETICON]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-seticon
 type ICON_SZ uint8
 
 const (
@@ -580,9 +582,9 @@ const (
 	ICON_SZ_SMALL2 ICON_SZ = 2
 )
 
-// Dialog codes returned by MessageBox().
+// Dialog codes returned by [MessageBox].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
+// [MessageBox]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
 type ID int32
 
 const (
@@ -597,9 +599,9 @@ const (
 	ID_YES      ID = 6
 )
 
-// LoadCursor() lpCursorName.
+// [LoadCursor] lpCursorName.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
+// [LoadCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 type IDC uintptr
 
 const (
@@ -621,9 +623,9 @@ const (
 	IDC_PERSON      IDC = 32672
 )
 
-// WM_HOTKEY identifier.
+// [WM_HOTKEY] identifier.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-hotkey
+// [WM_HOTKEY]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-hotkey
 type IDHOT int32
 
 const (
@@ -631,9 +633,9 @@ const (
 	IDHOT_SNAPDESKTOP IDHOT = -2
 )
 
-// LoadIcon() lpIconName.
+// [LoadIcon] lpIconName.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
+// [LoadIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 type IDI uintptr
 
 const (
@@ -649,9 +651,9 @@ const (
 	IDI_INFORMATION IDI = IDI_ASTERISK
 )
 
-// LoadImage() type.
+// [LoadImage] type.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
+// [LoadImage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
 type IMAGE uint32
 
 const (
@@ -661,9 +663,9 @@ const (
 	IMAGE_ENHMETAFILE IMAGE = 3
 )
 
-// InSendMessageEx() return value.
+// [InSendMessageEx] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessageex
+// [InSendMessageEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessageex
 type ISMEX uint32
 
 const (
@@ -674,9 +676,9 @@ const (
 	ISMEX_SEND     ISMEX = 0x0000_0001
 )
 
-// SetProcessDefaultLayout() dwDefaultLayout.
+// [SetProcessDefaultLayout] dwDefaultLayout.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdefaultlayout
+// [SetProcessDefaultLayout]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdefaultlayout
 type LAYOUT uint32
 
 const (
@@ -684,9 +686,9 @@ const (
 	LAYOUT_RTL    LAYOUT = 0x0000_0001
 )
 
-// LoadImage fuLoad.
+// [LoadImage] fuLoad.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
+// [LoadImage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
 type LR uint32
 
 const (
@@ -705,9 +707,9 @@ const (
 	LR_SHARED           LR = 0x0000_8000
 )
 
-// LockSetForegroundWindow() uLockCode.
+// [LockSetForegroundWindow] uLockCode.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-locksetforegroundwindow
+// [LockSetForegroundWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-locksetforegroundwindow
 type LSFW uint32
 
 const (
@@ -715,9 +717,9 @@ const (
 	LSFW_UNLOCK LSFW = 2
 )
 
-// SetLayeredWindowAttributes() flags.
+// [SetLayeredWindowAttributes] flags.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setlayeredwindowattributes
+// [SetLayeredWindowAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setlayeredwindowattributes
 type LWA uint32
 
 const (
@@ -725,9 +727,9 @@ const (
 	LWA_COLORKEY LWA = 0x0000_0001
 )
 
-// MessageBox() uType.
+// [MessageBox] uType.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
+// [MessageBox]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
 type MB uint32
 
 const (
@@ -766,9 +768,9 @@ const (
 	MB_SERVICE_NOTIFICATION MB = 0x0020_0000
 )
 
-// WM_MENUCHAR menu type. Originally with MF prefix.
+// [WM_MENUCHAR] menu type. Originally with MF prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menuchar
+// [WM_MENUCHAR]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menuchar
 type MFMC uint16
 
 const (
@@ -776,9 +778,9 @@ const (
 	SYSMENU MFMC = 0x0000_2000
 )
 
-// CheckMenuItem() uCheck, among others.
+// [CheckMenuItem] uCheck, among others.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuitem
+// [CheckMenuItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuitem
 type MF uint32
 
 const (
@@ -811,9 +813,9 @@ const (
 	MF_MOUSESELECT     MF = 0x0000_8000
 )
 
-// MENUITEMINFO fState.
+// [MENUITEMINFO] fState.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
+// [MENUITEMINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
 type MFS uint32
 
 const (
@@ -827,9 +829,9 @@ const (
 	MFS_DEFAULT   MFS = MFS(MF_DEFAULT)
 )
 
-// MENUITEMINFO fType.
+// [MENUITEMINFO] fType.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
+// [MENUITEMINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
 type MFT uint32
 
 const (
@@ -844,9 +846,9 @@ const (
 	MFT_RIGHTJUSTIFY MFT = MFT(MF_RIGHTJUSTIFY)
 )
 
-// MENUITEMINFO fMask.
+// [MENUITEMINFO] fMask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
+// [MENUITEMINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
 type MIIM uint32
 
 const (
@@ -861,9 +863,9 @@ const (
 	MIIM_FTYPE      MIIM = 0x0000_0100
 )
 
-// MENUINFO fMask.
+// [MENUINFO] fMask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
+// [MENUINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
 type MIM uint32
 
 const (
@@ -875,9 +877,9 @@ const (
 	MIM_APPLYTOSUBMENUS MIM = 0x8000_0000
 )
 
-// WM_LBUTTONDOWN virtual keys, among others
+// [WM_LBUTTONDOWN] virtual keys, among others
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-lbuttondown
+// [WM_LBUTTONDOWN]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-lbuttondown
 type MK uint16
 
 const (
@@ -890,9 +892,9 @@ const (
 	MK_XBUTTON2 MK = 0x0040
 )
 
-// MONITORINFO dwFlags
+// [MONITORINFO] dwFlags
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfo
+// [MONITORINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfo
 type MONITORINFOF uint32
 
 const (
@@ -900,9 +902,9 @@ const (
 	MONITORINFOF_PRIMARY MONITORINFOF = 0x0000_0001
 )
 
-// WM_MENUCHAR return value.
+// [WM_MENUCHAR] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menuchar
+// [WM_MENUCHAR]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menuchar
 type MNC uint32
 
 const (
@@ -912,9 +914,9 @@ const (
 	MNC_SELECT  MNC = 3
 )
 
-// WM_MENUDRAG return value.
+// [WM_MENUDRAG] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menudrag
+// [WM_MENUDRAG]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menudrag
 type MND uint32
 
 const (
@@ -922,9 +924,9 @@ const (
 	MND_ENDMENU  MND = 1
 )
 
-// WM_MENUGETOBJECT return value.
+// [WM_MENUGETOBJECT] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-menugetobject
+// [WM_MENUGETOBJECT]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menugetobject
 type MNGO uint32
 
 const (
@@ -932,9 +934,9 @@ const (
 	MNGO_NOERROR     MNGO = 0x0000_0001
 )
 
-// MENUGETOBJECTINFO dwFlags.
+// [MENUGETOBJECTINFO] dwFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menugetobjectinfo
+// [MENUGETOBJECTINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menugetobjectinfo
 type MNGOF uint32
 
 const (
@@ -942,9 +944,9 @@ const (
 	MNGOF_BOTTOMGAP MNGOF = 0x0000_0002
 )
 
-// MENUINFO dwStyle.
+// [MENUINFO] dwStyle.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
+// [MENUINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
 type MNS uint32
 
 const (
@@ -956,9 +958,9 @@ const (
 	MNS_CHECKORBMP  MNS = 0x0400_0000
 )
 
-// WM_HOTKEY combined keys.
+// [WM_HOTKEY] combined keys.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-hotkey
+// [WM_HOTKEY]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-hotkey
 type MOD uint16
 
 const (
@@ -968,9 +970,9 @@ const (
 	MOD_WIN     MOD = 0x0008
 )
 
-// MonitorFromPoint() dwFlags.
+// [MonitorFromPoint] dwFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
+// [MonitorFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
 type MONITOR uint32
 
 const (
@@ -979,9 +981,9 @@ const (
 	MONITOR_DEFAULTTONEAREST MONITOR = 0x0000_0002
 )
 
-// WM_ENTERIDLE displayed.
+// [WM_ENTERIDLE] displayed.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/dlgbox/wm-enteridle
+// [WM_ENTERIDLE]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-enteridle
 type MSGF uint32
 
 const (
@@ -989,9 +991,9 @@ const (
 	MSGF_MENU      MSGF = 2
 )
 
-// DRAWITEMSTRUCT itemAction.
+// [DRAWITEMSTRUCT] itemAction.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
+// [DRAWITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
 type ODA uint32
 
 const (
@@ -1000,9 +1002,9 @@ const (
 	ODA_FOCUS      ODA = 0x0004
 )
 
-// SetSystemCursor() id.
+// [SetSystemCursor] id.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setsystemcursor
+// [SetSystemCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setsystemcursor
 type OCR uint32
 
 const (
@@ -1022,9 +1024,9 @@ const (
 	OCR_WAIT        OCR = 32514
 )
 
-// DRAWITEMSTRUCT itemState.
+// [DRAWITEMSTRUCT] itemState.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
+// [DRAWITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
 type ODS uint32
 
 const (
@@ -1041,9 +1043,9 @@ const (
 	ODS_NOFOCUSRECT  ODS = 0x0200
 )
 
-// DRAWITEMSTRUCT CtlType.
+// [DRAWITEMSTRUCT] CtlType.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
+// [DRAWITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
 type ODT uint32
 
 const (
@@ -1056,11 +1058,11 @@ const (
 	ODT_LISTVIEW ODT = 102
 )
 
-// COMPAREITEMSTRUCT and DELETEITEMSTRUCT CtlType. Originally with ODT prefix.
+// [COMPAREITEMSTRUCT] and [DELETEITEMSTRUCT] CtlType. Originally with ODT
+// prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
-//
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-deleteitemstruct
+// [COMPAREITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
+// [DELETEITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-deleteitemstruct
 type ODT_C uint32
 
 const (
@@ -1068,9 +1070,9 @@ const (
 	ODT_C_COMBOBOX ODT_C = ODT_C(ODT_COMBOBOX)
 )
 
-// PeekMessage() wRemoveMsg.
+// [PeekMessage] wRemoveMsg.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew
+// [PeekMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew
 type PM uint32
 
 const (
@@ -1084,9 +1086,9 @@ const (
 	PM_QS_SENDMESSAGE PM = PM(QS_SENDMESSAGE << 16)
 )
 
-// GetQueueStatus() flags.
+// [GetQueueStatus] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getqueuestatus
+// [GetQueueStatus]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getqueuestatus
 type QS uint32
 
 const (
@@ -1107,10 +1109,13 @@ const (
 	QS_ALLINPUT       QS = QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY | QS_SENDMESSAGE
 )
 
-// WM_HSCROLL, WM_HSCROLL, WM_HSCROLLCLIPBOARD and WM_VSCROLLCLIPBOARD request.
-// Originally with SB prefix.
+// [WM_HSCROLL], [WM_VSCROLL], [WM_HSCROLLCLIPBOARD] and [WM_VSCROLLCLIPBOARD]
+// request. Originally with SB prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/wm-hscroll
+// [WM_HSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-hscroll
+// [WM_VSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-vscroll
+// [WM_HSCROLLCLIPBOARD]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-hscrollclipboard
+// [WM_VSCROLLCLIPBOARD]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-vscrollclipboard
 type SB_REQ uint16
 
 const (
@@ -1131,9 +1136,9 @@ const (
 	SB_REQ_ENDSCROLL     SB_REQ = 8
 )
 
-// GetScrollInfo() nBar, among others. Originally has SB prefix.
+// [GetScrollInfo] nBar, among others. Originally has SB prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getscrollinfo
+// [GetScrollInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getscrollinfo
 type SB_TYPE int32
 
 const (
@@ -1143,9 +1148,9 @@ const (
 	SB_TYPE_BOTH SB_TYPE = 3
 )
 
-// WM_SYSCOMMAND type of requested command.
+// [WM_SYSCOMMAND] type of requested command.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-syscommand
+// [WM_SYSCOMMAND]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-syscommand
 type SC uint32
 
 const (
@@ -1171,7 +1176,9 @@ const (
 	SC_SEPARATOR    SC = 0xf00f
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/ne-winnt-security_impersonation_level
+// [SECURITY_IMPERSONATION_LEVEL] enumeration.
+//
+// [SECURITY_IMPERSONATION_LEVEL]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ne-winnt-security_impersonation_level
 type SECURITY_IMPERSONATION_LEVEL uint32
 
 const (
@@ -1181,9 +1188,9 @@ const (
 	SECURITY_IMPERSONATION_LEVEL_DELAGATION
 )
 
-// SCROLLINFO fMask.
+// [SCROLLINFO] fMask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-scrollinfo
+// [SCROLLINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-scrollinfo
 type SIF uint32
 
 const (
@@ -1195,9 +1202,9 @@ const (
 	SIF_ALL             SIF = SIF_RANGE | SIF_PAGE | SIF_POS | SIF_TRACKPOS
 )
 
-// WM_SIZE request.
+// [WM_SIZE] request.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-size
+// [WM_SIZE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-size
 type SIZE_REQ int32
 
 const (
@@ -1208,9 +1215,9 @@ const (
 	SIZE_REQ_MAXHIDE   SIZE_REQ = 4 // Message is sent to all pop-up windows when some other window is maximized.
 )
 
-// GetSystemMetrics() nIndex.
+// [GetSystemMetrics] nIndex.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
+// [GetSystemMetrics]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
 type SM int32
 
 const (
@@ -1317,9 +1324,9 @@ const (
 	SM_SYSTEMDOCKED                SM = 0x2004
 )
 
-// SendMessageTimeout() flags.
+// [SendMessageTimeout] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessagetimeoutw
+// [SendMessageTimeout]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessagetimeoutw
 type SMTO uint32
 
 const (
@@ -1330,9 +1337,9 @@ const (
 	SMTO_ERRORONEXIT        SMTO = 0x0020
 )
 
-// SystemParametersInfo() uiAction.
+// [SystemParametersInfo] uiAction.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
+// [SystemParametersInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
 type SPI uint32
 
 const (
@@ -1479,9 +1486,9 @@ const (
 	SPI_SETDOCKMOVING               SPI = 0x0091
 )
 
-// SystemParametersInfo() fWinIni.
+// [SystemParametersInfo] fWinIni.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
+// [SystemParametersInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
 type SPIF uint32
 
 const (
@@ -1490,9 +1497,9 @@ const (
 	SPIF_SENDCHANGE       SPIF = SPIF_SENDWININICHANGE
 )
 
-// Static control styles.
+// Static control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/static-control-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/static-control-styles
 type SS WS
 
 const (
@@ -1530,9 +1537,9 @@ const (
 	SS_ELLIPSISMASK    SS = 0x0000_c000
 )
 
-// ShowWindow() nCmdShow.
+// [ShowWindow] nCmdShow.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
+// [ShowWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
 type SW int32
 
 const (
@@ -1551,10 +1558,10 @@ const (
 	SW_FORCEMINIMIZE   SW = 11
 )
 
-// SetWindowPos(), DeferWindowPos() uFlags.
+// [SetWindowPos], [DeferWindowPos] uFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deferwindowpos
+// [SetWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
+// [DeferWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deferwindowpos
 type SWP uint32
 
 const (
@@ -1575,7 +1582,9 @@ const (
 	SWP_ASYNCWINDOWPOS SWP = 0x4000
 )
 
-// WM_SHOWWINDOW return value. Originally has SW prefix.
+// [WM_SHOWWINDOW] return value. Originally has SW prefix.
+//
+// [WM_SHOWWINDOW]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-showwindow
 type SWS uint8
 
 const (
@@ -1585,9 +1594,10 @@ const (
 	SWS_PARENTOPENING SWS = 3 // The window's owner window is being restored.
 )
 
-// Trackbar's WM_HSCROLL and WM_VSCROLL request. Originally has TB prefix.
+// Trackbar's [WM_HSCROLL] and [WM_VSCROLL] request. Originally has TB prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/wm-hscroll--trackbar-
+// [WM_HSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-hscroll--trackbar-
+// [WM_VSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-vscroll--trackbar-
 type TB_REQ uint16
 
 const (
@@ -1602,9 +1612,9 @@ const (
 	TB_REQ_ENDTRACK      TB_REQ = 8
 )
 
-// SetUserObjectInformation() nIndex.
+// [SetUserObjectInformation] nIndex.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setuserobjectinformationw
+// [SetUserObjectInformation]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setuserobjectinformationw
 type UOI int32
 
 const (
@@ -1612,9 +1622,9 @@ const (
 	UOI_TIMERPROC_EXCEPTION_SUPPRESSION UOI = 7
 )
 
-// Virtual key codes.
+// [Virtual key codes].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+// [Virtual key codes]: https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
 type VK uint16
 
 const (
@@ -1780,9 +1790,9 @@ const (
 	VK_OEM_CLEAR           VK = 0xfe
 )
 
-// WM_ACTIVATE activation state.
+// [WM_ACTIVATE] activation state.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-activate
+// [WM_ACTIVATE]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-activate
 type WA int32
 
 const (
@@ -1791,9 +1801,9 @@ const (
 	WA_CLICKACTIVE WA = 2
 )
 
-// SetWindowDisplayAffinity() dwAffinity
+// [SetWindowDisplayAffinity] dwAffinity
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity
+// [SetWindowDisplayAffinity]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity
 type WDA uint32
 
 const (
@@ -1802,9 +1812,9 @@ const (
 	WDA_EXCLUDEFROMCAPTURE WDA = 0x0000_0011
 )
 
-// SetWindowsHookEx() idHook.
+// [SetWindowsHookEx] idHook.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
+// [SetWindowsHookEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
 type WH int32
 
 const (
@@ -1825,9 +1835,9 @@ const (
 	WH_MOUSE_LL        WH = 14
 )
 
-// WM_SIZING window edge.
+// [WM_SIZING] window edge.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-sizing
+// [WM_SIZING]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-sizing
 type WMSZ uint8
 
 const (
@@ -1841,9 +1851,9 @@ const (
 	WMSZ_TOPRIGHT    WMSZ = 5
 )
 
-// Window styles.
+// Window [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/window-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/winmsg/window-styles
 type WS uint32
 
 const (
@@ -1878,9 +1888,9 @@ const (
 	WS_CHILDWINDOW WS = WS_CHILD                          // Same as the WS_CHILD style.
 )
 
-// Extended window styles.
+// Extended window [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
 type WS_EX uint32
 
 const (
@@ -1914,9 +1924,9 @@ const (
 	WS_EX_NOACTIVATE          WS_EX = 0x0800_0000
 )
 
-// WM_NCCALCSIZE return flags.
+// [WM_NCCALCSIZE] return flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-nccalcsize
+// [WM_NCCALCSIZE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-nccalcsize
 type WVR uint32
 
 const (
@@ -1931,9 +1941,9 @@ const (
 	WVR_VALIDRECTS  WVR = 0x0400
 )
 
-// Composes XTYP.
+// Composes XTYP in [PFNCALLBACK].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nc-ddeml-pfncallback
+// [PFNCALLBACK]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nc-ddeml-pfncallback
 type XCLASS uint32
 
 const (
@@ -1944,9 +1954,9 @@ const (
 	XCLASS_NOTIFICATION XCLASS = 0x8000
 )
 
-// PFNCALLBACK wType.
+// [PFNCALLBACK] wType.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nc-ddeml-pfncallback
+// [PFNCALLBACK]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nc-ddeml-pfncallback
 type XTYP uint32
 
 const (
@@ -1970,9 +1980,9 @@ const (
 	XTYP_SHIFT XTYP = 4
 )
 
-// Composes XTYP.
+// Composes XTYP in [PFNCALLBACK].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ddeml/nc-ddeml-pfncallback
+// [PFNCALLBACK]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nc-ddeml-pfncallback
 type XTYPF uint32
 
 const (

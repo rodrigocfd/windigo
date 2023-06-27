@@ -4,7 +4,7 @@ package automco
 
 // DISPPARAMS named args.
 //
-// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/automat/dispid-constants
+// 📑 https://learn.microsoft.com/en-us/previous-versions/windows/desktop/automat/dispid-constants
 type DISPID int32
 
 const (
@@ -20,7 +20,7 @@ const (
 
 // FUNCDESC callconv.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type CALLCONV uint32
 
 const (
@@ -39,7 +39,7 @@ const (
 
 // IDispatch.Invoke() flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 type DISPATCH uint16
 
 const (
@@ -51,7 +51,7 @@ const (
 
 // FUNCDESC wFuncFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type FUNCFLAG uint16
 
 const (
@@ -72,7 +72,7 @@ const (
 
 // FUNCDESC funckind.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type FUNCKIND uint32
 
 const (
@@ -96,7 +96,7 @@ const (
 
 // FUNCDESC invkind.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type INVOKEKIND uint32
 
 const (
@@ -108,7 +108,7 @@ const (
 
 // Parameter flags.
 //
-// 📑 https://docs.microsoft.com/en-us/previous-versions/windows/desktop/automat/paramflags
+// 📑 https://learn.microsoft.com/en-us/previous-versions/windows/desktop/automat/paramflags
 type PARAMFLAG uint16
 
 const (
@@ -124,7 +124,7 @@ const (
 
 // Type flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-typeflags
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-typeflags
 type TYPEFLAG uint16
 
 const (
@@ -147,7 +147,7 @@ const (
 
 // Specifies a type.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-typekind
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-typekind
 type TYPEKIND uint32
 
 const (
@@ -164,7 +164,7 @@ const (
 
 // Variable flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-varflags
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-varflags
 type VARFLAG uint16
 
 const (
@@ -185,7 +185,7 @@ const (
 
 // VARDESC varkind.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-vardesc
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-vardesc
 type VARKIND uint32
 
 const (
@@ -197,7 +197,7 @@ const (
 
 // VARIANT types.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-varenum
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-varenum
 type VT uint16
 
 const (

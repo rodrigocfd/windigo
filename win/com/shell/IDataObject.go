@@ -8,7 +8,7 @@ import (
 
 // [IDataObject] COM interface.
 //
-// [IDataObject]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
+// [IDataObject]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
 type IDataObject interface {
 	com.IUnknown
 }

@@ -2,9 +2,9 @@
 
 package co
 
-// CHOOSECOLOR Flags.
+// [CHOOSECOLOR] Flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolorw-r1
+// [CHOOSECOLOR]: https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolorw-r1
 type CC uint32
 
 const (

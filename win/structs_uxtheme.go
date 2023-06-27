@@ -4,7 +4,7 @@ package win
 
 // [MARGINS] struct.
 //
-// [MARGINS]: https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/ns-uxtheme-margins
+// [MARGINS]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/ns-uxtheme-margins
 type MARGINS struct {
 	CxLeftWidth    int32
 	CxRightWidth   int32

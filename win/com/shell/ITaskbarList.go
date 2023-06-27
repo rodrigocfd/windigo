@@ -14,33 +14,33 @@ import (
 
 // [ITaskbarList] COM interface.
 //
-// [ITaskbarList]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
+// [ITaskbarList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
 type ITaskbarList interface {
 	com.IUnknown
 
 	// [ActivateTab] COM method.
 	//
-	// [ActivateTab]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
+	// [ActivateTab]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
 	ActivateTab(hWnd win.HWND)
 
 	// [AddTab] COM method.
 	//
-	// [AddTab]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-addtab
+	// [AddTab]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-addtab
 	AddTab(hWnd win.HWND)
 
 	// [DeleteTab] COM method.
 	//
-	// [DeleteTab]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-deletetab
+	// [DeleteTab]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-deletetab
 	DeleteTab(hWnd win.HWND)
 
 	// [HrInit] COM method.
 	//
-	// [HrInit]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-hrinit
+	// [HrInit]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-hrinit
 	HrInit()
 
 	// [SetActiveAlt] COM method.
 	//
-	// [SetActiveAlt]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-setactivealt
+	// [SetActiveAlt]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-setactivealt
 	SetActiveAlt(hWnd win.HWND)
 }
 

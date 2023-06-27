@@ -12,7 +12,7 @@ import (
 
 // [GetSysColorBrush] function.
 //
-// [GetSysColorBrush]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolorbrush
+// [GetSysColorBrush]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolorbrush
 func GetSysColorBrush(index co.COLOR) HBRUSH {
 	ret, _, err := syscall.SyscallN(proc.GetSysColorBrush.Addr(),
 		uintptr(index))

@@ -13,7 +13,7 @@ import (
 
 // [DefSubclassProc] function.
 //
-// [DefSubclassProc]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-defsubclassproc
+// [DefSubclassProc]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-defsubclassproc
 func (hWnd HWND) DefSubclassProc(
 	msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 
@@ -24,7 +24,7 @@ func (hWnd HWND) DefSubclassProc(
 
 // [RemoveWindowSubclass] function.
 //
-// [RemoveWindowSubclass]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-removewindowsubclass
+// [RemoveWindowSubclass]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-removewindowsubclass
 func (hWnd HWND) RemoveWindowSubclass(
 	subclassProc uintptr, idSubclass uint32) {
 
@@ -37,7 +37,7 @@ func (hWnd HWND) RemoveWindowSubclass(
 
 // [SetWindowSubclass] function.
 //
-// [SetWindowSubclass]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-setwindowsubclass
+// [SetWindowSubclass]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-setwindowsubclass
 func (hWnd HWND) SetWindowSubclass(
 	subclassProc uintptr, idSubclass uint32, refData unsafe.Pointer) {
 
@@ -50,7 +50,7 @@ func (hWnd HWND) SetWindowSubclass(
 
 // [TaskDialog] function.
 //
-// [TaskDialog]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
+// [TaskDialog]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
 func (hWnd HWND) TaskDialog(
 	hInstance HINSTANCE,
 	windowTitle, mainInstruction, content StrOpt,

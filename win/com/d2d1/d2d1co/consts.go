@@ -2,7 +2,7 @@
 
 package d2d1co
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dcommon/ne-dcommon-d2d1_alpha_mode
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/dcommon/ne-dcommon-d2d1_alpha_mode
 type ALPHA_MODE uint32
 
 const (
@@ -12,7 +12,7 @@ const (
 	ALPHA_MODE_IGNORE        ALPHA_MODE = 3
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_debug_level
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_debug_level
 type DEBUG_LEVEL uint32
 
 const (
@@ -22,7 +22,7 @@ const (
 	DEBUG_LEVEL_INFORMATION DEBUG_LEVEL = 3
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format
 type DXGI_FORMAT uint32
 
 const (
@@ -147,7 +147,7 @@ const (
 	DXGI_FORMAT_V408                       DXGI_FORMAT = 132
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_factory_type
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_factory_type
 type FACTORY_TYPE uint32
 
 const (
@@ -155,7 +155,7 @@ const (
 	FACTORY_TYPE_MULTI_THREADED  FACTORY_TYPE = 1
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_feature_level
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_feature_level
 type FEATURE_LEVEL uint32
 
 const (
@@ -164,7 +164,7 @@ const (
 	FEATURE_LEVEL_10      FEATURE_LEVEL = 0xa000 // The video card must support DirectX 10.
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_present_options
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_present_options
 type PRESENT_OPTIONS uint32
 
 const (
@@ -173,7 +173,7 @@ const (
 	PRESENT_OPTIONS_IMMEDIATELY     PRESENT_OPTIONS = 0x0000_0002
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_render_target_type
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_render_target_type
 type RENDER_TARGET_TYPE uint32
 
 const (
@@ -182,7 +182,7 @@ const (
 	RENDER_TARGET_TYPE_HARDWARE RENDER_TARGET_TYPE = 2
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_render_target_usage
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_render_target_usage
 type RENDER_TARGET_USAGE uint32
 
 const (
@@ -191,7 +191,7 @@ const (
 	RENDER_TARGET_USAGE_GDI_COMPATIBLE        RENDER_TARGET_USAGE = 0x0000_0002
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_window_state
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_window_state
 type WINDOW_STATE uint32
 
 const (

@@ -14,7 +14,7 @@ import (
 
 // [IFileSourceFilter] COM interface.
 //
-// [IFileSourceFilter]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
+// [IFileSourceFilter]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
 type IFileSourceFilter interface {
 	com.IUnknown
 
@@ -22,12 +22,12 @@ type IFileSourceFilter interface {
 	//
 	// Returns false if no file is opened.
 	//
-	// [GetCurFile]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-getcurfile
+	// [GetCurFile]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-getcurfile
 	GetCurFile(mt *AM_MEDIA_TYPE) (string, bool)
 
 	// [Load] COM method.
 	//
-	// [Load]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-load
+	// [Load]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesourcefilter-load
 	Load(fileName string, mt *AM_MEDIA_TYPE)
 }
 

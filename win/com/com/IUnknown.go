@@ -14,13 +14,13 @@ import (
 
 // [IUnknown] COM interface, base to all COM interfaces.
 //
-// [IUnknown]: https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
+// [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 type IUnknown interface {
 	// [QueryInterface] COM method.
 	//
 	// ⚠️ You must defer IUnknown.Release() on the returned COM object.
 	//
-	// [QueryInterface]: https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
+	// [QueryInterface]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 	QueryInterface(riid co.IID) IUnknown
 
 	// [AddRef] COM method.
@@ -36,7 +36,7 @@ type IUnknown interface {
 	//	otherObj := myObj.AddRef()
 	//	defer otherObj.Release()
 	//
-	// [AddRef]: https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+	// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 	AddRef() IUnknown
 
 	// [Release] COM method.
@@ -45,7 +45,7 @@ type IUnknown interface {
 	//
 	// Never fails, can be called any number of times.
 	//
-	// [Release]: https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
+	// [Release]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 	Release() uint32
 
 	// Returns the underlying pointer to pointer to the COM virtual table.

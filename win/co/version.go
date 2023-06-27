@@ -2,9 +2,9 @@
 
 package co
 
-// VS_FIXEDFILEINFO DwFileType.
+// [VS_FIXEDFILEINFO] DwFileType.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
+// [VS_FIXEDFILEINFO]: https://learn.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
 type VFT uint32
 
 const (
@@ -17,9 +17,9 @@ const (
 	VFT_STATIC_LIB VFT = 0x0000_0007
 )
 
-// VS_FIXEDFILEINFO DwFileSubType.
+// [VS_FIXEDFILEINFO] DwFileSubType.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
+// [VS_FIXEDFILEINFO]: https://learn.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
 type VFT2 uint32
 
 const (
@@ -42,9 +42,9 @@ const (
 	VFT2_FONT_TRUETYPE VFT2 = 0x0000_0003
 )
 
-// VS_FIXEDFILEINFO DwFileOS.
+// [VS_FIXEDFILEINFO] DwFileOS.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
+// [VS_FIXEDFILEINFO]: https://learn.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
 type VOS uint32
 
 const (
@@ -68,9 +68,9 @@ const (
 	VOS_NT_WINDOWS32  VOS = 0x0004_0004
 )
 
-// VS_FIXEDFILEINFO DwFileFlagsMask and DwFileFlags.
+// [VS_FIXEDFILEINFO] DwFileFlagsMask and DwFileFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
+// [VS_FIXEDFILEINFO]: https://learn.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
 type VS_FF uint32
 
 const (

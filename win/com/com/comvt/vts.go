@@ -4,7 +4,7 @@ package comvt
 
 // IBindCtx virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ibindctx
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ibindctx
 type IBindCtx struct {
 	IUnknown
 	RegisterObjectBound   uintptr
@@ -21,7 +21,7 @@ type IBindCtx struct {
 
 // IPersist virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
 type IPersist struct {
 	IUnknown
 	GetClassID uintptr
@@ -29,7 +29,7 @@ type IPersist struct {
 
 // IPicture virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/nn-ocidl-ipicture
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nn-ocidl-ipicture
 type IPicture struct {
 	IUnknown
 	Get_Handle             uintptr
@@ -50,7 +50,7 @@ type IPicture struct {
 
 // ISequentialStream virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-isequentialstream
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-isequentialstream
 type ISequentialStream struct {
 	IUnknown
 	Read  uintptr
@@ -59,7 +59,7 @@ type ISequentialStream struct {
 
 // IStream virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
 type IStream struct {
 	ISequentialStream
 	Seek         uintptr
@@ -75,7 +75,7 @@ type IStream struct {
 
 // IUnknown virtual table, base to all COM virtual tables.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 type IUnknown struct {
 	QueryInterface uintptr
 	AddRef         uintptr

@@ -13,7 +13,7 @@ import (
 
 // Native toolbar control.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/toolbar-controls-overview
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-controls-overview
 type Toolbar interface {
 	AnyNativeControl
 	implToolbar() // prevent public implementation
@@ -22,7 +22,7 @@ type Toolbar interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-toolbar-control-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-toolbar-control-reference-notifications
 	On() *_ToolbarEvents
 
 	AutoSize()                                                   // Sends a TB_AUTOSIZE message to resize the toolbar.
@@ -192,245 +192,245 @@ func (me *_ToolbarEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-beginadjust
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-beginadjust
 func (me *_ToolbarEvents) TbnBeginAdjust(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_BEGINADJUST, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-begindrag
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-begindrag
 func (me *_ToolbarEvents) TbnBeginDrag(userFunc func(p *win.NMTOOLBAR)) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_BEGINDRAG, func(p unsafe.Pointer) {
 		userFunc((*win.NMTOOLBAR)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-custhelp
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-custhelp
 func (me *_ToolbarEvents) TbnCustHelp(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_CUSTHELP, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-deletingbutton
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-deletingbutton
 func (me *_ToolbarEvents) TbnDeletingButton(userFunc func(p *win.NMTOOLBAR)) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_DELETINGBUTTON, func(p unsafe.Pointer) {
 		userFunc((*win.NMTOOLBAR)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-dragout
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-dragout
 func (me *_ToolbarEvents) TbnDragOut(userFunc func(p *win.NMTOOLBAR)) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_DRAGOUT, func(p unsafe.Pointer) {
 		userFunc((*win.NMTOOLBAR)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-dragover
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-dragover
 func (me *_ToolbarEvents) TbnDragOver(userFunc func(p *win.NMTBHOTITEM) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_DRAGOVER, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTBHOTITEM)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-dropdown
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-dropdown
 func (me *_ToolbarEvents) TbnDropDown(userFunc func(p *win.NMTOOLBAR) co.TBDDRET) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_DROPDOWN, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMTOOLBAR)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-dupaccelerator
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-dupaccelerator
 func (me *_ToolbarEvents) TbnDupAccelerator(userFunc func(p *win.NMTBDUPACCELERATOR) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_DUPACCELERATOR, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTBDUPACCELERATOR)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-endadjust
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-endadjust
 func (me *_ToolbarEvents) TbnEndAdjust(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_ENDADJUST, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-enddrag
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-enddrag
 func (me *_ToolbarEvents) TbnEndDrag(userFunc func(p *win.NMTOOLBAR)) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_ENDDRAG, func(p unsafe.Pointer) {
 		userFunc((*win.NMTOOLBAR)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-getbuttoninfo
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-getbuttoninfo
 func (me *_ToolbarEvents) TbnGetButtonInfo(userFunc func(p *win.NMTOOLBAR) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_GETBUTTONINFO, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTOOLBAR)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-getdispinfo
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-getdispinfo
 func (me *_ToolbarEvents) TbnGetDispInfo(userFunc func(p *win.NMTBDISPINFO)) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_GETDISPINFO, func(p unsafe.Pointer) {
 		userFunc((*win.NMTBDISPINFO)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-getinfotip
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-getinfotip
 func (me *_ToolbarEvents) TbnGetInfoTip(userFunc func(p *win.NMTBGETINFOTIP)) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_GETINFOTIP, func(p unsafe.Pointer) {
 		userFunc((*win.NMTBGETINFOTIP)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-getobject
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-getobject
 func (me *_ToolbarEvents) TbnGetObject(userFunc func(p *win.NMOBJECTNOTIFY)) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_GETOBJECT, func(p unsafe.Pointer) {
 		userFunc((*win.NMOBJECTNOTIFY)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-hotitemchange
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-hotitemchange
 func (me *_ToolbarEvents) TbnHotItemChange(userFunc func(*win.NMTBHOTITEM) int) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_HOTITEMCHANGE, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMTBHOTITEM)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-initcustomize
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-initcustomize
 func (me *_ToolbarEvents) TbnInitCustomize(userFunc func() co.TBNRF) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_INITCUSTOMIZE, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc())
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-mapaccelerator
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-mapaccelerator
 func (me *_ToolbarEvents) TbnMapAccelerator(userFunc func(p *win.NMCHAR) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_MAPACCELERATOR, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMCHAR)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-querydelete
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-querydelete
 func (me *_ToolbarEvents) TbnQueryDelete(userFunc func(p *win.NMTOOLBAR) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_QUERYDELETE, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTOOLBAR)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-queryinsert
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-queryinsert
 func (me *_ToolbarEvents) TbnQueryInsert(userFunc func(p *win.NMTOOLBAR) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_QUERYINSERT, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTOOLBAR)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-reset
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-reset
 func (me *_ToolbarEvents) TbnReset(userFunc func() co.TBNRF) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_RESET, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc())
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-restore
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-restore
 func (me *_ToolbarEvents) TbnRestore(userFunc func(p *win.NMTBRESTORE) int) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_RESTORE, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMTBRESTORE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-save
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-save
 func (me *_ToolbarEvents) TbnSave(userFunc func(p *win.NMTBSAVE)) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_SAVE, func(p unsafe.Pointer) {
 		userFunc((*win.NMTBSAVE)(p))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-toolbarchange
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-toolbarchange
 func (me *_ToolbarEvents) TbnToolbarChange(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.TBN_TOOLBARCHANGE, func(p unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-wrapaccelerator
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-wrapaccelerator
 func (me *_ToolbarEvents) TbnWrapAccelerator(userFunc func(p *win.NMTBWRAPACCELERATOR) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_WRAPACCELERATOR, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTBWRAPACCELERATOR)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-wraphotitem
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tbn-wraphotitem
 func (me *_ToolbarEvents) TbnWrapHotItem(userFunc func(p *win.NMTBWRAPHOTITEM) bool) {
 	me.events.addNfyRet(me.ctrlId, co.TBN_WRAPHOTITEM, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMTBWRAPHOTITEM)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-char-toolbar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-char-toolbar
 func (me *_ToolbarEvents) NmChar(userFunc func(p *win.NMCHAR) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_CHAR, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMCHAR)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-click-toolbar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-toolbar
 func (me *_ToolbarEvents) NmClick(userFunc func(p *win.NMMOUSE) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_CLICK, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMMOUSE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-customdraw-toolbar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-customdraw-toolbar
 func (me *_ToolbarEvents) NmCustomDraw(userFunc func(p *win.NMTBCUSTOMDRAW) co.CDRF) {
 	me.events.addNfyRet(me.ctrlId, co.NM_CUSTOMDRAW, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMTBCUSTOMDRAW)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-dblclk-toolbar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-dblclk-toolbar
 func (me *_ToolbarEvents) NmDblClk(userFunc func(p *win.NMMOUSE) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_DBLCLK, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMMOUSE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-keydown-toolbar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-keydown-toolbar
 func (me *_ToolbarEvents) NmKeyDown(userFunc func(p *win.NMKEY) int) {
 	me.events.addNfyRet(me.ctrlId, co.NM_KEYDOWN, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMKEY)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-ldown-toolbar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-ldown-toolbar
 func (me *_ToolbarEvents) NmLDown(userFunc func(p *win.NMMOUSE) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_LDOWN, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMMOUSE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-rclick-toolbar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-rclick-toolbar
 func (me *_ToolbarEvents) NmRClick(userFunc func(p *win.NMMOUSE) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_RCLICK, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMMOUSE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-toolbar
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-toolbar
 func (me *_ToolbarEvents) NmRDblClk(userFunc func(p *win.NMMOUSE) bool) {
 	me.events.addNfyRet(me.ctrlId, co.NM_RDBLCLK, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMMOUSE)(p)))
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-list-view-
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-list-view-
 func (me *_ToolbarEvents) NmReleasedCapture(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/nm-tooltipscreated-toolbar-
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-tooltipscreated-toolbar-
 func (me *_ToolbarEvents) NmTooltipsCreated(userFunc func(p *win.NMTOOLTIPSCREATED)) {
 	me.events.addNfyZero(me.ctrlId, co.NM_TOOLTIPSCREATED, func(p unsafe.Pointer) {
 		userFunc((*win.NMTOOLTIPSCREATED)(p))

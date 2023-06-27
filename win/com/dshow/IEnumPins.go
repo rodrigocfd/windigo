@@ -14,7 +14,7 @@ import (
 
 // [IEnumPins] COM interface.
 //
-// [IEnumPins]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
+// [IEnumPins]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
 type IEnumPins interface {
 	com.IUnknown
 
@@ -22,7 +22,7 @@ type IEnumPins interface {
 	//
 	// ⚠️ You must defer IEnumPins.Release() on the returned object.
 	//
-	// [Clone]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-clone
+	// [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-clone
 	Clone() IEnumPins
 
 	// This helper method calls IEnumPins.Skip() until the end of the enum to
@@ -38,17 +38,17 @@ type IEnumPins interface {
 	//
 	// ⚠️ You must defer IPin.Release() on the returned object.
 	//
-	// [Next]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-next
+	// [Next]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-next
 	Next() (IPin, bool)
 
 	// [Reset] COM method.
 	//
-	// [Reset]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-reset
+	// [Reset]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-reset
 	Reset()
 
 	// [Skip] COM method.
 	//
-	// [Skip]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-skip
+	// [Skip]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ienumpins-skip
 	Skip(numPins int) bool
 }
 

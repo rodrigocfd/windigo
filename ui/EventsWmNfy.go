@@ -117,21 +117,21 @@ func (me *_EventsWmNfy) processMessage(
 //
 // Avoid this method, prefer the specific command notification handlers.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
+// 📑 https://learn.microsoft.com/en-us/windows/win32/menurc/wm-command
 func (me *_EventsWmNfy) WmCommand(cmdId int, notifCode co.CMD, userFunc func(p wm.Command)) {
 	me.addCmdZero(cmdId, notifCode, userFunc)
 }
 
 // Handles a WM_COMMAND notification when a menu item is clicked.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
+// 📑 https://learn.microsoft.com/en-us/windows/win32/menurc/wm-command
 func (me *_EventsWmNfy) WmCommandMenu(cmdId int, userFunc func(p wm.Command)) {
 	me.addCmdZero(cmdId, co.CMD_MENU, userFunc)
 }
 
 // Handles a WM_COMMAND notification when a keyboard shortcut key is hit.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
+// 📑 https://learn.microsoft.com/en-us/windows/win32/menurc/wm-command
 func (me *_EventsWmNfy) WmCommandAccel(cmdId int, userFunc func(p wm.Command)) {
 	me.addCmdZero(cmdId, co.CMD_ACCELERATOR, userFunc)
 }
@@ -139,7 +139,7 @@ func (me *_EventsWmNfy) WmCommandAccel(cmdId int, userFunc func(p wm.Command)) {
 // Handles a WM_COMMAND notification when a keyboard shortcut key is hit, or a
 // menu item is clicked.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
+// 📑 https://learn.microsoft.com/en-us/windows/win32/menurc/wm-command
 func (me *_EventsWmNfy) WmCommandAccelMenu(cmdId int, userFunc func(p wm.Command)) {
 	me.addCmdZero(cmdId, co.CMD_MENU, userFunc)
 	me.addCmdZero(cmdId, co.CMD_ACCELERATOR, userFunc)
@@ -149,7 +149,7 @@ func (me *_EventsWmNfy) WmCommandAccelMenu(cmdId int, userFunc func(p wm.Command
 //
 // Avoid this method, prefer the specific notification handlers.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/wm-notify
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/wm-notify
 func (me *_EventsWmNfy) WmNotify(idFrom int, code co.NM, userFunc func(p unsafe.Pointer) uintptr) {
 	me.addNfyRet(idFrom, code, userFunc)
 }

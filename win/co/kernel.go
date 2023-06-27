@@ -2,7 +2,9 @@
 
 package co
 
-// CONSOLE_READCONSOLE_CONTROL DwControlKeyState.
+// [CONSOLE_READCONSOLE_CONTROL] DwControlKeyState.
+//
+// [CONSOLE_READCONSOLE_CONTROL]: https://learn.microsoft.com/en-us/windows/console/console-readconsole-control
 type CKS uint32
 
 const (
@@ -17,9 +19,9 @@ const (
 	SHIFT_PRESSED      CKS = 0x0010
 )
 
-// SetConsoleDisplayMode() mode.
+// [SetConsoleDisplayMode] mode.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/console/setconsoledisplaymode
+// [SetConsoleDisplayMode]: https://learn.microsoft.com/en-us/windows/console/setconsoledisplaymode
 type CONSOLE uint32
 
 const (
@@ -27,9 +29,9 @@ const (
 	CONSOLE_WINDOWED_MODE   CONSOLE = 2
 )
 
-// Code page identifiers.
+// [Code page] identifiers.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
+// [Code page]: https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
 type CP uint16
 
 const (
@@ -69,7 +71,9 @@ const (
 	CP_UTF8 CP = 65001 // Unicode (UTF-8).
 )
 
-// CreateProcess() dwCreationFlags.
+// [CreateProcess] dwCreationFlags.
+//
+// [CreateProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw
 type CREATE uint32
 
 const (
@@ -95,9 +99,9 @@ const (
 	CREATE_INHERIT_PARENT_AFFINITY      CREATE = 0x0001_0000
 )
 
-// CreateFile() dwCreationDisposition. Originally without prefix.
+// [CreateFile] dwCreationDisposition. Originally without prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+// [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 type DISPOSITION uint32
 
 const (
@@ -108,9 +112,9 @@ const (
 	DISPOSITION_TRUNCATE_EXISTING DISPOSITION = 5
 )
 
-// SetConsoleMode() mode.
+// [SetConsoleMode] mode.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/console/setconsolemode
+// [SetConsoleMode]: https://learn.microsoft.com/en-us/windows/console/setconsolemode
 type ENABLE uint32
 
 const (
@@ -130,9 +134,9 @@ const (
 	ENABLE_LVB_GRID_WORLDWIDE          ENABLE = 0x0010
 )
 
-// WM_ENDSESSION event.
+// [WM_ENDSESSION] event.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/shutdown/wm-endsession
+// [WM_ENDSESSION]: https://learn.microsoft.com/en-us/windows/win32/shutdown/wm-endsession
 type ENDSESSION uint32
 
 const (
@@ -142,9 +146,9 @@ const (
 	ENDSESSION_LOGOFF            ENDSESSION = 0x8000_0000
 )
 
-// CreateFile() dwFlagsAndAttributes.
+// [CreateFile] dwFlagsAndAttributes.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+// [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 type FILE_ATTRIBUTE uint32
 
 const (
@@ -173,9 +177,9 @@ const (
 	FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS FILE_ATTRIBUTE = 0x0040_0000
 )
 
-// CreateFile() dwFlagsAndAttributes.
+// [CreateFile] dwFlagsAndAttributes.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+// [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 type FILE_FLAG uint32
 
 const (
@@ -195,9 +199,9 @@ const (
 	FILE_FLAG_OPEN_REQUIRING_OPLOCK FILE_FLAG = 0x0004_0000
 )
 
-// SetFilePointerEx() dwMoveMethod. Originally with FILE prefix.
+// [SetFilePointerEx] dwMoveMethod. Originally with FILE prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
+// [SetFilePointerEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
 type FILE_FROM uint32
 
 const (
@@ -206,9 +210,9 @@ const (
 	FILE_FROM_END     FILE_FROM = 2
 )
 
-// MapViewOfFile() dwDesiredAccess.
+// [MapViewOfFile] dwDesiredAccess.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
+// [MapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 type FILE_MAP uint32
 
 const (
@@ -239,9 +243,9 @@ const (
 	FILE_OPEN_RW_OPEN_OR_CREATE                  // Open a file or create if it doesn't exist, for read and write.
 )
 
-// CreateFile() dwShareMode.
+// [CreateFile] dwShareMode.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+// [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 type FILE_SHARE uint32
 
 const (
@@ -251,9 +255,9 @@ const (
 	FILE_SHARE_DELETE FILE_SHARE = 0x0000_0004
 )
 
-// GetVolumeInformation() flags.
+// [GetVolumeInformation] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getvolumeinformationw
+// [GetVolumeInformation]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getvolumeinformationw
 type FILE_VOL uint32
 
 const (
@@ -280,7 +284,9 @@ const (
 	FILE_VOL_SUPPORTS_BLOCK_REFCOUNTING   FILE_VOL = 0x0800_0000
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/secauthz/generic-access-rights
+// Generic access [rights].
+//
+// [rights]: https://learn.microsoft.com/en-us/windows/win32/secauthz/generic-access-rights
 type GENERIC uint32
 
 const (
@@ -290,9 +296,9 @@ const (
 	GENERIC_ALL     GENERIC = 0x1000_0000
 )
 
-// GlobalAlloc() uFlags.
+// [GlobalAlloc] uFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
+// [GlobalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
 type GMEM uint32
 
 const (
@@ -304,7 +310,9 @@ const (
 	GMEM_GPTR     GMEM = GMEM_FIXED | GMEM_ZEROINIT
 )
 
-// HeapAlloc() flags.
+// [HeapAlloc] flags.
+//
+// [HeapAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapalloc
 type HEAP_ALLOC uint32
 
 const (
@@ -313,7 +321,9 @@ const (
 	HEAP_ALLOC_ZERO_MEMORY         HEAP_ALLOC = 0x0000_0008
 )
 
-// HeapCreate() options.
+// [HeapCreate] options.
+//
+// [HeapCreate]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcreate
 type HEAP_CREATE uint32
 
 const (
@@ -322,14 +332,20 @@ const (
 	HEAP_CREATE_NO_SERIALIZE        HEAP_CREATE = 0x0000_0001
 )
 
-// HeapFree(), HeapSize() and HeapValidate() flags.
+// [HeapFree], [HeapSize] and [HeapValidate] flags.
+//
+// [HeapFree]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapfree
+// [HeapSize]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapsize
+// [HeapValidate]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapvalidate
 type HEAP_NS uint32
 
 const (
 	HEAP_SER_NO_SERIALIZE HEAP_NS = 0x0000_0001
 )
 
-// HeapReAlloc() flags.
+// [HeapReAlloc] flags.
+//
+// [HeapReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heaprealloc
 type HEAP_REALLOC uint32
 
 const (
@@ -339,9 +355,9 @@ const (
 	HEAP_REALLOC_ZERO_MEMORY           HEAP_REALLOC = 0x0000_0008
 )
 
-// Language identifier.
+// [Language] identifier.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/language-identifier-constants-and-strings
+// [Language]: https://learn.microsoft.com/en-us/windows/win32/intl/language-identifier-constants-and-strings
 type LANG uint16
 
 const (
@@ -487,9 +503,9 @@ const (
 	LANG_ZULU                LANG = 0x35
 )
 
-// LockFileEx() dwFlags.
+// [LockFileEx] dwFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex
+// [LockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex
 type LOCKFILE uint32
 
 const (
@@ -498,9 +514,9 @@ const (
 	LOCKFILE_EXCLUSIVE_LOCK   LOCKFILE = 0x0000_0002
 )
 
-// MoveFileEx() dwFlags.
+// [MoveFileEx] dwFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw
+// [MoveFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw
 type MOVEFILE uint32
 
 const (
@@ -512,9 +528,9 @@ const (
 	MOVEFILE_WRITE_THROUGH         MOVEFILE = 0x8
 )
 
-// CreateFileMapping() flProtect.
+// [CreateFileMapping] flProtect.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
+// [CreateFileMapping]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
 type PAGE uint32
 
 const (
@@ -538,9 +554,9 @@ const (
 	PAGE_ENCLAVE_DECOMMIT       PAGE = 0x1000_0000
 )
 
-// WM_POWERBROADCAST event.
+// [WM_POWERBROADCAST] event.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast
+// [WM_POWERBROADCAST]: https://learn.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast
 type PBT uint32
 
 const (
@@ -560,7 +576,9 @@ const (
 	PBT_POWERSETTINGCHANGE    PBT = 0x8013
 )
 
-// CreateNamedPipe() dwPipeMode.
+// [CreateNamedPipe] dwPipeMode.
+//
+// [CreateNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
 type PIPE uint32
 
 const (
@@ -574,7 +592,9 @@ const (
 	PIPE_REJECT_REMOTE_CLIENTS PIPE = 0x0000_0008
 )
 
-// CreateNamedPipe() dwOpenMode.
+// [CreateNamedPipe] dwOpenMode.
+//
+// [CreateNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
 type PIPE_ACCESS uint32
 
 const (
@@ -583,9 +603,9 @@ const (
 	PIPE_ACCESS_DUPLEX   PIPE_ACCESS = 0x0000_0003
 )
 
-// Process access rights.
+// Process [access rights].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
+// [access rights]: https://learn.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
 type PROCESS uint32
 
 const (
@@ -607,9 +627,9 @@ const (
 	PROCESS_SYNCHRONIZE               PROCESS = PROCESS(STANDARD_RIGHTS_SYNCHRONIZE)
 )
 
-// SYSTEM_INFO dwProcessorType.
+// [SYSTEM_INFO] dwProcessorType.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
+// [SYSTEM_INFO]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
 type PROCESSOR uint32
 
 const (
@@ -638,9 +658,9 @@ const (
 	PROCESSOR_OPTIL         PROCESSOR = 0x494f
 )
 
-// SYSTEM_INFO wProcessorArchitecture.
+// [SYSTEM_INFO] wProcessorArchitecture.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
+// [SYSTEM_INFO]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
 type PROCESSOR_ARCHITECTURE uint16
 
 const (
@@ -662,9 +682,9 @@ const (
 	PROCESSOR_ARCHITECTURE_UNKNOWN        PROCESSOR_ARCHITECTURE = 0xffff
 )
 
-// ReplaceFile() dwReplaceFlags.
+// [ReplaceFile] dwReplaceFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew
+// [ReplaceFile]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew
 type REPLACEFILE uint32
 
 const (
@@ -674,9 +694,9 @@ const (
 	REPLACEFILE_IGNORE_ACL_ERRORS   REPLACEFILE = 0x0000_0004
 )
 
-// Predefined resource types.
+// Predefined [resource types].
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/menurc/resource-types
+// [resource types]: https://learn.microsoft.com/en-us/windows/win32/menurc/resource-types
 type RT uint16
 
 const (
@@ -703,9 +723,9 @@ const (
 	RT_VXD          RT = 20
 )
 
-// CreateFileMapping() flProtect.
+// [CreateFileMapping] flProtect.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
+// [CreateFileMapping]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
 type SEC uint32
 
 const (
@@ -723,9 +743,9 @@ const (
 	SEC_IMAGE_NO_EXECUTE       SEC = SEC_IMAGE | SEC_NOCACHE
 )
 
-// CreateFile() dwFlagsAndAttributes.
+// [CreateFile] dwFlagsAndAttributes.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+// [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 type SECURITY uint32
 
 const (
@@ -738,9 +758,9 @@ const (
 	SECURITY_EFFECTIVE_ONLY   SECURITY = 0x0008_0000
 )
 
-// Sort order identifier for locales.
+// Sort order [identifier] for locales.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/sort-order-identifiers
+// [identifier]: https://learn.microsoft.com/en-us/windows/win32/intl/sort-order-identifiers
 type SORT uint16
 
 const (
@@ -764,10 +784,10 @@ const (
 	SORT_GEORGIAN_MODERN        SORT = 0x1
 )
 
-// Standard access rights. These are generic and compose other access right
+// Standard [access rights]. These are generic and compose other access right
 // types. Also includes unprefixed and SPECIFIC_RIGHT prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/secauthz/standard-access-rights
+// [access rights]: https://learn.microsoft.com/en-us/windows/win32/secauthz/standard-access-rights
 type STANDARD_RIGHTS uint32
 
 const (
@@ -786,9 +806,9 @@ const (
 	STANDARD_RIGHTS_WRITE    STANDARD_RIGHTS = STANDARD_RIGHTS_READ_CONTROL
 )
 
-// STARTUPINFO dwFlags.
+// [STARTUPINFO] dwFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
+// [STARTUPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
 type STARTF uint32
 
 const (
@@ -808,9 +828,9 @@ const (
 	STARTF_USESTDHANDLES    STARTF = 0x0000_0100
 )
 
-// Standard devices.
+// Standard [devices].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/console/getstdhandle
+// [devices]: https://learn.microsoft.com/en-us/windows/console/getstdhandle
 type STD int32
 
 const (
@@ -819,9 +839,9 @@ const (
 	STD_ERROR_HANDLE  STD = -12
 )
 
-// Sub-language identifier.
+// Sub-language [identifier].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/intl/language-identifier-constants-and-strings
+// [identifier]: https://learn.microsoft.com/en-us/windows/win32/intl/language-identifier-constants-and-strings
 type SUBLANG uint16
 
 const (
@@ -1071,9 +1091,9 @@ const (
 	SUBLANG_ZULU_SOUTH_AFRICA                   SUBLANG = 0x01
 )
 
-// CreateToolhelp32Snapshot() dwFlags.
+// [CreateToolhelp32Snapshot] dwFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-createtoolhelp32snapshot
+// [CreateToolhelp32Snapshot]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-createtoolhelp32snapshot
 type TH32CS uint32
 
 const (
@@ -1086,9 +1106,9 @@ const (
 	TH32CS_INHERIT      TH32CS = 0x8000_0000
 )
 
-// GetTimeZoneInformation() return value.
+// [GetTimeZoneInformation] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation
+// [GetTimeZoneInformation]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation
 type TIME_ZONE_ID uint32
 
 const (
@@ -1097,9 +1117,9 @@ const (
 	TIME_ZONE_ID_DAYLIGHT TIME_ZONE_ID = 2
 )
 
-// VerifyVersionInfo() dwTypeMask.
+// [VerifyVersionInfo] dwTypeMask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
+// [VerifyVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
 type VER uint32
 
 const (
@@ -1113,9 +1133,9 @@ const (
 	VER_SUITENAME        VER = 0x000_0040
 )
 
-// VerifyVersionInfo() dwlConditionMask.
+// [VerifyVersionInfo] dwlConditionMask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
+// [VerifyVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
 type VER_COND uint8
 
 const (
@@ -1129,9 +1149,9 @@ const (
 	VER_COND_OR  VER_COND = 7
 )
 
-// OSVERSIONINFOEX WSuiteMask. Includes values with VER_NT prefix.
+// [OSVERSIONINFOEX] WSuiteMask. Includes values with VER_NT prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
+// [OSVERSIONINFOEX]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
 type VER_SUITE uint16
 
 const (
@@ -1154,9 +1174,9 @@ const (
 	VER_SUITE_NT_WORKSTATION       VER_SUITE = 0x000_0001
 )
 
-// WaitForSingleObject() return value.
+// [WaitForSingleObject] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+// [WaitForSingleObject]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 type WAIT uint32
 
 const (
@@ -1166,9 +1186,9 @@ const (
 	WAIT_FAILED    WAIT = 0xffff_ffff
 )
 
-// IsWindowsVersionOrGreater() values; originally _WIN32_WINNT.
+// [IsWindowsVersionOrGreater] values; originally _WIN32_WINNT.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/winprog/using-the-windows-headers
+// [IsWindowsVersionOrGreater]: https://learn.microsoft.com/en-us/windows/win32/winprog/using-the-windows-headers
 type WIN32_WINNT uint16
 
 const (

@@ -13,7 +13,7 @@ import (
 // native struct with such a field type would be wrong. However, the Unwrap()
 // method will return the syscall.Errno value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes
+// 📑 https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes
 type ERROR uint32
 
 // Implements error interface.
@@ -28,7 +28,7 @@ func (err ERROR) Unwrap() error {
 
 // Calls FormatMessage() and returns a full error description.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-formatmessagew
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-formatmessagew
 func (err ERROR) String() string {
 	return fmt.Sprintf("[%d 0x%02x] %s",
 		uint32(err), uint32(err), err.Unwrap().Error())

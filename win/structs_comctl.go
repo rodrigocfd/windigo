@@ -20,7 +20,7 @@ import (
 //	ebt := &EDITBALLOONTIP{}
 //	ebt.SetCbStruct()
 //
-// [EDITBALLOONTIP]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-editballoontip
+// [EDITBALLOONTIP]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-editballoontip
 type EDITBALLOONTIP struct {
 	cbStruct uint32
 	PszTitle *uint16
@@ -39,7 +39,7 @@ func (eb *EDITBALLOONTIP) SetCbStruct() { eb.cbStruct = uint32(unsafe.Sizeof(*eb
 //	idp := &IMAGELISTDRAWPARAMS{}
 //	idp.SetCbSize()
 //
-// [IMAGELISTDRAWPARAMS]: https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
+// [IMAGELISTDRAWPARAMS]: https://learn.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
 type IMAGELISTDRAWPARAMS struct {
 	cbSize       uint32
 	Himl         HIMAGELIST
@@ -68,7 +68,7 @@ func (idp *IMAGELISTDRAWPARAMS) SetCbSize() { idp.cbSize = uint32(unsafe.Sizeof(
 //	icx := INITCOMMONCONTROLSEX{}
 //	icx.SetDwSize()
 //
-// [INITCOMMONCONTROLSEX]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
+// [INITCOMMONCONTROLSEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
 type INITCOMMONCONTROLSEX struct {
 	dwSize uint32
 	DwICC  co.ICC
@@ -78,7 +78,7 @@ func (icx *INITCOMMONCONTROLSEX) SetDwSize() { icx.dwSize = uint32(unsafe.Sizeof
 
 // [LITEM] struct.
 //
-// [LITEM]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
+// [LITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
 type LITEM struct {
 	Mask      co.LIF
 	ILink     int32
@@ -100,7 +100,7 @@ func (li *LITEM) SetSzUrl(val string) {
 
 // [LVCOLUMN] struct.
 //
-// [LVCOLUMN]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
+// [LVCOLUMN]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
 type LVCOLUMN struct {
 	Mask       co.LVCF
 	Fmt        co.LVCFMT_C
@@ -123,7 +123,7 @@ func (lvc *LVCOLUMN) SetPszText(val []uint16) {
 
 // [LVFINDINFO] struct.
 //
-// [LVFINDINFO]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvfindinfow
+// [LVFINDINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvfindinfow
 type LVFINDINFO struct {
 	Flags       co.LVFI
 	Psz         *uint16
@@ -137,7 +137,7 @@ func (fi *LVFINDINFO) SetVkDirection(val co.VK) { fi.vkDirection = uint32(val) }
 
 // [LVHITTESTINFO] struct.
 //
-// [LVHITTESTINFO]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvhittestinfo
+// [LVHITTESTINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvhittestinfo
 type LVHITTESTINFO struct {
 	Pt       POINT // Coordinates relative to list view.
 	Flags    co.LVHT
@@ -148,7 +148,7 @@ type LVHITTESTINFO struct {
 
 // [LVITEM] struct.
 //
-// [LVITEM]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemw
+// [LVITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemw
 type LVITEM struct {
 	Mask       co.LVIF
 	IItem      int32
@@ -175,7 +175,7 @@ func (lvi *LVITEM) SetPszText(val []uint16) {
 
 // [LVITEMINDEX] struct.
 //
-// [LVITEMINDEX]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemindex
+// [LVITEMINDEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemindex
 type LVITEMINDEX struct {
 	IItem  int32
 	IGroup int32
@@ -183,7 +183,7 @@ type LVITEMINDEX struct {
 
 // [NMBCDROPDOWN] struct.
 //
-// [NMBCDROPDOWN]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbcdropdown
+// [NMBCDROPDOWN]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbcdropdown
 type NMBCDROPDOWN struct {
 	Hdr      NMHDR
 	RcButton RECT
@@ -191,7 +191,7 @@ type NMBCDROPDOWN struct {
 
 // [NMBCHOTITEM] struct.
 //
-// [NMBCHOTITEM]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbchotitem
+// [NMBCHOTITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbchotitem
 type NMBCHOTITEM struct {
 	Hdr     NMHDR
 	DwFlags co.HICF
@@ -199,7 +199,7 @@ type NMBCHOTITEM struct {
 
 // [NMCHAR] struct.
 //
-// [NMCHAR]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmchar
+// [NMCHAR]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmchar
 type NMCHAR struct {
 	Hdr        NMHDR
 	Ch         uint32
@@ -209,7 +209,7 @@ type NMCHAR struct {
 
 // [NMCUSTOMDRAW] struct;
 //
-// [NMCUSTOMDRAW]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcustomdraw
+// [NMCUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcustomdraw
 type NMCUSTOMDRAW struct {
 	Hdr         NMHDR
 	DwDrawStage co.CDDS
@@ -222,7 +222,7 @@ type NMCUSTOMDRAW struct {
 
 // [NMDATETIMECHANGE] struct.
 //
-// [NMDATETIMECHANGE]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimechange
+// [NMDATETIMECHANGE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimechange
 type NMDATETIMECHANGE struct {
 	Nmhdr   NMHDR
 	DwFlags co.GDT
@@ -231,7 +231,7 @@ type NMDATETIMECHANGE struct {
 
 // [NMDATETIMEFORMAT] struct.
 //
-// [NMDATETIMEFORMAT]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatw
+// [NMDATETIMEFORMAT]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatw
 type NMDATETIMEFORMAT struct {
 	Nmhdr      NMHDR
 	PszFormat  *uint16
@@ -247,7 +247,7 @@ func (dtf *NMDATETIMEFORMAT) SetSzDisplay(val string) {
 
 // [NMDATETIMEFORMATQUERY] struct.
 //
-// [NMDATETIMEFORMATQUERY]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatqueryw
+// [NMDATETIMEFORMATQUERY]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatqueryw
 type NMDATETIMEFORMATQUERY struct {
 	Nmhdr     NMHDR
 	PszFormat *uint16
@@ -256,7 +256,7 @@ type NMDATETIMEFORMATQUERY struct {
 
 // [NMDATETIMESTRING] struct.
 //
-// [NMDATETIMESTRING]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimestringw
+// [NMDATETIMESTRING]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimestringw
 type NMDATETIMESTRING struct {
 	Nmhdr         NMHDR
 	PszUserString *uint16
@@ -266,7 +266,7 @@ type NMDATETIMESTRING struct {
 
 // [NMDATETIMEWMKEYDOWN] struct.
 //
-// [NMDATETIMEWMKEYDOWN]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimewmkeydownw
+// [NMDATETIMEWMKEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimewmkeydownw
 type NMDATETIMEWMKEYDOWN struct {
 	Nmhdr     NMHDR
 	nVirtKey  int32 // should be uint16
@@ -279,7 +279,7 @@ func (dtk *NMDATETIMEWMKEYDOWN) SetNVirtKey(val co.VK) { dtk.nVirtKey = int32(va
 
 // [NMDAYSTATE] struct.
 //
-// [NMDAYSTATE]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdaystate
+// [NMDAYSTATE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdaystate
 type NMDAYSTATE struct {
 	Nmhdr       NMHDR
 	StStart     SYSTEMTIME
@@ -289,7 +289,7 @@ type NMDAYSTATE struct {
 
 // [NMITEMACTIVATE] struct.
 //
-// [NMITEMACTIVATE]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmitemactivate
+// [NMITEMACTIVATE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmitemactivate
 type NMITEMACTIVATE struct {
 	Hdr       NMHDR
 	IItem     int32
@@ -304,7 +304,7 @@ type NMITEMACTIVATE struct {
 
 // [NMKEY] struct.
 //
-// [NMKEY]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmkey
+// [NMKEY]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmkey
 type NMKEY struct {
 	Hdr    NMHDR
 	nVKey  uint32 // should be uint16
@@ -368,7 +368,7 @@ func (nmk *NMKEY) SetTransitionState(val bool) {
 
 // [NMLINK] struct.
 //
-// [NMLINK]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlink
+// [NMLINK]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlink
 type NMLINK struct {
 	Hdr  NMHDR
 	Item LITEM
@@ -376,7 +376,7 @@ type NMLINK struct {
 
 // [NMLISTVIEW] struct.
 //
-// [NMLISTVIEW]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlistview
+// [NMLISTVIEW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlistview
 type NMLISTVIEW struct {
 	Hdr       NMHDR
 	IItem     int32
@@ -390,7 +390,7 @@ type NMLISTVIEW struct {
 
 // [NMLVCACHEHINT] struct.
 //
-// [NMLVCACHEHINT]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvcachehint
+// [NMLVCACHEHINT]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvcachehint
 type NMLVCACHEHINT struct {
 	Hdr   NMHDR
 	IFrom int32
@@ -399,7 +399,7 @@ type NMLVCACHEHINT struct {
 
 // [NMLVCUSTOMDRAW] struct.
 //
-// [NMLVCUSTOMDRAW]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvcustomdraw
+// [NMLVCUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvcustomdraw
 type NMLVCUSTOMDRAW struct {
 	Nmcd        NMCUSTOMDRAW
 	ClrText     COLORREF
@@ -425,7 +425,7 @@ func (lcd *NMLVCUSTOMDRAW) SetPartStateId(val co.VS) {
 
 // [NMLVDISPINFO] struct.
 //
-// [NMLVDISPINFO]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvdispinfow
+// [NMLVDISPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvdispinfow
 type NMLVDISPINFO struct {
 	Hdr  NMHDR
 	Item LVITEM
@@ -433,7 +433,7 @@ type NMLVDISPINFO struct {
 
 // [NMLVEMPTYMARKUP] struct.
 //
-// [NMLVEMPTYMARKUP]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvemptymarkup
+// [NMLVEMPTYMARKUP]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvemptymarkup
 type NMLVEMPTYMARKUP struct {
 	Hdr      NMHDR
 	DwFlags  co.EMF
@@ -447,7 +447,7 @@ func (lve *NMLVEMPTYMARKUP) SetSzMarkup(val string) {
 
 // [NMLVFINDITEM] struct.
 //
-// [NMLVFINDITEM]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvfinditemw
+// [NMLVFINDITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvfinditemw
 type NMLVFINDITEM struct {
 	Hdr    NMHDR
 	IStart int32
@@ -456,7 +456,7 @@ type NMLVFINDITEM struct {
 
 // [NMLVGETINFOTIP] struct.
 //
-// [NMLVGETINFOTIP]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvgetinfotipw
+// [NMLVGETINFOTIP]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvgetinfotipw
 type NMLVGETINFOTIP struct {
 	Hdr        NMHDR
 	DwFlags    co.LVGIT
@@ -475,7 +475,7 @@ func (git *NMLVGETINFOTIP) SetPszText(val []uint16) {
 
 // [NMLVKEYDOWN] struct.
 //
-// [NMLVKEYDOWN]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvkeydown
+// [NMLVKEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvkeydown
 type NMLVKEYDOWN struct {
 	Hdr   NMHDR
 	WVKey co.VK
@@ -484,7 +484,7 @@ type NMLVKEYDOWN struct {
 
 // [NMLVLINK] struct.
 //
-// [NMLVLINK]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvlink
+// [NMLVLINK]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvlink
 type NMLVLINK struct {
 	Hdr      NMHDR
 	Link     LITEM
@@ -494,7 +494,7 @@ type NMLVLINK struct {
 
 // [NMLVODSTATECHANGE] struct.
 //
-// [NMLVODSTATECHANGE]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvodstatechange
+// [NMLVODSTATECHANGE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvodstatechange
 type NMLVODSTATECHANGE struct {
 	Hdr       NMHDR
 	IFrom     int32
@@ -505,7 +505,7 @@ type NMLVODSTATECHANGE struct {
 
 // [NMLVSCROLL] struct.
 //
-// [NMLVSCROLL]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvscroll
+// [NMLVSCROLL]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvscroll
 type NMLVSCROLL struct {
 	Hdr    NMHDR
 	Dx, Dy int32
@@ -513,7 +513,7 @@ type NMLVSCROLL struct {
 
 // [NMMOUSE] struct.
 //
-// [NMMOUSE]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmmouse
+// [NMMOUSE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmmouse
 type NMMOUSE struct {
 	Hdr        NMHDR
 	DwItemSpec uintptr // DWORD_PTR
@@ -524,7 +524,7 @@ type NMMOUSE struct {
 
 // [NMOBJECTNOTIFY] struct.
 //
-// [NMOBJECTNOTIFY]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmobjectnotify
+// [NMOBJECTNOTIFY]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmobjectnotify
 type NMOBJECTNOTIFY struct {
 	Hdr     NMHDR
 	IItem   int32
@@ -536,7 +536,7 @@ type NMOBJECTNOTIFY struct {
 
 // [NMSELCHANGE] struct.
 //
-// [NMSELCHANGE]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmselchange
+// [NMSELCHANGE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmselchange
 type NMSELCHANGE struct {
 	Nmhdr      NMHDR
 	StSelStart SYSTEMTIME
@@ -545,7 +545,7 @@ type NMSELCHANGE struct {
 
 // [NMTBCUSTOMDRAW] struct.
 //
-// [NMTBCUSTOMDRAW]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbcustomdraw
+// [NMTBCUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbcustomdraw
 type NMTBCUSTOMDRAW struct {
 	Nmcd                 NMCUSTOMDRAW
 	HbrMonoDither        HBRUSH
@@ -565,7 +565,7 @@ type NMTBCUSTOMDRAW struct {
 
 // [NMTBDISPINFO] struct.
 //
-// [NMTBDISPINFO]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbdispinfow
+// [NMTBDISPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbdispinfow
 type NMTBDISPINFO struct {
 	Hdr       NMHDR
 	DwMask    co.TBNF
@@ -584,7 +584,7 @@ func (tdi *NMTBDISPINFO) SetPszText(val []uint16) {
 
 // [NMTBDUPACCELERATOR] struct.
 //
-// [NMTBDUPACCELERATOR]: https://docs.microsoft.com/en-us/windows/win32/controls/tbn-dupaccelerator
+// [NMTBDUPACCELERATOR]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-dupaccelerator
 type NMTBDUPACCELERATOR struct {
 	Hdr  NMHDR
 	Ch   uint32
@@ -596,7 +596,7 @@ func (da *NMTBDUPACCELERATOR) SetFDup(val bool) { da.fDup = util.BoolToInt32(val
 
 // [NMTBGETINFOTIP] struct.
 //
-// [NMTBGETINFOTIP]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbgetinfotipw
+// [NMTBGETINFOTIP]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbgetinfotipw
 type NMTBGETINFOTIP struct {
 	Hdr        NMHDR
 	pszText    *uint16
@@ -613,7 +613,7 @@ func (git *NMTBGETINFOTIP) SetPszText(val []uint16) {
 
 // [NMTBHOTITEM] struct.
 //
-// [NMTBHOTITEM]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbhotitem
+// [NMTBHOTITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbhotitem
 type NMTBHOTITEM struct {
 	Hdr     NMHDR
 	IdOld   int32
@@ -623,7 +623,7 @@ type NMTBHOTITEM struct {
 
 // [NMTBRESTORE] struct.
 //
-// [NMTBRESTORE]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbrestore
+// [NMTBRESTORE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbrestore
 type NMTBRESTORE struct {
 	Hdr              NMHDR
 	PData            *uint32
@@ -637,7 +637,7 @@ type NMTBRESTORE struct {
 
 // [NMTBSAVE] struct.
 //
-// [NMTBSAVE]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbsave
+// [NMTBSAVE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbsave
 type NMTBSAVE struct {
 	Hdr      NMHDR
 	PData    *uint32
@@ -650,7 +650,7 @@ type NMTBSAVE struct {
 
 // [NMTBWRAPACCELERATOR] struct.
 //
-// [NMTBWRAPACCELERATOR]: https://docs.microsoft.com/en-us/windows/win32/controls/tbn-wrapaccelerator
+// [NMTBWRAPACCELERATOR]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-wrapaccelerator
 type NMTBWRAPACCELERATOR struct {
 	Hdr     NMHDR
 	Ch      uint32
@@ -659,7 +659,7 @@ type NMTBWRAPACCELERATOR struct {
 
 // [NMTBWRAPHOTITEM] struct.
 //
-// [NMTBWRAPHOTITEM]: https://docs.microsoft.com/en-us/windows/win32/controls/tbn-wraphotitem
+// [NMTBWRAPHOTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-wraphotitem
 type NMTBWRAPHOTITEM struct {
 	Hdr     NMHDR
 	IStart  int32
@@ -669,7 +669,7 @@ type NMTBWRAPHOTITEM struct {
 
 // [NMTOOLBAR] struct.
 //
-// [NMTOOLBAR]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtoolbarw
+// [NMTOOLBAR]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtoolbarw
 type NMTOOLBAR struct {
 	Hdr      NMHDR
 	IItem    int32
@@ -687,7 +687,7 @@ func (git *NMTOOLBAR) SetPszText(val []uint16) {
 
 // [NMTOOLTIPSCREATED] struct.
 //
-// [NMTOOLTIPSCREATED]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtooltipscreated
+// [NMTOOLTIPSCREATED]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtooltipscreated
 type NMTOOLTIPSCREATED struct {
 	Hdr          NMHDR
 	HwndToolTips HWND
@@ -695,7 +695,7 @@ type NMTOOLTIPSCREATED struct {
 
 // [NMTRBTHUMBPOSCHANGING] struct.
 //
-// [NMTRBTHUMBPOSCHANGING]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtrbthumbposchanging
+// [NMTRBTHUMBPOSCHANGING]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtrbthumbposchanging
 type NMTRBTHUMBPOSCHANGING struct {
 	Hdr     NMHDR
 	DwPos   uint32
@@ -704,7 +704,7 @@ type NMTRBTHUMBPOSCHANGING struct {
 
 // [NMTREEVIEW] struct.
 //
-// [NMTREEVIEW]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtreevieww
+// [NMTREEVIEW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtreevieww
 type NMTREEVIEW struct {
 	Hdr     NMHDR
 	Action  uint32 // co.TVE | co.TVC
@@ -715,7 +715,7 @@ type NMTREEVIEW struct {
 
 // [NMTVASYNCDRAW] struct.
 //
-// [NMTVASYNCDRAW]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvasyncdraw
+// [NMTVASYNCDRAW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvasyncdraw
 type NMTVASYNCDRAW struct {
 	Hdr            NMHDR
 	Pimldp         *IMAGELISTDRAWPARAMS
@@ -728,7 +728,7 @@ type NMTVASYNCDRAW struct {
 
 // [NMTVCUSTOMDRAW] struct.
 //
-// [NMTVCUSTOMDRAW]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvcustomdraw
+// [NMTVCUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvcustomdraw
 type NMTVCUSTOMDRAW struct {
 	Nmcd      NMCUSTOMDRAW
 	ClrText   COLORREF
@@ -738,7 +738,7 @@ type NMTVCUSTOMDRAW struct {
 
 // [NMTVDISPINFO] struct.
 //
-// [NMTVDISPINFO]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvdispinfow
+// [NMTVDISPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvdispinfow
 type NMTVDISPINFO struct {
 	Hdr  NMHDR
 	Item TVITEM
@@ -746,7 +746,7 @@ type NMTVDISPINFO struct {
 
 // [NMTVGETINFOTIP] struct.
 //
-// [NMTVGETINFOTIP]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvgetinfotipw
+// [NMTVGETINFOTIP]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvgetinfotipw
 type NMTVGETINFOTIP struct {
 	Hdr        NMHDR
 	pszText    *uint16
@@ -763,7 +763,7 @@ func (git *NMTVGETINFOTIP) SetPszText(val []uint16) {
 
 // [NMTVITEMCHANGE] struct.
 //
-// [NMTVITEMCHANGE]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvitemchange
+// [NMTVITEMCHANGE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvitemchange
 type NMTVITEMCHANGE struct {
 	Hdr       NMHDR
 	UChanged  co.TVIF
@@ -775,7 +775,7 @@ type NMTVITEMCHANGE struct {
 
 // [NMTVKEYDOWN] struct.
 //
-// [NMTVKEYDOWN]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvkeydown
+// [NMTVKEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvkeydown
 type NMTVKEYDOWN struct {
 	Hdr   NMHDR
 	WVKey co.VK
@@ -784,7 +784,7 @@ type NMTVKEYDOWN struct {
 
 // [NMVIEWCHANGE] struct.
 //
-// [NMVIEWCHANGE]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmviewchange
+// [NMVIEWCHANGE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmviewchange
 type NMVIEWCHANGE struct {
 	Nmhdr     NMHDR
 	DwOldView co.MCMV
@@ -796,7 +796,7 @@ type NMVIEWCHANGE struct {
 // Note that this struct is originally packed, so we must serialized it before
 // using it.
 //
-// [TASKDIALOG_BUTTON]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialog_button
+// [TASKDIALOG_BUTTON]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialog_button
 type TASKDIALOG_BUTTON struct {
 	NButtonID     int32
 	PszButtonText string
@@ -820,7 +820,7 @@ func (tdb *TASKDIALOG_BUTTON) serializedPacked() ([12]byte, unsafe.Pointer) {
 // Note that this struct is originally packed, so we must serialized it before
 // using it.
 //
-// [TASKDIALOGCONFIG]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig
+// [TASKDIALOGCONFIG]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig
 type TASKDIALOGCONFIG struct {
 	HwndParent              HWND
 	HInstance               HINSTANCE
@@ -915,7 +915,7 @@ func (td *TASKDIALOGCONFIG) serializePacked() ([160]byte, []unsafe.Pointer) {
 
 // [TBBUTTON] struct.
 //
-// [TBBUTTON]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbutton
+// [TBBUTTON]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbutton
 type TBBUTTON struct {
 	iBitmap   int32
 	IdCommand int32
@@ -944,7 +944,7 @@ func (tbb *TBBUTTON) SetIBitmap(icon, imgList int) {
 //	tbbi := &TBBUTTONINFO{}
 //	tbbi.SetCbSize()
 //
-// [TBBUTTONINFO]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbuttoninfow
+// [TBBUTTONINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbuttoninfow
 type TBBUTTONINFO struct {
 	cbSize    uint32
 	DwMask    co.TBIF
@@ -977,7 +977,7 @@ type TVINSERTSTRUCT struct {
 
 // [TVITEM] struct.
 //
-// [TVITEM]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemw
+// [TVITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemw
 type TVITEM struct {
 	Mask           co.TVIF
 	HItem          HTREEITEM
@@ -999,7 +999,7 @@ func (tvi *TVITEM) SetPszText(val []uint16) {
 
 // [TVITEMEX] struct.
 //
-// [TVITEMEX]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
+// [TVITEMEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
 type TVITEMEX struct {
 	Mask           co.TVIF
 	HItem          HTREEITEM

@@ -12,7 +12,7 @@ import (
 //
 // Prefer using a RadioGroup instead.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioButton interface {
 	AnyNativeControl
 	AnyFocusControl
@@ -23,7 +23,7 @@ type RadioButton interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_ButtonEvents
 
 	EmulateClick()                // Emulates an user click.

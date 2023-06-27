@@ -13,7 +13,7 @@ import (
 
 // A handle to a [pipe].
 //
-// [pipe]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
+// [pipe]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type HPIPE HANDLE
 
 // [CreateNamedPipe] function.
@@ -68,14 +68,14 @@ func (hPipe HPIPE) DisconnectNamedPipe() error {
 
 // [CloseHandle] function.
 //
-// [CloseHandle]: https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+// [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (hPipe HPIPE) CloseHandle() error {
 	return HFILE(hPipe).CloseHandle()
 }
 
 // [ReadFile] function.
 //
-// [ReadFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
+// [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hPipe HPIPE) ReadFile(
 	buffer []byte, overlapped *OVERLAPPED) (numBytesRead uint32, e error) {
 
@@ -84,7 +84,7 @@ func (hPipe HPIPE) ReadFile(
 
 // [WriteFile] function.
 //
-// [WriteFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
+// [WriteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
 func (hPipe HPIPE) WriteFile(
 	data []byte, overlapped *OVERLAPPED) (numBytesWritten uint32, e error) {
 

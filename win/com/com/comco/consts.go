@@ -4,7 +4,7 @@ package comco
 
 // CoCreateInstance() dwClsContext.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 type CLSCTX uint32
 
 const (
@@ -35,7 +35,7 @@ const (
 
 // CoInitializeEx() dwCoInit.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 type COINIT uint32
 
 const (
@@ -45,7 +45,7 @@ const (
 	COINIT_SPEED_OVER_MEMORY COINIT = 0x8
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-locktype
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-locktype
 type LOCKTYPE uint32
 
 const (
@@ -54,7 +54,7 @@ const (
 	LOCKTYPE_ONLYONCE  LOCKTYPE = 4
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/ocidl/ne-ocidl-pictureattributes
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/ocidl/ne-ocidl-pictureattributes
 type PICATTR uint32
 
 const (
@@ -62,7 +62,7 @@ const (
 	PICATTR_TRANSPARENT PICATTR = 0x02
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/com/pictype-constants
+// 📑 https://learn.microsoft.com/en-us/windows/win32/com/pictype-constants
 type PICTYPE int16
 
 const (
@@ -74,7 +74,7 @@ const (
 	PICTYPE_ENHMETAFILE   PICTYPE = 4
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-stgc
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-stgc
 type STGC uint32
 
 const (
@@ -85,7 +85,7 @@ const (
 	STGC_CONSOLIDATE                        STGC = 8
 )
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-stream_seek
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-stream_seek
 type STREAM_SEEK uint32
 
 const (

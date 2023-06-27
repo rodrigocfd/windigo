@@ -13,7 +13,7 @@ import (
 
 // A handle to an [image list].
 //
-// [image list]: https://docs.microsoft.com/en-us/windows/win32/controls/image-lists
+// [image list]: https://learn.microsoft.com/en-us/windows/win32/controls/image-lists
 type HIMAGELIST HANDLE
 
 // [ImageList_Create] function.
@@ -22,7 +22,7 @@ type HIMAGELIST HANDLE
 //
 // ⚠️ You must defer HIMAGELIST.Destroy().
 //
-// [ImageList_Create]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
+// [ImageList_Create]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
 func ImageListCreate(
 	cx, cy uint32, flags co.ILC, szInitial, szGrow uint32) HIMAGELIST {
 
@@ -41,7 +41,7 @@ func ImageListCreate(
 // destroyed, because all icon resources are automatically freed.
 // Otherwise, if loaded with CreateIcon(), it must be destroyed.
 //
-// [ImageList_AddIcon]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_addicon
+// [ImageList_AddIcon]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_addicon
 func (hImg HIMAGELIST) AddIcon(hIcons ...HICON) {
 	for _, hIco := range hIcons {
 		hImg.ReplaceIcon(-1, hIco)
@@ -50,7 +50,7 @@ func (hImg HIMAGELIST) AddIcon(hIcons ...HICON) {
 
 // [ImageList_Destroy] function.
 //
-// [ImageList_Destroy]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_destroy
+// [ImageList_Destroy]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_destroy
 func (hImg HIMAGELIST) Destroy() error {
 	// http://www.catch22.net/tuts/win32/system-image-list
 	// https://www.autohotkey.com/docs/commands/ListView.htm
@@ -64,7 +64,7 @@ func (hImg HIMAGELIST) Destroy() error {
 
 // [ImageList_GetIconSize] function.
 //
-// [ImageList_GetIconSize]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticonsize
+// [ImageList_GetIconSize]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_geticonsize
 func (hImg HIMAGELIST) GetIconSize() SIZE {
 	var sz SIZE
 	ret, _, err := syscall.SyscallN(proc.ImageList_GetIconSize.Addr(),
@@ -78,7 +78,7 @@ func (hImg HIMAGELIST) GetIconSize() SIZE {
 
 // [ImageList_GetImageCount] function.
 //
-// [ImageList_GetImageCount]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_getimagecount
+// [ImageList_GetImageCount]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_getimagecount
 func (hImg HIMAGELIST) GetImageCount() uint32 {
 	ret, _, _ := syscall.SyscallN(proc.ImageList_GetImageCount.Addr(),
 		uintptr(hImg))
@@ -91,7 +91,7 @@ func (hImg HIMAGELIST) GetImageCount() uint32 {
 // destroyed, because all icon resources are automatically freed.
 // Otherwise, if loaded with CreateIcon(), it must be destroyed.
 //
-// [ImageList_ReplaceIcon]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_replaceicon
+// [ImageList_ReplaceIcon]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_replaceicon
 func (hImg HIMAGELIST) ReplaceIcon(i int32, hIcon HICON) int32 {
 	ret, _, err := syscall.SyscallN(proc.ImageList_ReplaceIcon.Addr(),
 		uintptr(hImg), uintptr(i), uintptr(hIcon))

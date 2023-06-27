@@ -30,7 +30,7 @@ import (
 //	excel := mainObj.QueryInterface(automco.IID_IDispatch)
 //	defer excel.Release()
 //
-// [CLSIDFromProgID]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
+// [CLSIDFromProgID]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	var guid win.GUID
 	ret, _, _ := syscall.SyscallN(proc.CLSIDFromProgID.Addr(),
@@ -63,7 +63,7 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 //	)
 //	defer comObject.Release()
 //
-// [CoCreateInstance]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
+// [CoCreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
 	rclsid co.CLSID, iUnkOuter *IUnknown,
 	dwClsContext comco.CLSCTX, riid co.IID) IUnknown {
@@ -101,7 +101,7 @@ func CoCreateInstance(
 //
 // ⚠️ You must defer CoUninitialize().
 //
-// [CoInitializeEx]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
+// [CoInitializeEx]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 func CoInitializeEx(coInit comco.COINIT) {
 	ret, _, _ := syscall.SyscallN(proc.CoInitializeEx.Addr(),
 		0, uintptr(coInit))
@@ -112,7 +112,7 @@ func CoInitializeEx(coInit comco.COINIT) {
 
 // [CoUninitialize] function.
 //
-// [CoUninitialize]: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
+// [CoUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
 func CoUninitialize() {
 	syscall.SyscallN(proc.CoUninitialize.Addr())
 }
@@ -127,7 +127,7 @@ func IsObj(obj IUnknown) bool {
 //
 // ⚠️ You must defer OleUninitialize().
 //
-// [OleInitialize]: https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleinitialize
+// [OleInitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleinitialize
 func OleInitialize() {
 	ret, _, _ := syscall.SyscallN(proc.OleInitialize.Addr(),
 		0)
@@ -138,7 +138,7 @@ func OleInitialize() {
 
 // [OleUninitialize] function.
 //
-// [OleUninitialize]: https://docs.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleuninitialize
+// [OleUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-oleuninitialize
 func OleUninitialize() {
 	syscall.SyscallN(proc.OleUninitialize.Addr())
 }

@@ -15,68 +15,68 @@ import (
 
 // [ITaskbarList3] COM interface.
 //
-// [ITaskbarList3]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
+// [ITaskbarList3]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
 type ITaskbarList3 interface {
 	ITaskbarList2
 
 	// [RegisterTab] COM method.
 	//
-	// [RegisterTab]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-registertab
+	// [RegisterTab]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-registertab
 	RegisterTab(hwndTab, hwndMDI win.HWND)
 
 	// [SetOverlayIcon] COM method.
 	//
-	// [SetOverlayIcon]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setoverlayicon
+	// [SetOverlayIcon]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setoverlayicon
 	SetOverlayIcon(hWnd win.HWND, hIcon win.HICON, description string)
 
 	// [SetProgressState] COM method.
 	//
-	// [SetProgressState]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
+	// [SetProgressState]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
 	SetProgressState(hWnd win.HWND, flags shellco.TBPF)
 
 	// [SetProgressValue] COM method.
 	//
-	// [SetProgressValue]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue
+	// [SetProgressValue]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue
 	SetProgressValue(hWnd win.HWND, completed, total uint64)
 
 	// [SetTabActive] COM method.
 	//
-	// [SetTabActive]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settabactive
+	// [SetTabActive]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settabactive
 	SetTabActive(hwndTab, hwndMDI win.HWND)
 
 	// [SetTabOrder] COM method.
 	//
-	// [SetTabOrder]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settaborder
+	// [SetTabOrder]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-settaborder
 	SetTabOrder(hwndTab, hwndInsertBefore win.HWND)
 
 	// [SetThumbnailClip] COM method.
 	//
-	// [SetThumbnailClip]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailclip
+	// [SetThumbnailClip]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailclip
 	SetThumbnailClip(hWnd win.HWND, rcClip *win.RECT)
 
 	// [SetThumbnailTooltip] COM method.
 	//
-	// [SetThumbnailTooltip]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
+	// [SetThumbnailTooltip]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
 	SetThumbnailTooltip(hwnd win.HWND, tip string)
 
 	// [ThumbBarAddButtons] COM method.
 	//
-	// [ThumbBarAddButtons]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbaraddbuttons
+	// [ThumbBarAddButtons]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbaraddbuttons
 	ThumbBarAddButtons(hWnd win.HWND, buttons []THUMBBUTTON)
 
 	// [ThumbBarSetImageList] COM method.
 	//
-	// [ThumbBarSetImageList]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarsetimagelist
+	// [ThumbBarSetImageList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarsetimagelist
 	ThumbBarSetImageList(hWnd win.HWND, hImgl win.HIMAGELIST)
 
 	// [ThumbBarUpdateButtons] COM method.
 	//
-	// [ThumbBarUpdateButtons]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarupdatebuttons
+	// [ThumbBarUpdateButtons]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-thumbbarupdatebuttons
 	ThumbBarUpdateButtons(hWnd win.HWND, buttons []THUMBBUTTON)
 
 	// [UnregisterTab] COM method.
 	//
-	// [UnregisterTab]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-unregistertab
+	// [UnregisterTab]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-unregistertab
 	UnregisterTab(hwndTab win.HWND)
 }
 

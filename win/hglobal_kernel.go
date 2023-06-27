@@ -13,7 +13,7 @@ import (
 
 // A handle to a global [memory block].
 //
-// [memory block]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hglobal
+// [memory block]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hglobal
 type HGLOBAL HANDLE
 
 // [GlobalAlloc] function.
@@ -35,7 +35,7 @@ type HGLOBAL HANDLE
 //	sliceMem := hMem.GlobalLock(50)
 //	defer hMem.GlobalUnlock()
 //
-// [GlobalAlloc]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
+// [GlobalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
 func GlobalAlloc(uFlags co.GMEM, numBytes int) HGLOBAL {
 	ret, _, err := syscall.SyscallN(proc.GlobalAlloc.Addr(),
 		uintptr(uFlags), uintptr(numBytes))
@@ -47,7 +47,7 @@ func GlobalAlloc(uFlags co.GMEM, numBytes int) HGLOBAL {
 
 // [GlobalFlags] function.
 //
-// [GlobalFlags]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalflags
+// [GlobalFlags]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalflags
 func (hGlobal HGLOBAL) GlobalFlags() co.GMEM {
 	ret, _, err := syscall.SyscallN(proc.GlobalFlags.Addr(),
 		uintptr(hGlobal))
@@ -61,7 +61,7 @@ func (hGlobal HGLOBAL) GlobalFlags() co.GMEM {
 //
 // This method is safe to be called if hGlobal is zero.
 //
-// [GlobalFree]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalfree
+// [GlobalFree]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalfree
 func (hGlobal HGLOBAL) GlobalFree() error {
 	ret, _, err := syscall.SyscallN(proc.GlobalFree.Addr(),
 		uintptr(hGlobal))
@@ -91,7 +91,7 @@ func (hGlobal HGLOBAL) GlobalFree() error {
 //	sliceMem := hMem.GlobalLock(hMem.GlobalSize())
 //	defer hMem.GlobalUnlock()
 //
-// [GlobalLock]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globallock
+// [GlobalLock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globallock
 func (hGlobal HGLOBAL) GlobalLock(numBytes int) []byte {
 	ret, _, err := syscall.SyscallN(proc.GlobalLock.Addr(),
 		uintptr(hGlobal))
@@ -105,7 +105,7 @@ func (hGlobal HGLOBAL) GlobalLock(numBytes int) []byte {
 //
 // ⚠️ You must defer HGLOBAL.GlobalFree().
 //
-// [GlobalReAlloc]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalrealloc
+// [GlobalReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalrealloc
 func (hGlobal HGLOBAL) GlobalReAlloc(numBytes int, uFlags co.GMEM) HGLOBAL {
 	ret, _, err := syscall.SyscallN(proc.GlobalReAlloc.Addr(),
 		uintptr(hGlobal), uintptr(numBytes), uintptr(uFlags))
@@ -117,7 +117,7 @@ func (hGlobal HGLOBAL) GlobalReAlloc(numBytes int, uFlags co.GMEM) HGLOBAL {
 
 // [GlobalSize] function.
 //
-// [GlobalSize]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalsize
+// [GlobalSize]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalsize
 func (hGlobal HGLOBAL) GlobalSize() int {
 	ret, _, err := syscall.SyscallN(proc.GlobalSize.Addr(),
 		uintptr(hGlobal))
@@ -129,7 +129,7 @@ func (hGlobal HGLOBAL) GlobalSize() int {
 
 // [GlobalUnlock] function.
 //
-// [GlobalUnlock]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalunlock
+// [GlobalUnlock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalunlock
 func (hGlobal HGLOBAL) GlobalUnlock() error {
 	ret, _, err := syscall.SyscallN(proc.GlobalUnlock.Addr(),
 		uintptr(hGlobal))

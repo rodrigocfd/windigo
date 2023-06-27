@@ -17,28 +17,28 @@ import (
 
 // [IMediaFilter] COM interface.
 //
-// [IMediaFilter]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
+// [IMediaFilter]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
 type IMediaFilter interface {
 	com.IPersist
 
 	// [GetState] COM method.
 	//
-	// [GetState]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-getstate
+	// [GetState]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-getstate
 	GetState(msTimeout win.NumInf) (dshowco.FILTER_STATE, error)
 
 	// [Pause] COM method.
 	//
-	// [Pause]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-pause
+	// [Pause]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-pause
 	Pause() bool
 
 	// [Run] COM method.
 	//
-	// [Run]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-run
+	// [Run]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-run
 	Run(start time.Duration) bool
 
 	// [Stop] COM method.
 	//
-	// [Stop]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-stop
+	// [Stop]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediafilter-stop
 	Stop() bool
 }
 

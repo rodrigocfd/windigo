@@ -13,18 +13,18 @@ import (
 
 // [IBindCtx] COM interface.
 //
-// [IBindCtx]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ibindctx
+// [IBindCtx]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ibindctx
 type IBindCtx interface {
 	IUnknown
 
 	// [ReleaseBoundObjects] COM method.
 	//
-	// [ReleaseBoundObjects]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-releaseboundobjects
+	// [ReleaseBoundObjects]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-releaseboundobjects
 	ReleaseBoundObjects()
 
 	// [RevokeObjectParam] COM method.
 	//
-	// [RevokeObjectParam]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-revokeobjectparam
+	// [RevokeObjectParam]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-revokeobjectparam
 	RevokeObjectParam(key string)
 }
 

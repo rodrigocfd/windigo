@@ -9,14 +9,14 @@ import (
 
 // [FACTORY_OPTIONS] struct.
 //
-// [FACTORY_OPTIONS]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/ns-d2d1-d2d1_factory_options
+// [FACTORY_OPTIONS]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ns-d2d1-d2d1_factory_options
 type FACTORY_OPTIONS struct {
 	DebugLevel d2d1co.DEBUG_LEVEL
 }
 
 // [HWND_RENDER_TARGET_PROPERTIES] struct.
 //
-// [HWND_RENDER_TARGET_PROPERTIES]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/ns-d2d1-d2d1_hwnd_render_target_properties
+// [HWND_RENDER_TARGET_PROPERTIES]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ns-d2d1-d2d1_hwnd_render_target_properties
 type HWND_RENDER_TARGET_PROPERTIES struct {
 	Hwnd           win.HWND
 	PixelSize      SIZE_U
@@ -25,7 +25,7 @@ type HWND_RENDER_TARGET_PROPERTIES struct {
 
 // [PIXEL_FORMAT] struct.
 //
-// [PIXEL_FORMAT]: https://docs.microsoft.com/en-us/windows/win32/api/dcommon/ns-dcommon-d2d1_pixel_format
+// [PIXEL_FORMAT]: https://learn.microsoft.com/en-us/windows/win32/api/dcommon/ns-dcommon-d2d1_pixel_format
 type PIXEL_FORMAT struct {
 	Format    d2d1co.DXGI_FORMAT
 	AlphaMode d2d1co.ALPHA_MODE
@@ -33,7 +33,7 @@ type PIXEL_FORMAT struct {
 
 // [RENDER_TARGET_PROPERTIES] struct.
 //
-// [RENDER_TARGET_PROPERTIES]: https://docs.microsoft.com/en-us/windows/win32/api/d2d1/ns-d2d1-d2d1_render_target_properties
+// [RENDER_TARGET_PROPERTIES]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ns-d2d1-d2d1_render_target_properties
 type RENDER_TARGET_PROPERTIES struct {
 	Type        d2d1co.RENDER_TARGET_TYPE
 	PixelFormat PIXEL_FORMAT
@@ -45,7 +45,7 @@ type RENDER_TARGET_PROPERTIES struct {
 
 // [SIZE_U] struct.
 //
-// [SIZE_U]: https://docs.microsoft.com/en-us/windows/win32/direct2d/d2d1-size-u
+// [SIZE_U]: https://learn.microsoft.com/en-us/windows/win32/direct2d/d2d1-size-u
 type SIZE_U struct {
 	Width, Height uint32
 }

@@ -15,13 +15,13 @@ import (
 
 // [ITaskbarList4] COM interface.
 //
-// [ITaskbarList4]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist4
+// [ITaskbarList4]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist4
 type ITaskbarList4 interface {
 	ITaskbarList3
 
 	// [SetProperties] COM method.
 	//
-	// [SetProperties]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist4-settabproperties
+	// [SetProperties]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist4-settabproperties
 	SetProperties(hwndTab win.HWND, flags shellco.STPFLAG)
 }
 

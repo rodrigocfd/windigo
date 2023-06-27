@@ -18,7 +18,7 @@ import (
 //
 // ⚠️ You must defer FreeConsole().
 //
-// [AllocConsole]: https://docs.microsoft.com/en-us/windows/console/allocconsole
+// [AllocConsole]: https://learn.microsoft.com/en-us/windows/console/allocconsole
 func AllocConsole() error {
 	ret, _, err := syscall.SyscallN(proc.AllocConsole.Addr())
 	if ret == 0 {
@@ -31,7 +31,7 @@ func AllocConsole() error {
 //
 // ⚠️ You must defer FreeConsole().
 //
-// [AttachConsole]: https://docs.microsoft.com/en-us/windows/console/attachconsole
+// [AttachConsole]: https://learn.microsoft.com/en-us/windows/console/attachconsole
 func AttachConsole(processId uint32) error {
 	ret, _, err := syscall.SyscallN(proc.AttachConsole.Addr(),
 		uintptr(processId))
@@ -43,7 +43,7 @@ func AttachConsole(processId uint32) error {
 
 // [CopyFile] function.
 //
-// [CopyFile]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-copyfilew
+// [CopyFile]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-copyfilew
 func CopyFile(existingFile, newFile string, failIfExists bool) error {
 	ret, _, err := syscall.SyscallN(proc.CopyFile.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(existingFile))),
@@ -57,7 +57,7 @@ func CopyFile(existingFile, newFile string, failIfExists bool) error {
 
 // [CreateDirectory] function.
 //
-// [CreateDirectory]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw
+// [CreateDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw
 func CreateDirectory(
 	pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
 
@@ -75,7 +75,7 @@ func CreateDirectory(
 // ⚠️ You must defer HPROCESS.CloseHandle() and HTHREAD.CloseHandle() on
 // HProcess and HThread members of PROCESS_INFORMATION.
 //
-// [CreateProcess]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw
+// [CreateProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw
 func CreateProcess(
 	applicationName, commandLine StrOpt,
 	processAttributes, threadAttributes *SECURITY_ATTRIBUTES,
@@ -117,7 +117,7 @@ func CreateProcess(
 
 // [DeleteFile] function.
 //
-// [DeleteFile]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
+// [DeleteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
 func DeleteFile(fileName string) error {
 	ret, _, err := syscall.SyscallN(proc.DeleteFile.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))))
@@ -129,7 +129,7 @@ func DeleteFile(fileName string) error {
 
 // [EnumProcesses] function.
 //
-// [EnumProcesses]: https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocesses
+// [EnumProcesses]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocesses
 func EnumProcesses() ([]uint32, error) {
 	const UINT32_SZ = unsafe.Sizeof(uint32(0)) // in bytes
 
@@ -164,7 +164,7 @@ func EnumProcesses() ([]uint32, error) {
 
 // [ExitProcess] function.
 //
-// [ExitProcess]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess
+// [ExitProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess
 func ExitProcess(exitCode uint32) {
 	syscall.SyscallN(proc.ExitProcess.Addr(),
 		uintptr(exitCode))
@@ -172,7 +172,7 @@ func ExitProcess(exitCode uint32) {
 
 // [ExpandEnvironmentStrings] function.
 //
-// [ExpandEnvironmentStrings]: https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
+// [ExpandEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
 func ExpandEnvironmentStrings(src string) string {
 	pSrc := Str.ToNativePtr(src)
 	ret, _, _ := syscall.SyscallN(proc.ExpandEnvironmentStrings.Addr(),
@@ -191,7 +191,7 @@ func ExpandEnvironmentStrings(src string) string {
 
 // [FileTimeToSystemTime] function.
 //
-// [FileTimeToSystemTime]: https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
+// [FileTimeToSystemTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
 func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
 	ret, _, err := syscall.SyscallN(proc.FileTimeToSystemTime.Addr(),
 		uintptr(unsafe.Pointer(inFileTime)),
@@ -203,7 +203,7 @@ func FileTimeToSystemTime(inFileTime *FILETIME, outSystemTime *SYSTEMTIME) {
 
 // [FreeConsole] function.
 //
-// [FreeConsole]: https://docs.microsoft.com/en-us/windows/console/freeconsole
+// [FreeConsole]: https://learn.microsoft.com/en-us/windows/console/freeconsole
 func FreeConsole() error {
 	ret, _, err := syscall.SyscallN(proc.FreeConsole.Addr())
 	if ret == 0 {
@@ -214,7 +214,7 @@ func FreeConsole() error {
 
 // [GetCommandLine] function.
 //
-// [GetCommandLine]: https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getcommandlinew
+// [GetCommandLine]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getcommandlinew
 func GetCommandLine() string {
 	ret, _, _ := syscall.SyscallN(proc.GetCommandLine.Addr())
 	return Str.FromNativePtr((*uint16)(unsafe.Pointer(ret)))
@@ -222,7 +222,7 @@ func GetCommandLine() string {
 
 // [GetConsoleCP] function.
 //
-// [GetConsoleCP]: https://docs.microsoft.com/en-us/windows/console/getconsolecp
+// [GetConsoleCP]: https://learn.microsoft.com/en-us/windows/console/getconsolecp
 func GetConsoleCP() (co.CP, error) {
 	ret, _, err := syscall.SyscallN(proc.GetConsoleCP.Addr())
 	if ret == 0 {
@@ -233,7 +233,7 @@ func GetConsoleCP() (co.CP, error) {
 
 // [GetConsoleTitle] function.
 //
-// [GetConsoleTitle]: https://docs.microsoft.com/en-us/windows/console/getconsoletitle
+// [GetConsoleTitle]: https://learn.microsoft.com/en-us/windows/console/getconsoletitle
 func GetConsoleTitle() (string, error) {
 	const BUF_SZ = _MAX_PATH * 2
 	buf := make([]uint16, BUF_SZ)
@@ -248,7 +248,7 @@ func GetConsoleTitle() (string, error) {
 
 // [GetConsoleWindow] function.
 //
-// [GetConsoleWindow]: https://docs.microsoft.com/en-us/windows/console/getconsolewindow
+// [GetConsoleWindow]: https://learn.microsoft.com/en-us/windows/console/getconsolewindow
 func GetConsoleWindow() HWND {
 	ret, _, _ := syscall.SyscallN(proc.GetConsoleWindow.Addr())
 	return HWND(ret)
@@ -256,7 +256,7 @@ func GetConsoleWindow() HWND {
 
 // [GetCurrentDirectory] function.
 //
-// [GetCurrentDirectory]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getcurrentdirectory
+// [GetCurrentDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getcurrentdirectory
 func GetCurrentDirectory() string {
 	var buf [_MAX_PATH + 1]uint16
 	ret, _, err := syscall.SyscallN(proc.GetCurrentDirectory.Addr(),
@@ -269,7 +269,7 @@ func GetCurrentDirectory() string {
 
 // [GetCurrentProcessId] function.
 //
-// [GetCurrentProcessId]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
+// [GetCurrentProcessId]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
 func GetCurrentProcessId() uint32 {
 	ret, _, _ := syscall.SyscallN(proc.GetCurrentProcessId.Addr())
 	return uint32(ret)
@@ -277,7 +277,7 @@ func GetCurrentProcessId() uint32 {
 
 // [GetCurrentThreadId] function.
 //
-// [GetCurrentThreadId]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthreadid
+// [GetCurrentThreadId]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthreadid
 func GetCurrentThreadId() uint32 {
 	ret, _, _ := syscall.SyscallN(proc.GetCurrentThreadId.Addr())
 	return uint32(ret)
@@ -285,7 +285,7 @@ func GetCurrentThreadId() uint32 {
 
 // [GetDynamicTimeZoneInformation] function.
 //
-// [GetDynamicTimeZoneInformation]: https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-getdynamictimezoneinformation
+// [GetDynamicTimeZoneInformation]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-getdynamictimezoneinformation
 func GetDynamicTimeZoneInformation(
 	timeZoneInfo *DYNAMIC_TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
 
@@ -299,7 +299,7 @@ func GetDynamicTimeZoneInformation(
 // You don't need to call [FreeEnvironmentStrings], it's automatically called
 // after the data retrieval.
 //
-// [GetEnvironmentStrings]: https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getenvironmentstringsw
+// [GetEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getenvironmentstringsw
 // [FreeEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-freeenvironmentstringsw
 func GetEnvironmentStrings() map[string]string {
 	ret, _, err := syscall.SyscallN(proc.GetEnvironmentStrings.Addr())
@@ -324,7 +324,7 @@ func GetEnvironmentStrings() map[string]string {
 
 // [GetFileAttributes] function.
 //
-// [GetFileAttributes]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
+// [GetFileAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
 	ret, _, err := syscall.SyscallN(proc.GetFileAttributes.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))))
@@ -338,7 +338,7 @@ func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
 
 // [GetStartupInfo] function.
 //
-// [GetStartupInfo]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getstartupinfow
+// [GetStartupInfo]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getstartupinfow
 func GetStartupInfo(startupInfo *STARTUPINFO) {
 	syscall.SyscallN(proc.GetStartupInfo.Addr(),
 		uintptr(unsafe.Pointer(startupInfo)))
@@ -346,7 +346,7 @@ func GetStartupInfo(startupInfo *STARTUPINFO) {
 
 // [GetSystemInfo] function.
 //
-// [GetSystemInfo]: https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsysteminfo
+// [GetSystemInfo]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsysteminfo
 func GetSystemInfo(systemInfo *SYSTEM_INFO) {
 	syscall.SyscallN(proc.GetSystemInfo.Addr(),
 		uintptr(unsafe.Pointer(systemInfo)))
@@ -354,7 +354,7 @@ func GetSystemInfo(systemInfo *SYSTEM_INFO) {
 
 // [GetSystemTime] function.
 //
-// [GetSystemTime]: https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtime
+// [GetSystemTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtime
 func GetSystemTime(systemTime *SYSTEMTIME) {
 	syscall.SyscallN(proc.GetSystemTime.Addr(),
 		uintptr(unsafe.Pointer(systemTime)))
@@ -362,7 +362,7 @@ func GetSystemTime(systemTime *SYSTEMTIME) {
 
 // [GetSystemTimes] function.
 //
-// [GetSystemTimes]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getsystemtimes
+// [GetSystemTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getsystemtimes
 func GetSystemTimes(idleTime, kernelTime, userTime *FILETIME) {
 	ret, _, err := syscall.SyscallN(proc.GetSystemTimes.Addr(),
 		uintptr(unsafe.Pointer(idleTime)), uintptr(unsafe.Pointer(kernelTime)),
@@ -374,7 +374,7 @@ func GetSystemTimes(idleTime, kernelTime, userTime *FILETIME) {
 
 // [GetSystemTimeAsFileTime] function.
 //
-// [GetSystemTimeAsFileTime]: https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimeasfiletime
+// [GetSystemTimeAsFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimeasfiletime
 func GetSystemTimeAsFileTime() FILETIME {
 	var ft FILETIME
 	syscall.SyscallN(proc.GetSystemTimeAsFileTime.Addr(),
@@ -384,7 +384,7 @@ func GetSystemTimeAsFileTime() FILETIME {
 
 // [GetSystemTimePreciseAsFileTime] function.
 //
-// [GetSystemTimePreciseAsFileTime]: https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimepreciseasfiletime
+// [GetSystemTimePreciseAsFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimepreciseasfiletime
 func GetSystemTimePreciseAsFileTime() FILETIME {
 	var ft FILETIME
 	syscall.SyscallN(proc.GetSystemTimePreciseAsFileTime.Addr(),
@@ -394,7 +394,7 @@ func GetSystemTimePreciseAsFileTime() FILETIME {
 
 // [GetTimeZoneInformation] function.
 //
-// [GetTimeZoneInformation]: https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation
+// [GetTimeZoneInformation]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation
 func GetTimeZoneInformation(
 	timeZoneInfo *TIME_ZONE_INFORMATION) co.TIME_ZONE_ID {
 
@@ -405,7 +405,7 @@ func GetTimeZoneInformation(
 
 // [GetTimeZoneInformationForYear] function.
 //
-// [GetTimeZoneInformationForYear]: https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformationforyear
+// [GetTimeZoneInformationForYear]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformationforyear
 func GetTimeZoneInformationForYear(
 	wYear uint16,
 	dtzi *DYNAMIC_TIME_ZONE_INFORMATION, tzi *TIME_ZONE_INFORMATION) {
@@ -440,7 +440,7 @@ type _VolumeInfo struct {
 //	fmt.Printf("Max component length: %d\n", nfo.MaxComponentLength)
 //	fmt.Printf("Serial number: 0x08%x\n", nfo.SerialNumber)
 //
-// [GetVolumeInformation]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getvolumeinformationw
+// [GetVolumeInformation]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getvolumeinformationw
 func GetVolumeInformation(rootPathName StrOpt) (_VolumeInfo, error) {
 	var info _VolumeInfo
 	var nameBuf [_MAX_PATH + 1]uint16
@@ -465,7 +465,7 @@ func GetVolumeInformation(rootPathName StrOpt) (_VolumeInfo, error) {
 
 // [GetWindowsDirectory] function.
 //
-// [GetWindowsDirectory]: https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getwindowsdirectoryw
+// [GetWindowsDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getwindowsdirectoryw
 func GetWindowsDirectory() string {
 	var buf [_MAX_PATH + 1]uint16
 	ret, _, err := syscall.SyscallN(proc.GetWindowsDirectory.Addr(),
@@ -478,7 +478,7 @@ func GetWindowsDirectory() string {
 
 // [HIBYTE] macro.
 //
-// [HIBYTE]: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632656(v=vs.85)
+// [HIBYTE]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632656(v=vs.85)
 func HIBYTE(val uint16) uint8 {
 	_, hi := util.Break16(val)
 	return hi
@@ -486,7 +486,7 @@ func HIBYTE(val uint16) uint8 {
 
 // [HIWORD] macro.
 //
-// [HIWORD]: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632657(v=vs.85)
+// [HIWORD]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632657(v=vs.85)
 func HIWORD(val uint32) uint16 {
 	_, hi := util.Break32(val)
 	return hi
@@ -494,7 +494,7 @@ func HIWORD(val uint32) uint16 {
 
 // [IsWindows10OrGreater] function.
 //
-// [IsWindows10OrGreater]: https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows10orgreater
+// [IsWindows10OrGreater]: https://learn.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows10orgreater
 func IsWindows10OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(HIBYTE(uint16(co.WIN32_WINNT_WINTHRESHOLD))),
@@ -504,7 +504,7 @@ func IsWindows10OrGreater() bool {
 
 // [IsWindows7OrGreater] function.
 //
-// [IsWindows7OrGreater]: https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows7orgreater
+// [IsWindows7OrGreater]: https://learn.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows7orgreater
 func IsWindows7OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(HIBYTE(uint16(co.WIN32_WINNT_WIN7))),
@@ -514,7 +514,7 @@ func IsWindows7OrGreater() bool {
 
 // [IsWindows8OrGreater] function.
 //
-// [IsWindows8OrGreater]: https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8orgreater
+// [IsWindows8OrGreater]: https://learn.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8orgreater
 func IsWindows8OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(HIBYTE(uint16(co.WIN32_WINNT_WIN8))),
@@ -524,7 +524,7 @@ func IsWindows8OrGreater() bool {
 
 // [IsWindows8Point1OrGreater] function.
 //
-// [IsWindows8Point1OrGreater]: https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8point1orgreater
+// [IsWindows8Point1OrGreater]: https://learn.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindows8point1orgreater
 func IsWindows8Point1OrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(HIBYTE(uint16(co.WIN32_WINNT_WINBLUE))),
@@ -534,7 +534,7 @@ func IsWindows8Point1OrGreater() bool {
 
 // [IsWindowsVistaOrGreater] function.
 //
-// [IsWindowsVistaOrGreater]: https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsvistaorgreater
+// [IsWindowsVistaOrGreater]: https://learn.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsvistaorgreater
 func IsWindowsVistaOrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(HIBYTE(uint16(co.WIN32_WINNT_VISTA))),
@@ -544,7 +544,7 @@ func IsWindowsVistaOrGreater() bool {
 
 // [IsWindowsXpOrGreater] function.
 //
-// [IsWindowsXpOrGreater]: https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsxporgreater
+// [IsWindowsXpOrGreater]: https://learn.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsxporgreater
 func IsWindowsXpOrGreater() bool {
 	return IsWindowsVersionOrGreater(
 		uint32(HIBYTE(uint16(co.WIN32_WINNT_WINXP))),
@@ -554,7 +554,7 @@ func IsWindowsXpOrGreater() bool {
 
 // [IsWindowsVersionOrGreater] function.
 //
-// [IsWindowsVersionOrGreater]: https://docs.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsversionorgreater
+// [IsWindowsVersionOrGreater]: https://learn.microsoft.com/en-us/windows/win32/api/versionhelpers/nf-versionhelpers-iswindowsversionorgreater
 func IsWindowsVersionOrGreater(
 	majorVersion, minorVersion uint32, servicePackMajor uint16) bool {
 
@@ -582,7 +582,7 @@ func IsWindowsVersionOrGreater(
 
 // [LOBYTE] macro.
 //
-// [LOBYTE]: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632658(v=vs.85)
+// [LOBYTE]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632658(v=vs.85)
 func LOBYTE(val uint16) uint8 {
 	lo, _ := util.Break16(val)
 	return lo
@@ -590,7 +590,7 @@ func LOBYTE(val uint16) uint8 {
 
 // [LOWORD] macro.
 //
-// [LOWORD]: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632659(v=vs.85)
+// [LOWORD]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632659(v=vs.85)
 func LOWORD(val uint32) uint16 {
 	lo, _ := util.Break32(val)
 	return lo
@@ -598,21 +598,21 @@ func LOWORD(val uint32) uint16 {
 
 // [MAKELONG] macro.
 //
-// [MAKELONG]: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632660(v=vs.85)
+// [MAKELONG]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632660(v=vs.85)
 func MAKELONG(lo, hi uint16) uint32 {
 	return util.Make32(lo, hi)
 }
 
 // [MAKEWORD] macro.
 //
-// [MAKEWORD]: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632663(v=vs.85)
+// [MAKEWORD]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632663(v=vs.85)
 func MAKEWORD(lo, hi uint8) uint16 {
 	return util.Make16(lo, hi)
 }
 
 // [MoveFile] function.
 //
-// [MoveFile]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefilew
+// [MoveFile]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefilew
 func MoveFile(existingFile, newFile string) error {
 	ret, _, err := syscall.SyscallN(proc.MoveFile.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(existingFile))),
@@ -625,7 +625,7 @@ func MoveFile(existingFile, newFile string) error {
 
 // [MoveFileEx] function.
 //
-// [MoveFileEx]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw
+// [MoveFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw
 func MoveFileEx(existingFile, newFile string, flags co.MOVEFILE) error {
 	ret, _, err := syscall.SyscallN(proc.MoveFileEx.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(existingFile))),
@@ -643,7 +643,7 @@ func MoveFileEx(existingFile, newFile string, flags co.MOVEFILE) error {
 //
 //	res := int32((int64(n) * int64(num)) / int64(den))
 //
-// [MulDiv]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-muldiv
+// [MulDiv]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-muldiv
 func MulDiv(number, numerator, denominator int32) int32 {
 	ret, _, _ := syscall.SyscallN(proc.MulDiv.Addr(),
 		uintptr(number), uintptr(numerator), uintptr(denominator))
@@ -652,7 +652,7 @@ func MulDiv(number, numerator, denominator int32) int32 {
 
 // [QueryPerformanceCounter] function.
 //
-// [QueryPerformanceCounter]: https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter
+// [QueryPerformanceCounter]: https://learn.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter
 func QueryPerformanceCounter() int64 {
 	var lpPerformanceCount int64
 	ret, _, err := syscall.SyscallN(proc.QueryPerformanceCounter.Addr(),
@@ -665,7 +665,7 @@ func QueryPerformanceCounter() int64 {
 
 // [QueryPerformanceFrequency] function.
 //
-// [QueryPerformanceFrequency]: https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancefrequency
+// [QueryPerformanceFrequency]: https://learn.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancefrequency
 func QueryPerformanceFrequency() int64 {
 	var lpFrequency int64
 	ret, _, err := syscall.SyscallN(proc.QueryPerformanceFrequency.Addr(),
@@ -678,7 +678,7 @@ func QueryPerformanceFrequency() int64 {
 
 // [RemoveDirectory] function.
 //
-// [RemoveDirectory]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw
+// [RemoveDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw
 func RemoveDirectory(pathName string) error {
 	ret, _, err := syscall.SyscallN(proc.RemoveDirectory.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(pathName))))
@@ -690,7 +690,7 @@ func RemoveDirectory(pathName string) error {
 
 // [ReplaceFile] function.
 //
-// [ReplaceFile]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew
+// [ReplaceFile]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew
 func ReplaceFile(
 	replaced, replacement string,
 	backup StrOpt, replaceFlags co.REPLACEFILE) error {
@@ -707,7 +707,7 @@ func ReplaceFile(
 
 // [SetConsoleOutputCP] function.
 //
-// [SetConsoleOutputCP]: https://docs.microsoft.com/en-us/windows/console/setconsoleoutputcp
+// [SetConsoleOutputCP]: https://learn.microsoft.com/en-us/windows/console/setconsoleoutputcp
 func SetConsoleOutputCP(codePage co.CP) error {
 	ret, _, err := syscall.SyscallN(proc.SetConsoleOutputCP.Addr(),
 		uintptr(codePage))
@@ -719,7 +719,7 @@ func SetConsoleOutputCP(codePage co.CP) error {
 
 // [SetConsoleTitle] function.
 //
-// [SetConsoleTitle]: https://docs.microsoft.com/en-us/windows/console/setconsoletitle
+// [SetConsoleTitle]: https://learn.microsoft.com/en-us/windows/console/setconsoletitle
 func SetConsoleTitle(title string) error {
 	ret, _, err := syscall.SyscallN(proc.SetConsoleTitle.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(title))))
@@ -731,7 +731,7 @@ func SetConsoleTitle(title string) error {
 
 // [SetCurrentDirectory] function.
 //
-// [SetCurrentDirectory]: https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setcurrentdirectory
+// [SetCurrentDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setcurrentdirectory
 func SetCurrentDirectory(pathName string) error {
 	ret, _, err := syscall.SyscallN(proc.SetCurrentDirectory.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(pathName))))
@@ -743,7 +743,7 @@ func SetCurrentDirectory(pathName string) error {
 
 // [SetFileAttributes] function.
 //
-// [SetFileAttributes]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfileattributesw
+// [SetFileAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfileattributesw
 func SetFileAttributes(fileName string, attrs co.FILE_ATTRIBUTE) error {
 	ret, _, err := syscall.SyscallN(proc.SetFileAttributes.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(fileName))), uintptr(attrs))
@@ -755,7 +755,7 @@ func SetFileAttributes(fileName string, attrs co.FILE_ATTRIBUTE) error {
 
 // [Sleep] function.
 //
-// [Sleep]: https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
+// [Sleep]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
 func Sleep(milliseconds uint32) {
 	syscall.SyscallN(proc.Sleep.Addr(),
 		uintptr(milliseconds))
@@ -763,7 +763,7 @@ func Sleep(milliseconds uint32) {
 
 // [SystemParametersInfo] function.
 //
-// [SystemParametersInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
+// [SystemParametersInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
 func SystemParametersInfo(
 	uiAction co.SPI, uiParam uint32, pvParam unsafe.Pointer, fWinIni co.SPIF) {
 
@@ -776,7 +776,7 @@ func SystemParametersInfo(
 
 // [SystemTimeToFileTime] function.
 //
-// [SystemTimeToFileTime]: https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetofiletime
+// [SystemTimeToFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetofiletime
 func SystemTimeToFileTime(inSystemTime *SYSTEMTIME, outFileTime *FILETIME) {
 	ret, _, err := syscall.SyscallN(proc.SystemTimeToFileTime.Addr(),
 		uintptr(unsafe.Pointer(inSystemTime)),
@@ -788,7 +788,7 @@ func SystemTimeToFileTime(inSystemTime *SYSTEMTIME, outFileTime *FILETIME) {
 
 // [SystemTimeToTzSpecificLocalTime] function.
 //
-// [SystemTimeToTzSpecificLocalTime]: https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetotzspecificlocaltime
+// [SystemTimeToTzSpecificLocalTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetotzspecificlocaltime
 func SystemTimeToTzSpecificLocalTime(
 	timeZoneInfo *TIME_ZONE_INFORMATION,
 	inUniversalTime *SYSTEMTIME, outLocalTime *SYSTEMTIME) {
@@ -804,7 +804,7 @@ func SystemTimeToTzSpecificLocalTime(
 
 // [TzSpecificLocalTimeToSystemTime] function.
 //
-// [TzSpecificLocalTimeToSystemTime]: https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-tzspecificlocaltimetosystemtime
+// [TzSpecificLocalTimeToSystemTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-tzspecificlocaltimetosystemtime
 func TzSpecificLocalTimeToSystemTime(
 	timeZoneInfo *TIME_ZONE_INFORMATION,
 	inLocalTime *SYSTEMTIME, outUniversalTime *SYSTEMTIME) {

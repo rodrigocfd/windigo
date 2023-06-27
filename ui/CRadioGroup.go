@@ -10,7 +10,7 @@ type RadioGroup interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_RadioButtonEvents
 
 	AsCtrls() []AnyControl         // Returns all radios buttons as AnyControl.
@@ -139,7 +139,7 @@ func (me *_RadioButtonEvents) new(radios *[]RadioButton) {
 	me.radios = radios
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bn-clicked
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
 func (me *_RadioButtonEvents) BnClicked(userFunc func(radio RadioButton)) {
 	for _, radio := range *me.radios {
 		curRadio := radio
@@ -149,7 +149,7 @@ func (me *_RadioButtonEvents) BnClicked(userFunc func(radio RadioButton)) {
 	}
 }
 
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bn-dblclk
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bn-dblclk
 func (me *_RadioButtonEvents) BnDblClk(userFunc func(radio RadioButton)) {
 	for _, radio := range *me.radios {
 		curRadio := radio

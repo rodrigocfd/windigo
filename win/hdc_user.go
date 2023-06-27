@@ -15,7 +15,7 @@ import (
 
 // [DrawIcon] function.
 //
-// [DrawIcon]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawicon
+// [DrawIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawicon
 func (hdc HDC) DrawIcon(x, y int32, hIcon HICON) {
 	ret, _, err := syscall.SyscallN(proc.DrawIcon.Addr(),
 		uintptr(hdc), uintptr(x), uintptr(y), uintptr(hIcon))
@@ -26,7 +26,7 @@ func (hdc HDC) DrawIcon(x, y int32, hIcon HICON) {
 
 // [DrawIconEx] function.
 //
-// [DrawIconEx]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawiconex
+// [DrawIconEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawiconex
 func (hdc HDC) DrawIconEx(
 	pos POINT, hIcon HICON, size SIZE, frameIndex uint32,
 	hbrFlickerFree HBRUSH, diFlags co.DI) {
@@ -45,7 +45,7 @@ func (hdc HDC) DrawIconEx(
 // To continue enumeration, the callback function must return true; to stop
 // enumeration, it must return false.
 //
-// [EnumDisplayMonitors]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
+// [EnumDisplayMonitors]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
 func (hdc HDC) EnumDisplayMonitors(
 	rcClip *RECT,
 	callback func(hMon HMONITOR, hdcMon HDC, rcMon *RECT) bool) error {
@@ -88,7 +88,7 @@ var (
 
 // [FrameRect] function.
 //
-// [FrameRect]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-framerect
+// [FrameRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-framerect
 func (hdc HDC) FrameRect(rc *RECT, hBrush HBRUSH) {
 	ret, _, err := syscall.SyscallN(proc.FrameRect.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(rc)), uintptr(hBrush))
@@ -99,7 +99,7 @@ func (hdc HDC) FrameRect(rc *RECT, hBrush HBRUSH) {
 
 // [InvertRect] function.
 //
-// [InvertRect]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invertrect
+// [InvertRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invertrect
 func (hdc HDC) InvertRect(rc *RECT) {
 	ret, _, err := syscall.SyscallN(proc.InvertRect.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(rc)))

@@ -8,7 +8,7 @@ import (
 
 // IDispatch virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 type IDispatch struct {
 	comvt.IUnknown
 	GetTypeInfoCount uintptr
@@ -19,7 +19,7 @@ type IDispatch struct {
 
 // IErrorLog virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ierrorlog
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ierrorlog
 type IErrorLog struct {
 	comvt.IUnknown
 	AddError uintptr
@@ -27,7 +27,7 @@ type IErrorLog struct {
 
 // IPropertyBag virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ipropertybag
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ipropertybag
 type IPropertyBag struct {
 	comvt.IUnknown
 	Read  uintptr
@@ -36,7 +36,7 @@ type IPropertyBag struct {
 
 // ITypeInfo virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
 type ITypeInfo struct {
 	comvt.IUnknown
 	GetTypeAttr          uintptr

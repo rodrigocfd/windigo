@@ -13,13 +13,13 @@ import (
 
 // [IPersist] COM interface.
 //
-// [IPersist]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
+// [IPersist]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ipersist
 type IPersist interface {
 	IUnknown
 
 	// [GetClassID] COM method.
 	//
-	// [GetClassID]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ipersist-getclassid
+	// [GetClassID]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ipersist-getclassid
 	GetClassID() *win.GUID
 }
 

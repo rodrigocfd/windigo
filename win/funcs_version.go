@@ -14,7 +14,7 @@ import (
 //
 // Automatically allocs the buffer with GetFileVersionInfoSize().
 //
-// [GetFileVersionInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
+// [GetFileVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
 func GetFileVersionInfo(fileName string) ([]byte, error) {
 	visz, errSz := GetFileVersionInfoSize(fileName)
 	if errSz != nil {
@@ -34,7 +34,7 @@ func GetFileVersionInfo(fileName string) ([]byte, error) {
 
 // [GetFileVersionInfo] function.
 //
-// [GetFileVersionInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
+// [GetFileVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
 func GetFileVersionInfoSize(fileName string) (uint32, error) {
 	var lpdwHandle uint32
 	ret, _, err := syscall.SyscallN(proc.GetFileVersionInfoSize.Addr(),
@@ -53,7 +53,7 @@ func GetFileVersionInfoSize(fileName string) (uint32, error) {
 //
 // This function is rather tricky. Prefer using ResourceInfo.
 //
-// [VerQueryValue]: https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
+// [VerQueryValue]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
 func VerQueryValue(
 	block []byte, subBlock string) (ptr unsafe.Pointer, sz uint32, exists bool) {
 

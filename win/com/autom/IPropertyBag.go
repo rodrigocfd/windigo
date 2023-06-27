@@ -14,7 +14,7 @@ import (
 
 // [IPropertyBag] COM interface.
 //
-// [IPropertyBag]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ipropertybag
+// [IPropertyBag]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-ipropertybag
 type IPropertyBag interface {
 	com.IUnknown
 
@@ -24,12 +24,12 @@ type IPropertyBag interface {
 	//
 	// ⚠️ You must defer VARIANT.VariantClear() on the returned object.
 	//
-	// [Read]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ipropertybag-read
+	// [Read]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ipropertybag-read
 	Read(propName string, errorLog IErrorLog) VARIANT
 
 	// [Write] COM method.
 	//
-	// [Write]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ipropertybag-write
+	// [Write]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ipropertybag-write
 	Write(propName string, value *VARIANT)
 }
 

@@ -2,9 +2,9 @@
 
 package co
 
-// NMTVASYNCDRAW dwRetFlags, don't seem to be defined anywhere, values are unconfirmed.
+// [NMTVASYNCDRAW] dwRetFlags, don't seem to be defined anywhere, values are unconfirmed.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvasyncdraw
+// [NMTVASYNCDRAW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtvasyncdraw
 type ADRF uint32
 
 const (
@@ -14,9 +14,9 @@ const (
 	ADRF_DRAWIMAGE    ADRF = 3
 )
 
-// Toolbar button styles.
+// Toolbar button [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/toolbar-control-and-button-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-control-and-button-styles
 type BTNS uint8
 
 const (
@@ -32,9 +32,9 @@ const (
 	BTNS_WHOLEDROPDOWN BTNS = 0x0080
 )
 
-// NMCUSTOMDRAW dwDrawStage.
+// [NMCUSTOMDRAW] dwDrawStage.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcustomdraw
+// [NMCUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcustomdraw
 type CDDS uint32
 
 const (
@@ -50,9 +50,9 @@ const (
 	CDDS_SUBITEM       CDDS = 0x0002_0000
 )
 
-// NMCUSTOMDRAW uItemState.
+// [NMCUSTOMDRAW] uItemState.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcustomdraw
+// [NMCUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcustomdraw
 type CDIS uint32
 
 const (
@@ -71,9 +71,9 @@ const (
 	CDIS_DROPHILITED      CDIS = 0x1000
 )
 
-// NM_CUSTOMDRAW return value.
+// [NM_CUSTOMDRAW] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcustomdraw
+// [NM_CUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmcustomdraw
 type CDRF uint32
 
 const (
@@ -88,9 +88,9 @@ const (
 	CDRF_NOTIFYPOSTERASE   CDRF = 0x0000_0040
 )
 
-// Clipboard formats.
+// Clipboard [formats].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/dataxchg/standard-clipboard-formats
+// [formats]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/standard-clipboard-formats
 type CF uint16
 
 const (
@@ -123,9 +123,9 @@ const (
 	CF_GDIOBJLAST      CF = 0x03ff
 )
 
-// DateTimePicker control styles.
+// DateTimePicker control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-control-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-control-styles
 type DTS WS
 
 const (
@@ -140,9 +140,9 @@ const (
 	DTS_RIGHTALIGN             DTS = 0x0020
 )
 
-// NMLVEMPTYMARKUP dwFlags.
+// [NMLVEMPTYMARKUP] dwFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvemptymarkup
+// [NMLVEMPTYMARKUP]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvemptymarkup
 type EMF uint32
 
 const (
@@ -150,9 +150,9 @@ const (
 	EMF_CENTERED EMF = 0x0000_0001
 )
 
-// DTM_SETSYSTEMTIME action.
+// [DTM_SETSYSTEMTIME] action.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/dtm-setsystemtime
+// [DTM_SETSYSTEMTIME]: https://learn.microsoft.com/en-us/windows/win32/controls/dtm-setsystemtime
 type GDT uint32
 
 const (
@@ -160,9 +160,11 @@ const (
 	GDT_NONE  GDT = 1
 )
 
-// NMBCHOTITEM and NMTBHOTITEM dwFlags, NMTBWRAPHOTITEM iReason.
+// [NMBCHOTITEM] and [NMTBHOTITEM] dwFlags, [NMTBWRAPHOTITEM] iReason.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbchotitem
+// [NMBCHOTITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbchotitem
+// [NMTBHOTITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbhotitem
+// [NMTBWRAPHOTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-wraphotitem
 type HICF uint32
 
 const (
@@ -178,9 +180,9 @@ const (
 	HICF_TOGGLEDROPDOWN HICF = 0x0000_0100
 )
 
-// INITCOMMONCONTROLSEX dwIcc.
+// [INITCOMMONCONTROLSEX] dwIcc.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
+// [INITCOMMONCONTROLSEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
 type ICC uint32
 
 const (
@@ -203,9 +205,9 @@ const (
 	ICC_WIN95_CLASSES      ICC = 0x0000_00ff // Load animate control, header, hot key, list-view, progress bar, status bar, tab, tooltip, toolbar, trackbar, tree-view, and up-down control classes.
 )
 
-// ImageList_Create() flags.
+// [ImageList_Create] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
+// [ImageList_Create]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
 type ILC uint32
 
 const (
@@ -224,9 +226,9 @@ const (
 	ILC_HIGHQUALITYSCALE ILC = 0x0002_0000
 )
 
-// ImageList_Draw() flags.
+// [ImageList_Draw] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_draw
+// [ImageList_Draw]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_draw
 type ILD uint32
 
 const (
@@ -247,9 +249,9 @@ const (
 	ILD_BLEND         ILD = ILD_BLEND50
 )
 
-// ImageList state flags.
+// ImageList state [flags].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/imageliststateflags
+// [flags]: https://learn.microsoft.com/en-us/windows/win32/controls/imageliststateflags
 type ILS uint32
 
 const (
@@ -260,9 +262,9 @@ const (
 	ILS_ALPHA    ILS = 0x0000_0008
 )
 
-// LITEM mask.
+// [LITEM] mask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
+// [LITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
 type LIF uint32
 
 const (
@@ -272,9 +274,9 @@ const (
 	LIF_URL       LIF = 0x0000_0008
 )
 
-// LITEM state.
+// [LITEM] state.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
+// [LITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-litem
 type LIS uint32
 
 const (
@@ -285,9 +287,9 @@ const (
 	LIS_DEFAULTCOLORS LIS = 0x0000_0010
 )
 
-// LVM_GETVIEW return value.
+// [LVM_GETVIEW] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getview
+// [LVM_GETVIEW]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getview
 type LV_VIEW uint32
 
 const (
@@ -298,9 +300,9 @@ const (
 	LV_VIEW_TILE      LV_VIEW = 0x0004
 )
 
-// NMLVCUSTOMDRAW dwItemType.
+// [NMLVCUSTOMDRAW] dwItemType.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvcustomdraw
+// [NMLVCUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvcustomdraw
 type LVCDI uint32
 
 const (
@@ -309,9 +311,9 @@ const (
 	LVCDI_TEMSLIST LVCDI = 0x0000_0002
 )
 
-// LVCOLUMN mask.
+// [LVCOLUMN] mask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
+// {LVCOLUMN]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
 type LVCF uint32
 
 const (
@@ -326,9 +328,9 @@ const (
 	LVCF_WIDTH        LVCF = 0x0002
 )
 
-// LVCOLUMN fmt.
+// [LVCOLUMN] fmt.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
+// [LVCOLUMN]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvcolumnw
 type LVCFMT_C int32
 
 const (
@@ -345,9 +347,9 @@ const (
 	LVCFMT_C_SPLITBUTTON     LVCFMT_C = 0x100_0000
 )
 
-// LVITEM piColFmt.
+// [LVITEM] piColFmt.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemw
+// [LVITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemw
 type LVCFMT_I int32
 
 const (
@@ -358,9 +360,9 @@ const (
 	LVCFMT_I_TILE_PLACEMENTMASK LVCFMT_I = LVCFMT_I_LINE_BREAK | LVCFMT_I_FILL
 )
 
-// LVFINDINFO flags.
+// [LVFINDINFO] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvfindinfow
+// [LVFINDINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvfindinfow
 type LVFI uint32
 
 const (
@@ -372,9 +374,9 @@ const (
 	LVFI_NEARESTXY LVFI = 0x0040
 )
 
-// NMLVCUSTOMDRAW uAlign.
+// [NMLVCUSTOMDRAW] uAlign.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvcustomdraw
+// [NMLVCUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvcustomdraw
 type LVGA_HEADER uint32
 
 const (
@@ -383,9 +385,9 @@ const (
 	LVGA_HEADER_RIGHT  LVGA_HEADER = 0x0000_0004
 )
 
-// NMLVGETINFOTIP dwFlags.
+// [NMLVGETINFOTIP] dwFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvgetinfotipw
+// [NMLVGETINFOTIP]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmlvgetinfotipw
 type LVGIT uint32
 
 const (
@@ -393,9 +395,9 @@ const (
 	LVGIT_UNFOLDED LVGIT = 0x0001
 )
 
-// LVITEM iGroupId.
+// [LVITEM] iGroupId.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemw
+// [LVITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemw
 type LVI_GROUPID int32
 
 const (
@@ -403,9 +405,9 @@ const (
 	LVI_GROUPID_I_GROUPIDNONE     LVI_GROUPID = -2
 )
 
-// LVITEM mask.
+// [LVITEM] mask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemw
+// [LVITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemw
 type LVIF uint32
 
 const (
@@ -420,9 +422,9 @@ const (
 	LVIF_TEXT        LVIF = 0x0000_0001
 )
 
-// LVM_GETITEMRECT portion.
+// [LVM_GETITEMRECT] portion.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getitemrect
+// [LVM_GETITEMRECT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitemrect
 type LVIR uint32
 
 const (
@@ -432,9 +434,9 @@ const (
 	LVIR_SELECTBOUNDS LVIR = 3
 )
 
-// ListView item states.
+// ListView item [states].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/list-view-item-states
+// [states]: https://learn.microsoft.com/en-us/windows/win32/controls/list-view-item-states
 type LVIS uint32
 
 const (
@@ -449,9 +451,9 @@ const (
 	LVIS_STATEIMAGEMASK LVIS = 0xf000
 )
 
-// NMITEMACTIVATE uKeyFlags.
+// [NMITEMACTIVATE] uKeyFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmitemactivate
+// [NMITEMACTIVATE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmitemactivate
 type LVKF uint32
 
 const (
@@ -460,9 +462,9 @@ const (
 	LVKF_SHIFT   LVKF = 0x0004
 )
 
-// LVHITTESTINFO flags.
+// [LVHITTESTINFO] flags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvhittestinfo
+// [LVHITTESTINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvhittestinfo
 type LVHT uint32
 
 const (
@@ -486,9 +488,9 @@ const (
 	LVHT_EX_FOOTER           LVHT = 0x0800_0000
 )
 
-// LVM_GETNEXTITEM item relationship.
+// [LVM_GETNEXTITEM] item relationship.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getnextitem
+// [LVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getnextitem
 type LVNI uint32
 
 const (
@@ -509,9 +511,9 @@ const (
 	LVNI_DIRECTIONMASK LVNI = LVNI_ABOVE | LVNI_BELOW | LVNI_TOLEFT | LVNI_TORIGHT
 )
 
-// ListView control styles.
+// ListView control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/list-view-window-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/list-view-window-styles
 type LVS WS
 
 const (
@@ -539,9 +541,9 @@ const (
 	LVS_TYPESTYLEMASK   LVS = 0xfc00
 )
 
-// ListView extended control styles.
+// ListView extended control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/extended-list-view-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/extended-list-view-styles
 type LVS_EX WS_EX
 
 const (
@@ -578,9 +580,9 @@ const (
 	LVS_EX_UNDERLINEHOT          LVS_EX = 0x0000_0800
 )
 
-// LVM_GETIMAGELIST type.
+// [LVM_GETIMAGELIST] type.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/lvm-getimagelist
+// [LVM_GETIMAGELIST]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getimagelist
 type LVSIL uint8
 
 const (
@@ -590,9 +592,9 @@ const (
 	LVSIL_GROUPHEADER LVSIL = 3
 )
 
-// SysLink control styles.
+// SysLink control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/syslink-control-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/syslink-control-styles
 type LWS WS
 
 const (
@@ -604,9 +606,9 @@ const (
 	LWS_RIGHT          LWS = 0x0020
 )
 
-// NMVIEWCHANGE dwOldView/dwNewView.
+// [NMVIEWCHANGE] dwOldView/dwNewView.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmviewchange
+// [NMVIEWCHANGE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmviewchange
 type MCMV uint32
 
 const (
@@ -616,9 +618,9 @@ const (
 	MCMV_CENTURY MCMV = 3
 )
 
-// MonthCalendar control styles.
+// MonthCalendar control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/month-calendar-control-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/month-calendar-control-styles
 type MCS WS
 
 const (
@@ -633,9 +635,9 @@ const (
 	MCS_NOSELCHANGEONNAV MCS = 0x0100 // The selection is not changed when the user navigates next or previous in the calendar. This allows the user to select a range larger than is visible.
 )
 
-// ProgressBar control styles.
+// ProgressBar control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/progress-bar-control-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/progress-bar-control-styles
 type PBS WS
 
 const (
@@ -645,9 +647,9 @@ const (
 	PBS_SMOOTHREVERSE PBS = 0x10
 )
 
-// PBM_SETSTATE state.
+// [PBM_SETSTATE] state.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/pbm-setstate
+// [PBM_SETSTATE]: https://learn.microsoft.com/en-us/windows/win32/controls/pbm-setstate
 type PBST uint32
 
 const (
@@ -656,9 +658,9 @@ const (
 	PBST_PAUSED PBST = 0x0003
 )
 
-// StatusBar styles.
+// StatusBar [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/status-bar-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/status-bar-styles
 type SBARS WS
 
 const (
@@ -666,9 +668,9 @@ const (
 	SBARS_TOOLTIPS SBARS = 0x0800 // Use this style to enable tooltips.
 )
 
-// TBN_DROPDOWN return values.
+// [TBN_DROPDOWN] return values.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-dropdown
+// [TBN_DROPDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-dropdown
 type TBDDRET uint8
 
 const (
@@ -677,9 +679,9 @@ const (
 	TBDDRET_TREATPRESSED TBDDRET = 2
 )
 
-// TBBUTTONINFO dwMask.
+// [TBBUTTONINFO] dwMask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbuttoninfow
+// [TBBUTTONINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbuttoninfow
 type TBIF uint32
 
 const (
@@ -693,9 +695,9 @@ const (
 	TBIF_BYINDEX TBIF = 0x8000_0000
 )
 
-// NMTBDISPINFO dwMask.
+// [NMTBDISPINFO] dwMask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbdispinfow
+// [NMTBDISPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtbdispinfow
 type TBNF uint32
 
 const (
@@ -704,9 +706,10 @@ const (
 	TBNF_DI_SETITEM TBNF = 0x1000_0000
 )
 
-// TBN_INITCUSTOMIZE and TBN_RESET return value.
+// [TBN_INITCUSTOMIZE] and [TBN_RESET] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tbn-initcustomize
+// [TBN_INITCUSTOMIZE]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-initcustomize
+// [TBN_RESET]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-reset
 type TBNRF uint32
 
 const (
@@ -715,9 +718,9 @@ const (
 	TBNRF_ENDCUSTOMIZE TBNRF = 0x0000_0002
 )
 
-// Trackbar control styles.
+// Trackbar control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/trackbar-control-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/trackbar-control-styles
 type TBS WS
 
 const (
@@ -740,9 +743,9 @@ const (
 	TBS_TRANSPARENTBKGND TBS = 0x1000 // Background is painted by the parent via the WM_PRINTCLIENT message.
 )
 
-// Toolbar control states.
+// Toolbar control [state].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/toolbar-button-states
+// [state]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-button-states
 type TBSTATE uint8
 
 const (
@@ -756,9 +759,9 @@ const (
 	TBSTATE_MARKED        TBSTATE = 0x80
 )
 
-// Toolbar control styles.
+// Toolbar control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/toolbar-control-and-button-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-control-and-button-styles
 type TBSTYLE WS
 
 const (
@@ -780,9 +783,9 @@ const (
 	TBSTYLE_TRANSPARENT  TBSTYLE = 0x8000
 )
 
-// Toolbar control extended styles.
+// Toolbar control extended [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/toolbar-extended-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-extended-styles
 type TBSTYLE_EX uint32
 
 const (
@@ -795,9 +798,9 @@ const (
 	TBSTYLE_EX_DOUBLEBUFFER       TBSTYLE_EX = 0x0000_0080
 )
 
-// TaskDialog() pszIcon. Originally with TD prefix and ICON suffix.
+// [TaskDialog] pszIcon. Originally with TD prefix and ICON suffix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
+// [TaskDialog]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
 type TD_ICON uint16
 
 const (
@@ -807,9 +810,9 @@ const (
 	TD_ICON_SHIELD      TD_ICON = 0xfffc
 )
 
-// TaskDialog() dwCommonButtons. Originally has BUTTON suffix.
+// [TaskDialog] dwCommonButtons. Originally has BUTTON suffix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
+// [TaskDialog]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
 type TDCBF int32
 
 const (
@@ -821,9 +824,9 @@ const (
 	TDCBF_CLOSE  TDCBF = 0x0020
 )
 
-// TASKDIALOGCONFIG dwFlags.
+// [TASKDIALOGCONFIG] dwFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/Commctrl/ns-commctrl-taskdialogconfig
+// [TASKDIALOGCONFIG]: https://learn.microsoft.com/en-us/windows/win32/api/Commctrl/ns-commctrl-taskdialogconfig
 type TDF int32
 
 const (
@@ -847,9 +850,9 @@ const (
 	TDF_SIZE_TO_CONTENT             TDF = 0x0100_0000
 )
 
-// EDITBALLOONTIP ttiIcon.
+// [EDITBALLOONTIP] ttiIcon.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-editballoontip
+// [EDITBALLOONTIP]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-editballoontip
 type TTI int32
 
 const (
@@ -862,9 +865,9 @@ const (
 	TTI_ERROR_LARGE   TTI = 6
 )
 
-// TVM_EXPAND action flag.
+// [TVM_EXPAND] action flag.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvm-expand
+// [TVM_EXPAND]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-expand
 type TVE uint32
 
 const (
@@ -875,9 +878,9 @@ const (
 	TVE_COLLAPSERESET TVE = 0x8000
 )
 
-// TVM_GETNEXTITEM item to retrieve.
+// [TVM_GETNEXTITEM] item to retrieve.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvm-getnextitem
+// [TVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getnextitem
 type TVGN uint32
 
 const (
@@ -895,9 +898,9 @@ const (
 	TVGN_NEXTSELECTED    TVGN = 0x000b
 )
 
-// TVITEMTEX cChildren.
+// [TVITEMTEX] cChildren.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
+// [TVITEMTEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
 type TVI_CHILDREN int32
 
 const (
@@ -907,9 +910,9 @@ const (
 	TVI_CHILDREN_AUTO     TVI_CHILDREN = -2
 )
 
-// TVITEMTEX mask.
+// [TVITEMTEX] mask.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
+// [TVITEMTEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
 type TVIF uint32
 
 const (
@@ -925,9 +928,9 @@ const (
 	TVIF_EXPANDEDIMAGE TVIF = 0x0200
 )
 
-// TVITEMTEX state.
+// [TVITEMTEX] state.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
+// [TVITEMTEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
 type TVIS uint32
 
 const (
@@ -943,9 +946,9 @@ const (
 	TVIS_USERMASK       TVIS = 0xf000
 )
 
-// TVITEMTEX uStateEx.
+// [TVITEMTEX] uStateEx.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
+// [TVITEMTEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
 type TVIS_EX uint32
 
 const (
@@ -954,9 +957,9 @@ const (
 	TVIS_EX_ALL      TVIS_EX = 0x0002
 )
 
-// TVN_SINGLEEXPAND return value.
+// [TVN_SINGLEEXPAND] return value.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tvn-singleexpand
+// [TVN_SINGLEEXPAND]: https://learn.microsoft.com/en-us/windows/win32/controls/tvn-singleexpand
 type TVNRET uintptr
 
 const (
@@ -965,9 +968,9 @@ const (
 	TVNRET_SKIPNEW TVNRET = 2
 )
 
-// TreeView control styles.
+// TreeView control [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-control-window-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-control-window-styles
 type TVS WS
 
 const (
@@ -989,9 +992,9 @@ const (
 	TVS_NOHSCROLL       TVS = 0x8000
 )
 
-// TreeView control extended styles.
+// TreeView control extended [styles].
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/tree-view-control-window-extended-styles
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-control-window-extended-styles
 type TVS_EX WS_EX
 
 const (

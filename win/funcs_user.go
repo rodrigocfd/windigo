@@ -17,7 +17,7 @@ import (
 
 // [AdjustWindowRectEx] function.
 //
-// [AdjustWindowRectEx]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-adjustwindowrectex
+// [AdjustWindowRectEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-adjustwindowrectex
 func AdjustWindowRectEx(rc *RECT, style co.WS, hasMenu bool, exStyle co.WS_EX) {
 	ret, _, err := syscall.SyscallN(proc.AdjustWindowRectEx.Addr(),
 		uintptr(unsafe.Pointer(rc)), uintptr(style),
@@ -29,7 +29,7 @@ func AdjustWindowRectEx(rc *RECT, style co.WS, hasMenu bool, exStyle co.WS_EX) {
 
 // [AllowSetForegroundWindow] function.
 //
-// [AllowSetForegroundWindow]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-allowsetforegroundwindow
+// [AllowSetForegroundWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-allowsetforegroundwindow
 func AllowSetForegroundWindow(processId uint32) {
 	ret, _, err := syscall.SyscallN(proc.AllowSetForegroundWindow.Addr(),
 		uintptr(processId))
@@ -40,7 +40,7 @@ func AllowSetForegroundWindow(processId uint32) {
 
 // [BroadcastSystemMessage] function.
 //
-// [BroadcastSystemMessage]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
+// [BroadcastSystemMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
 func BroadcastSystemMessage(
 	flags co.BSF,
 	recipients co.BSM,
@@ -104,7 +104,7 @@ func CreateIconFromResourceEx(
 
 // [DestroyCaret] function.
 //
-// [DestroyCaret]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycarret
+// [DestroyCaret]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycarret
 func DestroyCaret() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyCaret.Addr())
 	if ret == 0 {
@@ -115,7 +115,7 @@ func DestroyCaret() error {
 
 // [DispatchMessage] function.
 //
-// [DispatchMessage]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dispatchmessage
+// [DispatchMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dispatchmessage
 func DispatchMessage(msg *MSG) uintptr {
 	ret, _, _ := syscall.SyscallN(proc.DispatchMessage.Addr(),
 		uintptr(unsafe.Pointer(msg)))
@@ -124,7 +124,7 @@ func DispatchMessage(msg *MSG) uintptr {
 
 // [EndMenu] function.
 //
-// [EndMenu]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endmenu
+// [EndMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endmenu
 func EndMenu() {
 	ret, _, err := syscall.SyscallN(proc.EndMenu.Addr())
 	if ret == 0 {
@@ -137,7 +137,7 @@ func EndMenu() {
 // To continue enumeration, the callback function must return true; to stop
 // enumeration, it must return false.
 //
-// [EnumDisplayDevices]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw
+// [EnumDisplayDevices]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw
 func EnumDisplayDevices(
 	device StrOpt, flags co.EDD,
 	callback func(devNum int, info *DISPLAY_DEVICE) bool) {
@@ -175,7 +175,7 @@ func EnumDisplayDevices(
 // To continue enumeration, the callback function must return true; to stop
 // enumeration, it must return false.
 //
-// [EnumWindows]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
+// [EnumWindows]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
 func EnumWindows(callback func(hWnd HWND) bool) {
 	pPack := &_EnumWindowsPack{f: callback}
 	_globalEnumWindowsMutex.Lock()
@@ -211,7 +211,7 @@ var (
 
 // [GetAsyncKeyState] function.
 //
-// [GetAsyncKeyState]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getasynckeystate
+// [GetAsyncKeyState]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getasynckeystate
 func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
 	ret, _, _ := syscall.SyscallN(proc.GetAsyncKeyState.Addr(),
 		uintptr(virtKeyCode))
@@ -220,7 +220,7 @@ func GetAsyncKeyState(virtKeyCode co.VK) uint16 {
 
 // [GetCaretPos] function.
 //
-// [GetCaretPos]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcaretpos
+// [GetCaretPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcaretpos
 func GetCaretPos() RECT {
 	var rc RECT
 	ret, _, err := syscall.SyscallN(proc.GetCaretPos.Addr(),
@@ -233,7 +233,7 @@ func GetCaretPos() RECT {
 
 // [GetCursorPos] function.
 //
-// [GetCursorPos]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcursorpos
+// [GetCursorPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcursorpos
 func GetCursorPos() POINT {
 	var pt POINT
 	ret, _, err := syscall.SyscallN(proc.GetCursorPos.Addr(),
@@ -246,7 +246,7 @@ func GetCursorPos() POINT {
 
 // [GetDialogBaseUnits] function.
 //
-// [GetDialogBaseUnits]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdialogbaseunits
+// [GetDialogBaseUnits]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdialogbaseunits
 func GetDialogBaseUnits() (horz, vert uint16) {
 	ret, _, _ := syscall.SyscallN(proc.GetDialogBaseUnits.Addr())
 	horz, vert = LOWORD(uint32(ret)), HIWORD(uint32(ret))
@@ -255,7 +255,7 @@ func GetDialogBaseUnits() (horz, vert uint16) {
 
 // [GetGUIThreadInfo] function.
 //
-// [GetGUIThreadInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getguithreadinfo
+// [GetGUIThreadInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getguithreadinfo
 func GetGUIThreadInfo(thread_id uint32, info *GUITHREADINFO) {
 	info.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(proc.GetGUIThreadInfo.Addr(),
@@ -267,7 +267,7 @@ func GetGUIThreadInfo(thread_id uint32, info *GUITHREADINFO) {
 
 // [GetInputState] function.
 //
-// [GetInputState]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getinputstate
+// [GetInputState]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getinputstate
 func GetInputState() bool {
 	ret, _, _ := syscall.SyscallN(proc.GetInputState.Addr())
 	return ret != 0
@@ -275,7 +275,7 @@ func GetInputState() bool {
 
 // [GetMessage] function.
 //
-// [GetMessage]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagew
+// [GetMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagew
 func GetMessage(
 	msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) (int32, error) {
 
@@ -290,7 +290,7 @@ func GetMessage(
 
 // [GetMessageExtraInfo] function.
 //
-// [GetMessageExtraInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessageextrainfo
+// [GetMessageExtraInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessageextrainfo
 func GetMessageExtraInfo() LPARAM {
 	ret, _, _ := syscall.SyscallN(proc.GetMessageExtraInfo.Addr())
 	return LPARAM(ret)
@@ -298,7 +298,7 @@ func GetMessageExtraInfo() LPARAM {
 
 // [GetMessagePos] function.
 //
-// [GetMessagePos]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagepos
+// [GetMessagePos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagepos
 func GetMessagePos() POINT {
 	ret, _, _ := syscall.SyscallN(proc.GetMessagePos.Addr())
 	return POINT{
@@ -309,7 +309,7 @@ func GetMessagePos() POINT {
 
 // [GetMessageTime] function.
 //
-// [GetMessageTime]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagetime
+// [GetMessageTime]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagetime
 func GetMessageTime() time.Duration {
 	ret, _, _ := syscall.SyscallN(proc.GetMessageTime.Addr())
 	return time.Duration(ret * uintptr(time.Millisecond))
@@ -317,7 +317,7 @@ func GetMessageTime() time.Duration {
 
 // [GetPhysicalCursorPos] function.
 //
-// [GetPhysicalCursorPos]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos
+// [GetPhysicalCursorPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos
 func GetPhysicalCursorPos() POINT {
 	var pt POINT
 	ret, _, err := syscall.SyscallN(proc.GetPhysicalCursorPos.Addr(),
@@ -330,7 +330,7 @@ func GetPhysicalCursorPos() POINT {
 
 // [GetProcessDefaultLayout] function.
 //
-// [GetProcessDefaultLayout]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getprocessdefaultlayout
+// [GetProcessDefaultLayout]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getprocessdefaultlayout
 func GetProcessDefaultLayout() co.LAYOUT {
 	var defaultLayout co.LAYOUT
 	ret, _, err := syscall.SyscallN(proc.GetProcessDefaultLayout.Addr(),
@@ -343,7 +343,7 @@ func GetProcessDefaultLayout() co.LAYOUT {
 
 // [GetQueueStatus] function.
 //
-// [GetQueueStatus]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getqueuestatus
+// [GetQueueStatus]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getqueuestatus
 func GetQueueStatus(flags co.QS) uint32 {
 	ret, _, _ := syscall.SyscallN(proc.GetQueueStatus.Addr(),
 		uintptr(flags))
@@ -352,7 +352,7 @@ func GetQueueStatus(flags co.QS) uint32 {
 
 // [GetSysColor] function.
 //
-// [GetSysColor]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolor
+// [GetSysColor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolor
 func GetSysColor(index co.COLOR) COLORREF {
 	ret, _, _ := syscall.SyscallN(proc.GetSysColor.Addr(),
 		uintptr(index))
@@ -361,7 +361,7 @@ func GetSysColor(index co.COLOR) COLORREF {
 
 // [GetSystemMetrics] function.
 //
-// [GetSystemMetrics]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
+// [GetSystemMetrics]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
 func GetSystemMetrics(index co.SM) int32 {
 	ret, _, _ := syscall.SyscallN(proc.GetSystemMetrics.Addr(),
 		uintptr(index))
@@ -384,7 +384,7 @@ func GetSystemMetricsForDpi(index co.SM, dpi uint32) int32 {
 
 // [InSendMessage] function.
 //
-// [InSendMessage]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessage
+// [InSendMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessage
 func InSendMessage() bool {
 	ret, _, _ := syscall.SyscallN(proc.InSendMessage.Addr())
 	return ret != 0
@@ -392,7 +392,7 @@ func InSendMessage() bool {
 
 // [InSendMessageEx] function.
 //
-// [InSendMessageEx]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessageex
+// [InSendMessageEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessageex
 func InSendMessageEx() co.ISMEX {
 	ret, _, _ := syscall.SyscallN(proc.InSendMessageEx.Addr())
 	return co.ISMEX(ret)
@@ -400,7 +400,7 @@ func InSendMessageEx() co.ISMEX {
 
 // [IsGUIThread] function.
 //
-// [IsGUIThread]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isguithread
+// [IsGUIThread]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isguithread
 func IsGUIThread(convertToGuiThread bool) (bool, error) {
 	ret, _, _ := syscall.SyscallN(proc.IsGUIThread.Addr(),
 		util.BoolToUintptr(convertToGuiThread))
@@ -412,7 +412,7 @@ func IsGUIThread(convertToGuiThread bool) (bool, error) {
 
 // [LockSetForegroundWindow] function.
 //
-// [LockSetForegroundWindow]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-locksetforegroundwindow
+// [LockSetForegroundWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-locksetforegroundwindow
 func LockSetForegroundWindow(lockCode co.LSFW) {
 	ret, _, err := syscall.SyscallN(proc.LockSetForegroundWindow.Addr(),
 		uintptr(lockCode))
@@ -423,7 +423,7 @@ func LockSetForegroundWindow(lockCode co.LSFW) {
 
 // [PeekMessage] function.
 //
-// [PeekMessage]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew
+// [PeekMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew
 func PeekMessage(
 	msg *MSG, hWnd HWND,
 	msgFilterMin, msgFilterMax co.WM, removeMsg co.PM) bool {
@@ -436,7 +436,7 @@ func PeekMessage(
 
 // [PostQuitMessage] function.
 //
-// [PostQuitMessage]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postquitmessage
+// [PostQuitMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postquitmessage
 func PostQuitMessage(exitCode int32) {
 	syscall.SyscallN(proc.PostQuitMessage.Addr(),
 		uintptr(exitCode))
@@ -444,7 +444,7 @@ func PostQuitMessage(exitCode int32) {
 
 // [PostThreadMessage] function.
 //
-// [PostThreadMessage]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postthreadmessagew
+// [PostThreadMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postthreadmessagew
 func PostThreadMessage(
 	idThread uint32, msg co.WM, wParam WPARAM, lParam LPARAM) error {
 
@@ -458,7 +458,7 @@ func PostThreadMessage(
 
 // [RegisterClassEx] function.
 //
-// [RegisterClassEx]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassexw
+// [RegisterClassEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassexw
 func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, error) {
 	wcx.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(proc.RegisterClassEx.Addr(),
@@ -473,7 +473,7 @@ func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, error) {
 
 // [RegisterWindowMessage] function.
 //
-// [RegisterWindowMessage]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerwindowmessagew
+// [RegisterWindowMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerwindowmessagew
 func RegisterWindowMessage(message string) (co.WM, error) {
 	ret, _, err := syscall.SyscallN(proc.RegisterWindowMessage.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(message))))
@@ -487,7 +487,7 @@ func RegisterWindowMessage(message string) (co.WM, error) {
 
 // [ReplyMessage] function.
 //
-// [ReplyMessage]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-replymessage
+// [ReplyMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-replymessage
 func ReplyMessage(result uintptr) bool {
 	ret, _, _ := syscall.SyscallN(proc.ReplyMessage.Addr(),
 		result)
@@ -496,7 +496,7 @@ func ReplyMessage(result uintptr) bool {
 
 // [TranslateMessage] function.
 //
-// [TranslateMessage]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translatemessage
+// [TranslateMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translatemessage
 func TranslateMessage(msg *MSG) bool {
 	ret, _, _ := syscall.SyscallN(proc.TranslateMessage.Addr(),
 		uintptr(unsafe.Pointer(msg)))
@@ -507,7 +507,7 @@ func TranslateMessage(msg *MSG) bool {
 //
 // Available in Windows 10, version 1703.
 //
-// [SetProcessDpiAwarenessContext]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
+// [SetProcessDpiAwarenessContext]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
 func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) error {
 	ret, _, err := syscall.SyscallN(proc.SetProcessDpiAwarenessContext.Addr(),
 		uintptr(value))
@@ -521,7 +521,7 @@ func SetProcessDpiAwarenessContext(value co.DPI_AWARE_CTX) error {
 //
 // Available in Windows Vista.
 //
-// [SetProcessDPIAware]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiaware
+// [SetProcessDPIAware]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiaware
 func SetProcessDPIAware() {
 	ret, _, _ := syscall.SyscallN(proc.SetProcessDPIAware.Addr())
 	if ret == 0 {
@@ -531,7 +531,7 @@ func SetProcessDPIAware() {
 
 // [SetMessageExtraInfo] function.
 //
-// [SetMessageExtraInfo]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmessageextrainfo
+// [SetMessageExtraInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmessageextrainfo
 func SetMessageExtraInfo(lp LPARAM) LPARAM {
 	ret, _, _ := syscall.SyscallN(proc.SetMessageExtraInfo.Addr(),
 		uintptr(lp))
@@ -540,7 +540,7 @@ func SetMessageExtraInfo(lp LPARAM) LPARAM {
 
 // [SetProcessDefaultLayout] function.
 //
-// [SetProcessDefaultLayout]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdefaultlayout
+// [SetProcessDefaultLayout]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdefaultlayout
 func SetProcessDefaultLayout(defaultLayout co.LAYOUT) {
 	ret, _, err := syscall.SyscallN(proc.SetProcessDefaultLayout.Addr(),
 		uintptr(defaultLayout))
@@ -551,7 +551,7 @@ func SetProcessDefaultLayout(defaultLayout co.LAYOUT) {
 
 // [UnregisterClass] function.
 //
-// [UnregisterClass]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unregisterclassw
+// [UnregisterClass]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unregisterclassw
 func UnregisterClass(className ClassName, hInst HINSTANCE) error {
 	classNameVal, classNameBuf := className.raw()
 	ret, _, err := syscall.SyscallN(proc.UnregisterClass.Addr(),

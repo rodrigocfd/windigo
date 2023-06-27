@@ -9,7 +9,7 @@ import (
 
 // [VS_FIXEDFILEINFO] struct.
 //
-// [VS_FIXEDFILEINFO]: https://docs.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
+// [VS_FIXEDFILEINFO]: https://learn.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo
 type VS_FIXEDFILEINFO struct {
 	DwSignature        uint32
 	DwStrucVersion     uint32

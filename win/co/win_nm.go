@@ -2,9 +2,9 @@
 
 package co
 
-// WM_COMMAND notification codes.
+// [WM_COMMAND] notification codes.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
+// [WM_COMMAND]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-command
 type CMD uint16
 
 const (
@@ -12,9 +12,9 @@ const (
 	CMD_ACCELERATOR CMD = 1 // Message originated from an accelerator.
 )
 
-// WM_NOTIFY common control notifications.
+// [WM_NOTIFY] common control notifications.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/common-control-reference#notifications
+// [WM_NOTIFY]: https://learn.microsoft.com/en-us/windows/win32/controls/common-control-reference#notifications
 type NM int32
 
 const (
@@ -44,9 +44,9 @@ const (
 	NM_TVSTATEIMAGECHANGING NM = _NM_FIRST - 24
 )
 
-// Button control notifications (BCN, BN).
+// Button control [notifications] (BCN, BN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 const (
 	_BCN_FIRST NM = -1250
 
@@ -66,9 +66,9 @@ const (
 	BN_KILLFOCUS     CMD = 7
 )
 
-// ComboBox control notifications (CBN).
+// ComboBox control [notifications] (CBN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-notifications
 const (
 	CBN_ERRSPACE     CMD = 0xffff
 	CBN_SELCHANGE    CMD = 1
@@ -83,9 +83,9 @@ const (
 	CBN_SELENDCANCEL CMD = 10
 )
 
-// ComboBoxEx control notifications (CBEN).
+// ComboBoxEx control [notifications] (CBEN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-comboboxex-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-comboboxex-control-reference-notifications
 const (
 	_CBEN_FIRST NM = -800
 
@@ -97,9 +97,9 @@ const (
 	CBEN_DRAGBEGIN   NM = _CBEN_FIRST - 9
 )
 
-// DateTimePicker control notifications (DTN).
+// DateTimePicker control [notifications] (DTN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-date-and-time-picker-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-date-and-time-picker-control-reference-notifications
 const (
 	_DTN_FIRST  NM = -740
 	_DTN_FIRST2 NM = -753
@@ -113,9 +113,9 @@ const (
 	DTN_USERSTRING     NM = _DTN_FIRST - 5
 )
 
-// Edit control notifications (EN).
+// Edit control [notifications] (EN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-notifications
 const (
 	EN_SETFOCUS     CMD = 0x0100
 	EN_KILLFOCUS    CMD = 0x0200
@@ -131,9 +131,9 @@ const (
 	EN_AFTER_PASTE  CMD = 0x0801
 )
 
-// Header control notifications (HDN).
+// Header control [notifications] (HDN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-header-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-header-control-reference-notifications
 const (
 	_HDN_FIRST NM = -300
 
@@ -158,18 +158,18 @@ const (
 	HDN_OVERFLOWCLICK      NM = _HDN_FIRST - 19
 )
 
-// IpAddress notifications (IPN).
+// IpAddress [notifications] (IPN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-ip-address-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-ip-address-control-reference-notifications
 const (
 	_IPN_FIRST NM = -860
 
 	IPN_FIELDCHANGED NM = _IPN_FIRST - 0
 )
 
-// ListView control notifications (LVN).
+// ListView control [notifications] (LVN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-list-view-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-list-view-control-reference-notifications
 const (
 	_LVN_FIRST NM = -100
 
@@ -202,9 +202,9 @@ const (
 	LVN_GETEMPTYMARKUP      NM = _LVN_FIRST - 87
 )
 
-// MonthCalendar control notifications (MCN).
+// MonthCalendar control [notifications] (MCN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-notifications
 const (
 	_MCN_FIRST NM = -746
 
@@ -214,9 +214,9 @@ const (
 	MCN_VIEWCHANGE  NM = _MCN_FIRST - 4
 )
 
-// Rebar control notifications (RBN).
+// Rebar control [notifications] (RBN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-rebar-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-rebar-control-reference-notifications
 const (
 	_RBN_FIRST NM = -831
 
@@ -235,18 +235,18 @@ const (
 	RBN_AUTOBREAK     NM = _RBN_FIRST - 22
 )
 
-// StatusBar control notifications (SBN).
+// StatusBar control [notifications] (SBN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-status-bars-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-status-bars-reference-notifications
 const (
 	_SBN_FIRST NM = -880
 
 	SBN_SIMPLEMODECHANGE NM = _SBN_FIRST - 0
 )
 
-// Static control notifications (STN).
+// Static control [notifications] (STN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-static-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-static-control-reference-notifications
 const (
 	STN_CLICKED CMD = 0
 	STN_DBLCLK  CMD = 1
@@ -254,9 +254,9 @@ const (
 	STN_DISABLE CMD = 3
 )
 
-// Toolbar control notifications (TBN).
+// Toolbar control [notifications] (TBN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-toolbar-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-toolbar-control-reference-notifications
 const (
 	_TBN_FIRST NM = -700
 
@@ -287,9 +287,9 @@ const (
 	TBN_MAPACCELERATOR  NM = _TBN_FIRST - 28
 )
 
-// Tab control notifications (TCN).
+// Tab control [notifications] (TCN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-tab-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-tab-control-reference-notifications
 const (
 	_TCN_FIRST NM = -550
 
@@ -300,18 +300,18 @@ const (
 	TCN_FOCUSCHANGE NM = _TCN_FIRST - 4
 )
 
-// Trackbar control notifications (TRBN).
+// Trackbar control [notifications] (TRBN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-notifications
 const (
 	_TRBN_FIRST NM = -1501
 
 	TRBN_THUMBPOSCHANGING NM = _TRBN_FIRST - 1
 )
 
-// Tooltip control notifications (TTN).
+// Tooltip control [notifications] (TTN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-tooltip-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-tooltip-control-reference-notifications
 const (
 	_TTN_FIRST NM = -520
 
@@ -322,9 +322,9 @@ const (
 	TTN_NEEDTEXT    NM = TTN_GETDISPINFO
 )
 
-// TreeView control notifications (TVN).
+// TreeView control [notifications] (TVN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-tree-view-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-tree-view-control-reference-notifications
 const (
 	_TVN_FIRST NM = -400
 
@@ -347,9 +347,9 @@ const (
 	TVN_ASYNCDRAW      NM = _TVN_FIRST - 20
 )
 
-// UpDown control notifications (UDN).
+// UpDown control [notifications] (UDN).
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-up-down-control-reference-notifications
+// [notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-up-down-control-reference-notifications
 const (
 	_UDN_FIRST NM = -721
 

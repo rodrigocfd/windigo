@@ -15,45 +15,45 @@ import (
 
 // [IGraphBuilder] COM interface.
 //
-// [IGraphBuilder]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-igraphbuilder
+// [IGraphBuilder]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-igraphbuilder
 type IGraphBuilder interface {
 	IFilterGraph
 
 	// [Abort] COM interface.
 	//
-	// [Abort]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
+	// [Abort]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-abort
 	Abort()
 
 	// [AddSourceFilter] COM method.
 	//
 	// ⚠️ You must defer IBaseFilter.Release() on the returned object.
 	//
-	// [AddSourceFilter]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-addsourcefilter
+	// [AddSourceFilter]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-addsourcefilter
 	AddSourceFilter(fileName, filterName string) IBaseFilter
 
 	// [Connect] COM method.
 	//
-	// [Connect]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-connect
+	// [Connect]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-connect
 	Connect(pinOut, pinIn IPin)
 
 	// [Render] COM method.
 	//
-	// [Render]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-render
+	// [Render]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-render
 	Render(pinOut IPin)
 
 	// [RenderFile] COM method.
 	//
-	// [RenderFile]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-renderfile
+	// [RenderFile]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-renderfile
 	RenderFile(file string) error
 
 	// [SetLogFile] COM method.
 	//
-	// [SetLogFile]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-setlogfile
+	// [SetLogFile]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-setlogfile
 	SetLogFile(hFile win.HFILE)
 
 	// [ShouldOperationContinue] COM method.
 	//
-	// [ShouldOperationContinue]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-shouldoperationcontinue
+	// [ShouldOperationContinue]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-igraphbuilder-shouldoperationcontinue
 	ShouldOperationContinue() bool
 }
 

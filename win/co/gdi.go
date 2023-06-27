@@ -2,9 +2,9 @@
 
 package co
 
-// SetArcDirection() dir.
+// [SetArcDirection] dir.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setarcdirection
+// [SetArcDirection]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setarcdirection
 type AD int32
 
 const (
@@ -12,9 +12,9 @@ const (
 	AD_CLOCKWISE        AD = 2
 )
 
-// BITMAPINFOHEADER biCompression.
+// [BITMAPINFOHEADER] biCompression.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
+// [BITMAPINFOHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
 type BI uint32
 
 const (
@@ -26,9 +26,9 @@ const (
 	BI_PNG       BI = 5
 )
 
-// SetBkMode() mode. Originally has no prefix.
+// [SetBkMode] mode. Originally has no prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setbkmode
+// [SetBkMode]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setbkmode
 type BKMODE int32
 
 const (
@@ -36,9 +36,9 @@ const (
 	BKMODE_OPAQUE      BKMODE = 2
 )
 
-// LOGBRUSH lbStyle. Originally with BS prefix.
+// [LOGBRUSH] lbStyle. Originally with BS prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
+// [LOGBRUSH]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
 type BRS uint32
 
 const (
@@ -55,9 +55,9 @@ const (
 	BRS_MONOPATTERN   BRS = 9
 )
 
-// TEXTMETRIC tmCharSet. Originally with _CHARSET suffix.
+// [TEXTMETRIC] tmCharSet. Originally with _CHARSET suffix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-textmetricw
+// [TEXTMETRIC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-textmetricw
 type CHARSET uint8
 
 const (
@@ -82,9 +82,9 @@ const (
 	CHARSET_BALTIC      CHARSET = 186
 )
 
-// CreateDIBSection() usage.
+// [CreateDIBSection] usage.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
+// [CreateDIBSection]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
 type DIB uint32
 
 const (
@@ -92,9 +92,9 @@ const (
 	DIB_PAL_COLORS DIB = 1 // Color table in palette indices.
 )
 
-// LOGFONT lfWeight.
+// [LOGFONT] lfWeight.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
+// [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type FW uint32
 
 const (
@@ -115,9 +115,9 @@ const (
 	FW_BLACK      FW = FW_HEAVY
 )
 
-// GetDeviceCaps() index. Originally has no prefix.
+// [GetDeviceCaps] index. Originally has no prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdevicecaps
+// [GetDeviceCaps]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdevicecaps
 type GDC int32
 
 const (
@@ -163,9 +163,9 @@ const (
 	GDC_COLORMGMTCAPS   GDC = 121
 )
 
-// CreateHatchBrush() iHatch.
+// [CreateHatchBrush] iHatch.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createhatchbrush
+// [CreateHatchBrush]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createhatchbrush
 type HS int32
 
 const (
@@ -177,9 +177,9 @@ const (
 	HS_DIAGCROSS  HS = 5 // Pattern: xxxxx
 )
 
-// SetPolyFillMode() mode. Originally has no prefix.
+// [SetPolyFillMode] mode. Originally has no prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setpolyfillmode
+// [SetPolyFillMode]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setpolyfillmode
 type POLYF int32
 
 const (
@@ -187,9 +187,9 @@ const (
 	POLYF_WINDING   POLYF = 2
 )
 
-// WM_PRINT drawing options.
+// [WM_PRINT] drawing options.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/gdi/wm-print
+// [WM_PRINT]: https://learn.microsoft.com/en-us/windows/win32/gdi/wm-print
 type PRF uint32
 
 const (
@@ -201,9 +201,9 @@ const (
 	PRF_OWNED        PRF = 0x0000_0020
 )
 
-// CreatePen() iStyle.
+// [CreatePen] iStyle.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
+// [CreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
 type PS int32
 
 const (
@@ -216,9 +216,9 @@ const (
 	PS_INSIDEFRAME PS = 6
 )
 
-// PolyDraw() aj.
+// [PolyDraw] aj.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polydraw
+// [PolyDraw]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polydraw
 type PT uint8
 
 const (
@@ -228,9 +228,9 @@ const (
 	PT_MOVETO      PT = 0x06
 )
 
-// SelectObject() return value. Originally with REGION suffix.
+// [SelectObject] return value. Originally with REGION suffix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
+// [SelectObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 type REGION uint32
 
 const (
@@ -239,9 +239,10 @@ const (
 	REGION_COMPLEX REGION = 3
 )
 
-// CombineRgn() and SelectClipPath() mode.
+// [CombineRgn] and [SelectClipPath] mode.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
+// [CombineRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
+// [SelectClipPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectclippath
 type RGN int32
 
 const (
@@ -252,9 +253,10 @@ const (
 	RGN_COPY RGN = 5
 )
 
-// BitBlt() rop, IMAGELISTDRAWPARAMS dwRop.
+// [BitBlt] rop, [IMAGELISTDRAWPARAMS] dwRop.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
+// [BitBlt]: https://learn.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
+// [IMAGELISTDRAWPARAMS]: https://learn.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
 type ROP uint32
 
 const (
@@ -277,9 +279,9 @@ const (
 	ROP_CAPTUREBLT     ROP = 0x4000_0000
 )
 
-// SetStretchBltMode() mode.
+// [SetStretchBltMode] mode.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setstretchbltmode
+// [SetStretchBltMode]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setstretchbltmode
 type STRETCH int32
 
 const (
@@ -292,9 +294,9 @@ const (
 	STRETCH_DELETESCANS  STRETCH = STRETCH_COLORONCOLOR
 )
 
-// SetTextAlign() align. Includes values with VTA prefix.
+// [SetTextAlign] align. Includes values with VTA prefix.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-settextalign
+// [SetTextAlign]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-settextalign
 type TA uint32
 
 const (
@@ -309,9 +311,9 @@ const (
 	TA_RTLREADING TA = 256
 )
 
-// TrackPopupMenu() uFlags.
+// [TrackPopupMenu] uFlags.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
+// [TrackPopupMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
 type TPM uint32
 
 const (

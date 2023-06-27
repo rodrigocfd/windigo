@@ -12,7 +12,7 @@ import (
 
 // [IsThemeDialogTextureEnabled] function.
 //
-// [IsThemeDialogTextureEnabled]: https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemedialogtextureenabled
+// [IsThemeDialogTextureEnabled]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemedialogtextureenabled
 func (hWnd HWND) IsThemeDialogTextureEnabled() bool {
 	ret, _, _ := syscall.SyscallN(proc.IsThemeDialogTextureEnabled.Addr(),
 		uintptr(hWnd))
@@ -23,7 +23,7 @@ func (hWnd HWND) IsThemeDialogTextureEnabled() bool {
 //
 // ⚠️ You must defer HTHEME.CloseThemeData().
 //
-// [OpenThemeData]: https://docs.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
+// [OpenThemeData]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
 func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {
 	ret, _, err := syscall.SyscallN(proc.OpenThemeData.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(Str.ToNativePtr(classNames))))

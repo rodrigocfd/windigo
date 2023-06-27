@@ -18,25 +18,25 @@ import (
 
 // [IShellItem] COM interface.
 //
-// [IShellItem]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
+// [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 type IShellItem interface {
 	com.IUnknown
 
 	// [Compare] COM method.
 	//
-	// [Compare]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-compare
+	// [Compare]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-compare
 	Compare(si IShellItem, hint shellco.SICHINT) bool
 
 	// [GetAttributes] COM method.
 	//
-	// [GetAttributes]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getattributes
+	// [GetAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getattributes
 	GetAttributes(mask co.SFGAO) co.SFGAO
 
 	// [GetParent] COM method.
 	//
 	// ⚠️ You must defer IShellItem.Release() on the returned object.
 	//
-	// [GetParent]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
+	// [GetParent]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
 	GetParent() IShellItem
 
 	// [GetDisplayName] COM method.
@@ -47,7 +47,7 @@ type IShellItem interface {
 	//
 	//	fullPath := shi.GetDisplayName(shellco.SIGDN_FILESYSPATH)
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
 	GetDisplayName(sigdnName shellco.SIGDN) string
 }
 
@@ -70,7 +70,7 @@ func NewIShellItem(base com.IUnknown) IShellItem {
 //	ish := shell.NewShellItemFromPath("C:\\Temp\\file.txt")
 //	defer ish.Release()
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 func NewShellItemFromPath(folderOrFilePath string) (IShellItem, error) {
 	var ppvQueried **comvt.IUnknown
 	ret, _, _ := syscall.SyscallN(proc.SHCreateItemFromParsingName.Addr(),

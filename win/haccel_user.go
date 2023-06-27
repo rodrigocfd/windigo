@@ -12,14 +12,14 @@ import (
 
 // A handle to an [accelerator table].
 //
-// [accelerator table]: https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types#haccel
+// [accelerator table]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#haccel
 type HACCEL HANDLE
 
 // [CreateAcceleratorTable] function.
 //
 // ⚠️ You must defer HACCEL.DestroyAcceleratorTable().
 //
-// [CreateAcceleratorTable]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createacceleratortablew
+// [CreateAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createacceleratortablew
 func CreateAcceleratorTable(accelList []ACCEL) HACCEL {
 	ret, _, err := syscall.SyscallN(proc.CreateAcceleratorTable.Addr(),
 		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)))
@@ -31,7 +31,7 @@ func CreateAcceleratorTable(accelList []ACCEL) HACCEL {
 
 // [CopyAcceleratorTable] function.
 //
-// [CopyAcceleratorTable]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyacceleratortablew
+// [CopyAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyacceleratortablew
 func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
 	szRet, _, _ := syscall.SyscallN(proc.CopyAcceleratorTable.Addr(),
 		uintptr(hAccel), 0, 0)
@@ -46,7 +46,7 @@ func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
 
 // [DestroyAcceleratorTable] function.
 //
-// [DestroyAcceleratorTable]: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyacceleratortable
+// [DestroyAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyacceleratortable
 func (hAccel HACCEL) DestroyAcceleratorTable() error {
 	ret, _, err := syscall.SyscallN(proc.DestroyAcceleratorTable.Addr(),
 		uintptr(hAccel))

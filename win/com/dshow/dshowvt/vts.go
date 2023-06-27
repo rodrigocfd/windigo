@@ -9,7 +9,7 @@ import (
 
 // IBaseFilter virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
 type IBaseFilter struct {
 	IMediaFilter
 	EnumPins        uintptr
@@ -21,7 +21,7 @@ type IBaseFilter struct {
 
 // IBasicAudio virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-ibasicaudio
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/control/nn-control-ibasicaudio
 type IBasicAudio struct {
 	automvt.IDispatch
 	PutVolume  uintptr
@@ -32,7 +32,7 @@ type IBasicAudio struct {
 
 // IEnumFilters virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
 type IEnumFilters struct {
 	comvt.IUnknown
 	Next  uintptr
@@ -43,7 +43,7 @@ type IEnumFilters struct {
 
 // IEnumMediaTypes virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienummediatypes
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienummediatypes
 type IEnumMediaTypes struct {
 	comvt.IUnknown
 	Next  uintptr
@@ -54,7 +54,7 @@ type IEnumMediaTypes struct {
 
 // IEnumPins virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
 type IEnumPins struct {
 	comvt.IUnknown
 	Next  uintptr
@@ -65,7 +65,7 @@ type IEnumPins struct {
 
 // IFileSinkFilter virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter
 type IFileSinkFilter struct {
 	comvt.IUnknown
 	SetFileName uintptr
@@ -74,7 +74,7 @@ type IFileSinkFilter struct {
 
 // IFileSinkFilter2 virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter2
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter2
 type IFileSinkFilter2 struct {
 	IFileSinkFilter
 	SetMode uintptr
@@ -83,7 +83,7 @@ type IFileSinkFilter2 struct {
 
 // IFileSourceFilter virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
 type IFileSourceFilter struct {
 	comvt.IUnknown
 	Load       uintptr
@@ -92,7 +92,7 @@ type IFileSourceFilter struct {
 
 // IFilterGraph virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
 type IFilterGraph struct {
 	comvt.IUnknown
 	AddFilter            uintptr
@@ -107,7 +107,7 @@ type IFilterGraph struct {
 
 // IGraphBuilder virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-igraphbuilder
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-igraphbuilder
 type IGraphBuilder struct {
 	IFilterGraph
 	Connect                 uintptr
@@ -121,7 +121,7 @@ type IGraphBuilder struct {
 
 // IMediaControl virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
 type IMediaControl struct {
 	automvt.IDispatch
 	Run                    uintptr
@@ -137,7 +137,7 @@ type IMediaControl struct {
 
 // IMediaFilter virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
 type IMediaFilter struct {
 	comvt.IPersist
 	Stop          uintptr
@@ -150,7 +150,7 @@ type IMediaFilter struct {
 
 // IMediaSeeking virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediaseeking
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediaseeking
 type IMediaSeeking struct {
 	comvt.IUnknown
 	GetCapabilities      uintptr
@@ -174,7 +174,7 @@ type IMediaSeeking struct {
 
 // IMFGetService virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
 type IMFGetService struct {
 	comvt.IUnknown
 	GetService uintptr
@@ -182,7 +182,7 @@ type IMFGetService struct {
 
 // IMFVideoDisplayControl virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
 type IMFVideoDisplayControl struct {
 	comvt.IUnknown
 	GetNativeVideoSize uintptr
@@ -205,7 +205,7 @@ type IMFVideoDisplayControl struct {
 
 // IPin virtual table.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
+// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
 type IPin struct {
 	comvt.IUnknown
 	Connect                  uintptr

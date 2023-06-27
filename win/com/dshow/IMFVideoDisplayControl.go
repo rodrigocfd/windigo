@@ -15,57 +15,57 @@ import (
 
 // [IMFVideoDisplayControl] COM interface.
 //
-// [IMFVideoDisplayControl]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
+// [IMFVideoDisplayControl]: https://learn.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
 type IMFVideoDisplayControl interface {
 	com.IUnknown
 
 	// [GetAspectRatioMode] COM method.
 	//
-	// [GetAspectRatioMode]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getaspectratiomode
+	// [GetAspectRatioMode]: https://learn.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getaspectratiomode
 	GetAspectRatioMode() dshowco.MFVideoARMode
 
 	// [GetIdealVideoSize] COM method.
 	//
 	// Returns the minimum and maximum ideal sizes.
 	//
-	// [GetIdealVideoSize]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getidealvideosize
+	// [GetIdealVideoSize]: https://learn.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getidealvideosize
 	GetIdealVideoSize() (min, max win.SIZE)
 
 	// [GetNativeVideoSize] COM method.
 	//
 	// Returns video rectangle and aspect ratio.
 	//
-	// [GetNativeVideoSize]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getnativevideosize
+	// [GetNativeVideoSize]: https://learn.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getnativevideosize
 	GetNativeVideoSize() (size, aspectRatio win.SIZE)
 
 	// [GetVideoPosition] COM method.
 	//
-	// [GetVideoPosition]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideoposition
+	// [GetVideoPosition]: https://learn.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideoposition
 	GetVideoPosition() (source MFVideoNormalizedRect, dest win.RECT)
 
 	// [GetVideoWindow] COM method.
 	//
-	// [GetVideoWindow]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideowindow
+	// [GetVideoWindow]: https://learn.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-getvideowindow
 	GetVideoWindow() win.HWND
 
 	// [RepaintVideo] COM method.
 	//
-	// [RepaintVideo]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-repaintvideo
+	// [RepaintVideo]: https://learn.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-repaintvideo
 	RepaintVideo()
 
 	// [SetAspectRatioMode] COM method.
 	//
-	// [SetAspectRatioMode]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setaspectratiomode
+	// [SetAspectRatioMode]: https://learn.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setaspectratiomode
 	SetAspectRatioMode(mode dshowco.MFVideoARMode) error
 
 	// [SetVideoPosition] COM method.
 	//
-	// [SetVideoPosition]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideoposition
+	// [SetVideoPosition]: https://learn.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideoposition
 	SetVideoPosition(nrcSource *MFVideoNormalizedRect, rcDest *win.RECT)
 
 	// [SetVideoWindow] COM method.
 	//
-	// [SetVideoWindow]: https://docs.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideowindow
+	// [SetVideoWindow]: https://learn.microsoft.com/en-us/windows/win32/api/evr/nf-evr-imfvideodisplaycontrol-setvideowindow
 	SetVideoWindow(hwndVideo win.HWND) error
 }
 

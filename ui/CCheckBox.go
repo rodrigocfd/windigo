@@ -10,7 +10,7 @@ import (
 
 // Native check box control.
 //
-// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#check-boxes
+// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#check-boxes
 type CheckBox interface {
 	AnyNativeControl
 	AnyFocusControl
@@ -21,7 +21,7 @@ type CheckBox interface {
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://docs.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
+	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_ButtonEvents
 
 	CheckState() co.BST                   // Retrieves the current check state.

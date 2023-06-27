@@ -14,7 +14,7 @@ import (
 
 // [IFileSinkFilter] COM interface.
 //
-// [IFileSinkFilter]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter
+// [IFileSinkFilter]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter
 type IFileSinkFilter interface {
 	com.IUnknown
 
@@ -22,12 +22,12 @@ type IFileSinkFilter interface {
 	//
 	// Returns false if no file is opened.
 	//
-	// [GetCurFile]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter-getcurfile
+	// [GetCurFile]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter-getcurfile
 	GetCurFile(mt *AM_MEDIA_TYPE) (string, bool)
 
 	// [SetFileName] COM method.
 	//
-	// [SetFileName]: https://docs.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter-setfilename
+	// [SetFileName]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter-setfilename
 	SetFileName(fileName string, mt *AM_MEDIA_TYPE)
 }
 

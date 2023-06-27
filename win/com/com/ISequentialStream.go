@@ -12,7 +12,7 @@ import (
 
 // [ISequentialStream] COM interface.
 //
-// [ISequentialStream]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-isequentialstream
+// [ISequentialStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-isequentialstream
 type ISequentialStream interface {
 	IUnknown
 
@@ -21,12 +21,12 @@ type ISequentialStream interface {
 	// If returned numBytesRead is lower than requested buffer size, it means
 	// the end of stream was reached.
 	//
-	// [Read]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-isequentialstream-read
+	// [Read]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-isequentialstream-read
 	Read(buffer []byte) (numBytesRead uint32)
 
 	// [Write] COM method.
 	//
-	// [Write]: https://docs.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-isequentialstream-write
+	// [Write]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-isequentialstream-write
 	Write(data []byte) (numBytesWritten uint32)
 }
 

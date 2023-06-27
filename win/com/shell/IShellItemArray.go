@@ -15,7 +15,7 @@ import (
 
 // [IShellItemArray] COM interface.
 //
-// [IShellItemArray]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
+// [IShellItemArray]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
 type IShellItemArray interface {
 	com.IUnknown
 
@@ -26,12 +26,12 @@ type IShellItemArray interface {
 	//
 	// ⚠️ You must defer IShellItem.Release() on the returned object.
 	//
-	// [GetItemAt]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
+	// [GetItemAt]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
 	GetItemAt(index int) IShellItem
 
 	// [GetCount] COM method.
 	//
-	// [GetCount]: https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getcount
+	// [GetCount]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getcount
 	GetCount() int
 
 	// This helper method calls IShellItemArray.GetItemAt() to retrieve all

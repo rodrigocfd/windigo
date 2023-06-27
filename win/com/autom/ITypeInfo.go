@@ -17,13 +17,13 @@ import (
 
 // [ITypeInfo] COM interface.
 //
-// [ITypeInfo]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
+// [ITypeInfo]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
 type ITypeInfo interface {
 	com.IUnknown
 
 	// [AddressOfMember] COM method.
 	//
-	// [AddressOfMember]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-addressofmember
+	// [AddressOfMember]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-addressofmember
 	AddressOfMember(memberId MEMBERID, invokeKind automco.INVOKEKIND) uintptr
 
 	// [CreateInstance] COM method.
@@ -31,7 +31,7 @@ type ITypeInfo interface {
 	// ⚠️ You must defer IUnknown.Release() on the returned COM object. If
 	// iUnkOuter is not null, you must defer IUnknown.Release() on it too.
 	//
-	// [CreateInstance]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-createinstance
+	// [CreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-createinstance
 	CreateInstance(iUnkOuter *com.IUnknown, riid co.IID) com.IUnknown
 
 	// [GetDocumentation] COM method.
@@ -44,7 +44,7 @@ type ITypeInfo interface {
 	//	docum := info.GetDocumentation(funDesc.Memid)
 	//	fmt.Printf("Function name: %s\n", docum.Name)
 	//
-	// [GetDocumentation]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdocumentation
+	// [GetDocumentation]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdocumentation
 	GetDocumentation(memId MEMBERID) TypeDoc
 
 	// [GetFuncDesc] COM method.
@@ -64,12 +64,12 @@ type ITypeInfo interface {
 	//			funDesc.Memid, funDesc.Invkind)
 	//	}
 	//
-	// [GetFuncDesc]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getfuncdesc
+	// [GetFuncDesc]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getfuncdesc
 	GetFuncDesc(index int) *FUNCDESC
 
 	// [GetIDsOfNames] COM method.
 	//
-	// [GetIDsOfNames]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getidsofnames
+	// [GetIDsOfNames]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getidsofnames
 	GetIDsOfNames(names []string) []MEMBERID
 
 	// [GetTypeAttr] COM method.
@@ -86,14 +86,14 @@ type ITypeInfo interface {
 	//	fmt.Printf("Num funcs: %d, GUID: %s\n",
 	//		attr.CFuncs, attr.Guid.String())
 	//
-	// [GetTypeAttr]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-gettypeattr
+	// [GetTypeAttr]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-gettypeattr
 	GetTypeAttr() *TYPEATTR
 
 	// [GetVarDesc] COM method.
 	//
 	// ⚠️ You must defer ITypeInfo.ReleaseVarDesc() on the returned object.
 	//
-	// [GetVarDesc]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getvardesc
+	// [GetVarDesc]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getvardesc
 	GetVarDesc(index int) *VARDESC
 
 	// This helper method retrieves a resumed information of all functions of
@@ -103,17 +103,17 @@ type ITypeInfo interface {
 
 	// [ReleaseFuncDesc] COM method.
 	//
-	// [ReleaseFuncDesc]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasefuncdesc
+	// [ReleaseFuncDesc]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasefuncdesc
 	ReleaseFuncDesc(funcDesc *FUNCDESC)
 
 	// [ReleaseTypeAttr] COM method.
 	//
-	// [ReleaseTypeAttr]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasetypeattr
+	// [ReleaseTypeAttr]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasetypeattr
 	ReleaseTypeAttr(typeAttr *TYPEATTR)
 
 	// [ReleaseVarDesc] COM method.
 	//
-	// [ReleaseVarDesc]: https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasevardesc
+	// [ReleaseVarDesc]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasevardesc
 	ReleaseVarDesc(varDesc *VARDESC)
 }
 
