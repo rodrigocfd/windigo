@@ -50,7 +50,8 @@ func (hKey HKEY) RegCloseKey() error {
 // [RegDeleteKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyw
 func (hKey HKEY) RegDeleteKey(subKey string) error {
 	ret, _, _ := syscall.SyscallN(proc.RegDeleteKey.Addr(),
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))))
+		uintptr(hKey),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))))
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -64,7 +65,8 @@ func (hKey HKEY) RegDeleteKey(subKey string) error {
 // [RegDeleteKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyexw
 func (hKey HKEY) RegDeleteKeyEx(subKey string, samDesired co.KEY) error {
 	ret, _, _ := syscall.SyscallN(proc.RegDeleteKeyEx.Addr(),
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
+		uintptr(hKey),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
 		uintptr(samDesired), 0)
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
@@ -77,7 +79,8 @@ func (hKey HKEY) RegDeleteKeyEx(subKey string, samDesired co.KEY) error {
 // [RegDeleteKeyValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyvaluew
 func (hKey HKEY) RegDeleteKeyValue(subKey, valueName string) error {
 	ret, _, _ := syscall.SyscallN(proc.RegDeleteKeyValue.Addr(),
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
+		uintptr(hKey),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(valueName))))
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
@@ -90,7 +93,8 @@ func (hKey HKEY) RegDeleteKeyValue(subKey, valueName string) error {
 // [RegDeleteTree]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletetreew
 func (hKey HKEY) RegDeleteTree(subKey string) error {
 	ret, _, _ := syscall.SyscallN(proc.RegDeleteTree.Addr(),
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))))
+		uintptr(hKey),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))))
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
 	}
@@ -223,24 +227,61 @@ func (hKey HKEY) RegFlushKey() error {
 
 // [RegGetValue] function.
 //
-// This function is rather tricky. Prefer using HKEY.ReadBinary(),
-// HKEY.ReadDword(), HKEY.ReadQword() or HKEY.ReadString().
+// Example:
+//
+//	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
+//		"Control Panel\\Sound",
+//		co.REG_OPTION_NONE,
+//		co.KEY_READ)
+//	defer hKey.RegCloseKey()
+//
+//	regVal, _ := hKey.RegGetValue(
+//		win.StrOptNone(),
+//		win.StrOptSome("Beep"))
+//	if val, ok := regVal.Sz(); ok {
+//		println(val)
+//	}
 //
 // [RegGetValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-reggetvaluew
-func (hKey HKEY) RegGetValue(
-	subKey, value string, flags co.RRF, pdwType *co.REG,
-	pData unsafe.Pointer, pDataLen *uint32) error {
+func (hKey HKEY) RegGetValue(subKey, value StrOpt) (RegVal, error) {
+	pSubKeyName := subKey.Raw()
+	pValueName := value.Raw()
+	var dataType co.REG
+	var dataLen uint32
 
+	// Query data type and length.
 	ret, _, _ := syscall.SyscallN(proc.RegGetValue.Addr(),
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
-		uintptr(unsafe.Pointer(Str.ToNativePtr(value))),
-		uintptr(flags), uintptr(unsafe.Pointer(pdwType)),
-		uintptr(pData), uintptr(unsafe.Pointer(pDataLen)))
-
+		uintptr(hKey),
+		uintptr(pSubKeyName),
+		uintptr(pValueName),
+		uintptr(co.RRF_RT_ANY|co.RRF_NOEXPAND),
+		uintptr(unsafe.Pointer(&dataType)),
+		0,
+		uintptr(unsafe.Pointer(&dataLen)))
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
-		return wErr
+		return RegValNone(), wErr
 	}
-	return nil
+
+	// Alloc receiving block.
+	buf := make([]byte, dataLen)
+
+	// Retrieve the value content.
+	ret, _, _ = syscall.SyscallN(proc.RegGetValue.Addr(),
+		uintptr(hKey),
+		uintptr(pSubKeyName),
+		uintptr(pValueName),
+		uintptr(co.RRF_RT_ANY|co.RRF_NOEXPAND),
+		uintptr(unsafe.Pointer(&dataType)),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(unsafe.Pointer(&dataLen)))
+	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
+		return RegValNone(), wErr
+	}
+
+	return RegVal{
+		ty:  dataType,
+		val: buf,
+	}, nil
 }
 
 // [RegOpenKeyEx] function.
@@ -261,8 +302,10 @@ func (hKey HKEY) RegOpenKeyEx(
 
 	var openedKey HKEY
 	ret, _, _ := syscall.SyscallN(proc.RegOpenKeyEx.Addr(),
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
-		uintptr(ulOptions), uintptr(samDesired),
+		uintptr(hKey),
+		uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
+		uintptr(ulOptions),
+		uintptr(samDesired),
 		uintptr(unsafe.Pointer(&openedKey)))
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
@@ -306,7 +349,9 @@ func (hKey HKEY) RegQueryInfoKey() (_KeyInfo, error) {
 
 	ret, _, _ := syscall.SyscallN(proc.RegQueryInfoKey.Addr(),
 		uintptr(hKey),
-		uintptr(unsafe.Pointer(&classBuf[0])), uintptr(unsafe.Pointer(&classBufLen)), 0,
+		uintptr(unsafe.Pointer(&classBuf[0])),
+		uintptr(unsafe.Pointer(&classBufLen)),
+		0,
 		uintptr(unsafe.Pointer(&info.NumSubKeys)),
 		uintptr(unsafe.Pointer(&info.MaxSubKeyNameLen)),
 		uintptr(unsafe.Pointer(&info.MaxSubKeyClassLen)),
@@ -327,18 +372,29 @@ func (hKey HKEY) RegQueryInfoKey() (_KeyInfo, error) {
 
 // [RegSetKeyValue] function.
 //
-// This function is rather tricky. Prefer using HKEY.WriteBinary(),
-// HKEY.WriteDword(), HKEY.WriteQword() or HKEY.WriteString().
+// Example:
+//
+//	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
+//		"Control Panel\\Sound",
+//		co.REG_OPTION_NONE,
+//		co.KEY_READ|co.KEY_WRITE)
+//	defer hKey.RegCloseKey()
+//
+//	newData := win.RegValSz("yes")
+//	hKey.RegSetKeyValue(
+//		win.StrOptNone(),
+//		win.StrOptSome("Beep"),
+//		newData)
 //
 // [RegSetKeyValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetkeyvaluew
-func (hKey HKEY) RegSetKeyValue(
-	subKey, valueName string, dwType co.REG,
-	pData unsafe.Pointer, dataLen uint32) error {
-
+func (hKey HKEY) RegSetKeyValue(subKey, value StrOpt, data RegVal) error {
 	ret, _, _ := syscall.SyscallN(proc.RegSetKeyValue.Addr(),
-		uintptr(hKey), uintptr(unsafe.Pointer(Str.ToNativePtr(subKey))),
-		uintptr(unsafe.Pointer(Str.ToNativePtr(valueName))),
-		uintptr(dwType), uintptr(pData), uintptr(dataLen))
+		uintptr(hKey),
+		uintptr(subKey.Raw()),
+		uintptr(value.Raw()),
+		uintptr(data.ty),
+		uintptr(unsafe.Pointer(&data.val[0])),
+		uintptr(len(data.val)))
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
 		return wErr
