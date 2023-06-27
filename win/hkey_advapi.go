@@ -85,7 +85,7 @@ func (hKey HKEY) RegDeleteKeyValue(subKey, valueName string) error {
 	return nil
 }
 
-// [RegDeleteTree] funciton.
+// [RegDeleteTree] function.
 //
 // [RegDeleteTree]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletetreew
 func (hKey HKEY) RegDeleteTree(subKey string) error {
@@ -100,6 +100,19 @@ func (hKey HKEY) RegDeleteTree(subKey string) error {
 // [RegEnumKeyEx] function.
 //
 // Returns the names of all subkeys within a key.
+//
+// Example:
+//
+//	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
+//		"Control Panel\\Desktop",
+//		co.REG_OPTION_NONE,
+//		co.KEY_READ|co.KEY_ENUMERATE_SUB_KEYS)
+//	defer hKey.RegCloseKey()
+//
+//	subKeys, _ := hKey.RegEnumKeyEx()
+//	for _, subKey := range subKeys {
+//		println(subKey)
+//	}
 //
 // [RegEnumKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumkeyexw
 func (hKey HKEY) RegEnumKeyEx() ([]string, error) {
@@ -140,6 +153,19 @@ type _ValueEnum struct {
 // [RegEnumValue] function.
 //
 // Returns the names and types of all values within a key.
+//
+// Example:
+//
+//	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
+//		"Control Panel\\Keyboard",
+//		co.REG_OPTION_NONE,
+//		co.KEY_READ)
+//	defer hKey.RegCloseKey()
+//
+//	values, _ := hKey.RegEnumValue()
+//	for _, value := range values {
+//		println(value.Name)
+//	}
 //
 // [RegEnumValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumvaluew
 func (hKey HKEY) RegEnumValue() ([]_ValueEnum, error) {
@@ -221,6 +247,14 @@ func (hKey HKEY) RegGetValue(
 //
 // ⚠️ You must defer HKEY.RegCloseKey().
 //
+// Example:
+//
+//	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
+//		"Control Panel\\Keyboard",
+//		co.REG_OPTION_NONE,
+//		co.KEY_READ)
+//	defer hKey.RegCloseKey()
+//
 // [RegOpenKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
 func (hKey HKEY) RegOpenKeyEx(
 	subKey string, ulOptions co.REG_OPTION, samDesired co.KEY) (HKEY, error) {
@@ -250,6 +284,18 @@ type _KeyInfo struct {
 }
 
 // [RegQueryInfoKey] function.
+//
+// Example:
+//
+//	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
+//		"Control Panel\\Desktop",
+//		co.REG_OPTION_NONE,
+//		co.KEY_READ)
+//	defer hKey.RegCloseKey()
+//
+//	nfo, _ := hKey.RegQueryInfoKey()
+//	println(nfo.NumSubKeys, nfo.NumValues,
+//		nfo.LastWriteTime.Format(time.ANSIC))
 //
 // [RegQueryInfoKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryinfokeyw
 func (hKey HKEY) RegQueryInfoKey() (_KeyInfo, error) {
