@@ -122,6 +122,38 @@ func (ft *FILETIME) FromTime(val time.Time) {
 	)
 }
 
+// [MANAGEDAPPLICATION] struct.
+//
+// [MANAGEDAPPLICATION]: https://learn.microsoft.com/en-us/windows/win32/api/appmgmt/ns-appmgmt-managedapplication
+type MANAGEDAPPLICATION struct {
+	pszPackageName *uint16
+	pszPublisher   *uint16
+	DwVersionHi    uint32
+	DwVersionLo    uint32
+	DwRevision     uint32
+	GpoId          GUID
+	pszPolicyName  *uint16
+	ProductId      GUID
+	Language       LANGID
+	pszOwner       *uint16
+	pszCompany     *uint16
+	pszComments    *uint16
+	pszContact     *uint16
+	pszSupportUrl  *uint16
+	DwPathType     uint32
+	bInstalled     int32 // BOOL
+}
+
+func (ma *MANAGEDAPPLICATION) PszPackageName() string { return Str.FromNativePtr(ma.pszPackageName) }
+func (ma *MANAGEDAPPLICATION) PszPublisher() string   { return Str.FromNativePtr(ma.pszPublisher) }
+func (ma *MANAGEDAPPLICATION) PszPolicyName() string  { return Str.FromNativePtr(ma.pszPolicyName) }
+func (ma *MANAGEDAPPLICATION) PszOwner() string       { return Str.FromNativePtr(ma.pszOwner) }
+func (ma *MANAGEDAPPLICATION) PszCompany() string     { return Str.FromNativePtr(ma.pszCompany) }
+func (ma *MANAGEDAPPLICATION) PszComments() string    { return Str.FromNativePtr(ma.pszComments) }
+func (ma *MANAGEDAPPLICATION) PszContact() string     { return Str.FromNativePtr(ma.pszContact) }
+func (ma *MANAGEDAPPLICATION) PszSupportUrl() string  { return Str.FromNativePtr(ma.pszSupportUrl) }
+func (ma *MANAGEDAPPLICATION) BInstalled() bool       { return ma.bInstalled != 0 }
+
 // [MODULEENTRY32] struct.
 //
 // ⚠️ You must call SetDwSize() to initialize the struct.

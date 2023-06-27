@@ -2,6 +2,13 @@
 
 package win
 
+// Private constants from advapi.
+const (
+	_MANAGED_APPS_USERAPPLICATIONS  = 0x1
+	_MANAGED_APPS_FROMCATEGORY      = 0x2
+	_MANAGED_APPS_INFOLEVEL_DEFAULT = 0x1_0000
+)
+
 // Private constants from comctl.
 const (
 	_L_MAX_URL_LENGTH = 2048 + 32 + 4
