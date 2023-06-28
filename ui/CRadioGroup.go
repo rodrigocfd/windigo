@@ -6,11 +6,12 @@ package ui
 type RadioGroup interface {
 	implRadioGroup() // prevent public implementation
 
-	// Exposes all the Button messages the can be handled by all radios in the group.
+	// Exposes all the [Button notifications] the can be handled by all radios
+	// in the group.
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
+	// [Button notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_RadioButtonEvents
 
 	AsCtrls() []AnyControl         // Returns all radios buttons as AnyControl.
@@ -139,7 +140,9 @@ func (me *_RadioButtonEvents) new(radios *[]RadioButton) {
 	me.radios = radios
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
+// [BN_CLICKED] message handler.
+//
+// [BN_CLICKED]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
 func (me *_RadioButtonEvents) BnClicked(userFunc func(radio RadioButton)) {
 	for _, radio := range *me.radios {
 		curRadio := radio
@@ -149,7 +152,9 @@ func (me *_RadioButtonEvents) BnClicked(userFunc func(radio RadioButton)) {
 	}
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bn-dblclk
+// [BN_DBLCLK] message handler.
+//
+// [BN_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-dblclk
 func (me *_RadioButtonEvents) BnDblClk(userFunc func(radio RadioButton)) {
 	for _, radio := range *me.radios {
 		curRadio := radio

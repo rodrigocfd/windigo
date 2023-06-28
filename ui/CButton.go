@@ -19,11 +19,11 @@ type Button interface {
 	AnyTextControl
 	implButton() // prevent public implementation
 
-	// Exposes all the Button notifications the can be handled.
+	// Exposes all the [Button notifications] the can be handled.
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
+	// [Button notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_ButtonEvents
 
 	EmulateClick() // Emulates an user click.
@@ -216,49 +216,63 @@ func (me *_ButtonEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bcn-dropdown
+// [BCN_DROPDOWN] message handler.
+//
+// [BCN_DROPDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/bcn-dropdown
 func (me *_ButtonEvents) BcnDropDown(userFunc func(p *win.NMBCDROPDOWN)) {
 	me.events.addNfyZero(me.ctrlId, co.BCN_DROPDOWN, func(p unsafe.Pointer) {
 		userFunc((*win.NMBCDROPDOWN)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bcn-hotitemchange
+// [BCN_HOTITEMCHANGE] message handler.
+//
+// [BCN_HOTITEMCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/bcn-hotitemchange
 func (me *_ButtonEvents) BcnHotItemChange(userFunc func(p *win.NMBCHOTITEM)) {
 	me.events.addNfyZero(me.ctrlId, co.BCN_HOTITEMCHANGE, func(p unsafe.Pointer) {
 		userFunc((*win.NMBCHOTITEM)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
+// [BN_CLICKED] message handler.
+//
+// [BN_CLICKED]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
 func (me *_ButtonEvents) BnClicked(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.BN_CLICKED, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bn-dblclk
+// [BN_DBLCLK] message handler.
+//
+// [BN_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-dblclk
 func (me *_ButtonEvents) BnDblClk(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.BN_DBLCLK, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bn-killfocus
+// [BN_KILLFOCUS] message handler.
+//
+// [BN_KILLFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-killfocus
 func (me *_ButtonEvents) BnKillFocus(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.BN_KILLFOCUS, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bn-setfocus
+// [BN_SETFOCUS] message handler.
+//
+// [BN_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-setfocus
 func (me *_ButtonEvents) BnSetFocus(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.BN_SETFOCUS, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-customdraw-button
+// [NM_CUSTOMDRAW] message handler.
+//
+// [NM_CUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-customdraw-button
 func (me *_ButtonEvents) NmCustomDraw(userFunc func(p *win.NMCUSTOMDRAW) co.CDRF) {
 	me.events.addNfyRet(me.ctrlId, co.NM_CUSTOMDRAW, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMCUSTOMDRAW)(p)))

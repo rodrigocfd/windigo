@@ -20,11 +20,11 @@ type ListView interface {
 	AnyFocusControl
 	implListView() // prevent public implementation
 
-	// Exposes all the ListView notifications the can be handled.
+	// Exposes all the [ListView notifications] the can be handled.
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-list-view-control-reference-notifications
+	// [ListView notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-list-view-control-reference-notifications
 	On() *_ListViewEvents
 
 	ContextMenu() win.HMENU                                           // Returns the associated context menu, if any.
@@ -370,259 +370,333 @@ func (me *_ListViewEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-begindrag
+// [LVN_BEGINDRAG] message handler.
+//
+// [LVN_BEGINDRAG]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-begindrag
 func (me *_ListViewEvents) LvnBeginDrag(userFunc func(p *win.NMLISTVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_BEGINDRAG, func(p unsafe.Pointer) {
 		userFunc((*win.NMLISTVIEW)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-beginlabeledit
+// [LVN_BEGINLABELEDIT] message handler.
+//
+// [LVN_BEGINLABELEDIT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-beginlabeledit
 func (me *_ListViewEvents) LvnBeginLabelEdit(userFunc func(p *win.NMLVDISPINFO) bool) {
 	me.events.addNfyRet(me.ctrlId, co.LVN_BEGINLABELEDIT, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMLVDISPINFO)(p)))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-beginrdrag
+// [LVN_BEGINRDRAG] message handler.
+//
+// [LVN_BEGINRDRAG]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-beginrdrag
 func (me *_ListViewEvents) LvnBeginRDrag(userFunc func(p *win.NMLISTVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_BEGINRDRAG, func(p unsafe.Pointer) {
 		userFunc((*win.NMLISTVIEW)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-beginscroll
+// [LVN_BEGINSCROLL] message handler.
+//
+// [LVN_BEGINSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-beginscroll
 func (me *_ListViewEvents) LvnBeginScroll(userFunc func(p *win.NMLVSCROLL)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_BEGINSCROLL, func(p unsafe.Pointer) {
 		userFunc((*win.NMLVSCROLL)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-columnclick
+// [LVN_COLUMNCLICK] message handler.
+//
+// [LVN_COLUMNCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-columnclick
 func (me *_ListViewEvents) LvnColumnClick(userFunc func(p *win.NMLISTVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_COLUMNCLICK, func(p unsafe.Pointer) {
 		userFunc((*win.NMLISTVIEW)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-columndropdown
+// [LVN_COLUMNDROPDOWN] message handler.
+//
+// [LVN_COLUMNDROPDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-columndropdown
 func (me *_ListViewEvents) LvnColumnDropDown(userFunc func(p *win.NMLISTVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_COLUMNDROPDOWN, func(p unsafe.Pointer) {
 		userFunc((*win.NMLISTVIEW)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-columnoverflowclick
+// [LVN_COLUMNOVERFLOWCLICK] message handler.
+//
+// [LVN_COLUMNOVERFLOWCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-columnoverflowclick
 func (me *_ListViewEvents) LvnColumnOverflowClick(userFunc func(p *win.NMLISTVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_COLUMNOVERFLOWCLICK, func(p unsafe.Pointer) {
 		userFunc((*win.NMLISTVIEW)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-deleteallitems
+// [LVN_DELETEALLITEMS] message handler.
+//
+// [LVN_DELETEALLITEMS]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-deleteallitems
 func (me *_ListViewEvents) LvnDeleteAllItems(userFunc func(p *win.NMLISTVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_DELETEALLITEMS, func(p unsafe.Pointer) {
 		userFunc((*win.NMLISTVIEW)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-deleteitem
+// [LVN_DELETEITEM] message handler.
+//
+// [LVN_DELETEITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-deleteitem
 func (me *_ListViewEvents) LvnDeleteItem(userFunc func(p *win.NMLISTVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_DELETEITEM, func(p unsafe.Pointer) {
 		userFunc((*win.NMLISTVIEW)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-endlabeledit
+// [LVN_ENDLABELEDIT] message handler.
+//
+// [LVN_ENDLABELEDIT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-endlabeledit
 func (me *_ListViewEvents) LvnEndLabelEdit(userFunc func(p *win.NMLVDISPINFO) bool) {
 	me.events.addNfyRet(me.ctrlId, co.LVN_ENDLABELEDIT, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMLVDISPINFO)(p)))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-endscroll
+// [LVN_ENDSCROLL] message handler.
+//
+// [LVN_ENDSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-endscroll
 func (me *_ListViewEvents) LvnEndScroll(userFunc func(p *win.NMLVSCROLL)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_ENDSCROLL, func(p unsafe.Pointer) {
 		userFunc((*win.NMLVSCROLL)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-getdispinfo
+// [LVN_GETDISPINFO] message handler.
+//
+// [LVN_GETDISPINFO]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-getdispinfo
 func (me *_ListViewEvents) LvnGetDispInfo(userFunc func(p *win.NMLVDISPINFO)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_GETDISPINFO, func(p unsafe.Pointer) {
 		userFunc((*win.NMLVDISPINFO)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-getemptymarkup
+// [LVN_GETEMPTYMARKUP] message handler.
+//
+// [LVN_GETEMPTYMARKUP]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-getemptymarkup
 func (me *_ListViewEvents) LvnGetEmptyMarkup(userFunc func(p *win.NMLVEMPTYMARKUP) bool) {
 	me.events.addNfyRet(me.ctrlId, co.LVN_GETEMPTYMARKUP, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMLVEMPTYMARKUP)(p)))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-getinfotip
+// [LVN_GETINFOTIP] message handler.
+//
+// [LVN_GETINFOTIP]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-getinfotip
 func (me *_ListViewEvents) LvnGetInfoTip(userFunc func(p *win.NMLVGETINFOTIP)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_GETINFOTIP, func(p unsafe.Pointer) {
 		userFunc((*win.NMLVGETINFOTIP)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-hottrack
+// [LVN_HOTTRACK] message handler.
+//
+// [LVN_HOTTRACK]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-hottrack
 func (me *_ListViewEvents) LvnHotTrack(userFunc func(p *win.NMLISTVIEW) int) {
 	me.events.addNfyRet(me.ctrlId, co.LVN_HOTTRACK, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMLISTVIEW)(p)))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-incrementalsearch
+// [LVN_INCREMENTALSEARCH] message handler.
+//
+// [LVN_INCREMENTALSEARCH]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-incrementalsearch
 func (me *_ListViewEvents) LvnIncrementalSearch(userFunc func(p *win.NMLVFINDITEM) int) {
 	me.events.addNfyRet(me.ctrlId, co.LVN_INCREMENTALSEARCH, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMLVFINDITEM)(p)))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-insertitem
+// [LVN_INSERTITEM] message handler.
+//
+// [LVN_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-insertitem
 func (me *_ListViewEvents) LvnInsertItem(userFunc func(p *win.NMLISTVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_INSERTITEM, func(p unsafe.Pointer) {
 		userFunc((*win.NMLISTVIEW)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-itemactivate
+// [LVN_ITEMACTIVATE] message handler.
+//
+// [LVN_ITEMACTIVATE]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-itemactivate
 func (me *_ListViewEvents) LvnItemActivate(userFunc func(p *win.NMITEMACTIVATE)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_ITEMACTIVATE, func(p unsafe.Pointer) {
 		userFunc((*win.NMITEMACTIVATE)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-itemchanged
+// [LVN_ITEMCHANGED] message handler.
+//
+// [LVN_ITEMCHANGED]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-itemchanged
 func (me *_ListViewEvents) LvnItemChanged(userFunc func(p *win.NMLISTVIEW)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_ITEMCHANGED, func(p unsafe.Pointer) {
 		userFunc((*win.NMLISTVIEW)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-itemchanging
+// [LVN_ITEMCHANGING] message handler.
+//
+// [LVN_ITEMCHANGING]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-itemchanging
 func (me *_ListViewEvents) LvnItemChanging(userFunc func(p *win.NMLISTVIEW) bool) {
 	me.events.addNfyRet(me.ctrlId, co.LVN_ITEMCHANGING, func(p unsafe.Pointer) uintptr {
 		return util.BoolToUintptr(userFunc((*win.NMLISTVIEW)(p)))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-keydown
+// [LVN_KEYDOWN] message handler.
+//
+// [LVN_KEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-keydown
 func (me *_ListViewEvents) LvnKeyDown(userFunc func(p *win.NMLVKEYDOWN)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_KEYDOWN, func(p unsafe.Pointer) {
 		userFunc((*win.NMLVKEYDOWN)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-linkclick
+// [LVN_LINKCLICK] message handler.
+//
+// [LVN_LINKCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-linkclick
 func (me *_ListViewEvents) LvnLinkClick(userFunc func(p *win.NMLVLINK)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_LINKCLICK, func(p unsafe.Pointer) {
 		userFunc((*win.NMLVLINK)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-marqueebegin
+// [LVN_MARQUEEBEGIN] message handler.
+//
+// [LVN_MARQUEEBEGIN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-marqueebegin
 func (me *_ListViewEvents) LvnMarqueeBegin(userFunc func() uint) {
 	me.events.addNfyRet(me.ctrlId, co.LVN_MARQUEEBEGIN, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc())
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-odcachehint
+// [LVN_ODCACHEHINT] message handler.
+//
+// [LVN_ODCACHEHINT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-odcachehint
 func (me *_ListViewEvents) LvnODCacheHint(userFunc func(p *win.NMLVCACHEHINT)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_ODCACHEHINT, func(p unsafe.Pointer) {
 		userFunc((*win.NMLVCACHEHINT)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-odfinditem
+// [LVN_ODFINDITEM] message handler.
+//
+// [LVN_ODFINDITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-odfinditem
 func (me *_ListViewEvents) LvnODFindItem(userFunc func(p *win.NMLVFINDITEM) int) {
 	me.events.addNfyRet(me.ctrlId, co.LVN_ODFINDITEM, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMLVFINDITEM)(p)))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-odstatechanged
+// [LVN_ODSTATECHANGED] message handler.
+//
+// [LVN_ODSTATECHANGED]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-odstatechanged
 func (me *_ListViewEvents) LvnODStateChanged(userFunc func(p *win.NMLVODSTATECHANGE)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_ODSTATECHANGED, func(p unsafe.Pointer) {
 		userFunc((*win.NMLVODSTATECHANGE)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvn-setdispinfo
+// [LVN_SETDISPINFO] message handler.
+//
+// [LVN_SETDISPINFO]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-setdispinfo
 func (me *_ListViewEvents) LvnSetDispInfo(userFunc func(p *win.NMLVDISPINFO)) {
 	me.events.addNfyZero(me.ctrlId, co.LVN_SETDISPINFO, func(p unsafe.Pointer) {
 		userFunc((*win.NMLVDISPINFO)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-list-view
+// [NM_CLICK] message handler.
+//
+// [NM_CLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-list-view
 func (me *_ListViewEvents) NmClick(userFunc func(p *win.NMITEMACTIVATE)) {
 	me.events.addNfyZero(me.ctrlId, co.NM_CLICK, func(p unsafe.Pointer) {
 		userFunc((*win.NMITEMACTIVATE)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-customdraw-list-view
+// [NM_CUSTOMDRAW] message handler.
+//
+// [NM_CUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-customdraw-list-view
 func (me *_ListViewEvents) NmCustomDraw(userFunc func(p *win.NMLVCUSTOMDRAW) co.CDRF) {
 	me.events.addNfyRet(me.ctrlId, co.NM_CUSTOMDRAW, func(p unsafe.Pointer) uintptr {
 		return uintptr(userFunc((*win.NMLVCUSTOMDRAW)(p)))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-dblclk-list-view
+// [NM_DBLCLK] message handler.
+//
+// [NM_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-dblclk-list-view
 func (me *_ListViewEvents) NmDblClk(userFunc func(p *win.NMITEMACTIVATE)) {
 	me.events.addNfyZero(me.ctrlId, co.NM_DBLCLK, func(p unsafe.Pointer) {
 		userFunc((*win.NMITEMACTIVATE)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-hover-list-view
+// [NM_HOVER] message handler.
+//
+// [NM_HOVER]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-hover-list-view
 func (me *_ListViewEvents) NmHover(userFunc func() uint) {
 	me.events.addNfyRet(me.ctrlId, co.NM_HOVER, func(_ unsafe.Pointer) uintptr {
 		return uintptr(userFunc())
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-killfocus-list-view
+// [NM_KILLFOCUS] message handler.
+//
+// [NM_KILLFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-killfocus-list-view
 func (me *_ListViewEvents) NmKillFocus(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_KILLFOCUS, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-rclick-list-view
+// [NM_RCLICK] message handler.
+//
+// [NM_RCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rclick-list-view
 func (me *_ListViewEvents) NmRClick(userFunc func(p *win.NMITEMACTIVATE)) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RCLICK, func(p unsafe.Pointer) {
 		userFunc((*win.NMITEMACTIVATE)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-list-view
+// [NM_RDBLCLK] message handler.
+//
+// [NM_RDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-list-view
 func (me *_ListViewEvents) NmRDblClk(userFunc func(p *win.NMITEMACTIVATE)) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RDBLCLK, func(p unsafe.Pointer) {
 		userFunc((*win.NMITEMACTIVATE)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-list-view-
+// [NM_RELEASEDCAPTURE] message handler.
+//
+// [NM_RELEASEDCAPTURE]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-list-view-
 func (me *_ListViewEvents) NmReleasedCapture(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-return-list-view-
+// [NM_RETURN] message handler.
+//
+// [NM_RETURN]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-return-list-view-
 func (me *_ListViewEvents) NmReturn(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RETURN, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-setfocus-list-view-
+// [NM_SETFOCUS] message handler.
+//
+// [NM_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-setfocus-list-view-
 func (me *_ListViewEvents) NmSetFocus(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_SETFOCUS, func(_ unsafe.Pointer) {
 		userFunc()

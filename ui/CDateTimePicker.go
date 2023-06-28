@@ -19,11 +19,11 @@ type DateTimePicker interface {
 	AnyFocusControl
 	implDateTimePicker() // prevent public implementation
 
-	// Exposes all the DateTimePicker notifications the can be handled.
+	// Exposes all the [DateTimePicker notifications] the can be handled.
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-date-and-time-picker-control-reference-notifications
+	// [DateTimePicker notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-date-and-time-picker-control-reference-notifications
 	On() *_DateTimePickerEvents
 
 	SetTime(newTime time.Time) // Sets the current time.
@@ -222,63 +222,81 @@ func (me *_DateTimePickerEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/dtn-closeup
+// [DTN_CLOSEUP] message handler.
+//
+// [DTN_CLOSEUP]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-closeup
 func (me *_DateTimePickerEvents) DtnCloseUp(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.DTN_CLOSEUP, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/dtn-datetimechange
+// [DTN_DATETIMECHANGE] message handler.
+//
+// [DTN_DATETIMECHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-datetimechange
 func (me *_DateTimePickerEvents) DtnDateTimeChange(userFunc func(p *win.NMDATETIMECHANGE)) {
 	me.events.addNfyZero(me.ctrlId, co.DTN_DATETIMECHANGE, func(p unsafe.Pointer) {
 		userFunc((*win.NMDATETIMECHANGE)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/dtn-dropdown
+// [DTN_DROPDOWN] message handler.
+//
+// [DTN_DROPDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-dropdown
 func (me *_DateTimePickerEvents) DtnDropDown(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.DTN_DROPDOWN, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/dtn-format
+// [DTN_FORMAT] message handler.
+//
+// [DTN_FORMAT]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-format
 func (me *_DateTimePickerEvents) DtnFormat(userFunc func(p *win.NMDATETIMEFORMAT)) {
 	me.events.addNfyZero(me.ctrlId, co.DTN_FORMAT, func(p unsafe.Pointer) {
 		userFunc((*win.NMDATETIMEFORMAT)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/dtn-formatquery
+// [DTN_FORMATQUERY] message handler.
+//
+// [DTN_FORMATQUERY]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-formatquery
 func (me *_DateTimePickerEvents) DtnFormatQuery(userFunc func(p *win.NMDATETIMEFORMATQUERY)) {
 	me.events.addNfyZero(me.ctrlId, co.DTN_FORMATQUERY, func(p unsafe.Pointer) {
 		userFunc((*win.NMDATETIMEFORMATQUERY)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/dtn-userstring
+// [DTN_USERSTRING] message handler.
+//
+// [DTN_USERSTRING]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-userstring
 func (me *_DateTimePickerEvents) DtnUserString(userFunc func(p *win.NMDATETIMESTRING)) {
 	me.events.addNfyZero(me.ctrlId, co.DTN_USERSTRING, func(p unsafe.Pointer) {
 		userFunc((*win.NMDATETIMESTRING)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/dtn-wmkeydown
+// [DTN_WMKEYDOWN] message handler.
+//
+// [DTN_WMKEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-wmkeydown
 func (me *_DateTimePickerEvents) DtnWmKeyDown(userFunc func(p *win.NMDATETIMEWMKEYDOWN)) {
 	me.events.addNfyZero(me.ctrlId, co.DTN_WMKEYDOWN, func(p unsafe.Pointer) {
 		userFunc((*win.NMDATETIMEWMKEYDOWN)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-killfocus-date-time
+// [NM_KILLFOCUS] message handler.
+//
+// [NM_KILLFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-killfocus-date-time
 func (me *_DateTimePickerEvents) NmKillFocus(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_KILLFOCUS, func(_ unsafe.Pointer) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-setfocus-date-time-
+// [NM_SETFOCUS] message handler.
+//
+// [NM_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-setfocus-date-time-
 func (me *_DateTimePickerEvents) NmSetFocus(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_SETFOCUS, func(_ unsafe.Pointer) {
 		userFunc()

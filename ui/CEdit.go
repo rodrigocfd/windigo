@@ -20,11 +20,11 @@ type Edit interface {
 	AnyTextControl
 	implEdit() // prevent public implementation
 
-	// Exposes all the Edit notifications the can be handled.
+	// Exposes all the [Edit notifications] the can be handled.
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-notifications
+	// [Edit notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-edit-control-reference-notifications
 	On() *_EditEvents
 
 	HideBalloonTip()                                // Hides a balloon tip, if any.
@@ -260,70 +260,90 @@ func (me *_EditEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-align-ltr-ec
+// [EN_ALIGN_LTR_EC] message handler.
+//
+// [EN_ALIGN_LTR_EC]: https://learn.microsoft.com/en-us/windows/win32/controls/en-align-ltr-ec
 func (me *_EditEvents) EnAlignLtrEc(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_ALIGN_LTR_EC, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-align-rtl-ec
+// [EN_ALIGN_RTL_EC] message handler.
+//
+// [EN_ALIGN_RTL_EC]: https://learn.microsoft.com/en-us/windows/win32/controls/en-align-rtl-ec
 func (me *_EditEvents) EnAlignRtlEc(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_ALIGN_RTL_EC, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-change
+// [EN_CHANGE] message handler.
+//
+// [EN_CHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/en-change
 func (me *_EditEvents) EnChange(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_CHANGE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-errspace
+// [EN_ERRSPACE] message handler.
+//
+// [EN_ERRSPACE]: https://learn.microsoft.com/en-us/windows/win32/controls/en-errspace
 func (me *_EditEvents) EnErrSpace(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_ERRSPACE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-hscroll
+// [EN_HSCROLL] message handler.
+//
+// [EN_HSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/en-hscroll
 func (me *_EditEvents) EnHScroll(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_HSCROLL, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-killfocus
+// [EN_KILLFOCUS] message handler.
+//
+// [EN_KILLFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/en-killfocus
 func (me *_EditEvents) EnKillFocus(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_KILLFOCUS, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-maxtext
+// [EN_MAXTEXT] message handler.
+//
+// [EN_MAXTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/en-maxtext
 func (me *_EditEvents) EnMaxText(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_MAXTEXT, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-setfocus
+// [EN_SETFOCUS] message handler.
+//
+// [EN_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/en-setfocus
 func (me *_EditEvents) EnSetFocus(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_SETFOCUS, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-update
+// [EN_UPDATE] message handler.
+//
+// [EN_UPDATE]: https://learn.microsoft.com/en-us/windows/win32/controls/en-update
 func (me *_EditEvents) EnUpdate(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_UPDATE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/en-vscroll
+// [EN_VSCROLL] message handler.
+//
+// [EN_VSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/en-vscroll
 func (me *_EditEvents) EnVScroll(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.EN_VSCROLL, func(_ wm.Command) {
 		userFunc()

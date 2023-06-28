@@ -11,8 +11,11 @@ type _TaskDlgT struct{}
 
 // Displays various modal prompts which the user must interact to.
 //
-// The methods are high-level wrappers to win.TaskDialogIndirect() function,
-// which is a modern replacement to the old HWND.MessageBox() method.
+// The methods are high-level wrappers to [TaskDialogIndirect], which is a
+// modern replacement to the old [MessageBox] method.
+//
+// [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
+// [MessageBox]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
 var TaskDlg _TaskDlgT
 
 // Displays an error modal prompt with an OK button.

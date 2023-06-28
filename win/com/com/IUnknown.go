@@ -41,9 +41,10 @@ type IUnknown interface {
 
 	// [Release] COM method.
 	//
-	// Releases the COM pointer and sets the internal pointer to nil.
+	// If the underlying COM pointer is not nil, calls [Release] and sets it to
+	// nil.
 	//
-	// Never fails, can be called any number of times.
+	// Never fails, can safely be called any number of times.
 	//
 	// [Release]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 	Release() uint32
@@ -96,15 +97,15 @@ func (me *_IUnknown) AddRef() IUnknown {
 }
 
 func (me *_IUnknown) Release() uint32 {
-	ret := uintptr(0)
+	var refCount uintptr
 	if me.Ptr() != nil {
-		ret, _, _ = syscall.SyscallN((*me.ppv).Release,
+		refCount, _, _ = syscall.SyscallN((*me.ppv).Release,
 			uintptr(unsafe.Pointer(me.ppv)))
-		if ret == 0 { // COM pointer was released
+		if refCount == 0 { // COM pointer was released
 			me.ppv = nil
 		}
 	}
-	return uint32(ret)
+	return uint32(refCount)
 }
 
 func (me *_IUnknown) Ptr() **comvt.IUnknown {

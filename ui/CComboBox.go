@@ -17,11 +17,11 @@ type ComboBox interface {
 	AnyTextControl
 	implComboBox() // prevent public implementation
 
-	// Exposes all the ComboBox notifications the can be handled.
+	// Exposes all the [ComboBox notifications] the can be handled.
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-notifications
+	// [ComboBox notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-notifications
 	On() *_ComboBoxEvents
 
 	Items() *_ComboBoxItems // Item methods.
@@ -237,77 +237,99 @@ func (me *_ComboBoxEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-closeup
+// [CBN_CLOSEUP] message handler.
+//
+// [CBN_CLOSEUP]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-closeup
 func (me *_ComboBoxEvents) CbnCloseUp(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_CLOSEUP, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-dblclk
+// [CBN_DBLCLK] message handler.
+//
+// [CBN_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-dblclk
 func (me *_ComboBoxEvents) CbnDblClk(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_DBLCLK, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-dropdown
+// [CBN_DROPDOWN] message handler.
+//
+// [CBN_DROPDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-dropdown
 func (me *_ComboBoxEvents) CbnDropDown(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_DROPDOWN, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-editchange
+// [CBN_EDITCHANGE] message handler.
+//
+// [CBN_EDITCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-editchange
 func (me *_ComboBoxEvents) CbnEditChange(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_EDITCHANGE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-editupdate
+// [CBN_EDITUPDATE] message handler.
+//
+// [CBN_EDITUPDATE]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-editupdate
 func (me *_ComboBoxEvents) CbnEditUpdate(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_EDITUPDATE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-errspace
+// [CBN_ERRSPACE] message handler.
+//
+// [CBN_ERRSPACE]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-errspace
 func (me *_ComboBoxEvents) CbnErrSpace(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_ERRSPACE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-killfocus
+// [CBN_KILLFOCUS] message handler.
+//
+// [CBN_KILLFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-killfocus
 func (me *_ComboBoxEvents) CbnKillFocus(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_KILLFOCUS, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selchange
+// [CBN_SELCHANGE] message handler.
+//
+// [CBN_SELCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selchange
 func (me *_ComboBoxEvents) CbnSelChange(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_SELCHANGE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selendcancel
+// [CBN_SELENDCANCEL] message handler.
+//
+// [CBN_SELENDCANCEL]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selendcancel
 func (me *_ComboBoxEvents) CbnSelEndCancel(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_SELENDCANCEL, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selendok
+// [CBN_SELENDOK] message handler.
+//
+// [CBN_SELENDOK]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selendok
 func (me *_ComboBoxEvents) CbnSelEndOk(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_SELENDOK, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/cbn-setfocus
+// [CBN_SETFOCUS] message handler.
+//
+// [CBN_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-setfocus
 func (me *_ComboBoxEvents) CbnSetFocus(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.CBN_SETFOCUS, func(_ wm.Command) {
 		userFunc()

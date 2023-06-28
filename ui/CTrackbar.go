@@ -18,11 +18,11 @@ type Trackbar interface {
 	AnyFocusControl
 	implTrackbar() // prevent public implementation
 
-	// Exposes all the Trackbar notifications the can be handled.
+	// Exposes all the [Trackbar notifications] the can be handled.
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-notifications
+	// [Trackbar notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-trackbar-control-reference-notifications
 	On() *_TrackbarEvents
 
 	PageSize() int                // Retrieves the number of positions of page up/down.
@@ -262,14 +262,18 @@ func (me *_TrackbarEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/trbn-thumbposchanging
+// [TRBN_THUMBPOSCHANGING] message handler.
+//
+// [TRBN_THUMBPOSCHANGING]: https://learn.microsoft.com/en-us/windows/win32/controls/trbn-thumbposchanging
 func (me *_TrackbarEvents) ThumbPosChanging(userFunc func(p *win.NMTRBTHUMBPOSCHANGING)) {
 	me.events.addNfyZero(me.ctrlId, co.TRBN_THUMBPOSCHANGING, func(p unsafe.Pointer) {
 		userFunc((*win.NMTRBTHUMBPOSCHANGING)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-trackbar-
+// [NM_RELEASEDCAPTURE] message handler.
+//
+// [NM_RELEASEDCAPTURE]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-trackbar-
 func (me *_TrackbarEvents) NmReleasedCapture(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) {
 		userFunc()

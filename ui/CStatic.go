@@ -16,11 +16,11 @@ type Static interface {
 	AnyTextControl
 	implStatic() // prevent public implementation
 
-	// Exposes all the Static notifications the can be handled.
+	// Exposes all the [Static notifications] the can be handled.
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-static-control-reference-notifications
+	// [Static notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-static-control-reference-notifications
 	On() *_StaticEvents
 
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
@@ -213,28 +213,36 @@ func (me *_StaticEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/stn-clicked
+// [STN_CLICKED] message handler.
+//
+// [STN_CLICKED]: https://learn.microsoft.com/en-us/windows/win32/controls/stn-clicked
 func (me *_StaticEvents) StnClicked(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.STN_CLICKED, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/stn-dblclk
+// [STN_DBLCLK] message handler.
+//
+// [STN_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/stn-dblclk
 func (me *_StaticEvents) StnDblClk(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.STN_DBLCLK, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/stn-disable
+// [STN_DISABLE] message handler.
+//
+// [STN_DISABLE]: https://learn.microsoft.com/en-us/windows/win32/controls/stn-disable
 func (me *_StaticEvents) StnDisable(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.STN_DISABLE, func(_ wm.Command) {
 		userFunc()
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/stn-enable
+// [STN_ENABLE] message handler.
+//
+// [STN_ENABLE]: https://learn.microsoft.com/en-us/windows/win32/controls/stn-enable
 func (me *_StaticEvents) StnEnable(userFunc func()) {
 	me.events.addCmdZero(me.ctrlId, co.STN_ENABLE, func(_ wm.Command) {
 		userFunc()

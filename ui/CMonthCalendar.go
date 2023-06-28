@@ -19,11 +19,11 @@ type MonthCalendar interface {
 	AnyFocusControl
 	implMonthCalendar() // prevent public implementation
 
-	// Exposes all the MonthCalendar notifications the can be handled.
+	// Exposes all the [MonthCalendar notifications] the can be handled.
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-notifications
+	// [MonthCalendar notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-month-calendar-control-reference-notifications
 	On() *_MonthCalendarEvents
 
 	SelectDate(date time.Time) // Sets the selected date.
@@ -205,35 +205,45 @@ func (me *_MonthCalendarEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/mcn-getdaystate
+// [MCN_GETDAYSTATE] message handler.
+//
+// [MCN_GETDAYSTATE]: https://learn.microsoft.com/en-us/windows/win32/controls/mcn-getdaystate
 func (me *_MonthCalendarEvents) McnGetDayState(userFunc func(p *win.NMDAYSTATE)) {
 	me.events.addNfyZero(me.ctrlId, co.MCN_GETDAYSTATE, func(p unsafe.Pointer) {
 		userFunc((*win.NMDAYSTATE)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/mcn-selchange
+// [MCN_SELCHANGE] message handler.
+//
+// [MCN_SELCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/mcn-selchange
 func (me *_MonthCalendarEvents) McnSelChange(userFunc func(p *win.NMSELCHANGE)) {
 	me.events.addNfyZero(me.ctrlId, co.MCN_SELCHANGE, func(p unsafe.Pointer) {
 		userFunc((*win.NMSELCHANGE)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/mcn-select
+// [MCN_SELECT] message handler.
+//
+// [MCN_SELECT]: https://learn.microsoft.com/en-us/windows/win32/controls/mcn-select
 func (me *_MonthCalendarEvents) McnSelect(userFunc func(p *win.NMSELCHANGE)) {
 	me.events.addNfyZero(me.ctrlId, co.MCN_SELECT, func(p unsafe.Pointer) {
 		userFunc((*win.NMSELCHANGE)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/mcn-viewchange
+// [MCN_VIEWCHANGE] message handler.
+//
+// [MCN_VIEWCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/mcn-viewchange
 func (me *_MonthCalendarEvents) McnViewChange(userFunc func(p *win.NMVIEWCHANGE)) {
 	me.events.addNfyZero(me.ctrlId, co.MCN_VIEWCHANGE, func(p unsafe.Pointer) {
 		userFunc((*win.NMVIEWCHANGE)(p))
 	})
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-monthcal-
+// [NM_RELEASEDCAPTURE] message handler.
+//
+// [NM_RELEASEDCAPTURE]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-monthcal-
 func (me *_MonthCalendarEvents) NmReleasedCapture(userFunc func()) {
 	me.events.addNfyZero(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) {
 		userFunc()

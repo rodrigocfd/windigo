@@ -19,11 +19,11 @@ type SysLink interface {
 	AnyTextControl
 	implSysLink() // prevent public implementation
 
-	// Exposes all the SysLink notifications the can be handled.
+	// Exposes all the [SysLink notifications] the can be handled.
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-syslink-control-reference-notifications
+	// [SysLink notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-syslink-control-reference-notifications
 	On() *_SysLinkEvents
 
 	SetTextAndResize(text string) // Sets the text and resizes the control to fit it exactly.
@@ -209,7 +209,9 @@ func (me *_SysLinkEvents) new(ctrl *_NativeControlBase) {
 	me.events = ctrl.Parent().On()
 }
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-syslink
+// [NM_CLICK] message handler.
+//
+// [NM_CLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-syslink
 func (me *_SysLinkEvents) NmClick(userFunc func(p *win.NMLINK)) {
 	me.events.addNfyZero(me.ctrlId, co.NM_CLICK, func(p unsafe.Pointer) {
 		userFunc((*win.NMLINK)(p))

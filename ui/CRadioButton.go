@@ -19,11 +19,11 @@ type RadioButton interface {
 	AnyTextControl
 	implRadioButton() // prevent public implementation
 
-	// Exposes all the Button notifications the can be handled.
+	// Exposes all the [Button notifications] the can be handled.
 	//
 	// Panics if called after the control was created.
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
+	// [Button notifications]: https://learn.microsoft.com/en-us/windows/win32/controls/bumper-button-control-reference-notifications
 	On() *_ButtonEvents
 
 	EmulateClick()                // Emulates an user click.
