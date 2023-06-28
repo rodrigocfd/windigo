@@ -17,8 +17,12 @@ type BSTR uintptr
 
 // [SysAllocString] function.
 //
-// ⚠️ You must defer BSTR.SysFreeString(), unless you call
-// BSTR.SysReAllocString().
+// ⚠️ You must defer BSTR.SysFreeString().
+//
+// Example:
+//
+//	bstr := autom.SysAllocString("hello")
+//	defer bstr.SysFreeString()
 //
 // [SysAllocString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysallocstring
 func SysAllocString(s string) BSTR {
@@ -40,8 +44,12 @@ func (bstr BSTR) SysFreeString() {
 
 // [SysReAllocString] function.
 //
-// ⚠️ You must defer BSTR.SysFreeString(), unless you call
-// BSTR.SysReAllocString().
+// Example:
+//
+//	bstr := autom.SysAllocString("hello")
+//	defer bstr.SysFreeString()
+//
+//	bstr = bstr.SysReAllocString("another")
 //
 // [SysReAllocString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysreallocstring
 func (bstr BSTR) SysReAllocString(s string) BSTR {
