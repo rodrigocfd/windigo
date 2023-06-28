@@ -171,7 +171,8 @@ func NewIDispatch(base com.IUnknown) IDispatch {
 	return &_IDispatch{IUnknown: base}
 }
 
-// Constructs an automation IDispatch object by calling [CLSIDFromProgID].
+// Helper function which constructs an automation IDispatch object by calling
+// [CLSIDFromProgID] and [CoCreateInstance].
 //
 // Note that the target application must be installed, otherwise the call will
 // fail.
@@ -180,13 +181,11 @@ func NewIDispatch(base com.IUnknown) IDispatch {
 //
 // Example:
 //
-//	excelApp, err := autom.NewIDispatchFromProgId("Excel.Application")
-//	if err != nil {
-//		panic(err)
-//	}
+//	excelApp, _ := autom.NewIDispatchFromProgId("Excel.Application")
 //	defer excelApp.Release()
 //
 // [CLSIDFromProgID]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
+// [CoCreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func NewIDispatchFromProgId(progId string) (IDispatch, error) {
 	clsId, err := com.CLSIDFromProgID(progId)
 	if err != nil {

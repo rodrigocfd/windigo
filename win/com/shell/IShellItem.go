@@ -60,8 +60,7 @@ func NewIShellItem(base com.IUnknown) IShellItem {
 	return &_IShellItem{IUnknown: base}
 }
 
-// Creates an IShellItem from a string path by calling
-// SHCreateItemFromParsingName().
+// [SHCreateItemFromParsingName]: function.
 //
 // ⚠️ You must defer IShellItem.Release().
 //
@@ -70,8 +69,8 @@ func NewIShellItem(base com.IUnknown) IShellItem {
 //	ish := shell.NewShellItemFromPath("C:\\Temp\\file.txt")
 //	defer ish.Release()
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
-func NewShellItemFromPath(folderOrFilePath string) (IShellItem, error) {
+// [SHCreateItemFromParsingName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
+func SHCreateItemFromParsingName(folderOrFilePath string) (IShellItem, error) {
 	var ppvQueried **comvt.IUnknown
 	ret, _, _ := syscall.SyscallN(proc.SHCreateItemFromParsingName.Addr(),
 		uintptr(unsafe.Pointer(win.Str.ToNativePtr(folderOrFilePath))),

@@ -101,30 +101,34 @@ func NewIPicture(base IUnknown) IPicture {
 	return &_IPicture{IUnknown: base}
 }
 
-// Calls NewIStreamFromSlice() and NewIPictureFromStream() to create a new
-// picture.
+// [OleLoadPicture] function.
 //
-// ⚠️ You must defer IPicture.Release().
-func NewIPictureFromSlice(src []byte, keepOriginalFormat bool) IPicture {
-	stream := NewIStreamFromSlice(src)
-	defer stream.Release()
-
-	return NewIPictureFromStream(stream, 0, keepOriginalFormat)
-}
-
-// Calls OleLoadPicturePath() to load a picture from a file.
+// Pass size = 0 to read all the bytes from the stream.
 //
-// The picture must be in BMP (bitmap), JPEG, WMF (metafile), ICO (icon), or GIF
-// format.
+// The bytes are copied, so IStream can be released after this function returns.
 //
 // ⚠️ You must defer IPicture.Release().
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/olectl/nf-olectl-oleloadpicturepath
-func NewIPictureFromFile(path string, transparentColor win.COLORREF) IPicture {
+// Example:
+//
+//	data := []byte{0x10, 0x11, 0x12}
+//	defer runtime.KeepAlive(data)
+//
+//	stream := SHCreateMemStream(data)
+//	defer stream.Release()
+//
+//	pic := OleLoadPicture(stream, 0, true)
+//	defer pic.Release()
+//
+// [OleLoadPicture]: https://learn.microsoft.com/en-us/windows/win32/api/olectl/nf-olectl-oleloadpicture
+func OleLoadPicture(
+	stream IStream, size uint32, keepOriginalFormat bool) IPicture {
+
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.SyscallN(proc.OleLoadPicturePath.Addr(),
-		uintptr(unsafe.Pointer(win.Str.ToNativePtr(path))),
-		0, 0, uintptr(transparentColor),
+	ret, _, _ := syscall.SyscallN(proc.OleLoadPicture.Addr(),
+		uintptr(unsafe.Pointer(stream.Ptr())),
+		uintptr(size),
+		util.BoolToUintptr(!keepOriginalFormat), // note: reversed
 		uintptr(unsafe.Pointer(win.GuidFromIid(comco.IID_IPicture))),
 		uintptr(unsafe.Pointer(&ppQueried)))
 
@@ -135,22 +139,19 @@ func NewIPictureFromFile(path string, transparentColor win.COLORREF) IPicture {
 	}
 }
 
-// Calls OleLoadPicture() to create a new picture. Pass size = 0 to read all the
-// bytes from the stream.
+// [OleLoadPicturePath] function.
 //
-// The bytes are copied, so IStream can be released after this function returns.
+// The picture must be in BMP (bitmap), JPEG, WMF (metafile), ICO (icon), or GIF
+// format.
 //
 // ⚠️ You must defer IPicture.Release().
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/olectl/nf-olectl-oleloadpicture
-func NewIPictureFromStream(
-	stream IStream, size uint32, keepOriginalFormat bool) IPicture {
-
+// [OleLoadPicturePath]: https://learn.microsoft.com/en-us/windows/win32/api/olectl/nf-olectl-oleloadpicturepath
+func OleLoadPicturePath(path string, transparentColor win.COLORREF) IPicture {
 	var ppQueried **comvt.IUnknown
-	ret, _, _ := syscall.SyscallN(proc.OleLoadPicture.Addr(),
-		uintptr(unsafe.Pointer(stream.Ptr())),
-		uintptr(size),
-		util.BoolToUintptr(!keepOriginalFormat), // note: reversed
+	ret, _, _ := syscall.SyscallN(proc.OleLoadPicturePath.Addr(),
+		uintptr(unsafe.Pointer(win.Str.ToNativePtr(path))),
+		0, 0, uintptr(transparentColor),
 		uintptr(unsafe.Pointer(win.GuidFromIid(comco.IID_IPicture))),
 		uintptr(unsafe.Pointer(&ppQueried)))
 

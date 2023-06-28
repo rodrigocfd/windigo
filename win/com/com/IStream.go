@@ -65,13 +65,23 @@ func NewIStream(base IUnknown) IStream {
 	return &_IStream{ISequentialStream: NewISequentialStream(base)}
 }
 
-// Calls [SHCreateMemStream] to create a new stream over a slice, which must
-// remain in memory.
+// [SHCreateMemStream] function.
+//
+// Creates an IStream projection over a slice, which must remain valid in
+// memory throughout IStream's lifetime.
 //
 // ⚠️ You must defer IStream.Release().
 //
+// Example:
+//
+//	data := []byte{0x10, 0x11, 0x12}
+//	defer runtime.KeepAlive(data)
+//
+//	stream := SHCreateMemStream(data)
+//	defer stream.Release()
+//
 // [SHCreateMemStream]: https://learn.microsoft.com/en-us/windows/win32/api/shlwapi/nf-shlwapi-shcreatememstream
-func NewIStreamFromSlice(src []byte) IStream {
+func SHCreateMemStream(src []byte) IStream {
 	ret, _, _ := syscall.SyscallN(proc.SHCreateMemStream.Addr(),
 		uintptr(unsafe.Pointer(&src[0])), uintptr(len(src)))
 	if ret == 0 {

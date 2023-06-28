@@ -44,9 +44,11 @@ func NewID2D1Factory(base com.IUnknown) ID2D1Factory {
 	return &_ID2D1Factory{IUnknown: base}
 }
 
-// Creates a new ID2D1Factory.
+// [D2D1CreateFactory] function.
 //
 // ⚠️ You must defer ID2D1Factory.Release().
+//
+// [D2D1CreateFactory]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-d2d1createfactory
 func D2D1CreateFactory(
 	factoryType d2d1co.FACTORY_TYPE,
 	debugLevel d2d1co.DEBUG_LEVEL) ID2D1Factory {
