@@ -836,8 +836,8 @@ func (me *_EventsWm) WmNcCreate(userFunc func(p wm.Create) bool) {
 
 // [WM_NCDESTROY] message handler.
 //
-// ⚠️ By handling this message, you'll overwrite the default behavior in
-// WindowMain, which calls [PostQuitMessage].
+// ⚠️ By handling this message, you'll overwrite the default behavior in raw
+// and dialog WindowMain, in both cases calling [PostQuitMessage].
 //
 // [WM_NCDESTROY]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-ncdestroy
 // [PostQuitMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postquitmessage
