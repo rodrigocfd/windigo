@@ -2,7 +2,9 @@
 
 package d2d1co
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/dcommon/ne-dcommon-d2d1_alpha_mode
+// [D2D1_ALPHA_MODE] enumeration.
+//
+// [D2D1_ALPHA_MODE]: https://learn.microsoft.com/en-us/windows/win32/api/dcommon/ne-dcommon-d2d1_alpha_mode
 type ALPHA_MODE uint32
 
 const (
@@ -12,7 +14,19 @@ const (
 	ALPHA_MODE_IGNORE        ALPHA_MODE = 3
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_debug_level
+// [D2D1_ANTIALIAS_MODE] enumeration.
+//
+// [D2D1_ANTIALIAS_MODE]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_antialias_mode
+type ANTIALIAS_MODE uint32
+
+const (
+	ANTIALIAS_MODE_PER_PRIMITIVE ANTIALIAS_MODE = 0
+	ANTIALIAS_MODE_ALIASED       ANTIALIAS_MODE = 1
+)
+
+// [D2D1_DEBUG_LEVEL] enumeration.
+//
+// [D2D1_DEBUG_LEVEL]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_debug_level
 type DEBUG_LEVEL uint32
 
 const (
@@ -22,7 +36,9 @@ const (
 	DEBUG_LEVEL_INFORMATION DEBUG_LEVEL = 3
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format
+// [DXGI_FORMAT] enumeration.
+//
+// [DXGI_FORMAT]: https://learn.microsoft.com/en-us/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format
 type DXGI_FORMAT uint32
 
 const (
@@ -147,7 +163,9 @@ const (
 	DXGI_FORMAT_V408                       DXGI_FORMAT = 132
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_factory_type
+// [D2D1_FACTORY_TYPE] enumeration.
+//
+// [D2D1_FACTORY_TYPE]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_factory_type
 type FACTORY_TYPE uint32
 
 const (
@@ -155,7 +173,9 @@ const (
 	FACTORY_TYPE_MULTI_THREADED  FACTORY_TYPE = 1
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_feature_level
+// [D2D1_FEATURE_LEVEL] enumeration.
+//
+// [D2D1_FEATURE_LEVEL]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_feature_level
 type FEATURE_LEVEL uint32
 
 const (
@@ -164,7 +184,9 @@ const (
 	FEATURE_LEVEL_10      FEATURE_LEVEL = 0xa000 // The video card must support DirectX 10.
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_present_options
+// [D2D1_PRESENT_OPTIONS] enumeration.
+//
+// [D2D1_PRESENT_OPTIONS]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_present_options
 type PRESENT_OPTIONS uint32
 
 const (
@@ -173,7 +195,9 @@ const (
 	PRESENT_OPTIONS_IMMEDIATELY     PRESENT_OPTIONS = 0x0000_0002
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_render_target_type
+// [D2D1_RENDER_TARGET_TYPE] enumeration.
+//
+// [D2D1_RENDER_TARGET_TYPE]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_render_target_type
 type RENDER_TARGET_TYPE uint32
 
 const (
@@ -182,7 +206,9 @@ const (
 	RENDER_TARGET_TYPE_HARDWARE RENDER_TARGET_TYPE = 2
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_render_target_usage
+// [D2D1_RENDER_TARGET_USAGE] enumeration.
+//
+// [D2D1_RENDER_TARGET_USAGE]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_render_target_usage
 type RENDER_TARGET_USAGE uint32
 
 const (
@@ -191,7 +217,9 @@ const (
 	RENDER_TARGET_USAGE_GDI_COMPATIBLE        RENDER_TARGET_USAGE = 0x0000_0002
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_window_state
+// [D2D1_WINDOW_STATE] enumeration.
+//
+// [D2D1_WINDOW_STATE]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_window_state
 type WINDOW_STATE uint32
 
 const (

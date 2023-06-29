@@ -43,6 +43,13 @@ type RENDER_TARGET_PROPERTIES struct {
 	MinLevel    d2d1co.FEATURE_LEVEL
 }
 
+// [SIZE_F] struct.
+//
+// [SIZE_F]: https://learn.microsoft.com/en-us/windows/win32/direct2d/d2d1-size-f
+type SIZE_F struct {
+	Width, Height float32
+}
+
 // [SIZE_U] struct.
 //
 // [SIZE_U]: https://learn.microsoft.com/en-us/windows/win32/direct2d/d2d1-size-u
