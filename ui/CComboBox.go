@@ -61,7 +61,7 @@ func NewComboBox(parent AnyParent, opts *_ComboBoxO) ComboBox {
 	me.events.new(&me._NativeControlBase)
 	me.items.new(me)
 
-	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		size := win.SIZE{Cx: int32(opts.width), Cy: 0}
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &size)
 
@@ -94,7 +94,7 @@ func NewComboBoxDlg(
 	me.events.new(&me._NativeControlBase)
 	me.items.new(me)
 
-	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
 		parent.addResizingChild(me, horz, vert)
 	})

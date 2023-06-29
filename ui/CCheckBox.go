@@ -64,7 +64,7 @@ func NewCheckBox(parent AnyParent, opts *_CheckBoxO) CheckBox {
 	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 
-	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 		if opts.size.Cx == 0 && opts.size.Cy == 0 {
 			opts.size = _CalcTextBoundBoxWithCheck(opts.text, true)
@@ -92,7 +92,7 @@ func NewCheckBoxDlg(
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
-	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
 		parent.addResizingChild(me, horz, vert)
 	})

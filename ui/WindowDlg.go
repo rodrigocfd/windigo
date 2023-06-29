@@ -74,7 +74,7 @@ func _DlgProc(
 	// Prevents processing before WM_INITDIALOG and after WM_NCDESTROY.
 	if _, isStored := _globalWindowDlgPtrs[pMe]; isStored {
 		// Process all internal events.
-		pMe.internalEvents.processMessages(uMsg, wParam, lParam)
+		atLeast1Internal := pMe.internalEvents.processMessages(uMsg, wParam, lParam)
 
 		// Child controls are created in internalEvents closures, so we put the
 		// system font only after running them.
@@ -98,13 +98,13 @@ func _DlgProc(
 			pMe._WindowBase.clearMessages() // prevents circular references
 		}
 
-		if wasHandled {
+		if atLeast1Internal || wasHandled {
 			if meaningfulRet {
 				return retVal
 			}
-			return 1 // message processed, default return value
+			return 1 // TRUE; message processed, but default return value
 		}
 	}
 
-	return 0 // message not processed
+	return 0 // FALSE; message not processed
 }

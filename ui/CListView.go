@@ -79,7 +79,7 @@ func NewListView(parent AnyParent, opts *_ListViewO) ListView {
 	me.items.new(me)
 	me.hContextMenu = opts.contextMenu
 
-	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
@@ -120,7 +120,7 @@ func NewListViewDlg(
 	me.items.new(me)
 	me.hContextMenu = hContextMenu
 
-	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
 		parent.addResizingChild(me, horz, vert)
 	})
@@ -210,7 +210,7 @@ func (me *_ListView) View() co.LV_VIEW {
 }
 
 func (me *_ListView) handledEvents() {
-	me.Parent().internalOn().addNfyZero(me.CtrlId(), co.LVN_KEYDOWN, func(p unsafe.Pointer) {
+	me.Parent().internalOn().addNfyNoRet(me.CtrlId(), co.LVN_KEYDOWN, func(p unsafe.Pointer) {
 		nmk := (*win.NMLVKEYDOWN)(p)
 		hasCtrl := (win.GetAsyncKeyState(co.VK_CONTROL) & 0x8000) != 0
 		hasShift := (win.GetAsyncKeyState(co.VK_SHIFT) & 0x8000) != 0
@@ -222,7 +222,7 @@ func (me *_ListView) handledEvents() {
 		}
 	})
 
-	me.Parent().internalOn().addNfyZero(me.CtrlId(), co.NM_RCLICK, func(p unsafe.Pointer) {
+	me.Parent().internalOn().addNfyNoRet(me.CtrlId(), co.NM_RCLICK, func(p unsafe.Pointer) {
 		nmi := (*win.NMITEMACTIVATE)(p)
 		hasCtrl := (nmi.UKeyFlags & co.LVKF_CONTROL) != 0
 		hasShift := (nmi.UKeyFlags & co.LVKF_SHIFT) != 0

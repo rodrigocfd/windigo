@@ -147,7 +147,7 @@ func _WndProc(
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
 	if _, isStored := _globalWindowRawPtrs[pMe]; isStored {
 		// Process all internal events.
-		pMe.internalEvents.processMessages(uMsg, wParam, lParam)
+		atLeast1Internal := pMe.internalEvents.processMessages(uMsg, wParam, lParam)
 
 		// Try to process the message with an user handler.
 		retVal, meaningfulRet, wasHandled :=
@@ -161,11 +161,11 @@ func _WndProc(
 			pMe._WindowBase.clearMessages() // prevents circular references
 		}
 
-		if wasHandled {
+		if atLeast1Internal || wasHandled {
 			if meaningfulRet {
 				return retVal
 			}
-			return 0 // message processed, default return value
+			return 0 // message processed, but default return value
 		}
 	}
 

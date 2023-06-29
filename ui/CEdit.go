@@ -66,7 +66,7 @@ func NewEdit(parent AnyParent, opts *_EditO) Edit {
 	me._NativeControlBase.new(parent, opts.ctrlId)
 	me.events.new(&me._NativeControlBase)
 
-	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
@@ -87,7 +87,7 @@ func NewEditDlg(parent AnyParent, ctrlId int, horz HORZ, vert VERT) Edit {
 	me._NativeControlBase.new(parent, ctrlId)
 	me.events.new(&me._NativeControlBase)
 
-	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
 		parent.addResizingChild(me, horz, vert)
 	})

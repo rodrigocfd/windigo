@@ -44,7 +44,7 @@ func NewStatusBar(parent AnyParent) StatusBar {
 	me.events.new(&me._NativeControlBase)
 	me.parts.new(me)
 
-	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		sbStyles := co.WS_CHILD | co.WS_VISIBLE | co.WS(co.SBARS_TOOLTIPS)
 
 		parentStyle := co.WS(parent.Hwnd().GetWindowLongPtr(co.GWLP_STYLE))
@@ -60,7 +60,7 @@ func NewStatusBar(parent AnyParent) StatusBar {
 			sbStyles, win.POINT{}, win.SIZE{}, win.HMENU(me.CtrlId()))
 	})
 
-	parent.internalOn().addMsgZero(co.WM_SIZE, func(p wm.Any) {
+	parent.internalOn().addMsgNoRet(co.WM_SIZE, func(p wm.Any) {
 		me.parts.resizeToFitParent(wm.Size{Msg: p})
 	})
 

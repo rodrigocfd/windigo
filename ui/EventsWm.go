@@ -13,26 +13,26 @@ import (
 // If an event for the given message already exists, it will be overwritten.
 // Used in native control subclassing.
 type _EventsWm struct {
-	msgsRet  map[co.WM]func(p wm.Any) uintptr // meaningful return value
-	msgsZero map[co.WM]func(p wm.Any)         // just returns zero (or TRUE if dialog)
-	timers   map[uintptr]func()               // WM_TIMER
+	msgsRet   map[co.WM]func(p wm.Any) uintptr // meaningful return value
+	msgsNoRet map[co.WM]func(p wm.Any)         // just returns zero (or TRUE if dialog)
+	tmrsNoRet map[uintptr]func()               // WM_TIMER
 }
 
 func (me *_EventsWm) new() {
 	me.msgsRet = make(map[co.WM]func(p wm.Any) uintptr, 10) // arbitrary
-	me.msgsZero = make(map[co.WM]func(p wm.Any), 10)
-	me.timers = make(map[uintptr]func(), 5)
+	me.msgsNoRet = make(map[co.WM]func(p wm.Any), 10)
+	me.tmrsNoRet = make(map[uintptr]func(), 5)
 }
 
 func (me *_EventsWm) clear() {
 	for key := range me.msgsRet {
 		delete(me.msgsRet, key)
 	}
-	for key := range me.msgsZero {
-		delete(me.msgsZero, key)
+	for key := range me.msgsNoRet {
+		delete(me.msgsNoRet, key)
 	}
-	for key := range me.timers {
-		delete(me.timers, key)
+	for key := range me.tmrsNoRet {
+		delete(me.tmrsNoRet, key)
 	}
 }
 
@@ -43,13 +43,13 @@ func (me *_EventsWm) addMsgRet(uMsg co.WM, userFunc func(p wm.Any) uintptr) {
 
 // Adds a new WM message with no meaningful value, always returning zero.
 func (me *_EventsWm) addMsgZero(uMsg co.WM, userFunc func(p wm.Any)) {
-	me.msgsZero[uMsg] = userFunc
+	me.msgsNoRet[uMsg] = userFunc
 }
 
 func (me *_EventsWm) hasMessages() bool {
 	return len(me.msgsRet) > 0 ||
-		len(me.msgsZero) > 0 ||
-		len(me.timers) > 0
+		len(me.msgsNoRet) > 0 ||
+		len(me.tmrsNoRet) > 0
 }
 
 func (me *_EventsWm) processMessage(
@@ -60,13 +60,13 @@ func (me *_EventsWm) processMessage(
 	msgObj := wm.Any{WParam: wParam, LParam: lParam}
 
 	if uMsg == co.WM_TIMER {
-		if userFunc, hasFunc := me.timers[uintptr(wParam)]; hasFunc {
-			userFunc()
+		if userFunc, hasFunc := me.tmrsNoRet[uintptr(wParam)]; hasFunc {
+			userFunc() // always returns zero (or TRUE if dialog)
 			return 0, false, true
 		}
 
-	} else if userFunc, hasFunc := me.msgsZero[uMsg]; hasFunc {
-		userFunc(msgObj)
+	} else if userFunc, hasFunc := me.msgsNoRet[uMsg]; hasFunc {
+		userFunc(msgObj) // always returns zero (or TRUE if dialog)
 		return 0, false, true
 
 	} else if userFunc, hasFunc := me.msgsRet[uMsg]; hasFunc {
@@ -89,7 +89,7 @@ func (me *_EventsWm) Wm(uMsg co.WM, userFunc func(p wm.Any) uintptr) {
 //
 // [WM_TIMER]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-timer
 func (me *_EventsWm) WmTimer(timerId uintptr, userFunc func()) {
-	me.timers[timerId] = userFunc
+	me.tmrsNoRet[timerId] = userFunc
 }
 
 // [WM_ACTIVATE] message handler.

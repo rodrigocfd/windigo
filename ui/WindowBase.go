@@ -83,7 +83,7 @@ func (me *_WindowBase) clearMessages() {
 }
 
 func (me *_WindowBase) defaultMessages() {
-	me.internalOn().addMsgZero(_WM_UI_THREAD, func(p wm.Any) { // handle our custom thread UI message
+	me.internalOn().addMsgNoRet(_WM_UI_THREAD, func(p wm.Any) { // handle our custom thread UI message
 		if p.WParam == win.WPARAM(_WM_UI_THREAD) { // additional safety check
 			_globalUiThreadMutex.Lock()
 			userFunc := _globalUiThreadCache[int(p.LParam)] // retrieve from cache
@@ -94,7 +94,7 @@ func (me *_WindowBase) defaultMessages() {
 		}
 	})
 
-	me.internalOn().addMsgZero(co.WM_SIZE, func(p wm.Any) {
+	me.internalOn().addMsgNoRet(co.WM_SIZE, func(p wm.Any) {
 		me.resizerChildren.resizeChildren(wm.Size{Msg: p})
 	})
 }

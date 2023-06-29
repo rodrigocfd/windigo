@@ -65,7 +65,7 @@ func NewToolbar(parent AnyParent, opts *_ToolbarO) Toolbar {
 	me.events.new(&me._NativeControlBase)
 	me.buttons.new(me)
 
-	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		me._NativeControlBase.createWindow(opts.wndExStyles,
 			win.ClassNameStr("ToolbarWindow32"), win.StrOptNone(),
 			opts.wndStyles|co.WS(opts.ctrlStyles),

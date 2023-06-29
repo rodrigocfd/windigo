@@ -11,11 +11,11 @@ import (
 )
 
 type (
-	_HashCmd struct {
+	_HashCmd struct { // composite identifier for WM_COMMAND
 		cmdId     int
 		notifCode co.CMD
 	}
-	_HashNfy struct {
+	_HashNfy struct { // composite identifier for WM_NOTIFY
 		idFrom int
 		code   co.NM
 	}
@@ -28,34 +28,34 @@ type (
 // Used in parent window user events.
 type _EventsWmNfy struct {
 	_EventsWm
-	cmdsZero map[_HashCmd]func(p wm.Command)
-	nfysRet  map[_HashNfy]func(p unsafe.Pointer) uintptr // meaningful return value
-	nfysZero map[_HashNfy]func(p unsafe.Pointer)         // just returns zero (or TRUE if dialog)
+	cmdsNoRet map[_HashCmd]func(p wm.Command)
+	nfysRet   map[_HashNfy]func(p unsafe.Pointer) uintptr // meaningful return value
+	nfysNoRet map[_HashNfy]func(p unsafe.Pointer)         // just returns zero (or TRUE if dialog)
 }
 
 func (me *_EventsWmNfy) new() {
 	me._EventsWm.new()
-	me.cmdsZero = make(map[_HashCmd]func(p wm.Command), 10) // arbitrary
+	me.cmdsNoRet = make(map[_HashCmd]func(p wm.Command), 10) // arbitrary
 	me.nfysRet = make(map[_HashNfy]func(p unsafe.Pointer) uintptr, 10)
-	me.nfysZero = make(map[_HashNfy]func(p unsafe.Pointer), 10)
+	me.nfysNoRet = make(map[_HashNfy]func(p unsafe.Pointer), 10)
 }
 
 func (me *_EventsWmNfy) clear() {
 	me._EventsWm.clear()
-	for key := range me.cmdsZero {
-		delete(me.cmdsZero, key)
+	for key := range me.cmdsNoRet {
+		delete(me.cmdsNoRet, key)
 	}
 	for key := range me.nfysRet {
 		delete(me.nfysRet, key)
 	}
-	for key := range me.nfysZero {
-		delete(me.nfysZero, key)
+	for key := range me.nfysNoRet {
+		delete(me.nfysNoRet, key)
 	}
 }
 
 // Adds a WM_COMMAND event with no meaningful return value, always returning zero.
 func (me *_EventsWmNfy) addCmdZero(cmdId int, notifCode co.CMD, userFunc func(p wm.Command)) {
-	me.cmdsZero[_HashCmd{
+	me.cmdsNoRet[_HashCmd{
 		cmdId:     cmdId,
 		notifCode: notifCode,
 	}] = userFunc
@@ -71,7 +71,7 @@ func (me *_EventsWmNfy) addNfyRet(idFrom int, code co.NM, userFunc func(p unsafe
 
 // Adds a WM_NOTIFY event with no meaningful return value, always returning zero.
 func (me *_EventsWmNfy) addNfyZero(idFrom int, code co.NM, userFunc func(p unsafe.Pointer)) {
-	me.nfysZero[_HashNfy{
+	me.nfysNoRet[_HashNfy{
 		idFrom: idFrom,
 		code:   code,
 	}] = userFunc
@@ -87,9 +87,9 @@ func (me *_EventsWmNfy) processMessage(
 			cmdId:     int(wParam.LoWord()),
 			notifCode: co.CMD(wParam.HiWord()),
 		}
-		if userFunc, hasFunc := me.cmdsZero[hash]; hasFunc {
+		if userFunc, hasFunc := me.cmdsNoRet[hash]; hasFunc {
 			msgObj := wm.Any{WParam: wParam, LParam: lParam}
-			userFunc(wm.Command{Msg: msgObj})
+			userFunc(wm.Command{Msg: msgObj}) // always returns zero (or TRUE if dialog)
 			return 0, false, true
 		}
 
@@ -101,10 +101,9 @@ func (me *_EventsWmNfy) processMessage(
 			code:   co.NM(hdr.Code),
 		}
 
-		if userFunc, hasFunc := me.nfysZero[hash]; hasFunc {
-			userFunc(pHdr)
+		if userFunc, hasFunc := me.nfysNoRet[hash]; hasFunc {
+			userFunc(pHdr) // always returns zero (or TRUE if dialog)
 			return 0, false, true
-
 		} else if userFunc, hasFunc := me.nfysRet[hash]; hasFunc {
 			return userFunc(pHdr), true, true
 		}

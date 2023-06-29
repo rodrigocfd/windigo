@@ -62,7 +62,7 @@ func NewTreeView(parent AnyParent, opts *_TreeViewO) TreeView {
 	me.events.new(&me._NativeControlBase)
 	me.items.new(me)
 
-	parent.internalOn().addMsgZero(_CreateOrInitDialog(parent), func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(_CreateOrInitDialog(parent), func(_ wm.Any) {
 		_ConvertDtuOrMultiplyDpi(parent, &opts.position, &opts.size)
 
 		me._NativeControlBase.createWindow(opts.wndExStyles,
@@ -92,7 +92,7 @@ func NewTreeViewDlg(
 	me.events.new(&me._NativeControlBase)
 	me.items.new(me)
 
-	parent.internalOn().addMsgZero(co.WM_INITDIALOG, func(_ wm.Any) {
+	parent.internalOn().addMsgNoRet(co.WM_INITDIALOG, func(_ wm.Any) {
 		me._NativeControlBase.assignDlgItem()
 		parent.addResizingChild(me, horz, vert)
 	})
