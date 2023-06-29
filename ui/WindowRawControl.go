@@ -77,8 +77,8 @@ func (me *_WindowRawControl) isDialog() bool {
 }
 
 func (me *_WindowRawControl) defaultMessages() {
-	me.On().WmNcPaint(func(p wm.NcPaint) {
-		_PaintThemedBorders(me.Hwnd(), p)
+	me.internalOn().addMsgNoRet(co.WM_NCPAINT, func(p wm.Any) {
+		_PaintThemedBorders(me.Hwnd(), wm.NcPaint{Msg: p})
 	})
 }
 

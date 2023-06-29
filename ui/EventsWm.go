@@ -94,9 +94,6 @@ func (me *_EventsWm) WmTimer(timerId uintptr, userFunc func()) {
 
 // [WM_ACTIVATE] message handler.
 //
-// ⚠️ By handling this message, you'll overwrite the default behavior in
-// WindowMain.
-//
 // [WM_ACTIVATE]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-activate
 func (me *_EventsWm) WmActivate(userFunc func(p wm.Activate)) {
 	me.addMsgZero(co.WM_ACTIVATE, func(p wm.Any) {
@@ -199,8 +196,13 @@ func (me *_EventsWm) WmClipboardUpdate(userFunc func()) {
 //
 // ⚠️ By handling this message, you'll overwrite the default behavior in
 // WindowMain and WindowModal.
+//   - dialog WindowMain: calls [DestroyWindow];
+//   - dialog WindowModal: calls [EndDialog];
+//   - raw WindowModal: re-enables parent window and calls [DestroyWindow].
 //
 // [WM_CLOSE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-close
+// [DestroyWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroywindow
+// [EndDialog]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enddialog
 func (me *_EventsWm) WmClose(userFunc func()) {
 	me.addMsgZero(co.WM_CLOSE, func(_ wm.Any) {
 		userFunc()
@@ -835,9 +837,10 @@ func (me *_EventsWm) WmNcCreate(userFunc func(p wm.Create) bool) {
 // [WM_NCDESTROY] message handler.
 //
 // ⚠️ By handling this message, you'll overwrite the default behavior in
-// WindowMain.
+// WindowMain, which calls [PostQuitMessage].
 //
 // [WM_NCDESTROY]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-ncdestroy
+// [PostQuitMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postquitmessage
 func (me *_EventsWm) WmNcDestroy(userFunc func()) {
 	me.addMsgZero(co.WM_NCDESTROY, func(_ wm.Any) {
 		userFunc()
@@ -935,9 +938,6 @@ func (me *_EventsWm) WmNcMouseMove(userFunc func(p wm.NcMouse)) {
 }
 
 // [WM_NCPAINT] message handler.
-//
-// ⚠️ By handling this message, you'll overwrite the default behavior in
-// WindowControl.
 //
 // [WM_NCPAINT]: https://learn.microsoft.com/en-us/windows/win32/gdi/wm-ncpaint
 func (me *_EventsWm) WmNcPaint(userFunc func(p wm.NcPaint)) {
@@ -1118,9 +1118,6 @@ func (me *_EventsWm) WmRenderFormat(userFunc func(p wm.RenderFormat)) {
 }
 
 // [WM_SETFOCUS] message handler.
-//
-// ⚠️ By handling this message, you'll overwrite the default behavior in
-// WindowMain.
 //
 // [WM_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-setfocus
 func (me *_EventsWm) WmSetFocus(userFunc func(p wm.SetFocus)) {

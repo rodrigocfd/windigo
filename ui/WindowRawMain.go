@@ -85,7 +85,7 @@ func (me *_WindowRawMain) defaultMessages() {
 		win.PostQuitMessage(0)
 	})
 
-	me.On().WmSetFocus(func(_ wm.SetFocus) {
+	me.internalOn().addMsgNoRet(co.WM_SETFOCUS, func(_ wm.Any) {
 		if me.Hwnd() == win.GetFocus() {
 			// If window receives focus, delegate to first child.
 			if hFirstChild := me.Hwnd().GetNextDlgTabItem(win.HWND(0), false); hFirstChild != 0 {
@@ -94,10 +94,10 @@ func (me *_WindowRawMain) defaultMessages() {
 		}
 	})
 
-	me.On().WmActivate(func(p wm.Activate) {
-		// https://devblogs.microsoft.com/oldnewthing/20140521-00/?p=943
-		if !p.IsMinimized() {
-			if p.Event() == co.WA_INACTIVE {
+	me.internalOn().addMsgNoRet(co.WM_ACTIVATE, func(p wm.Any) {
+		wmAct := wm.Activate{Msg: p}
+		if !wmAct.IsMinimized() { // https://devblogs.microsoft.com/oldnewthing/20140521-00/?p=943
+			if wmAct.Event() == co.WA_INACTIVE {
 				if hCurFocus := win.GetFocus(); hCurFocus != 0 && me.Hwnd().IsChild(hCurFocus) {
 					me.hChildPrevFocus = hCurFocus // save previously focused control
 				}
