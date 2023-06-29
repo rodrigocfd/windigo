@@ -67,7 +67,7 @@ func (me *_WindowRawModal) isDialog() bool {
 }
 
 func (me *_WindowRawModal) defaultMessages() {
-	me.On().WmSetFocus(func(_ wm.SetFocus) {
+	me.internalOn().addMsgNoRet(co.WM_SETFOCUS, func(_ wm.Any) {
 		if me.Hwnd() == win.GetFocus() {
 			// If window receive focus, delegate to first child.
 			// This also happens right after the modal is created.

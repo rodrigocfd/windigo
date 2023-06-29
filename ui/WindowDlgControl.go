@@ -83,7 +83,7 @@ func (me *_WindowDlgControl) isDialog() bool {
 }
 
 func (me *_WindowDlgControl) defaultMessages() {
-	me.On().WmNcPaint(func(p wm.NcPaint) {
-		_PaintThemedBorders(me.Hwnd(), p)
+	me.internalOn().addMsgNoRet(co.WM_NCPAINT, func(p wm.Any) {
+		_PaintThemedBorders(me.Hwnd(), wm.NcPaint{Msg: p})
 	})
 }
