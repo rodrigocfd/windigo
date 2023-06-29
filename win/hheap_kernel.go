@@ -111,6 +111,23 @@ func (hHeap HHEAP) HeapReAlloc(
 	return unsafe.Slice((*byte)(unsafe.Pointer(ret)), num_bytes), nil
 }
 
+// [HeapSetInformation] function.
+//
+// [HeapSetInformation]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapsetinformation
+func (hHeap HHEAP) HeapSetInformation(
+	informationClass co.HEAP_CLASS,
+	information *uint32,
+	informationLength int) error {
+
+	ret, _, err := syscall.SyscallN(proc.HeapSetInformation.Addr(),
+		uintptr(hHeap), uintptr(informationClass),
+		uintptr(unsafe.Pointer(information)), uintptr(informationLength))
+	if ret == 0 {
+		return errco.ERROR(err)
+	}
+	return nil
+}
+
 // [HeapSize] function.
 //
 // [HeapSize]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapsize

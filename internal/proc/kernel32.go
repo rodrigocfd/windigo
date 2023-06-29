@@ -87,6 +87,7 @@ var (
 	HeapDestroy                     = kernel32.NewProc("HeapDestroy")
 	HeapFree                        = kernel32.NewProc("HeapFree")
 	HeapReAlloc                     = kernel32.NewProc("HeapReAlloc")
+	HeapSetInformation              = kernel32.NewProc("HeapSetInformation")
 	HeapSize                        = kernel32.NewProc("HeapSize")
 	HeapValidate                    = kernel32.NewProc("HeapValidate")
 	LoadLibrary                     = kernel32.NewProc("LoadLibraryW")

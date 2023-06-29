@@ -321,6 +321,17 @@ const (
 	HEAP_ALLOC_ZERO_MEMORY         HEAP_ALLOC = 0x0000_0008
 )
 
+// [HeapSetInformation] class.
+//
+// [HeapSetInformation]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapsetinformation
+type HEAP_CLASS uint32
+
+const (
+	HEAP_CLASS_CompatibilityInformation      HEAP_CLASS = 0
+	HEAP_CLASS_EnableTerminationOnCorruption HEAP_CLASS = 1
+	HEAP_CLASS_OptimizeResources             HEAP_CLASS = 3
+)
+
 // [HeapCreate] options.
 //
 // [HeapCreate]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcreate
