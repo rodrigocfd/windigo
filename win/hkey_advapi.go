@@ -298,7 +298,9 @@ func (hKey HKEY) RegGetValue(subKey, value StrOpt) (RegVal, error) {
 //
 // [RegOpenKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
 func (hKey HKEY) RegOpenKeyEx(
-	subKey string, ulOptions co.REG_OPTION, samDesired co.KEY) (HKEY, error) {
+	subKey string,
+	ulOptions co.REG_OPTION,
+	samDesired co.KEY) (HKEY, error) {
 
 	var openedKey HKEY
 	ret, _, _ := syscall.SyscallN(proc.RegOpenKeyEx.Addr(),

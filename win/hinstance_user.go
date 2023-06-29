@@ -16,8 +16,10 @@ import (
 //
 // [CreateDialogParam]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
 func (hInst HINSTANCE) CreateDialogParam(
-	templateName ResId, hwndParent HWND,
-	dialogFunc uintptr, dwInitParam LPARAM) HWND {
+	templateName ResId,
+	hwndParent HWND,
+	dialogFunc uintptr,
+	dwInitParam LPARAM) HWND {
 
 	templateNameVal, templateNameBuf := templateName.raw()
 	ret, _, err := syscall.SyscallN(proc.CreateDialogParam.Addr(),
@@ -34,8 +36,10 @@ func (hInst HINSTANCE) CreateDialogParam(
 //
 // [DialogBoxParam]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparamw
 func (hInst HINSTANCE) DialogBoxParam(
-	templateName ResId, hwndParent HWND,
-	dialogFunc uintptr, dwInitParam LPARAM) uintptr {
+	templateName ResId,
+	hwndParent HWND,
+	dialogFunc uintptr,
+	dwInitParam LPARAM) uintptr {
 
 	templateNameVal, templateNameBuf := templateName.raw()
 	ret, _, err := syscall.SyscallN(proc.DialogBoxParam.Addr(),
@@ -52,7 +56,8 @@ func (hInst HINSTANCE) DialogBoxParam(
 //
 // [GetClassInfoEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassinfoexw
 func (hInst HINSTANCE) GetClassInfoEx(
-	className *uint16, destBuf *WNDCLASSEX) (ATOM, error) {
+	className *uint16,
+	destBuf *WNDCLASSEX) (ATOM, error) {
 
 	ret, _, err := syscall.SyscallN(proc.GetClassInfoEx.Addr(),
 		uintptr(hInst),
@@ -140,7 +145,10 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 //
 // [LoadImage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
 func (hInst HINSTANCE) LoadImage(
-	name ResId, imgType co.IMAGE, cx, cy int32, fuLoad co.LR) HGDIOBJ {
+	name ResId,
+	imgType co.IMAGE,
+	cx, cy int32,
+	fuLoad co.LR) HGDIOBJ {
 
 	nameVal, nameBuf := name.raw()
 	ret, _, err := syscall.SyscallN(proc.LoadImage.Addr(),

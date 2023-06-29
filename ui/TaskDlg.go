@@ -21,7 +21,9 @@ var TaskDlg _TaskDlgT
 // Displays an error modal prompt with an OK button.
 func (_TaskDlgT) Error(
 	parent AnyParent,
-	title string, header win.StrOpt, body string) {
+	title string,
+	header win.StrOpt,
+	body string) {
 
 	TaskDlg.generate(parent, title, header, body,
 		co.TDCBF_OK, co.TD_ICON_ERROR, nil)
@@ -30,7 +32,9 @@ func (_TaskDlgT) Error(
 // Displays an information modal prompt with an OK button.
 func (_TaskDlgT) Info(
 	parent AnyParent,
-	title string, header win.StrOpt, body string) {
+	title string,
+	header win.StrOpt,
+	body string) {
 
 	TaskDlg.generate(parent, title, header, body,
 		co.TDCBF_OK, co.TD_ICON_INFORMATION, nil)
@@ -41,7 +45,9 @@ func (_TaskDlgT) Info(
 // Returns true if the user clicked OK.
 func (_TaskDlgT) OkCancel(
 	parent AnyParent,
-	title string, header win.StrOpt, body string) bool {
+	title string,
+	header win.StrOpt,
+	body string) bool {
 
 	return TaskDlg.generate(parent, title, header, body,
 		co.TDCBF_OK|co.TDCBF_CANCEL, co.TD_ICON_WARNING, nil) == co.ID_OK
@@ -52,7 +58,10 @@ func (_TaskDlgT) OkCancel(
 //
 // Returns true if the user clicked OK.
 func (_TaskDlgT) OkCancelEx(
-	parent AnyParent, title string, header win.StrOpt, body string,
+	parent AnyParent,
+	title string,
+	header win.StrOpt,
+	body string,
 	okText, cancelText win.StrOpt) bool {
 
 	var btns co.TDCBF
@@ -85,7 +94,9 @@ func (_TaskDlgT) OkCancelEx(
 // Returns true if the user clicked Yes.
 func (_TaskDlgT) YesNo(
 	parent AnyParent,
-	title string, header win.StrOpt, body string) bool {
+	title string,
+	header win.StrOpt,
+	body string) bool {
 
 	return TaskDlg.generate(parent, title, header, body,
 		co.TDCBF_YES|co.TDCBF_NO, co.TD_ICON_WARNING, nil) == co.ID_YES
@@ -94,7 +105,9 @@ func (_TaskDlgT) YesNo(
 // Displays a question modal prompt with Yes, No and Cancel buttons.
 func (_TaskDlgT) YesNoCancel(
 	parent AnyParent,
-	title string, header win.StrOpt, body string) co.ID {
+	title string,
+	header win.StrOpt,
+	body string) co.ID {
 
 	return TaskDlg.generate(parent, title, header, body,
 		co.TDCBF_YES|co.TDCBF_NO|co.TDCBF_CANCEL, co.TD_ICON_WARNING, nil)
@@ -102,8 +115,12 @@ func (_TaskDlgT) YesNoCancel(
 
 func (_TaskDlgT) generate(
 	parent AnyParent,
-	title string, header win.StrOpt, body string,
-	btns co.TDCBF, ico co.TD_ICON, customBtns []win.TASKDIALOG_BUTTON) co.ID {
+	title string,
+	header win.StrOpt,
+	body string,
+	btns co.TDCBF,
+	ico co.TD_ICON,
+	customBtns []win.TASKDIALOG_BUTTON) co.ID {
 
 	tdc := win.TASKDIALOGCONFIG{
 		DwFlags:         co.TDF_ALLOW_DIALOG_CANCELLATION | co.TDF_POSITION_RELATIVE_TO_WINDOW,

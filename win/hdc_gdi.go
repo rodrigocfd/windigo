@@ -88,7 +88,11 @@ func (hdc HDC) BeginPath() {
 //
 // [BitBlt]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-bitblt
 func (hdc HDC) BitBlt(
-	destTopLeft POINT, sz SIZE, hdcSrc HDC, srcTopLeft POINT, rop co.ROP) {
+	destTopLeft POINT,
+	sz SIZE,
+	hdcSrc HDC,
+	srcTopLeft POINT,
+	rop co.ROP) {
 
 	ret, _, err := syscall.SyscallN(proc.BitBlt.Addr(),
 		uintptr(hdc), uintptr(destTopLeft.X), uintptr(destTopLeft.Y),
@@ -170,8 +174,10 @@ func (hdc HDC) CreateCompatibleDC() HDC {
 //
 // [CreateDIBSection]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
 func (hdc HDC) CreateDIBSection(
-	bmi *BITMAPINFO, usage co.DIB,
-	hSection HFILEMAP, offset uint32) (HBITMAP, *byte) {
+	bmi *BITMAPINFO,
+	usage co.DIB,
+	hSection HFILEMAP,
+	offset uint32) (HBITMAP, *byte) {
 
 	var ppvBits *byte
 	ret, _, err := syscall.SyscallN(proc.CreateDIBSection.Addr(),
@@ -387,7 +393,9 @@ func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 func (hdc HDC) GetDIBits(
 	hbm HBITMAP,
 	firstScanLine, numScanLines int,
-	bitmapDataBuffer []byte, bmi *BITMAPINFO, usage co.DIB) int {
+	bitmapDataBuffer []byte,
+	bmi *BITMAPINFO,
+	usage co.DIB) int {
 
 	var dataBufPtr *byte
 	if bitmapDataBuffer != nil {
@@ -564,8 +572,13 @@ func (hdc HDC) LPtoDP(pts []POINT) {
 //
 // [MaskBlt]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-maskblt
 func (hdc HDC) MaskBlt(
-	destTopLeft POINT, sz SIZE, hdcSrc HDC, srcTopLeft POINT,
-	hbmMask HBITMAP, maskOffset POINT, rop co.ROP) {
+	destTopLeft POINT,
+	sz SIZE,
+	hdcSrc HDC,
+	srcTopLeft POINT,
+	hbmMask HBITMAP,
+	maskOffset POINT,
+	rop co.ROP) {
 
 	ret, _, err := syscall.SyscallN(proc.MaskBlt.Addr(),
 		uintptr(hdc), uintptr(destTopLeft.X), uintptr(destTopLeft.Y),
@@ -1005,8 +1018,11 @@ func (hdc HDC) TextOut(x, y int32, text string) {
 //
 // [TransparentBlt]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-transparentblt
 func (hdc HDC) TransparentBlt(
-	destTopLeft POINT, destSz SIZE,
-	hdcSrc HDC, srcTopLeft POINT, srcSz SIZE,
+	destTopLeft POINT,
+	destSz SIZE,
+	hdcSrc HDC,
+	srcTopLeft POINT,
+	srcSz SIZE,
 	colorTransparent COLORREF) {
 
 	ret, _, err := syscall.SyscallN(proc.TransparentBlt.Addr(),

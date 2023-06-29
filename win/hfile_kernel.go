@@ -23,10 +23,15 @@ type HFILE HANDLE
 // ⚠️ You must defer HFILE.CloseHandle().
 //
 // [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
-func CreateFile(fileName string, desiredAccess co.GENERIC,
-	shareMode co.FILE_SHARE, securityAttributes *SECURITY_ATTRIBUTES,
-	creationDisposition co.DISPOSITION, attributes co.FILE_ATTRIBUTE,
-	flags co.FILE_FLAG, security co.SECURITY,
+func CreateFile(
+	fileName string,
+	desiredAccess co.GENERIC,
+	shareMode co.FILE_SHARE,
+	securityAttributes *SECURITY_ATTRIBUTES,
+	creationDisposition co.DISPOSITION,
+	attributes co.FILE_ATTRIBUTE,
+	flags co.FILE_FLAG,
+	security co.SECURITY,
 	hTemplateFile HFILE) (HFILE, error) {
 
 	ret, _, err := syscall.SyscallN(proc.CreateFile.Addr(),
@@ -76,8 +81,10 @@ func (hFile HFILE) GetFileSizeEx() (uint64, error) {
 // [CreateFileMapping]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
 func (hFile HFILE) CreateFileMapping(
 	securityAttributes *SECURITY_ATTRIBUTES,
-	protectPage co.PAGE, protectSec co.SEC,
-	maxSize uint64, objectName StrOpt) (HFILEMAP, error) {
+	protectPage co.PAGE,
+	protectSec co.SEC,
+	maxSize uint64,
+	objectName StrOpt) (HFILEMAP, error) {
 
 	ret, _, err := syscall.SyscallN(proc.CreateFileMappingFromApp.Addr(),
 		uintptr(hFile), uintptr(unsafe.Pointer(securityAttributes)),
@@ -113,7 +120,9 @@ func (hFile HFILE) LockFile(offset, numBytes uint64) error {
 //
 // [LockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex
 func (hFile HFILE) LockFileEx(
-	flags co.LOCKFILE, numBytes uint64, overlapped *OVERLAPPED) error {
+	flags co.LOCKFILE,
+	numBytes uint64,
+	overlapped *OVERLAPPED) error {
 
 	numBytesLo, numBytesHi := util.Break64(numBytes)
 	ret, _, err := syscall.SyscallN(proc.LockFileEx.Addr(),
@@ -259,7 +268,8 @@ func (hMap HFILEMAP) CloseHandle() error {
 // [MapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMap HFILEMAP) MapViewOfFile(
 	desiredAccess co.FILE_MAP,
-	offset uint64, numBytesToMap uint) (HFILEMAPVIEW, error) {
+	offset uint64,
+	numBytesToMap uint) (HFILEMAPVIEW, error) {
 
 	si := SYSTEM_INFO{}
 	GetSystemInfo(&si)

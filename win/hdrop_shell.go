@@ -31,7 +31,9 @@ func (hDrop HDROP) DragFinish() {
 //
 // [DragQueryFile]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragqueryfilew
 func (hDrop HDROP) DragQueryFile(
-	iFile uint32, lpszFile *uint16, cch uint32) uint32 {
+	iFile uint32,
+	lpszFile *uint16,
+	cch uint32) uint32 {
 
 	ret, _, err := syscall.SyscallN(proc.DragQueryFile.Addr(),
 		uintptr(hDrop), uintptr(iFile), uintptr(unsafe.Pointer(lpszFile)),

@@ -24,7 +24,9 @@ type HIMAGELIST HANDLE
 //
 // [ImageList_Create]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
 func ImageListCreate(
-	cx, cy uint32, flags co.ILC, szInitial, szGrow uint32) HIMAGELIST {
+	cx, cy uint32,
+	flags co.ILC,
+	szInitial, szGrow uint32) HIMAGELIST {
 
 	ret, _, err := syscall.SyscallN(proc.ImageList_Create.Addr(),
 		uintptr(cx), uintptr(cy), uintptr(flags),

@@ -32,7 +32,8 @@ func GetCurrentProcess() HPROCESS {
 // [OpenProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
 func OpenProcess(
 	desiredAccess co.PROCESS,
-	inheritHandle bool, processId uint32) (HPROCESS, error) {
+	inheritHandle bool,
+	processId uint32) (HPROCESS, error) {
 
 	ret, _, err := syscall.SyscallN(proc.OpenProcess.Addr(),
 		uintptr(desiredAccess), util.BoolToUintptr(inheritHandle),
@@ -141,7 +142,8 @@ func (hProcess HPROCESS) GetProcessTimes() (
 //
 // [ReadProcessMemory]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory
 func (hProcess HPROCESS) ReadProcessMemory(
-	baseAddress uintptr, buffer []byte) (numBytesRead uint64, e error) {
+	baseAddress uintptr,
+	buffer []byte) (numBytesRead uint64, e error) {
 
 	ret, _, err := syscall.SyscallN(proc.ReadProcessMemory.Addr(),
 		uintptr(hProcess), baseAddress, uintptr(unsafe.Pointer(&buffer[0])),
@@ -180,7 +182,8 @@ func (hProcess HPROCESS) WaitForSingleObject(milliseconds NumInf) (co.WAIT, erro
 //
 // [WriteProcessMemory]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
 func (hProcess HPROCESS) WriteProcessMemory(
-	baseAddress uintptr, data []byte) (numBytesWritten uint64, e error) {
+	baseAddress uintptr,
+	data []byte) (numBytesWritten uint64, e error) {
 
 	ret, _, err := syscall.SyscallN(proc.WriteProcessMemory.Addr(),
 		uintptr(hProcess), baseAddress, uintptr(unsafe.Pointer(&data[0])),

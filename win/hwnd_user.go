@@ -23,9 +23,15 @@ type HWND HANDLE
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func CreateWindowEx(
-	exStyle co.WS_EX, className ClassName, title StrOpt,
-	style co.WS, x, y, width, height int32,
-	parent HWND, menu HMENU, instance HINSTANCE, param LPARAM) HWND {
+	exStyle co.WS_EX,
+	className ClassName,
+	title StrOpt,
+	style co.WS,
+	x, y, width, height int32,
+	parent HWND,
+	menu HMENU,
+	instance HINSTANCE,
+	param LPARAM) HWND {
 
 	classNameVal, classNameBuf := className.raw()
 	ret, _, err := syscall.SyscallN(proc.CreateWindowEx.Addr(),
@@ -508,7 +514,10 @@ func (hWnd HWND) GetWindowRect() RECT {
 
 // [GetWindowText] function.
 //
+// Calls [GetWindowTextLength] to allocate the memory block.
+//
 // [GetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextw
+// [GetWindowTextLength]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextlengthw
 func (hWnd HWND) GetWindowText() string {
 	len := hWnd.GetWindowTextLength() + 1
 	buf := make([]uint16, len)
@@ -523,7 +532,11 @@ func (hWnd HWND) GetWindowText() string {
 
 // [GetWindowTextLength] function.
 //
+// You usually don't need to call this function since [GetWindowText] already
+// calls it to allocate the memory block.
+//
 // [GetWindowTextLength]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextlengthw
+// [GetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextw
 func (hWnd HWND) GetWindowTextLength() int32 {
 	ret, _, _ := syscall.SyscallN(proc.GetWindowTextLength.Addr(),
 		uintptr(hWnd))

@@ -22,9 +22,14 @@ type HPIPE HANDLE
 //
 // [CreateNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
 func CreateNamedPipe(
-	name string, dwOpenMode co.PIPE_ACCESS, dwPipeMode co.PIPE,
-	nMaxInstances uint, nOutBufferSize uint, nInBufferSize uint,
-	nDefaultTimeOut uint, securityAttributes *SECURITY_ATTRIBUTES) (HPIPE, error) {
+	name string,
+	dwOpenMode co.PIPE_ACCESS,
+	dwPipeMode co.PIPE,
+	nMaxInstances uint,
+	nOutBufferSize uint,
+	nInBufferSize uint,
+	nDefaultTimeOut uint,
+	securityAttributes *SECURITY_ATTRIBUTES) (HPIPE, error) {
 
 	ret, _, err := syscall.SyscallN(proc.CreateNamedPipe.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(name))),

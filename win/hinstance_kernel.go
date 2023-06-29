@@ -69,7 +69,9 @@ func (hInst HINSTANCE) FindResource(
 //
 // [FindResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-findresourceexw
 func (hInst HINSTANCE) FindResourceEx(
-	name ResId, rsrcType RsrcType, language LANGID) (HRSRC, error) {
+	name ResId,
+	rsrcType RsrcType,
+	language LANGID) (HRSRC, error) {
 
 	nameVal, nameBuf := name.raw()
 	rsrcTypeVal, rsrcTypeBuf := rsrcType.raw()

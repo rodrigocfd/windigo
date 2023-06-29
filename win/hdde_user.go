@@ -30,8 +30,11 @@ type HDDE uint32
 // [DdeInitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeinitializew
 func DdeInitialize(
 	callback func(
-		wType co.XTYP, wFmt uint32, hConv HCONV,
-		hsz1, hsz2 HSZ, hData, dwData1, dwData2 uintptr) uintptr,
+		wType co.XTYP,
+		wFmt uint32,
+		hConv HCONV,
+		hsz1, hsz2 HSZ,
+		hData, dwData1, dwData2 uintptr) uintptr,
 	afCmd co.AFCMD) (HDDE, error) {
 
 	var idInst uint32
@@ -147,7 +150,9 @@ type HCONV HANDLE
 //
 // [DdeConnect]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeconnect
 func (hDde HDDE) DdeConnect(
-	serviceName, topic StrOpt, cc *CONVCONTEXT) (HCONV, error) {
+	serviceName,
+	topic StrOpt,
+	cc *CONVCONTEXT) (HCONV, error) {
 
 	serviceNameHsz, err := hDde._strOptToHsz(serviceName)
 	if err != nil {
@@ -195,7 +200,9 @@ type HDDEDATA HANDLE
 //
 // [DdeAddData]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeadddata
 func (hDde HDDE) DdeAddData(
-	hData HDDEDATA, data []byte, offset int) (HDDEDATA, error) {
+	hData HDDEDATA,
+	data []byte,
+	offset int) (HDDEDATA, error) {
 
 	ret, _, _ := syscall.SyscallN(proc.DdeAddData.Addr(),
 		uintptr(hData), uintptr(unsafe.Pointer(&data[0])), uintptr(len(data)),
@@ -214,8 +221,12 @@ func (hDde HDDE) DdeAddData(
 //
 // [DdeClientTransaction]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeclienttransaction
 func (hDde HDDE) DdeClientTransaction(
-	data []byte, hConv HCONV, item StrOpt,
-	fmt co.CF, xType co.XTYP, msTimeout int) (HDDEDATA, error) {
+	data []byte,
+	hConv HCONV,
+	item StrOpt,
+	fmt co.CF,
+	xType co.XTYP,
+	msTimeout int) (HDDEDATA, error) {
 
 	var pData unsafe.Pointer
 	if data != nil {

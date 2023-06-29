@@ -28,7 +28,8 @@ type HHOOK HANDLE
 // [SetWindowsHookEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
 func SetWindowsHookEx(idHook co.WH,
 	callback func(code int32, wp WPARAM, lp LPARAM) uintptr,
-	hMod HINSTANCE, threadId uint32) (HHOOK, error) {
+	hMod HINSTANCE,
+	threadId uint32) (HHOOK, error) {
 
 	ret, _, err := syscall.SyscallN(proc.SetWindowsHookEx.Addr(),
 		uintptr(idHook), syscall.NewCallback(callback),
