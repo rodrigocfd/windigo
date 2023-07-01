@@ -98,6 +98,23 @@ func (hTheme HTHEME) GetThemePosition(partStateId co.VS, propId co.TMT) POINT {
 	return pt
 }
 
+// [GetThemePropertyOrigin] function.
+//
+// [GetThemePropertyOrigin]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemepropertyorigin
+func (hTheme HTHEME) GetThemePropertyOrigin(
+	partStateId co.VS, propId co.TMT) co.PROPERTYORIGIN {
+
+	var origin co.PROPERTYORIGIN
+	ret, _, _ := syscall.SyscallN(proc.GetThemePropertyOrigin.Addr(),
+		uintptr(hTheme),
+		uintptr(partStateId.Part()), uintptr(partStateId.State()),
+		uintptr(propId), uintptr(unsafe.Pointer(&origin)))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
+	}
+	return origin
+}
+
 // [GetThemeRect] function.
 //
 // [GetThemeRect]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemerect
@@ -110,6 +127,20 @@ func (hTheme HTHEME) GetThemeRect(partStateId co.VS, propId co.TMT) RECT {
 		panic(hr)
 	}
 	return rc
+}
+
+// [GetThemeString] function.
+//
+// [GetThemeString]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemestring
+func (hTheme HTHEME) GetThemeString(partStateId co.VS, propId co.TMT) string {
+	var buf [256 + 1]uint16 // arbitrary
+	ret, _, _ := syscall.SyscallN(proc.GetThemeRect.Addr(),
+		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
+		uintptr(propId), uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
+	}
+	return Str.FromNativeSlice(buf[:])
 }
 
 // [GetThemeSysColorBrush] function.
