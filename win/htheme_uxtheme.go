@@ -42,9 +42,7 @@ func (hTheme HTHEME) DrawThemeBackground(
 // [GetThemeColor] function.
 //
 // [GetThemeColor]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemecolor
-func (hTheme HTHEME) GetThemeColor(
-	partStateId co.VS, propId co.TMT_COLOR) COLORREF {
-
+func (hTheme HTHEME) GetThemeColor(partStateId co.VS, propId co.TMT) COLORREF {
 	var color COLORREF
 	ret, _, _ := syscall.SyscallN(proc.GetThemeColor.Addr(),
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
@@ -58,7 +56,7 @@ func (hTheme HTHEME) GetThemeColor(
 // [GetThemeInt] function.
 //
 // [GetThemeInt]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemeint
-func (hTheme HTHEME) GetThemeInt(partStateId co.VS, propId co.TMT_INT) int32 {
+func (hTheme HTHEME) GetThemeInt(partStateId co.VS, propId co.TMT) int32 {
 	var intVal int32
 	ret, _, _ := syscall.SyscallN(proc.GetThemeInt.Addr(),
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
@@ -73,7 +71,7 @@ func (hTheme HTHEME) GetThemeInt(partStateId co.VS, propId co.TMT_INT) int32 {
 //
 // [GetThemeMetric]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthememetric
 func (hTheme HTHEME) GetThemeMetric(
-	hdc HDC, partStateId co.VS, propId co.TMT_INT) int32 {
+	hdc HDC, partStateId co.VS, propId co.TMT) int32 {
 
 	var intVal int32
 	ret, _, _ := syscall.SyscallN(proc.GetThemeMetric.Addr(),
@@ -89,9 +87,7 @@ func (hTheme HTHEME) GetThemeMetric(
 // [GetThemePosition] function.
 //
 // [GetThemePosition]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemeposition
-func (hTheme HTHEME) GetThemePosition(
-	partStateId co.VS, propId co.TMT_POSITION) POINT {
-
+func (hTheme HTHEME) GetThemePosition(partStateId co.VS, propId co.TMT) POINT {
 	var pt POINT
 	ret, _, _ := syscall.SyscallN(proc.GetThemePosition.Addr(),
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
@@ -105,7 +101,7 @@ func (hTheme HTHEME) GetThemePosition(
 // [GetThemeRect] function.
 //
 // [GetThemeRect]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemerect
-func (hTheme HTHEME) GetThemeRect(partStateId co.VS, propId co.TMT_RECT) RECT {
+func (hTheme HTHEME) GetThemeRect(partStateId co.VS, propId co.TMT) RECT {
 	var rc RECT
 	ret, _, _ := syscall.SyscallN(proc.GetThemeRect.Addr(),
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
@@ -121,7 +117,7 @@ func (hTheme HTHEME) GetThemeRect(partStateId co.VS, propId co.TMT_RECT) RECT {
 // ⚠️ You must defer HBRUSH.DeleteObject().
 //
 // [GetThemeSysColorBrush]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemesyscolorbrush
-func (hTheme HTHEME) GetThemeSysColorBrush(colorId co.TMT_COLOR) HBRUSH {
+func (hTheme HTHEME) GetThemeSysColorBrush(colorId co.TMT) HBRUSH {
 	ret, _, err := syscall.SyscallN(proc.GetThemeSysColorBrush.Addr(),
 		uintptr(hTheme), uintptr(colorId))
 	if ret == 0 {
@@ -133,7 +129,7 @@ func (hTheme HTHEME) GetThemeSysColorBrush(colorId co.TMT_COLOR) HBRUSH {
 // [GetThemeSysFont] function.
 //
 // [GetThemeSysFont]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemesysfont
-func (hTheme HTHEME) GetThemeSysFont(fontId co.TMT_FONT, lf *LOGFONT) {
+func (hTheme HTHEME) GetThemeSysFont(fontId co.TMT, lf *LOGFONT) {
 	ret, _, _ := syscall.SyscallN(proc.GetThemeSysFont.Addr(),
 		uintptr(hTheme), uintptr(fontId), uintptr(unsafe.Pointer(lf)))
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
