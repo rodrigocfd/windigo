@@ -277,7 +277,7 @@ func (hWnd HWND) EnumChildWindows(callback func(hChild HWND) bool) {
 type _EnumChildPack struct{ f func(hChild HWND) bool }
 
 var (
-	_globalEnumChildFuncs    map[*_EnumChildPack]struct{}
+	_globalEnumChildFuncs    map[*_EnumChildPack]struct{} // keeps pointers from being collected by GC
 	_globalEnumChildMutex    = sync.Mutex{}
 	_globalEnumChildCallback = syscall.NewCallback(
 		func(hChild HWND, lParam LPARAM) uintptr {
@@ -1062,7 +1062,7 @@ func (hWnd HWND) SetTimerCallback(
 type _TimerPack struct{ f func(timerId uintptr) }
 
 var (
-	_globalTimerFuncs    map[*_TimerPack]struct{}
+	_globalTimerFuncs    map[*_TimerPack]struct{} // keeps pointers from being collected by GC
 	_globalTimerMutex    = sync.Mutex{}
 	_globalTimerCallback = syscall.NewCallback(
 		func(_ HWND, _ co.WM, timerId uintptr, _ uint32) uintptr {

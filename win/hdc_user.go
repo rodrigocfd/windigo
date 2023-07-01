@@ -77,7 +77,7 @@ type _EnumMonitorsPack struct {
 }
 
 var (
-	_globalEnumMonitorsFuncs    map[*_EnumMonitorsPack]struct{}
+	_globalEnumMonitorsFuncs    map[*_EnumMonitorsPack]struct{} // keeps pointers from being collected by GC
 	_globalEnumMonitorsMutex    = sync.Mutex{}
 	_globalEnumMonitorsCallback = syscall.NewCallback(
 		func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lParam LPARAM) uintptr {

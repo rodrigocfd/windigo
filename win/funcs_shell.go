@@ -52,8 +52,10 @@ func ShellNotifyIcon(message co.NIM, data *NOTIFYICONDATA) error {
 //
 // [SHGetFileInfo]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
 func SHGetFileInfo(
-	path string, fileAttributes co.FILE_ATTRIBUTE,
-	sfi *SHFILEINFO, flags co.SHGFI) {
+	path string,
+	fileAttributes co.FILE_ATTRIBUTE,
+	sfi *SHFILEINFO,
+	flags co.SHGFI) {
 
 	ret, _, err := syscall.SyscallN(proc.SHGetFileInfo.Addr(),
 		uintptr(unsafe.Pointer(Str.ToNativePtr(path))),

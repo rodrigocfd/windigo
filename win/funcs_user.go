@@ -200,7 +200,7 @@ func EnumWindows(callback func(hWnd HWND) bool) {
 type _EnumWindowsPack struct{ f func(hWnd HWND) bool }
 
 var (
-	_globalEnumWindowsFuncs    map[*_EnumWindowsPack]struct{}
+	_globalEnumWindowsFuncs    map[*_EnumWindowsPack]struct{} // keeps pointers from being collected by GC
 	_globalEnumWindowsMutex    = sync.Mutex{}
 	_globalEnumWindowsCallback = syscall.NewCallback(
 		func(hWnd HWND, lParam LPARAM) uintptr {

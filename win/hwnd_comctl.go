@@ -54,7 +54,8 @@ func (hWnd HWND) SetWindowSubclass(
 func (hWnd HWND) TaskDialog(
 	hInstance HINSTANCE,
 	windowTitle, mainInstruction, content StrOpt,
-	commonButtons co.TDCBF, icon co.TD_ICON) co.ID {
+	commonButtons co.TDCBF,
+	icon co.TD_ICON) co.ID {
 
 	var pnButton int32
 	ret, _, _ := syscall.SyscallN(proc.TaskDialog.Addr(),
