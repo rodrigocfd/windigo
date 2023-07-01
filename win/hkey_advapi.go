@@ -149,7 +149,7 @@ func (hKey HKEY) RegEnumKeyEx() ([]string, error) {
 	return keyNames, nil
 }
 
-type _ValueEnum struct {
+type _HkeyValueEnum struct {
 	Name string
 	Type co.REG
 }
@@ -172,13 +172,13 @@ type _ValueEnum struct {
 //	}
 //
 // [RegEnumValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumvaluew
-func (hKey HKEY) RegEnumValue() ([]_ValueEnum, error) {
+func (hKey HKEY) RegEnumValue() ([]_HkeyValueEnum, error) {
 	keyInfo, err := hKey.RegQueryInfoKey()
 	if err != nil {
 		return nil, err
 	}
 
-	values := make([]_ValueEnum, 0, keyInfo.NumValues) // to be returned
+	values := make([]_HkeyValueEnum, 0, keyInfo.NumValues) // to be returned
 
 	valueNameBuf := make([]uint16, keyInfo.MaxValueNameLen+2) // room to avoid "more data" error
 	var valueNameBufLen uint32
@@ -316,7 +316,7 @@ func (hKey HKEY) RegOpenKeyEx(
 	return openedKey, nil
 }
 
-type _KeyInfo struct {
+type _HkeyInfo struct {
 	Class                 string
 	NumSubKeys            uint32
 	MaxSubKeyNameLen      uint32
@@ -343,8 +343,8 @@ type _KeyInfo struct {
 //		nfo.LastWriteTime.Format(time.ANSIC))
 //
 // [RegQueryInfoKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryinfokeyw
-func (hKey HKEY) RegQueryInfoKey() (_KeyInfo, error) {
-	var info _KeyInfo
+func (hKey HKEY) RegQueryInfoKey() (_HkeyInfo, error) {
+	var info _HkeyInfo
 	var classBuf [_MAX_PATH + 1]uint16 // arbitrary
 	classBufLen := uint32(len(classBuf))
 	var ft FILETIME
@@ -364,7 +364,7 @@ func (hKey HKEY) RegQueryInfoKey() (_KeyInfo, error) {
 		uintptr(unsafe.Pointer(&ft)))
 
 	if wErr := errco.ERROR(ret); wErr != errco.SUCCESS {
-		return _KeyInfo{}, wErr
+		return _HkeyInfo{}, wErr
 	}
 
 	info.Class = Str.FromNativeSlice(classBuf[:])

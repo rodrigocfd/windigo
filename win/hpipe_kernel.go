@@ -47,6 +47,13 @@ func CreateNamedPipe(
 	return HPIPE(ret), nil
 }
 
+// [CloseHandle] function.
+//
+// [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+func (hPipe HPIPE) CloseHandle() error {
+	return HFILE(hPipe).CloseHandle()
+}
+
 // [ConnectNamedPipe] function.
 //
 // [ConnectNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-connectnamedpipe
@@ -71,11 +78,49 @@ func (hPipe HPIPE) DisconnectNamedPipe() error {
 	return nil
 }
 
-// [CloseHandle] function.
+type _HpipeInfo struct {
+	Flags     co.PIPE
+	OutBuffer uint32
+	InBuffer  uint32
+	MaxInsts  uint32
+}
+
+// [GetNamedPipeInfo] function.
 //
-// [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
-func (hPipe HPIPE) CloseHandle() error {
-	return HFILE(hPipe).CloseHandle()
+// [GetNamedPipeInfo]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-getnamedpipeinfo
+func (hPipe HPIPE) GetNamedPipeInfo() (_HpipeInfo, error) {
+	var info _HpipeInfo
+	ret, _, err := syscall.SyscallN(proc.GetNamedPipeInfo.Addr(),
+		uintptr(hPipe), uintptr(unsafe.Pointer(&info.Flags)),
+		uintptr(unsafe.Pointer(&info.OutBuffer)),
+		uintptr(unsafe.Pointer(&info.InBuffer)),
+		uintptr(unsafe.Pointer(&info.MaxInsts)))
+	if ret == 0 {
+		return _HpipeInfo{}, errco.ERROR(err)
+	}
+	return info, nil
+}
+
+type _HpipePeek struct {
+	Read      uint32
+	Available uint32
+	Left      uint32
+}
+
+// [PeekNamedPipe] function.
+//
+// [PeekNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-peeknamedpipe
+func (hPipe HPIPE) PeekNamedPipe(buffer []byte) (_HpipePeek, error) {
+	var info _HpipePeek
+	ret, _, err := syscall.SyscallN(proc.PeekNamedPipe.Addr(),
+		uintptr(hPipe), uintptr(unsafe.Pointer(&buffer[0])), uintptr(len(buffer)),
+		uintptr(unsafe.Pointer(&info.Read)),
+		uintptr(unsafe.Pointer(&info.Available)),
+		uintptr(unsafe.Pointer(&info.Left)))
+	if ret == 0 {
+		return _HpipePeek{}, errco.ERROR(err)
+	}
+	return info, nil
 }
 
 // [ReadFile] function.
