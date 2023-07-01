@@ -139,7 +139,7 @@ func (me *_IShellLink) GetDescription() string {
 }
 
 func (me *_IShellLink) GetIconLocation() (path string, index int32) {
-	buf := make([]uint16, 256) // arbitrary
+	var buf [256 + 1]uint16 // arbitrary
 	iconIndex := int32(0)
 
 	ret, _, _ := syscall.SyscallN(
@@ -149,7 +149,7 @@ func (me *_IShellLink) GetIconLocation() (path string, index int32) {
 		uintptr(unsafe.Pointer(&iconIndex)))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return win.Str.FromNativeSlice(buf), iconIndex
+		return win.Str.FromNativeSlice(buf[:]), iconIndex
 	} else {
 		panic(hr)
 	}
@@ -158,7 +158,7 @@ func (me *_IShellLink) GetIconLocation() (path string, index int32) {
 func (me *_IShellLink) GetPath(
 	fd *win.WIN32_FIND_DATA, flags shellco.SLGP) string {
 
-	buf := make([]uint16, 256) // arbitrary
+	var buf [256 + 1]uint16 // arbitrary
 	ret, _, _ := syscall.SyscallN(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).GetPath,
 		uintptr(unsafe.Pointer(me.Ptr())),
@@ -166,7 +166,7 @@ func (me *_IShellLink) GetPath(
 		uintptr(unsafe.Pointer(fd)), uintptr(flags))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return win.Str.FromNativeSlice(buf)
+		return win.Str.FromNativeSlice(buf[:])
 	} else {
 		panic(hr)
 	}
@@ -187,14 +187,14 @@ func (me *_IShellLink) GetShowCmd() co.SW {
 }
 
 func (me *_IShellLink) GetWorkingDirectory() string {
-	buf := make([]uint16, 256) // arbitrary
+	var buf [256 + 1]uint16 // arbitrary
 	ret, _, _ := syscall.SyscallN(
 		(*shellvt.IShellLink)(unsafe.Pointer(*me.Ptr())).GetWorkingDirectory,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)-1))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-		return win.Str.FromNativeSlice(buf)
+		return win.Str.FromNativeSlice(buf[:])
 	} else {
 		panic(hr)
 	}
