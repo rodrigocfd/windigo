@@ -301,7 +301,9 @@ func (hDde HDDE) DdeGetData(hData HDDEDATA, offset int) ([]byte, error) {
 // [handle]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecreatestringhandlew
 type HSZ HANDLE
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecmpstringhandles
+// [DdeCmpStringHandles] function.
+//
+// [DdeCmpStringHandles]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddecmpstringhandles
 func (hDde HDDE) DdeCmpStringHandles(hsz1, hsz2 HSZ) int {
 	ret, _, _ := syscall.SyscallN(proc.DdeCmpStringHandles.Addr(),
 		uintptr(hsz1), uintptr(hsz2))

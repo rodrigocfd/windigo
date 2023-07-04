@@ -11,9 +11,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native date and time picker control.
+// Native [date and time picker] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-controls
+// [date and time picker]: https://learn.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-controls
 type DateTimePicker interface {
 	AnyNativeControl
 	AnyFocusControl

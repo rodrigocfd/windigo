@@ -2,9 +2,9 @@
 
 package comco
 
-// CoCreateInstance() dwClsContext.
+// [CoCreateInstance] dwClsContext.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
+// [CoCreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 type CLSCTX uint32
 
 const (
@@ -33,9 +33,9 @@ const (
 	CLSCTX_SERVER                 CLSCTX = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER
 )
 
-// CoInitializeEx() dwCoInit.
+// [CoInitializeEx] dwCoInit.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
+// [CoInitializeEx]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 type COINIT uint32
 
 const (
@@ -45,7 +45,9 @@ const (
 	COINIT_SPEED_OVER_MEMORY COINIT = 0x8
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-locktype
+// [LOCKTYPE] enumeration.
+//
+// [LOCKTYPE]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-locktype
 type LOCKTYPE uint32
 
 const (
@@ -54,7 +56,9 @@ const (
 	LOCKTYPE_ONLYONCE  LOCKTYPE = 4
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/ocidl/ne-ocidl-pictureattributes
+// [PICTUREATTRIBUTES] enumeration.
+//
+// [PICTUREATTRIBUTES]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/ne-ocidl-pictureattributes
 type PICATTR uint32
 
 const (
@@ -62,7 +66,9 @@ const (
 	PICATTR_TRANSPARENT PICATTR = 0x02
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/com/pictype-constants
+// [PICTYPE] constants.
+//
+// [PICTYPE]: https://learn.microsoft.com/en-us/windows/win32/com/pictype-constants
 type PICTYPE int16
 
 const (
@@ -74,7 +80,9 @@ const (
 	PICTYPE_ENHMETAFILE   PICTYPE = 4
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-stgc
+// [STGC] enumeration.
+//
+// [STGC]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-stgc
 type STGC uint32
 
 const (
@@ -85,7 +93,9 @@ const (
 	STGC_CONSOLIDATE                        STGC = 8
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-stream_seek
+// [STREAM_SEEK] enumeration.
+//
+// [STREAM_SEEK]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-stream_seek
 type STREAM_SEEK uint32
 
 const (

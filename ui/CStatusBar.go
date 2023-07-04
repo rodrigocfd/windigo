@@ -11,9 +11,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native status bar control.
+// Native [status bar] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/status-bars
+// [status bar]: https://learn.microsoft.com/en-us/windows/win32/controls/status-bars
 type StatusBar interface {
 	AnyNativeControl
 	implStatusBar() // prevent public implementation

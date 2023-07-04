@@ -2,9 +2,9 @@
 
 package automco
 
-// DISPPARAMS named args.
+// [DISPPARAMS] named args.
 //
-// 📑 https://learn.microsoft.com/en-us/previous-versions/windows/desktop/automat/dispid-constants
+// [DISPPARAMS]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/automat/dispid-constants
 type DISPID int32
 
 const (
@@ -18,9 +18,9 @@ const (
 	DISPID_COLLECT     DISPID = -8
 )
 
-// FUNCDESC callconv.
+// [FUNCDESC] callconv.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
+// [FUNCDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type CALLCONV uint32
 
 const (
@@ -37,9 +37,9 @@ const (
 	CALLCONV_MAX
 )
 
-// IDispatch.Invoke() flags.
+// [IDispatch.Invoke] flags.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
+// [IDispatch.Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 type DISPATCH uint16
 
 const (
@@ -49,9 +49,9 @@ const (
 	DISPATCH_PROPERTYPUTREF DISPATCH = 0x8
 )
 
-// FUNCDESC wFuncFlags.
+// [FUNCDESC] wFuncFlags.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
+// [FUNCDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type FUNCFLAG uint16
 
 const (
@@ -70,9 +70,9 @@ const (
 	FUNCFLAG_FIMMEDIATEBIND    FUNCFLAG = 0x1000
 )
 
-// FUNCDESC funckind.
+// [FUNCDESC] funckind.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
+// [FUNCDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type FUNCKIND uint32
 
 const (
@@ -83,7 +83,9 @@ const (
 	FUNCKIND_DISPATCH
 )
 
-// IDLDESC wIDLFlags. Apparently undocumented.
+// [IDLDESC] wIDLFlags.
+//
+// [IDLDESC]: https://learn.microsoft.com/en-us/previous-versions/windows/embedded/aa515591(v=msdn.10)
 type IDLFLAG uint16
 
 const (
@@ -94,9 +96,9 @@ const (
 	IDLFLAG_FRETVAL IDLFLAG = 0x08
 )
 
-// FUNCDESC invkind.
+// [FUNCDESC] invkind.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
+// [FUNCDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type INVOKEKIND uint32
 
 const (
@@ -106,9 +108,9 @@ const (
 	INVOKEKIND_PROPERTYPUTREF INVOKEKIND = 8
 )
 
-// Parameter flags.
+// [PARAMFLAG] constants.
 //
-// 📑 https://learn.microsoft.com/en-us/previous-versions/windows/desktop/automat/paramflags
+// [PARAMFLAG]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/automat/paramflags
 type PARAMFLAG uint16
 
 const (
@@ -122,9 +124,9 @@ const (
 	PARAMFLAG_FHASCUSTDATA PARAMFLAG = 0x40
 )
 
-// Type flags.
+// [TYPEFLAGS] enumeration.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-typeflags
+// [TYPEFLAGS]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-typeflags
 type TYPEFLAG uint16
 
 const (
@@ -145,9 +147,9 @@ const (
 	TYPEFLAG_FPROXY         TYPEFLAG = 0x4000
 )
 
-// Specifies a type.
+// [TYPEKIND] enumeration.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-typekind
+// [TYPEKIND]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-typekind
 type TYPEKIND uint32
 
 const (
@@ -162,9 +164,9 @@ const (
 	TYPEKIND_MAX
 )
 
-// Variable flags.
+// [VARFLAGS] enumeration.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-varflags
+// [VARFLAGS]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ne-oaidl-varflags
 type VARFLAG uint16
 
 const (
@@ -183,9 +185,9 @@ const (
 	VARFLAG_FIMMEDIATEBIND   VARFLAG = 0x1000
 )
 
-// VARDESC varkind.
+// [VARDESC] varkind.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-vardesc
+// [VARDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-vardesc
 type VARKIND uint32
 
 const (
@@ -195,9 +197,9 @@ const (
 	VARKIND_DISPATCH
 )
 
-// VARIANT types.
+// [VARENUM] enumeration.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-varenum
+// [VARENUM]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-varenum
 type VT uint16
 
 const (

@@ -6,12 +6,12 @@ import (
 	"fmt"
 )
 
-// Common dialog box error codes.
+// Common dialog box [error codes].
 //
 // These error codes are unrelated to the ordinary system error codes,
 // represented by the errco.ERROR type.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-commdlgextendederror
+// [error codes]: https://learn.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-commdlgextendederror
 type CDERR uint32
 
 // Implements error interface.

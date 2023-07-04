@@ -10,9 +10,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native SysLink control.
+// Native [SysLink] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/syslink-control-entry
+// [SysLink]: https://learn.microsoft.com/en-us/windows/win32/controls/syslink-control-entry
 type SysLink interface {
 	AnyNativeControl
 	AnyFocusControl

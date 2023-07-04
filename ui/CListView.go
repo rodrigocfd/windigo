@@ -12,9 +12,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native list view control.
+// Native [list view] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/list-view-controls-overview
+// [list view]: https://learn.microsoft.com/en-us/windows/win32/controls/list-view-controls-overview
 type ListView interface {
 	AnyNativeControl
 	AnyFocusControl

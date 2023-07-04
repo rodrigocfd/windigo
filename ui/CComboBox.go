@@ -8,9 +8,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native combo box control.
+// Native [combo box] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/about-combo-boxes
+// [combo box]: https://learn.microsoft.com/en-us/windows/win32/controls/about-combo-boxes
 type ComboBox interface {
 	AnyNativeControl
 	AnyFocusControl

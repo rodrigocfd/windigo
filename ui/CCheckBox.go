@@ -8,9 +8,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native check box control.
+// Native [check box] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#check-boxes
+// [check box]: https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#check-boxes
 type CheckBox interface {
 	AnyNativeControl
 	AnyFocusControl

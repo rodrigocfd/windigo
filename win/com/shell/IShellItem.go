@@ -47,7 +47,7 @@ type IShellItem interface {
 	//
 	//	fullPath := shi.GetDisplayName(shellco.SIGDN_FILESYSPATH)
 	//
-	// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
+	// [GetDisplayName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
 	GetDisplayName(sigdnName shellco.SIGDN) string
 }
 

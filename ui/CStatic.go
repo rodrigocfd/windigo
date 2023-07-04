@@ -8,9 +8,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native static control.
+// Native [static] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/about-static-controls
+// [static]: https://learn.microsoft.com/en-us/windows/win32/controls/about-static-controls
 type Static interface {
 	AnyNativeControl
 	AnyTextControl

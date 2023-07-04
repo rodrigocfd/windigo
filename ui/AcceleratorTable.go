@@ -9,9 +9,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native accelerator table resource.
+// Native [accelerator table] resource.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/learnwin32/accelerator-tables
+// [accelerator table]: https://learn.microsoft.com/en-us/windows/win32/learnwin32/accelerator-tables
 type AcceleratorTable interface {
 	implAcceleratorTable() // prevent public implementation
 

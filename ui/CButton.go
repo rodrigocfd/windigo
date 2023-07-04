@@ -10,9 +10,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native button control.
+// Native [button] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#push-buttons
+// [button]: https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#push-buttons
 type Button interface {
 	AnyNativeControl
 	AnyFocusControl

@@ -9,9 +9,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native progress bar control.
+// Native [progress bar] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/progress-bar-control
+// [progress bar]: https://learn.microsoft.com/en-us/windows/win32/controls/progress-bar-control
 type ProgressBar interface {
 	AnyNativeControl
 	implProgressBar() // prevent public implementation

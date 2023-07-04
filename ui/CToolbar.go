@@ -11,9 +11,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native toolbar control.
+// Native [toolbar] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-controls-overview
+// [toolbar]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-controls-overview
 type Toolbar interface {
 	AnyNativeControl
 	implToolbar() // prevent public implementation

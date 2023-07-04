@@ -107,10 +107,10 @@ func (me *_ListViewItems) Focused() (ListViewItem, bool) {
 	return me.Get(idx), true
 }
 
-// Sends LVM_FINDITEM to search for an item with the given exact text,
+// Sends [LVM_FINDITEM] to search for an item with the given exact text,
 // case-insensitive.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/lvm-finditem
+// [LVM_FINDITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-finditem
 func (me *_ListViewItems) Find(text string) (ListViewItem, bool) {
 	lvfi := win.LVFINDINFO{
 		Flags: co.LVFI_STRING,

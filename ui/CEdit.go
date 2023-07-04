@@ -11,9 +11,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native edit control.
+// Native [edit] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/about-edit-controls
+// [edit]: https://learn.microsoft.com/en-us/windows/win32/controls/about-edit-controls
 type Edit interface {
 	AnyNativeControl
 	AnyFocusControl

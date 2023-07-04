@@ -10,9 +10,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native trackbar control.
+// Native [trackbar] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/trackbar-controls
+// [trackbar]: https://learn.microsoft.com/en-us/windows/win32/controls/trackbar-controls
 type Trackbar interface {
 	AnyNativeControl
 	AnyFocusControl

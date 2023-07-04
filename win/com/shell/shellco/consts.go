@@ -2,7 +2,9 @@
 
 package shellco
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/com/dropeffect-constants
+// [DROPEFFECT] constants.
+//
+// [DROPEFFECT]: https://learn.microsoft.com/en-us/windows/win32/com/dropeffect-constants
 type DROPEFFECT uint32
 
 const (
@@ -13,7 +15,9 @@ const (
 	DROPEFFECT_SCROLL DROPEFFECT = 0x8000_0000
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-advanceslideshow
+// [IDesktopWallpaper.AdvanceSlideshow] direction.
+//
+// [IDesktopWallpaper.AdvanceSlideshow]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-advanceslideshow
 type DSD uint32
 
 const (
@@ -21,7 +25,9 @@ const (
 	DSD_BACKWARD DSD = 1
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-getslideshowoptions
+// [IDesktopWallpaper.GetSlideshowOptions] options.
+//
+// [IDesktopWallpaper.GetSlideshowOptions]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-getslideshowoptions
 type DSO uint32
 
 const (
@@ -29,7 +35,9 @@ const (
 	DSO_SHUFFLEIMAGES DSO = 0x01
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-getstatus
+// [IDesktopWallpaper.GetStatus] state.
+//
+// [IDesktopWallpaper.GetStatus]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-getstatus
 type DSS uint32
 
 const (
@@ -38,7 +46,9 @@ const (
 	DSS_DISABLED_BY_REMOTE_SESSION DSS = 0x04
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-desktop_wallpaper_position
+// [DESKTOP_WALLPAPER_POSITION] enumeration.
+//
+// [DESKTOP_WALLPAPER_POSITION]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-desktop_wallpaper_position
 type DWPOS uint32
 
 const (
@@ -50,7 +60,9 @@ const (
 	DWPOS_SPAN    DWPOS = 5
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_fileopendialogoptions
+// [_FILEOPENDIALOGOPTIONS] enumeration.
+//
+// [_FILEOPENDIALOGOPTIONS]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_fileopendialogoptions
 type FOS uint32
 
 const (
@@ -79,7 +91,9 @@ const (
 	FOS_SUPPORTSTREAMABLEITEMS   FOS = 0x8000_0000
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_sichintf
+// [_SICHINTF] enumeration.
+//
+// [_SICHINTF]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_sichintf
 type SICHINT uint32
 
 const (
@@ -89,7 +103,9 @@ const (
 	SICHINT_TEST_FILESYSPATH_IF_NOT_EQUAL SICHINT = 0x2000_0000
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-sigdn
+// [SIGDN] enumeration.
+//
+// [SIGDN]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-sigdn
 type SIGDN uint32
 
 const (
@@ -105,7 +121,9 @@ const (
 	SIGDN_PARENTRELATIVEFORUI         SIGDN = 0x8009_4001
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getpath
+// [IShellLink.GetPath] flags.
+//
+// [IShellLink.GetPath]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getpath
 type SLGP uint32
 
 const (
@@ -115,7 +133,9 @@ const (
 	SLGP_RELATIVEPRIORITY SLGP = 0x8
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-resolve
+// [IShellLink.Resolve] flags.
+//
+// [IShellLink.Resolve]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-resolve
 type SLR uint32
 
 const (
@@ -136,7 +156,9 @@ const (
 	SLR_NO_OBJECT_ID              SLR = 0x2000
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-stpflag
+// [STPFLAG] enumeration.
+//
+// [STPFLAG]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-stpflag
 type STPFLAG uint32
 
 const (
@@ -147,9 +169,9 @@ const (
 	STPFLAG_USEAPPPEEKWHENACTIVE      STPFLAG = 0x8
 )
 
-// ITaskbarList3.SetProgressState() tbpFlags.
+// [ITaskbarList3.SetProgressState] tbpFlags.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
+// [ITaskbarList3.SetProgressState]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressstate
 type TBPF uint32
 
 const (
@@ -183,9 +205,9 @@ const (
 	TBPF_PAUSED TBPF = 0x8
 )
 
-// THUMBBUTTON dwMask.
+// [THUMBBUTTONMASK] enumeration.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-thumbbuttonmask
+// [THUMBBUTTONMASK]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-thumbbuttonmask
 type THB uint32
 
 const (
@@ -195,9 +217,9 @@ const (
 	THB_FLAGS   THB = 0x8
 )
 
-// THUMBBUTTON dwFlags.
+// [THUMBBUTTONFLAGS] enumeration.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-thumbbuttonflags
+// [THUMBBUTTONFLAGS]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-thumbbuttonflags
 type THBF uint32
 
 const (

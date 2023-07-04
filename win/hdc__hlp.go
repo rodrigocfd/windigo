@@ -6,9 +6,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Converts HIMETRIC units to pixels.
+// [AtlHiMetricToPixel] function. Converts HIMETRIC units to pixels.
 //
-// 📑 https://learn.microsoft.com/en-us/cpp/atl/reference/pixel-himetric-conversion-global-functions?view=msvc-170#atlhimetrictopixel
+// [AtlHiMetricToPixel]: https://learn.microsoft.com/en-us/cpp/atl/reference/pixel-himetric-conversion-global-functions?view=msvc-170#atlhimetrictopixel
 func (hdc HDC) HiMetricToPixel(
 	himetricX, himetricY int32) (pixelX, pixelY int32) {
 
@@ -26,9 +26,9 @@ func (hdc HDC) HiMetricToPixel(
 	return
 }
 
-// Converts pixels to HIMETRIC units.
+// [AtlPixelToHiMetric] function. Converts pixels to HIMETRIC units.
 //
-// 📑 https://learn.microsoft.com/en-us/cpp/atl/reference/pixel-himetric-conversion-global-functions?view=msvc-170#atlpixeltohimetric
+// [AtlPixelToHiMetric]: https://learn.microsoft.com/en-us/cpp/atl/reference/pixel-himetric-conversion-global-functions?view=msvc-170#atlpixeltohimetric
 func (hdc HDC) PixelToHiMetric(
 	pixelX, pixelY int32) (himetricX, himetricY int32) {
 

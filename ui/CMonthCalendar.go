@@ -11,9 +11,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native month calendar control.
+// Native [month calendar] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/month-calendar-controls
+// [month calendar]: https://learn.microsoft.com/en-us/windows/win32/controls/month-calendar-controls
 type MonthCalendar interface {
 	AnyNativeControl
 	AnyFocusControl

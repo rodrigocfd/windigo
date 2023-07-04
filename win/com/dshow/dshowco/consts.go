@@ -2,9 +2,9 @@
 
 package dshowco
 
-// IFileSinkFilter2 modes.
+// [IFileSinkFilter2] modes.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-setmode
+// [IFileSinkFilter2]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-ifilesinkfilter2-setmode
 type AM_FILE uint32
 
 const (
@@ -12,7 +12,9 @@ const (
 	AM_FILE_OVERWRITE AM_FILE = 0x1
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-filter_state
+// [FILTER_STATE] enumeration.
+//
+// [FILTER_STATE]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-filter_state
 type FILTER_STATE uint32
 
 const (
@@ -21,7 +23,9 @@ const (
 	FILTER_STATE_State_Running
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/evr/ne-evr-mfvideoaspectratiomode
+// [MFVideoAspectRatioMode] enumeration.
+//
+// [MFVideoAspectRatioMode]: https://learn.microsoft.com/en-us/windows/win32/api/evr/ne-evr-mfvideoaspectratiomode
 type MFVideoARMode uint32
 
 const (
@@ -31,7 +35,9 @@ const (
 	MFVideoARMode_NonLinearStretch MFVideoARMode = 0x4 // Apply a non-linear horizontal stretch if the aspect ratio of the destination rectangle does not match the aspect ratio of the source rectangle.
 )
 
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-pin_direction
+// [PIN_DIRECTION] enumeration.
+//
+// [PIN_DIRECTION]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-pin_direction
 type PIN_DIRECTION uint32
 
 const (
@@ -39,9 +45,9 @@ const (
 	PIN_DIRECTION_OUTOUT
 )
 
-// Originally AM_SEEKING_SeekingCapabilities enum.
+// [AM_SEEKING_SEEKING_CAPABILITIES] enumeration.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-SEEKING_FLAGS_capabilities
+// [AM_SEEKING_SEEKING_CAPABILITIES]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/ne-strmif-am_seeking_seeking_capabilities
 type SEEKING_CAPABILITIES uint32
 
 const (
@@ -56,9 +62,9 @@ const (
 	SEEKING_CAPABILITIES_Source           SEEKING_CAPABILITIES = 0x100
 )
 
-// IMediaSeeking.SetPositions() flags. Originally AM_SEEKING_SeekingFlags enum.
+// [IMediaSeeking.SetPositions] flags.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
+// [IMediaSeeking.SetPositions]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nf-strmif-imediaseeking-setpositions
 type SEEKING_FLAGS uint32
 
 const (

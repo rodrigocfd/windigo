@@ -11,9 +11,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native tree view control.
+// Native [tree view] control.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-controls
+// [tree view]: https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-controls
 type TreeView interface {
 	AnyNativeControl
 	AnyFocusControl

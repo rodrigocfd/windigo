@@ -8,11 +8,11 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Native radio button control.
+// Native [radio button] control.
 //
 // Prefer using a RadioGroup instead.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
+// [radio button]: https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioButton interface {
 	AnyNativeControl
 	AnyFocusControl

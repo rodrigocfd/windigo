@@ -6,12 +6,12 @@ import (
 	"fmt"
 )
 
-// DDE error codes.
+// DDE [error codes].
 //
 // These error codes are unrelated to the ordinary system error codes,
 // represented by the errco.ERROR type.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddegetlasterror
+// [error codes]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddegetlasterror
 type DMLERR uint32
 
 // Implements error interface.

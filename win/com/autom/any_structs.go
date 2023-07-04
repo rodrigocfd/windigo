@@ -102,7 +102,9 @@ type FUNCDESC struct {
 	WFuncFlags        automco.FUNCFLAG
 }
 
-// Composes various structs. Apparently undocumented.
+// [IDLDESC] struct.
+//
+// [IDLDESC]: https://learn.microsoft.com/en-us/previous-versions/windows/embedded/aa515591(v=msdn.10)
 type IDLDESC struct {
 	dwReserved uintptr
 	WIDLFlags  automco.IDLFLAG
