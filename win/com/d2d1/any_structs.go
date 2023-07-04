@@ -7,6 +7,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/com/d2d1/d2d1co"
 )
 
+// [COLOR_F] struct;
+//
+// [COLOR_F]: https://learn.microsoft.com/en-us/windows/win32/Direct2D/d2d1-color-f
+type COLOR_F struct {
+	R float32
+	G float32
+	B float32
+	A float32
+}
+
 // [FACTORY_OPTIONS] struct.
 //
 // [FACTORY_OPTIONS]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ns-d2d1-d2d1_factory_options

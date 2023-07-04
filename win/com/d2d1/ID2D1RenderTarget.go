@@ -26,6 +26,11 @@ type ID2D1RenderTarget interface {
 	// [BeginDraw]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-begindraw
 	BeginDraw()
 
+	// [Clear] COM method.
+	//
+	// [Clear]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-clear(constd2d1_color_f)
+	Clear(clearColor *COLOR_F)
+
 	// [EndDraw] COM method.
 	//
 	// [EndDraw]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-enddraw
@@ -95,6 +100,17 @@ func (me *_ID2D1RenderTarget) BeginDraw() {
 	ret, _, _ := syscall.SyscallN(
 		(*d2d1vt.ID2D1RenderTarget)(unsafe.Pointer(*me.Ptr())).BeginDraw,
 		uintptr(unsafe.Pointer(me.Ptr())))
+
+	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
+	}
+}
+
+func (me *_ID2D1RenderTarget) Clear(clearColor *COLOR_F) {
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1RenderTarget)(unsafe.Pointer(*me.Ptr())).Clear,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(clearColor)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
 		panic(hr)
