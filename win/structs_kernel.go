@@ -95,27 +95,31 @@ func (dtz *DYNAMIC_TIME_ZONE_INFORMATION) SetDynamicDaylightTimeDisabled(val boo
 
 // [FILETIME] struct.
 //
+// Can be converted to [SYSTEMTIME] with [FileTimeToSystemTime] function.
+//
 // [FILETIME]: https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
+// [SYSTEMTIME]: https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime
+// [FileTimeToSystemTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
 type FILETIME struct {
 	dwLowDateTime  uint32
 	dwHighDateTime uint32
 }
 
-// Returns the epoch in 100-nanoseconds unit.
+// Returns the internal value converted to epoch in 100-nanoseconds unit.
 func (ft *FILETIME) EpochNano100() uint64 { return util.Make64(ft.dwLowDateTime, ft.dwHighDateTime) }
 
-// Sets the epoch in 100-nanoseconds unit.
+// Replaces the internal value with the given epoch in 100-nanoseconds unit.
 func (ft *FILETIME) SetEpochNano100(val uint64) {
 	ft.dwLowDateTime, ft.dwHighDateTime = util.Break64(val)
 }
 
-// Returns the [time.Time].
+// Returns the internal value converted to [time.Time].
 func (ft *FILETIME) ToTime() time.Time {
 	// https://stackoverflow.com/a/4135003/6923555
 	return time.Unix(0, int64(util.Make64(ft.dwLowDateTime, ft.dwHighDateTime)-116_444_736_000_000_000)*100)
 }
 
-// Sets the [time.Time].
+// Replaces the internal value with the given [time.Time].
 func (ft *FILETIME) FromTime(val time.Time) {
 	ft.dwLowDateTime, ft.dwHighDateTime = util.Break64(
 		uint64(val.UnixNano()/100 + 116_444_736_000_000_000),
@@ -320,7 +324,11 @@ type SYSTEM_INFO struct {
 
 // [SYSTEMTIME] struct.
 //
+// Can be converted to [FILETIME] with [SystemTimeToFileTime] function.
+//
 // [SYSTEMTIME]: https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime
+// [FILETIME]: https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
+// [SystemTimeToFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetofiletime
 type SYSTEMTIME struct {
 	WYear         uint16
 	WMonth        uint16

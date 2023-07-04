@@ -50,6 +50,7 @@ var (
 	GetExitCodeThread               = kernel32.NewProc("GetExitCodeThread")
 	GetFileAttributes               = kernel32.NewProc("GetFileAttributesW")
 	GetFileSizeEx                   = kernel32.NewProc("GetFileSizeEx")
+	GetLocalTime                    = kernel32.NewProc("GetLocalTime")
 	GetModuleFileName               = kernel32.NewProc("GetModuleFileNameW")
 	GetModuleHandle                 = kernel32.NewProc("GetModuleHandleW")
 	GetNamedPipeInfo                = kernel32.NewProc("GetNamedPipeInfo")

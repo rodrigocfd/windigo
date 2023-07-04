@@ -336,6 +336,19 @@ func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
 	}
 }
 
+// [GetLocalTime] function.
+//
+// Example:
+//
+//	var st win.SYSTEMTIME
+//	win.GetLocalTime(&st)
+//
+// [GetLocalTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getlocaltime
+func GetLocalTime(systemTime *SYSTEMTIME) {
+	syscall.SyscallN(proc.GetLocalTime.Addr(),
+		uintptr(unsafe.Pointer(systemTime)))
+}
+
 // [GetStartupInfo] function.
 //
 // [GetStartupInfo]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getstartupinfow
@@ -354,7 +367,16 @@ func GetSystemInfo(systemInfo *SYSTEM_INFO) {
 
 // [GetSystemTime] function.
 //
+// Note that the returned value is in UTC format, the local time can be
+// retrieved with [GetLocalTime].
+//
+// Example:
+//
+//	var st win.SYSTEMTIME
+//	win.GetSystemTime(&st)
+//
 // [GetSystemTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtime
+// [GetLocalTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getlocaltime
 func GetSystemTime(systemTime *SYSTEMTIME) {
 	syscall.SyscallN(proc.GetSystemTime.Addr(),
 		uintptr(unsafe.Pointer(systemTime)))
@@ -363,16 +385,20 @@ func GetSystemTime(systemTime *SYSTEMTIME) {
 // [GetSystemTimes] function.
 //
 // [GetSystemTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getsystemtimes
-func GetSystemTimes(idleTime, kernelTime, userTime *FILETIME) {
+func GetSystemTimes() (idleTime, kernelTime, userTime FILETIME) {
 	ret, _, err := syscall.SyscallN(proc.GetSystemTimes.Addr(),
-		uintptr(unsafe.Pointer(idleTime)), uintptr(unsafe.Pointer(kernelTime)),
-		uintptr(unsafe.Pointer(userTime)))
+		uintptr(unsafe.Pointer(&idleTime)),
+		uintptr(unsafe.Pointer(&kernelTime)),
+		uintptr(unsafe.Pointer(&userTime)))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}
+	return
 }
 
 // [GetSystemTimeAsFileTime] function.
+//
+// Note that the returned value is in UTC format.
 //
 // [GetSystemTimeAsFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimeasfiletime
 func GetSystemTimeAsFileTime() FILETIME {
@@ -383,6 +409,8 @@ func GetSystemTimeAsFileTime() FILETIME {
 }
 
 // [GetSystemTimePreciseAsFileTime] function.
+//
+// Note that the returned value is in UTC format.
 //
 // [GetSystemTimePreciseAsFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimepreciseasfiletime
 func GetSystemTimePreciseAsFileTime() FILETIME {
@@ -408,7 +436,8 @@ func GetTimeZoneInformation(
 // [GetTimeZoneInformationForYear]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformationforyear
 func GetTimeZoneInformationForYear(
 	wYear uint16,
-	dtzi *DYNAMIC_TIME_ZONE_INFORMATION, tzi *TIME_ZONE_INFORMATION) {
+	dtzi *DYNAMIC_TIME_ZONE_INFORMATION,
+	tzi *TIME_ZONE_INFORMATION) {
 
 	ret, _, err := syscall.SyscallN(proc.GetTimeZoneInformationForYear.Addr(),
 		uintptr(wYear),
