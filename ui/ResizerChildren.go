@@ -51,6 +51,10 @@ func (me *_ResizerChildren) add(
 	// Must be called after both the parent and the children were created,
 	// because both HWNDs are used.
 
+	if horz == HORZ_NONE && vert == VERT_NONE {
+		return // nothing to do, don't even bother adding the control
+	}
+
 	if len(me.ctrls) == 0 { // first control being added?
 		rcParent := hParent.GetClientRect()
 		me.szOrig = win.SIZE{Cx: rcParent.Right, Cy: rcParent.Bottom} // save parent client area
