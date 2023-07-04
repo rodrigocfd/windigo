@@ -9,6 +9,14 @@ import (
 )
 
 // Variant type for a Registry value.
+//
+// Example:
+//
+//	regVal := RegValSz("Some text")
+//
+//	if val, ok := regVal.Sz(); ok {
+//		println(val)
+//	}
 type RegVal struct {
 	ty  co.REG
 	val []byte
@@ -25,6 +33,11 @@ func RegValNone() RegVal {
 		ty:  co.REG_NONE,
 		val: nil,
 	}
+}
+
+// Returns true if current value is co.REG_NONE.
+func (me *RegVal) IsNone() bool {
+	return me.ty == co.REG_NONE
 }
 
 // Creates a new RegVal variant with a co.REG_BINARY value.
@@ -86,6 +99,46 @@ func (me *RegVal) Dword() (uint32, bool) {
 		return *data, true
 	} else {
 		return 0, false
+	}
+}
+
+// Creates a new RegVal variant with a co.REG_EXPAND_SZ value.
+//
+// When the value is retrieved, the environment variables should be expanded
+// with [ExpandEnvironmentStrings] function.
+//
+// [ExpandEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
+func RegValExpandSz(s string) RegVal {
+	sliceUsr := Str.ToNativeSlice(s)
+	sliceData := unsafe.Slice((*byte)(unsafe.Pointer(&sliceUsr[0])), len(sliceUsr)*2)
+
+	return RegVal{
+		ty:  co.REG_EXPAND_SZ,
+		val: sliceData,
+	}
+}
+
+// If the current value is co.REG_EXPAND_SZ, returns it and true; otherwise ""
+// and false.
+//
+// Environment variables can be expanded with [ExpandEnvironmentStrings]
+// function.
+//
+// Example:
+//
+//	regVal := RegValExpandSz("Some text")
+//
+//	if val, ok := regVal.ExpandSz(); ok {
+//		println(ExpandEnvironmentStrings(val))
+//	}
+//
+// [ExpandEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
+func (me *RegVal) ExpandSz() (string, bool) {
+	if me.ty == co.REG_EXPAND_SZ {
+		data := unsafe.Slice((*uint16)(unsafe.Pointer(&me.val[0])), len(me.val)/2)
+		return Str.FromNativeSlice(data), true
+	} else {
+		return "", false
 	}
 }
 
