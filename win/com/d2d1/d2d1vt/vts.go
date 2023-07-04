@@ -6,9 +6,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 )
 
-// ID2D1Factory virtual table.
+// [ID2D1Factory] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1factory
+// [ID2D1Factory]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1factory
 type ID2D1Factory struct {
 	comvt.IUnknown
 	ReloadSystemMetrics            uintptr
@@ -27,9 +27,9 @@ type ID2D1Factory struct {
 	CreateDCRenderTarget           uintptr
 }
 
-// ID2D1HwndRenderTarget virtual table.
+// [ID2D1HwndRenderTarget] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1hwndrendertarget
+// [ID2D1HwndRenderTarget]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1hwndrendertarget
 type ID2D1HwndRenderTarget struct {
 	ID2D1RenderTarget
 	CheckWindowState uintptr
@@ -37,9 +37,9 @@ type ID2D1HwndRenderTarget struct {
 	GetHwnd          uintptr
 }
 
-// ID2D1RenderTarget virtual table.
+// [ID2D1RenderTarget] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1rendertarget
+// [ID2D1RenderTarget]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1rendertarget
 type ID2D1RenderTarget struct {
 	ID2D1Resource
 	CreateBitmap                 uintptr
@@ -97,9 +97,9 @@ type ID2D1RenderTarget struct {
 	IsSupported                  uintptr
 }
 
-// ID2D1Resource virtual table.
+// [ID2D1Resource] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1resource
+// [ID2D1Resource]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1resource
 type ID2D1Resource struct {
 	comvt.IUnknown
 	GetFactory uintptr

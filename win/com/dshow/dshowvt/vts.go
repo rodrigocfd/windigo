@@ -7,9 +7,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 )
 
-// IBaseFilter virtual table.
+// [IBaseFilter] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
+// [IBaseFilter]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ibasefilter
 type IBaseFilter struct {
 	IMediaFilter
 	EnumPins        uintptr
@@ -19,9 +19,9 @@ type IBaseFilter struct {
 	QueryVendorInfo uintptr
 }
 
-// IBasicAudio virtual table.
+// [IBasicAudio] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/control/nn-control-ibasicaudio
+// [IBasicAudio]: https://learn.microsoft.com/en-us/windows/win32/api/control/nn-control-ibasicaudio
 type IBasicAudio struct {
 	automvt.IDispatch
 	PutVolume  uintptr
@@ -30,9 +30,9 @@ type IBasicAudio struct {
 	GetBalance uintptr
 }
 
-// IEnumFilters virtual table.
+// [IEnumFilters] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
+// [IEnumFilters]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumfilters
 type IEnumFilters struct {
 	comvt.IUnknown
 	Next  uintptr
@@ -41,9 +41,9 @@ type IEnumFilters struct {
 	Clone uintptr
 }
 
-// IEnumMediaTypes virtual table.
+// [IEnumMediaTypes] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienummediatypes
+// [IEnumMediaTypes]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienummediatypes
 type IEnumMediaTypes struct {
 	comvt.IUnknown
 	Next  uintptr
@@ -52,9 +52,9 @@ type IEnumMediaTypes struct {
 	Clone uintptr
 }
 
-// IEnumPins virtual table.
+// [IEnumPins] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
+// [IEnumPins]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ienumpins
 type IEnumPins struct {
 	comvt.IUnknown
 	Next  uintptr
@@ -63,36 +63,36 @@ type IEnumPins struct {
 	Clone uintptr
 }
 
-// IFileSinkFilter virtual table.
+// [IFileSinkFilter] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter
+// [IFileSinkFilter]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter
 type IFileSinkFilter struct {
 	comvt.IUnknown
 	SetFileName uintptr
 	GetCurFile  uintptr
 }
 
-// IFileSinkFilter2 virtual table.
+// [IFileSinkFilter2] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter2
+// [IFileSinkFilter2]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesinkfilter2
 type IFileSinkFilter2 struct {
 	IFileSinkFilter
 	SetMode uintptr
 	GetMode uintptr
 }
 
-// IFileSourceFilter virtual table.
+// [IFileSourceFilter] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
+// [IFileSourceFilter]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifilesourcefilter
 type IFileSourceFilter struct {
 	comvt.IUnknown
 	Load       uintptr
 	GetCurFile uintptr
 }
 
-// IFilterGraph virtual table.
+// [IFilterGraph] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
+// [IFilterGraph]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ifiltergraph
 type IFilterGraph struct {
 	comvt.IUnknown
 	AddFilter            uintptr
@@ -105,9 +105,9 @@ type IFilterGraph struct {
 	SetDefaultSyncSource uintptr
 }
 
-// IGraphBuilder virtual table.
+// [IGraphBuilder] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-igraphbuilder
+// [IGraphBuilder]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-igraphbuilder
 type IGraphBuilder struct {
 	IFilterGraph
 	Connect                 uintptr
@@ -119,9 +119,9 @@ type IGraphBuilder struct {
 	ShouldOperationContinue uintptr
 }
 
-// IMediaControl virtual table.
+// [IMediaControl] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
+// [IMediaControl]: https://learn.microsoft.com/en-us/windows/win32/api/control/nn-control-imediacontrol
 type IMediaControl struct {
 	automvt.IDispatch
 	Run                    uintptr
@@ -135,9 +135,9 @@ type IMediaControl struct {
 	StopWhenReady          uintptr
 }
 
-// IMediaFilter virtual table.
+// [IMediaFilter] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
+// [IMediaFilter]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediafilter
 type IMediaFilter struct {
 	comvt.IPersist
 	Stop          uintptr
@@ -148,9 +148,9 @@ type IMediaFilter struct {
 	GetSyncSource uintptr
 }
 
-// IMediaSeeking virtual table.
+// [IMediaSeeking] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediaseeking
+// [IMediaSeeking]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-imediaseeking
 type IMediaSeeking struct {
 	comvt.IUnknown
 	GetCapabilities      uintptr
@@ -172,17 +172,17 @@ type IMediaSeeking struct {
 	GetPreroll           uintptr
 }
 
-// IMFGetService virtual table.
+// [IMFGetService] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
+// [IMFGetService]: https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
 type IMFGetService struct {
 	comvt.IUnknown
 	GetService uintptr
 }
 
-// IMFVideoDisplayControl virtual table.
+// [IMFVideoDisplayControl] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
+// [IMFVideoDisplayControl]: https://learn.microsoft.com/en-us/windows/win32/api/evr/nn-evr-imfvideodisplaycontrol
 type IMFVideoDisplayControl struct {
 	comvt.IUnknown
 	GetNativeVideoSize uintptr
@@ -203,9 +203,9 @@ type IMFVideoDisplayControl struct {
 	GetFullscreen      uintptr
 }
 
-// IPin virtual table.
+// [IPin] virtual table.
 //
-// 📑 https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
+// [IPin]: https://learn.microsoft.com/en-us/windows/win32/api/strmif/nn-strmif-ipin
 type IPin struct {
 	comvt.IUnknown
 	Connect                  uintptr
