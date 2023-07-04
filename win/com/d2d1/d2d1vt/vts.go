@@ -37,6 +37,14 @@ type ID2D1HwndRenderTarget struct {
 	GetHwnd          uintptr
 }
 
+// [ID2D1Mesh] virtual table.
+//
+// [ID2D1Mesh]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1mesh
+type ID2D1Mesh struct {
+	ID2D1Resource
+	Open uintptr
+}
+
 // [ID2D1RenderTarget] virtual table.
 //
 // [ID2D1RenderTarget]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1rendertarget
@@ -103,4 +111,13 @@ type ID2D1RenderTarget struct {
 type ID2D1Resource struct {
 	comvt.IUnknown
 	GetFactory uintptr
+}
+
+// [ID2D1TessellationSink] virtual table.
+//
+// [ID2D1TessellationSink]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1tessellationsink
+type ID2D1TessellationSink struct {
+	comvt.IUnknown
+	AddTriangles uintptr
+	Close        uintptr
 }

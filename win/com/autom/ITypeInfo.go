@@ -234,7 +234,7 @@ func (me *_ITypeInfo) GetIDsOfNames(names []string) []MEMBERID {
 		(*automvt.ITypeInfo)(unsafe.Pointer(*me.Ptr())).GetTypeAttr,
 		uintptr(unsafe.Pointer(me.Ptr())),
 		uintptr(unsafe.Pointer(&pNames[0])),
-		uintptr(len(names)),
+		uintptr(uint32(len(names))),
 		uintptr(unsafe.Pointer(&memberIds[0])))
 
 	if hr := errco.ERROR(ret); hr == errco.S_OK {

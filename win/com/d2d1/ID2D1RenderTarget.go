@@ -8,6 +8,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/com/com"
+	"github.com/rodrigocfd/windigo/win/com/com/comvt"
 	"github.com/rodrigocfd/windigo/win/com/d2d1/d2d1co"
 	"github.com/rodrigocfd/windigo/win/com/d2d1/d2d1vt"
 	"github.com/rodrigocfd/windigo/win/errco"
@@ -30,6 +31,13 @@ type ID2D1RenderTarget interface {
 	//
 	// [Clear]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-clear(constd2d1_color_f)
 	Clear(clearColor *COLOR_F)
+
+	// [CreateMesh] COM method.
+	//
+	// ⚠️ You must defer ID2D1Mesh.Release().
+	//
+	// [CreateMesh]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-createmesh
+	CreateMesh() ID2D1Mesh
 
 	// [EndDraw] COM method.
 	//
@@ -113,6 +121,20 @@ func (me *_ID2D1RenderTarget) Clear(clearColor *COLOR_F) {
 		uintptr(unsafe.Pointer(clearColor)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
+	}
+}
+
+func (me *_ID2D1RenderTarget) CreateMesh() ID2D1Mesh {
+	var ppQueried **comvt.IUnknown
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1RenderTarget)(unsafe.Pointer(*me.Ptr())).CreateMesh,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(unsafe.Pointer(&ppQueried)))
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return NewID2D1Mesh(com.NewIUnknown(ppQueried))
+	} else {
 		panic(hr)
 	}
 }

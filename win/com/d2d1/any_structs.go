@@ -11,10 +11,7 @@ import (
 //
 // [COLOR_F]: https://learn.microsoft.com/en-us/windows/win32/Direct2D/d2d1-color-f
 type COLOR_F struct {
-	R float32
-	G float32
-	B float32
-	A float32
+	R, G, B, A float32
 }
 
 // [FACTORY_OPTIONS] struct.
@@ -41,6 +38,13 @@ type PIXEL_FORMAT struct {
 	AlphaMode d2d1co.ALPHA_MODE
 }
 
+// [POINT_2F] struct.
+//
+// [POINT_2F]: https://learn.microsoft.com/en-us/windows/win32/api/dcommon/ns-dcommon-d2d_point_2f
+type POINT_2F struct {
+	X, Y float32
+}
+
 // [RENDER_TARGET_PROPERTIES] struct.
 //
 // [RENDER_TARGET_PROPERTIES]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ns-d2d1-d2d1_render_target_properties
@@ -65,4 +69,11 @@ type SIZE_F struct {
 // [SIZE_U]: https://learn.microsoft.com/en-us/windows/win32/direct2d/d2d1-size-u
 type SIZE_U struct {
 	Width, Height uint32
+}
+
+// [TRIANGLE] struct.
+//
+// [TRIANGLE]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ns-d2d1-d2d1_triangle
+type TRIANGLE struct {
+	Point1, Point2, Point3 POINT_2F
 }
