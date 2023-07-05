@@ -9,6 +9,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/proc"
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/errco"
 )
@@ -18,12 +19,52 @@ import (
 // [device context]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdc
 type HDC HANDLE
 
+// [AbortDoc] function.
+//
+// [AbortDoc]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-abortdoc
+func (hdc HDC) AbortDoc() {
+	ret, _, _ := syscall.SyscallN(proc.AbortDoc.Addr(),
+		uintptr(hdc))
+	if int32(ret) == -1 {
+		panic(errco.INVALID_PRINTER_COMMAND)
+	}
+}
+
 // [AbortPath] function.
 //
 // [AbortPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-abortpath
 func (hdc HDC) AbortPath() {
 	ret, _, err := syscall.SyscallN(proc.AbortPath.Addr(),
 		uintptr(hdc))
+	if ret == 0 {
+		panic(errco.ERROR(err))
+	}
+}
+
+// [AlphaBlend] function.
+//
+// This method is called from the destination HDC.
+//
+// [AlphaBlend]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-alphablend
+func (hdc HDC) AlphaBlend(
+	originDest POINT,
+	szDest SIZE,
+	hdcSrc HDC,
+	originSrc POINT,
+	szSrc SIZE,
+	ftn BLENDFUNCTION) {
+
+	ret, _, err := syscall.SyscallN(proc.AlphaBlend.Addr(),
+		uintptr(hdc), uintptr(originDest.X), uintptr(originDest.Y),
+		uintptr(szDest.Cx), uintptr(szDest.Cy),
+		uintptr(hdcSrc), uintptr(originSrc.X), uintptr(originSrc.Y),
+		uintptr(szSrc.Cx), uintptr(szSrc.Cy),
+		uintptr(
+			util.Make32(
+				util.Make16(ftn.BlendOp, ftn.BlendFlags),
+				util.Make16(ftn.SourceConstantAlpha, ftn.AlphaFormat),
+			),
+		))
 	if ret == 0 {
 		panic(errco.ERROR(err))
 	}

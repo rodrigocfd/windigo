@@ -93,6 +93,16 @@ func (bih *BITMAPINFOHEADER) Serialize() []byte {
 	return unsafe.Slice((*byte)(unsafe.Pointer(bih)), unsafe.Sizeof(*bih))
 }
 
+// [BLENDFUNCTION] struct.
+//
+// [BLENDFUNCTION]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-blendfunction
+type BLENDFUNCTION struct {
+	BlendOp             byte
+	BlendFlags          byte
+	SourceConstantAlpha byte
+	AlphaFormat         byte
+}
+
 // [COLORREF] struct.
 //
 // Specifies an RGB color.

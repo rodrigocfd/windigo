@@ -22,6 +22,7 @@ const (
 	_HGDI_ERROR   = 0xffff_ffff
 	_LF_FACESIZE  = 32
 	_REGION_ERROR = 0
+	_SP_ERROR     = -1
 )
 
 // Private constants from kernel.
