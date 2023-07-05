@@ -33,5 +33,5 @@ func (hProcess HPROCESS) OpenProcessToken(
 	if ret == 0 {
 		return HACCESSTOKEN(0), errco.ERROR(err)
 	}
-	return HACCESSTOKEN(ret), nil
+	return hToken, nil
 }

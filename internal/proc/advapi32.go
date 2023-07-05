@@ -12,6 +12,7 @@ var (
 	GetCurrentProcessToken         = advapi32.NewProc("GetCurrentProcessToken")
 	GetCurrentThreadEffectiveToken = advapi32.NewProc("GetCurrentThreadEffectiveToken")
 	GetManagedApplications         = advapi32.NewProc("GetManagedApplications")
+	GetTokenInformation            = advapi32.NewProc("GetTokenInformation")
 	OpenProcessToken               = advapi32.NewProc("OpenProcessToken")
 	RegCloseKey                    = advapi32.NewProc("RegCloseKey")
 	RegDeleteKey                   = advapi32.NewProc("RegDeleteKeyW")

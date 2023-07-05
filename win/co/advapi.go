@@ -130,3 +130,82 @@ const (
 	TOKEN_TRUST_CONSTRAINT_MASK TOKEN = TOKEN(STANDARD_RIGHTS_READ) | TOKEN_QUERY | TOKEN_QUERY_SOURCE
 	TOKEN_ACCESS_PSEUDO_HANDLE  TOKEN = TOKEN_QUERY | TOKEN_QUERY_SOURCE
 )
+
+// [TOKEN_ELEVATION_TYPE] enumeration.
+//
+// [TOKEN_ELEVATION_TYPE]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ne-winnt-token_elevation_type
+type TOKEN_ELEVATION_TYPE uint32
+
+const (
+	TOKEN_ELEVATION_TYPE_Default TOKEN_ELEVATION_TYPE = iota + 1
+	TOKEN_ELEVATION_TYPE_Full
+	TOKEN_ELEVATION_TYPE_Limited
+)
+
+// [TOKEN_INFORMATION_CLASS] enumeration.
+//
+// [TOKEN_INFORMATION_CLASS]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ne-winnt-token_information_class
+type TOKEN_INFO uint32
+
+const (
+	TOKEN_INFO_User TOKEN_INFO = iota + 1
+	TOKEN_INFO_Groups
+	TOKEN_INFO_Privileges
+	TOKEN_INFO_Owner
+	TOKEN_INFO_PrimaryGroup
+	TOKEN_INFO_DefaultDacl
+	TOKEN_INFO_Source
+	TOKEN_INFO_Type
+	TOKEN_INFO_ImpersonationLevel
+	TOKEN_INFO_Statistics
+	TOKEN_INFO_RestrictedSids
+	TOKEN_INFO_SessionId
+	TOKEN_INFO_GroupsAndPrivileges
+	TOKEN_INFO_SessionReference
+	TOKEN_INFO_SandBoxInert
+	TOKEN_INFO_AuditPolicy
+	TOKEN_INFO_Origin
+	TOKEN_INFO_ElevationType
+	TOKEN_INFO_Linked
+	TOKEN_INFO_Elevation
+	TOKEN_INFO_HasRestrictions
+	TOKEN_INFO_AccessInformation
+	TOKEN_INFO_VirtualizationAllowed
+	TOKEN_INFO_VirtualizationEnabled
+	TOKEN_INFO_IntegrityLevel
+	TOKEN_INFO_UIAccess
+	TOKEN_INFO_MandatoryPolicy
+	TOKEN_INFO_LogonSid
+	TOKEN_INFO_IsAppContainer
+	TOKEN_INFO_Capabilities
+	TOKEN_INFO_AppContainerSid
+	TOKEN_INFO_AppContainerNumber
+	TOKEN_INFO_UserClaimAttributes
+	TOKEN_INFO_DeviceClaimAttributes
+	TOKEN_INFO_RestrictedUserClaimAttributes
+	TOKEN_INFO_RestrictedDeviceClaimAttributes
+	TOKEN_INFO_DeviceGroups
+	TOKEN_INFO_RestrictedDeviceGroups
+	TOKEN_INFO_SecurityAttributes
+	TOKEN_INFO_IsRestricted
+	TOKEN_INFO_ProcessTrustLevel
+	TOKEN_INFO_PrivateNameSpace
+	TOKEN_INFO_SingletonAttributes
+	TOKEN_INFO_BnoIsolation
+	TOKEN_INFO_ChildProcessFlags
+	TOKEN_INFO_IsLessPrivilegedAppContainer
+	TOKEN_INFO_IsSandboxed
+	TOKEN_INFO_OriginatingProcessTrustLevel
+)
+
+// [TOKEN_MANDATORY_POLICY] policy.
+//
+// [TOKEN_MANDATORY_POLICY]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-token_mandatory_policy
+type TOKEN_POLICY uint32
+
+const (
+	TOKEN_POLICY_OFF             TOKEN_POLICY = 0x0
+	TOKEN_POLICY_NO_WRITE_UP     TOKEN_POLICY = 0x1
+	TOKEN_POLICY_NEW_PROCESS_MIN TOKEN_POLICY = 0x2
+	TOKEN_POLICY_VALID_MASK      TOKEN_POLICY = 0x3
+)
