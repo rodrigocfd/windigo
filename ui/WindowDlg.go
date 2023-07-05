@@ -49,7 +49,7 @@ func (me *_WindowDlg) dialogBox(hParent win.HWND, hInst win.HINSTANCE) {
 }
 
 var (
-	// A set keeping all *_WindowDlg that were retrieved in _DlgProc.
+	// A set keeping all *_WindowDlg that were retrieved in _DlgProc, prevent from GC collecting.
 	_globalWindowDlgPtrs = make(map[*_WindowDlg]struct{}, 10)
 
 	// Default dialog procedure.
@@ -74,7 +74,7 @@ func _DlgProc(
 	// Prevents processing before WM_INITDIALOG and after WM_NCDESTROY.
 	if _, isStored := _globalWindowDlgPtrs[pMe]; isStored {
 		// Process all internal events.
-		atLeast1Internal := pMe.internalEvents.processMessages(uMsg, wParam, lParam)
+		atLeast1Internal := pMe.internalEvents.processAllMessages(uMsg, wParam, lParam)
 
 		// Child controls are created in internalEvents closures, so we put the
 		// system font only after running them.

@@ -66,7 +66,7 @@ func (me *_EventsInternal) addNfyNoRet(
 }
 
 // Executes all handlers for the given message.
-func (me *_EventsInternal) processMessages(
+func (me *_EventsInternal) processAllMessages(
 	uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) (atLeast1 bool) {
 
 	if uMsg == co.WM_NOTIFY {

@@ -105,7 +105,7 @@ var (
 	// incremented at each subclass installed
 	_globalSubclassId = uint32(0)
 
-	// A set keeping all *_NativeControlBase that were retrieved in _SubclassProc.
+	// A set keeping all *_NativeControlBase that were retrieved in _SubclassProc, prevent from GC collecting.
 	_globalNativeControlBasePtrs = make(map[*_NativeControlBase]struct{}, 10)
 
 	// Default window procedure for subclassed child controls.

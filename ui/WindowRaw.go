@@ -121,7 +121,7 @@ func (me *_WindowRaw) calcWndCoords(
 }
 
 var (
-	// A set keeping all *_WindowRaw that were retrieved in _WndProc.
+	// A set keeping all *_WindowRaw that were retrieved in _WndProc, prevent from GC collecting.
 	_globalWindowRawPtrs = make(map[*_WindowRaw]struct{}, 10)
 
 	// Default window procedure.
@@ -147,7 +147,7 @@ func _WndProc(
 	// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
 	if _, isStored := _globalWindowRawPtrs[pMe]; isStored {
 		// Process all internal events.
-		atLeast1Internal := pMe.internalEvents.processMessages(uMsg, wParam, lParam)
+		atLeast1Internal := pMe.internalEvents.processAllMessages(uMsg, wParam, lParam)
 
 		// Try to process the message with an user handler.
 		retVal, meaningfulRet, wasHandled :=
