@@ -32,6 +32,13 @@ type ID2D1RenderTarget interface {
 	// [Clear]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-clear(constd2d1_color_f)
 	Clear(clearColor *COLOR_F)
 
+	// [CreateLayer] COM method.
+	//
+	// ⚠️ You must defer ID2D1Layer.Release().
+	//
+	// [CreateLayer]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-createlayer(d2d1_size_f_id2d1layer)
+	CreateLayer(size SIZE_F) ID2D1Layer
+
 	// [CreateMesh] COM method.
 	//
 	// ⚠️ You must defer ID2D1Mesh.Release().
@@ -121,6 +128,21 @@ func (me *_ID2D1RenderTarget) Clear(clearColor *COLOR_F) {
 		uintptr(unsafe.Pointer(clearColor)))
 
 	if hr := errco.ERROR(ret); hr != errco.S_OK {
+		panic(hr)
+	}
+}
+
+func (me *_ID2D1RenderTarget) CreateLayer(size SIZE_F) ID2D1Layer {
+	var ppQueried **comvt.IUnknown
+	ret, _, _ := syscall.SyscallN(
+		(*d2d1vt.ID2D1RenderTarget)(unsafe.Pointer(*me.Ptr())).CreateLayer,
+		uintptr(unsafe.Pointer(me.Ptr())),
+		uintptr(util.Make64(uint32(size.Width), uint32(size.Height))),
+		uintptr(unsafe.Pointer(&ppQueried)))
+
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return NewID2D1Layer(com.NewIUnknown(ppQueried))
+	} else {
 		panic(hr)
 	}
 }

@@ -37,6 +37,14 @@ type ID2D1HwndRenderTarget struct {
 	GetHwnd          uintptr
 }
 
+// [ID2D1Layer] virtul table.
+//
+// [ID2D1Layer]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1layer
+type ID2D1Layer struct {
+	ID2D1Resource
+	GetSize uintptr
+}
+
 // [ID2D1Mesh] virtual table.
 //
 // [ID2D1Mesh]: https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nn-d2d1-id2d1mesh
