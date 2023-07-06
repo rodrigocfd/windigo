@@ -406,8 +406,10 @@ type POINT struct {
 type POWERBROADCAST_SETTING struct {
 	PowerSetting GUID
 	DataLength   uint32
-	Data         [1]uint16
+	data         [1]uint8
 }
+
+func (pbs *POWERBROADCAST_SETTING) Data(i int) *uint8 { return &pbs.data[i] }
 
 // [RECT] struct.
 //

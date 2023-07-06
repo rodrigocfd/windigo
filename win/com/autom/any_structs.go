@@ -15,8 +15,10 @@ import (
 type ARRAYDESC struct {
 	TdescElem TYPEDESC
 	CDims     uint16
-	Rgbounds  [1]SAFEARRAYBOUND
+	rgbounds  [1]SAFEARRAYBOUND
 }
+
+func (ad *ARRAYDESC) Rgbounds(i int) *SAFEARRAYBOUND { return &ad.rgbounds[i] }
 
 // [DISPPARAMS] sruct.
 //
