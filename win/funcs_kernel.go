@@ -338,7 +338,7 @@ func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
 
 // [GetLocalTime] function.
 //
-// Example:
+// # Example
 //
 //	var st win.SYSTEMTIME
 //	win.GetLocalTime(&st)
@@ -370,7 +370,7 @@ func GetSystemInfo(systemInfo *SYSTEM_INFO) {
 // Note that the returned value is in UTC format, the local time can be
 // retrieved with [GetLocalTime].
 //
-// Example:
+// # Example
 //
 //	var st win.SYSTEMTIME
 //	win.GetSystemTime(&st)
@@ -457,7 +457,7 @@ type _VolumeInfo struct {
 
 // [GetVolumeInformation] function.
 //
-// Example:
+// # Example
 //
 //	nfo, err := win.GetVolumeInformation(win.StrOptSome("C:\\"))
 //	if err != nil {

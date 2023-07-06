@@ -101,7 +101,9 @@ func (hInst HINSTANCE) FreeLibrary() error {
 
 // [GetModuleFileName] function.
 //
-// Example retrieving own .exe path:
+// # Example
+//
+// Retrieving own .exe path:
 //
 //	exePath := win.HINSTANCE(0).GetModuleFileName()
 //	fmt.Printf("Current .exe path: %s\n", exePath)

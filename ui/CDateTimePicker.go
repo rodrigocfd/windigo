@@ -40,7 +40,7 @@ type _DateTimePicker struct {
 // Creates a new DateTimePicker. Call ui.DateTimePickerOpts() to define the
 // options to be passed to the underlying CreateWindowEx().
 //
-// Example:
+// # Example
 //
 //	var owner ui.AnyParent // initialized somewhere
 //

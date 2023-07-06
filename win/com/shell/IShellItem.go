@@ -41,7 +41,7 @@ type IShellItem interface {
 
 	// [GetDisplayName] COM method.
 	//
-	// Example:
+	// # Example
 	//
 	//	var shi shell.IShellItem // initialized somewhere
 	//
@@ -64,7 +64,7 @@ func NewIShellItem(base com.IUnknown) IShellItem {
 //
 // ⚠️ You must defer IShellItem.Release().
 //
-// Example:
+// # Example
 //
 //	ish := shell.NewShellItemFromPath("C:\\Temp\\file.txt")
 //	defer ish.Release()

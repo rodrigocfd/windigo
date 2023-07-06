@@ -27,7 +27,7 @@ type HGLOBAL HANDLE
 //
 // ⚠️ You must defer HGLOBAL.GlobalFree().
 //
-// Example:
+// # Example
 //
 //	hMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 50)
 //	defer hMem.GlobalFree()
@@ -83,7 +83,7 @@ func (hGlobal HGLOBAL) GlobalFree() error {
 // ⚠️ You must defer HGLOBAL.GlobalUnlock(). After that, the slice must not be
 // used.
 //
-// Example:
+// # Example
 //
 //	hMem := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 50)
 //	defer hMem.GlobalFree()

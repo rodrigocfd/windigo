@@ -72,7 +72,7 @@ func NewIStream(base IUnknown) IStream {
 //
 // ⚠️ You must defer IStream.Release().
 //
-// Example:
+// # Example
 //
 //	data := []byte{0x10, 0x11, 0x12}
 //	defer runtime.KeepAlive(data)

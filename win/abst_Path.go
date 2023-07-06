@@ -17,7 +17,7 @@ var Path _PathT
 
 // Returns whether the path ends with at least one of the given extensions.
 //
-// Example:
+// # Example
 //
 //	var docPath string // initialized somewhere
 //
@@ -36,7 +36,7 @@ func (_PathT) HasExtension(path string, extensions ...string) bool {
 //
 // Uses FindFirstFile() and HFIND functions.
 //
-// Example:
+// # Example
 //
 //	files, err := win.Path.ListFilesInFolder("C:\\Temp\\*.txt")
 //
@@ -75,7 +75,9 @@ func (_PathT) ListFilesInFolder(pathAndPattern string) ([]string, error) {
 
 // Returns the path of the current executable, without trailing backslash.
 //
-// Example loading a file which is the same folder of the EXE:
+// # Example
+//
+// Loading a file which is the same folder of the EXE:
 //
 //	namesPath := win.Path.ExePath() + "\\names.txt"
 func (_PathT) ExePath() string {

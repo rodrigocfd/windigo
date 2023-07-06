@@ -105,7 +105,7 @@ func (hKey HKEY) RegDeleteTree(subKey string) error {
 //
 // Returns the names of all subkeys within a key.
 //
-// Example:
+// # Example
 //
 //	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
 //		"Control Panel\\Desktop",
@@ -158,7 +158,7 @@ type _HkeyValueEnum struct {
 //
 // Returns the names and types of all values within a key.
 //
-// Example:
+// # Example
 //
 //	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
 //		"Control Panel\\Keyboard",
@@ -227,7 +227,7 @@ func (hKey HKEY) RegFlushKey() error {
 
 // [RegGetValue] function.
 //
-// Example:
+// # Example
 //
 //	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
 //		"Control Panel\\Sound",
@@ -288,7 +288,7 @@ func (hKey HKEY) RegGetValue(subKey, value StrOpt) (RegVal, error) {
 //
 // ⚠️ You must defer HKEY.RegCloseKey().
 //
-// Example:
+// # Example
 //
 //	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
 //		"Control Panel\\Keyboard",
@@ -330,7 +330,7 @@ type _HkeyInfo struct {
 
 // [RegQueryInfoKey] function.
 //
-// Example:
+// # Example
 //
 //	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
 //		"Control Panel\\Desktop",
@@ -374,7 +374,7 @@ func (hKey HKEY) RegQueryInfoKey() (_HkeyInfo, error) {
 
 // [RegSetKeyValue] function.
 //
-// Example:
+// # Example
 //
 //	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
 //		"Control Panel\\Sound",

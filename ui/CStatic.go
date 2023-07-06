@@ -36,7 +36,7 @@ type _Static struct {
 // Creates a new Static. Call ui.StaticOpts() to define the options to be passed
 // to the underlying CreateWindowEx().
 //
-// Example:
+// # Example
 //
 //	var owner ui.AnyParent // initialized somewhere
 //

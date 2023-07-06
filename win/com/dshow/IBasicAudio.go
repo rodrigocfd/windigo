@@ -45,7 +45,7 @@ type _IBasicAudio struct{ autom.IDispatch }
 //
 // ⚠️ You must defer IBasicAudio.Release().
 //
-// Example:
+// # Example
 //
 //	var gb dshow.IGraphBuilder // initialized somewhere
 //

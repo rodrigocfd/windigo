@@ -31,9 +31,9 @@ func (bm *BITMAP) CalcBitmapSize(bitCount uint16) int {
 //
 // ⚠️ You must call SetBfType() to initialize the struct.
 //
-// Example:
+// # Example
 //
-//	bfh := BITMAPFILEHEADER{}
+//	var bfh BITMAPFILEHEADER
 //	bfh.SetBfType()
 //
 // [BITMAPFILEHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapfileheader
@@ -67,7 +67,7 @@ type BITMAPINFO struct {
 //
 // ⚠️ You must call SetBiSize() to initialize the struct.
 //
-// Example:
+// # Example
 //
 //	bih := &BITMAPINFOHEADER{}
 //	bih.SetBiSize()

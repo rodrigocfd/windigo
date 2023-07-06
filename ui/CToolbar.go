@@ -44,7 +44,7 @@ type _Toolbar struct {
 // Creates a new Toolbar. Call ui.ToolbarOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
 //
-// Example:
+// # Example
 //
 //	var owner ui.AnyParent // initialized somewhere
 //

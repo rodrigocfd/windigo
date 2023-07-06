@@ -18,7 +18,7 @@ type _WindowRawControl struct {
 // Creates a new WindowControl. Call WindowControlOpts() to define the options
 // to be passed to the underlying CreateWindowEx().
 //
-// Example:
+// # Example
 //
 //	var owner AnyParent // initialized somewhere
 //

@@ -15,7 +15,7 @@ import (
 //
 // ⚠️ You must call SetCbStruct() to initialize the struct.
 //
-// Example:
+// # Example:
 //
 //	ebt := &EDITBALLOONTIP{}
 //	ebt.SetCbStruct()
@@ -34,7 +34,7 @@ func (eb *EDITBALLOONTIP) SetCbStruct() { eb.cbStruct = uint32(unsafe.Sizeof(*eb
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// Example:
+// # Example:
 //
 //	idp := &IMAGELISTDRAWPARAMS{}
 //	idp.SetCbSize()
@@ -63,9 +63,9 @@ func (idp *IMAGELISTDRAWPARAMS) SetCbSize() { idp.cbSize = uint32(unsafe.Sizeof(
 //
 // ⚠️ You must call SetDwSize() to initialize the struct.
 //
-// Example:
+// # Example:
 //
-//	icx := INITCOMMONCONTROLSEX{}
+//	var icx INITCOMMONCONTROLSEX
 //	icx.SetDwSize()
 //
 // [INITCOMMONCONTROLSEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
@@ -939,7 +939,7 @@ func (tbb *TBBUTTON) SetIBitmap(icon, imgList int) {
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// Example:
+// # Example:
 //
 //	tbbi := &TBBUTTONINFO{}
 //	tbbi.SetCbSize()

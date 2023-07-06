@@ -19,7 +19,7 @@ type BSTR uintptr
 //
 // ⚠️ You must defer BSTR.SysFreeString().
 //
-// Example:
+// # Example
 //
 //	bstr := autom.SysAllocString("hello")
 //	defer bstr.SysFreeString()
@@ -44,7 +44,7 @@ func (bstr BSTR) SysFreeString() {
 
 // [SysReAllocString] function.
 //
-// Example:
+// # Example
 //
 //	bstr := autom.SysAllocString("hello")
 //	defer bstr.SysFreeString()

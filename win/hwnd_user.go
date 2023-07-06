@@ -1028,7 +1028,7 @@ func (hWnd HWND) SetTimer(msElapse int, timerId uintptr) uintptr {
 // ⚠️ You must call HWND.KillTimer() to stop the timer and free the allocated
 // resources.
 //
-// Example:
+// # Example
 //
 //	var hWnd HWND // initialized somewhere
 //

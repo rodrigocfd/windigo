@@ -26,7 +26,7 @@ func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) {
 
 // [DwmGetWindowAttribute] function.
 //
-// Example:
+// # Example
 //
 //	var hwnd win.HWND // initialized somewhere
 //
@@ -118,7 +118,7 @@ func (hWnd HWND) DwmSetIconicThumbnail(hBmp HBITMAP, sitFlags co.DWM_SIT) {
 
 // [DwmSetWindowAttribute] function.
 //
-// Example:
+// # Example
 //
 //	var hwnd win.HWND // initialized somewhere
 //

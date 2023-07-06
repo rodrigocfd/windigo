@@ -10,7 +10,7 @@ import (
 
 // Variant type for a Registry value.
 //
-// Example:
+// # Example
 //
 //	regVal := RegValSz("Some text")
 //
@@ -54,7 +54,7 @@ func RegValBinary(data []byte) RegVal {
 // If the current value is co.REG_BINARY, returns it and true; otherwise nil and
 // false.
 //
-// Example:
+// # Example:
 //
 //	regVal := win.RegValBinary([]byte{0x10, 0x44})
 //
@@ -86,7 +86,7 @@ func RegValDword(n uint32) RegVal {
 // If the current value is co.REG_DWORD, returns it and true; otherwise 0 and
 // false.
 //
-// Example:
+// # Example:
 //
 //	regVal := RegValDword(0x8000_1001)
 //
@@ -124,7 +124,7 @@ func RegValExpandSz(s string) RegVal {
 // Environment variables can be expanded with [ExpandEnvironmentStrings]
 // function.
 //
-// Example:
+// # Example:
 //
 //	regVal := RegValExpandSz("Some text")
 //
@@ -157,7 +157,7 @@ func RegValQword(n uint64) RegVal {
 // If the current value is co.REG_QWORD, returns it and true; otherwise 0 and
 // false.
 //
-// Example:
+// # Example:
 //
 //	regVal := RegValQword(0x8000_3303_0000_1001)
 //
@@ -187,7 +187,7 @@ func RegValSz(s string) RegVal {
 // If the current value is co.REG_SZ, returns it and true; otherwise "" and
 // false.
 //
-// Example:
+// # Example:
 //
 //	regVal := RegValSz("Some text")
 //

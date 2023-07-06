@@ -118,7 +118,7 @@ type _IMediaSeeking struct{ com.IUnknown }
 //
 // ⚠️ You must defer IMediaSeeking.Release().
 //
-// Example:
+// # Example
 //
 //	var gb dshow.IGraphBuilder // initialized somewhere
 //

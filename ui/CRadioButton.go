@@ -45,7 +45,7 @@ type _RadioButton struct {
 //
 // Prefer using the RadioGroup, which manages multiple radio buttons at once.
 //
-// Example:
+// # Example
 //
 //	var owner ui.AnyParent // initialized somewhere
 //

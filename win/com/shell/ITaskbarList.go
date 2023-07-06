@@ -50,7 +50,7 @@ type _ITaskbarList struct{ com.IUnknown }
 //
 // ⚠️ You must defer ITaskbarList.Release().
 //
-// Example:
+// # Example
 //
 //	taskbl := shell.NewITaskbarList(
 //		com.CoCreateInstance(

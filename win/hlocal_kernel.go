@@ -27,7 +27,7 @@ type HLOCAL HANDLE
 //
 // ⚠️ You must defer HLOCAL.LocalFree().
 //
-// Example:
+// # Example:
 //
 //	hMem := win.LocalAlloc(co.LMEM_FIXED|co.LMEM_ZEROINIT, 50)
 //	defer hMem.LocalFree()
@@ -83,7 +83,7 @@ func (hLocal HLOCAL) LocalFree() error {
 // ⚠️ You must defer HLOCAL.LocalUnlock(). After that, the slice must not be
 // used.
 //
-// Example:
+// # Example:
 //
 //	hMem := win.LocalAlloc(co.LMEM_FIXED|co.LMEM_ZEROINIT, 50)
 //	defer hMem.LocalFree()

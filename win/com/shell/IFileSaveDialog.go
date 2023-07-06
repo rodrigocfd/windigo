@@ -29,7 +29,7 @@ type _IFileSaveDialog struct{ IFileDialog }
 //
 // ⚠️ You must defer IFileSaveDialog.Release().
 //
-// Example:
+// # Example
 //
 //	fsd := shell.NewIFileSaveDialog(
 //		com.CoCreateInstance(

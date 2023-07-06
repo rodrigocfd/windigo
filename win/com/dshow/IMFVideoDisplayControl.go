@@ -75,7 +75,7 @@ type _IMFVideoDisplayControl struct{ com.IUnknown }
 //
 // ⚠️ You must defer IMFVideoDisplayControl.Release().
 //
-// Example:
+// # Example
 //
 //	var gs dshow.IMFGetService // initialized somewhere
 //

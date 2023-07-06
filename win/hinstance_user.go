@@ -118,7 +118,9 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 // ⚠️ If the object is not being loaded from the application resources, you must
 // defer its respective DeleteObject().
 //
-// Example loading a 16x16 icon resource:
+// # Examples
+//
+// Loading a 16x16 icon resource:
 //
 //	const MY_ICON_ID int = 101
 //
@@ -131,7 +133,7 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) HICON {
 //		),
 //	)
 //
-// Example loading a bitmap from file:
+// Loading a bitmap from a file:
 //
 //	hBmp := win.HBITMAP(
 //		win.HINSTANCE(0).LoadImage(

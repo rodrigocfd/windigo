@@ -12,7 +12,7 @@ import (
 // Variant type for a class name identifier, which can be empty, an ATOM or a
 // string.
 //
-// Example:
+// # Example:
 //
 //	clsName := win.ClassNameStr("FOO")
 //
@@ -69,7 +69,7 @@ func (me *ClassName) raw() (val uintptr, ptr *uint16) {
 
 // Variant type for a cursor resource identifier.
 //
-// Example:
+// # Example:
 //
 //	curId := win.CursorResIdc(co.IDC_ARROW)
 //
@@ -130,7 +130,7 @@ func (me *CursorRes) raw() (val uintptr, ptr *uint16) {
 
 // Variant type for an icon resource identifier.
 //
-// Example:
+// # Example:
 //
 //	icoId := win.IconResIdi(co.IDI_HAND)
 //
@@ -192,7 +192,7 @@ func (me *IconRes) raw() (val uintptr, ptr *uint16) {
 // Variant type for a menu item identifier, which can be specified by command ID
 // or zero-based position.
 //
-// Example:
+// # Example:
 //
 //	item := win.MenuItemPos(2)
 //
@@ -242,7 +242,7 @@ func (me *MenuItem) raw() (uintptr, co.MF) {
 
 // Variant type for a resource identifier.
 //
-// Example:
+// # Example:
 //
 //	resId := win.ResIdInt(0x400)
 //

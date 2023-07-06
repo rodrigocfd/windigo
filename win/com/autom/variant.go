@@ -50,7 +50,7 @@ func (vt *VARIANT) Type() automco.VT {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantEmpty()
 //	defer vari.VariantClear()
@@ -72,7 +72,7 @@ func (vt *VARIANT) IsEmpty() bool {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantBool(true)
 //	defer vari.VariantClear()
@@ -87,7 +87,7 @@ func NewVariantBool(v bool) VARIANT {
 // If the VARIANT object has type VT_BOOL, returns the value and true.
 // Otherwise, returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantBool(true)
 //	defer vari.VariantClear()
@@ -109,7 +109,7 @@ func (vt *VARIANT) Bool() (actualValue, isBool bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantFloat32(40.5)
 //	defer vari.VariantClear()
@@ -123,7 +123,7 @@ func NewVariantFloat32(v float32) VARIANT {
 // If the VARIANT object has type VT_R4, returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantFloat32(40.5)
 //	defer vari.VariantClear()
@@ -144,7 +144,7 @@ func (vt *VARIANT) Float32() (float32, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantFloat64(40.5)
 //	defer vari.VariantClear()
@@ -158,7 +158,7 @@ func NewVariantFloat64(v float64) VARIANT {
 // If the VARIANT object has type VT_R8, returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantFloat64(40.5)
 //	defer vari.VariantClear()
@@ -182,7 +182,7 @@ func (vt *VARIANT) Float64() (float64, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	var idisp autom.IDispatch // initialized somewhere
 //
@@ -202,7 +202,7 @@ func NewVariantIDispatch(v IDispatch) VARIANT {
 //
 // ⚠️ You must defer IDispatch.Release() on the returned object.
 //
-// Example:
+// # Example
 //
 //	var idisp autom.IDispatch // initialized somewhere
 //
@@ -229,7 +229,7 @@ func (vt *VARIANT) IDispatch() (IDispatch, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantInt8(50)
 //	defer vari.VariantClear()
@@ -243,7 +243,7 @@ func NewVariantInt8(v int8) VARIANT {
 // If the VARIANT object has type VT_I1, returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantInt8(50)
 //	defer vari.VariantClear()
@@ -264,7 +264,7 @@ func (vt *VARIANT) Int8() (int8, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantInt16(50)
 //	defer vari.VariantClear()
@@ -278,7 +278,7 @@ func NewVariantInt16(v int16) VARIANT {
 // If the VARIANT object has type VT_I2, returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantInt16(50)
 //	defer vari.VariantClear()
@@ -299,7 +299,7 @@ func (vt *VARIANT) Int16() (int16, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantInt32(50)
 //	defer vari.VariantClear()
@@ -313,7 +313,7 @@ func NewVariantInt32(v int32) VARIANT {
 // If the VARIANT object has type VT_I4, returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantInt32(50)
 //	defer vari.VariantClear()
@@ -334,7 +334,7 @@ func (vt *VARIANT) Int32() (int32, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantInt64(50)
 //	defer vari.VariantClear()
@@ -348,7 +348,7 @@ func NewVariantInt64(v int64) VARIANT {
 // If the VARIANT object has type VT_I8, returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantInt64(50)
 //	defer vari.VariantClear()
@@ -369,7 +369,7 @@ func (vt *VARIANT) Int64() (int64, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantStr("foo")
 //	defer vari.VariantClear()
@@ -384,7 +384,7 @@ func NewVariantStr(v string) VARIANT {
 // If the VARIANT object has type VT_BSTR, returns the value and true.
 // Otherwise, returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantStr("foo")
 //	defer vari.VariantClear()
@@ -406,7 +406,7 @@ func (vt *VARIANT) Str() (string, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantTime(time.Now())
 //	defer vari.VariantClear()
@@ -431,7 +431,7 @@ func NewVariantTime(v time.Time) VARIANT {
 // If the object contains a value of type time.Time, returns it and true.
 // Otherwise, returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantTime(true)
 //	defer vari.VariantClear()
@@ -461,7 +461,7 @@ func (vt *VARIANT) Time() (time.Time, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantUint8(50)
 //	defer vari.VariantClear()
@@ -475,7 +475,7 @@ func NewVariantUint8(v uint8) VARIANT {
 // If the VARIANT object has type VT_UI1, returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantUint8(50)
 //	defer vari.VariantClear()
@@ -496,7 +496,7 @@ func (vt *VARIANT) Uint8() (uint8, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantUint16(50)
 //	defer vari.VariantClear()
@@ -510,7 +510,7 @@ func NewVariantUint16(v uint16) VARIANT {
 // If the VARIANT object has type VT_UI2, returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantUint16(50)
 //	defer vari.VariantClear()
@@ -531,7 +531,7 @@ func (vt *VARIANT) Uint16() (uint16, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantUint32(50)
 //	defer vari.VariantClear()
@@ -545,7 +545,7 @@ func NewVariantUint32(v uint32) VARIANT {
 // If the VARIANT object has type VT_UI4, returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantUint32(50)
 //	defer vari.VariantClear()
@@ -566,7 +566,7 @@ func (vt *VARIANT) Uint32() (uint32, bool) {
 //
 // ⚠️ You must defer VARIANT.VariantClear().
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantUint64(50)
 //	defer vari.VariantClear()
@@ -580,7 +580,7 @@ func NewVariantUint64(v uint64) VARIANT {
 // If the VARIANT object has type VT_UI8, returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// Example:
+// # Example
 //
 //	vari := autom.NewVariantUint64(50)
 //	defer vari.VariantClear()

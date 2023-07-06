@@ -42,7 +42,7 @@ type _CheckBox struct {
 // Creates a new CheckBox. Call ui.CheckBoxOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
 //
-// Example:
+// # Example
 //
 //	var owner ui.AnyParent // initialized somewhere
 //

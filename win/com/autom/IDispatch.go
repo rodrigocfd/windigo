@@ -31,7 +31,7 @@ type IDispatch interface {
 	//
 	// ⚠️ You must defer ITypeInfo.Release() on the returned object.
 	//
-	// Example:
+	// # Example
 	//
 	//	var iDisp autom.IDispatch // initialized somewhere
 	//
@@ -75,7 +75,7 @@ type IDispatch interface {
 	//
 	// ⚠️ You must defer VARIANT.VariantClear() on the returned VARIANT.
 	//
-	// Example:
+	// # Example
 	//
 	//	xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
 	//	if err != nil {
@@ -105,7 +105,7 @@ type IDispatch interface {
 	//
 	// ⚠️ You must defer VARIANT.VariantClear() on the returned VARIANT.
 	//
-	// Example:
+	// # Example
 	//
 	//	xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
 	//	if err != nil {
@@ -135,7 +135,7 @@ type IDispatch interface {
 	//
 	// ⚠️ You must defer VARIANT.VariantClear() on the returned VARIANT.
 	//
-	// Example:
+	// # Example
 	//
 	//	xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
 	//	if err != nil {
@@ -179,7 +179,7 @@ func NewIDispatch(base com.IUnknown) IDispatch {
 //
 // ⚠️ You must defer IDispatch.Release().
 //
-// Example:
+// # Example
 //
 //	excelApp, _ := autom.NewIDispatchFromProgId("Excel.Application")
 //	defer excelApp.Release()

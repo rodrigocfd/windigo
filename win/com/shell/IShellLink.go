@@ -97,7 +97,7 @@ type _IShellLink struct{ com.IUnknown }
 //
 // ⚠️ You must defer IShellLink.Release().
 //
-// Example:
+// # Example
 //
 //	lnk := shell.NewIShellLink(
 //		com.CoCreateInstance(

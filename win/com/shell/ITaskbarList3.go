@@ -86,7 +86,7 @@ type _ITaskbarList3 struct{ ITaskbarList2 }
 //
 // ⚠️ You must defer ITaskbarList3.Release().
 //
-// Example:
+// # Example
 //
 //	taskbl := shell.NewITaskbarList3(
 //		com.CoCreateInstance(

@@ -18,7 +18,7 @@ type _WindowRawMain struct {
 // Creates a new WindowMain. Call WindowMainOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
 //
-// Example:
+// # Example
 //
 //	myWindow := ui.NewWindowMain(
 //		ui.WindowMainOpts().

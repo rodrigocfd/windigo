@@ -38,7 +38,7 @@ type IShellItemArray interface {
 	// IShellItem objects, then calls IShellItem.GetDisplayName() on each one,
 	// retrieving the names as strings.
 	//
-	// Example:
+	// # Example
 	//
 	//	var shia shell.IShellItemArray // initialized somewhere
 	//

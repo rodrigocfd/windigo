@@ -40,7 +40,7 @@ type _TreeView struct {
 // Creates a new TreView. Call ui.TreeViewOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
 //
-// Example:
+// # Example
 //
 //	var owner AnyParent // initialized somewhere
 //

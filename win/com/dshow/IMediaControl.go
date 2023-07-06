@@ -57,7 +57,7 @@ type _IMediaControl struct{ autom.IDispatch }
 //
 // ⚠️ You must defer IMediaControl.Release().
 //
-// Example:
+// # Example
 //
 //	var gb dshow.IGraphBuilder // initialized somewhere
 //

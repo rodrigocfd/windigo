@@ -38,7 +38,7 @@ type _ComboBox struct {
 // Creates a new ComboBox. Call ui.ComboBoxOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
 //
-// Example:
+// # Example
 //
 //	var owner ui.AnyParent // initialized somewhere
 //

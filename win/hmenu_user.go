@@ -93,7 +93,7 @@ func (hMenu HMENU) AppendMenu(
 
 // [CheckMenuItem] function.
 //
-// Example:
+// # Example:
 //
 //	var hMenu win.HMENU // initialized somewhere
 //
@@ -116,7 +116,7 @@ func (hMenu HMENU) CheckMenuItem(item MenuItem, check bool) bool {
 //
 // Panics if the three item identifiers don't have the same variant type.
 //
-// Example:
+// # Example:
 //
 //	var hMenu win.HMENU // initialized somewhere
 //
@@ -147,7 +147,7 @@ func (hMenu HMENU) CheckMenuRadioItem(
 
 // [DeleteMenu] function.
 //
-// Example:
+// # Example:
 //
 //	var hMenu win.HMENU // initialized somewhere
 //
@@ -177,7 +177,7 @@ func (hMenu HMENU) DestroyMenu() error {
 
 // [EnableMenuItem] function.
 //
-// Example:
+// # Example:
 //
 //	var hMenu win.HMENU // initialized somewhere
 //

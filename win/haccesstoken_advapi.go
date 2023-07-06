@@ -44,7 +44,7 @@ func (hToken HACCESSTOKEN) CloseHandle() error {
 
 // [GetTokenInformation] function.
 //
-// Example:
+// # Example
 //
 // Checking of the current process has elevated privileges:
 //

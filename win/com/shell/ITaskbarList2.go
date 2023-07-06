@@ -31,7 +31,7 @@ type _ITaskbarList2 struct{ ITaskbarList }
 //
 // ⚠️ You must defer ITaskbarList2.Release().
 //
-// Example:
+// # Example
 //
 //	taskbl := shell.NewITaskbarList2(
 //		com.CoCreateInstance(

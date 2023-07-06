@@ -63,7 +63,7 @@ type _IGraphBuilder struct{ IFilterGraph }
 //
 // ⚠️ You must defer IGraphBuilder.Release().
 //
-// Example:
+// # Example
 //
 //	gb := dshow.NewIGraphBuilder(
 //		com.CoCreateInstance(

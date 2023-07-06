@@ -23,7 +23,9 @@ type IMFGetService interface {
 	//
 	// ⚠️ You must defer IUnknown.Release() on the returned object.
 	//
-	// Example for IMFVideoDisplayControl:
+	// # Example
+	//
+	// Getting an IMFVideoDisplayControl:
 	//
 	//	var gs dshow.IMFGetService // initialized somewhere
 	//
@@ -45,7 +47,7 @@ type _IMFGetService struct{ com.IUnknown }
 //
 // ⚠️ You must defer IMFGetService.Release().
 //
-// Example:
+// # Example
 //
 //	var vmr dshow.IBaseFilter // initialized somewhere
 //

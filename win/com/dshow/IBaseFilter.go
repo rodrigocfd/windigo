@@ -60,7 +60,9 @@ type _IBaseFilter struct{ IMediaFilter }
 //
 // ⚠️ You must defer IBaseFilter.Release().
 //
-// Example for an Enhanced Video Renderer:
+// # Examples
+//
+// Creating an Enhanced Video Renderer (EVR):
 //
 //	evh := dshow.NewIBaseFilter(
 //		com.CoCreateInstance(
@@ -70,7 +72,7 @@ type _IBaseFilter struct{ IMediaFilter }
 //	)
 //	defer evh.Release()
 //
-// Example for a Video Media Renderer 9:
+// Creating a Video Media Renderer 9 (VMR9):
 //
 //	vmr9 := dshow.NewIBaseFilter(
 //		com.CoCreateInstance(

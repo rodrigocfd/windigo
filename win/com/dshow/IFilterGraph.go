@@ -70,7 +70,7 @@ type _IFilterGraph struct{ com.IUnknown }
 //
 // ⚠️ You must defer IFilterGraph.Release().
 //
-// Example:
+// # Example
 //
 //	fg := dshow.NewIFilterGraph(
 //		com.CoCreateInstance(

@@ -11,7 +11,7 @@ import (
 // Variant type for a number which can be INFINITE (defined in Windows headers
 // as -1).
 //
-// Example:
+// # Example:
 //
 //	num := win.NumInfNumeric(100)
 //
@@ -38,7 +38,7 @@ func NumInfNumeric(n int) NumInf {
 // If the current value is numeric, returns the number and true; otherwise
 // returns zero and false.
 //
-// Example:
+// # Example:
 //
 //	num := win.NumInfNumeric(100)
 //
@@ -71,7 +71,7 @@ func (me *NumInf) Raw() uintptr {
 
 // Variant type for a resource type.
 //
-// Example:
+// # Example:
 //
 //	rsrcTy := win.RsrcTypeRt(co.RT_ACCELERATOR)
 type RsrcType struct {
@@ -116,7 +116,7 @@ func (me *RsrcType) raw() (val uintptr, ptr *uint16) {
 
 // Variant type for an optional string value.
 //
-// Example:
+// # Example:
 //
 //	realStr := win.StrOptSome("foo")
 //

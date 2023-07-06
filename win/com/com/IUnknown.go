@@ -29,7 +29,7 @@ type IUnknown interface {
 	//
 	// ⚠️ You must defer IUnknown.Release() on the returned COM object.
 	//
-	// Example:
+	// # Example
 	//
 	//	var myObj IUnknown // initialized somewhere
 	//

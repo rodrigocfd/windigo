@@ -132,7 +132,7 @@ func (me *Ini) SaveToFile(filePath string) error {
 // call Ini.SourcePath() to retrieve the path, instead of manually saving it
 // somewhere.
 //
-// Example:
+// # Example
 //
 //	ini, _ := win.IniLoad("C:\\Temp\\foo.ini")
 //
@@ -148,7 +148,7 @@ func (me *Ini) SourcePath() string {
 // Note that a pointer to the string is returned, so that the value can be
 // directly modified.
 //
-// Example:
+// # Example
 //
 //	ini, _ := win.IniLoad("C:\\Temp\\foo.ini")
 //

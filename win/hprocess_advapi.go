@@ -15,7 +15,7 @@ import (
 //
 // ⚠️ You must defer HACCESSTOKEN.CloseHandle().
 //
-// Example:
+// # Example
 //
 //	hProcess := GetCurrentProcess()
 //

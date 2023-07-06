@@ -12,7 +12,7 @@ import (
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
-// Example:
+// # Example
 //
 //	nic := &NOTIFYICONDATA{}
 //	nic.SetCbSize()

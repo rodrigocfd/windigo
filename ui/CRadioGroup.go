@@ -33,7 +33,7 @@ type _RadioGroup struct {
 // ui.RadioButtonOpts() to define the options of each RadioButton to be passed
 // to the underlying CreateWindowEx().
 //
-// Example:
+// # Example
 //
 //	var owner ui.AnyParent // initialized somewhere
 //

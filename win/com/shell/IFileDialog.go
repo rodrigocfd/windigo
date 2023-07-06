@@ -73,7 +73,7 @@ type IFileDialog interface {
 	// IShellItem.GetDisplayName(), returning the single file selected by the
 	// user.
 	//
-	// Example:
+	// # Example
 	//
 	//	var fd shell.IFileDialog // initialized somewhere
 	//
@@ -104,7 +104,7 @@ type IFileDialog interface {
 
 	// [SetFileTypes] COM method.
 	//
-	// Example:
+	// # Example
 	//
 	//	var fd shell.IFileDialog // initialized somewhere
 	//
@@ -128,7 +128,7 @@ type IFileDialog interface {
 
 	// [SetOptions] COM method.
 	//
-	// Example:
+	// # Example
 	//
 	//	var fd shell.IFileDialog // initialized somewhere
 	//

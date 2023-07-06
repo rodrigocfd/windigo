@@ -19,7 +19,7 @@ type ResourceInfo struct {
 
 // Reads and stores an embedded resource from an executable or DLL file.
 //
-// Example:
+// # Example
 //
 //	resNfo, _ := win.ResourceInfoLoad(win.HINSTANCE(0).GetModuleFileName())
 //	verNfo, _ := resNfo.FixedFileInfo()

@@ -97,7 +97,7 @@ type _IDesktopWallpaper struct{ com.IUnknown }
 //
 // ⚠️ You must defer IDesktopWallpaper.Release().
 //
-// Example:
+// # Example
 //
 //	deskWp := shell.NewIDesktopWallpaper(
 //		com.CoCreateInstance(

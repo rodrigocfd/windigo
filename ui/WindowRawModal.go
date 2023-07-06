@@ -18,7 +18,7 @@ type _WindowRawModal struct {
 // Creates a new WindowModal. Call WindowModalOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
 //
-// Example:
+// # Example
 //
 //	myModal := ui.NewWindowModal(
 //		ui.WindowModalOpts().

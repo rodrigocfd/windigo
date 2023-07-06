@@ -8,7 +8,7 @@ import (
 
 // Variant type for an icon identifier for TASKDIALOGCONFIG.
 //
-// Example:
+// # Example
 //
 //	ico := TdcIconTdi(co.TD_ICON_ERROR)
 //

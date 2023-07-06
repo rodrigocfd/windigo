@@ -36,7 +36,7 @@ type ITypeInfo interface {
 
 	// [GetDocumentation] COM method.
 	//
-	// Example:
+	// # Example
 	//
 	//	var info autom.ITypeInfo // initialized somewhere
 	//	var funDesc *autom.FUNCDESC
@@ -51,7 +51,7 @@ type ITypeInfo interface {
 	//
 	// ⚠️ You must defer ITypeInfo.ReleaseFuncDesc() on the returned object.
 	//
-	// Example:
+	// # Example
 	//
 	//	var info autom.ITypeInfo // initialized somewhere
 	//	var attr *autom.TYPEATTR
@@ -76,7 +76,7 @@ type ITypeInfo interface {
 	//
 	// ⚠️ You must defer ITypeInfo.ReleaseTypeAttr() on the returned object.
 	//
-	// Example:
+	// # Example
 	//
 	//	var info autom.ITypeInfo // initialized somewhere
 	//

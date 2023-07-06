@@ -12,7 +12,7 @@ import (
 //
 // ⚠️ You must call SetLStructSize() to initialize the struct.
 //
-// Example:
+// # Example
 //
 //	cc := &CHOOSECOLOR{}
 //	cc.SetLStructSize()

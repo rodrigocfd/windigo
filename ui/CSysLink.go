@@ -39,7 +39,7 @@ type _SysLink struct {
 // Creates a new SysLink. Call ui.SysLinkOpts() to define the options to be
 // passed to the underlying CreateWindowEx().
 //
-// Example:
+// # Example
 //
 //	var owner ui.AnyParent // initialized somewhere
 //

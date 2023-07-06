@@ -19,7 +19,7 @@ import (
 //
 // ⚠️ You must defer HGLOBAL.GlobalFree().
 //
-// Example:
+// # Example
 //
 //	hMem := win.GlobalAllocStr(co.GMEM_FIXED, "my text")
 //	defer hMem.GlobalFree()

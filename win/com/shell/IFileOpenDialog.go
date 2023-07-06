@@ -40,7 +40,7 @@ type IFileOpenDialog interface {
 	// IShellItemArray.ListDisplayNames(), returning the multiple files selected
 	// by the user.
 	//
-	// Example:
+	// # Example
 	//
 	//	var fod shell.IFileOpenDialog // initialized somewhere
 	//
@@ -54,7 +54,7 @@ type _IFileOpenDialog struct{ IFileDialog }
 //
 // ⚠️ You must defer IFileOpenDialog.Release().
 //
-// Example:
+// # Example
 //
 //	fod := shell.NewIFileOpenDialog(
 //		com.CoCreateInstance(

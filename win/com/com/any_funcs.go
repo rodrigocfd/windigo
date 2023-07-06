@@ -19,7 +19,7 @@ import (
 // Used to retrieve class IDs to create COM Automation objects. If the progId is
 // invalid, error returns errco.CO_E_CLASSSTRING.
 //
-// Example:
+// # Example
 //
 //	clsId, _ := com.CLSIDFromProgID("Excel.Application")
 //
@@ -53,7 +53,7 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 // ⚠️ You must defer IUnknown.Release() on the returned COM object. If iUnkOuter
 // is not null, you must defer IUnknown.Release() on it too.
 //
-// Example:
+// # Example
 //
 //	comObject := shell.NewITaskbarList(
 //		com.CoCreateInstance(
@@ -65,8 +65,10 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 //
 // [CoCreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
-	rclsid co.CLSID, iUnkOuter *IUnknown,
-	dwClsContext comco.CLSCTX, riid co.IID) IUnknown {
+	rclsid co.CLSID,
+	iUnkOuter *IUnknown,
+	dwClsContext comco.CLSCTX,
+	riid co.IID) IUnknown {
 
 	var ppvQueried **comvt.IUnknown
 

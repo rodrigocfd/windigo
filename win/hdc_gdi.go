@@ -370,7 +370,9 @@ func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 // Note that this method fails if bitmapDataBuffer is an ordinary Go slice; it
 // must be allocated directly from the OS heap.
 //
-// Example taking a screenshot:
+// # Example
+//
+// Taking a screenshot and saving into a BMP file:
 //
 //	cxScreen := win.GetSystemMetrics(co.SM_CXSCREEN)
 //	cyScreen := win.GetSystemMetrics(co.SM_CYSCREEN)
@@ -406,7 +408,7 @@ func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 //	}
 //	bi.BmiHeader.SetBiSize()
 //
-//	bmpObj := win.BITMAP{}
+//	var bmpObj win.BITMAP
 //	hBmp.GetObject(&bmpObj)
 //	bmpSize := bmpObj.CalcBitmapSize(bi.BmiHeader.BiBitCount)
 //
@@ -418,7 +420,7 @@ func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 //
 //	hdcScreen.GetDIBits(hBmp, 0, int(cyScreen), bmpSlice, &bi, co.DIB_RGB_COLORS)
 //
-//	bfh := win.BITMAPFILEHEADER{}
+//	var bfh win.BITMAPFILEHEADER
 //	bfh.SetBfType()
 //	bfh.SetBfOffBits(uint32(unsafe.Sizeof(bfh) + unsafe.Sizeof(bi.BmiHeader)))
 //	bfh.SetBfSize(bfh.BfOffBits() + uint32(bmpSize))
