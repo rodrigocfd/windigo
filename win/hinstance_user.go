@@ -32,6 +32,24 @@ func (hInst HINSTANCE) CreateDialogParam(
 	return HWND(ret)
 }
 
+// [DialogBoxIndirectParam] function.
+//
+// [DialogBoxIndirectParam]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxindirectparamw
+func (hInst HINSTANCE) DialogBoxIndirectParam(
+	template *DLGTEMPLATE,
+	hwndParent HWND,
+	dialogFunc uintptr,
+	dwInitParam LPARAM) uintptr {
+
+	ret, _, err := syscall.SyscallN(proc.DialogBoxIndirectParamW.Addr(),
+		uintptr(hInst), uintptr(unsafe.Pointer(template)),
+		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam))
+	if int(ret) == -1 && errco.ERROR(err) != errco.SUCCESS {
+		panic(errco.ERROR(err))
+	}
+	return ret
+}
+
 // [DialogBoxParam] function.
 //
 // [DialogBoxParam]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparamw

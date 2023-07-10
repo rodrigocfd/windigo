@@ -58,6 +58,7 @@ var (
 	DestroyIcon                   = user32.NewProc("DestroyIcon")
 	DestroyMenu                   = user32.NewProc("DestroyMenu")
 	DestroyWindow                 = user32.NewProc("DestroyWindow")
+	DialogBoxIndirectParamW       = user32.NewProc("DialogBoxIndirectParamW")
 	DialogBoxParam                = user32.NewProc("DialogBoxParamW")
 	DispatchMessage               = user32.NewProc("DispatchMessageW")
 	DrawIcon                      = user32.NewProc("DrawIcon")

@@ -129,6 +129,26 @@ func (dd *DISPLAY_DEVICE) SetDeviceString(val string) {
 	copy(dd.deviceString[:], Str.ToNativeSlice(Str.Substr(val, 0, len(dd.deviceString)-1)))
 }
 
+// [DLGITEMTEMPLATE] struct.
+//
+// [DLGITEMTEMPLATE]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-dlgitemtemplate
+type DLGITEMTEMPLATE struct {
+	Style           co.WS
+	DwExtendedStyle co.WS_EX
+	X, Y, Cx, Cy    int16
+	Id              uint16
+}
+
+// [DLGTEMPLATE] struct.
+//
+// [DLGTEMPLATE]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-dlgtemplate
+type DLGTEMPLATE struct {
+	Style           co.WS
+	DwExtendedStyle co.WS_EX
+	Cdit            uint16
+	X, Y, Cx, Cy    int16
+}
+
 // [DRAWITEMSTRUCT] struct.
 //
 // [DRAWITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
