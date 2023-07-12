@@ -4,6 +4,7 @@ package ui
 
 import (
 	"fmt"
+	"runtime"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/util"
@@ -210,6 +211,26 @@ func (me *_ListView) View() co.LV_VIEW {
 }
 
 func (me *_ListView) handledEvents() {
+	me.OnSubclass().WmGetDlgCode(func(p wm.GetDlgCode) co.DLGC {
+		if !p.IsQuery() && p.VirtualKeyCode() == co.VK_RETURN {
+			iCode := int32(co.LVN_KEYDOWN)
+			nmlvkd := &win.NMLVKEYDOWN{
+				Hdr: win.NMHDR{
+					HWndFrom: me.Hwnd(),
+					IdFrom:   uintptr(me.CtrlId()),
+					Code:     uint32(iCode),
+				},
+				WVKey: co.VK_RETURN,
+			}
+			me.Hwnd().GetAncestor(co.GA_PARENT).
+				SendMessage(co.WM_NOTIFY, win.WPARAM(me.CtrlId()), // send Enter key to parent
+					win.LPARAM(unsafe.Pointer(nmlvkd)))
+			runtime.KeepAlive(nmlvkd)
+		}
+		dlgcSystem := me.Hwnd().DefSubclassProc(co.WM_GETDLGCODE, p.Msg.WParam, p.Msg.LParam)
+		return co.DLGC(dlgcSystem)
+	})
+
 	me.Parent().internalOn().addNfyNoRet(me.CtrlId(), co.LVN_KEYDOWN, func(p unsafe.Pointer) {
 		nmk := (*win.NMLVKEYDOWN)(p)
 		hasCtrl := (win.GetAsyncKeyState(co.VK_CONTROL) & 0x8000) != 0
