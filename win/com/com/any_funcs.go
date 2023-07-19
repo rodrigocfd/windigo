@@ -44,6 +44,22 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	}
 }
 
+// [CoCreateGuid] function.
+//
+// This function creates a globally unique 128-bit integer.
+//
+// [CoCreateGuid]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateguid
+func CoCreateGuid() win.GUID {
+	var guid win.GUID
+	ret, _, _ := syscall.SyscallN(proc.CoCreateGuid.Addr(),
+		uintptr(unsafe.Pointer(&guid)))
+	if hr := errco.ERROR(ret); hr == errco.S_OK {
+		return guid
+	} else {
+		panic(hr)
+	}
+}
+
 // [CoCreateInstance] function.
 //
 // Creates a COM object from its CLSID + IID. The iUnkOuter is usually nil.
