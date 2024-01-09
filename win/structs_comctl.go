@@ -782,6 +782,15 @@ type NMTVKEYDOWN struct {
 	Flags uint32
 }
 
+// [NMTCKEYDOWN] struct.
+//
+// [NMTCKEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmtckeydown
+type NMTCKEYDOWN struct {
+	Hdr   NMHDR
+	WVKey co.VK
+	Flags uint32
+}
+
 // [NMVIEWCHANGE] struct.
 //
 // [NMVIEWCHANGE]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmviewchange
@@ -1022,4 +1031,31 @@ func (tvx *TVITEMEX) PszText() []uint16 { return unsafe.Slice(tvx.pszText, tvx.c
 func (tvx *TVITEMEX) SetPszText(val []uint16) {
 	tvx.cchTextMax = int32(len(val))
 	tvx.pszText = &val[0]
+}
+
+// [TCITEM] struct.
+//
+// [TCITEM]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tcitema
+type TCITEM struct {
+	Mask       co.TCIF
+	State      co.TCIS
+	StateMask  co.TCIS
+	pszText    *uint16
+	cchTextMax int32
+	IImage     int32
+	LParam     LPARAM
+}
+
+func (tci *TCITEM) PszText() []uint16 { return unsafe.Slice(tci.pszText, tci.cchTextMax) }
+func (tci *TCITEM) SetPszText(val []uint16) {
+	tci.cchTextMax = int32(len(val))
+	tci.pszText = &val[0]
+}
+
+// [TCHITTESTINFO] struct.
+//
+// [TCHITTESTINFO]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tchittestinfo
+type TCHITTESTINFO struct {
+	Pt    POINT
+	Flags co.TCHT
 }
