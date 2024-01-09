@@ -1011,3 +1011,77 @@ const (
 	TVS_EX_DIMMEDCHECKBOXES    TVS_EX = 0x0200
 	TVS_EX_DRAWIMAGEASYNC      TVS_EX = 0x0400
 )
+
+// [TCITEM] mask.
+//
+// [TCITEM]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tcitemw
+type TCIF uint32
+
+const (
+	TCIF_TEXT       TCIF = 0x0001
+	TCIF_IMAGE      TCIF = 0x0002
+	TCIF_RTLREADING TCIF = 0x0004
+	TCIF_PARAM      TCIF = 0x0008
+	TCIF_STATE      TCIF = 0x0010
+)
+
+// [TCITEM] state.
+//
+// [TCITEM]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tcitemw
+type TCIS uint32
+
+const (
+	TCIS_BUTTONPRESSED TCIS = 0x0001
+	TCIS_HIGHLIGHTED   TCIS = 0x0002
+)
+
+// Tab control [styles].
+//
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/tab-control-styles
+type TCS WS
+
+const (
+	TCS_SCROLLOPPOSITE    TCS = 0x0001
+	TCS_BOTTOM            TCS = 0x0002
+	TCS_RIGHT             TCS = 0x0002
+	TCS_MULTISELECT       TCS = 0x0004
+	TCS_FLATBUTTONS       TCS = 0x0008
+	TCS_FORCEICONLEFT     TCS = 0x0010
+	TCS_FORCELABELLEFT    TCS = 0x0020
+	TCS_HOTTRACK          TCS = 0x0040
+	TCS_VERTICAL          TCS = 0x0080
+	TCS_TABS              TCS = 0x0000
+	TCS_BUTTONS           TCS = 0x0100
+	TCS_SINGLELINE        TCS = 0x0000
+	TCS_MULTILINE         TCS = 0x0200
+	TCS_RIGHTJUSTIFY      TCS = 0x0000
+	TCS_FIXEDWIDTH        TCS = 0x0400
+	TCS_RAGGEDRIGHT       TCS = 0x0800
+	TCS_FOCUSONBUTTONDOWN TCS = 0x1000
+	TCS_OWNERDRAWFIXED    TCS = 0x2000
+	TCS_TOOLTIPS          TCS = 0x4000
+	TCS_FOCUSNEVER        TCS = 0x8000
+)
+
+// Tab control extended [styles].
+//
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/tab-control-extended-styles
+type TCS_EX WS_EX
+
+const (
+	TCS_EX_NONE           TCS_EX = 0
+	TCS_EX_FLATSEPARATORS TCS_EX = 0x0000_0001
+	TCS_EX_REGISTERDROP   TCS_EX = 0x0000_0002
+)
+
+// [TCHITTESTINFO] flags.
+//
+// [TCHITTESTINFO]: https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tchittestinfo
+type TCHT uint32
+
+const (
+	TCHT_NOWHERE     TCHT = 0x0001
+	TCHT_ONITEMICON  TCHT = 0x0002
+	TCHT_ONITEMLABEL TCHT = 0x0004
+	TCHT_ONITEM      TCHT = TCHT_ONITEMICON | TCHT_ONITEMLABEL
+)
