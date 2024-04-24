@@ -16,9 +16,54 @@ import (
 
 func main() {
 	runtime.LockOSThread()
-
 	m := NewMain()
 	m.Run()
+
+	// com.CoInitializeEx(comco.COINIT_APARTMENTTHREADED)
+	// defer com.CoUninitialize()
+
+	// xlApp, err := autom.NewIDispatchFromProgId("Excel.Application")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer xlApp.Release()
+
+	// trueVal := autom.NewVariantInt32(1)
+	// defer trueVal.VariantClear()
+	// ret0, err := xlApp.InvokePut("Visible", trueVal)
+	// if err != nil {
+	// 	switch realErr := err.(type) {
+	// 	case *autom.ExceptionInfo:
+	// 		println("Invoke error", realErr.Code, realErr.Description)
+	// 	default:
+	// 		println("Other error", realErr.Error())
+	// 	}
+	// }
+	// defer ret0.VariantClear()
+
+	// ret1, err := xlApp.InvokeGet("Workbooks")
+	// if err != nil {
+	// 	switch realErr := err.(type) {
+	// 	case *autom.ExceptionInfo:
+	// 		println("Invoke error", realErr.Code, realErr.Description)
+	// 	default:
+	// 		println("Other error", realErr.Error())
+	// 	}
+	// }
+	// defer ret1.VariantClear()
+
+	// ret2, err := xlApp.InvokeMethod("Quit")
+	// if err != nil {
+	// 	switch realErr := err.(type) {
+	// 	case *autom.ExceptionInfo:
+	// 		println("Invoke error", realErr.Code, realErr.Description)
+	// 	default:
+	// 		println("Other error", realErr.Error())
+	// 	}
+	// }
+	// defer ret2.VariantClear()
+
+	// println("Types", ret0.Type(), ret1.Type(), ret2.Type())
 }
 
 const (
@@ -65,7 +110,7 @@ func NewMain() *Main {
 }
 
 func (me *Main) Run() {
-	defer me.pic.Free()
+	defer me.pic.FreeComObjs()
 
 	me.wnd.RunAsMain()
 }
@@ -114,7 +159,8 @@ func (me *Main) events() {
 		// fod.SetFolder(&shiDir)
 
 		if fod.Show(me.wnd.Hwnd()) {
-			me.pic.StartPlayback(fod.GetResultDisplayName(shellco.SIGDN_FILESYSPATH))
+			vidFile := fod.GetResultDisplayName(shellco.SIGDN_FILESYSPATH)
+			me.pic.StartPlayback(vidFile)
 		}
 	})
 

@@ -30,7 +30,8 @@ func NewPicture(
 	parent ui.AnyParent, pos win.POINT, sz win.SIZE,
 	horz ui.HORZ, vert ui.VERT) *Picture {
 
-	wnd := ui.NewWindowControl(parent,
+	wnd := ui.NewWindowControl(
+		parent,
 		ui.WindowControlOpts().
 			WndExStyles(co.WS_EX_NONE).
 			Position(pos).
@@ -47,7 +48,7 @@ func NewPicture(
 	return me
 }
 
-func (me *Picture) Free() {
+func (me *Picture) FreeComObjs() {
 	if com.IsObj(me.mediaCtrl) {
 		me.mediaCtrl.Stop()
 
@@ -61,7 +62,7 @@ func (me *Picture) Free() {
 }
 
 func (me *Picture) StartPlayback(vidPath string) {
-	me.Free()
+	me.FreeComObjs()
 
 	me.graphBuilder = dshow.NewIGraphBuilder(
 		com.CoCreateInstance(
@@ -89,11 +90,11 @@ func (me *Picture) StartPlayback(vidPath string) {
 		),
 	)
 
-	if e := me.controllerEvr.SetVideoWindow(me.wnd.Hwnd()); e != nil {
-		panic(e)
+	if err := me.controllerEvr.SetVideoWindow(me.wnd.Hwnd()); err != nil {
+		panic(err)
 	}
-	if e := me.controllerEvr.SetAspectRatioMode(dshowco.MFVideoARMode_PreservePicture); e != nil {
-		panic(e)
+	if err := me.controllerEvr.SetAspectRatioMode(dshowco.MFVideoARMode_PreservePicture); err != nil {
+		panic(err)
 	}
 
 	me.mediaCtrl = dshow.NewIMediaControl(
@@ -106,8 +107,8 @@ func (me *Picture) StartPlayback(vidPath string) {
 		me.graphBuilder.QueryInterface(dshowco.IID_IBasicAudio),
 	)
 
-	if e := me.graphBuilder.RenderFile(vidPath); e != nil {
-		panic(e)
+	if err := me.graphBuilder.RenderFile(vidPath); err != nil {
+		panic(err)
 	}
 
 	rc := me.wnd.Hwnd().GetWindowRect()
@@ -119,7 +120,7 @@ func (me *Picture) StartPlayback(vidPath string) {
 
 func (me *Picture) Pause() {
 	if com.IsObj(me.mediaCtrl) {
-		state, _ := me.mediaCtrl.GetState(-1)
+		state, _ := me.mediaCtrl.GetState(win.NumInfInfinite())
 		if state == dshowco.FILTER_STATE_State_Running {
 			me.mediaCtrl.Pause()
 		}
@@ -128,7 +129,7 @@ func (me *Picture) Pause() {
 
 func (me *Picture) TogglePlayPause() {
 	if com.IsObj(me.mediaCtrl) {
-		state, _ := me.mediaCtrl.GetState(-1)
+		state, _ := me.mediaCtrl.GetState(win.NumInfInfinite())
 		if state == dshowco.FILTER_STATE_State_Running {
 			me.mediaCtrl.Pause()
 		} else {

@@ -20,7 +20,8 @@ func NewTracker(
 	parent ui.AnyParent, pos win.POINT, sz win.SIZE,
 	horz ui.HORZ, vert ui.VERT) *Tracker {
 
-	wnd := ui.NewWindowControl(parent,
+	wnd := ui.NewWindowControl(
+		parent,
 		ui.WindowControlOpts().
 			WndExStyles(co.WS_EX_NONE).
 			Position(pos).
