@@ -77,6 +77,23 @@ const (
 	APPCOMMAND_DWM_FLIP3D                        APPCOMMAND = 54
 )
 
+// [AnimateWindow] flags.
+//
+// [AnimateWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-animatewindow
+type AW uint32
+
+const (
+	AW_ACTIVATE     AW = 0x0002_0000
+	AW_BLEND        AW = 0x0008_0000
+	AW_CENTER       AW = 0x0000_0010
+	AW_HIDE         AW = 0x0001_0000
+	AW_HOR_POSITIVE AW = 0x0000_0001
+	AW_HOR_NEGATIVE AW = 0x0000_0002
+	AW_SLIDE        AW = 0x0004_0000
+	AW_VER_POSITIVE AW = 0x0000_0004
+	AW_VER_NEGATIVE AW = 0x0000_0008
+)
+
 // Button control [styles].
 //
 // [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/button-styles

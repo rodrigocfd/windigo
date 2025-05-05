@@ -36,6 +36,16 @@ func AllowSetForegroundWindow(processId uint32) error {
 
 var _AllowSetForegroundWindow = dll.User32.NewProc("AllowSetForegroundWindow")
 
+// [AnyPopup] function.
+//
+// [AnyPopup]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-anypopup
+func AnyPopup() bool {
+	ret, _, _ := syscall.SyscallN(_AnyPopup.Addr())
+	return ret != 0
+}
+
+var _AnyPopup = dll.User32.NewProc("AnyPopup")
+
 // [BroadcastSystemMessage] function.
 //
 // [BroadcastSystemMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
@@ -171,6 +181,39 @@ func EnumDisplayDevices(device string, flags co.EDD) []DISPLAY_DEVICE {
 
 var _EnumDisplayDevicesW = dll.User32.NewProc("EnumDisplayDevicesW")
 
+// [EnumThreadWindows] function.
+//
+// [EnumThreadWindows]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumthreadwindows
+func EnumThreadWindows(threadId uint32) []HWND {
+	pPack := &_EnumThreadWindowsPack{
+		arr: make([]HWND, 0),
+	}
+
+	syscall.SyscallN(_EnumThreadWindows.Addr(),
+		enumThreadWindowsCallback(), uintptr(unsafe.Pointer(pPack)))
+	return pPack.arr
+}
+
+type _EnumThreadWindowsPack struct{ arr []HWND }
+
+var (
+	_EnumThreadWindows         = dll.User32.NewProc("EnumThreadWindows")
+	_enumThreadWindowsCallback uintptr
+)
+
+func enumThreadWindowsCallback() uintptr {
+	if _enumThreadWindowsCallback == 0 {
+		_enumThreadWindowsCallback = syscall.NewCallback(
+			func(hWnd HWND, lParam LPARAM) uintptr {
+				pPack := (*_EnumThreadWindowsPack)(unsafe.Pointer(lParam))
+				pPack.arr = append(pPack.arr, hWnd)
+				return 1
+			},
+		)
+	}
+	return _enumThreadWindowsCallback
+}
+
 // [EnumWindows] function.
 //
 // [EnumWindows]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
@@ -194,9 +237,9 @@ var (
 func enumWindowsCallback() uintptr {
 	if _enumWindowsCallback == 0 {
 		_enumWindowsCallback = syscall.NewCallback(
-			func(hChild HWND, lParam LPARAM) uintptr {
+			func(hWnd HWND, lParam LPARAM) uintptr {
 				pPack := (*_EnumWindowsPack)(unsafe.Pointer(lParam))
-				pPack.arr = append(pPack.arr, hChild)
+				pPack.arr = append(pPack.arr, hWnd)
 				return 1
 			},
 		)
@@ -638,6 +681,16 @@ func ShowCursor(show bool) int {
 
 var _ShowCursor = dll.User32.NewProc("ShowCursor")
 
+// [SoundSentry] function.
+//
+// [SoundSentry]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-soundsentry
+func SoundSentry() bool {
+	ret, _, _ := syscall.SyscallN(_SoundSentry.Addr())
+	return ret != 0
+}
+
+var _SoundSentry = dll.User32.NewProc("SoundSentry")
+
 // [SystemParametersInfo] function.
 //
 // [SystemParametersInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow
@@ -682,3 +735,13 @@ func UnregisterClass(className ClassName, hInst HINSTANCE) error {
 }
 
 var _UnregisterClassW = dll.User32.NewProc("UnregisterClassW")
+
+// [WaitMessage] function.
+//
+// [WaitMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-waitmessage
+func WaitMessage() error {
+	ret, _, err := syscall.SyscallN(_WaitMessage.Addr())
+	return util.ZeroToGetLastError(ret, err)
+}
+
+var _WaitMessage = dll.User32.NewProc("WaitMessage")

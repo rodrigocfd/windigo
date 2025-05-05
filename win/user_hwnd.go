@@ -133,6 +133,17 @@ func GetShellWindow() HWND {
 
 var _GetShellWindow = dll.User32.NewProc("GetShellWindow")
 
+// [AnimateWindow] function.
+//
+// [AnimateWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-animatewindow
+func (hWnd HWND) AnimateWindow(time uint, flags co.AW) error {
+	ret, _, err := syscall.SyscallN(_AnimateWindow.Addr(),
+		uintptr(hWnd), uintptr(time), uintptr(flags))
+	return util.ZeroToGetLastError(ret, err)
+}
+
+var _AnimateWindow = dll.User32.NewProc("AnimateWindow")
+
 // [BeginPaint] function.
 //
 // ⚠️ You must defer HWND.EndPaint().
@@ -156,6 +167,17 @@ func (hWnd HWND) BeginPaint(ps *PAINTSTRUCT) (HDC, error) {
 }
 
 var _BeginPaint = dll.User32.NewProc("BeginPaint")
+
+// [BringWindowToTop] function.
+//
+// [BringWindowToTop]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-bringwindowtotop
+func (hWnd HWND) BringWindowToTop() error {
+	ret, _, err := syscall.SyscallN(_BringWindowToTop.Addr(),
+		uintptr(hWnd))
+	return util.ZeroToGetLastError(ret, err)
+}
+
+var _BringWindowToTop = dll.User32.NewProc("BringWindowToTop")
 
 // [ChildWindowFromPoint] function.
 //
@@ -212,6 +234,19 @@ func (hWnd HWND) ClientToScreenRc(rc *RECT) error {
 		uintptr(hWnd), uintptr(unsafe.Pointer(&rc.Right)))
 	return util.ZeroAsSysInvalidParm(ret)
 }
+
+// [CloseWindow] function.
+//
+// Note that this function will actually minimize the window, not destroy it.
+//
+// [CloseWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-closewindow
+func (hWnd HWND) CloseWindow() error {
+	ret, _, _ := syscall.SyscallN(_CloseWindow.Addr(),
+		uintptr(hWnd))
+	return util.ZeroAsSysInvalidParm(ret)
+}
+
+var _CloseWindow = dll.User32.NewProc("CloseWindow")
 
 // [DefDlgProc] function.
 //
