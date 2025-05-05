@@ -32,16 +32,16 @@ const (
 
 	// Combines the STANDARD_RIGHTS_READ, KEY_QUERY_VALUE,
 	// KEY_ENUMERATE_SUB_KEYS, and KEY_NOTIFY values.
-	KEY_READ KEY = (KEY(STANDARD_RIGHTS_READ) | KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
+	KEY_READ = (KEY(STANDARD_RIGHTS_READ) | KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
 	// Combines the STANDARD_RIGHTS_WRITE, KEY_SET_VALUE, and KEY_CREATE_SUB_KEY
 	// access rights.
-	KEY_WRITE KEY = (KEY(STANDARD_RIGHTS_WRITE) | KEY_SET_VALUE | KEY_CREATE_SUB_KEY) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
+	KEY_WRITE = (KEY(STANDARD_RIGHTS_WRITE) | KEY_SET_VALUE | KEY_CREATE_SUB_KEY) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
 	// Equivalent to KEY_READ.
-	KEY_EXECUTE KEY = KEY_READ & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
+	KEY_EXECUTE = KEY_READ & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
 	// Combines the STANDARD_RIGHTS_REQUIRED, KEY_QUERY_VALUE, KEY_SET_VALUE,
 	// KEY_CREATE_SUB_KEY, KEY_ENUMERATE_SUB_KEYS, KEY_NOTIFY, and
 	// KEY_CREATE_LINK access rights.
-	KEY_ALL_ACCESS KEY = (KEY(STANDARD_RIGHTS_ALL) | KEY_QUERY_VALUE | KEY_SET_VALUE | KEY_CREATE_SUB_KEY | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY | KEY_CREATE_LINK) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
+	KEY_ALL_ACCESS = (KEY(STANDARD_RIGHTS_ALL) | KEY_QUERY_VALUE | KEY_SET_VALUE | KEY_CREATE_SUB_KEY | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY | KEY_CREATE_LINK) & ^KEY(STANDARD_RIGHTS_SYNCHRONIZE)
 )
 
 // Registry value [types].
@@ -50,21 +50,25 @@ const (
 type REG uint32
 
 const (
-	REG_NONE                REG = 0  // No value type.
-	REG_SZ                  REG = 1  // Unicode nul terminated string.
-	REG_EXPAND_SZ           REG = 2  // Unicode nul terminated string (with environment variable references).
-	REG_BINARY              REG = 3  // Free form binary.
-	REG_DWORD               REG = 4  // 32-bit number.
-	REG_DWORD_LITTLE_ENDIAN REG = 4  // 32-bit number (same as REG_DWORD).
-	REG_DWORD_BIG_ENDIAN    REG = 5  // 32-bit number.
-	REG_LINK                REG = 6  // Symbolic Link (unicode).
-	REG_MULTI_SZ            REG = 7  // Multiple Unicode strings.
-	REG_QWORD               REG = 11 // 64-bit number.
-	REG_QWORD_LITTLE_ENDIAN REG = 11 // 64-bit number (same as REG_QWORD).
+	REG_NONE                       REG = 0
+	REG_SZ                         REG = 1
+	REG_EXPAND_SZ                  REG = 2
+	REG_BINARY                     REG = 3
+	REG_DWORD                      REG = 4
+	REG_DWORD_LITTLE_ENDIAN        REG = 4
+	REG_DWORD_BIG_ENDIAN           REG = 5
+	REG_LINK                       REG = 6
+	REG_MULTI_SZ                   REG = 7
+	REG_RESOURCE_LIST              REG = 8
+	REG_FULL_RESOURCE_DESCRIPTOR   REG = 9
+	REG_RESOURCE_REQUIREMENTS_LIST REG = 10
+	REG_QWORD                      REG = 11
+	REG_QWORD_LITTLE_ENDIAN        REG = 11
 )
 
-// [RegOpenKeyEx] ulOptions.
+// [RegCreateKeyEx] and [RegOpenKeyEx] options.
 //
+// [RegCreateKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regcreatekeyexw
 // [RegOpenKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
 type REG_OPTION uint32
 
@@ -79,7 +83,28 @@ const (
 	REG_OPTION_DONT_VIRTUALIZE REG_OPTION = 0x0000_0010
 )
 
-// [RegGetValue] dwFlags.
+// [RegRestoreKey] flags. Originally has REG prefix.
+//
+// [RegRestoreKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regrestorekeyw
+type REG_RESTORE uint32
+
+const (
+	REG_RESTORE_FORCE               REG_RESTORE = 0x0000_0008
+	REG_RESTORE_WHOLE_HIVE_VOLATILE REG_RESTORE = 0x0000_0001
+)
+
+// [RegSaveKeyEx] flags. Originally has REG prefix.
+//
+// [RegSaveKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsavekeyexw
+type REG_SAVE uint32
+
+const (
+	REG_SAVE_STANDARD_FORMAT REG_SAVE = 1
+	REG_SAVE_LATEST_FORMAT   REG_SAVE = 2
+	REG_SAVE_NO_COMPRESSION  REG_SAVE = 4
+)
+
+// [RegGetValue] flags.
 //
 // [RegGetValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-reggetvaluew
 type RRF uint32
@@ -98,114 +123,8 @@ const (
 
 	RRF_SUBKEY_WOW6464KEY RRF = 0x0001_0000
 	RRF_SUBKEY_WOW6432KEY RRF = 0x0002_0000
-	RRF_NOEXPAND          RRF = 0x1000_0000
-	RRF_ZEROONFAILURE     RRF = 0x2000_0000
-)
+	RRF_WOW64_MASK        RRF = 0x0003_0000
 
-// Token [access rights].
-//
-// [access rights]: https://learn.microsoft.com/en-us/windows/win32/secauthz/access-rights-for-access-token-objects
-type TOKEN uint32
-
-const (
-	TOKEN_DELETE       TOKEN = TOKEN(STANDARD_RIGHTS_DELETE)
-	TOKEN_READ_CONTROL TOKEN = TOKEN(STANDARD_RIGHTS_READ_CONTROL)
-	TOKEN_WRITE_DAC    TOKEN = TOKEN(STANDARD_RIGHTS_WRITE_DAC)
-	TOKEN_WRITE_OWNER  TOKEN = TOKEN(STANDARD_RIGHTS_WRITE_OWNER)
-
-	TOKEN_ASSIGN_PRIMARY        TOKEN = 0x0001
-	TOKEN_DUPLICATE             TOKEN = 0x0002
-	TOKEN_IMPERSONATE           TOKEN = 0x0004
-	TOKEN_QUERY                 TOKEN = 0x0008
-	TOKEN_QUERY_SOURCE          TOKEN = 0x0010
-	TOKEN_ADJUST_PRIVILEGES     TOKEN = 0x0020
-	TOKEN_ADJUST_GROUPS         TOKEN = 0x0040
-	TOKEN_ADJUST_DEFAULT        TOKEN = 0x0080
-	TOKEN_ADJUST_SESSIONID      TOKEN = 0x0100
-	TOKEN_ALL_ACCESS_P          TOKEN = TOKEN(STANDARD_RIGHTS_REQUIRED) | TOKEN_ASSIGN_PRIMARY | TOKEN_DUPLICATE | TOKEN_IMPERSONATE | TOKEN_QUERY | TOKEN_QUERY_SOURCE | TOKEN_ADJUST_PRIVILEGES | TOKEN_ADJUST_GROUPS | TOKEN_ADJUST_DEFAULT
-	TOKEN_ALL_ACCESS            TOKEN = TOKEN_ALL_ACCESS_P | TOKEN_ADJUST_SESSIONID
-	TOKEN_READ                  TOKEN = TOKEN(STANDARD_RIGHTS_READ) | TOKEN_QUERY
-	TOKEN_WRITE                 TOKEN = TOKEN(STANDARD_RIGHTS_WRITE) | TOKEN_ADJUST_PRIVILEGES | TOKEN_ADJUST_GROUPS | TOKEN_ADJUST_DEFAULT
-	TOKEN_EXECUTE               TOKEN = TOKEN(STANDARD_RIGHTS_EXECUTE)
-	TOKEN_TRUST_CONSTRAINT_MASK TOKEN = TOKEN(STANDARD_RIGHTS_READ) | TOKEN_QUERY | TOKEN_QUERY_SOURCE
-	TOKEN_ACCESS_PSEUDO_HANDLE  TOKEN = TOKEN_QUERY | TOKEN_QUERY_SOURCE
-)
-
-// [TOKEN_ELEVATION_TYPE] enumeration.
-//
-// [TOKEN_ELEVATION_TYPE]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ne-winnt-token_elevation_type
-type TOKEN_ELEVATION_TYPE uint32
-
-const (
-	TOKEN_ELEVATION_TYPE_Default TOKEN_ELEVATION_TYPE = iota + 1
-	TOKEN_ELEVATION_TYPE_Full
-	TOKEN_ELEVATION_TYPE_Limited
-)
-
-// [TOKEN_INFORMATION_CLASS] enumeration.
-//
-// [TOKEN_INFORMATION_CLASS]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ne-winnt-token_information_class
-type TOKEN_INFO uint32
-
-const (
-	TOKEN_INFO_User TOKEN_INFO = iota + 1
-	TOKEN_INFO_Groups
-	TOKEN_INFO_Privileges
-	TOKEN_INFO_Owner
-	TOKEN_INFO_PrimaryGroup
-	TOKEN_INFO_DefaultDacl
-	TOKEN_INFO_Source
-	TOKEN_INFO_Type
-	TOKEN_INFO_ImpersonationLevel
-	TOKEN_INFO_Statistics
-	TOKEN_INFO_RestrictedSids
-	TOKEN_INFO_SessionId
-	TOKEN_INFO_GroupsAndPrivileges
-	TOKEN_INFO_SessionReference
-	TOKEN_INFO_SandBoxInert
-	TOKEN_INFO_AuditPolicy
-	TOKEN_INFO_Origin
-	TOKEN_INFO_ElevationType
-	TOKEN_INFO_Linked
-	TOKEN_INFO_Elevation
-	TOKEN_INFO_HasRestrictions
-	TOKEN_INFO_AccessInformation
-	TOKEN_INFO_VirtualizationAllowed
-	TOKEN_INFO_VirtualizationEnabled
-	TOKEN_INFO_IntegrityLevel
-	TOKEN_INFO_UIAccess
-	TOKEN_INFO_MandatoryPolicy
-	TOKEN_INFO_LogonSid
-	TOKEN_INFO_IsAppContainer
-	TOKEN_INFO_Capabilities
-	TOKEN_INFO_AppContainerSid
-	TOKEN_INFO_AppContainerNumber
-	TOKEN_INFO_UserClaimAttributes
-	TOKEN_INFO_DeviceClaimAttributes
-	TOKEN_INFO_RestrictedUserClaimAttributes
-	TOKEN_INFO_RestrictedDeviceClaimAttributes
-	TOKEN_INFO_DeviceGroups
-	TOKEN_INFO_RestrictedDeviceGroups
-	TOKEN_INFO_SecurityAttributes
-	TOKEN_INFO_IsRestricted
-	TOKEN_INFO_ProcessTrustLevel
-	TOKEN_INFO_PrivateNameSpace
-	TOKEN_INFO_SingletonAttributes
-	TOKEN_INFO_BnoIsolation
-	TOKEN_INFO_ChildProcessFlags
-	TOKEN_INFO_IsLessPrivilegedAppContainer
-	TOKEN_INFO_IsSandboxed
-	TOKEN_INFO_OriginatingProcessTrustLevel
-)
-
-// [TOKEN_MANDATORY_POLICY] policy.
-//
-// [TOKEN_MANDATORY_POLICY]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-token_mandatory_policy
-type TOKEN_POLICY uint32
-
-const (
-	TOKEN_POLICY_OFF             TOKEN_POLICY = 0x0
-	TOKEN_POLICY_NO_WRITE_UP     TOKEN_POLICY = 0x1
-	TOKEN_POLICY_NEW_PROCESS_MIN TOKEN_POLICY = 0x2
-	TOKEN_POLICY_VALID_MASK      TOKEN_POLICY = 0x3
+	RRF_NOEXPAND      RRF = 0x1000_0000
+	RRF_ZEROONFAILURE RRF = 0x2000_0000
 )

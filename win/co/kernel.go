@@ -2,31 +2,25 @@
 
 package co
 
-// [CONSOLE_READCONSOLE_CONTROL] DwControlKeyState.
+// [QueryProcessAffinityUpdateMode] and [SetProcessAffinityUpdateMode] flags.
 //
-// [CONSOLE_READCONSOLE_CONTROL]: https://learn.microsoft.com/en-us/windows/console/console-readconsole-control
-type CKS uint32
+// [QueryProcessAffinityUpdateMode]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-queryprocessaffinityupdatemode
+// [SetProcessAffinityUpdateMode]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setprocessaffinityupdatemode
+type AFFINITY uint32
 
 const (
-	CAPSLOCK_ON        CKS = 0x0080
-	ENHANCED_KEY       CKS = 0x0100
-	LEFT_ALT_PRESSED   CKS = 0x0002
-	LEFT_CTRL_PRESSED  CKS = 0x0008
-	NUMLOCK_ON         CKS = 0x0020
-	RIGHT_ALT_PRESSED  CKS = 0x0001
-	RIGHT_CTRL_PRESSED CKS = 0x0004
-	SCROLLLOCK_ON      CKS = 0x0040
-	SHIFT_PRESSED      CKS = 0x0010
+	AFFINITY_NONE               AFFINITY = 0
+	AFFINITY_ENABLE_AUTO_UPDATE AFFINITY = 0x0000_0001
 )
 
-// [SetConsoleDisplayMode] mode.
+// [WM_DEVICECHANGE] return value.
 //
-// [SetConsoleDisplayMode]: https://learn.microsoft.com/en-us/windows/console/setconsoledisplaymode
-type CONSOLE uint32
+// [WM_DEVICECHANGE]: https://learn.microsoft.com/en-us/windows/win32/devio/wm-devicechange
+type BROADCAST_QUERY uint32
 
 const (
-	CONSOLE_FULLSCREEN_MODE CONSOLE = 1
-	CONSOLE_WINDOWED_MODE   CONSOLE = 2
+	BROADCAST_QUERY_OK   BROADCAST_QUERY = 0
+	BROADCAST_QUERY_DENY BROADCAST_QUERY = 0x424D5144
 )
 
 // [Code page] identifiers.
@@ -99,6 +93,26 @@ const (
 	CREATE_INHERIT_PARENT_AFFINITY      CREATE = 0x0001_0000
 )
 
+// [WM_DEVICECHANGE] event.
+//
+// [WM_DEVICECHANGE]: https://learn.microsoft.com/en-us/windows/win32/devio/wm-devicechange
+type DBT uint16
+
+const (
+	DBT_DEVNODES_CHANGED        DBT = 0x0007
+	DBT_QUERYCHANGECONFIG       DBT = 0x0017
+	DBT_CONFIGCHANGED           DBT = 0x0018
+	DBT_CONFIGCHANGECANCELED    DBT = 0x0019
+	DBT_DEVICEARRIVAL           DBT = 0x8000
+	DBT_DEVICEQUERYREMOVE       DBT = 0x8001
+	DBT_DEVICEQUERYREMOVEFAILED DBT = 0x8002
+	DBT_DEVICEREMOVEPENDING     DBT = 0x8003
+	DBT_DEVICEREMOVECOMPLETE    DBT = 0x8004
+	DBT_DEVICETYPESPECIFIC      DBT = 0x8005
+	DBT_CUSTOMEVENT             DBT = 0x8006
+	DBT_USERDEFINED             DBT = 0xffff
+)
+
 // [CreateFile] dwCreationDisposition. Originally without prefix.
 //
 // [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
@@ -110,28 +124,6 @@ const (
 	DISPOSITION_OPEN_ALWAYS       DISPOSITION = 4
 	DISPOSITION_OPEN_EXISTING     DISPOSITION = 3
 	DISPOSITION_TRUNCATE_EXISTING DISPOSITION = 5
-)
-
-// [SetConsoleMode] mode.
-//
-// [SetConsoleMode]: https://learn.microsoft.com/en-us/windows/console/setconsolemode
-type ENABLE uint32
-
-const (
-	ENABLE_ECHO_INPUT             ENABLE = 0x0004
-	ENABLE_INSERT_MODE            ENABLE = 0x0020
-	ENABLE_LINE_INPUT             ENABLE = 0x0002
-	ENABLE_MOUSE_INPUT            ENABLE = 0x0010
-	ENABLE_PROCESSED_INPUT        ENABLE = 0x0001
-	ENABLE_QUICK_EDIT_MODE        ENABLE = 0x0040
-	ENABLE_WINDOW_INPUT           ENABLE = 0x0008
-	ENABLE_VIRTUAL_TERMINAL_INPUT ENABLE = 0x0200
-
-	ENABLE_PROCESSED_OUTPUT            ENABLE = 0x0001
-	ENABLE_WRAP_AT_EOL_OUTPUT          ENABLE = 0x0002
-	ENABLE_VIRTUAL_TERMINAL_PROCESSING ENABLE = 0x0004
-	ENABLE_DISABLE_NEWLINE_AUTO_RETURN ENABLE = 0x0008
-	ENABLE_LVB_GRID_WORLDWIDE          ENABLE = 0x0010
 )
 
 // [WM_ENDSESSION] event.
@@ -146,9 +138,9 @@ const (
 	ENDSESSION_LOGOFF            ENDSESSION = 0x8000_0000
 )
 
-// [CreateFile] dwFlagsAndAttributes.
+// File attribute [constants].
 //
-// [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+// [constants]: https://learn.microsoft.com/en-us/windows/win32/fileio/file-attribute-constants
 type FILE_ATTRIBUTE uint32
 
 const (
@@ -222,7 +214,7 @@ const (
 	_SECTION_MAP_EXECUTE          FILE_MAP = 0x0008
 	_SECTION_EXTEND_SIZE          FILE_MAP = 0x0010
 	_SECTION_MAP_EXECUTE_EXPLICIT FILE_MAP = 0x0020
-	_SECTION_ALL_ACCESS           FILE_MAP = FILE_MAP(STANDARD_RIGHTS_REQUIRED) | _SECTION_QUERY | _SECTION_MAP_WRITE | _SECTION_MAP_READ | _SECTION_MAP_EXECUTE | _SECTION_EXTEND_SIZE
+	_SECTION_ALL_ACCESS                    = FILE_MAP(STANDARD_RIGHTS_REQUIRED) | _SECTION_QUERY | _SECTION_MAP_WRITE | _SECTION_MAP_READ | _SECTION_MAP_EXECUTE | _SECTION_EXTEND_SIZE
 
 	FILE_MAP_WRITE           FILE_MAP = _SECTION_MAP_WRITE
 	FILE_MAP_READ            FILE_MAP = _SECTION_MAP_READ
@@ -234,7 +226,7 @@ const (
 	FILE_MAP_LARGE_PAGES     FILE_MAP = 0x2000_0000
 )
 
-// FileOpen() and FileMappedOpen() desired access.
+// FileOpen() and FileMapOpen() desired access.
 type FILE_OPEN uint8
 
 const (
@@ -253,35 +245,6 @@ const (
 	FILE_SHARE_READ   FILE_SHARE = 0x0000_0001
 	FILE_SHARE_WRITE  FILE_SHARE = 0x0000_0002
 	FILE_SHARE_DELETE FILE_SHARE = 0x0000_0004
-)
-
-// [GetVolumeInformation] flags.
-//
-// [GetVolumeInformation]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getvolumeinformationw
-type FILE_VOL uint32
-
-const (
-	FILE_VOL_CASE_PRESERVED_NAMES         FILE_VOL = 0x0000_0002
-	FILE_VOL_CASE_SENSITIVE_SEARCH        FILE_VOL = 0x0000_0001
-	FILE_VOL_DAX_VOLUME                   FILE_VOL = 0x2000_0000
-	FILE_VOL_FILE_COMPRESSION             FILE_VOL = 0x0000_0010
-	FILE_VOL_NAMED_STREAMS                FILE_VOL = 0x0004_0000
-	FILE_VOL_PERSISTENT_ACLS              FILE_VOL = 0x0000_0008
-	FILE_VOL_READ_ONLY_VOLUME             FILE_VOL = 0x0008_0000
-	FILE_VOL_SEQUENTIAL_WRITE_ONCE        FILE_VOL = 0x0010_0000
-	FILE_VOL_SUPPORTS_ENCRYPTION          FILE_VOL = 0x0002_0000
-	FILE_VOL_SUPPORTS_EXTENDED_ATTRIBUTES FILE_VOL = 0x0080_0000
-	FILE_VOL_SUPPORTS_HARD_LINKS          FILE_VOL = 0x0040_0000
-	FILE_VOL_SUPPORTS_OBJECT_IDS          FILE_VOL = 0x0001_0000
-	FILE_VOL_SUPPORTS_OPEN_BY_FILE_ID     FILE_VOL = 0x0100_0000
-	FILE_VOL_SUPPORTS_REPARSE_POINTS      FILE_VOL = 0x0000_0080
-	FILE_VOL_SUPPORTS_SPARSE_FILES        FILE_VOL = 0x0000_0040
-	FILE_VOL_SUPPORTS_TRANSACTIONS        FILE_VOL = 0x0020_0000
-	FILE_VOL_SUPPORTS_USN_JOURNAL         FILE_VOL = 0x0200_0000
-	FILE_VOL_UNICODE_ON_DISK              FILE_VOL = 0x0000_0004
-	FILE_VOL_VOLUME_IS_COMPRESSED         FILE_VOL = 0x0000_8000
-	FILE_VOL_VOLUME_QUOTAS                FILE_VOL = 0x0000_0020
-	FILE_VOL_SUPPORTS_BLOCK_REFCOUNTING   FILE_VOL = 0x0800_0000
 )
 
 // Generic access [rights].
@@ -321,17 +284,6 @@ const (
 	HEAP_ALLOC_ZERO_MEMORY         HEAP_ALLOC = 0x0000_0008
 )
 
-// [HeapSetInformation] class.
-//
-// [HeapSetInformation]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapsetinformation
-type HEAP_CLASS uint32
-
-const (
-	HEAP_CLASS_CompatibilityInformation      HEAP_CLASS = 0
-	HEAP_CLASS_EnableTerminationOnCorruption HEAP_CLASS = 1
-	HEAP_CLASS_OptimizeResources             HEAP_CLASS = 3
-)
-
 // [HeapCreate] options.
 //
 // [HeapCreate]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcreate
@@ -351,7 +303,8 @@ const (
 type HEAP_NS uint32
 
 const (
-	HEAP_SER_NO_SERIALIZE HEAP_NS = 0x0000_0001
+	HEAP_NS_NONE         HEAP_NS = 0
+	HEAP_NS_NO_SERIALIZE HEAP_NS = 0x0000_0001
 )
 
 // [HeapReAlloc] flags.
@@ -514,20 +467,6 @@ const (
 	LANG_ZULU                LANG = 0x35
 )
 
-// [LocalAlloc] uFlags.
-//
-// [LocalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-localalloc
-type LMEM uint32
-
-const (
-	LMEM_FIXED    LMEM = 0x0000
-	LMEM_MOVEABLE LMEM = 0x0002
-	LMEM_ZEROINIT LMEM = 0x0040
-	LMEM_MODIFY   LMEM = 0x0080
-	LMEM_GHND     LMEM = LMEM_MOVEABLE | LMEM_ZEROINIT
-	LMEM_GPTR     LMEM = LMEM_FIXED | LMEM_ZEROINIT
-)
-
 // [LockFileEx] dwFlags.
 //
 // [LockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex
@@ -537,20 +476,6 @@ const (
 	LOCKFILE_NONE             LOCKFILE = 0
 	LOCKFILE_FAIL_IMMEDIATELY LOCKFILE = 0x0000_0001
 	LOCKFILE_EXCLUSIVE_LOCK   LOCKFILE = 0x0000_0002
-)
-
-// [MoveFileEx] dwFlags.
-//
-// [MoveFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw
-type MOVEFILE uint32
-
-const (
-	MOVEFILE_COPY_ALLOWED          MOVEFILE = 0x2
-	MOVEFILE_CREATE_HARDLINK       MOVEFILE = 0x10
-	MOVEFILE_DELAY_UNTIL_REBOOT    MOVEFILE = 0x4
-	MOVEFILE_FAIL_IF_NOT_TRACKABLE MOVEFILE = 0x20
-	MOVEFILE_REPLACE_EXISTING      MOVEFILE = 0x1
-	MOVEFILE_WRITE_THROUGH         MOVEFILE = 0x8
 )
 
 // [CreateFileMapping] flProtect.
@@ -601,55 +526,57 @@ const (
 	PBT_POWERSETTINGCHANGE    PBT = 0x8013
 )
 
-// [CreateNamedPipe] dwPipeMode.
+// [GetPriorityClass] and [SetPriorityClass] values. Originally has
+// PRIORITY_CLASS suffix.
 //
-// [CreateNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
-type PIPE uint32
+// [GetPriorityClass]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getpriorityclass
+// [SetPriorityClass]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setpriorityclass
+type PRIORITY uint32
 
 const (
-	PIPE_WAIT                  PIPE = 0x0000_0000
-	PIPE_NOWAIT                PIPE = 0x0000_0001
-	PIPE_READMODE_BYTE         PIPE = 0x0000_0000
-	PIPE_READMODE_MESSAGE      PIPE = 0x0000_0002
-	PIPE_TYPE_BYTE             PIPE = 0x0000_0000
-	PIPE_TYPE_MESSAGE          PIPE = 0x0000_0004
-	PIPE_ACCEPT_REMOTE_CLIENTS PIPE = 0x0000_0000
-	PIPE_REJECT_REMOTE_CLIENTS PIPE = 0x0000_0008
+	PRIORITY_ABOVE_NORMAL PRIORITY = 0x0000_8000
+	PRIORITY_BELOW_NORMAL PRIORITY = 0x0000_4000
+	PRIORITY_HIGH         PRIORITY = 0x0000_0080
+	PRIORITY_IDLE         PRIORITY = 0x0000_0040
+	PRIORITY_NORMAL       PRIORITY = 0x0000_0020
+	PRIORITY_REALTIME     PRIORITY = 0x0000_0100
 )
 
-// [CreateNamedPipe] dwOpenMode.
+// Process [security and access rights].
 //
-// [CreateNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
-type PIPE_ACCESS uint32
-
-const (
-	PIPE_ACCESS_INBOUND  PIPE_ACCESS = 0x0000_0001
-	PIPE_ACCESS_OUTBOUND PIPE_ACCESS = 0x0000_0002
-	PIPE_ACCESS_DUPLEX   PIPE_ACCESS = 0x0000_0003
-)
-
-// Process [access rights].
-//
-// [access rights]: https://learn.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
+// [security and access rights]: https://learn.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
 type PROCESS uint32
 
 const (
-	PROCESS_ALL_ACCESS                PROCESS = PROCESS(STANDARD_RIGHTS_REQUIRED|STANDARD_RIGHTS_SYNCHRONIZE) | 0xffff
+	PROCESS_DELETE       = PROCESS(STANDARD_RIGHTS_DELETE)
+	PROCESS_READ_CONTROL = PROCESS(STANDARD_RIGHTS_READ_CONTROL)
+	PROCESS_SYNCHRONIZE  = PROCESS(STANDARD_RIGHTS_SYNCHRONIZE)
+	PROCESS_WRITE_DAC    = PROCESS(STANDARD_RIGHTS_WRITE_DAC)
+	PROCESS_WRITE_OWNER  = PROCESS(STANDARD_RIGHTS_WRITE_OWNER)
+
+	PROCESS_ALL_ACCESS                        = PROCESS(STANDARD_RIGHTS_REQUIRED | STANDARD_RIGHTS_SYNCHRONIZE | 0xffff)
 	PROCESS_CREATE_PROCESS            PROCESS = 0x0080
 	PROCESS_CREATE_THREAD             PROCESS = 0x0002
 	PROCESS_DUP_HANDLE                PROCESS = 0x0040
 	PROCESS_QUERY_INFORMATION         PROCESS = 0x0400
 	PROCESS_QUERY_LIMITED_INFORMATION PROCESS = 0x1000
-	PROCESS_SET_LIMITED_INFORMATION   PROCESS = 0x2000
 	PROCESS_SET_INFORMATION           PROCESS = 0x0200
 	PROCESS_SET_QUOTA                 PROCESS = 0x0100
-	PROCESS_SET_SESSIONID             PROCESS = 0x0004
 	PROCESS_SUSPEND_RESUME            PROCESS = 0x0800
 	PROCESS_TERMINATE                 PROCESS = 0x0001
-	PROCESS_VM_OPERATION              PROCESS = 0x0008
+	PROCESS_WM_OPERATION              PROCESS = 0x0008
 	PROCESS_VM_READ                   PROCESS = 0x0010
 	PROCESS_VM_WRITE                  PROCESS = 0x0020
-	PROCESS_SYNCHRONIZE               PROCESS = PROCESS(STANDARD_RIGHTS_SYNCHRONIZE)
+)
+
+// [QueryFullProcessImageName] flags.
+//
+// [QueryFullProcessImageName]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-queryfullprocessimagenamew
+type PROCESS_NAME uint32
+
+const (
+	PROCESS_NAME_WIN32  PROCESS_NAME = 0
+	PROCESS_NAME_NATIVE PROCESS_NAME = 0x0000_0001
 )
 
 // [SYSTEM_INFO] dwProcessorType.
@@ -705,47 +632,6 @@ const (
 	PROCESSOR_ARCHITECTURE_ARM32_ON_WIN64 PROCESSOR_ARCHITECTURE = 13
 	PROCESSOR_ARCHITECTURE_IA32_ON_ARM64  PROCESSOR_ARCHITECTURE = 14
 	PROCESSOR_ARCHITECTURE_UNKNOWN        PROCESSOR_ARCHITECTURE = 0xffff
-)
-
-// [ReplaceFile] dwReplaceFlags.
-//
-// [ReplaceFile]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew
-type REPLACEFILE uint32
-
-const (
-	REPLACEFILE_NONE                REPLACEFILE = 0
-	REPLACEFILE_WRITE_THROUGH       REPLACEFILE = 0x0000_0001
-	REPLACEFILE_IGNORE_MERGE_ERRORS REPLACEFILE = 0x0000_0002
-	REPLACEFILE_IGNORE_ACL_ERRORS   REPLACEFILE = 0x0000_0004
-)
-
-// Predefined [resource types].
-//
-// [resource types]: https://learn.microsoft.com/en-us/windows/win32/menurc/resource-types
-type RT uint16
-
-const (
-	RT_ACCELERATOR  RT = 9
-	RT_ANICURSOR    RT = 21
-	RT_ANIICON      RT = 22
-	RT_BITMAP       RT = 2
-	RT_CURSOR       RT = 1
-	RT_DIALOG       RT = 5
-	RT_DLGINCLUDE   RT = 17
-	RT_FONT         RT = 8
-	RT_FONTDIR      RT = 7
-	RT_GROUP_CURSOR RT = 12
-	RT_GROUP_ICON   RT = 14
-	RT_HTML         RT = 23
-	RT_ICON         RT = 3
-	RT_MANIFEST     RT = 24
-	RT_MENU         RT = 4
-	RT_MESSAGETABLE RT = 11
-	RT_PLUGPLAY     RT = 19
-	RT_RCDATA       RT = 10
-	RT_STRING       RT = 6
-	RT_VERSION      RT = 16
-	RT_VXD          RT = 20
 )
 
 // [CreateFileMapping] flProtect.
@@ -825,13 +711,13 @@ const (
 	STANDARD_RIGHTS_WRITE_OWNER  STANDARD_RIGHTS = 0x0008_0000
 
 	STANDARD_RIGHTS_ALL      STANDARD_RIGHTS = 0x001f_0000
-	STANDARD_RIGHTS_EXECUTE  STANDARD_RIGHTS = STANDARD_RIGHTS_READ_CONTROL
-	STANDARD_RIGHTS_READ     STANDARD_RIGHTS = STANDARD_RIGHTS_READ_CONTROL
+	STANDARD_RIGHTS_EXECUTE                  = STANDARD_RIGHTS_READ_CONTROL
+	STANDARD_RIGHTS_READ                     = STANDARD_RIGHTS_READ_CONTROL
 	STANDARD_RIGHTS_REQUIRED STANDARD_RIGHTS = 0x000f_0000
-	STANDARD_RIGHTS_WRITE    STANDARD_RIGHTS = STANDARD_RIGHTS_READ_CONTROL
+	STANDARD_RIGHTS_WRITE                    = STANDARD_RIGHTS_READ_CONTROL
 )
 
-// [STARTUPINFO] dwFlags.
+// [STARTUPINFO] flags.
 //
 // [STARTUPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
 type STARTF uint32
@@ -853,15 +739,40 @@ const (
 	STARTF_USESTDHANDLES    STARTF = 0x0000_0100
 )
 
-// Standard [devices].
+// [STARTUPINFO] fill attribute. Originally without prefix.
 //
-// [devices]: https://learn.microsoft.com/en-us/windows/console/getstdhandle
-type STD int32
+// [STARTUPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
+type STARTFILL uint32
 
 const (
-	STD_INPUT_HANDLE  STD = -10
-	STD_OUTPUT_HANDLE STD = -11
-	STD_ERROR_HANDLE  STD = -12
+	STARTFILL_FOREGROUND_BLUE      STARTFILL = 0x0001
+	STARTFILL_FOREGROUND_GREEN     STARTFILL = 0x0002
+	STARTFILL_FOREGROUND_RED       STARTFILL = 0x0004
+	STARTFILL_FOREGROUND_INTENSITY STARTFILL = 0x0008
+	STARTFILL_BACKGROUND_BLUE      STARTFILL = 0x0010
+	STARTFILL_BACKGROUND_GREEN     STARTFILL = 0x0020
+	STARTFILL_BACKGROUND_RED       STARTFILL = 0x0040
+	STARTFILL_BACKGROUND_INTENSITY STARTFILL = 0x0080
+)
+
+// [STARTUPINFO] show window. Originally just SW from user32.
+//
+// [STARTUPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
+type STARTSW uint16
+
+const (
+	STARTSW_HIDE            = STARTSW(SW_HIDE)
+	STARTSW_SHOWNORMAL      = STARTSW(SW_SHOWNORMAL)
+	STARTSW_SHOWMINIMIZED   = STARTSW(SW_SHOWMINIMIZED)
+	STARTSW_SHOWMAXIMIZED   = STARTSW(SW_SHOWMAXIMIZED)
+	STARTSW_MAXIMIZE        = STARTSW(SW_MAXIMIZE)
+	STARTSW_SHOWNOACTIVATE  = STARTSW(SW_SHOWNOACTIVATE)
+	STARTSW_SHOW            = STARTSW(SW_SHOW)
+	STARTSW_MINIMIZE        = STARTSW(SW_MINIMIZE)
+	STARTSW_SHOWMINNOACTIVE = STARTSW(SW_SHOWMINNOACTIVE)
+	STARTSW_SHOWNA          = STARTSW(SW_SHOWNA)
+	STARTSW_RESTORE         = STARTSW(SW_RESTORE)
+	STARTSW_FORCEMINIMIZE   = STARTSW(SW_FORCEMINIMIZE)
 )
 
 // Sub-language [identifier].
@@ -1230,4 +1141,23 @@ const (
 	WIN32_WINNT_WINBLUE      WIN32_WINNT = 0x0603
 	WIN32_WINNT_WINTHRESHOLD WIN32_WINNT = 0x0a00
 	WIN32_WINNT_WIN10        WIN32_WINNT = 0x0a00
+)
+
+// [WM_WTSSESSION_CHANGE] state.
+//
+// [WM_WTSSESSION_CHANGE]: https://learn.microsoft.com/en-us/windows/win32/termserv/wm-wtssession-change
+type WTS uint8
+
+const (
+	WTS_CONSOLE_CONNECT        WTS = 0x1
+	WTS_CONSOLE_DISCONNECT     WTS = 0x2
+	WTS_REMOTE_CONNECT         WTS = 0x3
+	WTS_REMOTE_DISCONNECT      WTS = 0x4
+	WTS_SESSION_LOGON          WTS = 0x5
+	WTS_SESSION_LOGOFF         WTS = 0x6
+	WTS_SESSION_LOCK           WTS = 0x7
+	WTS_SESSION_UNLOCK         WTS = 0x8
+	WTS_SESSION_REMOTE_CONTROL WTS = 0x9
+	WTS_SESSION_CREATE         WTS = 0xa
+	WTS_SESSION_TERMINATE      WTS = 0xb
 )

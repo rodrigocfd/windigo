@@ -1,0 +1,91 @@
+//go:build windows
+
+package win
+
+import (
+	"syscall"
+	"unsafe"
+
+	"github.com/rodrigocfd/windigo/internal/dll"
+	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/win/co"
+)
+
+// Handle to a memory-mapped [file].
+//
+// [file]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
+type HFILEMAP HANDLE
+
+// [CloseHandle] function.
+//
+// [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+func (hMap HFILEMAP) CloseHandle() error {
+	return HANDLE(hMap).CloseHandle()
+}
+
+// [MapViewOfFile] function.
+//
+// The offset will be rounded down to a multiple of the allocation granularity,
+// which is taken with GetSystemInfo().
+//
+// Note that this function may present issues in x86 architectures.
+//
+// ⚠️ You must defer HFILEMAPVIEW.UnmapViewOfFile().
+//
+// [MapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
+func (hMap HFILEMAP) MapViewOfFile(
+	desiredAccess co.FILE_MAP,
+	offset uint64,
+	numBytesToMap uint,
+) (HFILEMAPVIEW, error) {
+	si := GetSystemInfo()
+	if (offset % uint64(si.DwAllocationGranularity)) != 0 {
+		offset -= offset % uint64(si.DwAllocationGranularity)
+	}
+
+	ret, _, err := syscall.SyscallN(_MapViewOfFileFromApp.Addr(),
+		uintptr(hMap), uintptr(desiredAccess), uintptr(offset),
+		uintptr(numBytesToMap))
+	if ret == 0 {
+		return HFILEMAPVIEW(0), co.ERROR(err)
+	}
+	return HFILEMAPVIEW(ret), nil
+}
+
+var _MapViewOfFileFromApp = dll.Kernel32.NewProc("MapViewOfFileFromApp")
+
+// Handle to the memory block of a memory-mapped [file]. Actually, this is the
+// starting address of the mapped view.
+//
+// [file]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
+type HFILEMAPVIEW HANDLE
+
+// Returns a pointer to the beginning of the mapped memory block.
+func (hMem HFILEMAPVIEW) Ptr() *byte {
+	return (*byte)(unsafe.Pointer(hMem))
+}
+
+// [FlushViewOfFile] function.
+//
+// [FlushViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-flushviewoffile
+func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes uint) error {
+	ret, _, err := syscall.SyscallN(_FlushViewOfFile.Addr(),
+		uintptr(hMem), uintptr(numBytes))
+	return util.ZeroToGetLastError(ret, err)
+}
+
+var _FlushViewOfFile = dll.Kernel32.NewProc("FlushViewOfFile")
+
+// [UnmapViewOfFile] function.
+//
+// Paired with [MapViewOfFile].
+//
+// [UnmapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
+// [MapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
+func (hMem HFILEMAPVIEW) UnmapViewOfFile() error {
+	ret, _, err := syscall.SyscallN(_UnmapViewOfFile.Addr(),
+		uintptr(hMem))
+	return util.ZeroToGetLastError(ret, err)
+}
+
+var _UnmapViewOfFile = dll.Kernel32.NewProc("UnmapViewOfFile")

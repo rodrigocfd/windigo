@@ -1,0 +1,99 @@
+//go:build windows
+
+package shell
+
+import (
+	"syscall"
+	"unsafe"
+
+	"github.com/rodrigocfd/windigo/internal/vt"
+	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/ole"
+)
+
+// [IFileOpenDialog] COM interface.
+//
+// # Example
+//
+//	var hWnd win.HWND // initialized somewhere
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	fod, _ := ole.CoCreateInstance[shell.IFileOpenDialog](
+//		rel,
+//		co.CLSID_FileOpenDialog,
+//		co.CLSCTX_INPROC_SERVER,
+//	)
+//
+//	defOpts, _ := fod.GetOptions()
+//	fod.SetOptions(defOpts |
+//		co.FOS_FORCEFILESYSTEM |
+//		co.FOS_FILEMUSTEXIST |
+//		co.FOS_ALLOWMULTISELECT,
+//	)
+//
+//	fod.SetFileTypes([]shell.COMDLG_FILTERSPEC{
+//		{Name: "MP3 audio files", Spec: "*.mp3"},
+//		{Name: "All files", Spec: "*.*"},
+//	})
+//	fod.SetFileTypeIndex(1)
+//
+//	if ok, _ := fod.Show(hWnd); ok {
+//		arr, _ := fod.GetResults(rel)
+//		for item, _ := range arr.Iter(rel) {
+//			mp3, _ := item.GetDisplayName(co.SIGDN_FILESYSPATH)
+//			println(mp3)
+//		}
+//	}
+//
+// [IFileOpenDialog]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileopendialog
+type IFileOpenDialog struct{ IFileDialog }
+
+// Returns the unique COM interface identifier.
+func (*IFileOpenDialog) IID() co.IID {
+	return co.IID_IFileOpenDialog
+}
+
+// [GetResults] method.
+//
+// Returns the selected items after user confirmation, for multi-selection
+// dialogs – those with co.FOS_ALLOWMULTISELECT option.
+//
+// For single-selection dialogs, use IFileDialog.GetResult().
+//
+// [GetResults]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
+func (me *IFileOpenDialog) GetResults(releaser *ole.Releaser) (*IShellItemArray, error) {
+	var ppvtQueried **vt.IUnknown
+	ret, _, _ := syscall.SyscallN(
+		(*vt.IFileOpenDialog)(unsafe.Pointer(*me.Ppvt())).GetResults,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := vt.NewObj[IShellItemArray](ppvtQueried)
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+// [GetSelectedItems] method.
+//
+// [GetSelectedItems]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
+func (me *IFileOpenDialog) GetSelectedItems(releaser *ole.Releaser) (*IShellItemArray, error) {
+	var ppvtQueried **vt.IUnknown
+	ret, _, _ := syscall.SyscallN(
+		(*vt.IFileOpenDialog)(unsafe.Pointer(*me.Ppvt())).GetSelectedItems,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := vt.NewObj[IShellItemArray](ppvtQueried)
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}

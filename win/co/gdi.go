@@ -55,9 +55,11 @@ const (
 	BRS_MONOPATTERN   BRS = 9
 )
 
-// [TEXTMETRIC] tmCharSet. Originally with _CHARSET suffix.
+// [TEXTMETRIC] tmCharSet and [LOGFONT] lfCharSet. Originally with _CHARSET
+// suffix.
 //
 // [TEXTMETRIC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-textmetricw
+// [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type CHARSET uint8
 
 const (
@@ -82,6 +84,24 @@ const (
 	CHARSET_BALTIC      CHARSET = 186
 )
 
+// [GetDCEx] flags.
+//
+// [GetDCEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdc
+type DCX uint32
+
+const (
+	DCX_WINDOW           DCX = 0x0000_0001
+	DCX_CACHE            DCX = 0x0000_0002
+	DCX_NORESETATTRS     DCX = 0x0000_0004
+	DCX_CLIPCHILDREN     DCX = 0x0000_0008
+	DCX_CLIPSIBLINGS     DCX = 0x0000_0010
+	DCX_PARENTCLIP       DCX = 0x0000_0020
+	DCX_EXCLUDERGN       DCX = 0x0000_0040
+	DCX_INTERSECTRGN     DCX = 0x0000_0080
+	DCX_EXCLUDEUPDATE    DCX = 0x0000_0100
+	DCX_LOCKWINDOWUPDATE DCX = 0x0000_0400
+)
+
 // [CreateDIBSection] usage.
 //
 // [CreateDIBSection]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
@@ -90,6 +110,59 @@ type DIB uint32
 const (
 	DIB_RGB_COLORS DIB = 0 // Color table in RGBs.
 	DIB_PAL_COLORS DIB = 1 // Color table in palette indices.
+)
+
+// [LOGFONT] lfClipPrecision. Originally with CLIP prefix and PRECIS suffix.
+//
+// [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
+type CLIP_PRECIS uint8
+
+const (
+	CLIP_PRECIS_DEFAULT     CLIP_PRECIS = 0
+	CLIP_PRECIS_CHARACTER   CLIP_PRECIS = 1
+	CLIP_PRECIS_STROKE      CLIP_PRECIS = 2
+	CLIP_PRECIS_MASK        CLIP_PRECIS = 0xf
+	CLIP_PRECIS_LH_ANGLES   CLIP_PRECIS = 1 << 4
+	CLIP_PRECIS_TT_ALWAYS   CLIP_PRECIS = 2 << 4
+	CLIP_PRECIS_DFA_DISABLE CLIP_PRECIS = 4 << 4
+	CLIP_PRECIS_EMBEDDED    CLIP_PRECIS = 8 << 4
+)
+
+// [LOGFONT] lfPitchAndFamily. Combination of PITCH and FF constants.
+//
+// [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
+type FF uint8
+
+const (
+	_PITCH_DEFAULT  FF = 0
+	_PITCH_FIXED    FF = 1
+	_PITCH_VARIABLE FF = 2
+
+	_FF_DONTCARE   FF = 0 << 4
+	_FF_ROMAN      FF = 1 << 4
+	_FF_SWISS      FF = 2 << 4
+	_FF_MODERN     FF = 3 << 4
+	_FF_SCRIPT     FF = 4 << 4
+	_FF_DECORATIVE FF = 5 << 4
+
+	FF_DEFAULT_DONTCARE    = _PITCH_DEFAULT | _FF_DONTCARE
+	FF_DEFAULT_ROMAN       = _PITCH_DEFAULT | _FF_ROMAN
+	FF_DEFAULT_SWISS       = _PITCH_DEFAULT | _FF_SWISS
+	FF_DEFAULT_MODERN      = _PITCH_DEFAULT | _FF_MODERN
+	FF_DEFAULT_SCRIPT      = _PITCH_DEFAULT | _FF_SCRIPT
+	FF_DEFAULT_DECORATIVE  = _PITCH_DEFAULT | _FF_DECORATIVE
+	FF_FIXED_DONTCARE      = _PITCH_FIXED | _FF_DONTCARE
+	FF_FIXED_ROMAN         = _PITCH_FIXED | _FF_ROMAN
+	FF_FIXED_SWISS         = _PITCH_FIXED | _FF_SWISS
+	FF_FIXED_MODERN        = _PITCH_FIXED | _FF_MODERN
+	FF_FIXED_SCRIPT        = _PITCH_FIXED | _FF_SCRIPT
+	FF_FIXED_DECORATIVE    = _PITCH_FIXED | _FF_DECORATIVE
+	FF_VARIABLE_DONTCARE   = _PITCH_VARIABLE | _FF_DONTCARE
+	FF_VARIABLE_ROMAN      = _PITCH_VARIABLE | _FF_ROMAN
+	FF_VARIABLE_SWISS      = _PITCH_VARIABLE | _FF_SWISS
+	FF_VARIABLE_MODERN     = _PITCH_VARIABLE | _FF_MODERN
+	FF_VARIABLE_SCRIPT     = _PITCH_VARIABLE | _FF_SCRIPT
+	FF_VARIABLE_DECORATIVE = _PITCH_VARIABLE | _FF_DECORATIVE
 )
 
 // [LOGFONT] lfWeight.
@@ -163,18 +236,23 @@ const (
 	GDC_COLORMGMTCAPS   GDC = 121
 )
 
-// [CreateHatchBrush] iHatch.
+// [LOGFONT] lfOutPrecision. Originally with OUT prefix and PRECIS suffix.
 //
-// [CreateHatchBrush]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createhatchbrush
-type HS int32
+// [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
+type OUT_PRECIS uint8
 
 const (
-	HS_HORIZONTAL HS = 0 // Pattern: -----
-	HS_VERTICAL   HS = 1 // Pattern: |||||
-	HS_FDIAGONAL  HS = 2 // Pattern: \\\\\
-	HS_BDIAGONAL  HS = 3 // Pattern: /////
-	HS_CROSS      HS = 4 // Pattern: +++++
-	HS_DIAGCROSS  HS = 5 // Pattern: xxxxx
+	OUT_PRECIS_DEFAULT        OUT_PRECIS = 0
+	OUT_PRECIS_STRING         OUT_PRECIS = 1
+	OUT_PRECIS_CHARACTER      OUT_PRECIS = 2
+	OUT_PRECIS_STROKE         OUT_PRECIS = 3
+	OUT_PRECIS_TT             OUT_PRECIS = 4
+	OUT_PRECIS_DEVICE         OUT_PRECIS = 5
+	OUT_PRECIS_RASTER         OUT_PRECIS = 6
+	OUT_PRECIS_TT_ONLY        OUT_PRECIS = 7
+	OUT_PRECIS_OUTLINE        OUT_PRECIS = 8
+	OUT_PRECIS_SCREEN_OUTLINE OUT_PRECIS = 9
+	OUT_PRECIS_PS_ONLY        OUT_PRECIS = 10
 )
 
 // [SetPolyFillMode] mode. Originally has no prefix.
@@ -226,6 +304,21 @@ const (
 	PT_LINETO      PT = 0x02
 	PT_BEZIERTO    PT = 0x04
 	PT_MOVETO      PT = 0x06
+)
+
+// [LOGFONT] lfQuality. Originally with QUALITY suffix.
+//
+// [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
+type QUALITY uint8
+
+const (
+	QUALITY_DEFAULT           QUALITY = 0
+	QUALITY_DRAFT             QUALITY = 1
+	QUALITY_PROOF             QUALITY = 2
+	QUALITY_NONANTIALIASED    QUALITY = 3
+	QUALITY_ANTIALIASED       QUALITY = 4
+	QUALITY_CLEARTYPE         QUALITY = 5
+	QUALITY_CLEARTYPE_NATURAL QUALITY = 6
 )
 
 // [SelectObject] return value. Originally with REGION suffix.
@@ -309,32 +402,4 @@ const (
 	TA_BOTTOM     TA = 8
 	TA_BASELINE   TA = 24
 	TA_RTLREADING TA = 256
-)
-
-// [TrackPopupMenu] uFlags.
-//
-// [TrackPopupMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
-type TPM uint32
-
-const (
-	TPM_LEFTBUTTON      TPM = 0x0000
-	TPM_RIGHTBUTTON     TPM = 0x0002
-	TPM_LEFTALIGN       TPM = 0x0000
-	TPM_CENTERALIGN     TPM = 0x0004
-	TPM_RIGHTALIGN      TPM = 0x0008
-	TPM_TOPALIGN        TPM = 0x0000
-	TPM_VCENTERALIGN    TPM = 0x0010
-	TPM_BOTTOMALIGN     TPM = 0x0020
-	TPM_HORIZONTAL      TPM = 0x0000
-	TPM_VERTICAL        TPM = 0x0040
-	TPM_NONOTIFY        TPM = 0x0080
-	TPM_RETURNCMD       TPM = 0x0100
-	TPM_RECURSE         TPM = 0x0001
-	TPM_HORPOSANIMATION TPM = 0x0400
-	TPM_HORNEGANIMATION TPM = 0x0800
-	TPM_VERPOSANIMATION TPM = 0x1000
-	TPM_VERNEGANIMATION TPM = 0x2000
-	TPM_NOANIMATION     TPM = 0x4000
-	TPM_LAYOUTRTL       TPM = 0x8000
-	TPM_WORKAREA        TPM = 0x1_0000
 )

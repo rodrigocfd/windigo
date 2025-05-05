@@ -1,0 +1,171 @@
+//go:build windows
+
+package win
+
+import (
+	"syscall"
+
+	"github.com/rodrigocfd/windigo/internal/dll"
+	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/win/co"
+)
+
+// Handle to a global [memory block].
+//
+// [memory block]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hglobal
+type HGLOBAL HANDLE
+
+// [GlobalAlloc] function.
+//
+// With co.GMEM_FIXED, the handle itself is the pointer to the memory block, and
+// it can optionally be passed to unsafe.Slice() to create a slice over the
+// memory block.
+//
+// With co.GMEM_MOVEABLE, you must call HGLOBAL.GlobalLock() to retrieve the
+// pointer.
+//
+// ⚠️ You must defer HGLOBAL.GlobalFree().
+//
+// # Example
+//
+//	hMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 50)
+//	defer hMem.GlobalFree()
+//
+//	ptrMem := hMem.GlobalLock(50)
+//	defer hMem.GlobalUnlock()
+//
+// [GlobalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
+func GlobalAlloc(uFlags co.GMEM, numBytes uint) (HGLOBAL, error) {
+	ret, _, err := syscall.SyscallN(_GlobalAlloc.Addr(),
+		uintptr(uFlags), uintptr(numBytes))
+	if ret == 0 {
+		return HGLOBAL(0), co.ERROR(err)
+	}
+	return HGLOBAL(ret), nil
+}
+
+var _GlobalAlloc = dll.Kernel32.NewProc("GlobalAlloc")
+
+// [GlobalFlags] function.
+//
+// [GlobalFlags]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalflags
+func (hGlobal HGLOBAL) GlobalFlags() (co.GMEM, error) {
+	ret, _, err := syscall.SyscallN(_GlobalFlags.Addr(),
+		uintptr(hGlobal))
+	if ret == util.GMEM_INVALID_HANDLE {
+		return co.GMEM(0), co.ERROR(err)
+	}
+	return co.GMEM(ret), nil
+}
+
+var _GlobalFlags = dll.Kernel32.NewProc("GlobalFlags")
+
+// [GlobalFree] function.
+//
+// Paired with [GlobalAlloc] and [GlobalReAlloc].
+//
+// This method is safe to be called if hGlobal is zero.
+//
+// [GlobalFree]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalfree
+// [GlobalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
+// [GlobalReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalrealloc
+func (hGlobal HGLOBAL) GlobalFree() error {
+	if hGlobal == 0 {
+		return nil // nothing to do
+	}
+
+	ret, _, err := syscall.SyscallN(_GlobalFree.Addr(),
+		uintptr(hGlobal))
+	if ret != 0 {
+		return co.ERROR(err)
+	}
+	return nil
+}
+
+var _GlobalFree = dll.Kernel32.NewProc("GlobalFree")
+
+// [GlobalLock] function.
+//
+// If you called GlobalAlloc() with co.GMEM_FIXED, technically you don't need to
+// call this method, because the handle itself is the pointer to the memory
+// block; however, this method is easier to use.
+//
+// ⚠️ You must defer HGLOBAL.GlobalUnlock().
+//
+// # Example
+//
+//	hMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 10)
+//	defer hMem.GlobalFree()
+//
+//	szMem, _ := hMem.GlobalSize()
+//
+//	ptrMem, _ := hMem.GlobalLock()
+//	defer hMem.GlobalUnlock()
+//
+//	sliceMem := unsafe.Slice((*byte)(unsafe.Pointer(ptrMem)), szMem)
+//
+// [GlobalLock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globallock
+func (hGlobal HGLOBAL) GlobalLock() (uintptr, error) {
+	ret, _, err := syscall.SyscallN(_GlobalLock.Addr(),
+		uintptr(hGlobal))
+	if ret == 0 {
+		return 0, co.ERROR(err)
+	}
+	return ret, nil
+}
+
+var _GlobalLock = dll.Kernel32.NewProc("GlobalLock")
+
+// [GlobalReAlloc] function.
+//
+// ⚠️ You must defer HGLOBAL.GlobalFree().
+//
+// # Example
+//
+//	hMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 10)
+//	defer hMem.GlobalFree()
+//
+//	hMem, _ := hMem.GlobalReAlloc(20, co.GMEM_FIXED|co.GMEM_ZEROINIT)
+//
+//	ptrMem, _ := hMem.GlobalLock(hMem.GlobalSize())
+//	defer hMem.GlobalUnlock()
+//
+// [GlobalReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalrealloc
+func (hGlobal HGLOBAL) GlobalReAlloc(numBytes uint, uFlags co.GMEM) (HGLOBAL, error) {
+	ret, _, err := syscall.SyscallN(_GlobalReAlloc.Addr(),
+		uintptr(hGlobal), uintptr(numBytes), uintptr(uFlags))
+	if ret == 0 {
+		return HGLOBAL(0), co.ERROR(err)
+	}
+	return HGLOBAL(ret), nil
+}
+
+var _GlobalReAlloc = dll.Kernel32.NewProc("GlobalReAlloc")
+
+// [GlobalSize] function.
+//
+// [GlobalSize]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalsize
+func (hGlobal HGLOBAL) GlobalSize() (uint, error) {
+	ret, _, err := syscall.SyscallN(_GlobalSize.Addr(),
+		uintptr(hGlobal))
+	if ret == 0 {
+		return 0, co.ERROR(err)
+	}
+	return uint(ret), nil
+}
+
+var _GlobalSize = dll.Kernel32.NewProc("GlobalSize")
+
+// [GlobalUnlock] function.
+//
+// [GlobalUnlock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalunlock
+func (hGlobal HGLOBAL) GlobalUnlock() error {
+	ret, _, err := syscall.SyscallN(_GlobalUnlock.Addr(),
+		uintptr(hGlobal))
+	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
+		return wErr
+	}
+	return nil
+}
+
+var _GlobalUnlock = dll.Kernel32.NewProc("GlobalUnlock")

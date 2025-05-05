@@ -20,14 +20,14 @@ const (
 type BTNS uint8
 
 const (
-	BTNS_BUTTON        BTNS = BTNS(TBSTYLE_BUTTON)
-	BTNS_SEP           BTNS = BTNS(TBSTYLE_SEP)
-	BTNS_CHECK         BTNS = BTNS(TBSTYLE_CHECK)
-	BTNS_GROUP         BTNS = BTNS(TBSTYLE_GROUP)
-	BTNS_CHECKGROUP    BTNS = BTNS(TBSTYLE_CHECKGROUP)
-	BTNS_DROPDOWN      BTNS = BTNS(TBSTYLE_DROPDOWN)
-	BTNS_AUTOSIZE      BTNS = BTNS(TBSTYLE_AUTOSIZE)
-	BTNS_NOPREFIX      BTNS = BTNS(TBSTYLE_NOPREFIX)
+	BTNS_BUTTON             = BTNS(TBSTYLE_BUTTON)
+	BTNS_SEP                = BTNS(TBSTYLE_SEP)
+	BTNS_CHECK              = BTNS(TBSTYLE_CHECK)
+	BTNS_GROUP              = BTNS(TBSTYLE_GROUP)
+	BTNS_CHECKGROUP         = BTNS(TBSTYLE_CHECKGROUP)
+	BTNS_DROPDOWN           = BTNS(TBSTYLE_DROPDOWN)
+	BTNS_AUTOSIZE           = BTNS(TBSTYLE_AUTOSIZE)
+	BTNS_NOPREFIX           = BTNS(TBSTYLE_NOPREFIX)
 	BTNS_SHOWTEXT      BTNS = 0x0040
 	BTNS_WHOLEDROPDOWN BTNS = 0x0080
 )
@@ -88,41 +88,6 @@ const (
 	CDRF_NOTIFYPOSTERASE   CDRF = 0x0000_0040
 )
 
-// Clipboard [formats].
-//
-// [formats]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/standard-clipboard-formats
-type CF uint16
-
-const (
-	CF_TEXT            CF = 1
-	CF_BITMAP          CF = 2
-	CF_METAFILEPICT    CF = 3
-	CF_SYLK            CF = 4
-	CF_DIF             CF = 5
-	CF_TIFF            CF = 6
-	CF_OEMTEXT         CF = 7
-	CF_DIB             CF = 8
-	CF_PALETTE         CF = 9
-	CF_PENDATA         CF = 10
-	CF_RIFF            CF = 11
-	CF_WAVE            CF = 12
-	CF_UNICODETEXT     CF = 13
-	CF_ENHMETAFILE     CF = 14
-	CF_HDROP           CF = 15
-	CF_LOCALE          CF = 16
-	CF_DIBV5           CF = 17
-	CF_MAX             CF = 18
-	CF_OWNERDISPLAY    CF = 0x0080
-	CF_DSPTEXT         CF = 0x0081
-	CF_DSPBITMAP       CF = 0x0082
-	CF_DSPMETAFILEPICT CF = 0x0083
-	CF_DSPENHMETAFILE  CF = 0x008e
-	CF_PRIVATEFIRST    CF = 0x0200
-	CF_PRIVATELAST     CF = 0x02ff
-	CF_GDIOBJFIRST     CF = 0x0300
-	CF_GDIOBJLAST      CF = 0x03ff
-)
-
 // DateTimePicker control [styles].
 //
 // [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-control-styles
@@ -160,6 +125,114 @@ const (
 	GDT_NONE  GDT = 1
 )
 
+// [HDITEM] mask.
+//
+// [HDITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-hditemw
+type HDF int32
+
+const (
+	HDF_NONE            HDF = 0
+	HDF_LEFT            HDF = 0x0000 // The item's contents are left-aligned.
+	HDF_RIGHT           HDF = 0x0001 // The item's contents are right-aligned.
+	HDF_CENTER          HDF = 0x0002 // The item's contents are centered.
+	HDF_JUSTIFYMASK     HDF = 0x0003 // Isolate the bits corresponding to the three justification flags listed in the preceding table.
+	HDF_RTLREADING      HDF = 0x0004
+	HDF_BITMAP          HDF = 0x2000
+	HDF_STRING          HDF = 0x4000
+	HDF_OWNERDRAW       HDF = 0x8000
+	HDF_IMAGE           HDF = 0x0800
+	HDF_BITMAP_ON_RIGHT HDF = 0x1000
+	HDF_SORTUP          HDF = 0x0400 // Draws an up-arrow on this item. This is typically used to indicate that information in the current window is sorted on this column in ascending order. This flag cannot be combined with HDF_IMAGE or HDF_BITMAP.
+	HDF_SORTDOWN        HDF = 0x0200 // Draws a down-arrow on this item. This is typically used to indicate that information in the current window is sorted on this column in descending order. This flag cannot be combined with HDF_IMAGE or HDF_BITMAP.
+	HDF_CHECKBOX        HDF = 0x0040
+	HDF_CHECKED         HDF = 0x0080
+	HDF_FIXEDWIDTH      HDF = 0x0100
+	HDF_SPLITBUTTON     HDF = 0x100_0000
+)
+
+// [HDITEM] type.
+//
+// [HDITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-hditemw
+type HDFT uint32
+
+const (
+	HDFT_ISSTRING   HDFT = 0x0000
+	HDFT_ISNUMBER   HDFT = 0x0001
+	HDFT_ISDATE     HDFT = 0x0002
+	HDFT_HASNOVALUE HDFT = 0x8000
+)
+
+// [HDITEM] mask.
+//
+// [HDITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-hditemw
+type HDI uint32
+
+const (
+	HDI_WIDTH      HDI = 0x0001
+	HDI_HEIGHT     HDI = HDI_WIDTH
+	HDI_TEXT       HDI = 0x0002
+	HDI_FORMAT     HDI = 0x0004
+	HDI_LPARAM     HDI = 0x0008
+	HDI_BITMAP     HDI = 0x0010
+	HDI_IMAGE      HDI = 0x0020
+	HDI_DI_SETITEM HDI = 0x0040
+	HDI_ORDER      HDI = 0x0080
+	HDI_FILTER     HDI = 0x0100
+	HDI_STATE      HDI = 0x0200
+)
+
+// [HDITEM] state.
+//
+// [HDITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-hditemw
+type HDIS uint32
+
+const (
+	HDIS_NONE    HDIS = 0
+	HDIS_FOCUSED HDIS = 0x0000_0001
+)
+
+// [NMHEADER] button. Originally has no definitions
+//
+// [NMHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmheaderw
+type HEADER_BTN int32
+
+const (
+	HEADER_BTN_LEFT   HEADER_BTN = 0
+	HEADER_BTN_RIGHT  HEADER_BTN = 1
+	HEADER_BTN_MIDDLE HEADER_BTN = 2
+)
+
+// Header control [styles].
+//
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/header-control-styles
+type HDS WS
+
+const (
+	HDS_NONE       HDS = 0
+	HDS_HORZ       HDS = 0x0000
+	HDS_BUTTONS    HDS = 0x0002
+	HDS_HOTTRACK   HDS = 0x0004
+	HDS_HIDDEN     HDS = 0x0008
+	HDS_DRAGDROP   HDS = 0x0040
+	HDS_FULLDRAG   HDS = 0x0080
+	HDS_FILTERBAR  HDS = 0x0100
+	HDS_FLAT       HDS = 0x0200
+	HDS_CHECKBOXES HDS = 0x0400
+	HDS_NOSIZING   HDS = 0x0800
+	HDS_OVERFLOW   HDS = 0x1000
+)
+
+// [HDM_GETIMAGELIST] and [HDM_SETIMAGELIST] type.
+//
+// [HDM_GETIMAGELIST]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getimagelist
+// [HDM_SETIMAGELIST]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-setimagelist
+type HDSIL uint8
+
+const (
+	HDSIL_NORMAL HDSIL = 0
+	HDSIL_STATE  HDSIL = 1
+)
+
 // [NMBCHOTITEM] and [NMTBHOTITEM] dwFlags, [NMTBWRAPHOTITEM] iReason.
 //
 // [NMBCHOTITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmbchotitem
@@ -180,7 +253,7 @@ const (
 	HICF_TOGGLEDROPDOWN HICF = 0x0000_0100
 )
 
-// [INITCOMMONCONTROLSEX] dwIcc.
+// [INITCOMMONCONTROLSEX] icc.
 //
 // [INITCOMMONCONTROLSEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
 type ICC uint32
@@ -395,6 +468,32 @@ const (
 	LVGIT_UNFOLDED LVGIT = 0x0001
 )
 
+// [LVHITTESTINFO] flags.
+//
+// [LVHITTESTINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvhittestinfo
+type LVHT uint32
+
+const (
+	LVHT_NOWHERE             LVHT = 0x0000_0001
+	LVHT_ONITEMICON          LVHT = 0x0000_0002
+	LVHT_ONITEMLABEL         LVHT = 0x0000_0004
+	LVHT_ONITEMSTATEICON     LVHT = 0x0000_0008
+	LVHT_ONITEM              LVHT = LVHT_ONITEMICON | LVHT_ONITEMLABEL | LVHT_ONITEMSTATEICON
+	LVHT_ABOVE               LVHT = 0x0000_0008
+	LVHT_BELOW               LVHT = 0x0000_0010
+	LVHT_TORIGHT             LVHT = 0x0000_0020
+	LVHT_TOLEFT              LVHT = 0x0000_0040
+	LVHT_EX_GROUP_HEADER     LVHT = 0x1000_0000
+	LVHT_EX_GROUP_FOOTER     LVHT = 0x2000_0000
+	LVHT_EX_GROUP_COLLAPSE   LVHT = 0x4000_0000
+	LVHT_EX_GROUP_BACKGROUND LVHT = 0x8000_0000
+	LVHT_EX_GROUP_STATEICON  LVHT = 0x0100_0000
+	LVHT_EX_GROUP_SUBSETLINK LVHT = 0x0200_0000
+	LVHT_EX_GROUP            LVHT = LVHT_EX_GROUP_BACKGROUND | LVHT_EX_GROUP_COLLAPSE | LVHT_EX_GROUP_FOOTER | LVHT_EX_GROUP_HEADER | LVHT_EX_GROUP_STATEICON | LVHT_EX_GROUP_SUBSETLINK
+	LVHT_EX_ONCONTENTS       LVHT = 0x0400_0000
+	LVHT_EX_FOOTER           LVHT = 0x0800_0000
+)
+
 // [LVITEM] iGroupId.
 //
 // [LVITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvitemw
@@ -462,32 +561,6 @@ const (
 	LVKF_SHIFT   LVKF = 0x0004
 )
 
-// [LVHITTESTINFO] flags.
-//
-// [LVHITTESTINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvhittestinfo
-type LVHT uint32
-
-const (
-	LVHT_NOWHERE             LVHT = 0x0000_0001
-	LVHT_ONITEMICON          LVHT = 0x0000_0002
-	LVHT_ONITEMLABEL         LVHT = 0x0000_0004
-	LVHT_ONITEMSTATEICON     LVHT = 0x0000_0008
-	LVHT_ONITEM              LVHT = LVHT_ONITEMICON | LVHT_ONITEMLABEL | LVHT_ONITEMSTATEICON
-	LVHT_ABOVE               LVHT = 0x0000_0008
-	LVHT_BELOW               LVHT = 0x0000_0010
-	LVHT_TORIGHT             LVHT = 0x0000_0020
-	LVHT_TOLEFT              LVHT = 0x0000_0040
-	LVHT_EX_GROUP_HEADER     LVHT = 0x1000_0000
-	LVHT_EX_GROUP_FOOTER     LVHT = 0x2000_0000
-	LVHT_EX_GROUP_COLLAPSE   LVHT = 0x4000_0000
-	LVHT_EX_GROUP_BACKGROUND LVHT = 0x8000_0000
-	LVHT_EX_GROUP_STATEICON  LVHT = 0x0100_0000
-	LVHT_EX_GROUP_SUBSETLINK LVHT = 0x0200_0000
-	LVHT_EX_GROUP            LVHT = LVHT_EX_GROUP_BACKGROUND | LVHT_EX_GROUP_COLLAPSE | LVHT_EX_GROUP_FOOTER | LVHT_EX_GROUP_HEADER | LVHT_EX_GROUP_STATEICON | LVHT_EX_GROUP_SUBSETLINK
-	LVHT_EX_ONCONTENTS       LVHT = 0x0400_0000
-	LVHT_EX_FOOTER           LVHT = 0x0800_0000
-)
-
 // [LVM_GETNEXTITEM] item relationship.
 //
 // [LVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getnextitem
@@ -517,6 +590,7 @@ const (
 type LVS WS
 
 const (
+	LVS_NONE            LVS = 0
 	LVS_ALIGNLEFT       LVS = 0x0800
 	LVS_ALIGNMASK       LVS = 0x0c00
 	LVS_ALIGNTOP        LVS = 0x0000
@@ -541,10 +615,10 @@ const (
 	LVS_TYPESTYLEMASK   LVS = 0xfc00
 )
 
-// ListView extended control [styles].
+// ListView control [extended styles].
 //
-// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/extended-list-view-styles
-type LVS_EX WS_EX
+// [extended styles]: https://learn.microsoft.com/en-us/windows/win32/controls/extended-list-view-styles
+type LVS_EX uint32
 
 const (
 	LVS_EX_NONE                  LVS_EX = 0
@@ -580,16 +654,17 @@ const (
 	LVS_EX_UNDERLINEHOT          LVS_EX = 0x0000_0800
 )
 
-// [LVM_GETIMAGELIST] type.
+// [LVM_GETIMAGELIST] and [LVM_SETIMAGELIST] type.
 //
 // [LVM_GETIMAGELIST]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getimagelist
+// [LVM_SETIMAGELIST]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setimagelist
 type LVSIL uint8
 
 const (
-	LVSIL_NORMAL      LVSIL = 0
-	LVSIL_SMALL       LVSIL = 1
-	LVSIL_STATE       LVSIL = 2
-	LVSIL_GROUPHEADER LVSIL = 3
+	LVSIL_NORMAL      LVSIL = 0 // Large icons (32 x 32).
+	LVSIL_SMALL       LVSIL = 1 // Small icons (16 x 16). If you're using the list view in report mode, this is what you want.
+	LVSIL_STATE       LVSIL = 2 // State icons (16 x 16).
+	LVSIL_GROUPHEADER LVSIL = 3 // Group header icons (16 x 16).
 )
 
 // SysLink control [styles].
@@ -677,22 +752,6 @@ const (
 	TBDDRET_DEFAULT      TBDDRET = 0
 	TBDDRET_NODEFAULT    TBDDRET = 1
 	TBDDRET_TREATPRESSED TBDDRET = 2
-)
-
-// [TBBUTTONINFO] dwMask.
-//
-// [TBBUTTONINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbuttoninfow
-type TBIF uint32
-
-const (
-	TBIF_IMAGE   TBIF = 0x0000_0001
-	TBIF_TEXT    TBIF = 0x0000_0002
-	TBIF_STATE   TBIF = 0x0000_0004
-	TBIF_STYLE   TBIF = 0x0000_0008
-	TBIF_LPARAM  TBIF = 0x0000_0010
-	TBIF_COMMAND TBIF = 0x0000_0020
-	TBIF_SIZE    TBIF = 0x0000_0040
-	TBIF_BYINDEX TBIF = 0x8000_0000
 )
 
 // [NMTBDISPINFO] dwMask.
@@ -783,9 +842,9 @@ const (
 	TBSTYLE_TRANSPARENT  TBSTYLE = 0x8000
 )
 
-// Toolbar control extended [styles].
+// Toolbar control [extended styles].
 //
-// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-extended-styles
+// [extended styles]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-extended-styles
 type TBSTYLE_EX uint32
 
 const (
@@ -798,16 +857,66 @@ const (
 	TBSTYLE_EX_DOUBLEBUFFER       TBSTYLE_EX = 0x0000_0080
 )
 
-// [TaskDialog] pszIcon. Originally with TD prefix and ICON suffix.
+// [TCITEM] mask.
 //
-// [TaskDialog]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
-type TD_ICON uint16
+// [TCITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tcitemw
+type TCIF uint32
 
 const (
-	TD_ICON_WARNING     TD_ICON = 0xffff
-	TD_ICON_ERROR       TD_ICON = 0xfffe
-	TD_ICON_INFORMATION TD_ICON = 0xfffd
-	TD_ICON_SHIELD      TD_ICON = 0xfffc
+	TCIF_TEXT       TCIF = 0x0001
+	TCIF_IMAGE      TCIF = 0x0002
+	TCIF_RTLREADING TCIF = 0x0004
+	TCIF_PARAM      TCIF = 0x0008
+	TCIF_STATE      TCIF = 0x0010
+)
+
+// [TCITEM] state.
+//
+// [TCITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tcitemw
+type TCIS uint32
+
+const (
+	TCIS_BUTTONPRESSED TCIS = 0x0001
+	TCIS_HIGHLIGHTED   TCIS = 0x0002
+)
+
+// Tab control [styles].
+//
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/tab-control-styles
+type TCS WS
+
+const (
+	TCS_SCROLLOPPOSITE    TCS = 0x0001
+	TCS_BOTTOM            TCS = 0x0002
+	TCS_RIGHT             TCS = 0x0002
+	TCS_MULTISELECT       TCS = 0x0004
+	TCS_FLATBUTTONS       TCS = 0x0008
+	TCS_FORCEICONLEFT     TCS = 0x0010
+	TCS_FORCELABELLEFT    TCS = 0x0020
+	TCS_HOTTRACK          TCS = 0x0040
+	TCS_VERTICAL          TCS = 0x0080
+	TCS_TABS              TCS = 0x0000
+	TCS_BUTTONS           TCS = 0x0100
+	TCS_SINGLELINE        TCS = 0x0000
+	TCS_MULTILINE         TCS = 0x0200
+	TCS_RIGHTJUSTIFY      TCS = 0x0000
+	TCS_FIXEDWIDTH        TCS = 0x0400
+	TCS_RAGGEDRIGHT       TCS = 0x0800
+	TCS_FOCUSONBUTTONDOWN TCS = 0x1000
+	TCS_OWNERDRAWFIXED    TCS = 0x2000
+	TCS_TOOLTIPS          TCS = 0x4000
+	TCS_FOCUSNEVER        TCS = 0x8000
+)
+
+// Tab control [extended styles].
+//
+// [extended styles]: https://learn.microsoft.com/en-us/windows/win32/controls/tab-control-extended-styles
+type TCS_EX uint32
+
+const (
+	TCS_EX_NONE           TCS_EX = 0
+	TCS_EX_FLATSEPARATORS TCS_EX = 0x0000_0001
+	TCS_EX_REGISTERDROP   TCS_EX = 0x0000_0002
 )
 
 // [TaskDialog] dwCommonButtons. Originally has BUTTON suffix.
@@ -822,6 +931,20 @@ const (
 	TDCBF_CANCEL TDCBF = 0x0008
 	TDCBF_RETRY  TDCBF = 0x0010
 	TDCBF_CLOSE  TDCBF = 0x0020
+)
+
+// [TaskDialog] and [TASKDIALOGCONFIG] pszIcon. Originally with TD prefix and
+// ICON suffix.
+//
+// [TaskDialog]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog
+// [TASKDIALOGCONFIG]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig
+type TDICON uint16
+
+const (
+	TDICON_WARNING     TDICON = 0xffff
+	TDICON_ERROR       TDICON = 0xfffe
+	TDICON_INFORMATION TDICON = 0xfffd
+	TDICON_SHIELD      TDICON = 0xfffc
 )
 
 // [TASKDIALOGCONFIG] dwFlags.
@@ -910,9 +1033,9 @@ const (
 	TVI_CHILDREN_AUTO     TVI_CHILDREN = -2
 )
 
-// [TVITEMTEX] mask.
+// [TVITEM] mask.
 //
-// [TVITEMTEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemexw
+// [TVITEM]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvitemw
 type TVIF uint32
 
 const (
@@ -992,10 +1115,10 @@ const (
 	TVS_NOHSCROLL       TVS = 0x8000
 )
 
-// TreeView control extended [styles].
+// TreeView control [extended styles].
 //
-// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-control-window-extended-styles
-type TVS_EX WS_EX
+// [extended styles]: https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-control-window-extended-styles
+type TVS_EX uint32
 
 const (
 	TVS_EX_NONE                TVS_EX = 0
@@ -1010,4 +1133,32 @@ const (
 	TVS_EX_EXCLUSIONCHECKBOXES TVS_EX = 0x0100
 	TVS_EX_DIMMEDCHECKBOXES    TVS_EX = 0x0200
 	TVS_EX_DRAWIMAGEASYNC      TVS_EX = 0x0400
+)
+
+// [TVM_GETIMAGELIST] and [TVM_SETIMAGELIST] type.
+//
+// [TVM_GETIMAGELIST]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getimagelist
+// [TVM_SETIMAGELIST]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-setimagelist
+type TVSIL uint8
+
+const (
+	TVSIL_NORMAL TVSIL = 0
+	TVSIL_STATE  TVSIL = 2
+)
+
+// UpDown control [styles].
+//
+// [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/up-down-control-styles
+type UDS WS
+
+const (
+	UDS_RAP         UDS = 0x0001
+	UDS_SETBUDDYINT UDS = 0x0002
+	UDS_ALIGNRIGHT  UDS = 0x0004
+	UDS_ALIGNLEFT   UDS = 0x0008
+	UDS_AUTOBUDDY   UDS = 0x0010
+	UDS_ARROWKEYS   UDS = 0x0020
+	UDS_HORZ        UDS = 0x0040
+	UDS_NOTHOUSANDS UDS = 0x0080
+	UDS_HOTTRACK    UDS = 0x0100
 )

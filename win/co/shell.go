@@ -32,6 +32,7 @@ const (
 	NIIF_NOSOUND            NIIF = 0x0000_0010
 	NIIF_LARGE_ICON         NIIF = 0x0000_0020
 	NIIF_RESPECT_QUIET_TIME NIIF = 0x0000_0080
+	NIIF_ICON_MASK          NIIF = 0x0000_000f
 )
 
 // [Shell_NotifyIcon] dwMessage.
@@ -47,7 +48,7 @@ const (
 	NIM_SETVERSION NIM = 0x0000_0004
 )
 
-// [NOTIFYICONDATA] dwState and dwStateMask.
+// [NOTIFYICONDATA] dwState.
 //
 // [NOTIFYICONDATA]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
 type NIS uint32
@@ -105,6 +106,27 @@ const (
 	SFGAO_STORAGEANCESTOR SFGAO = 0x0080_0000
 	SFGAO_STORAGECAPMASK  SFGAO = 0x70c5_0008
 	SFGAO_PKEYSFGAOMASK   SFGAO = 0x8104_4000
+)
+
+// [SHCONTF] enumeration.
+//
+// [SHCONTF]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_shcontf
+type SHCONTF uint32
+
+const (
+	SHCONTF_CHECKING_FOR_CHILDREN SHCONTF = 0x10
+	SHCONTF_FOLDERS               SHCONTF = 0x20
+	SHCONTF_NONFOLDERS            SHCONTF = 0x40
+	SHCONTF_INCLUDEHIDDEN         SHCONTF = 0x80
+	SHCONTF_INIT_ON_FIRST_NEXT    SHCONTF = 0x100
+	SHCONTF_NETPRINTERSRCH        SHCONTF = 0x200
+	SHCONTF_SHAREABLE             SHCONTF = 0x400
+	SHCONTF_STORAGE               SHCONTF = 0x800
+	SHCONTF_NAVIGATION_ENUM       SHCONTF = 0x1000
+	SHCONTF_FASTITEMS             SHCONTF = 0x2000
+	SHCONTF_FLATLIST              SHCONTF = 0x4000
+	SHCONTF_ENABLE_ASYNC          SHCONTF = 0x8000
+	SHCONTF_INCLUDESUPERHIDDEN    SHCONTF = 0x1_0000
 )
 
 // [SHGetFileInfo] uFlags.

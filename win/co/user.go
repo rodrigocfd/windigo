@@ -15,41 +15,6 @@ const (
 	ACCELF_ALT     ACCELF = 0x10
 )
 
-// [DdeInitialize] afCmd. Includes the prefixes APPCLASS, APPCMD, CBF and MF.
-//
-// [DdeInitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddeinitializew
-type AFCMD uint32
-
-const (
-	AFCMD_APPCLASS_MONITOR  AFCMD = 0x0000_0001
-	AFCMD_APPCLASS_STANDARD AFCMD = 0x0000_0000
-
-	AFCMD_APPCMD_CLIENTONLY  AFCMD = 0x0000_0010
-	AFCMD_APPCMD_FILTERINITS AFCMD = 0x0000_0020
-
-	AFCMD_CBF_FAIL_ALLSVRXACTIONS  AFCMD = 0x0003_f000
-	AFCMD_CBF_FAIL_ADVISES         AFCMD = 0x0000_4000
-	AFCMD_CBF_FAIL_CONNECTIONS     AFCMD = 0x0000_2000
-	AFCMD_CBF_FAIL_EXECUTES        AFCMD = 0x0000_8000
-	AFCMD_CBF_FAIL_POKES           AFCMD = 0x0001_0000
-	AFCMD_CBF_FAIL_REQUESTS        AFCMD = 0x0002_0000
-	AFCMD_CBF_FAIL_SELFCONNECTIONS AFCMD = 0x0000_1000
-
-	AFCMD_CBF_SKIP_ALLNOTIFICATIONS AFCMD = 0x003c_0000
-	AFCMD_CBF_SKIP_CONNECT_CONFIRMS AFCMD = 0x0004_0000
-	AFCMD_CBF_SKIP_DISCONNECTS      AFCMD = 0x0020_0000
-	AFCMD_CBF_SKIP_REGISTRATIONS    AFCMD = 0x0008_0000
-	AFCMD_CBF_SKIP_UNREGISTRATIONS  AFCMD = 0x0010_0000
-
-	AFCMD_MF_CALLBACKS AFCMD = 0x0800_0000
-	AFCMD_MF_CONV      AFCMD = 0x4000_0000
-	AFCMD_MF_ERRORS    AFCMD = 0x1000_0000
-	AFCMD_MF_HSZ_INFO  AFCMD = 0x0100_0000
-	AFCMD_MF_LINKS     AFCMD = 0x2000_0000
-	AFCMD_MF_POSTMSGS  AFCMD = 0x0400_0000
-	AFCMD_MF_SENDMSGS  AFCMD = 0x02000000
-)
-
 // [WM_APPCOMMAND] command.
 //
 // [WM_APPCOMMAND]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-appcommand
@@ -148,17 +113,6 @@ const (
 	BS_RIGHTBUTTON     BS = BS_LEFTTEXT
 )
 
-// [BroadcastSystemMessage] lpInfo.
-//
-// [BroadcastSystemMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
-type BSM uint32
-
-const (
-	BSM_ALLCOMPONENTS BSM = 0x00000000
-	BSM_ALLDESKTOPS   BSM = 0x00000010
-	BSM_APPLICATIONS  BSM = 0x00000008
-)
-
 // [BroadcastSystemMessage] flags.
 //
 // [BroadcastSystemMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
@@ -174,6 +128,17 @@ const (
 	BSF_POSTMESSAGE        BSF = 0x0000_0010
 	BSF_QUERY              BSF = 0x0000_0001
 	BSF_SENDNOTIFYMESSAGE  BSF = 0x0000_0100
+)
+
+// [BroadcastSystemMessage] lpInfo.
+//
+// [BroadcastSystemMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-broadcastsystemmessagew
+type BSM uint32
+
+const (
+	BSM_ALLCOMPONENTS BSM = 0x00000000
+	BSM_ALLDESKTOPS   BSM = 0x00000010
+	BSM_APPLICATIONS  BSM = 0x00000008
 )
 
 // [IsDlgButtonChecked] return value, among others.
@@ -208,6 +173,41 @@ const (
 	CBS_DISABLENOSCROLL   CBS = 0x0800
 	CBS_UPPERCASE         CBS = 0x2000
 	CBS_LOWERCASE         CBS = 0x4000
+)
+
+// Clipboard [formats].
+//
+// [formats]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/standard-clipboard-formats
+type CF uint16
+
+const (
+	CF_TEXT            CF = 1
+	CF_BITMAP          CF = 2
+	CF_METAFILEPICT    CF = 3
+	CF_SYLK            CF = 4
+	CF_DIF             CF = 5
+	CF_TIFF            CF = 6
+	CF_OEMTEXT         CF = 7
+	CF_DIB             CF = 8
+	CF_PALETTE         CF = 9
+	CF_PENDATA         CF = 10
+	CF_RIFF            CF = 11
+	CF_WAVE            CF = 12
+	CF_UNICODETEXT     CF = 13
+	CF_ENHMETAFILE     CF = 14
+	CF_HDROP           CF = 15
+	CF_LOCALE          CF = 16
+	CF_DIBV5           CF = 17
+	CF_MAX             CF = 18
+	CF_OWNERDISPLAY    CF = 0x0080
+	CF_DSPTEXT         CF = 0x0081
+	CF_DSPBITMAP       CF = 0x0082
+	CF_DSPMETAFILEPICT CF = 0x0083
+	CF_DSPENHMETAFILE  CF = 0x008e
+	CF_PRIVATEFIRST    CF = 0x0200
+	CF_PRIVATELAST     CF = 0x02ff
+	CF_GDIOBJFIRST     CF = 0x0300
+	CF_GDIOBJLAST      CF = 0x03ff
 )
 
 // [GetSysColor] nIndex.
@@ -272,6 +272,17 @@ const (
 	CS_BYTEALIGNWINDOW CS = 0x2000
 	CS_GLOBALCLASS     CS = 0x4000
 	CS_DROPSHADOW      CS = 0x0002_0000
+)
+
+// [CURSORINFO] flags.
+//
+// [CURSORINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-cursorinfo
+type CURSOR uint32
+
+const (
+	CURSOR_HIDDEN     CURSOR = 0
+	CURSOR_SHOWING    CURSOR = 0x0000_0001
+	CURSOR_SUPPRESSED CURSOR = 0x0000_0002
 )
 
 // [ChildWindowFromPointEx] flags.
@@ -342,31 +353,6 @@ const (
 	DLGC_WANTCHARS       DLGC = 0x0080
 	DLGC_STATIC          DLGC = 0x0100
 	DLGC_BUTTON          DLGC = 0x2000
-)
-
-// [DdeNameService] opts. Originally with DNS prefix.
-//
-// [DdeNameService]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nf-ddeml-ddenameservice
-type DDENS uint32
-
-const (
-	DDENS_REGISTER   DDENS = 0x0001
-	DDENS_UNREGISTER DDENS = 0x0002
-	DDENS_FILTERON   DDENS = 0x0003
-	DDENS_FILTEROFF  DDENS = 0x0004
-)
-
-// [SetProcessDpiAwarenessContext] value.
-//
-// [SetProcessDpiAwarenessContext]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
-type DPI_AWARE_CTX int32
-
-const (
-	DPI_AWARE_CTX_UNAWARE           DPI_AWARE_CTX = -1
-	DPI_AWARE_CTX_SYSTEM_AWARE      DPI_AWARE_CTX = -2
-	DPI_AWARE_CTX_PER_MON_AWARE     DPI_AWARE_CTX = -3
-	DPI_AWARE_CTX_PER_MON_AWARE_V2  DPI_AWARE_CTX = -4
-	DPI_AWARE_CTX_UNAWARE_GDISCALED DPI_AWARE_CTX = -5
 )
 
 // [EnumDisplayDevices] flags.
@@ -455,16 +441,6 @@ const (
 	GCL_WNDPROC       GCL = -24
 )
 
-// [GetMenuDefaultItem] gmdiFlags.
-//
-// [GetMenuDefaultItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenudefaultitem
-type GMDI uint32
-
-const (
-	GMDI_GOINTOPOPUPS GMDI = 0x0002
-	GMDI_USEDISABLED  GMDI = 0x0001
-)
-
 // [GUITHREADINFO] flags.
 //
 // [GUITHREADINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-guithreadinfo
@@ -476,6 +452,16 @@ const (
 	GUI_INMOVESIZE     GUI = 0x0000_0002
 	GUI_POPUPMENUMODE  GUI = 0x0000_0010
 	GUI_SYSTEMMENUMODE GUI = 0x0000_0008
+)
+
+// [GetMenuDefaultItem] gmdiFlags.
+//
+// [GetMenuDefaultItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenudefaultitem
+type GMDI uint32
+
+const (
+	GMDI_GOINTOPOPUPS GMDI = 0x0002
+	GMDI_USEDISABLED  GMDI = 0x0001
 )
 
 // [GetWindow] uCmd.
@@ -491,24 +477,6 @@ const (
 	GW_OWNER        GW = 4
 	GW_CHILD        GW = 5
 	GW_ENABLEDPOPUP GW = 6
-)
-
-// [SetWindowsHookEx] callback CBT hook codes.
-//
-// [SetWindowsHookEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
-type HCBT int32
-
-const (
-	HCBT_MOVESIZE     HCBT = 0
-	HCBT_MINMAX       HCBT = 1
-	HCBT_QS           HCBT = 2
-	HCBT_CREATEWND    HCBT = 3
-	HCBT_DESTROYWND   HCBT = 4
-	HCBT_ACTIVATE     HCBT = 5
-	HCBT_CLICKSKIPPED HCBT = 6
-	HCBT_KEYSKIPPED   HCBT = 7
-	HCBT_SYSCOMMAND   HCBT = 8
-	HCBT_SETFOCUS     HCBT = 9
 )
 
 // [HELPINFO] iContextType.
@@ -558,19 +526,6 @@ const (
 	HT_HELP        HT = 21
 )
 
-// [SetWindowPos] hwndInsertAfter. Can be converted to HWND.
-//
-// [SetWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
-type HWND_IA int32
-
-const (
-	HWND_IA_NONE      HWND_IA = 0
-	HWND_IA_BOTTOM    HWND_IA = 1
-	HWND_IA_NOTOPMOST HWND_IA = -2
-	HWND_IA_TOP       HWND_IA = 0
-	HWND_IA_TOPMOST   HWND_IA = -1
-)
-
 // [WM_SETICON] icon size. Originally with ICON prefix.
 //
 // [WM_SETICON]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-seticon
@@ -599,28 +554,31 @@ const (
 	ID_YES      ID = 6
 )
 
-// [LoadCursor] lpCursorName.
+// Standard [cursors].
 //
-// [LoadCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
+// [cursors]: https://learn.microsoft.com/en-us/windows/win32/menurc/about-cursors
 type IDC uintptr
 
 const (
-	IDC_ARROW       IDC = 32512
-	IDC_IBEAM       IDC = 32513
-	IDC_WAIT        IDC = 32514
-	IDC_CROSS       IDC = 32515
-	IDC_UPARROW     IDC = 32516
-	IDC_SIZENWSE    IDC = 32642
-	IDC_SIZENESW    IDC = 32643
-	IDC_SIZEWE      IDC = 32644
-	IDC_SIZENS      IDC = 32645
-	IDC_SIZEALL     IDC = 32646
-	IDC_NO          IDC = 32648
-	IDC_HAND        IDC = 32649
-	IDC_APPSTARTING IDC = 32650
-	IDC_HELP        IDC = 32651
-	IDC_PIN         IDC = 32671
-	IDC_PERSON      IDC = 32672
+	IDC_ARROW       IDC = 32512 // Normal select.
+	IDC_IBEAM       IDC = 32513 // Text select.
+	IDC_WAIT        IDC = 32514 // Busy.
+	IDC_CROSS       IDC = 32515 // Precision select.
+	IDC_UPARROW     IDC = 32516 // Alternate select.
+	IDC_SIZENWSE    IDC = 32642 // Diagonal resize 1.
+	IDC_SIZENESW    IDC = 32643 // Diagonal resize 2.
+	IDC_SIZEWE      IDC = 32644 // Horizontal resize.
+	IDC_SIZENS      IDC = 32645 // Vertical resize.
+	IDC_SIZEALL     IDC = 32646 // Move.
+	IDC_NO          IDC = 32648 // Unavailable.
+	IDC_HAND        IDC = 32649 // Link select.
+	IDC_APPSTARTING IDC = 32650 // Working in background.
+	IDC_HELP        IDC = 32651 // Help select.
+	IDC_PIN         IDC = 32671 // Location select.
+	IDC_PERSON      IDC = 32672 // Person select.
+
+	IDC_PEN IDC = 32631 // A pen cursor.
+	IDC_CD  IDC = 32663 // An arrow CD cursor.
 )
 
 // [WM_HOTKEY] identifier.
@@ -717,16 +675,6 @@ const (
 	LSFW_UNLOCK LSFW = 2
 )
 
-// [SetLayeredWindowAttributes] flags.
-//
-// [SetLayeredWindowAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setlayeredwindowattributes
-type LWA uint32
-
-const (
-	LWA_ALPHA    LWA = 0x0000_0002
-	LWA_COLORKEY LWA = 0x0000_0001
-)
-
 // [MessageBox] uType.
 //
 // [MessageBox]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
@@ -768,16 +716,6 @@ const (
 	MB_SERVICE_NOTIFICATION MB = 0x0020_0000
 )
 
-// [WM_MENUCHAR] menu type. Originally with MF prefix.
-//
-// [WM_MENUCHAR]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menuchar
-type MFMC uint16
-
-const (
-	POPUP   MFMC = 0x0000_0010
-	SYSMENU MFMC = 0x0000_2000
-)
-
 // [CheckMenuItem] uCheck, among others.
 //
 // [CheckMenuItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-checkmenuitem
@@ -811,6 +749,16 @@ const (
 	MF_HELP            MF = 0x0000_4000
 	MF_RIGHTJUSTIFY    MF = 0x0000_4000
 	MF_MOUSESELECT     MF = 0x0000_8000
+)
+
+// [WM_MENUCHAR] menu type. Originally with MF prefix.
+//
+// [WM_MENUCHAR]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menuchar
+type MFMC uint16
+
+const (
+	POPUP   MFMC = 0x0000_0010
+	SYSMENU MFMC = 0x0000_2000
 )
 
 // [MENUITEMINFO] fState.
@@ -892,16 +840,6 @@ const (
 	MK_XBUTTON2 MK = 0x0040
 )
 
-// [MONITORINFO] dwFlags
-//
-// [MONITORINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfo
-type MONITORINFOF uint32
-
-const (
-	MONITORINFOF_OTHER   MONITORINFOF = 0
-	MONITORINFOF_PRIMARY MONITORINFOF = 0x0000_0001
-)
-
 // [WM_MENUCHAR] return value.
 //
 // [WM_MENUCHAR]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menuchar
@@ -970,9 +908,11 @@ const (
 	MOD_WIN     MOD = 0x0008
 )
 
-// [MonitorFromPoint] dwFlags.
+// [MonitorFromPoint], [MonitorFromRect] and [MonitorFromWindow] flags.
 //
 // [MonitorFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
+// [MonitorFromRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromrect
+// [MonitorFromWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromwindow
 type MONITOR uint32
 
 const (
@@ -1000,28 +940,6 @@ const (
 	ODA_DRAWENTIRE ODA = 0x0001
 	ODA_SELECT     ODA = 0x0002
 	ODA_FOCUS      ODA = 0x0004
-)
-
-// [SetSystemCursor] id.
-//
-// [SetSystemCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setsystemcursor
-type OCR uint32
-
-const (
-	OCR_APPSTARTING OCR = 32650
-	OCR_NORMAL      OCR = 32512
-	OCR_CROSS       OCR = 32515
-	OCR_HAND        OCR = 32649
-	OCR_HELP        OCR = 32651
-	OCR_IBEAM       OCR = 32513
-	OCR_NO          OCR = 32648
-	OCR_SIZEALL     OCR = 32646
-	OCR_SIZENESW    OCR = 32643
-	OCR_SIZENS      OCR = 32645
-	OCR_SIZENWSE    OCR = 32642
-	OCR_SIZEWE      OCR = 32644
-	OCR_UP          OCR = 32516
-	OCR_WAIT        OCR = 32514
 )
 
 // [DRAWITEMSTRUCT] itemState.
@@ -1080,16 +998,39 @@ const (
 	PM_REMOVE   PM = 0x0001
 	PM_NOYIELD  PM = 0x0002
 
-	PM_QS_INPUT       PM = PM(QS_INPUT << 16)
-	PM_QS_PAINT       PM = PM(QS_PAINT << 16)
-	PM_QS_POSTMESSAGE PM = PM((QS_POSTMESSAGE | QS_HOTKEY | QS_TIMER) << 16)
-	PM_QS_SENDMESSAGE PM = PM(QS_SENDMESSAGE << 16)
+	PM_QS_INPUT       PM = PM(uint32(QS_INPUT) << 16)
+	PM_QS_PAINT       PM = PM(uint32(QS_PAINT) << 16)
+	PM_QS_POSTMESSAGE PM = PM(uint32(QS_POSTMESSAGE|QS_HOTKEY|QS_TIMER) << 16)
+	PM_QS_SENDMESSAGE PM = PM(uint32(QS_SENDMESSAGE) << 16)
+)
+
+// [RedrawWindow] flags.
+//
+// [RedrawWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-redrawwindow
+type RDW uint32
+
+const (
+	RDW_ERASE         RDW = 0x0004
+	RDW_FRAME         RDW = 0x0400
+	RDW_INTERNALPAINT RDW = 0x0002
+	RDW_INVALIDATE    RDW = 0x0001
+
+	RDW_NOERASE         RDW = 0x0020
+	RDW_NOFRAME         RDW = 0x0800
+	RDW_NOINTERNALPAINT RDW = 0x0010
+	RDW_VALIDATE        RDW = 0x0008
+
+	RDW_ERASENOW  RDW = 0x0200
+	RDW_UPDATENOW RDW = 0x0100
+
+	RDW_ALLCHILDREN RDW = 0x0080
+	RDW_NOCHILDREN  RDW = 0x0040
 )
 
 // [GetQueueStatus] flags.
 //
 // [GetQueueStatus]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getqueuestatus
-type QS uint32
+type QS uint16
 
 const (
 	QS_KEY            QS = 0x0001
@@ -1107,6 +1048,35 @@ const (
 	QS_MOUSE          QS = QS_MOUSEMOVE | QS_MOUSEBUTTON
 	QS_INPUT          QS = QS_MOUSE | QS_KEY | QS_RAWINPUT | QS_TOUCH | QS_POINTER
 	QS_ALLINPUT       QS = QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY | QS_SENDMESSAGE
+)
+
+// Resource [types].
+//
+// [types]: https://learn.microsoft.com/en-us/windows/win32/menurc/resource-types
+type RT uint32
+
+const (
+	RT_ACCELERATOR  RT = 9
+	RT_ANICURSOR    RT = 21
+	RT_ANIICON      RT = 22
+	RT_BITMAP       RT = 2
+	RT_CURSOR       RT = 1
+	RT_DIALOG       RT = 5
+	RT_DLGINCLUDE   RT = 17
+	RT_FONT         RT = 8
+	RT_FONTDIR      RT = 7
+	RT_GROUP_CURSOR    = RT_CURSOR + 11
+	RT_GROUP_ICON      = RT_ICON + 11
+	RT_HTML         RT = 23
+	RT_ICON         RT = 3
+	RT_MANIFEST     RT = 24
+	RT_MENU         RT = 4
+	RT_MESSAGETABLE RT = 11
+	RT_PLUGPLAY     RT = 19
+	RT_RCDATA       RT = 10
+	RT_STRING       RT = 6
+	RT_VERSION      RT = 16
+	RT_VXD          RT = 20
 )
 
 // [WM_HSCROLL], [WM_VSCROLL], [WM_HSCROLLCLIPBOARD] and [WM_VSCROLLCLIPBOARD]
@@ -1136,18 +1106,6 @@ const (
 	SB_REQ_ENDSCROLL     SB_REQ = 8
 )
 
-// [GetScrollInfo] nBar, among others. Originally has SB prefix.
-//
-// [GetScrollInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getscrollinfo
-type SB_TYPE int32
-
-const (
-	SB_TYPE_HORZ SB_TYPE = 0
-	SB_TYPE_VERT SB_TYPE = 1
-	SB_TYPE_CTL  SB_TYPE = 2
-	SB_TYPE_BOTH SB_TYPE = 3
-)
-
 // [WM_SYSCOMMAND] type of requested command.
 //
 // [WM_SYSCOMMAND]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-syscommand
@@ -1174,32 +1132,6 @@ const (
 	SC_MONITORPOWER SC = 0xf170
 	SC_CONTEXTHELP  SC = 0xf180
 	SC_SEPARATOR    SC = 0xf00f
-)
-
-// [SECURITY_IMPERSONATION_LEVEL] enumeration.
-//
-// [SECURITY_IMPERSONATION_LEVEL]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ne-winnt-security_impersonation_level
-type SECURITY_IMPERSONATION_LEVEL uint32
-
-const (
-	SECURITY_IMPERSONATION_LEVEL_ANONYMOUS SECURITY_IMPERSONATION_LEVEL = iota
-	SECURITY_IMPERSONATION_LEVEL_IDENTIFICATION
-	SECURITY_IMPERSONATION_LEVEL_IMPERSONATION
-	SECURITY_IMPERSONATION_LEVEL_DELAGATION
-)
-
-// [SCROLLINFO] fMask.
-//
-// [SCROLLINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-scrollinfo
-type SIF uint32
-
-const (
-	SIF_RANGE           SIF = 0x0001
-	SIF_PAGE            SIF = 0x0002
-	SIF_POS             SIF = 0x0004
-	SIF_DISABLENOSCROLL SIF = 0x0008
-	SIF_TRACKPOS        SIF = 0x0010
-	SIF_ALL             SIF = SIF_RANGE | SIF_PAGE | SIF_POS | SIF_TRACKPOS
 )
 
 // [WM_SIZE] request.
@@ -1322,19 +1254,6 @@ const (
 	SM_CARETBLINKINGENABLED        SM = 0x2002
 	SM_CONVERTIBLESLATEMODE        SM = 0x2003
 	SM_SYSTEMDOCKED                SM = 0x2004
-)
-
-// [SendMessageTimeout] flags.
-//
-// [SendMessageTimeout]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessagetimeoutw
-type SMTO uint32
-
-const (
-	SMTO_ABORTIFHUNG        SMTO = 0x0002
-	SMTO_BLOCK              SMTO = 0x0001
-	SMTO_NORMAL             SMTO = 0x0000
-	SMTO_NOTIMEOUTIFNOTHUNG SMTO = 0x0008
-	SMTO_ERRORONEXIT        SMTO = 0x0020
 )
 
 // [SystemParametersInfo] uiAction.
@@ -1612,6 +1531,34 @@ const (
 	TB_REQ_ENDTRACK      TB_REQ = 8
 )
 
+// [TrackPopupMenu] uFlags.
+//
+// [TrackPopupMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
+type TPM uint32
+
+const (
+	TPM_LEFTBUTTON      TPM = 0x0000
+	TPM_RIGHTBUTTON     TPM = 0x0002
+	TPM_LEFTALIGN       TPM = 0x0000
+	TPM_CENTERALIGN     TPM = 0x0004
+	TPM_RIGHTALIGN      TPM = 0x0008
+	TPM_TOPALIGN        TPM = 0x0000
+	TPM_VCENTERALIGN    TPM = 0x0010
+	TPM_BOTTOMALIGN     TPM = 0x0020
+	TPM_HORIZONTAL      TPM = 0x0000
+	TPM_VERTICAL        TPM = 0x0040
+	TPM_NONOTIFY        TPM = 0x0080
+	TPM_RETURNCMD       TPM = 0x0100
+	TPM_RECURSE         TPM = 0x0001
+	TPM_HORPOSANIMATION TPM = 0x0400
+	TPM_HORNEGANIMATION TPM = 0x0800
+	TPM_VERPOSANIMATION TPM = 0x1000
+	TPM_VERNEGANIMATION TPM = 0x2000
+	TPM_NOANIMATION     TPM = 0x4000
+	TPM_LAYOUTRTL       TPM = 0x8000
+	TPM_WORKAREA        TPM = 0x1_0000
+)
+
 // [SetUserObjectInformation] nIndex.
 //
 // [SetUserObjectInformation]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setuserobjectinformationw
@@ -1628,21 +1575,21 @@ const (
 type VK uint16
 
 const (
-	VK_LBUTTON             VK = 0x01
-	VK_RBUTTON             VK = 0x02
+	VK_LBUTTON             VK = 0x01 // Left mouse button.
+	VK_RBUTTON             VK = 0x02 // Right mouse button.
 	VK_CANCEL              VK = 0x03
-	VK_MBUTTON             VK = 0x04
+	VK_MBUTTON             VK = 0x04 // Middle mouse button.
 	VK_XBUTTON1            VK = 0x05
 	VK_XBUTTON2            VK = 0x06
-	VK_BACK                VK = 0x08
+	VK_BACK                VK = 0x08 // Backspace key.
 	VK_TAB                 VK = 0x09
 	VK_CLEAR               VK = 0x0c
-	VK_RETURN              VK = 0x0d
+	VK_RETURN              VK = 0x0d // Enter key.
 	VK_SHIFT               VK = 0x10
 	VK_CONTROL             VK = 0x11
-	VK_MENU                VK = 0x12
+	VK_MENU                VK = 0x12 // Alt key.
 	VK_PAUSE               VK = 0x13
-	VK_CAPITAL             VK = 0x14
+	VK_CAPITAL             VK = 0x14 // Caps lock key.
 	VK_KANA                VK = 0x15
 	VK_HANGEUL             VK = 0x15
 	VK_HANGUL              VK = 0x15
@@ -1650,14 +1597,14 @@ const (
 	VK_FINAL               VK = 0x18
 	VK_HANJA               VK = 0x19
 	VK_KANJI               VK = 0x19
-	VK_ESCAPE              VK = 0x1b
+	VK_ESCAPE              VK = 0x1b // Esc key.
 	VK_CONVERT             VK = 0x1c
 	VK_NONCONVERT          VK = 0x1d
 	VK_ACCEPT              VK = 0x1e
 	VK_MODECHANGE          VK = 0x1f
-	VK_SPACE               VK = 0x20
-	VK_PRIOR               VK = 0x21
-	VK_NEXT                VK = 0x22
+	VK_SPACE               VK = 0x20 // Space bar.
+	VK_PRIOR               VK = 0x21 // Page up key.
+	VK_NEXT                VK = 0x22 // Page down key.
 	VK_END                 VK = 0x23
 	VK_HOME                VK = 0x24
 	VK_LEFT                VK = 0x25
@@ -1667,14 +1614,14 @@ const (
 	VK_SELECT              VK = 0x29
 	VK_PRINT               VK = 0x2a
 	VK_EXECUTE             VK = 0x2b
-	VK_SNAPSHOT            VK = 0x2c
+	VK_SNAPSHOT            VK = 0x2c // Print screen key.
 	VK_INSERT              VK = 0x2d
 	VK_DELETE              VK = 0x2e
 	VK_HELP                VK = 0x2f
-	VK_LWIN                VK = 0x5b
-	VK_RWIN                VK = 0x5c
+	VK_LWIN                VK = 0x5b // Left Windows key.
+	VK_RWIN                VK = 0x5c // Right Windows key.
 	VK_APPS                VK = 0x5d
-	VK_SLEEP               VK = 0x5f
+	VK_SLEEP               VK = 0x5f // Computer sleep key.
 	VK_NUMPAD0             VK = 0x60
 	VK_NUMPAD1             VK = 0x61
 	VK_NUMPAD2             VK = 0x62
@@ -1801,38 +1748,19 @@ const (
 	WA_CLICKACTIVE WA = 2
 )
 
-// [SetWindowDisplayAffinity] dwAffinity
+// [WM_PARENTNOTIFY] event.
 //
-// [SetWindowDisplayAffinity]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity
-type WDA uint32
+// [WM_PARENTNOTIFY] https://learn.microsoft.com/en-us/windows/win32/inputmsg/wm-parentnotify
+type WMPN uint16
 
 const (
-	WDA_NONE               WDA = 0x0000_0000
-	WDA_MONITOR            WDA = 0x0000_0001
-	WDA_EXCLUDEFROMCAPTURE WDA = 0x0000_0011
-)
-
-// [SetWindowsHookEx] idHook.
-//
-// [SetWindowsHookEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
-type WH int32
-
-const (
-	WH_MSGFILTER       WH = -1
-	WH_JOURNALRECORD   WH = 0
-	WH_JOURNALPLAYBACK WH = 1
-	WH_KEYBOARD        WH = 2
-	WH_GETMESSAGE      WH = 3
-	WH_CALLWNDPROC     WH = 4
-	WH_CBT             WH = 5
-	WH_SYSMSGFILTER    WH = 6
-	WH_MOUSE           WH = 7
-	WH_DEBUG           WH = 9
-	WH_SHELL           WH = 10
-	WH_FOREGROUNDIDLE  WH = 11
-	WH_CALLWNDPROCRET  WH = 12
-	WH_KEYBOARD_LL     WH = 13
-	WH_MOUSE_LL        WH = 14
+	WMPN_CREATE      WMPN = WMPN(WM_CREATE)
+	WMPN_DESTROY     WMPN = WMPN(WM_DESTROY)
+	WMPN_LBUTTONDOWN WMPN = WMPN(WM_LBUTTONDOWN)
+	WMPN_MBUTTONDOWN WMPN = WMPN(WM_MBUTTONDOWN)
+	WMPN_RBUTTONDOWN WMPN = WMPN(WM_RBUTTONDOWN)
+	WMPN_XBUTTONDOWN WMPN = WMPN(WM_XBUTTONDOWN)
+	WMPN_POINTERDOWN WMPN = WMPN(WM_POINTERDOWN)
 )
 
 // [WM_SIZING] window edge.
@@ -1939,54 +1867,4 @@ const (
 	WVR_VREDRAW     WVR = 0x0200
 	WVR_REDRAW      WVR = WVR_HREDRAW | WVR_VREDRAW
 	WVR_VALIDRECTS  WVR = 0x0400
-)
-
-// Composes XTYP in [PFNCALLBACK].
-//
-// [PFNCALLBACK]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nc-ddeml-pfncallback
-type XCLASS uint32
-
-const (
-	XCLASS_MASK         XCLASS = 0xfc00
-	XCLASS_BOOL         XCLASS = 0x1000
-	XCLASS_DATA         XCLASS = 0x2000
-	XCLASS_FLAGS        XCLASS = 0x4000
-	XCLASS_NOTIFICATION XCLASS = 0x8000
-)
-
-// [PFNCALLBACK] wType.
-//
-// [PFNCALLBACK]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nc-ddeml-pfncallback
-type XTYP uint32
-
-const (
-	XTYP_ERROR           XTYP = 0x0000 | XTYP(XCLASS_NOTIFICATION) | XTYP(XTYPF_NOBLOCK)
-	XTYP_ADVDATA         XTYP = 0x0010 | XTYP(XCLASS_FLAGS)
-	XTYP_ADVREQ          XTYP = 0x0020 | XTYP(XCLASS_DATA) | XTYP(XTYPF_NOBLOCK)
-	XTYP_ADVSTART        XTYP = 0x0030 | XTYP(XCLASS_BOOL)
-	XTYP_ADVSTOP         XTYP = 0x0040 | XTYP(XCLASS_NOTIFICATION)
-	XTYP_EXECUTE         XTYP = 0x0050 | XTYP(XCLASS_FLAGS)
-	XTYP_CONNECT         XTYP = 0x0060 | XTYP(XCLASS_BOOL) | XTYP(XTYPF_NOBLOCK)
-	XTYP_CONNECT_CONFIRM XTYP = 0x0070 | XTYP(XCLASS_NOTIFICATION) | XTYP(XTYPF_NOBLOCK)
-	XTYP_XACT_COMPLETE   XTYP = 0x0080 | XTYP(XCLASS_NOTIFICATION)
-	XTYP_POKE            XTYP = 0x0090 | XTYP(XCLASS_FLAGS)
-	XTYP_REGISTER        XTYP = 0x00a0 | XTYP(XCLASS_NOTIFICATION) | XTYP(XTYPF_NOBLOCK)
-	XTYP_REQUEST         XTYP = 0x00b0 | XTYP(XCLASS_DATA)
-	XTYP_DISCONNECT      XTYP = 0x00c0 | XTYP(XCLASS_NOTIFICATION) | XTYP(XTYPF_NOBLOCK)
-	XTYP_UNREGISTER      XTYP = 0x00d0 | XTYP(XCLASS_NOTIFICATION) | XTYP(XTYPF_NOBLOCK)
-	XTYP_WILDCONNECT     XTYP = 0x00e0 | XTYP(XCLASS_DATA) | XTYP(XTYPF_NOBLOCK)
-
-	XTYP_MASK  XTYP = 0x00f0
-	XTYP_SHIFT XTYP = 4
-)
-
-// Composes XTYP in [PFNCALLBACK].
-//
-// [PFNCALLBACK]: https://learn.microsoft.com/en-us/windows/win32/api/ddeml/nc-ddeml-pfncallback
-type XTYPF uint32
-
-const (
-	XTYPF_NOBLOCK XTYPF = 0x0002
-	XTYPF_NODATA  XTYPF = 0x0004
-	XTYPF_ACKREQ  XTYPF = 0x0008
 )
