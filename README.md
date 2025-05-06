@@ -85,6 +85,12 @@ func (me *MyWindow) events() {
 }
 ```
 
+To release an `.exe` file, run the command:
+
+```
+go build -ldflags "-s -w -H=windowsgui"
+```
+
 ## Architecture
 
 The library is divided in two main packages:

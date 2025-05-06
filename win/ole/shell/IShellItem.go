@@ -15,6 +15,8 @@ import (
 
 // [IShellItem] COM interface.
 //
+// Usually created with [SHCreateItemFromParsingName].
+//
 // # Example
 //
 //	rel := ole.NewReleaser()
@@ -24,6 +26,7 @@ import (
 //		rel, "C:\\Temp\\foo.txt")
 //
 // [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
+// [SHCreateItemFromParsingName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 type IShellItem struct{ ole.IUnknown }
 
 // Returns the unique COM interface identifier.

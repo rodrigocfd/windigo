@@ -168,6 +168,23 @@ func (c COLORREF) ToRgbquad() RGBQUAD {
 	return rq
 }
 
+// [GRADIENT_RECT] struct.
+//
+// [GRADIENT_RECT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-gradient_rect
+type GRADIENT_RECT struct {
+	UpperLeft  uint32
+	LowerRight uint32
+}
+
+// [GRADIENT_TRIANGLE] struct.
+//
+// [GRADIENT_TRIANGLE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-gradient_triangle
+type GRADIENT_TRIANGLE struct {
+	Vertex1 uint32
+	Vertex2 uint32
+	Vertex3 uint32
+}
+
 // [LOGBRUSH] struct.
 //
 // [LOGBRUSH]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
@@ -269,4 +286,16 @@ type TEXTMETRIC struct {
 	TmStruckOut        uint8
 	TmPitchAndFamily   uint8
 	TmCharSet          co.CHARSET
+}
+
+// [TRIVERTEX] struct.
+//
+// [TRIVERTEX]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-trivertex
+type TRIVERTEX struct {
+	X     int32
+	Y     int32
+	Red   uint16
+	Green uint16
+	Blue  uint16
+	Alpha uint16
 }

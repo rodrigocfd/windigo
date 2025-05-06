@@ -19,6 +19,22 @@ import (
 // [GDI object]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hgdiobj
 type HGDIOBJ HANDLE
 
+// [GetStockObject] function.
+//
+// ⚠️ The returned HGDIOBJ must be cast into the proper GDI object.
+//
+// [GetStockObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getstockobject
+func GetStockObject(ty co.STOCK) (HGDIOBJ, error) {
+	ret, _, _ := syscall.SyscallN(_GetStockObject.Addr(),
+		uintptr(ty))
+	if ret == 0 {
+		return HGDIOBJ(0), co.ERROR_INVALID_PARAMETER
+	}
+	return HGDIOBJ(ret), nil
+}
+
+var _GetStockObject = dll.Gdi32.NewProc("GetStockObject")
+
 // [DeleteObject] function.
 //
 // [DeleteObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject

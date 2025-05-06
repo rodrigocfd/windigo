@@ -165,6 +165,16 @@ const (
 	FF_VARIABLE_DECORATIVE = _PITCH_VARIABLE | _FF_DECORATIVE
 )
 
+// [AddFontResourceEx] fl.
+//
+// [AddFontResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-addfontresourceexw
+type FR uint32
+
+const (
+	FR_PRIVATE  FR = 0x10
+	FR_NOT_ENUM FR = 0x20
+)
+
 // [LOGFONT] lfWeight.
 //
 // [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
@@ -234,6 +244,17 @@ const (
 	GDC_BLTALIGNMENT    GDC = 119
 	GDC_SHADEBLENDCAPS  GDC = 120
 	GDC_COLORMGMTCAPS   GDC = 121
+)
+
+// [GradientFill] mode.
+//
+// [GradientFill]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gradientfill
+type GRADIENT_FILL uint32
+
+const (
+	GRADIENT_FILL_RECT_H   GRADIENT_FILL = 0x0000_0000
+	GRADIENT_FILL_RECT_V   GRADIENT_FILL = 0x0000_0001
+	GRADIENT_FILL_TRIANGLE GRADIENT_FILL = 0x0000_0002
 )
 
 // [LOGFONT] lfOutPrecision. Originally with OUT prefix and PRECIS suffix.
@@ -370,6 +391,34 @@ const (
 	ROP_WHITENESS      ROP = 0x00ff_0062
 	ROP_NOMIRRORBITMAP ROP = 0x8000_0000
 	ROP_CAPTUREBLT     ROP = 0x4000_0000
+)
+
+// [GetStockObject] type. Originally has no prefix.
+//
+// [GetStockObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getstockobject
+type STOCK int32
+
+const (
+	STOCK_WHITE_BRUSH         STOCK = 0
+	STOCK_LTGRAY_BRUSH        STOCK = 1
+	STOCK_GRAY_BRUSH          STOCK = 2
+	STOCK_DKGRAY_BRUSH        STOCK = 3
+	STOCK_BLACK_BRUSH         STOCK = 4
+	STOCK_NULL_BRUSH          STOCK = 5
+	STOCK_HOLLOW_BRUSH              = STOCK_NULL_BRUSH
+	STOCK_WHITE_PEN           STOCK = 6
+	STOCK_BLACK_PEN           STOCK = 7
+	STOCK_NULL_PEN            STOCK = 8
+	STOCK_OEM_FIXED_FONT      STOCK = 10
+	STOCK_ANSI_FIXED_FONT     STOCK = 11
+	STOCK_ANSI_VAR_FONT       STOCK = 12
+	STOCK_SYSTEM_FONT         STOCK = 13
+	STOCK_DEVICE_DEFAULT_FONT STOCK = 14
+	STOCK_DEFAULT_PALETTE     STOCK = 15
+	STOCK_SYSTEM_FIXED_FONT   STOCK = 16
+	STOCK_DEFAULT_GUI_FONT    STOCK = 17
+	STOCK_DC_BRUSH            STOCK = 18
+	STOCK_DC_PEN              STOCK = 19
 )
 
 // [SetStretchBltMode] mode.

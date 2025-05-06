@@ -539,6 +539,20 @@ func (hdc HDC) GetDIBits(
 
 var _GetDIBits = dll.Gdi32.NewProc("GetDIBits")
 
+// [GetPixel] function.
+//
+// [GetPixel]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getpixel
+func (hdc HDC) GetPixel() (COLORREF, error) {
+	ret, _, _ := syscall.SyscallN(_GetPixel.Addr(),
+		uintptr(hdc))
+	if ret == util.CLR_INVALID {
+		return COLORREF(0), co.ERROR_INVALID_PARAMETER
+	}
+	return COLORREF(ret), nil
+}
+
+var _GetPixel = dll.Gdi32.NewProc("GetPixel")
+
 // [GetPolyFillMode] function.
 //
 // [GetPolyFillMode]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getpolyfillmode
@@ -675,6 +689,41 @@ func (hdc HDC) GetWindowOrgEx() (POINT, error) {
 }
 
 var _GetWindowOrgEx = dll.Gdi32.NewProc("GetWindowOrgEx")
+
+// [GradientFill] function.
+//
+// You must specify one mesh, either meshTriangle or meshRect. If you specify
+// both or none, the function panics.
+//
+// [GradientFill]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gradientfill
+func (hdc HDC) GradientFill(
+	vertex []TRIVERTEX,
+	meshTriangle []GRADIENT_TRIANGLE,
+	meshRect []GRADIENT_RECT,
+	mode co.GRADIENT_FILL,
+) error {
+	if (meshTriangle == nil && meshRect == nil) ||
+		(meshTriangle != nil && meshRect != nil) {
+		panic("You must specify one: meshTriangle or meshRect.")
+	}
+
+	var pMesh unsafe.Pointer
+	var nMesh int
+	if meshTriangle != nil {
+		pMesh = unsafe.Pointer(&meshTriangle[0])
+		nMesh = len(meshTriangle)
+	} else {
+		pMesh = unsafe.Pointer(&meshRect[0])
+		nMesh = len(meshRect)
+	}
+
+	ret, _, _ := syscall.SyscallN(_GradientFill.Addr(),
+		uintptr(hdc), uintptr(unsafe.Pointer(&vertex[0])), uintptr(len(vertex)),
+		uintptr(pMesh), uintptr(nMesh), uintptr(mode))
+	return util.ZeroAsSysInvalidParm(ret)
+}
+
+var _GradientFill = dll.Gdi32.NewProc("GradientFill")
 
 // [AtlHiMetricToPixel] function. Converts HIMETRIC units to pixels.
 //

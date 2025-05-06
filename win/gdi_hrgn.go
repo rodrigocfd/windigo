@@ -7,6 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
+	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -62,6 +63,21 @@ func (hRgn HRGN) EqualRgn(other HRGN) bool {
 }
 
 var _EqualRgn = dll.Gdi32.NewProc("EqualRgn")
+
+// [GetRgnBox] function.
+//
+// [GetRgnBox]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getrgnbox
+func (hRgn HRGN) GetRgnBox() (RECT, co.REGION, error) {
+	var rc RECT
+	ret, _, _ := syscall.SyscallN(_GetRgnBox.Addr(),
+		uintptr(hRgn), uintptr(unsafe.Pointer(&rc)))
+	if ret == util.REGION_ERROR {
+		return RECT{}, co.REGION(0), co.ERROR_INVALID_PARAMETER
+	}
+	return rc, co.REGION(ret), nil
+}
+
+var _GetRgnBox = dll.Gdi32.NewProc("GetRgnBox")
 
 // [OffsetClipRgn] function.
 //
