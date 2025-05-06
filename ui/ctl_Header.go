@@ -21,6 +21,17 @@ type Header struct {
 
 // Creates a new Header with [CreateWindowEx].
 //
+// # Example
+//
+//	var wndOwner ui.Parent // initialized somewhere
+//
+//	header := ui.NewHeader(
+//		wndOwner,
+//		ui.OptsHeader().
+//			Position(ui.Dpi(260, 240)).
+//			Size(ui.Dpi(200, 23)),
+//	)
+//
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewHeader(parent Parent, opts *VarOptsHeader) *Header {
 	setUniqueCtrlId(&opts.ctrlId)
@@ -43,6 +54,15 @@ func NewHeader(parent Parent, opts *VarOptsHeader) *Header {
 
 // Instantiates a new Header to be loaded from a dialog resource with
 // [GetDlgItem].
+//
+// # Example
+//
+//	const ID_HEADER uint16 = 0x100
+//
+//	var wndOwner ui.Parent // initialized somewhere
+//
+//	header := ui.NewHeaderDlg(
+//		wndOwner, ID_HEADER, ui.LAY_NONE_NONE)
 //
 // [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func NewHeaderDlg(parent Parent, ctrlId uint16, layout LAY) *Header {

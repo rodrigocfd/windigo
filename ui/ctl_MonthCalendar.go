@@ -20,6 +20,17 @@ type MonthCalendar struct {
 
 // Creates a new MonthCalendar with [CreateWindowEx].
 //
+// # Example
+//
+//	var wndOwner ui.Parent // initialized somewhere
+//
+//	monthCal := ui.NewMonthCalendar(
+//		wndOwner,
+//		ui.OptsMonthCalendar().
+//			Position(ui.Dpi(20, 135)).
+//			Value(time.Date(1981, 4, 26, 5, 0, 0, 0, time.Local)),
+//	)
+//
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar {
 	setUniqueCtrlId(&opts.ctrlId)
@@ -50,6 +61,15 @@ func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar 
 
 // Instantiates a new MonthCalendar to be loaded from a dialog resource with
 // [GetDlgItem].
+//
+// # Example
+//
+//	const ID_MCAL uint16 = 0x100
+//
+//	var wndOwner ui.Parent // initialized somewhere
+//
+//	monthCal := ui.NewMonthCalendarDlg(
+//		wndOwner, ID_MCAL, ui.LAY_NONE_NONE)
 //
 // [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func NewMonthCalendarDlg(parent Parent, ctrlId uint16, layout LAY) *MonthCalendar {

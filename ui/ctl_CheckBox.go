@@ -18,6 +18,18 @@ type CheckBox struct {
 
 // Creates a new CheckBox with [CreateWindowEx].
 //
+// # Example
+//
+//	var wndOwner ui.Parent // initialized somewhere
+//
+//	chk := ui.NewCheckBox(
+//		wndOwner,
+//		ui.OptsCheckBox().
+//			Text("&Click me").
+//			Position(ui.Dpi(128, 75)).
+//			State(co.BST_CHECKED),
+//	)
+//
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 	setUniqueCtrlId(&opts.ctrlId)
