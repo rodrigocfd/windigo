@@ -47,7 +47,7 @@ type BLENDFUNCTION struct {
 //
 // # Example
 //
-//	var bfh BITMAPFILEHEADER
+//	var bfh win.BITMAPFILEHEADER
 //	bfh.SetBfType()
 //
 // [BITMAPFILEHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapfileheader
@@ -80,6 +80,11 @@ func (bfh *BITMAPFILEHEADER) Serialize() []byte { return bfh.data[:] }
 //
 // ⚠️ You must call BmiHeader.SetBiSize() to initialize the struct.
 //
+// # Example
+//
+//	var bi win.BITMAPINFO
+//	bi.BmiHeader.SetBiSize()
+//
 // [BITMAPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfo
 type BITMAPINFO struct {
 	BmiHeader BITMAPINFOHEADER
@@ -89,6 +94,11 @@ type BITMAPINFO struct {
 // [BITMAPINFOHEADER] struct.
 //
 // ⚠️ You must call SetBiSize() to initialize the struct.
+//
+// # Example
+//
+//	var bih win.BITMAPINFOHEADER
+//	bih.SetBiSize()
 //
 // [BITMAPINFOHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
 type BITMAPINFOHEADER struct {

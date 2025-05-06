@@ -32,13 +32,14 @@ func (me *_BaseRaw) registerClass(
 	classBgBrush win.HBRUSH,
 	classCursor win.HCURSOR,
 ) win.ATOM {
-	var wcx win.WNDCLASSEX
+	wcx := win.WNDCLASSEX{
+		LpfnWndProc:   wndProcCallback(),
+		HInstance:     hInst,
+		Style:         classStyle,
+		HbrBackground: classBgBrush,
+		HCursor:       classCursor,
+	}
 	wcx.SetCbSize()
-	wcx.LpfnWndProc = wndProcCallback()
-	wcx.HInstance = hInst
-	wcx.Style = classStyle
-	wcx.HbrBackground = classBgBrush
-	wcx.HCursor = classCursor
 
 	if classIconId != 0 {
 		hIcon, _ := hInst.LoadIcon(win.IconResId(classIconId))

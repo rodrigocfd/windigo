@@ -14,6 +14,11 @@ import (
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
+// # Example
+//
+//	var nid win.NOTIFYICONDATA
+//	nid.SetCbSize()
+//
 // [NOTIFYICONDATA]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
 type NOTIFYICONDATA struct {
 	cbSize           uint32
@@ -62,6 +67,11 @@ func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
 // [NOTIFYICONIDENTIFIER] struct.
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
+//
+// # Example
+//
+//	var nii win.NOTIFYICONIDENTIFIER
+//	nii.SetCbSize()
 //
 // [NOTIFYICONIDENTIFIER]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyiconidentifier
 type NOTIFYICONIDENTIFIER struct {

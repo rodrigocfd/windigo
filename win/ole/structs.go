@@ -53,6 +53,11 @@ func (dp *DISPPARAMS) SetNamedArgs(v ...co.DISPID) {
 //
 // ⚠️ You must call SetTdSize() to initialize the struct.
 //
+// # Example
+//
+//	var dvt ole.DVTARGETDEVICE
+//	dvt.SetTdSize()
+//
 // [DVTARGETDEVICE]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ns-objidl-dvtargetdevice
 type DVTARGETDEVICE struct {
 	tdSize             uint32
@@ -124,7 +129,12 @@ func (e *EXCEPINFO) Error() string {
 
 // [EXCEPINFO] struct.
 //
-// ⚠️ You must call _EXCEPINFO.Free() to release the pointers.
+// ⚠️ You must call Free() to release the pointers.
+//
+// # Example
+//
+//	var e ole._EXCEPINFO
+//	defer e.Free()
 //
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
 type _EXCEPINFO struct {

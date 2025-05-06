@@ -62,6 +62,11 @@ type CREATESTRUCT struct {
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
+// # Example
+//
+//	var ci win.CURSORINFO
+//	ci.SetCbSize()
+//
 // [CURSORINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-cursorinfo
 type CURSORINFO struct {
 	cbSize      uint32
@@ -89,6 +94,11 @@ type DELETEITEMSTRUCT struct {
 // [DISPLAY_DEVICE] struct.
 //
 // ⚠️ You must call SetCb() to initialize the struct.
+//
+// # Example
+//
+//	var dd win.DISPLAY_DEVICE
+//	dd.SetCb()
 //
 // [DISPLAY_DEVICE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-display_devicew
 type DISPLAY_DEVICE struct {
@@ -148,6 +158,11 @@ type DRAWITEMSTRUCT struct {
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
+// # Example
+//
+//	var gti win.GUITHREADINFO
+//	gti.SetCbSize()
+//
 // [GUITHREADINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-guithreadinfo
 type GUITHREADINFO struct {
 	cbSize        uint32
@@ -169,6 +184,11 @@ func (gti *GUITHREADINFO) SetCbSize() {
 // [HELPINFO] struct.
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
+//
+// # Example
+//
+//	var hi win.HELPINFO
+//	hi.SetCbSize()
 //
 // [HELPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-helpinfo
 type HELPINFO struct {
@@ -206,6 +226,11 @@ func (ii *ICONINFO) SetFIcon(val bool) {
 // [ICONINFOEX] struct.
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
+//
+// # Example
+//
+//	var iix win.ICONINFOEX
+//	iix.SetCbSize()
 //
 // [ICONINFOEX]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfoexw
 type ICONINFOEX struct {
@@ -302,6 +327,11 @@ type MENUGETOBJECTINFO struct {
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
+// # Example
+//
+//	var mi win.MENUINFO
+//	mi.SetCbSize()
+//
 // [MENUINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuinfo
 type MENUINFO struct {
 	cbSize          uint32
@@ -321,6 +351,11 @@ func (mi *MENUINFO) SetCbSize() {
 // [MENUITEMINFO] struct.
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
+//
+// # Example
+//
+//	var mii win.MENUITEMINFO
+//	mii.SetCbSize()
 //
 // [MENUITEMINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfow
 type MENUITEMINFO struct {
@@ -377,6 +412,11 @@ type NCCALCSIZE_PARAMS struct {
 // [NONCLIENTMETRICS] struct.
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
+//
+// # Example
+//
+//	var ncm win.NONCLIENTMETRICS
+//	ncm.SetCbSize()
 //
 // [NONCLIENTMETRICS]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nonclientmetricsw
 type NONCLIENTMETRICS struct {
@@ -489,6 +529,11 @@ type STYLESTRUCT_WSEX struct {
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
+// # Example
+//
+//	var tix win.TITLEBARINFOEX
+//	tix.SetCbSize()
+//
 // [TITLEBARINFOEX]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-titlebarinfoex
 type TITLEBARINFOEX struct {
 	cbSize     uint32
@@ -515,6 +560,11 @@ type WINDOWPOS struct {
 // [WNDCLASSEX] struct.
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
+//
+// # Example
+//
+//	var wcx win.WNDCLASSEX
+//	wcx.SetCbSize()
 //
 // [WNDCLASSEX]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassexw
 type WNDCLASSEX struct {

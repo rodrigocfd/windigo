@@ -30,6 +30,11 @@ const (
 //
 // ⚠️ You must call SetCbStruct() to initialize the struct.
 //
+// # Example
+//
+//	var eb win.EDITBALLOONTIP
+//	eb.SetCbStruct()
+//
 // [EDITBALLOONTIP]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-editballoontip
 type EDITBALLOONTIP struct {
 	cbStruct uint32
@@ -73,6 +78,11 @@ func (hdi *HDITEM) SetPszText(val []uint16) {
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.
 //
+// # Example
+//
+//	var idp win.IMAGELISTDRAWPARAMS
+//	idp.SetCbSize()
+//
 // [IMAGELISTDRAWPARAMS]: https://learn.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imagelistdrawparams
 type IMAGELISTDRAWPARAMS struct {
 	cbSize       uint32
@@ -99,6 +109,11 @@ func (idp *IMAGELISTDRAWPARAMS) SetCbSize() {
 // [_INITCOMMONCONTROLSEX] struct.
 //
 // ⚠️ You must call SetDwSize() to initialize the struct.
+//
+// # Example
+//
+//	var icc win._INITCOMMONCONTROLSEX
+//	icc.SetDwSize()
 //
 // [_INITCOMMONCONTROLSEX]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
 type _INITCOMMONCONTROLSEX struct {

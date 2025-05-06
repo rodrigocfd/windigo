@@ -196,6 +196,11 @@ func (lcid LCID) SortId() co.SORT {
 //
 // ⚠️ You must call SetDwSize() to initialize the struct.
 //
+// # Example
+//
+//	var me win.MODULEENTRY32
+//	me.SetDwSize()
+//
 // [MODULEENTRY32]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-moduleentry32w
 type MODULEENTRY32 struct {
 	dwSize        uint32
@@ -232,6 +237,11 @@ func (me *MODULEENTRY32) SetSzExePath(val string) {
 // [OSVERSIONINFOEX] struct.
 //
 // ⚠️ You must call SetDwOsVersionInfoSize() to initialize the struct.
+//
+// # Example
+//
+//	var osv win.OSVERSIONINFOEX
+//	osv.SetDwOsVersionInfoSize()
 //
 // [OSVERSIONINFOEX]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
 type OSVERSIONINFOEX struct {
@@ -285,6 +295,11 @@ type PROCESS_INFORMATION struct {
 //
 // ⚠️ You must call SetDwSize() to initialize the struct.
 //
+// # Example
+//
+//	var pe win.PROCESSENTRY32
+//	pe.SetDwSize()
+//
 // [PROCESSENTRY32]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-processentry32w
 type PROCESSENTRY32 struct {
 	dwSize              uint32
@@ -315,6 +330,11 @@ func (me *PROCESSENTRY32) SetSzExeFile(val string) {
 //
 // ⚠️ You must call SetNLength() to initialize the struct.
 //
+// # Example
+//
+//	var sa win.SECURITY_ATTRIBUTES
+//	sa.SetNLength()
+//
 // [SECURITY_ATTRIBUTES]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/aa379560(v=vs.85)
 type SECURITY_ATTRIBUTES struct {
 	nLength              uint32
@@ -337,6 +357,11 @@ func (sa *SECURITY_ATTRIBUTES) SetBInheritHandle(val bool) {
 // [STARTUPINFO] struct.
 //
 // ⚠️ You must call SetCb() to initialize the struct.
+//
+// # Example
+//
+//	var si win.STARTUPINFO
+//	si.SetCb()
 //
 // [STARTUPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow
 type STARTUPINFO struct {
@@ -449,6 +474,11 @@ func (st *SYSTEMTIME) SetTime(val time.Time) error {
 // [THREADENTRY32] struct.
 //
 // ⚠️ You must call SetDwSize() to initialize the struct.
+//
+// # Example
+//
+//	var te win.THREADENTRY32
+//	te.SetDwSize()
 //
 // [THREADENTRY32]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-threadentry32
 type THREADENTRY32 struct {
