@@ -627,6 +627,41 @@ const (
 	OUT_PRECIS_PS_ONLY        OUT_PRECIS = 10
 )
 
+// [PIXELFORMATDESCRIPTOR] dwFlags.
+//
+// [PIXELFORMATDESCRIPTOR]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-pixelformatdescriptor
+type PFD uint32
+
+const (
+	PFD_DRAW_TO_WINDOW      PFD = 0x0000_0004
+	PFD_DRAW_TO_BITMAP      PFD = 0x0000_0008
+	PFD_SUPPORT_GDI         PFD = 0x0000_0010
+	PFD_SUPPORT_OPENGL      PFD = 0x0000_0020
+	PFD_GENERIC_ACCELERATED PFD = 0x0000_1000
+	PFD_GENERIC_FORMAT      PFD = 0x0000_0040
+	PFD_NEED_PALETTE        PFD = 0x0000_0080
+	PFD_NEED_SYSTEM_PALETTE PFD = 0x0000_0100
+	PFD_DOUBLEBUFFER        PFD = 0x0000_0001
+	PFD_STEREO              PFD = 0x0000_0002
+	PFD_SWAP_LAYER_BUFFERS  PFD = 0x0000_0800
+
+	PFD_DEPTH_DONTCARE        PFD = 0x2000_0000
+	PFD_DOUBLEBUFFER_DONTCARE PFD = 0x4000_0000
+	PFD_STEREO_DONTCARE       PFD = 0x8000_0000
+	PFD_SWAP_COPY             PFD = 0x0000_0400
+	PFD_SWAP_EXCHANGE         PFD = 0x0000_0200
+)
+
+// [PIXELFORMATDESCRIPTOR] dwPixelType.
+//
+// [PIXELFORMATDESCRIPTOR]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-pixelformatdescriptor
+type PFD_TYPE uint8
+
+const (
+	PFD_TYPE_RGBA       PFD_TYPE = 0
+	PFD_TYPE_COLORINDEX PFD_TYPE = 1
+)
+
 // [SetPolyFillMode] mode. Originally has no prefix.
 //
 // [SetPolyFillMode]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setpolyfillmode

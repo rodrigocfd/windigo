@@ -202,6 +202,20 @@ func (hdc HDC) CloseFigure() error {
 
 var _CloseFigure = dll.Gdi32.NewProc("CloseFigure")
 
+// [ChoosePixelFormat] function.
+//
+// [ChoosePixelFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-choosepixelformat
+func (hdc HDC) ChoosePixelFormat(pfd *PIXELFORMATDESCRIPTOR) (int, error) {
+	ret, _, err := syscall.SyscallN(_ChoosePixelFormat.Addr(),
+		uintptr(hdc), uintptr(unsafe.Pointer(pfd)))
+	if ret == 0 {
+		return 0, co.ERROR(err)
+	}
+	return int(ret), nil
+}
+
+var _ChoosePixelFormat = dll.Gdi32.NewProc("ChoosePixelFormat")
+
 // [CreateCompatibleBitmap] function.
 //
 // ⚠️ You must defer HBITMAP.DeleteObject().

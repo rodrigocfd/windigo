@@ -238,8 +238,8 @@ func (dm *DEVMODE) SetDmDeviceName(val string) {
 	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(dm.dmDeviceName)-1)), dm.dmDeviceName[:])
 }
 
-// Sets the dwSize field to the size of the struct, correctly initializing it.
-// Also sets dwSpecVersion.
+// Sets the dmSize field to the size of the struct, correctly initializing it.
+// Also sets dmSpecVersion.
 func (dm *DEVMODE) SetDmSize() {
 	dm.dmSpecVersion = util.DM_SPECVERSION
 	dm.dmSize = uint16(unsafe.Sizeof(*dm))
@@ -332,6 +332,47 @@ type LOGPEN struct {
 	LopnStyle co.PS
 	LopnWidth POINT
 	LopnColor COLORREF
+}
+
+// [PIXELFORMATDESCRIPTOR] struct.
+//
+// ⚠️ You must call SetNSize() to initialize the struct.
+//
+// [PIXELFORMATDESCRIPTOR]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-pixelformatdescriptor
+type PIXELFORMATDESCRIPTOR struct {
+	nSize           uint16
+	nVersion        uint16
+	DwFlags         co.PFD
+	IPixelType      co.PFD_TYPE
+	CColorBits      uint8
+	CRedBits        uint8
+	CRedShift       uint8
+	CGreenBits      uint8
+	CGreenShift     uint8
+	CBlueBits       uint8
+	CBlueShift      uint8
+	CAlphaBits      uint8
+	CAlphaShift     uint8
+	CAccumBits      uint8
+	CAccumRedBits   uint8
+	CAccumGreenBits uint8
+	CAccumBlueBits  uint8
+	CAccumAlphaBits uint8
+	CDepthBits      uint8
+	CStencilBits    uint8
+	CAuxBuffers     uint8
+	iLayerType      uint8
+	BReserved       uint8
+	dwLayerMask     uint32
+	DwVisibleMask   uint32
+	dwDamageMask    uint32
+}
+
+// Sets the nSize field to the size of the struct, correctly initializing it.
+// Also sets nVersion.
+func (pfd *PIXELFORMATDESCRIPTOR) SetNSize() {
+	pfd.nSize = uint16(unsafe.Sizeof(*pfd))
+	pfd.nVersion = 1
 }
 
 // [RGBQUAD] struct.

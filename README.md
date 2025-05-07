@@ -9,7 +9,7 @@ Win32 API and GUI in idiomatic Go.
 
 Windigo is designed to be familiar to C/C++ Win32 programmers, using the same concepts, and an API as close as possible to the original Win32 API. This allows most C/C++ Win32 tutorials and examples to be translated to Go.
 
-Notably, Windigo is written 100% in pure Go – CGo is **not** used, just native syscalls.
+Notably, Windigo is written 100% in pure Go – CGo is **not** used, just native syscalls. 
 
 
 ## Example
@@ -85,7 +85,7 @@ func (me *MyWindow) events() {
 }
 ```
 
-To release an `.exe` file, run the command:
+To release the `.exe` file, run the command:
 
 ```
 go build -ldflags "-s -w -H=windowsgui"
