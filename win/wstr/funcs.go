@@ -32,7 +32,7 @@ func CmpI(a, b string) int {
 	return Cmp(strings.ToUpper(a), strings.ToUpper(b))
 }
 
-// Formats a number of bytes into KB, MB, GB or TB.
+// Formats a number of bytes into KB, MB, GB, TB or PB.
 func FmtBytes(numBytes uint64) string {
 	switch {
 	case numBytes < 1024:
@@ -43,8 +43,10 @@ func FmtBytes(numBytes uint64) string {
 		return fmt.Sprintf("%.2f MB", float64(numBytes)/1024/1024)
 	case numBytes < 1024*1024*1024*1024:
 		return fmt.Sprintf("%.2f GB", float64(numBytes)/1024/1024/1024)
-	default:
+	case numBytes < 1024*1024*1024*1024*1024:
 		return fmt.Sprintf("%.2f TB", float64(numBytes)/1024/1024/1024/1024)
+	default:
+		return fmt.Sprintf("%.2f PB", float64(numBytes)/1024/1024/1024/1024/1024)
 	}
 }
 
