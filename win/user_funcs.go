@@ -350,7 +350,7 @@ func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) (int32, 
 	ret, _, err := syscall.SyscallN(_GetMessageW.Addr(),
 		uintptr(unsafe.Pointer(msg)), uintptr(hWnd),
 		uintptr(msgFilterMin), uintptr(msgFilterMax))
-	if int(ret) == -1 {
+	if int32(ret) == -1 {
 		return 0, co.ERROR(err)
 	}
 	return int32(ret), nil

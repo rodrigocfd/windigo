@@ -103,7 +103,7 @@ var _GetThreadTimes = dll.Kernel32.NewProc("GetThreadTimes")
 func (hThread HTHREAD) ResumeThread() (uint32, error) {
 	ret, _, err := syscall.SyscallN(_ResumeThread.Addr(),
 		uintptr(hThread))
-	if int(ret) == -1 {
+	if int32(ret) == -1 {
 		return 0, co.ERROR(err)
 	}
 	return uint32(ret), nil
@@ -128,7 +128,7 @@ var _TerminateThread = dll.Kernel32.NewProc("TerminateThread")
 func (hThread HTHREAD) SuspendThread() (uint32, error) {
 	ret, _, err := syscall.SyscallN(_SuspendThread.Addr(),
 		uintptr(hThread))
-	if int(ret) == -1 {
+	if int32(ret) == -1 {
 		return 0, co.ERROR(err)
 	}
 	return uint32(ret), nil

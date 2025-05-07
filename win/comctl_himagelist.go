@@ -179,7 +179,7 @@ var _ImageList_GetImageCount = dll.Comctl32.NewProc("ImageList_GetImageCount")
 func (hImg HIMAGELIST) ReplaceIcon(i int, hIcon HICON) (int, error) {
 	ret, _, _ := syscall.SyscallN(_ImageList_ReplaceIcon.Addr(),
 		uintptr(hImg), uintptr(i), uintptr(hIcon))
-	if int(ret) == -1 {
+	if int32(ret) == -1 {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
 	return int(ret), nil

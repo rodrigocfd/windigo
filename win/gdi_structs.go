@@ -168,6 +168,24 @@ func (c COLORREF) ToRgbquad() RGBQUAD {
 	return rq
 }
 
+// [DOCINFO] struct.
+//
+// ⚠️ You must call SetCbSize() to initialize the struct.
+//
+// [DOCINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-docinfow
+type DOCINFO struct {
+	cbSize       int32
+	LpszDocName  *uint16
+	LpszOutput   *uint16
+	LpszDataType *uint16
+	FwType       co.DIPJ
+}
+
+// Sets the cbSize field to the size of the struct, correctly initializing it.
+func (di *DOCINFO) SetCbSize() {
+	di.cbSize = int32(unsafe.Sizeof(*di))
+}
+
 // [DEVMODE] struct.
 //
 // ⚠️ You must call SetDmSize() to initialize the struct.

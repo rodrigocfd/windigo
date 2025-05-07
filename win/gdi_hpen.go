@@ -47,6 +47,38 @@ func CreatePenIndirect(lp *LOGPEN) (HPEN, error) {
 
 var _CreatePenIndirect = dll.Gdi32.NewProc("CreatePenIndirect")
 
+// [ExtCreatePen] function.
+//
+// ⚠️ You must defer HPEN.DeleteObject().
+//
+// [ExtCreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-extcreatepen
+func ExtCreatePen(
+	penType co.PS_TYPE,
+	penStyle co.PS_STYLE,
+	endCap co.PS_ENDCAP,
+	width uint,
+	brush *LOGBRUSH,
+	styleLengths []uint,
+) (HPEN, error) {
+	var nLens int
+	var pLens unsafe.Pointer
+	if styleLengths != nil {
+		nLens = len(styleLengths)
+		pLens = unsafe.Pointer(&styleLengths[0])
+	}
+
+	ret, _, _ := syscall.SyscallN(_ExtCreatePen.Addr(),
+		uintptr(penType)|uintptr(penStyle)|uintptr(endCap),
+		uintptr(width), uintptr(unsafe.Pointer(brush)),
+		uintptr(nLens), uintptr(pLens))
+	if ret == 0 {
+		return HPEN(0), co.ERROR_INVALID_PARAMETER
+	}
+	return HPEN(ret), nil
+}
+
+var _ExtCreatePen = dll.Gdi32.NewProc("ExtCreatePen")
+
 // [DeleteObject] function.
 //
 // [DeleteObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject

@@ -80,7 +80,7 @@ func (hMenu HMENU) checkMenuItem(check bool, flagPosCmd co.MF, item uint) error 
 
 	ret, _, _ := syscall.SyscallN(_CheckMenuItem.Addr(),
 		uintptr(hMenu), uintptr(item), uintptr(flagPosCmd))
-	if int(ret) == -1 {
+	if int32(ret) == -1 {
 		return co.ERROR_INVALID_PARAMETER
 	}
 	return nil
@@ -173,7 +173,7 @@ func (hMenu HMENU) enableMenuItem(enable bool, flagPosCmd co.MF, item uint) erro
 
 	ret, _, _ := syscall.SyscallN(_EnableMenuItem.Addr(),
 		uintptr(hMenu), uintptr(item), uintptr(flagPosCmd))
-	if int(ret) == -1 {
+	if int32(ret) == -1 {
 		return co.ERROR_INVALID_PARAMETER
 	}
 	return nil
@@ -189,7 +189,7 @@ var _EnableMenuItem = dll.User32.NewProc("EnableMenuItem")
 func (hMenu HMENU) GetMenuDefaultItem(gmdiFlags co.GMDI) (uint, error) {
 	ret, _, err := syscall.SyscallN(_GetMenuDefaultItem.Addr(),
 		uintptr(hMenu), 1, uintptr(gmdiFlags))
-	if wErr := co.ERROR(err); int(ret) == -1 || wErr != co.ERROR_SUCCESS {
+	if wErr := co.ERROR(err); int32(ret) == -1 || wErr != co.ERROR_SUCCESS {
 		return 0, wErr
 	}
 	return uint(ret), nil
@@ -205,7 +205,7 @@ var _GetMenuDefaultItem = dll.User32.NewProc("GetMenuDefaultItem")
 func (hMenu HMENU) GetMenuItemID(index uint) (uint16, error) {
 	ret, _, _ := syscall.SyscallN(_GetMenuItemID.Addr(),
 		uintptr(hMenu), uintptr(index))
-	if int(ret) == -1 {
+	if int32(ret) == -1 {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
 	return uint16(ret), nil
@@ -219,7 +219,7 @@ var _GetMenuItemID = dll.User32.NewProc("GetMenuItemID")
 func (hMenu HMENU) GetMenuItemCount() (uint, error) {
 	ret, _, err := syscall.SyscallN(_GetMenuItemCount.Addr(),
 		uintptr(hMenu))
-	if int(ret) == -1 {
+	if int32(ret) == -1 {
 		return 0, co.ERROR(err)
 	}
 	return uint(ret), nil

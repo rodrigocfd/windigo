@@ -46,7 +46,7 @@ func (hInst HINSTANCE) DialogBoxIndirectParam(
 	ret, _, err := syscall.SyscallN(_DialogBoxIndirectParamW.Addr(),
 		uintptr(hInst), uintptr(unsafe.Pointer(template)),
 		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam))
-	if int(ret) == -1 && co.ERROR(err) != co.ERROR_SUCCESS {
+	if int32(ret) == -1 && co.ERROR(err) != co.ERROR_SUCCESS {
 		return 0, co.ERROR(err)
 	}
 	return ret, nil
@@ -69,7 +69,7 @@ func (hInst HINSTANCE) DialogBoxParam(
 	ret, _, err := syscall.SyscallN(_DialogBoxParamW.Addr(),
 		uintptr(hInst), templateNameVal,
 		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam))
-	if int(ret) == -1 && co.ERROR(err) != co.ERROR_SUCCESS {
+	if int32(ret) == -1 && co.ERROR(err) != co.ERROR_SUCCESS {
 		return 0, co.ERROR(err)
 	}
 	return ret, nil

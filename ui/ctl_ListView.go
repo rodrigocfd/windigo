@@ -289,7 +289,7 @@ func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
 // [LVM_SETVIEW]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setview
 func (me *ListView) SetView(view co.LV_VIEW) *ListView {
 	ret, err := me.hWnd.SendMessage(co.LVM_SETVIEW, win.WPARAM(view), 0)
-	if err != nil || int(ret) == -1 {
+	if err != nil || int32(ret) == -1 {
 		panic(fmt.Sprintf("LVM_SETVIEW failed for %d.", view))
 	}
 	return me

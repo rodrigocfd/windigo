@@ -125,7 +125,7 @@ func (me ListViewItem) Focus() ListViewItem {
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETITEMSTATE,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
-	if err != nil || int(ret) == -1 {
+	if err != nil || int32(ret) == -1 {
 		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", me.index))
 	}
 

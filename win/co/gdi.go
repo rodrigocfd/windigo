@@ -128,6 +128,17 @@ const (
 	CLIP_PRECIS_EMBEDDED    CLIP_PRECIS = 8 << 4
 )
 
+// [DOCINFO] fwType. Originally has DI prefix.
+//
+// [DOCINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-docinfow
+type DIPJ uint32
+
+const (
+	DIPJ_NONE                  DIPJ = 0
+	DIPJ_APPBANDING            DIPJ = 0x0000_0001
+	DIPJ_ROPS_READ_DESTINATION DIPJ = 0x0000_0002
+)
+
 // [DEVMODE] dmFields.
 //
 // [DEVMODE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-devmodew
@@ -699,6 +710,44 @@ const (
 	PS_DASHDOTDOT  PS = 4
 	PS_NULL        PS = 5
 	PS_INSIDEFRAME PS = 6
+)
+
+// [ExtCreatePen] end cap. Originally has PS prefix.
+//
+// [ExtCreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-extcreatepen
+type PS_ENDCAP uint32
+
+const (
+	PS_ENDCAP_ROUND  PS_ENDCAP = 0x0000_0000
+	PS_ENDCAP_SQUARE PS_ENDCAP = 0x0000_0100
+	PS_ENDCAP_FLAT   PS_ENDCAP = 0x0000_0200
+)
+
+// [ExtCreatePen] style. Originally has PS prefix.
+//
+// [ExtCreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-extcreatepen
+type PS_STYLE uint32
+
+const (
+	PS_STYLE_ALTERNATE   PS_STYLE = 8
+	PS_STYLE_SOLID                = PS_STYLE(PS_SOLID)
+	PS_STYLE_DASH                 = PS_STYLE(PS_DASH)
+	PS_STYLE_DOT                  = PS_STYLE(PS_DOT)
+	PS_STYLE_DASHDOT              = PS_STYLE(PS_DASHDOT)
+	PS_STYLE_DASHDOTDOT           = PS_STYLE(PS_DASHDOTDOT)
+	PS_STYLE_NULL                 = PS_STYLE(PS_NULL)
+	PS_STYLE_USERSTYLE   PS_STYLE = 7
+	PS_STYLE_INSIDEFRAME          = PS_STYLE(PS_INSIDEFRAME)
+)
+
+// [ExtCreatePen] type. Originally has PS prefix.
+//
+// [ExtCreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-extcreatepen
+type PS_TYPE uint32
+
+const (
+	PS_TYPE_COSMETIC  PS_TYPE = 0x0000_0000
+	PS_TYPE_GEOMETRIC PS_TYPE = 0x0001_0000
 )
 
 // [PolyDraw] aj.
