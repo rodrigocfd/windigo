@@ -65,10 +65,7 @@ var _CreateICW = dll.Gdi32.NewProc("CreateICW")
 func (hdc HDC) AbortDoc() error {
 	ret, _, _ := syscall.SyscallN(_AbortDoc.Addr(),
 		uintptr(hdc))
-	if int32(ret) == -1 {
-		return co.ERROR_INVALID_PRINTER_COMMAND
-	}
-	return nil
+	return util.Minus1AsSysInvalidParm(ret)
 }
 
 var _AbortDoc = dll.Gdi32.NewProc("AbortDoc")
@@ -183,7 +180,7 @@ func (hdc HDC) BitBlt(
 		uintptr(sz.Cx), uintptr(sz.Cy),
 		uintptr(hdcSrc), uintptr(srcTopLeft.X), uintptr(srcTopLeft.Y),
 		uintptr(rop))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _BitBlt = dll.Gdi32.NewProc("BitBlt")
@@ -1378,7 +1375,7 @@ var _SetPixel = dll.Gdi32.NewProc("SetPixel")
 func (hdc HDC) SetPixelFormat(format int, pfd *PIXELFORMATDESCRIPTOR) error {
 	ret, _, err := syscall.SyscallN(_SetPixelFormat.Addr(),
 		uintptr(hdc), uintptr(format), uintptr(unsafe.Pointer(pfd)))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetPixelFormat = dll.Gdi32.NewProc("SetPixelFormat")
@@ -1527,7 +1524,7 @@ var _StrokePath = dll.Gdi32.NewProc("StrokePath")
 func (hdc HDC) SwapBuffers() error {
 	ret, _, err := syscall.SyscallN(_SwapBuffers.Addr(),
 		uintptr(hdc))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SwapBuffers = dll.Gdi32.NewProc("SwapBuffers")

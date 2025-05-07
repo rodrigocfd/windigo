@@ -256,7 +256,7 @@ var _ReadProcessMemory = dll.Kernel32.NewProc("ReadProcessMemory")
 func (hProcess HPROCESS) SetPriorityClass(pc co.PRIORITY) error {
 	ret, _, err := syscall.SyscallN(_SetPriorityClass.Addr(),
 		uintptr(hProcess), uintptr(pc))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetPriorityClass = dll.Kernel32.NewProc("SetPriorityClass")
@@ -267,7 +267,7 @@ var _SetPriorityClass = dll.Kernel32.NewProc("SetPriorityClass")
 func (hProcess HPROCESS) SetProcessAffinityUpdateMode(affinity co.AFFINITY) error {
 	ret, _, err := syscall.SyscallN(_SetProcessAffinityUpdateMode.Addr(),
 		uintptr(hProcess), uintptr(affinity))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetProcessAffinityUpdateMode = dll.Kernel32.NewProc("SetProcessAffinityUpdateMode")
@@ -278,7 +278,7 @@ var _SetProcessAffinityUpdateMode = dll.Kernel32.NewProc("SetProcessAffinityUpda
 func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
 	ret, _, err := syscall.SyscallN(_TerminateProcess.Addr(),
 		uintptr(hProcess), uintptr(exitCode))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _TerminateProcess = dll.Kernel32.NewProc("TerminateProcess")

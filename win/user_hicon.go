@@ -54,7 +54,7 @@ var _CopyIcon = dll.User32.NewProc("CopyIcon")
 func (hIcon HICON) DestroyIcon() error {
 	ret, _, err := syscall.SyscallN(_DestroyIcon.Addr(),
 		uintptr(hIcon))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _DestroyIcon = dll.User32.NewProc("DestroyIcon")

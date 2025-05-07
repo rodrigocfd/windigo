@@ -21,7 +21,7 @@ type HANDLE syscall.Handle
 func (h HANDLE) CloseHandle() error {
 	ret, _, err := syscall.SyscallN(_CloseHandle.Addr(),
 		uintptr(h))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _CloseHandle = dll.Kernel32.NewProc("CloseHandle")

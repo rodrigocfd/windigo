@@ -14,7 +14,7 @@ import (
 
 // [GetFileVersionInfo] function.
 //
-// This function is tricky, prefer using VersionLoad().
+// This is a low level function, prefer using VersionLoad().
 //
 // # Example
 //
@@ -33,7 +33,7 @@ func GetFileVersionInfo(fileName string, dest []byte) error {
 	ret, _, err := syscall.SyscallN(_GetFileVersionInfoW.Addr(),
 		uintptr(fileName16.UnsafePtr()), 0,
 		uintptr(len(dest)), uintptr(unsafe.Pointer(&dest[0])))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _GetFileVersionInfoW = dll.Version.NewProc("GetFileVersionInfoW")
@@ -57,7 +57,7 @@ var _GetFileVersionInfoSizeW = dll.Version.NewProc("GetFileVersionInfoSizeW")
 
 // [VerQueryValue] function.
 //
-// This function is tricky, prefer using VersionLoad().
+// This is a low level function, prefer using VersionLoad().
 //
 // # Example
 //

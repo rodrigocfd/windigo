@@ -20,7 +20,7 @@ func AdjustWindowRectEx(rc *RECT, style co.WS, hasMenu bool, exStyle co.WS_EX) e
 	ret, _, err := syscall.SyscallN(_AdjustWindowRectEx.Addr(),
 		uintptr(unsafe.Pointer(rc)), uintptr(style),
 		util.BoolToUintptr(hasMenu), uintptr(exStyle))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _AdjustWindowRectEx = dll.User32.NewProc("AdjustWindowRectEx")
@@ -31,7 +31,7 @@ var _AdjustWindowRectEx = dll.User32.NewProc("AdjustWindowRectEx")
 func AllowSetForegroundWindow(processId uint32) error {
 	ret, _, err := syscall.SyscallN(_AllowSetForegroundWindow.Addr(),
 		uintptr(processId))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _AllowSetForegroundWindow = dll.User32.NewProc("AllowSetForegroundWindow")
@@ -120,7 +120,7 @@ var _CreateIconFromResourceEx = dll.User32.NewProc("CreateIconFromResourceEx")
 // [DestroyCaret]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycarret
 func DestroyCaret() error {
 	ret, _, err := syscall.SyscallN(_DestroyCaret.Addr())
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _DestroyCaret = dll.User32.NewProc("DestroyCaret")
@@ -141,7 +141,7 @@ var _DispatchMessageW = dll.User32.NewProc("DispatchMessageW")
 // [EndMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endmenu
 func EndMenu() error {
 	ret, _, err := syscall.SyscallN(_EndMenu.Addr())
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _EndMenu = dll.User32.NewProc("EndMenu")
@@ -507,7 +507,7 @@ var _IsGUIThread = dll.User32.NewProc("IsGUIThread")
 func LockSetForegroundWindow(lockCode co.LSFW) error {
 	ret, _, err := syscall.SyscallN(_LockSetForegroundWindow.Addr(),
 		uintptr(lockCode))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _LockSetForegroundWindow = dll.User32.NewProc("LockSetForegroundWindow")
@@ -551,7 +551,7 @@ var _PostQuitMessage = dll.User32.NewProc("PostQuitMessage")
 func PostThreadMessage(idThread uint32, msg co.WM, wParam WPARAM, lParam LPARAM) error {
 	ret, _, err := syscall.SyscallN(_PostThreadMessageW.Addr(),
 		uintptr(idThread), uintptr(msg), uintptr(wParam), uintptr(lParam))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _PostThreadMessageW = dll.User32.NewProc("PostThreadMessageW")
@@ -622,7 +622,7 @@ var _ReplyMessage = dll.User32.NewProc("ReplyMessage")
 func SetCaretPos(x, y int) error {
 	ret, _, err := syscall.SyscallN(_SetCaretPos.Addr(),
 		uintptr(x), uintptr(y))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetCaretPos = dll.User32.NewProc("SetCaretPos")
@@ -633,7 +633,7 @@ var _SetCaretPos = dll.User32.NewProc("SetCaretPos")
 func SetCursorPos(x, y int) error {
 	ret, _, err := syscall.SyscallN(_SetCursorPos.Addr(),
 		uintptr(x), uintptr(y))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetCursorPos = dll.User32.NewProc("SetCursorPos")
@@ -655,7 +655,7 @@ var _SetMessageExtraInfo = dll.User32.NewProc("SetMessageExtraInfo")
 func SetProcessDefaultLayout(defaultLayout co.LAYOUT) error {
 	ret, _, err := syscall.SyscallN(_SetProcessDefaultLayout.Addr(),
 		uintptr(defaultLayout))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetProcessDefaultLayout = dll.User32.NewProc("SetProcessDefaultLayout")
@@ -665,7 +665,7 @@ var _SetProcessDefaultLayout = dll.User32.NewProc("SetProcessDefaultLayout")
 // [SetProcessDPIAware]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiaware
 func SetProcessDPIAware() error {
 	ret, _, err := syscall.SyscallN(_SetProcessDPIAware.Addr())
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetProcessDPIAware = dll.User32.NewProc("SetProcessDPIAware")
@@ -702,7 +702,7 @@ func SystemParametersInfo(
 ) error {
 	ret, _, err := syscall.SyscallN(_SystemParametersInfoW.Addr(),
 		uintptr(uiAction), uintptr(uiParam), uintptr(pvParam), uintptr(fWinIni))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SystemParametersInfoW = dll.User32.NewProc("SystemParametersInfoW")
@@ -741,7 +741,7 @@ var _UnregisterClassW = dll.User32.NewProc("UnregisterClassW")
 // [WaitMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-waitmessage
 func WaitMessage() error {
 	ret, _, err := syscall.SyscallN(_WaitMessage.Addr())
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _WaitMessage = dll.User32.NewProc("WaitMessage")

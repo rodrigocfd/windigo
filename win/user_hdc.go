@@ -18,7 +18,7 @@ import (
 func (hdc HDC) DrawIcon(x, y int, hIcon HICON) error {
 	ret, _, err := syscall.SyscallN(_DrawIcon.Addr(),
 		uintptr(hdc), uintptr(x), uintptr(y), uintptr(hIcon))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _DrawIcon = dll.User32.NewProc("DrawIcon")
@@ -38,7 +38,7 @@ func (hdc HDC) DrawIconEx(
 		uintptr(hdc), uintptr(pos.X), uintptr(pos.Y), uintptr(hIcon),
 		uintptr(size.Cx), uintptr(size.Cy), uintptr(frameIndex),
 		uintptr(hbrFlickerFree), uintptr(diFlags))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _DrawIconEx = dll.User32.NewProc("DrawIconEx")
@@ -94,7 +94,7 @@ func enumDisplayMonitorsCallback() uintptr {
 func (hdc HDC) FrameRect(rc *RECT, hBrush HBRUSH) error {
 	ret, _, err := syscall.SyscallN(_FrameRect.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(rc)), uintptr(hBrush))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _FrameRect = dll.User32.NewProc("FrameRect")
@@ -105,7 +105,7 @@ var _FrameRect = dll.User32.NewProc("FrameRect")
 func (hdc HDC) InvertRect(rc *RECT) error {
 	ret, _, err := syscall.SyscallN(_InvertRect.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(rc)))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _InvertRect = dll.User32.NewProc("InvertRect")
@@ -116,7 +116,7 @@ var _InvertRect = dll.User32.NewProc("InvertRect")
 func (hdc HDC) PaintDesktop() error {
 	ret, _, err := syscall.SyscallN(_PaintDesktop.Addr(),
 		uintptr(hdc))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _PaintDesktop = dll.User32.NewProc("PaintDesktop")

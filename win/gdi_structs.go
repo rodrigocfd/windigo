@@ -131,6 +131,11 @@ func (bih *BITMAPINFOHEADER) Serialize() []byte {
 // [COLORREF]: https://learn.microsoft.com/en-us/windows/win32/gdi/colorref
 type COLORREF uint32
 
+const (
+	COLORREF_NONE    COLORREF = 0xffff_ffff // No color.
+	COLORREF_DEFAULT COLORREF = 0xff00_0000 // Default color.
+)
+
 // [RGB] macro.
 //
 // [RGB]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-rgb

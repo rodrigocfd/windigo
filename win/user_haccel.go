@@ -58,7 +58,7 @@ var _CopyAcceleratorTableW = dll.User32.NewProc("CopyAcceleratorTableW")
 func (hAccel HACCEL) DestroyAcceleratorTable() error {
 	ret, _, err := syscall.SyscallN(_DestroyAcceleratorTable.Addr(),
 		uintptr(hAccel))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _DestroyAcceleratorTable = dll.User32.NewProc("DestroyAcceleratorTable")

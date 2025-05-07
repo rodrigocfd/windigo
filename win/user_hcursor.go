@@ -29,7 +29,7 @@ func (hCursor HCURSOR) CopyCursor() (HCURSOR, error) {
 func (hCursor HCURSOR) DestroyCursor() error {
 	ret, _, err := syscall.SyscallN(_DestroyCursor.Addr(),
 		uintptr(hCursor))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _DestroyCursor = dll.User32.NewProc("DestroyCursor")

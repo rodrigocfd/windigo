@@ -117,7 +117,7 @@ var _ResumeThread = dll.Kernel32.NewProc("ResumeThread")
 func (hThread HTHREAD) TerminateThread(exitCode uint32) error {
 	ret, _, err := syscall.SyscallN(_TerminateThread.Addr(),
 		uintptr(hThread), uintptr(exitCode))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _TerminateThread = dll.Kernel32.NewProc("TerminateThread")

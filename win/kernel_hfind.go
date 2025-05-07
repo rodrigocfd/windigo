@@ -53,7 +53,7 @@ var _FindFirstFileW = dll.Kernel32.NewProc("FindFirstFileW")
 func (hFind HFIND) FindClose() error {
 	ret, _, err := syscall.SyscallN(_FindClose.Addr(),
 		uintptr(hFind))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _FindClose = dll.Kernel32.NewProc("FindClose")

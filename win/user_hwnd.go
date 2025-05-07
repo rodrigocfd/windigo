@@ -139,7 +139,7 @@ var _GetShellWindow = dll.User32.NewProc("GetShellWindow")
 func (hWnd HWND) AnimateWindow(time uint, flags co.AW) error {
 	ret, _, err := syscall.SyscallN(_AnimateWindow.Addr(),
 		uintptr(hWnd), uintptr(time), uintptr(flags))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _AnimateWindow = dll.User32.NewProc("AnimateWindow")
@@ -174,7 +174,7 @@ var _BeginPaint = dll.User32.NewProc("BeginPaint")
 func (hWnd HWND) BringWindowToTop() error {
 	ret, _, err := syscall.SyscallN(_BringWindowToTop.Addr(),
 		uintptr(hWnd))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _BringWindowToTop = dll.User32.NewProc("BringWindowToTop")
@@ -279,7 +279,7 @@ var _DefWindowProcW = dll.User32.NewProc("DefWindowProcW")
 func (hWnd HWND) DestroyWindow() error {
 	ret, _, err := syscall.SyscallN(_DestroyWindow.Addr(),
 		uintptr(hWnd))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _DestroyWindow = dll.User32.NewProc("DestroyWindow")
@@ -290,7 +290,7 @@ var _DestroyWindow = dll.User32.NewProc("DestroyWindow")
 func (hWnd HWND) DrawMenuBar() error {
 	ret, _, err := syscall.SyscallN(_DrawMenuBar.Addr(),
 		uintptr(hWnd))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _DrawMenuBar = dll.User32.NewProc("DrawMenuBar")
@@ -315,7 +315,7 @@ var _EnableWindow = dll.User32.NewProc("EnableWindow")
 func (hWnd HWND) EndDialog(result uintptr) error {
 	ret, _, err := syscall.SyscallN(_EndDialog.Addr(),
 		uintptr(hWnd), result)
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _EndDialog = dll.User32.NewProc("EndDialog")
@@ -735,7 +735,7 @@ var _MonitorFromWindow = dll.User32.NewProc("MonitorFromWindow")
 func (hWnd HWND) PostMessage(msg co.WM, wParam WPARAM, lParam LPARAM) error {
 	ret, _, err := syscall.SyscallN(_PostMessageW.Addr(),
 		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _PostMessageW = dll.User32.NewProc("PostMessageW")
@@ -844,7 +844,7 @@ var _SetForegroundWindow = dll.User32.NewProc("SetForegroundWindow")
 func (hWnd HWND) SetMenu(hMenu HMENU) error {
 	ret, _, err := syscall.SyscallN(_SetMenu.Addr(),
 		uintptr(hWnd), uintptr(hMenu))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetMenu = dll.User32.NewProc("SetMenu")
@@ -859,7 +859,7 @@ func (hWnd HWND) SetWindowPos(hwndInsertAfter HWND, x, y int, cx, cy uint, flags
 		uintptr(hWnd), uintptr(hwndInsertAfter),
 		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy),
 		uintptr(flags))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetWindowPos = dll.User32.NewProc("SetWindowPos")
@@ -892,7 +892,7 @@ var _SetWindowTextW = dll.User32.NewProc("SetWindowTextW")
 func (hWnd HWND) ShowCaret() error {
 	ret, _, err := syscall.SyscallN(_ShowCaret.Addr(),
 		uintptr(hWnd))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _ShowCaret = dll.User32.NewProc("ShowCaret")
@@ -922,7 +922,7 @@ func (hWnd HWND) Style() (co.WS, error) {
 func (hWnd HWND) TranslateAccelerator(hAccel HACCEL, msg *MSG) error {
 	ret, _, err := syscall.SyscallN(_TranslateAcceleratorW.Addr(),
 		uintptr(hWnd), uintptr(hAccel), uintptr(unsafe.Pointer(msg)))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _TranslateAcceleratorW = dll.User32.NewProc("TranslateAcceleratorW")

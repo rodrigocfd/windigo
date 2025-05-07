@@ -133,7 +133,7 @@ func (hFile HFILE) LockFile(offset, numBytes uint) error {
 	ret, _, err := syscall.SyscallN(_LockFile.Addr(),
 		uintptr(hFile), uintptr(offsetLo), uintptr(offsetHi),
 		uintptr(numBytesLo), uintptr(numBytesHi))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _LockFile = dll.Kernel32.NewProc("LockFile")
@@ -153,7 +153,7 @@ func (hFile HFILE) LockFileEx(
 		uintptr(hFile), uintptr(flags), 0,
 		uintptr(numBytesLo), uintptr(numBytesHi),
 		uintptr(unsafe.Pointer(overlapped)))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _LockFileEx = dll.Kernel32.NewProc("LockFileEx")
@@ -209,7 +209,7 @@ func (hFile HFILE) UnlockFile(offset, numBytes uint) error {
 	ret, _, err := syscall.SyscallN(_UnlockFile.Addr(),
 		uintptr(hFile), uintptr(offsetLo), uintptr(offsetHi),
 		uintptr(numBytesLo), uintptr(numBytesHi))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _UnlockFile = dll.Kernel32.NewProc("UnlockFile")
@@ -225,7 +225,7 @@ func (hFile HFILE) UnlockFileEx(numBytes uint, overlapped *OVERLAPPED) error {
 	ret, _, err := syscall.SyscallN(_UnlockFileEx.Addr(),
 		uintptr(hFile), 0, uintptr(numBytesLo), uintptr(numBytesHi),
 		uintptr(unsafe.Pointer(overlapped)))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _UnlockFileEx = dll.Kernel32.NewProc("UnlockFileEx")

@@ -21,7 +21,7 @@ func (hProcess HPROCESS) SetUserObjectInformation(
 ) error {
 	ret, _, err := syscall.SyscallN(_SetUserObjectInformationW.Addr(),
 		uintptr(hProcess), uintptr(index), uintptr(info), uintptr(infoLen))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetUserObjectInformationW = dll.User32.NewProc("SetUserObjectInformationW")

@@ -90,7 +90,7 @@ var _HeapCompact = dll.Kernel32.NewProc("HeapCompact")
 func (hHeap HHEAP) HeapDestroy() error {
 	ret, _, err := syscall.SyscallN(_HeapDestroy.Addr(),
 		uintptr(hHeap))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _HeapDestroy = dll.Kernel32.NewProc("HeapDestroy")
@@ -117,7 +117,7 @@ func (hHeap HHEAP) HeapFree(flags co.HEAP_NS, ptr unsafe.Pointer) error {
 
 	ret, _, err := syscall.SyscallN(_HeapFree.Addr(),
 		uintptr(hHeap), uintptr(flags), uintptr(ptr))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _HeapFree = dll.Kernel32.NewProc("HeapFree")

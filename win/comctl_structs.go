@@ -74,6 +74,17 @@ func (hdi *HDITEM) SetPszText(val []uint16) {
 	hdi.pszText = &val[0]
 }
 
+// [IMAGEINFO] struct.
+//
+// [IMAGEINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commoncontrols/ns-commoncontrols-imageinfo
+type IMAGEINFO struct {
+	HbmImage HBITMAP
+	HbmMask  HBITMAP
+	unused1  int32
+	unused2  int32
+	RcImage  RECT
+}
+
 // [IMAGELISTDRAWPARAMS] struct.
 //
 // ⚠️ You must call SetCbSize() to initialize the struct.

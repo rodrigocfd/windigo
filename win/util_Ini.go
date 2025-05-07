@@ -124,7 +124,7 @@ func (me *Ini) SaveToFile(filePath string) error {
 	if _, err := fout.WriteString(serialized.String()); err != nil {
 		return err
 	}
-	return err
+	return nil
 }
 
 // Returns a pointer to the section with the given name, or nil if not existing.

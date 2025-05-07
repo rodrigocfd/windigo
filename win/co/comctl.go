@@ -299,9 +299,9 @@ const (
 	ILC_HIGHQUALITYSCALE ILC = 0x0002_0000
 )
 
-// [ImageList_Draw] flags.
+// [ImageList_DrawEx] flags.
 //
-// [ImageList_Draw]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_draw
+// [ImageList_DrawEx]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_drawex
 type ILD uint32
 
 const (

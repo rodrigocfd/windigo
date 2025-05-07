@@ -49,7 +49,7 @@ var _OpenClipboard = dll.User32.NewProc("OpenClipboard")
 // [CloseClipboard]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-closeclipboard
 func (HCLIPBOARD) CloseClipboard() error {
 	ret, _, err := syscall.SyscallN(_CloseClipboard.Addr())
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _CloseClipboard = dll.User32.NewProc("CloseClipboard")
@@ -72,7 +72,7 @@ var _CountClipboardFormats = dll.User32.NewProc("CountClipboardFormats")
 // [EmptyClipboard]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-emptyclipboard
 func (HCLIPBOARD) EmptyClipboard() error {
 	ret, _, err := syscall.SyscallN(_EmptyClipboard.Addr())
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _EmptyClipboard = dll.User32.NewProc("EmptyClipboard")
@@ -200,7 +200,7 @@ func (HCLIPBOARD) SetClipboardData(format co.CF, data []byte) error {
 
 	ret, _, err := syscall.SyscallN(_SetClipboardData.Addr(),
 		uintptr(format), uintptr(hGlobal)) // HGLOBAL will be owned by the clipboard
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetClipboardData = dll.User32.NewProc("SetClipboardData")

@@ -23,7 +23,7 @@ func CopyFile(existingFile, newFile string, failIfExists bool) error {
 	ret, _, err := syscall.SyscallN(_CopyFileW.Addr(),
 		uintptr(existingFile16.UnsafePtr()), uintptr(newFile16.UnsafePtr()),
 		util.BoolToUintptr(failIfExists))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _CopyFileW = dll.Kernel32.NewProc("CopyFileW")
@@ -35,7 +35,7 @@ func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) e
 	pathName16 := wstr.NewBufWith[wstr.Stack20](pathName, wstr.EMPTY_IS_NIL)
 	ret, _, err := syscall.SyscallN(_CreateDirectoryW.Addr(),
 		uintptr(pathName16.UnsafePtr()), uintptr(unsafe.Pointer(securityAttributes)))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _CreateDirectoryW = dll.Kernel32.NewProc("CreateDirectoryW")
@@ -99,7 +99,7 @@ func DeleteFile(fileName string) error {
 	fileName16 := wstr.NewBufWith[wstr.Stack20](fileName, wstr.EMPTY_IS_NIL)
 	ret, _, err := syscall.SyscallN(_DeleteFileW.Addr(),
 		uintptr(fileName16.UnsafePtr()))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _DeleteFileW = dll.Kernel32.NewProc("DeleteFileW")
@@ -459,7 +459,7 @@ func SetCurrentDirectory(pathName string) error {
 	pathName16 := wstr.NewBufWith[wstr.Stack20](pathName, wstr.EMPTY_IS_NIL)
 	ret, _, err := syscall.SyscallN(_SetCurrentDirectoryW.Addr(),
 		uintptr(pathName16.UnsafePtr()))
-	return util.ZeroToGetLastError(ret, err)
+	return util.ZeroAsGetLastError(ret, err)
 }
 
 var _SetCurrentDirectoryW = dll.Kernel32.NewProc("SetCurrentDirectoryW")
