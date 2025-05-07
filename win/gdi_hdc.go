@@ -19,6 +19,24 @@ import (
 // [device context]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hdc
 type HDC HANDLE
 
+// [CreateDC] function.
+//
+// ⚠️ You must defer HDC.DeleteDC().
+//
+// [CreateDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdcw
+func CreateDC(driver, device string, dm *DEVMODE) (HDC, error) {
+	driver16 := wstr.NewBufWith[wstr.Stack20](driver, wstr.EMPTY_IS_NIL)
+	device16 := wstr.NewBufWith[wstr.Stack20](device, wstr.ALLOW_EMPTY)
+
+	ret, _, _ := syscall.SyscallN(_AbortDoc.Addr(),
+		uintptr(driver16.UnsafePtr()), uintptr(device16.UnsafePtr()), 0,
+		uintptr(unsafe.Pointer(dm)))
+	if ret == 0 {
+		return HDC(0), co.ERROR_INVALID_PARAMETER
+	}
+	return HDC(ret), nil
+}
+
 // [AbortDoc] function.
 //
 // [AbortDoc]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-abortdoc

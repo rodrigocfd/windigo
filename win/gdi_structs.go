@@ -168,6 +168,110 @@ func (c COLORREF) ToRgbquad() RGBQUAD {
 	return rq
 }
 
+// [DEVMODE] struct.
+//
+// ⚠️ You must call SetDmSize() to initialize the struct.
+//
+// # Example
+//
+//	var dm win.DEVMODE
+//	dm.SetDmSize()
+//
+// [DEVMODE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-devmodew
+type DEVMODE struct {
+	dmDeviceName       [util.CCHDEVICENAME]uint16
+	dmSpecVersion      uint16
+	DmDriverVersion    uint16
+	dmSize             uint16
+	DmDriverExtra      uint16
+	DmFields           co.DM
+	union0             DEVMODE_Printer
+	DmColor            co.DMCOLOR
+	DmDuplex           co.DMDUP
+	DmYResolution      int16
+	DmTTOption         co.DMTT
+	DmCollate          co.DMCOLLATE
+	dmFormName         [util.CCHFORMNAME]uint16
+	DmLogPixels        uint16
+	DmBitsPerPel       uint32
+	DmPelsWidth        uint32
+	DmPelsHeight       uint32
+	union1             uint32 // co.DMDISPLAYFLAGS | co.DMNUP
+	DmDisplayFrequency uint32
+	DmICMMethod        co.DMICMMETHOD
+	DmICMIntent        co.DMICM
+	DmMediaType        co.DMMEDIA
+	DmDitherType       co.DMDITHER
+	dmReserved1        uint32
+	dmReserved2        uint32
+	DmPanningWidth     uint32
+	DmPanningHeight    uint32
+}
+
+// 1st variation of 1st union of [DEVMODE] struct.
+//
+// [DEVMODE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-devmodew
+type DEVMODE_Printer struct {
+	DmOrientation   co.DMORIENT
+	DmPaperSize     co.DMPAPER
+	DmPaperLength   int16
+	DmPaperWidth    int16
+	DmScale         int16
+	DmCopies        int16
+	DmDefaultSource co.DMBIN
+	DmPrintQuality  co.DMRES
+}
+
+// 2st variation of 1st union of [DEVMODE] struct.
+//
+// [DEVMODE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-devmodew
+type DEVMODE_Display struct {
+	DmPosition           POINT
+	DmDisplayOrientation co.DMDO
+	DmDisplayFixedOutput co.DMDFO
+}
+
+func (dm *DEVMODE) DmDeviceName() string {
+	return wstr.Utf16SliceToStr(dm.dmDeviceName[:])
+}
+func (dm *DEVMODE) SetDmDeviceName(val string) {
+	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(dm.dmDeviceName)-1)), dm.dmDeviceName[:])
+}
+
+// Sets the dwSize field to the size of the struct, correctly initializing it.
+// Also sets dwSpecVersion.
+func (dm *DEVMODE) SetDmSize() {
+	dm.dmSpecVersion = util.DM_SPECVERSION
+	dm.dmSize = uint16(unsafe.Sizeof(*dm))
+}
+
+// Returns the 1st variation of the 1st union.
+func (dm *DEVMODE) Printer() *DEVMODE_Printer {
+	return &dm.union0
+}
+
+// Returns the 2nd variation of the 1st union.
+func (dm *DEVMODE) Display() *DEVMODE_Display {
+	return (*DEVMODE_Display)(unsafe.Pointer(&dm.union0))
+}
+
+func (dm *DEVMODE) DmFormName() string {
+	return wstr.Utf16SliceToStr(dm.dmFormName[:])
+}
+func (dm *DEVMODE) SetDmFormName(val string) {
+	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(dm.dmFormName)-1)), dm.dmFormName[:])
+}
+
+// Returns the 1st variation of the 2nd union.
+func (dm *DEVMODE) DmDisplayFlags() *co.DMDISPLAYFLAGS {
+	return (*co.DMDISPLAYFLAGS)(unsafe.Pointer(&dm.union1))
+}
+
+// Returns the 2st variation of the 2nd union.
+func (dm *DEVMODE) DmNup() *co.DMNUP {
+	return (*co.DMNUP)(unsafe.Pointer(&dm.union1))
+}
+
 // [GRADIENT_RECT] struct.
 //
 // [GRADIENT_RECT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-gradient_rect

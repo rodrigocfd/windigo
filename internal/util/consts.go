@@ -15,7 +15,10 @@ const (
 
 // Internal constants for gdi.
 const (
+	CCHDEVICENAME     = 32
+	CCHFORMNAME       = 32
 	CLR_INVALID       = 0xffff_ffff
+	DM_SPECVERSION    = 0x0401
 	GDI_ERR           = 0xffff_ffff
 	HGDI_ERROR        = 0xffff_ffff
 	HIMETRIC_PER_INCH = 2540
