@@ -1073,6 +1073,7 @@ const (
 type RT uint32
 
 const (
+	RT_NONE         RT = 0
 	RT_ACCELERATOR  RT = 9
 	RT_ANICURSOR    RT = 21
 	RT_ANIICON      RT = 22

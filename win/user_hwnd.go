@@ -700,6 +700,17 @@ func (hWnd HWND) IsWindow() bool {
 
 var _IsWindow = dll.User32.NewProc("IsWindow")
 
+// [MapDialogRect] function.
+//
+// [MapDialogRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mapdialogrect
+func (hWnd HWND) MapDialogRect(rc *RECT) error {
+	ret, _, err := syscall.SyscallN(_MapDialogRect.Addr(),
+		uintptr(hWnd), uintptr(unsafe.Pointer(rc)))
+	return util.ZeroAsGetLastError(ret, err)
+}
+
+var _MapDialogRect = dll.User32.NewProc("MapDialogRect")
+
 // [MessageBox] function.
 //
 // [MessageBox]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
