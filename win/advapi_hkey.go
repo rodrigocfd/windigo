@@ -431,7 +431,7 @@ var _RegOpenKeyExW = dll.Advapi32.NewProc("RegOpenKeyExW")
 // [RegQueryInfoKey] function.
 //
 // [RegQueryInfoKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryinfokeyw
-func (hKey HKEY) RegQueryInfoKey() (_HkeyInfo, error) {
+func (hKey HKEY) RegQueryInfoKey() (HkeyInfo, error) {
 	var (
 		classBuf              = wstr.NewBufSized[wstr.Stack64](64)
 		numSubKeys            uint32
@@ -464,13 +464,13 @@ func (hKey HKEY) RegQueryInfoKey() (_HkeyInfo, error) {
 		if wErr := co.ERROR(ret); wErr == co.ERROR_MORE_DATA {
 			classBuf.Resize(classBuf.Len() + 64) // increase buffer size to try again
 		} else if wErr != co.ERROR_SUCCESS {
-			return _HkeyInfo{}, wErr
+			return HkeyInfo{}, wErr
 		} else {
 			break
 		}
 	}
 
-	return _HkeyInfo{
+	return HkeyInfo{
 		Class:                 wstr.Utf16SliceToStr(classBuf.HotSlice()),
 		NumSubKeys:            uint(numSubKeys),
 		MaxSubKeyNameLen:      uint(maxSubKeyNameLen),
@@ -484,7 +484,10 @@ func (hKey HKEY) RegQueryInfoKey() (_HkeyInfo, error) {
 
 }
 
-type _HkeyInfo struct {
+// Returned by [RegQueryInfoKey].
+//
+// [RegQueryInfoKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryinfokeyw
+type HkeyInfo struct {
 	Class                 string
 	NumSubKeys            uint
 	MaxSubKeyNameLen      uint

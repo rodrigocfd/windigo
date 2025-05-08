@@ -78,7 +78,7 @@ var _GetThreadId = dll.Kernel32.NewProc("GetThreadId")
 // [GetThreadTimes] function.
 //
 // [GetThreadTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadtimes
-func (hThread HTHREAD) GetThreadTimes() (creation, exit, kernel, user time.Time, wErr error) {
+func (hThread HTHREAD) GetThreadTimes() (HthreadTimes, error) {
 	var ftCreation FILETIME
 	var ftExit FILETIME
 	var ftKernel FILETIME
@@ -90,9 +90,25 @@ func (hThread HTHREAD) GetThreadTimes() (creation, exit, kernel, user time.Time,
 		uintptr(unsafe.Pointer(&ftKernel)),
 		uintptr(unsafe.Pointer(&ftUser)))
 	if ret == 0 {
-		wErr = co.ERROR(err)
+		return HthreadTimes{}, co.ERROR(err)
 	}
-	return ftCreation.ToTime(), ftExit.ToTime(), ftKernel.ToTime(), ftUser.ToTime(), nil
+
+	return HthreadTimes{
+		Creation: ftCreation.ToTime(),
+		Exit:     ftExit.ToTime(),
+		Kernel:   ftKernel.ToTime(),
+		User:     ftUser.ToTime(),
+	}, nil
+}
+
+// Returned by [GetThreadTimes].
+//
+// [GetThreadTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadtimes
+type HthreadTimes struct {
+	Creation time.Time
+	Exit     time.Time
+	Kernel   time.Time
+	User     time.Time
 }
 
 var _GetThreadTimes = dll.Kernel32.NewProc("GetThreadTimes")

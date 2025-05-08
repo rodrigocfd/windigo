@@ -127,17 +127,17 @@ var _GetProcessId = dll.Kernel32.NewProc("GetProcessId")
 // [GetProcessTimes] function.
 //
 // [GetProcessTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
-func (hProcess HPROCESS) GetProcessTimes() (_ProcessTimes, error) {
+func (hProcess HPROCESS) GetProcessTimes() (HprocessTimes, error) {
 	var ftCreation, ftExit, ftKernel, ftUser FILETIME
 	ret, _, err := syscall.SyscallN(_GetProcessTimes.Addr(),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&ftCreation)), uintptr(unsafe.Pointer(&ftExit)),
 		uintptr(unsafe.Pointer(&ftKernel)), uintptr(unsafe.Pointer(&ftUser)))
 	if ret == 0 {
-		return _ProcessTimes{}, co.ERROR(err)
+		return HprocessTimes{}, co.ERROR(err)
 	}
 
-	return _ProcessTimes{
+	return HprocessTimes{
 		Creation: ftCreation.ToTime(),
 		Exit:     ftExit.ToTime(),
 		Kernel:   ftKernel.ToTime(),
@@ -145,7 +145,10 @@ func (hProcess HPROCESS) GetProcessTimes() (_ProcessTimes, error) {
 	}, nil
 }
 
-type _ProcessTimes struct {
+// Returned by [GetProcessTimes].
+//
+// [GetProcessTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
+type HprocessTimes struct {
 	Creation time.Time
 	Exit     time.Time
 	Kernel   time.Time
