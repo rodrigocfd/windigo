@@ -501,6 +501,67 @@ type HkeyInfo struct {
 
 var _RegQueryInfoKeyW = dll.Advapi32.NewProc("RegQueryInfoKeyW")
 
+// [RegQueryMultipleValues] function.
+//
+// # Example
+//
+//	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
+//		"Control Panel\\Desktop", co.REG_OPTION_NONE, co.KEY_READ)
+//	defer hKey.RegCloseKey()
+//
+//	regVals, _ := hKey.RegQueryMultipleValues("DragWidth", "WallPaper")
+//	for _, regVal := range regVals {
+//		str, _ := regVal.Sz()
+//		println(str)
+//	}
+//
+// [RegQueryMultipleValues]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regquerymultiplevaluesw
+func (hKey HKEY) RegQueryMultipleValues(valueNames ...string) ([]RegVal, error) {
+	valueNames16 := wstr.NewArray(valueNames...)
+	var dataBuf []byte
+
+	valents := make([]_VALENT, 0, len(valueNames))
+	for idx := range valueNames {
+		valents = append(valents, _VALENT{
+			ValueName: valueNames16.PtrOf(uint(idx)),
+		})
+	}
+
+	for {
+		var szDataBytes uint32
+		ret, _, _ := syscall.SyscallN(_RegQueryMultipleValuesW.Addr(), // 1st call to retrieve size only
+			uintptr(hKey), uintptr(unsafe.Pointer(&valents[0])), uintptr(len(valueNames)),
+			0, uintptr(unsafe.Pointer(&szDataBytes)))
+		if wErr := co.ERROR(ret); wErr != co.ERROR_MORE_DATA {
+			return nil, wErr
+		}
+
+		dataBuf = make([]byte, szDataBytes)
+		ret, _, _ = syscall.SyscallN(_RegQueryMultipleValuesW.Addr(), // 2nd call to retrieve the data
+			uintptr(hKey), uintptr(unsafe.Pointer(&valents[0])), uintptr(len(valueNames)),
+			uintptr(unsafe.Pointer(&dataBuf[0])), uintptr(unsafe.Pointer(&szDataBytes)))
+
+		if wErr := co.ERROR(ret); wErr == co.ERROR_SUCCESS {
+			dataBuf = dataBuf[:szDataBytes] // data length may have shrunk
+			regVals := make([]RegVal, 0, len(valents))
+			for _, valent := range valents {
+				regVal, err := regValParse(valent.bufProjection(dataBuf), valent.Type)
+				if err != nil {
+					return nil, err
+				}
+				regVals = append(regVals, regVal)
+			}
+			return regVals, nil
+		} else if wErr == co.ERROR_MORE_DATA {
+			continue // value changed in a concurrent operation; retry
+		} else {
+			return nil, wErr
+		}
+	}
+}
+
+var _RegQueryMultipleValuesW = dll.Advapi32.NewProc("RegQueryMultipleValuesW")
+
 // [RegQueryReflectionKey] function.
 //
 // [RegQueryReflectionKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryreflectionkey
@@ -538,11 +599,9 @@ func (hKey HKEY) RegQueryValueEx(valueName string) (RegVal, error) {
 
 	for {
 		var szDataBytes uint32
-
 		ret, _, _ := syscall.SyscallN(_RegQueryValueExW.Addr(), // 1st call to retrieve size only
 			uintptr(hKey), uintptr(valueName16.UnsafePtr()), 0, 0, 0,
 			uintptr(unsafe.Pointer(&szDataBytes)))
-
 		if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
 			return RegVal{}, wErr
 		}

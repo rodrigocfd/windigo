@@ -65,7 +65,7 @@ var _InitMUILanguage = dll.Comctl32.NewProc("InitMUILanguage")
 //
 // [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
-	strsBuf := wstr.NewArray()
+	strs16 := wstr.NewArray()
 
 	tdcBuf := NewVecSized(160, byte(0)) // packed TASKDIALOGCONFIG is 160 bytes
 	defer tdcBuf.Free()
@@ -73,7 +73,7 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 	btnsBuf := NewVec[[12]byte]() // packed TASKDIALOG_BUTTON is 12 bytes
 	defer btnsBuf.Free()
 
-	taskConfig.serialize(&strsBuf, &tdcBuf, &btnsBuf)
+	taskConfig.serialize(&strs16, &tdcBuf, &btnsBuf)
 
 	pPnButton := NewVecSized(1, int32(0)) // OS-allocated; value to be returned
 	defer pPnButton.Free()
