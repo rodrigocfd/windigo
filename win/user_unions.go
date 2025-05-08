@@ -7,8 +7,10 @@ import (
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
-// Tagged union for a class name identifier, which can be empty, an [ATOM] or a
-// string.
+// Tagged union for a class name identifier, which can be:
+//   - none
+//   - [ATOM]
+//   - string
 //
 // # Example
 //
@@ -86,7 +88,10 @@ func (me *ClassName) raw(wideBuf *wstr.Buf[wstr.Stack20]) uintptr {
 	}
 }
 
-// Tagged union for a [cursor resource] identifier.
+// Tagged union for a [cursor resource] identifier, which can be:
+//   - co.IDC
+//   - uint16
+//   - string
 //
 // # Example
 //
@@ -169,7 +174,10 @@ func (me *CursorRes) raw(wideBuf *wstr.Buf[wstr.Stack20]) uintptr {
 	}
 }
 
-// Tagged union for an [icon resource] identifier.
+// Tagged union for an [icon resource] identifier, which can be:
+//   - co.IDI
+//   - uint16
+//   - string
 //
 // # Example:
 //
@@ -252,7 +260,9 @@ func (me *IconRes) raw(wideBuf *wstr.Buf[wstr.Stack20]) uintptr {
 	}
 }
 
-// Tagged union for a resource identifier.
+// Tagged union for a resource identifier, which can be:
+//   - uint16
+//   - string
 //
 // # Example
 //

@@ -6,7 +6,11 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Tagged union for an icon identifier for [TASKDIALOGCONFIG].
+// Tagged union for an icon identifier for [TASKDIALOGCONFIG], which can be:
+//   - none
+//   - [HICON]
+//   - uint16
+//   - co.TDICON
 //
 // # Example
 //
@@ -17,6 +21,7 @@ import (
 //	}
 //
 // [TASKDIALOGCONFIG]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig
+// [HICON]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hicon
 type TdcIcon struct {
 	tag  _TdcIconTag
 	data uint64
@@ -25,10 +30,10 @@ type TdcIcon struct {
 type _TdcIconTag uint8
 
 var (
-	_TdcIconTag_none      _TdcIconTag = 0x0
-	_TdcIconTag_hIcon     _TdcIconTag = 0x1
-	_TdcIconTag_uint16_id _TdcIconTag = 0x2
-	_TdcIconTag_tdIcon    _TdcIconTag = 0x3
+	_TdcIconTag_none   _TdcIconTag = 0x0
+	_TdcIconTag_hIcon  _TdcIconTag = 0x1
+	_TdcIconTag_id     _TdcIconTag = 0x2
+	_TdcIconTag_tdIcon _TdcIconTag = 0x3
 )
 
 // Creates a new TdcIcon with an empty value.
@@ -62,14 +67,14 @@ func (me *TdcIcon) HIcon() (HICON, bool) {
 // Creates a new TdcIcon with an ID value.
 func TdcIconId(id uint16) TdcIcon {
 	return TdcIcon{
-		tag:  _TdcIconTag_uint16_id,
+		tag:  _TdcIconTag_id,
 		data: uint64(uint16(id)),
 	}
 }
 
 // If the value is an ID, returns it and true.
 func (me *TdcIcon) Id() (uint16, bool) {
-	if me.tag == _TdcIconTag_uint16_id {
+	if me.tag == _TdcIconTag_id {
 		return uint16(me.data), true
 	}
 	return 0, false
