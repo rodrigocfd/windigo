@@ -6,8 +6,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/internal/vt"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -32,7 +32,7 @@ func (me *IFileDialog) AddPlace(si *IShellItem, fdap co.FDAP) error {
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).AddPlace,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(si.Ppvt())), uintptr(fdap))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [Advise] method.
@@ -56,7 +56,7 @@ func (me *IFileDialog) ClearClientData() error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).ClearClientData,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [Close] method.
@@ -67,7 +67,7 @@ func (me *IFileDialog) Close(hr co.ERROR) error {
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).Close,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hr))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [GetCurrentSelection] method.
@@ -193,7 +193,7 @@ func (me *IFileDialog) SetClientGuid(guid *win.GUID) error {
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetClientGuid,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(guid)))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [SetDefaultExtension] method.
@@ -204,7 +204,7 @@ func (me *IFileDialog) SetDefaultExtension(defaultExt string) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetDefaultExtension,
 		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(defaultExt16.UnsafePtr()))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [SetDefaultFolder] method.
@@ -214,7 +214,7 @@ func (me *IFileDialog) SetDefaultFolder(si *IShellItem) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetDefaultFolder,
 		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(unsafe.Pointer(si.Ppvt())))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [SetFileName] method.
@@ -225,7 +225,7 @@ func (me *IFileDialog) SetFileName(name string) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetFileName,
 		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(name16.UnsafePtr()))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [SetFileNameLabel] method.
@@ -236,7 +236,7 @@ func (me *IFileDialog) SetFileNameLabel(label string) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetFileNameLabel,
 		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(label16.UnsafePtr()))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [SetFileTypeIndex] method.
@@ -249,7 +249,7 @@ func (me *IFileDialog) SetFileTypeIndex(index uint) error {
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetFileTypeIndex,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(index))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [SetFileTypes] method.
@@ -285,7 +285,7 @@ func (me *IFileDialog) SetFileTypes(filterSpec []COMDLG_FILTERSPEC) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(nFilters),
 		uintptr(unsafe.Pointer(&nativeFilters[0])))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [SetFolder] method.
@@ -296,7 +296,7 @@ func (me *IFileDialog) SetFolder(si *IShellItem) error {
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetFolder,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(si.Ppvt())))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [SetOkButtonLabel] method.
@@ -307,7 +307,7 @@ func (me *IFileDialog) SetOkButtonLabel(text string) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetOkButtonLabel,
 		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(text16.UnsafePtr()))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [SetOptions] method.
@@ -329,7 +329,7 @@ func (me *IFileDialog) SetOptions(fos co.FOS) error {
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetOptions,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(fos))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [SetTitle] method.
@@ -340,7 +340,7 @@ func (me *IFileDialog) SetTitle(title string) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetTitle,
 		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(title16.UnsafePtr()))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [Unadvise] method.
@@ -350,5 +350,5 @@ func (me *IFileDialog) Unadvise(cookie uint32) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).Unadvise,
 		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(cookie))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }

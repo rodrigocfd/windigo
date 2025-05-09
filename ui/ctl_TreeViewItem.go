@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
@@ -281,7 +281,7 @@ func (me TreeViewItem) SetText(text string) TreeViewItem {
 //
 // [TVM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getitem
 func (me TreeViewItem) Text() string {
-	var buf [util.MAX_PATH]uint16 // arbitrary
+	var buf [wutil.MAX_PATH]uint16 // arbitrary
 
 	tvi := win.TVITEMEX{
 		HItem: me.hItem,

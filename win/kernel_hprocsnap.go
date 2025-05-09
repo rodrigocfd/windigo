@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -25,7 +25,7 @@ type HPROCSNAP HANDLE
 func CreateToolhelp32Snapshot(flags co.TH32CS, processId uint32) (HPROCSNAP, error) {
 	ret, _, err := syscall.SyscallN(_CreateToolhelp32Snapshot.Addr(),
 		uintptr(flags), uintptr(processId))
-	if int(ret) == util.INVALID_HANDLE_VALUE {
+	if int(ret) == wutil.INVALID_HANDLE_VALUE {
 		return HPROCSNAP(0), co.ERROR(err)
 	}
 	return HPROCSNAP(ret), nil

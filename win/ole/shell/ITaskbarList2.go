@@ -6,8 +6,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/internal/vt"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -40,6 +40,6 @@ func (me *ITaskbarList2) MarkFullscreenWindow(hwnd win.HWND, fullScreen bool) er
 	ret, _, _ := syscall.SyscallN(
 		(*vt.ITaskbarList2)(unsafe.Pointer(*me.Ppvt())).MarkFullscreenWindow,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(hwnd), util.BoolToUintptr(fullScreen))
-	return util.ErrorAsHResult(ret)
+		uintptr(hwnd), wutil.BoolToUintptr(fullScreen))
+	return wutil.ErrorAsHResult(ret)
 }

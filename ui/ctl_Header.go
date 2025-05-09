@@ -5,7 +5,7 @@ package ui
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -232,7 +232,7 @@ type EventsHeader struct {
 // [HDN_BEGINDRAG]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-begindrag
 func (me *EventsHeader) HdnBeginDrag(fun func(p *win.NMHEADER) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_BEGINDRAG, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMHEADER)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMHEADER)(p)))
 	})
 }
 
@@ -251,7 +251,7 @@ func (me *EventsHeader) HdnBeginFilterEdit(fun func(p *win.NMHEADER)) {
 // [HDN_BEGINTRACK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-begintrack
 func (me *EventsHeader) HdnBeginTrack(fun func(p *win.NMHEADER) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_BEGINTRACK, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMHEADER)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMHEADER)(p)))
 	})
 }
 
@@ -280,7 +280,7 @@ func (me *EventsHeader) HdnDropDown(fun func(p *win.NMHEADER)) {
 // [HDN_ENDDRAG]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-enddrag
 func (me *EventsHeader) HdnEndDrag(fun func(p *win.NMHEADER) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_ENDDRAG, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMHEADER)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMHEADER)(p)))
 	})
 }
 
@@ -309,7 +309,7 @@ func (me *EventsHeader) HdnEndTrack(fun func(p *win.NMHEADER)) {
 // [HDN_FILTERBTNCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-filterbtnclick
 func (me *EventsHeader) HdnFilterBtnClick(fun func(p *win.NMHDFILTERBTNCLICK) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_FILTERBTNCLICK, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMHDFILTERBTNCLICK)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMHDFILTERBTNCLICK)(p)))
 	})
 }
 
@@ -347,7 +347,7 @@ func (me *EventsHeader) HdnItemChanged(fun func(p *win.NMHEADER)) {
 // [HDN_ITEMCHANGING]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-itemchanging
 func (me *EventsHeader) HdnItemChanging(fun func(p *win.NMHEADER) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_ITEMCHANGING, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMHEADER)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMHEADER)(p)))
 	})
 }
 
@@ -406,7 +406,7 @@ func (me *EventsHeader) HdnOverflowClick(fun func(p *win.NMHEADER)) {
 // [HDN_TRACK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-track
 func (me *EventsHeader) HdnTrack(fun func(p *win.NMHEADER) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_TRACK, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMHEADER)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMHEADER)(p)))
 	})
 }
 

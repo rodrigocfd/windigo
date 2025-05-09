@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -90,7 +90,7 @@ var _HeapCompact = dll.Kernel32.NewProc("HeapCompact")
 func (hHeap HHEAP) HeapDestroy() error {
 	ret, _, err := syscall.SyscallN(_HeapDestroy.Addr(),
 		uintptr(hHeap))
-	return util.ZeroAsGetLastError(ret, err)
+	return wutil.ZeroAsGetLastError(ret, err)
 }
 
 var _HeapDestroy = dll.Kernel32.NewProc("HeapDestroy")
@@ -117,7 +117,7 @@ func (hHeap HHEAP) HeapFree(flags co.HEAP_NS, ptr unsafe.Pointer) error {
 
 	ret, _, err := syscall.SyscallN(_HeapFree.Addr(),
 		uintptr(hHeap), uintptr(flags), uintptr(ptr))
-	return util.ZeroAsGetLastError(ret, err)
+	return wutil.ZeroAsGetLastError(ret, err)
 }
 
 var _HeapFree = dll.Kernel32.NewProc("HeapFree")

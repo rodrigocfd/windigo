@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -16,8 +16,8 @@ import (
 // [DwmEnableMMCSS]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmenablemmcss
 func DwmEnableMMCSS(enable bool) error {
 	ret, _, _ := syscall.SyscallN(_DwmEnableMMCSS.Addr(),
-		util.BoolToUintptr(enable))
-	return util.ErrorAsHResult(ret)
+		wutil.BoolToUintptr(enable))
+	return wutil.ErrorAsHResult(ret)
 }
 
 var _DwmEnableMMCSS = dll.Dwmapi.NewProc("DwmEnableMMCSS")
@@ -27,7 +27,7 @@ var _DwmEnableMMCSS = dll.Dwmapi.NewProc("DwmEnableMMCSS")
 // [DwmFlush]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmflush
 func DwmFlush() error {
 	ret, _, _ := syscall.SyscallN(_DwmFlush.Addr())
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 var _DwmFlush = dll.Dwmapi.NewProc("DwmFlush")

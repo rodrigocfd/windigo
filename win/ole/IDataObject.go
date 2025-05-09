@@ -6,8 +6,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/internal/vt"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -62,5 +62,5 @@ func (me *IDataObject) QueryGetData(etc *FORMATETC) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IDataObject)(unsafe.Pointer(*me.Ppvt())).QueryGetData,
 		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(unsafe.Pointer(etc)))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }

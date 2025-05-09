@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -71,7 +71,7 @@ func (hMem HFILEMAPVIEW) Ptr() *byte {
 func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes uint) error {
 	ret, _, err := syscall.SyscallN(_FlushViewOfFile.Addr(),
 		uintptr(hMem), uintptr(numBytes))
-	return util.ZeroAsGetLastError(ret, err)
+	return wutil.ZeroAsGetLastError(ret, err)
 }
 
 var _FlushViewOfFile = dll.Kernel32.NewProc("FlushViewOfFile")
@@ -85,7 +85,7 @@ var _FlushViewOfFile = dll.Kernel32.NewProc("FlushViewOfFile")
 func (hMem HFILEMAPVIEW) UnmapViewOfFile() error {
 	ret, _, err := syscall.SyscallN(_UnmapViewOfFile.Addr(),
 		uintptr(hMem))
-	return util.ZeroAsGetLastError(ret, err)
+	return wutil.ZeroAsGetLastError(ret, err)
 }
 
 var _UnmapViewOfFile = dll.Kernel32.NewProc("UnmapViewOfFile")

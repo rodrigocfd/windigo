@@ -7,8 +7,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/internal/vt"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -60,9 +60,9 @@ func NewIDropTargetImpl(releaser *Releaser) *IDropTarget {
 		},
 		counter: 1,
 	}
-	util.PtrCache.Add(unsafe.Pointer(pImpl)) // keep ptr
+	wutil.PtrCache.Add(unsafe.Pointer(pImpl)) // keep ptr
 	ppImpl := &pImpl
-	util.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
+	wutil.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
 
 	ppFakeVtbl := (**vt.IUnknown)(unsafe.Pointer(ppImpl))
 	pObj := vt.NewObj[IDropTarget](ppFakeVtbl)
@@ -176,8 +176,8 @@ func iDropTargetCallbacks() {
 			ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
 			newCount := atomic.AddUint32(&(*ppImpl).counter, ^uint32(0)) // decrement 1
 			if newCount == 0 {
-				util.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
-				util.PtrCache.Delete(unsafe.Pointer(ppImpl))
+				wutil.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
+				wutil.PtrCache.Delete(unsafe.Pointer(ppImpl))
 			}
 			return uintptr(newCount)
 		},

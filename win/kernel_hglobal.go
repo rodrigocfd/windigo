@@ -6,7 +6,7 @@ import (
 	"syscall"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -52,7 +52,7 @@ var _GlobalAlloc = dll.Kernel32.NewProc("GlobalAlloc")
 func (hGlobal HGLOBAL) GlobalFlags() (co.GMEM, error) {
 	ret, _, err := syscall.SyscallN(_GlobalFlags.Addr(),
 		uintptr(hGlobal))
-	if ret == util.GMEM_INVALID_HANDLE {
+	if ret == wutil.GMEM_INVALID_HANDLE {
 		return co.GMEM(0), co.ERROR(err)
 	}
 	return co.GMEM(ret), nil

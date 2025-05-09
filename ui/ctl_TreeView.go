@@ -5,7 +5,7 @@ package ui
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -247,7 +247,7 @@ func (me *EventsTreeView) TvnBeginDrag(fun func(p *win.NMTREEVIEW)) {
 // [TVN_BEGINLABELEDIT]: https://learn.microsoft.com/en-us/windows/win32/controls/tvn-beginlabeledit
 func (me *EventsTreeView) TvnBeginLabelEdit(fun func(p *win.NMTVDISPINFO) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TVN_BEGINLABELEDIT, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMTVDISPINFO)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMTVDISPINFO)(p)))
 	})
 }
 
@@ -276,7 +276,7 @@ func (me *EventsTreeView) TvnDeleteItem(fun func(p *win.NMTREEVIEW)) {
 // [TVN_ENDLABELEDIT]: https://learn.microsoft.com/en-us/windows/win32/controls/tvn-endlabeledit
 func (me *EventsTreeView) TvnEndLabelEdit(fun func(p *win.NMTVDISPINFO) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TVN_ENDLABELEDIT, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMTVDISPINFO)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMTVDISPINFO)(p)))
 	})
 }
 
@@ -315,7 +315,7 @@ func (me *EventsTreeView) TvnItemChanged(fun func(p *win.NMTVITEMCHANGE)) {
 // [TVN_ITEMCHANGING]: https://learn.microsoft.com/en-us/windows/win32/controls/tvn-itemchanging
 func (me *EventsTreeView) TvnItemChanging(fun func(p *win.NMTVITEMCHANGE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TVN_ITEMCHANGING, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMTVITEMCHANGE)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMTVITEMCHANGE)(p)))
 	})
 }
 
@@ -334,7 +334,7 @@ func (me *EventsTreeView) TvnItemExpanded(fun func(p *win.NMTREEVIEW)) {
 // [TVN_ITEMEXPANDING]: https://learn.microsoft.com/en-us/windows/win32/controls/tvn-itemexpanding
 func (me *EventsTreeView) TvnItemExpanding(fun func(p *win.NMTREEVIEW) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TVN_ITEMEXPANDING, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMTREEVIEW)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMTREEVIEW)(p)))
 	})
 }
 
@@ -362,7 +362,7 @@ func (me *EventsTreeView) TvnSelChanged(fun func(p *win.NMTREEVIEW)) {
 // [TVN_SELCHANGING]: https://learn.microsoft.com/en-us/windows/win32/controls/tvn-selchanging
 func (me *EventsTreeView) TvnSelChanging(fun func(p *win.NMTREEVIEW) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TVN_SELCHANGING, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMTREEVIEW)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMTREEVIEW)(p)))
 	})
 }
 

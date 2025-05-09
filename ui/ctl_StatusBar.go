@@ -5,7 +5,7 @@ package ui
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -75,7 +75,7 @@ type EventsStatusBar struct {
 // [NM_CLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-status-bar
 func (me *EventsStatusBar) NmClick(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_CLICK, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMMOUSE)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
 }
 
@@ -84,7 +84,7 @@ func (me *EventsStatusBar) NmClick(fun func(p *win.NMMOUSE) bool) {
 // [NM_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-dblclk-status-bar
 func (me *EventsStatusBar) NmDblClk(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_DBLCLK, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMMOUSE)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
 }
 
@@ -93,7 +93,7 @@ func (me *EventsStatusBar) NmDblClk(fun func(p *win.NMMOUSE) bool) {
 // [NM_RCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rclick-status-bar
 func (me *EventsStatusBar) NmRClick(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RCLICK, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMMOUSE)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
 }
 
@@ -102,7 +102,7 @@ func (me *EventsStatusBar) NmRClick(fun func(p *win.NMMOUSE) bool) {
 // [NM_RDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-status-bar
 func (me *EventsStatusBar) NmRDblClk(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RDBLCLK, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMMOUSE)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
 }
 

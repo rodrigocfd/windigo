@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -71,7 +71,7 @@ func (hRgn HRGN) GetRgnBox() (RECT, co.REGION, error) {
 	var rc RECT
 	ret, _, _ := syscall.SyscallN(_GetRgnBox.Addr(),
 		uintptr(hRgn), uintptr(unsafe.Pointer(&rc)))
-	if ret == util.REGION_ERROR {
+	if ret == wutil.REGION_ERROR {
 		return RECT{}, co.REGION(0), co.ERROR_INVALID_PARAMETER
 	}
 	return rc, co.REGION(ret), nil

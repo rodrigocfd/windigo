@@ -3,7 +3,7 @@
 package ui
 
 import (
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -40,7 +40,7 @@ func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 
 	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
 		if opts.size.Cx == 0 && opts.size.Cy == 0 {
-			opts.size, _ = calcTextBoundBoxWithCheck(util.RemoveAccelAmpersands(opts.text))
+			opts.size, _ = calcTextBoundBoxWithCheck(wutil.RemoveAccelAmpersands(opts.text))
 		}
 		me.createWindow(opts.wndExStyle, "BUTTON", opts.text,
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, true)
@@ -159,7 +159,7 @@ func (me *CheckBox) SetStateAndTrigger(state co.BST) *CheckBox {
 // Returns the same object, so further operations can be chained.
 func (me *CheckBox) SetTextAndResize(text string) *CheckBox {
 	me.hWnd.SetWindowText(text)
-	boundBox, _ := calcTextBoundBoxWithCheck(util.RemoveAccelAmpersands(text))
+	boundBox, _ := calcTextBoundBoxWithCheck(wutil.RemoveAccelAmpersands(text))
 	me.hWnd.SetWindowPos(win.HWND(0), 0, 0,
 		uint(boundBox.Cx), uint(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me

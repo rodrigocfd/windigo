@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -17,7 +17,7 @@ import (
 func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) error {
 	ret, _, _ := syscall.SyscallN(_DwmExtendFrameIntoClientArea.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(marginsInset)))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 var _DwmExtendFrameIntoClientArea = dll.Dwmapi.NewProc("DwmExtendFrameIntoClientArea")
@@ -62,7 +62,7 @@ var _DwmGetWindowAttribute = dll.Dwmapi.NewProc("DwmGetWindowAttribute")
 func (hWnd HWND) DwmInvalidateIconicBitmaps() error {
 	ret, _, _ := syscall.SyscallN(_DwmInvalidateIconicBitmaps.Addr(),
 		uintptr(hWnd))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 var _DwmInvalidateIconicBitmaps = dll.Dwmapi.NewProc("DwmInvalidateIconicBitmaps")
@@ -74,7 +74,7 @@ func (hWnd HWND) DwmSetIconicLivePreviewBitmap(hBmp HBITMAP, ptClient POINT, sit
 	ret, _, _ := syscall.SyscallN(_DwmSetIconicLivePreviewBitmap.Addr(),
 		uintptr(hWnd), uintptr(hBmp), uintptr(unsafe.Pointer(&ptClient)),
 		uintptr(sitFlags))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 var _DwmSetIconicLivePreviewBitmap = dll.Dwmapi.NewProc("DwmSetIconicLivePreviewBitmap")
@@ -85,7 +85,7 @@ var _DwmSetIconicLivePreviewBitmap = dll.Dwmapi.NewProc("DwmSetIconicLivePreview
 func (hWnd HWND) DwmSetIconicThumbnail(hBmp HBITMAP, sitFlags co.DWM_SIT) error {
 	ret, _, _ := syscall.SyscallN(_DwmSetIconicThumbnail.Addr(),
 		uintptr(hWnd), uintptr(hBmp), uintptr(sitFlags))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 var _DwmSetIconicThumbnail = dll.Dwmapi.NewProc("DwmSetIconicThumbnail")
@@ -114,7 +114,7 @@ func (hWnd HWND) DwmSetWindowAttribute(attr DwmAttr) error {
 
 	ret, _, _ := syscall.SyscallN(_DwmSetWindowAttribute.Addr(),
 		uintptr(hWnd), uintptr(attr.tag), uintptr(ptrBuf), szBuf)
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 var _DwmSetWindowAttribute = dll.Dwmapi.NewProc("DwmSetWindowAttribute")

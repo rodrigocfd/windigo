@@ -8,7 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -133,7 +133,7 @@ var _ResumeThread = dll.Kernel32.NewProc("ResumeThread")
 func (hThread HTHREAD) TerminateThread(exitCode uint32) error {
 	ret, _, err := syscall.SyscallN(_TerminateThread.Addr(),
 		uintptr(hThread), uintptr(exitCode))
-	return util.ZeroAsGetLastError(ret, err)
+	return wutil.ZeroAsGetLastError(ret, err)
 }
 
 var _TerminateThread = dll.Kernel32.NewProc("TerminateThread")
@@ -172,5 +172,5 @@ var _WaitForSingleObject = dll.Kernel32.NewProc("WaitForSingleObject")
 //
 // [WaitForSingleObject]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 func (hThread HTHREAD) WaitForSingleObjectInfinite() (co.WAIT, error) {
-	return hThread.WaitForSingleObject(util.INFINITE)
+	return hThread.WaitForSingleObject(wutil.INFINITE)
 }

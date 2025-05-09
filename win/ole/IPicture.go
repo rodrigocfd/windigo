@@ -6,8 +6,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/internal/vt"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -103,7 +103,7 @@ func (me *IPicture) PictureChanged() error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).PictureChanged,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [Render] method.
@@ -161,7 +161,7 @@ func (me *IPicture) SaveAsFile(stream *IStream, saveCopy bool) (numBytesWritten 
 		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).SaveAsFile,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
-		util.BoolToUintptr(saveCopy),
+		wutil.BoolToUintptr(saveCopy),
 		uintptr(unsafe.Pointer(&numBytesWritten)))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -200,8 +200,8 @@ func (me *IPicture) SetKeepOriginalFormat(keep bool) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).Put_KeepOriginalFormat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		util.BoolToUintptr(keep))
-	return util.ErrorAsHResult(ret)
+		wutil.BoolToUintptr(keep))
+	return wutil.ErrorAsHResult(ret)
 }
 
 // Calls [IPicture.Width] and [IPicture.Height] at once.

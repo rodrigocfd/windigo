@@ -5,7 +5,7 @@ package ui
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -261,7 +261,7 @@ type EventsTrackbar struct {
 // [TRBN_THUMBPOSCHANGING]: https://learn.microsoft.com/en-us/windows/win32/controls/trbn-thumbposchanging
 func (me *EventsTrackbar) ThumbPosChanging(fun func(p *win.NMTRBTHUMBPOSCHANGING) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TRBN_THUMBPOSCHANGING, func(p unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun((*win.NMTRBTHUMBPOSCHANGING)(p)))
+		return wutil.BoolToUintptr(fun((*win.NMTRBTHUMBPOSCHANGING)(p)))
 	})
 }
 

@@ -6,8 +6,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/internal/vt"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -42,7 +42,7 @@ func (me *ITaskbarList) ActivateTab(hWnd win.HWND) error {
 		(*vt.ITaskbarList)(unsafe.Pointer(*me.Ppvt())).ActivateTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [AddTab] method.
@@ -53,7 +53,7 @@ func (me *ITaskbarList) AddTab(hWnd win.HWND) error {
 		(*vt.ITaskbarList)(unsafe.Pointer(*me.Ppvt())).AddTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [DeleteTab] method.
@@ -64,7 +64,7 @@ func (me *ITaskbarList) DeleteTab(hWnd win.HWND) error {
 		(*vt.ITaskbarList)(unsafe.Pointer(*me.Ppvt())).DeleteTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [HrInit] method.
@@ -74,7 +74,7 @@ func (me *ITaskbarList) HrInit() error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.ITaskbarList)(unsafe.Pointer(*me.Ppvt())).HrInit,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 // [SetActiveAlt] method.
@@ -85,5 +85,5 @@ func (me *ITaskbarList) SetActiveAlt(hWnd win.HWND) error {
 		(*vt.ITaskbarList)(unsafe.Pointer(*me.Ppvt())).SetActiveAlt,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }

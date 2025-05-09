@@ -6,7 +6,7 @@ import (
 	"syscall"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 )
 
 // A [handle] to an object. This generic handle is used throughout the whole
@@ -21,7 +21,7 @@ type HANDLE syscall.Handle
 func (h HANDLE) CloseHandle() error {
 	ret, _, err := syscall.SyscallN(_CloseHandle.Addr(),
 		uintptr(h))
-	return util.ZeroAsGetLastError(ret, err)
+	return wutil.ZeroAsGetLastError(ret, err)
 }
 
 var _CloseHandle = dll.Kernel32.NewProc("CloseHandle")

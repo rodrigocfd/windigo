@@ -6,7 +6,7 @@ import (
 	"syscall"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -59,7 +59,7 @@ var _DeferWindowPos = dll.User32.NewProc("DeferWindowPos")
 func (hDwp HDWP) EndDeferWindowPos() error {
 	ret, _, err := syscall.SyscallN(_EndDeferWindowPos.Addr(),
 		uintptr(hDwp))
-	return util.ZeroAsGetLastError(ret, err)
+	return wutil.ZeroAsGetLastError(ret, err)
 }
 
 var _EndDeferWindowPos = dll.User32.NewProc("EndDeferWindowPos")

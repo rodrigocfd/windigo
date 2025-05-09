@@ -5,7 +5,7 @@ package ui
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -336,6 +336,6 @@ func (me *EventsTab) TcnSelChange(fun func()) {
 // [TCN_SELCHANGING]: https://learn.microsoft.com/en-us/windows/win32/controls/tcn-selchanging
 func (me *EventsTab) TcnSelChanging(fun func() bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TCN_SELCHANGING, func(_ unsafe.Pointer) uintptr {
-		return util.BoolToUintptr(fun())
+		return wutil.BoolToUintptr(fun())
 	})
 }

@@ -6,7 +6,7 @@ import (
 	"syscall"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -29,7 +29,7 @@ func (hCursor HCURSOR) CopyCursor() (HCURSOR, error) {
 func (hCursor HCURSOR) DestroyCursor() error {
 	ret, _, err := syscall.SyscallN(_DestroyCursor.Addr(),
 		uintptr(hCursor))
-	return util.ZeroAsGetLastError(ret, err)
+	return wutil.ZeroAsGetLastError(ret, err)
 }
 
 var _DestroyCursor = dll.User32.NewProc("DestroyCursor")

@@ -3,7 +3,7 @@
 package win
 
 import (
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -45,8 +45,8 @@ func (ffi *VS_FIXEDFILEINFO) SetProductVersion(major, minor, patch, build uint16
 }
 
 func (ffi *VS_FIXEDFILEINFO) FileDate() uint64 {
-	return util.Make64(ffi.dwFileDateLS, ffi.dwFileDateMS)
+	return wutil.Make64(ffi.dwFileDateLS, ffi.dwFileDateMS)
 }
 func (ffi *VS_FIXEDFILEINFO) SetFileDate(val uint64) {
-	ffi.dwFileDateLS, ffi.dwFileDateMS = util.Break64(val)
+	ffi.dwFileDateLS, ffi.dwFileDateMS = wutil.Break64(val)
 }

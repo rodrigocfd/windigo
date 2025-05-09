@@ -9,7 +9,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -65,7 +65,7 @@ var _CreateICW = dll.Gdi32.NewProc("CreateICW")
 func (hdc HDC) AbortDoc() error {
 	ret, _, _ := syscall.SyscallN(_AbortDoc.Addr(),
 		uintptr(hdc))
-	return util.Minus1AsSysInvalidParm(ret)
+	return wutil.Minus1AsSysInvalidParm(ret)
 }
 
 var _AbortDoc = dll.Gdi32.NewProc("AbortDoc")
@@ -76,7 +76,7 @@ var _AbortDoc = dll.Gdi32.NewProc("AbortDoc")
 func (hdc HDC) AbortPath() error {
 	ret, _, _ := syscall.SyscallN(_AbortPath.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _AbortPath = dll.Gdi32.NewProc("AbortPath")
@@ -100,12 +100,12 @@ func (hdc HDC) AlphaBlend(
 		uintptr(hdcSrc), uintptr(originSrc.X), uintptr(originSrc.Y),
 		uintptr(szSrc.Cx), uintptr(szSrc.Cy),
 		uintptr(
-			util.Make32(
-				util.Make16(ftn.BlendOp, ftn.BlendFlags),
-				util.Make16(ftn.SourceConstantAlpha, ftn.AlphaFormat),
+			wutil.Make32(
+				wutil.Make16(ftn.BlendOp, ftn.BlendFlags),
+				wutil.Make16(ftn.SourceConstantAlpha, ftn.AlphaFormat),
 			),
 		))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _AlphaBlend = dll.Gdi32.NewProc("AlphaBlend")
@@ -117,7 +117,7 @@ func (hdc HDC) AngleArc(center POINT, r uint, startAngle, sweepAngle float32) er
 	ret, _, _ := syscall.SyscallN(_AngleArc.Addr(),
 		uintptr(hdc), uintptr(center.X), uintptr(center.Y), uintptr(r),
 		uintptr(startAngle), uintptr(sweepAngle))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _AngleArc = dll.Gdi32.NewProc("AngleArc")
@@ -131,7 +131,7 @@ func (hdc HDC) Arc(bound RECT, radialStart, radialEnd POINT) error {
 		uintptr(bound.Right), uintptr(bound.Bottom),
 		uintptr(radialStart.X), uintptr(radialStart.Y),
 		uintptr(radialEnd.X), uintptr(radialEnd.Y))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _Arc = dll.Gdi32.NewProc("Arc")
@@ -145,7 +145,7 @@ func (hdc HDC) ArcTo(bound RECT, radialStart, radialEnd POINT) error {
 		uintptr(bound.Right), uintptr(bound.Bottom),
 		uintptr(radialStart.X), uintptr(radialStart.Y),
 		uintptr(radialEnd.X), uintptr(radialEnd.Y))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _ArcTo = dll.Gdi32.NewProc("ArcTo")
@@ -158,7 +158,7 @@ var _ArcTo = dll.Gdi32.NewProc("ArcTo")
 func (hdc HDC) BeginPath() error {
 	ret, _, _ := syscall.SyscallN(_BeginPath.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _BeginPath = dll.Gdi32.NewProc("BeginPath")
@@ -180,7 +180,7 @@ func (hdc HDC) BitBlt(
 		uintptr(sz.Cx), uintptr(sz.Cy),
 		uintptr(hdcSrc), uintptr(srcTopLeft.X), uintptr(srcTopLeft.Y),
 		uintptr(rop))
-	return util.ZeroAsGetLastError(ret, err)
+	return wutil.ZeroAsGetLastError(ret, err)
 }
 
 var _BitBlt = dll.Gdi32.NewProc("BitBlt")
@@ -191,7 +191,7 @@ var _BitBlt = dll.Gdi32.NewProc("BitBlt")
 func (hdc HDC) CancelDC() error {
 	ret, _, _ := syscall.SyscallN(_CancelDC.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _CancelDC = dll.Gdi32.NewProc("CancelDC")
@@ -205,7 +205,7 @@ func (hdc HDC) Chord(bound RECT, radialStart, radialEnd POINT) error {
 		uintptr(bound.Right), uintptr(bound.Bottom),
 		uintptr(radialStart.X), uintptr(radialStart.Y),
 		uintptr(radialEnd.X), uintptr(radialEnd.Y))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _Chord = dll.Gdi32.NewProc("Chord")
@@ -216,7 +216,7 @@ var _Chord = dll.Gdi32.NewProc("Chord")
 func (hdc HDC) CloseFigure() error {
 	ret, _, _ := syscall.SyscallN(_CloseFigure.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _CloseFigure = dll.Gdi32.NewProc("CloseFigure")
@@ -312,7 +312,7 @@ var _CreateHalftonePalette = dll.Gdi32.NewProc("CreateHalftonePalette")
 func (hdc HDC) DeleteDC() error {
 	ret, _, _ := syscall.SyscallN(_DeleteDC.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _DeleteDC = dll.Gdi32.NewProc("DeleteDC")
@@ -324,7 +324,7 @@ func (hdc HDC) Ellipse(bound RECT) error {
 	ret, _, _ := syscall.SyscallN(_Ellipse.Addr(),
 		uintptr(hdc), uintptr(bound.Left), uintptr(bound.Top),
 		uintptr(bound.Right), uintptr(bound.Bottom))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _Ellipse = dll.Gdi32.NewProc("Ellipse")
@@ -335,7 +335,7 @@ var _Ellipse = dll.Gdi32.NewProc("Ellipse")
 func (hdc HDC) EndDoc() error {
 	ret, _, _ := syscall.SyscallN(_EndDoc.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _EndDoc = dll.Gdi32.NewProc("EndDoc")
@@ -346,7 +346,7 @@ var _EndDoc = dll.Gdi32.NewProc("EndDoc")
 func (hdc HDC) EndPage() error {
 	ret, _, _ := syscall.SyscallN(_EndPage.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _EndPage = dll.Gdi32.NewProc("EndPage")
@@ -360,7 +360,7 @@ var _EndPage = dll.Gdi32.NewProc("EndPage")
 func (hdc HDC) EndPath() error {
 	ret, _, _ := syscall.SyscallN(_EndPath.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _EndPath = dll.Gdi32.NewProc("EndPath")
@@ -386,7 +386,7 @@ var _ExcludeClipRect = dll.Gdi32.NewProc("ExcludeClipRect")
 func (hdc HDC) FillPath() error {
 	ret, _, _ := syscall.SyscallN(_FillPath.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _FillPath = dll.Gdi32.NewProc("FillPath")
@@ -397,7 +397,7 @@ var _FillPath = dll.Gdi32.NewProc("FillPath")
 func (hdc HDC) FillRect(rc *RECT, hBrush HBRUSH) error {
 	ret, _, _ := syscall.SyscallN(_FillRect.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(rc)), uintptr(hBrush))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _FillRect = dll.Gdi32.NewProc("FillRect")
@@ -408,7 +408,7 @@ var _FillRect = dll.Gdi32.NewProc("FillRect")
 func (hdc HDC) FillRgn(hRgn HRGN, hBrush HBRUSH) error {
 	ret, _, _ := syscall.SyscallN(_FillRgn.Addr(),
 		uintptr(hdc), uintptr(hRgn), uintptr(hBrush))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _FillRgn = dll.Gdi32.NewProc("FillRgn")
@@ -419,7 +419,7 @@ var _FillRgn = dll.Gdi32.NewProc("FillRgn")
 func (hdc HDC) FlattenPath() error {
 	ret, _, _ := syscall.SyscallN(_FlattenPath.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _FlattenPath = dll.Gdi32.NewProc("FlattenPath")
@@ -430,7 +430,7 @@ var _FlattenPath = dll.Gdi32.NewProc("FlattenPath")
 func (hdc HDC) FrameRgn(hRgn HRGN, hBrush HBRUSH, width, height uint) error {
 	ret, _, _ := syscall.SyscallN(_FrameRgn.Addr(),
 		uintptr(hdc), uintptr(hRgn), uintptr(hBrush), uintptr(width), uintptr(height))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _FrameRgn = dll.Gdi32.NewProc("FrameRgn")
@@ -441,7 +441,7 @@ var _FrameRgn = dll.Gdi32.NewProc("FrameRgn")
 func (hdc HDC) GetBkColor() (COLORREF, error) {
 	ret, _, _ := syscall.SyscallN(_GetBkColor.Addr(),
 		uintptr(hdc))
-	if ret == util.CLR_INVALID {
+	if ret == wutil.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
 	}
 	return COLORREF(ret), nil
@@ -484,7 +484,7 @@ var _GetCurrentPositionEx = dll.Gdi32.NewProc("GetCurrentPositionEx")
 func (hdc HDC) GetDCBrushColor() (COLORREF, error) {
 	ret, _, _ := syscall.SyscallN(_GetDCBrushColor.Addr(),
 		uintptr(hdc))
-	if ret == util.CLR_INVALID {
+	if ret == wutil.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
 	}
 	return COLORREF(ret), nil
@@ -498,7 +498,7 @@ var _GetDCBrushColor = dll.Gdi32.NewProc("GetDCBrushColor")
 func (hdc HDC) GetDCPenColor() (COLORREF, error) {
 	ret, _, _ := syscall.SyscallN(_GetDCPenColor.Addr(),
 		uintptr(hdc))
-	if ret == util.CLR_INVALID {
+	if ret == wutil.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
 	}
 	return COLORREF(ret), nil
@@ -618,7 +618,7 @@ var _GetDIBits = dll.Gdi32.NewProc("GetDIBits")
 func (hdc HDC) GetPixel() (COLORREF, error) {
 	ret, _, _ := syscall.SyscallN(_GetPixel.Addr(),
 		uintptr(hdc))
-	if ret == util.CLR_INVALID {
+	if ret == wutil.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
 	}
 	return COLORREF(ret), nil
@@ -646,7 +646,7 @@ var _GetPolyFillMode = dll.Gdi32.NewProc("GetPolyFillMode")
 func (hdc HDC) GetTextColor() (COLORREF, error) {
 	ret, _, _ := syscall.SyscallN(_GetTextColor.Addr(),
 		uintptr(hdc))
-	if ret == util.CLR_INVALID {
+	if ret == wutil.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
 	}
 	return COLORREF(ret), nil
@@ -677,7 +677,7 @@ var _GetTextExtentPoint32W = dll.Gdi32.NewProc("GetTextExtentPoint32W")
 //
 // [GetTextFace]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextfacew
 func (hdc HDC) GetTextFace() (string, error) {
-	var buf [util.LF_FACESIZE]uint16
+	var buf [wutil.LF_FACESIZE]uint16
 	ret, _, _ := syscall.SyscallN(_GetTextFaceW.Addr(),
 		uintptr(hdc), uintptr(len(buf)), uintptr(unsafe.Pointer(&buf[0])))
 	if ret == 0 {
@@ -793,7 +793,7 @@ func (hdc HDC) GradientFill(
 	ret, _, _ := syscall.SyscallN(_GradientFill.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(&vertex[0])), uintptr(len(vertex)),
 		uintptr(pMesh), uintptr(nMesh), uintptr(mode))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _GradientFill = dll.Gdi32.NewProc("GradientFill")
@@ -806,11 +806,11 @@ func (hdc HDC) HiMetricToPixel(himetricX, himetricY int) (pixelX, pixelY int) {
 	// https://forums.codeguru.com/showthread.php?109554-Unresizable-activeX-control
 	pixelX = int(
 		(int64(himetricX) * int64(hdc.GetDeviceCaps(co.GDC_LOGPIXELSX))) /
-			int64(util.HIMETRIC_PER_INCH),
+			int64(wutil.HIMETRIC_PER_INCH),
 	)
 	pixelY = int(
 		(int64(himetricY) * int64(hdc.GetDeviceCaps(co.GDC_LOGPIXELSY))) /
-			int64(util.HIMETRIC_PER_INCH),
+			int64(wutil.HIMETRIC_PER_INCH),
 	)
 	return
 }
@@ -836,7 +836,7 @@ var _IntersectClipRect = dll.Gdi32.NewProc("IntersectClipRect")
 func (hdc HDC) InvertRgn(hRgn HRGN) error {
 	ret, _, _ := syscall.SyscallN(_InvertRgn.Addr(),
 		uintptr(hdc), uintptr(hRgn))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _InvertRgn = dll.Gdi32.NewProc("InvertRgn")
@@ -847,7 +847,7 @@ var _InvertRgn = dll.Gdi32.NewProc("InvertRgn")
 func (hdc HDC) LineTo(x, y int) error {
 	ret, _, _ := syscall.SyscallN(_LineTo.Addr(),
 		uintptr(hdc), uintptr(x), uintptr(y))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _LineTo = dll.Gdi32.NewProc("LineTo")
@@ -858,7 +858,7 @@ var _LineTo = dll.Gdi32.NewProc("LineTo")
 func (hdc HDC) LPtoDP(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(_LPtoDP.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])), uintptr(len(pts)))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _LPtoDP = dll.Gdi32.NewProc("LPtoDP")
@@ -881,7 +881,7 @@ func (hdc HDC) MaskBlt(
 		uintptr(hdcSrc), uintptr(srcTopLeft.X), uintptr(srcTopLeft.Y),
 		uintptr(hbmMask), uintptr(maskOffset.X), uintptr(maskOffset.Y),
 		uintptr(rop))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _MaskBlt = dll.Gdi32.NewProc("MaskBlt")
@@ -907,7 +907,7 @@ var _MoveToEx = dll.Gdi32.NewProc("MoveToEx")
 func (hdc HDC) PaintRgn(hRgn HRGN) error {
 	ret, _, _ := syscall.SyscallN(_PaintRgn.Addr(),
 		uintptr(hdc), uintptr(hRgn))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _PaintRgn = dll.Gdi32.NewProc("PaintRgn")
@@ -919,7 +919,7 @@ func (hdc HDC) PatBlt(topLeft POINT, sz SIZE, rop co.ROP) error {
 	ret, _, _ := syscall.SyscallN(_PatBlt.Addr(),
 		uintptr(hdc), uintptr(topLeft.X), uintptr(topLeft.Y),
 		uintptr(sz.Cx), uintptr(sz.Cy), uintptr(rop))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _PatBlt = dll.Gdi32.NewProc("PatBlt")
@@ -949,7 +949,7 @@ func (hdc HDC) Pie(bound RECT, endPointRadial1, endPointRadial2 POINT) error {
 		uintptr(bound.Right), uintptr(bound.Bottom),
 		uintptr(endPointRadial1.X), uintptr(endPointRadial1.Y),
 		uintptr(endPointRadial2.X), uintptr(endPointRadial2.Y))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _Pie = dll.Gdi32.NewProc("Pie")
@@ -959,11 +959,11 @@ var _Pie = dll.Gdi32.NewProc("Pie")
 // [AtlPixelToHiMetric]: https://learn.microsoft.com/en-us/cpp/atl/reference/pixel-himetric-conversion-global-functions?view=msvc-170#atlpixeltohimetri
 func (hdc HDC) PixelToHiMetric(pixelX, pixelY int) (himetricX, himetricY int) {
 	himetricX = int(
-		(int64(pixelX) * int64(util.HIMETRIC_PER_INCH)) /
+		(int64(pixelX) * int64(wutil.HIMETRIC_PER_INCH)) /
 			int64(hdc.GetDeviceCaps(co.GDC_LOGPIXELSX)),
 	)
 	himetricY = int(
-		(int64(pixelY) * int64(util.HIMETRIC_PER_INCH)) /
+		(int64(pixelY) * int64(wutil.HIMETRIC_PER_INCH)) /
 			int64(hdc.GetDeviceCaps(co.GDC_LOGPIXELSY)),
 	)
 	return
@@ -975,7 +975,7 @@ func (hdc HDC) PixelToHiMetric(pixelX, pixelY int) (himetricX, himetricY int) {
 func (hdc HDC) PolyBezier(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(_PolyBezier.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])), uintptr(len(pts)))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _PolyBezier = dll.Gdi32.NewProc("PolyBezier")
@@ -986,7 +986,7 @@ var _PolyBezier = dll.Gdi32.NewProc("PolyBezier")
 func (hdc HDC) PolyBezierTo(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(_PolyBezierTo.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])), uintptr(len(pts)))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _PolyBezierTo = dll.Gdi32.NewProc("PolyBezierTo")
@@ -1005,7 +1005,7 @@ func (hdc HDC) PolyDraw(pts []POINT, usage []co.PT) error {
 	ret, _, _ := syscall.SyscallN(_PolyDraw.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])),
 		uintptr(unsafe.Pointer(&usage[0])), uintptr(len(pts)))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _PolyDraw = dll.Gdi32.NewProc("PolyDraw")
@@ -1016,7 +1016,7 @@ var _PolyDraw = dll.Gdi32.NewProc("PolyDraw")
 func (hdc HDC) Polygon(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(_Polygon.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])), uintptr(len(pts)))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _Polygon = dll.Gdi32.NewProc("Polygon")
@@ -1027,7 +1027,7 @@ var _Polygon = dll.Gdi32.NewProc("Polygon")
 func (hdc HDC) Polyline(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(_Polyline.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])), uintptr(len(pts)))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _Polyline = dll.Gdi32.NewProc("Polyline")
@@ -1038,7 +1038,7 @@ var _Polyline = dll.Gdi32.NewProc("Polyline")
 func (hdc HDC) PolylineTo(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(_PolylineTo.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(&pts[0])), uintptr(len(pts)))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _PolylineTo = dll.Gdi32.NewProc("PolylineTo")
@@ -1066,7 +1066,7 @@ func (hdc HDC) PolyPolygon(polygons [][]POINT) error {
 		uintptr(unsafe.Pointer(&allPtsFlat[0])),
 		uintptr(unsafe.Pointer(&ptsPerPolygon[0])),
 		uintptr(len(polygons)))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _PolyPolygon = dll.Gdi32.NewProc("PolyPolygon")
@@ -1094,7 +1094,7 @@ func (hdc HDC) PolyPolyline(polyLines [][]POINT) error {
 		uintptr(unsafe.Pointer(&allPtsFlat[0])),
 		uintptr(unsafe.Pointer(&ptsPerPolyLine[0])),
 		uintptr(len(polyLines)))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _PolyPolyline = dll.Gdi32.NewProc("PolyPolyline")
@@ -1119,7 +1119,7 @@ var _PtVisible = dll.Gdi32.NewProc("PtVisible")
 func (hdc HDC) RealizePalette() (uint, error) {
 	ret, _, _ := syscall.SyscallN(_RealizePalette.Addr(),
 		uintptr(hdc))
-	if ret == util.GDI_ERR {
+	if ret == wutil.GDI_ERR {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
 	return uint(ret), nil
@@ -1134,7 +1134,7 @@ func (hdc HDC) Rectangle(bound RECT) error {
 	ret, _, _ := syscall.SyscallN(_Rectangle.Addr(),
 		uintptr(hdc), uintptr(bound.Left), uintptr(bound.Top),
 		uintptr(bound.Right), uintptr(bound.Bottom))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _Rectangle = dll.Gdi32.NewProc("Rectangle")
@@ -1162,7 +1162,7 @@ var _ResetDCW = dll.Gdi32.NewProc("ResetDCW")
 func (hdc HDC) RestoreDC(savedDC int32) error {
 	ret, _, _ := syscall.SyscallN(_RestoreDC.Addr(),
 		uintptr(hdc), uintptr(savedDC))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _RestoreDC = dll.Gdi32.NewProc("RestoreDC")
@@ -1175,7 +1175,7 @@ func (hdc HDC) RoundRect(bound RECT, sz SIZE) error {
 		uintptr(hdc), uintptr(bound.Left), uintptr(bound.Top),
 		uintptr(bound.Right), uintptr(bound.Bottom),
 		uintptr(sz.Cx), uintptr(sz.Cy))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _RoundRect = dll.Gdi32.NewProc("RoundRect")
@@ -1203,7 +1203,7 @@ var _SaveDC = dll.Gdi32.NewProc("SaveDC")
 func (hdc HDC) SelectClipPath(mode co.RGN) error {
 	ret, _, _ := syscall.SyscallN(_SelectClipPath.Addr(),
 		uintptr(hdc), uintptr(mode))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _SelectClipPath = dll.Gdi32.NewProc("SelectClipPath")
@@ -1214,7 +1214,7 @@ var _SelectClipPath = dll.Gdi32.NewProc("SelectClipPath")
 func (hdc HDC) SelectClipRgn(hRgn HRGN) (co.REGION, error) {
 	ret, _, _ := syscall.SyscallN(_SelectClipRgn.Addr(),
 		uintptr(hdc), uintptr(hRgn))
-	if ret == util.REGION_ERROR {
+	if ret == wutil.REGION_ERROR {
 		return co.REGION(0), co.ERROR_INVALID_PARAMETER
 	}
 	return co.REGION(ret), nil
@@ -1277,7 +1277,7 @@ func (hdc HDC) SelectObjectPen(hPen HPEN) (HPEN, error) {
 func (hdc HDC) SelectObjectRgn(hRgn HRGN) (co.REGION, error) {
 	ret, _, _ := syscall.SyscallN(_SelectObject.Addr(),
 		uintptr(hdc), uintptr(hRgn))
-	if ret == util.HGDI_ERROR || ret == util.REGION_ERROR {
+	if ret == wutil.HGDI_ERROR || ret == wutil.REGION_ERROR {
 		return co.REGION(0), co.ERROR_INVALID_PARAMETER
 	}
 	return co.REGION(ret), nil
@@ -1288,7 +1288,7 @@ func (hdc HDC) SelectObjectRgn(hRgn HRGN) (co.REGION, error) {
 // [SelectPalette]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectpalette
 func (hdc HDC) SelectPalette(hPal HPALETTE, forceBkgd bool) (HPALETTE, error) {
 	ret, _, _ := syscall.SyscallN(_SelectPalette.Addr(),
-		uintptr(hdc), uintptr(hPal), util.BoolToUintptr(forceBkgd))
+		uintptr(hdc), uintptr(hPal), wutil.BoolToUintptr(forceBkgd))
 	if ret == 0 {
 		return HPALETTE(0), co.ERROR_INVALID_PARAMETER
 	}
@@ -1317,7 +1317,7 @@ var _SetArcDirection = dll.Gdi32.NewProc("SetArcDirection")
 func (hdc HDC) SetBkColor(color COLORREF) (COLORREF, error) {
 	ret, _, _ := syscall.SyscallN(_SetBkColor.Addr(),
 		uintptr(hdc), uintptr(color))
-	if ret == util.CLR_INVALID {
+	if ret == wutil.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
 	}
 	return COLORREF(ret), nil
@@ -1375,7 +1375,7 @@ var _SetPixel = dll.Gdi32.NewProc("SetPixel")
 func (hdc HDC) SetPixelFormat(format int, pfd *PIXELFORMATDESCRIPTOR) error {
 	ret, _, err := syscall.SyscallN(_SetPixelFormat.Addr(),
 		uintptr(hdc), uintptr(format), uintptr(unsafe.Pointer(pfd)))
-	return util.ZeroAsGetLastError(ret, err)
+	return wutil.ZeroAsGetLastError(ret, err)
 }
 
 var _SetPixelFormat = dll.Gdi32.NewProc("SetPixelFormat")
@@ -1414,7 +1414,7 @@ var _SetStretchBltMode = dll.Gdi32.NewProc("SetStretchBltMode")
 func (hdc HDC) SetTextAlign(align co.TA) error {
 	ret, _, _ := syscall.SyscallN(_SetTextAlign.Addr(),
 		uintptr(hdc), uintptr(align))
-	if ret == util.GDI_ERR {
+	if ret == wutil.GDI_ERR {
 		return co.ERROR_INVALID_PARAMETER
 	}
 	return nil
@@ -1428,7 +1428,7 @@ var _SetTextAlign = dll.Gdi32.NewProc("SetTextAlign")
 func (hdc HDC) SetTextColor(color COLORREF) (COLORREF, error) {
 	ret, _, _ := syscall.SyscallN(_SetTextColor.Addr(),
 		uintptr(hdc), uintptr(color))
-	if ret == util.CLR_INVALID {
+	if ret == wutil.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
 	}
 	return COLORREF(ret), nil
@@ -1457,7 +1457,7 @@ var _SetViewportExtEx = dll.Gdi32.NewProc("SetViewportExtEx")
 func (hdc HDC) StartDoc(di *DOCINFO) error {
 	ret, _, _ := syscall.SyscallN(_StartDocW.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(di)))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _StartDocW = dll.Gdi32.NewProc("StartDocW")
@@ -1468,7 +1468,7 @@ var _StartDocW = dll.Gdi32.NewProc("StartDocW")
 func (hdc HDC) StartPage() error {
 	ret, _, _ := syscall.SyscallN(_StartPage.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _StartPage = dll.Gdi32.NewProc("StartPage")
@@ -1491,7 +1491,7 @@ func (hdc HDC) StretchBlt(
 		uintptr(destSz.Cx), uintptr(destSz.Cy),
 		uintptr(hdcSrc), uintptr(srcTopLeft.X), uintptr(srcTopLeft.Y),
 		uintptr(srcSz.Cx), uintptr(srcSz.Cy), uintptr(rop))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _StretchBlt = dll.Gdi32.NewProc("StretchBlt")
@@ -1502,7 +1502,7 @@ var _StretchBlt = dll.Gdi32.NewProc("StretchBlt")
 func (hdc HDC) StrokeAndFillPath() error {
 	ret, _, _ := syscall.SyscallN(_StrokeAndFillPath.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _StrokeAndFillPath = dll.Gdi32.NewProc("StrokeAndFillPath")
@@ -1513,7 +1513,7 @@ var _StrokeAndFillPath = dll.Gdi32.NewProc("StrokeAndFillPath")
 func (hdc HDC) StrokePath() error {
 	ret, _, _ := syscall.SyscallN(_StrokePath.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _StrokePath = dll.Gdi32.NewProc("StrokePath")
@@ -1524,7 +1524,7 @@ var _StrokePath = dll.Gdi32.NewProc("StrokePath")
 func (hdc HDC) SwapBuffers() error {
 	ret, _, err := syscall.SyscallN(_SwapBuffers.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsGetLastError(ret, err)
+	return wutil.ZeroAsGetLastError(ret, err)
 }
 
 var _SwapBuffers = dll.Gdi32.NewProc("SwapBuffers")
@@ -1539,7 +1539,7 @@ func (hdc HDC) TextOut(x, y int, text string) error {
 	ret, _, _ := syscall.SyscallN(_TextOutW.Addr(),
 		uintptr(hdc), uintptr(x), uintptr(y),
 		uintptr(text16.UnsafePtr()), uintptr(textLen-1))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _TextOutW = dll.Gdi32.NewProc("TextOutW")
@@ -1565,7 +1565,7 @@ func (hdc HDC) TransparentBlt(
 		uintptr(srcTopLeft.X), uintptr(srcTopLeft.Y),
 		uintptr(srcSz.Cx), uintptr(srcSz.Cy),
 		uintptr(colorTransparent))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _TransparentBlt = dll.Gdi32.NewProc("TransparentBlt")
@@ -1576,7 +1576,7 @@ var _TransparentBlt = dll.Gdi32.NewProc("TransparentBlt")
 func (hdc HDC) WidenPath() error {
 	ret, _, _ := syscall.SyscallN(_WidenPath.Addr(),
 		uintptr(hdc))
-	return util.ZeroAsSysInvalidParm(ret)
+	return wutil.ZeroAsSysInvalidParm(ret)
 }
 
 var _WidenPath = dll.Gdi32.NewProc("WidenPath")

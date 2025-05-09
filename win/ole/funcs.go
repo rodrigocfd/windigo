@@ -8,8 +8,8 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/util"
 	"github.com/rodrigocfd/windigo/internal/vt"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
@@ -187,7 +187,7 @@ func OleLoadPicture(
 	ret, _, _ := syscall.SyscallN(_OleLoadPicture.Addr(),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
 		uintptr(size),
-		util.BoolToUintptr(!keepOriginalFormat), // note: reversed
+		wutil.BoolToUintptr(!keepOriginalFormat), // note: reversed
 		uintptr(unsafe.Pointer(&guid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -215,7 +215,7 @@ var _OleLoadPicture = dll.Oleaut32.NewProc("OleLoadPicture")
 func OleInitialize() error {
 	ret, _, _ := syscall.SyscallN(_OleInitialize.Addr(),
 		0)
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 var _OleInitialize = dll.Ole32.NewProc("OleInitialize")
@@ -301,7 +301,7 @@ var _ReleaseStgMedium = dll.Ole32.NewProc("ReleaseStgMedium")
 func RevokeDragDrop(hWnd win.HWND) error {
 	ret, _, _ := syscall.SyscallN(_RevokeDragDrop.Addr(),
 		uintptr(hWnd))
-	return util.ErrorAsHResult(ret)
+	return wutil.ErrorAsHResult(ret)
 }
 
 var _RevokeDragDrop = dll.Ole32.NewProc("RevokeDragDrop")
