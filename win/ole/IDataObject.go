@@ -16,7 +16,9 @@ import (
 // [IDataObject]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
 type IDataObject struct{ IUnknown }
 
-// Returns the unique COM interface identifier.
+// Returns the unique COM [interface ID].
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IDataObject) IID() co.IID {
 	return co.IID_IDataObject
 }

@@ -18,7 +18,9 @@ import (
 // [IBindCtx]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ibindctx
 type IBindCtx struct{ IUnknown }
 
-// Returns the unique COM interface identifier.
+// Returns the unique COM [interface ID].
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IBindCtx) IID() co.IID {
 	return co.IID_IBindCtx
 }

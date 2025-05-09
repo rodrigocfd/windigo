@@ -29,7 +29,9 @@ import (
 // [SHCreateItemFromParsingName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 type IShellItem struct{ ole.IUnknown }
 
-// Returns the unique COM interface identifier.
+// Returns the unique COM [interface ID].
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IShellItem) IID() co.IID {
 	return co.IID_IShellItem
 }

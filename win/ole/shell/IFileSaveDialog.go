@@ -43,7 +43,9 @@ import (
 // [IFileSaveDialog]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifilesavedialog
 type IFileSaveDialog struct{ IFileDialog }
 
-// Returns the unique COM interface identifier.
+// Returns the unique COM [interface ID].
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IFileSaveDialog) IID() co.IID {
 	return co.IID_IFileSaveDialog
 }

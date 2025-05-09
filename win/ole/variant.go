@@ -26,6 +26,21 @@ type VARIANT struct {
 	data       [16]byte
 }
 
+// Calls [VariantClear].
+//
+// You usually don't need to call this method directly, since every function
+// which returns a [COM] object will require a Releaser to manage the object's
+// lifetime.
+//
+// [VariantClear]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantclear
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+func (me *VARIANT) Release() {
+	syscall.SyscallN(_VariantClear.Addr(),
+		uintptr(unsafe.Pointer(me))) // ignore errors
+}
+
+var _VariantClear = dll.Oleaut32.NewProc("VariantClear")
+
 // Returns the type of the VARIANT.
 func (vt *VARIANT) Type() co.VT {
 	return vt.tag
@@ -45,7 +60,7 @@ func NewVariantEmpty(releaser *Releaser) *VARIANT {
 	v := &VARIANT{}
 	syscall.SyscallN(_VariantInit.Addr(),
 		uintptr(unsafe.Pointer(v)))
-	releaser.AddVar(v)
+	releaser.Add(v)
 	return v
 }
 

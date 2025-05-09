@@ -28,7 +28,9 @@ import (
 // [ITaskbarList4]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist4
 type ITaskbarList4 struct{ ITaskbarList3 }
 
-// Returns the unique COM interface identifier.
+// Returns the unique COM [interface ID].
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*ITaskbarList4) IID() co.IID {
 	return co.IID_ITaskbarList4
 }

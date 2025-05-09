@@ -11,11 +11,32 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// [IUnknown] COM interface, base to all COM interfaces.
+// [IUnknown] [COM] interface, base to all COM interfaces.
 //
 // [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 type IUnknown struct {
 	ppvt **vt.IUnknown
+}
+
+// Calls [Release].
+//
+// You usually don't need to call this method directly, since every function
+// which returns a [COM] object will require a Releaser to manage the object's
+// lifetime.
+//
+// [Release]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+func (me *IUnknown) Release() {
+	me.Set(nil)
+}
+
+// Returns the unique [COM] [interface ID].
+//
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
+func (*IUnknown) IID() co.IID {
+	return co.IID_IUnknown
 }
 
 // Returns the [COM] virtual table pointer.
@@ -38,13 +59,6 @@ func (me *IUnknown) Ppvt() **vt.IUnknown {
 func (me *IUnknown) Set(ppvt **vt.IUnknown) {
 	vt.Release(me.ppvt)
 	me.ppvt = ppvt
-}
-
-// Returns the unique [COM] interface identifier.
-//
-// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
-func (*IUnknown) IID() co.IID {
-	return co.IID_IUnknown
 }
 
 // [QueryInterface] method. Not implemented as a method of [IUnknown] because

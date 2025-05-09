@@ -16,7 +16,9 @@ import (
 // [IStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
 type IStream struct{ ISequentialStream }
 
-// Returns the unique COM interface identifier.
+// Returns the unique COM [interface ID].
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IStream) IID() co.IID {
 	return co.IID_IStream
 }
