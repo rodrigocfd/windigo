@@ -14,6 +14,32 @@ import (
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
+// [SHCreateItemFromIDList] function.
+//
+// [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
+func SHCreateItemFromIDList[T any, P ole.ComCtor[T]](
+	releaser *ole.Releaser,
+	pidl ITEMIDLIST,
+) (*T, error) {
+	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	var ppvtQueried **vt.IUnknown
+	guidIid := win.GuidFrom(pObj.IID())
+
+	ret, _, _ := syscall.SyscallN(_SHCreateItemFromIDList.Addr(),
+		uintptr(pidl), uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj.Set(ppvtQueried)
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHCreateItemFromIDList = dll.Shell32.NewProc("SHCreateItemFromIDList")
+
 // [SHCreateItemFromParsingName] function.
 //
 // Return type is tipically [IShellItem] of [IShellItem2].
@@ -80,3 +106,21 @@ func SHGetDesktopFolder(releaser *ole.Releaser) (*IShellFolder, error) {
 }
 
 var _SHGetDesktopFolder = dll.Shell32.NewProc("SHGetDesktopFolder")
+
+// [SHGetIDListFromObject] function.
+//
+// ⚠️ You must defer ITEMIDLIST.Free().
+//
+// [SHGetIDListFromObject]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shgetidlistfromobject
+func SHGetIDListFromObject(obj ole.ComPtr) (ITEMIDLIST, error) {
+	var pidl ITEMIDLIST
+	ret, _, _ := syscall.SyscallN(_SHGetIDListFromObject.Addr(),
+		uintptr(unsafe.Pointer(obj.Ppvt())), uintptr(unsafe.Pointer(&pidl)))
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return pidl, nil
+	} else {
+		return ITEMIDLIST(0), hr
+	}
+}
+
+var _SHGetIDListFromObject = dll.Shell32.NewProc("SHGetIDListFromObject")

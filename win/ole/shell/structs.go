@@ -5,6 +5,7 @@ package shell
 import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/ole"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
@@ -25,6 +26,18 @@ type COMDLG_FILTERSPEC struct {
 type _COMDLG_FILTERSPEC struct {
 	PszName *uint16
 	PszSpec *uint16
+}
+
+// [ITEMIDLIST] struct.
+//
+// [ITEMIDLIST]: https://learn.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-itemidlist
+type ITEMIDLIST uintptr
+
+// Calls [CoTaskMemFree] to release the memory.
+//
+// [CoTaskMemFree]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
+func (il ITEMIDLIST) Free() {
+	ole.HTASKMEM(il).CoTaskMemFree()
 }
 
 // [THUMBBUTTON] struct.
