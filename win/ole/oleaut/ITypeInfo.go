@@ -1,6 +1,6 @@
 //go:build windows
 
-package ole
+package oleaut
 
 import (
 	"syscall"
@@ -8,12 +8,13 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/ole"
 )
 
 // [ITypeInfo] COM interface.
 //
 // [ITypeInfo]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
-type ITypeInfo struct{ IUnknown }
+type ITypeInfo struct{ ole.IUnknown }
 
 // Returns the unique COM [interface ID].
 //
@@ -40,35 +41,13 @@ func (me *ITypeInfo) AddressOfMember(memberId MEMBERID, invokeKind co.INVOKEKIND
 	}
 }
 
-// // [CreateInstance] method.
-// //
-// // [CreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-createinstance
-// func (me *ITypeInfo) CreateInstance(releaser *Releaser, riid co.IID) (*IUnknown, error) {
-// 	var ppvtQueried **vt.IUnknown
-// 	guidIid := win.GuidFrom(riid)
-//
-// 	ret, _, _ := syscall.SyscallN(
-// 		(*vt.ITypeInfo)(unsafe.Pointer(*me.Ppvt())).CreateInstance,
-// 		uintptr(unsafe.Pointer(me.Ppvt())), 0, // don't query pUnkOuter
-// 		uintptr(unsafe.Pointer(&guidIid)),
-// 		uintptr(unsafe.Pointer(&ppvtQueried)))
-//
-// 	if hr := errco.ERROR(ret); hr == errco.S_OK {
-// 		pUnk := NewIUnknown(ppvtQueried)
-// 		releaser.Add(pUnk)
-// 		return pUnk, nil
-// 	} else {
-// 		return nil, hr
-// 	}
-// }
-
 // [GetDllEntry] method.
 //
 // [GetDllEntry]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdllentry
 func (me *ITypeInfo) GetDllEntry(
 	memberId MEMBERID,
 	invokeKind co.INVOKEKIND,
-) (_ITypeInfoDll, error) {
+) (ITypeInfoDllEntry, error) {
 	var dllName, name BSTR
 	defer dllName.SysFreeString()
 	defer name.SysFreeString()
@@ -83,17 +62,20 @@ func (me *ITypeInfo) GetDllEntry(
 		uintptr(unsafe.Pointer(&ordinal16)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return _ITypeInfoDll{
+		return ITypeInfoDllEntry{
 			DllName: dllName.String(),
 			Name:    name.String(),
 			Ordinal: uint(ordinal16),
 		}, nil
 	} else {
-		return _ITypeInfoDll{}, hr
+		return ITypeInfoDllEntry{}, hr
 	}
 }
 
-type _ITypeInfoDll struct {
+// Returned by [ITypeInfo.GetDllEntry].
+//
+// [ITypeInfo.GetDllEntry]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdllentry
+type ITypeInfoDllEntry struct {
 	DllName string
 	Name    string
 	Ordinal uint
@@ -102,7 +84,7 @@ type _ITypeInfoDll struct {
 // [GetDocumentation] method.
 //
 // [GetDocumentation]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdocumentation
-func (me *ITypeInfo) GetDocumentation(memberId MEMBERID) (_ITypeInfoDoc, error) {
+func (me *ITypeInfo) GetDocumentation(memberId MEMBERID) (ITypeInfoDoc, error) {
 	var name, docStr, helpFile BSTR
 	defer name.SysFreeString()
 	defer docStr.SysFreeString()
@@ -119,18 +101,21 @@ func (me *ITypeInfo) GetDocumentation(memberId MEMBERID) (_ITypeInfoDoc, error) 
 		uintptr(unsafe.Pointer(&helpFile)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return _ITypeInfoDoc{
+		return ITypeInfoDoc{
 			Name:        name.String(),
 			DocString:   docStr.String(),
 			HelpContext: uint(helpCtx),
 			HelpFile:    helpFile.String(),
 		}, nil
 	} else {
-		return _ITypeInfoDoc{}, hr
+		return ITypeInfoDoc{}, hr
 	}
 }
 
-type _ITypeInfoDoc struct {
+// Returned by [ITypeInfo.GetDocumentation].
+//
+// [ITypeInfo.GetDocumentation]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdocumentation
+type ITypeInfoDoc struct {
 	Name        string
 	DocString   string
 	HelpContext uint

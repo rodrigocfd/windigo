@@ -1,6 +1,6 @@
 //go:build windows
 
-package ole
+package oleaut
 
 import (
 	"encoding/binary"
@@ -13,6 +13,7 @@ import (
 	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/ole"
 )
 
 // OLE Automation [VARIANT] type.
@@ -53,10 +54,10 @@ func (vt *VARIANT) Type() co.VT {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariantEmpty(rel)
+//	v := oleaut.NewVariantEmpty(rel)
 //
 // [VariantInit]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantinit
-func NewVariantEmpty(releaser *Releaser) *VARIANT {
+func NewVariantEmpty(releaser *ole.Releaser) *VARIANT {
 	v := &VARIANT{}
 	syscall.SyscallN(_VariantInit.Addr(),
 		uintptr(unsafe.Pointer(v)))
@@ -94,7 +95,7 @@ func (v *VARIANT) IsEmpty() bool {
 //
 // [VariantInit]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantinit
 // [types]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-varenum
-func NewVariant(releaser *Releaser, value interface{}) *VARIANT {
+func NewVariant(releaser *ole.Releaser, value interface{}) *VARIANT {
 	v := NewVariantEmpty(releaser)
 
 	switch val := value.(type) {
@@ -172,7 +173,7 @@ func NewVariant(releaser *Releaser, value interface{}) *VARIANT {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, true)
+//	v := oleaut.NewVariant(rel, true)
 //
 //	if boolVal, ok := v.Bool(); ok {
 //		println(boolVal)
@@ -193,7 +194,7 @@ func (v *VARIANT) Bool() (actualValue, isBool bool) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, float32(43.5))
+//	v := oleaut.NewVariant(rel, float32(43.5))
 //
 //	if floatVal, ok := v.Float32(); ok {
 //		println(floatVal)
@@ -213,7 +214,7 @@ func (v *VARIANT) Float32() (float32, bool) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, float64(43.5))
+//	v := oleaut.NewVariant(rel, float64(43.5))
 //
 //	if floatVal, ok := v.Float64(); ok {
 //		println(floatVal)
@@ -237,12 +238,12 @@ func (v *VARIANT) Float64() (float64, bool) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, pDisp)
+//	v := oleaut.NewVariant(rel, pDisp)
 //
 //	if pDispVal, ok := v.IDispatch(rel); ok {
 //		println(pDisp.Ppvt())
 //	}
-func (v *VARIANT) IDispatch(releaser *Releaser) (*IDispatch, bool) {
+func (v *VARIANT) IDispatch(releaser *ole.Releaser) (*IDispatch, bool) {
 	if v.tag == co.VT_DISPATCH {
 		rawPpvt := uintptr(binary.LittleEndian.Uint64(v.data[:]))
 		ppvt := (**vt.IUnknown)(unsafe.Pointer(rawPpvt))
@@ -263,7 +264,7 @@ func (v *VARIANT) IDispatch(releaser *Releaser) (*IDispatch, bool) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, int8(50))
+//	v := oleaut.NewVariant(rel, int8(50))
 //
 //	if intVal, ok := v.Int8(); ok {
 //		println(intVal)
@@ -283,7 +284,7 @@ func (v *VARIANT) Int8() (int8, bool) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, int16(50))
+//	v := oleaut.NewVariant(rel, int16(50))
 //
 //	if intVal, ok := v.Int16(); ok {
 //		println(intVal)
@@ -303,7 +304,7 @@ func (v *VARIANT) Int16() (int16, bool) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, int32(50))
+//	v := oleaut.NewVariant(rel, int32(50))
 //
 //	if intVal, ok := v.Int32(); ok {
 //		println(intVal)
@@ -323,7 +324,7 @@ func (v *VARIANT) Int32() (int32, bool) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, int64(50))
+//	v := oleaut.NewVariant(rel, int64(50))
 //
 //	if intVal, ok := v.Int64(); ok {
 //		println(intVal)
@@ -343,7 +344,7 @@ func (v *VARIANT) Int64() (int64, bool) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, "foo")
+//	v := oleaut.NewVariant(rel, "foo")
 //
 //	if strVal, ok := v.Str(); ok {
 //		println(strVal)
@@ -369,7 +370,7 @@ var _SystemTimeToVariantTime = dll.Oleaut32.NewProc("SystemTimeToVariantTime")
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, time.Now())
+//	v := oleaut.NewVariant(rel, time.Now())
 //
 //	if dateVal, ok := v.Date(); ok {
 //		println(dateVal.Format(time.ANSIC))
@@ -401,7 +402,7 @@ var _VariantTimeToSystemTime = dll.Oleaut32.NewProc("VariantTimeToSystemTime")
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, uint8(50))
+//	v := oleaut.NewVariant(rel, uint8(50))
 //
 //	if intVal, ok := v.Uint8(); ok {
 //		println(intVal)
@@ -421,7 +422,7 @@ func (v *VARIANT) Uint8() (uint8, bool) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, uint16(50))
+//	v := oleaut.NewVariant(rel, uint16(50))
 //
 //	if intVal, ok := v.Uint16(); ok {
 //		println(intVal)
@@ -441,7 +442,7 @@ func (v *VARIANT) Uint16() (uint16, bool) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, uint32(50))
+//	v := oleaut.NewVariant(rel, uint32(50))
 //
 //	if intVal, ok := v.Uint32(); ok {
 //		println(intVal)
@@ -461,7 +462,7 @@ func (v *VARIANT) Uint32() (uint32, bool) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	v := ole.NewVariant(rel, uint64(50))
+//	v := oleaut.NewVariant(rel, uint64(50))
 //
 //	if intVal, ok := v.Uint64(); ok {
 //		println(intVal)

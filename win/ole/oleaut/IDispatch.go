@@ -1,6 +1,6 @@
 //go:build windows
 
-package ole
+package oleaut
 
 import (
 	"syscall"
@@ -9,13 +9,14 @@ import (
 	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/ole"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
 // [IDispatch] COM interface.
 //
 // [IDispatch]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
-type IDispatch struct{ IUnknown }
+type IDispatch struct{ ole.IUnknown }
 
 // Returns the unique COM [interface ID].
 //
@@ -65,7 +66,7 @@ func (me *IDispatch) GetIDsOfNames(
 //
 // # Example
 //
-//	var iDisp ole.IDispatch // initialized somewhere
+//	var iDisp oleaut.IDispatch // initialized somewhere
 //
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
@@ -73,7 +74,7 @@ func (me *IDispatch) GetIDsOfNames(
 //	nfo, _ := iDisp.GetTypeInfo(rel, win.LCID_USER_DEFAULT)
 //
 // [GetTypeInfo]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
-func (me *IDispatch) GetTypeInfo(releaser *Releaser, lcid win.LCID) (*ITypeInfo, error) {
+func (me *IDispatch) GetTypeInfo(releaser *ole.Releaser, lcid win.LCID) (*ITypeInfo, error) {
 	var ppvtQueried **vt.IUnknown
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IDispatch)(unsafe.Pointer(*me.Ppvt())).GetTypeInfo,
@@ -120,7 +121,7 @@ func (me *IDispatch) GetTypeInfoCount() (uint, error) {
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
 func (me *IDispatch) Invoke(
-	releaser *Releaser,
+	releaser *ole.Releaser,
 	dispIdMember MEMBERID,
 	lcid win.LCID,
 	flags co.DISPATCH,
@@ -165,14 +166,17 @@ func (me *IDispatch) Invoke(
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	iExcel, _ := ole.IDispatchFromProgId(rel, "Excel.Application")
+//	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
+//	iExcel, _ := ole.CoCreateInstance[oleaut.IDispatch](
+//		rel, clsId, co.CLSCTX_LOCAL_SERVER)
+//
 //	vBooks, _ := iExcel.InvokeGet(rel, "Workbooks")
 //	iBooks, _ := vBooks.IDispatch(rel)
 //
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
 func (me *IDispatch) InvokeGet(
-	releaser *Releaser,
+	releaser *ole.Releaser,
 	propertyName string,
 	params ...interface{},
 ) (*VARIANT, error) {
@@ -194,7 +198,10 @@ func (me *IDispatch) InvokeGet(
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	iExcel, _ := ole.IDispatchFromProgId(rel, "Excel.Application")
+//	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
+//	iExcel, _ := ole.CoCreateInstance[oleaut.IDispatch](
+//		rel, clsId, co.CLSCTX_LOCAL_SERVER)
+//
 //	vBooks, _ := iExcel.InvokeGet(rel, "Workbooks")
 //	iBooks, _ := vBooks.IDispatch(rel)
 //	vFile, _ := iBooks.InvokeMethod(rel, "Open", "C:\\Temp\\file.xlsx")
@@ -205,7 +212,7 @@ func (me *IDispatch) InvokeGet(
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
 func (me *IDispatch) InvokeMethod(
-	releaser *Releaser,
+	releaser *ole.Releaser,
 	methodName string,
 	params ...interface{},
 ) (*VARIANT, error) {
@@ -215,14 +222,14 @@ func (me *IDispatch) InvokeMethod(
 // Calls [Invoke] with co.DISPATCH_PROPERTYPUT.
 //
 // If the remote call raises an exception, the returned error will be an
-// instance of *ole.[EXCEPINFO].
+// instance of *oleaut.[EXCEPINFO].
 //
 // Parameter must be one of the valid VARIANT types.
 //
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
 func (me *IDispatch) InvokePut(
-	releaser *Releaser,
+	releaser *ole.Releaser,
 	propertyName string,
 	value interface{},
 ) (*VARIANT, error) {
@@ -230,7 +237,7 @@ func (me *IDispatch) InvokePut(
 }
 
 func (me *IDispatch) rawInvoke(
-	releaser *Releaser,
+	releaser *ole.Releaser,
 	method co.DISPATCH,
 	methodName string,
 	params ...interface{},
@@ -240,7 +247,7 @@ func (me *IDispatch) rawInvoke(
 		return nil, err
 	}
 
-	localRel := NewReleaser()
+	localRel := ole.NewReleaser()
 	defer localRel.Release()
 
 	arrVars := make([]VARIANT, 0, len(params))

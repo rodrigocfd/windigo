@@ -1,6 +1,6 @@
 //go:build windows
 
-package ole
+package oleaut
 
 import (
 	"syscall"

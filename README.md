@@ -106,6 +106,7 @@ More specifically:
 | `win` | Native Win32 structs, handles and functions. |
 | `win/co` | Native Win32 constants, all typed. |
 | `win/ole` | COM bindings. |
+| `win/ole/oleaut` | COM automation bindings. |
 | `win/ole/shell` | Shell COM bindings. |
 | `win/wstr` | String and UTF-16 wide string management. |
 
@@ -113,13 +114,14 @@ Internal package dependency:
 
 ```mermaid
 flowchart BT
-    internal/util([internal/util]) --> win/co
-    ui --> win/ole
+    internal/wutil([internal/wutil]) --> win/co
+    ui --> win
     win --> internal/dll([internal/dll])
-    win --> internal/util
+    win --> internal/wutil
     win --> win/wstr
     win/ole --> internal/vt([internal/vt])
     win/ole --> win
+    win/ole/oleaut --> win/ole
     win/ole/shell --> win/ole
 ```
 
