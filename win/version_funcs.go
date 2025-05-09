@@ -14,7 +14,7 @@ import (
 
 // [GetFileVersionInfo] function.
 //
-// This is a low level function, prefer using VersionLoad().
+// This is a low-level function, prefer using VersionLoad().
 //
 // # Example
 //
@@ -57,7 +57,7 @@ var _GetFileVersionInfoSizeW = dll.Version.NewProc("GetFileVersionInfoSizeW")
 
 // [VerQueryValue] function.
 //
-// This is a low level function, prefer using VersionLoad().
+// This is a low-level function, prefer using VersionLoad().
 //
 // # Example
 //

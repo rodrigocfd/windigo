@@ -18,26 +18,31 @@ type IUnknown struct {
 	ppvt **vt.IUnknown
 }
 
-// Returns the [IUnknown] virtual table.
+// Returns the [COM] virtual table pointer.
 //
-// [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 func (me *IUnknown) Ppvt() **vt.IUnknown {
 	return me.ppvt
 }
 
-// Calls [Release], then sets a new [IUnknown] virtual table.
+// Calls [Release], then sets a new [COM] virtual table pointer.
 //
 // If you pass nil, you effectively release the object; the owning ole.Releaser
 // will simply do nothing.
 //
+// This is a low-level method, used internally by the library. Incorrect usage
+// may lead to segmentation faults.
+//
 // [Release]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
-// [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 func (me *IUnknown) Set(ppvt **vt.IUnknown) {
 	vt.Release(me.ppvt)
 	me.ppvt = ppvt
 }
 
-// Returns the unique COM interface identifier.
+// Returns the unique [COM] interface identifier.
+//
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 func (*IUnknown) IID() co.IID {
 	return co.IID_IUnknown
 }

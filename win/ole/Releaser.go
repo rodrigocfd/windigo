@@ -54,12 +54,18 @@ func NewReleaser() *Releaser {
 
 // Adds new COM pointers to be released with [Release].
 //
+// Usually, this method is called automatically by functions which return COM
+// objects.
+//
 // [Release]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 func (me *Releaser) Add(ptrs ...ComPtr) {
 	me.ptrs = append(me.ptrs, ptrs...)
 }
 
-// Adds new VARIANT objects to be released with [VariantClear]
+// Adds new VARIANT objects to be released with [VariantClear].
+//
+// Usually, this method is called automatically by functions which return
+// VARIANT objects.
 //
 // [VariantClear]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantclear
 func (me *Releaser) AddVar(va ...*VARIANT) {
@@ -71,6 +77,11 @@ func (me *Releaser) AddVar(va ...*VARIANT) {
 //
 // Calls [VariantClear] on each stored VARIANT object, in the reverse order they
 // were added. Then frees the internal slice.
+//
+// # Example
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
 //
 // [Release]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 // [VariantClear]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantclear

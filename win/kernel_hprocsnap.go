@@ -138,7 +138,7 @@ func (hProcSnap HPROCSNAP) EnumThreads() ([]THREADENTRY32, error) {
 
 // [Module32First] function.
 //
-// This is a low level function, prefer using HPROCSNAP.IterModules().
+// This is a low-level function, prefer using HPROCSNAP.IterModules().
 //
 // [Module32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32firstw
 func (hProcSnap HPROCSNAP) Module32First(buf *MODULEENTRY32) (bool, error) {
@@ -158,7 +158,7 @@ var _Module32FirstW = dll.Kernel32.NewProc("Module32FirstW")
 
 // [Module32Next] function.
 //
-// This is a low level function, prefer using HPROCSNAP.IterModules().
+// This is a low-level function, prefer using HPROCSNAP.IterModules().
 //
 // [Module32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32nextw
 func (hProcSnap HPROCSNAP) Module32Next(buf *MODULEENTRY32) (bool, error) {
@@ -178,7 +178,7 @@ var _Module32NextW = dll.Kernel32.NewProc("Module32NextW")
 
 // [Process32First] function.
 //
-// This is a low level function, prefer using HPROCSNAP.IterProcesses().
+// This is a low-level function, prefer using HPROCSNAP.IterProcesses().
 //
 // [Process32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
 func (hProcSnap HPROCSNAP) Process32First(buf *PROCESSENTRY32) (bool, error) {
@@ -198,7 +198,7 @@ var _Process32FirstW = dll.Kernel32.NewProc("Process32FirstW")
 
 // [Process32Next] function.
 //
-// This is a low level function, prefer using HPROCSNAP.IterProcesses().
+// This is a low-level function, prefer using HPROCSNAP.IterProcesses().
 //
 // [Process32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
 func (hProcSnap HPROCSNAP) Process32Next(buf *PROCESSENTRY32) (bool, error) {
@@ -218,7 +218,7 @@ var _Process32NextW = dll.Kernel32.NewProc("Process32NextW")
 
 // [Thread32First] function.
 //
-// This is a low level function, prefer using HPROCSNAP.IterThreads().
+// This is a low-level function, prefer using HPROCSNAP.IterThreads().
 //
 // [Thread32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32first
 func (hProcSnap HPROCSNAP) Thread32First(buf *THREADENTRY32) (bool, error) {
@@ -238,7 +238,7 @@ var _Thread32First = dll.Kernel32.NewProc("Thread32First")
 
 // [Thread32Next] function.
 //
-// This is a low level function, prefer using HPROCSNAP.IterThreads().
+// This is a low-level function, prefer using HPROCSNAP.IterThreads().
 //
 // [Thread32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32next
 func (hProcSnap HPROCSNAP) Thread32Next(buf *THREADENTRY32) (bool, error) {

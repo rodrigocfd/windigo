@@ -21,7 +21,7 @@ type HFIND HANDLE
 //
 // Returns true if a file was found.
 //
-// This is a low level function, prefer using Path.IterFiles().
+// This is a low-level function, prefer using Path.IterFiles().
 //
 // ⚠️ You must defer HFIND.FindClose().
 //
@@ -62,7 +62,7 @@ var _FindClose = dll.Kernel32.NewProc("FindClose")
 //
 // Returns true if a file was found.
 //
-// This is a low level function, prefer using Path.IterFiles().
+// This is a low-level function, prefer using Path.IterFiles().
 //
 // [FindNextFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
 func (hFind HFIND) FindNextFile(findFileData *WIN32_FIND_DATA) (bool, error) {
