@@ -11,7 +11,6 @@ import (
 
 // Stores multiple COM pointers and VARIANT values, allowing releasing the
 // resources all at once:
-//
 //   - COM pointers will call [Release];
 //   - VARIANT objects will call [VariantClear].
 //
@@ -32,7 +31,6 @@ type Releaser struct {
 
 // Stores multiple COM pointers and VARIANT values, allowing releasing the
 // resources all at once:
-//
 //   - COM pointers will call [Release];
 //   - VARIANT objects will call [VariantClear].
 //

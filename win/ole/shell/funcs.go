@@ -16,7 +16,25 @@ import (
 
 // [SHCreateItemFromIDList] function.
 //
+// Return type is tipically [IShellItem] of [IShellItem2].
+//
+// # Example
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
+//		rel, "C:\\Temp\\foo.txt")
+//
+//	pidl, _ := shell.SHGetIDListFromObject(item)
+//	defer pidl.Free()
+//
+//	sameItem, _ := shell.SHCreateItemFromIDList[shell.IShellItem2](
+//		rel, pidl)
+//
 // [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
+// [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
+// [IShellItem2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem2
 func SHCreateItemFromIDList[T any, P ole.ComCtor[T]](
 	releaser *ole.Releaser,
 	pidl ITEMIDLIST,
@@ -110,6 +128,17 @@ var _SHGetDesktopFolder = dll.Shell32.NewProc("SHGetDesktopFolder")
 // [SHGetIDListFromObject] function.
 //
 // ⚠️ You must defer ITEMIDLIST.Free().
+//
+// # Example
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
+//		rel, "C:\\Temp\\foo.txt")
+//
+//	pidl, _ := shell.SHGetIDListFromObject(item)
+//	defer pidl.Free()
 //
 // [SHGetIDListFromObject]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shgetidlistfromobject
 func SHGetIDListFromObject(obj ole.ComPtr) (ITEMIDLIST, error) {
