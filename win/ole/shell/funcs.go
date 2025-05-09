@@ -54,3 +54,29 @@ func SHCreateItemFromParsingName[T any, P ole.ComCtor[T]](
 }
 
 var _SHCreateItemFromParsingName = dll.Shell32.NewProc("SHCreateItemFromParsingName")
+
+// [SHGetDesktopFolder] function.
+//
+// # Example
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	folder, _ := shell.SHGetDesktopFolder(rel)
+//
+// [SHGetDesktopFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetdesktopfolder
+func SHGetDesktopFolder(releaser *ole.Releaser) (*IShellFolder, error) {
+	var ppvtQueried **vt.IUnknown
+	ret, _, _ := syscall.SyscallN(_SHGetDesktopFolder.Addr(),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := vt.NewObj[IShellFolder](ppvtQueried)
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHGetDesktopFolder = dll.Shell32.NewProc("SHGetDesktopFolder")
