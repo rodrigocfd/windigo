@@ -64,6 +64,23 @@ type FORMATETC struct {
 	Tymed    co.TYMED
 }
 
+// [STATSTG] struct.
+//
+// [STATSTG]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ns-objidl-statstg
+type STATSTG struct {
+	PwcsName          *uint16
+	Type              co.STGTY
+	CbSize            uint64
+	MTime             win.FILETIME
+	CTime             win.FILETIME
+	ATime             win.FILETIME
+	GrfMode           uint32
+	GrfLocksSupported co.LOCKTYPE
+	ClsId             win.GUID
+	GrfStateBits      uint32
+	reserved          uint32
+}
+
 // [STGMEDIUM] struct.
 //
 // If you received this struct from a COM call, you'll have to free the memory

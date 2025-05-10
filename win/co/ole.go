@@ -313,6 +313,17 @@ const (
 	SEVERITY_FAILURE SEVERITY = 1
 )
 
+// [STATFLAG] enumeration.
+//
+// [STATFLAG]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-statflag
+type STATFLAG uint32
+
+const (
+	STATFLAG_DEFAULT STATFLAG = 0
+	STATFLAG_NONAME  STATFLAG = 1
+	STATFLAG_NOOPEN  STATFLAG = 2
+)
+
 // [STGC] enumeration.
 //
 // [STGC]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-stgc
@@ -324,6 +335,18 @@ const (
 	STGC_ONLYIFCURRENT                      STGC = 2
 	STGC_DANGEROUSLYCOMMITMERELYTODISKCACHE STGC = 4
 	STGC_CONSOLIDATE                        STGC = 8
+)
+
+// [STGTY] enumeration.
+//
+// [STGTY]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-stgty
+type STGTY uint32
+
+const (
+	STGTY_STORAGE   STGC = 1
+	STGTY_STREAM    STGC = 2
+	STGTY_LOCKBYTES STGC = 3
+	STGTY_PROPERTY  STGC = 4
 )
 
 // [STREAM_SEEK] enumeration.

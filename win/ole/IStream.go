@@ -23,6 +23,25 @@ func (*IStream) IID() co.IID {
 	return co.IID_IStream
 }
 
+// [Clone] method.
+//
+// [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-clone
+func (me *IStream) Clone(releaser *Releaser) (*IStream, error) {
+	var ppvtQueried **vt.IUnknown
+	ret, _, _ := syscall.SyscallN(
+		(*vt.IStream)(unsafe.Pointer(*me.Ppvt())).Clone,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := vt.NewObj[IStream](ppvtQueried)
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
 // [Commit] method.
 //
 // [Commit]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-commit
@@ -107,6 +126,23 @@ func (me *IStream) SetSize(newSize uint) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(newSize))
 	return wutil.ErrorAsHResult(ret)
+}
+
+// [Stat] method.
+//
+// [Stat]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-stat
+func (me *IStream) Stat(flag co.STATFLAG) (STATSTG, error) {
+	var stg STATSTG
+	ret, _, _ := syscall.SyscallN(
+		(*vt.IStream)(unsafe.Pointer(*me.Ppvt())).Stat,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&stg)), uintptr(flag))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return stg, nil
+	} else {
+		return STATSTG{}, hr
+	}
 }
 
 // [UnlockRegion] method.

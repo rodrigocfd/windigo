@@ -121,7 +121,8 @@ func (me *ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, tip string) error {
 	tip16 := wstr.NewBufWith[wstr.Stack20](tip, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(
 		(*vt.ITaskbarList3)(unsafe.Pointer(*me.Ppvt())).SetThumbnailTooltip,
-		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(hwnd), uintptr(tip16.UnsafePtr()))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(hwnd), uintptr(tip16.UnsafePtr()))
 	return wutil.ErrorAsHResult(ret)
 }
 

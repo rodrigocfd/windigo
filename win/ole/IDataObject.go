@@ -63,6 +63,7 @@ func (me *IDataObject) GetData(etc *FORMATETC) (STGMEDIUM, error) {
 func (me *IDataObject) QueryGetData(etc *FORMATETC) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IDataObject)(unsafe.Pointer(*me.Ppvt())).QueryGetData,
-		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(unsafe.Pointer(etc)))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(etc)))
 	return wutil.ErrorAsHResult(ret)
 }

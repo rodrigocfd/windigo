@@ -205,7 +205,8 @@ func (me *IFileDialog) SetDefaultExtension(defaultExt string) error {
 	defaultExt16 := wstr.NewBufWith[wstr.Stack20](defaultExt, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetDefaultExtension,
-		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(defaultExt16.UnsafePtr()))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(defaultExt16.UnsafePtr()))
 	return wutil.ErrorAsHResult(ret)
 }
 
@@ -215,7 +216,8 @@ func (me *IFileDialog) SetDefaultExtension(defaultExt string) error {
 func (me *IFileDialog) SetDefaultFolder(si *IShellItem) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetDefaultFolder,
-		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(unsafe.Pointer(si.Ppvt())))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(si.Ppvt())))
 	return wutil.ErrorAsHResult(ret)
 }
 
@@ -226,7 +228,8 @@ func (me *IFileDialog) SetFileName(name string) error {
 	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetFileName,
-		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(name16.UnsafePtr()))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(name16.UnsafePtr()))
 	return wutil.ErrorAsHResult(ret)
 }
 
@@ -237,7 +240,8 @@ func (me *IFileDialog) SetFileNameLabel(label string) error {
 	label16 := wstr.NewBufWith[wstr.Stack20](label, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetFileNameLabel,
-		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(label16.UnsafePtr()))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(label16.UnsafePtr()))
 	return wutil.ErrorAsHResult(ret)
 }
 
@@ -308,7 +312,8 @@ func (me *IFileDialog) SetOkButtonLabel(text string) error {
 	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetOkButtonLabel,
-		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(text16.UnsafePtr()))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(text16.UnsafePtr()))
 	return wutil.ErrorAsHResult(ret)
 }
 
@@ -341,7 +346,8 @@ func (me *IFileDialog) SetTitle(title string) error {
 	title16 := wstr.NewBufWith[wstr.Stack20](title, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).SetTitle,
-		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(title16.UnsafePtr()))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(title16.UnsafePtr()))
 	return wutil.ErrorAsHResult(ret)
 }
 
@@ -351,6 +357,7 @@ func (me *IFileDialog) SetTitle(title string) error {
 func (me *IFileDialog) Unadvise(cookie uint32) error {
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IFileDialog)(unsafe.Pointer(*me.Ppvt())).Unadvise,
-		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(cookie))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(cookie))
 	return wutil.ErrorAsHResult(ret)
 }

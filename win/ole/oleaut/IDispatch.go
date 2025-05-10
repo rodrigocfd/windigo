@@ -101,7 +101,8 @@ func (me *IDispatch) GetTypeInfoCount() (uint, error) {
 	var pctInfo uint32
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IDispatch)(unsafe.Pointer(*me.Ppvt())).GetTypeInfoCount,
-		uintptr(unsafe.Pointer(me.Ppvt())), uintptr(unsafe.Pointer(&pctInfo)))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&pctInfo)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return uint(pctInfo), nil
