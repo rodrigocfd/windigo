@@ -69,6 +69,23 @@ type IShellItem struct {
 	Compare        uintptr
 }
 
+type IShellItem2 struct {
+	IShellItem
+	GetPropertyStore                 uintptr
+	GetPropertyStoreWithCreateObject uintptr
+	GetPropertyStoreForKeys          uintptr
+	GetPropertyDescriptionList       uintptr
+	Update                           uintptr
+	GetProperty                      uintptr
+	GetCLSID                         uintptr
+	GetFileTime                      uintptr
+	GetInt32                         uintptr
+	GetString                        uintptr
+	GetUInt32                        uintptr
+	GetUInt64                        uintptr
+	GetBool                          uintptr
+}
+
 type IShellItemArray struct {
 	IUnknown
 	BindToHandler              uintptr

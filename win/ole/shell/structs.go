@@ -3,6 +3,8 @@
 package shell
 
 import (
+	"unsafe"
+
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -38,6 +40,27 @@ type ITEMIDLIST uintptr
 // [CoTaskMemFree]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
 func (il ITEMIDLIST) Free() {
 	ole.HTASKMEM(il).CoTaskMemFree()
+}
+
+// [PROPERTYKEY] struct.
+//
+// [PROPERTYKEY]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ns-wtypes-propertykey
+type PROPERTYKEY struct {
+	data [20]byte // packed
+}
+
+func (pk *PROPERTYKEY) FmtId() win.GUID {
+	return *(*win.GUID)(unsafe.Pointer(&pk.data[0]))
+}
+func (pk *PROPERTYKEY) SetFmtId(guid win.GUID) {
+	*(*win.GUID)(unsafe.Pointer(&pk.data[0])) = guid
+}
+
+func (pk *PROPERTYKEY) PId() uint32 {
+	return *(*uint32)(unsafe.Pointer(&pk.data[16]))
+}
+func (pk *PROPERTYKEY) SetPId(pid uint32) {
+	*(*uint32)(unsafe.Pointer(&pk.data[16])) = pid
 }
 
 // [THUMBBUTTON] struct.
