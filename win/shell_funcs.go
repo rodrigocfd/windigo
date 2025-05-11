@@ -30,7 +30,7 @@ func CommandLineToArgv(cmdLine string) ([]string, error) {
 	strs := make([]string, 0, pNumArgs)
 
 	for _, lpPtr := range lpPtrs {
-		strs = append(strs, wstr.Utf16PtrToStr(lpPtr))
+		strs = append(strs, wstr.WstrPtrToStr(lpPtr))
 	}
 	return strs, nil
 }

@@ -326,7 +326,7 @@ func (me ListViewItem) Text(columnIndex int) string {
 		buf.Resize(buf.Len() + 64) // increase buffer size to try again
 	}
 
-	return wstr.Utf16SliceToStr(buf.HotSlice())
+	return wstr.WstrSliceToStr(buf.HotSlice())
 }
 
 // Returns the unique ID associated to the item with [LVM_MAPINDEXTOID].

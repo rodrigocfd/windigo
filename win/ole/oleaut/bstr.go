@@ -72,5 +72,5 @@ var _SysReAllocString = dll.Oleaut32.NewProc("SysReAllocString")
 
 // Converts the BSTR pointer to a string.
 func (bstr BSTR) String() string {
-	return wstr.Utf16PtrToStr((*uint16)(unsafe.Pointer(bstr)))
+	return wstr.WstrPtrToStr((*uint16)(unsafe.Pointer(bstr)))
 }

@@ -190,7 +190,7 @@ func (me HeaderItem) Text() string {
 		panic(fmt.Sprintf("HDM_GETITEM %d failed.", me.index))
 	}
 
-	return wstr.Utf16SliceToStr(textBuf[:])
+	return wstr.WstrSliceToStr(textBuf[:])
 }
 
 // Retrieves the width of the item with [HDM_GETITEM].

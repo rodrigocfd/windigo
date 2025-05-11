@@ -262,7 +262,7 @@ func (hKey HKEY) RegEnumKeyEx() ([]string, error) {
 		if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
 			return nil, wErr
 		}
-		keys = append(keys, wstr.Utf16SliceToStr(keyNameBuf.HotSlice()))
+		keys = append(keys, wstr.WstrSliceToStr(keyNameBuf.HotSlice()))
 	}
 
 	return keys, nil
@@ -307,7 +307,7 @@ func (hKey HKEY) RegEnumValue() ([]string, error) {
 		if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
 			return nil, wErr
 		}
-		names = append(names, wstr.Utf16SliceToStr(valueNameBuf.HotSlice()))
+		names = append(names, wstr.WstrSliceToStr(valueNameBuf.HotSlice()))
 	}
 
 	return names, nil
@@ -470,7 +470,7 @@ func (hKey HKEY) RegQueryInfoKey() (HkeyInfo, error) {
 	}
 
 	return HkeyInfo{
-		Class:                 wstr.Utf16SliceToStr(classBuf.HotSlice()),
+		Class:                 wstr.WstrSliceToStr(classBuf.HotSlice()),
 		NumSubKeys:            uint(numSubKeys),
 		MaxSubKeyNameLen:      uint(maxSubKeyNameLen),
 		MaxClassNameLen:       uint(maxClassNameLen),

@@ -78,5 +78,5 @@ func (me StatusBarPart) Text() string {
 	buf := wstr.NewBufSized[wstr.Stack64](len + 1) // room for terminating null
 	me.owner.hWnd.SendMessage(co.SB_GETTEXT,
 		win.WPARAM(me.index), win.LPARAM(buf.UnsafePtr()))
-	return wstr.Utf16SliceToStr(buf.HotSlice())
+	return wstr.WstrSliceToStr(buf.HotSlice())
 }

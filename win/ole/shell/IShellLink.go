@@ -37,7 +37,7 @@ func (me *IShellLink) GetArguments() (string, error) {
 		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return wstr.Utf16SliceToStr(buf), nil
+		return wstr.WstrSliceToStr(buf), nil
 	} else {
 		return "", hr
 	}
@@ -54,7 +54,7 @@ func (me *IShellLink) GetDescription() (string, error) {
 		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return wstr.Utf16SliceToStr(buf), nil
+		return wstr.WstrSliceToStr(buf), nil
 	} else {
 		return "", hr
 	}
@@ -91,7 +91,7 @@ func (me *IShellLink) GetIconLocation() (path string, index int, hr error) {
 		uintptr(unsafe.Pointer(&iconIndex)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return wstr.Utf16SliceToStr(buf[:]), int(iconIndex), nil
+		return wstr.WstrSliceToStr(buf[:]), int(iconIndex), nil
 	} else {
 		return "", 0, hr
 	}
@@ -109,7 +109,7 @@ func (me *IShellItem) GetPath(fd *win.WIN32_FIND_DATA, flags co.SLGP) (string, e
 		uintptr(unsafe.Pointer(fd)), uintptr(flags))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return wstr.Utf16SliceToStr(buf[:]), nil
+		return wstr.WstrSliceToStr(buf[:]), nil
 	} else {
 		return "", hr
 	}
@@ -143,7 +143,7 @@ func (me *IShellLink) GetWorkingDirectory() (string, error) {
 		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)-1))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return wstr.Utf16SliceToStr(buf[:]), nil
+		return wstr.WstrSliceToStr(buf[:]), nil
 	} else {
 		return "", hr
 	}

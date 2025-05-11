@@ -294,5 +294,5 @@ func (me TreeViewItem) Text() string {
 	if ret == 0 || err != nil {
 		panic("TVM_GETITEM failed.")
 	}
-	return wstr.Utf16SliceToStr(buf[:])
+	return wstr.WstrSliceToStr(buf[:])
 }

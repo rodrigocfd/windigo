@@ -118,7 +118,7 @@ func (me *IShellItem2) GetString(key *PROPERTYKEY) (string, error) {
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		defer ole.HTASKMEM(psz).CoTaskMemFree()
-		name := wstr.Utf16PtrToStr((*uint16)(unsafe.Pointer(psz)))
+		name := wstr.WstrPtrToStr((*uint16)(unsafe.Pointer(psz)))
 		return name, nil
 	} else {
 		return "", hr

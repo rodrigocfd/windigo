@@ -76,7 +76,7 @@ func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return wstr.Utf16SliceToStr(processName[:]), nil
+	return wstr.WstrSliceToStr(processName[:]), nil
 }
 
 var _GetModuleBaseNameW = dll.Kernel32.NewProc("GetModuleBaseNameW")
@@ -200,7 +200,7 @@ func (hProcess HPROCESS) QueryFullProcessImageName(flags co.PROCESS_NAME) (strin
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return wstr.Utf16SliceToStr(buf[:]), nil
+	return wstr.WstrSliceToStr(buf[:]), nil
 }
 
 var _QueryFullProcessImageNameW = dll.Kernel32.NewProc("QueryFullProcessImageNameW")

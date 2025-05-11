@@ -396,7 +396,7 @@ func (hWnd HWND) GetClassName() (string, error) {
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return "", wErr
 	}
-	return wstr.Utf16SliceToStr(buf[:]), nil
+	return wstr.WstrSliceToStr(buf[:]), nil
 }
 
 var _GetClassNameW = dll.User32.NewProc("GetClassNameW")
@@ -612,7 +612,7 @@ func (hWnd HWND) GetWindowText() (string, error) {
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return "", wErr
 	}
-	return wstr.Utf16SliceToStr(buf.HotSlice()), nil
+	return wstr.WstrSliceToStr(buf.HotSlice()), nil
 }
 
 var _GetWindowTextW = dll.User32.NewProc("GetWindowTextW")

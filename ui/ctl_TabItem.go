@@ -98,5 +98,5 @@ func (me TabItem) Text() string {
 		panic(fmt.Sprintf("TCM_GETITEM %d failed.", me.index))
 	}
 
-	return wstr.Utf16SliceToStr(textBuf[:])
+	return wstr.WstrSliceToStr(textBuf[:])
 }

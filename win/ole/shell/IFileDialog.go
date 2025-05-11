@@ -103,7 +103,7 @@ func (me *IFileDialog) GetFileName() (string, error) {
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		defer ole.HTASKMEM(pv).CoTaskMemFree()
-		name := wstr.Utf16PtrToStr((*uint16)(unsafe.Pointer(pv)))
+		name := wstr.WstrPtrToStr((*uint16)(unsafe.Pointer(pv)))
 		return name, nil
 	} else {
 		return "", hr

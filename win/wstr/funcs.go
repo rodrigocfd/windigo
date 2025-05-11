@@ -76,7 +76,7 @@ const (
 // directly to dest, assuming dest is properly allocated.
 //
 // Panics on error.
-func StrToUtf16(str string, dest []uint16) {
+func StrToWstrBuf(str string, dest []uint16) {
 	curPos := 0
 
 	for i := 0; i < len(str); { // adapted from wtf8_windows.go
@@ -121,10 +121,10 @@ func StrToUtf16(str string, dest []uint16) {
 // syscall.UTF16PtrFromString().
 //
 // Panics on error.
-func StrToUtf16Ptr(s string) *uint16 {
+func StrToWstrPtr(s string) *uint16 {
 	pstr, err := syscall.UTF16PtrFromString(s)
 	if err != nil {
-		panic(fmt.Sprintf("wstr.StrToUtf16Ptr() failed \"%s\": %s", s, err))
+		panic(fmt.Sprintf("wstr.StrToWstrPtr() failed \"%s\": %s", s, err))
 	}
 	return pstr
 }
@@ -192,7 +192,7 @@ func Utf16PtrMultiToStr(p *uint16) []string {
 			}
 
 			slice := unsafe.Slice(p, sLen) // create slice without terminating null
-			values = append(values, Utf16SliceToStr(slice))
+			values = append(values, WstrSliceToStr(slice))
 
 			pRun = unsafe.Add(pRun, unsafe.Sizeof(*p)) // pRun++
 			p = (*uint16)(pRun)
@@ -210,7 +210,7 @@ func Utf16PtrMultiToStr(p *uint16) []string {
 // Converts a null-terminated *uint16 to string.
 //
 // Copied from syscall_windows.go, utf16PtrToString() private function.
-func Utf16PtrToStr(p *uint16) string {
+func WstrPtrToStr(p *uint16) string {
 	if p == nil {
 		return ""
 	}
@@ -224,13 +224,13 @@ func Utf16PtrToStr(p *uint16) string {
 	}
 
 	slice := unsafe.Slice(p, sLen) // create slice without terminating null
-	return Utf16SliceToStr(slice)
+	return WstrSliceToStr(slice)
 }
 
 // Converts an []uint16 to string, which may be null-terminated or not.
 //
 // Wraps syscall.UTF16ToString().
-func Utf16SliceToStr(s []uint16) string {
+func WstrSliceToStr(s []uint16) string {
 	trimAt := len(s)
 	for i, ch := range s {
 		if ch == 0 { // we found a terminating null

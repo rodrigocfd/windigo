@@ -233,7 +233,7 @@ func (me ListViewCol) Title() string {
 		panic(fmt.Sprintf("LVM_GETCOLUMN %d failed.", me.index))
 	}
 
-	return wstr.Utf16SliceToStr(titleBuf[:])
+	return wstr.WstrSliceToStr(titleBuf[:])
 }
 
 // Retrieves the width of the column with [LVM_GETCOLUMNWIDTH].

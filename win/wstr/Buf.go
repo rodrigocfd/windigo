@@ -187,7 +187,7 @@ func (me *Buf[B]) Set(str string, emptyStr EMPTY_STR) {
 	if emptyStr == ALLOW_EMPTY || str != "" {
 		strLen := utf8.RuneCountInString(str)
 		me.Resize(uint(strLen) + 1) // room for terminating null
-		StrToUtf16(str, me.HotSlice())
+		StrToWstrBuf(str, me.HotSlice())
 	}
 }
 

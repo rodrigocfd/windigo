@@ -150,7 +150,7 @@ func (HCLIPBOARD) GetClipboardFormatName(format co.CF) (string, error) {
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return wstr.Utf16SliceToStr(buf[:]), nil
+	return wstr.WstrSliceToStr(buf[:]), nil
 }
 
 var _GetClipboardFormatNameW = dll.User32.NewProc("GetClipboardFormatNameW")

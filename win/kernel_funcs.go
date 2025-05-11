@@ -139,7 +139,7 @@ func ExpandEnvironmentStrings(s string) (string, error) {
 		required := uint(ret) // plus terminating null count
 
 		if required <= szBuf {
-			return wstr.Utf16SliceToStr(buf.HotSlice()), nil
+			return wstr.WstrSliceToStr(buf.HotSlice()), nil
 		}
 
 		szBuf = required // set new buffer size to try again
@@ -169,7 +169,7 @@ var _FileTimeToSystemTime = dll.Kernel32.NewProc("FileTimeToSystemTime")
 // [GetCommandLine]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getcommandlinew
 func GetCommandLine() string {
 	ret, _, _ := syscall.SyscallN(_GetCommandLineW.Addr())
-	return wstr.Utf16PtrToStr((*uint16)(unsafe.Pointer(ret)))
+	return wstr.WstrPtrToStr((*uint16)(unsafe.Pointer(ret)))
 }
 
 var _GetCommandLineW = dll.Kernel32.NewProc("GetCommandLineW")

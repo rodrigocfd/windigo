@@ -84,7 +84,7 @@ func RegValExpandSz(s string) RegVal {
 func (me *RegVal) ExpandSz() (string, bool) {
 	if me.tag == co.REG_EXPAND_SZ {
 		str16 := unsafe.Slice((*uint16)(unsafe.Pointer(&me.data[0])), len(me.data)/2)
-		return wstr.Utf16SliceToStr(str16), true
+		return wstr.WstrSliceToStr(str16), true
 	}
 	return "", false
 }
@@ -209,7 +209,7 @@ func RegValSz(s string) RegVal {
 func (me *RegVal) Sz() (string, bool) {
 	if me.tag == co.REG_SZ {
 		str16 := unsafe.Slice((*uint16)(unsafe.Pointer(&me.data[0])), len(me.data)/2)
-		return wstr.Utf16SliceToStr(str16), true
+		return wstr.WstrSliceToStr(str16), true
 	}
 	return "", false
 }

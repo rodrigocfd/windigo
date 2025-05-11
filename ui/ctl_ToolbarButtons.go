@@ -31,7 +31,7 @@ func (me *CollectionToolbarButtons) Add(cmdId uint16, text string, iconIndex int
 		IdCommand: int32(cmdId),
 		FsStyle:   co.BTNS_AUTOSIZE,
 		FsState:   co.TBSTATE_ENABLED,
-		IString:   wstr.StrToUtf16Ptr(text),
+		IString:   wstr.StrToWstrPtr(text),
 	}
 
 	ret, _ := me.owner.hWnd.SendMessage(co.TB_ADDBUTTONS,

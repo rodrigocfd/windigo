@@ -211,7 +211,7 @@ func (p WmDeviceChange) EventData() unsafe.Pointer { return unsafe.Pointer(p.Raw
 type WmDevModeChange struct{ Raw Wm }
 
 func (p WmDevModeChange) DeviceName() string {
-	return wstr.Utf16PtrToStr((*uint16)(unsafe.Pointer(p.Raw.LParam)))
+	return wstr.WstrPtrToStr((*uint16)(unsafe.Pointer(p.Raw.LParam)))
 }
 
 // [WM_DISPLAYCHANGE] parameters.

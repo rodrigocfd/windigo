@@ -90,7 +90,7 @@ var _GetFileVersionInfoSizeW = dll.Version.NewProc("GetFileVersionInfoSizeW")
 //					block.LangId, block.CodePage, "ProductName")); ok {
 //
 //				wideStr := unsafe.Slice((*uint16)(pStr), nChars)
-//				str := wstr.Utf16SliceToStr(wideStr)
+//				str := wstr.WstrSliceToStr(wideStr)
 //				println(str)
 //			}
 //		}

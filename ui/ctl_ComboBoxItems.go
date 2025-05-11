@@ -44,7 +44,7 @@ func (me *CollectionComboBoxItems) All() []string {
 
 		me.owner.hWnd.SendMessage(co.CB_GETLBTEXT,
 			win.WPARAM(i), win.LPARAM(buf.UnsafePtr()))
-		items = append(items, wstr.Utf16SliceToStr(buf.HotSlice()))
+		items = append(items, wstr.WstrSliceToStr(buf.HotSlice()))
 	}
 
 	return items
@@ -80,7 +80,7 @@ func (me *CollectionComboBoxItems) Get(index int) string {
 	buf.Resize(uint(nChars) + 1)
 	me.owner.hWnd.SendMessage(co.CB_GETLBTEXT,
 		win.WPARAM(index), win.LPARAM(buf.UnsafePtr()))
-	return wstr.Utf16SliceToStr(buf.HotSlice())
+	return wstr.WstrSliceToStr(buf.HotSlice())
 }
 
 // Returns the last item with [CB_GETLBTEXT].
@@ -126,5 +126,5 @@ func (me *CollectionComboBoxItems) Text(index uint) string {
 
 	me.owner.hWnd.SendMessage(co.CB_GETLBTEXT,
 		win.WPARAM(index), win.LPARAM(buf.UnsafePtr()))
-	return wstr.Utf16SliceToStr(buf.HotSlice())
+	return wstr.WstrSliceToStr(buf.HotSlice())
 }

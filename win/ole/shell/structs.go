@@ -74,8 +74,8 @@ type THUMBBUTTON struct {
 }
 
 func (tb *THUMBBUTTON) SzTip() string {
-	return wstr.Utf16SliceToStr(tb.szTip[:])
+	return wstr.WstrSliceToStr(tb.szTip[:])
 }
 func (tb *THUMBBUTTON) SetSzTip(val string) {
-	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(tb.szTip)-1)), tb.szTip[:])
+	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(tb.szTip)-1)), tb.szTip[:])
 }

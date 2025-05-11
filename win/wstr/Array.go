@@ -70,7 +70,7 @@ func (me *Array) Append(strs ...string) {
 
 	dest := me.buf.HotSlice()[curSz:] // slice to receive the strings
 	for _, str := range strs {
-		StrToUtf16(str, dest) // empty strings are also added
+		StrToWstrBuf(str, dest) // empty strings are also added
 		strLen := utf8.RuneCountInString(str)
 		dest = dest[strLen+1:] // advance the slice to receive the next string
 	}

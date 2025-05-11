@@ -152,7 +152,7 @@ func (hTheme HTHEME) GetThemeString(partStateId co.VS, propId co.TMT) (string, e
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
-	return wstr.Utf16SliceToStr(buf[:]), nil
+	return wstr.WstrSliceToStr(buf[:]), nil
 }
 
 var _GetThemeString = dll.Uxtheme.NewProc("GetThemeString")

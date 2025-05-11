@@ -68,7 +68,7 @@ func (hDrop HDROP) DragQueryFile() ([]string, error) {
 		if ret == 0 {
 			return nil, co.ERROR_INVALID_PARAMETER
 		}
-		paths = append(paths, wstr.Utf16SliceToStr(pathBuf[:]))
+		paths = append(paths, wstr.WstrSliceToStr(pathBuf[:]))
 	}
 
 	return paths, nil

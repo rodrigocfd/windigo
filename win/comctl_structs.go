@@ -150,17 +150,17 @@ type LITEM struct {
 }
 
 func (li *LITEM) SzID() string {
-	return wstr.Utf16SliceToStr(li.szID[:])
+	return wstr.WstrSliceToStr(li.szID[:])
 }
 func (li *LITEM) SetSzID(val string) {
-	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(li.szID)-1)), li.szID[:])
+	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(li.szID)-1)), li.szID[:])
 }
 
 func (li *LITEM) SzUrl() string {
-	return wstr.Utf16SliceToStr(li.szUrl[:])
+	return wstr.WstrSliceToStr(li.szUrl[:])
 }
 func (li *LITEM) SetSzUrl(val string) {
-	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(li.szUrl)-1)), li.szUrl[:])
+	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(li.szUrl)-1)), li.szUrl[:])
 }
 
 // [LVCOLUMN] struct.
@@ -314,10 +314,10 @@ type NMDATETIMEFORMAT struct {
 }
 
 func (dtf *NMDATETIMEFORMAT) SzDisplay() string {
-	return wstr.Utf16SliceToStr(dtf.szDisplay[:])
+	return wstr.WstrSliceToStr(dtf.szDisplay[:])
 }
 func (dtf *NMDATETIMEFORMAT) SetSzDisplay(val string) {
-	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(dtf.szDisplay)-1)), dtf.szDisplay[:])
+	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(dtf.szDisplay)-1)), dtf.szDisplay[:])
 }
 
 // [NMDATETIMEFORMATQUERY] struct.
@@ -569,10 +569,10 @@ type NMLVEMPTYMARKUP struct {
 }
 
 func (lve *NMLVEMPTYMARKUP) SzMarkup() string {
-	return wstr.Utf16SliceToStr(lve.szMarkup[:])
+	return wstr.WstrSliceToStr(lve.szMarkup[:])
 }
 func (lve *NMLVEMPTYMARKUP) SetSzMarkup(val string) {
-	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(lve.szMarkup)-1)), lve.szMarkup[:])
+	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(lve.szMarkup)-1)), lve.szMarkup[:])
 }
 
 // [NMLVFINDITEM] struct.

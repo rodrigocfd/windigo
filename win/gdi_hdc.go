@@ -683,7 +683,7 @@ func (hdc HDC) GetTextFace() (string, error) {
 	if ret == 0 {
 		return "", co.ERROR_INVALID_PARAMETER
 	}
-	return wstr.Utf16SliceToStr(buf[:]), nil
+	return wstr.WstrSliceToStr(buf[:]), nil
 }
 
 var _GetTextFaceW = dll.Gdi32.NewProc("GetTextFaceW")

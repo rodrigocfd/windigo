@@ -58,7 +58,7 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 		chCopied := uint(ret) + 1 // plus terminating null count
 
 		if chCopied < buf.Len() { // to break, must have at least 1 char gap
-			return wstr.Utf16SliceToStr(buf.HotSlice()), nil
+			return wstr.WstrSliceToStr(buf.HotSlice()), nil
 		}
 
 		buf.Resize(buf.Len() + 64) // increase buffer size to try again

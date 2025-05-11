@@ -44,24 +44,24 @@ func (nid *NOTIFYICONDATA) SetCbSize() {
 }
 
 func (nid *NOTIFYICONDATA) SzTip() string {
-	return wstr.Utf16SliceToStr(nid.szTip[:])
+	return wstr.WstrSliceToStr(nid.szTip[:])
 }
 func (nid *NOTIFYICONDATA) SetSzTip(val string) {
-	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(nid.szTip)-1)), nid.szTip[:])
+	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szTip)-1)), nid.szTip[:])
 }
 
 func (nid *NOTIFYICONDATA) SzInfo() string {
-	return wstr.Utf16SliceToStr(nid.szInfo[:])
+	return wstr.WstrSliceToStr(nid.szInfo[:])
 }
 func (nid *NOTIFYICONDATA) SetSzInfo(val string) {
-	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(nid.szInfo)-1)), nid.szInfo[:])
+	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szInfo)-1)), nid.szInfo[:])
 }
 
 func (nid *NOTIFYICONDATA) SzInfoTitle() string {
-	return wstr.Utf16SliceToStr(nid.szInfoTitle[:])
+	return wstr.WstrSliceToStr(nid.szInfoTitle[:])
 }
 func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
-	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(nid.szInfoTitle)-1)), nid.szInfoTitle[:])
+	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szInfoTitle)-1)), nid.szInfoTitle[:])
 }
 
 // [NOTIFYICONIDENTIFIER] struct.
@@ -98,15 +98,15 @@ type SHFILEINFO struct {
 }
 
 func (shf *SHFILEINFO) SzDisplayName() string {
-	return wstr.Utf16SliceToStr(shf.szDisplayName[:])
+	return wstr.WstrSliceToStr(shf.szDisplayName[:])
 }
 func (shf *SHFILEINFO) SetSzDisplayName(val string) {
-	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(shf.szDisplayName)-1)), shf.szDisplayName[:])
+	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(shf.szDisplayName)-1)), shf.szDisplayName[:])
 }
 
 func (shf *SHFILEINFO) SzTypeName() string {
-	return wstr.Utf16SliceToStr(shf.szTypeName[:])
+	return wstr.WstrSliceToStr(shf.szTypeName[:])
 }
 func (shf *SHFILEINFO) SetSzTypeName(val string) {
-	wstr.StrToUtf16(wstr.SubstrRunes(val, 0, uint(len(shf.szTypeName)-1)), shf.szTypeName[:])
+	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(shf.szTypeName)-1)), shf.szTypeName[:])
 }
