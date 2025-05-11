@@ -323,7 +323,7 @@ func (me *EventsWindow) WmClipboardUpdate(fun func()) {
 // [WM_CLOSE] message handler.
 //
 // ⚠️ By handling this message, you'll overwrite the default behavior in
-// WindowMain and WindowModal.
+// WindowMain and WindowModal:
 //   - dialog WindowMain: calls [DestroyWindow];
 //   - dialog WindowModal: calls [EndDialog];
 //   - raw WindowModal: re-enables parent window and calls [DestroyWindow].

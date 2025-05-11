@@ -75,7 +75,6 @@ func (v *VARIANT) IsEmpty() bool {
 // Calls [VariantInit] and sets the type and value.
 //
 // Allowed [types]:
-//
 //   - bool (VT_BOOL)
 //   - float32 (VT_R4)
 //   - float64 (VT_R8)

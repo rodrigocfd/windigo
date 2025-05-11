@@ -8,13 +8,16 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/vt"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/ole"
+	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
 // [IShellItem2] COM interface.
 //
-// / Usually created with [SHCreateItemFromParsingName].
+// Usually created with [SHCreateItemFromParsingName].
 //
 // # Example
 //
@@ -101,4 +104,68 @@ func (me *IShellItem2) GetInt32(key *PROPERTYKEY) (int32, error) {
 	} else {
 		return 0, hr
 	}
+}
+
+// [GetString] method.
+//
+// [GetString]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getstring
+func (me *IShellItem2) GetString(key *PROPERTYKEY) (string, error) {
+	var psz uintptr
+	ret, _, _ := syscall.SyscallN(
+		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetString,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&psz)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		defer ole.HTASKMEM(psz).CoTaskMemFree()
+		name := wstr.Utf16PtrToStr((*uint16)(unsafe.Pointer(psz)))
+		return name, nil
+	} else {
+		return "", hr
+	}
+}
+
+// [GetUInt32] method.
+//
+// [GetUInt32]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getuint32
+func (me *IShellItem2) GetUInt32(key *PROPERTYKEY) (uint32, error) {
+	var ui uint32
+	ret, _, _ := syscall.SyscallN(
+		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetUInt32,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&ui)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return ui, nil
+	} else {
+		return 0, hr
+	}
+}
+
+// [GetUInt64] method.
+//
+// [GetUInt64]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getuint64
+func (me *IShellItem2) GetUInt64(key *PROPERTYKEY) (uint64, error) {
+	var ull uint64
+	ret, _, _ := syscall.SyscallN(
+		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetUInt64,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&ull)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return ull, nil
+	} else {
+		return 0, hr
+	}
+}
+
+// [Update] method.
+//
+// [Update]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-update
+func (me *IShellItem2) Update(bc *ole.IBindCtx) error {
+	ret, _, _ := syscall.SyscallN(
+		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetUInt64,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(bc.Ppvt())))
+	return wutil.ErrorAsHResult(ret)
 }
