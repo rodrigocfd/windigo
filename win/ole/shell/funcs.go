@@ -7,7 +7,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -40,7 +39,7 @@ func SHCreateItemFromIDList[T any, P ole.ComCtor[T]](
 	pidl ITEMIDLIST,
 ) (*T, error) {
 	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	guidIid := win.GuidFrom(pObj.IID())
 
 	ret, _, _ := syscall.SyscallN(_SHCreateItemFromIDList.Addr(),
@@ -78,7 +77,7 @@ func SHCreateItemFromParsingName[T any, P ole.ComCtor[T]](
 	folderOrFilePath string,
 ) (*T, error) {
 	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	riidGuid := win.GuidFrom(pObj.IID())
 
 	folderOrFilePath16 := wstr.NewBufWith[wstr.Stack20](folderOrFilePath, wstr.EMPTY_IS_NIL)
@@ -110,12 +109,12 @@ var _SHCreateItemFromParsingName = dll.Shell32.NewProc("SHCreateItemFromParsingN
 //
 // [SHGetDesktopFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetdesktopfolder
 func SHGetDesktopFolder(releaser *ole.Releaser) (*IShellFolder, error) {
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	ret, _, _ := syscall.SyscallN(_SHGetDesktopFolder.Addr(),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := vt.NewObj[IShellFolder](ppvtQueried)
+		pObj := ole.ComObj[IShellFolder](ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -150,7 +149,7 @@ func SHGetKnownFolderItem[T any, P ole.ComCtor[T]](
 	hToken win.HANDLE, // HACCESSTOKEN
 ) (*T, error) {
 	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	kfidGuid := win.GuidFrom(kfid)
 	riidGuid := win.GuidFrom(pObj.IID())
 

@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
 )
@@ -109,7 +108,7 @@ func (me *IShellItemArray) EnumItems(releaser *ole.Releaser) ([]*IShellItem, err
 func (me *IShellItemArray) GetCount() (uint, error) {
 	var count uint32
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItemArray)(unsafe.Pointer(*me.Ppvt())).GetCount,
+		(*_IShellItemArrayVt)(unsafe.Pointer(*me.Ppvt())).GetCount,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&count)), 0)
 
@@ -124,17 +123,28 @@ func (me *IShellItemArray) GetCount() (uint, error) {
 //
 // [GetItemAt]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
 func (me *IShellItemArray) GetItemAt(releaser *ole.Releaser, index uint) (*IShellItem, error) {
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItemArray)(unsafe.Pointer(*me.Ppvt())).GetItemAt,
+		(*_IShellItemArrayVt)(unsafe.Pointer(*me.Ppvt())).GetItemAt,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(index), uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := vt.NewObj[IShellItem](ppvtQueried)
+		pObj := ole.ComObj[IShellItem](ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
 		return nil, hr
 	}
+}
+
+type _IShellItemArrayVt struct {
+	ole.IUnknownVt
+	BindToHandler              uintptr
+	GetPropertyStore           uintptr
+	GetPropertyDescriptionList uintptr
+	GetAttributes              uintptr
+	GetCount                   uintptr
+	GetItemAt                  uintptr
+	EnumItems                  uintptr
 }

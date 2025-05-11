@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -30,7 +29,7 @@ func (*IPicture) IID() co.IID {
 func (me *IPicture) Attributes() (co.PICATTR, error) {
 	var attr co.PICATTR
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).Get_Attributes,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Attributes,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&attr)))
 
@@ -47,7 +46,7 @@ func (me *IPicture) Attributes() (co.PICATTR, error) {
 func (me *IPicture) CurDC() (win.HDC, error) {
 	var hdc win.HDC
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).Get_CurDC,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_CurDC,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&hdc)))
 
@@ -70,7 +69,7 @@ func (me *IPicture) CurDC() (win.HDC, error) {
 func (me *IPicture) Height() (int, error) {
 	var cy int32
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).Get_Height,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Height,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&cy)))
 
@@ -87,7 +86,7 @@ func (me *IPicture) Height() (int, error) {
 func (me *IPicture) KeepOriginalFormat() (bool, error) {
 	var keep int32 // BOOL
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).Get_KeepOriginalFormat,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_KeepOriginalFormat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&keep)))
 
@@ -103,7 +102,7 @@ func (me *IPicture) KeepOriginalFormat() (bool, error) {
 // [PictureChanged]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-picturechanged
 func (me *IPicture) PictureChanged() error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).PictureChanged,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).PictureChanged,
 		uintptr(unsafe.Pointer(me.Ppvt())))
 	return wutil.ErrorAsHResult(ret)
 }
@@ -138,7 +137,7 @@ func (me *IPicture) Render(
 	srcSz win.SIZE,
 ) (metafileBounds win.RECT, hr error) {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).Render,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Render,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hdc),
 		uintptr(destOffset.X), uintptr(destOffset.Y),
@@ -160,7 +159,7 @@ func (me *IPicture) Render(
 // [SaveAsFile]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-saveasfile
 func (me *IPicture) SaveAsFile(stream *IStream, saveCopy bool) (numBytesWritten uint, hr error) {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).SaveAsFile,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).SaveAsFile,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
 		wutil.BoolToUintptr(saveCopy),
@@ -182,7 +181,7 @@ func (me *IPicture) SelectPicture(hdc win.HDC) (win.HDC, win.HBITMAP, error) {
 	var hBmp win.HBITMAP
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).SelectPicture,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).SelectPicture,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&hdcOut)),
@@ -200,7 +199,7 @@ func (me *IPicture) SelectPicture(hdc win.HDC) (win.HDC, win.HBITMAP, error) {
 // [SetKeepOriginalFormat]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-put_keeporiginalformat
 func (me *IPicture) SetKeepOriginalFormat(keep bool) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).Put_KeepOriginalFormat,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Put_KeepOriginalFormat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		wutil.BoolToUintptr(keep))
 	return wutil.ErrorAsHResult(ret)
@@ -271,7 +270,7 @@ func (me *IPicture) SizePixels(hdc win.HDC) (win.SIZE, error) {
 func (me *IPicture) Type() (co.PICTYPE, error) {
 	var picty co.PICTYPE
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).Get_Type,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Type,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&picty)))
 
@@ -292,7 +291,7 @@ func (me *IPicture) Type() (co.PICTYPE, error) {
 func (me *IPicture) Width() (int, error) {
 	var cx int32
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IPicture)(unsafe.Pointer(*me.Ppvt())).Get_Width,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Width,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&cx)))
 
@@ -301,4 +300,22 @@ func (me *IPicture) Width() (int, error) {
 	} else {
 		return 0, hr
 	}
+}
+
+type _IPictureVt struct {
+	IUnknownVt
+	Get_Handle             uintptr
+	Get_hPal               uintptr
+	Get_Type               uintptr
+	Get_Width              uintptr
+	Get_Height             uintptr
+	Render                 uintptr
+	Set_hPal               uintptr
+	Get_CurDC              uintptr
+	SelectPicture          uintptr
+	Get_KeepOriginalFormat uintptr
+	Put_KeepOriginalFormat uintptr
+	PictureChanged         uintptr
+	SaveAsFile             uintptr
+	Get_Attributes         uintptr
 }

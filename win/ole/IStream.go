@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -27,14 +26,14 @@ func (*IStream) IID() co.IID {
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-clone
 func (me *IStream) Clone(releaser *Releaser) (*IStream, error) {
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **IUnknownVt
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IStream)(unsafe.Pointer(*me.Ppvt())).Clone,
+		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Clone,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := vt.NewObj[IStream](ppvtQueried)
+		pObj := ComObj[IStream](ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -47,7 +46,7 @@ func (me *IStream) Clone(releaser *Releaser) (*IStream, error) {
 // [Commit]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-commit
 func (me *IStream) Commit(flags co.STGC) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IStream)(unsafe.Pointer(*me.Ppvt())).Commit,
+		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Commit,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(flags))
 	return wutil.ErrorAsHResult(ret)
@@ -61,7 +60,7 @@ func (me *IStream) CopyTo(
 	numBytes uint64,
 ) (numBytesRead, numBytesWritten uint64, hr error) {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IStream)(unsafe.Pointer(*me.Ppvt())).CopyTo,
+		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).CopyTo,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(dest.Ppvt())),
 		uintptr(numBytes),
@@ -83,7 +82,7 @@ func (me *IStream) CopyTo(
 // [LockRegion]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-lockregion
 func (me *IStream) LockRegion(offset, length uint64, lockType co.LOCKTYPE) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IStream)(unsafe.Pointer(*me.Ppvt())).LockRegion,
+		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).LockRegion,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(offset), uintptr(length), uintptr(lockType))
 	return wutil.ErrorAsHResult(ret)
@@ -94,7 +93,7 @@ func (me *IStream) LockRegion(offset, length uint64, lockType co.LOCKTYPE) error
 // [Revert]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-revert
 func (me *IStream) Revert() error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IStream)(unsafe.Pointer(*me.Ppvt())).Revert,
+		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Revert,
 		uintptr(unsafe.Pointer(me.Ppvt())))
 	return wutil.ErrorAsHResult(ret)
 }
@@ -104,7 +103,7 @@ func (me *IStream) Revert() error {
 // [Seek]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-seek
 func (me *IStream) Seek(displacement int64, origin co.STREAM_SEEK) (newOffset uint, hr error) {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IStream)(unsafe.Pointer(*me.Ppvt())).Seek,
+		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Seek,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(displacement), uintptr(origin),
 		uintptr(unsafe.Pointer(&newOffset)))
@@ -122,7 +121,7 @@ func (me *IStream) Seek(displacement int64, origin co.STREAM_SEEK) (newOffset ui
 // [SetSize]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-setsize
 func (me *IStream) SetSize(newSize uint) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IStream)(unsafe.Pointer(*me.Ppvt())).SetSize,
+		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).SetSize,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(newSize))
 	return wutil.ErrorAsHResult(ret)
@@ -134,7 +133,7 @@ func (me *IStream) SetSize(newSize uint) error {
 func (me *IStream) Stat(flag co.STATFLAG) (STATSTG, error) {
 	var stg STATSTG
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IStream)(unsafe.Pointer(*me.Ppvt())).Stat,
+		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Stat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&stg)), uintptr(flag))
 
@@ -150,8 +149,21 @@ func (me *IStream) Stat(flag co.STATFLAG) (STATSTG, error) {
 // [UnlockRegion]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-unlockregion
 func (me *IStream) UnlockRegion(offset, length uint64, lockType co.LOCKTYPE) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IStream)(unsafe.Pointer(*me.Ppvt())).UnlockRegion,
+		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).UnlockRegion,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(offset), uintptr(length), uintptr(lockType))
 	return wutil.ErrorAsHResult(ret)
+}
+
+type _IStreamVt struct {
+	_ISequentialStreamVt
+	Seek         uintptr
+	SetSize      uintptr
+	CopyTo       uintptr
+	Commit       uintptr
+	Revert       uintptr
+	LockRegion   uintptr
+	UnlockRegion uintptr
+	Stat         uintptr
+	Clone        uintptr
 }

@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -40,8 +39,13 @@ func (*ITaskbarList4) IID() co.IID {
 // [SetProperties]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist4-settabproperties
 func (me *ITaskbarList4) SetProperties(hwndTab win.HWND, flags co.STPFLAG) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.ITaskbarList4)(unsafe.Pointer(*me.Ppvt())).SetTabProperties,
+		(*_ITaskbarList4Vt)(unsafe.Pointer(*me.Ppvt())).SetTabProperties,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndTab), uintptr(flags))
 	return wutil.ErrorAsHResult(ret)
+}
+
+type _ITaskbarList4Vt struct {
+	_ITaskbarList3Vt
+	SetTabProperties uintptr
 }

@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -55,8 +54,17 @@ func (*IFileSaveDialog) IID() co.IID {
 // [SetSaveAsItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem
 func (me *IFileSaveDialog) SetSaveAsItem(si *IShellItem) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IFileSaveDialog)(unsafe.Pointer(*me.Ppvt())).SetSaveAsItem,
+		(*_IFileSaveDialogVt)(unsafe.Pointer(*me.Ppvt())).SetSaveAsItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(si.Ppvt())))
 	return wutil.ErrorAsHResult(ret)
+}
+
+type _IFileSaveDialogVt struct {
+	_IFileDialogVt
+	SetSaveAsItem          uintptr
+	SetProperties          uintptr
+	SetCollectedProperties uintptr
+	GetProperties          uintptr
+	ApplyProperties        uintptr
 }

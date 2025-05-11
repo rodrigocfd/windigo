@@ -7,7 +7,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -39,7 +38,7 @@ func OleLoadPicture(
 	size uint,
 	keepOriginalFormat bool,
 ) (*ole.IPicture, error) {
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	guid := win.GuidFrom(co.IID_IPicture)
 
 	ret, _, _ := syscall.SyscallN(_OleLoadPicture.Addr(),
@@ -50,7 +49,8 @@ func OleLoadPicture(
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := vt.NewObj[ole.IPicture](ppvtQueried)
+		pObj := new(ole.IPicture)
+		pObj.Set(ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -76,7 +76,7 @@ func OleLoadPicturePath(
 	transparentColor win.COLORREF,
 ) (*ole.IPicture, error) {
 	path16 := wstr.NewBufWith[wstr.Stack20](path, wstr.EMPTY_IS_NIL)
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	guid := win.GuidFrom(co.IID_IPicture)
 
 	ret, _, _ := syscall.SyscallN(_OleLoadPicturePath.Addr(),
@@ -84,7 +84,8 @@ func OleLoadPicturePath(
 		uintptr(unsafe.Pointer(&guid)), uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := vt.NewObj[ole.IPicture](ppvtQueried)
+		pObj := new(ole.IPicture)
+		pObj.Set(ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {

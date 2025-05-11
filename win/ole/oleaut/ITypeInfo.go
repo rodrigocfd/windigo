@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
 )
@@ -26,10 +25,13 @@ func (*ITypeInfo) IID() co.IID {
 // [AddressOfMember] method.
 //
 // [AddressOfMember]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-addressofmember
-func (me *ITypeInfo) AddressOfMember(memberId MEMBERID, invokeKind co.INVOKEKIND) (uintptr, error) {
+func (me *ITypeInfo) AddressOfMember(
+	memberId MEMBERID,
+	invokeKind co.INVOKEKIND,
+) (uintptr, error) {
 	var addr uintptr
 	ret, _, _ := syscall.SyscallN(
-		(*vt.ITypeInfo)(unsafe.Pointer(*me.Ppvt())).AddressOfMember,
+		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).AddressOfMember,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(memberId), uintptr(invokeKind),
 		uintptr(unsafe.Pointer(&addr)))
@@ -54,7 +56,7 @@ func (me *ITypeInfo) GetDllEntry(
 	var ordinal16 uint16
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.ITypeInfo)(unsafe.Pointer(*me.Ppvt())).GetDllEntry,
+		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetDllEntry,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(memberId), uintptr(invokeKind),
 		uintptr(unsafe.Pointer(&dllName)),
@@ -92,7 +94,7 @@ func (me *ITypeInfo) GetDocumentation(memberId MEMBERID) (ITypeInfoDoc, error) {
 	var helpCtx uint32
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.ITypeInfo)(unsafe.Pointer(*me.Ppvt())).GetDocumentation,
+		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetDocumentation,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(memberId),
 		uintptr(unsafe.Pointer(&name)),
@@ -120,4 +122,27 @@ type ITypeInfoDoc struct {
 	DocString   string
 	HelpContext uint
 	HelpFile    string
+}
+
+type _ITypeInfoVt struct {
+	ole.IUnknownVt
+	GetTypeAttr          uintptr
+	GetTypeComp          uintptr
+	GetFuncDesc          uintptr
+	GetVarDesc           uintptr
+	GetNames             uintptr
+	GetRefTypeOfImplType uintptr
+	GetImplTypeFlags     uintptr
+	GetIDsOfNames        uintptr
+	Invoke               uintptr
+	GetDocumentation     uintptr
+	GetDllEntry          uintptr
+	GetRefTypeInfo       uintptr
+	AddressOfMember      uintptr
+	CreateInstance       uintptr
+	GetMops              uintptr
+	GetContainingTypeLib uintptr
+	ReleaseTypeAttr      uintptr
+	ReleaseFuncDesc      uintptr
+	ReleaseVarDesc       uintptr
 }

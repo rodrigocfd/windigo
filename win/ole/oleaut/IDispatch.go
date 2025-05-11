@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -47,7 +46,7 @@ func (me *IDispatch) GetIDsOfNames(
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IDispatch)(unsafe.Pointer(*me.Ppvt())).GetIDsOfNames,
+		(*_IDispatchVt)(unsafe.Pointer(*me.Ppvt())).GetIDsOfNames,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&nullGuid)),
 		uintptr(unsafe.Pointer(&strPtrs[0])),
@@ -75,15 +74,15 @@ func (me *IDispatch) GetIDsOfNames(
 //
 // [GetTypeInfo]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfo
 func (me *IDispatch) GetTypeInfo(releaser *ole.Releaser, lcid win.LCID) (*ITypeInfo, error) {
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IDispatch)(unsafe.Pointer(*me.Ppvt())).GetTypeInfo,
+		(*_IDispatchVt)(unsafe.Pointer(*me.Ppvt())).GetTypeInfo,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		0, uintptr(lcid),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := vt.NewObj[ITypeInfo](ppvtQueried)
+		pObj := ole.ComObj[ITypeInfo](ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -100,7 +99,7 @@ func (me *IDispatch) GetTypeInfo(releaser *ole.Releaser, lcid win.LCID) (*ITypeI
 func (me *IDispatch) GetTypeInfoCount() (uint, error) {
 	var pctInfo uint32
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IDispatch)(unsafe.Pointer(*me.Ppvt())).GetTypeInfoCount,
+		(*_IDispatchVt)(unsafe.Pointer(*me.Ppvt())).GetTypeInfoCount,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&pctInfo)))
 
@@ -135,7 +134,7 @@ func (me *IDispatch) Invoke(
 	nullGuid := win.GuidFrom(co.IID_NULL)
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IDispatch)(unsafe.Pointer(*me.Ppvt())).Invoke,
+		(*_IDispatchVt)(unsafe.Pointer(*me.Ppvt())).Invoke,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(dispIdMember),
 		uintptr(unsafe.Pointer(&nullGuid)),
@@ -269,4 +268,12 @@ func (me *IDispatch) rawInvoke(
 		return nil, err
 	}
 	return v, nil
+}
+
+type _IDispatchVt struct {
+	ole.IUnknownVt
+	GetTypeInfoCount uintptr
+	GetTypeInfo      uintptr
+	GetIDsOfNames    uintptr
+	Invoke           uintptr
 }

@@ -119,7 +119,6 @@ flowchart BT
     win --> internal/dll([internal/dll])
     win --> internal/wutil
     win --> win/wstr
-    win/ole --> internal/vt([internal/vt])
     win/ole --> win
     win/ole/oleaut --> win/ole
     win/ole/shell --> win/ole

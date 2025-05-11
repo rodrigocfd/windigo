@@ -7,7 +7,6 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -58,7 +57,7 @@ func (me *IShellItem2) GetBool(pkey co.PKEY) (bool, error) {
 	var bVal int32 // BOOL
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetBool,
+		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetBool,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&bVal)))
 
@@ -77,7 +76,7 @@ func (me *IShellItem2) GetCLSID(pkey co.PKEY) (win.GUID, error) {
 	var clsid win.GUID
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetCLSID,
+		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetCLSID,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&clsid)))
 
@@ -96,7 +95,7 @@ func (me *IShellItem2) GetFileTime(pkey co.PKEY) (time.Time, error) {
 	var ft win.FILETIME
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetFileTime,
+		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetFileTime,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&ft)))
 
@@ -115,7 +114,7 @@ func (me *IShellItem2) GetInt32(pkey co.PKEY) (int32, error) {
 	var i int32
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetInt32,
+		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetInt32,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&i)))
 
@@ -145,7 +144,7 @@ func (me *IShellItem2) GetString(pkey co.PKEY) (string, error) {
 	var psz uintptr
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetString,
+		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetString,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&psz)))
 
@@ -166,7 +165,7 @@ func (me *IShellItem2) GetUInt32(pkey co.PKEY) (uint32, error) {
 	var ui uint32
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetUInt32,
+		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetUInt32,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&ui)))
 
@@ -185,7 +184,7 @@ func (me *IShellItem2) GetUInt64(pkey co.PKEY) (uint64, error) {
 	var ull uint64
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetUInt64,
+		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetUInt64,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&ull)))
 
@@ -201,8 +200,25 @@ func (me *IShellItem2) GetUInt64(pkey co.PKEY) (uint64, error) {
 // [Update]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-update
 func (me *IShellItem2) Update(bc *ole.IBindCtx) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetUInt64,
+		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetUInt64,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(bc.Ppvt())))
 	return wutil.ErrorAsHResult(ret)
+}
+
+type _IShellItem2Vt struct {
+	_IShellItemVt
+	GetPropertyStore                 uintptr
+	GetPropertyStoreWithCreateObject uintptr
+	GetPropertyStoreForKeys          uintptr
+	GetPropertyDescriptionList       uintptr
+	Update                           uintptr
+	GetProperty                      uintptr
+	GetCLSID                         uintptr
+	GetFileTime                      uintptr
+	GetInt32                         uintptr
+	GetString                        uintptr
+	GetUInt32                        uintptr
+	GetUInt64                        uintptr
+	GetBool                          uintptr
 }

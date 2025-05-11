@@ -7,7 +7,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -19,7 +18,7 @@ import (
 type IFileDialogEvents struct{ ole.IUnknown }
 
 type _IFileDialogEventsImpl struct {
-	vt                vt.IFileDialogEvents
+	vt                _IFileDialogEventsVt
 	counter           uint32
 	onFileOk          func() co.HRESULT
 	onFolderChanging  func(folder *IShellItem) co.HRESULT
@@ -36,8 +35,8 @@ type _IFileDialogEventsImpl struct {
 func NewIFileDialogEventsImpl(releaser *ole.Releaser) *IFileDialogEvents {
 	iFileDialogEventsCallbacks()
 	pImpl := &_IFileDialogEventsImpl{ // has Go function pointers, so cannot be allocated on the OS heap
-		vt: vt.IFileDialogEvents{
-			IUnknown: vt.IUnknown{
+		vt: _IFileDialogEventsVt{
+			IUnknownVt: ole.IUnknownVt{
 				QueryInterface: _iFileDialogEventsQueryInterface,
 				AddRef:         _iFileDialogEventsAddRef,
 				Release:        _iFileDialogEventsRelease,
@@ -56,8 +55,8 @@ func NewIFileDialogEventsImpl(releaser *ole.Releaser) *IFileDialogEvents {
 	ppImpl := &pImpl
 	wutil.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
 
-	ppFakeVtbl := (**vt.IUnknown)(unsafe.Pointer(ppImpl))
-	pObj := vt.NewObj[IFileDialogEvents](ppFakeVtbl)
+	ppFakeVtbl := (**ole.IUnknownVt)(unsafe.Pointer(ppImpl))
+	pObj := ole.ComObj[IFileDialogEvents](ppFakeVtbl)
 	releaser.Add(pObj)
 	return pObj
 }
@@ -131,7 +130,7 @@ func iFileDialogEventsCallbacks() {
 	}
 
 	_iFileDialogEventsQueryInterface = syscall.NewCallback(
-		func(_p uintptr, _riid uintptr, ppv ***vt.IUnknown) uintptr {
+		func(_p uintptr, _riid uintptr, ppv ***ole.IUnknownVt) uintptr {
 			*ppv = nil
 			return uintptr(co.HRESULT_E_NOTIMPL)
 		},
@@ -156,7 +155,7 @@ func iFileDialogEventsCallbacks() {
 	)
 
 	_iFileDialogEventsOnFileOk = syscall.NewCallback(
-		func(p uintptr, _ **vt.IUnknown) uintptr {
+		func(p uintptr, _ **ole.IUnknownVt) uintptr {
 			ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
 			if fun := (*ppImpl).onFileOk; fun == nil { // user didn't define a callback
 				return uintptr(co.HRESULT_S_OK)
@@ -166,18 +165,18 @@ func iFileDialogEventsCallbacks() {
 		},
 	)
 	_iFileDialogEventsOnFolderChanging = syscall.NewCallback(
-		func(p uintptr, _ **vt.IUnknown, vtSi **vt.IUnknown) uintptr {
+		func(p uintptr, _ **ole.IUnknownVt, vtSi **ole.IUnknownVt) uintptr {
 			ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
 			if fun := (*ppImpl).onFolderChanging; fun == nil { // user didn't define a callback
 				return uintptr(co.HRESULT_S_OK)
 			} else {
-				pItem := vt.NewObj[IShellItem](vtSi)
+				pItem := ole.ComObj[IShellItem](vtSi)
 				return uintptr(fun(pItem))
 			}
 		},
 	)
 	_iFileDialogEventsOnFolderChange = syscall.NewCallback(
-		func(p uintptr, _ **vt.IUnknown) uintptr {
+		func(p uintptr, _ **ole.IUnknownVt) uintptr {
 			ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
 			if fun := (*ppImpl).onFolderChange; fun == nil { // user didn't define a callback
 				return uintptr(co.HRESULT_S_OK)
@@ -187,7 +186,7 @@ func iFileDialogEventsCallbacks() {
 		},
 	)
 	_iFileDialogEventsOnSelectionChange = syscall.NewCallback(
-		func(p uintptr, _ **vt.IUnknown) uintptr {
+		func(p uintptr, _ **ole.IUnknownVt) uintptr {
 			ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
 			if fun := (*ppImpl).onSelectionChange; fun == nil { // user didn't define a callback
 				return uintptr(co.HRESULT_S_OK)
@@ -197,12 +196,12 @@ func iFileDialogEventsCallbacks() {
 		},
 	)
 	_iFileDialogEventsOnShareViolation = syscall.NewCallback(
-		func(p uintptr, _ **vt.IUnknown, vtSi **vt.IUnknown, pResponse *uint32) uintptr {
+		func(p uintptr, _ **ole.IUnknownVt, vtSi **ole.IUnknownVt, pResponse *uint32) uintptr {
 			ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
 			if fun := (*ppImpl).onShareViolation; fun == nil { // user didn't define a callback
 				return uintptr(co.HRESULT_S_OK)
 			} else {
-				pItem := vt.NewObj[IShellItem](vtSi)
+				pItem := ole.ComObj[IShellItem](vtSi)
 				response := co.FDESVR(*pResponse)
 				ret := fun(pItem, &response)
 				*pResponse = uint32(response)
@@ -211,7 +210,7 @@ func iFileDialogEventsCallbacks() {
 		},
 	)
 	_iFileDialogEventsOnTypeChange = syscall.NewCallback(
-		func(p uintptr, _ **vt.IUnknown) uintptr {
+		func(p uintptr, _ **ole.IUnknownVt) uintptr {
 			ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
 			if fun := (*ppImpl).onTypeChange; fun == nil { // user didn't define a callback
 				return uintptr(co.HRESULT_S_OK)
@@ -221,12 +220,12 @@ func iFileDialogEventsCallbacks() {
 		},
 	)
 	_iFileDialogEventsOnOverwrite = syscall.NewCallback(
-		func(p uintptr, _ **vt.IUnknown, vtSi **vt.IUnknown, pResponse *uint32) uintptr {
+		func(p uintptr, _ **ole.IUnknownVt, vtSi **ole.IUnknownVt, pResponse *uint32) uintptr {
 			ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
 			if fun := (*ppImpl).onOverwrite; fun == nil { // user didn't define a callback
 				return uintptr(co.HRESULT_S_OK)
 			} else {
-				pItem := vt.NewObj[IShellItem](vtSi)
+				pItem := ole.ComObj[IShellItem](vtSi)
 				response := co.FDEOR(*pResponse)
 				ret := fun(pItem, &response)
 				*pResponse = uint32(response)
@@ -234,4 +233,15 @@ func iFileDialogEventsCallbacks() {
 			}
 		},
 	)
+}
+
+type _IFileDialogEventsVt struct {
+	ole.IUnknownVt
+	OnFileOk          uintptr
+	OnFolderChanging  uintptr
+	OnFolderChange    uintptr
+	OnSelectionChange uintptr
+	OnShareViolation  uintptr
+	OnTypeChange      uintptr
+	OnOverwrite       uintptr
 }

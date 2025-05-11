@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
 )
@@ -66,14 +65,14 @@ func (*IFileOpenDialog) IID() co.IID {
 //
 // [GetResults]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
 func (me *IFileOpenDialog) GetResults(releaser *ole.Releaser) (*IShellItemArray, error) {
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IFileOpenDialog)(unsafe.Pointer(*me.Ppvt())).GetResults,
+		(*_IFileOpenDialogVt)(unsafe.Pointer(*me.Ppvt())).GetResults,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := vt.NewObj[IShellItemArray](ppvtQueried)
+		pObj := ole.ComObj[IShellItemArray](ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -85,17 +84,23 @@ func (me *IFileOpenDialog) GetResults(releaser *ole.Releaser) (*IShellItemArray,
 //
 // [GetSelectedItems]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
 func (me *IFileOpenDialog) GetSelectedItems(releaser *ole.Releaser) (*IShellItemArray, error) {
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IFileOpenDialog)(unsafe.Pointer(*me.Ppvt())).GetSelectedItems,
+		(*_IFileOpenDialogVt)(unsafe.Pointer(*me.Ppvt())).GetSelectedItems,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := vt.NewObj[IShellItemArray](ppvtQueried)
+		pObj := ole.ComObj[IShellItemArray](ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
 		return nil, hr
 	}
+}
+
+type _IFileOpenDialogVt struct {
+	_IFileDialogVt
+	GetResults       uintptr
+	GetSelectedItems uintptr
 }

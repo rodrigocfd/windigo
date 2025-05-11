@@ -7,7 +7,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -26,7 +25,7 @@ import (
 type IDropTarget struct{ IUnknown }
 
 type _IDropTargetImpl struct {
-	vt        vt.IDropTarget
+	vt        _IDropTargetVt
 	counter   uint32
 	dragEnter func(dataObj *IDataObject, keyState co.MK, pt win.POINT, effect *co.DROPEFFECT) co.HRESULT
 	dragOver  func(keyState co.MK, pt win.POINT, effect *co.DROPEFFECT) co.HRESULT
@@ -47,8 +46,8 @@ type _IDropTargetImpl struct {
 func NewIDropTargetImpl(releaser *Releaser) *IDropTarget {
 	iDropTargetCallbacks()
 	pImpl := &_IDropTargetImpl{ // has Go function pointers, so cannot be allocated on the OS heap
-		vt: vt.IDropTarget{
-			IUnknown: vt.IUnknown{
+		vt: _IDropTargetVt{
+			IUnknownVt: IUnknownVt{
 				QueryInterface: _iDropTargetQueryInterface,
 				AddRef:         _iDropTargetAddRef,
 				Release:        _iDropTargetRelease,
@@ -64,8 +63,8 @@ func NewIDropTargetImpl(releaser *Releaser) *IDropTarget {
 	ppImpl := &pImpl
 	wutil.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
 
-	ppFakeVtbl := (**vt.IUnknown)(unsafe.Pointer(ppImpl))
-	pObj := vt.NewObj[IDropTarget](ppFakeVtbl)
+	ppFakeVtbl := (**IUnknownVt)(unsafe.Pointer(ppImpl))
+	pObj := ComObj[IDropTarget](ppFakeVtbl)
 	releaser.Add(pObj)
 	return pObj
 }
@@ -159,7 +158,7 @@ func iDropTargetCallbacks() {
 	}
 
 	_iDropTargetQueryInterface = syscall.NewCallback(
-		func(_p uintptr, _riid uintptr, ppv ***vt.IUnknown) uintptr {
+		func(_p uintptr, _riid uintptr, ppv ***IUnknownVt) uintptr {
 			*ppv = nil
 			return uintptr(co.HRESULT_E_NOTIMPL)
 		},
@@ -184,9 +183,9 @@ func iDropTargetCallbacks() {
 	)
 
 	_iDropTargetDragEnter = syscall.NewCallback(
-		func(p uintptr, vtDataObj **vt.IUnknown, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
+		func(p uintptr, vtDataObj **IUnknownVt, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
 			ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-			pDataObj := vt.NewObj[IDataObject](vtDataObj)
+			pDataObj := ComObj[IDataObject](vtDataObj)
 			if fun := (*ppImpl).dragEnter; fun == nil { // user didn't define a callback
 				return uintptr(co.HRESULT_S_OK)
 			} else {
@@ -221,9 +220,9 @@ func iDropTargetCallbacks() {
 		},
 	)
 	_iDropTargetDrop = syscall.NewCallback(
-		func(p uintptr, vtDataObj **vt.IUnknown, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
+		func(p uintptr, vtDataObj **IUnknownVt, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
 			ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-			pDataObj := vt.NewObj[IDataObject](vtDataObj)
+			pDataObj := ComObj[IDataObject](vtDataObj)
 			if fun := (*ppImpl).drop; fun == nil { // user didn't define a callback
 				return uintptr(co.HRESULT_S_OK)
 			} else {
@@ -234,4 +233,12 @@ func iDropTargetCallbacks() {
 			}
 		},
 	)
+}
+
+type _IDropTargetVt struct {
+	IUnknownVt
+	DragEnter uintptr
+	DragOver  uintptr
+	DragLeave uintptr
+	Drop      uintptr
 }

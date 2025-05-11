@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -41,7 +40,7 @@ func (*ITaskbarList) IID() co.IID {
 // [ActivateTab]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab
 func (me *ITaskbarList) ActivateTab(hWnd win.HWND) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.ITaskbarList)(unsafe.Pointer(*me.Ppvt())).ActivateTab,
+		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).ActivateTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
 	return wutil.ErrorAsHResult(ret)
@@ -52,7 +51,7 @@ func (me *ITaskbarList) ActivateTab(hWnd win.HWND) error {
 // [AddTab]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-addtab
 func (me *ITaskbarList) AddTab(hWnd win.HWND) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.ITaskbarList)(unsafe.Pointer(*me.Ppvt())).AddTab,
+		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).AddTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
 	return wutil.ErrorAsHResult(ret)
@@ -63,7 +62,7 @@ func (me *ITaskbarList) AddTab(hWnd win.HWND) error {
 // [DeleteTab]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-deletetab
 func (me *ITaskbarList) DeleteTab(hWnd win.HWND) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.ITaskbarList)(unsafe.Pointer(*me.Ppvt())).DeleteTab,
+		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).DeleteTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
 	return wutil.ErrorAsHResult(ret)
@@ -74,7 +73,7 @@ func (me *ITaskbarList) DeleteTab(hWnd win.HWND) error {
 // [HrInit]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-hrinit
 func (me *ITaskbarList) HrInit() error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.ITaskbarList)(unsafe.Pointer(*me.Ppvt())).HrInit,
+		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).HrInit,
 		uintptr(unsafe.Pointer(me.Ppvt())))
 	return wutil.ErrorAsHResult(ret)
 }
@@ -84,8 +83,17 @@ func (me *ITaskbarList) HrInit() error {
 // [SetActiveAlt]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-setactivealt
 func (me *ITaskbarList) SetActiveAlt(hWnd win.HWND) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.ITaskbarList)(unsafe.Pointer(*me.Ppvt())).SetActiveAlt,
+		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).SetActiveAlt,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
 	return wutil.ErrorAsHResult(ret)
+}
+
+type _ITaskbarListVt struct {
+	ole.IUnknownVt
+	HrInit       uintptr
+	AddTab       uintptr
+	DeleteTab    uintptr
+	ActivateTab  uintptr
+	SetActiveAlt uintptr
 }

@@ -10,7 +10,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -113,8 +112,8 @@ func NewVariant(releaser *ole.Releaser, value interface{}) *VARIANT {
 		binary.LittleEndian.PutUint64(v.data[:], math.Float64bits(val))
 	case *IDispatch:
 		v.tag = co.VT_DISPATCH
-		vt.AddRef(val.Ppvt()) // clone, because we'll release it independently
-		rawPpvt := uintptr(unsafe.Pointer(val.Ppvt()))
+		pCloned := ole.AddRef(val, releaser) // clone, because we'll release it independently
+		rawPpvt := uintptr(unsafe.Pointer(pCloned.Ppvt()))
 		binary.LittleEndian.PutUint64(v.data[:], uint64(rawPpvt))
 	case int8:
 		v.tag = co.VT_I1
@@ -245,12 +244,10 @@ func (v *VARIANT) Float64() (float64, bool) {
 func (v *VARIANT) IDispatch(releaser *ole.Releaser) (*IDispatch, bool) {
 	if v.tag == co.VT_DISPATCH {
 		rawPpvt := uintptr(binary.LittleEndian.Uint64(v.data[:]))
-		ppvt := (**vt.IUnknown)(unsafe.Pointer(rawPpvt))
-		vt.AddRef(ppvt) // clone, so it can be released independently
-
-		pObj := vt.NewObj[IDispatch](ppvt)
-		releaser.Add(pObj)
-		return pObj, true
+		ppvt := (**ole.IUnknownVt)(unsafe.Pointer(rawPpvt))
+		pObj := ole.ComObj[IDispatch](ppvt)
+		pCloned := ole.AddRef(pObj, releaser) // clone, because we'll release it independently
+		return pCloned, true
 	}
 	return nil, false
 }

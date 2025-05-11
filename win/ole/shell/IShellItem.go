@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -59,17 +58,17 @@ func BindToHandler[T any, P ole.ComCtor[T]](
 	bhid co.BHID,
 ) (*T, error) {
 	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	bhidGuid := win.GuidFrom(bhid)
 	riidGuid := win.GuidFrom(pObj.IID())
 
-	var pBindCtx **vt.IUnknown
+	var pBindCtx **ole.IUnknownVt
 	if bindCtx != nil {
 		pBindCtx = bindCtx.Ppvt()
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem)(unsafe.Pointer(*iShellItem.Ppvt())).BindToHandler,
+		(*_IShellItemVt)(unsafe.Pointer(*iShellItem.Ppvt())).BindToHandler,
 		uintptr(unsafe.Pointer(iShellItem.Ppvt())),
 		uintptr(unsafe.Pointer(pBindCtx)),
 		uintptr(unsafe.Pointer(&bhidGuid)),
@@ -91,7 +90,7 @@ func BindToHandler[T any, P ole.ComCtor[T]](
 func (me *IShellItem) Compare(si *IShellItem, hint co.SICHINT) (bool, error) {
 	var piOrder uint32
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem)(unsafe.Pointer(*me.Ppvt())).Compare,
+		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).Compare,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(si.Ppvt())),
 		uintptr(hint),
@@ -111,7 +110,7 @@ func (me *IShellItem) Compare(si *IShellItem, hint co.SICHINT) (bool, error) {
 // [GetAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getattributes
 func (me *IShellItem) GetAttributes(mask co.SFGAO) (attrs co.SFGAO, exactMatch bool, hr error) {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem)(unsafe.Pointer(*me.Ppvt())).GetAttributes,
+		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).GetAttributes,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&mask)),
 		uintptr(unsafe.Pointer(&attrs)))
@@ -138,7 +137,7 @@ func (me *IShellItem) GetAttributes(mask co.SFGAO) (attrs co.SFGAO, exactMatch b
 func (me *IShellItem) GetDisplayName(sigdnName co.SIGDN) (string, error) {
 	var pv uintptr
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem)(unsafe.Pointer(*me.Ppvt())).GetDisplayName,
+		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).GetDisplayName,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(sigdnName), uintptr(unsafe.Pointer(&pv)))
 
@@ -155,17 +154,26 @@ func (me *IShellItem) GetDisplayName(sigdnName co.SIGDN) (string, error) {
 //
 // [GetParent]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
 func (me *IShellItem) GetParent(releaser *ole.Releaser) (*IShellItem, error) {
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **ole.IUnknownVt
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IShellItem)(unsafe.Pointer(*me.Ppvt())).GetParent,
+		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).GetParent,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := vt.NewObj[IShellItem](ppvtQueried)
+		pObj := ole.ComObj[IShellItem](ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
 		return nil, hr
 	}
+}
+
+type _IShellItemVt struct {
+	ole.IUnknownVt
+	BindToHandler  uintptr
+	GetParent      uintptr
+	GetDisplayName uintptr
+	GetAttributes  uintptr
+	Compare        uintptr
 }

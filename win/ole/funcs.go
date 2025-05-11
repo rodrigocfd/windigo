@@ -8,7 +8,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -71,7 +70,7 @@ func CoCreateInstance[T any, P ComCtor[T]](
 	dwClsContext co.CLSCTX,
 ) (*T, error) {
 	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **IUnknownVt
 	guidClsid := win.GuidFrom(rclsid)
 	guidIid := win.GuidFrom(pObj.IID())
 
@@ -142,12 +141,12 @@ var _CoUninitialize = dll.Ole32.NewProc("CoUninitialize")
 //
 // [CreateBindCtx]: https://learn.microsoft.com/en-us/windows/win32/api/objbase/nf-objbase-createbindctx
 func CreateBindCtx(releaser *Releaser) (*IBindCtx, error) {
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **IUnknownVt
 	ret, _, _ := syscall.SyscallN(_CreateBindCtx.Addr(),
 		0, uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := vt.NewObj[IBindCtx](ppvtQueried)
+		pObj := ComObj[IBindCtx](ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -250,7 +249,8 @@ func SHCreateMemStream(releaser *Releaser, src []byte) (*IStream, error) {
 		return nil, co.HRESULT_E_OUTOFMEMORY
 	}
 
-	pObj := vt.NewObj[IStream]((**vt.IUnknown)(unsafe.Pointer(ret)))
+	ppvt := (**IUnknownVt)(unsafe.Pointer(ret))
+	pObj := ComObj[IStream](ppvt)
 	releaser.Add(pObj)
 	return pObj, nil
 }

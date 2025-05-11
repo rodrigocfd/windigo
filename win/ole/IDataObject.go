@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -29,7 +28,7 @@ func (*IDataObject) IID() co.IID {
 func (me *IDataObject) GetCanonicalFormatEtc(etcIn *FORMATETC) (FORMATETC, error) {
 	var etcOut FORMATETC
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IDataObject)(unsafe.Pointer(*me.Ppvt())).GetCanonicalFormatEtc,
+		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).GetCanonicalFormatEtc,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(etcIn)), uintptr(unsafe.Pointer(&etcOut)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -47,7 +46,7 @@ func (me *IDataObject) GetCanonicalFormatEtc(etcIn *FORMATETC) (FORMATETC, error
 func (me *IDataObject) GetData(etc *FORMATETC) (STGMEDIUM, error) {
 	var stg STGMEDIUM
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IDataObject)(unsafe.Pointer(*me.Ppvt())).GetData,
+		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).GetData,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(etc)), uintptr(unsafe.Pointer(&stg)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -62,8 +61,21 @@ func (me *IDataObject) GetData(etc *FORMATETC) (STGMEDIUM, error) {
 // [QueryGetData]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-idataobject-querygetdata
 func (me *IDataObject) QueryGetData(etc *FORMATETC) error {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IDataObject)(unsafe.Pointer(*me.Ppvt())).QueryGetData,
+		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).QueryGetData,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(etc)))
 	return wutil.ErrorAsHResult(ret)
+}
+
+type _IDataObjectVt struct {
+	IUnknownVt
+	GetData               uintptr
+	GetDataHere           uintptr
+	QueryGetData          uintptr
+	GetCanonicalFormatEtc uintptr
+	SetData               uintptr
+	EnumFormatEtc         uintptr
+	DAdvise               uintptr
+	DUnadvise             uintptr
+	EnumDAdvise           uintptr
 }

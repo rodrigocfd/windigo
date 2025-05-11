@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -31,7 +30,7 @@ func (*IModalWindow) IID() co.IID {
 // [Show]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-imodalwindow-show
 func (me *IModalWindow) Show(hwndOwner win.HWND) (bool, error) {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.IModalWindow)(unsafe.Pointer(*me.Ppvt())).Show,
+		(*_IModalWindowVt)(unsafe.Pointer(*me.Ppvt())).Show,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndOwner))
 
@@ -42,4 +41,9 @@ func (me *IModalWindow) Show(hwndOwner win.HWND) (bool, error) {
 	} else {
 		return false, wErr.HResult()
 	}
+}
+
+type _IModalWindowVt struct {
+	ole.IUnknownVt
+	Show uintptr
 }

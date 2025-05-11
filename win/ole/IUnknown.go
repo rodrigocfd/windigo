@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -16,7 +15,7 @@ import (
 // [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 type IUnknown struct {
-	ppvt **vt.IUnknown
+	ppvt **IUnknownVt
 }
 
 // Calls [Release].
@@ -41,8 +40,11 @@ func (*IUnknown) IID() co.IID {
 
 // Returns the [COM] virtual table pointer.
 //
+// This is a low-level method, used internally by the library. Incorrect usage
+// may lead to segmentation faults.
+//
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
-func (me *IUnknown) Ppvt() **vt.IUnknown {
+func (me *IUnknown) Ppvt() **IUnknownVt {
 	return me.ppvt
 }
 
@@ -56,12 +58,27 @@ func (me *IUnknown) Ppvt() **vt.IUnknown {
 //
 // [Release]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
-func (me *IUnknown) Set(ppvt **vt.IUnknown) {
+func (me *IUnknown) Set(ppvt **IUnknownVt) {
 	if me.ppvt != nil {
-		syscall.SyscallN((*ppvt).Release,
-			uintptr(unsafe.Pointer(ppvt)))
+		syscall.SyscallN((*me.ppvt).Release,
+			uintptr(unsafe.Pointer(me.ppvt)))
 	}
 	me.ppvt = ppvt
+}
+
+// [AddRef] method. Not implemented as a method of [IUnknown] because Go doesn't
+// support generic methods.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+// [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
+func AddRef[T any, P ComCtor[T]](iUnknown P, releaser *Releaser) *T {
+	syscall.SyscallN((*iUnknown.Ppvt()).AddRef,
+		uintptr(unsafe.Pointer(iUnknown.Ppvt())))
+
+	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	pObj.Set(iUnknown.Ppvt())
+	releaser.Add(pObj)
+	return pObj
 }
 
 // [QueryInterface] method. Not implemented as a method of [IUnknown] because
@@ -74,7 +91,7 @@ func QueryInterface[T any, P ComCtor[T]](
 	releaser *Releaser,
 ) (*T, error) {
 	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
-	var ppvtQueried **vt.IUnknown
+	var ppvtQueried **IUnknownVt
 	riidGuid := win.GuidFrom(pObj.IID())
 
 	ret, _, _ := syscall.SyscallN((*iUnknown.Ppvt()).QueryInterface,
@@ -89,4 +106,26 @@ func QueryInterface[T any, P ComCtor[T]](
 	} else {
 		return nil, hr
 	}
+}
+
+// Syntactic sugar to create a new [COM] object from its virtual table.
+//
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+func ComObj[T any, P interface {
+	*T
+	Set(**IUnknownVt)
+}](ppvt **IUnknownVt) *T {
+	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	pObj.Set(ppvt)
+	return pObj
+}
+
+// [IUnknown] [COM] virtual table, base to all COM virtual tables.
+//
+// [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+type IUnknownVt struct {
+	QueryInterface uintptr
+	AddRef         uintptr
+	Release        uintptr
 }

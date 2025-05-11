@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/vt"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -30,7 +29,7 @@ func (*ISequentialStream) IID() co.IID {
 // [Read]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-isequentialstream-read
 func (me *ISequentialStream) Read(buffer []byte) (numBytesRead uint32, hr error) {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.ISequentialStream)(unsafe.Pointer(*me.Ppvt())).Read,
+		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Read,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&buffer[0])),
 		uintptr(len(buffer)),
@@ -49,7 +48,7 @@ func (me *ISequentialStream) Read(buffer []byte) (numBytesRead uint32, hr error)
 // [Write]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-isequentialstream-write
 func (me *ISequentialStream) Write(data []byte) (numBytesWritten uint32, hr error) {
 	ret, _, _ := syscall.SyscallN(
-		(*vt.ISequentialStream)(unsafe.Pointer(*me.Ppvt())).Write,
+		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Write,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&data[0])),
 		uintptr(len(data)),
@@ -61,4 +60,10 @@ func (me *ISequentialStream) Write(data []byte) (numBytesWritten uint32, hr erro
 		numBytesWritten = 0
 	}
 	return
+}
+
+type _ISequentialStreamVt struct {
+	IUnknownVt
+	Read  uintptr
+	Write uintptr
 }
