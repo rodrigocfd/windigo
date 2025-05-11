@@ -25,15 +25,3 @@ func AddRef(ppvt **IUnknown) uint32 {
 		uintptr(unsafe.Pointer(ppvt)))
 	return uint32(refCount)
 }
-
-// [Release] method.
-//
-// [Release]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
-func Release(ppvt **IUnknown) uint32 {
-	var refCount uintptr
-	if ppvt != nil {
-		refCount, _, _ = syscall.SyscallN((*ppvt).Release,
-			uintptr(unsafe.Pointer(ppvt)))
-	}
-	return uint32(refCount)
-}

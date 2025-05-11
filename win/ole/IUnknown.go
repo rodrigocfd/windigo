@@ -57,7 +57,10 @@ func (me *IUnknown) Ppvt() **vt.IUnknown {
 // [Release]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 func (me *IUnknown) Set(ppvt **vt.IUnknown) {
-	vt.Release(me.ppvt)
+	if me.ppvt != nil {
+		syscall.SyscallN((*ppvt).Release,
+			uintptr(unsafe.Pointer(ppvt)))
+	}
 	me.ppvt = ppvt
 }
 
