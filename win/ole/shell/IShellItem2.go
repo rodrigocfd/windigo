@@ -4,6 +4,7 @@ package shell
 
 import (
 	"syscall"
+	"time"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/vt"
@@ -65,5 +66,39 @@ func (me *IShellItem2) GetCLSID(key *PROPERTYKEY) (win.GUID, error) {
 		return clsid, nil
 	} else {
 		return win.GUID{}, hr
+	}
+}
+
+// [GetFileTime] method.
+//
+// [GetFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getfiletime
+func (me *IShellItem2) GetFileTime(key *PROPERTYKEY) (time.Time, error) {
+	var ft win.FILETIME
+	ret, _, _ := syscall.SyscallN(
+		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetFileTime,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&ft)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return ft.ToTime(), nil
+	} else {
+		return time.Time{}, hr
+	}
+}
+
+// [GetInt32] method.
+//
+// [GetInt32]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getint32
+func (me *IShellItem2) GetInt32(key *PROPERTYKEY) (int32, error) {
+	var i int32
+	ret, _, _ := syscall.SyscallN(
+		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetInt32,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&i)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return i, nil
+	} else {
+		return 0, hr
 	}
 }
