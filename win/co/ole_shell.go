@@ -8,6 +8,7 @@ const (
 	CLSID_ShellLink      CLSID = "00021401-0000-0000-c000-000000000046"
 	CLSID_TaskbarList    CLSID = "56fdf344-fd6d-11d0-958a-006097c9a090"
 
+	IID_IEnumShellItems   IID = "70629033-e363-4a28-a567-0db78006e6d7"
 	IID_IFileDialog       IID = "42f85136-db7e-439c-85f1-e4075d135fc8"
 	IID_IFileDialogEvents IID = "973510db-7d7f-452b-8975-74a85828d354"
 	IID_IFileOpenDialog   IID = "d57c7288-d4ad-4768-be02-9d969532d960"

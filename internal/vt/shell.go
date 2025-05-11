@@ -2,6 +2,14 @@
 
 package vt
 
+type IEnumShellItems struct {
+	IUnknown
+	Next  uintptr
+	Skip  uintptr
+	Reset uintptr
+	Clone uintptr
+}
+
 type IFileDialog struct {
 	IModalWindow
 	SetFileTypes        uintptr

@@ -39,6 +39,17 @@ func (*IShellItem) IID() co.IID {
 // [BindToHandler] method. Not implemented as a method of [IShellItem] because
 // Go doesn't support generic methods.
 //
+// # Example
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	desktop, _ := shell.SHGetKnownFolderItem[shell.IShellItem](
+//		rel, co.FOLDERID_Desktop, co.KF_FLAG_DEFAULT, win.HANDLE(0))
+//
+//	enumItems, _ := shell.BindToHandler[shell.IEnumShellItems](
+//		desktop, rel, nil, co.BHID_EnumItems)
+//
 // [BindToHandler]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-bindtohandler
 // [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 func BindToHandler[T any, P ole.ComCtor[T]](
