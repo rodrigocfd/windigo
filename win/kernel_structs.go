@@ -79,7 +79,7 @@ func (g *GUID) String() string {
 //
 // Panics if  malformed.
 func GuidFrom[T ~string](strGuid T) GUID {
-	strs := strings.Split(string(strGuid), "-")
+	strs := strings.SplitN(string(strGuid), "-", 5)
 	if len(strs) != 5 {
 		panic(fmt.Sprintf("Malformed GUID parts: %s", strGuid))
 	}

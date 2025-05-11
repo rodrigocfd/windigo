@@ -50,6 +50,31 @@ func FmtBytes(numBytes uint64) string {
 	}
 }
 
+// Parses a string into an uint number.
+//
+// Panics if an invalid character is found.
+func ParseUint(strNumber string) uint {
+	nChars := uint(len(strNumber))
+	var out uint
+
+	for idx, ch := range strNumber {
+		if ch < '0' || ch > '9' {
+			panic(fmt.Sprintf("ParseUint: invalid character found - '%c'", ch))
+		}
+
+		out += (uint(ch) - uint('0')) * powUint(10, nChars-uint(idx)-1)
+	}
+	return out
+}
+
+func powUint(a, b uint) uint {
+	out := uint(1)
+	for i := uint(0); i < b; i++ {
+		out *= a
+	}
+	return out
+}
+
 // Splits the string into lines, considering LF or CR+LF.
 func SplitLines(s string) []string {
 	lines := strings.Split(s, "\n")

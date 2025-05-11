@@ -3,9 +3,9 @@
 package shell
 
 import (
+	"strings"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -50,15 +50,32 @@ type PROPERTYKEY struct {
 	data [20]byte // packed
 }
 
-// Returns the fmtId GUID.
+// Creates a [PROPERTYKEY] from a string representation.
+//
+// [PROPERTYKEY]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ns-wtypes-propertykey
+func PropertykeyFrom(pkey co.PKEY) PROPERTYKEY {
+	parts := strings.SplitN(string(pkey), " ", 2)
+	fmtId := win.GuidFrom(parts[0])
+	pId := wstr.ParseUint(parts[1])
+
+	var out PROPERTYKEY
+	out.SetFmdId(fmtId)
+	out.SetPId(uint32(pId))
+	return out
+}
+
 func (pk *PROPERTYKEY) FmtId() win.GUID {
 	return *(*win.GUID)(unsafe.Pointer(&pk.data[0]))
 }
+func (pk *PROPERTYKEY) SetFmdId(fmtId win.GUID) {
+	*(*win.GUID)(unsafe.Pointer(&pk.data[0])) = fmtId
+}
 
-// Sets the fmtId GUID. The pid field will be set to PID_FIRST_USABLE (0x2).
-func (pk *PROPERTYKEY) SetFmtId(guid win.GUID) {
-	*(*win.GUID)(unsafe.Pointer(&pk.data[0])) = guid
-	*(*uint32)(unsafe.Pointer(&pk.data[16])) = wutil.PID_FIRST_USABLE
+func (pk *PROPERTYKEY) PId() uint32 {
+	return *(*uint32)(unsafe.Pointer(&pk.data[16]))
+}
+func (pk *PROPERTYKEY) SetPId(pId uint32) {
+	*(*uint32)(unsafe.Pointer(&pk.data[16])) = pId
 }
 
 // [THUMBBUTTON] struct.

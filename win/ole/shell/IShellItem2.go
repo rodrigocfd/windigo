@@ -53,12 +53,14 @@ func (*IShellItem2) IID() co.IID {
 // [GetBool] method.
 //
 // [GetBool]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getbool
-func (me *IShellItem2) GetBool(key *PROPERTYKEY) (bool, error) {
+func (me *IShellItem2) GetBool(pkey co.PKEY) (bool, error) {
+	guidPkey := PropertykeyFrom(pkey)
 	var bVal int32 // BOOL
+
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetBool,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&bVal)))
+		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&bVal)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return bVal != 0, nil
@@ -70,12 +72,14 @@ func (me *IShellItem2) GetBool(key *PROPERTYKEY) (bool, error) {
 // [GetCLSID] method.
 //
 // [GetCLSID]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getclsid
-func (me *IShellItem2) GetCLSID(key *PROPERTYKEY) (win.GUID, error) {
+func (me *IShellItem2) GetCLSID(pkey co.PKEY) (win.GUID, error) {
+	guidPkey := PropertykeyFrom(pkey)
 	var clsid win.GUID
+
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetCLSID,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&clsid)))
+		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&clsid)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return clsid, nil
@@ -87,12 +91,14 @@ func (me *IShellItem2) GetCLSID(key *PROPERTYKEY) (win.GUID, error) {
 // [GetFileTime] method.
 //
 // [GetFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getfiletime
-func (me *IShellItem2) GetFileTime(key *PROPERTYKEY) (time.Time, error) {
+func (me *IShellItem2) GetFileTime(pkey co.PKEY) (time.Time, error) {
+	guidPkey := PropertykeyFrom(pkey)
 	var ft win.FILETIME
+
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetFileTime,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&ft)))
+		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&ft)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return ft.ToTime(), nil
@@ -104,12 +110,14 @@ func (me *IShellItem2) GetFileTime(key *PROPERTYKEY) (time.Time, error) {
 // [GetInt32] method.
 //
 // [GetInt32]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getint32
-func (me *IShellItem2) GetInt32(key *PROPERTYKEY) (int32, error) {
+func (me *IShellItem2) GetInt32(pkey co.PKEY) (int32, error) {
+	guidPkey := PropertykeyFrom(pkey)
 	var i int32
+
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetInt32,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&i)))
+		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&i)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return i, nil
@@ -120,13 +128,26 @@ func (me *IShellItem2) GetInt32(key *PROPERTYKEY) (int32, error) {
 
 // [GetString] method.
 //
+// # Example
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem2](
+//		rel, "C:\\Temp\\foo.txt")
+//
+//	ty, _ := item.GetString(co.PKEY_ItemTypeText)
+//	println(ty)
+//
 // [GetString]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getstring
-func (me *IShellItem2) GetString(key *PROPERTYKEY) (string, error) {
+func (me *IShellItem2) GetString(pkey co.PKEY) (string, error) {
+	guidPkey := PropertykeyFrom(pkey)
 	var psz uintptr
+
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetString,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&psz)))
+		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&psz)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		defer ole.HTASKMEM(psz).CoTaskMemFree()
@@ -140,12 +161,14 @@ func (me *IShellItem2) GetString(key *PROPERTYKEY) (string, error) {
 // [GetUInt32] method.
 //
 // [GetUInt32]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getuint32
-func (me *IShellItem2) GetUInt32(key *PROPERTYKEY) (uint32, error) {
+func (me *IShellItem2) GetUInt32(pkey co.PKEY) (uint32, error) {
+	guidPkey := PropertykeyFrom(pkey)
 	var ui uint32
+
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetUInt32,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&ui)))
+		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&ui)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return ui, nil
@@ -157,12 +180,14 @@ func (me *IShellItem2) GetUInt32(key *PROPERTYKEY) (uint32, error) {
 // [GetUInt64] method.
 //
 // [GetUInt64]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getuint64
-func (me *IShellItem2) GetUInt64(key *PROPERTYKEY) (uint64, error) {
+func (me *IShellItem2) GetUInt64(pkey co.PKEY) (uint64, error) {
+	guidPkey := PropertykeyFrom(pkey)
 	var ull uint64
+
 	ret, _, _ := syscall.SyscallN(
 		(*vt.IShellItem2)(unsafe.Pointer(*me.Ppvt())).GetUInt64,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(key)), uintptr(unsafe.Pointer(&ull)))
+		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&ull)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return ull, nil
