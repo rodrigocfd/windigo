@@ -27,8 +27,20 @@ import (
 //	ish, _ := shell.SHCreateItemFromParsingName[shell.IShellItem2](
 //		rel, "C:\\Temp\\foo.txt")
 //
+// It can also be queried from an [IShellItem] object:
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
+//		rel, "C:\\Temp\\foo.txt")
+//
+//	item2, _ := ole.QueryInterface[shell.IShellItem2](
+//		&item.IUnknown, rel)
+//
 // [IShellItem2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem2
 // [SHCreateItemFromParsingName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
+// [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 type IShellItem2 struct{ IShellItem }
 
 // Returns the unique COM [interface ID].
