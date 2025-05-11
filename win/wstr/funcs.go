@@ -132,6 +132,8 @@ func StrToUtf16Ptr(s string) *uint16 {
 // Returns a slice over the string, starting at the given index, and with the
 // given length. Counts [runes], not bytes.
 //
+// This function is useful if your string contains multi-byte UTF-8 chars.
+//
 // [runes]: https://stackoverflow.com/a/38537764/6923555
 func SubstrRunes(s string, start, length uint) string {
 	startStrIdx := 0

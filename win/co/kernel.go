@@ -226,15 +226,6 @@ const (
 	FILE_MAP_LARGE_PAGES     FILE_MAP = 0x2000_0000
 )
 
-// FileOpen() and FileMapOpen() desired access.
-type FILE_OPEN uint8
-
-const (
-	FILE_OPEN_READ_EXISTING     FILE_OPEN = iota // Open an existing file for read only.
-	FILE_OPEN_RW_EXISTING                        // Open an existing file for read and write.
-	FILE_OPEN_RW_OPEN_OR_CREATE                  // Open a file or create if it doesn't exist, for read and write.
-)
-
 // [CreateFile] dwShareMode.
 //
 // [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
@@ -245,6 +236,16 @@ const (
 	FILE_SHARE_READ   FILE_SHARE = 0x0000_0001
 	FILE_SHARE_WRITE  FILE_SHARE = 0x0000_0002
 	FILE_SHARE_DELETE FILE_SHARE = 0x0000_0004
+)
+
+// FileOpen() and FileMapOpen() desired access.
+type FOPEN uint8
+
+const (
+	FOPEN_READ_EXISTING     FOPEN = iota // Open an existing file for read only.
+	FOPEN_RW_EXISTING                    // Open an existing file for read and write.
+	FOPEN_RW_OPEN_OR_CREATE              // Open a file or create if it doesn't exist, for read and write.
+	FOPEN_RW_CREATE                      // Creates a new file as read/write. Fails if the file already exists.
 )
 
 // Generic access [rights].

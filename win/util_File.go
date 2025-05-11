@@ -21,7 +21,14 @@ import (
 //   - [io.StringWriter]
 //   - [io.Writer]
 //
-// Created with FileOpen().
+// Created with win.FileOpen().
+//
+// # Example
+//
+//	f, _ := win.FileOpen("C:\\Temp\\foo.txt", co.FOPEN_RW_OPEN_OR_CREATE)
+//	defer f.Close()
+//
+//	fmt.Fprintf(f, "foo")
 //
 // [HFILE]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type File struct {
@@ -32,25 +39,34 @@ type File struct {
 //
 // ⚠️ You must defer File.Close().
 //
+// # Example
+//
+//	f, _ := win.FileOpen("C:\\Temp\\foo.txt", co.FOPEN_RW_OPEN_OR_CREATE)
+//	defer f.Close()
+//
 // [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
-func FileOpen(filePath string, desiredAccess co.FILE_OPEN) (*File, error) {
+func FileOpen(filePath string, desiredAccess co.FOPEN) (*File, error) {
 	var access co.GENERIC
 	var share co.FILE_SHARE
 	var disposition co.DISPOSITION
 
 	switch desiredAccess {
-	case co.FILE_OPEN_READ_EXISTING:
+	case co.FOPEN_READ_EXISTING:
 		access = co.GENERIC_READ
 		share = co.FILE_SHARE_READ
 		disposition = co.DISPOSITION_OPEN_EXISTING
-	case co.FILE_OPEN_RW_EXISTING:
+	case co.FOPEN_RW_EXISTING:
 		access = co.GENERIC_READ | co.GENERIC_WRITE
 		share = co.FILE_SHARE_NONE
 		disposition = co.DISPOSITION_OPEN_EXISTING
-	case co.FILE_OPEN_RW_OPEN_OR_CREATE:
+	case co.FOPEN_RW_OPEN_OR_CREATE:
 		access = co.GENERIC_READ | co.GENERIC_WRITE
 		share = co.FILE_SHARE_NONE
 		disposition = co.DISPOSITION_OPEN_ALWAYS
+	case co.FOPEN_RW_CREATE:
+		access = co.GENERIC_READ | co.GENERIC_WRITE
+		share = co.FILE_SHARE_NONE
+		disposition = co.DISPOSITION_CREATE_NEW
 	}
 
 	hFile, err := CreateFile(filePath, access, share, nil,
@@ -141,7 +157,7 @@ func (me *File) ReadAllAsSlice() ([]byte, error) {
 //
 // # Example
 //
-//	f, _ := win.FileOpen("C:\\Temp\\foo.txt", co.FILE_OPEN_READ_EXISTING)
+//	f, _ := win.FileOpen("C:\\Temp\\foo.txt", co.FOPEN_READ_EXISTING)
 //	defer f.Close()
 //
 //	data, _ := f.ReadAllAsVec()
@@ -307,9 +323,9 @@ type FileMap struct {
 //
 // # Example
 //
-//	f, _ := win.FileMapOpen("C:\\Temp\\foo.txt", co.FILE_OPEN_READ_EXISTING)
+//	f, _ := win.FileMapOpen("C:\\Temp\\foo.txt", co.FOPEN_READ_EXISTING)
 //	defer f.Close()
-func FileMapOpen(filePath string, desiredAccess co.FILE_OPEN) (*FileMap, error) {
+func FileMapOpen(filePath string, desiredAccess co.FOPEN) (*FileMap, error) {
 	objFile, err := FileOpen(filePath, desiredAccess)
 	if err != nil {
 		return nil, err
@@ -320,7 +336,7 @@ func FileMapOpen(filePath string, desiredAccess co.FILE_OPEN) (*FileMap, error) 
 		hMap:     HFILEMAP(0),
 		pMem:     HFILEMAPVIEW(0),
 		sz:       0,
-		readOnly: desiredAccess == co.FILE_OPEN_READ_EXISTING,
+		readOnly: desiredAccess == co.FOPEN_READ_EXISTING,
 	}
 
 	if err := me.mapInMemory(); err != nil {
@@ -371,7 +387,7 @@ func (me *FileMap) ReadAllAsSlice() []byte {
 //
 // # Example
 //
-//	f, _ := win.FileMapOpen("C:\\Temp\\foo.txt", co.FILE_OPEN_READ_EXISTING)
+//	f, _ := win.FileMapOpen("C:\\Temp\\foo.txt", co.FOPEN_READ_EXISTING)
 //	defer f.Close()
 //
 //	data := f.ReadAllAsVec()
@@ -399,7 +415,7 @@ func (me *FileMap) ReadChunkAsSlice(offset, length uint) []byte {
 //
 // # Example
 //
-//	f, _ := win.FileMapOpen("C:\\Temp\\foo.txt", co.FILE_OPEN_READ_EXISTING)
+//	f, _ := win.FileMapOpen("C:\\Temp\\foo.txt", co.FOPEN_READ_EXISTING)
 //	defer f.Close()
 //
 //	data := f.ReadChunkAsVec(0, 30)

@@ -85,7 +85,7 @@ func IniLoad(iniPath string) (*Ini, error) {
 }
 
 func iniLoadLines(iniPath string) ([]string, error) {
-	fin, err := FileMapOpen(iniPath, co.FILE_OPEN_READ_EXISTING)
+	fin, err := FileMapOpen(iniPath, co.FOPEN_READ_EXISTING)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (me *Ini) SaveToFile(filePath string) error {
 		}
 	}
 
-	fout, err := FileOpen(filePath, co.FILE_OPEN_RW_OPEN_OR_CREATE)
+	fout, err := FileOpen(filePath, co.FOPEN_RW_OPEN_OR_CREATE)
 	if err != nil {
 		return err
 	}
