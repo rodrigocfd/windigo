@@ -41,3 +41,8 @@ const (
 	CCHILDREN_TITLEBAR = 5
 	WC_DIALOG          = uint16(0x8002)
 )
+
+// Internal constants for ole/shell.
+const (
+	PID_FIRST_USABLE = 0x2
+)
