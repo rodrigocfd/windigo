@@ -250,6 +250,30 @@ const (
 	HOTKEYF_EXT     HOTKEYF = 0x08
 )
 
+// [KNOWN_FOLDER_FLAG] enumeration.
+//
+// [KNOWN_FOLDER_FLAG]: https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/ne-shlobj_core-known_folder_flag
+type KF_FLAG uint32
+
+const (
+	KF_FLAG_DEFAULT                          KF_FLAG = 0x0000_0000
+	KF_FLAG_FORCE_APP_DATA_REDIRECTION       KF_FLAG = 0x0008_0000
+	KF_FLAG_RETURN_FILTER_REDIRECTION_TARGET KF_FLAG = 0x0004_0000
+	KF_FLAG_FORCE_PACKAGE_REDIRECTION        KF_FLAG = 0x0002_0000
+	KF_FLAG_NO_PACKAGE_REDIRECTION           KF_FLAG = 0x0001_0000
+	KF_FLAG_FORCE_APPCONTAINER_REDIRECTION   KF_FLAG = 0x0002_0000
+	KF_FLAG_NO_APPCONTAINER_REDIRECTION      KF_FLAG = 0x0001_0000
+	KF_FLAG_CREATE                           KF_FLAG = 0x0000_8000
+	KF_FLAG_DONT_VERIFY                      KF_FLAG = 0x0000_4000
+	KF_FLAG_DONT_UNEXPAND                    KF_FLAG = 0x0000_2000
+	KF_FLAG_NO_ALIAS                         KF_FLAG = 0x0000_1000
+	KF_FLAG_INIT                             KF_FLAG = 0x0000_0800
+	KF_FLAG_DEFAULT_PATH                     KF_FLAG = 0x0000_0400
+	KF_FLAG_NOT_PARENT_RELATIVE              KF_FLAG = 0x0000_0200
+	KF_FLAG_SIMPLE_IDLIST                    KF_FLAG = 0x0000_0100
+	KF_FLAG_ALIAS_ONLY                       KF_FLAG = 0x8000_0000
+)
+
 // [_SICHINTF] enumeration.
 //
 // [_SICHINTF]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_sichintf

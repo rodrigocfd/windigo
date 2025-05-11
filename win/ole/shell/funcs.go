@@ -16,7 +16,7 @@ import (
 
 // [SHCreateItemFromIDList] function.
 //
-// Return type is tipically [IShellItem] of [IShellItem2].
+// Return type is typically [IShellItem] of [IShellItem2].
 //
 // # Example
 //
@@ -60,7 +60,7 @@ var _SHCreateItemFromIDList = dll.Shell32.NewProc("SHCreateItemFromIDList")
 
 // [SHCreateItemFromParsingName] function.
 //
-// Return type is tipically [IShellItem] of [IShellItem2].
+// Return type is typically [IShellItem] of [IShellItem2].
 //
 // # Example
 //
@@ -124,6 +124,52 @@ func SHGetDesktopFolder(releaser *ole.Releaser) (*IShellFolder, error) {
 }
 
 var _SHGetDesktopFolder = dll.Shell32.NewProc("SHGetDesktopFolder")
+
+// [SHGetKnownFolderItem] function.
+//
+// Return type is typically [IShellItem] of [IShellItem2].
+//
+// # Example
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	desktop, _ := shell.SHGetKnownFolderItem[shell.IShellItem](
+//		rel, co.FOLDERID_Desktop, co.KF_FLAG_DEFAULT, win.HANDLE(0))
+//
+//	path, _ := desktop.GetDisplayName(co.SIGDN_FILESYSPATH)
+//	println(path)
+//
+// [SHGetKnownFolderItem]: https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetknownfolderitem
+// [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
+// [IShellItem2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem2
+func SHGetKnownFolderItem[T any, P ole.ComCtor[T]](
+	releaser *ole.Releaser,
+	kfid co.FOLDERID,
+	flags co.KF_FLAG,
+	hToken win.HANDLE, // HACCESSTOKEN
+) (*T, error) {
+	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	var ppvtQueried **vt.IUnknown
+	kfidGuid := win.GuidFrom(kfid)
+	riidGuid := win.GuidFrom(pObj.IID())
+
+	ret, _, _ := syscall.SyscallN(_SHGetKnownFolderItem.Addr(),
+		uintptr(unsafe.Pointer(&kfidGuid)),
+		uintptr(flags), uintptr(hToken),
+		uintptr(unsafe.Pointer(&riidGuid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj.Set(ppvtQueried)
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHGetKnownFolderItem = dll.Shell32.NewProc("SHGetKnownFolderItem")
 
 // [SHGetIDListFromObject] function.
 //
