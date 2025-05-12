@@ -40,7 +40,7 @@ func (me *IDataObject) GetCanonicalFormatEtc(etcIn *FORMATETC) (FORMATETC, error
 
 // [GetData] method.
 //
-// ⚠️ You must defer ReleaseStgMedium() on the returned object.
+// ⚠️ You must defer [ReleaseStgMedium] on the returned object.
 //
 // [GetData]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-idataobject-getdata
 func (me *IDataObject) GetData(etc *FORMATETC) (STGMEDIUM, error) {

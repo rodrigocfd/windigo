@@ -12,7 +12,7 @@ import (
 
 // [DVTARGETDEVICE] struct.
 //
-// ⚠️ You must call SetTdSize() to initialize the struct.
+// ⚠️ You must call [DVTARGETDEVICE.SetTdSize] to initialize the struct.
 //
 // # Example
 //
@@ -86,7 +86,6 @@ type STATSTG struct {
 // with [ReleaseStgMedium].
 //
 // [STGMEDIUM]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ns-objidl-ustgmedium-r1
-// [ReleaseStgMedium]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-releasestgmedium
 type STGMEDIUM struct {
 	tymed          co.TYMED
 	data           uintptr // union

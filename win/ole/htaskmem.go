@@ -17,7 +17,7 @@ type HTASKMEM win.HANDLE
 
 // [CoTaskMemAlloc] function.
 //
-// ⚠️ You must defer HTASKMEM.CoTaskMemFree().
+// ⚠️ You must defer [HTASKMEM.CoTaskMemFree].
 //
 // # Example
 //
@@ -42,11 +42,9 @@ var _CoTaskMemAlloc = dll.Ole32.NewProc("CoTaskMemAlloc")
 //
 // This method is safe to be called if hMem is zero.
 //
-// Paired with [CoTaskMemAlloc] and [CoTaskMemRealloc].
+// Paired with [CoTaskMemAlloc] and [HTASKMEM.CoTaskMemRealloc].
 //
 // [CoTaskMemFree]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
-// [CoTaskMemAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
-// [CoTaskMemRealloc]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
 func (hMem HTASKMEM) CoTaskMemFree() {
 	if hMem != 0 {
 		syscall.SyscallN(_CoTaskMemFree.Addr(),
@@ -58,7 +56,7 @@ var _CoTaskMemFree = dll.Ole32.NewProc("CoTaskMemFree")
 
 // [CoTaskMemRealloc] function.
 //
-// ⚠️ You must defer CoTaskMemFree().
+// ⚠️ You must defer [HTASKMEM.CoTaskMemFree].
 //
 // [CoTaskMemRealloc]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
 func (hMem HTASKMEM) CoTaskMemRealloc(numBytes uint) (HTASKMEM, error) {

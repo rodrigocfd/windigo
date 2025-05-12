@@ -46,8 +46,6 @@ type ComPtr interface {
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 // [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
-// [CoCreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-// [QueryInterface]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 type ComCtor[T any] interface {
 	*T
 	ComPtr

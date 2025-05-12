@@ -21,7 +21,7 @@ type IUnknown struct {
 // Calls [Release].
 //
 // You usually don't need to call this method directly, since every function
-// which returns a [COM] object will require a Releaser to manage the object's
+// which returns a [COM] object will require a [Releaser] to manage the object's
 // lifetime.
 //
 // [Release]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
@@ -70,7 +70,6 @@ func (me *IUnknown) Set(ppvt **IUnknownVt) {
 // support generic methods.
 //
 // [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
-// [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 func AddRef[T any, P ComCtor[T]](iUnknown P, releaser *Releaser) *T {
 	syscall.SyscallN((*iUnknown.Ppvt()).AddRef,
 		uintptr(unsafe.Pointer(iUnknown.Ppvt())))
@@ -85,7 +84,6 @@ func AddRef[T any, P ComCtor[T]](iUnknown P, releaser *Releaser) *T {
 // Go doesn't support generic methods.
 //
 // [QueryInterface]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
-// [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 func QueryInterface[T any, P ComCtor[T]](
 	iUnknown ComPtr,
 	releaser *Releaser,

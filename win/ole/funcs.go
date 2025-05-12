@@ -17,7 +17,7 @@ import (
 // [CLSIDFromProgID] function.
 //
 // Used to retrieve class IDs to create COM Automation objects. If the progId is
-// invalid, returns errco.CO_E_CLASSSTRING.
+// invalid, returns [co.HRESULT_CO_E_CLASSSTRING].
 //
 // # Example
 //
@@ -93,7 +93,7 @@ var _CoCreateInstance = dll.Ole32.NewProc("CoCreateInstance")
 
 // [CoInitializeEx] function.
 //
-// ⚠️ You must defer CoUninitialize().
+// ⚠️ You must defer [CoUninitialize].
 //
 // # Example
 //
@@ -123,7 +123,6 @@ var _CoInitializeEx = dll.Ole32.NewProc("CoInitializeEx")
 // Paired [CoInitializeEx].
 //
 // [CoUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
-// [CoInitializeEx]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 func CoUninitialize() {
 	syscall.SyscallN(_CoUninitialize.Addr())
 }
@@ -158,7 +157,7 @@ var _CreateBindCtx = dll.Ole32.NewProc("CreateBindCtx")
 
 // [OleInitialize] function.
 //
-// ⚠️ You must defer OleUninitialize().
+// ⚠️ You must defer [OleUninitialize].
 //
 // # Example
 //
@@ -176,6 +175,8 @@ var _OleInitialize = dll.Ole32.NewProc("OleInitialize")
 
 // [OleUninitialize] function.
 //
+// Paired with [OleInitialize].
+//
 // [OleUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-oleuninitialize
 func OleUninitialize() {
 	syscall.SyscallN(_OleUninitialize.Addr())
@@ -184,6 +185,8 @@ func OleUninitialize() {
 var _OleUninitialize = dll.Ole32.NewProc("OleUninitialize")
 
 // [RegisterDragDrop] function.
+//
+// Paired with [RevokeDragDrop].
 //
 // [RegisterDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-registerdragdrop
 func RegisterDragDrop(hWnd win.HWND, dropTarget *IDropTarget) error {
@@ -207,6 +210,8 @@ var _RegisterDragDrop = dll.Ole32.NewProc("RegisterDragDrop")
 
 // [ReleaseStgMedium] function.
 //
+// Paired with [IDataObject.GetData].
+//
 // [ReleaseStgMedium]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-releasestgmedium
 func ReleaseStgMedium(stg *STGMEDIUM) {
 	syscall.SyscallN(_ReleaseStgMedium.Addr(),
@@ -216,6 +221,8 @@ func ReleaseStgMedium(stg *STGMEDIUM) {
 var _ReleaseStgMedium = dll.Ole32.NewProc("ReleaseStgMedium")
 
 // [RevokeDragDrop] function.
+//
+// Paired with [RegisterDragDrop].
 //
 // [RevokeDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-revokedragdrop
 func RevokeDragDrop(hWnd win.HWND) error {
@@ -228,7 +235,7 @@ var _RevokeDragDrop = dll.Ole32.NewProc("RevokeDragDrop")
 
 // [SHCreateMemStream] function.
 //
-// Creates an IStream projection over a slice, which must remain valid in
+// Creates an [IStream] projection over a slice, which must remain valid in
 // memory throughout IStream's lifetime.
 //
 // # Example

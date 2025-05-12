@@ -77,7 +77,7 @@ func (me *IStream) CopyTo(
 
 // [LockRegion] method.
 //
-// ⚠️ You must defer IStream.UnlockRegion().
+// ⚠️ You must defer [IStream.UnlockRegion].
 //
 // [LockRegion]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-lockregion
 func (me *IStream) LockRegion(offset, length uint64, lockType co.LOCKTYPE) error {
@@ -145,6 +145,8 @@ func (me *IStream) Stat(flag co.STATFLAG) (STATSTG, error) {
 }
 
 // [UnlockRegion] method.
+//
+// Paired with [IStream.LockRegion].
 //
 // [UnlockRegion]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-unlockregion
 func (me *IStream) UnlockRegion(offset, length uint64, lockType co.LOCKTYPE) error {
