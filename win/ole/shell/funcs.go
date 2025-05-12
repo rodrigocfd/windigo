@@ -25,25 +25,24 @@ import (
 //	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
 //		rel, "C:\\Temp\\foo.txt")
 //
-//	pidl, _ := shell.SHGetIDListFromObject(item)
-//	defer pidl.Free()
+//	idl, _ := shell.SHGetIDListFromObject(rel, item)
 //
 //	sameItem, _ := shell.SHCreateItemFromIDList[shell.IShellItem2](
-//		rel, pidl)
+//		rel, idl)
 //
 // [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
 // [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 // [IShellItem2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem2
 func SHCreateItemFromIDList[T any, P ole.ComCtor[T]](
 	releaser *ole.Releaser,
-	pidl ITEMIDLIST,
+	pidl *ITEMIDLIST,
 ) (*T, error) {
 	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
 	var ppvtQueried **ole.IUnknownVt
 	guidIid := win.GuidFrom(pObj.IID())
 
 	ret, _, _ := syscall.SyscallN(_SHCreateItemFromIDList.Addr(),
-		uintptr(pidl), uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(*pidl), uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -172,8 +171,6 @@ var _SHGetKnownFolderItem = dll.Shell32.NewProc("SHGetKnownFolderItem")
 
 // [SHGetIDListFromObject] function.
 //
-// ⚠️ You must defer ITEMIDLIST.Free().
-//
 // # Example
 //
 //	rel := ole.NewReleaser()
@@ -182,18 +179,19 @@ var _SHGetKnownFolderItem = dll.Shell32.NewProc("SHGetKnownFolderItem")
 //	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
 //		rel, "C:\\Temp\\foo.txt")
 //
-//	pidl, _ := shell.SHGetIDListFromObject(item)
-//	defer pidl.Free()
+//	idl, _ := shell.SHGetIDListFromObject(rel, item)
 //
 // [SHGetIDListFromObject]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shgetidlistfromobject
-func SHGetIDListFromObject(obj ole.ComPtr) (ITEMIDLIST, error) {
-	var pidl ITEMIDLIST
+func SHGetIDListFromObject(releaser *ole.Releaser, obj ole.ComPtr) (*ITEMIDLIST, error) {
+	var idl ITEMIDLIST
 	ret, _, _ := syscall.SyscallN(_SHGetIDListFromObject.Addr(),
-		uintptr(unsafe.Pointer(obj.Ppvt())), uintptr(unsafe.Pointer(&pidl)))
+		uintptr(unsafe.Pointer(obj.Ppvt())), uintptr(unsafe.Pointer(&idl)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return pidl, nil
+		pIdl := &idl
+		releaser.Add(pIdl)
+		return pIdl, nil
 	} else {
-		return ITEMIDLIST(0), hr
+		return nil, hr
 	}
 }
 

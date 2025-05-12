@@ -36,11 +36,19 @@ type _COMDLG_FILTERSPEC struct {
 // [ITEMIDLIST]: https://learn.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-itemidlist
 type ITEMIDLIST uintptr
 
-// Calls [CoTaskMemFree] to release the memory.
+// Calls [CoTaskMemFree].
+//
+// You usually don't need to call this method directly, since every function
+// which returns a [COM] object will require a Releaser to manage the object's
+// lifetime.
 //
 // [CoTaskMemFree]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
-func (il ITEMIDLIST) Free() {
-	ole.HTASKMEM(il).CoTaskMemFree()
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+func (il *ITEMIDLIST) Release() {
+	if *il != 0 {
+		ole.HTASKMEM(*il).CoTaskMemFree()
+		*il = 0
+	}
 }
 
 // [PROPERTYKEY] struct.
