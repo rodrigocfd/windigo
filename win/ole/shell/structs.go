@@ -36,13 +36,12 @@ type _COMDLG_FILTERSPEC struct {
 // [ITEMIDLIST]: https://learn.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-itemidlist
 type ITEMIDLIST uintptr
 
-// Calls [CoTaskMemFree].
+// Calls [ole.HTASKMEM.CoTaskMemFree].
 //
 // You usually don't need to call this method directly, since every function
 // which returns a [COM] object will require a Releaser to manage the object's
 // lifetime.
 //
-// [CoTaskMemFree]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 func (il *ITEMIDLIST) Release() {
 	if *il != 0 {
@@ -59,8 +58,6 @@ type PROPERTYKEY struct {
 }
 
 // Creates a [PROPERTYKEY] from a string representation.
-//
-// [PROPERTYKEY]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ns-wtypes-propertykey
 func PropertykeyFrom(pkey co.PKEY) PROPERTYKEY {
 	parts := strings.SplitN(string(pkey), " ", 2)
 	fmtId := win.GuidFrom(parts[0])

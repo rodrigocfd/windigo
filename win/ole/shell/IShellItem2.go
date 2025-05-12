@@ -38,8 +38,6 @@ import (
 //		&item.IUnknown, rel)
 //
 // [IShellItem2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem2
-// [SHCreateItemFromParsingName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
-// [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 type IShellItem2 struct{ IShellItem }
 
 // Returns the unique COM [interface ID].

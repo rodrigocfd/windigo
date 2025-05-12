@@ -59,9 +59,9 @@ func (*IFileOpenDialog) IID() co.IID {
 // [GetResults] method.
 //
 // Returns the selected items after user confirmation, for multi-selection
-// dialogs – those with co.FOS_ALLOWMULTISELECT option.
+// dialogs – those with [co.FOS_ALLOWMULTISELECT] option.
 //
-// For single-selection dialogs, use IFileDialog.GetResult().
+// For single-selection dialogs, use [IFileDialog.GetResult].
 //
 // [GetResults]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
 func (me *IFileOpenDialog) GetResults(releaser *ole.Releaser) (*IShellItemArray, error) {

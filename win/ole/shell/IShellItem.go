@@ -25,7 +25,6 @@ import (
 //		rel, "C:\\Temp\\foo.txt")
 //
 // [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
-// [SHCreateItemFromParsingName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
 type IShellItem struct{ ole.IUnknown }
 
 // Returns the unique COM [interface ID].
@@ -50,7 +49,6 @@ func (*IShellItem) IID() co.IID {
 //		desktop, rel, nil, co.BHID_EnumItems)
 //
 // [BindToHandler]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-bindtohandler
-// [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 func BindToHandler[T any, P ole.ComCtor[T]](
 	iShellItem *IShellItem,
 	releaser *ole.Releaser,

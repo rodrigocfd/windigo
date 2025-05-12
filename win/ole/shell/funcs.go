@@ -31,8 +31,6 @@ import (
 //		rel, idl)
 //
 // [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
-// [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
-// [IShellItem2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem2
 func SHCreateItemFromIDList[T any, P ole.ComCtor[T]](
 	releaser *ole.Releaser,
 	pidl *ITEMIDLIST,
@@ -69,8 +67,6 @@ var _SHCreateItemFromIDList = dll.Shell32.NewProc("SHCreateItemFromIDList")
 //		rel, "C:\\Temp\\foo.txt")
 //
 // [SHCreateItemFromParsingName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
-// [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
-// [IShellItem2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem2
 func SHCreateItemFromParsingName[T any, P ole.ComCtor[T]](
 	releaser *ole.Releaser,
 	folderOrFilePath string,
@@ -139,8 +135,6 @@ var _SHGetDesktopFolder = dll.Shell32.NewProc("SHGetDesktopFolder")
 //	println(path)
 //
 // [SHGetKnownFolderItem]: https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetknownfolderitem
-// [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
-// [IShellItem2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem2
 func SHGetKnownFolderItem[T any, P ole.ComCtor[T]](
 	releaser *ole.Releaser,
 	kfid co.FOLDERID,

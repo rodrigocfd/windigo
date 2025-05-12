@@ -22,8 +22,9 @@ func (*IShellItemArray) IID() co.IID {
 	return co.IID_IShellItemArray
 }
 
-// Returns the path names of each [IShellItem] object by calling [GetCount],
-// [GetItemAt] and [GetDisplayName].
+// Returns the path names of each [IShellItem] object by calling
+// [IShellItemArray.GetCount], [IShellItemArray.GetItemAt] and
+// [IShellItem.GetDisplayName].
 //
 // # Example
 //
@@ -33,11 +34,6 @@ func (*IShellItemArray) IID() co.IID {
 //	for _, fullPath := range names {
 //		println(fullPath)
 //	}
-//
-// [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
-// [GetCount]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getcount
-// [GetItemAt]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
-// [GetDisplayName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getdisplayname
 func (me *IShellItemArray) EnumDisplayNames(sigdnName co.SIGDN) ([]string, error) {
 	localRel := ole.NewReleaser()
 	defer localRel.Release()
@@ -64,9 +60,11 @@ func (me *IShellItemArray) EnumDisplayNames(sigdnName co.SIGDN) ([]string, error
 	return names, nil
 }
 
-// Returns all [IShellItem] objects by calling [GetCount] and [GetItemAt].
+// Returns all [IShellItem] objects by calling [IShellItemArray.GetCount] and
+// [IShellItemArray.GetItemAt].
 //
-// If you just want to retrieve the paths, prefer using EnumDisplayNames().
+// If you just want to retrieve the paths, prefer using
+// [IShellItemArray.EnumDisplayNames].
 //
 // # Example
 //
@@ -80,10 +78,6 @@ func (me *IShellItemArray) EnumDisplayNames(sigdnName co.SIGDN) ([]string, error
 //		fullPath, _ := item.GetDisplayName(co.SIGDN_FILESYSPATH)
 //		println(fullPath)
 //	}
-//
-// [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
-// [GetCount]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getcount
-// [GetItemAt]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
 func (me *IShellItemArray) EnumItems(releaser *ole.Releaser) ([]*IShellItem, error) {
 	count, err := me.GetCount()
 	if err != nil {

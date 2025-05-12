@@ -59,7 +59,7 @@ func (me *IEnumShellItems) Clone(releaser *ole.Releaser) (*IEnumShellItems, erro
 	}
 }
 
-// Returns all objects by calling [Next].
+// Returns all objects by calling [IEnumShellItems.Next].
 //
 // # Example
 //
@@ -77,8 +77,6 @@ func (me *IEnumShellItems) Clone(releaser *ole.Releaser) (*IEnumShellItems, erro
 //		path, _ := item.GetDisplayName(co.SIGDN_FILESYSPATH)
 //		println(path)
 //	}
-//
-// [Next]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumshellitems-next
 func (me *IEnumShellItems) Enum(rel *ole.Releaser) ([]*IShellItem, error) {
 	items := make([]*IShellItem, 0)
 	var item *IShellItem
@@ -99,6 +97,8 @@ func (me *IEnumShellItems) Enum(rel *ole.Releaser) ([]*IShellItem, error) {
 // [Next] method.
 //
 // If there are no more items, nil is returned.
+//
+// This is a low-level method, prefer using [IEnumShellItems.Enum].
 //
 // [Next]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumshellitems-next
 func (me *IEnumShellItems) Next(releaser *ole.Releaser) (*IShellItem, error) {
