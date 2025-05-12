@@ -37,7 +37,7 @@ func OleLoadPicture(
 	stream *ole.IStream,
 	size uint,
 	keepOriginalFormat bool,
-) (*ole.IPicture, error) {
+) (*IPicture, error) {
 	var ppvtQueried **ole.IUnknownVt
 	guid := win.GuidFrom(co.IID_IPicture)
 
@@ -49,8 +49,7 @@ func OleLoadPicture(
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := new(ole.IPicture)
-		pObj.Set(ppvtQueried)
+		pObj := ole.ComObj[IPicture](ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -74,7 +73,7 @@ func OleLoadPicturePath(
 	releaser *ole.Releaser,
 	path string,
 	transparentColor win.COLORREF,
-) (*ole.IPicture, error) {
+) (*IPicture, error) {
 	path16 := wstr.NewBufWith[wstr.Stack20](path, wstr.EMPTY_IS_NIL)
 	var ppvtQueried **ole.IUnknownVt
 	guid := win.GuidFrom(co.IID_IPicture)
@@ -84,7 +83,7 @@ func OleLoadPicturePath(
 		uintptr(unsafe.Pointer(&guid)), uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := new(ole.IPicture)
+		pObj := ole.ComObj[IPicture](ppvtQueried)
 		pObj.Set(ppvtQueried)
 		releaser.Add(pObj)
 		return pObj, nil
