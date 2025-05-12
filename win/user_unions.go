@@ -19,8 +19,6 @@ import (
 //	if s, ok := clsName.Str(); ok {
 //		println(s)
 //	}
-//
-// [ATOM]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#atom
 type ClassName struct {
 	tag  _ClassNameTag
 	atom ATOM
@@ -35,7 +33,7 @@ const (
 	_ClassNameTag_str  _ClassNameTag = 0x2
 )
 
-// Creates a new ClassName with an empty value.
+// Creates a new [ClassName] with an empty value.
 func ClassNameNone() ClassName {
 	return ClassName{
 		tag: _ClassNameTag_none,
@@ -47,7 +45,7 @@ func (me *ClassName) IsNone() bool {
 	return me.tag == _ClassNameTag_none
 }
 
-// Creates a new ClassName with an ATOM value.
+// Creates a new [ClassName] with an [ATOM] value.
 func ClassNameAtom(atom ATOM) ClassName {
 	return ClassName{
 		tag:  _ClassNameTag_atom,
@@ -55,12 +53,12 @@ func ClassNameAtom(atom ATOM) ClassName {
 	}
 }
 
-// If the value is an ATOM, returns it and true.
+// If the value is an [ATOM], returns it and true.
 func (me *ClassName) Atom() (ATOM, bool) {
 	return me.atom, me.tag == _ClassNameTag_atom
 }
 
-// Creates a new ClassName with a string value.
+// Creates a new [ClassName] with a string value.
 func ClassNameStr(str string) ClassName {
 	return ClassName{
 		tag: _ClassNameTag_str,
@@ -89,7 +87,7 @@ func (me *ClassName) raw(wideBuf *wstr.Buf[wstr.Stack20]) uintptr {
 }
 
 // Tagged union for a [cursor resource] identifier, which can be:
-//   - co.IDC
+//   - [co.IDC]
 //   - uint16
 //   - string
 //
@@ -116,7 +114,7 @@ const (
 	_CursorTag_str _CursorResTag = 0x3
 )
 
-// Creates a new CursorRes with a co.IDC value.
+// Creates a new [CursorRes] with a [co.IDC] value.
 func CursorResIdc(idc co.IDC) CursorRes {
 	return CursorRes{
 		tag:  _CursorTag_idc,
@@ -124,7 +122,7 @@ func CursorResIdc(idc co.IDC) CursorRes {
 	}
 }
 
-// If the value is a co.IDC, returns it and true.
+// If the value is a [co.IDC], returns it and true.
 func (me *CursorRes) Idc() (co.IDC, bool) {
 	if me.tag == _CursorTag_idc {
 		return co.IDC(me.data), true
@@ -132,7 +130,7 @@ func (me *CursorRes) Idc() (co.IDC, bool) {
 	return co.IDC(0), false
 }
 
-// Creates a new CursorRes with an ID value.
+// Creates a new [CursorRes] with an ID value.
 func CursorResId(id uint16) CursorRes {
 	return CursorRes{
 		tag:  _CursorTag_id,
@@ -148,7 +146,7 @@ func (me *CursorRes) Id() (uint16, bool) {
 	return 0, false
 }
 
-// Creates a new CursorRes with a string value.
+// Creates a new [CursorRes] with a string value.
 func CursorResStr(str string) CursorRes {
 	return CursorRes{
 		tag: _CursorTag_str,
@@ -175,7 +173,7 @@ func (me *CursorRes) raw(wideBuf *wstr.Buf[wstr.Stack20]) uintptr {
 }
 
 // Tagged union for an [icon resource] identifier, which can be:
-//   - co.IDI
+//   - [co.IDI]
 //   - uint16
 //   - string
 //
@@ -202,7 +200,7 @@ const (
 	_IconResTag_str _IconResTag = 0x3
 )
 
-// Creates a new IconRes with a co.IDI value.
+// Creates a new [IconRes] with a [co.IDI] value.
 func IconResIdi(idi co.IDI) IconRes {
 	return IconRes{
 		tag:  _IconResTag_idi,
@@ -210,7 +208,7 @@ func IconResIdi(idi co.IDI) IconRes {
 	}
 }
 
-// If the value is an co.IDI, returns it and true.
+// If the value is a [co.IDI], returns it and true.
 func (me *IconRes) Idi() (co.IDI, bool) {
 	if me.tag == _IconResTag_idi {
 		return co.IDI(me.data), true
@@ -218,7 +216,7 @@ func (me *IconRes) Idi() (co.IDI, bool) {
 	return co.IDI(0), false
 }
 
-// Creates a new IconRes with an ID value.
+// Creates a new [IconRes] with an ID value.
 func IconResId(id uint16) IconRes {
 	return IconRes{
 		tag:  _IconResTag_id,
@@ -234,7 +232,7 @@ func (me *IconRes) Id() (uint16, bool) {
 	return 0, false
 }
 
-// Creates a new IconRes with a string value.
+// Creates a new [IconRes] with a string value.
 func IconResStr(str string) IconRes {
 	return IconRes{
 		tag: _IconResTag_str,
@@ -284,7 +282,7 @@ const (
 	_ResIdTag_str _ResIdTag = 0x2
 )
 
-// Creates a new ResId with an integer value.
+// Creates a new [ResId] with an integer value.
 func ResIdInt(id uint16) ResId {
 	return ResId{
 		tag: _ResIdTag_id,
@@ -297,7 +295,7 @@ func (me *ResId) Int() (uint16, bool) {
 	return me.id, me.tag == _ResIdTag_id
 }
 
-// Creates a new ResId with a string value.
+// Creates a new [ResId] with a string value.
 func ResIdStr(str string) ResId {
 	return ResId{
 		tag: _ResIdTag_str,

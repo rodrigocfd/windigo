@@ -23,7 +23,7 @@ var _IsThemeDialogTextureEnabled = dll.Uxtheme.NewProc("IsThemeDialogTextureEnab
 
 // [OpenThemeData] function.
 //
-// ⚠️ You must defer HTHEME.CloseThemeData().
+// ⚠️ You must defer [HTHEME.CloseThemeData].
 //
 // [OpenThemeData]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
 func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {

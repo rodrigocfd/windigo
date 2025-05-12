@@ -18,7 +18,7 @@ type HACCEL HANDLE
 
 // [CreateAcceleratorTable] function.
 //
-// ⚠️ You must defer HACCEL.DestroyAcceleratorTable().
+// ⚠️ You must defer [HACCEL.DestroyAcceleratorTable].
 //
 // [CreateAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createacceleratortablew
 func CreateAcceleratorTable(accelList []ACCEL) (HACCEL, error) {
@@ -54,7 +54,6 @@ var _CopyAcceleratorTableW = dll.User32.NewProc("CopyAcceleratorTableW")
 // Paired with [CreateAcceleratorTable].
 //
 // [DestroyAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyacceleratortable
-// [CreateAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createacceleratortablew
 func (hAccel HACCEL) DestroyAcceleratorTable() error {
 	ret, _, err := syscall.SyscallN(_DestroyAcceleratorTable.Addr(),
 		uintptr(hAccel))

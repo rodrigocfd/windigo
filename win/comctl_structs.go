@@ -28,7 +28,7 @@ const (
 
 // [EDITBALLOONTIP] struct.
 //
-// ⚠️ You must call SetCbStruct() to initialize the struct.
+// ⚠️ You must call [EDITBALLOONTIP.SetCbStruct] to initialize the struct.
 //
 // # Example
 //
@@ -87,7 +87,7 @@ type IMAGEINFO struct {
 
 // [IMAGELISTDRAWPARAMS] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [IMAGELISTDRAWPARAMS.SetCbSize] to initialize the struct.
 //
 // # Example
 //
@@ -119,7 +119,7 @@ func (idp *IMAGELISTDRAWPARAMS) SetCbSize() {
 
 // [_INITCOMMONCONTROLSEX] struct.
 //
-// ⚠️ You must call SetDwSize() to initialize the struct.
+// ⚠️ You must call [_INITCOMMONCONTROLSEX.SetDwSize] to initialize the struct.
 //
 // # Example
 //

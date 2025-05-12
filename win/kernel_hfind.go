@@ -21,9 +21,9 @@ type HFIND HANDLE
 //
 // Returns true if a file was found.
 //
-// This is a low-level function, prefer using Path.IterFiles().
+// This is a low-level function, prefer using [EnumFiles] or [EnumFilesDeep].
 //
-// ⚠️ You must defer HFIND.FindClose().
+// ⚠️ You must defer [HFIND.FindClose].
 //
 // [FindFirstFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
 func FindFirstFile(fileName string, findFileData *WIN32_FIND_DATA) (HFIND, bool, error) {
@@ -49,7 +49,6 @@ var _FindFirstFileW = dll.Kernel32.NewProc("FindFirstFileW")
 // Paired with [FindFirstFile].
 //
 // [FindClose]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
-// [FindFirstFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
 func (hFind HFIND) FindClose() error {
 	ret, _, err := syscall.SyscallN(_FindClose.Addr(),
 		uintptr(hFind))
@@ -62,7 +61,7 @@ var _FindClose = dll.Kernel32.NewProc("FindClose")
 //
 // Returns true if a file was found.
 //
-// This is a low-level function, prefer using Path.IterFiles().
+// This is a low-level function, prefer using [EnumFiles] or [EnumFilesDeep].
 //
 // [FindNextFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
 func (hFind HFIND) FindNextFile(findFileData *WIN32_FIND_DATA) (bool, error) {

@@ -24,7 +24,7 @@ type HIMAGELIST HANDLE
 
 // [ImageList_Create] function.
 //
-// ⚠️ You must defer HIMAGELIST.Destroy().
+// ⚠️ You must defer [HIMAGELIST.Destroy].
 //
 // # Example
 //
@@ -57,12 +57,10 @@ var _ImageList_Add = dll.Comctl32.NewProc("ImageList_Add")
 
 // [ImageList_AddIcon] function.
 //
-// If icon was loaded from resource with [LoadIcon], it doesn't need to be
-// destroyed, because all icon resources are automatically freed.
-// Otherwise, if loaded with CreateIcon(), it must be destroyed.
+// If icon was loaded from resource with [HINSTANCE.LoadIcon], it doesn't need
+// to be destroyed, because all icon resources are automatically freed.
 //
 // [ImageList_AddIcon]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_addicon
-// [LoadIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hImg HIMAGELIST) AddIcon(hIcons ...HICON) error {
 	for _, hIco := range hIcons {
 		if err := hImg.ReplaceIcon(-1, hIco); err != nil {
@@ -72,10 +70,8 @@ func (hImg HIMAGELIST) AddIcon(hIcons ...HICON) error {
 	return nil
 }
 
-// Calls [LoadIcon] and [ImageList_AddIcon] to load an icon from the resource.
-//
-// [LoadIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
-// [ImageList_AddIcon]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_addicon
+// Calls [HINSTANCE.LoadIcon] and [HIMAGELIST.AddIcon] to load an icon from the
+// resource.
 func (hImg HIMAGELIST) AddIconFromResource(iconIds ...uint16) error {
 	hInst, err := GetModuleHandle("")
 	if err != nil {
@@ -94,8 +90,8 @@ func (hImg HIMAGELIST) AddIconFromResource(iconIds ...uint16) error {
 	return nil
 }
 
-// Calls [SHGetFileInfo] to load icons from the shell, used by Windows Explorer
-// to represent the given file extensions, like "mp3".
+// Calls [SHGetFileInfo] and [HIMAGELIST.AddIcon] to load icons from the shell,
+// used by Windows Explorer to represent the given file extensions, like "mp3".
 //
 // # Example
 //
@@ -103,8 +99,6 @@ func (hImg HIMAGELIST) AddIconFromResource(iconIds ...uint16) error {
 //	defer hImg.Destroy()
 //
 //	hImg.AddIconFromShell("mp3", "wav")
-//
-// [SHGetFileInfo]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
 func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) error {
 	sz, err := hImg.GetIconSize()
 	if err != nil {
@@ -251,7 +245,7 @@ var _ImageList_DrawIndirect = dll.Comctl32.NewProc("ImageList_DrawIndirect")
 
 // [ImageList_Duplicate] function.
 //
-// ⚠️ You must defer HIMAGELIST.Destroy().
+// ⚠️ You must defer [HIMAGELIST.Destroy].
 //
 // # Example
 //
@@ -356,12 +350,10 @@ func (hImg HIMAGELIST) RemoveAll() error {
 
 // [ImageList_ReplaceIcon] function.
 //
-// If icon was loaded from resource with [LoadIcon], it doesn't need to be
-// destroyed, because all icon resources are automatically freed. Otherwise, if
-// loaded with CreateIcon(), it must be destroyed.
+// If icon was loaded from resource with [HINSTANCE.LoadIcon], it doesn't need
+// to be destroyed, because all icon resources are automatically freed.
 //
 // [ImageList_ReplaceIcon]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_replaceicon
-// [LoadIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hImg HIMAGELIST) ReplaceIcon(index int, hIcon HICON) error {
 	ret, _, _ := syscall.SyscallN(_ImageList_ReplaceIcon.Addr(),
 		uintptr(hImg), uintptr(index), uintptr(hIcon))

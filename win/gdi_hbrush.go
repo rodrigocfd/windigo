@@ -17,7 +17,7 @@ type HBRUSH HGDIOBJ
 
 // [CreateBrushIndirect] function.
 //
-// ⚠️ You must defer HBRUSH.DeleteObject().
+// ⚠️ You must defer [HBRUSH.DeleteObject].
 //
 // [CreateBrushIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbrushindirect
 func CreateBrushIndirect(lb *LOGBRUSH) (HBRUSH, error) {
@@ -29,9 +29,11 @@ func CreateBrushIndirect(lb *LOGBRUSH) (HBRUSH, error) {
 	return HBRUSH(ret), nil
 }
 
+var _CreateBrushIndirect = dll.Gdi32.NewProc("CreateBrushIndirect")
+
 // [CreatePatternBrush] function.
 //
-// ⚠️ You must defer HBRUSH.DeleteObject().
+// ⚠️ You must defer [HBRUSH.DeleteObject].
 //
 // [CreatePatternBrush]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpatternbrush
 func CreatePatternBrush(hbm HBITMAP) (HBRUSH, error) {
@@ -44,8 +46,6 @@ func CreatePatternBrush(hbm HBITMAP) (HBRUSH, error) {
 }
 
 var _CreatePatternBrush = dll.Gdi32.NewProc("CreatePatternBrush")
-
-var _CreateBrushIndirect = dll.Gdi32.NewProc("CreateBrushIndirect")
 
 // [DeleteObject] function.
 //

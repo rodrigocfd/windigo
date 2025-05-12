@@ -31,19 +31,19 @@ func (me *RegVal) Type() co.REG {
 	return me.tag
 }
 
-// Creates a new RegVal with a co.REG_NONE value.
+// Creates a new [RegVal] with a [co.REG_NONE] value.
 func RegValNone() RegVal {
 	return RegVal{
 		tag: co.REG_NONE,
 	}
 }
 
-// If the value is co.REG_NONE, returns true.
+// If the value is [co.REG_NONE], returns true.
 func (me *RegVal) IsNone() bool {
 	return me.tag == co.REG_NONE
 }
 
-// Creates a new RegVal with a co.REG_BINARY value.
+// Creates a new [RegVal] with a [co.REG_BINARY] value.
 //
 // Note that the data content is not copied, the slice pointer is simply stored.
 func RegValBinary(data []byte) RegVal {
@@ -53,7 +53,7 @@ func RegValBinary(data []byte) RegVal {
 	}
 }
 
-// If the value is co.REG_BINARY, returns it and true.
+// If the value is [co.REG_BINARY], returns it and true.
 func (me *RegVal) Binary() ([]byte, bool) {
 	if me.tag == co.REG_BINARY {
 		return me.data, true
@@ -61,11 +61,9 @@ func (me *RegVal) Binary() ([]byte, bool) {
 	return nil, false
 }
 
-// Creates a new RegVal with a co.REG_EXPAND_SZ value.
+// Creates a new [RegVal] with a [co.REG_EXPAND_SZ] value.
 //
-// The environment variables are expanded with [ExpandEnvironmentStrings].
-//
-// [ExpandEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
+// The environment variables can be expanded with [ExpandEnvironmentStrings].
 func RegValExpandSz(s string) RegVal {
 	str16, _ := syscall.UTF16FromString(s)
 	data := unsafe.Slice((*byte)(unsafe.Pointer(&str16[0])), len(str16)*2)
@@ -76,11 +74,9 @@ func RegValExpandSz(s string) RegVal {
 	}
 }
 
-// If the value is co.REG_EXPAND_SZ, returns it and true.
+// If the value is [co.REG_EXPAND_SZ], returns it and true.
 //
-// The environment variables are expanded with [ExpandEnvironmentStrings].
-//
-// [ExpandEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
+// The environment variables can be expanded with [ExpandEnvironmentStrings].
 func (me *RegVal) ExpandSz() (string, bool) {
 	if me.tag == co.REG_EXPAND_SZ {
 		str16 := unsafe.Slice((*uint16)(unsafe.Pointer(&me.data[0])), len(me.data)/2)
@@ -89,9 +85,9 @@ func (me *RegVal) ExpandSz() (string, bool) {
 	return "", false
 }
 
-// Creates a new RegVal with a co.REG_DWORD value.
+// Creates a new [RegVal] with a [co.REG_DWORD] value.
 //
-// Same as co.REG_DWORD_LITTLE_ENDIAN.
+// Same as [co.REG_DWORD_LITTLE_ENDIAN].
 func RegValDword(n uint32) RegVal {
 	var data [4]byte
 	binary.LittleEndian.PutUint32(data[:], n)
@@ -102,8 +98,8 @@ func RegValDword(n uint32) RegVal {
 	}
 }
 
-// If the value is co.REG_DWORD or co.REG_DWORD_LITTLE_ENDIAN, returns it and
-// true.
+// If the value is [co.REG_DWORD] or [co.REG_DWORD_LITTLE_ENDIAN], returns it
+// and true.
 func (me *RegVal) Dword() (uint32, bool) {
 	if me.tag == co.REG_DWORD {
 		return binary.LittleEndian.Uint32(me.data), true
@@ -111,7 +107,7 @@ func (me *RegVal) Dword() (uint32, bool) {
 	return 0, false
 }
 
-// Creates a new RegVal with a co.REG_DWORD_BIG_ENDIAN value.
+// Creates a new [RegVal] with a [co.REG_DWORD_BIG_ENDIAN] value.
 func RegValDwordBigEndian(n uint32) RegVal {
 	var data [4]byte
 	binary.BigEndian.PutUint32(data[:], n)
@@ -122,7 +118,7 @@ func RegValDwordBigEndian(n uint32) RegVal {
 	}
 }
 
-// If the value is co.REG_DWORD_BIG_ENDIAN, returns it and true.
+// If the value is [co.REG_DWORD_BIG_ENDIAN], returns it and true.
 func (me *RegVal) DwordBigEndian() (uint32, bool) {
 	if me.tag == co.REG_DWORD_BIG_ENDIAN {
 		return binary.BigEndian.Uint32(me.data), true
@@ -130,7 +126,7 @@ func (me *RegVal) DwordBigEndian() (uint32, bool) {
 	return 0, false
 }
 
-// Creates a new RegVal with a co.REG_MULTI_SZ value.
+// Creates a new [RegVal] with a [co.REG_MULTI_SZ] value.
 func RegValMultiSz(strs ...string) RegVal {
 	neededLen := 1 // count double terminating null
 	for _, s := range strs {
@@ -155,7 +151,7 @@ func RegValMultiSz(strs ...string) RegVal {
 	}
 }
 
-// If the value is co.REG_MULTI_SZ, returns it and true.
+// If the value is [co.REG_MULTI_SZ], returns it and true.
 func (me *RegVal) MultiSz() ([]string, bool) {
 	if me.tag == co.REG_MULTI_SZ {
 		pStr16 := (*uint16)(unsafe.Pointer(&me.data[0]))
@@ -164,9 +160,9 @@ func (me *RegVal) MultiSz() ([]string, bool) {
 	return nil, false
 }
 
-// Creates a new RegVal with a co.REG_QWORD value.
+// Creates a new [RegVal] with a [co.REG_QWORD] value.
 //
-// Same as co.REG_QWORD_LITTLE_ENDIAN.
+// Same as [co.REG_QWORD_LITTLE_ENDIAN].
 func RegValQword(n uint64) RegVal {
 	var data [4]byte
 	binary.LittleEndian.PutUint64(data[:], n)
@@ -177,8 +173,8 @@ func RegValQword(n uint64) RegVal {
 	}
 }
 
-// If the value is co.REG_QWORD or co.REG_QWORD_LITTLE_ENDIAN, returns it and
-// true.
+// If the value is [co.REG_QWORD] or [co.REG_QWORD_LITTLE_ENDIAN], returns it
+// and true.
 func (me *RegVal) Qword() (uint64, bool) {
 	if me.tag == co.REG_QWORD {
 		return binary.LittleEndian.Uint64(me.data), true
@@ -186,7 +182,7 @@ func (me *RegVal) Qword() (uint64, bool) {
 	return 0, false
 }
 
-// Creates a new RegVal with a co.REG_SZ value.
+// Creates a new [RegVal] with a [co.REG_SZ] value.
 func RegValSz(s string) RegVal {
 	str16, _ := syscall.UTF16FromString(s)
 	data := unsafe.Slice((*byte)(unsafe.Pointer(&str16[0])), len(str16)*2)
@@ -197,7 +193,7 @@ func RegValSz(s string) RegVal {
 	}
 }
 
-// If the value is co.REG_SZ, returns it and true.
+// If the value is [co.REG_SZ], returns it and true.
 //
 // # Example:
 //
@@ -214,7 +210,7 @@ func (me *RegVal) Sz() (string, bool) {
 	return "", false
 }
 
-// Builds a RegVal from a data block, with a few validations.
+// Builds a [RegVal] from a data block, with a few validations.
 func regValParse(data []byte, regType co.REG) (RegVal, error) {
 	isDword := regType == co.REG_DWORD || regType == co.REG_DWORD_BIG_ENDIAN
 	isQword := regType == co.REG_QWORD

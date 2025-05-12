@@ -13,7 +13,7 @@ import (
 
 // [CommandLineToArgv] function.
 //
-// Typically used with GetCommandLine().
+// Typically used with [GetCommandLine].
 //
 // [CommandLineToArgv]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw
 func CommandLineToArgv(cmdLine string) ([]string, error) {
@@ -68,7 +68,7 @@ var _Shell_NotifyIconGetRect = dll.Shell32.NewProc("Shell_NotifyIconGetRect")
 
 // [SHGetFileInfo] function.
 //
-// ⚠️ You must defer HICON.DestroyIcon() on the HIcon member of the returned
+// ⚠️ You must defer [HICON.DestroyIcon] on the HIcon member of the returned
 // struct.
 //
 // [SHGetFileInfo]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow

@@ -18,7 +18,7 @@ type HMENU HANDLE
 
 // [CreateMenu] function.
 //
-// ⚠️ You must defer HMENU.DestroyMenu(), unless it's attached to a window.
+// ⚠️ You must defer [HMENU.DestroyMenu], unless it's attached to a window.
 //
 // [CreateMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createmenu
 func CreateMenu() (HMENU, error) {
@@ -33,7 +33,7 @@ var _CreateMenu = dll.User32.NewProc("CreateMenu")
 
 // [CreatePopupMenu] function.
 //
-// ⚠️ You must defer HMENU.DestroyMenu(), unless it's attached to a window.
+// ⚠️ You must defer [HMENU.DestroyMenu], unless it's attached to a window.
 //
 // [CreatePopupMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createpopupmenu
 func CreatePopupMenu() (HMENU, error) {
@@ -387,13 +387,11 @@ func (hMenu HMENU) SetMenuItemInfoByPos(index uint, info *MENUITEMINFO) error {
 var _SetMenuItemInfo = dll.User32.NewProc("SetMenuItemInfo")
 
 // Shows the popup menu anchored at the given coordinates using
-// [TrackPopupMenu].
+// [HMENU.TrackPopupMenu].
 //
 // If hCoordsRelativeTo is zero, coordinates must be relative to hParent.
 //
 // This function will block until the menu disappears.
-//
-// [TrackPopupMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
 func (hMenu HMENU) ShowAtPoint(pos POINT, hParent, hCoordsRelativeTo HWND) {
 	if hCoordsRelativeTo == 0 {
 		hCoordsRelativeTo = hParent
@@ -409,7 +407,7 @@ func (hMenu HMENU) ShowAtPoint(pos POINT, hParent, hCoordsRelativeTo HWND) {
 //
 // This function will block until the menu disappears.
 //
-// If TPM_RETURNCMD is passed, returns the selected command ID.
+// If [co.TPM_RETURNCMD] is passed, returns the selected command ID.
 //
 // [TrackPopupMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
 func (hMenu HMENU) TrackPopupMenu(flags co.TPM, x, y int, hWnd HWND) (int, error) {

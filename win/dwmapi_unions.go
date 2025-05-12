@@ -16,7 +16,7 @@ type DwmAttr struct {
 	rc  RECT
 }
 
-// Creates a DwmAttr with a co.DWMWA_NCRENDERING_ENABLED value.
+// Creates a [DwmAttr] with a [co.DWMWA_NCRENDERING_ENABLED] value.
 func DwmAttrNcRenderingEnabled(enabled bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_NCRENDERING_ENABLED,
@@ -24,7 +24,7 @@ func DwmAttrNcRenderingEnabled(enabled bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_NCRENDERING_ENABLED, returns it and true.
+// If the value is [co.DWMWA_NCRENDERING_ENABLED], returns it and true.
 func (me *DwmAttr) NcRenderingEnabled() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_NCRENDERING_ENABLED {
 		return me.dw != 0, true
@@ -32,7 +32,7 @@ func (me *DwmAttr) NcRenderingEnabled() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_NCRENDERING_POLICY value.
+// Creates a [DwmAttr] with a [co.DWMWA_NCRENDERING_POLICY] value.
 func DwmAttrNcRenderingPolicy(policy co.DWMNCRP) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_NCRENDERING_POLICY,
@@ -40,7 +40,7 @@ func DwmAttrNcRenderingPolicy(policy co.DWMNCRP) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_NCRENDERING_POLICY, returns it and true.
+// If the value is [co.DWMWA_NCRENDERING_POLICY], returns it and true.
 func (me *DwmAttr) NcRenderingPolicy() (co.DWMNCRP, bool) {
 	if me.tag == co.DWMWA_NCRENDERING_POLICY {
 		return co.DWMNCRP(me.dw), true
@@ -48,7 +48,7 @@ func (me *DwmAttr) NcRenderingPolicy() (co.DWMNCRP, bool) {
 	return co.DWMNCRP(0), false
 }
 
-// Creates a DwmAttr with a co.DWMWA_TRANSITIONS_FORCEDISABLED value.
+// Creates a [DwmAttr] with a [co.DWMWA_TRANSITIONS_FORCEDISABLED] value.
 func DwmAttrTransitionsForceDisabled(force bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_TRANSITIONS_FORCEDISABLED,
@@ -56,7 +56,7 @@ func DwmAttrTransitionsForceDisabled(force bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_TRANSITIONS_FORCEDISABLED, returns it and true.
+// If the value is [co.DWMWA_TRANSITIONS_FORCEDISABLED], returns it and true.
 func (me *DwmAttr) TransitionsForceDisabled() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_TRANSITIONS_FORCEDISABLED {
 		return me.dw != 0, true
@@ -64,7 +64,7 @@ func (me *DwmAttr) TransitionsForceDisabled() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_ALLOW_NCPAINT value.
+// Creates a [DwmAttr] with a [co.DWMWA_ALLOW_NCPAINT] value.
 func DwmAttrAllowNcPaint(allow bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_ALLOW_NCPAINT,
@@ -72,7 +72,7 @@ func DwmAttrAllowNcPaint(allow bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_ALLOW_NCPAINT, returns it and true.
+// If the value is [co.DWMWA_ALLOW_NCPAINT], returns it and true.
 func (me *DwmAttr) AllowNcPaint() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_ALLOW_NCPAINT {
 		return me.dw != 0, true
@@ -80,7 +80,7 @@ func (me *DwmAttr) AllowNcPaint() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_CAPTION_BUTTON_BOUNDS value.
+// Creates a [DwmAttr] with a [co.DWMWA_CAPTION_BUTTON_BOUNDS] value.
 func DwmAttrCaptionButtonBounds(rc RECT) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_CAPTION_BUTTON_BOUNDS,
@@ -88,7 +88,7 @@ func DwmAttrCaptionButtonBounds(rc RECT) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_CAPTION_BUTTON_BOUNDS, returns it and true.
+// If the value is [co.DWMWA_CAPTION_BUTTON_BOUNDS], returns it and true.
 func (me *DwmAttr) CaptionButtonBounds() (RECT, bool) {
 	if me.tag == co.DWMWA_CAPTION_BUTTON_BOUNDS {
 		return me.rc, true
@@ -96,7 +96,7 @@ func (me *DwmAttr) CaptionButtonBounds() (RECT, bool) {
 	return RECT{}, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_NONCLIENT_RTL_LAYOUT value.
+// Creates a [DwmAttr] with a [co.DWMWA_NONCLIENT_RTL_LAYOUT] value.
 func DwmAttrNonClientRtlLayout(ncRtl bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_NONCLIENT_RTL_LAYOUT,
@@ -104,7 +104,7 @@ func DwmAttrNonClientRtlLayout(ncRtl bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_NONCLIENT_RTL_LAYOUT, returns it and true.
+// If the value is [co.DWMWA_NONCLIENT_RTL_LAYOUT], returns it and true.
 func (me *DwmAttr) NonClientRtlLayout() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_NONCLIENT_RTL_LAYOUT {
 		return me.dw != 0, true
@@ -112,7 +112,7 @@ func (me *DwmAttr) NonClientRtlLayout() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_FORCE_ICONIC_REPRESENTATION value.
+// Creates a [DwmAttr] with a [co.DWMWA_FORCE_ICONIC_REPRESENTATION] value.
 func DwmAttrForceIconicRepresentation(force bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_FORCE_ICONIC_REPRESENTATION,
@@ -120,7 +120,7 @@ func DwmAttrForceIconicRepresentation(force bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_FORCE_ICONIC_REPRESENTATION, returns it and true.
+// If the value is [co.DWMWA_FORCE_ICONIC_REPRESENTATION], returns it and true.
 func (me *DwmAttr) ForceIconicRepresentation() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_FORCE_ICONIC_REPRESENTATION {
 		return me.dw != 0, true
@@ -128,7 +128,7 @@ func (me *DwmAttr) ForceIconicRepresentation() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_FLIP3D_POLICY value.
+// Creates a [DwmAttr] with a [co.DWMWA_FLIP3D_POLICY] value.
 func DwmAttrFlip3dPolicy(policy co.DWMFLIP3D) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_FLIP3D_POLICY,
@@ -136,7 +136,7 @@ func DwmAttrFlip3dPolicy(policy co.DWMFLIP3D) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_FLIP3D_POLICY, returns it and true.
+// If the value is [co.DWMWA_FLIP3D_POLICY], returns it and true.
 func (me *DwmAttr) Flip3dPolicy() (co.DWMFLIP3D, bool) {
 	if me.tag == co.DWMWA_FLIP3D_POLICY {
 		return co.DWMFLIP3D(me.dw), true
@@ -144,7 +144,7 @@ func (me *DwmAttr) Flip3dPolicy() (co.DWMFLIP3D, bool) {
 	return co.DWMFLIP3D(0), false
 }
 
-// Creates a DwmAttr with a co.DWMWA_EXTENDED_FRAME_BOUNDS value.
+// Creates a [DwmAttr] with a [co.DWMWA_EXTENDED_FRAME_BOUNDS] value.
 func DwmAttrExtendedFrameBounds(rc RECT) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_EXTENDED_FRAME_BOUNDS,
@@ -152,7 +152,7 @@ func DwmAttrExtendedFrameBounds(rc RECT) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_EXTENDED_FRAME_BOUNDS, returns it and true.
+// If the value is [co.DWMWA_EXTENDED_FRAME_BOUNDS], returns it and true.
 func (me *DwmAttr) ExtendedFrameBounds() (RECT, bool) {
 	if me.tag == co.DWMWA_EXTENDED_FRAME_BOUNDS {
 		return me.rc, true
@@ -160,7 +160,7 @@ func (me *DwmAttr) ExtendedFrameBounds() (RECT, bool) {
 	return RECT{}, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_HAS_ICONIC_BITMAP value.
+// Creates a [DwmAttr] with a [co.DWMWA_HAS_ICONIC_BITMAP] value.
 func DwmAttrHasIconicBitmap(has bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_HAS_ICONIC_BITMAP,
@@ -168,7 +168,7 @@ func DwmAttrHasIconicBitmap(has bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_HAS_ICONIC_BITMAP, returns it and true.
+// If the value is [co.DWMWA_HAS_ICONIC_BITMAP], returns it and true.
 func (me *DwmAttr) HasIconicBitmap() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_HAS_ICONIC_BITMAP {
 		return me.dw != 0, true
@@ -176,7 +176,7 @@ func (me *DwmAttr) HasIconicBitmap() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_DISALLOW_PEEK value.
+// Creates a [DwmAttr] with a [co.DWMWA_DISALLOW_PEEK] value.
 func DwmAttrDisallowPeek(disallow bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_DISALLOW_PEEK,
@@ -184,7 +184,7 @@ func DwmAttrDisallowPeek(disallow bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_DISALLOW_PEEK, returns it and true.
+// If the value is [co.DWMWA_DISALLOW_PEEK], returns it and true.
 func (me *DwmAttr) DisallowPeek() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_DISALLOW_PEEK {
 		return me.dw != 0, true
@@ -192,7 +192,7 @@ func (me *DwmAttr) DisallowPeek() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_EXCLUDED_FROM_PEEK value.
+// Creates a [DwmAttr] with a [co.DWMWA_EXCLUDED_FROM_PEEK] value.
 func DwmAttrExcludedFromPeek(excluded bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_EXCLUDED_FROM_PEEK,
@@ -200,7 +200,7 @@ func DwmAttrExcludedFromPeek(excluded bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_EXCLUDED_FROM_PEEK, returns it and true.
+// If the value is [co.DWMWA_EXCLUDED_FROM_PEEK], returns it and true.
 func (me *DwmAttr) ExcludedFromPeek() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_EXCLUDED_FROM_PEEK {
 		return me.dw != 0, true
@@ -208,7 +208,7 @@ func (me *DwmAttr) ExcludedFromPeek() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_CLOAK value.
+// Creates a [DwmAttr] with a [co.DWMWA_CLOAK] value.
 func DwmAttrCloak(cloak bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_CLOAK,
@@ -216,7 +216,7 @@ func DwmAttrCloak(cloak bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_CLOAK, returns it and true.
+// If the value is [co.DWMWA_CLOAK], returns it and true.
 func (me *DwmAttr) Cloak() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_CLOAK {
 		return me.dw != 0, true
@@ -224,7 +224,7 @@ func (me *DwmAttr) Cloak() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_CLOAKED value.
+// Creates a [DwmAttr] with a [co.DWMWA_CLOAKED] value.
 func DwmAttrCloaked(cloaked co.DWM_CLOAKED) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_CLOAKED,
@@ -232,7 +232,7 @@ func DwmAttrCloaked(cloaked co.DWM_CLOAKED) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_CLOAKED, returns it and true.
+// If the value is [co.DWMWA_CLOAKED], returns it and true.
 func (me *DwmAttr) Cloaked() (co.DWM_CLOAKED, bool) {
 	if me.tag == co.DWMWA_CLOAKED {
 		return co.DWM_CLOAKED(me.dw), true
@@ -240,7 +240,7 @@ func (me *DwmAttr) Cloaked() (co.DWM_CLOAKED, bool) {
 	return co.DWM_CLOAKED(0), false
 }
 
-// Creates a DwmAttr with a co.DWMWA_FREEZE_REPRESENTATION value.
+// Creates a [DwmAttr] with a [co.DWMWA_FREEZE_REPRESENTATION] value.
 func DwmAttrFreezeRepresentation(freeze bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_FREEZE_REPRESENTATION,
@@ -248,7 +248,7 @@ func DwmAttrFreezeRepresentation(freeze bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_FREEZE_REPRESENTATION, returns it and true.
+// If the value is [co.DWMWA_FREEZE_REPRESENTATION], returns it and true.
 func (me *DwmAttr) FreezeRepresentation() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_FREEZE_REPRESENTATION {
 		return me.dw != 0, true
@@ -256,7 +256,7 @@ func (me *DwmAttr) FreezeRepresentation() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_PASSIVE_UPDATE_MODE value.
+// Creates a [DwmAttr] with a [co.DWMWA_PASSIVE_UPDATE_MODE] value.
 func DwmAttrPassiveUpdateMode(passive bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_PASSIVE_UPDATE_MODE,
@@ -264,7 +264,7 @@ func DwmAttrPassiveUpdateMode(passive bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_PASSIVE_UPDATE_MODE, returns it and true.
+// If the value is [co.DWMWA_PASSIVE_UPDATE_MODE], returns it and true.
 func (me *DwmAttr) PassiveUpdateMode() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_PASSIVE_UPDATE_MODE {
 		return me.dw != 0, true
@@ -272,7 +272,7 @@ func (me *DwmAttr) PassiveUpdateMode() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_USE_HOSTBACKDROPBRUSH value.
+// Creates a [DwmAttr] with a [co.DWMWA_USE_HOSTBACKDROPBRUSH] value.
 func DwmAttrUseHostBackdropBrush(use bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_USE_HOSTBACKDROPBRUSH,
@@ -280,7 +280,7 @@ func DwmAttrUseHostBackdropBrush(use bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_USE_HOSTBACKDROPBRUSH, returns it and true.
+// If the value is [co.DWMWA_USE_HOSTBACKDROPBRUSH], returns it and true.
 func (me *DwmAttr) UseHostBackdropBrush() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_USE_HOSTBACKDROPBRUSH {
 		return me.dw != 0, true
@@ -288,7 +288,7 @@ func (me *DwmAttr) UseHostBackdropBrush() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_USE_IMMERSIVE_DARK_MODE value.
+// Creates a [DwmAttr] with a [co.DWMWA_USE_IMMERSIVE_DARK_MODE] value.
 func DwmAttrUseImmersiveDarkMode(use bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_USE_IMMERSIVE_DARK_MODE,
@@ -296,7 +296,7 @@ func DwmAttrUseImmersiveDarkMode(use bool) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_USE_IMMERSIVE_DARK_MODE, returns it and true.
+// If the value is [co.DWMWA_USE_IMMERSIVE_DARK_MODE], returns it and true.
 func (me *DwmAttr) UseImmersiveDarkMode() (actualValue, ok bool) {
 	if me.tag == co.DWMWA_USE_IMMERSIVE_DARK_MODE {
 		return me.dw != 0, true
@@ -304,7 +304,7 @@ func (me *DwmAttr) UseImmersiveDarkMode() (actualValue, ok bool) {
 	return false, false
 }
 
-// Creates a DwmAttr with a co.DWMWA_WINDOW_CORNER_PREFERENCE value.
+// Creates a [DwmAttr] with a [co.DWMWA_WINDOW_CORNER_PREFERENCE] value.
 func DwmAttrWindowCornerPreference(corner co.DWMWCP) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_WINDOW_CORNER_PREFERENCE,
@@ -312,7 +312,7 @@ func DwmAttrWindowCornerPreference(corner co.DWMWCP) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_WINDOW_CORNER_PREFERENCE, returns it and true.
+// If the value is [co.DWMWA_WINDOW_CORNER_PREFERENCE], returns it and true.
 func (me *DwmAttr) WindowCornerPreference() (co.DWMWCP, bool) {
 	if me.tag == co.DWMWA_WINDOW_CORNER_PREFERENCE {
 		return co.DWMWCP(me.dw), true
@@ -320,11 +320,11 @@ func (me *DwmAttr) WindowCornerPreference() (co.DWMWCP, bool) {
 	return co.DWMWCP(0), false
 }
 
-// Creates a DwmAttr with a co.DWMWA_BORDER_COLOR value.
+// Creates a [DwmAttr] with a [co.DWMWA_BORDER_COLOR] value.
 //
 // You may want to specify:
-//   - 0xffff_fffe (DWMWA_COLOR_NONE)
-//   - 0xffff_ffff (DWMWA_COLOR_DEFAULT)
+//   - [COLORREF_DWMA_NONE]
+//   - [COLORREF_DWMA_DEFAULT]
 func DwmAttrBorderColor(color COLORREF) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_BORDER_COLOR,
@@ -332,11 +332,11 @@ func DwmAttrBorderColor(color COLORREF) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_BORDER_COLOR, returns it and true.
+// If the value is [co.DWMWA_BORDER_COLOR], returns it and true.
 //
-// You may get:
-//   - 0xffff_fffe (DWMWA_COLOR_NONE)
-//   - 0xffff_ffff (DWMWA_COLOR_DEFAULT)
+// You may also get:
+//   - [COLORREF_DWMA_NONE]
+//   - [COLORREF_DWMA_DEFAULT]
 func (me *DwmAttr) BorderColor() (COLORREF, bool) {
 	if me.tag == co.DWMWA_BORDER_COLOR {
 		return COLORREF(me.dw), true
@@ -344,10 +344,10 @@ func (me *DwmAttr) BorderColor() (COLORREF, bool) {
 	return COLORREF(0), false
 }
 
-// Creates a DwmAttr with a co.DWMWA_CAPTION_COLOR value.
+// Creates a [DwmAttr] with a [co.DWMWA_CAPTION_COLOR] value.
 //
 // You may want to specify:
-//   - 0xffff_ffff (DWMWA_COLOR_DEFAULT)
+//   - [COLORREF_DWMA_DEFAULT]
 func DwmAttrCaptionColor(color COLORREF) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_CAPTION_COLOR,
@@ -355,10 +355,10 @@ func DwmAttrCaptionColor(color COLORREF) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_CAPTION_COLOR, returns it and true.
+// If the value is [co.DWMWA_CAPTION_COLOR], returns it and true.
 //
-// You may get:
-//   - 0xffff_ffff (DWMWA_COLOR_DEFAULT)
+// You may also get:
+//   - [COLORREF_DWMA_DEFAULT]
 func (me *DwmAttr) CaptionColor() (COLORREF, bool) {
 	if me.tag == co.DWMWA_CAPTION_COLOR {
 		return COLORREF(me.dw), true
@@ -366,10 +366,10 @@ func (me *DwmAttr) CaptionColor() (COLORREF, bool) {
 	return COLORREF(0), false
 }
 
-// Creates a DwmAttr with a co.DWMWA_TEXT_COLOR value.
+// Creates a [DwmAttr] with a [co.DWMWA_TEXT_COLOR] value.
 //
 // You may want to specify:
-//   - 0xffff_ffff (DWMWA_COLOR_DEFAULT)
+//   - [COLORREF_DWMA_DEFAULT]
 func DwmAttrTextColor(color COLORREF) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_TEXT_COLOR,
@@ -377,10 +377,10 @@ func DwmAttrTextColor(color COLORREF) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_TEXT_COLOR, returns it and true.
+// If the value is [co.DWMWA_TEXT_COLOR], returns it and true.
 //
-// You may get:
-//   - 0xffff_ffff (DWMWA_COLOR_DEFAULT)
+// You may also get:
+//   - [COLORREF_DWMA_DEFAULT]
 func (me *DwmAttr) TextColor() (COLORREF, bool) {
 	if me.tag == co.DWMWA_TEXT_COLOR {
 		return COLORREF(me.dw), true
@@ -388,7 +388,7 @@ func (me *DwmAttr) TextColor() (COLORREF, bool) {
 	return COLORREF(0), false
 }
 
-// Creates a DwmAttr with a co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS value.
+// Creates a [DwmAttr] with a [co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS] value.
 func DwmAttrVisibleFrameBorderThickness(width uint) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS,
@@ -396,7 +396,7 @@ func DwmAttrVisibleFrameBorderThickness(width uint) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS, returns it and true.
+// If the value is [co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS], returns it and true.
 func (me *DwmAttr) VisibleFrameBorderThickness() (uint, bool) {
 	if me.tag == co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS {
 		return uint(me.dw), true
@@ -404,7 +404,7 @@ func (me *DwmAttr) VisibleFrameBorderThickness() (uint, bool) {
 	return uint(0), false
 }
 
-// Creates a DwmAttr with a co.DWMWA_SYSTEMBACKDROP_TYPE value.
+// Creates a [DwmAttr] with a [co.DWMWA_SYSTEMBACKDROP_TYPE] value.
 func DwmAttrSystemBackdropType(sb co.DWMSBT) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_SYSTEMBACKDROP_TYPE,
@@ -412,7 +412,7 @@ func DwmAttrSystemBackdropType(sb co.DWMSBT) DwmAttr {
 	}
 }
 
-// If the value is co.DWMWA_SYSTEMBACKDROP_TYPE, returns it and true.
+// If the value is [co.DWMWA_SYSTEMBACKDROP_TYPE], returns it and true.
 func (me *DwmAttr) SystemBackdropType() (co.DWMSBT, bool) {
 	if me.tag == co.DWMWA_SYSTEMBACKDROP_TYPE {
 		return co.DWMSBT(me.dw), true

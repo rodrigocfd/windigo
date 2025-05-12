@@ -17,7 +17,7 @@ type HPEN HGDIOBJ
 
 // [CreatePen] function.
 //
-// ⚠️ You must defer HPEN.DeleteObject().
+// ⚠️ You must defer [HPEN.DeleteObject].
 //
 // [CreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
 func CreatePen(style co.PS, width uint, color COLORREF) (HPEN, error) {
@@ -33,7 +33,7 @@ var _CreatePen = dll.Gdi32.NewProc("CreatePen")
 
 // [CreatePenIndirect] function.
 //
-// ⚠️ You must defer HPEN.DeleteObject().
+// ⚠️ You must defer [HPEN.DeleteObject].
 //
 // [CreatePenIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpenindirect
 func CreatePenIndirect(lp *LOGPEN) (HPEN, error) {
@@ -49,7 +49,7 @@ var _CreatePenIndirect = dll.Gdi32.NewProc("CreatePenIndirect")
 
 // [ExtCreatePen] function.
 //
-// ⚠️ You must defer HPEN.DeleteObject().
+// ⚠️ You must defer [HPEN.DeleteObject].
 //
 // [ExtCreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-extcreatepen
 func ExtCreatePen(

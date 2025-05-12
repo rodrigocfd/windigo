@@ -43,7 +43,7 @@ type BLENDFUNCTION struct {
 
 // [BITMAPFILEHEADER] struct.
 //
-// ⚠️ You must call SetBfType() to initialize the struct.
+// ⚠️ You must call [BITMAPFILEHEADER.SetBfType] to initialize the struct.
 //
 // # Example
 //
@@ -78,7 +78,8 @@ func (bfh *BITMAPFILEHEADER) Serialize() []byte { return bfh.data[:] }
 
 // [BITMAPINFO] struct.
 //
-// ⚠️ You must call BmiHeader.SetBiSize() to initialize the struct.
+// ⚠️ You must call [BITMAPINFOHEADER.SetBiSize] on BmiHeader field, to
+// initialize the struct.
 //
 // # Example
 //
@@ -93,7 +94,7 @@ type BITMAPINFO struct {
 
 // [BITMAPINFOHEADER] struct.
 //
-// ⚠️ You must call SetBiSize() to initialize the struct.
+// ⚠️ You must call [BITMAPINFOHEADER.SetBiSize] to initialize the struct.
 //
 // # Example
 //
@@ -134,6 +135,9 @@ type COLORREF uint32
 const (
 	COLORREF_NONE    COLORREF = 0xffff_ffff // No color.
 	COLORREF_DEFAULT COLORREF = 0xff00_0000 // Default color.
+
+	COLORREF_DWMA_NONE    COLORREF = 0xffff_fffe // No color in a DWMA context.
+	COLORREF_DWMA_DEFAULT COLORREF = 0xffff_ffff // Default color in a DWMA context.
 )
 
 // [RGB] macro.
@@ -175,7 +179,7 @@ func (c COLORREF) ToRgbquad() RGBQUAD {
 
 // [DOCINFO] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [DOCINFO.SetCbSize] to initialize the struct.
 //
 // [DOCINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-docinfow
 type DOCINFO struct {
@@ -193,7 +197,7 @@ func (di *DOCINFO) SetCbSize() {
 
 // [DEVMODE] struct.
 //
-// ⚠️ You must call SetDmSize() to initialize the struct.
+// ⚠️ You must call [DEVMODE.SetDmSize] to initialize the struct.
 //
 // # Example
 //
@@ -232,8 +236,6 @@ type DEVMODE struct {
 }
 
 // 1st variation of 1st union of [DEVMODE] struct.
-//
-// [DEVMODE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-devmodew
 type DEVMODE_Printer struct {
 	DmOrientation   co.DMORIENT
 	DmPaperSize     co.DMPAPER
@@ -246,8 +248,6 @@ type DEVMODE_Printer struct {
 }
 
 // 2st variation of 1st union of [DEVMODE] struct.
-//
-// [DEVMODE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-devmodew
 type DEVMODE_Display struct {
 	DmPosition           POINT
 	DmDisplayOrientation co.DMDO
@@ -359,7 +359,7 @@ type LOGPEN struct {
 
 // [PIXELFORMATDESCRIPTOR] struct.
 //
-// ⚠️ You must call SetNSize() to initialize the struct.
+// ⚠️ You must call [PIXELFORMATDESCRIPTOR.SetNSize] to initialize the struct.
 //
 // [PIXELFORMATDESCRIPTOR]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-pixelformatdescriptor
 type PIXELFORMATDESCRIPTOR struct {

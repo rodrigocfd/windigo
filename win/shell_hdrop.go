@@ -33,8 +33,9 @@ var _DragFinish = dll.Shell32.NewProc("DragFinish")
 // [DragQueryFile] function. Called internally several times until all files are
 // retrieved, then the full paths are returned.
 //
-// ⚠️ If this HDROP comes from an operation from [WS_EX_ACCEPTFILES], you must
-// defer HDROP.DragFinish(). If it comes from [RegisterDragDrop], don't call it.
+// ⚠️ If this HDROP comes from an operation from [co.WS_EX_ACCEPTFILES], you
+// must defer [HDROP.DragFinish]. If it comes from [RegisterDragDrop], don't
+// call it.
 //
 // # Example
 //
@@ -48,7 +49,6 @@ var _DragFinish = dll.Shell32.NewProc("DragFinish")
 //	}
 //
 // [DragQueryFile]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragqueryfilew
-// [WS_EX_ACCEPTFILES]: https://learn.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
 // [RegisterDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-registerdragdrop
 func (hDrop HDROP) DragQueryFile() ([]string, error) {
 	ret, _, _ := syscall.SyscallN(_DragQueryFileW.Addr(),

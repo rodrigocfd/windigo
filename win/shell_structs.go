@@ -12,7 +12,7 @@ import (
 
 // [NOTIFYICONDATA] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [NOTIFYICONDATA.SetCbSize] to initialize the struct.
 //
 // # Example
 //
@@ -66,7 +66,7 @@ func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
 
 // [NOTIFYICONIDENTIFIER] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [NOTIFYICONIDENTIFIER.SetCbSize] to initialize the struct.
 //
 // # Example
 //

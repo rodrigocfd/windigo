@@ -143,7 +143,7 @@ func StrToWstrBuf(str string, dest []uint16) {
 }
 
 // Converts string to null-terminated *uint16. Wrapper to
-// syscall.UTF16PtrFromString().
+// [syscall.UTF16PtrFromString].
 //
 // Panics on error.
 func StrToWstrPtr(s string) *uint16 {
@@ -254,7 +254,7 @@ func WstrPtrToStr(p *uint16) string {
 
 // Converts an []uint16 to string, which may be null-terminated or not.
 //
-// Wraps syscall.UTF16ToString().
+// Wraps [syscall.UTF16ToString].
 func WstrSliceToStr(s []uint16) string {
 	trimAt := len(s)
 	for i, ch := range s {

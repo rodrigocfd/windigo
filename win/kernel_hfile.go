@@ -20,7 +20,7 @@ type HFILE HANDLE
 
 // [CreateFile] function.
 //
-// ⚠️ You must defer HFILE.CloseHandle().
+// ⚠️ You must defer [HFILE.CloseHandle].
 //
 // [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 func CreateFile(
@@ -77,7 +77,7 @@ var _GetFileSizeEx = dll.Kernel32.NewProc("GetFileSizeEx")
 
 // [CreateFileMapping] function.
 //
-// ⚠️ You must defer HFILEMAP.CloseHandle().
+// ⚠️ You must defer [HFILEMAP.CloseHandle].
 //
 // [CreateFileMapping]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
 func (hFile HFILE) CreateFileMapping(
@@ -123,7 +123,7 @@ var _GetFileTime = dll.Kernel32.NewProc("GetFileTime")
 
 // [LockFile] function.
 //
-// ⚠️ You must defer HFILE.UnlockFile().
+// ⚠️ You must defer [HFILE.UnlockFile].
 //
 // [LockFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfile
 func (hFile HFILE) LockFile(offset, numBytes uint) error {
@@ -140,7 +140,7 @@ var _LockFile = dll.Kernel32.NewProc("LockFile")
 
 // [LockFileEx] function.
 //
-// ⚠️ You must defer HFILE.UnlockFileEx().
+// ⚠️ You must defer [HFILE.UnlockFileEx].
 //
 // [LockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex
 func (hFile HFILE) LockFileEx(
@@ -198,10 +198,9 @@ var _SetEndOfFile = dll.Kernel32.NewProc("SetEndOfFile")
 
 // [UnlockFile] function.
 //
-// Paired with [LockFile].
+// Paired with [HFILE.LockFile].
 //
 // [UnlockFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfile
-// [LockFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfile
 func (hFile HFILE) UnlockFile(offset, numBytes uint) error {
 	offsetLo, offsetHi := wutil.Break64(uint64(offset))
 	numBytesLo, numBytesHi := wutil.Break64(uint64(numBytes))
@@ -216,10 +215,9 @@ var _UnlockFile = dll.Kernel32.NewProc("UnlockFile")
 
 // [UnlockFileEx] function.
 //
-// Paired with [LockFileEx].
+// Paired with [HFILE.LockFileEx].
 //
 // [UnlockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfileex
-// [LockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex
 func (hFile HFILE) UnlockFileEx(numBytes uint, overlapped *OVERLAPPED) error {
 	numBytesLo, numBytesHi := wutil.Break64(uint64(numBytes))
 	ret, _, err := syscall.SyscallN(_UnlockFileEx.Addr(),

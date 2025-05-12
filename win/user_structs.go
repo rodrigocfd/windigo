@@ -60,7 +60,7 @@ type CREATESTRUCT struct {
 
 // [CURSORINFO] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [CURSORINFO.SetCbSize] to initialize the struct.
 //
 // # Example
 //
@@ -93,7 +93,7 @@ type DELETEITEMSTRUCT struct {
 
 // [DISPLAY_DEVICE] struct.
 //
-// ⚠️ You must call SetCb() to initialize the struct.
+// ⚠️ You must call [DISPLAY_DEVICE.SetCb] to initialize the struct.
 //
 // # Example
 //
@@ -156,7 +156,7 @@ type DRAWITEMSTRUCT struct {
 
 // [GUITHREADINFO] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [GUITHREADINFO.SetCbSize] to initialize the struct.
 //
 // # Example
 //
@@ -183,7 +183,7 @@ func (gti *GUITHREADINFO) SetCbSize() {
 
 // [HELPINFO] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [HELPINFO.SetCbSize] to initialize the struct.
 //
 // # Example
 //
@@ -225,7 +225,7 @@ func (ii *ICONINFO) SetFIcon(val bool) {
 
 // [ICONINFOEX] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [ICONINFOEX.SetCbSize] to initialize the struct.
 //
 // # Example
 //
@@ -325,7 +325,7 @@ type MENUGETOBJECTINFO struct {
 
 // [MENUINFO] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [MENUINFO.SetCbSize] to initialize the struct.
 //
 // # Example
 //
@@ -350,7 +350,7 @@ func (mi *MENUINFO) SetCbSize() {
 
 // [MENUITEMINFO] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [MENUITEMINFO.SetCbSize] to initialize the struct.
 //
 // # Example
 //
@@ -411,7 +411,7 @@ type NCCALCSIZE_PARAMS struct {
 
 // [NONCLIENTMETRICS] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [NONCLIENTMETRICS.SetCbSize] to initialize the struct.
 //
 // # Example
 //
@@ -527,7 +527,7 @@ type STYLESTRUCT_WSEX struct {
 
 // [TITLEBARINFOEX] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [TITLEBARINFOEX.SetCbSize] to initialize the struct.
 //
 // # Example
 //
@@ -559,7 +559,7 @@ type WINDOWPOS struct {
 
 // [WNDCLASSEX] struct.
 //
-// ⚠️ You must call SetCbSize() to initialize the struct.
+// ⚠️ You must call [WNDCLASSEX.SetCbSize] to initialize the struct.
 //
 // # Example
 //

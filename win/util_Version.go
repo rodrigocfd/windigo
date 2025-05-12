@@ -18,9 +18,6 @@ import (
 //	hInst, _ := win.GetModuleHandle("")
 //	exeName, _ := hInst.GetModuleFileName()
 //	info, _ := win.VersionLoad(exeName)
-//
-// [GetFileVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
-// [VerQueryValue]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
 type VersionInfo struct {
 	Version          [4]uint16
 	LangId           LANGID
@@ -47,9 +44,6 @@ type VersionInfo struct {
 //	hInst, _ := win.GetModuleHandle("")
 //	exeName, _ := hInst.GetModuleFileName()
 //	info, _ := win.VersionLoad(exeName)
-//
-// [GetFileVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
-// [VerQueryValue]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
 func VersionLoad(moduleName string) (VersionInfo, error) {
 	szData, err := GetFileVersionInfoSize(moduleName)
 	if err != nil {

@@ -46,9 +46,9 @@ var _DrawIconEx = dll.User32.NewProc("DrawIconEx")
 // [EnumDisplayMonitors] function.
 //
 // [EnumDisplayMonitors]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
-func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) ([]_EnumMonitorInfo, error) {
+func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) ([]EnumDisplayMonitorsInfo, error) {
 	pPack := &_EnumDisplayMonitorsPack{
-		arr: make([]_EnumMonitorInfo, 0),
+		arr: make([]EnumDisplayMonitorsInfo, 0),
 	}
 	ret, _, _ := syscall.SyscallN(_EnumDisplayMonitors.Addr(),
 		uintptr(hdc), uintptr(unsafe.Pointer(rcClip)),
@@ -61,9 +61,10 @@ func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) ([]_EnumMonitorInfo, error) {
 }
 
 type (
-	_EnumDisplayMonitorsPack struct{ arr []_EnumMonitorInfo }
+	_EnumDisplayMonitorsPack struct{ arr []EnumDisplayMonitorsInfo }
 
-	_EnumMonitorInfo struct {
+	// Returned by [HDC.EnumDisplayMonitors].
+	EnumDisplayMonitorsInfo struct {
 		HMon   HMONITOR
 		HdcMon HDC
 		Rc     RECT
@@ -80,7 +81,7 @@ func enumDisplayMonitorsCallback() uintptr {
 		_enumDisplayMonitorsCallback = syscall.NewCallback(
 			func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lParam LPARAM) uintptr {
 				pPack := (*_EnumDisplayMonitorsPack)(unsafe.Pointer(lParam))
-				pPack.arr = append(pPack.arr, _EnumMonitorInfo{hMon, hdcMon, *rcMon})
+				pPack.arr = append(pPack.arr, EnumDisplayMonitorsInfo{hMon, hdcMon, *rcMon})
 				return 1
 			},
 		)

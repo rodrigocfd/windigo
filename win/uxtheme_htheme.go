@@ -19,10 +19,9 @@ type HTHEME HANDLE
 
 // [CloseThemeData] function.
 //
-// Paired with [OpenThemeData].
+// Paired with [HWND.OpenThemeData].
 //
 // [CloseThemeData]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-closethemedata
-// [OpenThemeData]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
 func (hTheme HTHEME) CloseThemeData() {
 	syscall.SyscallN(_CloseThemeData.Addr(),
 		uintptr(hTheme))
@@ -159,7 +158,7 @@ var _GetThemeString = dll.Uxtheme.NewProc("GetThemeString")
 
 // [GetThemeSysColorBrush] function.
 //
-// ⚠️ You must defer HBRUSH.DeleteObject().
+// ⚠️ You must defer [HBRUSH.DeleteObject].
 //
 // [GetThemeSysColorBrush]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemesyscolorbrush
 func (hTheme HTHEME) GetThemeSysColorBrush(colorId co.TMT) (HBRUSH, error) {

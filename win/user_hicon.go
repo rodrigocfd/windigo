@@ -18,7 +18,7 @@ type HICON HANDLE
 
 // [CreateIconIndirect] function.
 //
-// ⚠️ You must defer HICON.DestroyIcon().
+// ⚠️ You must defer [HICON.DestroyIcon].
 //
 // [CreateIconIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconindirect
 func CreateIconIndirect(info *ICONINFO) (HICON, error) {
@@ -34,7 +34,7 @@ var _CreateIconIndirect = dll.User32.NewProc("CreateIconIndirect")
 
 // [CopyIcon] function.
 //
-// ⚠️ You must defer HICON.DestroyIcon().
+// ⚠️ You must defer [HICON.DestroyIcon].
 //
 // [CopyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyicon
 func (hIcon HICON) CopyIcon() (HICON, error) {
@@ -61,7 +61,7 @@ var _DestroyIcon = dll.User32.NewProc("DestroyIcon")
 
 // [GetIconInfo] function.
 //
-// ⚠️ You must defer HBITMAP.DeleteObject() in HbmMask and HbmColor fields.
+// ⚠️ You must defer [HBITMAP.DeleteObject] in HbmMask and HbmColor fields.
 //
 // [GetIconInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfo
 func (hIcon HICON) GetIconInfo() (ICONINFO, error) {
@@ -78,7 +78,7 @@ var _GetIconInfo = dll.User32.NewProc("GetIconInfo")
 
 // [GetIconInfoEx] function.
 //
-// ⚠️ You must defer HBITMAP.DeleteObject() in HbmMask and HbmColor fields.
+// ⚠️ You must defer [HBITMAP.DeleteObject] in HbmMask and HbmColor fields.
 //
 // [GetIconInfoEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfoexw
 func (hIcon HICON) GetIconInfoEx() (ICONINFOEX, error) {

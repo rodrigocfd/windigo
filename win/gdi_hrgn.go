@@ -18,7 +18,7 @@ type HRGN HGDIOBJ
 
 // [CreateRectRgnIndirect] function.
 //
-// ⚠️ You must defer HRGN.DeleteObject().
+// ⚠️ You must defer [HRGN.DeleteObject].
 //
 // [CreateRectRgnIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
 func CreateRectRgnIndirect(bounds RECT) (HRGN, error) {

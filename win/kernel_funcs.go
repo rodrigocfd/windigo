@@ -42,8 +42,8 @@ var _CreateDirectoryW = dll.Kernel32.NewProc("CreateDirectoryW")
 
 // [CreateProcess] function.
 //
-// ⚠️ You must defer HPROCESS.CloseHandle() and HTHREAD.CloseHandle() on
-// HProcess and HThread members returned in PROCESS_INFORMATION.
+// ⚠️ You must defer [HPROCESS.CloseHandle] and [HTHREAD.CloseHandle] on
+// HProcess and HThread members returned in [PROCESS_INFORMATION].
 //
 // # Example
 //
@@ -196,8 +196,7 @@ var _GetCurrentThreadId = dll.Kernel32.NewProc("GetCurrentThreadId")
 
 // [GetEnvironmentStrings] function.
 //
-// You don't need to call [FreeEnvironmentStrings], it's automatically called
-// after the data retrieval.
+// [FreeEnvironmentStrings] is automatically called after the data retrieval.
 //
 // [GetEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getenvironmentstringsw
 // [FreeEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-freeenvironmentstringsw

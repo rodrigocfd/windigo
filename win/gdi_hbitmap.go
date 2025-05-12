@@ -17,7 +17,7 @@ type HBITMAP HGDIOBJ
 
 // [CreateBitmap] function.
 //
-// ⚠️ You must defer HBITMAP.DeleteObject().
+// ⚠️ You must defer [HBITMAP.DeleteObject].
 //
 // [CreateBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmap
 func CreateBitmap(width, height int, numPlanes, bitCount uint, bits []byte) (HBITMAP, error) {
@@ -34,7 +34,7 @@ var _CreateBitmap = dll.Gdi32.NewProc("CreateBitmap")
 
 // [CreateBitmapIndirect] function.
 //
-// ⚠️ You must defer HBITMAP.DeleteObject().
+// ⚠️ You must defer [HBITMAP.DeleteObject].
 //
 // [CreateBitmapIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmapindirect
 func CreateBitmapIndirect(bm *BITMAP) (HBITMAP, error) {

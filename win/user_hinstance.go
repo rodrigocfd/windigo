@@ -163,10 +163,13 @@ var _LoadIconW = dll.User32.NewProc("LoadIconW")
 
 // [LoadImage] function.
 //
-// Returned HGDIOBJ must be cast into HBITMAP, HCURSOR or HICON.
+// Returned [HGDIOBJ] must be cast into [HBITMAP], [HCURSOR] or [HICON].
 //
 // ⚠️ If the object is not being loaded from the application resources with
-// co.LR_SHARED, you must defer its respective DeleteObject().
+// [co.LR_SHARED], you must defer its respective free method:
+//   - [HBITMAP.DeleteObject]
+//   - [HCURSOR.DestroyCursor]
+//   - [HICON.DestroyIcon]
 //
 // # Examples
 //
@@ -217,7 +220,7 @@ var _LoadImageW = dll.User32.NewProc("LoadImageW")
 
 // [LoadMenu] function.
 //
-// ⚠️ You must defer HMENU.DestroyMenu().
+// ⚠️ You must defer [HMENU.DestroyMenu].
 //
 // [LoadMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
 func (hInst HINSTANCE) LoadMenu(menuName ResId) (HMENU, error) {

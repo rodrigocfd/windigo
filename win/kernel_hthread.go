@@ -101,9 +101,7 @@ func (hThread HTHREAD) GetThreadTimes() (HthreadTimes, error) {
 	}, nil
 }
 
-// Returned by [GetThreadTimes].
-//
-// [GetThreadTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadtimes
+// Returned by [HTHREAD.GetThreadTimes].
 type HthreadTimes struct {
 	Creation time.Time
 	Exit     time.Time
@@ -154,7 +152,7 @@ var _SuspendThread = dll.Kernel32.NewProc("SuspendThread")
 
 // [WaitForSingleObject] function.
 //
-// For INFINITE, use HTHREAD.WaitForSingleObjectInfinite().
+// For INFINITE, use [HTHREAD.WaitForSingleObjectInfinite].
 //
 // [WaitForSingleObject]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 func (hThread HTHREAD) WaitForSingleObject(milliseconds uint) (co.WAIT, error) {
@@ -168,9 +166,7 @@ func (hThread HTHREAD) WaitForSingleObject(milliseconds uint) (co.WAIT, error) {
 
 var _WaitForSingleObject = dll.Kernel32.NewProc("WaitForSingleObject")
 
-// [WaitForSingleObject] function with INFINITE value.
-//
-// [WaitForSingleObject]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+// [HTHREAD.WaitForSingleObject] function with INFINITE value.
 func (hThread HTHREAD) WaitForSingleObjectInfinite() (co.WAIT, error) {
 	return hThread.WaitForSingleObject(wutil.INFINITE)
 }

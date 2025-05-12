@@ -28,7 +28,7 @@ var _GetCurrentProcess = dll.Kernel32.NewProc("GetCurrentProcess")
 
 // [OpenProcess] function.
 //
-// ⚠️ You must defer HPROCESS.CloseHandle().
+// ⚠️ You must defer [HPROCESS.CloseHandle].
 //
 // [OpenProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
 func OpenProcess(access co.PROCESS, inheritHandle bool, processId uint32) (HPROCESS, error) {
@@ -145,9 +145,7 @@ func (hProcess HPROCESS) GetProcessTimes() (HprocessTimes, error) {
 	}, nil
 }
 
-// Returned by [GetProcessTimes].
-//
-// [GetProcessTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
+// Returned by [HPROCESS.GetProcessTimes].
 type HprocessTimes struct {
 	Creation time.Time
 	Exit     time.Time

@@ -24,7 +24,7 @@ type (
 	Stack64  = [64]uint16  // Stack size of 64 chars.
 	Stack260 = [260]uint16 // Stack size of 260 chars (MAX_PATH).
 
-	// Short string optimization size for wstr.Buf buffers.
+	// Short string optimization size for [Buf].
 	//
 	// Used internally by the library to make syscalls.
 	Sso interface {
@@ -48,7 +48,7 @@ type Buf[B Sso] struct {
 	inUse    uint
 }
 
-// Creates an empty wstr.Buf with a small buffer optimization of the given size.
+// Creates an empty [Buf] with a small buffer optimization of the given size.
 //
 // Be careful when choosing the buffer size: if it won't fit the stack, it will
 // escape to the GC heap, making all the effort useless. If you're unsure, just
@@ -63,7 +63,7 @@ func NewBuf[B Sso]() Buf[B] {
 	return Buf[B]{}
 }
 
-// Creates an empty wstr.Buf with a small buffer optimization of the given size,
+// Creates an empty [Buf] with a small buffer optimization of the given size,
 // resizing it to the given number of UTF-16 chars.
 //
 // Be careful when choosing the buffer size: if it won't fit the stack, it will
@@ -81,7 +81,7 @@ func NewBufSized[B Sso](numChars uint) Buf[B] {
 	return me
 }
 
-// Creates an empty wstr.Buf with a small buffer optimization of the given size,
+// Creates an empty [Buf] with a small buffer optimization of the given size,
 // converting the given string to an UTF-16 string, with a terminating null. The
 // buffer is resized to accommodate it.
 //

@@ -146,7 +146,7 @@ var _AnimateWindow = dll.User32.NewProc("AnimateWindow")
 
 // [BeginPaint] function.
 //
-// ⚠️ You must defer HWND.EndPaint().
+// ⚠️ You must defer [HWND.EndPaint].
 //
 // # Example
 //
@@ -210,7 +210,6 @@ var _ChildWindowFromPointEx = dll.User32.NewProc("ChildWindowFromPointEx")
 // [ClientToScreen] function for [POINT].
 //
 // [ClientToScreen]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clienttoscreen
-// [POINT]: https://learn.microsoft.com/en-us/windows/win32/api/windef/ns-windef-point
 func (hWnd HWND) ClientToScreenPt(pt *POINT) error {
 	ret, _, _ := syscall.SyscallN(_ClientToScreen.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(pt)))
@@ -222,7 +221,6 @@ var _ClientToScreen = dll.User32.NewProc("ClientToScreen")
 // [ClientToScreen] function for [RECT].
 //
 // [ClientToScreen]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clienttoscreen
-// [RECT]: https://learn.microsoft.com/en-us/windows/win32/api/windef/ns-windef-rect
 func (hWnd HWND) ClientToScreenRc(rc *RECT) error {
 	ret, _, _ := syscall.SyscallN(_ClientToScreen.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(rc)))
@@ -273,7 +271,7 @@ var _DefWindowProcW = dll.User32.NewProc("DefWindowProcW")
 // [DestroyWindow] function.
 //
 // Note: don't call this function to close a window. The correct way to close a
-// window is calling SendMessage with WM_CLOSE.
+// window is sending [co.WM_CLOSE].
 //
 // [DestroyWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroywindow
 func (hWnd HWND) DestroyWindow() error {
@@ -308,10 +306,7 @@ var _EnableWindow = dll.User32.NewProc("EnableWindow")
 
 // [EndDialog] function.
 //
-// Paired with [BeginPaint].
-//
 // [EndDialog]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enddialog
-// [BeginPaint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint
 func (hWnd HWND) EndDialog(result uintptr) error {
 	ret, _, err := syscall.SyscallN(_EndDialog.Addr(),
 		uintptr(hWnd), result)
@@ -321,6 +316,8 @@ func (hWnd HWND) EndDialog(result uintptr) error {
 var _EndDialog = dll.User32.NewProc("EndDialog")
 
 // [EndPaint] function.
+//
+// Paired with [HWND.BeginPaint].
 //
 // [EndPaint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endpaint
 func (hWnd HWND) EndPaint(ps *PAINTSTRUCT) {
@@ -364,9 +361,7 @@ func enumChildWindowsCallback() uintptr {
 	return _enumChildWindowsCallback
 }
 
-// Calls [GetWindowLongPtr] to retrieve the window extended style.
-//
-// [GetWindowLongPtr]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
+// Calls [HWND.GetWindowLongPtr] to retrieve the window extended style.
 func (hWnd HWND) ExStyle() (co.WS_EX, error) {
 	exStyle, err := hWnd.GetWindowLongPtr(co.GWLP_EXSTYLE)
 	return co.WS_EX(exStyle), err
@@ -418,7 +413,7 @@ var _GetClientRect = dll.User32.NewProc("GetClientRect")
 
 // [GetDC] function.
 //
-// ⚠️ You must defer HDC.ReleaseDC().
+// ⚠️ You must defer [HWND.ReleaseDC].
 //
 // # Example
 //
@@ -441,7 +436,7 @@ var _GetDC = dll.User32.NewProc("GetDC")
 
 // [GetDCEx] function.
 //
-// ⚠️ You must defer HDC.ReleaseDC().
+// ⚠️ You must defer [HWND.ReleaseDC].
 //
 // [GetDCEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdc
 func (hWnd HWND) GetDCEx(hRgnClip HRGN, flags co.DCX) (HDC, error) {
@@ -563,7 +558,7 @@ var _GetWindow = dll.User32.NewProc("GetWindow")
 
 // [GetWindowDC] function.
 //
-// ⚠️ You must defer HDC.ReleaseDC().
+// ⚠️ You must defer [HWND.ReleaseDC].
 //
 // [GetWindowDC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowdc
 func (hWnd HWND) GetWindowDC() (HDC, error) {
@@ -594,10 +589,9 @@ var _GetWindowRect = dll.User32.NewProc("GetWindowRect")
 
 // [GetWindowText] function.
 //
-// Calls [GetWindowTextLength] to allocate the memory block.
+// Calls [HWND.GetWindowTextLength] to allocate the memory block.
 //
 // [GetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextw
-// [GetWindowTextLength]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextlengthw
 func (hWnd HWND) GetWindowText() (string, error) {
 	bufSz, errLen := hWnd.GetWindowTextLength()
 	if errLen != nil {
@@ -619,11 +613,10 @@ var _GetWindowTextW = dll.User32.NewProc("GetWindowTextW")
 
 // [GetWindowTextLength] function.
 //
-// You usually don't need to call this function since [GetWindowText] already
+// You usually don't need to call this function since [HWND.GetWindowText] already
 // calls it to allocate the memory block.
 //
 // [GetWindowTextLength]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextlengthw
-// [GetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextw
 func (hWnd HWND) GetWindowTextLength() (uint, error) {
 	ret, _, err := syscall.SyscallN(_GetWindowTextLengthW.Addr(),
 		uintptr(hWnd))
@@ -635,10 +628,8 @@ func (hWnd HWND) GetWindowTextLength() (uint, error) {
 
 var _GetWindowTextLengthW = dll.User32.NewProc("GetWindowTextLengthW")
 
-// Calls [GetWindowLongPtr] to retrieve the instance to which this window
+// Calls [HWND.GetWindowLongPtr] to retrieve the instance to which this window
 // belongs.
-//
-// [GetWindowLongPtr]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
 func (hWnd HWND) HInstance() (HINSTANCE, error) {
 	hInst, err := hWnd.GetWindowLongPtr(co.GWLP_HINSTANCE)
 	return HINSTANCE(hInst), err
@@ -666,15 +657,12 @@ func (hWnd HWND) IsChild(hChild HWND) bool {
 
 var _IsChild = dll.User32.NewProc("IsChild")
 
-// Calls [GetClassLongPtr] and checks the ATOM against WC_DIALOG.
-//
-// [GetClassLongPtr]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclasslongptrw
+// Calls [HWND.GetClassLongPtr] and checks the [ATOM] against WC_DIALOG.
 func (hWnd HWND) IsDialog() (bool, error) {
 	uAtom, err := hWnd.GetClassLongPtr(co.GCL_ATOM)
 	if err != nil {
 		return false, err
 	}
-
 	return uint16(uAtom) == wutil.WC_DIALOG, nil
 }
 
@@ -765,10 +753,7 @@ var _RedrawWindow = dll.User32.NewProc("RedrawWindow")
 
 // [ReleaseDC] function.
 //
-// Paired with [GetDC].
-//
 // [ReleaseDC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-releasedc
-// [GetDC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdc
 func (hWnd HWND) ReleaseDC(hdc HDC) error {
 	ret, _, _ := syscall.SyscallN(_ReleaseDC.Addr(),
 		uintptr(hWnd), uintptr(hdc))
@@ -780,7 +765,6 @@ var _ReleaseDC = dll.User32.NewProc("ReleaseDC")
 // [ScreenToClient] function for [POINT].
 //
 // [ScreenToClient]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-screentoclient
-// [POINT]: https://learn.microsoft.com/en-us/windows/win32/api/windef/ns-windef-point
 func (hWnd HWND) ScreenToClientPt(pt *POINT) error {
 	ret, _, _ := syscall.SyscallN(_ScreenToClient.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(pt)))
@@ -792,7 +776,6 @@ var _ScreenToClient = dll.User32.NewProc("ScreenToClient")
 // [ScreenToClient] function for [RECT].
 //
 // [ScreenToClient]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-screentoclient
-// [RECT]: https://learn.microsoft.com/en-us/windows/win32/api/windef/ns-windef-rect
 func (hWnd HWND) ScreenToClientRc(rc *RECT) error {
 	ret, _, _ := syscall.SyscallN(_ScreenToClient.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(rc)))
@@ -862,8 +845,6 @@ var _SetMenu = dll.User32.NewProc("SetMenu")
 
 // [SetWindowPos] function.
 //
-// You can pass HWND or HWND_IA in hwndInsertAfter argument.
-//
 // [SetWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
 func (hWnd HWND) SetWindowPos(hwndInsertAfter HWND, x, y int, cx, cy uint, flags co.SWP) error {
 	ret, _, err := syscall.SyscallN(_SetWindowPos.Addr(),
@@ -919,9 +900,7 @@ func (hWnd HWND) ShowWindow(cmdShow co.SW) bool {
 
 var _ShowWindow = dll.User32.NewProc("ShowWindow")
 
-// Calls [GetWindowLongPtr] to retrieve the window style.
-//
-// [GetWindowLongPtr]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
+// Calls [HWND.GetWindowLongPtr] to retrieve the window style.
 func (hWnd HWND) Style() (co.WS, error) {
 	style, err := hWnd.GetWindowLongPtr(co.GWLP_STYLE)
 	return co.WS(style), err

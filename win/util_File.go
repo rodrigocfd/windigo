@@ -21,7 +21,7 @@ import (
 //   - [io.StringWriter]
 //   - [io.Writer]
 //
-// Created with win.FileOpen().
+// Created with [FileOpen].
 //
 // # Example
 //
@@ -29,22 +29,18 @@ import (
 //	defer f.Close()
 //
 //	fmt.Fprintf(f, "foo")
-//
-// [HFILE]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#handle
 type File struct {
 	hFile HFILE
 }
 
 // Opens a file with [CreateFile], returning a new high-level File object.
 //
-// ⚠️ You must defer File.Close().
+// ⚠️ You must defer [File.Close].
 //
 // # Example
 //
 //	f, _ := win.FileOpen("C:\\Temp\\foo.txt", co.FOPEN_RW_OPEN_OR_CREATE)
 //	defer f.Close()
-//
-// [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 func FileOpen(filePath string, desiredAccess co.FOPEN) (*File, error) {
 	var access co.GENERIC
 	var share co.FILE_SHARE
@@ -81,9 +77,7 @@ func FileOpen(filePath string, desiredAccess co.FOPEN) (*File, error) {
 
 // Implements [io.Closer].
 //
-// Calls [CloseHandle].
-//
-// [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+// Calls [HFILE.CloseHandle].
 func (me *File) Close() error {
 	var e error
 	if me.hFile != 0 {
@@ -100,10 +94,8 @@ func (me *File) Hfile() HFILE {
 
 // Implements [io.Reader].
 //
-// Calls [ReadFile] to read the file contents from its current internal pointer
-// up to the buffer size.
-//
-// [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
+// Calls [HFILE.ReadFile] to read the file contents from its current internal
+// pointer up to the buffer size.
 func (me *File) Read(p []byte) (numBytesRead int, wErr error) {
 	numRead, wErr := me.hFile.ReadFile(p, nil)
 	if wErr != nil {
@@ -122,10 +114,7 @@ func (me *File) Read(p []byte) (numBytesRead int, wErr error) {
 // Rewinds the internal file pointer and reads all contents at once, then
 // rewinds the pointer again. Returns a []byte with the contents.
 //
-// Calls [SetFilePointerEx] and [ReadFile].
-//
-// [SetFilePointerEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
-// [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
+// Calls [HFILE.SetFilePointerEx] and [HFILE.ReadFile].
 func (me *File) ReadAllAsSlice() ([]byte, error) {
 	if _, err := me.Seek(0, io.SeekStart); err != nil {
 		return nil, err
@@ -149,11 +138,11 @@ func (me *File) ReadAllAsSlice() ([]byte, error) {
 }
 
 // Rewinds the internal file pointer and reads all contents at once, then
-// rewinds the pointer again. Returns a Vec[byte] with the contents.
+// rewinds the pointer again. Returns a [Vec] with the contents.
 //
-// Calls [SetFilePointerEx] and [ReadFile].
+// Calls [HFILE.SetFilePointerEx] and [HFILE.ReadFile].
 //
-// ⚠️ You must defer Vec.Free() on the returned Vec.
+// ⚠️ You must defer [Vec.Free] on the returned Vec.
 //
 // # Example
 //
@@ -194,9 +183,7 @@ func (me *File) ReadAllAsVec() (Vec[byte], error) {
 
 // Implements [io.ByteReader].
 //
-// Calls [ReadFile].
-//
-// [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
+// Calls [HFILE.ReadFile].
 func (me *File) ReadByte() (byte, error) {
 	var buf [1]byte
 	_, err := me.Read(buf[:])
@@ -206,10 +193,7 @@ func (me *File) ReadByte() (byte, error) {
 // Truncates or expands the file, according to the new size. Zero will empty the
 // file. The internal file pointer will rewind.
 //
-// Calls [SetFilePointerEx] and [SetEndOfFile].
-//
-// [SetFilePointerEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
-// [SetEndOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setendoffile
+// Calls [HFILE.SetFilePointerEx] and [HFILE.SetEndOfFile].
 func (me *File) Resize(numBytes uint) error {
 	if _, err := me.Seek(0, io.SeekStart); err != nil {
 		return err
@@ -233,9 +217,7 @@ func (me *File) Resize(numBytes uint) error {
 
 // Implements [io.Seeker].
 //
-// Moves the internal pointer with [SetFilePointerEx].
-//
-// [SetFilePointerEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
+// Moves the internal pointer with [HFILE.SetFilePointerEx].
 func (me *File) Seek(offset int, whence int) (int64, error) {
 	var moveMethod co.FILE_FROM
 	switch whence {
@@ -254,9 +236,7 @@ func (me *File) Seek(offset int, whence int) (int64, error) {
 	return int64(newOff), nil
 }
 
-// Retrieves the file size with [GetFileSizeEx]. This value is not cached.
-//
-// [GetFileSizeEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex
+// Retrieves the file size with [HFILE.GetFileSizeEx]. This value is not cached.
 func (me *File) Size() (uint, error) {
 	sz, err := me.hFile.GetFileSizeEx()
 	if err != nil {
@@ -267,9 +247,8 @@ func (me *File) Size() (uint, error) {
 
 // Implements [io.Writer].
 //
-// Calls [WriteFile] to write a slice at current internal pointer position.
-//
-// [WriteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
+// Calls [HFILE.WriteFile] to write a slice at current internal pointer
+// position.
 func (me *File) Write(p []byte) (n int, wErr error) {
 	written, wErr := me.hFile.WriteFile(p, nil)
 	if wErr != nil {
@@ -280,9 +259,7 @@ func (me *File) Write(p []byte) (n int, wErr error) {
 
 // Implements [io.ByteWriter].
 //
-// Calls [WriteFile] to write a byte at current internal pointer position.
-//
-// [WriteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
+// Calls [HFILE.WriteFile] to write a byte at current internal pointer position.
 func (me *File) WriteByte(c byte) error {
 	_, err := me.Write([]byte{c})
 	return err
@@ -290,9 +267,8 @@ func (me *File) WriteByte(c byte) error {
 
 // Implements [io.StringWriter].
 //
-// Calls [WriteFile] to write a string at current internal pointer position.
-//
-// [WriteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
+// Calls [HFILE.WriteFile] to write a string at current internal pointer
+// position.
 func (me *File) WriteString(s string) (int, error) {
 	serialized := []byte(s)
 	return me.Write(serialized)
@@ -303,9 +279,7 @@ func (me *File) WriteString(s string) (int, error) {
 // Note that memory-mapped files may present issues in x86 architectures; if so,
 // just use the ordinary File.
 //
-// Created with FileMapOpen().
-//
-// [HFILEMAP]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
+// Created with [FileMapOpen].
 type FileMap struct {
 	objFile  *File
 	hMap     HFILEMAP
@@ -319,7 +293,7 @@ type FileMap struct {
 // Note that memory-mapped files may present issues in x86 architectures; if so,
 // just use the ordinary FileOpen.
 //
-// ⚠️ You must defer FileMap.Close().
+// ⚠️ You must defer [FileMap.Close].
 //
 // # Example
 //
@@ -381,9 +355,9 @@ func (me *FileMap) ReadAllAsSlice() []byte {
 	return me.ReadChunkAsSlice(0, me.sz)
 }
 
-// Returns a new Vec[byte] with a copy of all data in the file.
+// Returns a new [Vec] with a copy of all data in the file.
 //
-// ⚠️ You must defer Vec.Free() on the returned Vec.
+// ⚠️ You must defer [Vec.Free] on the returned Vec.
 //
 // # Example
 //
@@ -408,10 +382,10 @@ func (me *FileMap) ReadChunkAsSlice(offset, length uint) []byte {
 	return buf
 }
 
-// Returns a Vec[byte] with a copy of the data, start with offset, and with the
+// Returns a [Vec] with a copy of the data, start with offset, and with the
 // given length.
 //
-// ⚠️ You must defer Vec.Free() on the returned Vec.
+// ⚠️ You must defer [Vec.Free] on the returned Vec.
 //
 // # Example
 //

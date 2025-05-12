@@ -31,7 +31,7 @@ var _GetProcessHeap = dll.Kernel32.NewProc("GetProcessHeap")
 
 // [HeapCreate] function.
 //
-// ⚠️ You must defer HHEAP.HeapDestroy().
+// ⚠️ You must defer [HHEAP.HeapDestroy].
 //
 // [HeapCreate]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcreate
 func HeapCreate(options co.HEAP_CREATE, initialSize, maximumSize uint) (HHEAP, error) {
@@ -47,7 +47,7 @@ var _HeapCreate = dll.Kernel32.NewProc("HeapCreate")
 
 // [HeapAlloc] function.
 //
-// ⚠️ You must defer HHEAP.HeapFree().
+// ⚠️ You must defer [HHEAP.HeapFree].
 //
 // # Example
 //
@@ -86,7 +86,6 @@ var _HeapCompact = dll.Kernel32.NewProc("HeapCompact")
 // Paired with [HeapCreate].
 //
 // [HeapDestroy]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapdestroy
-// [HeapCreate]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcreate
 func (hHeap HHEAP) HeapDestroy() error {
 	ret, _, err := syscall.SyscallN(_HeapDestroy.Addr(),
 		uintptr(hHeap))
@@ -97,7 +96,7 @@ var _HeapDestroy = dll.Kernel32.NewProc("HeapDestroy")
 
 // [HeapFree] function.
 //
-// Paired with [HeapAlloc] and [HeapReAlloc].
+// Paired with [HHEAP.HeapAlloc] and [HHEAP.HeapReAlloc].
 //
 // This method is safe to be called if block is nil.
 //
@@ -108,8 +107,6 @@ var _HeapDestroy = dll.Kernel32.NewProc("HeapDestroy")
 //	defer hHeap.HeapFree(co.HEAP_NS_NONE, ptr)
 //
 // [HeapFree]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapfree
-// [HeapAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapalloc
-// [HeapReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heaprealloc
 func (hHeap HHEAP) HeapFree(flags co.HEAP_NS, ptr unsafe.Pointer) error {
 	if ptr == nil {
 		return nil // nothing to do
@@ -124,9 +121,9 @@ var _HeapFree = dll.Kernel32.NewProc("HeapFree")
 
 // [HeapReAlloc] function.
 //
-// If block is nil, simple calls [HeapAlloc].
+// If block is nil, simple calls [HHEAP.HeapAlloc].
 //
-// ⚠️ You must defer HHEAP.HeapFree().
+// ⚠️ You must defer [HHEAP.HeapFree].
 //
 // # Example
 //
@@ -138,7 +135,6 @@ var _HeapFree = dll.Kernel32.NewProc("HeapFree")
 //		co.HEAP_REALLOC_ZERO_MEMORY, ptr, 20)
 //
 // [HeapReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heaprealloc
-// [HeapAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapalloc
 func (hHeap HHEAP) HeapReAlloc(
 	flags co.HEAP_REALLOC,
 	ptr unsafe.Pointer,

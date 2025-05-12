@@ -19,7 +19,7 @@ type HFONT HGDIOBJ
 
 // [CreateFont] function.
 //
-// ⚠️ You must defer HFONT.DeleteObject().
+// ⚠️ You must defer [HFONT.DeleteObject].
 //
 // [CreateFont]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontw
 func CreateFont(
@@ -57,7 +57,7 @@ var _CreateFontW = dll.Gdi32.NewProc("CreateFontW")
 
 // [CreateFontIndirect] function.
 //
-// ⚠️ You must defer HFONT.DeleteObject().
+// ⚠️ You must defer [HFONT.DeleteObject].
 //
 // [CreateFontIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontindirectw
 func CreateFontIndirect(lf *LOGFONT) (HFONT, error) {

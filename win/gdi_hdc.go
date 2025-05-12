@@ -21,7 +21,7 @@ type HDC HANDLE
 
 // [CreateDC] function.
 //
-// ⚠️ You must defer HDC.DeleteDC().
+// ⚠️ You must defer [HDC.DeleteDC].
 //
 // [CreateDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdcw
 func CreateDC(driver, device string, dm *DEVMODE) (HDC, error) {
@@ -41,7 +41,7 @@ var _CreateDCW = dll.Gdi32.NewProc("CreateDCW")
 
 // [CreateIC] function.
 //
-// ⚠️ You must defer HDC.DeleteDC().
+// ⚠️ You must defer [HDC.DeleteDC].
 //
 // [CreateIC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createicw
 func CreateIC(driver, device string, dm *DEVMODE) (HDC, error) {
@@ -152,7 +152,7 @@ var _ArcTo = dll.Gdi32.NewProc("ArcTo")
 
 // [BeginPath] function.
 //
-// ⚠️ You must defer HDC.EndPath().
+// ⚠️ You must defer [HDC.EndPath].
 //
 // [BeginPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-beginpath
 func (hdc HDC) BeginPath() error {
@@ -237,7 +237,7 @@ var _ChoosePixelFormat = dll.Gdi32.NewProc("ChoosePixelFormat")
 
 // [CreateCompatibleBitmap] function.
 //
-// ⚠️ You must defer HBITMAP.DeleteObject().
+// ⚠️ You must defer [HBITMAP.DeleteObject].
 //
 // [CreateCompatibleBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createcompatiblebitmap
 func (hdc HDC) CreateCompatibleBitmap(cx, cy uint) (HBITMAP, error) {
@@ -253,7 +253,7 @@ var _CreateCompatibleBitmap = dll.Gdi32.NewProc("CreateCompatibleBitmap")
 
 // [CreateCompatibleDC] function.
 //
-// ⚠️ You must defer HDC.DeleteDC().
+// ⚠️ You must defer [HDC.DeleteDC].
 //
 // [CreateCompatibleDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createcompatibledc
 func (hdc HDC) CreateCompatibleDC() (HDC, error) {
@@ -269,7 +269,7 @@ var _CreateCompatibleDC = dll.Gdi32.NewProc("CreateCompatibleDC")
 
 // [CreateDIBSection] function.
 //
-// ⚠️ You must defer HBITMAP.DeleteObject().
+// ⚠️ You must defer [HBITMAP.DeleteObject].
 //
 // [CreateDIBSection]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
 func (hdc HDC) CreateDIBSection(
@@ -292,7 +292,7 @@ var _CreateDIBSection = dll.Gdi32.NewProc("CreateDIBSection")
 
 // [CreateHalftonePalette] function.
 //
-// ⚠️ You must defer HPALETTE.DeleteObject().
+// ⚠️ You must defer [HPALETTE.DeleteObject].
 //
 // [CreateHalftonePalette]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createhalftonepalette
 func (hdc HDC) CreateHalftonePalette() (HPALETTE, error) {
@@ -353,10 +353,9 @@ var _EndPage = dll.Gdi32.NewProc("EndPage")
 
 // [EndPath] function.
 //
-// Paired with [BeginPath].
+// Paired with [HDC.BeginPath].
 //
 // [EndPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-endpath
-// [BeginPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-beginpath
 func (hdc HDC) EndPath() error {
 	ret, _, _ := syscall.SyscallN(_EndPath.Addr(),
 		uintptr(hdc))
@@ -576,7 +575,7 @@ var _GetDeviceCaps = dll.Gdi32.NewProc("GetDeviceCaps")
 //	bfh.SetBfOffBits(uint32(unsafe.Sizeof(bfh) + unsafe.Sizeof(bi.BmiHeader)))
 //	bfh.SetBfSize(bfh.BfOffBits() + uint32(bmpSize))
 //
-//	fo, _ := win.FileOpen("C:\\users\\rodrigo\\desktop\\foo.bmp", co.FOPEN_RW_OPEN_OR_CREATE)
+//	fo, _ := win.FileOpen("C:\\Temp\\foo.bmp", co.FOPEN_RW_OPEN_OR_CREATE)
 //	defer fo.Close()
 //
 //	fo.Write(bfh.Serialize())
@@ -584,7 +583,6 @@ var _GetDeviceCaps = dll.Gdi32.NewProc("GetDeviceCaps")
 //	fo.Write(bmpSlice)
 //
 // [GetDIBits]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibits
-// [GlobalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
 func (hdc HDC) GetDIBits(
 	hbm HBITMAP,
 	firstScanLine, numScanLines uint,
@@ -926,7 +924,7 @@ var _PatBlt = dll.Gdi32.NewProc("PatBlt")
 
 // [PathToRegion] function.
 //
-// ⚠️ You must defer HRGN.DeleteObject() on the returned HRGN.
+// ⚠️ You must defer [HRGN.DeleteObject] on the returned HRGN.
 //
 // [PathToRegion]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-pathtoregion
 func (hdc HDC) PathToRegion() (HRGN, error) {
@@ -1155,10 +1153,9 @@ var _ResetDCW = dll.Gdi32.NewProc("ResetDCW")
 
 // [RestoreDC] function.
 //
-// Paired with [SaveDC].
+// Paired with [HDC.SaveDC].
 //
 // [RestoreDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-restoredc
-// [SaveDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-savedc
 func (hdc HDC) RestoreDC(savedDC int32) error {
 	ret, _, _ := syscall.SyscallN(_RestoreDC.Addr(),
 		uintptr(hdc), uintptr(savedDC))
@@ -1182,10 +1179,9 @@ var _RoundRect = dll.Gdi32.NewProc("RoundRect")
 
 // [SaveDC] function.
 //
-// Paired with [RestoreDC].
+// Paired with [HDC.RestoreDC].
 //
 // [SaveDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-savedc
-// [RestoreDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-restoredc
 func (hdc HDC) SaveDC() (int32, error) {
 	ret, _, _ := syscall.SyscallN(_SaveDC.Addr(),
 		uintptr(hdc))
@@ -1225,7 +1221,6 @@ var _SelectClipRgn = dll.Gdi32.NewProc("SelectClipRgn")
 // [SelectObject] function for [HBITMAP].
 //
 // [SelectObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
-// [HBITMAP]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbitmap
 func (hdc HDC) SelectObjectBmp(hBmp HBITMAP) (HBITMAP, error) {
 	hGdiObj, err := hdc.SelectObject(HGDIOBJ(hBmp))
 	if err != nil {
@@ -1237,7 +1232,6 @@ func (hdc HDC) SelectObjectBmp(hBmp HBITMAP) (HBITMAP, error) {
 // [SelectObject] function for [HBRUSH].
 //
 // [SelectObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
-// [HBRUSH]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbrush
 func (hdc HDC) SelectObjectBrush(hBrush HBRUSH) (HBRUSH, error) {
 	hGdiObj, err := hdc.SelectObject(HGDIOBJ(hBrush))
 	if err != nil {
@@ -1249,7 +1243,6 @@ func (hdc HDC) SelectObjectBrush(hBrush HBRUSH) (HBRUSH, error) {
 // [SelectObject] function for [HFONT].
 //
 // [SelectObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
-// [HFONT]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hfont
 func (hdc HDC) SelectObjectFont(hFont HFONT) (HFONT, error) {
 	hGdiObj, err := hdc.SelectObject(HGDIOBJ(hFont))
 	if err != nil {
@@ -1261,7 +1254,6 @@ func (hdc HDC) SelectObjectFont(hFont HFONT) (HFONT, error) {
 // [SelectObject] function for [HPEN].
 //
 // [HPEN]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hpen
-// [SelectObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectPen(hPen HPEN) (HPEN, error) {
 	hGdiObj, err := hdc.SelectObject(HGDIOBJ(hPen))
 	if err != nil {
@@ -1273,7 +1265,6 @@ func (hdc HDC) SelectObjectPen(hPen HPEN) (HPEN, error) {
 // [SelectObject] function for [HRGN].
 //
 // [SelectObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
-// [HRGN]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hrgn
 func (hdc HDC) SelectObjectRgn(hRgn HRGN) (co.REGION, error) {
 	ret, _, _ := syscall.SyscallN(_SelectObject.Addr(),
 		uintptr(hdc), uintptr(hRgn))

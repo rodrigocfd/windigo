@@ -17,7 +17,7 @@ type HDWP HANDLE
 
 // [BeginDeferWindowPos] function.
 //
-// ⚠️ You must defer HDWP.EndDeferWindowPos().
+// ⚠️ You must defer [HDWP.EndDeferWindowPos].
 //
 // [BeginDeferWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-begindeferwindowpos
 func BeginDeferWindowPos(numWindows uint) (HDWP, error) {

@@ -17,14 +17,14 @@ type HGLOBAL HANDLE
 
 // [GlobalAlloc] function.
 //
-// With co.GMEM_FIXED, the handle itself is the pointer to the memory block, and
-// it can optionally be passed to unsafe.Slice() to create a slice over the
+// With [co.GMEM_FIXED], the handle itself is the pointer to the memory block,
+// and it can optionally be passed to unsafe.Slice() to create a slice over the
 // memory block.
 //
-// With co.GMEM_MOVEABLE, you must call HGLOBAL.GlobalLock() to retrieve the
+// With [co.GMEM_MOVEABLE], you must call [HGLOBAL.GlobalLock] to retrieve the
 // pointer.
 //
-// ⚠️ You must defer HGLOBAL.GlobalFree().
+// ⚠️ You must defer [HGLOBAL.GlobalFree].
 //
 // # Example
 //
@@ -62,13 +62,11 @@ var _GlobalFlags = dll.Kernel32.NewProc("GlobalFlags")
 
 // [GlobalFree] function.
 //
-// Paired with [GlobalAlloc] and [GlobalReAlloc].
+// Paired with [GlobalAlloc] and [HGLOBAL.GlobalReAlloc].
 //
 // This method is safe to be called if hGlobal is zero.
 //
 // [GlobalFree]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalfree
-// [GlobalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
-// [GlobalReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalrealloc
 func (hGlobal HGLOBAL) GlobalFree() error {
 	if hGlobal == 0 {
 		return nil // nothing to do
@@ -86,11 +84,11 @@ var _GlobalFree = dll.Kernel32.NewProc("GlobalFree")
 
 // [GlobalLock] function.
 //
-// If you called GlobalAlloc() with co.GMEM_FIXED, technically you don't need to
-// call this method, because the handle itself is the pointer to the memory
+// If you called [GlobalAlloc] with [co.GMEM_FIXED], technically you don't need
+// to call this method, because the handle itself is the pointer to the memory
 // block; however, this method is easier to use.
 //
-// ⚠️ You must defer HGLOBAL.GlobalUnlock().
+// ⚠️ You must defer [HGLOBAL.GlobalUnlock].
 //
 // # Example
 //
@@ -118,7 +116,7 @@ var _GlobalLock = dll.Kernel32.NewProc("GlobalLock")
 
 // [GlobalReAlloc] function.
 //
-// ⚠️ You must defer HGLOBAL.GlobalFree().
+// ⚠️ You must defer [HGLOBAL.GlobalFree].
 //
 // # Example
 //

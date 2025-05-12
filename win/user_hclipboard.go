@@ -25,7 +25,7 @@ type HCLIPBOARD struct{}
 
 // [OpenClipboard] function.
 //
-// ⚠️ You must defer HCLIPBOARD.CloseClipboard().
+// ⚠️ You must defer [HCLIPBOARD.CloseClipboard].
 //
 // # Example
 //
@@ -45,6 +45,8 @@ func OpenClipboard(hWndOwner HWND) (HCLIPBOARD, error) {
 var _OpenClipboard = dll.User32.NewProc("OpenClipboard")
 
 // [CloseClipboard] function.
+//
+// Paired with [OpenClipboard].
 //
 // [CloseClipboard]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-closeclipboard
 func (HCLIPBOARD) CloseClipboard() error {
@@ -110,7 +112,7 @@ var _EnumClipboardFormats = dll.User32.NewProc("EnumClipboardFormats")
 // Returns a newly-allocated slice, with a copy of the clipboard contents.
 //
 // If format is not correct, the function fails weirdly, returning
-// co.ERROR_SUCCESS.
+// [co.ERROR_SUCCESS].
 //
 // [GetClipboardData]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboarddata
 func (HCLIPBOARD) GetClipboardData(format co.CF) ([]byte, error) {

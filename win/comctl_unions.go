@@ -10,7 +10,7 @@ import (
 //   - none
 //   - [HICON]
 //   - uint16
-//   - co.TDICON
+//   - [co.TDICON]
 //
 // # Example
 //
@@ -19,9 +19,6 @@ import (
 //	if tdi, ok := ico.Tdi(); ok {
 //		println(tdi)
 //	}
-//
-// [TASKDIALOGCONFIG]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig
-// [HICON]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hicon
 type TdcIcon struct {
 	tag  _TdcIconTag
 	data uint64
@@ -36,7 +33,7 @@ var (
 	_TdcIconTag_tdIcon _TdcIconTag = 0x3
 )
 
-// Creates a new TdcIcon with an empty value.
+// Creates a new [TdcIcon] with an empty value.
 func TdcIconNone() TdcIcon {
 	return TdcIcon{
 		tag: _TdcIconTag_none,
@@ -48,7 +45,7 @@ func (me *TdcIcon) IsNone() bool {
 	return me.tag == _TdcIconTag_none
 }
 
-// Creates a new TdcIcon with a HICON value.
+// Creates a new [TdcIcon] with a [HICON] value.
 func TdcIconHicon(hIcon HICON) TdcIcon {
 	return TdcIcon{
 		tag:  _TdcIconTag_hIcon,
@@ -56,7 +53,7 @@ func TdcIconHicon(hIcon HICON) TdcIcon {
 	}
 }
 
-// If the value is a HICON, returns it and true.
+// If the value is a [HICON], returns it and true.
 func (me *TdcIcon) HIcon() (HICON, bool) {
 	if me.tag == _TdcIconTag_hIcon {
 		return HICON(me.data), true
@@ -64,7 +61,7 @@ func (me *TdcIcon) HIcon() (HICON, bool) {
 	return HICON(0), false
 }
 
-// Creates a new TdcIcon with an ID value.
+// Creates a new [TdcIcon] with an ID value.
 func TdcIconId(id uint16) TdcIcon {
 	return TdcIcon{
 		tag:  _TdcIconTag_id,
@@ -80,7 +77,7 @@ func (me *TdcIcon) Id() (uint16, bool) {
 	return 0, false
 }
 
-// Creates a new TdcIcon with a co.TDICON value.
+// Creates a new [TdcIcon] with a [co.TDICON] value.
 func TdcIconTdi(tdIcon co.TDICON) TdcIcon {
 	return TdcIcon{
 		tag:  _TdcIconTag_tdIcon,
@@ -88,7 +85,7 @@ func TdcIconTdi(tdIcon co.TDICON) TdcIcon {
 	}
 }
 
-// If the value is a co.TDICON, returns it and true.
+// If the value is a [co.TDICON], returns it and true.
 func (me *TdcIcon) Tdi() (co.TDICON, bool) {
 	if me.tag == _TdcIconTag_tdIcon {
 		return co.TDICON(me.data), true

@@ -26,11 +26,11 @@ func (hMap HFILEMAP) CloseHandle() error {
 // [MapViewOfFile] function.
 //
 // The offset will be rounded down to a multiple of the allocation granularity,
-// which is taken with GetSystemInfo().
+// which is taken with [GetSystemInfo].
 //
 // Note that this function may present issues in x86 architectures.
 //
-// ⚠️ You must defer HFILEMAPVIEW.UnmapViewOfFile().
+// ⚠️ You must defer [HFILEMAPVIEW.UnmapViewOfFile].
 //
 // [MapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMap HFILEMAP) MapViewOfFile(
@@ -78,10 +78,9 @@ var _FlushViewOfFile = dll.Kernel32.NewProc("FlushViewOfFile")
 
 // [UnmapViewOfFile] function.
 //
-// Paired with [MapViewOfFile].
+// Paired with [HFILEMAP.MapViewOfFile].
 //
 // [UnmapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
-// [MapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMem HFILEMAPVIEW) UnmapViewOfFile() error {
 	ret, _, err := syscall.SyscallN(_UnmapViewOfFile.Addr(),
 		uintptr(hMem))

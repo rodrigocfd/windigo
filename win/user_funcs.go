@@ -72,10 +72,10 @@ var _BroadcastSystemMessageW = dll.User32.NewProc("BroadcastSystemMessageW")
 
 // [CreateIconFromResourceEx] function for cursor.
 //
-// This function creates HCURSOR only. The HICON variation is
-// CreateIconFromResourceEx().
+// This function creates [HCURSOR] only. The [HICON] variation is
+// [CreateIconFromResourceEx].
 //
-// ⚠️ You must defer HCURSOR.DestroyCursor().
+// ⚠️ You must defer [HCURSOR.DestroyCursor].
 //
 // [CreateIconFromResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconfromresourceex
 func CreateCursorFromResourceEx(
@@ -91,10 +91,10 @@ func CreateCursorFromResourceEx(
 
 // [CreateIconFromResourceEx] function.
 //
-// This function creates HICON only. The HCURSOR variation is
-// CreateCursorFromResourceEx().
+// This function creates [HICON] only. The [HCURSOR] variation is
+// [CreateCursorFromResourceEx].
 //
-// ⚠️ You must defer HICON.DestroyIcon().
+// ⚠️ You must defer [HICON.DestroyIcon].
 //
 // [CreateIconFromResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconfromresourceex
 func CreateIconFromResourceEx(

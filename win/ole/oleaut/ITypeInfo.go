@@ -75,8 +75,6 @@ func (me *ITypeInfo) GetDllEntry(
 }
 
 // Returned by [ITypeInfo.GetDllEntry].
-//
-// [ITypeInfo.GetDllEntry]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdllentry
 type ITypeInfoDllEntry struct {
 	DllName string
 	Name    string
@@ -115,8 +113,6 @@ func (me *ITypeInfo) GetDocumentation(memberId MEMBERID) (ITypeInfoDoc, error) {
 }
 
 // Returned by [ITypeInfo.GetDocumentation].
-//
-// [ITypeInfo.GetDocumentation]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdocumentation
 type ITypeInfoDoc struct {
 	Name        string
 	DocString   string

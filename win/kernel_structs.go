@@ -57,7 +57,7 @@ func (ft *FILETIME) SetTime(val time.Time) {
 
 // [GUID] struct.
 //
-// Can be created with GuidFrom().
+// Can be created with [GuidFrom].
 //
 // [GUID]: https://learn.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
 type GUID struct {
@@ -77,7 +77,7 @@ func (g *GUID) String() string {
 
 // Creates a [GUID] from a const string representation.
 //
-// Panics if  malformed.
+// Panics if malformed.
 func GuidFrom[T ~string](strGuid T) GUID {
 	strs := strings.SplitN(string(strGuid), "-", 5)
 	if len(strs) != 5 {
@@ -122,7 +122,7 @@ func GuidFrom[T ~string](strGuid T) GUID {
 
 // Language and sublanguage [identifier].
 //
-// Created with ui.MAKELANGID().
+// Created with [MAKELANGID].
 //
 // [identifier]: https://learn.microsoft.com/en-us/windows/win32/intl/language-identifiers
 type LANGID uint16
@@ -158,7 +158,7 @@ func (lid LANGID) SubLang() co.SUBLANG {
 
 // Locale [identifier].
 //
-// Created with ui.MAKELCID().
+// Created with [MAKELCID].
 //
 // [identifier]: https://learn.microsoft.com/en-us/windows/win32/intl/locale-identifiers
 type LCID uint32
@@ -194,7 +194,7 @@ func (lcid LCID) SortId() co.SORT {
 
 // [MODULEENTRY32] struct.
 //
-// ⚠️ You must call SetDwSize() to initialize the struct.
+// ⚠️ You must call [MODULEENTRY32.SetDwSize] to initialize the struct.
 //
 // # Example
 //
@@ -236,7 +236,8 @@ func (me *MODULEENTRY32) SetSzExePath(val string) {
 
 // [OSVERSIONINFOEX] struct.
 //
-// ⚠️ You must call SetDwOsVersionInfoSize() to initialize the struct.
+// ⚠️ You must call [OSVERSIONINFOEX.SetDwOsVersionInfoSize] to initialize the
+// struct.
 //
 // # Example
 //
@@ -293,7 +294,7 @@ type PROCESS_INFORMATION struct {
 
 // [PROCESSENTRY32] struct.
 //
-// ⚠️ You must call SetDwSize() to initialize the struct.
+// ⚠️ You must call [PROCESSENTRY32.SetDwSize] to initialize the struct.
 //
 // # Example
 //
@@ -328,7 +329,7 @@ func (me *PROCESSENTRY32) SetSzExeFile(val string) {
 
 // [SECURITY_ATTRIBUTES] struct.
 //
-// ⚠️ You must call SetNLength() to initialize the struct.
+// ⚠️ You must call [SECURITY_ATTRIBUTES.SetNLength] to initialize the struct.
 //
 // # Example
 //
@@ -356,7 +357,7 @@ func (sa *SECURITY_ATTRIBUTES) SetBInheritHandle(val bool) {
 
 // [STARTUPINFO] struct.
 //
-// ⚠️ You must call SetCb() to initialize the struct.
+// ⚠️ You must call [STARTUPINFO.SetCb] to initialize the struct.
 //
 // # Example
 //
@@ -421,7 +422,7 @@ type SYSTEMTIME struct {
 	WMilliseconds uint16
 }
 
-// Decomposes a time.Duration into this SYSTEMTIME fields.
+// Decomposes a [time.Duration] into this SYSTEMTIME fields.
 //
 // # Example
 //
@@ -473,7 +474,7 @@ func (st *SYSTEMTIME) SetTime(val time.Time) error {
 
 // [THREADENTRY32] struct.
 //
-// ⚠️ You must call SetDwSize() to initialize the struct.
+// ⚠️ You must call [THREADENTRY32.SetDwSize] to initialize the struct.
 //
 // # Example
 //

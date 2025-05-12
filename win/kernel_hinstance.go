@@ -6,6 +6,7 @@ import (
 	"syscall"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
+	"github.com/rodrigocfd/windigo/internal/wutil"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -35,6 +36,36 @@ func GetModuleHandle(moduleName string) (HINSTANCE, error) {
 }
 
 var _GetModuleHandleW = dll.Kernel32.NewProc("GetModuleHandleW")
+
+// [LoadLibrary] function.
+//
+// ⚠️ You must defer [HINSTANCE.FreeLibrary].
+//
+// [LoadLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
+func LoadLibrary(libFileName string) (HINSTANCE, error) {
+	libFileName16 := wstr.NewBufWith[wstr.Stack20](libFileName, wstr.EMPTY_IS_NIL)
+	ret, _, err := syscall.SyscallN(_LoadLibraryW.Addr(),
+		uintptr(libFileName16.UnsafePtr()))
+	if ret == 0 {
+		return HINSTANCE(0), co.ERROR(err)
+	}
+	return HINSTANCE(ret), nil
+}
+
+var _LoadLibraryW = dll.Kernel32.NewProc("LoadLibraryW")
+
+// [FreeLibrary] function.
+//
+// Paired with [LoadLibrary].
+//
+// [FreeLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
+func (hInst HINSTANCE) FreeLibrary() error {
+	ret, _, err := syscall.SyscallN(_FreeLibrary.Addr(),
+		uintptr(hInst))
+	return wutil.ZeroAsGetLastError(ret, err)
+}
+
+var _FreeLibrary = dll.Kernel32.NewProc("FreeLibrary")
 
 // [GetModuleFileName] function.
 //
@@ -66,20 +97,3 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 }
 
 var _GetModuleFileNameW = dll.Kernel32.NewProc("GetModuleFileNameW")
-
-// [LoadLibrary] function.
-//
-// ⚠️ You must defer HINSTANCE.FreeLibrary().
-//
-// [LoadLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
-func LoadLibrary(libFileName string) (HINSTANCE, error) {
-	libFileName16 := wstr.NewBufWith[wstr.Stack20](libFileName, wstr.EMPTY_IS_NIL)
-	ret, _, err := syscall.SyscallN(_LoadLibraryW.Addr(),
-		uintptr(libFileName16.UnsafePtr()))
-	if ret == 0 {
-		return HINSTANCE(0), co.ERROR(err)
-	}
-	return HINSTANCE(ret), nil
-}
-
-var _LoadLibraryW = dll.Kernel32.NewProc("LoadLibraryW")

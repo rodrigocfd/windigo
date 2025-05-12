@@ -10,7 +10,7 @@ import (
 )
 
 type (
-	// High-level abstraction for .ini file contents, loaded with win.IniLoad().
+	// High-level abstraction for .ini file contents, loaded with [IniLoad].
 	Ini struct {
 		// Path to the .ini file that has been loaded. If you want to save the
 		// .ini somewhere else, you may change this value.
@@ -39,7 +39,7 @@ type (
 	}
 )
 
-// Loads an .ini file from a file, parsing its contents.
+// Creates an [Ini] object by reading an .ini file, parsing its contents.
 //
 // # Example
 //
@@ -93,8 +93,7 @@ func iniLoadLines(iniPath string) ([]string, error) {
 	return wstr.SplitLines(string(fin.HotSlice())), nil
 }
 
-// Serializes the content back to the .ini file.
-// Saves the contents to a .ini file.
+// Serializes and saves the content back to the .ini file.
 func (me *Ini) SaveToFile(filePath string) error {
 	var serialized strings.Builder
 

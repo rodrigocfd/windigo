@@ -35,11 +35,11 @@ const (
 // [RegConnectRegistry] function.
 //
 // Panics if predef_key is different from:
-//   - HKEY_LOCAL_MACHINE;
-//   - HKEY_PERFORMANCE_DATA;
-//   - HKEY_USERS.
+//   - [HKEY_LOCAL_MACHINE];
+//   - [HKEY_PERFORMANCE_DATA];
+//   - [HKEY_USERS].
 //
-// ⚠️ You must defer HKEY.RegCloseKey().
+// ⚠️ You must defer [HKEY.RegCloseKey].
 //
 // # Example
 //
@@ -72,7 +72,7 @@ var _RegConnectRegistryW = dll.Advapi32.NewProc("RegConnectRegistryW")
 
 // [RegOpenCurrentUser] function.
 //
-// ⚠️ You must defer HKEY.RegCloseKey().
+// ⚠️ You must defer [HKEY.RegCloseKey].
 //
 // [RegOpenCurrentUser]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopencurrentuser
 func RegOpenCurrentUser(accessRights co.KEY) (HKEY, error) {
@@ -112,7 +112,7 @@ var _RegCopyTreeW = dll.Advapi32.NewProc("RegCopyTreeW")
 
 // [RegCreateKeyEx] function.
 //
-// ⚠️ You must defer HKEY.RegCloseKey().
+// ⚠️ You must defer [HKEY.RegCloseKey].
 //
 // [RegCreateKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regcreatekeyexw
 func (hKey HKEY) RegCreateKeyEx(
@@ -152,7 +152,7 @@ var _RegDeleteKeyW = dll.Advapi32.NewProc("RegDeleteKeyW")
 
 // [RegDeleteKeyEx] function.
 //
-// samDesired must be co.KEY_WOW64_32KEY or co.KEY_WOW64_64KEY.
+// samDesired must be [co.KEY_WOW64_32KEY] or [co.KEY_WOW64_64KEY].
 //
 // [RegDeleteKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyexw
 func (hKey HKEY) RegDeleteKeyEx(subKey string, samDesired co.KEY) error {
@@ -396,7 +396,7 @@ var _RegLoadKeyW = dll.Advapi32.NewProc("RegLoadKeyW")
 
 // [RegOpenKeyEx] function.
 //
-// ⚠️ You must defer HKEY.RegCloseKey().
+// ⚠️ You must defer [HKEY.RegCloseKey].
 //
 // # Example
 //
@@ -483,9 +483,7 @@ func (hKey HKEY) RegQueryInfoKey() (HkeyInfo, error) {
 
 }
 
-// Returned by [RegQueryInfoKey].
-//
-// [RegQueryInfoKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryinfokeyw
+// Returned by [HKEY.RegQueryInfoKey].
 type HkeyInfo struct {
 	Class                 string
 	NumSubKeys            uint
@@ -658,11 +656,9 @@ var _RegReplaceKeyW = dll.Advapi32.NewProc("RegReplaceKeyW")
 
 // [RegRestoreKey] function.
 //
-// Paired with [RegSaveKey] or [RegSaveKeyEx].
+// Paired with [HKEY.RegSaveKey] or [HKEY.RegSaveKeyEx].
 //
 // [RegRestoreKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regrestorekeyw
-// [RegSaveKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsavekeyw
-// [RegSaveKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsavekeyexw
 func (hKey HKEY) RegRestoreKey(srcFile string, flags co.REG_RESTORE) error {
 	srcFile16 := wstr.NewBufWith[wstr.Stack20](srcFile, wstr.ALLOW_EMPTY)
 	ret, _, _ := syscall.SyscallN(_RegRestoreKeyW.Addr(),
@@ -674,10 +670,9 @@ var _RegRestoreKeyW = dll.Advapi32.NewProc("RegRestoreKeyW")
 
 // [RegSaveKey] function.
 //
-// Paired with [RegRestoreKey].
+// Paired with [HKEY.RegRestoreKey].
 //
 // [RegSaveKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsavekeyw
-// [RegRestoreKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regrestorekeyw
 func (hKey HKEY) RegSaveKey(destFile string, securityAttributes *SECURITY_ATTRIBUTES) error {
 	destFile16 := wstr.NewBufWith[wstr.Stack20](destFile, wstr.ALLOW_EMPTY)
 	ret, _, _ := syscall.SyscallN(_RegSaveKeyW.Addr(),
@@ -690,10 +685,9 @@ var _RegSaveKeyW = dll.Advapi32.NewProc("RegSaveKeyW")
 
 // [RegSaveKeyEx] function.
 //
-// Paired with [RegRestoreKey].
+// Paired with [HKEY.RegRestoreKey].
 //
 // [RegSaveKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsavekeyexw
-// [RegRestoreKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regrestorekeyw
 func (hKey HKEY) RegSaveKeyEx(
 	destFile string,
 	securityAttributes *SECURITY_ATTRIBUTES,

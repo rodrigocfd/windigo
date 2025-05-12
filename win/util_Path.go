@@ -11,10 +11,11 @@ import (
 )
 
 // Returns all file and folder names on a given directory, filtered to the given
-// pattern, by calling [FindFirstFile], [FindNextFile] and [FindClose].
+// pattern, by calling [FindFirstFile], [HFIND.FindNextFile] and
+// [HFIND.FindClose].
 //
 // This function is not recursive; to also search nested directories, use
-// win.EnumFilesDeep().
+// [EnumFilesDeep].
 //
 // # Example
 //
@@ -22,10 +23,6 @@ import (
 //	for _, file := files {
 //		println(file)
 //	}
-//
-// [FindFirstFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
-// [FindNextFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
-// [FindClose]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
 func EnumFiles(pathAndPattern string) ([]string, error) {
 	var wfd WIN32_FIND_DATA
 	hFind, found, err := FindFirstFile(pathAndPattern, &wfd)
@@ -54,7 +51,7 @@ func EnumFiles(pathAndPattern string) ([]string, error) {
 }
 
 // Returns all files recursively on all folders, by calling [FindFirstFile],
-// [FindNextFile] and [FindClose].
+// [HFIND.FindNextFile] and [HFIND.FindClose].
 //
 // # Example
 //
@@ -64,8 +61,6 @@ func EnumFiles(pathAndPattern string) ([]string, error) {
 //	}
 //
 // [FindFirstFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
-// [FindNextFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
-// [FindClose]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
 func EnumFilesDeep(path string) ([]string, error) {
 	path, _ = strings.CutSuffix(path, "\\")
 
@@ -94,8 +89,6 @@ func EnumFilesDeep(path string) ([]string, error) {
 // Returns true if the given file or folder exists. Calls [GetFileAttributes].
 //
 // Panics on error.
-//
-// [GetFileAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func PathExists(path string) bool {
 	attr, err := GetFileAttributes(path)
 	if err != nil {
@@ -144,8 +137,6 @@ func PathHasExtension(path string, extensions ...string) bool {
 // [GetFileAttributes].
 //
 // Panics on error.
-//
-// [GetFileAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func PathIsFolder(path string) bool {
 	attr, err := GetFileAttributes(path)
 	if err != nil {
@@ -159,8 +150,6 @@ func PathIsFolder(path string) bool {
 // [GetFileAttributes].
 //
 // Panics on error.
-//
-// [GetFileAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func PathIsHidden(path string) bool {
 	attr, err := GetFileAttributes(path)
 	if err != nil {

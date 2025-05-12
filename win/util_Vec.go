@@ -10,6 +10,11 @@ import (
 
 // Dynamic, manually [heap-allocated] memory block array.
 //
+// Created with:
+//   - [NewVec]
+//   - [NewVecReserved]
+//   - [NewVecSized]
+//
 // Do not store Go pointers in a Vec – this will make the GC believe they are no
 // more in use, thus collecting them.
 //
@@ -19,13 +24,13 @@ type Vec[T any] struct {
 	inUse uint // Number of elements effectively being used.
 }
 
-// Creates a new, unallocated Vec, which allows manual memory management from
+// Creates a new, unallocated [Vec], which allows manual memory management from
 // the heap.
 //
 // Do not store Go pointers in a Vec – this will make the GC believe they are no
 // more in use, thus collecting them.
 //
-// ⚠️ You must defer Vec.Free().
+// ⚠️ You must defer [Vec.Free].
 //
 // # Example
 //
@@ -38,12 +43,12 @@ func NewVec[T any]() Vec[T] {
 	}
 }
 
-// Creates a new Vec with preallocated memory, but zero elements.
+// Creates a new [Vec] with preallocated memory, but zero elements.
 //
 // Do not store Go pointers in a Vec – this will make the GC believe they are no
 // more in use, thus collecting them.
 //
-// ⚠️ You must defer Vec.Free().
+// ⚠️ You must defer [Vec.Free].
 //
 // # Example
 //
@@ -55,12 +60,12 @@ func NewVecReserved[T any](numElems uint) Vec[T] {
 	return me
 }
 
-// Creates a new Vec with the given copies of the element.
+// Creates a new [Vec] with the given copies of the element.
 //
 // Do not store Go pointers in a Vec – this will make the GC believe they are no
 // more in use, thus collecting them.
 //
-// ⚠️ You must defer Vec.Free().
+// ⚠️ You must defer [Vec.Free].
 //
 // # Example
 //
@@ -156,7 +161,7 @@ func (me *Vec[T]) Len() uint {
 // without adding elements.
 //
 // This method is intended for optimization purposes. If you want to create a
-// buffer to receive data, use Vec.AllocBuf() instead.
+// buffer to receive data, use [Vec.Resize] instead.
 //
 // If amount is smaller than the current buffer size, does nothing; that is,
 // this function only grows the buffer.
