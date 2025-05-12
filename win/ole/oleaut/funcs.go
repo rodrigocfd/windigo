@@ -18,7 +18,8 @@ import (
 //
 // Pass size = 0 to read all the bytes from the stream.
 //
-// The bytes are copied, so IStream can be released after this function returns.
+// The bytes are copied, so [ole.IStream] can be released after this function
+// returns.
 //
 // # Example
 //

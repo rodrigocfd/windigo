@@ -74,20 +74,20 @@ func (v *VARIANT) IsEmpty() bool {
 // Calls [VariantInit] and sets the type and value.
 //
 // Allowed [types]:
-//   - bool (VT_BOOL)
-//   - float32 (VT_R4)
-//   - float64 (VT_R8)
-//   - *ole.IDispatch (VT_DISPATCH)
-//   - int8 (VT_I1)
-//   - int16 (VT_I2)
-//   - int32 (VT_I4)
-//   - int64 (VT_I8)
-//   - string (VT_BSTR)
-//   - time.Time (VT_DATE)
-//   - uint8 (VT_UI1)
-//   - uint16 (VT_UI2)
-//   - uint32 (VT_UI4)
-//   - uint64 (VT_UI8)
+//   - bool ([co.VT_BOOL])
+//   - float32 ([co.VT_R4])
+//   - float64 ([co.VT_R8])
+//   - *[IDispatch] ([co.VT_DISPATCH])
+//   - int8 ([co.VT_I1])
+//   - int16 ([co.VT_I2])
+//   - int32 ([co.VT_I4])
+//   - int64 ([co.VT_I8])
+//   - string ([co.VT_BSTR])
+//   - [time.Time] ([co.VT_DATE])
+//   - uint8 ([co.VT_UI1])
+//   - uint16 ([co.VT_UI2])
+//   - uint32 ([co.VT_UI4])
+//   - uint64 ([co.VT_UI8])
 //
 // Panics if the type of the value is not allowed.
 //
@@ -163,7 +163,7 @@ func NewVariant(releaser *ole.Releaser, value interface{}) *VARIANT {
 	return v
 }
 
-// If the object has type VT_BOOL, returns the value and true. Otherwise,
+// If the object has type [co.VT_BOOL], returns the value and true. Otherwise,
 // returns a default value and false.
 //
 // # Example
@@ -184,7 +184,7 @@ func (v *VARIANT) Bool() (actualValue, isBool bool) {
 	return false, false
 }
 
-// If the object has type VT_R4, returns the value and true. Otherwise,
+// If the object has type [co.VT_R4], returns the value and true. Otherwise,
 // returns a default value and false.
 //
 // # Example
@@ -204,7 +204,7 @@ func (v *VARIANT) Float32() (float32, bool) {
 	return 0, false
 }
 
-// If the object has type VT_R8, returns the value and true. Otherwise,
+// If the object has type [co.VT_R8], returns the value and true. Otherwise,
 // returns a default value and false.
 //
 // # Example
@@ -224,10 +224,10 @@ func (v *VARIANT) Float64() (float64, bool) {
 	return 0, false
 }
 
-// If the object has type VT_DISPATCH, returns the value and true. Otherwise,
-// returns a default value and false.
+// If the object has type [co.VT_DISPATCH], returns the value and true.
+// Otherwise, returns a default value and false.
 //
-// The returned object is a clone of the stored one, and must be released.
+// The returned object is a clone of the stored object.
 //
 // # Example
 //
@@ -252,8 +252,8 @@ func (v *VARIANT) IDispatch(releaser *ole.Releaser) (*IDispatch, bool) {
 	return nil, false
 }
 
-// If the object has type VT_I1, returns the value and true. Otherwise, returns
-// a default value and false.
+// If the object has type [co.VT_I1], returns the value and true. Otherwise,
+// returns a default value and false.
 //
 // # Example
 //
@@ -272,7 +272,7 @@ func (v *VARIANT) Int8() (int8, bool) {
 	return 0, false
 }
 
-// If the VARIANT object has type VT_I2, returns the value and true. Otherwise,
+// If the object has type [co.VT_I2], returns the value and true. Otherwise,
 // returns a default value and false.
 //
 // # Example
@@ -292,8 +292,8 @@ func (v *VARIANT) Int16() (int16, bool) {
 	return 0, false
 }
 
-// If the object has type VT_I4, returns the value and true. Otherwise, returns
-// a default value and false.
+// If the object has type [co.VT_I4], returns the value and true. Otherwise,
+// returns a default value and false.
 //
 // # Example
 //
@@ -312,8 +312,8 @@ func (v *VARIANT) Int32() (int32, bool) {
 	return 0, false
 }
 
-// If the object has type VT_I8, returns the value and true. Otherwise, returns
-// a default value and false.
+// If the object has type [co.VT_I8], returns the value and true. Otherwise,
+// returns a default value and false.
 //
 // # Example
 //
@@ -332,7 +332,7 @@ func (v *VARIANT) Int64() (int64, bool) {
 	return 0, false
 }
 
-// If the VARIANT has type VT_BSTR, returns the value and true. Otherwise,
+// If the object has type [co.VT_BSTR], returns the value and true. Otherwise,
 // returns a default value and false.
 //
 // # Example
@@ -355,7 +355,7 @@ func (v *VARIANT) Str() (string, bool) {
 
 var _SystemTimeToVariantTime = dll.Oleaut32.NewProc("SystemTimeToVariantTime")
 
-// If the object contains a value of type time.Time, returns it and true,
+// If the object contains a value of type [time.Time], returns it and true,
 // calling [VariantTimeToSystemTime]. Otherwise, returns a default value and
 // false.
 //
@@ -390,8 +390,8 @@ func (v *VARIANT) Date() (time.Time, bool) {
 
 var _VariantTimeToSystemTime = dll.Oleaut32.NewProc("VariantTimeToSystemTime")
 
-// If the object has type VT_UI1, returns the value and true. Otherwise, returns
-// a default value and false.
+// If the object has type [co.VT_UI1], returns the value and true. Otherwise,
+// returns a default value and false.
 //
 // # Example
 //
@@ -410,8 +410,8 @@ func (v *VARIANT) Uint8() (uint8, bool) {
 	return 0, false
 }
 
-// If the object has type VT_UI2, returns the value and true. Otherwise, returns
-// a default value and false.
+// If the object has type [co.VT_UI2], returns the value and true. Otherwise,
+// returns a default value and false.
 //
 // # Example
 //
@@ -430,8 +430,8 @@ func (v *VARIANT) Uint16() (uint16, bool) {
 	return 0, false
 }
 
-// If the object has type VT_UI4, returns the value and true. Otherwise, returns
-// a default value and false.
+// If the object has type [co.VT_UI4], returns the value and true. Otherwise,
+// returns a default value and false.
 //
 // # Example
 //
@@ -450,8 +450,8 @@ func (v *VARIANT) Uint32() (uint32, bool) {
 	return 0, false
 }
 
-// If the object has type VT_UI8, returns the value and true. Otherwise, returns
-// a default value and false.
+// If the object has type [co.VT_UI8], returns the value and true. Otherwise,
+// returns a default value and false.
 //
 // # Example
 //

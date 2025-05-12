@@ -77,10 +77,10 @@ func (me *IPicture) Handle() (win.HBITMAP, error) {
 
 // [get_Height] method.
 //
-// If you need both width and height, call IPicture.Size(), which returns both.
+// If you need both width and height, call [IPicture.Size], which returns both.
 //
 // Note that this method returns the height in HIMETRIC units. To convert it to
-// pixels, use HDC.HiMetricToPixel(), or simply call IPicture.SizePixels()
+// pixels, use [win.HDC.HiMetricToPixel], or simply call [IPicture.SizePixels]
 // method, which already performs the conversion.
 //
 // [get_Height]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_height
@@ -253,10 +253,10 @@ func (me *IPicture) SetHPal(hPal win.HPALETTE) error {
 
 // Calls [IPicture.Width] and [IPicture.Height] at once.
 //
-// If you need both width and height, call IPicture.Size(), which returns both.
+// If you need both width and height, call [IPicture.Size], which returns both.
 //
 // Note that this method returns the size in HIMETRIC units. To convert it to
-// pixels, use HDC.HiMetricToPixel(), or simply call IPicture.SizePixels()
+// pixels, use [win.HDC.HiMetricToPixel], or simply call [IPicture.SizePixels]
 // method, which already performs the conversion.
 //
 // [IPicture.Width]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_width
@@ -275,11 +275,11 @@ func (me *IPicture) Size() (win.SIZE, error) {
 	return win.SIZE{Cx: int32(width), Cy: int32(height)}, nil
 }
 
-// Calls IPicture.Width() and IPicture.Height(), then convers from HIMETRIC
-// units to pixels with HDC.HiMetricToPixel().
+// Calls [IPicture.Width] and [IPicture.Height], then convers from HIMETRIC
+// units to pixels with [win.HDC.HiMetricToPixel].
 //
-// If hdc is zero, calls win.HWND(0).GetDC() to retrieve the DC for the
-// entire screen.
+// If hdc is zero, the method will retrieve the HDC for the whole screen with
+// [win.HWND.GetDC].
 //
 // # Example
 //
@@ -330,7 +330,7 @@ func (me *IPicture) Type() (co.PICTYPE, error) {
 // [get_Width] method.
 //
 // Note that this method returns the width in HIMETRIC units. To convert it to
-// pixels, use HDC.HiMetricToPixel(), or simply call IPicture.SizePixels()
+// pixels, use [win.HDC.HiMetricToPixel], or simply call [IPicture.SizePixels]
 // method, which already performs the conversion.
 //
 // [get_Width]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_width

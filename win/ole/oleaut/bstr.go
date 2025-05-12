@@ -18,7 +18,7 @@ type BSTR uintptr
 
 // [SysAllocString] function.
 //
-// ⚠️ You must defer BSTR.SysFreeString().
+// ⚠️ You must defer [BSTR.SysFreeString].
 //
 // # Example
 //

@@ -64,7 +64,7 @@ func (ed *ELEMDESC) ParmDesc() *PARAMDESC {
 
 // [EXCEPINFO] struct syntactic sugar.
 //
-// When IDispatch.Invoke() remote call fails, the raw [EXCEPINFO] is converted
+// When [IDispatch.Invoke] remote call fails, the raw EXCEPINFO is converted
 // into this one, then returned as the error.
 //
 // Implements error interface.
@@ -84,7 +84,7 @@ func (e *EXCEPINFO) Error() string {
 
 // [EXCEPINFO] struct.
 //
-// ⚠️ You must call Free() to release the pointers.
+// ⚠️ You must call [_EXCEPINFO.Free] to release the pointers.
 //
 // # Example
 //

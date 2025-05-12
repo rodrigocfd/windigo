@@ -112,14 +112,13 @@ func (me *IDispatch) GetTypeInfoCount() (uint, error) {
 
 // [Invoke] method.
 //
-// This is a low-level method, prefer using IDispatch.InvokeGet(),
-// IDispatch.InvokeMethod() or IDispatch.InvokePut().
+// This is a low-level method, prefer using [IDispatch.InvokeGet],
+// [IDispatch.InvokeMethod] or [IDispatch.InvokePut].
 //
 // If the remote call raises an exception, the returned error will be an
-// instance of *ole.[EXCEPINFO].
+// instance of *[EXCEPINFO].
 //
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
-// [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
 func (me *IDispatch) Invoke(
 	releaser *ole.Releaser,
 	dispIdMember MEMBERID,
@@ -153,10 +152,10 @@ func (me *IDispatch) Invoke(
 	}
 }
 
-// Calls [Invoke] with co.DISPATCH_PROPERTYGET.
+// Calls [Invoke] with [co.DISPATCH_PROPERTYGET].
 //
 // If the remote call raises an exception, the returned error will be an
-// instance of *ole.[EXCEPINFO].
+// instance of *[EXCEPINFO].
 //
 // # Example
 //
@@ -183,12 +182,12 @@ func (me *IDispatch) InvokeGet(
 	return me.rawInvoke(releaser, co.DISPATCH_PROPERTYGET, propertyName, params...)
 }
 
-// Calls [Invoke] with co.DISPATCH_METHOD.
+// Calls [Invoke] with [co.DISPATCH_METHOD].
 //
 // If the remote call raises an exception, the returned error will be an
-// instance of *ole.[EXCEPINFO].
+// instance of *[EXCEPINFO].
 //
-// Parameters must be one of the valid VARIANT types.
+// Parameters must be one of the valid [VARIANT] types.
 //
 // # Example
 //
@@ -219,12 +218,12 @@ func (me *IDispatch) InvokeMethod(
 	return me.rawInvoke(releaser, co.DISPATCH_METHOD, methodName, params...)
 }
 
-// Calls [Invoke] with co.DISPATCH_PROPERTYPUT.
+// Calls [Invoke] with [co.DISPATCH_PROPERTYPUT].
 //
 // If the remote call raises an exception, the returned error will be an
-// instance of *oleaut.[EXCEPINFO].
+// instance of *[EXCEPINFO].
 //
-// Parameter must be one of the valid VARIANT types.
+// Parameter must be one of the valid [VARIANT] types.
 //
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
