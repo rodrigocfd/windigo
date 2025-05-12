@@ -14,7 +14,7 @@ import (
 // The buttons collection
 //
 // You cannot create this object directly, it will be created automatically
-// by the owning control.
+// by the owning [Toolbar].
 type CollectionToolbarButtons struct {
 	owner *Toolbar
 }

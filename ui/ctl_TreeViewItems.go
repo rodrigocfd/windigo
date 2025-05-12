@@ -10,7 +10,7 @@ import (
 // The items collection.
 //
 // You cannot create this object directly, it will be created automatically
-// by the owning control.
+// by the owning [TreeView].
 type CollectionTreeViewItems struct {
 	owner *TreeView
 }

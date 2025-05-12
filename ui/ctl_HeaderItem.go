@@ -27,9 +27,9 @@ func (me HeaderItem) Index() int {
 // Retrieves the text justification with [HDM_GETITEM].
 //
 // Possible values:
-//   - HDF_LEFT
-//   - HDF_CENTER
-//   - HDF_RIGHT
+//   - [co.HDF_LEFT]
+//   - [co.HDF_CENTER]
+//   - [co.HDF_RIGHT]
 //
 // [HDM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getitem
 func (me HeaderItem) Justification() co.HDF {
@@ -58,9 +58,9 @@ func (me HeaderItem) Order() int {
 // Sets the text justification with [HDM_SETITEM].
 //
 // Possible values:
-//   - HDF_LEFT
-//   - HDF_CENTER
-//   - HDF_RIGHT
+//   - [co.HDF_LEFT]
+//   - [co.HDF_CENTER]
+//   - [co.HDF_RIGHT]
 //
 // Returns the same item, so further operations can be chained.
 //
@@ -83,9 +83,9 @@ func (me HeaderItem) SetJustification(hdf co.HDF) HeaderItem {
 // Sets the displayed sort arrow with [HDM_SETITEM].
 //
 // Possible values:
-//   - co.HDF_NONE
-//   - co.HDF_SORTUP
-//   - co.HDF_SORTDOWN
+//   - [co.HDF_NONE]
+//   - [co.HDF_SORTUP]
+//   - [co.HDF_SORTDOWN]
 //
 // Returns the same item, so further operations can be chained.
 //
@@ -156,9 +156,9 @@ func (me HeaderItem) SetWidth(width int) HeaderItem {
 // Retrieves the displayed sort arrow with [HDM_GETITEM].
 //
 // Possible values:
-//   - co.HDF_NONE
-//   - co.HDF_SORTUP
-//   - co.HDF_SORTDOWN
+//   - [co.HDF_NONE]
+//   - [co.HDF_SORTUP]
+//   - [co.HDF_SORTDOWN]
 //
 // [HDM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getitem
 func (me HeaderItem) SortArrow() co.HDF {

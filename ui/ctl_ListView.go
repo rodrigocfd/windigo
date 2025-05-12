@@ -24,9 +24,7 @@ type ListView struct {
 	Items        CollectionListViewItems // Methods to interact with the items collection.
 }
 
-// Creates a new ListView with [CreateWindowEx].
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
+// Creates a new [ListView] with [win.CreateWindowEx].
 func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &ListView{
@@ -54,12 +52,8 @@ func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 	return me
 }
 
-// Instantiates a new ListView to be loaded from a dialog resource with
-// [GetDlgItem].
-//
-// Panics on error.
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
+// Instantiates a new [ListView] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 func NewListViewDlg(parent Parent, ctrlId uint16, contextMenuId uint16, layout LAY) *ListView {
 	hInst, _ := win.GetModuleHandle("")
 
@@ -207,7 +201,7 @@ func (me *ListView) ContextMenu() win.HMENU {
 	return me.hContextMenu
 }
 
-// Returns the embedded Header of the list view, or nil if none.
+// Returns the embedded [Header] of the list view, or nil if none.
 func (me *ListView) Header() *Header {
 	return me.header
 }
@@ -303,7 +297,7 @@ func (me *ListView) View() co.LV_VIEW {
 	return co.LV_VIEW(viewRet)
 }
 
-// Options for ui.NewListView(); returned by ui.OptsListView().
+// Options for [NewListView]; returned by [OptsListView].
 type VarOptsListView struct {
 	ctrlId      uint16
 	layout      LAY
@@ -316,7 +310,7 @@ type VarOptsListView struct {
 	contextMenu win.HMENU
 }
 
-// Options for ui.NewListView().
+// Options for [NewListView].
 func OptsListView() *VarOptsListView {
 	return &VarOptsListView{
 		size:       win.SIZE{Cx: int32(DpiX(120)), Cy: int32(DpiY(120))},
@@ -338,29 +332,25 @@ func (o *VarOptsListView) CtrlId(id uint16) *VarOptsListView { o.ctrlId = id; re
 func (o *VarOptsListView) Layout(l LAY) *VarOptsListView { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsListView) Position(x, y int) *VarOptsListView {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control size in pixels, passed to [CreateWindowEx].
+// Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(120, 120).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsListView) Size(cx int, cy int) *VarOptsListView {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
 }
 
-// List view control [style], passed to [CreateWindowEx].
+// List view control [style], passed to [win.CreateWindowEx].
 //
 // Since the image lists are managed by the control, co.LVS_SHAREIMAGELISTS
 // won't be allowed.
@@ -368,7 +358,6 @@ func (o *VarOptsListView) Size(cx int, cy int) *VarOptsListView {
 // Defaults to co.LVS_REPORT | co.LVS_NOSORTHEADER | co.LVS_SHOWSELALWAYS.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/list-view-window-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsListView) CtrlStyle(s co.LVS) *VarOptsListView {
 	o.ctrlStyle = s &^ co.LVS_SHAREIMAGELISTS
 	return o
@@ -381,18 +370,14 @@ func (o *VarOptsListView) CtrlStyle(s co.LVS) *VarOptsListView {
 // [extended style]: https://learn.microsoft.com/en-us/windows/win32/controls/extended-list-view-styles
 func (o *VarOptsListView) CtrlExStyle(s co.LVS_EX) *VarOptsListView { o.ctrlExStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsListView) WndStyle(s co.WS) *VarOptsListView { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT | co.WS_EX_CLIENTEDGE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsListView) WndExStyle(s co.WS_EX) *VarOptsListView { o.wndExStyle = s; return o }
 
 // Context menu popup.

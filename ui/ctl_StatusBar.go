@@ -19,9 +19,7 @@ type StatusBar struct {
 	Parts  CollectionStatusBarParts // Methods to interact with the parts collection.
 }
 
-// Creates a new Static with [CreateWindowEx].
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
+// Creates a new [StatusBar] with [win.CreateWindowEx].
 func NewStatusBar(parent Parent) *StatusBar {
 	ctrlId := nextCtrlId() // always give it an auto ID
 	me := &StatusBar{

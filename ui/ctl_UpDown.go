@@ -17,7 +17,7 @@ type UpDown struct {
 	events EventsUpDown
 }
 
-// Creates a new UpDown with [CreateWindowEx].
+// Creates a new [UpDown] with [win.CreateWindowEx].
 //
 // If co.UDS_AUTOBUDDY control style is set, the UpDown will use the immediately
 // previous control – usually an Edit – as its buddy, attaching itself to it.
@@ -38,8 +38,6 @@ type UpDown struct {
 //		ui.OptsUpDown().
 //			Range(0, 10),
 //	)
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewUpDown(parent Parent, opts *VarOptsUpDown) *UpDown {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &UpDown{
@@ -67,13 +65,11 @@ func NewUpDown(parent Parent, opts *VarOptsUpDown) *UpDown {
 	return me
 }
 
-// Instantiates a new Header to be loaded from a dialog resource with
-// [GetDlgItem].
+// Instantiates a new [UpDown] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 //
 // If co.UDS_AUTOBUDDY control style is set, the UpDown will use the immediately
 // previous control – usually an Edit – as its buddy, attaching itself to it.
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func NewUpDownDlg(parent Parent, ctrlId uint16, layout LAY) *UpDown {
 	me := &UpDown{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -160,7 +156,7 @@ func (me *UpDown) Value() (int, bool) {
 	return int(ret), true
 }
 
-// Options for ui.NewUpDown(); returned by ui.OptsUpDown().
+// Options for [NewUpDown]; returned by [OptsUpDown].
 type VarOptsUpDown struct {
 	ctrlId     uint16
 	layout     LAY
@@ -175,7 +171,7 @@ type VarOptsUpDown struct {
 	value      int
 }
 
-// Options for ui.NewUpDown().
+// Options for [NewUpDown].
 func OptsUpDown() *VarOptsUpDown {
 	return &VarOptsUpDown{
 		height:    int32(DpiY(50)),
@@ -197,25 +193,21 @@ func (o *VarOptsUpDown) CtrlId(id uint16) *VarOptsUpDown { o.ctrlId = id; return
 func (o *VarOptsUpDown) Layout(l LAY) *VarOptsUpDown { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsUpDown) Position(x, y int) *VarOptsUpDown {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control height in pixels, passed to [CreateWindowEx].
+// Control height in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.DpiY(50).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsUpDown) Height(h int) *VarOptsUpDown { o.height = int32(h); return o }
 
-// Up-down control [style], passed to [CreateWindowEx].
+// Up-down control [style], passed to [win.CreateWindowEx].
 //
 // If co.UDS_AUTOBUDDY is set, the UpDown will use the immediately previous
 // control – usually an Edit – as its buddy, attaching itself to it.
@@ -223,21 +215,16 @@ func (o *VarOptsUpDown) Height(h int) *VarOptsUpDown { o.height = int32(h); retu
 // Defaults to co.UDS_AUTOBUDDY | co.UDS_SETBUDDYINT | co.UDS_ALIGNRIGHT | co.UDS_ARROWKEYS | co.UDS_HOTTRACK.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/up-down-control-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsUpDown) CtrlStyle(s co.UDS) *VarOptsUpDown { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsUpDown) WndStyle(s co.WS) *VarOptsUpDown { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsUpDown) WndExStyle(s co.WS_EX) *VarOptsUpDown { o.wndExStyle = s; return o }
 
 // Value radix. Must be 10 (decimal) or 16 (hexadecimal).

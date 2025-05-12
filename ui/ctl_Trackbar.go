@@ -18,7 +18,7 @@ type Trackbar struct {
 	events EventsTrackbar
 }
 
-// Creates a new Trackbar with [CreateWindowEx].
+// Creates a new [Trackbar] with [win.CreateWindowEx].
 //
 // # Example
 //
@@ -34,8 +34,6 @@ type Trackbar struct {
 //	trackbar.On().WmHScroll(func(_ WmScroll) {
 //		println("Pos", trackbar.Pos())
 //	})
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewTrackbar(parent Parent, opts *VarOptsTrackbar) *Trackbar {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Trackbar{
@@ -64,10 +62,8 @@ func NewTrackbar(parent Parent, opts *VarOptsTrackbar) *Trackbar {
 	return me
 }
 
-// Instantiates a new Button to be loaded from a dialog resource with
-// [GetDlgItem].
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
+// Instantiates a new [Trackbar] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 func NewTrackbarDlg(parent Parent, ctrlId uint16, layout LAY) *Trackbar {
 	me := &Trackbar{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -145,7 +141,7 @@ func (me *Trackbar) SetRange(min, max int) *Trackbar {
 	return me
 }
 
-// Options for ui.NewTrackbar(); returned by ui.OptsTrackbar().
+// Options for [NewTrackbar]; returned by [OptsTrackbar].
 type VarOptsTrackbar struct {
 	ctrlId     uint16
 	layout     LAY
@@ -160,7 +156,7 @@ type VarOptsTrackbar struct {
 	value      int
 }
 
-// Options for ui.NewTrackbar().
+// Options for [NewTrackbar].
 func OptsTrackbar() *VarOptsTrackbar {
 	return &VarOptsTrackbar{
 		size:      win.SIZE{Cx: int32(DpiX(175)), Cy: int32(DpiY(28))},
@@ -182,48 +178,39 @@ func (o *VarOptsTrackbar) CtrlId(id uint16) *VarOptsTrackbar { o.ctrlId = id; re
 func (o *VarOptsTrackbar) Layout(l LAY) *VarOptsTrackbar { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTrackbar) Position(x, y int) *VarOptsTrackbar {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control size in pixels, passed to [CreateWindowEx].
+// Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(175, 28).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTrackbar) Size(cx int, cy int) *VarOptsTrackbar {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
 }
 
-// Trackbar control [style], passed to [CreateWindowEx].
+// Trackbar control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.TBS_AUTOTICKS | co.TBS_HORZ.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/trackbar-control-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTrackbar) CtrlStyle(s co.TBS) *VarOptsTrackbar { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE | co.WS_TABSTOP | co.WS_GROUP.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTrackbar) WndStyle(s co.WS) *VarOptsTrackbar { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTrackbar) WndExStyle(s co.WS_EX) *VarOptsTrackbar { o.wndExStyle = s; return o }
 
 // Number of positions of page up/down.

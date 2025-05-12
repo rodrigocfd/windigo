@@ -20,9 +20,7 @@ type TreeView struct {
 	Items     CollectionTreeViewItems       // Methods to interact with the items collection.
 }
 
-// Creates a new TreeView with [CreateWindowEx].
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
+// Creates a new [TreeView] with [win.CreateWindowEx].
 func NewTreeView(parent Parent, opts *VarOptsTreeView) *TreeView {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &TreeView{
@@ -45,10 +43,8 @@ func NewTreeView(parent Parent, opts *VarOptsTreeView) *TreeView {
 	return me
 }
 
-// Instantiates a new TreeView to be loaded from a dialog resource with
-// [GetDlgItem].
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
+// Instantiates a new [TreeView] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 func NewTreeViewDlg(parent Parent, ctrlId uint16, layout LAY) *TreeView {
 	me := &TreeView{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -126,7 +122,7 @@ func (me *TreeView) SetExtendedStyle(doSet bool, style co.TVS_EX) *TreeView {
 	return me
 }
 
-// Options for ui.NewTreeView(); returned by ui.OptsTreeView().
+// Options for [NewTreeView]; returned by [OptsTreeView].
 type VarOptsTreeView struct {
 	ctrlId      uint16
 	layout      LAY
@@ -138,7 +134,7 @@ type VarOptsTreeView struct {
 	wndExStyle  co.WS_EX
 }
 
-// Options for ui.NewTreeView().
+// Options for [NewTreeView].
 func OptsTreeView() *VarOptsTreeView {
 	return &VarOptsTreeView{
 		size:       win.SIZE{Cx: int32(DpiX(120)), Cy: int32(DpiY(120))},
@@ -160,34 +156,29 @@ func (o *VarOptsTreeView) CtrlId(id uint16) *VarOptsTreeView { o.ctrlId = id; re
 func (o *VarOptsTreeView) Layout(l LAY) *VarOptsTreeView { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTreeView) Position(x, y int) *VarOptsTreeView {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control size in pixels, passed to [CreateWindowEx].
+// Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(120, 120).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTreeView) Size(cx int, cy int) *VarOptsTreeView {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
 }
 
-// Tree view control [style], passed to [CreateWindowEx].
+// Tree view control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.TVS_HASLINES | co.TVS_LINESATROOT | co.TVS_SHOWSELALWAYS | co.TVS_HASBUTTONS.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-control-window-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTreeView) CtrlStyle(s co.TVS) *VarOptsTreeView { o.ctrlStyle = s; return o }
 
 // Tree view control [extended style].
@@ -197,18 +188,14 @@ func (o *VarOptsTreeView) CtrlStyle(s co.TVS) *VarOptsTreeView { o.ctrlStyle = s
 // [extended style]: https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-control-window-extended-styles
 func (o *VarOptsTreeView) CtrlExStyle(s co.TVS_EX) *VarOptsTreeView { o.ctrlExStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTreeView) WndStyle(s co.WS) *VarOptsTreeView { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT | co.WS_EX_CLIENTEDGE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTreeView) WndExStyle(s co.WS_EX) *VarOptsTreeView { o.wndExStyle = s; return o }
 
 // Native [tree view] control events.

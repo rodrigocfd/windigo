@@ -18,9 +18,7 @@ type ProgressBar struct {
 	isMarquee bool
 }
 
-// Creates a new ProgressBar with [CreateWindowEx].
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
+// Creates a new [ProgressBar] with [win.CreateWindowEx].
 func NewProgressBar(parent Parent, opts *VarOptsProgressBar) *ProgressBar {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &ProgressBar{
@@ -47,10 +45,8 @@ func NewProgressBar(parent Parent, opts *VarOptsProgressBar) *ProgressBar {
 	return me
 }
 
-// Instantiates a new ProgressBar to be loaded from a dialog resource with
-// [GetDlgItem].
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
+// Instantiates a new [ProgressBar] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 func NewProgressBarDlg(parent Parent, ctrlId uint16, layout LAY) *ProgressBar {
 	me := &ProgressBar{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -142,7 +138,7 @@ func (me *ProgressBar) SetState(state co.PBST) *ProgressBar {
 	return me
 }
 
-// Options for ui.NewProgressBar(); returned by ui.OptsProgressBar().
+// Options for [NewProgressBar]; returned by [OptsProgressBar].
 type VarOptsProgressBar struct {
 	ctrlId     uint16
 	layout     LAY
@@ -157,7 +153,7 @@ type VarOptsProgressBar struct {
 	state      co.PBST
 }
 
-// Options for ui.NewProgressBar().
+// Options for [NewProgressBar].
 func OptsProgressBar() *VarOptsProgressBar {
 	return &VarOptsProgressBar{
 		size:      win.SIZE{Cx: int32(DpiX(140)), Cy: int32(DpiY(26))},
@@ -179,48 +175,39 @@ func (o *VarOptsProgressBar) CtrlId(id uint16) *VarOptsProgressBar { o.ctrlId = 
 func (o *VarOptsProgressBar) Layout(l LAY) *VarOptsProgressBar { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsProgressBar) Position(x, y int) *VarOptsProgressBar {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control size in pixels, passed to [CreateWindowEx].
+// Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(140, 26).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsProgressBar) Size(cx int, cy int) *VarOptsProgressBar {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
 }
 
-// Progress bar control [style], passed to [CreateWindowEx].
+// Progress bar control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.PBS_SMOOTH.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/progress-bar-control-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsProgressBar) CtrlStyle(s co.PBS) *VarOptsProgressBar { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsProgressBar) WndStyle(s co.WS) *VarOptsProgressBar { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsProgressBar) WndExStyle(s co.WS_EX) *VarOptsProgressBar { o.wndExStyle = s; return o }
 
 // Minimum and maximum range.

@@ -7,7 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Manages a group of native [radio buttons].
+// Manages a group of native [RadioButton] controls.
 //
 // [radio buttons]: https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioGroup struct {
@@ -15,7 +15,7 @@ type RadioGroup struct {
 	events EventsRadioGroup
 }
 
-// Creates RadioButton controls with [CreateWindowEx].
+// Creates the [RadioButton] controls with [win.CreateWindowEx].
 //
 // Panics if the number of radio buttons is zero.
 //
@@ -33,8 +33,6 @@ type RadioGroup struct {
 //			Position(260, 145).
 //			Selected(true),
 //	)
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewRadioGroup(parent Parent, allOpts ...*VarOptsRadioButton) *RadioGroup {
 	if len(allOpts) == 0 {
 		panic("Cannot create a RadioGroup without radio buttons.")
@@ -79,12 +77,10 @@ func NewRadioGroup(parent Parent, allOpts ...*VarOptsRadioButton) *RadioGroup {
 	return me
 }
 
-// Instantiates CheckBox controls to be loaded from a dialog resource with
-// [GetDlgItem].
+// Instantiates the [RadioButton] controls to be loaded from a dialog resource
+// with [win.HWND.GetDlgItem].
 //
 // Panics if the number of radio buttons is zero.
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func NewRadioGroupDlg(parent Parent, layout LAY, ctrlIds ...uint16) *RadioGroup {
 	if len(ctrlIds) == 0 {
 		panic("Cannot create a RadioGroup without radio buttons.")
@@ -114,8 +110,8 @@ func NewRadioGroupDlg(parent Parent, layout LAY, ctrlIds ...uint16) *RadioGroup 
 	return me
 }
 
-// Exposes all the control notifications the can be handled for all radio
-// buttons at once.
+// Exposes all the control notifications the can be handled for all
+// [RadioButton] controls at once.
 //
 // Panics if called after the controls have been created.
 func (me *RadioGroup) On() *EventsRadioGroup {
@@ -125,16 +121,15 @@ func (me *RadioGroup) On() *EventsRadioGroup {
 	return &me.events
 }
 
-// Returns the number of radio buttons.
+// Returns the number of [RadioButton] controls.
 func (me *RadioGroup) Count() uint {
 	return uint(len(me.radios))
 }
 
-// Enables or disables all radio buttons at once with [EnableWindow].
+// Enables or disables all [RadioButton] controls at once with
+// [win.HWND.EnableWindow].
 //
 // Returns the same object, so further operations can be chained.
-//
-// [EnableWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablewindow
 func (me *RadioGroup) Enable(enable bool) *RadioGroup {
 	for _, radio := range me.radios {
 		radio.hWnd.EnableWindow(enable)
@@ -142,12 +137,12 @@ func (me *RadioGroup) Enable(enable bool) *RadioGroup {
 	return me
 }
 
-// Returns the radio button at the given index.
+// Returns the [RadioButton] at the given index.
 func (me *RadioGroup) Get(index uint) *RadioButton {
 	return me.radios[index]
 }
 
-// Returns the radio button with the given control ID, or nil if none.
+// Returns the [RadioButton] with the given control ID, or nil if none.
 func (me *RadioGroup) GetById(ctrlId uint16) *RadioButton {
 	for _, radio := range me.radios {
 		if radio.CtrlId() == ctrlId {
@@ -157,7 +152,7 @@ func (me *RadioGroup) GetById(ctrlId uint16) *RadioButton {
 	return nil
 }
 
-// Returns the selected radio button, or nil if none.
+// Returns the selected [RadioButton], or nil if none.
 func (me *RadioGroup) Selected() *RadioButton {
 	for _, radio := range me.radios {
 		if radio.IsSelected() {

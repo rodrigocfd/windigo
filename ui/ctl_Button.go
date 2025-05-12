@@ -17,7 +17,7 @@ type Button struct {
 	events EventsButton
 }
 
-// Creates a new Button with [CreateWindowEx].
+// Creates a new [Button] with [win.CreateWindowEx].
 //
 // # Example
 //
@@ -29,8 +29,6 @@ type Button struct {
 //			Text("Click").
 //			Position(ui.Dpi(20, 10)),
 //	)
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewButton(parent Parent, opts *VarOptsButton) *Button {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Button{
@@ -48,8 +46,8 @@ func NewButton(parent Parent, opts *VarOptsButton) *Button {
 	return me
 }
 
-// Instantiates a new Button to be loaded from a dialog resource with
-// [GetDlgItem].
+// Instantiates a new [Button] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 //
 // # Example
 //
@@ -59,8 +57,6 @@ func NewButton(parent Parent, opts *VarOptsButton) *Button {
 //
 //	btn := ui.NewButtonDlg(
 //		wndOwner, ID_BTN, ui.LAY_NONE_NONE)
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func NewButtonDlg(parent Parent, ctrlId uint16, layout LAY) *Button {
 	me := &Button{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -84,19 +80,15 @@ func (me *Button) On() *EventsButton {
 	return &me.events
 }
 
-// Calls [SetWindowText].
+// Calls [win.HWND.SetWindowText].
 //
 // Returns the same object, so further operations can be chained.
-//
-// [SetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowtextw
 func (me *Button) SetText(text string) *Button {
 	me.hWnd.SetWindowText(text)
 	return me
 }
 
-// Calls [GetWindowText].
-//
-// [GetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextw
+// Calls [win.HWND.GetWindowText].
 func (me *Button) Text() string {
 	t, _ := me.hWnd.GetWindowText()
 	return t
@@ -112,7 +104,7 @@ func (me *Button) TriggerClick() *Button {
 	return me
 }
 
-// Options for ui.NewButton(); returned by ui.OptsButton().
+// Options for [NewButton]; returned by [OptsButton].
 type VarOptsButton struct {
 	ctrlId     uint16
 	layout     LAY
@@ -124,7 +116,7 @@ type VarOptsButton struct {
 	wndExStyle co.WS_EX
 }
 
-// Options for ui.NewButton().
+// Options for [NewButton].
 func OptsButton() *VarOptsButton {
 	return &VarOptsButton{
 		size:      win.SIZE{Cx: int32(DpiX(88)), Cy: int32(DpiY(26))},
@@ -144,59 +136,46 @@ func (o *VarOptsButton) CtrlId(id uint16) *VarOptsButton { o.ctrlId = id; return
 // Defaults to ui.LAY_NONE_NONE.
 func (o *VarOptsButton) Layout(l LAY) *VarOptsButton { o.layout = l; return o }
 
-// Text to be displayed, passed to [CreateWindowEx].
+// Text to be displayed, passed to [win.CreateWindowEx].
 //
 // Defaults to empty string.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsButton) Text(t string) *VarOptsButton { o.text = t; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsButton) Position(x, y int) *VarOptsButton {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control height in pixels, passed to [CreateWindowEx].
+// Control height in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.DpiX(88).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsButton) Width(w int) *VarOptsButton { o.size.Cx = int32(w); return o }
 
-// Control width in pixels, passed to [CreateWindowEx].
+// Control width in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.DpiY(26).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsButton) Height(h int) *VarOptsButton { o.size.Cy = int32(h); return o }
 
-// Button control [style], passed to [CreateWindowEx].
+// Button control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.BS_PUSHBUTTON.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/button-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsButton) CtrlStyle(s co.BS) *VarOptsButton { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE | co.WS_TABSTOP | co.WS_GROUP.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsButton) WndStyle(s co.WS) *VarOptsButton { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsButton) WndExStyle(s co.WS_EX) *VarOptsButton { o.wndExStyle = s; return o }
 
 // Native [button] control events.

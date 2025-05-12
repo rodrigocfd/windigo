@@ -18,7 +18,7 @@ type Edit struct {
 	events EventsEdit
 }
 
-// Creates a new Edit with [CreateWindowEx].
+// Creates a new [Edit] with [win.CreateWindowEx].
 //
 // # Example
 //
@@ -29,8 +29,6 @@ type Edit struct {
 //		ui.OptsEdit().
 //			Position(ui.Dpi(20, 10)),
 //	)
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewEdit(parent Parent, opts *VarOptsEdit) *Edit {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Edit{
@@ -48,8 +46,8 @@ func NewEdit(parent Parent, opts *VarOptsEdit) *Edit {
 	return me
 }
 
-// Instantiates a new Edit to be loaded from a dialog resource with
-// [GetDlgItem].
+// Instantiates a new [Edit] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 //
 // # Example
 //
@@ -59,8 +57,6 @@ func NewEdit(parent Parent, opts *VarOptsEdit) *Edit {
 //
 //	txt := ui.NewEditDlg(
 //		wndOwner, ID_TXT, ui.LAY_NONE_NONE)
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func NewEditDlg(parent Parent, ctrlId uint16, layout LAY) *Edit {
 	me := &Edit{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -117,11 +113,9 @@ func (me *Edit) SetSelection(startPos, endPos int) *Edit {
 	return me
 }
 
-// Calls [SetWindowText].
+// Calls [win.HWND.SetWindowText].
 //
 // Returns the same object, so further operations can be chained.
-//
-// [SetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowtextw
 func (me *Edit) SetText(text string) *Edit {
 	me.hWnd.SetWindowText(text)
 	return me
@@ -146,15 +140,13 @@ func (me *Edit) ShowBalloonTip(title, text string, icon co.TTI) *Edit {
 	return me
 }
 
-// Calls [GetWindowText].
-//
-// [GetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextw
+// Calls [win.HWND.GetWindowText].
 func (me *Edit) Text() string {
 	t, _ := me.hWnd.GetWindowText()
 	return t
 }
 
-// Options for ui.NewEdit(); returned by ui.OptsEdit().
+// Options for [NewEdit]; returned by [OptsEdit].
 type VarOptsEdit struct {
 	ctrlId     uint16
 	layout     LAY
@@ -166,7 +158,7 @@ type VarOptsEdit struct {
 	wndExStyle co.WS_EX
 }
 
-// Options for ui.NewEdit().
+// Options for [NewEdit].
 func OptsEdit() *VarOptsEdit {
 	return &VarOptsEdit{
 		size:       win.SIZE{Cx: int32(DpiX(100)), Cy: int32(DpiY(23))},
@@ -187,59 +179,46 @@ func (o *VarOptsEdit) CtrlId(id uint16) *VarOptsEdit { o.ctrlId = id; return o }
 // Defaults to ui.LAY_NONE_NONE.
 func (o *VarOptsEdit) Layout(l LAY) *VarOptsEdit { o.layout = l; return o }
 
-// Text to be displayed, passed to [CreateWindowEx].
+// Text to be displayed, passed to [win.CreateWindowEx].
 //
 // Defaults to empty string.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsEdit) Text(t string) *VarOptsEdit { o.text = t; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsEdit) Position(x, y int) *VarOptsEdit {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control width in pixels, passed to [CreateWindowEx].
+// Control width in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.DpiX(100).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsEdit) Width(w int) *VarOptsEdit { o.size.Cx = int32(w); return o }
 
-// Control height in pixels, passed to [CreateWindowEx].
+// Control height in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.DpiY(23).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsEdit) Height(h int) *VarOptsEdit { o.size.Cy = int32(h); return o }
 
-// Edit control [style], passed to [CreateWindowEx].
+// Edit control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.ES_AUTOHSCROLL | co.ES_NOHIDESEL.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/edit-control-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsEdit) CtrlStyle(s co.ES) *VarOptsEdit { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE | co.WS_TABSTOP | co.WS_GROUP.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsEdit) WndStyle(s co.WS) *VarOptsEdit { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT | co.WS_EX_CLIENTEDGE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsEdit) WndExStyle(s co.WS_EX) *VarOptsEdit { o.wndExStyle = s; return o }
 
 // Native [edit] (text box) control events.

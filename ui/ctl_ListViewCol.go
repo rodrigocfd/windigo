@@ -40,9 +40,9 @@ func (me ListViewCol) Index() int {
 // Retrieves the text justification with [HDM_GETITEM].
 //
 // Possible values:
-//   - HDF_LEFT
-//   - HDF_CENTER
-//   - HDF_RIGHT
+//   - [co.HDF_LEFT]
+//   - [co.HDF_CENTER]
+//   - [co.HDF_RIGHT]
 //
 // Panics if the list view has no header.
 //
@@ -58,9 +58,9 @@ func (me ListViewCol) Justification() co.HDF {
 // Sets the text justification with [LVM_GETHEADER] and [HDM_SETITEM].
 //
 // Possible values:
-//   - HDF_LEFT
-//   - HDF_CENTER
-//   - HDF_RIGHT
+//   - [co.HDF_LEFT]
+//   - [co.HDF_CENTER]
+//   - [co.HDF_RIGHT]
 //
 // Returns the same column, so further operations can be chained.
 //
@@ -105,9 +105,9 @@ func (me ListViewCol) SelectedTexts() []string {
 // Sets the displayed sort arrow with [LVM_GETHEADER] and [HDM_SETITEM].
 //
 // Possible values:
-//   - co.HDF_NONE
-//   - co.HDF_SORTUP
-//   - co.HDF_SORTDOWN
+//   - [co.HDF_NONE]
+//   - [co.HDF_SORTUP]
+//   - [co.HDF_SORTDOWN]
 //
 // Returns the same column, so further operations can be chained.
 //
@@ -198,9 +198,9 @@ func (me ListViewCol) SetWidthToFill() ListViewCol {
 // Retrieves the displayed sort arrow with [HDM_GETITEM].
 //
 // Possible values:
-//   - co.HDF_NONE
-//   - co.HDF_SORTUP
-//   - co.HDF_SORTDOWN
+//   - [co.HDF_NONE]
+//   - [co.HDF_SORTUP]
+//   - [co.HDF_SORTDOWN]
 //
 // Panics if the list view has no header.
 //

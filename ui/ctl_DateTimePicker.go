@@ -18,7 +18,7 @@ type DateTimePicker struct {
 	events EventsDateTimePicker
 }
 
-// Creates a new DateTimePicker with [CreateWindowEx].
+// Creates a new [DateTimePicker] with [win.CreateWindowEx].
 //
 // # Example
 //
@@ -30,8 +30,6 @@ type DateTimePicker struct {
 //			Position(ui.Dpi(210, 20)).
 //			Value(time.Date(1981, 4, 26, 5, 0, 0, 0, time.Local)),
 //	)
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewDateTimePicker(parent Parent, opts *VarOptsDateTimePicker) *DateTimePicker {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &DateTimePicker{
@@ -52,8 +50,8 @@ func NewDateTimePicker(parent Parent, opts *VarOptsDateTimePicker) *DateTimePick
 	return me
 }
 
-// Instantiates a new DateTimePicker to be loaded from a dialog resource with
-// [GetDlgItem].
+// Instantiates a new [DateTimePicker] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 //
 // # Example
 //
@@ -63,8 +61,6 @@ func NewDateTimePicker(parent Parent, opts *VarOptsDateTimePicker) *DateTimePick
 //
 //	dtp := ui.NewDateTimePickerDlg(
 //		wndOwner, ID_DTP, ui.LAY_NONE_NONE)
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func NewDateTimePickerDlg(parent Parent, ctrlId uint16, layout LAY) *DateTimePicker {
 	me := &DateTimePicker{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -116,7 +112,7 @@ func (me *DateTimePicker) Time() time.Time {
 	return st.ToTime()
 }
 
-// Options for ui.NewDateTimePicker(); returned by ui.OptsDateTimePicker().
+// Options for [NewDateTimePicker]; returned by [OptsDateTimePicker].
 type VarOptsDateTimePicker struct {
 	ctrlId     uint16
 	layout     LAY
@@ -128,7 +124,7 @@ type VarOptsDateTimePicker struct {
 	value      time.Time
 }
 
-// Options for ui.NewDateTimePicker().
+// Options for [NewDateTimePicker].
 func OptsDateTimePicker() *VarOptsDateTimePicker {
 	return &VarOptsDateTimePicker{
 		size:       win.SIZE{Cx: int32(DpiX(230)), Cy: int32(DpiY(23))},
@@ -150,48 +146,39 @@ func (o *VarOptsDateTimePicker) CtrlId(id uint16) *VarOptsDateTimePicker { o.ctr
 func (o *VarOptsDateTimePicker) Layout(l LAY) *VarOptsDateTimePicker { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsDateTimePicker) Position(x, y int) *VarOptsDateTimePicker {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control size in pixels, passed to [CreateWindowEx].
+// Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(230, 23).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsDateTimePicker) Size(cx int, cy int) *VarOptsDateTimePicker {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
 }
 
-// Date and time picker control [style], passed to [CreateWindowEx].
+// Date and time picker control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.DTS_LONGDATEFORMAT.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-control-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsDateTimePicker) CtrlStyle(s co.DTS) *VarOptsDateTimePicker { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsDateTimePicker) WndStyle(s co.WS) *VarOptsDateTimePicker { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT | co.WS_EX_CLIENTEDGE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsDateTimePicker) WndExStyle(s co.WS_EX) *VarOptsDateTimePicker {
 	o.wndExStyle = s
 	return o
@@ -199,7 +186,7 @@ func (o *VarOptsDateTimePicker) WndExStyle(s co.WS_EX) *VarOptsDateTimePicker {
 
 // Initial value.
 //
-// Defaults to time.Now().
+// Defaults to [time.Now].
 func (o *VarOptsDateTimePicker) Value(t time.Time) *VarOptsDateTimePicker { o.value = t; return o }
 
 // Native [date and time picker] control events.

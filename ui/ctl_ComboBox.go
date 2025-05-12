@@ -16,7 +16,7 @@ type ComboBox struct {
 	Items  CollectionComboBoxItems // Methods to interact with the items collection.
 }
 
-// Creates a new ComboBox with [CreateWindowEx].
+// Creates a new [ComboBox] with [win.CreateWindowEx].
 //
 // # Example
 //
@@ -29,8 +29,6 @@ type ComboBox struct {
 //			Texts("Avocado", "Banana", "Pineapple").
 //			Selected(2),
 //	)
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &ComboBox{
@@ -52,8 +50,8 @@ func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
 	return me
 }
 
-// Instantiates a new ComboBox to be loaded from a dialog resource with
-// [GetDlgItem].
+// Instantiates a new [ComboBox] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 //
 // # Example
 //
@@ -63,8 +61,6 @@ func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
 //
 //	cmb := ui.NewComboBoxDlg(
 //		wndOwner, ID_CMB, ui.LAY_NONE_NONE)
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func NewComboBoxDlg(parent Parent, ctrlId uint16, layout LAY) *ComboBox {
 	me := &ComboBox{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -95,7 +91,7 @@ func (me *ComboBox) Text() string {
 	return txt
 }
 
-// Options for ui.NewComboBox(); returned by ui.OptsComboBox().
+// Options for [NewComboBox]; returned by [OptsComboBox].
 type VarOptsComboBox struct {
 	ctrlId     uint16
 	layout     LAY
@@ -109,7 +105,7 @@ type VarOptsComboBox struct {
 	selected int
 }
 
-// Options for ui.NewComboBox().
+// Options for [NewComboBox].
 func OptsComboBox() *VarOptsComboBox {
 	return &VarOptsComboBox{
 		width:     DpiX(100),
@@ -131,44 +127,35 @@ func (o *VarOptsComboBox) CtrlId(id uint16) *VarOptsComboBox { o.ctrlId = id; re
 func (o *VarOptsComboBox) Layout(l LAY) *VarOptsComboBox { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsComboBox) Position(x, y int) *VarOptsComboBox {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control width in pixels, passed to [CreateWindowEx].
+// Control width in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(100).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsComboBox) Width(w int) *VarOptsComboBox { o.width = w; return o }
 
-// Combo box control [style], passed to [CreateWindowEx].
+// Combo box control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.CBS_DROPDOWNLIST.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/combo-box-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsComboBox) CtrlStyle(s co.CBS) *VarOptsComboBox { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE | co.WS_TABSTOP | co.WS_GROUP.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsComboBox) WndStyle(s co.WS) *VarOptsComboBox { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsComboBox) WndExStyle(s co.WS_EX) *VarOptsComboBox { o.wndExStyle = s; return o }
 
 // Texts to be added to the ComboBox.

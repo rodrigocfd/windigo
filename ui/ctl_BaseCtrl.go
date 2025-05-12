@@ -41,10 +41,9 @@ func (me *_BaseCtrl) CtrlId() uint16 {
 // If parent is a dialog, sets the focus by sending [WM_NEXTDLGCTL]. This draws
 // the borders correctly in some undefined controls, like buttons.
 //
-// Otherwise, calls [SetFocus].
+// Otherwise, calls [win.HWND.SetFocus].
 //
 // [WM_NEXTDLGCTL]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-nextdlgctl
-// [SetFocus]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setfocus
 func (me *_BaseCtrl) Focus() {
 	hParent, _ := me.hWnd.GetAncestor(co.GA_PARENT)
 	isDialog, _ := hParent.IsDialog()

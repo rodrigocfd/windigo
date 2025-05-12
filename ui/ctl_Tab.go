@@ -20,7 +20,7 @@ type Tab struct {
 	Items    CollectionTabItems // Methods to interact with the items collection.
 }
 
-// Creates a new Tab with [CreateWindowEx].
+// Creates a new [Tab] with [win.CreateWindowEx].
 //
 // # Example
 //
@@ -40,8 +40,6 @@ type Tab struct {
 //				ui.TabIns{Title: "Second", Content: child2},
 //			),
 //	)
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Tab{
@@ -69,9 +67,8 @@ func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 	return me
 }
 
-// Instantiates a new Tab to be loaded from a dialog resource with [GetDlgItem].
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
+// Instantiates a new [Tab] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 func NewTabDlg(parent Parent, ctrlId uint16, layout LAY, items ...TabIns) *Tab {
 	me := &Tab{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -126,7 +123,7 @@ func (me *Tab) SetExtendedStyle(doSet bool, style co.TCS_EX) *Tab {
 	return me
 }
 
-// Options for ui.NewTab(); returned by ui.OptsTab().
+// Options for [NewTab]; returned by [OptsTab].
 type VarOptsTab struct {
 	ctrlId      uint16
 	layout      LAY
@@ -141,15 +138,13 @@ type VarOptsTab struct {
 	selected int
 }
 
-// Title and content of a tab to be added to a [tab] control in ui.NewTab().
-//
-// [tab]: https://learn.microsoft.com/en-us/windows/win32/controls/tab-controls
+// Title and content of a tab to be added to a [Tab] control in [NewTab].
 type TabIns struct {
 	Title   string   // Title of the tab.
 	Content *Control // Custom control to be rendered inside the tab.
 }
 
-// Options for ui.NewTab().
+// Options for [NewTab].
 func OptsTab() *VarOptsTab {
 	return &VarOptsTab{
 		size:     win.SIZE{Cx: int32(DpiX(80)), Cy: int32(DpiY(50))},
@@ -169,34 +164,29 @@ func (o *VarOptsTab) CtrlId(id uint16) *VarOptsTab { o.ctrlId = id; return o }
 func (o *VarOptsTab) Layout(l LAY) *VarOptsTab { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTab) Position(x, y int) *VarOptsTab {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control size in pixels, passed to [CreateWindowEx].
+// Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(80, 50).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTab) Size(cx int, cy int) *VarOptsTab {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
 }
 
-// Tab control [style], passed to [CreateWindowEx].
+// Tab control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.TCS_NONE.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/tab-control-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTab) CtrlStyle(s co.TCS) *VarOptsTab { o.ctrlStyle = s; return o }
 
 // Tab control [extended style].
@@ -206,18 +196,14 @@ func (o *VarOptsTab) CtrlStyle(s co.TCS) *VarOptsTab { o.ctrlStyle = s; return o
 // [extended style]: https://learn.microsoft.com/en-us/windows/win32/controls/tab-control-extended-styles
 func (o *VarOptsTab) CtrlExStyle(s co.TCS_EX) *VarOptsTab { o.ctrlExStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTab) WndStyle(s co.WS) *VarOptsTab { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsTab) WndExStyle(s co.WS_EX) *VarOptsTab { o.wndExStyle = s; return o }
 
 // Items to be added as soon as the control is created.

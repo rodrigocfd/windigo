@@ -18,7 +18,7 @@ type MonthCalendar struct {
 	events EventsMonthCalendar
 }
 
-// Creates a new MonthCalendar with [CreateWindowEx].
+// Creates a new [MonthCalendar] with [win.CreateWindowEx].
 //
 // # Example
 //
@@ -30,8 +30,6 @@ type MonthCalendar struct {
 //			Position(ui.Dpi(20, 135)).
 //			Value(time.Date(1981, 4, 26, 5, 0, 0, 0, time.Local)),
 //	)
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &MonthCalendar{
@@ -59,8 +57,8 @@ func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar 
 	return me
 }
 
-// Instantiates a new MonthCalendar to be loaded from a dialog resource with
-// [GetDlgItem].
+// Instantiates a new [MonthCalendar] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 //
 // # Example
 //
@@ -70,8 +68,6 @@ func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar 
 //
 //	monthCal := ui.NewMonthCalendarDlg(
 //		wndOwner, ID_MCAL, ui.LAY_NONE_NONE)
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func NewMonthCalendarDlg(parent Parent, ctrlId uint16, layout LAY) *MonthCalendar {
 	me := &MonthCalendar{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -116,7 +112,7 @@ func (me *MonthCalendar) SetDate(date time.Time) *MonthCalendar {
 	return me
 }
 
-// Options for ui.NewMonthCalendar(); returned by ui.OptsMonthCalendar().
+// Options for [NewMonthCalendar]; returned by [OptsMonthCalendar].
 type VarOptsMonthCalendar struct {
 	ctrlId     uint16
 	layout     LAY
@@ -127,7 +123,7 @@ type VarOptsMonthCalendar struct {
 	value      time.Time
 }
 
-// Options for ui.NewMonthCalendar().
+// Options for [NewMonthCalendar].
 func OptsMonthCalendar() *VarOptsMonthCalendar {
 	return &VarOptsMonthCalendar{
 		wndStyle: co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
@@ -146,37 +142,30 @@ func (o *VarOptsMonthCalendar) CtrlId(id uint16) *VarOptsMonthCalendar { o.ctrlI
 func (o *VarOptsMonthCalendar) Layout(l LAY) *VarOptsMonthCalendar { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsMonthCalendar) Position(x, y int) *VarOptsMonthCalendar {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Month calendar control [style], passed to [CreateWindowEx].
+// Month calendar control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.MCS_NONE.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/month-calendar-control-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsMonthCalendar) CtrlStyle(s co.MCS) *VarOptsMonthCalendar { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE | co.WS_TABSTOP | co.WS_GROUP.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsMonthCalendar) WndStyle(s co.WS) *VarOptsMonthCalendar { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsMonthCalendar) WndExStyle(s co.WS_EX) *VarOptsMonthCalendar {
 	o.wndExStyle = s
 	return o
@@ -184,7 +173,7 @@ func (o *VarOptsMonthCalendar) WndExStyle(s co.WS_EX) *VarOptsMonthCalendar {
 
 // Initial value.
 //
-// Defaults to time.Now().
+// Defaults to [time.Now].
 func (o *VarOptsMonthCalendar) Value(t time.Time) *VarOptsMonthCalendar { o.value = t; return o }
 
 // Native [month calendar] control events.

@@ -14,7 +14,7 @@ import (
 // The items collection.
 //
 // You cannot create this object directly, it will be created automatically
-// by the owning control.
+// by the owning [Header].
 type CollectionHeaderItems struct {
 	owner *Header
 }

@@ -35,7 +35,7 @@ func (me StatusBarPart) Index() int {
 
 // Sets the icon with [SB_SETICON].
 //
-// The icon is shared, the StatusBar doesn't own it.
+// The icon is shared, the [StatusBar] doesn't own it.
 //
 // Returns the same part, so further operations can be chained.
 //

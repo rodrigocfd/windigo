@@ -19,9 +19,7 @@ type Toolbar struct {
 	Buttons CollectionToolbarButtons // Methods to interact with the buttons collection.
 }
 
-// Creates a new Trackbar with [CreateWindowEx].
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
+// Creates a new [Toolbar] with [win.CreateWindowEx].
 func NewToolbar(parent Parent, opts *VarOptsToolbar) *Toolbar {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Toolbar{
@@ -109,7 +107,7 @@ func (me *Toolbar) SetExtendedStyle(doSet bool, style co.TBSTYLE_EX) *Toolbar {
 	return me
 }
 
-// Options for ui.NewToolbar(); returned by ui.OptsToolbar().
+// Options for [NewToolbar]; returned by [OptsToolbar].
 type VarOptsToolbar struct {
 	ctrlId      uint16
 	ctrlStyle   co.TBSTYLE
@@ -118,7 +116,7 @@ type VarOptsToolbar struct {
 	wndExStyle  co.WS_EX
 }
 
-// Options for ui.NewToolbar().
+// Options for [NewToolbar].
 func OptsToolbar() *VarOptsToolbar {
 	return &VarOptsToolbar{
 		ctrlStyle: co.TBSTYLE_BUTTON | co.TBSTYLE_FLAT | co.TBSTYLE_LIST,
@@ -131,12 +129,11 @@ func OptsToolbar() *VarOptsToolbar {
 // Defaults to an auto-generated ID.
 func (o *VarOptsToolbar) CtrlId(id uint16) *VarOptsToolbar { o.ctrlId = id; return o }
 
-// Toolbar control [style], passed to [CreateWindowEx].
+// Toolbar control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.TBSTYLE_BUTTON | co.TBSTYLE_FLAT | co.TBSTYLE_LIST.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-control-and-button-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsToolbar) CtrlStyle(s co.TBSTYLE) *VarOptsToolbar { o.ctrlStyle = s; return o }
 
 // Toolbar control [extended style].
@@ -146,18 +143,14 @@ func (o *VarOptsToolbar) CtrlStyle(s co.TBSTYLE) *VarOptsToolbar { o.ctrlStyle =
 // [extended style]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-extended-styles
 func (o *VarOptsToolbar) CtrlExStyle(s co.TBSTYLE_EX) *VarOptsToolbar { o.ctrlExStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsToolbar) WndStyle(s co.WS) *VarOptsToolbar { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsToolbar) WndExStyle(s co.WS_EX) *VarOptsToolbar { o.wndExStyle = s; return o }
 
 // Native [toolbar] control events.

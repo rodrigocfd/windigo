@@ -11,7 +11,7 @@ import (
 // Native [radio button] control.
 //
 // You cannot create this control directly, it must be created through a
-// RadioGroup.
+// [RadioGroup].
 //
 // [radio button]: https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioButton struct {
@@ -24,14 +24,14 @@ type RadioButton struct {
 //
 // Panics if called after the control has been created.
 //
-// Prefer using the ui.RadioGroup notifications, which can handle all radio
+// Prefer using the [RadioGroup] notifications, which can handle all radio
 // buttons in the group at once.
 func (me *RadioButton) On() *EventsButton {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
 
-// Zero-based index of this radio button within its RadioGroup.
+// Zero-based index of this radio button within its [RadioGroup].
 func (me *RadioButton) Index() uint {
 	return me.index
 }
@@ -81,7 +81,7 @@ func (me *RadioButton) SetTextAndResize(text string) *RadioButton {
 	return me
 }
 
-// Options for ui.NewRadioGroup(); returned by ui.OptsRadioButton().
+// Options for [NewRadioGroup]; returned by [OptsRadioButton].
 type VarOptsRadioButton struct {
 	ctrlId     uint16
 	layout     LAY
@@ -94,7 +94,7 @@ type VarOptsRadioButton struct {
 	selected   bool
 }
 
-// Options for ui.NewRadioGroup().
+// Options for [NewRadioGroup].
 func OptsRadioButton() *VarOptsRadioButton {
 	return &VarOptsRadioButton{
 		ctrlStyle: co.BS_AUTORADIOBUTTON,
@@ -113,56 +113,45 @@ func (o *VarOptsRadioButton) CtrlId(id uint16) *VarOptsRadioButton { o.ctrlId = 
 // Defaults to ui.LAY_NONE_NONE.
 func (o *VarOptsRadioButton) Layout(l LAY) *VarOptsRadioButton { o.layout = l; return o }
 
-// Text to be displayed, passed to [CreateWindowEx].
+// Text to be displayed, passed to [win.CreateWindowEx].
 //
 // Defaults to empty string.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsRadioButton) Text(t string) *VarOptsRadioButton { o.text = t; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsRadioButton) Position(x, y int) *VarOptsRadioButton {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control size in pixels, passed to [CreateWindowEx].
+// Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to fit current text.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsRadioButton) Size(cx int, cy int) *VarOptsRadioButton {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
 }
 
-// Radio button control [style], passed to [CreateWindowEx].
+// Radio button control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.BS_AUTORADIOBUTTON.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/button-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsRadioButton) CtrlStyle(s co.BS) *VarOptsRadioButton { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsRadioButton) WndStyle(s co.WS) *VarOptsRadioButton { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsRadioButton) WndExStyle(s co.WS_EX) *VarOptsRadioButton { o.wndExStyle = s; return o }
 
 // Defines this radio button as initially selected.

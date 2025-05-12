@@ -19,7 +19,7 @@ type Header struct {
 	Items  CollectionHeaderItems // Methods to interact with the items collection.
 }
 
-// Creates a new Header with [CreateWindowEx].
+// Creates a new [Header] with [win.CreateWindowEx].
 //
 // # Example
 //
@@ -31,8 +31,6 @@ type Header struct {
 //			Position(ui.Dpi(260, 240)).
 //			Size(ui.Dpi(200, 23)),
 //	)
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewHeader(parent Parent, opts *VarOptsHeader) *Header {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Header{
@@ -52,8 +50,8 @@ func NewHeader(parent Parent, opts *VarOptsHeader) *Header {
 	return me
 }
 
-// Instantiates a new Header to be loaded from a dialog resource with
-// [GetDlgItem].
+// Instantiates a new [Header] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 //
 // # Example
 //
@@ -63,8 +61,6 @@ func NewHeader(parent Parent, opts *VarOptsHeader) *Header {
 //
 //	header := ui.NewHeaderDlg(
 //		wndOwner, ID_HEADER, ui.LAY_NONE_NONE)
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func NewHeaderDlg(parent Parent, ctrlId uint16, layout LAY) *Header {
 	me := &Header{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -82,7 +78,7 @@ func NewHeaderDlg(parent Parent, ctrlId uint16, layout LAY) *Header {
 	return me
 }
 
-// Instantiates a Header from a ListView control.
+// Instantiates a [Header] from a [ListView] control.
 func newHeaderFromListView(parent Parent) *Header {
 	ctrlId := nextCtrlId()
 	me := &Header{
@@ -95,7 +91,7 @@ func newHeaderFromListView(parent Parent) *Header {
 	return me
 }
 
-// Assigns the HWND to the Header if it belongs to an existing ListView.
+// Assigns the HWND to the [Header] if it belongs to an existing [ListView].
 func (me *Header) assignToListView(hHeader win.HWND) {
 	me._BaseCtrl.hWnd = hHeader
 	hHeader.SetWindowLongPtr(co.GWLP_ID, uintptr(me._BaseCtrl.ctrlId)) // give the header an ID, initially is zero
@@ -140,7 +136,7 @@ func (me *Header) ImageList(which co.HDSIL) win.HIMAGELIST {
 	return hImg
 }
 
-// Options for ui.NewHeader(); returned by ui.OptsHeader().
+// Options for [NewHeader]; returned by [OptsHeader].
 type VarOptsHeader struct {
 	ctrlId     uint16
 	layout     LAY
@@ -151,7 +147,7 @@ type VarOptsHeader struct {
 	wndExStyle co.WS_EX
 }
 
-// Options for ui.NewHeader().
+// Options for [NewHeader].
 func OptsHeader() *VarOptsHeader {
 	return &VarOptsHeader{
 		size:      win.SIZE{Cx: int32(DpiX(100)), Cy: int32(DpiY(23))},
@@ -172,48 +168,39 @@ func (o *VarOptsHeader) CtrlId(id uint16) *VarOptsHeader { o.ctrlId = id; return
 func (o *VarOptsHeader) Layout(l LAY) *VarOptsHeader { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsHeader) Position(x, y int) *VarOptsHeader {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control size in pixels, passed to [CreateWindowEx].
+// Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(100, 23).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsHeader) Size(cx int, cy int) *VarOptsHeader {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
 }
 
-// Header control [style], passed to [CreateWindowEx].
+// Header control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.HDS_BUTTONS | co.HDS_HORZ.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/header-control-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsHeader) CtrlStyle(s co.HDS) *VarOptsHeader { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_GROUP | co.WS_VISIBLE | co.WS_BORDER.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsHeader) WndStyle(s co.WS) *VarOptsHeader { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsHeader) WndExStyle(s co.WS_EX) *VarOptsHeader { o.wndExStyle = s; return o }
 
 // Native [header] control events.

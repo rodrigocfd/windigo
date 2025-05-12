@@ -16,9 +16,7 @@ type Static struct {
 	events EventsStatic
 }
 
-// Creates a new Static with [CreateWindowEx].
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
+// Creates a new [Static] with [win.CreateWindowEx].
 func NewStatic(parent Parent, opts *VarOptsStatic) *Static {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Static{
@@ -39,10 +37,8 @@ func NewStatic(parent Parent, opts *VarOptsStatic) *Static {
 	return me
 }
 
-// Instantiates a new Static to be loaded from a dialog resource with
-// [GetDlgItem].
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
+// Instantiates a new [Static] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 func NewStaticDlg(parent Parent, ctrlId uint16, layout LAY) *Static {
 	me := &Static{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -66,9 +62,7 @@ func (me *Static) On() *EventsStatic {
 	return &me.events
 }
 
-// Calls [SetWindowText] and resizes the control to exactly fit it.
-//
-// [SetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowtextw
+// Calls [win.HWND.SetWindowText] and resizes the control to exactly fit it.
 func (me *Static) SetTextAndResize(text string) *Static {
 	me.hWnd.SetWindowText(text)
 	boundBox, _ := calcTextBoundBox(wutil.RemoveAccelAmpersands(text))
@@ -77,15 +71,13 @@ func (me *Static) SetTextAndResize(text string) *Static {
 	return me
 }
 
-// Calls [GetWindowText].
-//
-// [GetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextw
+// Calls [win.HWND.GetWindowText].
 func (me *Static) Text() string {
 	t, _ := me.hWnd.GetWindowText()
 	return t
 }
 
-// Options for ui.NewStatic(); returned by ui.OptsStatic().
+// Options for [NewStatic]; returned by [OptsStatic].
 type VarOptsStatic struct {
 	ctrlId     uint16
 	layout     LAY
@@ -97,7 +89,7 @@ type VarOptsStatic struct {
 	wndExStyle co.WS_EX
 }
 
-// Options for ui.NewStatic().
+// Options for [NewStatic].
 func OptsStatic() *VarOptsStatic {
 	return &VarOptsStatic{
 		ctrlStyle: co.SS_LEFT | co.SS_NOTIFY,
@@ -116,56 +108,45 @@ func (o *VarOptsStatic) CtrlId(id uint16) *VarOptsStatic { o.ctrlId = id; return
 // Defaults to ui.LAY_NONE_NONE.
 func (o *VarOptsStatic) Layout(l LAY) *VarOptsStatic { o.layout = l; return o }
 
-// Text to be displayed, passed to [CreateWindowEx].
+// Text to be displayed, passed to [win.CreateWindowEx].
 //
 // Defaults to empty string.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsStatic) Text(t string) *VarOptsStatic { o.text = t; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsStatic) Position(x, y int) *VarOptsStatic {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control size in pixels, passed to [CreateWindowEx].
+// Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to fit current text.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsStatic) Size(cx int, cy int) *VarOptsStatic {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
 }
 
-// Static control [style], passed to [CreateWindowEx].
+// Static control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.SS_LEFT | co.SS_NOTIFY.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/static-control-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsStatic) CtrlStyle(s co.SS) *VarOptsStatic { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsStatic) WndStyle(s co.WS) *VarOptsStatic { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsStatic) WndExStyle(s co.WS_EX) *VarOptsStatic { o.wndExStyle = s; return o }
 
 // Native [static] (label) control events.

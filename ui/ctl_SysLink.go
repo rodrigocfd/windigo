@@ -18,9 +18,7 @@ type SysLink struct {
 	events EventsSysLink
 }
 
-// Creates a new SysLink with [CreateWindowEx].
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
+// Creates a new [SysLink] with [win.CreateWindowEx].
 func NewSysLink(parent Parent, opts *VarOptsSysLink) *SysLink {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &SysLink{
@@ -41,10 +39,8 @@ func NewSysLink(parent Parent, opts *VarOptsSysLink) *SysLink {
 	return me
 }
 
-// Instantiates a new SysLink to be loaded from a dialog resource wit
-// [GetDlgItem].
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
+// Instantiates a new [SysLink] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 func NewSysLinkDlg(parent Parent, ctrlId uint16, layout LAY) *SysLink {
 	me := &SysLink{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -68,7 +64,7 @@ func (me *SysLink) On() *EventsSysLink {
 	return &me.events
 }
 
-// Calls [SetWindowText] and resizes the control to exactly fit it.
+// Calls [win.HWND.SetWindowText] and resizes the control to exactly fit it.
 //
 // # Example
 //
@@ -76,8 +72,6 @@ func (me *SysLink) On() *EventsSysLink {
 //
 //	link.SetTextAndResize(
 //		"Link <a href=\"https://google.com\">here</a>")
-//
-// [SetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowtextw
 func (me *SysLink) SetTextAndResize(text string) *SysLink {
 	me.hWnd.SetWindowText(text)
 	boundBox, _ := calcTextBoundBox(wutil.RemoveAccelAmpersands(wutil.RemoveHtmlAnchor(text)))
@@ -86,15 +80,13 @@ func (me *SysLink) SetTextAndResize(text string) *SysLink {
 	return me
 }
 
-// Calls [GetWindowText].
-//
-// [GetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextw
+// Calls [win.HWND.GetWindowText].
 func (me *SysLink) Text() string {
 	t, _ := me.hWnd.GetWindowText()
 	return t
 }
 
-// Options for ui.NewSysLink(); returned by ui.OptsSysLink().
+// Options for [NewSysLink]; returned by [OptsSysLink].
 type VarOptsSysLink struct {
 	ctrlId     uint16
 	layout     LAY
@@ -106,7 +98,7 @@ type VarOptsSysLink struct {
 	wndExStyle co.WS_EX
 }
 
-// Options for ui.NewSysLink().
+// Options for [NewSysLink]
 func OptsSysLink() *VarOptsSysLink {
 	return &VarOptsSysLink{
 		ctrlStyle: co.LWS_TRANSPARENT,
@@ -125,7 +117,7 @@ func (o *VarOptsSysLink) CtrlId(id uint16) *VarOptsSysLink { o.ctrlId = id; retu
 // Defaults to ui.LAY_NONE_NONE.
 func (o *VarOptsSysLink) Layout(l LAY) *VarOptsSysLink { o.layout = l; return o }
 
-// Text to be displayed, passed to [CreateWindowEx]. URLs are embedded using
+// Text to be displayed, passed to [win.CreateWindowEx]. URLs are embedded using
 // HTML anchor syntax.
 //
 // Defaults to empty string.
@@ -134,53 +126,42 @@ func (o *VarOptsSysLink) Layout(l LAY) *VarOptsSysLink { o.layout = l; return o 
 //
 //	ui.OptsSysLink().
 //		Text("Link <a href=\"https://google.com\">here</a>")
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsSysLink) Text(t string) *VarOptsSysLink { o.text = t; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsSysLink) Position(x, y int) *VarOptsSysLink {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control size in pixels, passed to [CreateWindowEx].
+// Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to fit current text.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsSysLink) Size(cx int, cy int) *VarOptsSysLink {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
 }
 
-// SysLink control [style], passed to [CreateWindowEx].
+// SysLink control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.LWS_TRANSPARENT.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/syslink-control-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsSysLink) CtrlStyle(s co.LWS) *VarOptsSysLink { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE | co.WS_TABSTOP | co.WS_GROUP.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsSysLink) WndStyle(s co.WS) *VarOptsSysLink { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsSysLink) WndExStyle(s co.WS_EX) *VarOptsSysLink { o.wndExStyle = s; return o }
 
 // Native [syslink] control events.

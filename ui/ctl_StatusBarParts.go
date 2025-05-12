@@ -22,7 +22,7 @@ func (me *_StatusBarPartData) IsFixedWidth() bool {
 // The parts collection.
 //
 // You cannot create this object directly, it will be created automatically
-// by the owning control.
+// by the owning [StatusBar].
 type CollectionStatusBarParts struct {
 	owner           *StatusBar
 	partsData       []_StatusBarPartData

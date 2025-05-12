@@ -14,7 +14,7 @@ import (
 // The columns collection.
 //
 // You cannot create this object directly, it will be created automatically
-// by the owning control.
+// by the owning [ListView].
 type CollectionListViewCols struct {
 	owner *ListView
 }

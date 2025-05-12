@@ -16,7 +16,7 @@ type CheckBox struct {
 	events EventsButton
 }
 
-// Creates a new CheckBox with [CreateWindowEx].
+// Creates a new [CheckBox] with [win.CreateWindowEx].
 //
 // # Example
 //
@@ -29,8 +29,6 @@ type CheckBox struct {
 //			Position(ui.Dpi(128, 75)).
 //			State(co.BST_CHECKED),
 //	)
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &CheckBox{
@@ -52,8 +50,8 @@ func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 	return me
 }
 
-// Instantiates a new CheckBox to be loaded from a dialog resource with
-// [GetDlgItem].
+// Instantiates a new [CheckBox] to be loaded from a dialog resource with
+// [win.HWND.GetDlgItem].
 //
 // # Example
 //
@@ -63,8 +61,6 @@ func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 //
 //	chk := ui.NewCheckBoxDlg(
 //		wndOwner, ID_CHK, ui.LAY_NONE_NONE)
-//
-// [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func NewCheckBoxDlg(parent Parent, ctrlId uint16, layout LAY) *CheckBox {
 	me := &CheckBox{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -98,7 +94,7 @@ func (me *CheckBox) IsChecked() bool {
 
 // Sets the current check state by sending a [BM_SETCHECK] message.
 //
-// A true value will apply co.BST_CHECKED, otherwise co.BST_UNCHECKED.
+// A true value will apply [co.BST_CHECKED], otherwise [co.BST_UNCHECKED].
 //
 // Returns the same object, so further operations can be chained.
 //
@@ -114,7 +110,7 @@ func (me *CheckBox) SetCheck(checked bool) *CheckBox {
 // Sets the current check state by sending a [BM_SETCHECK] message, then sends
 // a [BN_CLICKED] notification.
 //
-// A true value will apply co.BST_CHECKED, otherwise co.BST_UNCHECKED.
+// A true value will apply [co.BST_CHECKED], otherwise [co.BST_UNCHECKED].
 //
 // Returns the same object, so further operations can be chained.
 //
@@ -173,15 +169,13 @@ func (me *CheckBox) State() co.BST {
 	return co.BST(state)
 }
 
-// Calls [GetWindowText].
-//
-// [GetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextw
+// Calls [win.HWND.GetWindowText].
 func (me *CheckBox) Text() string {
 	t, _ := me.hWnd.GetWindowText()
 	return t
 }
 
-// Options for ui.NewCheckBox(); returned by ui.OptsCheckBox().
+// Options for [NewCheckBox]; returned by [OptsCheckBox].
 type VarOptsCheckBox struct {
 	ctrlId     uint16
 	layout     LAY
@@ -194,7 +188,7 @@ type VarOptsCheckBox struct {
 	state      co.BST
 }
 
-// Options for ui.NewCheckBox().
+// Options for NewCheckBox].
 func OptsCheckBox() *VarOptsCheckBox {
 	return &VarOptsCheckBox{
 		ctrlStyle: co.BS_AUTOCHECKBOX,
@@ -213,56 +207,45 @@ func (o *VarOptsCheckBox) CtrlId(id uint16) *VarOptsCheckBox { o.ctrlId = id; re
 // Defaults to ui.LAY_NONE_NONE.
 func (o *VarOptsCheckBox) Layout(l LAY) *VarOptsCheckBox { o.layout = l; return o }
 
-// Text to be displayed, passed to [CreateWindowEx].
+// Text to be displayed, passed to [win.CreateWindowEx].
 //
 // Defaults to empty string.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsCheckBox) Text(t string) *VarOptsCheckBox { o.text = t; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
-// [CreateWindowEx].
+// [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(0, 0).
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsCheckBox) Position(x, y int) *VarOptsCheckBox {
 	o.position.X = int32(x)
 	o.position.Y = int32(y)
 	return o
 }
 
-// Control size in pixels, passed to [CreateWindowEx].
+// Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to fit current text.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsCheckBox) Size(cx int, cy int) *VarOptsCheckBox {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
 }
 
-// Check box control [style], passed to [CreateWindowEx].
+// Check box control [style], passed to [win.CreateWindowEx].
 //
 // Defaults to co.BS_AUTOCHECKBOX.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/button-styles
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsCheckBox) CtrlStyle(s co.BS) *VarOptsCheckBox { o.ctrlStyle = s; return o }
 
-// Window style, passed to [CreateWindowEx].
+// Window style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_CHILD | co.WS_VISIBLE | co.WS_TABSTOP | co.WS_GROUP.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsCheckBox) WndStyle(s co.WS) *VarOptsCheckBox { o.wndStyle = s; return o }
 
-// Window extended style, passed to [CreateWindowEx].
+// Window extended style, passed to [win.CreateWindowEx].
 //
 // Defaults to co.WS_EX_LEFT.
-//
-// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsCheckBox) WndExStyle(s co.WS_EX) *VarOptsCheckBox { o.wndExStyle = s; return o }
 
 // Sets the initial state of the check box.
