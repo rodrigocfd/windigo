@@ -8,7 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
@@ -168,7 +168,7 @@ var _CreateBindCtx = dll.Ole32.NewProc("CreateBindCtx")
 func OleInitialize() error {
 	ret, _, _ := syscall.SyscallN(_OleInitialize.Addr(),
 		0)
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 var _OleInitialize = dll.Ole32.NewProc("OleInitialize")
@@ -228,7 +228,7 @@ var _ReleaseStgMedium = dll.Ole32.NewProc("ReleaseStgMedium")
 func RevokeDragDrop(hWnd win.HWND) error {
 	ret, _, _ := syscall.SyscallN(_RevokeDragDrop.Addr(),
 		uintptr(hWnd))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 var _RevokeDragDrop = dll.Ole32.NewProc("RevokeDragDrop")

@@ -6,7 +6,7 @@ import (
 	"syscall"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -62,7 +62,7 @@ var _LoadLibraryW = dll.Kernel32.NewProc("LoadLibraryW")
 func (hInst HINSTANCE) FreeLibrary() error {
 	ret, _, err := syscall.SyscallN(_FreeLibrary.Addr(),
 		uintptr(hInst))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _FreeLibrary = dll.Kernel32.NewProc("FreeLibrary")

@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -33,7 +33,7 @@ func GetFileVersionInfo(fileName string, dest []byte) error {
 	ret, _, err := syscall.SyscallN(_GetFileVersionInfoW.Addr(),
 		uintptr(fileName16.UnsafePtr()), 0,
 		uintptr(len(dest)), uintptr(unsafe.Pointer(&dest[0])))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _GetFileVersionInfoW = dll.Version.NewProc("GetFileVersionInfoW")

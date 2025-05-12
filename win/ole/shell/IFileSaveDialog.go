@@ -6,7 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -57,7 +57,7 @@ func (me *IFileSaveDialog) SetSaveAsItem(si *IShellItem) error {
 		(*_IFileSaveDialogVt)(unsafe.Pointer(*me.Ppvt())).SetSaveAsItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(si.Ppvt())))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 type _IFileSaveDialogVt struct {

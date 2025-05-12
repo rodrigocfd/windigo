@@ -8,7 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -93,7 +93,7 @@ var _RegOpenCurrentUser = dll.Advapi32.NewProc("RegOpenCurrentUser")
 func (hKey HKEY) RegCloseKey() error {
 	ret, _, _ := syscall.SyscallN(_RegCloseKey.Addr(),
 		uintptr(hKey))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegCloseKey = dll.Advapi32.NewProc("RegCloseKey")
@@ -105,7 +105,7 @@ func (hKey HKEY) RegCopyTree(subKey string, dest HKEY) error {
 	subKey16 := wstr.NewBufWith[wstr.Stack20](subKey, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(_RegCopyTreeW.Addr(),
 		uintptr(hKey), uintptr(subKey16.UnsafePtr()))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegCopyTreeW = dll.Advapi32.NewProc("RegCopyTreeW")
@@ -145,7 +145,7 @@ func (hKey HKEY) RegDeleteKey(subKey string) error {
 	subKey16 := wstr.NewBufWith[wstr.Stack20](subKey, wstr.ALLOW_EMPTY)
 	ret, _, _ := syscall.SyscallN(_RegDeleteKeyW.Addr(),
 		uintptr(hKey), uintptr(subKey16.UnsafePtr()))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegDeleteKeyW = dll.Advapi32.NewProc("RegDeleteKeyW")
@@ -160,7 +160,7 @@ func (hKey HKEY) RegDeleteKeyEx(subKey string, samDesired co.KEY) error {
 	ret, _, _ := syscall.SyscallN(_RegDeleteKeyExW.Addr(),
 		uintptr(hKey), uintptr(subKey16.UnsafePtr()),
 		uintptr(samDesired&(co.KEY_WOW64_32KEY|co.KEY_WOW64_64KEY)), 0)
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegDeleteKeyExW = dll.Advapi32.NewProc("RegDeleteKeyExW")
@@ -174,7 +174,7 @@ func (hKey HKEY) RegDeleteKeyValue(subKey, valueName string) error {
 
 	ret, _, _ := syscall.SyscallN(_RegDeleteKeyValueW.Addr(),
 		uintptr(hKey), uintptr(subKey16.UnsafePtr()), uintptr(valueName16.UnsafePtr()))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegDeleteKeyValueW = dll.Advapi32.NewProc("RegDeleteKeyValueW")
@@ -186,7 +186,7 @@ func (hKey HKEY) RegDeleteTree(subKey string) error {
 	subKey16 := wstr.NewBufWith[wstr.Stack20](subKey, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(_RegDeleteTreeW.Addr(),
 		uintptr(hKey), uintptr(subKey16.UnsafePtr()))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegDeleteTreeW = dll.Advapi32.NewProc("RegDeleteTreeW")
@@ -198,7 +198,7 @@ func (hKey HKEY) RegDeleteValue(valueName string) error {
 	valueName16 := wstr.NewBufWith[wstr.Stack20](valueName, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(_RegDeleteValueW.Addr(),
 		uintptr(hKey), uintptr(valueName16.UnsafePtr()))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegDeleteValueW = dll.Advapi32.NewProc("RegDeleteValueW")
@@ -209,7 +209,7 @@ var _RegDeleteValueW = dll.Advapi32.NewProc("RegDeleteValueW")
 func (hKey HKEY) RegDisableReflectionKey() error {
 	ret, _, _ := syscall.SyscallN(_RegDisableReflectionKey.Addr(),
 		uintptr(hKey))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegDisableReflectionKey = dll.Advapi32.NewProc("RegDisableReflectionKey")
@@ -220,7 +220,7 @@ var _RegDisableReflectionKey = dll.Advapi32.NewProc("RegDisableReflectionKey")
 func (hKey HKEY) RegEnableReflectionKey() error {
 	ret, _, _ := syscall.SyscallN(_RegEnableReflectionKey.Addr(),
 		uintptr(hKey))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegEnableReflectionKey = dll.Advapi32.NewProc("RegEnableReflectionKey")
@@ -321,7 +321,7 @@ var _RegEnumValueW = dll.Advapi32.NewProc("RegEnumValueW")
 func (hKey HKEY) RegFlushKey() error {
 	ret, _, _ := syscall.SyscallN(_RegFlushKey.Addr(),
 		uintptr(hKey))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegFlushKey = dll.Advapi32.NewProc("RegFlushKey")
@@ -389,7 +389,7 @@ func (hKey HKEY) RegLoadKey(subKey, file string) error {
 
 	ret, _, _ := syscall.SyscallN(_RegLoadKeyW.Addr(),
 		uintptr(hKey), uintptr(subKey16.UnsafePtr()), uintptr(file16.UnsafePtr()))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegLoadKeyW = dll.Advapi32.NewProc("RegLoadKeyW")
@@ -633,7 +633,7 @@ func (hKey HKEY) RegRenameKey(subKey, newName string) error {
 
 	ret, _, _ := syscall.SyscallN(_RegRenameKey.Addr(),
 		uintptr(hKey), uintptr(subKey16.UnsafePtr()), uintptr(newName16.UnsafePtr()))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegRenameKey = dll.Advapi32.NewProc("RegRenameKey")
@@ -649,7 +649,7 @@ func (hKey HKEY) RegReplaceKey(subKey, srcFile, destBackupFile string) error {
 	ret, _, _ := syscall.SyscallN(_RegReplaceKeyW.Addr(),
 		uintptr(hKey), uintptr(subKey16.UnsafePtr()),
 		uintptr(srcFile16.UnsafePtr()), uintptr(destBackupFile16.UnsafePtr()))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegReplaceKeyW = dll.Advapi32.NewProc("RegReplaceKeyW")
@@ -663,7 +663,7 @@ func (hKey HKEY) RegRestoreKey(srcFile string, flags co.REG_RESTORE) error {
 	srcFile16 := wstr.NewBufWith[wstr.Stack20](srcFile, wstr.ALLOW_EMPTY)
 	ret, _, _ := syscall.SyscallN(_RegRestoreKeyW.Addr(),
 		uintptr(hKey), uintptr(srcFile16.UnsafePtr()), uintptr(flags))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegRestoreKeyW = dll.Advapi32.NewProc("RegRestoreKeyW")
@@ -678,7 +678,7 @@ func (hKey HKEY) RegSaveKey(destFile string, securityAttributes *SECURITY_ATTRIB
 	ret, _, _ := syscall.SyscallN(_RegSaveKeyW.Addr(),
 		uintptr(hKey), uintptr(destFile16.UnsafePtr()),
 		uintptr(unsafe.Pointer(securityAttributes)))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegSaveKeyW = dll.Advapi32.NewProc("RegSaveKeyW")
@@ -697,7 +697,7 @@ func (hKey HKEY) RegSaveKeyEx(
 	ret, _, _ := syscall.SyscallN(_RegSaveKeyExW.Addr(),
 		uintptr(hKey), uintptr(destFile16.UnsafePtr()),
 		uintptr(unsafe.Pointer(securityAttributes)), uintptr(flags))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegSaveKeyExW = dll.Advapi32.NewProc("RegSaveKeyExW")
@@ -713,7 +713,7 @@ func (hKey HKEY) RegSetKeyValue(subKey, valueName string, data RegVal) error {
 		uintptr(hKey), uintptr(subKey16.UnsafePtr()),
 		uintptr(valueName16.UnsafePtr()), uintptr(data.Type()),
 		uintptr(unsafe.Pointer(&data.data[0])), uintptr(uint32(len(data.data))))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegSetKeyValueW = dll.Advapi32.NewProc("RegSetKeyValueW")
@@ -727,7 +727,7 @@ func (hKey HKEY) RegSetValueEx(valueName string, data RegVal) error {
 		uintptr(hKey), uintptr(valueName16.UnsafePtr()), 0,
 		uintptr(data.Type()), uintptr(unsafe.Pointer(&data.data[0])),
 		uintptr(uint32(len(data.data))))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegSetValueExW = dll.Advapi32.NewProc("RegSetValueExW")
@@ -739,7 +739,7 @@ func (hKey HKEY) RegUnLoadKey(subKey string) error {
 	subKey16 := wstr.NewBufWith[wstr.Stack20](subKey, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(_RegUnLoadKeyW.Addr(),
 		uintptr(hKey), uintptr(subKey16.UnsafePtr()))
-	return wutil.ZeroAsSysError(ret)
+	return utl.ZeroAsSysError(ret)
 }
 
 var _RegUnLoadKeyW = dll.Advapi32.NewProc("RegUnLoadKeyW")

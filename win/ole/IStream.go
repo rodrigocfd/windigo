@@ -6,7 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -49,7 +49,7 @@ func (me *IStream) Commit(flags co.STGC) error {
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Commit,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(flags))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [CopyTo] method.
@@ -85,7 +85,7 @@ func (me *IStream) LockRegion(offset, length uint64, lockType co.LOCKTYPE) error
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).LockRegion,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(offset), uintptr(length), uintptr(lockType))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [Revert] method.
@@ -95,7 +95,7 @@ func (me *IStream) Revert() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Revert,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [Seek] method.
@@ -124,7 +124,7 @@ func (me *IStream) SetSize(newSize uint) error {
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).SetSize,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(newSize))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [Stat] method.
@@ -154,7 +154,7 @@ func (me *IStream) UnlockRegion(offset, length uint64, lockType co.LOCKTYPE) err
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).UnlockRegion,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(offset), uintptr(length), uintptr(lockType))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 type _IStreamVt struct {

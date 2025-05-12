@@ -5,7 +5,7 @@ package win
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -220,7 +220,7 @@ func (ii *ICONINFO) FIcon() bool {
 	return ii.fIcon != 0
 }
 func (ii *ICONINFO) SetFIcon(val bool) {
-	ii.fIcon = wutil.BoolToInt32(val)
+	ii.fIcon = utl.BoolToInt32(val)
 }
 
 // [ICONINFOEX] struct.
@@ -241,8 +241,8 @@ type ICONINFOEX struct {
 	HbmMask   HBITMAP
 	HbmColor  HBITMAP
 	WResID    uint16
-	szModName [wutil.MAX_PATH]uint16
-	szResName [wutil.MAX_PATH]uint16
+	szModName [utl.MAX_PATH]uint16
+	szResName [utl.MAX_PATH]uint16
 }
 
 // Sets the cbSize field to the size of the struct, correctly initializing it.
@@ -254,7 +254,7 @@ func (iix *ICONINFOEX) FIcon() bool {
 	return iix.fIcon != 0
 }
 func (iix *ICONINFOEX) SetFIcon(val bool) {
-	iix.fIcon = wutil.BoolToInt32(val)
+	iix.fIcon = utl.BoolToInt32(val)
 }
 
 func (iix *ICONINFOEX) SzModName() string {
@@ -466,7 +466,7 @@ func (ps *PAINTSTRUCT) FErase() bool {
 	return ps.fErase != 0
 }
 func (ps *PAINTSTRUCT) SetFErase(val bool) {
-	ps.fErase = wutil.BoolToInt32(val)
+	ps.fErase = utl.BoolToInt32(val)
 }
 
 // [POINT] struct.
@@ -538,8 +538,8 @@ type STYLESTRUCT_WSEX struct {
 type TITLEBARINFOEX struct {
 	cbSize     uint32
 	RcTitleBar RECT
-	Rgstate    [wutil.CCHILDREN_TITLEBAR + 1]uint32
-	Rgrect     [wutil.CCHILDREN_TITLEBAR + 1]RECT
+	Rgstate    [utl.CCHILDREN_TITLEBAR + 1]uint32
+	Rgrect     [utl.CCHILDREN_TITLEBAR + 1]RECT
 }
 
 // Sets the cbSize field to the size of the struct, correctly initializing it.

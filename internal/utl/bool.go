@@ -1,6 +1,6 @@
 //go:build windows
 
-package wutil
+package utl
 
 // Syntactic sugar; converts bool to 0 or 1.
 func BoolToInt32(b bool) int32 {

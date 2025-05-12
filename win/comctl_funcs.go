@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -31,7 +31,7 @@ func InitCommonControlsEx(icc co.ICC) error {
 
 	ret, _, _ := syscall.SyscallN(_InitCommonControlsEx.Addr(),
 		uintptr(unsafe.Pointer(&iccx)))
-	return wutil.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 var _InitCommonControlsEx = dll.Comctl32.NewProc("InitCommonControlsEx")

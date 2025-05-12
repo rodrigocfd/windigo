@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -270,7 +270,7 @@ func (me *ListView) SetExtendedStyle(doSet bool, style co.LVS_EX) *ListView {
 // [WM_SETREDRAW]: https://learn.microsoft.com/en-us/windows/win32/gdi/wm-setredraw
 func (me *ListView) SetRedraw(allowRedraw bool) *ListView {
 	me.hWnd.SendMessage(co.WM_SETREDRAW,
-		win.WPARAM(wutil.BoolToUintptr(allowRedraw)), 0)
+		win.WPARAM(utl.BoolToUintptr(allowRedraw)), 0)
 	return me
 }
 
@@ -421,7 +421,7 @@ func (me *EventsListView) LvnBeginDrag(fun func(p *win.NMLISTVIEW)) {
 // [LVN_BEGINLABELEDIT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-beginlabeledit
 func (me *EventsListView) LvnBeginLabelEdit(fun func(p *win.NMLVDISPINFO) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.LVN_BEGINLABELEDIT, func(p unsafe.Pointer) uintptr {
-		return wutil.BoolToUintptr(fun((*win.NMLVDISPINFO)(p)))
+		return utl.BoolToUintptr(fun((*win.NMLVDISPINFO)(p)))
 	})
 }
 
@@ -500,7 +500,7 @@ func (me *EventsListView) LvnDeleteItem(fun func(p *win.NMLISTVIEW)) {
 // [LVN_ENDLABELEDIT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-endlabeledit
 func (me *EventsListView) LvnEndLabelEdit(fun func(p *win.NMLVDISPINFO) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.LVN_ENDLABELEDIT, func(p unsafe.Pointer) uintptr {
-		return wutil.BoolToUintptr(fun((*win.NMLVDISPINFO)(p)))
+		return utl.BoolToUintptr(fun((*win.NMLVDISPINFO)(p)))
 	})
 }
 
@@ -529,7 +529,7 @@ func (me *EventsListView) LvnGetDispInfo(fun func(p *win.NMLVDISPINFO)) {
 // [LVN_GETEMPTYMARKUP]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-getemptymarkup
 func (me *EventsListView) LvnGetEmptyMarkup(fun func(p *win.NMLVEMPTYMARKUP) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.LVN_GETEMPTYMARKUP, func(p unsafe.Pointer) uintptr {
-		return wutil.BoolToUintptr(fun((*win.NMLVEMPTYMARKUP)(p)))
+		return utl.BoolToUintptr(fun((*win.NMLVEMPTYMARKUP)(p)))
 	})
 }
 
@@ -596,7 +596,7 @@ func (me *EventsListView) LvnItemChanged(fun func(p *win.NMLISTVIEW)) {
 // [LVN_ITEMCHANGING]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-itemchanging
 func (me *EventsListView) LvnItemChanging(fun func(p *win.NMLISTVIEW) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.LVN_ITEMCHANGING, func(p unsafe.Pointer) uintptr {
-		return wutil.BoolToUintptr(fun((*win.NMLISTVIEW)(p)))
+		return utl.BoolToUintptr(fun((*win.NMLISTVIEW)(p)))
 	})
 }
 

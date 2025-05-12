@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -206,7 +206,7 @@ func (di *DOCINFO) SetCbSize() {
 //
 // [DEVMODE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-devmodew
 type DEVMODE struct {
-	dmDeviceName       [wutil.CCHDEVICENAME]uint16
+	dmDeviceName       [utl.CCHDEVICENAME]uint16
 	dmSpecVersion      uint16
 	DmDriverVersion    uint16
 	dmSize             uint16
@@ -218,7 +218,7 @@ type DEVMODE struct {
 	DmYResolution      int16
 	DmTTOption         co.DMTT
 	DmCollate          co.DMCOLLATE
-	dmFormName         [wutil.CCHFORMNAME]uint16
+	dmFormName         [utl.CCHFORMNAME]uint16
 	DmLogPixels        uint16
 	DmBitsPerPel       uint32
 	DmPelsWidth        uint32
@@ -264,7 +264,7 @@ func (dm *DEVMODE) SetDmDeviceName(val string) {
 // Sets the dmSize field to the size of the struct, correctly initializing it.
 // Also sets dmSpecVersion.
 func (dm *DEVMODE) SetDmSize() {
-	dm.dmSpecVersion = wutil.DM_SPECVERSION
+	dm.dmSpecVersion = utl.DM_SPECVERSION
 	dm.dmSize = uint16(unsafe.Sizeof(*dm))
 }
 
@@ -338,7 +338,7 @@ type LOGFONT struct {
 	LfClipPrecision  co.CLIP_PRECIS
 	LfQuality        co.QUALITY
 	LfPitchAndFamily co.FF
-	lfFaceName       [wutil.LF_FACESIZE]uint16
+	lfFaceName       [utl.LF_FACESIZE]uint16
 }
 
 func (lf *LOGFONT) LfFaceName() string {

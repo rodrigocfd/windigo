@@ -6,7 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -64,7 +64,7 @@ func (me *IDataObject) QueryGetData(etc *FORMATETC) error {
 		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).QueryGetData,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(etc)))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 type _IDataObjectVt struct {

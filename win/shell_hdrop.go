@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -58,7 +58,7 @@ func (hDrop HDROP) DragQueryFile() ([]string, error) {
 	}
 
 	count := uint32(ret)
-	var pathBuf [wutil.MAX_PATH]uint16 // buffer to receive a path
+	var pathBuf [utl.MAX_PATH]uint16 // buffer to receive a path
 	paths := make([]string, 0, count)
 
 	for i := uint32(0); i < count; i++ {

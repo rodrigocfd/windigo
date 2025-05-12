@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -45,7 +45,7 @@ func OleLoadPicture(
 	ret, _, _ := syscall.SyscallN(_OleLoadPicture.Addr(),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
 		uintptr(size),
-		wutil.BoolToUintptr(!keepOriginalFormat), // note: reversed
+		utl.BoolToUintptr(!keepOriginalFormat), // note: reversed
 		uintptr(unsafe.Pointer(&guid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 

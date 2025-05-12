@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -80,7 +80,7 @@ func (hMenu HMENU) checkMenuItem(check bool, flagPosCmd co.MF, item uint) error 
 
 	ret, _, _ := syscall.SyscallN(_CheckMenuItem.Addr(),
 		uintptr(hMenu), uintptr(item), uintptr(flagPosCmd))
-	return wutil.Minus1AsSysInvalidParm(ret)
+	return utl.Minus1AsSysInvalidParm(ret)
 }
 
 var _CheckMenuItem = dll.User32.NewProc("CheckMenuItem")
@@ -121,7 +121,7 @@ var _DeleteMenu = dll.User32.NewProc("DeleteMenu")
 func (hMenu HMENU) DestroyMenu() error {
 	ret, _, err := syscall.SyscallN(_DestroyMenu.Addr(),
 		uintptr(hMenu))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _DestroyMenu = dll.User32.NewProc("DestroyMenu")
@@ -170,7 +170,7 @@ func (hMenu HMENU) enableMenuItem(enable bool, flagPosCmd co.MF, item uint) erro
 
 	ret, _, _ := syscall.SyscallN(_EnableMenuItem.Addr(),
 		uintptr(hMenu), uintptr(item), uintptr(flagPosCmd))
-	return wutil.Minus1AsSysInvalidParm(ret)
+	return utl.Minus1AsSysInvalidParm(ret)
 }
 
 var _EnableMenuItem = dll.User32.NewProc("EnableMenuItem")
@@ -229,7 +229,7 @@ func (hMenu HMENU) GetMenuItemInfoByCmd(cmdId uint16, mii *MENUITEMINFO) error {
 	ret, _, err := syscall.SyscallN(_GetMenuItemInfoW.Addr(),
 		uintptr(hMenu), uintptr(cmdId), uintptr(co.MF_BYCOMMAND),
 		uintptr(unsafe.Pointer(mii)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 // [GetMenuItemInfo] function, using the zero-based item position.
@@ -240,7 +240,7 @@ func (hMenu HMENU) GetMenuItemInfoByPos(index uint, mii *MENUITEMINFO) error {
 	ret, _, err := syscall.SyscallN(_GetMenuItemInfoW.Addr(),
 		uintptr(hMenu), uintptr(index), uintptr(co.MF_BYPOSITION),
 		uintptr(unsafe.Pointer(mii)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _GetMenuItemInfoW = dll.User32.NewProc("GetMenuItemInfoW")
@@ -264,7 +264,7 @@ func (hMenu HMENU) InsertMenuItemByCmd(cmdId uint16, mii *MENUITEMINFO) error {
 	ret, _, err := syscall.SyscallN(_InsertMenuItemW.Addr(),
 		uintptr(hMenu), uintptr(cmdId), uintptr(co.MF_BYCOMMAND),
 		uintptr(unsafe.Pointer(mii)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 // [InsertMenuItem] function, using the zero-based item position.
@@ -274,7 +274,7 @@ func (hMenu HMENU) InsertMenuItemByPos(index uint, mii *MENUITEMINFO) error {
 	ret, _, err := syscall.SyscallN(_InsertMenuItemW.Addr(),
 		uintptr(hMenu), uintptr(index), uintptr(co.MF_BYPOSITION),
 		uintptr(unsafe.Pointer(mii)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _InsertMenuItemW = dll.User32.NewProc("InsertMenuItemW")
@@ -315,7 +315,7 @@ var _RemoveMenu = dll.User32.NewProc("RemoveMenu")
 func (hMenu HMENU) SetMenuDefaultItemByCmd(cmdId uint16) error {
 	ret, _, err := syscall.SyscallN(_SetMenuDefaultItem.Addr(),
 		uintptr(hMenu), uintptr(cmdId), uintptr(co.MF_BYCOMMAND))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 // [SetMenuDefaultItem] function, using the zero-based item position.
@@ -324,7 +324,7 @@ func (hMenu HMENU) SetMenuDefaultItemByCmd(cmdId uint16) error {
 func (hMenu HMENU) SetMenuDefaultItemByPos(index uint) error {
 	ret, _, err := syscall.SyscallN(_SetMenuDefaultItem.Addr(),
 		uintptr(hMenu), uintptr(index), uintptr(co.MF_BYPOSITION))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _SetMenuDefaultItem = dll.User32.NewProc("SetMenuDefaultItem")
@@ -335,7 +335,7 @@ var _SetMenuDefaultItem = dll.User32.NewProc("SetMenuDefaultItem")
 func (hMenu HMENU) SetMenuInfo(info *MENUINFO) error {
 	ret, _, err := syscall.SyscallN(_SetMenuInfo.Addr(),
 		uintptr(hMenu), uintptr(unsafe.Pointer(info)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _SetMenuInfo = dll.User32.NewProc("SetMenuInfo")
@@ -347,7 +347,7 @@ func (hMenu HMENU) SetMenuItemBitmapsByCmd(cmdId uint16, hBmpUnchecked, hBmpChec
 	ret, _, err := syscall.SyscallN(_SetMenuItemBitmaps.Addr(),
 		uintptr(hMenu), uintptr(cmdId), uintptr(co.MF_BYCOMMAND),
 		uintptr(hBmpUnchecked), uintptr(hBmpChecked))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 // [SetMenuItemBitmaps] function, using the zero-based item position.
@@ -357,7 +357,7 @@ func (hMenu HMENU) SetMenuItemBitmapsByPos(index uint, hBmpUnchecked, hBmpChecke
 	ret, _, err := syscall.SyscallN(_SetMenuItemBitmaps.Addr(),
 		uintptr(hMenu), uintptr(index), uintptr(co.MF_BYPOSITION),
 		uintptr(hBmpUnchecked), uintptr(hBmpChecked))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _SetMenuItemBitmaps = dll.User32.NewProc("SetMenuItemBitmaps")
@@ -370,7 +370,7 @@ func (hMenu HMENU) SetMenuItemInfoByCmd(cmdId uint16, info *MENUITEMINFO) error 
 	ret, _, err := syscall.SyscallN(_SetMenuItemInfo.Addr(),
 		uintptr(hMenu), uintptr(cmdId), uintptr(co.MF_BYCOMMAND),
 		uintptr(unsafe.Pointer(info)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 // [SetMenuItemInfo] function, using the zero-based item position.
@@ -381,7 +381,7 @@ func (hMenu HMENU) SetMenuItemInfoByPos(index uint, info *MENUITEMINFO) error {
 	ret, _, err := syscall.SyscallN(_SetMenuItemInfo.Addr(),
 		uintptr(hMenu), uintptr(index), uintptr(co.MF_BYPOSITION),
 		uintptr(unsafe.Pointer(info)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _SetMenuItemInfo = dll.User32.NewProc("SetMenuItemInfo")

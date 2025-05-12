@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -54,7 +54,7 @@ var _CopyIcon = dll.User32.NewProc("CopyIcon")
 func (hIcon HICON) DestroyIcon() error {
 	ret, _, err := syscall.SyscallN(_DestroyIcon.Addr(),
 		uintptr(hIcon))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _DestroyIcon = dll.User32.NewProc("DestroyIcon")

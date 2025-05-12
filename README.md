@@ -114,10 +114,10 @@ Internal package dependency:
 
 ```mermaid
 flowchart BT
-    internal/wutil([internal/wutil]) --> win/co
+    internal/utl([internal/utl]) --> win/co
     ui --> win
     win --> internal/dll([internal/dll])
-    win --> internal/wutil
+    win --> internal/utl
     win --> win/wstr
     win/ole --> win
     win/ole/oleaut --> win/ole

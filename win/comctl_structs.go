@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -145,8 +145,8 @@ type LITEM struct {
 	ILink     int32
 	State     co.LIS
 	StateMask co.LIS
-	szID      [wutil.MAX_LINKID_TEXT]uint16
-	szUrl     [wutil.L_MAX_URL_LENGTH]uint16
+	szID      [utl.MAX_LINKID_TEXT]uint16
+	szUrl     [utl.L_MAX_URL_LENGTH]uint16
 }
 
 func (li *LITEM) SzID() string {
@@ -450,45 +450,45 @@ func (nmk *NMKEY) SetScanCode(val uint8) {
 	)
 }
 
-func (nmk *NMKEY) IsExtendedKey() bool { return wutil.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 0) }
+func (nmk *NMKEY) IsExtendedKey() bool { return utl.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 0) }
 func (nmk *NMKEY) SetIsExtendedKey(val bool) {
 	nmk.uFlags = MAKELONG(
 		MAKEWORD(
 			LOBYTE(LOWORD(nmk.uFlags)),
-			wutil.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 0, val),
+			utl.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 0, val),
 		),
 		HIWORD(nmk.uFlags),
 	)
 }
 
-func (nmk *NMKEY) ContextCode() bool { return wutil.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 5) }
+func (nmk *NMKEY) ContextCode() bool { return utl.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 5) }
 func (nmk *NMKEY) SetContextCode(val bool) {
 	nmk.uFlags = MAKELONG(
 		MAKEWORD(
 			LOBYTE(LOWORD(nmk.uFlags)),
-			wutil.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 5, val),
+			utl.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 5, val),
 		),
 		HIWORD(nmk.uFlags),
 	)
 }
 
-func (nmk *NMKEY) IsKeyDownBeforeSend() bool { return wutil.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 6) }
+func (nmk *NMKEY) IsKeyDownBeforeSend() bool { return utl.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 6) }
 func (nmk *NMKEY) SetIsKeyDownBeforeSend(val bool) {
 	nmk.uFlags = MAKELONG(
 		MAKEWORD(
 			LOBYTE(LOWORD(nmk.uFlags)),
-			wutil.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 6, val),
+			utl.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 6, val),
 		),
 		HIWORD(nmk.uFlags),
 	)
 }
 
-func (nmk *NMKEY) TransitionState() bool { return wutil.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 7) }
+func (nmk *NMKEY) TransitionState() bool { return utl.BitIsSet(HIBYTE(LOWORD(nmk.uFlags)), 7) }
 func (nmk *NMKEY) SetTransitionState(val bool) {
 	nmk.uFlags = MAKELONG(
 		MAKEWORD(
 			LOBYTE(LOWORD(nmk.uFlags)),
-			wutil.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 7, val),
+			utl.BitSet(HIBYTE(LOWORD(nmk.uFlags)), 7, val),
 		),
 		HIWORD(nmk.uFlags),
 	)
@@ -544,7 +544,7 @@ type NMLVCUSTOMDRAW struct {
 }
 
 func (lcd *NMLVCUSTOMDRAW) PartStateId() co.VS {
-	return co.VS(wutil.Make32(uint16(lcd.iStateId), uint16(lcd.iPartId)))
+	return co.VS(utl.Make32(uint16(lcd.iStateId), uint16(lcd.iPartId)))
 }
 func (lcd *NMLVCUSTOMDRAW) SetPartStateId(val co.VS) {
 	lcd.iPartId = val.Part()
@@ -565,7 +565,7 @@ type NMLVDISPINFO struct {
 type NMLVEMPTYMARKUP struct {
 	Hdr      NMHDR
 	DwFlags  co.EMF
-	szMarkup [wutil.L_MAX_URL_LENGTH]uint16
+	szMarkup [utl.L_MAX_URL_LENGTH]uint16
 }
 
 func (lve *NMLVEMPTYMARKUP) SzMarkup() string {
@@ -729,7 +729,7 @@ func (da *NMTBDUPACCELERATOR) FDup() bool {
 	return da.fDup != 0
 }
 func (da *NMTBDUPACCELERATOR) SetFDup(val bool) {
-	da.fDup = wutil.BoolToInt32(val)
+	da.fDup = utl.BoolToInt32(val)
 }
 
 // [NMTBGETINFOTIP] struct.

@@ -3,7 +3,7 @@
 package ui
 
 import (
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -75,7 +75,7 @@ func (me *RadioButton) SelectAndTrigger() *RadioButton {
 // Returns the same object, so further operations can be chained.
 func (me *RadioButton) SetTextAndResize(text string) *RadioButton {
 	me.hWnd.SetWindowText(text)
-	boundBox, _ := calcTextBoundBoxWithCheck(wutil.RemoveAccelAmpersands(text))
+	boundBox, _ := calcTextBoundBoxWithCheck(utl.RemoveAccelAmpersands(text))
 	me.hWnd.SetWindowPos(win.HWND(0), 0, 0,
 		uint(boundBox.Cx), uint(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me

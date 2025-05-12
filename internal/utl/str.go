@@ -1,6 +1,6 @@
 //go:build windows
 
-package wutil
+package utl
 
 import (
 	"strings"

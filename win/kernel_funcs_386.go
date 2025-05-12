@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -16,7 +16,7 @@ import (
 // [VerifyVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
 func VerifyVersionInfo(ovi *OSVERSIONINFOEX, typeMask co.VER, conditionMask uint64) (bool, error) {
 	ovi.SetDwOsVersionInfoSize() // safety
-	cMaskLo, cMaskHi := wutil.Break64(conditionMask)
+	cMaskLo, cMaskHi := utl.Break64(conditionMask)
 
 	ret, _, err := syscall.SyscallN(_VerifyVersionInfoW.Addr(),
 		uintptr(unsafe.Pointer(ovi)),
@@ -37,11 +37,11 @@ var _VerifyVersionInfoW = dll.Kernel32.NewProc("VerifyVersionInfoW")
 //
 // [VerSetConditionMask]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-versetconditionmask
 func VerSetConditionMask(conditionMask uint64, typeMask co.VER, condition co.VER_COND) uint64 {
-	cMaskLo, cMaskHi := wutil.Break64(conditionMask)
+	cMaskLo, cMaskHi := utl.Break64(conditionMask)
 	retLo, retHi, _ := syscall.SyscallN(_VerSetConditionMask.Addr(),
 		uintptr(cMaskLo), uintptr(cMaskHi),
 		uintptr(typeMask), uintptr(condition))
-	return wutil.Make64(uint32(retLo), uint32(retHi))
+	return utl.Make64(uint32(retLo), uint32(retHi))
 }
 
 var _VerSetConditionMask = dll.Kernel32.NewProc("VerSetConditionMask")

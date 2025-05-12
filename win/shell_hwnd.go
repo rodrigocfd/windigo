@@ -6,7 +6,7 @@ import (
 	"syscall"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
@@ -20,7 +20,7 @@ func (hWnd HWND) ShellAbout(app, otherStuff string, hIcon HICON) error {
 	ret, _, _ := syscall.SyscallN(_ShellAboutW.Addr(),
 		uintptr(hWnd), uintptr(app16.UnsafePtr()), uintptr(other16.UnsafePtr()),
 		uintptr(hIcon))
-	return wutil.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 var _ShellAboutW = dll.Shell32.NewProc("ShellAboutW")

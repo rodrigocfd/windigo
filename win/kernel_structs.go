@@ -9,7 +9,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -29,18 +29,18 @@ type FILETIME struct {
 
 // Returns the internal value converted to epoch in 100-nanoseconds unit.
 func (ft *FILETIME) ToEpochNano100() uint {
-	return uint(wutil.Make64(ft.dwLowDateTime, ft.dwHighDateTime))
+	return uint(utl.Make64(ft.dwLowDateTime, ft.dwHighDateTime))
 }
 
 // Replaces the internal value with the given epoch in 100-nanoseconds unit.
 func (ft *FILETIME) SetEpochNano100(val uint) {
-	ft.dwLowDateTime, ft.dwHighDateTime = wutil.Break64(uint64(val))
+	ft.dwLowDateTime, ft.dwHighDateTime = utl.Break64(uint64(val))
 }
 
 // Returns the internal value converted to [time.Time].
 func (ft *FILETIME) ToTime() time.Time {
 	// https://stackoverflow.com/a/4135003/6923555
-	return time.Unix(0, int64(wutil.Make64(ft.dwLowDateTime, ft.dwHighDateTime)-116_444_736_000_000_000)*100)
+	return time.Unix(0, int64(utl.Make64(ft.dwLowDateTime, ft.dwHighDateTime)-116_444_736_000_000_000)*100)
 }
 
 // Replaces the internal value with the given [time.Time].
@@ -50,7 +50,7 @@ func (ft *FILETIME) ToTime() time.Time {
 //	var ft win.FILETIME
 //	ft.SetTime(time.Now())
 func (ft *FILETIME) SetTime(val time.Time) {
-	ft.dwLowDateTime, ft.dwHighDateTime = wutil.Break64(
+	ft.dwLowDateTime, ft.dwHighDateTime = utl.Break64(
 		uint64(val.UnixNano()/100 + 116_444_736_000_000_000),
 	)
 }
@@ -69,7 +69,7 @@ type GUID struct {
 
 // Formats the GUID as a string.
 func (g *GUID) String() string {
-	data4 := wutil.ReverseBytes64(g.data4)
+	data4 := utl.ReverseBytes64(g.data4)
 	return fmt.Sprintf("%08x-%04x-%04x-%04x-%012x",
 		g.data1, g.data2, g.data3,
 		data4>>48, data4&0xffff_ffff_ffff)
@@ -116,7 +116,7 @@ func GuidFrom[T ~string](strGuid T) GUID {
 		data1: uint32(num1),
 		data2: nums16[0],
 		data3: nums16[1],
-		data4: wutil.ReverseBytes64((uint64(nums16[2]) << 48) | num5),
+		data4: utl.ReverseBytes64((uint64(nums16[2]) << 48) | num5),
 	}
 }
 
@@ -211,8 +211,8 @@ type MODULEENTRY32 struct {
 	ModBaseAddr   uintptr
 	ModBaseSize   uint32
 	HModule       HINSTANCE
-	szModule      [wutil.MAX_MODULE_NAME32 + 1]uint16
-	szExePath     [wutil.MAX_PATH]uint16
+	szModule      [utl.MAX_MODULE_NAME32 + 1]uint16
+	szExePath     [utl.MAX_PATH]uint16
 }
 
 // Sets the dwSize field to the size of the struct, correctly initializing it.
@@ -312,7 +312,7 @@ type PROCESSENTRY32 struct {
 	Th32ParentProcessID uint32
 	PcPriClassBase      int32
 	dwFlags             uint32
-	szExeFile           [wutil.MAX_PATH]uint16
+	szExeFile           [utl.MAX_PATH]uint16
 }
 
 // Sets the dwSize field to the size of the struct, correctly initializing it.
@@ -352,7 +352,7 @@ func (sa *SECURITY_ATTRIBUTES) BInheritHandle() bool {
 	return sa.bInheritHandle != 0
 }
 func (sa *SECURITY_ATTRIBUTES) SetBInheritHandle(val bool) {
-	sa.bInheritHandle = wutil.BoolToInt32(val)
+	sa.bInheritHandle = utl.BoolToInt32(val)
 }
 
 // [STARTUPINFO] struct.
@@ -536,7 +536,7 @@ type WIN32_FIND_DATA struct {
 	NFileSizeLow       uint32
 	dwReserved0        uint32
 	dwReserved1        uint32
-	cFileName          [wutil.MAX_PATH]uint16
+	cFileName          [utl.MAX_PATH]uint16
 	cAlternateFileName [14]uint16
 	DwFileType         uint32
 	DwCreatorType      uint32

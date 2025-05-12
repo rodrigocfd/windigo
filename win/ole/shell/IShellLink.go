@@ -6,7 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -29,7 +29,7 @@ func (*IShellLink) IID() co.IID {
 //
 // [GetArguments]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getarguments
 func (me *IShellLink) GetArguments() (string, error) {
-	buf := make([]uint16, wutil.INFOTIPSIZE) // arbitrary
+	buf := make([]uint16, utl.INFOTIPSIZE) // arbitrary
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetArguments,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -46,7 +46,7 @@ func (me *IShellLink) GetArguments() (string, error) {
 //
 // [GetDescription]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getdescription
 func (me *IShellLink) GetDescription() (string, error) {
-	buf := make([]uint16, wutil.INFOTIPSIZE) // arbitrary
+	buf := make([]uint16, utl.INFOTIPSIZE) // arbitrary
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetDescription,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -80,7 +80,7 @@ func (me *IShellLink) GetHotkey() (co.HOTKEYF, error) {
 //
 // [GetIconLocation]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-geticonlocation
 func (me *IShellLink) GetIconLocation() (path string, index int, hr error) {
-	var buf [wutil.MAX_PATH]uint16 // arbitrary
+	var buf [utl.MAX_PATH]uint16 // arbitrary
 	var iconIndex uint16
 
 	ret, _, _ := syscall.SyscallN(
@@ -100,7 +100,7 @@ func (me *IShellLink) GetIconLocation() (path string, index int, hr error) {
 //
 // [GetPath]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getpath
 func (me *IShellItem) GetPath(fd *win.WIN32_FIND_DATA, flags co.SLGP) (string, error) {
-	var buf [wutil.MAX_PATH]uint16 // arbitrary
+	var buf [utl.MAX_PATH]uint16 // arbitrary
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetPath,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -135,7 +135,7 @@ func (me *IShellLink) GetShowCmd() (co.SW, error) {
 //
 // [GetWorkingDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getworkingdirectory
 func (me *IShellLink) GetWorkingDirectory() (string, error) {
-	var buf [wutil.MAX_PATH]uint16 // arbitrary
+	var buf [utl.MAX_PATH]uint16 // arbitrary
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetWorkingDirectory,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -156,7 +156,7 @@ func (me *IShellLink) Resolve(hWnd win.HWND, flags co.SLR) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).Resolve,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd), uintptr(flags))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetArguments] method.
@@ -168,7 +168,7 @@ func (me *IShellLink) SetArguments(args string) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetArguments,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(args16.UnsafePtr()))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetDescription] method.
@@ -180,7 +180,7 @@ func (me *IShellLink) SetDescription(descr string) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetDescription,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(descr16.UnsafePtr()))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetHotkey] method.
@@ -191,7 +191,7 @@ func (me *IShellLink) SetHotkey(hotkey co.HOTKEYF) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetHotkey,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hotkey))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetIconLocation] method.
@@ -203,7 +203,7 @@ func (me *IShellLink) SetIconLocation(path string, index int) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetIconLocation,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(path16.UnsafePtr()), uintptr(index))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetPath] method.
@@ -215,7 +215,7 @@ func (me *IShellLink) SetPath(path string) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetPath,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(path16.UnsafePtr()))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetRelativePath] method.
@@ -227,7 +227,7 @@ func (me *IShellLink) SetRelativePath(path string) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetRelativePath,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(path16.UnsafePtr()))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetShowCmd] method.
@@ -238,7 +238,7 @@ func (me *IShellLink) SetShowCmd(cmd co.SW) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetShowCmd,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(cmd))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetWorkingDirectory] method.
@@ -250,7 +250,7 @@ func (me *IShellLink) SetWorkingDirectory(path string) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetWorkingDirectory,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(path16.UnsafePtr()))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 type _IShellLinkVt struct {

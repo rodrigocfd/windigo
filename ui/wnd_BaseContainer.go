@@ -5,7 +5,7 @@ package ui
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -49,7 +49,7 @@ func (me *_BaseContainer) removeWmCreateInitdialog() {
 
 func (me *_BaseContainer) uiThread(fun func()) {
 	pPack := &_ThreadPack{fun}
-	wutil.PtrCache.Add(unsafe.Pointer(pPack))
+	utl.PtrCache.Add(unsafe.Pointer(pPack))
 
 	hWndRoot, _ := me.hWnd.GetAncestor(co.GA_ROOTOWNER)
 	hWndRoot.SendMessage(_WM_UI_THREAD,
@@ -62,7 +62,7 @@ func (me *_BaseContainer) defaultMessageHandlers() {
 	me.beforeUserEvents.Wm(_WM_UI_THREAD, func(p Wm) uintptr {
 		if p.WParam == win.WPARAM(_WM_UI_THREAD) { // additional safety check
 			pPack := (*_ThreadPack)(unsafe.Pointer(p.LParam))
-			wutil.PtrCache.Delete(unsafe.Pointer(pPack)) // now GC will be able to collect it
+			utl.PtrCache.Delete(unsafe.Pointer(pPack)) // now GC will be able to collect it
 			pPack.fun()
 		}
 		return 0 // ignored

@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -21,7 +21,7 @@ func (hProcess HPROCESS) SetUserObjectInformation(
 ) error {
 	ret, _, err := syscall.SyscallN(_SetUserObjectInformationW.Addr(),
 		uintptr(hProcess), uintptr(index), uintptr(info), uintptr(infoLen))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _SetUserObjectInformationW = dll.User32.NewProc("SetUserObjectInformationW")

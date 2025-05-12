@@ -5,7 +5,7 @@ package ui
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -28,7 +28,7 @@ func NewSysLink(parent Parent, opts *VarOptsSysLink) *SysLink {
 
 	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
 		if opts.size.Cx == 0 && opts.size.Cy == 0 {
-			opts.size, _ = calcTextBoundBox(wutil.RemoveAccelAmpersands(wutil.RemoveHtmlAnchor(opts.text)))
+			opts.size, _ = calcTextBoundBox(utl.RemoveAccelAmpersands(utl.RemoveHtmlAnchor(opts.text)))
 		}
 		me.createWindow(opts.wndExStyle, "SysLink", opts.text,
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, true)
@@ -74,7 +74,7 @@ func (me *SysLink) On() *EventsSysLink {
 //		"Link <a href=\"https://google.com\">here</a>")
 func (me *SysLink) SetTextAndResize(text string) *SysLink {
 	me.hWnd.SetWindowText(text)
-	boundBox, _ := calcTextBoundBox(wutil.RemoveAccelAmpersands(wutil.RemoveHtmlAnchor(text)))
+	boundBox, _ := calcTextBoundBox(utl.RemoveAccelAmpersands(utl.RemoveHtmlAnchor(text)))
 	me.hWnd.SetWindowPos(win.HWND(0), 0, 0,
 		uint(boundBox.Cx), uint(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me

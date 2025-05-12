@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -32,7 +32,7 @@ func FindFirstFile(fileName string, findFileData *WIN32_FIND_DATA) (HFIND, bool,
 	ret, _, err := syscall.SyscallN(_FindFirstFileW.Addr(),
 		uintptr(fileName16.UnsafePtr()), uintptr(unsafe.Pointer(findFileData)))
 
-	if int(ret) == wutil.INVALID_HANDLE_VALUE {
+	if int(ret) == utl.INVALID_HANDLE_VALUE {
 		if wErr := co.ERROR(err); wErr == co.ERROR_FILE_NOT_FOUND || wErr == co.ERROR_PATH_NOT_FOUND {
 			return HFIND(0), false, nil // no matching files, not an error
 		} else {
@@ -52,7 +52,7 @@ var _FindFirstFileW = dll.Kernel32.NewProc("FindFirstFileW")
 func (hFind HFIND) FindClose() error {
 	ret, _, err := syscall.SyscallN(_FindClose.Addr(),
 		uintptr(hFind))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _FindClose = dll.Kernel32.NewProc("FindClose")

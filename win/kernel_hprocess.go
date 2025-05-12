@@ -8,7 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -33,7 +33,7 @@ var _GetCurrentProcess = dll.Kernel32.NewProc("GetCurrentProcess")
 // [OpenProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
 func OpenProcess(access co.PROCESS, inheritHandle bool, processId uint32) (HPROCESS, error) {
 	ret, _, err := syscall.SyscallN(_OpenProcess.Addr(),
-		uintptr(access), wutil.BoolToUintptr(inheritHandle), uintptr(processId))
+		uintptr(access), utl.BoolToUintptr(inheritHandle), uintptr(processId))
 	if ret == 0 {
 		return HPROCESS(0), co.ERROR(err)
 	}
@@ -68,7 +68,7 @@ var _GetExitCodeProcess = dll.Kernel32.NewProc("GetExitCodeProcess")
 //
 // [GetModuleBaseName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
 func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
-	var processName [wutil.MAX_PATH]uint16
+	var processName [utl.MAX_PATH]uint16
 	ret, _, err := syscall.SyscallN(_GetModuleBaseNameW.Addr(),
 		uintptr(hProcess), uintptr(hModule),
 		uintptr(unsafe.Pointer(&processName[0])),
@@ -189,7 +189,7 @@ var _IsWow64Process = dll.Kernel32.NewProc("IsWow64Process")
 //
 // [QueryFullProcessImageName]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-queryfullprocessimagenamew
 func (hProcess HPROCESS) QueryFullProcessImageName(flags co.PROCESS_NAME) (string, error) {
-	var buf [wutil.MAX_PATH]uint16
+	var buf [utl.MAX_PATH]uint16
 	szBuf := uint32(len(buf))
 
 	ret, _, err := syscall.SyscallN(_QueryFullProcessImageNameW.Addr(),
@@ -257,7 +257,7 @@ var _ReadProcessMemory = dll.Kernel32.NewProc("ReadProcessMemory")
 func (hProcess HPROCESS) SetPriorityClass(pc co.PRIORITY) error {
 	ret, _, err := syscall.SyscallN(_SetPriorityClass.Addr(),
 		uintptr(hProcess), uintptr(pc))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _SetPriorityClass = dll.Kernel32.NewProc("SetPriorityClass")
@@ -268,7 +268,7 @@ var _SetPriorityClass = dll.Kernel32.NewProc("SetPriorityClass")
 func (hProcess HPROCESS) SetProcessAffinityUpdateMode(affinity co.AFFINITY) error {
 	ret, _, err := syscall.SyscallN(_SetProcessAffinityUpdateMode.Addr(),
 		uintptr(hProcess), uintptr(affinity))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _SetProcessAffinityUpdateMode = dll.Kernel32.NewProc("SetProcessAffinityUpdateMode")
@@ -279,7 +279,7 @@ var _SetProcessAffinityUpdateMode = dll.Kernel32.NewProc("SetProcessAffinityUpda
 func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
 	ret, _, err := syscall.SyscallN(_TerminateProcess.Addr(),
 		uintptr(hProcess), uintptr(exitCode))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _TerminateProcess = dll.Kernel32.NewProc("TerminateProcess")

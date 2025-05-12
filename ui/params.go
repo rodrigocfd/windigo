@@ -5,7 +5,7 @@ package ui
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
@@ -91,13 +91,13 @@ type WmChar struct{ Raw Wm }
 func (p WmChar) CharCode() rune      { return rune(p.Raw.WParam) }
 func (p WmChar) RepeatCount() uint   { return uint(p.Raw.LParam.LoWord()) }
 func (p WmChar) ScanCode() uint8     { return win.LOBYTE(p.Raw.LParam.HiWord()) }
-func (p WmChar) IsExtendedKey() bool { return wutil.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 0) }
-func (p WmChar) HasAltKey() bool     { return wutil.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 5) }
+func (p WmChar) IsExtendedKey() bool { return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 0) }
+func (p WmChar) HasAltKey() bool     { return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 5) }
 func (p WmChar) IsKeyDownBeforeSend() bool {
-	return wutil.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 6)
+	return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 6)
 }
 func (p WmChar) IsKeyBeingReleased() bool {
-	return wutil.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 7)
+	return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 7)
 }
 
 // [WM_CHARTOITEM] parameters.
@@ -411,12 +411,12 @@ type WmKey struct{ Raw Wm }
 func (p WmKey) VirtualKeyCode() co.VK { return co.VK(p.Raw.WParam) }
 func (p WmKey) RepeatCount() uint     { return uint(p.Raw.LParam.LoWord()) }
 func (p WmKey) ScanCode() uint8       { return win.LOBYTE(p.Raw.LParam.HiWord()) }
-func (p WmKey) IsExtendedKey() bool   { return wutil.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 0) }
-func (p WmKey) HasAltKey() bool       { return wutil.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 5) }
+func (p WmKey) IsExtendedKey() bool   { return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 0) }
+func (p WmKey) HasAltKey() bool       { return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 5) }
 func (p WmKey) IsKeyDownBeforeSend() bool {
-	return wutil.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 6)
+	return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 6)
 }
-func (p WmKey) IsReleasingKey() bool { return wutil.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 7) }
+func (p WmKey) IsReleasingKey() bool { return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 7) }
 
 // [WM_KILLFOCUS] parameters.
 //

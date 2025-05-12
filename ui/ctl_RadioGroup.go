@@ -3,7 +3,7 @@
 package ui
 
 import (
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -62,7 +62,7 @@ func NewRadioGroup(parent Parent, allOpts ...*VarOptsRadioButton) *RadioGroup {
 	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
 		for idx, opts := range allOpts {
 			if opts.size.Cx == 0 && opts.size.Cy == 0 {
-				opts.size, _ = calcTextBoundBoxWithCheck(wutil.RemoveAccelAmpersands(opts.text))
+				opts.size, _ = calcTextBoundBoxWithCheck(utl.RemoveAccelAmpersands(opts.text))
 			}
 			me.radios[idx].createWindow(opts.wndExStyle, "BUTTON", opts.text,
 				opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, true)

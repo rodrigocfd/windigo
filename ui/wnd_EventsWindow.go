@@ -5,7 +5,7 @@ package ui
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -362,7 +362,7 @@ func (me *EventsWindow) WmContextMenu(fun func(p WmContextMenu)) {
 // [WM_COPYDATA]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-copydata
 func (me *EventsWindow) WmCopyData(fun func(p WmCopyData) bool) {
 	me.Wm(co.WM_COPYDATA, func(p Wm) uintptr {
-		return wutil.BoolToUintptr(fun(WmCopyData{Raw: p}))
+		return utl.BoolToUintptr(fun(WmCopyData{Raw: p}))
 	})
 }
 
@@ -811,7 +811,7 @@ func (me *EventsWindow) WmHScrollClipboard(fun func(p WmScrollClipboard)) {
 // [WM_CREATE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-create
 func (me *EventsWindow) WmInitDialog(fun func(p WmInitDialog) bool) {
 	me.Wm(co.WM_INITDIALOG, func(p Wm) uintptr {
-		return wutil.BoolToUintptr(fun(WmInitDialog{Raw: p}))
+		return utl.BoolToUintptr(fun(WmInitDialog{Raw: p}))
 	})
 }
 
@@ -1027,7 +1027,7 @@ func (me *EventsWindow) WmMoving(fun func(p WmMoving)) {
 // [WM_NCACTIVATE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-ncactivate
 func (me *EventsWindow) WmNcActivate(fun func(p WmNcActivate) bool) {
 	me.Wm(co.WM_NCACTIVATE, func(p Wm) uintptr {
-		return wutil.BoolToUintptr(fun(WmNcActivate{Raw: p}))
+		return utl.BoolToUintptr(fun(WmNcActivate{Raw: p}))
 	})
 }
 
@@ -1045,7 +1045,7 @@ func (me *EventsWindow) WmNcCalcSize(fun func(p WmNcCalcSize) co.WVR) {
 // [WM_NCCREATE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-nccreate
 func (me *EventsWindow) WmNcCreate(fun func(p WmCreate) bool) {
 	me.Wm(co.WM_NCCREATE, func(p Wm) uintptr {
-		return wutil.BoolToUintptr(fun(WmCreate{Raw: p}))
+		return utl.BoolToUintptr(fun(WmCreate{Raw: p}))
 	})
 }
 
@@ -1331,7 +1331,7 @@ func (me *EventsWindow) WmQueryDragIcon(fun func() win.HICON) {
 // [WM_QUERYOPEN]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-queryopen
 func (me *EventsWindow) WmQueryOpen(fun func() bool) {
 	me.Wm(co.WM_QUERYOPEN, func(p Wm) uintptr {
-		return wutil.BoolToUintptr(fun())
+		return utl.BoolToUintptr(fun())
 	})
 }
 
@@ -1588,7 +1588,7 @@ func (me *EventsWindow) WmUnInitMenuPopup(fun func(p WmUnInitMenuPopup)) {
 // [WM_UNDO]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-undo
 func (me *EventsWindow) WmUndo(fun func() bool) {
 	me.Wm(co.WM_UNDO, func(p Wm) uintptr {
-		return wutil.BoolToUintptr(fun())
+		return utl.BoolToUintptr(fun())
 	})
 }
 

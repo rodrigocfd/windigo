@@ -6,7 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -42,7 +42,7 @@ func (me *ITaskbarList4) SetProperties(hwndTab win.HWND, flags co.STPFLAG) error
 		(*_ITaskbarList4Vt)(unsafe.Pointer(*me.Ppvt())).SetTabProperties,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndTab), uintptr(flags))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 type _ITaskbarList4Vt struct {

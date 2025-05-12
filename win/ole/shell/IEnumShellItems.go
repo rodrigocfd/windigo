@@ -6,7 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
 )
@@ -129,7 +129,7 @@ func (me *IEnumShellItems) Reset() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IEnumShellItemsVt)(unsafe.Pointer(*me.Ppvt())).Reset,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [Skip] method.
@@ -140,7 +140,7 @@ func (me *IEnumShellItems) Skip(count uint) error {
 		(*_IEnumShellItemsVt)(unsafe.Pointer(*me.Ppvt())).Skip,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(count)))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 type _IEnumShellItemsVt struct {

@@ -8,7 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -22,8 +22,8 @@ func CopyFile(existingFile, newFile string, failIfExists bool) error {
 
 	ret, _, err := syscall.SyscallN(_CopyFileW.Addr(),
 		uintptr(existingFile16.UnsafePtr()), uintptr(newFile16.UnsafePtr()),
-		wutil.BoolToUintptr(failIfExists))
-	return wutil.ZeroAsGetLastError(ret, err)
+		utl.BoolToUintptr(failIfExists))
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _CopyFileW = dll.Kernel32.NewProc("CopyFileW")
@@ -35,7 +35,7 @@ func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) e
 	pathName16 := wstr.NewBufWith[wstr.Stack20](pathName, wstr.EMPTY_IS_NIL)
 	ret, _, err := syscall.SyscallN(_CreateDirectoryW.Addr(),
 		uintptr(pathName16.UnsafePtr()), uintptr(unsafe.Pointer(securityAttributes)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _CreateDirectoryW = dll.Kernel32.NewProc("CreateDirectoryW")
@@ -78,7 +78,7 @@ func CreateProcess(
 		uintptr(commandLine16.UnsafePtr()),
 		uintptr(unsafe.Pointer(processAttributes)),
 		uintptr(unsafe.Pointer(threadAttributes)),
-		wutil.BoolToUintptr(inheritHandles),
+		utl.BoolToUintptr(inheritHandles),
 		uintptr(creationFlags|co.CREATE_UNICODE_ENVIRONMENT), // env strings are always UTF-16
 		uintptr(environment16.UnsafePtrOf(0)),
 		uintptr(currentDirectory16.UnsafePtr()),
@@ -99,7 +99,7 @@ func DeleteFile(fileName string) error {
 	fileName16 := wstr.NewBufWith[wstr.Stack20](fileName, wstr.EMPTY_IS_NIL)
 	ret, _, err := syscall.SyscallN(_DeleteFileW.Addr(),
 		uintptr(fileName16.UnsafePtr()))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _DeleteFileW = dll.Kernel32.NewProc("DeleteFileW")
@@ -263,7 +263,7 @@ func GetTimeZoneInformation() (TIME_ZONE_INFORMATION, co.TIME_ZONE_ID, error) {
 	var tzi TIME_ZONE_INFORMATION
 	ret, _, err := syscall.SyscallN(_GetTimeZoneInformation.Addr(),
 		uintptr(unsafe.Pointer(&tzi)))
-	if ret == wutil.TIME_ZONE_INVALID {
+	if ret == utl.TIME_ZONE_INVALID {
 		return TIME_ZONE_INFORMATION{}, co.TIME_ZONE_ID(0), co.ERROR(err)
 	}
 	return tzi, co.TIME_ZONE_ID(ret), nil
@@ -409,7 +409,7 @@ func IsWindowsVersionOrGreater(majorVersion, minorVersion uint32, servicePackMaj
 //
 // [HIBYTE]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632656(v=vs.85)
 func HIBYTE(val uint16) uint8 {
-	_, hi := wutil.Break16(val)
+	_, hi := utl.Break16(val)
 	return hi
 }
 
@@ -417,7 +417,7 @@ func HIBYTE(val uint16) uint8 {
 //
 // [HIWORD]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632657(v=vs.85)
 func HIWORD(val uint32) uint16 {
-	_, hi := wutil.Break32(val)
+	_, hi := utl.Break32(val)
 	return hi
 }
 
@@ -425,7 +425,7 @@ func HIWORD(val uint32) uint16 {
 //
 // [LOBYTE]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632658(v=vs.85)
 func LOBYTE(val uint16) uint8 {
-	lo, _ := wutil.Break16(val)
+	lo, _ := utl.Break16(val)
 	return lo
 }
 
@@ -433,7 +433,7 @@ func LOBYTE(val uint16) uint8 {
 //
 // [LOWORD]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632659(v=vs.85)
 func LOWORD(val uint32) uint16 {
-	lo, _ := wutil.Break32(val)
+	lo, _ := utl.Break32(val)
 	return lo
 }
 
@@ -441,14 +441,14 @@ func LOWORD(val uint32) uint16 {
 //
 // [MAKELONG]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632660(v=vs.85)
 func MAKELONG(lo, hi uint16) uint32 {
-	return wutil.Make32(lo, hi)
+	return utl.Make32(lo, hi)
 }
 
 // [MAKEWORD] macro.
 //
 // [MAKEWORD]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632663(v=vs.85)
 func MAKEWORD(lo, hi uint8) uint16 {
-	return wutil.Make16(lo, hi)
+	return utl.Make16(lo, hi)
 }
 
 // [SetCurrentDirectory] function.
@@ -458,7 +458,7 @@ func SetCurrentDirectory(pathName string) error {
 	pathName16 := wstr.NewBufWith[wstr.Stack20](pathName, wstr.EMPTY_IS_NIL)
 	ret, _, err := syscall.SyscallN(_SetCurrentDirectoryW.Addr(),
 		uintptr(pathName16.UnsafePtr()))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _SetCurrentDirectoryW = dll.Kernel32.NewProc("SetCurrentDirectoryW")

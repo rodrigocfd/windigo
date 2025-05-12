@@ -8,7 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -44,7 +44,7 @@ func CreateFile(
 		uintptr(uint32(attributes)|uint32(flags)|uint32(security)),
 		uintptr(hTemplateFile))
 
-	if int(ret) == wutil.INVALID_HANDLE_VALUE {
+	if int(ret) == utl.INVALID_HANDLE_VALUE {
 		return HFILE(0), co.ERROR(err)
 	}
 	return HFILE(ret), nil
@@ -127,13 +127,13 @@ var _GetFileTime = dll.Kernel32.NewProc("GetFileTime")
 //
 // [LockFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfile
 func (hFile HFILE) LockFile(offset, numBytes uint) error {
-	offsetLo, offsetHi := wutil.Break64(uint64(offset))
-	numBytesLo, numBytesHi := wutil.Break64(uint64(numBytes))
+	offsetLo, offsetHi := utl.Break64(uint64(offset))
+	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 
 	ret, _, err := syscall.SyscallN(_LockFile.Addr(),
 		uintptr(hFile), uintptr(offsetLo), uintptr(offsetHi),
 		uintptr(numBytesLo), uintptr(numBytesHi))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _LockFile = dll.Kernel32.NewProc("LockFile")
@@ -148,12 +148,12 @@ func (hFile HFILE) LockFileEx(
 	numBytes uint,
 	overlapped *OVERLAPPED,
 ) error {
-	numBytesLo, numBytesHi := wutil.Break64(uint64(numBytes))
+	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 	ret, _, err := syscall.SyscallN(_LockFileEx.Addr(),
 		uintptr(hFile), uintptr(flags), 0,
 		uintptr(numBytesLo), uintptr(numBytesHi),
 		uintptr(unsafe.Pointer(overlapped)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _LockFileEx = dll.Kernel32.NewProc("LockFileEx")
@@ -202,13 +202,13 @@ var _SetEndOfFile = dll.Kernel32.NewProc("SetEndOfFile")
 //
 // [UnlockFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfile
 func (hFile HFILE) UnlockFile(offset, numBytes uint) error {
-	offsetLo, offsetHi := wutil.Break64(uint64(offset))
-	numBytesLo, numBytesHi := wutil.Break64(uint64(numBytes))
+	offsetLo, offsetHi := utl.Break64(uint64(offset))
+	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 
 	ret, _, err := syscall.SyscallN(_UnlockFile.Addr(),
 		uintptr(hFile), uintptr(offsetLo), uintptr(offsetHi),
 		uintptr(numBytesLo), uintptr(numBytesHi))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _UnlockFile = dll.Kernel32.NewProc("UnlockFile")
@@ -219,11 +219,11 @@ var _UnlockFile = dll.Kernel32.NewProc("UnlockFile")
 //
 // [UnlockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfileex
 func (hFile HFILE) UnlockFileEx(numBytes uint, overlapped *OVERLAPPED) error {
-	numBytesLo, numBytesHi := wutil.Break64(uint64(numBytes))
+	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 	ret, _, err := syscall.SyscallN(_UnlockFileEx.Addr(),
 		uintptr(hFile), 0, uintptr(numBytesLo), uintptr(numBytesHi),
 		uintptr(unsafe.Pointer(overlapped)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _UnlockFileEx = dll.Kernel32.NewProc("UnlockFileEx")

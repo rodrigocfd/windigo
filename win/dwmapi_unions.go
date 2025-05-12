@@ -3,7 +3,7 @@
 package win
 
 import (
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -20,7 +20,7 @@ type DwmAttr struct {
 func DwmAttrNcRenderingEnabled(enabled bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_NCRENDERING_ENABLED,
-		dw:  wutil.BoolToUint32(enabled),
+		dw:  utl.BoolToUint32(enabled),
 	}
 }
 
@@ -52,7 +52,7 @@ func (me *DwmAttr) NcRenderingPolicy() (co.DWMNCRP, bool) {
 func DwmAttrTransitionsForceDisabled(force bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_TRANSITIONS_FORCEDISABLED,
-		dw:  wutil.BoolToUint32(force),
+		dw:  utl.BoolToUint32(force),
 	}
 }
 
@@ -68,7 +68,7 @@ func (me *DwmAttr) TransitionsForceDisabled() (actualValue, ok bool) {
 func DwmAttrAllowNcPaint(allow bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_ALLOW_NCPAINT,
-		dw:  wutil.BoolToUint32(allow),
+		dw:  utl.BoolToUint32(allow),
 	}
 }
 
@@ -100,7 +100,7 @@ func (me *DwmAttr) CaptionButtonBounds() (RECT, bool) {
 func DwmAttrNonClientRtlLayout(ncRtl bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_NONCLIENT_RTL_LAYOUT,
-		dw:  wutil.BoolToUint32(ncRtl),
+		dw:  utl.BoolToUint32(ncRtl),
 	}
 }
 
@@ -116,7 +116,7 @@ func (me *DwmAttr) NonClientRtlLayout() (actualValue, ok bool) {
 func DwmAttrForceIconicRepresentation(force bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_FORCE_ICONIC_REPRESENTATION,
-		dw:  wutil.BoolToUint32(force),
+		dw:  utl.BoolToUint32(force),
 	}
 }
 
@@ -164,7 +164,7 @@ func (me *DwmAttr) ExtendedFrameBounds() (RECT, bool) {
 func DwmAttrHasIconicBitmap(has bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_HAS_ICONIC_BITMAP,
-		dw:  wutil.BoolToUint32(has),
+		dw:  utl.BoolToUint32(has),
 	}
 }
 
@@ -180,7 +180,7 @@ func (me *DwmAttr) HasIconicBitmap() (actualValue, ok bool) {
 func DwmAttrDisallowPeek(disallow bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_DISALLOW_PEEK,
-		dw:  wutil.BoolToUint32(disallow),
+		dw:  utl.BoolToUint32(disallow),
 	}
 }
 
@@ -196,7 +196,7 @@ func (me *DwmAttr) DisallowPeek() (actualValue, ok bool) {
 func DwmAttrExcludedFromPeek(excluded bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_EXCLUDED_FROM_PEEK,
-		dw:  wutil.BoolToUint32(excluded),
+		dw:  utl.BoolToUint32(excluded),
 	}
 }
 
@@ -212,7 +212,7 @@ func (me *DwmAttr) ExcludedFromPeek() (actualValue, ok bool) {
 func DwmAttrCloak(cloak bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_CLOAK,
-		dw:  wutil.BoolToUint32(cloak),
+		dw:  utl.BoolToUint32(cloak),
 	}
 }
 
@@ -244,7 +244,7 @@ func (me *DwmAttr) Cloaked() (co.DWM_CLOAKED, bool) {
 func DwmAttrFreezeRepresentation(freeze bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_FREEZE_REPRESENTATION,
-		dw:  wutil.BoolToUint32(freeze),
+		dw:  utl.BoolToUint32(freeze),
 	}
 }
 
@@ -260,7 +260,7 @@ func (me *DwmAttr) FreezeRepresentation() (actualValue, ok bool) {
 func DwmAttrPassiveUpdateMode(passive bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_PASSIVE_UPDATE_MODE,
-		dw:  wutil.BoolToUint32(passive),
+		dw:  utl.BoolToUint32(passive),
 	}
 }
 
@@ -276,7 +276,7 @@ func (me *DwmAttr) PassiveUpdateMode() (actualValue, ok bool) {
 func DwmAttrUseHostBackdropBrush(use bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_USE_HOSTBACKDROPBRUSH,
-		dw:  wutil.BoolToUint32(use),
+		dw:  utl.BoolToUint32(use),
 	}
 }
 
@@ -292,7 +292,7 @@ func (me *DwmAttr) UseHostBackdropBrush() (actualValue, ok bool) {
 func DwmAttrUseImmersiveDarkMode(use bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_USE_IMMERSIVE_DARK_MODE,
-		dw:  wutil.BoolToUint32(use),
+		dw:  utl.BoolToUint32(use),
 	}
 }
 

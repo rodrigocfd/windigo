@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -41,7 +41,7 @@ var _GetStockObject = dll.Gdi32.NewProc("GetStockObject")
 func (hGdiObj HGDIOBJ) DeleteObject() error {
 	ret, _, _ := syscall.SyscallN(_DeleteObject.Addr(),
 		uintptr(hGdiObj))
-	return wutil.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 var _DeleteObject = dll.Gdi32.NewProc("DeleteObject")
@@ -52,7 +52,7 @@ var _DeleteObject = dll.Gdi32.NewProc("DeleteObject")
 func (hGdiObj HGDIOBJ) GetObject(szBuf uintptr, buf unsafe.Pointer) error {
 	ret, _, _ := syscall.SyscallN(_GetObjectW.Addr(),
 		uintptr(hGdiObj), szBuf, uintptr(buf))
-	return wutil.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 var _GetObjectW = dll.Gdi32.NewProc("GetObjectW")

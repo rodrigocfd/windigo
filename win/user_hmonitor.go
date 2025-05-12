@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -21,7 +21,7 @@ type HMONITOR HANDLE
 // [MonitorFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
 func MonitorFromPoint(pt POINT, flags co.MONITOR) HMONITOR {
 	ret, _, _ := syscall.SyscallN(_MonitorFromPoint.Addr(),
-		uintptr(wutil.Make64(uint32(pt.X), uint32(pt.Y))), uintptr(flags))
+		uintptr(utl.Make64(uint32(pt.X), uint32(pt.Y))), uintptr(flags))
 	return HMONITOR(ret)
 }
 

@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -51,7 +51,7 @@ var _OpenClipboard = dll.User32.NewProc("OpenClipboard")
 // [CloseClipboard]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-closeclipboard
 func (HCLIPBOARD) CloseClipboard() error {
 	ret, _, err := syscall.SyscallN(_CloseClipboard.Addr())
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _CloseClipboard = dll.User32.NewProc("CloseClipboard")
@@ -74,7 +74,7 @@ var _CountClipboardFormats = dll.User32.NewProc("CountClipboardFormats")
 // [EmptyClipboard]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-emptyclipboard
 func (HCLIPBOARD) EmptyClipboard() error {
 	ret, _, err := syscall.SyscallN(_EmptyClipboard.Addr())
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _EmptyClipboard = dll.User32.NewProc("EmptyClipboard")
@@ -146,7 +146,7 @@ var _GetClipboardData = dll.User32.NewProc("GetClipboardData")
 //
 // [GetClipboardFormatName]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardformatnamew
 func (HCLIPBOARD) GetClipboardFormatName(format co.CF) (string, error) {
-	var buf [wutil.MAX_PATH]uint16
+	var buf [utl.MAX_PATH]uint16
 	ret, _, err := syscall.SyscallN(_GetClipboardFormatNameW.Addr(),
 		uintptr(format))
 	if ret == 0 {
@@ -202,7 +202,7 @@ func (HCLIPBOARD) SetClipboardData(format co.CF, data []byte) error {
 
 	ret, _, err := syscall.SyscallN(_SetClipboardData.Addr(),
 		uintptr(format), uintptr(hGlobal)) // HGLOBAL will be owned by the clipboard
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _SetClipboardData = dll.User32.NewProc("SetClipboardData")

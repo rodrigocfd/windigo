@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -42,8 +42,8 @@ func CreateFont(
 	ret, _, _ := syscall.SyscallN(_CreateFontW.Addr(),
 		uintptr(height), uintptr(width), uintptr(escapement),
 		uintptr(orientation), uintptr(height),
-		wutil.BoolToUintptr(italic), wutil.BoolToUintptr(underline),
-		wutil.BoolToUintptr(strikeOut),
+		utl.BoolToUintptr(italic), utl.BoolToUintptr(underline),
+		utl.BoolToUintptr(strikeOut),
 		uintptr(charSet), uintptr(outPrecision), uintptr(clipPrecision),
 		uintptr(quality), uintptr(pitchAndFamily),
 		uintptr(faceName16.UnsafePtr()))

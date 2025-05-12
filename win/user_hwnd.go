@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -139,7 +139,7 @@ var _GetShellWindow = dll.User32.NewProc("GetShellWindow")
 func (hWnd HWND) AnimateWindow(time uint, flags co.AW) error {
 	ret, _, err := syscall.SyscallN(_AnimateWindow.Addr(),
 		uintptr(hWnd), uintptr(time), uintptr(flags))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _AnimateWindow = dll.User32.NewProc("AnimateWindow")
@@ -174,7 +174,7 @@ var _BeginPaint = dll.User32.NewProc("BeginPaint")
 func (hWnd HWND) BringWindowToTop() error {
 	ret, _, err := syscall.SyscallN(_BringWindowToTop.Addr(),
 		uintptr(hWnd))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _BringWindowToTop = dll.User32.NewProc("BringWindowToTop")
@@ -213,7 +213,7 @@ var _ChildWindowFromPointEx = dll.User32.NewProc("ChildWindowFromPointEx")
 func (hWnd HWND) ClientToScreenPt(pt *POINT) error {
 	ret, _, _ := syscall.SyscallN(_ClientToScreen.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(pt)))
-	return wutil.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 var _ClientToScreen = dll.User32.NewProc("ClientToScreen")
@@ -230,7 +230,7 @@ func (hWnd HWND) ClientToScreenRc(rc *RECT) error {
 
 	ret, _, _ = syscall.SyscallN(_ClientToScreen.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(&rc.Right)))
-	return wutil.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 // [CloseWindow] function.
@@ -241,7 +241,7 @@ func (hWnd HWND) ClientToScreenRc(rc *RECT) error {
 func (hWnd HWND) CloseWindow() error {
 	ret, _, _ := syscall.SyscallN(_CloseWindow.Addr(),
 		uintptr(hWnd))
-	return wutil.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 var _CloseWindow = dll.User32.NewProc("CloseWindow")
@@ -277,7 +277,7 @@ var _DefWindowProcW = dll.User32.NewProc("DefWindowProcW")
 func (hWnd HWND) DestroyWindow() error {
 	ret, _, err := syscall.SyscallN(_DestroyWindow.Addr(),
 		uintptr(hWnd))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _DestroyWindow = dll.User32.NewProc("DestroyWindow")
@@ -288,7 +288,7 @@ var _DestroyWindow = dll.User32.NewProc("DestroyWindow")
 func (hWnd HWND) DrawMenuBar() error {
 	ret, _, err := syscall.SyscallN(_DrawMenuBar.Addr(),
 		uintptr(hWnd))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _DrawMenuBar = dll.User32.NewProc("DrawMenuBar")
@@ -298,7 +298,7 @@ var _DrawMenuBar = dll.User32.NewProc("DrawMenuBar")
 // [EnableWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablewindow
 func (hWnd HWND) EnableWindow(enable bool) bool {
 	ret, _, _ := syscall.SyscallN(_EnableWindow.Addr(),
-		uintptr(hWnd), wutil.BoolToUintptr(enable))
+		uintptr(hWnd), utl.BoolToUintptr(enable))
 	return ret != 0 // the window was previously disabled?
 }
 
@@ -310,7 +310,7 @@ var _EnableWindow = dll.User32.NewProc("EnableWindow")
 func (hWnd HWND) EndDialog(result uintptr) error {
 	ret, _, err := syscall.SyscallN(_EndDialog.Addr(),
 		uintptr(hWnd), result)
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _EndDialog = dll.User32.NewProc("EndDialog")
@@ -505,7 +505,7 @@ var _GetMenu = dll.User32.NewProc("GetMenu")
 // [GetNextDlgGroupItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getnextdlggroupitem
 func (hWnd HWND) GetNextDlgGroupItem(hChild HWND, isPrevious bool) (HWND, error) {
 	ret, _, err := syscall.SyscallN(_GetNextDlgGroupItem.Addr(),
-		uintptr(hWnd), uintptr(hChild), wutil.BoolToUintptr(isPrevious))
+		uintptr(hWnd), uintptr(hChild), utl.BoolToUintptr(isPrevious))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return HWND(0), wErr
 	}
@@ -519,7 +519,7 @@ var _GetNextDlgGroupItem = dll.User32.NewProc("GetNextDlgGroupItem")
 // [GetNextDlgTabItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getnextdlgtabitem
 func (hWnd HWND) GetNextDlgTabItem(hChild HWND, isPrevious bool) (HWND, error) {
 	ret, _, err := syscall.SyscallN(_GetNextDlgTabItem.Addr(),
-		uintptr(hWnd), uintptr(hChild), wutil.BoolToUintptr(isPrevious))
+		uintptr(hWnd), uintptr(hChild), utl.BoolToUintptr(isPrevious))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return HWND(0), wErr
 	}
@@ -640,8 +640,8 @@ func (hWnd HWND) HInstance() (HINSTANCE, error) {
 // [InvalidateRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invalidaterect
 func (hWnd HWND) InvalidateRect(rc *RECT, erase bool) error {
 	ret, _, _ := syscall.SyscallN(_InvalidateRect.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(rc)), wutil.BoolToUintptr(erase))
-	return wutil.ZeroAsSysInvalidParm(ret)
+		uintptr(hWnd), uintptr(unsafe.Pointer(rc)), utl.BoolToUintptr(erase))
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 var _InvalidateRect = dll.User32.NewProc("InvalidateRect")
@@ -663,7 +663,7 @@ func (hWnd HWND) IsDialog() (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	return uint16(uAtom) == wutil.WC_DIALOG, nil
+	return uint16(uAtom) == utl.WC_DIALOG, nil
 }
 
 // [IsDialogMessage] function.
@@ -694,7 +694,7 @@ var _IsWindow = dll.User32.NewProc("IsWindow")
 func (hWnd HWND) MapDialogRect(rc *RECT) error {
 	ret, _, err := syscall.SyscallN(_MapDialogRect.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(rc)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _MapDialogRect = dll.User32.NewProc("MapDialogRect")
@@ -734,7 +734,7 @@ var _MonitorFromWindow = dll.User32.NewProc("MonitorFromWindow")
 func (hWnd HWND) PostMessage(msg co.WM, wParam WPARAM, lParam LPARAM) error {
 	ret, _, err := syscall.SyscallN(_PostMessageW.Addr(),
 		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _PostMessageW = dll.User32.NewProc("PostMessageW")
@@ -746,7 +746,7 @@ func (hWnd HWND) RedrawWindow(rcUpdate *RECT, hrgnUpdate HRGN, flags co.RDW) err
 	ret, _, _ := syscall.SyscallN(_RedrawWindow.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(rcUpdate)),
 		uintptr(hrgnUpdate), uintptr(flags))
-	return wutil.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 var _RedrawWindow = dll.User32.NewProc("RedrawWindow")
@@ -757,7 +757,7 @@ var _RedrawWindow = dll.User32.NewProc("RedrawWindow")
 func (hWnd HWND) ReleaseDC(hdc HDC) error {
 	ret, _, _ := syscall.SyscallN(_ReleaseDC.Addr(),
 		uintptr(hWnd), uintptr(hdc))
-	return wutil.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 var _ReleaseDC = dll.User32.NewProc("ReleaseDC")
@@ -768,7 +768,7 @@ var _ReleaseDC = dll.User32.NewProc("ReleaseDC")
 func (hWnd HWND) ScreenToClientPt(pt *POINT) error {
 	ret, _, _ := syscall.SyscallN(_ScreenToClient.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(pt)))
-	return wutil.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 var _ScreenToClient = dll.User32.NewProc("ScreenToClient")
@@ -785,7 +785,7 @@ func (hWnd HWND) ScreenToClientRc(rc *RECT) error {
 
 	ret, _, _ = syscall.SyscallN(_ScreenToClient.Addr(),
 		uintptr(hWnd), uintptr(unsafe.Pointer(&rc.Right)))
-	return wutil.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 // [SendMessage] function.
@@ -838,7 +838,7 @@ var _SetForegroundWindow = dll.User32.NewProc("SetForegroundWindow")
 func (hWnd HWND) SetMenu(hMenu HMENU) error {
 	ret, _, err := syscall.SyscallN(_SetMenu.Addr(),
 		uintptr(hWnd), uintptr(hMenu))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _SetMenu = dll.User32.NewProc("SetMenu")
@@ -851,7 +851,7 @@ func (hWnd HWND) SetWindowPos(hwndInsertAfter HWND, x, y int, cx, cy uint, flags
 		uintptr(hWnd), uintptr(hwndInsertAfter),
 		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy),
 		uintptr(flags))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _SetWindowPos = dll.User32.NewProc("SetWindowPos")
@@ -861,8 +861,8 @@ var _SetWindowPos = dll.User32.NewProc("SetWindowPos")
 // [SetWindowRgn]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowrgn
 func (hWnd HWND) SetWindowRgn(hRgn HRGN, redraw bool) error {
 	ret, _, _ := syscall.SyscallN(_SetWindowRgn.Addr(),
-		uintptr(hWnd), uintptr(hRgn), wutil.BoolToUintptr(redraw))
-	return wutil.ZeroAsSysInvalidParm(ret)
+		uintptr(hWnd), uintptr(hRgn), utl.BoolToUintptr(redraw))
+	return utl.ZeroAsSysInvalidParm(ret)
 }
 
 var _SetWindowRgn = dll.User32.NewProc("SetWindowRgn")
@@ -884,7 +884,7 @@ var _SetWindowTextW = dll.User32.NewProc("SetWindowTextW")
 func (hWnd HWND) ShowCaret() error {
 	ret, _, err := syscall.SyscallN(_ShowCaret.Addr(),
 		uintptr(hWnd))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _ShowCaret = dll.User32.NewProc("ShowCaret")
@@ -912,7 +912,7 @@ func (hWnd HWND) Style() (co.WS, error) {
 func (hWnd HWND) TranslateAccelerator(hAccel HACCEL, msg *MSG) error {
 	ret, _, err := syscall.SyscallN(_TranslateAcceleratorW.Addr(),
 		uintptr(hWnd), uintptr(hAccel), uintptr(unsafe.Pointer(msg)))
-	return wutil.ZeroAsGetLastError(ret, err)
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
 var _TranslateAcceleratorW = dll.User32.NewProc("TranslateAcceleratorW")

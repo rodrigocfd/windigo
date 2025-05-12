@@ -5,7 +5,7 @@ package ui
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -93,7 +93,7 @@ func (me *ProgressBar) SetMarquee(isMarquee bool) *ProgressBar {
 	}
 
 	me.hWnd.SendMessage(co.PBM_SETMARQUEE,
-		win.WPARAM(wutil.BoolToUintptr(isMarquee)), 0)
+		win.WPARAM(utl.BoolToUintptr(isMarquee)), 0)
 
 	if !isMarquee {
 		me.hWnd.SetWindowLongPtr(co.GWLP_STYLE,

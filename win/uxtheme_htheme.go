@@ -7,7 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -37,7 +37,7 @@ func (hTheme HTHEME) DrawThemeBackground(hdc HDC, partStateId co.VS, rc *RECT, c
 		uintptr(hTheme), uintptr(hdc),
 		uintptr(partStateId.Part()), uintptr(partStateId.State()),
 		uintptr(unsafe.Pointer(rc)), uintptr(unsafe.Pointer(clipRc)))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 var _DrawThemeBackground = dll.Uxtheme.NewProc("DrawThemeBackground")
@@ -144,7 +144,7 @@ var _GetThemeRect = dll.Uxtheme.NewProc("GetThemeRect")
 //
 // [GetThemeString]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemestring
 func (hTheme HTHEME) GetThemeString(partStateId co.VS, propId co.TMT) (string, error) {
-	var buf [wutil.MAX_PATH]uint16 // arbitrary
+	var buf [utl.MAX_PATH]uint16 // arbitrary
 	ret, _, _ := syscall.SyscallN(_GetThemeString.Addr(),
 		uintptr(hTheme), uintptr(partStateId.Part()), uintptr(partStateId.State()),
 		uintptr(propId), uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))

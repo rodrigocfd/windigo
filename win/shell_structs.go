@@ -5,7 +5,7 @@ package win
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -93,7 +93,7 @@ type SHFILEINFO struct {
 	HIcon         HICON
 	IIcon         int32
 	DwAttributes  co.SFGAO
-	szDisplayName [wutil.MAX_PATH]uint16
+	szDisplayName [utl.MAX_PATH]uint16
 	szTypeName    [80]uint16
 }
 

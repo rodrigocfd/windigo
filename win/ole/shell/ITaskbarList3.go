@@ -6,7 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/wutil"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
@@ -43,7 +43,7 @@ func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) error {
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).RegisterTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndTab), uintptr(hwndMDI))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetOverlayIcon] method.
@@ -55,7 +55,7 @@ func (me *ITaskbarList3) SetOverlayIcon(hWnd win.HWND, hIcon win.HICON, descript
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).SetOverlayIcon,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd), uintptr(hIcon), uintptr(description16.UnsafePtr()))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetProgressState] method.
@@ -66,7 +66,7 @@ func (me *ITaskbarList3) SetProgressState(hWnd win.HWND, flags co.TBPF) error {
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).SetProgressState,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd), uintptr(flags))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetProgressValue] method.
@@ -77,7 +77,7 @@ func (me *ITaskbarList3) SetProgressValue(hWnd win.HWND, completed, total uint) 
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).SetProgressValue,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd), uintptr(completed), uintptr(total))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetTabActive] method.
@@ -88,7 +88,7 @@ func (me *ITaskbarList3) SetTabActive(hwndTab, hwndMDI win.HWND) error {
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).SetTabActive,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndTab), uintptr(hwndMDI))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetTabOrder] method.
@@ -99,7 +99,7 @@ func (me *ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore win.HWND) error {
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).SetTabOrder,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndTab), uintptr(hwndInsertBefore))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetThumbnailClip] method.
@@ -110,7 +110,7 @@ func (me *ITaskbarList3) SetThumbnailClip(hWnd win.HWND, rcClip *win.RECT) error
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).SetThumbnailClip,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd), uintptr(unsafe.Pointer(rcClip)))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [SetThumbnailTooltip] method.
@@ -122,7 +122,7 @@ func (me *ITaskbarList3) SetThumbnailTooltip(hwnd win.HWND, tip string) error {
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).SetThumbnailTooltip,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwnd), uintptr(tip16.UnsafePtr()))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [ThumbBarAddButtons] method.
@@ -133,7 +133,7 @@ func (me *ITaskbarList3) ThumbBarAddButtons(hWnd win.HWND, buttons []THUMBBUTTON
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).ThumbBarAddButtons,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd), uintptr(len(buttons)), uintptr(unsafe.Pointer(&buttons[0])))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [ThumbBarSetImageList] method.
@@ -144,7 +144,7 @@ func (me *ITaskbarList3) ThumbBarSetImageList(hWnd win.HWND, hImgl win.HIMAGELIS
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).ThumbBarSetImageList,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd), uintptr(hImgl))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [ThumbBarUpdateButtons] method.
@@ -155,7 +155,7 @@ func (me *ITaskbarList3) ThumbBarUpdateButtons(hWnd win.HWND, buttons []THUMBBUT
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).ThumbBarUpdateButtons,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd), uintptr(len(buttons)), uintptr(unsafe.Pointer(&buttons[0])))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 // [UnregisterTab] method.
@@ -166,7 +166,7 @@ func (me *ITaskbarList3) UnregisterTab(hwndTab win.HWND) error {
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).UnregisterTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndTab))
-	return wutil.ErrorAsHResult(ret)
+	return utl.ErrorAsHResult(ret)
 }
 
 type _ITaskbarList3Vt struct {
