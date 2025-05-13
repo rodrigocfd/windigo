@@ -166,11 +166,11 @@ func (me *IDispatch) Invoke(
 //	defer rel.Release()
 //
 //	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
-//	iExcel, _ := ole.CoCreateInstance[oleaut.IDispatch](
+//	dispExcel, _ := ole.CoCreateInstance[oleaut.IDispatch](
 //		rel, clsId, co.CLSCTX_LOCAL_SERVER)
 //
-//	vBooks, _ := iExcel.InvokeGet(rel, "Workbooks")
-//	iBooks, _ := vBooks.IDispatch(rel)
+//	varBooks, _ := dispExcel.InvokeGet(rel, "Workbooks")
+//	dispBooks, _ := varBooks.IDispatch(rel)
 //
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
@@ -198,15 +198,17 @@ func (me *IDispatch) InvokeGet(
 //	defer rel.Release()
 //
 //	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
-//	iExcel, _ := ole.CoCreateInstance[oleaut.IDispatch](
+//	dispExcel, _ := ole.CoCreateInstance[oleaut.IDispatch](
 //		rel, clsId, co.CLSCTX_LOCAL_SERVER)
 //
-//	vBooks, _ := iExcel.InvokeGet(rel, "Workbooks")
-//	iBooks, _ := vBooks.IDispatch(rel)
-//	vFile, _ := iBooks.InvokeMethod(rel, "Open", "C:\\Temp\\file.xlsx")
-//	iFile, _ := vFile.IDispatch(rel)
-//	iFile.InvokeMethod(rel, "SaveAs", "C:\\Temp\\copy.xlsx")
-//	iFile.InvokeMethod(rel, "Close")
+//	varBooks, _ := dispExcel.InvokeGet(rel, "Workbooks")
+//	dispBooks, _ := varBooks.IDispatch(rel)
+//
+//	varFile, _ := dispBooks.InvokeMethod(rel, "Open", "C:\\Temp\\file.xlsx")
+//	dispFile, _ := varFile.IDispatch(rel)
+//
+//	dispFile.InvokeMethod(rel, "SaveAs", "C:\\Temp\\copy.xlsx")
+//	dispFile.InvokeMethod(rel, "Close")
 //
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo

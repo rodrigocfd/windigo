@@ -6,6 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
 )
@@ -40,6 +41,33 @@ func (me *ITypeInfo) AddressOfMember(
 		return addr, nil
 	} else {
 		return 0, hr
+	}
+}
+
+// [CreateInstance] method. Not implemented as a method of [ITypeInfo] because
+// Go doesn't support generic methods.
+//
+// [CreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-createinstance
+func CreateInstance[T any, P ole.ComCtor[T]](
+	iTypeInfo *ITypeInfo,
+	releaser *ole.Releaser,
+) (*T, error) {
+	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	var ppvtQueried **ole.IUnknownVt
+	riidGuid := win.GuidFrom(pObj.IID())
+
+	ret, _, _ := syscall.SyscallN(
+		(*_ITypeInfoVt)(unsafe.Pointer(*iTypeInfo.Ppvt())).CreateInstance,
+		uintptr(unsafe.Pointer(iTypeInfo.Ppvt())),
+		uintptr(unsafe.Pointer(&riidGuid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj.Set(ppvtQueried)
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
 	}
 }
 
