@@ -24,6 +24,14 @@ import (
 // [IDropTarget]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
 type IDropTarget struct{ IUnknown }
 
+// Returns the unique [COM] [interface ID].
+//
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
+func (*IDropTarget) IID() co.IID {
+	return co.IID_IDropTarget
+}
+
 type _IDropTargetImpl struct {
 	vt        _IDropTargetVt
 	counter   uint32
@@ -44,19 +52,9 @@ type _IDropTargetImpl struct {
 //
 // [IDropTarget]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
 func NewIDropTargetImpl(releaser *Releaser) *IDropTarget {
-	iDropTargetCallbacks()
+	_iDropTargetVtPtrs.init()
 	pImpl := &_IDropTargetImpl{ // has Go function pointers, so cannot be allocated on the OS heap
-		vt: _IDropTargetVt{
-			IUnknownVt: IUnknownVt{
-				QueryInterface: _iDropTargetQueryInterface,
-				AddRef:         _iDropTargetAddRef,
-				Release:        _iDropTargetRelease,
-			},
-			DragEnter: _iDropTargetDragEnter,
-			DragOver:  _iDropTargetDragOver,
-			DragLeave: _iDropTargetDragLeave,
-			Drop:      _iDropTargetDrop,
-		},
+		vt:      _iDropTargetVtPtrs, // simply copy the syscall callback pointers
 		counter: 1,
 	}
 	utl.PtrCache.Add(unsafe.Pointer(pImpl)) // keep ptr
@@ -141,104 +139,96 @@ func (me *IDropTarget) Drop(
 	(*(**_IDropTargetImpl)(unsafe.Pointer(me.Ppvt()))).drop = fun
 }
 
-var (
-	_iDropTargetQueryInterface uintptr
-	_iDropTargetAddRef         uintptr
-	_iDropTargetRelease        uintptr
-
-	_iDropTargetDragEnter uintptr
-	_iDropTargetDragOver  uintptr
-	_iDropTargetDragLeave uintptr
-	_iDropTargetDrop      uintptr
-)
-
-func iDropTargetCallbacks() {
-	if _iDropTargetQueryInterface != 0 {
-		return
-	}
-
-	_iDropTargetQueryInterface = syscall.NewCallback(
-		func(_p uintptr, _riid uintptr, ppv ***IUnknownVt) uintptr {
-			*ppv = nil
-			return uintptr(co.HRESULT_E_NOTIMPL)
-		},
-	)
-	_iDropTargetAddRef = syscall.NewCallback(
-		func(p uintptr) uintptr {
-			ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-			newCount := atomic.AddUint32(&(**ppImpl).counter, 1)
-			return uintptr(newCount)
-		},
-	)
-	_iDropTargetRelease = syscall.NewCallback(
-		func(p uintptr) uintptr {
-			ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-			newCount := atomic.AddUint32(&(*ppImpl).counter, ^uint32(0)) // decrement 1
-			if newCount == 0 {
-				utl.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
-				utl.PtrCache.Delete(unsafe.Pointer(ppImpl))
-			}
-			return uintptr(newCount)
-		},
-	)
-
-	_iDropTargetDragEnter = syscall.NewCallback(
-		func(p uintptr, vtDataObj **IUnknownVt, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
-			ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-			pDataObj := ComObj[IDataObject](vtDataObj)
-			if fun := (*ppImpl).dragEnter; fun == nil { // user didn't define a callback
-				return uintptr(co.HRESULT_S_OK)
-			} else {
-				effect := co.DROPEFFECT(*pdwEffect)
-				ret := fun(pDataObj, co.MK(grfKeyState), pt, &effect)
-				*pdwEffect = uint32(effect)
-				return uintptr(ret)
-			}
-		},
-	)
-	_iDropTargetDragOver = syscall.NewCallback(
-		func(p uintptr, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
-			ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-			if fun := (*ppImpl).dragOver; fun == nil { // user didn't define a callback
-				return uintptr(co.HRESULT_S_OK)
-			} else {
-				effect := co.DROPEFFECT(*pdwEffect)
-				ret := fun(co.MK(grfKeyState), pt, &effect)
-				*pdwEffect = uint32(effect)
-				return uintptr(ret)
-			}
-		},
-	)
-	_iDropTargetDragLeave = syscall.NewCallback(
-		func(p uintptr) uintptr {
-			ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-			if fun := (*ppImpl).dragLeave; fun == nil { // user didn't define a callback
-				return uintptr(co.HRESULT_S_OK)
-			} else {
-				return uintptr(fun())
-			}
-		},
-	)
-	_iDropTargetDrop = syscall.NewCallback(
-		func(p uintptr, vtDataObj **IUnknownVt, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
-			ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-			pDataObj := ComObj[IDataObject](vtDataObj)
-			if fun := (*ppImpl).drop; fun == nil { // user didn't define a callback
-				return uintptr(co.HRESULT_S_OK)
-			} else {
-				effect := co.DROPEFFECT(*pdwEffect)
-				ret := fun(pDataObj, co.MK(grfKeyState), pt, &effect)
-				*pdwEffect = uint32(effect)
-				return uintptr(ret)
-			}
-		},
-	)
-}
-
 type _IDropTargetVt struct {
 	IUnknownVt
 	DragEnter uintptr
 	DragOver  uintptr
 	DragLeave uintptr
 	Drop      uintptr
+}
+
+var _iDropTargetVtPtrs _IDropTargetVt // Global to keep the syscall callback pointers.
+
+func (me *_IDropTargetVt) init() {
+	if me.QueryInterface == 0 { // initialize only once
+		*me = _IDropTargetVt{
+			IUnknownVt: IUnknownVt{
+				QueryInterface: syscall.NewCallback(
+					func(_p uintptr, _riid uintptr, ppv ***IUnknownVt) uintptr {
+						*ppv = nil
+						return uintptr(co.HRESULT_E_NOTIMPL)
+					},
+				),
+				AddRef: syscall.NewCallback(
+					func(p uintptr) uintptr {
+						ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
+						newCount := atomic.AddUint32(&(**ppImpl).counter, 1)
+						return uintptr(newCount)
+					},
+				),
+				Release: syscall.NewCallback(
+					func(p uintptr) uintptr {
+						ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
+						newCount := atomic.AddUint32(&(*ppImpl).counter, ^uint32(0)) // decrement 1
+						if newCount == 0 {
+							utl.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
+							utl.PtrCache.Delete(unsafe.Pointer(ppImpl))
+						}
+						return uintptr(newCount)
+					},
+				),
+			},
+			DragEnter: syscall.NewCallback(
+				func(p uintptr, vtDataObj **IUnknownVt, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
+					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
+					pDataObj := ComObj[IDataObject](vtDataObj)
+					if fun := (*ppImpl).dragEnter; fun == nil { // user didn't define a callback
+						return uintptr(co.HRESULT_S_OK)
+					} else {
+						effect := co.DROPEFFECT(*pdwEffect)
+						ret := fun(pDataObj, co.MK(grfKeyState), pt, &effect)
+						*pdwEffect = uint32(effect)
+						return uintptr(ret)
+					}
+				},
+			),
+			DragOver: syscall.NewCallback(
+				func(p uintptr, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
+					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
+					if fun := (*ppImpl).dragOver; fun == nil { // user didn't define a callback
+						return uintptr(co.HRESULT_S_OK)
+					} else {
+						effect := co.DROPEFFECT(*pdwEffect)
+						ret := fun(co.MK(grfKeyState), pt, &effect)
+						*pdwEffect = uint32(effect)
+						return uintptr(ret)
+					}
+				},
+			),
+			DragLeave: syscall.NewCallback(
+				func(p uintptr) uintptr {
+					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
+					if fun := (*ppImpl).dragLeave; fun == nil { // user didn't define a callback
+						return uintptr(co.HRESULT_S_OK)
+					} else {
+						return uintptr(fun())
+					}
+				},
+			),
+			Drop: syscall.NewCallback(
+				func(p uintptr, vtDataObj **IUnknownVt, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
+					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
+					pDataObj := ComObj[IDataObject](vtDataObj)
+					if fun := (*ppImpl).drop; fun == nil { // user didn't define a callback
+						return uintptr(co.HRESULT_S_OK)
+					} else {
+						effect := co.DROPEFFECT(*pdwEffect)
+						ret := fun(pDataObj, co.MK(grfKeyState), pt, &effect)
+						*pdwEffect = uint32(effect)
+						return uintptr(ret)
+					}
+				},
+			),
+		}
+	}
 }

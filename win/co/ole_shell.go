@@ -8,22 +8,23 @@ const (
 	CLSID_ShellLink      CLSID = "00021401-0000-0000-c000-000000000046"
 	CLSID_TaskbarList    CLSID = "56fdf344-fd6d-11d0-958a-006097c9a090"
 
-	IID_IEnumShellItems   IID = "70629033-e363-4a28-a567-0db78006e6d7"
-	IID_IFileDialog       IID = "42f85136-db7e-439c-85f1-e4075d135fc8"
-	IID_IFileDialogEvents IID = "973510db-7d7f-452b-8975-74a85828d354"
-	IID_IFileOpenDialog   IID = "d57c7288-d4ad-4768-be02-9d969532d960"
-	IID_IFileSaveDialog   IID = "84bccd23-5fde-4cdb-aea4-af64b83d78ab"
-	IID_IModalWindow      IID = "b4db1657-70d7-485e-8e3e-6fcb5a5c1802"
-	IID_IShellFolder      IID = "000214e6-0000-0000-c000-000000000046"
-	IID_IShellItem        IID = "43826d1e-e718-42ee-bc55-a1e261c37bfe"
-	IID_IShellItem2       IID = "7e9fb0d3-919f-4307-ab2e-9b1860310c93"
-	IID_IShellItemArray   IID = "b63ea76d-1f85-456f-a19c-48159efa858b"
-	IID_IShellItemFilter  IID = "2659b475-eeb8-48b7-8f07-b378810f48cf"
-	IID_IShellLink        IID = "000214f9-0000-0000-c000-000000000046"
-	IID_ITaskbarList      IID = "56fdf342-fd6d-11d0-958a-006097c9a090"
-	IID_ITaskbarList2     IID = "602d4995-b13a-429b-a66e-1935e44f4317"
-	IID_ITaskbarList3     IID = "ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf"
-	IID_ITaskbarList4     IID = "c43dc798-95d1-4bea-9030-bb99e2983a1a"
+	IID_IEnumShellItems            IID = "70629033-e363-4a28-a567-0db78006e6d7"
+	IID_IFileDialog                IID = "42f85136-db7e-439c-85f1-e4075d135fc8"
+	IID_IFileDialogEvents          IID = "973510db-7d7f-452b-8975-74a85828d354"
+	IID_IFileOpenDialog            IID = "d57c7288-d4ad-4768-be02-9d969532d960"
+	IID_IFileOperationProgressSink IID = "04b0f1a7-9490-44bc-96e1-4296a31252e2"
+	IID_IFileSaveDialog            IID = "84bccd23-5fde-4cdb-aea4-af64b83d78ab"
+	IID_IModalWindow               IID = "b4db1657-70d7-485e-8e3e-6fcb5a5c1802"
+	IID_IShellFolder               IID = "000214e6-0000-0000-c000-000000000046"
+	IID_IShellItem                 IID = "43826d1e-e718-42ee-bc55-a1e261c37bfe"
+	IID_IShellItem2                IID = "7e9fb0d3-919f-4307-ab2e-9b1860310c93"
+	IID_IShellItemArray            IID = "b63ea76d-1f85-456f-a19c-48159efa858b"
+	IID_IShellItemFilter           IID = "2659b475-eeb8-48b7-8f07-b378810f48cf"
+	IID_IShellLink                 IID = "000214f9-0000-0000-c000-000000000046"
+	IID_ITaskbarList               IID = "56fdf342-fd6d-11d0-958a-006097c9a090"
+	IID_ITaskbarList2              IID = "602d4995-b13a-429b-a66e-1935e44f4317"
+	IID_ITaskbarList3              IID = "ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf"
+	IID_ITaskbarList4              IID = "c43dc798-95d1-4bea-9030-bb99e2983a1a"
 )
 
 // [FDAP] enumeration.
@@ -413,4 +414,26 @@ const (
 	THBF_NOBACKGROUND   THBF = 0x4
 	THBF_HIDDEN         THBF = 0x8
 	THBF_NONINTERACTIVE THBF = 0x10
+)
+
+// [_TRANSFER_SOURCE_FLAGS] enumeration.
+//
+// [_TRANSFER_SOURCE_FLAGS]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_transfer_source_flags
+type TSF uint32
+
+const (
+	TSF_NORMAL                     TSF = 0
+	TSF_FAIL_EXIST                 TSF = 0
+	TSF_RENAME_EXIST               TSF = 0x1
+	TSF_OVERWRITE_EXIST            TSF = 0x2
+	TSF_ALLOW_DECRYPTION           TSF = 0x4
+	TSF_NO_SECURITY                TSF = 0x8
+	TSF_COPY_CREATION_TIME         TSF = 0x10
+	TSF_COPY_WRITE_TIME            TSF = 0x20
+	TSF_USE_FULL_ACCESS            TSF = 0x40
+	TSF_DELETE_RECYCLE_IF_POSSIBLE TSF = 0x80
+	TSF_COPY_HARD_LINK             TSF = 0x100
+	TSF_COPY_LOCALIZED_NAME        TSF = 0x200
+	TSF_MOVE_AS_COPY_DELETE        TSF = 0x400
+	TSF_SUSPEND_SHELLEVENTS        TSF = 0x800
 )

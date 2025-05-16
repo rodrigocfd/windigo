@@ -108,6 +108,9 @@ func QueryInterface[T any, P ComCtor[T]](
 
 // Syntactic sugar to create a new [COM] object from its virtual table.
 //
+// This is a low-level method, used internally by the library. Incorrect usage
+// may lead to segmentation faults.
+//
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 func ComObj[T any, P interface {
 	*T
