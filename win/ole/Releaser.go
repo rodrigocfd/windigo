@@ -2,10 +2,10 @@
 
 package ole
 
-// Stores multiple [COM] objects, releasing all them at once.
+// Stores multiple [COM] resources, releasing all them at once.
 //
-// Every function which returns a COM object will require a Releaser to manage the
-// object's lifetime.
+// Every function which returns a COM resource will require a Releaser to manage
+// the object's lifetime.
 //
 // # Example
 //
@@ -14,14 +14,14 @@ package ole
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 type Releaser struct {
-	objs []Releasable
+	objs []ComResource
 }
 
-// Creates a new Releaser to stores multiple [COM] objects, releasing all them
-// at once.
+// Creates a new [Releaser] to store multiple [COM] resources, releasing them
+// all at once.
 //
-// Every function which returns a COM object will require a Releaser to manage the
-// object's lifetime.
+// Every function which returns a COM resource will require a Releaser to manage
+// the object's lifetime.
 //
 // ⚠️ You must defer Releaser.Release().
 //
@@ -35,13 +35,12 @@ func NewReleaser() *Releaser {
 	return new(Releaser)
 }
 
-// Adds a new [COM] object to have its lifetime managed by the Releaser.
-func (me *Releaser) Add(objs ...Releasable) {
+// Adds a new [COM] resource to have its lifetime managed by the Releaser.
+func (me *Releaser) Add(objs ...ComResource) {
 	me.objs = append(me.objs, objs...)
 }
 
-// Releases the resources of all added [COM] objects, in the reverse order they
-// were added.
+// Releases all added [COM] resource, in the reverse order they were added.
 //
 // # Example
 //

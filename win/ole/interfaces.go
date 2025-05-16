@@ -11,7 +11,7 @@ import (
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 // [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 type ComPtr interface {
-	Releasable
+	ComResource
 
 	// Returns the unique COM [interface ID].
 	//
@@ -55,7 +55,7 @@ type ComCtor[T any] interface {
 // cleanup.
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
-type Releasable interface {
+type ComResource interface {
 	// Frees the resources of the object immediately.
 	//
 	// You usually don't need to call this method directly, since every function
