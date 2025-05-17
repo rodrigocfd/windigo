@@ -4,6 +4,7 @@ package co
 
 const (
 	CLSID_FileOpenDialog CLSID = "dc1c5a9c-e88a-4dde-a5a1-60f82a20aef7"
+	CLSID_FileOperation  CLSID = "3ad05575-8857-4850-9277-11b85bdb8e09"
 	CLSID_FileSaveDialog CLSID = "c0b4e2f3-ba21-4773-8dba-335ec946eb8b"
 	CLSID_ShellLink      CLSID = "00021401-0000-0000-c000-000000000046"
 	CLSID_TaskbarList    CLSID = "56fdf344-fd6d-11d0-958a-006097c9a090"
@@ -12,6 +13,7 @@ const (
 	IID_IFileDialog                IID = "42f85136-db7e-439c-85f1-e4075d135fc8"
 	IID_IFileDialogEvents          IID = "973510db-7d7f-452b-8975-74a85828d354"
 	IID_IFileOpenDialog            IID = "d57c7288-d4ad-4768-be02-9d969532d960"
+	IID_IFileOperation             IID = "947aab5f-0a5c-4c13-b4d6-4bf7836fc9f8"
 	IID_IFileOperationProgressSink IID = "04b0f1a7-9490-44bc-96e1-4296a31252e2"
 	IID_IFileSaveDialog            IID = "84bccd23-5fde-4cdb-aea4-af64b83d78ab"
 	IID_IModalWindow               IID = "b4db1657-70d7-485e-8e3e-6fcb5a5c1802"
