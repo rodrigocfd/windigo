@@ -61,6 +61,31 @@ const (
 	FDESVR_REFUSE
 )
 
+// [SHFILEOPSTRUCT] flags.
+//
+// [SHFILEOPSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileopstructw
+type FOF uint16
+
+const (
+	FOF_MULTIDESTFILES        FOF = 0x0001
+	FOF_CONFIRMMOUSE          FOF = 0x0002
+	FOF_SILENT                FOF = 0x0004
+	FOF_RENAMEONCOLLISION     FOF = 0x0008
+	FOF_NOCONFIRMATION        FOF = 0x0010
+	FOF_WANTMAPPINGHANDLE     FOF = 0x0020
+	FOF_ALLOWUNDO             FOF = 0x0040
+	FOF_FILESONLY             FOF = 0x0080
+	FOF_SIMPLEPROGRESS        FOF = 0x0100
+	FOF_NOCONFIRMMKDIR        FOF = 0x0200
+	FOF_NOERRORUI             FOF = 0x0400
+	FOF_NOCOPYSECURITYATTRIBS FOF = 0x0800
+	FOF_NORECURSION           FOF = 0x1000
+	FOF_NO_CONNECTED_ELEMENTS FOF = 0x2000
+	FOF_WANTNUKEWARNING       FOF = 0x4000
+	FOF_NORECURSEREPARSE      FOF = 0x8000
+	FOF_NO_UI                     = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR
+)
+
 // [_FILEOPENDIALOGOPTIONS] enumeration.
 //
 // [_FILEOPENDIALOGOPTIONS]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_fileopendialogoptions
