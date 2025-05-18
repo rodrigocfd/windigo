@@ -40,7 +40,7 @@ func (me *_ControlRaw) defaultMessageHandlers() {
 	})
 }
 
-// Options for ui.NewControl(); returned by ui.OptsControl().
+// Options for [NewControl]; returned by [OptsControl].
 type VarOptsControl struct {
 	className   string
 	classStyle  co.CS
@@ -55,7 +55,7 @@ type VarOptsControl struct {
 	exStyle  co.WS_EX
 }
 
-// Options for ui.NewControl().
+// Options for [NewControl].
 func OptsControl() *VarOptsControl {
 	hCursor, _ := win.HINSTANCE(0).LoadCursor(win.CursorResIdc(co.IDC_ARROW))
 	return &VarOptsControl{

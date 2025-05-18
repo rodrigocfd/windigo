@@ -41,7 +41,7 @@ func (me *_ControlDlg) defaultMessageHandlers() {
 	})
 }
 
-// Options for ui.NewControlDlg(); returned by ui.OptsControlDlg().
+// Options for [NewControlDlg]; returned by [OptsControlDlg].
 type VarOptsControlDlg struct {
 	dlgId    uint16
 	ctrlId   uint16
@@ -49,7 +49,7 @@ type VarOptsControlDlg struct {
 	position win.POINT
 }
 
-// Options for ui.NewControlDlg().
+// Options for [NewControlDlg].
 func OptsControlDlg() *VarOptsControlDlg {
 	return &VarOptsControlDlg{}
 }

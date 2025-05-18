@@ -150,7 +150,7 @@ func (me *EventsWindow) processLastMessage(p Wm) (userRet uintptr, wasHandled bo
 }
 
 func (me *EventsWindow) removeWmCreateInitdialog() {
-	count := 0
+	count := 0 // how many messages we have discounting WM_CREATE and WM_INITDIALOG
 	for _, msg := range me.msgs {
 		if msg.id != co.WM_CREATE && msg.id != co.WM_INITDIALOG {
 			count++
@@ -371,11 +371,18 @@ func (me *EventsWindow) WmCopyData(fun func(p WmCopyData) bool) {
 // Return 0 to continue window creation, or -1 to abort it.
 //
 // Sent only to windows created with [CreateWindowEx]; dialog windows will
-// receive [WM_INITDIALOG] instead.
+// receive [EventsWindow.WmInitDialog] instead.
+//
+// # Example
+//
+//	var wnd ui.Parent // initialized somewhere
+//
+//	wnd.On().WmCreate(func(_ ui.WmCreate) bool {
+//		return 0
+//	}
 //
 // [WM_CREATE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-create
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
-// [WM_INITDIALOG]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-initdialog
 func (me *EventsWindow) WmCreate(fun func(p WmCreate) int) {
 	me.Wm(co.WM_CREATE, func(p Wm) uintptr {
 		return uintptr(fun(WmCreate{Raw: p}))
@@ -804,11 +811,18 @@ func (me *EventsWindow) WmHScrollClipboard(fun func(p WmScrollClipboard)) {
 // control.
 //
 // Sent only to dialog windows; those created with [CreateWindowEx] will receive
-// [WM_CREATE] instead.
+// [EventsWindow.WmCreate] instead.
+//
+// # Example
+//
+//	var wnd ui.Parent // initialized somewhere
+//
+//	wnd.On().WmInitDialog(func(_ ui.WmInitDialog) bool {
+//		return true
+//	}
 //
 // [WM_INITDIALOG]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-initdialog
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
-// [WM_CREATE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-create
 func (me *EventsWindow) WmInitDialog(fun func(p WmInitDialog) bool) {
 	me.Wm(co.WM_INITDIALOG, func(p Wm) uintptr {
 		return utl.BoolToUintptr(fun(WmInitDialog{Raw: p}))
@@ -1265,11 +1279,20 @@ func (me *EventsWindow) WmNull(fun func()) {
 // [WM_PAINT] message handler.
 //
 // Note that, even if you don't actually paint anything, you still must call
-// [BeginPaint] and [EndPaint], otherwise the window may get stuck.
+// [win.HWND.BeginPaint] and [win.HWND.EndPaint], otherwise the window may get
+// stuck.
+//
+// # Example
+//
+//	var wnd ui.Parent // initialized somewhere
+//
+//	wnd.On().WmPaint(func() {
+//		var ps win.PAINTSTRUCT
+//		hdc, _ := wnd.Hwnd().BeginPaint(&ps)
+//		defer wnd.Hwnd().EndPaint(&ps)
+//	}
 //
 // [WM_PAINT]: https://learn.microsoft.com/en-us/windows/win32/gdi/wm-paint
-// [BeginPaint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint
-// [EndPaint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endpaint
 func (me *EventsWindow) WmPaint(fun func()) {
 	me.Wm(co.WM_PAINT, func(_ Wm) uintptr {
 		fun()

@@ -73,7 +73,7 @@ func (me *_ModalRaw) defaultMessageHandlers() {
 	})
 }
 
-// Options for ui.NewModal(); returned by ui.OptsModal().
+// Options for [NewModal]; returned by [OptsModal].
 type VarOptsModal struct {
 	className   string
 	classStyle  co.CS
@@ -89,7 +89,7 @@ type VarOptsModal struct {
 	processDlgMsgs bool
 }
 
-// Options for ui.NewModal().
+// Options for [NewModal].
 func OptsModal() *VarOptsModal {
 	hCursor, _ := win.HINSTANCE(0).LoadCursor(win.CursorResIdc(co.IDC_ARROW))
 	return &VarOptsModal{

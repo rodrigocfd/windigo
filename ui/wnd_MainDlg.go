@@ -56,14 +56,14 @@ func (me *_MainDlg) defaultMessageHandlers() {
 	})
 }
 
-// Options for ui.NewMainDlg(); returned by ui.OptsMainDlg().
+// Options for [NewMainDlg]; returned by [OptsMainDlg].
 type VarOptsMainDlg struct {
 	dlgId        uint16
 	iconId       uint16
 	accelTableId uint16
 }
 
-// Options for ui.NewMainDlg().
+// Options for [NewMainDlg].
 func OptsMainDlg() *VarOptsMainDlg {
 	return &VarOptsMainDlg{}
 }

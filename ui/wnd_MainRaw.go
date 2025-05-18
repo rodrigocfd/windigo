@@ -84,7 +84,7 @@ func (me *_MainRaw) defaultMessageHandlers() {
 	})
 }
 
-// Options for ui.NewMain(); returned by ui.OptsMain().
+// Options for [NewMain]; returned by [OptsMain].
 type VarOptsMain struct {
 	className   string
 	classStyle  co.CS
@@ -103,7 +103,7 @@ type VarOptsMain struct {
 	processDlgMsgs bool
 }
 
-// Options for ui.NewMain().
+// Options for [NewMain].
 func OptsMain() *VarOptsMain {
 	hCursor, _ := win.HINSTANCE(0).LoadCursor(win.CursorResIdc(co.IDC_ARROW))
 	return &VarOptsMain{
