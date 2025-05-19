@@ -14,8 +14,9 @@ import (
 //   - [ChildControl]
 //   - [Parent]
 type Control struct {
-	raw *_ControlRaw
-	dlg *_ControlDlg
+	raw    *_ControlRaw
+	dlg    *_ControlDlg
+	parent Parent
 }
 
 // Creates a new custom control with [CreateWindowEx].
@@ -23,7 +24,8 @@ type Control struct {
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func NewControl(parent Parent, opts *VarOptsControl) *Control {
 	return &Control{
-		raw: newControlRaw(parent, opts),
+		raw:    newControlRaw(parent, opts),
+		parent: parent,
 	}
 }
 
@@ -32,8 +34,14 @@ func NewControl(parent Parent, opts *VarOptsControl) *Control {
 // [CreateDialogParam]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
 func NewControlDlg(parent Parent, opts *VarOptsControlDlg) *Control {
 	return &Control{
-		dlg: newControlDlg(parent, opts),
+		dlg:    newControlDlg(parent, opts),
+		parent: parent,
 	}
+}
+
+// Returns the parent container of this control.
+func (me *Control) Parent() Parent {
+	return me.parent
 }
 
 // Returns the underlying HWND handle of this window.

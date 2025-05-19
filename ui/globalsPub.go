@@ -59,7 +59,7 @@ func Dpi(x, y int) (int, int) {
 //
 // [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func MsgError(wnd Parent, title, caption, body string) {
-	msgBuild(wnd, title, caption, body, co.TDICON_ERROR, "")
+	msgBuild(wnd, title, caption, body, co.TDICON_ERROR, "", false)
 }
 
 // Syntactic sugar to [TaskDialogIndirect] to display a message box indicating
@@ -80,7 +80,7 @@ func MsgError(wnd Parent, title, caption, body string) {
 //
 // [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func MsgWarn(wnd Parent, title, caption, body string) {
-	msgBuild(wnd, title, caption, body, co.TDICON_WARNING, "")
+	msgBuild(wnd, title, caption, body, co.TDICON_WARNING, "", false)
 }
 
 // Syntactic sugar to [TaskDialogIndirect] to display a message box indicating
@@ -101,7 +101,7 @@ func MsgWarn(wnd Parent, title, caption, body string) {
 //
 // [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func MsgOk(wnd Parent, title, caption, body string) {
-	msgBuild(wnd, title, caption, body, co.TDICON_INFORMATION, "")
+	msgBuild(wnd, title, caption, body, co.TDICON_INFORMATION, "", false)
 }
 
 // Syntactic sugar to [TaskDialogIndirect] to display a message box prompting
@@ -128,21 +128,34 @@ func MsgOk(wnd Parent, title, caption, body string) {
 //
 // [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func MsgOkCancel(wnd Parent, title, caption, body, okText string) co.ID {
-	return msgBuild(wnd, title, caption, body, co.TDICON_INFORMATION, okText)
+	return msgBuild(wnd, title, caption, body, co.TDICON_INFORMATION, okText, true)
 }
 
-func msgBuild(wnd Parent, title, caption, body string, icon co.TDICON, okText string) co.ID {
+func msgBuild(
+	wnd Parent,
+	title, caption, body string,
+	icon co.TDICON,
+	okText string,
+	hasCancel bool,
+) co.ID {
 	var hParent win.HWND
 	if wnd != nil {
 		hParent = wnd.Hwnd()
 	}
 
+	var commonButtons co.TDCBF
 	var buttons []win.TASKDIALOG_BUTTON
-	if okText != "" {
+	if hasCancel {
+		finalOkText := okText
+		if finalOkText == "" {
+			finalOkText = "&OK"
+		}
 		buttons = []win.TASKDIALOG_BUTTON{
-			{Id: co.ID_OK, Text: okText},
+			{Id: co.ID_OK, Text: finalOkText},
 			{Id: co.ID_CANCEL, Text: "&Cancel"},
 		}
+	} else {
+		commonButtons = co.TDCBF_OK
 	}
 
 	ret, err := win.TaskDialogIndirect(win.TASKDIALOGCONFIG{
@@ -151,7 +164,7 @@ func msgBuild(wnd Parent, title, caption, body string, icon co.TDICON, okText st
 		MainInstruction: caption,
 		Content:         body,
 		HMainIcon:       win.TdcIconTdi(icon),
-		CommonButtons:   co.TDCBF_OK,
+		CommonButtons:   commonButtons,
 		Flags:           co.TDF_ALLOW_DIALOG_CANCELLATION | co.TDF_POSITION_RELATIVE_TO_WINDOW,
 		Buttons:         buttons,
 	})
