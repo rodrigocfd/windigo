@@ -7,6 +7,10 @@ import (
 )
 
 // Modal window.
+//
+// Implements:
+//   - [Window]
+//   - [Parent]
 type Modal struct {
 	raw *_ModalRaw
 	dlg *_ModalDlg
@@ -64,7 +68,7 @@ func (me *Modal) ShowModal() {
 
 // Returns the underlying HWND handle of this window.
 //
-// Implements ui.Window.
+// Implements [Window].
 //
 // Note that this handle is initially zero, existing only after window creation.
 func (me *Modal) Hwnd() win.HWND {
@@ -77,7 +81,7 @@ func (me *Modal) Hwnd() win.HWND {
 
 // Exposes all the window notifications the can be handled.
 //
-// Implements ui.Parent.
+// Implements [Parent].
 //
 // Panics if called after the window has been created.
 func (me *Modal) On() *EventsWindow {
@@ -97,7 +101,7 @@ func (me *Modal) On() *EventsWindow {
 // [WNDPROC], run in the original thread of the window, thus allowing GUI
 // updates. With this, the user doesn't have to deal with a custom WM_ message.
 //
-// Implements ui.Parent.
+// Implements [Parent].
 //
 // # Example
 //
@@ -124,7 +128,7 @@ func (me *Modal) UiThread(fun func()) {
 	}
 }
 
-// Implements ui.Parent.
+// Implements [Parent].
 func (me *Modal) base() *_BaseContainer {
 	if me.raw != nil {
 		return &me.raw._BaseContainer

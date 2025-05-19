@@ -10,6 +10,10 @@ import (
 )
 
 // Main application window.
+//
+// Implements:
+//   - [Window]
+//   - [Parent]
 type Main struct {
 	raw *_MainRaw
 	dlg *_MainDlg
@@ -107,7 +111,7 @@ func (me *Main) RunAsMain() int {
 
 // Returns the underlying HWND handle of this window.
 //
-// Implements ui.Window.
+// Implements [Window].
 //
 // Note that this handle is initially zero, existing only after window creation.
 func (me *Main) Hwnd() win.HWND {
@@ -120,7 +124,7 @@ func (me *Main) Hwnd() win.HWND {
 
 // Exposes all the window notifications the can be handled.
 //
-// Implements ui.Parent.
+// Implements [Parent].
 //
 // Panics if called after the window has been created.
 func (me *Main) On() *EventsWindow {
@@ -140,7 +144,7 @@ func (me *Main) On() *EventsWindow {
 // [WNDPROC], run in the original thread of the window, thus allowing GUI
 // updates. With this, the user doesn't have to deal with a custom WM_ message.
 //
-// Implements ui.Parent.
+// Implements [Parent].
 //
 // # Example
 //
@@ -167,7 +171,7 @@ func (me *Main) UiThread(fun func()) {
 	}
 }
 
-// Implements ui.Parent.
+// Implements [Parent].
 func (me *Main) base() *_BaseContainer {
 	if me.raw != nil {
 		return &me.raw._BaseContainer

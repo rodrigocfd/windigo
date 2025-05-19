@@ -8,6 +8,11 @@ import (
 )
 
 // Custom control.
+//
+// Implements:
+//   - [Window]
+//   - [ChildControl]
+//   - [Parent]
 type Control struct {
 	raw *_ControlRaw
 	dlg *_ControlDlg
@@ -33,7 +38,7 @@ func NewControlDlg(parent Parent, opts *VarOptsControlDlg) *Control {
 
 // Returns the underlying HWND handle of this window.
 //
-// Implements ui.Window.
+// Implements [Window].
 //
 // Note that this handle is initially zero, existing only after window creation.
 func (me *Control) Hwnd() win.HWND {
@@ -46,7 +51,7 @@ func (me *Control) Hwnd() win.HWND {
 
 // Returns the control ID, unique within the same Parent.
 //
-// Implements ui.ChildControl.
+// Implements [ChildControl].
 func (me *Control) CtrlId() uint16 {
 	if me.raw != nil {
 		return me.raw.ctrlId
@@ -59,7 +64,7 @@ func (me *Control) CtrlId() uint16 {
 // draws the borders correctly in some undefined controls, like buttons.
 // Otherwise, calls [SetFocus].
 //
-// Implements ui.ChildControl.
+// Implements [ChildControl].
 //
 // [WM_NEXTDLGCTL]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-nextdlgctl
 // [SetFocus]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setfocus
@@ -75,7 +80,7 @@ func (me *Control) Focus() {
 
 // Exposes all the window notifications the can be handled.
 //
-// Implements ui.Parent.
+// Implements [Parent].
 //
 // Panics if called after the window has been created.
 func (me *Control) On() *EventsWindow {
@@ -95,7 +100,7 @@ func (me *Control) On() *EventsWindow {
 // [WNDPROC], run in the original thread of the window, thus allowing GUI
 // updates. With this, the user doesn't have to deal with a custom WM_ message.
 //
-// Implements ui.Parent.
+// Implements [Parent].
 //
 // # Example
 //
@@ -122,7 +127,7 @@ func (me *Control) UiThread(fun func()) {
 	}
 }
 
-// Implements ui.Parent.
+// Implements [Parent].
 func (me *Control) base() *_BaseContainer {
 	if me.raw != nil {
 		return &me.raw._BaseContainer
