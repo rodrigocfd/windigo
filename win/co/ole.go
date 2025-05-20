@@ -28,6 +28,16 @@ const (
 	BHID_FilePlaceholder    BHID = "8677dceb-aae0-4005-8d3d-547fa852f825"
 )
 
+// [BIND_FLAGS] enumeration.
+//
+// [BIND_FLAGS]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-bind_flags
+type BIND uint32
+
+const (
+	BIND_MAYBOTHERUSER     BIND = 1
+	BIND_JUSTTESTEXISTENCE BIND = 2
+)
+
 // A COM [class ID], represented as a string.
 //
 // [class ID]: https://learn.microsoft.com/en-us/windows/win32/com/clsid-key-hklm
