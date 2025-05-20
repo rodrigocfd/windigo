@@ -2,6 +2,10 @@
 
 package ole
 
+import (
+	"github.com/rodrigocfd/windigo/internal/utl"
+)
+
 // Stores multiple [COM] resources, releasing all them at once.
 //
 // Every function which returns a COM resource will require a Releaser to manage
@@ -58,17 +62,32 @@ func (me *Releaser) Release() {
 // Release the specific [COM] resources, if present, immediately. They won't be
 // released again when [Releaser.Release] is called.
 func (me *Releaser) ReleaseNow(objs ...ComResource) {
-	newSlice := make([]ComResource, 0, len(me.objs))
-
-	for _, obj := range me.objs {
-		for _, objToRelease := range objs {
-			if obj == objToRelease {
-				obj.Release()
-			} else {
-				newSlice = append(newSlice, obj)
+	nRelease := 0
+	for _, objToRelease := range objs {
+		if !utl.IsNil(objToRelease) {
+			for _, obj := range me.objs {
+				if obj == objToRelease {
+					nRelease++
+				}
 			}
 		}
 	}
 
+	if nRelease == 0 {
+		return
+	}
+
+	newSlice := make([]ComResource, 0, nRelease)
+	for _, objToRelease := range objs {
+		if !utl.IsNil(objToRelease) {
+			for _, obj := range me.objs {
+				if obj == objToRelease {
+					obj.Release()
+				} else {
+					newSlice = append(newSlice, obj)
+				}
+			}
+		}
+	}
 	me.objs = newSlice
 }
