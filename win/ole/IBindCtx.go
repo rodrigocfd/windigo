@@ -24,3 +24,17 @@ type IBindCtx struct{ IUnknown }
 func (*IBindCtx) IID() co.IID {
 	return co.IID_IBindCtx
 }
+
+type _IBindCtxVt struct {
+	IUnknownVt
+	RegisterObjectBound   uintptr
+	RevokeObjectBound     uintptr
+	ReleaseBoundObjects   uintptr
+	SetBindOptions        uintptr
+	GetBindOptions        uintptr
+	GetRunningObjectTable uintptr
+	RegisterObjectParam   uintptr
+	GetObjectParam        uintptr
+	EnumObjectParam       uintptr
+	RevokeObjectParam     uintptr
+}
