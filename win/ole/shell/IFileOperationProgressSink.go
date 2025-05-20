@@ -15,6 +15,28 @@ import (
 
 // [IFileOperationProgressSink] COM interface.
 //
+// # Example
+//
+//	ole.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer ole.CoUninitialize()
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	op, _ := ole.CoCreateInstance[shell.IFileOperation](
+//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL)
+//
+//	sink := shell.NewIFileOperationProgressSinkImpl(rel)
+//	sink.PreCopyItem(func(
+//		flags co.TSF,
+//		item, destFolder *shell.IShellItem,
+//		newName string,
+//	) co.HRESULT {
+//		println("Pre-copy", newName)
+//		return co.HRESULT_S_OK
+//	})
+//	op.Advise(sink)
+//
 // [IFileOperationProgressSink]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileoperationprogresssink
 type IFileOperationProgressSink struct{ ole.IUnknown }
 
@@ -49,8 +71,30 @@ type _IFileOperationProgressSinkImpl struct {
 
 // Implements [IFileOperationProgressSink].
 //
+// # Example
+//
+//	ole.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer ole.CoUninitialize()
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	op, _ := ole.CoCreateInstance[shell.IFileOperation](
+//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL)
+//
+//	sink := shell.NewIFileOperationProgressSinkImpl(rel)
+//	sink.PreCopyItem(func(
+//		flags co.TSF,
+//		item, destFolder *shell.IShellItem,
+//		newName string,
+//	) co.HRESULT {
+//		println("Pre-copy", newName)
+//		return co.HRESULT_S_OK
+//	})
+//	op.Advise(sink)
+//
 // [IFileOperationProgressSink]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileoperationprogresssink
-func NewIFileOperationProgressSink(releaser *ole.Releaser) *IFileOperationProgressSink {
+func NewIFileOperationProgressSinkImpl(releaser *ole.Releaser) *IFileOperationProgressSink {
 	_iFileOperationProgressSinkVtPtrs.init()
 	pImpl := &_IFileOperationProgressSinkImpl{ // has Go function pointers, so cannot be allocated on the OS heap
 		vt:      _iFileOperationProgressSinkVtPtrs, // simply copy the syscall callback pointers
