@@ -13,6 +13,17 @@ import (
 
 // [IShellFolder] COM interface.
 //
+// # Example
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
+//		rel, "C:\\Temp")
+//
+//	folder, _ := shell.BindToHandler[shell.IShellFolder](
+//		item, rel, nil, co.BHID_SFObject)
+//
 // [IShellFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellfolder
 type IShellFolder struct{ ole.IUnknown }
 
