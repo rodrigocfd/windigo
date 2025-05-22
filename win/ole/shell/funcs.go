@@ -93,6 +93,44 @@ func SHCreateItemFromParsingName[T any, P ole.ComCtor[T]](
 
 var _SHCreateItemFromParsingName = dll.Shell32.NewProc("SHCreateItemFromParsingName")
 
+// [SHCreateItemFromRelativeName] function.
+//
+// [SHCreateItemFromRelativeName]:
+func SHCreateItemFromRelativeName[T any, P ole.ComCtor[T]](
+	releaser *ole.Releaser,
+	parent *IShellItem,
+	name string,
+	bindCtx *ole.IBindCtx,
+) (*T, error) {
+	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	var ppvtQueried **ole.IUnknownVt
+	riidGuid := win.GuidFrom(pObj.IID())
+
+	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.ALLOW_EMPTY)
+
+	var pBindCtx **ole.IUnknownVt
+	if bindCtx != nil {
+		pBindCtx = bindCtx.Ppvt()
+	}
+
+	ret, _, _ := syscall.SyscallN(_SHCreateItemFromRelativeName.Addr(),
+		uintptr(unsafe.Pointer(parent.Ppvt())),
+		uintptr(name16.UnsafePtr()),
+		uintptr(unsafe.Pointer(pBindCtx)),
+		uintptr(unsafe.Pointer(&riidGuid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj.Set(ppvtQueried)
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHCreateItemFromRelativeName = dll.Shell32.NewProc("SHCreateItemFromRelativeName")
+
 // [SHGetDesktopFolder] function.
 //
 // # Example
