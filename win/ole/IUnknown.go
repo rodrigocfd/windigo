@@ -40,11 +40,21 @@ func (me *IUnknown) Ppvt() **IUnknownVt {
 
 // [AddRef] method.
 //
+// The returned object must have the same type of the caller.
+//
+// # Example
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	var folder *shell.IShellItem
+//	shell.SHCreateItemFromParsingName(rel, "C:\\Temp", &folder)
+//
+//	var folderCopy *shell.IShellItem
+//	folder.QueryInterface(rel, &folderCopy)
+//
 // [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *IUnknown) AddRef(releaser *Releaser, ppOut interface{}) {
-
-	// TODO: validate ppOut as receiver type
-
 	utl.ComValidateOutPtr(ppOut)
 
 	syscall.SyscallN((*me.Ppvt()).AddRef,
