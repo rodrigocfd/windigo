@@ -23,19 +23,19 @@ import (
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	ish, _ := shell.SHCreateItemFromParsingName[shell.IShellItem2](
-//		rel, "C:\\Temp\\foo.txt")
+//	var item *shell.IShellItem2
+//	shell.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
 //
 // It can also be queried from an [IShellItem] object:
 //
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
-//		rel, "C:\\Temp\\foo.txt")
+//	var item *shell.IShellItem
+//	shell.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
 //
-//	item2, _ := ole.QueryInterface[shell.IShellItem2](
-//		&item.IUnknown, rel)
+//	var item2 *shell.IShellItem2
+//	item.QueryInterface(rel, &item2)
 //
 // [IShellItem2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem2
 type IShellItem2 struct{ IShellItem }
@@ -130,8 +130,8 @@ func (me *IShellItem2) GetInt32(pkey co.PKEY) (int32, error) {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem2](
-//		rel, "C:\\Temp\\foo.txt")
+//	var item *shell.IShellItem2
+//	shell.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
 //
 //	ty, _ := item.GetString(co.PKEY_ItemTypeText)
 //	println(ty)

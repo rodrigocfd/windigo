@@ -20,11 +20,11 @@ import (
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
-//		rel, "C:\\Temp")
+//	var item *shell.IShellItem
+//	shell.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
 //
-//	folder, _ := shell.BindToHandler[shell.IShellFolder](
-//		item, rel, nil, co.BHID_SFObject)
+//	var folder *shell.IShellFolder
+//	shell.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
 //
 // [IShellFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellfolder
 type IShellFolder struct{ ole.IUnknown }

@@ -8,6 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -65,6 +66,40 @@ func (me *IUnknown) Release() {
 		syscall.SyscallN((*me.ppvt).Release,
 			uintptr(unsafe.Pointer(me.ppvt)))
 		me.ppvt = nil
+	}
+}
+
+// [QueryInterface] method.
+//
+// # Example
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	var item *shell.IShellItem
+//	shell.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
+//
+//	var item2 *shell.IShellItem2
+//	item.QueryInterface(rel, &item2)
+//
+// [QueryInterface]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
+func (me *IUnknown) QueryInterface(releaser *Releaser, ppOut interface{}) error {
+	utl.ComValidateOutPtr(ppOut)
+
+	var ppvtQueried **IUnknownVt
+	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
+
+	ret, _, _ := syscall.SyscallN((*me.Ppvt()).QueryInterface,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
+		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ComResource))
+		return nil
+	} else {
+		return hr
 	}
 }
 

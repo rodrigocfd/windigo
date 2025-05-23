@@ -23,8 +23,8 @@ import (
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	ish, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
-//		rel, "C:\\Temp\\foo.txt")
+//	var item *shell.IShellItem
+//	shell.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
 //
 // [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 type IShellItem struct{ ole.IUnknown }
