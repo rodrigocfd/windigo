@@ -20,10 +20,12 @@ import (
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	fod, _ := ole.CoCreateInstance[shell.IFileOpenDialog](
+//	var fod *shell.IFileOpenDialog
+//	ole.CoCreateInstance(
 //		rel,
 //		co.CLSID_FileOpenDialog,
 //		co.CLSCTX_INPROC_SERVER,
+//		&fod,
 //	)
 //
 //	defOpts, _ := fod.GetOptions()

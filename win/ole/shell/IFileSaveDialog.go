@@ -19,10 +19,12 @@ import (
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	fsd, _ := ole.CoCreateInstance[shell.IFileSaveDialog](
+//	var fsd *shell.IFileSaveDialog
+//	ole.CoCreateInstance(
 //		rel,
 //		co.CLSID_FileSaveDialog,
 //		co.CLSCTX_INPROC_SERVER,
+//		&fsd,
 //	)
 //
 //	fsd.SetFileTypes([]shell.COMDLG_FILTERSPEC{

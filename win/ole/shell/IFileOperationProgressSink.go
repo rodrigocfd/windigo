@@ -23,8 +23,9 @@ import (
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	op, _ := ole.CoCreateInstance[shell.IFileOperation](
-//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL)
+//	var op *shell.IFileOperation
+//	ole.CoCreateInstance(
+//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL, &op)
 //
 //	sink := shell.NewIFileOperationProgressSinkImpl(rel)
 //	sink.PreCopyItem(func(
@@ -79,8 +80,9 @@ type _IFileOperationProgressSinkImpl struct {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	op, _ := ole.CoCreateInstance[shell.IFileOperation](
-//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL)
+//	var op *shell.IFileOperation
+//	ole.CoCreateInstance(
+//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL, &op)
 //
 //	sink := shell.NewIFileOperationProgressSinkImpl(rel)
 //	sink.PreCopyItem(func(

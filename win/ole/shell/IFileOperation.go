@@ -23,8 +23,13 @@ import (
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	op, _ := ole.CoCreateInstance[shell.IFileOperation](
-//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL)
+//	var op *shell.IFileOperation
+//	ole.CoCreateInstance(
+//		rel,
+//		co.CLSID_FileOperation,
+//		co.CLSCTX_ALL,
+//		&op,
+//	)
 //
 // [IFileOperation]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileoperation
 type IFileOperation struct{ ole.IUnknown }
@@ -80,13 +85,13 @@ func (me *IFileOperation) ApplyPropertiesToItem(item *IShellItem) error {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	op, _ := ole.CoCreateInstance[shell.IFileOperation](
-//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL)
+//	var op *shell.IFileOperation
+//	ole.CoCreateInstance(
+//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL, &op)
 //
-//	file, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
-//		rel, "C:\\Temp\\foo.txt")
-//	dest, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
-//		rel, "C:\\Temp\\mydir")
+//	var file, dest *shell.IShellItem
+//	shell.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &file)
+//	shell.SHCreateItemFromParsingName(rel, "C:\\Temp\\mydir", &dest)
 //
 //	op.CopyItem(file, dest, "new name.txt", nil)
 //	op.PerformOperations()

@@ -19,10 +19,12 @@ import (
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	taskbl, _ := ole.CoCreateInstance[shell.ITaskbarList](
+//	var taskbl *shell.ITaskbarList
+//	ole.CoCreateInstance(
 //		rel,
 //		co.CLSID_TaskbarList,
 //		co.CLSCTX_INPROC_SERVER,
+//		&taskbl,
 //	)
 //
 // [ITaskbarList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
