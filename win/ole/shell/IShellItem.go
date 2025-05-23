@@ -43,8 +43,14 @@ func (*IShellItem) IID() co.IID {
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	desktop, _ := shell.SHGetKnownFolderItem[shell.IShellItem](
-//		rel, co.FOLDERID_Desktop, co.KF_FLAG_DEFAULT, win.HANDLE(0))
+//	var desktop *shell.IShellItem
+//	shell.SHGetKnownFolderItem(
+//		rel,
+//		co.FOLDERID_Desktop,
+//		co.KF_FLAG_DEFAULT,
+//		win.HANDLE(0),
+//		&desktop,
+//	)
 //
 //	var enumItems *IEnumShellItems
 //	desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)

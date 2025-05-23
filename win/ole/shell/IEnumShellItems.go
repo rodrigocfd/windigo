@@ -18,11 +18,17 @@ import (
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	desktop, _ := shell.SHGetKnownFolderItem[shell.IShellItem](
-//		rel, co.FOLDERID_Desktop, co.KF_FLAG_DEFAULT, win.HANDLE(0))
+//	var desktop *shell.IShellItem
+//	shell.SHGetKnownFolderItem(
+//		rel,
+//		co.FOLDERID_Desktop,
+//		co.KF_FLAG_DEFAULT,
+//		win.HANDLE(0),
+//		&desktop,
+//	)
 //
-//	enumItems, _ := shell.BindToHandler[shell.IEnumShellItems](
-//		desktop, rel, nil, co.BHID_EnumItems)
+//	var enumItems *shell.IEnumShellItems
+//	desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
 //
 //	items, _ := enumItems.Enum(rel)
 //	for _, item := range items {
@@ -67,11 +73,17 @@ func (me *IEnumShellItems) Clone(releaser *ole.Releaser) (*IEnumShellItems, erro
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	desktop, _ := shell.SHGetKnownFolderItem[shell.IShellItem](
-//		rel, co.FOLDERID_Desktop, co.KF_FLAG_DEFAULT, win.HANDLE(0))
+//	var desktop *shell.IShellItem
+//	shell.SHGetKnownFolderItem(
+//		rel,
+//		co.FOLDERID_Desktop,
+//		co.KF_FLAG_DEFAULT,
+//		win.HANDLE(0),
+//		&desktop,
+//	)
 //
-//	enumItems, _ := shell.BindToHandler[shell.IEnumShellItems](
-//		desktop, rel, nil, co.BHID_EnumItems)
+//	var enumItems *shell.IEnumShellItems
+//	desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
 //
 //	items, _ := enumItems.Enum(rel)
 //	for _, item := range items {
