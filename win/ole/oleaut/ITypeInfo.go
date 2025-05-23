@@ -51,15 +51,22 @@ func (me *ITypeInfo) AddressOfMember(
 // [CreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-createinstance
 func (me *ITypeInfo) CreateInstance(
 	releaser *ole.Releaser,
+	unkOuter *ole.IUnknown,
 	ppOut interface{},
 ) error {
 	var ppvtQueried **ole.IUnknownVt
 	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
 
+	var pUnkOuter **ole.IUnknownVt
+	if unkOuter != nil {
+		pUnkOuter = unkOuter.Ppvt()
+	}
+
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		0, uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(pUnkOuter)),
+		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {

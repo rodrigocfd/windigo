@@ -24,6 +24,7 @@ import (
 //	ole.CoCreateInstance(
 //		rel,
 //		co.CLSID_FileOpenDialog,
+//		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&fod,
 //	)

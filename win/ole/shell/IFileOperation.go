@@ -27,6 +27,7 @@ import (
 //	ole.CoCreateInstance(
 //		rel,
 //		co.CLSID_FileOperation,
+//		nil,
 //		co.CLSCTX_ALL,
 //		&op,
 //	)
@@ -87,7 +88,7 @@ func (me *IFileOperation) ApplyPropertiesToItem(item *IShellItem) error {
 //
 //	var op *shell.IFileOperation
 //	ole.CoCreateInstance(
-//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL, &op)
+//		rel, co.CLSID_FileOperation, nil, co.CLSCTX_ALL, &op)
 //
 //	var file, dest *shell.IShellItem
 //	shell.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &file)

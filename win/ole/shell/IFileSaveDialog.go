@@ -23,6 +23,7 @@ import (
 //	ole.CoCreateInstance(
 //		rel,
 //		co.CLSID_FileSaveDialog,
+//		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&fsd,
 //	)

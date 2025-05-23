@@ -171,7 +171,7 @@ func (me *IDispatch) Invoke(
 //
 //	var dispExcel *oleaut.IDispatch
 //	ole.CoCreateInstance(
-//		rel, clsId, co.CLSCTX_LOCAL_SERVER, &dispExcel)
+//		rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &dispExcel)
 //
 //	varBooks, _ := dispExcel.InvokeGet(rel, "Workbooks")
 //	dispBooks, _ := varBooks.IDispatch(rel)
@@ -205,7 +205,7 @@ func (me *IDispatch) InvokeGet(
 //
 //	var dispExcel *oleaut.IDispatch
 //	ole.CoCreateInstance(
-//		rel, clsId, co.CLSCTX_LOCAL_SERVER, &dispExcel)
+//		rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &dispExcel)
 //
 //	varBooks, _ := dispExcel.InvokeGet(rel, "Workbooks")
 //	dispBooks, _ := varBooks.IDispatch(rel)

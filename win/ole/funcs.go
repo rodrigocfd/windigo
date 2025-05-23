@@ -33,7 +33,7 @@ import (
 //
 //	var dispExcel *oleaut.IDispatch
 //	ole.CoCreateInstance(
-//		rel, clsId, co.CLSCTX_LOCAL_SERVER, &dispExcel)
+//		rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &dispExcel)
 //
 // [CLSIDFromProgID]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func CLSIDFromProgID(progId string) (co.CLSID, error) {
@@ -63,6 +63,7 @@ var _CLSIDFromProgID = dll.Ole32.NewProc("CLSIDFromProgID")
 //	ole.CoCreateInstance(
 //		rel,
 //		co.CLSID_TaskbarList,
+//		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&taskbl,
 //	)
@@ -71,6 +72,7 @@ var _CLSIDFromProgID = dll.Ole32.NewProc("CLSIDFromProgID")
 func CoCreateInstance(
 	releaser *Releaser,
 	rclsid co.CLSID,
+	unkOuter *IUnknown,
 	dwClsContext co.CLSCTX,
 	ppOut interface{},
 ) error {
@@ -80,8 +82,14 @@ func CoCreateInstance(
 	guidClsid := win.GuidFrom(rclsid)
 	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
 
+	var pUnkOuter **IUnknownVt
+	if unkOuter != nil {
+		pUnkOuter = unkOuter.Ppvt()
+	}
+
 	ret, _, _ := syscall.SyscallN(_CoCreateInstance.Addr(),
-		uintptr(unsafe.Pointer(&guidClsid)), 0, // don't query pUnkOuter
+		uintptr(unsafe.Pointer(&guidClsid)),
+		uintptr(unsafe.Pointer(pUnkOuter)),
 		uintptr(dwClsContext),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))

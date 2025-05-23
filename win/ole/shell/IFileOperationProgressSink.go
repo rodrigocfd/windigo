@@ -25,7 +25,7 @@ import (
 //
 //	var op *shell.IFileOperation
 //	ole.CoCreateInstance(
-//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL, &op)
+//		rel, co.CLSID_FileOperation, nil, co.CLSCTX_ALL, &op)
 //
 //	sink := shell.NewIFileOperationProgressSinkImpl(rel)
 //	sink.PreCopyItem(func(
@@ -82,7 +82,7 @@ type _IFileOperationProgressSinkImpl struct {
 //
 //	var op *shell.IFileOperation
 //	ole.CoCreateInstance(
-//		rel, co.CLSID_FileOperation, co.CLSCTX_ALL, &op)
+//		rel, co.CLSID_FileOperation, nil, co.CLSCTX_ALL, &op)
 //
 //	sink := shell.NewIFileOperationProgressSinkImpl(rel)
 //	sink.PreCopyItem(func(
