@@ -62,7 +62,8 @@ func NewIDropTargetImpl(releaser *Releaser) *IDropTarget {
 	utl.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
 
 	ppFakeVtbl := (**IUnknownVt)(unsafe.Pointer(ppImpl))
-	pObj := ComObj[IDropTarget](ppFakeVtbl)
+	var pObj *IDropTarget
+	utl.ComCreateObj(&pObj, unsafe.Pointer(ppFakeVtbl))
 	releaser.Add(pObj)
 	return pObj
 }
@@ -181,7 +182,8 @@ func (me *_IDropTargetVt) init() {
 			DragEnter: syscall.NewCallback(
 				func(p uintptr, vtDataObj **IUnknownVt, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
 					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-					pDataObj := ComObj[IDataObject](vtDataObj)
+					var pDataObj *IDataObject
+					utl.ComCreateObj(&pDataObj, unsafe.Pointer(vtDataObj))
 					if fun := (*ppImpl).dragEnter; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
@@ -218,7 +220,8 @@ func (me *_IDropTargetVt) init() {
 			Drop: syscall.NewCallback(
 				func(p uintptr, vtDataObj **IUnknownVt, grfKeyState uint32, pt win.POINT, pdwEffect *uint32) uintptr {
 					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-					pDataObj := ComObj[IDataObject](vtDataObj)
+					var pDataObj *IDataObject
+					utl.ComCreateObj(&pDataObj, unsafe.Pointer(vtDataObj))
 					if fun := (*ppImpl).drop; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {

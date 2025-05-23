@@ -105,7 +105,8 @@ func NewIFileOperationProgressSinkImpl(releaser *ole.Releaser) *IFileOperationPr
 	utl.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
 
 	ppFakeVtbl := (**ole.IUnknownVt)(unsafe.Pointer(ppImpl))
-	pObj := ole.ComObj[IFileOperationProgressSink](ppFakeVtbl)
+	var pObj *IFileOperationProgressSink
+	utl.ComCreateObj(&pObj, unsafe.Pointer(ppFakeVtbl))
 	releaser.Add(pObj)
 	return pObj
 }
@@ -319,7 +320,8 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).preRenameItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						pItem := ole.ComObj[IShellItem](psiItem)
+						var pItem *IShellItem
+						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
 						return uintptr(fun(co.TSF(dwFlags), pItem, wstr.WstrPtrToStr(pszNewName)))
 					}
 				},
@@ -336,8 +338,9 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).postRenameItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						pItem := ole.ComObj[IShellItem](psiItem)
-						pNew := ole.ComObj[IShellItem](psiNewlyCreated)
+						var pItem, pNew *IShellItem
+						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
+						utl.ComCreateObj(&pNew, unsafe.Pointer(psiNewlyCreated))
 						return uintptr(fun(co.TSF(dwFlags), pItem,
 							wstr.WstrPtrToStr(pszNewName), hrRename, pNew))
 					}
@@ -353,8 +356,9 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).preMoveItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						pItem := ole.ComObj[IShellItem](psiItem)
-						pDest := ole.ComObj[IShellItem](psiDestinationFolder)
+						var pItem, pDest *IShellItem
+						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
+						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
 						return uintptr(fun(co.TSF(dwFlags), pItem, pDest, wstr.WstrPtrToStr(pszNewName)))
 					}
 				},
@@ -371,9 +375,10 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).postMoveItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						pItem := ole.ComObj[IShellItem](psiItem)
-						pDest := ole.ComObj[IShellItem](psiDestinationFolder)
-						pNew := ole.ComObj[IShellItem](psiNewlyCreated)
+						var pItem, pDest, pNew *IShellItem
+						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
+						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
+						utl.ComCreateObj(&pNew, unsafe.Pointer(psiNewlyCreated))
 						return uintptr(fun(co.TSF(dwFlags), pItem, pDest,
 							wstr.WstrPtrToStr(pszNewName), hrMove, pNew))
 					}
@@ -389,8 +394,9 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).preCopyItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						pItem := ole.ComObj[IShellItem](psiItem)
-						pDest := ole.ComObj[IShellItem](psiDestinationFolder)
+						var pItem, pDest *IShellItem
+						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
+						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
 						return uintptr(fun(co.TSF(dwFlags), pItem, pDest, wstr.WstrPtrToStr(pszNewName)))
 					}
 				},
@@ -407,9 +413,10 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).postCopyItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						pItem := ole.ComObj[IShellItem](psiItem)
-						pDest := ole.ComObj[IShellItem](psiDestinationFolder)
-						pNew := ole.ComObj[IShellItem](psiNewlyCreated)
+						var pItem, pDest, pNew *IShellItem
+						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
+						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
+						utl.ComCreateObj(&pNew, unsafe.Pointer(psiNewlyCreated))
 						return uintptr(fun(co.TSF(dwFlags), pItem, pDest,
 							wstr.WstrPtrToStr(pszNewName), hrMove, pNew))
 					}
@@ -421,7 +428,8 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).preDeleteItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						pItem := ole.ComObj[IShellItem](psiItem)
+						var pItem *IShellItem
+						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
 						return uintptr(fun(co.TSF(dwFlags), pItem))
 					}
 				},
@@ -437,8 +445,9 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).postDeleteItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						pItem := ole.ComObj[IShellItem](psiItem)
-						pNew := ole.ComObj[IShellItem](psiNewlyCreated)
+						var pItem, pNew *IShellItem
+						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
+						utl.ComCreateObj(&pNew, unsafe.Pointer(psiNewlyCreated))
 						return uintptr(fun(co.TSF(dwFlags), pItem, hrMove, pNew))
 					}
 				},
@@ -453,7 +462,8 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).preNewItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						pDest := ole.ComObj[IShellItem](psiDestinationFolder)
+						var pDest *IShellItem
+						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
 						return uintptr(fun(co.TSF(dwFlags), pDest, wstr.WstrPtrToStr(pszNewName)))
 					}
 				},
@@ -471,8 +481,9 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).postNewItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						pDest := ole.ComObj[IShellItem](psiDestinationFolder)
-						pNew := ole.ComObj[IShellItem](psiNewItem)
+						var pDest, pNew *IShellItem
+						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
+						utl.ComCreateObj(&pNew, unsafe.Pointer(psiNewItem))
 						return uintptr(fun(co.TSF(dwFlags), pDest, wstr.WstrPtrToStr(pszNewName),
 							wstr.WstrPtrToStr(pszTemplateName), fileAttributes, hrNew, pNew))
 					}

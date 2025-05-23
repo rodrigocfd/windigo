@@ -50,7 +50,8 @@ func OleLoadPicture(
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := ole.ComObj[IPicture](ppvtQueried)
+		var pObj *IPicture
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -84,8 +85,8 @@ func OleLoadPicturePath(
 		uintptr(unsafe.Pointer(&guid)), uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := ole.ComObj[IPicture](ppvtQueried)
-		pObj.Set(ppvtQueried)
+		var pObj *IPicture
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {

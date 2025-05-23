@@ -40,7 +40,8 @@ func (me *IBindCtx) EnumObjectParam(releaser *Releaser) (*IEnumString, error) {
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := ComObj[IEnumString](ppvtQueried)
+		var pObj *IEnumString
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -51,7 +52,7 @@ func (me *IBindCtx) EnumObjectParam(releaser *Releaser) (*IEnumString, error) {
 // [RegisterObjectBound] method.
 //
 // [RegisterObjectBound]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-registerobjectbound
-func (me *IBindCtx) RegisterObjectBound(obj ComPtr) error {
+func (me *IBindCtx) RegisterObjectBound(obj *IUnknown) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).RegisterObjectBound,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -72,10 +73,11 @@ func (me *IBindCtx) ReleaseBoundObjects() error {
 // [RevokeObjectBound] method.
 //
 // [RevokeObjectBound]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-revokeobjectbound
-func (me *IBindCtx) RevokeObjectBound(obj ComPtr) error {
+func (me *IBindCtx) RevokeObjectBound(obj *IUnknown) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).RevokeObjectBound,
-		uintptr(unsafe.Pointer(me.Ppvt())))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(obj.Ppvt())))
 	return utl.ErrorAsHResult(ret)
 }
 

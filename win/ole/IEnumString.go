@@ -34,7 +34,8 @@ func (me *IEnumString) Clone(releaser *Releaser) (*IEnumString, error) {
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := ComObj[IEnumString](ppvtQueried)
+		var pObj *IEnumString
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {

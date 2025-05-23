@@ -6,6 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -82,7 +83,8 @@ func (me *IDispatch) GetTypeInfo(releaser *ole.Releaser, lcid win.LCID) (*ITypeI
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := ole.ComObj[ITypeInfo](ppvtQueried)
+		var pObj *ITypeInfo
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -166,8 +168,10 @@ func (me *IDispatch) Invoke(
 //	defer rel.Release()
 //
 //	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
-//	dispExcel, _ := ole.CoCreateInstance[oleaut.IDispatch](
-//		rel, clsId, co.CLSCTX_LOCAL_SERVER)
+//
+//	var dispExcel *oleaut.IDispatch
+//	ole.CoCreateInstance(
+//		rel, clsId, co.CLSCTX_LOCAL_SERVER, &dispExcel)
 //
 //	varBooks, _ := dispExcel.InvokeGet(rel, "Workbooks")
 //	dispBooks, _ := varBooks.IDispatch(rel)
@@ -198,8 +202,10 @@ func (me *IDispatch) InvokeGet(
 //	defer rel.Release()
 //
 //	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
-//	dispExcel, _ := ole.CoCreateInstance[oleaut.IDispatch](
-//		rel, clsId, co.CLSCTX_LOCAL_SERVER)
+//
+//	var dispExcel *oleaut.IDispatch
+//	ole.CoCreateInstance(
+//		rel, clsId, co.CLSCTX_LOCAL_SERVER, &dispExcel)
 //
 //	varBooks, _ := dispExcel.InvokeGet(rel, "Workbooks")
 //	dispBooks, _ := varBooks.IDispatch(rel)

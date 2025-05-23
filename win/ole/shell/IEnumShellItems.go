@@ -51,7 +51,8 @@ func (me *IEnumShellItems) Clone(releaser *ole.Releaser) (*IEnumShellItems, erro
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := ole.ComObj[IEnumShellItems](ppvtQueried)
+		var pObj *IEnumShellItems
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -111,7 +112,8 @@ func (me *IEnumShellItems) Next(releaser *ole.Releaser) (*IShellItem, error) {
 		1, uintptr(unsafe.Pointer(&ppvtQueried)), uintptr(unsafe.Pointer(&numFetched)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := ole.ComObj[IShellItem](ppvtQueried)
+		var pObj *IShellItem
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
 		releaser.Add(pObj)
 		return pObj, nil
 	} else if hr == co.HRESULT_S_FALSE {

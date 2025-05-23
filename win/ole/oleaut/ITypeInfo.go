@@ -3,9 +3,11 @@
 package oleaut
 
 import (
+	"reflect"
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -44,30 +46,28 @@ func (me *ITypeInfo) AddressOfMember(
 	}
 }
 
-// [CreateInstance] method. Not implemented as a method of [ITypeInfo] because
-// Go doesn't support generic methods.
+// [CreateInstance] method.
 //
 // [CreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-createinstance
-func CreateInstance[T any, P ole.ComCtor[T]](
-	iTypeInfo *ITypeInfo,
+func (me *ITypeInfo) CreateInstance(
 	releaser *ole.Releaser,
-) (*T, error) {
-	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	ppOut interface{},
+) error {
 	var ppvtQueried **ole.IUnknownVt
-	riidGuid := win.GuidFrom(pObj.IID())
+	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
 
 	ret, _, _ := syscall.SyscallN(
-		(*_ITypeInfoVt)(unsafe.Pointer(*iTypeInfo.Ppvt())).CreateInstance,
-		uintptr(unsafe.Pointer(iTypeInfo.Ppvt())),
-		uintptr(unsafe.Pointer(&riidGuid)),
+		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		0, uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj.Set(ppvtQueried)
-		releaser.Add(pObj)
-		return pObj, nil
+		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
+		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		return nil
 	} else {
-		return nil, hr
+		return hr
 	}
 }
 

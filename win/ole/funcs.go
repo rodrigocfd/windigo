@@ -4,6 +4,7 @@ package ole
 
 import (
 	"errors"
+	"reflect"
 	"syscall"
 	"unsafe"
 
@@ -30,8 +31,9 @@ import (
 //
 //	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
 //
-//	excel, _ := ole.CoCreateInstance[ole.IDispatch](
-//		rel, clsId, co.CLSCTX_LOCAL_SERVER)
+//	var dispExcel *oleaut.IDispatch
+//	ole.CoCreateInstance(
+//		rel, clsId, co.CLSCTX_LOCAL_SERVER, &dispExcel)
 //
 // [CLSIDFromProgID]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func CLSIDFromProgID(progId string) (co.CLSID, error) {
@@ -57,22 +59,26 @@ var _CLSIDFromProgID = dll.Ole32.NewProc("CLSIDFromProgID")
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	taskbl, _ := ole.CoCreateInstance[shell.ITaskbarList](
+//	var taskbl *shell.ITaskbarList
+//	ole.CoCreateInstance(
 //		rel,
 //		co.CLSID_TaskbarList,
 //		co.CLSCTX_INPROC_SERVER,
+//		&taskbl,
 //	)
 //
 // [CoCreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-func CoCreateInstance[T any, P ComCtor[T]](
+func CoCreateInstance(
 	releaser *Releaser,
 	rclsid co.CLSID,
 	dwClsContext co.CLSCTX,
-) (*T, error) {
-	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	ppOut interface{},
+) error {
+	utl.ComValidateOutPtr(ppOut)
+
 	var ppvtQueried **IUnknownVt
 	guidClsid := win.GuidFrom(rclsid)
-	guidIid := win.GuidFrom(pObj.IID())
+	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
 
 	ret, _, _ := syscall.SyscallN(_CoCreateInstance.Addr(),
 		uintptr(unsafe.Pointer(&guidClsid)), 0, // don't query pUnkOuter
@@ -81,11 +87,11 @@ func CoCreateInstance[T any, P ComCtor[T]](
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj.Set(ppvtQueried)
-		releaser.Add(pObj)
-		return pObj, nil
+		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
+		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ComResource))
+		return nil
 	} else {
-		return nil, hr
+		return hr
 	}
 }
 
@@ -145,7 +151,8 @@ func CreateBindCtx(releaser *Releaser) (*IBindCtx, error) {
 		0, uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := ComObj[IBindCtx](ppvtQueried)
+		var pObj *IBindCtx
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -257,7 +264,8 @@ func SHCreateMemStream(releaser *Releaser, src []byte) (*IStream, error) {
 	}
 
 	ppvt := (**IUnknownVt)(unsafe.Pointer(ret))
-	pObj := ComObj[IStream](ppvt)
+	var pObj *IStream
+	utl.ComCreateObj(&pObj, unsafe.Pointer(ppvt))
 	releaser.Add(pObj)
 	return pObj, nil
 }

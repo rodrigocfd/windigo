@@ -33,7 +33,8 @@ func (me *IStream) Clone(releaser *Releaser) (*IStream, error) {
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := ComObj[IStream](ppvtQueried)
+		var pObj *IStream
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {

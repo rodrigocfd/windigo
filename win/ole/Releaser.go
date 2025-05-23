@@ -6,6 +6,21 @@ import (
 	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
+// A [COM] object whose lifetime can be managed by an ole.Releaser, automating the
+// cleanup.
+//
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+type ComResource interface {
+	// Frees the resources of the object immediately.
+	//
+	// You usually don't need to call this method directly, since every function
+	// which returns a [COM] object will require a Releaser to manage the
+	// object's lifetime.
+	//
+	// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+	Release()
+}
+
 // Stores multiple [COM] resources, releasing all them at once.
 //
 // Every function which returns a COM resource will require a Releaser to manage
@@ -59,33 +74,33 @@ func (me *Releaser) Release() {
 	me.objs = nil
 }
 
-// Release the specific [COM] resources, if present, immediately. They won't be
-// released again when [Releaser.Release] is called.
+// Releases the specific [COM] resources, if present, immediately.
+//
+// These objects will be removed from the internal list, thus not being released
+// when [Releaser.Release] is further called.
 func (me *Releaser) ReleaseNow(objs ...ComResource) {
-	nRelease := 0
-	for _, objToRelease := range objs {
-		if !utl.IsNil(objToRelease) {
-			for _, obj := range me.objs {
-				if obj == objToRelease {
-					nRelease++
+	numToRelease := 0
+	for _, passedObj := range objs {
+		if !utl.IsNil(passedObj) { // obj passed by the user is not nil
+			for _, ourObj := range me.objs {
+				if ourObj == passedObj { // we found this object in our list
+					numToRelease++
 				}
 			}
 		}
 	}
 
-	if nRelease == 0 {
-		return
+	if numToRelease == 0 {
+		return // no objects to be released
 	}
 
-	newSlice := make([]ComResource, 0, nRelease)
-	for _, objToRelease := range objs {
-		if !utl.IsNil(objToRelease) {
-			for _, obj := range me.objs {
-				if obj == objToRelease {
-					obj.Release()
-				} else {
-					newSlice = append(newSlice, obj)
-				}
+	newSlice := make([]ComResource, 0, len(me.objs)-numToRelease)
+	for _, ourObj := range me.objs {
+		for _, passedObj := range objs {
+			if passedObj == ourObj {
+				ourObj.Release()
+			} else {
+				newSlice = append(newSlice, ourObj)
 			}
 		}
 	}

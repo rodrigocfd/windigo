@@ -3,10 +3,12 @@
 package shell
 
 import (
+	"reflect"
 	"syscall"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -22,33 +24,30 @@ import (
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
-//		rel, "C:\\Temp\\foo.txt")
+//	var item *shell.IShellItem
+//	shell.SHCreateItemFromParsingName(
+//		rel, "C:\\Temp\\foo.txt", &item)
 //
 //	idl, _ := shell.SHGetIDListFromObject(rel, item)
 //
-//	sameItem, _ := shell.SHCreateItemFromIDList[shell.IShellItem2](
-//		rel, idl)
+//	var sameItem *shell.IShellItem2
+//	shell.SHCreateItemFromIDList(rel, idl, &sameItem)
 //
 // [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
-func SHCreateItemFromIDList[T any, P ole.ComCtor[T]](
-	releaser *ole.Releaser,
-	pidl *ITEMIDLIST,
-) (*T, error) {
-	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+func SHCreateItemFromIDList(releaser *ole.Releaser, pidl *ITEMIDLIST, ppOut interface{}) error {
 	var ppvtQueried **ole.IUnknownVt
-	guidIid := win.GuidFrom(pObj.IID())
+	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
 
 	ret, _, _ := syscall.SyscallN(_SHCreateItemFromIDList.Addr(),
 		uintptr(*pidl), uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj.Set(ppvtQueried)
-		releaser.Add(pObj)
-		return pObj, nil
+		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
+		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		return nil
 	} else {
-		return nil, hr
+		return hr
 	}
 }
 
@@ -63,31 +62,35 @@ var _SHCreateItemFromIDList = dll.Shell32.NewProc("SHCreateItemFromIDList")
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	ish, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
-//		rel, "C:\\Temp\\foo.txt")
+//	var item *shell.IShellItem
+//	shell.SHCreateItemFromParsingName(
+//		rel,
+//		"C:\\Temp\\foo.txt",
+//		&item,
+//	)
 //
 // [SHCreateItemFromParsingName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
-func SHCreateItemFromParsingName[T any, P ole.ComCtor[T]](
+func SHCreateItemFromParsingName(
 	releaser *ole.Releaser,
 	folderOrFilePath string,
-) (*T, error) {
-	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	ppOut interface{},
+) error {
 	var ppvtQueried **ole.IUnknownVt
-	riidGuid := win.GuidFrom(pObj.IID())
+	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
 
 	folderOrFilePath16 := wstr.NewBufWith[wstr.Stack20](folderOrFilePath, wstr.EMPTY_IS_NIL)
 
 	ret, _, _ := syscall.SyscallN(_SHCreateItemFromParsingName.Addr(),
 		uintptr(folderOrFilePath16.UnsafePtr()),
-		0, uintptr(unsafe.Pointer(&riidGuid)),
+		0, uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj.Set(ppvtQueried)
-		releaser.Add(pObj)
-		return pObj, nil
+		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
+		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		return nil
 	} else {
-		return nil, hr
+		return hr
 	}
 }
 
@@ -95,16 +98,16 @@ var _SHCreateItemFromParsingName = dll.Shell32.NewProc("SHCreateItemFromParsingN
 
 // [SHCreateItemFromRelativeName] function.
 //
-// [SHCreateItemFromRelativeName]:
-func SHCreateItemFromRelativeName[T any, P ole.ComCtor[T]](
+// [SHCreateItemFromRelativeName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromrelativename
+func SHCreateItemFromRelativeName(
 	releaser *ole.Releaser,
 	parent *IShellItem,
 	name string,
 	bindCtx *ole.IBindCtx,
-) (*T, error) {
-	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	ppOut interface{},
+) error {
 	var ppvtQueried **ole.IUnknownVt
-	riidGuid := win.GuidFrom(pObj.IID())
+	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
 
 	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.ALLOW_EMPTY)
 
@@ -117,15 +120,15 @@ func SHCreateItemFromRelativeName[T any, P ole.ComCtor[T]](
 		uintptr(unsafe.Pointer(parent.Ppvt())),
 		uintptr(name16.UnsafePtr()),
 		uintptr(unsafe.Pointer(pBindCtx)),
-		uintptr(unsafe.Pointer(&riidGuid)),
+		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj.Set(ppvtQueried)
-		releaser.Add(pObj)
-		return pObj, nil
+		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
+		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		return nil
 	} else {
-		return nil, hr
+		return hr
 	}
 }
 
@@ -147,7 +150,8 @@ func SHGetDesktopFolder(releaser *ole.Releaser) (*IShellFolder, error) {
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := ole.ComObj[IShellFolder](ppvtQueried)
+		var pObj *IShellFolder
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -166,36 +170,42 @@ var _SHGetDesktopFolder = dll.Shell32.NewProc("SHGetDesktopFolder")
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	desktop, _ := shell.SHGetKnownFolderItem[shell.IShellItem](
-//		rel, co.FOLDERID_Desktop, co.KF_FLAG_DEFAULT, win.HANDLE(0))
+//	var desktop *shell.IShellItem
+//	shell.SHGetKnownFolderItem(
+//		rel,
+//		co.FOLDERID_Desktop,
+//		co.KF_FLAG_DEFAULT,
+//		win.HANDLE(0),
+//		&desktop,
+//	)
 //
 //	path, _ := desktop.GetDisplayName(co.SIGDN_FILESYSPATH)
 //	println(path)
 //
 // [SHGetKnownFolderItem]: https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetknownfolderitem
-func SHGetKnownFolderItem[T any, P ole.ComCtor[T]](
+func SHGetKnownFolderItem(
 	releaser *ole.Releaser,
 	kfid co.FOLDERID,
 	flags co.KF_FLAG,
 	hToken win.HANDLE, // HACCESSTOKEN
-) (*T, error) {
-	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	ppOut interface{},
+) error {
 	var ppvtQueried **ole.IUnknownVt
-	kfidGuid := win.GuidFrom(kfid)
-	riidGuid := win.GuidFrom(pObj.IID())
+	guidKfid := win.GuidFrom(kfid)
+	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
 
 	ret, _, _ := syscall.SyscallN(_SHGetKnownFolderItem.Addr(),
-		uintptr(unsafe.Pointer(&kfidGuid)),
+		uintptr(unsafe.Pointer(&guidKfid)),
 		uintptr(flags), uintptr(hToken),
-		uintptr(unsafe.Pointer(&riidGuid)),
+		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj.Set(ppvtQueried)
-		releaser.Add(pObj)
-		return pObj, nil
+		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
+		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		return nil
 	} else {
-		return nil, hr
+		return hr
 	}
 }
 
@@ -208,13 +218,14 @@ var _SHGetKnownFolderItem = dll.Shell32.NewProc("SHGetKnownFolderItem")
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
-//	item, _ := shell.SHCreateItemFromParsingName[shell.IShellItem](
-//		rel, "C:\\Temp\\foo.txt")
+//	var item *shell.IShellItem
+//	shell.SHCreateItemFromParsingName(
+//		rel, "C:\\Temp\\foo.txt", &item)
 //
-//	idl, _ := shell.SHGetIDListFromObject(rel, item)
+//	idl, _ := shell.SHGetIDListFromObject(rel, &item.IUnknown)
 //
 // [SHGetIDListFromObject]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shgetidlistfromobject
-func SHGetIDListFromObject(releaser *ole.Releaser, obj ole.ComPtr) (*ITEMIDLIST, error) {
+func SHGetIDListFromObject(releaser *ole.Releaser, obj *ole.IUnknown) (*ITEMIDLIST, error) {
 	var idl ITEMIDLIST
 	ret, _, _ := syscall.SyscallN(_SHGetIDListFromObject.Addr(),
 		uintptr(unsafe.Pointer(obj.Ppvt())), uintptr(unsafe.Pointer(&idl)))

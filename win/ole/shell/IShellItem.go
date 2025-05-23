@@ -3,9 +3,11 @@
 package shell
 
 import (
+	"reflect"
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -34,8 +36,7 @@ func (*IShellItem) IID() co.IID {
 	return co.IID_IShellItem
 }
 
-// [BindToHandler] method. Not implemented as a method of [IShellItem] because
-// Go doesn't support generic methods.
+// [BindToHandler] method.
 //
 // # Example
 //
@@ -45,20 +46,19 @@ func (*IShellItem) IID() co.IID {
 //	desktop, _ := shell.SHGetKnownFolderItem[shell.IShellItem](
 //		rel, co.FOLDERID_Desktop, co.KF_FLAG_DEFAULT, win.HANDLE(0))
 //
-//	enumItems, _ := shell.BindToHandler[shell.IEnumShellItems](
-//		desktop, rel, nil, co.BHID_EnumItems)
+//	var enumItems *IEnumShellItems
+//	desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
 //
 // [BindToHandler]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-bindtohandler
-func BindToHandler[T any, P ole.ComCtor[T]](
-	iShellItem *IShellItem,
+func (me *IShellItem) BindToHandler(
 	releaser *ole.Releaser,
 	bindCtx *ole.IBindCtx,
 	bhid co.BHID,
-) (*T, error) {
-	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	ppOut interface{},
+) error {
 	var ppvtQueried **ole.IUnknownVt
-	bhidGuid := win.GuidFrom(bhid)
-	riidGuid := win.GuidFrom(pObj.IID())
+	guidBhid := win.GuidFrom(bhid)
+	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
 
 	var pBindCtx **ole.IUnknownVt
 	if bindCtx != nil {
@@ -66,19 +66,19 @@ func BindToHandler[T any, P ole.ComCtor[T]](
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		(*_IShellItemVt)(unsafe.Pointer(*iShellItem.Ppvt())).BindToHandler,
-		uintptr(unsafe.Pointer(iShellItem.Ppvt())),
+		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).BindToHandler,
+		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(pBindCtx)),
-		uintptr(unsafe.Pointer(&bhidGuid)),
-		uintptr(unsafe.Pointer(&riidGuid)),
+		uintptr(unsafe.Pointer(&guidBhid)),
+		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj.Set(ppvtQueried)
-		releaser.Add(pObj)
-		return pObj, nil
+		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
+		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		return nil
 	} else {
-		return nil, hr
+		return hr
 	}
 }
 
@@ -159,7 +159,8 @@ func (me *IShellItem) GetParent(releaser *ole.Releaser) (*IShellItem, error) {
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := ole.ComObj[IShellItem](ppvtQueried)
+		var pObj *IShellItem
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {

@@ -3,9 +3,11 @@
 package shell
 
 import (
+	"reflect"
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
@@ -34,19 +36,17 @@ func (*IShellFolder) IID() co.IID {
 	return co.IID_IShellFolder
 }
 
-// [BindToObject] method. Not implemented as a method of [IShellFolder] because
-// Go doesn't support generic methods.
+// [BindToObject] method.
 //
 // [BindToObject]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellfolder-bindtoobject
-func BindToObject[T any, P ole.ComCtor[T]](
-	iShellFolder *IShellFolder,
+func (me *IShellFolder) BindToObject(
 	releaser *ole.Releaser,
 	pidl *ITEMIDLIST,
 	bindCtx *ole.IBindCtx,
-) (*T, error) {
-	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	ppOut interface{},
+) error {
 	var ppvtQueried **ole.IUnknownVt
-	riidGuid := win.GuidFrom(pObj.IID())
+	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
 
 	var pBindCtx **ole.IUnknownVt
 	if bindCtx != nil {
@@ -54,34 +54,32 @@ func BindToObject[T any, P ole.ComCtor[T]](
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		(*_IShellFolderVt)(unsafe.Pointer(*iShellFolder.Ppvt())).BindToObject,
+		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).BindToObject,
 		uintptr(*pidl),
 		uintptr(unsafe.Pointer(pBindCtx)),
-		uintptr(unsafe.Pointer(&riidGuid)),
+		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj.Set(ppvtQueried)
-		releaser.Add(pObj)
-		return pObj, nil
+		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
+		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		return nil
 	} else {
-		return nil, hr
+		return hr
 	}
 }
 
-// [BindToStorage] method. Not implemented as a method of [IShellFolder] because
-// Go doesn't support generic methods.
+// [BindToStorage] method.
 //
 // [BindToStorage]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellfolder-bindtostorage
-func BindToStorage[T any, P ole.ComCtor[T]](
-	iShellFolder *IShellFolder,
+func (me *IShellFolder) BindToStorage(
 	releaser *ole.Releaser,
 	pidl *ITEMIDLIST,
 	bindCtx *ole.IBindCtx,
-) (*T, error) {
-	pObj := P(new(T)) // https://stackoverflow.com/a/69575720/6923555
+	ppOut interface{},
+) error {
 	var ppvtQueried **ole.IUnknownVt
-	riidGuid := win.GuidFrom(pObj.IID())
+	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
 
 	var pBindCtx **ole.IUnknownVt
 	if bindCtx != nil {
@@ -89,18 +87,18 @@ func BindToStorage[T any, P ole.ComCtor[T]](
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		(*_IShellFolderVt)(unsafe.Pointer(*iShellFolder.Ppvt())).BindToStorage,
+		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).BindToStorage,
 		uintptr(*pidl),
 		uintptr(unsafe.Pointer(pBindCtx)),
-		uintptr(unsafe.Pointer(&riidGuid)),
+		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj.Set(ppvtQueried)
-		releaser.Add(pObj)
-		return pObj, nil
+		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
+		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		return nil
 	} else {
-		return nil, hr
+		return hr
 	}
 }
 
