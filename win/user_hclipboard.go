@@ -187,7 +187,7 @@ var _IsClipboardFormatAvailable = dll.User32.NewProc("IsClipboardFormatAvailable
 //
 // [SetClipboardData]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setclipboarddata
 func (HCLIPBOARD) SetClipboardData(format co.CF, data []byte) error {
-	hGlobal, wErr := GlobalAlloc(co.GMEM_MOVEABLE, uint(len(data)))
+	hGlobal, wErr := GlobalAlloc(co.GMEM_MOVEABLE, uint(len(data))) // will be owned by the clipboard
 	if wErr != nil {
 		return wErr
 	}
@@ -201,7 +201,7 @@ func (HCLIPBOARD) SetClipboardData(format co.CF, data []byte) error {
 	hGlobal.GlobalUnlock()
 
 	ret, _, err := syscall.SyscallN(_SetClipboardData.Addr(),
-		uintptr(format), uintptr(hGlobal)) // HGLOBAL will be owned by the clipboard
+		uintptr(format), uintptr(hGlobal))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

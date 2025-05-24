@@ -21,6 +21,11 @@ type HPROCSNAP HANDLE
 //
 // ⚠️ You must defer [HPROCSNAP.CloseHandle].
 //
+// # Example
+//
+//	hSnap, _ := win.CreateToolhelp32Snapshot(co.TH32CS_SNAPMODULE, 0)
+//	defer hSnap.CloseHandle()
+//
 // [CreateToolhelp32Snapshot]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-createtoolhelp32snapshot
 func CreateToolhelp32Snapshot(flags co.TH32CS, processId uint32) (HPROCSNAP, error) {
 	ret, _, err := syscall.SyscallN(_CreateToolhelp32Snapshot.Addr(),
@@ -49,7 +54,7 @@ func (hProcSnap HPROCSNAP) CloseHandle() error {
 //	defer hSnap.CloseHandle()
 //
 //	modules, _ := hSnap.EnumModules()
-//	for nfo, _ := range modules {
+//	for _, nfo := range modules {
 //		println(nfo.SzExePath())
 //	}
 func (hProcSnap HPROCSNAP) EnumModules() ([]MODULEENTRY32, error) {
@@ -79,7 +84,7 @@ func (hProcSnap HPROCSNAP) EnumModules() ([]MODULEENTRY32, error) {
 //	defer hSnap.CloseHandle()
 //
 //	processes, _ := hSnap.EnumProcesses()
-//	for nfo, _ := range processes {
+//	for _, nfo := range processes {
 //		println(nfo.SzExeFile())
 //	}
 func (hProcSnap HPROCSNAP) EnumProcesses() ([]PROCESSENTRY32, error) {
@@ -109,7 +114,7 @@ func (hProcSnap HPROCSNAP) EnumProcesses() ([]PROCESSENTRY32, error) {
 //	defer hSnap.CloseHandle()
 //
 //	threads, _ := hSnap.EnumThreads()
-//	for nfo, _ := range threads {
+//	for _, nfo := range threads {
 //		println(nfo.Th32ThreadID)
 //	}
 func (hProcSnap HPROCSNAP) EnumThreads() ([]THREADENTRY32, error) {

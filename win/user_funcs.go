@@ -720,6 +720,8 @@ var _TranslateMessage = dll.User32.NewProc("TranslateMessage")
 
 // [UnregisterClass] function.
 //
+// Paired with [RegisterClassEx].
+//
 // [UnregisterClass]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unregisterclassw
 func UnregisterClass(className ClassName, hInst HINSTANCE) error {
 	className16 := wstr.NewBuf[wstr.Stack20]()

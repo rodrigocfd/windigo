@@ -120,8 +120,7 @@ func PathGetPath(path string) string {
 //
 // # Example
 //
-//	var docPath string // initialized somewhere
-//
+//	docPath := "C:\\Temp\\foo.txt"
 //	isDocument := win.PathHasExtension(docPath, "txt", "doc")
 func PathHasExtension(path string, extensions ...string) bool {
 	pathUpper := strings.ToUpper(path)
