@@ -134,7 +134,7 @@ func (HCLIPBOARD) GetClipboardData(format co.CF) ([]byte, error) {
 	}
 	defer hGlobal.GlobalUnlock()
 
-	mem := unsafe.Slice((*byte)(unsafe.Pointer(ptrData)), szData) // map in-memory content
+	mem := unsafe.Slice((*byte)(ptrData), szData) // map in-memory content
 	buf := make([]byte, szData)
 	copy(buf, mem)
 	return buf, nil
@@ -196,7 +196,7 @@ func (HCLIPBOARD) SetClipboardData(format co.CF, data []byte) error {
 	if wErr != nil {
 		return wErr
 	}
-	mem := unsafe.Slice((*byte)(unsafe.Pointer(ptr)), len(data))
+	mem := unsafe.Slice((*byte)(ptr), len(data))
 	copy(mem, data)
 	hGlobal.GlobalUnlock()
 

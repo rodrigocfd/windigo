@@ -4,6 +4,7 @@ package win
 
 import (
 	"syscall"
+	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
 	"github.com/rodrigocfd/windigo/internal/utl"
@@ -28,11 +29,15 @@ type HGLOBAL HANDLE
 //
 // # Example
 //
-//	hMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 50)
+//	hMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 10)
 //	defer hMem.GlobalFree()
 //
-//	ptrMem := hMem.GlobalLock(50)
+//	szMem, _ := hMem.GlobalSize()
+//
+//	ptrMem, _ := hMem.GlobalLock()
 //	defer hMem.GlobalUnlock()
+//
+//	sliceMem := unsafe.Slice((*byte)(ptrMem), szMem)
 //
 // [GlobalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
 func GlobalAlloc(uFlags co.GMEM, numBytes uint) (HGLOBAL, error) {
@@ -86,7 +91,7 @@ var _GlobalFree = dll.Kernel32.NewProc("GlobalFree")
 //
 // If you called [GlobalAlloc] with [co.GMEM_FIXED], technically you don't need
 // to call this method, because the handle itself is the pointer to the memory
-// block; however, this method is easier to use.
+// block; however, this method is safer.
 //
 // ⚠️ You must defer [HGLOBAL.GlobalUnlock].
 //
@@ -100,16 +105,16 @@ var _GlobalFree = dll.Kernel32.NewProc("GlobalFree")
 //	ptrMem, _ := hMem.GlobalLock()
 //	defer hMem.GlobalUnlock()
 //
-//	sliceMem := unsafe.Slice((*byte)(unsafe.Pointer(ptrMem)), szMem)
+//	sliceMem := unsafe.Slice((*byte)(ptrMem), szMem)
 //
 // [GlobalLock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globallock
-func (hGlobal HGLOBAL) GlobalLock() (uintptr, error) {
+func (hGlobal HGLOBAL) GlobalLock() (unsafe.Pointer, error) {
 	ret, _, err := syscall.SyscallN(_GlobalLock.Addr(),
 		uintptr(hGlobal))
 	if ret == 0 {
-		return 0, co.ERROR(err)
+		return nil, co.ERROR(err)
 	}
-	return ret, nil
+	return unsafe.Pointer(ret), nil
 }
 
 var _GlobalLock = dll.Kernel32.NewProc("GlobalLock")
@@ -123,10 +128,14 @@ var _GlobalLock = dll.Kernel32.NewProc("GlobalLock")
 //	hMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 10)
 //	defer hMem.GlobalFree()
 //
-//	hMem, _ := hMem.GlobalReAlloc(20, co.GMEM_FIXED|co.GMEM_ZEROINIT)
+//	hMem, _ = hMem.GlobalReAlloc(20, co.GMEM_FIXED|co.GMEM_ZEROINIT)
 //
-//	ptrMem, _ := hMem.GlobalLock(hMem.GlobalSize())
+//	szMem, _ := hMem.GlobalSize()
+//
+//	ptrMem, _ := hMem.GlobalLock()
 //	defer hMem.GlobalUnlock()
+//
+//	sliceMem := unsafe.Slice((*byte)(ptrMem), szMem)
 //
 // [GlobalReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalrealloc
 func (hGlobal HGLOBAL) GlobalReAlloc(numBytes uint, uFlags co.GMEM) (HGLOBAL, error) {
