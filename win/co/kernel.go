@@ -479,30 +479,69 @@ const (
 	LOCKFILE_EXCLUSIVE_LOCK   LOCKFILE = 0x0000_0002
 )
 
-// [CreateFileMapping] flProtect.
+// [MEMORY_BASIC_INFORMATION] flags.
 //
-// [CreateFileMapping]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
+// [MEMORY_BASIC_INFORMATION]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-memory_basic_information
+type MEM uint32
+
+const (
+	MEM_COMMIT                     MEM = 0x0000_1000
+	MEM_RESERVE                    MEM = 0x0000_2000
+	MEM_REPLACE_PLACEHOLDER        MEM = 0x0000_4000
+	MEM_RESERVE_PLACEHOLDER        MEM = 0x0004_0000
+	MEM_RESET                      MEM = 0x0008_0000
+	MEM_TOP_DOWN                   MEM = 0x0010_0000
+	MEM_WRITE_WATCH                MEM = 0x0020_0000
+	MEM_PHYSICAL                   MEM = 0x0040_0000
+	MEM_ROTATE                     MEM = 0x0080_0000
+	MEM_DIFFERENT_IMAGE_BASE_OK    MEM = 0x0080_0000
+	MEM_RESET_UNDO                 MEM = 0x0100_0000
+	MEM_LARGE_PAGES                MEM = 0x2000_0000
+	MEM_4MB_PAGES                  MEM = 0x8000_0000
+	MEM_64K_PAGES                      = MEM_LARGE_PAGES | MEM_PHYSICAL
+	MEM_UNMAP_WITH_TRANSIENT_BOOST MEM = 0x0000_0001
+	MEM_COALESCE_PLACEHOLDERS      MEM = 0x0000_0001
+	MEM_PRESERVE_PLACEHOLDER       MEM = 0x0000_0002
+	MEM_DECOMMIT                   MEM = 0x0000_4000
+	MEM_RELEASE                    MEM = 0x0000_8000
+	MEM_FREE                       MEM = 0x0001_0000
+)
+
+// Memory protection [constants].
+//
+// [constants]: https://learn.microsoft.com/en-us/windows/win32/memory/memory-protection-constants
 type PAGE uint32
 
 const (
-	PAGE_NONE                   PAGE = 0
-	PAGE_NOACCESS               PAGE = 0x01
-	PAGE_READONLY               PAGE = 0x02
-	PAGE_READWRITE              PAGE = 0x04
-	PAGE_WRITECOPY              PAGE = 0x08
-	PAGE_EXECUTE                PAGE = 0x10
-	PAGE_EXECUTE_READ           PAGE = 0x20
-	PAGE_EXECUTE_READWRITE      PAGE = 0x40
-	PAGE_EXECUTE_WRITECOPY      PAGE = 0x80
-	PAGE_GUARD                  PAGE = 0x100
-	PAGE_NOCACHE                PAGE = 0x200
-	PAGE_WRITECOMBINE           PAGE = 0x400
-	PAGE_ENCLAVE_THREAD_CONTROL PAGE = 0x8000_0000
-	PAGE_REVERT_TO_FILE_MAP     PAGE = 0x8000_0000
-	PAGE_TARGETS_NO_UPDATE      PAGE = 0x4000_0000
-	PAGE_TARGETS_INVALID        PAGE = 0x4000_0000
-	PAGE_ENCLAVE_UNVALIDATED    PAGE = 0x2000_0000
-	PAGE_ENCLAVE_DECOMMIT       PAGE = 0x1000_0000
+	PAGE_NONE                       PAGE = 0
+	PAGE_NOACCESS                   PAGE = 0x01
+	PAGE_READONLY                   PAGE = 0x02
+	PAGE_READWRITE                  PAGE = 0x04
+	PAGE_WRITECOPY                  PAGE = 0x08
+	PAGE_EXECUTE                    PAGE = 0x10
+	PAGE_EXECUTE_READ               PAGE = 0x20
+	PAGE_EXECUTE_READWRITE          PAGE = 0x40
+	PAGE_EXECUTE_WRITECOPY          PAGE = 0x80
+	PAGE_GUARD                      PAGE = 0x100
+	PAGE_NOCACHE                    PAGE = 0x200
+	PAGE_WRITECOMBINE               PAGE = 0x400
+	PAGE_GRAPHICS_NOACCESS          PAGE = 0x0800
+	PAGE_GRAPHICS_READONLY          PAGE = 0x1000
+	PAGE_GRAPHICS_READWRITE         PAGE = 0x2000
+	PAGE_GRAPHICS_EXECUTE           PAGE = 0x4000
+	PAGE_GRAPHICS_EXECUTE_READ      PAGE = 0x8000
+	PAGE_GRAPHICS_EXECUTE_READWRITE PAGE = 0x1_0000
+	PAGE_GRAPHICS_COHERENT          PAGE = 0x2_0000
+	PAGE_GRAPHICS_NOCACHE           PAGE = 0x4_0000
+	PAGE_ENCLAVE_THREAD_CONTROL     PAGE = 0x8000_0000
+	PAGE_REVERT_TO_FILE_MAP         PAGE = 0x8000_0000
+	PAGE_TARGETS_NO_UPDATE          PAGE = 0x4000_0000
+	PAGE_TARGETS_INVALID            PAGE = 0x4000_0000
+	PAGE_ENCLAVE_UNVALIDATED        PAGE = 0x2000_0000
+	PAGE_ENCLAVE_MASK               PAGE = 0x1000_0000
+	PAGE_ENCLAVE_DECOMMIT                = PAGE_ENCLAVE_MASK
+	PAGE_ENCLAVE_SS_FIRST                = PAGE_ENCLAVE_MASK | 1
+	PAGE_ENCLAVE_SS_REST                 = PAGE_ENCLAVE_MASK | 2
 )
 
 // [WM_POWERBROADCAST] event.
@@ -652,7 +691,7 @@ const (
 	SEC_NOCACHE                SEC = 0x1000_0000
 	SEC_WRITECOMBINE           SEC = 0x4000_0000
 	SEC_LARGE_PAGES            SEC = 0x8000_0000
-	SEC_IMAGE_NO_EXECUTE       SEC = SEC_IMAGE | SEC_NOCACHE
+	SEC_IMAGE_NO_EXECUTE           = SEC_IMAGE | SEC_NOCACHE
 )
 
 // [CreateFile] dwFlagsAndAttributes.

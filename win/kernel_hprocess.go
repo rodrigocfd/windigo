@@ -284,6 +284,22 @@ func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
 
 var _TerminateProcess = dll.Kernel32.NewProc("TerminateProcess")
 
+// [VirtualQueryEx] function.
+//
+// [VirtualQueryEx]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualqueryex
+func (hProcess HPROCESS) VirtualQueryEx(baseAddress uintptr) (MEMORY_BASIC_INFORMATION, error) {
+	var mbi MEMORY_BASIC_INFORMATION
+	ret, _, err := syscall.SyscallN(_VirtualQueryEx.Addr(),
+		uintptr(hProcess), baseAddress,
+		uintptr(unsafe.Pointer(&mbi)), uintptr(uint32(unsafe.Sizeof(mbi))))
+	if ret == 0 {
+		return MEMORY_BASIC_INFORMATION{}, co.ERROR(err)
+	}
+	return mbi, nil
+}
+
+var _VirtualQueryEx = dll.Kernel32.NewProc("VirtualQueryEx")
+
 // [WriteProcessMemory] function.
 //
 // [WriteProcessMemory]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory

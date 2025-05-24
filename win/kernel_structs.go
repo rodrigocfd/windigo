@@ -192,6 +192,20 @@ func (lcid LCID) SortId() co.SORT {
 	return co.SORT((uint32(lcid) >> 16) & 0xf)
 }
 
+// [MEMORY_BASIC_INFORMATION] struct.
+//
+// [MEMORY_BASIC_INFORMATION]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-memory_basic_information
+type MEMORY_BASIC_INFORMATION struct {
+	BaseAddress       uintptr
+	AllocationBase    uintptr
+	AllocationProtect co.PAGE
+	PartitionId       uint16
+	RegionSize        uintptr
+	State             co.MEM
+	Protect           co.PAGE
+	Type              co.MEM
+}
+
 // [MODULEENTRY32] struct.
 //
 // ⚠️ You must call [MODULEENTRY32.SetDwSize] to initialize the struct.
