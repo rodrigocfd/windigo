@@ -13,6 +13,8 @@ Notably, Windigo is written 100% in pure Go – CGo is **not** used, just native
 
 ## Examples
 
+In the examples below, error checking is ommited for brevity.
+
 <details>
 <summary>GUI window</summary>
 
@@ -149,6 +151,8 @@ func main() {
 
 ### Enumerating running processes
 
+The example below takes a [process snapshot](https://learn.microsoft.com/en-us/windows/win32/toolhelp/taking-a-snapshot-and-viewing-processes) to list the running processes:
+
 ```go
 package main
 
@@ -269,16 +273,17 @@ import (
 )
 
 func main() {
-	ole.CoInitializeEx(
-		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+	runtime.LockOSThread() // important: Windows GUI is single-threaded
+
+	ole.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 	defer ole.CoUninitialize()
 
-	rel := ole.NewReleaser() // will release all COM objects created here
-	defer rel.Release()
+	releaser := ole.NewReleaser() // will release all COM objects created here
+	defer releaser.Release()
 
 	var fod *shell.IFileOpenDialog
 	ole.CoCreateInstance(
-		rel,
+		releaser,
 		co.CLSID_FileOpenDialog,
 		nil,
 		co.CLSCTX_INPROC_SERVER,
@@ -297,11 +302,52 @@ func main() {
 	})
 	fod.SetFileTypeIndex(1)
 
-	if ok, _ := fod.Show(win.HWND(0)); ok {
-		item, _ := fod.GetResult(rel)
+	if ok, _ := fod.Show(win.HWND(0)); ok { // in real applications, pass the parent HWND
+		item, _ := fod.GetResult(releaser)
 		fileName, _ := item.GetDisplayName(co.SIGDN_FILESYSPATH)
 		println(fileName)
 	}
+}
+```
+</details>
+
+<details>
+<summary>COM Automation</summary>
+
+### COM Automation
+
+Windigo implements the [`IDispatch`](https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch) COM interface, allowing you to [invoke](https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke) Automation methods.
+
+The example below manipulates an Excel spreadsheet, saving a copy of it:
+
+```go
+package main
+
+import (
+	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/ole"
+	"github.com/rodrigocfd/windigo/win/ole/oleaut"
+)
+
+func main() {
+	ole.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+	defer ole.CoUninitialize()
+
+	rel := ole.NewReleaser()
+	defer rel.Release()
+
+	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
+
+	var dispatchExcel *oleaut.IDispatch
+	ole.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &dispatchExcel)
+
+	variantBooks, _ := dispatchExcel.InvokeGet(rel, "Workbooks")
+	dispatchBooks, _ := variantBooks.IDispatch(rel)
+	variantFile, _ := dispatchBooks.InvokeMethod(rel, "Open", "C:\\Temp\\foo.xlsx")
+
+	dispatchFile, _ := variantFile.IDispatch(rel)
+	dispatchFile.InvokeMethod(rel, "SaveAs", "C:\\Temp\\foo copy.xlsx")
+	dispatchFile.InvokeMethod(rel, "Close")
 }
 ```
 </details>
