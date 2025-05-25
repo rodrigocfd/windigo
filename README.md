@@ -249,6 +249,63 @@ func main() {
 ```
 </details>
 
+<details>
+<summary>Component Object Model (COM)</summary>
+
+### Component Object Model (COM)
+
+Windigo has full support for C++ [COM](https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal) objects. The cleanup is performed by an `ole.Releaser` object, which calls [`Release`](https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release) on multiple COM objects at once, much like an arena allocator. Every function which produces a COM object requires an `ole.Releaser` to take care of its lifetime.
+
+The example below uses COM objects to display the system native [Open File](https://learn.microsoft.com/en-us/windows/win32/learnwin32/example--the-open-dialog-box) window:
+
+```go
+package main
+
+import (
+	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/ole"
+	"github.com/rodrigocfd/windigo/win/ole/shell"
+)
+
+func main() {
+	ole.CoInitializeEx(
+		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+	defer ole.CoUninitialize()
+
+	rel := ole.NewReleaser() // will release all COM objects created here
+	defer rel.Release()
+
+	var fod *shell.IFileOpenDialog
+	ole.CoCreateInstance(
+		rel,
+		co.CLSID_FileOpenDialog,
+		nil,
+		co.CLSCTX_INPROC_SERVER,
+		&fod,
+	)
+
+	defOpts, _ := fod.GetOptions()
+	fod.SetOptions(defOpts |
+		co.FOS_FORCEFILESYSTEM |
+		co.FOS_FILEMUSTEXIST,
+	)
+
+	fod.SetFileTypes([]shell.COMDLG_FILTERSPEC{
+		{Name: "Text files", Spec: "*.txt"},
+		{Name: "All files", Spec: "*.*"},
+	})
+	fod.SetFileTypeIndex(1)
+
+	if ok, _ := fod.Show(win.HWND(0)); ok {
+		item, _ := fod.GetResult(rel)
+		fileName, _ := item.GetDisplayName(co.SIGDN_FILESYSPATH)
+		println(fileName)
+	}
+}
+```
+</details>
+
 ## Architecture
 
 The library is divided in two main packages:

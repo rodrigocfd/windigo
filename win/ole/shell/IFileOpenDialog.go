@@ -17,6 +17,10 @@ import (
 //
 //	var hWnd win.HWND // initialized somewhere
 //
+//	ole.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer ole.CoUninitialize()
+//
 //	rel := ole.NewReleaser()
 //	defer rel.Release()
 //
@@ -32,22 +36,19 @@ import (
 //	defOpts, _ := fod.GetOptions()
 //	fod.SetOptions(defOpts |
 //		co.FOS_FORCEFILESYSTEM |
-//		co.FOS_FILEMUSTEXIST |
-//		co.FOS_ALLOWMULTISELECT,
+//		co.FOS_FILEMUSTEXIST,
 //	)
 //
 //	fod.SetFileTypes([]shell.COMDLG_FILTERSPEC{
-//		{Name: "MP3 audio files", Spec: "*.mp3"},
+//		{Name: "Text files", Spec: "*.txt"},
 //		{Name: "All files", Spec: "*.*"},
 //	})
 //	fod.SetFileTypeIndex(1)
 //
 //	if ok, _ := fod.Show(hWnd); ok {
-//		arr, _ := fod.GetResults(rel)
-//		for item, _ := range arr.Iter(rel) {
-//			mp3, _ := item.GetDisplayName(co.SIGDN_FILESYSPATH)
-//			println(mp3)
-//		}
+//		item, _ := fod.GetResult(rel)
+//		fileName, _ := item.GetDisplayName(co.SIGDN_FILESYSPATH)
+//		println(fileName)
 //	}
 //
 // [IFileOpenDialog]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileopendialog
