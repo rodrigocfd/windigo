@@ -575,7 +575,7 @@ var _GetDeviceCaps = dll.Gdi32.NewProc("GetDeviceCaps")
 //	bfh.SetBfOffBits(uint32(unsafe.Sizeof(bfh) + unsafe.Sizeof(bi.BmiHeader)))
 //	bfh.SetBfSize(bfh.BfOffBits() + uint32(bmpSize))
 //
-//	fo, _ := win.FileOpen("C:\\Temp\\foo.bmp", co.FOPEN_RW_OPEN_OR_CREATE)
+//	fo, _ := win.FileOpen("C:\\Temp\\screenshot.bmp", co.FOPEN_RW_OPEN_OR_CREATE)
 //	defer fo.Close()
 //
 //	fo.Write(bfh.Serialize())
