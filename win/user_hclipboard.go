@@ -4,7 +4,6 @@ package win
 
 import (
 	"syscall"
-	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
 	"github.com/rodrigocfd/windigo/internal/utl"
@@ -123,20 +122,14 @@ func (HCLIPBOARD) GetClipboardData(format co.CF) ([]byte, error) {
 	}
 
 	hGlobal := HGLOBAL(ret)
-	szData, wErr := hGlobal.GlobalSize()
-	if wErr != nil {
-		return nil, wErr
-	}
-
-	ptrData, wErr := hGlobal.GlobalLock()
+	sliceMem, wErr := hGlobal.GlobalLockSlice() // map in-memory content
 	if wErr != nil {
 		return nil, wErr
 	}
 	defer hGlobal.GlobalUnlock()
 
-	mem := unsafe.Slice((*byte)(ptrData), szData) // map in-memory content
-	buf := make([]byte, szData)
-	copy(buf, mem)
+	buf := make([]byte, len(sliceMem))
+	copy(buf, sliceMem)
 	return buf, nil
 }
 
@@ -192,13 +185,12 @@ func (HCLIPBOARD) SetClipboardData(format co.CF, data []byte) error {
 		return wErr
 	}
 
-	ptr, wErr := hGlobal.GlobalLock()
+	sliceMem, wErr := hGlobal.GlobalLockSlice()
 	if wErr != nil {
 		return wErr
 	}
-	mem := unsafe.Slice((*byte)(ptr), len(data))
-	copy(mem, data)
-	hGlobal.GlobalUnlock()
+	defer hGlobal.GlobalUnlock()
+	copy(sliceMem, data)
 
 	ret, _, err := syscall.SyscallN(_SetClipboardData.Addr(),
 		uintptr(format), uintptr(hGlobal))

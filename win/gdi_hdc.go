@@ -565,7 +565,7 @@ var _GetDeviceCaps = dll.Gdi32.NewProc("GetDeviceCaps")
 //	rawMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, bmpSize)
 //	defer rawMem.GlobalFree()
 //
-//	bmpSlice, _ := rawMem.GlobalLock(bmpSize)
+//	bmpSlice, _ := rawMem.GlobalLockSlice()
 //	defer rawMem.GlobalUnlock()
 //
 //	hdcScreen.GetDIBits(hBmp, 0, uint(cyScreen), bmpSlice, &bi, co.DIB_RGB_COLORS)
