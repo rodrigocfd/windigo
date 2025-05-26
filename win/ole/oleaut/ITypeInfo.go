@@ -78,6 +78,30 @@ func (me *ITypeInfo) CreateInstance(
 	}
 }
 
+// [GetContainingTypeLib] method.
+//
+// Returns the type library and its index.
+//
+// [GetContainingTypeLib]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getcontainingtypelib
+func (me *ITypeInfo) GetContainingTypeLib(releaser *ole.Releaser) (*ITypeLib, uint, error) {
+	var ppvtQueried **ole.IUnknownVt
+	var index uint32
+
+	ret, _, _ := syscall.SyscallN(
+		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetContainingTypeLib,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&ppvtQueried)), uintptr(unsafe.Pointer(&index)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		var pObj *ITypeLib
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		releaser.Add(pObj)
+		return pObj, uint(index), nil
+	} else {
+		return nil, 0, hr
+	}
+}
+
 // [GetDllEntry] method.
 //
 // [GetDllEntry]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdllentry
