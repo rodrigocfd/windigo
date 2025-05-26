@@ -30,8 +30,8 @@ type VARIANT struct {
 // Calls [VariantClear].
 //
 // You usually don't need to call this method directly, since every function
-// which returns a [COM] object will require a Releaser to manage the object's
-// lifetime.
+// which returns a [COM] object will require an [ole.Releaser] to manage the
+// object's lifetime.
 //
 // [VariantClear]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantclear
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
@@ -58,7 +58,7 @@ func (vt *VARIANT) Type() co.VT {
 //
 // [VariantInit]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantinit
 func NewVariantEmpty(releaser *ole.Releaser) *VARIANT {
-	v := &VARIANT{}
+	v := new(VARIANT)
 	syscall.SyscallN(_VariantInit.Addr(),
 		uintptr(unsafe.Pointer(v)))
 	releaser.Add(v)

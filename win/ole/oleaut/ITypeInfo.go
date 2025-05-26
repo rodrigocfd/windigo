@@ -179,6 +179,50 @@ type ITypeInfoDoc struct {
 	HelpFile    string
 }
 
+// [GetFuncDesc] method.
+//
+// The [ole.Releaser] is responsible for freeing the resources by calling
+// [ReleaseFuncDesc].
+//
+// # Example
+//
+//	var nfo *oleaut.ITypeInfo // initialized somewhere
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	funcDesc, _ := nfo.GetFuncDesc(rel, 0)
+//	println(funcDesc.Memid)
+//
+// [GetFuncDesc]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getfuncdesc
+// [ReleaseFuncDesc]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasefuncdesc
+func (me *ITypeInfo) GetFuncDesc(releaser *ole.Releaser, index uint) (*FuncDescData, error) {
+	var pFuncDesc *FUNCDESC
+	ret, _, _ := syscall.SyscallN(
+		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetFuncDesc,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(index), uintptr(unsafe.Pointer(&pFuncDesc)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pData := &FuncDescData{pFuncDesc, me}
+		releaser.Add(pData)
+		return pData, nil
+	} else {
+		return nil, hr
+	}
+}
+
+// [ReleaseFuncDesc] method.
+//
+// [ReleaseFuncDesc]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasefuncdesc
+func (me *ITypeInfo) _ReleaseFuncDesc(pFuncDesc *FUNCDESC) error {
+	ret, _, _ := syscall.SyscallN(
+		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).ReleaseFuncDesc,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(pFuncDesc)))
+	return utl.ErrorAsHResult(ret)
+}
+
 type _ITypeInfoVt struct {
 	ole.IUnknownVt
 	GetTypeAttr          uintptr

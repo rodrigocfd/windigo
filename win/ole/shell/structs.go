@@ -39,8 +39,8 @@ type ITEMIDLIST uintptr
 // Calls [ole.HTASKMEM.CoTaskMemFree].
 //
 // You usually don't need to call this method directly, since every function
-// which returns a [COM] object will require a Releaser to manage the object's
-// lifetime.
+// which returns a [COM] object will require an [ole.Releaser] to manage the
+// object's lifetime.
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 func (il *ITEMIDLIST) Release() {
