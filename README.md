@@ -11,6 +11,14 @@ Windigo is designed to be familiar to C/C++ Win32 programmers, using the same co
 
 Notably, Windigo is written 100% in pure Go – CGo is **not** used, just native syscalls. 
 
+## Install
+
+Version 0.2 is scheduled to be released in June 1st. Until there, you can pull straight from the master branch:
+
+```
+go get github.com/rodrigocfd/windigo@master
+```
+
 ## Examples
 
 In the examples below, error checking is ommited for brevity.
@@ -383,21 +391,6 @@ flowchart BT
     win/ole --> win
     win/ole/oleaut --> win/ole
     win/ole/shell --> win/ole
-```
-
-## Legacy version
-
-As of May 2025, Windigo was heavily refactored, featuring:
-
-* simpler package organization;
-* more strict error handling;
-* more performant [UTF-16](https://learn.microsoft.com/en-us/windows/win32/learnwin32/working-with-strings) string conversion, with short string optimization;
-* a new [COM](https://en.wikipedia.org/wiki/Component_Object_Model) implementation.
-
-If, for some reason, you can't upgrade right now, just point your go.mod to the old version:
-
-```
-go get github.com/rodrigocfd/windigo@v0.1.0
 ```
 
 ## License
