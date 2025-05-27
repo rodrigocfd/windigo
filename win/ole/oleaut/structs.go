@@ -26,6 +26,11 @@ func (ad *ARRAYDESC) Rgbounds(i int) *SAFEARRAYBOUND {
 // [MEMBERID]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/automat/memberid
 type MEMBERID int32
 
+// Predefined [MEMBERID].
+//
+// [MEMBERID]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/automat/memberid
+const MEMBERID_NIL = MEMBERID(co.DISPID_UNKNOWN)
+
 // [DISPPARAMS] sruct.
 //
 // [DISPPARAMS]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-dispparams
@@ -95,9 +100,9 @@ func (e *EXCEPINFO) Error() string {
 type _EXCEPINFO struct {
 	WCode             uint16
 	wReserved         uint16
-	BstrSource        uintptr
-	BstrDescription   uintptr
-	BstrHelpFile      uintptr
+	BstrSource        BSTR
+	BstrDescription   BSTR
+	BstrHelpFile      BSTR
 	DwHelpContext     uint16
 	pvReserved        uintptr
 	PfnDeferredFillIn uintptr
@@ -113,19 +118,16 @@ func (e *_EXCEPINFO) Serialize() *EXCEPINFO {
 		nfo.Code = int(e.Scode)
 	}
 
+	// The BSTRs are freed inside IDispatch.Invoke().
 	if e.BstrSource != 0 {
-		bstr := BSTR(e.BstrSource) // don't free
-		nfo.Source = bstr.String()
+		nfo.Source = e.BstrSource.String()
 	}
 	if e.BstrDescription != 0 {
-		bstr := BSTR(e.BstrDescription) // don't free
-		nfo.Description = bstr.String()
+		nfo.Description = e.BstrDescription.String()
 	}
 	if e.BstrHelpFile != 0 {
-		bstr := BSTR(e.BstrHelpFile) // don't free
-		nfo.HelpFile = bstr.String()
+		nfo.HelpFile = e.BstrHelpFile.String()
 	}
-
 	return &nfo
 }
 

@@ -103,6 +103,18 @@ const (
 	IDLFLAG_FRETVAL IDLFLAG = 0x08
 )
 
+// [IMPLTYPEFLAG] constants.
+//
+// [IMPLTYPEFLAG]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/automat/impltypeflags
+type IMPLTYPEFLAG int32
+
+const (
+	IMPLTYPEFLAG_FDEFAULT       IMPLTYPEFLAG = 0x1
+	IMPLTYPEFLAG_FSOURCE        IMPLTYPEFLAG = 0x2
+	IMPLTYPEFLAG_FRESTRICTED    IMPLTYPEFLAG = 0x4
+	IMPLTYPEFLAG_FDEFAULTVTABLE IMPLTYPEFLAG = 0x8
+)
+
 // [FUNCDESC] invkind.
 //
 // [FUNCDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc

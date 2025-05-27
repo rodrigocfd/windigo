@@ -42,8 +42,10 @@ var _SysAllocString = dll.Oleaut32.NewProc("SysAllocString")
 //
 // [SysFreeString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysfreestring
 func (bstr BSTR) SysFreeString() {
-	syscall.SyscallN(_SysFreeString.Addr(),
-		uintptr(bstr))
+	if bstr != 0 {
+		syscall.SyscallN(_SysFreeString.Addr(),
+			uintptr(bstr))
+	}
 }
 
 var _SysFreeString = dll.Oleaut32.NewProc("SysFreeString")

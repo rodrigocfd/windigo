@@ -11,6 +11,7 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
+	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
 // [ITypeInfo] COM interface.
@@ -209,6 +210,67 @@ func (me *ITypeInfo) GetFuncDesc(releaser *ole.Releaser, index uint) (*FuncDescD
 		return pData, nil
 	} else {
 		return nil, hr
+	}
+}
+
+// [GetIDsOfNames] method.
+//
+// [GetIDsOfNames]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getidsofnames
+func (me *ITypeInfo) GetIDsOfNames(names ...string) ([]MEMBERID, error) {
+	names16 := wstr.NewArray(names...)
+	ptrs16 := make([]*uint16, 0, len(names)) // pointers to the UTF-16 strings
+	for i := uint(0); i < uint(len(names)); i++ {
+		ptrs16 = append(ptrs16, names16.PtrOf(i))
+	}
+	memIds := make([]MEMBERID, len(names))
+
+	ret, _, _ := syscall.SyscallN(
+		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetIDsOfNames,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&ptrs16[0])),
+		uintptr(len(names)),
+		uintptr(unsafe.Pointer(&memIds[0])))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return memIds, nil
+	} else {
+		return nil, hr
+	}
+}
+
+// [GetImplTypeFlags] method.
+//
+// [GetImplTypeFlags]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getimpltypeflags
+func (me *ITypeInfo) GetImplTypeFlags(index uint) (co.IMPLTYPEFLAG, error) {
+	var flags co.IMPLTYPEFLAG
+	ret, _, _ := syscall.SyscallN(
+		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetImplTypeFlags,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(index), uintptr(unsafe.Pointer(&flags)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return flags, nil
+	} else {
+		return co.IMPLTYPEFLAG(0), hr
+	}
+}
+
+// [GetMops] method.
+//
+// [GetMops]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getmops
+func (me *ITypeInfo) GetMops(memberId MEMBERID) (string, error) {
+	var mops BSTR
+	defer mops.SysFreeString()
+
+	ret, _, _ := syscall.SyscallN(
+		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetMops,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(memberId), uintptr(unsafe.Pointer(&mops)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return mops.String(), nil
+	} else {
+		return "", hr
 	}
 }
 
