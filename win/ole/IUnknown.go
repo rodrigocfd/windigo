@@ -78,7 +78,7 @@ func (me *IUnknown) Ppvt() **IUnknownVt {
 //
 // [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *IUnknown) AddRef(releaser *Releaser, ppOut interface{}) {
-	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ComObj)
+	pOut := utl.ComValidateObj(ppOut).(ComObj)
 	releaser.ReleaseNow(pOut)
 
 	syscall.SyscallN((*me.Ppvt()).AddRef,
@@ -118,7 +118,7 @@ func (me *IUnknown) Release() {
 //
 // [QueryInterface]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IUnknown) QueryInterface(releaser *Releaser, ppOut interface{}) error {
-	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ComObj)
+	pOut := utl.ComValidateObj(ppOut).(ComObj)
 	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **IUnknownVt

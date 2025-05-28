@@ -34,7 +34,7 @@ import (
 //
 // [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
 func SHCreateItemFromIDList(releaser *ole.Releaser, pidl *ITEMIDLIST, ppOut interface{}) error {
-	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	pOut := utl.ComValidateObj(ppOut).(ole.ComObj)
 	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **ole.IUnknownVt
@@ -77,7 +77,7 @@ func SHCreateItemFromParsingName(
 	folderOrFilePath string,
 	ppOut interface{},
 ) error {
-	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	pOut := utl.ComValidateObj(ppOut).(ole.ComObj)
 	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **ole.IUnknownVt
@@ -111,7 +111,7 @@ func SHCreateItemFromRelativeName(
 	bindCtx *ole.IBindCtx,
 	ppOut interface{},
 ) error {
-	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	pOut := utl.ComValidateObj(ppOut).(ole.ComObj)
 	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **ole.IUnknownVt
@@ -292,7 +292,7 @@ func SHGetKnownFolderItem(
 	hToken win.HANDLE, // HACCESSTOKEN
 	ppOut interface{},
 ) error {
-	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	pOut := utl.ComValidateObj(ppOut).(ole.ComObj)
 	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **ole.IUnknownVt

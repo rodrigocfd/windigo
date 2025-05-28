@@ -63,7 +63,7 @@ func (me *IShellItem) BindToHandler(
 	bhid co.BHID,
 	ppOut interface{},
 ) error {
-	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	pOut := utl.ComValidateObj(ppOut).(ole.ComObj)
 	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **ole.IUnknownVt

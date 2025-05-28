@@ -56,7 +56,7 @@ func (me *ITypeInfo) CreateInstance(
 	unkOuter *ole.IUnknown,
 	ppOut interface{},
 ) error {
-	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	pOut := utl.ComValidateObj(ppOut).(ole.ComObj)
 	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **ole.IUnknownVt

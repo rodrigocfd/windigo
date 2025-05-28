@@ -32,9 +32,10 @@ func IsNil(x interface{}) bool {
 	}
 }
 
-// Validates the pointer to pointer to COM object, and retrieves the underlying
-// pointed-to object. Panics if fails.
-func ComValidateAndRetrievePointedToObj(ppOut interface{}) interface{} {
+// Validates the pointer to pointer to COM object. Panics if fails.
+//
+// Returns the underlying pointed-to object.
+func ComValidateObj(ppOut interface{}) interface{} {
 	ppTy := reflect.TypeOf(ppOut) // **IUnknown
 	if ppTy.Kind() != reflect.Ptr {
 		panic("You must a pass a pointer to a pointer COM object [**Ty failed].")
@@ -60,7 +61,8 @@ func ComValidateAndRetrievePointedToObj(ppOut interface{}) interface{} {
 }
 
 // Creates a COM object, assign it to the pointer, and sets is **IUnknownVt.
-// Returns the pointed-to object.
+//
+// Returns the underlying pointed-to object.
 func ComCreateObj(ppOut interface{}, ppIUnknownVt unsafe.Pointer) interface{} {
 	pTarget := reflect.ValueOf(ppOut).Elem()  // *IUnknown
 	ty := reflect.TypeOf(ppOut).Elem().Elem() // IUnknown

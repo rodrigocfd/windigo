@@ -75,7 +75,7 @@ func CoCreateInstance(
 	dwClsContext co.CLSCTX,
 	ppOut interface{},
 ) error {
-	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ComObj)
+	pOut := utl.ComValidateObj(ppOut).(ComObj)
 	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **IUnknownVt

@@ -47,7 +47,7 @@ func (me *IShellFolder) BindToObject(
 	bindCtx *ole.IBindCtx,
 	ppOut interface{},
 ) error {
-	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	pOut := utl.ComValidateObj(ppOut).(ole.ComObj)
 	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **ole.IUnknownVt
@@ -83,7 +83,7 @@ func (me *IShellFolder) BindToStorage(
 	bindCtx *ole.IBindCtx,
 	ppOut interface{},
 ) error {
-	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	pOut := utl.ComValidateObj(ppOut).(ole.ComObj)
 	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **ole.IUnknownVt
