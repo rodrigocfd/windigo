@@ -134,6 +134,100 @@ func SHCreateItemFromRelativeName(
 
 var _SHCreateItemFromRelativeName = dll.Shell32.NewProc("SHCreateItemFromRelativeName")
 
+// [SHCreateShellItemArray] function.
+//
+// [SHCreateShellItemArray]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateshellitemarray
+func SHCreateShellItemArray(
+	releaser *ole.Releaser,
+	pidlParent *ITEMIDLIST,
+	parent *IShellFolder,
+	pidlChildren []*ITEMIDLIST,
+) (*IShellItemArray, error) {
+	var ppvtQueried **ole.IUnknownVt
+
+	var pidlParentObj ITEMIDLIST
+	if pidlParent != nil {
+		pidlParentObj = *pidlParent
+	}
+
+	var pParent **ole.IUnknownVt
+	if parent != nil {
+		pParent = parent.Ppvt()
+	}
+
+	var pidlChildrenObjsPtr *ITEMIDLIST
+	if pidlChildren != nil {
+		pidlChildrenObjs := make([]ITEMIDLIST, 0, len(pidlChildren))
+		for _, pidl := range pidlChildren {
+			pidlChildrenObjs = append(pidlChildrenObjs, *pidl)
+		}
+		pidlChildrenObjsPtr = &pidlChildrenObjs[0]
+	}
+
+	ret, _, _ := syscall.SyscallN(_SHCreateShellItemArray.Addr(),
+		uintptr(pidlParentObj),
+		uintptr(unsafe.Pointer(pParent)),
+		uintptr(len(pidlChildren)),
+		uintptr(unsafe.Pointer(pidlChildrenObjsPtr)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		var pObj *IShellItemArray
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHCreateShellItemArray = dll.Shell32.NewProc("SHCreateShellItemArray")
+
+// [SHCreateShellItemArrayFromIDLists] function.
+//
+// # Example
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	var item1, item2 *shell.IShellItem
+//	shell.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item1)
+//	shell.SHCreateItemFromParsingName(rel, "C:\\Temp\\bar.txt", &item2)
+//
+//	pidl1, _ := shell.SHGetIDListFromObject(rel, &item1.IUnknown)
+//	pidl2, _ := shell.SHGetIDListFromObject(rel, &item2.IUnknown)
+//
+//	arr, _ := shell.SHCreateShellItemArrayFromIDLists(rel, pidl1, pidl2)
+//
+// [SHCreateShellItemArrayFromIDLists]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateshellitemarrayfromidlists?redirectedfrom=MSDN
+func SHCreateShellItemArrayFromIDLists(
+	releaser *ole.Releaser,
+	pidls ...*ITEMIDLIST,
+) (*IShellItemArray, error) {
+	var ppvtQueried **ole.IUnknownVt
+
+	pidlObjs := make([]ITEMIDLIST, 0, len(pidls))
+	for _, pidl := range pidls {
+		pidlObjs = append(pidlObjs, *pidl)
+	}
+
+	ret, _, _ := syscall.SyscallN(_SHCreateShellItemArrayFromIDLists.Addr(),
+		uintptr(len(pidls)),
+		uintptr(unsafe.Pointer(&pidlObjs[0])),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		var pObj *IShellItemArray
+		utl.ComCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHCreateShellItemArrayFromIDLists = dll.Shell32.NewProc("SHCreateShellItemArrayFromIDLists")
+
 // [SHGetDesktopFolder] function.
 //
 // # Example

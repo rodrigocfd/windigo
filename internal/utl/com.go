@@ -70,5 +70,5 @@ func ComCreateObj(ppOut interface{}, ppIUnknownVt unsafe.Pointer) {
 	pTarget.Set(reflect.New(ty))              // instantiate new object on the heap and assign its pointer
 
 	addrField0 := pTarget.Elem().Field(0).UnsafeAddr()
-	*(*uintptr)(unsafe.Pointer(addrField0)) = uintptr(ppIUnknownVt)
+	*(*uintptr)(unsafe.Pointer(addrField0)) = uintptr(ppIUnknownVt) // assign ppvt field
 }
