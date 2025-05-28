@@ -15,6 +15,8 @@ import (
 
 // [IFileOperation] COM interface.
 //
+// Implements [ole.ComObj] and [ole.ComResource].
+//
 // # Example
 //
 //	ole.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)

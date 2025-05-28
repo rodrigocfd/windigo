@@ -15,6 +15,8 @@ import (
 
 // [IDispatch] COM interface.
 //
+// Implements [ole.ComObj] and [ole.ComResource].
+//
 // [IDispatch]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 type IDispatch struct{ ole.IUnknown }
 

@@ -12,6 +12,8 @@ import (
 
 // [IDataObject] COM interface.
 //
+// Implements [ComObj] and [ComResource].
+//
 // [IDataObject]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
 type IDataObject struct{ IUnknown }
 

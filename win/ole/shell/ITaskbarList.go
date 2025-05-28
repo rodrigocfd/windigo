@@ -14,6 +14,8 @@ import (
 
 // [ITaskbarList] COM interface.
 //
+// Implements [ole.ComObj] and [ole.ComResource].
+//
 // # Example
 //
 //	rel := ole.NewReleaser()

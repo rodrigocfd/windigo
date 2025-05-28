@@ -12,6 +12,8 @@ import (
 
 // [IFileSaveDialog] COM interface.
 //
+// Implements [ole.ComObj] and [ole.ComResource].
+//
 // # Example
 //
 //	var hWnd win.HWND // initialized somewhere

@@ -15,6 +15,8 @@ import (
 
 // [IShellLink] COM interface.
 //
+// Implements [ole.ComObj] and [ole.ComResource].
+//
 // [IShellLink]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishelllinkw
 type IShellLink struct{ ole.IUnknown }
 

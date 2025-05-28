@@ -33,6 +33,8 @@ type _COMDLG_FILTERSPEC struct {
 
 // [ITEMIDLIST] struct.
 //
+// Implements [ole.ComResource].
+//
 // [ITEMIDLIST]: https://learn.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-itemidlist
 type ITEMIDLIST uintptr
 

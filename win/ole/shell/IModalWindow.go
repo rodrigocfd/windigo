@@ -13,6 +13,8 @@ import (
 
 // [IModalWindow] COM interface.
 //
+// Implements [ole.ComObj] and [ole.ComResource].
+//
 // [IModalWindow]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
 type IModalWindow struct{ ole.IUnknown }
 

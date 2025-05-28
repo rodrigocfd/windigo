@@ -14,6 +14,8 @@ import (
 
 // [IDropTarget] COM interface.
 //
+// Implements [ComObj] and [ComResource].
+//
 // # Example
 //
 //	rel := ole.NewReleaser()

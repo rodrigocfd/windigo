@@ -15,6 +15,8 @@ import (
 
 // [IFileDialog] COM interface.
 //
+// Implements [ole.ComObj] and [ole.ComResource].
+//
 // [IFileDialog]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialog
 type IFileDialog struct{ IModalWindow }
 

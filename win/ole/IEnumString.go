@@ -13,6 +13,8 @@ import (
 
 // [IEnumString] COM interface.
 //
+// Implements [ComObj] and [ComResource].
+//
 // [IEnumString]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ienumstring
 type IEnumString struct{ IUnknown }
 

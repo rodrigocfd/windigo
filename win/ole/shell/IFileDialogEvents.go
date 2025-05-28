@@ -14,6 +14,8 @@ import (
 
 // [IFileDialogEvents] COM interface.
 //
+// Implements [ole.ComObj] and [ole.ComResource].
+//
 // [IFileDialogEvents]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialogevents
 type IFileDialogEvents struct{ ole.IUnknown }
 

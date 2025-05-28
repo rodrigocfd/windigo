@@ -9,6 +9,8 @@ import (
 
 // [ITypeLib] COM interface.
 //
+// Implements [ole.ComObj] and [ole.ComResource].
+//
 // [ITypeLib]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypelib
 type ITypeLib struct{ ole.IUnknown }
 

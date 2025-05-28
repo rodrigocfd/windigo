@@ -12,6 +12,8 @@ import (
 
 // [IStream] COM interface.
 //
+// Implements [ComObj] and [ComResource].
+//
 // [IStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
 type IStream struct{ ISequentialStream }
 

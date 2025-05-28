@@ -35,6 +35,8 @@ type ComObj interface {
 
 // [IUnknown] [COM] interface, base to all COM interfaces.
 //
+// Implements [ComObj] and [ComResource].
+//
 // [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 type IUnknown struct {
@@ -86,7 +88,7 @@ func (me *IUnknown) AddRef(releaser *Releaser, ppOut interface{}) {
 	releaser.Add(pOut)
 }
 
-// [Release] method. Implements [ComResource].
+// [Release] method.
 //
 // You usually don't need to call this method directly, since every function
 // which returns a [COM] object will require a [Releaser] to manage the object's

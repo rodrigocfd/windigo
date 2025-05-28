@@ -15,6 +15,8 @@ import (
 
 // [IShellItem] COM interface.
 //
+// Implements [ole.ComObj] and [ole.ComResource].
+//
 // Usually created with [SHCreateItemFromParsingName].
 //
 // # Example

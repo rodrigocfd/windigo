@@ -18,6 +18,8 @@ import (
 
 // OLE Automation [VARIANT] type.
 //
+// Implements [ole.ComResource].
+//
 // [VARIANT]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-variant
 type VARIANT struct {
 	tag        co.VT

@@ -11,6 +11,8 @@ import (
 
 // [ISequentialStream] COM interface.
 //
+// Implements [ComObj] and [ComResource].
+//
 // [ISequentialStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-isequentialstream
 type ISequentialStream struct{ IUnknown }
 

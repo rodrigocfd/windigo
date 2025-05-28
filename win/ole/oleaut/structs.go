@@ -156,7 +156,9 @@ type FUNCDESC struct {
 	WFuncFlags        co.FUNCFLAG
 }
 
-// [FUNCDESC] struct. Implements [ole.ComResource].
+// [FUNCDESC] struct.
+//
+// Implements [ole.ComResource].
 //
 // [FUNCDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type FuncDescData struct {
@@ -164,7 +166,7 @@ type FuncDescData struct {
 	owner *ITypeInfo
 }
 
-// [ITypeInfo.ReleaseFuncDesc] method. Implements [ole.ComResource].
+// [ITypeInfo.ReleaseFuncDesc] method.
 //
 // You usually don't need to call this method directly, since every function
 // which returns a [COM] object will require an [ole.Releaser] to manage the
