@@ -44,6 +44,8 @@ func (*IFileOperation) IID() co.IID {
 
 // [Advise] method.
 //
+// Paired with [IFileOperation.Unadvise].
+//
 // [Advise]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperation-advise
 func (me *IFileOperation) Advise(fops *IFileOperationProgressSink) (uint32, error) {
 	var cookie uint32
@@ -273,6 +275,8 @@ func (me *IFileOperation) SetProgressMessage(message string) error {
 }
 
 // [Unadvise] method.
+//
+// Paired with [IFileOperation.Advise].
 //
 // [Unadvise]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperation-unadvise
 func (me *IFileOperation) Unadvise(cookie uint32) error {

@@ -11,6 +11,7 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/ole"
+	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
 // [IShellFolder] COM interface.
@@ -24,7 +25,7 @@ import (
 //	shell.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
 //
 //	var folder *shell.IShellFolder
-//	shell.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
+//	item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
 //
 // [IShellFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellfolder
 type IShellFolder struct{ ole.IUnknown }
@@ -99,6 +100,48 @@ func (me *IShellFolder) BindToStorage(
 		return nil
 	} else {
 		return hr
+	}
+}
+
+// [ParseDisplayName] method.
+//
+// [ParseDisplayName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellfolder-parsedisplayname
+func (me *IShellFolder) ParseDisplayName(
+	releaser *ole.Releaser,
+	hWnd win.HWND,
+	bindCtx *ole.IBindCtx,
+	displayName string,
+	attributes co.SFGAO,
+) (*ITEMIDLIST, co.SFGAO, error) {
+	var pBindCtx **ole.IUnknownVt
+	if bindCtx != nil {
+		pBindCtx = bindCtx.Ppvt()
+	}
+
+	displayName16 := wstr.NewBufWith[wstr.Stack20](displayName, wstr.ALLOW_EMPTY)
+	var chEaten uint32
+	var idl ITEMIDLIST
+
+	var pSfgao *co.SFGAO
+	if attributes != co.SFGAO(0) {
+		pSfgao = &attributes
+	}
+
+	ret, _, _ := syscall.SyscallN(
+		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).ParseDisplayName,
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(pBindCtx)),
+		uintptr(displayName16.UnsafePtr()),
+		uintptr(unsafe.Pointer(&chEaten)),
+		uintptr(unsafe.Pointer(&idl)),
+		uintptr(unsafe.Pointer(pSfgao)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pIdl := &idl
+		releaser.Add(pIdl)
+		return pIdl, *pSfgao, nil
+	} else {
+		return nil, co.SFGAO(0), hr
 	}
 }
 

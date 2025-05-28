@@ -28,14 +28,16 @@ import (
 //		rel, co.CLSID_FileOperation, nil, co.CLSCTX_ALL, &op)
 //
 //	sink := shell.NewIFileOperationProgressSinkImpl(rel)
-//	sink.PreCopyItem(func(
-//		flags co.TSF,
-//		item, destFolder *shell.IShellItem,
-//		newName string,
-//	) co.HRESULT {
-//		println("Pre-copy", newName)
-//		return co.HRESULT_S_OK
-//	})
+//	sink.PreCopyItem(
+//		func(
+//			flags co.TSF,
+//			item, destFolder *shell.IShellItem,
+//			newName string,
+//		) co.HRESULT {
+//			println("Pre-copy", newName)
+//			return co.HRESULT_S_OK
+//		},
+//	)
 //	op.Advise(sink)
 //
 // [IFileOperationProgressSink]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileoperationprogresssink
@@ -85,14 +87,16 @@ type _IFileOperationProgressSinkImpl struct {
 //		rel, co.CLSID_FileOperation, nil, co.CLSCTX_ALL, &op)
 //
 //	sink := shell.NewIFileOperationProgressSinkImpl(rel)
-//	sink.PreCopyItem(func(
-//		flags co.TSF,
-//		item, destFolder *shell.IShellItem,
-//		newName string,
-//	) co.HRESULT {
-//		println("Pre-copy", newName)
-//		return co.HRESULT_S_OK
-//	})
+//	sink.PreCopyItem(
+//		func(
+//			flags co.TSF,
+//			item, destFolder *shell.IShellItem,
+//			newName string,
+//		) co.HRESULT {
+//			println("Pre-copy", newName)
+//			return co.HRESULT_S_OK
+//		},
+//	)
 //	op.Advise(sink)
 //
 // [IFileOperationProgressSink]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileoperationprogresssink
