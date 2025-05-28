@@ -3,7 +3,6 @@
 package oleaut
 
 import (
-	"reflect"
 	"syscall"
 	"unsafe"
 
@@ -55,8 +54,11 @@ func (me *ITypeInfo) CreateInstance(
 	unkOuter *ole.IUnknown,
 	ppOut interface{},
 ) error {
+	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	releaser.ReleaseNow(pOut)
+
 	var ppvtQueried **ole.IUnknownVt
-	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
+	guidIid := win.GuidFrom(pOut.IID())
 
 	var pUnkOuter **ole.IUnknownVt
 	if unkOuter != nil {
@@ -71,8 +73,8 @@ func (me *ITypeInfo) CreateInstance(
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
-		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		pOut = utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(ole.ComObj)
+		releaser.Add(pOut)
 		return nil
 	} else {
 		return hr

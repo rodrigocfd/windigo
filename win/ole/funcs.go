@@ -4,7 +4,6 @@ package ole
 
 import (
 	"errors"
-	"reflect"
 	"syscall"
 	"unsafe"
 
@@ -76,11 +75,12 @@ func CoCreateInstance(
 	dwClsContext co.CLSCTX,
 	ppOut interface{},
 ) error {
-	utl.ComValidateOutPtr(ppOut)
+	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ComObj)
+	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **IUnknownVt
 	guidClsid := win.GuidFrom(rclsid)
-	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
+	guidIid := win.GuidFrom(pOut.IID())
 
 	var pUnkOuter **IUnknownVt
 	if unkOuter != nil {
@@ -95,8 +95,8 @@ func CoCreateInstance(
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
-		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ComResource))
+		pOut = utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(ComObj)
+		releaser.Add(pOut)
 		return nil
 	} else {
 		return hr

@@ -3,7 +3,6 @@
 package shell
 
 import (
-	"reflect"
 	"syscall"
 	"unsafe"
 
@@ -62,9 +61,12 @@ func (me *IShellItem) BindToHandler(
 	bhid co.BHID,
 	ppOut interface{},
 ) error {
+	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	releaser.ReleaseNow(pOut)
+
 	var ppvtQueried **ole.IUnknownVt
 	guidBhid := win.GuidFrom(bhid)
-	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
+	guidIid := win.GuidFrom(pOut.IID())
 
 	var pBindCtx **ole.IUnknownVt
 	if bindCtx != nil {
@@ -80,8 +82,8 @@ func (me *IShellItem) BindToHandler(
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
-		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		pOut = utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(ole.ComObj)
+		releaser.Add(pOut)
 		return nil
 	} else {
 		return hr

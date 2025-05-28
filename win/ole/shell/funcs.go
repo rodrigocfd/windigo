@@ -3,7 +3,6 @@
 package shell
 
 import (
-	"reflect"
 	"syscall"
 	"unsafe"
 
@@ -35,16 +34,19 @@ import (
 //
 // [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
 func SHCreateItemFromIDList(releaser *ole.Releaser, pidl *ITEMIDLIST, ppOut interface{}) error {
+	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	releaser.ReleaseNow(pOut)
+
 	var ppvtQueried **ole.IUnknownVt
-	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
+	guidIid := win.GuidFrom(pOut.IID())
 
 	ret, _, _ := syscall.SyscallN(_SHCreateItemFromIDList.Addr(),
 		uintptr(*pidl), uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
-		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		pOut = utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(ole.ComObj)
+		releaser.Add(pOut)
 		return nil
 	} else {
 		return hr
@@ -75,8 +77,11 @@ func SHCreateItemFromParsingName(
 	folderOrFilePath string,
 	ppOut interface{},
 ) error {
+	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	releaser.ReleaseNow(pOut)
+
 	var ppvtQueried **ole.IUnknownVt
-	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
+	guidIid := win.GuidFrom(pOut.IID())
 
 	folderOrFilePath16 := wstr.NewBufWith[wstr.Stack20](folderOrFilePath, wstr.EMPTY_IS_NIL)
 
@@ -86,8 +91,8 @@ func SHCreateItemFromParsingName(
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
-		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		pOut = utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(ole.ComObj)
+		releaser.Add(pOut)
 		return nil
 	} else {
 		return hr
@@ -106,8 +111,11 @@ func SHCreateItemFromRelativeName(
 	bindCtx *ole.IBindCtx,
 	ppOut interface{},
 ) error {
+	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	releaser.ReleaseNow(pOut)
+
 	var ppvtQueried **ole.IUnknownVt
-	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
+	guidIid := win.GuidFrom(pOut.IID())
 
 	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.ALLOW_EMPTY)
 
@@ -124,8 +132,8 @@ func SHCreateItemFromRelativeName(
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
-		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		pOut = utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(ole.ComObj)
+		releaser.Add(pOut)
 		return nil
 	} else {
 		return hr
@@ -284,9 +292,12 @@ func SHGetKnownFolderItem(
 	hToken win.HANDLE, // HACCESSTOKEN
 	ppOut interface{},
 ) error {
+	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	releaser.ReleaseNow(pOut)
+
 	var ppvtQueried **ole.IUnknownVt
 	guidKfid := win.GuidFrom(kfid)
-	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
+	guidIid := win.GuidFrom(pOut.IID())
 
 	ret, _, _ := syscall.SyscallN(_SHGetKnownFolderItem.Addr(),
 		uintptr(unsafe.Pointer(&guidKfid)),
@@ -295,8 +306,8 @@ func SHGetKnownFolderItem(
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
-		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		pOut = utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(ole.ComObj)
+		releaser.Add(pOut)
 		return nil
 	} else {
 		return hr

@@ -32,8 +32,9 @@ func IsNil(x interface{}) bool {
 	}
 }
 
-// Validates the receiving pointer to pointer to COM object; panics if fails.
-func ComValidateOutPtr(ppOut interface{}) {
+// Validates the pointer to pointer to COM object, and retrieves the underlying
+// pointed-to object. Panics if fails.
+func ComValidateAndRetrievePointedToObj(ppOut interface{}) interface{} {
 	ppTy := reflect.TypeOf(ppOut) // **IUnknown
 	if ppTy.Kind() != reflect.Ptr {
 		panic("You must a pass a pointer to a pointer COM object [**Ty failed].")
@@ -54,21 +55,19 @@ func ComValidateOutPtr(ppOut interface{}) {
 	if pTarget.MethodByName("IID") == emptyVal {
 		panic("You must a pass a pointer to a pointer COM object [target IID() failed].")
 	}
-}
 
-// Calls the IID() method to retrieve the co.IID constant from a COM object.
-func ComRetrieveIid(ppOut interface{}) string {
-	pTarget := reflect.ValueOf(ppOut).Elem() // *IUnknown
-	rets := pTarget.MethodByName("IID").Call([]reflect.Value{})
-	return rets[0].String()
+	return pTarget.Interface()
 }
 
 // Creates a COM object, assign it to the pointer, and sets is **IUnknownVt.
-func ComCreateObj(ppOut interface{}, ppIUnknownVt unsafe.Pointer) {
+// Returns the pointed-to object.
+func ComCreateObj(ppOut interface{}, ppIUnknownVt unsafe.Pointer) interface{} {
 	pTarget := reflect.ValueOf(ppOut).Elem()  // *IUnknown
 	ty := reflect.TypeOf(ppOut).Elem().Elem() // IUnknown
 	pTarget.Set(reflect.New(ty))              // instantiate new object on the heap and assign its pointer
 
 	addrField0 := pTarget.Elem().Field(0).UnsafeAddr()
 	*(*uintptr)(unsafe.Pointer(addrField0)) = uintptr(ppIUnknownVt) // assign ppvt field
+
+	return pTarget.Interface()
 }

@@ -3,7 +3,6 @@
 package shell
 
 import (
-	"reflect"
 	"syscall"
 	"unsafe"
 
@@ -46,8 +45,11 @@ func (me *IShellFolder) BindToObject(
 	bindCtx *ole.IBindCtx,
 	ppOut interface{},
 ) error {
+	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	releaser.ReleaseNow(pOut)
+
 	var ppvtQueried **ole.IUnknownVt
-	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
+	guidIid := win.GuidFrom(pOut.IID())
 
 	var pBindCtx **ole.IUnknownVt
 	if bindCtx != nil {
@@ -62,8 +64,8 @@ func (me *IShellFolder) BindToObject(
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
-		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		pOut = utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(ole.ComObj)
+		releaser.Add(pOut)
 		return nil
 	} else {
 		return hr
@@ -79,8 +81,11 @@ func (me *IShellFolder) BindToStorage(
 	bindCtx *ole.IBindCtx,
 	ppOut interface{},
 ) error {
+	pOut := utl.ComValidateAndRetrievePointedToObj(ppOut).(ole.ComObj)
+	releaser.ReleaseNow(pOut)
+
 	var ppvtQueried **ole.IUnknownVt
-	guidIid := win.GuidFrom(utl.ComRetrieveIid(ppOut))
+	guidIid := win.GuidFrom(pOut.IID())
 
 	var pBindCtx **ole.IUnknownVt
 	if bindCtx != nil {
@@ -95,8 +100,8 @@ func (me *IShellFolder) BindToStorage(
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried))
-		releaser.Add(reflect.ValueOf(ppOut).Elem().Interface().(ole.ComResource))
+		pOut = utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(ole.ComObj)
+		releaser.Add(pOut)
 		return nil
 	} else {
 		return hr
