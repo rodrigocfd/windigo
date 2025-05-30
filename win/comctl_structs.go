@@ -112,7 +112,7 @@ type IMAGELISTDRAWPARAMS struct {
 	CrEffect     COLORREF
 }
 
-// Sets the cbStruct field to the size of the struct, correctly initializing it.
+// Sets the cbSize field to the size of the struct, correctly initializing it.
 func (idp *IMAGELISTDRAWPARAMS) SetCbSize() {
 	idp.cbSize = uint32(unsafe.Sizeof(*idp))
 }
@@ -132,7 +132,7 @@ type _INITCOMMONCONTROLSEX struct {
 	DwICC  co.ICC
 }
 
-// Sets the cbStruct field to the size of the struct, correctly initializing it.
+// Sets the dwSize field to the size of the struct, correctly initializing it.
 func (icc *_INITCOMMONCONTROLSEX) SetDwSize() {
 	icc.dwSize = uint32(unsafe.Sizeof(*icc))
 }

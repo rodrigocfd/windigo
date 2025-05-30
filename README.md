@@ -21,7 +21,7 @@ go get github.com/rodrigocfd/windigo@master
 
 ## Examples
 
-In the examples below, error checking is ommited for brevity.
+*In the examples below, error checking is ommited for brevity.*
 
 <details>
 <summary>GUI window</summary>

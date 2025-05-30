@@ -296,6 +296,38 @@ type OVERLAPPED struct {
 	HEvent       uintptr // HEVENT
 }
 
+// [PERFORMANCE_INFORMATION] struct.
+//
+// ⚠️ You must call [PERFORMANCE_INFORMATION.SetCb] to initialize the struct.
+//
+// # Example
+//
+//	var pi win.PERFORMANCE_INFORMATION
+//	pi.SetCb()
+//
+// [PERFORMANCE_INFORMATION]:
+type PERFORMANCE_INFORMATION struct {
+	cb                uint32
+	CommitTotal       uintptr
+	CommitLimit       uintptr
+	CommitPeak        uintptr
+	PhysicalTotal     uintptr
+	PhysicalAvailable uintptr
+	SystemCache       uintptr
+	KernelTotal       uintptr
+	KernelPaged       uintptr
+	KernelNonpaged    uintptr
+	PageSize          uintptr
+	HandleCount       uint32
+	ProcessCount      uint32
+	ThreadCount       uint32
+}
+
+// Sets the cb field to the size of the struct, correctly initializing it.
+func (pi *PERFORMANCE_INFORMATION) SetCb() {
+	pi.cb = uint32(unsafe.Sizeof(*pi))
+}
+
 // [PROCESS_INFORMATION] struct.
 //
 // [PROCESS_INFORMATION]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-process_information

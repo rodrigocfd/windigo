@@ -75,7 +75,7 @@ type CURSORINFO struct {
 	PtScreenPos POINT
 }
 
-// Sets the cb field to the size of the struct, correctly initializing it.
+// Sets the cbSize field to the size of the struct, correctly initializing it.
 func (ci *CURSORINFO) SetCbSize() {
 	ci.cbSize = uint32(unsafe.Sizeof(*ci))
 }
