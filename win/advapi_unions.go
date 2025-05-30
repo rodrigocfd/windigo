@@ -155,7 +155,7 @@ func RegValMultiSz(strs ...string) RegVal {
 func (me *RegVal) MultiSz() ([]string, bool) {
 	if me.tag == co.REG_MULTI_SZ {
 		pStr16 := (*uint16)(unsafe.Pointer(&me.data[0]))
-		return wstr.Utf16PtrMultiToStr(pStr16), true
+		return wstr.WstrPtrMultiToStr(pStr16), true
 	}
 	return nil, false
 }

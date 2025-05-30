@@ -210,7 +210,7 @@ func GetEnvironmentStrings() (map[string]string, error) {
 	if ret == 0 {
 		return nil, co.ERROR_NOT_CAPABLE
 	}
-	rawEntries := wstr.Utf16PtrMultiToStr((*uint16)(unsafe.Pointer(ret)))
+	rawEntries := wstr.WstrPtrMultiToStr((*uint16)(unsafe.Pointer(ret)))
 
 	ret, _, _ = syscall.SyscallN(_FreeEnvironmentStringsW.Addr(),
 		ret)
@@ -278,6 +278,20 @@ func GetPerformanceInfo() (PERFORMANCE_INFORMATION, error) {
 }
 
 var _K32GetPerformanceInfo = dll.Kernel32.NewProc("K32GetPerformanceInfo")
+
+// [GetStartupInfo] function.
+//
+// [GetStartupInfo]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getstartupinfow
+func GetStartupInfo() STARTUPINFO {
+	var si STARTUPINFO
+	si.SetCb()
+
+	syscall.SyscallN(_GetStartupInfoW.Addr(),
+		uintptr(unsafe.Pointer(&si)))
+	return si
+}
+
+var _GetStartupInfoW = dll.Kernel32.NewProc("GetStartupInfoW")
 
 // [GetTimeZoneInformation] function.
 //

@@ -709,6 +709,16 @@ const (
 	SECURITY_EFFECTIVE_ONLY   SECURITY = 0x0008_0000
 )
 
+// [GetProcessShutdownParameters] flag.
+//
+// [GetProcessShutdownParameters]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessshutdownparameters
+type SHUTDOWN uint32
+
+const (
+	SHUTDOWN_NONE    SHUTDOWN = 0
+	SHUTDOWN_NORETRY SHUTDOWN = 0x0000_0001
+)
+
 // Sort order [identifier] for locales.
 //
 // [identifier]: https://learn.microsoft.com/en-us/windows/win32/intl/sort-order-identifiers

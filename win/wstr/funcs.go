@@ -202,7 +202,7 @@ func RemoveDiacritics(s string) string {
 // Converts a multi null-terminated *uint16 to []string.
 //
 // Source must have 2 terminating nulls.
-func Utf16PtrMultiToStr(p *uint16) []string {
+func WstrPtrMultiToStr(p *uint16) []string {
 	values := make([]string, 0)
 	if p == nil {
 		return values

@@ -165,6 +165,38 @@ func (hProcess HPROCESS) GetProcessMemoryInfo() (PROCESS_MEMORY_COUNTERS_EX, err
 
 var _GetProcessMemoryInfo = dll.Kernel32.NewProc("GetProcessMemoryInfo")
 
+// [GetProcessPriorityBoost] function.
+//
+// [GetProcessPriorityBoost]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesspriorityboost
+func (hProcess HPROCESS) GetProcessPriorityBoost() (bool, error) {
+	var bVal int32 // BOOL
+	ret, _, err := syscall.SyscallN(_GetProcessPriorityBoost.Addr(),
+		uintptr(hProcess),
+		uintptr(unsafe.Pointer(&bVal)))
+	if ret == 0 {
+		return false, co.ERROR(err)
+	}
+	return bVal != 0, nil
+}
+
+var _GetProcessPriorityBoost = dll.Kernel32.NewProc("GetProcessPriorityBoost")
+
+// [GetProcessShutdownParameters] function.
+//
+// [GetProcessShutdownParameters]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessshutdownparameters
+func (hProcess HPROCESS) GetProcessShutdownParameters() (priorityLevel uint32, flag co.SHUTDOWN, wErr error) {
+	ret, _, err := syscall.SyscallN(_GetProcessShutdownParameters.Addr(),
+		uintptr(hProcess),
+		uintptr(unsafe.Pointer(&priorityLevel)),
+		uintptr(unsafe.Pointer(&flag)))
+	if ret == 0 {
+		return 0, co.SHUTDOWN(0), co.ERROR(err)
+	}
+	return
+}
+
+var _GetProcessShutdownParameters = dll.Kernel32.NewProc("GetProcessShutdownParameters")
+
 // [GetProcessTimes] function.
 //
 // [GetProcessTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
@@ -197,6 +229,20 @@ type HprocessTimes struct {
 }
 
 var _GetProcessTimes = dll.Kernel32.NewProc("GetProcessTimes")
+
+// [GetProcessVersion] function.
+//
+// [GetProcessVersion]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessversion
+func (hProcess HPROCESS) GetProcessVersion() (maj, min uint16, wErr error) {
+	ret, _, err := syscall.SyscallN(_GetProcessVersion.Addr(),
+		uintptr(hProcess))
+	if ret == 0 {
+		return 0, 0, co.ERROR(err)
+	}
+	return HIWORD(uint32(ret)), LOWORD(uint32(ret)), nil
+}
+
+var _GetProcessVersion = dll.Kernel32.NewProc("GetProcessVersion")
 
 // [IsProcessCritical] function.
 //
