@@ -38,7 +38,8 @@ func (me *ITypeInfo) AddressOfMember(
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).AddressOfMember,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(memberId), uintptr(invokeKind),
+		uintptr(memberId),
+		uintptr(invokeKind),
 		uintptr(unsafe.Pointer(&addr)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -95,7 +96,8 @@ func (me *ITypeInfo) GetContainingTypeLib(releaser *ole.Releaser) (*ITypeLib, ui
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetContainingTypeLib,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)), uintptr(unsafe.Pointer(&index)))
+		uintptr(unsafe.Pointer(&ppvtQueried)),
+		uintptr(unsafe.Pointer(&index)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		var pObj *ITypeLib
@@ -122,7 +124,8 @@ func (me *ITypeInfo) GetDllEntry(
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetDllEntry,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(memberId), uintptr(invokeKind),
+		uintptr(memberId),
+		uintptr(invokeKind),
 		uintptr(unsafe.Pointer(&dllName)),
 		uintptr(unsafe.Pointer(&name)),
 		uintptr(unsafe.Pointer(&ordinal16)))
@@ -206,7 +209,8 @@ func (me *ITypeInfo) GetFuncDesc(releaser *ole.Releaser, index uint) (*FuncDescD
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetFuncDesc,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(index), uintptr(unsafe.Pointer(&pFuncDesc)))
+		uintptr(uint32(index)),
+		uintptr(unsafe.Pointer(&pFuncDesc)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		pData := &FuncDescData{pFuncDesc, me}
@@ -232,7 +236,7 @@ func (me *ITypeInfo) GetIDsOfNames(names ...string) ([]MEMBERID, error) {
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetIDsOfNames,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&ptrs16[0])),
-		uintptr(len(names)),
+		uintptr(uint32(len(names))),
 		uintptr(unsafe.Pointer(&memIds[0])))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -250,7 +254,8 @@ func (me *ITypeInfo) GetImplTypeFlags(index uint) (co.IMPLTYPEFLAG, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetImplTypeFlags,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(index), uintptr(unsafe.Pointer(&flags)))
+		uintptr(uint32(index)),
+		uintptr(unsafe.Pointer(&flags)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return flags, nil
@@ -269,7 +274,8 @@ func (me *ITypeInfo) GetMops(memberId MEMBERID) (string, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetMops,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(memberId), uintptr(unsafe.Pointer(&mops)))
+		uintptr(memberId),
+		uintptr(unsafe.Pointer(&mops)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return mops.String(), nil

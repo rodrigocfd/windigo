@@ -44,7 +44,7 @@ func OleLoadPicture(
 
 	ret, _, _ := syscall.SyscallN(_OleLoadPicture.Addr(),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
-		uintptr(size),
+		uintptr(int32(size)),
 		utl.BoolToUintptr(!keepOriginalFormat), // note: reversed
 		uintptr(unsafe.Pointer(&guid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
@@ -81,8 +81,11 @@ func OleLoadPicturePath(
 	guid := win.GuidFrom(co.IID_IPicture)
 
 	ret, _, _ := syscall.SyscallN(_OleLoadPicturePath.Addr(),
-		uintptr(path16.UnsafePtr()), 0, 0, uintptr(transparentColor),
-		uintptr(unsafe.Pointer(&guid)), uintptr(unsafe.Pointer(&ppvtQueried)))
+		uintptr(path16.UnsafePtr()),
+		0, 0,
+		uintptr(transparentColor),
+		uintptr(unsafe.Pointer(&guid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		var pObj *IPicture

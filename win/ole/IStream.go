@@ -87,7 +87,9 @@ func (me *IStream) LockRegion(offset, length uint64, lockType co.LOCKTYPE) error
 	ret, _, _ := syscall.SyscallN(
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).LockRegion,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(offset), uintptr(length), uintptr(lockType))
+		uintptr(offset),
+		uintptr(length),
+		uintptr(lockType))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -108,7 +110,8 @@ func (me *IStream) Seek(displacement int64, origin co.STREAM_SEEK) (newOffset ui
 	ret, _, _ := syscall.SyscallN(
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Seek,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(displacement), uintptr(origin),
+		uintptr(displacement),
+		uintptr(origin),
 		uintptr(unsafe.Pointer(&newOffset)))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -138,7 +141,8 @@ func (me *IStream) Stat(flag co.STATFLAG) (STATSTG, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Stat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&stg)), uintptr(flag))
+		uintptr(unsafe.Pointer(&stg)),
+		uintptr(flag))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return stg, nil
@@ -156,7 +160,9 @@ func (me *IStream) UnlockRegion(offset, length uint64, lockType co.LOCKTYPE) err
 	ret, _, _ := syscall.SyscallN(
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).UnlockRegion,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(offset), uintptr(length), uintptr(lockType))
+		uintptr(offset),
+		uintptr(length),
+		uintptr(lockType))
 	return utl.ErrorAsHResult(ret)
 }
 

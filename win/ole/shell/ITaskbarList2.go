@@ -46,7 +46,8 @@ func (me *ITaskbarList2) MarkFullscreenWindow(hwnd win.HWND, fullScreen bool) er
 	ret, _, _ := syscall.SyscallN(
 		(*_ITaskbarList2Vt)(unsafe.Pointer(*me.Ppvt())).MarkFullscreenWindow,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(hwnd), utl.BoolToUintptr(fullScreen))
+		uintptr(hwnd),
+		utl.BoolToUintptr(fullScreen))
 	return utl.ErrorAsHResult(ret)
 }
 

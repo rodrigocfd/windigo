@@ -60,7 +60,8 @@ func (me *IFileOperation) Advise(fops *IFileOperationProgressSink) (uint32, erro
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).Advise,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pSink), uintptr(unsafe.Pointer(&cookie)))
+		uintptr(pSink),
+		uintptr(unsafe.Pointer(&cookie)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return cookie, nil
@@ -117,8 +118,10 @@ func (me *IFileOperation) CopyItem(
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).CopyItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(item.Ppvt())), uintptr(unsafe.Pointer(destFolder.Ppvt())),
-		uintptr(copyName16.UnsafePtr()), uintptr(pSink))
+		uintptr(unsafe.Pointer(item.Ppvt())),
+		uintptr(unsafe.Pointer(destFolder.Ppvt())),
+		uintptr(copyName16.UnsafePtr()),
+		uintptr(pSink))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -134,7 +137,8 @@ func (me *IFileOperation) DeleteItem(item *IShellItem, fops *IFileOperationProgr
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).DeleteItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(item.Ppvt())), uintptr(pSink))
+		uintptr(unsafe.Pointer(item.Ppvt())),
+		uintptr(pSink))
 	return utl.ErrorAsHResult(ret)
 }
 

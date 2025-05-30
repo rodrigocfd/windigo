@@ -73,7 +73,9 @@ func (me *IEnumString) Next() (string, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Next,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		1, uintptr(unsafe.Pointer(&pv)), uintptr(unsafe.Pointer(&numFetched)))
+		1,
+		uintptr(unsafe.Pointer(&pv)),
+		uintptr(unsafe.Pointer(&numFetched)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		defer HTASKMEM(pv).CoTaskMemFree()

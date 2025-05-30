@@ -147,7 +147,8 @@ func (me *IShellItem) GetDisplayName(sigdnName co.SIGDN) (string, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).GetDisplayName,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(sigdnName), uintptr(unsafe.Pointer(&pv)))
+		uintptr(sigdnName),
+		uintptr(unsafe.Pointer(&pv)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		defer ole.HTASKMEM(pv).CoTaskMemFree()

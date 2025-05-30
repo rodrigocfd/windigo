@@ -35,7 +35,8 @@ func (me *IShellLink) GetArguments() (string, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetArguments,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(int32(len(buf))))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return wstr.WstrSliceToStr(buf), nil
@@ -52,7 +53,8 @@ func (me *IShellLink) GetDescription() (string, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetDescription,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(int32(len(buf))))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return wstr.WstrSliceToStr(buf), nil
@@ -88,7 +90,8 @@ func (me *IShellLink) GetIconLocation() (path string, index int, hr error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetIconLocation,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)-1),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(int32(len(buf)-1)),
 		uintptr(unsafe.Pointer(&iconIndex)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -106,7 +109,8 @@ func (me *IShellItem) GetPath(fd *win.WIN32_FIND_DATA, flags co.SLGP) (string, e
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetPath,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)-1),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(int32(len(buf)-1)),
 		uintptr(unsafe.Pointer(fd)), uintptr(flags))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -141,7 +145,8 @@ func (me *IShellLink) GetWorkingDirectory() (string, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetWorkingDirectory,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)-1))
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(int32(len(buf)-1)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return wstr.WstrSliceToStr(buf[:]), nil
@@ -157,7 +162,8 @@ func (me *IShellLink) Resolve(hWnd win.HWND, flags co.SLR) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).Resolve,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(hWnd), uintptr(flags))
+		uintptr(hWnd),
+		uintptr(flags))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -204,7 +210,8 @@ func (me *IShellLink) SetIconLocation(path string, index int) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetIconLocation,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(path16.UnsafePtr()), uintptr(index))
+		uintptr(path16.UnsafePtr()),
+		uintptr(int32(index)))
 	return utl.ErrorAsHResult(ret)
 }
 

@@ -107,7 +107,8 @@ func (me *IShellItemArray) GetCount() (uint, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItemArrayVt)(unsafe.Pointer(*me.Ppvt())).GetCount,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&count)), 0)
+		uintptr(unsafe.Pointer(&count)),
+		0)
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return uint(count), nil
@@ -124,7 +125,8 @@ func (me *IShellItemArray) GetItemAt(releaser *ole.Releaser, index uint) (*IShel
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItemArrayVt)(unsafe.Pointer(*me.Ppvt())).GetItemAt,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(index), uintptr(unsafe.Pointer(&ppvtQueried)))
+		uintptr(uint32(index)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		var pObj *IShellItem

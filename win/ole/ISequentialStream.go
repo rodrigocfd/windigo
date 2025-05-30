@@ -34,7 +34,7 @@ func (me *ISequentialStream) Read(buffer []byte) (numBytesRead uint32, hr error)
 		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Read,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&buffer[0])),
-		uintptr(len(buffer)),
+		uintptr(uint32(len(buffer))),
 		uintptr(unsafe.Pointer(&numBytesRead)))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -53,7 +53,7 @@ func (me *ISequentialStream) Write(data []byte) (numBytesWritten uint32, hr erro
 		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Write,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&data[0])),
-		uintptr(len(data)),
+		uintptr(uint32(len(data))),
 		uintptr(unsafe.Pointer(&numBytesWritten)))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {

@@ -41,7 +41,8 @@ func SHCreateItemFromIDList(releaser *ole.Releaser, pidl *ITEMIDLIST, ppOut inte
 	guidIid := win.GuidFrom(pOut.IID())
 
 	ret, _, _ := syscall.SyscallN(_SHCreateItemFromIDList.Addr(),
-		uintptr(*pidl), uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(*pidl),
+		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -87,7 +88,8 @@ func SHCreateItemFromParsingName(
 
 	ret, _, _ := syscall.SyscallN(_SHCreateItemFromParsingName.Addr(),
 		uintptr(folderOrFilePath16.UnsafePtr()),
-		0, uintptr(unsafe.Pointer(&guidIid)),
+		0,
+		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -220,7 +222,7 @@ func SHCreateShellItemArrayFromIDLists(
 	}
 
 	ret, _, _ := syscall.SyscallN(_SHCreateShellItemArrayFromIDLists.Addr(),
-		uintptr(len(pidls)),
+		uintptr(uint32(len(pidls))),
 		uintptr(unsafe.Pointer(&pidlObjs[0])),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -301,7 +303,8 @@ func SHGetKnownFolderItem(
 
 	ret, _, _ := syscall.SyscallN(_SHGetKnownFolderItem.Addr(),
 		uintptr(unsafe.Pointer(&guidKfid)),
-		uintptr(flags), uintptr(hToken),
+		uintptr(flags),
+		uintptr(hToken),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -333,7 +336,8 @@ var _SHGetKnownFolderItem = dll.Shell32.NewProc("SHGetKnownFolderItem")
 func SHGetIDListFromObject(releaser *ole.Releaser, obj *ole.IUnknown) (*ITEMIDLIST, error) {
 	var idl ITEMIDLIST
 	ret, _, _ := syscall.SyscallN(_SHGetIDListFromObject.Addr(),
-		uintptr(unsafe.Pointer(obj.Ppvt())), uintptr(unsafe.Pointer(&idl)))
+		uintptr(unsafe.Pointer(obj.Ppvt())),
+		uintptr(unsafe.Pointer(&idl)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		pIdl := &idl
 		releaser.Add(pIdl)

@@ -63,7 +63,8 @@ var _SysFreeString = dll.Oleaut32.NewProc("SysFreeString")
 func (bstr BSTR) SysReAllocString(s string) (BSTR, error) {
 	s16 := wstr.NewBufWith[wstr.Stack20](s, wstr.ALLOW_EMPTY)
 	ret, _, _ := syscall.SyscallN(_SysReAllocString.Addr(),
-		uintptr(bstr), uintptr(s16.UnsafePtr()))
+		uintptr(bstr),
+		uintptr(s16.UnsafePtr()))
 	if ret == 0 {
 		return BSTR(0), co.HRESULT_E_OUTOFMEMORY
 	}

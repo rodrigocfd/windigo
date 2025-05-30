@@ -40,7 +40,8 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	var guid win.GUID
 
 	ret, _, _ := syscall.SyscallN(_CLSIDFromProgID.Addr(),
-		uintptr(progId16.UnsafePtr()), uintptr(unsafe.Pointer(&guid)))
+		uintptr(progId16.UnsafePtr()),
+		uintptr(unsafe.Pointer(&guid)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return co.CLSID(guid.String()), nil
@@ -118,7 +119,8 @@ var _CoCreateInstance = dll.Ole32.NewProc("CoCreateInstance")
 // [CoInitializeEx]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 func CoInitializeEx(coInit co.COINIT) (alreadyInitialized bool, hr error) {
 	ret, _, _ := syscall.SyscallN(_CoInitializeEx.Addr(),
-		0, uintptr(coInit))
+		0,
+		uintptr(coInit))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		alreadyInitialized, hr = false, nil
@@ -156,7 +158,8 @@ var _CoUninitialize = dll.Ole32.NewProc("CoUninitialize")
 func CreateBindCtx(releaser *Releaser) (*IBindCtx, error) {
 	var ppvtQueried **IUnknownVt
 	ret, _, _ := syscall.SyscallN(_CreateBindCtx.Addr(),
-		0, uintptr(unsafe.Pointer(&ppvtQueried)))
+		0,
+		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		var pObj *IBindCtx
@@ -211,7 +214,8 @@ func RegisterDragDrop(hWnd win.HWND, dropTarget *IDropTarget) error {
 	}
 
 	ret, _, _ := syscall.SyscallN(_RegisterDragDrop.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(dropTarget.Ppvt())))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(dropTarget.Ppvt())))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		if hr == co.HRESULT_E_OUTOFMEMORY {
 			return errors.New("RegisterDragDrop failed, did you call OleInitialize?")
@@ -266,7 +270,8 @@ var _RevokeDragDrop = dll.Ole32.NewProc("RevokeDragDrop")
 // [SHCreateMemStream]: https://learn.microsoft.com/en-us/windows/win32/api/shlwapi/nf-shlwapi-shcreatememstream
 func SHCreateMemStream(releaser *Releaser, src []byte) (*IStream, error) {
 	ret, _, _ := syscall.SyscallN(_SHCreateMemStream.Addr(),
-		uintptr(unsafe.Pointer(&src[0])), uintptr(len(src)))
+		uintptr(unsafe.Pointer(&src[0])),
+		uintptr(uint32(len(src))))
 	if ret == 0 {
 		return nil, co.HRESULT_E_OUTOFMEMORY
 	}

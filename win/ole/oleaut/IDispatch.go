@@ -53,7 +53,7 @@ func (me *IDispatch) GetIDsOfNames(
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&nullGuid)),
 		uintptr(unsafe.Pointer(&strPtrs[0])),
-		uintptr(nParams),
+		uintptr(uint32(nParams)),
 		uintptr(lcid),
 		uintptr(unsafe.Pointer(&memberIds[0])))
 
@@ -81,7 +81,8 @@ func (me *IDispatch) GetTypeInfo(releaser *ole.Releaser, lcid win.LCID) (*ITypeI
 	ret, _, _ := syscall.SyscallN(
 		(*_IDispatchVt)(unsafe.Pointer(*me.Ppvt())).GetTypeInfo,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		0, uintptr(lcid),
+		0,
+		uintptr(lcid),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -141,7 +142,8 @@ func (me *IDispatch) Invoke(
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(dispIdMember),
 		uintptr(unsafe.Pointer(&nullGuid)),
-		uintptr(lcid), uintptr(flags),
+		uintptr(lcid),
+		uintptr(flags),
 		uintptr(unsafe.Pointer(dispParams)),
 		uintptr(unsafe.Pointer(remoteResult)),
 		uintptr(unsafe.Pointer(&remoteErr)),

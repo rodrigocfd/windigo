@@ -34,18 +34,22 @@ func (me *IFileDialog) AddPlace(si *IShellItem, fdap co.FDAP) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).AddPlace,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(si.Ppvt())), uintptr(fdap))
+		uintptr(unsafe.Pointer(si.Ppvt())),
+		uintptr(fdap))
 	return utl.ErrorAsHResult(ret)
 }
 
 // [Advise] method.
+//
+// Paired with [IFileDialog.Unadvise].
 //
 // [Advise]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-advise
 func (me *IFileDialog) Advise(events *IFileDialogEvents) (cookie uint32, hr error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).Advise,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(events.Ppvt())), uintptr(unsafe.Pointer(&cookie)))
+		uintptr(unsafe.Pointer(events.Ppvt())),
+		uintptr(unsafe.Pointer(&cookie)))
 	if hr = co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
@@ -293,7 +297,7 @@ func (me *IFileDialog) SetFileTypes(filterSpec []COMDLG_FILTERSPEC) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFileTypes,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(nFilters),
+		uintptr(uint32(nFilters)),
 		uintptr(unsafe.Pointer(&nativeFilters[0])))
 	return utl.ErrorAsHResult(ret)
 }
@@ -356,6 +360,8 @@ func (me *IFileDialog) SetTitle(title string) error {
 }
 
 // [Unadvise] method.
+//
+// Paired with [IFileDialog.Advise].
 //
 // [Unadvise]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-unadvise
 func (me *IFileDialog) Unadvise(cookie uint32) error {

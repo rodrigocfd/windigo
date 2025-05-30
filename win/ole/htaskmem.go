@@ -61,7 +61,8 @@ var _CoTaskMemFree = dll.Ole32.NewProc("CoTaskMemFree")
 // [CoTaskMemRealloc]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
 func (hMem HTASKMEM) CoTaskMemRealloc(numBytes uint) (HTASKMEM, error) {
 	ret, _, _ := syscall.SyscallN(_CoTaskMemRealloc.Addr(),
-		uintptr(hMem), uintptr(numBytes))
+		uintptr(hMem),
+		uintptr(numBytes))
 	if ret == 0 {
 		return HTASKMEM(0), co.HRESULT_E_OUTOFMEMORY
 	}

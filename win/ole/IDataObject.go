@@ -32,7 +32,8 @@ func (me *IDataObject) GetCanonicalFormatEtc(etcIn *FORMATETC) (FORMATETC, error
 	ret, _, _ := syscall.SyscallN(
 		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).GetCanonicalFormatEtc,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(etcIn)), uintptr(unsafe.Pointer(&etcOut)))
+		uintptr(unsafe.Pointer(etcIn)),
+		uintptr(unsafe.Pointer(&etcOut)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return etcOut, nil
 	} else {
@@ -50,7 +51,8 @@ func (me *IDataObject) GetData(etc *FORMATETC) (STGMEDIUM, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).GetData,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(etc)), uintptr(unsafe.Pointer(&stg)))
+		uintptr(unsafe.Pointer(etc)),
+		uintptr(unsafe.Pointer(&stg)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return stg, nil
 	} else {

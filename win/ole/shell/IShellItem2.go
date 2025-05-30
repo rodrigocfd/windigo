@@ -59,7 +59,8 @@ func (me *IShellItem2) GetBool(pkey co.PKEY) (bool, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetBool,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&bVal)))
+		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(&bVal)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return bVal != 0, nil
@@ -78,7 +79,9 @@ func (me *IShellItem2) GetCLSID(pkey co.PKEY) (win.GUID, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetCLSID,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&clsid)))
+		uintptr(unsafe.Pointer(&guidPkey)),
+
+		uintptr(unsafe.Pointer(&clsid)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return clsid, nil
@@ -97,7 +100,8 @@ func (me *IShellItem2) GetFileTime(pkey co.PKEY) (time.Time, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetFileTime,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&ft)))
+		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(&ft)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return ft.ToTime(), nil
@@ -116,7 +120,8 @@ func (me *IShellItem2) GetInt32(pkey co.PKEY) (int32, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetInt32,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&i)))
+		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(&i)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return i, nil
@@ -146,7 +151,8 @@ func (me *IShellItem2) GetString(pkey co.PKEY) (string, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetString,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&psz)))
+		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(&psz)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		defer ole.HTASKMEM(psz).CoTaskMemFree()
@@ -167,7 +173,8 @@ func (me *IShellItem2) GetUInt32(pkey co.PKEY) (uint32, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetUInt32,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&ui)))
+		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(&ui)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return ui, nil
@@ -186,7 +193,8 @@ func (me *IShellItem2) GetUInt64(pkey co.PKEY) (uint64, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetUInt64,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)), uintptr(unsafe.Pointer(&ull)))
+		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(&ull)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return ull, nil

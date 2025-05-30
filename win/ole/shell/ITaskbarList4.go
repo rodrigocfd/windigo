@@ -46,7 +46,8 @@ func (me *ITaskbarList4) SetProperties(hwndTab win.HWND, flags co.STPFLAG) error
 	ret, _, _ := syscall.SyscallN(
 		(*_ITaskbarList4Vt)(unsafe.Pointer(*me.Ppvt())).SetTabProperties,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(hwndTab), uintptr(flags))
+		uintptr(hwndTab),
+		uintptr(flags))
 	return utl.ErrorAsHResult(ret)
 }
 

@@ -177,10 +177,14 @@ func (me *IPicture) Render(
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Render,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hdc),
-		uintptr(destOffset.X), uintptr(destOffset.Y),
-		uintptr(destSz.Cx), uintptr(destSz.Cy),
-		uintptr(srcOffset.X), uintptr(srcOffset.Y),
-		uintptr(srcSz.Cx), uintptr(srcSz.Cy),
+		uintptr(destOffset.X),
+		uintptr(destOffset.Y),
+		uintptr(destSz.Cx),
+		uintptr(destSz.Cy),
+		uintptr(srcOffset.X),
+		uintptr(srcOffset.Y),
+		uintptr(srcSz.Cx),
+		uintptr(srcSz.Cy),
 		uintptr(unsafe.Pointer(&metafileBounds)))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
