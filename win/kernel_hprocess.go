@@ -131,7 +131,7 @@ func (hProcess HPROCESS) GetProcessImageFileName() (string, error) {
 	var buf [utl.MAX_PATH]uint16
 	szBuf := uint32(len(buf))
 	ret, _, err := syscall.SyscallN(_K32GetProcessImageFileNameW.Addr(),
-		uintptr(unsafe.Pointer(&buf[0])), uintptr(szBuf))
+		uintptr(hProcess), uintptr(unsafe.Pointer(&buf[0])), uintptr(szBuf))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
@@ -139,6 +139,23 @@ func (hProcess HPROCESS) GetProcessImageFileName() (string, error) {
 }
 
 var _K32GetProcessImageFileNameW = dll.Kernel32.NewProc("K32GetProcessImageFileNameW")
+
+// [GetProcessMemoryInfo] function
+//
+// [GetProcessMemoryInfo]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getprocessmemoryinfo
+func (hProcess HPROCESS) GetProcessMemoryInfo() (PROCESS_MEMORY_COUNTERS_EX, error) {
+	var pmc PROCESS_MEMORY_COUNTERS_EX
+	pmc.SetCb()
+
+	ret, _, err := syscall.SyscallN(_GetProcessMemoryInfo.Addr(),
+		uintptr(hProcess), uintptr(unsafe.Pointer(&pmc)), uintptr(unsafe.Sizeof(pmc)))
+	if ret == 0 {
+		return PROCESS_MEMORY_COUNTERS_EX{}, co.ERROR(err)
+	}
+	return pmc, nil
+}
+
+var _GetProcessMemoryInfo = dll.Kernel32.NewProc("GetProcessMemoryInfo")
 
 // [GetProcessTimes] function.
 //

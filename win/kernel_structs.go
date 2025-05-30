@@ -305,7 +305,7 @@ type OVERLAPPED struct {
 //	var pi win.PERFORMANCE_INFORMATION
 //	pi.SetCb()
 //
-// [PERFORMANCE_INFORMATION]:
+// [PERFORMANCE_INFORMATION]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-performance_information
 type PERFORMANCE_INFORMATION struct {
 	cb                uint32
 	CommitTotal       uintptr
@@ -336,6 +336,35 @@ type PROCESS_INFORMATION struct {
 	HThread     HTHREAD
 	DwProcessId uint32
 	DwThreadId  uint32
+}
+
+// [PROCESS_MEMORY_COUNTERS_EX] struct.
+//
+// ⚠️ You must call [PROCESS_MEMORY_COUNTERS_EX.SetCb] to initialize the struct.
+//
+// # Example
+//
+//	var pi win.PERFORMANCE_INFORMATION
+//	pi.SetCb()
+//
+// [PROCESS_MEMORY_COUNTERS_EX]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex
+type PROCESS_MEMORY_COUNTERS_EX struct {
+	cb                         uint32
+	PageFaultCount             uint32
+	PeakWorkingSetSize         uintptr
+	WorkingSetSize             uintptr
+	QuotaPeakPagedPoolUsage    uintptr
+	QuotaPagedPoolUsage        uintptr
+	QuotaPeakNonPagedPoolUsage uintptr
+	QuotaNonPagedPoolUsage     uintptr
+	PagefileUsage              uintptr
+	PeakPagefileUsage          uintptr
+	PrivateUsage               uintptr
+}
+
+// Sets the cb field to the size of the struct, correctly initializing it.
+func (pmc *PROCESS_MEMORY_COUNTERS_EX) SetCb() {
+	pmc.cb = uint32(unsafe.Sizeof(*pmc))
 }
 
 // [PROCESSENTRY32] struct.
