@@ -29,7 +29,8 @@ var _IsThemeDialogTextureEnabled = dll.Uxtheme.NewProc("IsThemeDialogTextureEnab
 func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {
 	classNames16 := wstr.NewBufWith[wstr.Stack20](classNames, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(_OpenThemeData.Addr(),
-		uintptr(hWnd), uintptr(classNames16.UnsafePtr()))
+		uintptr(hWnd),
+		uintptr(classNames16.UnsafePtr()))
 	if ret == 0 {
 		return HTHEME(0), co.HRESULT_E_FAIL
 	}
