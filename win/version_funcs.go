@@ -31,8 +31,10 @@ import (
 func GetFileVersionInfo(fileName string, dest []byte) error {
 	fileName16 := wstr.NewBufWith[wstr.Stack20](fileName, wstr.EMPTY_IS_NIL)
 	ret, _, err := syscall.SyscallN(_GetFileVersionInfoW.Addr(),
-		uintptr(fileName16.UnsafePtr()), 0,
-		uintptr(len(dest)), uintptr(unsafe.Pointer(&dest[0])))
+		uintptr(fileName16.UnsafePtr()),
+		0,
+		uintptr(uint32(len(dest))),
+		uintptr(unsafe.Pointer(&dest[0])))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -46,7 +48,8 @@ func GetFileVersionInfoSize(fileName string) (uint, error) {
 	var dummy uint32
 
 	ret, _, err := syscall.SyscallN(_GetFileVersionInfoSizeW.Addr(),
-		uintptr(fileName16.UnsafePtr()), uintptr(unsafe.Pointer(&dummy)))
+		uintptr(fileName16.UnsafePtr()),
+		uintptr(unsafe.Pointer(&dummy)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
@@ -103,8 +106,10 @@ func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, uint, bool) {
 	var puLen uint32
 
 	ret, _, _ := syscall.SyscallN(_VerQueryValueW.Addr(),
-		uintptr(unsafe.Pointer(&block[0])), uintptr(subBlock16.UnsafePtr()),
-		uintptr(unsafe.Pointer(&lplpBuffer)), uintptr(unsafe.Pointer(&puLen)))
+		uintptr(unsafe.Pointer(&block[0])),
+		uintptr(subBlock16.UnsafePtr()),
+		uintptr(unsafe.Pointer(&lplpBuffer)),
+		uintptr(unsafe.Pointer(&puLen)))
 	if ret == 0 {
 		return nil, 0, false
 	}
