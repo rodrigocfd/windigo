@@ -12,6 +12,49 @@ import (
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
+// [ImageList_DragMove] function.
+//
+// [ImageList_DragMove]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_dragmove
+func ImageListDragMove(x, y int) error {
+	ret, _, _ := syscall.SyscallN(_ImageList_DragMove.Addr(),
+		uintptr(int32(x)),
+		uintptr(int32(y)))
+	return utl.ZeroAsSysInvalidParm(ret)
+}
+
+var _ImageList_DragMove = dll.Comctl32.NewProc("ImageList_DragMove")
+
+// [ImageList_DragShowNolock] function.
+//
+// [ImageList_DragShowNolock]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_dragshownolock
+func ImageListDragShowNolock(show bool) error {
+	ret, _, _ := syscall.SyscallN(_ImageList_DragShowNolock.Addr(),
+		utl.BoolToUintptr(show))
+	return utl.ZeroAsSysInvalidParm(ret)
+}
+
+var _ImageList_DragShowNolock = dll.Comctl32.NewProc("ImageList_DragShowNolock")
+
+// [ImageList_DrawIndirect] function.
+//
+// [ImageList_DrawIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_drawindirect
+func ImageListDrawIndirect(imldp *IMAGELISTDRAWPARAMS) error {
+	ret, _, _ := syscall.SyscallN(_ImageList_DrawIndirect.Addr(),
+		uintptr(unsafe.Pointer(imldp)))
+	return utl.ZeroAsSysInvalidParm(ret)
+}
+
+var _ImageList_DrawIndirect = dll.Comctl32.NewProc("ImageList_DrawIndirect")
+
+// [ImageList_EndDrag] function.
+//
+// [ImageList_EndDrag]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_enddrag
+func ImageListEndDrag() {
+	syscall.SyscallN(_ImageList_EndDrag.Addr())
+}
+
+var _ImageList_EndDrag = dll.Comctl32.NewProc("ImageList_EndDrag")
+
 // [InitCommonControls] function.
 //
 // [InitCommonControls]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
@@ -79,7 +122,8 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 	defer pPnButton.Free()
 
 	ret, _, _ := syscall.SyscallN(_TaskDialogIndirect.Addr(),
-		uintptr(tdcBuf.UnsafePtr()), uintptr(pPnButton.UnsafePtr()))
+		uintptr(tdcBuf.UnsafePtr()),
+		uintptr(pPnButton.UnsafePtr()))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return co.ID(0), hr
 	}
