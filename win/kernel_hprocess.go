@@ -124,6 +124,22 @@ func (hProcess HPROCESS) GetProcessId() (uint32, error) {
 
 var _GetProcessId = dll.Kernel32.NewProc("GetProcessId")
 
+// [GetProcessImageFileName] function
+//
+// [GetProcessImageFileName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getprocessimagefilenamew
+func (hProcess HPROCESS) GetProcessImageFileName() (string, error) {
+	var buf [utl.MAX_PATH]uint16
+	szBuf := uint32(len(buf))
+	ret, _, err := syscall.SyscallN(_K32GetProcessImageFileNameW.Addr(),
+		uintptr(unsafe.Pointer(&buf[0])), uintptr(szBuf))
+	if ret == 0 {
+		return "", co.ERROR(err)
+	}
+	return wstr.WstrSliceToStr(buf[:]), nil
+}
+
+var _K32GetProcessImageFileNameW = dll.Kernel32.NewProc("K32GetProcessImageFileNameW")
+
 // [GetProcessTimes] function.
 //
 // [GetProcessTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
