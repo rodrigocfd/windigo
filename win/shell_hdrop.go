@@ -63,7 +63,9 @@ func (hDrop HDROP) DragQueryFile() ([]string, error) {
 
 	for i := uint32(0); i < count; i++ {
 		ret, _, _ = syscall.SyscallN(_DragQueryFileW.Addr(),
-			uintptr(hDrop), uintptr(i), uintptr(unsafe.Pointer(&pathBuf[0])),
+			uintptr(hDrop),
+			uintptr(i),
+			uintptr(unsafe.Pointer(&pathBuf[0])),
 			uintptr(uint32(len(pathBuf))))
 		if ret == 0 {
 			return nil, co.ERROR_INVALID_PARAMETER
@@ -84,7 +86,8 @@ var _DragQueryFileW = dll.Shell32.NewProc("DragQueryFileW")
 func (hDrop HDROP) DragQueryPoint() (POINT, bool) {
 	var pt POINT
 	ret, _, _ := syscall.SyscallN(_DragQueryPoint.Addr(),
-		uintptr(hDrop), uintptr(unsafe.Pointer(&pt)))
+		uintptr(hDrop),
+		uintptr(unsafe.Pointer(&pt)))
 	return pt, ret != 0
 }
 
