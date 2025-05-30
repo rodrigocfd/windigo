@@ -17,7 +17,10 @@ import (
 // [DrawIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawicon
 func (hdc HDC) DrawIcon(x, y int, hIcon HICON) error {
 	ret, _, err := syscall.SyscallN(_DrawIcon.Addr(),
-		uintptr(hdc), uintptr(x), uintptr(y), uintptr(hIcon))
+		uintptr(hdc),
+		uintptr(int32(x)),
+		uintptr(int32(y)),
+		uintptr(hIcon))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -30,14 +33,20 @@ func (hdc HDC) DrawIconEx(
 	pos POINT,
 	hIcon HICON,
 	size SIZE,
-	frameIndex uint,
+	frameIndexIfCursor uint,
 	hbrFlickerFree HBRUSH,
 	diFlags co.DI,
 ) error {
 	ret, _, err := syscall.SyscallN(_DrawIconEx.Addr(),
-		uintptr(hdc), uintptr(pos.X), uintptr(pos.Y), uintptr(hIcon),
-		uintptr(size.Cx), uintptr(size.Cy), uintptr(frameIndex),
-		uintptr(hbrFlickerFree), uintptr(diFlags))
+		uintptr(hdc),
+		uintptr(pos.X),
+		uintptr(pos.Y),
+		uintptr(hIcon),
+		uintptr(size.Cx),
+		uintptr(size.Cy),
+		uintptr(uint32(frameIndexIfCursor)),
+		uintptr(hbrFlickerFree),
+		uintptr(diFlags))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -51,8 +60,10 @@ func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) ([]EnumDisplayMonitorsInfo, err
 		arr: make([]EnumDisplayMonitorsInfo, 0),
 	}
 	ret, _, _ := syscall.SyscallN(_EnumDisplayMonitors.Addr(),
-		uintptr(hdc), uintptr(unsafe.Pointer(rcClip)),
-		enumDisplayMonitorsCallback(), uintptr(unsafe.Pointer(pPack)))
+		uintptr(hdc),
+		uintptr(unsafe.Pointer(rcClip)),
+		enumDisplayMonitorsCallback(),
+		uintptr(unsafe.Pointer(pPack)))
 	runtime.KeepAlive(pPack)
 	if ret == 0 {
 		return nil, co.ERROR_INVALID_PARAMETER
@@ -94,7 +105,9 @@ func enumDisplayMonitorsCallback() uintptr {
 // [FrameRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-framerect
 func (hdc HDC) FrameRect(rc *RECT, hBrush HBRUSH) error {
 	ret, _, err := syscall.SyscallN(_FrameRect.Addr(),
-		uintptr(hdc), uintptr(unsafe.Pointer(rc)), uintptr(hBrush))
+		uintptr(hdc),
+		uintptr(unsafe.Pointer(rc)),
+		uintptr(hBrush))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -105,7 +118,8 @@ var _FrameRect = dll.User32.NewProc("FrameRect")
 // [InvertRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invertrect
 func (hdc HDC) InvertRect(rc *RECT) error {
 	ret, _, err := syscall.SyscallN(_InvertRect.Addr(),
-		uintptr(hdc), uintptr(unsafe.Pointer(rc)))
+		uintptr(hdc),
+		uintptr(unsafe.Pointer(rc)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

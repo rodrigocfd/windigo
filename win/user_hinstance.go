@@ -24,8 +24,11 @@ func (hInst HINSTANCE) CreateDialogParam(
 	templateNameVal := templateName.raw(&templateName16)
 
 	ret, _, err := syscall.SyscallN(_CreateDialogParamW.Addr(),
-		uintptr(hInst), templateNameVal,
-		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam))
+		uintptr(hInst),
+		templateNameVal,
+		uintptr(hwndParent),
+		dialogFunc,
+		uintptr(dwInitParam))
 	if ret == 0 {
 		return HWND(0), co.ERROR(err)
 	}
@@ -44,8 +47,11 @@ func (hInst HINSTANCE) DialogBoxIndirectParam(
 	dwInitParam LPARAM,
 ) (uintptr, error) {
 	ret, _, err := syscall.SyscallN(_DialogBoxIndirectParamW.Addr(),
-		uintptr(hInst), uintptr(unsafe.Pointer(template)),
-		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam))
+		uintptr(hInst),
+		uintptr(unsafe.Pointer(template)),
+		uintptr(hwndParent),
+		dialogFunc,
+		uintptr(dwInitParam))
 	if int32(ret) == -1 && co.ERROR(err) != co.ERROR_SUCCESS {
 		return 0, co.ERROR(err)
 	}
@@ -67,8 +73,11 @@ func (hInst HINSTANCE) DialogBoxParam(
 	templateNameVal := templateName.raw(&templateName16)
 
 	ret, _, err := syscall.SyscallN(_DialogBoxParamW.Addr(),
-		uintptr(hInst), templateNameVal,
-		uintptr(hwndParent), dialogFunc, uintptr(dwInitParam))
+		uintptr(hInst),
+		templateNameVal,
+		uintptr(hwndParent),
+		dialogFunc,
+		uintptr(dwInitParam))
 	if int32(ret) == -1 && co.ERROR(err) != co.ERROR_SUCCESS {
 		return 0, co.ERROR(err)
 	}
@@ -107,7 +116,8 @@ func (hInst HINSTANCE) LoadAccelerators(tableName ResId) (HACCEL, error) {
 	tableNameVal := tableName.raw(&tableName16)
 
 	ret, _, err := syscall.SyscallN(_LoadAcceleratorsW.Addr(),
-		uintptr(hInst), tableNameVal)
+		uintptr(hInst),
+		tableNameVal)
 	if ret == 0 {
 		return HACCEL(0), co.ERROR(err)
 	}
@@ -126,7 +136,8 @@ func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) (HCURSOR, error) {
 	cursorNameVal := cursorName.raw(&cursorName16)
 
 	ret, _, err := syscall.SyscallN(_LoadCursorW.Addr(),
-		uintptr(hInst), cursorNameVal)
+		uintptr(hInst),
+		cursorNameVal)
 	if ret == 0 {
 		return HCURSOR(0), co.ERROR(err)
 	}
@@ -152,7 +163,8 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) (HICON, error) {
 	iconNameVal := iconName.raw(&iconName16)
 
 	ret, _, err := syscall.SyscallN(_LoadIconW.Addr(),
-		uintptr(hInst), iconNameVal)
+		uintptr(hInst),
+		iconNameVal)
 	if ret == 0 {
 		return HICON(0), co.ERROR(err)
 	}
@@ -208,8 +220,12 @@ func (hInst HINSTANCE) LoadImage(
 	nameVal := name.raw(&name16)
 
 	ret, _, err := syscall.SyscallN(_LoadImageW.Addr(),
-		uintptr(hInst), nameVal, uintptr(imgType),
-		uintptr(cx), uintptr(cy), uintptr(fuLoad))
+		uintptr(hInst),
+		nameVal,
+		uintptr(imgType),
+		uintptr(int32(cx)),
+		uintptr(int32(cy)),
+		uintptr(fuLoad))
 	if ret == 0 {
 		return HGDIOBJ(0), co.ERROR(err)
 	}
@@ -228,7 +244,8 @@ func (hInst HINSTANCE) LoadMenu(menuName ResId) (HMENU, error) {
 	menuNameVal := menuName.raw(&menuName16)
 
 	ret, _, err := syscall.SyscallN(_LoadMenuW.Addr(),
-		uintptr(hInst), menuNameVal)
+		uintptr(hInst),
+		menuNameVal)
 	if ret == 0 {
 		return HMENU(0), co.ERROR(err)
 	}

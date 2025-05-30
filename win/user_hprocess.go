@@ -20,7 +20,10 @@ func (hProcess HPROCESS) SetUserObjectInformation(
 	infoLen uintptr,
 ) error {
 	ret, _, err := syscall.SyscallN(_SetUserObjectInformationW.Addr(),
-		uintptr(hProcess), uintptr(index), uintptr(info), uintptr(infoLen))
+		uintptr(hProcess),
+		uintptr(index),
+		uintptr(info),
+		uintptr(infoLen))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

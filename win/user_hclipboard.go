@@ -193,7 +193,8 @@ func (HCLIPBOARD) SetClipboardData(format co.CF, data []byte) error {
 	copy(sliceMem, data)
 
 	ret, _, err := syscall.SyscallN(_SetClipboardData.Addr(),
-		uintptr(format), uintptr(hGlobal))
+		uintptr(format),
+		uintptr(hGlobal))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

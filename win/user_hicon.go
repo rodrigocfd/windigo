@@ -67,7 +67,8 @@ var _DestroyIcon = dll.User32.NewProc("DestroyIcon")
 func (hIcon HICON) GetIconInfo() (ICONINFO, error) {
 	var ii ICONINFO
 	ret, _, err := syscall.SyscallN(_GetIconInfo.Addr(),
-		uintptr(hIcon), uintptr(unsafe.Pointer(&ii)))
+		uintptr(hIcon),
+		uintptr(unsafe.Pointer(&ii)))
 	if ret == 0 {
 		return ICONINFO{}, co.ERROR(err)
 	}
@@ -86,7 +87,8 @@ func (hIcon HICON) GetIconInfoEx() (ICONINFOEX, error) {
 	ii.SetCbSize()
 
 	ret, _, _ := syscall.SyscallN(_GetIconInfoExW.Addr(),
-		uintptr(hIcon), uintptr(unsafe.Pointer(&ii)))
+		uintptr(hIcon),
+		uintptr(unsafe.Pointer(&ii)))
 	if ret == 0 {
 		return ICONINFOEX{}, co.ERROR_INVALID_PARAMETER
 	}

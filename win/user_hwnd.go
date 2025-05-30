@@ -38,10 +38,18 @@ func CreateWindowEx(
 	title16 := wstr.NewBufWith[wstr.Stack20](title, wstr.EMPTY_IS_NIL)
 
 	ret, _, err := syscall.SyscallN(_CreateWindowExW.Addr(),
-		uintptr(exStyle), classNameVal,
+		uintptr(exStyle),
+		classNameVal,
 		uintptr(title16.UnsafePtr()),
-		uintptr(style), uintptr(x), uintptr(y), uintptr(width), uintptr(height),
-		uintptr(parent), uintptr(menu), uintptr(instance), uintptr(param))
+		uintptr(style),
+		uintptr(int32(x)),
+		uintptr(int32(y)),
+		uintptr(int32(width)),
+		uintptr(int32(height)),
+		uintptr(parent),
+		uintptr(menu),
+		uintptr(instance),
+		uintptr(param))
 	if ret == 0 {
 		return HWND(0), co.ERROR(err)
 	}
@@ -138,7 +146,9 @@ var _GetShellWindow = dll.User32.NewProc("GetShellWindow")
 // [AnimateWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-animatewindow
 func (hWnd HWND) AnimateWindow(time uint, flags co.AW) error {
 	ret, _, err := syscall.SyscallN(_AnimateWindow.Addr(),
-		uintptr(hWnd), uintptr(time), uintptr(flags))
+		uintptr(hWnd),
+		uintptr(time),
+		uintptr(flags))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -159,7 +169,8 @@ var _AnimateWindow = dll.User32.NewProc("AnimateWindow")
 // [BeginPaint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint
 func (hWnd HWND) BeginPaint(ps *PAINTSTRUCT) (HDC, error) {
 	ret, _, _ := syscall.SyscallN(_BeginPaint.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(ps)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(ps)))
 	if ret == 0 {
 		return HDC(0), co.ERROR_INVALID_PARAMETER
 	}
@@ -184,7 +195,9 @@ var _BringWindowToTop = dll.User32.NewProc("BringWindowToTop")
 // [ChildWindowFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-childwindowfrompoint
 func (hWnd HWND) ChildWindowFromPoint(pt POINT) (HWND, bool) {
 	ret, _, _ := syscall.SyscallN(_ChildWindowFromPoint.Addr(),
-		uintptr(hWnd), uintptr(pt.X), uintptr(pt.Y))
+		uintptr(hWnd),
+		uintptr(pt.X),
+		uintptr(pt.Y))
 	if ret == 0 {
 		return HWND(0), false
 	}
@@ -198,7 +211,10 @@ var _ChildWindowFromPoint = dll.User32.NewProc("ChildWindowFromPoint")
 // [ChildWindowFromPointEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-childwindowfrompointex
 func (hWnd HWND) ChildWindowFromPointEx(pt POINT, flags co.CWP) (HWND, bool) {
 	ret, _, _ := syscall.SyscallN(_ChildWindowFromPointEx.Addr(),
-		uintptr(hWnd), uintptr(pt.X), uintptr(pt.Y), uintptr(flags))
+		uintptr(hWnd),
+		uintptr(pt.X),
+		uintptr(pt.Y),
+		uintptr(flags))
 	if ret == 0 {
 		return HWND(0), false
 	}
@@ -212,7 +228,8 @@ var _ChildWindowFromPointEx = dll.User32.NewProc("ChildWindowFromPointEx")
 // [ClientToScreen]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clienttoscreen
 func (hWnd HWND) ClientToScreenPt(pt *POINT) error {
 	ret, _, _ := syscall.SyscallN(_ClientToScreen.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(pt)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(pt)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -223,7 +240,8 @@ var _ClientToScreen = dll.User32.NewProc("ClientToScreen")
 // [ClientToScreen]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clienttoscreen
 func (hWnd HWND) ClientToScreenRc(rc *RECT) error {
 	ret, _, _ := syscall.SyscallN(_ClientToScreen.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(rc)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(rc)))
 	if ret == 0 {
 		return co.ERROR_INVALID_PARAMETER
 	}
@@ -251,7 +269,10 @@ var _CloseWindow = dll.User32.NewProc("CloseWindow")
 // [DefDlgProc]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-defdlgprocw
 func (hWnd HWND) DefDlgProc(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	ret, _, _ := syscall.SyscallN(_DefDlgProcW.Addr(),
-		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam))
+		uintptr(hWnd),
+		uintptr(msg),
+		uintptr(wParam),
+		uintptr(lParam))
 	return ret
 }
 
@@ -262,7 +283,10 @@ var _DefDlgProcW = dll.User32.NewProc("DefDlgProcW")
 // [DefWindowProc]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-defwindowprocw
 func (hWnd HWND) DefWindowProc(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	ret, _, _ := syscall.SyscallN(_DefWindowProcW.Addr(),
-		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam))
+		uintptr(hWnd),
+		uintptr(msg),
+		uintptr(wParam),
+		uintptr(lParam))
 	return ret
 }
 
@@ -309,7 +333,8 @@ var _EnableWindow = dll.User32.NewProc("EnableWindow")
 // [EndDialog]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enddialog
 func (hWnd HWND) EndDialog(result uintptr) error {
 	ret, _, err := syscall.SyscallN(_EndDialog.Addr(),
-		uintptr(hWnd), result)
+		uintptr(hWnd),
+		result)
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -322,7 +347,8 @@ var _EndDialog = dll.User32.NewProc("EndDialog")
 // [EndPaint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endpaint
 func (hWnd HWND) EndPaint(ps *PAINTSTRUCT) {
 	syscall.SyscallN(_EndPaint.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(ps)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(ps)))
 }
 
 var _EndPaint = dll.User32.NewProc("EndPaint")
@@ -336,7 +362,8 @@ func (hWnd HWND) EnumChildWindows() []HWND {
 	}
 
 	syscall.SyscallN(_EnumChildWindows.Addr(),
-		uintptr(hWnd), enumChildWindowsCallback(),
+		uintptr(hWnd),
+		enumChildWindowsCallback(),
 		uintptr(unsafe.Pointer(pPack)))
 	return pPack.arr
 }
@@ -372,7 +399,8 @@ func (hWnd HWND) ExStyle() (co.WS_EX, error) {
 // [GetAncestor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getancestor
 func (hWnd HWND) GetAncestor(gaFlags co.GA) (HWND, error) {
 	ret, _, err := syscall.SyscallN(_GetAncestor.Addr(),
-		uintptr(hWnd), uintptr(gaFlags))
+		uintptr(hWnd),
+		uintptr(gaFlags))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return HWND(0), wErr
 	}
@@ -387,7 +415,9 @@ var _GetAncestor = dll.User32.NewProc("GetAncestor")
 func (hWnd HWND) GetClassName() (string, error) {
 	var buf [256 + 1]uint16
 	ret, _, err := syscall.SyscallN(_GetClassNameW.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(int32(len(buf))))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return "", wErr
 	}
@@ -402,7 +432,8 @@ var _GetClassNameW = dll.User32.NewProc("GetClassNameW")
 func (hWnd HWND) GetClientRect() (RECT, error) {
 	var rc RECT
 	ret, _, err := syscall.SyscallN(_GetClientRect.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(&rc)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&rc)))
 	if ret == 0 {
 		return RECT{}, co.ERROR(err)
 	}
@@ -441,7 +472,9 @@ var _GetDC = dll.User32.NewProc("GetDC")
 // [GetDCEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdc
 func (hWnd HWND) GetDCEx(hRgnClip HRGN, flags co.DCX) (HDC, error) {
 	ret, _, _ := syscall.SyscallN(_GetDCEx.Addr(),
-		uintptr(hWnd), uintptr(hRgnClip), uintptr(flags))
+		uintptr(hWnd),
+		uintptr(hRgnClip),
+		uintptr(flags))
 	if ret == 0 {
 		return HDC(0), co.ERROR_INVALID_PARAMETER
 	}
@@ -469,7 +502,8 @@ var _GetDlgCtrlID = dll.User32.NewProc("GetDlgCtrlID")
 // [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func (hWnd HWND) GetDlgItem(dlgId uint16) (HWND, error) {
 	ret, _, err := syscall.SyscallN(_GetDlgItem.Addr(),
-		uintptr(hWnd), uintptr(dlgId))
+		uintptr(hWnd),
+		uintptr(int32(dlgId)))
 	if ret == 0 {
 		return HWND(0), co.ERROR(err)
 	}
@@ -505,7 +539,9 @@ var _GetMenu = dll.User32.NewProc("GetMenu")
 // [GetNextDlgGroupItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getnextdlggroupitem
 func (hWnd HWND) GetNextDlgGroupItem(hChild HWND, isPrevious bool) (HWND, error) {
 	ret, _, err := syscall.SyscallN(_GetNextDlgGroupItem.Addr(),
-		uintptr(hWnd), uintptr(hChild), utl.BoolToUintptr(isPrevious))
+		uintptr(hWnd),
+		uintptr(hChild),
+		utl.BoolToUintptr(isPrevious))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return HWND(0), wErr
 	}
@@ -519,7 +555,9 @@ var _GetNextDlgGroupItem = dll.User32.NewProc("GetNextDlgGroupItem")
 // [GetNextDlgTabItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getnextdlgtabitem
 func (hWnd HWND) GetNextDlgTabItem(hChild HWND, isPrevious bool) (HWND, error) {
 	ret, _, err := syscall.SyscallN(_GetNextDlgTabItem.Addr(),
-		uintptr(hWnd), uintptr(hChild), utl.BoolToUintptr(isPrevious))
+		uintptr(hWnd),
+		uintptr(hChild),
+		utl.BoolToUintptr(isPrevious))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return HWND(0), wErr
 	}
@@ -547,7 +585,8 @@ var _GetParent = dll.User32.NewProc("GetParent")
 // [GetWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindow
 func (hWnd HWND) GetWindow(cmd co.GW) (HWND, error) {
 	ret, _, err := syscall.SyscallN(_GetWindow.Addr(),
-		uintptr(hWnd), uintptr(cmd))
+		uintptr(hWnd),
+		uintptr(cmd))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return HWND(0), wErr
 	}
@@ -578,7 +617,8 @@ var _GetWindowDC = dll.User32.NewProc("GetWindowDC")
 func (hWnd HWND) GetWindowRect() (RECT, error) {
 	var rc RECT
 	ret, _, err := syscall.SyscallN(_GetWindowRect.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(&rc)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&rc)))
 	if ret == 0 {
 		return RECT{}, co.ERROR(err)
 	}
@@ -602,7 +642,9 @@ func (hWnd HWND) GetWindowText() (string, error) {
 	buf := wstr.NewBufSized[wstr.Stack64](bufSz)
 
 	ret, _, err := syscall.SyscallN(_GetWindowTextW.Addr(),
-		uintptr(hWnd), uintptr(buf.UnsafePtr()), uintptr(bufSz))
+		uintptr(hWnd),
+		uintptr(buf.UnsafePtr()),
+		uintptr(int32(bufSz)))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return "", wErr
 	}
@@ -640,7 +682,9 @@ func (hWnd HWND) HInstance() (HINSTANCE, error) {
 // [InvalidateRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invalidaterect
 func (hWnd HWND) InvalidateRect(rc *RECT, erase bool) error {
 	ret, _, _ := syscall.SyscallN(_InvalidateRect.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(rc)), utl.BoolToUintptr(erase))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(rc)),
+		utl.BoolToUintptr(erase))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -651,7 +695,8 @@ var _InvalidateRect = dll.User32.NewProc("InvalidateRect")
 // [IsChild]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-ischild
 func (hWnd HWND) IsChild(hChild HWND) bool {
 	ret, _, _ := syscall.SyscallN(_IsChild.Addr(),
-		uintptr(hWnd), uintptr(hChild))
+		uintptr(hWnd),
+		uintptr(hChild))
 	return ret != 0
 }
 
@@ -671,7 +716,8 @@ func (hWnd HWND) IsDialog() (bool, error) {
 // [IsDialogMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isdialogmessagew
 func (hWnd HWND) IsDialogMessage(msg *MSG) bool {
 	ret, _, _ := syscall.SyscallN(_IsDialogMessageW.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(msg)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(msg)))
 	return ret != 0
 }
 
@@ -693,7 +739,8 @@ var _IsWindow = dll.User32.NewProc("IsWindow")
 // [MapDialogRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mapdialogrect
 func (hWnd HWND) MapDialogRect(rc *RECT) error {
 	ret, _, err := syscall.SyscallN(_MapDialogRect.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(rc)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(rc)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -707,8 +754,10 @@ func (hWnd HWND) MessageBox(text, caption string, uType co.MB) (co.ID, error) {
 	caption16 := wstr.NewBufWith[wstr.Stack20](caption, wstr.EMPTY_IS_NIL)
 
 	ret, _, err := syscall.SyscallN(_MessageBoxW.Addr(),
-		uintptr(hWnd), uintptr(text16.UnsafePtr()),
-		uintptr(caption16.UnsafePtr()), uintptr(uType))
+		uintptr(hWnd),
+		uintptr(text16.UnsafePtr()),
+		uintptr(caption16.UnsafePtr()),
+		uintptr(uType))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return co.ID(0), wErr
 	}
@@ -722,7 +771,8 @@ var _MessageBoxW = dll.User32.NewProc("MessageBoxW")
 // [MonitorFromWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromwindow
 func (hWnd HWND) MonitorFromWindow(flags co.MONITOR) HMONITOR {
 	ret, _, _ := syscall.SyscallN(_MonitorFromWindow.Addr(),
-		uintptr(hWnd), uintptr(flags))
+		uintptr(hWnd),
+		uintptr(flags))
 	return HMONITOR(ret)
 }
 
@@ -733,7 +783,10 @@ var _MonitorFromWindow = dll.User32.NewProc("MonitorFromWindow")
 // [PostMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postmessagew
 func (hWnd HWND) PostMessage(msg co.WM, wParam WPARAM, lParam LPARAM) error {
 	ret, _, err := syscall.SyscallN(_PostMessageW.Addr(),
-		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam))
+		uintptr(hWnd),
+		uintptr(msg),
+		uintptr(wParam),
+		uintptr(lParam))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -744,8 +797,10 @@ var _PostMessageW = dll.User32.NewProc("PostMessageW")
 // [RedrawWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-redrawwindow
 func (hWnd HWND) RedrawWindow(rcUpdate *RECT, hrgnUpdate HRGN, flags co.RDW) error {
 	ret, _, _ := syscall.SyscallN(_RedrawWindow.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(rcUpdate)),
-		uintptr(hrgnUpdate), uintptr(flags))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(rcUpdate)),
+		uintptr(hrgnUpdate),
+		uintptr(flags))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -756,7 +811,8 @@ var _RedrawWindow = dll.User32.NewProc("RedrawWindow")
 // [ReleaseDC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-releasedc
 func (hWnd HWND) ReleaseDC(hdc HDC) error {
 	ret, _, _ := syscall.SyscallN(_ReleaseDC.Addr(),
-		uintptr(hWnd), uintptr(hdc))
+		uintptr(hWnd),
+		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -767,7 +823,8 @@ var _ReleaseDC = dll.User32.NewProc("ReleaseDC")
 // [ScreenToClient]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-screentoclient
 func (hWnd HWND) ScreenToClientPt(pt *POINT) error {
 	ret, _, _ := syscall.SyscallN(_ScreenToClient.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(pt)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(pt)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -778,13 +835,15 @@ var _ScreenToClient = dll.User32.NewProc("ScreenToClient")
 // [ScreenToClient]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-screentoclient
 func (hWnd HWND) ScreenToClientRc(rc *RECT) error {
 	ret, _, _ := syscall.SyscallN(_ScreenToClient.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(rc)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(rc)))
 	if ret == 0 {
 		return co.ERROR_INVALID_PARAMETER
 	}
 
 	ret, _, _ = syscall.SyscallN(_ScreenToClient.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(&rc.Right)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&rc.Right)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -793,7 +852,10 @@ func (hWnd HWND) ScreenToClientRc(rc *RECT) error {
 // [SendMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessagew
 func (hWnd HWND) SendMessage(msg co.WM, wParam WPARAM, lParam LPARAM) (uintptr, error) {
 	ret, _, err := syscall.SyscallN(_SendMessageW.Addr(),
-		uintptr(hWnd), uintptr(msg), uintptr(wParam), uintptr(lParam))
+		uintptr(hWnd),
+		uintptr(msg),
+		uintptr(wParam),
+		uintptr(lParam))
 	if wErr := co.ERROR(err); wErr == co.ERROR_ACCESS_DENIED {
 		return 0, wErr
 	}
@@ -837,7 +899,8 @@ var _SetForegroundWindow = dll.User32.NewProc("SetForegroundWindow")
 // [SetMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenu
 func (hWnd HWND) SetMenu(hMenu HMENU) error {
 	ret, _, err := syscall.SyscallN(_SetMenu.Addr(),
-		uintptr(hWnd), uintptr(hMenu))
+		uintptr(hWnd),
+		uintptr(hMenu))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -848,8 +911,12 @@ var _SetMenu = dll.User32.NewProc("SetMenu")
 // [SetWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
 func (hWnd HWND) SetWindowPos(hwndInsertAfter HWND, x, y int, cx, cy uint, flags co.SWP) error {
 	ret, _, err := syscall.SyscallN(_SetWindowPos.Addr(),
-		uintptr(hWnd), uintptr(hwndInsertAfter),
-		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy),
+		uintptr(hWnd),
+		uintptr(hwndInsertAfter),
+		uintptr(int32(x)),
+		uintptr(int32(y)),
+		uintptr(int32(cx)),
+		uintptr(int32(cy)),
 		uintptr(flags))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -861,7 +928,9 @@ var _SetWindowPos = dll.User32.NewProc("SetWindowPos")
 // [SetWindowRgn]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowrgn
 func (hWnd HWND) SetWindowRgn(hRgn HRGN, redraw bool) error {
 	ret, _, _ := syscall.SyscallN(_SetWindowRgn.Addr(),
-		uintptr(hWnd), uintptr(hRgn), utl.BoolToUintptr(redraw))
+		uintptr(hWnd),
+		uintptr(hRgn),
+		utl.BoolToUintptr(redraw))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -873,7 +942,8 @@ var _SetWindowRgn = dll.User32.NewProc("SetWindowRgn")
 func (hWnd HWND) SetWindowText(text string) {
 	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.EMPTY_IS_NIL)
 	syscall.SyscallN(_SetWindowTextW.Addr(),
-		uintptr(hWnd), uintptr(text16.UnsafePtr()))
+		uintptr(hWnd),
+		uintptr(text16.UnsafePtr()))
 }
 
 var _SetWindowTextW = dll.User32.NewProc("SetWindowTextW")
@@ -894,7 +964,8 @@ var _ShowCaret = dll.User32.NewProc("ShowCaret")
 // [ShowWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
 func (hWnd HWND) ShowWindow(cmdShow co.SW) bool {
 	ret, _, _ := syscall.SyscallN(_ShowWindow.Addr(),
-		uintptr(hWnd), uintptr(cmdShow))
+		uintptr(hWnd),
+		uintptr(cmdShow))
 	return ret != 0
 }
 
@@ -911,7 +982,9 @@ func (hWnd HWND) Style() (co.WS, error) {
 // [TranslateAccelerator]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translateacceleratorw
 func (hWnd HWND) TranslateAccelerator(hAccel HACCEL, msg *MSG) error {
 	ret, _, err := syscall.SyscallN(_TranslateAcceleratorW.Addr(),
-		uintptr(hWnd), uintptr(hAccel), uintptr(unsafe.Pointer(msg)))
+		uintptr(hWnd),
+		uintptr(hAccel),
+		uintptr(unsafe.Pointer(msg)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

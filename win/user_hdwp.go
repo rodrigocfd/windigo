@@ -40,8 +40,14 @@ func (hDwp HDWP) DeferWindowPos(
 	uFlags co.SWP,
 ) (HDWP, error) {
 	ret, _, err := syscall.SyscallN(_DeferWindowPos.Addr(),
-		uintptr(hDwp), uintptr(hWnd), uintptr(hwndInsertAfter),
-		uintptr(x), uintptr(y), uintptr(cx), uintptr(cy), uintptr(uFlags))
+		uintptr(hDwp),
+		uintptr(hWnd),
+		uintptr(hwndInsertAfter),
+		uintptr(int32(x)),
+		uintptr(int32(y)),
+		uintptr(int32(cx)),
+		uintptr(int32(cy)),
+		uintptr(uFlags))
 	if ret == 0 {
 		return HDWP(0), co.ERROR(err)
 	}

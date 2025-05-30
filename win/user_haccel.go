@@ -23,7 +23,8 @@ type HACCEL HANDLE
 // [CreateAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createacceleratortablew
 func CreateAcceleratorTable(accelList []ACCEL) (HACCEL, error) {
 	ret, _, err := syscall.SyscallN(_CreateAcceleratorTableW.Addr(),
-		uintptr(unsafe.Pointer(&accelList[0])), uintptr(len(accelList)))
+		uintptr(unsafe.Pointer(&accelList[0])),
+		uintptr(int32(len(accelList))))
 	if ret == 0 {
 		return HACCEL(0), co.ERROR(err)
 	}
@@ -37,7 +38,8 @@ var _CreateAcceleratorTableW = dll.User32.NewProc("CreateAcceleratorTableW")
 // [CopyAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyacceleratortablew
 func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
 	szRet, _, _ := syscall.SyscallN(_CopyAcceleratorTableW.Addr(),
-		uintptr(hAccel), 0, 0)
+		uintptr(hAccel),
+		0, 0)
 	if szRet == 0 {
 		return []ACCEL{}
 	}
