@@ -82,7 +82,9 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 
 	for {
 		ret, _, err := syscall.SyscallN(_GetModuleFileNameW.Addr(),
-			uintptr(hInst), uintptr(buf.UnsafePtr()), uintptr(buf.Len()))
+			uintptr(hInst),
+			uintptr(buf.UnsafePtr()),
+			uintptr(uint32(buf.Len())))
 		if ret == 0 {
 			return "", co.ERROR(err)
 		}

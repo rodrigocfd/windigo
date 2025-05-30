@@ -40,7 +40,8 @@ type HGLOBAL HANDLE
 // [GlobalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
 func GlobalAlloc(uFlags co.GMEM, numBytes uint) (HGLOBAL, error) {
 	ret, _, err := syscall.SyscallN(_GlobalAlloc.Addr(),
-		uintptr(uFlags), uintptr(numBytes))
+		uintptr(uFlags),
+		uintptr(numBytes))
 	if ret == 0 {
 		return HGLOBAL(0), co.ERROR(err)
 	}
@@ -153,7 +154,9 @@ func (hGlobal HGLOBAL) GlobalLockSlice() ([]byte, error) {
 // [GlobalReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalrealloc
 func (hGlobal HGLOBAL) GlobalReAlloc(numBytes uint, uFlags co.GMEM) (HGLOBAL, error) {
 	ret, _, err := syscall.SyscallN(_GlobalReAlloc.Addr(),
-		uintptr(hGlobal), uintptr(numBytes), uintptr(uFlags))
+		uintptr(hGlobal),
+		uintptr(numBytes),
+		uintptr(uFlags))
 	if ret == 0 {
 		return HGLOBAL(0), co.ERROR(err)
 	}

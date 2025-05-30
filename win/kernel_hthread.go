@@ -38,7 +38,8 @@ func (hThread HTHREAD) CloseHandle() error {
 func (hThread HTHREAD) GetExitCodeThread() (uint32, error) {
 	var exitCode uint32
 	ret, _, err := syscall.SyscallN(_GetExitCodeThread.Addr(),
-		uintptr(hThread), uintptr(unsafe.Pointer(&exitCode)))
+		uintptr(hThread),
+		uintptr(unsafe.Pointer(&exitCode)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
@@ -85,7 +86,8 @@ func (hThread HTHREAD) GetThreadTimes() (HthreadTimes, error) {
 	var ftUser FILETIME
 
 	ret, _, err := syscall.SyscallN(_GetThreadTimes.Addr(),
-		uintptr(hThread), uintptr(unsafe.Pointer(&ftCreation)),
+		uintptr(hThread),
+		uintptr(unsafe.Pointer(&ftCreation)),
 		uintptr(unsafe.Pointer(&ftExit)),
 		uintptr(unsafe.Pointer(&ftKernel)),
 		uintptr(unsafe.Pointer(&ftUser)))
@@ -130,7 +132,8 @@ var _ResumeThread = dll.Kernel32.NewProc("ResumeThread")
 // [TerminateThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread
 func (hThread HTHREAD) TerminateThread(exitCode uint32) error {
 	ret, _, err := syscall.SyscallN(_TerminateThread.Addr(),
-		uintptr(hThread), uintptr(exitCode))
+		uintptr(hThread),
+		uintptr(exitCode))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -157,7 +160,8 @@ var _SuspendThread = dll.Kernel32.NewProc("SuspendThread")
 // [WaitForSingleObject]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 func (hThread HTHREAD) WaitForSingleObject(milliseconds uint) (co.WAIT, error) {
 	ret, _, err := syscall.SyscallN(_WaitForSingleObject.Addr(),
-		uintptr(hThread), uintptr(milliseconds))
+		uintptr(hThread),
+		uintptr(milliseconds))
 	if co.WAIT(ret) == co.WAIT_FAILED {
 		return co.WAIT_FAILED, co.ERROR(err)
 	}

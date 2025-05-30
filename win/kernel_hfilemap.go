@@ -44,7 +44,9 @@ func (hMap HFILEMAP) MapViewOfFile(
 	}
 
 	ret, _, err := syscall.SyscallN(_MapViewOfFileFromApp.Addr(),
-		uintptr(hMap), uintptr(desiredAccess), uintptr(offset),
+		uintptr(hMap),
+		uintptr(desiredAccess),
+		uintptr(offset),
 		uintptr(numBytesToMap))
 	if ret == 0 {
 		return HFILEMAPVIEW(0), co.ERROR(err)
@@ -70,7 +72,8 @@ func (hMem HFILEMAPVIEW) Ptr() *byte {
 // [FlushViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-flushviewoffile
 func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes uint) error {
 	ret, _, err := syscall.SyscallN(_FlushViewOfFile.Addr(),
-		uintptr(hMem), uintptr(numBytes))
+		uintptr(hMem),
+		uintptr(numBytes))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

@@ -38,7 +38,8 @@ func CreateFile(
 
 	ret, _, err := syscall.SyscallN(_CreateFileW.Addr(),
 		uintptr(fileName16.UnsafePtr()),
-		uintptr(desiredAccess), uintptr(shareMode),
+		uintptr(desiredAccess),
+		uintptr(shareMode),
 		uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(creationDisposition),
 		uintptr(uint32(attributes)|uint32(flags)|uint32(security)),
@@ -65,7 +66,8 @@ func (hFile HFILE) CloseHandle() error {
 func (hFile HFILE) GetFileSizeEx() (uint, error) {
 	var retSz int64
 	ret, _, err := syscall.SyscallN(_GetFileSizeEx.Addr(),
-		uintptr(hFile), uintptr(unsafe.Pointer(&retSz)))
+		uintptr(hFile),
+		uintptr(unsafe.Pointer(&retSz)))
 
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return 0, wErr
@@ -87,11 +89,15 @@ func (hFile HFILE) CreateFileMapping(
 	maxSize uint,
 	objectName string,
 ) (HFILEMAP, error) {
+	maxLo, maxHi := utl.Break64(uint64(maxSize))
 	objectName16 := wstr.NewBufWith[wstr.Stack20](objectName, wstr.EMPTY_IS_NIL)
 
 	ret, _, err := syscall.SyscallN(_CreateFileMappingFromApp.Addr(),
-		uintptr(hFile), uintptr(unsafe.Pointer(securityAttributes)),
-		uintptr(uint32(protectPage)|uint32(protectSec)), uintptr(maxSize),
+		uintptr(hFile),
+		uintptr(unsafe.Pointer(securityAttributes)),
+		uintptr(uint32(protectPage)|uint32(protectSec)),
+		uintptr(maxHi),
+		uintptr(maxLo),
 		uintptr(objectName16.UnsafePtr()))
 	if ret == 0 {
 		return HFILEMAP(0), co.ERROR(err)
@@ -110,7 +116,8 @@ func (hFile HFILE) GetFileTime() (creation, lastAccess, lastWrite time.Time, wEr
 	var ftLastWrite FILETIME
 
 	ret, _, err := syscall.SyscallN(_GetFileTime.Addr(),
-		uintptr(hFile), uintptr(unsafe.Pointer(&ftCreation)),
+		uintptr(hFile),
+		uintptr(unsafe.Pointer(&ftCreation)),
 		uintptr(unsafe.Pointer(&ftLastAccess)),
 		uintptr(unsafe.Pointer(&ftLastWrite)))
 	if ret == 0 {
@@ -131,8 +138,11 @@ func (hFile HFILE) LockFile(offset, numBytes uint) error {
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 
 	ret, _, err := syscall.SyscallN(_LockFile.Addr(),
-		uintptr(hFile), uintptr(offsetLo), uintptr(offsetHi),
-		uintptr(numBytesLo), uintptr(numBytesHi))
+		uintptr(hFile),
+		uintptr(offsetLo),
+		uintptr(offsetHi),
+		uintptr(numBytesLo),
+		uintptr(numBytesHi))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -150,8 +160,11 @@ func (hFile HFILE) LockFileEx(
 ) error {
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 	ret, _, err := syscall.SyscallN(_LockFileEx.Addr(),
-		uintptr(hFile), uintptr(flags), 0,
-		uintptr(numBytesLo), uintptr(numBytesHi),
+		uintptr(hFile),
+		uintptr(flags),
+		0,
+		uintptr(numBytesLo),
+		uintptr(numBytesHi),
 		uintptr(unsafe.Pointer(overlapped)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -167,8 +180,10 @@ func (hFile HFILE) ReadFile(
 ) (numBytesRead uint, wErr error) {
 	var numBytesRead32 uint32
 	ret, _, err := syscall.SyscallN(_ReadFile.Addr(),
-		uintptr(hFile), uintptr(unsafe.Pointer(&buffer[0])),
-		uintptr(uint32(len(buffer))), uintptr(unsafe.Pointer(&numBytesRead32)),
+		uintptr(hFile),
+		uintptr(unsafe.Pointer(&buffer[0])),
+		uintptr(uint32(len(buffer))),
+		uintptr(unsafe.Pointer(&numBytesRead32)),
 		uintptr(unsafe.Pointer(overlapped)))
 
 	if wErr = co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
@@ -187,7 +202,6 @@ var _ReadFile = dll.Kernel32.NewProc("ReadFile")
 func (hFile HFILE) SetEndOfFile() error {
 	ret, _, err := syscall.SyscallN(_SetEndOfFile.Addr(),
 		uintptr(hFile))
-
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return err
 	}
@@ -206,8 +220,11 @@ func (hFile HFILE) UnlockFile(offset, numBytes uint) error {
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 
 	ret, _, err := syscall.SyscallN(_UnlockFile.Addr(),
-		uintptr(hFile), uintptr(offsetLo), uintptr(offsetHi),
-		uintptr(numBytesLo), uintptr(numBytesHi))
+		uintptr(hFile),
+		uintptr(offsetLo),
+		uintptr(offsetHi),
+		uintptr(numBytesLo),
+		uintptr(numBytesHi))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -221,7 +238,10 @@ var _UnlockFile = dll.Kernel32.NewProc("UnlockFile")
 func (hFile HFILE) UnlockFileEx(numBytes uint, overlapped *OVERLAPPED) error {
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 	ret, _, err := syscall.SyscallN(_UnlockFileEx.Addr(),
-		uintptr(hFile), 0, uintptr(numBytesLo), uintptr(numBytesHi),
+		uintptr(hFile),
+		0,
+		uintptr(numBytesLo),
+		uintptr(numBytesHi),
 		uintptr(unsafe.Pointer(overlapped)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -237,8 +257,10 @@ func (hFile HFILE) WriteFile(
 ) (numBytesWritten uint, wErr error) {
 	var numBytesWritten32 uint32
 	ret, _, err := syscall.SyscallN(_WriteFile.Addr(),
-		uintptr(hFile), uintptr(unsafe.Pointer(&data[0])),
-		uintptr(uint32(len(data))), uintptr(unsafe.Pointer(&numBytesWritten32)),
+		uintptr(hFile),
+		uintptr(unsafe.Pointer(&data[0])),
+		uintptr(uint32(len(data))),
+		uintptr(unsafe.Pointer(&numBytesWritten32)),
 		uintptr(unsafe.Pointer(overlapped)))
 
 	if wErr = co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {

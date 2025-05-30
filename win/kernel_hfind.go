@@ -30,7 +30,8 @@ func FindFirstFile(fileName string, findFileData *WIN32_FIND_DATA) (HFIND, bool,
 	fileName16 := wstr.NewBufWith[wstr.Stack20](fileName, wstr.EMPTY_IS_NIL)
 
 	ret, _, err := syscall.SyscallN(_FindFirstFileW.Addr(),
-		uintptr(fileName16.UnsafePtr()), uintptr(unsafe.Pointer(findFileData)))
+		uintptr(fileName16.UnsafePtr()),
+		uintptr(unsafe.Pointer(findFileData)))
 
 	if int(ret) == utl.INVALID_HANDLE_VALUE {
 		if wErr := co.ERROR(err); wErr == co.ERROR_FILE_NOT_FOUND || wErr == co.ERROR_PATH_NOT_FOUND {
@@ -66,7 +67,8 @@ var _FindClose = dll.Kernel32.NewProc("FindClose")
 // [FindNextFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
 func (hFind HFIND) FindNextFile(findFileData *WIN32_FIND_DATA) (bool, error) {
 	ret, _, err := syscall.SyscallN(_FindNextFileW.Addr(),
-		uintptr(hFind), uintptr(unsafe.Pointer(findFileData)))
+		uintptr(hFind),
+		uintptr(unsafe.Pointer(findFileData)))
 
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {

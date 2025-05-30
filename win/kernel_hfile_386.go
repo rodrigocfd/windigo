@@ -17,14 +17,17 @@ func (hFile HFILE) SetFilePointerEx(
 	distanceToMove int,
 	moveMethod co.FILE_FROM,
 ) (newPointerOffset int, wErr error) {
+	var newOff32 int32
 	ret, _, err := syscall.SyscallN(_SetFilePointer.Addr(),
-		uintptr(hFile), uintptr(distanceToMove),
-		uintptr(unsafe.Pointer(&newPointerOffset)), uintptr(moveMethod))
+		uintptr(hFile),
+		uintptr(int32(distanceToMove)),
+		uintptr(unsafe.Pointer(&newOff32)),
+		uintptr(moveMethod))
 
 	if wErr = co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
-		newPointerOffset = 0
+		return 0, wErr
 	} else {
-		wErr = nil
+		return int(newOff32), nil
 	}
 	return
 }

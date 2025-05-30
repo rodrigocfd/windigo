@@ -21,7 +21,8 @@ func CopyFile(existingFile, newFile string, failIfExists bool) error {
 	newFile16 := wstr.NewBufWith[wstr.Stack20](newFile, wstr.EMPTY_IS_NIL)
 
 	ret, _, err := syscall.SyscallN(_CopyFileW.Addr(),
-		uintptr(existingFile16.UnsafePtr()), uintptr(newFile16.UnsafePtr()),
+		uintptr(existingFile16.UnsafePtr()),
+		uintptr(newFile16.UnsafePtr()),
 		utl.BoolToUintptr(failIfExists))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -34,7 +35,8 @@ var _CopyFileW = dll.Kernel32.NewProc("CopyFileW")
 func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
 	pathName16 := wstr.NewBufWith[wstr.Stack20](pathName, wstr.EMPTY_IS_NIL)
 	ret, _, err := syscall.SyscallN(_CreateDirectoryW.Addr(),
-		uintptr(pathName16.UnsafePtr()), uintptr(unsafe.Pointer(securityAttributes)))
+		uintptr(pathName16.UnsafePtr()),
+		uintptr(unsafe.Pointer(securityAttributes)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -120,7 +122,8 @@ var _ExitProcess = dll.Kernel32.NewProc("ExitProcess")
 func ExpandEnvironmentStrings(s string) (string, error) {
 	s16 := wstr.NewBufWith[wstr.Stack260](s, wstr.ALLOW_EMPTY)
 	ret, _, err := syscall.SyscallN(_ExpandEnvironmentStringsW.Addr(),
-		uintptr(s16.UnsafePtr()), 0, 0)
+		uintptr(s16.UnsafePtr()),
+		0, 0)
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
@@ -132,7 +135,9 @@ func ExpandEnvironmentStrings(s string) (string, error) {
 		buf.Resize(szBuf)
 
 		ret, _, err = syscall.SyscallN(_ExpandEnvironmentStringsW.Addr(),
-			uintptr(s16.UnsafePtr()), uintptr(buf.UnsafePtr()), uintptr(szBuf))
+			uintptr(s16.UnsafePtr()),
+			uintptr(buf.UnsafePtr()),
+			uintptr(uint32(szBuf)))
 		if ret == 0 {
 			return "", co.ERROR(err)
 		}

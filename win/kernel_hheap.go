@@ -36,7 +36,9 @@ var _GetProcessHeap = dll.Kernel32.NewProc("GetProcessHeap")
 // [HeapCreate]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcreate
 func HeapCreate(options co.HEAP_CREATE, initialSize, maximumSize uint) (HHEAP, error) {
 	ret, _, err := syscall.SyscallN(_HeapCreate.Addr(),
-		uintptr(options), uintptr(initialSize), uintptr(maximumSize))
+		uintptr(options),
+		uintptr(initialSize),
+		uintptr(maximumSize))
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
@@ -58,7 +60,9 @@ var _HeapCreate = dll.Kernel32.NewProc("HeapCreate")
 // [HeapAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapalloc
 func (hHeap HHEAP) HeapAlloc(flags co.HEAP_ALLOC, numBytes uint) (unsafe.Pointer, error) {
 	ret, _, err := syscall.SyscallN(_HeapAlloc.Addr(),
-		uintptr(hHeap), uintptr(flags), uintptr(numBytes))
+		uintptr(hHeap),
+		uintptr(flags),
+		uintptr(numBytes))
 	if ret == 0 {
 		return nil, co.ERROR(err)
 	}
@@ -72,7 +76,8 @@ var _HeapAlloc = dll.Kernel32.NewProc("HeapAlloc")
 // [HeapCompact]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcompact
 func (hHeap HHEAP) HeapCompact(flags co.HEAP_NS) (uint, error) {
 	ret, _, err := syscall.SyscallN(_HeapCompact.Addr(),
-		uintptr(hHeap), uintptr(flags))
+		uintptr(hHeap),
+		uintptr(flags))
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
@@ -113,7 +118,9 @@ func (hHeap HHEAP) HeapFree(flags co.HEAP_NS, ptr unsafe.Pointer) error {
 	}
 
 	ret, _, err := syscall.SyscallN(_HeapFree.Addr(),
-		uintptr(hHeap), uintptr(flags), uintptr(ptr))
+		uintptr(hHeap),
+		uintptr(flags),
+		uintptr(ptr))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -145,7 +152,9 @@ func (hHeap HHEAP) HeapReAlloc(
 	}
 
 	ret, _, err := syscall.SyscallN(_HeapReAlloc.Addr(),
-		uintptr(hHeap), uintptr(flags), uintptr(ptr),
+		uintptr(hHeap),
+		uintptr(flags),
+		uintptr(ptr),
 		uintptr(numBytes))
 	if ret == 0 {
 		return nil, co.ERROR(err)
@@ -160,7 +169,9 @@ var _HeapReAlloc = dll.Kernel32.NewProc("HeapReAlloc")
 // [HeapSize]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapsize
 func (hHeap HHEAP) HeapSize(flags co.HEAP_NS, ptr unsafe.Pointer) (uint, error) {
 	ret, _, err := syscall.SyscallN(_HeapSize.Addr(),
-		uintptr(hHeap), uintptr(flags), uintptr(ptr))
+		uintptr(hHeap),
+		uintptr(flags),
+		uintptr(ptr))
 	if int64(ret) == -1 {
 		return 0, co.ERROR(err)
 	}
@@ -174,7 +185,9 @@ var _HeapSize = dll.Kernel32.NewProc("HeapSize")
 // [HeapValidate]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapvalidate
 func (hHeap HHEAP) HeapValidate(flags co.HEAP_NS, ptr unsafe.Pointer) bool {
 	ret, _, _ := syscall.SyscallN(_HeapValidate.Addr(),
-		uintptr(hHeap), uintptr(flags), uintptr(ptr))
+		uintptr(hHeap),
+		uintptr(flags),
+		uintptr(ptr))
 	return ret != 0
 }
 

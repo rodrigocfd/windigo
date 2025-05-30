@@ -29,7 +29,8 @@ type HPROCSNAP HANDLE
 // [CreateToolhelp32Snapshot]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-createtoolhelp32snapshot
 func CreateToolhelp32Snapshot(flags co.TH32CS, processId uint32) (HPROCSNAP, error) {
 	ret, _, err := syscall.SyscallN(_CreateToolhelp32Snapshot.Addr(),
-		uintptr(flags), uintptr(processId))
+		uintptr(flags),
+		uintptr(processId))
 	if int(ret) == utl.INVALID_HANDLE_VALUE {
 		return HPROCSNAP(0), co.ERROR(err)
 	}
@@ -142,7 +143,8 @@ func (hProcSnap HPROCSNAP) EnumThreads() ([]THREADENTRY32, error) {
 // [Module32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32firstw
 func (hProcSnap HPROCSNAP) Module32First(buf *MODULEENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(_Module32FirstW.Addr(),
-		uintptr(hProcSnap), uintptr(unsafe.Pointer(buf)))
+		uintptr(hProcSnap),
+		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended
@@ -162,7 +164,8 @@ var _Module32FirstW = dll.Kernel32.NewProc("Module32FirstW")
 // [Module32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32nextw
 func (hProcSnap HPROCSNAP) Module32Next(buf *MODULEENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(_Module32NextW.Addr(),
-		uintptr(hProcSnap), uintptr(unsafe.Pointer(buf)))
+		uintptr(hProcSnap),
+		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended
@@ -182,7 +185,8 @@ var _Module32NextW = dll.Kernel32.NewProc("Module32NextW")
 // [Process32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
 func (hProcSnap HPROCSNAP) Process32First(buf *PROCESSENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(_Process32FirstW.Addr(),
-		uintptr(hProcSnap), uintptr(unsafe.Pointer(buf)))
+		uintptr(hProcSnap),
+		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended
@@ -202,7 +206,8 @@ var _Process32FirstW = dll.Kernel32.NewProc("Process32FirstW")
 // [Process32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
 func (hProcSnap HPROCSNAP) Process32Next(buf *PROCESSENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(_Process32NextW.Addr(),
-		uintptr(hProcSnap), uintptr(unsafe.Pointer(buf)))
+		uintptr(hProcSnap),
+		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended
@@ -222,7 +227,8 @@ var _Process32NextW = dll.Kernel32.NewProc("Process32NextW")
 // [Thread32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32first
 func (hProcSnap HPROCSNAP) Thread32First(buf *THREADENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(_Thread32First.Addr(),
-		uintptr(hProcSnap), uintptr(unsafe.Pointer(buf)))
+		uintptr(hProcSnap),
+		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended
@@ -242,7 +248,8 @@ var _Thread32First = dll.Kernel32.NewProc("Thread32First")
 // [Thread32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32next
 func (hProcSnap HPROCSNAP) Thread32Next(buf *THREADENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(_Thread32Next.Addr(),
-		uintptr(hProcSnap), uintptr(unsafe.Pointer(buf)))
+		uintptr(hProcSnap),
+		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended

@@ -70,7 +70,7 @@ func ExtCreatePen(
 	}
 
 	ret, _, _ := syscall.SyscallN(_ExtCreatePen.Addr(),
-		uintptr(penType)|uintptr(penStyle)|uintptr(endCap),
+		uintptr(uint32(penType)|uint32(penStyle)|uint32(endCap)),
 		uintptr(width),
 		uintptr(unsafe.Pointer(brush)),
 		uintptr(nLens),
