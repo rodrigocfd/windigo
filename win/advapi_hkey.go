@@ -59,7 +59,8 @@ func RegConnectRegistry(machineName string, hKey HKEY) (HKEY, error) {
 	var openedKey HKEY
 
 	ret, _, _ := syscall.SyscallN(_RegConnectRegistryW.Addr(),
-		uintptr(machineName16.UnsafePtr()), uintptr(hKey),
+		uintptr(machineName16.UnsafePtr()),
+		uintptr(hKey),
 		uintptr(unsafe.Pointer(&openedKey)))
 
 	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
@@ -78,7 +79,8 @@ var _RegConnectRegistryW = dll.Advapi32.NewProc("RegConnectRegistryW")
 func RegOpenCurrentUser(accessRights co.KEY) (HKEY, error) {
 	var openedKey HKEY
 	ret, _, _ := syscall.SyscallN(_RegOpenCurrentUser.Addr(),
-		uintptr(accessRights), uintptr(unsafe.Pointer(&openedKey)))
+		uintptr(accessRights),
+		uintptr(unsafe.Pointer(&openedKey)))
 	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
 		return HKEY(0), wErr
 	}
@@ -104,7 +106,8 @@ var _RegCloseKey = dll.Advapi32.NewProc("RegCloseKey")
 func (hKey HKEY) RegCopyTree(subKey string, dest HKEY) error {
 	subKey16 := wstr.NewBufWith[wstr.Stack20](subKey, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(_RegCopyTreeW.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()))
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -125,8 +128,11 @@ func (hKey HKEY) RegCreateKeyEx(
 	var openedKey HKEY
 
 	ret, _, _ := syscall.SyscallN(_RegCreateKeyExW.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()), 0, 0,
-		uintptr(options), uintptr(accessRights),
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()),
+		0, 0,
+		uintptr(options),
+		uintptr(accessRights),
 		uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(unsafe.Pointer(&openedKey)))
 
@@ -144,7 +150,8 @@ var _RegCreateKeyExW = dll.Advapi32.NewProc("RegCreateKeyExW")
 func (hKey HKEY) RegDeleteKey(subKey string) error {
 	subKey16 := wstr.NewBufWith[wstr.Stack20](subKey, wstr.ALLOW_EMPTY)
 	ret, _, _ := syscall.SyscallN(_RegDeleteKeyW.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()))
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -158,8 +165,10 @@ var _RegDeleteKeyW = dll.Advapi32.NewProc("RegDeleteKeyW")
 func (hKey HKEY) RegDeleteKeyEx(subKey string, samDesired co.KEY) error {
 	subKey16 := wstr.NewBufWith[wstr.Stack20](subKey, wstr.ALLOW_EMPTY)
 	ret, _, _ := syscall.SyscallN(_RegDeleteKeyExW.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()),
-		uintptr(samDesired&(co.KEY_WOW64_32KEY|co.KEY_WOW64_64KEY)), 0)
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()),
+		uintptr(samDesired&(co.KEY_WOW64_32KEY|co.KEY_WOW64_64KEY)),
+		0)
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -173,7 +182,9 @@ func (hKey HKEY) RegDeleteKeyValue(subKey, valueName string) error {
 	valueName16 := wstr.NewBufWith[wstr.Stack20](valueName, wstr.EMPTY_IS_NIL)
 
 	ret, _, _ := syscall.SyscallN(_RegDeleteKeyValueW.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()), uintptr(valueName16.UnsafePtr()))
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()),
+		uintptr(valueName16.UnsafePtr()))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -185,7 +196,8 @@ var _RegDeleteKeyValueW = dll.Advapi32.NewProc("RegDeleteKeyValueW")
 func (hKey HKEY) RegDeleteTree(subKey string) error {
 	subKey16 := wstr.NewBufWith[wstr.Stack20](subKey, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(_RegDeleteTreeW.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()))
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -197,7 +209,8 @@ var _RegDeleteTreeW = dll.Advapi32.NewProc("RegDeleteTreeW")
 func (hKey HKEY) RegDeleteValue(valueName string) error {
 	valueName16 := wstr.NewBufWith[wstr.Stack20](valueName, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(_RegDeleteValueW.Addr(),
-		uintptr(hKey), uintptr(valueName16.UnsafePtr()))
+		uintptr(hKey),
+		uintptr(valueName16.UnsafePtr()))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -254,7 +267,8 @@ func (hKey HKEY) RegEnumKeyEx() ([]string, error) {
 		szKeyNameBuf := uint32(keyNameBuf.Len())
 
 		ret, _, _ := syscall.SyscallN(_RegEnumKeyExW.Addr(),
-			uintptr(hKey), uintptr(i),
+			uintptr(hKey),
+			uintptr(uint32(i)),
 			uintptr(keyNameBuf.UnsafePtr()),
 			uintptr(unsafe.Pointer(&szKeyNameBuf)),
 			0, 0, 0, 0)
@@ -299,7 +313,8 @@ func (hKey HKEY) RegEnumValue() ([]string, error) {
 		szValueNameBuf := uint32(valueNameBuf.Len())
 
 		ret, _, _ := syscall.SyscallN(_RegEnumValueW.Addr(),
-			uintptr(hKey), uintptr(i),
+			uintptr(hKey),
+			uintptr(uint32(i)),
 			uintptr(valueNameBuf.UnsafePtr()),
 			uintptr(unsafe.Pointer(&szValueNameBuf)),
 			0, 0, 0, 0)
@@ -350,8 +365,11 @@ func (hKey HKEY) RegGetValue(subKey, valueName string, flags co.RRF) (RegVal, er
 		var szDataBytes uint32
 
 		ret, _, _ := syscall.SyscallN(_RegGetValueW.Addr(), // 1st call to retrieve size only
-			uintptr(hKey), uintptr(subKey16.UnsafePtr()),
-			uintptr(valueName16.UnsafePtr()), uintptr(flags), 0, 0,
+			uintptr(hKey),
+			uintptr(subKey16.UnsafePtr()),
+			uintptr(valueName16.UnsafePtr()),
+			uintptr(flags),
+			0, 0,
 			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
@@ -362,9 +380,12 @@ func (hKey HKEY) RegGetValue(subKey, valueName string, flags co.RRF) (RegVal, er
 		var dataType uint32
 
 		ret, _, _ = syscall.SyscallN(_RegGetValueW.Addr(), // 2nd call to retrieve the data
-			uintptr(hKey), uintptr(subKey16.UnsafePtr()),
-			uintptr(valueName16.UnsafePtr()), uintptr(flags),
-			uintptr(unsafe.Pointer(&dataType)), uintptr(unsafe.Pointer(&dataBuf[0])),
+			uintptr(hKey),
+			uintptr(subKey16.UnsafePtr()),
+			uintptr(valueName16.UnsafePtr()),
+			uintptr(flags),
+			uintptr(unsafe.Pointer(&dataType)),
+			uintptr(unsafe.Pointer(&dataBuf[0])),
 			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr == co.ERROR_SUCCESS {
@@ -388,7 +409,9 @@ func (hKey HKEY) RegLoadKey(subKey, file string) error {
 	file16 := wstr.NewBufWith[wstr.Stack20](file, wstr.ALLOW_EMPTY)
 
 	ret, _, _ := syscall.SyscallN(_RegLoadKeyW.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()), uintptr(file16.UnsafePtr()))
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()),
+		uintptr(file16.UnsafePtr()))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -416,8 +439,11 @@ func (hKey HKEY) RegOpenKeyEx(
 	var openedKey HKEY
 
 	ret, _, _ := syscall.SyscallN(_RegOpenKeyExW.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()),
-		uintptr(options), uintptr(accessRights), uintptr(unsafe.Pointer(&openedKey)))
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()),
+		uintptr(options),
+		uintptr(accessRights),
+		uintptr(unsafe.Pointer(&openedKey)))
 
 	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
 		return HKEY(0), wErr
@@ -527,16 +553,23 @@ func (hKey HKEY) RegQueryMultipleValues(valueNames ...string) ([]RegVal, error) 
 	for {
 		var szDataBytes uint32
 		ret, _, _ := syscall.SyscallN(_RegQueryMultipleValuesW.Addr(), // 1st call to retrieve size only
-			uintptr(hKey), uintptr(unsafe.Pointer(&valents[0])), uintptr(len(valueNames)),
-			0, uintptr(unsafe.Pointer(&szDataBytes)))
+			uintptr(hKey),
+			uintptr(unsafe.Pointer(&valents[0])),
+			uintptr(uint32(len(valueNames))),
+			0,
+			uintptr(unsafe.Pointer(&szDataBytes)))
+
 		if wErr := co.ERROR(ret); wErr != co.ERROR_MORE_DATA {
 			return nil, wErr
 		}
 
 		dataBuf = make([]byte, szDataBytes)
 		ret, _, _ = syscall.SyscallN(_RegQueryMultipleValuesW.Addr(), // 2nd call to retrieve the data
-			uintptr(hKey), uintptr(unsafe.Pointer(&valents[0])), uintptr(len(valueNames)),
-			uintptr(unsafe.Pointer(&dataBuf[0])), uintptr(unsafe.Pointer(&szDataBytes)))
+			uintptr(hKey),
+			uintptr(unsafe.Pointer(&valents[0])),
+			uintptr(uint32(len(valueNames))),
+			uintptr(unsafe.Pointer(&dataBuf[0])),
+			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr == co.ERROR_SUCCESS {
 			dataBuf = dataBuf[:szDataBytes] // data length may have shrunk
@@ -565,7 +598,8 @@ var _RegQueryMultipleValuesW = dll.Advapi32.NewProc("RegQueryMultipleValuesW")
 func (hKey HKEY) RegQueryReflectionKey() (bool, error) {
 	var bVal int32 // BOOL
 	ret, _, _ := syscall.SyscallN(_RegQueryReflectionKey.Addr(),
-		uintptr(hKey), uintptr(unsafe.Pointer(&bVal)))
+		uintptr(hKey),
+		uintptr(unsafe.Pointer(&bVal)))
 	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
 		return false, wErr
 	}
@@ -597,8 +631,11 @@ func (hKey HKEY) RegQueryValueEx(valueName string) (RegVal, error) {
 	for {
 		var szDataBytes uint32
 		ret, _, _ := syscall.SyscallN(_RegQueryValueExW.Addr(), // 1st call to retrieve size only
-			uintptr(hKey), uintptr(valueName16.UnsafePtr()), 0, 0, 0,
+			uintptr(hKey),
+			uintptr(valueName16.UnsafePtr()),
+			0, 0, 0,
 			uintptr(unsafe.Pointer(&szDataBytes)))
+
 		if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
 			return RegVal{}, wErr
 		}
@@ -607,8 +644,11 @@ func (hKey HKEY) RegQueryValueEx(valueName string) (RegVal, error) {
 		var dataType uint32
 
 		ret, _, _ = syscall.SyscallN(_RegQueryValueExW.Addr(), // 2nd call to retrieve the data
-			uintptr(hKey), uintptr(valueName16.UnsafePtr()), 0,
-			uintptr(unsafe.Pointer(&dataType)), uintptr(unsafe.Pointer(&dataBuf[0])),
+			uintptr(hKey),
+			uintptr(valueName16.UnsafePtr()),
+			0,
+			uintptr(unsafe.Pointer(&dataType)),
+			uintptr(unsafe.Pointer(&dataBuf[0])),
 			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr == co.ERROR_SUCCESS {
@@ -632,7 +672,9 @@ func (hKey HKEY) RegRenameKey(subKey, newName string) error {
 	newName16 := wstr.NewBufWith[wstr.Stack20](newName, wstr.EMPTY_IS_NIL)
 
 	ret, _, _ := syscall.SyscallN(_RegRenameKey.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()), uintptr(newName16.UnsafePtr()))
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()),
+		uintptr(newName16.UnsafePtr()))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -647,8 +689,10 @@ func (hKey HKEY) RegReplaceKey(subKey, srcFile, destBackupFile string) error {
 	destBackupFile16 := wstr.NewBufWith[wstr.Stack20](destBackupFile, wstr.EMPTY_IS_NIL)
 
 	ret, _, _ := syscall.SyscallN(_RegReplaceKeyW.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()),
-		uintptr(srcFile16.UnsafePtr()), uintptr(destBackupFile16.UnsafePtr()))
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()),
+		uintptr(srcFile16.UnsafePtr()),
+		uintptr(destBackupFile16.UnsafePtr()))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -662,7 +706,9 @@ var _RegReplaceKeyW = dll.Advapi32.NewProc("RegReplaceKeyW")
 func (hKey HKEY) RegRestoreKey(srcFile string, flags co.REG_RESTORE) error {
 	srcFile16 := wstr.NewBufWith[wstr.Stack20](srcFile, wstr.ALLOW_EMPTY)
 	ret, _, _ := syscall.SyscallN(_RegRestoreKeyW.Addr(),
-		uintptr(hKey), uintptr(srcFile16.UnsafePtr()), uintptr(flags))
+		uintptr(hKey),
+		uintptr(srcFile16.UnsafePtr()),
+		uintptr(flags))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -676,7 +722,8 @@ var _RegRestoreKeyW = dll.Advapi32.NewProc("RegRestoreKeyW")
 func (hKey HKEY) RegSaveKey(destFile string, securityAttributes *SECURITY_ATTRIBUTES) error {
 	destFile16 := wstr.NewBufWith[wstr.Stack20](destFile, wstr.ALLOW_EMPTY)
 	ret, _, _ := syscall.SyscallN(_RegSaveKeyW.Addr(),
-		uintptr(hKey), uintptr(destFile16.UnsafePtr()),
+		uintptr(hKey),
+		uintptr(destFile16.UnsafePtr()),
 		uintptr(unsafe.Pointer(securityAttributes)))
 	return utl.ZeroAsSysError(ret)
 }
@@ -695,8 +742,10 @@ func (hKey HKEY) RegSaveKeyEx(
 ) error {
 	destFile16 := wstr.NewBufWith[wstr.Stack20](destFile, wstr.ALLOW_EMPTY)
 	ret, _, _ := syscall.SyscallN(_RegSaveKeyExW.Addr(),
-		uintptr(hKey), uintptr(destFile16.UnsafePtr()),
-		uintptr(unsafe.Pointer(securityAttributes)), uintptr(flags))
+		uintptr(hKey),
+		uintptr(destFile16.UnsafePtr()),
+		uintptr(unsafe.Pointer(securityAttributes)),
+		uintptr(flags))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -710,9 +759,12 @@ func (hKey HKEY) RegSetKeyValue(subKey, valueName string, data RegVal) error {
 	valueName16 := wstr.NewBufWith[wstr.Stack20](valueName, wstr.EMPTY_IS_NIL)
 
 	ret, _, _ := syscall.SyscallN(_RegSetKeyValueW.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()),
-		uintptr(valueName16.UnsafePtr()), uintptr(data.Type()),
-		uintptr(unsafe.Pointer(&data.data[0])), uintptr(uint32(len(data.data))))
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()),
+		uintptr(valueName16.UnsafePtr()),
+		uintptr(data.Type()),
+		uintptr(unsafe.Pointer(&data.data[0])),
+		uintptr(uint32(len(data.data))))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -724,8 +776,11 @@ var _RegSetKeyValueW = dll.Advapi32.NewProc("RegSetKeyValueW")
 func (hKey HKEY) RegSetValueEx(valueName string, data RegVal) error {
 	valueName16 := wstr.NewBufWith[wstr.Stack20](valueName, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(_RegSetValueExW.Addr(),
-		uintptr(hKey), uintptr(valueName16.UnsafePtr()), 0,
-		uintptr(data.Type()), uintptr(unsafe.Pointer(&data.data[0])),
+		uintptr(hKey),
+		uintptr(valueName16.UnsafePtr()),
+		0,
+		uintptr(data.Type()),
+		uintptr(unsafe.Pointer(&data.data[0])),
 		uintptr(uint32(len(data.data))))
 	return utl.ZeroAsSysError(ret)
 }
@@ -738,7 +793,8 @@ var _RegSetValueExW = dll.Advapi32.NewProc("RegSetValueExW")
 func (hKey HKEY) RegUnLoadKey(subKey string) error {
 	subKey16 := wstr.NewBufWith[wstr.Stack20](subKey, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(_RegUnLoadKeyW.Addr(),
-		uintptr(hKey), uintptr(subKey16.UnsafePtr()))
+		uintptr(hKey),
+		uintptr(subKey16.UnsafePtr()))
 	return utl.ZeroAsSysError(ret)
 }
 
