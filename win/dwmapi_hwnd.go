@@ -16,7 +16,8 @@ import (
 // [DwmExtendFrameIntoClientArea]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea
 func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) error {
 	ret, _, _ := syscall.SyscallN(_DwmExtendFrameIntoClientArea.Addr(),
-		uintptr(hWnd), uintptr(unsafe.Pointer(marginsInset)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(marginsInset)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -47,7 +48,10 @@ func (hWnd HWND) DwmGetWindowAttribute(attr co.DWMWA) (DwmAttr, error) {
 	}
 
 	ret, _, _ := syscall.SyscallN(_DwmGetWindowAttribute.Addr(),
-		uintptr(hWnd), uintptr(attr), uintptr(ptrBuf), szBuf)
+		uintptr(hWnd),
+		uintptr(attr),
+		uintptr(ptrBuf),
+		szBuf)
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return DwmAttr{}, hr
 	}
@@ -72,7 +76,9 @@ var _DwmInvalidateIconicBitmaps = dll.Dwmapi.NewProc("DwmInvalidateIconicBitmaps
 // [DwmSetIconicLivePreviewBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticoniclivepreviewbitmap
 func (hWnd HWND) DwmSetIconicLivePreviewBitmap(hBmp HBITMAP, ptClient POINT, sitFlags co.DWM_SIT) error {
 	ret, _, _ := syscall.SyscallN(_DwmSetIconicLivePreviewBitmap.Addr(),
-		uintptr(hWnd), uintptr(hBmp), uintptr(unsafe.Pointer(&ptClient)),
+		uintptr(hWnd),
+		uintptr(hBmp),
+		uintptr(unsafe.Pointer(&ptClient)),
 		uintptr(sitFlags))
 	return utl.ErrorAsHResult(ret)
 }
@@ -84,7 +90,9 @@ var _DwmSetIconicLivePreviewBitmap = dll.Dwmapi.NewProc("DwmSetIconicLivePreview
 // [DwmSetIconicThumbnail]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticonicthumbnail
 func (hWnd HWND) DwmSetIconicThumbnail(hBmp HBITMAP, sitFlags co.DWM_SIT) error {
 	ret, _, _ := syscall.SyscallN(_DwmSetIconicThumbnail.Addr(),
-		uintptr(hWnd), uintptr(hBmp), uintptr(sitFlags))
+		uintptr(hWnd),
+		uintptr(hBmp),
+		uintptr(sitFlags))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -113,7 +121,10 @@ func (hWnd HWND) DwmSetWindowAttribute(attr DwmAttr) error {
 	}
 
 	ret, _, _ := syscall.SyscallN(_DwmSetWindowAttribute.Addr(),
-		uintptr(hWnd), uintptr(attr.tag), uintptr(ptrBuf), szBuf)
+		uintptr(hWnd),
+		uintptr(attr.tag),
+		uintptr(ptrBuf),
+		szBuf)
 	return utl.ErrorAsHResult(ret)
 }
 

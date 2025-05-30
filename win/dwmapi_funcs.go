@@ -40,7 +40,8 @@ func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool, hr error) {
 	var bOpaque int32 // BOOL
 
 	ret, _, _ := syscall.SyscallN(_DwmGetColorizationColor.Addr(),
-		uintptr(unsafe.Pointer(&clr)), uintptr(unsafe.Pointer(&bOpaque)))
+		uintptr(unsafe.Pointer(&clr)),
+		uintptr(unsafe.Pointer(&bOpaque)))
 	if hr = co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return COLORREF(0), false, hr
 	}
