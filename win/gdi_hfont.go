@@ -40,12 +40,19 @@ func CreateFont(
 ) (HFONT, error) {
 	faceName16 := wstr.NewBufWith[wstr.Stack20](faceName, wstr.EMPTY_IS_NIL)
 	ret, _, _ := syscall.SyscallN(_CreateFontW.Addr(),
-		uintptr(height), uintptr(width), uintptr(escapement),
-		uintptr(orientation), uintptr(height),
-		utl.BoolToUintptr(italic), utl.BoolToUintptr(underline),
+		uintptr(int32(height)),
+		uintptr(int32(width)),
+		uintptr(int32(escapement)),
+		uintptr(int32(orientation)),
+		uintptr(int32(height)),
+		utl.BoolToUintptr(italic),
+		utl.BoolToUintptr(underline),
 		utl.BoolToUintptr(strikeOut),
-		uintptr(charSet), uintptr(outPrecision), uintptr(clipPrecision),
-		uintptr(quality), uintptr(pitchAndFamily),
+		uintptr(charSet),
+		uintptr(outPrecision),
+		uintptr(clipPrecision),
+		uintptr(quality),
+		uintptr(pitchAndFamily),
 		uintptr(faceName16.UnsafePtr()))
 	if ret == 0 {
 		return HFONT(0), co.ERROR_INVALID_PARAMETER

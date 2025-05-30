@@ -16,7 +16,9 @@ import (
 func AddFontResourceEx(name string, fl co.FR) (uint, error) {
 	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.ALLOW_EMPTY)
 	ret, _, _ := syscall.SyscallN(_AddFontResourceExW.Addr(),
-		uintptr(name16.UnsafePtr()), uintptr(fl), 0)
+		uintptr(name16.UnsafePtr()),
+		uintptr(fl),
+		0)
 	if ret == 0 {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}

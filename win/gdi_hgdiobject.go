@@ -51,7 +51,9 @@ var _DeleteObject = dll.Gdi32.NewProc("DeleteObject")
 // [GetObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
 func (hGdiObj HGDIOBJ) GetObject(szBuf uintptr, buf unsafe.Pointer) error {
 	ret, _, _ := syscall.SyscallN(_GetObjectW.Addr(),
-		uintptr(hGdiObj), szBuf, uintptr(buf))
+		uintptr(hGdiObj),
+		uintptr(int32(szBuf)),
+		uintptr(buf))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -62,7 +64,8 @@ var _GetObjectW = dll.Gdi32.NewProc("GetObjectW")
 // [SelectObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObject(hGdiObj HGDIOBJ) (HGDIOBJ, error) {
 	ret, _, _ := syscall.SyscallN(_SelectObject.Addr(),
-		uintptr(hdc), uintptr(hGdiObj))
+		uintptr(hdc),
+		uintptr(hGdiObj))
 	if ret == 0 {
 		return HGDIOBJ(0), co.ERROR_INVALID_PARAMETER
 	}

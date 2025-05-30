@@ -22,7 +22,9 @@ type HPEN HGDIOBJ
 // [CreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
 func CreatePen(style co.PS, width uint, color COLORREF) (HPEN, error) {
 	ret, _, _ := syscall.SyscallN(_CreatePen.Addr(),
-		uintptr(style), uintptr(width), uintptr(color))
+		uintptr(style),
+		uintptr(int32(width)),
+		uintptr(color))
 	if ret == 0 {
 		return HPEN(0), co.ERROR_INVALID_PARAMETER
 	}
@@ -69,8 +71,10 @@ func ExtCreatePen(
 
 	ret, _, _ := syscall.SyscallN(_ExtCreatePen.Addr(),
 		uintptr(penType)|uintptr(penStyle)|uintptr(endCap),
-		uintptr(width), uintptr(unsafe.Pointer(brush)),
-		uintptr(nLens), uintptr(pLens))
+		uintptr(width),
+		uintptr(unsafe.Pointer(brush)),
+		uintptr(nLens),
+		uintptr(pLens))
 	if ret == 0 {
 		return HPEN(0), co.ERROR_INVALID_PARAMETER
 	}

@@ -22,7 +22,10 @@ type HBITMAP HGDIOBJ
 // [CreateBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmap
 func CreateBitmap(width, height int, numPlanes, bitCount uint, bits []byte) (HBITMAP, error) {
 	ret, _, _ := syscall.SyscallN(_CreateBitmap.Addr(),
-		uintptr(width), uintptr(height), uintptr(numPlanes), uintptr(bitCount),
+		uintptr(int32(width)),
+		uintptr(int32(height)),
+		uintptr(uint32(numPlanes)),
+		uintptr(uint32(bitCount)),
 		uintptr(unsafe.Pointer(&bits[0])))
 	if ret == 0 {
 		return HBITMAP(0), co.ERROR_INVALID_PARAMETER
