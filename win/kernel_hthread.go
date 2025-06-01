@@ -91,6 +91,21 @@ func (hThread HTHREAD) GetThreadIdealProcessorEx() (PROCESSOR_NUMBER, error) {
 
 var _GetThreadIdealProcessorEx = dll.Kernel32.NewProc("GetThreadIdealProcessorEx")
 
+// [GetThreadIOPendingFlag] function.
+//
+// [GetThreadIOPendingFlag]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadiopendingflag
+func (hThread HTHREAD) GetThreadIOPendingFlag() (bool, error) {
+	var bVal int32 // BOOL
+	ret, _, err := syscall.SyscallN(_GetThreadIOPendingFlag.Addr(),
+		uintptr(hThread), uintptr(unsafe.Pointer(&bVal)))
+	if ret == 0 {
+		return false, co.ERROR(err)
+	}
+	return bVal != 0, nil
+}
+
+var _GetThreadIOPendingFlag = dll.Kernel32.NewProc("GetThreadIOPendingFlag")
+
 // [GetThreadTimes] function.
 //
 // [GetThreadTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadtimes
