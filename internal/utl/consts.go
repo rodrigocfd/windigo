@@ -15,15 +15,17 @@ const (
 
 // Internal constants for gdi.
 const (
-	CCHDEVICENAME     = 32
-	CCHFORMNAME       = 32
-	CLR_INVALID       = 0xffff_ffff
-	DM_SPECVERSION    = 0x0401
-	GDI_ERR           = 0xffff_ffff
-	HGDI_ERROR        = 0xffff_ffff
-	HIMETRIC_PER_INCH = 2540
-	LF_FACESIZE       = 32
-	REGION_ERROR      = 0
+	CCHDEVICENAME                = 32
+	CCHFORMNAME                  = 32
+	CLR_INVALID                  = 0xffff_ffff
+	DM_SPECVERSION               = 0x0401
+	GDI_ERR                      = 0xffff_ffff
+	HGDI_ERROR                   = 0xffff_ffff
+	HIMETRIC_PER_INCH            = 2540
+	LF_FACESIZE                  = 32
+	MAXLONG                      = 0x7fff_ffff
+	REGION_ERROR                 = 0
+	THREAD_PRIORITY_ERROR_RETURN = MAXLONG
 )
 
 // Internal constants for kernel.

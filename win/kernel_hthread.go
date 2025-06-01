@@ -82,7 +82,8 @@ var _GetThreadId = dll.Kernel32.NewProc("GetThreadId")
 func (hThread HTHREAD) GetThreadIdealProcessorEx() (PROCESSOR_NUMBER, error) {
 	var pi PROCESSOR_NUMBER
 	ret, _, err := syscall.SyscallN(_GetThreadIdealProcessorEx.Addr(),
-		uintptr(hThread), uintptr(unsafe.Pointer(&pi)))
+		uintptr(hThread),
+		uintptr(unsafe.Pointer(&pi)))
 	if ret == 0 {
 		return PROCESSOR_NUMBER{}, co.ERROR(err)
 	}
@@ -97,7 +98,8 @@ var _GetThreadIdealProcessorEx = dll.Kernel32.NewProc("GetThreadIdealProcessorEx
 func (hThread HTHREAD) GetThreadIOPendingFlag() (bool, error) {
 	var bVal int32 // BOOL
 	ret, _, err := syscall.SyscallN(_GetThreadIOPendingFlag.Addr(),
-		uintptr(hThread), uintptr(unsafe.Pointer(&bVal)))
+		uintptr(hThread),
+		uintptr(unsafe.Pointer(&bVal)))
 	if ret == 0 {
 		return false, co.ERROR(err)
 	}
@@ -105,6 +107,20 @@ func (hThread HTHREAD) GetThreadIOPendingFlag() (bool, error) {
 }
 
 var _GetThreadIOPendingFlag = dll.Kernel32.NewProc("GetThreadIOPendingFlag")
+
+// [GetThreadPriority] function.
+//
+// [GetThreadPriority]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadpriority
+func (hThread HTHREAD) GetThreadPriority() (co.THREAD_PRIORITY, error) {
+	ret, _, err := syscall.SyscallN(_GetThreadPriority.Addr(),
+		uintptr(hThread))
+	if ret == utl.THREAD_PRIORITY_ERROR_RETURN {
+		return co.THREAD_PRIORITY(0), co.ERROR(err)
+	}
+	return co.THREAD_PRIORITY(ret), nil
+}
+
+var _GetThreadPriority = dll.Kernel32.NewProc("GetThreadPriority")
 
 // [GetThreadTimes] function.
 //

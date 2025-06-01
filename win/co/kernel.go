@@ -1105,6 +1105,26 @@ const (
 	TH32CS_INHERIT      TH32CS = 0x8000_0000
 )
 
+// [GetThreadPriority] codes. Originally a DWORD.
+//
+// [GetThreadPriority]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadpriority
+type THREAD_PRIORITY int32
+
+const (
+	_THREAD_BASE_PRIORITY_LOWRT THREAD_PRIORITY = 15
+	_THREAD_BASE_PRIORITY_MAX   THREAD_PRIORITY = 2
+	_THREAD_BASE_PRIORITY_MIN   THREAD_PRIORITY = -2
+	_THREAD_BASE_PRIORITY_IDLE  THREAD_PRIORITY = -15
+
+	THREAD_PRIORITY_LOWEST                        = _THREAD_BASE_PRIORITY_MIN
+	THREAD_PRIORITY_BELOW_NORMAL                  = THREAD_PRIORITY_LOWEST + 1
+	THREAD_PRIORITY_NORMAL        THREAD_PRIORITY = 0
+	THREAD_PRIORITY_HIGHEST                       = _THREAD_BASE_PRIORITY_MAX
+	THREAD_PRIORITY_ABOVE_NORMAL                  = THREAD_PRIORITY_HIGHEST - 1
+	THREAD_PRIORITY_TIME_CRITICAL                 = _THREAD_BASE_PRIORITY_LOWRT
+	THREAD_PRIORITY_IDLE                          = _THREAD_BASE_PRIORITY_IDLE
+)
+
 // [GetTimeZoneInformation] return value.
 //
 // [GetTimeZoneInformation]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation
