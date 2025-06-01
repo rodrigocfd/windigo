@@ -1015,10 +1015,10 @@ const (
 	PM_REMOVE   PM = 0x0001
 	PM_NOYIELD  PM = 0x0002
 
-	PM_QS_INPUT       PM = PM(uint32(QS_INPUT) << 16)
-	PM_QS_PAINT       PM = PM(uint32(QS_PAINT) << 16)
-	PM_QS_POSTMESSAGE PM = PM(uint32(QS_POSTMESSAGE|QS_HOTKEY|QS_TIMER) << 16)
-	PM_QS_SENDMESSAGE PM = PM(uint32(QS_SENDMESSAGE) << 16)
+	PM_QS_INPUT       = PM(uint32(QS_INPUT) << 16)
+	PM_QS_PAINT       = PM(uint32(QS_PAINT) << 16)
+	PM_QS_POSTMESSAGE = PM(uint32(QS_POSTMESSAGE|QS_HOTKEY|QS_TIMER) << 16)
+	PM_QS_SENDMESSAGE = PM(uint32(QS_SENDMESSAGE) << 16)
 )
 
 // [RedrawWindow] flags.
@@ -1062,9 +1062,9 @@ const (
 	QS_RAWINPUT       QS = 0x0400
 	QS_TOUCH          QS = 0x0800
 	QS_POINTER        QS = 0x1000
-	QS_MOUSE          QS = QS_MOUSEMOVE | QS_MOUSEBUTTON
-	QS_INPUT          QS = QS_MOUSE | QS_KEY | QS_RAWINPUT | QS_TOUCH | QS_POINTER
-	QS_ALLINPUT       QS = QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY | QS_SENDMESSAGE
+	QS_MOUSE             = QS_MOUSEMOVE | QS_MOUSEBUTTON
+	QS_INPUT             = QS_MOUSE | QS_KEY | QS_RAWINPUT | QS_TOUCH | QS_POINTER
+	QS_ALLINPUT          = QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY | QS_SENDMESSAGE
 )
 
 // Resource [types].
@@ -1843,34 +1843,33 @@ type WS uint32
 
 const (
 	WS_NONE             WS = 0
-	WS_OVERLAPPED       WS = 0x0000_0000         // The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_TILED style.
-	WS_POPUP            WS = 0x8000_0000         // The window is a pop-up window. This style cannot be used with the WS_CHILD style.
-	WS_CHILD            WS = 0x4000_0000         // The window is a child window.
-	WS_MINIMIZE         WS = 0x2000_0000         // The window is initially minimized.
-	WS_VISIBLE          WS = 0x1000_0000         // The window is initially visible.
-	WS_DISABLED         WS = 0x0800_0000         // The window is initially disabled.
-	WS_CLIPSIBLINGS     WS = 0x0400_0000         // Clips child windows relative to each other.
-	WS_CLIPCHILDREN     WS = 0x0200_0000         // Excludes the area occupied by child windows when drawing occurs within the parent window. This style is used when creating the parent window.
-	WS_MAXIMIZE         WS = 0x0100_0000         // The window is initially maximized.
-	WS_CAPTION          WS = 0x00c0_0000         // The window has a title bar (includes the WS_BORDER style).
-	WS_BORDER           WS = 0x0080_0000         // The window has a thin-line border.
-	WS_DLGFRAME         WS = 0x0040_0000         // The window has a border of a style typically used with dialog boxes. A window with this style cannot have a title bar.
-	WS_VSCROLL          WS = 0x0020_0000         // The window has a vertical scroll bar.
-	WS_HSCROLL          WS = 0x0010_0000         // The window has a horizontal scroll bar.
-	WS_SYSMENU          WS = 0x0008_0000         // The window has a window menu on its title bar. The WS_CAPTION style must also be specified.
-	WS_THICKFRAME       WS = 0x0004_0000         // The window has a sizing border. Same as the WS_SIZEBOX style.
-	WS_GROUP            WS = 0x0002_0000         // The window is the first control of a group of controls.
-	WS_TABSTOP          WS = 0x0001_0000         // The window is a control that can receive the keyboard focus when the user presses the TAB key.
-	WS_MINIMIZEBOX      WS = 0x0002_0000         // The window has a minimize button.
-	WS_MAXIMIZEBOX      WS = 0x0001_0000         // The window has a maximize button.
-	WS_TILED            WS = WS_OVERLAPPED       // The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_OVERLAPPED style.
-	WS_ICONIC           WS = WS_MINIMIZE         // The window is initially minimized. Same as the WS_MINIMIZE style.
-	WS_SIZEBOX          WS = WS_THICKFRAME       // The window has a sizing border. Same as the WS_THICKFRAME style.
-	WS_TILEDWINDOW      WS = WS_OVERLAPPEDWINDOW // The window is an overlapped window. Same as the WS_OVERLAPPEDWINDOW style.
-	WS_OVERLAPPEDWINDOW WS = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU |
-		WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX // The window is an overlapped window. Same as the WS_TILEDWINDOW style.
-	WS_POPUPWINDOW WS = WS_POPUP | WS_BORDER | WS_SYSMENU // The window is a pop-up window. The WS_CAPTION and WS_POPUPWINDOW styles must be combined to make the window menu visible.
-	WS_CHILDWINDOW WS = WS_CHILD                          // Same as the WS_CHILD style.
+	WS_OVERLAPPED       WS = 0x0000_0000                                                                               // The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_TILED style.
+	WS_POPUP            WS = 0x8000_0000                                                                               // The window is a pop-up window. This style cannot be used with the WS_CHILD style.
+	WS_CHILD            WS = 0x4000_0000                                                                               // The window is a child window.
+	WS_MINIMIZE         WS = 0x2000_0000                                                                               // The window is initially minimized.
+	WS_VISIBLE          WS = 0x1000_0000                                                                               // The window is initially visible.
+	WS_DISABLED         WS = 0x0800_0000                                                                               // The window is initially disabled.
+	WS_CLIPSIBLINGS     WS = 0x0400_0000                                                                               // Clips child windows relative to each other.
+	WS_CLIPCHILDREN     WS = 0x0200_0000                                                                               // Excludes the area occupied by child windows when drawing occurs within the parent window. This style is used when creating the parent window.
+	WS_MAXIMIZE         WS = 0x0100_0000                                                                               // The window is initially maximized.
+	WS_CAPTION          WS = 0x00c0_0000                                                                               // The window has a title bar (includes the WS_BORDER style).
+	WS_BORDER           WS = 0x0080_0000                                                                               // The window has a thin-line border.
+	WS_DLGFRAME         WS = 0x0040_0000                                                                               // The window has a border of a style typically used with dialog boxes. A window with this style cannot have a title bar.
+	WS_VSCROLL          WS = 0x0020_0000                                                                               // The window has a vertical scroll bar.
+	WS_HSCROLL          WS = 0x0010_0000                                                                               // The window has a horizontal scroll bar.
+	WS_SYSMENU          WS = 0x0008_0000                                                                               // The window has a window menu on its title bar. The WS_CAPTION style must also be specified.
+	WS_THICKFRAME       WS = 0x0004_0000                                                                               // The window has a sizing border. Same as the WS_SIZEBOX style.
+	WS_GROUP            WS = 0x0002_0000                                                                               // The window is the first control of a group of controls.
+	WS_TABSTOP          WS = 0x0001_0000                                                                               // The window is a control that can receive the keyboard focus when the user presses the TAB key.
+	WS_MINIMIZEBOX      WS = 0x0002_0000                                                                               // The window has a minimize button.
+	WS_MAXIMIZEBOX      WS = 0x0001_0000                                                                               // The window has a maximize button.
+	WS_TILED               = WS_OVERLAPPED                                                                             // The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_OVERLAPPED style.
+	WS_ICONIC              = WS_MINIMIZE                                                                               // The window is initially minimized. Same as the WS_MINIMIZE style.
+	WS_SIZEBOX             = WS_THICKFRAME                                                                             // The window has a sizing border. Same as the WS_THICKFRAME style.
+	WS_TILEDWINDOW         = WS_OVERLAPPEDWINDOW                                                                       // The window is an overlapped window. Same as the WS_OVERLAPPEDWINDOW style.
+	WS_OVERLAPPEDWINDOW    = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX // The window is an overlapped window. Same as the WS_TILEDWINDOW style.
+	WS_POPUPWINDOW         = WS_POPUP | WS_BORDER | WS_SYSMENU                                                         // The window is a pop-up window. The WS_CAPTION and WS_POPUPWINDOW styles must be combined to make the window menu visible.
+	WS_CHILDWINDOW         = WS_CHILD                                                                                  // Same as the WS_CHILD style.
 )
 
 // Extended window [styles].
@@ -1899,8 +1898,8 @@ const (
 	WS_EX_CONTROLPARENT       WS_EX = 0x0001_0000
 	WS_EX_STATICEDGE          WS_EX = 0x0002_0000 // The window has a three-dimensional border style intended to be used for items that do not accept user input.
 	WS_EX_APPWINDOW           WS_EX = 0x0004_0000 // Forces a top-level window onto the taskbar when the window is visible.
-	WS_EX_OVERLAPPEDWINDOW    WS_EX = WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE
-	WS_EX_PALETTEWINDOW       WS_EX = WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST // The window is palette window, which is a modeless dialog box that presents an array of commands.
+	WS_EX_OVERLAPPEDWINDOW          = WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE
+	WS_EX_PALETTEWINDOW             = WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST // The window is palette window, which is a modeless dialog box that presents an array of commands.
 	WS_EX_LAYERED             WS_EX = 0x0008_0000
 	WS_EX_NOINHERITLAYOUT     WS_EX = 0x0010_0000 // The window does not pass its window layout to its child windows.
 	WS_EX_NOREDIRECTIONBITMAP WS_EX = 0x0020_0000
@@ -1922,6 +1921,6 @@ const (
 	WVR_ALIGNRIGHT  WVR = 0x0080
 	WVR_HREDRAW     WVR = 0x0100
 	WVR_VREDRAW     WVR = 0x0200
-	WVR_REDRAW      WVR = WVR_HREDRAW | WVR_VREDRAW
+	WVR_REDRAW          = WVR_HREDRAW | WVR_VREDRAW
 	WVR_VALIDRECTS  WVR = 0x0400
 )

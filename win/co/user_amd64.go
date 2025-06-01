@@ -19,6 +19,6 @@ const (
 	GWLP_USERDATA   GWLP = -21
 
 	GWLP_DWLP_MSGRESULT GWLP = 0                       // Originally with DWLP prefix.
-	GWLP_DWLP_DLGPROC   GWLP = GWLP_DWLP_MSGRESULT + 8 // Originally with DWLP prefix.
-	GWLP_DWLP_USER      GWLP = GWLP_DWLP_DLGPROC + 8   // Originally with DWLP prefix.
+	GWLP_DWLP_DLGPROC        = GWLP_DWLP_MSGRESULT + 8 // Originally with DWLP prefix.
+	GWLP_DWLP_USER           = GWLP_DWLP_DLGPROC + 8   // Originally with DWLP prefix.
 )
