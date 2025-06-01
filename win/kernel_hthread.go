@@ -122,6 +122,22 @@ func (hThread HTHREAD) GetThreadPriority() (co.THREAD_PRIORITY, error) {
 
 var _GetThreadPriority = dll.Kernel32.NewProc("GetThreadPriority")
 
+// [GetThreadPriorityBoost] function.
+//
+// [GetThreadPriorityBoost]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadpriorityboost
+func (hThread HTHREAD) GetThreadPriorityBoost() (bool, error) {
+	var bVal int32 // BOOL
+	ret, _, err := syscall.SyscallN(_GetThreadPriorityBoost.Addr(),
+		uintptr(hThread),
+		uintptr(unsafe.Pointer(&bVal)))
+	if ret == 0 {
+		return false, co.ERROR(err)
+	}
+	return bVal != 0, nil
+}
+
+var _GetThreadPriorityBoost = dll.Kernel32.NewProc("GetThreadPriorityBoost")
+
 // [GetThreadTimes] function.
 //
 // [GetThreadTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadtimes
