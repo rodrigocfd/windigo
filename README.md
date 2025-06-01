@@ -1,4 +1,4 @@
-[![Go Reference](https://pkg.go.dev/badge/github.com/rodrigocfd/windigo.svg)](https://pkg.go.dev/github.com/rodrigocfd/windigo@v0.2.0)
+[![Go Reference](https://pkg.go.dev/badge/github.com/rodrigocfd/windigo.svg)](https://pkg.go.dev/github.com/rodrigocfd/windigo)
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/rodrigocfd/windigo?style=flat-square&color=03a7ed)](https://github.com/rodrigocfd/windigo)
 [![Lines of code](https://tokei.rs/b1/github/rodrigocfd/windigo?label=LoC&style=flat-square)](https://github.com/rodrigocfd/windigo)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg?label=License&style=flat-square)](https://github.com/rodrigocfd/windigo/blob/master/LICENSE.md)
@@ -13,10 +13,8 @@ Notably, Windigo is written 100% in pure Go – CGo is **not** used, just native
 
 ## Install
 
-Version 0.2 is scheduled to be released in June 1st. Until there, you can pull straight from the master branch:
-
 ```
-go get github.com/rodrigocfd/windigo@master
+go get -u github.com/rodrigocfd/windigo
 ```
 
 ## Examples
