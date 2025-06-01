@@ -402,6 +402,15 @@ func (me *PROCESSENTRY32) SetSzExeFile(val string) {
 	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(me.szExeFile)-1)), me.szExeFile[:])
 }
 
+// [PROCESSOR_NUMBER] struct.
+//
+// [PROCESSOR_NUMBER]:
+type PROCESSOR_NUMBER struct {
+	Group    uint16
+	Number   uint8
+	reserved uint8
+}
+
 // [SECURITY_ATTRIBUTES] struct.
 //
 // ⚠️ You must call [SECURITY_ATTRIBUTES.SetNLength] to initialize the struct.

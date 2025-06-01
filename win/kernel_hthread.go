@@ -76,6 +76,21 @@ func (hThread HTHREAD) GetThreadId() (uint32, error) {
 
 var _GetThreadId = dll.Kernel32.NewProc("GetThreadId")
 
+// [GetThreadIdealProcessorEx] function.
+//
+// [GetThreadIdealProcessorEx]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadidealprocessorex
+func (hThread HTHREAD) GetThreadIdealProcessorEx() (PROCESSOR_NUMBER, error) {
+	var pi PROCESSOR_NUMBER
+	ret, _, err := syscall.SyscallN(_GetThreadIdealProcessorEx.Addr(),
+		uintptr(hThread), uintptr(unsafe.Pointer(&pi)))
+	if ret == 0 {
+		return PROCESSOR_NUMBER{}, co.ERROR(err)
+	}
+	return pi, nil
+}
+
+var _GetThreadIdealProcessorEx = dll.Kernel32.NewProc("GetThreadIdealProcessorEx")
+
 // [GetThreadTimes] function.
 //
 // [GetThreadTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadtimes
