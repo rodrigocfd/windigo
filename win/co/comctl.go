@@ -169,7 +169,7 @@ type HDI uint32
 
 const (
 	HDI_WIDTH      HDI = 0x0001
-	HDI_HEIGHT     HDI = HDI_WIDTH
+	HDI_HEIGHT         = HDI_WIDTH
 	HDI_TEXT       HDI = 0x0002
 	HDI_FORMAT     HDI = 0x0004
 	HDI_LPARAM     HDI = 0x0008
@@ -317,9 +317,9 @@ const (
 	ILD_SCALE         ILD = 0x0000_2000
 	ILD_DPISCALE      ILD = 0x0000_4000
 	ILD_ASYNC         ILD = 0x0000_8000
-	ILD_SELECTED      ILD = ILD_BLEND50
-	ILD_FOCUS         ILD = ILD_BLEND25
-	ILD_BLEND         ILD = ILD_BLEND50
+	ILD_SELECTED          = ILD_BLEND50
+	ILD_FOCUS             = ILD_BLEND25
+	ILD_BLEND             = ILD_BLEND50
 )
 
 // ImageList state [flags].

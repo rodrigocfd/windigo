@@ -41,7 +41,7 @@ func (me *IModalWindow) Show(hwndOwner win.HWND) (bool, error) {
 	} else if wErr == co.ERROR_CANCELLED {
 		return false, nil
 	} else {
-		return false, wErr.HResult()
+		return false, wErr.ToHresult()
 	}
 }
 

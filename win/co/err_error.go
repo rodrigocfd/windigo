@@ -38,7 +38,7 @@ func (err ERROR) String() string {
 // Converts the ordinary Windows error to an [HRESULT].
 //
 // [HRESULT]: https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/0642cb2f-2075-4469-918c-4441e69c548a
-func (err ERROR) HResult() HRESULT {
+func (err ERROR) ToHresult() HRESULT {
 	if int32(err) <= 0 {
 		return HRESULT(err)
 	} else {

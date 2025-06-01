@@ -127,7 +127,7 @@ const (
 	BS_MULTILINE       BS = 0x0000_2000
 	BS_NOTIFY          BS = 0x0000_4000 // Button will send BN_DISABLE, BN_PUSHED, BN_KILLFOCUS, BN_PAINT, BN_SETFOCUS, and BN_UNPUSHED notifications.
 	BS_FLAT            BS = 0x0000_8000
-	BS_RIGHTBUTTON     BS = BS_LEFTTEXT
+	BS_RIGHTBUTTON        = BS_LEFTTEXT
 )
 
 // [BroadcastSystemMessage] flags.
@@ -263,12 +263,12 @@ const (
 	COLOR_GRADIENTINACTIVECAPTION COLOR = 28
 	COLOR_MENUHILIGHT             COLOR = 29
 	COLOR_MENUBAR                 COLOR = 30
-	COLOR_DESKTOP                 COLOR = COLOR_BACKGROUND
-	COLOR_3DFACE                  COLOR = COLOR_BTNFACE
-	COLOR_3DSHADOW                COLOR = COLOR_BTNSHADOW
-	COLOR_3DHIGHLIGHT             COLOR = COLOR_BTNHIGHLIGHT
-	COLOR_3DHILIGHT               COLOR = COLOR_BTNHIGHLIGHT
-	COLOR_BTNHILIGHT              COLOR = COLOR_BTNHIGHLIGHT
+	COLOR_DESKTOP                       = COLOR_BACKGROUND
+	COLOR_3DFACE                        = COLOR_BTNFACE
+	COLOR_3DSHADOW                      = COLOR_BTNSHADOW
+	COLOR_3DHIGHLIGHT                   = COLOR_BTNHIGHLIGHT
+	COLOR_3DHILIGHT                     = COLOR_BTNHIGHLIGHT
+	COLOR_BTNHILIGHT                    = COLOR_BTNHIGHLIGHT
 )
 
 // Window class [styles].
@@ -424,18 +424,18 @@ const (
 	// Retrieves the parent window. This does not include the owner as it does
 	// with the win.HWND.GetParent() function.
 	GA_PARENT GA = 1
-	// Retrieves the root window by walking the chain of parent windows. Returns
-	// the closest parent with WS_OVERLAPPED or WS_POPUP.
+	// Retrieves the [root window] by walking the chain of parent windows.
+	// Returns the closest parent with WS_OVERLAPPED or WS_POPUP.
 	//
-	// https://groups.google.com/a/chromium.org/g/chromium-dev/c/Hirr_DkuZdw/m/N0pSoJBhAAAJ
+	// [root window]: https://groups.google.com/a/chromium.org/g/chromium-dev/c/Hirr_DkuZdw/m/N0pSoJBhAAAJ
 	GA_ROOT GA = 2
-	// Retrieves the owned root window by walking the chain of parent and owner
-	// windows returned by win.HWND.GetParent().
+	// Retrieves the [owned root window] by walking the chain of parent and
+	// owner windows returned by win.HWND.GetParent().
 	//
 	// Returns the furthest parent with WS_OVERLAPPED or WS_POPUP which usually
 	// is the main application window.
 	//
-	// https://groups.google.com/a/chromium.org/g/chromium-dev/c/Hirr_DkuZdw/m/N0pSoJBhAAAJ
+	// [owned root window]: https://groups.google.com/a/chromium.org/g/chromium-dev/c/Hirr_DkuZdw/m/N0pSoJBhAAAJ
 	GA_ROOTOWNER GA = 3
 )
 
@@ -519,7 +519,7 @@ const (
 	HT_CAPTION     HT = 2
 	HT_SYSMENU     HT = 3
 	HT_GROWBOX     HT = 4
-	HT_SIZE        HT = HT_GROWBOX
+	HT_SIZE           = HT_GROWBOX
 	HT_MENU        HT = 5
 	HT_HSCROLL     HT = 6
 	HT_VSCROLL     HT = 7
@@ -534,10 +534,10 @@ const (
 	HT_BOTTOMLEFT  HT = 16
 	HT_BOTTOMRIGHT HT = 17
 	HT_BORDER      HT = 18
-	HT_REDUCE      HT = HT_MINBUTTON
-	HT_ZOOM        HT = HT_MAXBUTTON
-	HT_SIZEFIRST   HT = HT_LEFT
-	HT_SIZELAST    HT = HT_BOTTOMRIGHT
+	HT_REDUCE         = HT_MINBUTTON
+	HT_ZOOM           = HT_MAXBUTTON
+	HT_SIZEFIRST      = HT_LEFT
+	HT_SIZELAST       = HT_BOTTOMRIGHT
 	HT_OBJECT      HT = 19
 	HT_CLOSE       HT = 20
 	HT_HELP        HT = 21
@@ -621,9 +621,9 @@ const (
 	IDI_ASTERISK    IDI = 32516
 	IDI_WINLOGO     IDI = 32517
 	IDI_SHIELD      IDI = 32518
-	IDI_WARNING     IDI = IDI_EXCLAMATION
-	IDI_ERROR       IDI = IDI_HAND
-	IDI_INFORMATION IDI = IDI_ASTERISK
+	IDI_WARNING         = IDI_EXCLAMATION
+	IDI_ERROR           = IDI_HAND
+	IDI_INFORMATION     = IDI_ASTERISK
 )
 
 // [LoadImage] type.
@@ -785,13 +785,13 @@ type MFS uint32
 
 const (
 	MFS_GRAYED    MFS = 0x0000_0003
-	MFS_DISABLED  MFS = MFS_GRAYED
-	MFS_CHECKED   MFS = MFS(MF_CHECKED)
-	MFS_HILITE    MFS = MFS(MF_HILITE)
-	MFS_ENABLED   MFS = MFS(MF_ENABLED)
-	MFS_UNCHECKED MFS = MFS(MF_UNCHECKED)
-	MFS_UNHILITE  MFS = MFS(MF_UNHILITE)
-	MFS_DEFAULT   MFS = MFS(MF_DEFAULT)
+	MFS_DISABLED      = MFS_GRAYED
+	MFS_CHECKED       = MFS(MF_CHECKED)
+	MFS_HILITE        = MFS(MF_HILITE)
+	MFS_ENABLED       = MFS(MF_ENABLED)
+	MFS_UNCHECKED     = MFS(MF_UNCHECKED)
+	MFS_UNHILITE      = MFS(MF_UNHILITE)
+	MFS_DEFAULT       = MFS(MF_DEFAULT)
 )
 
 // [MENUITEMINFO] fType.
@@ -800,15 +800,15 @@ const (
 type MFT uint32
 
 const (
-	MFT_STRING       MFT = MFT(MF_STRING)
-	MFT_BITMAP       MFT = MFT(MF_BITMAP)
-	MFT_MENUBARBREAK MFT = MFT(MF_MENUBARBREAK)
-	MFT_MENUBREAK    MFT = MFT(MF_MENUBREAK)
-	MFT_OWNERDRAW    MFT = MFT(MF_OWNERDRAW)
+	MFT_STRING           = MFT(MF_STRING)
+	MFT_BITMAP           = MFT(MF_BITMAP)
+	MFT_MENUBARBREAK     = MFT(MF_MENUBARBREAK)
+	MFT_MENUBREAK        = MFT(MF_MENUBREAK)
+	MFT_OWNERDRAW        = MFT(MF_OWNERDRAW)
 	MFT_RADIOCHECK   MFT = 0x0000_0200
-	MFT_SEPARATOR    MFT = MFT(MF_SEPARATOR)
+	MFT_SEPARATOR        = MFT(MF_SEPARATOR)
 	MFT_RIGHTORDER   MFT = 0x0000_2000
-	MFT_RIGHTJUSTIFY MFT = MFT(MF_RIGHTJUSTIFY)
+	MFT_RIGHTJUSTIFY     = MFT(MF_RIGHTJUSTIFY)
 )
 
 // [MENUITEMINFO] fMask.
@@ -1001,8 +1001,8 @@ const (
 type ODT_C uint32
 
 const (
-	ODT_C_LISTBOX  ODT_C = ODT_C(ODT_LISTBOX)
-	ODT_C_COMBOBOX ODT_C = ODT_C(ODT_COMBOBOX)
+	ODT_C_LISTBOX  = ODT_C(ODT_LISTBOX)
+	ODT_C_COMBOBOX = ODT_C(ODT_COMBOBOX)
 )
 
 // [PeekMessage] wRemoveMsg.
@@ -1215,10 +1215,10 @@ const (
 	SM_PENWINDOWS                  SM = 41
 	SM_DBCSENABLED                 SM = 42
 	SM_CMOUSEBUTTONS               SM = 43
-	SM_CXFIXEDFRAME                SM = SM_CXDLGFRAME
-	SM_CYFIXEDFRAME                SM = SM_CYDLGFRAME
-	SM_CXSIZEFRAME                 SM = SM_CXFRAME
-	SM_CYSIZEFRAME                 SM = SM_CYFRAME
+	SM_CXFIXEDFRAME                   = SM_CXDLGFRAME
+	SM_CYFIXEDFRAME                   = SM_CYDLGFRAME
+	SM_CXSIZEFRAME                    = SM_CXFRAME
+	SM_CYSIZEFRAME                    = SM_CYFRAME
 	SM_SECURE                      SM = 44
 	SM_CXEDGE                      SM = 45
 	SM_CYEDGE                      SM = 46
@@ -1354,7 +1354,7 @@ const (
 	SPI_SETMOUSETRAILS              SPI = 0x005d
 	SPI_GETMOUSETRAILS              SPI = 0x005e
 	SPI_SETSCREENSAVERRUNNING       SPI = 0x0061
-	SPI_SCREENSAVERRUNNING          SPI = SPI_SETSCREENSAVERRUNNING
+	SPI_SCREENSAVERRUNNING              = SPI_SETSCREENSAVERRUNNING
 	SPI_GETFILTERKEYS               SPI = 0x0032
 	SPI_SETFILTERKEYS               SPI = 0x0033
 	SPI_GETTOGGLEKEYS               SPI = 0x0034
@@ -1431,7 +1431,7 @@ type SPIF uint32
 const (
 	SPIF_UPDATEINIFILE    SPIF = 1
 	SPIF_SENDWININICHANGE SPIF = 2
-	SPIF_SENDCHANGE       SPIF = SPIF_SENDWININICHANGE
+	SPIF_SENDCHANGE            = SPIF_SENDWININICHANGE
 )
 
 // Static control [styles].
@@ -1513,8 +1513,8 @@ const (
 	SWP_NOCOPYBITS     SWP = 0x0100
 	SWP_NOOWNERZORDER  SWP = 0x0200
 	SWP_NOSENDCHANGING SWP = 0x0400
-	SWP_DRAWFRAME      SWP = SWP_FRAMECHANGED
-	SWP_NOREPOSITION   SWP = SWP_NOOWNERZORDER
+	SWP_DRAWFRAME          = SWP_FRAMECHANGED
+	SWP_NOREPOSITION       = SWP_NOOWNERZORDER
 	SWP_DEFERERASE     SWP = 0x2000
 	SWP_ASYNCWINDOWPOS SWP = 0x4000
 )
@@ -1811,13 +1811,13 @@ const (
 type WMPN uint16
 
 const (
-	WMPN_CREATE      WMPN = WMPN(WM_CREATE)
-	WMPN_DESTROY     WMPN = WMPN(WM_DESTROY)
-	WMPN_LBUTTONDOWN WMPN = WMPN(WM_LBUTTONDOWN)
-	WMPN_MBUTTONDOWN WMPN = WMPN(WM_MBUTTONDOWN)
-	WMPN_RBUTTONDOWN WMPN = WMPN(WM_RBUTTONDOWN)
-	WMPN_XBUTTONDOWN WMPN = WMPN(WM_XBUTTONDOWN)
-	WMPN_POINTERDOWN WMPN = WMPN(WM_POINTERDOWN)
+	WMPN_CREATE      = WMPN(WM_CREATE)
+	WMPN_DESTROY     = WMPN(WM_DESTROY)
+	WMPN_LBUTTONDOWN = WMPN(WM_LBUTTONDOWN)
+	WMPN_MBUTTONDOWN = WMPN(WM_MBUTTONDOWN)
+	WMPN_RBUTTONDOWN = WMPN(WM_RBUTTONDOWN)
+	WMPN_XBUTTONDOWN = WMPN(WM_XBUTTONDOWN)
+	WMPN_POINTERDOWN = WMPN(WM_POINTERDOWN)
 )
 
 // [WM_SIZING] window edge.
@@ -1842,34 +1842,35 @@ const (
 type WS uint32
 
 const (
-	WS_NONE             WS = 0
-	WS_OVERLAPPED       WS = 0x0000_0000                                                                               // The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_TILED style.
-	WS_POPUP            WS = 0x8000_0000                                                                               // The window is a pop-up window. This style cannot be used with the WS_CHILD style.
-	WS_CHILD            WS = 0x4000_0000                                                                               // The window is a child window.
-	WS_MINIMIZE         WS = 0x2000_0000                                                                               // The window is initially minimized.
-	WS_VISIBLE          WS = 0x1000_0000                                                                               // The window is initially visible.
-	WS_DISABLED         WS = 0x0800_0000                                                                               // The window is initially disabled.
-	WS_CLIPSIBLINGS     WS = 0x0400_0000                                                                               // Clips child windows relative to each other.
-	WS_CLIPCHILDREN     WS = 0x0200_0000                                                                               // Excludes the area occupied by child windows when drawing occurs within the parent window. This style is used when creating the parent window.
-	WS_MAXIMIZE         WS = 0x0100_0000                                                                               // The window is initially maximized.
-	WS_CAPTION          WS = 0x00c0_0000                                                                               // The window has a title bar (includes the WS_BORDER style).
-	WS_BORDER           WS = 0x0080_0000                                                                               // The window has a thin-line border.
-	WS_DLGFRAME         WS = 0x0040_0000                                                                               // The window has a border of a style typically used with dialog boxes. A window with this style cannot have a title bar.
-	WS_VSCROLL          WS = 0x0020_0000                                                                               // The window has a vertical scroll bar.
-	WS_HSCROLL          WS = 0x0010_0000                                                                               // The window has a horizontal scroll bar.
-	WS_SYSMENU          WS = 0x0008_0000                                                                               // The window has a window menu on its title bar. The WS_CAPTION style must also be specified.
-	WS_THICKFRAME       WS = 0x0004_0000                                                                               // The window has a sizing border. Same as the WS_SIZEBOX style.
-	WS_GROUP            WS = 0x0002_0000                                                                               // The window is the first control of a group of controls.
-	WS_TABSTOP          WS = 0x0001_0000                                                                               // The window is a control that can receive the keyboard focus when the user presses the TAB key.
-	WS_MINIMIZEBOX      WS = 0x0002_0000                                                                               // The window has a minimize button.
-	WS_MAXIMIZEBOX      WS = 0x0001_0000                                                                               // The window has a maximize button.
-	WS_TILED               = WS_OVERLAPPED                                                                             // The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_OVERLAPPED style.
-	WS_ICONIC              = WS_MINIMIZE                                                                               // The window is initially minimized. Same as the WS_MINIMIZE style.
-	WS_SIZEBOX             = WS_THICKFRAME                                                                             // The window has a sizing border. Same as the WS_THICKFRAME style.
-	WS_TILEDWINDOW         = WS_OVERLAPPEDWINDOW                                                                       // The window is an overlapped window. Same as the WS_OVERLAPPEDWINDOW style.
-	WS_OVERLAPPEDWINDOW    = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX // The window is an overlapped window. Same as the WS_TILEDWINDOW style.
-	WS_POPUPWINDOW         = WS_POPUP | WS_BORDER | WS_SYSMENU                                                         // The window is a pop-up window. The WS_CAPTION and WS_POPUPWINDOW styles must be combined to make the window menu visible.
-	WS_CHILDWINDOW         = WS_CHILD                                                                                  // Same as the WS_CHILD style.
+	WS_NONE         WS = 0
+	WS_OVERLAPPED   WS = 0x0000_0000 // The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_TILED style.
+	WS_POPUP        WS = 0x8000_0000 // The window is a pop-up window. This style cannot be used with the WS_CHILD style.
+	WS_CHILD        WS = 0x4000_0000 // The window is a child window.
+	WS_MINIMIZE     WS = 0x2000_0000 // The window is initially minimized.
+	WS_VISIBLE      WS = 0x1000_0000 // The window is initially visible.
+	WS_DISABLED     WS = 0x0800_0000 // The window is initially disabled.
+	WS_CLIPSIBLINGS WS = 0x0400_0000 // Clips child windows relative to each other.
+	WS_CLIPCHILDREN WS = 0x0200_0000 // Excludes the area occupied by child windows when drawing occurs within the parent window. This style is used when creating the parent window.
+	WS_MAXIMIZE     WS = 0x0100_0000 // The window is initially maximized.
+	WS_CAPTION      WS = 0x00c0_0000 // The window has a title bar (includes the WS_BORDER style).
+	WS_BORDER       WS = 0x0080_0000 // The window has a thin-line border.
+	WS_DLGFRAME     WS = 0x0040_0000 // The window has a border of a style typically used with dialog boxes. A window with this style cannot have a title bar.
+	WS_VSCROLL      WS = 0x0020_0000 // The window has a vertical scroll bar.
+	WS_HSCROLL      WS = 0x0010_0000 // The window has a horizontal scroll bar.
+	WS_SYSMENU      WS = 0x0008_0000 // The window has a window menu on its title bar. The WS_CAPTION style must also be specified.
+	WS_THICKFRAME   WS = 0x0004_0000 // The window has a sizing border. Same as the WS_SIZEBOX style.
+	WS_GROUP        WS = 0x0002_0000 // The window is the first control of a group of controls.
+	WS_TABSTOP      WS = 0x0001_0000 // The window is a control that can receive the keyboard focus when the user presses the TAB key.
+	WS_MINIMIZEBOX  WS = 0x0002_0000 // The window has a minimize button.
+	WS_MAXIMIZEBOX  WS = 0x0001_0000 // The window has a maximize button.
+
+	WS_TILED            = WS_OVERLAPPED                                                                             // The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_OVERLAPPED style.
+	WS_ICONIC           = WS_MINIMIZE                                                                               // The window is initially minimized. Same as the WS_MINIMIZE style.
+	WS_SIZEBOX          = WS_THICKFRAME                                                                             // The window has a sizing border. Same as the WS_THICKFRAME style.
+	WS_TILEDWINDOW      = WS_OVERLAPPEDWINDOW                                                                       // The window is an overlapped window. Same as the WS_OVERLAPPEDWINDOW style.
+	WS_OVERLAPPEDWINDOW = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX // The window is an overlapped window. Same as the WS_TILEDWINDOW style.
+	WS_POPUPWINDOW      = WS_POPUP | WS_BORDER | WS_SYSMENU                                                         // The window is a pop-up window. The WS_CAPTION and WS_POPUPWINDOW styles must be combined to make the window menu visible.
+	WS_CHILDWINDOW      = WS_CHILD                                                                                  // Same as the WS_CHILD style.
 )
 
 // Extended window [styles].

@@ -8,27 +8,15 @@ package co
 type KEY uint32
 
 const (
-	// Required to query the values of a registry key.
-	KEY_QUERY_VALUE KEY = 0x0001
-	// Required to create, delete, or set a registry value.
-	KEY_SET_VALUE KEY = 0x0002
-	// Required to create a subkey of a registry key.
-	KEY_CREATE_SUB_KEY KEY = 0x0004
-	// Required to enumerate the subkeys of a registry key.
-	KEY_ENUMERATE_SUB_KEYS KEY = 0x0008
-	// Required to request change notifications for a registry key or for
-	// subkeys of a registry key.
-	KEY_NOTIFY KEY = 0x0010
-	// Reserved for system use.
-	KEY_CREATE_LINK KEY = 0x0020
-	// Indicates that an application on 64-bit Windows should operate on the
-	// 32-bit registry view.
-	KEY_WOW64_32KEY KEY = 0x0200
-	// Indicates that an application on 64-bit Windows should operate on the
-	// 64-bit registry view.
-	KEY_WOW64_64KEY KEY = 0x0100
-	// Undocumented flag.
-	KEY_WOW64_RES KEY = 0x0300
+	KEY_QUERY_VALUE        KEY = 0x0001 // Required to query the values of a registry key.
+	KEY_SET_VALUE          KEY = 0x0002 // Required to create, delete, or set a registry value.
+	KEY_CREATE_SUB_KEY     KEY = 0x0004 // Required to create a subkey of a registry key.
+	KEY_ENUMERATE_SUB_KEYS KEY = 0x0008 // Required to enumerate the subkeys of a registry key.
+	KEY_NOTIFY             KEY = 0x0010 // Required to request change notifications for a registry key or for subkeys of a registry key.
+	KEY_CREATE_LINK        KEY = 0x0020 // Reserved for system use.
+	KEY_WOW64_32KEY        KEY = 0x0200 // Indicates that an application on 64-bit Windows should operate on the 32-bit registry view.
+	KEY_WOW64_64KEY        KEY = 0x0100 // Indicates that an application on 64-bit Windows should operate on the 64-bit registry view.
+	KEY_WOW64_RES          KEY = 0x0300 // Undocumented flag.
 
 	// Combines the STANDARD_RIGHTS_READ, KEY_QUERY_VALUE,
 	// KEY_ENUMERATE_SUB_KEYS, and KEY_NOTIFY values.
