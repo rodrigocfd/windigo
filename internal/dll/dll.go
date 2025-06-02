@@ -14,6 +14,7 @@ var (
 	Kernel32 = syscall.NewLazyDLL("kernel32.dll")
 	Ole32    = syscall.NewLazyDLL("ole32.dll")
 	Oleaut32 = syscall.NewLazyDLL("oleaut32.dll")
+	Psapi    = syscall.NewLazyDLL("psapi.dll")
 	Shell32  = syscall.NewLazyDLL("shell32.dll")
 	Shlwapi  = syscall.NewLazyDLL("shlwapi")
 	User32   = syscall.NewLazyDLL("user32.dll")

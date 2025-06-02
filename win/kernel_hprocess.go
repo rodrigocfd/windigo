@@ -67,24 +67,6 @@ func (hProcess HPROCESS) GetExitCodeProcess() (uint32, error) {
 
 var _GetExitCodeProcess = dll.Kernel32.NewProc("GetExitCodeProcess")
 
-// [GetModuleBaseName] function.
-//
-// [GetModuleBaseName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
-func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
-	var processName [utl.MAX_PATH]uint16
-	ret, _, err := syscall.SyscallN(_GetModuleBaseNameW.Addr(),
-		uintptr(hProcess),
-		uintptr(hModule),
-		uintptr(unsafe.Pointer(&processName[0])),
-		uintptr(len(processName)))
-	if ret == 0 {
-		return "", co.ERROR(err)
-	}
-	return wstr.WstrSliceToStr(processName[:]), nil
-}
-
-var _GetModuleBaseNameW = dll.Kernel32.NewProc("GetModuleBaseNameW")
-
 // [GetPriorityClass] function.
 //
 // [GetPriorityClass]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getpriorityclass
