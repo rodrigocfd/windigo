@@ -670,6 +670,21 @@ func (hWnd HWND) GetWindowTextLength() (uint, error) {
 
 var _GetWindowTextLengthW = dll.User32.NewProc("GetWindowTextLengthW")
 
+// [GetWindowThreadProcessId] function.
+//
+// [GetWindowThreadProcessId]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowthreadprocessid
+func (hWnd HWND) GetWindowThreadProcessId() (threadId, processId uint32, wErr error) {
+	var pid uint32
+	ret, _, err := syscall.SyscallN(_GetWindowThreadProcessId.Addr(),
+		uintptr(hWnd), uintptr(unsafe.Pointer(&pid)))
+	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
+		return 0, 0, wErr
+	}
+	return uint32(ret), pid, nil
+}
+
+var _GetWindowThreadProcessId = dll.User32.NewProc("GetWindowThreadProcessId")
+
 // Calls [HWND.GetWindowLongPtr] to retrieve the instance to which this window
 // belongs.
 func (hWnd HWND) HInstance() (HINSTANCE, error) {
