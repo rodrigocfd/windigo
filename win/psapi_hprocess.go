@@ -48,6 +48,24 @@ func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
 
 var _GetModuleBaseNameW = dll.Psapi.NewProc("GetModuleBaseNameW")
 
+// [GetModuleInformation] function.
+//
+// [GetModuleInformation]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmoduleinformation
+func (hProcess HPROCESS) GetModuleInformation(hModule HINSTANCE) (MODULEINFO, error) {
+	var mi MODULEINFO
+	ret, _, err := syscall.SyscallN(_GetModuleInformation.Addr(),
+		uintptr(hProcess),
+		uintptr(hModule),
+		uintptr(unsafe.Pointer(&mi)),
+		uintptr(uint32(unsafe.Sizeof(mi))))
+	if ret == 0 {
+		return MODULEINFO{}, co.ERROR(err)
+	}
+	return mi, nil
+}
+
+var _GetModuleInformation = dll.Psapi.NewProc("GetModuleInformation")
+
 // [GetModuleFileNameEx] function.
 //
 // [GetModuleFileNameEx]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulefilenameexw
