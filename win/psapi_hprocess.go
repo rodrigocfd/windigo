@@ -12,6 +12,24 @@ import (
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
+// [GetMappedFileName] function.
+//
+// [GetMappedFileName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmappedfilenamew
+func (hProcess HPROCESS) GetMappedFileName(address uintptr) (string, error) {
+	var fileName [utl.MAX_PATH]uint16
+	ret, _, err := syscall.SyscallN(_GetMappedFileNameW.Addr(),
+		uintptr(hProcess),
+		address,
+		uintptr(unsafe.Pointer(&fileName[0])),
+		uintptr(len(fileName)))
+	if ret == 0 {
+		return "", co.ERROR(err)
+	}
+	return wstr.WstrSliceToStr(fileName[:]), nil
+}
+
+var _GetMappedFileNameW = dll.Psapi.NewProc("GetMappedFileNameW")
+
 // [GetModuleBaseName] function.
 //
 // [GetModuleBaseName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
