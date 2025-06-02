@@ -111,42 +111,6 @@ func (hProcess HPROCESS) GetProcessId() (uint32, error) {
 
 var _GetProcessId = dll.Kernel32.NewProc("GetProcessId")
 
-// [GetProcessImageFileName] function
-//
-// [GetProcessImageFileName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getprocessimagefilenamew
-func (hProcess HPROCESS) GetProcessImageFileName() (string, error) {
-	var buf [utl.MAX_PATH]uint16
-	ret, _, err := syscall.SyscallN(_K32GetProcessImageFileNameW.Addr(),
-		uintptr(hProcess),
-		uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(uint32(len(buf))))
-	if ret == 0 {
-		return "", co.ERROR(err)
-	}
-	return wstr.WstrSliceToStr(buf[:]), nil
-}
-
-var _K32GetProcessImageFileNameW = dll.Kernel32.NewProc("K32GetProcessImageFileNameW")
-
-// [GetProcessMemoryInfo] function
-//
-// [GetProcessMemoryInfo]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getprocessmemoryinfo
-func (hProcess HPROCESS) GetProcessMemoryInfo() (PROCESS_MEMORY_COUNTERS_EX, error) {
-	var pmc PROCESS_MEMORY_COUNTERS_EX
-	pmc.SetCb()
-
-	ret, _, err := syscall.SyscallN(_GetProcessMemoryInfo.Addr(),
-		uintptr(hProcess),
-		uintptr(unsafe.Pointer(&pmc)),
-		uintptr(uint32(unsafe.Sizeof(pmc))))
-	if ret == 0 {
-		return PROCESS_MEMORY_COUNTERS_EX{}, co.ERROR(err)
-	}
-	return pmc, nil
-}
-
-var _GetProcessMemoryInfo = dll.Kernel32.NewProc("GetProcessMemoryInfo")
-
 // [GetProcessPriorityBoost] function.
 //
 // [GetProcessPriorityBoost]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesspriorityboost
