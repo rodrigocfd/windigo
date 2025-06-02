@@ -12,6 +12,17 @@ import (
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
+// [EmptyWorkingSet] function.
+//
+// [EmptyWorkingSet]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-emptyworkingset
+func (hProcess HPROCESS) EmptyWorkingSet() error {
+	ret, _, err := syscall.SyscallN(_EmptyWorkingSet.Addr(),
+		uintptr(hProcess))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _EmptyWorkingSet = dll.Psapi.NewProc("EmptyWorkingSet")
+
 // [GetMappedFileName] function.
 //
 // [GetMappedFileName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmappedfilenamew
