@@ -3,6 +3,7 @@
 package oleaut
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 
@@ -163,6 +164,8 @@ func (me *IDispatch) Invoke(
 // If the remote call raises an exception, the returned error will be an
 // instance of *[EXCEPINFO].
 //
+// Parameters must be one of the valid [VARIANT] types.
+//
 // # Example
 //
 //	ole.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -190,6 +193,47 @@ func (me *IDispatch) InvokeGet(
 	return me.rawInvoke(releaser, co.DISPATCH_PROPERTYGET, propertyName, params...)
 }
 
+// Calls [Invoke] with [co.DISPATCH_PROPERTYGET], and tries to convert the
+// [VARIANT] result to an [IDispatch] object.
+//
+// If the remote call raises an exception, the returned error will be an
+// instance of *[EXCEPINFO].
+//
+// Parameters must be one of the valid [VARIANT] types.
+//
+// # Example
+//
+//	ole.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer ole.CoUninitialize()
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
+//
+//	var dispExcel *oleaut.IDispatch
+//	ole.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &dispExcel)
+//
+//	books, _ := dispExcel.InvokeGetIDispatch(rel, "Workbooks")
+//
+// [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
+// [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
+func (me *IDispatch) InvokeGetIDispatch(
+	releaser *ole.Releaser,
+	propertyName string,
+	params ...interface{},
+) (*IDispatch, error) {
+	variant, err := me.InvokeGet(releaser, propertyName, params...)
+	if err != nil {
+		return nil, err
+	}
+	if idisp, ok := variant.IDispatch(releaser); ok {
+		return idisp, nil
+	} else {
+		return nil, fmt.Errorf("InvokeGet \"%s\" didn't return an IDispatch object", propertyName)
+	}
+}
+
 // Calls [Invoke] with [co.DISPATCH_METHOD].
 //
 // If the remote call raises an exception, the returned error will be an
@@ -208,8 +252,7 @@ func (me *IDispatch) InvokeGet(
 //	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
 //
 //	var dispExcel *oleaut.IDispatch
-//	ole.CoCreateInstance(
-//		rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &dispExcel)
+//	ole.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &dispExcel)
 //
 //	varBooks, _ := dispExcel.InvokeGet(rel, "Workbooks")
 //	dispBooks, _ := varBooks.IDispatch(rel)
@@ -230,6 +273,50 @@ func (me *IDispatch) InvokeMethod(
 	return me.rawInvoke(releaser, co.DISPATCH_METHOD, methodName, params...)
 }
 
+// Calls [Invoke] with [co.DISPATCH_METHOD], and tries to convert the
+// [VARIANT] result to an [IDispatch] object.
+//
+// If the remote call raises an exception, the returned error will be an
+// instance of *[EXCEPINFO].
+//
+// Parameters must be one of the valid [VARIANT] types.
+//
+// # Example
+//
+//	ole.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer ole.CoUninitialize()
+//
+//	rel := ole.NewReleaser()
+//	defer rel.Release()
+//
+//	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
+//
+//	var excel *oleaut.IDispatch
+//	ole.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &excel)
+//
+//	books, _ := excel.InvokeGetIDispatch(rel, "Workbooks")
+//	file, _ := books.InvokeMethodIDispatch(rel, "Open", "C:\\Temp\\file.xlsx")
+//	file.InvokeMethod(rel, "SaveAs", "C:\\Temp\\copy.xlsx")
+//	file.InvokeMethod(rel, "Close")
+//
+// [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
+// [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
+func (me *IDispatch) InvokeMethodIDispatch(
+	releaser *ole.Releaser,
+	methodName string,
+	params ...interface{},
+) (*IDispatch, error) {
+	variant, err := me.InvokeMethod(releaser, methodName, params...)
+	if err != nil {
+		return nil, err
+	}
+	if idisp, ok := variant.IDispatch(releaser); ok {
+		return idisp, nil
+	} else {
+		return nil, fmt.Errorf("InvokeMethod \"%s\" didn't return an IDispatch object", methodName)
+	}
+}
+
 // Calls [Invoke] with [co.DISPATCH_PROPERTYPUT].
 //
 // If the remote call raises an exception, the returned error will be an
@@ -245,6 +332,32 @@ func (me *IDispatch) InvokePut(
 	value interface{},
 ) (*VARIANT, error) {
 	return me.rawInvoke(releaser, co.DISPATCH_PROPERTYPUT, propertyName, value)
+}
+
+// Calls [Invoke] with [co.DISPATCH_PROPERTYPUT], and tries to convert the
+// [VARIANT] result to an [IDispatch] object.
+//
+// If the remote call raises an exception, the returned error will be an
+// instance of *[EXCEPINFO].
+//
+// Parameter must be one of the valid [VARIANT] types.
+//
+// [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
+// [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
+func (me *IDispatch) InvokePutIDispatch(
+	releaser *ole.Releaser,
+	propertyName string,
+	value interface{},
+) (*IDispatch, error) {
+	variant, err := me.InvokePut(releaser, propertyName, value)
+	if err != nil {
+		return nil, err
+	}
+	if idisp, ok := variant.IDispatch(releaser); ok {
+		return idisp, nil
+	} else {
+		return nil, fmt.Errorf("InvokePut \"%s\" didn't return an IDispatch object", propertyName)
+	}
 }
 
 func (me *IDispatch) rawInvoke(

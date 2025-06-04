@@ -344,16 +344,13 @@ func main() {
 
 	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
 
-	var dispatchExcel *oleaut.IDispatch
-	ole.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &dispatchExcel)
+	var excel *oleaut.IDispatch
+	ole.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &excel)
 
-	variantBooks, _ := dispatchExcel.InvokeGet(rel, "Workbooks")
-	dispatchBooks, _ := variantBooks.IDispatch(rel)
-	variantFile, _ := dispatchBooks.InvokeMethod(rel, "Open", "C:\\Temp\\foo.xlsx")
-
-	dispatchFile, _ := variantFile.IDispatch(rel)
-	dispatchFile.InvokeMethod(rel, "SaveAs", "C:\\Temp\\foo copy.xlsx")
-	dispatchFile.InvokeMethod(rel, "Close")
+	books, _ := excel.InvokeGetIDispatch(rel, "Workbooks")
+	file, _ := books.InvokeMethodIDispatch(rel, "Open", "C:\\Temp\\foo.xlsx")
+	file.InvokeMethod(rel, "SaveAs", "C:\\Temp\\foo copy.xlsx")
+	file.InvokeMethod(rel, "Close")
 }
 ```
 </details>
