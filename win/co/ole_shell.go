@@ -303,6 +303,16 @@ const (
 	KF_FLAG_ALIAS_ONLY                       KF_FLAG = 0x8000_0000
 )
 
+// [IShellFolder.CompareIDs] lParam.
+//
+// [IShellFolder.CompareIDs]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellfolder-compareids
+type SHCIDS uint32
+
+const (
+	SHCIDS_ALLFIELDS     SHCIDS = 0x8000_0000
+	SHCIDS_CANONICALONLY SHCIDS = 0x1000_0000
+)
+
 // [_SICHINTF] enumeration.
 //
 // [_SICHINTF]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_sichintf

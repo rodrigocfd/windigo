@@ -44,9 +44,23 @@ func (hr HRESULT) Facility() FACILITY {
 	return FACILITY((uint32(hr) >> 16) & 0x1fff)
 }
 
+// [FAILED] macro.
+//
+// [FAILED]: https://learn.microsoft.com/en-us/windows/win32/api/winerror/nf-winerror-failed
+func (hr HRESULT) Failed() bool {
+	return int32(hr) < 0
+}
+
 // Returns the HRESULT severity.
 func (hr HRESULT) Severity() SEVERITY {
 	return SEVERITY((uint32(hr) >> 31) & 0x1)
+}
+
+// [SUCCEEDED] macro.
+//
+// [SUCCEEDED]: https://learn.microsoft.com/en-us/windows/win32/api/winerror/nf-winerror-succeeded
+func (hr HRESULT) Succeeded() bool {
+	return int32(hr) >= 0
 }
 
 const (

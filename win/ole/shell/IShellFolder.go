@@ -110,6 +110,27 @@ func (me *IShellFolder) BindToStorage(
 	}
 }
 
+// [CompareIDs] method.
+//
+// [CompareIDs]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellfolder-compareids
+func (me *IShellFolder) CompareIDs(
+	sortingRule uint16,
+	sortingFlags co.SHCIDS,
+	pidl1, pidl2 *ITEMIDLIST,
+) (int, error) {
+	ret, _, _ := syscall.SyscallN(
+		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).CompareIDs,
+		uintptr(uint32(sortingRule)|uint32(sortingFlags)),
+		uintptr(*pidl1),
+		uintptr(*pidl2))
+
+	if hr := co.HRESULT(ret); hr.Succeeded() {
+		return int(hr.Code()), nil
+	} else {
+		return 0, hr
+	}
+}
+
 // [ParseDisplayName] method.
 //
 // [ParseDisplayName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellfolder-parsedisplayname
