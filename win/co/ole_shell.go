@@ -17,6 +17,7 @@ const (
 	IID_IFileOperationProgressSink IID = "04b0f1a7-9490-44bc-96e1-4296a31252e2"
 	IID_IFileSaveDialog            IID = "84bccd23-5fde-4cdb-aea4-af64b83d78ab"
 	IID_IModalWindow               IID = "b4db1657-70d7-485e-8e3e-6fcb5a5c1802"
+	IID_IOleWindow                 IID = "00000114-0000-0000-c000-000000000046"
 	IID_IShellFolder               IID = "000214e6-0000-0000-c000-000000000046"
 	IID_IShellItem                 IID = "43826d1e-e718-42ee-bc55-a1e261c37bfe"
 	IID_IShellItem2                IID = "7e9fb0d3-919f-4307-ab2e-9b1860310c93"
