@@ -1,0 +1,52 @@
+package main
+
+import (
+	"fmt"
+	"os"
+	"strings"
+)
+
+func main() {
+	genBounds()
+}
+
+func genBounds() {
+	var buf strings.Builder
+
+	ty := "OLEAUT"
+	count := 0
+	start := 0
+	for i, r := range dllStr {
+		if r == '\n' {
+			procName := dllStr[start:i]
+			if procName != "" && !strings.HasPrefix(procName, "--") {
+				buf.WriteString(
+					fmt.Sprintf("PROC_%s PROC_%s = %d | (%d << 16) | (%d << 32)\n",
+						procName, ty, count, start, i),
+				)
+				println(procName)
+				count++
+			}
+			start = i + 1
+		}
+	}
+
+	os.WriteFile(".\\out.txt", []byte(buf.String()), 0644)
+}
+
+const dllStr = `
+--bstr
+SysAllocString
+SysFreeString
+SysReAllocString
+
+--funcs
+OleLoadPicture
+OleLoadPicturePath
+
+--variant
+VariantClear
+VariantInit
+SystemTimeToVariantTime
+VariantTimeToSystemTime
+`
