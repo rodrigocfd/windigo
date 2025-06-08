@@ -20,11 +20,9 @@ type HPROCESS HANDLE
 //
 // [GetCurrentProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocess
 func GetCurrentProcess() HPROCESS {
-	ret, _, _ := syscall.SyscallN(_GetCurrentProcess.Addr())
+	ret, _, _ := syscall.SyscallN(dll.Kernel(dll.PROC_GetCurrentProcess))
 	return HPROCESS(ret)
 }
-
-var _GetCurrentProcess = dll.Kernel32.NewProc("GetCurrentProcess")
 
 // [OpenProcess] function.
 //
@@ -32,7 +30,7 @@ var _GetCurrentProcess = dll.Kernel32.NewProc("GetCurrentProcess")
 //
 // [OpenProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
 func OpenProcess(access co.PROCESS, inheritHandle bool, processId uint32) (HPROCESS, error) {
-	ret, _, err := syscall.SyscallN(_OpenProcess.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_OpenProcess),
 		uintptr(access),
 		utl.BoolToUintptr(inheritHandle),
 		uintptr(processId))
@@ -41,8 +39,6 @@ func OpenProcess(access co.PROCESS, inheritHandle bool, processId uint32) (HPROC
 	}
 	return HPROCESS(ret), nil
 }
-
-var _OpenProcess = dll.Kernel32.NewProc("OpenProcess")
 
 // [CloseHandle] function.
 //
@@ -56,7 +52,7 @@ func (hProcess HPROCESS) CloseHandle() error {
 // [GetExitCodeProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess
 func (hProcess HPROCESS) GetExitCodeProcess() (uint32, error) {
 	var exitCode uint32
-	ret, _, err := syscall.SyscallN(_GetExitCodeProcess.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetExitCodeProcess),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&exitCode)))
 	if ret == 0 {
@@ -65,13 +61,11 @@ func (hProcess HPROCESS) GetExitCodeProcess() (uint32, error) {
 	return exitCode, nil
 }
 
-var _GetExitCodeProcess = dll.Kernel32.NewProc("GetExitCodeProcess")
-
 // [GetPriorityClass] function.
 //
 // [GetPriorityClass]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getpriorityclass
 func (hProcess HPROCESS) GetPriorityClass() (co.PRIORITY, error) {
-	ret, _, err := syscall.SyscallN(_GetPriorityClass.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetPriorityClass),
 		uintptr(hProcess))
 	if ret == 0 {
 		return co.PRIORITY(0), co.ERROR(err)
@@ -79,14 +73,12 @@ func (hProcess HPROCESS) GetPriorityClass() (co.PRIORITY, error) {
 	return co.PRIORITY(ret), nil
 }
 
-var _GetPriorityClass = dll.Kernel32.NewProc("GetPriorityClass")
-
 // [GetProcessHandleCount] function.
 //
 // [GetProcessHandleCount]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesshandlecount
 func (hProcess HPROCESS) GetProcessHandleCount() (uint, error) {
 	var count uint32
-	ret, _, err := syscall.SyscallN(_GetProcessHandleCount.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetProcessHandleCount),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&count)))
 	if ret == 0 {
@@ -95,13 +87,11 @@ func (hProcess HPROCESS) GetProcessHandleCount() (uint, error) {
 	return uint(count), nil
 }
 
-var _GetProcessHandleCount = dll.Kernel32.NewProc("GetProcessHandleCount")
-
 // [GetProcessId] function.
 //
 // [GetProcessId]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessid
 func (hProcess HPROCESS) GetProcessId() (uint32, error) {
-	ret, _, err := syscall.SyscallN(_GetProcessId.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetProcessId),
 		uintptr(hProcess))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -109,14 +99,12 @@ func (hProcess HPROCESS) GetProcessId() (uint32, error) {
 	return uint32(ret), nil
 }
 
-var _GetProcessId = dll.Kernel32.NewProc("GetProcessId")
-
 // [GetProcessPriorityBoost] function.
 //
 // [GetProcessPriorityBoost]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesspriorityboost
 func (hProcess HPROCESS) GetProcessPriorityBoost() (bool, error) {
 	var bVal int32 // BOOL
-	ret, _, err := syscall.SyscallN(_GetProcessPriorityBoost.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetProcessPriorityBoost),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&bVal)))
 	if ret == 0 {
@@ -125,13 +113,11 @@ func (hProcess HPROCESS) GetProcessPriorityBoost() (bool, error) {
 	return bVal != 0, nil
 }
 
-var _GetProcessPriorityBoost = dll.Kernel32.NewProc("GetProcessPriorityBoost")
-
 // [GetProcessShutdownParameters] function.
 //
 // [GetProcessShutdownParameters]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessshutdownparameters
 func (hProcess HPROCESS) GetProcessShutdownParameters() (priorityLevel uint32, flag co.SHUTDOWN, wErr error) {
-	ret, _, err := syscall.SyscallN(_GetProcessShutdownParameters.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetProcessShutdownParameters),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&priorityLevel)),
 		uintptr(unsafe.Pointer(&flag)))
@@ -141,14 +127,12 @@ func (hProcess HPROCESS) GetProcessShutdownParameters() (priorityLevel uint32, f
 	return
 }
 
-var _GetProcessShutdownParameters = dll.Kernel32.NewProc("GetProcessShutdownParameters")
-
 // [GetProcessTimes] function.
 //
 // [GetProcessTimes]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
 func (hProcess HPROCESS) GetProcessTimes() (HprocessTimes, error) {
 	var ftCreation, ftExit, ftKernel, ftUser FILETIME
-	ret, _, err := syscall.SyscallN(_GetProcessTimes.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetProcessTimes),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&ftCreation)),
 		uintptr(unsafe.Pointer(&ftExit)),
@@ -174,13 +158,11 @@ type HprocessTimes struct {
 	User     time.Time
 }
 
-var _GetProcessTimes = dll.Kernel32.NewProc("GetProcessTimes")
-
 // [GetProcessVersion] function.
 //
 // [GetProcessVersion]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessversion
 func (hProcess HPROCESS) GetProcessVersion() (maj, min uint16, wErr error) {
-	ret, _, err := syscall.SyscallN(_GetProcessVersion.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetProcessVersion),
 		uintptr(hProcess))
 	if ret == 0 {
 		return 0, 0, co.ERROR(err)
@@ -188,14 +170,12 @@ func (hProcess HPROCESS) GetProcessVersion() (maj, min uint16, wErr error) {
 	return HIWORD(uint32(ret)), LOWORD(uint32(ret)), nil
 }
 
-var _GetProcessVersion = dll.Kernel32.NewProc("GetProcessVersion")
-
 // [IsProcessCritical] function.
 //
 // [IsProcessCritical]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-isprocesscritical
 func (hProcess HPROCESS) IsProcessCritical() (bool, error) {
 	var bVal int32 // BOOL
-	ret, _, err := syscall.SyscallN(_IsProcessCritical.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_IsProcessCritical),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&bVal)))
 	if ret == 0 {
@@ -203,15 +183,13 @@ func (hProcess HPROCESS) IsProcessCritical() (bool, error) {
 	}
 	return bVal != 0, nil
 }
-
-var _IsProcessCritical = dll.Kernel32.NewProc("IsProcessCritical")
 
 // [IsWow64Process] function.
 //
 // [IsWow64Process]: https://learn.microsoft.com/en-us/windows/win32/api/wow64apiset/nf-wow64apiset-iswow64process
 func (hProcess HPROCESS) IsWow64Process() (bool, error) {
 	var bVal int32 // BOOL
-	ret, _, err := syscall.SyscallN(_IsWow64Process.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_IsWow64Process),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&bVal)))
 	if ret == 0 {
@@ -219,8 +197,6 @@ func (hProcess HPROCESS) IsWow64Process() (bool, error) {
 	}
 	return bVal != 0, nil
 }
-
-var _IsWow64Process = dll.Kernel32.NewProc("IsWow64Process")
 
 // [QueryFullProcessImageName] function.
 //
@@ -229,7 +205,7 @@ func (hProcess HPROCESS) QueryFullProcessImageName(flags co.PROCESS_NAME) (strin
 	var buf [utl.MAX_PATH]uint16
 	szBuf := uint32(len(buf))
 
-	ret, _, err := syscall.SyscallN(_QueryFullProcessImageNameW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_QueryFullProcessImageNameW),
 		uintptr(hProcess),
 		uintptr(flags),
 		uintptr(unsafe.Pointer(&buf[0])),
@@ -240,14 +216,12 @@ func (hProcess HPROCESS) QueryFullProcessImageName(flags co.PROCESS_NAME) (strin
 	return wstr.WstrSliceToStr(buf[:]), nil
 }
 
-var _QueryFullProcessImageNameW = dll.Kernel32.NewProc("QueryFullProcessImageNameW")
-
 // [QueryProcessAffinityUpdateMode] function.
 //
 // [QueryProcessAffinityUpdateMode]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-queryprocessaffinityupdatemode
 func (hProcess HPROCESS) QueryProcessAffinityUpdateMode() (co.AFFINITY, error) {
 	var flags co.AFFINITY
-	ret, _, err := syscall.SyscallN(_QueryProcessAffinityUpdateMode.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_QueryProcessAffinityUpdateMode),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&flags)))
 	if ret == 0 {
@@ -256,14 +230,12 @@ func (hProcess HPROCESS) QueryProcessAffinityUpdateMode() (co.AFFINITY, error) {
 	return flags, nil
 }
 
-var _QueryProcessAffinityUpdateMode = dll.Kernel32.NewProc("QueryProcessAffinityUpdateMode")
-
 // [QueryProcessCycleTime] function.
 //
 // [QueryProcessCycleTime]: https://learn.microsoft.com/en-us/windows/win32/api/realtimeapiset/nf-realtimeapiset-queryprocesscycletime
 func (hProcess HPROCESS) QueryProcessCycleTime() (uint64, error) {
 	var cycle uint64
-	ret, _, err := syscall.SyscallN(_QueryProcessCycleTime.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_QueryProcessCycleTime),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&cycle)))
 	if ret == 0 {
@@ -272,8 +244,6 @@ func (hProcess HPROCESS) QueryProcessCycleTime() (uint64, error) {
 	return cycle, nil
 }
 
-var _QueryProcessCycleTime = dll.Kernel32.NewProc("QueryProcessCycleTime")
-
 // [ReadProcessMemory] function.
 //
 // [ReadProcessMemory]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory
@@ -281,7 +251,7 @@ func (hProcess HPROCESS) ReadProcessMemory(
 	baseAddress uintptr,
 	dest []byte,
 ) (numBytesRead uint, wErr error) {
-	ret, _, err := syscall.SyscallN(_ReadProcessMemory.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_ReadProcessMemory),
 		uintptr(hProcess),
 		baseAddress,
 		uintptr(unsafe.Pointer(&dest[0])),
@@ -293,50 +263,42 @@ func (hProcess HPROCESS) ReadProcessMemory(
 	return numBytesRead, nil
 }
 
-var _ReadProcessMemory = dll.Kernel32.NewProc("ReadProcessMemory")
-
 // [SetPriorityClass] function.
 //
 // [SetPriorityClass]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setpriorityclass
 func (hProcess HPROCESS) SetPriorityClass(pc co.PRIORITY) error {
-	ret, _, err := syscall.SyscallN(_SetPriorityClass.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_SetPriorityClass),
 		uintptr(hProcess),
 		uintptr(pc))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _SetPriorityClass = dll.Kernel32.NewProc("SetPriorityClass")
-
 // [SetProcessAffinityUpdateMode] function.
 //
 // [SetProcessAffinityUpdateMode]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setprocessaffinityupdatemode
 func (hProcess HPROCESS) SetProcessAffinityUpdateMode(affinity co.AFFINITY) error {
-	ret, _, err := syscall.SyscallN(_SetProcessAffinityUpdateMode.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_SetProcessAffinityUpdateMode),
 		uintptr(hProcess),
 		uintptr(affinity))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _SetProcessAffinityUpdateMode = dll.Kernel32.NewProc("SetProcessAffinityUpdateMode")
-
 // [TerminateProcess] function.
 //
 // [TerminateProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess
 func (hProcess HPROCESS) TerminateProcess(exitCode uint32) error {
-	ret, _, err := syscall.SyscallN(_TerminateProcess.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_TerminateProcess),
 		uintptr(hProcess),
 		uintptr(exitCode))
 	return utl.ZeroAsGetLastError(ret, err)
 }
-
-var _TerminateProcess = dll.Kernel32.NewProc("TerminateProcess")
 
 // [VirtualQueryEx] function.
 //
 // [VirtualQueryEx]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualqueryex
 func (hProcess HPROCESS) VirtualQueryEx(baseAddress uintptr) (MEMORY_BASIC_INFORMATION, error) {
 	var mbi MEMORY_BASIC_INFORMATION
-	ret, _, err := syscall.SyscallN(_VirtualQueryEx.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_VirtualQueryEx),
 		uintptr(hProcess),
 		baseAddress,
 		uintptr(unsafe.Pointer(&mbi)),
@@ -347,8 +309,6 @@ func (hProcess HPROCESS) VirtualQueryEx(baseAddress uintptr) (MEMORY_BASIC_INFOR
 	return mbi, nil
 }
 
-var _VirtualQueryEx = dll.Kernel32.NewProc("VirtualQueryEx")
-
 // [WriteProcessMemory] function.
 //
 // [WriteProcessMemory]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
@@ -356,7 +316,7 @@ func (hProcess HPROCESS) WriteProcessMemory(
 	baseAddress uintptr,
 	src []byte,
 ) (numBytesWritten uint, wErr error) {
-	ret, _, err := syscall.SyscallN(_WriteProcessMemory.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_WriteProcessMemory),
 		uintptr(hProcess),
 		baseAddress,
 		uintptr(unsafe.Pointer(&src[0])),
@@ -367,5 +327,3 @@ func (hProcess HPROCESS) WriteProcessMemory(
 	}
 	return numBytesWritten, nil
 }
-
-var _WriteProcessMemory = dll.Kernel32.NewProc("WriteProcessMemory")

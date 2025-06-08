@@ -18,7 +18,7 @@ func (hFile HFILE) SetFilePointerEx(
 	moveMethod co.FILE_FROM,
 ) (newPointerOffset int, wErr error) {
 	var newOff64 int64
-	ret, _, err := syscall.SyscallN(_SetFilePointerEx.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_SetFilePointerEx),
 		uintptr(hFile),
 		uintptr(int64(distanceToMove)),
 		uintptr(unsafe.Pointer(&newOff64)),
@@ -29,7 +29,4 @@ func (hFile HFILE) SetFilePointerEx(
 	} else {
 		return int(newOff64), nil
 	}
-	return
 }
-
-var _SetFilePointerEx = dll.Kernel32.NewProc("SetFilePointerEx")

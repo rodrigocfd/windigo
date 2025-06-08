@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/dll"
 	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -42,7 +41,7 @@ func OleLoadPicture(
 	var ppvtQueried **ole.IUnknownVt
 	guid := win.GuidFrom(co.IID_IPicture)
 
-	ret, _, _ := syscall.SyscallN(_OleLoadPicture.Addr(),
+	ret, _, _ := syscall.SyscallN(dllOleaut(_PROC_OleLoadPicture),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
 		uintptr(int32(size)),
 		utl.BoolToUintptr(!keepOriginalFormat), // note: reversed
@@ -58,8 +57,6 @@ func OleLoadPicture(
 		return nil, hr
 	}
 }
-
-var _OleLoadPicture = dll.Oleaut32.NewProc("OleLoadPicture")
 
 // [OleLoadPicturePath] function.
 //
@@ -80,7 +77,7 @@ func OleLoadPicturePath(
 	var ppvtQueried **ole.IUnknownVt
 	guid := win.GuidFrom(co.IID_IPicture)
 
-	ret, _, _ := syscall.SyscallN(_OleLoadPicturePath.Addr(),
+	ret, _, _ := syscall.SyscallN(dllOleaut(_PROC_OleLoadPicturePath),
 		uintptr(path16.UnsafePtr()),
 		0, 0,
 		uintptr(transparentColor),
@@ -96,5 +93,3 @@ func OleLoadPicturePath(
 		return nil, hr
 	}
 }
-
-var _OleLoadPicturePath = dll.Oleaut32.NewProc("OleLoadPicturePath")

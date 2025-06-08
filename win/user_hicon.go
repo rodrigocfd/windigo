@@ -22,7 +22,7 @@ type HICON HANDLE
 //
 // [CreateIconIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconindirect
 func CreateIconIndirect(info *ICONINFO) (HICON, error) {
-	ret, _, err := syscall.SyscallN(_CreateIconIndirect.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_CreateIconIndirect),
 		uintptr(unsafe.Pointer(info)))
 	if ret == 0 {
 		return HICON(0), co.ERROR(err)
@@ -30,15 +30,13 @@ func CreateIconIndirect(info *ICONINFO) (HICON, error) {
 	return HICON(ret), nil
 }
 
-var _CreateIconIndirect = dll.User32.NewProc("CreateIconIndirect")
-
 // [CopyIcon] function.
 //
 // ⚠️ You must defer [HICON.DestroyIcon].
 //
 // [CopyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyicon
 func (hIcon HICON) CopyIcon() (HICON, error) {
-	ret, _, err := syscall.SyscallN(_CopyIcon.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_CopyIcon),
 		uintptr(hIcon))
 	if ret == 0 {
 		return HICON(0), co.ERROR(err)
@@ -46,18 +44,14 @@ func (hIcon HICON) CopyIcon() (HICON, error) {
 	return HICON(ret), nil
 }
 
-var _CopyIcon = dll.User32.NewProc("CopyIcon")
-
 // [DestroyIcon] function.
 //
 // [DestroyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyicon
 func (hIcon HICON) DestroyIcon() error {
-	ret, _, err := syscall.SyscallN(_DestroyIcon.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_DestroyIcon),
 		uintptr(hIcon))
 	return utl.ZeroAsGetLastError(ret, err)
 }
-
-var _DestroyIcon = dll.User32.NewProc("DestroyIcon")
 
 // [GetIconInfo] function.
 //
@@ -66,7 +60,7 @@ var _DestroyIcon = dll.User32.NewProc("DestroyIcon")
 // [GetIconInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-geticoninfo
 func (hIcon HICON) GetIconInfo() (ICONINFO, error) {
 	var ii ICONINFO
-	ret, _, err := syscall.SyscallN(_GetIconInfo.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_GetIconInfo),
 		uintptr(hIcon),
 		uintptr(unsafe.Pointer(&ii)))
 	if ret == 0 {
@@ -74,8 +68,6 @@ func (hIcon HICON) GetIconInfo() (ICONINFO, error) {
 	}
 	return ii, nil
 }
-
-var _GetIconInfo = dll.User32.NewProc("GetIconInfo")
 
 // [GetIconInfoEx] function.
 //
@@ -86,7 +78,7 @@ func (hIcon HICON) GetIconInfoEx() (ICONINFOEX, error) {
 	var ii ICONINFOEX
 	ii.SetCbSize()
 
-	ret, _, _ := syscall.SyscallN(_GetIconInfoExW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.User(dll.PROC_GetIconInfoExW),
 		uintptr(hIcon),
 		uintptr(unsafe.Pointer(&ii)))
 	if ret == 0 {
@@ -94,5 +86,3 @@ func (hIcon HICON) GetIconInfoEx() (ICONINFOEX, error) {
 	}
 	return ii, nil
 }
-
-var _GetIconInfoExW = dll.User32.NewProc("GetIconInfoExW")

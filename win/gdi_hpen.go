@@ -21,7 +21,7 @@ type HPEN HGDIOBJ
 //
 // [CreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
 func CreatePen(style co.PS, width uint, color COLORREF) (HPEN, error) {
-	ret, _, _ := syscall.SyscallN(_CreatePen.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreatePen),
 		uintptr(style),
 		uintptr(int32(width)),
 		uintptr(color))
@@ -31,23 +31,19 @@ func CreatePen(style co.PS, width uint, color COLORREF) (HPEN, error) {
 	return HPEN(ret), nil
 }
 
-var _CreatePen = dll.Gdi32.NewProc("CreatePen")
-
 // [CreatePenIndirect] function.
 //
 // ⚠️ You must defer [HPEN.DeleteObject].
 //
 // [CreatePenIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpenindirect
 func CreatePenIndirect(lp *LOGPEN) (HPEN, error) {
-	ret, _, _ := syscall.SyscallN(_CreatePenIndirect.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreatePenIndirect),
 		uintptr(unsafe.Pointer(lp)))
 	if ret == 0 {
 		return HPEN(0), co.ERROR_INVALID_PARAMETER
 	}
 	return HPEN(ret), nil
 }
-
-var _CreatePenIndirect = dll.Gdi32.NewProc("CreatePenIndirect")
 
 // [ExtCreatePen] function.
 //
@@ -69,7 +65,7 @@ func ExtCreatePen(
 		pLens = unsafe.Pointer(&styleLengths[0])
 	}
 
-	ret, _, _ := syscall.SyscallN(_ExtCreatePen.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_ExtCreatePen),
 		uintptr(uint32(penType)|uint32(penStyle)|uint32(endCap)),
 		uintptr(width),
 		uintptr(unsafe.Pointer(brush)),
@@ -80,8 +76,6 @@ func ExtCreatePen(
 	}
 	return HPEN(ret), nil
 }
-
-var _ExtCreatePen = dll.Gdi32.NewProc("ExtCreatePen")
 
 // [DeleteObject] function.
 //

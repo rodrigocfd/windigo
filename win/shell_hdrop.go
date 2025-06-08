@@ -24,11 +24,9 @@ type HDROP HANDLE
 // [DragFinish]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragfinish
 // [RegisterDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-registerdragdrop
 func (hDrop HDROP) DragFinish() {
-	syscall.SyscallN(_DragFinish.Addr(),
+	syscall.SyscallN(dll.Shell(dll.PROC_DragFinish),
 		uintptr(hDrop))
 }
-
-var _DragFinish = dll.Shell32.NewProc("DragFinish")
 
 // [DragQueryFile] function. Called internally several times until all files are
 // retrieved, then the full paths are returned.
@@ -51,7 +49,7 @@ var _DragFinish = dll.Shell32.NewProc("DragFinish")
 // [DragQueryFile]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragqueryfilew
 // [RegisterDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-registerdragdrop
 func (hDrop HDROP) DragQueryFile() ([]string, error) {
-	ret, _, _ := syscall.SyscallN(_DragQueryFileW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Shell(dll.PROC_DragQueryFileW),
 		uintptr(hDrop), uintptr(0xffff_ffff), 0, 0)
 	if ret == 0 {
 		return nil, co.ERROR_INVALID_PARAMETER
@@ -62,7 +60,7 @@ func (hDrop HDROP) DragQueryFile() ([]string, error) {
 	paths := make([]string, 0, count)
 
 	for i := uint32(0); i < count; i++ {
-		ret, _, _ = syscall.SyscallN(_DragQueryFileW.Addr(),
+		ret, _, _ = syscall.SyscallN(dll.Shell(dll.PROC_DragQueryFileW),
 			uintptr(hDrop),
 			uintptr(i),
 			uintptr(unsafe.Pointer(&pathBuf[0])),
@@ -76,8 +74,6 @@ func (hDrop HDROP) DragQueryFile() ([]string, error) {
 	return paths, nil
 }
 
-var _DragQueryFileW = dll.Shell32.NewProc("DragQueryFileW")
-
 // [DragQueryPoint] function.
 //
 // Returns true if dropped within client area.
@@ -85,10 +81,8 @@ var _DragQueryFileW = dll.Shell32.NewProc("DragQueryFileW")
 // [DragQueryPoint]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragquerypoint
 func (hDrop HDROP) DragQueryPoint() (POINT, bool) {
 	var pt POINT
-	ret, _, _ := syscall.SyscallN(_DragQueryPoint.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Shell(dll.PROC_DragQueryPoint),
 		uintptr(hDrop),
 		uintptr(unsafe.Pointer(&pt)))
 	return pt, ret != 0
 }
-
-var _DragQueryPoint = dll.Shell32.NewProc("DragQueryPoint")

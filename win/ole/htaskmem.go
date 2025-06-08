@@ -5,7 +5,6 @@ package ole
 import (
 	"syscall"
 
-	"github.com/rodrigocfd/windigo/internal/dll"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -28,15 +27,13 @@ type HTASKMEM win.HANDLE
 //
 // [CoTaskMemAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
 func CoTaskMemAlloc(numBytes uint) (HTASKMEM, error) {
-	ret, _, _ := syscall.SyscallN(_CoTaskMemAlloc.Addr(),
+	ret, _, _ := syscall.SyscallN(dllOle(_PROC_CoTaskMemAlloc),
 		uintptr(numBytes))
 	if ret == 0 {
 		return HTASKMEM(0), co.HRESULT_E_OUTOFMEMORY
 	}
 	return HTASKMEM(ret), nil
 }
-
-var _CoTaskMemAlloc = dll.Ole32.NewProc("CoTaskMemAlloc")
 
 // [CoTaskMemFree] function.
 //
@@ -47,12 +44,10 @@ var _CoTaskMemAlloc = dll.Ole32.NewProc("CoTaskMemAlloc")
 // [CoTaskMemFree]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
 func (hMem HTASKMEM) CoTaskMemFree() {
 	if hMem != 0 {
-		syscall.SyscallN(_CoTaskMemFree.Addr(),
+		syscall.SyscallN(dllOle(_PROC_CoTaskMemFree),
 			uintptr(hMem))
 	}
 }
-
-var _CoTaskMemFree = dll.Ole32.NewProc("CoTaskMemFree")
 
 // [CoTaskMemRealloc] function.
 //
@@ -60,7 +55,7 @@ var _CoTaskMemFree = dll.Ole32.NewProc("CoTaskMemFree")
 //
 // [CoTaskMemRealloc]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
 func (hMem HTASKMEM) CoTaskMemRealloc(numBytes uint) (HTASKMEM, error) {
-	ret, _, _ := syscall.SyscallN(_CoTaskMemRealloc.Addr(),
+	ret, _, _ := syscall.SyscallN(dllOle(_PROC_CoTaskMemRealloc),
 		uintptr(hMem),
 		uintptr(numBytes))
 	if ret == 0 {
@@ -68,5 +63,3 @@ func (hMem HTASKMEM) CoTaskMemRealloc(numBytes uint) (HTASKMEM, error) {
 	}
 	return HTASKMEM(ret), nil
 }
-
-var _CoTaskMemRealloc = dll.Ole32.NewProc("CoTaskMemRealloc")

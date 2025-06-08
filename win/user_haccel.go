@@ -22,7 +22,7 @@ type HACCEL HANDLE
 //
 // [CreateAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createacceleratortablew
 func CreateAcceleratorTable(accelList []ACCEL) (HACCEL, error) {
-	ret, _, err := syscall.SyscallN(_CreateAcceleratorTableW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_CreateAcceleratorTableW),
 		uintptr(unsafe.Pointer(&accelList[0])),
 		uintptr(int32(len(accelList))))
 	if ret == 0 {
@@ -31,25 +31,21 @@ func CreateAcceleratorTable(accelList []ACCEL) (HACCEL, error) {
 	return HACCEL(ret), nil
 }
 
-var _CreateAcceleratorTableW = dll.User32.NewProc("CreateAcceleratorTableW")
-
 // [CopyAcceleratorTable] function.
 //
 // [CopyAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyacceleratortablew
 func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
-	szRet, _, _ := syscall.SyscallN(_CopyAcceleratorTableW.Addr(),
+	szRet, _, _ := syscall.SyscallN(dll.User(dll.PROC_CopyAcceleratorTableW),
 		uintptr(hAccel),
 		0, 0)
 	if szRet == 0 {
 		return []ACCEL{}
 	}
 	accelList := make([]ACCEL, szRet)
-	syscall.SyscallN(_CopyAcceleratorTableW.Addr(),
+	syscall.SyscallN(dll.User(dll.PROC_CopyAcceleratorTableW),
 		uintptr(hAccel), uintptr(unsafe.Pointer(&accelList[0])), szRet)
 	return accelList
 }
-
-var _CopyAcceleratorTableW = dll.User32.NewProc("CopyAcceleratorTableW")
 
 // [DestroyAcceleratorTable] function.
 //
@@ -57,9 +53,7 @@ var _CopyAcceleratorTableW = dll.User32.NewProc("CopyAcceleratorTableW")
 //
 // [DestroyAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyacceleratortable
 func (hAccel HACCEL) DestroyAcceleratorTable() error {
-	ret, _, err := syscall.SyscallN(_DestroyAcceleratorTable.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_DestroyAcceleratorTable),
 		uintptr(hAccel))
 	return utl.ZeroAsGetLastError(ret, err)
 }
-
-var _DestroyAcceleratorTable = dll.User32.NewProc("DestroyAcceleratorTable")

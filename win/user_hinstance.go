@@ -23,7 +23,7 @@ func (hInst HINSTANCE) CreateDialogParam(
 	templateName16 := wstr.NewBuf[wstr.Stack20]()
 	templateNameVal := templateName.raw(&templateName16)
 
-	ret, _, err := syscall.SyscallN(_CreateDialogParamW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_CreateDialogParamW),
 		uintptr(hInst),
 		templateNameVal,
 		uintptr(hwndParent),
@@ -35,8 +35,6 @@ func (hInst HINSTANCE) CreateDialogParam(
 	return HWND(ret), nil
 }
 
-var _CreateDialogParamW = dll.User32.NewProc("CreateDialogParamW")
-
 // [DialogBoxIndirectParam] function.
 //
 // [DialogBoxIndirectParam]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxindirectparamw
@@ -46,7 +44,7 @@ func (hInst HINSTANCE) DialogBoxIndirectParam(
 	dialogFunc uintptr,
 	dwInitParam LPARAM,
 ) (uintptr, error) {
-	ret, _, err := syscall.SyscallN(_DialogBoxIndirectParamW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_DialogBoxIndirectParamW),
 		uintptr(hInst),
 		uintptr(unsafe.Pointer(template)),
 		uintptr(hwndParent),
@@ -57,8 +55,6 @@ func (hInst HINSTANCE) DialogBoxIndirectParam(
 	}
 	return ret, nil
 }
-
-var _DialogBoxIndirectParamW = dll.User32.NewProc("DialogBoxIndirectParamW")
 
 // [DialogBoxParam] function.
 //
@@ -72,7 +68,7 @@ func (hInst HINSTANCE) DialogBoxParam(
 	templateName16 := wstr.NewBuf[wstr.Stack20]()
 	templateNameVal := templateName.raw(&templateName16)
 
-	ret, _, err := syscall.SyscallN(_DialogBoxParamW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_DialogBoxParamW),
 		uintptr(hInst),
 		templateNameVal,
 		uintptr(hwndParent),
@@ -84,8 +80,6 @@ func (hInst HINSTANCE) DialogBoxParam(
 	return ret, nil
 }
 
-var _DialogBoxParamW = dll.User32.NewProc("DialogBoxParamW")
-
 // [GetClassInfoEx] function.
 //
 // [GetClassInfoEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassinfoexw
@@ -93,7 +87,7 @@ func (hInst HINSTANCE) GetClassInfoEx(
 	className *uint16,
 	destBuf *WNDCLASSEX,
 ) (ATOM, error) {
-	ret, _, err := syscall.SyscallN(_GetClassInfoExW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_GetClassInfoExW),
 		uintptr(hInst),
 		uintptr(unsafe.Pointer(className)),
 		uintptr(unsafe.Pointer(destBuf)))
@@ -102,8 +96,6 @@ func (hInst HINSTANCE) GetClassInfoEx(
 	}
 	return ATOM(ret), nil
 }
-
-var _GetClassInfoExW = dll.User32.NewProc("GetClassInfoExW")
 
 // [LoadAccelerators] function.
 //
@@ -115,7 +107,7 @@ func (hInst HINSTANCE) LoadAccelerators(tableName ResId) (HACCEL, error) {
 	tableName16 := wstr.NewBuf[wstr.Stack20]()
 	tableNameVal := tableName.raw(&tableName16)
 
-	ret, _, err := syscall.SyscallN(_LoadAcceleratorsW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_LoadAcceleratorsW),
 		uintptr(hInst),
 		tableNameVal)
 	if ret == 0 {
@@ -123,8 +115,6 @@ func (hInst HINSTANCE) LoadAccelerators(tableName ResId) (HACCEL, error) {
 	}
 	return HACCEL(ret), nil
 }
-
-var _LoadAcceleratorsW = dll.User32.NewProc("LoadAcceleratorsW")
 
 // [LoadCursor] function.
 //
@@ -135,7 +125,7 @@ func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) (HCURSOR, error) {
 	cursorName16 := wstr.NewBuf[wstr.Stack20]()
 	cursorNameVal := cursorName.raw(&cursorName16)
 
-	ret, _, err := syscall.SyscallN(_LoadCursorW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_LoadCursorW),
 		uintptr(hInst),
 		cursorNameVal)
 	if ret == 0 {
@@ -143,8 +133,6 @@ func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) (HCURSOR, error) {
 	}
 	return HCURSOR(ret), nil
 }
-
-var _LoadCursorW = dll.User32.NewProc("LoadCursorW")
 
 // [LoadIcon] function.
 //
@@ -162,7 +150,7 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) (HICON, error) {
 	iconName16 := wstr.NewBuf[wstr.Stack20]()
 	iconNameVal := iconName.raw(&iconName16)
 
-	ret, _, err := syscall.SyscallN(_LoadIconW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_LoadIconW),
 		uintptr(hInst),
 		iconNameVal)
 	if ret == 0 {
@@ -170,8 +158,6 @@ func (hInst HINSTANCE) LoadIcon(iconName IconRes) (HICON, error) {
 	}
 	return HICON(ret), nil
 }
-
-var _LoadIconW = dll.User32.NewProc("LoadIconW")
 
 // [LoadImage] function.
 //
@@ -219,7 +205,7 @@ func (hInst HINSTANCE) LoadImage(
 	name16 := wstr.NewBuf[wstr.Stack20]()
 	nameVal := name.raw(&name16)
 
-	ret, _, err := syscall.SyscallN(_LoadImageW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_LoadImageW),
 		uintptr(hInst),
 		nameVal,
 		uintptr(imgType),
@@ -232,8 +218,6 @@ func (hInst HINSTANCE) LoadImage(
 	return HGDIOBJ(ret), nil
 }
 
-var _LoadImageW = dll.User32.NewProc("LoadImageW")
-
 // [LoadMenu] function.
 //
 // ⚠️ You must defer [HMENU.DestroyMenu].
@@ -243,7 +227,7 @@ func (hInst HINSTANCE) LoadMenu(menuName ResId) (HMENU, error) {
 	menuName16 := wstr.NewBuf[wstr.Stack20]()
 	menuNameVal := menuName.raw(&menuName16)
 
-	ret, _, err := syscall.SyscallN(_LoadMenuW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_LoadMenuW),
 		uintptr(hInst),
 		menuNameVal)
 	if ret == 0 {
@@ -251,5 +235,3 @@ func (hInst HINSTANCE) LoadMenu(menuName ResId) (HMENU, error) {
 	}
 	return HMENU(ret), nil
 }
-
-var _LoadMenuW = dll.User32.NewProc("LoadMenuW")

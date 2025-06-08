@@ -21,7 +21,7 @@ type HBITMAP HGDIOBJ
 //
 // [CreateBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmap
 func CreateBitmap(width, height int, numPlanes, bitCount uint, bits []byte) (HBITMAP, error) {
-	ret, _, _ := syscall.SyscallN(_CreateBitmap.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateBitmap),
 		uintptr(int32(width)),
 		uintptr(int32(height)),
 		uintptr(uint32(numPlanes)),
@@ -33,23 +33,19 @@ func CreateBitmap(width, height int, numPlanes, bitCount uint, bits []byte) (HBI
 	return HBITMAP(ret), nil
 }
 
-var _CreateBitmap = dll.Gdi32.NewProc("CreateBitmap")
-
 // [CreateBitmapIndirect] function.
 //
 // ⚠️ You must defer [HBITMAP.DeleteObject].
 //
 // [CreateBitmapIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmapindirect
 func CreateBitmapIndirect(bm *BITMAP) (HBITMAP, error) {
-	ret, _, _ := syscall.SyscallN(_CreateBitmapIndirect.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateBitmapIndirect),
 		uintptr(unsafe.Pointer(bm)))
 	if ret == 0 {
 		return HBITMAP(0), co.ERROR_INVALID_PARAMETER
 	}
 	return HBITMAP(ret), nil
 }
-
-var _CreateBitmapIndirect = dll.Gdi32.NewProc("CreateBitmapIndirect")
 
 // [DeleteObject] function.
 //

@@ -43,7 +43,7 @@ func (hMap HFILEMAP) MapViewOfFile(
 		offset -= offset % uint64(si.DwAllocationGranularity)
 	}
 
-	ret, _, err := syscall.SyscallN(_MapViewOfFileFromApp.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_MapViewOfFileFromApp),
 		uintptr(hMap),
 		uintptr(desiredAccess),
 		uintptr(offset),
@@ -53,8 +53,6 @@ func (hMap HFILEMAP) MapViewOfFile(
 	}
 	return HFILEMAPVIEW(ret), nil
 }
-
-var _MapViewOfFileFromApp = dll.Kernel32.NewProc("MapViewOfFileFromApp")
 
 // Handle to the memory block of a memory-mapped [file]. Actually, this is the
 // starting address of the mapped view.
@@ -71,13 +69,11 @@ func (hMem HFILEMAPVIEW) Ptr() *byte {
 //
 // [FlushViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-flushviewoffile
 func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes uint) error {
-	ret, _, err := syscall.SyscallN(_FlushViewOfFile.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_FlushViewOfFile),
 		uintptr(hMem),
 		uintptr(numBytes))
 	return utl.ZeroAsGetLastError(ret, err)
 }
-
-var _FlushViewOfFile = dll.Kernel32.NewProc("FlushViewOfFile")
 
 // [UnmapViewOfFile] function.
 //
@@ -85,9 +81,7 @@ var _FlushViewOfFile = dll.Kernel32.NewProc("FlushViewOfFile")
 //
 // [UnmapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
 func (hMem HFILEMAPVIEW) UnmapViewOfFile() error {
-	ret, _, err := syscall.SyscallN(_UnmapViewOfFile.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_UnmapViewOfFile),
 		uintptr(hMem))
 	return utl.ZeroAsGetLastError(ret, err)
 }
-
-var _UnmapViewOfFile = dll.Kernel32.NewProc("UnmapViewOfFile")

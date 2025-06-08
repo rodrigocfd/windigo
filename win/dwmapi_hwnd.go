@@ -15,13 +15,11 @@ import (
 //
 // [DwmExtendFrameIntoClientArea]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea
 func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) error {
-	ret, _, _ := syscall.SyscallN(_DwmExtendFrameIntoClientArea.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Dwmapi(dll.PROC_DwmExtendFrameIntoClientArea),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(marginsInset)))
 	return utl.ErrorAsHResult(ret)
 }
-
-var _DwmExtendFrameIntoClientArea = dll.Dwmapi.NewProc("DwmExtendFrameIntoClientArea")
 
 // [DwmGetWindowAttribute] function.
 //
@@ -47,7 +45,7 @@ func (hWnd HWND) DwmGetWindowAttribute(attr co.DWMWA) (DwmAttr, error) {
 		ptrBuf, szBuf = unsafe.Pointer(&dwBuf), unsafe.Sizeof(dwBuf)
 	}
 
-	ret, _, _ := syscall.SyscallN(_DwmGetWindowAttribute.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Dwmapi(dll.PROC_DwmGetWindowAttribute),
 		uintptr(hWnd),
 		uintptr(attr),
 		uintptr(ptrBuf),
@@ -58,24 +56,20 @@ func (hWnd HWND) DwmGetWindowAttribute(attr co.DWMWA) (DwmAttr, error) {
 	return dwmAttrFromRaw(attr, dwBuf, rcBuf), nil
 }
 
-var _DwmGetWindowAttribute = dll.Dwmapi.NewProc("DwmGetWindowAttribute")
-
 // [DwmInvalidateIconicBitmaps] function.
 //
 // [DwmInvalidateIconicBitmaps]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwminvalidateiconicbitmaps
 func (hWnd HWND) DwmInvalidateIconicBitmaps() error {
-	ret, _, _ := syscall.SyscallN(_DwmInvalidateIconicBitmaps.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Dwmapi(dll.PROC_DwmInvalidateIconicBitmaps),
 		uintptr(hWnd))
 	return utl.ErrorAsHResult(ret)
 }
-
-var _DwmInvalidateIconicBitmaps = dll.Dwmapi.NewProc("DwmInvalidateIconicBitmaps")
 
 // [DwmSetIconicLivePreviewBitmap] function.
 //
 // [DwmSetIconicLivePreviewBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticoniclivepreviewbitmap
 func (hWnd HWND) DwmSetIconicLivePreviewBitmap(hBmp HBITMAP, ptClient POINT, sitFlags co.DWM_SIT) error {
-	ret, _, _ := syscall.SyscallN(_DwmSetIconicLivePreviewBitmap.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Dwmapi(dll.PROC_DwmSetIconicLivePreviewBitmap),
 		uintptr(hWnd),
 		uintptr(hBmp),
 		uintptr(unsafe.Pointer(&ptClient)),
@@ -83,20 +77,16 @@ func (hWnd HWND) DwmSetIconicLivePreviewBitmap(hBmp HBITMAP, ptClient POINT, sit
 	return utl.ErrorAsHResult(ret)
 }
 
-var _DwmSetIconicLivePreviewBitmap = dll.Dwmapi.NewProc("DwmSetIconicLivePreviewBitmap")
-
 // [DwmSetIconicThumbnail] function.
 //
 // [DwmSetIconicThumbnail]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticonicthumbnail
 func (hWnd HWND) DwmSetIconicThumbnail(hBmp HBITMAP, sitFlags co.DWM_SIT) error {
-	ret, _, _ := syscall.SyscallN(_DwmSetIconicThumbnail.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Dwmapi(dll.PROC_DwmSetIconicThumbnail),
 		uintptr(hWnd),
 		uintptr(hBmp),
 		uintptr(sitFlags))
 	return utl.ErrorAsHResult(ret)
 }
-
-var _DwmSetIconicThumbnail = dll.Dwmapi.NewProc("DwmSetIconicThumbnail")
 
 // [DwmSetWindowAttribute] function.
 //
@@ -120,12 +110,10 @@ func (hWnd HWND) DwmSetWindowAttribute(attr DwmAttr) error {
 		ptrBuf, szBuf = unsafe.Pointer(&attr.dw), unsafe.Sizeof(attr.dw)
 	}
 
-	ret, _, _ := syscall.SyscallN(_DwmSetWindowAttribute.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Dwmapi(dll.PROC_DwmSetWindowAttribute),
 		uintptr(hWnd),
 		uintptr(attr.tag),
 		uintptr(ptrBuf),
 		szBuf)
 	return utl.ErrorAsHResult(ret)
 }
-
-var _DwmSetWindowAttribute = dll.Dwmapi.NewProc("DwmSetWindowAttribute")

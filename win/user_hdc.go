@@ -16,15 +16,13 @@ import (
 //
 // [DrawIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawicon
 func (hdc HDC) DrawIcon(x, y int, hIcon HICON) error {
-	ret, _, err := syscall.SyscallN(_DrawIcon.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_DrawIcon),
 		uintptr(hdc),
 		uintptr(int32(x)),
 		uintptr(int32(y)),
 		uintptr(hIcon))
 	return utl.ZeroAsGetLastError(ret, err)
 }
-
-var _DrawIcon = dll.User32.NewProc("DrawIcon")
 
 // [DrawIconEx] function.
 //
@@ -37,7 +35,7 @@ func (hdc HDC) DrawIconEx(
 	hbrFlickerFree HBRUSH,
 	diFlags co.DI,
 ) error {
-	ret, _, err := syscall.SyscallN(_DrawIconEx.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_DrawIconEx),
 		uintptr(hdc),
 		uintptr(pos.X),
 		uintptr(pos.Y),
@@ -50,8 +48,6 @@ func (hdc HDC) DrawIconEx(
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _DrawIconEx = dll.User32.NewProc("DrawIconEx")
-
 // [EnumDisplayMonitors] function.
 //
 // [EnumDisplayMonitors]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
@@ -59,7 +55,7 @@ func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) ([]EnumDisplayMonitorsInfo, err
 	pPack := &_EnumDisplayMonitorsPack{
 		arr: make([]EnumDisplayMonitorsInfo, 0),
 	}
-	ret, _, _ := syscall.SyscallN(_EnumDisplayMonitors.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.User(dll.PROC_EnumDisplayMonitors),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(rcClip)),
 		enumDisplayMonitorsCallback(),
@@ -82,10 +78,7 @@ type (
 	}
 )
 
-var (
-	_EnumDisplayMonitors         = dll.User32.NewProc("EnumDisplayMonitors")
-	_enumDisplayMonitorsCallback uintptr
-)
+var _enumDisplayMonitorsCallback uintptr
 
 func enumDisplayMonitorsCallback() uintptr {
 	if _enumDisplayMonitorsCallback == 0 {
@@ -104,45 +97,37 @@ func enumDisplayMonitorsCallback() uintptr {
 //
 // [FrameRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-framerect
 func (hdc HDC) FrameRect(rc *RECT, hBrush HBRUSH) error {
-	ret, _, err := syscall.SyscallN(_FrameRect.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_FrameRect),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(rc)),
 		uintptr(hBrush))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _FrameRect = dll.User32.NewProc("FrameRect")
-
 // [InvertRect] function.
 //
 // [InvertRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invertrect
 func (hdc HDC) InvertRect(rc *RECT) error {
-	ret, _, err := syscall.SyscallN(_InvertRect.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_InvertRect),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(rc)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _InvertRect = dll.User32.NewProc("InvertRect")
-
 // [PaintDesktop] function.
 //
 // [PaintDesktop]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-paintdesktop
 func (hdc HDC) PaintDesktop() error {
-	ret, _, err := syscall.SyscallN(_PaintDesktop.Addr(),
+	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_PaintDesktop),
 		uintptr(hdc))
 	return utl.ZeroAsGetLastError(ret, err)
 }
-
-var _PaintDesktop = dll.User32.NewProc("PaintDesktop")
 
 // [WindowFromDC] function.
 //
 // [WindowFromDC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-windowfromdc
 func (hdc HDC) WindowFromDC() HWND {
-	ret, _, _ := syscall.SyscallN(_WindowFromDC.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.User(dll.PROC_WindowFromDC),
 		uintptr(hdc))
 	return HWND(ret)
 }
-
-var _WindowFromDC = dll.User32.NewProc("WindowFromDC")

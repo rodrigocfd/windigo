@@ -17,7 +17,7 @@ func GetPerformanceInfo() (PERFORMANCE_INFORMATION, error) {
 	var pi PERFORMANCE_INFORMATION
 	pi.SetCb()
 
-	ret, _, err := syscall.SyscallN(_K32GetPerformanceInfo.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Psapi(dll.PROC_K32GetPerformanceInfo),
 		uintptr(unsafe.Pointer(&pi)),
 		uintptr(unsafe.Sizeof(pi)))
 	if ret == 0 {
@@ -25,5 +25,3 @@ func GetPerformanceInfo() (PERFORMANCE_INFORMATION, error) {
 	}
 	return pi, nil
 }
-
-var _K32GetPerformanceInfo = dll.Psapi.NewProc("K32GetPerformanceInfo")

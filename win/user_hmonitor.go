@@ -20,22 +20,18 @@ type HMONITOR HANDLE
 //
 // [MonitorFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
 func MonitorFromPoint(pt POINT, flags co.MONITOR) HMONITOR {
-	ret, _, _ := syscall.SyscallN(_MonitorFromPoint.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.User(dll.PROC_MonitorFromPoint),
 		uintptr(utl.Make64(uint32(pt.X), uint32(pt.Y))),
 		uintptr(flags))
 	return HMONITOR(ret)
 }
 
-var _MonitorFromPoint = dll.User32.NewProc("MonitorFromPoint")
-
 // [MonitorFromRect] function.
 //
 // [MonitorFromRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromrect
 func MonitorFromRect(rc *RECT, flags co.MONITOR) HMONITOR {
-	ret, _, _ := syscall.SyscallN(_MonitorFromRect.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.User(dll.PROC_MonitorFromRect),
 		uintptr(unsafe.Pointer(rc)),
 		uintptr(flags))
 	return HMONITOR(ret)
 }
-
-var _MonitorFromRect = dll.User32.NewProc("MonitorFromRect")

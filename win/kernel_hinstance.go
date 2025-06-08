@@ -27,15 +27,13 @@ type HINSTANCE HANDLE
 // [GetModuleHandle]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
 func GetModuleHandle(moduleName string) (HINSTANCE, error) {
 	moduleName16 := wstr.NewBufWith[wstr.Stack20](moduleName, wstr.EMPTY_IS_NIL)
-	ret, _, err := syscall.SyscallN(_GetModuleHandleW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetModuleHandleW),
 		uintptr(moduleName16.UnsafePtr()))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
 	}
 	return HINSTANCE(ret), nil
 }
-
-var _GetModuleHandleW = dll.Kernel32.NewProc("GetModuleHandleW")
 
 // [LoadLibrary] function.
 //
@@ -44,7 +42,7 @@ var _GetModuleHandleW = dll.Kernel32.NewProc("GetModuleHandleW")
 // [LoadLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
 func LoadLibrary(libFileName string) (HINSTANCE, error) {
 	libFileName16 := wstr.NewBufWith[wstr.Stack20](libFileName, wstr.EMPTY_IS_NIL)
-	ret, _, err := syscall.SyscallN(_LoadLibraryW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_LoadLibraryW),
 		uintptr(libFileName16.UnsafePtr()))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
@@ -52,20 +50,16 @@ func LoadLibrary(libFileName string) (HINSTANCE, error) {
 	return HINSTANCE(ret), nil
 }
 
-var _LoadLibraryW = dll.Kernel32.NewProc("LoadLibraryW")
-
 // [FreeLibrary] function.
 //
 // Paired with [LoadLibrary].
 //
 // [FreeLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
 func (hInst HINSTANCE) FreeLibrary() error {
-	ret, _, err := syscall.SyscallN(_FreeLibrary.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_FreeLibrary),
 		uintptr(hInst))
 	return utl.ZeroAsGetLastError(ret, err)
 }
-
-var _FreeLibrary = dll.Kernel32.NewProc("FreeLibrary")
 
 // [GetModuleFileName] function.
 //
@@ -81,7 +75,7 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 	buf := wstr.NewBufSized[wstr.Stack260](260) // start allocating on the stack
 
 	for {
-		ret, _, err := syscall.SyscallN(_GetModuleFileNameW.Addr(),
+		ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetModuleFileNameW),
 			uintptr(hInst),
 			uintptr(buf.UnsafePtr()),
 			uintptr(uint32(buf.Len())))
@@ -97,5 +91,3 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 		buf.Resize(buf.Len() + 64) // increase buffer size to try again
 	}
 }
-
-var _GetModuleFileNameW = dll.Kernel32.NewProc("GetModuleFileNameW")

@@ -19,9 +19,7 @@ type HANDLE syscall.Handle
 //
 // [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (h HANDLE) CloseHandle() error {
-	ret, _, err := syscall.SyscallN(_CloseHandle.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_CloseHandle),
 		uintptr(h))
 	return utl.ZeroAsGetLastError(ret, err)
 }
-
-var _CloseHandle = dll.Kernel32.NewProc("CloseHandle")

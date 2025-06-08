@@ -21,7 +21,7 @@ type HBRUSH HGDIOBJ
 //
 // [CreateBrushIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbrushindirect
 func CreateBrushIndirect(lb *LOGBRUSH) (HBRUSH, error) {
-	ret, _, _ := syscall.SyscallN(_CreateBrushIndirect.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateBrushIndirect),
 		uintptr(unsafe.Pointer(lb)))
 	if ret == 0 {
 		return HBRUSH(0), co.ERROR_INVALID_PARAMETER
@@ -29,23 +29,19 @@ func CreateBrushIndirect(lb *LOGBRUSH) (HBRUSH, error) {
 	return HBRUSH(ret), nil
 }
 
-var _CreateBrushIndirect = dll.Gdi32.NewProc("CreateBrushIndirect")
-
 // [CreatePatternBrush] function.
 //
 // ⚠️ You must defer [HBRUSH.DeleteObject].
 //
 // [CreatePatternBrush]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpatternbrush
 func CreatePatternBrush(hbm HBITMAP) (HBRUSH, error) {
-	ret, _, _ := syscall.SyscallN(_CreatePatternBrush.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreatePatternBrush),
 		uintptr(hbm))
 	if ret == 0 {
 		return HBRUSH(0), co.ERROR_INVALID_PARAMETER
 	}
 	return HBRUSH(ret), nil
 }
-
-var _CreatePatternBrush = dll.Gdi32.NewProc("CreatePatternBrush")
 
 // [DeleteObject] function.
 //

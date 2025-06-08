@@ -39,7 +39,7 @@ func CreateFont(
 	faceName string,
 ) (HFONT, error) {
 	faceName16 := wstr.NewBufWith[wstr.Stack20](faceName, wstr.EMPTY_IS_NIL)
-	ret, _, _ := syscall.SyscallN(_CreateFontW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateFontW),
 		uintptr(int32(height)),
 		uintptr(int32(width)),
 		uintptr(int32(escapement)),
@@ -60,23 +60,19 @@ func CreateFont(
 	return HFONT(ret), nil
 }
 
-var _CreateFontW = dll.Gdi32.NewProc("CreateFontW")
-
 // [CreateFontIndirect] function.
 //
 // ⚠️ You must defer [HFONT.DeleteObject].
 //
 // [CreateFontIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontindirectw
 func CreateFontIndirect(lf *LOGFONT) (HFONT, error) {
-	ret, _, _ := syscall.SyscallN(_CreateFontIndirectW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateFontIndirectW),
 		uintptr(unsafe.Pointer(lf)))
 	if ret == 0 {
 		return HFONT(0), co.ERROR_INVALID_PARAMETER
 	}
 	return HFONT(ret), nil
 }
-
-var _CreateFontIndirectW = dll.Gdi32.NewProc("CreateFontIndirectW")
 
 // [DeleteObject] function.
 //

@@ -14,12 +14,10 @@ import (
 //
 // [IsThemeDialogTextureEnabled]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemedialogtextureenabled
 func (hWnd HWND) IsThemeDialogTextureEnabled() bool {
-	ret, _, _ := syscall.SyscallN(_IsThemeDialogTextureEnabled.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Uxtheme(dll.PROC_IsThemeDialogTextureEnabled),
 		uintptr(hWnd))
 	return ret != 0
 }
-
-var _IsThemeDialogTextureEnabled = dll.Uxtheme.NewProc("IsThemeDialogTextureEnabled")
 
 // [OpenThemeData] function.
 //
@@ -28,7 +26,7 @@ var _IsThemeDialogTextureEnabled = dll.Uxtheme.NewProc("IsThemeDialogTextureEnab
 // [OpenThemeData]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
 func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {
 	classNames16 := wstr.NewBufWith[wstr.Stack20](classNames, wstr.EMPTY_IS_NIL)
-	ret, _, _ := syscall.SyscallN(_OpenThemeData.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Uxtheme(dll.PROC_OpenThemeData),
 		uintptr(hWnd),
 		uintptr(classNames16.UnsafePtr()))
 	if ret == 0 {
@@ -36,5 +34,3 @@ func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {
 	}
 	return HTHEME(ret), nil
 }
-
-var _OpenThemeData = dll.Uxtheme.NewProc("OpenThemeData")

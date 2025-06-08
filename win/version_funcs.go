@@ -30,15 +30,13 @@ import (
 // [GetFileVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
 func GetFileVersionInfo(fileName string, dest []byte) error {
 	fileName16 := wstr.NewBufWith[wstr.Stack20](fileName, wstr.EMPTY_IS_NIL)
-	ret, _, err := syscall.SyscallN(_GetFileVersionInfoW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Version(dll.PROC_GetFileVersionInfoW),
 		uintptr(fileName16.UnsafePtr()),
 		0,
 		uintptr(uint32(len(dest))),
 		uintptr(unsafe.Pointer(&dest[0])))
 	return utl.ZeroAsGetLastError(ret, err)
 }
-
-var _GetFileVersionInfoW = dll.Version.NewProc("GetFileVersionInfoW")
 
 // [GetFileVersionInfoSize] function.
 //
@@ -47,7 +45,7 @@ func GetFileVersionInfoSize(fileName string) (uint, error) {
 	fileName16 := wstr.NewBufWith[wstr.Stack20](fileName, wstr.EMPTY_IS_NIL)
 	var dummy uint32
 
-	ret, _, err := syscall.SyscallN(_GetFileVersionInfoSizeW.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Version(dll.PROC_GetFileVersionInfoSizeW),
 		uintptr(fileName16.UnsafePtr()),
 		uintptr(unsafe.Pointer(&dummy)))
 	if ret == 0 {
@@ -55,8 +53,6 @@ func GetFileVersionInfoSize(fileName string) (uint, error) {
 	}
 	return uint(ret), nil
 }
-
-var _GetFileVersionInfoSizeW = dll.Version.NewProc("GetFileVersionInfoSizeW")
 
 // [VerQueryValue] function.
 //
@@ -105,7 +101,7 @@ func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, uint, bool) {
 	var lplpBuffer uintptr
 	var puLen uint32
 
-	ret, _, _ := syscall.SyscallN(_VerQueryValueW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Version(dll.PROC_VerQueryValueW),
 		uintptr(unsafe.Pointer(&block[0])),
 		uintptr(subBlock16.UnsafePtr()),
 		uintptr(unsafe.Pointer(&lplpBuffer)),
@@ -115,5 +111,3 @@ func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, uint, bool) {
 	}
 	return unsafe.Pointer(lplpBuffer), uint(puLen), true
 }
-
-var _VerQueryValueW = dll.Version.NewProc("VerQueryValueW")

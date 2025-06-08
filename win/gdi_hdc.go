@@ -28,7 +28,7 @@ func CreateDC(driver, device string, dm *DEVMODE) (HDC, error) {
 	driver16 := wstr.NewBufWith[wstr.Stack20](driver, wstr.EMPTY_IS_NIL)
 	device16 := wstr.NewBufWith[wstr.Stack20](device, wstr.ALLOW_EMPTY)
 
-	ret, _, _ := syscall.SyscallN(_CreateDCW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateDCW),
 		uintptr(driver16.UnsafePtr()),
 		uintptr(device16.UnsafePtr()),
 		0,
@@ -38,8 +38,6 @@ func CreateDC(driver, device string, dm *DEVMODE) (HDC, error) {
 	}
 	return HDC(ret), nil
 }
-
-var _CreateDCW = dll.Gdi32.NewProc("CreateDCW")
 
 // [CreateIC] function.
 //
@@ -50,7 +48,7 @@ func CreateIC(driver, device string, dm *DEVMODE) (HDC, error) {
 	driver16 := wstr.NewBufWith[wstr.Stack20](driver, wstr.ALLOW_EMPTY)
 	device16 := wstr.NewBufWith[wstr.Stack20](device, wstr.ALLOW_EMPTY)
 
-	ret, _, _ := syscall.SyscallN(_CreateICW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateICW),
 		uintptr(driver16.UnsafePtr()),
 		uintptr(device16.UnsafePtr()),
 		0,
@@ -61,29 +59,23 @@ func CreateIC(driver, device string, dm *DEVMODE) (HDC, error) {
 	return HDC(ret), nil
 }
 
-var _CreateICW = dll.Gdi32.NewProc("CreateICW")
-
 // [AbortDoc] function.
 //
 // [AbortDoc]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-abortdoc
 func (hdc HDC) AbortDoc() error {
-	ret, _, _ := syscall.SyscallN(_AbortDoc.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_AbortDoc),
 		uintptr(hdc))
 	return utl.Minus1AsSysInvalidParm(ret)
 }
-
-var _AbortDoc = dll.Gdi32.NewProc("AbortDoc")
 
 // [AbortPath] function.
 //
 // [AbortPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-abortpath
 func (hdc HDC) AbortPath() error {
-	ret, _, _ := syscall.SyscallN(_AbortPath.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_AbortPath),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _AbortPath = dll.Gdi32.NewProc("AbortPath")
 
 // [AlphaBlend] function.
 //
@@ -98,7 +90,7 @@ func (hdc HDC) AlphaBlend(
 	szSrc SIZE,
 	ftn BLENDFUNCTION,
 ) error {
-	ret, _, _ := syscall.SyscallN(_AlphaBlend.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_AlphaBlend),
 		uintptr(hdc),
 		uintptr(originDest.X),
 		uintptr(originDest.Y),
@@ -118,13 +110,11 @@ func (hdc HDC) AlphaBlend(
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _AlphaBlend = dll.Gdi32.NewProc("AlphaBlend")
-
 // [AngleArc] function.
 //
 // [AngleArc]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-anglearc
 func (hdc HDC) AngleArc(center POINT, r uint, startAngle, sweepAngle float32) error {
-	ret, _, _ := syscall.SyscallN(_AngleArc.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_AngleArc),
 		uintptr(hdc),
 		uintptr(center.X),
 		uintptr(center.Y),
@@ -134,13 +124,11 @@ func (hdc HDC) AngleArc(center POINT, r uint, startAngle, sweepAngle float32) er
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _AngleArc = dll.Gdi32.NewProc("AngleArc")
-
 // [Arc] function.
 //
 // [Arc]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-arc
 func (hdc HDC) Arc(bound RECT, radialStart, radialEnd POINT) error {
-	ret, _, _ := syscall.SyscallN(_Arc.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_Arc),
 		uintptr(hdc),
 		uintptr(bound.Left),
 		uintptr(bound.Top),
@@ -152,14 +140,12 @@ func (hdc HDC) Arc(bound RECT, radialStart, radialEnd POINT) error {
 		uintptr(radialEnd.Y))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _Arc = dll.Gdi32.NewProc("Arc")
 
 // [ArcTo] function.
 //
 // [ArcTo]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-arcto
 func (hdc HDC) ArcTo(bound RECT, radialStart, radialEnd POINT) error {
-	ret, _, _ := syscall.SyscallN(_ArcTo.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_ArcTo),
 		uintptr(hdc),
 		uintptr(bound.Left),
 		uintptr(bound.Top),
@@ -171,8 +157,6 @@ func (hdc HDC) ArcTo(bound RECT, radialStart, radialEnd POINT) error {
 		uintptr(radialEnd.Y))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _ArcTo = dll.Gdi32.NewProc("ArcTo")
 
 // [BeginPath] function.
 //
@@ -180,12 +164,10 @@ var _ArcTo = dll.Gdi32.NewProc("ArcTo")
 //
 // [BeginPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-beginpath
 func (hdc HDC) BeginPath() error {
-	ret, _, _ := syscall.SyscallN(_BeginPath.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_BeginPath),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _BeginPath = dll.Gdi32.NewProc("BeginPath")
 
 // [BitBlt] function.
 //
@@ -199,7 +181,7 @@ func (hdc HDC) BitBlt(
 	srcTopLeft POINT,
 	rop co.ROP,
 ) error {
-	ret, _, err := syscall.SyscallN(_BitBlt.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Gdi(dll.PROC_BitBlt),
 		uintptr(hdc),
 		uintptr(destTopLeft.X),
 		uintptr(destTopLeft.Y),
@@ -212,24 +194,20 @@ func (hdc HDC) BitBlt(
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _BitBlt = dll.Gdi32.NewProc("BitBlt")
-
 // [CancelDC] function.
 //
 // [CancelDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-canceldc
 func (hdc HDC) CancelDC() error {
-	ret, _, _ := syscall.SyscallN(_CancelDC.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CancelDC),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _CancelDC = dll.Gdi32.NewProc("CancelDC")
 
 // [Chord] function.
 //
 // [Chord]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-chord
 func (hdc HDC) Chord(bound RECT, radialStart, radialEnd POINT) error {
-	ret, _, _ := syscall.SyscallN(_Chord.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_Chord),
 		uintptr(hdc),
 		uintptr(bound.Left),
 		uintptr(bound.Top),
@@ -242,24 +220,20 @@ func (hdc HDC) Chord(bound RECT, radialStart, radialEnd POINT) error {
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _Chord = dll.Gdi32.NewProc("Chord")
-
 // [CloseFigure] function.
 //
 // [CloseFigure]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-closefigure
 func (hdc HDC) CloseFigure() error {
-	ret, _, _ := syscall.SyscallN(_CloseFigure.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CloseFigure),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _CloseFigure = dll.Gdi32.NewProc("CloseFigure")
 
 // [ChoosePixelFormat] function.
 //
 // [ChoosePixelFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-choosepixelformat
 func (hdc HDC) ChoosePixelFormat(pfd *PIXELFORMATDESCRIPTOR) (int, error) {
-	ret, _, err := syscall.SyscallN(_ChoosePixelFormat.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Gdi(dll.PROC_ChoosePixelFormat),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(pfd)))
 	if ret == 0 {
@@ -268,15 +242,13 @@ func (hdc HDC) ChoosePixelFormat(pfd *PIXELFORMATDESCRIPTOR) (int, error) {
 	return int(ret), nil
 }
 
-var _ChoosePixelFormat = dll.Gdi32.NewProc("ChoosePixelFormat")
-
 // [CreateCompatibleBitmap] function.
 //
 // ⚠️ You must defer [HBITMAP.DeleteObject].
 //
 // [CreateCompatibleBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createcompatiblebitmap
 func (hdc HDC) CreateCompatibleBitmap(cx, cy uint) (HBITMAP, error) {
-	ret, _, _ := syscall.SyscallN(_CreateCompatibleBitmap.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateCompatibleBitmap),
 		uintptr(hdc),
 		uintptr(int32(cx)),
 		uintptr(int32(cy)))
@@ -286,23 +258,19 @@ func (hdc HDC) CreateCompatibleBitmap(cx, cy uint) (HBITMAP, error) {
 	return HBITMAP(ret), nil
 }
 
-var _CreateCompatibleBitmap = dll.Gdi32.NewProc("CreateCompatibleBitmap")
-
 // [CreateCompatibleDC] function.
 //
 // ⚠️ You must defer [HDC.DeleteDC].
 //
 // [CreateCompatibleDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createcompatibledc
 func (hdc HDC) CreateCompatibleDC() (HDC, error) {
-	ret, _, _ := syscall.SyscallN(_CreateCompatibleDC.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateCompatibleDC),
 		uintptr(hdc))
 	if ret == 0 {
 		return HDC(0), co.ERROR_INVALID_PARAMETER
 	}
 	return HDC(ret), nil
 }
-
-var _CreateCompatibleDC = dll.Gdi32.NewProc("CreateCompatibleDC")
 
 // [CreateDIBSection] function.
 //
@@ -316,7 +284,7 @@ func (hdc HDC) CreateDIBSection(
 	offset uint,
 ) (HBITMAP, *byte, error) {
 	var ppvBits *byte
-	ret, _, err := syscall.SyscallN(_CreateDIBSection.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Gdi(dll.PROC_CreateDIBSection),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(bmi)),
 		uintptr(usage),
@@ -329,15 +297,13 @@ func (hdc HDC) CreateDIBSection(
 	return HBITMAP(ret), ppvBits, nil
 }
 
-var _CreateDIBSection = dll.Gdi32.NewProc("CreateDIBSection")
-
 // [CreateHalftonePalette] function.
 //
 // ⚠️ You must defer [HPALETTE.DeleteObject].
 //
 // [CreateHalftonePalette]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createhalftonepalette
 func (hdc HDC) CreateHalftonePalette() (HPALETTE, error) {
-	ret, _, _ := syscall.SyscallN(_CreateHalftonePalette.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateHalftonePalette),
 		uintptr(hdc))
 	if ret == 0 {
 		return HPALETTE(0), co.ERROR_INVALID_PARAMETER
@@ -345,24 +311,20 @@ func (hdc HDC) CreateHalftonePalette() (HPALETTE, error) {
 	return HPALETTE(ret), nil
 }
 
-var _CreateHalftonePalette = dll.Gdi32.NewProc("CreateHalftonePalette")
-
 // [DeleteDC] function.
 //
 // [DeleteDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deletedc
 func (hdc HDC) DeleteDC() error {
-	ret, _, _ := syscall.SyscallN(_DeleteDC.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_DeleteDC),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _DeleteDC = dll.Gdi32.NewProc("DeleteDC")
 
 // [Ellipse] function.
 //
 // [Ellipse]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-ellipse
 func (hdc HDC) Ellipse(bound RECT) error {
-	ret, _, _ := syscall.SyscallN(_Ellipse.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_Ellipse),
 		uintptr(hdc),
 		uintptr(bound.Left),
 		uintptr(bound.Top),
@@ -371,29 +333,23 @@ func (hdc HDC) Ellipse(bound RECT) error {
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _Ellipse = dll.Gdi32.NewProc("Ellipse")
-
 // [EndDoc] function.
 //
 // [EndDoc]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-enddoc
 func (hdc HDC) EndDoc() error {
-	ret, _, _ := syscall.SyscallN(_EndDoc.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_EndDoc),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _EndDoc = dll.Gdi32.NewProc("EndDoc")
 
 // [EndPage] function.
 //
 // [EndPage]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-endpage
 func (hdc HDC) EndPage() error {
-	ret, _, _ := syscall.SyscallN(_EndPage.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_EndPage),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _EndPage = dll.Gdi32.NewProc("EndPage")
 
 // [EndPath] function.
 //
@@ -401,18 +357,16 @@ var _EndPage = dll.Gdi32.NewProc("EndPage")
 //
 // [EndPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-endpath
 func (hdc HDC) EndPath() error {
-	ret, _, _ := syscall.SyscallN(_EndPath.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_EndPath),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _EndPath = dll.Gdi32.NewProc("EndPath")
 
 // [ExcludeClipRect] function.
 //
 // [ExcludeClipRect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-excludecliprect
 func (hdc HDC) ExcludeClipRect(rc RECT) (co.REGION, error) {
-	ret, _, _ := syscall.SyscallN(_ExcludeClipRect.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_ExcludeClipRect),
 		uintptr(hdc),
 		uintptr(rc.Left),
 		uintptr(rc.Top),
@@ -424,61 +378,51 @@ func (hdc HDC) ExcludeClipRect(rc RECT) (co.REGION, error) {
 	return co.REGION(ret), nil
 }
 
-var _ExcludeClipRect = dll.Gdi32.NewProc("ExcludeClipRect")
-
 // [FillPath] function.
 //
 // [FillPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-fillpath
 func (hdc HDC) FillPath() error {
-	ret, _, _ := syscall.SyscallN(_FillPath.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_FillPath),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _FillPath = dll.Gdi32.NewProc("FillPath")
 
 // [FillRect] function.
 //
 // [FillRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-fillrect
 func (hdc HDC) FillRect(rc *RECT, hBrush HBRUSH) error {
-	ret, _, _ := syscall.SyscallN(_FillRect.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_FillRect),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(rc)),
 		uintptr(hBrush))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _FillRect = dll.Gdi32.NewProc("FillRect")
-
 // [FillRgn] function.
 //
 // [FillRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-fillrgn
 func (hdc HDC) FillRgn(hRgn HRGN, hBrush HBRUSH) error {
-	ret, _, _ := syscall.SyscallN(_FillRgn.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_FillRgn),
 		uintptr(hdc),
 		uintptr(hRgn),
 		uintptr(hBrush))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _FillRgn = dll.Gdi32.NewProc("FillRgn")
-
 // [FlattenPath] function.
 //
 // [FlattenPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-flattenpath
 func (hdc HDC) FlattenPath() error {
-	ret, _, _ := syscall.SyscallN(_FlattenPath.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_FlattenPath),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _FlattenPath = dll.Gdi32.NewProc("FlattenPath")
 
 // [FrameRgn] function.
 //
 // [FrameRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-framergn
 func (hdc HDC) FrameRgn(hRgn HRGN, hBrush HBRUSH, width, height uint) error {
-	ret, _, _ := syscall.SyscallN(_FrameRgn.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_FrameRgn),
 		uintptr(hdc),
 		uintptr(hRgn),
 		uintptr(hBrush),
@@ -487,13 +431,11 @@ func (hdc HDC) FrameRgn(hRgn HRGN, hBrush HBRUSH, width, height uint) error {
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _FrameRgn = dll.Gdi32.NewProc("FrameRgn")
-
 // [GetBkColor] function.
 //
 // [GetBkColor]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getbkcolor
 func (hdc HDC) GetBkColor() (COLORREF, error) {
-	ret, _, _ := syscall.SyscallN(_GetBkColor.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetBkColor),
 		uintptr(hdc))
 	if ret == utl.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
@@ -501,13 +443,11 @@ func (hdc HDC) GetBkColor() (COLORREF, error) {
 	return COLORREF(ret), nil
 }
 
-var _GetBkColor = dll.Gdi32.NewProc("GetBkColor")
-
 // [GetBkMode] function.
 //
 // [GetBkMode]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getbkmode
 func (hdc HDC) GetBkMode() (co.BKMODE, error) {
-	ret, _, _ := syscall.SyscallN(_GetBkMode.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetBkMode),
 		uintptr(hdc))
 	if ret == 0 {
 		return co.BKMODE(0), co.ERROR_INVALID_PARAMETER
@@ -515,14 +455,12 @@ func (hdc HDC) GetBkMode() (co.BKMODE, error) {
 	return co.BKMODE(ret), nil
 }
 
-var _GetBkMode = dll.Gdi32.NewProc("GetBkMode")
-
 // [GetCurrentPositionEx] function.
 //
 // [GetCurrentPositionEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getcurrentpositionex
 func (hdc HDC) GetCurrentPositionEx() (POINT, error) {
 	var pt POINT
-	ret, _, _ := syscall.SyscallN(_GetCurrentPositionEx.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetCurrentPositionEx),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&pt)))
 	if ret == 0 {
@@ -531,27 +469,23 @@ func (hdc HDC) GetCurrentPositionEx() (POINT, error) {
 	return pt, nil
 }
 
-var _GetCurrentPositionEx = dll.Gdi32.NewProc("GetCurrentPositionEx")
-
 // [GetDCBrushColor] function.
 //
 // [GetDCBrushColor]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdcbrushcolor
 func (hdc HDC) GetDCBrushColor() (COLORREF, error) {
-	ret, _, _ := syscall.SyscallN(_GetDCBrushColor.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetDCBrushColor),
 		uintptr(hdc))
 	if ret == utl.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
 	}
 	return COLORREF(ret), nil
 }
-
-var _GetDCBrushColor = dll.Gdi32.NewProc("GetDCBrushColor")
 
 // [GetDCPenColor] function.
 //
 // [GetDCPenColor]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdcpencolor
 func (hdc HDC) GetDCPenColor() (COLORREF, error) {
-	ret, _, _ := syscall.SyscallN(_GetDCPenColor.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetDCPenColor),
 		uintptr(hdc))
 	if ret == utl.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
@@ -559,19 +493,15 @@ func (hdc HDC) GetDCPenColor() (COLORREF, error) {
 	return COLORREF(ret), nil
 }
 
-var _GetDCPenColor = dll.Gdi32.NewProc("GetDCPenColor")
-
 // [GetDeviceCaps] function.
 //
 // [GetDeviceCaps]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdevicecaps
 func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
-	ret, _, _ := syscall.SyscallN(_GetDeviceCaps.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetDeviceCaps),
 		uintptr(hdc),
 		uintptr(index))
 	return int32(ret)
 }
-
-var _GetDeviceCaps = dll.Gdi32.NewProc("GetDeviceCaps")
 
 // [GetDIBits] function.
 //
@@ -654,7 +584,7 @@ func (hdc HDC) GetDIBits(
 
 	bmi.BmiHeader.SetBiSize() // safety
 
-	ret, _, _ := syscall.SyscallN(_GetDIBits.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetDIBits),
 		uintptr(hdc),
 		uintptr(hbm),
 		uintptr(uint32(firstScanLine)),
@@ -669,13 +599,11 @@ func (hdc HDC) GetDIBits(
 	return int(ret), nil
 }
 
-var _GetDIBits = dll.Gdi32.NewProc("GetDIBits")
-
 // [GetPixel] function.
 //
 // [GetPixel]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getpixel
 func (hdc HDC) GetPixel() (COLORREF, error) {
-	ret, _, _ := syscall.SyscallN(_GetPixel.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetPixel),
 		uintptr(hdc))
 	if ret == utl.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
@@ -683,13 +611,11 @@ func (hdc HDC) GetPixel() (COLORREF, error) {
 	return COLORREF(ret), nil
 }
 
-var _GetPixel = dll.Gdi32.NewProc("GetPixel")
-
 // [GetPolyFillMode] function.
 //
 // [GetPolyFillMode]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getpolyfillmode
 func (hdc HDC) GetPolyFillMode() (co.POLYF, error) {
-	ret, _, _ := syscall.SyscallN(_GetPolyFillMode.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetPolyFillMode),
 		uintptr(hdc))
 	if ret == 0 {
 		return co.POLYF(0), co.ERROR_INVALID_PARAMETER
@@ -697,21 +623,17 @@ func (hdc HDC) GetPolyFillMode() (co.POLYF, error) {
 	return co.POLYF(ret), nil
 }
 
-var _GetPolyFillMode = dll.Gdi32.NewProc("GetPolyFillMode")
-
 // [GetTextColor] function.
 //
 // [GetTextColor]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextcolor
 func (hdc HDC) GetTextColor() (COLORREF, error) {
-	ret, _, _ := syscall.SyscallN(_GetTextColor.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetTextColor),
 		uintptr(hdc))
 	if ret == utl.CLR_INVALID {
 		return COLORREF(0), co.ERROR_INVALID_PARAMETER
 	}
 	return COLORREF(ret), nil
 }
-
-var _GetTextColor = dll.Gdi32.NewProc("GetTextColor")
 
 // [GetTextExtentPoint32] function.
 //
@@ -721,7 +643,7 @@ func (hdc HDC) GetTextExtentPoint32(text string) (SIZE, error) {
 	textLen := utf8.RuneCountInString(text)
 	var sz SIZE
 
-	ret, _, _ := syscall.SyscallN(_GetTextExtentPoint32W.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetTextExtentPoint32W),
 		uintptr(hdc),
 		uintptr(text16.UnsafePtr()),
 		uintptr(textLen),
@@ -732,14 +654,12 @@ func (hdc HDC) GetTextExtentPoint32(text string) (SIZE, error) {
 	return sz, nil
 }
 
-var _GetTextExtentPoint32W = dll.Gdi32.NewProc("GetTextExtentPoint32W")
-
 // [GetTextFace] function.
 //
 // [GetTextFace]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextfacew
 func (hdc HDC) GetTextFace() (string, error) {
 	var buf [utl.LF_FACESIZE]uint16
-	ret, _, _ := syscall.SyscallN(_GetTextFaceW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetTextFaceW),
 		uintptr(hdc),
 		uintptr(len(buf)),
 		uintptr(unsafe.Pointer(&buf[0])))
@@ -749,14 +669,12 @@ func (hdc HDC) GetTextFace() (string, error) {
 	return wstr.WstrSliceToStr(buf[:]), nil
 }
 
-var _GetTextFaceW = dll.Gdi32.NewProc("GetTextFaceW")
-
 // [GetTextMetrics] function.
 //
 // [GetTextMetrics]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextmetricsw
 func (hdc HDC) GetTextMetrics() (TEXTMETRIC, error) {
 	var tm TEXTMETRIC
-	ret, _, _ := syscall.SyscallN(_GetTextMetricsW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetTextMetricsW),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&tm)))
 	if ret == 0 {
@@ -765,14 +683,12 @@ func (hdc HDC) GetTextMetrics() (TEXTMETRIC, error) {
 	return tm, nil
 }
 
-var _GetTextMetricsW = dll.Gdi32.NewProc("GetTextMetricsW")
-
 // [GetViewportExtEx] function.
 //
 // [GetViewportExtEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getviewportextex
 func (hdc HDC) GetViewportExtEx() (SIZE, error) {
 	var sz SIZE
-	ret, _, _ := syscall.SyscallN(_GetViewportExtEx.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetViewportExtEx),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&sz)))
 	if ret == 0 {
@@ -780,15 +696,13 @@ func (hdc HDC) GetViewportExtEx() (SIZE, error) {
 	}
 	return sz, nil
 }
-
-var _GetViewportExtEx = dll.Gdi32.NewProc("GetViewportExtEx")
 
 // [GetViewportOrgEx] function.
 //
 // [GetViewportOrgEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getviewportorgex
 func (hdc HDC) GetViewportOrgEx() (POINT, error) {
 	var pt POINT
-	ret, _, _ := syscall.SyscallN(_GetViewportOrgEx.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetViewportOrgEx),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&pt)))
 	if ret == 0 {
@@ -797,14 +711,12 @@ func (hdc HDC) GetViewportOrgEx() (POINT, error) {
 	return pt, nil
 }
 
-var _GetViewportOrgEx = dll.Gdi32.NewProc("GetViewportOrgEx")
-
 // [GetWindowExtEx] function.
 //
 // [GetWindowExtEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getwindowextex
 func (hdc HDC) GetWindowExtEx() (SIZE, error) {
 	var sz SIZE
-	ret, _, _ := syscall.SyscallN(_GetWindowExtEx.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetWindowExtEx),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&sz)))
 	if ret == 0 {
@@ -813,14 +725,12 @@ func (hdc HDC) GetWindowExtEx() (SIZE, error) {
 	return sz, nil
 }
 
-var _GetWindowExtEx = dll.Gdi32.NewProc("GetWindowExtEx")
-
 // [GetWindowOrgEx] function.
 //
 // [GetWindowOrgEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getwindoworgex
 func (hdc HDC) GetWindowOrgEx() (POINT, error) {
 	var pt POINT
-	ret, _, _ := syscall.SyscallN(_GetWindowOrgEx.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetWindowOrgEx),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&pt)))
 	if ret == 0 {
@@ -828,8 +738,6 @@ func (hdc HDC) GetWindowOrgEx() (POINT, error) {
 	}
 	return pt, nil
 }
-
-var _GetWindowOrgEx = dll.Gdi32.NewProc("GetWindowOrgEx")
 
 // [GradientFill] function.
 //
@@ -858,7 +766,7 @@ func (hdc HDC) GradientFill(
 		nMesh = len(meshRect)
 	}
 
-	ret, _, _ := syscall.SyscallN(_GradientFill.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GradientFill),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&vertex[0])),
 		uintptr(uint32(len(vertex))),
@@ -867,8 +775,6 @@ func (hdc HDC) GradientFill(
 		uintptr(mode))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _GradientFill = dll.Gdi32.NewProc("GradientFill")
 
 // [AtlHiMetricToPixel] function. Converts HIMETRIC units to pixels.
 //
@@ -891,7 +797,7 @@ func (hdc HDC) HiMetricToPixel(himetricX, himetricY int) (pixelX, pixelY int) {
 //
 // [IntersectClipRect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-intersectcliprect
 func (hdc HDC) IntersectClipRect(coords RECT) (co.REGION, error) {
-	ret, _, _ := syscall.SyscallN(_IntersectClipRect.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_IntersectClipRect),
 		uintptr(hdc),
 		uintptr(coords.Left),
 		uintptr(coords.Top),
@@ -903,45 +809,37 @@ func (hdc HDC) IntersectClipRect(coords RECT) (co.REGION, error) {
 	return co.REGION(ret), nil
 }
 
-var _IntersectClipRect = dll.Gdi32.NewProc("IntersectClipRect")
-
 // [InvertRgn] function.
 //
 // [InvertRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-invertrgn
 func (hdc HDC) InvertRgn(hRgn HRGN) error {
-	ret, _, _ := syscall.SyscallN(_InvertRgn.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_InvertRgn),
 		uintptr(hdc),
 		uintptr(hRgn))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _InvertRgn = dll.Gdi32.NewProc("InvertRgn")
-
 // [LineTo] function.
 //
 // [LineTo]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-lineto
 func (hdc HDC) LineTo(x, y int) error {
-	ret, _, _ := syscall.SyscallN(_LineTo.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_LineTo),
 		uintptr(hdc),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _LineTo = dll.Gdi32.NewProc("LineTo")
-
 // [LPtoDP] function.
 //
 // [LPtoDP]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-lptodp
 func (hdc HDC) LPtoDP(pts []POINT) error {
-	ret, _, _ := syscall.SyscallN(_LPtoDP.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_LPtoDP),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&pts[0])),
 		uintptr(int32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _LPtoDP = dll.Gdi32.NewProc("LPtoDP")
 
 // [MaskBlt] function.
 //
@@ -955,7 +853,7 @@ func (hdc HDC) MaskBlt(
 	maskOffset POINT,
 	rop co.ROP,
 ) error {
-	ret, _, _ := syscall.SyscallN(_MaskBlt.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_MaskBlt),
 		uintptr(hdc),
 		uintptr(destTopLeft.X),
 		uintptr(destTopLeft.Y),
@@ -971,14 +869,12 @@ func (hdc HDC) MaskBlt(
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _MaskBlt = dll.Gdi32.NewProc("MaskBlt")
-
 // [MoveToEx] function.
 //
 // [MoveToEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-movetoex
 func (hdc HDC) MoveToEx(x, y int) (POINT, error) {
 	var pt POINT
-	ret, _, _ := syscall.SyscallN(_MoveToEx.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_MoveToEx),
 		uintptr(hdc),
 		uintptr(int32(x)),
 		uintptr(int32(y)),
@@ -989,25 +885,21 @@ func (hdc HDC) MoveToEx(x, y int) (POINT, error) {
 	return pt, nil
 }
 
-var _MoveToEx = dll.Gdi32.NewProc("MoveToEx")
-
 // [PaintRgn] function.
 //
 // [PaintRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-paintrgn
 func (hdc HDC) PaintRgn(hRgn HRGN) error {
-	ret, _, _ := syscall.SyscallN(_PaintRgn.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_PaintRgn),
 		uintptr(hdc),
 		uintptr(hRgn))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _PaintRgn = dll.Gdi32.NewProc("PaintRgn")
-
 // [PatBlt] function.
 //
 // [PatBlt]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-patblt
 func (hdc HDC) PatBlt(topLeft POINT, sz SIZE, rop co.ROP) error {
-	ret, _, _ := syscall.SyscallN(_PatBlt.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_PatBlt),
 		uintptr(hdc),
 		uintptr(topLeft.X),
 		uintptr(topLeft.Y),
@@ -1017,15 +909,13 @@ func (hdc HDC) PatBlt(topLeft POINT, sz SIZE, rop co.ROP) error {
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _PatBlt = dll.Gdi32.NewProc("PatBlt")
-
 // [PathToRegion] function.
 //
 // ⚠️ You must defer [HRGN.DeleteObject] on the returned HRGN.
 //
 // [PathToRegion]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-pathtoregion
 func (hdc HDC) PathToRegion() (HRGN, error) {
-	ret, _, _ := syscall.SyscallN(_PathToRegion.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_PathToRegion),
 		uintptr(hdc))
 	if ret == 0 {
 		return HRGN(0), co.ERROR_INVALID_PARAMETER
@@ -1033,13 +923,11 @@ func (hdc HDC) PathToRegion() (HRGN, error) {
 	return HRGN(ret), nil
 }
 
-var _PathToRegion = dll.Gdi32.NewProc("PathToRegion")
-
 // [Pie] function.
 //
 // [Pie]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-pie
 func (hdc HDC) Pie(bound RECT, endPointRadial1, endPointRadial2 POINT) error {
-	ret, _, _ := syscall.SyscallN(_Pie.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_Pie),
 		uintptr(hdc),
 		uintptr(bound.Left),
 		uintptr(bound.Top),
@@ -1051,8 +939,6 @@ func (hdc HDC) Pie(bound RECT, endPointRadial1, endPointRadial2 POINT) error {
 		uintptr(endPointRadial2.Y))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _Pie = dll.Gdi32.NewProc("Pie")
 
 // [AtlPixelToHiMetric] function. Converts pixels to HIMETRIC units.
 //
@@ -1073,27 +959,23 @@ func (hdc HDC) PixelToHiMetric(pixelX, pixelY int) (himetricX, himetricY int) {
 //
 // [PolyBezier]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polybezier
 func (hdc HDC) PolyBezier(pts []POINT) error {
-	ret, _, _ := syscall.SyscallN(_PolyBezier.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_PolyBezier),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&pts[0])),
 		uintptr(uint32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _PolyBezier = dll.Gdi32.NewProc("PolyBezier")
 
 // [PolyBezierTo] function.
 //
 // [PolyBezierTo]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polybezierto
 func (hdc HDC) PolyBezierTo(pts []POINT) error {
-	ret, _, _ := syscall.SyscallN(_PolyBezierTo.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_PolyBezierTo),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&pts[0])),
 		uintptr(uint32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _PolyBezierTo = dll.Gdi32.NewProc("PolyBezierTo")
 
 // [PolyDraw] function.
 //
@@ -1106,7 +988,7 @@ func (hdc HDC) PolyDraw(pts []POINT, usage []co.PT) error {
 			len(pts), len(usage)))
 	}
 
-	ret, _, _ := syscall.SyscallN(_PolyDraw.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_PolyDraw),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&pts[0])),
 		uintptr(unsafe.Pointer(&usage[0])),
@@ -1114,46 +996,38 @@ func (hdc HDC) PolyDraw(pts []POINT, usage []co.PT) error {
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _PolyDraw = dll.Gdi32.NewProc("PolyDraw")
-
 // [Polygon] function.
 //
 // [Polygon]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polygon
 func (hdc HDC) Polygon(pts []POINT) error {
-	ret, _, _ := syscall.SyscallN(_Polygon.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_Polygon),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&pts[0])),
 		uintptr(uint32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _Polygon = dll.Gdi32.NewProc("Polygon")
-
 // [Polyline] function.
 //
 // [Polyline]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polyline
 func (hdc HDC) Polyline(pts []POINT) error {
-	ret, _, _ := syscall.SyscallN(_Polyline.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_Polyline),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&pts[0])),
 		uintptr(int32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _Polyline = dll.Gdi32.NewProc("Polyline")
-
 // [PolylineTo] function.
 //
 // [PolylineTo]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polylineto
 func (hdc HDC) PolylineTo(pts []POINT) error {
-	ret, _, _ := syscall.SyscallN(_PolylineTo.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_PolylineTo),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&pts[0])),
 		uintptr(uint32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _PolylineTo = dll.Gdi32.NewProc("PolylineTo")
 
 // [PolyPolygon] function.
 //
@@ -1173,15 +1047,13 @@ func (hdc HDC) PolyPolygon(polygons [][]POINT) error {
 		ptsPerPolygon = append(ptsPerPolygon, int32(len(polygon)))
 	}
 
-	ret, _, _ := syscall.SyscallN(_PolyPolygon.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_PolyPolygon),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&allPtsFlat[0])),
 		uintptr(unsafe.Pointer(&ptsPerPolygon[0])),
 		uintptr(int32(len(polygons))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _PolyPolygon = dll.Gdi32.NewProc("PolyPolygon")
 
 // [PolyPolyline] function.
 //
@@ -1201,7 +1073,7 @@ func (hdc HDC) PolyPolyline(polyLines [][]POINT) error {
 		ptsPerPolyLine = append(ptsPerPolyLine, int32(len(polyLine)))
 	}
 
-	ret, _, _ := syscall.SyscallN(_PolyPolyline.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_PolyPolyline),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&allPtsFlat[0])),
 		uintptr(unsafe.Pointer(&ptsPerPolyLine[0])),
@@ -1209,13 +1081,11 @@ func (hdc HDC) PolyPolyline(polyLines [][]POINT) error {
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _PolyPolyline = dll.Gdi32.NewProc("PolyPolyline")
-
 // [PtVisible] function.
 //
 // [PtVisible]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-ptvisible
 func (hdc HDC) PtVisible(x, y int) (bool, error) {
-	ret, _, _ := syscall.SyscallN(_PtVisible.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_PtVisible),
 		uintptr(hdc),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
@@ -1225,13 +1095,11 @@ func (hdc HDC) PtVisible(x, y int) (bool, error) {
 	return ret != 0, nil
 }
 
-var _PtVisible = dll.Gdi32.NewProc("PtVisible")
-
 // [RealizePalette] function.
 //
 // [RealizePalette]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-realizepalette
 func (hdc HDC) RealizePalette() (uint, error) {
-	ret, _, _ := syscall.SyscallN(_RealizePalette.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_RealizePalette),
 		uintptr(hdc))
 	if ret == utl.GDI_ERR {
 		return 0, co.ERROR_INVALID_PARAMETER
@@ -1239,13 +1107,11 @@ func (hdc HDC) RealizePalette() (uint, error) {
 	return uint(ret), nil
 }
 
-var _RealizePalette = dll.Gdi32.NewProc("RealizePalette")
-
 // [Rectangle] function.
 //
 // [Rectangle]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-rectangle
 func (hdc HDC) Rectangle(bound RECT) error {
-	ret, _, _ := syscall.SyscallN(_Rectangle.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_Rectangle),
 		uintptr(hdc),
 		uintptr(bound.Left),
 		uintptr(bound.Top),
@@ -1254,13 +1120,11 @@ func (hdc HDC) Rectangle(bound RECT) error {
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _Rectangle = dll.Gdi32.NewProc("Rectangle")
-
 // [ResetDC] function.
 //
 // [ResetDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-resetdcw
 func (hdc HDC) ResetDC(dm *DEVMODE) (HDC, error) {
-	ret, _, _ := syscall.SyscallN(_ResetDCW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_ResetDCW),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(dm)))
 	if ret == 0 {
@@ -1269,27 +1133,23 @@ func (hdc HDC) ResetDC(dm *DEVMODE) (HDC, error) {
 	return HDC(ret), nil
 }
 
-var _ResetDCW = dll.Gdi32.NewProc("ResetDCW")
-
 // [RestoreDC] function.
 //
 // Paired with [HDC.SaveDC].
 //
 // [RestoreDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-restoredc
 func (hdc HDC) RestoreDC(savedDC int32) error {
-	ret, _, _ := syscall.SyscallN(_RestoreDC.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_RestoreDC),
 		uintptr(hdc),
 		uintptr(savedDC))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _RestoreDC = dll.Gdi32.NewProc("RestoreDC")
-
 // [RoundRect] function.
 //
 // [RoundRect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-roundrect
 func (hdc HDC) RoundRect(bound RECT, sz SIZE) error {
-	ret, _, _ := syscall.SyscallN(_RoundRect.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_RoundRect),
 		uintptr(hdc),
 		uintptr(bound.Left),
 		uintptr(bound.Top),
@@ -1300,15 +1160,13 @@ func (hdc HDC) RoundRect(bound RECT, sz SIZE) error {
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _RoundRect = dll.Gdi32.NewProc("RoundRect")
-
 // [SaveDC] function.
 //
 // Paired with [HDC.RestoreDC].
 //
 // [SaveDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-savedc
 func (hdc HDC) SaveDC() (int32, error) {
-	ret, _, _ := syscall.SyscallN(_SaveDC.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SaveDC),
 		uintptr(hdc))
 	if ret == 0 {
 		return 0, co.ERROR_INVALID_PARAMETER
@@ -1316,25 +1174,21 @@ func (hdc HDC) SaveDC() (int32, error) {
 	return int32(ret), nil
 }
 
-var _SaveDC = dll.Gdi32.NewProc("SaveDC")
-
 // [SelectClipPath] function.
 //
 // [SelectClipPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectclippath
 func (hdc HDC) SelectClipPath(mode co.RGN) error {
-	ret, _, _ := syscall.SyscallN(_SelectClipPath.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SelectClipPath),
 		uintptr(hdc),
 		uintptr(mode))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _SelectClipPath = dll.Gdi32.NewProc("SelectClipPath")
-
 // [SelectClipRgn] function.
 //
 // [SelectClipRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectcliprgn
 func (hdc HDC) SelectClipRgn(hRgn HRGN) (co.REGION, error) {
-	ret, _, _ := syscall.SyscallN(_SelectClipRgn.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SelectClipRgn),
 		uintptr(hdc),
 		uintptr(hRgn))
 	if ret == utl.REGION_ERROR {
@@ -1342,8 +1196,6 @@ func (hdc HDC) SelectClipRgn(hRgn HRGN) (co.REGION, error) {
 	}
 	return co.REGION(ret), nil
 }
-
-var _SelectClipRgn = dll.Gdi32.NewProc("SelectClipRgn")
 
 // [SelectObject] function for [HBITMAP].
 //
@@ -1393,7 +1245,7 @@ func (hdc HDC) SelectObjectPen(hPen HPEN) (HPEN, error) {
 //
 // [SelectObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObjectRgn(hRgn HRGN) (co.REGION, error) {
-	ret, _, _ := syscall.SyscallN(_SelectObject.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SelectObject),
 		uintptr(hdc),
 		uintptr(hRgn))
 	if ret == utl.HGDI_ERROR || ret == utl.REGION_ERROR {
@@ -1406,7 +1258,7 @@ func (hdc HDC) SelectObjectRgn(hRgn HRGN) (co.REGION, error) {
 //
 // [SelectPalette]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectpalette
 func (hdc HDC) SelectPalette(hPal HPALETTE, forceBkgd bool) (HPALETTE, error) {
-	ret, _, _ := syscall.SyscallN(_SelectPalette.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SelectPalette),
 		uintptr(hdc),
 		uintptr(hPal),
 		utl.BoolToUintptr(forceBkgd))
@@ -1416,13 +1268,11 @@ func (hdc HDC) SelectPalette(hPal HPALETTE, forceBkgd bool) (HPALETTE, error) {
 	return HPALETTE(ret), nil
 }
 
-var _SelectPalette = dll.Gdi32.NewProc("SelectPalette")
-
 // [SetArcDirection] function.
 //
 // [SetArcDirection]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setarcdirection
 func (hdc HDC) SetArcDirection(direction co.AD) (co.AD, error) {
-	ret, _, _ := syscall.SyscallN(_SetArcDirection.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SetArcDirection),
 		uintptr(hdc),
 		uintptr(direction))
 	if ret == 0 {
@@ -1431,13 +1281,11 @@ func (hdc HDC) SetArcDirection(direction co.AD) (co.AD, error) {
 	return co.AD(ret), nil
 }
 
-var _SetArcDirection = dll.Gdi32.NewProc("SetArcDirection")
-
 // [SetBkColor] function.
 //
 // [SetBkColor]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setbkcolor
 func (hdc HDC) SetBkColor(color COLORREF) (COLORREF, error) {
-	ret, _, _ := syscall.SyscallN(_SetBkColor.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SetBkColor),
 		uintptr(hdc),
 		uintptr(color))
 	if ret == utl.CLR_INVALID {
@@ -1446,13 +1294,11 @@ func (hdc HDC) SetBkColor(color COLORREF) (COLORREF, error) {
 	return COLORREF(ret), nil
 }
 
-var _SetBkColor = dll.Gdi32.NewProc("SetBkColor")
-
 // [SetBkMode] function.
 //
 // [SetBkMode]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setbkmode
 func (hdc HDC) SetBkMode(mode co.BKMODE) (co.BKMODE, error) {
-	ret, _, _ := syscall.SyscallN(_SetBkMode.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SetBkMode),
 		uintptr(hdc),
 		uintptr(mode))
 	if ret == 0 {
@@ -1461,14 +1307,12 @@ func (hdc HDC) SetBkMode(mode co.BKMODE) (co.BKMODE, error) {
 	return co.BKMODE(ret), nil
 }
 
-var _SetBkMode = dll.Gdi32.NewProc("SetBkMode")
-
 // [SetBrushOrgEx] function.
 //
 // [SetBrushOrgEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setbrushorgex
 func (hdc HDC) SetBrushOrgEx(newOrigin POINT) (POINT, error) {
 	var oldOrigin POINT
-	ret, _, _ := syscall.SyscallN(_SetBrushOrgEx.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SetBrushOrgEx),
 		uintptr(hdc),
 		uintptr(newOrigin.X),
 		uintptr(newOrigin.Y),
@@ -1479,13 +1323,11 @@ func (hdc HDC) SetBrushOrgEx(newOrigin POINT) (POINT, error) {
 	return oldOrigin, nil
 }
 
-var _SetBrushOrgEx = dll.Gdi32.NewProc("SetBrushOrgEx")
-
 // [SetPixel] function.
 //
 // [SetPixel]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setpixel
 func (hdc HDC) SetPixel(x, y int, color COLORREF) (COLORREF, error) {
-	ret, _, _ := syscall.SyscallN(_SetPixel.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SetPixel),
 		uintptr(hdc),
 		uintptr(int32(x)),
 		uintptr(int32(y)),
@@ -1496,26 +1338,22 @@ func (hdc HDC) SetPixel(x, y int, color COLORREF) (COLORREF, error) {
 	return COLORREF(ret), nil
 }
 
-var _SetPixel = dll.Gdi32.NewProc("SetPixel")
-
 // [SetPixelFormat] function.
 //
 // [SetPixelFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setpixelformat
 func (hdc HDC) SetPixelFormat(format int, pfd *PIXELFORMATDESCRIPTOR) error {
-	ret, _, err := syscall.SyscallN(_SetPixelFormat.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Gdi(dll.PROC_SetPixelFormat),
 		uintptr(hdc),
 		uintptr(format),
 		uintptr(unsafe.Pointer(pfd)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _SetPixelFormat = dll.Gdi32.NewProc("SetPixelFormat")
-
 // [SetPolyFillMode] function.
 //
 // [SetPolyFillMode]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setpolyfillmode
 func (hdc HDC) SetPolyFillMode(mode co.POLYF) (co.POLYF, error) {
-	ret, _, _ := syscall.SyscallN(_SetPolyFillMode.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SetPolyFillMode),
 		uintptr(hdc),
 		uintptr(mode))
 	if ret == 0 {
@@ -1524,13 +1362,11 @@ func (hdc HDC) SetPolyFillMode(mode co.POLYF) (co.POLYF, error) {
 	return co.POLYF(ret), nil
 }
 
-var _SetPolyFillMode = dll.Gdi32.NewProc("SetPolyFillMode")
-
 // [SetStretchBltMode] function.
 //
 // [SetStretchBltMode]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setstretchbltmode
 func (hdc HDC) SetStretchBltMode(mode co.STRETCH) (co.STRETCH, error) {
-	ret, _, _ := syscall.SyscallN(_SetStretchBltMode.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SetStretchBltMode),
 		uintptr(hdc),
 		uintptr(mode))
 	if ret == 0 {
@@ -1539,13 +1375,11 @@ func (hdc HDC) SetStretchBltMode(mode co.STRETCH) (co.STRETCH, error) {
 	return co.STRETCH(ret), nil
 }
 
-var _SetStretchBltMode = dll.Gdi32.NewProc("SetStretchBltMode")
-
 // [SetTextAlign] function.
 //
 // [SetTextAlign]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-settextalign
 func (hdc HDC) SetTextAlign(align co.TA) error {
-	ret, _, _ := syscall.SyscallN(_SetTextAlign.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SetTextAlign),
 		uintptr(hdc),
 		uintptr(align))
 	if ret == utl.GDI_ERR {
@@ -1554,13 +1388,11 @@ func (hdc HDC) SetTextAlign(align co.TA) error {
 	return nil
 }
 
-var _SetTextAlign = dll.Gdi32.NewProc("SetTextAlign")
-
 // [SetTextColor] function.
 //
 // [SetTextColor]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-settextcolor
 func (hdc HDC) SetTextColor(color COLORREF) (COLORREF, error) {
-	ret, _, _ := syscall.SyscallN(_SetTextColor.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SetTextColor),
 		uintptr(hdc),
 		uintptr(color))
 	if ret == utl.CLR_INVALID {
@@ -1569,14 +1401,12 @@ func (hdc HDC) SetTextColor(color COLORREF) (COLORREF, error) {
 	return COLORREF(ret), nil
 }
 
-var _SetTextColor = dll.Gdi32.NewProc("SetTextColor")
-
 // [SetViewportExtEx] function.
 //
 // [SetViewportExtEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setviewportextex
 func (hdc HDC) SetViewportExtEx(x, y int) (SIZE, error) {
 	var sz SIZE
-	ret, _, _ := syscall.SyscallN(_SetViewportExtEx.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SetViewportExtEx),
 		uintptr(hdc),
 		uintptr(int32(x)),
 		uintptr(int32(y)),
@@ -1587,30 +1417,24 @@ func (hdc HDC) SetViewportExtEx(x, y int) (SIZE, error) {
 	return sz, nil
 }
 
-var _SetViewportExtEx = dll.Gdi32.NewProc("SetViewportExtEx")
-
 // [StartDoc] function.
 //
 // [StartDoc]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-startdocw
 func (hdc HDC) StartDoc(di *DOCINFO) error {
-	ret, _, _ := syscall.SyscallN(_StartDocW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_StartDocW),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(di)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _StartDocW = dll.Gdi32.NewProc("StartDocW")
-
 // [StartPage] function.
 //
 // [StartPage]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-startpage
 func (hdc HDC) StartPage() error {
-	ret, _, _ := syscall.SyscallN(_StartPage.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_StartPage),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _StartPage = dll.Gdi32.NewProc("StartPage")
 
 // [StretchBlt] function.
 //
@@ -1625,7 +1449,7 @@ func (hdc HDC) StretchBlt(
 	srcSz SIZE,
 	rop co.ROP,
 ) error {
-	ret, _, _ := syscall.SyscallN(_StretchBlt.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_StretchBlt),
 		uintptr(hdc),
 		uintptr(destTopLeft.X),
 		uintptr(destTopLeft.Y),
@@ -1640,40 +1464,32 @@ func (hdc HDC) StretchBlt(
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _StretchBlt = dll.Gdi32.NewProc("StretchBlt")
-
 // [StrokeAndFillPath] function.
 //
 // [StrokeAndFillPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-strokeandfillpath
 func (hdc HDC) StrokeAndFillPath() error {
-	ret, _, _ := syscall.SyscallN(_StrokeAndFillPath.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_StrokeAndFillPath),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _StrokeAndFillPath = dll.Gdi32.NewProc("StrokeAndFillPath")
 
 // [StrokePath] function.
 //
 // [StrokePath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-strokepath
 func (hdc HDC) StrokePath() error {
-	ret, _, _ := syscall.SyscallN(_StrokePath.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_StrokePath),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _StrokePath = dll.Gdi32.NewProc("StrokePath")
 
 // [SwapBuffers] function.
 //
 // [SwapBuffers]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-swapbuffers
 func (hdc HDC) SwapBuffers() error {
-	ret, _, err := syscall.SyscallN(_SwapBuffers.Addr(),
+	ret, _, err := syscall.SyscallN(dll.Gdi(dll.PROC_SwapBuffers),
 		uintptr(hdc))
 	return utl.ZeroAsGetLastError(ret, err)
 }
-
-var _SwapBuffers = dll.Gdi32.NewProc("SwapBuffers")
 
 // [TextOut] function.
 //
@@ -1682,7 +1498,7 @@ func (hdc HDC) TextOut(x, y int, text string) error {
 	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.ALLOW_EMPTY)
 	textLen := utf8.RuneCountInString(text)
 
-	ret, _, _ := syscall.SyscallN(_TextOutW.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_TextOutW),
 		uintptr(hdc),
 		uintptr(int32(x)),
 		uintptr(int32(y)),
@@ -1690,8 +1506,6 @@ func (hdc HDC) TextOut(x, y int, text string) error {
 		uintptr(int32(textLen-1)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _TextOutW = dll.Gdi32.NewProc("TextOutW")
 
 // [TransparentBlt] function.
 //
@@ -1706,7 +1520,7 @@ func (hdc HDC) TransparentBlt(
 	srcSz SIZE,
 	colorTransparent COLORREF,
 ) error {
-	ret, _, _ := syscall.SyscallN(_TransparentBlt.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_TransparentBlt),
 		uintptr(hdc),
 		uintptr(destTopLeft.X),
 		uintptr(destTopLeft.Y),
@@ -1721,15 +1535,11 @@ func (hdc HDC) TransparentBlt(
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _TransparentBlt = dll.Gdi32.NewProc("TransparentBlt")
-
 // [WidenPath] function.
 //
 // [WidenPath]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-widenpath
 func (hdc HDC) WidenPath() error {
-	ret, _, _ := syscall.SyscallN(_WidenPath.Addr(),
+	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_WidenPath),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
-
-var _WidenPath = dll.Gdi32.NewProc("WidenPath")
