@@ -24,6 +24,7 @@ const (
 	IID_IShellItemArray            IID = "b63ea76d-1f85-456f-a19c-48159efa858b"
 	IID_IShellItemFilter           IID = "2659b475-eeb8-48b7-8f07-b378810f48cf"
 	IID_IShellLink                 IID = "000214f9-0000-0000-c000-000000000046"
+	IID_IShellView                 IID = "000214e3-0000-0000-c000-000000000046"
 	IID_ITaskbarList               IID = "56fdf342-fd6d-11d0-958a-006097c9a090"
 	IID_ITaskbarList2              IID = "602d4995-b13a-429b-a66e-1935e44f4317"
 	IID_ITaskbarList3              IID = "ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf"
@@ -390,6 +391,18 @@ const (
 	STPFLAG_USEAPPTHUMBNAILWHENACTIVE STPFLAG = 0x2
 	STPFLAG_USEAPPPEEKALWAYS          STPFLAG = 0x4
 	STPFLAG_USEAPPPEEKWHENACTIVE      STPFLAG = 0x8
+)
+
+// [IShellView.UIActivate] state.
+//
+// [IShellView.UIActivate]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellview-uiactivate
+type SVUIA uint32
+
+const (
+	SVUIA_DEACTIVATE SVUIA = iota
+	SVUIA_ACTIVATE_NOFOCUS
+	SVUIA_ACTIVATE_FOCUS
+	SVUIA_INPLACEACTIVATE
 )
 
 // [ITaskbarList3.SetProgressState] tbpFlags.

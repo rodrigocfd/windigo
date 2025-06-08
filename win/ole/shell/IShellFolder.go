@@ -136,6 +136,8 @@ func (me *IShellFolder) CompareIDs(
 
 // [CreateViewObject] method.
 //
+// Return type is typically [IShellView].
+//
 // [CreateViewObject]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellfolder-createviewobject
 func (me *IShellFolder) CreateViewObject(
 	releaser *ole.Releaser,
