@@ -5,7 +5,6 @@ package win
 import (
 	"fmt"
 	"strconv"
-	"strings"
 	"time"
 	"unsafe"
 
@@ -79,12 +78,15 @@ func (g *GUID) String() string {
 //
 // Panics if malformed.
 func GuidFrom[T ~string](strGuid T) GUID {
-	strs := strings.SplitN(string(strGuid), "-", 5)
-	if len(strs) != 5 {
-		panic(fmt.Sprintf("Malformed GUID parts: %s", strGuid))
+	parts := [5]string{
+		string(strGuid[0:8]),
+		string(strGuid[9:13]),
+		string(strGuid[14:18]),
+		string(strGuid[19:23]),
+		string(strGuid[24:36]),
 	}
 
-	num1, e := strconv.ParseUint(strs[0], 16, 32)
+	num1, e := strconv.ParseUint(parts[0], 16, 32)
 	if e != nil {
 		panic(e)
 	}
@@ -94,17 +96,17 @@ func GuidFrom[T ~string](strGuid T) GUID {
 
 	var nums16 [3]uint16
 	for p := 1; p <= 3; p++ {
-		num, e := strconv.ParseUint(strs[p], 16, 16)
+		num, e := strconv.ParseUint(parts[p], 16, 16)
 		if e != nil {
 			panic(e)
 		}
 		if num > 0xffff {
-			panic(fmt.Sprintf("GUID part %d overflows: %x", p, num))
+			panic(fmt.Sprintf("GUID part %d overflow: %x", p, num))
 		}
 		nums16[p-1] = uint16(num)
 	}
 
-	num5, e := strconv.ParseUint(strs[4], 16, 64)
+	num5, e := strconv.ParseUint(parts[4], 16, 64)
 	if e != nil {
 		panic(e)
 	}
