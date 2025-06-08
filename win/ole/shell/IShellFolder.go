@@ -60,6 +60,7 @@ func (me *IShellFolder) BindToObject(
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).BindToObject,
+		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(*pidl),
 		uintptr(unsafe.Pointer(pBindCtx)),
 		uintptr(unsafe.Pointer(&guidIid)),
@@ -96,6 +97,7 @@ func (me *IShellFolder) BindToStorage(
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).BindToStorage,
+		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(*pidl),
 		uintptr(unsafe.Pointer(pBindCtx)),
 		uintptr(unsafe.Pointer(&guidIid)),
@@ -120,6 +122,7 @@ func (me *IShellFolder) CompareIDs(
 ) (int, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).CompareIDs,
+		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(sortingRule)|uint32(sortingFlags)),
 		uintptr(*pidl1),
 		uintptr(*pidl2))
@@ -128,6 +131,36 @@ func (me *IShellFolder) CompareIDs(
 		return int(hr.Code()), nil
 	} else {
 		return 0, hr
+	}
+}
+
+// [CreateViewObject] method.
+//
+// [CreateViewObject]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellfolder-createviewobject
+func (me *IShellFolder) CreateViewObject(
+	releaser *ole.Releaser,
+	hwndOwner win.HWND,
+	ppOut interface{},
+) error {
+	pOut := utl.ComValidateObj(ppOut).(ole.ComObj)
+	releaser.ReleaseNow(pOut)
+
+	var ppvtQueried **ole.IUnknownVt
+	guidIid := win.GuidFrom(pOut.IID())
+
+	ret, _, _ := syscall.SyscallN(
+		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).CreateViewObject,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(hwndOwner),
+		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pOut = utl.ComCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(ole.ComObj)
+		releaser.Add(pOut)
+		return nil
+	} else {
+		return hr
 	}
 }
 
@@ -157,6 +190,7 @@ func (me *IShellFolder) ParseDisplayName(
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).ParseDisplayName,
+		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(pBindCtx)),
 		uintptr(displayName16.UnsafePtr()),
