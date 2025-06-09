@@ -20,14 +20,14 @@ type _PROC_SHELL uint64 // Procedure identifiers for shell.
 
 // Auto-generated shell procedure identifier: cache index | str start | str past-end.
 const (
-	_PROC_SHCreateItemFromIDList            _PROC_SHELL = 0 | (1 << 16) | (23 << 32)
-	_PROC_SHCreateItemFromParsingName       _PROC_SHELL = 1 | (24 << 16) | (51 << 32)
-	_PROC_SHCreateItemFromRelativeName      _PROC_SHELL = 2 | (52 << 16) | (80 << 32)
-	_PROC_SHCreateShellItemArray            _PROC_SHELL = 3 | (81 << 16) | (103 << 32)
-	_PROC_SHCreateShellItemArrayFromIDLists _PROC_SHELL = 4 | (104 << 16) | (137 << 32)
-	_PROC_SHGetDesktopFolder                _PROC_SHELL = 5 | (138 << 16) | (156 << 32)
-	_PROC_SHGetKnownFolderItem              _PROC_SHELL = 6 | (157 << 16) | (177 << 32)
-	_PROC_SHGetIDListFromObject             _PROC_SHELL = 7 | (178 << 16) | (199 << 32)
+	_PROC_SHCreateItemFromIDList            _PROC_SHELL = 0 | (9 << 16) | (31 << 32)
+	_PROC_SHCreateItemFromParsingName       _PROC_SHELL = 1 | (32 << 16) | (59 << 32)
+	_PROC_SHCreateItemFromRelativeName      _PROC_SHELL = 2 | (60 << 16) | (88 << 32)
+	_PROC_SHCreateShellItemArray            _PROC_SHELL = 3 | (89 << 16) | (111 << 32)
+	_PROC_SHCreateShellItemArrayFromIDLists _PROC_SHELL = 4 | (112 << 16) | (145 << 32)
+	_PROC_SHGetDesktopFolder                _PROC_SHELL = 5 | (146 << 16) | (164 << 32)
+	_PROC_SHGetKnownFolderItem              _PROC_SHELL = 6 | (165 << 16) | (185 << 32)
+	_PROC_SHGetIDListFromObject             _PROC_SHELL = 7 | (186 << 16) | (207 << 32)
 )
 
 // Declaration of shell procedure names.
