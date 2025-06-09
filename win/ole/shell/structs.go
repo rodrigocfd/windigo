@@ -3,7 +3,6 @@
 package shell
 
 import (
-	"strings"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
@@ -61,9 +60,8 @@ type PROPERTYKEY struct {
 
 // Creates a [PROPERTYKEY] from a string representation.
 func PropertykeyFrom(pkey co.PKEY) PROPERTYKEY {
-	parts := strings.SplitN(string(pkey), " ", 2)
-	fmtId := win.GuidFrom(parts[0])
-	pId := wstr.ParseUint(parts[1])
+	fmtId := win.GuidFrom(string(pkey)[0:36])
+	pId := wstr.ParseUint(string(pkey)[37:])
 
 	var out PROPERTYKEY
 	out.SetFmdId(fmtId)
