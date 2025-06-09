@@ -51,16 +51,10 @@ func (*IFileOperation) IID() co.IID {
 // [Advise]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperation-advise
 func (me *IFileOperation) Advise(fops *IFileOperationProgressSink) (uint32, error) {
 	var cookie uint32
-
-	var pSink unsafe.Pointer
-	if fops != nil {
-		pSink = unsafe.Pointer(fops.Ppvt())
-	}
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).Advise,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pSink),
+		uintptr(unsafe.Pointer(fops.Ppvt())),
 		uintptr(unsafe.Pointer(&cookie)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -109,19 +103,13 @@ func (me *IFileOperation) CopyItem(
 	fops *IFileOperationProgressSink,
 ) error {
 	copyName16 := wstr.NewBufWith[wstr.Stack20](copyName, wstr.EMPTY_IS_NIL)
-
-	var pSink unsafe.Pointer
-	if fops != nil {
-		pSink = unsafe.Pointer(fops.Ppvt())
-	}
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).CopyItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())),
 		uintptr(unsafe.Pointer(destFolder.Ppvt())),
 		uintptr(copyName16.UnsafePtr()),
-		uintptr(pSink))
+		uintptr(ole.Ppvt(fops)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -129,16 +117,11 @@ func (me *IFileOperation) CopyItem(
 //
 // [DeleteItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperation-deleteitem
 func (me *IFileOperation) DeleteItem(item *IShellItem, fops *IFileOperationProgressSink) error {
-	var pSink unsafe.Pointer
-	if fops != nil {
-		pSink = unsafe.Pointer(fops.Ppvt())
-	}
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).DeleteItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())),
-		uintptr(pSink))
+		uintptr(ole.Ppvt(fops)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -168,19 +151,13 @@ func (me *IFileOperation) MoveItem(
 	fops *IFileOperationProgressSink,
 ) error {
 	newName16 := wstr.NewBufWith[wstr.Stack20](newName, wstr.EMPTY_IS_NIL)
-
-	var pSink unsafe.Pointer
-	if fops != nil {
-		pSink = unsafe.Pointer(fops.Ppvt())
-	}
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).MoveItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())),
 		uintptr(unsafe.Pointer(destFolder.Ppvt())),
 		uintptr(newName16.UnsafePtr()),
-		uintptr(pSink))
+		uintptr(ole.Ppvt(fops)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -196,11 +173,6 @@ func (me *IFileOperation) NewItem(
 	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.ALLOW_EMPTY)
 	templateName16 := wstr.NewBufWith[wstr.Stack20](templateName, wstr.EMPTY_IS_NIL)
 
-	var pSink unsafe.Pointer
-	if fops != nil {
-		pSink = unsafe.Pointer(fops.Ppvt())
-	}
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).NewItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -208,7 +180,7 @@ func (me *IFileOperation) NewItem(
 		uintptr(fileAtt),
 		uintptr(name16.UnsafePtr()),
 		uintptr(templateName16.UnsafePtr()),
-		uintptr(pSink))
+		uintptr(ole.Ppvt(fops)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -231,18 +203,12 @@ func (me *IFileOperation) RenameItem(
 	fops *IFileOperationProgressSink,
 ) error {
 	newName16 := wstr.NewBufWith[wstr.Stack20](newName, wstr.ALLOW_EMPTY)
-
-	var pSink unsafe.Pointer
-	if fops != nil {
-		pSink = unsafe.Pointer(fops.Ppvt())
-	}
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).RenameItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())),
 		uintptr(newName16.UnsafePtr()),
-		uintptr(pSink))
+		uintptr(ole.Ppvt(fops)))
 	return utl.ErrorAsHResult(ret)
 }
 

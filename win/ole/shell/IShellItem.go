@@ -70,15 +70,10 @@ func (me *IShellItem) BindToHandler(
 	guidBhid := win.GuidFrom(bhid)
 	guidIid := win.GuidFrom(pOut.IID())
 
-	var pBindCtx **ole.IUnknownVt
-	if bindCtx != nil {
-		pBindCtx = bindCtx.Ppvt()
-	}
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).BindToHandler,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(pBindCtx)),
+		uintptr(ole.Ppvt(bindCtx)),
 		uintptr(unsafe.Pointer(&guidBhid)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))

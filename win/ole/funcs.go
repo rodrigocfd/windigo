@@ -13,6 +13,19 @@ import (
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
+// Returns the [COM] virtual table pointer, performing a nil check.
+//
+// This is a low-level method, used internally by the library. Incorrect usage
+// may lead to segmentation faults.
+//
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+func Ppvt(obj ComObj) unsafe.Pointer {
+	if !utl.IsNil(obj) {
+		return unsafe.Pointer(obj.Ppvt())
+	}
+	return nil
+}
+
 // [CLSIDFromProgID] function.
 //
 // Used to retrieve class IDs to create COM Automation objects. If the progId is

@@ -148,8 +148,8 @@ func (me *IPicture) PictureChanged() error {
 //
 // # Example
 //
-//	var wnd ui.Main // initialized somewhere
-//	var pic ole.IPicture
+//	var wnd *ui.Main // initialized somewhere
+//	var pic *ole.IPicture
 //
 //	wnd.On().WmPaint(func() {
 //		var ps win.PAINTSTRUCT

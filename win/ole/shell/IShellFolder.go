@@ -53,16 +53,11 @@ func (me *IShellFolder) BindToObject(
 	var ppvtQueried **ole.IUnknownVt
 	guidIid := win.GuidFrom(pOut.IID())
 
-	var pBindCtx **ole.IUnknownVt
-	if bindCtx != nil {
-		pBindCtx = bindCtx.Ppvt()
-	}
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).BindToObject,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(*pidl),
-		uintptr(unsafe.Pointer(pBindCtx)),
+		uintptr(ole.Ppvt(bindCtx)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -90,16 +85,11 @@ func (me *IShellFolder) BindToStorage(
 	var ppvtQueried **ole.IUnknownVt
 	guidIid := win.GuidFrom(pOut.IID())
 
-	var pBindCtx **ole.IUnknownVt
-	if bindCtx != nil {
-		pBindCtx = bindCtx.Ppvt()
-	}
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).BindToStorage,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(*pidl),
-		uintptr(unsafe.Pointer(pBindCtx)),
+		uintptr(ole.Ppvt(bindCtx)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -176,11 +166,6 @@ func (me *IShellFolder) ParseDisplayName(
 	displayName string,
 	attributes co.SFGAO,
 ) (*ITEMIDLIST, co.SFGAO, error) {
-	var pBindCtx **ole.IUnknownVt
-	if bindCtx != nil {
-		pBindCtx = bindCtx.Ppvt()
-	}
-
 	displayName16 := wstr.NewBufWith[wstr.Stack20](displayName, wstr.ALLOW_EMPTY)
 	var chEaten uint32
 	var idl ITEMIDLIST
@@ -194,7 +179,7 @@ func (me *IShellFolder) ParseDisplayName(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).ParseDisplayName,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(pBindCtx)),
+		uintptr(ole.Ppvt(bindCtx)),
 		uintptr(displayName16.UnsafePtr()),
 		uintptr(unsafe.Pointer(&chEaten)),
 		uintptr(unsafe.Pointer(&idl)),

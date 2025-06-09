@@ -116,15 +116,10 @@ func SHCreateItemFromRelativeName(
 
 	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.ALLOW_EMPTY)
 
-	var pBindCtx **ole.IUnknownVt
-	if bindCtx != nil {
-		pBindCtx = bindCtx.Ppvt()
-	}
-
 	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHCreateItemFromRelativeName),
 		uintptr(unsafe.Pointer(parent.Ppvt())),
 		uintptr(name16.UnsafePtr()),
-		uintptr(unsafe.Pointer(pBindCtx)),
+		uintptr(ole.Ppvt(bindCtx)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -153,11 +148,6 @@ func SHCreateShellItemArray(
 		pidlParentObj = *pidlParent
 	}
 
-	var pParent **ole.IUnknownVt
-	if parent != nil {
-		pParent = parent.Ppvt()
-	}
-
 	var pidlChildrenObjsPtr *ITEMIDLIST
 	if pidlChildren != nil {
 		pidlChildrenObjs := make([]ITEMIDLIST, 0, len(pidlChildren))
@@ -169,7 +159,7 @@ func SHCreateShellItemArray(
 
 	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHCreateShellItemArray),
 		uintptr(pidlParentObj),
-		uintptr(unsafe.Pointer(pParent)),
+		uintptr(ole.Ppvt(parent)),
 		uintptr(len(pidlChildren)),
 		uintptr(unsafe.Pointer(pidlChildrenObjsPtr)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))

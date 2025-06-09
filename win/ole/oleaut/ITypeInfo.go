@@ -63,15 +63,10 @@ func (me *ITypeInfo) CreateInstance(
 	var ppvtQueried **ole.IUnknownVt
 	guidIid := win.GuidFrom(pOut.IID())
 
-	var pUnkOuter **ole.IUnknownVt
-	if unkOuter != nil {
-		pUnkOuter = unkOuter.Ppvt()
-	}
-
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(pUnkOuter)),
+		uintptr(ole.Ppvt(unkOuter)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
