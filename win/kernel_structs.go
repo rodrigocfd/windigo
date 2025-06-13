@@ -365,19 +365,12 @@ type PROCESSOR_NUMBER struct {
 type SECURITY_ATTRIBUTES struct {
 	nLength              uint32
 	LpSecurityDescriptor uintptr // LPVOID
-	bInheritHandle       int32   // BOOL
+	BInheritHandle       int32   // This is a BOOL value.
 }
 
 // Sets the nLength field to the size of the struct, correctly initializing it.
 func (sa *SECURITY_ATTRIBUTES) SetNLength() {
 	sa.nLength = uint32(unsafe.Sizeof(*sa))
-}
-
-func (sa *SECURITY_ATTRIBUTES) BInheritHandle() bool {
-	return sa.bInheritHandle != 0
-}
-func (sa *SECURITY_ATTRIBUTES) SetBInheritHandle(val bool) {
-	sa.bInheritHandle = utl.BoolToInt32(val)
 }
 
 // [STARTUPINFO] struct.

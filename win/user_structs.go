@@ -209,18 +209,11 @@ func (hi *HELPINFO) SetCbSize() {
 //
 // [ICONINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfo
 type ICONINFO struct {
-	fIcon    int32 // BOOL
+	FIcon    int32 // This is a BOOL value.
 	XHotspot uint32
 	YHotspot uint32
 	HbmMask  HBITMAP
 	HbmColor HBITMAP
-}
-
-func (ii *ICONINFO) FIcon() bool {
-	return ii.fIcon != 0
-}
-func (ii *ICONINFO) SetFIcon(val bool) {
-	ii.fIcon = utl.BoolToInt32(val)
 }
 
 // [ICONINFOEX] struct.
@@ -235,7 +228,7 @@ func (ii *ICONINFO) SetFIcon(val bool) {
 // [ICONINFOEX]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfoexw
 type ICONINFOEX struct {
 	cbSize    uint32
-	fIcon     int32 // BOOL
+	FIcon     int32 // This is a BOOL value.
 	XHotspot  uint32
 	YHotspot  uint32
 	HbmMask   HBITMAP
@@ -248,13 +241,6 @@ type ICONINFOEX struct {
 // Sets the cbSize field to the size of the struct, correctly initializing it.
 func (iix *ICONINFOEX) SetCbSize() {
 	iix.cbSize = uint32(unsafe.Sizeof(*iix))
-}
-
-func (iix *ICONINFOEX) FIcon() bool {
-	return iix.fIcon != 0
-}
-func (iix *ICONINFOEX) SetFIcon(val bool) {
-	iix.fIcon = utl.BoolToInt32(val)
 }
 
 func (iix *ICONINFOEX) SzModName() string {
@@ -455,18 +441,11 @@ func (ncm *NONCLIENTMETRICS) SetCbSize() {
 // [PAINTSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-paintstruct
 type PAINTSTRUCT struct {
 	Hdc         HDC
-	fErase      int32 // BOOL
+	FErase      int32 // This is a BOOL value.
 	RcPaint     RECT
-	fRestore    int32 // BOOL
-	fIncUpdate  int32 // BOOL
+	fRestore    int32 // This is a BOOL value.
+	fIncUpdate  int32 // This is a BOOL value.
 	rgbReserved [32]byte
-}
-
-func (ps *PAINTSTRUCT) FErase() bool {
-	return ps.fErase != 0
-}
-func (ps *PAINTSTRUCT) SetFErase(val bool) {
-	ps.fErase = utl.BoolToInt32(val)
 }
 
 // [POINT] struct.

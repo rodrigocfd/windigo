@@ -330,9 +330,9 @@ type LOGFONT struct {
 	LfEscapement     int32
 	LfOrientation    int32
 	LfWeight         co.FW
-	LfItalic         uint8 // BOOL
-	LfUnderline      uint8 // BOOL
-	LfStrikeOut      uint8 // BOOL
+	LfItalic         uint8 // This is a BOOL value.
+	LfUnderline      uint8 // This is a BOOL value.
+	LfStrikeOut      uint8 // This is a BOOL value.
 	LfCharSet        co.CHARSET
 	LfOutPrecision   co.OUT_PRECIS
 	LfClipPrecision  co.CLIP_PRECIS
