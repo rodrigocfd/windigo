@@ -267,7 +267,7 @@ func SHGetDesktopFolder(releaser *ole.Releaser) (*IShellFolder, error) {
 func SHGetKnownFolderItem(
 	releaser *ole.Releaser,
 	kfid co.FOLDERID,
-	flags co.KF_FLAG,
+	flags co.KF,
 	hToken win.HANDLE, // HACCESSTOKEN
 	ppOut interface{},
 ) error {
