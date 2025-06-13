@@ -18,6 +18,54 @@ import (
 // [atom]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#atom
 type ATOM uint16
 
+// [CONSOLE_CURSOR_INFO] struct.
+//
+// [CONSOLE_CURSOR_INFO]: https://learn.microsoft.com/en-us/windows/console/console-cursor-info-str
+type CONSOLE_CURSOR_INFO struct {
+	DwSize   uint32
+	BVisible int32 // This is a BOOL value.
+}
+
+// [CONSOLE_FONT_INFO] struct.
+//
+// [CONSOLE_FONT_INFO]: https://learn.microsoft.com/en-us/windows/console/console-font-info-str
+type CONSOLE_FONT_INFO struct {
+	NFont      uint32
+	DwFontSize COORD
+}
+
+// [CONSOLE_READCONSOLE_CONTROL] struct.
+//
+// ⚠️ You must call [CONSOLE_READCONSOLE_CONTROL.SetNLength] to initialize the
+// struct.
+//
+// # Example
+//
+//	var crc win.CONSOLE_READCONSOLE_CONTROL
+//	crc.SetNLength()
+//
+// [CONSOLE_READCONSOLE_CONTROL]: https://learn.microsoft.com/en-us/windows/console/console-readconsole-control
+type CONSOLE_READCONSOLE_CONTROL struct {
+	nLength           uint32
+	NInitialChars     uint32
+	DwCtrlWakeupMask  uint32
+	DwControlKeyState co.CKS
+}
+
+// Sets the nLength field to the size of the struct, correctly initializing it.
+func (c *CONSOLE_READCONSOLE_CONTROL) SetNLength() {
+	c.nLength = uint32(unsafe.Sizeof(*c))
+}
+
+// [COORD] struct.
+
+// [COORD] struct.
+//
+// [COORD]: https://learn.microsoft.com/en-us/windows/console/coord-str
+type COORD struct {
+	X, Y int16
+}
+
 // [FILETIME] struct.
 //
 // [FILETIME]: https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime

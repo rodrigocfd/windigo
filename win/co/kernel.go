@@ -23,6 +23,56 @@ const (
 	BROADCAST_QUERY_DENY BROADCAST_QUERY = 0x424D5144
 )
 
+// Console [character attributes].
+//
+// [character attributes]: https://learn.microsoft.com/en-us/windows/console/console-screen-buffers#character-attributes
+type CHAR_ATTR uint16
+
+const (
+	FOREGROUND_BLUE            CHAR_ATTR = 0x0001 // Text color contains blue.
+	FOREGROUND_GREEN           CHAR_ATTR = 0x0002 // Text color contains green.
+	FOREGROUND_RED             CHAR_ATTR = 0x0004 // Text color contains red.
+	FOREGROUND_INTENSITY       CHAR_ATTR = 0x0008 // Text color is intensified.
+	BACKGROUND_BLUE            CHAR_ATTR = 0x0010 // Background color contains blue.
+	BACKGROUND_GREEN           CHAR_ATTR = 0x0020 // Background color contains green.
+	BACKGROUND_RED             CHAR_ATTR = 0x0040 // Background color contains red.
+	BACKGROUND_INTENSITY       CHAR_ATTR = 0x0080 // Background color is intensified.
+	COMMON_LVB_LEADING_BYTE    CHAR_ATTR = 0x0100 // Leading Byte of DBCS.
+	COMMON_LVB_TRAILING_BYTE   CHAR_ATTR = 0x0200 // Trailing Byte of DBCS.
+	COMMON_LVB_GRID_HORIZONTAL CHAR_ATTR = 0x0400 // DBCS: Grid attribute: top horizontal.
+	COMMON_LVB_GRID_LVERTICAL  CHAR_ATTR = 0x0800 // DBCS: Grid attribute: left vertical.
+	COMMON_LVB_GRID_RVERTICAL  CHAR_ATTR = 0x1000 // DBCS: Grid attribute: right vertical.
+	COMMON_LVB_REVERSE_VIDEO   CHAR_ATTR = 0x4000 // DBCS: Reverse fore/back ground attribute.
+	COMMON_LVB_UNDERSCORE      CHAR_ATTR = 0x8000 // DBCS: Underscore.
+)
+
+// [CONSOLE_READCONSOLE_CONTROL] DwControlKeyState.
+//
+// [CONSOLE_READCONSOLE_CONTROL]: https://learn.microsoft.com/en-us/windows/console/console-readconsole-control
+type CKS uint32
+
+const (
+	CAPSLOCK_ON        CKS = 0x0080
+	ENHANCED_KEY       CKS = 0x0100
+	LEFT_ALT_PRESSED   CKS = 0x0002
+	LEFT_CTRL_PRESSED  CKS = 0x0008
+	NUMLOCK_ON         CKS = 0x0020
+	RIGHT_ALT_PRESSED  CKS = 0x0001
+	RIGHT_CTRL_PRESSED CKS = 0x0004
+	SCROLLLOCK_ON      CKS = 0x0040
+	SHIFT_PRESSED      CKS = 0x0010
+)
+
+// [SetConsoleDisplayMode] mode. Originally has CONSOLE prefix and MODE suffix.
+//
+// [SetConsoleDisplayMode]: https://learn.microsoft.com/en-us/windows/console/setconsoledisplaymode
+type CONSOLE_MODE uint32
+
+const (
+	CONSOLE_MODE_FULLSCREEN CONSOLE_MODE = 1
+	CONSOLE_MODE_WINDOWED   CONSOLE_MODE = 2
+)
+
 // [Code page] identifiers.
 //
 // [Code page]: https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
@@ -124,6 +174,28 @@ const (
 	DISPOSITION_OPEN_ALWAYS       DISPOSITION = 4
 	DISPOSITION_OPEN_EXISTING     DISPOSITION = 3
 	DISPOSITION_TRUNCATE_EXISTING DISPOSITION = 5
+)
+
+// [SetConsoleMode] mode.
+//
+// [SetConsoleMode]: https://learn.microsoft.com/en-us/windows/console/setconsolemode
+type ENABLE uint32
+
+const (
+	ENABLE_ECHO_INPUT             ENABLE = 0x0004
+	ENABLE_INSERT_MODE            ENABLE = 0x0020
+	ENABLE_LINE_INPUT             ENABLE = 0x0002
+	ENABLE_MOUSE_INPUT            ENABLE = 0x0010
+	ENABLE_PROCESSED_INPUT        ENABLE = 0x0001
+	ENABLE_QUICK_EDIT_MODE        ENABLE = 0x0040
+	ENABLE_WINDOW_INPUT           ENABLE = 0x0008
+	ENABLE_VIRTUAL_TERMINAL_INPUT ENABLE = 0x0200
+
+	ENABLE_PROCESSED_OUTPUT            ENABLE = 0x0001
+	ENABLE_WRAP_AT_EOL_OUTPUT          ENABLE = 0x0002
+	ENABLE_VIRTUAL_TERMINAL_PROCESSING ENABLE = 0x0004
+	ENABLE_DISABLE_NEWLINE_AUTO_RETURN ENABLE = 0x0008
+	ENABLE_LVB_GRID_WORLDWIDE          ENABLE = 0x0010
 )
 
 // [WM_ENDSESSION] event.
@@ -863,6 +935,17 @@ const (
 	STARTSW_SHOWNA          = STARTSW(SW_SHOWNA)
 	STARTSW_RESTORE         = STARTSW(SW_RESTORE)
 	STARTSW_FORCEMINIMIZE   = STARTSW(SW_FORCEMINIMIZE)
+)
+
+// Standard [devices].
+//
+// [devices]: https://learn.microsoft.com/en-us/windows/console/getstdhandle
+type STD int32
+
+const (
+	STD_INPUT_HANDLE  STD = -10
+	STD_OUTPUT_HANDLE STD = -11
+	STD_ERROR_HANDLE  STD = -12
 )
 
 // Sub-language [identifier].

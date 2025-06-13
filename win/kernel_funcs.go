@@ -435,6 +435,16 @@ func MAKEWORD(lo, hi uint8) uint16 {
 	return utl.Make16(lo, hi)
 }
 
+// [SetConsoleTitle] function.
+//
+// [SetConsoleTitle]: https://learn.microsoft.com/en-us/windows/console/setconsoletitle
+func SetConsoleTitle(title string) error {
+	title16 := wstr.NewBufWith[wstr.Stack20](title, wstr.EMPTY_IS_NIL)
+	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_SetConsoleTitleW),
+		uintptr(title16.UnsafePtr()))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
 // [SetCurrentDirectory] function.
 //
 // [SetCurrentDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setcurrentdirectory

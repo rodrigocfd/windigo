@@ -93,10 +93,12 @@ type STGMEDIUM struct {
 	PUnkForRelease IUnknown
 }
 
+// Returns the tymed field.
 func (stg *STGMEDIUM) Tymed() co.TYMED {
 	return stg.tymed
 }
 
+// Attemps to return the [win.HBITMAP] if tymed == co.TYMED_GDI.
 func (stg *STGMEDIUM) HBitmap() (win.HBITMAP, bool) {
 	if stg.tymed == co.TYMED_GDI {
 		return win.HBITMAP(stg.data), true
@@ -104,6 +106,7 @@ func (stg *STGMEDIUM) HBitmap() (win.HBITMAP, bool) {
 	return win.HBITMAP(0), false
 }
 
+// Attemps to return the [win.HGLOBAL] if tymed == co.TYMED_HGLOBAL.
 func (stg *STGMEDIUM) HGlobal() (win.HGLOBAL, bool) {
 	if stg.tymed == co.TYMED_HGLOBAL {
 		return win.HGLOBAL(stg.data), true
@@ -111,6 +114,7 @@ func (stg *STGMEDIUM) HGlobal() (win.HGLOBAL, bool) {
 	return win.HGLOBAL(0), false
 }
 
+// Attemps to return the string if tymed == co.TYMED_FILE.
 func (stg *STGMEDIUM) FileName() (string, bool) {
 	if stg.tymed == co.TYMED_FILE {
 		return wstr.WstrPtrToStr((*uint16)(unsafe.Pointer(stg.data))), true
@@ -118,6 +122,7 @@ func (stg *STGMEDIUM) FileName() (string, bool) {
 	return "", false
 }
 
+// Attemps to return the [IStream] if tymed == co.TYMED_ISTREAM.
 func (stg *STGMEDIUM) IStream(releaser *Releaser) (*IStream, bool) {
 	if stg.tymed == co.TYMED_ISTREAM {
 		ppvt := (**IUnknownVt)(unsafe.Pointer(stg.data))
