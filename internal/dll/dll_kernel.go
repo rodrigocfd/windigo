@@ -7,7 +7,7 @@ import (
 )
 
 // Stores the loazy-loaded kernel procedures.
-var kernelCache [103]*syscall.Proc
+var kernelCache [108]*syscall.Proc
 
 // Loads kernel procedures.
 func Kernel(procId PROC_KERNEL) uintptr {
@@ -80,47 +80,52 @@ const (
 	PROC_LoadLibraryW                    PROC_KERNEL = 59 | (1009 << 16) | (1021 << 32)
 	PROC_FreeLibrary                     PROC_KERNEL = 60 | (1022 << 16) | (1033 << 32)
 	PROC_GetModuleFileNameW              PROC_KERNEL = 61 | (1034 << 16) | (1052 << 32)
-	PROC_GetCurrentProcess               PROC_KERNEL = 62 | (1065 << 16) | (1082 << 32)
-	PROC_OpenProcess                     PROC_KERNEL = 63 | (1083 << 16) | (1094 << 32)
-	PROC_GetExitCodeProcess              PROC_KERNEL = 64 | (1095 << 16) | (1113 << 32)
-	PROC_GetPriorityClass                PROC_KERNEL = 65 | (1114 << 16) | (1130 << 32)
-	PROC_GetProcessHandleCount           PROC_KERNEL = 66 | (1131 << 16) | (1152 << 32)
-	PROC_GetProcessId                    PROC_KERNEL = 67 | (1153 << 16) | (1165 << 32)
-	PROC_GetProcessPriorityBoost         PROC_KERNEL = 68 | (1166 << 16) | (1189 << 32)
-	PROC_GetProcessShutdownParameters    PROC_KERNEL = 69 | (1190 << 16) | (1218 << 32)
-	PROC_GetProcessTimes                 PROC_KERNEL = 70 | (1219 << 16) | (1234 << 32)
-	PROC_GetProcessVersion               PROC_KERNEL = 71 | (1235 << 16) | (1252 << 32)
-	PROC_IsProcessCritical               PROC_KERNEL = 72 | (1253 << 16) | (1270 << 32)
-	PROC_IsWow64Process                  PROC_KERNEL = 73 | (1271 << 16) | (1285 << 32)
-	PROC_QueryFullProcessImageNameW      PROC_KERNEL = 74 | (1286 << 16) | (1312 << 32)
-	PROC_QueryProcessAffinityUpdateMode  PROC_KERNEL = 75 | (1313 << 16) | (1343 << 32)
-	PROC_QueryProcessCycleTime           PROC_KERNEL = 76 | (1344 << 16) | (1365 << 32)
-	PROC_ReadProcessMemory               PROC_KERNEL = 77 | (1366 << 16) | (1383 << 32)
-	PROC_SetPriorityClass                PROC_KERNEL = 78 | (1384 << 16) | (1400 << 32)
-	PROC_SetProcessAffinityUpdateMode    PROC_KERNEL = 79 | (1401 << 16) | (1429 << 32)
-	PROC_TerminateProcess                PROC_KERNEL = 80 | (1430 << 16) | (1446 << 32)
-	PROC_VirtualQueryEx                  PROC_KERNEL = 81 | (1447 << 16) | (1461 << 32)
-	PROC_WriteProcessMemory              PROC_KERNEL = 82 | (1462 << 16) | (1480 << 32)
-	PROC_CreateToolhelp32Snapshot        PROC_KERNEL = 83 | (1494 << 16) | (1518 << 32)
-	PROC_Module32FirstW                  PROC_KERNEL = 84 | (1519 << 16) | (1533 << 32)
-	PROC_Module32NextW                   PROC_KERNEL = 85 | (1534 << 16) | (1547 << 32)
-	PROC_Process32FirstW                 PROC_KERNEL = 86 | (1548 << 16) | (1563 << 32)
-	PROC_Process32NextW                  PROC_KERNEL = 87 | (1564 << 16) | (1578 << 32)
-	PROC_Thread32First                   PROC_KERNEL = 88 | (1579 << 16) | (1592 << 32)
-	PROC_Thread32Next                    PROC_KERNEL = 89 | (1593 << 16) | (1605 << 32)
-	PROC_GetCurrentThread                PROC_KERNEL = 90 | (1617 << 16) | (1633 << 32)
-	PROC_GetExitCodeThread               PROC_KERNEL = 91 | (1634 << 16) | (1651 << 32)
-	PROC_GetProcessIdOfThread            PROC_KERNEL = 92 | (1652 << 16) | (1672 << 32)
-	PROC_GetThreadId                     PROC_KERNEL = 93 | (1673 << 16) | (1684 << 32)
-	PROC_GetThreadIdealProcessorEx       PROC_KERNEL = 94 | (1685 << 16) | (1710 << 32)
-	PROC_GetThreadIOPendingFlag          PROC_KERNEL = 95 | (1711 << 16) | (1733 << 32)
-	PROC_GetThreadPriority               PROC_KERNEL = 96 | (1734 << 16) | (1751 << 32)
-	PROC_GetThreadPriorityBoost          PROC_KERNEL = 97 | (1752 << 16) | (1774 << 32)
-	PROC_GetThreadTimes                  PROC_KERNEL = 98 | (1775 << 16) | (1789 << 32)
-	PROC_ResumeThread                    PROC_KERNEL = 99 | (1790 << 16) | (1802 << 32)
-	PROC_TerminateThread                 PROC_KERNEL = 100 | (1803 << 16) | (1818 << 32)
-	PROC_SuspendThread                   PROC_KERNEL = 101 | (1819 << 16) | (1832 << 32)
-	PROC_WaitForSingleObject             PROC_KERNEL = 102 | (1833 << 16) | (1852 << 32)
+	PROC_CreateNamedPipeW                PROC_KERNEL = 62 | (1062 << 16) | (1078 << 32)
+	PROC_ConnectNamedPipe                PROC_KERNEL = 63 | (1079 << 16) | (1095 << 32)
+	PROC_DisconnectNamedPipe             PROC_KERNEL = 64 | (1096 << 16) | (1115 << 32)
+	PROC_GetNamedPipeInfo                PROC_KERNEL = 65 | (1116 << 16) | (1132 << 32)
+	PROC_PeekNamedPipe                   PROC_KERNEL = 66 | (1133 << 16) | (1146 << 32)
+	PROC_GetCurrentProcess               PROC_KERNEL = 67 | (1159 << 16) | (1176 << 32)
+	PROC_OpenProcess                     PROC_KERNEL = 68 | (1177 << 16) | (1188 << 32)
+	PROC_GetExitCodeProcess              PROC_KERNEL = 69 | (1189 << 16) | (1207 << 32)
+	PROC_GetPriorityClass                PROC_KERNEL = 70 | (1208 << 16) | (1224 << 32)
+	PROC_GetProcessHandleCount           PROC_KERNEL = 71 | (1225 << 16) | (1246 << 32)
+	PROC_GetProcessId                    PROC_KERNEL = 72 | (1247 << 16) | (1259 << 32)
+	PROC_GetProcessPriorityBoost         PROC_KERNEL = 73 | (1260 << 16) | (1283 << 32)
+	PROC_GetProcessShutdownParameters    PROC_KERNEL = 74 | (1284 << 16) | (1312 << 32)
+	PROC_GetProcessTimes                 PROC_KERNEL = 75 | (1313 << 16) | (1328 << 32)
+	PROC_GetProcessVersion               PROC_KERNEL = 76 | (1329 << 16) | (1346 << 32)
+	PROC_IsProcessCritical               PROC_KERNEL = 77 | (1347 << 16) | (1364 << 32)
+	PROC_IsWow64Process                  PROC_KERNEL = 78 | (1365 << 16) | (1379 << 32)
+	PROC_QueryFullProcessImageNameW      PROC_KERNEL = 79 | (1380 << 16) | (1406 << 32)
+	PROC_QueryProcessAffinityUpdateMode  PROC_KERNEL = 80 | (1407 << 16) | (1437 << 32)
+	PROC_QueryProcessCycleTime           PROC_KERNEL = 81 | (1438 << 16) | (1459 << 32)
+	PROC_ReadProcessMemory               PROC_KERNEL = 82 | (1460 << 16) | (1477 << 32)
+	PROC_SetPriorityClass                PROC_KERNEL = 83 | (1478 << 16) | (1494 << 32)
+	PROC_SetProcessAffinityUpdateMode    PROC_KERNEL = 84 | (1495 << 16) | (1523 << 32)
+	PROC_TerminateProcess                PROC_KERNEL = 85 | (1524 << 16) | (1540 << 32)
+	PROC_VirtualQueryEx                  PROC_KERNEL = 86 | (1541 << 16) | (1555 << 32)
+	PROC_WriteProcessMemory              PROC_KERNEL = 87 | (1556 << 16) | (1574 << 32)
+	PROC_CreateToolhelp32Snapshot        PROC_KERNEL = 88 | (1588 << 16) | (1612 << 32)
+	PROC_Module32FirstW                  PROC_KERNEL = 89 | (1613 << 16) | (1627 << 32)
+	PROC_Module32NextW                   PROC_KERNEL = 90 | (1628 << 16) | (1641 << 32)
+	PROC_Process32FirstW                 PROC_KERNEL = 91 | (1642 << 16) | (1657 << 32)
+	PROC_Process32NextW                  PROC_KERNEL = 92 | (1658 << 16) | (1672 << 32)
+	PROC_Thread32First                   PROC_KERNEL = 93 | (1673 << 16) | (1686 << 32)
+	PROC_Thread32Next                    PROC_KERNEL = 94 | (1687 << 16) | (1699 << 32)
+	PROC_GetCurrentThread                PROC_KERNEL = 95 | (1711 << 16) | (1727 << 32)
+	PROC_GetExitCodeThread               PROC_KERNEL = 96 | (1728 << 16) | (1745 << 32)
+	PROC_GetProcessIdOfThread            PROC_KERNEL = 97 | (1746 << 16) | (1766 << 32)
+	PROC_GetThreadId                     PROC_KERNEL = 98 | (1767 << 16) | (1778 << 32)
+	PROC_GetThreadIdealProcessorEx       PROC_KERNEL = 99 | (1779 << 16) | (1804 << 32)
+	PROC_GetThreadIOPendingFlag          PROC_KERNEL = 100 | (1805 << 16) | (1827 << 32)
+	PROC_GetThreadPriority               PROC_KERNEL = 101 | (1828 << 16) | (1845 << 32)
+	PROC_GetThreadPriorityBoost          PROC_KERNEL = 102 | (1846 << 16) | (1868 << 32)
+	PROC_GetThreadTimes                  PROC_KERNEL = 103 | (1869 << 16) | (1883 << 32)
+	PROC_ResumeThread                    PROC_KERNEL = 104 | (1884 << 16) | (1896 << 32)
+	PROC_TerminateThread                 PROC_KERNEL = 105 | (1897 << 16) | (1912 << 32)
+	PROC_SuspendThread                   PROC_KERNEL = 106 | (1913 << 16) | (1926 << 32)
+	PROC_WaitForSingleObject             PROC_KERNEL = 107 | (1927 << 16) | (1946 << 32)
 )
 
 // Declaration of kernel procedure names.
@@ -208,6 +213,13 @@ GetModuleHandleW
 LoadLibraryW
 FreeLibrary
 GetModuleFileNameW
+
+--hpipe
+CreateNamedPipeW
+ConnectNamedPipe
+DisconnectNamedPipe
+GetNamedPipeInfo
+PeekNamedPipe
 
 --hprocess
 GetCurrentProcess

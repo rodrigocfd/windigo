@@ -579,6 +579,33 @@ const (
 	PBT_POWERSETTINGCHANGE    PBT = 0x8013
 )
 
+// [CreateNamedPipe] dwPipeMode.
+//
+// [CreateNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
+type PIPE uint32
+
+const (
+	PIPE_WAIT                  PIPE = 0x0000_0000
+	PIPE_NOWAIT                PIPE = 0x0000_0001
+	PIPE_READMODE_BYTE         PIPE = 0x0000_0000
+	PIPE_READMODE_MESSAGE      PIPE = 0x0000_0002
+	PIPE_TYPE_BYTE             PIPE = 0x0000_0000
+	PIPE_TYPE_MESSAGE          PIPE = 0x0000_0004
+	PIPE_ACCEPT_REMOTE_CLIENTS PIPE = 0x0000_0000
+	PIPE_REJECT_REMOTE_CLIENTS PIPE = 0x0000_0008
+)
+
+// [CreateNamedPipe] dwOpenMode.
+//
+// [CreateNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
+type PIPE_ACCESS uint32
+
+const (
+	PIPE_ACCESS_INBOUND  PIPE_ACCESS = 0x0000_0001
+	PIPE_ACCESS_OUTBOUND PIPE_ACCESS = 0x0000_0002
+	PIPE_ACCESS_DUPLEX   PIPE_ACCESS = 0x0000_0003
+)
+
 // [GetPriorityClass] and [SetPriorityClass] values. Originally has
 // PRIORITY_CLASS suffix.
 //
