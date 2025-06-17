@@ -75,7 +75,9 @@ func (hMenu HMENU) checkMenuItem(check bool, flagPosCmd co.MF, item uint) error 
 	}
 
 	ret, _, _ := syscall.SyscallN(dll.User(dll.PROC_CheckMenuItem),
-		uintptr(hMenu), uintptr(item), uintptr(flagPosCmd))
+		uintptr(hMenu),
+		uintptr(item),
+		uintptr(flagPosCmd))
 	return utl.Minus1AsSysInvalidParm(ret)
 }
 

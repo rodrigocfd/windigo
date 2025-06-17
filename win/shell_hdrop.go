@@ -50,7 +50,8 @@ func (hDrop HDROP) DragFinish() {
 // [RegisterDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-registerdragdrop
 func (hDrop HDROP) DragQueryFile() ([]string, error) {
 	ret, _, _ := syscall.SyscallN(dll.Shell(dll.PROC_DragQueryFileW),
-		uintptr(hDrop), uintptr(0xffff_ffff), 0, 0)
+		uintptr(hDrop),
+		uintptr(0xffff_ffff), 0, 0)
 	if ret == 0 {
 		return nil, co.ERROR_INVALID_PARAMETER
 	}

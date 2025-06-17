@@ -138,7 +138,8 @@ func NewVariant(releaser *ole.Releaser, value interface{}) *VARIANT {
 		st.SetTime(val)
 
 		ret, _, _ := syscall.SyscallN(dllOleaut(_PROC_SystemTimeToVariantTime),
-			uintptr(unsafe.Pointer(&st)), uintptr(unsafe.Pointer(&double)))
+			uintptr(unsafe.Pointer(&st)),
+			uintptr(unsafe.Pointer(&double)))
 		if ret == 0 {
 			panic("SystemTimeToVariantTime() failed.") // should never happen, time.Time is always valid
 		}
@@ -379,7 +380,8 @@ func (v *VARIANT) Date() (time.Time, bool) {
 		var st win.SYSTEMTIME
 
 		ret, _, _ := syscall.SyscallN(dllOleaut(_PROC_VariantTimeToSystemTime),
-			uintptr(math.Float64bits(double)), uintptr(unsafe.Pointer(&st)))
+			uintptr(math.Float64bits(double)),
+			uintptr(unsafe.Pointer(&st)))
 		if ret == 0 {
 			panic("VariantTimeToSystemTime() failed.") // should never happen, time.Time is always valid
 		}

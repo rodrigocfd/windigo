@@ -219,7 +219,8 @@ func (hWnd HWND) ClientToScreenRc(rc *RECT) error {
 	}
 
 	ret, _, _ = syscall.SyscallN(dll.User(dll.PROC_ClientToScreen),
-		uintptr(hWnd), uintptr(unsafe.Pointer(&rc.Right)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&rc.Right)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -595,7 +596,8 @@ func (hWnd HWND) GetWindowTextLength() (uint, error) {
 func (hWnd HWND) GetWindowThreadProcessId() (threadId, processId uint32, wErr error) {
 	var pid uint32
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_GetWindowThreadProcessId),
-		uintptr(hWnd), uintptr(unsafe.Pointer(&pid)))
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&pid)))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return 0, 0, wErr
 	}

@@ -111,7 +111,8 @@ func (me *IShellItem) GetPath(fd *win.WIN32_FIND_DATA, flags co.SLGP) (string, e
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(int32(len(buf)-1)),
-		uintptr(unsafe.Pointer(fd)), uintptr(flags))
+		uintptr(unsafe.Pointer(fd)),
+		uintptr(flags))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return wstr.WstrSliceToStr(buf[:]), nil

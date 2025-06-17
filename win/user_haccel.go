@@ -43,7 +43,9 @@ func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
 	}
 	accelList := make([]ACCEL, szRet)
 	syscall.SyscallN(dll.User(dll.PROC_CopyAcceleratorTableW),
-		uintptr(hAccel), uintptr(unsafe.Pointer(&accelList[0])), szRet)
+		uintptr(hAccel),
+		uintptr(unsafe.Pointer(&accelList[0])),
+		szRet)
 	return accelList
 }
 
