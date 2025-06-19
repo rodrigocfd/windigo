@@ -32,12 +32,14 @@ type CollectionListViewCols struct {
 //
 // [LVM_INSERTCOLUMN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertcolumn
 func (me *CollectionListViewCols) Add(title string, width int) ListViewCol {
-	title16 := wstr.NewBufWith[wstr.Stack20](title, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+
 	lvc := win.LVCOLUMN{
 		Mask: co.LVCF_TEXT | co.LVCF_WIDTH,
 		Cx:   int32(width),
 	}
-	lvc.SetPszText(title16.HotSlice())
+	lvc.SetPszText(wbuf.SliceAllowEmpty(title))
 
 	newIdxRet, err := me.owner.hWnd.SendMessage(co.LVM_INSERTCOLUMN,
 		0xffff, win.LPARAM(unsafe.Pointer(&lvc)))

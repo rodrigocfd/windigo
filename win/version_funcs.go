@@ -29,9 +29,12 @@ import (
 //
 // [GetFileVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
 func GetFileVersionInfo(fileName string, dest []byte) error {
-	fileName16 := wstr.NewBufWith[wstr.Stack20](fileName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pFileName := wbuf.PtrEmptyIsNil(fileName)
+
 	ret, _, err := syscall.SyscallN(dll.Version(dll.PROC_GetFileVersionInfoW),
-		uintptr(fileName16.UnsafePtr()),
+		uintptr(pFileName),
 		0,
 		uintptr(uint32(len(dest))),
 		uintptr(unsafe.Pointer(&dest[0])))
@@ -42,11 +45,14 @@ func GetFileVersionInfo(fileName string, dest []byte) error {
 //
 // [GetFileVersionInfoSize]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
 func GetFileVersionInfoSize(fileName string) (uint, error) {
-	fileName16 := wstr.NewBufWith[wstr.Stack20](fileName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pFileName := wbuf.PtrEmptyIsNil(fileName)
+
 	var dummy uint32
 
 	ret, _, err := syscall.SyscallN(dll.Version(dll.PROC_GetFileVersionInfoSizeW),
-		uintptr(fileName16.UnsafePtr()),
+		uintptr(pFileName),
 		uintptr(unsafe.Pointer(&dummy)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -89,7 +95,7 @@ func GetFileVersionInfoSize(fileName string) (uint, error) {
 //					block.LangId, block.CodePage, "ProductName")); ok {
 //
 //				wideStr := unsafe.Slice((*uint16)(pStr), nChars)
-//				str := wstr.WstrSliceToStr(wideStr)
+//				str := wstr.WinSliceToGo(wideStr)
 //				println(str)
 //			}
 //		}
@@ -97,13 +103,16 @@ func GetFileVersionInfoSize(fileName string) (uint, error) {
 //
 // [VerQueryValue]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
 func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, uint, bool) {
-	subBlock16 := wstr.NewBufWith[wstr.Stack20](subBlock, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pSubBlock := wbuf.PtrAllowEmpty(subBlock)
+
 	var lplpBuffer uintptr
 	var puLen uint32
 
 	ret, _, _ := syscall.SyscallN(dll.Version(dll.PROC_VerQueryValueW),
 		uintptr(unsafe.Pointer(&block[0])),
-		uintptr(subBlock16.UnsafePtr()),
+		uintptr(pSubBlock),
 		uintptr(unsafe.Pointer(&lplpBuffer)),
 		uintptr(unsafe.Pointer(&puLen)))
 	if ret == 0 {

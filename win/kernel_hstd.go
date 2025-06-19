@@ -49,22 +49,24 @@ func (hStd HSTD) GetCurrentConsoleFont(maximumWindow bool) (CONSOLE_FONT_INFO, e
 //
 // [ReadConsole]: https://learn.microsoft.com/en-us/windows/console/readconsole
 func (hStd HSTD) ReadConsole(
-	maxCharsToRead int,
+	maxCharsToRead uint,
 	inputControl *CONSOLE_READCONSOLE_CONTROL,
-) (string, error) {
-	buf := make([]uint16, maxCharsToRead+1)
-	var numCharsRead uint32
+) (text string, numCharsRead uint, wErr error) {
+	recvBuf := wstr.NewBufReceiver(maxCharsToRead + 1)
+	defer recvBuf.Free()
+
+	var numRead32 uint32
 
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_ReadConsoleW),
 		uintptr(hStd),
-		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(recvBuf.UnsafePtr()),
 		uintptr(maxCharsToRead),
-		uintptr(unsafe.Pointer(&numCharsRead)),
+		uintptr(unsafe.Pointer(&numRead32)),
 		uintptr(unsafe.Pointer(inputControl)))
 	if ret == 0 {
-		return "", co.ERROR(err)
+		return "", 0, co.ERROR(err)
 	}
-	return wstr.WstrSliceToStr(buf[:numCharsRead]), nil
+	return recvBuf.String(), uint(numRead32), nil
 }
 
 // [SetConsoleCursorInfo] function.
@@ -153,12 +155,15 @@ func (hStd HSTD) SetConsoleTextAttribute(attrs co.CHAR_ATTR) error {
 //
 // [WriteConsole]: https://learn.microsoft.com/en-us/windows/console/writeconsole
 func (hStd HSTD) WriteConsole(text string) (numCharsWritten uint, wErr error) {
-	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pText := wbuf.PtrAllowEmpty(text)
+
 	var numWritten32 uint32
 
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_WriteConsoleW),
 		uintptr(hStd),
-		uintptr(text16.UnsafePtr()),
+		uintptr(pText),
 		uintptr(uint32(len(text))),
 		uintptr(unsafe.Pointer(&numWritten32)),
 		0)

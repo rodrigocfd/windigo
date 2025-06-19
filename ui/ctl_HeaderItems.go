@@ -26,12 +26,14 @@ type CollectionHeaderItems struct {
 //
 // [HDM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-insertitem
 func (me *CollectionHeaderItems) Add(text string, width int) HeaderItem {
-	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+
 	hdi := win.HDITEM{
 		Mask: co.HDI_TEXT | co.HDI_WIDTH,
 		Cxy:  int32(width),
 	}
-	hdi.SetPszText(text16.HotSlice())
+	hdi.SetPszText(wbuf.SliceAllowEmpty(text))
 
 	newIdxRet, err := me.owner.hWnd.SendMessage(co.HDM_INSERTITEM,
 		0xffff, win.LPARAM(unsafe.Pointer(&hdi)))

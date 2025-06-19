@@ -73,12 +73,15 @@ func OleLoadPicturePath(
 	path string,
 	transparentColor win.COLORREF,
 ) (*IPicture, error) {
-	path16 := wstr.NewBufWith[wstr.Stack20](path, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pPath := wbuf.PtrEmptyIsNil(path)
+
 	var ppvtQueried **ole.IUnknownVt
 	guid := win.GuidFrom(co.IID_IPicture)
 
 	ret, _, _ := syscall.SyscallN(dllOleaut(_PROC_OleLoadPicturePath),
-		uintptr(path16.UnsafePtr()),
+		uintptr(pPath),
 		0, 0,
 		uintptr(transparentColor),
 		uintptr(unsafe.Pointer(&guid)),

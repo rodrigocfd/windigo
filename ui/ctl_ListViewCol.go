@@ -132,12 +132,14 @@ func (me ListViewCol) SetSortArrow(hdf co.HDF) ListViewCol {
 //
 // [LVM_SETCOLUMN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setcolumn
 func (me ListViewCol) SetTitle(title string) ListViewCol {
-	title16 := wstr.NewBufWith[wstr.Stack20](title, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+
 	lvc := win.LVCOLUMN{
 		ISubItem: int32(me.index),
 		Mask:     co.LVCF_TEXT,
 	}
-	lvc.SetPszText(title16.HotSlice())
+	lvc.SetPszText(wbuf.SliceAllowEmpty(title))
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETCOLUMN,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvc)))
@@ -219,13 +221,14 @@ func (me ListViewCol) SortArrow() co.HDF {
 //
 // [LVM_GETCOLUMN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getcolumn
 func (me ListViewCol) Title() string {
-	var titleBuf [64]uint16 // arbitrary
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
 
 	lvc := win.LVCOLUMN{
 		ISubItem: int32(me.index),
 		Mask:     co.LVCF_TEXT,
 	}
-	lvc.SetPszText(titleBuf[:])
+	lvc.SetPszText(recvBuf.HotSlice())
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_GETCOLUMN,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvc)))
@@ -233,7 +236,7 @@ func (me ListViewCol) Title() string {
 		panic(fmt.Sprintf("LVM_GETCOLUMN %d failed.", me.index))
 	}
 
-	return wstr.WstrSliceToStr(titleBuf[:])
+	return recvBuf.String()
 }
 
 // Retrieves the width of the column with [LVM_GETCOLUMNWIDTH].

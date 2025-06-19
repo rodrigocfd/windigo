@@ -25,10 +25,13 @@ func (hWnd HWND) IsThemeDialogTextureEnabled() bool {
 //
 // [OpenThemeData]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
 func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {
-	classNames16 := wstr.NewBufWith[wstr.Stack20](classNames, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pClassNames := wbuf.PtrEmptyIsNil(classNames)
+
 	ret, _, _ := syscall.SyscallN(dll.Uxtheme(dll.PROC_OpenThemeData),
 		uintptr(hWnd),
-		uintptr(classNames16.UnsafePtr()))
+		uintptr(pClassNames))
 	if ret == 0 {
 		return HTHEME(0), co.HRESULT_E_FAIL
 	}

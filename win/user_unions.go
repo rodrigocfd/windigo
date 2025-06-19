@@ -72,15 +72,14 @@ func (me *ClassName) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *ClassName) raw(wideBuf *wstr.Buf[wstr.Stack20]) uintptr {
+func (me *ClassName) raw(wbuf *wstr.BufConverter) uintptr {
 	switch me.tag {
 	case _ClassNameTag_none:
 		return 0
 	case _ClassNameTag_atom:
 		return uintptr(me.atom)
 	case _ClassNameTag_str:
-		wideBuf.Set(me.str, wstr.EMPTY_IS_NIL)
-		return uintptr(wideBuf.UnsafePtr())
+		return uintptr(wbuf.PtrEmptyIsNil(me.str))
 	default:
 		panic("Invalid ClassName value.")
 	}
@@ -160,13 +159,12 @@ func (me *CursorRes) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *CursorRes) raw(wideBuf *wstr.Buf[wstr.Stack20]) uintptr {
+func (me *CursorRes) raw(wbuf *wstr.BufConverter) uintptr {
 	switch me.tag {
 	case _CursorTag_idc, _CursorTag_id:
 		return me.data
 	case _CursorTag_str:
-		wideBuf.Set(me.str, wstr.EMPTY_IS_NIL)
-		return uintptr(wideBuf.UnsafePtr())
+		return uintptr(wbuf.PtrEmptyIsNil(me.str))
 	default:
 		panic("Invalid CursorRes value.")
 	}
@@ -246,13 +244,12 @@ func (me *IconRes) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *IconRes) raw(wideBuf *wstr.Buf[wstr.Stack20]) uintptr {
+func (me *IconRes) raw(wbuf *wstr.BufConverter) uintptr {
 	switch me.tag {
 	case _IconResTag_idi, _IconResTag_id:
 		return me.data
 	case _IconResTag_str:
-		wideBuf.Set(me.str, wstr.EMPTY_IS_NIL)
-		return uintptr(wideBuf.UnsafePtr())
+		return uintptr(wbuf.PtrEmptyIsNil(me.str))
 	default:
 		panic("Invalid IconRes value.")
 	}
@@ -309,13 +306,12 @@ func (me *ResId) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *ResId) raw(wideBuf *wstr.Buf[wstr.Stack20]) uintptr {
+func (me *ResId) raw(wbuf *wstr.BufConverter) uintptr {
 	switch me.tag {
 	case _ResIdTag_id:
 		return uintptr(me.id)
 	case _ResIdTag_str:
-		wideBuf.Set(me.str, wstr.EMPTY_IS_NIL)
-		return uintptr(wideBuf.UnsafePtr())
+		return uintptr(wbuf.PtrEmptyIsNil(me.str))
 	default:
 		panic("Invalid ResId value.")
 	}

@@ -150,17 +150,17 @@ type LITEM struct {
 }
 
 func (li *LITEM) SzID() string {
-	return wstr.WstrSliceToStr(li.szID[:])
+	return wstr.WinSliceToGo(li.szID[:])
 }
 func (li *LITEM) SetSzID(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(li.szID)-1)), li.szID[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(li.szID)-1)), li.szID[:])
 }
 
 func (li *LITEM) SzUrl() string {
-	return wstr.WstrSliceToStr(li.szUrl[:])
+	return wstr.WinSliceToGo(li.szUrl[:])
 }
 func (li *LITEM) SetSzUrl(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(li.szUrl)-1)), li.szUrl[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(li.szUrl)-1)), li.szUrl[:])
 }
 
 // [LVCOLUMN] struct.
@@ -314,10 +314,10 @@ type NMDATETIMEFORMAT struct {
 }
 
 func (dtf *NMDATETIMEFORMAT) SzDisplay() string {
-	return wstr.WstrSliceToStr(dtf.szDisplay[:])
+	return wstr.WinSliceToGo(dtf.szDisplay[:])
 }
 func (dtf *NMDATETIMEFORMAT) SetSzDisplay(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(dtf.szDisplay)-1)), dtf.szDisplay[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(dtf.szDisplay)-1)), dtf.szDisplay[:])
 }
 
 // [NMDATETIMEFORMATQUERY] struct.
@@ -569,10 +569,10 @@ type NMLVEMPTYMARKUP struct {
 }
 
 func (lve *NMLVEMPTYMARKUP) SzMarkup() string {
-	return wstr.WstrSliceToStr(lve.szMarkup[:])
+	return wstr.WinSliceToGo(lve.szMarkup[:])
 }
 func (lve *NMLVEMPTYMARKUP) SetSzMarkup(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(lve.szMarkup)-1)), lve.szMarkup[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(lve.szMarkup)-1)), lve.szMarkup[:])
 }
 
 // [NMLVFINDITEM] struct.
@@ -997,28 +997,15 @@ type TASKDIALOGCONFIG struct {
 
 // Converts the syntactic sugar struct into the packed raw one.
 func (tdc *TASKDIALOGCONFIG) serialize(
-	strsBuf *wstr.Array, // buffer for all struct strings, followed by all button strings
+	strsBuf *wstr.BufConverter, // buffer for all struct and button strings
 	tdcBuf *Vec[byte],
 	btnsBuf *Vec[[12]byte], // buffer for Buttons and RadioButtons
 ) {
 	dest := tdcBuf.HotSlice()
 
-	strsBuf.Append( // serialize all strings in advance, so we can safely grab their pointers
-		tdc.WindowTitle,          // 0
-		tdc.MainInstruction,      // 1
-		tdc.Content,              // 2
-		tdc.VerificationText,     // 3
-		tdc.ExpandedInformation,  // 4
-		tdc.ExpandedControlText,  // 5
-		tdc.CollapsedControlText, // 6
-		tdc.Footer)               // 7
-	for _, btn := range tdc.Buttons {
-		strsBuf.Append(btn.Text) // serialize button strings
-	}
-	for _, btn := range tdc.RadioButtons {
-		strsBuf.Append(btn.Text) // serialize radio strings
-	}
-	btnsBuf.Resize(uint(len(tdc.Buttons)+len(tdc.RadioButtons)), [12]byte{}) // for buttons and radios
+	numButtons := uint(len(tdc.Buttons))
+	numRadios := uint(len(tdc.RadioButtons))
+	btnsBuf.Resize(numButtons+numRadios, [12]byte{}) // for buttons and radios
 
 	tdc.put32(dest[0:], uint32(tdcBuf.Len())) // cbSize
 	tdc.put64(dest[4:], uint64(tdc.HwndParent))
@@ -1026,20 +1013,20 @@ func (tdc *TASKDIALOGCONFIG) serialize(
 	tdc.put32(dest[20:], uint32(tdc.Flags))
 	tdc.put32(dest[24:], uint32(tdc.CommonButtons))
 
-	tdc.putStr(dest[28:], strsBuf.PtrOf(0)) // PszWindowTitle
+	tdc.putPtr(dest[28:], strsBuf.PtrAllowEmpty(tdc.WindowTitle))
 
 	if !tdc.HMainIcon.IsNone() {
 		tdc.put64(dest[36:], tdc.HMainIcon.raw())
 	}
 
-	tdc.putStr(dest[44:], strsBuf.PtrOf(1)) // PszMainInstruction
-	tdc.putStr(dest[52:], strsBuf.PtrOf(2)) // PszContent
+	tdc.putPtr(dest[44:], strsBuf.PtrAllowEmpty(tdc.MainInstruction))
+	tdc.putPtr(dest[52:], strsBuf.PtrAllowEmpty(tdc.Content))
 
 	if len(tdc.Buttons) > 0 {
 		for i, btn := range tdc.Buttons {
 			btnBuf := btnsBuf.Get(uint(i))
 			tdc.put32((*btnBuf)[:], uint32(btn.Id))
-			tdc.putStr((*btnBuf)[4:], strsBuf.PtrOf(8+uint(i)))
+			tdc.putPtr((*btnBuf)[4:], strsBuf.PtrAllowEmpty(btn.Text))
 		}
 		tdc.put32(dest[60:], uint32(len(tdc.Buttons)))
 		tdc.putPtr(dest[64:], btnsBuf.UnsafePtr())
@@ -1048,11 +1035,11 @@ func (tdc *TASKDIALOGCONFIG) serialize(
 	tdc.put32(dest[72:], uint32(tdc.DefaultButtonId))
 
 	if len(tdc.RadioButtons) > 0 {
-		baseRadios := uint(len(tdc.Buttons)) // PRadioButtons are appended at the same array
+		baseRadios := uint(len(tdc.Buttons)) // radios are appended after the buttons
 		for i, btn := range tdc.RadioButtons {
 			btnBuf := btnsBuf.Get(baseRadios + uint(i))
 			tdc.put32((*btnBuf)[:], uint32(btn.Id))
-			tdc.putStr((*btnBuf)[4:], strsBuf.PtrOf(8+baseRadios+uint(i)))
+			tdc.putPtr((*btnBuf)[4:], strsBuf.PtrAllowEmpty(btn.Text))
 		}
 		tdc.put32(dest[76:], uint32(len(tdc.RadioButtons)))
 		tdc.putPtr(dest[80:], unsafe.Pointer(btnsBuf.Get(baseRadios)))
@@ -1060,16 +1047,16 @@ func (tdc *TASKDIALOGCONFIG) serialize(
 
 	tdc.put32(dest[88:], uint32(tdc.DefaultRadioButton))
 
-	tdc.putStr(dest[92:], strsBuf.PtrOf(3))  // PszVerificationText
-	tdc.putStr(dest[100:], strsBuf.PtrOf(4)) // PszExpandedInformation
-	tdc.putStr(dest[108:], strsBuf.PtrOf(5)) // PszExpandedControlText
-	tdc.putStr(dest[116:], strsBuf.PtrOf(6)) // PszCollapsedControlText
+	tdc.putPtr(dest[92:], strsBuf.PtrAllowEmpty(tdc.VerificationText))
+	tdc.putPtr(dest[100:], strsBuf.PtrAllowEmpty(tdc.ExpandedInformation))
+	tdc.putPtr(dest[108:], strsBuf.PtrAllowEmpty(tdc.ExpandedControlText))
+	tdc.putPtr(dest[116:], strsBuf.PtrAllowEmpty(tdc.CollapsedControlText))
 
 	if !tdc.HFooterIcon.IsNone() {
 		tdc.put64(dest[124:], tdc.HFooterIcon.raw())
 	}
 
-	tdc.putStr(dest[132:], strsBuf.PtrOf(7)) // PszFooter
+	tdc.putPtr(dest[132:], strsBuf.PtrAllowEmpty(tdc.Footer))
 
 	tdc.put64(dest[140:], uint64(tdc.PfCallback))
 	tdc.put64(dest[148:], uint64(tdc.LpCallbackData))
@@ -1084,9 +1071,6 @@ func (tdc *TASKDIALOGCONFIG) put64(b []byte, v uint64) {
 }
 func (tdc *TASKDIALOGCONFIG) putPtr(b []byte, p unsafe.Pointer) {
 	tdc.put64(b, uint64(uintptr(p)))
-}
-func (tdc *TASKDIALOGCONFIG) putStr(b []byte, p *uint16) {
-	tdc.putPtr(b, unsafe.Pointer(p))
 }
 
 // [TCITEM] struct.

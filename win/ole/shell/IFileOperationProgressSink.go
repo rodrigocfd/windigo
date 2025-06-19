@@ -330,7 +330,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					} else {
 						var pItem *IShellItem
 						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
-						return uintptr(fun(co.TSF(dwFlags), pItem, wstr.WstrPtrToStr(pszNewName)))
+						return uintptr(fun(co.TSF(dwFlags), pItem, wstr.WinPtrToGo(pszNewName)))
 					}
 				},
 			),
@@ -350,7 +350,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
 						utl.ComCreateObj(&pNew, unsafe.Pointer(psiNewlyCreated))
 						return uintptr(fun(co.TSF(dwFlags), pItem,
-							wstr.WstrPtrToStr(pszNewName), hrRename, pNew))
+							wstr.WinPtrToGo(pszNewName), hrRename, pNew))
 					}
 				},
 			),
@@ -367,7 +367,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 						var pItem, pDest *IShellItem
 						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
 						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
-						return uintptr(fun(co.TSF(dwFlags), pItem, pDest, wstr.WstrPtrToStr(pszNewName)))
+						return uintptr(fun(co.TSF(dwFlags), pItem, pDest, wstr.WinPtrToGo(pszNewName)))
 					}
 				},
 			),
@@ -388,7 +388,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
 						utl.ComCreateObj(&pNew, unsafe.Pointer(psiNewlyCreated))
 						return uintptr(fun(co.TSF(dwFlags), pItem, pDest,
-							wstr.WstrPtrToStr(pszNewName), hrMove, pNew))
+							wstr.WinPtrToGo(pszNewName), hrMove, pNew))
 					}
 				},
 			),
@@ -405,7 +405,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 						var pItem, pDest *IShellItem
 						utl.ComCreateObj(&pItem, unsafe.Pointer(psiItem))
 						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
-						return uintptr(fun(co.TSF(dwFlags), pItem, pDest, wstr.WstrPtrToStr(pszNewName)))
+						return uintptr(fun(co.TSF(dwFlags), pItem, pDest, wstr.WinPtrToGo(pszNewName)))
 					}
 				},
 			),
@@ -426,7 +426,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
 						utl.ComCreateObj(&pNew, unsafe.Pointer(psiNewlyCreated))
 						return uintptr(fun(co.TSF(dwFlags), pItem, pDest,
-							wstr.WstrPtrToStr(pszNewName), hrMove, pNew))
+							wstr.WinPtrToGo(pszNewName), hrMove, pNew))
 					}
 				},
 			),
@@ -472,7 +472,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					} else {
 						var pDest *IShellItem
 						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
-						return uintptr(fun(co.TSF(dwFlags), pDest, wstr.WstrPtrToStr(pszNewName)))
+						return uintptr(fun(co.TSF(dwFlags), pDest, wstr.WinPtrToGo(pszNewName)))
 					}
 				},
 			),
@@ -492,8 +492,8 @@ func (me *_IFileOperationProgressSinkVt) init() {
 						var pDest, pNew *IShellItem
 						utl.ComCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
 						utl.ComCreateObj(&pNew, unsafe.Pointer(psiNewItem))
-						return uintptr(fun(co.TSF(dwFlags), pDest, wstr.WstrPtrToStr(pszNewName),
-							wstr.WstrPtrToStr(pszTemplateName), fileAttributes, hrNew, pNew))
+						return uintptr(fun(co.TSF(dwFlags), pDest, wstr.WinPtrToGo(pszNewName),
+							wstr.WinPtrToGo(pszTemplateName), fileAttributes, hrNew, pNew))
 					}
 				},
 			),

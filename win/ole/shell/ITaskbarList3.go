@@ -56,13 +56,16 @@ func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI win.HWND) error {
 //
 // [SetOverlayIcon]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setoverlayicon
 func (me *ITaskbarList3) SetOverlayIcon(hWnd win.HWND, hIcon win.HICON, description string) error {
-	description16 := wstr.NewBufWith[wstr.Stack20](description, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pDescription := wbuf.PtrAllowEmpty(description)
+
 	ret, _, _ := syscall.SyscallN(
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).SetOverlayIcon,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(hIcon),
-		uintptr(description16.UnsafePtr()))
+		uintptr(pDescription))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -131,12 +134,15 @@ func (me *ITaskbarList3) SetThumbnailClip(hWnd win.HWND, rcClip *win.RECT) error
 //
 // [SetThumbnailTooltip]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
 func (me *ITaskbarList3) SetThumbnailTooltip(hWnd win.HWND, tip string) error {
-	tip16 := wstr.NewBufWith[wstr.Stack20](tip, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pTip := wbuf.PtrEmptyIsNil(tip)
+
 	ret, _, _ := syscall.SyscallN(
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).SetThumbnailTooltip,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
-		uintptr(tip16.UnsafePtr()))
+		uintptr(pTip))
 	return utl.ErrorAsHResult(ret)
 }
 

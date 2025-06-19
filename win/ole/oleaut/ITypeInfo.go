@@ -220,17 +220,20 @@ func (me *ITypeInfo) GetFuncDesc(releaser *ole.Releaser, index uint) (*FuncDescD
 //
 // [GetIDsOfNames]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getidsofnames
 func (me *ITypeInfo) GetIDsOfNames(names ...string) ([]MEMBERID, error) {
-	names16 := wstr.NewArray(names...)
-	ptrs16 := make([]*uint16, 0, len(names)) // pointers to the UTF-16 strings
-	for i := uint(0); i < uint(len(names)); i++ {
-		ptrs16 = append(ptrs16, names16.PtrOf(i))
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+
+	strPtrs := make([]*uint16, 0, len(names))
+	for _, name := range names {
+		strPtrs = append(strPtrs, (*uint16)(wbuf.PtrAllowEmpty(name)))
 	}
-	memIds := make([]MEMBERID, len(names))
+
+	memIds := make([]MEMBERID, len(names)) // to be returned
 
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetIDsOfNames,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ptrs16[0])),
+		uintptr(unsafe.Pointer(&strPtrs[0])),
 		uintptr(uint32(len(names))),
 		uintptr(unsafe.Pointer(&memIds[0])))
 

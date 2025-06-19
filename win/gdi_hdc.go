@@ -25,12 +25,14 @@ type HDC HANDLE
 //
 // [CreateDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdcw
 func CreateDC(driver, device string, dm *DEVMODE) (HDC, error) {
-	driver16 := wstr.NewBufWith[wstr.Stack20](driver, wstr.EMPTY_IS_NIL)
-	device16 := wstr.NewBufWith[wstr.Stack20](device, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pDriver := wbuf.PtrEmptyIsNil(driver)
+	pDevice := wbuf.PtrAllowEmpty(device)
 
 	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateDCW),
-		uintptr(driver16.UnsafePtr()),
-		uintptr(device16.UnsafePtr()),
+		uintptr(pDriver),
+		uintptr(pDevice),
 		0,
 		uintptr(unsafe.Pointer(dm)))
 	if ret == 0 {
@@ -45,12 +47,14 @@ func CreateDC(driver, device string, dm *DEVMODE) (HDC, error) {
 //
 // [CreateIC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createicw
 func CreateIC(driver, device string, dm *DEVMODE) (HDC, error) {
-	driver16 := wstr.NewBufWith[wstr.Stack20](driver, wstr.ALLOW_EMPTY)
-	device16 := wstr.NewBufWith[wstr.Stack20](device, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pDriver := wbuf.PtrAllowEmpty(driver)
+	pDevice := wbuf.PtrAllowEmpty(device)
 
 	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_CreateICW),
-		uintptr(driver16.UnsafePtr()),
-		uintptr(device16.UnsafePtr()),
+		uintptr(pDriver),
+		uintptr(pDevice),
 		0,
 		uintptr(unsafe.Pointer(dm)))
 	if ret == 0 {
@@ -639,13 +643,16 @@ func (hdc HDC) GetTextColor() (COLORREF, error) {
 //
 // [GetTextExtentPoint32]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextextentpoint32w
 func (hdc HDC) GetTextExtentPoint32(text string) (SIZE, error) {
-	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pText := wbuf.PtrAllowEmpty(text)
+
 	textLen := utf8.RuneCountInString(text)
 	var sz SIZE
 
 	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetTextExtentPoint32W),
 		uintptr(hdc),
-		uintptr(text16.UnsafePtr()),
+		uintptr(pText),
 		uintptr(textLen),
 		uintptr(unsafe.Pointer(&sz)))
 	if ret == 0 {
@@ -666,7 +673,7 @@ func (hdc HDC) GetTextFace() (string, error) {
 	if ret == 0 {
 		return "", co.ERROR_INVALID_PARAMETER
 	}
-	return wstr.WstrSliceToStr(buf[:]), nil
+	return wstr.WinSliceToGo(buf[:]), nil
 }
 
 // [GetTextMetrics] function.
@@ -1495,14 +1502,17 @@ func (hdc HDC) SwapBuffers() error {
 //
 // [TextOut]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-textoutw
 func (hdc HDC) TextOut(x, y int, text string) error {
-	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pText := wbuf.PtrAllowEmpty(text)
+
 	textLen := utf8.RuneCountInString(text)
 
 	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_TextOutW),
 		uintptr(hdc),
 		uintptr(int32(x)),
 		uintptr(int32(y)),
-		uintptr(text16.UnsafePtr()),
+		uintptr(pText),
 		uintptr(int32(textLen-1)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }

@@ -27,10 +27,12 @@ type HFIND HANDLE
 //
 // [FindFirstFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
 func FindFirstFile(fileName string, findFileData *WIN32_FIND_DATA) (HFIND, bool, error) {
-	fileName16 := wstr.NewBufWith[wstr.Stack20](fileName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pFileName := wbuf.PtrEmptyIsNil(fileName)
 
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_FindFirstFileW),
-		uintptr(fileName16.UnsafePtr()),
+		uintptr(pFileName),
 		uintptr(unsafe.Pointer(findFileData)))
 
 	if int(ret) == utl.INVALID_HANDLE_VALUE {

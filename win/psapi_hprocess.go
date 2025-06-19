@@ -25,48 +25,54 @@ func (hProcess HPROCESS) EmptyWorkingSet() error {
 //
 // [GetMappedFileName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmappedfilenamew
 func (hProcess HPROCESS) GetMappedFileName(address uintptr) (string, error) {
-	var fileName [utl.MAX_PATH]uint16
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
+
 	ret, _, err := syscall.SyscallN(dll.Psapi(dll.PROC_GetMappedFileNameW),
 		uintptr(hProcess),
 		address,
-		uintptr(unsafe.Pointer(&fileName[0])),
-		uintptr(len(fileName)))
+		uintptr(recvBuf.UnsafePtr()),
+		uintptr(uint32(recvBuf.Len())))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return wstr.WstrSliceToStr(fileName[:]), nil
+	return recvBuf.String(), nil
 }
 
 // [GetModuleBaseName] function.
 //
 // [GetModuleBaseName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
 func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
-	var baseName [utl.MAX_PATH]uint16
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
+
 	ret, _, err := syscall.SyscallN(dll.Psapi(dll.PROC_GetModuleBaseNameW),
 		uintptr(hProcess),
 		uintptr(hModule),
-		uintptr(unsafe.Pointer(&baseName[0])),
-		uintptr(len(baseName)))
+		uintptr(recvBuf.UnsafePtr()),
+		uintptr(uint32(recvBuf.Len())))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return wstr.WstrSliceToStr(baseName[:]), nil
+	return recvBuf.String(), nil
 }
 
 // [GetModuleFileNameEx] function.
 //
 // [GetModuleFileNameEx]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulefilenameexw
 func (hProcess HPROCESS) GetModuleFileNameEx(hModule HINSTANCE) (string, error) {
-	var fileName [utl.MAX_PATH]uint16
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
+
 	ret, _, err := syscall.SyscallN(dll.Psapi(dll.PROC_GetModuleFileNameExW),
 		uintptr(hProcess),
 		uintptr(hModule),
-		uintptr(unsafe.Pointer(&fileName[0])),
-		uintptr(len(fileName)))
+		uintptr(recvBuf.UnsafePtr()),
+		uintptr(uint32(recvBuf.Len())))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return wstr.WstrSliceToStr(fileName[:]), nil
+	return recvBuf.String(), nil
 }
 
 // [GetModuleInformation] function.
@@ -89,15 +95,17 @@ func (hProcess HPROCESS) GetModuleInformation(hModule HINSTANCE) (MODULEINFO, er
 //
 // [GetProcessImageFileName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getprocessimagefilenamew
 func (hProcess HPROCESS) GetProcessImageFileName() (string, error) {
-	var buf [utl.MAX_PATH]uint16
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
+
 	ret, _, err := syscall.SyscallN(dll.Psapi(dll.PROC_K32GetProcessImageFileNameW),
 		uintptr(hProcess),
-		uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(uint32(len(buf))))
+		uintptr(recvBuf.UnsafePtr()),
+		uintptr(uint32(recvBuf.Len())))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return wstr.WstrSliceToStr(buf[:]), nil
+	return recvBuf.String(), nil
 }
 
 // [GetProcessMemoryInfo] function

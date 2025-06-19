@@ -44,24 +44,24 @@ func (nid *NOTIFYICONDATA) SetCbSize() {
 }
 
 func (nid *NOTIFYICONDATA) SzTip() string {
-	return wstr.WstrSliceToStr(nid.szTip[:])
+	return wstr.WinSliceToGo(nid.szTip[:])
 }
 func (nid *NOTIFYICONDATA) SetSzTip(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szTip)-1)), nid.szTip[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szTip)-1)), nid.szTip[:])
 }
 
 func (nid *NOTIFYICONDATA) SzInfo() string {
-	return wstr.WstrSliceToStr(nid.szInfo[:])
+	return wstr.WinSliceToGo(nid.szInfo[:])
 }
 func (nid *NOTIFYICONDATA) SetSzInfo(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szInfo)-1)), nid.szInfo[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szInfo)-1)), nid.szInfo[:])
 }
 
 func (nid *NOTIFYICONDATA) SzInfoTitle() string {
-	return wstr.WstrSliceToStr(nid.szInfoTitle[:])
+	return wstr.WinSliceToGo(nid.szInfoTitle[:])
 }
 func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szInfoTitle)-1)), nid.szInfoTitle[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szInfoTitle)-1)), nid.szInfoTitle[:])
 }
 
 // [NOTIFYICONIDENTIFIER] struct.
@@ -98,15 +98,15 @@ type SHFILEINFO struct {
 }
 
 func (shf *SHFILEINFO) SzDisplayName() string {
-	return wstr.WstrSliceToStr(shf.szDisplayName[:])
+	return wstr.WinSliceToGo(shf.szDisplayName[:])
 }
 func (shf *SHFILEINFO) SetSzDisplayName(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(shf.szDisplayName)-1)), shf.szDisplayName[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(shf.szDisplayName)-1)), shf.szDisplayName[:])
 }
 
 func (shf *SHFILEINFO) SzTypeName() string {
-	return wstr.WstrSliceToStr(shf.szTypeName[:])
+	return wstr.WinSliceToGo(shf.szTypeName[:])
 }
 func (shf *SHFILEINFO) SetSzTypeName(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(shf.szTypeName)-1)), shf.szTypeName[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(shf.szTypeName)-1)), shf.szTypeName[:])
 }

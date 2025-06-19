@@ -79,7 +79,7 @@ func (me *IEnumString) Next() (string, error) {
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		defer HTASKMEM(pv).CoTaskMemFree()
-		name := wstr.WstrPtrToStr((*uint16)(unsafe.Pointer(pv)))
+		name := wstr.WinPtrToGo((*uint16)(unsafe.Pointer(pv)))
 		return name, nil
 	} else if hr == co.HRESULT_S_FALSE {
 		return "", nil

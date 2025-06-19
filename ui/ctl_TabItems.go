@@ -20,11 +20,13 @@ type CollectionTabItems struct {
 }
 
 func (me *CollectionTabItems) add(title string) TabItem {
-	title16 := wstr.NewBufWith[wstr.Stack20](title, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+
 	tci := win.TCITEM{
 		Mask: co.TCIF_TEXT,
 	}
-	tci.SetPszText(title16.HotSlice())
+	tci.SetPszText(wbuf.SliceAllowEmpty(title))
 
 	newIdxRet, err := me.owner.hWnd.SendMessage(co.TCM_INSERTITEM,
 		0x0fff_ffff, win.LPARAM(unsafe.Pointer(&tci)))

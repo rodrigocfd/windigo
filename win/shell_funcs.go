@@ -17,11 +17,14 @@ import (
 //
 // [CommandLineToArgv]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw
 func CommandLineToArgv(cmdLine string) ([]string, error) {
-	cmdLine16 := wstr.NewBufWith[wstr.Stack20](cmdLine, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pCmdLine := wbuf.PtrEmptyIsNil(cmdLine)
+
 	var pNumArgs int32
 
 	ret, _, err := syscall.SyscallN(dll.Shell(dll.PROC_CommandLineToArgvW),
-		uintptr(cmdLine16.UnsafePtr()),
+		uintptr(pCmdLine),
 		uintptr(unsafe.Pointer(&pNumArgs)))
 	if ret == 0 {
 		return nil, co.ERROR(err)
@@ -31,7 +34,7 @@ func CommandLineToArgv(cmdLine string) ([]string, error) {
 	strs := make([]string, 0, pNumArgs)
 
 	for _, lpPtr := range lpPtrs {
-		strs = append(strs, wstr.WstrPtrToStr(lpPtr))
+		strs = append(strs, wstr.WinPtrToGo(lpPtr))
 	}
 	return strs, nil
 }
@@ -70,11 +73,14 @@ func Shell_NotifyIconGetRect(identifier *NOTIFYICONIDENTIFIER) (RECT, error) {
 //
 // [SHGetFileInfo]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
 func SHGetFileInfo(path string, fileAttrs co.FILE_ATTRIBUTE, flags co.SHGFI) (SHFILEINFO, error) {
-	path16 := wstr.NewBufWith[wstr.Stack20](path, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pPath := wbuf.PtrAllowEmpty(path)
+
 	var sfi SHFILEINFO
 
 	ret, _, _ := syscall.SyscallN(dll.Shell(dll.PROC_SHGetFileInfoW),
-		uintptr(path16.UnsafePtr()),
+		uintptr(pPath),
 		uintptr(fileAttrs),
 		uintptr(unsafe.Pointer(&sfi)),
 		unsafe.Sizeof(sfi),

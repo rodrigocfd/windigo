@@ -285,17 +285,17 @@ func (me *MODULEENTRY32) SetDwSize() {
 }
 
 func (me *MODULEENTRY32) SzModule() string {
-	return wstr.WstrSliceToStr(me.szModule[:])
+	return wstr.WinSliceToGo(me.szModule[:])
 }
 func (me *MODULEENTRY32) SetSzModule(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(me.szModule)-1)), me.szModule[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(me.szModule)-1)), me.szModule[:])
 }
 
 func (me *MODULEENTRY32) SzExePath() string {
-	return wstr.WstrSliceToStr(me.szExePath[:])
+	return wstr.WinSliceToGo(me.szExePath[:])
 }
 func (me *MODULEENTRY32) SetSzExePath(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(me.szExePath)-1)), me.szExePath[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(me.szExePath)-1)), me.szExePath[:])
 }
 
 // [OSVERSIONINFOEX] struct.
@@ -330,10 +330,10 @@ func (osv *OSVERSIONINFOEX) SetDwOsVersionInfoSize() {
 }
 
 func (osv *OSVERSIONINFOEX) SzCSDVersion() string {
-	return wstr.WstrSliceToStr(osv.szCSDVersion[:])
+	return wstr.WinSliceToGo(osv.szCSDVersion[:])
 }
 func (osv *OSVERSIONINFOEX) SetSzCSDVersion(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(osv.szCSDVersion)-1)), osv.szCSDVersion[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(osv.szCSDVersion)-1)), osv.szCSDVersion[:])
 }
 
 // [OVERLAPPED] struct.
@@ -385,10 +385,10 @@ func (pe *PROCESSENTRY32) SetDwSize() {
 }
 
 func (me *PROCESSENTRY32) SzExeFile() string {
-	return wstr.WstrSliceToStr(me.szExeFile[:])
+	return wstr.WinSliceToGo(me.szExeFile[:])
 }
 func (me *PROCESSENTRY32) SetSzExeFile(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(me.szExeFile)-1)), me.szExeFile[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(me.szExeFile)-1)), me.szExeFile[:])
 }
 
 // [PROCESSOR_NUMBER] struct.
@@ -577,17 +577,17 @@ type TIME_ZONE_INFORMATION struct {
 }
 
 func (tzi *TIME_ZONE_INFORMATION) StandardName() string {
-	return wstr.WstrSliceToStr(tzi.standardName[:])
+	return wstr.WinSliceToGo(tzi.standardName[:])
 }
 func (tzi *TIME_ZONE_INFORMATION) SetStandardName(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(tzi.standardName)-1)), tzi.standardName[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(tzi.standardName)-1)), tzi.standardName[:])
 }
 
 func (tzi *TIME_ZONE_INFORMATION) DaylightName() string {
-	return wstr.WstrSliceToStr(tzi.daylightName[:])
+	return wstr.WinSliceToGo(tzi.daylightName[:])
 }
 func (tzi *TIME_ZONE_INFORMATION) SetDaylightName(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(tzi.daylightName)-1)), tzi.daylightName[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(tzi.daylightName)-1)), tzi.daylightName[:])
 }
 
 // [WIN32_FIND_DATA] struct.
@@ -610,15 +610,15 @@ type WIN32_FIND_DATA struct {
 }
 
 func (wfd *WIN32_FIND_DATA) CFileName() string {
-	return wstr.WstrSliceToStr(wfd.cFileName[:])
+	return wstr.WinSliceToGo(wfd.cFileName[:])
 }
 func (wfd *WIN32_FIND_DATA) SetCFileName(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(wfd.cFileName)-1)), wfd.cFileName[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(wfd.cFileName)-1)), wfd.cFileName[:])
 }
 
 func (wfd *WIN32_FIND_DATA) CAlternateFileName() string {
-	return wstr.WstrSliceToStr(wfd.cAlternateFileName[:])
+	return wstr.WinSliceToGo(wfd.cAlternateFileName[:])
 }
 func (wfd *WIN32_FIND_DATA) SetCAlternateFileName(val string) {
-	wstr.StrToWstrBuf(wstr.SubstrRunes(val, 0, uint(len(wfd.cAlternateFileName)-1)), wfd.cAlternateFileName[:])
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(wfd.cAlternateFileName)-1)), wfd.cAlternateFileName[:])
 }

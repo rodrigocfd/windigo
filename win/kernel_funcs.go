@@ -17,12 +17,14 @@ import (
 //
 // [CopyFile]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-copyfilew
 func CopyFile(existingFile, newFile string, failIfExists bool) error {
-	existingFile16 := wstr.NewBufWith[wstr.Stack20](existingFile, wstr.EMPTY_IS_NIL)
-	newFile16 := wstr.NewBufWith[wstr.Stack20](newFile, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pExistingFile := wbuf.PtrEmptyIsNil(existingFile)
+	pNewFile := wbuf.PtrEmptyIsNil(newFile)
 
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_CopyFileW),
-		uintptr(existingFile16.UnsafePtr()),
-		uintptr(newFile16.UnsafePtr()),
+		uintptr(pExistingFile),
+		uintptr(pNewFile),
 		utl.BoolToUintptr(failIfExists))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -31,9 +33,12 @@ func CopyFile(existingFile, newFile string, failIfExists bool) error {
 //
 // [CreateDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw
 func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
-	pathName16 := wstr.NewBufWith[wstr.Stack20](pathName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pPathName := wbuf.PtrEmptyIsNil(pathName)
+
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_CreateDirectoryW),
-		uintptr(pathName16.UnsafePtr()),
+		uintptr(pPathName),
 		uintptr(unsafe.Pointer(securityAttributes)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -65,21 +70,24 @@ func CreateProcess(
 	currentDirectory string,
 	startupInfo *STARTUPINFO,
 ) (PROCESS_INFORMATION, error) {
-	applicationName16 := wstr.NewBufWith[wstr.Stack20](applicationName, wstr.EMPTY_IS_NIL)
-	commandLine16 := wstr.NewBufWith[wstr.Stack20](commandLine, wstr.EMPTY_IS_NIL)
-	environment16 := wstr.NewArray(environment...)
-	currentDirectory16 := wstr.NewBufWith[wstr.Stack20](currentDirectory, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pApplicationName := wbuf.PtrEmptyIsNil(applicationName)
+	pCommandLine := wbuf.PtrEmptyIsNil(commandLine)
+	pCurrentDirectory := wbuf.PtrEmptyIsNil(currentDirectory)
+
+	pEnvironment := wstr.GoArrToWinPtr(environment...)
 	var pi PROCESS_INFORMATION
 
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_CreateProcessW),
-		uintptr(applicationName16.UnsafePtr()),
-		uintptr(commandLine16.UnsafePtr()),
+		uintptr(pApplicationName),
+		uintptr(pCommandLine),
 		uintptr(unsafe.Pointer(processAttributes)),
 		uintptr(unsafe.Pointer(threadAttributes)),
 		utl.BoolToUintptr(inheritHandles),
 		uintptr(creationFlags|co.CREATE_UNICODE_ENVIRONMENT), // env strings are always UTF-16
-		uintptr(environment16.UnsafePtrOf(0)),
-		uintptr(currentDirectory16.UnsafePtr()),
+		uintptr(unsafe.Pointer(pEnvironment)),
+		uintptr(pCurrentDirectory),
 		uintptr(unsafe.Pointer(startupInfo)),
 		uintptr(unsafe.Pointer(&pi)))
 	if ret == 0 {
@@ -92,9 +100,12 @@ func CreateProcess(
 //
 // [DeleteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
 func DeleteFile(fileName string) error {
-	fileName16 := wstr.NewBufWith[wstr.Stack20](fileName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pFileName := wbuf.PtrEmptyIsNil(fileName)
+
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_DeleteFileW),
-		uintptr(fileName16.UnsafePtr()))
+		uintptr(pFileName))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -110,23 +121,27 @@ func ExitProcess(exitCode uint32) {
 //
 // [ExpandEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
 func ExpandEnvironmentStrings(s string) (string, error) {
-	s16 := wstr.NewBufWith[wstr.Stack260](s, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pS := wbuf.PtrAllowEmpty(s)
+
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_ExpandEnvironmentStringsW),
-		uintptr(s16.UnsafePtr()),
-		0, 0)
+		uintptr(pS),
+		0, 0) // 1st call to retrieve the required length
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
 
 	szBuf := uint(ret) // includes terminating null
-	buf := wstr.NewBuf[wstr.Stack20]()
+	recvBuf := wstr.NewBufReceiver(szBuf)
+	defer recvBuf.Free()
 
 	for {
-		buf.Resize(szBuf)
+		recvBuf.Resize(szBuf)
 
 		ret, _, err = syscall.SyscallN(dll.Kernel(dll.PROC_ExpandEnvironmentStringsW),
-			uintptr(s16.UnsafePtr()),
-			uintptr(buf.UnsafePtr()),
+			uintptr(pS),
+			uintptr(recvBuf.UnsafePtr()),
 			uintptr(uint32(szBuf)))
 		if ret == 0 {
 			return "", co.ERROR(err)
@@ -134,7 +149,7 @@ func ExpandEnvironmentStrings(s string) (string, error) {
 		required := uint(ret) // plus terminating null count
 
 		if required <= szBuf {
-			return wstr.WstrSliceToStr(buf.HotSlice()), nil
+			return recvBuf.String(), nil
 		}
 
 		szBuf = required // set new buffer size to try again
@@ -160,7 +175,7 @@ func FileTimeToSystemTime(ft *FILETIME) (SYSTEMTIME, error) {
 // [GetCommandLine]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getcommandlinew
 func GetCommandLine() string {
 	ret, _, _ := syscall.SyscallN(dll.Kernel(dll.PROC_GetCommandLineW))
-	return wstr.WstrPtrToStr((*uint16)(unsafe.Pointer(ret)))
+	return wstr.WinPtrToGo((*uint16)(unsafe.Pointer(ret)))
 }
 
 // [GetCurrentProcessId] function.
@@ -190,9 +205,9 @@ func GetEnvironmentStrings() (map[string]string, error) {
 	if ret == 0 {
 		return nil, co.ERROR_NOT_CAPABLE
 	}
-	rawEntries := wstr.WstrPtrMultiToStr((*uint16)(unsafe.Pointer(ret)))
+	rawEntries := wstr.WinArrPtrToGo((*uint16)(unsafe.Pointer(ret)))
 
-	ret, _, _ = syscall.SyscallN(dll.Kernel(dll.PROC_FreeEnvironmentStringsW),
+	ret, _, _ = syscall.SyscallN(dll.Kernel(dll.PROC_FreeEnvironmentStringsW), // free right away
 		ret)
 	if ret == 0 {
 		return nil, co.ERROR_NOT_CAPABLE
@@ -210,10 +225,12 @@ func GetEnvironmentStrings() (map[string]string, error) {
 //
 // [GetFileAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
-	fileName16 := wstr.NewBufWith[wstr.Stack20](fileName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pFileName := wbuf.PtrEmptyIsNil(fileName)
 
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetFileAttributesW),
-		uintptr(fileName16.UnsafePtr()))
+		uintptr(pFileName))
 
 	if retAttr := co.FILE_ATTRIBUTE(ret); retAttr == co.FILE_ATTRIBUTE_INVALID {
 		return retAttr, co.ERROR(err) // err is extended error information
@@ -439,9 +456,12 @@ func MAKEWORD(lo, hi uint8) uint16 {
 //
 // [SetConsoleTitle]: https://learn.microsoft.com/en-us/windows/console/setconsoletitle
 func SetConsoleTitle(title string) error {
-	title16 := wstr.NewBufWith[wstr.Stack20](title, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pTitle := wbuf.PtrEmptyIsNil(title)
+
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_SetConsoleTitleW),
-		uintptr(title16.UnsafePtr()))
+		uintptr(pTitle))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -449,9 +469,12 @@ func SetConsoleTitle(title string) error {
 //
 // [SetCurrentDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setcurrentdirectory
 func SetCurrentDirectory(pathName string) error {
-	pathName16 := wstr.NewBufWith[wstr.Stack20](pathName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pPathName := wbuf.PtrEmptyIsNil(pathName)
+
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_SetCurrentDirectoryW),
-		uintptr(pathName16.UnsafePtr()))
+		uintptr(pPathName))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

@@ -32,15 +32,15 @@ func CreateWindowEx(
 	instance HINSTANCE,
 	param LPARAM,
 ) (HWND, error) {
-	className16 := wstr.NewBuf[wstr.Stack20]()
-	classNameVal := className.raw(&className16)
-
-	title16 := wstr.NewBufWith[wstr.Stack20](title, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pClassName := className.raw(&wbuf)
+	pTitle := wbuf.PtrEmptyIsNil(title)
 
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_CreateWindowExW),
 		uintptr(exStyle),
-		classNameVal,
-		uintptr(title16.UnsafePtr()),
+		pClassName,
+		uintptr(pTitle),
 		uintptr(style),
 		uintptr(int32(x)),
 		uintptr(int32(y)),
@@ -60,14 +60,14 @@ func CreateWindowEx(
 //
 // [FindWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-findwindoww
 func FindWindow(className ClassName, title string) (HWND, bool) {
-	className16 := wstr.NewBuf[wstr.Stack20]()
-	classNameVal := className.raw(&className16)
-
-	title16 := wstr.NewBufWith[wstr.Stack20](title, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pClassName := className.raw(&wbuf)
+	pTitle := wbuf.PtrEmptyIsNil(title)
 
 	ret, _, _ := syscall.SyscallN(dll.User(dll.PROC_FindWindowW),
-		classNameVal,
-		uintptr(title16.UnsafePtr()))
+		pClassName,
+		uintptr(pTitle))
 	return HWND(ret), ret != 0
 }
 
@@ -365,15 +365,17 @@ func (hWnd HWND) GetAncestor(gaFlags co.GA) (HWND, error) {
 //
 // [GetClassName]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassnamew
 func (hWnd HWND) GetClassName() (string, error) {
-	var buf [256 + 1]uint16
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
+
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_GetClassNameW),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(int32(len(buf))))
+		uintptr(recvBuf.UnsafePtr()),
+		uintptr(int32(recvBuf.Len())))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return "", wErr
 	}
-	return wstr.WstrSliceToStr(buf[:]), nil
+	return recvBuf.String(), nil
 }
 
 // [GetClientRect] function.
@@ -563,16 +565,17 @@ func (hWnd HWND) GetWindowText() (string, error) {
 	}
 	bufSz += 1 // needed buffer, also counting terminating null
 
-	buf := wstr.NewBufSized[wstr.Stack64](bufSz)
+	recvBuf := wstr.NewBufReceiver(bufSz)
+	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_GetWindowTextW),
 		uintptr(hWnd),
-		uintptr(buf.UnsafePtr()),
+		uintptr(recvBuf.UnsafePtr()),
 		uintptr(int32(bufSz)))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return "", wErr
 	}
-	return wstr.WstrSliceToStr(buf.HotSlice()), nil
+	return recvBuf.String(), nil
 }
 
 // [GetWindowTextLength] function.
@@ -674,13 +677,15 @@ func (hWnd HWND) MapDialogRect(rc *RECT) error {
 //
 // [MessageBox]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
 func (hWnd HWND) MessageBox(text, caption string, uType co.MB) (co.ID, error) {
-	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.EMPTY_IS_NIL)
-	caption16 := wstr.NewBufWith[wstr.Stack20](caption, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pText := wbuf.PtrEmptyIsNil(text)
+	pCaption := wbuf.PtrEmptyIsNil(caption)
 
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_MessageBoxW),
 		uintptr(hWnd),
-		uintptr(text16.UnsafePtr()),
-		uintptr(caption16.UnsafePtr()),
+		uintptr(pText),
+		uintptr(pCaption),
 		uintptr(uType))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return co.ID(0), wErr
@@ -840,10 +845,13 @@ func (hWnd HWND) SetWindowRgn(hRgn HRGN, redraw bool) error {
 //
 // [SetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowtextw
 func (hWnd HWND) SetWindowText(text string) {
-	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pText := wbuf.PtrEmptyIsNil(text)
+
 	syscall.SyscallN(dll.User(dll.PROC_SetWindowTextW),
 		uintptr(hWnd),
-		uintptr(text16.UnsafePtr()))
+		uintptr(pText))
 }
 
 // [ShowCaret] function.

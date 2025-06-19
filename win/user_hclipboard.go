@@ -127,13 +127,17 @@ func (HCLIPBOARD) GetClipboardData(format co.CF) ([]byte, error) {
 //
 // [GetClipboardFormatName]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardformatnamew
 func (HCLIPBOARD) GetClipboardFormatName(format co.CF) (string, error) {
-	var buf [utl.MAX_PATH]uint16
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
+
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_GetClipboardFormatNameW),
-		uintptr(format))
+		uintptr(format),
+		uintptr(recvBuf.UnsafePtr()),
+		uintptr(int32(recvBuf.Len())))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return wstr.WstrSliceToStr(buf[:]), nil
+	return recvBuf.String(), nil
 }
 
 // [GetClipboardSequenceNumber] function.

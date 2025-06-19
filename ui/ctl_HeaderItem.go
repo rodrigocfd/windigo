@@ -120,11 +120,13 @@ func (me HeaderItem) SetSortArrow(hdf co.HDF) HeaderItem {
 //
 // [HDM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-setitem
 func (me HeaderItem) SetText(text string) HeaderItem {
-	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+
 	hdi := win.HDITEM{
 		Mask: co.HDI_TEXT,
 	}
-	hdi.SetPszText(text16.HotSlice())
+	hdi.SetPszText(wbuf.SliceAllowEmpty(text))
 
 	ret, err := me.owner.hWnd.SendMessage(co.HDM_SETITEM,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&hdi)))
@@ -177,12 +179,13 @@ func (me HeaderItem) SortArrow() co.HDF {
 //
 // [HDM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getitem
 func (me HeaderItem) Text() string {
-	var textBuf [64]uint16 // arbitrary
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
 
 	hdi := win.HDITEM{
 		Mask: co.HDI_TEXT,
 	}
-	hdi.SetPszText(textBuf[:])
+	hdi.SetPszText(recvBuf.HotSlice())
 
 	ret, err := me.owner.hWnd.SendMessage(co.HDM_GETITEM,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&hdi)))
@@ -190,7 +193,7 @@ func (me HeaderItem) Text() string {
 		panic(fmt.Sprintf("HDM_GETITEM %d failed.", me.index))
 	}
 
-	return wstr.WstrSliceToStr(textBuf[:])
+	return recvBuf.String()
 }
 
 // Retrieves the width of the item with [HDM_GETITEM].

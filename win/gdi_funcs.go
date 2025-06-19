@@ -14,9 +14,12 @@ import (
 //
 // [AddFontResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-addfontresourceexw
 func AddFontResourceEx(name string, fl co.FR) (uint, error) {
-	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pName := wbuf.PtrAllowEmpty(name)
+
 	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_AddFontResourceExW),
-		uintptr(name16.UnsafePtr()),
+		uintptr(pName),
 		uintptr(fl),
 		0)
 	if ret == 0 {

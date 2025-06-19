@@ -26,9 +26,12 @@ type BSTR uintptr
 //
 // [SysAllocString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysallocstring
 func SysAllocString(s string) (BSTR, error) {
-	s16 := wstr.NewBufWith[wstr.Stack20](s, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pS := wbuf.PtrAllowEmpty(s)
+
 	ret, _, _ := syscall.SyscallN(dllOleaut(_PROC_SysAllocString),
-		uintptr(s16.UnsafePtr()))
+		uintptr(pS))
 	if ret == 0 {
 		return BSTR(0), co.HRESULT_E_OUTOFMEMORY
 	}
@@ -56,10 +59,13 @@ func (bstr BSTR) SysFreeString() {
 //
 // [SysReAllocString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysreallocstring
 func (bstr BSTR) SysReAllocString(s string) (BSTR, error) {
-	s16 := wstr.NewBufWith[wstr.Stack20](s, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pS := wbuf.PtrAllowEmpty(s)
+
 	ret, _, _ := syscall.SyscallN(dllOleaut(_PROC_SysReAllocString),
 		uintptr(bstr),
-		uintptr(s16.UnsafePtr()))
+		uintptr(pS))
 	if ret == 0 {
 		return BSTR(0), co.HRESULT_E_OUTOFMEMORY
 	}
@@ -68,5 +74,5 @@ func (bstr BSTR) SysReAllocString(s string) (BSTR, error) {
 
 // Converts the BSTR pointer to a string.
 func (bstr BSTR) String() string {
-	return wstr.WstrPtrToStr((*uint16)(unsafe.Pointer(bstr)))
+	return wstr.WinPtrToGo((*uint16)(unsafe.Pointer(bstr)))
 }

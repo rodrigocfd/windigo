@@ -31,9 +31,12 @@ func CreateNamedPipe(
 	nDefaultTimeOut uint,
 	securityAttributes *SECURITY_ATTRIBUTES,
 ) (HPIPE, error) {
-	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pName := wbuf.PtrAllowEmpty(name)
+
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_CreateNamedPipeW),
-		uintptr(name16.UnsafePtr()),
+		uintptr(pName),
 		uintptr(dwOpenMode),
 		uintptr(dwPipeMode),
 		uintptr(nMaxInstances),

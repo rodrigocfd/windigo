@@ -84,7 +84,7 @@ func VersionLoad(moduleName string) (VersionInfo, error) {
 					bl.LangId, bl.CodePage, id)); ok {
 
 				wideStr := unsafe.Slice((*uint16)(pStr), nChars-1) // don't include terminating null
-				return wstr.WstrSliceToStr(wideStr)
+				return wstr.WinSliceToGo(wideStr)
 			}
 			return ""
 		}

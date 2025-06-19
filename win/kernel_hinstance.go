@@ -26,9 +26,12 @@ type HINSTANCE HANDLE
 //
 // [GetModuleHandle]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
 func GetModuleHandle(moduleName string) (HINSTANCE, error) {
-	moduleName16 := wstr.NewBufWith[wstr.Stack20](moduleName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pModuleName := wbuf.PtrEmptyIsNil(moduleName)
+
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetModuleHandleW),
-		uintptr(moduleName16.UnsafePtr()))
+		uintptr(pModuleName))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
 	}
@@ -41,9 +44,12 @@ func GetModuleHandle(moduleName string) (HINSTANCE, error) {
 //
 // [LoadLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
 func LoadLibrary(libFileName string) (HINSTANCE, error) {
-	libFileName16 := wstr.NewBufWith[wstr.Stack20](libFileName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pLibFileName := wbuf.PtrEmptyIsNil(libFileName)
+
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_LoadLibraryW),
-		uintptr(libFileName16.UnsafePtr()))
+		uintptr(pLibFileName))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
 	}
@@ -72,22 +78,25 @@ func (hInst HINSTANCE) FreeLibrary() error {
 //
 // [GetModuleFileName]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew
 func (hInst HINSTANCE) GetModuleFileName() (string, error) {
-	buf := wstr.NewBufSized[wstr.Stack260](260) // start allocating on the stack
+	sz := wstr.BUF_MAX
+	buf := wstr.NewBufReceiver(sz)
+	defer buf.Free()
 
 	for {
 		ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetModuleFileNameW),
 			uintptr(hInst),
 			uintptr(buf.UnsafePtr()),
-			uintptr(uint32(buf.Len())))
+			uintptr(uint32(sz)))
 		if ret == 0 {
 			return "", co.ERROR(err)
 		}
 		chCopied := uint(ret) + 1 // plus terminating null count
 
-		if chCopied < buf.Len() { // to break, must have at least 1 char gap
-			return wstr.WstrSliceToStr(buf.HotSlice()), nil
+		if chCopied < sz { // to break, must have at least 1 char gap
+			return buf.String(), nil
 		}
 
-		buf.Resize(buf.Len() + 64) // increase buffer size to try again
+		sz += 64
+		buf.Resize(sz) // increase buffer size to try again
 	}
 }

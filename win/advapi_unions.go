@@ -5,7 +5,6 @@ package win
 import (
 	"encoding/binary"
 	"syscall"
-	"unicode/utf8"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win/co"
@@ -80,7 +79,7 @@ func RegValExpandSz(s string) RegVal {
 func (me *RegVal) ExpandSz() (string, bool) {
 	if me.tag == co.REG_EXPAND_SZ {
 		str16 := unsafe.Slice((*uint16)(unsafe.Pointer(&me.data[0])), len(me.data)/2)
-		return wstr.WstrSliceToStr(str16), true
+		return wstr.WinSliceToGo(str16), true
 	}
 	return "", false
 }
@@ -128,26 +127,12 @@ func (me *RegVal) DwordBigEndian() (uint32, bool) {
 
 // Creates a new [RegVal] with a [co.REG_MULTI_SZ] value.
 func RegValMultiSz(strs ...string) RegVal {
-	neededLen := 1 // count double terminating null
-	for _, s := range strs {
-		neededLen += utf8.RuneCountInString(s) + 1 // count terminating null
-	}
-
-	allocatedData := make([]byte, neededLen*2) // in bytes; alloc right away
-	fillData := allocatedData[:]
-	buf16 := wstr.NewBuf[wstr.Stack20]()
-
-	for _, s := range strs {
-		buf16.Set(s, wstr.ALLOW_EMPTY)
-		lenBytes := buf16.Len() * 2
-		data := unsafe.Slice((*byte)(buf16.UnsafePtr()), lenBytes)
-		copy(fillData, data)
-		fillData = fillData[lenBytes:]
-	}
+	buf := wstr.GoArrToWinSlice(strs...)
+	data := unsafe.Slice((*byte)(unsafe.Pointer(&buf[0])), len(buf)*2)
 
 	return RegVal{
 		tag:  co.REG_MULTI_SZ,
-		data: allocatedData,
+		data: data,
 	}
 }
 
@@ -155,7 +140,7 @@ func RegValMultiSz(strs ...string) RegVal {
 func (me *RegVal) MultiSz() ([]string, bool) {
 	if me.tag == co.REG_MULTI_SZ {
 		pStr16 := (*uint16)(unsafe.Pointer(&me.data[0]))
-		return wstr.WstrPtrMultiToStr(pStr16), true
+		return wstr.WinArrPtrToGo(pStr16), true
 	}
 	return nil, false
 }
@@ -205,7 +190,7 @@ func RegValSz(s string) RegVal {
 func (me *RegVal) Sz() (string, bool) {
 	if me.tag == co.REG_SZ {
 		str16 := unsafe.Slice((*uint16)(unsafe.Pointer(&me.data[0])), len(me.data)/2)
-		return wstr.WstrSliceToStr(str16), true
+		return wstr.WinSliceToGo(str16), true
 	}
 	return "", false
 }

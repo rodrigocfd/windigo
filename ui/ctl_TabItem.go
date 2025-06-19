@@ -64,11 +64,13 @@ func (me TabItem) Select() TabItem {
 //
 // [TCM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-setitem
 func (me TabItem) SetText(text string) TabItem {
-	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+
 	tci := win.TCITEM{
 		Mask: co.TCIF_TEXT,
 	}
-	tci.SetPszText(text16.HotSlice())
+	tci.SetPszText(wbuf.SliceAllowEmpty(text))
 
 	ret, err := me.owner.hWnd.SendMessage(co.TCM_SETITEM,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&tci)))
@@ -85,12 +87,13 @@ func (me TabItem) SetText(text string) TabItem {
 //
 // [TCM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-getitem
 func (me TabItem) Text() string {
-	var textBuf [64]uint16 // arbitrary
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
 
 	tci := win.TCITEM{
 		Mask: co.TCIF_TEXT,
 	}
-	tci.SetPszText(textBuf[:])
+	tci.SetPszText(recvBuf.HotSlice())
 
 	ret, err := me.owner.hWnd.SendMessage(co.TCM_GETITEM,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&tci)))
@@ -98,5 +101,5 @@ func (me TabItem) Text() string {
 		panic(fmt.Sprintf("TCM_GETITEM %d failed.", me.index))
 	}
 
-	return wstr.WstrSliceToStr(textBuf[:])
+	return recvBuf.String()
 }

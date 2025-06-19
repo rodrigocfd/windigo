@@ -148,18 +148,20 @@ func (hTheme HTHEME) GetThemeRect(partStateId co.VS, propId co.TMT) (RECT, error
 //
 // [GetThemeString]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemestring
 func (hTheme HTHEME) GetThemeString(partStateId co.VS, propId co.TMT) (string, error) {
-	var buf [utl.MAX_PATH]uint16 // arbitrary
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
+
 	ret, _, _ := syscall.SyscallN(dll.Uxtheme(dll.PROC_GetThemeString),
 		uintptr(hTheme),
 		uintptr(partStateId.Part()),
 		uintptr(partStateId.State()),
 		uintptr(propId),
-		uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(int32(len(buf))))
+		uintptr(recvBuf.UnsafePtr()),
+		uintptr(int32(recvBuf.Len())))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
-	return wstr.WstrSliceToStr(buf[:]), nil
+	return recvBuf.String(), nil
 }
 
 // [GetThemeSysColorBrush] function.

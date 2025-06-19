@@ -102,13 +102,16 @@ func (me *IFileOperation) CopyItem(
 	copyName string,
 	fops *IFileOperationProgressSink,
 ) error {
-	copyName16 := wstr.NewBufWith[wstr.Stack20](copyName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pCopyName := wbuf.PtrEmptyIsNil(copyName)
+
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).CopyItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())),
 		uintptr(unsafe.Pointer(destFolder.Ppvt())),
-		uintptr(copyName16.UnsafePtr()),
+		uintptr(pCopyName),
 		uintptr(ole.Ppvt(fops)))
 	return utl.ErrorAsHResult(ret)
 }
@@ -150,13 +153,16 @@ func (me *IFileOperation) MoveItem(
 	newName string,
 	fops *IFileOperationProgressSink,
 ) error {
-	newName16 := wstr.NewBufWith[wstr.Stack20](newName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pNewName := wbuf.PtrEmptyIsNil(newName)
+
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).MoveItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())),
 		uintptr(unsafe.Pointer(destFolder.Ppvt())),
-		uintptr(newName16.UnsafePtr()),
+		uintptr(pNewName),
 		uintptr(ole.Ppvt(fops)))
 	return utl.ErrorAsHResult(ret)
 }
@@ -170,16 +176,18 @@ func (me *IFileOperation) NewItem(
 	name, templateName string,
 	fops *IFileOperationProgressSink,
 ) error {
-	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.ALLOW_EMPTY)
-	templateName16 := wstr.NewBufWith[wstr.Stack20](templateName, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pName := wbuf.PtrAllowEmpty(name)
+	pTemplateName := wbuf.PtrEmptyIsNil(templateName)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).NewItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(destFolder.Ppvt())),
 		uintptr(fileAtt),
-		uintptr(name16.UnsafePtr()),
-		uintptr(templateName16.UnsafePtr()),
+		uintptr(pName),
+		uintptr(pTemplateName),
 		uintptr(ole.Ppvt(fops)))
 	return utl.ErrorAsHResult(ret)
 }
@@ -202,12 +210,15 @@ func (me *IFileOperation) RenameItem(
 	newName string,
 	fops *IFileOperationProgressSink,
 ) error {
-	newName16 := wstr.NewBufWith[wstr.Stack20](newName, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pNewName := wbuf.PtrEmptyIsNil(newName)
+
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).RenameItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())),
-		uintptr(newName16.UnsafePtr()),
+		uintptr(pNewName),
 		uintptr(ole.Ppvt(fops)))
 	return utl.ErrorAsHResult(ret)
 }
@@ -238,11 +249,14 @@ func (me *IFileOperation) SetOwnerWindow(hWnd win.HWND) error {
 //
 // [SetProgressMessage]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperation-setprogressmessage
 func (me *IFileOperation) SetProgressMessage(message string) error {
-	message16 := wstr.NewBufWith[wstr.Stack20](message, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pMessage := wbuf.PtrEmptyIsNil(message)
+
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).SetProgressMessage,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(message16.UnsafePtr()))
+		uintptr(pMessage))
 	return utl.ErrorAsHResult(ret)
 }
 

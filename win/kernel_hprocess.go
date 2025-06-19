@@ -202,18 +202,20 @@ func (hProcess HPROCESS) IsWow64Process() (bool, error) {
 //
 // [QueryFullProcessImageName]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-queryfullprocessimagenamew
 func (hProcess HPROCESS) QueryFullProcessImageName(flags co.PROCESS_NAME) (string, error) {
-	var buf [utl.MAX_PATH]uint16
-	szBuf := uint32(len(buf))
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
+
+	szBuf := uint32(recvBuf.Len())
 
 	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_QueryFullProcessImageNameW),
 		uintptr(hProcess),
 		uintptr(flags),
-		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(recvBuf.UnsafePtr()),
 		uintptr(unsafe.Pointer(&szBuf)))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return wstr.WstrSliceToStr(buf[:]), nil
+	return recvBuf.String(), nil
 }
 
 // [QueryProcessAffinityUpdateMode] function.

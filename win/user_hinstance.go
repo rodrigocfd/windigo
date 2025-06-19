@@ -20,12 +20,13 @@ func (hInst HINSTANCE) CreateDialogParam(
 	dialogFunc uintptr,
 	dwInitParam LPARAM,
 ) (HWND, error) {
-	templateName16 := wstr.NewBuf[wstr.Stack20]()
-	templateNameVal := templateName.raw(&templateName16)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pTemplateName := templateName.raw(&wbuf)
 
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_CreateDialogParamW),
 		uintptr(hInst),
-		templateNameVal,
+		pTemplateName,
 		uintptr(hwndParent),
 		dialogFunc,
 		uintptr(dwInitParam))
@@ -65,12 +66,13 @@ func (hInst HINSTANCE) DialogBoxParam(
 	dialogFunc uintptr,
 	dwInitParam LPARAM,
 ) (uintptr, error) {
-	templateName16 := wstr.NewBuf[wstr.Stack20]()
-	templateNameVal := templateName.raw(&templateName16)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pTemplateName := templateName.raw(&wbuf)
 
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_DialogBoxParamW),
 		uintptr(hInst),
-		templateNameVal,
+		pTemplateName,
 		uintptr(hwndParent),
 		dialogFunc,
 		uintptr(dwInitParam))
@@ -104,12 +106,13 @@ func (hInst HINSTANCE) GetClassInfoEx(
 //
 // [LoadAccelerators]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
 func (hInst HINSTANCE) LoadAccelerators(tableName ResId) (HACCEL, error) {
-	tableName16 := wstr.NewBuf[wstr.Stack20]()
-	tableNameVal := tableName.raw(&tableName16)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pTableName := tableName.raw(&wbuf)
 
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_LoadAcceleratorsW),
 		uintptr(hInst),
-		tableNameVal)
+		pTableName)
 	if ret == 0 {
 		return HACCEL(0), co.ERROR(err)
 	}
@@ -122,12 +125,13 @@ func (hInst HINSTANCE) LoadAccelerators(tableName ResId) (HACCEL, error) {
 //
 // [LoadCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) (HCURSOR, error) {
-	cursorName16 := wstr.NewBuf[wstr.Stack20]()
-	cursorNameVal := cursorName.raw(&cursorName16)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pCursorName := cursorName.raw(&wbuf)
 
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_LoadCursorW),
 		uintptr(hInst),
-		cursorNameVal)
+		pCursorName)
 	if ret == 0 {
 		return HCURSOR(0), co.ERROR(err)
 	}
@@ -147,12 +151,13 @@ func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) (HCURSOR, error) {
 //
 // [LoadIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hInst HINSTANCE) LoadIcon(iconName IconRes) (HICON, error) {
-	iconName16 := wstr.NewBuf[wstr.Stack20]()
-	iconNameVal := iconName.raw(&iconName16)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pIconName := iconName.raw(&wbuf)
 
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_LoadIconW),
 		uintptr(hInst),
-		iconNameVal)
+		pIconName)
 	if ret == 0 {
 		return HICON(0), co.ERROR(err)
 	}
@@ -202,12 +207,13 @@ func (hInst HINSTANCE) LoadImage(
 	cx, cy uint,
 	fuLoad co.LR,
 ) (HGDIOBJ, error) {
-	name16 := wstr.NewBuf[wstr.Stack20]()
-	nameVal := name.raw(&name16)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pName := name.raw(&wbuf)
 
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_LoadImageW),
 		uintptr(hInst),
-		nameVal,
+		pName,
 		uintptr(imgType),
 		uintptr(int32(cx)),
 		uintptr(int32(cy)),
@@ -224,12 +230,13 @@ func (hInst HINSTANCE) LoadImage(
 //
 // [LoadMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
 func (hInst HINSTANCE) LoadMenu(menuName ResId) (HMENU, error) {
-	menuName16 := wstr.NewBuf[wstr.Stack20]()
-	menuNameVal := menuName.raw(&menuName16)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pMenuName := menuName.raw(&wbuf)
 
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_LoadMenuW),
 		uintptr(hInst),
-		menuNameVal)
+		pMenuName)
 	if ret == 0 {
 		return HMENU(0), co.ERROR(err)
 	}

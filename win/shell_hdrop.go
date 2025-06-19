@@ -7,7 +7,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -56,20 +55,22 @@ func (hDrop HDROP) DragQueryFile() ([]string, error) {
 		return nil, co.ERROR_INVALID_PARAMETER
 	}
 
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
+
 	count := uint32(ret)
-	var pathBuf [utl.MAX_PATH]uint16 // buffer to receive a path
 	paths := make([]string, 0, count)
 
 	for i := uint32(0); i < count; i++ {
 		ret, _, _ = syscall.SyscallN(dll.Shell(dll.PROC_DragQueryFileW),
 			uintptr(hDrop),
 			uintptr(i),
-			uintptr(unsafe.Pointer(&pathBuf[0])),
-			uintptr(uint32(len(pathBuf))))
+			uintptr(recvBuf.UnsafePtr()),
+			uintptr(uint32(recvBuf.Len())))
 		if ret == 0 {
 			return nil, co.ERROR_INVALID_PARAMETER
 		}
-		paths = append(paths, wstr.WstrSliceToStr(pathBuf[:]))
+		paths = append(paths, recvBuf.String())
 	}
 
 	return paths, nil

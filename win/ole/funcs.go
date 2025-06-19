@@ -48,11 +48,14 @@ func Ppvt(obj ComObj) unsafe.Pointer {
 //
 // [CLSIDFromProgID]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func CLSIDFromProgID(progId string) (co.CLSID, error) {
-	progId16 := wstr.NewBufWith[wstr.Stack20](progId, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pProgId := wbuf.PtrAllowEmpty(progId)
+
 	var guid win.GUID
 
 	ret, _, _ := syscall.SyscallN(dllOle(_PROC_CLSIDFromProgID),
-		uintptr(progId16.UnsafePtr()),
+		uintptr(pProgId),
 		uintptr(unsafe.Pointer(&guid)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {

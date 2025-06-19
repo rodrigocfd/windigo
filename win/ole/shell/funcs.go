@@ -81,10 +81,12 @@ func SHCreateItemFromParsingName(
 	var ppvtQueried **ole.IUnknownVt
 	guidIid := win.GuidFrom(pOut.IID())
 
-	folderOrFilePath16 := wstr.NewBufWith[wstr.Stack20](folderOrFilePath, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pFolderOrFilePath := wbuf.PtrEmptyIsNil(folderOrFilePath)
 
 	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHCreateItemFromParsingName),
-		uintptr(folderOrFilePath16.UnsafePtr()),
+		uintptr(pFolderOrFilePath),
 		0,
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
@@ -114,11 +116,13 @@ func SHCreateItemFromRelativeName(
 	var ppvtQueried **ole.IUnknownVt
 	guidIid := win.GuidFrom(pOut.IID())
 
-	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pName := wbuf.PtrAllowEmpty(name)
 
 	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHCreateItemFromRelativeName),
 		uintptr(unsafe.Pointer(parent.Ppvt())),
-		uintptr(name16.UnsafePtr()),
+		uintptr(pName),
 		uintptr(ole.Ppvt(bindCtx)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))

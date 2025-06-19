@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
@@ -29,7 +28,9 @@ type TreeViewItem struct {
 //
 // [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
 func (me TreeViewItem) AddChild(text string, iconIndex int) TreeViewItem {
-	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+
 	mask := co.TVIF_TEXT
 	if iconIndex != -1 {
 		mask |= co.TVIF_IMAGE
@@ -43,7 +44,7 @@ func (me TreeViewItem) AddChild(text string, iconIndex int) TreeViewItem {
 			IImage: int32(iconIndex),
 		},
 	}
-	tvi.Itemex.SetPszText(text16.HotSlice())
+	tvi.Itemex.SetPszText(wbuf.SliceAllowEmpty(text))
 
 	hItemRet, err := me.owner.hWnd.SendMessage(co.TVM_INSERTITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))
@@ -260,12 +261,14 @@ func (me TreeViewItem) SetIconIndex(iconIndex int) TreeViewItem {
 //
 // [TVM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-setitem
 func (me TreeViewItem) SetText(text string) TreeViewItem {
-	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+
 	tvi := win.TVITEMEX{
 		HItem: me.hItem,
 		Mask:  co.TVIF_TEXT,
 	}
-	tvi.SetPszText(text16.HotSlice())
+	tvi.SetPszText(wbuf.SliceAllowEmpty(text))
 
 	ret, err := me.owner.hWnd.SendMessage(co.TVM_SETITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))
@@ -281,18 +284,19 @@ func (me TreeViewItem) SetText(text string) TreeViewItem {
 //
 // [TVM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getitem
 func (me TreeViewItem) Text() string {
-	var buf [utl.MAX_PATH]uint16 // arbitrary
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
 
 	tvi := win.TVITEMEX{
 		HItem: me.hItem,
 		Mask:  co.TVIF_TEXT,
 	}
-	tvi.SetPszText(buf[:])
+	tvi.SetPszText(recvBuf.HotSlice())
 
 	ret, err := me.owner.hWnd.SendMessage(co.TVM_GETITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))
 	if ret == 0 || err != nil {
 		panic("TVM_GETITEM failed.")
 	}
-	return wstr.WstrSliceToStr(buf[:])
+	return recvBuf.String()
 }

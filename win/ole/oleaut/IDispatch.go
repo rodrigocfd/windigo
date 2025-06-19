@@ -38,15 +38,15 @@ func (me *IDispatch) GetIDsOfNames(
 ) ([]MEMBERID, error) {
 	nParams := uint(1 + len(parameters)) // member + parameters
 	nullGuid := win.GuidFrom(co.IID_NULL)
-	memberIds := make([]MEMBERID, nParams) // will be returned
+	memberIds := make([]MEMBERID, nParams) // to be returned
 
-	allStrs16 := wstr.NewArray()
-	allStrs16.Append(member)
-	allStrs16.Append(parameters...)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
 
 	strPtrs := make([]*uint16, 0, nParams)
-	for i := uint(0); i < nParams; i++ {
-		strPtrs = append(strPtrs, allStrs16.PtrOf(i))
+	strPtrs = append(strPtrs, (*uint16)(wbuf.PtrAllowEmpty(member)))
+	for _, param := range parameters {
+		strPtrs = append(strPtrs, (*uint16)(wbuf.PtrAllowEmpty(param)))
 	}
 
 	ret, _, _ := syscall.SyscallN(

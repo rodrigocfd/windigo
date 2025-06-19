@@ -166,7 +166,10 @@ func (me *IShellFolder) ParseDisplayName(
 	displayName string,
 	attributes co.SFGAO,
 ) (*ITEMIDLIST, co.SFGAO, error) {
-	displayName16 := wstr.NewBufWith[wstr.Stack20](displayName, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pDisplayName := wbuf.PtrAllowEmpty(displayName)
+
 	var chEaten uint32
 	var idl ITEMIDLIST
 
@@ -180,7 +183,7 @@ func (me *IShellFolder) ParseDisplayName(
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(ole.Ppvt(bindCtx)),
-		uintptr(displayName16.UnsafePtr()),
+		uintptr(pDisplayName),
 		uintptr(unsafe.Pointer(&chEaten)),
 		uintptr(unsafe.Pointer(&idl)),
 		uintptr(unsafe.Pointer(pSfgao)))

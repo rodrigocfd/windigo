@@ -150,17 +150,20 @@ func EndMenu() error {
 //
 // [EnumDisplayDevices]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw
 func EnumDisplayDevices(device string, flags co.EDD) []DISPLAY_DEVICE {
-	devices := make([]DISPLAY_DEVICE, 0)
-	devNum := 0
-	device16 := wstr.NewBufWith[wstr.Stack20](device, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pDevice := wbuf.PtrEmptyIsNil(device)
 
-	var dide DISPLAY_DEVICE
+	devices := make([]DISPLAY_DEVICE, 0) // to be returned
+	devNum := 0
+
+	var dide DISPLAY_DEVICE // buffer to receive each iteration
 	dide.SetCb()
 
 	for {
 		// Ignore errors: only fails with devNum out-of-bounds, which never happens here.
 		ret, _, _ := syscall.SyscallN(dll.User(dll.PROC_EnumDisplayDevicesW),
-			uintptr(device16.UnsafePtr()),
+			uintptr(pDevice),
 			uintptr(devNum),
 			uintptr(unsafe.Pointer(&dide)),
 			uintptr(flags))
@@ -527,9 +530,12 @@ func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, error) {
 //
 // [RegisterClipboardFormat]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclipboardformatw
 func RegisterClipboardFormat(name string) (co.CF, error) {
-	name16 := wstr.NewBufWith[wstr.Stack20](name, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pName := wbuf.PtrAllowEmpty(name)
+
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_RegisterClipboardFormatW),
-		uintptr(name16.UnsafePtr()))
+		uintptr(pName))
 	if ret == 0 {
 		return co.CF(0), co.ERROR(err)
 	}
@@ -540,9 +546,12 @@ func RegisterClipboardFormat(name string) (co.CF, error) {
 //
 // [RegisterWindowMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerwindowmessagew
 func RegisterWindowMessage(message string) (co.WM, error) {
-	message16 := wstr.NewBufWith[wstr.Stack20](message, wstr.EMPTY_IS_NIL)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pMessage := wbuf.PtrEmptyIsNil(message)
+
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_RegisterWindowMessageW),
-		uintptr(message16.UnsafePtr()))
+		uintptr(pMessage))
 
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return co.WM(0), wErr
@@ -655,11 +664,12 @@ func TranslateMessage(msg *MSG) bool {
 //
 // [UnregisterClass]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unregisterclassw
 func UnregisterClass(className ClassName, hInst HINSTANCE) error {
-	className16 := wstr.NewBuf[wstr.Stack20]()
-	classNameVal := className.raw(&className16)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pClassName := className.raw(&wbuf)
 
 	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_UnregisterClassW),
-		classNameVal,
+		pClassName,
 		uintptr(hInst))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return wErr

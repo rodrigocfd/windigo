@@ -287,11 +287,13 @@ func (me ListViewItem) SetIconIndex(iconIndex int) ListViewItem {
 //
 // [LVM_SETITEMTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setitemtext
 func (me ListViewItem) SetText(columnIndex int, text string) ListViewItem {
-	text16 := wstr.NewBufWith[wstr.Stack20](text, wstr.ALLOW_EMPTY)
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+
 	lvi := win.LVITEM{
 		ISubItem: int32(columnIndex),
 	}
-	lvi.SetPszText(text16.HotSlice())
+	lvi.SetPszText(wbuf.SliceAllowEmpty(text))
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETITEMTEXT,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
@@ -307,26 +309,28 @@ func (me ListViewItem) SetText(columnIndex int, text string) ListViewItem {
 //
 // [LVM_GETITEMTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitemtext
 func (me ListViewItem) Text(columnIndex int) string {
-	buf := wstr.NewBufSized[wstr.Stack64](64) // start allocating on the stack
+	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	defer recvBuf.Free()
+
 	lvi := win.LVITEM{
 		ISubItem: int32(columnIndex),
 	}
 
 	for {
-		lvi.SetPszText(buf.HotSlice())
+		lvi.SetPszText(recvBuf.HotSlice())
 
 		nCharsRet, _ := me.owner.hWnd.SendMessage(co.LVM_GETITEMTEXT,
 			win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
 		nChars := uint(nCharsRet)
 
-		if nChars+1 < buf.Len() { // to break, must have at least 1 char gap
+		if nChars+1 < recvBuf.Len() { // to break, must have at least 1 char gap
 			break
 		}
 
-		buf.Resize(buf.Len() + 64) // increase buffer size to try again
+		recvBuf.Resize(recvBuf.Len() + 64) // increase buffer size to try again
 	}
 
-	return wstr.WstrSliceToStr(buf.HotSlice())
+	return recvBuf.String()
 }
 
 // Returns the unique ID associated to the item with [LVM_MAPINDEXTOID].
