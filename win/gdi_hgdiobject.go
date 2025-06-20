@@ -25,7 +25,8 @@ type HGDIOBJ HANDLE
 //
 // [GetStockObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getstockobject
 func GetStockObject(ty co.STOCK) (HGDIOBJ, error) {
-	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetStockObject),
+	ret, _, _ := syscall.SyscallN(
+		dll.Gdi(&_GetStockObject, "GetStockObject"),
 		uintptr(ty))
 	if ret == 0 {
 		return HGDIOBJ(0), co.ERROR_INVALID_PARAMETER
@@ -33,31 +34,40 @@ func GetStockObject(ty co.STOCK) (HGDIOBJ, error) {
 	return HGDIOBJ(ret), nil
 }
 
+var _GetStockObject *syscall.Proc
+
 // [DeleteObject] function.
 //
 // [DeleteObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hGdiObj HGDIOBJ) DeleteObject() error {
-	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_DeleteObject),
+	ret, _, _ := syscall.SyscallN(
+		dll.Gdi(&_DeleteObject, "DeleteObject"),
 		uintptr(hGdiObj))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
+
+var _DeleteObject *syscall.Proc
 
 // [GetObject] function.
 //
 // [GetObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
 func (hGdiObj HGDIOBJ) GetObject(szBuf uintptr, buf unsafe.Pointer) error {
-	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_GetObjectW),
+	ret, _, _ := syscall.SyscallN(
+		dll.Gdi(&_GetObjectW, "GetObjectW"),
 		uintptr(hGdiObj),
 		uintptr(int32(szBuf)),
 		uintptr(buf))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
+var _GetObjectW *syscall.Proc
+
 // [SelectObject] function.
 //
 // [SelectObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObject(hGdiObj HGDIOBJ) (HGDIOBJ, error) {
-	ret, _, _ := syscall.SyscallN(dll.Gdi(dll.PROC_SelectObject),
+	ret, _, _ := syscall.SyscallN(
+		dll.Gdi(&_SelectObject, "SelectObject"),
 		uintptr(hdc),
 		uintptr(hGdiObj))
 	if ret == 0 {
@@ -65,3 +75,5 @@ func (hdc HDC) SelectObject(hGdiObj HGDIOBJ) (HGDIOBJ, error) {
 	}
 	return HGDIOBJ(ret), nil
 }
+
+var _SelectObject *syscall.Proc

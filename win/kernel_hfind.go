@@ -31,7 +31,8 @@ func FindFirstFile(fileName string, findFileData *WIN32_FIND_DATA) (HFIND, bool,
 	defer wbuf.Free()
 	pFileName := wbuf.PtrEmptyIsNil(fileName)
 
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_FindFirstFileW),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_FindFirstFileW, "FindFirstFileW"),
 		uintptr(pFileName),
 		uintptr(unsafe.Pointer(findFileData)))
 
@@ -45,16 +46,21 @@ func FindFirstFile(fileName string, findFileData *WIN32_FIND_DATA) (HFIND, bool,
 	return HFIND(ret), true, nil // a file was found
 }
 
+var _FindFirstFileW *syscall.Proc
+
 // [FindClose] function.
 //
 // Paired with [FindFirstFile].
 //
 // [FindClose]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
 func (hFind HFIND) FindClose() error {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_FindClose),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_FindClose, "FindClose"),
 		uintptr(hFind))
 	return utl.ZeroAsGetLastError(ret, err)
 }
+
+var _FindClose *syscall.Proc
 
 // [FindNextFile] function.
 //
@@ -64,7 +70,8 @@ func (hFind HFIND) FindClose() error {
 //
 // [FindNextFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
 func (hFind HFIND) FindNextFile(findFileData *WIN32_FIND_DATA) (bool, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_FindNextFileW),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_FindNextFileW, "FindNextFileW"),
 		uintptr(hFind),
 		uintptr(unsafe.Pointer(findFileData)))
 
@@ -77,3 +84,5 @@ func (hFind HFIND) FindNextFile(findFileData *WIN32_FIND_DATA) (bool, error) {
 	}
 	return true, nil // a file was found
 }
+
+var _FindNextFileW *syscall.Proc

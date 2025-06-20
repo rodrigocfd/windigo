@@ -7,6 +7,7 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/dll"
 	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -54,7 +55,8 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 
 	var guid win.GUID
 
-	ret, _, _ := syscall.SyscallN(dllOle(_PROC_CLSIDFromProgID),
+	ret, _, _ := syscall.SyscallN(
+		dll.Ole(&_CLSIDFromProgID, "CLSIDFromProgID"),
 		uintptr(pProgId),
 		uintptr(unsafe.Pointer(&guid)))
 
@@ -64,6 +66,8 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 		return "", hr
 	}
 }
+
+var _CLSIDFromProgID *syscall.Proc
 
 // [CoCreateInstance] function.
 //
@@ -101,7 +105,8 @@ func CoCreateInstance(
 		pUnkOuter = unkOuter.Ppvt()
 	}
 
-	ret, _, _ := syscall.SyscallN(dllOle(_PROC_CoCreateInstance),
+	ret, _, _ := syscall.SyscallN(
+		dll.Ole(&_CoCreateInstance, "CoCreateInstance"),
 		uintptr(unsafe.Pointer(&guidClsid)),
 		uintptr(unsafe.Pointer(pUnkOuter)),
 		uintptr(dwClsContext),
@@ -117,6 +122,8 @@ func CoCreateInstance(
 	}
 }
 
+var _CoCreateInstance *syscall.Proc
+
 // [CoInitializeEx] function.
 //
 // ⚠️ You must defer [CoUninitialize].
@@ -129,7 +136,8 @@ func CoCreateInstance(
 //
 // [CoInitializeEx]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 func CoInitializeEx(coInit co.COINIT) (alreadyInitialized bool, hr error) {
-	ret, _, _ := syscall.SyscallN(dllOle(_PROC_CoInitializeEx),
+	ret, _, _ := syscall.SyscallN(
+		dll.Ole(&_CoInitializeEx, "CoInitializeEx"),
 		0,
 		uintptr(coInit))
 
@@ -143,14 +151,19 @@ func CoInitializeEx(coInit co.COINIT) (alreadyInitialized bool, hr error) {
 	return
 }
 
+var _CoInitializeEx *syscall.Proc
+
 // [CoUninitialize] function.
 //
 // Paired [CoInitializeEx].
 //
 // [CoUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
 func CoUninitialize() {
-	syscall.SyscallN(dllOle(_PROC_CoUninitialize))
+	syscall.SyscallN(
+		dll.Ole(&_CoUninitialize, "CoUninitialize"))
 }
+
+var _CoUninitialize *syscall.Proc
 
 // [CreateBindCtx] function.
 //
@@ -164,7 +177,8 @@ func CoUninitialize() {
 // [CreateBindCtx]: https://learn.microsoft.com/en-us/windows/win32/api/objbase/nf-objbase-createbindctx
 func CreateBindCtx(releaser *Releaser) (*IBindCtx, error) {
 	var ppvtQueried **IUnknownVt
-	ret, _, _ := syscall.SyscallN(dllOle(_PROC_CreateBindCtx),
+	ret, _, _ := syscall.SyscallN(
+		dll.Ole(&_CreateBindCtx, "CreateBindCtx"),
 		0,
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -178,6 +192,8 @@ func CreateBindCtx(releaser *Releaser) (*IBindCtx, error) {
 	}
 }
 
+var _CreateBindCtx *syscall.Proc
+
 // [OleInitialize] function.
 //
 // ⚠️ You must defer [OleUninitialize].
@@ -189,10 +205,13 @@ func CreateBindCtx(releaser *Releaser) (*IBindCtx, error) {
 //
 // [OleInitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-oleinitialize
 func OleInitialize() error {
-	ret, _, _ := syscall.SyscallN(dllOle(_PROC_OleInitialize),
+	ret, _, _ := syscall.SyscallN(
+		dll.Ole(&_OleInitialize, "OleInitialize"),
 		0)
 	return utl.ErrorAsHResult(ret)
 }
+
+var _OleInitialize *syscall.Proc
 
 // [OleUninitialize] function.
 //
@@ -200,8 +219,11 @@ func OleInitialize() error {
 //
 // [OleUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-oleuninitialize
 func OleUninitialize() {
-	syscall.SyscallN(dllOle(_PROC_OleUninitialize))
+	syscall.SyscallN(
+		dll.Ole(&_OleUninitialize, "OleUninitialize"))
 }
+
+var _OleUninitialize *syscall.Proc
 
 // [RegisterDragDrop] function.
 //
@@ -214,7 +236,8 @@ func RegisterDragDrop(hWnd win.HWND, dropTarget *IDropTarget) error {
 		return errors.New("do not use WS_EX_ACCEPTFILES with RegisterDragDrop")
 	}
 
-	ret, _, _ := syscall.SyscallN(dllOle(_PROC_RegisterDragDrop),
+	ret, _, _ := syscall.SyscallN(
+		dll.Ole(&_RegisterDragDrop, "RegisterDragDrop"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(dropTarget.Ppvt())))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
@@ -226,15 +249,20 @@ func RegisterDragDrop(hWnd win.HWND, dropTarget *IDropTarget) error {
 	return nil
 }
 
+var _RegisterDragDrop *syscall.Proc
+
 // [ReleaseStgMedium] function.
 //
 // Paired with [IDataObject.GetData].
 //
 // [ReleaseStgMedium]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-releasestgmedium
 func ReleaseStgMedium(stg *STGMEDIUM) {
-	syscall.SyscallN(dllOle(_PROC_ReleaseStgMedium),
+	syscall.SyscallN(
+		dll.Ole(&_ReleaseStgMedium, "ReleaseStgMedium"),
 		uintptr(unsafe.Pointer(stg)))
 }
+
+var _ReleaseStgMedium *syscall.Proc
 
 // [RevokeDragDrop] function.
 //
@@ -242,10 +270,13 @@ func ReleaseStgMedium(stg *STGMEDIUM) {
 //
 // [RevokeDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-revokedragdrop
 func RevokeDragDrop(hWnd win.HWND) error {
-	ret, _, _ := syscall.SyscallN(dllOle(_PROC_RevokeDragDrop),
+	ret, _, _ := syscall.SyscallN(
+		dll.Ole(&_RevokeDragDrop, "RevokeDragDrop"),
 		uintptr(hWnd))
 	return utl.ErrorAsHResult(ret)
 }
+
+var _RevokeDragDrop *syscall.Proc
 
 // [SHCreateMemStream] function.
 //
@@ -264,7 +295,8 @@ func RevokeDragDrop(hWnd win.HWND) error {
 //
 // [SHCreateMemStream]: https://learn.microsoft.com/en-us/windows/win32/api/shlwapi/nf-shlwapi-shcreatememstream
 func SHCreateMemStream(releaser *Releaser, src []byte) (*IStream, error) {
-	ret, _, _ := syscall.SyscallN(dllShlwapi(_PROC_SHCreateMemStream),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shlwapi(&_SHCreateMemStream, "SHCreateMemStream"),
 		uintptr(unsafe.Pointer(&src[0])),
 		uintptr(uint32(len(src))))
 	if ret == 0 {
@@ -277,3 +309,5 @@ func SHCreateMemStream(releaser *Releaser, src []byte) (*IStream, error) {
 	releaser.Add(pObj)
 	return pObj, nil
 }
+
+var _SHCreateMemStream *syscall.Proc

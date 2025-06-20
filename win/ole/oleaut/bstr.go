@@ -6,6 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/dll"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -30,7 +31,8 @@ func SysAllocString(s string) (BSTR, error) {
 	defer wbuf.Free()
 	pS := wbuf.PtrAllowEmpty(s)
 
-	ret, _, _ := syscall.SyscallN(dllOleaut(_PROC_SysAllocString),
+	ret, _, _ := syscall.SyscallN(
+		dll.Oleaut(&_SysAllocString, "SysAllocString"),
 		uintptr(pS))
 	if ret == 0 {
 		return BSTR(0), co.HRESULT_E_OUTOFMEMORY
@@ -38,15 +40,20 @@ func SysAllocString(s string) (BSTR, error) {
 	return BSTR(ret), nil
 }
 
+var _SysAllocString *syscall.Proc
+
 // [SysFreeString] function.
 //
 // [SysFreeString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysfreestring
 func (bstr BSTR) SysFreeString() {
 	if bstr != 0 {
-		syscall.SyscallN(dllOleaut(_PROC_SysFreeString),
+		syscall.SyscallN(
+			dll.Oleaut(&_SysFreeString, "SysFreeString"),
 			uintptr(bstr))
 	}
 }
+
+var _SysFreeString *syscall.Proc
 
 // [SysReAllocString] function.
 //
@@ -63,7 +70,8 @@ func (bstr BSTR) SysReAllocString(s string) (BSTR, error) {
 	defer wbuf.Free()
 	pS := wbuf.PtrAllowEmpty(s)
 
-	ret, _, _ := syscall.SyscallN(dllOleaut(_PROC_SysReAllocString),
+	ret, _, _ := syscall.SyscallN(
+		dll.Oleaut(&_SysReAllocString, "SysReAllocString"),
 		uintptr(bstr),
 		uintptr(pS))
 	if ret == 0 {
@@ -71,6 +79,8 @@ func (bstr BSTR) SysReAllocString(s string) (BSTR, error) {
 	}
 	return BSTR(ret), nil
 }
+
+var _SysReAllocString *syscall.Proc
 
 // Converts the BSTR pointer to a string.
 func (bstr BSTR) String() string {

@@ -28,7 +28,8 @@ type HPROCSNAP HANDLE
 //
 // [CreateToolhelp32Snapshot]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-createtoolhelp32snapshot
 func CreateToolhelp32Snapshot(flags co.TH32CS, processId uint32) (HPROCSNAP, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_CreateToolhelp32Snapshot),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_CreateToolhelp32Snapshot, "CreateToolhelp32Snapshot"),
 		uintptr(flags),
 		uintptr(processId))
 	if int(ret) == utl.INVALID_HANDLE_VALUE {
@@ -36,6 +37,8 @@ func CreateToolhelp32Snapshot(flags co.TH32CS, processId uint32) (HPROCSNAP, err
 	}
 	return HPROCSNAP(ret), nil
 }
+
+var _CreateToolhelp32Snapshot *syscall.Proc
 
 // [CloseHandle] function.
 //
@@ -140,7 +143,8 @@ func (hProcSnap HPROCSNAP) EnumThreads() ([]THREADENTRY32, error) {
 //
 // [Module32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32firstw
 func (hProcSnap HPROCSNAP) Module32First(buf *MODULEENTRY32) (bool, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_Module32FirstW),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_Module32FirstW, "Module32FirstW"),
 		uintptr(hProcSnap),
 		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
@@ -152,6 +156,8 @@ func (hProcSnap HPROCSNAP) Module32First(buf *MODULEENTRY32) (bool, error) {
 	}
 	return true, nil // a module was found
 }
+
+var _Module32FirstW *syscall.Proc
 
 // [Module32Next] function.
 //
@@ -159,7 +165,8 @@ func (hProcSnap HPROCSNAP) Module32First(buf *MODULEENTRY32) (bool, error) {
 //
 // [Module32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32nextw
 func (hProcSnap HPROCSNAP) Module32Next(buf *MODULEENTRY32) (bool, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_Module32NextW),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_Module32NextW, "Module32NextW"),
 		uintptr(hProcSnap),
 		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
@@ -172,13 +179,16 @@ func (hProcSnap HPROCSNAP) Module32Next(buf *MODULEENTRY32) (bool, error) {
 	return true, nil // a module was found
 }
 
+var _Module32NextW *syscall.Proc
+
 // [Process32First] function.
 //
 // This is a low-level function, prefer using [HPROCSNAP.EnumProcesses].
 //
 // [Process32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
 func (hProcSnap HPROCSNAP) Process32First(buf *PROCESSENTRY32) (bool, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_Process32FirstW),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_Process32FirstW, "Process32FirstW"),
 		uintptr(hProcSnap),
 		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
@@ -190,6 +200,8 @@ func (hProcSnap HPROCSNAP) Process32First(buf *PROCESSENTRY32) (bool, error) {
 	}
 	return true, nil // a process was found
 }
+
+var _Process32FirstW *syscall.Proc
 
 // [Process32Next] function.
 //
@@ -197,7 +209,8 @@ func (hProcSnap HPROCSNAP) Process32First(buf *PROCESSENTRY32) (bool, error) {
 //
 // [Process32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
 func (hProcSnap HPROCSNAP) Process32Next(buf *PROCESSENTRY32) (bool, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_Process32NextW),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_Process32NextW, "Process32NextW"),
 		uintptr(hProcSnap),
 		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
@@ -210,13 +223,16 @@ func (hProcSnap HPROCSNAP) Process32Next(buf *PROCESSENTRY32) (bool, error) {
 	return true, nil // a process was found
 }
 
+var _Process32NextW *syscall.Proc
+
 // [Thread32First] function.
 //
 // This is a low-level function, prefer using [HPROCSNAP.EnumThreads].
 //
 // [Thread32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32first
 func (hProcSnap HPROCSNAP) Thread32First(buf *THREADENTRY32) (bool, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_Thread32First),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_Thread32First, "Thread32First"),
 		uintptr(hProcSnap),
 		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
@@ -229,13 +245,16 @@ func (hProcSnap HPROCSNAP) Thread32First(buf *THREADENTRY32) (bool, error) {
 	return true, nil // a thread was found
 }
 
+var _Thread32First *syscall.Proc
+
 // [Thread32Next] function.
 //
 // This is a low-level function, prefer using [HPROCSNAP.EnumThreads].
 //
 // [Thread32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32next
 func (hProcSnap HPROCSNAP) Thread32Next(buf *THREADENTRY32) (bool, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_Thread32Next),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_Thread32Next, "Thread32Next"),
 		uintptr(hProcSnap),
 		uintptr(unsafe.Pointer(buf)))
 	if ret == 0 {
@@ -247,3 +266,5 @@ func (hProcSnap HPROCSNAP) Thread32Next(buf *THREADENTRY32) (bool, error) {
 	}
 	return true, nil // a thread was found
 }
+
+var _Thread32Next *syscall.Proc

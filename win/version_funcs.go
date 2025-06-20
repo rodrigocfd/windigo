@@ -33,13 +33,16 @@ func GetFileVersionInfo(fileName string, dest []byte) error {
 	defer wbuf.Free()
 	pFileName := wbuf.PtrEmptyIsNil(fileName)
 
-	ret, _, err := syscall.SyscallN(dll.Version(dll.PROC_GetFileVersionInfoW),
+	ret, _, err := syscall.SyscallN(
+		dll.Version(&_GetFileVersionInfoW, "GetFileVersionInfoW"),
 		uintptr(pFileName),
 		0,
 		uintptr(uint32(len(dest))),
 		uintptr(unsafe.Pointer(&dest[0])))
 	return utl.ZeroAsGetLastError(ret, err)
 }
+
+var _GetFileVersionInfoW *syscall.Proc
 
 // [GetFileVersionInfoSize] function.
 //
@@ -51,7 +54,8 @@ func GetFileVersionInfoSize(fileName string) (uint, error) {
 
 	var dummy uint32
 
-	ret, _, err := syscall.SyscallN(dll.Version(dll.PROC_GetFileVersionInfoSizeW),
+	ret, _, err := syscall.SyscallN(
+		dll.Version(&_GetFileVersionInfoSizeW, "GetFileVersionInfoSizeW"),
 		uintptr(pFileName),
 		uintptr(unsafe.Pointer(&dummy)))
 	if ret == 0 {
@@ -59,6 +63,8 @@ func GetFileVersionInfoSize(fileName string) (uint, error) {
 	}
 	return uint(ret), nil
 }
+
+var _GetFileVersionInfoSizeW *syscall.Proc
 
 // [VerQueryValue] function.
 //
@@ -110,7 +116,8 @@ func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, uint, bool) {
 	var lplpBuffer uintptr
 	var puLen uint32
 
-	ret, _, _ := syscall.SyscallN(dll.Version(dll.PROC_VerQueryValueW),
+	ret, _, _ := syscall.SyscallN(
+		dll.Version(&_VerQueryValueW, "VerQueryValueW"),
 		uintptr(unsafe.Pointer(&block[0])),
 		uintptr(pSubBlock),
 		uintptr(unsafe.Pointer(&lplpBuffer)),
@@ -120,3 +127,5 @@ func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, uint, bool) {
 	}
 	return unsafe.Pointer(lplpBuffer), uint(puLen), true
 }
+
+var _VerQueryValueW *syscall.Proc

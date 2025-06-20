@@ -33,7 +33,8 @@ type HCLIPBOARD struct{}
 //
 // [OpenClipboard]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-openclipboard
 func OpenClipboard(hWndOwner HWND) (HCLIPBOARD, error) {
-	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_OpenClipboard),
+	ret, _, err := syscall.SyscallN(
+		dll.User(&_OpenClipboard, "OpenClipboard"),
 		uintptr(hWndOwner))
 	if ret == 0 {
 		return HCLIPBOARD{}, co.ERROR(err)
@@ -41,34 +42,45 @@ func OpenClipboard(hWndOwner HWND) (HCLIPBOARD, error) {
 	return HCLIPBOARD{}, nil
 }
 
+var _OpenClipboard *syscall.Proc
+
 // [CloseClipboard] function.
 //
 // Paired with [OpenClipboard].
 //
 // [CloseClipboard]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-closeclipboard
 func (HCLIPBOARD) CloseClipboard() error {
-	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_CloseClipboard))
+	ret, _, err := syscall.SyscallN(
+		dll.User(&_CloseClipboard, "CloseClipboard"))
 	return utl.ZeroAsGetLastError(ret, err)
 }
+
+var _CloseClipboard *syscall.Proc
 
 // [CountClipboardFormats] function.
 //
 // [CountClipboardFormats]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-countclipboardformats
 func (HCLIPBOARD) CountClipboardFormats() (uint, error) {
-	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_CountClipboardFormats))
+	ret, _, err := syscall.SyscallN(
+		dll.User(&_CountClipboardFormats, "CountClipboardFormats"))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return 0, wErr
 	}
 	return uint(ret), nil
 }
 
+var _CountClipboardFormats *syscall.Proc
+
 // [EmptyClipboard] function.
 //
 // [EmptyClipboard]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-emptyclipboard
 func (HCLIPBOARD) EmptyClipboard() error {
-	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_EmptyClipboard))
+	ret, _, err := syscall.SyscallN(
+		dll.User(&_EmptyClipboard, "EmptyClipboard"))
 	return utl.ZeroAsGetLastError(ret, err)
 }
+
+var _EmptyClipboard *syscall.Proc
 
 // [EnumClipboardFormats] function.
 //
@@ -78,7 +90,8 @@ func (HCLIPBOARD) EnumClipboardFormats() ([]co.CF, error) {
 	thisFormat := co.CF(0)
 
 	for {
-		ret, _, err := syscall.SyscallN(dll.User(dll.PROC_EnumClipboardFormats),
+		ret, _, err := syscall.SyscallN(
+			dll.User(&_EnumClipboardFormats, "EnumClipboardFormats"),
 			uintptr(thisFormat))
 
 		if ret == 0 {
@@ -96,6 +109,8 @@ func (HCLIPBOARD) EnumClipboardFormats() ([]co.CF, error) {
 	return formats, nil
 }
 
+var _EnumClipboardFormats *syscall.Proc
+
 // [GetClipboardData] function.
 //
 // Returns a newly-allocated slice, with a copy of the clipboard contents.
@@ -105,7 +120,8 @@ func (HCLIPBOARD) EnumClipboardFormats() ([]co.CF, error) {
 //
 // [GetClipboardData]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboarddata
 func (HCLIPBOARD) GetClipboardData(format co.CF) ([]byte, error) {
-	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_GetClipboardData),
+	ret, _, err := syscall.SyscallN(
+		dll.User(&_GetClipboardData, "GetClipboardData"),
 		uintptr(format))
 	if ret == 0 {
 		return nil, co.ERROR(err)
@@ -123,6 +139,8 @@ func (HCLIPBOARD) GetClipboardData(format co.CF) ([]byte, error) {
 	return buf, nil
 }
 
+var _GetClipboardData *syscall.Proc
+
 // [GetClipboardFormatName] function.
 //
 // [GetClipboardFormatName]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardformatnamew
@@ -130,7 +148,8 @@ func (HCLIPBOARD) GetClipboardFormatName(format co.CF) (string, error) {
 	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
-	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_GetClipboardFormatNameW),
+	ret, _, err := syscall.SyscallN(
+		dll.User(&_GetClipboardFormatNameW, "GetClipboardFormatNameW"),
 		uintptr(format),
 		uintptr(recvBuf.UnsafePtr()),
 		uintptr(int32(recvBuf.Len())))
@@ -140,25 +159,33 @@ func (HCLIPBOARD) GetClipboardFormatName(format co.CF) (string, error) {
 	return recvBuf.String(), nil
 }
 
+var _GetClipboardFormatNameW *syscall.Proc
+
 // [GetClipboardSequenceNumber] function.
 //
 // [GetClipboardSequenceNumber]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardsequencenumber
 func (HCLIPBOARD) GetClipboardSequenceNumber() int {
-	ret, _, _ := syscall.SyscallN(dll.User(dll.PROC_GetClipboardSequenceNumber))
+	ret, _, _ := syscall.SyscallN(
+		dll.User(&_GetClipboardSequenceNumber, "GetClipboardSequenceNumber"))
 	return int(ret)
 }
+
+var _GetClipboardSequenceNumber *syscall.Proc
 
 // [IsClipboardFormatAvailable] function.
 //
 // [IsClipboardFormatAvailable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isclipboardformatavailable
 func (HCLIPBOARD) IsClipboardFormatAvailable(format co.CF) (bool, error) {
-	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_IsClipboardFormatAvailable),
+	ret, _, err := syscall.SyscallN(
+		dll.User(&_IsClipboardFormatAvailable, "IsClipboardFormatAvailable"),
 		uintptr(format))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return false, wErr
 	}
 	return ret != 0, nil
 }
+
+var _IsClipboardFormatAvailable *syscall.Proc
 
 // [SetClipboardData] function.
 //
@@ -178,8 +205,11 @@ func (HCLIPBOARD) SetClipboardData(format co.CF, data []byte) error {
 	defer hGlobal.GlobalUnlock()
 	copy(sliceMem, data)
 
-	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_SetClipboardData),
+	ret, _, err := syscall.SyscallN(
+		dll.User(&_SetClipboardData, "SetClipboardData"),
 		uintptr(format),
 		uintptr(hGlobal))
 	return utl.ZeroAsGetLastError(ret, err)
 }
+
+var _SetClipboardData *syscall.Proc

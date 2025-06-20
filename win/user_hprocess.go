@@ -19,10 +19,13 @@ func (hProcess HPROCESS) SetUserObjectInformation(
 	info unsafe.Pointer,
 	infoLen uintptr,
 ) error {
-	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_SetUserObjectInformationW),
+	ret, _, err := syscall.SyscallN(
+		dll.User(&_SetUserObjectInformationW, "SetUserObjectInformationW"),
 		uintptr(hProcess),
 		uintptr(index),
 		uintptr(info),
 		uintptr(infoLen))
 	return utl.ZeroAsGetLastError(ret, err)
 }
+
+var _SetUserObjectInformationW *syscall.Proc

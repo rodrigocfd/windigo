@@ -14,10 +14,13 @@ import (
 //
 // [IsThemeDialogTextureEnabled]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemedialogtextureenabled
 func (hWnd HWND) IsThemeDialogTextureEnabled() bool {
-	ret, _, _ := syscall.SyscallN(dll.Uxtheme(dll.PROC_IsThemeDialogTextureEnabled),
+	ret, _, _ := syscall.SyscallN(
+		dll.Uxtheme(&_IsThemeDialogTextureEnabled, "IsThemeDialogTextureEnabled"),
 		uintptr(hWnd))
 	return ret != 0
 }
+
+var _IsThemeDialogTextureEnabled *syscall.Proc
 
 // [OpenThemeData] function.
 //
@@ -29,7 +32,8 @@ func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {
 	defer wbuf.Free()
 	pClassNames := wbuf.PtrEmptyIsNil(classNames)
 
-	ret, _, _ := syscall.SyscallN(dll.Uxtheme(dll.PROC_OpenThemeData),
+	ret, _, _ := syscall.SyscallN(
+		dll.Uxtheme(&_OpenThemeData, "OpenThemeData"),
 		uintptr(hWnd),
 		uintptr(pClassNames))
 	if ret == 0 {
@@ -37,3 +41,5 @@ func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {
 	}
 	return HTHEME(ret), nil
 }
+
+var _OpenThemeData *syscall.Proc

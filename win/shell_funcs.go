@@ -23,7 +23,8 @@ func CommandLineToArgv(cmdLine string) ([]string, error) {
 
 	var pNumArgs int32
 
-	ret, _, err := syscall.SyscallN(dll.Shell(dll.PROC_CommandLineToArgvW),
+	ret, _, err := syscall.SyscallN(
+		dll.Shell(&_CommandLineToArgvW, "CommandLineToArgvW"),
 		uintptr(pCmdLine),
 		uintptr(unsafe.Pointer(&pNumArgs)))
 	if ret == 0 {
@@ -39,11 +40,14 @@ func CommandLineToArgv(cmdLine string) ([]string, error) {
 	return strs, nil
 }
 
+var _CommandLineToArgvW *syscall.Proc
+
 // [Shell_NotifyIcon] function.
 //
 // [Shell_NotifyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
 func Shell_NotifyIcon(message co.NIM, data *NOTIFYICONDATA) error {
-	ret, _, _ := syscall.SyscallN(dll.Shell(dll.PROC_Shell_NotifyIconW),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_Shell_NotifyIconW, "Shell_NotifyIconW"),
 		uintptr(message),
 		uintptr(unsafe.Pointer(data)))
 	if ret == 0 {
@@ -52,12 +56,15 @@ func Shell_NotifyIcon(message co.NIM, data *NOTIFYICONDATA) error {
 	return nil
 }
 
+var _Shell_NotifyIconW *syscall.Proc
+
 // [Shell_NotifyIconGetRect] function.
 //
 // [Shell_NotifyIconGetRect]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyicongetrect
 func Shell_NotifyIconGetRect(identifier *NOTIFYICONIDENTIFIER) (RECT, error) {
 	var rc RECT
-	ret, _, _ := syscall.SyscallN(dll.Shell(dll.PROC_Shell_NotifyIconGetRect),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_Shell_NotifyIconGetRect, "Shell_NotifyIconGetRect"),
 		uintptr(unsafe.Pointer(identifier)),
 		uintptr(unsafe.Pointer(&rc)))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
@@ -65,6 +72,8 @@ func Shell_NotifyIconGetRect(identifier *NOTIFYICONIDENTIFIER) (RECT, error) {
 	}
 	return rc, nil
 }
+
+var _Shell_NotifyIconGetRect *syscall.Proc
 
 // [SHGetFileInfo] function.
 //
@@ -79,7 +88,8 @@ func SHGetFileInfo(path string, fileAttrs co.FILE_ATTRIBUTE, flags co.SHGFI) (SH
 
 	var sfi SHFILEINFO
 
-	ret, _, _ := syscall.SyscallN(dll.Shell(dll.PROC_SHGetFileInfoW),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHGetFileInfoW, "SHGetFileInfoW"),
 		uintptr(pPath),
 		uintptr(fileAttrs),
 		uintptr(unsafe.Pointer(&sfi)),
@@ -99,3 +109,5 @@ func SHGetFileInfo(path string, fileAttrs co.FILE_ATTRIBUTE, flags co.SHGFI) (SH
 
 	return sfi, nil
 }
+
+var _SHGetFileInfoW *syscall.Proc

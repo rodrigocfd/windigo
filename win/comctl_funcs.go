@@ -16,43 +16,58 @@ import (
 //
 // [ImageList_DragMove]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_dragmove
 func ImageListDragMove(x, y int) error {
-	ret, _, _ := syscall.SyscallN(dll.Comctl(dll.PROC_ImageList_DragMove),
+	ret, _, _ := syscall.SyscallN(
+		dll.Comctl(&_ImageList_DragMove, "ImageList_DragMove"),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
+var _ImageList_DragMove *syscall.Proc
+
 // [ImageList_DragShowNolock] function.
 //
 // [ImageList_DragShowNolock]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_dragshownolock
 func ImageListDragShowNolock(show bool) error {
-	ret, _, _ := syscall.SyscallN(dll.Comctl(dll.PROC_ImageList_DragShowNolock),
+	ret, _, _ := syscall.SyscallN(
+		dll.Comctl(&_ImageList_DragShowNolock, "ImageList_DragShowNolock"),
 		utl.BoolToUintptr(show))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
+
+var _ImageList_DragShowNolock *syscall.Proc
 
 // [ImageList_DrawIndirect] function.
 //
 // [ImageList_DrawIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_drawindirect
 func ImageListDrawIndirect(imldp *IMAGELISTDRAWPARAMS) error {
-	ret, _, _ := syscall.SyscallN(dll.Comctl(dll.PROC_ImageList_DrawIndirect),
+	ret, _, _ := syscall.SyscallN(
+		dll.Comctl(&_ImageList_DrawIndirect, "ImageList_DrawIndirect"),
 		uintptr(unsafe.Pointer(imldp)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
+
+var _ImageList_DrawIndirect *syscall.Proc
 
 // [ImageList_EndDrag] function.
 //
 // [ImageList_EndDrag]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_enddrag
 func ImageListEndDrag() {
-	syscall.SyscallN(dll.Comctl(dll.PROC_ImageList_EndDrag))
+	syscall.SyscallN(
+		dll.Comctl(&_ImageList_EndDrag, "ImageList_EndDrag"))
 }
+
+var _ImageList_EndDrag *syscall.Proc
 
 // [InitCommonControls] function.
 //
 // [InitCommonControls]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
 func InitCommonControls() {
-	syscall.SyscallN(dll.Comctl(dll.PROC_InitCommonControls))
+	syscall.SyscallN(
+		dll.Comctl(&_InitCommonControls, "InitCommonControls"))
 }
+
+var _InitCommonControls *syscall.Proc
 
 // [InitCommonControlsEx] function.
 //
@@ -62,18 +77,24 @@ func InitCommonControlsEx(icc co.ICC) error {
 	iccx.SetDwSize()
 	iccx.DwICC = icc
 
-	ret, _, _ := syscall.SyscallN(dll.Comctl(dll.PROC_InitCommonControlsEx),
+	ret, _, _ := syscall.SyscallN(
+		dll.Comctl(&_InitCommonControlsEx, "InitCommonControlsEx"),
 		uintptr(unsafe.Pointer(&iccx)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
+
+var _InitCommonControlsEx *syscall.Proc
 
 // [InitMUILanguage] function.
 //
 // [InitMUILanguage]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initmuilanguage
 func InitMUILanguage(lang LANGID) {
-	syscall.SyscallN(dll.Comctl(dll.PROC_InitMUILanguage),
+	syscall.SyscallN(
+		dll.Comctl(&_InitMUILanguage, "InitMUILanguage"),
 		uintptr(lang))
 }
+
+var _InitMUILanguage *syscall.Proc
 
 // [TaskDialogIndirect] function.
 //
@@ -108,7 +129,8 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 	pPnButton := NewVecSized(1, int32(0)) // OS-allocated; value to be returned
 	defer pPnButton.Free()
 
-	ret, _, _ := syscall.SyscallN(dll.Comctl(dll.PROC_TaskDialogIndirect),
+	ret, _, _ := syscall.SyscallN(
+		dll.Comctl(&_TaskDialogIndirect, "TaskDialogIndirect"),
 		uintptr(tdcBuf.UnsafePtr()),
 		uintptr(pPnButton.UnsafePtr()))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
@@ -117,3 +139,5 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 
 	return co.ID(*pPnButton.Get(0)), nil
 }
+
+var _TaskDialogIndirect *syscall.Proc

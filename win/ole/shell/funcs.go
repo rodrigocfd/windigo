@@ -6,6 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/dll"
 	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -39,7 +40,8 @@ func SHCreateItemFromIDList(releaser *ole.Releaser, pidl *ITEMIDLIST, ppOut inte
 	var ppvtQueried **ole.IUnknownVt
 	guidIid := win.GuidFrom(pOut.IID())
 
-	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHCreateItemFromIDList),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHCreateItemFromIDList, "SHCreateItemFromIDList"),
 		uintptr(*pidl),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
@@ -52,6 +54,8 @@ func SHCreateItemFromIDList(releaser *ole.Releaser, pidl *ITEMIDLIST, ppOut inte
 		return hr
 	}
 }
+
+var _SHCreateItemFromIDList *syscall.Proc
 
 // [SHCreateItemFromParsingName] function.
 //
@@ -85,7 +89,8 @@ func SHCreateItemFromParsingName(
 	defer wbuf.Free()
 	pFolderOrFilePath := wbuf.PtrEmptyIsNil(folderOrFilePath)
 
-	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHCreateItemFromParsingName),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHCreateItemFromParsingName, "SHCreateItemFromParsingName"),
 		uintptr(pFolderOrFilePath),
 		0,
 		uintptr(unsafe.Pointer(&guidIid)),
@@ -99,6 +104,8 @@ func SHCreateItemFromParsingName(
 		return hr
 	}
 }
+
+var _SHCreateItemFromParsingName *syscall.Proc
 
 // [SHCreateItemFromRelativeName] function.
 //
@@ -120,7 +127,8 @@ func SHCreateItemFromRelativeName(
 	defer wbuf.Free()
 	pName := wbuf.PtrAllowEmpty(name)
 
-	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHCreateItemFromRelativeName),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHCreateItemFromRelativeName, "SHCreateItemFromRelativeName"),
 		uintptr(unsafe.Pointer(parent.Ppvt())),
 		uintptr(pName),
 		uintptr(ole.Ppvt(bindCtx)),
@@ -135,6 +143,8 @@ func SHCreateItemFromRelativeName(
 		return hr
 	}
 }
+
+var _SHCreateItemFromRelativeName *syscall.Proc
 
 // [SHCreateShellItemArray] function.
 //
@@ -161,7 +171,8 @@ func SHCreateShellItemArray(
 		pidlChildrenObjsPtr = &pidlChildrenObjs[0]
 	}
 
-	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHCreateShellItemArray),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHCreateShellItemArray, "SHCreateShellItemArray"),
 		uintptr(pidlParentObj),
 		uintptr(ole.Ppvt(parent)),
 		uintptr(len(pidlChildren)),
@@ -177,6 +188,8 @@ func SHCreateShellItemArray(
 		return nil, hr
 	}
 }
+
+var _SHCreateShellItemArray *syscall.Proc
 
 // [SHCreateShellItemArrayFromIDLists] function.
 //
@@ -206,7 +219,8 @@ func SHCreateShellItemArrayFromIDLists(
 		pidlObjs = append(pidlObjs, *pidl)
 	}
 
-	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHCreateShellItemArrayFromIDLists),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHCreateShellItemArrayFromIDLists, "SHCreateShellItemArrayFromIDLists"),
 		uintptr(uint32(len(pidls))),
 		uintptr(unsafe.Pointer(&pidlObjs[0])),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
@@ -221,6 +235,8 @@ func SHCreateShellItemArrayFromIDLists(
 	}
 }
 
+var _SHCreateShellItemArrayFromIDLists *syscall.Proc
+
 // [SHGetDesktopFolder] function.
 //
 // # Example
@@ -233,7 +249,8 @@ func SHCreateShellItemArrayFromIDLists(
 // [SHGetDesktopFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetdesktopfolder
 func SHGetDesktopFolder(releaser *ole.Releaser) (*IShellFolder, error) {
 	var ppvtQueried **ole.IUnknownVt
-	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHGetDesktopFolder),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHGetDesktopFolder, "SHGetDesktopFolder"),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -245,6 +262,8 @@ func SHGetDesktopFolder(releaser *ole.Releaser) (*IShellFolder, error) {
 		return nil, hr
 	}
 }
+
+var _SHGetDesktopFolder *syscall.Proc
 
 // [SHGetKnownFolderItem] function.
 //
@@ -282,7 +301,8 @@ func SHGetKnownFolderItem(
 	guidKfid := win.GuidFrom(kfid)
 	guidIid := win.GuidFrom(pOut.IID())
 
-	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHGetKnownFolderItem),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHGetKnownFolderItem, "SHGetKnownFolderItem"),
 		uintptr(unsafe.Pointer(&guidKfid)),
 		uintptr(flags),
 		uintptr(hToken),
@@ -297,6 +317,8 @@ func SHGetKnownFolderItem(
 		return hr
 	}
 }
+
+var _SHGetKnownFolderItem *syscall.Proc
 
 // [SHGetIDListFromObject] function.
 //
@@ -314,7 +336,8 @@ func SHGetKnownFolderItem(
 // [SHGetIDListFromObject]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shgetidlistfromobject
 func SHGetIDListFromObject(releaser *ole.Releaser, obj *ole.IUnknown) (*ITEMIDLIST, error) {
 	var idl ITEMIDLIST
-	ret, _, _ := syscall.SyscallN(dllShell(_PROC_SHGetIDListFromObject),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHGetIDListFromObject, "SHGetIDListFromObject"),
 		uintptr(unsafe.Pointer(obj.Ppvt())),
 		uintptr(unsafe.Pointer(&idl)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -325,3 +348,5 @@ func SHGetIDListFromObject(releaser *ole.Releaser, obj *ole.IUnknown) (*ITEMIDLI
 		return nil, hr
 	}
 }
+
+var _SHGetIDListFromObject *syscall.Proc

@@ -3,88 +3,94 @@
 package dll
 
 import (
-	"sync"
-	"sync/atomic"
 	"syscall"
-	"unsafe"
 )
 
-const dllStr = `
-advapi32
-comctl32
-dwmapi
-gdi32
-kernel32
-ole32
-oleaut32
-psapi
-shell32
-shlwapi
-user32
-uxtheme
-version
-`
-
-type SYSDLL uint64 // Identifies a system DLL to be loaded into the global cache.
-
-// System DLL identifier: cache index | str start | str past-end.
-const (
-	SYSDLL_advapi32 SYSDLL = 0 | (1 << 16) | (9 << 32)
-	SYSDLL_comctl32 SYSDLL = 1 | (10 << 16) | (18 << 32)
-	SYSDLL_dwmapi   SYSDLL = 2 | (19 << 16) | (25 << 32)
-	SYSDLL_gdi32    SYSDLL = 3 | (26 << 16) | (31 << 32)
-	SYSDLL_kernel32 SYSDLL = 4 | (32 << 16) | (40 << 32)
-	SYSDLL_ole32    SYSDLL = 5 | (41 << 16) | (46 << 32)
-	SYSDLL_oleaut32 SYSDLL = 6 | (47 << 16) | (55 << 32)
-	SYSDLL_psapi    SYSDLL = 7 | (56 << 16) | (61 << 32)
-	SYSDLL_shell32  SYSDLL = 8 | (62 << 16) | (69 << 32)
-	SYSDLL_shlwapi  SYSDLL = 9 | (70 << 16) | (77 << 32)
-	SYSDLL_user32   SYSDLL = 10 | (78 << 16) | (84 << 32)
-	SYSDLL_uxtheme  SYSDLL = 11 | (85 << 16) | (92 << 32)
-	SYSDLL_version  SYSDLL = 12 | (93 << 16) | (100 << 32)
-)
-
-var (
-	dllCache [13]*syscall.DLL // Stores the lazy-loaded system DLLs.
-	dllMutex sync.Mutex       // For loading all DLLs and procedures.
-)
-
-// Loads a system DLL into the global cache.
-func loadDll(dllId SYSDLL) *syscall.DLL {
-	idx := uint64(dllId) & 0xffff
-	if pDll := atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&dllCache[idx]))); pDll != nil {
-		return (*syscall.DLL)(pDll)
+// Loads a DLL and a procedure, caching the objects.
+func load(dll **syscall.DLL, dllName string, proc **syscall.Proc, procName string) uintptr {
+	if *dll == nil {
+		*dll = syscall.MustLoadDLL(dllName)
 	}
-
-	rangeStart := uint64(dllId) >> 16 & 0xffff
-	rangePastEnd := uint64(dllId) >> 32 & 0xffff
-	name := dllStr[rangeStart:rangePastEnd]
-
-	dllMutex.Lock()
-	defer dllMutex.Unlock()
-
-	dllObj := syscall.MustLoadDLL(name)
-	atomic.StorePointer((*unsafe.Pointer)(unsafe.Pointer(&dllCache[idx])), unsafe.Pointer(dllObj))
-	return dllObj
+	if *proc == nil {
+		*proc = kernel32.MustFindProc(procName)
+	}
+	return (*proc).Addr()
 }
 
-// Loads a procedure from a system DLL into the global cache.
-func LoadProc(dllId SYSDLL, procCache []*syscall.Proc, procStr string, procId uint64) *syscall.Proc {
-	idx := procId & 0xffff
-	if pProc := atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&procCache[idx]))); pProc != nil {
-		return (*syscall.Proc)(pProc)
-	}
-
-	rangeStart := procId >> 16 & 0xffff
-	rangePastEnd := procId >> 32 & 0xffff
-	name := procStr[rangeStart:rangePastEnd]
-
-	dllObj := loadDll(dllId)
-
-	dllMutex.Lock()
-	defer dllMutex.Unlock()
-
-	proc := dllObj.MustFindProc(name)
-	atomic.StorePointer((*unsafe.Pointer)(unsafe.Pointer(&procCache[idx])), unsafe.Pointer(proc))
-	return proc
+func Advapi(proc **syscall.Proc, name string) uintptr {
+	return load(&advapi32, "advapi32", proc, name)
 }
+
+var advapi32 *syscall.DLL
+
+func Comctl(proc **syscall.Proc, name string) uintptr {
+	return load(&comctl32, "comctl32", proc, name)
+}
+
+var comctl32 *syscall.DLL
+
+func Dwmapi(proc **syscall.Proc, name string) uintptr {
+	return load(&dwmapi, "dwmapi", proc, name)
+}
+
+var dwmapi *syscall.DLL
+
+func Gdi(proc **syscall.Proc, name string) uintptr {
+	return load(&gdi32, "gdi32", proc, name)
+}
+
+var gdi32 *syscall.DLL
+
+func Kernel(proc **syscall.Proc, name string) uintptr {
+	return load(&kernel32, "kernel32", proc, name)
+}
+
+var kernel32 *syscall.DLL
+
+func Ole(proc **syscall.Proc, name string) uintptr {
+	return load(&ole32, "ole32", proc, name)
+}
+
+var ole32 *syscall.DLL
+
+func Oleaut(proc **syscall.Proc, name string) uintptr {
+	return load(&oleaut32, "oleaut32", proc, name)
+}
+
+var oleaut32 *syscall.DLL
+
+func Psapi(proc **syscall.Proc, name string) uintptr {
+	return load(&psapi, "psapi", proc, name)
+}
+
+var psapi *syscall.DLL
+
+func Shell(proc **syscall.Proc, name string) uintptr {
+	return load(&shell32, "shell32", proc, name)
+}
+
+var shell32 *syscall.DLL
+
+func Shlwapi(proc **syscall.Proc, name string) uintptr {
+	return load(&shlwapi, "shlwapi", proc, name)
+}
+
+var shlwapi *syscall.DLL
+
+func User(proc **syscall.Proc, name string) uintptr {
+	return load(&user32, "user32", proc, name)
+}
+
+var user32 *syscall.DLL
+
+func Uxtheme(proc **syscall.Proc, name string) uintptr {
+	return load(&uxtheme, "uxtheme", proc, name)
+}
+
+var uxtheme *syscall.DLL
+
+func Version(proc **syscall.Proc, name string) uintptr {
+	return load(&version, "version", proc, name)
+}
+
+var version *syscall.DLL

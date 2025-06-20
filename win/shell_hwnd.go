@@ -19,10 +19,13 @@ func (hWnd HWND) ShellAbout(app, otherStuff string, hIcon HICON) error {
 	pApp := wbuf.PtrAllowEmpty(app)
 	pOtherStuff := wbuf.PtrEmptyIsNil(otherStuff)
 
-	ret, _, _ := syscall.SyscallN(dll.Shell(dll.PROC_ShellAboutW),
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_ShellAboutW, "ShellAboutW"),
 		uintptr(hWnd),
 		uintptr(pApp),
 		uintptr(pOtherStuff),
 		uintptr(hIcon))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
+
+var _ShellAboutW *syscall.Proc

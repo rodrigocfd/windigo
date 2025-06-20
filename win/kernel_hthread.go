@@ -19,9 +19,12 @@ type HTHREAD HANDLE
 //
 // [GetCurrentThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthread
 func GetCurrentThread() HTHREAD {
-	ret, _, _ := syscall.SyscallN(dll.Kernel(dll.PROC_GetCurrentThread))
+	ret, _, _ := syscall.SyscallN(
+		dll.Kernel(&_GetCurrentThread, "GetCurrentThread"))
 	return HTHREAD(ret)
 }
+
+var _GetCurrentThread *syscall.Proc
 
 // [CloseHandle] function.
 //
@@ -35,7 +38,8 @@ func (hThread HTHREAD) CloseHandle() error {
 // [GetExitCodeThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodethread
 func (hThread HTHREAD) GetExitCodeThread() (uint32, error) {
 	var exitCode uint32
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetExitCodeThread),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_GetExitCodeThread, "GetExitCodeThread"),
 		uintptr(hThread),
 		uintptr(unsafe.Pointer(&exitCode)))
 	if ret == 0 {
@@ -44,11 +48,14 @@ func (hThread HTHREAD) GetExitCodeThread() (uint32, error) {
 	return exitCode, nil
 }
 
+var _GetExitCodeThread *syscall.Proc
+
 // [GetProcessIdOfThread] function.
 //
 // [GetProcessIdOfThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessidofthread
 func (hThread HTHREAD) GetProcessIdOfThread() (uint32, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetProcessIdOfThread),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_GetProcessIdOfThread, "GetProcessIdOfThread"),
 		uintptr(hThread))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -56,24 +63,30 @@ func (hThread HTHREAD) GetProcessIdOfThread() (uint32, error) {
 	return uint32(ret), nil
 }
 
+var _GetProcessIdOfThread *syscall.Proc
+
 // [GetThreadId] function.
 //
 // [GetThreadId]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadid
 func (hThread HTHREAD) GetThreadId() (uint32, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetThreadId),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_GetThreadId, "GetThreadId"),
 		uintptr(hThread))
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
 	return uint32(ret), nil
 }
+
+var _GetThreadId *syscall.Proc
 
 // [GetThreadIdealProcessorEx] function.
 //
 // [GetThreadIdealProcessorEx]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadidealprocessorex
 func (hThread HTHREAD) GetThreadIdealProcessorEx() (PROCESSOR_NUMBER, error) {
 	var pi PROCESSOR_NUMBER
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetThreadIdealProcessorEx),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_GetThreadIdealProcessorEx, "GetThreadIdealProcessorEx"),
 		uintptr(hThread),
 		uintptr(unsafe.Pointer(&pi)))
 	if ret == 0 {
@@ -82,12 +95,15 @@ func (hThread HTHREAD) GetThreadIdealProcessorEx() (PROCESSOR_NUMBER, error) {
 	return pi, nil
 }
 
+var _GetThreadIdealProcessorEx *syscall.Proc
+
 // [GetThreadIOPendingFlag] function.
 //
 // [GetThreadIOPendingFlag]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadiopendingflag
 func (hThread HTHREAD) GetThreadIOPendingFlag() (bool, error) {
 	var bVal int32 // BOOL
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetThreadIOPendingFlag),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_GetThreadIOPendingFlag, "GetThreadIOPendingFlag"),
 		uintptr(hThread),
 		uintptr(unsafe.Pointer(&bVal)))
 	if ret == 0 {
@@ -96,11 +112,14 @@ func (hThread HTHREAD) GetThreadIOPendingFlag() (bool, error) {
 	return bVal != 0, nil
 }
 
+var _GetThreadIOPendingFlag *syscall.Proc
+
 // [GetThreadPriority] function.
 //
 // [GetThreadPriority]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadpriority
 func (hThread HTHREAD) GetThreadPriority() (co.THREAD_PRIORITY, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetThreadPriority),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_GetThreadPriority, "GetThreadPriority"),
 		uintptr(hThread))
 	if ret == utl.THREAD_PRIORITY_ERROR_RETURN {
 		return co.THREAD_PRIORITY(0), co.ERROR(err)
@@ -108,12 +127,15 @@ func (hThread HTHREAD) GetThreadPriority() (co.THREAD_PRIORITY, error) {
 	return co.THREAD_PRIORITY(ret), nil
 }
 
+var _GetThreadPriority *syscall.Proc
+
 // [GetThreadPriorityBoost] function.
 //
 // [GetThreadPriorityBoost]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadpriorityboost
 func (hThread HTHREAD) GetThreadPriorityBoost() (bool, error) {
 	var bVal int32 // BOOL
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetThreadPriorityBoost),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_GetThreadPriorityBoost, "GetThreadPriorityBoost"),
 		uintptr(hThread),
 		uintptr(unsafe.Pointer(&bVal)))
 	if ret == 0 {
@@ -121,6 +143,8 @@ func (hThread HTHREAD) GetThreadPriorityBoost() (bool, error) {
 	}
 	return bVal != 0, nil
 }
+
+var _GetThreadPriorityBoost *syscall.Proc
 
 // [GetThreadTimes] function.
 //
@@ -131,7 +155,8 @@ func (hThread HTHREAD) GetThreadTimes() (HthreadTimes, error) {
 	var ftKernel FILETIME
 	var ftUser FILETIME
 
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetThreadTimes),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_GetThreadTimes, "GetThreadTimes"),
 		uintptr(hThread),
 		uintptr(unsafe.Pointer(&ftCreation)),
 		uintptr(unsafe.Pointer(&ftExit)),
@@ -149,6 +174,8 @@ func (hThread HTHREAD) GetThreadTimes() (HthreadTimes, error) {
 	}, nil
 }
 
+var _GetThreadTimes *syscall.Proc
+
 // Returned by [HTHREAD.GetThreadTimes].
 type HthreadTimes struct {
 	Creation time.Time
@@ -161,35 +188,44 @@ type HthreadTimes struct {
 //
 // [ResumeThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-resumethread
 func (hThread HTHREAD) ResumeThread() (uint32, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_ResumeThread),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_ResumeThread, "ResumeThread"),
 		uintptr(hThread))
 	if int32(ret) == -1 {
 		return 0, co.ERROR(err)
 	}
 	return uint32(ret), nil
 }
+
+var _ResumeThread *syscall.Proc
 
 // [TerminateThread] function.
 //
 // [TerminateThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread
 func (hThread HTHREAD) TerminateThread(exitCode uint32) error {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_TerminateThread),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_TerminateThread, "TerminateThread"),
 		uintptr(hThread),
 		uintptr(exitCode))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
+var _TerminateThread *syscall.Proc
+
 // [SuspendThread] function.
 //
 // [SuspendThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-suspendthread
 func (hThread HTHREAD) SuspendThread() (uint32, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_SuspendThread),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_SuspendThread, "SuspendThread"),
 		uintptr(hThread))
 	if int32(ret) == -1 {
 		return 0, co.ERROR(err)
 	}
 	return uint32(ret), nil
 }
+
+var _SuspendThread *syscall.Proc
 
 // [WaitForSingleObject] function.
 //
@@ -197,7 +233,8 @@ func (hThread HTHREAD) SuspendThread() (uint32, error) {
 //
 // [WaitForSingleObject]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 func (hThread HTHREAD) WaitForSingleObject(milliseconds uint) (co.WAIT, error) {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_WaitForSingleObject),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_WaitForSingleObject, "WaitForSingleObject"),
 		uintptr(hThread),
 		uintptr(milliseconds))
 	if co.WAIT(ret) == co.WAIT_FAILED {
@@ -205,6 +242,8 @@ func (hThread HTHREAD) WaitForSingleObject(milliseconds uint) (co.WAIT, error) {
 	}
 	return co.WAIT(ret), nil
 }
+
+var _WaitForSingleObject *syscall.Proc
 
 // [HTHREAD.WaitForSingleObject] function with INFINITE value.
 func (hThread HTHREAD) WaitForSingleObjectInfinite() (co.WAIT, error) {

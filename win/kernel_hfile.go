@@ -38,7 +38,8 @@ func CreateFile(
 	defer wbuf.Free()
 	pFileName := wbuf.PtrEmptyIsNil(fileName)
 
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_CreateFileW),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_CreateFileW, "CreateFileW"),
 		uintptr(pFileName),
 		uintptr(desiredAccess),
 		uintptr(shareMode),
@@ -53,6 +54,8 @@ func CreateFile(
 	return HFILE(ret), nil
 }
 
+var _CreateFileW *syscall.Proc
+
 // [CloseHandle] function.
 //
 // [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
@@ -65,7 +68,8 @@ func (hFile HFILE) CloseHandle() error {
 // [GetFileSizeEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex
 func (hFile HFILE) GetFileSizeEx() (uint, error) {
 	var retSz int64
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetFileSizeEx),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_GetFileSizeEx, "GetFileSizeEx"),
 		uintptr(hFile),
 		uintptr(unsafe.Pointer(&retSz)))
 
@@ -74,6 +78,8 @@ func (hFile HFILE) GetFileSizeEx() (uint, error) {
 	}
 	return uint(retSz), nil
 }
+
+var _GetFileSizeEx *syscall.Proc
 
 // [CreateFileMapping] function.
 //
@@ -93,7 +99,8 @@ func (hFile HFILE) CreateFileMapping(
 	defer wbuf.Free()
 	pObjectName := wbuf.PtrEmptyIsNil(objectName)
 
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_CreateFileMappingFromApp),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_CreateFileMappingFromApp, "CreateFileMappingFromApp"),
 		uintptr(hFile),
 		uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
@@ -106,6 +113,8 @@ func (hFile HFILE) CreateFileMapping(
 	return HFILEMAP(ret), nil
 }
 
+var _CreateFileMappingFromApp *syscall.Proc
+
 // [GetFileTime] function.
 //
 // [GetFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfiletime
@@ -114,7 +123,8 @@ func (hFile HFILE) GetFileTime() (creation, lastAccess, lastWrite time.Time, wEr
 	var ftLastAccess FILETIME
 	var ftLastWrite FILETIME
 
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetFileTime),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_GetFileTime, "GetFileTime"),
 		uintptr(hFile),
 		uintptr(unsafe.Pointer(&ftCreation)),
 		uintptr(unsafe.Pointer(&ftLastAccess)),
@@ -125,6 +135,8 @@ func (hFile HFILE) GetFileTime() (creation, lastAccess, lastWrite time.Time, wEr
 	return ftCreation.ToTime(), ftLastAccess.ToTime(), ftLastWrite.ToTime(), nil
 }
 
+var _GetFileTime *syscall.Proc
+
 // [LockFile] function.
 //
 // ⚠️ You must defer [HFILE.UnlockFile].
@@ -134,7 +146,8 @@ func (hFile HFILE) LockFile(offset, numBytes uint) error {
 	offsetLo, offsetHi := utl.Break64(uint64(offset))
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_LockFile),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_LockFile, "LockFile"),
 		uintptr(hFile),
 		uintptr(offsetLo),
 		uintptr(offsetHi),
@@ -142,6 +155,8 @@ func (hFile HFILE) LockFile(offset, numBytes uint) error {
 		uintptr(numBytesHi))
 	return utl.ZeroAsGetLastError(ret, err)
 }
+
+var _LockFile *syscall.Proc
 
 // [LockFileEx] function.
 //
@@ -154,7 +169,8 @@ func (hFile HFILE) LockFileEx(
 	overlapped *OVERLAPPED,
 ) error {
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_LockFileEx),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_LockFileEx, "LockFileEx"),
 		uintptr(hFile),
 		uintptr(flags),
 		0,
@@ -164,6 +180,8 @@ func (hFile HFILE) LockFileEx(
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
+var _LockFileEx *syscall.Proc
+
 // [ReadFile] function.
 //
 // [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
@@ -172,7 +190,8 @@ func (hFile HFILE) ReadFile(
 	overlapped *OVERLAPPED,
 ) (numBytesRead uint, wErr error) {
 	var numBytesRead32 uint32
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_ReadFile),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_ReadFile, "ReadFile"),
 		uintptr(hFile),
 		uintptr(unsafe.Pointer(&buffer[0])),
 		uintptr(uint32(len(buffer))),
@@ -187,17 +206,22 @@ func (hFile HFILE) ReadFile(
 	return
 }
 
+var _ReadFile *syscall.Proc
+
 // [SetEndOfFile] function.
 //
 // [SetEndOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setendoffile
 func (hFile HFILE) SetEndOfFile() error {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_SetEndOfFile),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_SetEndOfFile, "SetEndOfFile"),
 		uintptr(hFile))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return err
 	}
 	return nil
 }
+
+var _SetEndOfFile *syscall.Proc
 
 // [UnlockFile] function.
 //
@@ -208,7 +232,8 @@ func (hFile HFILE) UnlockFile(offset, numBytes uint) error {
 	offsetLo, offsetHi := utl.Break64(uint64(offset))
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_UnlockFile),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_UnlockFile, "UnlockFile"),
 		uintptr(hFile),
 		uintptr(offsetLo),
 		uintptr(offsetHi),
@@ -217,6 +242,8 @@ func (hFile HFILE) UnlockFile(offset, numBytes uint) error {
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
+var _UnlockFile *syscall.Proc
+
 // [UnlockFileEx] function.
 //
 // Paired with [HFILE.LockFileEx].
@@ -224,7 +251,8 @@ func (hFile HFILE) UnlockFile(offset, numBytes uint) error {
 // [UnlockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfileex
 func (hFile HFILE) UnlockFileEx(numBytes uint, overlapped *OVERLAPPED) error {
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_UnlockFileEx),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_UnlockFileEx, "UnlockFileEx"),
 		uintptr(hFile),
 		0,
 		uintptr(numBytesLo),
@@ -232,6 +260,8 @@ func (hFile HFILE) UnlockFileEx(numBytes uint, overlapped *OVERLAPPED) error {
 		uintptr(unsafe.Pointer(overlapped)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
+
+var _UnlockFileEx *syscall.Proc
 
 // [WriteFile] function.
 //
@@ -241,7 +271,8 @@ func (hFile HFILE) WriteFile(
 	overlapped *OVERLAPPED,
 ) (numBytesWritten uint, wErr error) {
 	var numBytesWritten32 uint32
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_WriteFile),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_WriteFile, "WriteFile"),
 		uintptr(hFile),
 		uintptr(unsafe.Pointer(&data[0])),
 		uintptr(uint32(len(data))),
@@ -255,3 +286,5 @@ func (hFile HFILE) WriteFile(
 	}
 	return
 }
+
+var _WriteFile *syscall.Proc

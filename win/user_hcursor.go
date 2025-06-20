@@ -27,16 +27,20 @@ func (hCursor HCURSOR) CopyCursor() (HCURSOR, error) {
 //
 // [DestroyCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycursor
 func (hCursor HCURSOR) DestroyCursor() error {
-	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_DestroyCursor),
+	ret, _, err := syscall.SyscallN(
+		dll.User(&_DestroyCursor, "DestroyCursor"),
 		uintptr(hCursor))
 	return utl.ZeroAsGetLastError(ret, err)
 }
+
+var _DestroyCursor *syscall.Proc
 
 // [SetCursor] function.
 //
 // [SetCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setcursor
 func (hCursor HCURSOR) SetCursor() (HCURSOR, error) {
-	ret, _, err := syscall.SyscallN(dll.User(dll.PROC_SetCursor),
+	ret, _, err := syscall.SyscallN(
+		dll.User(&_SetCursor, "SetCursor"),
 		uintptr(hCursor))
 	if wErr := co.ERROR(err); wErr != co.ERROR_SUCCESS {
 		return HCURSOR(0), err
@@ -44,3 +48,5 @@ func (hCursor HCURSOR) SetCursor() (HCURSOR, error) {
 		return HCURSOR(ret), nil
 	}
 }
+
+var _SetCursor *syscall.Proc

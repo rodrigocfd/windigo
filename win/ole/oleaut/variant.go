@@ -9,6 +9,7 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/internal/dll"
 	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
@@ -37,9 +38,12 @@ type VARIANT struct {
 // [VariantClear]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantclear
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 func (me *VARIANT) Release() {
-	syscall.SyscallN(dllOleaut(_PROC_VariantClear),
+	syscall.SyscallN(
+		dll.Oleaut(&_VariantClear, "VariantClear"),
 		uintptr(unsafe.Pointer(me))) // ignore errors
 }
+
+var _VariantClear *syscall.Proc
 
 // Returns the type of the VARIANT.
 func (vt *VARIANT) Type() co.VT {
@@ -58,11 +62,14 @@ func (vt *VARIANT) Type() co.VT {
 // [VariantInit]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantinit
 func NewVariantEmpty(releaser *ole.Releaser) *VARIANT {
 	v := new(VARIANT)
-	syscall.SyscallN(dllOleaut(_PROC_VariantInit),
+	syscall.SyscallN(
+		dll.Oleaut(&_VariantInit, "VariantInit"),
 		uintptr(unsafe.Pointer(v)))
 	releaser.Add(v)
 	return v
 }
+
+var _VariantInit *syscall.Proc
 
 // Returns true if current type is VT_EMPTY.
 func (v *VARIANT) IsEmpty() bool {
@@ -137,7 +144,8 @@ func NewVariant(releaser *ole.Releaser, value interface{}) *VARIANT {
 		var st win.SYSTEMTIME
 		st.SetTime(val)
 
-		ret, _, _ := syscall.SyscallN(dllOleaut(_PROC_SystemTimeToVariantTime),
+		ret, _, _ := syscall.SyscallN(
+			dll.Oleaut(&_SystemTimeToVariantTime, "SystemTimeToVariantTime"),
 			uintptr(unsafe.Pointer(&st)),
 			uintptr(unsafe.Pointer(&double)))
 		if ret == 0 {
@@ -162,6 +170,8 @@ func NewVariant(releaser *ole.Releaser, value interface{}) *VARIANT {
 
 	return v
 }
+
+var _SystemTimeToVariantTime *syscall.Proc
 
 // If the object has type [co.VT_BOOL], returns the value and true. Otherwise,
 // returns a default value and false.
@@ -379,7 +389,8 @@ func (v *VARIANT) Date() (time.Time, bool) {
 		double := math.Float64frombits(binary.LittleEndian.Uint64(v.data[:]))
 		var st win.SYSTEMTIME
 
-		ret, _, _ := syscall.SyscallN(dllOleaut(_PROC_VariantTimeToSystemTime),
+		ret, _, _ := syscall.SyscallN(
+			dll.Oleaut(&_VariantTimeToSystemTime, "VariantTimeToSystemTime"),
 			uintptr(math.Float64bits(double)),
 			uintptr(unsafe.Pointer(&st)))
 		if ret == 0 {
@@ -389,6 +400,8 @@ func (v *VARIANT) Date() (time.Time, bool) {
 	}
 	return time.Time{}, false
 }
+
+var _VariantTimeToSystemTime *syscall.Proc
 
 // If the object has type [co.VT_UI1], returns the value and true. Otherwise,
 // returns a default value and false.

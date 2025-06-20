@@ -30,13 +30,16 @@ func GetModuleHandle(moduleName string) (HINSTANCE, error) {
 	defer wbuf.Free()
 	pModuleName := wbuf.PtrEmptyIsNil(moduleName)
 
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetModuleHandleW),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_GetModuleHandleW, "GetModuleHandleW"),
 		uintptr(pModuleName))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
 	}
 	return HINSTANCE(ret), nil
 }
+
+var _GetModuleHandleW *syscall.Proc
 
 // [LoadLibrary] function.
 //
@@ -48,7 +51,8 @@ func LoadLibrary(libFileName string) (HINSTANCE, error) {
 	defer wbuf.Free()
 	pLibFileName := wbuf.PtrEmptyIsNil(libFileName)
 
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_LoadLibraryW),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_LoadLibraryW, "LoadLibraryW"),
 		uintptr(pLibFileName))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
@@ -56,16 +60,21 @@ func LoadLibrary(libFileName string) (HINSTANCE, error) {
 	return HINSTANCE(ret), nil
 }
 
+var _LoadLibraryW *syscall.Proc
+
 // [FreeLibrary] function.
 //
 // Paired with [LoadLibrary].
 //
 // [FreeLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
 func (hInst HINSTANCE) FreeLibrary() error {
-	ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_FreeLibrary),
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel(&_FreeLibrary, "FreeLibrary"),
 		uintptr(hInst))
 	return utl.ZeroAsGetLastError(ret, err)
 }
+
+var _FreeLibrary *syscall.Proc
 
 // [GetModuleFileName] function.
 //
@@ -83,7 +92,8 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 	defer buf.Free()
 
 	for {
-		ret, _, err := syscall.SyscallN(dll.Kernel(dll.PROC_GetModuleFileNameW),
+		ret, _, err := syscall.SyscallN(
+			dll.Kernel(&_GetModuleFileNameW, "GetModuleFileNameW"),
 			uintptr(hInst),
 			uintptr(buf.UnsafePtr()),
 			uintptr(uint32(sz)))
@@ -100,3 +110,5 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 		buf.Resize(sz) // increase buffer size to try again
 	}
 }
+
+var _GetModuleFileNameW *syscall.Proc
