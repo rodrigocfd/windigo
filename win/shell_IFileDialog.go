@@ -305,6 +305,17 @@ func (me *IFileDialog) SetFileTypes(filterSpec []COMDLG_FILTERSPEC) error {
 	return utl.ErrorAsHResult(ret)
 }
 
+// [SetFilter] method.
+//
+// [SetFilter]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilter
+func (me *IFileDialog) SetFilter(filter *IShellItemFilter) error {
+	ret, _, _ := syscall.SyscallN(
+		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFilter,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(filter.Ppvt())))
+	return utl.ErrorAsHResult(ret)
+}
+
 // [SetFolder] method.
 //
 // [SetFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfolder
