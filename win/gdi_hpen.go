@@ -64,17 +64,17 @@ func ExtCreatePen(
 	brush *LOGBRUSH,
 	styleLengths []uint,
 ) (HPEN, error) {
-	var nLens int
+	var nLens uint32
 	var pLens unsafe.Pointer
 	if styleLengths != nil {
-		nLens = len(styleLengths)
+		nLens = uint32(len(styleLengths))
 		pLens = unsafe.Pointer(&styleLengths[0])
 	}
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_ExtCreatePen, "ExtCreatePen"),
 		uintptr(uint32(penType)|uint32(penStyle)|uint32(endCap)),
-		uintptr(width),
+		uintptr(uint32(width)),
 		uintptr(unsafe.Pointer(brush)),
 		uintptr(nLens),
 		uintptr(pLens))

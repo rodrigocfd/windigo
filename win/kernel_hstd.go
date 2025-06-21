@@ -67,7 +67,7 @@ func (hStd HSTD) ReadConsole(
 		dll.Load(dll.KERNEL32, &_ReadConsoleW, "ReadConsoleW"),
 		uintptr(hStd),
 		uintptr(recvBuf.UnsafePtr()),
-		uintptr(maxCharsToRead),
+		uintptr(uint32(maxCharsToRead)),
 		uintptr(unsafe.Pointer(&numRead32)),
 		uintptr(unsafe.Pointer(inputControl)))
 	if ret == 0 {

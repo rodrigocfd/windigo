@@ -207,7 +207,7 @@ func SHCreateShellItemArray(
 		dll.Load(dll.SHELL32, &_SHCreateShellItemArray, "SHCreateShellItemArray"),
 		uintptr(pidlParentObj),
 		uintptr(ppvtOrNil(parent)),
-		uintptr(len(pidlChildren)),
+		uintptr(uint32(len(pidlChildren))),
 		uintptr(unsafe.Pointer(pidlChildrenObjsPtr)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 

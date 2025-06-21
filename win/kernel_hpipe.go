@@ -40,10 +40,10 @@ func CreateNamedPipe(
 		uintptr(pName),
 		uintptr(dwOpenMode),
 		uintptr(dwPipeMode),
-		uintptr(nMaxInstances),
-		uintptr(nOutBufferSize),
-		uintptr(nInBufferSize),
-		uintptr(nDefaultTimeOut),
+		uintptr(uint32(nMaxInstances)),
+		uintptr(uint32(nOutBufferSize)),
+		uintptr(uint32(nInBufferSize)),
+		uintptr(uint32(nDefaultTimeOut)),
 		uintptr(unsafe.Pointer(securityAttributes)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -129,7 +129,7 @@ func (hPipe HPIPE) PeekNamedPipe(buffer []byte) (HpipePeek, error) {
 		dll.Load(dll.KERNEL32, &_PeekNamedPipe, "PeekNamedPipe"),
 		uintptr(hPipe),
 		uintptr(unsafe.Pointer(&buffer[0])),
-		uintptr(len(buffer)),
+		uintptr(uint32(len(buffer))),
 		uintptr(unsafe.Pointer(&info.Read)),
 		uintptr(unsafe.Pointer(&info.Available)),
 		uintptr(unsafe.Pointer(&info.Left)))

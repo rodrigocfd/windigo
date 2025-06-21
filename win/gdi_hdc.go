@@ -789,7 +789,7 @@ func (hdc HDC) GetTextFace() (string, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_GetTextFaceW, "GetTextFaceW"),
 		uintptr(hdc),
-		uintptr(len(buf)),
+		uintptr(int32(len(buf))),
 		uintptr(unsafe.Pointer(&buf[0])))
 	if ret == 0 {
 		return "", co.ERROR_INVALID_PARAMETER
@@ -1593,7 +1593,7 @@ func (hdc HDC) SetPixelFormat(format int, pfd *PIXELFORMATDESCRIPTOR) error {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_SetPixelFormat, "SetPixelFormat"),
 		uintptr(hdc),
-		uintptr(format),
+		uintptr(int32(format)),
 		uintptr(unsafe.Pointer(pfd)))
 	return utl.ZeroAsGetLastError(ret, err)
 }

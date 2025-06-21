@@ -178,7 +178,7 @@ func (hWnd HWND) AnimateWindow(time uint, flags co.AW) error {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_AnimateWindow, "AnimateWindow"),
 		uintptr(hWnd),
-		uintptr(time),
+		uintptr(uint32(time)),
 		uintptr(flags))
 	return utl.ZeroAsGetLastError(ret, err)
 }

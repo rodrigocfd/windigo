@@ -89,12 +89,11 @@ var _BroadcastSystemMessageW *syscall.Proc
 // [CreateIconFromResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconfromresourceex
 func CreateCursorFromResourceEx(
 	resBits []byte,
-	fmtVersion int,
+	fmtVersion uint32,
 	cxDesired, cyDesired uint,
 	flags co.LR,
 ) (HCURSOR, error) {
-	hIcon, err := CreateIconFromResourceEx(
-		resBits, fmtVersion, cxDesired, cyDesired, flags)
+	hIcon, err := CreateIconFromResourceEx(resBits, fmtVersion, cxDesired, cyDesired, flags)
 	return HCURSOR(hIcon), err
 }
 
@@ -108,18 +107,18 @@ func CreateCursorFromResourceEx(
 // [CreateIconFromResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconfromresourceex
 func CreateIconFromResourceEx(
 	resBits []byte,
-	fmtVersion int,
+	fmtVersion uint32,
 	cxDesired, cyDesired uint,
 	flags co.LR,
 ) (HICON, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_CreateIconFromResourceEx, "CreateIconFromResourceEx"),
 		uintptr(unsafe.Pointer(&resBits[0])),
-		uintptr(len(resBits)),
+		uintptr(uint32(len(resBits))),
 		1,
 		uintptr(fmtVersion),
-		uintptr(cxDesired),
-		uintptr(cyDesired),
+		uintptr(int32(cxDesired)),
+		uintptr(int32(cyDesired)),
 		uintptr(flags))
 	if ret == 0 {
 		return HICON(0), co.ERROR(err)
