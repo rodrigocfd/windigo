@@ -85,15 +85,10 @@ func CoCreateInstance(
 	guidClsid := GuidFrom(rclsid)
 	guidIid := GuidFrom(pOut.IID())
 
-	var pUnkOuter **_IUnknownVt
-	if unkOuter != nil {
-		pUnkOuter = unkOuter.Ppvt()
-	}
-
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.OLE32, &_CoCreateInstance, "CoCreateInstance"),
 		uintptr(unsafe.Pointer(&guidClsid)),
-		uintptr(unsafe.Pointer(pUnkOuter)),
+		uintptr(ppvtOrNil(unkOuter)),
 		uintptr(dwClsContext),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
