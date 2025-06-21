@@ -28,7 +28,7 @@ type HTASKMEM HANDLE
 // [CoTaskMemAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
 func CoTaskMemAlloc(numBytes uint) (HTASKMEM, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Ole(&_CoTaskMemAlloc, "CoTaskMemAlloc"),
+		dll.Load(dll.OLE32, &_CoTaskMemAlloc, "CoTaskMemAlloc"),
 		uintptr(numBytes))
 	if ret == 0 {
 		return HTASKMEM(0), co.HRESULT_E_OUTOFMEMORY
@@ -48,7 +48,7 @@ var _CoTaskMemAlloc *syscall.Proc
 func (hMem HTASKMEM) CoTaskMemFree() {
 	if hMem != 0 {
 		syscall.SyscallN(
-			dll.Ole(&_CoTaskMemFree, "CoTaskMemFree"),
+			dll.Load(dll.OLE32, &_CoTaskMemFree, "CoTaskMemFree"),
 			uintptr(hMem))
 	}
 }
@@ -62,7 +62,7 @@ var _CoTaskMemFree *syscall.Proc
 // [CoTaskMemRealloc]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
 func (hMem HTASKMEM) CoTaskMemRealloc(numBytes uint) (HTASKMEM, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Ole(&_CoTaskMemRealloc, "CoTaskMemRealloc"),
+		dll.Load(dll.OLE32, &_CoTaskMemRealloc, "CoTaskMemRealloc"),
 		uintptr(hMem),
 		uintptr(numBytes))
 	if ret == 0 {

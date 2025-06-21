@@ -41,7 +41,7 @@ func OleLoadPicture(
 	guid := GuidFrom(co.IID_IPicture)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Oleaut(&_OleLoadPicture, "OleLoadPicture"),
+		dll.Load(dll.OLEAUT32, &_OleLoadPicture, "OleLoadPicture"),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
 		uintptr(int32(size)),
 		utl.BoolToUintptr(!keepOriginalFormat), // note: reversed
@@ -83,7 +83,7 @@ func OleLoadPicturePath(
 	guid := GuidFrom(co.IID_IPicture)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Oleaut(&_OleLoadPicturePath, "OleLoadPicturePath"),
+		dll.Load(dll.OLEAUT32, &_OleLoadPicturePath, "OleLoadPicturePath"),
 		uintptr(pPath),
 		0, 0,
 		uintptr(transparentColor),

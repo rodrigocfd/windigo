@@ -17,7 +17,7 @@ import (
 // [EmptyWorkingSet]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-emptyworkingset
 func (hProcess HPROCESS) EmptyWorkingSet() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Psapi(&_EmptyWorkingSet, "EmptyWorkingSet"),
+		dll.Load(dll.PSAPI, &_EmptyWorkingSet, "EmptyWorkingSet"),
 		uintptr(hProcess))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -32,7 +32,7 @@ func (hProcess HPROCESS) GetMappedFileName(address uintptr) (string, error) {
 	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(
-		dll.Psapi(&_GetMappedFileNameW, "GetMappedFileNameW"),
+		dll.Load(dll.PSAPI, &_GetMappedFileNameW, "GetMappedFileNameW"),
 		uintptr(hProcess),
 		address,
 		uintptr(recvBuf.UnsafePtr()),
@@ -53,7 +53,7 @@ func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
 	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(
-		dll.Psapi(&_GetModuleBaseNameW, "GetModuleBaseNameW"),
+		dll.Load(dll.PSAPI, &_GetModuleBaseNameW, "GetModuleBaseNameW"),
 		uintptr(hProcess),
 		uintptr(hModule),
 		uintptr(recvBuf.UnsafePtr()),
@@ -74,7 +74,7 @@ func (hProcess HPROCESS) GetModuleFileNameEx(hModule HINSTANCE) (string, error) 
 	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(
-		dll.Psapi(&_GetModuleFileNameExW, "GetModuleFileNameExW"),
+		dll.Load(dll.PSAPI, &_GetModuleFileNameExW, "GetModuleFileNameExW"),
 		uintptr(hProcess),
 		uintptr(hModule),
 		uintptr(recvBuf.UnsafePtr()),
@@ -93,7 +93,7 @@ var _GetModuleFileNameExW *syscall.Proc
 func (hProcess HPROCESS) GetModuleInformation(hModule HINSTANCE) (MODULEINFO, error) {
 	var mi MODULEINFO
 	ret, _, err := syscall.SyscallN(
-		dll.Psapi(&_GetModuleInformation, "GetModuleInformation"),
+		dll.Load(dll.PSAPI, &_GetModuleInformation, "GetModuleInformation"),
 		uintptr(hProcess),
 		uintptr(hModule),
 		uintptr(unsafe.Pointer(&mi)),
@@ -114,7 +114,7 @@ func (hProcess HPROCESS) GetProcessImageFileName() (string, error) {
 	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(
-		dll.Psapi(&_K32GetProcessImageFileNameW, "K32GetProcessImageFileNameW"),
+		dll.Load(dll.PSAPI, &_K32GetProcessImageFileNameW, "K32GetProcessImageFileNameW"),
 		uintptr(hProcess),
 		uintptr(recvBuf.UnsafePtr()),
 		uintptr(uint32(recvBuf.Len())))
@@ -134,7 +134,7 @@ func (hProcess HPROCESS) GetProcessMemoryInfo() (PROCESS_MEMORY_COUNTERS_EX, err
 	pmc.SetCb()
 
 	ret, _, err := syscall.SyscallN(
-		dll.Psapi(&_GetProcessMemoryInfo, "GetProcessMemoryInfo"),
+		dll.Load(dll.PSAPI, &_GetProcessMemoryInfo, "GetProcessMemoryInfo"),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&pmc)),
 		uintptr(uint32(unsafe.Sizeof(pmc))))

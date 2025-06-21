@@ -22,7 +22,7 @@ type HBRUSH HGDIOBJ
 // [CreateBrushIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbrushindirect
 func CreateBrushIndirect(lb *LOGBRUSH) (HBRUSH, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_CreateBrushIndirect, "CreateBrushIndirect"),
+		dll.Load(dll.GDI32, &_CreateBrushIndirect, "CreateBrushIndirect"),
 		uintptr(unsafe.Pointer(lb)))
 	if ret == 0 {
 		return HBRUSH(0), co.ERROR_INVALID_PARAMETER
@@ -39,7 +39,7 @@ var _CreateBrushIndirect *syscall.Proc
 // [CreatePatternBrush]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpatternbrush
 func CreatePatternBrush(hbm HBITMAP) (HBRUSH, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_CreatePatternBrush, "CreatePatternBrush"),
+		dll.Load(dll.GDI32, &_CreatePatternBrush, "CreatePatternBrush"),
 		uintptr(hbm))
 	if ret == 0 {
 		return HBRUSH(0), co.ERROR_INVALID_PARAMETER

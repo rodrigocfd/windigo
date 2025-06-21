@@ -23,7 +23,7 @@ type HRGN HGDIOBJ
 // [CreateRectRgnIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
 func CreateRectRgnIndirect(bounds RECT) (HRGN, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_CreateRectRgnIndirect, "CreateRectRgnIndirect"),
+		dll.Load(dll.GDI32, &_CreateRectRgnIndirect, "CreateRectRgnIndirect"),
 		uintptr(unsafe.Pointer(&bounds)))
 	if ret == 0 {
 		return HRGN(0), co.ERROR_INVALID_PARAMETER
@@ -38,7 +38,7 @@ var _CreateRectRgnIndirect *syscall.Proc
 // [CombineRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
 func (hRgn HRGN) CombineRgn(src1, src2 HRGN, mode co.RGN) (co.REGION, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_CombineRgn, "CombineRgn"),
+		dll.Load(dll.GDI32, &_CombineRgn, "CombineRgn"),
 		uintptr(hRgn),
 		uintptr(src1),
 		uintptr(src2),
@@ -63,7 +63,7 @@ func (hRgn HRGN) DeleteObject() error {
 // [EqualRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-equalrgn
 func (hRgn HRGN) EqualRgn(other HRGN) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_EqualRgn, "EqualRgn"),
+		dll.Load(dll.GDI32, &_EqualRgn, "EqualRgn"),
 		uintptr(hRgn),
 		uintptr(other))
 	return ret != 0
@@ -77,7 +77,7 @@ var _EqualRgn *syscall.Proc
 func (hRgn HRGN) GetRgnBox() (RECT, co.REGION, error) {
 	var rc RECT
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_GetRgnBox, "GetRgnBox"),
+		dll.Load(dll.GDI32, &_GetRgnBox, "GetRgnBox"),
 		uintptr(hRgn),
 		uintptr(unsafe.Pointer(&rc)))
 	if ret == utl.REGION_ERROR {
@@ -93,7 +93,7 @@ var _GetRgnBox *syscall.Proc
 // [OffsetClipRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-offsetcliprgn
 func (hRgn HRGN) OffsetClipRgn(x, y int32) (co.REGION, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_OffsetClipRgn, "OffsetClipRgn"),
+		dll.Load(dll.GDI32, &_OffsetClipRgn, "OffsetClipRgn"),
 		uintptr(hRgn),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
@@ -110,7 +110,7 @@ var _OffsetClipRgn *syscall.Proc
 // [OffsetRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-offsetrgn
 func (hRgn HRGN) OffsetRgn(x, y int32) (co.REGION, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_OffsetRgn, "OffsetRgn"),
+		dll.Load(dll.GDI32, &_OffsetRgn, "OffsetRgn"),
 		uintptr(hRgn),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
@@ -127,7 +127,7 @@ var _OffsetRgn *syscall.Proc
 // [PtInRegion]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-ptinregion
 func (hRgn HRGN) PtInRegion(x, y int32) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_PtInRegion, "PtInRegion"),
+		dll.Load(dll.GDI32, &_PtInRegion, "PtInRegion"),
 		uintptr(hRgn),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
@@ -141,7 +141,7 @@ var _PtInRegion *syscall.Proc
 // [RectInRegion]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-rectinregion
 func (hRgn HRGN) RectInRegion(rc RECT) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_RectInRegion, "RectInRegion"),
+		dll.Load(dll.GDI32, &_RectInRegion, "RectInRegion"),
 		uintptr(hRgn),
 		uintptr(unsafe.Pointer(&rc)))
 	return ret != 0

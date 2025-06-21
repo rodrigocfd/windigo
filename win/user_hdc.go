@@ -17,7 +17,7 @@ import (
 // [DrawIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawicon
 func (hdc HDC) DrawIcon(x, y int, hIcon HICON) error {
 	ret, _, err := syscall.SyscallN(
-		dll.User(&_DrawIcon, "DrawIcon"),
+		dll.Load(dll.USER32, &_DrawIcon, "DrawIcon"),
 		uintptr(hdc),
 		uintptr(int32(x)),
 		uintptr(int32(y)),
@@ -39,7 +39,7 @@ func (hdc HDC) DrawIconEx(
 	diFlags co.DI,
 ) error {
 	ret, _, err := syscall.SyscallN(
-		dll.User(&_DrawIconEx, "DrawIconEx"),
+		dll.Load(dll.USER32, &_DrawIconEx, "DrawIconEx"),
 		uintptr(hdc),
 		uintptr(pos.X),
 		uintptr(pos.Y),
@@ -62,7 +62,7 @@ func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) ([]EnumDisplayMonitorsInfo, err
 		arr: make([]EnumDisplayMonitorsInfo, 0),
 	}
 	ret, _, _ := syscall.SyscallN(
-		dll.User(&_EnumDisplayMonitors, "EnumDisplayMonitors"),
+		dll.Load(dll.USER32, &_EnumDisplayMonitors, "EnumDisplayMonitors"),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(rcClip)),
 		enumDisplayMonitorsCallback(),
@@ -107,7 +107,7 @@ var _enumDisplayMonitorsCallback uintptr
 // [FrameRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-framerect
 func (hdc HDC) FrameRect(rc *RECT, hBrush HBRUSH) error {
 	ret, _, err := syscall.SyscallN(
-		dll.User(&_FrameRect, "FrameRect"),
+		dll.Load(dll.USER32, &_FrameRect, "FrameRect"),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(rc)),
 		uintptr(hBrush))
@@ -121,7 +121,7 @@ var _FrameRect *syscall.Proc
 // [InvertRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invertrect
 func (hdc HDC) InvertRect(rc *RECT) error {
 	ret, _, err := syscall.SyscallN(
-		dll.User(&_InvertRect, "InvertRect"),
+		dll.Load(dll.USER32, &_InvertRect, "InvertRect"),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(rc)))
 	return utl.ZeroAsGetLastError(ret, err)
@@ -134,7 +134,7 @@ var _InvertRect *syscall.Proc
 // [PaintDesktop]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-paintdesktop
 func (hdc HDC) PaintDesktop() error {
 	ret, _, err := syscall.SyscallN(
-		dll.User(&_PaintDesktop, "PaintDesktop"),
+		dll.Load(dll.USER32, &_PaintDesktop, "PaintDesktop"),
 		uintptr(hdc))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -146,7 +146,7 @@ var _PaintDesktop *syscall.Proc
 // [WindowFromDC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-windowfromdc
 func (hdc HDC) WindowFromDC() HWND {
 	ret, _, _ := syscall.SyscallN(
-		dll.User(&_WindowFromDC, "WindowFromDC"),
+		dll.Load(dll.USER32, &_WindowFromDC, "WindowFromDC"),
 		uintptr(hdc))
 	return HWND(ret)
 }

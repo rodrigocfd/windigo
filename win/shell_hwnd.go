@@ -20,7 +20,7 @@ func (hWnd HWND) ShellAbout(app, otherStuff string, hIcon HICON) error {
 	pOtherStuff := wbuf.PtrEmptyIsNil(otherStuff)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Shell(&_ShellAboutW, "ShellAboutW"),
+		dll.Load(dll.SHELL32, &_ShellAboutW, "ShellAboutW"),
 		uintptr(hWnd),
 		uintptr(pApp),
 		uintptr(pOtherStuff),

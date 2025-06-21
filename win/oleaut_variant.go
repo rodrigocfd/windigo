@@ -30,7 +30,7 @@ type VARIANT struct {
 // Implements [OleResource].
 func (me *VARIANT) release() {
 	syscall.SyscallN(
-		dll.Oleaut(&_VariantClear, "VariantClear"),
+		dll.Load(dll.OLEAUT32, &_VariantClear, "VariantClear"),
 		uintptr(unsafe.Pointer(me))) // ignore errors
 }
 
@@ -54,7 +54,7 @@ func (vt *VARIANT) Type() co.VT {
 func NewVariantEmpty(releaser *OleReleaser) *VARIANT {
 	v := new(VARIANT)
 	syscall.SyscallN(
-		dll.Oleaut(&_VariantInit, "VariantInit"),
+		dll.Load(dll.OLEAUT32, &_VariantInit, "VariantInit"),
 		uintptr(unsafe.Pointer(v)))
 	releaser.Add(v)
 	return v
@@ -136,7 +136,7 @@ func NewVariant(releaser *OleReleaser, value interface{}) *VARIANT {
 		st.SetTime(val)
 
 		ret, _, _ := syscall.SyscallN(
-			dll.Oleaut(&_SystemTimeToVariantTime, "SystemTimeToVariantTime"),
+			dll.Load(dll.OLEAUT32, &_SystemTimeToVariantTime, "SystemTimeToVariantTime"),
 			uintptr(unsafe.Pointer(&st)),
 			uintptr(unsafe.Pointer(&double)))
 		if ret == 0 {
@@ -381,7 +381,7 @@ func (v *VARIANT) Date() (time.Time, bool) {
 		var st SYSTEMTIME
 
 		ret, _, _ := syscall.SyscallN(
-			dll.Oleaut(&_VariantTimeToSystemTime, "VariantTimeToSystemTime"),
+			dll.Load(dll.OLEAUT32, &_VariantTimeToSystemTime, "VariantTimeToSystemTime"),
 			uintptr(math.Float64bits(double)),
 			uintptr(unsafe.Pointer(&st)))
 		if ret == 0 {

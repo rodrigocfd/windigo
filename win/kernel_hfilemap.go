@@ -44,7 +44,7 @@ func (hMap HFILEMAP) MapViewOfFile(
 	}
 
 	ret, _, err := syscall.SyscallN(
-		dll.Kernel(&_MapViewOfFileFromApp, "MapViewOfFileFromApp"),
+		dll.Load(dll.KERNEL32, &_MapViewOfFileFromApp, "MapViewOfFileFromApp"),
 		uintptr(hMap),
 		uintptr(desiredAccess),
 		uintptr(offset),
@@ -73,7 +73,7 @@ func (hMem HFILEMAPVIEW) Ptr() *byte {
 // [FlushViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-flushviewoffile
 func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes uint) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Kernel(&_FlushViewOfFile, "FlushViewOfFile"),
+		dll.Load(dll.KERNEL32, &_FlushViewOfFile, "FlushViewOfFile"),
 		uintptr(hMem),
 		uintptr(numBytes))
 	return utl.ZeroAsGetLastError(ret, err)
@@ -88,7 +88,7 @@ var _FlushViewOfFile *syscall.Proc
 // [UnmapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
 func (hMem HFILEMAPVIEW) UnmapViewOfFile() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Kernel(&_UnmapViewOfFile, "UnmapViewOfFile"),
+		dll.Load(dll.KERNEL32, &_UnmapViewOfFile, "UnmapViewOfFile"),
 		uintptr(hMem))
 	return utl.ZeroAsGetLastError(ret, err)
 }

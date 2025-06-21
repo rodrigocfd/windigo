@@ -31,7 +31,7 @@ func GetModuleHandle(moduleName string) (HINSTANCE, error) {
 	pModuleName := wbuf.PtrEmptyIsNil(moduleName)
 
 	ret, _, err := syscall.SyscallN(
-		dll.Kernel(&_GetModuleHandleW, "GetModuleHandleW"),
+		dll.Load(dll.KERNEL32, &_GetModuleHandleW, "GetModuleHandleW"),
 		uintptr(pModuleName))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
@@ -52,7 +52,7 @@ func LoadLibrary(libFileName string) (HINSTANCE, error) {
 	pLibFileName := wbuf.PtrEmptyIsNil(libFileName)
 
 	ret, _, err := syscall.SyscallN(
-		dll.Kernel(&_LoadLibraryW, "LoadLibraryW"),
+		dll.Load(dll.KERNEL32, &_LoadLibraryW, "LoadLibraryW"),
 		uintptr(pLibFileName))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
@@ -69,7 +69,7 @@ var _LoadLibraryW *syscall.Proc
 // [FreeLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
 func (hInst HINSTANCE) FreeLibrary() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Kernel(&_FreeLibrary, "FreeLibrary"),
+		dll.Load(dll.KERNEL32, &_FreeLibrary, "FreeLibrary"),
 		uintptr(hInst))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -93,7 +93,7 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 
 	for {
 		ret, _, err := syscall.SyscallN(
-			dll.Kernel(&_GetModuleFileNameW, "GetModuleFileNameW"),
+			dll.Load(dll.KERNEL32, &_GetModuleFileNameW, "GetModuleFileNameW"),
 			uintptr(hInst),
 			uintptr(buf.UnsafePtr()),
 			uintptr(uint32(sz)))

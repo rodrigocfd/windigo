@@ -32,7 +32,7 @@ func SysAllocString(s string) (BSTR, error) {
 	pS := wbuf.PtrAllowEmpty(s)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Oleaut(&_SysAllocString, "SysAllocString"),
+		dll.Load(dll.OLEAUT32, &_SysAllocString, "SysAllocString"),
 		uintptr(pS))
 	if ret == 0 {
 		return BSTR(0), co.HRESULT_E_OUTOFMEMORY
@@ -48,7 +48,7 @@ var _SysAllocString *syscall.Proc
 func (bstr BSTR) SysFreeString() {
 	if bstr != 0 {
 		syscall.SyscallN(
-			dll.Oleaut(&_SysFreeString, "SysFreeString"),
+			dll.Load(dll.OLEAUT32, &_SysFreeString, "SysFreeString"),
 			uintptr(bstr))
 	}
 }
@@ -71,7 +71,7 @@ func (bstr BSTR) SysReAllocString(s string) (BSTR, error) {
 	pS := wbuf.PtrAllowEmpty(s)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Oleaut(&_SysReAllocString, "SysReAllocString"),
+		dll.Load(dll.OLEAUT32, &_SysReAllocString, "SysReAllocString"),
 		uintptr(bstr),
 		uintptr(pS))
 	if ret == 0 {

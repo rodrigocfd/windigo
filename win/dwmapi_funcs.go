@@ -16,7 +16,7 @@ import (
 // [DwmEnableMMCSS]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmenablemmcss
 func DwmEnableMMCSS(enable bool) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Dwmapi(&_DwmEnableMMCSS, "DwmEnableMMCSS"),
+		dll.Load(dll.DWMAPI, &_DwmEnableMMCSS, "DwmEnableMMCSS"),
 		utl.BoolToUintptr(enable))
 	return utl.ErrorAsHResult(ret)
 }
@@ -28,7 +28,7 @@ var _DwmEnableMMCSS *syscall.Proc
 // [DwmFlush]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmflush
 func DwmFlush() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Dwmapi(&_DwmFlush, "DwmFlush"))
+		dll.Load(dll.DWMAPI, &_DwmFlush, "DwmFlush"))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -42,7 +42,7 @@ func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool, hr error) {
 	var bOpaque int32 // BOOL
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Dwmapi(&_DwmGetColorizationColor, "DwmGetColorizationColor"),
+		dll.Load(dll.DWMAPI, &_DwmGetColorizationColor, "DwmGetColorizationColor"),
 		uintptr(unsafe.Pointer(&clr)),
 		uintptr(unsafe.Pointer(&bOpaque)))
 	if hr = co.HRESULT(ret); hr != co.HRESULT_S_OK {
@@ -59,7 +59,7 @@ var _DwmGetColorizationColor *syscall.Proc
 func DwmIsCompositionEnabled() (bool, error) {
 	var pfEnabled int32 // BOOL
 	ret, _, _ := syscall.SyscallN(
-		dll.Dwmapi(&_DwmIsCompositionEnabled, "DwmIsCompositionEnabled"),
+		dll.Load(dll.DWMAPI, &_DwmIsCompositionEnabled, "DwmIsCompositionEnabled"),
 		uintptr(unsafe.Pointer(&pfEnabled)))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		panic(hr)

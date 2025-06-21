@@ -19,7 +19,7 @@ func AddFontResourceEx(name string, fl co.FR) (uint, error) {
 	pName := wbuf.PtrAllowEmpty(name)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_AddFontResourceExW, "AddFontResourceExW"),
+		dll.Load(dll.GDI32, &_AddFontResourceExW, "AddFontResourceExW"),
 		uintptr(pName),
 		uintptr(fl),
 		0)
@@ -36,7 +36,7 @@ var _AddFontResourceExW *syscall.Proc
 // [GdiFlush]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gdiflush
 func GdiFlush() bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_GdiFlush, "GdiFlush"))
+		dll.Load(dll.GDI32, &_GdiFlush, "GdiFlush"))
 	return ret == 0
 }
 

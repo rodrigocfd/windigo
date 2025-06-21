@@ -20,7 +20,7 @@ type HANDLE syscall.Handle
 // [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 func (h HANDLE) CloseHandle() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Kernel(&_CloseHandle, "CloseHandle"),
+		dll.Load(dll.KERNEL32, &_CloseHandle, "CloseHandle"),
 		uintptr(h))
 	return utl.ZeroAsGetLastError(ret, err)
 }

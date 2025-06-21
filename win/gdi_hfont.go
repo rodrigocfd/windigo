@@ -43,7 +43,7 @@ func CreateFont(
 	pFaceName := wbuf.PtrEmptyIsNil(faceName)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_CreateFontW, "CreateFontW"),
+		dll.Load(dll.GDI32, &_CreateFontW, "CreateFontW"),
 		uintptr(int32(height)),
 		uintptr(int32(width)),
 		uintptr(int32(escapement)),
@@ -73,7 +73,7 @@ var _CreateFontW *syscall.Proc
 // [CreateFontIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontindirectw
 func CreateFontIndirect(lf *LOGFONT) (HFONT, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Gdi(&_CreateFontIndirectW, "CreateFontIndirectW"),
+		dll.Load(dll.GDI32, &_CreateFontIndirectW, "CreateFontIndirectW"),
 		uintptr(unsafe.Pointer(lf)))
 	if ret == 0 {
 		return HFONT(0), co.ERROR_INVALID_PARAMETER

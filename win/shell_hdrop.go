@@ -24,7 +24,7 @@ type HDROP HANDLE
 // [RegisterDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-registerdragdrop
 func (hDrop HDROP) DragFinish() {
 	syscall.SyscallN(
-		dll.Shell(&_DragFinish, "DragFinish"),
+		dll.Load(dll.SHELL32, &_DragFinish, "DragFinish"),
 		uintptr(hDrop))
 }
 
@@ -52,7 +52,7 @@ var _DragFinish *syscall.Proc
 // [RegisterDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-registerdragdrop
 func (hDrop HDROP) DragQueryFile() ([]string, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Shell(&_DragQueryFileW, "DragQueryFileW"),
+		dll.Load(dll.SHELL32, &_DragQueryFileW, "DragQueryFileW"),
 		uintptr(hDrop),
 		uintptr(0xffff_ffff), 0, 0)
 	if ret == 0 {
@@ -67,7 +67,7 @@ func (hDrop HDROP) DragQueryFile() ([]string, error) {
 
 	for i := uint32(0); i < count; i++ {
 		ret, _, _ = syscall.SyscallN(
-			dll.Shell(&_DragQueryFileW, "DragQueryFileW"),
+			dll.Load(dll.SHELL32, &_DragQueryFileW, "DragQueryFileW"),
 			uintptr(hDrop),
 			uintptr(i),
 			uintptr(recvBuf.UnsafePtr()),
@@ -91,7 +91,7 @@ var _DragQueryFileW *syscall.Proc
 func (hDrop HDROP) DragQueryPoint() (POINT, bool) {
 	var pt POINT
 	ret, _, _ := syscall.SyscallN(
-		dll.Shell(&_DragQueryPoint, "DragQueryPoint"),
+		dll.Load(dll.SHELL32, &_DragQueryPoint, "DragQueryPoint"),
 		uintptr(hDrop),
 		uintptr(unsafe.Pointer(&pt)))
 	return pt, ret != 0

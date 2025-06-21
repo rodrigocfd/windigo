@@ -16,7 +16,7 @@ import (
 // [DwmExtendFrameIntoClientArea]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea
 func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Dwmapi(&_DwmExtendFrameIntoClientArea, "DwmExtendFrameIntoClientArea"),
+		dll.Load(dll.DWMAPI, &_DwmExtendFrameIntoClientArea, "DwmExtendFrameIntoClientArea"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(marginsInset)))
 	return utl.ErrorAsHResult(ret)
@@ -49,7 +49,7 @@ func (hWnd HWND) DwmGetWindowAttribute(attr co.DWMWA) (DwmAttr, error) {
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Dwmapi(&_DwmGetWindowAttribute, "DwmGetWindowAttribute"),
+		dll.Load(dll.DWMAPI, &_DwmGetWindowAttribute, "DwmGetWindowAttribute"),
 		uintptr(hWnd),
 		uintptr(attr),
 		uintptr(ptrBuf),
@@ -67,7 +67,7 @@ var _DwmGetWindowAttribute *syscall.Proc
 // [DwmInvalidateIconicBitmaps]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwminvalidateiconicbitmaps
 func (hWnd HWND) DwmInvalidateIconicBitmaps() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Dwmapi(&_DwmInvalidateIconicBitmaps, "DwmInvalidateIconicBitmaps"),
+		dll.Load(dll.DWMAPI, &_DwmInvalidateIconicBitmaps, "DwmInvalidateIconicBitmaps"),
 		uintptr(hWnd))
 	return utl.ErrorAsHResult(ret)
 }
@@ -79,7 +79,7 @@ var _DwmInvalidateIconicBitmaps *syscall.Proc
 // [DwmSetIconicLivePreviewBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticoniclivepreviewbitmap
 func (hWnd HWND) DwmSetIconicLivePreviewBitmap(hBmp HBITMAP, ptClient POINT, sitFlags co.DWM_SIT) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Dwmapi(&_DwmSetIconicLivePreviewBitmap, "DwmSetIconicLivePreviewBitmap"),
+		dll.Load(dll.DWMAPI, &_DwmSetIconicLivePreviewBitmap, "DwmSetIconicLivePreviewBitmap"),
 		uintptr(hWnd),
 		uintptr(hBmp),
 		uintptr(unsafe.Pointer(&ptClient)),
@@ -94,7 +94,7 @@ var _DwmSetIconicLivePreviewBitmap *syscall.Proc
 // [DwmSetIconicThumbnail]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticonicthumbnail
 func (hWnd HWND) DwmSetIconicThumbnail(hBmp HBITMAP, sitFlags co.DWM_SIT) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Dwmapi(&_DwmSetIconicThumbnail, "DwmSetIconicThumbnail"),
+		dll.Load(dll.DWMAPI, &_DwmSetIconicThumbnail, "DwmSetIconicThumbnail"),
 		uintptr(hWnd),
 		uintptr(hBmp),
 		uintptr(sitFlags))
@@ -126,7 +126,7 @@ func (hWnd HWND) DwmSetWindowAttribute(attr DwmAttr) error {
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Dwmapi(&_DwmSetWindowAttribute, "DwmSetWindowAttribute"),
+		dll.Load(dll.DWMAPI, &_DwmSetWindowAttribute, "DwmSetWindowAttribute"),
 		uintptr(hWnd),
 		uintptr(attr.tag),
 		uintptr(ptrBuf),

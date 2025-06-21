@@ -16,7 +16,7 @@ import (
 // [DefSubclassProc]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-defsubclassproc
 func (hWnd HWND) DefSubclassProc(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	ret, _, _ := syscall.SyscallN(
-		dll.Comctl(&_DefSubclassProc, "DefSubclassProc"),
+		dll.Load(dll.COMCTL32, &_DefSubclassProc, "DefSubclassProc"),
 		uintptr(hWnd),
 		uintptr(msg),
 		uintptr(wParam),
@@ -31,7 +31,7 @@ var _DefSubclassProc *syscall.Proc
 // [ImageList_DragEnter]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_dragenter
 func (hWnd HWND) ImageListDragEnter(x, y int) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Comctl(&_ImageList_DragEnter, "ImageList_DragEnter"),
+		dll.Load(dll.COMCTL32, &_ImageList_DragEnter, "ImageList_DragEnter"),
 		uintptr(hWnd),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
@@ -45,7 +45,7 @@ var _ImageList_DragEnter *syscall.Proc
 // [ImageList_DragLeave]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_dragleave
 func (hWnd HWND) ImageListDragLeave() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Comctl(&_ImageList_DragLeave, "ImageList_DragLeave"),
+		dll.Load(dll.COMCTL32, &_ImageList_DragLeave, "ImageList_DragLeave"),
 		uintptr(hWnd))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -57,7 +57,7 @@ var _ImageList_DragLeave *syscall.Proc
 // [RemoveWindowSubclass]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-removewindowsubclass
 func (hWnd HWND) RemoveWindowSubclass(subclassProc uintptr, idSubclass uint32) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Comctl(&_RemoveWindowSubclass, "RemoveWindowSubclass"),
+		dll.Load(dll.COMCTL32, &_RemoveWindowSubclass, "RemoveWindowSubclass"),
 		uintptr(hWnd),
 		subclassProc,
 		uintptr(idSubclass))
@@ -75,7 +75,7 @@ func (hWnd HWND) SetWindowSubclass(
 	refData unsafe.Pointer,
 ) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Comctl(&_SetWindowSubclass, "SetWindowSubclass"),
+		dll.Load(dll.COMCTL32, &_SetWindowSubclass, "SetWindowSubclass"),
 		uintptr(hWnd),
 		subclassProc,
 		uintptr(idSubclass),

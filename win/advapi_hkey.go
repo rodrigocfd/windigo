@@ -62,7 +62,7 @@ func RegConnectRegistry(machineName string, hKey HKEY) (HKEY, error) {
 	var openedKey HKEY
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegConnectRegistryW, "RegConnectRegistryW"),
+		dll.Load(dll.ADVAPI32, &_RegConnectRegistryW, "RegConnectRegistryW"),
 		uintptr(pMachineName),
 		uintptr(hKey),
 		uintptr(unsafe.Pointer(&openedKey)))
@@ -83,7 +83,7 @@ var _RegConnectRegistryW *syscall.Proc
 func RegOpenCurrentUser(accessRights co.KEY) (HKEY, error) {
 	var openedKey HKEY
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegOpenCurrentUser, "RegOpenCurrentUser"),
+		dll.Load(dll.ADVAPI32, &_RegOpenCurrentUser, "RegOpenCurrentUser"),
 		uintptr(accessRights),
 		uintptr(unsafe.Pointer(&openedKey)))
 	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
@@ -99,7 +99,7 @@ var _RegOpenCurrentUser *syscall.Proc
 // [RegCloseKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regclosekey
 func (hKey HKEY) RegCloseKey() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegCloseKey, "RegCloseKey"),
+		dll.Load(dll.ADVAPI32, &_RegCloseKey, "RegCloseKey"),
 		uintptr(hKey))
 	return utl.ZeroAsSysError(ret)
 }
@@ -115,7 +115,7 @@ func (hKey HKEY) RegCopyTree(subKey string, dest HKEY) error {
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegCopyTreeW, "RegCopyTreeW"),
+		dll.Load(dll.ADVAPI32, &_RegCopyTreeW, "RegCopyTreeW"),
 		uintptr(hKey),
 		uintptr(pSubKey))
 	return utl.ZeroAsSysError(ret)
@@ -141,7 +141,7 @@ func (hKey HKEY) RegCreateKeyEx(
 	var openedKey HKEY
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegCreateKeyExW, "RegCreateKeyExW"),
+		dll.Load(dll.ADVAPI32, &_RegCreateKeyExW, "RegCreateKeyExW"),
 		uintptr(hKey),
 		uintptr(pSubKey),
 		0, 0,
@@ -167,7 +167,7 @@ func (hKey HKEY) RegDeleteKey(subKey string) error {
 	pSubKey := wbuf.PtrAllowEmpty(subKey)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegDeleteKeyW, "RegDeleteKeyW"),
+		dll.Load(dll.ADVAPI32, &_RegDeleteKeyW, "RegDeleteKeyW"),
 		uintptr(hKey),
 		uintptr(pSubKey))
 	return utl.ZeroAsSysError(ret)
@@ -186,7 +186,7 @@ func (hKey HKEY) RegDeleteKeyEx(subKey string, samDesired co.KEY) error {
 	pSubKey := wbuf.PtrAllowEmpty(subKey)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegDeleteKeyExW, "RegDeleteKeyExW"),
+		dll.Load(dll.ADVAPI32, &_RegDeleteKeyExW, "RegDeleteKeyExW"),
 		uintptr(hKey),
 		uintptr(pSubKey),
 		uintptr(samDesired&(co.KEY_WOW64_32KEY|co.KEY_WOW64_64KEY)),
@@ -206,7 +206,7 @@ func (hKey HKEY) RegDeleteKeyValue(subKey, valueName string) error {
 	pValueName := wbuf.PtrEmptyIsNil(valueName)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegDeleteKeyValueW, "RegDeleteKeyValueW"),
+		dll.Load(dll.ADVAPI32, &_RegDeleteKeyValueW, "RegDeleteKeyValueW"),
 		uintptr(hKey),
 		uintptr(pSubKey),
 		uintptr(pValueName))
@@ -224,7 +224,7 @@ func (hKey HKEY) RegDeleteTree(subKey string) error {
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegDeleteTreeW, "RegDeleteTreeW"),
+		dll.Load(dll.ADVAPI32, &_RegDeleteTreeW, "RegDeleteTreeW"),
 		uintptr(hKey),
 		uintptr(pSubKey))
 	return utl.ZeroAsSysError(ret)
@@ -241,7 +241,7 @@ func (hKey HKEY) RegDeleteValue(valueName string) error {
 	pValueName := wbuf.PtrEmptyIsNil(valueName)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegDeleteValueW, "RegDeleteValueW"),
+		dll.Load(dll.ADVAPI32, &_RegDeleteValueW, "RegDeleteValueW"),
 		uintptr(hKey),
 		uintptr(pValueName))
 	return utl.ZeroAsSysError(ret)
@@ -254,7 +254,7 @@ var _RegDeleteValueW *syscall.Proc
 // [RegDisableReflectionKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdisablereflectionkey
 func (hKey HKEY) RegDisableReflectionKey() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegDisableReflectionKey, "RegDisableReflectionKey"),
+		dll.Load(dll.ADVAPI32, &_RegDisableReflectionKey, "RegDisableReflectionKey"),
 		uintptr(hKey))
 	return utl.ZeroAsSysError(ret)
 }
@@ -266,7 +266,7 @@ var _RegDisableReflectionKey *syscall.Proc
 // [RegEnableReflectionKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenablereflectionkey
 func (hKey HKEY) RegEnableReflectionKey() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegEnableReflectionKey, "RegEnableReflectionKey"),
+		dll.Load(dll.ADVAPI32, &_RegEnableReflectionKey, "RegEnableReflectionKey"),
 		uintptr(hKey))
 	return utl.ZeroAsSysError(ret)
 }
@@ -308,7 +308,7 @@ func (hKey HKEY) RegEnumKeyEx() ([]string, error) {
 		szKeyNameBuf := uint32(keyNameBuf.Len())
 
 		ret, _, _ := syscall.SyscallN(
-			dll.Advapi(&_RegEnumKeyExW, "RegEnumKeyExW"),
+			dll.Load(dll.ADVAPI32, &_RegEnumKeyExW, "RegEnumKeyExW"),
 			uintptr(hKey),
 			uintptr(uint32(i)),
 			uintptr(keyNameBuf.UnsafePtr()),
@@ -361,7 +361,7 @@ func (hKey HKEY) RegEnumValue() ([]string, error) {
 		szValueNameBuf := uint32(valueNameBuf.Len())
 
 		ret, _, _ := syscall.SyscallN(
-			dll.Advapi(&_RegEnumValueW, "RegEnumValueW"),
+			dll.Load(dll.ADVAPI32, &_RegEnumValueW, "RegEnumValueW"),
 			uintptr(hKey),
 			uintptr(uint32(i)),
 			uintptr(valueNameBuf.UnsafePtr()),
@@ -384,7 +384,7 @@ var _RegEnumValueW *syscall.Proc
 // [RegFlushKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regflushkey
 func (hKey HKEY) RegFlushKey() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegFlushKey, "RegFlushKey"),
+		dll.Load(dll.ADVAPI32, &_RegFlushKey, "RegFlushKey"),
 		uintptr(hKey))
 	return utl.ZeroAsSysError(ret)
 }
@@ -417,7 +417,7 @@ func (hKey HKEY) RegGetValue(subKey, valueName string, flags co.RRF) (RegVal, er
 		var szDataBytes uint32
 
 		ret, _, _ := syscall.SyscallN( // 1st call to retrieve size only
-			dll.Advapi(&_RegGetValueW, "RegGetValueW"),
+			dll.Load(dll.ADVAPI32, &_RegGetValueW, "RegGetValueW"),
 			uintptr(hKey),
 			uintptr(pSubKey),
 			uintptr(pValueName),
@@ -433,7 +433,7 @@ func (hKey HKEY) RegGetValue(subKey, valueName string, flags co.RRF) (RegVal, er
 		var dataType uint32
 
 		ret, _, _ = syscall.SyscallN( // 2nd call to retrieve the data
-			dll.Advapi(&_RegGetValueW, "RegGetValueW"),
+			dll.Load(dll.ADVAPI32, &_RegGetValueW, "RegGetValueW"),
 			uintptr(hKey),
 			uintptr(pSubKey),
 			uintptr(pValueName),
@@ -465,7 +465,7 @@ func (hKey HKEY) RegLoadKey(subKey, file string) error {
 	pFile := wbuf.PtrAllowEmpty(file)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegLoadKeyW, "RegLoadKeyW"),
+		dll.Load(dll.ADVAPI32, &_RegLoadKeyW, "RegLoadKeyW"),
 		uintptr(hKey),
 		uintptr(pSubKey),
 		uintptr(pFile))
@@ -499,7 +499,7 @@ func (hKey HKEY) RegOpenKeyEx(
 	var openedKey HKEY
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegOpenKeyExW, "RegOpenKeyExW"),
+		dll.Load(dll.ADVAPI32, &_RegOpenKeyExW, "RegOpenKeyExW"),
 		uintptr(hKey),
 		uintptr(pSubKey),
 		uintptr(options),
@@ -536,7 +536,7 @@ func (hKey HKEY) RegQueryInfoKey() (HkeyInfo, error) {
 		szClassBuf := uint32(classBuf.Len())
 
 		ret, _, _ := syscall.SyscallN(
-			dll.Advapi(&_RegQueryInfoKeyW, "RegQueryInfoKeyW"),
+			dll.Load(dll.ADVAPI32, &_RegQueryInfoKeyW, "RegQueryInfoKeyW"),
 			uintptr(hKey),
 			uintptr(classBuf.Len()),
 			uintptr(unsafe.Pointer(&szClassBuf)),
@@ -617,7 +617,7 @@ func (hKey HKEY) RegQueryMultipleValues(valueNames ...string) ([]RegVal, error) 
 	for {
 		var szDataBytes uint32
 		ret, _, _ := syscall.SyscallN( // 1st call to retrieve size only
-			dll.Advapi(&_RegQueryMultipleValuesW, "RegQueryMultipleValuesW"),
+			dll.Load(dll.ADVAPI32, &_RegQueryMultipleValuesW, "RegQueryMultipleValuesW"),
 			uintptr(hKey),
 			uintptr(unsafe.Pointer(&valents[0])),
 			uintptr(uint32(len(valueNames))),
@@ -630,7 +630,7 @@ func (hKey HKEY) RegQueryMultipleValues(valueNames ...string) ([]RegVal, error) 
 
 		dataBuf := make([]byte, szDataBytes)
 		ret, _, _ = syscall.SyscallN( // 2nd call to retrieve the data
-			dll.Advapi(&_RegQueryMultipleValuesW, "RegQueryMultipleValuesW"),
+			dll.Load(dll.ADVAPI32, &_RegQueryMultipleValuesW, "RegQueryMultipleValuesW"),
 			uintptr(hKey),
 			uintptr(unsafe.Pointer(&valents[0])),
 			uintptr(uint32(len(valueNames))),
@@ -664,7 +664,7 @@ var _RegQueryMultipleValuesW *syscall.Proc
 func (hKey HKEY) RegQueryReflectionKey() (bool, error) {
 	var bVal int32 // BOOL
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegQueryReflectionKey, "RegQueryReflectionKey"),
+		dll.Load(dll.ADVAPI32, &_RegQueryReflectionKey, "RegQueryReflectionKey"),
 		uintptr(hKey),
 		uintptr(unsafe.Pointer(&bVal)))
 	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
@@ -699,7 +699,7 @@ func (hKey HKEY) RegQueryValueEx(valueName string) (RegVal, error) {
 	for {
 		var szDataBytes uint32
 		ret, _, _ := syscall.SyscallN( // 1st call to retrieve size only
-			dll.Advapi(&_RegQueryValueExW, "RegQueryValueExW"),
+			dll.Load(dll.ADVAPI32, &_RegQueryValueExW, "RegQueryValueExW"),
 			uintptr(hKey),
 			uintptr(pValueName),
 			0, 0, 0,
@@ -713,7 +713,7 @@ func (hKey HKEY) RegQueryValueEx(valueName string) (RegVal, error) {
 		var dataType uint32
 
 		ret, _, _ = syscall.SyscallN( // 2nd call to retrieve the data
-			dll.Advapi(&_RegQueryValueExW, "RegQueryValueExW"),
+			dll.Load(dll.ADVAPI32, &_RegQueryValueExW, "RegQueryValueExW"),
 			uintptr(hKey),
 			uintptr(pValueName),
 			0,
@@ -744,7 +744,7 @@ func (hKey HKEY) RegRenameKey(subKey, newName string) error {
 	pNewName := wbuf.PtrEmptyIsNil(newName)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegRenameKey, "RegRenameKey"),
+		dll.Load(dll.ADVAPI32, &_RegRenameKey, "RegRenameKey"),
 		uintptr(hKey),
 		uintptr(pSubKey),
 		uintptr(pNewName))
@@ -764,7 +764,7 @@ func (hKey HKEY) RegReplaceKey(subKey, srcFile, destBackupFile string) error {
 	pDestBackupFile := wbuf.PtrEmptyIsNil(destBackupFile)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegReplaceKeyW, "RegReplaceKeyW"),
+		dll.Load(dll.ADVAPI32, &_RegReplaceKeyW, "RegReplaceKeyW"),
 		uintptr(hKey),
 		uintptr(pSubKey),
 		uintptr(pSrcFile),
@@ -785,7 +785,7 @@ func (hKey HKEY) RegRestoreKey(srcFile string, flags co.REG_RESTORE) error {
 	pSrcFile := wbuf.PtrAllowEmpty(srcFile)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegRestoreKeyW, "RegRestoreKeyW"),
+		dll.Load(dll.ADVAPI32, &_RegRestoreKeyW, "RegRestoreKeyW"),
 		uintptr(hKey),
 		uintptr(pSrcFile),
 		uintptr(flags))
@@ -805,7 +805,7 @@ func (hKey HKEY) RegSaveKey(destFile string, securityAttributes *SECURITY_ATTRIB
 	pDestFile := wbuf.PtrAllowEmpty(destFile)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegSaveKeyW, "RegSaveKeyW"),
+		dll.Load(dll.ADVAPI32, &_RegSaveKeyW, "RegSaveKeyW"),
 		uintptr(hKey),
 		uintptr(pDestFile),
 		uintptr(unsafe.Pointer(securityAttributes)))
@@ -829,7 +829,7 @@ func (hKey HKEY) RegSaveKeyEx(
 	pDestFile := wbuf.PtrAllowEmpty(destFile)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegSaveKeyExW, "RegSaveKeyExW"),
+		dll.Load(dll.ADVAPI32, &_RegSaveKeyExW, "RegSaveKeyExW"),
 		uintptr(hKey),
 		uintptr(pDestFile),
 		uintptr(unsafe.Pointer(securityAttributes)),
@@ -849,7 +849,7 @@ func (hKey HKEY) RegSetKeyValue(subKey, valueName string, data RegVal) error {
 	pValueName := wbuf.PtrEmptyIsNil(valueName)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegSetKeyValueW, "RegSetKeyValueW"),
+		dll.Load(dll.ADVAPI32, &_RegSetKeyValueW, "RegSetKeyValueW"),
 		uintptr(hKey),
 		uintptr(pSubKey),
 		uintptr(pValueName),
@@ -870,7 +870,7 @@ func (hKey HKEY) RegSetValueEx(valueName string, data RegVal) error {
 	pValueName := wbuf.PtrEmptyIsNil(valueName)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegSetValueExW, "RegSetValueExW"),
+		dll.Load(dll.ADVAPI32, &_RegSetValueExW, "RegSetValueExW"),
 		uintptr(hKey),
 		uintptr(pValueName),
 		0,
@@ -891,7 +891,7 @@ func (hKey HKEY) RegUnLoadKey(subKey string) error {
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Advapi(&_RegUnLoadKeyW, "RegUnLoadKeyW"),
+		dll.Load(dll.ADVAPI32, &_RegUnLoadKeyW, "RegUnLoadKeyW"),
 		uintptr(hKey),
 		uintptr(pSubKey))
 	return utl.ZeroAsSysError(ret)

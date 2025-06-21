@@ -19,7 +19,7 @@ func (hFile HFILE) SetFilePointerEx(
 ) (newPointerOffset int, wErr error) {
 	var newOff32 int32
 	ret, _, err := syscall.SyscallN(
-		dll.Kernel(&_SetFilePointer, "SetFilePointer"),
+		dll.Load(dll.KERNEL32, &_SetFilePointer, "SetFilePointer"),
 		uintptr(hFile),
 		uintptr(int32(distanceToMove)),
 		uintptr(unsafe.Pointer(&newOff32)),
