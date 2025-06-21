@@ -86,8 +86,7 @@ func (me *IFileDialog) GetCurrentSelection(releaser *OleReleaser) (*IShellItem, 
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		var pObj *IShellItem
-		utl.OleCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		pObj := &IShellItem{IUnknown{ppvtQueried}}
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -142,8 +141,7 @@ func (me *IFileDialog) GetFolder(releaser *OleReleaser) (*IShellItem, error) {
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		var pObj *IShellItem
-		utl.OleCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		pObj := &IShellItem{IUnknown{ppvtQueried}}
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -184,8 +182,7 @@ func (me *IFileDialog) GetResult(releaser *OleReleaser) (*IShellItem, error) {
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		var pObj *IShellItem
-		utl.OleCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		pObj := &IShellItem{IUnknown{ppvtQueried}}
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {

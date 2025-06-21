@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -128,8 +127,7 @@ func (me *IShellItemArray) GetItemAt(releaser *OleReleaser, index uint) (*IShell
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		var pObj *IShellItem
-		utl.OleCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		pObj := &IShellItem{IUnknown{ppvtQueried}}
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {

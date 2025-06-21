@@ -112,8 +112,7 @@ func NewIFileOperationProgressSinkImpl(releaser *OleReleaser) *IFileOperationPro
 	utl.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
 
 	ppFakeVtbl := (**_IUnknownVt)(unsafe.Pointer(ppImpl))
-	var pObj *IFileOperationProgressSink
-	utl.OleCreateObj(&pObj, unsafe.Pointer(ppFakeVtbl))
+	pObj := &IFileOperationProgressSink{IUnknown{ppFakeVtbl}}
 	releaser.Add(pObj)
 	return pObj
 }
@@ -327,9 +326,11 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).preRenameItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(psiItem))
-						return uintptr(fun(co.TSF(dwFlags), pItem, wstr.WinPtrToGo(pszNewName)))
+						return uintptr(fun(
+							co.TSF(dwFlags),
+							&IShellItem{IUnknown{psiItem}},
+							wstr.WinPtrToGo(pszNewName),
+						))
 					}
 				},
 			),
@@ -345,11 +346,13 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).postRenameItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem, pNew *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(psiItem))
-						utl.OleCreateObj(&pNew, unsafe.Pointer(psiNewlyCreated))
-						return uintptr(fun(co.TSF(dwFlags), pItem,
-							wstr.WinPtrToGo(pszNewName), hrRename, pNew))
+						return uintptr(fun(
+							co.TSF(dwFlags),
+							&IShellItem{IUnknown{psiItem}},
+							wstr.WinPtrToGo(pszNewName),
+							hrRename,
+							&IShellItem{IUnknown{psiNewlyCreated}},
+						))
 					}
 				},
 			),
@@ -363,10 +366,12 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).preMoveItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem, pDest *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(psiItem))
-						utl.OleCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
-						return uintptr(fun(co.TSF(dwFlags), pItem, pDest, wstr.WinPtrToGo(pszNewName)))
+						return uintptr(fun(
+							co.TSF(dwFlags),
+							&IShellItem{IUnknown{psiItem}},
+							&IShellItem{IUnknown{psiDestinationFolder}},
+							wstr.WinPtrToGo(pszNewName),
+						))
 					}
 				},
 			),
@@ -382,12 +387,14 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).postMoveItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem, pDest, pNew *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(psiItem))
-						utl.OleCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
-						utl.OleCreateObj(&pNew, unsafe.Pointer(psiNewlyCreated))
-						return uintptr(fun(co.TSF(dwFlags), pItem, pDest,
-							wstr.WinPtrToGo(pszNewName), hrMove, pNew))
+						return uintptr(fun(
+							co.TSF(dwFlags),
+							&IShellItem{IUnknown{psiItem}},
+							&IShellItem{IUnknown{psiDestinationFolder}},
+							wstr.WinPtrToGo(pszNewName),
+							hrMove,
+							&IShellItem{IUnknown{psiNewlyCreated}},
+						))
 					}
 				},
 			),
@@ -401,10 +408,12 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).preCopyItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem, pDest *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(psiItem))
-						utl.OleCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
-						return uintptr(fun(co.TSF(dwFlags), pItem, pDest, wstr.WinPtrToGo(pszNewName)))
+						return uintptr(fun(
+							co.TSF(dwFlags),
+							&IShellItem{IUnknown{psiItem}},
+							&IShellItem{IUnknown{psiDestinationFolder}},
+							wstr.WinPtrToGo(pszNewName),
+						))
 					}
 				},
 			),
@@ -420,12 +429,14 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).postCopyItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem, pDest, pNew *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(psiItem))
-						utl.OleCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
-						utl.OleCreateObj(&pNew, unsafe.Pointer(psiNewlyCreated))
-						return uintptr(fun(co.TSF(dwFlags), pItem, pDest,
-							wstr.WinPtrToGo(pszNewName), hrMove, pNew))
+						return uintptr(fun(
+							co.TSF(dwFlags),
+							&IShellItem{IUnknown{psiItem}},
+							&IShellItem{IUnknown{psiDestinationFolder}},
+							wstr.WinPtrToGo(pszNewName),
+							hrMove,
+							&IShellItem{IUnknown{psiNewlyCreated}},
+						))
 					}
 				},
 			),
@@ -435,9 +446,10 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).preDeleteItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(psiItem))
-						return uintptr(fun(co.TSF(dwFlags), pItem))
+						return uintptr(fun(
+							co.TSF(dwFlags),
+							&IShellItem{IUnknown{psiItem}},
+						))
 					}
 				},
 			),
@@ -452,10 +464,12 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).postDeleteItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem, pNew *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(psiItem))
-						utl.OleCreateObj(&pNew, unsafe.Pointer(psiNewlyCreated))
-						return uintptr(fun(co.TSF(dwFlags), pItem, hrMove, pNew))
+						return uintptr(fun(
+							co.TSF(dwFlags),
+							&IShellItem{IUnknown{psiItem}},
+							hrMove,
+							&IShellItem{IUnknown{psiNewlyCreated}},
+						))
 					}
 				},
 			),
@@ -469,9 +483,11 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).preNewItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pDest *IShellItem
-						utl.OleCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
-						return uintptr(fun(co.TSF(dwFlags), pDest, wstr.WinPtrToGo(pszNewName)))
+						return uintptr(fun(
+							co.TSF(dwFlags),
+							&IShellItem{IUnknown{psiDestinationFolder}},
+							wstr.WinPtrToGo(pszNewName),
+						))
 					}
 				},
 			),
@@ -488,11 +504,15 @@ func (me *_IFileOperationProgressSinkVt) init() {
 					if fun := (**ppImpl).postNewItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pDest, pNew *IShellItem
-						utl.OleCreateObj(&pDest, unsafe.Pointer(psiDestinationFolder))
-						utl.OleCreateObj(&pNew, unsafe.Pointer(psiNewItem))
-						return uintptr(fun(co.TSF(dwFlags), pDest, wstr.WinPtrToGo(pszNewName),
-							wstr.WinPtrToGo(pszTemplateName), fileAttributes, hrNew, pNew))
+						return uintptr(fun(
+							co.TSF(dwFlags),
+							&IShellItem{IUnknown{psiDestinationFolder}},
+							wstr.WinPtrToGo(pszNewName),
+							wstr.WinPtrToGo(pszTemplateName),
+							fileAttributes,
+							hrNew,
+							&IShellItem{IUnknown{psiNewItem}},
+						))
 					}
 				},
 			),

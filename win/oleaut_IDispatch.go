@@ -7,7 +7,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -85,8 +84,7 @@ func (me *IDispatch) GetTypeInfo(releaser *OleReleaser, lcid LCID) (*ITypeInfo, 
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		var pObj *ITypeInfo
-		utl.OleCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		pObj := &ITypeInfo{IUnknown{ppvtQueried}}
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {

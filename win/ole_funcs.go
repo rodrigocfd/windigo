@@ -163,8 +163,7 @@ func CreateBindCtx(releaser *OleReleaser) (*IBindCtx, error) {
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		var pObj *IBindCtx
-		utl.OleCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		pObj := &IBindCtx{IUnknown{ppvtQueried}}
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {
@@ -284,8 +283,7 @@ func SHCreateMemStream(releaser *OleReleaser, src []byte) (*IStream, error) {
 	}
 
 	ppvt := (**_IUnknownVt)(unsafe.Pointer(ret))
-	var pObj *IStream
-	utl.OleCreateObj(&pObj, unsafe.Pointer(ppvt))
+	pObj := &IStream{ISequentialStream{IUnknown{ppvt}}}
 	releaser.Add(pObj)
 	return pObj, nil
 }

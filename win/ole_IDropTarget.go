@@ -63,8 +63,7 @@ func NewIDropTargetImpl(releaser *OleReleaser) *IDropTarget {
 	utl.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
 
 	ppFakeVtbl := (**_IUnknownVt)(unsafe.Pointer(ppImpl))
-	var pObj *IDropTarget
-	utl.OleCreateObj(&pObj, unsafe.Pointer(ppFakeVtbl))
+	pObj := &IDropTarget{IUnknown{ppFakeVtbl}}
 	releaser.Add(pObj)
 	return pObj
 }
@@ -183,15 +182,15 @@ func (me *_IDropTargetVt) init() {
 			DragEnter: syscall.NewCallback(
 				func(p uintptr, vtDataObj **_IUnknownVt, grfKeyState uint32, pt POINT, pdwEffect *uint32) uintptr {
 					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-					var pDataObj *IDataObject
-					utl.OleCreateObj(&pDataObj, unsafe.Pointer(vtDataObj))
 					if fun := (*ppImpl).dragEnter; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						effect := co.DROPEFFECT(*pdwEffect)
-						ret := fun(pDataObj, co.MK(grfKeyState), pt, &effect)
-						*pdwEffect = uint32(effect)
-						return uintptr(ret)
+						return uintptr(fun(
+							&IDataObject{IUnknown{vtDataObj}},
+							co.MK(grfKeyState),
+							pt,
+							(*co.DROPEFFECT)(pdwEffect),
+						))
 					}
 				},
 			),
@@ -201,10 +200,11 @@ func (me *_IDropTargetVt) init() {
 					if fun := (*ppImpl).dragOver; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						effect := co.DROPEFFECT(*pdwEffect)
-						ret := fun(co.MK(grfKeyState), pt, &effect)
-						*pdwEffect = uint32(effect)
-						return uintptr(ret)
+						return uintptr(fun(
+							co.MK(grfKeyState),
+							pt,
+							(*co.DROPEFFECT)(pdwEffect),
+						))
 					}
 				},
 			),
@@ -221,15 +221,15 @@ func (me *_IDropTargetVt) init() {
 			Drop: syscall.NewCallback(
 				func(p uintptr, vtDataObj **_IUnknownVt, grfKeyState uint32, pt POINT, pdwEffect *uint32) uintptr {
 					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-					var pDataObj *IDataObject
-					utl.OleCreateObj(&pDataObj, unsafe.Pointer(vtDataObj))
 					if fun := (*ppImpl).drop; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						effect := co.DROPEFFECT(*pdwEffect)
-						ret := fun(pDataObj, co.MK(grfKeyState), pt, &effect)
-						*pdwEffect = uint32(effect)
-						return uintptr(ret)
+						return uintptr(fun(
+							&IDataObject{IUnknown{vtDataObj}},
+							co.MK(grfKeyState),
+							pt,
+							(*co.DROPEFFECT)(pdwEffect),
+						))
 					}
 				},
 			),

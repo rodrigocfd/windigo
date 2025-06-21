@@ -35,8 +35,7 @@ func (me *IStream) Clone(releaser *OleReleaser) (*IStream, error) {
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		var pObj *IStream
-		utl.OleCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		pObj := &IStream{ISequentialStream{IUnknown{ppvtQueried}}}
 		releaser.Add(pObj)
 		return pObj, nil
 	} else {

@@ -93,8 +93,7 @@ func (me *ITypeInfo) GetContainingTypeLib(releaser *OleReleaser) (*ITypeLib, uin
 		uintptr(unsafe.Pointer(&index)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		var pObj *ITypeLib
-		utl.OleCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		pObj := &ITypeLib{IUnknown{ppvtQueried}}
 		releaser.Add(pObj)
 		return pObj, uint(index), nil
 	} else {

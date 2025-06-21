@@ -47,8 +47,7 @@ func NewIShellItemFilterImpl(releaser *OleReleaser) *IShellItemFilter {
 	utl.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
 
 	ppFakeVtbl := (**_IUnknownVt)(unsafe.Pointer(ppImpl))
-	var pObj *IShellItemFilter
-	utl.OleCreateObj(&pObj, unsafe.Pointer(ppFakeVtbl))
+	pObj := &IShellItemFilter{IUnknown{ppFakeVtbl}}
 	releaser.Add(pObj)
 	return pObj
 }
@@ -110,9 +109,7 @@ func (me *_IShellItemFilterVt) init() {
 					if fun := (**ppImpl).includeItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(psi))
-						return uintptr(fun(pItem))
+						return uintptr(fun(&IShellItem{IUnknown{psi}}))
 					}
 				},
 			),
@@ -122,12 +119,10 @@ func (me *_IShellItemFilterVt) init() {
 					if fun := (**ppImpl).getEnumFlagsForItem; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(psi))
-						flags := co.SHCONTF(*pgrfFlags)
-						ret := fun(pItem, &flags)
-						*pgrfFlags = uint32(flags)
-						return uintptr(ret)
+						return uintptr(fun(
+							&IShellItem{IUnknown{psi}},
+							(*co.SHCONTF)(pgrfFlags),
+						))
 					}
 				},
 			),

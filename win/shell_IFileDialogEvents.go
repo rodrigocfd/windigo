@@ -52,8 +52,7 @@ func NewIFileDialogEventsImpl(releaser *OleReleaser) *IFileDialogEvents {
 	utl.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
 
 	ppFakeVtbl := (**_IUnknownVt)(unsafe.Pointer(ppImpl))
-	var pObj *IFileDialogEvents
-	utl.OleCreateObj(&pObj, unsafe.Pointer(ppFakeVtbl))
+	pObj := &IFileDialogEvents{IUnknown{ppFakeVtbl}}
 	releaser.Add(pObj)
 	return pObj
 }
@@ -165,9 +164,7 @@ func (me *_IFileDialogEventsVt) init() {
 					if fun := (*ppImpl).onFolderChanging; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(vtSi))
-						return uintptr(fun(pItem))
+						return uintptr(fun(&IShellItem{IUnknown{vtSi}}))
 					}
 				},
 			),
@@ -197,12 +194,10 @@ func (me *_IFileDialogEventsVt) init() {
 					if fun := (*ppImpl).onShareViolation; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(vtSi))
-						response := co.FDESVR(*pResponse)
-						ret := fun(pItem, &response)
-						*pResponse = uint32(response)
-						return uintptr(ret)
+						return uintptr(fun(
+							&IShellItem{IUnknown{vtSi}},
+							(*co.FDESVR)(pResponse),
+						))
 					}
 				},
 			),
@@ -222,12 +217,10 @@ func (me *_IFileDialogEventsVt) init() {
 					if fun := (*ppImpl).onOverwrite; fun == nil { // user didn't define a callback
 						return uintptr(co.HRESULT_S_OK)
 					} else {
-						var pItem *IShellItem
-						utl.OleCreateObj(&pItem, unsafe.Pointer(vtSi))
-						response := co.FDEOR(*pResponse)
-						ret := fun(pItem, &response)
-						*pResponse = uint32(response)
-						return uintptr(ret)
+						return uintptr(fun(
+							&IShellItem{IUnknown{vtSi}},
+							(*co.FDEOR)(pResponse),
+						))
 					}
 				},
 			),

@@ -10,7 +10,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
@@ -246,8 +245,7 @@ func (v *VARIANT) IDispatch(releaser *OleReleaser) (*IDispatch, bool) {
 	if v.tag == co.VT_DISPATCH {
 		rawPpvt := uintptr(binary.LittleEndian.Uint64(v.data[:]))
 		ppvt := (**_IUnknownVt)(unsafe.Pointer(rawPpvt))
-		var pCurrent *IDispatch
-		utl.OleCreateObj(&pCurrent, unsafe.Pointer(ppvt))
+		pCurrent := &IDispatch{IUnknown{ppvt}}
 
 		var pCloned *IDispatch
 		pCurrent.AddRef(releaser, &pCloned) // clone, because we'll release it independently
