@@ -551,6 +551,17 @@ func IsGUIThread(convertToGuiThread bool) (bool, error) {
 
 var _IsGUIThread *syscall.Proc
 
+// [IsProcessDPIAware] function.
+//
+// [IsProcessDPIAware]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isprocessdpiaware
+func IsProcessDPIAware() bool {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_IsProcessDPIAware, "IsProcessDPIAware"))
+	return ret != 0
+}
+
+var _IsProcessDPIAware *syscall.Proc
+
 // [LockSetForegroundWindow] function.
 //
 // [LockSetForegroundWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-locksetforegroundwindow

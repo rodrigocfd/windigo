@@ -504,6 +504,27 @@ type STYLESTRUCT_WSEX struct {
 	StyleNew co.WS_EX
 }
 
+// [TITLEBARINFO] struct.
+//
+// ⚠️ You must call [TITLEBARINFO.SetCbSize] to initialize the struct.
+//
+// # Example
+//
+//	var ti win.TITLEBARINFO
+//	ti.SetCbSize()
+//
+// [TITLEBARINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-titlebarinfo
+type TITLEBARINFO struct {
+	cbSize     uint32
+	RcTitleBar RECT
+	Rgstate    [utl.CCHILDREN_TITLEBAR + 1]uint32
+}
+
+// Sets the cbSize field to the size of the struct, correctly initializing it.
+func (ti *TITLEBARINFO) SetCbSize() {
+	ti.cbSize = uint32(unsafe.Sizeof(*ti))
+}
+
 // [TITLEBARINFOEX] struct.
 //
 // ⚠️ You must call [TITLEBARINFOEX.SetCbSize] to initialize the struct.
@@ -524,6 +545,30 @@ type TITLEBARINFOEX struct {
 // Sets the cbSize field to the size of the struct, correctly initializing it.
 func (tix *TITLEBARINFOEX) SetCbSize() {
 	tix.cbSize = uint32(unsafe.Sizeof(*tix))
+}
+
+// [WINDOWPLACEMENT] struct.
+//
+// ⚠️ You must call [WINDOWPLACEMENT.SetLength] to initialize the struct.
+//
+// # Example
+//
+//	var wp win.WINDOWPLACEMENT
+//	wp.SetLength()
+//
+// [WINDOWPLACEMENT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowplacement
+type WINDOWPLACEMENT struct {
+	length           uint32
+	Flags            co.WPF
+	ShowCmd          co.SW
+	PtMinPosition    POINT
+	PtMaxPosition    POINT
+	RcNormalPosition RECT
+}
+
+// Sets the length field to the size of the struct, correctly initializing it.
+func (wp *WINDOWPLACEMENT) SetLength() {
+	wp.length = uint32(unsafe.Sizeof(*wp))
 }
 
 // [WINDOWPOS] struct.

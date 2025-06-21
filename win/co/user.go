@@ -1805,6 +1805,17 @@ const (
 	WA_CLICKACTIVE WA = 2
 )
 
+// [Display affinity].
+//
+// [Display affinity]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity
+type WDA uint32
+
+const (
+	WDA_NONE               WDA = 0x0000_0000
+	WDA_MONITOR            WDA = 0x0000_0001
+	WDA_EXCLUDEFROMCAPTURE WDA = 0x0000_0011
+)
+
 // [WM_PARENTNOTIFY] event.
 //
 // [WM_PARENTNOTIFY] https://learn.microsoft.com/en-us/windows/win32/inputmsg/wm-parentnotify
@@ -1834,6 +1845,17 @@ const (
 	WMSZ_TOP         WMSZ = 3
 	WMSZ_TOPLEFT     WMSZ = 4
 	WMSZ_TOPRIGHT    WMSZ = 5
+)
+
+// [WINDOWPLACEMENT] flags.
+//
+// [WINDOWPLACEMENT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowplacement
+type WPF uint32
+
+const (
+	WPF_ASYNCWINDOWPLACEMENT WPF = 0x0004
+	WPF_RESTORETOMAXIMIZED   WPF = 0x0002
+	WPF_SETMINPOSITION       WPF = 0x0001
 )
 
 // Window [styles].

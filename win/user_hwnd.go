@@ -149,6 +149,28 @@ func GetShellWindow() HWND {
 
 var _GetShellWindow *syscall.Proc
 
+// [WindowFromPhysicalPoint] function.
+//
+// [WindowFromPhysicalPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-windowfromphysicalpoint
+func WindowFromPhysicalPoint() HWND {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_WindowFromPhysicalPoint, "WindowFromPhysicalPoint"))
+	return HWND(ret)
+}
+
+var _WindowFromPhysicalPoint *syscall.Proc
+
+// [WindowFromPoint] function.
+//
+// [WindowFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-windowfrompoint
+func WindowFromPoint() HWND {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_WindowFromPoint, "WindowFromPoint"))
+	return HWND(ret)
+}
+
+var _WindowFromPoint *syscall.Proc
+
 // [AnimateWindow] function.
 //
 // [AnimateWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-animatewindow
@@ -619,6 +641,40 @@ func (hWnd HWND) GetParent() (HWND, error) {
 
 var _GetParent *syscall.Proc
 
+// [GetTitleBarInfo] function.
+//
+// [GetTitleBarInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-gettitlebarinfo
+func (hWnd HWND) GetTitleBarInfo() (TITLEBARINFO, error) {
+	var ti TITLEBARINFO
+	ti.SetCbSize()
+
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_GetTitleBarInfo, "GetTitleBarInfo"),
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&ti)))
+	if ret == 0 {
+		return TITLEBARINFO{}, co.ERROR(err)
+	}
+	return ti, nil
+}
+
+var _GetTitleBarInfo *syscall.Proc
+
+// [GetTopWindow] function.
+//
+// [GetTopWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-gettopwindow
+func (hWnd HWND) GetTopWindow() (HWND, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_GetTopWindow, "GetTopWindow"),
+		uintptr(hWnd))
+	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
+		return HWND(0), wErr
+	}
+	return HWND(ret), nil
+}
+
+var _GetTopWindow *syscall.Proc
+
 // [GetWindow] function.
 //
 // [GetWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindow
@@ -651,6 +707,42 @@ func (hWnd HWND) GetWindowDC() (HDC, error) {
 }
 
 var _GetWindowDC *syscall.Proc
+
+// [GetWindowDisplayAffinity] function.
+//
+// [GetWindowDisplayAffinity]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowdisplayaffinity
+func (hWnd HWND) GetWindowDisplayAffinity() (co.WDA, error) {
+	var da co.WDA
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_GetWindowDisplayAffinity, "GetWindowDisplayAffinity"),
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&da)))
+	if ret == 0 {
+		return co.WDA(0), co.ERROR(err)
+	}
+	return da, nil
+}
+
+var _GetWindowDisplayAffinity *syscall.Proc
+
+// [GetWindowPlacement] function.
+//
+// [GetWindowPlacement]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowplacement
+func (hWnd HWND) GetWindowPlacement() (WINDOWPLACEMENT, error) {
+	var wp WINDOWPLACEMENT
+	wp.SetLength()
+
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_GetWindowPlacement, "GetWindowPlacement"),
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&wp)))
+	if ret == 0 {
+		return WINDOWPLACEMENT{}, co.ERROR(err)
+	}
+	return wp, nil
+}
+
+var _GetWindowPlacement *syscall.Proc
 
 // [GetWindowRect] function.
 //
@@ -787,6 +879,18 @@ func (hWnd HWND) IsDialogMessage(msg *MSG) bool {
 }
 
 var _IsDialogMessageW *syscall.Proc
+
+// [IsIconic] function.
+//
+// [IsIconic]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isiconic
+func (hWnd HWND) IsIconic() bool {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_IsIconic, "IsIconic"),
+		uintptr(hWnd))
+	return ret != 0
+}
+
+var _IsIconic *syscall.Proc
 
 // [IsWindow] function.
 //
@@ -987,6 +1091,33 @@ func (hWnd HWND) SetMenu(hMenu HMENU) error {
 
 var _SetMenu *syscall.Proc
 
+// [SetWindowDisplayAffinity] function.
+//
+// [SetWindowDisplayAffinity]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity
+func (hWnd HWND) SetWindowDisplayAffinity(da co.WDA) error {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_SetWindowDisplayAffinity, "SetWindowDisplayAffinity"),
+		uintptr(hWnd),
+		uintptr(da))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _SetWindowDisplayAffinity *syscall.Proc
+
+// [SetWindowPlacement] function.
+//
+// [SetWindowPlacement]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowplacement
+func (hWnd HWND) SetWindowPlacement(wp *WINDOWPLACEMENT) error {
+	wp.SetLength() // safety
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_SetWindowPlacement, "SetWindowPlacement"),
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(wp)))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _SetWindowPlacement *syscall.Proc
+
 // [SetWindowPos] function.
 //
 // [SetWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
@@ -1048,6 +1179,19 @@ func (hWnd HWND) ShowCaret() error {
 
 var _ShowCaret *syscall.Proc
 
+// [ShowOwnedPopups] function.
+//
+// [ShowOwnedPopups]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showownedpopups
+func (hWnd HWND) ShowOwnedPopups(show bool) error {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_ShowOwnedPopups, "ShowOwnedPopups"),
+		uintptr(hWnd),
+		utl.BoolToUintptr(show))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _ShowOwnedPopups *syscall.Proc
+
 // [ShowWindow] function.
 //
 // [ShowWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
@@ -1060,6 +1204,19 @@ func (hWnd HWND) ShowWindow(cmdShow co.SW) bool {
 }
 
 var _ShowWindow *syscall.Proc
+
+// [ShowWindowAsync] function.
+//
+// [ShowWindowAsync]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindowasync
+func (hWnd HWND) ShowWindowAsync(cmdShow co.SW) error {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_ShowWindowAsync, "ShowWindowAsync"),
+		uintptr(hWnd),
+		uintptr(cmdShow))
+	return utl.ZeroAsSysInvalidParm(ret)
+}
+
+var _ShowWindowAsync *syscall.Proc
 
 // Calls [HWND.GetWindowLongPtr] to retrieve the window style.
 func (hWnd HWND) Style() (co.WS, error) {
