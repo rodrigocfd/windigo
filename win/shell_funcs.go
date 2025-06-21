@@ -7,6 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
@@ -41,6 +42,349 @@ func CommandLineToArgv(cmdLine string) ([]string, error) {
 }
 
 var _CommandLineToArgvW *syscall.Proc
+
+// [SHCreateItemFromIDList] function.
+//
+// Return type is typically [IShellItem] of [IShellItem2].
+//
+// # Example
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+//	var item *win.IShellItem
+//	win.SHCreateItemFromParsingName(
+//		rel,
+//		"C:\\Temp\\foo.txt",
+//		&item,
+//	)
+//
+//	idl, _ := win.SHGetIDListFromObject(rel, item)
+//
+//	var sameItem *win.IShellItem2
+//	win.SHCreateItemFromIDList(rel, idl, &sameItem)
+//
+// [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
+func SHCreateItemFromIDList(releaser *OleReleaser, pidl *ITEMIDLIST, ppOut interface{}) error {
+	pOut := utl.OleValidateObj(ppOut).(OleObj)
+	releaser.ReleaseNow(pOut)
+
+	var ppvtQueried **_IUnknownVt
+	guidIid := GuidFrom(pOut.IID())
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHCreateItemFromIDList, "SHCreateItemFromIDList"),
+		uintptr(*pidl),
+		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
+		releaser.Add(pOut)
+		return nil
+	} else {
+		return hr
+	}
+}
+
+var _SHCreateItemFromIDList *syscall.Proc
+
+// [SHCreateItemFromParsingName] function.
+//
+// Return type is typically [IShellItem] of [IShellItem2].
+//
+// # Example
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+//	var item *win.IShellItem
+//	win.SHCreateItemFromParsingName(
+//		rel,
+//		"C:\\Temp\\foo.txt",
+//		&item,
+//	)
+//
+// [SHCreateItemFromParsingName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromparsingname
+func SHCreateItemFromParsingName(
+	releaser *OleReleaser,
+	folderOrFilePath string,
+	ppOut interface{},
+) error {
+	pOut := utl.OleValidateObj(ppOut).(OleObj)
+	releaser.ReleaseNow(pOut)
+
+	var ppvtQueried **_IUnknownVt
+	guidIid := GuidFrom(pOut.IID())
+
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pFolderOrFilePath := wbuf.PtrEmptyIsNil(folderOrFilePath)
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHCreateItemFromParsingName, "SHCreateItemFromParsingName"),
+		uintptr(pFolderOrFilePath),
+		0,
+		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
+		releaser.Add(pOut)
+		return nil
+	} else {
+		return hr
+	}
+}
+
+var _SHCreateItemFromParsingName *syscall.Proc
+
+// [SHCreateItemFromRelativeName] function.
+//
+// [SHCreateItemFromRelativeName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromrelativename
+func SHCreateItemFromRelativeName(
+	releaser *OleReleaser,
+	parent *IShellItem,
+	name string,
+	bindCtx *IBindCtx,
+	ppOut interface{},
+) error {
+	pOut := utl.OleValidateObj(ppOut).(OleObj)
+	releaser.ReleaseNow(pOut)
+
+	var ppvtQueried **_IUnknownVt
+	guidIid := GuidFrom(pOut.IID())
+
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pName := wbuf.PtrAllowEmpty(name)
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHCreateItemFromRelativeName, "SHCreateItemFromRelativeName"),
+		uintptr(unsafe.Pointer(parent.Ppvt())),
+		uintptr(pName),
+		uintptr(ppvtOrNil(bindCtx)),
+		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
+		releaser.Add(pOut)
+		return nil
+	} else {
+		return hr
+	}
+}
+
+var _SHCreateItemFromRelativeName *syscall.Proc
+
+// [SHCreateShellItemArray] function.
+//
+// [SHCreateShellItemArray]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateshellitemarray
+func SHCreateShellItemArray(
+	releaser *OleReleaser,
+	pidlParent *ITEMIDLIST,
+	parent *IShellFolder,
+	pidlChildren []*ITEMIDLIST,
+) (*IShellItemArray, error) {
+	var ppvtQueried **_IUnknownVt
+
+	var pidlParentObj ITEMIDLIST
+	if pidlParent != nil {
+		pidlParentObj = *pidlParent
+	}
+
+	var pidlChildrenObjsPtr *ITEMIDLIST
+	if pidlChildren != nil {
+		pidlChildrenObjs := make([]ITEMIDLIST, 0, len(pidlChildren))
+		for _, pidl := range pidlChildren {
+			pidlChildrenObjs = append(pidlChildrenObjs, *pidl)
+		}
+		pidlChildrenObjsPtr = &pidlChildrenObjs[0]
+	}
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHCreateShellItemArray, "SHCreateShellItemArray"),
+		uintptr(pidlParentObj),
+		uintptr(ppvtOrNil(parent)),
+		uintptr(len(pidlChildren)),
+		uintptr(unsafe.Pointer(pidlChildrenObjsPtr)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		var pObj *IShellItemArray
+		utl.OleCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHCreateShellItemArray *syscall.Proc
+
+// [SHCreateShellItemArrayFromIDLists] function.
+//
+// # Example
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+//	var item1, item2 *win.IShellItem
+//	win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item1)
+//	win.SHCreateItemFromParsingName(rel, "C:\\Temp\\bar.txt", &item2)
+//
+//	pidl1, _ := win.SHGetIDListFromObject(rel, &item1.IUnknown)
+//	pidl2, _ := win.SHGetIDListFromObject(rel, &item2.IUnknown)
+//
+//	arr, _ := win.SHCreateShellItemArrayFromIDLists(rel, pidl1, pidl2)
+//
+// [SHCreateShellItemArrayFromIDLists]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateshellitemarrayfromidlists?redirectedfrom=MSDN
+func SHCreateShellItemArrayFromIDLists(
+	releaser *OleReleaser,
+	pidls ...*ITEMIDLIST,
+) (*IShellItemArray, error) {
+	var ppvtQueried **_IUnknownVt
+
+	pidlObjs := make([]ITEMIDLIST, 0, len(pidls))
+	for _, pidl := range pidls {
+		pidlObjs = append(pidlObjs, *pidl)
+	}
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHCreateShellItemArrayFromIDLists, "SHCreateShellItemArrayFromIDLists"),
+		uintptr(uint32(len(pidls))),
+		uintptr(unsafe.Pointer(&pidlObjs[0])),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		var pObj *IShellItemArray
+		utl.OleCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHCreateShellItemArrayFromIDLists *syscall.Proc
+
+// [SHGetDesktopFolder] function.
+//
+// # Example
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+//	folder, _ := win.SHGetDesktopFolder(rel)
+//
+// [SHGetDesktopFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetdesktopfolder
+func SHGetDesktopFolder(releaser *OleReleaser) (*IShellFolder, error) {
+	var ppvtQueried **_IUnknownVt
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHGetDesktopFolder, "SHGetDesktopFolder"),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		var pObj *IShellFolder
+		utl.OleCreateObj(&pObj, unsafe.Pointer(ppvtQueried))
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHGetDesktopFolder *syscall.Proc
+
+// [SHGetKnownFolderItem] function.
+//
+// Return type is typically [IShellItem] of [IShellItem2].
+//
+// # Example
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+//	var desktop *win.IShellItem
+//	win.SHGetKnownFolderItem(
+//		rel,
+//		co.FOLDERID_Desktop,
+//		co.KF_FLAG_DEFAULT,
+//		win.HANDLE(0),
+//		&desktop,
+//	)
+//
+//	path, _ := desktop.GetDisplayName(co.SIGDN_FILESYSPATH)
+//	println(path)
+//
+// [SHGetKnownFolderItem]: https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetknownfolderitem
+func SHGetKnownFolderItem(
+	releaser *OleReleaser,
+	kfid co.FOLDERID,
+	flags co.KF,
+	hToken HANDLE, // HACCESSTOKEN
+	ppOut interface{},
+) error {
+	pOut := utl.OleValidateObj(ppOut).(OleObj)
+	releaser.ReleaseNow(pOut)
+
+	var ppvtQueried **_IUnknownVt
+	guidKfid := GuidFrom(kfid)
+	guidIid := GuidFrom(pOut.IID())
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHGetKnownFolderItem, "SHGetKnownFolderItem"),
+		uintptr(unsafe.Pointer(&guidKfid)),
+		uintptr(flags),
+		uintptr(hToken),
+		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
+		releaser.Add(pOut)
+		return nil
+	} else {
+		return hr
+	}
+}
+
+var _SHGetKnownFolderItem *syscall.Proc
+
+// [SHGetIDListFromObject] function.
+//
+// # Example
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+//	var item *win.IShellItem
+//	swin.SHCreateItemFromParsingName(
+//		rel,
+//		"C:\\Temp\\foo.txt",
+//		&item,
+//	)
+//
+//	idl, _ := win.SHGetIDListFromObject(rel, &item.IUnknown)
+//
+// [SHGetIDListFromObject]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shgetidlistfromobject
+func SHGetIDListFromObject(releaser *OleReleaser, obj *IUnknown) (*ITEMIDLIST, error) {
+	var idl ITEMIDLIST
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell(&_SHGetIDListFromObject, "SHGetIDListFromObject"),
+		uintptr(unsafe.Pointer(obj.Ppvt())),
+		uintptr(unsafe.Pointer(&idl)))
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pIdl := &idl
+		releaser.Add(pIdl)
+		return pIdl, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHGetIDListFromObject *syscall.Proc
 
 // [Shell_NotifyIcon] function.
 //

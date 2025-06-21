@@ -6,91 +6,163 @@ import (
 	"syscall"
 )
 
-// Loads a DLL and a procedure, caching the objects.
-func load(dll **syscall.DLL, dllName string, proc **syscall.Proc, procName string) uintptr {
-	if *dll == nil {
-		*dll = syscall.MustLoadDLL(dllName)
-	}
-	if *proc == nil {
-		*proc = kernel32.MustFindProc(procName)
-	}
-	return (*proc).Addr()
-}
+// ---
+// Loading functions have repeated code because, with a single function, there
+// would be 2 pointer indirections causing a ~9% increase in syscall times.
+// ---
 
 func Advapi(proc **syscall.Proc, name string) uintptr {
-	return load(&advapi32, "advapi32", proc, name)
+	if advapi32 == nil {
+		advapi32 = syscall.MustLoadDLL("advapi32")
+	}
+	if *proc == nil {
+		*proc = advapi32.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var advapi32 *syscall.DLL
 
 func Comctl(proc **syscall.Proc, name string) uintptr {
-	return load(&comctl32, "comctl32", proc, name)
+	if comctl32 == nil {
+		comctl32 = syscall.MustLoadDLL("comctl32")
+	}
+	if *proc == nil {
+		*proc = comctl32.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var comctl32 *syscall.DLL
 
 func Dwmapi(proc **syscall.Proc, name string) uintptr {
-	return load(&dwmapi, "dwmapi", proc, name)
+	if dwmapi == nil {
+		dwmapi = syscall.MustLoadDLL("dwmapi")
+	}
+	if *proc == nil {
+		*proc = dwmapi.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var dwmapi *syscall.DLL
 
 func Gdi(proc **syscall.Proc, name string) uintptr {
-	return load(&gdi32, "gdi32", proc, name)
+	if gdi32 == nil {
+		gdi32 = syscall.MustLoadDLL("gdi32")
+	}
+	if *proc == nil {
+		*proc = gdi32.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var gdi32 *syscall.DLL
 
 func Kernel(proc **syscall.Proc, name string) uintptr {
-	return load(&kernel32, "kernel32", proc, name)
+	if kernel32 == nil {
+		kernel32 = syscall.MustLoadDLL("kernel32")
+	}
+	if *proc == nil {
+		*proc = kernel32.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var kernel32 *syscall.DLL
 
 func Ole(proc **syscall.Proc, name string) uintptr {
-	return load(&ole32, "ole32", proc, name)
+	if ole32 == nil {
+		ole32 = syscall.MustLoadDLL("ole32")
+	}
+	if *proc == nil {
+		*proc = ole32.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var ole32 *syscall.DLL
 
 func Oleaut(proc **syscall.Proc, name string) uintptr {
-	return load(&oleaut32, "oleaut32", proc, name)
+	if oleaut32 == nil {
+		oleaut32 = syscall.MustLoadDLL("oleaut32")
+	}
+	if *proc == nil {
+		*proc = oleaut32.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var oleaut32 *syscall.DLL
 
 func Psapi(proc **syscall.Proc, name string) uintptr {
-	return load(&psapi, "psapi", proc, name)
+	if psapi == nil {
+		psapi = syscall.MustLoadDLL("psapi")
+	}
+	if *proc == nil {
+		*proc = psapi.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var psapi *syscall.DLL
 
 func Shell(proc **syscall.Proc, name string) uintptr {
-	return load(&shell32, "shell32", proc, name)
+	if shell32 == nil {
+		shell32 = syscall.MustLoadDLL("shell32")
+	}
+	if *proc == nil {
+		*proc = shell32.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var shell32 *syscall.DLL
 
 func Shlwapi(proc **syscall.Proc, name string) uintptr {
-	return load(&shlwapi, "shlwapi", proc, name)
+	if shlwapi == nil {
+		shlwapi = syscall.MustLoadDLL("shlwapi")
+	}
+	if *proc == nil {
+		*proc = shlwapi.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var shlwapi *syscall.DLL
 
 func User(proc **syscall.Proc, name string) uintptr {
-	return load(&user32, "user32", proc, name)
+	if user32 == nil {
+		user32 = syscall.MustLoadDLL("user32")
+	}
+	if *proc == nil {
+		*proc = user32.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var user32 *syscall.DLL
 
 func Uxtheme(proc **syscall.Proc, name string) uintptr {
-	return load(&uxtheme, "uxtheme", proc, name)
+	if uxtheme == nil {
+		uxtheme = syscall.MustLoadDLL("uxtheme")
+	}
+	if *proc == nil {
+		*proc = uxtheme.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var uxtheme *syscall.DLL
 
 func Version(proc **syscall.Proc, name string) uintptr {
-	return load(&version, "version", proc, name)
+	if version == nil {
+		version = syscall.MustLoadDLL("version")
+	}
+	if *proc == nil {
+		*proc = version.MustFindProc(name)
+	}
+	return (*proc).Addr()
 }
 
 var version *syscall.DLL

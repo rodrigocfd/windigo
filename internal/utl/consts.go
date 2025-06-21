@@ -2,11 +2,6 @@
 
 package utl
 
-// Internal constants for ole/shell.
-const (
-	INFOTIPSIZE = 1024
-)
-
 // Internal constants for comctl.
 const (
 	L_MAX_URL_LENGTH = 2048 + 32 + 4
@@ -36,6 +31,11 @@ const (
 	MAX_MODULE_NAME32    = 255
 	MAX_PATH             = 260
 	TIME_ZONE_INVALID    = 0xffff_ffff
+)
+
+// Internal constants for shell.
+const (
+	INFOTIPSIZE = 1024
 )
 
 // Internal constants for user.

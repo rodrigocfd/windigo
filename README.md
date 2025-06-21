@@ -264,7 +264,7 @@ func main() {
 
 ### Component Object Model (COM)
 
-Windigo has full support for C++ [COM](https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal) objects. The cleanup is performed by an `ole.Releaser` object, which calls [`Release`](https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release) on multiple COM objects at once, much like an arena allocator. Every function which produces a COM object requires an `ole.Releaser` to take care of its lifetime.
+Windigo has full support for C++ [COM](https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal) objects. The cleanup is performed by a `win.OleReleaser` object, which calls [`Release`](https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release) on multiple COM objects at once, much like an arena allocator. Every function which produces a COM object requires a `win.OleReleaser` to take care of its lifetime.
 
 The example below uses COM objects to display the system native [Open File](https://learn.microsoft.com/en-us/windows/win32/learnwin32/example--the-open-dialog-box) window:
 
@@ -274,21 +274,19 @@ package main
 import (
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/ole"
-	"github.com/rodrigocfd/windigo/win/ole/shell"
 )
 
 func main() {
 	runtime.LockOSThread() // important: Windows GUI is single-threaded
 
-	ole.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
-	defer ole.CoUninitialize()
+	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+	defer win.CoUninitialize()
 
-	releaser := ole.NewReleaser() // will release all COM objects created here
+	releaser := win.NewOleReleaser() // will release all COM objects created here
 	defer releaser.Release()
 
-	var fod *shell.IFileOpenDialog
-	ole.CoCreateInstance(
+	var fod *win.IFileOpenDialog
+	win.CoCreateInstance(
 		releaser,
 		co.CLSID_FileOpenDialog,
 		nil,
@@ -302,7 +300,7 @@ func main() {
 		co.FOS_FILEMUSTEXIST,
 	)
 
-	fod.SetFileTypes([]shell.COMDLG_FILTERSPEC{
+	fod.SetFileTypes([]win.COMDLG_FILTERSPEC{
 		{Name: "Text files", Spec: "*.txt"},
 		{Name: "All files", Spec: "*.*"},
 	})
@@ -330,22 +328,21 @@ The example below manipulates an Excel spreadsheet, saving a copy of it:
 package main
 
 import (
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/ole"
-	"github.com/rodrigocfd/windigo/win/ole/oleaut"
 )
 
 func main() {
-	ole.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
-	defer ole.CoUninitialize()
+	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+	defer win.CoUninitialize()
 
-	rel := ole.NewReleaser()
+	rel := win.NewOleReleaser()
 	defer rel.Release()
 
-	clsId, _ := ole.CLSIDFromProgID("Excel.Application")
+	clsId, _ := win.CLSIDFromProgID("Excel.Application")
 
-	var excel *oleaut.IDispatch
-	ole.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &excel)
+	var excel *win.IDispatch
+	win.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &excel)
 
 	books, _ := excel.InvokeGetIDispatch(rel, "Workbooks")
 	file, _ := books.InvokeMethodIDispatch(rel, "Open", "C:\\Temp\\foo.xlsx")
@@ -369,9 +366,6 @@ More specifically:
 | `ui` | High-level UI windows and controls. |
 | `win` | Native Win32 structs, handles and functions. |
 | `win/co` | Native Win32 constants, all typed. |
-| `win/ole` | COM bindings. |
-| `win/ole/oleaut` | COM automation bindings. |
-| `win/ole/shell` | Shell COM bindings. |
 | `win/wstr` | String and UTF-16 wide string management. |
 
 Internal package dependency:
@@ -383,9 +377,6 @@ flowchart BT
     win --> internal/dll([internal/dll])
     win --> internal/utl
     win --> win/wstr
-    win/ole --> win
-    win/ole/oleaut --> win/ole
-    win/ole/shell --> win/ole
 ```
 
 ## License
