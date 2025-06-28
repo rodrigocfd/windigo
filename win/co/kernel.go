@@ -29,21 +29,21 @@ const (
 type CHAR_ATTR uint16
 
 const (
-	FOREGROUND_BLUE            CHAR_ATTR = 0x0001 // Text color contains blue.
-	FOREGROUND_GREEN           CHAR_ATTR = 0x0002 // Text color contains green.
-	FOREGROUND_RED             CHAR_ATTR = 0x0004 // Text color contains red.
-	FOREGROUND_INTENSITY       CHAR_ATTR = 0x0008 // Text color is intensified.
-	BACKGROUND_BLUE            CHAR_ATTR = 0x0010 // Background color contains blue.
-	BACKGROUND_GREEN           CHAR_ATTR = 0x0020 // Background color contains green.
-	BACKGROUND_RED             CHAR_ATTR = 0x0040 // Background color contains red.
-	BACKGROUND_INTENSITY       CHAR_ATTR = 0x0080 // Background color is intensified.
-	COMMON_LVB_LEADING_BYTE    CHAR_ATTR = 0x0100 // Leading Byte of DBCS.
-	COMMON_LVB_TRAILING_BYTE   CHAR_ATTR = 0x0200 // Trailing Byte of DBCS.
-	COMMON_LVB_GRID_HORIZONTAL CHAR_ATTR = 0x0400 // DBCS: Grid attribute: top horizontal.
-	COMMON_LVB_GRID_LVERTICAL  CHAR_ATTR = 0x0800 // DBCS: Grid attribute: left vertical.
-	COMMON_LVB_GRID_RVERTICAL  CHAR_ATTR = 0x1000 // DBCS: Grid attribute: right vertical.
-	COMMON_LVB_REVERSE_VIDEO   CHAR_ATTR = 0x4000 // DBCS: Reverse fore/back ground attribute.
-	COMMON_LVB_UNDERSCORE      CHAR_ATTR = 0x8000 // DBCS: Underscore.
+	CHAR_ATTR_FOREGROUND_BLUE            CHAR_ATTR = 0x0001 // Text color contains blue.
+	CHAR_ATTR_FOREGROUND_GREEN           CHAR_ATTR = 0x0002 // Text color contains green.
+	CHAR_ATTR_FOREGROUND_RED             CHAR_ATTR = 0x0004 // Text color contains red.
+	CHAR_ATTR_FOREGROUND_INTENSITY       CHAR_ATTR = 0x0008 // Text color is intensified.
+	CHAR_ATTR_BACKGROUND_BLUE            CHAR_ATTR = 0x0010 // Background color contains blue.
+	CHAR_ATTR_BACKGROUND_GREEN           CHAR_ATTR = 0x0020 // Background color contains green.
+	CHAR_ATTR_BACKGROUND_RED             CHAR_ATTR = 0x0040 // Background color contains red.
+	CHAR_ATTR_BACKGROUND_INTENSITY       CHAR_ATTR = 0x0080 // Background color is intensified.
+	CHAR_ATTR_COMMON_LVB_LEADING_BYTE    CHAR_ATTR = 0x0100 // Leading Byte of DBCS.
+	CHAR_ATTR_COMMON_LVB_TRAILING_BYTE   CHAR_ATTR = 0x0200 // Trailing Byte of DBCS.
+	CHAR_ATTR_COMMON_LVB_GRID_HORIZONTAL CHAR_ATTR = 0x0400 // DBCS: Grid attribute: top horizontal.
+	CHAR_ATTR_COMMON_LVB_GRID_LVERTICAL  CHAR_ATTR = 0x0800 // DBCS: Grid attribute: left vertical.
+	CHAR_ATTR_COMMON_LVB_GRID_RVERTICAL  CHAR_ATTR = 0x1000 // DBCS: Grid attribute: right vertical.
+	CHAR_ATTR_COMMON_LVB_REVERSE_VIDEO   CHAR_ATTR = 0x4000 // DBCS: Reverse fore/back ground attribute.
+	CHAR_ATTR_COMMON_LVB_UNDERSCORE      CHAR_ATTR = 0x8000 // DBCS: Underscore.
 )
 
 // [CONSOLE_READCONSOLE_CONTROL] DwControlKeyState.
