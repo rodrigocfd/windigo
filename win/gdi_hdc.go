@@ -240,6 +240,22 @@ func (hdc HDC) CancelDC() error {
 
 var _CancelDC *syscall.Proc
 
+// [ChoosePixelFormat] function.
+//
+// [ChoosePixelFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-choosepixelformat
+func (hdc HDC) ChoosePixelFormat(pfd *PIXELFORMATDESCRIPTOR) (int, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.GDI32, &_ChoosePixelFormat, "ChoosePixelFormat"),
+		uintptr(hdc),
+		uintptr(unsafe.Pointer(pfd)))
+	if ret == 0 {
+		return 0, co.ERROR(err)
+	}
+	return int(ret), nil
+}
+
+var _ChoosePixelFormat *syscall.Proc
+
 // [Chord] function.
 //
 // [Chord]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-chord
@@ -271,22 +287,6 @@ func (hdc HDC) CloseFigure() error {
 }
 
 var _CloseFigure *syscall.Proc
-
-// [ChoosePixelFormat] function.
-//
-// [ChoosePixelFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-choosepixelformat
-func (hdc HDC) ChoosePixelFormat(pfd *PIXELFORMATDESCRIPTOR) (int, error) {
-	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_ChoosePixelFormat, "ChoosePixelFormat"),
-		uintptr(hdc),
-		uintptr(unsafe.Pointer(pfd)))
-	if ret == 0 {
-		return 0, co.ERROR(err)
-	}
-	return int(ret), nil
-}
-
-var _ChoosePixelFormat *syscall.Proc
 
 // [CreateCompatibleBitmap] function.
 //
@@ -725,6 +725,21 @@ func (hdc HDC) GetPixel() (COLORREF, error) {
 }
 
 var _GetPixel *syscall.Proc
+
+// [GetPixelFormat] function.
+//
+// [GetPixelFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getpixelformat
+func (hdc HDC) GetPixelFormat() (int, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.GDI32, &_GetPixelFormat, "GetPixelFormat"),
+		uintptr(hdc))
+	if ret == 0 {
+		return 0, co.ERROR(err)
+	}
+	return int(int32(ret)), nil
+}
+
+var _GetPixelFormat *syscall.Proc
 
 // [GetPolyFillMode] function.
 //
