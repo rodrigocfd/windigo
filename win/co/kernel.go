@@ -667,15 +667,23 @@ const (
 	PIPE_REJECT_REMOTE_CLIENTS PIPE = 0x0000_0008
 )
 
-// [CreateNamedPipe] dwOpenMode.
+// [CreateNamedPipe] dwOpenMode. Also includes FILE_FLAG and WRITE values.
 //
 // [CreateNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
 type PIPE_ACCESS uint32
 
 const (
+	PIPE_ACCESS_DUPLEX   PIPE_ACCESS = 0x0000_0003
 	PIPE_ACCESS_INBOUND  PIPE_ACCESS = 0x0000_0001
 	PIPE_ACCESS_OUTBOUND PIPE_ACCESS = 0x0000_0002
-	PIPE_ACCESS_DUPLEX   PIPE_ACCESS = 0x0000_0003
+
+	PIPE_ACCESS_FIRST_PIPE_INSTANCE PIPE_ACCESS = 0x0008_0000
+	PIPE_ACCESS_WRITE_THROUGH       PIPE_ACCESS = 0x8000_0000
+	PIPE_ACCESS_OVERLAPPED          PIPE_ACCESS = 0x4000_0000
+
+	PIPE_ACCESS_WRITE_DAC              PIPE_ACCESS = 0x0004_0000
+	PIPE_ACCESS_WRITE_OWNER            PIPE_ACCESS = 0x0008_0000
+	PIPE_ACCESS_ACCESS_SYSTEM_SECURITY PIPE_ACCESS = 0x0100_0000
 )
 
 // [GetPriorityClass] and [SetPriorityClass] values. Originally has
