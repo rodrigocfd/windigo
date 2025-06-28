@@ -357,7 +357,7 @@ var _SHGetKnownFolderItem *syscall.Proc
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	swin.SHCreateItemFromParsingName(
+//	win.SHCreateItemFromParsingName(
 //		rel,
 //		"C:\\Temp\\foo.txt",
 //		&item,
