@@ -244,6 +244,7 @@ var _CancelDC *syscall.Proc
 //
 // [ChoosePixelFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-choosepixelformat
 func (hdc HDC) ChoosePixelFormat(pfd *PIXELFORMATDESCRIPTOR) (int, error) {
+	pfd.SetNSize() // safety
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_ChoosePixelFormat, "ChoosePixelFormat"),
 		uintptr(hdc),
@@ -380,6 +381,27 @@ func (hdc HDC) DeleteDC() error {
 }
 
 var _DeleteDC *syscall.Proc
+
+// [DescribePixelFormat] function.
+//
+// [DescribePixelFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-describepixelformat
+func (hdc HDC) DescribePixelFormat(index int) (PIXELFORMATDESCRIPTOR, error) {
+	var pfd PIXELFORMATDESCRIPTOR
+	pfd.SetNSize()
+
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.GDI32, &_DescribePixelFormat, "DeleteDC"),
+		uintptr(hdc),
+		uintptr(int32(index)),
+		uintptr(uint32(unsafe.Sizeof(pfd))),
+		uintptr(unsafe.Pointer(&pfd)))
+	if ret == 0 {
+		return PIXELFORMATDESCRIPTOR{}, co.ERROR(err)
+	}
+	return pfd, nil
+}
+
+var _DescribePixelFormat *syscall.Proc
 
 // [Ellipse] function.
 //
@@ -1605,6 +1627,7 @@ var _SetPixel *syscall.Proc
 //
 // [SetPixelFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setpixelformat
 func (hdc HDC) SetPixelFormat(format int, pfd *PIXELFORMATDESCRIPTOR) error {
+	pfd.SetNSize() // safety
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_SetPixelFormat, "SetPixelFormat"),
 		uintptr(hdc),
