@@ -11,7 +11,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
-// A handle to the [clipboard]. Actually this handle does not exist, it only
+// Handle to the [clipboard]. Actually this handle does not exist, it only
 // serves the purpose of logically group the clipboard functions.
 //
 // # Example

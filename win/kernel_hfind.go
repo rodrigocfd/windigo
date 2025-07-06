@@ -12,9 +12,9 @@ import (
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
-// A handle returned by [FindFirstFile] function.
+// Handle to a [find object], used to find files.
 //
-// [FindFirstFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
+// [find object]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
 type HFIND HANDLE
 
 // [FindFirstFile] function.
