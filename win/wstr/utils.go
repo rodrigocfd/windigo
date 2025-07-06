@@ -117,7 +117,7 @@ func RemoveDiacritics(s string) string {
 func SplitLines(s string) []string {
 	lines := strings.Split(s, "\n")
 	for i, line := range lines {
-		lineLen := utf8.RuneCountInString(line)
+		lineLen := len(line)
 		if lineLen > 0 && line[lineLen-1] == '\r' {
 			lines[i] = line[:lineLen-1]
 		}
