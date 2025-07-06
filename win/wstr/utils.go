@@ -47,6 +47,23 @@ func FmtBytes(numBytes uint64) string {
 	}
 }
 
+// Converts the number to a string with thousand separators.
+func FmtThousands(n uint) string {
+	if n == 0 {
+		return "0"
+	}
+
+	final := ""
+	for {
+		thou := n % 1000
+		final = fmt.Sprintf("%03d,%s", thou, final)
+		n = (n - thou) / 1000
+		if n == 0 {
+			return strings.TrimLeft(final[:len(final)-1], "0")
+		}
+	}
+}
+
 // Parses a string into an uint number.
 //
 // Panics if an invalid character is found.
