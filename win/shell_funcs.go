@@ -383,6 +383,70 @@ func SHGetIDListFromObject(releaser *OleReleaser, obj *IUnknown) (*ITEMIDLIST, e
 
 var _SHGetIDListFromObject *syscall.Proc
 
+// [SHGetPropertyStoreFromIDList] function.
+//
+// [SHGetPropertyStoreFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shgetpropertystorefromidlist
+func SHGetPropertyStoreFromIDList(
+	releaser *OleReleaser,
+	pidl *ITEMIDLIST,
+	flags co.GPS,
+) (*IPropertyStore, error) {
+	var ppvtQueried **_IUnknownVt
+	guid := GuidFrom(co.IID_IPropertyStore)
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.SHELL32, &_SHGetPropertyStoreFromIDList, "SHGetPropertyStoreFromIDList"),
+		uintptr(*pidl),
+		uintptr(flags),
+		uintptr(unsafe.Pointer(&guid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := &IPropertyStore{IUnknown{ppvtQueried}}
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHGetPropertyStoreFromIDList *syscall.Proc
+
+// [SHGetPropertyStoreFromParsingName] function.
+//
+// [SHGetPropertyStoreFromParsingName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shgetpropertystorefromparsingname
+func SHGetPropertyStoreFromParsingName(
+	releaser *OleReleaser,
+	folderOrFilePath string,
+	bindCtx *IBindCtx,
+	flags co.GPS,
+) (*IPropertyStore, error) {
+	var ppvtQueried **_IUnknownVt
+	guid := GuidFrom(co.IID_IPropertyStore)
+
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pFolderOrFilePath := wbuf.PtrAllowEmpty(folderOrFilePath)
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.SHELL32, &_SHGetPropertyStoreFromParsingName, "SHGetPropertyStoreFromParsingName"),
+		uintptr(pFolderOrFilePath),
+		uintptr(ppvtOrNil(bindCtx)),
+		uintptr(flags),
+		uintptr(unsafe.Pointer(&guid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := &IPropertyStore{IUnknown{ppvtQueried}}
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+var _SHGetPropertyStoreFromParsingName *syscall.Proc
+
 // [Shell_NotifyIcon] function.
 //
 // [Shell_NotifyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw

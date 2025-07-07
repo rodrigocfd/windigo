@@ -44,7 +44,7 @@ func (me *IEnumString) Clone(releaser *OleReleaser) (*IEnumString, error) {
 	}
 }
 
-// Returns all objects by calling [IEnumString.Next].
+// Returns all string values by calling [IEnumString.Next].
 func (me *IEnumString) Enum() ([]string, error) {
 	strs := make([]string, 0)
 	var s string

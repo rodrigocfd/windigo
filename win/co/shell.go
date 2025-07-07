@@ -240,6 +240,29 @@ const (
 	FOLDERID_LocalStorage           FOLDERID = "b3eb08d3-a1f3-496b-865a-42b536cda0ec"
 )
 
+// [GETPROPERTYSTOREFLAGS] enumeration.
+//
+// [GETPROPERTYSTOREFLAGS]: https://learn.microsoft.com/en-us/windows/win32/api/propsys/ne-propsys-getpropertystoreflags
+type GPS uint32
+
+const (
+	GPS_DEFAULT                 GPS = 0
+	GPS_HANDLERPROPERTIESONLY   GPS = 0x1
+	GPS_READWRITE               GPS = 0x2
+	GPS_TEMPORARY               GPS = 0x4
+	GPS_FASTPROPERTIESONLY      GPS = 0x8
+	GPS_OPENSLOWITEM            GPS = 0x10
+	GPS_DELAYCREATION           GPS = 0x20
+	GPS_BESTEFFORT              GPS = 0x40
+	GPS_NO_OPLOCK               GPS = 0x80
+	GPS_PREFERQUERYPROPERTIES   GPS = 0x100
+	GPS_EXTRINSICPROPERTIES     GPS = 0x200
+	GPS_EXTRINSICPROPERTIESONLY GPS = 0x400
+	GPS_VOLATILEPROPERTIES      GPS = 0x800
+	GPS_VOLATILEPROPERTIESONLY  GPS = 0x1000
+	GPS_MASK_VALID              GPS = 0x1fff
+)
+
 // [IShellLink.GetHotkey] returned value.
 //
 // [IShellLink.GetHotkey]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-gethotkey

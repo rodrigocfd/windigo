@@ -66,7 +66,7 @@ func (me *IEnumShellItems) Clone(releaser *OleReleaser) (*IEnumShellItems, error
 	}
 }
 
-// Returns all objects by calling [IEnumShellItems.Next].
+// Returns all [IShellItem] values by calling [IEnumShellItems.Next].
 //
 // # Example
 //
