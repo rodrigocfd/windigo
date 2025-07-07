@@ -357,6 +357,16 @@ type LOGPEN struct {
 	LopnColor COLORREF
 }
 
+// [PALETTEENTRY] struct.
+//
+// [PALETTEENTRY]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-paletteentry
+type PALETTEENTRY struct {
+	PeRed   uint8
+	PeGreen uint8
+	PeBlue  uint8
+	PeFlags co.PC
+}
+
 // [PIXELFORMATDESCRIPTOR] struct.
 //
 // ⚠️ You must call [PIXELFORMATDESCRIPTOR.SetNSize] to initialize the struct.

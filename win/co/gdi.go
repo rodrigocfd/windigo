@@ -638,6 +638,17 @@ const (
 	OUT_PRECIS_PS_ONLY        OUT_PRECIS = 10
 )
 
+// [PALETTEENTRY] PeFlags.
+//
+// [PALETTEENTRY]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-paletteentry
+type PC uint8
+
+const (
+	PC_RESERVED   PC = 0x01 // Palette index used for animation.
+	PC_EXPLICIT   PC = 0x02 // Palette index is explicit to device.
+	PC_NOCOLLAPSE PC = 0x04 // Do not match color to system palette.
+)
+
 // [PIXELFORMATDESCRIPTOR] dwFlags.
 //
 // [PIXELFORMATDESCRIPTOR]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-pixelformatdescriptor
