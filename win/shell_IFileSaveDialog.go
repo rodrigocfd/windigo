@@ -54,14 +54,63 @@ func (*IFileSaveDialog) IID() co.IID {
 	return co.IID_IFileSaveDialog
 }
 
+// [ApplyProperties] method.
+//
+// [ApplyProperties]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-applyproperties
+func (me *IFileSaveDialog) ApplyProperties(
+	item *IShellItem,
+	store *IPropertyStore,
+	hwnd HWND,
+	sink *IFileOperationProgressSink,
+) error {
+	ret, _, _ := syscall.SyscallN(
+		(*_IFileSaveDialogVt)(unsafe.Pointer(*me.Ppvt())).ApplyProperties,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(item.Ppvt())),
+		uintptr(unsafe.Pointer(store.Ppvt())),
+		uintptr(hwnd),
+		uintptr(ppvtOrNil(sink)))
+	return utl.ErrorAsHResult(ret)
+}
+
+// [GetProperties] method.
+//
+// [GetProperties]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-getproperties
+func (me *IFileSaveDialog) GetProperties(releaser *OleReleaser) (*IPropertyStore, error) {
+	var ppvtQueried **_IUnknownVt
+	ret, _, _ := syscall.SyscallN(
+		(*_IFileSaveDialogVt)(unsafe.Pointer(*me.Ppvt())).GetProperties,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := &IPropertyStore{IUnknown{ppvtQueried}}
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+// [SetProperties] method.
+//
+// [SetProperties]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setproperties
+func (me *IFileSaveDialog) SetProperties(store *IPropertyStore) error {
+	ret, _, _ := syscall.SyscallN(
+		(*_IFileSaveDialogVt)(unsafe.Pointer(*me.Ppvt())).SetProperties,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(store.Ppvt())))
+	return utl.ErrorAsHResult(ret)
+}
+
 // [SetSaveAsItem] method.
 //
 // [SetSaveAsItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-setsaveasitem
-func (me *IFileSaveDialog) SetSaveAsItem(si *IShellItem) error {
+func (me *IFileSaveDialog) SetSaveAsItem(item *IShellItem) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileSaveDialogVt)(unsafe.Pointer(*me.Ppvt())).SetSaveAsItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(si.Ppvt())))
+		uintptr(unsafe.Pointer(item.Ppvt())))
 	return utl.ErrorAsHResult(ret)
 }
 
