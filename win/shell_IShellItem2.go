@@ -127,6 +127,29 @@ func (me *IShellItem2) GetInt32(pkey co.PKEY) (int32, error) {
 	}
 }
 
+// [GetPropertyStore] method.
+//
+// [GetPropertyStore]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getpropertystore
+func (me *IShellItem2) GetPropertyStore(releaser *OleReleaser, flags co.GPS) (*IPropertyStore, error) {
+	var ppvtQueried **_IUnknownVt
+	guid := GuidFrom(co.IID_IPropertyStore)
+
+	ret, _, _ := syscall.SyscallN(
+		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetPropertyStore,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(flags),
+		uintptr(unsafe.Pointer(&guid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := &IPropertyStore{IUnknown{ppvtQueried}}
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
 // [GetString] method.
 //
 // # Example
