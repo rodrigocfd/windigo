@@ -436,6 +436,19 @@ const (
 	SHCONTF_INCLUDESUPERHIDDEN    SHCONTF = 0x1_0000
 )
 
+// [_SHGDNF] enumeration.
+//
+// [_SHGDNF]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_shgdnf
+type SHGDN uint32
+
+const (
+	SHGDN_NORMAL        SHGDN = 0
+	SHGDN_INFOLDER      SHGDN = 0x1
+	SHGDN_FOREDITING    SHGDN = 0x1000
+	SHGDN_FORADDRESSBAR SHGDN = 0x4000
+	SHGDN_FORPARSING    SHGDN = 0x8000
+)
+
 // [SHGetFileInfo] uFlags.
 //
 // [SHGetFileInfo]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow

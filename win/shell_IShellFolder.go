@@ -195,6 +195,40 @@ func (me *IShellFolder) ParseDisplayName(
 	}
 }
 
+// [SetNameOf] method.
+//
+// [SetNameOf]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellfolder-setnameof
+func (me *IShellFolder) SetNameOf(
+	releaser *OleReleaser,
+	hWnd HWND,
+	pidl *ITEMIDLIST,
+	name string,
+	flags co.SHGDN,
+) (*ITEMIDLIST, error) {
+	var idlChild ITEMIDLIST
+
+	wbuf := wstr.NewBufConverter()
+	defer wbuf.Free()
+	pName := wbuf.PtrAllowEmpty(name)
+
+	ret, _, _ := syscall.SyscallN(
+		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).SetNameOf,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(*pidl)),
+		uintptr(pName),
+		uintptr(flags),
+		uintptr(unsafe.Pointer(&idlChild)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pIdlChild := &idlChild
+		releaser.Add(pIdlChild)
+		return pIdlChild, nil
+	} else {
+		return nil, hr
+	}
+}
+
 type _IShellFolderVt struct {
 	_IUnknownVt
 	ParseDisplayName uintptr
