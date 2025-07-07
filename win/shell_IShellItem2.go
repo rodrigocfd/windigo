@@ -70,21 +70,20 @@ func (me *IShellItem2) GetBool(pkey co.PKEY) (bool, error) {
 // [GetCLSID] method.
 //
 // [GetCLSID]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getclsid
-func (me *IShellItem2) GetCLSID(pkey co.PKEY) (GUID, error) {
+func (me *IShellItem2) GetCLSID(pkey co.PKEY) (co.CLSID, error) {
 	guidPkey := PropertykeyFrom(pkey)
-	var clsid GUID
+	var guidClsid GUID
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetCLSID,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidPkey)),
-
-		uintptr(unsafe.Pointer(&clsid)))
+		uintptr(unsafe.Pointer(&guidClsid)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return clsid, nil
+		return co.CLSID(guidClsid.String()), nil
 	} else {
-		return GUID{}, hr
+		return co.CLSID(""), hr
 	}
 }
 
