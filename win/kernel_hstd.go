@@ -84,6 +84,23 @@ func (hStd HSTD) GetLargestConsoleWindowSize() (COORD, error) {
 
 var _GetLargestConsoleWindowSize *syscall.Proc
 
+// [GetNumberOfConsoleInputEvents] function.
+//
+// [GetNumberOfConsoleInputEvents]: https://learn.microsoft.com/en-us/windows/console/getnumberofconsoleinputevents
+func (hStd HSTD) GetNumberOfConsoleInputEvents() (uint, error) {
+	var numberOfEvents uint32
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_GetNumberOfConsoleInputEvents, "GetNumberOfConsoleInputEvents"),
+		uintptr(hStd),
+		uintptr(unsafe.Pointer(&numberOfEvents)))
+	if ret == 0 {
+		return 0, co.ERROR(err)
+	}
+	return uint(numberOfEvents), nil
+}
+
+var _GetNumberOfConsoleInputEvents *syscall.Proc
+
 // [ReadConsole] function.
 //
 // [ReadConsole]: https://learn.microsoft.com/en-us/windows/console/readconsole
