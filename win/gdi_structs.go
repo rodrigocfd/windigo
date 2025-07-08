@@ -337,7 +337,7 @@ type LOGFONT struct {
 	LfOutPrecision   co.OUT_PRECIS
 	LfClipPrecision  co.CLIP_PRECIS
 	LfQuality        co.QUALITY
-	LfPitchAndFamily co.FF
+	lfPitchAndFamily uint8 // combination of co.PITCH and co.FF
 	lfFaceName       [utl.LF_FACESIZE]uint16
 }
 
@@ -346,6 +346,22 @@ func (lf *LOGFONT) LfFaceName() string {
 }
 func (lf *LOGFONT) SetLfFaceName(val string) {
 	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(lf.lfFaceName)-1)), lf.lfFaceName[:])
+}
+
+func (lf *LOGFONT) Pitch() co.PITCH {
+	return co.PITCH(lf.lfPitchAndFamily & 0b1111)
+}
+func (lf *LOGFONT) SetPitch(val co.PITCH) {
+	lf.lfPitchAndFamily &^= 0b1111 // clear bits
+	lf.lfPitchAndFamily |= uint8(val & 0b1111)
+}
+
+func (lf *LOGFONT) Family() co.FF {
+	return co.FF(lf.lfPitchAndFamily & 0b1111_0000)
+}
+func (lf *LOGFONT) SetFamily(val co.FF) {
+	lf.lfPitchAndFamily &^= 0b1111_0000 // clear bits
+	lf.lfPitchAndFamily |= uint8(val & 0b1111_0000)
 }
 
 // [LOGPEN] struct.
@@ -462,8 +478,24 @@ type TEXTMETRIC struct {
 	TmItalic           uint8
 	TmUnderlined       uint8
 	TmStruckOut        uint8
-	TmPitchAndFamily   uint8
+	tmPitchAndFamily   uint8 // combination of co.TMPF and co.FF
 	TmCharSet          co.CHARSET
+}
+
+func (tm *TEXTMETRIC) Pitch() co.TMPF {
+	return co.TMPF(tm.tmPitchAndFamily & 0b1111)
+}
+func (tm *TEXTMETRIC) SetPitch(val co.TMPF) {
+	tm.tmPitchAndFamily &^= 0b1111 // clear bits
+	tm.tmPitchAndFamily |= uint8(val & 0b1111)
+}
+
+func (tm *TEXTMETRIC) Family() co.FF {
+	return co.FF(tm.tmPitchAndFamily & 0b1111_0000)
+}
+func (tm *TEXTMETRIC) SetFamily(val co.FF) {
+	tm.tmPitchAndFamily &^= 0b1111_0000 // clear bits
+	tm.tmPitchAndFamily |= uint8(val & 0b1111_0000)
 }
 
 // [TRIVERTEX] struct.

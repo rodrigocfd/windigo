@@ -34,6 +34,53 @@ type CONSOLE_FONT_INFO struct {
 	DwFontSize COORD
 }
 
+// [CONSOLE_FONT_INFOEX] struct.
+//
+// ⚠️ You must call [CONSOLE_FONT_INFOEX.SetCbSize] to initialize the struct.
+//
+// # Example
+//
+//	var cfix win.CONSOLE_FONT_INFOEX
+//	cfix.SetCbSize()
+//
+// [CONSOLE_FONT_INFOEX]: https://learn.microsoft.com/en-us/windows/console/console-font-infoex
+type CONSOLE_FONT_INFOEX struct {
+	cbSize     uint32
+	NFont      uint32
+	DwFontSize COORD
+	fontFamily uint32 // combination of co.TMPF and co.FF
+	FontWeight uint32
+	faceName   [utl.LF_FACESIZE]uint16
+}
+
+// Sets the cbSize field to the size of the struct, correctly initializing it.
+func (cfix *CONSOLE_FONT_INFOEX) SetCbSize() {
+	cfix.cbSize = uint32(unsafe.Sizeof(*cfix))
+}
+
+func (tm *CONSOLE_FONT_INFOEX) Pitch() co.TMPF {
+	return co.TMPF(tm.fontFamily & 0b1111)
+}
+func (tm *CONSOLE_FONT_INFOEX) SetPitch(val co.TMPF) {
+	tm.fontFamily &^= 0b1111 // clear bits
+	tm.fontFamily |= uint32(val & 0b1111)
+}
+
+func (tm *CONSOLE_FONT_INFOEX) Family() co.FF {
+	return co.FF(tm.fontFamily & 0b1111_0000)
+}
+func (tm *CONSOLE_FONT_INFOEX) SetFamily(val co.FF) {
+	tm.fontFamily &^= 0b1111_0000 // clear bits
+	tm.fontFamily |= uint32(val & 0b1111_0000)
+}
+
+func (cfix *CONSOLE_FONT_INFOEX) FaceName() string {
+	return wstr.WinSliceToGo(cfix.faceName[:])
+}
+func (cfix *CONSOLE_FONT_INFOEX) SetFaceName(val string) {
+	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(cfix.faceName)-1)), cfix.faceName[:])
+}
+
 // [CONSOLE_READCONSOLE_CONTROL] struct.
 //
 // ⚠️ You must call [CONSOLE_READCONSOLE_CONTROL.SetNLength] to initialize the
@@ -56,8 +103,6 @@ type CONSOLE_READCONSOLE_CONTROL struct {
 func (c *CONSOLE_READCONSOLE_CONTROL) SetNLength() {
 	c.nLength = uint32(unsafe.Sizeof(*c))
 }
-
-// [COORD] struct.
 
 // [COORD] struct.
 //

@@ -490,41 +490,20 @@ const (
 	DMTT_DOWNLOAD_OUTLINE DMTT = 4
 )
 
-// [LOGFONT] lfPitchAndFamily. Combination of PITCH and FF constants.
+// [LOGFONT] family.
+//
+// The values set the bits 4 to 7. Bits 0 to 3 are usually set by [PITCH].
 //
 // [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type FF uint8
 
 const (
-	_PITCH_DEFAULT  FF = 0
-	_PITCH_FIXED    FF = 1
-	_PITCH_VARIABLE FF = 2
-
-	_FF_DONTCARE   FF = 0 << 4
-	_FF_ROMAN      FF = 1 << 4
-	_FF_SWISS      FF = 2 << 4
-	_FF_MODERN     FF = 3 << 4
-	_FF_SCRIPT     FF = 4 << 4
-	_FF_DECORATIVE FF = 5 << 4
-
-	FF_DEFAULT_DONTCARE    = _PITCH_DEFAULT | _FF_DONTCARE
-	FF_DEFAULT_ROMAN       = _PITCH_DEFAULT | _FF_ROMAN
-	FF_DEFAULT_SWISS       = _PITCH_DEFAULT | _FF_SWISS
-	FF_DEFAULT_MODERN      = _PITCH_DEFAULT | _FF_MODERN
-	FF_DEFAULT_SCRIPT      = _PITCH_DEFAULT | _FF_SCRIPT
-	FF_DEFAULT_DECORATIVE  = _PITCH_DEFAULT | _FF_DECORATIVE
-	FF_FIXED_DONTCARE      = _PITCH_FIXED | _FF_DONTCARE
-	FF_FIXED_ROMAN         = _PITCH_FIXED | _FF_ROMAN
-	FF_FIXED_SWISS         = _PITCH_FIXED | _FF_SWISS
-	FF_FIXED_MODERN        = _PITCH_FIXED | _FF_MODERN
-	FF_FIXED_SCRIPT        = _PITCH_FIXED | _FF_SCRIPT
-	FF_FIXED_DECORATIVE    = _PITCH_FIXED | _FF_DECORATIVE
-	FF_VARIABLE_DONTCARE   = _PITCH_VARIABLE | _FF_DONTCARE
-	FF_VARIABLE_ROMAN      = _PITCH_VARIABLE | _FF_ROMAN
-	FF_VARIABLE_SWISS      = _PITCH_VARIABLE | _FF_SWISS
-	FF_VARIABLE_MODERN     = _PITCH_VARIABLE | _FF_MODERN
-	FF_VARIABLE_SCRIPT     = _PITCH_VARIABLE | _FF_SCRIPT
-	FF_VARIABLE_DECORATIVE = _PITCH_VARIABLE | _FF_DECORATIVE
+	FF_DONTCARE   FF = 0 << 4
+	FF_ROMAN      FF = 1 << 4
+	FF_SWISS      FF = 2 << 4
+	FF_MODERN     FF = 3 << 4
+	FF_SCRIPT     FF = 4 << 4
+	FF_DECORATIVE FF = 5 << 4
 )
 
 // [AddFontResourceEx] fl.
@@ -682,6 +661,19 @@ type PFD_TYPE uint8
 const (
 	PFD_TYPE_RGBA       PFD_TYPE = 0
 	PFD_TYPE_COLORINDEX PFD_TYPE = 1
+)
+
+// [LOGFONT] pitch. Originally has PITCH suffix.
+//
+// The values set the bits 0 to 3. Bits 4 to 7 are usually set by [FF].
+//
+// [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
+type PITCH uint8
+
+const (
+	PITCH_DEFAULT  PITCH = 0
+	PITCH_FIXED    PITCH = 1
+	PITCH_VARIABLE PITCH = 2
 )
 
 // [SetPolyFillMode] mode. Originally has no prefix.
@@ -897,4 +889,18 @@ const (
 	TA_BOTTOM     TA = 8
 	TA_BASELINE   TA = 24
 	TA_RTLREADING TA = 256
+)
+
+// [TEXTMETRIC] tmPitchAndFamily.
+//
+// The values set the bits 0 to 3. Bits 4 to 7 are usually set by [FF].
+//
+// [TEXTMETRIC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-textmetricw
+type TMPF uint8
+
+const (
+	TMPF_FIXED_PITCH TMPF = 0x01
+	TMPF_VECTOR      TMPF = 0x02
+	TMPF_DEVICE      TMPF = 0x08
+	TMPF_TRUETYPE    TMPF = 0x04
 )

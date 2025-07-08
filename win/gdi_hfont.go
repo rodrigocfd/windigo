@@ -35,7 +35,8 @@ func CreateFont(
 	outPrecision co.OUT_PRECIS,
 	clipPrecision co.CLIP_PRECIS,
 	quality co.QUALITY,
-	pitchAndFamily co.FF,
+	pitch co.PITCH,
+	family co.FF,
 	faceName string,
 ) (HFONT, error) {
 	wbuf := wstr.NewBufConverter()
@@ -56,7 +57,7 @@ func CreateFont(
 		uintptr(outPrecision),
 		uintptr(clipPrecision),
 		uintptr(quality),
-		uintptr(pitchAndFamily),
+		uintptr(uint8(pitch)|uint8(family)),
 		uintptr(pFaceName))
 	if ret == 0 {
 		return HFONT(0), co.ERROR_INVALID_PARAMETER

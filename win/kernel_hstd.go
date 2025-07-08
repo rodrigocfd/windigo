@@ -51,6 +51,24 @@ func (hStd HSTD) GetCurrentConsoleFont(maximumWindow bool) (CONSOLE_FONT_INFO, e
 
 var _GetCurrentConsoleFont *syscall.Proc
 
+// [GetCurrentConsoleFontEx] function.
+//
+// [GetCurrentConsoleFontEx]: https://learn.microsoft.com/en-us/windows/console/getcurrentconsolefontex
+func (hStd HSTD) GetCurrentConsoleFontEx(maximumWindow bool) (CONSOLE_FONT_INFOEX, error) {
+	var cfix CONSOLE_FONT_INFOEX
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_GetCurrentConsoleFontEx, "GetCurrentConsoleFontEx"),
+		uintptr(hStd),
+		utl.BoolToUintptr(maximumWindow),
+		uintptr(unsafe.Pointer(&cfix)))
+	if ret == 0 {
+		return CONSOLE_FONT_INFOEX{}, co.ERROR(err)
+	}
+	return cfix, nil
+}
+
+var _GetCurrentConsoleFontEx *syscall.Proc
+
 // [ReadConsole] function.
 //
 // [ReadConsole]: https://learn.microsoft.com/en-us/windows/console/readconsole
