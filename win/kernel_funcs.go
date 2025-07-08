@@ -293,6 +293,22 @@ func GetLocalTime() SYSTEMTIME {
 
 var _GetLocalTime *syscall.Proc
 
+// [GetNumberOfConsoleMouseButtons] function.
+//
+// [GetNumberOfConsoleMouseButtons]: https://learn.microsoft.com/en-us/windows/console/getnumberofconsolemousebuttons
+func GetNumberOfConsoleMouseButtons() (uint, error) {
+	var numberOfMouseButtons uint32
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_GetNumberOfConsoleMouseButtons, "GetNumberOfConsoleMouseButtons"),
+		uintptr(unsafe.Pointer(&numberOfMouseButtons)))
+	if ret == 0 {
+		return 0, co.ERROR(err)
+	}
+	return uint(numberOfMouseButtons), nil
+}
+
+var _GetNumberOfConsoleMouseButtons *syscall.Proc
+
 // [GetStartupInfo] function.
 //
 // [GetStartupInfo]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getstartupinfow
