@@ -29,7 +29,7 @@ import (
 //
 // [GetFileVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
 func GetFileVersionInfo(fileName string, dest []byte) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pFileName := wbuf.PtrEmptyIsNil(fileName)
 
@@ -48,7 +48,7 @@ var _GetFileVersionInfoW *syscall.Proc
 //
 // [GetFileVersionInfoSize]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
 func GetFileVersionInfoSize(fileName string) (uint, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pFileName := wbuf.PtrEmptyIsNil(fileName)
 
@@ -101,7 +101,7 @@ var _GetFileVersionInfoSizeW *syscall.Proc
 //					block.LangId, block.CodePage, "ProductName")); ok {
 //
 //				wideStr := unsafe.Slice((*uint16)(pStr), nChars)
-//				str := wstr.WinSliceToGo(wideStr)
+//				str := wstr.DecodeSlice(wideStr)
 //				println(str)
 //			}
 //		}
@@ -109,7 +109,7 @@ var _GetFileVersionInfoSizeW *syscall.Proc
 //
 // [VerQueryValue]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
 func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, uint, bool) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubBlock := wbuf.PtrAllowEmpty(subBlock)
 

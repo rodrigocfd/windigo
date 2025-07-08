@@ -173,7 +173,7 @@ var _EndMenu *syscall.Proc
 //
 // [EnumDisplayDevices]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw
 func EnumDisplayDevices(device string, flags co.EDD) []DISPLAY_DEVICE {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pDevice := wbuf.PtrEmptyIsNil(device)
 
@@ -651,7 +651,7 @@ var _RegisterClassExW *syscall.Proc
 //
 // [RegisterClipboardFormat]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclipboardformatw
 func RegisterClipboardFormat(name string) (co.CF, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pName := wbuf.PtrAllowEmpty(name)
 
@@ -670,7 +670,7 @@ var _RegisterClipboardFormatW *syscall.Proc
 //
 // [RegisterWindowMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerwindowmessagew
 func RegisterWindowMessage(message string) (co.WM, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pMessage := wbuf.PtrEmptyIsNil(message)
 
@@ -821,7 +821,7 @@ var _TranslateMessage *syscall.Proc
 //
 // [UnregisterClass]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unregisterclassw
 func UnregisterClass(className ClassName, hInst HINSTANCE) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pClassName := className.raw(&wbuf)
 

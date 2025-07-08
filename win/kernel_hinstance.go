@@ -26,7 +26,7 @@ type HINSTANCE HANDLE
 //
 // [GetModuleHandle]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
 func GetModuleHandle(moduleName string) (HINSTANCE, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pModuleName := wbuf.PtrEmptyIsNil(moduleName)
 
@@ -47,7 +47,7 @@ var _GetModuleHandleW *syscall.Proc
 //
 // [LoadLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
 func LoadLibrary(libFileName string) (HINSTANCE, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pLibFileName := wbuf.PtrEmptyIsNil(libFileName)
 
@@ -88,7 +88,7 @@ var _FreeLibrary *syscall.Proc
 // [GetModuleFileName]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew
 func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 	sz := wstr.BUF_MAX
-	buf := wstr.NewBufReceiver(sz)
+	buf := wstr.NewBufDecoder(sz)
 	defer buf.Free()
 
 	for {

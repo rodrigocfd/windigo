@@ -31,7 +31,7 @@ func CreateNamedPipe(
 	nDefaultTimeOut uint,
 	securityAttributes *SECURITY_ATTRIBUTES,
 ) (HPIPE, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pName := wbuf.PtrAllowEmpty(name)
 

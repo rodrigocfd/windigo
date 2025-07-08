@@ -27,7 +27,7 @@ type BSTR uintptr
 //
 // [SysAllocString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysallocstring
 func SysAllocString(s string) (BSTR, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pS := wbuf.PtrAllowEmpty(s)
 
@@ -66,7 +66,7 @@ var _SysFreeString *syscall.Proc
 //
 // [SysReAllocString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysreallocstring
 func (bstr BSTR) SysReAllocString(s string) (BSTR, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pS := wbuf.PtrAllowEmpty(s)
 
@@ -84,5 +84,5 @@ var _SysReAllocString *syscall.Proc
 
 // Converts the BSTR pointer to a string.
 func (bstr BSTR) String() string {
-	return wstr.WinPtrToGo((*uint16)(unsafe.Pointer(bstr)))
+	return wstr.DecodePtr((*uint16)(unsafe.Pointer(bstr)))
 }

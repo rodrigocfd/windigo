@@ -145,7 +145,7 @@ var _GetClipboardData *syscall.Proc
 //
 // [GetClipboardFormatName]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardformatnamew
 func (HCLIPBOARD) GetClipboardFormatName(format co.CF) (string, error) {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(

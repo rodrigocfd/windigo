@@ -120,7 +120,7 @@ func (me HeaderItem) SetSortArrow(hdf co.HDF) HeaderItem {
 //
 // [HDM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-setitem
 func (me HeaderItem) SetText(text string) HeaderItem {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	hdi := win.HDITEM{
@@ -179,7 +179,7 @@ func (me HeaderItem) SortArrow() co.HDF {
 //
 // [HDM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getitem
 func (me HeaderItem) Text() string {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	hdi := win.HDITEM{

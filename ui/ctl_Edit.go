@@ -127,7 +127,7 @@ func (me *Edit) SetText(text string) *Edit {
 //
 // [EM_SHOWBALLOONTIP]: https://learn.microsoft.com/en-us/windows/win32/controls/em-showballoontip
 func (me *Edit) ShowBalloonTip(title, text string, icon co.TTI) *Edit {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	ebt := win.EDITBALLOONTIP{

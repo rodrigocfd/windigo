@@ -32,7 +32,7 @@ type CollectionListViewCols struct {
 //
 // [LVM_INSERTCOLUMN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertcolumn
 func (me *CollectionListViewCols) Add(title string, width int) ListViewCol {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	lvc := win.LVCOLUMN{

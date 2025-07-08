@@ -20,7 +20,7 @@ func (hInst HINSTANCE) CreateDialogParam(
 	dialogFunc uintptr,
 	dwInitParam LPARAM,
 ) (HWND, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pTemplateName := templateName.raw(&wbuf)
 
@@ -72,7 +72,7 @@ func (hInst HINSTANCE) DialogBoxParam(
 	dialogFunc uintptr,
 	dwInitParam LPARAM,
 ) (uintptr, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pTemplateName := templateName.raw(&wbuf)
 
@@ -118,7 +118,7 @@ var _GetClassInfoExW *syscall.Proc
 //
 // [LoadAccelerators]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
 func (hInst HINSTANCE) LoadAccelerators(tableName ResId) (HACCEL, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pTableName := tableName.raw(&wbuf)
 
@@ -140,7 +140,7 @@ var _LoadAcceleratorsW *syscall.Proc
 //
 // [LoadCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) (HCURSOR, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pCursorName := cursorName.raw(&wbuf)
 
@@ -169,7 +169,7 @@ var _LoadCursorW *syscall.Proc
 //
 // [LoadIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hInst HINSTANCE) LoadIcon(iconName IconRes) (HICON, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pIconName := iconName.raw(&wbuf)
 
@@ -228,7 +228,7 @@ func (hInst HINSTANCE) LoadImage(
 	cx, cy uint,
 	fuLoad co.LR,
 ) (HGDIOBJ, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pName := name.raw(&wbuf)
 
@@ -254,7 +254,7 @@ var _LoadImageW *syscall.Proc
 //
 // [LoadMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadmenuw
 func (hInst HINSTANCE) LoadMenu(menuName ResId) (HMENU, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pMenuName := menuName.raw(&wbuf)
 

@@ -172,7 +172,7 @@ var _GetThemeRect *syscall.Proc
 //
 // [GetThemeString]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemestring
 func (hTheme HTHEME) GetThemeString(partStateId co.VS, propId co.TMT) (string, error) {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	ret, _, _ := syscall.SyscallN(

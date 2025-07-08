@@ -32,7 +32,7 @@ func CreateWindowEx(
 	instance HINSTANCE,
 	param LPARAM,
 ) (HWND, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pClassName := className.raw(&wbuf)
 	pTitle := wbuf.PtrEmptyIsNil(title)
@@ -63,7 +63,7 @@ var _CreateWindowExW *syscall.Proc
 //
 // [FindWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-findwindoww
 func FindWindow(className ClassName, title string) (HWND, bool) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pClassName := className.raw(&wbuf)
 	pTitle := wbuf.PtrEmptyIsNil(title)
@@ -461,7 +461,7 @@ var _GetAncestor *syscall.Proc
 //
 // [GetClassName]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassnamew
 func (hWnd HWND) GetClassName() (string, error) {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(
@@ -773,7 +773,7 @@ func (hWnd HWND) GetWindowText() (string, error) {
 	}
 	bufSz += 1 // needed buffer, also counting terminating null
 
-	recvBuf := wstr.NewBufReceiver(bufSz)
+	recvBuf := wstr.NewBufDecoder(bufSz)
 	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(
@@ -921,7 +921,7 @@ var _MapDialogRect *syscall.Proc
 //
 // [MessageBox]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
 func (hWnd HWND) MessageBox(text, caption string, uType co.MB) (co.ID, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pText := wbuf.PtrEmptyIsNil(text)
 	pCaption := wbuf.PtrEmptyIsNil(caption)
@@ -1154,7 +1154,7 @@ var _SetWindowRgn *syscall.Proc
 //
 // [SetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowtextw
 func (hWnd HWND) SetWindowText(text string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pText := wbuf.PtrEmptyIsNil(text)
 

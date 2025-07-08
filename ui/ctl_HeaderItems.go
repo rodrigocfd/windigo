@@ -26,7 +26,7 @@ type CollectionHeaderItems struct {
 //
 // [HDM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-insertitem
 func (me *CollectionHeaderItems) Add(text string, width int) HeaderItem {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	hdi := win.HDITEM{

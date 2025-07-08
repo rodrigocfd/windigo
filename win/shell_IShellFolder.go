@@ -164,7 +164,7 @@ func (me *IShellFolder) ParseDisplayName(
 	displayName string,
 	attributes co.SFGAO,
 ) (*ITEMIDLIST, co.SFGAO, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pDisplayName := wbuf.PtrAllowEmpty(displayName)
 
@@ -207,7 +207,7 @@ func (me *IShellFolder) SetNameOf(
 ) (*ITEMIDLIST, error) {
 	var idlChild ITEMIDLIST
 
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pName := wbuf.PtrAllowEmpty(name)
 

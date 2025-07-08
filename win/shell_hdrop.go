@@ -59,7 +59,7 @@ func (hDrop HDROP) DragQueryFile() ([]string, error) {
 		return nil, co.ERROR_INVALID_PARAMETER
 	}
 
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	count := uint32(ret)

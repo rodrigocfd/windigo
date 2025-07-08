@@ -55,7 +55,7 @@ func RegConnectRegistry(machineName string, hKey HKEY) (HKEY, error) {
 		panic("Invalid HKEY.")
 	}
 
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pMachineName := wbuf.PtrEmptyIsNil(machineName)
 
@@ -110,7 +110,7 @@ var _RegCloseKey *syscall.Proc
 //
 // [RegCopyTree]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regcopytreew
 func (hKey HKEY) RegCopyTree(subKey string, dest HKEY) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 
@@ -134,7 +134,7 @@ func (hKey HKEY) RegCreateKeyEx(
 	accessRights co.KEY,
 	securityAttributes *SECURITY_ATTRIBUTES,
 ) (HKEY, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 
@@ -162,7 +162,7 @@ var _RegCreateKeyExW *syscall.Proc
 //
 // [RegDeleteKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyw
 func (hKey HKEY) RegDeleteKey(subKey string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrAllowEmpty(subKey)
 
@@ -181,7 +181,7 @@ var _RegDeleteKeyW *syscall.Proc
 //
 // [RegDeleteKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyexw
 func (hKey HKEY) RegDeleteKeyEx(subKey string, samDesired co.KEY) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrAllowEmpty(subKey)
 
@@ -200,7 +200,7 @@ var _RegDeleteKeyExW *syscall.Proc
 //
 // [RegDeleteKeyValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyvaluew
 func (hKey HKEY) RegDeleteKeyValue(subKey, valueName string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 	pValueName := wbuf.PtrEmptyIsNil(valueName)
@@ -219,7 +219,7 @@ var _RegDeleteKeyValueW *syscall.Proc
 //
 // [RegDeleteTree]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletetreew
 func (hKey HKEY) RegDeleteTree(subKey string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 
@@ -236,7 +236,7 @@ var _RegDeleteTreeW *syscall.Proc
 //
 // [RegDeleteValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletevaluew
 func (hKey HKEY) RegDeleteValue(valueName string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pValueName := wbuf.PtrEmptyIsNil(valueName)
 
@@ -301,7 +301,7 @@ func (hKey HKEY) RegEnumKeyEx() ([]string, error) {
 
 	keys := make([]string, 0, nfo.NumSubKeys) // to be returned
 
-	keyNameBuf := wstr.NewBufReceiver(nfo.MaxSubKeyNameLen + 1)
+	keyNameBuf := wstr.NewBufDecoder(nfo.MaxSubKeyNameLen + 1)
 	defer keyNameBuf.Free()
 
 	for i := uint(0); i < nfo.NumSubKeys; i++ {
@@ -354,7 +354,7 @@ func (hKey HKEY) RegEnumValue() ([]string, error) {
 
 	names := make([]string, 0, nfo.NumValues) // to be returned
 
-	valueNameBuf := wstr.NewBufReceiver(nfo.MaxValueNameLen + 1)
+	valueNameBuf := wstr.NewBufDecoder(nfo.MaxValueNameLen + 1)
 	defer valueNameBuf.Free()
 
 	for i := uint(0); i < nfo.NumValues; i++ {
@@ -406,7 +406,7 @@ var _RegFlushKey *syscall.Proc
 //
 // [RegGetValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-reggetvaluew
 func (hKey HKEY) RegGetValue(subKey, valueName string, flags co.RRF) (RegVal, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 	pValueName := wbuf.PtrEmptyIsNil(valueName)
@@ -459,7 +459,7 @@ var _RegGetValueW *syscall.Proc
 //
 // [RegLoadKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regloadkeyw
 func (hKey HKEY) RegLoadKey(subKey, file string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 	pFile := wbuf.PtrAllowEmpty(file)
@@ -492,7 +492,7 @@ func (hKey HKEY) RegOpenKeyEx(
 	options co.REG_OPTION,
 	accessRights co.KEY,
 ) (HKEY, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 
@@ -518,7 +518,7 @@ var _RegOpenKeyExW *syscall.Proc
 //
 // [RegQueryInfoKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryinfokeyw
 func (hKey HKEY) RegQueryInfoKey() (HkeyInfo, error) {
-	classBuf := wstr.NewBufReceiver(64)
+	classBuf := wstr.NewBufDecoder(64)
 	defer classBuf.Free()
 
 	var (
@@ -604,7 +604,7 @@ type HkeyInfo struct {
 //
 // [RegQueryMultipleValues]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regquerymultiplevaluesw
 func (hKey HKEY) RegQueryMultipleValues(valueNames ...string) ([]RegVal, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	valents := make([]_VALENT, 0, len(valueNames))
@@ -692,7 +692,7 @@ var _RegQueryReflectionKey *syscall.Proc
 //
 // [RegQueryValueEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryvalueexw
 func (hKey HKEY) RegQueryValueEx(valueName string) (RegVal, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pValueName := wbuf.PtrEmptyIsNil(valueName)
 
@@ -738,7 +738,7 @@ var _RegQueryValueExW *syscall.Proc
 //
 // [RegRenameKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regrenamekey
 func (hKey HKEY) RegRenameKey(subKey, newName string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrAllowEmpty(subKey)
 	pNewName := wbuf.PtrEmptyIsNil(newName)
@@ -757,7 +757,7 @@ var _RegRenameKey *syscall.Proc
 //
 // [RegReplaceKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regreplacekeyw
 func (hKey HKEY) RegReplaceKey(subKey, srcFile, destBackupFile string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 	pSrcFile := wbuf.PtrEmptyIsNil(srcFile)
@@ -780,7 +780,7 @@ var _RegReplaceKeyW *syscall.Proc
 //
 // [RegRestoreKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regrestorekeyw
 func (hKey HKEY) RegRestoreKey(srcFile string, flags co.REG_RESTORE) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSrcFile := wbuf.PtrAllowEmpty(srcFile)
 
@@ -800,7 +800,7 @@ var _RegRestoreKeyW *syscall.Proc
 //
 // [RegSaveKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsavekeyw
 func (hKey HKEY) RegSaveKey(destFile string, securityAttributes *SECURITY_ATTRIBUTES) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pDestFile := wbuf.PtrAllowEmpty(destFile)
 
@@ -824,7 +824,7 @@ func (hKey HKEY) RegSaveKeyEx(
 	securityAttributes *SECURITY_ATTRIBUTES,
 	flags co.REG_SAVE,
 ) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pDestFile := wbuf.PtrAllowEmpty(destFile)
 
@@ -843,7 +843,7 @@ var _RegSaveKeyExW *syscall.Proc
 //
 // [RegSetKeyValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetkeyvaluew
 func (hKey HKEY) RegSetKeyValue(subKey, valueName string, data RegVal) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrAllowEmpty(subKey)
 	pValueName := wbuf.PtrEmptyIsNil(valueName)
@@ -865,7 +865,7 @@ var _RegSetKeyValueW *syscall.Proc
 //
 // [RegSetValueEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetvalueexw
 func (hKey HKEY) RegSetValueEx(valueName string, data RegVal) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pValueName := wbuf.PtrEmptyIsNil(valueName)
 
@@ -886,7 +886,7 @@ var _RegSetValueExW *syscall.Proc
 //
 // [RegUnLoadKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regunloadkeyw
 func (hKey HKEY) RegUnLoadKey(subKey string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pSubKey := wbuf.PtrEmptyIsNil(subKey)
 

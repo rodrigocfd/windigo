@@ -132,7 +132,7 @@ func (me ListViewCol) SetSortArrow(hdf co.HDF) ListViewCol {
 //
 // [LVM_SETCOLUMN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setcolumn
 func (me ListViewCol) SetTitle(title string) ListViewCol {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	lvc := win.LVCOLUMN{
@@ -221,7 +221,7 @@ func (me ListViewCol) SortArrow() co.HDF {
 //
 // [LVM_GETCOLUMN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getcolumn
 func (me ListViewCol) Title() string {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	lvc := win.LVCOLUMN{

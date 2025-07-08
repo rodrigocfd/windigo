@@ -115,7 +115,7 @@ var _InitMUILanguage *syscall.Proc
 //
 // [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
-	wbuf := wstr.NewBufConverter() // to keep all strings used in the call
+	wbuf := wstr.NewBufEncoder() // to keep all strings used in the call
 	defer wbuf.Free()
 
 	tdcBuf := NewVecSized(160, byte(0)) // packed TASKDIALOGCONFIG is 160 bytes

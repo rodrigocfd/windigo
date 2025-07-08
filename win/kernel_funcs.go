@@ -17,7 +17,7 @@ import (
 //
 // [CopyFile]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-copyfilew
 func CopyFile(existingFile, newFile string, failIfExists bool) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pExistingFile := wbuf.PtrEmptyIsNil(existingFile)
 	pNewFile := wbuf.PtrEmptyIsNil(newFile)
@@ -36,7 +36,7 @@ var _CopyFileW *syscall.Proc
 //
 // [CreateDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw
 func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pPathName := wbuf.PtrEmptyIsNil(pathName)
 
@@ -76,13 +76,13 @@ func CreateProcess(
 	currentDirectory string,
 	startupInfo *STARTUPINFO,
 ) (PROCESS_INFORMATION, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pApplicationName := wbuf.PtrEmptyIsNil(applicationName)
 	pCommandLine := wbuf.PtrEmptyIsNil(commandLine)
 	pCurrentDirectory := wbuf.PtrEmptyIsNil(currentDirectory)
 
-	pEnvironment := wstr.GoArrToWinPtr(environment...)
+	pEnvironment := wstr.EncodeArrToPtr(environment...)
 	var pi PROCESS_INFORMATION
 
 	ret, _, err := syscall.SyscallN(
@@ -109,7 +109,7 @@ var _CreateProcessW *syscall.Proc
 //
 // [DeleteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
 func DeleteFile(fileName string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pFileName := wbuf.PtrEmptyIsNil(fileName)
 
@@ -136,7 +136,7 @@ var _ExitProcess *syscall.Proc
 //
 // [ExpandEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
 func ExpandEnvironmentStrings(s string) (string, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pS := wbuf.PtrAllowEmpty(s)
 
@@ -149,7 +149,7 @@ func ExpandEnvironmentStrings(s string) (string, error) {
 	}
 
 	szBuf := uint(ret) // includes terminating null
-	recvBuf := wstr.NewBufReceiver(szBuf)
+	recvBuf := wstr.NewBufDecoder(szBuf)
 	defer recvBuf.Free()
 
 	for {
@@ -198,7 +198,7 @@ var _FileTimeToSystemTime *syscall.Proc
 func GetCommandLine() string {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GetCommandLineW, "GetCommandLineW"))
-	return wstr.WinPtrToGo((*uint16)(unsafe.Pointer(ret)))
+	return wstr.DecodePtr((*uint16)(unsafe.Pointer(ret)))
 }
 
 var _GetCommandLineW *syscall.Proc
@@ -237,7 +237,7 @@ func GetEnvironmentStrings() (map[string]string, error) {
 	if ret == 0 {
 		return nil, co.ERROR_NOT_CAPABLE
 	}
-	rawEntries := wstr.WinArrPtrToGo((*uint16)(unsafe.Pointer(ret)))
+	rawEntries := wstr.DecodeArrPtr((*uint16)(unsafe.Pointer(ret)))
 
 	ret, _, _ = syscall.SyscallN( // free right away
 		dll.Load(dll.KERNEL32, &_FreeEnvironmentStringsW, "FreeEnvironmentStringsW"),
@@ -263,7 +263,7 @@ var (
 //
 // [GetFileAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pFileName := wbuf.PtrEmptyIsNil(fileName)
 
@@ -525,7 +525,7 @@ func MAKEWORD(lo, hi uint8) uint16 {
 //
 // [SetConsoleTitle]: https://learn.microsoft.com/en-us/windows/console/setconsoletitle
 func SetConsoleTitle(title string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pTitle := wbuf.PtrEmptyIsNil(title)
 
@@ -541,7 +541,7 @@ var _SetConsoleTitleW *syscall.Proc
 //
 // [SetCurrentDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setcurrentdirectory
 func SetCurrentDirectory(pathName string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pPathName := wbuf.PtrEmptyIsNil(pathName)
 

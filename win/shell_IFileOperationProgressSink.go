@@ -329,7 +329,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 						return uintptr(fun(
 							co.TSF(dwFlags),
 							&IShellItem{IUnknown{psiItem}},
-							wstr.WinPtrToGo(pszNewName),
+							wstr.DecodePtr(pszNewName),
 						))
 					}
 				},
@@ -349,7 +349,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 						return uintptr(fun(
 							co.TSF(dwFlags),
 							&IShellItem{IUnknown{psiItem}},
-							wstr.WinPtrToGo(pszNewName),
+							wstr.DecodePtr(pszNewName),
 							hrRename,
 							&IShellItem{IUnknown{psiNewlyCreated}},
 						))
@@ -370,7 +370,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 							co.TSF(dwFlags),
 							&IShellItem{IUnknown{psiItem}},
 							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.WinPtrToGo(pszNewName),
+							wstr.DecodePtr(pszNewName),
 						))
 					}
 				},
@@ -391,7 +391,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 							co.TSF(dwFlags),
 							&IShellItem{IUnknown{psiItem}},
 							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.WinPtrToGo(pszNewName),
+							wstr.DecodePtr(pszNewName),
 							hrMove,
 							&IShellItem{IUnknown{psiNewlyCreated}},
 						))
@@ -412,7 +412,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 							co.TSF(dwFlags),
 							&IShellItem{IUnknown{psiItem}},
 							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.WinPtrToGo(pszNewName),
+							wstr.DecodePtr(pszNewName),
 						))
 					}
 				},
@@ -433,7 +433,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 							co.TSF(dwFlags),
 							&IShellItem{IUnknown{psiItem}},
 							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.WinPtrToGo(pszNewName),
+							wstr.DecodePtr(pszNewName),
 							hrMove,
 							&IShellItem{IUnknown{psiNewlyCreated}},
 						))
@@ -486,7 +486,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 						return uintptr(fun(
 							co.TSF(dwFlags),
 							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.WinPtrToGo(pszNewName),
+							wstr.DecodePtr(pszNewName),
 						))
 					}
 				},
@@ -507,8 +507,8 @@ func (me *_IFileOperationProgressSinkVt) init() {
 						return uintptr(fun(
 							co.TSF(dwFlags),
 							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.WinPtrToGo(pszNewName),
-							wstr.WinPtrToGo(pszTemplateName),
+							wstr.DecodePtr(pszNewName),
+							wstr.DecodePtr(pszTemplateName),
 							fileAttributes,
 							hrNew,
 							&IShellItem{IUnknown{psiNewItem}},

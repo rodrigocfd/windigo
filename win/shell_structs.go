@@ -78,24 +78,24 @@ func (nid *NOTIFYICONDATA) SetCbSize() {
 }
 
 func (nid *NOTIFYICONDATA) SzTip() string {
-	return wstr.WinSliceToGo(nid.szTip[:])
+	return wstr.DecodeSlice(nid.szTip[:])
 }
 func (nid *NOTIFYICONDATA) SetSzTip(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szTip)-1)), nid.szTip[:])
+	wstr.EncodeToBuf(val, nid.szTip[:])
 }
 
 func (nid *NOTIFYICONDATA) SzInfo() string {
-	return wstr.WinSliceToGo(nid.szInfo[:])
+	return wstr.DecodeSlice(nid.szInfo[:])
 }
 func (nid *NOTIFYICONDATA) SetSzInfo(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szInfo)-1)), nid.szInfo[:])
+	wstr.EncodeToBuf(val, nid.szInfo[:])
 }
 
 func (nid *NOTIFYICONDATA) SzInfoTitle() string {
-	return wstr.WinSliceToGo(nid.szInfoTitle[:])
+	return wstr.DecodeSlice(nid.szInfoTitle[:])
 }
 func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(nid.szInfoTitle)-1)), nid.szInfoTitle[:])
+	wstr.EncodeToBuf(val, nid.szInfoTitle[:])
 }
 
 // [NOTIFYICONIDENTIFIER] struct.
@@ -164,17 +164,17 @@ type SHFILEINFO struct {
 }
 
 func (shf *SHFILEINFO) SzDisplayName() string {
-	return wstr.WinSliceToGo(shf.szDisplayName[:])
+	return wstr.DecodeSlice(shf.szDisplayName[:])
 }
 func (shf *SHFILEINFO) SetSzDisplayName(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(shf.szDisplayName)-1)), shf.szDisplayName[:])
+	wstr.EncodeToBuf(val, shf.szDisplayName[:])
 }
 
 func (shf *SHFILEINFO) SzTypeName() string {
-	return wstr.WinSliceToGo(shf.szTypeName[:])
+	return wstr.DecodeSlice(shf.szTypeName[:])
 }
 func (shf *SHFILEINFO) SetSzTypeName(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(shf.szTypeName)-1)), shf.szTypeName[:])
+	wstr.EncodeToBuf(val, shf.szTypeName[:])
 }
 
 // [THUMBBUTTON] struct.
@@ -190,8 +190,8 @@ type THUMBBUTTON struct {
 }
 
 func (tb *THUMBBUTTON) SzTip() string {
-	return wstr.WinSliceToGo(tb.szTip[:])
+	return wstr.DecodeSlice(tb.szTip[:])
 }
 func (tb *THUMBBUTTON) SetSzTip(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(tb.szTip)-1)), tb.szTip[:])
+	wstr.EncodeToBuf(val, tb.szTip[:])
 }

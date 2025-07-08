@@ -36,19 +36,19 @@ func (dvt *DVTARGETDEVICE) SetTdSize() {
 func (dvt *DVTARGETDEVICE) DriverName() string {
 	ptr := unsafe.Pointer(dvt)
 	ptr = unsafe.Add(ptr, dvt.tdDriverNameOffset)
-	return wstr.WinPtrToGo((*uint16)(ptr))
+	return wstr.DecodePtr((*uint16)(ptr))
 }
 
 func (dvt *DVTARGETDEVICE) DeviceName() string {
 	ptr := unsafe.Pointer(dvt)
 	ptr = unsafe.Add(ptr, dvt.tdDeviceNameOffset)
-	return wstr.WinPtrToGo((*uint16)(ptr))
+	return wstr.DecodePtr((*uint16)(ptr))
 }
 
 func (dvt *DVTARGETDEVICE) PortName() string {
 	ptr := unsafe.Pointer(dvt)
 	ptr = unsafe.Add(ptr, dvt.tdPortNameOffset)
-	return wstr.WinPtrToGo((*uint16)(ptr))
+	return wstr.DecodePtr((*uint16)(ptr))
 }
 
 // [FORMATETC] struct.
@@ -115,7 +115,7 @@ func (stg *STGMEDIUM) HGlobal() (HGLOBAL, bool) {
 // Attemps to return the string if tymed == co.TYMED_FILE.
 func (stg *STGMEDIUM) FileName() (string, bool) {
 	if stg.tymed == co.TYMED_FILE {
-		return wstr.WinPtrToGo((*uint16)(unsafe.Pointer(stg.data))), true
+		return wstr.DecodePtr((*uint16)(unsafe.Pointer(stg.data))), true
 	}
 	return "", false
 }

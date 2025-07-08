@@ -64,7 +64,7 @@ func (me TabItem) Select() TabItem {
 //
 // [TCM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-setitem
 func (me TabItem) SetText(text string) TabItem {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	tci := win.TCITEM{
@@ -87,7 +87,7 @@ func (me TabItem) SetText(text string) TabItem {
 //
 // [TCM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-getitem
 func (me TabItem) Text() string {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	tci := win.TCITEM{

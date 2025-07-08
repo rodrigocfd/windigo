@@ -37,7 +37,7 @@ func (me *IDispatch) GetIDsOfNames(
 	nullGuid := GuidFrom(co.IID_NULL)
 	memberIds := make([]MEMBERID, nParams) // to be returned
 
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	strPtrs := make([]*uint16, 0, nParams)

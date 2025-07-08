@@ -55,7 +55,7 @@ func (me *CollectionListViewItems) AddWithIcon(iconIndex int, texts ...string) L
 		panic("You must inform at least 1 text when adding a ListView item.")
 	}
 
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	mask := co.LVIF_TEXT
@@ -152,7 +152,7 @@ func (me *CollectionListViewItems) Focused() (ListViewItem, bool) {
 //
 // [LVM_FINDITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-finditem
 func (me *CollectionListViewItems) Find(text string) (ListViewItem, bool) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	lvfi := win.LVFINDINFO{

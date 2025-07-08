@@ -28,7 +28,7 @@ type TreeViewItem struct {
 //
 // [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
 func (me TreeViewItem) AddChild(text string, iconIndex int) TreeViewItem {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	mask := co.TVIF_TEXT
@@ -261,7 +261,7 @@ func (me TreeViewItem) SetIconIndex(iconIndex int) TreeViewItem {
 //
 // [TVM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-setitem
 func (me TreeViewItem) SetText(text string) TreeViewItem {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	tvi := win.TVITEMEX{
@@ -284,7 +284,7 @@ func (me TreeViewItem) SetText(text string) TreeViewItem {
 //
 // [TVM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getitem
 func (me TreeViewItem) Text() string {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	tvi := win.TVITEMEX{

@@ -100,7 +100,7 @@ func (me *IFileOperation) CopyItem(
 	copyName string,
 	fops *IFileOperationProgressSink,
 ) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pCopyName := wbuf.PtrEmptyIsNil(copyName)
 
@@ -151,7 +151,7 @@ func (me *IFileOperation) MoveItem(
 	newName string,
 	fops *IFileOperationProgressSink,
 ) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pNewName := wbuf.PtrEmptyIsNil(newName)
 
@@ -174,7 +174,7 @@ func (me *IFileOperation) NewItem(
 	name, templateName string,
 	fops *IFileOperationProgressSink,
 ) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pName := wbuf.PtrAllowEmpty(name)
 	pTemplateName := wbuf.PtrEmptyIsNil(templateName)
@@ -208,7 +208,7 @@ func (me *IFileOperation) RenameItem(
 	newName string,
 	fops *IFileOperationProgressSink,
 ) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pNewName := wbuf.PtrEmptyIsNil(newName)
 
@@ -247,7 +247,7 @@ func (me *IFileOperation) SetOwnerWindow(hWnd HWND) error {
 //
 // [SetProgressMessage]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperation-setprogressmessage
 func (me *IFileOperation) SetProgressMessage(message string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pMessage := wbuf.PtrEmptyIsNil(message)
 

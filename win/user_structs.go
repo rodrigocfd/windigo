@@ -116,17 +116,17 @@ func (dd *DISPLAY_DEVICE) SetCb() {
 }
 
 func (dd *DISPLAY_DEVICE) DeviceName() string {
-	return wstr.WinSliceToGo(dd.deviceName[:])
+	return wstr.DecodeSlice(dd.deviceName[:])
 }
 func (dd *DISPLAY_DEVICE) SetDeviceName(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(dd.deviceName)-1)), dd.deviceName[:])
+	wstr.EncodeToBuf(val, dd.deviceName[:])
 }
 
 func (dd *DISPLAY_DEVICE) DeviceString() string {
-	return wstr.WinSliceToGo(dd.deviceString[:])
+	return wstr.DecodeSlice(dd.deviceString[:])
 }
 func (dd *DISPLAY_DEVICE) SetDeviceString(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(dd.deviceString)-1)), dd.deviceString[:])
+	wstr.EncodeToBuf(val, dd.deviceString[:])
 }
 
 // [DLGTEMPLATE] struct.
@@ -244,17 +244,17 @@ func (iix *ICONINFOEX) SetCbSize() {
 }
 
 func (iix *ICONINFOEX) SzModName() string {
-	return wstr.WinSliceToGo(iix.szModName[:])
+	return wstr.DecodeSlice(iix.szModName[:])
 }
 func (iix *ICONINFOEX) SetSzModName(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(iix.szModName)-1)), iix.szModName[:])
+	wstr.EncodeToBuf(val, iix.szModName[:])
 }
 
 func (iix *ICONINFOEX) SzResName() string {
-	return wstr.WinSliceToGo(iix.szResName[:])
+	return wstr.DecodeSlice(iix.szResName[:])
 }
 func (iix *ICONINFOEX) SetSzResName(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(iix.szResName)-1)), iix.szResName[:])
+	wstr.EncodeToBuf(val, iix.szResName[:])
 }
 
 // Second message [parameter].

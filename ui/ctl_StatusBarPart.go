@@ -54,7 +54,7 @@ func (me StatusBarPart) SetIcon(hIcon win.HICON) StatusBarPart {
 //
 // [SB_SETTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/sb-settext
 func (me StatusBarPart) SetText(text string) StatusBarPart {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pText := wbuf.PtrAllowEmpty(text)
 
@@ -78,7 +78,7 @@ func (me StatusBarPart) Text() string {
 		return ""
 	}
 
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	me.owner.hWnd.SendMessage(co.SB_GETTEXT,

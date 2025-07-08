@@ -74,7 +74,7 @@ func OleLoadPicturePath(
 	path string,
 	transparentColor COLORREF,
 ) (*IPicture, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pPath := wbuf.PtrEmptyIsNil(path)
 

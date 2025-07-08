@@ -28,7 +28,7 @@ var _EmptyWorkingSet *syscall.Proc
 //
 // [GetMappedFileName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmappedfilenamew
 func (hProcess HPROCESS) GetMappedFileName(address uintptr) (string, error) {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(
@@ -49,7 +49,7 @@ var _GetMappedFileNameW *syscall.Proc
 //
 // [GetModuleBaseName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
 func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(
@@ -70,7 +70,7 @@ var _GetModuleBaseNameW *syscall.Proc
 //
 // [GetModuleFileNameEx]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulefilenameexw
 func (hProcess HPROCESS) GetModuleFileNameEx(hModule HINSTANCE) (string, error) {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(
@@ -110,7 +110,7 @@ var _GetModuleInformation *syscall.Proc
 //
 // [GetProcessImageFileName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getprocessimagefilenamew
 func (hProcess HPROCESS) GetProcessImageFileName() (string, error) {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	ret, _, err := syscall.SyscallN(

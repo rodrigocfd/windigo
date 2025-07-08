@@ -14,7 +14,7 @@ import (
 //
 // [ShellAbout]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shellaboutw
 func (hWnd HWND) ShellAbout(app, otherStuff string, hIcon HICON) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pApp := wbuf.PtrAllowEmpty(app)
 	pOtherStuff := wbuf.PtrEmptyIsNil(otherStuff)

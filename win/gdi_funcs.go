@@ -14,7 +14,7 @@ import (
 //
 // [AddFontResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-addfontresourceexw
 func AddFontResourceEx(name string, fl co.FR) (uint, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pName := wbuf.PtrAllowEmpty(name)
 

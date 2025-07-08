@@ -79,7 +79,7 @@ func RegValExpandSz(s string) RegVal {
 func (me *RegVal) ExpandSz() (string, bool) {
 	if me.tag == co.REG_EXPAND_SZ {
 		str16 := unsafe.Slice((*uint16)(unsafe.Pointer(&me.data[0])), len(me.data)/2)
-		return wstr.WinSliceToGo(str16), true
+		return wstr.DecodeSlice(str16), true
 	}
 	return "", false
 }
@@ -127,7 +127,7 @@ func (me *RegVal) DwordBigEndian() (uint32, bool) {
 
 // Creates a new [RegVal] with a [co.REG_MULTI_SZ] value.
 func RegValMultiSz(strs ...string) RegVal {
-	buf := wstr.GoArrToWinSlice(strs...)
+	buf := wstr.EncodeArrToSlice(strs...)
 	data := unsafe.Slice((*byte)(unsafe.Pointer(&buf[0])), len(buf)*2)
 
 	return RegVal{
@@ -140,7 +140,7 @@ func RegValMultiSz(strs ...string) RegVal {
 func (me *RegVal) MultiSz() ([]string, bool) {
 	if me.tag == co.REG_MULTI_SZ {
 		pStr16 := (*uint16)(unsafe.Pointer(&me.data[0]))
-		return wstr.WinArrPtrToGo(pStr16), true
+		return wstr.DecodeArrPtr(pStr16), true
 	}
 	return nil, false
 }
@@ -190,7 +190,7 @@ func RegValSz(s string) RegVal {
 func (me *RegVal) Sz() (string, bool) {
 	if me.tag == co.REG_SZ {
 		str16 := unsafe.Slice((*uint16)(unsafe.Pointer(&me.data[0])), len(me.data)/2)
-		return wstr.WinSliceToGo(str16), true
+		return wstr.DecodeSlice(str16), true
 	}
 	return "", false
 }

@@ -287,7 +287,7 @@ func (me ListViewItem) SetIconIndex(iconIndex int) ListViewItem {
 //
 // [LVM_SETITEMTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setitemtext
 func (me ListViewItem) SetText(columnIndex int, text string) ListViewItem {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	lvi := win.LVITEM{
@@ -309,7 +309,7 @@ func (me ListViewItem) SetText(columnIndex int, text string) ListViewItem {
 //
 // [LVM_GETITEMTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitemtext
 func (me ListViewItem) Text(columnIndex int) string {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	lvi := win.LVITEM{

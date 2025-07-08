@@ -145,7 +145,7 @@ func (me *IShellItem) GetDisplayName(sigdnName co.SIGDN) (string, error) {
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		defer HTASKMEM(pv).CoTaskMemFree()
-		name := wstr.WinPtrToGo((*uint16)(unsafe.Pointer(pv)))
+		name := wstr.DecodePtr((*uint16)(unsafe.Pointer(pv)))
 		return name, nil
 	} else {
 		return "", hr

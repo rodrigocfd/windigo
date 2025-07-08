@@ -106,7 +106,7 @@ func (me *IFileDialog) GetFileName() (string, error) {
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		defer HTASKMEM(pv).CoTaskMemFree()
-		name := wstr.WinPtrToGo((*uint16)(unsafe.Pointer(pv)))
+		name := wstr.DecodePtr((*uint16)(unsafe.Pointer(pv)))
 		return name, nil
 	} else {
 		return "", hr
@@ -205,7 +205,7 @@ func (me *IFileDialog) SetClientGuid(guid *GUID) error {
 //
 // [SetDefaultExtension]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setdefaultextension
 func (me *IFileDialog) SetDefaultExtension(defaultExt string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pDefaultExt := wbuf.PtrEmptyIsNil(defaultExt)
 
@@ -231,7 +231,7 @@ func (me *IFileDialog) SetDefaultFolder(si *IShellItem) error {
 //
 // [SetFileName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilename
 func (me *IFileDialog) SetFileName(name string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pName := wbuf.PtrEmptyIsNil(name)
 
@@ -246,7 +246,7 @@ func (me *IFileDialog) SetFileName(name string) error {
 //
 // [SetFileNameLabel]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilenamelabel
 func (me *IFileDialog) SetFileNameLabel(label string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pLabel := wbuf.PtrEmptyIsNil(label)
 
@@ -283,7 +283,7 @@ func (me *IFileDialog) SetFileTypeIndex(index uint) error {
 //
 // [SetFileTypes]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypes
 func (me *IFileDialog) SetFileTypes(filterSpec []COMDLG_FILTERSPEC) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	nativeFilters := make([]_COMDLG_FILTERSPEC, 0, len(filterSpec))
@@ -328,7 +328,7 @@ func (me *IFileDialog) SetFolder(si *IShellItem) error {
 //
 // [SetOkButtonLabel]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setokbuttonlabel
 func (me *IFileDialog) SetOkButtonLabel(text string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pText := wbuf.PtrEmptyIsNil(text)
 
@@ -365,7 +365,7 @@ func (me *IFileDialog) SetOptions(fos co.FOS) error {
 //
 // [SetTitle]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-settitle
 func (me *IFileDialog) SetTitle(title string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pTitle := wbuf.PtrEmptyIsNil(title)
 

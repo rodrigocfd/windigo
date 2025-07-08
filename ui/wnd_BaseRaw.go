@@ -54,7 +54,7 @@ func (me *_BaseRaw) registerClass(
 			wcx.HbrBackground, wcx.HIconSm, wcx.LpszMenuName)
 	}
 
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	wcx.LpszClassName = (*uint16)(wbuf.PtrEmptyIsNil(className))
 

@@ -108,7 +108,7 @@ func (hStd HSTD) ReadConsole(
 	maxCharsToRead uint,
 	inputControl *CONSOLE_READCONSOLE_CONTROL,
 ) (text string, numCharsRead uint, wErr error) {
-	recvBuf := wstr.NewBufReceiver(maxCharsToRead + 1)
+	recvBuf := wstr.NewBufDecoder(maxCharsToRead + 1)
 	defer recvBuf.Free()
 
 	var numRead32 uint32
@@ -232,7 +232,7 @@ var _SetConsoleTextAttribute *syscall.Proc
 //
 // [WriteConsole]: https://learn.microsoft.com/en-us/windows/console/writeconsole
 func (hStd HSTD) WriteConsole(text string) (numCharsWritten uint, wErr error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pText := wbuf.PtrAllowEmpty(text)
 

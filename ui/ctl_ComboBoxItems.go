@@ -20,7 +20,7 @@ type CollectionComboBoxItems struct {
 //
 // [CB_ADDSTRING]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-addstring
 func (me *CollectionComboBoxItems) Add(texts ...string) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	for _, text := range texts {
@@ -35,7 +35,7 @@ func (me *CollectionComboBoxItems) Add(texts ...string) {
 //
 // [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
 func (me *CollectionComboBoxItems) All() []string {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	nItems := me.Count()
@@ -74,7 +74,7 @@ func (me *CollectionComboBoxItems) DeleteAll() {
 //
 // [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
 func (me *CollectionComboBoxItems) Get(index int) string {
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	// nChars, _ := me.owner.hWnd.SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(index), 0)
@@ -127,7 +127,7 @@ func (me *CollectionComboBoxItems) Text(index uint) string {
 	// 	panic(fmt.Sprintf("CB_GETLBTEXTLEN failed at item %d.", index))
 	// }
 
-	recvBuf := wstr.NewBufReceiver(wstr.BUF_MAX)
+	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
 	defer recvBuf.Free()
 
 	me.owner.hWnd.SendMessage(co.CB_GETLBTEXT,

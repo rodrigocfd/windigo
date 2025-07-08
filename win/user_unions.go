@@ -72,7 +72,7 @@ func (me *ClassName) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *ClassName) raw(wbuf *wstr.BufConverter) uintptr {
+func (me *ClassName) raw(wbuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
 	case _ClassNameTag_none:
 		return 0
@@ -159,7 +159,7 @@ func (me *CursorRes) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *CursorRes) raw(wbuf *wstr.BufConverter) uintptr {
+func (me *CursorRes) raw(wbuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
 	case _CursorTag_idc, _CursorTag_id:
 		return me.data
@@ -244,7 +244,7 @@ func (me *IconRes) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *IconRes) raw(wbuf *wstr.BufConverter) uintptr {
+func (me *IconRes) raw(wbuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
 	case _IconResTag_idi, _IconResTag_id:
 		return me.data
@@ -306,7 +306,7 @@ func (me *ResId) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *ResId) raw(wbuf *wstr.BufConverter) uintptr {
+func (me *ResId) raw(wbuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
 	case _ResIdTag_id:
 		return uintptr(me.id)

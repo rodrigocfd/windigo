@@ -18,7 +18,7 @@ import (
 //
 // [CommandLineToArgv]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw
 func CommandLineToArgv(cmdLine string) ([]string, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pCmdLine := wbuf.PtrEmptyIsNil(cmdLine)
 
@@ -36,7 +36,7 @@ func CommandLineToArgv(cmdLine string) ([]string, error) {
 	strs := make([]string, 0, pNumArgs)
 
 	for _, lpPtr := range lpPtrs {
-		strs = append(strs, wstr.WinPtrToGo(lpPtr))
+		strs = append(strs, wstr.DecodePtr(lpPtr))
 	}
 	return strs, nil
 }
@@ -117,7 +117,7 @@ func SHCreateItemFromParsingName(
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())
 
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pFolderOrFilePath := wbuf.PtrEmptyIsNil(folderOrFilePath)
 
@@ -155,7 +155,7 @@ func SHCreateItemFromRelativeName(
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())
 
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pName := wbuf.PtrAllowEmpty(name)
 
@@ -424,7 +424,7 @@ func SHGetPropertyStoreFromParsingName(
 	var ppvtQueried **_IUnknownVt
 	guid := GuidFrom(co.IID_IPropertyStore)
 
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pFolderOrFilePath := wbuf.PtrAllowEmpty(folderOrFilePath)
 
@@ -487,7 +487,7 @@ var _Shell_NotifyIconGetRect *syscall.Proc
 //
 // [SHGetFileInfo]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
 func SHGetFileInfo(path string, fileAttrs co.FILE_ATTRIBUTE, flags co.SHGFI) (SHFILEINFO, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pPath := wbuf.PtrAllowEmpty(path)
 

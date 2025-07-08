@@ -39,7 +39,7 @@ func CreateFont(
 	family co.FF,
 	faceName string,
 ) (HFONT, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pFaceName := wbuf.PtrEmptyIsNil(faceName)
 

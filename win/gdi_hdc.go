@@ -24,7 +24,7 @@ type HDC HANDLE
 //
 // [CreateDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdcw
 func CreateDC(driver, device string, dm *DEVMODE) (HDC, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pDriver := wbuf.PtrEmptyIsNil(driver)
 	pDevice := wbuf.PtrAllowEmpty(device)
@@ -49,7 +49,7 @@ var _CreateDCW *syscall.Proc
 //
 // [CreateIC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createicw
 func CreateIC(driver, device string, dm *DEVMODE) (HDC, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pDriver := wbuf.PtrAllowEmpty(driver)
 	pDevice := wbuf.PtrAllowEmpty(device)
@@ -796,7 +796,7 @@ var _GetTextColor *syscall.Proc
 //
 // [GetTextExtentPoint32]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextextentpoint32w
 func (hdc HDC) GetTextExtentPoint32(text string) (SIZE, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pText := wbuf.PtrAllowEmpty(text)
 
@@ -830,7 +830,7 @@ func (hdc HDC) GetTextFace() (string, error) {
 	if ret == 0 {
 		return "", co.ERROR_INVALID_PARAMETER
 	}
-	return wstr.WinSliceToGo(buf[:]), nil
+	return wstr.DecodeSlice(buf[:]), nil
 }
 
 var _GetTextFaceW *syscall.Proc
@@ -1816,7 +1816,7 @@ var _SwapBuffers *syscall.Proc
 //
 // [TextOut]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-textoutw
 func (hdc HDC) TextOut(x, y int, text string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pText := wbuf.PtrAllowEmpty(text)
 

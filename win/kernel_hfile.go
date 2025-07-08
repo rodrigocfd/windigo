@@ -34,7 +34,7 @@ func CreateFile(
 	security co.SECURITY,
 	hTemplateFile HFILE,
 ) (HFILE, error) {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pFileName := wbuf.PtrEmptyIsNil(fileName)
 
@@ -95,7 +95,7 @@ func (hFile HFILE) CreateFileMapping(
 ) (HFILEMAP, error) {
 	maxLo, maxHi := utl.Break64(uint64(maxSize))
 
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pObjectName := wbuf.PtrEmptyIsNil(objectName)
 

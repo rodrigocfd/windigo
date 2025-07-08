@@ -55,7 +55,7 @@ func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI HWND) error {
 //
 // [SetOverlayIcon]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setoverlayicon
 func (me *ITaskbarList3) SetOverlayIcon(hWnd HWND, hIcon HICON, description string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pDescription := wbuf.PtrAllowEmpty(description)
 
@@ -133,7 +133,7 @@ func (me *ITaskbarList3) SetThumbnailClip(hWnd HWND, rcClip *RECT) error {
 //
 // [SetThumbnailTooltip]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailtooltip
 func (me *ITaskbarList3) SetThumbnailTooltip(hWnd HWND, tip string) error {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 	pTip := wbuf.PtrEmptyIsNil(tip)
 

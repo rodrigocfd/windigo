@@ -150,17 +150,17 @@ type LITEM struct {
 }
 
 func (li *LITEM) SzID() string {
-	return wstr.WinSliceToGo(li.szID[:])
+	return wstr.DecodeSlice(li.szID[:])
 }
 func (li *LITEM) SetSzID(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(li.szID)-1)), li.szID[:])
+	wstr.EncodeToBuf(val, li.szID[:])
 }
 
 func (li *LITEM) SzUrl() string {
-	return wstr.WinSliceToGo(li.szUrl[:])
+	return wstr.DecodeSlice(li.szUrl[:])
 }
 func (li *LITEM) SetSzUrl(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(li.szUrl)-1)), li.szUrl[:])
+	wstr.EncodeToBuf(val, li.szUrl[:])
 }
 
 // [LVCOLUMN] struct.
@@ -314,10 +314,10 @@ type NMDATETIMEFORMAT struct {
 }
 
 func (dtf *NMDATETIMEFORMAT) SzDisplay() string {
-	return wstr.WinSliceToGo(dtf.szDisplay[:])
+	return wstr.DecodeSlice(dtf.szDisplay[:])
 }
 func (dtf *NMDATETIMEFORMAT) SetSzDisplay(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(dtf.szDisplay)-1)), dtf.szDisplay[:])
+	wstr.EncodeToBuf(val, dtf.szDisplay[:])
 }
 
 // [NMDATETIMEFORMATQUERY] struct.
@@ -569,10 +569,10 @@ type NMLVEMPTYMARKUP struct {
 }
 
 func (lve *NMLVEMPTYMARKUP) SzMarkup() string {
-	return wstr.WinSliceToGo(lve.szMarkup[:])
+	return wstr.DecodeSlice(lve.szMarkup[:])
 }
 func (lve *NMLVEMPTYMARKUP) SetSzMarkup(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(lve.szMarkup)-1)), lve.szMarkup[:])
+	wstr.EncodeToBuf(val, lve.szMarkup[:])
 }
 
 // [NMLVFINDITEM] struct.
@@ -997,7 +997,7 @@ type TASKDIALOGCONFIG struct {
 
 // Converts the syntactic sugar struct into the packed raw one.
 func (tdc *TASKDIALOGCONFIG) serialize(
-	pStrsBuf *wstr.BufConverter, // buffer for all struct and button strings
+	pStrsBuf *wstr.BufEncoder, // buffer for all struct and button strings
 	pTdcBuf *Vec[byte],
 	pBtnsBuf *Vec[[12]byte], // buffer for Buttons and RadioButtons
 ) {

@@ -255,10 +255,10 @@ type DEVMODE_Display struct {
 }
 
 func (dm *DEVMODE) DmDeviceName() string {
-	return wstr.WinSliceToGo(dm.dmDeviceName[:])
+	return wstr.DecodeSlice(dm.dmDeviceName[:])
 }
 func (dm *DEVMODE) SetDmDeviceName(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(dm.dmDeviceName)-1)), dm.dmDeviceName[:])
+	wstr.EncodeToBuf(val, dm.dmDeviceName[:])
 }
 
 // Sets the dmSize field to the size of the struct, correctly initializing it.
@@ -279,10 +279,10 @@ func (dm *DEVMODE) Display() *DEVMODE_Display {
 }
 
 func (dm *DEVMODE) DmFormName() string {
-	return wstr.WinSliceToGo(dm.dmFormName[:])
+	return wstr.DecodeSlice(dm.dmFormName[:])
 }
 func (dm *DEVMODE) SetDmFormName(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(dm.dmFormName)-1)), dm.dmFormName[:])
+	wstr.EncodeToBuf(val, dm.dmFormName[:])
 }
 
 // Returns the 1st variation of the 2nd union.
@@ -342,10 +342,10 @@ type LOGFONT struct {
 }
 
 func (lf *LOGFONT) LfFaceName() string {
-	return wstr.WinSliceToGo(lf.lfFaceName[:])
+	return wstr.DecodeSlice(lf.lfFaceName[:])
 }
 func (lf *LOGFONT) SetLfFaceName(val string) {
-	wstr.GoToWinBuf(wstr.SubstrRunes(val, 0, uint(len(lf.lfFaceName)-1)), lf.lfFaceName[:])
+	wstr.EncodeToBuf(val, lf.lfFaceName[:])
 }
 
 func (lf *LOGFONT) Pitch() co.PITCH {

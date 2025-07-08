@@ -20,7 +20,7 @@ type CollectionTabItems struct {
 }
 
 func (me *CollectionTabItems) add(title string) TabItem {
-	wbuf := wstr.NewBufConverter()
+	wbuf := wstr.NewBufEncoder()
 	defer wbuf.Free()
 
 	tci := win.TCITEM{
