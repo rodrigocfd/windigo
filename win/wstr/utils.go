@@ -29,7 +29,7 @@ func CmpI(a, b string) int {
 }
 
 // Formats a number of bytes into KB, MB, GB, TB or PB.
-func FmtBytes(numBytes uint64) string {
+func FmtBytes(numBytes uint) string {
 	switch {
 	case numBytes < 1024:
 		return fmt.Sprintf("%d bytes", numBytes)
