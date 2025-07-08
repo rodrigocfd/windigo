@@ -5,7 +5,6 @@ package win
 import (
 	"fmt"
 	"syscall"
-	"unicode/utf8"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
@@ -801,7 +800,7 @@ func (hdc HDC) GetTextExtentPoint32(text string) (SIZE, error) {
 	defer wbuf.Free()
 	pText := wbuf.PtrAllowEmpty(text)
 
-	textLen := utf8.RuneCountInString(text)
+	textLen := len([]rune(text))
 	var sz SIZE
 
 	ret, _, _ := syscall.SyscallN(
@@ -1821,7 +1820,7 @@ func (hdc HDC) TextOut(x, y int, text string) error {
 	defer wbuf.Free()
 	pText := wbuf.PtrAllowEmpty(text)
 
-	textLen := utf8.RuneCountInString(text)
+	textLen := len([]rune(text))
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_TextOutW, "TextOutW"),

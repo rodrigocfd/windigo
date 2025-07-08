@@ -5,7 +5,6 @@ package wstr
 import (
 	"fmt"
 	"strings"
-	"unicode/utf8"
 )
 
 // Compares two strings [lexographically].
@@ -95,7 +94,7 @@ func RemoveDiacritics(s string) string {
 	repls := []rune("AaAaAaAaAaEeEeEeEeIiIiIiIiOoOoOoOoOoUuUuUuUuCcAaDdNnOoYy")
 
 	var strBuf strings.Builder
-	strBuf.Grow(utf8.RuneCountInString(s))
+	strBuf.Grow(len([]rune(s)))
 
 	for _, ch := range s {
 		replaced := false

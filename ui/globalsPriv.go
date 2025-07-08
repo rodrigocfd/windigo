@@ -3,7 +3,6 @@
 package ui
 
 import (
-	"unicode/utf8"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
@@ -72,7 +71,7 @@ func (wndTy _WNDTY) initMsg() co.WM {
 // Calculates the bound rectangle to fit the text with current UI font.
 func calcTextBoundBox(text string) (win.SIZE, error) {
 	isTextEmpty := false
-	if utf8.RuneCountInString(text) == 0 {
+	if len([]rune(text)) == 0 {
 		isTextEmpty = true
 		text = "Pj" // just a placeholder to get the text height
 	}

@@ -4,7 +4,6 @@ package utl
 
 import (
 	"strings"
-	"unicode/utf8"
 )
 
 // "&He && she" becomes "He & she".
@@ -29,7 +28,7 @@ func RemoveAccelAmpersands(text string) string {
 // without delimiting a tag.
 func RemoveHtmlAnchor(text string) string {
 	var buf strings.Builder
-	buf.Grow(utf8.RuneCountInString(text))
+	buf.Grow(len([]rune(text)))
 
 	withinAnchor := false
 	for _, ch := range text {

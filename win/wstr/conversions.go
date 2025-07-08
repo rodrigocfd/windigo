@@ -28,7 +28,7 @@ func GoArrToWinBuf(strs []string, dest []uint16) {
 	idxNextCh := 0
 	for _, str := range strs {
 		GoToWinBuf(str, dest[idxNextCh:])
-		idxNextCh += utf8.RuneCountInString(str) + 1
+		idxNextCh += len([]rune(str)) + 1
 	}
 	dest[idxNextCh] = 0x0000 // additional terminating null
 }
@@ -51,7 +51,7 @@ func GoArrToWinPtr(strs ...string) *uint16 {
 func GoArrToWinSlice(strs ...string) []uint16 {
 	numChars := 1 // count additional terminating null
 	for _, str := range strs {
-		numChars += utf8.RuneCountInString(str) + 1
+		numChars += len([]rune(str)) + 1
 	}
 	buf := make([]uint16, numChars)
 	GoArrToWinBuf(strs, buf)
@@ -117,7 +117,7 @@ func GoToWinPtr(s string) *uint16 {
 //
 // Panics on error.
 func GoToWinSlice(str string) []uint16 {
-	numChars := utf8.RuneCountInString(str) + 1
+	numChars := len([]rune(str)) + 1
 	buf := make([]uint16, numChars)
 	GoToWinBuf(str, buf)
 	return buf

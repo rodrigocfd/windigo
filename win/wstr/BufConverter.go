@@ -3,7 +3,6 @@
 package wstr
 
 import (
-	"unicode/utf8"
 	"unsafe"
 )
 
@@ -69,7 +68,7 @@ func (me *BufConverter) PtrEmptyIsNil(s string) unsafe.Pointer {
 }
 
 func (me *BufConverter) add(s string) (*uint16, int) {
-	numChars := utf8.RuneCountInString(s) + 1 // plus terminating null
+	numChars := len([]rune(s)) + 1 // plus terminating null
 	if !me.gotGlobal || !globalBuf.canFit(numChars) {
 		// This string won't fit the global buffer, create a local one for it.
 		// Keep the lock to global buffer, because we may already have strings
@@ -99,7 +98,7 @@ func (me *BufConverter) PtrMulti(ss ...string) unsafe.Pointer {
 
 	numChars := 1 // double terminating null
 	for _, s := range ss {
-		numChars += utf8.RuneCountInString(s) + 1 // plus terminating null
+		numChars += len([]rune(s)) + 1 // plus terminating null
 	}
 
 	if !me.gotGlobal || !globalBuf.canFit(numChars) {
@@ -110,7 +109,7 @@ func (me *BufConverter) PtrMulti(ss ...string) unsafe.Pointer {
 		idxLocal := 0
 		for _, s := range ss {
 			GoToWinBuf(s, newLocalBuf[idxLocal:])
-			idxLocal += utf8.RuneCountInString(s) + 1
+			idxLocal += len([]rune(s)) + 1
 		}
 		me.localBufs = append(me.localBufs, newLocalBuf)
 		return unsafe.Pointer(&newLocalBuf[0])
@@ -119,7 +118,7 @@ func (me *BufConverter) PtrMulti(ss ...string) unsafe.Pointer {
 		idx0 := globalBuf.idxNextCh
 		for _, s := range ss {
 			GoToWinBuf(s, globalBuf.buf[globalBuf.idxNextCh:])
-			globalBuf.idxNextCh += utf8.RuneCountInString(s) + 1
+			globalBuf.idxNextCh += len([]rune(s)) + 1
 		}
 		globalBuf.buf[globalBuf.idxNextCh] = 0x0000 // double terminating null
 		globalBuf.idxNextCh += 1
