@@ -58,6 +58,21 @@ const (
 	DWMSBT_TABBEDWINDOW
 )
 
+// [DwmShowContact] showContact.
+//
+// [DwmShowContact]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmshowcontact
+type DWMSC uint32
+
+const (
+	DWMSC_NONE      DWMSC = 0x0000_0000
+	DWMSC_DOWN      DWMSC = 0x0000_0001
+	DWMSC_UP        DWMSC = 0x0000_0002
+	DWMSC_DRAG      DWMSC = 0x0000_0004
+	DWMSC_HOLD      DWMSC = 0x0000_0008
+	DWMSC_PENBARREL DWMSC = 0x0000_0010
+	DWMSC_ALL       DWMSC = 0xffff_ffff
+)
+
 // [DWMWINDOWATTRIBUTE] enumeration.
 //
 // [DWMWINDOWATTRIBUTE]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute

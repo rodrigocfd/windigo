@@ -68,3 +68,16 @@ func DwmIsCompositionEnabled() (bool, error) {
 }
 
 var _DwmIsCompositionEnabled *syscall.Proc
+
+// [DwmShowContact] function.
+//
+// [DwmShowContact]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmshowcontact
+func DwmShowContact(pointerId uint, showContact co.DWMSC) error {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.DWMAPI, &_DwmShowContact, "DwmShowContact"),
+		uintptr(uint32(pointerId)),
+		uintptr(showContact))
+	return utl.ErrorAsHResult(ret)
+}
+
+var _DwmShowContact *syscall.Proc

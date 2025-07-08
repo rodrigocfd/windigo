@@ -74,6 +74,20 @@ func (hWnd HWND) DwmInvalidateIconicBitmaps() error {
 
 var _DwmInvalidateIconicBitmaps *syscall.Proc
 
+// [DwmModifyPreviousDxFrameDuration] function.
+//
+// [DwmModifyPreviousDxFrameDuration]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmmodifypreviousdxframeduration
+func (hWnd HWND) DwmModifyPreviousDxFrameDuration(numRefreshes uint, relative bool) error {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.DWMAPI, &_DwmModifyPreviousDxFrameDuration, "DwmModifyPreviousDxFrameDuration"),
+		uintptr(hWnd),
+		uintptr(int32(numRefreshes)),
+		utl.BoolToUintptr(relative))
+	return utl.ErrorAsHResult(ret)
+}
+
+var _DwmModifyPreviousDxFrameDuration *syscall.Proc
+
 // [DwmSetIconicLivePreviewBitmap] function.
 //
 // [DwmSetIconicLivePreviewBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmseticoniclivepreviewbitmap
