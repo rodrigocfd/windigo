@@ -69,6 +69,21 @@ func (hStd HSTD) GetCurrentConsoleFontEx(maximumWindow bool) (CONSOLE_FONT_INFOE
 
 var _GetCurrentConsoleFontEx *syscall.Proc
 
+// [GetLargestConsoleWindowSize] function.
+//
+// [GetLargestConsoleWindowSize]: https://learn.microsoft.com/en-us/windows/console/getlargestconsolewindowsize
+func (hStd HSTD) GetLargestConsoleWindowSize() (COORD, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_GetLargestConsoleWindowSize, "GetLargestConsoleWindowSize"),
+		uintptr(hStd))
+	if ret == 0 {
+		return COORD{}, co.ERROR(err)
+	}
+	return COORD{int16(LOWORD(uint32(ret))), int16(HIWORD(uint32(ret)))}, nil
+}
+
+var _GetLargestConsoleWindowSize *syscall.Proc
+
 // [ReadConsole] function.
 //
 // [ReadConsole]: https://learn.microsoft.com/en-us/windows/console/readconsole
