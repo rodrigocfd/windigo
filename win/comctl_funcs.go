@@ -126,18 +126,20 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 
 	taskConfig.serialize(&wbuf, &tdcBuf, &btnsBuf)
 
-	pPnButton := NewVecSized(1, int32(0)) // OS-allocated; value to be returned
-	defer pPnButton.Free()
+	pPnButtons := NewVecSized(3, int32(0)) // button, radio and check values returned
+	defer pPnButtons.Free()
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.COMCTL32, &_TaskDialogIndirect, "TaskDialogIndirect"),
 		uintptr(tdcBuf.UnsafePtr()),
-		uintptr(pPnButton.UnsafePtr()))
+		uintptr(unsafe.Pointer(pPnButtons.Get(0))),
+		uintptr(unsafe.Pointer(pPnButtons.Get(1))),
+		uintptr(unsafe.Pointer(pPnButtons.Get(2))))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return co.ID(0), hr
 	}
 
-	return co.ID(*pPnButton.Get(0)), nil
+	return co.ID(*pPnButtons.Get(0)), nil
 }
 
 var _TaskDialogIndirect *syscall.Proc

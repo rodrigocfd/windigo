@@ -997,76 +997,76 @@ type TASKDIALOGCONFIG struct {
 
 // Converts the syntactic sugar struct into the packed raw one.
 func (tdc *TASKDIALOGCONFIG) serialize(
-	strsBuf *wstr.BufConverter, // buffer for all struct and button strings
-	tdcBuf *Vec[byte],
-	btnsBuf *Vec[[12]byte], // buffer for Buttons and RadioButtons
+	pStrsBuf *wstr.BufConverter, // buffer for all struct and button strings
+	pTdcBuf *Vec[byte],
+	pBtnsBuf *Vec[[12]byte], // buffer for Buttons and RadioButtons
 ) {
-	dest := tdcBuf.HotSlice()
+	dest := pTdcBuf.HotSlice()
 
 	numButtons := uint(len(tdc.Buttons))
 	numRadios := uint(len(tdc.RadioButtons))
-	btnsBuf.Resize(numButtons+numRadios, [12]byte{}) // for buttons and radios
+	pBtnsBuf.Resize(numButtons+numRadios, [12]byte{}) // alloc buffer for buttons + radios
 
-	tdc.put32(dest[0:], uint32(tdcBuf.Len())) // cbSize
+	tdc.put32(dest[0:], uint32(pTdcBuf.Len())) // cbSize
 	tdc.put64(dest[4:], uint64(tdc.HwndParent))
 	tdc.put64(dest[12:], uint64(tdc.HInstance))
 	tdc.put32(dest[20:], uint32(tdc.Flags))
 	tdc.put32(dest[24:], uint32(tdc.CommonButtons))
 
-	tdc.putPtr(dest[28:], strsBuf.PtrAllowEmpty(tdc.WindowTitle))
+	tdc.putPtr(dest[28:], pStrsBuf.PtrAllowEmpty(tdc.WindowTitle))
 
 	if !tdc.HMainIcon.IsNone() {
 		tdc.put64(dest[36:], tdc.HMainIcon.raw())
 	}
 
-	tdc.putPtr(dest[44:], strsBuf.PtrAllowEmpty(tdc.MainInstruction))
-	tdc.putPtr(dest[52:], strsBuf.PtrAllowEmpty(tdc.Content))
+	tdc.putPtr(dest[44:], pStrsBuf.PtrAllowEmpty(tdc.MainInstruction))
+	tdc.putPtr(dest[52:], pStrsBuf.PtrAllowEmpty(tdc.Content))
 
 	if len(tdc.Buttons) > 0 {
 		for i, btn := range tdc.Buttons {
-			btnBuf := btnsBuf.Get(uint(i))
-			tdc.put32((*btnBuf)[:], uint32(btn.Id))
-			tdc.putPtr((*btnBuf)[4:], strsBuf.PtrAllowEmpty(btn.Text))
+			pBtnBuf := pBtnsBuf.Get(uint(i)) // already allocated
+			tdc.put32((*pBtnBuf)[:], uint32(btn.Id))
+			tdc.putPtr((*pBtnBuf)[4:], pStrsBuf.PtrAllowEmpty(btn.Text))
 		}
-		tdc.put32(dest[60:], uint32(len(tdc.Buttons)))
-		tdc.putPtr(dest[64:], btnsBuf.UnsafePtr())
+		tdc.put32(dest[60:], uint32(len(tdc.Buttons))) // number of buttons
+		tdc.putPtr(dest[64:], pBtnsBuf.UnsafePtr())    // ptr to buttons block
 	}
 
 	tdc.put32(dest[72:], uint32(tdc.DefaultButtonId))
 
 	if len(tdc.RadioButtons) > 0 {
-		baseRadios := uint(len(tdc.Buttons)) // radios are appended after the buttons
+		baseRadioIdx := uint(len(tdc.Buttons)) // radios are appended after the buttons
 		for i, btn := range tdc.RadioButtons {
-			btnBuf := btnsBuf.Get(baseRadios + uint(i))
-			tdc.put32((*btnBuf)[:], uint32(btn.Id))
-			tdc.putPtr((*btnBuf)[4:], strsBuf.PtrAllowEmpty(btn.Text))
+			pBtnBuf := pBtnsBuf.Get(baseRadioIdx + uint(i)) // already allocated
+			tdc.put32((*pBtnBuf)[:], uint32(btn.Id))
+			tdc.putPtr((*pBtnBuf)[4:], pStrsBuf.PtrAllowEmpty(btn.Text))
 		}
-		tdc.put32(dest[76:], uint32(len(tdc.RadioButtons)))
-		tdc.putPtr(dest[80:], unsafe.Pointer(btnsBuf.Get(baseRadios)))
+		tdc.put32(dest[76:], uint32(len(tdc.RadioButtons)))               // number of radios
+		tdc.putPtr(dest[80:], unsafe.Pointer(pBtnsBuf.Get(baseRadioIdx))) // ptr to radios block
 	}
 
 	tdc.put32(dest[88:], uint32(tdc.DefaultRadioButton))
 
-	tdc.putPtr(dest[92:], strsBuf.PtrAllowEmpty(tdc.VerificationText))
-	tdc.putPtr(dest[100:], strsBuf.PtrAllowEmpty(tdc.ExpandedInformation))
-	tdc.putPtr(dest[108:], strsBuf.PtrAllowEmpty(tdc.ExpandedControlText))
-	tdc.putPtr(dest[116:], strsBuf.PtrAllowEmpty(tdc.CollapsedControlText))
+	tdc.putPtr(dest[92:], pStrsBuf.PtrAllowEmpty(tdc.VerificationText))
+	tdc.putPtr(dest[100:], pStrsBuf.PtrAllowEmpty(tdc.ExpandedInformation))
+	tdc.putPtr(dest[108:], pStrsBuf.PtrAllowEmpty(tdc.ExpandedControlText))
+	tdc.putPtr(dest[116:], pStrsBuf.PtrAllowEmpty(tdc.CollapsedControlText))
 
 	if !tdc.HFooterIcon.IsNone() {
 		tdc.put64(dest[124:], tdc.HFooterIcon.raw())
 	}
 
-	tdc.putPtr(dest[132:], strsBuf.PtrAllowEmpty(tdc.Footer))
+	tdc.putPtr(dest[132:], pStrsBuf.PtrAllowEmpty(tdc.Footer))
 
 	tdc.put64(dest[140:], uint64(tdc.PfCallback))
 	tdc.put64(dest[148:], uint64(tdc.LpCallbackData))
 	tdc.put32(dest[156:], uint32(tdc.Width))
 }
 
-func (tdc *TASKDIALOGCONFIG) put32(b []byte, v uint32) {
+func (*TASKDIALOGCONFIG) put32(b []byte, v uint32) {
 	binary.LittleEndian.PutUint32(b, v)
 }
-func (tdc *TASKDIALOGCONFIG) put64(b []byte, v uint64) {
+func (*TASKDIALOGCONFIG) put64(b []byte, v uint64) {
 	binary.LittleEndian.PutUint64(b, v)
 }
 func (tdc *TASKDIALOGCONFIG) putPtr(b []byte, p unsafe.Pointer) {
