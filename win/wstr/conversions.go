@@ -26,7 +26,7 @@ func DecodeArrPtr(p *uint16) []string {
 			}
 
 			slice := unsafe.Slice(p, sLen) // create slice without terminating null
-			values = append(values, DecodeSlice(slice))
+			values = append(values, string(utf16.Decode(slice)))
 
 			pRun = unsafe.Add(pRun, unsafe.Sizeof(*p)) // pRun++
 			p = (*uint16)(pRun)
@@ -58,7 +58,7 @@ func DecodePtr(p *uint16) string {
 	}
 
 	slice := unsafe.Slice(p, sLen) // create slice without terminating null
-	return DecodeSlice(slice)
+	return string(utf16.Decode(slice))
 }
 
 // Converts a []uint16 with a Windows UTF-16 string, null-terminated or not,
@@ -66,6 +66,11 @@ func DecodePtr(p *uint16) string {
 //
 // Wraps [utf16.Decode].
 func DecodeSlice(str []uint16) string {
+	for idx, ch := range str {
+		if ch == 0x0000 {
+			return string(utf16.Decode(str[:idx])) // stop before first terminating null
+		}
+	}
 	return string(utf16.Decode(str))
 }
 
