@@ -438,7 +438,7 @@ func (me *PROCESSENTRY32) SetSzExeFile(val string) {
 
 // [PROCESSOR_NUMBER] struct.
 //
-// [PROCESSOR_NUMBER]:
+// [PROCESSOR_NUMBER]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-processor_number
 type PROCESSOR_NUMBER struct {
 	Group    uint16
 	Number   uint8

@@ -192,6 +192,37 @@ func FileTimeToSystemTime(ft *FILETIME) (SYSTEMTIME, error) {
 
 var _FileTimeToSystemTime *syscall.Proc
 
+// [GetActiveProcessorCount] function.
+//
+// For ALL_PROCESSOR_GROUPS, pass 0xffff.
+//
+// [GetActiveProcessorCount]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getactiveprocessorcount
+func GetActiveProcessorCount(groupNumber uint) (uint, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_GetActiveProcessorCount, "GetActiveProcessorCount"),
+		uintptr(uint16(groupNumber)))
+	if ret == 0 {
+		return 0, co.ERROR(err)
+	}
+	return uint(uint32(ret)), nil
+}
+
+var _GetActiveProcessorCount *syscall.Proc
+
+// [GetActiveProcessorGroupCount] function.
+//
+// [GetActiveProcessorGroupCount]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getactiveprocessorgroupcount
+func GetActiveProcessorGroupCount() (uint, error) {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_GetActiveProcessorGroupCount, "GetActiveProcessorGroupCount"))
+	if ret == 0 {
+		return 0, co.ERROR_INVALID_PARAMETER
+	}
+	return uint(uint16(ret)), nil
+}
+
+var _GetActiveProcessorGroupCount *syscall.Proc
+
 // [GetCommandLine] function.
 //
 // [GetCommandLine]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getcommandlinew
@@ -213,6 +244,30 @@ func GetCurrentProcessId() uint32 {
 }
 
 var _GetCurrentProcessId *syscall.Proc
+
+// [GetCurrentProcessorNumber] function.
+//
+// [GetCurrentProcessorNumber]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessornumber
+func GetCurrentProcessorNumber() uint {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_GetCurrentProcessorNumber, "GetCurrentProcessorNumber"))
+	return uint(uint16(ret))
+}
+
+var _GetCurrentProcessorNumber *syscall.Proc
+
+// [GetCurrentProcessorNumberEx] function.
+//
+// [GetCurrentProcessorNumberEx]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessornumberex
+func GetCurrentProcessorNumberEx() PROCESSOR_NUMBER {
+	var pn PROCESSOR_NUMBER
+	syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_GetCurrentProcessorNumberEx, "GetCurrentProcessorNumberEx"),
+		uintptr(unsafe.Pointer(&pn)))
+	return pn
+}
+
+var _GetCurrentProcessorNumberEx *syscall.Proc
 
 // [GetCurrentThreadId] function.
 //
