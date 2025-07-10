@@ -115,55 +115,57 @@ func (me *_BaseRaw) delegateFocusToFirstChild() error {
 var _wndProcCallback uintptr
 
 func wndProcCallback() uintptr {
-	if _wndProcCallback == 0 {
-		_wndProcCallback = syscall.NewCallback(
-			func(hWnd win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
-				var pMe *_BaseRaw
-
-				if uMsg == co.WM_NCCREATE {
-					cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
-					pMe = (*_BaseRaw)(unsafe.Pointer(cs.LpCreateParams))
-					pMe.hWnd = hWnd
-					hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe))) // store
-				} else {
-					ptr, _ := hWnd.GetWindowLongPtr(co.GWLP_USERDATA) // retrieve
-					pMe = (*_BaseRaw)(unsafe.Pointer(ptr))
-				}
-
-				// If no pointer stored, then no processing is done.
-				// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
-				if pMe == nil {
-					return hWnd.DefWindowProc(uMsg, wParam, lParam)
-				}
-
-				// Execute before-user closures, keep track if at least one was executed.
-				msg := Wm{uMsg, wParam, lParam}
-				atLeastOneBeforeUser := pMe.beforeUserEvents.processAllMessages(msg)
-
-				// Execute user closure, if any.
-				userRet, hasUserRet := pMe.userEvents.processLastMessage(msg)
-
-				// Execute post-user closures, keep track if at least one was executed.
-				atLeastOneAfterUser := pMe.afterUserEvents.processAllMessages(msg)
-
-				switch uMsg {
-				case co.WM_CREATE:
-					pMe.removeWmCreateInitdialog() // will release all memory in these closures
-				case co.WM_NCDESTROY: // always check
-					hWnd.SetWindowLongPtr(co.GWLP_USERDATA, 0)
-					pMe.hWnd = win.HWND(0)
-					pMe.clearMessages()
-				}
-
-				if hasUserRet {
-					return userRet
-				} else if atLeastOneBeforeUser || atLeastOneAfterUser {
-					return 0
-				} else {
-					return hWnd.DefWindowProc(uMsg, wParam, lParam)
-				}
-			},
-		)
+	if _wndProcCallback != 0 {
+		return _wndProcCallback
 	}
+
+	_wndProcCallback = syscall.NewCallback(
+		func(hWnd win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
+			var pMe *_BaseRaw
+
+			if uMsg == co.WM_NCCREATE {
+				cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
+				pMe = (*_BaseRaw)(unsafe.Pointer(cs.LpCreateParams))
+				pMe.hWnd = hWnd
+				hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe))) // store
+			} else {
+				ptr, _ := hWnd.GetWindowLongPtr(co.GWLP_USERDATA) // retrieve
+				pMe = (*_BaseRaw)(unsafe.Pointer(ptr))
+			}
+
+			// If no pointer stored, then no processing is done.
+			// Prevents processing before WM_NCCREATE and after WM_NCDESTROY.
+			if pMe == nil {
+				return hWnd.DefWindowProc(uMsg, wParam, lParam)
+			}
+
+			// Execute before-user closures, keep track if at least one was executed.
+			msg := Wm{uMsg, wParam, lParam}
+			atLeastOneBeforeUser := pMe.beforeUserEvents.processAllMessages(msg)
+
+			// Execute user closure, if any.
+			userRet, hasUserRet := pMe.userEvents.processLastMessage(msg)
+
+			// Execute post-user closures, keep track if at least one was executed.
+			atLeastOneAfterUser := pMe.afterUserEvents.processAllMessages(msg)
+
+			switch uMsg {
+			case co.WM_CREATE:
+				pMe.removeWmCreateInitdialog() // will release all memory in these closures
+			case co.WM_NCDESTROY: // always check
+				hWnd.SetWindowLongPtr(co.GWLP_USERDATA, 0)
+				pMe.hWnd = win.HWND(0)
+				pMe.clearMessages()
+			}
+
+			if hasUserRet {
+				return userRet
+			} else if atLeastOneBeforeUser || atLeastOneAfterUser {
+				return 0
+			} else {
+				return hWnd.DefWindowProc(uMsg, wParam, lParam)
+			}
+		},
+	)
 	return _wndProcCallback
 }

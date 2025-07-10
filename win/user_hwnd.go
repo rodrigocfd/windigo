@@ -420,20 +420,22 @@ var _EnumChildWindows *syscall.Proc
 
 type _EnumChildWindowsPack struct{ arr []HWND }
 
+var _enumChildWindowsCallback uintptr
+
 func enumChildWindowsCallback() uintptr {
-	if _enumChildWindowsCallback == 0 {
-		_enumChildWindowsCallback = syscall.NewCallback(
-			func(hChild HWND, lParam LPARAM) uintptr {
-				pPack := (*_EnumChildWindowsPack)(unsafe.Pointer(lParam))
-				pPack.arr = append(pPack.arr, hChild)
-				return 1
-			},
-		)
+	if _enumChildWindowsCallback != 0 {
+		return _enumChildWindowsCallback
 	}
+
+	_enumChildWindowsCallback = syscall.NewCallback(
+		func(hChild HWND, lParam LPARAM) uintptr {
+			pPack := (*_EnumChildWindowsPack)(unsafe.Pointer(lParam))
+			pPack.arr = append(pPack.arr, hChild)
+			return 1
+		},
+	)
 	return _enumChildWindowsCallback
 }
-
-var _enumChildWindowsCallback uintptr
 
 // Calls [HWND.GetWindowLongPtr] to retrieve the window extended style.
 func (hWnd HWND) ExStyle() (co.WS_EX, error) {

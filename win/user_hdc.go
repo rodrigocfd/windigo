@@ -87,20 +87,22 @@ type (
 	}
 )
 
+var _enumDisplayMonitorsCallback uintptr
+
 func enumDisplayMonitorsCallback() uintptr {
-	if _enumDisplayMonitorsCallback == 0 {
-		_enumDisplayMonitorsCallback = syscall.NewCallback(
-			func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lParam LPARAM) uintptr {
-				pPack := (*_EnumDisplayMonitorsPack)(unsafe.Pointer(lParam))
-				pPack.arr = append(pPack.arr, EnumDisplayMonitorsInfo{hMon, hdcMon, *rcMon})
-				return 1
-			},
-		)
+	if _enumDisplayMonitorsCallback != 0 {
+		return _enumDisplayMonitorsCallback
 	}
+
+	_enumDisplayMonitorsCallback = syscall.NewCallback(
+		func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lParam LPARAM) uintptr {
+			pPack := (*_EnumDisplayMonitorsPack)(unsafe.Pointer(lParam))
+			pPack.arr = append(pPack.arr, EnumDisplayMonitorsInfo{hMon, hdcMon, *rcMon})
+			return 1
+		},
+	)
 	return _enumDisplayMonitorsCallback
 }
-
-var _enumDisplayMonitorsCallback uintptr
 
 // [FrameRect] function.
 //

@@ -223,15 +223,17 @@ var _EnumThreadWindows *syscall.Proc
 type _EnumThreadWindowsPack struct{ arr []HWND }
 
 func enumThreadWindowsCallback() uintptr {
-	if _enumThreadWindowsCallback == 0 {
-		_enumThreadWindowsCallback = syscall.NewCallback(
-			func(hWnd HWND, lParam LPARAM) uintptr {
-				pPack := (*_EnumThreadWindowsPack)(unsafe.Pointer(lParam))
-				pPack.arr = append(pPack.arr, hWnd)
-				return 1
-			},
-		)
+	if _enumThreadWindowsCallback != 0 {
+		return _enumThreadWindowsCallback
 	}
+
+	_enumThreadWindowsCallback = syscall.NewCallback(
+		func(hWnd HWND, lParam LPARAM) uintptr {
+			pPack := (*_EnumThreadWindowsPack)(unsafe.Pointer(lParam))
+			pPack.arr = append(pPack.arr, hWnd)
+			return 1
+		},
+	)
 	return _enumThreadWindowsCallback
 }
 
@@ -256,20 +258,22 @@ var _EnumWindows *syscall.Proc
 
 type _EnumWindowsPack struct{ arr []HWND }
 
+var _enumWindowsCallback uintptr
+
 func enumWindowsCallback() uintptr {
-	if _enumWindowsCallback == 0 {
-		_enumWindowsCallback = syscall.NewCallback(
-			func(hWnd HWND, lParam LPARAM) uintptr {
-				pPack := (*_EnumWindowsPack)(unsafe.Pointer(lParam))
-				pPack.arr = append(pPack.arr, hWnd)
-				return 1
-			},
-		)
+	if _enumWindowsCallback != 0 {
+		return _enumWindowsCallback
 	}
+
+	_enumWindowsCallback = syscall.NewCallback(
+		func(hWnd HWND, lParam LPARAM) uintptr {
+			pPack := (*_EnumWindowsPack)(unsafe.Pointer(lParam))
+			pPack.arr = append(pPack.arr, hWnd)
+			return 1
+		},
+	)
 	return _enumWindowsCallback
 }
-
-var _enumWindowsCallback uintptr
 
 // [GetAsyncKeyState] function.
 //
