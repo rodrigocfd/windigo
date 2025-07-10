@@ -8,6 +8,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
 // [IBindCtx] COM interface.
@@ -66,6 +67,33 @@ func (me *IBindCtx) GetBindOptions() (BIND_OPTS3, error) {
 		return bo, nil
 	} else {
 		return BIND_OPTS3{}, hr
+	}
+}
+
+// [GetObjectParam] method.
+//
+// [GetObjectParam]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-getobjectparam
+func (me *IBindCtx) GetObjectParam(releaser *OleReleaser, key string, ppOut interface{}) error {
+	pOut := utl.OleValidateObj(ppOut).(OleObj)
+	releaser.ReleaseNow(pOut)
+
+	var ppvtQueried **_IUnknownVt
+
+	wbuf := wstr.NewBufEncoder()
+	defer wbuf.Free()
+	pKey := wbuf.PtrAllowEmpty(key)
+
+	ret, _, _ := syscall.SyscallN(
+		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).GetObjectParam,
+		uintptr(pKey),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
+		releaser.Add(pOut)
+		return nil
+	} else {
+		return hr
 	}
 }
 
