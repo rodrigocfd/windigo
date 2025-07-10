@@ -146,9 +146,10 @@ func wndProcCallback() uintptr {
 				// Execute post-user closures, keep track if at least one was executed.
 				atLeastOneAfterUser := pMe.afterUserEvents.processAllMessages(msg)
 
-				if uMsg == co.WM_CREATE {
+				switch uMsg {
+				case co.WM_CREATE:
 					pMe.removeWmCreateInitdialog() // will release all memory in these closures
-				} else if uMsg == co.WM_NCDESTROY { // always check
+				case co.WM_NCDESTROY: // always check
 					hWnd.SetWindowLongPtr(co.GWLP_USERDATA, 0)
 					pMe.hWnd = win.HWND(0)
 					pMe.clearMessages()

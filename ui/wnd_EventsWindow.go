@@ -76,7 +76,8 @@ func (me *EventsWindow) hasMessage() bool {
 }
 
 func (me *EventsWindow) processAllMessages(p Wm) (atLeastOne bool) {
-	if p.Msg == co.WM_COMMAND {
+	switch p.Msg {
+	case co.WM_COMMAND:
 		cmdId := p.WParam.LoWord()
 		notifCode := co.CMD(p.WParam.HiWord())
 		for _, obj := range me.cmds {
@@ -85,7 +86,7 @@ func (me *EventsWindow) processAllMessages(p Wm) (atLeastOne bool) {
 				atLeastOne = true
 			}
 		}
-	} else if p.Msg == co.WM_NOTIFY {
+	case co.WM_NOTIFY:
 		pHdr := unsafe.Pointer(p.LParam)
 		hdr := (*win.NMHDR)(pHdr)
 		for _, obj := range me.nfys {
@@ -94,7 +95,7 @@ func (me *EventsWindow) processAllMessages(p Wm) (atLeastOne bool) {
 				atLeastOne = true
 			}
 		}
-	} else if p.Msg == co.WM_TIMER {
+	case co.WM_TIMER:
 		for _, obj := range me.tmrs {
 			if obj.timerId == uintptr(p.WParam) {
 				obj.fun()
@@ -109,12 +110,12 @@ func (me *EventsWindow) processAllMessages(p Wm) (atLeastOne bool) {
 			atLeastOne = true
 		}
 	}
-
 	return
 }
 
 func (me *EventsWindow) processLastMessage(p Wm) (userRet uintptr, wasHandled bool) {
-	if p.Msg == co.WM_COMMAND {
+	switch p.Msg {
+	case co.WM_COMMAND:
 		cmdId := p.WParam.LoWord()
 		notifCode := co.CMD(p.WParam.HiWord())
 		for i := len(me.cmds) - 1; i >= 0; i-- { // slices.Backward() uses too much GC, index uses nothing
@@ -123,7 +124,7 @@ func (me *EventsWindow) processLastMessage(p Wm) (userRet uintptr, wasHandled bo
 				return me.defProcVal, true // handled, stop here
 			}
 		}
-	} else if p.Msg == co.WM_NOTIFY {
+	case co.WM_NOTIFY:
 		pHdr := unsafe.Pointer(p.LParam)
 		hdr := (*win.NMHDR)(pHdr)
 		for i := len(me.nfys) - 1; i >= 0; i-- {
@@ -131,7 +132,7 @@ func (me *EventsWindow) processLastMessage(p Wm) (userRet uintptr, wasHandled bo
 				return me.nfys[i].fun(pHdr), true // handled, stop here
 			}
 		}
-	} else if p.Msg == co.WM_TIMER {
+	case co.WM_TIMER:
 		for i := len(me.tmrs) - 1; i >= 0; i-- {
 			if me.tmrs[i].timerId == uintptr(p.WParam) {
 				me.tmrs[i].fun()
@@ -145,7 +146,6 @@ func (me *EventsWindow) processLastMessage(p Wm) (userRet uintptr, wasHandled bo
 			return me.msgs[i].fun(p), true // handled, stop here
 		}
 	}
-
 	return 0, false
 }
 

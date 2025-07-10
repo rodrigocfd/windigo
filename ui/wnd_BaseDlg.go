@@ -107,9 +107,10 @@ func dlgProcCallback() uintptr {
 				// Execute post-user closures, keep track if at least one was executed.
 				atLeastOneAfterUser := pMe.afterUserEvents.processAllMessages(msg)
 
-				if uMsg == co.WM_INITDIALOG {
+				switch uMsg {
+				case co.WM_INITDIALOG:
 					pMe.removeWmCreateInitdialog() // will release all memory in these closures
-				} else if uMsg == co.WM_NCDESTROY { // always check
+				case co.WM_NCDESTROY: // always check
 					hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, 0)
 					pMe.hWnd = win.HWND(0)
 					pMe.clearMessages()
