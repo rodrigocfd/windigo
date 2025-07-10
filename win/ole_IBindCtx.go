@@ -50,6 +50,25 @@ func (me *IBindCtx) EnumObjectParam(releaser *OleReleaser) (*IEnumString, error)
 	}
 }
 
+// [GetBindOptions] method.
+//
+// [GetBindOptions]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-getbindoptions
+func (me *IBindCtx) GetBindOptions() (BIND_OPTS3, error) {
+	var bo BIND_OPTS3
+	bo.SetCbStruct()
+
+	ret, _, _ := syscall.SyscallN(
+		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).GetBindOptions,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&bo)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return bo, nil
+	} else {
+		return BIND_OPTS3{}, hr
+	}
+}
+
 // [RegisterObjectBound] method.
 //
 // [RegisterObjectBound]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-registerobjectbound

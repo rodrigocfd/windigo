@@ -9,6 +9,96 @@ import (
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
+// [BIND_OPTS3] struct.
+//
+// ⚠️ You must call [BIND_OPTS3.SetCbStruct] to initialize the struct.
+//
+// # Example
+//
+//	var bo3 win.BIND_OPTS3
+//	bo3.SetCbStruct()
+//
+// [BIND_OPTS3]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ns-objidl-bind_opts3-r1
+type BIND_OPTS3 struct {
+	cbStruct            uint32
+	GrfFlags            co.BIND
+	GrfMode             co.STGM
+	DwTickCountDeadline uint32
+	DwTrackFlags        co.SLR
+	DwClassContext      co.CLSCTX
+	Locale              LCID
+	PServerInfo         *COSERVERINFO
+	Hwnd                HWND
+}
+
+// Sets the cbStruct field to the size of the struct, correctly initializing it.
+func (bo *BIND_OPTS3) SetCbStruct() {
+	bo.cbStruct = uint32(unsafe.Sizeof(*bo))
+}
+
+// [COAUTHIDENTITY] struct.
+//
+// [COAUTHIDENTITY]: https://learn.microsoft.com/en-us/windows/win32/api/wtypesbase/ns-wtypesbase-coauthidentity
+type COAUTHIDENTITY struct {
+	user           *uint16
+	userLength     uint32
+	domain         *uint16
+	domainLength   uint32
+	password       *uint16
+	passwordLength uint32
+	Flags          co.SEC_WINNT_AUTH_IDENTITY
+}
+
+func (coai *COAUTHIDENTITY) User() string {
+	return wstr.DecodeSlice(unsafe.Slice(coai.user, coai.userLength))
+}
+func (coai *COAUTHIDENTITY) SetUser(val string) {
+	buf := wstr.EncodeToSlice(val)
+	coai.user = &buf[0]
+	coai.userLength = uint32(len(buf) - 1) // without terminating null
+}
+
+func (coai *COAUTHIDENTITY) Domain() string {
+	return wstr.DecodeSlice(unsafe.Slice(coai.domain, coai.domainLength))
+}
+func (coai *COAUTHIDENTITY) SetDomain(val string) {
+	buf := wstr.EncodeToSlice(val)
+	coai.domain = &buf[0]
+	coai.domainLength = uint32(len(buf) - 1) // without terminating null
+}
+
+func (coai *COAUTHIDENTITY) Password() string {
+	return wstr.DecodeSlice(unsafe.Slice(coai.password, coai.passwordLength))
+}
+func (coai *COAUTHIDENTITY) SetPassword(val string) {
+	buf := wstr.EncodeToSlice(val)
+	coai.password = &buf[0]
+	coai.passwordLength = uint32(len(buf) - 1) // without terminating null
+}
+
+// [COAUTHINFO] struct.
+//
+// [COAUTHINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wtypesbase/ns-wtypesbase-coauthinfo
+type COAUTHINFO struct {
+	DwAuthnSvc           co.RPC_C_AUTHN
+	DwAuthzSvc           co.RPC_C_AUTHZ
+	PwszServerPrincName  *uint16
+	DwAuthnLevel         co.RPC_C_AUTHN_LEVEL
+	DwImpersonationLevel co.RPC_C_IMP_LEVEL
+	PAuthIdentityData    *COAUTHIDENTITY
+	DwCapabilities       co.EOAC_QOS
+}
+
+// [COSERVERINFO] struct.
+//
+// [COSERVERINFO]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ns-objidl-coserverinfo
+type COSERVERINFO struct {
+	dwReserved1 uint32
+	PwszName    *uint16
+	PAuthInfo   *COAUTHINFO
+	dwReserved2 uint32
+}
+
 // [DVTARGETDEVICE] struct.
 //
 // ⚠️ You must call [DVTARGETDEVICE.SetTdSize] to initialize the struct.

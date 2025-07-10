@@ -262,6 +262,41 @@ const (
 	DVASPECT_DOCPRINT  DVASPECT = 8
 )
 
+// [EOLE_AUTHENTICATION_CAPABILITIES] enumeration.
+//
+// [EOLE_AUTHENTICATION_CAPABILITIES]: https://learn.microsoft.com/en-us/windows/win32/api/objidlbase/ne-objidlbase-eole_authentication_capabilities
+type EOAC uint32
+
+const (
+	EOAC_NONE              EOAC = 0
+	EOAC_MUTUAL_AUTH       EOAC = 0x1
+	EOAC_STATIC_CLOAKING   EOAC = 0x20
+	EOAC_DYNAMIC_CLOAKING  EOAC = 0x40
+	EOAC_ANY_AUTHORITY     EOAC = 0x80
+	EOAC_MAKE_FULLSIC      EOAC = 0x100
+	EOAC_DEFAULT           EOAC = 0x800
+	EOAC_SECURE_REFS       EOAC = 0x2
+	EOAC_ACCESS_CONTROL    EOAC = 0x4
+	EOAC_APPID             EOAC = 0x8
+	EOAC_DYNAMIC           EOAC = 0x10
+	EOAC_REQUIRE_FULLSIC   EOAC = 0x200
+	EOAC_AUTO_IMPERSONATE  EOAC = 0x400
+	EOAC_DISABLE_AAA       EOAC = 0x1000
+	EOAC_NO_CUSTOM_MARSHAL EOAC = 0x2000
+	EOAC_RESERVED1         EOAC = 0x4000
+)
+
+// [COAUTHINFO] dwCapabilities, with flags from [EOAC] and
+// [RPC_C_QOS_CAPABILITIES].
+//
+// [COAUTHINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wtypesbase/ns-wtypesbase-coauthinfo
+type EOAC_QOS uint32
+
+const (
+	EOAC_QOS_NONE        = EOAC_QOS(EOAC_NONE)
+	EOAC_QOS_MUTUAL_AUTH = EOAC_QOS(RPC_C_QOS_CAPABILITIES_MUTUAL_AUTH)
+)
+
 // [LOCKTYPE] enumeration.
 //
 // [LOCKTYPE]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ne-objidl-locktype
@@ -297,6 +332,95 @@ const (
 	PICTYPE_ENHMETAFILE   PICTYPE = 4
 )
 
+// Authentication service [constants].
+//
+// [constants]: https://learn.microsoft.com/en-us/windows/win32/com/com-authentication-service-constants
+type RPC_C_AUTHN uint32
+
+const (
+	RPC_C_AUTHN_NONE          RPC_C_AUTHN = 0
+	RPC_C_AUTHN_DCE_PRIVATE   RPC_C_AUTHN = 1
+	RPC_C_AUTHN_DCE_PUBLIC    RPC_C_AUTHN = 2
+	RPC_C_AUTHN_DEC_PUBLIC    RPC_C_AUTHN = 4
+	RPC_C_AUTHN_GSS_NEGOTIATE RPC_C_AUTHN = 9
+	RPC_C_AUTHN_WINNT         RPC_C_AUTHN = 10
+	RPC_C_AUTHN_GSS_SCHANNEL  RPC_C_AUTHN = 14
+	RPC_C_AUTHN_GSS_KERBEROS  RPC_C_AUTHN = 16
+	RPC_C_AUTHN_DPA           RPC_C_AUTHN = 17
+	RPC_C_AUTHN_MSN           RPC_C_AUTHN = 18
+	RPC_C_AUTHN_KERNEL        RPC_C_AUTHN = 20
+	RPC_C_AUTHN_DIGEST        RPC_C_AUTHN = 21
+	RPC_C_AUTHN_NEGO_EXTENDER RPC_C_AUTHN = 30
+	RPC_C_AUTHN_PKU2U         RPC_C_AUTHN = 31
+	RPC_C_AUTHN_MQ            RPC_C_AUTHN = 100
+	RPC_C_AUTHN_DEFAULT       RPC_C_AUTHN = 0xffff_ffff
+)
+
+// Authentication level [constants].
+//
+// [constants]: https://learn.microsoft.com/en-us/windows/win32/com/com-authentication-level-constants
+type RPC_C_AUTHN_LEVEL uint32
+
+const (
+	RPC_C_AUTHN_LEVEL_DEFAULT       RPC_C_AUTHN_LEVEL = 0
+	RPC_C_AUTHN_LEVEL_NONE          RPC_C_AUTHN_LEVEL = 1
+	RPC_C_AUTHN_LEVEL_CONNECT       RPC_C_AUTHN_LEVEL = 2
+	RPC_C_AUTHN_LEVEL_CALL          RPC_C_AUTHN_LEVEL = 3
+	RPC_C_AUTHN_LEVEL_PKT           RPC_C_AUTHN_LEVEL = 4
+	RPC_C_AUTHN_LEVEL_PKT_INTEGRITY RPC_C_AUTHN_LEVEL = 5
+	RPC_C_AUTHN_LEVEL_PKT_PRIVACY   RPC_C_AUTHN_LEVEL = 6
+)
+
+// Authorization [constants].
+//
+// [constants]: https://learn.microsoft.com/en-us/windows/win32/com/com-authorization-constants
+type RPC_C_AUTHZ uint32
+
+const (
+	RPC_C_AUTHZ_NONE    RPC_C_AUTHZ = 0
+	RPC_C_AUTHZ_NAME    RPC_C_AUTHZ = 1
+	RPC_C_AUTHZ_DCE     RPC_C_AUTHZ = 2
+	RPC_C_AUTHZ_DEFAULT RPC_C_AUTHZ = 0xffff_ffff
+)
+
+// Impersonation level [constants].
+//
+// [constants]: https://learn.microsoft.com/en-us/windows/win32/com/com-impersonation-level-constants
+type RPC_C_IMP_LEVEL uint32
+
+const (
+	RPC_C_IMP_LEVEL_DEFAULT     RPC_C_IMP_LEVEL = 0
+	RPC_C_IMP_LEVEL_ANONYMOUS   RPC_C_IMP_LEVEL = 1
+	RPC_C_IMP_LEVEL_IDENTIFY    RPC_C_IMP_LEVEL = 2
+	RPC_C_IMP_LEVEL_IMPERSONATE RPC_C_IMP_LEVEL = 3
+	RPC_C_IMP_LEVEL_DELEGATE    RPC_C_IMP_LEVEL = 4
+)
+
+// Quality of service [capabilities].
+//
+// [capabilities]: https://learn.microsoft.com/en-us/windows/win32/rpc/quality-of-service
+type RPC_C_QOS_CAPABILITIES uint32
+
+const (
+	RPC_C_QOS_CAPABILITIES_DEFAULT                     RPC_C_QOS_CAPABILITIES = 0x0
+	RPC_C_QOS_CAPABILITIES_MUTUAL_AUTH                 RPC_C_QOS_CAPABILITIES = 0x1
+	RPC_C_QOS_CAPABILITIES_MAKE_FULLSIC                RPC_C_QOS_CAPABILITIES = 0x2
+	RPC_C_QOS_CAPABILITIES_ANY_AUTHORITY               RPC_C_QOS_CAPABILITIES = 0x4
+	RPC_C_QOS_CAPABILITIES_IGNORE_DELEGATE_FAILURE     RPC_C_QOS_CAPABILITIES = 0x8
+	RPC_C_QOS_CAPABILITIES_LOCAL_MA_HINT               RPC_C_QOS_CAPABILITIES = 0x10
+	RPC_C_QOS_CAPABILITIES_SCHANNEL_FULL_AUTH_IDENTITY RPC_C_QOS_CAPABILITIES = 0x20
+)
+
+// [COAUTHIDENTITY] flags.
+//
+// [COAUTHIDENTITY]: https://learn.microsoft.com/en-us/windows/win32/api/wtypesbase/ns-wtypesbase-coauthidentity
+type SEC_WINNT_AUTH_IDENTITY uint32
+
+const (
+	SEC_WINNT_AUTH_IDENTITY_ANSI    SEC_WINNT_AUTH_IDENTITY = 0x1
+	SEC_WINNT_AUTH_IDENTITY_UNICODE SEC_WINNT_AUTH_IDENTITY = 0x2
+)
+
 // [HRESULT] severity.
 //
 // [HRESULT]: https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/0642cb2f-2075-4469-918c-4441e69c548a
@@ -329,6 +453,32 @@ const (
 	STGC_ONLYIFCURRENT                      STGC = 2
 	STGC_DANGEROUSLYCOMMITMERELYTODISKCACHE STGC = 4
 	STGC_CONSOLIDATE                        STGC = 8
+)
+
+// [STGM] constants.
+//
+// [STGM]: https://learn.microsoft.com/en-us/windows/win32/stg/stgm-constants
+type STGM uint32
+
+const (
+	STGM_READ             STGM = 0x0000_0000
+	STGM_WRITE            STGM = 0x0000_0001
+	STGM_READWRITE        STGM = 0x0000_0002
+	STGM_SHARE_DENY_NONE  STGM = 0x0000_0040
+	STGM_SHARE_DENY_READ  STGM = 0x0000_0030
+	STGM_SHARE_DENY_WRITE STGM = 0x0000_0020
+	STGM_SHARE_EXCLUSIVE  STGM = 0x0000_0010
+	STGM_PRIORITY         STGM = 0x0004_0000
+	STGM_CREATE           STGM = 0x0000_1000
+	STGM_CONVERT          STGM = 0x0002_0000
+	STGM_FAILIFTHERE      STGM = 0x0000_0000
+	STGM_DIRECT           STGM = 0x0000_0000
+	STGM_TRANSACTED       STGM = 0x0001_0000
+	STGM_NOSCRATCH        STGM = 0x0010_0000
+	STGM_NOSNAPSHOT       STGM = 0x0020_0000
+	STGM_SIMPLE           STGM = 0x0800_0000
+	STGM_DIRECT_SWMR      STGM = 0x0040_0000
+	STGM_DELETEONRELEASE  STGM = 0x0400_0000
 )
 
 // [STGTY] enumeration.
