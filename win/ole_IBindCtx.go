@@ -129,6 +129,17 @@ func (me *IBindCtx) RevokeObjectBound(obj *IUnknown) error {
 	return utl.ErrorAsHResult(ret)
 }
 
+// [SetBindOptions] method.
+//
+// [SetBindOptions]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-setbindoptions
+func (me *IBindCtx) SetBindOptions(bindOpts *BIND_OPTS3) error {
+	ret, _, _ := syscall.SyscallN(
+		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).SetBindOptions,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(bindOpts)))
+	return utl.ErrorAsHResult(ret)
+}
+
 type _IBindCtxVt struct {
 	_IUnknownVt
 	RegisterObjectBound   uintptr
