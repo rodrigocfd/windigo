@@ -1220,6 +1220,65 @@ func (hWnd HWND) ShowWindowAsync(cmdShow co.SW) error {
 
 var _ShowWindowAsync *syscall.Proc
 
+// [ShutdownBlockReasonCreate] function.
+//
+// [ShutdownBlockReasonCreate]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-shutdownblockreasoncreate
+func (hWnd HWND) ShutdownBlockReasonCreate(reason string) error {
+	wbuf := wstr.NewBufEncoder()
+	defer wbuf.Free()
+	pReason := wbuf.PtrAllowEmpty(reason)
+
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_ShutdownBlockReasonCreate, "ShutdownBlockReasonCreate"),
+		uintptr(hWnd),
+		uintptr(pReason))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _ShutdownBlockReasonCreate *syscall.Proc
+
+// [ShutdownBlockReasonDestroy] function.
+//
+// [ShutdownBlockReasonDestroy]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-shutdownblockreasondestroy
+func (hWnd HWND) ShutdownBlockReasonDestroy() error {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_ShutdownBlockReasonDestroy, "ShutdownBlockReasonDestroy"),
+		uintptr(hWnd))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _ShutdownBlockReasonDestroy *syscall.Proc
+
+// [ShutdownBlockReasonQuery] function.
+//
+// [ShutdownBlockReasonQuery]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-shutdownblockreasonquery
+func (hWnd HWND) ShutdownBlockReasonQuery() (string, error) {
+	var bufSz uint32
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_ShutdownBlockReasonQuery, "ShutdownBlockReasonQuery"),
+		uintptr(hWnd),
+		0,
+		uintptr(unsafe.Pointer(&bufSz)))
+	if ret == 0 {
+		return "", co.ERROR(err)
+	}
+
+	recvBuf := wstr.NewBufDecoder(uint(bufSz))
+	defer recvBuf.Free()
+
+	ret, _, err = syscall.SyscallN(
+		dll.Load(dll.USER32, &_ShutdownBlockReasonQuery, "ShutdownBlockReasonQuery"),
+		uintptr(hWnd),
+		uintptr(recvBuf.UnsafePtr()),
+		uintptr(unsafe.Pointer(&bufSz)))
+	if ret == 0 {
+		return "", co.ERROR(err)
+	}
+	return recvBuf.String(), nil
+}
+
+var _ShutdownBlockReasonQuery *syscall.Proc
+
 // Calls [HWND.GetWindowLongPtr] to retrieve the window style.
 func (hWnd HWND) Style() (co.WS, error) {
 	style, err := hWnd.GetWindowLongPtr(co.GWLP_STYLE)
