@@ -3,6 +3,8 @@
 package win
 
 import (
+	"fmt"
+
 	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win/co"
 )
@@ -12,7 +14,7 @@ import (
 // [DWMWINDOWATTRIBUTE]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
 type DwmAttr struct {
 	tag co.DWMWA
-	dw  uint32
+	dw  uint32 // stores BOOL, COLORREF and const values
 	rc  RECT
 }
 
@@ -471,6 +473,6 @@ func dwmAttrFromRaw(attr co.DWMWA, dwBuf uint32, rcBuf RECT) DwmAttr {
 	case co.DWMWA_SYSTEMBACKDROP_TYPE:
 		return DwmAttrSystemBackdropType(co.DWMSBT(dwBuf))
 	default:
-		panic("Invalid co.DWMWA value.")
+		panic(fmt.Sprintf("Invalid co.DWMWA value: %d.", attr))
 	}
 }
