@@ -275,6 +275,19 @@ func enumWindowsCallback() uintptr {
 	return _enumWindowsCallback
 }
 
+// [ExitWindowsEx] function.
+//
+// [ExitWindowsEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-exitwindowsex
+func ExitWindowsEx(flags co.EXW, reason co.SHTDN) error {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_ExitWindowsEx, "ExitWindowsEx"),
+		uintptr(flags),
+		uintptr(reason))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _ExitWindowsEx *syscall.Proc
+
 // [GetAsyncKeyState] function.
 //
 // [GetAsyncKeyState]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getasynckeystate
@@ -576,6 +589,17 @@ func LockSetForegroundWindow(lockCode co.LSFW) error {
 }
 
 var _LockSetForegroundWindow *syscall.Proc
+
+// [LockWorkStation] function.
+//
+// [LockWorkStation]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-lockworkstation
+func LockWorkStation() error {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_LockWorkStation, "LockWorkStation"))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _LockWorkStation *syscall.Proc
 
 // [OffsetRect] function.
 //
