@@ -33,6 +33,12 @@ type _COMDLG_FILTERSPEC struct {
 //
 // Implements [OleResource].
 //
+// You can retrieve the ITEMIDLIST of an [IShellItem] with
+// [SHGetIDListFromObject].
+//
+// You can retrieve the [IShellItem] if an ITEMIDLIST with
+// [SHCreateItemFromIDList].
+//
 // [ITEMIDLIST]: https://learn.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-itemidlist
 type ITEMIDLIST uintptr
 

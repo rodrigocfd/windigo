@@ -90,13 +90,13 @@ func (me *IEnumShellItems) Clone(releaser *OleReleaser) (*IEnumShellItems, error
 //		path, _ := item.GetDisplayName(co.SIGDN_FILESYSPATH)
 //		println(path)
 //	}
-func (me *IEnumShellItems) Enum(rel *OleReleaser) ([]*IShellItem, error) {
+func (me *IEnumShellItems) Enum(releaser *OleReleaser) ([]*IShellItem, error) {
 	items := make([]*IShellItem, 0)
 	var item *IShellItem
 	var hr error
 
 	for {
-		item, hr = me.Next(rel)
+		item, hr = me.Next(releaser)
 		if hr != nil { // actual error
 			return nil, hr
 		} else if item == nil { // no more items to fetch

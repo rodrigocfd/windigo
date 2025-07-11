@@ -17,6 +17,10 @@ import (
 //
 // # Example
 //
+//	win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
@@ -151,6 +155,49 @@ func (me *IShellFolder) CreateViewObject(
 		return nil
 	} else {
 		return hr
+	}
+}
+
+// [EnumObjects] method.
+//
+// # Example
+//
+//	win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+//	var item *win.IShellItem
+//	win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
+//
+//	var folder *win.IShellFolder
+//	item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
+//
+//	idlList, _ := folder.EnumObjects(rel, win.HWND(0),
+//		co.SHCONTF_FOLDERS|co.SHCONTF_NONFOLDERS|co.SHCONTF_INCLUDEHIDDEN)
+//
+// [EnumObjects]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellfolder-enumobjects
+func (me *IShellFolder) EnumObjects(
+	releaser *OleReleaser,
+	hWnd HWND,
+	flags co.SHCONTF,
+) (*IEnumIDList, error) {
+	var ppvtQueried **_IUnknownVt
+	ret, _, _ := syscall.SyscallN(
+		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).EnumObjects,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(hWnd),
+		uintptr(flags),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := &IEnumIDList{IUnknown{ppvtQueried}}
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
 	}
 }
 
