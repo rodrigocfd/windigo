@@ -6,14 +6,6 @@ import (
 	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
-// A [COM] object whose lifetime can be managed by an [OleReleaser], automating
-// the cleanup.
-//
-// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
-type OleResource interface {
-	release()
-}
-
 // Stores multiple [COM] resources, releasing all them at once.
 //
 // Every function which returns a COM resource will require an [OleReleaser]

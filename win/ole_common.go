@@ -9,6 +9,14 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// A [COM] object whose lifetime can be managed by an [OleReleaser], automating
+// the cleanup.
+//
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+type OleResource interface {
+	release()
+}
+
 // A [COM] object, derived from [IUnknown].
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
