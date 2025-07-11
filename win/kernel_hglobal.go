@@ -29,7 +29,7 @@ type HGLOBAL HANDLE
 //
 // # Example
 //
-//	hMem, _ := GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 10)
+//	hMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 10)
 //	defer hMem.GlobalFree()
 //
 //	sliceMem, _ := hMem.GlobalLockSlice()
@@ -38,10 +38,10 @@ type HGLOBAL HANDLE
 //	println(len(sliceMem))
 //
 // [GlobalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
-func GlobalAlloc(uFlags co.GMEM, numBytes uint) (HGLOBAL, error) {
+func GlobalAlloc(flags co.GMEM, numBytes uint) (HGLOBAL, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GlobalAlloc, "GlobalAlloc"),
-		uintptr(uFlags),
+		uintptr(flags),
 		uintptr(numBytes))
 	if ret == 0 {
 		return HGLOBAL(0), co.ERROR(err)
@@ -130,7 +130,7 @@ var _GlobalLock *syscall.Proc
 //
 // # Example
 //
-//	hMem, _ := GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 10)
+//	hMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 10)
 //	defer hMem.GlobalFree()
 //
 //	sliceMem, _ := hMem.GlobalLockSlice()
@@ -153,15 +153,20 @@ func (hGlobal HGLOBAL) GlobalLockSlice() ([]byte, error) {
 
 // [GlobalReAlloc] function.
 //
+// Be careful when using this function. It returns a new [HGLOBAL] handle, which
+// invalidates the previous one – that is, you should not call
+// [HGLOBAL.GlobalFree] on the previous one. This can become tricky if you
+// used defer.
+//
 // ⚠️ You must defer [HGLOBAL.GlobalFree].
 //
 // [GlobalReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalrealloc
-func (hGlobal HGLOBAL) GlobalReAlloc(numBytes uint, uFlags co.GMEM) (HGLOBAL, error) {
+func (hGlobal HGLOBAL) GlobalReAlloc(numBytes uint, flags co.GMEM) (HGLOBAL, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GlobalReAlloc, "GlobalReAlloc"),
 		uintptr(hGlobal),
 		uintptr(numBytes),
-		uintptr(uFlags))
+		uintptr(flags))
 	if ret == 0 {
 		return HGLOBAL(0), co.ERROR(err)
 	}

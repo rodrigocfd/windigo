@@ -28,6 +28,7 @@ const (
 	GMEM_INVALID_HANDLE  = 0x8000
 	INFINITE             = 0xffff_ffff
 	INVALID_HANDLE_VALUE = -1
+	LMEM_INVALID_HANDLE  = 0x8000
 	MAX_MODULE_NAME32    = 255
 	MAX_PATH             = 260
 	TIME_ZONE_INVALID    = 0xffff_ffff
