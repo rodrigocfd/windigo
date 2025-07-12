@@ -93,8 +93,8 @@ func iniLoadLines(iniPath string) ([]string, error) {
 	return wstr.SplitLines(string(fin.HotSlice())), nil
 }
 
-// Serializes and saves the content back to the .ini file.
-func (me *Ini) SaveToFile(filePath string) error {
+// Serializes the contents.
+func (me *Ini) Serialize() string {
 	var serialized strings.Builder
 
 	for idxSection := range me.Sections {
@@ -111,19 +111,12 @@ func (me *Ini) SaveToFile(filePath string) error {
 		}
 	}
 
-	fout, err := FileOpen(filePath, co.FOPEN_RW_OPEN_OR_CREATE)
-	if err != nil {
-		return err
-	}
-	defer fout.Close()
+	return serialized.String()
+}
 
-	if err := fout.Resize(0); err != nil { // truncate file
-		return err
-	}
-	if _, err := fout.WriteString(serialized.String()); err != nil {
-		return err
-	}
-	return nil
+// Serializes and saves the contents into the .ini file.
+func (me *Ini) SaveToFile(filePath string) error {
+	return FileWrite(filePath, []byte(me.Serialize()))
 }
 
 // Returns a pointer to the section with the given name, or nil if not existing.

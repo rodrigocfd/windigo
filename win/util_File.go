@@ -10,7 +10,69 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// Reads all the contents of the file at once. Calls:
+//
+//   - [CreateFile]
+//   - [HFILE.GetFileSizeEx]
+//   - [HFILE.ReadFile]
+//   - [HFILE.CloseHandle]
+//
+// # Example
+//
+//	contents, _ := win.FileRead("C:\\Temp\\foo.txt")
+func FileRead(filePath string) ([]byte, error) {
+	fin, err := FileOpen(filePath, co.FOPEN_READ_EXISTING)
+	if err != nil {
+		return nil, fmt.Errorf("FileOpen: %w", err)
+	}
+	defer fin.Close()
+
+	sz, err := fin.Size()
+	if err != nil {
+		return nil, fmt.Errorf("File.Size: %w", err)
+	}
+
+	ret := make([]byte, sz)
+	if _, err := fin.Read(ret); err != nil {
+		return nil, fmt.Errorf("File.Read: %w", err)
+	}
+
+	return ret, nil
+}
+
+// Truncates the file, then writes all the contents at once. Calls:
+//
+//   - [CreateFile]
+//   - [HFILE.SetEndOfFile]
+//   - [HFILE.WriteFile]
+//   - [HFILE.CloseHandle]
+//
+// # Example
+//
+//	contents := []byte("my text")
+//	win.FileWrite("C:\\Temp\\foo.txt", contents)
+func FileWrite(filePath string, contents []byte) error {
+	fout, err := FileOpen(filePath, co.FOPEN_RW_OPEN_OR_CREATE)
+	if err != nil {
+		return fmt.Errorf("FileOpen: %w", err)
+	}
+	defer fout.Close()
+
+	if err := fout.Hfile().SetEndOfFile(); err != nil {
+		return fmt.Errorf("HFILE.SetEndOfFile: %w", err)
+	}
+
+	if _, err := fout.Write(contents); err != nil {
+		return fmt.Errorf("File.Write: %w", err)
+	}
+
+	return nil
+}
+
 // High-level abstraction to [HFILE], providing several operations.
+//
+// If you simply need to read or write the contents, consider using the
+// [FileRead] and [FileWrite] functions.
 //
 // Implements the following standard io interfaces:
 //   - [io.ByteReader]
@@ -195,10 +257,6 @@ func (me *File) ReadByte() (byte, error) {
 //
 // Calls [HFILE.SetFilePointerEx] and [HFILE.SetEndOfFile].
 func (me *File) Resize(numBytes uint) error {
-	if _, err := me.Seek(0, io.SeekStart); err != nil {
-		return err
-	}
-
 	// Simply go beyond file limits.
 	if _, err := me.Seek(int(numBytes), io.SeekStart); err != nil {
 		return err
@@ -278,6 +336,9 @@ func (me *File) WriteString(s string) (int, error) {
 //
 // Note that memory-mapped files may present issues in x86 architectures; if so,
 // just use the ordinary File.
+//
+// If you simply need to read or write the contents, consider using the
+// [FileRead] and [FileWrite] functions.
 //
 // Created with [FileMapOpen].
 type FileMap struct {
