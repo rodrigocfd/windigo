@@ -136,16 +136,14 @@ func main() {
 
 	// Enumerate all values under this key
 
-	allValues, _ := hKey.RegEnumValue()
-	for _, value := range allValues {
-		regVal, _ := hKey.RegQueryValueEx(value)
-
-		if strVal, ok := regVal.Sz(); ok { // does it contain a string?
-			println("Value str", value, strVal)
-		} else if intVal, ok := regVal.Dword(); ok { // does it contain an uint32?
-			println("Value int", value, intVal)
+	namesVals, _ := hKey.RegEnumValue()
+	for _, nameVal := range namesVals {
+		if str, ok := nameVal.Val.Sz(); ok { // does it contain a string?
+			println("Value str", nameVal.Name, str)
+		} else if num, ok := nameVal.Val.Dword(); ok { // does it contain an uint32?
+			println("Value int", nameVal.Name, num)
 		} else {
-			println("Value other", value, regVal.Type())
+			println("Value other", nameVal.Name)
 		}
 	}
 }

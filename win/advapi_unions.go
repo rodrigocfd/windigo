@@ -195,7 +195,8 @@ func (me *RegVal) Sz() (string, bool) {
 	return "", false
 }
 
-// Builds a [RegVal] from a data block, with a few validations.
+// Builds a [RegVal] from a data block, taking ownership of it. Performs a few
+// validations.
 func regValParse(data []byte, regType co.REG) (RegVal, error) {
 	isDword := regType == co.REG_DWORD || regType == co.REG_DWORD_BIG_ENDIAN
 	isQword := regType == co.REG_QWORD

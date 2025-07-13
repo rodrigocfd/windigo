@@ -11,7 +11,6 @@ import (
 )
 
 // Reads all the contents of the file at once. Calls:
-//
 //   - [CreateFile]
 //   - [HFILE.GetFileSizeEx]
 //   - [HFILE.ReadFile]
@@ -41,7 +40,6 @@ func FileRead(filePath string) ([]byte, error) {
 }
 
 // Truncates the file, then writes all the contents at once. Calls:
-//
 //   - [CreateFile]
 //   - [HFILE.SetEndOfFile]
 //   - [HFILE.WriteFile]

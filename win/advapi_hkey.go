@@ -3,6 +3,8 @@
 package win
 
 import (
+	"sort"
+	"strings"
 	"syscall"
 	"time"
 	"unsafe"
@@ -321,6 +323,9 @@ func (hKey HKEY) RegEnumKeyEx() ([]string, error) {
 		keys = append(keys, keyNameBuf.String())
 	}
 
+	sort.Slice(keys, func(a, b int) bool {
+		return strings.ToUpper(keys[a]) < strings.ToUpper(keys[b])
+	})
 	return keys, nil
 }
 
@@ -336,29 +341,37 @@ var _RegEnumKeyExW *syscall.Proc
 //		co.KEY_READ)
 //	defer hKey.RegCloseKey()
 //
-//	names, _ := hKey.RegEnumValue()
-//	for name, _ := range names {
-//		println(name)
+//	namesVals, _ := hKey.RegEnumValue()
+//	for _, nameVal := range namesVals {
+//		if str, ok := nameVal.Val.Sz(); ok {
+//			println(nameVal.Name, "Str val", str)
+//		} else {
+//			println(nameVal.Name, "other type")
+//		}
 //	}
 //
 // [RegEnumValue]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regenumvaluew
-func (hKey HKEY) RegEnumValue() ([]string, error) {
+func (hKey HKEY) RegEnumValue() ([]HkeyNameVal, error) {
 	nfo, err := hKey.RegQueryInfoKey()
 	if err != nil {
 		return nil, err
 	}
 
 	if nfo.NumValues == 0 {
-		return []string{}, nil // no values
+		return []HkeyNameVal{}, nil // no values
 	}
 
-	names := make([]string, 0, nfo.NumValues) // to be returned
+	namesVals := make([]HkeyNameVal, 0, nfo.NumValues) // to be returned
 
 	valueNameBuf := wstr.NewBufDecoder(nfo.MaxValueNameLen + 1)
 	defer valueNameBuf.Free()
 
+	dataBuf := make([]byte, nfo.MaxValueDataLen)
+
 	for i := uint(0); i < nfo.NumValues; i++ {
 		szValueNameBuf := uint32(valueNameBuf.Len())
+		var dataType uint32
+		szDataBytes := uint32(len(dataBuf))
 
 		ret, _, _ := syscall.SyscallN(
 			dll.Load(dll.ADVAPI32, &_RegEnumValueW, "RegEnumValueW"),
@@ -366,18 +379,37 @@ func (hKey HKEY) RegEnumValue() ([]string, error) {
 			uintptr(uint32(i)),
 			uintptr(valueNameBuf.UnsafePtr()),
 			uintptr(unsafe.Pointer(&szValueNameBuf)),
-			0, 0, 0, 0)
+			0,
+			uintptr(unsafe.Pointer(&dataType)),
+			uintptr(unsafe.Pointer(&dataBuf[0])),
+			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
 			return nil, wErr
 		}
-		names = append(names, valueNameBuf.String())
+
+		dataBufToMove := make([]byte, szDataBytes) // possibly smaller than the largest value
+		copy(dataBufToMove, dataBuf[:szDataBytes])
+		newVal, err := regValParse(dataBufToMove, co.REG(dataType))
+		if err != nil {
+			return nil, err
+		}
+		namesVals = append(namesVals, HkeyNameVal{valueNameBuf.String(), newVal})
 	}
 
-	return names, nil
+	sort.Slice(namesVals, func(a, b int) bool {
+		return strings.ToUpper(namesVals[a].Name) < strings.ToUpper(namesVals[b].Name)
+	})
+	return namesVals, nil
 }
 
 var _RegEnumValueW *syscall.Proc
+
+// Returned by [HKEY.RegEnumValue].
+type HkeyNameVal struct {
+	Name string // Value name.
+	Val  RegVal // Value data.
+}
 
 // [RegFlushKey] function.
 //
@@ -538,7 +570,7 @@ func (hKey HKEY) RegQueryInfoKey() (HkeyInfo, error) {
 		ret, _, _ := syscall.SyscallN(
 			dll.Load(dll.ADVAPI32, &_RegQueryInfoKeyW, "RegQueryInfoKeyW"),
 			uintptr(hKey),
-			uintptr(classBuf.Len()),
+			uintptr(classBuf.UnsafePtr()),
 			uintptr(unsafe.Pointer(&szClassBuf)),
 			0,
 			uintptr(unsafe.Pointer(&numSubKeys)),
