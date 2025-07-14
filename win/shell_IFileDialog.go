@@ -276,7 +276,7 @@ func (me *IFileDialog) SetFileTypeIndex(index uint) error {
 //
 //	var fd win.IFileDialog // initialized somewhere
 //
-//	fd.SetFileTypes([]win.COMDLG_FILTERSPEC{
+//	_ = fd.SetFileTypes([]win.COMDLG_FILTERSPEC{
 //		{Name: "MP3 audio files", Spec: "*.mp3"},
 //		{Name: "All files", Spec: "*.*"},
 //	})
@@ -346,7 +346,7 @@ func (me *IFileDialog) SetOkButtonLabel(text string) error {
 //	var fd win.IFileDialog // initialized somewhere
 //
 //	curOpts, _ := fd.GetOptions()
-//	fd.SetOptions(curOpts |
+//	_ = fd.SetOptions(curOpts |
 //		co.FOS_FORCEFILESYSTEM |
 //		co.FOS_FILEMUSTEXIST |
 //		co.FOS_ALLOWMULTISELECT,

@@ -22,7 +22,7 @@ type BSTR uintptr
 //
 // # Example
 //
-//	bstr := win.SysAllocString("hello")
+//	bstr, _ := win.SysAllocString("hello")
 //	defer bstr.SysFreeString()
 //
 // [SysAllocString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysallocstring
@@ -57,12 +57,12 @@ var _SysFreeString *syscall.Proc
 
 // [SysReAllocString] function.
 //
-// # Example
+// Be careful when using this function. It returns a new [BSTR] handle, which
+// invalidates the previous one – that is, you should not call
+// [BSTR.SysFreeString] on the previous one. This can become tricky if you
+// used defer.
 //
-//	bstr := win.SysAllocString("hello")
-//	defer bstr.SysFreeString()
-//
-//	bstr = bstr.SysReAllocString("another")
+// ⚠️ You must defer [BSTR.SysFreeString].
 //
 // [SysReAllocString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysreallocstring
 func (bstr BSTR) SysReAllocString(s string) (BSTR, error) {

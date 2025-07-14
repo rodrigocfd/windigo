@@ -59,9 +59,17 @@ var _CreateDirectoryW *syscall.Proc
 //	var si win.STARTUPINFO
 //	si.SetCb()
 //
-//	pi, _ := win.CreateProcess("C:\\Windows\\notepad.exe", "",
-//		nil, nil, false, co.CREATE_NONE, []string{"FOO=bar", "BAR=44"},
-//		"", &si)
+//	pi, _ := win.CreateProcess(
+//		"C:\\Windows\\notepad.exe",
+//		"",
+//		nil,
+//		nil,
+//		false,
+//		co.CREATE_NONE,
+//		[]string{"FOO=bar", "BAR=44"},
+//		"",
+//		&si,
+//	)
 //
 //	defer pi.HProcess.CloseHandle()
 //	defer pi.HThread.CloseHandle()

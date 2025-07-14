@@ -28,7 +28,7 @@ import (
 //	defer runtime.KeepAlive(data)
 //
 //	stream, _ := win.SHCreateMemStream(rel, data)
-//	pic, _ := win.OleLoadPicture(rel, &stream, 0, true)
+//	pic, _ := win.OleLoadPicture(rel, stream, 0, true)
 //
 // [OleLoadPicture]: https://learn.microsoft.com/en-us/windows/win32/api/olectl/nf-olectl-oleloadpicture
 func OleLoadPicture(

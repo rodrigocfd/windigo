@@ -43,7 +43,7 @@ type (
 //
 // # Example
 //
-//	ini, err := win.IniLoad("C:\\Temp\\foo.ini")
+//	ini, _ := win.IniLoad("C:\\Temp\\foo.ini")
 func IniLoad(iniPath string) (*Ini, error) {
 	lines, err := iniLoadLines(iniPath)
 	if err != nil {

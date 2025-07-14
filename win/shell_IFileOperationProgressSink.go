@@ -18,15 +18,20 @@ import (
 //
 // # Example
 //
-//	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var op *win.IFileOperation
-//	win.CoCreateInstance(
-//		rel, co.CLSID_FileOperation, nil, co.CLSCTX_ALL, &op)
+//	_ = win.CoCreateInstance(
+//		rel,
+//		co.CLSID_FileOperation,
+//		nil,
+//		co.CLSCTX_ALL, &op,
+//	)
 //
 //	sink := win.NewIFileOperationProgressSinkImpl(rel)
 //	sink.PreCopyItem(
@@ -39,7 +44,7 @@ import (
 //			return co.HRESULT_S_OK
 //		},
 //	)
-//	op.Advise(sink)
+//	_, _ = op.Advise(sink)
 //
 // [IFileOperationProgressSink]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileoperationprogresssink
 type IFileOperationProgressSink struct{ IUnknown }
@@ -77,15 +82,20 @@ type _IFileOperationProgressSinkImpl struct {
 //
 // # Example
 //
-//	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var op *win.IFileOperation
-//	win.CoCreateInstance(
-//		rel, co.CLSID_FileOperation, nil, co.CLSCTX_ALL, &op)
+//	_ = win.CoCreateInstance(
+//		rel,
+//		co.CLSID_FileOperation,
+//		nil,
+//		co.CLSCTX_ALL, &op,
+//	)
 //
 //	sink := win.NewIFileOperationProgressSinkImpl(rel)
 //	sink.PreCopyItem(
@@ -98,7 +108,7 @@ type _IFileOperationProgressSinkImpl struct {
 //			return co.HRESULT_S_OK
 //		},
 //	)
-//	op.Advise(sink)
+//	_, _ = op.Advise(sink)
 //
 // [IFileOperationProgressSink]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileoperationprogresssink
 func NewIFileOperationProgressSinkImpl(releaser *OleReleaser) *IFileOperationProgressSink {

@@ -19,7 +19,7 @@ import (
 //
 // # Example
 //
-//	win.CoInitializeEx(
+//	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
@@ -29,7 +29,13 @@ import (
 //	clsId, _ := win.CLSIDFromProgID("Excel.Application")
 //
 //	var excel *win.IDispatch
-//	win.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &excel)
+//	_ = win.CoCreateInstance(
+//		rel,
+//		clsId,
+//		nil,
+//		co.CLSCTX_LOCAL_SERVER,
+//		&excel,
+//	)
 //
 // [CLSIDFromProgID]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func CLSIDFromProgID(progId string) (co.CLSID, error) {
@@ -57,11 +63,15 @@ var _CLSIDFromProgID *syscall.Proc
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var taskbl *win.ITaskbarList
-//	win.CoCreateInstance(
+//	_ = win.CoCreateInstance(
 //		rel,
 //		co.CLSID_TaskbarList,
 //		nil,
@@ -109,7 +119,7 @@ var _CoCreateInstance *syscall.Proc
 //
 // # Example
 //
-//	win.CoInitializeEx(
+//	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
@@ -178,7 +188,7 @@ var _CreateBindCtx *syscall.Proc
 //
 // # Example
 //
-//	win.OleInitialize()
+//	_ = win.OleInitialize()
 //	defer win.OleUninitialize()
 //
 // [OleInitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-oleinitialize

@@ -105,7 +105,7 @@ func (hImg HIMAGELIST) AddIconFromResource(iconIds ...uint16) error {
 //	hImg, _ := win.ImageListCreate(16, 16, co.ILC_COLOR32, 1, 1)
 //	defer hImg.Destroy()
 //
-//	hImg.AddIconFromShell("mp3", "wav")
+//	_ = hImg.AddIconFromShell("mp3", "wav")
 func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) error {
 	sz, err := hImg.GetIconSize()
 	if err != nil {

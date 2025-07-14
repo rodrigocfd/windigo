@@ -212,7 +212,7 @@ func main() {
 	hBmpOld, _ := hdcMem.SelectObjectBmp(hBmp)
 	defer hdcMem.SelectObjectBmp(hBmpOld)
 
-	hdcMem.BitBlt(
+	_ = hdcMem.BitBlt(
 		win.POINT{X: 0, Y: 0},
 		win.SIZE{Cx: cxScreen, Cy: cyScreen},
 		hdcScreen,
@@ -240,19 +240,29 @@ func main() {
 	bmpSlice, _ := rawMem.GlobalLockSlice()
 	defer rawMem.GlobalUnlock()
 
-	hdcScreen.GetDIBits(hBmp, 0, uint(cyScreen), bmpSlice, &bi, co.DIB_RGB_COLORS)
+	_, _ = hdcScreen.GetDIBits(
+		hBmp,
+		0,
+		uint(cyScreen),
+		bmpSlice,
+		&bi,
+		co.DIB_RGB_COLORS,
+	)
 
 	var bfh win.BITMAPFILEHEADER
 	bfh.SetBfType()
 	bfh.SetBfOffBits(uint32(unsafe.Sizeof(bfh) + unsafe.Sizeof(bi.BmiHeader)))
 	bfh.SetBfSize(bfh.BfOffBits() + uint32(bmpSize))
 
-	fo, _ := win.FileOpen("C:\\Temp\\screenshot.bmp", co.FOPEN_RW_OPEN_OR_CREATE)
-	defer fo.Close()
+	fout, _ := win.FileOpen(
+		"C:\\Temp\\screenshot.bmp",
+		co.FOPEN_RW_OPEN_OR_CREATE,
+	)
+	defer fout.Close()
 
-	fo.Write(bfh.Serialize())
-	fo.Write(bi.BmiHeader.Serialize())
-	fo.Write(bmpSlice)
+	_, _ = fout.Write(bfh.Serialize())
+	_, _ = fout.Write(bi.BmiHeader.Serialize())
+	_, _ = fout.Write(bmpSlice)
 }
 ```
 </details>
@@ -277,14 +287,15 @@ import (
 func main() {
 	runtime.LockOSThread() // important: Windows GUI is single-threaded
 
-	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+	_, _ := win.CoInitializeEx(
+		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 	defer win.CoUninitialize()
 
 	releaser := win.NewOleReleaser() // will release all COM objects created here
 	defer releaser.Release()
 
 	var fod *win.IFileOpenDialog
-	win.CoCreateInstance(
+	_ = win.CoCreateInstance(
 		releaser,
 		co.CLSID_FileOpenDialog,
 		nil,
@@ -293,16 +304,16 @@ func main() {
 	)
 
 	defOpts, _ := fod.GetOptions()
-	fod.SetOptions(defOpts |
+	_ = fod.SetOptions(defOpts |
 		co.FOS_FORCEFILESYSTEM |
 		co.FOS_FILEMUSTEXIST,
 	)
 
-	fod.SetFileTypes([]win.COMDLG_FILTERSPEC{
+	_ = fod.SetFileTypes([]win.COMDLG_FILTERSPEC{
 		{Name: "Text files", Spec: "*.txt"},
 		{Name: "All files", Spec: "*.*"},
 	})
-	fod.SetFileTypeIndex(1)
+	_ = fod.SetFileTypeIndex(1)
 
 	if ok, _ := fod.Show(win.HWND(0)); ok { // in real applications, pass the parent HWND
 		item, _ := fod.GetResult(releaser)
@@ -331,7 +342,8 @@ import (
 )
 
 func main() {
-	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+	_, _ = win.CoInitializeEx(
+		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 	defer win.CoUninitialize()
 
 	rel := win.NewOleReleaser()
@@ -340,12 +352,18 @@ func main() {
 	clsId, _ := win.CLSIDFromProgID("Excel.Application")
 
 	var excel *win.IDispatch
-	win.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &excel)
+	_ = win.CoCreateInstance(
+		rel,
+		clsId,
+		nil,
+		co.CLSCTX_LOCAL_SERVER,
+		&excel,
+	)
 
 	books, _ := excel.InvokeGetIDispatch(rel, "Workbooks")
 	file, _ := books.InvokeMethodIDispatch(rel, "Open", "C:\\Temp\\foo.xlsx")
-	file.InvokeMethod(rel, "SaveAs", "C:\\Temp\\foo copy.xlsx")
-	file.InvokeMethod(rel, "Close")
+	_, _ = file.InvokeMethod(rel, "SaveAs", "C:\\Temp\\foo copy.xlsx")
+	_, _ = file.InvokeMethod(rel, "Close")
 }
 ```
 </details>

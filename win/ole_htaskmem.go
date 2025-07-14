@@ -57,6 +57,11 @@ var _CoTaskMemFree *syscall.Proc
 
 // [CoTaskMemRealloc] function.
 //
+// Be careful when using this function. It returns a new [HTASKMEM] handle,
+// which invalidates the previous one – that is, you should not call
+// [HTASKMEM.CoTaskMemFree] on the previous one. This can become tricky if you
+// used defer.
+//
 // ⚠️ You must defer [HTASKMEM.CoTaskMemFree].
 //
 // [CoTaskMemRealloc]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc

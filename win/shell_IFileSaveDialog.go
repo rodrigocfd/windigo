@@ -22,7 +22,7 @@ import (
 //	defer rel.Release()
 //
 //	var fsd *win.IFileSaveDialog
-//	win.CoCreateInstance(
+//	_ = win.CoCreateInstance(
 //		rel,
 //		co.CLSID_FileSaveDialog,
 //		nil,
@@ -30,13 +30,13 @@ import (
 //		&fsd,
 //	)
 //
-//	fsd.SetFileTypes([]win.COMDLG_FILTERSPEC{
+//	_ = fsd.SetFileTypes([]win.COMDLG_FILTERSPEC{
 //		{Name: "Text files", Spec: "*.txt"},
 //		{Name: "All files", Spec: "*.*"},
 //	})
-//	fsd.SetFileTypeIndex(1)
+//	_ = fsd.SetFileTypeIndex(1)
 //
-//	fsd.SetFileName("default-file-name.txt")
+//	_ = fsd.SetFileName("default-file-name.txt")
 //
 //	if ok, _ := fsd.Show(hWnd); ok {
 //		item, _ := fsd.GetResult(rel)

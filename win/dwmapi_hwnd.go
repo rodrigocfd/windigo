@@ -124,9 +124,9 @@ var _DwmSetIconicThumbnail *syscall.Proc
 //	var hWnd win.HWND // initialized somewhere
 //
 //	attr := win.DwmAttrExtendedFrameBounds(
-//		win.RECT{10, 10, 10, 10},
+//		win.RECT{Left: 10, Top: 10, Right: 10, Bottom: 10},
 //	)
-//	hWnd.DwmSetWindowAttribute(attr)
+//	_ = hWnd.DwmSetWindowAttribute(attr)
 //
 // [DwmSetWindowAttribute]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmsetwindowattribute
 func (hWnd HWND) DwmSetWindowAttribute(attr DwmAttr) error {

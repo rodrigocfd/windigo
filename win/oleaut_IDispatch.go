@@ -164,7 +164,8 @@ func (me *IDispatch) Invoke(
 //
 // # Example
 //
-//	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
 //	rel := win.NewOleReleaser()
@@ -173,7 +174,13 @@ func (me *IDispatch) Invoke(
 //	clsId, _ := win.CLSIDFromProgID("Excel.Application")
 //
 //	var excel *win.IDispatch
-//	win.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &excel)
+//	_ = win.CoCreateInstance(
+//		rel,
+//		clsId,
+//		nil,
+//		co.CLSCTX_LOCAL_SERVER,
+//		&excel,
+//	)
 //
 //	varBooks, _ := excel.InvokeGet(rel, "Workbooks")
 //	dispBooks, _ := varBooks.IDispatch(rel)
@@ -198,7 +205,8 @@ func (me *IDispatch) InvokeGet(
 //
 // # Example
 //
-//	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
 //	rel := win.NewOleReleaser()
@@ -207,7 +215,13 @@ func (me *IDispatch) InvokeGet(
 //	clsId, _ := win.CLSIDFromProgID("Excel.Application")
 //
 //	var excel *win.IDispatch
-//	win.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &excel)
+//	_ = win.CoCreateInstance(
+//		rel,
+//		clsId,
+//		nil,
+//		co.CLSCTX_LOCAL_SERVER,
+//		&excel,
+//	)
 //
 //	books, _ := excel.InvokeGetIDispatch(rel, "Workbooks")
 //
@@ -238,7 +252,8 @@ func (me *IDispatch) InvokeGetIDispatch(
 //
 // # Example
 //
-//	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
 //	rel := win.NewOleReleaser()
@@ -247,7 +262,13 @@ func (me *IDispatch) InvokeGetIDispatch(
 //	clsId, _ := win.CLSIDFromProgID("Excel.Application")
 //
 //	var excel *win.IDispatch
-//	win.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &excel)
+//	_ = win.CoCreateInstance(
+//		rel,
+//		clsId,
+//		nil,
+//		co.CLSCTX_LOCAL_SERVER,
+//		&excel,
+//	)
 //
 //	varBooks, _ := excel.InvokeGet(rel, "Workbooks")
 //	dispBooks, _ := varBooks.IDispatch(rel)
@@ -255,8 +276,8 @@ func (me *IDispatch) InvokeGetIDispatch(
 //	varFile, _ := dispBooks.InvokeMethod(rel, "Open", "C:\\Temp\\file.xlsx")
 //	dispFile, _ := varFile.IDispatch(rel)
 //
-//	dispFile.InvokeMethod(rel, "SaveAs", "C:\\Temp\\copy.xlsx")
-//	dispFile.InvokeMethod(rel, "Close")
+//	_, _ = dispFile.InvokeMethod(rel, "SaveAs", "C:\\Temp\\copy.xlsx")
+//	_, _ = dispFile.InvokeMethod(rel, "Close")
 //
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
@@ -278,7 +299,8 @@ func (me *IDispatch) InvokeMethod(
 //
 // # Example
 //
-//	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
 //	rel := win.NewOleReleaser()
@@ -287,12 +309,18 @@ func (me *IDispatch) InvokeMethod(
 //	clsId, _ := win.CLSIDFromProgID("Excel.Application")
 //
 //	var excel *win.IDispatch
-//	win.CoCreateInstance(rel, clsId, nil, co.CLSCTX_LOCAL_SERVER, &excel)
+//	_ = win.CoCreateInstance(
+//		rel,
+//		clsId,
+//		nil,
+//		co.CLSCTX_LOCAL_SERVER,
+//		&excel,
+//	)
 //
 //	books, _ := excel.InvokeGetIDispatch(rel, "Workbooks")
 //	file, _ := books.InvokeMethodIDispatch(rel, "Open", "C:\\Temp\\file.xlsx")
-//	file.InvokeMethod(rel, "SaveAs", "C:\\Temp\\copy.xlsx")
-//	file.InvokeMethod(rel, "Close")
+//	_, _ = file.InvokeMethod(rel, "SaveAs", "C:\\Temp\\copy.xlsx")
+//	_, _ = file.InvokeMethod(rel, "Close")
 //
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo

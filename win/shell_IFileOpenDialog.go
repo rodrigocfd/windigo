@@ -17,7 +17,7 @@ import (
 //
 //	var hWnd win.HWND // initialized somewhere
 //
-//	win.CoInitializeEx(
+//	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
@@ -25,7 +25,7 @@ import (
 //	defer rel.Release()
 //
 //	var fod *win.IFileOpenDialog
-//	win.CoCreateInstance(
+//	_ = win.CoCreateInstance(
 //		rel,
 //		co.CLSID_FileOpenDialog,
 //		nil,
@@ -34,16 +34,16 @@ import (
 //	)
 //
 //	defOpts, _ := fod.GetOptions()
-//	fod.SetOptions(defOpts |
+//	_ = fod.SetOptions(defOpts |
 //		co.FOS_FORCEFILESYSTEM |
 //		co.FOS_FILEMUSTEXIST,
 //	)
 //
-//	fod.SetFileTypes([]win.COMDLG_FILTERSPEC{
+//	_ = fod.SetFileTypes([]win.COMDLG_FILTERSPEC{
 //		{Name: "Text files", Spec: "*.txt"},
 //		{Name: "All files", Spec: "*.*"},
 //	})
-//	fod.SetFileTypeIndex(1)
+//	_ = fod.SetFileTypeIndex(1)
 //
 //	if ok, _ := fod.Show(hWnd); ok {
 //		item, _ := fod.GetResult(rel)

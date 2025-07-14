@@ -17,11 +17,15 @@ import (
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var taskbl *win.ITaskbarList3
-//	win.CoCreateInstance(
+//	_ = win.CoCreateInstance(
 //		rel,
 //		co.CLSID_TaskbarList,
 //		nil,

@@ -23,7 +23,7 @@ import (
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
 //
 // [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 type IShellItem struct{ IUnknown }
@@ -39,20 +39,24 @@ func (*IShellItem) IID() co.IID {
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var desktop *win.IShellItem
-//	win.SHGetKnownFolderItem(
+//	_ = win.SHGetKnownFolderItem(
 //		rel,
 //		co.FOLDERID_Desktop,
-//		co.KF_FLAG_DEFAULT,
+//		co.KF_DEFAULT,
 //		win.HANDLE(0),
 //		&desktop,
 //	)
 //
 //	var enumItems *win.IEnumShellItems
-//	desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
+//	_ = desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
 //
 // [BindToHandler]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-bindtohandler
 func (me *IShellItem) BindToHandler(

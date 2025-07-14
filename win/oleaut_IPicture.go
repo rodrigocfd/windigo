@@ -155,7 +155,7 @@ func (me *IPicture) PictureChanged() error {
 //		defer wnd.Hwnd().EndPaint(&ps)
 //
 //		sz, _ := pic.Size()
-//		pic.Render(hdc,
+//		_, _ = pic.Render(hdc,
 //			win.POINT{},
 //			win.SIZE{Cx: ps.RcPaint.Right, Cy: ps.RcPaint.Bottom},
 //			win.POINT{X: 0, Y: sz.Cy},

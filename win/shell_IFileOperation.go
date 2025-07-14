@@ -17,14 +17,15 @@ import (
 //
 // # Example
 //
-//	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var op *win.IFileOperation
-//	win.CoCreateInstance(
+//	_ = win.CoCreateInstance(
 //		rel,
 //		co.CLSID_FileOperation,
 //		nil,
@@ -77,22 +78,28 @@ func (me *IFileOperation) ApplyPropertiesToItem(item *IShellItem) error {
 //
 // # Example
 //
-//	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var op *win.IFileOperation
-//	win.CoCreateInstance(
-//		rel, co.CLSID_FileOperation, nil, co.CLSCTX_ALL, &op)
+//	_ = win.CoCreateInstance(
+//		rel,
+//		co.CLSID_FileOperation,
+//		nil,
+//		co.CLSCTX_ALL,
+//		&op,
+//	)
 //
 //	var file, dest *win.IShellItem
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &file)
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp\\mydir", &dest)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &file)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp\\mydir", &dest)
 //
-//	op.CopyItem(file, dest, "new name.txt", nil)
-//	op.PerformOperations()
+//	_ = op.CopyItem(file, dest, "new name.txt", nil)
+//	_ = op.PerformOperations()
 //
 // [CopyItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperation-copyitem
 func (me *IFileOperation) CopyItem(

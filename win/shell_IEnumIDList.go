@@ -16,7 +16,7 @@ import (
 //
 // # Example
 //
-//	win.CoInitializeEx(
+//	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
@@ -24,12 +24,12 @@ import (
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
 //
 //	var folder *win.IShellFolder
-//	item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
+//	_ = item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
 //
-//	idlList, _ := folder.EnumObjects(rel, win.HWND(0),
+//	pidlList, _ := folder.EnumObjects(rel, win.HWND(0),
 //		co.SHCONTF_FOLDERS|co.SHCONTF_NONFOLDERS|co.SHCONTF_INCLUDEHIDDEN)
 //
 // [IEnumIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ienumidlist
@@ -65,7 +65,7 @@ func (me *IEnumIDList) Clone(releaser *OleReleaser) (*IEnumIDList, error) {
 //
 // # Example
 //
-//	win.CoInitializeEx(
+//	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
@@ -73,18 +73,21 @@ func (me *IEnumIDList) Clone(releaser *OleReleaser) (*IEnumIDList, error) {
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
 //
 //	var folder *win.IShellFolder
-//	item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
+//	_ = item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
 //
-//	idlList, _ := folder.EnumObjects(rel, win.HWND(0),
-//		co.SHCONTF_FOLDERS|co.SHCONTF_NONFOLDERS|co.SHCONTF_INCLUDEHIDDEN)
+//	pidlList, _ := folder.EnumObjects(
+//		rel,
+//		win.HWND(0),
+//		co.SHCONTF_FOLDERS|co.SHCONTF_NONFOLDERS|co.SHCONTF_INCLUDEHIDDEN,
+//	)
 //
-//	idls, _ := idlList.Enum(rel)
-//	for _, idl := range idls {
+//	pidls, _ := pidlList.Enum(rel)
+//	for _, pidl := range pidls {
 //		var child *win.IShellItem
-//		win.SHCreateItemFromIDList(rel, idl, &child)
+//		_ = win.SHCreateItemFromIDList(rel, pidl, &child)
 //		name, _ := child.GetDisplayName(co.SIGDN_FILESYSPATH)
 //		println(name)
 //	}

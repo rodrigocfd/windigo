@@ -44,14 +44,18 @@ func (me *IUnknown) Ppvt() **_IUnknownVt {
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var folder *win.IShellItem
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp", &folder)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp", &folder)
 //
 //	var folderCopy *win.IShellItem
-//	folder.QueryInterface(rel, &folderCopy)
+//	folder.AddRef(rel, &folderCopy)
 //
 // [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
@@ -69,14 +73,18 @@ func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
 //
 //	var item2 *win.IShellItem2
-//	item.QueryInterface(rel, &item2)
+//	_ = item.QueryInterface(rel, &item2)
 //
 // [QueryInterface]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IUnknown) QueryInterface(releaser *OleReleaser, ppOut interface{}) error {

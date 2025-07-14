@@ -102,7 +102,7 @@ var _InitMUILanguage *syscall.Proc
 //
 //	var hWnd win.HWND // initialized somewhere
 //
-//	win.TaskDialogIndirect(win.TASKDIALOGCONFIG{
+//	_, _ = win.TaskDialogIndirect(win.TASKDIALOGCONFIG{
 //		HwndParent:      hWnd,
 //		WindowTitle:     "Title",
 //		MainInstruction: "Caption",

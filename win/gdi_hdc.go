@@ -657,7 +657,7 @@ var _GetDeviceCaps *syscall.Proc
 //	hBmpOld, _ := hdcMem.SelectObjectBmp(hBmp)
 //	defer hdcMem.SelectObjectBmp(hBmpOld)
 //
-//	hdcMem.BitBlt(
+//	_ = hdcMem.BitBlt(
 //		win.POINT{X: 0, Y: 0},
 //		win.SIZE{Cx: cxScreen, Cy: cyScreen},
 //		hdcScreen,
@@ -685,19 +685,29 @@ var _GetDeviceCaps *syscall.Proc
 //	bmpSlice, _ := rawMem.GlobalLockSlice()
 //	defer rawMem.GlobalUnlock()
 //
-//	hdcScreen.GetDIBits(hBmp, 0, uint(cyScreen), bmpSlice, &bi, co.DIB_RGB_COLORS)
+//	_, _ = hdcScreen.GetDIBits(
+//		hBmp,
+//		0,
+//		uint(cyScreen),
+//		bmpSlice,
+//		&bi,
+//		co.DIB_RGB_COLORS,
+//	)
 //
 //	var bfh win.BITMAPFILEHEADER
 //	bfh.SetBfType()
 //	bfh.SetBfOffBits(uint32(unsafe.Sizeof(bfh) + unsafe.Sizeof(bi.BmiHeader)))
 //	bfh.SetBfSize(bfh.BfOffBits() + uint32(bmpSize))
 //
-//	fo, _ := win.FileOpen("C:\\Temp\\screenshot.bmp", co.FOPEN_RW_OPEN_OR_CREATE)
-//	defer fo.Close()
+//	fout, _ := win.FileOpen(
+//		"C:\\Temp\\screenshot.bmp",
+//		co.FOPEN_RW_OPEN_OR_CREATE,
+//	)
+//	defer fout.Close()
 //
-//	fo.Write(bfh.Serialize())
-//	fo.Write(bi.BmiHeader.Serialize())
-//	fo.Write(bmpSlice)
+//	_, _ = fout.Write(bfh.Serialize())
+//	_, _ = fout.Write(bi.BmiHeader.Serialize())
+//	_, _ = fout.Write(bmpSlice)
 //
 // [GetDIBits]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibits
 func (hdc HDC) GetDIBits(

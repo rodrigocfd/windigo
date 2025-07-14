@@ -25,7 +25,7 @@ import (
 //	data := heap.NewVecSized(szData, byte(0))
 //	defer data.Free()
 //
-//	win.GetFileVersionInfo(exeName, data.HotSlice())
+//	_ = win.GetFileVersionInfo(exeName, data.HotSlice())
 //
 // [GetFileVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
 func GetFileVersionInfo(fileName string, dest []byte) error {
@@ -79,7 +79,7 @@ var _GetFileVersionInfoSizeW *syscall.Proc
 //	data := heap.NewVecSized(szData, byte(0))
 //	defer data.Free()
 //
-//	win.GetFileVersionInfo(exeName, data.HotSlice())
+//	_ = win.GetFileVersionInfo(exeName, data.HotSlice())
 //
 //	if pNfoRaw, _, ok := win.VerQueryValue(data.HotSlice(), "\\"); ok {
 //		pNfo := (*win.VS_FIXEDFILEINFO)(pNfoRaw)

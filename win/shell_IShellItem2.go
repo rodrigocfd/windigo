@@ -20,22 +20,30 @@ import (
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var item *win.IShellItem2
-//	shwinll.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
 //
 // It can also be queried from an [IShellItem] object:
+//
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
 //
 //	var item2 *win.IShellItem2
-//	item.QueryInterface(rel, &item2)
+//	_ = item.QueryInterface(rel, &item2)
 //
 // [IShellItem2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem2
 type IShellItem2 struct{ IShellItem }
@@ -154,11 +162,15 @@ func (me *IShellItem2) GetPropertyStore(releaser *OleReleaser, flags co.GPS) (*I
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var item *win.IShellItem2
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
 //
 //	ty, _ := item.GetString(co.PKEY_ItemTypeText)
 //	println(ty)

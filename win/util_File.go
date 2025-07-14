@@ -48,7 +48,7 @@ func FileRead(filePath string) ([]byte, error) {
 // # Example
 //
 //	contents := []byte("my text")
-//	win.FileWrite("C:\\Temp\\foo.txt", contents)
+//	_ = win.FileWrite("C:\\Temp\\foo.txt", contents)
 func FileWrite(filePath string, contents []byte) error {
 	fout, err := FileOpen(filePath, co.FOPEN_RW_OPEN_OR_CREATE)
 	if err != nil {

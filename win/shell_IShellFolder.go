@@ -17,7 +17,7 @@ import (
 //
 // # Example
 //
-//	win.CoInitializeEx(
+//	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
@@ -25,10 +25,10 @@ import (
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
 //
 //	var folder *win.IShellFolder
-//	item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
+//	_ = item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
 //
 // [IShellFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellfolder
 type IShellFolder struct{ IUnknown }
@@ -162,7 +162,7 @@ func (me *IShellFolder) CreateViewObject(
 //
 // # Example
 //
-//	win.CoInitializeEx(
+//	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
 //	defer win.CoUninitialize()
 //
@@ -170,13 +170,16 @@ func (me *IShellFolder) CreateViewObject(
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
 //
 //	var folder *win.IShellFolder
-//	item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
+//	_ = item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
 //
-//	idlList, _ := folder.EnumObjects(rel, win.HWND(0),
-//		co.SHCONTF_FOLDERS|co.SHCONTF_NONFOLDERS|co.SHCONTF_INCLUDEHIDDEN)
+//	pidlList, _ := folder.EnumObjects(
+//		rel,
+//		win.HWND(0),
+//		co.SHCONTF_FOLDERS|co.SHCONTF_NONFOLDERS|co.SHCONTF_INCLUDEHIDDEN,
+//	)
 //
 // [EnumObjects]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellfolder-enumobjects
 func (me *IShellFolder) EnumObjects(

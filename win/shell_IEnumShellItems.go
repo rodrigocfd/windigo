@@ -16,20 +16,24 @@ import (
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var desktop *win.IShellItem
-//	win.SHGetKnownFolderItem(
+//	_ = win.SHGetKnownFolderItem(
 //		rel,
 //		co.FOLDERID_Desktop,
-//		co.KF_FLAG_DEFAULT,
+//		co.KF_DEFAULT,
 //		win.HANDLE(0),
 //		&desktop,
 //	)
 //
 //	var enumItems *win.IEnumShellItems
-//	desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
+//	_ = desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
 //
 //	items, _ := enumItems.Enum(rel)
 //	for _, item := range items {
@@ -70,20 +74,24 @@ func (me *IEnumShellItems) Clone(releaser *OleReleaser) (*IEnumShellItems, error
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var desktop *win.IShellItem
-//	win.SHGetKnownFolderItem(
+//	_ = win.SHGetKnownFolderItem(
 //		rel,
 //		co.FOLDERID_Desktop,
-//		co.KF_FLAG_DEFAULT,
+//		co.KF_DEFAULT,
 //		win.HANDLE(0),
 //		&desktop,
 //	)
 //
 //	var enumItems *win.IEnumShellItems
-//	desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
+//	_ = desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
 //
 //	items, _ := enumItems.Enum(rel)
 //	for _, item := range items {

@@ -49,20 +49,24 @@ var _CommandLineToArgvW *syscall.Proc
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	win.SHCreateItemFromParsingName(
+//	_ = win.SHCreateItemFromParsingName(
 //		rel,
 //		"C:\\Temp\\foo.txt",
 //		&item,
 //	)
 //
-//	idl, _ := win.SHGetIDListFromObject(rel, item)
+//	pidl, _ := win.SHGetIDListFromObject(rel, &item.IUnknown)
 //
 //	var sameItem *win.IShellItem2
-//	win.SHCreateItemFromIDList(rel, idl, &sameItem)
+//	_ = win.SHCreateItemFromIDList(rel, pidl, &sameItem)
 //
 // [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
 func SHCreateItemFromIDList(releaser *OleReleaser, pidl *ITEMIDLIST, ppOut interface{}) error {
@@ -95,11 +99,15 @@ var _SHCreateItemFromIDList *syscall.Proc
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	win.SHCreateItemFromParsingName(
+//	_ = win.SHCreateItemFromParsingName(
 //		rel,
 //		"C:\\Temp\\foo.txt",
 //		&item,
@@ -226,12 +234,16 @@ var _SHCreateShellItemArray *syscall.Proc
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var item1, item2 *win.IShellItem
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item1)
-//	win.SHCreateItemFromParsingName(rel, "C:\\Temp\\bar.txt", &item2)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item1)
+//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp\\bar.txt", &item2)
 //
 //	pidl1, _ := win.SHGetIDListFromObject(rel, &item1.IUnknown)
 //	pidl2, _ := win.SHGetIDListFromObject(rel, &item2.IUnknown)
@@ -300,14 +312,18 @@ var _SHGetDesktopFolder *syscall.Proc
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var desktop *win.IShellItem
-//	win.SHGetKnownFolderItem(
+//	_ = win.SHGetKnownFolderItem(
 //		rel,
 //		co.FOLDERID_Desktop,
-//		co.KF_FLAG_DEFAULT,
+//		co.KF_DEFAULT,
 //		win.HANDLE(0),
 //		&desktop,
 //	)
@@ -353,11 +369,15 @@ var _SHGetKnownFolderItem *syscall.Proc
 //
 // # Example
 //
+//	_, _ = win.CoInitializeEx(
+//		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
+//	defer win.CoUninitialize()
+//
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	win.SHCreateItemFromParsingName(
+//	_ = win.SHCreateItemFromParsingName(
 //		rel,
 //		"C:\\Temp\\foo.txt",
 //		&item,
