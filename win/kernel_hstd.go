@@ -128,6 +128,16 @@ func (hStd HSTD) ReadConsole(
 
 var _ReadConsoleW *syscall.Proc
 
+// [ReadFile] function.
+//
+// [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
+func (hStd HSTD) ReadFile(
+	buffer []byte,
+	overlapped *OVERLAPPED,
+) (numBytesRead uint, wErr error) {
+	return HFILE(hStd).ReadFile(buffer, overlapped)
+}
+
 // [SetConsoleCursorInfo] function.
 //
 // [SetConsoleCursorInfo]: https://learn.microsoft.com/en-us/windows/console/setconsolecursorinfo
@@ -252,3 +262,13 @@ func (hStd HSTD) WriteConsole(text string) (numCharsWritten uint, wErr error) {
 }
 
 var _WriteConsoleW *syscall.Proc
+
+// [WriteFile] function.
+//
+// [WriteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
+func (hStd HSTD) WriteFile(
+	data []byte,
+	overlapped *OVERLAPPED,
+) (numBytesWritten uint, wErr error) {
+	return HFILE(hStd).WriteFile(data, overlapped)
+}
