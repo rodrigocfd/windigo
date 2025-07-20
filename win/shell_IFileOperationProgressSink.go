@@ -282,290 +282,292 @@ type _IFileOperationProgressSinkVt struct {
 var _iFileOperationProgressSinkVtPtrs _IFileOperationProgressSinkVt // Global to keep the syscall callback pointers.
 
 func (me *_IFileOperationProgressSinkVt) init() {
-	if me.QueryInterface == 0 { // initialize only once
-		*me = _IFileOperationProgressSinkVt{
-			_IUnknownVt: _IUnknownVt{
-				QueryInterface: syscall.NewCallback(
-					func(_p uintptr, _riid uintptr, ppv ***_IUnknownVt) uintptr {
-						*ppv = nil
-						return uintptr(co.HRESULT_E_NOTIMPL)
-					},
-				),
-				AddRef: syscall.NewCallback(
-					func(p uintptr) uintptr {
-						ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-						newCount := atomic.AddUint32(&(**ppImpl).counter, 1)
-						return uintptr(newCount)
-					},
-				),
-				Release: syscall.NewCallback(
-					func(p uintptr) uintptr {
-						ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-						newCount := atomic.AddUint32(&(*ppImpl).counter, ^uint32(0)) // decrement 1
-						if newCount == 0 {
-							utl.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
-							utl.PtrCache.Delete(unsafe.Pointer(ppImpl))
-						}
-						return uintptr(newCount)
-					},
-				),
-			},
-			StartOperations: syscall.NewCallback(
+	if me.QueryInterface != 0 {
+		return
+	}
+
+	*me = _IFileOperationProgressSinkVt{
+		_IUnknownVt: _IUnknownVt{
+			QueryInterface: syscall.NewCallback(
+				func(_p uintptr, _riid uintptr, ppv ***_IUnknownVt) uintptr {
+					*ppv = nil
+					return uintptr(co.HRESULT_E_NOTIMPL)
+				},
+			),
+			AddRef: syscall.NewCallback(
 				func(p uintptr) uintptr {
 					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).startOperations; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun())
-					}
+					newCount := atomic.AddUint32(&(**ppImpl).counter, 1)
+					return uintptr(newCount)
 				},
 			),
-			FinishOperations: syscall.NewCallback(
-				func(p uintptr, hrResult co.HRESULT) uintptr {
+			Release: syscall.NewCallback(
+				func(p uintptr) uintptr {
 					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).finishOperations; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(hrResult))
+					newCount := atomic.AddUint32(&(*ppImpl).counter, ^uint32(0)) // decrement 1
+					if newCount == 0 {
+						utl.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
+						utl.PtrCache.Delete(unsafe.Pointer(ppImpl))
 					}
+					return uintptr(newCount)
 				},
 			),
-			PreRenameItem: syscall.NewCallback(
-				func(p uintptr, dwFlags uint32, psiItem **_IUnknownVt, pszNewName *uint16) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).preRenameItem; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(
-							co.TSF(dwFlags),
-							&IShellItem{IUnknown{psiItem}},
-							wstr.DecodePtr(pszNewName),
-						))
-					}
-				},
-			),
-			PostRenameItem: syscall.NewCallback(
-				func(p uintptr,
-					dwFlags uint32,
-					psiItem **_IUnknownVt,
-					pszNewName *uint16,
-					hrRename co.HRESULT,
-					psiNewlyCreated **_IUnknownVt,
-				) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).postRenameItem; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(
-							co.TSF(dwFlags),
-							&IShellItem{IUnknown{psiItem}},
-							wstr.DecodePtr(pszNewName),
-							hrRename,
-							&IShellItem{IUnknown{psiNewlyCreated}},
-						))
-					}
-				},
-			),
-			PreMoveItem: syscall.NewCallback(
-				func(p uintptr,
-					dwFlags uint32,
-					psiItem, psiDestinationFolder **_IUnknownVt,
-					pszNewName *uint16,
-				) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).preMoveItem; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(
-							co.TSF(dwFlags),
-							&IShellItem{IUnknown{psiItem}},
-							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.DecodePtr(pszNewName),
-						))
-					}
-				},
-			),
-			PostMoveItem: syscall.NewCallback(
-				func(p uintptr,
-					dwFlags uint32,
-					psiItem, psiDestinationFolder **_IUnknownVt,
-					pszNewName *uint16,
-					hrMove co.HRESULT,
-					psiNewlyCreated **_IUnknownVt,
-				) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).postMoveItem; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(
-							co.TSF(dwFlags),
-							&IShellItem{IUnknown{psiItem}},
-							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.DecodePtr(pszNewName),
-							hrMove,
-							&IShellItem{IUnknown{psiNewlyCreated}},
-						))
-					}
-				},
-			),
-			PreCopyItem: syscall.NewCallback(
-				func(p uintptr,
-					dwFlags uint32,
-					psiItem, psiDestinationFolder **_IUnknownVt,
-					pszNewName *uint16,
-				) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).preCopyItem; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(
-							co.TSF(dwFlags),
-							&IShellItem{IUnknown{psiItem}},
-							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.DecodePtr(pszNewName),
-						))
-					}
-				},
-			),
-			PostCopyItem: syscall.NewCallback(
-				func(p uintptr,
-					dwFlags uint32,
-					psiItem, psiDestinationFolder **_IUnknownVt,
-					pszNewName *uint16,
-					hrMove co.HRESULT,
-					psiNewlyCreated **_IUnknownVt,
-				) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).postCopyItem; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(
-							co.TSF(dwFlags),
-							&IShellItem{IUnknown{psiItem}},
-							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.DecodePtr(pszNewName),
-							hrMove,
-							&IShellItem{IUnknown{psiNewlyCreated}},
-						))
-					}
-				},
-			),
-			PreDeleteItem: syscall.NewCallback(
-				func(p uintptr, dwFlags uint32, psiItem **_IUnknownVt) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).preDeleteItem; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(
-							co.TSF(dwFlags),
-							&IShellItem{IUnknown{psiItem}},
-						))
-					}
-				},
-			),
-			PostDeleteItem: syscall.NewCallback(
-				func(p uintptr,
-					dwFlags uint32,
-					psiItem **_IUnknownVt,
-					hrMove co.HRESULT,
-					psiNewlyCreated **_IUnknownVt,
-				) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).postDeleteItem; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(
-							co.TSF(dwFlags),
-							&IShellItem{IUnknown{psiItem}},
-							hrMove,
-							&IShellItem{IUnknown{psiNewlyCreated}},
-						))
-					}
-				},
-			),
-			PreNewItem: syscall.NewCallback(
-				func(p uintptr,
-					dwFlags uint32,
-					psiDestinationFolder **_IUnknownVt,
-					pszNewName *uint16,
-				) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).preNewItem; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(
-							co.TSF(dwFlags),
-							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.DecodePtr(pszNewName),
-						))
-					}
-				},
-			),
-			PostNewItem: syscall.NewCallback(
-				func(p uintptr,
-					dwFlags uint32,
-					psiDestinationFolder **_IUnknownVt,
-					pszNewName, pszTemplateName *uint16,
-					fileAttributes co.FILE_ATTRIBUTE,
-					hrNew co.HRESULT,
-					psiNewItem **_IUnknownVt,
-				) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).postNewItem; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(
-							co.TSF(dwFlags),
-							&IShellItem{IUnknown{psiDestinationFolder}},
-							wstr.DecodePtr(pszNewName),
-							wstr.DecodePtr(pszTemplateName),
-							fileAttributes,
-							hrNew,
-							&IShellItem{IUnknown{psiNewItem}},
-						))
-					}
-				},
-			),
-			UpdateProgress: syscall.NewCallback(
-				func(p uintptr, iWorkTotal, iWorkSoFar uint32) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).updateProgress; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun(uint(iWorkTotal), uint(iWorkSoFar)))
-					}
-				},
-			),
-			ResetTimer: syscall.NewCallback(
-				func(p uintptr, iWorkTotal, iWorkSoFar uint32) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).resetTimer; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun())
-					}
-				},
-			),
-			PauseTimer: syscall.NewCallback(
-				func(p uintptr, iWorkTotal, iWorkSoFar uint32) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).pauseTimer; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun())
-					}
-				},
-			),
-			ResumeTimer: syscall.NewCallback(
-				func(p uintptr, iWorkTotal, iWorkSoFar uint32) uintptr {
-					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					if fun := (**ppImpl).resumeTimer; fun == nil { // user didn't define a callback
-						return uintptr(co.HRESULT_S_OK)
-					} else {
-						return uintptr(fun())
-					}
-				},
-			),
-		}
+		},
+		StartOperations: syscall.NewCallback(
+			func(p uintptr) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).startOperations; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun())
+				}
+			},
+		),
+		FinishOperations: syscall.NewCallback(
+			func(p uintptr, hrResult co.HRESULT) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).finishOperations; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(hrResult))
+				}
+			},
+		),
+		PreRenameItem: syscall.NewCallback(
+			func(p uintptr, dwFlags uint32, psiItem **_IUnknownVt, pszNewName *uint16) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).preRenameItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(
+						co.TSF(dwFlags),
+						&IShellItem{IUnknown{psiItem}},
+						wstr.DecodePtr(pszNewName),
+					))
+				}
+			},
+		),
+		PostRenameItem: syscall.NewCallback(
+			func(p uintptr,
+				dwFlags uint32,
+				psiItem **_IUnknownVt,
+				pszNewName *uint16,
+				hrRename co.HRESULT,
+				psiNewlyCreated **_IUnknownVt,
+			) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).postRenameItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(
+						co.TSF(dwFlags),
+						&IShellItem{IUnknown{psiItem}},
+						wstr.DecodePtr(pszNewName),
+						hrRename,
+						&IShellItem{IUnknown{psiNewlyCreated}},
+					))
+				}
+			},
+		),
+		PreMoveItem: syscall.NewCallback(
+			func(p uintptr,
+				dwFlags uint32,
+				psiItem, psiDestinationFolder **_IUnknownVt,
+				pszNewName *uint16,
+			) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).preMoveItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(
+						co.TSF(dwFlags),
+						&IShellItem{IUnknown{psiItem}},
+						&IShellItem{IUnknown{psiDestinationFolder}},
+						wstr.DecodePtr(pszNewName),
+					))
+				}
+			},
+		),
+		PostMoveItem: syscall.NewCallback(
+			func(p uintptr,
+				dwFlags uint32,
+				psiItem, psiDestinationFolder **_IUnknownVt,
+				pszNewName *uint16,
+				hrMove co.HRESULT,
+				psiNewlyCreated **_IUnknownVt,
+			) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).postMoveItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(
+						co.TSF(dwFlags),
+						&IShellItem{IUnknown{psiItem}},
+						&IShellItem{IUnknown{psiDestinationFolder}},
+						wstr.DecodePtr(pszNewName),
+						hrMove,
+						&IShellItem{IUnknown{psiNewlyCreated}},
+					))
+				}
+			},
+		),
+		PreCopyItem: syscall.NewCallback(
+			func(p uintptr,
+				dwFlags uint32,
+				psiItem, psiDestinationFolder **_IUnknownVt,
+				pszNewName *uint16,
+			) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).preCopyItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(
+						co.TSF(dwFlags),
+						&IShellItem{IUnknown{psiItem}},
+						&IShellItem{IUnknown{psiDestinationFolder}},
+						wstr.DecodePtr(pszNewName),
+					))
+				}
+			},
+		),
+		PostCopyItem: syscall.NewCallback(
+			func(p uintptr,
+				dwFlags uint32,
+				psiItem, psiDestinationFolder **_IUnknownVt,
+				pszNewName *uint16,
+				hrMove co.HRESULT,
+				psiNewlyCreated **_IUnknownVt,
+			) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).postCopyItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(
+						co.TSF(dwFlags),
+						&IShellItem{IUnknown{psiItem}},
+						&IShellItem{IUnknown{psiDestinationFolder}},
+						wstr.DecodePtr(pszNewName),
+						hrMove,
+						&IShellItem{IUnknown{psiNewlyCreated}},
+					))
+				}
+			},
+		),
+		PreDeleteItem: syscall.NewCallback(
+			func(p uintptr, dwFlags uint32, psiItem **_IUnknownVt) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).preDeleteItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(
+						co.TSF(dwFlags),
+						&IShellItem{IUnknown{psiItem}},
+					))
+				}
+			},
+		),
+		PostDeleteItem: syscall.NewCallback(
+			func(p uintptr,
+				dwFlags uint32,
+				psiItem **_IUnknownVt,
+				hrMove co.HRESULT,
+				psiNewlyCreated **_IUnknownVt,
+			) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).postDeleteItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(
+						co.TSF(dwFlags),
+						&IShellItem{IUnknown{psiItem}},
+						hrMove,
+						&IShellItem{IUnknown{psiNewlyCreated}},
+					))
+				}
+			},
+		),
+		PreNewItem: syscall.NewCallback(
+			func(p uintptr,
+				dwFlags uint32,
+				psiDestinationFolder **_IUnknownVt,
+				pszNewName *uint16,
+			) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).preNewItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(
+						co.TSF(dwFlags),
+						&IShellItem{IUnknown{psiDestinationFolder}},
+						wstr.DecodePtr(pszNewName),
+					))
+				}
+			},
+		),
+		PostNewItem: syscall.NewCallback(
+			func(p uintptr,
+				dwFlags uint32,
+				psiDestinationFolder **_IUnknownVt,
+				pszNewName, pszTemplateName *uint16,
+				fileAttributes co.FILE_ATTRIBUTE,
+				hrNew co.HRESULT,
+				psiNewItem **_IUnknownVt,
+			) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).postNewItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(
+						co.TSF(dwFlags),
+						&IShellItem{IUnknown{psiDestinationFolder}},
+						wstr.DecodePtr(pszNewName),
+						wstr.DecodePtr(pszTemplateName),
+						fileAttributes,
+						hrNew,
+						&IShellItem{IUnknown{psiNewItem}},
+					))
+				}
+			},
+		),
+		UpdateProgress: syscall.NewCallback(
+			func(p uintptr, iWorkTotal, iWorkSoFar uint32) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).updateProgress; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(uint(iWorkTotal), uint(iWorkSoFar)))
+				}
+			},
+		),
+		ResetTimer: syscall.NewCallback(
+			func(p uintptr, iWorkTotal, iWorkSoFar uint32) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).resetTimer; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun())
+				}
+			},
+		),
+		PauseTimer: syscall.NewCallback(
+			func(p uintptr, iWorkTotal, iWorkSoFar uint32) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).pauseTimer; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun())
+				}
+			},
+		),
+		ResumeTimer: syscall.NewCallback(
+			func(p uintptr, iWorkTotal, iWorkSoFar uint32) uintptr {
+				ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
+				if fun := (**ppImpl).resumeTimer; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun())
+				}
+			},
+		),
 	}
 }
