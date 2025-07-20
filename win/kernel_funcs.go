@@ -113,6 +113,21 @@ func CreateProcess(
 
 var _CreateProcessW *syscall.Proc
 
+// [DeactivateActCtx] function.
+//
+// Cookie is returned by [HACTCTX.ActivateActCtx].
+//
+// [DeactivateActCtx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-deactivateactctx
+func DeactivateActCtx(flags co.DEACTIVATE_ACTCTX, cookie uint) error {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_DeactivateActCtx, "DeactivateActCtx"),
+		uintptr(flags),
+		uintptr(cookie))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _DeactivateActCtx *syscall.Proc
+
 // [DeleteFile] function.
 //
 // [DeleteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew

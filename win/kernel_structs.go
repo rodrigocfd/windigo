@@ -13,6 +13,33 @@ import (
 	"github.com/rodrigocfd/windigo/win/wstr"
 )
 
+// [ACTCTX] struct.
+//
+// ⚠️ You must call [ACTCTX.SetCbSize] to initialize the struct.
+//
+// # Example
+//
+//	var ac win.ACTCTX
+//	ac.SetCbSize()
+//
+// [ACTCTX]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-actctxw
+type ACTCTX struct {
+	cbSize                 uint32
+	DwFlags                co.ACTCTX
+	LpSource               *uint16
+	WProcessorArchitecture co.PROCESSOR_ARCHITECTURE
+	WLangId                LANGID
+	LpAssemblyDirectory    *uint16
+	LpResourceName         *uint16
+	LpApplicationName      *uint16
+	HModule                HINSTANCE
+}
+
+// Sets the cbSize field to the size of the struct, correctly initializing it.
+func (ac *ACTCTX) SetCbSize() {
+	ac.cbSize = uint32(unsafe.Sizeof(*ac))
+}
+
 // An [atom].
 //
 // [atom]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#atom
@@ -58,27 +85,27 @@ func (cfix *CONSOLE_FONT_INFOEX) SetCbSize() {
 	cfix.cbSize = uint32(unsafe.Sizeof(*cfix))
 }
 
-func (tm *CONSOLE_FONT_INFOEX) Pitch() co.TMPF {
-	return co.TMPF(tm.fontFamily & 0b1111)
+func (ac *CONSOLE_FONT_INFOEX) Pitch() co.TMPF {
+	return co.TMPF(ac.fontFamily & 0b1111)
 }
-func (tm *CONSOLE_FONT_INFOEX) SetPitch(val co.TMPF) {
-	tm.fontFamily &^= 0b1111 // clear bits
-	tm.fontFamily |= uint32(val & 0b1111)
-}
-
-func (tm *CONSOLE_FONT_INFOEX) Family() co.FF {
-	return co.FF(tm.fontFamily & 0b1111_0000)
-}
-func (tm *CONSOLE_FONT_INFOEX) SetFamily(val co.FF) {
-	tm.fontFamily &^= 0b1111_0000 // clear bits
-	tm.fontFamily |= uint32(val & 0b1111_0000)
+func (ac *CONSOLE_FONT_INFOEX) SetPitch(val co.TMPF) {
+	ac.fontFamily &^= 0b1111 // clear bits
+	ac.fontFamily |= uint32(val & 0b1111)
 }
 
-func (cfix *CONSOLE_FONT_INFOEX) FaceName() string {
-	return wstr.DecodeSlice(cfix.faceName[:])
+func (ac *CONSOLE_FONT_INFOEX) Family() co.FF {
+	return co.FF(ac.fontFamily & 0b1111_0000)
 }
-func (cfix *CONSOLE_FONT_INFOEX) SetFaceName(val string) {
-	wstr.EncodeToBuf(val, cfix.faceName[:])
+func (ac *CONSOLE_FONT_INFOEX) SetFamily(val co.FF) {
+	ac.fontFamily &^= 0b1111_0000 // clear bits
+	ac.fontFamily |= uint32(val & 0b1111_0000)
+}
+
+func (ac *CONSOLE_FONT_INFOEX) FaceName() string {
+	return wstr.DecodeSlice(ac.faceName[:])
+}
+func (ac *CONSOLE_FONT_INFOEX) SetFaceName(val string) {
+	wstr.EncodeToBuf(val, ac.faceName[:])
 }
 
 // [CONSOLE_READCONSOLE_CONTROL] struct.

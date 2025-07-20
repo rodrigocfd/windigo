@@ -2,6 +2,22 @@
 
 package co
 
+// [ACTCTX] dwFlags. Originally has ACTCTX_FLAG prefix.
+//
+// [ACTCTX]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-actctxw
+type ACTCTX uint32
+
+const (
+	ACTCTX_PROCESSOR_ARCHITECTURE_VALID ACTCTX = 0x0000_0001
+	ACTCTX_LANGID_VALID                 ACTCTX = 0x0000_0002
+	ACTCTX_ASSEMBLY_DIRECTORY_VALID     ACTCTX = 0x0000_0004
+	ACTCTX_RESOURCE_NAME_VALID          ACTCTX = 0x0000_0008
+	ACTCTX_SET_PROCESS_DEFAULT          ACTCTX = 0x0000_0010
+	ACTCTX_APPLICATION_NAME_VALID       ACTCTX = 0x0000_0020
+	ACTCTX_SOURCE_IS_ASSEMBLYREF        ACTCTX = 0x0000_0040
+	ACTCTX_HMODULE_VALID                ACTCTX = 0x0000_0080
+)
+
 // [QueryProcessAffinityUpdateMode] and [SetProcessAffinityUpdateMode] flags.
 //
 // [QueryProcessAffinityUpdateMode]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-queryprocessaffinityupdatemode
@@ -161,6 +177,16 @@ const (
 	DBT_DEVICETYPESPECIFIC      DBT = 0x8005
 	DBT_CUSTOMEVENT             DBT = 0x8006
 	DBT_USERDEFINED             DBT = 0xffff
+)
+
+// [DeactivateActCtx] flags.
+//
+// [ActivateActCtx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-activateactctx
+type DEACTIVATE_ACTCTX uint32
+
+const (
+	DEACTIVATE_ACTCTX_NONE                     DEACTIVATE_ACTCTX = 0
+	DEACTIVATE_ACTCTX_FORCE_EARLY_DEACTIVATION DEACTIVATE_ACTCTX = 0x0000_0001
 )
 
 // [CreateFile] dwCreationDisposition. Originally without prefix.
