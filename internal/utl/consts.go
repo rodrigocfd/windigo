@@ -10,7 +10,6 @@ const (
 
 // Internal constants for gdi.
 const (
-	CCHDEVICENAME                = 32
 	CCHFORMNAME                  = 32
 	CLR_INVALID                  = 0xffff_ffff
 	DM_SPECVERSION               = 0x0401
@@ -41,6 +40,7 @@ const (
 
 // Internal constants for user.
 const (
+	CCHDEVICENAME      = 32
 	CCHILDREN_TITLEBAR = 5
 	WC_DIALOG          = uint16(0x8002)
 )

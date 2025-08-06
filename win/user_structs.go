@@ -375,6 +375,36 @@ type MINMAXINFO struct {
 	PtMaxTrackSize POINT
 }
 
+// [MONITORINFOEX] struct.
+//
+// ⚠️ You must call [MONITORINFOEX.SetCbSize] to initialize the struct.
+//
+// # Example
+//
+//	var mix win.MONITORINFOEX
+//	mix.SetCbSize()
+//
+// [MONITORINFOEX]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfoexw
+type MONITORINFOEX struct {
+	cbSize    uint32
+	RcMonitor RECT
+	RcWork    RECT
+	DwFlags   co.MONITORINFOF
+	szDevice  [utl.CCHDEVICENAME]uint16
+}
+
+// Sets the cbSize field to the size of the struct, correctly initializing it.
+func (mix *MONITORINFOEX) SetCbSize() {
+	mix.cbSize = uint32(unsafe.Sizeof(*mix))
+}
+
+func (mix *MONITORINFOEX) SzDevice() string {
+	return wstr.DecodeSlice(mix.szDevice[:])
+}
+func (mix *MONITORINFOEX) SetSzDevice(val string) {
+	wstr.EncodeToBuf(val, mix.szDevice[:])
+}
+
 // [MSG] struct.
 //
 // [MSG]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msg

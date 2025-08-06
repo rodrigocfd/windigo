@@ -958,6 +958,16 @@ const (
 	MONITOR_DEFAULTTONEAREST MONITOR = 0x0000_0002
 )
 
+// [MONITORINFO] dwFlags.
+//
+// [MONITORINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-monitorinfo
+type MONITORINFOF uint32
+
+const (
+	MONITORINFOF_NONE    MONITORINFOF = 0
+	MONITORINFOF_PRIMARY MONITORINFOF = 0x0000_0001
+)
+
 // [WM_ENTERIDLE] displayed.
 //
 // [WM_ENTERIDLE]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-enteridle

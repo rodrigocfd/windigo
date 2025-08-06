@@ -41,3 +41,22 @@ func MonitorFromRect(rc *RECT, flags co.MONITOR) HMONITOR {
 }
 
 var _MonitorFromRect *syscall.Proc
+
+// [GetMonitorInfo] function.
+//
+// [GetMonitorInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmonitorinfow
+func (hMon HMONITOR) GetMonitorInfo() (MONITORINFOEX, error) {
+	var mix MONITORINFOEX
+	mix.SetCbSize()
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_GetMonitorInfoW, "GetMonitorInfoW"),
+		uintptr(hMon),
+		uintptr(unsafe.Pointer(&mix)))
+	if ret == 0 {
+		return MONITORINFOEX{}, co.ERROR_INVALID_PARAMETER
+	}
+	return mix, nil
+}
+
+var _GetMonitorInfoW *syscall.Proc

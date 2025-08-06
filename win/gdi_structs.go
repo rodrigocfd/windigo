@@ -181,6 +181,11 @@ func (c COLORREF) ToRgbquad() RGBQUAD {
 //
 // ⚠️ You must call [DOCINFO.SetCbSize] to initialize the struct.
 //
+// # Example
+//
+//	var di win.DOCINFO
+//	di.SetCbSize()
+//
 // [DOCINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-docinfow
 type DOCINFO struct {
 	cbSize       int32
@@ -419,9 +424,9 @@ type PIXELFORMATDESCRIPTOR struct {
 
 // Sets the nSize field to the size of the struct, correctly initializing it.
 // Also sets nVersion.
-func (pfd *PIXELFORMATDESCRIPTOR) SetNSize() {
-	pfd.nSize = uint16(unsafe.Sizeof(*pfd))
-	pfd.nVersion = 1
+func (mix *PIXELFORMATDESCRIPTOR) SetNSize() {
+	mix.nSize = uint16(unsafe.Sizeof(*mix))
+	mix.nVersion = 1
 }
 
 // [RGBQUAD] struct.
