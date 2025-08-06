@@ -331,7 +331,7 @@ var _CreateCompatibleDC *syscall.Proc
 // [CreateDIBSection]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
 func (hdc HDC) CreateDIBSection(
 	bmi *BITMAPINFO,
-	usage co.DIB,
+	usage co.DIB_COLORS,
 	hSection HFILEMAP,
 	offset uint,
 ) (HBITMAP, *byte, error) {
@@ -715,7 +715,7 @@ func (hdc HDC) GetDIBits(
 	firstScanLine, numScanLines uint,
 	bitmapDataBuffer []byte,
 	bmi *BITMAPINFO,
-	usage co.DIB,
+	usage co.DIB_COLORS,
 ) (int, error) {
 	var dataBufPtr *byte
 	if bitmapDataBuffer != nil {
@@ -1613,6 +1613,42 @@ func (hdc HDC) SetBrushOrgEx(newOrigin POINT) (POINT, error) {
 }
 
 var _SetBrushOrgEx *syscall.Proc
+
+// [SetDIBitsToDevice] function.
+//
+// [SetDIBitsToDevice]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setdibitstodevice
+func (hdc HDC) SetDIBitsToDevice(
+	upperLeftDest POINT,
+	imgSz SIZE,
+	imgLowerLeft POINT,
+	startScanLine uint,
+	numDibScanLines uint,
+	pColorData unsafe.Pointer,
+	pBmi *BITMAPINFO,
+	usage co.DIB_COLORS,
+) (uint, error) {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.GDI32, &_SetDIBitsToDevice, "SetDIBitsToDevice"),
+		uintptr(hdc),
+		uintptr(upperLeftDest.X),
+		uintptr(upperLeftDest.Y),
+		uintptr(uint16(imgSz.Cx)),
+		uintptr(uint16(imgSz.Cy)),
+		uintptr(imgLowerLeft.X),
+		uintptr(imgLowerLeft.Y),
+		uintptr(uint32(startScanLine)),
+		uintptr(uint32(numDibScanLines)),
+		uintptr(pColorData),
+		uintptr(unsafe.Pointer(pBmi)),
+		uintptr(usage))
+
+	if ret == 0 || ret == utl.GDI_ERR {
+		return 0, co.ERROR_INVALID_PARAMETER
+	}
+	return uint(ret), nil
+}
+
+var _SetDIBitsToDevice *syscall.Proc
 
 // [SetPixel] function.
 //

@@ -102,14 +102,17 @@ const (
 	DCX_LOCKWINDOWUPDATE DCX = 0x0000_0400
 )
 
-// [CreateDIBSection] usage.
+// [CreateDIBSection], [GetDIBits] and [SetDIBitsToDevice] usage. Originally has
+// DIV prefix and COLORS suffix.
 //
 // [CreateDIBSection]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
-type DIB uint32
+// [GetDIBits]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibits
+// [SetDIBitsToDevice]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setdibitstodevice
+type DIB_COLORS uint32
 
 const (
-	DIB_RGB_COLORS DIB = 0 // Color table in RGBs.
-	DIB_PAL_COLORS DIB = 1 // Color table in palette indices.
+	DIB_COLORS_RGB DIB_COLORS = 0 // Color table in RGBs.
+	DIB_COLORS_PAL DIB_COLORS = 1 // Color table in palette indices.
 )
 
 // [LOGFONT] lfClipPrecision. Originally with CLIP prefix and PRECIS suffix.
