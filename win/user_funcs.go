@@ -740,6 +740,24 @@ func ReplyMessage(result uintptr) bool {
 
 var _ReplyMessage *syscall.Proc
 
+// [SendInput] function.
+//
+// [SendInput]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput
+func SendInput(inputs []INPUT) (uint, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_SendInput, "SendInput"),
+		uintptr(uint32(len(inputs))),
+		uintptr(unsafe.Pointer(&inputs[0])),
+		uintptr(uint32(unsafe.Sizeof(INPUT{}))))
+
+	if wErr := co.ERROR(err); wErr != co.ERROR_SUCCESS {
+		return 0, wErr
+	}
+	return uint(ret), nil
+}
+
+var _SendInput *syscall.Proc
+
 // [SetCaretPos] function.
 //
 // [SetCaretPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setcaretpos

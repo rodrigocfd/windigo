@@ -658,6 +658,17 @@ const (
 	IMAGE_ENHMETAFILE IMAGE = 3
 )
 
+// [INPUT] type.
+//
+// [INPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-input
+type INPUT uint32
+
+const (
+	INPUT_MOUSE    INPUT = 0
+	INPUT_KEYBOARD INPUT = 1
+	INPUT_HARDWARE INPUT = 2
+)
+
 // [InSendMessageEx] return value.
 //
 // [InSendMessageEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessageex
@@ -669,6 +680,18 @@ const (
 	ISMEX_NOTIFY   ISMEX = 0x0000_0002
 	ISMEX_REPLIED  ISMEX = 0x0000_0008
 	ISMEX_SEND     ISMEX = 0x0000_0001
+)
+
+// [KEYBDINPUT] dwFlags.
+//
+// [KEYBDINPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-keybdinput
+type KEYEVENTF uint32
+
+const (
+	KEYEVENTF_EXTENDEDKEY KEYEVENTF = 0x0001
+	KEYEVENTF_KEYUP       KEYEVENTF = 0x0002
+	KEYEVENTF_UNICODE     KEYEVENTF = 0x0004
+	KEYEVENTF_SCANCODE    KEYEVENTF = 0x0008
 )
 
 // [SetProcessDefaultLayout] dwDefaultLayout.
@@ -979,6 +1002,28 @@ type MONITORINFOF uint32
 const (
 	MONITORINFOF_NONE    MONITORINFOF = 0
 	MONITORINFOF_PRIMARY MONITORINFOF = 0x0000_0001
+)
+
+// [MOUSEINPUT] dwFlags.
+//
+// [MOUSEINPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-mouseinput
+type MOUSEEVENTF uint32
+
+const (
+	MOUSEEVENTF_MOVE            MOUSEEVENTF = 0x0001   // Mouse move.
+	MOUSEEVENTF_LEFTDOWN        MOUSEEVENTF = 0x0002   // Left button down.
+	MOUSEEVENTF_LEFTUP          MOUSEEVENTF = 0x0004   // Left button up.
+	MOUSEEVENTF_RIGHTDOWN       MOUSEEVENTF = 0x0008   // Right button down.
+	MOUSEEVENTF_RIGHTUP         MOUSEEVENTF = 0x0010   // Right button up.
+	MOUSEEVENTF_MIDDLEDOWN      MOUSEEVENTF = 0x0020   // Middle button down.
+	MOUSEEVENTF_MIDDLEUP        MOUSEEVENTF = 0x0040   // Middle button up.
+	MOUSEEVENTF_XDOWN           MOUSEEVENTF = 0x0080   // X button down.
+	MOUSEEVENTF_XUP             MOUSEEVENTF = 0x0100   // X button down.
+	MOUSEEVENTF_WHEEL           MOUSEEVENTF = 0x0800   // Wheel button rolled.
+	MOUSEEVENTF_HWHEEL          MOUSEEVENTF = 0x0_1000 // Hwheel button rolled.
+	MOUSEEVENTF_MOVE_NOCOALESCE MOUSEEVENTF = 0x2000   // Do not coalesce mouse moves.
+	MOUSEEVENTF_VIRTUALDESK     MOUSEEVENTF = 0x4000   // Map to entire virtual desktop.
+	MOUSEEVENTF_ABSOLUTE        MOUSEEVENTF = 0x8000   // Absolute move.
 )
 
 // [WM_ENTERIDLE] displayed.

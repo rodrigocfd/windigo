@@ -181,6 +181,15 @@ func (gti *GUITHREADINFO) SetCbSize() {
 	gti.cbSize = uint32(unsafe.Sizeof(*gti))
 }
 
+// [HARDWAREINPUT] struct.
+//
+// [HARDWAREINPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-hardwareinput
+type HARDWAREINPUT struct {
+	UMsg    uint32
+	WParamL uint16
+	WParamH uint16
+}
+
 // [HELPINFO] struct.
 //
 // ⚠️ You must call [HELPINFO.SetCbSize] to initialize the struct.
@@ -255,6 +264,60 @@ func (iix *ICONINFOEX) SzResName() string {
 }
 func (iix *ICONINFOEX) SetSzResName(val string) {
 	wstr.EncodeToBuf(val, iix.szResName[:])
+}
+
+// [INPUT] struct.
+//
+// [INPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-input
+type INPUT struct {
+	Type co.INPUT
+	mi   MOUSEINPUT // union with KEYBDINPUT and HARDWAREINPUT
+}
+
+func (i *INPUT) MouseInput() *MOUSEINPUT {
+	return &i.mi
+}
+func (i *INPUT) KeybdInput() *KEYBDINPUT {
+	return (*KEYBDINPUT)(unsafe.Pointer(&i.mi))
+}
+func (i *INPUT) HardwareInput() *HARDWAREINPUT {
+	return (*HARDWAREINPUT)(unsafe.Pointer(&i.mi))
+}
+
+func (i *INPUT) SetMouseInput(mi MOUSEINPUT) {
+	i.Type = co.INPUT_MOUSE
+	*i.MouseInput() = mi
+}
+func (i *INPUT) SetKeybdInput(ki KEYBDINPUT) {
+	i.Type = co.INPUT_KEYBOARD
+	*i.KeybdInput() = ki
+}
+func (i *INPUT) SetHardwareInput(hi HARDWAREINPUT) {
+	i.Type = co.INPUT_HARDWARE
+	*i.HardwareInput() = hi
+}
+
+// [KEYBDINPUT] struct.
+//
+// [KEYBDINPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-keybdinput
+type KEYBDINPUT struct {
+	WVk         co.VK
+	WScan       uint16
+	DwFlags     co.KEYEVENTF
+	Time        uint32
+	DwExtraInfo uintptr
+}
+
+// [MOUSEINPUT] struct.
+//
+// [MOUSEINPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-mouseinput
+type MOUSEINPUT struct {
+	Dx          int32
+	Dy          int32
+	MouseData   uint32
+	DwFlags     co.MOUSEEVENTF
+	Time        uint32
+	DwExtraInto uintptr
 }
 
 // Second message [parameter].
