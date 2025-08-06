@@ -712,6 +712,19 @@ const (
 	LSFW_UNLOCK LSFW = 2
 )
 
+// [MapVirtualKey] uMapType.
+//
+// [MapVirtualKey]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mapvirtualkeyw
+type MAPVK uint32
+
+const (
+	MAPVK_VK_TO_VSC    MAPVK = 0
+	MAPVK_VSC_TO_VK    MAPVK = 1
+	MAPVK_VK_TO_CHAR   MAPVK = 2
+	MAPVK_VSC_TO_VK_EX MAPVK = 3
+	MAPVK_VK_TO_VSC_EX MAPVK = 4
+)
+
 // [MessageBox] uType.
 //
 // [MessageBox]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw

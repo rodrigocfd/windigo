@@ -601,6 +601,19 @@ func LockWorkStation() error {
 
 var _LockWorkStation *syscall.Proc
 
+// [MapVirtualKey] function.
+//
+// [MapVirtualKey]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mapvirtualkeyw
+func MapVirtualKey(code co.VK, mapType co.MAPVK) uint32 {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_MapVirtualKeyW, "MapVirtualKeyW"),
+		uintptr(uint32(code)),
+		uintptr(mapType))
+	return uint32(ret)
+}
+
+var _MapVirtualKeyW *syscall.Proc
+
 // [OffsetRect] function.
 //
 // [OffsetRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-offsetrect
