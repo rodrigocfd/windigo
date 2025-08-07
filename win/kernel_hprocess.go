@@ -53,6 +53,20 @@ func (hProcess HPROCESS) CloseHandle() error {
 	return HANDLE(hProcess).CloseHandle()
 }
 
+// [FlushInstructionCache] function.
+//
+// [FlushInstructionCache]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-flushinstructioncache
+func (hProcess HPROCESS) FlushInstructionCache(baseAddress uintptr, size uint) error {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_FlushInstructionCache, "FlushInstructionCache"),
+		uintptr(hProcess),
+		baseAddress,
+		uintptr(size))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _FlushInstructionCache *syscall.Proc
+
 // [GetExitCodeProcess] function.
 //
 // [GetExitCodeProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess

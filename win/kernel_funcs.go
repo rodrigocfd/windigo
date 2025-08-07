@@ -215,6 +215,16 @@ func FileTimeToSystemTime(ft *FILETIME) (SYSTEMTIME, error) {
 
 var _FileTimeToSystemTime *syscall.Proc
 
+// [FlushProcessWriteBuffers] function.
+//
+// [FlushProcessWriteBuffers]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-flushprocesswritebuffers
+func FlushProcessWriteBuffers() {
+	syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_FlushProcessWriteBuffers, "FlushProcessWriteBuffers"))
+}
+
+var _FlushProcessWriteBuffers *syscall.Proc
+
 // [GetActiveProcessorCount] function.
 //
 // For ALL_PROCESSOR_GROUPS, pass 0xffff.
