@@ -5,6 +5,7 @@ package win
 import (
 	"strings"
 	"syscall"
+	"time"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/internal/dll"
@@ -640,6 +641,17 @@ func SetCurrentDirectory(pathName string) error {
 }
 
 var _SetCurrentDirectoryW *syscall.Proc
+
+// [Sleep] function.
+//
+// [Sleep]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
+func Sleep(duration time.Duration) {
+	syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_Sleep, "Sleep"),
+		uintptr(uint32(duration.Milliseconds())))
+}
+
+var _Sleep *syscall.Proc
 
 // [SystemTimeToFileTime] function.
 //
