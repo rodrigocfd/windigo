@@ -1093,6 +1093,22 @@ func (hWnd HWND) SetMenu(hMenu HMENU) error {
 
 var _SetMenu *syscall.Proc
 
+// [SetParent] function.
+//
+// [SetParent]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setparent
+func (hWnd HWND) SetParent(hNewParent HWND) (HWND, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_SetParent, "SetParent"),
+		uintptr(hWnd),
+		uintptr(hNewParent))
+	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
+		return HWND(0), wErr
+	}
+	return HWND(ret), nil
+}
+
+var _SetParent *syscall.Proc
+
 // [SetWindowDisplayAffinity] function.
 //
 // [SetWindowDisplayAffinity]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity
