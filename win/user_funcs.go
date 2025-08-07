@@ -97,6 +97,22 @@ func CreateCursorFromResourceEx(
 	return HCURSOR(hIcon), err
 }
 
+// [CallWindowProc] function.
+//
+// [CallWindowProc]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-callwindowprocw
+func CallWindowProcW(prevWndFunc uintptr, hWnd HWND, msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_CallWindowProcW, "CallWindowProcW"),
+		prevWndFunc,
+		uintptr(hWnd),
+		uintptr(msg),
+		uintptr(wParam),
+		uintptr(lParam))
+	return ret
+}
+
+var _CallWindowProcW *syscall.Proc
+
 // [CreateIconFromResourceEx] function.
 //
 // This function creates [HICON] only. The [HCURSOR] variation is
