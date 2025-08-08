@@ -11,8 +11,8 @@ import (
 )
 
 type _BaseCtrl struct {
-	ctrlId uint16
-	hWnd   win.HWND
+	ctrlId uint16   // Control identifier.
+	hWnd   win.HWND // Handle to the control.
 
 	subclassEvents EventsWindow
 	subclassProc   uintptr // Prevents InvalidInitCycle.

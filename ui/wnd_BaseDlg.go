@@ -120,7 +120,12 @@ func dlgProcCallback() uintptr {
 			}
 
 			if hasUserRet {
-				return userRet
+				if uMsg == co.WM_GETDLGCODE { // demands special treatment
+					hDlg.SetWindowLongPtr(co.GWLP_DWLP_MSGRESULT, userRet)
+					return 1 // TRUE
+				} else {
+					return userRet
+				}
 			} else if atLeastOneBeforeUser || atLeastOneAfterUser {
 				return 1 // TRUE
 			} else {
