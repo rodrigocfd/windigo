@@ -138,6 +138,7 @@ func paintThemedBorders(hWnd win.HWND, p WmNcPaint) {
 	hdc.SelectClipRgn(hRgnClip)
 
 	if hTheme, err := hWnd.OpenThemeData("EDIT"); err == nil {
+		defer hTheme.CloseThemeData()
 		hTheme.DrawThemeBackground(hdc, co.VS_EDIT_EDITTEXT_NORMAL, &rc, nil)
 	}
 }
