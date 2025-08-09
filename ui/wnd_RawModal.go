@@ -7,16 +7,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-type _ModalRaw struct {
-	_BaseRaw
+type _RawModal struct {
+	_RawBase
 	parent                Parent
 	opts                  *VarOptsModal
 	hChildPrevFocusParent win.HWND
 }
 
-func newModalRaw(parent Parent, opts *VarOptsModal) *_ModalRaw {
-	me := &_ModalRaw{
-		_BaseRaw:              newBaseRaw(),
+func newModalRaw(parent Parent, opts *VarOptsModal) *_RawModal {
+	me := &_RawModal{
+		_RawBase:              newBaseRaw(),
 		parent:                parent,
 		opts:                  opts,
 		hChildPrevFocusParent: win.HWND(0),
@@ -25,7 +25,7 @@ func newModalRaw(parent Parent, opts *VarOptsModal) *_ModalRaw {
 	return me
 }
 
-func (me *_ModalRaw) showModal() {
+func (me *_RawModal) showModal() {
 	hInst, _ := me.parent.Hwnd().HInstance()
 	atom := me.registerClass(hInst, me.opts.className, me.opts.classStyle,
 		me.opts.classIconId, me.opts.classBrush, me.opts.classCursor)
@@ -56,8 +56,8 @@ func (me *_ModalRaw) showModal() {
 	me.runModalLoop(processDlgMsgs)
 }
 
-func (me *_ModalRaw) defaultMessageHandlers() {
-	me._BaseRaw._BaseContainer.defaultMessageHandlers()
+func (me *_RawModal) defaultMessageHandlers() {
+	me._RawBase._BaseContainer.defaultMessageHandlers()
 
 	me.beforeUserEvents.WmSetFocus(func(_ WmSetFocus) {
 		me.delegateFocusToFirstChild()

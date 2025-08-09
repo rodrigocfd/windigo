@@ -7,16 +7,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-type _MainDlg struct {
-	_BaseDlg
+type _DlgMain struct {
+	_DlgBase
 	iconId       uint16
 	accelTableId uint16
 }
 
 // Constructor.
-func newMainDlg(opts *VarOptsMainDlg) *_MainDlg {
-	me := &_MainDlg{
-		_BaseDlg:     newBaseDlg(opts.dlgId),
+func newMainDlg(opts *VarOptsMainDlg) *_DlgMain {
+	me := &_DlgMain{
+		_DlgBase:     newBaseDlg(opts.dlgId),
 		iconId:       opts.iconId,
 		accelTableId: opts.accelTableId,
 	}
@@ -24,7 +24,7 @@ func newMainDlg(opts *VarOptsMainDlg) *_MainDlg {
 	return me
 }
 
-func (me *_MainDlg) runAsMain(hInst win.HINSTANCE) int {
+func (me *_DlgMain) runAsMain(hInst win.HINSTANCE) int {
 	me.createDialogParam(hInst, win.HWND(0))
 
 	if me.iconId != 0 {
@@ -44,8 +44,8 @@ func (me *_MainDlg) runAsMain(hInst win.HINSTANCE) int {
 	return me.runMainLoop(hAccel, true)
 }
 
-func (me *_MainDlg) defaultMessageHandlers() {
-	me._BaseDlg._BaseContainer.defaultMessageHandlers()
+func (me *_DlgMain) defaultMessageHandlers() {
+	me._DlgBase._BaseContainer.defaultMessageHandlers()
 
 	me.userEvents.WmClose(func() {
 		me.hWnd.DestroyWindow()

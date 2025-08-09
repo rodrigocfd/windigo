@@ -7,16 +7,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-type _ControlDlg struct {
-	_BaseDlg
+type _DlgControl struct {
+	_DlgBase
 	ctrlId uint16
 }
 
 // Constructor.
-func newControlDlg(parent Parent, opts *VarOptsControlDlg) *_ControlDlg {
+func newControlDlg(parent Parent, opts *VarOptsControlDlg) *_DlgControl {
 	setUniqueCtrlId(&opts.ctrlId)
-	me := &_ControlDlg{
-		_BaseDlg: newBaseDlg(opts.dlgId),
+	me := &_DlgControl{
+		_DlgBase: newBaseDlg(opts.dlgId),
 		ctrlId:   opts.ctrlId,
 	}
 
@@ -35,7 +35,7 @@ func newControlDlg(parent Parent, opts *VarOptsControlDlg) *_ControlDlg {
 	return me
 }
 
-func (me *_ControlDlg) defaultMessageHandlers() {
+func (me *_DlgControl) defaultMessageHandlers() {
 	me.userEvents.WmNcPaint(func(p WmNcPaint) {
 		paintThemedBorders(me.hWnd, p)
 	})

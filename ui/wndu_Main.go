@@ -15,8 +15,8 @@ import (
 //   - [Window]
 //   - [Parent]
 type Main struct {
-	raw *_MainRaw
-	dlg *_MainDlg
+	raw *_RawMain
+	dlg *_DlgMain
 }
 
 // Creates a new main window with [CreateWindowEx].

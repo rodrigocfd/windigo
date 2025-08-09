@@ -7,27 +7,27 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-type _ModalDlg struct {
-	_BaseDlg
+type _DlgModal struct {
+	_DlgBase
 	parent Parent
 }
 
-func newModalDlg(parent Parent, dlgId uint16) *_ModalDlg {
-	me := &_ModalDlg{
-		_BaseDlg: newBaseDlg(dlgId),
+func newModalDlg(parent Parent, dlgId uint16) *_DlgModal {
+	me := &_DlgModal{
+		_DlgBase: newBaseDlg(dlgId),
 		parent:   parent,
 	}
 	me.defaultMessageHandlers()
 	return me
 }
 
-func (me *_ModalDlg) showModal() {
+func (me *_DlgModal) showModal() {
 	hInst, _ := me.parent.Hwnd().HInstance()
 	me.dialogBoxParam(hInst, me.parent.Hwnd())
 }
 
-func (me *_ModalDlg) defaultMessageHandlers() {
-	me._BaseDlg._BaseContainer.defaultMessageHandlers()
+func (me *_DlgModal) defaultMessageHandlers() {
+	me._DlgBase._BaseContainer.defaultMessageHandlers()
 
 	me.beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
 		rcModal, _ := me.hWnd.GetWindowRect()

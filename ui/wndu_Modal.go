@@ -4,44 +4,66 @@ package ui
 
 import (
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Custom control.
+// Modal window.
 //
 // Implements:
 //   - [Window]
-//   - [ChildControl]
 //   - [Parent]
-type Control struct {
-	raw    *_ControlRaw
-	dlg    *_ControlDlg
-	parent Parent
+type Modal struct {
+	raw *_RawModal
+	dlg *_DlgModal
 }
 
-// Creates a new custom control with [CreateWindowEx].
+// Creates a new modal window with [CreateWindowEx].
+//
+// # Example
+//
+//	var wndParent ui.Parent // initialized somewhere
+//
+//	wndModal := ui.NewModal(
+//		wndParent,
+//		ui.OptsModal().
+//			Title("Hello modal"),
+//	)
+//	wndModal.ShowModal()
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
-func NewControl(parent Parent, opts *VarOptsControl) *Control {
-	return &Control{
-		raw:    newControlRaw(parent, opts),
-		parent: parent,
+func NewModal(parent Parent, opts *VarOptsModal) *Modal {
+	return &Modal{
+		raw: newModalRaw(parent, opts),
+		dlg: nil,
 	}
 }
 
-// Creates a new dialog-based custom control with [CreateDialogParam].
+// Creates a new dialog-based Modal with [DialogBoxParam].
 //
-// [CreateDialogParam]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
-func NewControlDlg(parent Parent, opts *VarOptsControlDlg) *Control {
-	return &Control{
-		dlg:    newControlDlg(parent, opts),
-		parent: parent,
+// # Example
+//
+//	const ID_MODAL_DLG uint16 = 2000
+//
+//	var wndParent ui.Parent // initialized somewhere
+//
+//	wndModal := ui.NewModalDlg(wndParent, 2000)
+//	wndModal.ShowModal()
+//
+// [DialogBoxParam]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparamw
+func NewModalDlg(parent Parent, dlgId uint16) *Modal {
+	return &Modal{
+		raw: nil,
+		dlg: newModalDlg(parent, dlgId),
 	}
 }
 
-// Returns the parent container of this control.
-func (me *Control) Parent() Parent {
-	return me.parent
+// Physically creates the window, then runs the modal loop. This method will
+// block until the window is closed.
+func (me *Modal) ShowModal() {
+	if me.raw != nil {
+		me.raw.showModal()
+	} else {
+		me.dlg.showModal()
+	}
 }
 
 // Returns the underlying HWND handle of this window.
@@ -49,40 +71,11 @@ func (me *Control) Parent() Parent {
 // Implements [Window].
 //
 // Note that this handle is initially zero, existing only after window creation.
-func (me *Control) Hwnd() win.HWND {
+func (me *Modal) Hwnd() win.HWND {
 	if me.raw != nil {
 		return me.raw.hWnd
 	} else {
 		return me.dlg.hWnd
-	}
-}
-
-// Returns the control ID, unique within the same Parent.
-//
-// Implements [ChildControl].
-func (me *Control) CtrlId() uint16 {
-	if me.raw != nil {
-		return me.raw.ctrlId
-	} else {
-		return me.dlg.ctrlId
-	}
-}
-
-// If parent is a dialog, sets the focus by sending [WM_NEXTDLGCTL]. This
-// draws the borders correctly in some undefined controls, like buttons.
-// Otherwise, calls [SetFocus].
-//
-// Implements [ChildControl].
-//
-// [WM_NEXTDLGCTL]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-nextdlgctl
-// [SetFocus]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setfocus
-func (me *Control) Focus() {
-	hParent, _ := me.Hwnd().GetAncestor(co.GA_PARENT)
-	isDialog, _ := hParent.IsDialog()
-	if isDialog {
-		hParent.SendMessage(co.WM_NEXTDLGCTL, win.WPARAM(me.Hwnd()), 1)
-	} else {
-		me.Hwnd().SetFocus()
 	}
 }
 
@@ -91,7 +84,7 @@ func (me *Control) Focus() {
 // Implements [Parent].
 //
 // Panics if called after the window has been created.
-func (me *Control) On() *EventsWindow {
+func (me *Modal) On() *EventsWindow {
 	if me.Hwnd() != 0 {
 		panic("Cannot add event handling after the window has been created.")
 	}
@@ -127,7 +120,7 @@ func (me *Control) On() *EventsWindow {
 //
 // [SendMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessagew
 // [WNDPROC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nc-winuser-wndproc
-func (me *Control) UiThread(fun func()) {
+func (me *Modal) UiThread(fun func()) {
 	if me.raw != nil {
 		me.raw.uiThread(fun)
 	} else {
@@ -136,7 +129,7 @@ func (me *Control) UiThread(fun func()) {
 }
 
 // Implements [Parent].
-func (me *Control) base() *_BaseContainer {
+func (me *Modal) base() *_BaseContainer {
 	if me.raw != nil {
 		return &me.raw._BaseContainer
 	} else {

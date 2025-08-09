@@ -7,16 +7,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-type _MainRaw struct {
-	_BaseRaw
+type _RawMain struct {
+	_RawBase
 	opts            *VarOptsMain
 	hChildPrevFocus win.HWND
 }
 
 // Constructor.
-func newMainRaw(opts *VarOptsMain) *_MainRaw {
-	me := &_MainRaw{
-		_BaseRaw:        newBaseRaw(),
+func newMainRaw(opts *VarOptsMain) *_RawMain {
+	me := &_RawMain{
+		_RawBase:        newBaseRaw(),
 		opts:            opts,
 		hChildPrevFocus: win.HWND(0),
 	}
@@ -24,7 +24,7 @@ func newMainRaw(opts *VarOptsMain) *_MainRaw {
 	return me
 }
 
-func (me *_MainRaw) runAsMain(hInst win.HINSTANCE) int {
+func (me *_RawMain) runAsMain(hInst win.HINSTANCE) int {
 	atom := me.registerClass(hInst, me.opts.className, me.opts.classStyle,
 		me.opts.classIconId, me.opts.classBrush, me.opts.classCursor)
 
@@ -60,8 +60,8 @@ func (me *_MainRaw) runAsMain(hInst win.HINSTANCE) int {
 	return me.runMainLoop(accelTable, processDlgMsgs)
 }
 
-func (me *_MainRaw) defaultMessageHandlers() {
-	me._BaseRaw._BaseContainer.defaultMessageHandlers()
+func (me *_RawMain) defaultMessageHandlers() {
+	me._RawBase._BaseContainer.defaultMessageHandlers()
 
 	me.beforeUserEvents.WmActivate(func(p WmActivate) {
 		if !p.IsMinimized() { // https://devblogs.microsoft.com/oldnewthing/20140521-00/?p=943

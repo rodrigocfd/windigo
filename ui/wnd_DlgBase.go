@@ -12,24 +12,24 @@ import (
 
 // Base to all dialog-based windows created with CreateDialogParam and
 // DialogBoxParam.
-type _BaseDlg struct {
+type _DlgBase struct {
 	_BaseContainer
 	dlgId uint16
 }
 
 // Constructor.
-func newBaseDlg(dlgId uint16) _BaseDlg {
+func newBaseDlg(dlgId uint16) _DlgBase {
 	if dlgId == 0 {
 		panic("Dialog ID must be specified.")
 	}
 
-	return _BaseDlg{
+	return _DlgBase{
 		_BaseContainer: newBaseContainer(_WNDTY_DLG),
 		dlgId:          dlgId,
 	}
 }
 
-func (me *_BaseDlg) createDialogParam(hInst win.HINSTANCE, hParent win.HWND) {
+func (me *_DlgBase) createDialogParam(hInst win.HINSTANCE, hParent win.HWND) {
 	if me.hWnd != 0 {
 		panic("Cannot create dialog twice.")
 	}
@@ -43,7 +43,7 @@ func (me *_BaseDlg) createDialogParam(hInst win.HINSTANCE, hParent win.HWND) {
 	}
 }
 
-func (me *_BaseDlg) dialogBoxParam(hInst win.HINSTANCE, hParent win.HWND) {
+func (me *_DlgBase) dialogBoxParam(hInst win.HINSTANCE, hParent win.HWND) {
 	if me.hWnd != 0 {
 		panic("Cannot create dialog twice.")
 	}
@@ -56,7 +56,7 @@ func (me *_BaseDlg) dialogBoxParam(hInst win.HINSTANCE, hParent win.HWND) {
 	}
 }
 
-func (me *_BaseDlg) setIcon(hInst win.HINSTANCE, iconId uint16) error {
+func (me *_DlgBase) setIcon(hInst win.HINSTANCE, iconId uint16) error {
 	hGdiobjIcon, err := hInst.LoadImage(win.ResIdInt(iconId),
 		co.IMAGE_ICON, 16, 16, co.LR_DEFAULTCOLOR|co.LR_SHARED)
 	if err != nil {
@@ -83,15 +83,15 @@ func dlgProcCallback() uintptr {
 
 	_dlgProcCallback = syscall.NewCallback(
 		func(hDlg win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
-			var pMe *_BaseDlg
+			var pMe *_DlgBase
 
 			if uMsg == co.WM_INITDIALOG {
-				pMe = (*_BaseDlg)(unsafe.Pointer(lParam))
+				pMe = (*_DlgBase)(unsafe.Pointer(lParam))
 				pMe.hWnd = hDlg
 				hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, uintptr(unsafe.Pointer(pMe)))
 			} else {
 				ptr, _ := hDlg.GetWindowLongPtr(co.GWLP_DWLP_USER) // retrieve
-				pMe = (*_BaseDlg)(unsafe.Pointer(ptr))
+				pMe = (*_DlgBase)(unsafe.Pointer(ptr))
 			}
 
 			// If no pointer stored, then no processing is done.

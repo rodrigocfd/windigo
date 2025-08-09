@@ -7,16 +7,16 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-type _ControlRaw struct {
-	_BaseRaw
+type _RawControl struct {
+	_RawBase
 	ctrlId uint16
 }
 
 // Constructor.
-func newControlRaw(parent Parent, opts *VarOptsControl) *_ControlRaw {
+func newControlRaw(parent Parent, opts *VarOptsControl) *_RawControl {
 	setUniqueCtrlId(&opts.ctrlId)
-	me := &_ControlRaw{
-		_BaseRaw: newBaseRaw(),
+	me := &_RawControl{
+		_RawBase: newBaseRaw(),
 		ctrlId:   opts.ctrlId,
 	}
 
@@ -34,7 +34,7 @@ func newControlRaw(parent Parent, opts *VarOptsControl) *_ControlRaw {
 	return me
 }
 
-func (me *_ControlRaw) defaultMessageHandlers() {
+func (me *_RawControl) defaultMessageHandlers() {
 	me.userEvents.WmNcPaint(func(p WmNcPaint) {
 		paintThemedBorders(me.hWnd, p)
 	})

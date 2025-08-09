@@ -13,18 +13,18 @@ import (
 )
 
 // Base to all windows created with CreateWindowEx.
-type _BaseRaw struct {
+type _RawBase struct {
 	_BaseContainer
 }
 
 // Constructor.
-func newBaseRaw() _BaseRaw {
-	return _BaseRaw{
+func newBaseRaw() _RawBase {
+	return _RawBase{
 		_BaseContainer: newBaseContainer(_WNDTY_RAW),
 	}
 }
 
-func (me *_BaseRaw) registerClass(
+func (me *_RawBase) registerClass(
 	hInst win.HINSTANCE,
 	className string,
 	classStyle co.CS,
@@ -76,7 +76,7 @@ func (me *_BaseRaw) registerClass(
 	return atom
 }
 
-func (me *_BaseRaw) createWindow(
+func (me *_RawBase) createWindow(
 	exStyle co.WS_EX,
 	className win.ATOM,
 	title string,
@@ -100,7 +100,7 @@ func (me *_BaseRaw) createWindow(
 	}
 }
 
-func (me *_BaseRaw) delegateFocusToFirstChild() error {
+func (me *_RawBase) delegateFocusToFirstChild() error {
 	if hFocus := win.GetFocus(); hFocus == me.hWnd {
 		// https://stackoverflow.com/a/2835220/6923555
 		hFirstChild, err := me.hWnd.GetWindow(co.GW_CHILD)
@@ -121,16 +121,16 @@ func wndProcCallback() uintptr {
 
 	_wndProcCallback = syscall.NewCallback(
 		func(hWnd win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
-			var pMe *_BaseRaw
+			var pMe *_RawBase
 
 			if uMsg == co.WM_NCCREATE {
 				cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
-				pMe = (*_BaseRaw)(unsafe.Pointer(cs.LpCreateParams))
+				pMe = (*_RawBase)(unsafe.Pointer(cs.LpCreateParams))
 				pMe.hWnd = hWnd
 				hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe))) // store
 			} else {
 				ptr, _ := hWnd.GetWindowLongPtr(co.GWLP_USERDATA) // retrieve
-				pMe = (*_BaseRaw)(unsafe.Pointer(ptr))
+				pMe = (*_RawBase)(unsafe.Pointer(ptr))
 			}
 
 			// If no pointer stored, then no processing is done.

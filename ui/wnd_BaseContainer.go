@@ -73,6 +73,7 @@ func (me *_BaseContainer) defaultMessageHandlers() {
 	})
 }
 
+// Runs the message loop for the main window, blocking until it's closed.
 func (me *_BaseContainer) runMainLoop(hAccel win.HACCEL, processDlgMsgs bool) int {
 	vecMsg := win.NewVecSized(1, win.MSG{})
 	defer vecMsg.Free()
@@ -111,6 +112,7 @@ func (me *_BaseContainer) runMainLoop(hAccel win.HACCEL, processDlgMsgs bool) in
 	}
 }
 
+// Runs the message loop for a modal window, blocking until it's closed.
 func (me *_BaseContainer) runModalLoop(processDlgMsgs bool) {
 	vecMsg := win.NewVecSized(1, win.MSG{})
 	defer vecMsg.Free()
