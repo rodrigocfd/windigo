@@ -29,7 +29,7 @@ func (me *_DlgModal) showModal() {
 func (me *_DlgModal) defaultMessageHandlers() {
 	me._DlgBase._BaseContainer.defaultMessageHandlers()
 
-	me.beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	me.beforeUserEvents.wmCreateOrInitdialog(func() {
 		rcModal, _ := me.hWnd.GetWindowRect()
 		rcParent, _ := me.parent.Hwnd().GetWindowRect()
 
@@ -37,8 +37,6 @@ func (me *_DlgModal) defaultMessageHandlers() {
 		y := rcParent.Top + ((rcParent.Bottom - rcParent.Top) / 2) - (rcModal.Bottom-rcModal.Top)/2
 
 		me.hWnd.SetWindowPos(win.HWND(0), int(x), int(y), 0, 0, co.SWP_NOSIZE|co.SWP_NOZORDER)
-
-		return true // ignored
 	})
 
 	me.userEvents.WmClose(func() {

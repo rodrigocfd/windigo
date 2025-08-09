@@ -20,7 +20,7 @@ func newControlDlg(parent Parent, opts *VarOptsControlDlg) *_DlgControl {
 		ctrlId:   opts.ctrlId,
 	}
 
-	parent.base().beforeUserEvents.Wm(parent.base().wndTy.initMsg(), func(_ Wm) uintptr {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		hInst, _ := parent.Hwnd().HInstance()
 		me.createDialogParam(hInst, parent.Hwnd())
 		me.hWnd.SetWindowLongPtr(co.GWLP_ID, uintptr(opts.ctrlId)) // give the control its ID
@@ -28,7 +28,6 @@ func newControlDlg(parent Parent, opts *VarOptsControlDlg) *_DlgControl {
 			int(opts.position.X), int(opts.position.Y), 0, 0,
 			co.SWP_NOZORDER|co.SWP_NOSIZE)
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
-		return 0 // ignored
 	})
 
 	me.defaultMessageHandlers()

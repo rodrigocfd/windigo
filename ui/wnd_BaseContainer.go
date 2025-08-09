@@ -15,36 +15,34 @@ const _WM_UI_THREAD = co.WM_APP + 0x3fff // Internal message to run closures fro
 // Base to raw and dialog container windows.
 type _BaseContainer struct {
 	hWnd   win.HWND
-	wndTy  _WNDTY
 	layout _Layout
 
-	beforeUserEvents EventsWindow
+	beforeUserEvents _EventsWindowLib
 	userEvents       EventsWindow
-	afterUserEvents  EventsWindow
+	afterUserEvents  _EventsWindowLib
 }
 
 // Constructor.
 func newBaseContainer(wndTy _WNDTY) _BaseContainer {
 	return _BaseContainer{
 		hWnd:   win.HWND(0),
-		wndTy:  wndTy,
 		layout: newLayout(),
 
-		beforeUserEvents: newEventsWindow(_WNDTY_DLG),
-		userEvents:       newEventsWindow(_WNDTY_DLG),
-		afterUserEvents:  newEventsWindow(_WNDTY_DLG),
+		beforeUserEvents: newEventsWindowLib(),
+		userEvents:       newEventsWindow(wndTy),
+		afterUserEvents:  newEventsWindowLib(),
 	}
 }
 
-func (me *_BaseContainer) clearMessages() {
-	me.beforeUserEvents.clear()
-	me.userEvents.clear()
-	me.afterUserEvents.clear()
-}
 func (me *_BaseContainer) removeWmCreateInitdialog() {
 	me.beforeUserEvents.removeWmCreateInitdialog()
 	me.userEvents.removeWmCreateInitdialog()
 	me.afterUserEvents.removeWmCreateInitdialog()
+}
+func (me *_BaseContainer) clearMessages() {
+	me.beforeUserEvents.clear()
+	me.userEvents.clear()
+	me.afterUserEvents.clear()
 }
 
 func (me *_BaseContainer) uiThread(fun func()) {
@@ -59,17 +57,16 @@ func (me *_BaseContainer) uiThread(fun func()) {
 type _ThreadPack struct{ fun func() }
 
 func (me *_BaseContainer) defaultMessageHandlers() {
-	me.beforeUserEvents.Wm(_WM_UI_THREAD, func(p Wm) uintptr {
+	me.beforeUserEvents.wm(_WM_UI_THREAD, func(p Wm) {
 		if p.WParam == win.WPARAM(_WM_UI_THREAD) { // additional safety check
 			pPack := (*_ThreadPack)(unsafe.Pointer(p.LParam))
 			utl.PtrCache.Delete(unsafe.Pointer(pPack)) // now GC will be able to collect it
 			pPack.fun()
 		}
-		return 0 // ignored
 	})
 
-	me.beforeUserEvents.WmSize(func(p WmSize) {
-		me.layout.Rearrange(p)
+	me.beforeUserEvents.wm(co.WM_SIZE, func(p Wm) {
+		me.layout.Rearrange(WmSize{Raw: p})
 	})
 }
 

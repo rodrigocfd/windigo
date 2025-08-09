@@ -45,7 +45,7 @@ func NewUpDown(parent Parent, opts *VarOptsUpDown) *UpDown {
 		events:    EventsUpDown{opts.ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "msctls_updown32", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position,
 			win.SIZE{Cy: opts.height}, parent, true)
@@ -59,7 +59,6 @@ func NewUpDown(parent Parent, opts *VarOptsUpDown) *UpDown {
 		if opts.value != 0 {
 			me.SetValue(opts.value)
 		}
-		return 0 // ignored
 	})
 
 	return me
@@ -76,10 +75,9 @@ func NewUpDownDlg(parent Parent, ctrlId uint16, layout LAY) *UpDown {
 		events:    EventsUpDown{ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	return me

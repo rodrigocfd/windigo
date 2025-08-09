@@ -24,14 +24,13 @@ func NewStatic(parent Parent, opts *VarOptsStatic) *Static {
 		events:    EventsStatic{opts.ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		if opts.size.Cx == 0 && opts.size.Cy == 0 {
 			opts.size, _ = calcTextBoundBox(utl.RemoveAccelAmpersands(opts.text))
 		}
 		me.createWindow(opts.wndExStyle, "STATIC", opts.text,
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, true)
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
-		return 0 // ignored
 	})
 
 	return me
@@ -45,10 +44,9 @@ func NewStaticDlg(parent Parent, ctrlId uint16, layout LAY) *Static {
 		events:    EventsStatic{ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	return me

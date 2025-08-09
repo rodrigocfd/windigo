@@ -26,7 +26,7 @@ func NewProgressBar(parent Parent, opts *VarOptsProgressBar) *ProgressBar {
 		isMarquee: false,
 	}
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "msctls_progress32", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, false)
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
@@ -39,7 +39,6 @@ func NewProgressBar(parent Parent, opts *VarOptsProgressBar) *ProgressBar {
 		if opts.state != 0 {
 			me.SetState(opts.state)
 		}
-		return 0 // ignored
 	})
 
 	return me
@@ -52,10 +51,9 @@ func NewProgressBarDlg(parent Parent, ctrlId uint16, layout LAY) *ProgressBar {
 		_BaseCtrl: newBaseCtrl(ctrlId),
 	}
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	return me

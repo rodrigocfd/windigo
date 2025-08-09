@@ -20,14 +20,13 @@ func newControlRaw(parent Parent, opts *VarOptsControl) *_RawControl {
 		ctrlId:   opts.ctrlId,
 	}
 
-	parent.base().beforeUserEvents.Wm(parent.base().wndTy.initMsg(), func(_ Wm) uintptr {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		hInst, _ := parent.Hwnd().HInstance()
 		atom := me.registerClass(hInst, opts.className, opts.classStyle,
 			0, opts.classBrush, opts.classCursor)
 		me.createWindow(opts.exStyle, atom, "", opts.style,
 			opts.position, opts.size, parent.Hwnd(), win.HMENU(opts.ctrlId), hInst)
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
-		return 0 // ignored
 	})
 
 	me.defaultMessageHandlers()

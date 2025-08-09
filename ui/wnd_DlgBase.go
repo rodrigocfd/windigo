@@ -102,13 +102,13 @@ func dlgProcCallback() uintptr {
 
 			// Execute before-user closures, keep track if at least one was executed.
 			msg := Wm{uMsg, wParam, lParam}
-			atLeastOneBeforeUser := pMe.beforeUserEvents.processAllMessages(msg)
+			atLeastOneBeforeUser := pMe.beforeUserEvents.processAll(msg)
 
 			// Execute user closure, if any.
-			userRet, hasUserRet := pMe.userEvents.processLastMessage(msg)
+			userRet, hasUserRet := pMe.userEvents.processLast(msg)
 
 			// Execute post-user closures, keep track if at least one was executed.
-			atLeastOneAfterUser := pMe.afterUserEvents.processAllMessages(msg)
+			atLeastOneAfterUser := pMe.afterUserEvents.processAll(msg)
 
 			switch uMsg {
 			case co.WM_INITDIALOG:
@@ -120,10 +120,11 @@ func dlgProcCallback() uintptr {
 			}
 
 			if hasUserRet {
-				if uMsg == co.WM_GETDLGCODE { // demands special treatment
+				switch uMsg {
+				case co.WM_GETDLGCODE: // demands special treatment
 					hDlg.SetWindowLongPtr(co.GWLP_DWLP_MSGRESULT, userRet)
 					return 1 // TRUE
-				} else {
+				default:
 					return userRet
 				}
 			} else if atLeastOneBeforeUser || atLeastOneAfterUser {

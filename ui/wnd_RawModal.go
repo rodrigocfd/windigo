@@ -59,7 +59,7 @@ func (me *_RawModal) showModal() {
 func (me *_RawModal) defaultMessageHandlers() {
 	me._RawBase._BaseContainer.defaultMessageHandlers()
 
-	me.beforeUserEvents.WmSetFocus(func(_ WmSetFocus) {
+	me.beforeUserEvents.wm(co.WM_SETFOCUS, func(_ Wm) {
 		me.delegateFocusToFirstChild()
 	})
 

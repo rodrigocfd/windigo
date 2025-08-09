@@ -37,14 +37,13 @@ func NewDateTimePicker(parent Parent, opts *VarOptsDateTimePicker) *DateTimePick
 		events:    EventsDateTimePicker{opts.ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysDateTimePick32", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, true)
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
 		if !opts.value.IsZero() {
 			me.SetTime(opts.value)
 		}
-		return 0 // ignored
 	})
 
 	return me
@@ -67,10 +66,9 @@ func NewDateTimePickerDlg(parent Parent, ctrlId uint16, layout LAY) *DateTimePic
 		events:    EventsDateTimePicker{ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	return me

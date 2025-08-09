@@ -51,23 +51,6 @@ func setUniqueCtrlId(pCtrlId *uint16) {
 	}
 }
 
-// Dialog or created with CreateWindowEx()?
-type _WNDTY uint8
-
-const (
-	_WNDTY_DLG _WNDTY = 0x01 // A dialog window, loaded from resource.
-	_WNDTY_RAW _WNDTY = 0x02 // An ordinary window created with CreateWindowEx.
-)
-
-// Returns co.WM_CREATE for ordinary windows, or co.WM_INITDIALOG for dialogs.
-func (wndTy _WNDTY) initMsg() co.WM {
-	if wndTy == _WNDTY_DLG {
-		return co.WM_INITDIALOG
-	} else {
-		return co.WM_CREATE
-	}
-}
-
 // Calculates the bound rectangle to fit the text with current UI font.
 func calcTextBoundBox(text string) (win.SIZE, error) {
 	isTextEmpty := false

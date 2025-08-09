@@ -37,7 +37,7 @@ func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 	me.Cols.owner = me
 	me.Items.owner = me
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysListView32", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, false)
 		if opts.ctrlExStyle != co.LVS_EX(0) {
@@ -45,7 +45,6 @@ func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 		}
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
 		me.assignOrClearHeader()
-		return 0 // ignored
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -76,11 +75,10 @@ func NewListViewDlg(parent Parent, ctrlId uint16, contextMenuId uint16, layout L
 	me.Cols.owner = me
 	me.Items.owner = me
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
 		me.assignOrClearHeader()
-		return true // ignored
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -107,7 +105,7 @@ func (me *ListView) defaultMessageHandlers(parent Parent) {
 		return co.DLGC(dlgcSystem)
 	})
 
-	parent.base().beforeUserEvents.WmNotify(me.ctrlId, co.LVN_KEYDOWN, func(p unsafe.Pointer) uintptr {
+	parent.base().beforeUserEvents.wmNotify(me.ctrlId, co.LVN_KEYDOWN, func(p unsafe.Pointer) {
 		nmk := (*win.NMLVKEYDOWN)(p)
 		hasCtrl := (win.GetAsyncKeyState(co.VK_CONTROL) & 0x8000) != 0
 		hasShift := (win.GetAsyncKeyState(co.VK_SHIFT) & 0x8000) != 0
@@ -117,26 +115,23 @@ func (me *ListView) defaultMessageHandlers(parent Parent) {
 		} else if nmk.WVKey == co.VK_APPS { // context menu key
 			me.showContextMenu(false, hasCtrl, hasShift)
 		}
-		return 0 // ignored
 	})
 
-	parent.base().beforeUserEvents.WmNotify(me.ctrlId, co.NM_RCLICK, func(p unsafe.Pointer) uintptr {
+	parent.base().beforeUserEvents.wmNotify(me.ctrlId, co.NM_RCLICK, func(p unsafe.Pointer) {
 		nmi := (*win.NMITEMACTIVATE)(p)
 		hasCtrl := (nmi.UKeyFlags & co.LVKF_CONTROL) != 0
 		hasShift := (nmi.UKeyFlags & co.LVKF_SHIFT) != 0
 
 		me.showContextMenu(true, hasCtrl, hasShift)
-		return 0 // ignored
 	})
 
-	parent.base().afterUserEvents.WmNotify(me.ctrlId, co.LVN_DELETEITEM, func(p unsafe.Pointer) uintptr {
+	parent.base().afterUserEvents.wmNotify(me.ctrlId, co.LVN_DELETEITEM, func(p unsafe.Pointer) {
 		nmlv := (*win.NMLISTVIEW)(p)
 		item := me.Items.Get(int(nmlv.IItem))
 		delete(me.itemsData, item.Uid())
-		return 0 // ignored
 	})
 
-	parent.base().afterUserEvents.WmDestroy(func() {
+	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
 		if me.hContextMenu != 0 {
 			me.hContextMenu.DestroyMenu()
 		}

@@ -37,7 +37,7 @@ func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar 
 		events:    EventsMonthCalendar{opts.ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysMonthCal32", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, win.SIZE{}, parent, false)
 
@@ -51,7 +51,6 @@ func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar 
 		if !opts.value.IsZero() {
 			me.SetDate(opts.value)
 		}
-		return 0 // ignored
 	})
 
 	return me
@@ -74,10 +73,9 @@ func NewMonthCalendarDlg(parent Parent, ctrlId uint16, layout LAY) *MonthCalenda
 		events:    EventsMonthCalendar{ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	return me

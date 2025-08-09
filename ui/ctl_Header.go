@@ -39,11 +39,10 @@ func NewHeader(parent Parent, opts *VarOptsHeader) *Header {
 	}
 	me.Items.owner = me
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysHeader32", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, true)
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
-		return 0 // ignored
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -68,10 +67,9 @@ func NewHeaderDlg(parent Parent, ctrlId uint16, layout LAY) *Header {
 	}
 	me.Items.owner = me
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -98,12 +96,12 @@ func (me *Header) assignToListView(hHeader win.HWND) {
 }
 
 func (me *Header) defaultMessageHandlers(parent Parent) {
-	parent.base().afterUserEvents.WmDestroy(func() {
+	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
 		kinds := []co.HDSIL{co.HDSIL_NORMAL, co.HDSIL_STATE}
 		for _, kind := range kinds {
 			h, _ := me.hWnd.SendMessage(co.HDM_GETIMAGELIST, win.WPARAM(kind), 0)
 			if h != 0 {
-				me.hWnd.SendMessage(co.HDM_SETIMAGELIST, win.WPARAM(kind), 0)
+				me.hWnd.SendMessage(co.HDM_SETIMAGELIST, win.WPARAM(kind), 0) // release image list
 				win.HIMAGELIST(h).Destroy()
 			}
 		}

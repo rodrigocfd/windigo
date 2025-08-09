@@ -63,7 +63,8 @@ func (me *_RawMain) runAsMain(hInst win.HINSTANCE) int {
 func (me *_RawMain) defaultMessageHandlers() {
 	me._RawBase._BaseContainer.defaultMessageHandlers()
 
-	me.beforeUserEvents.WmActivate(func(p WmActivate) {
+	me.beforeUserEvents.wm(co.WM_ACTIVATE, func(rawP Wm) {
+		p := WmActivate{Raw: rawP}
 		if !p.IsMinimized() { // https://devblogs.microsoft.com/oldnewthing/20140521-00/?p=943
 			if p.Event() == co.WA_INACTIVE {
 				if hCurFocus := win.GetFocus(); hCurFocus != 0 && me.hWnd.IsChild(hCurFocus) {
@@ -75,7 +76,7 @@ func (me *_RawMain) defaultMessageHandlers() {
 		}
 	})
 
-	me.beforeUserEvents.WmSetFocus(func(p WmSetFocus) {
+	me.beforeUserEvents.wm(co.WM_SETFOCUS, func(_ Wm) {
 		me.delegateFocusToFirstChild()
 	})
 

@@ -59,7 +59,7 @@ func NewRadioGroup(parent Parent, allOpts ...*VarOptsRadioButton) *RadioGroup {
 	}
 	me.events = EventsRadioGroup{me, &parent.base().userEvents}
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		for idx, opts := range allOpts {
 			if opts.size.Cx == 0 && opts.size.Cy == 0 {
 				opts.size, _ = calcTextBoundBoxWithCheck(utl.RemoveAccelAmpersands(opts.text))
@@ -71,7 +71,6 @@ func NewRadioGroup(parent Parent, allOpts ...*VarOptsRadioButton) *RadioGroup {
 				me.radios[idx].Select()
 			}
 		}
-		return 0 // ignored
 	})
 
 	return me
@@ -99,12 +98,11 @@ func NewRadioGroupDlg(parent Parent, layout LAY, ctrlIds ...uint16) *RadioGroup 
 	}
 	me.events = EventsRadioGroup{me, &parent.base().userEvents}
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		for _, radio := range me.radios {
 			radio.assignDialog(parent)
 			parent.base().layout.Add(parent, radio.hWnd, layout)
 		}
-		return true // ignored
 	})
 
 	return me

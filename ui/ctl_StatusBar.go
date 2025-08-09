@@ -28,7 +28,7 @@ func NewStatusBar(parent Parent) *StatusBar {
 	}
 	me.Parts.owner = me
 
-	parent.base().beforeUserEvents.Wm(parent.base().wndTy.initMsg(), func(_ Wm) uintptr {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		sbStyle := co.WS_CHILD | co.WS_VISIBLE | co.WS(co.SBARS_TOOLTIPS)
 		parentStyle, _ := parent.Hwnd().Style()
 		isParentResizable := (parentStyle&co.WS_MAXIMIZEBOX) != 0 ||
@@ -39,11 +39,10 @@ func NewStatusBar(parent Parent) *StatusBar {
 
 		me.createWindow(co.WS_EX_NONE, "msctls_statusbar32", "",
 			sbStyle, win.POINT{}, win.SIZE{}, parent, false)
-		return 0 // ignored
 	})
 
-	parent.base().beforeUserEvents.WmSize(func(p WmSize) {
-		me.Parts.resizeToFitParent(p)
+	parent.base().beforeUserEvents.wm(co.WM_SIZE, func(p Wm) {
+		me.Parts.resizeToFitParent(WmSize{Raw: p})
 	})
 
 	return me

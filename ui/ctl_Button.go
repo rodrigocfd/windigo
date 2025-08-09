@@ -36,11 +36,10 @@ func NewButton(parent Parent, opts *VarOptsButton) *Button {
 		events:    EventsButton{opts.ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "BUTTON", opts.text,
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, true)
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
-		return 0 // ignored
 	})
 
 	return me
@@ -63,10 +62,9 @@ func NewButtonDlg(parent Parent, ctrlId uint16, layout LAY) *Button {
 		events:    EventsButton{ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	return me

@@ -36,7 +36,7 @@ func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 		events:    EventsButton{opts.ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		if opts.size.Cx == 0 && opts.size.Cy == 0 {
 			opts.size, _ = calcTextBoundBoxWithCheck(utl.RemoveAccelAmpersands(opts.text))
 		}
@@ -44,7 +44,6 @@ func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, true)
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
 		me.SetState(opts.state)
-		return 0 // ignored
 	})
 
 	return me
@@ -67,10 +66,9 @@ func NewCheckBoxDlg(parent Parent, ctrlId uint16, layout LAY) *CheckBox {
 		events:    EventsButton{ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	return me

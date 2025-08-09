@@ -29,14 +29,13 @@ func NewTreeView(parent Parent, opts *VarOptsTreeView) *TreeView {
 	}
 	me.Items.owner = me
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysTreeView32", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, false)
 		if opts.ctrlExStyle != co.TVS_EX(0) {
 			me.SetExtendedStyle(true, opts.ctrlExStyle)
 		}
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
-		return 0 // ignored
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -52,10 +51,9 @@ func NewTreeViewDlg(parent Parent, ctrlId uint16, layout LAY) *TreeView {
 	}
 	me.Items.owner = me
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -63,18 +61,17 @@ func NewTreeViewDlg(parent Parent, ctrlId uint16, layout LAY) *TreeView {
 }
 
 func (me *TreeView) defaultMessageHandlers(parent Parent) {
-	parent.base().afterUserEvents.WmNotify(me.ctrlId, co.TVN_DELETEITEM, func(p unsafe.Pointer) uintptr {
+	parent.base().afterUserEvents.wmNotify(me.ctrlId, co.TVN_DELETEITEM, func(p unsafe.Pointer) {
 		nmtv := (*win.NMTREEVIEW)(p)
 		delete(me.itemsData, nmtv.ItemOld.HItem)
-		return 0 // ignored
 	})
 
-	parent.base().afterUserEvents.WmDestroy(func() {
+	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
 		kinds := []co.TVSIL{co.TVSIL_NORMAL, co.TVSIL_STATE}
 		for _, kind := range kinds {
 			h, _ := me.hWnd.SendMessage(co.TVM_GETIMAGELIST, win.WPARAM(kind), 0)
 			if h != 0 {
-				me.hWnd.SendMessage(co.TVM_SETIMAGELIST, win.WPARAM(kind), 0)
+				me.hWnd.SendMessage(co.TVM_SETIMAGELIST, win.WPARAM(kind), 0) // release image list
 				win.HIMAGELIST(h).Destroy()
 			}
 		}

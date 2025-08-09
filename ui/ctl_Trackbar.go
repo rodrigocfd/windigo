@@ -41,7 +41,7 @@ func NewTrackbar(parent Parent, opts *VarOptsTrackbar) *Trackbar {
 		events:    EventsTrackbar{opts.ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "msctls_trackbar32", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, false)
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
@@ -56,7 +56,6 @@ func NewTrackbar(parent Parent, opts *VarOptsTrackbar) *Trackbar {
 		if opts.value != 0 {
 			me.SetPos(opts.value)
 		}
-		return 0 // ignored
 	})
 
 	return me
@@ -70,10 +69,9 @@ func NewTrackbarDlg(parent Parent, ctrlId uint16, layout LAY) *Trackbar {
 		events:    EventsTrackbar{ctrlId, &parent.base().userEvents},
 	}
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	return me

@@ -10,6 +10,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// Base to all native controls.
 type _BaseCtrl struct {
 	ctrlId uint16   // Control identifier.
 	hWnd   win.HWND // Handle to the control.
@@ -92,9 +93,6 @@ func (me *_BaseCtrl) createWindow(
 }
 
 func (me *_BaseCtrl) assignDialog(parent Parent) {
-	if parent.base().wndTy == _WNDTY_RAW {
-		panic("Parent window is not a dialog, cannot instantiate control.")
-	}
 	if me.hWnd != 0 {
 		panic("Cannot create control twice.")
 	}
@@ -148,7 +146,7 @@ func subclassProcCallback() uintptr {
 
 			if pMe != nil {
 				msg := Wm{uMsg, wParam, lParam}
-				userRet, hasUserRet = pMe.subclassEvents.processLastMessage(msg)
+				userRet, hasUserRet = pMe.subclassEvents.processLast(msg)
 			}
 
 			if uMsg == co.WM_NCDESTROY { // always check

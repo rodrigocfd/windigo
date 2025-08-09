@@ -49,7 +49,7 @@ func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 	}
 	me.Items.owner = me
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysTabControl32", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, true)
 		if opts.ctrlExStyle != co.TCS_EX(0) {
@@ -60,7 +60,6 @@ func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 		}
 		me.Items.Get(opts.selected).Select()
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
-		return 0 // ignored
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -77,14 +76,13 @@ func NewTabDlg(parent Parent, ctrlId uint16, layout LAY, items ...TabIns) *Tab {
 	}
 	me.Items.owner = me
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		for _, child := range me.children {
 			me.Items.add(child.Title) // add each tab
 		}
 		me.Items.Get(0).displayContent() // 1st tab selected by default
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -92,11 +90,10 @@ func NewTabDlg(parent Parent, ctrlId uint16, layout LAY, items ...TabIns) *Tab {
 }
 
 func (me *Tab) defaultMessageHandlers(parent Parent) {
-	parent.base().beforeUserEvents.WmNotify(me.ctrlId, co.TCN_SELCHANGE, func(_ unsafe.Pointer) uintptr {
+	parent.base().beforeUserEvents.wmNotify(me.ctrlId, co.TCN_SELCHANGE, func(_ unsafe.Pointer) {
 		if selTab, ok := me.Items.Selected(); ok {
 			selTab.displayContent()
 		}
-		return 0 // ignored
 	})
 }
 

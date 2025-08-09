@@ -37,14 +37,13 @@ func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
 	}
 	me.Items.owner = me
 
-	parent.base().beforeUserEvents.WmCreate(func(_ WmCreate) int {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		sz := win.SIZE{Cx: int32(opts.width)}
 		me.createWindow(opts.wndExStyle, "COMBOBOX", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, sz, parent, true)
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
 		me.Items.Add(opts.texts...)
 		me.Items.Select(opts.selected)
-		return 0 // ignored
 	})
 
 	return me
@@ -68,10 +67,9 @@ func NewComboBoxDlg(parent Parent, ctrlId uint16, layout LAY) *ComboBox {
 	}
 	me.Items.owner = me
 
-	parent.base().beforeUserEvents.WmInitDialog(func(_ WmInitDialog) bool {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		parent.base().layout.Add(parent, me.hWnd, layout)
-		return true // ignored
 	})
 
 	return me

@@ -29,6 +29,12 @@ type (
 		timerId uintptr
 		fun     func()
 	}
+	_WNDTY uint8 // Tells if the window is raw or dialog.
+)
+
+const (
+	_WNDTY_DLG _WNDTY = 0x01 // A dialog window, loaded from resource.
+	_WNDTY_RAW _WNDTY = 0x02 // An ordinary window created with CreateWindowEx.
 )
 
 // Exposes events for window [messages].
@@ -43,37 +49,42 @@ type EventsWindow struct {
 	// We use simple arrays instead of maps, because the closures are never too
 	// many, therefore a simple linear search is more efficient.
 
-	wmCreates  []func(p WmCreate) int      // WM_CREATE messages; deleted after first processing
-	wmInitDlgs []func(p WmInitDialog) bool // WM_INITDIALOG messages; deleted after first processing
-
-	msgs []_StorageMsg // ordinary WM messages
-	cmds []_StorageCmd // WM_COMMAND
-	nfys []_StorageNfy // WM_NOTIFY
-	tmrs []_StorageTmr // WM_TIMER
+	wmCreate     func(p WmCreate) int      // WM_CREATE message; deleted after first processing
+	wmInitDialog func(p WmInitDialog) bool // WM_INITDIALOG message; deleted after first processing
+	msgs         []_StorageMsg             // ordinary WM messages
+	cmds         []_StorageCmd             // WM_COMMAND
+	nfys         []_StorageNfy             // WM_NOTIFY
+	tmrs         []_StorageTmr             // WM_TIMER
 }
 
 // Constructor.
 func newEventsWindow(wndTy _WNDTY) EventsWindow {
-	defProcVal := 0
+	defProcVal := 0 // for raw windows
 	if wndTy == _WNDTY_DLG {
-		defProcVal = 1 // TRUE
+		defProcVal = 1 // TRUE; for dialogs
 	}
 
 	return EventsWindow{
-		defProcVal: uintptr(defProcVal),
-		wmCreates:  make([]func(p WmCreate) int, 0),
-		wmInitDlgs: make([]func(p WmInitDialog) bool, 0),
-		msgs:       make([]_StorageMsg, 0),
-		cmds:       make([]_StorageCmd, 0),
-		nfys:       make([]_StorageNfy, 0),
-		tmrs:       make([]_StorageTmr, 0),
+		defProcVal:   uintptr(defProcVal),
+		wmCreate:     nil,
+		wmInitDialog: nil,
+		msgs:         make([]_StorageMsg, 0),
+		cmds:         make([]_StorageCmd, 0),
+		nfys:         make([]_StorageNfy, 0),
+		tmrs:         make([]_StorageTmr, 0),
 	}
+}
+
+// To be called after the first WM_CREATE/INITDIALOG processing. Releases the
+// memory in all these closures, which are never called again.
+func (me *EventsWindow) removeWmCreateInitdialog() {
+	me.wmCreate = nil
+	me.wmInitDialog = nil
 }
 
 // Releases the memory of all closures.
 func (me *EventsWindow) clear() {
-	me.wmCreates = nil
-	me.wmInitDlgs = nil
+	me.removeWmCreateInitdialog()
 	me.msgs = nil
 	me.cmds = nil
 	me.nfys = nil
@@ -81,78 +92,26 @@ func (me *EventsWindow) clear() {
 }
 
 func (me *EventsWindow) hasMessage() bool {
-	return len(me.wmCreates) > 0 ||
-		len(me.wmInitDlgs) > 0 ||
+	return me.wmCreate != nil ||
+		me.wmInitDialog != nil ||
 		len(me.msgs) > 0 ||
 		len(me.cmds) > 0 ||
 		len(me.nfys) > 0 ||
 		len(me.tmrs) > 0
 }
 
-// For library-defined events, to run before and after user events. We run them
-// all, discarding the result.
-func (me *EventsWindow) processAllMessages(p Wm) (atLeastOne bool) {
-	switch p.Msg {
-	case co.WM_CREATE:
-		for _, fun := range me.wmCreates {
-			fun(WmCreate{Raw: p})
-			atLeastOne = true
-		}
-	case co.WM_INITDIALOG:
-		for _, fun := range me.wmInitDlgs {
-			fun(WmInitDialog{Raw: p})
-			atLeastOne = true
-		}
-	case co.WM_COMMAND:
-		cmdId := p.WParam.LoWord()
-		notifCode := co.CMD(p.WParam.HiWord())
-		for _, obj := range me.cmds {
-			if obj.cmdId == cmdId && obj.notifCode == notifCode {
-				obj.fun()
-				atLeastOne = true
-			}
-		}
-	case co.WM_NOTIFY:
-		pHdr := unsafe.Pointer(p.LParam)
-		hdr := (*win.NMHDR)(pHdr)
-		for _, obj := range me.nfys {
-			if obj.idFrom == uint16(hdr.IdFrom) && obj.code == co.NM(hdr.Code) {
-				obj.fun(pHdr)
-				atLeastOne = true
-			}
-		}
-	case co.WM_TIMER:
-		for _, obj := range me.tmrs {
-			if obj.timerId == uintptr(p.WParam) {
-				obj.fun()
-				atLeastOne = true
-			}
-		}
-	}
-
-	for _, obj := range me.msgs {
-		if obj.id == p.Msg {
-			obj.fun(p)
-			atLeastOne = true
-		}
-	}
-	return
-}
-
 // For user events. When the user adds a message handler, it will overwrite a
 // previously added one. It would be too costly to search and remove the
 // previous one, so we just keep them all, and run the last one.
-func (me *EventsWindow) processLastMessage(p Wm) (userRet uintptr, wasHandled bool) {
+func (me *EventsWindow) processLast(p Wm) (userRet uintptr, wasHandled bool) {
 	switch p.Msg {
 	case co.WM_CREATE:
-		if len(me.wmCreates) > 0 {
-			fun := me.wmCreates[len(me.wmCreates)-1]
-			return uintptr(fun(WmCreate{Raw: p})), true // handled, stop here
+		if me.wmCreate != nil {
+			return uintptr(me.wmCreate(WmCreate{Raw: p})), true // handled, stop here
 		}
 	case co.WM_INITDIALOG:
-		if len(me.wmInitDlgs) > 0 {
-			fun := me.wmInitDlgs[len(me.wmInitDlgs)-1]
-			return utl.BoolToUintptr(fun(WmInitDialog{Raw: p})), true // handled, stop here
+		if me.wmInitDialog != nil {
+			return utl.BoolToUintptr(me.wmInitDialog(WmInitDialog{Raw: p})), true // handled, stop here
 		}
 	case co.WM_COMMAND:
 		cmdId := p.WParam.LoWord()
@@ -188,13 +147,6 @@ func (me *EventsWindow) processLastMessage(p Wm) (userRet uintptr, wasHandled bo
 	return 0, false // no message found
 }
 
-// To be called after the first WM_CREATE/INITDIALOG processing. Releases the
-// memory in all these closures, which are never called again.
-func (me *EventsWindow) removeWmCreateInitdialog() {
-	me.wmCreates = nil
-	me.wmInitDlgs = nil
-}
-
 // [WM_CREATE] message handler.
 //
 // Return 0 to continue window creation, or -1 to abort it.
@@ -213,7 +165,7 @@ func (me *EventsWindow) removeWmCreateInitdialog() {
 // [WM_CREATE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-create
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (me *EventsWindow) WmCreate(fun func(p WmCreate) int) {
-	me.wmCreates = append(me.wmCreates, fun)
+	me.wmCreate = fun
 }
 
 // [WM_INITDIALOG] message handler.
@@ -235,7 +187,7 @@ func (me *EventsWindow) WmCreate(fun func(p WmCreate) int) {
 // [WM_INITDIALOG]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-initdialog
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (me *EventsWindow) WmInitDialog(fun func(p WmInitDialog) bool) {
-	me.wmInitDlgs = append(me.wmInitDlgs, fun)
+	me.wmInitDialog = fun
 }
 
 // Generic [message handler].

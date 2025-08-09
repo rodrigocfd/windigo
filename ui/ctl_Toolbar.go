@@ -28,7 +28,7 @@ func NewToolbar(parent Parent, opts *VarOptsToolbar) *Toolbar {
 	}
 	me.Buttons.owner = me
 
-	parent.base().beforeUserEvents.Wm(parent.base().wndTy.initMsg(), func(_ Wm) uintptr {
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "ToolbarWindow32", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), win.POINT{}, win.SIZE{}, parent, false)
 		me.hWnd.SendMessage(co.TB_BUTTONSTRUCTSIZE,
@@ -37,7 +37,6 @@ func NewToolbar(parent Parent, opts *VarOptsToolbar) *Toolbar {
 		if opts.ctrlExStyle != co.TBSTYLE_EX_NONE {
 			me.SetExtendedStyle(true, opts.ctrlExStyle)
 		}
-		return 0 // ignored
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -45,7 +44,7 @@ func NewToolbar(parent Parent, opts *VarOptsToolbar) *Toolbar {
 }
 
 func (me *Toolbar) defaultMessageHandlers(parent Parent) {
-	parent.base().afterUserEvents.WmDestroy(func() {
+	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
 		h, _ := me.hWnd.SendMessage(co.TB_GETIMAGELIST, 0, 0)
 		if h != 0 {
 			me.hWnd.SendMessage(co.TB_SETIMAGELIST, 0, 0)
