@@ -7,6 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// Raw window control.
 type _RawControl struct {
 	_RawBase
 	ctrlId uint16

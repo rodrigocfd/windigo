@@ -7,6 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// Dialog-based main application window.
 type _DlgMain struct {
 	_DlgBase
 	iconId       uint16

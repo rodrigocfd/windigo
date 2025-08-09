@@ -7,6 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// Dialog-based modal window.
 type _DlgModal struct {
 	_DlgBase
 	parent Parent

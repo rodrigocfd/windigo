@@ -7,6 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// Raw modal window.
 type _RawModal struct {
 	_RawBase
 	parent                Parent

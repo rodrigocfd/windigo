@@ -7,6 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// Dialog-based control.
 type _DlgControl struct {
 	_DlgBase
 	ctrlId uint16

@@ -7,6 +7,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
+// Raw main application window.
 type _RawMain struct {
 	_RawBase
 	opts            *VarOptsMain
