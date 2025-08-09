@@ -105,9 +105,10 @@ func (me *_Layout) Rearrange(parm WmSize) {
 		ctl := me.ctrls[i]
 
 		uFlags := co.SWP_NOZORDER
-		if ctl.layout == LAY_REPOS_REPOS { // repos both horz and vert
+		switch ctl.layout {
+		case LAY_REPOS_REPOS: // repos both horz and vert
 			uFlags |= co.SWP_NOSIZE
-		} else if ctl.layout == LAY_RESIZE_RESIZE { // resize both horz and vert
+		case LAY_RESIZE_RESIZE: // resize both horz and vert
 			uFlags |= co.SWP_NOMOVE
 		}
 
