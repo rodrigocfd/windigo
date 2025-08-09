@@ -1013,20 +1013,20 @@ func (tdc *TASKDIALOGCONFIG) serialize(
 	tdc.put32(dest[20:], uint32(tdc.Flags))
 	tdc.put32(dest[24:], uint32(tdc.CommonButtons))
 
-	tdc.putPtr(dest[28:], pStrsBuf.PtrAllowEmpty(tdc.WindowTitle))
+	tdc.putPtr(dest[28:], pStrsBuf.PtrEmptyIsNil(tdc.WindowTitle))
 
 	if !tdc.HMainIcon.IsNone() {
 		tdc.put64(dest[36:], tdc.HMainIcon.raw())
 	}
 
-	tdc.putPtr(dest[44:], pStrsBuf.PtrAllowEmpty(tdc.MainInstruction))
-	tdc.putPtr(dest[52:], pStrsBuf.PtrAllowEmpty(tdc.Content))
+	tdc.putPtr(dest[44:], pStrsBuf.PtrEmptyIsNil(tdc.MainInstruction))
+	tdc.putPtr(dest[52:], pStrsBuf.PtrEmptyIsNil(tdc.Content))
 
 	if len(tdc.Buttons) > 0 {
 		for i, btn := range tdc.Buttons {
 			pBtnBuf := pBtnsBuf.Get(uint(i)) // already allocated
 			tdc.put32((*pBtnBuf)[:], uint32(btn.Id))
-			tdc.putPtr((*pBtnBuf)[4:], pStrsBuf.PtrAllowEmpty(btn.Text))
+			tdc.putPtr((*pBtnBuf)[4:], pStrsBuf.PtrEmptyIsNil(btn.Text))
 		}
 		tdc.put32(dest[60:], uint32(len(tdc.Buttons))) // number of buttons
 		tdc.putPtr(dest[64:], pBtnsBuf.UnsafePtr())    // ptr to buttons block
@@ -1039,7 +1039,7 @@ func (tdc *TASKDIALOGCONFIG) serialize(
 		for i, btn := range tdc.RadioButtons {
 			pBtnBuf := pBtnsBuf.Get(baseRadioIdx + uint(i)) // already allocated
 			tdc.put32((*pBtnBuf)[:], uint32(btn.Id))
-			tdc.putPtr((*pBtnBuf)[4:], pStrsBuf.PtrAllowEmpty(btn.Text))
+			tdc.putPtr((*pBtnBuf)[4:], pStrsBuf.PtrEmptyIsNil(btn.Text))
 		}
 		tdc.put32(dest[76:], uint32(len(tdc.RadioButtons)))               // number of radios
 		tdc.putPtr(dest[80:], unsafe.Pointer(pBtnsBuf.Get(baseRadioIdx))) // ptr to radios block
@@ -1047,16 +1047,16 @@ func (tdc *TASKDIALOGCONFIG) serialize(
 
 	tdc.put32(dest[88:], uint32(tdc.DefaultRadioButton))
 
-	tdc.putPtr(dest[92:], pStrsBuf.PtrAllowEmpty(tdc.VerificationText))
-	tdc.putPtr(dest[100:], pStrsBuf.PtrAllowEmpty(tdc.ExpandedInformation))
-	tdc.putPtr(dest[108:], pStrsBuf.PtrAllowEmpty(tdc.ExpandedControlText))
-	tdc.putPtr(dest[116:], pStrsBuf.PtrAllowEmpty(tdc.CollapsedControlText))
+	tdc.putPtr(dest[92:], pStrsBuf.PtrEmptyIsNil(tdc.VerificationText))
+	tdc.putPtr(dest[100:], pStrsBuf.PtrEmptyIsNil(tdc.ExpandedInformation))
+	tdc.putPtr(dest[108:], pStrsBuf.PtrEmptyIsNil(tdc.ExpandedControlText))
+	tdc.putPtr(dest[116:], pStrsBuf.PtrEmptyIsNil(tdc.CollapsedControlText))
 
 	if !tdc.HFooterIcon.IsNone() {
 		tdc.put64(dest[124:], tdc.HFooterIcon.raw())
 	}
 
-	tdc.putPtr(dest[132:], pStrsBuf.PtrAllowEmpty(tdc.Footer))
+	tdc.putPtr(dest[132:], pStrsBuf.PtrEmptyIsNil(tdc.Footer))
 
 	tdc.put64(dest[140:], uint64(tdc.PfCallback))
 	tdc.put64(dest[148:], uint64(tdc.LpCallbackData))
