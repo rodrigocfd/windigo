@@ -676,6 +676,15 @@ func (p WmScroll) ScrollBoxPos() int       { return int(p.Raw.WParam.HiWord()) }
 func (p WmScroll) Request() co.SB_REQ      { return co.SB_REQ(p.Raw.WParam.LoWord()) }
 func (p WmScroll) HwndScrollbar() win.HWND { return win.HWND(p.Raw.LParam) }
 
+// [WM_SETCURSOR] parameters.
+//
+// [WM_SETCURSOR]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-setcursor
+type WmSetCursor struct{ Raw Wm }
+
+func (p WmSetCursor) Hwnd() win.HWND       { return win.HWND(p.Raw.WParam) }
+func (p WmSetCursor) CursorPos() win.POINT { return p.Raw.LParam.MakePoint() }
+func (p WmSetCursor) SrcMsg() co.WM        { return co.WM(p.Raw.LParam) }
+
 // [WM_SETFOCUS] parameters.
 //
 // [WM_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-setfocus

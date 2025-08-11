@@ -644,6 +644,10 @@ var _SetCurrentDirectoryW *syscall.Proc
 
 // [Sleep] function.
 //
+// # Example
+//
+//	win.Sleep(5 * time.Second)
+//
 // [Sleep]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
 func Sleep(duration time.Duration) {
 	syscall.SyscallN(

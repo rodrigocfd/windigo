@@ -1383,6 +1383,15 @@ func (me *EventsWindow) WmRenderFormat(fun func(p WmRenderFormat)) {
 	})
 }
 
+// [WM_SETCURSOR] message handler.
+//
+// [WM_SETCURSOR]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-setcursor
+func (me *EventsWindow) WmSetCursor(fun func(p WmSetCursor) bool) {
+	me.Wm(co.WM_SETCURSOR, func(p Wm) uintptr {
+		return utl.BoolToUintptr(fun(WmSetCursor{Raw: p}))
+	})
+}
+
 // [WM_SETFOCUS] message handler.
 //
 // [WM_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-setfocus

@@ -136,7 +136,7 @@ var _LoadAcceleratorsW *syscall.Proc
 
 // [LoadCursor] function.
 //
-// Icons loaded from resources are shared, and don't need to be deleted.
+// Cursors loaded from resources are shared, and don't need to be deleted.
 //
 // [LoadCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) (HCURSOR, error) {

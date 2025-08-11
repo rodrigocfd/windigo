@@ -121,7 +121,7 @@ func dlgProcCallback() uintptr {
 
 			if hasUserRet {
 				switch uMsg {
-				case co.WM_GETDLGCODE: // demands special treatment
+				case co.WM_GETDLGCODE, co.WM_SETCURSOR: // demands special treatment
 					hDlg.SetWindowLongPtr(co.GWLP_DWLP_MSGRESULT, userRet)
 					return 1 // TRUE
 				default:
