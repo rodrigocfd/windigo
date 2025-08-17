@@ -64,30 +64,20 @@ func (me *OleReleaser) Release() {
 // These objects will be removed from the internal list, thus not being released
 // when [OleReleaser.Release] is further called.
 func (me *OleReleaser) ReleaseNow(objs ...OleResource) {
-	numToRelease := 0
-	for _, passedObj := range objs {
-		if !utl.IsNil(passedObj) { // obj passed by the user is not nil
-			for _, ourObj := range me.objs {
-				if ourObj == passedObj { // we found this object in our list
-					numToRelease++
-				}
+NextHisObj:
+	for _, hisObj := range objs {
+		if utl.IsNil(hisObj) {
+			continue // skip nil objects
+		}
+
+		for ourIdx, ourObj := range me.objs {
+			if ourObj == hisObj { // we found the passed object in our array
+				hisObj.release()
+				copy(me.objs[ourIdx:len(me.objs)-1], me.objs[ourIdx+1:len(me.objs)]) // move subsequent elements into the gap
+				me.objs[len(me.objs)-1] = nil
+				me.objs = me.objs[:len(me.objs)-1] // shrink our slice over the same memory
+				continue NextHisObj
 			}
 		}
 	}
-
-	if numToRelease == 0 {
-		return // no objects to be released
-	}
-
-	newSlice := make([]OleResource, 0, len(me.objs)-numToRelease)
-	for _, ourObj := range me.objs {
-		for _, passedObj := range objs {
-			if passedObj == ourObj {
-				ourObj.release()
-			} else {
-				newSlice = append(newSlice, ourObj)
-			}
-		}
-	}
-	me.objs = newSlice
 }

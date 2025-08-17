@@ -50,7 +50,7 @@ func (me *_EventsWindowLib) clear() {
 	me.nfys = nil
 }
 
-// Runs all the internal closures for the given message, discarding the results.
+// Runs all the internal closures for the given message.
 func (me *_EventsWindowLib) processAll(p Wm) (atLeastOne bool) {
 	switch p.Msg {
 	case co.WM_CREATE, co.WM_INITDIALOG:
