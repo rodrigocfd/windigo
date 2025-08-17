@@ -116,7 +116,7 @@ func (me *Ini) Serialize() string {
 
 // Serializes and saves the contents into the .ini file.
 func (me *Ini) SaveToFile(filePath string) error {
-	return FileWrite(filePath, []byte(me.Serialize()))
+	return FileWriteNow(filePath, []byte(me.Serialize()))
 }
 
 // Returns a pointer to the section with the given name, or nil if not existing.

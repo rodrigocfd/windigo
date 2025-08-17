@@ -118,7 +118,7 @@ func SplitLines(s string) []string {
 	for i, line := range lines {
 		lineLen := len(line)
 		if lineLen > 0 && line[lineLen-1] == '\r' {
-			lines[i] = line[:lineLen-1]
+			lines[i] = line[:lineLen-1] // strip away the trailing '\r'
 		}
 	}
 	return lines

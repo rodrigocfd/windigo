@@ -10,7 +10,7 @@ import (
 	"github.com/rodrigocfd/windigo/win/co"
 )
 
-// Reads all the contents of the file at once. Calls:
+// Reads all the contents of the file at once, immediately. Calls:
 //   - [CreateFile]
 //   - [HFILE.GetFileSizeEx]
 //   - [HFILE.ReadFile]
@@ -18,8 +18,8 @@ import (
 //
 // # Example
 //
-//	contents, _ := win.FileRead("C:\\Temp\\foo.txt")
-func FileRead(filePath string) ([]byte, error) {
+//	contents, _ := win.FileReadNow("C:\\Temp\\foo.txt")
+func FileReadNow(filePath string) ([]byte, error) {
 	fin, err := FileOpen(filePath, co.FOPEN_READ_EXISTING)
 	if err != nil {
 		return nil, fmt.Errorf("FileOpen: %w", err)
@@ -39,7 +39,7 @@ func FileRead(filePath string) ([]byte, error) {
 	return ret, nil
 }
 
-// Truncates the file, then writes all the contents at once. Calls:
+// Truncates the file, then writes all the contents at once, immediately. Calls:
 //   - [CreateFile]
 //   - [HFILE.SetEndOfFile]
 //   - [HFILE.WriteFile]
@@ -48,8 +48,8 @@ func FileRead(filePath string) ([]byte, error) {
 // # Example
 //
 //	contents := []byte("my text")
-//	_ = win.FileWrite("C:\\Temp\\foo.txt", contents)
-func FileWrite(filePath string, contents []byte) error {
+//	_ = win.FileWriteNow("C:\\Temp\\foo.txt", contents)
+func FileWriteNow(filePath string, contents []byte) error {
 	fout, err := FileOpen(filePath, co.FOPEN_RW_OPEN_OR_CREATE)
 	if err != nil {
 		return fmt.Errorf("FileOpen: %w", err)
