@@ -633,6 +633,21 @@ func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
 
 var _GetDeviceCaps *syscall.Proc
 
+// [GetDIBColorTable] function.
+//
+// [GetDIBColorTable]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibcolortable
+func (hdc HDC) GetDIBColorTable(iStart uint, buf []RGBQUAD) error {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.GDI32, &_GetDIBColorTable, "GetDIBColorTable"),
+		uintptr(hdc),
+		uintptr(uint32(iStart)),
+		uintptr(uint32(len(buf))),
+		uintptr(unsafe.Pointer(&buf[0])))
+	return utl.ZeroAsSysInvalidParm(ret)
+}
+
+var _GetDIBColorTable *syscall.Proc
+
 // [GetDIBits] function.
 //
 // Note that this method fails if bitmapDataBuffer is an ordinary Go slice; it
