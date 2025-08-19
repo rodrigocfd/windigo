@@ -605,6 +605,23 @@ func (hdc HDC) GetDCBrushColor() (COLORREF, error) {
 
 var _GetDCBrushColor *syscall.Proc
 
+// [GetDCOrgEx] function.
+//
+// [GetDCOrgEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdcorgex
+func (hdc HDC) GetDCOrgEx() (POINT, error) {
+	var pt POINT
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.GDI32, &_GetDCOrgEx, "GetDCOrgEx"),
+		uintptr(hdc),
+		uintptr(unsafe.Pointer(&pt)))
+	if ret == 0 {
+		return POINT{}, co.ERROR_INVALID_PARAMETER
+	}
+	return pt, nil
+}
+
+var _GetDCOrgEx *syscall.Proc
+
 // [GetDCPenColor] function.
 //
 // [GetDCPenColor]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdcpencolor
