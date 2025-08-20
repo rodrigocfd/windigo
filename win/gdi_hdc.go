@@ -324,6 +324,29 @@ func (hdc HDC) CreateCompatibleDC() (HDC, error) {
 
 var _CreateCompatibleDC *syscall.Proc
 
+// [CreateDIBitmap] function.
+//
+// [CreateDIBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibitmap
+func (hdc HDC) CreateDIBitmap(
+	pBmih *BITMAPV5HEADER,
+	initialBitmapData []byte,
+	pBmi *BITMAPINFO,
+	usage co.DIB_COLORS,
+) error {
+	pBmih.SetSize() // safety
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.GDI32, &_CreateDIBitmap, "CreateDIBitmap"),
+		uintptr(hdc),
+		uintptr(unsafe.Pointer(pBmih)),
+		utl.CBM_INIT,
+		uintptr(unsafe.Pointer(&initialBitmapData[0])),
+		uintptr(unsafe.Pointer(pBmi)),
+		uintptr(usage))
+	return utl.ZeroAsSysError(ret)
+}
+
+var _CreateDIBitmap *syscall.Proc
+
 // [CreateDIBSection] function.
 //
 // ⚠️ You must defer [HBITMAP.DeleteObject].
@@ -754,7 +777,7 @@ func (hdc HDC) GetDIBits(
 		dataBufPtr = &bitmapDataBuffer[0]
 	}
 
-	bmi.BmiHeader.SetBiSize() // safety
+	bmi.BmiHeader.SetSize() // safety
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_GetDIBits, "GetDIBits"),

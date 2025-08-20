@@ -12,9 +12,10 @@ const (
 	AD_CLOCKWISE        AD = 2
 )
 
-// [BITMAPINFOHEADER] biCompression.
+// [BITMAPINFOHEADER] and [BITMAPV5HEADER] Compression.
 //
 // [BITMAPINFOHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
+// [BITMAPV5HEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapv5header
 type BI uint32
 
 const (
@@ -24,6 +25,22 @@ const (
 	BI_BITFIELDS BI = 3
 	BI_JPEG      BI = 4
 	BI_PNG       BI = 5
+)
+
+// [BITMAPINFOHEADER] and [BITMAPV5HEADER] BitCount.
+//
+// [BITMAPINFOHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
+// [BITMAPV5HEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapv5header
+type BITCOUNT uint16
+
+const (
+	BITCOUNT_0  BITCOUNT = 0  // The number of bits per pixel is specified or is implied by the JPEG or PNG file format.
+	BITCOUNT_1  BITCOUNT = 1  // The bitmap is monochrome.
+	BITCOUNT_4  BITCOUNT = 4  // The bitmap has a maximum of 16 colors.
+	BITCOUNT_8  BITCOUNT = 8  // The bitmap has a maximum of 256 colors.
+	BITCOUNT_16 BITCOUNT = 16 // The bitmap has a maximum of 2^16 colors.
+	BITCOUNT_24 BITCOUNT = 24 // The bitmap has a maximum of 2^24 colors.
+	BITCOUNT_32 BITCOUNT = 32 // The bitmap has a maximum of 2^32 colors.
 )
 
 // [SetBkMode] mode. Originally has no prefix.
@@ -102,9 +119,10 @@ const (
 	DCX_LOCKWINDOWUPDATE DCX = 0x0000_0400
 )
 
-// [CreateDIBSection], [GetDIBits] and [SetDIBitsToDevice] usage. Originally has
-// DIV prefix and COLORS suffix.
+// [CreateDIBitmap], [CreateDIBSection], [GetDIBits] and [SetDIBitsToDevice]
+// usage. Originally has DIV prefix and COLORS suffix.
 //
+// [CreateDIBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibitmap
 // [CreateDIBSection]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdibsection
 // [GetDIBits]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibits
 // [SetDIBitsToDevice]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setdibitstodevice
@@ -599,6 +617,31 @@ const (
 	GRADIENT_FILL_RECT_H   GRADIENT_FILL = 0x0000_0000
 	GRADIENT_FILL_RECT_V   GRADIENT_FILL = 0x0000_0001
 	GRADIENT_FILL_TRIANGLE GRADIENT_FILL = 0x0000_0002
+)
+
+// [BITMAPV5HEADER] CSType. Originally has LCS or PROFILE prefixes.
+//
+// [BITMAPV5HEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapv5header
+type LCS uint32
+
+const (
+	LCS_CALIBRATED_RGB      LCS = 0x0000_0000
+	LCS_SRGB                    = LCS(uint32('s') | uint32('R')<<8 | uint32('G')<<16 | uint32('B')<<24)
+	LCS_WINDOWS_COLOR_SPACE     = LCS(uint32('W') | uint32('i')<<8 | uint32('n')<<16 | uint32(' ')<<24)
+	LCS_PROFILE_LINKED          = LCS(uint32('L') | uint32('I')<<8 | uint32('N')<<16 | uint32('K')<<24)
+	LCS_PROFILE_EMBEDDED        = LCS(uint32('M') | uint32('B')<<8 | uint32('E')<<16 | uint32('D')<<24)
+)
+
+// [BITMAPV5HEADER] Intent.
+//
+// [BITMAPV5HEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapv5header
+type LCS_GM uint32
+
+const (
+	LCS_GM_BUSINESS         LCS_GM = 0x0000_0001
+	LCS_GM_GRAPHICS         LCS_GM = 0x0000_0002
+	LCS_GM_IMAGES           LCS_GM = 0x0000_0004
+	LCS_GM_ABS_COLORIMETRIC LCS_GM = 0x0000_0008
 )
 
 // [LOGFONT] lfOutPrecision. Originally with OUT prefix and PRECIS suffix.

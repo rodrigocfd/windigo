@@ -10,6 +10,7 @@ const (
 
 // Internal constants for gdi.
 const (
+	CBM_INIT                     = 0x04
 	CCHFORMNAME                  = 32
 	CLR_INVALID                  = 0xffff_ffff
 	DM_SPECVERSION               = 0x0401

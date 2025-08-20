@@ -94,35 +94,77 @@ type BITMAPINFO struct {
 
 // [BITMAPINFOHEADER] struct.
 //
-// ⚠️ You must call [BITMAPINFOHEADER.SetBiSize] to initialize the struct.
+// ⚠️ You must call [BITMAPINFOHEADER.SetSize] to initialize the struct.
 //
 // # Example
 //
 //	var bih win.BITMAPINFOHEADER
-//	bih.SetBiSize()
+//	bih.SetSize()
 //
 // [BITMAPINFOHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
 type BITMAPINFOHEADER struct {
-	biSize          uint32
-	BiWidth         int32
-	BiHeight        int32
-	BiPlanes        uint16
-	BiBitCount      uint16
-	BiCompression   co.BI
-	BiSizeImage     uint32
-	BiXPelsPerMeter int32
-	BiYPelsPerMeter int32
-	BiClrUsed       uint32
-	BiClrImportant  uint32
+	size          uint32
+	Width         int32
+	Height        int32
+	Planes        uint16
+	BitCount      co.BITCOUNT
+	Compression   co.BI
+	SizeImage     uint32
+	XPelsPerMeter int32
+	YPelsPerMeter int32
+	ClrUsed       uint32
+	ClrImportant  uint32
 }
 
 // Sets the biSize field to the size of the struct, correctly initializing it.
-func (bih *BITMAPINFOHEADER) SetBiSize() {
-	bih.biSize = uint32(unsafe.Sizeof(*bih))
+func (bih *BITMAPINFOHEADER) SetSize() {
+	bih.size = uint32(unsafe.Sizeof(*bih))
 }
 
 func (bih *BITMAPINFOHEADER) Serialize() []byte {
 	return unsafe.Slice((*byte)(unsafe.Pointer(bih)), unsafe.Sizeof(*bih))
+}
+
+// [BITMAPV5HEADER] struct.
+//
+// ⚠️ You must call [BITMAPV5HEADER.SetSize] to initialize the struct.
+//
+// # Example
+//
+//	var bvh win.BITMAPV5HEADER
+//	bih.SetSize()
+//
+// [BITMAPV5HEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapv5header
+type BITMAPV5HEADER struct {
+	size          uint32
+	Width         int32
+	Height        int32
+	Planes        uint16
+	BitCount      co.BITCOUNT
+	Compression   co.BI
+	SizeImage     uint32
+	XPelsPerMeter int32
+	YPelsPerMeter int32
+	ClrUsed       uint32
+	ClrImportant  uint32
+	RedMask       uint32
+	GreenMask     uint32
+	BlueMask      uint32
+	AlphaMask     uint32
+	CSType        co.LCS
+	Endpoints     CIEXYZTRIPLE
+	GammaRed      uint32
+	GammaGreen    uint32
+	GammaBlue     uint32
+	Intent        co.LCS_GM
+	ProfileData   uint32
+	ProfileSize   uint32
+	reserved      uint32
+}
+
+// Sets the size field to the size of the struct, correctly initializing it.
+func (bvh *BITMAPV5HEADER) SetSize() {
+	bvh.size = uint32(unsafe.Sizeof(*bvh))
 }
 
 // [COLORREF] struct.
@@ -175,6 +217,24 @@ func (c COLORREF) ToRgbquad() RGBQUAD {
 	rq.SetGreen(c.Green())
 	rq.SetRed(c.Red())
 	return rq
+}
+
+// [CIEXYZ] struct.
+//
+// [CIEXYZ]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-ciexyz
+type CIEXYZ struct {
+	CiexyzX int32
+	CiexyzY int32
+	CiexyzZ int32
+}
+
+// [CIEXYZTRIPLE] struct.
+//
+// [CIEXYZTRIPLE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-ciexyztriple
+type CIEXYZTRIPLE struct {
+	CiexyzRed   CIEXYZ
+	CiexyzGreen CIEXYZ
+	CiexyzBlue  CIEXYZ
 }
 
 // [DOCINFO] struct.
