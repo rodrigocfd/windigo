@@ -62,20 +62,20 @@ func (il *ITEMIDLIST) release() {
 // [NOTIFYICONDATA]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
 type NOTIFYICONDATA struct {
 	cbSize           uint32
-	HWnd             HWND
-	UID              uint32
-	UFlags           co.NIF
-	UCallbackMessage co.WM
-	HIcon            HICON
+	HWnd             HWND   // Handle to the window that receives notifications from the icon in the notification area.
+	UID              uint32 // Application-defined identifier of the taskbar icon.
+	UFlags           co.NIF // Indicate which other members of the struct are valid, also provides other information.
+	UCallbackMessage co.WM  // Application-defined message identifier. Sent to the hWnd as an ordinary message.
+	HIcon            HICON  // Handle to the icon to be added, modified or deleted.
 	szTip            [128]uint16
-	DwState          co.NIS
-	DwStateMask      co.NIS
+	DwState          co.NIS // State of the icon.
+	DwStateMask      co.NIS // Specifies which bits of DwState are retrieved of modified.
 	szInfo           [256]uint16
 	uVersion         uint32
 	szInfoTitle      [64]uint16
-	DwInfoFlags      co.NIIF
-	GuidItem         GUID
-	HBalloonIcon     HICON
+	DwInfoFlags      co.NIIF // Modifies the behavior of the balloon notification.
+	GuidItem         GUID    // A registered GUID that identifies the icon, overriding UID. Requires co.NIF_GUID in UFlags.
+	HBalloonIcon     HICON   // Handle to the icon of the balloon notification.
 }
 
 // Sets the cbSize field to the size of the struct, correctly initializing it.
@@ -83,23 +83,32 @@ func (nid *NOTIFYICONDATA) SetCbSize() {
 	nid.cbSize = uint32(unsafe.Sizeof(*nid))
 }
 
+// Retrieves the text of the icon tooltip.
 func (nid *NOTIFYICONDATA) SzTip() string {
 	return wstr.DecodeSlice(nid.szTip[:])
 }
+
+// Sets the text of the icon tooltip.
 func (nid *NOTIFYICONDATA) SetSzTip(val string) {
 	wstr.EncodeToBuf(val, nid.szTip[:])
 }
 
+// Retrieves the text displayed in a balloon notification.
 func (nid *NOTIFYICONDATA) SzInfo() string {
 	return wstr.DecodeSlice(nid.szInfo[:])
 }
+
+// Sets the text displayed in a balloon notification.
 func (nid *NOTIFYICONDATA) SetSzInfo(val string) {
 	wstr.EncodeToBuf(val, nid.szInfo[:])
 }
 
+// Retrieves the title of the ballon notification.
 func (nid *NOTIFYICONDATA) SzInfoTitle() string {
 	return wstr.DecodeSlice(nid.szInfoTitle[:])
 }
+
+// Sets the title of the ballon notification.
 func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
 	wstr.EncodeToBuf(val, nid.szInfoTitle[:])
 }
