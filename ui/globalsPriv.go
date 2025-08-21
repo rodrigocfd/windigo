@@ -3,6 +3,7 @@
 package ui
 
 import (
+	"strings"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/win"
@@ -54,7 +55,7 @@ func setUniqueCtrlId(pCtrlId *uint16) {
 // Calculates the bound rectangle to fit the text with current UI font.
 func calcTextBoundBox(text string) (win.SIZE, error) {
 	isTextEmpty := false
-	if len([]rune(text)) == 0 {
+	if len(strings.TrimSpace(text)) == 0 {
 		isTextEmpty = true
 		text = "Pj" // just a placeholder to get the text height
 	}
