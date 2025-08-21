@@ -345,6 +345,26 @@ const (
 	NIM_SETVERSION NIM = 0x0000_0004
 )
 
+// [Shell_NotifyIcon] notifications, which are sent in the low-order bits of
+// WPARAM.
+//
+// [Shell_NotifyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
+type NIN uint16
+
+const (
+	_NINF_KEY NIN = 0x1
+
+	NIN_SELECT    = NIN(WM_USER + 0)
+	NIN_KEYSELECT = NIN_SELECT | _NINF_KEY
+
+	NIN_BALLOONSHOW      = NIN(WM_USER + 2)
+	NIN_BALLOONHIDE      = NIN(WM_USER + 3)
+	NIN_BALLOONTIMEOUT   = NIN(WM_USER + 4)
+	NIN_BALLOONUSERCLICK = NIN(WM_USER + 5)
+	NIN_POPUPOPEN        = NIN(WM_USER + 6)
+	NIN_POPUPCLOSE       = NIN(WM_USER + 7)
+)
+
 // [NOTIFYICONDATA] dwState.
 //
 // [NOTIFYICONDATA]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
