@@ -305,14 +305,14 @@ const (
 type NIF uint32
 
 const (
-	NIF_MESSAGE  NIF = 0x0000_0001
-	NIF_ICON     NIF = 0x0000_0002
-	NIF_TIP      NIF = 0x0000_0004
-	NIF_STATE    NIF = 0x0000_0008
-	NIF_INFO     NIF = 0x0000_0010
-	NIF_GUID     NIF = 0x0000_0020
-	NIF_REALTIME NIF = 0x0000_0040
-	NIF_SHOWTIP  NIF = 0x0000_0080
+	NIF_MESSAGE  NIF = 0x0000_0001 // The UCallbackMessage member is valid.
+	NIF_ICON     NIF = 0x0000_0002 // The HIcon member is valid.
+	NIF_TIP      NIF = 0x0000_0004 // The szTip member is valid.
+	NIF_STATE    NIF = 0x0000_0008 // The DwState and DwStateMask members are valid.
+	NIF_INFO     NIF = 0x0000_0010 // Display a balloon notification. The szInfo, szInfoTitle and DwInfoFlags are valid.
+	NIF_GUID     NIF = 0x0000_0020 // The GuidItem member is valid.
+	NIF_REALTIME NIF = 0x0000_0040 // If the balloon notification cannot be displayed immediately, discard it.
+	NIF_SHOWTIP  NIF = 0x0000_0080 // Use the standard tooltip instead of an application-drawn, pop-up UI.
 )
 
 // [NOTIFYICONDATA] dwInfoFlags.
