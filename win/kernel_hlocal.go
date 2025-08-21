@@ -27,7 +27,7 @@ type HLOCAL HANDLE
 //
 // ⚠️ You must defer [HLOCAL.LocalFree].
 //
-// # Example
+// Example:
 //
 //	hMem, _ := win.LocalAlloc(co.LMEM_FIXED|co.LMEM_ZEROINIT, 10)
 //	defer hMem.LocalFree()
@@ -100,7 +100,7 @@ var _LocalFree *syscall.Proc
 //
 // ⚠️ You must defer [HLOCAL.LocalUnlock].
 //
-// # Example
+// Example:
 //
 //	hMem, _ := win.LocalAlloc(co.LMEM_FIXED|co.LMEM_ZEROINIT, 10)
 //	defer hMem.LocalFree()
@@ -128,7 +128,7 @@ var _LocalLock *syscall.Proc
 //
 // ⚠️ You must defer [HLOCAL.LocalUnlock].
 //
-// # Example
+// Example:
 //
 //	hMem, _ := win.LocalAlloc(co.LMEM_FIXED|co.LMEM_ZEROINIT, 10)
 //	defer hMem.LocalFree()

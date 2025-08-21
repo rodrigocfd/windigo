@@ -693,7 +693,7 @@ var _GetDIBColorTable *syscall.Proc
 // Note that this method fails if bitmapDataBuffer is an ordinary Go slice; it
 // must be allocated directly from the OS heap, for example with [GlobalAlloc].
 //
-// # Example
+// Example:
 //
 // Taking a screenshot and saving into a BMP file:
 //

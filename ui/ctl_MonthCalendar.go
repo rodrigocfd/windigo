@@ -20,7 +20,7 @@ type MonthCalendar struct {
 
 // Creates a new [MonthCalendar] with [win.CreateWindowEx].
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //
@@ -59,7 +59,7 @@ func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar 
 // Instantiates a new [MonthCalendar] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
 //
-// # Example
+// Example:
 //
 //	const ID_MCAL uint16 = 0x100
 //

@@ -42,7 +42,7 @@ func (vt *VARIANT) Type() co.VT {
 
 // [VariantInit] function.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -166,7 +166,7 @@ var _SystemTimeToVariantTime *syscall.Proc
 // If the object has type [co.VT_BOOL], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -187,7 +187,7 @@ func (v *VARIANT) Bool() (actualValue, isBool bool) {
 // If the object has type [co.VT_R4], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -207,7 +207,7 @@ func (v *VARIANT) Float32() (float32, bool) {
 // If the object has type [co.VT_R8], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -229,7 +229,7 @@ func (v *VARIANT) Float64() (float64, bool) {
 //
 // The returned object is a clone of the stored object.
 //
-// # Example
+// Example:
 //
 //	var pDisp IDispatch // initialized somewhere
 //
@@ -257,7 +257,7 @@ func (v *VARIANT) IDispatch(releaser *OleReleaser) (*IDispatch, bool) {
 // If the object has type [co.VT_I1], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -277,7 +277,7 @@ func (v *VARIANT) Int8() (int8, bool) {
 // If the object has type [co.VT_I2], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -297,7 +297,7 @@ func (v *VARIANT) Int16() (int16, bool) {
 // If the object has type [co.VT_I4], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -317,7 +317,7 @@ func (v *VARIANT) Int32() (int32, bool) {
 // If the object has type [co.VT_I8], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -337,7 +337,7 @@ func (v *VARIANT) Int64() (int64, bool) {
 // If the object has type [co.VT_BSTR], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -361,7 +361,7 @@ func (v *VARIANT) Str() (string, bool) {
 //
 // Panics on error.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -395,7 +395,7 @@ var _VariantTimeToSystemTime *syscall.Proc
 // If the object has type [co.VT_UI1], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -415,7 +415,7 @@ func (v *VARIANT) Uint8() (uint8, bool) {
 // If the object has type [co.VT_UI2], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -435,7 +435,7 @@ func (v *VARIANT) Uint16() (uint16, bool) {
 // If the object has type [co.VT_UI4], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -455,7 +455,7 @@ func (v *VARIANT) Uint32() (uint32, bool) {
 // If the object has type [co.VT_UI8], returns the value and true. Otherwise,
 // returns a default value and false.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()

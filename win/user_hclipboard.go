@@ -14,7 +14,7 @@ import (
 // Handle to the [clipboard]. Actually this handle does not exist, it only
 // serves the purpose of logically group the clipboard functions.
 //
-// # Example
+// Example:
 //
 //	hClip, _ := win.OpenClipboard(win.HWND(0))
 //	defer hClip.CloseClipboard()
@@ -26,7 +26,7 @@ type HCLIPBOARD struct{}
 //
 // ⚠️ You must defer [HCLIPBOARD.CloseClipboard].
 //
-// # Example
+// Example:
 //
 //	hClip, _ := win.OpenClipboard(win.HWND(0))
 //	defer hClip.CloseClipboard()

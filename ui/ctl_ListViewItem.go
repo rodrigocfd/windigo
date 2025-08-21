@@ -33,7 +33,7 @@ func (me ListViewItem) Delete() {
 
 // Returns the user-custom data stored for this item, or nil if none.
 //
-// # Example
+// Example:
 //
 //	type Person struct {
 //		Name string
@@ -240,7 +240,7 @@ func (me ListViewItem) Select(isSelected bool) ListViewItem {
 
 // Stores user-custom data for this item.
 //
-// # Example
+// Example:
 //
 //	type Person struct {
 //		Name string

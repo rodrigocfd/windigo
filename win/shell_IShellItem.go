@@ -17,7 +17,7 @@ import (
 //
 // Usually created with [SHCreateItemFromParsingName].
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -37,7 +37,7 @@ func (*IShellItem) IID() co.IID {
 
 // [BindToHandler] method.
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -132,7 +132,7 @@ func (me *IShellItem) GetAttributes(mask co.SFGAO) (attrs co.SFGAO, exactMatch b
 
 // [GetDisplayName] method.
 //
-// # Example
+// Example:
 //
 //	var shi win.IShellItem // initialized somewhere
 //

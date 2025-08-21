@@ -18,7 +18,7 @@ type HTASKMEM HANDLE
 //
 // ⚠️ You must defer [HTASKMEM.CoTaskMemFree].
 //
-// # Example
+// Example:
 //
 //	hMem, _ := win.CoTaskMemAlloc(uint(unsafe.Sizeof(win.MSG{})))
 //	defer hMem.CoTaskMemFree()

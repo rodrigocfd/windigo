@@ -17,7 +17,7 @@ import (
 // This function is not recursive; to also search nested directories, use
 // [EnumFilesDeep].
 //
-// # Example
+// Example:
 //
 //	files, _ := win.EnumFiles("C:\\Temp\\*.txt")
 //	for _, file := files {
@@ -53,7 +53,7 @@ func EnumFiles(pathAndPattern string) ([]string, error) {
 // Returns all files recursively on all folders, by calling [FindFirstFile],
 // [HFIND.FindNextFile] and [HFIND.FindClose].
 //
-// # Example
+// Example:
 //
 //	files, _ := win.EnumFilesDeep("C:\\Temp")
 //	for _, file := files {
@@ -118,7 +118,7 @@ func PathGetPath(path string) string {
 
 // Returns whether the path ends with at least one of the given extensions.
 //
-// # Example
+// Example:
 //
 //	docPath := "C:\\Temp\\foo.txt"
 //	isDocument := win.PathHasExtension(docPath, "txt", "doc")

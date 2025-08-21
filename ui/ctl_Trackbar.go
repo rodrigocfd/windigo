@@ -20,7 +20,7 @@ type Trackbar struct {
 
 // Creates a new [Trackbar] with [win.CreateWindowEx].
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //

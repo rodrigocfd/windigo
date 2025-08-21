@@ -18,7 +18,7 @@ import (
 //
 // Usually created with [SHCreateItemFromParsingName].
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -160,7 +160,7 @@ func (me *IShellItem2) GetPropertyStore(releaser *OleReleaser, flags co.GPS) (*I
 
 // [GetString] method.
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)

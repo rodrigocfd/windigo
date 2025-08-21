@@ -184,7 +184,7 @@ type ITypeInfoDoc struct {
 // The [OleReleaser] is responsible for freeing the resources by calling
 // [ReleaseFuncDesc].
 //
-// # Example
+// Example:
 //
 //	var nfo *win.ITypeInfo // initialized somewhere
 //

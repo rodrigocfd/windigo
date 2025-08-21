@@ -22,7 +22,7 @@ type Tab struct {
 
 // Creates a new [Tab] with [win.CreateWindowEx].
 //
-// # Example
+// Example:
 //
 //	var (
 //		wndOwner ui.Parent // initialized somewhere

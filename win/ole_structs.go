@@ -13,7 +13,7 @@ import (
 //
 // ⚠️ You must call [BIND_OPTS3.SetCbStruct] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var bo3 win.BIND_OPTS3
 //	bo3.SetCbStruct()
@@ -103,7 +103,7 @@ type COSERVERINFO struct {
 //
 // ⚠️ You must call [DVTARGETDEVICE.SetTdSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var dvt win.DVTARGETDEVICE
 //	dvt.SetTdSize()

@@ -27,7 +27,7 @@ type HGLOBAL HANDLE
 //
 // ⚠️ You must defer [HGLOBAL.GlobalFree].
 //
-// # Example
+// Example:
 //
 //	hMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 10)
 //	defer hMem.GlobalFree()
@@ -100,7 +100,7 @@ var _GlobalFree *syscall.Proc
 //
 // ⚠️ You must defer [HGLOBAL.GlobalUnlock].
 //
-// # Example
+// Example:
 //
 //	hMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 10)
 //	defer hMem.GlobalFree()
@@ -128,7 +128,7 @@ var _GlobalLock *syscall.Proc
 //
 // ⚠️ You must defer [HGLOBAL.GlobalUnlock].
 //
-// # Example
+// Example:
 //
 //	hMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, 10)
 //	defer hMem.GlobalFree()

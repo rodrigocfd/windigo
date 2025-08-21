@@ -17,7 +17,7 @@ import (
 //
 // ⚠️ You must call [ACTCTX.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var ac win.ACTCTX
 //	ac.SetCbSize()
@@ -65,7 +65,7 @@ type CONSOLE_FONT_INFO struct {
 //
 // ⚠️ You must call [CONSOLE_FONT_INFOEX.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var cfix win.CONSOLE_FONT_INFOEX
 //	cfix.SetCbSize()
@@ -113,7 +113,7 @@ func (ac *CONSOLE_FONT_INFOEX) SetFaceName(val string) {
 // ⚠️ You must call [CONSOLE_READCONSOLE_CONTROL.SetNLength] to initialize the
 // struct.
 //
-// # Example
+// Example:
 //
 //	var crc win.CONSOLE_READCONSOLE_CONTROL
 //	crc.SetNLength()
@@ -164,7 +164,7 @@ func (ft *FILETIME) ToTime() time.Time {
 
 // Replaces the internal value with the given [time.Time].
 //
-// # Example
+// Example:
 //
 //	var ft win.FILETIME
 //	ft.SetTime(time.Now())
@@ -332,7 +332,7 @@ type MEMORY_BASIC_INFORMATION struct {
 //
 // ⚠️ You must call [MODULEENTRY32.SetDwSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var me win.MODULEENTRY32
 //	me.SetDwSize()
@@ -375,7 +375,7 @@ func (me *MODULEENTRY32) SetSzExePath(val string) {
 // ⚠️ You must call [OSVERSIONINFOEX.SetDwOsVersionInfoSize] to initialize the
 // struct.
 //
-// # Example
+// Example:
 //
 //	var osv win.OSVERSIONINFOEX
 //	osv.SetDwOsVersionInfoSize()
@@ -432,7 +432,7 @@ type PROCESS_INFORMATION struct {
 //
 // ⚠️ You must call [PROCESSENTRY32.SetDwSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var pe win.PROCESSENTRY32
 //	pe.SetDwSize()
@@ -476,7 +476,7 @@ type PROCESSOR_NUMBER struct {
 //
 // ⚠️ You must call [SECURITY_ATTRIBUTES.SetNLength] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var sa win.SECURITY_ATTRIBUTES
 //	sa.SetNLength()
@@ -497,7 +497,7 @@ func (sa *SECURITY_ATTRIBUTES) SetNLength() {
 //
 // ⚠️ You must call [STARTUPINFO.SetCb] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var si win.STARTUPINFO
 //	si.SetCb()
@@ -562,7 +562,7 @@ type SYSTEMTIME struct {
 
 // Decomposes a [time.Duration] into this SYSTEMTIME fields.
 //
-// # Example
+// Example:
 //
 //	var st win.SYSTEMTIME
 //	st.SetDuration(time.Minute * 3)
@@ -591,7 +591,7 @@ func (st *SYSTEMTIME) ToTime() time.Time {
 // Fills this SYSTEMTIME with the value of a [time.Time], in the current
 // timezone.
 //
-// # Example
+// Example:
 //
 //	var st win.SYSTEMTIME
 //	st.SetTime(time.Now())
@@ -614,7 +614,7 @@ func (st *SYSTEMTIME) SetTime(val time.Time) error {
 //
 // ⚠️ You must call [THREADENTRY32.SetDwSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var te win.THREADENTRY32
 //	te.SetDwSize()

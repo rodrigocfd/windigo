@@ -16,7 +16,7 @@ import (
 //
 // This is a low-level function, prefer using [VersionLoad].
 //
-// # Example
+// Example:
 //
 //	hInst, _ := win.GetModuleHandle("")
 //	exeName, _ := hInst.GetModuleFileName()
@@ -70,7 +70,7 @@ var _GetFileVersionInfoSizeW *syscall.Proc
 //
 // This is a low-level function, prefer using [VersionLoad].
 //
-// # Example
+// Example:
 //
 //	hInst, _ := win.GetModuleHandle("")
 //	exeName, _ := hInst.GetModuleFileName()

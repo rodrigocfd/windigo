@@ -20,7 +20,7 @@ type Edit struct {
 
 // Creates a new [Edit] with [win.CreateWindowEx].
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //
@@ -48,7 +48,7 @@ func NewEdit(parent Parent, opts *VarOptsEdit) *Edit {
 // Instantiates a new [Edit] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
 //
-// # Example
+// Example:
 //
 //	const ID_TXT uint16 = 0x100
 //

@@ -14,7 +14,7 @@ import (
 
 // Handle to an [image list].
 //
-// # Example
+// Example:
 //
 //	hImg, _ := win.ImageListCreate(16, 16, co.ILC_COLOR32, 1, 1)
 //	defer hImg.Destroy()
@@ -26,7 +26,7 @@ type HIMAGELIST HANDLE
 //
 // ⚠️ You must defer [HIMAGELIST.Destroy].
 //
-// # Example
+// Example:
 //
 //	hImg, _ := win.ImageListCreate(16, 16, co.ILC_COLOR32, 1, 1)
 //	defer hImg.Destroy()
@@ -100,7 +100,7 @@ func (hImg HIMAGELIST) AddIconFromResource(iconIds ...uint16) error {
 // Calls [SHGetFileInfo] and [HIMAGELIST.AddIcon] to load icons from the shell,
 // used by Windows Explorer to represent the given file extensions, like "mp3".
 //
-// # Example
+// Example:
 //
 //	hImg, _ := win.ImageListCreate(16, 16, co.ILC_COLOR32, 1, 1)
 //	defer hImg.Destroy()
@@ -215,7 +215,7 @@ var _ImageList_DrawEx *syscall.Proc
 //
 // ⚠️ You must defer [HIMAGELIST.Destroy].
 //
-// # Example
+// Example:
 //
 //	hImg, _ := win.ImageListCreate(16, 16, co.ILC_COLOR32, 1, 1)
 //	defer hImg.Destroy()

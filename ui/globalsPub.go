@@ -46,7 +46,7 @@ func Dpi(x, y int) (int, int) {
 //
 // Panics on error.
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //
@@ -67,7 +67,7 @@ func MsgError(wnd Parent, title, caption, body string) {
 //
 // Panics on error.
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //
@@ -88,7 +88,7 @@ func MsgWarn(wnd Parent, title, caption, body string) {
 //
 // Panics on error.
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //
@@ -111,7 +111,7 @@ func MsgOk(wnd Parent, title, caption, body string) {
 //
 // Panics on error.
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //

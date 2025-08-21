@@ -144,7 +144,7 @@ func (me *IPicture) PictureChanged() error {
 
 // [Render] method.
 //
-// # Example
+// Example:
 //
 //	var wnd *ui.Main // initialized somewhere
 //	var pic *win.IPicture
@@ -285,7 +285,7 @@ func (me *IPicture) Size() (SIZE, error) {
 // If hdc is zero, the method will retrieve the HDC for the whole screen with
 // [HWND.GetDC].
 //
-// # Example
+// Example:
 //
 //	hdcScreen, _ := win.HWND(0).GetDC()
 //	defer win.HWND(0).ReleaseDC(hdcScreen)

@@ -98,7 +98,7 @@ var _InitMUILanguage *syscall.Proc
 
 // [TaskDialogIndirect] function.
 //
-// # Example
+// Example:
 //
 //	var hWnd win.HWND // initialized somewhere
 //

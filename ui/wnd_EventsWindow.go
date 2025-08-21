@@ -154,7 +154,7 @@ func (me *EventsWindow) processLast(p Wm) (userRet uintptr, wasHandled bool) {
 // Sent only to windows created with [CreateWindowEx]; dialog windows will
 // receive [EventsWindow.WmInitDialog] instead.
 //
-// # Example
+// Example:
 //
 //	var wnd ui.Parent // initialized somewhere
 //
@@ -176,7 +176,7 @@ func (me *EventsWindow) WmCreate(fun func(p WmCreate) int) {
 // Sent only to dialog windows; those created with [CreateWindowEx] will receive
 // [EventsWindow.WmCreate] instead.
 //
-// # Example
+// Example:
 //
 //	var wnd ui.Parent // initialized somewhere
 //
@@ -1257,7 +1257,7 @@ func (me *EventsWindow) WmNull(fun func()) {
 // [win.HWND.BeginPaint] and [win.HWND.EndPaint], otherwise the window may get
 // stuck.
 //
-// # Example
+// Example:
 //
 //	var wnd ui.Parent // initialized somewhere
 //

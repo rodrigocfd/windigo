@@ -16,7 +16,7 @@ import (
 //   - [HFILE.ReadFile]
 //   - [HFILE.CloseHandle]
 //
-// # Example
+// Example:
 //
 //	contents, _ := win.FileReadNow("C:\\Temp\\foo.txt")
 func FileReadNow(filePath string) ([]byte, error) {
@@ -45,7 +45,7 @@ func FileReadNow(filePath string) ([]byte, error) {
 //   - [HFILE.WriteFile]
 //   - [HFILE.CloseHandle]
 //
-// # Example
+// Example:
 //
 //	contents := []byte("my text")
 //	_ = win.FileWriteNow("C:\\Temp\\foo.txt", contents)
@@ -83,7 +83,7 @@ func FileWriteNow(filePath string, contents []byte) error {
 //
 // Created with [FileOpen].
 //
-// # Example
+// Example:
 //
 //	f, _ := win.FileOpen("C:\\Temp\\foo.txt", co.FOPEN_RW_OPEN_OR_CREATE)
 //	defer f.Close()
@@ -97,7 +97,7 @@ type File struct {
 //
 // ⚠️ You must defer [File.Close].
 //
-// # Example
+// Example:
 //
 //	f, _ := win.FileOpen("C:\\Temp\\foo.txt", co.FOPEN_RW_OPEN_OR_CREATE)
 //	defer f.Close()
@@ -204,7 +204,7 @@ func (me *File) ReadAllAsSlice() ([]byte, error) {
 //
 // ⚠️ You must defer [Vec.Free] on the returned Vec.
 //
-// # Example
+// Example:
 //
 //	f, _ := win.FileOpen("C:\\Temp\\foo.txt", co.FOPEN_READ_EXISTING)
 //	defer f.Close()
@@ -354,7 +354,7 @@ type FileMap struct {
 //
 // ⚠️ You must defer [FileMap.Close].
 //
-// # Example
+// Example:
 //
 //	f, _ := win.FileMapOpen("C:\\Temp\\foo.txt", co.FOPEN_READ_EXISTING)
 //	defer f.Close()
@@ -418,7 +418,7 @@ func (me *FileMap) ReadAllAsSlice() []byte {
 //
 // ⚠️ You must defer [Vec.Free] on the returned Vec.
 //
-// # Example
+// Example:
 //
 //	f, _ := win.FileMapOpen("C:\\Temp\\foo.txt", co.FOPEN_READ_EXISTING)
 //	defer f.Close()
@@ -446,7 +446,7 @@ func (me *FileMap) ReadChunkAsSlice(offset, length uint) []byte {
 //
 // ⚠️ You must defer [Vec.Free] on the returned Vec.
 //
-// # Example
+// Example:
 //
 //	f, _ := win.FileMapOpen("C:\\Temp\\foo.txt", co.FOPEN_READ_EXISTING)
 //	defer f.Close()

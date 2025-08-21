@@ -15,7 +15,7 @@ import (
 //
 // Implements [OleObj] and [OleResource].
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()

@@ -146,7 +146,7 @@ func (o *VarOptsMain) ClassIconId(i uint16) *VarOptsMain { o.classIconId = i; re
 //
 // Defaults to stock co.IDC_ARROW.
 //
-// # Example
+// Example:
 //
 //	hCursor, _ := win.HINSTANCE(0).
 //		LoadCursor(win.CursorResIdc(co.IDC_ARROW))
@@ -161,7 +161,7 @@ func (o *VarOptsMain) ClassCursor(h win.HCURSOR) *VarOptsMain { o.classCursor = 
 //
 // Defaults to co.COLOR_BTNFACE color.
 //
-// # Example
+// Example:
 //
 //	ui.OptsControl().
 //		ClassBrush(win.HBRUSH(co.COLOR_BTNFACE + 1))

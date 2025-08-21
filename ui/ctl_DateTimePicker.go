@@ -20,7 +20,7 @@ type DateTimePicker struct {
 
 // Creates a new [DateTimePicker] with [win.CreateWindowEx].
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //
@@ -52,7 +52,7 @@ func NewDateTimePicker(parent Parent, opts *VarOptsDateTimePicker) *DateTimePick
 // Instantiates a new [DateTimePicker] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
 //
-// # Example
+// Example:
 //
 //	const ID_DTP uint16 = 0x100
 //

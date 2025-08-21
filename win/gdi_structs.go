@@ -45,7 +45,7 @@ type BLENDFUNCTION struct {
 //
 // ⚠️ You must call [BITMAPFILEHEADER.SetBfType] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var bfh win.BITMAPFILEHEADER
 //	bfh.SetBfType()
@@ -81,7 +81,7 @@ func (bfh *BITMAPFILEHEADER) Serialize() []byte { return bfh.data[:] }
 // ⚠️ You must call [BITMAPINFOHEADER.SetBiSize] on BmiHeader field, to
 // initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var bi win.BITMAPINFO
 //	bi.BmiHeader.SetBiSize()
@@ -96,7 +96,7 @@ type BITMAPINFO struct {
 //
 // ⚠️ You must call [BITMAPINFOHEADER.SetSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var bih win.BITMAPINFOHEADER
 //	bih.SetSize()
@@ -129,7 +129,7 @@ func (bih *BITMAPINFOHEADER) Serialize() []byte {
 //
 // ⚠️ You must call [BITMAPV5HEADER.SetSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var bvh win.BITMAPV5HEADER
 //	bih.SetSize()
@@ -241,7 +241,7 @@ type CIEXYZTRIPLE struct {
 //
 // ⚠️ You must call [DOCINFO.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var di win.DOCINFO
 //	di.SetCbSize()
@@ -264,7 +264,7 @@ func (di *DOCINFO) SetCbSize() {
 //
 // ⚠️ You must call [DEVMODE.SetDmSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var dm win.DEVMODE
 //	dm.SetDmSize()

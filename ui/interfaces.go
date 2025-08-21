@@ -46,7 +46,7 @@ type Parent interface {
 	// updates. With this, the user doesn't have to deal with a custom WM_
 	// message.
 	//
-	// # Example
+	// Example:
 	//
 	//	var wnd ui.Parent // initialized somewhere
 	//

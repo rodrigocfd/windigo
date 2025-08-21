@@ -381,7 +381,7 @@ func (o *VarOptsListView) WndExStyle(s co.WS_EX) *VarOptsListView { o.wndExStyle
 //
 // Defaults to none.
 //
-// # Example
+// Example:
 //
 //	hInst, _ := win.GetModuleHandle("")
 //	hMenu, _ := hInst.LoadMenu(win.ResIdInt(0x101))

@@ -160,7 +160,7 @@ var _LoadCursorW *syscall.Proc
 //
 // Icons loaded from resources are shared, and don't need to be deleted.
 //
-// # Example
+// Example:
 //
 // Loading an icon from the resource:
 //
@@ -195,7 +195,7 @@ var _LoadIconW *syscall.Proc
 //   - [HCURSOR.DestroyCursor]
 //   - [HICON.DestroyIcon]
 //
-// # Examples
+// Example:
 //
 // Loading a 16x16 icon resource:
 //

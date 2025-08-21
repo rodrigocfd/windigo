@@ -18,7 +18,7 @@ type CheckBox struct {
 
 // Creates a new [CheckBox] with [win.CreateWindowEx].
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //
@@ -52,7 +52,7 @@ func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 // Instantiates a new [CheckBox] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
 //
-// # Example
+// Example:
 //
 //	const ID_CHK uint16 = 0x100
 //

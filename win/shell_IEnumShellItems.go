@@ -14,7 +14,7 @@ import (
 //
 // Implements [OleObj] and [OleResource].
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -72,7 +72,7 @@ func (me *IEnumShellItems) Clone(releaser *OleReleaser) (*IEnumShellItems, error
 
 // Returns all [IShellItem] values by calling [IEnumShellItems.Next].
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)

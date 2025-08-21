@@ -77,7 +77,7 @@ func (me *CollectionStatusBarParts) resizeToFitParent(parm WmSize) {
 //
 // Panics if width is zero.
 //
-// # Example
+// Example:
 //
 //	var sbar ui.StatusBar // initialized somewhere
 //
@@ -113,7 +113,7 @@ func (me *CollectionStatusBarParts) AddFixed(text string, width int) {
 //
 // Panics if resizeWeight is zero.
 //
-// # Example
+// Example:
 //
 //	var sbar ui.StatusBar // initialized somewhere
 //

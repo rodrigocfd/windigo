@@ -18,7 +18,7 @@ type ComboBox struct {
 
 // Creates a new [ComboBox] with [win.CreateWindowEx].
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //
@@ -52,7 +52,7 @@ func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
 // Instantiates a new [ComboBox] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
 //
-// # Example
+// Example:
 //
 //	const ID_CMB uint16 = 0x100
 //

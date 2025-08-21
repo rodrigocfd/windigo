@@ -13,7 +13,7 @@ import (
 
 // Tagged union for a Registry value.
 //
-// # Example
+// Example:
 //
 //	regVal := win.RegValSz("Some text")
 //
@@ -180,7 +180,7 @@ func RegValSz(s string) RegVal {
 
 // If the value is [co.REG_SZ], returns it and true.
 //
-// # Example:
+// Example::
 //
 //	regVal := win.RegValSz("Some text")
 //

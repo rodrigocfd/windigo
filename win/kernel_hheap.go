@@ -53,7 +53,7 @@ var _HeapCreate *syscall.Proc
 //
 // ⚠️ You must defer [HHEAP.HeapFree].
 //
-// # Example
+// Example:
 //
 //	hHeap, _ := win.GetProcessHeap()
 //	ptr, _ := hHeap.HeapAlloc(co.HEAP_ALLOC_ZERO_MEMORY, 10)
@@ -110,7 +110,7 @@ var _HeapDestroy *syscall.Proc
 //
 // This method is safe to be called if block is nil.
 //
-// # Example
+// Example:
 //
 //	hHeap, _ := win.GetProcessHeap()
 //	ptr, _ := hHeap.HeapAlloc(co.HEAP_ALLOC_ZERO_MEMORY, 10)
@@ -138,7 +138,7 @@ var _HeapFree *syscall.Proc
 //
 // ⚠️ You must defer [HHEAP.HeapFree].
 //
-// # Example
+// Example:
 //
 //	hHeap, _ := win.GetProcessHeap()
 //	ptr, _ := hHeap.HeapAlloc(co.HEAP_ALLOC_ZERO_MEMORY, 10)

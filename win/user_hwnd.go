@@ -189,7 +189,7 @@ var _AnimateWindow *syscall.Proc
 //
 // ⚠️ You must defer [HWND.EndPaint].
 //
-// # Example
+// Example:
 //
 //	var hWnd win.HWND // initialized somewhere
 //
@@ -500,7 +500,7 @@ var _GetClientRect *syscall.Proc
 //
 // ⚠️ You must defer [HWND.ReleaseDC].
 //
-// # Example
+// Example:
 //
 // Retrieving the DC of the entire screen:
 //

@@ -22,7 +22,7 @@ type UpDown struct {
 // If co.UDS_AUTOBUDDY control style is set, the UpDown will use the immediately
 // previous control – usually an Edit – as its buddy, attaching itself to it.
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //

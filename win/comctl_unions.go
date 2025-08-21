@@ -12,7 +12,7 @@ import (
 //   - uint16
 //   - [co.TDICON]
 //
-// # Example
+// Example:
 //
 //	ico := TdcIconTdi(co.TD_ICON_ERROR)
 //

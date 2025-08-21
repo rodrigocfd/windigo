@@ -17,7 +17,7 @@ import (
 // Used to retrieve class IDs to create COM Automation objects. If the progId is
 // invalid, returns [co.HRESULT_CO_E_CLASSSTRING].
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -61,7 +61,7 @@ var _CLSIDFromProgID *syscall.Proc
 
 // [CoCreateInstance] function.
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -117,7 +117,7 @@ var _CoCreateInstance *syscall.Proc
 //
 // ⚠️ You must defer [CoUninitialize].
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -156,7 +156,7 @@ var _CoUninitialize *syscall.Proc
 
 // [CreateBindCtx] function.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -186,7 +186,7 @@ var _CreateBindCtx *syscall.Proc
 //
 // ⚠️ You must defer [OleUninitialize].
 //
-// # Example
+// Example:
 //
 //	_ = win.OleInitialize()
 //	defer win.OleUninitialize()
@@ -231,7 +231,7 @@ var _ReleaseStgMedium *syscall.Proc
 // Creates an [IStream] projection over a slice, which must remain valid in
 // memory throughout IStream's lifetime.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()

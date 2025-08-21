@@ -21,7 +21,7 @@ type Main struct {
 
 // Creates a new main window with [CreateWindowEx].
 //
-// # Example
+// Example:
 //
 //	runtime.LockOSThread()
 //
@@ -45,7 +45,7 @@ func NewMain(opts *VarOptsMain) *Main {
 
 // Creates a new dialog-based Main with [CreateDialogParam].
 //
-// # Example
+// Example:
 //
 //	const (
 //		ID_MAIN_DLG    uint16 = 1000
@@ -146,7 +146,7 @@ func (me *Main) On() *EventsWindow {
 //
 // Implements [Parent].
 //
-// # Example
+// Example:
 //
 //	var wnd *ui.WindowMain // initialized somewhere
 //

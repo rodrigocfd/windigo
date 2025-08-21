@@ -47,7 +47,7 @@ var _CommandLineToArgvW *syscall.Proc
 //
 // Return type is typically [IShellItem] of [IShellItem2].
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -97,7 +97,7 @@ var _SHCreateItemFromIDList *syscall.Proc
 //
 // Return type is typically [IShellItem] of [IShellItem2].
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -232,7 +232,7 @@ var _SHCreateShellItemArray *syscall.Proc
 
 // [SHCreateShellItemArrayFromIDLists] function.
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -281,7 +281,7 @@ var _SHCreateShellItemArrayFromIDLists *syscall.Proc
 
 // [SHGetDesktopFolder] function.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -310,7 +310,7 @@ var _SHGetDesktopFolder *syscall.Proc
 //
 // Return type is typically [IShellItem] of [IShellItem2].
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -367,7 +367,7 @@ var _SHGetKnownFolderItem *syscall.Proc
 
 // [SHGetIDListFromObject] function.
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)

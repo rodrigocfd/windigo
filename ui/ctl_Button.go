@@ -19,7 +19,7 @@ type Button struct {
 
 // Creates a new [Button] with [win.CreateWindowEx].
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //
@@ -48,7 +48,7 @@ func NewButton(parent Parent, opts *VarOptsButton) *Button {
 // Instantiates a new [Button] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
 //
-// # Example
+// Example:
 //
 //	const ID_BTN uint16 = 0x100
 //

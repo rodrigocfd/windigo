@@ -27,7 +27,7 @@ func (*IShellItemArray) IID() co.IID {
 // [IShellItemArray.GetCount], [IShellItemArray.GetItemAt] and
 // [IShellItem.GetDisplayName].
 //
-// # Example
+// Example:
 //
 //	var arr win.IShellItemArray // initialized somewhere
 //
@@ -67,7 +67,7 @@ func (me *IShellItemArray) EnumDisplayNames(sigdnName co.SIGDN) ([]string, error
 // If you just want to retrieve the paths, prefer using
 // [IShellItemArray.EnumDisplayNames].
 //
-// # Example
+// Example:
 //
 //	var arr win.IShellItemArray // initialized somewhere
 //

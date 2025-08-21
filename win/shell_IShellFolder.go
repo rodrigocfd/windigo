@@ -15,7 +15,7 @@ import (
 //
 // Implements [OleObj] and [OleResource].
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -160,7 +160,7 @@ func (me *IShellFolder) CreateViewObject(
 
 // [EnumObjects] method.
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)

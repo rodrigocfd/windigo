@@ -11,7 +11,7 @@ import (
 // Every function which returns a COM resource will require an [OleReleaser]
 // to manage the object's lifetime.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -29,7 +29,7 @@ type OleReleaser struct {
 //
 // ⚠️ You must defer [OleReleaser.Release].
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -46,7 +46,7 @@ func (me *OleReleaser) Add(objs ...OleResource) {
 
 // Releases all added [COM] resource, in the reverse order they were added.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()

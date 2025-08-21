@@ -26,7 +26,7 @@ var _DwmExtendFrameIntoClientArea *syscall.Proc
 
 // [DwmGetWindowAttribute] function.
 //
-// # Example
+// Example:
 //
 //	var hWnd win.HWND // initialized somewhere
 //
@@ -119,7 +119,7 @@ var _DwmSetIconicThumbnail *syscall.Proc
 
 // [DwmSetWindowAttribute] function.
 //
-// # Example
+// Example:
 //
 //	var hWnd win.HWND // initialized somewhere
 //

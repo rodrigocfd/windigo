@@ -270,7 +270,7 @@ func (me *CollectionListViewItems) SelectedCount() uint {
 
 // Sorts the items according to the callback with [LVM_SORTITEMSEX].
 //
-// # Example
+// Example:
 //
 //	var lv ui.ListView // initialized somewhere
 //

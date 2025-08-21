@@ -32,7 +32,7 @@ type Vec[T any] struct {
 //
 // ⚠️ You must defer [Vec.Free].
 //
-// # Example
+// Example:
 //
 //	pts := win.NewVec[win.POINT]()
 //	defer pts.Free()
@@ -50,7 +50,7 @@ func NewVec[T any]() Vec[T] {
 //
 // ⚠️ You must defer [Vec.Free].
 //
-// # Example
+// Example:
 //
 //	pts := win.NewVecReserved[win.POINT](30)
 //	defer pts.Free()
@@ -67,7 +67,7 @@ func NewVecReserved[T any](numElems uint) Vec[T] {
 //
 // ⚠️ You must defer [Vec.Free].
 //
-// # Example
+// Example:
 //
 //	pts := win.NewVecSized(30, win.POINT{})
 //	defer pts.Free()
@@ -79,7 +79,7 @@ func NewVecSized[T any](numElems uint, elem T) Vec[T] {
 
 // Appends new elements, increasing the buffer size if needed.
 //
-// # Example
+// Example:
 //
 //	bigNums := win.NewVec[uint64]()
 //	defer bigNums.Free()

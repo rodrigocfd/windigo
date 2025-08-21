@@ -37,7 +37,7 @@ var _DragFinish *syscall.Proc
 // must defer [HDROP.DragFinish]. If it comes from [RegisterDragDrop], don't
 // call it.
 //
-// # Example
+// Example:
 //
 //	var hDrop win.HDROP // initialized somewhere
 //

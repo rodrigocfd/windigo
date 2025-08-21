@@ -19,7 +19,7 @@ type MODULEINFO struct {
 //
 // ⚠️ You must call [PERFORMANCE_INFORMATION.SetCb] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var pi win.PERFORMANCE_INFORMATION
 //	pi.SetCb()
@@ -51,10 +51,10 @@ func (pi *PERFORMANCE_INFORMATION) SetCb() {
 //
 // ⚠️ You must call [PROCESS_MEMORY_COUNTERS_EX.SetCb] to initialize the struct.
 //
-// # Example
+// Example:
 //
-//	var pi win.PERFORMANCE_INFORMATION
-//	pi.SetCb()
+//	var pmc win.PROCESS_MEMORY_COUNTERS_EX
+//	pmc.SetCb()
 //
 // [PROCESS_MEMORY_COUNTERS_EX]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex
 type PROCESS_MEMORY_COUNTERS_EX struct {

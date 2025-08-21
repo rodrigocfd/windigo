@@ -64,7 +64,7 @@ func (me *SysLink) On() *EventsSysLink {
 
 // Calls [win.HWND.SetWindowText] and resizes the control to exactly fit it.
 //
-// # Example
+// Example:
 //
 //	var link ui.SysLink // initialized somewhere
 //
@@ -120,7 +120,7 @@ func (o *VarOptsSysLink) Layout(l LAY) *VarOptsSysLink { o.layout = l; return o 
 //
 // Defaults to empty string.
 //
-// # Example
+// Example:
 //
 //	ui.OptsSysLink().
 //		Text("Link <a href=\"https://google.com\">here</a>")

@@ -110,7 +110,7 @@ func (me *Control) On() *EventsWindow {
 //
 // Implements [Parent].
 //
-// # Example
+// Example:
 //
 //	var wnd *ui.WindowModal // initialized somewhere
 //

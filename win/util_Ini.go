@@ -41,7 +41,7 @@ type (
 
 // Creates an [Ini] object by reading an .ini file, parsing its contents.
 //
-// # Example
+// Example:
 //
 //	ini, _ := win.IniLoad("C:\\Temp\\foo.ini")
 func IniLoad(iniPath string) (*Ini, error) {

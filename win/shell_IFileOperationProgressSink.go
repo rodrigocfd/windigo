@@ -16,7 +16,7 @@ import (
 //
 // Implements [OleObj] and [OleResource].
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -80,7 +80,7 @@ type _IFileOperationProgressSinkImpl struct {
 
 // Implements [IFileOperationProgressSink].
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)

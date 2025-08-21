@@ -180,7 +180,7 @@ var _EndMenu *syscall.Proc
 
 // [EnumDisplayDevices] function.
 //
-// # Example
+// Example:
 //
 //	devices := win.EnumDisplayDevices("", co.EDD_GET_DEVICE_INTERFACE_NAME)
 //	for _, device := devices {

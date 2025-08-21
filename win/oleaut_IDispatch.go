@@ -64,7 +64,7 @@ func (me *IDispatch) GetIDsOfNames(
 
 // [GetTypeInfo] method.
 //
-// # Example
+// Example:
 //
 //	var iDisp oleaut.IDispatch // initialized somewhere
 //
@@ -162,7 +162,7 @@ func (me *IDispatch) Invoke(
 //
 // Parameters must be one of the valid [VARIANT] types.
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -203,7 +203,7 @@ func (me *IDispatch) InvokeGet(
 //
 // Parameters must be one of the valid [VARIANT] types.
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -250,7 +250,7 @@ func (me *IDispatch) InvokeGetIDispatch(
 //
 // Parameters must be one of the valid [VARIANT] types.
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)
@@ -297,7 +297,7 @@ func (me *IDispatch) InvokeMethod(
 //
 // Parameters must be one of the valid [VARIANT] types.
 //
-// # Example
+// Example:
 //
 //	_, _ = win.CoInitializeEx(
 //		co.COINIT_APARTMENTTHREADED | co.COINIT_DISABLE_OLE1DDE)

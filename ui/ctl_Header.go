@@ -21,7 +21,7 @@ type Header struct {
 
 // Creates a new [Header] with [win.CreateWindowEx].
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //
@@ -52,7 +52,7 @@ func NewHeader(parent Parent, opts *VarOptsHeader) *Header {
 // Instantiates a new [Header] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
 //
-// # Example
+// Example:
 //
 //	const ID_HEADER uint16 = 0x100
 //

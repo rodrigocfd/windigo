@@ -21,7 +21,7 @@ type HPROCSNAP HANDLE
 //
 // ⚠️ You must defer [HPROCSNAP.CloseHandle].
 //
-// # Example
+// Example:
 //
 //	hSnap, _ := win.CreateToolhelp32Snapshot(co.TH32CS_SNAPMODULE, 0)
 //	defer hSnap.CloseHandle()
@@ -50,7 +50,7 @@ func (hProcSnap HPROCSNAP) CloseHandle() error {
 // Returns the modules by calling [HPROCSNAP.Module32First] and
 // [HPROCSNAP.Module32Next].
 //
-// # Example
+// Example:
 //
 //	hSnap, _ := win.CreateToolhelp32Snapshot(co.TH32CS_SNAPMODULE, 0)
 //	defer hSnap.CloseHandle()
@@ -80,7 +80,7 @@ func (hProcSnap HPROCSNAP) EnumModules() ([]MODULEENTRY32, error) {
 // Returns the processes by calling [HPROCSNAP.Process32First] and
 // [HPROCSNAP.Process32Next].
 //
-// # Example
+// Example:
 //
 //	hSnap, _ := win.CreateToolhelp32Snapshot(co.TH32CS_SNAPPROCESS, 0)
 //	defer hSnap.CloseHandle()
@@ -110,7 +110,7 @@ func (hProcSnap HPROCSNAP) EnumProcesses() ([]PROCESSENTRY32, error) {
 // Returns the threads by calling [HPROCSNAP.Thread32First] and
 // [HPROCSNAP.Thread32Next].
 //
-// # Example
+// Example:
 //
 //	hSnap, _ := win.CreateToolhelp32Snapshot(co.TH32CS_SNAPTHREAD, 0)
 //	defer hSnap.CloseHandle()

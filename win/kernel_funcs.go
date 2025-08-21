@@ -55,7 +55,7 @@ var _CreateDirectoryW *syscall.Proc
 // ⚠️ You must defer [HPROCESS.CloseHandle] and [HTHREAD.CloseHandle] on
 // HProcess and HThread members returned in [PROCESS_INFORMATION].
 //
-// # Example
+// Example:
 //
 //	var si win.STARTUPINFO
 //	si.SetCb()
@@ -644,7 +644,7 @@ var _SetCurrentDirectoryW *syscall.Proc
 
 // [Sleep] function.
 //
-// # Example
+// Example:
 //
 //	win.Sleep(5 * time.Second)
 //

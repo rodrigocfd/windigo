@@ -20,7 +20,7 @@ type BSTR uintptr
 //
 // ⚠️ You must defer [BSTR.SysFreeString].
 //
-// # Example
+// Example:
 //
 //	bstr, _ := win.SysAllocString("hello")
 //	defer bstr.SysFreeString()

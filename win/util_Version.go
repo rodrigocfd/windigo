@@ -13,7 +13,7 @@ import (
 // Version information from an EXE or DLL, loaded with [GetFileVersionInfo] and
 // [VerQueryValue].
 //
-// # Example
+// Example:
 //
 //	hInst, _ := win.GetModuleHandle("")
 //	exeName, _ := hInst.GetModuleFileName()
@@ -39,7 +39,7 @@ type VersionInfo struct {
 // Loads the embedded version information from an EXE or DLL, with
 // [GetFileVersionInfo] and [VerQueryValue].
 //
-// # Example
+// Example:
 //
 //	hInst, _ := win.GetModuleHandle("")
 //	exeName, _ := hInst.GetModuleFileName()

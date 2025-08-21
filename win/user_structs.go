@@ -62,7 +62,7 @@ type CREATESTRUCT struct {
 //
 // ⚠️ You must call [CURSORINFO.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var ci win.CURSORINFO
 //	ci.SetCbSize()
@@ -95,7 +95,7 @@ type DELETEITEMSTRUCT struct {
 //
 // ⚠️ You must call [DISPLAY_DEVICE.SetCb] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var dd win.DISPLAY_DEVICE
 //	dd.SetCb()
@@ -158,7 +158,7 @@ type DRAWITEMSTRUCT struct {
 //
 // ⚠️ You must call [GUITHREADINFO.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var gti win.GUITHREADINFO
 //	gti.SetCbSize()
@@ -194,7 +194,7 @@ type HARDWAREINPUT struct {
 //
 // ⚠️ You must call [HELPINFO.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var hi win.HELPINFO
 //	hi.SetCbSize()
@@ -229,7 +229,7 @@ type ICONINFO struct {
 //
 // ⚠️ You must call [ICONINFOEX.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var iix win.ICONINFOEX
 //	iix.SetCbSize()
@@ -376,7 +376,7 @@ type MENUGETOBJECTINFO struct {
 //
 // ⚠️ You must call [MENUINFO.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var mi win.MENUINFO
 //	mi.SetCbSize()
@@ -401,7 +401,7 @@ func (mi *MENUINFO) SetCbSize() {
 //
 // ⚠️ You must call [MENUITEMINFO.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var mii win.MENUITEMINFO
 //	mii.SetCbSize()
@@ -442,7 +442,7 @@ type MINMAXINFO struct {
 //
 // ⚠️ You must call [MONITORINFOEX.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var mix win.MONITORINFOEX
 //	mix.SetCbSize()
@@ -492,7 +492,7 @@ type NCCALCSIZE_PARAMS struct {
 //
 // ⚠️ You must call [NONCLIENTMETRICS.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var ncm win.NONCLIENTMETRICS
 //	ncm.SetCbSize()
@@ -601,7 +601,7 @@ type STYLESTRUCT_WSEX struct {
 //
 // ⚠️ You must call [TITLEBARINFO.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var ti win.TITLEBARINFO
 //	ti.SetCbSize()
@@ -622,7 +622,7 @@ func (ti *TITLEBARINFO) SetCbSize() {
 //
 // ⚠️ You must call [TITLEBARINFOEX.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var tix win.TITLEBARINFOEX
 //	tix.SetCbSize()
@@ -644,7 +644,7 @@ func (tix *TITLEBARINFOEX) SetCbSize() {
 //
 // ⚠️ You must call [WINDOWPLACEMENT.SetLength] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var wp win.WINDOWPLACEMENT
 //	wp.SetLength()
@@ -678,7 +678,7 @@ type WINDOWPOS struct {
 //
 // ⚠️ You must call [WNDCLASSEX.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var wcx win.WNDCLASSEX
 //	wcx.SetCbSize()

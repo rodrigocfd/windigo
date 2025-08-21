@@ -15,7 +15,7 @@ import (
 //
 // Implements [OleObj] and [OleResource].
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -44,7 +44,7 @@ type _IDropTargetImpl struct {
 
 // Implements [IDropTarget].
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
@@ -95,7 +95,7 @@ func (me *IDropTarget) DragLeave(fun func() co.HRESULT) {
 
 // Defines [Drop] method.
 //
-// # Example
+// Example:
 //
 //	var dropTarget *win.IDropTarget // initialized somewhere
 //

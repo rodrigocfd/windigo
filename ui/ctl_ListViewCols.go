@@ -24,7 +24,7 @@ type CollectionListViewCols struct {
 //
 // Panics on error.
 //
-// # Example
+// Example:
 //
 //	var list ui.ListView // initialized somewhere
 //

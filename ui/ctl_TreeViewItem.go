@@ -79,7 +79,7 @@ func (me TreeViewItem) Children() []TreeViewItem {
 
 // Returns the user-custom data stored for this item, or nil if none.
 //
-// # Example
+// Example:
 //
 //	type Person struct {
 //		Name string
@@ -214,7 +214,7 @@ func (me TreeViewItem) PrevSibling() (TreeViewItem, bool) {
 
 // Stores user-custom data for this item.
 //
-// # Example
+// Example:
 //
 //	type Person struct {
 //		Name string

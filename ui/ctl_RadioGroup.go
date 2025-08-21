@@ -19,7 +19,7 @@ type RadioGroup struct {
 //
 // Panics if the number of radio buttons is zero.
 //
-// # Example
+// Example:
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //

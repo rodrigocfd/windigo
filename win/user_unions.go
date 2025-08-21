@@ -12,7 +12,7 @@ import (
 //   - [ATOM]
 //   - string
 //
-// # Example
+// Example:
 //
 //	clsName := win.ClassNameStr("FOO")
 //
@@ -90,7 +90,7 @@ func (me *ClassName) raw(wbuf *wstr.BufEncoder) uintptr {
 //   - uint16
 //   - string
 //
-// # Example
+// Example:
 //
 //	curId := win.CursorResIdc(co.IDC_ARROW)
 //
@@ -175,7 +175,7 @@ func (me *CursorRes) raw(wbuf *wstr.BufEncoder) uintptr {
 //   - uint16
 //   - string
 //
-// # Example:
+// Example:
 //
 //	icoId := win.IconResIdi(co.IDI_HAND)
 //
@@ -259,7 +259,7 @@ func (me *IconRes) raw(wbuf *wstr.BufEncoder) uintptr {
 //   - uint16
 //   - string
 //
-// # Example
+// Example:
 //
 //	resId := win.ResIdInt(0x400)
 //

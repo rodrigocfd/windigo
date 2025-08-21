@@ -54,7 +54,7 @@ func (il *ITEMIDLIST) release() {
 //
 // ⚠️ You must call [NOTIFYICONDATA.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var nid win.NOTIFYICONDATA
 //	nid.SetCbSize()
@@ -108,7 +108,7 @@ func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
 //
 // ⚠️ You must call [NOTIFYICONIDENTIFIER.SetCbSize] to initialize the struct.
 //
-// # Example
+// Example:
 //
 //	var nii win.NOTIFYICONIDENTIFIER
 //	nii.SetCbSize()

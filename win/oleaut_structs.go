@@ -91,7 +91,7 @@ func (e *EXCEPINFO) Error() string {
 //
 // ⚠️ You must call [_EXCEPINFO.Free] to release the pointers.
 //
-// # Example
+// Example:
 //
 //	var e oleaut._EXCEPINFO
 //	defer e.Free()

@@ -272,7 +272,7 @@ func (me *IFileDialog) SetFileTypeIndex(index uint) error {
 
 // [SetFileTypes] method.
 //
-// # Example
+// Example:
 //
 //	var fd win.IFileDialog // initialized somewhere
 //
@@ -341,7 +341,7 @@ func (me *IFileDialog) SetOkButtonLabel(text string) error {
 
 // [SetOptions] method.
 //
-// # Example
+// Example:
 //
 //	var fd win.IFileDialog // initialized somewhere
 //

@@ -18,7 +18,7 @@ type Modal struct {
 
 // Creates a new modal window with [CreateWindowEx].
 //
-// # Example
+// Example:
 //
 //	var wndParent ui.Parent // initialized somewhere
 //
@@ -39,7 +39,7 @@ func NewModal(parent Parent, opts *VarOptsModal) *Modal {
 
 // Creates a new dialog-based Modal with [DialogBoxParam].
 //
-// # Example
+// Example:
 //
 //	const ID_MODAL_DLG uint16 = 2000
 //
@@ -103,7 +103,7 @@ func (me *Modal) On() *EventsWindow {
 //
 // Implements [Parent].
 //
-// # Example
+// Example:
 //
 //	var wnd *ui.WindowModal // initialized somewhere
 //

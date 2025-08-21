@@ -18,7 +18,7 @@ type HINSTANCE HANDLE
 
 // [GetModuleHandle] function.
 //
-// # Example
+// Example:
 //
 // Retrieving own .exe handle:
 //
@@ -78,7 +78,7 @@ var _FreeLibrary *syscall.Proc
 
 // [GetModuleFileName] function.
 //
-// # Example
+// Example:
 //
 // Retrieving own .exe path:
 //

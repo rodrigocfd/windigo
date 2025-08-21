@@ -86,7 +86,7 @@ func (o *VarOptsControl) ClassStyle(s co.CS) *VarOptsControl { o.classStyle = s;
 //
 // Defaults to stock co.IDC_ARROW.
 //
-// # Example
+// Example:
 //
 //	hCursor, _ := win.HINSTANCE(0).
 //		LoadCursor(win.CursorResIdc(co.IDC_ARROW))
@@ -101,7 +101,7 @@ func (o *VarOptsControl) ClassCursor(h win.HCURSOR) *VarOptsControl { o.classCur
 //
 // Defaults to co.COLOR_WINDOW color.
 //
-// # Example
+// Example:
 //
 //	ui.OptsControl().
 //		ClassBrush(win.HBRUSH(co.COLOR_WINDOW + 1))

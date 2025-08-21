@@ -19,7 +19,7 @@ import (
 // The bytes are copied, so [IStream] can be released after this function
 // returns.
 //
-// # Example
+// Example:
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()

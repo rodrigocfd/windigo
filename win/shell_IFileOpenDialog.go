@@ -13,7 +13,7 @@ import (
 //
 // Implements [OleObj] and [OleResource].
 //
-// # Example
+// Example:
 //
 //	var hWnd win.HWND // initialized somewhere
 //

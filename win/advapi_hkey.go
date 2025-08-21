@@ -43,7 +43,7 @@ const (
 //
 // ⚠️ You must defer [HKEY.RegCloseKey].
 //
-// # Example
+// Example:
 //
 //	hKey, _ := win.RegConnectRegistry(
 //		"\\computername",
@@ -277,7 +277,7 @@ var _RegEnableReflectionKey *syscall.Proc
 
 // [RegEnumKeyEx] function.
 //
-// # Example
+// Example:
 //
 //	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
 //		"Control Panel",
@@ -333,7 +333,7 @@ var _RegEnumKeyExW *syscall.Proc
 
 // [RegEnumValue] function.
 //
-// # Example
+// Example:
 //
 //	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
 //		"Control Panel\\Keyboard",
@@ -425,7 +425,7 @@ var _RegFlushKey *syscall.Proc
 
 // [RegGetValue] function.
 //
-// # Example
+// Example:
 //
 //	regVal, _ := win.HKEY_CURRENT_USER.RegGetValue(
 //		"Control Panel\\Mouse",
@@ -510,7 +510,7 @@ var _RegLoadKeyW *syscall.Proc
 //
 // ⚠️ You must defer [HKEY.RegCloseKey].
 //
-// # Example
+// Example:
 //
 //	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
 //		"Control Panel\\Keyboard",
@@ -622,7 +622,7 @@ type HkeyInfo struct {
 
 // [RegQueryMultipleValues] function.
 //
-// # Example
+// Example:
 //
 //	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
 //		"Control Panel\\Desktop", co.REG_OPTION_NONE, co.KEY_READ)
@@ -709,7 +709,7 @@ var _RegQueryReflectionKey *syscall.Proc
 
 // [RegQueryValueEx] function.
 //
-// # Example
+// Example:
 //
 //	hKey, _ := win.HKEY_CURRENT_USER.RegOpenKeyEx(
 //		"Control Panel\\Mouse",
