@@ -107,11 +107,11 @@ func (me *EventsWindow) processLast(p Wm) (userRet uintptr, wasHandled bool) {
 	switch p.Msg {
 	case co.WM_CREATE:
 		if me.wmCreate != nil {
-			return uintptr(me.wmCreate(WmCreate{Raw: p})), true // handled, stop here
+			return uintptr(me.wmCreate(WmCreate{p})), true // handled, stop here
 		}
 	case co.WM_INITDIALOG:
 		if me.wmInitDialog != nil {
-			return utl.BoolToUintptr(me.wmInitDialog(WmInitDialog{Raw: p})), true // handled, stop here
+			return utl.BoolToUintptr(me.wmInitDialog(WmInitDialog{p})), true // handled, stop here
 		}
 	case co.WM_COMMAND:
 		cmdId := p.WParam.LoWord()
@@ -238,7 +238,7 @@ func (me *EventsWindow) WmTimer(timerId uintptr, fun func()) {
 // [WM_ACTIVATE]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-activate
 func (me *EventsWindow) WmActivate(fun func(p WmActivate)) {
 	me.Wm(co.WM_ACTIVATE, func(p Wm) uintptr {
-		fun(WmActivate{Raw: p})
+		fun(WmActivate{p})
 		return me.defProcVal
 	})
 }
@@ -248,7 +248,7 @@ func (me *EventsWindow) WmActivate(fun func(p WmActivate)) {
 // [WM_ACTIVATEAPP]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-activateapp
 func (me *EventsWindow) WmActivateApp(fun func(p WmActivateApp)) {
 	me.Wm(co.WM_ACTIVATEAPP, func(p Wm) uintptr {
-		fun(WmActivateApp{Raw: p})
+		fun(WmActivateApp{p})
 		return me.defProcVal
 	})
 }
@@ -258,7 +258,7 @@ func (me *EventsWindow) WmActivateApp(fun func(p WmActivateApp)) {
 // [WM_APPCOMMAND]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-appcommand
 func (me *EventsWindow) WmAppCommand(fun func(p WmAppCommand)) {
 	me.Wm(co.WM_APPCOMMAND, func(p Wm) uintptr {
-		fun(WmAppCommand{Raw: p})
+		fun(WmAppCommand{p})
 		return 1
 	})
 }
@@ -268,7 +268,7 @@ func (me *EventsWindow) WmAppCommand(fun func(p WmAppCommand)) {
 // [WM_ASKCBFORMATNAME]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-askcbformatname
 func (me *EventsWindow) WmAskCbFormatName(fun func(p WmAskCbFormatName)) {
 	me.Wm(co.WM_ASKCBFORMATNAME, func(p Wm) uintptr {
-		fun(WmAskCbFormatName{Raw: p})
+		fun(WmAskCbFormatName{p})
 		return me.defProcVal
 	})
 }
@@ -288,7 +288,7 @@ func (me *EventsWindow) WmCancelMode(fun func()) {
 // [WM_CAPTURECHANGED]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-capturechanged
 func (me *EventsWindow) WmCaptureChanged(fun func(p WmCaptureChanged)) {
 	me.Wm(co.WM_CAPTURECHANGED, func(p Wm) uintptr {
-		fun(WmCaptureChanged{Raw: p})
+		fun(WmCaptureChanged{p})
 		return me.defProcVal
 	})
 }
@@ -298,7 +298,7 @@ func (me *EventsWindow) WmCaptureChanged(fun func(p WmCaptureChanged)) {
 // [WM_CHANGECBCHAIN]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-changecbchain
 func (me *EventsWindow) WmChangeCbChain(fun func(p WmChangeCbChain)) {
 	me.Wm(co.WM_CHANGECBCHAIN, func(p Wm) uintptr {
-		fun(WmChangeCbChain{Raw: p})
+		fun(WmChangeCbChain{p})
 		return me.defProcVal
 	})
 }
@@ -308,7 +308,7 @@ func (me *EventsWindow) WmChangeCbChain(fun func(p WmChangeCbChain)) {
 // [WM_CHAR]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-char
 func (me *EventsWindow) WmChar(fun func(p WmChar)) {
 	me.Wm(co.WM_CHAR, func(p Wm) uintptr {
-		fun(WmChar{Raw: p})
+		fun(WmChar{p})
 		return me.defProcVal
 	})
 }
@@ -318,7 +318,7 @@ func (me *EventsWindow) WmChar(fun func(p WmChar)) {
 // [WM_CHARTOITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-chartoitem
 func (me *EventsWindow) WmCharToItem(fun func(p WmCharToItem) int) {
 	me.Wm(co.WM_CHARTOITEM, func(p Wm) uintptr {
-		return uintptr(fun(WmCharToItem{Raw: p}))
+		return uintptr(fun(WmCharToItem{p}))
 	})
 }
 
@@ -365,7 +365,7 @@ func (me *EventsWindow) WmClose(fun func()) {
 // [WM_COMPAREITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-compareitem
 func (me *EventsWindow) WmCompareItem(fun func(p WmCompareItem) int) {
 	me.Wm(co.WM_COMPAREITEM, func(p Wm) uintptr {
-		return uintptr(fun(WmCompareItem{Raw: p}))
+		return uintptr(fun(WmCompareItem{p}))
 	})
 }
 
@@ -374,7 +374,7 @@ func (me *EventsWindow) WmCompareItem(fun func(p WmCompareItem) int) {
 // [WM_CONTEXTMENU]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-contextmenu
 func (me *EventsWindow) WmContextMenu(fun func(p WmContextMenu)) {
 	me.Wm(co.WM_CONTEXTMENU, func(p Wm) uintptr {
-		fun(WmContextMenu{Raw: p})
+		fun(WmContextMenu{p})
 		return me.defProcVal
 	})
 }
@@ -384,7 +384,7 @@ func (me *EventsWindow) WmContextMenu(fun func(p WmContextMenu)) {
 // [WM_COPYDATA]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-copydata
 func (me *EventsWindow) WmCopyData(fun func(p WmCopyData) bool) {
 	me.Wm(co.WM_COPYDATA, func(p Wm) uintptr {
-		return utl.BoolToUintptr(fun(WmCopyData{Raw: p}))
+		return utl.BoolToUintptr(fun(WmCopyData{p}))
 	})
 }
 
@@ -393,7 +393,7 @@ func (me *EventsWindow) WmCopyData(fun func(p WmCopyData) bool) {
 // [WM_CTLCOLORBTN]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorbtn
 func (me *EventsWindow) WmCtlColorBtn(fun func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLORBTN, func(p Wm) uintptr {
-		return uintptr(fun(WmCtlColor{Raw: p}))
+		return uintptr(fun(WmCtlColor{p}))
 	})
 }
 
@@ -402,7 +402,7 @@ func (me *EventsWindow) WmCtlColorBtn(fun func(p WmCtlColor) win.HBRUSH) {
 // [WM_CTLCOLORDLG]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-ctlcolordlg
 func (me *EventsWindow) WmCtlColorDlg(fun func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLORDLG, func(p Wm) uintptr {
-		return uintptr(fun(WmCtlColor{Raw: p}))
+		return uintptr(fun(WmCtlColor{p}))
 	})
 }
 
@@ -411,7 +411,7 @@ func (me *EventsWindow) WmCtlColorDlg(fun func(p WmCtlColor) win.HBRUSH) {
 // [WM_CTLCOLOREDIT]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-ctlcoloredit
 func (me *EventsWindow) WmCtlColorEdit(fun func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLOREDIT, func(p Wm) uintptr {
-		return uintptr(fun(WmCtlColor{Raw: p}))
+		return uintptr(fun(WmCtlColor{p}))
 	})
 }
 
@@ -420,7 +420,7 @@ func (me *EventsWindow) WmCtlColorEdit(fun func(p WmCtlColor) win.HBRUSH) {
 // [WM_CTLCOLORLISTBOX]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorlistbox
 func (me *EventsWindow) WmCtlColorListBox(fun func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLORLISTBOX, func(p Wm) uintptr {
-		return uintptr(fun(WmCtlColor{Raw: p}))
+		return uintptr(fun(WmCtlColor{p}))
 	})
 }
 
@@ -429,7 +429,7 @@ func (me *EventsWindow) WmCtlColorListBox(fun func(p WmCtlColor) win.HBRUSH) {
 // [WM_CTLCOLORSCROLLBAR]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorscrollbar
 func (me *EventsWindow) WmCtlColorScrollBar(fun func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLORSCROLLBAR, func(p Wm) uintptr {
-		return uintptr(fun(WmCtlColor{Raw: p}))
+		return uintptr(fun(WmCtlColor{p}))
 	})
 }
 
@@ -438,7 +438,7 @@ func (me *EventsWindow) WmCtlColorScrollBar(fun func(p WmCtlColor) win.HBRUSH) {
 // [WM_CTLCOLORSTATIC]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorstatic
 func (me *EventsWindow) WmCtlColorStatic(fun func(p WmCtlColor) win.HBRUSH) {
 	me.Wm(co.WM_CTLCOLORSTATIC, func(p Wm) uintptr {
-		return uintptr(fun(WmCtlColor{Raw: p}))
+		return uintptr(fun(WmCtlColor{p}))
 	})
 }
 
@@ -447,7 +447,7 @@ func (me *EventsWindow) WmCtlColorStatic(fun func(p WmCtlColor) win.HBRUSH) {
 // [WM_DEADCHAR]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-deadchar
 func (me *EventsWindow) WmDeadChar(fun func(p WmChar)) {
 	me.Wm(co.WM_DEADCHAR, func(p Wm) uintptr {
-		fun(WmChar{Raw: p})
+		fun(WmChar{p})
 		return me.defProcVal
 	})
 }
@@ -457,7 +457,7 @@ func (me *EventsWindow) WmDeadChar(fun func(p WmChar)) {
 // [WM_DELETEITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-deleteitem
 func (me *EventsWindow) WmDeleteItem(fun func(p WmDeleteItem)) {
 	me.Wm(co.WM_DELETEITEM, func(p Wm) uintptr {
-		fun(WmDeleteItem{Raw: p})
+		fun(WmDeleteItem{p})
 		return 1
 	})
 }
@@ -487,7 +487,7 @@ func (me *EventsWindow) WmDestroyClipboard(fun func()) {
 // [WM_DEVICECHANGE]: https://learn.microsoft.com/en-us/windows/win32/devio/wm-devicechange
 func (me *EventsWindow) WmDeviceChange(fun func(WmDeviceChange) co.BROADCAST_QUERY) {
 	me.Wm(co.WM_DEVICECHANGE, func(p Wm) uintptr {
-		return uintptr(fun(WmDeviceChange{Raw: p}))
+		return uintptr(fun(WmDeviceChange{p}))
 	})
 }
 
@@ -496,7 +496,7 @@ func (me *EventsWindow) WmDeviceChange(fun func(WmDeviceChange) co.BROADCAST_QUE
 // [WM_DEVMODECHANGE]: https://learn.microsoft.com/en-us/windows/win32/gdi/wm-devmodechange
 func (me *EventsWindow) WmDevModeChange(fun func(WmDevModeChange)) {
 	me.Wm(co.WM_DEVMODECHANGE, func(p Wm) uintptr {
-		fun(WmDevModeChange{Raw: p})
+		fun(WmDevModeChange{p})
 		return me.defProcVal
 	})
 }
@@ -506,7 +506,7 @@ func (me *EventsWindow) WmDevModeChange(fun func(WmDevModeChange)) {
 // [WM_DISPLAYCHANGE]: https://learn.microsoft.com/en-us/windows/win32/gdi/wm-displaychange
 func (me *EventsWindow) WmDisplayChange(fun func(p WmDisplayChange)) {
 	me.Wm(co.WM_DISPLAYCHANGE, func(p Wm) uintptr {
-		fun(WmDisplayChange{Raw: p})
+		fun(WmDisplayChange{p})
 		return me.defProcVal
 	})
 }
@@ -526,7 +526,7 @@ func (me *EventsWindow) WmDrawClipboard(fun func()) {
 // [WM_DRAWITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-drawitem
 func (me *EventsWindow) WmDrawItem(fun func(p WmDrawItem)) {
 	me.Wm(co.WM_DRAWITEM, func(p Wm) uintptr {
-		fun(WmDrawItem{Raw: p})
+		fun(WmDrawItem{p})
 		return 1
 	})
 }
@@ -536,7 +536,7 @@ func (me *EventsWindow) WmDrawItem(fun func(p WmDrawItem)) {
 // [WM_DROPFILES]: https://learn.microsoft.com/en-us/windows/win32/shell/wm-dropfiles
 func (me *EventsWindow) WmDropFiles(fun func(p WmDropFiles)) {
 	me.Wm(co.WM_DROPFILES, func(p Wm) uintptr {
-		fun(WmDropFiles{Raw: p})
+		fun(WmDropFiles{p})
 		return me.defProcVal
 	})
 }
@@ -546,7 +546,7 @@ func (me *EventsWindow) WmDropFiles(fun func(p WmDropFiles)) {
 // [WM_DWMCOLORIZATIONCOLORCHANGED]: https://learn.microsoft.com/en-us/windows/win32/dwm/wm-dwmcolorizationcolorchanged
 func (me *EventsWindow) WmDwmColorizationColorChanged(fun func(p WmDwmColorizationColorChanged)) {
 	me.Wm(co.WM_DWMCOLORIZATIONCOLORCHANGED, func(p Wm) uintptr {
-		fun(WmDwmColorizationColorChanged{Raw: p})
+		fun(WmDwmColorizationColorChanged{p})
 		return me.defProcVal
 	})
 }
@@ -566,7 +566,7 @@ func (me *EventsWindow) WmDwmCompositionChanged(fun func()) {
 // [WM_DWMNCRENDERINGCHANGED]: https://learn.microsoft.com/en-us/windows/win32/dwm/wm-dwmncrenderingchanged
 func (me *EventsWindow) WmDwmNcRenderingChanged(fun func(p WmDwmNcRenderingChanged)) {
 	me.Wm(co.WM_DWMNCRENDERINGCHANGED, func(p Wm) uintptr {
-		fun(WmDwmNcRenderingChanged{Raw: p})
+		fun(WmDwmNcRenderingChanged{p})
 		return me.defProcVal
 	})
 }
@@ -586,7 +586,7 @@ func (me *EventsWindow) WmDwmSendIconicLivePreviewBitmap(fun func()) {
 // [WM_DWMSENDICONICTHUMBNAIL]: https://learn.microsoft.com/en-us/windows/win32/dwm/wm-dwmsendiconicthumbnail
 func (me *EventsWindow) WmDwmSendIconicThumbnail(fun func(p WmDwmSendIconicThumbnail)) {
 	me.Wm(co.WM_DWMSENDICONICTHUMBNAIL, func(p Wm) uintptr {
-		fun(WmDwmSendIconicThumbnail{Raw: p})
+		fun(WmDwmSendIconicThumbnail{p})
 		return me.defProcVal
 	})
 }
@@ -596,7 +596,7 @@ func (me *EventsWindow) WmDwmSendIconicThumbnail(fun func(p WmDwmSendIconicThumb
 // [WM_DWMWINDOWMAXIMIZEDCHANGE]: https://learn.microsoft.com/en-us/windows/win32/dwm/wm-dwmwindowmaximizedchange
 func (me *EventsWindow) WmDwmWindowMaximizedChange(fun func(p WmDwmWindowMaximizedChange)) {
 	me.Wm(co.WM_DWMWINDOWMAXIMIZEDCHANGE, func(p Wm) uintptr {
-		fun(WmDwmWindowMaximizedChange{Raw: p})
+		fun(WmDwmWindowMaximizedChange{p})
 		return me.defProcVal
 	})
 }
@@ -606,7 +606,7 @@ func (me *EventsWindow) WmDwmWindowMaximizedChange(fun func(p WmDwmWindowMaximiz
 // [WM_ENABLE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-enable
 func (me *EventsWindow) WmEnable(fun func(p WmEnable)) {
 	me.Wm(co.WM_ENABLE, func(p Wm) uintptr {
-		fun(WmEnable{Raw: p})
+		fun(WmEnable{p})
 		return me.defProcVal
 	})
 }
@@ -616,7 +616,7 @@ func (me *EventsWindow) WmEnable(fun func(p WmEnable)) {
 // [WM_ENDSESSION]: https://learn.microsoft.com/en-us/windows/win32/shutdown/wm-endsession
 func (me *EventsWindow) WmEndSession(fun func(p WmEndSession)) {
 	me.Wm(co.WM_ENDSESSION, func(p Wm) uintptr {
-		fun(WmEndSession{Raw: p})
+		fun(WmEndSession{p})
 		return me.defProcVal
 	})
 }
@@ -626,7 +626,7 @@ func (me *EventsWindow) WmEndSession(fun func(p WmEndSession)) {
 // [WM_ENTERIDLE]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-enteridle
 func (me *EventsWindow) WmEnterIdle(fun func(p WmEnterIdle)) {
 	me.Wm(co.WM_ENTERIDLE, func(p Wm) uintptr {
-		fun(WmEnterIdle{Raw: p})
+		fun(WmEnterIdle{p})
 		return me.defProcVal
 	})
 }
@@ -636,7 +636,7 @@ func (me *EventsWindow) WmEnterIdle(fun func(p WmEnterIdle)) {
 // [WM_ENTERMENULOOP]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-entermenuloop
 func (me *EventsWindow) WmEnterMenuLoop(fun func(WmEnterMenuLoop)) {
 	me.Wm(co.WM_ENTERMENULOOP, func(p Wm) uintptr {
-		fun(WmEnterMenuLoop{Raw: p})
+		fun(WmEnterMenuLoop{p})
 		return me.defProcVal
 	})
 }
@@ -656,7 +656,7 @@ func (me *EventsWindow) WmEnterSizeMove(fun func()) {
 // [WM_ERASEBKGND]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-erasebkgnd
 func (me *EventsWindow) WmEraseBkgnd(fun func(WmEraseBkgnd) int) {
 	me.Wm(co.WM_ERASEBKGND, func(p Wm) uintptr {
-		return uintptr(fun(WmEraseBkgnd{Raw: p}))
+		return uintptr(fun(WmEraseBkgnd{p}))
 	})
 }
 
@@ -665,7 +665,7 @@ func (me *EventsWindow) WmEraseBkgnd(fun func(WmEraseBkgnd) int) {
 // [WM_EXITMENULOOP]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-exitmenuloop
 func (me *EventsWindow) WmExitMenuLoop(fun func(WmExitMenuLoop)) {
 	me.Wm(co.WM_EXITMENULOOP, func(p Wm) uintptr {
-		fun(WmExitMenuLoop{Raw: p})
+		fun(WmExitMenuLoop{p})
 		return me.defProcVal
 	})
 }
@@ -695,7 +695,7 @@ func (me *EventsWindow) WmFontChange(fun func()) {
 // [WM_GETDLGCODE]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-getdlgcode
 func (me *EventsWindow) WmGetDlgCode(fun func(p WmGetDlgCode) co.DLGC) {
 	me.Wm(co.WM_GETDLGCODE, func(p Wm) uintptr {
-		return uintptr(fun(WmGetDlgCode{Raw: p}))
+		return uintptr(fun(WmGetDlgCode{p}))
 	})
 }
 
@@ -722,7 +722,7 @@ func (me *EventsWindow) WmGetHMenu(fun func() win.HMENU) {
 // [WM_GETICON]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-geticon
 func (me *EventsWindow) WmGetIcon(fun func(p WmGetIcon) win.HICON) {
 	me.Wm(co.WM_GETICON, func(p Wm) uintptr {
-		return uintptr(fun(WmGetIcon{Raw: p}))
+		return uintptr(fun(WmGetIcon{p}))
 	})
 }
 
@@ -731,7 +731,7 @@ func (me *EventsWindow) WmGetIcon(fun func(p WmGetIcon) win.HICON) {
 // [WM_GETMINMAXINFO]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-getminmaxinfo
 func (me *EventsWindow) WmGetMinMaxInfo(fun func(p WmGetMinMaxInfo)) {
 	me.Wm(co.WM_GETMINMAXINFO, func(p Wm) uintptr {
-		fun(WmGetMinMaxInfo{Raw: p})
+		fun(WmGetMinMaxInfo{p})
 		return me.defProcVal
 	})
 }
@@ -741,7 +741,7 @@ func (me *EventsWindow) WmGetMinMaxInfo(fun func(p WmGetMinMaxInfo)) {
 // [WM_GETTEXT]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-gettext
 func (me *EventsWindow) WmGetText(fun func(p WmGetText) uint) {
 	me.Wm(co.WM_GETTEXT, func(p Wm) uintptr {
-		return uintptr(fun(WmGetText{Raw: p}))
+		return uintptr(fun(WmGetText{p}))
 	})
 }
 
@@ -759,7 +759,7 @@ func (me *EventsWindow) WmGetTextLength(fun func() uint) {
 // [WM_GETTITLEBARINFOEX]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-gettitlebarinfoex
 func (me *EventsWindow) WmGetTitleBarInfoEx(fun func(p WmGetTitleBarInfoEx)) {
 	me.Wm(co.WM_GETTITLEBARINFOEX, func(p Wm) uintptr {
-		fun(WmGetTitleBarInfoEx{Raw: p})
+		fun(WmGetTitleBarInfoEx{p})
 		return me.defProcVal
 	})
 }
@@ -769,7 +769,7 @@ func (me *EventsWindow) WmGetTitleBarInfoEx(fun func(p WmGetTitleBarInfoEx)) {
 // [WM_HELP]: https://learn.microsoft.com/en-us/windows/win32/shell/wm-help
 func (me *EventsWindow) WmHelp(fun func(p WmHelp)) {
 	me.Wm(co.WM_HELP, func(p Wm) uintptr {
-		fun(WmHelp{Raw: p})
+		fun(WmHelp{p})
 		return 1
 	})
 }
@@ -779,7 +779,7 @@ func (me *EventsWindow) WmHelp(fun func(p WmHelp)) {
 // [WM_HOTKEY]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-hotkey
 func (me *EventsWindow) WmHotKey(fun func(p WmHotKey)) {
 	me.Wm(co.WM_HOTKEY, func(p Wm) uintptr {
-		fun(WmHotKey{Raw: p})
+		fun(WmHotKey{p})
 		return me.defProcVal
 	})
 }
@@ -789,7 +789,7 @@ func (me *EventsWindow) WmHotKey(fun func(p WmHotKey)) {
 // [WM_HSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-hscroll
 func (me *EventsWindow) WmHScroll(fun func(p WmScroll)) {
 	me.Wm(co.WM_HSCROLL, func(p Wm) uintptr {
-		fun(WmScroll{Raw: p})
+		fun(WmScroll{p})
 		return me.defProcVal
 	})
 }
@@ -799,7 +799,7 @@ func (me *EventsWindow) WmHScroll(fun func(p WmScroll)) {
 // [WM_HSCROLLCLIPBOARD]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-hscrollclipboard
 func (me *EventsWindow) WmHScrollClipboard(fun func(p WmScrollClipboard)) {
 	me.Wm(co.WM_HSCROLLCLIPBOARD, func(p Wm) uintptr {
-		fun(WmScrollClipboard{Raw: p})
+		fun(WmScrollClipboard{p})
 		return me.defProcVal
 	})
 }
@@ -809,7 +809,7 @@ func (me *EventsWindow) WmHScrollClipboard(fun func(p WmScrollClipboard)) {
 // [WM_INITMENUPOPUP]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-initmenupopup
 func (me *EventsWindow) WmInitMenuPopup(fun func(p WmInitMenuPopup)) {
 	me.Wm(co.WM_INITMENUPOPUP, func(p Wm) uintptr {
-		fun(WmInitMenuPopup{Raw: p})
+		fun(WmInitMenuPopup{p})
 		return me.defProcVal
 	})
 }
@@ -819,7 +819,7 @@ func (me *EventsWindow) WmInitMenuPopup(fun func(p WmInitMenuPopup)) {
 // [WM_KEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-keydown
 func (me *EventsWindow) WmKeyDown(fun func(p WmKey)) {
 	me.Wm(co.WM_KEYDOWN, func(p Wm) uintptr {
-		fun(WmKey{Raw: p})
+		fun(WmKey{p})
 		return me.defProcVal
 	})
 }
@@ -829,7 +829,7 @@ func (me *EventsWindow) WmKeyDown(fun func(p WmKey)) {
 // [WM_KEYUP]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-keyup
 func (me *EventsWindow) WmKeyUp(fun func(p WmKey)) {
 	me.Wm(co.WM_KEYUP, func(p Wm) uintptr {
-		fun(WmKey{Raw: p})
+		fun(WmKey{p})
 		return me.defProcVal
 	})
 }
@@ -839,7 +839,7 @@ func (me *EventsWindow) WmKeyUp(fun func(p WmKey)) {
 // [WM_KILLFOCUS]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-killfocus
 func (me *EventsWindow) WmKillFocus(fun func(p WmKillFocus)) {
 	me.Wm(co.WM_KILLFOCUS, func(p Wm) uintptr {
-		fun(WmKillFocus{Raw: p})
+		fun(WmKillFocus{p})
 		return me.defProcVal
 	})
 }
@@ -849,7 +849,7 @@ func (me *EventsWindow) WmKillFocus(fun func(p WmKillFocus)) {
 // [WM_LBUTTONDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-lbuttondblclk
 func (me *EventsWindow) WmLButtonDblClk(fun func(p WmMouse)) {
 	me.Wm(co.WM_LBUTTONDBLCLK, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return me.defProcVal
 	})
 }
@@ -859,7 +859,7 @@ func (me *EventsWindow) WmLButtonDblClk(fun func(p WmMouse)) {
 // [WM_LBUTTONDOWN]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-lbuttondown
 func (me *EventsWindow) WmLButtonDown(fun func(p WmMouse)) {
 	me.Wm(co.WM_LBUTTONDOWN, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return me.defProcVal
 	})
 }
@@ -869,7 +869,7 @@ func (me *EventsWindow) WmLButtonDown(fun func(p WmMouse)) {
 // [WM_LBUTTONUP]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-lbuttonup
 func (me *EventsWindow) WmLButtonUp(fun func(p WmMouse)) {
 	me.Wm(co.WM_LBUTTONUP, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return me.defProcVal
 	})
 }
@@ -879,7 +879,7 @@ func (me *EventsWindow) WmLButtonUp(fun func(p WmMouse)) {
 // [WM_MBUTTONDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-mbuttondblclk
 func (me *EventsWindow) WmMButtonDblClk(fun func(p WmMouse)) {
 	me.Wm(co.WM_MBUTTONDBLCLK, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return me.defProcVal
 	})
 }
@@ -889,7 +889,7 @@ func (me *EventsWindow) WmMButtonDblClk(fun func(p WmMouse)) {
 // [WM_MBUTTONDOWN]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-mbuttondown
 func (me *EventsWindow) WmMButtonDown(fun func(p WmMouse)) {
 	me.Wm(co.WM_MBUTTONDOWN, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return me.defProcVal
 	})
 }
@@ -899,7 +899,7 @@ func (me *EventsWindow) WmMButtonDown(fun func(p WmMouse)) {
 // [WM_MBUTTONUP]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-mbuttonup
 func (me *EventsWindow) WmMButtonUp(fun func(p WmMouse)) {
 	me.Wm(co.WM_MBUTTONUP, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return me.defProcVal
 	})
 }
@@ -909,7 +909,7 @@ func (me *EventsWindow) WmMButtonUp(fun func(p WmMouse)) {
 // [WM_MENUCHAR]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menuchar
 func (me *EventsWindow) WmMenuChar(fun func(p WmMenuChar) co.MNC) {
 	me.Wm(co.WM_MENUCHAR, func(p Wm) uintptr {
-		return uintptr(fun(WmMenuChar{Raw: p}))
+		return uintptr(fun(WmMenuChar{p}))
 	})
 }
 
@@ -918,7 +918,7 @@ func (me *EventsWindow) WmMenuChar(fun func(p WmMenuChar) co.MNC) {
 // [WM_MENUCOMMAND]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menucommand
 func (me *EventsWindow) WmMenuCommand(fun func(p WmMenu)) {
 	me.Wm(co.WM_MENUCOMMAND, func(p Wm) uintptr {
-		fun(WmMenu{Raw: p})
+		fun(WmMenu{p})
 		return me.defProcVal
 	})
 }
@@ -928,7 +928,7 @@ func (me *EventsWindow) WmMenuCommand(fun func(p WmMenu)) {
 // [WM_MENUDRAG]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menudrag
 func (me *EventsWindow) WmMenuDrag(fun func(p WmMenu) co.MND) {
 	me.Wm(co.WM_MENUDRAG, func(p Wm) uintptr {
-		return uintptr(fun(WmMenu{Raw: p}))
+		return uintptr(fun(WmMenu{p}))
 	})
 }
 
@@ -937,7 +937,7 @@ func (me *EventsWindow) WmMenuDrag(fun func(p WmMenu) co.MND) {
 // [WM_MENUGETOBJECT]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menugetobject
 func (me *EventsWindow) WmMenuGetObject(fun func(p WmMenuGetObject) co.MNGO) {
 	me.Wm(co.WM_MENUGETOBJECT, func(p Wm) uintptr {
-		return uintptr(fun(WmMenuGetObject{Raw: p}))
+		return uintptr(fun(WmMenuGetObject{p}))
 	})
 }
 
@@ -946,7 +946,7 @@ func (me *EventsWindow) WmMenuGetObject(fun func(p WmMenuGetObject) co.MNGO) {
 // [WM_MENURBUTTONUP]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menurbuttonup
 func (me *EventsWindow) WmMenuRButtonUp(fun func(p WmMenu)) {
 	me.Wm(co.WM_MENURBUTTONUP, func(p Wm) uintptr {
-		fun(WmMenu{Raw: p})
+		fun(WmMenu{p})
 		return me.defProcVal
 	})
 }
@@ -956,7 +956,7 @@ func (me *EventsWindow) WmMenuRButtonUp(fun func(p WmMenu)) {
 // [WM_MENUSELECT]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menuselect
 func (me *EventsWindow) WmMenuSelect(fun func(p WmMenuSelect)) {
 	me.Wm(co.WM_MENUSELECT, func(p Wm) uintptr {
-		fun(WmMenuSelect{Raw: p})
+		fun(WmMenuSelect{p})
 		return me.defProcVal
 	})
 }
@@ -966,7 +966,7 @@ func (me *EventsWindow) WmMenuSelect(fun func(p WmMenuSelect)) {
 // [WM_MOUSEHOVER]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-mousehover
 func (me *EventsWindow) WmMouseHover(fun func(p WmMouse)) {
 	me.Wm(co.WM_MOUSEHOVER, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return me.defProcVal
 	})
 }
@@ -986,7 +986,7 @@ func (me *EventsWindow) WmMouseLeave(fun func()) {
 // [WM_MOUSEMOVE]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-mousemove
 func (me *EventsWindow) WmMouseMove(fun func(p WmMouse)) {
 	me.Wm(co.WM_MOUSEMOVE, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return me.defProcVal
 	})
 }
@@ -996,7 +996,7 @@ func (me *EventsWindow) WmMouseMove(fun func(p WmMouse)) {
 // [WM_MOVE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-move
 func (me *EventsWindow) WmMove(fun func(p WmMove)) {
 	me.Wm(co.WM_MOVE, func(p Wm) uintptr {
-		fun(WmMove{Raw: p})
+		fun(WmMove{p})
 		return me.defProcVal
 	})
 }
@@ -1006,7 +1006,7 @@ func (me *EventsWindow) WmMove(fun func(p WmMove)) {
 // [WM_MOVING]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-moving
 func (me *EventsWindow) WmMoving(fun func(p WmMoving)) {
 	me.Wm(co.WM_MOVING, func(p Wm) uintptr {
-		fun(WmMoving{Raw: p})
+		fun(WmMoving{p})
 		return 1
 	})
 }
@@ -1016,7 +1016,7 @@ func (me *EventsWindow) WmMoving(fun func(p WmMoving)) {
 // [WM_NCACTIVATE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-ncactivate
 func (me *EventsWindow) WmNcActivate(fun func(p WmNcActivate) bool) {
 	me.Wm(co.WM_NCACTIVATE, func(p Wm) uintptr {
-		return utl.BoolToUintptr(fun(WmNcActivate{Raw: p}))
+		return utl.BoolToUintptr(fun(WmNcActivate{p}))
 	})
 }
 
@@ -1025,7 +1025,7 @@ func (me *EventsWindow) WmNcActivate(fun func(p WmNcActivate) bool) {
 // [WM_NCCALCSIZE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-nccalcsize
 func (me *EventsWindow) WmNcCalcSize(fun func(p WmNcCalcSize) co.WVR) {
 	me.Wm(co.WM_NCCALCSIZE, func(p Wm) uintptr {
-		return uintptr(fun(WmNcCalcSize{Raw: p}))
+		return uintptr(fun(WmNcCalcSize{p}))
 	})
 }
 
@@ -1034,7 +1034,7 @@ func (me *EventsWindow) WmNcCalcSize(fun func(p WmNcCalcSize) co.WVR) {
 // [WM_NCCREATE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-nccreate
 func (me *EventsWindow) WmNcCreate(fun func(p WmCreate) bool) {
 	me.Wm(co.WM_NCCREATE, func(p Wm) uintptr {
-		return utl.BoolToUintptr(fun(WmCreate{Raw: p}))
+		return utl.BoolToUintptr(fun(WmCreate{p}))
 	})
 }
 
@@ -1057,7 +1057,7 @@ func (me *EventsWindow) WmNcDestroy(fun func()) {
 // [WM_NCHITTEST]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest
 func (me *EventsWindow) WmNcHitTest(fun func(WmNcHitTest) co.HT) {
 	me.Wm(co.WM_NCHITTEST, func(p Wm) uintptr {
-		return uintptr(fun(WmNcHitTest{Raw: p}))
+		return uintptr(fun(WmNcHitTest{p}))
 	})
 }
 
@@ -1066,7 +1066,7 @@ func (me *EventsWindow) WmNcHitTest(fun func(WmNcHitTest) co.HT) {
 // [WM_NCLBUTTONDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-nclbuttondblclk
 func (me *EventsWindow) WmNcLButtonDblClk(fun func(p WmNcMouse)) {
 	me.Wm(co.WM_NCLBUTTONDBLCLK, func(p Wm) uintptr {
-		fun(WmNcMouse{Raw: p})
+		fun(WmNcMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1076,7 +1076,7 @@ func (me *EventsWindow) WmNcLButtonDblClk(fun func(p WmNcMouse)) {
 // [WM_NCLBUTTONDOWN]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-nclbuttondown
 func (me *EventsWindow) WmNcLButtonDown(fun func(p WmNcMouse)) {
 	me.Wm(co.WM_NCLBUTTONDOWN, func(p Wm) uintptr {
-		fun(WmNcMouse{Raw: p})
+		fun(WmNcMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1086,7 +1086,7 @@ func (me *EventsWindow) WmNcLButtonDown(fun func(p WmNcMouse)) {
 // [WM_NCLBUTTONUP]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-nclbuttonup
 func (me *EventsWindow) WmNcLButtonUp(fun func(p WmNcMouse)) {
 	me.Wm(co.WM_NCLBUTTONUP, func(p Wm) uintptr {
-		fun(WmNcMouse{Raw: p})
+		fun(WmNcMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1096,7 +1096,7 @@ func (me *EventsWindow) WmNcLButtonUp(fun func(p WmNcMouse)) {
 // [WM_NCMBUTTONDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-ncmbuttondblclk
 func (me *EventsWindow) WmNcMButtonDblClk(fun func(p WmNcMouse)) {
 	me.Wm(co.WM_NCMBUTTONDBLCLK, func(p Wm) uintptr {
-		fun(WmNcMouse{Raw: p})
+		fun(WmNcMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1106,7 +1106,7 @@ func (me *EventsWindow) WmNcMButtonDblClk(fun func(p WmNcMouse)) {
 // [WM_NCMBUTTONDOWN]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-ncmbuttondown
 func (me *EventsWindow) WmNcMButtonDown(fun func(p WmNcMouse)) {
 	me.Wm(co.WM_NCMBUTTONDOWN, func(p Wm) uintptr {
-		fun(WmNcMouse{Raw: p})
+		fun(WmNcMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1116,7 +1116,7 @@ func (me *EventsWindow) WmNcMButtonDown(fun func(p WmNcMouse)) {
 // [WM_NCMBUTTONUP]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-ncmbuttonup
 func (me *EventsWindow) WmNcMButtonUp(fun func(p WmNcMouse)) {
 	me.Wm(co.WM_NCMBUTTONUP, func(p Wm) uintptr {
-		fun(WmNcMouse{Raw: p})
+		fun(WmNcMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1126,7 +1126,7 @@ func (me *EventsWindow) WmNcMButtonUp(fun func(p WmNcMouse)) {
 // [WM_NCMOUSEHOVER]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-ncmousehover
 func (me *EventsWindow) WmNcMouseHover(fun func(p WmNcMouse)) {
 	me.Wm(co.WM_NCMOUSEHOVER, func(p Wm) uintptr {
-		fun(WmNcMouse{Raw: p})
+		fun(WmNcMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1146,7 +1146,7 @@ func (me *EventsWindow) WmNcMouseLeave(fun func()) {
 // [WM_NCMOUSEMOVE]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-ncmousemove
 func (me *EventsWindow) WmNcMouseMove(fun func(p WmNcMouse)) {
 	me.Wm(co.WM_NCMOUSEMOVE, func(p Wm) uintptr {
-		fun(WmNcMouse{Raw: p})
+		fun(WmNcMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1156,7 +1156,7 @@ func (me *EventsWindow) WmNcMouseMove(fun func(p WmNcMouse)) {
 // [WM_NCPAINT]: https://learn.microsoft.com/en-us/windows/win32/gdi/wm-ncpaint
 func (me *EventsWindow) WmNcPaint(fun func(p WmNcPaint)) {
 	me.Wm(co.WM_NCPAINT, func(p Wm) uintptr {
-		fun(WmNcPaint{Raw: p})
+		fun(WmNcPaint{p})
 		return me.defProcVal
 	})
 }
@@ -1166,7 +1166,7 @@ func (me *EventsWindow) WmNcPaint(fun func(p WmNcPaint)) {
 // [WM_NCRBUTTONDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-ncrbuttondblclk
 func (me *EventsWindow) WmNcRButtonDblClk(fun func(p WmNcMouse)) {
 	me.Wm(co.WM_NCRBUTTONDBLCLK, func(p Wm) uintptr {
-		fun(WmNcMouse{Raw: p})
+		fun(WmNcMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1176,7 +1176,7 @@ func (me *EventsWindow) WmNcRButtonDblClk(fun func(p WmNcMouse)) {
 // [WM_NCRBUTTONDOWN]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-ncrbuttondown
 func (me *EventsWindow) WmNcRButtonDown(fun func(p WmNcMouse)) {
 	me.Wm(co.WM_NCRBUTTONDOWN, func(p Wm) uintptr {
-		fun(WmNcMouse{Raw: p})
+		fun(WmNcMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1186,7 +1186,7 @@ func (me *EventsWindow) WmNcRButtonDown(fun func(p WmNcMouse)) {
 // [WM_NCRBUTTONUP]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-ncrbuttonup
 func (me *EventsWindow) WmNcRButtonUp(fun func(p WmNcMouse)) {
 	me.Wm(co.WM_NCRBUTTONUP, func(p Wm) uintptr {
-		fun(WmNcMouse{Raw: p})
+		fun(WmNcMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1196,7 +1196,7 @@ func (me *EventsWindow) WmNcRButtonUp(fun func(p WmNcMouse)) {
 // [WM_NCXBUTTONDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-ncxbuttondblclk
 func (me *EventsWindow) WmNcXButtonDblClk(fun func(p WmNcMouseX)) {
 	me.Wm(co.WM_NCXBUTTONDBLCLK, func(p Wm) uintptr {
-		fun(WmNcMouseX{Raw: p})
+		fun(WmNcMouseX{p})
 		return 1
 	})
 }
@@ -1206,7 +1206,7 @@ func (me *EventsWindow) WmNcXButtonDblClk(fun func(p WmNcMouseX)) {
 // [WM_NCXBUTTONDOWN]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-ncxbuttondown
 func (me *EventsWindow) WmNcXButtonDown(fun func(p WmNcMouseX)) {
 	me.Wm(co.WM_NCXBUTTONDOWN, func(p Wm) uintptr {
-		fun(WmNcMouseX{Raw: p})
+		fun(WmNcMouseX{p})
 		return 1
 	})
 }
@@ -1216,7 +1216,7 @@ func (me *EventsWindow) WmNcXButtonDown(fun func(p WmNcMouseX)) {
 // [WM_NCXBUTTONUP]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-ncxbuttonup\
 func (me *EventsWindow) WmNcXButtonUp(fun func(p WmNcMouseX)) {
 	me.Wm(co.WM_NCXBUTTONUP, func(p Wm) uintptr {
-		fun(WmNcMouseX{Raw: p})
+		fun(WmNcMouseX{p})
 		return 1
 	})
 }
@@ -1226,7 +1226,7 @@ func (me *EventsWindow) WmNcXButtonUp(fun func(p WmNcMouseX)) {
 // [WM_NEXTDLGCTL]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-nextdlgctl
 func (me *EventsWindow) WmNextDlgCtl(fun func(p WmNextDlgCtl)) {
 	me.Wm(co.WM_NEXTDLGCTL, func(p Wm) uintptr {
-		fun(WmNextDlgCtl{Raw: p})
+		fun(WmNextDlgCtl{p})
 		return me.defProcVal
 	})
 }
@@ -1236,7 +1236,7 @@ func (me *EventsWindow) WmNextDlgCtl(fun func(p WmNextDlgCtl)) {
 // [WM_NEXTMENU]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-nextmenu
 func (me *EventsWindow) WmNextMenu(fun func(p WmNextMenu)) {
 	me.Wm(co.WM_NEXTMENU, func(p Wm) uintptr {
-		fun(WmNextMenu{Raw: p})
+		fun(WmNextMenu{p})
 		return me.defProcVal
 	})
 }
@@ -1280,7 +1280,7 @@ func (me *EventsWindow) WmPaint(fun func()) {
 // [WM_PAINTCLIPBOARD]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-paintclipboard
 func (me *EventsWindow) WmPaintClipboard(fun func(WmPaintClipboard)) {
 	me.Wm(co.WM_PAINTCLIPBOARD, func(p Wm) uintptr {
-		fun(WmPaintClipboard{Raw: p})
+		fun(WmPaintClipboard{p})
 		return me.defProcVal
 	})
 }
@@ -1290,7 +1290,7 @@ func (me *EventsWindow) WmPaintClipboard(fun func(WmPaintClipboard)) {
 // [WM_PARENTNOTIFY]: https://learn.microsoft.com/en-us/windows/win32/inputmsg/wm-parentnotify
 func (me *EventsWindow) WmParentNotify(fun func(WmParentNotify)) {
 	me.Wm(co.WM_PARENTNOTIFY, func(p Wm) uintptr {
-		fun(WmParentNotify{Raw: p})
+		fun(WmParentNotify{p})
 		return me.defProcVal
 	})
 }
@@ -1300,7 +1300,7 @@ func (me *EventsWindow) WmParentNotify(fun func(WmParentNotify)) {
 // [WM_POWERBROADCAST]: https://learn.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast
 func (me *EventsWindow) WmPowerBroadcast(fun func(p WmPowerBroadcast)) {
 	me.Wm(co.WM_POWERBROADCAST, func(p Wm) uintptr {
-		fun(WmPowerBroadcast{Raw: p})
+		fun(WmPowerBroadcast{p})
 		return 1
 	})
 }
@@ -1310,7 +1310,7 @@ func (me *EventsWindow) WmPowerBroadcast(fun func(p WmPowerBroadcast)) {
 // [WM_PRINT]: https://learn.microsoft.com/en-us/windows/win32/gdi/wm-print
 func (me *EventsWindow) WmPrint(fun func(p WmPrint)) {
 	me.Wm(co.WM_PRINT, func(p Wm) uintptr {
-		fun(WmPrint{Raw: p})
+		fun(WmPrint{p})
 		return me.defProcVal
 	})
 }
@@ -1338,7 +1338,7 @@ func (me *EventsWindow) WmQueryOpen(fun func() bool) {
 // [WM_RBUTTONDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-rbuttondblclk
 func (me *EventsWindow) WmRButtonDblClk(fun func(p WmMouse)) {
 	me.Wm(co.WM_RBUTTONDBLCLK, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1348,7 +1348,7 @@ func (me *EventsWindow) WmRButtonDblClk(fun func(p WmMouse)) {
 // [WM_RBUTTONDOWN]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-rbuttondown
 func (me *EventsWindow) WmRButtonDown(fun func(p WmMouse)) {
 	me.Wm(co.WM_RBUTTONDOWN, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1358,7 +1358,7 @@ func (me *EventsWindow) WmRButtonDown(fun func(p WmMouse)) {
 // [WM_RBUTTONUP]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-rbuttonup
 func (me *EventsWindow) WmRButtonUp(fun func(p WmMouse)) {
 	me.Wm(co.WM_RBUTTONUP, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return me.defProcVal
 	})
 }
@@ -1378,7 +1378,7 @@ func (me *EventsWindow) WmRenderAllFormats(fun func()) {
 // [WM_RENDERFORMAT]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-renderformat
 func (me *EventsWindow) WmRenderFormat(fun func(p WmRenderFormat)) {
 	me.Wm(co.WM_RENDERFORMAT, func(p Wm) uintptr {
-		fun(WmRenderFormat{Raw: p})
+		fun(WmRenderFormat{p})
 		return me.defProcVal
 	})
 }
@@ -1388,7 +1388,7 @@ func (me *EventsWindow) WmRenderFormat(fun func(p WmRenderFormat)) {
 // [WM_SETCURSOR]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-setcursor
 func (me *EventsWindow) WmSetCursor(fun func(p WmSetCursor) bool) {
 	me.Wm(co.WM_SETCURSOR, func(p Wm) uintptr {
-		return utl.BoolToUintptr(fun(WmSetCursor{Raw: p}))
+		return utl.BoolToUintptr(fun(WmSetCursor{p}))
 	})
 }
 
@@ -1397,7 +1397,7 @@ func (me *EventsWindow) WmSetCursor(fun func(p WmSetCursor) bool) {
 // [WM_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-setfocus
 func (me *EventsWindow) WmSetFocus(fun func(p WmSetFocus)) {
 	me.Wm(co.WM_SETFOCUS, func(p Wm) uintptr {
-		fun(WmSetFocus{Raw: p})
+		fun(WmSetFocus{p})
 		return me.defProcVal
 	})
 }
@@ -1407,7 +1407,7 @@ func (me *EventsWindow) WmSetFocus(fun func(p WmSetFocus)) {
 // [WM_SETFONT]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-setfont
 func (me *EventsWindow) WmSetFont(fun func(p WmSetFont)) {
 	me.Wm(co.WM_SETFONT, func(p Wm) uintptr {
-		fun(WmSetFont{Raw: p})
+		fun(WmSetFont{p})
 		return me.defProcVal
 	})
 }
@@ -1417,7 +1417,7 @@ func (me *EventsWindow) WmSetFont(fun func(p WmSetFont)) {
 // [WM_SETICON]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-seticon
 func (me *EventsWindow) WmSetIcon(fun func(p WmSetIcon) win.HICON) {
 	me.Wm(co.WM_SETICON, func(p Wm) uintptr {
-		return uintptr(fun(WmSetIcon{Raw: p}))
+		return uintptr(fun(WmSetIcon{p}))
 	})
 }
 
@@ -1426,7 +1426,7 @@ func (me *EventsWindow) WmSetIcon(fun func(p WmSetIcon) win.HICON) {
 // [WM_SETREDRAW]: https://learn.microsoft.com/en-us/windows/win32/gdi/wm-setredraw
 func (me *EventsWindow) WmSetRedraw(fun func(p WmSetRedraw)) {
 	me.Wm(co.WM_SETREDRAW, func(p Wm) uintptr {
-		fun(WmSetRedraw{Raw: p})
+		fun(WmSetRedraw{p})
 		return me.defProcVal
 	})
 }
@@ -1436,7 +1436,7 @@ func (me *EventsWindow) WmSetRedraw(fun func(p WmSetRedraw)) {
 // [WM_SETTEXT]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-settext
 func (me *EventsWindow) WmSetText(fun func(p WmSetText) uintptr) {
 	me.Wm(co.WM_SETTEXT, func(p Wm) uintptr {
-		return fun(WmSetText{Raw: p})
+		return fun(WmSetText{p})
 	})
 }
 
@@ -1445,7 +1445,7 @@ func (me *EventsWindow) WmSetText(fun func(p WmSetText) uintptr) {
 // [WM_SHOWWINDOW]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-showwindow
 func (me *EventsWindow) WmShowWindow(fun func(p WmShowWindow)) {
 	me.Wm(co.WM_SHOWWINDOW, func(p Wm) uintptr {
-		fun(WmShowWindow{Raw: p})
+		fun(WmShowWindow{p})
 		return me.defProcVal
 	})
 }
@@ -1455,7 +1455,7 @@ func (me *EventsWindow) WmShowWindow(fun func(p WmShowWindow)) {
 // [WM_SIZE]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-size
 func (me *EventsWindow) WmSize(fun func(p WmSize)) {
 	me.Wm(co.WM_SIZE, func(p Wm) uintptr {
-		fun(WmSize{Raw: p})
+		fun(WmSize{p})
 		return me.defProcVal
 	})
 }
@@ -1465,7 +1465,7 @@ func (me *EventsWindow) WmSize(fun func(p WmSize)) {
 // [WM_SIZECLIPBOARD]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-sizeclipboard
 func (me *EventsWindow) WmSizeClipboard(fun func(p WmSizeClipboard)) {
 	me.Wm(co.WM_SIZECLIPBOARD, func(p Wm) uintptr {
-		fun(WmSizeClipboard{Raw: p})
+		fun(WmSizeClipboard{p})
 		return me.defProcVal
 	})
 }
@@ -1475,7 +1475,7 @@ func (me *EventsWindow) WmSizeClipboard(fun func(p WmSizeClipboard)) {
 // [WM_SIZING]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-sizing
 func (me *EventsWindow) WmSizing(fun func(p WmSizing)) {
 	me.Wm(co.WM_SIZING, func(p Wm) uintptr {
-		fun(WmSizing{Raw: p})
+		fun(WmSizing{p})
 		return 1
 	})
 }
@@ -1485,7 +1485,7 @@ func (me *EventsWindow) WmSizing(fun func(p WmSizing)) {
 // [WM_STYLECHANGED]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-stylechanged
 func (me *EventsWindow) WmStyleChanged(fun func(p WmStyles)) {
 	me.Wm(co.WM_STYLECHANGED, func(p Wm) uintptr {
-		fun(WmStyles{Raw: p})
+		fun(WmStyles{p})
 		return me.defProcVal
 	})
 }
@@ -1495,7 +1495,7 @@ func (me *EventsWindow) WmStyleChanged(fun func(p WmStyles)) {
 // [WM_STYLECHANGING]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-stylechanging
 func (me *EventsWindow) WmStyleChanging(fun func(p WmStyles)) {
 	me.Wm(co.WM_STYLECHANGING, func(p Wm) uintptr {
-		fun(WmStyles{Raw: p})
+		fun(WmStyles{p})
 		return me.defProcVal
 	})
 }
@@ -1515,7 +1515,7 @@ func (me *EventsWindow) WmSyncPaint(fun func()) {
 // [WM_SYSCHAR]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-syschar
 func (me *EventsWindow) WmSysChar(fun func(p WmChar)) {
 	me.Wm(co.WM_SYSCHAR, func(p Wm) uintptr {
-		fun(WmChar{Raw: p})
+		fun(WmChar{p})
 		return me.defProcVal
 	})
 }
@@ -1525,7 +1525,7 @@ func (me *EventsWindow) WmSysChar(fun func(p WmChar)) {
 // [WM_SYSCOMMAND]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-syscommand
 func (me *EventsWindow) WmSysCommand(fun func(p WmSysCommand)) {
 	me.Wm(co.WM_SYSCOMMAND, func(p Wm) uintptr {
-		fun(WmSysCommand{Raw: p})
+		fun(WmSysCommand{p})
 		return me.defProcVal
 	})
 }
@@ -1535,7 +1535,7 @@ func (me *EventsWindow) WmSysCommand(fun func(p WmSysCommand)) {
 // [WM_SYSDEADCHAR]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-sysdeadchar
 func (me *EventsWindow) WmSysDeadChar(fun func(p WmChar)) {
 	me.Wm(co.WM_SYSDEADCHAR, func(p Wm) uintptr {
-		fun(WmChar{Raw: p})
+		fun(WmChar{p})
 		return me.defProcVal
 	})
 }
@@ -1545,7 +1545,7 @@ func (me *EventsWindow) WmSysDeadChar(fun func(p WmChar)) {
 // [WM_SYSKEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-syskeydown
 func (me *EventsWindow) WmSysKeyDown(fun func(p WmKey)) {
 	me.Wm(co.WM_SYSKEYDOWN, func(p Wm) uintptr {
-		fun(WmKey{Raw: p})
+		fun(WmKey{p})
 		return me.defProcVal
 	})
 }
@@ -1555,7 +1555,7 @@ func (me *EventsWindow) WmSysKeyDown(fun func(p WmKey)) {
 // [WM_SYSKEYUP]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-syskeyup
 func (me *EventsWindow) WmSysKeyUp(fun func(p WmKey)) {
 	me.Wm(co.WM_SYSKEYUP, func(p Wm) uintptr {
-		fun(WmKey{Raw: p})
+		fun(WmKey{p})
 		return me.defProcVal
 	})
 }
@@ -1585,7 +1585,7 @@ func (me *EventsWindow) WmTimeChange(fun func()) {
 // [WM_UNINITMENUPOPUP]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-uninitmenupopup
 func (me *EventsWindow) WmUnInitMenuPopup(fun func(p WmUnInitMenuPopup)) {
 	me.Wm(co.WM_UNINITMENUPOPUP, func(p Wm) uintptr {
-		fun(WmUnInitMenuPopup{Raw: p})
+		fun(WmUnInitMenuPopup{p})
 		return me.defProcVal
 	})
 }
@@ -1604,7 +1604,7 @@ func (me *EventsWindow) WmUndo(fun func() bool) {
 // [WM_VSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-vscroll
 func (me *EventsWindow) WmVScroll(fun func(p WmScroll)) {
 	me.Wm(co.WM_VSCROLL, func(p Wm) uintptr {
-		fun(WmScroll{Raw: p})
+		fun(WmScroll{p})
 		return me.defProcVal
 	})
 }
@@ -1614,7 +1614,7 @@ func (me *EventsWindow) WmVScroll(fun func(p WmScroll)) {
 // [WM_VSCROLLCLIPBOARD]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-vscrollclipboard
 func (me *EventsWindow) WmVScrollClipboard(fun func(p WmScrollClipboard)) {
 	me.Wm(co.WM_VSCROLLCLIPBOARD, func(p Wm) uintptr {
-		fun(WmScrollClipboard{Raw: p})
+		fun(WmScrollClipboard{p})
 		return me.defProcVal
 	})
 }
@@ -1624,7 +1624,7 @@ func (me *EventsWindow) WmVScrollClipboard(fun func(p WmScrollClipboard)) {
 // [WM_WINDOWPOSCHANGED]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-windowposchanged
 func (me *EventsWindow) WmWindowPosChanged(fun func(p WmWindowPos)) {
 	me.Wm(co.WM_WINDOWPOSCHANGED, func(p Wm) uintptr {
-		fun(WmWindowPos{Raw: p})
+		fun(WmWindowPos{p})
 		return me.defProcVal
 	})
 }
@@ -1634,7 +1634,7 @@ func (me *EventsWindow) WmWindowPosChanged(fun func(p WmWindowPos)) {
 // [WM_WINDOWPOSCHANGING]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-windowposchanging
 func (me *EventsWindow) WmWindowPosChanging(fun func(p WmWindowPos)) {
 	me.Wm(co.WM_WINDOWPOSCHANGING, func(p Wm) uintptr {
-		fun(WmWindowPos{Raw: p})
+		fun(WmWindowPos{p})
 		return me.defProcVal
 	})
 }
@@ -1644,7 +1644,7 @@ func (me *EventsWindow) WmWindowPosChanging(fun func(p WmWindowPos)) {
 // [WM_WTSSESSION_CHANGE]: https://learn.microsoft.com/en-us/windows/win32/termserv/wm-wtssession-change
 func (me *EventsWindow) WmWtsSessionChange(fun func(p WmWtsSessionChange)) {
 	me.Wm(co.WM_WTSSESSION_CHANGE, func(p Wm) uintptr {
-		fun(WmWtsSessionChange{Raw: p})
+		fun(WmWtsSessionChange{p})
 		return me.defProcVal
 	})
 }
@@ -1654,7 +1654,7 @@ func (me *EventsWindow) WmWtsSessionChange(fun func(p WmWtsSessionChange)) {
 // [WM_XBUTTONDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-xbuttondblclk
 func (me *EventsWindow) WmXButtonDblClk(fun func(p WmMouse)) {
 	me.Wm(co.WM_XBUTTONDBLCLK, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return 1
 	})
 }
@@ -1664,7 +1664,7 @@ func (me *EventsWindow) WmXButtonDblClk(fun func(p WmMouse)) {
 // [WM_XBUTTONDOWN]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-xbuttondown
 func (me *EventsWindow) WmXButtonDown(fun func(p WmMouse)) {
 	me.Wm(co.WM_XBUTTONDOWN, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return 1
 	})
 }
@@ -1674,7 +1674,7 @@ func (me *EventsWindow) WmXButtonDown(fun func(p WmMouse)) {
 // [WM_XBUTTONUP]: https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-xbuttonup
 func (me *EventsWindow) WmXButtonUp(fun func(p WmMouse)) {
 	me.Wm(co.WM_XBUTTONUP, func(p Wm) uintptr {
-		fun(WmMouse{Raw: p})
+		fun(WmMouse{p})
 		return 1
 	})
 }

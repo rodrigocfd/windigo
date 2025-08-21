@@ -255,7 +255,7 @@ func (me *EventsTrackbar) ThumbPosChanging(fun func(p *win.NMTRBTHUMBPOSCHANGING
 // [WM_HSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-hscroll
 func (me *EventsTrackbar) WmHScroll(fun func(p WmScroll)) {
 	me.parentEvents.Wm(co.WM_HSCROLL, func(p Wm) uintptr {
-		fun(WmScroll{Raw: p})
+		fun(WmScroll{p})
 		return me.parentEvents.defProcVal
 	})
 }
@@ -265,7 +265,7 @@ func (me *EventsTrackbar) WmHScroll(fun func(p WmScroll)) {
 // [WM_VSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-vscroll
 func (me *EventsTrackbar) WmVScroll(fun func(p WmScroll)) {
 	me.parentEvents.Wm(co.WM_VSCROLL, func(p Wm) uintptr {
-		fun(WmScroll{Raw: p})
+		fun(WmScroll{p})
 		return me.parentEvents.defProcVal
 	})
 }

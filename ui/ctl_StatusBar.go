@@ -42,7 +42,7 @@ func NewStatusBar(parent Parent) *StatusBar {
 	})
 
 	parent.base().beforeUserEvents.wm(co.WM_SIZE, func(p Wm) {
-		me.Parts.resizeToFitParent(WmSize{Raw: p})
+		me.Parts.resizeToFitParent(WmSize{p})
 	})
 
 	return me

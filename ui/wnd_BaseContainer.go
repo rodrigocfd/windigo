@@ -66,7 +66,7 @@ func (me *_BaseContainer) defaultMessageHandlers() {
 	})
 
 	me.beforeUserEvents.wm(co.WM_SIZE, func(p Wm) {
-		me.layout.Rearrange(WmSize{Raw: p})
+		me.layout.Rearrange(WmSize{p})
 	})
 }
 
