@@ -118,8 +118,9 @@ func (o *VarOptsModal) ClassName(s string) *VarOptsModal { o.className = s; retu
 // [RegisterClassEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassexw
 func (o *VarOptsModal) ClassStyle(s co.CS) *VarOptsModal { o.classStyle = s; return o }
 
-// Icon associated to the window, passed to [RegisterClassEx]. This icon is
-// loaded from the resources with [LoadIcon], using the given resource ID.
+// ID of the resource icon to be associated to the window. The icon will be
+// automatically loaded from the resource with [LoadIcon], then passed to
+// [RegisterClassEx].
 //
 // Defaults to none.
 //

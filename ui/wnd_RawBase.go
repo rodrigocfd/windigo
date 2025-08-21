@@ -42,7 +42,10 @@ func (me *_RawBase) registerClass(
 	wcx.SetCbSize()
 
 	if classIconId != 0 {
-		hIcon, _ := hInst.LoadIcon(win.IconResId(classIconId))
+		hIcon, err := hInst.LoadIcon(win.IconResId(classIconId))
+		if err != nil {
+			panic(err)
+		}
 		wcx.HIcon = hIcon
 		wcx.HIconSm = hIcon
 	}
