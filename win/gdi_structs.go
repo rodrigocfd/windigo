@@ -94,6 +94,8 @@ type BITMAPINFO struct {
 
 // [BITMAPINFOHEADER] struct.
 //
+// Note that the Height field might be [twice] the actual height.
+//
 // ⚠️ You must call [BITMAPINFOHEADER.SetSize] to initialize the struct.
 //
 // Example:
@@ -102,6 +104,7 @@ type BITMAPINFO struct {
 //	bih.SetSize()
 //
 // [BITMAPINFOHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
+// [twice]: https://stackoverflow.com/q/5812849/6923555
 type BITMAPINFOHEADER struct {
 	size          uint32
 	Width         int32

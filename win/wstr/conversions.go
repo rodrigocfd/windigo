@@ -139,23 +139,23 @@ func rawEncodeToBuf(s []rune, dest []uint16) {
 	n := len(s)
 	for _, v := range s {
 		if v >= _SURR_SELF {
-			n++
+			n++ // count each extra surrogate char we'll need
 		}
 	}
 
 	szDest := len(dest)
 	n = 0
-	for _, v := range s {
+	for _, ch := range s {
 		if n >= szDest-1 {
-			break // truncate to prevent buffer overflow
+			break // truncate to prevent buffer overrun
 		}
 
-		switch utf16.RuneLen(v) {
+		switch utf16.RuneLen(ch) {
 		case 1: // normal rune
-			dest[n] = uint16(v)
+			dest[n] = uint16(ch)
 			n++
 		case 2: // needs surrogate sequence
-			r1, r2 := utf16.EncodeRune(v)
+			r1, r2 := utf16.EncodeRune(ch)
 			dest[n] = uint16(r1)
 			dest[n+1] = uint16(r2)
 			n += 2
