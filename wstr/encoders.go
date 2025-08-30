@@ -114,7 +114,7 @@ func EncodeToPtr(s string) *uint16 {
 // Converts a Go string into a null-terminated UTF-16 string. Returns a new
 // heap-allocated []uint16.
 func EncodeToSlice(s string) []uint16 {
-	buf := make([]uint16, CountUtf16Len(s))
+	buf := make([]uint16, CountUtf16Len(s)+1) // count terminating null
 	EncodeToBuf(buf, s)
 	return buf
 }
