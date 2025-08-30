@@ -3,8 +3,8 @@
 package ui
 
 import (
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 // Manages a group of native [RadioButton] controls.

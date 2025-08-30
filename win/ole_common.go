@@ -5,8 +5,8 @@ package win
 import (
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 // A [COM] object whose lifetime can be managed by an [OleReleaser], automating

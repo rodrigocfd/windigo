@@ -26,7 +26,7 @@ go get -u github.com/rodrigocfd/windigo
 
 ### GUI window
 
-The example below creates a window programmatically, and handles the button click. Also, it uses the `minimal.syso` provided in the [resources](resources/) folder.
+The example below creates a window programmatically, and handles the button click. Also, it uses the `minimal.syso` provided in the [_resources](_resources/) folder.
 
 ![Screen capture](example.gif)
 
@@ -37,8 +37,8 @@ import (
 	"fmt"
 	"runtime"
 
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/ui"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 func main() {
@@ -62,7 +62,7 @@ func NewMyWindow() *MyWindow {
 		ui.OptsMain().
 			Title("Hello you").
 			Size(ui.Dpi(340, 80)).
-			ClassIconId(101), // ID of icon resource, see resources folder
+			ClassIconId(101), // ID of icon resource, see _resources folder
 	)
 
 	lblName := ui.NewStatic( // create the child controls
@@ -113,8 +113,8 @@ go build -ldflags "-s -w -H=windowsgui"
 package main
 
 import (
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 func main() {
@@ -161,8 +161,8 @@ The example below takes a [process snapshot](https://learn.microsoft.com/en-us/w
 package main
 
 import (
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 func main() {
@@ -192,8 +192,8 @@ package main
 import (
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 func main() {
@@ -280,8 +280,8 @@ The example below uses COM objects to display the system native [Open File](http
 package main
 
 import (
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 func main() {
@@ -337,8 +337,8 @@ The example below manipulates an Excel spreadsheet, saving a copy of it:
 package main
 
 import (
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 func main() {
@@ -370,29 +370,24 @@ func main() {
 
 ## Architecture
 
-The library is divided in two main packages:
-
-* `ui` – high-level windows and controls;
-* `win` – low-level native Win32 bindings.
-
-More specifically:
+The library is divided in four packages:
 
 | Package | Description |
 | - | - |
+| `co` | Native Win32 constants, all typed. |
 | `ui` | High-level UI windows and controls. |
 | `win` | Native Win32 structs, handles and functions. |
-| `win/co` | Native Win32 constants, all typed. |
-| `win/wstr` | String and UTF-16 wide string management. |
+| `wstr` | String and UTF-16 wide string management. |
 
-Internal package dependency:
+Package dependency:
 
 ```mermaid
 flowchart BT
-    internal/utl([internal/utl]) --> win/co
+    internal/utl([internal/utl]) --> co
     ui --> win
     win --> internal/dll([internal/dll])
     win --> internal/utl
-    win --> win/wstr
+    win --> wstr
 ```
 
 ## License

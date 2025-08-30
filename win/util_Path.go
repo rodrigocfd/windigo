@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/co"
 )
 
 // Returns all file and folder names on a given directory, filtered to the given

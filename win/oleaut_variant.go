@@ -9,8 +9,8 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 // OLE Automation [VARIANT] type.

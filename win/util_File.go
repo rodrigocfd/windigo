@@ -7,7 +7,7 @@ import (
 	"io"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/co"
 )
 
 // Reads all the contents of the file at once, immediately. Calls:

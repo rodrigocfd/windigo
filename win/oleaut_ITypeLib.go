@@ -3,7 +3,7 @@
 package win
 
 import (
-	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/co"
 )
 
 // [ITypeLib] COM interface.

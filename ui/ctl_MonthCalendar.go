@@ -6,8 +6,8 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 // Native [month calendar] control.

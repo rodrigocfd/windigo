@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 type _StatusBarPartData struct {

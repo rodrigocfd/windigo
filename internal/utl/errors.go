@@ -5,7 +5,7 @@ package utl
 import (
 	"syscall"
 
-	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/co"
 )
 
 // Error handling syntactic sugar for syscalls which call GetLastError().

@@ -5,8 +5,8 @@ package win
 import (
 	"fmt"
 
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 // Tagged union for [DWMWINDOWATTRIBUTE] values.

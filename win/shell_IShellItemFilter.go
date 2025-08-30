@@ -7,8 +7,8 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 // [IShellItemFilter] COM interface.

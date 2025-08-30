@@ -3,7 +3,7 @@
 package win
 
 import (
-	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/co"
 )
 
 // Tagged union for an icon identifier for [TASKDIALOGCONFIG], which can be:

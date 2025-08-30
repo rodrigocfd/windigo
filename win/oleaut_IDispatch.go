@@ -7,8 +7,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/wstr"
+	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // [IDispatch] COM interface.

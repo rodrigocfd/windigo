@@ -3,8 +3,8 @@
 package win
 
 import (
-	"github.com/rodrigocfd/windigo/win/co"
-	"github.com/rodrigocfd/windigo/win/wstr"
+	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // Tagged union for a class name identifier, which can be:

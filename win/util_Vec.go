@@ -5,7 +5,7 @@ package win
 import (
 	"unsafe"
 
-	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/co"
 )
 
 // Dynamic, manually [heap-allocated] memory block array.

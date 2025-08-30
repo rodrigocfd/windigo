@@ -5,8 +5,8 @@ package win
 import (
 	"syscall"
 
+	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/win/co"
 )
 
 // Handle to an OLE [block of memory].
