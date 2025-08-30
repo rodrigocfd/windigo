@@ -2,82 +2,85 @@
 
 package wstr
 
-import (
-	"unsafe"
-)
+import "unsafe"
 
-// Buffer to receive Windows UTF-16 strings and convert them to Go strings.
+// A buffer to receive UTF-16 strings and convert them to Go strings.
 //
-// Tries to use the internal global buffer for faster operations.
+// This buffer is used internally to speed up syscalls that return strings, and
+// it's prone to buffer overruns. Be sure to allocate the needed space.
+//
+// This struct contains a buffer intended to be stack-allocated, so don't move
+// it.
+//
+// Example:
+//
+//	var buf wstr.BufDecoder
+//	buf.Alloc(20)
+//	ptr := buf.Ptr()
 type BufDecoder struct {
-	gotGlobal bool // Do we have the lock to the global buffer?
-	faceSize  uint // Declared size, which can be smaller than actual buffer size.
-	localBuf  []uint16
+	stack [BUF_MAX]uint16
+	heap  []uint16
+	sz    uint
 }
 
-// Constructs a new buffer to receive Windows UTF-16 strings, with the given
-// initial length. Tries to use the global buffer; if already in use, allocates
-// a dynamic buffer.
-func NewBufDecoder(numChars uint) BufDecoder {
-	me := BufDecoder{
-		gotGlobal: globalBuf.tryGet(),
-	}
-	me.Resize(numChars)
-	return me
-}
-
-// Releases the lock for the buffer. No further strings should be added: the
-// object must be discarded.
-func (me *BufDecoder) Free() {
-	if me.gotGlobal {
-		globalBuf.release()
-	}
-	me.localBuf = nil
-}
-
-// Returns the size of the receiving buffer.
-func (me *BufDecoder) Len() uint {
-	return me.faceSize
-}
-
-// Resizes the receiving buffer to the given number of chars. Always grows.
-func (me *BufDecoder) Resize(numChars uint) {
-	if me.gotGlobal {
-		if !globalBuf.canFit(int(numChars)) {
-			me.localBuf = make([]uint16, numChars)
-			copy(me.localBuf, globalBuf.buf[:])
-			globalBuf.release() // we won't use the global buffer anymore
-			me.gotGlobal = false
-		}
+// Makes sure there is enough room for the given number of chars. If an
+// allocation is necessary, any previous content will be lost.
+func (me *BufDecoder) Alloc(numChars uint) {
+	if numChars > BUF_MAX {
+		me.heap = make([]uint16, numChars)
 	} else {
-		if numChars > uint(len(me.localBuf)) { // requesting a buffer even larger
-			newLocalBuf := make([]uint16, numChars)
-			copy(newLocalBuf, me.localBuf)
-			me.localBuf = newLocalBuf
-		}
+		me.heap = nil
 	}
-	me.faceSize = numChars
+	me.sz = numChars
 }
 
-// Converts the receiving buffer content to a Go string.
+// Makes sure there is enough room for the given number of chars. If an
+// allocation is necessary, any previous content will be lost.
+//
+// In addition, zeroes the whole buffer.
+func (me *BufDecoder) AllocAndZero(numChars uint) {
+	me.Alloc(numChars)
+	me.Zero()
+}
+
+// Returns a slice over the internal memory block, up to latest
+// [BufDecoder.Alloc] call.
+func (me *BufDecoder) HotSlice() []uint16 {
+	if me.heap != nil {
+		return me.heap
+	} else {
+		return me.stack[:me.sz]
+	}
+}
+
+// Returns the size of the last call to [BufDecoder.Alloc].
+func (me *BufDecoder) Len() uint {
+	return me.sz
+}
+
+// Returns a pointer to the internal memory block, either stack or heap.
+func (me *BufDecoder) Ptr() unsafe.Pointer {
+	if me.heap != nil {
+		return unsafe.Pointer(&me.heap[0])
+	} else {
+		return unsafe.Pointer(&me.stack)
+	}
+}
+
+// Converts the contents to a Go string.
 func (me *BufDecoder) String() string {
 	return DecodeSlice(me.HotSlice())
 }
 
-// Returns a slice over the block.
-func (me *BufDecoder) HotSlice() []uint16 {
-	if me.gotGlobal {
-		return globalBuf.buf[:me.faceSize]
+// Zeroes the whole buffer.
+func (me *BufDecoder) Zero() {
+	if me.heap != nil {
+		for i := 0; i < len(me.heap); i++ {
+			me.heap[i] = 0x0000
+		}
 	} else {
-		return me.localBuf[:me.faceSize]
-	}
-}
-
-// Returns the *uint16 to the beginning of the block.
-func (me *BufDecoder) UnsafePtr() unsafe.Pointer {
-	if me.gotGlobal {
-		return unsafe.Pointer(&globalBuf.buf[0])
-	} else {
-		return unsafe.Pointer(&me.localBuf[0])
+		for i := 0; i < len(me.stack); i++ {
+			me.stack[i] = 0x0000
+		}
 	}
 }

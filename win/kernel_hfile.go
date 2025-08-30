@@ -34,13 +34,10 @@ func CreateFile(
 	security co.SECURITY,
 	hTemplateFile HFILE,
 ) (HFILE, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pFileName := wbuf.PtrEmptyIsNil(fileName)
-
+	var wFileName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_CreateFileW, "CreateFileW"),
-		uintptr(pFileName),
+		uintptr(wFileName.EmptyIsNil(fileName)),
 		uintptr(desiredAccess),
 		uintptr(shareMode),
 		uintptr(unsafe.Pointer(securityAttributes)),
@@ -94,10 +91,7 @@ func (hFile HFILE) CreateFileMapping(
 	objectName string,
 ) (HFILEMAP, error) {
 	maxLo, maxHi := utl.Break64(uint64(maxSize))
-
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pObjectName := wbuf.PtrEmptyIsNil(objectName)
+	var wObjectName wstr.BufEncoder
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_CreateFileMappingFromApp, "CreateFileMappingFromApp"),
@@ -106,7 +100,7 @@ func (hFile HFILE) CreateFileMapping(
 		uintptr(uint32(protectPage)|uint32(protectSec)),
 		uintptr(maxHi),
 		uintptr(maxLo),
-		uintptr(pObjectName))
+		uintptr(wObjectName.EmptyIsNil(objectName)))
 	if ret == 0 {
 		return HFILEMAP(0), co.ERROR(err)
 	}

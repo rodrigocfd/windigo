@@ -29,13 +29,10 @@ import (
 //
 // [GetFileVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfow
 func GetFileVersionInfo(fileName string, dest []byte) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pFileName := wbuf.PtrEmptyIsNil(fileName)
-
+	var wFileName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.VERSION, &_GetFileVersionInfoW, "GetFileVersionInfoW"),
-		uintptr(pFileName),
+		uintptr(wFileName.EmptyIsNil(fileName)),
 		0,
 		uintptr(uint32(len(dest))),
 		uintptr(unsafe.Pointer(&dest[0])))
@@ -48,15 +45,12 @@ var _GetFileVersionInfoW *syscall.Proc
 //
 // [GetFileVersionInfoSize]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
 func GetFileVersionInfoSize(fileName string) (uint, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pFileName := wbuf.PtrEmptyIsNil(fileName)
-
+	var wFileName wstr.BufEncoder
 	var dummy uint32
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.VERSION, &_GetFileVersionInfoSizeW, "GetFileVersionInfoSizeW"),
-		uintptr(pFileName),
+		uintptr(wFileName.EmptyIsNil(fileName)),
 		uintptr(unsafe.Pointer(&dummy)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -109,17 +103,14 @@ var _GetFileVersionInfoSizeW *syscall.Proc
 //
 // [VerQueryValue]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
 func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, uint, bool) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pSubBlock := wbuf.PtrAllowEmpty(subBlock)
-
+	var wSubBlock wstr.BufEncoder
 	var lplpBuffer uintptr
 	var puLen uint32
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.VERSION, &_VerQueryValueW, "VerQueryValueW"),
 		uintptr(unsafe.Pointer(&block[0])),
-		uintptr(pSubBlock),
+		uintptr(wSubBlock.AllowEmpty(subBlock)),
 		uintptr(unsafe.Pointer(&lplpBuffer)),
 		uintptr(unsafe.Pointer(&puLen)))
 	if ret == 0 {

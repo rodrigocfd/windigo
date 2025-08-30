@@ -5,6 +5,7 @@ package wstr
 import (
 	"fmt"
 	"strings"
+	"unicode/utf16"
 )
 
 // Compares two strings [lexographically].
@@ -26,6 +27,40 @@ func Cmp(a, b string) int {
 // [lexographically]: https://stackoverflow.com/a/52831144/6923555
 func CmpI(a, b string) int {
 	return Cmp(strings.ToUpper(a), strings.ToUpper(b))
+}
+
+// Counts the number of runes in the string, which can be less than the number
+// of bytes returned by len(s).
+//
+// Adapted from [utf8.RuneCountInString].
+func CountRunes(s string) uint {
+	n := uint(0)
+	for range s {
+		n++
+	}
+	return n
+}
+
+// Counts the number of uint16 words in the string, when encoded to UTF-16. This
+// can be greater than the number of runes, because surrogate pairs are also
+// counted.
+//
+// This function doesn't count a terminating null, an empty string will return
+// zero.
+func CountUtf16Len(s string) uint {
+	numWords := 0
+	for _, ch := range s {
+		switch utf16.RuneLen(ch) {
+		case 2:
+			numWords += 2 // surrogate sequence
+		default:
+			// If 1, is an ordinary char.
+			// If -1, it's a rune which cannot be encoded to UTF-16; in such
+			// case, encoding will simply place a '\uFFFD' word.
+			numWords++
+		}
+	}
+	return uint(numWords)
 }
 
 // Formats a number of bytes into KB, MB, GB, TB or PB.
@@ -93,23 +128,20 @@ func RemoveDiacritics(s string) string {
 	diacs := []rune("ÁáÀàÃãÂâÄäÉéÈèÊêËëÍíÌìÎîÏïÓóÒòÕõÔôÖöÚúÙùÛûÜüÇçÅåÐðÑñØøÝýÿ")
 	repls := []rune("AaAaAaAaAaEeEeEeEeIiIiIiIiOoOoOoOoOoUuUuUuUuCcAaDdNnOoYyy")
 
-	var strBuf strings.Builder
-	strBuf.Grow(len([]rune(s)))
+	var buf strings.Builder
+	buf.Grow(int(CountRunes(s)))
 
+EachChar:
 	for _, ch := range s {
-		replaced := false
 		for i, diac := range diacs {
 			if ch == diac {
-				strBuf.WriteRune(repls[i])
-				replaced = true
-				break
+				buf.WriteRune(rune(repls[i]))
+				continue EachChar
 			}
 		}
-		if !replaced {
-			strBuf.WriteRune(ch)
-		}
+		buf.WriteRune(ch)
 	}
-	return strBuf.String()
+	return buf.String()
 }
 
 // Splits the string into lines, considering LF or CR+LF.

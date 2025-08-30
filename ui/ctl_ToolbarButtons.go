@@ -26,15 +26,14 @@ type CollectionToolbarButtons struct {
 //
 // [TB_ADDBUTTONS]: https://learn.microsoft.com/en-us/windows/win32/controls/tb-addbuttons
 func (me *CollectionToolbarButtons) Add(cmdId uint16, text string, iconIndex int) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
+	var wText wstr.BufEncoder
 
 	tbb := win.TBBUTTON{
 		IBitmap:   int32(iconIndex),
 		IdCommand: int32(cmdId),
 		FsStyle:   co.BTNS_AUTOSIZE,
 		FsState:   co.TBSTATE_ENABLED,
-		IString:   (*uint16)(wbuf.PtrAllowEmpty(text)),
+		IString:   (*uint16)(wText.AllowEmpty(text)),
 	}
 
 	ret, _ := me.owner.hWnd.SendMessage(co.TB_ADDBUTTONS,

@@ -18,15 +18,12 @@ import (
 //
 // [CommandLineToArgv]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw
 func CommandLineToArgv(cmdLine string) ([]string, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pCmdLine := wbuf.PtrEmptyIsNil(cmdLine)
-
+	var wCmdLine wstr.BufEncoder
 	var pNumArgs int32
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_CommandLineToArgvW, "CommandLineToArgvW"),
-		uintptr(pCmdLine),
+		uintptr(wCmdLine.EmptyIsNil(cmdLine)),
 		uintptr(unsafe.Pointer(&pNumArgs)))
 	if ret == 0 {
 		return nil, co.ERROR(err)
@@ -124,14 +121,11 @@ func SHCreateItemFromParsingName(
 
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())
-
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pFolderOrFilePath := wbuf.PtrEmptyIsNil(folderOrFilePath)
+	var wFolderOrFilePath wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_SHCreateItemFromParsingName, "SHCreateItemFromParsingName"),
-		uintptr(pFolderOrFilePath),
+		uintptr(wFolderOrFilePath.EmptyIsNil(folderOrFilePath)),
 		0,
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
@@ -162,15 +156,12 @@ func SHCreateItemFromRelativeName(
 
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())
-
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pName := wbuf.PtrAllowEmpty(name)
+	var wName wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_SHCreateItemFromRelativeName, "SHCreateItemFromRelativeName"),
 		uintptr(unsafe.Pointer(parent.Ppvt())),
-		uintptr(pName),
+		uintptr(wName.AllowEmpty(name)),
 		uintptr(ppvtOrNil(bindCtx)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
@@ -443,14 +434,11 @@ func SHGetPropertyStoreFromParsingName(
 ) (*IPropertyStore, error) {
 	var ppvtQueried **_IUnknownVt
 	guid := GuidFrom(co.IID_IPropertyStore)
-
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pFolderOrFilePath := wbuf.PtrAllowEmpty(folderOrFilePath)
+	var wFolderOrFilePath wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_SHGetPropertyStoreFromParsingName, "SHGetPropertyStoreFromParsingName"),
-		uintptr(pFolderOrFilePath),
+		uintptr(wFolderOrFilePath.AllowEmpty(folderOrFilePath)),
 		uintptr(ppvtOrNil(bindCtx)),
 		uintptr(flags),
 		uintptr(unsafe.Pointer(&guid)),
@@ -507,15 +495,12 @@ var _Shell_NotifyIconGetRect *syscall.Proc
 //
 // [SHGetFileInfo]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
 func SHGetFileInfo(path string, fileAttrs co.FILE_ATTRIBUTE, flags co.SHGFI) (SHFILEINFO, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pPath := wbuf.PtrAllowEmpty(path)
-
+	var wPath wstr.BufEncoder
 	var sfi SHFILEINFO
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_SHGetFileInfoW, "SHGetFileInfoW"),
-		uintptr(pPath),
+		uintptr(wPath.AllowEmpty(path)),
 		uintptr(fileAttrs),
 		uintptr(unsafe.Pointer(&sfi)),
 		unsafe.Sizeof(sfi),

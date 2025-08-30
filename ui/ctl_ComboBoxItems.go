@@ -20,14 +20,10 @@ type CollectionComboBoxItems struct {
 //
 // [CB_ADDSTRING]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-addstring
 func (me *CollectionComboBoxItems) Add(texts ...string) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-
+	var wText wstr.BufEncoder
 	for _, text := range texts {
-		pText := wbuf.PtrAllowEmpty(text)
 		me.owner.hWnd.SendMessage(co.CB_ADDSTRING,
-			0, win.LPARAM(pText))
-		wbuf.Clear()
+			0, win.LPARAM(wText.AllowEmpty(text)))
 	}
 }
 
@@ -35,8 +31,8 @@ func (me *CollectionComboBoxItems) Add(texts ...string) {
 //
 // [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
 func (me *CollectionComboBoxItems) All() []string {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	nItems := me.Count()
 	items := make([]string, 0, nItems)
@@ -45,9 +41,10 @@ func (me *CollectionComboBoxItems) All() []string {
 		// nChars, _ := me.owner.hWnd.SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(i), 0)
 		// recvBuf.Resize(uint(nChars) + 1)
 
+		wBuf.Zero()
 		me.owner.hWnd.SendMessage(co.CB_GETLBTEXT,
-			win.WPARAM(i), win.LPARAM(recvBuf.UnsafePtr()))
-		items = append(items, recvBuf.String())
+			win.WPARAM(i), win.LPARAM(wBuf.Ptr()))
+		items = append(items, wBuf.String())
 	}
 
 	return items
@@ -74,8 +71,8 @@ func (me *CollectionComboBoxItems) DeleteAll() {
 //
 // [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
 func (me *CollectionComboBoxItems) Get(index int) string {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	// nChars, _ := me.owner.hWnd.SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(index), 0)
 	// if int32(nChars) == -1 { // CB_ERR
@@ -84,8 +81,8 @@ func (me *CollectionComboBoxItems) Get(index int) string {
 	// recvBuf.Resize(uint(nChars) + 1)
 
 	me.owner.hWnd.SendMessage(co.CB_GETLBTEXT,
-		win.WPARAM(index), win.LPARAM(recvBuf.UnsafePtr()))
-	return recvBuf.String()
+		win.WPARAM(index), win.LPARAM(wBuf.Ptr()))
+	return wBuf.String()
 }
 
 // Returns the last item with [CB_GETLBTEXT].
@@ -127,10 +124,10 @@ func (me *CollectionComboBoxItems) Text(index uint) string {
 	// 	panic(fmt.Sprintf("CB_GETLBTEXTLEN failed at item %d.", index))
 	// }
 
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	me.owner.hWnd.SendMessage(co.CB_GETLBTEXT,
-		win.WPARAM(index), win.LPARAM(recvBuf.UnsafePtr()))
-	return recvBuf.String()
+		win.WPARAM(index), win.LPARAM(wBuf.Ptr()))
+	return wBuf.String()
 }

@@ -31,13 +31,10 @@ func CreateNamedPipe(
 	nDefaultTimeOut uint,
 	securityAttributes *SECURITY_ATTRIBUTES,
 ) (HPIPE, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pName := wbuf.PtrAllowEmpty(name)
-
+	var wName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_CreateNamedPipeW, "CreateNamedPipeW"),
-		uintptr(pName),
+		uintptr(wName.AllowEmpty(name)),
 		uintptr(dwOpenMode),
 		uintptr(dwPipeMode),
 		uintptr(uint32(nMaxInstances)),

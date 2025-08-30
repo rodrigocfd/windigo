@@ -105,7 +105,7 @@ func (ac *CONSOLE_FONT_INFOEX) FaceName() string {
 	return wstr.DecodeSlice(ac.faceName[:])
 }
 func (ac *CONSOLE_FONT_INFOEX) SetFaceName(val string) {
-	wstr.EncodeToBuf(val, ac.faceName[:])
+	wstr.EncodeToBuf(ac.faceName[:], val)
 }
 
 // [CONSOLE_READCONSOLE_CONTROL] struct.
@@ -360,14 +360,14 @@ func (me *MODULEENTRY32) SzModule() string {
 	return wstr.DecodeSlice(me.szModule[:])
 }
 func (me *MODULEENTRY32) SetSzModule(val string) {
-	wstr.EncodeToBuf(val, me.szModule[:])
+	wstr.EncodeToBuf(me.szModule[:], val)
 }
 
 func (me *MODULEENTRY32) SzExePath() string {
 	return wstr.DecodeSlice(me.szExePath[:])
 }
 func (me *MODULEENTRY32) SetSzExePath(val string) {
-	wstr.EncodeToBuf(val, me.szExePath[:])
+	wstr.EncodeToBuf(me.szExePath[:], val)
 }
 
 // [OSVERSIONINFOEX] struct.
@@ -405,7 +405,7 @@ func (osv *OSVERSIONINFOEX) SzCSDVersion() string {
 	return wstr.DecodeSlice(osv.szCSDVersion[:])
 }
 func (osv *OSVERSIONINFOEX) SetSzCSDVersion(val string) {
-	wstr.EncodeToBuf(val, osv.szCSDVersion[:])
+	wstr.EncodeToBuf(osv.szCSDVersion[:], val)
 }
 
 // [OVERLAPPED] struct.
@@ -460,7 +460,7 @@ func (me *PROCESSENTRY32) SzExeFile() string {
 	return wstr.DecodeSlice(me.szExeFile[:])
 }
 func (me *PROCESSENTRY32) SetSzExeFile(val string) {
-	wstr.EncodeToBuf(val, me.szExeFile[:])
+	wstr.EncodeToBuf(me.szExeFile[:], val)
 }
 
 // [PROCESSOR_NUMBER] struct.
@@ -652,14 +652,14 @@ func (tzi *TIME_ZONE_INFORMATION) StandardName() string {
 	return wstr.DecodeSlice(tzi.standardName[:])
 }
 func (tzi *TIME_ZONE_INFORMATION) SetStandardName(val string) {
-	wstr.EncodeToBuf(val, tzi.standardName[:])
+	wstr.EncodeToBuf(tzi.standardName[:], val)
 }
 
 func (tzi *TIME_ZONE_INFORMATION) DaylightName() string {
 	return wstr.DecodeSlice(tzi.daylightName[:])
 }
 func (tzi *TIME_ZONE_INFORMATION) SetDaylightName(val string) {
-	wstr.EncodeToBuf(val, tzi.daylightName[:])
+	wstr.EncodeToBuf(tzi.daylightName[:], val)
 }
 
 // [WIN32_FIND_DATA] struct.
@@ -685,12 +685,12 @@ func (wfd *WIN32_FIND_DATA) CFileName() string {
 	return wstr.DecodeSlice(wfd.cFileName[:])
 }
 func (wfd *WIN32_FIND_DATA) SetCFileName(val string) {
-	wstr.EncodeToBuf(val, wfd.cFileName[:])
+	wstr.EncodeToBuf(wfd.cFileName[:], val)
 }
 
 func (wfd *WIN32_FIND_DATA) CAlternateFileName() string {
 	return wstr.DecodeSlice(wfd.cAlternateFileName[:])
 }
 func (wfd *WIN32_FIND_DATA) SetCAlternateFileName(val string) {
-	wstr.EncodeToBuf(val, wfd.cAlternateFileName[:])
+	wstr.EncodeToBuf(wfd.cAlternateFileName[:], val)
 }

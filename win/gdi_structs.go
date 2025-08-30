@@ -326,7 +326,7 @@ func (dm *DEVMODE) DmDeviceName() string {
 	return wstr.DecodeSlice(dm.dmDeviceName[:])
 }
 func (dm *DEVMODE) SetDmDeviceName(val string) {
-	wstr.EncodeToBuf(val, dm.dmDeviceName[:])
+	wstr.EncodeToBuf(dm.dmDeviceName[:], val)
 }
 
 // Sets the dmSize field to the size of the struct, correctly initializing it.
@@ -350,7 +350,7 @@ func (dm *DEVMODE) DmFormName() string {
 	return wstr.DecodeSlice(dm.dmFormName[:])
 }
 func (dm *DEVMODE) SetDmFormName(val string) {
-	wstr.EncodeToBuf(val, dm.dmFormName[:])
+	wstr.EncodeToBuf(dm.dmFormName[:], val)
 }
 
 // Returns the 1st variation of the 2nd union.
@@ -413,7 +413,7 @@ func (lf *LOGFONT) LfFaceName() string {
 	return wstr.DecodeSlice(lf.lfFaceName[:])
 }
 func (lf *LOGFONT) SetLfFaceName(val string) {
-	wstr.EncodeToBuf(val, lf.lfFaceName[:])
+	wstr.EncodeToBuf(lf.lfFaceName[:], val)
 }
 
 func (lf *LOGFONT) Pitch() co.PITCH {

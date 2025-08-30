@@ -29,17 +29,17 @@ func (*IShellLink) IID() co.IID {
 //
 // [GetArguments]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getarguments
 func (me *IShellLink) GetArguments() (string, error) {
-	recvBuf := wstr.NewBufDecoder(utl.INFOTIPSIZE) // arbitrary
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(utl.INFOTIPSIZE) // arbitrary
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetArguments,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(int32(recvBuf.Len())))
+		uintptr(wBuf.Ptr()),
+		uintptr(int32(wBuf.Len())))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return recvBuf.String(), nil
+		return wBuf.String(), nil
 	} else {
 		return "", hr
 	}
@@ -49,17 +49,17 @@ func (me *IShellLink) GetArguments() (string, error) {
 //
 // [GetDescription]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getdescription
 func (me *IShellLink) GetDescription() (string, error) {
-	recvBuf := wstr.NewBufDecoder(utl.INFOTIPSIZE) // arbitrary
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(utl.INFOTIPSIZE) // arbitrary
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetDescription,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(int32(recvBuf.Len())))
+		uintptr(wBuf.Ptr()),
+		uintptr(int32(wBuf.Len())))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return recvBuf.String(), nil
+		return wBuf.String(), nil
 	} else {
 		return "", hr
 	}
@@ -86,20 +86,20 @@ func (me *IShellLink) GetHotkey() (co.HOTKEYF, error) {
 //
 // [GetIconLocation]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-geticonlocation
 func (me *IShellLink) GetIconLocation() (path string, index int, hr error) {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	var iconIndex uint16
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetIconLocation,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(int32(recvBuf.Len()-1)),
+		uintptr(wBuf.Ptr()),
+		uintptr(int32(wBuf.Len()-1)),
 		uintptr(unsafe.Pointer(&iconIndex)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return recvBuf.String(), int(iconIndex), nil
+		return wBuf.String(), int(iconIndex), nil
 	} else {
 		return "", 0, hr
 	}
@@ -109,19 +109,19 @@ func (me *IShellLink) GetIconLocation() (path string, index int, hr error) {
 //
 // [GetPath]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getpath
 func (me *IShellItem) GetPath(fd *WIN32_FIND_DATA, flags co.SLGP) (string, error) {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetPath,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(int32(recvBuf.Len()-1)),
+		uintptr(wBuf.Ptr()),
+		uintptr(int32(wBuf.Len()-1)),
 		uintptr(unsafe.Pointer(fd)),
 		uintptr(flags))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return recvBuf.String(), nil
+		return wBuf.String(), nil
 	} else {
 		return "", hr
 	}
@@ -148,17 +148,17 @@ func (me *IShellLink) GetShowCmd() (co.SW, error) {
 //
 // [GetWorkingDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getworkingdirectory
 func (me *IShellLink) GetWorkingDirectory() (string, error) {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).GetWorkingDirectory,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(int32(recvBuf.Len()-1)))
+		uintptr(wBuf.Ptr()),
+		uintptr(int32(wBuf.Len()-1)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return recvBuf.String(), nil
+		return wBuf.String(), nil
 	} else {
 		return "", hr
 	}
@@ -180,14 +180,11 @@ func (me *IShellLink) Resolve(hWnd HWND, flags co.SLR) error {
 //
 // [SetArguments]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setarguments
 func (me *IShellLink) SetArguments(args string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pArgs := wbuf.PtrAllowEmpty(args)
-
+	var wArgs wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetArguments,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pArgs))
+		uintptr(wArgs.AllowEmpty(args)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -195,14 +192,11 @@ func (me *IShellLink) SetArguments(args string) error {
 //
 // [SetDescription]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setdescription
 func (me *IShellLink) SetDescription(descr string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pDescr := wbuf.PtrAllowEmpty(descr)
-
+	var wDescr wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetDescription,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pDescr))
+		uintptr(wDescr.AllowEmpty(descr)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -221,14 +215,11 @@ func (me *IShellLink) SetHotkey(hotkey co.HOTKEYF) error {
 //
 // [SetIconLocation]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-seticonlocation
 func (me *IShellLink) SetIconLocation(path string, index int) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pPath := wbuf.PtrAllowEmpty(path)
-
+	var wPath wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetIconLocation,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pPath),
+		uintptr(wPath.AllowEmpty(path)),
 		uintptr(int32(index)))
 	return utl.ErrorAsHResult(ret)
 }
@@ -237,14 +228,11 @@ func (me *IShellLink) SetIconLocation(path string, index int) error {
 //
 // [SetPath]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setpath
 func (me *IShellLink) SetPath(path string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pPath := wbuf.PtrAllowEmpty(path)
-
+	var wPath wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetPath,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pPath))
+		uintptr(wPath.AllowEmpty(path)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -252,14 +240,11 @@ func (me *IShellLink) SetPath(path string) error {
 //
 // [SetRelativePath]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setrelativepath
 func (me *IShellLink) SetRelativePath(path string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pPath := wbuf.PtrAllowEmpty(path)
-
+	var wPath wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetRelativePath,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pPath))
+		uintptr(wPath.AllowEmpty(path)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -278,14 +263,11 @@ func (me *IShellLink) SetShowCmd(cmd co.SW) error {
 //
 // [SetWorkingDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-setworkingdirectory
 func (me *IShellLink) SetWorkingDirectory(path string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pPath := wbuf.PtrAllowEmpty(path)
-
+	var wPath wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetWorkingDirectory,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pPath))
+		uintptr(wPath.AllowEmpty(path)))
 	return utl.ErrorAsHResult(ret)
 }
 

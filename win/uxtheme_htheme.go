@@ -172,8 +172,8 @@ var _GetThemeRect *syscall.Proc
 //
 // [GetThemeString]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemestring
 func (hTheme HTHEME) GetThemeString(partStateId co.VS, propId co.TMT) (string, error) {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.UXTHEME, &_GetThemeString, "GetThemeString"),
@@ -181,12 +181,12 @@ func (hTheme HTHEME) GetThemeString(partStateId co.VS, propId co.TMT) (string, e
 		uintptr(partStateId.Part()),
 		uintptr(partStateId.State()),
 		uintptr(propId),
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(int32(recvBuf.Len())))
+		uintptr(wBuf.Ptr()),
+		uintptr(int32(wBuf.Len())))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
-	return recvBuf.String(), nil
+	return wBuf.String(), nil
 }
 
 var _GetThemeString *syscall.Proc

@@ -252,21 +252,21 @@ var _IsWow64Process *syscall.Proc
 //
 // [QueryFullProcessImageName]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-queryfullprocessimagenamew
 func (hProcess HPROCESS) QueryFullProcessImageName(flags co.PROCESS_NAME) (string, error) {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
-	szBuf := uint32(recvBuf.Len())
+	szBuf := uint32(wBuf.Len())
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_QueryFullProcessImageNameW, "QueryFullProcessImageNameW"),
 		uintptr(hProcess),
 		uintptr(flags),
-		uintptr(recvBuf.UnsafePtr()),
+		uintptr(wBuf.Ptr()),
 		uintptr(unsafe.Pointer(&szBuf)))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return recvBuf.String(), nil
+	return wBuf.String(), nil
 }
 
 var _QueryFullProcessImageNameW *syscall.Proc

@@ -59,10 +59,10 @@ func (me *ClassName) Atom() (ATOM, bool) {
 }
 
 // Creates a new [ClassName] with a string value.
-func ClassNameStr(str string) ClassName {
+func ClassNameStr(s string) ClassName {
 	return ClassName{
 		tag: _ClassNameTag_str,
-		str: str,
+		str: s,
 	}
 }
 
@@ -72,14 +72,14 @@ func (me *ClassName) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *ClassName) raw(wbuf *wstr.BufEncoder) uintptr {
+func (me *ClassName) raw(wBuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
 	case _ClassNameTag_none:
 		return 0
 	case _ClassNameTag_atom:
 		return uintptr(me.atom)
 	case _ClassNameTag_str:
-		return uintptr(wbuf.PtrEmptyIsNil(me.str))
+		return uintptr(wBuf.EmptyIsNil(me.str))
 	default:
 		panic("Invalid ClassName value.")
 	}
@@ -146,10 +146,10 @@ func (me *CursorRes) Id() (uint16, bool) {
 }
 
 // Creates a new [CursorRes] with a string value.
-func CursorResStr(str string) CursorRes {
+func CursorResStr(s string) CursorRes {
 	return CursorRes{
 		tag: _CursorTag_str,
-		str: str,
+		str: s,
 	}
 }
 
@@ -159,12 +159,12 @@ func (me *CursorRes) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *CursorRes) raw(wbuf *wstr.BufEncoder) uintptr {
+func (me *CursorRes) raw(wBuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
 	case _CursorTag_idc, _CursorTag_id:
 		return me.data
 	case _CursorTag_str:
-		return uintptr(wbuf.PtrEmptyIsNil(me.str))
+		return uintptr(wBuf.EmptyIsNil(me.str))
 	default:
 		panic("Invalid CursorRes value.")
 	}
@@ -231,10 +231,10 @@ func (me *IconRes) Id() (uint16, bool) {
 }
 
 // Creates a new [IconRes] with a string value.
-func IconResStr(str string) IconRes {
+func IconResStr(s string) IconRes {
 	return IconRes{
 		tag: _IconResTag_str,
-		str: str,
+		str: s,
 	}
 }
 
@@ -244,12 +244,12 @@ func (me *IconRes) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *IconRes) raw(wbuf *wstr.BufEncoder) uintptr {
+func (me *IconRes) raw(wBuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
 	case _IconResTag_idi, _IconResTag_id:
 		return me.data
 	case _IconResTag_str:
-		return uintptr(wbuf.PtrEmptyIsNil(me.str))
+		return uintptr(wBuf.EmptyIsNil(me.str))
 	default:
 		panic("Invalid IconRes value.")
 	}
@@ -293,10 +293,10 @@ func (me *ResId) Int() (uint16, bool) {
 }
 
 // Creates a new [ResId] with a string value.
-func ResIdStr(str string) ResId {
+func ResIdStr(s string) ResId {
 	return ResId{
 		tag: _ResIdTag_str,
-		str: str,
+		str: s,
 	}
 }
 
@@ -306,12 +306,12 @@ func (me *ResId) Str() (string, bool) {
 }
 
 // Converts the internal value to uintptr.
-func (me *ResId) raw(wbuf *wstr.BufEncoder) uintptr {
+func (me *ResId) raw(wBuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
 	case _ResIdTag_id:
 		return uintptr(me.id)
 	case _ResIdTag_str:
-		return uintptr(wbuf.PtrEmptyIsNil(me.str))
+		return uintptr(wBuf.EmptyIsNil(me.str))
 	default:
 		panic("Invalid ResId value.")
 	}

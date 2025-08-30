@@ -26,13 +26,10 @@ type HINSTANCE HANDLE
 //
 // [GetModuleHandle]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
 func GetModuleHandle(moduleName string) (HINSTANCE, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pModuleName := wbuf.PtrEmptyIsNil(moduleName)
-
+	var wModuleName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GetModuleHandleW, "GetModuleHandleW"),
-		uintptr(pModuleName))
+		uintptr(wModuleName.EmptyIsNil(moduleName)))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
 	}
@@ -47,13 +44,10 @@ var _GetModuleHandleW *syscall.Proc
 //
 // [LoadLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw
 func LoadLibrary(libFileName string) (HINSTANCE, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pLibFileName := wbuf.PtrEmptyIsNil(libFileName)
-
+	var wLibFileName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_LoadLibraryW, "LoadLibraryW"),
-		uintptr(pLibFileName))
+		uintptr(wLibFileName.EmptyIsNil(libFileName)))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
 	}
@@ -87,15 +81,15 @@ var _FreeLibrary *syscall.Proc
 //
 // [GetModuleFileName]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew
 func (hInst HINSTANCE) GetModuleFileName() (string, error) {
-	sz := wstr.BUF_MAX
-	buf := wstr.NewBufDecoder(sz)
-	defer buf.Free()
+	sz := uint(wstr.BUF_MAX)
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(sz)
 
 	for {
 		ret, _, err := syscall.SyscallN(
 			dll.Load(dll.KERNEL32, &_GetModuleFileNameW, "GetModuleFileNameW"),
 			uintptr(hInst),
-			uintptr(buf.UnsafePtr()),
+			uintptr(wBuf.Ptr()),
 			uintptr(uint32(sz)))
 		if ret == 0 {
 			return "", co.ERROR(err)
@@ -103,11 +97,11 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 		chCopied := uint(ret) + 1 // plus terminating null count
 
 		if chCopied < sz { // to break, must have at least 1 char gap
-			return buf.String(), nil
+			return wBuf.String(), nil
 		}
 
 		sz += 64
-		buf.Resize(sz) // increase buffer size to try again
+		wBuf.AllocAndZero(sz) // increase buffer size to try again
 	}
 }
 

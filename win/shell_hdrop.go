@@ -59,23 +59,24 @@ func (hDrop HDROP) DragQueryFile() ([]string, error) {
 		return nil, co.ERROR_INVALID_PARAMETER
 	}
 
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	count := uint32(ret)
 	paths := make([]string, 0, count)
 
 	for i := uint32(0); i < count; i++ {
+		wBuf.Zero()
 		ret, _, _ = syscall.SyscallN(
 			dll.Load(dll.SHELL32, &_DragQueryFileW, "DragQueryFileW"),
 			uintptr(hDrop),
 			uintptr(i),
-			uintptr(recvBuf.UnsafePtr()),
-			uintptr(uint32(recvBuf.Len())))
+			uintptr(wBuf.Ptr()),
+			uintptr(uint32(wBuf.Len())))
 		if ret == 0 {
 			return nil, co.ERROR_INVALID_PARAMETER
 		}
-		paths = append(paths, recvBuf.String())
+		paths = append(paths, wBuf.String())
 	}
 
 	return paths, nil

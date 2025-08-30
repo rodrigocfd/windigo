@@ -18,15 +18,11 @@ import (
 //
 // [CopyFile]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-copyfilew
 func CopyFile(existingFile, newFile string, failIfExists bool) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pExistingFile := wbuf.PtrEmptyIsNil(existingFile)
-	pNewFile := wbuf.PtrEmptyIsNil(newFile)
-
+	var wExistingFile, wNewFile wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_CopyFileW, "CopyFileW"),
-		uintptr(pExistingFile),
-		uintptr(pNewFile),
+		uintptr(wExistingFile.EmptyIsNil(existingFile)),
+		uintptr(wNewFile.EmptyIsNil(newFile)),
 		utl.BoolToUintptr(failIfExists))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -37,13 +33,10 @@ var _CopyFileW *syscall.Proc
 //
 // [CreateDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw
 func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pPathName := wbuf.PtrEmptyIsNil(pathName)
-
+	var wPathName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_CreateDirectoryW, "CreateDirectoryW"),
-		uintptr(pPathName),
+		uintptr(wPathName.EmptyIsNil(pathName)),
 		uintptr(unsafe.Pointer(securityAttributes)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -85,25 +78,20 @@ func CreateProcess(
 	currentDirectory string,
 	startupInfo *STARTUPINFO,
 ) (PROCESS_INFORMATION, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pApplicationName := wbuf.PtrEmptyIsNil(applicationName)
-	pCommandLine := wbuf.PtrEmptyIsNil(commandLine)
-	pCurrentDirectory := wbuf.PtrEmptyIsNil(currentDirectory)
-
+	var wApplicationName, wCommandLine, wCurrentDirectory wstr.BufEncoder
 	pEnvironment := wstr.EncodeArrToPtr(environment...)
 	var pi PROCESS_INFORMATION
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_CreateProcessW, "CreateProcessW"),
-		uintptr(pApplicationName),
-		uintptr(pCommandLine),
+		uintptr(wApplicationName.EmptyIsNil(applicationName)),
+		uintptr(wCommandLine.EmptyIsNil(commandLine)),
 		uintptr(unsafe.Pointer(processAttributes)),
 		uintptr(unsafe.Pointer(threadAttributes)),
 		utl.BoolToUintptr(inheritHandles),
 		uintptr(creationFlags|co.CREATE_UNICODE_ENVIRONMENT), // env strings are always UTF-16
 		uintptr(unsafe.Pointer(pEnvironment)),
-		uintptr(pCurrentDirectory),
+		uintptr(wCurrentDirectory.EmptyIsNil(currentDirectory)),
 		uintptr(unsafe.Pointer(startupInfo)),
 		uintptr(unsafe.Pointer(&pi)))
 	if ret == 0 {
@@ -133,13 +121,10 @@ var _DeactivateActCtx *syscall.Proc
 //
 // [DeleteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-deletefilew
 func DeleteFile(fileName string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pFileName := wbuf.PtrEmptyIsNil(fileName)
-
+	var wFileName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_DeleteFileW, "DeleteFileW"),
-		uintptr(pFileName))
+		uintptr(wFileName.EmptyIsNil(fileName)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -160,9 +145,8 @@ var _ExitProcess *syscall.Proc
 //
 // [ExpandEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-expandenvironmentstringsw
 func ExpandEnvironmentStrings(s string) (string, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pS := wbuf.PtrAllowEmpty(s)
+	var wS wstr.BufEncoder
+	pS := wS.AllowEmpty(s)
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_ExpandEnvironmentStringsW, "ExpandEnvironmentStringsW"),
@@ -173,16 +157,15 @@ func ExpandEnvironmentStrings(s string) (string, error) {
 	}
 
 	szBuf := uint(ret) // includes terminating null
-	recvBuf := wstr.NewBufDecoder(szBuf)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
 
 	for {
-		recvBuf.Resize(szBuf)
+		wBuf.AllocAndZero(szBuf)
 
 		ret, _, err = syscall.SyscallN(
 			dll.Load(dll.KERNEL32, &_ExpandEnvironmentStringsW, "ExpandEnvironmentStringsW"),
 			uintptr(pS),
-			uintptr(recvBuf.UnsafePtr()),
+			uintptr(wBuf.Ptr()),
 			uintptr(uint32(szBuf)))
 		if ret == 0 {
 			return "", co.ERROR(err)
@@ -190,7 +173,7 @@ func ExpandEnvironmentStrings(s string) (string, error) {
 		required := uint(ret) // plus terminating null count
 
 		if required <= szBuf {
-			return recvBuf.String(), nil
+			return wBuf.String(), nil
 		}
 
 		szBuf = required // set new buffer size to try again
@@ -352,13 +335,10 @@ var (
 //
 // [GetFileAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw
 func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pFileName := wbuf.PtrEmptyIsNil(fileName)
-
+	var wFileName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GetFileAttributesW, "GetFileAttributesW"),
-		uintptr(pFileName))
+		uintptr(wFileName.EmptyIsNil(fileName)))
 
 	if retAttr := co.FILE_ATTRIBUTE(ret); retAttr == co.FILE_ATTRIBUTE_INVALID {
 		return retAttr, co.ERROR(err) // err is extended error information
@@ -614,13 +594,10 @@ func MAKEWORD(lo, hi uint8) uint16 {
 //
 // [SetConsoleTitle]: https://learn.microsoft.com/en-us/windows/console/setconsoletitle
 func SetConsoleTitle(title string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pTitle := wbuf.PtrEmptyIsNil(title)
-
+	var wTitle wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_SetConsoleTitleW, "SetConsoleTitleW"),
-		uintptr(pTitle))
+		uintptr(wTitle.EmptyIsNil(title)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -630,13 +607,10 @@ var _SetConsoleTitleW *syscall.Proc
 //
 // [SetCurrentDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setcurrentdirectory
 func SetCurrentDirectory(pathName string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pPathName := wbuf.PtrEmptyIsNil(pathName)
-
+	var wPathName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_SetCurrentDirectoryW, "SetCurrentDirectoryW"),
-		uintptr(pPathName))
+		uintptr(wPathName.EmptyIsNil(pathName)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

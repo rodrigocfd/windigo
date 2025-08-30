@@ -28,14 +28,11 @@ var _IsThemeDialogTextureEnabled *syscall.Proc
 //
 // [OpenThemeData]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-openthemedata
 func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pClassNames := wbuf.PtrEmptyIsNil(classNames)
-
+	var wClassNames wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.UXTHEME, &_OpenThemeData, "OpenThemeData"),
 		uintptr(hWnd),
-		uintptr(pClassNames))
+		uintptr(wClassNames.EmptyIsNil(classNames)))
 	if ret == 0 {
 		return HTHEME(0), co.HRESULT_E_FAIL
 	}

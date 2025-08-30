@@ -24,8 +24,7 @@ type Vec[T any] struct {
 	inUse uint // Number of elements effectively being used.
 }
 
-// Creates a new, unallocated [Vec], which allows manual memory management from
-// the heap.
+// Creates a new, unallocated [Vec].
 //
 // Do not store Go pointers in a Vec – this will make the GC believe they are no
 // more in use, thus collecting them.
@@ -60,7 +59,7 @@ func NewVecReserved[T any](numElems uint) Vec[T] {
 	return me
 }
 
-// Creates a new [Vec] with the given copies of the element.
+// Creates a new [Vec] with numElems copies of elem.
 //
 // Do not store Go pointers in a Vec – this will make the GC believe they are no
 // more in use, thus collecting them.
@@ -96,7 +95,7 @@ func (me *Vec[T]) Append(elems ...T) {
 	}
 }
 
-// Appends N copies of the element, increasing the buffer size if needed.
+// Appends numElems copies of elem, increasing the buffer size if needed.
 func (me *Vec[T]) AppendN(numElems uint, elem T) {
 	me.Reserve(me.inUse + numElems)
 	for i := uint(0); i < numElems; i++ {
@@ -157,6 +156,18 @@ func (me *Vec[T]) Len() uint {
 	return me.inUse
 }
 
+// Returns a pointer to allocated memory block.
+//
+// If the buffer is changed for whathever reason – like by adding an element or
+// reserving more space –, this pointer will be no longer valid.
+func (me *Vec[T]) Ptr() unsafe.Pointer {
+	if me.IsEmpty() {
+		return nil
+	} else {
+		return unsafe.Pointer(&me.data[0])
+	}
+}
+
 // Allocates memory for the given number of elements, reserving the space,
 // without adding elements.
 //
@@ -196,18 +207,6 @@ func (me *Vec[T]) Resize(numElements uint, elemToFill T) {
 			me.data[i] = dummy // fill the unused memory
 		}
 		me.inUse = numElements
-	}
-}
-
-// Returns a pointer to allocated memory block.
-//
-// If the buffer is changed for whathever reason – like by adding an element or
-// reserving more space –, this pointer will be no longer valid.
-func (me *Vec[T]) UnsafePtr() unsafe.Pointer {
-	if me.IsEmpty() {
-		return nil
-	} else {
-		return unsafe.Pointer(&me.data[0])
 	}
 }
 

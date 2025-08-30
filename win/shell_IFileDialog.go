@@ -205,14 +205,11 @@ func (me *IFileDialog) SetClientGuid(guid *GUID) error {
 //
 // [SetDefaultExtension]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setdefaultextension
 func (me *IFileDialog) SetDefaultExtension(defaultExt string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pDefaultExt := wbuf.PtrEmptyIsNil(defaultExt)
-
+	var wDefaultExt wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetDefaultExtension,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pDefaultExt))
+		uintptr(wDefaultExt.EmptyIsNil(defaultExt)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -231,14 +228,11 @@ func (me *IFileDialog) SetDefaultFolder(si *IShellItem) error {
 //
 // [SetFileName]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilename
 func (me *IFileDialog) SetFileName(name string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pName := wbuf.PtrEmptyIsNil(name)
-
+	var wName wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFileName,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pName))
+		uintptr(wName.EmptyIsNil(name)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -246,14 +240,11 @@ func (me *IFileDialog) SetFileName(name string) error {
 //
 // [SetFileNameLabel]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfilenamelabel
 func (me *IFileDialog) SetFileNameLabel(label string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pLabel := wbuf.PtrEmptyIsNil(label)
-
+	var wLabel wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFileNameLabel,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pLabel))
+		uintptr(wLabel.EmptyIsNil(label)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -283,14 +274,11 @@ func (me *IFileDialog) SetFileTypeIndex(index uint) error {
 //
 // [SetFileTypes]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypes
 func (me *IFileDialog) SetFileTypes(filterSpec []COMDLG_FILTERSPEC) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-
 	nativeFilters := make([]_COMDLG_FILTERSPEC, 0, len(filterSpec))
 	for _, fs := range filterSpec {
 		nativeFilters = append(nativeFilters, _COMDLG_FILTERSPEC{
-			PszName: (*uint16)(wbuf.PtrAllowEmpty(fs.Name)),
-			PszSpec: (*uint16)(wbuf.PtrAllowEmpty(fs.Spec)),
+			PszName: (*uint16)(wstr.EncodeToPtr(fs.Name)),
+			PszSpec: (*uint16)(wstr.EncodeToPtr(fs.Spec)),
 		})
 	}
 
@@ -328,14 +316,11 @@ func (me *IFileDialog) SetFolder(si *IShellItem) error {
 //
 // [SetOkButtonLabel]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setokbuttonlabel
 func (me *IFileDialog) SetOkButtonLabel(text string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pText := wbuf.PtrEmptyIsNil(text)
-
+	var wText wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetOkButtonLabel,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pText))
+		uintptr(wText.EmptyIsNil(text)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -365,14 +350,11 @@ func (me *IFileDialog) SetOptions(fos co.FOS) error {
 //
 // [SetTitle]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-settitle
 func (me *IFileDialog) SetTitle(title string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pTitle := wbuf.PtrEmptyIsNil(title)
-
+	var wTitle wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetTitle,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(pTitle))
+		uintptr(wTitle.EmptyIsNil(title)))
 	return utl.ErrorAsHResult(ret)
 }
 

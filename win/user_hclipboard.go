@@ -145,18 +145,18 @@ var _GetClipboardData *syscall.Proc
 //
 // [GetClipboardFormatName]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardformatnamew
 func (HCLIPBOARD) GetClipboardFormatName(format co.CF) (string, error) {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_GetClipboardFormatNameW, "GetClipboardFormatNameW"),
 		uintptr(format),
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(int32(recvBuf.Len())))
+		uintptr(wBuf.Ptr()),
+		uintptr(int32(wBuf.Len())))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return recvBuf.String(), nil
+	return wBuf.String(), nil
 }
 
 var _GetClipboardFormatNameW *syscall.Proc

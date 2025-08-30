@@ -57,9 +57,8 @@ func (me *_RawBase) registerClass(
 			wcx.HbrBackground, wcx.HIconSm, wcx.LpszMenuName)
 	}
 
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	wcx.LpszClassName = (*uint16)(wbuf.PtrEmptyIsNil(className))
+	var wClassName wstr.BufEncoder
+	wcx.LpszClassName = (*uint16)(wClassName.EmptyIsNil(className))
 
 	atom, err := win.RegisterClassEx(&wcx)
 	if err != nil {

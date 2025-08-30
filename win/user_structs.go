@@ -119,14 +119,14 @@ func (dd *DISPLAY_DEVICE) DeviceName() string {
 	return wstr.DecodeSlice(dd.deviceName[:])
 }
 func (dd *DISPLAY_DEVICE) SetDeviceName(val string) {
-	wstr.EncodeToBuf(val, dd.deviceName[:])
+	wstr.EncodeToBuf(dd.deviceName[:], val)
 }
 
 func (dd *DISPLAY_DEVICE) DeviceString() string {
 	return wstr.DecodeSlice(dd.deviceString[:])
 }
 func (dd *DISPLAY_DEVICE) SetDeviceString(val string) {
-	wstr.EncodeToBuf(val, dd.deviceString[:])
+	wstr.EncodeToBuf(dd.deviceString[:], val)
 }
 
 // [DLGTEMPLATE] struct.
@@ -256,14 +256,14 @@ func (iix *ICONINFOEX) SzModName() string {
 	return wstr.DecodeSlice(iix.szModName[:])
 }
 func (iix *ICONINFOEX) SetSzModName(val string) {
-	wstr.EncodeToBuf(val, iix.szModName[:])
+	wstr.EncodeToBuf(iix.szModName[:], val)
 }
 
 func (iix *ICONINFOEX) SzResName() string {
 	return wstr.DecodeSlice(iix.szResName[:])
 }
 func (iix *ICONINFOEX) SetSzResName(val string) {
-	wstr.EncodeToBuf(val, iix.szResName[:])
+	wstr.EncodeToBuf(iix.szResName[:], val)
 }
 
 // [INPUT] struct.
@@ -465,7 +465,7 @@ func (mix *MONITORINFOEX) SzDevice() string {
 	return wstr.DecodeSlice(mix.szDevice[:])
 }
 func (mix *MONITORINFOEX) SetSzDevice(val string) {
-	wstr.EncodeToBuf(val, mix.szDevice[:])
+	wstr.EncodeToBuf(mix.szDevice[:], val)
 }
 
 // [MSG] struct.

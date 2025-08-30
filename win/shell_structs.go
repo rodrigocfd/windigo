@@ -90,7 +90,7 @@ func (nid *NOTIFYICONDATA) SzTip() string {
 
 // Sets the text of the icon tooltip.
 func (nid *NOTIFYICONDATA) SetSzTip(val string) {
-	wstr.EncodeToBuf(val, nid.szTip[:])
+	wstr.EncodeToBuf(nid.szTip[:], val)
 }
 
 // Retrieves the text displayed in a balloon notification.
@@ -100,7 +100,7 @@ func (nid *NOTIFYICONDATA) SzInfo() string {
 
 // Sets the text displayed in a balloon notification.
 func (nid *NOTIFYICONDATA) SetSzInfo(val string) {
-	wstr.EncodeToBuf(val, nid.szInfo[:])
+	wstr.EncodeToBuf(nid.szInfo[:], val)
 }
 
 // Retrieves the title of the ballon notification.
@@ -110,7 +110,7 @@ func (nid *NOTIFYICONDATA) SzInfoTitle() string {
 
 // Sets the title of the ballon notification.
 func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
-	wstr.EncodeToBuf(val, nid.szInfoTitle[:])
+	wstr.EncodeToBuf(nid.szInfoTitle[:], val)
 }
 
 // [NOTIFYICONIDENTIFIER] struct.
@@ -182,14 +182,14 @@ func (shf *SHFILEINFO) SzDisplayName() string {
 	return wstr.DecodeSlice(shf.szDisplayName[:])
 }
 func (shf *SHFILEINFO) SetSzDisplayName(val string) {
-	wstr.EncodeToBuf(val, shf.szDisplayName[:])
+	wstr.EncodeToBuf(shf.szDisplayName[:], val)
 }
 
 func (shf *SHFILEINFO) SzTypeName() string {
 	return wstr.DecodeSlice(shf.szTypeName[:])
 }
 func (shf *SHFILEINFO) SetSzTypeName(val string) {
-	wstr.EncodeToBuf(val, shf.szTypeName[:])
+	wstr.EncodeToBuf(shf.szTypeName[:], val)
 }
 
 // [THUMBBUTTON] struct.
@@ -208,5 +208,5 @@ func (tb *THUMBBUTTON) SzTip() string {
 	return wstr.DecodeSlice(tb.szTip[:])
 }
 func (tb *THUMBBUTTON) SetSzTip(val string) {
-	wstr.EncodeToBuf(val, tb.szTip[:])
+	wstr.EncodeToBuf(tb.szTip[:], val)
 }

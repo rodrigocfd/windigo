@@ -55,9 +55,6 @@ func (me *CollectionListViewItems) AddWithIcon(iconIndex int, texts ...string) L
 		panic("You must inform at least 1 text when adding a ListView item.")
 	}
 
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-
 	mask := co.LVIF_TEXT
 	if iconIndex != -1 {
 		mask |= co.LVIF_IMAGE
@@ -68,9 +65,11 @@ func (me *CollectionListViewItems) AddWithIcon(iconIndex int, texts ...string) L
 		IItem:  0x0fff_ffff, // insert as last one
 		IImage: int32(iconIndex),
 	}
-	lvi.SetPszText(wbuf.SliceAllowEmpty(texts[0])) // first column is inserted right away
 
-	newIdxRet, err := me.owner.hWnd.SendMessage(co.LVM_INSERTITEM,
+	var wText wstr.BufEncoder
+	lvi.SetPszText(wText.Slice(texts[0]))
+
+	newIdxRet, err := me.owner.hWnd.SendMessage(co.LVM_INSERTITEM, // first column is inserted right away
 		0, win.LPARAM(unsafe.Pointer(&lvi)))
 	newIdx := int(newIdxRet)
 	if err != nil || newIdx == -1 {
@@ -79,9 +78,7 @@ func (me *CollectionListViewItems) AddWithIcon(iconIndex int, texts ...string) L
 
 	for i := 1; i < len(texts); i++ { // each subsequent column
 		lvi.ISubItem = int32(i)
-
-		wbuf.Clear()
-		lvi.SetPszText(wbuf.SliceAllowEmpty(texts[i]))
+		lvi.SetPszText(wText.Slice(texts[i]))
 
 		ret, err := me.owner.hWnd.SendMessage(co.LVM_SETITEMTEXT,
 			win.WPARAM(newIdx), win.LPARAM(unsafe.Pointer(&lvi)))
@@ -152,12 +149,11 @@ func (me *CollectionListViewItems) Focused() (ListViewItem, bool) {
 //
 // [LVM_FINDITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-finditem
 func (me *CollectionListViewItems) Find(text string) (ListViewItem, bool) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
+	var wText wstr.BufEncoder
 
 	lvfi := win.LVFINDINFO{
 		Flags: co.LVFI_STRING,
-		Psz:   (*uint16)(wbuf.PtrAllowEmpty(text)),
+		Psz:   (*uint16)(wText.AllowEmpty(text)),
 	}
 
 	idxBaseSearch := -1

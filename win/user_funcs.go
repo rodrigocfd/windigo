@@ -189,10 +189,7 @@ var _EndMenu *syscall.Proc
 //
 // [EnumDisplayDevices]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw
 func EnumDisplayDevices(device string, flags co.EDD) []DISPLAY_DEVICE {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pDevice := wbuf.PtrEmptyIsNil(device)
-
+	var wDevice wstr.BufEncoder
 	devices := make([]DISPLAY_DEVICE, 0) // to be returned
 	devNum := 0
 
@@ -203,7 +200,7 @@ func EnumDisplayDevices(device string, flags co.EDD) []DISPLAY_DEVICE {
 		// Ignore errors: only fails with devNum out-of-bounds, which never happens here.
 		ret, _, _ := syscall.SyscallN(
 			dll.Load(dll.USER32, &_EnumDisplayDevicesW, "EnumDisplayDevicesW"),
-			uintptr(pDevice),
+			uintptr(wDevice.EmptyIsNil(device)),
 			uintptr(devNum),
 			uintptr(unsafe.Pointer(&dide)),
 			uintptr(flags))
@@ -708,13 +705,10 @@ var _RegisterClassExW *syscall.Proc
 //
 // [RegisterClipboardFormat]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclipboardformatw
 func RegisterClipboardFormat(name string) (co.CF, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pName := wbuf.PtrAllowEmpty(name)
-
+	var wName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_RegisterClipboardFormatW, "RegisterClipboardFormatW"),
-		uintptr(pName))
+		uintptr(wName.AllowEmpty(name)))
 	if ret == 0 {
 		return co.CF(0), co.ERROR(err)
 	}
@@ -727,13 +721,10 @@ var _RegisterClipboardFormatW *syscall.Proc
 //
 // [RegisterWindowMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerwindowmessagew
 func RegisterWindowMessage(message string) (co.WM, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pMessage := wbuf.PtrEmptyIsNil(message)
-
+	var wMessage wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_RegisterWindowMessageW, "RegisterWindowMessageW"),
-		uintptr(pMessage))
+		uintptr(wMessage.EmptyIsNil(message)))
 
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return co.WM(0), wErr
@@ -896,13 +887,10 @@ var _TranslateMessage *syscall.Proc
 //
 // [UnregisterClass]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unregisterclassw
 func UnregisterClass(className ClassName, hInst HINSTANCE) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pClassName := className.raw(&wbuf)
-
+	var wClassName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_UnregisterClassW, "UnregisterClassW"),
-		pClassName,
+		className.raw(&wClassName),
 		uintptr(hInst))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return wErr

@@ -287,13 +287,12 @@ func (me ListViewItem) SetIconIndex(iconIndex int) ListViewItem {
 //
 // [LVM_SETITEMTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setitemtext
 func (me ListViewItem) SetText(columnIndex int, text string) ListViewItem {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-
 	lvi := win.LVITEM{
 		ISubItem: int32(columnIndex),
 	}
-	lvi.SetPszText(wbuf.SliceAllowEmpty(text))
+
+	var wText wstr.BufEncoder
+	lvi.SetPszText(wText.Slice(text))
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETITEMTEXT,
 		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
@@ -309,28 +308,28 @@ func (me ListViewItem) SetText(columnIndex int, text string) ListViewItem {
 //
 // [LVM_GETITEMTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitemtext
 func (me ListViewItem) Text(columnIndex int) string {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
-
 	lvi := win.LVITEM{
 		ISubItem: int32(columnIndex),
 	}
 
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
+
 	for {
-		lvi.SetPszText(recvBuf.HotSlice())
+		lvi.SetPszText(wBuf.HotSlice())
 
 		nCharsRet, _ := me.owner.hWnd.SendMessage(co.LVM_GETITEMTEXT,
 			win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
 		nChars := uint(nCharsRet)
 
-		if nChars+1 < recvBuf.Len() { // to break, must have at least 1 char gap
+		if nChars+1 < wBuf.Len() { // to break, must have at least 1 char gap
 			break
 		}
 
-		recvBuf.Resize(recvBuf.Len() + 64) // increase buffer size to try again
+		wBuf.AllocAndZero(wBuf.Len() + 64) // increase buffer size to try again
 	}
 
-	return recvBuf.String()
+	return wBuf.String()
 }
 
 // Returns the unique ID associated to the item with [LVM_MAPINDEXTOID].

@@ -39,10 +39,7 @@ func CreateFont(
 	family co.FF,
 	faceName string,
 ) (HFONT, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pFaceName := wbuf.PtrEmptyIsNil(faceName)
-
+	var wFaceName wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_CreateFontW, "CreateFontW"),
 		uintptr(int32(height)),
@@ -58,7 +55,7 @@ func CreateFont(
 		uintptr(clipPrecision),
 		uintptr(quality),
 		uintptr(uint8(pitch)|uint8(family)),
-		uintptr(pFaceName))
+		uintptr(wFaceName.EmptyIsNil(faceName)))
 	if ret == 0 {
 		return HFONT(0), co.ERROR_INVALID_PARAMETER
 	}

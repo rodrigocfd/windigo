@@ -78,14 +78,11 @@ func (me *IBindCtx) GetObjectParam(releaser *OleReleaser, key string, ppOut inte
 	releaser.ReleaseNow(pOut)
 
 	var ppvtQueried **_IUnknownVt
-
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pKey := wbuf.PtrAllowEmpty(key)
+	var wKey wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).GetObjectParam,
-		uintptr(pKey),
+		uintptr(wKey.AllowEmpty(key)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {

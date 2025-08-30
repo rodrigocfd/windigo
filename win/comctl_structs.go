@@ -153,14 +153,14 @@ func (li *LITEM) SzID() string {
 	return wstr.DecodeSlice(li.szID[:])
 }
 func (li *LITEM) SetSzID(val string) {
-	wstr.EncodeToBuf(val, li.szID[:])
+	wstr.EncodeToBuf(li.szID[:], val)
 }
 
 func (li *LITEM) SzUrl() string {
 	return wstr.DecodeSlice(li.szUrl[:])
 }
 func (li *LITEM) SetSzUrl(val string) {
-	wstr.EncodeToBuf(val, li.szUrl[:])
+	wstr.EncodeToBuf(li.szUrl[:], val)
 }
 
 // [LVCOLUMN] struct.
@@ -317,7 +317,7 @@ func (dtf *NMDATETIMEFORMAT) SzDisplay() string {
 	return wstr.DecodeSlice(dtf.szDisplay[:])
 }
 func (dtf *NMDATETIMEFORMAT) SetSzDisplay(val string) {
-	wstr.EncodeToBuf(val, dtf.szDisplay[:])
+	wstr.EncodeToBuf(dtf.szDisplay[:], val)
 }
 
 // [NMDATETIMEFORMATQUERY] struct.
@@ -572,7 +572,7 @@ func (lve *NMLVEMPTYMARKUP) SzMarkup() string {
 	return wstr.DecodeSlice(lve.szMarkup[:])
 }
 func (lve *NMLVEMPTYMARKUP) SetSzMarkup(val string) {
-	wstr.EncodeToBuf(val, lve.szMarkup[:])
+	wstr.EncodeToBuf(lve.szMarkup[:], val)
 }
 
 // [NMLVFINDITEM] struct.
@@ -997,80 +997,82 @@ type TASKDIALOGCONFIG struct {
 
 // Converts the syntactic sugar struct into the packed raw one.
 func (tdc *TASKDIALOGCONFIG) serialize(
-	pStrsBuf *wstr.BufEncoder, // buffer for all struct and button strings
-	pTdcBuf *Vec[byte],
-	pBtnsBuf *Vec[[12]byte], // buffer for Buttons and RadioButtons
+	tdcBuf []byte, // TASKDIALOGCONFIG buffer
+	btnsBuf []byte, // buffer for Buttons
+	radsBuf []byte, // buffer for RadioButtons
+	strsBuf []uint16, // buffer for the null-terminated UTF-16 strings
 ) {
-	dest := pTdcBuf.HotSlice()
+	tdc.put32(tdcBuf[0:], uint32(len(tdcBuf))) // cbSize
+	tdc.put64(tdcBuf[4:], uint64(tdc.HwndParent))
+	tdc.put64(tdcBuf[12:], uint64(tdc.HInstance))
+	tdc.put32(tdcBuf[20:], uint32(tdc.Flags))
+	tdc.put32(tdcBuf[24:], uint32(tdc.CommonButtons))
 
-	numButtons := uint(len(tdc.Buttons))
-	numRadios := uint(len(tdc.RadioButtons))
-	pBtnsBuf.Resize(numButtons+numRadios, [12]byte{}) // alloc buffer for buttons + radios
-
-	tdc.put32(dest[0:], uint32(pTdcBuf.Len())) // cbSize
-	tdc.put64(dest[4:], uint64(tdc.HwndParent))
-	tdc.put64(dest[12:], uint64(tdc.HInstance))
-	tdc.put32(dest[20:], uint32(tdc.Flags))
-	tdc.put32(dest[24:], uint32(tdc.CommonButtons))
-
-	tdc.putPtr(dest[28:], pStrsBuf.PtrEmptyIsNil(tdc.WindowTitle))
+	_, strsBuf = tdc.putStr(tdcBuf[28:], strsBuf, tdc.WindowTitle)
 
 	if !tdc.HMainIcon.IsNone() {
-		tdc.put64(dest[36:], tdc.HMainIcon.raw())
+		tdc.put64(tdcBuf[36:], tdc.HMainIcon.raw())
 	}
 
-	tdc.putPtr(dest[44:], pStrsBuf.PtrEmptyIsNil(tdc.MainInstruction))
-	tdc.putPtr(dest[52:], pStrsBuf.PtrEmptyIsNil(tdc.Content))
+	_, strsBuf = tdc.putStr(tdcBuf[44:], strsBuf, tdc.MainInstruction)
+	_, strsBuf = tdc.putStr(tdcBuf[52:], strsBuf, tdc.Content)
 
 	if len(tdc.Buttons) > 0 {
-		for i, btn := range tdc.Buttons {
-			pBtnBuf := pBtnsBuf.Get(uint(i)) // already allocated
-			tdc.put32((*pBtnBuf)[:], uint32(btn.Id))
-			tdc.putPtr((*pBtnBuf)[4:], pStrsBuf.PtrEmptyIsNil(btn.Text))
+		tdc.put32(tdcBuf[60:], uint32(len(tdc.Buttons)))     // number of buttons
+		tdc.putPtr(tdcBuf[64:], unsafe.Pointer(&btnsBuf[0])) // pointer to TASKDIALOG_BUTTON block
+		for _, btn := range tdc.Buttons {
+			btnsBuf = tdc.put32(btnsBuf, uint32(btn.Id))
+			btnsBuf, strsBuf = tdc.putStr(btnsBuf, strsBuf, btn.Text)
 		}
-		tdc.put32(dest[60:], uint32(len(tdc.Buttons))) // number of buttons
-		tdc.putPtr(dest[64:], pBtnsBuf.UnsafePtr())    // ptr to buttons block
 	}
 
-	tdc.put32(dest[72:], uint32(tdc.DefaultButtonId))
+	tdc.put32(tdcBuf[72:], uint32(tdc.DefaultButtonId))
 
 	if len(tdc.RadioButtons) > 0 {
-		baseRadioIdx := uint(len(tdc.Buttons)) // radios are appended after the buttons
-		for i, btn := range tdc.RadioButtons {
-			pBtnBuf := pBtnsBuf.Get(baseRadioIdx + uint(i)) // already allocated
-			tdc.put32((*pBtnBuf)[:], uint32(btn.Id))
-			tdc.putPtr((*pBtnBuf)[4:], pStrsBuf.PtrEmptyIsNil(btn.Text))
+		tdc.put32(tdcBuf[76:], uint32(len(tdc.RadioButtons))) // number of radios
+		tdc.putPtr(tdcBuf[80:], unsafe.Pointer(&radsBuf[0]))  // pointer to TASKDIALOG_BUTTON block
+		for _, rad := range tdc.RadioButtons {
+			radsBuf = tdc.put32(radsBuf, uint32(rad.Id))
+			radsBuf, strsBuf = tdc.putStr(radsBuf, strsBuf, rad.Text)
 		}
-		tdc.put32(dest[76:], uint32(len(tdc.RadioButtons)))               // number of radios
-		tdc.putPtr(dest[80:], unsafe.Pointer(pBtnsBuf.Get(baseRadioIdx))) // ptr to radios block
 	}
 
-	tdc.put32(dest[88:], uint32(tdc.DefaultRadioButton))
+	tdc.put32(tdcBuf[88:], uint32(tdc.DefaultRadioButton))
 
-	tdc.putPtr(dest[92:], pStrsBuf.PtrEmptyIsNil(tdc.VerificationText))
-	tdc.putPtr(dest[100:], pStrsBuf.PtrEmptyIsNil(tdc.ExpandedInformation))
-	tdc.putPtr(dest[108:], pStrsBuf.PtrEmptyIsNil(tdc.ExpandedControlText))
-	tdc.putPtr(dest[116:], pStrsBuf.PtrEmptyIsNil(tdc.CollapsedControlText))
+	_, strsBuf = tdc.putStr(tdcBuf[92:], strsBuf, tdc.VerificationText)
+	_, strsBuf = tdc.putStr(tdcBuf[100:], strsBuf, tdc.ExpandedInformation)
+	_, strsBuf = tdc.putStr(tdcBuf[108:], strsBuf, tdc.ExpandedControlText)
+	_, strsBuf = tdc.putStr(tdcBuf[116:], strsBuf, tdc.CollapsedControlText)
 
 	if !tdc.HFooterIcon.IsNone() {
-		tdc.put64(dest[124:], tdc.HFooterIcon.raw())
+		tdc.put64(tdcBuf[124:], tdc.HFooterIcon.raw())
 	}
 
-	tdc.putPtr(dest[132:], pStrsBuf.PtrEmptyIsNil(tdc.Footer))
+	_, strsBuf = tdc.putStr(tdcBuf[132:], strsBuf, tdc.Footer)
 
-	tdc.put64(dest[140:], uint64(tdc.PfCallback))
-	tdc.put64(dest[148:], uint64(tdc.LpCallbackData))
-	tdc.put32(dest[156:], uint32(tdc.Width))
+	tdc.put64(tdcBuf[140:], uint64(tdc.PfCallback))
+	tdc.put64(tdcBuf[148:], uint64(tdc.LpCallbackData))
+	tdc.put32(tdcBuf[156:], uint32(tdc.Width))
 }
 
-func (*TASKDIALOGCONFIG) put32(b []byte, v uint32) {
+func (*TASKDIALOGCONFIG) put32(b []byte, v uint32) []byte {
 	binary.LittleEndian.PutUint32(b, v)
+	return b[4:]
 }
-func (*TASKDIALOGCONFIG) put64(b []byte, v uint64) {
+func (*TASKDIALOGCONFIG) put64(b []byte, v uint64) []byte {
 	binary.LittleEndian.PutUint64(b, v)
+	return b[8:]
 }
-func (tdc *TASKDIALOGCONFIG) putPtr(b []byte, p unsafe.Pointer) {
-	tdc.put64(b, uint64(uintptr(p)))
+func (tdc *TASKDIALOGCONFIG) putPtr(b []byte, p unsafe.Pointer) []byte {
+	return tdc.put64(b, uint64(uintptr(p)))
+}
+func (tdc *TASKDIALOGCONFIG) putStr(b []byte, bStr []uint16, s string) ([]byte, []uint16) {
+	if s != "" {
+		nWords := wstr.EncodeToBuf(bStr, s)
+		tdc.putPtr(b, unsafe.Pointer(&bStr[0]))
+		return b[8:], bStr[nWords:]
+	}
+	return b[8:], bStr // empty string puts a nil pointer
 }
 
 // [TCITEM] struct.

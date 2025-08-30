@@ -217,12 +217,9 @@ func (me *ITypeInfo) GetFuncDesc(releaser *OleReleaser, index uint) (*FuncDescDa
 //
 // [GetIDsOfNames]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getidsofnames
 func (me *ITypeInfo) GetIDsOfNames(names ...string) ([]MEMBERID, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-
 	strPtrs := make([]*uint16, 0, len(names))
 	for _, name := range names {
-		strPtrs = append(strPtrs, (*uint16)(wbuf.PtrAllowEmpty(name)))
+		strPtrs = append(strPtrs, wstr.EncodeToPtr(name))
 	}
 
 	memIds := make([]MEMBERID, len(names)) // to be returned

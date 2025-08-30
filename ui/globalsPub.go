@@ -41,8 +41,8 @@ func Dpi(x, y int) (int, int) {
 	return DpiX(x), DpiY(y)
 }
 
-// Syntactic sugar to [TaskDialogIndirect] to display a message box indicating
-// an error.
+// Syntactic sugar to [win.TaskDialogIndirect] to display a message box
+// indicating an error.
 //
 // Panics on error.
 //
@@ -56,14 +56,12 @@ func Dpi(x, y int) (int, int) {
 //		"Big caption above text",
 //		"Here goes the text",
 //	)
-//
-// [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func MsgError(wnd Parent, title, caption, body string) {
 	msgBuild(wnd, title, caption, body, co.TDICON_ERROR, "", false)
 }
 
-// Syntactic sugar to [TaskDialogIndirect] to display a message box indicating
-// a warning.
+// Syntactic sugar to [win.TaskDialogIndirect] to display a message box
+// indicating a warning.
 //
 // Panics on error.
 //
@@ -77,14 +75,12 @@ func MsgError(wnd Parent, title, caption, body string) {
 //		"Big caption above text",
 //		"Here goes the text",
 //	)
-//
-// [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func MsgWarn(wnd Parent, title, caption, body string) {
 	msgBuild(wnd, title, caption, body, co.TDICON_WARNING, "", false)
 }
 
-// Syntactic sugar to [TaskDialogIndirect] to display a message box indicating
-// a successful operation.
+// Syntactic sugar to [win.TaskDialogIndirect] to display a message box
+// indicating a successful operation.
 //
 // Panics on error.
 //
@@ -98,13 +94,11 @@ func MsgWarn(wnd Parent, title, caption, body string) {
 //		"Big caption above text",
 //		"Here goes the text",
 //	)
-//
-// [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func MsgOk(wnd Parent, title, caption, body string) {
 	msgBuild(wnd, title, caption, body, co.TDICON_INFORMATION, "", false)
 }
 
-// Syntactic sugar to [TaskDialogIndirect] to display a message box prompting
+// Syntactic sugar to [win.TaskDialogIndirect] to display a message box prompting
 // the user to choose "Ok" or "Cancel". The "Ok" text can be customized.
 //
 // Returns co.ID_OK or co.ID_CANCEL.
@@ -125,8 +119,6 @@ func MsgOk(wnd Parent, title, caption, body string) {
 //	if ret == co.ID_OK {
 //		// ...
 //	}
-//
-// [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
 func MsgOkCancel(wnd Parent, title, caption, body, okText string) co.ID {
 	return msgBuild(wnd, title, caption, body, co.TDICON_INFORMATION, okText, true)
 }

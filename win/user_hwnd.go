@@ -32,16 +32,12 @@ func CreateWindowEx(
 	instance HINSTANCE,
 	param LPARAM,
 ) (HWND, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pClassName := className.raw(&wbuf)
-	pTitle := wbuf.PtrEmptyIsNil(title)
-
+	var wClassName, wTitle wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_CreateWindowExW, "CreateWindowExW"),
 		uintptr(exStyle),
-		pClassName,
-		uintptr(pTitle),
+		className.raw(&wClassName),
+		uintptr(wTitle.EmptyIsNil(title)),
 		uintptr(style),
 		uintptr(int32(x)),
 		uintptr(int32(y)),
@@ -63,15 +59,11 @@ var _CreateWindowExW *syscall.Proc
 //
 // [FindWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-findwindoww
 func FindWindow(className ClassName, title string) (HWND, bool) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pClassName := className.raw(&wbuf)
-	pTitle := wbuf.PtrEmptyIsNil(title)
-
+	var wClassName, wTitle wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.USER32, &_FindWindowW, "FindWindowW"),
-		pClassName,
-		uintptr(pTitle))
+		className.raw(&wClassName),
+		uintptr(wTitle.EmptyIsNil(title)))
 	return HWND(ret), ret != 0
 }
 
@@ -463,18 +455,18 @@ var _GetAncestor *syscall.Proc
 //
 // [GetClassName]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassnamew
 func (hWnd HWND) GetClassName() (string, error) {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_GetClassNameW, "GetClassNameW"),
 		uintptr(hWnd),
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(int32(recvBuf.Len())))
+		uintptr(wBuf.Ptr()),
+		uintptr(int32(wBuf.Len())))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return "", wErr
 	}
-	return recvBuf.String(), nil
+	return wBuf.String(), nil
 }
 
 var _GetClassNameW *syscall.Proc
@@ -775,18 +767,18 @@ func (hWnd HWND) GetWindowText() (string, error) {
 	}
 	bufSz += 1 // needed buffer, also counting terminating null
 
-	recvBuf := wstr.NewBufDecoder(bufSz)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(bufSz)
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_GetWindowTextW, "GetWindowTextW"),
 		uintptr(hWnd),
-		uintptr(recvBuf.UnsafePtr()),
+		uintptr(wBuf.Ptr()),
 		uintptr(int32(bufSz)))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return "", wErr
 	}
-	return recvBuf.String(), nil
+	return wBuf.String(), nil
 }
 
 var _GetWindowTextW *syscall.Proc
@@ -923,16 +915,12 @@ var _MapDialogRect *syscall.Proc
 //
 // [MessageBox]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw
 func (hWnd HWND) MessageBox(text, caption string, uType co.MB) (co.ID, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pText := wbuf.PtrEmptyIsNil(text)
-	pCaption := wbuf.PtrEmptyIsNil(caption)
-
+	var wText, wCaption wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_MessageBoxW, "MessageBoxW"),
 		uintptr(hWnd),
-		uintptr(pText),
-		uintptr(pCaption),
+		uintptr(wText.EmptyIsNil(text)),
+		uintptr(wCaption.EmptyIsNil(caption)),
 		uintptr(uType))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return co.ID(0), wErr
@@ -1172,14 +1160,11 @@ var _SetWindowRgn *syscall.Proc
 //
 // [SetWindowText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowtextw
 func (hWnd HWND) SetWindowText(text string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pText := wbuf.PtrEmptyIsNil(text)
-
+	var wText wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_SetWindowTextW, "SetWindowTextW"),
 		uintptr(hWnd),
-		uintptr(pText))
+		uintptr(wText.EmptyIsNil(text)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -1240,14 +1225,11 @@ var _ShowWindowAsync *syscall.Proc
 //
 // [ShutdownBlockReasonCreate]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-shutdownblockreasoncreate
 func (hWnd HWND) ShutdownBlockReasonCreate(reason string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pReason := wbuf.PtrAllowEmpty(reason)
-
+	var wReason wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_ShutdownBlockReasonCreate, "ShutdownBlockReasonCreate"),
 		uintptr(hWnd),
-		uintptr(pReason))
+		uintptr(wReason.AllowEmpty(reason)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -1279,18 +1261,18 @@ func (hWnd HWND) ShutdownBlockReasonQuery() (string, error) {
 		return "", co.ERROR(err)
 	}
 
-	recvBuf := wstr.NewBufDecoder(uint(bufSz))
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(uint(bufSz))
 
 	ret, _, err = syscall.SyscallN(
 		dll.Load(dll.USER32, &_ShutdownBlockReasonQuery, "ShutdownBlockReasonQuery"),
 		uintptr(hWnd),
-		uintptr(recvBuf.UnsafePtr()),
+		uintptr(wBuf.Ptr()),
 		uintptr(unsafe.Pointer(&bufSz)))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return recvBuf.String(), nil
+	return wBuf.String(), nil
 }
 
 var _ShutdownBlockReasonQuery *syscall.Proc

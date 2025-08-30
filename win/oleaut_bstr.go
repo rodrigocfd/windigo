@@ -27,13 +27,10 @@ type BSTR uintptr
 //
 // [SysAllocString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysallocstring
 func SysAllocString(s string) (BSTR, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pS := wbuf.PtrAllowEmpty(s)
-
+	var wS wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.OLEAUT32, &_SysAllocString, "SysAllocString"),
-		uintptr(pS))
+		uintptr(wS.AllowEmpty(s)))
 	if ret == 0 {
 		return BSTR(0), co.HRESULT_E_OUTOFMEMORY
 	}
@@ -66,14 +63,11 @@ var _SysFreeString *syscall.Proc
 //
 // [SysReAllocString]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-sysreallocstring
 func (bstr BSTR) SysReAllocString(s string) (BSTR, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pS := wbuf.PtrAllowEmpty(s)
-
+	var wS wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.OLEAUT32, &_SysReAllocString, "SysReAllocString"),
 		uintptr(bstr),
-		uintptr(pS))
+		uintptr(wS.AllowEmpty(s)))
 	if ret == 0 {
 		return BSTR(0), co.HRESULT_E_OUTOFMEMORY
 	}

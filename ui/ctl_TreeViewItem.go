@@ -28,9 +28,6 @@ type TreeViewItem struct {
 //
 // [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
 func (me TreeViewItem) AddChild(text string, iconIndex int) TreeViewItem {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-
 	mask := co.TVIF_TEXT
 	if iconIndex != -1 {
 		mask |= co.TVIF_IMAGE
@@ -44,7 +41,9 @@ func (me TreeViewItem) AddChild(text string, iconIndex int) TreeViewItem {
 			IImage: int32(iconIndex),
 		},
 	}
-	tvi.Itemex.SetPszText(wbuf.SliceAllowEmpty(text))
+
+	var wText wstr.BufEncoder
+	tvi.Itemex.SetPszText(wText.Slice(text))
 
 	hItemRet, err := me.owner.hWnd.SendMessage(co.TVM_INSERTITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))
@@ -261,14 +260,13 @@ func (me TreeViewItem) SetIconIndex(iconIndex int) TreeViewItem {
 //
 // [TVM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-setitem
 func (me TreeViewItem) SetText(text string) TreeViewItem {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-
 	tvi := win.TVITEMEX{
 		HItem: me.hItem,
 		Mask:  co.TVIF_TEXT,
 	}
-	tvi.SetPszText(wbuf.SliceAllowEmpty(text))
+
+	var wText wstr.BufEncoder
+	tvi.SetPszText(wText.Slice(text))
 
 	ret, err := me.owner.hWnd.SendMessage(co.TVM_SETITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))
@@ -284,19 +282,19 @@ func (me TreeViewItem) SetText(text string) TreeViewItem {
 //
 // [TVM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getitem
 func (me TreeViewItem) Text() string {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
-
 	tvi := win.TVITEMEX{
 		HItem: me.hItem,
 		Mask:  co.TVIF_TEXT,
 	}
-	tvi.SetPszText(recvBuf.HotSlice())
+
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
+	tvi.SetPszText(wBuf.HotSlice())
 
 	ret, err := me.owner.hWnd.SendMessage(co.TVM_GETITEM,
 		0, win.LPARAM(unsafe.Pointer(&tvi)))
 	if ret == 0 || err != nil {
 		panic("TVM_GETITEM failed.")
 	}
-	return recvBuf.String()
+	return wBuf.String()
 }

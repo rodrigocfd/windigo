@@ -28,19 +28,19 @@ var _EmptyWorkingSet *syscall.Proc
 //
 // [GetMappedFileName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmappedfilenamew
 func (hProcess HPROCESS) GetMappedFileName(address uintptr) (string, error) {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.PSAPI, &_GetMappedFileNameW, "GetMappedFileNameW"),
 		uintptr(hProcess),
 		address,
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(uint32(recvBuf.Len())))
+		uintptr(wBuf.Ptr()),
+		uintptr(uint32(wBuf.Len())))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return recvBuf.String(), nil
+	return wBuf.String(), nil
 }
 
 var _GetMappedFileNameW *syscall.Proc
@@ -49,19 +49,19 @@ var _GetMappedFileNameW *syscall.Proc
 //
 // [GetModuleBaseName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulebasenamew
 func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.PSAPI, &_GetModuleBaseNameW, "GetModuleBaseNameW"),
 		uintptr(hProcess),
 		uintptr(hModule),
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(uint32(recvBuf.Len())))
+		uintptr(wBuf.Ptr()),
+		uintptr(uint32(wBuf.Len())))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return recvBuf.String(), nil
+	return wBuf.String(), nil
 }
 
 var _GetModuleBaseNameW *syscall.Proc
@@ -70,19 +70,19 @@ var _GetModuleBaseNameW *syscall.Proc
 //
 // [GetModuleFileNameEx]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmodulefilenameexw
 func (hProcess HPROCESS) GetModuleFileNameEx(hModule HINSTANCE) (string, error) {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.PSAPI, &_GetModuleFileNameExW, "GetModuleFileNameExW"),
 		uintptr(hProcess),
 		uintptr(hModule),
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(uint32(recvBuf.Len())))
+		uintptr(wBuf.Ptr()),
+		uintptr(uint32(wBuf.Len())))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return recvBuf.String(), nil
+	return wBuf.String(), nil
 }
 
 var _GetModuleFileNameExW *syscall.Proc
@@ -110,18 +110,18 @@ var _GetModuleInformation *syscall.Proc
 //
 // [GetProcessImageFileName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getprocessimagefilenamew
 func (hProcess HPROCESS) GetProcessImageFileName() (string, error) {
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.PSAPI, &_K32GetProcessImageFileNameW, "K32GetProcessImageFileNameW"),
 		uintptr(hProcess),
-		uintptr(recvBuf.UnsafePtr()),
-		uintptr(uint32(recvBuf.Len())))
+		uintptr(wBuf.Ptr()),
+		uintptr(uint32(wBuf.Len())))
 	if ret == 0 {
 		return "", co.ERROR(err)
 	}
-	return recvBuf.String(), nil
+	return wBuf.String(), nil
 }
 
 var _K32GetProcessImageFileNameW *syscall.Proc

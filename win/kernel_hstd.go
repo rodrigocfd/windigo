@@ -108,22 +108,22 @@ func (hStd HSTD) ReadConsole(
 	maxCharsToRead uint,
 	inputControl *CONSOLE_READCONSOLE_CONTROL,
 ) (text string, numCharsRead uint, wErr error) {
-	recvBuf := wstr.NewBufDecoder(maxCharsToRead + 1)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(maxCharsToRead + 1)
 
 	var numRead32 uint32
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_ReadConsoleW, "ReadConsoleW"),
 		uintptr(hStd),
-		uintptr(recvBuf.UnsafePtr()),
+		uintptr(wBuf.Ptr()),
 		uintptr(uint32(maxCharsToRead)),
 		uintptr(unsafe.Pointer(&numRead32)),
 		uintptr(unsafe.Pointer(inputControl)))
 	if ret == 0 {
 		return "", 0, co.ERROR(err)
 	}
-	return recvBuf.String(), uint(numRead32), nil
+	return wBuf.String(), uint(numRead32), nil
 }
 
 var _ReadConsoleW *syscall.Proc
@@ -242,16 +242,13 @@ var _SetConsoleTextAttribute *syscall.Proc
 //
 // [WriteConsole]: https://learn.microsoft.com/en-us/windows/console/writeconsole
 func (hStd HSTD) WriteConsole(text string) (numCharsWritten uint, wErr error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pText := wbuf.PtrAllowEmpty(text)
-
+	var wText wstr.BufEncoder
 	var numWritten32 uint32
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_WriteConsoleW, "WriteConsoleW"),
 		uintptr(hStd),
-		uintptr(pText),
+		uintptr(wText.AllowEmpty(text)),
 		uintptr(uint32(len(text))),
 		uintptr(unsafe.Pointer(&numWritten32)),
 		0)

@@ -39,15 +39,12 @@ import (
 //
 // [CLSIDFromProgID]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func CLSIDFromProgID(progId string) (co.CLSID, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pProgId := wbuf.PtrAllowEmpty(progId)
-
+	var wProgId wstr.BufEncoder
 	var guid GUID
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.OLE32, &_CLSIDFromProgID, "CLSIDFromProgID"),
-		uintptr(pProgId),
+		uintptr(wProgId.AllowEmpty(progId)),
 		uintptr(unsafe.Pointer(&guid)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {

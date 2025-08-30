@@ -214,10 +214,7 @@ func (me *IShellFolder) ParseDisplayName(
 	displayName string,
 	attributes co.SFGAO,
 ) (*ITEMIDLIST, co.SFGAO, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pDisplayName := wbuf.PtrAllowEmpty(displayName)
-
+	var wDisplayName wstr.BufEncoder
 	var chEaten uint32
 	var idl ITEMIDLIST
 
@@ -231,7 +228,7 @@ func (me *IShellFolder) ParseDisplayName(
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(ppvtOrNil(bindCtx)),
-		uintptr(pDisplayName),
+		uintptr(wDisplayName.AllowEmpty(displayName)),
 		uintptr(unsafe.Pointer(&chEaten)),
 		uintptr(unsafe.Pointer(&idl)),
 		uintptr(unsafe.Pointer(pSfgao)))
@@ -256,17 +253,14 @@ func (me *IShellFolder) SetNameOf(
 	flags co.SHGDN,
 ) (*ITEMIDLIST, error) {
 	var idlChild ITEMIDLIST
-
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pName := wbuf.PtrAllowEmpty(name)
+	var wName wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).SetNameOf,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(*pidl)),
-		uintptr(pName),
+		uintptr(wName.AllowEmpty(name)),
 		uintptr(flags),
 		uintptr(unsafe.Pointer(&idlChild)))
 

@@ -14,16 +14,12 @@ import (
 //
 // [ShellAbout]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shellaboutw
 func (hWnd HWND) ShellAbout(app, otherStuff string, hIcon HICON) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pApp := wbuf.PtrAllowEmpty(app)
-	pOtherStuff := wbuf.PtrEmptyIsNil(otherStuff)
-
+	var wApp, wOtherStuff wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_ShellAboutW, "ShellAboutW"),
 		uintptr(hWnd),
-		uintptr(pApp),
-		uintptr(pOtherStuff),
+		uintptr(wApp.AllowEmpty(app)),
+		uintptr(wOtherStuff.EmptyIsNil(otherStuff)),
 		uintptr(hIcon))
 	return utl.ZeroAsSysInvalidParm(ret)
 }

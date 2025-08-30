@@ -54,13 +54,10 @@ func (me StatusBarPart) SetIcon(hIcon win.HICON) StatusBarPart {
 //
 // [SB_SETTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/sb-settext
 func (me StatusBarPart) SetText(text string) StatusBarPart {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pText := wbuf.PtrAllowEmpty(text)
-
+	var wText wstr.BufEncoder
 	ret, _ := me.owner.hWnd.SendMessage(co.SB_SETTEXT,
 		win.MAKEWPARAM(win.MAKEWORD(uint8(me.index), 0), 0),
-		win.LPARAM(pText))
+		win.LPARAM(wText.AllowEmpty(text)))
 	if ret == 0 {
 		panic(fmt.Sprintf("SB_SETTEXT %d failed \"%s\".", me.index, text))
 	}
@@ -78,10 +75,10 @@ func (me StatusBarPart) Text() string {
 		return ""
 	}
 
-	recvBuf := wstr.NewBufDecoder(wstr.BUF_MAX)
-	defer recvBuf.Free()
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
 
 	me.owner.hWnd.SendMessage(co.SB_GETTEXT,
-		win.WPARAM(me.index), win.LPARAM(recvBuf.UnsafePtr()))
-	return recvBuf.String()
+		win.WPARAM(me.index), win.LPARAM(wBuf.Ptr()))
+	return wBuf.String()
 }

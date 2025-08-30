@@ -24,15 +24,11 @@ type HDC HANDLE
 //
 // [CreateDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createdcw
 func CreateDC(driver, device string, dm *DEVMODE) (HDC, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pDriver := wbuf.PtrEmptyIsNil(driver)
-	pDevice := wbuf.PtrAllowEmpty(device)
-
+	var wDriver, wDevice wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_CreateDCW, "CreateDCW"),
-		uintptr(pDriver),
-		uintptr(pDevice),
+		uintptr(wDriver.EmptyIsNil(driver)),
+		uintptr(wDevice.AllowEmpty(device)),
 		0,
 		uintptr(unsafe.Pointer(dm)))
 	if ret == 0 {
@@ -49,15 +45,11 @@ var _CreateDCW *syscall.Proc
 //
 // [CreateIC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createicw
 func CreateIC(driver, device string, dm *DEVMODE) (HDC, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pDriver := wbuf.PtrAllowEmpty(driver)
-	pDevice := wbuf.PtrAllowEmpty(device)
-
+	var wDriver, wDevice wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_CreateICW, "CreateICW"),
-		uintptr(pDriver),
-		uintptr(pDevice),
+		uintptr(wDriver.AllowEmpty(driver)),
+		uintptr(wDevice.AllowEmpty(device)),
 		0,
 		uintptr(unsafe.Pointer(dm)))
 	if ret == 0 {
@@ -861,18 +853,14 @@ var _GetTextColor *syscall.Proc
 //
 // [GetTextExtentPoint32]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextextentpoint32w
 func (hdc HDC) GetTextExtentPoint32(text string) (SIZE, error) {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pText := wbuf.PtrAllowEmpty(text)
-
-	textLen := len([]rune(text))
+	var wText wstr.BufEncoder
 	var sz SIZE
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_GetTextExtentPoint32W, "GetTextExtentPoint32W"),
 		uintptr(hdc),
-		uintptr(pText),
-		uintptr(textLen),
+		uintptr(wText.AllowEmpty(text)),
+		uintptr(int32(wstr.CountUtf16Len(text))),
 		uintptr(unsafe.Pointer(&sz)))
 	if ret == 0 {
 		return SIZE{}, co.ERROR_INVALID_PARAMETER
@@ -1917,19 +1905,14 @@ var _SwapBuffers *syscall.Proc
 //
 // [TextOut]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-textoutw
 func (hdc HDC) TextOut(x, y int, text string) error {
-	wbuf := wstr.NewBufEncoder()
-	defer wbuf.Free()
-	pText := wbuf.PtrAllowEmpty(text)
-
-	textLen := len([]rune(text))
-
+	var wText wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_TextOutW, "TextOutW"),
 		uintptr(hdc),
 		uintptr(int32(x)),
 		uintptr(int32(y)),
-		uintptr(pText),
-		uintptr(int32(textLen-1)))
+		uintptr(wText.AllowEmpty(text)),
+		uintptr(int32(wstr.CountUtf16Len(text))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
