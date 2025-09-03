@@ -25,8 +25,7 @@ func CreateWindowEx(
 	className ClassName,
 	title string,
 	style co.WS,
-	x, y int,
-	width, height uint,
+	x, y, width, height int,
 	parent HWND,
 	menu HMENU,
 	instance HINSTANCE,
@@ -165,8 +164,10 @@ var _WindowFromPoint *syscall.Proc
 
 // [AnimateWindow] function.
 //
+// Panics if time is negative.
+//
 // [AnimateWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-animatewindow
-func (hWnd HWND) AnimateWindow(time uint, flags co.AW) error {
+func (hWnd HWND) AnimateWindow(time int, flags co.AW) error {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_AnimateWindow, "AnimateWindow"),
 		uintptr(hWnd),
@@ -789,14 +790,14 @@ var _GetWindowTextW *syscall.Proc
 // calls it to allocate the memory block.
 //
 // [GetWindowTextLength]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextlengthw
-func (hWnd HWND) GetWindowTextLength() (uint, error) {
+func (hWnd HWND) GetWindowTextLength() (int, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_GetWindowTextLengthW, "GetWindowTextLengthW"),
 		uintptr(hWnd))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return 0, wErr
 	}
-	return uint(ret), nil
+	return int(int32(ret)), nil
 }
 
 var _GetWindowTextLengthW *syscall.Proc
@@ -1127,7 +1128,7 @@ var _SetWindowPlacement *syscall.Proc
 // [SetWindowPos] function.
 //
 // [SetWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
-func (hWnd HWND) SetWindowPos(hwndInsertAfter HWND, x, y int, cx, cy uint, flags co.SWP) error {
+func (hWnd HWND) SetWindowPos(hwndInsertAfter HWND, x, y, cx, cy int, flags co.SWP) error {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_SetWindowPos, "SetWindowPos"),
 		uintptr(hWnd),
@@ -1262,7 +1263,7 @@ func (hWnd HWND) ShutdownBlockReasonQuery() (string, error) {
 	}
 
 	var wBuf wstr.BufDecoder
-	wBuf.Alloc(uint(bufSz))
+	wBuf.Alloc(int(bufSz))
 
 	ret, _, err = syscall.SyscallN(
 		dll.Load(dll.USER32, &_ShutdownBlockReasonQuery, "ShutdownBlockReasonQuery"),

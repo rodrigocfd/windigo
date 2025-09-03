@@ -55,13 +55,16 @@ func (hProcess HPROCESS) CloseHandle() error {
 
 // [FlushInstructionCache] function.
 //
+// Panics if size is negative.
+//
 // [FlushInstructionCache]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-flushinstructioncache
-func (hProcess HPROCESS) FlushInstructionCache(baseAddress uintptr, size uint) error {
+func (hProcess HPROCESS) FlushInstructionCache(baseAddress uintptr, size int) error {
+	utl.PanicNeg(size)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_FlushInstructionCache, "FlushInstructionCache"),
 		uintptr(hProcess),
 		baseAddress,
-		uintptr(size))
+		uintptr(uint64(size)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -102,7 +105,7 @@ var _GetPriorityClass *syscall.Proc
 // [GetProcessHandleCount] function.
 //
 // [GetProcessHandleCount]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesshandlecount
-func (hProcess HPROCESS) GetProcessHandleCount() (uint, error) {
+func (hProcess HPROCESS) GetProcessHandleCount() (int, error) {
 	var count uint32
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GetProcessHandleCount, "GetProcessHandleCount"),
@@ -111,7 +114,7 @@ func (hProcess HPROCESS) GetProcessHandleCount() (uint, error) {
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return uint(count), nil
+	return int(count), nil
 }
 
 var _GetProcessHandleCount *syscall.Proc
@@ -291,7 +294,7 @@ var _QueryProcessAffinityUpdateMode *syscall.Proc
 // [QueryProcessCycleTime] function.
 //
 // [QueryProcessCycleTime]: https://learn.microsoft.com/en-us/windows/win32/api/realtimeapiset/nf-realtimeapiset-queryprocesscycletime
-func (hProcess HPROCESS) QueryProcessCycleTime() (uint64, error) {
+func (hProcess HPROCESS) QueryProcessCycleTime() (int, error) {
 	var cycle uint64
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_QueryProcessCycleTime, "QueryProcessCycleTime"),
@@ -300,7 +303,7 @@ func (hProcess HPROCESS) QueryProcessCycleTime() (uint64, error) {
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return cycle, nil
+	return int(cycle), nil
 }
 
 var _QueryProcessCycleTime *syscall.Proc
@@ -311,18 +314,19 @@ var _QueryProcessCycleTime *syscall.Proc
 func (hProcess HPROCESS) ReadProcessMemory(
 	baseAddress uintptr,
 	dest []byte,
-) (numBytesRead uint, wErr error) {
+) (numBytesRead int, wErr error) {
+	var read64 uint64
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_ReadProcessMemory, "ReadProcessMemory"),
 		uintptr(hProcess),
 		baseAddress,
 		uintptr(unsafe.Pointer(&dest[0])),
-		uintptr(len(dest)),
-		uintptr(unsafe.Pointer(&numBytesRead)))
+		uintptr(uint64(len(dest))),
+		uintptr(unsafe.Pointer(&read64)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return numBytesRead, nil
+	return int(read64), nil
 }
 
 var _ReadProcessMemory *syscall.Proc
@@ -391,18 +395,19 @@ var _VirtualQueryEx *syscall.Proc
 func (hProcess HPROCESS) WriteProcessMemory(
 	baseAddress uintptr,
 	src []byte,
-) (numBytesWritten uint, wErr error) {
+) (numBytesWritten int, wErr error) {
+	var written64 uint64
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_WriteProcessMemory, "WriteProcessMemory"),
 		uintptr(hProcess),
 		baseAddress,
 		uintptr(unsafe.Pointer(&src[0])),
-		uintptr(len(src)),
-		uintptr(unsafe.Pointer(&numBytesWritten)))
+		uintptr(uint64(len(src))),
+		uintptr(unsafe.Pointer(&written64)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return numBytesWritten, nil
+	return int(written64), nil
 }
 
 var _WriteProcessMemory *syscall.Proc

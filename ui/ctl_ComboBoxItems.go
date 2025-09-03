@@ -3,7 +3,10 @@
 package ui
 
 import (
+	"fmt"
+
 	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/wstr"
 )
@@ -37,13 +40,13 @@ func (me *CollectionComboBoxItems) All() []string {
 	nItems := me.Count()
 	items := make([]string, 0, nItems)
 
-	for i := uint(0); i < nItems; i++ {
-		// nChars, _ := me.owner.hWnd.SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(i), 0)
-		// recvBuf.Resize(uint(nChars) + 1)
+	for i := 0; i < nItems; i++ {
+		// nChars, _ := me.owner.hWnd.SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(int32(i)), 0)
+		// wBuf.Alloc(int(nChars) + 1)
 
 		wBuf.Zero()
 		me.owner.hWnd.SendMessage(co.CB_GETLBTEXT,
-			win.WPARAM(i), win.LPARAM(wBuf.Ptr()))
+			win.WPARAM(int32(i)), win.LPARAM(wBuf.Ptr()))
 		items = append(items, wBuf.String())
 	}
 
@@ -53,9 +56,9 @@ func (me *CollectionComboBoxItems) All() []string {
 // Retrieves the number of items with [CB_GETCOUNT].
 //
 // [CB_GETCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getcount
-func (me *CollectionComboBoxItems) Count() uint {
+func (me *CollectionComboBoxItems) Count() int {
 	n, _ := me.owner.hWnd.SendMessage(co.CB_GETCOUNT, 0, 0)
-	return uint(n)
+	return int(n)
 }
 
 // Deletes all items with [CB_RESETCONTENT].
@@ -74,14 +77,14 @@ func (me *CollectionComboBoxItems) Get(index int) string {
 	var wBuf wstr.BufDecoder
 	wBuf.Alloc(wstr.BUF_MAX)
 
-	// nChars, _ := me.owner.hWnd.SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(index), 0)
-	// if int32(nChars) == -1 { // CB_ERR
-	// 	panic(fmt.Sprintf("Invalid ComboBox index: %d", index))
-	// }
-	// recvBuf.Resize(uint(nChars) + 1)
+	nChars, _ := me.owner.hWnd.SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(int32(index)), 0)
+	if int32(nChars) == utl.CB_ERR {
+		panic(fmt.Sprintf("Invalid ComboBox index: %d", index))
+	}
+	wBuf.Alloc(int(nChars) + 1)
 
 	me.owner.hWnd.SendMessage(co.CB_GETLBTEXT,
-		win.WPARAM(index), win.LPARAM(wBuf.Ptr()))
+		win.WPARAM(int32(index)), win.LPARAM(wBuf.Ptr()))
 	return wBuf.String()
 }
 
@@ -100,7 +103,7 @@ func (me *CollectionComboBoxItems) Last() string {
 //
 // [CB_SETCURSEL]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-setcursel
 func (me *CollectionComboBoxItems) Select(index int) {
-	me.owner.hWnd.SendMessage(co.CB_SETCURSEL, win.WPARAM(index), 0)
+	me.owner.hWnd.SendMessage(co.CB_SETCURSEL, win.WPARAM(int32(index)), 0)
 }
 
 // Retrieves the selected index with [CB_GETCURSEL].
@@ -118,7 +121,7 @@ func (me *CollectionComboBoxItems) Selected() int {
 // Panics on error.
 //
 // [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
-func (me *CollectionComboBoxItems) Text(index uint) string {
+func (me *CollectionComboBoxItems) Text(index int) string {
 	// nChars, _ := me.owner.hWnd.SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(index), 0)
 	// if int32(nChars) == -1 {
 	// 	panic(fmt.Sprintf("CB_GETLBTEXTLEN failed at item %d.", index))
@@ -128,6 +131,6 @@ func (me *CollectionComboBoxItems) Text(index uint) string {
 	wBuf.Alloc(wstr.BUF_MAX)
 
 	me.owner.hWnd.SendMessage(co.CB_GETLBTEXT,
-		win.WPARAM(index), win.LPARAM(wBuf.Ptr()))
+		win.WPARAM(int32(index)), win.LPARAM(wBuf.Ptr()))
 	return wBuf.String()
 }

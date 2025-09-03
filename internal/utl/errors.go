@@ -3,10 +3,20 @@
 package utl
 
 import (
+	"fmt"
 	"syscall"
 
 	"github.com/rodrigocfd/windigo/co"
 )
+
+// Panics if any of the numbers is negative.
+func PanicNeg(nums ...int) {
+	for _, n := range nums {
+		if n < 0 {
+			panic(fmt.Sprintf("Value cannot be negative: %d.", n))
+		}
+	}
+}
 
 // Error handling syntactic sugar for syscalls which call GetLastError().
 func ZeroAsGetLastError(ret uintptr, err syscall.Errno) error {

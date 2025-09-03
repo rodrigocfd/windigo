@@ -739,7 +739,7 @@ func (me *EventsWindow) WmGetMinMaxInfo(fun func(p WmGetMinMaxInfo)) {
 // [WM_GETTEXT] message handler.
 //
 // [WM_GETTEXT]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-gettext
-func (me *EventsWindow) WmGetText(fun func(p WmGetText) uint) {
+func (me *EventsWindow) WmGetText(fun func(p WmGetText) int) {
 	me.Wm(co.WM_GETTEXT, func(p Wm) uintptr {
 		return uintptr(fun(WmGetText{p}))
 	})
@@ -748,7 +748,7 @@ func (me *EventsWindow) WmGetText(fun func(p WmGetText) uint) {
 // [WM_GETTEXTLENGTH] message handler.
 //
 // [WM_GETTEXTLENGTH]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-gettextlength
-func (me *EventsWindow) WmGetTextLength(fun func() uint) {
+func (me *EventsWindow) WmGetTextLength(fun func() int) {
 	me.Wm(co.WM_GETTEXTLENGTH, func(p Wm) uintptr {
 		return uintptr(fun())
 	})

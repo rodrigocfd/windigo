@@ -71,8 +71,11 @@ var _DwmIsCompositionEnabled *syscall.Proc
 
 // [DwmShowContact] function.
 //
+// Panics if pointerId is negative.
+//
 // [DwmShowContact]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmshowcontact
-func DwmShowContact(pointerId uint, showContact co.DWMSC) error {
+func DwmShowContact(pointerId int, showContact co.DWMSC) error {
+	utl.PanicNeg(pointerId)
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.DWMAPI, &_DwmShowContact, "DwmShowContact"),
 		uintptr(uint32(pointerId)),

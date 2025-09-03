@@ -20,7 +20,7 @@ type HPEN HGDIOBJ
 // ⚠️ You must defer [HPEN.DeleteObject].
 //
 // [CreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
-func CreatePen(style co.PS, width uint, color COLORREF) (HPEN, error) {
+func CreatePen(style co.PS, width int, color COLORREF) (HPEN, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_CreatePen, "CreatePen"),
 		uintptr(style),
@@ -60,15 +60,17 @@ func ExtCreatePen(
 	penType co.PS_TYPE,
 	penStyle co.PS_STYLE,
 	endCap co.PS_ENDCAP,
-	width uint,
+	width int,
 	brush *LOGBRUSH,
-	styleLengths []uint,
+	styleLengths []int,
 ) (HPEN, error) {
-	var nLens uint32
 	var pLens unsafe.Pointer
 	if styleLengths != nil {
-		nLens = uint32(len(styleLengths))
-		pLens = unsafe.Pointer(&styleLengths[0])
+		lens32 := make([]uint32, 0, len(styleLengths))
+		for _, sl := range styleLengths {
+			lens32 = append(lens32, uint32(sl))
+		}
+		pLens = unsafe.Pointer(&lens32[0])
 	}
 
 	ret, _, _ := syscall.SyscallN(
@@ -76,7 +78,7 @@ func ExtCreatePen(
 		uintptr(uint32(penType)|uint32(penStyle)|uint32(endCap)),
 		uintptr(uint32(width)),
 		uintptr(unsafe.Pointer(brush)),
-		uintptr(nLens),
+		uintptr(uint32(len(styleLengths))),
 		uintptr(pLens))
 	if ret == 0 {
 		return HPEN(0), co.ERROR_INVALID_PARAMETER

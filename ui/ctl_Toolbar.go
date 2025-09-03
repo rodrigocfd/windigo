@@ -32,7 +32,7 @@ func NewToolbar(parent Parent, opts *VarOptsToolbar) *Toolbar {
 		me.createWindow(opts.wndExStyle, "ToolbarWindow32", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), win.POINT{}, win.SIZE{}, parent, false)
 		me.hWnd.SendMessage(co.TB_BUTTONSTRUCTSIZE,
-			win.WPARAM(unsafe.Sizeof(win.TBBUTTON{})), 0) // necessary before TB_ADDBUTTONS
+			win.WPARAM(int32(unsafe.Sizeof(win.TBBUTTON{}))), 0) // necessary before TB_ADDBUTTONS
 		me.hWnd.SendMessage(co.CCM_SETVERSION, 5, 0)
 		if opts.ctrlExStyle != co.TBSTYLE_EX_NONE {
 			me.SetExtendedStyle(true, opts.ctrlExStyle)
@@ -84,7 +84,7 @@ func (me *Toolbar) ImageList(cx, cy int) win.HIMAGELIST {
 	h, _ := me.hWnd.SendMessage(co.TB_GETIMAGELIST, 0, 0)
 	hImg := win.HIMAGELIST(h)
 	if hImg == win.HIMAGELIST(0) {
-		hImg, _ = win.ImageListCreate(uint(cx), uint(cy), co.ILC_COLOR32, 1, 1)
+		hImg, _ = win.ImageListCreate(cx, cy, co.ILC_COLOR32, 1, 1)
 		me.hWnd.SendMessage(co.TB_SETIMAGELIST, 0, win.LPARAM(hImg))
 	}
 	return hImg

@@ -87,7 +87,7 @@ var _GetLargestConsoleWindowSize *syscall.Proc
 // [GetNumberOfConsoleInputEvents] function.
 //
 // [GetNumberOfConsoleInputEvents]: https://learn.microsoft.com/en-us/windows/console/getnumberofconsoleinputevents
-func (hStd HSTD) GetNumberOfConsoleInputEvents() (uint, error) {
+func (hStd HSTD) GetNumberOfConsoleInputEvents() (int, error) {
 	var numberOfEvents uint32
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GetNumberOfConsoleInputEvents, "GetNumberOfConsoleInputEvents"),
@@ -96,18 +96,22 @@ func (hStd HSTD) GetNumberOfConsoleInputEvents() (uint, error) {
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return uint(numberOfEvents), nil
+	return int(numberOfEvents), nil
 }
 
 var _GetNumberOfConsoleInputEvents *syscall.Proc
 
 // [ReadConsole] function.
 //
+// Panics if maxCharsToRead is negative.
+//
 // [ReadConsole]: https://learn.microsoft.com/en-us/windows/console/readconsole
 func (hStd HSTD) ReadConsole(
-	maxCharsToRead uint,
+	maxCharsToRead int,
 	inputControl *CONSOLE_READCONSOLE_CONTROL,
-) (text string, numCharsRead uint, wErr error) {
+) (text string, numCharsRead int, wErr error) {
+	utl.PanicNeg(maxCharsToRead)
+
 	var wBuf wstr.BufDecoder
 	wBuf.Alloc(maxCharsToRead + 1)
 
@@ -123,7 +127,7 @@ func (hStd HSTD) ReadConsole(
 	if ret == 0 {
 		return "", 0, co.ERROR(err)
 	}
-	return wBuf.String(), uint(numRead32), nil
+	return wBuf.String(), int(numRead32), nil
 }
 
 var _ReadConsoleW *syscall.Proc
@@ -134,7 +138,7 @@ var _ReadConsoleW *syscall.Proc
 func (hStd HSTD) ReadFile(
 	buffer []byte,
 	overlapped *OVERLAPPED,
-) (numBytesRead uint, wErr error) {
+) (numBytesRead int, wErr error) {
 	return HFILE(hStd).ReadFile(buffer, overlapped)
 }
 
@@ -241,7 +245,7 @@ var _SetConsoleTextAttribute *syscall.Proc
 // [WriteConsole] function.
 //
 // [WriteConsole]: https://learn.microsoft.com/en-us/windows/console/writeconsole
-func (hStd HSTD) WriteConsole(text string) (numCharsWritten uint, wErr error) {
+func (hStd HSTD) WriteConsole(text string) (numCharsWritten int, wErr error) {
 	var wText wstr.BufEncoder
 	var numWritten32 uint32
 
@@ -255,7 +259,7 @@ func (hStd HSTD) WriteConsole(text string) (numCharsWritten uint, wErr error) {
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return uint(numWritten32), nil
+	return int(numWritten32), nil
 }
 
 var _WriteConsoleW *syscall.Proc
@@ -266,6 +270,6 @@ var _WriteConsoleW *syscall.Proc
 func (hStd HSTD) WriteFile(
 	data []byte,
 	overlapped *OVERLAPPED,
-) (numBytesWritten uint, wErr error) {
+) (numBytesWritten int, wErr error) {
 	return HFILE(hStd).WriteFile(data, overlapped)
 }

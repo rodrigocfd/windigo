@@ -65,7 +65,7 @@ func (me *Static) SetTextAndResize(text string) *Static {
 	me.hWnd.SetWindowText(text)
 	boundBox, _ := calcTextBoundBox(utl.RemoveAccelAmpersands(text))
 	me.hWnd.SetWindowPos(win.HWND(0), 0, 0,
-		uint(boundBox.Cx), uint(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
+		int(boundBox.Cx), int(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me
 }
 
@@ -124,7 +124,7 @@ func (o *VarOptsStatic) Position(x, y int) *VarOptsStatic {
 // Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to fit current text.
-func (o *VarOptsStatic) Size(cx int, cy int) *VarOptsStatic {
+func (o *VarOptsStatic) Size(cx, cy int) *VarOptsStatic {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

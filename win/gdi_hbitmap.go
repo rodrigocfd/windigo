@@ -8,6 +8,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/dll"
+	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
 // Handle to a [bitmap].
@@ -17,10 +18,13 @@ type HBITMAP HGDIOBJ
 
 // [CreateBitmap] function.
 //
+// Panics if numPlanes or bitCount is negative.
+//
 // ⚠️ You must defer [HBITMAP.DeleteObject].
 //
 // [CreateBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmap
-func CreateBitmap(width, height int, numPlanes, bitCount uint, bits []byte) (HBITMAP, error) {
+func CreateBitmap(width, height, numPlanes, bitCount int, bits []byte) (HBITMAP, error) {
+	utl.PanicNeg(numPlanes, bitCount)
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_CreateBitmap, "CreateBitmap"),
 		uintptr(int32(width)),

@@ -107,7 +107,7 @@ var _CreateProcessW *syscall.Proc
 // Cookie is returned by [HACTCTX.ActivateActCtx].
 //
 // [DeactivateActCtx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-deactivateactctx
-func DeactivateActCtx(flags co.DEACTIVATE_ACTCTX, cookie uint) error {
+func DeactivateActCtx(flags co.DEACTIVATE_ACTCTX, cookie int) error {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_DeactivateActCtx, "DeactivateActCtx"),
 		uintptr(flags),
@@ -156,7 +156,7 @@ func ExpandEnvironmentStrings(s string) (string, error) {
 		return "", co.ERROR(err)
 	}
 
-	szBuf := uint(ret) // includes terminating null
+	szBuf := int(ret) // includes terminating null
 	var wBuf wstr.BufDecoder
 
 	for {
@@ -170,7 +170,7 @@ func ExpandEnvironmentStrings(s string) (string, error) {
 		if ret == 0 {
 			return "", co.ERROR(err)
 		}
-		required := uint(ret) // plus terminating null count
+		required := int(ret) // plus terminating null count
 
 		if required <= szBuf {
 			return wBuf.String(), nil
@@ -213,15 +213,18 @@ var _FlushProcessWriteBuffers *syscall.Proc
 //
 // For ALL_PROCESSOR_GROUPS, pass 0xffff.
 //
+// Panics if groupNumber is negative.
+//
 // [GetActiveProcessorCount]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getactiveprocessorcount
-func GetActiveProcessorCount(groupNumber uint) (uint, error) {
+func GetActiveProcessorCount(groupNumber int) (int, error) {
+	utl.PanicNeg(groupNumber)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GetActiveProcessorCount, "GetActiveProcessorCount"),
 		uintptr(uint16(groupNumber)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return uint(uint32(ret)), nil
+	return int(uint32(ret)), nil
 }
 
 var _GetActiveProcessorCount *syscall.Proc
@@ -229,13 +232,13 @@ var _GetActiveProcessorCount *syscall.Proc
 // [GetActiveProcessorGroupCount] function.
 //
 // [GetActiveProcessorGroupCount]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getactiveprocessorgroupcount
-func GetActiveProcessorGroupCount() (uint, error) {
+func GetActiveProcessorGroupCount() (int, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GetActiveProcessorGroupCount, "GetActiveProcessorGroupCount"))
 	if ret == 0 {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
-	return uint(uint16(ret)), nil
+	return int(uint16(ret)), nil
 }
 
 var _GetActiveProcessorGroupCount *syscall.Proc
@@ -265,10 +268,10 @@ var _GetCurrentProcessId *syscall.Proc
 // [GetCurrentProcessorNumber] function.
 //
 // [GetCurrentProcessorNumber]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessornumber
-func GetCurrentProcessorNumber() uint {
+func GetCurrentProcessorNumber() int {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GetCurrentProcessorNumber, "GetCurrentProcessorNumber"))
-	return uint(uint16(ret))
+	return int(uint16(ret))
 }
 
 var _GetCurrentProcessorNumber *syscall.Proc
@@ -365,7 +368,7 @@ var _GetLocalTime *syscall.Proc
 // [GetNumberOfConsoleMouseButtons] function.
 //
 // [GetNumberOfConsoleMouseButtons]: https://learn.microsoft.com/en-us/windows/console/getnumberofconsolemousebuttons
-func GetNumberOfConsoleMouseButtons() (uint, error) {
+func GetNumberOfConsoleMouseButtons() (int, error) {
 	var numberOfMouseButtons uint32
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GetNumberOfConsoleMouseButtons, "GetNumberOfConsoleMouseButtons"),
@@ -373,7 +376,7 @@ func GetNumberOfConsoleMouseButtons() (uint, error) {
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return uint(numberOfMouseButtons), nil
+	return int(numberOfMouseButtons), nil
 }
 
 var _GetNumberOfConsoleMouseButtons *syscall.Proc

@@ -12,12 +12,12 @@ import (
 //
 // Returns the number of uint16 words written, including the double terminating
 // null.
-func EncodeArrToBuf(dest []uint16, strs ...string) uint {
+func EncodeArrToBuf(dest []uint16, strs ...string) int {
 	if len(dest) == 0 {
 		return 0
 	}
 
-	totWritten := uint(1) // count double terminating null
+	totWritten := 1 // count double terminating null
 	for _, str := range strs {
 		szDest := len(dest)
 		if szDest == 1 { // we need a second terminating null
@@ -42,7 +42,7 @@ func EncodeArrToPtr(strs ...string) *uint16 {
 // Converts multiple Go strings into multiple null-terminated UTF-16 strings,
 // with a double null terminator. Returns a new heap-allocated []uint16.
 func EncodeArrToSlice(strs ...string) []uint16 {
-	numWords := uint(1) // count double terminating null
+	numWords := 1 // count double terminating null
 	for _, s := range strs {
 		numWords += CountUtf16Len(s) + 1 // count terminating null
 	}
@@ -64,7 +64,7 @@ func EncodeArrToSlice(strs ...string) []uint16 {
 //
 //	buf := make([]uint16, 10)
 //	wstr.EncodeToBuf(buf, "abc")
-func EncodeToBuf(dest []uint16, s string) uint {
+func EncodeToBuf(dest []uint16, s string) int {
 	const (
 		_SURR_SELF   = 0x10000
 		_REPLAC_CHAR = '\uFFFD'
@@ -101,7 +101,7 @@ EachRune:
 		}
 	}
 	dest[idx] = 0x0000 // terminating null
-	return uint(idx) + 1
+	return idx + 1
 }
 
 // Converts a Go string into a null-terminated UTF-16 string. Returns a new

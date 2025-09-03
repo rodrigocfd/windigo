@@ -44,7 +44,7 @@ var _GetFileVersionInfoW *syscall.Proc
 // [GetFileVersionInfoSize] function.
 //
 // [GetFileVersionInfoSize]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-getfileversioninfosizew
-func GetFileVersionInfoSize(fileName string) (uint, error) {
+func GetFileVersionInfoSize(fileName string) (int, error) {
 	var wFileName wstr.BufEncoder
 	var dummy uint32
 
@@ -55,7 +55,7 @@ func GetFileVersionInfoSize(fileName string) (uint, error) {
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return uint(ret), nil
+	return int(uint32(ret)), nil
 }
 
 var _GetFileVersionInfoSizeW *syscall.Proc
@@ -102,7 +102,7 @@ var _GetFileVersionInfoSizeW *syscall.Proc
 //	}
 //
 // [VerQueryValue]: https://learn.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluew
-func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, uint, bool) {
+func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, int, bool) {
 	var wSubBlock wstr.BufEncoder
 	var lplpBuffer uintptr
 	var puLen uint32
@@ -116,7 +116,7 @@ func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, uint, bool) {
 	if ret == 0 {
 		return nil, 0, false
 	}
-	return unsafe.Pointer(lplpBuffer), uint(puLen), true
+	return unsafe.Pointer(lplpBuffer), int(puLen), true
 }
 
 var _VerQueryValueW *syscall.Proc

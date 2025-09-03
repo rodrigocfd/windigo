@@ -3,6 +3,7 @@
 package win
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 
@@ -116,7 +117,7 @@ func (me *IFileDialog) GetFileName() (string, error) {
 // [GetFileTypeIndex] method.
 //
 // [GetFileTypeIndex]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfiletypeindex
-func (me *IFileDialog) GetFileTypeIndex() (uint, error) {
+func (me *IFileDialog) GetFileTypeIndex() (int, error) {
 	var idx uint32
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).GetFileTypeIndex,
@@ -124,7 +125,7 @@ func (me *IFileDialog) GetFileTypeIndex() (uint, error) {
 		uintptr(unsafe.Pointer(&idx)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return uint(idx), nil
+		return int(idx), nil
 	} else {
 		return 0, hr
 	}
@@ -253,11 +254,15 @@ func (me *IFileDialog) SetFileNameLabel(label string) error {
 // The index is one-based.
 //
 // [SetFileTypeIndex]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setfiletypeindex
-func (me *IFileDialog) SetFileTypeIndex(index uint) error {
+func (me *IFileDialog) SetFileTypeIndex(index int) error {
+	if index < 1 {
+		panic(fmt.Sprintf("Index is one-based: %d.", index))
+	}
+
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFileTypeIndex,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(index))
+		uintptr(uint32(index)))
 	return utl.ErrorAsHResult(ret)
 }
 

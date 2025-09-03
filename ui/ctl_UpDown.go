@@ -95,9 +95,9 @@ func (me *UpDown) On() *EventsUpDown {
 // (hexadecimal).
 //
 // [UDM_GETBASE]: https://learn.microsoft.com/en-us/windows/win32/controls/udm-getbase
-func (me *UpDown) Radix() uint {
+func (me *UpDown) Radix() int {
 	ret, _ := me.hWnd.SendMessage(co.UDM_GETBASE, 0, 0)
-	return uint(ret)
+	return int(ret)
 }
 
 // Retrieves the range with [UDM_GETRANGE32].
@@ -115,7 +115,7 @@ func (me *UpDown) Range() (int, int) {
 // Returns the same object, so further operations can be chained.
 //
 // [UDM_SETBASE]: https://learn.microsoft.com/en-us/windows/win32/controls/udm-setbase
-func (me *UpDown) SetRadix(radix uint) *UpDown {
+func (me *UpDown) SetRadix(radix int) *UpDown {
 	me.hWnd.SendMessage(co.UDM_SETBASE, win.WPARAM(uint32(radix)), 0)
 	return me
 }
@@ -163,7 +163,7 @@ type VarOptsUpDown struct {
 	ctrlStyle  co.UDS
 	wndStyle   co.WS
 	wndExStyle co.WS_EX
-	radix      uint
+	radix      int
 	rangeMin   int
 	rangeMax   int
 	value      int
@@ -228,7 +228,7 @@ func (o *VarOptsUpDown) WndExStyle(s co.WS_EX) *VarOptsUpDown { o.wndExStyle = s
 // Value radix. Must be 10 (decimal) or 16 (hexadecimal).
 //
 // Defaults to 10.
-func (o *VarOptsUpDown) Radix(r uint) *VarOptsUpDown { o.radix = r; return o }
+func (o *VarOptsUpDown) Radix(r int) *VarOptsUpDown { o.radix = r; return o }
 
 // Minimum and maximum range.
 //

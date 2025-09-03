@@ -42,7 +42,7 @@ func (me StatusBarPart) Index() int {
 // [SB_SETICON]: https://learn.microsoft.com/en-us/windows/win32/controls/sb-seticon
 func (me StatusBarPart) SetIcon(hIcon win.HICON) StatusBarPart {
 	me.owner.hWnd.SendMessage(co.SB_SETICON,
-		win.WPARAM(me.index), win.LPARAM(hIcon))
+		win.WPARAM(int32(me.index)), win.LPARAM(hIcon))
 	return me
 }
 
@@ -69,9 +69,9 @@ func (me StatusBarPart) SetText(text string) StatusBarPart {
 //
 // [SB_GETTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/sb-gettext
 func (me StatusBarPart) Text() string {
-	nLen, _ := me.owner.hWnd.SendMessage(co.SB_GETTEXTLENGTH, win.WPARAM(me.index), 0)
-	len := uint(nLen)
-	if len == 0 {
+	nLen, _ := me.owner.hWnd.SendMessage(co.SB_GETTEXTLENGTH,
+		win.WPARAM(int32(me.index)), 0)
+	if nLen == 0 {
 		return ""
 	}
 
@@ -79,6 +79,6 @@ func (me StatusBarPart) Text() string {
 	wBuf.Alloc(wstr.BUF_MAX)
 
 	me.owner.hWnd.SendMessage(co.SB_GETTEXT,
-		win.WPARAM(me.index), win.LPARAM(wBuf.Ptr()))
+		win.WPARAM(int32(me.index)), win.LPARAM(wBuf.Ptr()))
 	return wBuf.String()
 }

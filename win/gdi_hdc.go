@@ -123,7 +123,7 @@ var _AlphaBlend *syscall.Proc
 // [AngleArc] function.
 //
 // [AngleArc]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-anglearc
-func (hdc HDC) AngleArc(center POINT, r uint, startAngle, sweepAngle float32) error {
+func (hdc HDC) AngleArc(center POINT, r int, startAngle, sweepAngle float32) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_AngleArc, "AngleArc"),
 		uintptr(hdc),
@@ -243,7 +243,7 @@ func (hdc HDC) ChoosePixelFormat(pfd *PIXELFORMATDESCRIPTOR) (int, error) {
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return int(ret), nil
+	return int(int32(ret)), nil
 }
 
 var _ChoosePixelFormat *syscall.Proc
@@ -285,7 +285,7 @@ var _CloseFigure *syscall.Proc
 // ⚠️ You must defer [HBITMAP.DeleteObject].
 //
 // [CreateCompatibleBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createcompatiblebitmap
-func (hdc HDC) CreateCompatibleBitmap(cx, cy uint) (HBITMAP, error) {
+func (hdc HDC) CreateCompatibleBitmap(cx, cy int) (HBITMAP, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_CreateCompatibleBitmap, "CreateCompatibleBitmap"),
 		uintptr(hdc),
@@ -348,7 +348,7 @@ func (hdc HDC) CreateDIBSection(
 	bmi *BITMAPINFO,
 	usage co.DIB_COLORS,
 	hSection HFILEMAP,
-	offset uint,
+	offset int,
 ) (HBITMAP, *byte, error) {
 	var ppvBits *byte
 	ret, _, err := syscall.SyscallN(
@@ -545,7 +545,7 @@ var _FlattenPath *syscall.Proc
 // [FrameRgn] function.
 //
 // [FrameRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-framergn
-func (hdc HDC) FrameRgn(hRgn HRGN, hBrush HBRUSH, width, height uint) error {
+func (hdc HDC) FrameRgn(hRgn HRGN, hBrush HBRUSH, width, height int) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_FrameRgn, "FrameRgn"),
 		uintptr(hdc),
@@ -668,7 +668,7 @@ var _GetDeviceCaps *syscall.Proc
 // [GetDIBColorTable] function.
 //
 // [GetDIBColorTable]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibcolortable
-func (hdc HDC) GetDIBColorTable(iStart uint, buf []RGBQUAD) error {
+func (hdc HDC) GetDIBColorTable(iStart int, buf []RGBQUAD) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_GetDIBColorTable, "GetDIBColorTable"),
 		uintptr(hdc),
@@ -695,7 +695,7 @@ var _GetDIBColorTable *syscall.Proc
 //	hdcScreen, _ := win.HWND(0).GetDC()
 //	defer win.HWND(0).ReleaseDC(hdcScreen)
 //
-//	hBmp, _ := hdcScreen.CreateCompatibleBitmap(uint(cxScreen), uint(cyScreen))
+//	hBmp, _ := hdcScreen.CreateCompatibleBitmap(int(cxScreen), int(cyScreen))
 //	defer hBmp.DeleteObject()
 //
 //	hdcMem, _ := hdcScreen.CreateCompatibleDC()
@@ -714,17 +714,17 @@ var _GetDIBColorTable *syscall.Proc
 //
 //	bi := win.BITMAPINFO{
 //		BmiHeader: win.BITMAPINFOHEADER{
-//			BiWidth:       cxScreen,
-//			BiHeight:      cyScreen,
-//			BiPlanes:      1,
-//			BiBitCount:    32,
-//			BiCompression: co.BI_RGB,
+//			Width:       cxScreen,
+//			Height:      cyScreen,
+//			Planes:      1,
+//			BitCount:    32,
+//			Compression: co.BI_RGB,
 //		},
 //	}
-//	bi.BmiHeader.SetBiSize()
+//	bi.BmiHeader.SetSize()
 //
 //	bmpObj, _ := hBmp.GetObject()
-//	bmpSize := bmpObj.CalcBitmapSize(bi.BmiHeader.BiBitCount)
+//	bmpSize := bmpObj.CalcBitmapSize(bi.BmiHeader.BitCount)
 //
 //	rawMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, bmpSize)
 //	defer rawMem.GlobalFree()
@@ -735,10 +735,10 @@ var _GetDIBColorTable *syscall.Proc
 //	_, _ = hdcScreen.GetDIBits(
 //		hBmp,
 //		0,
-//		uint(cyScreen),
+//		int(cyScreen),
 //		bmpSlice,
 //		&bi,
-//		co.DIB_RGB_COLORS,
+//		co.DIB_COLORS_RGB,
 //	)
 //
 //	var bfh win.BITMAPFILEHEADER
@@ -759,7 +759,7 @@ var _GetDIBColorTable *syscall.Proc
 // [GetDIBits]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibits
 func (hdc HDC) GetDIBits(
 	hbm HBITMAP,
-	firstScanLine, numScanLines uint,
+	firstScanLine, numScanLines int,
 	bitmapDataBuffer []byte,
 	bmi *BITMAPINFO,
 	usage co.DIB_COLORS,
@@ -784,7 +784,7 @@ func (hdc HDC) GetDIBits(
 	if ret == 0 {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
-	return int(ret), nil
+	return int(int32(ret)), nil
 }
 
 var _GetDIBits *syscall.Proc
@@ -1318,10 +1318,10 @@ var _PolylineTo *syscall.Proc
 //
 // [PolyPolygon]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polypolygon
 func (hdc HDC) PolyPolygon(polygons [][]POINT) error {
-	numPolygons := uint(len(polygons))
-	totalPts := uint(0)
+	numPolygons := len(polygons)
+	totalPts := 0
 	for _, polygon := range polygons {
-		totalPts += uint(len(polygon))
+		totalPts += len(polygon)
 	}
 
 	allPtsFlat := make([]POINT, 0, totalPts)
@@ -1347,10 +1347,10 @@ var _PolyPolygon *syscall.Proc
 //
 // [PolyPolyline]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-polypolyline
 func (hdc HDC) PolyPolyline(polyLines [][]POINT) error {
-	numPolyLines := uint(len(polyLines))
-	totalPts := uint(0)
+	numPolyLines := len(polyLines)
+	totalPts := 0
 	for _, polygon := range polyLines {
-		totalPts += uint(len(polygon))
+		totalPts += len(polygon)
 	}
 
 	allPtsFlat := make([]POINT, 0, totalPts)
@@ -1392,14 +1392,14 @@ var _PtVisible *syscall.Proc
 // [RealizePalette] function.
 //
 // [RealizePalette]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-realizepalette
-func (hdc HDC) RealizePalette() (uint, error) {
+func (hdc HDC) RealizePalette() (int, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_RealizePalette, "RealizePalette"),
 		uintptr(hdc))
 	if ret == utl.GDI_ERR {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
-	return uint(ret), nil
+	return int(uint32(ret)), nil
 }
 
 var _RealizePalette *syscall.Proc
@@ -1664,12 +1664,12 @@ func (hdc HDC) SetDIBitsToDevice(
 	upperLeftDest POINT,
 	imgSz SIZE,
 	imgLowerLeft POINT,
-	startScanLine uint,
-	numDibScanLines uint,
+	startScanLine int,
+	numDibScanLines int,
 	pColorData unsafe.Pointer,
 	pBmi *BITMAPINFO,
 	usage co.DIB_COLORS,
-) (uint, error) {
+) (int, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_SetDIBitsToDevice, "SetDIBitsToDevice"),
 		uintptr(hdc),
@@ -1688,7 +1688,7 @@ func (hdc HDC) SetDIBitsToDevice(
 	if ret == 0 || ret == utl.GDI_ERR {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
-	return uint(ret), nil
+	return int(int32(ret)), nil
 }
 
 var _SetDIBitsToDevice *syscall.Proc

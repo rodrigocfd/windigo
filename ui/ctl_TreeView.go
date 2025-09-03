@@ -165,7 +165,7 @@ func (o *VarOptsTreeView) Position(x, y int) *VarOptsTreeView {
 // Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(120, 120).
-func (o *VarOptsTreeView) Size(cx int, cy int) *VarOptsTreeView {
+func (o *VarOptsTreeView) Size(cx, cy int) *VarOptsTreeView {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

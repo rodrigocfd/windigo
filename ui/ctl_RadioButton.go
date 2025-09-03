@@ -17,7 +17,7 @@ import (
 type RadioButton struct {
 	_BaseCtrl
 	events EventsButton
-	index  uint
+	index  int
 }
 
 // Exposes all the control notifications the can be handled.
@@ -32,7 +32,7 @@ func (me *RadioButton) On() *EventsButton {
 }
 
 // Zero-based index of this radio button within its [RadioGroup].
-func (me *RadioButton) Index() uint {
+func (me *RadioButton) Index() int {
 	return me.index
 }
 
@@ -77,7 +77,7 @@ func (me *RadioButton) SetTextAndResize(text string) *RadioButton {
 	me.hWnd.SetWindowText(text)
 	boundBox, _ := calcTextBoundBoxWithCheck(utl.RemoveAccelAmpersands(text))
 	me.hWnd.SetWindowPos(win.HWND(0), 0, 0,
-		uint(boundBox.Cx), uint(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
+		int(boundBox.Cx), int(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me
 }
 
@@ -131,7 +131,7 @@ func (o *VarOptsRadioButton) Position(x, y int) *VarOptsRadioButton {
 // Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to fit current text.
-func (o *VarOptsRadioButton) Size(cx int, cy int) *VarOptsRadioButton {
+func (o *VarOptsRadioButton) Size(cx, cy int) *VarOptsRadioButton {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

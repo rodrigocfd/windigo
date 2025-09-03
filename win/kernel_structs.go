@@ -147,12 +147,12 @@ type FILETIME struct {
 }
 
 // Returns the internal value converted to epoch in 100-nanoseconds unit.
-func (ft *FILETIME) ToEpochNano100() uint {
-	return uint(utl.Make64(ft.dwLowDateTime, ft.dwHighDateTime))
+func (ft *FILETIME) ToEpochNano100() int {
+	return int(utl.Make64(ft.dwLowDateTime, ft.dwHighDateTime))
 }
 
 // Replaces the internal value with the given epoch in 100-nanoseconds unit.
-func (ft *FILETIME) SetEpochNano100(val uint) {
+func (ft *FILETIME) SetEpochNano100(val int) {
 	ft.dwLowDateTime, ft.dwHighDateTime = utl.Break64(uint64(val))
 }
 

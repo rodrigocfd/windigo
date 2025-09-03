@@ -6,6 +6,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
 // Dynamic, manually [heap-allocated] memory block array.
@@ -20,8 +21,8 @@ import (
 //
 // [heap-allocated]: https://learn.microsoft.com/en-us/windows/win32/Memory/heap-functions
 type Vec[T any] struct {
-	data  []T  // Slice to the heap-allocated memory.
-	inUse uint // Number of elements effectively being used.
+	data  []T // Slice to the heap-allocated memory.
+	inUse int // Number of elements effectively being used.
 }
 
 // Creates a new, unallocated [Vec].
@@ -47,13 +48,15 @@ func NewVec[T any]() Vec[T] {
 // Do not store Go pointers in a Vec – this will make the GC believe they are no
 // more in use, thus collecting them.
 //
+// Panics if numElems is negative.
+//
 // ⚠️ You must defer [Vec.Free].
 //
 // Example:
 //
 //	pts := win.NewVecReserved[win.POINT](30)
 //	defer pts.Free()
-func NewVecReserved[T any](numElems uint) Vec[T] {
+func NewVecReserved[T any](numElems int) Vec[T] {
 	var me Vec[T]
 	me.Reserve(numElems)
 	return me
@@ -64,13 +67,15 @@ func NewVecReserved[T any](numElems uint) Vec[T] {
 // Do not store Go pointers in a Vec – this will make the GC believe they are no
 // more in use, thus collecting them.
 //
+// Panics if numElems is negative.
+//
 // ⚠️ You must defer [Vec.Free].
 //
 // Example:
 //
 //	pts := win.NewVecSized(30, win.POINT{})
 //	defer pts.Free()
-func NewVecSized[T any](numElems uint, elem T) Vec[T] {
+func NewVecSized[T any](numElems int, elem T) Vec[T] {
 	var me Vec[T]
 	me.AppendN(numElems, elem)
 	return me
@@ -88,7 +93,7 @@ func NewVecSized[T any](numElems uint, elem T) Vec[T] {
 //	others := []uint64{10, 20, 30}
 //	bigNums.Append(others...)
 func (me *Vec[T]) Append(elems ...T) {
-	me.Reserve(me.inUse + uint(len(elems)))
+	me.Reserve(me.inUse + len(elems))
 	for _, elem := range elems {
 		me.data[me.inUse] = elem
 		me.inUse++
@@ -96,9 +101,11 @@ func (me *Vec[T]) Append(elems ...T) {
 }
 
 // Appends numElems copies of elem, increasing the buffer size if needed.
-func (me *Vec[T]) AppendN(numElems uint, elem T) {
+//
+// Panics if numElems is negative.
+func (me *Vec[T]) AppendN(numElems int, elem T) {
 	me.Reserve(me.inUse + numElems)
-	for i := uint(0); i < numElems; i++ {
+	for i := 0; i < numElems; i++ {
 		me.data[me.inUse] = elem
 		me.inUse++
 	}
@@ -107,7 +114,7 @@ func (me *Vec[T]) AppendN(numElems uint, elem T) {
 // Removes all elements, keeping the reserved size.
 func (me *Vec[T]) Clear() {
 	var dummy T
-	for i := uint(0); i < me.inUse; i++ {
+	for i := 0; i < me.inUse; i++ {
 		me.data[i] = dummy
 	}
 	me.inUse = 0
@@ -125,11 +132,11 @@ func (me *Vec[T]) Free() {
 
 // Returns a pointer the element at the given position.
 //
-// Does not perform bounds check.
-//
 // If the buffer is changed for whathever reason – like by adding an element or
 // reserving more space –, this pointer will be no longer valid.
-func (me *Vec[T]) Get(index uint) *T {
+//
+// Does not perform bounds check. Panics if index is negative.
+func (me *Vec[T]) Get(index int) *T {
 	return &me.data[index]
 }
 
@@ -152,7 +159,7 @@ func (me *Vec[T]) IsEmpty() bool {
 
 // Returns the number of elements currently stored, not counting the reserved
 // space.
-func (me *Vec[T]) Len() uint {
+func (me *Vec[T]) Len() int {
 	return me.inUse
 }
 
@@ -176,8 +183,11 @@ func (me *Vec[T]) Ptr() unsafe.Pointer {
 //
 // If amount is smaller than the current buffer size, does nothing; that is,
 // this function only grows the buffer.
-func (me *Vec[T]) Reserve(numElems uint) {
-	if numElems > uint(len(me.data)) {
+//
+// Panics if numElems is negative.
+func (me *Vec[T]) Reserve(numElems int) {
+	utl.PanicNeg(numElems)
+	if numElems > len(me.data) {
 		newSizeBytes := numElems * me.szElem()
 		hHeap, _ := GetProcessHeap()
 		if me.data == nil {
@@ -192,26 +202,29 @@ func (me *Vec[T]) Reserve(numElems uint) {
 }
 
 // Returns the actual number of allocated elements in the buffer.
-func (me *Vec[T]) Reserved() uint {
-	return uint(len(me.data))
+func (me *Vec[T]) Reserved() int {
+	return len(me.data)
 }
 
 // Resizes the internal buffer to the given number of elements. If increased,
 // the given element is used to fill the new positions.
-func (me *Vec[T]) Resize(numElements uint, elemToFill T) {
-	if numElements > me.inUse { // enlarge
-		me.AppendN(numElements-me.inUse, elemToFill)
-	} else if me.inUse > numElements { // shrink
+//
+// Panics if numElems is negative.
+func (me *Vec[T]) Resize(numElems int, elemToFill T) {
+	utl.PanicNeg(numElems)
+	if numElems > me.inUse { // enlarge
+		me.AppendN(numElems-me.inUse, elemToFill)
+	} else if me.inUse > numElems { // shrink
 		var dummy T
-		for i := numElements; i < me.inUse; i++ {
+		for i := numElems; i < me.inUse; i++ {
 			me.data[i] = dummy // fill the unused memory
 		}
-		me.inUse = numElements
+		me.inUse = numElems
 	}
 }
 
 // Size of a single element, in bytes.
-func (me *Vec[T]) szElem() uint {
+func (me *Vec[T]) szElem() int {
 	var dummy T
-	return uint(unsafe.Sizeof(dummy))
+	return int(unsafe.Sizeof(dummy))
 }

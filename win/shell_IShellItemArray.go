@@ -7,6 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
 // [IShellItemArray] COM interface.
@@ -46,7 +47,7 @@ func (me *IShellItemArray) EnumDisplayNames(sigdnName co.SIGDN) ([]string, error
 
 	names := make([]string, 0, count)
 
-	for i := uint(0); i < count; i++ {
+	for i := 0; i < count; i++ {
 		shellItem, err := me.GetItemAt(localRel, i)
 		if err != nil {
 			return nil, err
@@ -87,7 +88,7 @@ func (me *IShellItemArray) EnumItems(releaser *OleReleaser) ([]*IShellItem, erro
 
 	items := make([]*IShellItem, 0, count)
 
-	for i := uint(0); i < count; i++ {
+	for i := 0; i < count; i++ {
 		shellItem, err := me.GetItemAt(releaser, i)
 		if err != nil {
 			return nil, err // stop immediately
@@ -100,7 +101,7 @@ func (me *IShellItemArray) EnumItems(releaser *OleReleaser) ([]*IShellItem, erro
 // [GetCount] method.
 //
 // [GetCount]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getcount
-func (me *IShellItemArray) GetCount() (uint, error) {
+func (me *IShellItemArray) GetCount() (int, error) {
 	var count uint32
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItemArrayVt)(unsafe.Pointer(*me.Ppvt())).GetCount,
@@ -109,7 +110,7 @@ func (me *IShellItemArray) GetCount() (uint, error) {
 		0)
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return uint(count), nil
+		return int(count), nil
 	} else {
 		return 0, hr
 	}
@@ -117,9 +118,13 @@ func (me *IShellItemArray) GetCount() (uint, error) {
 
 // [GetItemAt] method.
 //
+// Panics if index is negative.
+//
 // [GetItemAt]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemarray-getitemat
-func (me *IShellItemArray) GetItemAt(releaser *OleReleaser, index uint) (*IShellItem, error) {
+func (me *IShellItemArray) GetItemAt(releaser *OleReleaser, index int) (*IShellItem, error) {
+	utl.PanicNeg(index)
 	var ppvtQueried **_IUnknownVt
+
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItemArrayVt)(unsafe.Pointer(*me.Ppvt())).GetItemAt,
 		uintptr(unsafe.Pointer(me.Ppvt())),

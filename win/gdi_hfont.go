@@ -23,14 +23,11 @@ type HFONT HGDIOBJ
 //
 // [CreateFont]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontw
 func CreateFont(
-	height int,
-	width int,
+	height, width int,
 	escapement int,
 	orientation int,
 	weight int,
-	italic bool,
-	underline bool,
-	strikeOut bool,
+	italic, underline, strikeOut bool,
 	charSet co.CHARSET,
 	outPrecision co.OUT_PRECIS,
 	clipPrecision co.CLIP_PRECIS,

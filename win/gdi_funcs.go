@@ -13,7 +13,7 @@ import (
 // [AddFontResourceEx] function.
 //
 // [AddFontResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-addfontresourceexw
-func AddFontResourceEx(name string, fl co.FR) (uint, error) {
+func AddFontResourceEx(name string, fl co.FR) (int, error) {
 	var wName wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_AddFontResourceExW, "AddFontResourceExW"),
@@ -23,7 +23,7 @@ func AddFontResourceEx(name string, fl co.FR) (uint, error) {
 	if ret == 0 {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
-	return uint(ret), nil
+	return int(int32(ret)), nil
 }
 
 var _AddFontResourceExW *syscall.Proc

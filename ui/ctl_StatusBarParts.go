@@ -11,8 +11,8 @@ import (
 )
 
 type _StatusBarPartData struct {
-	sizePixels   uint
-	resizeWeight uint
+	sizePixels   int
+	resizeWeight int
 }
 
 func (me *_StatusBarPartData) IsFixedWidth() bool {
@@ -27,13 +27,13 @@ type CollectionStatusBarParts struct {
 	owner           *StatusBar
 	partsData       []_StatusBarPartData
 	rightEdges      []int32 // buffer to speed up ResizeToFitParent() calls
-	initialParentCx uint    // cache used when adding parts
+	initialParentCx int     // cache used when adding parts
 }
 
 func (me *CollectionStatusBarParts) cacheInitialParentCx() {
 	if me.initialParentCx == 0 { // not cached yet?
 		rc, _ := me.owner.hWnd.GetClientRect()
-		me.initialParentCx = uint(rc.Right) // initial width of parent's client area
+		me.initialParentCx = int(rc.Right) // initial width of parent's client area
 	}
 }
 
@@ -47,29 +47,29 @@ func (me *CollectionStatusBarParts) resizeToFitParent(parm WmSize) {
 		return // no parts added, nothing else to do
 	}
 
-	cx := uint(parm.ClientAreaSize().Cx) // available width
+	cx := int(parm.ClientAreaSize().Cx) // available width
 
-	totalWeight := uint(0) // total weight of all variable-width parts
-	cxVariable := int(cx)  // total width to be divided among variable-width parts
+	totalWeight := 0 // total weight of all variable-width parts
+	cxVariable := cx // total width to be divided among variable-width parts
 	for i := range me.partsData {
 		if me.partsData[i].IsFixedWidth() {
-			cxVariable -= int(me.partsData[i].sizePixels)
+			cxVariable -= me.partsData[i].sizePixels
 		} else {
 			totalWeight += me.partsData[i].resizeWeight
 		}
 	}
 
-	cxTotal := int(cx)
+	cxTotal := cx
 	for i := len(me.partsData) - 1; i >= 0; i-- { // fill right edges array with the right edge of each part
 		me.rightEdges[i] = int32(cxTotal)
 		if me.partsData[i].IsFixedWidth() {
-			cxTotal -= int(me.partsData[i].sizePixels)
+			cxTotal -= me.partsData[i].sizePixels
 		} else {
-			cxTotal -= (cxVariable / int(totalWeight)) * int(me.partsData[i].resizeWeight)
+			cxTotal -= (cxVariable / totalWeight) * me.partsData[i].resizeWeight
 		}
 	}
 	me.owner.hWnd.SendMessage(co.SB_SETPARTS,
-		win.WPARAM(len(me.rightEdges)),
+		win.WPARAM(int32(len(me.rightEdges))),
 		win.LPARAM(unsafe.Pointer(&me.rightEdges[0])))
 }
 
@@ -90,7 +90,7 @@ func (me *CollectionStatusBarParts) AddFixed(text string, width int) {
 	}
 
 	me.partsData = append(me.partsData, _StatusBarPartData{
-		sizePixels: uint(width),
+		sizePixels: width,
 	})
 	me.rightEdges = append(me.rightEdges, 0)
 
@@ -111,17 +111,17 @@ func (me *CollectionStatusBarParts) AddFixed(text string, width int) {
 //   - Suppose you have 3 parts, respectively with weights of 1, 1 and 2.
 //   - If available client area is 400px, respective part widths will be 100, 100 and 200px.
 //
-// Panics if resizeWeight is zero.
+// Panics if resizeWeight is less than 1.
 //
 // Example:
 //
 //	var sbar ui.StatusBar // initialized somewhere
 //
 //	sbar.Parts.AddResizable("Text", 1)
-func (me *CollectionStatusBarParts) AddResizable(text string, resizeWeight uint) {
+func (me *CollectionStatusBarParts) AddResizable(text string, resizeWeight int) {
 	me.cacheInitialParentCx()
 
-	if resizeWeight == 0 {
+	if resizeWeight < 1 {
 		panic(fmt.Sprintf("Resize weight must be equal or greater than 1: %d.", resizeWeight))
 	}
 
@@ -145,15 +145,15 @@ func (me *CollectionStatusBarParts) AddResizable(text string, resizeWeight uint)
 func (me *CollectionStatusBarParts) All() []StatusBarPart {
 	nParts := me.Count()
 	parts := make([]StatusBarPart, 0, nParts)
-	for i := uint(0); i < nParts; i++ {
-		parts = append(parts, me.Get(int(i)))
+	for i := 0; i < nParts; i++ {
+		parts = append(parts, me.Get(i))
 	}
 	return parts
 }
 
 // Returns the number of parts.
-func (me *CollectionStatusBarParts) Count() uint {
-	return uint(len(me.partsData))
+func (me *CollectionStatusBarParts) Count() int {
+	return len(me.partsData)
 }
 
 // Returns the part at the given index.
@@ -166,5 +166,5 @@ func (me *CollectionStatusBarParts) Get(index int) StatusBarPart {
 
 // Returns the last part.
 func (me *CollectionStatusBarParts) Last() StatusBarPart {
-	return me.Get(int(me.Count()) - 1)
+	return me.Get(me.Count() - 1)
 }

@@ -25,6 +25,8 @@ type HLOCAL HANDLE
 // With [co.LMEM_MOVEABLE], you must call [HLOCAL.LocalLock] to retrieve the
 // pointer.
 //
+// Panics if numBytes is negative.
+//
 // ⚠️ You must defer [HLOCAL.LocalFree].
 //
 // Example:
@@ -38,11 +40,12 @@ type HLOCAL HANDLE
 //	println(len(sliceMem))
 //
 // [LocalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-localalloc
-func LocalAlloc(flags co.LMEM, numBytes uint) (HLOCAL, error) {
+func LocalAlloc(flags co.LMEM, numBytes int) (HLOCAL, error) {
+	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_LocalAlloc, "LocalAlloc"),
 		uintptr(flags),
-		uintptr(numBytes))
+		uintptr(uint64(numBytes)))
 	if ret == 0 {
 		return HLOCAL(0), co.ERROR(err)
 	}
@@ -158,14 +161,17 @@ func (hLocal HLOCAL) LocalLockSlice() ([]byte, error) {
 // [HLOCAL.LocalFree] on the previous one. This can become tricky if you
 // used defer.
 //
+// Panics if numBytes is negative.
+//
 // ⚠️ You must defer [HLOCAL.LocalFree].
 //
 // [LocalReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-localrealloc
-func (hLocal HLOCAL) LocalReAlloc(numBytes uint, flags co.LMEM) (HLOCAL, error) {
+func (hLocal HLOCAL) LocalReAlloc(numBytes int, flags co.LMEM) (HLOCAL, error) {
+	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_LocalReAlloc, "LocalReAlloc"),
 		uintptr(hLocal),
-		uintptr(numBytes),
+		uintptr(uint64(numBytes)),
 		uintptr(flags))
 	if ret == 0 {
 		return HLOCAL(0), co.ERROR(err)
@@ -178,14 +184,14 @@ var _LocalReAlloc *syscall.Proc
 // [LocalSize] function.
 //
 // [LocalSize]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-localsize
-func (hLocal HLOCAL) LocalSize() (uint, error) {
+func (hLocal HLOCAL) LocalSize() (int, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_LocalSize, "LocalSize"),
 		uintptr(hLocal))
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return uint(ret), nil
+	return int(uint64(ret)), nil
 }
 
 var _LocalSize *syscall.Proc

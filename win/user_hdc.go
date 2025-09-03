@@ -34,7 +34,7 @@ func (hdc HDC) DrawIconEx(
 	pos POINT,
 	hIcon HICON,
 	size SIZE,
-	frameIndexIfCursor uint,
+	frameIndexIfCursor int,
 	hbrFlickerFree HBRUSH,
 	diFlags co.DI,
 ) error {

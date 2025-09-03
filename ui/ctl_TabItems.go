@@ -42,13 +42,13 @@ func (me *CollectionTabItems) add(title string) TabItem {
 // Panics on error.
 //
 // [TCM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-getitemcount
-func (me *CollectionTabItems) Count() uint {
+func (me *CollectionTabItems) Count() int {
 	countRet, err := me.owner.hWnd.SendMessage(co.TCM_GETITEMCOUNT, 0, 0)
 	count := int(countRet)
 	if err != nil || count == -1 {
 		panic("TCM_GETITEMCOUNT failed.")
 	}
-	return uint(count)
+	return count
 }
 
 // Retrieves the focused item with [TCM_GETCURFOCUS], if any

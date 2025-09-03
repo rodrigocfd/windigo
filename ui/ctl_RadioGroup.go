@@ -54,7 +54,7 @@ func NewRadioGroup(parent Parent, allOpts ...*VarOptsRadioButton) *RadioGroup {
 		me.radios = append(me.radios, &RadioButton{
 			_BaseCtrl: newBaseCtrl(opts.ctrlId),
 			events:    EventsButton{opts.ctrlId, &parent.base().userEvents},
-			index:     uint(idx),
+			index:     idx,
 		})
 	}
 	me.events = EventsRadioGroup{me, &parent.base().userEvents}
@@ -93,7 +93,7 @@ func NewRadioGroupDlg(parent Parent, layout LAY, ctrlIds ...uint16) *RadioGroup 
 		me.radios = append(me.radios, &RadioButton{
 			_BaseCtrl: newBaseCtrl(ctrlId),
 			events:    EventsButton{ctrlId, &parent.base().userEvents},
-			index:     uint(idx),
+			index:     idx,
 		})
 	}
 	me.events = EventsRadioGroup{me, &parent.base().userEvents}
@@ -120,8 +120,8 @@ func (me *RadioGroup) On() *EventsRadioGroup {
 }
 
 // Returns the number of [RadioButton] controls.
-func (me *RadioGroup) Count() uint {
-	return uint(len(me.radios))
+func (me *RadioGroup) Count() int {
+	return len(me.radios)
 }
 
 // Enables or disables all [RadioButton] controls at once with
@@ -136,7 +136,7 @@ func (me *RadioGroup) Enable(enable bool) *RadioGroup {
 }
 
 // Returns the [RadioButton] at the given index.
-func (me *RadioGroup) Get(index uint) *RadioButton {
+func (me *RadioGroup) Get(index int) *RadioButton {
 	return me.radios[index]
 }
 

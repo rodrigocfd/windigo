@@ -43,7 +43,7 @@ func (me *IPropertyStore) Enum() ([]co.PKEY, error) {
 	}
 
 	pkeys := make([]co.PKEY, 0, count)
-	for i := uint(0); i < count; i++ {
+	for i := 0; i < count; i++ {
 		pkey, hr := me.GetAt(i)
 		if hr != nil {
 			return nil, hr
@@ -56,7 +56,7 @@ func (me *IPropertyStore) Enum() ([]co.PKEY, error) {
 // [GetAt] method.
 //
 // [GetAt]: https://learn.microsoft.com/en-us/windows/win32/api/propsys/nf-propsys-ipropertystore-getat
-func (me *IPropertyStore) GetAt(index uint) (co.PKEY, error) {
+func (me *IPropertyStore) GetAt(index int) (co.PKEY, error) {
 	var guidPkey GUID
 	ret, _, _ := syscall.SyscallN(
 		(*_IPropertyStoreVt)(unsafe.Pointer(*me.Ppvt())).GetAt,
@@ -74,7 +74,7 @@ func (me *IPropertyStore) GetAt(index uint) (co.PKEY, error) {
 // [GetCount] method.
 //
 // [GetCount]: https://learn.microsoft.com/en-us/windows/win32/api/propsys/nf-propsys-ipropertystore-getcount
-func (me *IPropertyStore) GetCount() (uint, error) {
+func (me *IPropertyStore) GetCount() (int, error) {
 	var cProps uint32
 	ret, _, _ := syscall.SyscallN(
 		(*_IPropertyStoreVt)(unsafe.Pointer(*me.Ppvt())).GetCount,
@@ -82,7 +82,7 @@ func (me *IPropertyStore) GetCount() (uint, error) {
 		uintptr(unsafe.Pointer(&cProps)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return uint(cProps), nil
+		return int(cProps), nil
 	} else {
 		return 0, hr
 	}

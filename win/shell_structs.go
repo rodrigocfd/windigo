@@ -3,6 +3,7 @@
 package win
 
 import (
+	"strconv"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
@@ -145,7 +146,7 @@ type PROPERTYKEY struct {
 // Creates a [PROPERTYKEY] from a string representation.
 func PropertykeyFrom(pkey co.PKEY) PROPERTYKEY {
 	fmtId := GuidFrom(string(pkey)[0:36])
-	pId := wstr.ParseUint(string(pkey)[37:])
+	pId, _ := strconv.ParseUint(string(pkey)[37:], 10, 32)
 
 	var out PROPERTYKEY
 	out.SetFmdId(fmtId)

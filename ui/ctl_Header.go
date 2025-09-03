@@ -178,7 +178,7 @@ func (o *VarOptsHeader) Position(x, y int) *VarOptsHeader {
 // Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(100, 23).
-func (o *VarOptsHeader) Size(cx int, cy int) *VarOptsHeader {
+func (o *VarOptsHeader) Size(cx, cy int) *VarOptsHeader {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

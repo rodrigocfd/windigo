@@ -24,6 +24,8 @@ type HIMAGELIST HANDLE
 
 // [ImageList_Create] function.
 //
+// Panics if cx, cy, szInitial or szGrow is negative.
+//
 // ⚠️ You must defer [HIMAGELIST.Destroy].
 //
 // Example:
@@ -32,7 +34,8 @@ type HIMAGELIST HANDLE
 //	defer hImg.Destroy()
 //
 // [ImageList_Create]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_create
-func ImageListCreate(cx, cy uint, flags co.ILC, szInitial, szGrow uint) (HIMAGELIST, error) {
+func ImageListCreate(cx, cy int, flags co.ILC, szInitial, szGrow int) (HIMAGELIST, error) {
+	utl.PanicNeg(szInitial, szGrow)
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.COMCTL32, &_ImageList_Create, "ImageList_Create"),
 		uintptr(int32(cx)),
@@ -269,11 +272,11 @@ var _ImageList_GetIconSize *syscall.Proc
 // [ImageList_GetImageCount] function.
 //
 // [ImageList_GetImageCount]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_getimagecount
-func (hImg HIMAGELIST) GetImageCount() uint {
+func (hImg HIMAGELIST) GetImageCount() int {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.COMCTL32, &_ImageList_GetImageCount, "ImageList_GetImageCount"),
 		uintptr(hImg))
-	return uint(ret)
+	return int(ret)
 }
 
 var _ImageList_GetImageCount *syscall.Proc
@@ -336,7 +339,7 @@ var _ImageList_ReplaceIcon *syscall.Proc
 // [ImageList_SetDragCursorImage] function.
 //
 // [ImageList_SetDragCursorImage]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_setdragcursorimage
-func (hImg HIMAGELIST) SetDragCursorImage(index int, dxHotspot, dyHotspot int) error {
+func (hImg HIMAGELIST) SetDragCursorImage(index, dxHotspot, dyHotspot int) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.COMCTL32, &_ImageList_SetDragCursorImage, "ImageList_SetDragCursorImage"),
 		uintptr(hImg),
@@ -364,8 +367,11 @@ var _ImageList_SetIconSize *syscall.Proc
 
 // [ImageList_SetImageCount] function.
 //
+// Panics if count is negative.
+//
 // [ImageList_SetImageCount]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_setimagecount
-func (hImg HIMAGELIST) SetImageCount(count uint) error {
+func (hImg HIMAGELIST) SetImageCount(count int) error {
+	utl.PanicNeg(count)
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.COMCTL32, &_ImageList_SetImageCount, "ImageList_SetImageCount"),
 		uintptr(hImg),

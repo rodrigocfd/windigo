@@ -37,7 +37,7 @@ func (me HeaderItem) Justification() co.HDF {
 		Mask: co.HDI_FORMAT,
 	}
 	me.owner.hWnd.SendMessage(co.HDM_GETITEM,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&hdi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&hdi)))
 
 	return hdi.Fmt & (co.HDF_LEFT | co.HDF_CENTER | co.HDF_RIGHT) // restrict bits
 }
@@ -50,7 +50,7 @@ func (me HeaderItem) Order() int {
 		Mask: co.HDI_ORDER,
 	}
 	me.owner.hWnd.SendMessage(co.HDM_GETITEM,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&hdi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&hdi)))
 
 	return int(hdi.IOrder)
 }
@@ -70,12 +70,12 @@ func (me HeaderItem) SetJustification(hdf co.HDF) HeaderItem {
 		Mask: co.HDI_FORMAT,
 	}
 	me.owner.hWnd.SendMessage(co.HDM_GETITEM,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&hdi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&hdi)))
 
 	hdi.Fmt &^= (co.HDF_LEFT | co.HDF_CENTER | co.HDF_RIGHT)        // remove bits
 	hdi.Fmt |= (hdf & (co.HDF_LEFT | co.HDF_CENTER | co.HDF_RIGHT)) // restrict bits
 	me.owner.hWnd.SendMessage(co.HDM_SETITEM,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&hdi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&hdi)))
 
 	return me
 }
@@ -94,20 +94,20 @@ func (me HeaderItem) SetJustification(hdf co.HDF) HeaderItem {
 // [HDM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-setitem
 func (me HeaderItem) SetSortArrow(hdf co.HDF) HeaderItem {
 	count := me.owner.Items.Count()
-	for i := uint(0); i < count; i++ {
+	for i := 0; i < count; i++ {
 		hdi := win.HDITEM{
 			Mask: co.HDI_FORMAT,
 		}
 		me.owner.hWnd.SendMessage(co.HDM_GETITEM,
-			win.WPARAM(i), win.LPARAM(unsafe.Pointer(&hdi))) // retrieve current style
+			win.WPARAM(int32(i)), win.LPARAM(unsafe.Pointer(&hdi))) // retrieve current style
 
 		hdi.Fmt &^= (co.HDF_SORTDOWN | co.HDF_SORTUP) // remove bits
 
-		if i == uint(me.index) { // only our item will be set
+		if i == int(me.index) { // only our item will be set
 			hdi.Fmt |= (hdf & (co.HDF_SORTDOWN | co.HDF_SORTUP)) // restrict bits
 		}
 		me.owner.hWnd.SendMessage(co.HDM_SETITEM,
-			win.WPARAM(i), win.LPARAM(unsafe.Pointer(&hdi)))
+			win.WPARAM(int32(i)), win.LPARAM(unsafe.Pointer(&hdi)))
 	}
 	return me
 }
@@ -128,7 +128,7 @@ func (me HeaderItem) SetText(text string) HeaderItem {
 	hdi.SetPszText(wText.Slice(text))
 
 	ret, err := me.owner.hWnd.SendMessage(co.HDM_SETITEM,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&hdi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&hdi)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("HDM_SETITEM %d to \"%s\" failed.", me.index, text))
 	}
@@ -150,7 +150,7 @@ func (me HeaderItem) SetWidth(width int) HeaderItem {
 	}
 
 	me.owner.hWnd.SendMessage(co.HDM_SETITEM,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&hdi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&hdi)))
 	return me
 }
 
@@ -167,7 +167,7 @@ func (me HeaderItem) SortArrow() co.HDF {
 		Mask: co.HDI_FORMAT,
 	}
 	me.owner.hWnd.SendMessage(co.HDM_GETITEM,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&hdi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&hdi)))
 
 	return hdi.Fmt & (co.HDF_SORTDOWN | co.HDF_SORTUP) // restrict bits
 }
@@ -187,7 +187,7 @@ func (me HeaderItem) Text() string {
 	hdi.SetPszText(wBuf.HotSlice())
 
 	ret, err := me.owner.hWnd.SendMessage(co.HDM_GETITEM,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&hdi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&hdi)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("HDM_GETITEM %d failed.", me.index))
 	}
@@ -206,7 +206,7 @@ func (me HeaderItem) Width() int {
 	}
 
 	ret, err := me.owner.hWnd.SendMessage(co.HDM_GETITEM,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&hdi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&hdi)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("HDM_GETITEM %d failed.", me.index))
 	}

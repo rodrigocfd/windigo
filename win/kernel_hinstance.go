@@ -81,7 +81,7 @@ var _FreeLibrary *syscall.Proc
 //
 // [GetModuleFileName]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew
 func (hInst HINSTANCE) GetModuleFileName() (string, error) {
-	sz := uint(wstr.BUF_MAX)
+	sz := wstr.BUF_MAX
 	var wBuf wstr.BufDecoder
 	wBuf.Alloc(sz)
 
@@ -94,7 +94,7 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 		if ret == 0 {
 			return "", co.ERROR(err)
 		}
-		chCopied := uint(ret) + 1 // plus terminating null count
+		chCopied := int(ret) + 1 // plus terminating null count
 
 		if chCopied < sz { // to break, must have at least 1 char gap
 			return wBuf.String(), nil

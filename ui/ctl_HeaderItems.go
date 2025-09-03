@@ -48,8 +48,8 @@ func (me *CollectionHeaderItems) Add(text string, width int) HeaderItem {
 func (me *CollectionHeaderItems) All() []HeaderItem {
 	nItems := me.Count()
 	items := make([]HeaderItem, 0, nItems)
-	for i := uint(0); i < nItems; i++ {
-		items = append(items, me.Get(int(i)))
+	for i := 0; i < nItems; i++ {
+		items = append(items, me.Get(i))
 	}
 	return items
 }
@@ -62,7 +62,7 @@ func (me *CollectionHeaderItems) AllOrdered() []HeaderItem {
 	indexes := make([]int32, nItems)
 
 	me.owner.hWnd.SendMessage(co.HDM_GETORDERARRAY,
-		win.WPARAM(nItems), win.LPARAM(unsafe.Pointer(&indexes[0])))
+		win.WPARAM(int32(nItems)), win.LPARAM(unsafe.Pointer(&indexes[0])))
 
 	items := make([]HeaderItem, 0, nItems)
 	for _, index := range indexes {
@@ -76,13 +76,13 @@ func (me *CollectionHeaderItems) AllOrdered() []HeaderItem {
 // Panics on error.
 //
 // [HDM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getitemcount
-func (me *CollectionHeaderItems) Count() uint {
+func (me *CollectionHeaderItems) Count() int {
 	countRet, err := me.owner.hWnd.SendMessage(co.HDM_GETITEMCOUNT, 0, 0)
 	count := int(countRet)
 	if err != nil || count == -1 {
 		panic("HDM_GETITEMCOUNT failed.")
 	}
-	return uint(count)
+	return count
 }
 
 // Returns the item at the given index.
@@ -96,14 +96,14 @@ func (me *CollectionHeaderItems) Get(index int) HeaderItem {
 // Sends [HDM_ORDERTOINDEX] to retrieve the item at the given order.
 //
 // [HDM_ORDERTOINDEX]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-ordertoindex
-func (me *CollectionHeaderItems) GetByOrder(order uint) HeaderItem {
-	idx, _ := me.owner.hWnd.SendMessage(co.HDM_ORDERTOINDEX, win.WPARAM(order), 0)
+func (me *CollectionHeaderItems) GetByOrder(order int) HeaderItem {
+	idx, _ := me.owner.hWnd.SendMessage(co.HDM_ORDERTOINDEX, win.WPARAM(int32(order)), 0)
 	return me.Get(int(idx))
 }
 
 // Returns the last item.
 func (me *CollectionHeaderItems) Last() HeaderItem {
-	return me.Get(int(me.Count()) - 1)
+	return me.Get(me.Count() - 1)
 }
 
 // Sends a [HDM_SETORDERARRAY] to reorder the items with the given order.
@@ -116,5 +116,5 @@ func (me *CollectionHeaderItems) Reorder(indexes []int) {
 	}
 
 	me.owner.hWnd.SendMessage(co.HDM_SETORDERARRAY,
-		win.WPARAM(len(buf)), win.LPARAM(unsafe.Pointer(&buf[0])))
+		win.WPARAM(int32(len(buf))), win.LPARAM(unsafe.Pointer(&buf[0])))
 }

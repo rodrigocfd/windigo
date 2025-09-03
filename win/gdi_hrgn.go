@@ -91,7 +91,7 @@ var _GetRgnBox *syscall.Proc
 // [OffsetClipRgn] function.
 //
 // [OffsetClipRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-offsetcliprgn
-func (hRgn HRGN) OffsetClipRgn(x, y int32) (co.REGION, error) {
+func (hRgn HRGN) OffsetClipRgn(x, y int) (co.REGION, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_OffsetClipRgn, "OffsetClipRgn"),
 		uintptr(hRgn),
@@ -108,7 +108,7 @@ var _OffsetClipRgn *syscall.Proc
 // [OffsetRgn] function.
 //
 // [OffsetRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-offsetrgn
-func (hRgn HRGN) OffsetRgn(x, y int32) (co.REGION, error) {
+func (hRgn HRGN) OffsetRgn(x, y int) (co.REGION, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_OffsetRgn, "OffsetRgn"),
 		uintptr(hRgn),
@@ -125,7 +125,7 @@ var _OffsetRgn *syscall.Proc
 // [PtInRegion] function.
 //
 // [PtInRegion]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-ptinregion
-func (hRgn HRGN) PtInRegion(x, y int32) bool {
+func (hRgn HRGN) PtInRegion(x, y int) bool {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_PtInRegion, "PtInRegion"),
 		uintptr(hRgn),

@@ -173,7 +173,7 @@ func (o *VarOptsTab) Position(x, y int) *VarOptsTab {
 // Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(80, 50).
-func (o *VarOptsTab) Size(cx int, cy int) *VarOptsTab {
+func (o *VarOptsTab) Size(cx, cy int) *VarOptsTab {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

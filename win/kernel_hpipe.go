@@ -18,6 +18,9 @@ type HPIPE HANDLE
 
 // [CreateNamedPipe] function.
 //
+// Panics if nMaxInstances, nOutBufferSize, nInBufferSize or nDefaultTimeOut is
+// negative.
+//
 // ⚠️ You must defer HPIPE.CloseHandle().
 //
 // [CreateNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createnamedpipew
@@ -25,10 +28,10 @@ func CreateNamedPipe(
 	name string,
 	dwOpenMode co.PIPE_ACCESS,
 	dwPipeMode co.PIPE,
-	nMaxInstances uint,
-	nOutBufferSize uint,
-	nInBufferSize uint,
-	nDefaultTimeOut uint,
+	nMaxInstances int,
+	nOutBufferSize int,
+	nInBufferSize int,
+	nDefaultTimeOut int,
 	securityAttributes *SECURITY_ATTRIBUTES,
 ) (HPIPE, error) {
 	var wName wstr.BufEncoder
@@ -151,7 +154,7 @@ type HpipePeek struct {
 func (hPipe HPIPE) ReadFile(
 	buffer []byte,
 	overlapped *OVERLAPPED,
-) (numBytesRead uint, wErr error) {
+) (numBytesRead int, wErr error) {
 	return HFILE(hPipe).ReadFile(buffer, overlapped)
 }
 
@@ -161,6 +164,6 @@ func (hPipe HPIPE) ReadFile(
 func (hPipe HPIPE) WriteFile(
 	data []byte,
 	overlapped *OVERLAPPED,
-) (numBytesWritten uint, wErr error) {
+) (numBytesWritten int, wErr error) {
 	return HFILE(hPipe).WriteFile(data, overlapped)
 }

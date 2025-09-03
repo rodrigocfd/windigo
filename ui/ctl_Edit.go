@@ -93,8 +93,8 @@ func (me *Edit) HideBalloonTip() *Edit {
 // Returns the same object, so further operations can be chained.
 //
 // [EM_SETLIMITTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/em-setlimittext
-func (me *Edit) LimitText(maxChars uint) *Edit {
-	me.hWnd.SendMessage(co.EM_SETLIMITTEXT, win.WPARAM(maxChars), 0)
+func (me *Edit) LimitText(maxChars int) *Edit {
+	me.hWnd.SendMessage(co.EM_SETLIMITTEXT, win.WPARAM(int32(maxChars)), 0)
 	return me
 }
 
@@ -107,7 +107,7 @@ func (me *Edit) LimitText(maxChars uint) *Edit {
 //
 // [EM_SETSEL]: https://learn.microsoft.com/en-us/windows/win32/controls/em-setsel
 func (me *Edit) SetSelection(startPos, endPos int) *Edit {
-	me.hWnd.SendMessage(co.EM_SETSEL, win.WPARAM(startPos), win.LPARAM(endPos))
+	me.hWnd.SendMessage(co.EM_SETSEL, win.WPARAM(int32(startPos)), win.LPARAM(int32(endPos)))
 	return me
 }
 

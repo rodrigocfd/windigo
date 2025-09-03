@@ -35,8 +35,8 @@ func (me *CollectionListViewItems) Add(texts ...string) ListViewItem {
 func (me *CollectionListViewItems) All() []ListViewItem {
 	nItems := me.Count()
 	items := make([]ListViewItem, 0, nItems)
-	for i := uint(0); i < nItems; i++ {
-		items = append(items, me.Get(int(i)))
+	for i := 0; i < nItems; i++ {
+		items = append(items, me.Get(i))
 	}
 	return items
 }
@@ -81,7 +81,7 @@ func (me *CollectionListViewItems) AddWithIcon(iconIndex int, texts ...string) L
 		lvi.SetPszText(wText.Slice(texts[i]))
 
 		ret, err := me.owner.hWnd.SendMessage(co.LVM_SETITEMTEXT,
-			win.WPARAM(newIdx), win.LPARAM(unsafe.Pointer(&lvi)))
+			win.WPARAM(int32(newIdx)), win.LPARAM(unsafe.Pointer(&lvi)))
 		if err != nil || ret == 0 {
 			panic(fmt.Sprintf("LVM_SETITEMTEXT col %d, \"%s\" failed.", i, texts[i]))
 		}
@@ -93,9 +93,9 @@ func (me *CollectionListViewItems) AddWithIcon(iconIndex int, texts ...string) L
 // Retrieves the number of items with [LVM_GETITEMCOUNT].
 //
 // [LVM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitemcount
-func (me *CollectionListViewItems) Count() uint {
+func (me *CollectionListViewItems) Count() int {
 	count, _ := me.owner.hWnd.SendMessage(co.LVM_GETITEMCOUNT, 0, 0)
-	return uint(count)
+	return int(count)
 }
 
 // Deletes all items at once with [LVM_DELETEALLITEMS].
@@ -116,13 +116,14 @@ func (me *CollectionListViewItems) DeleteSelected() {
 	for {
 		idxBaseSearch := -1 // always search the first one
 		idxRet, _ := me.owner.hWnd.SendMessage(co.LVM_GETNEXTITEM,
-			win.WPARAM(idxBaseSearch), win.LPARAM(co.LVNI_SELECTED))
+			win.WPARAM(int32(idxBaseSearch)), win.LPARAM(co.LVNI_SELECTED))
 		idx := int(idxRet)
 		if idx == -1 {
 			break
 		}
 
-		delRet, err := me.owner.hWnd.SendMessage(co.LVM_DELETEITEM, win.WPARAM(idx), 0)
+		delRet, err := me.owner.hWnd.SendMessage(co.LVM_DELETEITEM,
+			win.WPARAM(int32(idx)), 0)
 		if err != nil || delRet == 0 {
 			panic(fmt.Sprintf("LVM_DELETEITEM %d failed.", idx))
 		}
@@ -135,7 +136,7 @@ func (me *CollectionListViewItems) DeleteSelected() {
 func (me *CollectionListViewItems) Focused() (ListViewItem, bool) {
 	idxBaseSearch := -1
 	idxRet, _ := me.owner.hWnd.SendMessage(co.LVM_GETNEXTITEM,
-		win.WPARAM(idxBaseSearch), win.LPARAM(co.LVNI_FOCUSED))
+		win.WPARAM(int32(idxBaseSearch)), win.LPARAM(co.LVNI_FOCUSED))
 	idx := int(idxRet)
 	if idx == -1 {
 		return ListViewItem{}, false
@@ -158,7 +159,7 @@ func (me *CollectionListViewItems) Find(text string) (ListViewItem, bool) {
 
 	idxBaseSearch := -1
 	idxRet, _ := me.owner.hWnd.SendMessage(co.LVM_FINDITEM,
-		win.WPARAM(idxBaseSearch), win.LPARAM(unsafe.Pointer(&lvfi)))
+		win.WPARAM(int32(idxBaseSearch)), win.LPARAM(unsafe.Pointer(&lvfi)))
 	idx := int(idxRet)
 	if idx == -1 {
 		return ListViewItem{}, false // not found
@@ -176,7 +177,7 @@ func (me *CollectionListViewItems) Get(index int) ListViewItem {
 //
 // [LVM_MAPIDTOINDEX]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-mapidtoindex
 func (me *CollectionListViewItems) GetByUid(uid int) ListViewItem {
-	idx, _ := me.owner.hWnd.SendMessage(co.LVM_MAPIDTOINDEX, win.WPARAM(uid), 0)
+	idx, _ := me.owner.hWnd.SendMessage(co.LVM_MAPIDTOINDEX, win.WPARAM(int32(uid)), 0)
 	return me.Get(int(idx))
 }
 
@@ -192,7 +193,7 @@ func (me *CollectionListViewItems) HitTest(pos win.POINT) (ListViewItem, bool) {
 
 	idxBaseSearch := -1 // Vista: retrieve iGroup and iSubItem
 	me.owner.hWnd.SendMessage(co.LVM_HITTEST,
-		win.WPARAM(idxBaseSearch), win.LPARAM(unsafe.Pointer(&lvhti)))
+		win.WPARAM(int32(idxBaseSearch)), win.LPARAM(unsafe.Pointer(&lvhti)))
 
 	if lvhti.IItem == -1 {
 		return me.Get(-1), false
@@ -202,7 +203,7 @@ func (me *CollectionListViewItems) HitTest(pos win.POINT) (ListViewItem, bool) {
 
 // Returns the last item.
 func (me *CollectionListViewItems) Last() ListViewItem {
-	return me.Get(int(me.Count()) - 1)
+	return me.Get(me.Count() - 1)
 }
 
 // Selects or deselects all items at once with [LVM_SETITEMSTATE].
@@ -229,7 +230,7 @@ func (me *CollectionListViewItems) SelectAll(doSelect bool) {
 
 	idxBaseSearch := -1
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETITEMSTATE,
-		win.WPARAM(idxBaseSearch), win.LPARAM(unsafe.Pointer(&lvi)))
+		win.WPARAM(int32(idxBaseSearch)), win.LPARAM(unsafe.Pointer(&lvi)))
 	if err != nil || ret == 0 {
 		panic("LVM_SETITEMSTATE failed.")
 	}
@@ -245,7 +246,7 @@ func (me *CollectionListViewItems) Selected() []ListViewItem {
 	idx := -1
 	for {
 		idxRet, _ := me.owner.hWnd.SendMessage(co.LVM_GETNEXTITEM,
-			win.WPARAM(idx), win.LPARAM(co.LVNI_SELECTED))
+			win.WPARAM(int32(idx)), win.LPARAM(co.LVNI_SELECTED))
 		idx = int(idxRet)
 		if idx == -1 {
 			break
@@ -259,9 +260,9 @@ func (me *CollectionListViewItems) Selected() []ListViewItem {
 // Retrieves the number of selected items with [LVM_GETSELECTEDCOUNT].
 //
 // [LVM_GETSELECTEDCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getselectedcount
-func (me *CollectionListViewItems) SelectedCount() uint {
+func (me *CollectionListViewItems) SelectedCount() int {
 	ret, _ := me.owner.hWnd.SendMessage(co.LVM_GETSELECTEDCOUNT, 0, 0)
-	return uint(ret)
+	return int(ret)
 }
 
 // Sorts the items according to the callback with [LVM_SORTITEMSEX].

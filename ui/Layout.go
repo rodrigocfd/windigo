@@ -98,7 +98,7 @@ func (me *_Layout) Rearrange(parm WmSize) {
 		return // no need to resize if window is minimized
 	}
 
-	hdwp, _ := win.BeginDeferWindowPos(uint(len(me.ctrls)))
+	hdwp, _ := win.BeginDeferWindowPos(len(me.ctrls))
 	defer hdwp.EndDeferWindowPos()
 
 	for i := range me.ctrls {

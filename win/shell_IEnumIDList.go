@@ -149,8 +149,11 @@ func (me *IEnumIDList) Reset() error {
 
 // [Skip] method.
 //
+// Panics if count is negative.
+//
 // [Skip]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumidlist-skip
-func (me *IEnumIDList) Skip(count uint) error {
+func (me *IEnumIDList) Skip(count int) error {
+	utl.PanicNeg(count)
 	ret, _, _ := syscall.SyscallN(
 		(*_IEnumIDListVt)(unsafe.Pointer(*me.Ppvt())).Skip,
 		uintptr(unsafe.Pointer(me.Ppvt())),

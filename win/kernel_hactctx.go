@@ -57,8 +57,8 @@ var _GetCurrentActCtx *syscall.Proc
 // Deactivation is made by [DeactivateActCtx].
 //
 // [ActivateActCtx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-activateactctx
-func (hActCtx HACTCTX) ActivateActCtx() (uint, error) {
-	var cookie uint
+func (hActCtx HACTCTX) ActivateActCtx() (int, error) {
+	var cookie uintptr
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_ActivateActCtx, "ActivateActCtx"),
 		uintptr(unsafe.Pointer(hActCtx)),
@@ -66,7 +66,7 @@ func (hActCtx HACTCTX) ActivateActCtx() (uint, error) {
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return cookie, nil
+	return int(cookie), nil
 }
 
 var _ActivateActCtx *syscall.Proc

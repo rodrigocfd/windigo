@@ -156,8 +156,11 @@ func (me *IEnumShellItems) Reset() error {
 
 // [Skip] method.
 //
+// Panics if count is negative.
+//
 // [Skip]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumshellitems-skip
-func (me *IEnumShellItems) Skip(count uint) error {
+func (me *IEnumShellItems) Skip(count int) error {
+	utl.PanicNeg(count)
 	ret, _, _ := syscall.SyscallN(
 		(*_IEnumShellItemsVt)(unsafe.Pointer(*me.Ppvt())).Skip,
 		uintptr(unsafe.Pointer(me.Ppvt())),

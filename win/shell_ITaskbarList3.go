@@ -83,8 +83,11 @@ func (me *ITaskbarList3) SetProgressState(hWnd HWND, flags co.TBPF) error {
 
 // [SetProgressValue] method.
 //
+// Panics if completed or total is negative.
+//
 // [SetProgressValue]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setprogressvalue
-func (me *ITaskbarList3) SetProgressValue(hWnd HWND, completed, total uint) error {
+func (me *ITaskbarList3) SetProgressValue(hWnd HWND, completed, total int) error {
+	utl.PanicNeg(completed, total)
 	ret, _, _ := syscall.SyscallN(
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).SetProgressValue,
 		uintptr(unsafe.Pointer(me.Ppvt())),

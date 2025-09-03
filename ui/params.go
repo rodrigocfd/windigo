@@ -89,7 +89,7 @@ func (p WmChangeCbChain) IsLastWindow() bool           { return p.Raw.LParam == 
 type WmChar struct{ Raw Wm }
 
 func (p WmChar) CharCode() rune      { return rune(p.Raw.WParam) }
-func (p WmChar) RepeatCount() uint   { return uint(p.Raw.LParam.LoWord()) }
+func (p WmChar) RepeatCount() int    { return int(p.Raw.LParam.LoWord()) }
 func (p WmChar) ScanCode() uint8     { return win.LOBYTE(p.Raw.LParam.HiWord()) }
 func (p WmChar) IsExtendedKey() bool { return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 0) }
 func (p WmChar) HasAltKey() bool     { return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 5) }
@@ -347,7 +347,7 @@ func (p WmGetMinMaxInfo) Info() *win.MINMAXINFO {
 // [WM_GETTEXT]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-gettext
 type WmGetText struct{ Raw Wm }
 
-func (p WmGetText) MaxChars() uint  { return uint(p.Raw.WParam) }
+func (p WmGetText) MaxChars() int   { return int(p.Raw.WParam) }
 func (p WmGetText) Buffer() *uint16 { return (*uint16)(unsafe.Pointer(p.Raw.LParam)) }
 
 // [WM_GETTITLEBARINFOEX] parameters.
@@ -409,7 +409,7 @@ func (p WmInitMenuPopup) IsWindowMenu() bool { return p.Raw.LParam.HiWord() != 0
 type WmKey struct{ Raw Wm }
 
 func (p WmKey) VirtualKeyCode() co.VK { return co.VK(p.Raw.WParam) }
-func (p WmKey) RepeatCount() uint     { return uint(p.Raw.LParam.LoWord()) }
+func (p WmKey) RepeatCount() int      { return int(p.Raw.LParam.LoWord()) }
 func (p WmKey) ScanCode() uint8       { return win.LOBYTE(p.Raw.LParam.HiWord()) }
 func (p WmKey) IsExtendedKey() bool   { return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 0) }
 func (p WmKey) HasAltKey() bool       { return utl.BitIsSet(win.HIBYTE(p.Raw.LParam.HiWord()), 5) }
@@ -435,7 +435,7 @@ func (p WmKillFocus) HwndReceivingFocus() win.HWND { return win.HWND(p.Raw.LPara
 // [WM_MENURBUTTONUP]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menurbuttonup
 type WmMenu struct{ Raw Wm }
 
-func (p WmMenu) ItemIndex() uint  { return uint(p.Raw.WParam) }
+func (p WmMenu) ItemIndex() int   { return int(p.Raw.WParam) }
 func (p WmMenu) Hmenu() win.HMENU { return win.HMENU(p.Raw.LParam) }
 
 // [WM_MENUCHAR] parameters.

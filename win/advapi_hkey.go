@@ -281,7 +281,7 @@ func (hKey HKEY) RegEnumKeyEx() ([]string, error) {
 	var wKeyNameBuf wstr.BufDecoder
 	wKeyNameBuf.Alloc(nfo.MaxSubKeyNameLen + 1)
 
-	for i := uint(0); i < nfo.NumSubKeys; i++ {
+	for i := 0; i < nfo.NumSubKeys; i++ {
 		szKeyNameBuf := uint32(wKeyNameBuf.Len())
 		wKeyNameBuf.Zero()
 
@@ -344,7 +344,7 @@ func (hKey HKEY) RegEnumValue() ([]HkeyNameVal, error) {
 
 	dataBuf := make([]byte, nfo.MaxValueDataLen)
 
-	for i := uint(0); i < nfo.NumValues; i++ {
+	for i := 0; i < nfo.NumValues; i++ {
 		szValueNameBuf := uint32(wValueNameBuf.Len())
 		wValueNameBuf.Zero()
 		var dataType uint32
@@ -561,13 +561,13 @@ func (hKey HKEY) RegQueryInfoKey() (HkeyInfo, error) {
 
 	return HkeyInfo{
 		Class:                 wClassBuf.String(),
-		NumSubKeys:            uint(numSubKeys),
-		MaxSubKeyNameLen:      uint(maxSubKeyNameLen),
-		MaxClassNameLen:       uint(maxClassNameLen),
-		NumValues:             uint(numValues),
-		MaxValueNameLen:       uint(maxValueNameLen),
-		MaxValueDataLen:       uint(maxValueDataLen),
-		SecurityDescriptorLen: uint(securityDescriptorLen),
+		NumSubKeys:            int(numSubKeys),
+		MaxSubKeyNameLen:      int(maxSubKeyNameLen),
+		MaxClassNameLen:       int(maxClassNameLen),
+		NumValues:             int(numValues),
+		MaxValueNameLen:       int(maxValueNameLen),
+		MaxValueDataLen:       int(maxValueDataLen),
+		SecurityDescriptorLen: int(securityDescriptorLen),
 		LastWriteTime:         ft.ToTime(),
 	}, nil
 
@@ -578,13 +578,13 @@ var _RegQueryInfoKeyW *syscall.Proc
 // Returned by [HKEY.RegQueryInfoKey].
 type HkeyInfo struct {
 	Class                 string // User-defined class of the key.
-	NumSubKeys            uint
-	MaxSubKeyNameLen      uint
-	MaxClassNameLen       uint
-	NumValues             uint
-	MaxValueNameLen       uint
-	MaxValueDataLen       uint
-	SecurityDescriptorLen uint
+	NumSubKeys            int
+	MaxSubKeyNameLen      int
+	MaxClassNameLen       int
+	NumValues             int
+	MaxValueNameLen       int
+	MaxValueDataLen       int
+	SecurityDescriptorLen int
 	LastWriteTime         time.Time
 }
 

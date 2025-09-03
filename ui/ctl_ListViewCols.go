@@ -54,8 +54,8 @@ func (me *CollectionListViewCols) Add(title string, width int) ListViewCol {
 func (me *CollectionListViewCols) All() []ListViewCol {
 	nCols := me.Count()
 	cols := make([]ListViewCol, 0, nCols)
-	for i := uint(0); i < nCols; i++ {
-		cols = append(cols, me.Get(int(i)))
+	for i := 0; i < nCols; i++ {
+		cols = append(cols, me.Get(i))
 	}
 	return cols
 }
@@ -65,11 +65,10 @@ func (me *CollectionListViewCols) All() []ListViewCol {
 // Panics if the list view has no header.
 //
 // [HDM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getitemcount
-func (me *CollectionListViewCols) Count() uint {
+func (me *CollectionListViewCols) Count() int {
 	if me.owner.Header() == nil {
 		panic("This ListView has no header.")
 	}
-
 	return me.owner.header.Items.Count()
 }
 
@@ -83,5 +82,5 @@ func (me *CollectionListViewCols) Get(index int) ListViewCol {
 
 // Returns the last column.
 func (me *CollectionListViewCols) Last() ListViewCol {
-	return me.Get(int(me.Count()) - 1)
+	return me.Get(me.Count() - 1)
 }

@@ -30,25 +30,30 @@ func (hMap HFILEMAP) CloseHandle() error {
 //
 // Note that this function may present issues in x86 architectures.
 //
+// Panics if offset or numBytesToMap is negative.
+//
 // ⚠️ You must defer [HFILEMAPVIEW.UnmapViewOfFile].
 //
 // [MapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
 func (hMap HFILEMAP) MapViewOfFile(
 	desiredAccess co.FILE_MAP,
-	offset uint64,
-	numBytesToMap uint,
+	offset int,
+	numBytesToMap int,
 ) (HFILEMAPVIEW, error) {
+	utl.PanicNeg(offset, numBytesToMap)
+
 	si := GetSystemInfo()
-	if (offset % uint64(si.DwAllocationGranularity)) != 0 {
-		offset -= offset % uint64(si.DwAllocationGranularity)
+	offset64 := uint64(offset)
+	if (offset64 % uint64(si.DwAllocationGranularity)) != 0 {
+		offset64 -= offset64 % uint64(si.DwAllocationGranularity)
 	}
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_MapViewOfFileFromApp, "MapViewOfFileFromApp"),
 		uintptr(hMap),
 		uintptr(desiredAccess),
-		uintptr(offset),
-		uintptr(numBytesToMap))
+		uintptr(offset64),
+		uintptr(uint64(numBytesToMap)))
 	if ret == 0 {
 		return HFILEMAPVIEW(0), co.ERROR(err)
 	}
@@ -70,12 +75,15 @@ func (hMem HFILEMAPVIEW) Ptr() *byte {
 
 // [FlushViewOfFile] function.
 //
+// Panics if numBytes is negative.
+//
 // [FlushViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-flushviewoffile
-func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes uint) error {
+func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes int) error {
+	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_FlushViewOfFile, "FlushViewOfFile"),
 		uintptr(hMem),
-		uintptr(numBytes))
+		uintptr(uint64(numBytes)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

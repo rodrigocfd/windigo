@@ -155,7 +155,7 @@ func (me *CheckBox) SetTextAndResize(text string) *CheckBox {
 	me.hWnd.SetWindowText(text)
 	boundBox, _ := calcTextBoundBoxWithCheck(utl.RemoveAccelAmpersands(text))
 	me.hWnd.SetWindowPos(win.HWND(0), 0, 0,
-		uint(boundBox.Cx), uint(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
+		int(boundBox.Cx), int(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me
 }
 
@@ -223,7 +223,7 @@ func (o *VarOptsCheckBox) Position(x, y int) *VarOptsCheckBox {
 // Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to fit current text.
-func (o *VarOptsCheckBox) Size(cx int, cy int) *VarOptsCheckBox {
+func (o *VarOptsCheckBox) Size(cx, cy int) *VarOptsCheckBox {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

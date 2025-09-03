@@ -182,7 +182,7 @@ func (o *VarOptsMain) Title(t string) *VarOptsMain { o.title = t; return o }
 // Defaults to ui.Dpi(500, 400).
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
-func (o *VarOptsMain) Size(cx int, cy int) *VarOptsMain {
+func (o *VarOptsMain) Size(cx, cy int) *VarOptsMain {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

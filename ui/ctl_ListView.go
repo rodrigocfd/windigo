@@ -219,7 +219,7 @@ func (me *ListView) ImageList(which co.LVSIL) win.HIMAGELIST {
 		if which == co.LVSIL_NORMAL {
 			cx, cy = 32, 32
 		}
-		hImg, _ = win.ImageListCreate(uint(cx), uint(cy), co.ILC_COLOR32, 1, 1)
+		hImg, _ = win.ImageListCreate(cx, cy, co.ILC_COLOR32, 1, 1)
 		me.hWnd.SendMessage(co.LVM_SETIMAGELIST, win.WPARAM(which), win.LPARAM(hImg))
 	}
 	return hImg
@@ -233,7 +233,8 @@ func (me *ListView) ImageList(which co.LVSIL) win.HIMAGELIST {
 //
 // [LVM_SCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-scroll
 func (me *ListView) Scroll(horz, vert int) *ListView {
-	ret, err := me.hWnd.SendMessage(co.LVM_SCROLL, win.WPARAM(horz), win.LPARAM(vert))
+	ret, err := me.hWnd.SendMessage(co.LVM_SCROLL,
+		win.WPARAM(int32(horz)), win.LPARAM(int32(vert)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("ListView scrolling failed: %d, %d.", horz, vert))
 	}
@@ -339,7 +340,7 @@ func (o *VarOptsListView) Position(x, y int) *VarOptsListView {
 // Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(120, 120).
-func (o *VarOptsListView) Size(cx int, cy int) *VarOptsListView {
+func (o *VarOptsListView) Size(cx, cy int) *VarOptsListView {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o
@@ -618,7 +619,7 @@ func (me *EventsListView) LvnLinkClick(fun func(p *win.NMLVLINK)) {
 // [LVN_MARQUEEBEGIN] message handler.
 //
 // [LVN_MARQUEEBEGIN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvn-marqueebegin
-func (me *EventsListView) LvnMarqueeBegin(fun func() uint) {
+func (me *EventsListView) LvnMarqueeBegin(fun func() int) {
 	me.parentEvents.WmNotify(me.ctrlId, co.LVN_MARQUEEBEGIN, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun())
 	})
@@ -695,7 +696,7 @@ func (me *EventsListView) NmDblClk(fun func(p *win.NMITEMACTIVATE)) {
 // [NM_HOVER] message handler.
 //
 // [NM_HOVER]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-hover-list-view
-func (me *EventsListView) NmHover(fun func() uint) {
+func (me *EventsListView) NmHover(fun func() int) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_HOVER, func(_ unsafe.Pointer) uintptr {
 		return uintptr(fun())
 	})

@@ -34,7 +34,7 @@ import (
 func OleLoadPicture(
 	releaser *OleReleaser,
 	stream *IStream,
-	size uint,
+	size int,
 	keepOriginalFormat bool,
 ) (*IPicture, error) {
 	var ppvtQueried **_IUnknownVt

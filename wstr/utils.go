@@ -33,8 +33,8 @@ func CmpI(a, b string) int {
 // of bytes returned by len(s).
 //
 // Adapted from [utf8.RuneCountInString].
-func CountRunes(s string) uint {
-	n := uint(0)
+func CountRunes(s string) int {
+	n := 0
 	for range s {
 		n++
 	}
@@ -47,7 +47,7 @@ func CountRunes(s string) uint {
 //
 // This function doesn't count a terminating null, an empty string will return
 // zero.
-func CountUtf16Len(s string) uint {
+func CountUtf16Len(s string) int {
 	numWords := 0
 	for _, ch := range s {
 		switch utf16.RuneLen(ch) {
@@ -60,11 +60,11 @@ func CountUtf16Len(s string) uint {
 			numWords++
 		}
 	}
-	return uint(numWords)
+	return numWords
 }
 
 // Formats a number of bytes into KB, MB, GB, TB or PB.
-func FmtBytes(numBytes uint) string {
+func FmtBytes(numBytes int) string {
 	switch {
 	case numBytes < 1024:
 		return fmt.Sprintf("%d bytes", numBytes)
@@ -82,7 +82,7 @@ func FmtBytes(numBytes uint) string {
 }
 
 // Converts the number to a string with thousand separators.
-func FmtThousands(n uint) string {
+func FmtThousands(n int) string {
 	if n == 0 {
 		return "0"
 	}
@@ -96,31 +96,6 @@ func FmtThousands(n uint) string {
 			return strings.TrimLeft(final[:len(final)-1], "0")
 		}
 	}
-}
-
-// Parses a string into an uint number.
-//
-// Panics if an invalid character is found.
-func ParseUint(strNumber string) uint {
-	nChars := uint(len(strNumber))
-	var out uint
-
-	for idx, ch := range strNumber {
-		if ch < '0' || ch > '9' {
-			panic(fmt.Sprintf("ParseUint: invalid character found - '%c'", ch))
-		}
-
-		out += (uint(ch) - uint('0')) * powUint(10, nChars-uint(idx)-1)
-	}
-	return out
-}
-
-func powUint(a, b uint) uint {
-	out := uint(1)
-	for i := uint(0); i < b; i++ {
-		out *= a
-	}
-	return out
 }
 
 // Returns a new string with all diacritics removed.
@@ -161,10 +136,16 @@ func SplitLines(s string) []string {
 //
 // This function is useful if your string contains multi-byte UTF-8 chars.
 //
+// Panics if start or length is negative.
+//
 // [runes]: https://stackoverflow.com/a/38537764/6923555
-func SubstrRunes(s string, start, length uint) string {
+func SubstrRunes(s string, start, length int) string {
+	if start < 0 || length < 0 {
+		panic(fmt.Sprintf("Values start (%d) and length (%d) cannot be negative.", start, length))
+	}
+
 	startStrIdx := 0
-	i := uint(0)
+	i := 0
 	for j := range s {
 		if i == start {
 			startStrIdx = j

@@ -74,7 +74,7 @@ func (me *SysLink) SetTextAndResize(text string) *SysLink {
 	me.hWnd.SetWindowText(text)
 	boundBox, _ := calcTextBoundBox(utl.RemoveAccelAmpersands(utl.RemoveHtmlAnchor(text)))
 	me.hWnd.SetWindowPos(win.HWND(0), 0, 0,
-		uint(boundBox.Cx), uint(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
+		int(boundBox.Cx), int(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me
 }
 
@@ -139,7 +139,7 @@ func (o *VarOptsSysLink) Position(x, y int) *VarOptsSysLink {
 // Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to fit current text.
-func (o *VarOptsSysLink) Size(cx int, cy int) *VarOptsSysLink {
+func (o *VarOptsSysLink) Size(cx, cy int) *VarOptsSysLink {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

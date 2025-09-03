@@ -35,8 +35,8 @@ func (me TabItem) displayContent() {
 	hParent.ScreenToClientRc(&rcTab)
 	me.owner.hWnd.SendMessage(co.TCM_ADJUSTRECT, 0, win.LPARAM(unsafe.Pointer(&rcTab))) // ideal child size
 	me.owner.children[me.index].Content.Hwnd().
-		SetWindowPos(win.HWND(0), int(rcTab.Left), int(rcTab.Top),
-			uint(rcTab.Right-rcTab.Left), uint(rcTab.Bottom-rcTab.Top),
+		SetWindowPos(win.HWND(0), int(rcTab.Left), int(rcTab.Top), // resize child to ideal size
+			int(rcTab.Right-rcTab.Left), int(rcTab.Bottom-rcTab.Top),
 			co.SWP_NOZORDER|co.SWP_SHOWWINDOW)
 }
 
@@ -51,7 +51,7 @@ func (me TabItem) Index() int {
 //
 // [TCM_SETCURSEL]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-setcursel
 func (me TabItem) Select() TabItem {
-	me.owner.hWnd.SendMessage(co.TCM_SETCURSEL, win.WPARAM(me.index), 0)
+	me.owner.hWnd.SendMessage(co.TCM_SETCURSEL, win.WPARAM(int32(me.index)), 0)
 	me.displayContent() // because notification is not sent
 	return me
 }
@@ -72,7 +72,7 @@ func (me TabItem) SetText(text string) TabItem {
 	tci.SetPszText(wText.Slice(text))
 
 	ret, err := me.owner.hWnd.SendMessage(co.TCM_SETITEM,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&tci)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&tci)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("TCM_SETITEM %d to \"%s\" failed.", me.index, text))
 	}
@@ -95,7 +95,7 @@ func (me TabItem) Text() string {
 	tci.SetPszText(wBuf.HotSlice())
 
 	ret, err := me.owner.hWnd.SendMessage(co.TCM_GETITEM,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&tci)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&tci)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("TCM_GETITEM %d failed.", me.index))
 	}

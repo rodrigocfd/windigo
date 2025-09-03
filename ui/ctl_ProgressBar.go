@@ -185,7 +185,7 @@ func (o *VarOptsProgressBar) Position(x, y int) *VarOptsProgressBar {
 // Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(140, 26).
-func (o *VarOptsProgressBar) Size(cx int, cy int) *VarOptsProgressBar {
+func (o *VarOptsProgressBar) Size(cx, cy int) *VarOptsProgressBar {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

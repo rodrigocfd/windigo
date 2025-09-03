@@ -17,13 +17,16 @@ type HDWP HANDLE
 
 // [BeginDeferWindowPos] function.
 //
+// Panics if numWindows is negative.
+//
 // ⚠️ You must defer [HDWP.EndDeferWindowPos].
 //
 // [BeginDeferWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-begindeferwindowpos
-func BeginDeferWindowPos(numWindows uint) (HDWP, error) {
+func BeginDeferWindowPos(numWindows int) (HDWP, error) {
+	utl.PanicNeg(numWindows)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_BeginDeferWindowPos, "BeginDeferWindowPos"),
-		uintptr(numWindows))
+		uintptr(int32(numWindows)))
 	if ret == 0 {
 		return HDWP(0), co.ERROR(err)
 	}

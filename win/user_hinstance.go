@@ -210,7 +210,7 @@ var _LoadIconW *syscall.Proc
 func (hInst HINSTANCE) LoadImage(
 	name ResId,
 	imgType co.IMAGE,
-	cx, cy uint,
+	cx, cy int,
 	fuLoad co.LR,
 ) (HGDIOBJ, error) {
 	var wName wstr.BufEncoder

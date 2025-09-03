@@ -8,6 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
 // Reads all the contents of the file at once, immediately. Calls:
@@ -162,7 +163,7 @@ func (me *File) Read(p []byte) (numBytesRead int, wErr error) {
 		return 0, fmt.Errorf("ReadFile: %w", wErr)
 	}
 
-	if numRead < uint(len(p)) { // surely there's no more to read
+	if numRead < len(p) { // surely there's no more to read
 		return int(numRead), io.EOF
 	} else if numRead == 0 { // EOF found
 		return 0, io.EOF
@@ -254,9 +255,16 @@ func (me *File) ReadByte() (byte, error) {
 // file. The internal file pointer will rewind.
 //
 // Calls [HFILE.SetFilePointerEx] and [HFILE.SetEndOfFile].
-func (me *File) Resize(numBytes uint) error {
+//
+// For some reason, sometimes the resized file ends up with more space than
+// requested. So be careful with this function.
+//
+// Panics if numBytes is negative.
+func (me *File) Resize(numBytes int) error {
+	utl.PanicNeg(numBytes)
+
 	// Simply go beyond file limits.
-	if _, err := me.Seek(int(numBytes), io.SeekStart); err != nil {
+	if _, err := me.Seek(int64(numBytes), io.SeekStart); err != nil {
 		return err
 	}
 
@@ -274,7 +282,7 @@ func (me *File) Resize(numBytes uint) error {
 // Implements [io.Seeker].
 //
 // Moves the internal pointer with [HFILE.SetFilePointerEx].
-func (me *File) Seek(offset int, whence int) (int64, error) {
+func (me *File) Seek(offset int64, whence int) (int64, error) {
 	var moveMethod co.FILE_FROM
 	switch whence {
 	case io.SeekCurrent:
@@ -285,7 +293,7 @@ func (me *File) Seek(offset int, whence int) (int64, error) {
 		moveMethod = co.FILE_FROM_END
 	}
 
-	newOff, err := me.hFile.SetFilePointerEx(offset, moveMethod)
+	newOff, err := me.hFile.SetFilePointerEx(int(offset), moveMethod)
 	if err != nil {
 		return 0, fmt.Errorf("SetFilePointerEx: %w", err)
 	}
@@ -293,7 +301,7 @@ func (me *File) Seek(offset int, whence int) (int64, error) {
 }
 
 // Retrieves the file size with [HFILE.GetFileSizeEx]. This value is not cached.
-func (me *File) Size() (uint, error) {
+func (me *File) Size() (int, error) {
 	sz, err := me.hFile.GetFileSizeEx()
 	if err != nil {
 		return 0, fmt.Errorf("GetFileSizeEx: %w", err)
@@ -343,7 +351,7 @@ type FileMap struct {
 	objFile  *File
 	hMap     HFILEMAP
 	pMem     HFILEMAPVIEW
-	sz       uint
+	sz       int
 	readOnly bool
 }
 
@@ -434,7 +442,10 @@ func (me *FileMap) ReadAllAsVec() Vec[byte] {
 
 // Returns a new []byte with a copy of data, start with offset, and with the
 // given length.
-func (me *FileMap) ReadChunkAsSlice(offset, length uint) []byte {
+//
+// Panics if offset or length is negative.
+func (me *FileMap) ReadChunkAsSlice(offset, length int) []byte {
+	utl.PanicNeg(offset, length)
 	hotSlice := me.HotSlice()
 	buf := make([]byte, length)
 	copy(buf, hotSlice[offset:offset+length])
@@ -443,6 +454,8 @@ func (me *FileMap) ReadChunkAsSlice(offset, length uint) []byte {
 
 // Returns a [Vec] with a copy of the data, start with offset, and with the
 // given length.
+//
+// Panics if offset or length is negative.
 //
 // ⚠️ You must defer [Vec.Free] on the returned Vec.
 //
@@ -456,7 +469,8 @@ func (me *FileMap) ReadChunkAsSlice(offset, length uint) []byte {
 //
 //	txt := string(data.HotSlice())
 //	println(txt)
-func (me *FileMap) ReadChunkAsVec(offset, length uint) Vec[byte] {
+func (me *FileMap) ReadChunkAsVec(offset, length int) Vec[byte] {
+	utl.PanicNeg(offset, length)
 	hotSlice := me.HotSlice()
 	heapBuf := NewVec[byte]()
 	heapBuf.Append(hotSlice[offset : offset+length]...)
@@ -467,7 +481,9 @@ func (me *FileMap) ReadChunkAsVec(offset, length uint) Vec[byte] {
 // file.
 //
 // Internally, the file is unmapped, then remapped back into memory.
-func (me *FileMap) Resize(numBytes uint) error {
+//
+// Panics if numBytes is negative.
+func (me *FileMap) Resize(numBytes int) error {
 	me.pMem.UnmapViewOfFile()
 	me.hMap.CloseHandle()
 	if err := me.objFile.Resize(numBytes); err != nil {
@@ -477,7 +493,7 @@ func (me *FileMap) Resize(numBytes uint) error {
 }
 
 // Retrieves the file size. This value is cached.
-func (me *FileMap) Size() uint {
+func (me *FileMap) Size() int {
 	return me.sz
 }
 

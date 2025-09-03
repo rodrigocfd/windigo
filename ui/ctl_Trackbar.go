@@ -188,7 +188,7 @@ func (o *VarOptsTrackbar) Position(x, y int) *VarOptsTrackbar {
 // Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(175, 28).
-func (o *VarOptsTrackbar) Size(cx int, cy int) *VarOptsTrackbar {
+func (o *VarOptsTrackbar) Size(cx, cy int) *VarOptsTrackbar {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

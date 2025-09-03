@@ -25,8 +25,8 @@ type ListViewCol struct {
 func (me ListViewCol) AllTexts() []string {
 	nItems := me.owner.Items.Count()
 	texts := make([]string, 0, nItems)
-	for i := uint(0); i < nItems; i++ {
-		item := me.owner.Items.Get(int(i))
+	for i := 0; i < nItems; i++ {
+		item := me.owner.Items.Get(i)
 		texts = append(texts, item.Text(me.Index()))
 	}
 	return texts
@@ -89,7 +89,7 @@ func (me ListViewCol) SelectedTexts() []string {
 	idx := -1
 	for {
 		idxRet, _ := me.owner.hWnd.SendMessage(co.LVM_GETNEXTITEM,
-			win.WPARAM(idx), win.LPARAM(co.LVNI_SELECTED))
+			win.WPARAM(int32(idx)), win.LPARAM(co.LVNI_SELECTED))
 		idx = int(idxRet)
 		if idx == -1 {
 			break
@@ -141,7 +141,7 @@ func (me ListViewCol) SetTitle(title string) ListViewCol {
 	lvc.SetPszText(wTitle.Slice(title))
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETCOLUMN,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvc)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&lvc)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("LVM_SETCOLUMN %d to \"%s\" failed.", me.index, title))
 	}
@@ -158,7 +158,7 @@ func (me ListViewCol) SetTitle(title string) ListViewCol {
 // [LVM_SETCOLUMNWIDTH]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setcolumnwidth
 func (me ListViewCol) SetWidth(width int) ListViewCol {
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETCOLUMNWIDTH,
-		win.WPARAM(me.index), win.LPARAM(width))
+		win.WPARAM(int32(me.index)), win.LPARAM(int32(width)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("LVM_SETCOLUMNWIDTH %d to %d failed.", me.index, width))
 	}
@@ -174,20 +174,20 @@ func (me ListViewCol) SetWidth(width int) ListViewCol {
 //
 // [LVM_SETCOLUMNWIDTH]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setcolumnwidth
 func (me ListViewCol) SetWidthToFill() ListViewCol {
-	numCols := int(me.owner.Cols.Count())
-	cxUsed := uint(0)
+	numCols := me.owner.Cols.Count()
+	cxUsed := 0
 
 	for i := 0; i < numCols; i++ {
 		if i != int(me.index) {
-			cxUsed += uint(me.owner.Cols.Get(i).Width()) // retrieve cx of each column, but us
+			cxUsed += me.owner.Cols.Get(i).Width() // retrieve cx of each column, but us
 		}
 	}
 
 	rc, _ := me.owner.hWnd.GetClientRect() // list view client area
-	fillWidth := uint(rc.Right) - cxUsed
+	fillWidth := int(rc.Right) - cxUsed
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETCOLUMNWIDTH,
-		win.WPARAM(me.index), win.LPARAM(fillWidth))
+		win.WPARAM(int32(me.index)), win.LPARAM(int32(fillWidth)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf(
 			"LVM_SETCOLUMNWIDTH %d to %d failed.", me.index, fillWidth))
@@ -210,7 +210,6 @@ func (me ListViewCol) SortArrow() co.HDF {
 	if me.owner.Header() == nil {
 		panic("This ListView has no header.")
 	}
-
 	return me.owner.header.Items.Get(int(me.index)).SortArrow()
 }
 
@@ -230,7 +229,7 @@ func (me ListViewCol) Title() string {
 	lvc.SetPszText(wBuf.HotSlice())
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_GETCOLUMN,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvc)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&lvc)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("LVM_GETCOLUMN %d failed.", me.index))
 	}
@@ -245,7 +244,7 @@ func (me ListViewCol) Title() string {
 // [LVM_GETCOLUMNWIDTH]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getcolumnwidth
 func (me ListViewCol) Width() int {
 	cx, err := me.owner.hWnd.SendMessage(co.LVM_GETCOLUMNWIDTH,
-		win.WPARAM(me.index), 0)
+		win.WPARAM(int32(me.index)), 0)
 	if err != nil || cx == 0 {
 		panic(fmt.Sprintf("LVM_GETCOLUMNWIDTH %d failed.", me.index))
 	}

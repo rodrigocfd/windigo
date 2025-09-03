@@ -231,12 +231,15 @@ var _SuspendThread *syscall.Proc
 //
 // For INFINITE, use [HTHREAD.WaitForSingleObjectInfinite].
 //
+// Panics if milliseconds is negative.
+//
 // [WaitForSingleObject]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
-func (hThread HTHREAD) WaitForSingleObject(milliseconds uint) (co.WAIT, error) {
+func (hThread HTHREAD) WaitForSingleObject(milliseconds int) (co.WAIT, error) {
+	utl.PanicNeg(milliseconds)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_WaitForSingleObject, "WaitForSingleObject"),
 		uintptr(hThread),
-		uintptr(milliseconds))
+		uintptr(uint32(milliseconds)))
 	if co.WAIT(ret) == co.WAIT_FAILED {
 		return co.WAIT_FAILED, co.ERROR(err)
 	}

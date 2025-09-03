@@ -203,7 +203,7 @@ func main() {
 	hdcScreen, _ := win.HWND(0).GetDC()
 	defer win.HWND(0).ReleaseDC(hdcScreen)
 
-	hBmp, _ := hdcScreen.CreateCompatibleBitmap(uint(cxScreen), uint(cyScreen))
+	hBmp, _ := hdcScreen.CreateCompatibleBitmap(int(cxScreen), int(cyScreen))
 	defer hBmp.DeleteObject()
 
 	hdcMem, _ := hdcScreen.CreateCompatibleDC()
@@ -222,17 +222,17 @@ func main() {
 
 	bi := win.BITMAPINFO{
 		BmiHeader: win.BITMAPINFOHEADER{
-			BiWidth:       cxScreen,
-			BiHeight:      cyScreen,
-			BiPlanes:      1,
-			BiBitCount:    32,
-			BiCompression: co.BI_RGB,
+			Width:       cxScreen,
+			Height:      cyScreen,
+			Planes:      1,
+			BitCount:    32,
+			Compression: co.BI_RGB,
 		},
 	}
-	bi.BmiHeader.SetBiSize()
+	bi.BmiHeader.SetSize()
 
 	bmpObj, _ := hBmp.GetObject()
-	bmpSize := bmpObj.CalcBitmapSize(bi.BmiHeader.BiBitCount)
+	bmpSize := bmpObj.CalcBitmapSize(bi.BmiHeader.BitCount)
 
 	rawMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, bmpSize)
 	defer rawMem.GlobalFree()
@@ -243,10 +243,10 @@ func main() {
 	_, _ = hdcScreen.GetDIBits(
 		hBmp,
 		0,
-		uint(cyScreen),
+		int(cyScreen),
 		bmpSlice,
 		&bi,
-		co.DIB_RGB_COLORS,
+		co.DIB_COLORS_RGB,
 	)
 
 	var bfh win.BITMAPFILEHEADER

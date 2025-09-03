@@ -2,7 +2,9 @@
 
 package wstr
 
-import "unsafe"
+import (
+	"unsafe"
+)
 
 // A buffer to receive UTF-16 strings and convert them to Go strings.
 //
@@ -20,12 +22,14 @@ import "unsafe"
 type BufDecoder struct {
 	stack [BUF_MAX]uint16
 	heap  []uint16
-	sz    uint
+	sz    int
 }
 
 // Makes sure there is enough room for the given number of chars. If an
 // allocation is necessary, any previous content will be lost.
-func (me *BufDecoder) Alloc(numChars uint) {
+//
+// Panics if numChars is negative.
+func (me *BufDecoder) Alloc(numChars int) {
 	if numChars > BUF_MAX {
 		me.heap = make([]uint16, numChars)
 	} else {
@@ -38,7 +42,9 @@ func (me *BufDecoder) Alloc(numChars uint) {
 // allocation is necessary, any previous content will be lost.
 //
 // In addition, zeroes the whole buffer.
-func (me *BufDecoder) AllocAndZero(numChars uint) {
+//
+// Panics if numChars is negative.
+func (me *BufDecoder) AllocAndZero(numChars int) {
 	me.Alloc(numChars)
 	me.Zero()
 }
@@ -54,7 +60,7 @@ func (me *BufDecoder) HotSlice() []uint16 {
 }
 
 // Returns the size of the last call to [BufDecoder.Alloc].
-func (me *BufDecoder) Len() uint {
+func (me *BufDecoder) Len() int {
 	return me.sz
 }
 

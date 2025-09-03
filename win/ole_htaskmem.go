@@ -7,6 +7,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/dll"
+	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
 // Handle to an OLE [block of memory].
@@ -16,20 +17,23 @@ type HTASKMEM HANDLE
 
 // [CoTaskMemAlloc] function.
 //
+// Panics if numBytes is negative.
+//
 // ⚠️ You must defer [HTASKMEM.CoTaskMemFree].
 //
 // Example:
 //
-//	hMem, _ := win.CoTaskMemAlloc(uint(unsafe.Sizeof(win.MSG{})))
+//	hMem, _ := win.CoTaskMemAlloc(int(unsafe.Sizeof(win.MSG{})))
 //	defer hMem.CoTaskMemFree()
 //
 //	pMsg := (*win.MSG)(unsafe.Pointer(hMem))
 //
 // [CoTaskMemAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemalloc
-func CoTaskMemAlloc(numBytes uint) (HTASKMEM, error) {
+func CoTaskMemAlloc(numBytes int) (HTASKMEM, error) {
+	utl.PanicNeg(numBytes)
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.OLE32, &_CoTaskMemAlloc, "CoTaskMemAlloc"),
-		uintptr(numBytes))
+		uintptr(uint64(numBytes)))
 	if ret == 0 {
 		return HTASKMEM(0), co.HRESULT_E_OUTOFMEMORY
 	}
@@ -62,14 +66,17 @@ var _CoTaskMemFree *syscall.Proc
 // [HTASKMEM.CoTaskMemFree] on the previous one. This can become tricky if you
 // used defer.
 //
+// Panics if numBytes is negative.
+//
 // ⚠️ You must defer [HTASKMEM.CoTaskMemFree].
 //
 // [CoTaskMemRealloc]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemrealloc
-func (hMem HTASKMEM) CoTaskMemRealloc(numBytes uint) (HTASKMEM, error) {
+func (hMem HTASKMEM) CoTaskMemRealloc(numBytes int) (HTASKMEM, error) {
+	utl.PanicNeg(numBytes)
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.OLE32, &_CoTaskMemRealloc, "CoTaskMemRealloc"),
 		uintptr(hMem),
-		uintptr(numBytes))
+		uintptr(uint64(numBytes)))
 	if ret == 0 {
 		return HTASKMEM(0), co.HRESULT_E_OUTOFMEMORY
 	}

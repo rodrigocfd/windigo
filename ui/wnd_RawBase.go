@@ -95,7 +95,7 @@ func (me *_RawBase) createWindow(
 
 	// The hWnd member is saved in WM_NCCREATE processing in wndProc.
 	_, err := win.CreateWindowEx(exStyle, win.ClassNameAtom(className),
-		title, style, int(pos.X), int(pos.Y), uint(size.Cx), uint(size.Cy),
+		title, style, int(pos.X), int(pos.Y), int(size.Cx), int(size.Cy),
 		hParent, hMenu, hInst, win.LPARAM(unsafe.Pointer(me))) // pass pointer to object itself
 	if err != nil {
 		panic(err)

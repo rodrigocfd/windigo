@@ -72,7 +72,7 @@ type _IFileOperationProgressSinkImpl struct {
 	postDeleteItem   func(flags co.TSF, item *IShellItem, hrDelete co.HRESULT, newlyCreated *IShellItem) co.HRESULT
 	preNewItem       func(flags co.TSF, destFolder *IShellItem, newName string) co.HRESULT
 	postNewItem      func(flags co.TSF, destFolder *IShellItem, newName, templateName string, attr co.FILE_ATTRIBUTE, hrNew co.HRESULT, newItem *IShellItem) co.HRESULT
-	updateProgress   func(workTotal, workSoFar uint) co.HRESULT
+	updateProgress   func(workTotal, workSoFar int) co.HRESULT
 	resetTimer       func() co.HRESULT
 	pauseTimer       func() co.HRESULT
 	resumeTimer      func() co.HRESULT
@@ -234,7 +234,7 @@ func (me *IFileOperationProgressSink) PostNewItem(
 // Defines [UpdateProgress] method.
 //
 // [UpdateProgress]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperationprogresssink-updateprogress
-func (me *IFileOperationProgressSink) UpdateProgress(fun func(workTotal, workSoFar uint) co.HRESULT) {
+func (me *IFileOperationProgressSink) UpdateProgress(fun func(workTotal, workSoFar int) co.HRESULT) {
 	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).updateProgress = fun
 }
 
@@ -535,7 +535,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 				if fun := (**ppImpl).updateProgress; fun == nil { // user didn't define a callback
 					return uintptr(co.HRESULT_S_OK)
 				} else {
-					return uintptr(fun(uint(iWorkTotal), uint(iWorkSoFar)))
+					return uintptr(fun(int(iWorkTotal), int(iWorkSoFar)))
 				}
 			},
 		),

@@ -133,9 +133,9 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 		totTextUtf16Words += tdiStrLenIfAny(btn.Text)
 	}
 
-	szTdc := uint(TASKDIALOGCONFIG_SZ) // sizes of all blocks in bytes
-	szBtns := uint(len(taskConfig.Buttons)) * TASKDIALOG_BUTTON_SZ
-	szRads := uint(len(taskConfig.RadioButtons)) * TASKDIALOG_BUTTON_SZ
+	szTdc := TASKDIALOGCONFIG_SZ // sizes of all blocks in bytes
+	szBtns := len(taskConfig.Buttons) * TASKDIALOG_BUTTON_SZ
+	szRads := len(taskConfig.RadioButtons) * TASKDIALOG_BUTTON_SZ
 	szTexts := totTextUtf16Words * 2
 
 	totSize := szTdc + szBtns + szRads +
@@ -173,7 +173,7 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 
 var _TaskDialogIndirect *syscall.Proc
 
-func tdiStrLenIfAny(s string) uint {
+func tdiStrLenIfAny(s string) int {
 	if s != "" {
 		return wstr.CountUtf16Len(s) + 1 // count terminating null
 	}

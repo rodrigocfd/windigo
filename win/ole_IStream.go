@@ -56,38 +56,45 @@ func (me *IStream) Commit(flags co.STGC) error {
 
 // [CopyTo] method.
 //
+// Panics if numBytes is negative.
+//
 // [CopyTo]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-copyto
 func (me *IStream) CopyTo(
 	dest *IStream,
-	numBytes uint64,
-) (numBytesRead, numBytesWritten uint64, hr error) {
+	numBytes int,
+) (numBytesRead, numBytesWritten int, hr error) {
+	utl.PanicNeg(numBytes)
+	var read64, written64 uint64
+
 	ret, _, _ := syscall.SyscallN(
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).CopyTo,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(dest.Ppvt())),
-		uintptr(numBytes),
-		uintptr(unsafe.Pointer(&numBytesRead)),
-		uintptr(unsafe.Pointer(&numBytesWritten)))
+		uintptr(uint64(numBytes)),
+		uintptr(unsafe.Pointer(&read64)),
+		uintptr(unsafe.Pointer(&written64)))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		hr = nil
+		return int(read64), int(written64), nil
 	} else {
-		numBytes, numBytesWritten = 0, 0
+		return 0, 0, hr
 	}
-	return
 }
 
 // [LockRegion] method.
 //
+// Panics if offset or length is negative.
+//
 // ⚠️ You must defer [IStream.UnlockRegion].
 //
 // [LockRegion]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-lockregion
-func (me *IStream) LockRegion(offset, length uint64, lockType co.LOCKTYPE) error {
+func (me *IStream) LockRegion(offset, length int, lockType co.LOCKTYPE) error {
+	utl.PanicNeg(offset, length)
 	ret, _, _ := syscall.SyscallN(
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).LockRegion,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(offset),
-		uintptr(length),
+		uintptr(uint64(offset)),
+		uintptr(uint64(length)),
 		uintptr(lockType))
 	return utl.ErrorAsHResult(ret)
 }
@@ -105,30 +112,33 @@ func (me *IStream) Revert() error {
 // [Seek] method.
 //
 // [Seek]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-seek
-func (me *IStream) Seek(displacement int64, origin co.STREAM_SEEK) (newOffset uint, hr error) {
+func (me *IStream) Seek(displacement int, origin co.STREAM_SEEK) (newOffset int, hr error) {
+	var newOff64 uint64
 	ret, _, _ := syscall.SyscallN(
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Seek,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(displacement),
+		uintptr(int64(displacement)),
 		uintptr(origin),
-		uintptr(unsafe.Pointer(&newOffset)))
+		uintptr(unsafe.Pointer(&newOff64)))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		hr = nil
+		return int(newOff64), nil
 	} else {
-		newOffset = 0
+		return 0, hr
 	}
-	return
 }
 
 // [SetSize] method.
 //
+// Panics if newSize is negative.
+//
 // [SetSize]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-setsize
-func (me *IStream) SetSize(newSize uint) error {
+func (me *IStream) SetSize(newSize int) error {
+	utl.PanicNeg(newSize)
 	ret, _, _ := syscall.SyscallN(
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).SetSize,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(newSize))
+		uintptr(uint64(newSize)))
 	return utl.ErrorAsHResult(ret)
 }
 
@@ -154,13 +164,16 @@ func (me *IStream) Stat(flag co.STATFLAG) (STATSTG, error) {
 //
 // Paired with [IStream.LockRegion].
 //
+// Panics if offset or length is negative.
+//
 // [UnlockRegion]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-unlockregion
-func (me *IStream) UnlockRegion(offset, length uint64, lockType co.LOCKTYPE) error {
+func (me *IStream) UnlockRegion(offset, length int, lockType co.LOCKTYPE) error {
+	utl.PanicNeg(offset, length)
 	ret, _, _ := syscall.SyscallN(
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).UnlockRegion,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(offset),
-		uintptr(length),
+		uintptr(uint64(offset)),
+		uintptr(uint64(length)),
 		uintptr(lockType))
 	return utl.ErrorAsHResult(ret)
 }

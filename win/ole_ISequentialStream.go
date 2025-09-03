@@ -29,37 +29,38 @@ func (*ISequentialStream) IID() co.IID {
 // the end of stream was reached.
 //
 // [Read]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-isequentialstream-read
-func (me *ISequentialStream) Read(buffer []byte) (numBytesRead uint32, hr error) {
+func (me *ISequentialStream) Read(buffer []byte) (numBytesRead int, hr error) {
+	var read32 uint32
 	ret, _, _ := syscall.SyscallN(
 		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Read,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&buffer[0])),
 		uintptr(uint32(len(buffer))),
-		uintptr(unsafe.Pointer(&numBytesRead)))
+		uintptr(unsafe.Pointer(&read32)))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		hr = nil
+		return int(read32), nil
 	} else {
-		numBytesRead = 0
+		return 0, hr
 	}
-	return
 }
 
 // [Write] method.
 //
 // [Write]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-isequentialstream-write
-func (me *ISequentialStream) Write(data []byte) (numBytesWritten uint32, hr error) {
+func (me *ISequentialStream) Write(data []byte) (numBytesWritten int, hr error) {
+	var written32 uint32
 	ret, _, _ := syscall.SyscallN(
 		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Write,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&data[0])),
 		uintptr(uint32(len(data))),
-		uintptr(unsafe.Pointer(&numBytesWritten)))
+		uintptr(unsafe.Pointer(&written32)))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		hr = nil
+		return int(written32), nil
 	} else {
-		numBytesWritten = 0
+		return 0, hr
 	}
 	return
 }

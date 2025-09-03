@@ -196,20 +196,20 @@ func (me *IPicture) Render(
 // [SaveAsFile] method.
 //
 // [SaveAsFile]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-saveasfile
-func (me *IPicture) SaveAsFile(stream *IStream, saveCopy bool) (numBytesWritten uint, hr error) {
+func (me *IPicture) SaveAsFile(stream *IStream, saveCopy bool) (numBytesWritten int, hr error) {
+	var written32 int32
 	ret, _, _ := syscall.SyscallN(
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).SaveAsFile,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
 		utl.BoolToUintptr(saveCopy),
-		uintptr(unsafe.Pointer(&numBytesWritten)))
+		uintptr(unsafe.Pointer(&written32)))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		hr = nil
+		return int(written32), nil
 	} else {
-		numBytesWritten = 0
+		return 0, hr
 	}
-	return
 }
 
 // [SelectPicture] method.

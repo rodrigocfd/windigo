@@ -156,7 +156,7 @@ func (o *VarOptsDateTimePicker) Position(x, y int) *VarOptsDateTimePicker {
 // Control size in pixels, passed to [win.CreateWindowEx].
 //
 // Defaults to ui.Dpi(230, 23).
-func (o *VarOptsDateTimePicker) Size(cx int, cy int) *VarOptsDateTimePicker {
+func (o *VarOptsDateTimePicker) Size(cx, cy int) *VarOptsDateTimePicker {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

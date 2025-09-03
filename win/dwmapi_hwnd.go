@@ -76,8 +76,11 @@ var _DwmInvalidateIconicBitmaps *syscall.Proc
 
 // [DwmModifyPreviousDxFrameDuration] function.
 //
+// Panics if numRefreshes is negative.
+//
 // [DwmModifyPreviousDxFrameDuration]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmmodifypreviousdxframeduration
-func (hWnd HWND) DwmModifyPreviousDxFrameDuration(numRefreshes uint, relative bool) error {
+func (hWnd HWND) DwmModifyPreviousDxFrameDuration(numRefreshes int, relative bool) error {
+	utl.PanicNeg(numRefreshes)
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.DWMAPI, &_DwmModifyPreviousDxFrameDuration, "DwmModifyPreviousDxFrameDuration"),
 		uintptr(hWnd),

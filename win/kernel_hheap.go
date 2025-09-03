@@ -32,15 +32,18 @@ var _GetProcessHeap *syscall.Proc
 
 // [HeapCreate] function.
 //
+// Panics if initialSize or maximumSize is negative.
+//
 // ⚠️ You must defer [HHEAP.HeapDestroy].
 //
 // [HeapCreate]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcreate
-func HeapCreate(options co.HEAP_CREATE, initialSize, maximumSize uint) (HHEAP, error) {
+func HeapCreate(options co.HEAP_CREATE, initialSize, maximumSize int) (HHEAP, error) {
+	utl.PanicNeg(initialSize, maximumSize)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_HeapCreate, "HeapCreate"),
 		uintptr(options),
-		uintptr(initialSize),
-		uintptr(maximumSize))
+		uintptr(uint64(initialSize)),
+		uintptr(uint64(maximumSize)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
@@ -51,6 +54,8 @@ var _HeapCreate *syscall.Proc
 
 // [HeapAlloc] function.
 //
+// Panics if numBytes is negative.
+//
 // ⚠️ You must defer [HHEAP.HeapFree].
 //
 // Example:
@@ -60,12 +65,13 @@ var _HeapCreate *syscall.Proc
 //	defer hHeap.HeapFree(co.HEAP_NS_NONE, ptr)
 //
 // [HeapAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapalloc
-func (hHeap HHEAP) HeapAlloc(flags co.HEAP_ALLOC, numBytes uint) (unsafe.Pointer, error) {
+func (hHeap HHEAP) HeapAlloc(flags co.HEAP_ALLOC, numBytes int) (unsafe.Pointer, error) {
+	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_HeapAlloc, "HeapAlloc"),
 		uintptr(hHeap),
 		uintptr(flags),
-		uintptr(numBytes))
+		uintptr(uint64(numBytes)))
 	if ret == 0 {
 		return nil, co.ERROR(err)
 	}
@@ -77,7 +83,7 @@ var _HeapAlloc *syscall.Proc
 // [HeapCompact] function.
 //
 // [HeapCompact]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapcompact
-func (hHeap HHEAP) HeapCompact(flags co.HEAP_NS) (uint, error) {
+func (hHeap HHEAP) HeapCompact(flags co.HEAP_NS) (int, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_HeapCompact, "HeapCompact"),
 		uintptr(hHeap),
@@ -85,7 +91,7 @@ func (hHeap HHEAP) HeapCompact(flags co.HEAP_NS) (uint, error) {
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return uint(ret), nil
+	return int(uint64(ret)), nil
 }
 
 var _HeapCompact *syscall.Proc
@@ -136,6 +142,8 @@ var _HeapFree *syscall.Proc
 //
 // If block is nil, simple calls [HHEAP.HeapAlloc].
 //
+// Panics if numBytes is negative.
+//
 // ⚠️ You must defer [HHEAP.HeapFree].
 //
 // Example:
@@ -151,18 +159,19 @@ var _HeapFree *syscall.Proc
 func (hHeap HHEAP) HeapReAlloc(
 	flags co.HEAP_REALLOC,
 	ptr unsafe.Pointer,
-	numBytes uint,
+	numBytes int,
 ) (unsafe.Pointer, error) {
 	if ptr == nil {
 		return hHeap.HeapAlloc(co.HEAP_ALLOC(flags), numBytes) // simply forward
 	}
 
+	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_HeapReAlloc, "HeapReAlloc"),
 		uintptr(hHeap),
 		uintptr(flags),
 		uintptr(ptr),
-		uintptr(numBytes))
+		uintptr(uint64(numBytes)))
 	if ret == 0 {
 		return nil, co.ERROR(err)
 	}
@@ -174,7 +183,7 @@ var _HeapReAlloc *syscall.Proc
 // [HeapSize] function.
 //
 // [HeapSize]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapsize
-func (hHeap HHEAP) HeapSize(flags co.HEAP_NS, ptr unsafe.Pointer) (uint, error) {
+func (hHeap HHEAP) HeapSize(flags co.HEAP_NS, ptr unsafe.Pointer) (int, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_HeapSize, "HeapSize"),
 		uintptr(hHeap),
@@ -183,7 +192,7 @@ func (hHeap HHEAP) HeapSize(flags co.HEAP_NS, ptr unsafe.Pointer) (uint, error) 
 	if int64(ret) == -1 {
 		return 0, co.ERROR(err)
 	}
-	return uint(ret), nil
+	return int(uint64(ret)), nil
 }
 
 var _HeapSize *syscall.Proc

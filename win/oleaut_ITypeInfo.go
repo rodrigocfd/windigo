@@ -82,7 +82,7 @@ func (me *ITypeInfo) CreateInstance(
 // Returns the type library and its index.
 //
 // [GetContainingTypeLib]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getcontainingtypelib
-func (me *ITypeInfo) GetContainingTypeLib(releaser *OleReleaser) (*ITypeLib, uint, error) {
+func (me *ITypeInfo) GetContainingTypeLib(releaser *OleReleaser) (*ITypeLib, int, error) {
 	var ppvtQueried **_IUnknownVt
 	var index uint32
 
@@ -95,7 +95,7 @@ func (me *ITypeInfo) GetContainingTypeLib(releaser *OleReleaser) (*ITypeLib, uin
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		pObj := &ITypeLib{IUnknown{ppvtQueried}}
 		releaser.Add(pObj)
-		return pObj, uint(index), nil
+		return pObj, int(index), nil
 	} else {
 		return nil, 0, hr
 	}
@@ -126,7 +126,7 @@ func (me *ITypeInfo) GetDllEntry(
 		return ITypeInfoDllEntry{
 			DllName: dllName.String(),
 			Name:    name.String(),
-			Ordinal: uint(ordinal16),
+			Ordinal: int(ordinal16),
 		}, nil
 	} else {
 		return ITypeInfoDllEntry{}, hr
@@ -137,7 +137,7 @@ func (me *ITypeInfo) GetDllEntry(
 type ITypeInfoDllEntry struct {
 	DllName string
 	Name    string
-	Ordinal uint
+	Ordinal int
 }
 
 // [GetDocumentation] method.
@@ -163,7 +163,7 @@ func (me *ITypeInfo) GetDocumentation(memberId MEMBERID) (ITypeInfoDoc, error) {
 		return ITypeInfoDoc{
 			Name:        name.String(),
 			DocString:   docStr.String(),
-			HelpContext: uint(helpCtx),
+			HelpContext: int(helpCtx),
 			HelpFile:    helpFile.String(),
 		}, nil
 	} else {
@@ -175,7 +175,7 @@ func (me *ITypeInfo) GetDocumentation(memberId MEMBERID) (ITypeInfoDoc, error) {
 type ITypeInfoDoc struct {
 	Name        string
 	DocString   string
-	HelpContext uint
+	HelpContext int
 	HelpFile    string
 }
 
@@ -196,7 +196,7 @@ type ITypeInfoDoc struct {
 //
 // [GetFuncDesc]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getfuncdesc
 // [ReleaseFuncDesc]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-releasefuncdesc
-func (me *ITypeInfo) GetFuncDesc(releaser *OleReleaser, index uint) (*FuncDescData, error) {
+func (me *ITypeInfo) GetFuncDesc(releaser *OleReleaser, index int) (*FuncDescData, error) {
 	var pFuncDesc *FUNCDESC
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetFuncDesc,
@@ -241,7 +241,7 @@ func (me *ITypeInfo) GetIDsOfNames(names ...string) ([]MEMBERID, error) {
 // [GetImplTypeFlags] method.
 //
 // [GetImplTypeFlags]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getimpltypeflags
-func (me *ITypeInfo) GetImplTypeFlags(index uint) (co.IMPLTYPEFLAG, error) {
+func (me *ITypeInfo) GetImplTypeFlags(index int) (co.IMPLTYPEFLAG, error) {
 	var flags co.IMPLTYPEFLAG
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetImplTypeFlags,

@@ -99,8 +99,11 @@ func (me *IEnumString) Reset() error {
 
 // [Skip] method.
 //
+// Panics if count is negative.
+//
 // [Skip]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumstring-skip
-func (me *IEnumString) Skip(count uint) error {
+func (me *IEnumString) Skip(count int) error {
+	utl.PanicNeg(count)
 	ret, _, _ := syscall.SyscallN(
 		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Skip,
 		uintptr(unsafe.Pointer(me.Ppvt())),

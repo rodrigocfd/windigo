@@ -27,8 +27,8 @@ type BITMAP struct {
 // Useful when [capturing an image].
 //
 // [capturing an image]: https://learn.microsoft.com/en-gb/windows/win32/gdi/capturing-an-image
-func (bm *BITMAP) CalcBitmapSize(bitCount uint16) uint {
-	return uint(((bm.BmWidth*int32(bitCount) + 31) / 32) * 4 * bm.BmHeight)
+func (bm *BITMAP) CalcBitmapSize(bitCount co.BITCOUNT) int {
+	return int(((bm.BmWidth*int32(bitCount) + 31) / 32) * 4 * bm.BmHeight)
 }
 
 // [BLENDFUNCTION] struct.

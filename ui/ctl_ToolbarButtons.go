@@ -48,7 +48,7 @@ func (me *CollectionToolbarButtons) Add(cmdId uint16, text string, iconIndex int
 // Retrieves the number of buttons with [TB_BUTTONCOUNT].
 //
 // [TB_BUTTONCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/tb-buttoncount
-func (me *CollectionToolbarButtons) Count() uint {
+func (me *CollectionToolbarButtons) Count() int {
 	ret, _ := me.owner.hWnd.SendMessage(co.TB_BUTTONCOUNT, 0, 0)
-	return uint(ret)
+	return int(ret)
 }

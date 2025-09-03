@@ -33,7 +33,7 @@ func (me *IDispatch) GetIDsOfNames(
 	member string,
 	parameters ...string,
 ) ([]MEMBERID, error) {
-	nParams := uint(1 + len(parameters)) // member + parameters
+	nParams := 1 + len(parameters) // member + parameters
 	nullGuid := GuidFrom(co.IID_NULL)
 	memberIds := make([]MEMBERID, nParams) // to be returned
 
@@ -95,7 +95,7 @@ func (me *IDispatch) GetTypeInfo(releaser *OleReleaser, lcid LCID) (*ITypeInfo, 
 // number is 0.
 //
 // [GetTypeInfoCount]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-gettypeinfocount
-func (me *IDispatch) GetTypeInfoCount() (uint, error) {
+func (me *IDispatch) GetTypeInfoCount() (int, error) {
 	var pctInfo uint32
 	ret, _, _ := syscall.SyscallN(
 		(*_IDispatchVt)(unsafe.Pointer(*me.Ppvt())).GetTypeInfoCount,
@@ -103,7 +103,7 @@ func (me *IDispatch) GetTypeInfoCount() (uint, error) {
 		uintptr(unsafe.Pointer(&pctInfo)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return uint(pctInfo), nil
+		return int(pctInfo), nil
 	} else {
 		return 0, hr
 	}

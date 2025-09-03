@@ -60,13 +60,13 @@ var _CloseClipboard *syscall.Proc
 // [CountClipboardFormats] function.
 //
 // [CountClipboardFormats]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-countclipboardformats
-func (HCLIPBOARD) CountClipboardFormats() (uint, error) {
+func (HCLIPBOARD) CountClipboardFormats() (int, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_CountClipboardFormats, "CountClipboardFormats"))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return 0, wErr
 	}
-	return uint(ret), nil
+	return int(int32(ret)), nil
 }
 
 var _CountClipboardFormats *syscall.Proc
@@ -167,7 +167,7 @@ var _GetClipboardFormatNameW *syscall.Proc
 func (HCLIPBOARD) GetClipboardSequenceNumber() int {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.USER32, &_GetClipboardSequenceNumber, "GetClipboardSequenceNumber"))
-	return int(ret)
+	return int(uint32(ret))
 }
 
 var _GetClipboardSequenceNumber *syscall.Proc
@@ -193,7 +193,7 @@ var _IsClipboardFormatAvailable *syscall.Proc
 //
 // [SetClipboardData]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setclipboarddata
 func (HCLIPBOARD) SetClipboardData(format co.CF, data []byte) error {
-	hGlobal, wErr := GlobalAlloc(co.GMEM_MOVEABLE, uint(len(data))) // will be owned by the clipboard
+	hGlobal, wErr := GlobalAlloc(co.GMEM_MOVEABLE, len(data)) // will be owned by the clipboard
 	if wErr != nil {
 		return wErr
 	}

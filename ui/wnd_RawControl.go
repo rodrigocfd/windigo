@@ -137,7 +137,7 @@ func (o *VarOptsControl) Position(x, y int) *VarOptsControl {
 // Defaults to ui.Dpi(300, 200).
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
-func (o *VarOptsControl) Size(cx int, cy int) *VarOptsControl {
+func (o *VarOptsControl) Size(cx, cy int) *VarOptsControl {
 	o.size.Cx = int32(cx)
 	o.size.Cy = int32(cy)
 	return o

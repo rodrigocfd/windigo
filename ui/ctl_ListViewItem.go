@@ -25,7 +25,7 @@ type ListViewItem struct {
 //
 // [LVM_DELETEITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-deleteitem
 func (me ListViewItem) Delete() {
-	ret, err := me.owner.hWnd.SendMessage(co.LVM_DELETEITEM, win.WPARAM(me.index), 0)
+	ret, err := me.owner.hWnd.SendMessage(co.LVM_DELETEITEM, win.WPARAM(int32(me.index)), 0)
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("LVM_DELETEITEM %d failed.", me.index))
 	}
@@ -102,7 +102,7 @@ func (me ListViewItem) EnsureVisible() ListViewItem {
 
 	} else {
 		ret, err := me.owner.hWnd.SendMessage(co.LVM_ENSUREVISIBLE,
-			win.WPARAM(me.index), win.LPARAM(1)) // always entirely visible
+			win.WPARAM(int32(me.index)), win.LPARAM(1)) // always entirely visible
 		if err != nil || ret == 0 {
 			panic(fmt.Sprintf("LVM_ENSUREVISIBLE %d failed.", me.index))
 		}
@@ -124,7 +124,7 @@ func (me ListViewItem) Focus() ListViewItem {
 	}
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETITEMSTATE,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&lvi)))
 	if err != nil || int32(ret) == -1 {
 		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", me.index))
 	}
@@ -162,7 +162,7 @@ func (me ListViewItem) Index() int {
 // [LVM_GETITEMSTATE]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitemstate
 func (me ListViewItem) IsSelected() bool {
 	lvisRet, _ := me.owner.hWnd.SendMessage(co.LVM_GETITEMSTATE,
-		win.WPARAM(me.index), win.LPARAM(co.LVIS_SELECTED))
+		win.WPARAM(int32(me.index)), win.LPARAM(co.LVIS_SELECTED))
 	return co.LVIS(lvisRet) == co.LVIS_SELECTED
 }
 
@@ -171,7 +171,7 @@ func (me ListViewItem) IsSelected() bool {
 // [LVM_ISITEMVISIBLE]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-isitemvisible
 func (me ListViewItem) IsVisible() bool {
 	ret, _ := me.owner.hWnd.SendMessage(co.LVM_ISITEMVISIBLE,
-		win.WPARAM(me.index), 0)
+		win.WPARAM(int32(me.index)), 0)
 	return ret != 0
 }
 
@@ -187,7 +187,7 @@ func (me ListViewItem) ItemRect(portion co.LVIR) win.RECT {
 	}
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_GETITEMRECT,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&rcItem)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&rcItem)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("LVM_GETITEMRECT %d failed.", me.index))
 	}
@@ -230,7 +230,7 @@ func (me ListViewItem) Select(isSelected bool) ListViewItem {
 	}
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETITEMSTATE,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&lvi)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("LVM_SETITEMSTATE %d failed.", me.index))
 	}
@@ -295,7 +295,7 @@ func (me ListViewItem) SetText(columnIndex int, text string) ListViewItem {
 	lvi.SetPszText(wText.Slice(text))
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETITEMTEXT,
-		win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
+		win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&lvi)))
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("LVM_SETITEMTEXT %d/%d failed \"%s\".",
 			me.index, columnIndex, text))
@@ -319,8 +319,8 @@ func (me ListViewItem) Text(columnIndex int) string {
 		lvi.SetPszText(wBuf.HotSlice())
 
 		nCharsRet, _ := me.owner.hWnd.SendMessage(co.LVM_GETITEMTEXT,
-			win.WPARAM(me.index), win.LPARAM(unsafe.Pointer(&lvi)))
-		nChars := uint(nCharsRet)
+			win.WPARAM(int32(me.index)), win.LPARAM(unsafe.Pointer(&lvi)))
+		nChars := int(nCharsRet)
 
 		if nChars+1 < wBuf.Len() { // to break, must have at least 1 char gap
 			break
@@ -336,7 +336,7 @@ func (me ListViewItem) Text(columnIndex int) string {
 //
 // [LVM_MAPINDEXTOID]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-mapindextoid
 func (me ListViewItem) Uid() int {
-	uidRet, _ := me.owner.hWnd.SendMessage(co.LVM_MAPINDEXTOID, win.WPARAM(me.index), 0)
+	uidRet, _ := me.owner.hWnd.SendMessage(co.LVM_MAPINDEXTOID, win.WPARAM(int32(me.index)), 0)
 	return int(uidRet)
 }
 
@@ -348,7 +348,7 @@ func (me ListViewItem) Uid() int {
 //
 // [LVM_UPDATE]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-update
 func (me ListViewItem) Update() ListViewItem {
-	ret, err := me.owner.hWnd.SendMessage(co.LVM_UPDATE, win.WPARAM(me.index), 0)
+	ret, err := me.owner.hWnd.SendMessage(co.LVM_UPDATE, win.WPARAM(int32(me.index)), 0)
 	if err != nil || ret == 0 {
 		panic(fmt.Sprintf("LVM_UPDATE %d failed.", me.index))
 	}

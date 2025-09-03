@@ -391,7 +391,7 @@ func (me *DwmAttr) TextColor() (COLORREF, bool) {
 }
 
 // Creates a [DwmAttr] with a [co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS] value.
-func DwmAttrVisibleFrameBorderThickness(width uint) DwmAttr {
+func DwmAttrVisibleFrameBorderThickness(width int) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS,
 		dw:  uint32(width),
@@ -399,11 +399,11 @@ func DwmAttrVisibleFrameBorderThickness(width uint) DwmAttr {
 }
 
 // If the value is [co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS], returns it and true.
-func (me *DwmAttr) VisibleFrameBorderThickness() (uint, bool) {
+func (me *DwmAttr) VisibleFrameBorderThickness() (int, bool) {
 	if me.tag == co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS {
-		return uint(me.dw), true
+		return int(me.dw), true
 	}
-	return uint(0), false
+	return 0, false
 }
 
 // Creates a [DwmAttr] with a [co.DWMWA_SYSTEMBACKDROP_TYPE] value.
@@ -469,7 +469,7 @@ func dwmAttrFromRaw(attr co.DWMWA, dwBuf uint32, rcBuf RECT) DwmAttr {
 	case co.DWMWA_TEXT_COLOR:
 		return DwmAttrTextColor(COLORREF(dwBuf))
 	case co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS:
-		return DwmAttrVisibleFrameBorderThickness(uint(dwBuf))
+		return DwmAttrVisibleFrameBorderThickness(int(dwBuf))
 	case co.DWMWA_SYSTEMBACKDROP_TYPE:
 		return DwmAttrSystemBackdropType(co.DWMSBT(dwBuf))
 	default:

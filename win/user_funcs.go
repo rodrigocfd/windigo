@@ -90,7 +90,7 @@ var _BroadcastSystemMessageW *syscall.Proc
 func CreateCursorFromResourceEx(
 	resBits []byte,
 	fmtVersion uint32,
-	cxDesired, cyDesired uint,
+	cxDesired, cyDesired int,
 	flags co.LR,
 ) (HCURSOR, error) {
 	hIcon, err := CreateIconFromResourceEx(resBits, fmtVersion, cxDesired, cyDesired, flags)
@@ -124,7 +124,7 @@ var _CallWindowProcW *syscall.Proc
 func CreateIconFromResourceEx(
 	resBits []byte,
 	fmtVersion uint32,
-	cxDesired, cyDesired uint,
+	cxDesired, cyDesired int,
 	flags co.LR,
 ) (HICON, error) {
 	ret, _, err := syscall.SyscallN(
@@ -750,7 +750,7 @@ var _ReplyMessage *syscall.Proc
 // [SendInput] function.
 //
 // [SendInput]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput
-func SendInput(inputs []INPUT) (uint, error) {
+func SendInput(inputs []INPUT) (int, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_SendInput, "SendInput"),
 		uintptr(uint32(len(inputs))),
@@ -760,7 +760,7 @@ func SendInput(inputs []INPUT) (uint, error) {
 	if wErr := co.ERROR(err); wErr != co.ERROR_SUCCESS {
 		return 0, wErr
 	}
-	return uint(ret), nil
+	return int(uint32(ret)), nil
 }
 
 var _SendInput *syscall.Proc

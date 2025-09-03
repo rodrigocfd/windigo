@@ -25,6 +25,8 @@ type HGLOBAL HANDLE
 // With [co.GMEM_MOVEABLE], you must call [HGLOBAL.GlobalLock] to retrieve the
 // pointer.
 //
+// Panics if numBytes is negative.
+//
 // ⚠️ You must defer [HGLOBAL.GlobalFree].
 //
 // Example:
@@ -38,11 +40,12 @@ type HGLOBAL HANDLE
 //	println(len(sliceMem))
 //
 // [GlobalAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalalloc
-func GlobalAlloc(flags co.GMEM, numBytes uint) (HGLOBAL, error) {
+func GlobalAlloc(flags co.GMEM, numBytes int) (HGLOBAL, error) {
+	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GlobalAlloc, "GlobalAlloc"),
 		uintptr(flags),
-		uintptr(numBytes))
+		uintptr(uint64(numBytes)))
 	if ret == 0 {
 		return HGLOBAL(0), co.ERROR(err)
 	}
@@ -158,14 +161,17 @@ func (hGlobal HGLOBAL) GlobalLockSlice() ([]byte, error) {
 // [HGLOBAL.GlobalFree] on the previous one. This can become tricky if you
 // used defer.
 //
+// Panics if numBytes is negative.
+//
 // ⚠️ You must defer [HGLOBAL.GlobalFree].
 //
 // [GlobalReAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalrealloc
-func (hGlobal HGLOBAL) GlobalReAlloc(numBytes uint, flags co.GMEM) (HGLOBAL, error) {
+func (hGlobal HGLOBAL) GlobalReAlloc(numBytes int, flags co.GMEM) (HGLOBAL, error) {
+	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GlobalReAlloc, "GlobalReAlloc"),
 		uintptr(hGlobal),
-		uintptr(numBytes),
+		uintptr(uint64(numBytes)),
 		uintptr(flags))
 	if ret == 0 {
 		return HGLOBAL(0), co.ERROR(err)
@@ -178,14 +184,14 @@ var _GlobalReAlloc *syscall.Proc
 // [GlobalSize] function.
 //
 // [GlobalSize]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalsize
-func (hGlobal HGLOBAL) GlobalSize() (uint, error) {
+func (hGlobal HGLOBAL) GlobalSize() (int, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_GlobalSize, "GlobalSize"),
 		uintptr(hGlobal))
 	if ret == 0 {
 		return 0, co.ERROR(err)
 	}
-	return uint(ret), nil
+	return int(uint64(ret)), nil
 }
 
 var _GlobalSize *syscall.Proc
