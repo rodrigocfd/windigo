@@ -289,7 +289,7 @@ const (
 	FILE_FLAG_OPEN_REQUIRING_OPLOCK FILE_FLAG = 0x0004_0000
 )
 
-// [SetFilePointerEx] dwMoveMethod. Originally with FILE prefix.
+// [SetFilePointerEx] dwMoveMethod. Originally has FILE prefix.
 //
 // [SetFilePointerEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex
 type FILE_FROM uint32

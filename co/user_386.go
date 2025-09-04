@@ -10,15 +10,15 @@ package co
 type GWLP int32
 
 const (
-	GWLP_WNDPROC    GWLP = -4  // Originally with GWL prefix.
-	GWLP_HINSTANCE  GWLP = -6  // Originally with GWL prefix.
-	GWLP_HWNDPARENT GWLP = -8  // Originally with GWL prefix.
-	GWLP_ID         GWLP = -12 // Originally with GWL prefix.
-	GWLP_STYLE      GWLP = -16 // Originally with GWL prefix.
-	GWLP_EXSTYLE    GWLP = -20 // Originally with GWL prefix.
-	GWLP_USERDATA   GWLP = -21 // Originally with GWL prefix.
+	GWLP_WNDPROC    GWLP = -4  // Originally has GWL prefix.
+	GWLP_HINSTANCE  GWLP = -6  // Originally has GWL prefix.
+	GWLP_HWNDPARENT GWLP = -8  // Originally has GWL prefix.
+	GWLP_ID         GWLP = -12 // Originally has GWL prefix.
+	GWLP_STYLE      GWLP = -16 // Originally has GWL prefix.
+	GWLP_EXSTYLE    GWLP = -20 // Originally has GWL prefix.
+	GWLP_USERDATA   GWLP = -21 // Originally has GWL prefix.
 
-	GWLP_DWLP_MSGRESULT GWLP = 0 // Originally with DWL prefix.
-	GWLP_DWLP_DLGPROC   GWLP = 4 // Originally with DWL prefix.
-	GWLP_DWLP_USER      GWLP = 8 // Originally with DWL prefix.
+	GWLP_DWLP_MSGRESULT GWLP = 0 // Originally has DWL prefix.
+	GWLP_DWLP_DLGPROC   GWLP = 4 // Originally has DWL prefix.
+	GWLP_DWLP_USER      GWLP = 8 // Originally has DWL prefix.
 )

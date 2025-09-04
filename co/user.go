@@ -563,7 +563,7 @@ const (
 	HT_HELP        HT = 21
 )
 
-// [WM_SETICON] icon size. Originally with ICON prefix.
+// [WM_SETICON] icon size. Originally has ICON prefix.
 //
 // [WM_SETICON]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-seticon
 type ICON_SZ uint8
@@ -824,7 +824,7 @@ const (
 	MF_MOUSESELECT     MF = 0x0000_8000
 )
 
-// [WM_MENUCHAR] menu type. Originally with MF prefix.
+// [WM_MENUCHAR] menu type. Originally has MF prefix.
 //
 // [WM_MENUCHAR]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-menuchar
 type MFMC uint16
@@ -1081,7 +1081,7 @@ const (
 	ODT_LISTVIEW ODT = 102
 )
 
-// [COMPAREITEMSTRUCT] and [DELETEITEMSTRUCT] CtlType. Originally with ODT
+// [COMPAREITEMSTRUCT] and [DELETEITEMSTRUCT] CtlType. Originally has ODT
 // prefix.
 //
 // [COMPAREITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
@@ -1186,7 +1186,7 @@ const (
 )
 
 // [WM_HSCROLL], [WM_VSCROLL], [WM_HSCROLLCLIPBOARD] and [WM_VSCROLLCLIPBOARD]
-// request. Originally with SB prefix.
+// request. Originally has SB prefix.
 //
 // [WM_HSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-hscroll
 // [WM_VSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-vscroll

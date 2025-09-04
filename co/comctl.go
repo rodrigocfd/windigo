@@ -933,7 +933,7 @@ const (
 	TDCBF_CLOSE  TDCBF = 0x0020
 )
 
-// [TaskDialog] and [TASKDIALOGCONFIG] pszIcon. Originally with TD prefix and
+// [TaskDialog] and [TASKDIALOGCONFIG] pszIcon. Originally has TD prefix and
 // ICON suffix.
 //
 // [TaskDialog]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialog

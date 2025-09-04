@@ -53,7 +53,7 @@ const (
 	BKMODE_OPAQUE      BKMODE = 2
 )
 
-// [LOGBRUSH] lbStyle. Originally with BS prefix.
+// [LOGBRUSH] lbStyle. Originally has BS prefix.
 //
 // [LOGBRUSH]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
 type BRS uint32
@@ -72,7 +72,7 @@ const (
 	BRS_MONOPATTERN   BRS = 9
 )
 
-// [TEXTMETRIC] tmCharSet and [LOGFONT] lfCharSet. Originally with _CHARSET
+// [TEXTMETRIC] tmCharSet and [LOGFONT] lfCharSet. Originally has _CHARSET
 // suffix.
 //
 // [TEXTMETRIC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-textmetricw
@@ -133,7 +133,7 @@ const (
 	DIB_COLORS_PAL DIB_COLORS = 1 // Color table in palette indices.
 )
 
-// [LOGFONT] lfClipPrecision. Originally with CLIP prefix and PRECIS suffix.
+// [LOGFONT] lfClipPrecision. Originally has CLIP prefix and PRECIS suffix.
 //
 // [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type CLIP_PRECIS uint8
@@ -644,7 +644,7 @@ const (
 	LCS_GM_ABS_COLORIMETRIC LCS_GM = 0x0000_0008
 )
 
-// [LOGFONT] lfOutPrecision. Originally with OUT prefix and PRECIS suffix.
+// [LOGFONT] lfOutPrecision. Originally has OUT prefix and PRECIS suffix.
 //
 // [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type OUT_PRECIS uint8
@@ -811,7 +811,7 @@ const (
 	PT_MOVETO      PT = 0x06
 )
 
-// [LOGFONT] lfQuality. Originally with QUALITY suffix.
+// [LOGFONT] lfQuality. Originally has QUALITY suffix.
 //
 // [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type QUALITY uint8
@@ -826,7 +826,7 @@ const (
 	QUALITY_CLEARTYPE_NATURAL QUALITY = 6
 )
 
-// [SelectObject] return value. Originally with REGION suffix.
+// [SelectObject] return value. Originally has REGION suffix.
 //
 // [SelectObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 type REGION uint32
