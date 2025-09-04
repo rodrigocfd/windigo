@@ -1196,6 +1196,20 @@ func (hWnd HWND) ShowOwnedPopups(show bool) error {
 
 var _ShowOwnedPopups *syscall.Proc
 
+// [ShowScrollBar] function.
+//
+// [ShowScrollBar]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showscrollbar
+func (hWnd HWND) ShowScrollBar(bar co.SB_SHOW, show bool) error {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_ShowScrollBar, "ShowScrollBar"),
+		uintptr(hWnd),
+		uintptr(bar),
+		utl.BoolToUintptr(show))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _ShowScrollBar *syscall.Proc
+
 // [ShowWindow] function.
 //
 // [ShowWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow

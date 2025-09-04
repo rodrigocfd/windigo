@@ -1212,6 +1212,18 @@ const (
 	SB_REQ_ENDSCROLL     SB_REQ = 8
 )
 
+// [ShowScrollBar] bar. Originally has SB prefix.
+//
+// [ShowScrollBar]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showscrollbar
+type SB_SHOW int32
+
+const (
+	SB_SHOW_HORZ SB_SHOW = 0
+	SB_SHOW_VERT SB_SHOW = 1
+	SB_SHOW_CTL  SB_SHOW = 2
+	SB_SHOW_BOTH SB_SHOW = 3
+)
+
 // [WM_SYSCOMMAND] type of requested command.
 //
 // [WM_SYSCOMMAND]: https://learn.microsoft.com/en-us/windows/win32/menurc/wm-syscommand
