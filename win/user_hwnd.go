@@ -1111,6 +1111,34 @@ func (hWnd HWND) SetWindowDisplayAffinity(da co.WDA) error {
 
 var _SetWindowDisplayAffinity *syscall.Proc
 
+// [SetWindowFeedbackSetting] function.
+//
+// [SetWindowFeedbackSetting]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowfeedbacksetting
+func (hWnd HWND) SetWindowFeedbackSetting(feedback co.FEEDBACK, opt co.FEEDBACK_OPT) error {
+	var sz uint32
+	if opt == co.FEEDBACK_OPT_FALSE || opt == co.FEEDBACK_OPT_TRUE {
+		sz = uint32(unsafe.Sizeof(int32(0))) // BOOL
+	}
+
+	var config int32 // BOOL
+	var pConfig unsafe.Pointer
+	if opt == co.FEEDBACK_OPT_FALSE || opt == co.FEEDBACK_OPT_TRUE {
+		config = int32(opt)
+		pConfig = unsafe.Pointer(&config)
+	}
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_SetWindowFeedbackSetting, "SetWindowFeedbackSetting"),
+		uintptr(hWnd),
+		uintptr(feedback),
+		0,
+		uintptr(sz),
+		uintptr(pConfig))
+	return utl.ZeroAsSysInvalidParm(ret)
+}
+
+var _SetWindowFeedbackSetting *syscall.Proc
+
 // [SetWindowPlacement] function.
 //
 // [SetWindowPlacement]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowplacement

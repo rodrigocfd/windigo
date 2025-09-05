@@ -435,6 +435,36 @@ const (
 	FAPPCOMMAND_OEM   FAPPCOMMAND = 0x1000
 )
 
+// [SetWindowFeedbackSetting] feedback.
+//
+// [SetWindowFeedbackSetting]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowfeedbacksetting
+type FEEDBACK uint32
+
+const (
+	FEEDBACK_TOUCH_CONTACTVISUALIZATION FEEDBACK = 1
+	FEEDBACK_PEN_BARRELVISUALIZATION    FEEDBACK = 2
+	FEEDBACK_PEN_TAP                    FEEDBACK = 3
+	FEEDBACK_PEN_DOUBLETAP              FEEDBACK = 4
+	FEEDBACK_PEN_PRESSANDHOLD           FEEDBACK = 5
+	FEEDBACK_PEN_RIGHTTAP               FEEDBACK = 6
+	FEEDBACK_TOUCH_TAP                  FEEDBACK = 7
+	FEEDBACK_TOUCH_DOUBLETAP            FEEDBACK = 8
+	FEEDBACK_TOUCH_PRESSANDHOLD         FEEDBACK = 9
+	FEEDBACK_TOUCH_RIGHTTAP             FEEDBACK = 10
+	FEEDBACK_GESTURE_PRESSANDTAP        FEEDBACK = 11
+)
+
+// [SetWindowFeedbackSetting] opt.
+//
+// [SetWindowFeedbackSetting]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowfeedbacksetting
+type FEEDBACK_OPT uint8
+
+const (
+	FEEDBACK_OPT_FALSE FEEDBACK_OPT = iota
+	FEEDBACK_OPT_TRUE
+	FEEDBACK_OPT_RESET
+)
+
 // [GetAncestor] gaFlags.
 //
 // [GetAncestor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getancestor
