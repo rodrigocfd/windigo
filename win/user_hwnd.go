@@ -636,6 +636,21 @@ func (hWnd HWND) GetParent() (HWND, error) {
 
 var _GetParent *syscall.Proc
 
+// [GetScrollInfo] function.
+//
+// [GetScrollInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getscrollinfo
+func (hWnd HWND) GetScrollInfo(bar co.SBB, si *SCROLLINFO) error {
+	si.SetCbSize() // safety
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.USER32, &_GetScrollInfo, "GetScrollInfo"),
+		uintptr(hWnd),
+		uintptr(bar),
+		uintptr(unsafe.Pointer(si)))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _GetScrollInfo *syscall.Proc
+
 // [GetTitleBarInfo] function.
 //
 // [GetTitleBarInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-gettitlebarinfo
@@ -1098,6 +1113,22 @@ func (hWnd HWND) SetParent(hNewParent HWND) (HWND, error) {
 
 var _SetParent *syscall.Proc
 
+// [SetScrollInfo] function.
+//
+// [SetScrollInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setscrollinfo
+func (hWnd HWND) SetScrollInfo(bar co.SBB, si *SCROLLINFO, redraw bool) int {
+	si.SetCbSize() // safety
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_SetScrollInfo, "SetScrollInfo"),
+		uintptr(hWnd),
+		uintptr(bar),
+		uintptr(unsafe.Pointer(si)),
+		utl.BoolToUintptr(redraw))
+	return int(int32(ret))
+}
+
+var _SetScrollInfo *syscall.Proc
+
 // [SetWindowDisplayAffinity] function.
 //
 // [SetWindowDisplayAffinity]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity
@@ -1227,7 +1258,7 @@ var _ShowOwnedPopups *syscall.Proc
 // [ShowScrollBar] function.
 //
 // [ShowScrollBar]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showscrollbar
-func (hWnd HWND) ShowScrollBar(bar co.SB_SHOW, show bool) error {
+func (hWnd HWND) ShowScrollBar(bar co.SBB, show bool) error {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_ShowScrollBar, "ShowScrollBar"),
 		uintptr(hWnd),

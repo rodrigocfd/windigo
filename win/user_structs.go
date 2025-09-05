@@ -572,6 +572,31 @@ type RECT struct {
 	Left, Top, Right, Bottom int32
 }
 
+// [SCROLLINFO] struct.
+//
+// ⚠️ You must call [SCROLLINFO.SetCbSize] to initialize the struct.
+//
+// Example:
+//
+//	var si win.SCROLLINFO
+//	si.SetCbSize()
+//
+// [SCROLLINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-scrollinfo
+type SCROLLINFO struct {
+	cbSize    uint32
+	FMask     co.SIF
+	NMin      int32
+	NMax      int32
+	NPage     uint32
+	NPos      int32
+	NTrackPos int32
+}
+
+// Sets the cbSize field to the size of the struct, correctly initializing it.
+func (si *SCROLLINFO) SetCbSize() {
+	si.cbSize = uint32(unsafe.Sizeof(*si))
+}
+
 // [SIZE] struct.
 //
 // Basic area size structure, with cx and cy values.

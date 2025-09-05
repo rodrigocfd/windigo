@@ -1242,16 +1242,19 @@ const (
 	SB_REQ_ENDSCROLL     SB_REQ = 8
 )
 
-// [ShowScrollBar] bar. Originally has SB prefix.
+// [GetScrollInfo], [ShowScrollBar] and [SetScrollInfo] bar. Originally has SB
+// prefix.
 //
+// [GetScrollInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getscrollinfo
 // [ShowScrollBar]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showscrollbar
-type SB_SHOW int32
+// [SetScrollInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setscrollinfo
+type SBB int32
 
 const (
-	SB_SHOW_HORZ SB_SHOW = 0
-	SB_SHOW_VERT SB_SHOW = 1
-	SB_SHOW_CTL  SB_SHOW = 2
-	SB_SHOW_BOTH SB_SHOW = 3
+	SBB_HORZ SBB = 0
+	SBB_VERT SBB = 1
+	SBB_CTL  SBB = 2
+	SBB_BOTH SBB = 3
 )
 
 // [WM_SYSCOMMAND] type of requested command.
@@ -1348,6 +1351,20 @@ const (
 	SHTDN_UCLEANUI = SHTDN_REASON_FLAG_CLEAN_UI
 	SHTDN_PDIRTYUI = SHTDN_REASON_FLAG_PLANNED | SHTDN_REASON_FLAG_DIRTY_UI
 	SHTDN_UDIRTYUI = SHTDN_REASON_FLAG_DIRTY_UI
+)
+
+// [SCROLLINFO] FMask.
+//
+// [SCROLLINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-scrollinfo
+type SIF uint32
+
+const (
+	SIF_RANGE           SIF = 0x0001
+	SIF_PAGE            SIF = 0x0002
+	SIF_POS             SIF = 0x0004
+	SIF_DISABLENOSCROLL SIF = 0x0008
+	SIF_TRACKPOS        SIF = 0x0010
+	SIF_ALL                 = SIF_RANGE | SIF_PAGE | SIF_POS | SIF_TRACKPOS
 )
 
 // [WM_SIZE] request.
