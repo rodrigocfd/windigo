@@ -406,6 +406,17 @@ const (
 	HEAP_CREATE_NO_SERIALIZE        HEAP_CREATE = 0x0000_0001
 )
 
+// [HEAP_INFORMATION_CLASS] enumeration.
+//
+// [HEAP_INFORMATION_CLASS]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ne-winnt-heap_information_class
+type HEAP_INFO uint32
+
+const (
+	HEAP_INFO_CompatibilityInformation      HEAP_INFO = 0
+	HEAP_INFO_EnableTerminationOnCorruption HEAP_INFO = 1
+	HEAP_INFO_HeapOptimizeResources         HEAP_INFO = 3
+)
+
 // [HeapFree], [HeapSize] and [HeapValidate] flags.
 //
 // [HeapFree]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapfree

@@ -242,6 +242,26 @@ func GuidFrom[T ~string](strGuid T) GUID {
 	}
 }
 
+// [HEAP_OPTIMIZE_RESOURCES_INFORMATION] struct.
+//
+// ⚠️ You must call [HEAP_OPTIMIZE_RESOURCES_INFORMATION.SetVersion] to initialize the struct.
+//
+// Example:
+//
+//	var ho win.HEAP_OPTIMIZE_RESOURCES_INFORMATION
+//	ho.SetVersion()
+//
+// [HEAP_OPTIMIZE_RESOURCES_INFORMATION]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-heap_optimize_resources_information
+type HEAP_OPTIMIZE_RESOURCES_INFORMATION struct {
+	version uint32
+	Flags   uint32 // Must be set to zero.
+}
+
+// Sets the version field to the size of the struct, correctly initializing it.
+func (ho *HEAP_OPTIMIZE_RESOURCES_INFORMATION) SetVersion() {
+	ho.version = utl.HEAP_OPTIMIZE_RESOURCES_CURRENT_VERSION
+}
+
 // Language and sublanguage [identifier].
 //
 // Created with [MAKELANGID].

@@ -180,6 +180,21 @@ func (hHeap HHEAP) HeapReAlloc(
 
 var _HeapReAlloc *syscall.Proc
 
+// [HeapSetInformation] function.
+//
+// [HeapSetInformation]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapsetinformation
+func (hHeap HHEAP) HeapSetInformation(infoClass co.HEAP_INFO, pInfo unsafe.Pointer, infoLen int) error {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_HeapSetInformation, "HeapSetInformation"),
+		uintptr(hHeap),
+		uintptr(infoClass),
+		uintptr(pInfo),
+		uintptr(uint64(infoLen)))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _HeapSetInformation *syscall.Proc
+
 // [HeapSize] function.
 //
 // [HeapSize]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapsize
