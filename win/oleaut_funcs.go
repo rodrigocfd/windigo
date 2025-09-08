@@ -19,6 +19,16 @@ import (
 // The bytes are copied, so [IStream] can be released after this function
 // returns.
 //
+// The picture must be in the following formats:
+//   - BMP (bitmap)
+//   - JPEG
+//   - WMF (metafile)
+//   - ICO (icon)
+//   - GIF
+//
+// If the image format is not supported, returns
+// [co.HRESULT_CTL_E_INVALIDPICTURE].
+//
 // Example:
 //
 //	rel := win.NewOleReleaser()
@@ -67,6 +77,9 @@ var _OleLoadPicture *syscall.Proc
 //   - WMF (metafile)
 //   - ICO (icon)
 //   - GIF
+//
+// If the image format is not supported, returns
+// [co.HRESULT_CTL_E_INVALIDPICTURE].
 //
 // [OleLoadPicturePath]: https://learn.microsoft.com/en-us/windows/win32/api/olectl/nf-olectl-oleloadpicturepath
 func OleLoadPicturePath(
