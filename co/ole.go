@@ -428,7 +428,7 @@ type SEVERITY uint8
 
 const (
 	SEVERITY_SUCCESS SEVERITY = 0
-	SEVERITY_FAILURE SEVERITY = 1
+	SEVERITY_ERROR   SEVERITY = 1
 )
 
 // [BIND_OPTS3] and [IShellLink.Resolve] flags.
