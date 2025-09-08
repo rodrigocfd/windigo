@@ -26,11 +26,11 @@ type TdcIcon struct {
 
 type _TdcIconTag uint8
 
-var (
-	_TdcIconTag_none   _TdcIconTag = 0x0
-	_TdcIconTag_hIcon  _TdcIconTag = 0x1
-	_TdcIconTag_id     _TdcIconTag = 0x2
-	_TdcIconTag_tdIcon _TdcIconTag = 0x3
+const (
+	_TdcIconTag_none _TdcIconTag = iota
+	_TdcIconTag_hIcon
+	_TdcIconTag_id
+	_TdcIconTag_tdIcon
 )
 
 // Creates a new [TdcIcon] with an empty value.

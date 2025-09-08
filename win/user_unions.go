@@ -28,9 +28,9 @@ type ClassName struct {
 type _ClassNameTag uint8
 
 const (
-	_ClassNameTag_none _ClassNameTag = 0x0
-	_ClassNameTag_atom _ClassNameTag = 0x1
-	_ClassNameTag_str  _ClassNameTag = 0x2
+	_ClassNameTag_none _ClassNameTag = iota
+	_ClassNameTag_atom
+	_ClassNameTag_str
 )
 
 // Creates a new [ClassName] with an empty value.
@@ -108,9 +108,9 @@ type CursorRes struct {
 type _CursorResTag uint8
 
 const (
-	_CursorTag_idc _CursorResTag = 0x1
-	_CursorTag_id  _CursorResTag = 0x2
-	_CursorTag_str _CursorResTag = 0x3
+	_CursorTag_idc _CursorResTag = 1 + iota
+	_CursorTag_id
+	_CursorTag_str
 )
 
 // Creates a new [CursorRes] with a [co.IDC] value.
@@ -193,9 +193,9 @@ type IconRes struct {
 type _IconResTag uint8
 
 const (
-	_IconResTag_idi _IconResTag = 0x1
-	_IconResTag_id  _IconResTag = 0x2
-	_IconResTag_str _IconResTag = 0x3
+	_IconResTag_idi _IconResTag = 1 + iota
+	_IconResTag_id
+	_IconResTag_str
 )
 
 // Creates a new [IconRes] with a [co.IDI] value.
@@ -275,8 +275,8 @@ type ResId struct {
 type _ResIdTag uint8
 
 const (
-	_ResIdTag_id  _ResIdTag = 0x1
-	_ResIdTag_str _ResIdTag = 0x2
+	_ResIdTag_id _ResIdTag = 1 + iota
+	_ResIdTag_str
 )
 
 // Creates a new [ResId] with an integer value.
