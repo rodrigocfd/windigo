@@ -44,8 +44,7 @@ import (
 func main() {
 	runtime.LockOSThread() // important: Windows GUI is single-threaded
 
-	myWindow := NewMyWindow() // instantiate
-	myWindow.wnd.RunAsMain()  // ...and run
+	ShowMainWindow()
 }
 
 // This struct represents our main window.
@@ -56,8 +55,8 @@ type MyWindow struct {
 	btnShow *ui.Button
 }
 
-// Creates a new instance of our main window.
-func NewMyWindow() *MyWindow {
+// Displays the main window, blocking until it is closed.
+func ShowMainWindow() int {
 	wnd := ui.NewMain( // create the main window
 		ui.OptsMain().
 			Title("Hello you").
@@ -86,7 +85,7 @@ func NewMyWindow() *MyWindow {
 
 	me := &MyWindow{wnd, lblName, txtName, btnShow}
 	me.events()
-	return me
+	return wnd.RunAsMain()
 }
 
 func (me *MyWindow) events() {
