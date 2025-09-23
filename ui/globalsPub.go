@@ -7,32 +7,15 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 )
 
-// Global system DPI factor.
-var dpiX, dpiY int = 0, 0
-
-func cacheSystemDpi() error {
-	if dpiX == 0 || dpiY == 0 { // not cached yet?
-		hdcScreen, err := win.HWND(0).GetDC()
-		if err != nil {
-			return err
-		}
-		defer win.HWND(0).ReleaseDC(hdcScreen)
-
-		dpiX = int(hdcScreen.GetDeviceCaps(co.GDC_LOGPIXELSX))
-		dpiY = int(hdcScreen.GetDeviceCaps(co.GDC_LOGPIXELSY))
-	}
-	return nil
-}
-
 // Returns the value adjusted according to the current horizontal system DPI.
 func DpiX(x int) int {
-	cacheSystemDpi()
+	initalGuiSetup()
 	return x * dpiX / 96
 }
 
 // Returns the value adjusted according to the current vertical system DPI.
 func DpiY(y int) int {
-	cacheSystemDpi()
+	initalGuiSetup()
 	return y * dpiY / 96
 }
 

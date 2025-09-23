@@ -10,6 +10,45 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 )
 
+// Global system DPI factor.
+var dpiX, dpiY int = 0, 0
+
+func initalGuiSetup() {
+	if dpiX != 0 {
+		return // already done
+	}
+
+	if win.IsWindowsVistaOrGreater() {
+		if err := win.SetProcessDPIAware(); err != nil {
+			panic(err)
+		}
+	}
+
+	win.InitCommonControls()
+
+	if win.IsWindows8OrGreater() {
+		bVal := int32(0) // BOOL=FALSE; SetTimer() safety
+		err := win.GetCurrentProcess().SetUserObjectInformation(
+			co.UOI_TIMERPROC_EXCEPTION_SUPPRESSION, unsafe.Pointer(&bVal), unsafe.Sizeof(bVal))
+		if err != nil {
+			if wErr, _ := err.(co.ERROR); wErr != co.ERROR_INVALID_PARAMETER {
+				// Wine doesn't support SetUserObjectInformation() and returns
+				// INVALID_PARAMETER, so we let it pass. Otherwise, we crash.
+				// https://bugs.winehq.org/show_bug.cgi?id=54951
+				panic(wErr)
+			}
+		}
+	}
+
+	hdcScreen, err := win.HWND(0).GetDC()
+	if err != nil {
+		panic(err)
+	}
+	defer win.HWND(0).ReleaseDC(hdcScreen)
+	dpiX = int(hdcScreen.GetDeviceCaps(co.GDC_LOGPIXELSX))
+	dpiY = int(hdcScreen.GetDeviceCaps(co.GDC_LOGPIXELSY))
+}
+
 // Global UI font.
 var globalUiFont win.HFONT
 
