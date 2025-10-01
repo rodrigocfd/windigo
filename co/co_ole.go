@@ -5,7 +5,7 @@ package co
 // IBindCtx [BindToHandler] bhid, represented as a string.
 //
 // [BindToHandler]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-bindtohandler
-type BHID string
+type BHID GUID
 
 const (
 	BHID_SFObject           BHID = "3981e224-f559-11d3-8e3a-00c04f6837d5"
@@ -37,11 +37,6 @@ const (
 	BIND_MAYBOTHERUSER     BIND = 1
 	BIND_JUSTTESTEXISTENCE BIND = 2
 )
-
-// A COM [class ID], represented as a string.
-//
-// [class ID]: https://learn.microsoft.com/en-us/windows/win32/com/clsid-key-hklm
-type CLSID string
 
 // [HRESULT] facility.
 //

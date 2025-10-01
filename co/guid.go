@@ -2,6 +2,43 @@
 
 package co
 
+// A [GUID] struct, represented as a string.
+//
+// [GUID]: https://learn.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
+type GUID string
+
+// A COM [class ID], represented as a string.
+//
+// [class ID]: https://learn.microsoft.com/en-us/windows/win32/com/clsid-key-hklm
+type CLSID GUID
+
+// A COM [interface ID], represented as a string.
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
+type IID GUID
+
+// Ole GUID identifier.
+const (
+	IID_IBindCtx          IID = "0000000e-0000-0000-c000-000000000046"
+	IID_IDataObject       IID = "0000010e-0000-0000-c000-000000000046"
+	IID_IDropTarget       IID = "00000122-0000-0000-c000-000000000046"
+	IID_IEnumString       IID = "00000101-0000-0000-c000-000000000046"
+	IID_ISequentialStream IID = "0c733a30-2a1c-11ce-ade5-00aa0044773d"
+	IID_IStream           IID = "0000000c-0000-0000-c000-000000000046"
+	IID_IUnknown          IID = "00000000-0000-0000-c000-000000000046"
+	IID_NULL              IID = "00000000-0000-0000-0000-000000000000"
+)
+
+// Oleaut GUID identifier.
+const (
+	IID_IDispatch      IID = "00020400-0000-0000-c000-000000000046"
+	IID_IPicture       IID = "7bf80980-bf32-101a-8bbb-00aa00300cab"
+	IID_IPropertyStore IID = "886d8eeb-8cf2-4446-8d02-cdba1dbdcf99"
+	IID_ITypeInfo      IID = "00020401-0000-0000-c000-000000000046"
+	IID_ITypeLib       IID = "00020402-0000-0000-c000-000000000046"
+)
+
+// Shell GUID identifier.
 const (
 	CLSID_FileOpenDialog CLSID = "dc1c5a9c-e88a-4dde-a5a1-60f82a20aef7"
 	CLSID_FileOperation  CLSID = "3ad05575-8857-4850-9277-11b85bdb8e09"

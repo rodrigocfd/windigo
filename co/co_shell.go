@@ -93,7 +93,7 @@ const (
 // [KNOWNFOLDERID] constants, represented as a string.
 //
 // [KNOWNFOLDERID]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid
-type FOLDERID string
+type FOLDERID GUID
 
 const (
 	FOLDERID_NetworkFolder          FOLDERID = "d20beec4-5ca8-4905-ae3b-bf251ea09b53"
@@ -378,7 +378,7 @@ const (
 // [PROPERTYKEY] struct predefined values, represented as a string.
 //
 // [PROPERTYKEY]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ns-wtypes-propertykey
-type PKEY string
+type PKEY GUID
 
 const (
 	// Address properties
