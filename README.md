@@ -373,10 +373,10 @@ The library is divided in four packages:
 
 | Package | Description |
 | - | - |
-| `co` | Native Win32 constants, all typed. |
-| `ui` | High-level UI windows and controls. |
-| `win` | Native Win32 structs, handles and functions. |
-| `wstr` | String and UTF-16 wide string management. |
+| [`co`](https://pkg.go.dev/github.com/rodrigocfd/windigo/co) | Native Win32 constants, all typed. |
+| [`ui`](https://pkg.go.dev/github.com/rodrigocfd/windigo/ui) | High-level UI windows and controls. |
+| [`win`](https://pkg.go.dev/github.com/rodrigocfd/windigo/win) | Native Win32 structs, handles and functions. |
+| [`wstr`](https://pkg.go.dev/github.com/rodrigocfd/windigo/wstr) | String and UTF-16 wide string management. |
 
 Package dependency:
 
