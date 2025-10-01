@@ -126,3 +126,18 @@ type _IUnknownVt struct {
 	AddRef         uintptr
 	Release        uintptr
 }
+
+// IUnknown.QueryInterface method for custom-implemented interfaces.
+var _iunknownQueryInterfaceImpl uintptr
+
+func iunknownQueryInterfaceImpl() uintptr {
+	if _iunknownQueryInterfaceImpl == 0 {
+		_iunknownQueryInterfaceImpl = syscall.NewCallback(
+			func(_p uintptr, _riid uintptr, ppv ***_IUnknownVt) uintptr {
+				*ppv = nil
+				return uintptr(co.HRESULT_E_NOTIMPL)
+			},
+		)
+	}
+	return _iunknownQueryInterfaceImpl
+}

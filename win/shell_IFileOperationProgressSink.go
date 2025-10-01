@@ -288,12 +288,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 
 	*me = _IFileOperationProgressSinkVt{
 		_IUnknownVt: _IUnknownVt{
-			QueryInterface: syscall.NewCallback(
-				func(_p uintptr, _riid uintptr, ppv ***_IUnknownVt) uintptr {
-					*ppv = nil
-					return uintptr(co.HRESULT_E_NOTIMPL)
-				},
-			),
+			QueryInterface: iunknownQueryInterfaceImpl(),
 			AddRef: syscall.NewCallback(
 				func(p uintptr) uintptr {
 					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
