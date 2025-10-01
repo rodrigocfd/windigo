@@ -19,8 +19,8 @@ import (
 //
 // Example:
 //
-//	contents, _ := win.FileReadNow("C:\\Temp\\foo.txt")
-func FileReadNow(filePath string) ([]byte, error) {
+//	contents, _ := win.FileReadAll("C:\\Temp\\foo.txt")
+func FileReadAll(filePath string) ([]byte, error) {
 	fin, err := FileOpen(filePath, co.FOPEN_READ_EXISTING)
 	if err != nil {
 		return nil, fmt.Errorf("FileOpen: %w", err)
@@ -49,8 +49,8 @@ func FileReadNow(filePath string) ([]byte, error) {
 // Example:
 //
 //	contents := []byte("my text")
-//	_ = win.FileWriteNow("C:\\Temp\\foo.txt", contents)
-func FileWriteNow(filePath string, contents []byte) error {
+//	_ = win.FileWriteAll("C:\\Temp\\foo.txt", contents)
+func FileWriteAll(filePath string, contents []byte) error {
 	fout, err := FileOpen(filePath, co.FOPEN_RW_OPEN_OR_CREATE)
 	if err != nil {
 		return fmt.Errorf("FileOpen: %w", err)
