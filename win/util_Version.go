@@ -47,14 +47,14 @@ type VersionInfo struct {
 func VersionLoad(moduleName string) (VersionInfo, error) {
 	szData, err := GetFileVersionInfoSize(moduleName)
 	if err != nil {
-		return VersionInfo{}, err
+		return VersionInfo{}, fmt.Errorf("VersionLoad GetFileVersionInfoSize: %w", err)
 	}
 
 	data := NewVecSized(szData, byte(0))
 	defer data.Free()
 
 	if err := GetFileVersionInfo(moduleName, data.HotSlice()); err != nil {
-		return VersionInfo{}, err
+		return VersionInfo{}, fmt.Errorf("VersionLoad GetFileVersionInfo: %w", err)
 	}
 
 	var v VersionInfo // to be returned
