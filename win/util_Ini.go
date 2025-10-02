@@ -3,6 +3,7 @@
 package win
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/rodrigocfd/windigo/co"
@@ -47,7 +48,7 @@ type (
 func IniLoad(iniPath string) (*Ini, error) {
 	lines, err := iniLoadLines(iniPath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("IniLoad: %w", err)
 	}
 
 	me := &Ini{}
@@ -116,7 +117,10 @@ func (me *Ini) Serialize() string {
 
 // Serializes and saves the contents into the .ini file.
 func (me *Ini) SaveToFile(filePath string) error {
-	return FileWriteAll(filePath, []byte(me.Serialize()))
+	if err := FileWriteAll(filePath, []byte(me.Serialize())); err != nil {
+		return fmt.Errorf("Ini.SaveToFile: %w", err)
+	}
+	return nil
 }
 
 // Returns a pointer to the section with the given name, or nil if not existing.
