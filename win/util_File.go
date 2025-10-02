@@ -23,18 +23,18 @@ import (
 func FileReadAll(filePath string) ([]byte, error) {
 	fin, err := FileOpen(filePath, co.FOPEN_READ_EXISTING)
 	if err != nil {
-		return nil, fmt.Errorf("FileOpen: %w", err)
+		return nil, fmt.Errorf("FileReadAll: %w", err)
 	}
 	defer fin.Close()
 
 	sz, err := fin.Size()
 	if err != nil {
-		return nil, fmt.Errorf("File.Size: %w", err)
+		return nil, fmt.Errorf("FileReadAll: %w", err)
 	}
 
 	ret := make([]byte, sz)
 	if _, err := fin.Read(ret); err != nil {
-		return nil, fmt.Errorf("File.Read: %w", err)
+		return nil, fmt.Errorf("FileReadAll: %w", err)
 	}
 
 	return ret, nil
@@ -53,16 +53,16 @@ func FileReadAll(filePath string) ([]byte, error) {
 func FileWriteAll(filePath string, contents []byte) error {
 	fout, err := FileOpen(filePath, co.FOPEN_RW_OPEN_OR_CREATE)
 	if err != nil {
-		return fmt.Errorf("FileOpen: %w", err)
+		return fmt.Errorf("FileWriteAll: %w", err)
 	}
 	defer fout.Close()
 
 	if err := fout.Hfile().SetEndOfFile(); err != nil {
-		return fmt.Errorf("HFILE.SetEndOfFile: %w", err)
+		return fmt.Errorf("FileWriteAll HFILE.SetEndOfFile: %w", err)
 	}
 
 	if _, err := fout.Write(contents); err != nil {
-		return fmt.Errorf("File.Write: %w", err)
+		return fmt.Errorf("FileWriteAll: %w", err)
 	}
 
 	return nil
@@ -130,22 +130,24 @@ func FileOpen(filePath string, desiredAccess co.FOPEN) (*File, error) {
 		disposition, co.FILE_ATTRIBUTE_NORMAL, co.FILE_FLAG_NONE,
 		co.SECURITY_NONE, 0)
 	if err != nil {
-		return nil, fmt.Errorf("CreateFile: %w", err)
+		return nil, fmt.Errorf("FileOpen CreateFile: %w", err)
 	}
 
-	return &File{hFile: hFile}, nil
+	return &File{hFile}, nil
 }
 
 // Implements [io.Closer].
 //
 // Calls [HFILE.CloseHandle].
 func (me *File) Close() error {
-	var e error
 	if me.hFile != 0 {
-		e = me.hFile.CloseHandle()
+		err := me.hFile.CloseHandle()
 		me.hFile = 0
+		if err != nil {
+			return fmt.Errorf("File.Close HFILE.CloseHandle: %w", err)
+		}
 	}
-	return e
+	return nil
 }
 
 // Returns the underlying handle.
@@ -157,17 +159,17 @@ func (me *File) Hfile() HFILE {
 //
 // Calls [HFILE.ReadFile] to read the file contents from its current internal
 // pointer up to the buffer size.
-func (me *File) Read(p []byte) (numBytesRead int, wErr error) {
-	numRead, wErr := me.hFile.ReadFile(p, nil)
-	if wErr != nil {
-		return 0, fmt.Errorf("ReadFile: %w", wErr)
+func (me *File) Read(p []byte) (int, error) {
+	numRead, err := me.hFile.ReadFile(p, nil)
+	if err != nil {
+		return 0, fmt.Errorf("File.Read HFILE.ReadFile: %w", err)
 	}
 
-	if numRead < len(p) { // surely there's no more to read
+	if numRead < len(p) { // buffer not completely filled, surely there's no more to read
 		return int(numRead), io.EOF
 	} else if numRead == 0 { // EOF found
 		return 0, io.EOF
-	} else {
+	} else { // still more to read
 		return int(numRead), nil
 	}
 }
@@ -178,21 +180,21 @@ func (me *File) Read(p []byte) (numBytesRead int, wErr error) {
 // Calls [HFILE.SetFilePointerEx] and [HFILE.ReadFile].
 func (me *File) ReadAllAsSlice() ([]byte, error) {
 	if _, err := me.Seek(0, io.SeekStart); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("File.ReadAllAsSlice: %w", err)
 	}
 
 	fileSize, err := me.Size()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("File.ReadAllAsSlice: %w", err)
 	}
 
 	buf := make([]byte, fileSize)
 	if _, err := me.Read(buf); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("File.ReadAllAsSlice: %w", err)
 	}
 
 	if _, err := me.Seek(0, io.SeekStart); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("File.ReadAllAsSlice: %w", err)
 	}
 
 	return buf, nil
@@ -220,23 +222,23 @@ func (me *File) ReadAllAsSlice() ([]byte, error) {
 // [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (me *File) ReadAllAsVec() (Vec[byte], error) {
 	if _, err := me.Seek(0, io.SeekStart); err != nil {
-		return Vec[byte]{}, err
+		return Vec[byte]{}, fmt.Errorf("File.ReadAllAsVec: %w", err)
 	}
 
 	fileSize, err := me.Size()
 	if err != nil {
-		return Vec[byte]{}, err
+		return Vec[byte]{}, fmt.Errorf("File.ReadAllAsVec: %w", err)
 	}
 
 	heapBuf := NewVecSized[byte](fileSize, 0x00)
 	if _, err := me.Read(heapBuf.HotSlice()); err != nil {
 		heapBuf.Free()
-		return Vec[byte]{}, err
+		return Vec[byte]{}, fmt.Errorf("File.ReadAllAsVec: %w", err)
 	}
 
 	if _, err := me.Seek(0, io.SeekStart); err != nil {
 		heapBuf.Free()
-		return Vec[byte]{}, err
+		return Vec[byte]{}, fmt.Errorf("File.ReadAllAsVec: %w", err)
 	}
 
 	return heapBuf, nil
@@ -247,8 +249,10 @@ func (me *File) ReadAllAsVec() (Vec[byte], error) {
 // Calls [HFILE.ReadFile].
 func (me *File) ReadByte() (byte, error) {
 	var buf [1]byte
-	_, err := me.Read(buf[:])
-	return buf[0], err
+	if _, err := me.Read(buf[:]); err != nil {
+		return 0, fmt.Errorf("File.ReadByte: %w", err)
+	}
+	return buf[0], nil
 }
 
 // Truncates or expands the file, according to the new size. Zero will empty the
@@ -263,17 +267,18 @@ func (me *File) ReadByte() (byte, error) {
 func (me *File) Resize(numBytes int) error {
 	utl.PanicNeg(numBytes)
 
-	// Simply go beyond file limits.
+	// Simply go beyond file limits if needed.
 	if _, err := me.Seek(int64(numBytes), io.SeekStart); err != nil {
-		return err
+		return fmt.Errorf("File.Resize: %w", err)
 	}
 
 	if err := me.hFile.SetEndOfFile(); err != nil {
-		return fmt.Errorf("SetEndOfFile: %w", err)
+		return fmt.Errorf("File.Resize HFILE.SetEndOfFile: %w", err)
 	}
 
+	// Rewind pointer.
 	if _, err := me.Seek(0, io.SeekStart); err != nil {
-		return err
+		return fmt.Errorf("File.Resize: %w", err)
 	}
 
 	return nil
@@ -295,7 +300,7 @@ func (me *File) Seek(offset int64, whence int) (int64, error) {
 
 	newOff, err := me.hFile.SetFilePointerEx(int(offset), moveMethod)
 	if err != nil {
-		return 0, fmt.Errorf("SetFilePointerEx: %w", err)
+		return 0, fmt.Errorf("File.Seek HFILE.SetFilePointerEx: %w", err)
 	}
 	return int64(newOff), nil
 }
@@ -304,7 +309,7 @@ func (me *File) Seek(offset int64, whence int) (int64, error) {
 func (me *File) Size() (int, error) {
 	sz, err := me.hFile.GetFileSizeEx()
 	if err != nil {
-		return 0, fmt.Errorf("GetFileSizeEx: %w", err)
+		return 0, fmt.Errorf("File.Size HFILE.GetFileSizeEx: %w", err)
 	}
 	return sz, nil
 }
@@ -313,10 +318,10 @@ func (me *File) Size() (int, error) {
 //
 // Calls [HFILE.WriteFile] to write a slice at current internal pointer
 // position.
-func (me *File) Write(p []byte) (n int, wErr error) {
-	written, wErr := me.hFile.WriteFile(p, nil)
-	if wErr != nil {
-		return 0, fmt.Errorf("WriteFile: %w", wErr)
+func (me *File) Write(p []byte) (int, error) {
+	written, err := me.hFile.WriteFile(p, nil)
+	if err != nil {
+		return 0, fmt.Errorf("File.Write HFILE.WriteFile: %w", err)
 	}
 	return int(written), nil
 }
@@ -325,8 +330,10 @@ func (me *File) Write(p []byte) (n int, wErr error) {
 //
 // Calls [HFILE.WriteFile] to write a byte at current internal pointer position.
 func (me *File) WriteByte(c byte) error {
-	_, err := me.Write([]byte{c})
-	return err
+	if _, err := me.Write([]byte{c}); err != nil {
+		return fmt.Errorf("File.WriteByte: %w", err)
+	}
+	return nil
 }
 
 // Implements [io.StringWriter].
@@ -335,7 +342,11 @@ func (me *File) WriteByte(c byte) error {
 // position.
 func (me *File) WriteString(s string) (int, error) {
 	serialized := []byte(s)
-	return me.Write(serialized)
+	written, err := me.Write(serialized)
+	if err != nil {
+		return 0, fmt.Errorf("File.WriteString: %w", err)
+	}
+	return written, nil
 }
 
 // High-level abstraction to [HFILEMAP], providing several operations.
@@ -348,11 +359,10 @@ func (me *File) WriteString(s string) (int, error) {
 //
 // Created with [FileMapOpen].
 type FileMap struct {
-	objFile  *File
-	hMap     HFILEMAP
-	pMem     HFILEMAPVIEW
-	sz       int
-	readOnly bool
+	file *File
+	hMap HFILEMAP
+	pMem HFILEMAPVIEW
+	sz   int
 }
 
 // Opens a memory-mapped file, returning a new high-level FileMap object.
@@ -367,47 +377,74 @@ type FileMap struct {
 //	f, _ := win.FileMapOpen("C:\\Temp\\foo.txt", co.FOPEN_READ_EXISTING)
 //	defer f.Close()
 func FileMapOpen(filePath string, desiredAccess co.FOPEN) (*FileMap, error) {
-	objFile, err := FileOpen(filePath, desiredAccess)
+	file, err := FileOpen(filePath, desiredAccess)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("FileMapOpen: %w", err)
 	}
 
-	me := &FileMap{
-		objFile:  objFile,
-		hMap:     HFILEMAP(0),
-		pMem:     HFILEMAPVIEW(0),
-		sz:       0,
-		readOnly: desiredAccess == co.FOPEN_READ_EXISTING,
+	// Map into memory.
+	pageFlags := co.PAGE_READONLY
+	if desiredAccess != co.FOPEN_READ_EXISTING {
+		pageFlags = co.PAGE_READWRITE
 	}
 
-	if err := me.mapInMemory(); err != nil {
-		me.Close()
-		return nil, err
+	hMap, err := file.Hfile().CreateFileMapping(nil, pageFlags, co.SEC_NONE, 0, "")
+	if err != nil {
+		file.Close()
+		return nil, fmt.Errorf("FileMapOpen HFILE.CreateFileMapping: %w", err)
 	}
-	return me, nil
+
+	// Get pointer to data block.
+	mapFlags := co.FILE_MAP_READ
+	if desiredAccess != co.FOPEN_READ_EXISTING {
+		mapFlags = co.FILE_MAP_WRITE
+	}
+
+	pMem, err := hMap.MapViewOfFile(mapFlags, 0, 0)
+	if err != nil {
+		hMap.CloseHandle()
+		file.Close()
+		return nil, fmt.Errorf("FileMapOpen HFILEMAP.MapViewOfFile: %w", err)
+	}
+
+	// Cache file size.
+	sz, err := file.Size()
+	if err != nil {
+		pMem.UnmapViewOfFile()
+		hMap.CloseHandle()
+		file.Close()
+		return nil, fmt.Errorf("FileMapOpen: %w", err)
+	}
+
+	return &FileMap{file, hMap, pMem, sz}, nil
 }
 
 // Unmaps and releases the file resource.
 func (me *FileMap) Close() error {
-	var e1, e2, e3 error
+	var errRet error
 	if me.pMem != 0 {
-		e1 = me.pMem.UnmapViewOfFile()
+		err := me.pMem.UnmapViewOfFile()
 		me.pMem = 0
+		if err != nil {
+			errRet = fmt.Errorf("FileMap.Close HFILEMAPVIEW.UnmapViewOfFile: %w", err)
+		}
 	}
-	if me.hMap != 0 {
-		e2 = me.hMap.CloseHandle()
-		me.hMap = 0
-	}
-	e3 = me.objFile.Close()
-	me.sz = 0
 
-	if e1 != nil {
-		return e1
-	} else if e2 != nil {
-		return e2
-	} else {
-		return e3
+	if me.hMap != 0 {
+		err := me.hMap.CloseHandle()
+		me.hMap = 0
+		if err != nil && errRet == nil { // only report if pMem.UnmapViewOfFile() succeeded
+			errRet = fmt.Errorf("FileMap.Close HFILEMAP.CloseHandle: %w", err)
+		}
 	}
+
+	err := me.file.Close()
+	me.sz = 0
+	if err != nil && errRet == nil { // only report if hMap.CloseHandle() succeeded
+		errRet = fmt.Errorf("FileMap.Close: %w", err)
+	}
+
+	return errRet
 }
 
 // Returns a slice to the memory-mapped bytes.
@@ -477,55 +514,7 @@ func (me *FileMap) ReadChunkAsVec(offset, length int) Vec[byte] {
 	return heapBuf
 }
 
-// Truncates or expands the file, according to the new size. Zero will empty the
-// file.
-//
-// Internally, the file is unmapped, then remapped back into memory.
-//
-// Panics if numBytes is negative.
-func (me *FileMap) Resize(numBytes int) error {
-	me.pMem.UnmapViewOfFile()
-	me.hMap.CloseHandle()
-	if err := me.objFile.Resize(numBytes); err != nil {
-		return err
-	}
-	return me.mapInMemory()
-}
-
 // Retrieves the file size. This value is cached.
 func (me *FileMap) Size() int {
 	return me.sz
-}
-
-func (me *FileMap) mapInMemory() error {
-	// Mapping into memory.
-	pageFlags := co.PAGE_READONLY
-	if !me.readOnly {
-		pageFlags = co.PAGE_READWRITE
-	}
-
-	var err error
-	me.hMap, err = me.objFile.Hfile().
-		CreateFileMapping(nil, pageFlags, co.SEC_NONE, 0, "")
-	if err != nil {
-		return fmt.Errorf("CreateFileMapping: %w", err)
-	}
-
-	// Get pointer to data block.
-	mapFlags := co.FILE_MAP_READ
-	if !me.readOnly {
-		mapFlags = co.FILE_MAP_WRITE
-	}
-
-	if me.pMem, err = me.hMap.MapViewOfFile(mapFlags, 0, 0); err != nil {
-		return fmt.Errorf("MapViewOfFile: %w", err)
-	}
-
-	// Cache file size.
-	me.sz, err = me.objFile.Size()
-	if err != nil {
-		return fmt.Errorf("Size: %w", err)
-	}
-
-	return nil // file mapped successfully
 }
