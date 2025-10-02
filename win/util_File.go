@@ -57,8 +57,8 @@ func FileWriteAll(filePath string, contents []byte) error {
 	}
 	defer fout.Close()
 
-	if err := fout.Hfile().SetEndOfFile(); err != nil {
-		return fmt.Errorf("FileWriteAll HFILE.SetEndOfFile: %w", err)
+	if err := fout.Truncate(); err != nil {
+		return fmt.Errorf("FileWriteAll: %w", err)
 	}
 
 	if _, err := fout.Write(contents); err != nil {
@@ -312,6 +312,14 @@ func (me *File) Size() (int, error) {
 		return 0, fmt.Errorf("File.Size HFILE.GetFileSizeEx: %w", err)
 	}
 	return sz, nil
+}
+
+// Sets the file size to zero, deleting all its contents.
+func (me *File) Truncate() error {
+	if err := me.Resize(0); err != nil {
+		return fmt.Errorf("File.Truncate: %w", err)
+	}
+	return nil
 }
 
 // Implements [io.Writer].
