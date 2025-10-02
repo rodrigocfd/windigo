@@ -27,7 +27,7 @@ func EnumFiles(pathAndPattern string) ([]string, error) {
 	var wfd WIN32_FIND_DATA
 	hFind, found, err := FindFirstFile(pathAndPattern, &wfd)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("EnumFiles FindFirstFile: %w", err)
 	} else if !found {
 		return []string{}, nil // empty, not an error
 	}
@@ -43,7 +43,7 @@ func EnumFiles(pathAndPattern string) ([]string, error) {
 		}
 
 		if found, err = hFind.FindNextFile(&wfd); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("EnumFiles HFIND.FindNextFile: %w", err)
 		}
 	}
 
@@ -66,7 +66,7 @@ func EnumFilesDeep(path string) ([]string, error) {
 
 	foundFiles, err := EnumFiles(path + "\\*")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("EnumFilesDeep: %w", err)
 	}
 
 	files := make([]string, 0, len(foundFiles))
@@ -77,7 +77,7 @@ func EnumFilesDeep(path string) ([]string, error) {
 		} else {
 			nestedFiles, err := EnumFilesDeep(file)
 			if err != nil {
-				return nil, err
+				return nil, err // don't wrap to avoid recursion repetition
 			}
 			files = append(files, nestedFiles...)
 		}
