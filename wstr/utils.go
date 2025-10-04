@@ -66,18 +66,18 @@ func CountUtf16Len(s string) int {
 // Formats a number of bytes into KB, MB, GB, TB or PB.
 func FmtBytes(numBytes int) string {
 	switch {
-	case numBytes < 1024:
+	case numBytes < 1000:
 		return fmt.Sprintf("%d bytes", numBytes)
-	case numBytes < 1024*1024:
-		return fmt.Sprintf("%.2f KB", float64(numBytes)/1024)
-	case numBytes < 1024*1024*1024:
-		return fmt.Sprintf("%.2f MB", float64(numBytes)/1024/1024)
-	case numBytes < 1024*1024*1024*1024:
-		return fmt.Sprintf("%.2f GB", float64(numBytes)/1024/1024/1024)
-	case numBytes < 1024*1024*1024*1024*1024:
-		return fmt.Sprintf("%.2f TB", float64(numBytes)/1024/1024/1024/1024)
+	case numBytes < 1000*1000:
+		return fmt.Sprintf("%.2f KB", float64(numBytes)/1000)
+	case numBytes < 1000*1000*1000:
+		return fmt.Sprintf("%.2f MB", float64(numBytes)/1000/1000)
+	case numBytes < 1000*1000*1000*1000:
+		return fmt.Sprintf("%.2f GB", float64(numBytes)/1000/1000/1000)
+	case numBytes < 1000*1000*1000*1000*1000:
+		return fmt.Sprintf("%.2f TB", float64(numBytes)/1000/1000/1000/1000)
 	default:
-		return fmt.Sprintf("%.2f PB", float64(numBytes)/1024/1024/1024/1024/1024)
+		return fmt.Sprintf("%.2f PB", float64(numBytes)/1000/1000/1000/1000/1000)
 	}
 }
 
