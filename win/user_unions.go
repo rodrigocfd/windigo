@@ -33,7 +33,7 @@ const (
 	_ClassNameTag_str
 )
 
-// Creates a new [ClassName] with an empty value.
+// Constructs a new [ClassName] with an empty value.
 func ClassNameNone() ClassName {
 	return ClassName{
 		tag: _ClassNameTag_none,
@@ -45,7 +45,7 @@ func (me *ClassName) IsNone() bool {
 	return me.tag == _ClassNameTag_none
 }
 
-// Creates a new [ClassName] with an [ATOM] value.
+// Constructs a new [ClassName] with an [ATOM] value.
 func ClassNameAtom(atom ATOM) ClassName {
 	return ClassName{
 		tag:  _ClassNameTag_atom,
@@ -58,7 +58,7 @@ func (me *ClassName) Atom() (ATOM, bool) {
 	return me.atom, me.tag == _ClassNameTag_atom
 }
 
-// Creates a new [ClassName] with a string value.
+// Constructs a new [ClassName] with a string value.
 func ClassNameStr(s string) ClassName {
 	return ClassName{
 		tag: _ClassNameTag_str,
@@ -113,7 +113,7 @@ const (
 	_CursorTag_str
 )
 
-// Creates a new [CursorRes] with a [co.IDC] value.
+// Constructs a new [CursorRes] with a [co.IDC] value.
 func CursorResIdc(idc co.IDC) CursorRes {
 	return CursorRes{
 		tag:  _CursorTag_idc,
@@ -129,7 +129,7 @@ func (me *CursorRes) Idc() (co.IDC, bool) {
 	return co.IDC(0), false
 }
 
-// Creates a new [CursorRes] with an ID value.
+// Constructs a new [CursorRes] with an ID value.
 func CursorResId(id uint16) CursorRes {
 	return CursorRes{
 		tag:  _CursorTag_id,
@@ -145,7 +145,7 @@ func (me *CursorRes) Id() (uint16, bool) {
 	return 0, false
 }
 
-// Creates a new [CursorRes] with a string value.
+// Constructs a new [CursorRes] with a string value.
 func CursorResStr(s string) CursorRes {
 	return CursorRes{
 		tag: _CursorTag_str,
@@ -198,7 +198,7 @@ const (
 	_IconResTag_str
 )
 
-// Creates a new [IconRes] with a [co.IDI] value.
+// Constructs a new [IconRes] with a [co.IDI] value.
 func IconResIdi(idi co.IDI) IconRes {
 	return IconRes{
 		tag:  _IconResTag_idi,
@@ -214,7 +214,7 @@ func (me *IconRes) Idi() (co.IDI, bool) {
 	return co.IDI(0), false
 }
 
-// Creates a new [IconRes] with an ID value.
+// Constructs a new [IconRes] with an ID value.
 func IconResId(id uint16) IconRes {
 	return IconRes{
 		tag:  _IconResTag_id,
@@ -230,7 +230,7 @@ func (me *IconRes) Id() (uint16, bool) {
 	return 0, false
 }
 
-// Creates a new [IconRes] with a string value.
+// Constructs a new [IconRes] with a string value.
 func IconResStr(s string) IconRes {
 	return IconRes{
 		tag: _IconResTag_str,
@@ -279,7 +279,7 @@ const (
 	_ResIdTag_str
 )
 
-// Creates a new [ResId] with an integer value.
+// Constructs a new [ResId] with an integer value.
 func ResIdInt(id uint16) ResId {
 	return ResId{
 		tag: _ResIdTag_id,
@@ -292,7 +292,7 @@ func (me *ResId) Int() (uint16, bool) {
 	return me.id, me.tag == _ResIdTag_id
 }
 
-// Creates a new [ResId] with a string value.
+// Constructs a new [ResId] with a string value.
 func ResIdStr(s string) ResId {
 	return ResId{
 		tag: _ResIdTag_str,

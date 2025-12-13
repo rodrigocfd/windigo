@@ -33,7 +33,7 @@ const (
 	_TdcIconTag_tdIcon
 )
 
-// Creates a new [TdcIcon] with an empty value.
+// Constructs a new [TdcIcon] with an empty value.
 func TdcIconNone() TdcIcon {
 	return TdcIcon{
 		tag: _TdcIconTag_none,
@@ -45,7 +45,7 @@ func (me *TdcIcon) IsNone() bool {
 	return me.tag == _TdcIconTag_none
 }
 
-// Creates a new [TdcIcon] with a [HICON] value.
+// Constructs a new [TdcIcon] with a [HICON] value.
 func TdcIconHicon(hIcon HICON) TdcIcon {
 	return TdcIcon{
 		tag:  _TdcIconTag_hIcon,
@@ -61,7 +61,7 @@ func (me *TdcIcon) HIcon() (HICON, bool) {
 	return HICON(0), false
 }
 
-// Creates a new [TdcIcon] with an ID value.
+// Constructs a new [TdcIcon] with an ID value.
 func TdcIconId(id uint16) TdcIcon {
 	return TdcIcon{
 		tag:  _TdcIconTag_id,
@@ -77,7 +77,7 @@ func (me *TdcIcon) Id() (uint16, bool) {
 	return 0, false
 }
 
-// Creates a new [TdcIcon] with a [co.TDICON] value.
+// Constructs a new [TdcIcon] with a [co.TDICON] value.
 func TdcIconTdi(tdIcon co.TDICON) TdcIcon {
 	return TdcIcon{
 		tag:  _TdcIconTag_tdIcon,

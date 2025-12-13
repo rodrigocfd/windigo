@@ -30,7 +30,7 @@ func (me *RegVal) Type() co.REG {
 	return me.tag
 }
 
-// Creates a new [RegVal] with a [co.REG_NONE] value.
+// Constructs a new [RegVal] with a [co.REG_NONE] value.
 func RegValNone() RegVal {
 	return RegVal{
 		tag: co.REG_NONE,
@@ -42,7 +42,7 @@ func (me *RegVal) IsNone() bool {
 	return me.tag == co.REG_NONE
 }
 
-// Creates a new [RegVal] with a [co.REG_BINARY] value.
+// Constructs a new [RegVal] with a [co.REG_BINARY] value.
 //
 // Note that the data content is not copied, the slice pointer is simply stored.
 func RegValBinary(data []byte) RegVal {
@@ -60,7 +60,7 @@ func (me *RegVal) Binary() ([]byte, bool) {
 	return nil, false
 }
 
-// Creates a new [RegVal] with a [co.REG_EXPAND_SZ] value.
+// Constructs a new [RegVal] with a [co.REG_EXPAND_SZ] value.
 //
 // The environment variables can be expanded with [ExpandEnvironmentStrings].
 func RegValExpandSz(s string) RegVal {
@@ -84,7 +84,7 @@ func (me *RegVal) ExpandSz() (string, bool) {
 	return "", false
 }
 
-// Creates a new [RegVal] with a [co.REG_DWORD] value.
+// Constructs a new [RegVal] with a [co.REG_DWORD] value.
 //
 // Same as [co.REG_DWORD_LITTLE_ENDIAN].
 func RegValDword(n uint32) RegVal {
@@ -106,7 +106,7 @@ func (me *RegVal) Dword() (uint32, bool) {
 	return 0, false
 }
 
-// Creates a new [RegVal] with a [co.REG_DWORD_BIG_ENDIAN] value.
+// Constructs a new [RegVal] with a [co.REG_DWORD_BIG_ENDIAN] value.
 func RegValDwordBigEndian(n uint32) RegVal {
 	var data [4]byte
 	binary.BigEndian.PutUint32(data[:], n)
@@ -125,7 +125,7 @@ func (me *RegVal) DwordBigEndian() (uint32, bool) {
 	return 0, false
 }
 
-// Creates a new [RegVal] with a [co.REG_MULTI_SZ] value.
+// Constructs a new [RegVal] with a [co.REG_MULTI_SZ] value.
 func RegValMultiSz(strs ...string) RegVal {
 	buf := wstr.EncodeArrToSlice(strs...)
 	data := unsafe.Slice((*byte)(unsafe.Pointer(&buf[0])), len(buf)*2)
@@ -145,7 +145,7 @@ func (me *RegVal) MultiSz() ([]string, bool) {
 	return nil, false
 }
 
-// Creates a new [RegVal] with a [co.REG_QWORD] value.
+// Constructs a new [RegVal] with a [co.REG_QWORD] value.
 //
 // Same as [co.REG_QWORD_LITTLE_ENDIAN].
 func RegValQword(n uint64) RegVal {
@@ -167,7 +167,7 @@ func (me *RegVal) Qword() (uint64, bool) {
 	return 0, false
 }
 
-// Creates a new [RegVal] with a [co.REG_SZ] value.
+// Constructs a new [RegVal] with a [co.REG_SZ] value.
 func RegValSz(s string) RegVal {
 	str16, _ := syscall.UTF16FromString(s)
 	data := unsafe.Slice((*byte)(unsafe.Pointer(&str16[0])), len(str16)*2)
@@ -195,8 +195,8 @@ func (me *RegVal) Sz() (string, bool) {
 	return "", false
 }
 
-// Builds a [RegVal] from a data block, taking ownership of it. Performs a few
-// validations.
+// Constructs a [RegVal] from a data block, taking ownership of it. Performs a
+// few validations.
 func regValParse(data []byte, regType co.REG) (RegVal, error) {
 	isDword := regType == co.REG_DWORD || regType == co.REG_DWORD_BIG_ENDIAN
 	isQword := regType == co.REG_QWORD
