@@ -10,79 +10,99 @@ import (
 	"github.com/rodrigocfd/windigo/co"
 )
 
-// Returns all file and folder names on a given directory, filtered to the given
-// pattern, by calling [FindFirstFile], [HFIND.FindNextFile] and
-// [HFIND.FindClose].
+// Returns a new []string with all files and folders within searchPath.
 //
-// This function is not recursive; to also search nested directories, use
-// [EnumFilesDeep].
+// If fileExtension isn't empty, brings only the files and folders with this
+// extension.
+//
+// Does not search recursively. For a recursive search, use [PathEnumDeep].
+//
+// Calls:
+//   - [FindFirstFile]
+//   - [HFIND.FindNextFile]
+//   - [HFIND.FindClose]
 //
 // Example:
 //
-//	files, _ := win.EnumFiles("C:\\Temp\\*.txt")
-//	for _, file := files {
-//		println(file)
-//	}
-func EnumFiles(pathAndPattern string) ([]string, error) {
+//	paths := win.PathEnum("C:\\Temp", "")
+//	mp3s := win.PathEnum("C:\\Temp", "mp3")
+func PathEnum(searchPath, fileExtension string) ([]string, error) {
+	if strings.Contains(searchPath, "*") {
+		return nil, fmt.Errorf("invalid path: %s", searchPath)
+	} else if strings.Contains(fileExtension, "*") {
+		return nil, fmt.Errorf("invalid file extension: %s", fileExtension)
+	}
+	searchPath = strings.TrimSpace(searchPath)
+	searchPath = strings.TrimSuffix(searchPath, "\\")
+	basePath := searchPath
+	searchPath += "\\*"
+	fileExtension = strings.TrimSpace(fileExtension)
+	if fileExtension != "" {
+		searchPath += "." + fileExtension
+	}
+
 	var wfd WIN32_FIND_DATA
-	hFind, found, err := FindFirstFile(pathAndPattern, &wfd)
+	hFind, found, err := FindFirstFile(searchPath, &wfd)
 	if err != nil {
-		return nil, fmt.Errorf("EnumFiles FindFirstFile: %w", err)
+		return nil, fmt.Errorf("PathEnum FindFirstFile: %w", err)
 	} else if !found {
 		return []string{}, nil // empty, not an error
 	}
 	defer hFind.FindClose()
 
-	dirPath := PathGetPath(pathAndPattern) // path without file name
-	files := make([]string, 0)
-
+	files := make([]string, 0, 20) // arbitrary
 	for found {
 		fileNameFound := wfd.CFileName()
 		if fileNameFound != ".." && fileNameFound != "." {
-			files = append(files, dirPath+"\\"+fileNameFound)
+			files = append(files, basePath+"\\"+fileNameFound)
 		}
 
 		if found, err = hFind.FindNextFile(&wfd); err != nil {
-			return nil, fmt.Errorf("EnumFiles HFIND.FindNextFile: %w", err)
+			return nil, fmt.Errorf("PathEnum HFIND.FindNextFile: %w", err)
 		}
 	}
-
+	PathSort(files)
 	return files, nil
 }
 
-// Returns all files recursively on all folders, by calling [FindFirstFile],
-// [HFIND.FindNextFile] and [HFIND.FindClose].
+// Returns a new []string with all files within searchPath.
+//
+// If fileExtension isn't empty, brings only the files with this extension.
+//
+// Searches recursively. For a non-recursive search, use [PathEnum].
+//
+// Calls:
+//   - [FindFirstFile]
+//   - [HFIND.FindNextFile]
+//   - [HFIND.FindClose]
 //
 // Example:
 //
-//	files, _ := win.EnumFilesDeep("C:\\Temp")
-//	for _, file := files {
-//		println(file)
-//	}
-//
-// [FindFirstFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
-func EnumFilesDeep(path string) ([]string, error) {
-	path, _ = strings.CutSuffix(path, "\\")
-
-	foundFiles, err := EnumFiles(path + "\\*")
+//	paths := win.PathEnumDeep("C:\\Temp", "")
+//	mp3s := win.PathEnumDeep("C:\\Temp", "mp3")
+func PathEnumDeep(searchPath, fileExtension string) ([]string, error) {
+	foundFiles, err := PathEnum(searchPath, "") // if we pass extension, subfolders will be skipped
 	if err != nil {
-		return nil, fmt.Errorf("EnumFilesDeep: %w", err)
+		return nil, fmt.Errorf("PathEnumDeep: %w", err)
+	}
+	if len(foundFiles) == 0 {
+		return []string{}, nil
 	}
 
-	files := make([]string, 0, len(foundFiles))
-
-	for _, file := range foundFiles {
-		if !PathIsFolder(file) {
-			files = append(files, file)
+	files := make([]string, 0, len(foundFiles)+20) // arbitrary
+	for _, f := range foundFiles {
+		if !PathIsFolder(f) {
+			if fileExtension == "" || PathHasExtension(f, fileExtension) { // manual extension filter
+				files = append(files, f)
+			}
 		} else {
-			nestedFiles, err := EnumFilesDeep(file)
+			nestedFiles, err := PathEnumDeep(f, fileExtension) // recursively
 			if err != nil {
 				return nil, err // don't wrap to avoid recursion repetition
 			}
 			files = append(files, nestedFiles...)
 		}
 	}
-
 	return files, nil
 }
 

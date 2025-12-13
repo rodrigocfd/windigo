@@ -21,7 +21,7 @@ type HFIND HANDLE
 //
 // Returns true if a file was found.
 //
-// This is a low-level function, prefer using [EnumFiles] or [EnumFilesDeep].
+// This is a low-level function, prefer using [PathEnum] or [PathEnumDeep].
 //
 // ⚠️ You must defer [HFIND.FindClose].
 //
@@ -63,7 +63,7 @@ var _FindClose *syscall.Proc
 //
 // Returns true if a file was found.
 //
-// This is a low-level function, prefer using [EnumFiles] or [EnumFilesDeep].
+// This is a low-level function, prefer using [PathEnum] or [PathEnumDeep].
 //
 // [FindNextFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
 func (hFind HFIND) FindNextFile(findFileData *WIN32_FIND_DATA) (bool, error) {
