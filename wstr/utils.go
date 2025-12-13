@@ -144,16 +144,16 @@ func SubstrRunes(s string, start, length int) string {
 		panic(fmt.Sprintf("Values start (%d) and length (%d) cannot be negative.", start, length))
 	}
 
-	startStrIdx := 0
-	i := 0
-	for j := range s {
-		if i == start {
-			startStrIdx = j
+	startByteIdx := 0
+	runeIdx := 0
+	for byteIdx := range s {
+		if runeIdx == start {
+			startByteIdx = byteIdx
 		}
-		if i == start+length {
-			return s[startStrIdx:j]
+		if runeIdx == start+length {
+			return s[startByteIdx:byteIdx]
 		}
-		i++
+		runeIdx++
 	}
-	return s[startStrIdx:]
+	return s[startByteIdx:]
 }
