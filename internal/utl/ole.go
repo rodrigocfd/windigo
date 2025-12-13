@@ -60,7 +60,8 @@ func OleValidateObj(ppOut interface{}) interface{} {
 	return pTarget.Interface()
 }
 
-// Creates a COM object, assign it to the pointer, and sets is **IUnknownVt.
+// Constructs a new COM object, assigns it to the pointer, and sets its
+// **IUnknownVt.
 //
 // Returns the underlying pointed-to object.
 func OleCreateObj(ppOut interface{}, ppIUnknownVt unsafe.Pointer) interface{} {

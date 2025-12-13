@@ -194,7 +194,7 @@ func (g *GUID) String() string {
 		data4>>48, data4&0xffff_ffff_ffff)
 }
 
-// Creates a [GUID] from a const string representation.
+// Constructs a [GUID] from a const string representation.
 //
 // Panics if malformed.
 func GuidFrom[T ~string](strGuid T) GUID {

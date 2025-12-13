@@ -71,7 +71,7 @@ func FileWriteAll(filePath string, contents []byte) error {
 // High-level abstraction to [HFILE], providing several operations.
 //
 // If you simply need to read or write the contents, consider using the
-// [FileRead] and [FileWrite] functions.
+// [FileReadAll] and [FileWriteAll] functions.
 //
 // Implements the following standard io interfaces:
 //   - [io.ByteReader]
@@ -94,7 +94,7 @@ type File struct {
 	hFile HFILE
 }
 
-// Opens a file with [CreateFile], returning a new high-level File object.
+// Constructs a new [File] by calling [CreateFile].
 //
 // ⚠️ You must defer [File.Close].
 //
@@ -360,12 +360,17 @@ func (me *File) WriteString(s string) (int, error) {
 // High-level abstraction to [HFILEMAP], providing several operations.
 //
 // Note that memory-mapped files may present issues in x86 architectures; if so,
-// just use the ordinary File.
+// just use the ordinary [File].
 //
-// If you simply need to read or write the contents, consider using the
-// [FileRead] and [FileWrite] functions.
+// If you simply need to read or write the contents at once, consider using the
+// simpler [FileReadAll] and [FileWriteAll] functions.
 //
 // Created with [FileMapOpen].
+//
+// Example:
+//
+//	f, _ := win.FileMapOpen("C:\\Temp\\foo.txt", co.FOPEN_READ_EXISTING)
+//	defer f.Close()
 type FileMap struct {
 	file *File
 	hMap HFILEMAP
@@ -373,10 +378,11 @@ type FileMap struct {
 	sz   int
 }
 
-// Opens a memory-mapped file, returning a new high-level FileMap object.
+// Constructs a new [FileMap] by opening the file and mapping it into memory
+// with [HFILE.CreateFileMapping].
 //
 // Note that memory-mapped files may present issues in x86 architectures; if so,
-// just use the ordinary FileOpen.
+// just call the ordinary [FileOpen] to work with a non-memory-mapped [File].
 //
 // ⚠️ You must defer [FileMap.Close].
 //
@@ -457,7 +463,7 @@ func (me *FileMap) Close() error {
 
 // Returns a slice to the memory-mapped bytes.
 //
-// The FileMap object must remain open while the slice is being used.
+// The [FileMap] object must remain open while the slice is being used.
 func (me *FileMap) HotSlice() []byte {
 	return unsafe.Slice((*byte)(unsafe.Pointer(me.pMem)), me.sz)
 }

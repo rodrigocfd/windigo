@@ -138,12 +138,22 @@ func (nii *NOTIFYICONIDENTIFIER) SetCbSize() {
 
 // [PROPERTYKEY] struct.
 //
+// Constructible from a [co.PKEY] with [PropertykeyFrom].
+//
+// Example:
+//
+//	pkey := PropertykeyFrom(co.PKEY_ComputerName)
+//
 // [PROPERTYKEY]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ns-wtypes-propertykey
 type PROPERTYKEY struct {
 	data [20]byte // packed
 }
 
-// Creates a [PROPERTYKEY] from a string representation.
+// Constructs a [PROPERTYKEY] from a string representation.
+//
+// Example:
+//
+//	pkey := PropertykeyFrom(co.PKEY_ComputerName)
 func PropertykeyFrom(pkey co.PKEY) PROPERTYKEY {
 	fmtId := GuidFrom(string(pkey)[0:36])
 	pId, _ := strconv.ParseUint(string(pkey)[37:], 10, 32)

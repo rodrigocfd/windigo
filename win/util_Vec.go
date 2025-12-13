@@ -25,7 +25,7 @@ type Vec[T any] struct {
 	inUse int // Number of elements effectively being used.
 }
 
-// Creates a new, unallocated [Vec].
+// Constructs a new, unallocated [Vec].
 //
 // Do not store Go pointers in a Vec – this will make the GC believe they are no
 // more in use, thus collecting them.
@@ -43,7 +43,7 @@ func NewVec[T any]() Vec[T] {
 	}
 }
 
-// Creates a new [Vec] with preallocated memory, but zero elements.
+// Constructs a new [Vec] with preallocated memory, but zero elements.
 //
 // Do not store Go pointers in a Vec – this will make the GC believe they are no
 // more in use, thus collecting them.
@@ -62,7 +62,7 @@ func NewVecReserved[T any](numElems int) Vec[T] {
 	return me
 }
 
-// Creates a new [Vec] with numElems copies of elem.
+// Constructs a new [Vec] with numElems copies of elem.
 //
 // Do not store Go pointers in a Vec – this will make the GC believe they are no
 // more in use, thus collecting them.

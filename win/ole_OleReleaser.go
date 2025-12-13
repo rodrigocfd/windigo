@@ -21,8 +21,8 @@ type OleReleaser struct {
 	objs []OleResource
 }
 
-// Creates a new [OleReleaser] to store multiple [COM] resources, releasing them
-// all at once.
+// Constructs a new [OleReleaser] to store multiple [COM] resources, releasing
+// them all at once.
 //
 // Every function which returns a COM resource will require an [OleReleaser] to
 // manage the object's lifetime.

@@ -18,7 +18,7 @@ type DwmAttr struct {
 	rc  RECT
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_NCRENDERING_ENABLED] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_NCRENDERING_ENABLED] value.
 func DwmAttrNcRenderingEnabled(enabled bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_NCRENDERING_ENABLED,
@@ -34,7 +34,7 @@ func (me *DwmAttr) NcRenderingEnabled() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_NCRENDERING_POLICY] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_NCRENDERING_POLICY] value.
 func DwmAttrNcRenderingPolicy(policy co.DWMNCRP) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_NCRENDERING_POLICY,
@@ -50,7 +50,7 @@ func (me *DwmAttr) NcRenderingPolicy() (co.DWMNCRP, bool) {
 	return co.DWMNCRP(0), false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_TRANSITIONS_FORCEDISABLED] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_TRANSITIONS_FORCEDISABLED] value.
 func DwmAttrTransitionsForceDisabled(force bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_TRANSITIONS_FORCEDISABLED,
@@ -66,7 +66,7 @@ func (me *DwmAttr) TransitionsForceDisabled() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_ALLOW_NCPAINT] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_ALLOW_NCPAINT] value.
 func DwmAttrAllowNcPaint(allow bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_ALLOW_NCPAINT,
@@ -82,7 +82,7 @@ func (me *DwmAttr) AllowNcPaint() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_CAPTION_BUTTON_BOUNDS] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_CAPTION_BUTTON_BOUNDS] value.
 func DwmAttrCaptionButtonBounds(rc RECT) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_CAPTION_BUTTON_BOUNDS,
@@ -98,7 +98,7 @@ func (me *DwmAttr) CaptionButtonBounds() (RECT, bool) {
 	return RECT{}, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_NONCLIENT_RTL_LAYOUT] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_NONCLIENT_RTL_LAYOUT] value.
 func DwmAttrNonClientRtlLayout(ncRtl bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_NONCLIENT_RTL_LAYOUT,
@@ -114,7 +114,7 @@ func (me *DwmAttr) NonClientRtlLayout() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_FORCE_ICONIC_REPRESENTATION] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_FORCE_ICONIC_REPRESENTATION] value.
 func DwmAttrForceIconicRepresentation(force bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_FORCE_ICONIC_REPRESENTATION,
@@ -130,7 +130,7 @@ func (me *DwmAttr) ForceIconicRepresentation() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_FLIP3D_POLICY] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_FLIP3D_POLICY] value.
 func DwmAttrFlip3dPolicy(policy co.DWMFLIP3D) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_FLIP3D_POLICY,
@@ -146,7 +146,7 @@ func (me *DwmAttr) Flip3dPolicy() (co.DWMFLIP3D, bool) {
 	return co.DWMFLIP3D(0), false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_EXTENDED_FRAME_BOUNDS] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_EXTENDED_FRAME_BOUNDS] value.
 func DwmAttrExtendedFrameBounds(rc RECT) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_EXTENDED_FRAME_BOUNDS,
@@ -162,7 +162,7 @@ func (me *DwmAttr) ExtendedFrameBounds() (RECT, bool) {
 	return RECT{}, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_HAS_ICONIC_BITMAP] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_HAS_ICONIC_BITMAP] value.
 func DwmAttrHasIconicBitmap(has bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_HAS_ICONIC_BITMAP,
@@ -178,7 +178,7 @@ func (me *DwmAttr) HasIconicBitmap() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_DISALLOW_PEEK] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_DISALLOW_PEEK] value.
 func DwmAttrDisallowPeek(disallow bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_DISALLOW_PEEK,
@@ -194,7 +194,7 @@ func (me *DwmAttr) DisallowPeek() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_EXCLUDED_FROM_PEEK] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_EXCLUDED_FROM_PEEK] value.
 func DwmAttrExcludedFromPeek(excluded bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_EXCLUDED_FROM_PEEK,
@@ -210,7 +210,7 @@ func (me *DwmAttr) ExcludedFromPeek() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_CLOAK] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_CLOAK] value.
 func DwmAttrCloak(cloak bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_CLOAK,
@@ -226,7 +226,7 @@ func (me *DwmAttr) Cloak() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_CLOAKED] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_CLOAKED] value.
 func DwmAttrCloaked(cloaked co.DWM_CLOAKED) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_CLOAKED,
@@ -242,7 +242,7 @@ func (me *DwmAttr) Cloaked() (co.DWM_CLOAKED, bool) {
 	return co.DWM_CLOAKED(0), false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_FREEZE_REPRESENTATION] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_FREEZE_REPRESENTATION] value.
 func DwmAttrFreezeRepresentation(freeze bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_FREEZE_REPRESENTATION,
@@ -258,7 +258,7 @@ func (me *DwmAttr) FreezeRepresentation() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_PASSIVE_UPDATE_MODE] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_PASSIVE_UPDATE_MODE] value.
 func DwmAttrPassiveUpdateMode(passive bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_PASSIVE_UPDATE_MODE,
@@ -274,7 +274,7 @@ func (me *DwmAttr) PassiveUpdateMode() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_USE_HOSTBACKDROPBRUSH] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_USE_HOSTBACKDROPBRUSH] value.
 func DwmAttrUseHostBackdropBrush(use bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_USE_HOSTBACKDROPBRUSH,
@@ -290,7 +290,7 @@ func (me *DwmAttr) UseHostBackdropBrush() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_USE_IMMERSIVE_DARK_MODE] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_USE_IMMERSIVE_DARK_MODE] value.
 func DwmAttrUseImmersiveDarkMode(use bool) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_USE_IMMERSIVE_DARK_MODE,
@@ -306,7 +306,7 @@ func (me *DwmAttr) UseImmersiveDarkMode() (actualValue, ok bool) {
 	return false, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_WINDOW_CORNER_PREFERENCE] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_WINDOW_CORNER_PREFERENCE] value.
 func DwmAttrWindowCornerPreference(corner co.DWMWCP) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_WINDOW_CORNER_PREFERENCE,
@@ -322,7 +322,7 @@ func (me *DwmAttr) WindowCornerPreference() (co.DWMWCP, bool) {
 	return co.DWMWCP(0), false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_BORDER_COLOR] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_BORDER_COLOR] value.
 //
 // You may want to specify:
 //   - [COLORREF_DWMA_NONE]
@@ -346,7 +346,7 @@ func (me *DwmAttr) BorderColor() (COLORREF, bool) {
 	return COLORREF(0), false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_CAPTION_COLOR] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_CAPTION_COLOR] value.
 //
 // You may want to specify:
 //   - [COLORREF_DWMA_DEFAULT]
@@ -368,7 +368,7 @@ func (me *DwmAttr) CaptionColor() (COLORREF, bool) {
 	return COLORREF(0), false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_TEXT_COLOR] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_TEXT_COLOR] value.
 //
 // You may want to specify:
 //   - [COLORREF_DWMA_DEFAULT]
@@ -390,7 +390,7 @@ func (me *DwmAttr) TextColor() (COLORREF, bool) {
 	return COLORREF(0), false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS] value.
 func DwmAttrVisibleFrameBorderThickness(width int) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_VISIBLE_FRAME_BORDER_THICKNESS,
@@ -406,7 +406,7 @@ func (me *DwmAttr) VisibleFrameBorderThickness() (int, bool) {
 	return 0, false
 }
 
-// Constructs a [DwmAttr] with a [co.DWMWA_SYSTEMBACKDROP_TYPE] value.
+// Constructs a new [DwmAttr] with a [co.DWMWA_SYSTEMBACKDROP_TYPE] value.
 func DwmAttrSystemBackdropType(sb co.DWMSBT) DwmAttr {
 	return DwmAttr{
 		tag: co.DWMWA_SYSTEMBACKDROP_TYPE,

@@ -20,6 +20,9 @@ type HFILE HANDLE
 
 // [CreateFile] function.
 //
+// Unless you're doing something specific, consider using the high-level [File]
+// abstraction.
+//
 // ⚠️ You must defer [HFILE.CloseHandle].
 //
 // [CreateFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
@@ -79,6 +82,9 @@ func (hFile HFILE) GetFileSizeEx() (int, error) {
 var _GetFileSizeEx *syscall.Proc
 
 // [CreateFileMapping] function.
+//
+// Unless you're doing something specific, consider using the high-level
+// [FileMap] abstraction.
 //
 // Panics if maxSize is negative.
 //

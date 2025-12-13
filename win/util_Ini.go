@@ -40,7 +40,7 @@ type (
 	}
 )
 
-// Creates an [Ini] object by reading an .ini file, parsing its contents.
+// Constructs a new [Ini] object by reading an .ini file, parsing its contents.
 //
 // Example:
 //
