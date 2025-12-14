@@ -59,7 +59,7 @@ func NewHeader(parent Parent, opts *VarOptsHeader) *Header {
 //	var wndOwner ui.Parent // initialized somewhere
 //
 //	header := ui.NewHeaderDlg(
-//		wndOwner, ID_HEADER, ui.LAY_NONE_NONE)
+//		wndOwner, ID_HEADER, ui.LAY_HOLD_HOLD)
 func NewHeaderDlg(parent Parent, ctrlId uint16, layout LAY) *Header {
 	me := &Header{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -162,7 +162,7 @@ func (o *VarOptsHeader) CtrlId(id uint16) *VarOptsHeader { o.ctrlId = id; return
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsHeader) Layout(l LAY) *VarOptsHeader { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to

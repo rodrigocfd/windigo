@@ -59,7 +59,7 @@ func NewDateTimePicker(parent Parent, opts *VarOptsDateTimePicker) *DateTimePick
 //	var wndOwner ui.Parent // initialized somewhere
 //
 //	dtp := ui.NewDateTimePickerDlg(
-//		wndOwner, ID_DTP, ui.LAY_NONE_NONE)
+//		wndOwner, ID_DTP, ui.LAY_HOLD_HOLD)
 func NewDateTimePickerDlg(parent Parent, ctrlId uint16, layout LAY) *DateTimePicker {
 	me := &DateTimePicker{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -140,7 +140,7 @@ func (o *VarOptsDateTimePicker) CtrlId(id uint16) *VarOptsDateTimePicker { o.ctr
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsDateTimePicker) Layout(l LAY) *VarOptsDateTimePicker { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to

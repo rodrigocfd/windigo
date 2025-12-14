@@ -12,41 +12,41 @@ import (
 type LAY uint8
 
 const (
-	_LAYH_REPOS  LAY = 0b0000_0001
+	_LAYH_MOVE   LAY = 0b0000_0001
 	_LAYH_RESIZE LAY = 0b0000_0010
-	_LAYV_REPOS  LAY = 0b0000_0100
+	_LAYV_MOVE   LAY = 0b0000_0100
 	_LAYV_RESIZE LAY = 0b0000_1000
 
 	// When parent is resized, nothing happens.
-	LAY_NONE_NONE LAY = 0
+	LAY_HOLD_HOLD LAY = 0
 	// When parent resizes:
 	//	- horizontal: nothing happens;
 	//	- vertical: control moves anchored at bottom.
-	LAY_NONE_REPOS = _LAYV_REPOS
+	LAY_HOLD_MOVE = _LAYV_MOVE
 	// When parent resizes:
 	//	- horizontal: nothing happens;
 	//	- vertical: control is resized together.
-	LAY_NONE_RESIZE = _LAYV_RESIZE
+	LAY_HOLD_RESIZE = _LAYV_RESIZE
 	// When parent resizes:
 	//	- horizontal: control moves anchored at right;
 	//	- vertical: nothing happens.
-	LAY_REPOS_NONE = _LAYH_REPOS
+	LAY_MOVE_HOLD = _LAYH_MOVE
 	// When parent resizes:
 	//	- horizontal: control moves anchored at right;
 	//	- vertical: control moves anchored at bottom.
-	LAY_REPOS_REPOS = _LAYH_REPOS | _LAYV_REPOS
+	LAY_MOVE_MOVE = _LAYH_MOVE | _LAYV_MOVE
 	// When parent resizes:
 	//	- horizontal: control moves anchored at right;
 	//	- vertical: control is resized together.
-	LAY_REPOS_RESIZE = _LAYH_REPOS | _LAYV_RESIZE
+	LAY_MOVE_RESIZE = _LAYH_MOVE | _LAYV_RESIZE
 	// When parent resizes:
 	//	- horizontal: control is resized together;
 	//	- vertical: nothing happens.
-	LAY_RESIZE_NONE = _LAYH_RESIZE
+	LAY_RESIZE_HOLD = _LAYH_RESIZE
 	// When parent resizes:
 	//	- horizontal: control is resized together;
 	//	- vertical: control moves anchored at bottom.
-	LAY_RESIZE_REPOS = _LAYH_RESIZE | _LAYV_REPOS
+	LAY_RESIZE_MOVE = _LAYH_RESIZE | _LAYV_MOVE
 	// When parent resizes:
 	//	- horizontal: control is resized together;
 	//	- vertical: control is resized together.
@@ -77,7 +77,7 @@ func newLayout() _Layout {
 // Must be called after both the parent and the children were created, because
 // both HWNDs are used.
 func (me *_Layout) Add(parent Parent, hCtrl win.HWND, layout LAY) {
-	if layout == LAY_NONE_NONE {
+	if layout == LAY_HOLD_HOLD {
 		return // nothing to do, don't even bother adding the control
 	}
 
@@ -106,7 +106,7 @@ func (me *_Layout) Rearrange(parm WmSize) {
 
 		uFlags := co.SWP_NOZORDER
 		switch ctl.layout {
-		case LAY_REPOS_REPOS: // repos both horz and vert
+		case LAY_MOVE_MOVE: // repos both horz and vert
 			uFlags |= co.SWP_NOSIZE
 		case LAY_RESIZE_RESIZE: // resize both horz and vert
 			uFlags |= co.SWP_NOMOVE
@@ -115,12 +115,12 @@ func (me *_Layout) Rearrange(parm WmSize) {
 		szParent := parm.ClientAreaSize()
 
 		x := ctl.rcOrig.Left // keep original left pos
-		if (ctl.layout & _LAYH_REPOS) != 0 {
+		if (ctl.layout & _LAYH_MOVE) != 0 {
 			x = szParent.Cx - me.szOrig.Cx + ctl.rcOrig.Left
 		}
 
 		y := ctl.rcOrig.Top // keep original top pos
-		if (ctl.layout & _LAYV_REPOS) != 0 {
+		if (ctl.layout & _LAYV_MOVE) != 0 {
 			y = szParent.Cy - me.szOrig.Cy + ctl.rcOrig.Top
 		}
 

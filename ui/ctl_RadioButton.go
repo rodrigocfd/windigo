@@ -110,7 +110,7 @@ func (o *VarOptsRadioButton) CtrlId(id uint16) *VarOptsRadioButton { o.ctrlId = 
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsRadioButton) Layout(l LAY) *VarOptsRadioButton { o.layout = l; return o }
 
 // Text to be displayed, passed to [win.CreateWindowEx].

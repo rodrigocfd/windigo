@@ -112,7 +112,7 @@ func (o *VarOptsSysLink) CtrlId(id uint16) *VarOptsSysLink { o.ctrlId = id; retu
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsSysLink) Layout(l LAY) *VarOptsSysLink { o.layout = l; return o }
 
 // Text to be displayed, passed to [win.CreateWindowEx]. URLs are embedded using

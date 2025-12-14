@@ -66,7 +66,7 @@ func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar 
 //	var wndOwner ui.Parent // initialized somewhere
 //
 //	monthCal := ui.NewMonthCalendarDlg(
-//		wndOwner, ID_MCAL, ui.LAY_NONE_NONE)
+//		wndOwner, ID_MCAL, ui.LAY_HOLD_HOLD)
 func NewMonthCalendarDlg(parent Parent, ctrlId uint16, layout LAY) *MonthCalendar {
 	me := &MonthCalendar{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -136,7 +136,7 @@ func (o *VarOptsMonthCalendar) CtrlId(id uint16) *VarOptsMonthCalendar { o.ctrlI
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsMonthCalendar) Layout(l LAY) *VarOptsMonthCalendar { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to

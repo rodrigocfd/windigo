@@ -59,7 +59,7 @@ func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 //	var wndOwner ui.Parent // initialized somewhere
 //
 //	chk := ui.NewCheckBoxDlg(
-//		wndOwner, ID_CHK, ui.LAY_NONE_NONE)
+//		wndOwner, ID_CHK, ui.LAY_HOLD_HOLD)
 func NewCheckBoxDlg(parent Parent, ctrlId uint16, layout LAY) *CheckBox {
 	me := &CheckBox{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -202,7 +202,7 @@ func (o *VarOptsCheckBox) CtrlId(id uint16) *VarOptsCheckBox { o.ctrlId = id; re
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsCheckBox) Layout(l LAY) *VarOptsCheckBox { o.layout = l; return o }
 
 // Text to be displayed, passed to [win.CreateWindowEx].

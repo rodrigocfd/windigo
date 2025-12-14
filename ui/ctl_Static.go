@@ -103,7 +103,7 @@ func (o *VarOptsStatic) CtrlId(id uint16) *VarOptsStatic { o.ctrlId = id; return
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsStatic) Layout(l LAY) *VarOptsStatic { o.layout = l; return o }
 
 // Text to be displayed, passed to [win.CreateWindowEx].

@@ -69,7 +69,7 @@ func (o *VarOptsControlDlg) CtrlId(id uint16) *VarOptsControlDlg { o.ctrlId = id
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsControlDlg) Layout(l LAY) *VarOptsControlDlg { o.layout = l; return o }
 
 // Position coordinates within parent window client area.

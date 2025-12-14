@@ -55,7 +55,7 @@ func NewButton(parent Parent, opts *VarOptsButton) *Button {
 //	var wndOwner ui.Parent // initialized somewhere
 //
 //	btn := ui.NewButtonDlg(
-//		wndOwner, ID_BTN, ui.LAY_NONE_NONE)
+//		wndOwner, ID_BTN, ui.LAY_HOLD_HOLD)
 func NewButtonDlg(parent Parent, ctrlId uint16, layout LAY) *Button {
 	me := &Button{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -131,7 +131,7 @@ func (o *VarOptsButton) CtrlId(id uint16) *VarOptsButton { o.ctrlId = id; return
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsButton) Layout(l LAY) *VarOptsButton { o.layout = l; return o }
 
 // Text to be displayed, passed to [win.CreateWindowEx].

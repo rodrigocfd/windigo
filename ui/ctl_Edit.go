@@ -55,7 +55,7 @@ func NewEdit(parent Parent, opts *VarOptsEdit) *Edit {
 //	var wndOwner ui.Parent // initialized somewhere
 //
 //	txt := ui.NewEditDlg(
-//		wndOwner, ID_TXT, ui.LAY_NONE_NONE)
+//		wndOwner, ID_TXT, ui.LAY_HOLD_HOLD)
 func NewEditDlg(parent Parent, ctrlId uint16, layout LAY) *Edit {
 	me := &Edit{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -172,7 +172,7 @@ func (o *VarOptsEdit) CtrlId(id uint16) *VarOptsEdit { o.ctrlId = id; return o }
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsEdit) Layout(l LAY) *VarOptsEdit { o.layout = l; return o }
 
 // Text to be displayed, passed to [win.CreateWindowEx].

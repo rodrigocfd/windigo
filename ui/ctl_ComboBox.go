@@ -59,7 +59,7 @@ func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
 //	var wndOwner ui.Parent // initialized somewhere
 //
 //	cmb := ui.NewComboBoxDlg(
-//		wndOwner, ID_CMB, ui.LAY_NONE_NONE)
+//		wndOwner, ID_CMB, ui.LAY_HOLD_HOLD)
 func NewComboBoxDlg(parent Parent, ctrlId uint16, layout LAY) *ComboBox {
 	me := &ComboBox{
 		_BaseCtrl: newBaseCtrl(ctrlId),
@@ -121,7 +121,7 @@ func (o *VarOptsComboBox) CtrlId(id uint16) *VarOptsComboBox { o.ctrlId = id; re
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsComboBox) Layout(l LAY) *VarOptsComboBox { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to

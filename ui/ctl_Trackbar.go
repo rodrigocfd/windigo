@@ -172,7 +172,7 @@ func (o *VarOptsTrackbar) CtrlId(id uint16) *VarOptsTrackbar { o.ctrlId = id; re
 // Horizontal and vertical behavior for the control layout, when the parent
 // window is resized.
 //
-// Defaults to ui.LAY_NONE_NONE.
+// Defaults to ui.LAY_HOLD_HOLD.
 func (o *VarOptsTrackbar) Layout(l LAY) *VarOptsTrackbar { o.layout = l; return o }
 
 // Position coordinates within parent window client area, in pixels, passed to
