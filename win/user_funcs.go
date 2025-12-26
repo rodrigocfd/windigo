@@ -79,6 +79,21 @@ func BroadcastSystemMessage(
 
 var _BroadcastSystemMessageW *syscall.Proc
 
+// [CallNextHookEx] function.
+//
+// [CallNextHookEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-callnexthookex
+func CallNextHookEx(nCode int32, wParam WPARAM, lParam LPARAM) uintptr {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_CallNextHookEx, "CallNextHookEx"),
+		0,
+		uintptr(nCode),
+		uintptr(wParam),
+		uintptr(lParam))
+	return ret
+}
+
+var _CallNextHookEx *syscall.Proc
+
 // [CreateIconFromResourceEx] function for cursor.
 //
 // This function creates [HCURSOR] only. The [HICON] variation is
