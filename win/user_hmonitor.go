@@ -8,7 +8,6 @@ import (
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
 // Handle to a [display monitor].
@@ -22,7 +21,7 @@ type HMONITOR HANDLE
 func MonitorFromPoint(pt POINT, flags co.MONITOR) HMONITOR {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.USER32, &_MonitorFromPoint, "MonitorFromPoint"),
-		uintptr(utl.Make64(uint32(pt.X), uint32(pt.Y))),
+		pt.serializeUint64(),
 		uintptr(flags))
 	return HMONITOR(ret)
 }

@@ -550,6 +550,11 @@ type POINT struct {
 	X, Y int32
 }
 
+// Serializes the POINT into uint64, then casts to uintptr.
+func (p *POINT) serializeUint64() uintptr {
+	return uintptr(utl.Make64(uint32(p.X), uint32(p.Y)))
+}
+
 // [POWERBROADCAST_SETTING] struct.
 //
 // [POWERBROADCAST_SETTING]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-powerbroadcast_setting

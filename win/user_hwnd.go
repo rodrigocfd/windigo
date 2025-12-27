@@ -143,9 +143,10 @@ var _GetShellWindow *syscall.Proc
 // [WindowFromPhysicalPoint] function.
 //
 // [WindowFromPhysicalPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-windowfromphysicalpoint
-func WindowFromPhysicalPoint() HWND {
+func WindowFromPhysicalPoint(pt POINT) HWND {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_WindowFromPhysicalPoint, "WindowFromPhysicalPoint"))
+		dll.Load(dll.USER32, &_WindowFromPhysicalPoint, "WindowFromPhysicalPoint"),
+		pt.serializeUint64())
 	return HWND(ret)
 }
 
@@ -154,9 +155,10 @@ var _WindowFromPhysicalPoint *syscall.Proc
 // [WindowFromPoint] function.
 //
 // [WindowFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-windowfrompoint
-func WindowFromPoint() HWND {
+func WindowFromPoint(pt POINT) HWND {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_WindowFromPoint, "WindowFromPoint"))
+		dll.Load(dll.USER32, &_WindowFromPoint, "WindowFromPoint"),
+		pt.serializeUint64())
 	return HWND(ret)
 }
 
@@ -223,8 +225,7 @@ func (hWnd HWND) ChildWindowFromPoint(pt POINT) (HWND, bool) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.USER32, &_ChildWindowFromPoint, "ChildWindowFromPoint"),
 		uintptr(hWnd),
-		uintptr(pt.X),
-		uintptr(pt.Y))
+		pt.serializeUint64())
 	if ret == 0 {
 		return HWND(0), false
 	}
