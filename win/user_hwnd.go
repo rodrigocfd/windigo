@@ -343,6 +343,19 @@ func (hWnd HWND) DestroyWindow() error {
 
 var _DestroyWindow *syscall.Proc
 
+// [DragDetect] function.
+//
+// [DragDetect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dragdetect
+func (hWnd HWND) DragDetect(pt POINT) bool {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_DragDetect, "DragDetect"),
+		uintptr(hWnd),
+		pt.serializeUint64())
+	return ret != 0
+}
+
+var _DragDetect *syscall.Proc
+
 // [DrawMenuBar] function.
 //
 // [DrawMenuBar]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawmenubar
@@ -974,6 +987,19 @@ func (hWnd HWND) PostMessage(msg co.WM, wParam WPARAM, lParam LPARAM) error {
 }
 
 var _PostMessageW *syscall.Proc
+
+// [RealChildWindowFromPoint] function.
+//
+// [RealChildWindowFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-realchildwindowfrompoint
+func (hWnd HWND) RealChildWindowFromPoint(ptParentClientCoords POINT) HWND {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_RealChildWindowFromPoint, "RealChildWindowFromPoint"),
+		uintptr(hWnd),
+		ptParentClientCoords.serializeUint64())
+	return HWND(ret)
+}
+
+var _RealChildWindowFromPoint *syscall.Proc
 
 // [RedrawWindow] function.
 //

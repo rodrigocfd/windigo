@@ -698,6 +698,19 @@ func PostThreadMessage(idThread uint32, msg co.WM, wParam WPARAM, lParam LPARAM)
 
 var _PostThreadMessageW *syscall.Proc
 
+// [PtInRect] function.
+//
+// [PtInRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-ptinrect
+func PtInRect(rc RECT, pt POINT) bool {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_PtInRect, "PtInRect"),
+		uintptr(unsafe.Pointer(&rc)),
+		pt.serializeUint64())
+	return ret != 0
+}
+
+var _PtInRect *syscall.Proc
+
 // [RegisterClassEx] function.
 //
 // [RegisterClassEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassexw
