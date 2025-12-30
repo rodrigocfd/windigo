@@ -24,18 +24,18 @@ type HTHEME HANDLE
 // [CloseThemeData]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-closethemedata
 func (hTheme HTHEME) CloseThemeData() {
 	syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_CloseThemeData, "CloseThemeData"),
+		dll.Load(dll.UXTHEME, &_uxtheme_CloseThemeData, "CloseThemeData"),
 		uintptr(hTheme))
 }
 
-var _CloseThemeData *syscall.Proc
+var _uxtheme_CloseThemeData *syscall.Proc
 
 // [DrawThemeBackground] function.
 //
 // [DrawThemeBackground]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-drawthemebackground
 func (hTheme HTHEME) DrawThemeBackground(hdc HDC, partStateId co.VS, rc *RECT, clipRc *RECT) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_DrawThemeBackground, "DrawThemeBackground"),
+		dll.Load(dll.UXTHEME, &_uxtheme_DrawThemeBackground, "DrawThemeBackground"),
 		uintptr(hTheme),
 		uintptr(hdc),
 		uintptr(partStateId.Part()),
@@ -45,7 +45,7 @@ func (hTheme HTHEME) DrawThemeBackground(hdc HDC, partStateId co.VS, rc *RECT, c
 	return utl.ErrorAsHResult(ret)
 }
 
-var _DrawThemeBackground *syscall.Proc
+var _uxtheme_DrawThemeBackground *syscall.Proc
 
 // [GetThemeColor] function.
 //
@@ -53,7 +53,7 @@ var _DrawThemeBackground *syscall.Proc
 func (hTheme HTHEME) GetThemeColor(partStateId co.VS, propId co.TMT) (COLORREF, error) {
 	var color COLORREF
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_GetThemeColor, "GetThemeColor"),
+		dll.Load(dll.UXTHEME, &_uxtheme_GetThemeColor, "GetThemeColor"),
 		uintptr(hTheme),
 		uintptr(partStateId.Part()),
 		uintptr(partStateId.State()),
@@ -65,7 +65,7 @@ func (hTheme HTHEME) GetThemeColor(partStateId co.VS, propId co.TMT) (COLORREF, 
 	return color, nil
 }
 
-var _GetThemeColor *syscall.Proc
+var _uxtheme_GetThemeColor *syscall.Proc
 
 // [GetThemeInt] function.
 //
@@ -73,7 +73,7 @@ var _GetThemeColor *syscall.Proc
 func (hTheme HTHEME) GetThemeInt(partStateId co.VS, propId co.TMT) (int, error) {
 	var intVal int32
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_GetThemeInt, "GetThemeInt"),
+		dll.Load(dll.UXTHEME, &_uxtheme_GetThemeInt, "GetThemeInt"),
 		uintptr(hTheme),
 		uintptr(partStateId.Part()),
 		uintptr(partStateId.State()),
@@ -85,7 +85,7 @@ func (hTheme HTHEME) GetThemeInt(partStateId co.VS, propId co.TMT) (int, error) 
 	return int(intVal), nil
 }
 
-var _GetThemeInt *syscall.Proc
+var _uxtheme_GetThemeInt *syscall.Proc
 
 // [GetThemeMetric] function.
 //
@@ -93,7 +93,7 @@ var _GetThemeInt *syscall.Proc
 func (hTheme HTHEME) GetThemeMetric(hdc HDC, partStateId co.VS, propId co.TMT) (int, error) {
 	var intVal int32
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_GetThemeMetric, "GetThemeMetric"),
+		dll.Load(dll.UXTHEME, &_uxtheme_GetThemeMetric, "GetThemeMetric"),
 		uintptr(hTheme),
 		uintptr(hdc),
 		uintptr(partStateId.Part()),
@@ -106,7 +106,7 @@ func (hTheme HTHEME) GetThemeMetric(hdc HDC, partStateId co.VS, propId co.TMT) (
 	return int(intVal), nil
 }
 
-var _GetThemeMetric *syscall.Proc
+var _uxtheme_GetThemeMetric *syscall.Proc
 
 // [GetThemePosition] function.
 //
@@ -114,7 +114,7 @@ var _GetThemeMetric *syscall.Proc
 func (hTheme HTHEME) GetThemePosition(partStateId co.VS, propId co.TMT) (POINT, error) {
 	var pt POINT
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_GetThemePosition, "GetThemePosition"),
+		dll.Load(dll.UXTHEME, &_uxtheme_GetThemePosition, "GetThemePosition"),
 		uintptr(hTheme),
 		uintptr(partStateId.Part()),
 		uintptr(partStateId.State()),
@@ -126,7 +126,7 @@ func (hTheme HTHEME) GetThemePosition(partStateId co.VS, propId co.TMT) (POINT, 
 	return pt, nil
 }
 
-var _GetThemePosition *syscall.Proc
+var _uxtheme_GetThemePosition *syscall.Proc
 
 // [GetThemePropertyOrigin] function.
 //
@@ -134,7 +134,7 @@ var _GetThemePosition *syscall.Proc
 func (hTheme HTHEME) GetThemePropertyOrigin(partStateId co.VS, propId co.TMT) (co.PROPERTYORIGIN, error) {
 	var origin co.PROPERTYORIGIN
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_GetThemePropertyOrigin, "GetThemePropertyOrigin"),
+		dll.Load(dll.UXTHEME, &_uxtheme_GetThemePropertyOrigin, "GetThemePropertyOrigin"),
 		uintptr(hTheme),
 		uintptr(partStateId.Part()),
 		uintptr(partStateId.State()),
@@ -146,7 +146,7 @@ func (hTheme HTHEME) GetThemePropertyOrigin(partStateId co.VS, propId co.TMT) (c
 	return origin, nil
 }
 
-var _GetThemePropertyOrigin *syscall.Proc
+var _uxtheme_GetThemePropertyOrigin *syscall.Proc
 
 // [GetThemeRect] function.
 //
@@ -154,7 +154,7 @@ var _GetThemePropertyOrigin *syscall.Proc
 func (hTheme HTHEME) GetThemeRect(partStateId co.VS, propId co.TMT) (RECT, error) {
 	var rc RECT
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_GetThemeRect, "GetThemeRect"),
+		dll.Load(dll.UXTHEME, &_uxtheme_GetThemeRect, "GetThemeRect"),
 		uintptr(hTheme),
 		uintptr(partStateId.Part()),
 		uintptr(partStateId.State()),
@@ -166,7 +166,7 @@ func (hTheme HTHEME) GetThemeRect(partStateId co.VS, propId co.TMT) (RECT, error
 	return rc, nil
 }
 
-var _GetThemeRect *syscall.Proc
+var _uxtheme_GetThemeRect *syscall.Proc
 
 // [GetThemeString] function.
 //
@@ -176,7 +176,7 @@ func (hTheme HTHEME) GetThemeString(partStateId co.VS, propId co.TMT) (string, e
 	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_GetThemeString, "GetThemeString"),
+		dll.Load(dll.UXTHEME, &_uxtheme_GetThemeString, "GetThemeString"),
 		uintptr(hTheme),
 		uintptr(partStateId.Part()),
 		uintptr(partStateId.State()),
@@ -189,7 +189,7 @@ func (hTheme HTHEME) GetThemeString(partStateId co.VS, propId co.TMT) (string, e
 	return wBuf.String(), nil
 }
 
-var _GetThemeString *syscall.Proc
+var _uxtheme_GetThemeString *syscall.Proc
 
 // [GetThemeSysColorBrush] function.
 //
@@ -198,7 +198,7 @@ var _GetThemeString *syscall.Proc
 // [GetThemeSysColorBrush]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-getthemesyscolorbrush
 func (hTheme HTHEME) GetThemeSysColorBrush(colorId co.TMT) (HBRUSH, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_GetThemeSysColorBrush, "GetThemeSysColorBrush"),
+		dll.Load(dll.UXTHEME, &_uxtheme_GetThemeSysColorBrush, "GetThemeSysColorBrush"),
 		uintptr(hTheme),
 		uintptr(colorId))
 	if hr := co.HRESULT(ret); ret == 0 && hr != co.HRESULT_S_OK {
@@ -207,7 +207,7 @@ func (hTheme HTHEME) GetThemeSysColorBrush(colorId co.TMT) (HBRUSH, error) {
 	return HBRUSH(ret), nil
 }
 
-var _GetThemeSysColorBrush *syscall.Proc
+var _uxtheme_GetThemeSysColorBrush *syscall.Proc
 
 // [GetThemeSysFont] function.
 //
@@ -215,7 +215,7 @@ var _GetThemeSysColorBrush *syscall.Proc
 func (hTheme HTHEME) GetThemeSysFont(fontId co.TMT) (LOGFONT, error) {
 	var lf LOGFONT
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_GetThemeSysFont, "GetThemeSysFont"),
+		dll.Load(dll.UXTHEME, &_uxtheme_GetThemeSysFont, "GetThemeSysFont"),
 		uintptr(hTheme),
 		uintptr(fontId),
 		uintptr(unsafe.Pointer(&lf)))
@@ -225,7 +225,7 @@ func (hTheme HTHEME) GetThemeSysFont(fontId co.TMT) (LOGFONT, error) {
 	return lf, nil
 }
 
-var _GetThemeSysFont *syscall.Proc
+var _uxtheme_GetThemeSysFont *syscall.Proc
 
 // [GetThemeTextMetrics] function.
 //
@@ -233,7 +233,7 @@ var _GetThemeSysFont *syscall.Proc
 func (hTheme HTHEME) GetThemeTextMetrics(hdc HDC, partStateId co.VS) (TEXTMETRIC, error) {
 	var tm TEXTMETRIC
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_GetThemeTextMetrics, "GetThemeTextMetrics"),
+		dll.Load(dll.UXTHEME, &_uxtheme_GetThemeTextMetrics, "GetThemeTextMetrics"),
 		uintptr(hTheme),
 		uintptr(hdc),
 		uintptr(partStateId.Part()),
@@ -245,32 +245,32 @@ func (hTheme HTHEME) GetThemeTextMetrics(hdc HDC, partStateId co.VS) (TEXTMETRIC
 	return tm, nil
 }
 
-var _GetThemeTextMetrics *syscall.Proc
+var _uxtheme_GetThemeTextMetrics *syscall.Proc
 
 // [IsThemeBackgroundPartiallyTransparent] function.
 //
 // [IsThemeBackgroundPartiallyTransparent]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemebackgroundpartiallytransparent
 func (hTheme HTHEME) IsThemeBackgroundPartiallyTransparent(partStateId co.VS) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_IsThemeBackgroundPartiallyTransparent, "IsThemeBackgroundPartiallyTransparent"),
+		dll.Load(dll.UXTHEME, &_uxtheme_IsThemeBackgroundPartiallyTransparent, "IsThemeBackgroundPartiallyTransparent"),
 		uintptr(hTheme),
 		uintptr(partStateId.Part()),
 		uintptr(partStateId.State()))
 	return ret != 0
 }
 
-var _IsThemeBackgroundPartiallyTransparent *syscall.Proc
+var _uxtheme_IsThemeBackgroundPartiallyTransparent *syscall.Proc
 
 // [IsThemePartDefined] function.
 //
 // [IsThemePartDefined]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemepartdefined
 func (hTheme HTHEME) IsThemePartDefined(partStateId co.VS) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_IsThemePartDefined, "IsThemePartDefined"),
+		dll.Load(dll.UXTHEME, &_uxtheme_IsThemePartDefined, "IsThemePartDefined"),
 		uintptr(hTheme),
 		uintptr(partStateId.Part()),
 		uintptr(partStateId.State()))
 	return ret != 0
 }
 
-var _IsThemePartDefined *syscall.Proc
+var _uxtheme_IsThemePartDefined *syscall.Proc

@@ -14,7 +14,7 @@ import (
 // [GetSysColorBrush]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolorbrush
 func GetSysColorBrush(index co.COLOR) (HBRUSH, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetSysColorBrush, "GetSysColorBrush"),
+		dll.Load(dll.USER32, &_user_GetSysColorBrush, "GetSysColorBrush"),
 		uintptr(index))
 	if ret == 0 {
 		return HBRUSH(0), co.ERROR_INVALID_PARAMETER
@@ -22,4 +22,4 @@ func GetSysColorBrush(index co.COLOR) (HBRUSH, error) {
 	return HBRUSH(ret), nil
 }
 
-var _GetSysColorBrush *syscall.Proc
+var _user_GetSysColorBrush *syscall.Proc

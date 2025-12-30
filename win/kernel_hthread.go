@@ -20,11 +20,11 @@ type HTHREAD HANDLE
 // [GetCurrentThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthread
 func GetCurrentThread() HTHREAD {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetCurrentThread, "GetCurrentThread"))
+		dll.Load(dll.KERNEL32, &_kernel_GetCurrentThread, "GetCurrentThread"))
 	return HTHREAD(ret)
 }
 
-var _GetCurrentThread *syscall.Proc
+var _kernel_GetCurrentThread *syscall.Proc
 
 // [CloseHandle] function.
 //
@@ -39,7 +39,7 @@ func (hThread HTHREAD) CloseHandle() error {
 func (hThread HTHREAD) GetExitCodeThread() (uint32, error) {
 	var exitCode uint32
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetExitCodeThread, "GetExitCodeThread"),
+		dll.Load(dll.KERNEL32, &_kernel_GetExitCodeThread, "GetExitCodeThread"),
 		uintptr(hThread),
 		uintptr(unsafe.Pointer(&exitCode)))
 	if ret == 0 {
@@ -48,14 +48,14 @@ func (hThread HTHREAD) GetExitCodeThread() (uint32, error) {
 	return exitCode, nil
 }
 
-var _GetExitCodeThread *syscall.Proc
+var _kernel_GetExitCodeThread *syscall.Proc
 
 // [GetProcessIdOfThread] function.
 //
 // [GetProcessIdOfThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessidofthread
 func (hThread HTHREAD) GetProcessIdOfThread() (uint32, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetProcessIdOfThread, "GetProcessIdOfThread"),
+		dll.Load(dll.KERNEL32, &_kernel_GetProcessIdOfThread, "GetProcessIdOfThread"),
 		uintptr(hThread))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -63,14 +63,14 @@ func (hThread HTHREAD) GetProcessIdOfThread() (uint32, error) {
 	return uint32(ret), nil
 }
 
-var _GetProcessIdOfThread *syscall.Proc
+var _kernel_GetProcessIdOfThread *syscall.Proc
 
 // [GetThreadId] function.
 //
 // [GetThreadId]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadid
 func (hThread HTHREAD) GetThreadId() (uint32, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetThreadId, "GetThreadId"),
+		dll.Load(dll.KERNEL32, &_kernel_GetThreadId, "GetThreadId"),
 		uintptr(hThread))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -78,7 +78,7 @@ func (hThread HTHREAD) GetThreadId() (uint32, error) {
 	return uint32(ret), nil
 }
 
-var _GetThreadId *syscall.Proc
+var _kernel_GetThreadId *syscall.Proc
 
 // [GetThreadIdealProcessorEx] function.
 //
@@ -86,7 +86,7 @@ var _GetThreadId *syscall.Proc
 func (hThread HTHREAD) GetThreadIdealProcessorEx() (PROCESSOR_NUMBER, error) {
 	var pi PROCESSOR_NUMBER
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetThreadIdealProcessorEx, "GetThreadIdealProcessorEx"),
+		dll.Load(dll.KERNEL32, &_kernel_GetThreadIdealProcessorEx, "GetThreadIdealProcessorEx"),
 		uintptr(hThread),
 		uintptr(unsafe.Pointer(&pi)))
 	if ret == 0 {
@@ -95,7 +95,7 @@ func (hThread HTHREAD) GetThreadIdealProcessorEx() (PROCESSOR_NUMBER, error) {
 	return pi, nil
 }
 
-var _GetThreadIdealProcessorEx *syscall.Proc
+var _kernel_GetThreadIdealProcessorEx *syscall.Proc
 
 // [GetThreadIOPendingFlag] function.
 //
@@ -103,7 +103,7 @@ var _GetThreadIdealProcessorEx *syscall.Proc
 func (hThread HTHREAD) GetThreadIOPendingFlag() (bool, error) {
 	var bVal int32 // BOOL
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetThreadIOPendingFlag, "GetThreadIOPendingFlag"),
+		dll.Load(dll.KERNEL32, &_kernel_GetThreadIOPendingFlag, "GetThreadIOPendingFlag"),
 		uintptr(hThread),
 		uintptr(unsafe.Pointer(&bVal)))
 	if ret == 0 {
@@ -112,14 +112,14 @@ func (hThread HTHREAD) GetThreadIOPendingFlag() (bool, error) {
 	return bVal != 0, nil
 }
 
-var _GetThreadIOPendingFlag *syscall.Proc
+var _kernel_GetThreadIOPendingFlag *syscall.Proc
 
 // [GetThreadPriority] function.
 //
 // [GetThreadPriority]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadpriority
 func (hThread HTHREAD) GetThreadPriority() (co.THREAD_PRIORITY, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetThreadPriority, "GetThreadPriority"),
+		dll.Load(dll.KERNEL32, &_kernel_GetThreadPriority, "GetThreadPriority"),
 		uintptr(hThread))
 	if ret == utl.THREAD_PRIORITY_ERROR_RETURN {
 		return co.THREAD_PRIORITY(0), co.ERROR(err)
@@ -127,7 +127,7 @@ func (hThread HTHREAD) GetThreadPriority() (co.THREAD_PRIORITY, error) {
 	return co.THREAD_PRIORITY(ret), nil
 }
 
-var _GetThreadPriority *syscall.Proc
+var _kernel_GetThreadPriority *syscall.Proc
 
 // [GetThreadPriorityBoost] function.
 //
@@ -135,7 +135,7 @@ var _GetThreadPriority *syscall.Proc
 func (hThread HTHREAD) GetThreadPriorityBoost() (bool, error) {
 	var bVal int32 // BOOL
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetThreadPriorityBoost, "GetThreadPriorityBoost"),
+		dll.Load(dll.KERNEL32, &_kernel_GetThreadPriorityBoost, "GetThreadPriorityBoost"),
 		uintptr(hThread),
 		uintptr(unsafe.Pointer(&bVal)))
 	if ret == 0 {
@@ -144,7 +144,7 @@ func (hThread HTHREAD) GetThreadPriorityBoost() (bool, error) {
 	return bVal != 0, nil
 }
 
-var _GetThreadPriorityBoost *syscall.Proc
+var _kernel_GetThreadPriorityBoost *syscall.Proc
 
 // [GetThreadTimes] function.
 //
@@ -156,7 +156,7 @@ func (hThread HTHREAD) GetThreadTimes() (HthreadTimes, error) {
 	var ftUser FILETIME
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetThreadTimes, "GetThreadTimes"),
+		dll.Load(dll.KERNEL32, &_kernel_GetThreadTimes, "GetThreadTimes"),
 		uintptr(hThread),
 		uintptr(unsafe.Pointer(&ftCreation)),
 		uintptr(unsafe.Pointer(&ftExit)),
@@ -174,7 +174,7 @@ func (hThread HTHREAD) GetThreadTimes() (HthreadTimes, error) {
 	}, nil
 }
 
-var _GetThreadTimes *syscall.Proc
+var _kernel_GetThreadTimes *syscall.Proc
 
 // Returned by [HTHREAD.GetThreadTimes].
 type HthreadTimes struct {
@@ -189,7 +189,7 @@ type HthreadTimes struct {
 // [ResumeThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-resumethread
 func (hThread HTHREAD) ResumeThread() (uint32, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_ResumeThread, "ResumeThread"),
+		dll.Load(dll.KERNEL32, &_kernel_ResumeThread, "ResumeThread"),
 		uintptr(hThread))
 	if int32(ret) == -1 {
 		return 0, co.ERROR(err)
@@ -197,27 +197,27 @@ func (hThread HTHREAD) ResumeThread() (uint32, error) {
 	return uint32(ret), nil
 }
 
-var _ResumeThread *syscall.Proc
+var _kernel_ResumeThread *syscall.Proc
 
 // [TerminateThread] function.
 //
 // [TerminateThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread
 func (hThread HTHREAD) TerminateThread(exitCode uint32) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_TerminateThread, "TerminateThread"),
+		dll.Load(dll.KERNEL32, &_kernel_TerminateThread, "TerminateThread"),
 		uintptr(hThread),
 		uintptr(exitCode))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _TerminateThread *syscall.Proc
+var _kernel_TerminateThread *syscall.Proc
 
 // [SuspendThread] function.
 //
 // [SuspendThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-suspendthread
 func (hThread HTHREAD) SuspendThread() (uint32, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_SuspendThread, "SuspendThread"),
+		dll.Load(dll.KERNEL32, &_kernel_SuspendThread, "SuspendThread"),
 		uintptr(hThread))
 	if int32(ret) == -1 {
 		return 0, co.ERROR(err)
@@ -225,7 +225,7 @@ func (hThread HTHREAD) SuspendThread() (uint32, error) {
 	return uint32(ret), nil
 }
 
-var _SuspendThread *syscall.Proc
+var _kernel_SuspendThread *syscall.Proc
 
 // [WaitForSingleObject] function.
 //
@@ -237,7 +237,7 @@ var _SuspendThread *syscall.Proc
 func (hThread HTHREAD) WaitForSingleObject(milliseconds int) (co.WAIT, error) {
 	utl.PanicNeg(milliseconds)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_WaitForSingleObject, "WaitForSingleObject"),
+		dll.Load(dll.KERNEL32, &_kernel_WaitForSingleObject, "WaitForSingleObject"),
 		uintptr(hThread),
 		uintptr(uint32(milliseconds)))
 	if co.WAIT(ret) == co.WAIT_FAILED {
@@ -246,7 +246,7 @@ func (hThread HTHREAD) WaitForSingleObject(milliseconds int) (co.WAIT, error) {
 	return co.WAIT(ret), nil
 }
 
-var _WaitForSingleObject *syscall.Proc
+var _kernel_WaitForSingleObject *syscall.Proc
 
 // [HTHREAD.WaitForSingleObject] function with INFINITE value.
 func (hThread HTHREAD) WaitForSingleObjectInfinite() (co.WAIT, error) {

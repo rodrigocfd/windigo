@@ -14,7 +14,7 @@ import (
 // [GetClassLongPtr]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclasslongptrw
 func (hWnd HWND) GetClassLongPtr(index co.GCL) (uintptr, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetClassLongPtrW, "GetClassLongPtrW"),
+		dll.Load(dll.USER32, &_user_GetClassLongPtrW, "GetClassLongPtrW"),
 		uintptr(hWnd),
 		uintptr(index))
 	if ret == 0 {
@@ -23,14 +23,14 @@ func (hWnd HWND) GetClassLongPtr(index co.GCL) (uintptr, error) {
 	return ret, nil
 }
 
-var _GetClassLongPtrW *syscall.Proc
+var _user_GetClassLongPtrW *syscall.Proc
 
 // [GetWindowLongPtr] function.
 //
 // [GetWindowLongPtr]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowlongptrw
 func (hWnd HWND) GetWindowLongPtr(index co.GWLP) (uintptr, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetWindowLongPtrW, "GetWindowLongPtrW"),
+		dll.Load(dll.USER32, &_user_GetWindowLongPtrW, "GetWindowLongPtrW"),
 		uintptr(hWnd),
 		uintptr(index))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
@@ -39,14 +39,14 @@ func (hWnd HWND) GetWindowLongPtr(index co.GWLP) (uintptr, error) {
 	return ret, nil
 }
 
-var _GetWindowLongPtrW *syscall.Proc
+var _user_GetWindowLongPtrW *syscall.Proc
 
 // [SetWindowLongPtr] function.
 //
 // [SetWindowLongPtr]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowlongptrw
 func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) (uintptr, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetWindowLongPtrW, "SetWindowLongPtrW"),
+		dll.Load(dll.USER32, &_user_SetWindowLongPtrW, "SetWindowLongPtrW"),
 		uintptr(hWnd),
 		uintptr(index),
 		newLong)
@@ -56,4 +56,4 @@ func (hWnd HWND) SetWindowLongPtr(index co.GWLP, newLong uintptr) (uintptr, erro
 	return ret, nil
 }
 
-var _SetWindowLongPtrW *syscall.Proc
+var _user_SetWindowLongPtrW *syscall.Proc

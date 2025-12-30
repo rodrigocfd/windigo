@@ -32,7 +32,7 @@ type HTASKMEM HANDLE
 func CoTaskMemAlloc(numBytes int) (HTASKMEM, error) {
 	utl.PanicNeg(numBytes)
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_CoTaskMemAlloc, "CoTaskMemAlloc"),
+		dll.Load(dll.OLE32, &_ole_CoTaskMemAlloc, "CoTaskMemAlloc"),
 		uintptr(uint64(numBytes)))
 	if ret == 0 {
 		return HTASKMEM(0), co.HRESULT_E_OUTOFMEMORY
@@ -40,7 +40,7 @@ func CoTaskMemAlloc(numBytes int) (HTASKMEM, error) {
 	return HTASKMEM(ret), nil
 }
 
-var _CoTaskMemAlloc *syscall.Proc
+var _ole_CoTaskMemAlloc *syscall.Proc
 
 // [CoTaskMemFree] function.
 //
@@ -52,12 +52,12 @@ var _CoTaskMemAlloc *syscall.Proc
 func (hMem HTASKMEM) CoTaskMemFree() {
 	if hMem != 0 {
 		syscall.SyscallN(
-			dll.Load(dll.OLE32, &_CoTaskMemFree, "CoTaskMemFree"),
+			dll.Load(dll.OLE32, &_ole_CoTaskMemFree, "CoTaskMemFree"),
 			uintptr(hMem))
 	}
 }
 
-var _CoTaskMemFree *syscall.Proc
+var _ole_CoTaskMemFree *syscall.Proc
 
 // [CoTaskMemRealloc] function.
 //
@@ -74,7 +74,7 @@ var _CoTaskMemFree *syscall.Proc
 func (hMem HTASKMEM) CoTaskMemRealloc(numBytes int) (HTASKMEM, error) {
 	utl.PanicNeg(numBytes)
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_CoTaskMemRealloc, "CoTaskMemRealloc"),
+		dll.Load(dll.OLE32, &_ole_CoTaskMemRealloc, "CoTaskMemRealloc"),
 		uintptr(hMem),
 		uintptr(uint64(numBytes)))
 	if ret == 0 {
@@ -83,4 +83,4 @@ func (hMem HTASKMEM) CoTaskMemRealloc(numBytes int) (HTASKMEM, error) {
 	return HTASKMEM(ret), nil
 }
 
-var _CoTaskMemRealloc *syscall.Proc
+var _ole_CoTaskMemRealloc *syscall.Proc

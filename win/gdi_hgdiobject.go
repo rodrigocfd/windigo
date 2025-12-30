@@ -27,7 +27,7 @@ type HGDIOBJ HANDLE
 // [GetStockObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getstockobject
 func GetStockObject(ty co.STOCK) (HGDIOBJ, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_GetStockObject, "GetStockObject"),
+		dll.Load(dll.GDI32, &_gdi_GetStockObject, "GetStockObject"),
 		uintptr(ty))
 	if ret == 0 {
 		return HGDIOBJ(0), co.ERROR_INVALID_PARAMETER
@@ -35,40 +35,40 @@ func GetStockObject(ty co.STOCK) (HGDIOBJ, error) {
 	return HGDIOBJ(ret), nil
 }
 
-var _GetStockObject *syscall.Proc
+var _gdi_GetStockObject *syscall.Proc
 
 // [DeleteObject] function.
 //
 // [DeleteObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
 func (hGdiObj HGDIOBJ) DeleteObject() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_DeleteObject, "DeleteObject"),
+		dll.Load(dll.GDI32, &_gdi_DeleteObject, "DeleteObject"),
 		uintptr(hGdiObj))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _DeleteObject *syscall.Proc
+var _gdi_DeleteObject *syscall.Proc
 
 // [GetObject] function.
 //
 // [GetObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getobject
 func (hGdiObj HGDIOBJ) GetObject(szBuf uintptr, buf unsafe.Pointer) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_GetObjectW, "GetObjectW"),
+		dll.Load(dll.GDI32, &_gdi_GetObjectW, "GetObjectW"),
 		uintptr(hGdiObj),
 		uintptr(int32(szBuf)),
 		uintptr(buf))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _GetObjectW *syscall.Proc
+var _gdi_GetObjectW *syscall.Proc
 
 // [SelectObject] function.
 //
 // [SelectObject]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
 func (hdc HDC) SelectObject(hGdiObj HGDIOBJ) (HGDIOBJ, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_SelectObject, "SelectObject"),
+		dll.Load(dll.GDI32, &_gdi_SelectObject, "SelectObject"),
 		uintptr(hdc),
 		uintptr(hGdiObj))
 	if ret == 0 {
@@ -77,7 +77,9 @@ func (hdc HDC) SelectObject(hGdiObj HGDIOBJ) (HGDIOBJ, error) {
 	return HGDIOBJ(ret), nil
 }
 
-var _SelectObject *syscall.Proc
+var _gdi_SelectObject *syscall.Proc
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // Handle to a [bitmap].
 //
@@ -94,7 +96,7 @@ type HBITMAP HGDIOBJ
 func CreateBitmap(width, height, numPlanes, bitCount int, bits []byte) (HBITMAP, error) {
 	utl.PanicNeg(numPlanes, bitCount)
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_CreateBitmap, "CreateBitmap"),
+		dll.Load(dll.GDI32, &_gdi_CreateBitmap, "CreateBitmap"),
 		uintptr(int32(width)),
 		uintptr(int32(height)),
 		uintptr(uint32(numPlanes)),
@@ -106,7 +108,7 @@ func CreateBitmap(width, height, numPlanes, bitCount int, bits []byte) (HBITMAP,
 	return HBITMAP(ret), nil
 }
 
-var _CreateBitmap *syscall.Proc
+var _gdi_CreateBitmap *syscall.Proc
 
 // [CreateBitmapIndirect] function.
 //
@@ -115,7 +117,7 @@ var _CreateBitmap *syscall.Proc
 // [CreateBitmapIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmapindirect
 func CreateBitmapIndirect(bm *BITMAP) (HBITMAP, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_CreateBitmapIndirect, "CreateBitmapIndirect"),
+		dll.Load(dll.GDI32, &_gdi_CreateBitmapIndirect, "CreateBitmapIndirect"),
 		uintptr(unsafe.Pointer(bm)))
 	if ret == 0 {
 		return HBITMAP(0), co.ERROR_INVALID_PARAMETER
@@ -123,7 +125,7 @@ func CreateBitmapIndirect(bm *BITMAP) (HBITMAP, error) {
 	return HBITMAP(ret), nil
 }
 
-var _CreateBitmapIndirect *syscall.Proc
+var _gdi_CreateBitmapIndirect *syscall.Proc
 
 // [DeleteObject] function.
 //
@@ -144,6 +146,8 @@ func (hBmp HBITMAP) GetObject() (BITMAP, error) {
 	}
 }
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 // Handle to a [brush].
 //
 // [brush]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbrush
@@ -156,7 +160,7 @@ type HBRUSH HGDIOBJ
 // [CreateBrushIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbrushindirect
 func CreateBrushIndirect(lb *LOGBRUSH) (HBRUSH, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_CreateBrushIndirect, "CreateBrushIndirect"),
+		dll.Load(dll.GDI32, &_gdi_CreateBrushIndirect, "CreateBrushIndirect"),
 		uintptr(unsafe.Pointer(lb)))
 	if ret == 0 {
 		return HBRUSH(0), co.ERROR_INVALID_PARAMETER
@@ -164,7 +168,7 @@ func CreateBrushIndirect(lb *LOGBRUSH) (HBRUSH, error) {
 	return HBRUSH(ret), nil
 }
 
-var _CreateBrushIndirect *syscall.Proc
+var _gdi_CreateBrushIndirect *syscall.Proc
 
 // [CreatePatternBrush] function.
 //
@@ -173,7 +177,7 @@ var _CreateBrushIndirect *syscall.Proc
 // [CreatePatternBrush]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpatternbrush
 func CreatePatternBrush(hbm HBITMAP) (HBRUSH, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_CreatePatternBrush, "CreatePatternBrush"),
+		dll.Load(dll.GDI32, &_gdi_CreatePatternBrush, "CreatePatternBrush"),
 		uintptr(hbm))
 	if ret == 0 {
 		return HBRUSH(0), co.ERROR_INVALID_PARAMETER
@@ -181,7 +185,7 @@ func CreatePatternBrush(hbm HBITMAP) (HBRUSH, error) {
 	return HBRUSH(ret), nil
 }
 
-var _CreatePatternBrush *syscall.Proc
+var _gdi_CreatePatternBrush *syscall.Proc
 
 // [DeleteObject] function.
 //
@@ -201,6 +205,8 @@ func (hBrush HBRUSH) GetObject() (LOGBRUSH, error) {
 		return lb, nil
 	}
 }
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // Handle to a [font].
 //
@@ -228,7 +234,7 @@ func CreateFont(
 ) (HFONT, error) {
 	var wFaceName wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_CreateFontW, "CreateFontW"),
+		dll.Load(dll.GDI32, &_gdi_CreateFontW, "CreateFontW"),
 		uintptr(int32(height)),
 		uintptr(int32(width)),
 		uintptr(int32(escapement)),
@@ -249,7 +255,7 @@ func CreateFont(
 	return HFONT(ret), nil
 }
 
-var _CreateFontW *syscall.Proc
+var _gdi_CreateFontW *syscall.Proc
 
 // [CreateFontIndirect] function.
 //
@@ -258,7 +264,7 @@ var _CreateFontW *syscall.Proc
 // [CreateFontIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontindirectw
 func CreateFontIndirect(lf *LOGFONT) (HFONT, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_CreateFontIndirectW, "CreateFontIndirectW"),
+		dll.Load(dll.GDI32, &_gdi_CreateFontIndirectW, "CreateFontIndirectW"),
 		uintptr(unsafe.Pointer(lf)))
 	if ret == 0 {
 		return HFONT(0), co.ERROR_INVALID_PARAMETER
@@ -266,7 +272,7 @@ func CreateFontIndirect(lf *LOGFONT) (HFONT, error) {
 	return HFONT(ret), nil
 }
 
-var _CreateFontIndirectW *syscall.Proc
+var _gdi_CreateFontIndirectW *syscall.Proc
 
 // [DeleteObject] function.
 //
@@ -287,6 +293,8 @@ func (hFont HFONT) GetObject() (LOGFONT, error) {
 	}
 }
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 // Handle to a [pen].
 //
 // [pen]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hpen
@@ -299,7 +307,7 @@ type HPEN HGDIOBJ
 // [CreatePen]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpen
 func CreatePen(style co.PS, width int, color COLORREF) (HPEN, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_CreatePen, "CreatePen"),
+		dll.Load(dll.GDI32, &_gdi_CreatePen, "CreatePen"),
 		uintptr(style),
 		uintptr(int32(width)),
 		uintptr(color))
@@ -309,7 +317,7 @@ func CreatePen(style co.PS, width int, color COLORREF) (HPEN, error) {
 	return HPEN(ret), nil
 }
 
-var _CreatePen *syscall.Proc
+var _gdi_CreatePen *syscall.Proc
 
 // [CreatePenIndirect] function.
 //
@@ -318,7 +326,7 @@ var _CreatePen *syscall.Proc
 // [CreatePenIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpenindirect
 func CreatePenIndirect(lp *LOGPEN) (HPEN, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_CreatePenIndirect, "CreatePenIndirect"),
+		dll.Load(dll.GDI32, &_gdi_CreatePenIndirect, "CreatePenIndirect"),
 		uintptr(unsafe.Pointer(lp)))
 	if ret == 0 {
 		return HPEN(0), co.ERROR_INVALID_PARAMETER
@@ -326,7 +334,7 @@ func CreatePenIndirect(lp *LOGPEN) (HPEN, error) {
 	return HPEN(ret), nil
 }
 
-var _CreatePenIndirect *syscall.Proc
+var _gdi_CreatePenIndirect *syscall.Proc
 
 // [ExtCreatePen] function.
 //
@@ -351,7 +359,7 @@ func ExtCreatePen(
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_ExtCreatePen, "ExtCreatePen"),
+		dll.Load(dll.GDI32, &_gdi_ExtCreatePen, "ExtCreatePen"),
 		uintptr(uint32(penType)|uint32(penStyle)|uint32(endCap)),
 		uintptr(uint32(width)),
 		uintptr(unsafe.Pointer(brush)),
@@ -363,7 +371,7 @@ func ExtCreatePen(
 	return HPEN(ret), nil
 }
 
-var _ExtCreatePen *syscall.Proc
+var _gdi_ExtCreatePen *syscall.Proc
 
 // [DeleteObject] function.
 //
@@ -384,6 +392,8 @@ func (hPen HPEN) GetObject() (LOGPEN, error) {
 	}
 }
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 // Handle to a [region].
 //
 // [region]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hrgn
@@ -396,7 +406,7 @@ type HRGN HGDIOBJ
 // [CreateRectRgnIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createrectrgnindirect
 func CreateRectRgnIndirect(bounds RECT) (HRGN, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_CreateRectRgnIndirect, "CreateRectRgnIndirect"),
+		dll.Load(dll.GDI32, &_gdi_CreateRectRgnIndirect, "CreateRectRgnIndirect"),
 		uintptr(unsafe.Pointer(&bounds)))
 	if ret == 0 {
 		return HRGN(0), co.ERROR_INVALID_PARAMETER
@@ -404,14 +414,14 @@ func CreateRectRgnIndirect(bounds RECT) (HRGN, error) {
 	return HRGN(ret), nil
 }
 
-var _CreateRectRgnIndirect *syscall.Proc
+var _gdi_CreateRectRgnIndirect *syscall.Proc
 
 // [CombineRgn] function.
 //
 // [CombineRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-combinergn
 func (hRgn HRGN) CombineRgn(src1, src2 HRGN, mode co.RGN) (co.REGION, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_CombineRgn, "CombineRgn"),
+		dll.Load(dll.GDI32, &_gdi_CombineRgn, "CombineRgn"),
 		uintptr(hRgn),
 		uintptr(src1),
 		uintptr(src2),
@@ -422,7 +432,7 @@ func (hRgn HRGN) CombineRgn(src1, src2 HRGN, mode co.RGN) (co.REGION, error) {
 	return co.REGION(ret), nil
 }
 
-var _CombineRgn *syscall.Proc
+var _gdi_CombineRgn *syscall.Proc
 
 // [DeleteObject] function.
 //
@@ -436,13 +446,13 @@ func (hRgn HRGN) DeleteObject() error {
 // [EqualRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-equalrgn
 func (hRgn HRGN) EqualRgn(other HRGN) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_EqualRgn, "EqualRgn"),
+		dll.Load(dll.GDI32, &_gdi_EqualRgn, "EqualRgn"),
 		uintptr(hRgn),
 		uintptr(other))
 	return ret != 0
 }
 
-var _EqualRgn *syscall.Proc
+var _gdi_EqualRgn *syscall.Proc
 
 // [GetRgnBox] function.
 //
@@ -450,7 +460,7 @@ var _EqualRgn *syscall.Proc
 func (hRgn HRGN) GetRgnBox() (RECT, co.REGION, error) {
 	var rc RECT
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_GetRgnBox, "GetRgnBox"),
+		dll.Load(dll.GDI32, &_gdi_GetRgnBox, "GetRgnBox"),
 		uintptr(hRgn),
 		uintptr(unsafe.Pointer(&rc)))
 	if ret == utl.REGION_ERROR {
@@ -459,14 +469,14 @@ func (hRgn HRGN) GetRgnBox() (RECT, co.REGION, error) {
 	return rc, co.REGION(ret), nil
 }
 
-var _GetRgnBox *syscall.Proc
+var _gdi_GetRgnBox *syscall.Proc
 
 // [OffsetClipRgn] function.
 //
 // [OffsetClipRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-offsetcliprgn
 func (hRgn HRGN) OffsetClipRgn(x, y int) (co.REGION, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_OffsetClipRgn, "OffsetClipRgn"),
+		dll.Load(dll.GDI32, &_gdi_OffsetClipRgn, "OffsetClipRgn"),
 		uintptr(hRgn),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
@@ -476,14 +486,14 @@ func (hRgn HRGN) OffsetClipRgn(x, y int) (co.REGION, error) {
 	return co.REGION(ret), nil
 }
 
-var _OffsetClipRgn *syscall.Proc
+var _gdi_OffsetClipRgn *syscall.Proc
 
 // [OffsetRgn] function.
 //
 // [OffsetRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-offsetrgn
 func (hRgn HRGN) OffsetRgn(x, y int) (co.REGION, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_OffsetRgn, "OffsetRgn"),
+		dll.Load(dll.GDI32, &_gdi_OffsetRgn, "OffsetRgn"),
 		uintptr(hRgn),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
@@ -493,31 +503,31 @@ func (hRgn HRGN) OffsetRgn(x, y int) (co.REGION, error) {
 	return co.REGION(ret), nil
 }
 
-var _OffsetRgn *syscall.Proc
+var _gdi_OffsetRgn *syscall.Proc
 
 // [PtInRegion] function.
 //
 // [PtInRegion]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-ptinregion
 func (hRgn HRGN) PtInRegion(x, y int) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_PtInRegion, "PtInRegion"),
+		dll.Load(dll.GDI32, &_gdi_PtInRegion, "PtInRegion"),
 		uintptr(hRgn),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
 	return ret != 0
 }
 
-var _PtInRegion *syscall.Proc
+var _gdi_PtInRegion *syscall.Proc
 
 // [RectInRegion] function.
 //
 // [RectInRegion]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-rectinregion
 func (hRgn HRGN) RectInRegion(rc RECT) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_RectInRegion, "RectInRegion"),
+		dll.Load(dll.GDI32, &_gdi_RectInRegion, "RectInRegion"),
 		uintptr(hRgn),
 		uintptr(unsafe.Pointer(&rc)))
 	return ret != 0
 }
 
-var _RectInRegion *syscall.Proc
+var _gdi_RectInRegion *syscall.Proc

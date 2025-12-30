@@ -20,7 +20,7 @@ func (hProcess HPROCESS) SetUserObjectInformation(
 	infoLen uintptr,
 ) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetUserObjectInformationW, "SetUserObjectInformationW"),
+		dll.Load(dll.USER32, &_user_SetUserObjectInformationW, "SetUserObjectInformationW"),
 		uintptr(hProcess),
 		uintptr(index),
 		uintptr(info),
@@ -28,4 +28,4 @@ func (hProcess HPROCESS) SetUserObjectInformation(
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _SetUserObjectInformationW *syscall.Proc
+var _user_SetUserObjectInformationW *syscall.Proc

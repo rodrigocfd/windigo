@@ -24,7 +24,7 @@ func (hWnd HWND) RegisterDragDrop(dropTarget *IDropTarget) error {
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_RegisterDragDrop, "RegisterDragDrop"),
+		dll.Load(dll.OLE32, &_ole_RegisterDragDrop, "RegisterDragDrop"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(dropTarget.Ppvt())))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
@@ -36,7 +36,7 @@ func (hWnd HWND) RegisterDragDrop(dropTarget *IDropTarget) error {
 	return nil
 }
 
-var _RegisterDragDrop *syscall.Proc
+var _ole_RegisterDragDrop *syscall.Proc
 
 // [RevokeDragDrop] function.
 //
@@ -45,9 +45,9 @@ var _RegisterDragDrop *syscall.Proc
 // [RevokeDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-revokedragdrop
 func (hWnd HWND) RevokeDragDrop() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_RevokeDragDrop, "RevokeDragDrop"),
+		dll.Load(dll.OLE32, &_ole_RevokeDragDrop, "RevokeDragDrop"),
 		uintptr(hWnd))
 	return utl.ErrorAsHResult(ret)
 }
 
-var _RevokeDragDrop *syscall.Proc
+var _ole_RevokeDragDrop *syscall.Proc

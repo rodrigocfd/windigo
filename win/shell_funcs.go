@@ -22,7 +22,7 @@ func CommandLineToArgv(cmdLine string) ([]string, error) {
 	var pNumArgs int32
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_CommandLineToArgvW, "CommandLineToArgvW"),
+		dll.Load(dll.SHELL32, &_shell_CommandLineToArgvW, "CommandLineToArgvW"),
 		uintptr(wCmdLine.EmptyIsNil(cmdLine)),
 		uintptr(unsafe.Pointer(&pNumArgs)))
 	if ret == 0 {
@@ -38,7 +38,7 @@ func CommandLineToArgv(cmdLine string) ([]string, error) {
 	return strs, nil
 }
 
-var _CommandLineToArgvW *syscall.Proc
+var _shell_CommandLineToArgvW *syscall.Proc
 
 // [SHCreateItemFromIDList] function.
 //
@@ -74,7 +74,7 @@ func SHCreateItemFromIDList(releaser *OleReleaser, pidl *ITEMIDLIST, ppOut inter
 	guidIid := GuidFrom(pOut.IID())
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_SHCreateItemFromIDList, "SHCreateItemFromIDList"),
+		dll.Load(dll.SHELL32, &_shell_SHCreateItemFromIDList, "SHCreateItemFromIDList"),
 		uintptr(*pidl),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
@@ -88,7 +88,7 @@ func SHCreateItemFromIDList(releaser *OleReleaser, pidl *ITEMIDLIST, ppOut inter
 	}
 }
 
-var _SHCreateItemFromIDList *syscall.Proc
+var _shell_SHCreateItemFromIDList *syscall.Proc
 
 // [SHCreateItemFromParsingName] function.
 //
@@ -124,7 +124,7 @@ func SHCreateItemFromParsingName(
 	var wFolderOrFilePath wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_SHCreateItemFromParsingName, "SHCreateItemFromParsingName"),
+		dll.Load(dll.SHELL32, &_shell_SHCreateItemFromParsingName, "SHCreateItemFromParsingName"),
 		uintptr(wFolderOrFilePath.EmptyIsNil(folderOrFilePath)),
 		0,
 		uintptr(unsafe.Pointer(&guidIid)),
@@ -139,7 +139,7 @@ func SHCreateItemFromParsingName(
 	}
 }
 
-var _SHCreateItemFromParsingName *syscall.Proc
+var _shell_SHCreateItemFromParsingName *syscall.Proc
 
 // [SHCreateItemFromRelativeName] function.
 //
@@ -159,7 +159,7 @@ func SHCreateItemFromRelativeName(
 	var wName wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_SHCreateItemFromRelativeName, "SHCreateItemFromRelativeName"),
+		dll.Load(dll.SHELL32, &_shell_SHCreateItemFromRelativeName, "SHCreateItemFromRelativeName"),
 		uintptr(unsafe.Pointer(parent.Ppvt())),
 		uintptr(wName.AllowEmpty(name)),
 		uintptr(ppvtOrNil(bindCtx)),
@@ -175,7 +175,7 @@ func SHCreateItemFromRelativeName(
 	}
 }
 
-var _SHCreateItemFromRelativeName *syscall.Proc
+var _shell_SHCreateItemFromRelativeName *syscall.Proc
 
 // [SHCreateShellItemArray] function.
 //
@@ -203,7 +203,7 @@ func SHCreateShellItemArray(
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_SHCreateShellItemArray, "SHCreateShellItemArray"),
+		dll.Load(dll.SHELL32, &_shell_SHCreateShellItemArray, "SHCreateShellItemArray"),
 		uintptr(pidlParentObj),
 		uintptr(ppvtOrNil(parent)),
 		uintptr(uint32(len(pidlChildren))),
@@ -219,7 +219,7 @@ func SHCreateShellItemArray(
 	}
 }
 
-var _SHCreateShellItemArray *syscall.Proc
+var _shell_SHCreateShellItemArray *syscall.Proc
 
 // [SHCreateShellItemArrayFromIDLists] function.
 //
@@ -254,7 +254,7 @@ func SHCreateShellItemArrayFromIDLists(
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_SHCreateShellItemArrayFromIDLists, "SHCreateShellItemArrayFromIDLists"),
+		dll.Load(dll.SHELL32, &_shell_SHCreateShellItemArrayFromIDLists, "SHCreateShellItemArrayFromIDLists"),
 		uintptr(uint32(len(pidls))),
 		uintptr(unsafe.Pointer(&pidlObjs[0])),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
@@ -268,7 +268,7 @@ func SHCreateShellItemArrayFromIDLists(
 	}
 }
 
-var _SHCreateShellItemArrayFromIDLists *syscall.Proc
+var _shell_SHCreateShellItemArrayFromIDLists *syscall.Proc
 
 // [SHGetDesktopFolder] function.
 //
@@ -283,7 +283,7 @@ var _SHCreateShellItemArrayFromIDLists *syscall.Proc
 func SHGetDesktopFolder(releaser *OleReleaser) (*IShellFolder, error) {
 	var ppvtQueried **_IUnknownVt
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_SHGetDesktopFolder, "SHGetDesktopFolder"),
+		dll.Load(dll.SHELL32, &_shell_SHGetDesktopFolder, "SHGetDesktopFolder"),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -295,7 +295,7 @@ func SHGetDesktopFolder(releaser *OleReleaser) (*IShellFolder, error) {
 	}
 }
 
-var _SHGetDesktopFolder *syscall.Proc
+var _shell_SHGetDesktopFolder *syscall.Proc
 
 // [SHGetKnownFolderItem] function.
 //
@@ -338,7 +338,7 @@ func SHGetKnownFolderItem(
 	guidIid := GuidFrom(pOut.IID())
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_SHGetKnownFolderItem, "SHGetKnownFolderItem"),
+		dll.Load(dll.SHELL32, &_shell_SHGetKnownFolderItem, "SHGetKnownFolderItem"),
 		uintptr(unsafe.Pointer(&guidKfid)),
 		uintptr(flags),
 		uintptr(hToken),
@@ -354,7 +354,7 @@ func SHGetKnownFolderItem(
 	}
 }
 
-var _SHGetKnownFolderItem *syscall.Proc
+var _shell_SHGetKnownFolderItem *syscall.Proc
 
 // [SHGetIDListFromObject] function.
 //
@@ -380,7 +380,7 @@ var _SHGetKnownFolderItem *syscall.Proc
 func SHGetIDListFromObject(releaser *OleReleaser, obj *IUnknown) (*ITEMIDLIST, error) {
 	var idl ITEMIDLIST
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_SHGetIDListFromObject, "SHGetIDListFromObject"),
+		dll.Load(dll.SHELL32, &_shell_SHGetIDListFromObject, "SHGetIDListFromObject"),
 		uintptr(unsafe.Pointer(obj.Ppvt())),
 		uintptr(unsafe.Pointer(&idl)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -392,7 +392,7 @@ func SHGetIDListFromObject(releaser *OleReleaser, obj *IUnknown) (*ITEMIDLIST, e
 	}
 }
 
-var _SHGetIDListFromObject *syscall.Proc
+var _shell_SHGetIDListFromObject *syscall.Proc
 
 // [SHGetPropertyStoreFromIDList] function.
 //
@@ -406,7 +406,7 @@ func SHGetPropertyStoreFromIDList(
 	guid := GuidFrom(co.IID_IPropertyStore)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_SHGetPropertyStoreFromIDList, "SHGetPropertyStoreFromIDList"),
+		dll.Load(dll.SHELL32, &_shell_SHGetPropertyStoreFromIDList, "SHGetPropertyStoreFromIDList"),
 		uintptr(*pidl),
 		uintptr(flags),
 		uintptr(unsafe.Pointer(&guid)),
@@ -421,7 +421,7 @@ func SHGetPropertyStoreFromIDList(
 	}
 }
 
-var _SHGetPropertyStoreFromIDList *syscall.Proc
+var _shell_SHGetPropertyStoreFromIDList *syscall.Proc
 
 // [SHGetPropertyStoreFromParsingName] function.
 //
@@ -437,7 +437,7 @@ func SHGetPropertyStoreFromParsingName(
 	var wFolderOrFilePath wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_SHGetPropertyStoreFromParsingName, "SHGetPropertyStoreFromParsingName"),
+		dll.Load(dll.SHELL32, &_shell_SHGetPropertyStoreFromParsingName, "SHGetPropertyStoreFromParsingName"),
 		uintptr(wFolderOrFilePath.AllowEmpty(folderOrFilePath)),
 		uintptr(ppvtOrNil(bindCtx)),
 		uintptr(flags),
@@ -453,14 +453,14 @@ func SHGetPropertyStoreFromParsingName(
 	}
 }
 
-var _SHGetPropertyStoreFromParsingName *syscall.Proc
+var _shell_SHGetPropertyStoreFromParsingName *syscall.Proc
 
 // [Shell_NotifyIcon] function.
 //
 // [Shell_NotifyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
 func Shell_NotifyIcon(message co.NIM, data *NOTIFYICONDATA) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_Shell_NotifyIconW, "Shell_NotifyIconW"),
+		dll.Load(dll.SHELL32, &_shell_Shell_NotifyIconW, "Shell_NotifyIconW"),
 		uintptr(message),
 		uintptr(unsafe.Pointer(data)))
 	if ret == 0 {
@@ -469,7 +469,7 @@ func Shell_NotifyIcon(message co.NIM, data *NOTIFYICONDATA) error {
 	return nil
 }
 
-var _Shell_NotifyIconW *syscall.Proc
+var _shell_Shell_NotifyIconW *syscall.Proc
 
 // [Shell_NotifyIconGetRect] function.
 //
@@ -477,7 +477,7 @@ var _Shell_NotifyIconW *syscall.Proc
 func Shell_NotifyIconGetRect(identifier *NOTIFYICONIDENTIFIER) (RECT, error) {
 	var rc RECT
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_Shell_NotifyIconGetRect, "Shell_NotifyIconGetRect"),
+		dll.Load(dll.SHELL32, &_shell_Shell_NotifyIconGetRect, "Shell_NotifyIconGetRect"),
 		uintptr(unsafe.Pointer(identifier)),
 		uintptr(unsafe.Pointer(&rc)))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
@@ -486,7 +486,7 @@ func Shell_NotifyIconGetRect(identifier *NOTIFYICONIDENTIFIER) (RECT, error) {
 	return rc, nil
 }
 
-var _Shell_NotifyIconGetRect *syscall.Proc
+var _shell_Shell_NotifyIconGetRect *syscall.Proc
 
 // [SHGetFileInfo] function.
 //
@@ -499,7 +499,7 @@ func SHGetFileInfo(path string, fileAttrs co.FILE_ATTRIBUTE, flags co.SHGFI) (SH
 	var sfi SHFILEINFO
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_SHGetFileInfoW, "SHGetFileInfoW"),
+		dll.Load(dll.SHELL32, &_shell_SHGetFileInfoW, "SHGetFileInfoW"),
 		uintptr(wPath.AllowEmpty(path)),
 		uintptr(fileAttrs),
 		uintptr(unsafe.Pointer(&sfi)),
@@ -520,4 +520,4 @@ func SHGetFileInfo(path string, fileAttrs co.FILE_ATTRIBUTE, flags co.SHGFI) (SH
 	return sfi, nil
 }
 
-var _SHGetFileInfoW *syscall.Proc
+var _shell_SHGetFileInfoW *syscall.Proc

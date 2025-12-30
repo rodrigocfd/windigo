@@ -43,7 +43,7 @@ type HLOCAL HANDLE
 func LocalAlloc(flags co.LMEM, numBytes int) (HLOCAL, error) {
 	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_LocalAlloc, "LocalAlloc"),
+		dll.Load(dll.KERNEL32, &_kernel_LocalAlloc, "LocalAlloc"),
 		uintptr(flags),
 		uintptr(uint64(numBytes)))
 	if ret == 0 {
@@ -52,14 +52,14 @@ func LocalAlloc(flags co.LMEM, numBytes int) (HLOCAL, error) {
 	return HLOCAL(ret), nil
 }
 
-var _LocalAlloc *syscall.Proc
+var _kernel_LocalAlloc *syscall.Proc
 
 // [LocalFlags] function.
 //
 // [LocalFlags]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-localflags
 func (hLocal HLOCAL) LocalFlags() (co.LMEM, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_LocalFlags, "LocalFlags"),
+		dll.Load(dll.KERNEL32, &_kernel_LocalFlags, "LocalFlags"),
 		uintptr(hLocal))
 	if ret == utl.LMEM_INVALID_HANDLE {
 		return co.LMEM(0), co.ERROR(err)
@@ -67,7 +67,7 @@ func (hLocal HLOCAL) LocalFlags() (co.LMEM, error) {
 	return co.LMEM(ret), nil
 }
 
-var _LocalFlags *syscall.Proc
+var _kernel_LocalFlags *syscall.Proc
 
 // [LocalFree] function.
 //
@@ -82,7 +82,7 @@ func (hLocal HLOCAL) LocalFree() error {
 	}
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_LocalFree, "LocalFree"),
+		dll.Load(dll.KERNEL32, &_kernel_LocalFree, "LocalFree"),
 		uintptr(hLocal))
 	if ret != 0 {
 		return co.ERROR(err)
@@ -90,7 +90,7 @@ func (hLocal HLOCAL) LocalFree() error {
 	return nil
 }
 
-var _LocalFree *syscall.Proc
+var _kernel_LocalFree *syscall.Proc
 
 // [LocalLock] function.
 //
@@ -116,7 +116,7 @@ var _LocalFree *syscall.Proc
 // [LocalLock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-locallock
 func (hLocal HLOCAL) LocalLock() (unsafe.Pointer, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_LocalLock, "LocalLock"),
+		dll.Load(dll.KERNEL32, &_kernel_LocalLock, "LocalLock"),
 		uintptr(hLocal))
 	if ret == 0 {
 		return nil, co.ERROR(err)
@@ -124,7 +124,7 @@ func (hLocal HLOCAL) LocalLock() (unsafe.Pointer, error) {
 	return unsafe.Pointer(ret), nil
 }
 
-var _LocalLock *syscall.Proc
+var _kernel_LocalLock *syscall.Proc
 
 // Calls [HLOCAL.LocalSize] and [HLOCAL.LocalLock] to retrieve the size and
 // pointer to the allocated memory, then converts it to a slice over it.
@@ -169,7 +169,7 @@ func (hLocal HLOCAL) LocalLockSlice() ([]byte, error) {
 func (hLocal HLOCAL) LocalReAlloc(numBytes int, flags co.LMEM) (HLOCAL, error) {
 	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_LocalReAlloc, "LocalReAlloc"),
+		dll.Load(dll.KERNEL32, &_kernel_LocalReAlloc, "LocalReAlloc"),
 		uintptr(hLocal),
 		uintptr(uint64(numBytes)),
 		uintptr(flags))
@@ -179,14 +179,14 @@ func (hLocal HLOCAL) LocalReAlloc(numBytes int, flags co.LMEM) (HLOCAL, error) {
 	return HLOCAL(ret), nil
 }
 
-var _LocalReAlloc *syscall.Proc
+var _kernel_LocalReAlloc *syscall.Proc
 
 // [LocalSize] function.
 //
 // [LocalSize]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-localsize
 func (hLocal HLOCAL) LocalSize() (int, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_LocalSize, "LocalSize"),
+		dll.Load(dll.KERNEL32, &_kernel_LocalSize, "LocalSize"),
 		uintptr(hLocal))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -194,14 +194,14 @@ func (hLocal HLOCAL) LocalSize() (int, error) {
 	return int(uint64(ret)), nil
 }
 
-var _LocalSize *syscall.Proc
+var _kernel_LocalSize *syscall.Proc
 
 // [LocalUnlock] function.
 //
 // [LocalUnlock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-localunlock
 func (hLocal HLOCAL) LocalUnlock() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_LocalUnlock, "LocalUnlock"),
+		dll.Load(dll.KERNEL32, &_kernel_LocalUnlock, "LocalUnlock"),
 		uintptr(hLocal))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return wErr
@@ -209,4 +209,4 @@ func (hLocal HLOCAL) LocalUnlock() error {
 	return nil
 }
 
-var _LocalUnlock *syscall.Proc
+var _kernel_LocalUnlock *syscall.Proc

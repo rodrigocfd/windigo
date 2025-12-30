@@ -36,7 +36,7 @@ func CreateNamedPipe(
 ) (HPIPE, error) {
 	var wName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_CreateNamedPipeW, "CreateNamedPipeW"),
+		dll.Load(dll.KERNEL32, &_kernel_CreateNamedPipeW, "CreateNamedPipeW"),
 		uintptr(wName.AllowEmpty(name)),
 		uintptr(dwOpenMode),
 		uintptr(dwPipeMode),
@@ -51,7 +51,7 @@ func CreateNamedPipe(
 	return HPIPE(ret), nil
 }
 
-var _CreateNamedPipeW *syscall.Proc
+var _kernel_CreateNamedPipeW *syscall.Proc
 
 // [CloseHandle] function.
 //
@@ -65,7 +65,7 @@ func (hPipe HPIPE) CloseHandle() error {
 // [ConnectNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-connectnamedpipe
 func (hPipe HPIPE) ConnectNamedPipe() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_ConnectNamedPipe, "ConnectNamedPipe"),
+		dll.Load(dll.KERNEL32, &_kernel_ConnectNamedPipe, "ConnectNamedPipe"),
 		uintptr(hPipe),
 		uintptr(0))
 	if ret == 0 {
@@ -74,14 +74,14 @@ func (hPipe HPIPE) ConnectNamedPipe() error {
 	return nil
 }
 
-var _ConnectNamedPipe *syscall.Proc
+var _kernel_ConnectNamedPipe *syscall.Proc
 
 // [DisconnectNamedPipe] function.
 //
 // [DisconnectNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-disconnectnamedpipe
 func (hPipe HPIPE) DisconnectNamedPipe() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_DisconnectNamedPipe, "DisconnectNamedPipe"),
+		dll.Load(dll.KERNEL32, &_kernel_DisconnectNamedPipe, "DisconnectNamedPipe"),
 		uintptr(hPipe),
 		uintptr(0))
 	if ret == 0 {
@@ -90,7 +90,7 @@ func (hPipe HPIPE) DisconnectNamedPipe() error {
 	return nil
 }
 
-var _DisconnectNamedPipe *syscall.Proc
+var _kernel_DisconnectNamedPipe *syscall.Proc
 
 // [GetNamedPipeInfo] function.
 //
@@ -98,7 +98,7 @@ var _DisconnectNamedPipe *syscall.Proc
 func (hPipe HPIPE) GetNamedPipeInfo() (HpipeInfo, error) {
 	var info HpipeInfo
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetNamedPipeInfo, "GetNamedPipeInfo"),
+		dll.Load(dll.KERNEL32, &_kernel_GetNamedPipeInfo, "GetNamedPipeInfo"),
 		uintptr(hPipe),
 		uintptr(unsafe.Pointer(&info.Flags)),
 		uintptr(unsafe.Pointer(&info.OutBuffer)),
@@ -110,7 +110,7 @@ func (hPipe HPIPE) GetNamedPipeInfo() (HpipeInfo, error) {
 	return info, nil
 }
 
-var _GetNamedPipeInfo *syscall.Proc
+var _kernel_GetNamedPipeInfo *syscall.Proc
 
 // Returned by [HPIPE.GetNamedPipeInfo].
 type HpipeInfo struct {
@@ -126,7 +126,7 @@ type HpipeInfo struct {
 func (hPipe HPIPE) PeekNamedPipe(buffer []byte) (HpipePeek, error) {
 	var info HpipePeek
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_PeekNamedPipe, "PeekNamedPipe"),
+		dll.Load(dll.KERNEL32, &_kernel_PeekNamedPipe, "PeekNamedPipe"),
 		uintptr(hPipe),
 		uintptr(unsafe.Pointer(&buffer[0])),
 		uintptr(uint32(len(buffer))),
@@ -139,7 +139,7 @@ func (hPipe HPIPE) PeekNamedPipe(buffer []byte) (HpipePeek, error) {
 	return info, nil
 }
 
-var _PeekNamedPipe *syscall.Proc
+var _kernel_PeekNamedPipe *syscall.Proc
 
 // Returned by [HPIPE.PeekNamedPipe].
 type HpipePeek struct {

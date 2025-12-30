@@ -39,7 +39,7 @@ func CreateFile(
 ) (HFILE, error) {
 	var wFileName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_CreateFileW, "CreateFileW"),
+		dll.Load(dll.KERNEL32, &_kernel_CreateFileW, "CreateFileW"),
 		uintptr(wFileName.EmptyIsNil(fileName)),
 		uintptr(desiredAccess),
 		uintptr(shareMode),
@@ -54,7 +54,7 @@ func CreateFile(
 	return HFILE(ret), nil
 }
 
-var _CreateFileW *syscall.Proc
+var _kernel_CreateFileW *syscall.Proc
 
 // [CloseHandle] function.
 //
@@ -69,7 +69,7 @@ func (hFile HFILE) CloseHandle() error {
 func (hFile HFILE) GetFileSizeEx() (int, error) {
 	var retSz int64
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetFileSizeEx, "GetFileSizeEx"),
+		dll.Load(dll.KERNEL32, &_kernel_GetFileSizeEx, "GetFileSizeEx"),
 		uintptr(hFile),
 		uintptr(unsafe.Pointer(&retSz)))
 
@@ -79,7 +79,7 @@ func (hFile HFILE) GetFileSizeEx() (int, error) {
 	return int(retSz), nil
 }
 
-var _GetFileSizeEx *syscall.Proc
+var _kernel_GetFileSizeEx *syscall.Proc
 
 // [CreateFileMapping] function.
 //
@@ -104,7 +104,7 @@ func (hFile HFILE) CreateFileMapping(
 	var wObjectName wstr.BufEncoder
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_CreateFileMappingFromApp, "CreateFileMappingFromApp"),
+		dll.Load(dll.KERNEL32, &_kernel_CreateFileMappingFromApp, "CreateFileMappingFromApp"),
 		uintptr(hFile),
 		uintptr(unsafe.Pointer(securityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
@@ -117,7 +117,7 @@ func (hFile HFILE) CreateFileMapping(
 	return HFILEMAP(ret), nil
 }
 
-var _CreateFileMappingFromApp *syscall.Proc
+var _kernel_CreateFileMappingFromApp *syscall.Proc
 
 // [GetFileTime] function.
 //
@@ -125,7 +125,7 @@ var _CreateFileMappingFromApp *syscall.Proc
 func (hFile HFILE) GetFileTime() (creation, lastAccess, lastWrite time.Time, wErr error) {
 	var ftCreation, ftLastAccess, ftLastWrite FILETIME
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetFileTime, "GetFileTime"),
+		dll.Load(dll.KERNEL32, &_kernel_GetFileTime, "GetFileTime"),
 		uintptr(hFile),
 		uintptr(unsafe.Pointer(&ftCreation)),
 		uintptr(unsafe.Pointer(&ftLastAccess)),
@@ -136,7 +136,7 @@ func (hFile HFILE) GetFileTime() (creation, lastAccess, lastWrite time.Time, wEr
 	return ftCreation.ToTime(), ftLastAccess.ToTime(), ftLastWrite.ToTime(), nil
 }
 
-var _GetFileTime *syscall.Proc
+var _kernel_GetFileTime *syscall.Proc
 
 // [LockFile] function.
 //
@@ -151,7 +151,7 @@ func (hFile HFILE) LockFile(offset, numBytes int) error {
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_LockFile, "LockFile"),
+		dll.Load(dll.KERNEL32, &_kernel_LockFile, "LockFile"),
 		uintptr(hFile),
 		uintptr(offsetLo),
 		uintptr(offsetHi),
@@ -160,7 +160,7 @@ func (hFile HFILE) LockFile(offset, numBytes int) error {
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _LockFile *syscall.Proc
+var _kernel_LockFile *syscall.Proc
 
 // [LockFileEx] function.
 //
@@ -178,7 +178,7 @@ func (hFile HFILE) LockFileEx(
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_LockFileEx, "LockFileEx"),
+		dll.Load(dll.KERNEL32, &_kernel_LockFileEx, "LockFileEx"),
 		uintptr(hFile),
 		uintptr(flags),
 		0,
@@ -188,7 +188,7 @@ func (hFile HFILE) LockFileEx(
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _LockFileEx *syscall.Proc
+var _kernel_LockFileEx *syscall.Proc
 
 // [ReadFile] function.
 //
@@ -199,7 +199,7 @@ func (hFile HFILE) ReadFile(
 ) (numBytesRead int, wErr error) {
 	var numBytesRead32 uint32
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_ReadFile, "ReadFile"),
+		dll.Load(dll.KERNEL32, &_kernel_ReadFile, "ReadFile"),
 		uintptr(hFile),
 		uintptr(unsafe.Pointer(&buffer[0])),
 		uintptr(uint32(len(buffer))),
@@ -212,14 +212,14 @@ func (hFile HFILE) ReadFile(
 	return int(numBytesRead32), nil
 }
 
-var _ReadFile *syscall.Proc
+var _kernel_ReadFile *syscall.Proc
 
 // [SetEndOfFile] function.
 //
 // [SetEndOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setendoffile
 func (hFile HFILE) SetEndOfFile() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_SetEndOfFile, "SetEndOfFile"),
+		dll.Load(dll.KERNEL32, &_kernel_SetEndOfFile, "SetEndOfFile"),
 		uintptr(hFile))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return err
@@ -227,7 +227,7 @@ func (hFile HFILE) SetEndOfFile() error {
 	return nil
 }
 
-var _SetEndOfFile *syscall.Proc
+var _kernel_SetEndOfFile *syscall.Proc
 
 // [UnlockFile] function.
 //
@@ -242,7 +242,7 @@ func (hFile HFILE) UnlockFile(offset, numBytes int) error {
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_UnlockFile, "UnlockFile"),
+		dll.Load(dll.KERNEL32, &_kernel_UnlockFile, "UnlockFile"),
 		uintptr(hFile),
 		uintptr(offsetLo),
 		uintptr(offsetHi),
@@ -251,7 +251,7 @@ func (hFile HFILE) UnlockFile(offset, numBytes int) error {
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _UnlockFile *syscall.Proc
+var _kernel_UnlockFile *syscall.Proc
 
 // [UnlockFileEx] function.
 //
@@ -265,7 +265,7 @@ func (hFile HFILE) UnlockFileEx(numBytes int, overlapped *OVERLAPPED) error {
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_UnlockFileEx, "UnlockFileEx"),
+		dll.Load(dll.KERNEL32, &_kernel_UnlockFileEx, "UnlockFileEx"),
 		uintptr(hFile),
 		0,
 		uintptr(numBytesLo),
@@ -274,7 +274,7 @@ func (hFile HFILE) UnlockFileEx(numBytes int, overlapped *OVERLAPPED) error {
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _UnlockFileEx *syscall.Proc
+var _kernel_UnlockFileEx *syscall.Proc
 
 // [WriteFile] function.
 //
@@ -285,7 +285,7 @@ func (hFile HFILE) WriteFile(
 ) (numBytesWritten int, wErr error) {
 	var written32 uint32
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_WriteFile, "WriteFile"),
+		dll.Load(dll.KERNEL32, &_kernel_WriteFile, "WriteFile"),
 		uintptr(hFile),
 		uintptr(unsafe.Pointer(&data[0])),
 		uintptr(uint32(len(data))),
@@ -298,4 +298,100 @@ func (hFile HFILE) WriteFile(
 	return int(written32), nil
 }
 
-var _WriteFile *syscall.Proc
+var _kernel_WriteFile *syscall.Proc
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+// Handle to a memory-mapped [file].
+//
+// [file]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
+type HFILEMAP HANDLE
+
+// [CloseHandle] function.
+//
+// [CloseHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+func (hMap HFILEMAP) CloseHandle() error {
+	return HANDLE(hMap).CloseHandle()
+}
+
+// [MapViewOfFile] function.
+//
+// The offset will be rounded down to a multiple of the allocation granularity,
+// which is taken with [GetSystemInfo].
+//
+// Note that this function may present issues in x86 architectures.
+//
+// Panics if offset or numBytesToMap is negative.
+//
+// ⚠️ You must defer [HFILEMAPVIEW.UnmapViewOfFile].
+//
+// [MapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
+func (hMap HFILEMAP) MapViewOfFile(
+	desiredAccess co.FILE_MAP,
+	offset int,
+	numBytesToMap int,
+) (HFILEMAPVIEW, error) {
+	utl.PanicNeg(offset, numBytesToMap)
+
+	si := GetSystemInfo()
+	offset64 := uint64(offset)
+	if (offset64 % uint64(si.DwAllocationGranularity)) != 0 {
+		offset64 -= offset64 % uint64(si.DwAllocationGranularity)
+	}
+
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_kernel_MapViewOfFileFromApp, "MapViewOfFileFromApp"),
+		uintptr(hMap),
+		uintptr(desiredAccess),
+		uintptr(offset64),
+		uintptr(uint64(numBytesToMap)))
+	if ret == 0 {
+		return HFILEMAPVIEW(0), co.ERROR(err)
+	}
+	return HFILEMAPVIEW(ret), nil
+}
+
+var _kernel_MapViewOfFileFromApp *syscall.Proc
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+// Handle to the memory block of a memory-mapped [file]. Actually, this is the
+// starting address of the mapped view.
+//
+// [file]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile
+type HFILEMAPVIEW HANDLE
+
+// Returns a pointer to the beginning of the mapped memory block.
+func (hMem HFILEMAPVIEW) Ptr() *byte {
+	return (*byte)(unsafe.Pointer(hMem))
+}
+
+// [FlushViewOfFile] function.
+//
+// Panics if numBytes is negative.
+//
+// [FlushViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-flushviewoffile
+func (hMem HFILEMAPVIEW) FlushViewOfFile(numBytes int) error {
+	utl.PanicNeg(numBytes)
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_kernel_FlushViewOfFile, "FlushViewOfFile"),
+		uintptr(hMem),
+		uintptr(uint64(numBytes)))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _kernel_FlushViewOfFile *syscall.Proc
+
+// [UnmapViewOfFile] function.
+//
+// Paired with [HFILEMAP.MapViewOfFile].
+//
+// [UnmapViewOfFile]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
+func (hMem HFILEMAPVIEW) UnmapViewOfFile() error {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_kernel_UnmapViewOfFile, "UnmapViewOfFile"),
+		uintptr(hMem))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _kernel_UnmapViewOfFile *syscall.Proc

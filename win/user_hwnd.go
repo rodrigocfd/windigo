@@ -33,7 +33,7 @@ func CreateWindowEx(
 ) (HWND, error) {
 	var wClassName, wTitle wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_CreateWindowExW, "CreateWindowExW"),
+		dll.Load(dll.USER32, &_user_CreateWindowExW, "CreateWindowExW"),
 		uintptr(exStyle),
 		className.raw(&wClassName),
 		uintptr(wTitle.EmptyIsNil(title)),
@@ -52,7 +52,7 @@ func CreateWindowEx(
 	return HWND(ret), nil
 }
 
-var _CreateWindowExW *syscall.Proc
+var _user_CreateWindowExW *syscall.Proc
 
 // [FindWindow] function.
 //
@@ -60,109 +60,109 @@ var _CreateWindowExW *syscall.Proc
 func FindWindow(className ClassName, title string) (HWND, bool) {
 	var wClassName, wTitle wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_FindWindowW, "FindWindowW"),
+		dll.Load(dll.USER32, &_user_FindWindowW, "FindWindowW"),
 		className.raw(&wClassName),
 		uintptr(wTitle.EmptyIsNil(title)))
 	return HWND(ret), ret != 0
 }
 
-var _FindWindowW *syscall.Proc
+var _user_FindWindowW *syscall.Proc
 
 // [GetClipboardOwner] function.
 //
 // [GetClipboardOwner]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardowner
 func GetClipboardOwner() (HWND, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetClipboardOwner, "GetClipboardOwner"))
+		dll.Load(dll.USER32, &_user_GetClipboardOwner, "GetClipboardOwner"))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return HWND(0), wErr
 	}
 	return HWND(ret), nil
 }
 
-var _GetClipboardOwner *syscall.Proc
+var _user_GetClipboardOwner *syscall.Proc
 
 // [GetDesktopWindow] function.
 //
 // [GetDesktopWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdesktopwindow
 func GetDesktopWindow() HWND {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetDesktopWindow, "GetDesktopWindow"))
+		dll.Load(dll.USER32, &_user_GetDesktopWindow, "GetDesktopWindow"))
 	return HWND(ret)
 }
 
-var _GetDesktopWindow *syscall.Proc
+var _user_GetDesktopWindow *syscall.Proc
 
 // [GetFocus] function.
 //
 // [GetFocus]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getfocus
 func GetFocus() HWND {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetFocus, "GetFocus"))
+		dll.Load(dll.USER32, &_user_GetFocus, "GetFocus"))
 	return HWND(ret)
 }
 
-var _GetFocus *syscall.Proc
+var _user_GetFocus *syscall.Proc
 
 // [GetForegroundWindow] function.
 //
 // [GetForegroundWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow
 func GetForegroundWindow() HWND {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetForegroundWindow, "GetForegroundWindow"))
+		dll.Load(dll.USER32, &_user_GetForegroundWindow, "GetForegroundWindow"))
 	return HWND(ret)
 }
 
-var _GetForegroundWindow *syscall.Proc
+var _user_GetForegroundWindow *syscall.Proc
 
 // [GetOpenClipboardWindow] function.
 //
 // [GetOpenClipboardWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getopenclipboardwindow
 func GetOpenClipboardWindow() (HWND, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetOpenClipboardWindow, "GetOpenClipboardWindow"))
+		dll.Load(dll.USER32, &_user_GetOpenClipboardWindow, "GetOpenClipboardWindow"))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return HWND(0), wErr
 	}
 	return HWND(ret), nil
 }
 
-var _GetOpenClipboardWindow *syscall.Proc
+var _user_GetOpenClipboardWindow *syscall.Proc
 
 // [GetShellWindow] function.
 //
 // [GetShellWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getshellwindow
 func GetShellWindow() HWND {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetShellWindow, "GetShellWindow"))
+		dll.Load(dll.USER32, &_user_GetShellWindow, "GetShellWindow"))
 	return HWND(ret)
 }
 
-var _GetShellWindow *syscall.Proc
+var _user_GetShellWindow *syscall.Proc
 
 // [WindowFromPhysicalPoint] function.
 //
 // [WindowFromPhysicalPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-windowfromphysicalpoint
 func WindowFromPhysicalPoint(pt POINT) HWND {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_WindowFromPhysicalPoint, "WindowFromPhysicalPoint"),
+		dll.Load(dll.USER32, &_user_WindowFromPhysicalPoint, "WindowFromPhysicalPoint"),
 		pt.serializeUint64())
 	return HWND(ret)
 }
 
-var _WindowFromPhysicalPoint *syscall.Proc
+var _user_WindowFromPhysicalPoint *syscall.Proc
 
 // [WindowFromPoint] function.
 //
 // [WindowFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-windowfrompoint
 func WindowFromPoint(pt POINT) HWND {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_WindowFromPoint, "WindowFromPoint"),
+		dll.Load(dll.USER32, &_user_WindowFromPoint, "WindowFromPoint"),
 		pt.serializeUint64())
 	return HWND(ret)
 }
 
-var _WindowFromPoint *syscall.Proc
+var _user_WindowFromPoint *syscall.Proc
 
 // [AnimateWindow] function.
 //
@@ -171,14 +171,14 @@ var _WindowFromPoint *syscall.Proc
 // [AnimateWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-animatewindow
 func (hWnd HWND) AnimateWindow(time int, flags co.AW) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_AnimateWindow, "AnimateWindow"),
+		dll.Load(dll.USER32, &_user_AnimateWindow, "AnimateWindow"),
 		uintptr(hWnd),
 		uintptr(uint32(time)),
 		uintptr(flags))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _AnimateWindow *syscall.Proc
+var _user_AnimateWindow *syscall.Proc
 
 // [BeginPaint] function.
 //
@@ -195,7 +195,7 @@ var _AnimateWindow *syscall.Proc
 // [BeginPaint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint
 func (hWnd HWND) BeginPaint(ps *PAINTSTRUCT) (HDC, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_BeginPaint, "BeginPaint"),
+		dll.Load(dll.USER32, &_user_BeginPaint, "BeginPaint"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(ps)))
 	if ret == 0 {
@@ -204,26 +204,26 @@ func (hWnd HWND) BeginPaint(ps *PAINTSTRUCT) (HDC, error) {
 	return HDC(ret), nil
 }
 
-var _BeginPaint *syscall.Proc
+var _user_BeginPaint *syscall.Proc
 
 // [BringWindowToTop] function.
 //
 // [BringWindowToTop]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-bringwindowtotop
 func (hWnd HWND) BringWindowToTop() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_BringWindowToTop, "BringWindowToTop"),
+		dll.Load(dll.USER32, &_user_BringWindowToTop, "BringWindowToTop"),
 		uintptr(hWnd))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _BringWindowToTop *syscall.Proc
+var _user_BringWindowToTop *syscall.Proc
 
 // [ChildWindowFromPoint] function.
 //
 // [ChildWindowFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-childwindowfrompoint
 func (hWnd HWND) ChildWindowFromPoint(pt POINT) (HWND, bool) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ChildWindowFromPoint, "ChildWindowFromPoint"),
+		dll.Load(dll.USER32, &_user_ChildWindowFromPoint, "ChildWindowFromPoint"),
 		uintptr(hWnd),
 		pt.serializeUint64())
 	if ret == 0 {
@@ -232,14 +232,14 @@ func (hWnd HWND) ChildWindowFromPoint(pt POINT) (HWND, bool) {
 	return HWND(ret), true
 }
 
-var _ChildWindowFromPoint *syscall.Proc
+var _user_ChildWindowFromPoint *syscall.Proc
 
 // [ChildWindowFromPointEx] function.
 //
 // [ChildWindowFromPointEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-childwindowfrompointex
 func (hWnd HWND) ChildWindowFromPointEx(pt POINT, flags co.CWP) (HWND, bool) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ChildWindowFromPointEx, "ChildWindowFromPointEx"),
+		dll.Load(dll.USER32, &_user_ChildWindowFromPointEx, "ChildWindowFromPointEx"),
 		uintptr(hWnd),
 		uintptr(pt.X),
 		uintptr(pt.Y),
@@ -250,27 +250,27 @@ func (hWnd HWND) ChildWindowFromPointEx(pt POINT, flags co.CWP) (HWND, bool) {
 	return HWND(ret), true
 }
 
-var _ChildWindowFromPointEx *syscall.Proc
+var _user_ChildWindowFromPointEx *syscall.Proc
 
 // [ClientToScreen] function for [POINT].
 //
 // [ClientToScreen]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clienttoscreen
 func (hWnd HWND) ClientToScreenPt(pt *POINT) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ClientToScreen, "ClientToScreen"),
+		dll.Load(dll.USER32, &_user_ClientToScreen, "ClientToScreen"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(pt)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ClientToScreen *syscall.Proc
+var _user_ClientToScreen *syscall.Proc
 
 // [ClientToScreen] function for [RECT].
 //
 // [ClientToScreen]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clienttoscreen
 func (hWnd HWND) ClientToScreenRc(rc *RECT) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ClientToScreen, "ClientToScreen"),
+		dll.Load(dll.USER32, &_user_ClientToScreen, "ClientToScreen"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(rc)))
 	if ret == 0 {
@@ -278,7 +278,7 @@ func (hWnd HWND) ClientToScreenRc(rc *RECT) error {
 	}
 
 	ret, _, _ = syscall.SyscallN(
-		dll.Load(dll.USER32, &_ClientToScreen, "ClientToScreen"),
+		dll.Load(dll.USER32, &_user_ClientToScreen, "ClientToScreen"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(&rc.Right)))
 	return utl.ZeroAsSysInvalidParm(ret)
@@ -291,19 +291,19 @@ func (hWnd HWND) ClientToScreenRc(rc *RECT) error {
 // [CloseWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-closewindow
 func (hWnd HWND) CloseWindow() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_CloseWindow, "CloseWindow"),
+		dll.Load(dll.USER32, &_user_CloseWindow, "CloseWindow"),
 		uintptr(hWnd))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _CloseWindow *syscall.Proc
+var _user_CloseWindow *syscall.Proc
 
 // [DefDlgProc] function.
 //
 // [DefDlgProc]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-defdlgprocw
 func (hWnd HWND) DefDlgProc(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_DefDlgProcW, "DefDlgProcW"),
+		dll.Load(dll.USER32, &_user_DefDlgProcW, "DefDlgProcW"),
 		uintptr(hWnd),
 		uintptr(msg),
 		uintptr(wParam),
@@ -311,14 +311,14 @@ func (hWnd HWND) DefDlgProc(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	return ret
 }
 
-var _DefDlgProcW *syscall.Proc
+var _user_DefDlgProcW *syscall.Proc
 
 // [DefWindowProc] function.
 //
 // [DefWindowProc]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-defwindowprocw
 func (hWnd HWND) DefWindowProc(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_DefWindowProcW, "DefWindowProcW"),
+		dll.Load(dll.USER32, &_user_DefWindowProcW, "DefWindowProcW"),
 		uintptr(hWnd),
 		uintptr(msg),
 		uintptr(wParam),
@@ -326,7 +326,7 @@ func (hWnd HWND) DefWindowProc(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr 
 	return ret
 }
 
-var _DefWindowProcW *syscall.Proc
+var _user_DefWindowProcW *syscall.Proc
 
 // [DestroyWindow] function.
 //
@@ -336,62 +336,62 @@ var _DefWindowProcW *syscall.Proc
 // [DestroyWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroywindow
 func (hWnd HWND) DestroyWindow() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_DestroyWindow, "DestroyWindow"),
+		dll.Load(dll.USER32, &_user_DestroyWindow, "DestroyWindow"),
 		uintptr(hWnd))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _DestroyWindow *syscall.Proc
+var _user_DestroyWindow *syscall.Proc
 
 // [DragDetect] function.
 //
 // [DragDetect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dragdetect
 func (hWnd HWND) DragDetect(pt POINT) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_DragDetect, "DragDetect"),
+		dll.Load(dll.USER32, &_user_DragDetect, "DragDetect"),
 		uintptr(hWnd),
 		pt.serializeUint64())
 	return ret != 0
 }
 
-var _DragDetect *syscall.Proc
+var _user_DragDetect *syscall.Proc
 
 // [DrawMenuBar] function.
 //
 // [DrawMenuBar]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawmenubar
 func (hWnd HWND) DrawMenuBar() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_DrawMenuBar, "DrawMenuBar"),
+		dll.Load(dll.USER32, &_user_DrawMenuBar, "DrawMenuBar"),
 		uintptr(hWnd))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _DrawMenuBar *syscall.Proc
+var _user_DrawMenuBar *syscall.Proc
 
 // [EnableWindow] function.
 //
 // [EnableWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablewindow
 func (hWnd HWND) EnableWindow(enable bool) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_EnableWindow, "EnableWindow"),
+		dll.Load(dll.USER32, &_user_EnableWindow, "EnableWindow"),
 		uintptr(hWnd), utl.BoolToUintptr(enable))
 	return ret != 0 // the window was previously disabled?
 }
 
-var _EnableWindow *syscall.Proc
+var _user_EnableWindow *syscall.Proc
 
 // [EndDialog] function.
 //
 // [EndDialog]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enddialog
 func (hWnd HWND) EndDialog(result uintptr) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_EndDialog, "EndDialog"),
+		dll.Load(dll.USER32, &_user_EndDialog, "EndDialog"),
 		uintptr(hWnd),
 		result)
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _EndDialog *syscall.Proc
+var _user_EndDialog *syscall.Proc
 
 // [EndPaint] function.
 //
@@ -400,12 +400,12 @@ var _EndDialog *syscall.Proc
 // [EndPaint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endpaint
 func (hWnd HWND) EndPaint(ps *PAINTSTRUCT) {
 	syscall.SyscallN(
-		dll.Load(dll.USER32, &_EndPaint, "EndPaint"),
+		dll.Load(dll.USER32, &_user_EndPaint, "EndPaint"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(ps)))
 }
 
-var _EndPaint *syscall.Proc
+var _user_EndPaint *syscall.Proc
 
 // [EnumChildWindows] function.
 //
@@ -416,14 +416,14 @@ func (hWnd HWND) EnumChildWindows() []HWND {
 	}
 
 	syscall.SyscallN(
-		dll.Load(dll.USER32, &_EnumChildWindows, "EnumChildWindows"),
+		dll.Load(dll.USER32, &_user_EnumChildWindows, "EnumChildWindows"),
 		uintptr(hWnd),
 		enumChildWindowsCallback(),
 		uintptr(unsafe.Pointer(pPack)))
 	return pPack.arr
 }
 
-var _EnumChildWindows *syscall.Proc
+var _user_EnumChildWindows *syscall.Proc
 
 type _EnumChildWindowsPack struct{ arr []HWND }
 
@@ -455,7 +455,7 @@ func (hWnd HWND) ExStyle() (co.WS_EX, error) {
 // [GetAncestor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getancestor
 func (hWnd HWND) GetAncestor(gaFlags co.GA) (HWND, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetAncestor, "GetAncestor"),
+		dll.Load(dll.USER32, &_user_GetAncestor, "GetAncestor"),
 		uintptr(hWnd),
 		uintptr(gaFlags))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
@@ -464,7 +464,7 @@ func (hWnd HWND) GetAncestor(gaFlags co.GA) (HWND, error) {
 	return HWND(ret), nil
 }
 
-var _GetAncestor *syscall.Proc
+var _user_GetAncestor *syscall.Proc
 
 // [GetClassName] function.
 //
@@ -474,7 +474,7 @@ func (hWnd HWND) GetClassName() (string, error) {
 	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetClassNameW, "GetClassNameW"),
+		dll.Load(dll.USER32, &_user_GetClassNameW, "GetClassNameW"),
 		uintptr(hWnd),
 		uintptr(wBuf.Ptr()),
 		uintptr(int32(wBuf.Len())))
@@ -484,7 +484,7 @@ func (hWnd HWND) GetClassName() (string, error) {
 	return wBuf.String(), nil
 }
 
-var _GetClassNameW *syscall.Proc
+var _user_GetClassNameW *syscall.Proc
 
 // [GetClientRect] function.
 //
@@ -492,7 +492,7 @@ var _GetClassNameW *syscall.Proc
 func (hWnd HWND) GetClientRect() (RECT, error) {
 	var rc RECT
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetClientRect, "GetClientRect"),
+		dll.Load(dll.USER32, &_user_GetClientRect, "GetClientRect"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(&rc)))
 	if ret == 0 {
@@ -501,7 +501,7 @@ func (hWnd HWND) GetClientRect() (RECT, error) {
 	return rc, nil
 }
 
-var _GetClientRect *syscall.Proc
+var _user_GetClientRect *syscall.Proc
 
 // [GetDC] function.
 //
@@ -517,7 +517,7 @@ var _GetClientRect *syscall.Proc
 // [GetDC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdc
 func (hWnd HWND) GetDC() (HDC, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetDC, "GetDC"),
+		dll.Load(dll.USER32, &_user_GetDC, "GetDC"),
 		uintptr(hWnd))
 	if ret == 0 {
 		return HDC(0), co.ERROR_INVALID_PARAMETER
@@ -525,7 +525,7 @@ func (hWnd HWND) GetDC() (HDC, error) {
 	return HDC(ret), nil
 }
 
-var _GetDC *syscall.Proc
+var _user_GetDC *syscall.Proc
 
 // [GetDCEx] function.
 //
@@ -534,7 +534,7 @@ var _GetDC *syscall.Proc
 // [GetDCEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdc
 func (hWnd HWND) GetDCEx(hRgnClip HRGN, flags co.DCX) (HDC, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetDCEx, "GetDCEx"),
+		dll.Load(dll.USER32, &_user_GetDCEx, "GetDCEx"),
 		uintptr(hWnd),
 		uintptr(hRgnClip),
 		uintptr(flags))
@@ -544,14 +544,14 @@ func (hWnd HWND) GetDCEx(hRgnClip HRGN, flags co.DCX) (HDC, error) {
 	return HDC(ret), nil
 }
 
-var _GetDCEx *syscall.Proc
+var _user_GetDCEx *syscall.Proc
 
 // [GetDlgCtrlID] function.
 //
 // [GetDlgCtrlID]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgctrlid
 func (hWnd HWND) GetDlgCtrlID() (uint16, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetDlgCtrlID, "GetDlgCtrlID"),
+		dll.Load(dll.USER32, &_user_GetDlgCtrlID, "GetDlgCtrlID"),
 		uintptr(hWnd))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return 0, wErr
@@ -559,14 +559,14 @@ func (hWnd HWND) GetDlgCtrlID() (uint16, error) {
 	return uint16(ret), nil
 }
 
-var _GetDlgCtrlID *syscall.Proc
+var _user_GetDlgCtrlID *syscall.Proc
 
 // [GetDlgItem] function.
 //
 // [GetDlgItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
 func (hWnd HWND) GetDlgItem(dlgId uint16) (HWND, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetDlgItem, "GetDlgItem"),
+		dll.Load(dll.USER32, &_user_GetDlgItem, "GetDlgItem"),
 		uintptr(hWnd),
 		uintptr(int32(dlgId)))
 	if ret == 0 {
@@ -575,38 +575,38 @@ func (hWnd HWND) GetDlgItem(dlgId uint16) (HWND, error) {
 	return HWND(ret), nil
 }
 
-var _GetDlgItem *syscall.Proc
+var _user_GetDlgItem *syscall.Proc
 
 // [GetLastActivePopup] function.
 //
 // [GetLastActivePopup]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getlastactivepopup
 func (hWnd HWND) GetLastActivePopup() HWND {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetLastActivePopup, "GetLastActivePopup"),
+		dll.Load(dll.USER32, &_user_GetLastActivePopup, "GetLastActivePopup"),
 		uintptr(hWnd))
 	return HWND(ret)
 }
 
-var _GetLastActivePopup *syscall.Proc
+var _user_GetLastActivePopup *syscall.Proc
 
 // [GetMenu] function.
 //
 // [GetMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenu
 func (hWnd HWND) GetMenu() HMENU {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetMenu, "GetMenu"),
+		dll.Load(dll.USER32, &_user_GetMenu, "GetMenu"),
 		uintptr(hWnd))
 	return HMENU(ret)
 }
 
-var _GetMenu *syscall.Proc
+var _user_GetMenu *syscall.Proc
 
 // [GetNextDlgGroupItem] function.
 //
 // [GetNextDlgGroupItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getnextdlggroupitem
 func (hWnd HWND) GetNextDlgGroupItem(hChild HWND, isPrevious bool) (HWND, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetNextDlgGroupItem, "GetNextDlgGroupItem"),
+		dll.Load(dll.USER32, &_user_GetNextDlgGroupItem, "GetNextDlgGroupItem"),
 		uintptr(hWnd),
 		uintptr(hChild),
 		utl.BoolToUintptr(isPrevious))
@@ -616,14 +616,14 @@ func (hWnd HWND) GetNextDlgGroupItem(hChild HWND, isPrevious bool) (HWND, error)
 	return HWND(ret), nil
 }
 
-var _GetNextDlgGroupItem *syscall.Proc
+var _user_GetNextDlgGroupItem *syscall.Proc
 
 // [GetNextDlgTabItem] function.
 //
 // [GetNextDlgTabItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getnextdlgtabitem
 func (hWnd HWND) GetNextDlgTabItem(hChild HWND, isPrevious bool) (HWND, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetNextDlgTabItem, "GetNextDlgTabItem"),
+		dll.Load(dll.USER32, &_user_GetNextDlgTabItem, "GetNextDlgTabItem"),
 		uintptr(hWnd),
 		uintptr(hChild),
 		utl.BoolToUintptr(isPrevious))
@@ -633,14 +633,14 @@ func (hWnd HWND) GetNextDlgTabItem(hChild HWND, isPrevious bool) (HWND, error) {
 	return HWND(ret), nil
 }
 
-var _GetNextDlgTabItem *syscall.Proc
+var _user_GetNextDlgTabItem *syscall.Proc
 
 // [GetParent] function.
 //
 // [GetParent]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getparent
 func (hWnd HWND) GetParent() (HWND, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetParent, "GetParent"),
+		dll.Load(dll.USER32, &_user_GetParent, "GetParent"),
 		uintptr(hWnd))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return HWND(0), wErr
@@ -648,7 +648,7 @@ func (hWnd HWND) GetParent() (HWND, error) {
 	return HWND(ret), nil
 }
 
-var _GetParent *syscall.Proc
+var _user_GetParent *syscall.Proc
 
 // [GetScrollInfo] function.
 //
@@ -656,14 +656,14 @@ var _GetParent *syscall.Proc
 func (hWnd HWND) GetScrollInfo(bar co.SBB, si *SCROLLINFO) error {
 	si.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetScrollInfo, "GetScrollInfo"),
+		dll.Load(dll.USER32, &_user_GetScrollInfo, "GetScrollInfo"),
 		uintptr(hWnd),
 		uintptr(bar),
 		uintptr(unsafe.Pointer(si)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _GetScrollInfo *syscall.Proc
+var _user_GetScrollInfo *syscall.Proc
 
 // [GetTitleBarInfo] function.
 //
@@ -673,7 +673,7 @@ func (hWnd HWND) GetTitleBarInfo() (TITLEBARINFO, error) {
 	ti.SetCbSize()
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetTitleBarInfo, "GetTitleBarInfo"),
+		dll.Load(dll.USER32, &_user_GetTitleBarInfo, "GetTitleBarInfo"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(&ti)))
 	if ret == 0 {
@@ -682,14 +682,14 @@ func (hWnd HWND) GetTitleBarInfo() (TITLEBARINFO, error) {
 	return ti, nil
 }
 
-var _GetTitleBarInfo *syscall.Proc
+var _user_GetTitleBarInfo *syscall.Proc
 
 // [GetTopWindow] function.
 //
 // [GetTopWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-gettopwindow
 func (hWnd HWND) GetTopWindow() (HWND, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetTopWindow, "GetTopWindow"),
+		dll.Load(dll.USER32, &_user_GetTopWindow, "GetTopWindow"),
 		uintptr(hWnd))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return HWND(0), wErr
@@ -697,14 +697,14 @@ func (hWnd HWND) GetTopWindow() (HWND, error) {
 	return HWND(ret), nil
 }
 
-var _GetTopWindow *syscall.Proc
+var _user_GetTopWindow *syscall.Proc
 
 // [GetWindow] function.
 //
 // [GetWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindow
 func (hWnd HWND) GetWindow(cmd co.GW) (HWND, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetWindow, "GetWindow"),
+		dll.Load(dll.USER32, &_user_GetWindow, "GetWindow"),
 		uintptr(hWnd),
 		uintptr(cmd))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
@@ -713,7 +713,7 @@ func (hWnd HWND) GetWindow(cmd co.GW) (HWND, error) {
 	return HWND(ret), nil
 }
 
-var _GetWindow *syscall.Proc
+var _user_GetWindow *syscall.Proc
 
 // [GetWindowDC] function.
 //
@@ -722,7 +722,7 @@ var _GetWindow *syscall.Proc
 // [GetWindowDC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowdc
 func (hWnd HWND) GetWindowDC() (HDC, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetWindowDC, "GetWindowDC"),
+		dll.Load(dll.USER32, &_user_GetWindowDC, "GetWindowDC"),
 		uintptr(hWnd))
 	if ret == 0 {
 		return HDC(0), co.ERROR_INVALID_PARAMETER
@@ -730,7 +730,7 @@ func (hWnd HWND) GetWindowDC() (HDC, error) {
 	return HDC(ret), nil
 }
 
-var _GetWindowDC *syscall.Proc
+var _user_GetWindowDC *syscall.Proc
 
 // [GetWindowDisplayAffinity] function.
 //
@@ -738,7 +738,7 @@ var _GetWindowDC *syscall.Proc
 func (hWnd HWND) GetWindowDisplayAffinity() (co.WDA, error) {
 	var da co.WDA
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetWindowDisplayAffinity, "GetWindowDisplayAffinity"),
+		dll.Load(dll.USER32, &_user_GetWindowDisplayAffinity, "GetWindowDisplayAffinity"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(&da)))
 	if ret == 0 {
@@ -747,7 +747,7 @@ func (hWnd HWND) GetWindowDisplayAffinity() (co.WDA, error) {
 	return da, nil
 }
 
-var _GetWindowDisplayAffinity *syscall.Proc
+var _user_GetWindowDisplayAffinity *syscall.Proc
 
 // [GetWindowPlacement] function.
 //
@@ -757,7 +757,7 @@ func (hWnd HWND) GetWindowPlacement() (WINDOWPLACEMENT, error) {
 	wp.SetLength()
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetWindowPlacement, "GetWindowPlacement"),
+		dll.Load(dll.USER32, &_user_GetWindowPlacement, "GetWindowPlacement"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(&wp)))
 	if ret == 0 {
@@ -766,7 +766,7 @@ func (hWnd HWND) GetWindowPlacement() (WINDOWPLACEMENT, error) {
 	return wp, nil
 }
 
-var _GetWindowPlacement *syscall.Proc
+var _user_GetWindowPlacement *syscall.Proc
 
 // [GetWindowRect] function.
 //
@@ -774,7 +774,7 @@ var _GetWindowPlacement *syscall.Proc
 func (hWnd HWND) GetWindowRect() (RECT, error) {
 	var rc RECT
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetWindowRect, "GetWindowRect"),
+		dll.Load(dll.USER32, &_user_GetWindowRect, "GetWindowRect"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(&rc)))
 	if ret == 0 {
@@ -783,7 +783,7 @@ func (hWnd HWND) GetWindowRect() (RECT, error) {
 	return rc, nil
 }
 
-var _GetWindowRect *syscall.Proc
+var _user_GetWindowRect *syscall.Proc
 
 // [GetWindowText] function.
 //
@@ -801,7 +801,7 @@ func (hWnd HWND) GetWindowText() (string, error) {
 	wBuf.Alloc(bufSz)
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetWindowTextW, "GetWindowTextW"),
+		dll.Load(dll.USER32, &_user_GetWindowTextW, "GetWindowTextW"),
 		uintptr(hWnd),
 		uintptr(wBuf.Ptr()),
 		uintptr(int32(bufSz)))
@@ -811,7 +811,7 @@ func (hWnd HWND) GetWindowText() (string, error) {
 	return wBuf.String(), nil
 }
 
-var _GetWindowTextW *syscall.Proc
+var _user_GetWindowTextW *syscall.Proc
 
 // [GetWindowTextLength] function.
 //
@@ -821,7 +821,7 @@ var _GetWindowTextW *syscall.Proc
 // [GetWindowTextLength]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtextlengthw
 func (hWnd HWND) GetWindowTextLength() (int, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetWindowTextLengthW, "GetWindowTextLengthW"),
+		dll.Load(dll.USER32, &_user_GetWindowTextLengthW, "GetWindowTextLengthW"),
 		uintptr(hWnd))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return 0, wErr
@@ -829,7 +829,7 @@ func (hWnd HWND) GetWindowTextLength() (int, error) {
 	return int(int32(ret)), nil
 }
 
-var _GetWindowTextLengthW *syscall.Proc
+var _user_GetWindowTextLengthW *syscall.Proc
 
 // [GetWindowThreadProcessId] function.
 //
@@ -837,7 +837,7 @@ var _GetWindowTextLengthW *syscall.Proc
 func (hWnd HWND) GetWindowThreadProcessId() (threadId, processId uint32, wErr error) {
 	var pid uint32
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetWindowThreadProcessId, "GetWindowThreadProcessId"),
+		dll.Load(dll.USER32, &_user_GetWindowThreadProcessId, "GetWindowThreadProcessId"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(&pid)))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
@@ -846,7 +846,7 @@ func (hWnd HWND) GetWindowThreadProcessId() (threadId, processId uint32, wErr er
 	return uint32(ret), pid, nil
 }
 
-var _GetWindowThreadProcessId *syscall.Proc
+var _user_GetWindowThreadProcessId *syscall.Proc
 
 // Calls [HWND.GetWindowLongPtr] to retrieve the instance to which this window
 // belongs.
@@ -860,27 +860,27 @@ func (hWnd HWND) HInstance() (HINSTANCE, error) {
 // [InvalidateRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invalidaterect
 func (hWnd HWND) InvalidateRect(rc *RECT, erase bool) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_InvalidateRect, "InvalidateRect"),
+		dll.Load(dll.USER32, &_user_InvalidateRect, "InvalidateRect"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(rc)),
 		utl.BoolToUintptr(erase))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _InvalidateRect *syscall.Proc
+var _user_InvalidateRect *syscall.Proc
 
 // [IsChild] function.
 //
 // [IsChild]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-ischild
 func (hWnd HWND) IsChild(hChild HWND) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_IsChild, "IsChild"),
+		dll.Load(dll.USER32, &_user_IsChild, "IsChild"),
 		uintptr(hWnd),
 		uintptr(hChild))
 	return ret != 0
 }
 
-var _IsChild *syscall.Proc
+var _user_IsChild *syscall.Proc
 
 // Calls [HWND.GetClassLongPtr] and checks the [ATOM] against WC_DIALOG.
 func (hWnd HWND) IsDialog() (bool, error) {
@@ -896,50 +896,50 @@ func (hWnd HWND) IsDialog() (bool, error) {
 // [IsDialogMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isdialogmessagew
 func (hWnd HWND) IsDialogMessage(msg *MSG) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_IsDialogMessageW, "IsDialogMessageW"),
+		dll.Load(dll.USER32, &_user_IsDialogMessageW, "IsDialogMessageW"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(msg)))
 	return ret != 0
 }
 
-var _IsDialogMessageW *syscall.Proc
+var _user_IsDialogMessageW *syscall.Proc
 
 // [IsIconic] function.
 //
 // [IsIconic]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isiconic
 func (hWnd HWND) IsIconic() bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_IsIconic, "IsIconic"),
+		dll.Load(dll.USER32, &_user_IsIconic, "IsIconic"),
 		uintptr(hWnd))
 	return ret != 0
 }
 
-var _IsIconic *syscall.Proc
+var _user_IsIconic *syscall.Proc
 
 // [IsWindow] function.
 //
 // [IsWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-iswindow
 func (hWnd HWND) IsWindow() bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_IsWindow, "IsWindow"),
+		dll.Load(dll.USER32, &_user_IsWindow, "IsWindow"),
 		uintptr(hWnd))
 	return ret != 0
 }
 
-var _IsWindow *syscall.Proc
+var _user_IsWindow *syscall.Proc
 
 // [MapDialogRect] function.
 //
 // [MapDialogRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mapdialogrect
 func (hWnd HWND) MapDialogRect(rc *RECT) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_MapDialogRect, "MapDialogRect"),
+		dll.Load(dll.USER32, &_user_MapDialogRect, "MapDialogRect"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(rc)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _MapDialogRect *syscall.Proc
+var _user_MapDialogRect *syscall.Proc
 
 // [MessageBox] function.
 //
@@ -947,7 +947,7 @@ var _MapDialogRect *syscall.Proc
 func (hWnd HWND) MessageBox(text, caption string, uType co.MB) (co.ID, error) {
 	var wText, wCaption wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_MessageBoxW, "MessageBoxW"),
+		dll.Load(dll.USER32, &_user_MessageBoxW, "MessageBoxW"),
 		uintptr(hWnd),
 		uintptr(wText.EmptyIsNil(text)),
 		uintptr(wCaption.EmptyIsNil(caption)),
@@ -958,27 +958,27 @@ func (hWnd HWND) MessageBox(text, caption string, uType co.MB) (co.ID, error) {
 	return co.ID(ret), nil
 }
 
-var _MessageBoxW *syscall.Proc
+var _user_MessageBoxW *syscall.Proc
 
 // [MonitorFromWindow] function.
 //
 // [MonitorFromWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromwindow
 func (hWnd HWND) MonitorFromWindow(flags co.MONITOR) HMONITOR {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_MonitorFromWindow, "MonitorFromWindow"),
+		dll.Load(dll.USER32, &_user_MonitorFromWindow, "MonitorFromWindow"),
 		uintptr(hWnd),
 		uintptr(flags))
 	return HMONITOR(ret)
 }
 
-var _MonitorFromWindow *syscall.Proc
+var _user_MonitorFromWindow *syscall.Proc
 
 // [PostMessage] function.
 //
 // [PostMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postmessagew
 func (hWnd HWND) PostMessage(msg co.WM, wParam WPARAM, lParam LPARAM) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_PostMessageW, "PostMessageW"),
+		dll.Load(dll.USER32, &_user_PostMessageW, "PostMessageW"),
 		uintptr(hWnd),
 		uintptr(msg),
 		uintptr(wParam),
@@ -986,27 +986,27 @@ func (hWnd HWND) PostMessage(msg co.WM, wParam WPARAM, lParam LPARAM) error {
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _PostMessageW *syscall.Proc
+var _user_PostMessageW *syscall.Proc
 
 // [RealChildWindowFromPoint] function.
 //
 // [RealChildWindowFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-realchildwindowfrompoint
 func (hWnd HWND) RealChildWindowFromPoint(ptParentClientCoords POINT) HWND {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_RealChildWindowFromPoint, "RealChildWindowFromPoint"),
+		dll.Load(dll.USER32, &_user_RealChildWindowFromPoint, "RealChildWindowFromPoint"),
 		uintptr(hWnd),
 		ptParentClientCoords.serializeUint64())
 	return HWND(ret)
 }
 
-var _RealChildWindowFromPoint *syscall.Proc
+var _user_RealChildWindowFromPoint *syscall.Proc
 
 // [RedrawWindow] function.
 //
 // [RedrawWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-redrawwindow
 func (hWnd HWND) RedrawWindow(rcUpdate *RECT, hrgnUpdate HRGN, flags co.RDW) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_RedrawWindow, "RedrawWindow"),
+		dll.Load(dll.USER32, &_user_RedrawWindow, "RedrawWindow"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(rcUpdate)),
 		uintptr(hrgnUpdate),
@@ -1014,40 +1014,40 @@ func (hWnd HWND) RedrawWindow(rcUpdate *RECT, hrgnUpdate HRGN, flags co.RDW) err
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _RedrawWindow *syscall.Proc
+var _user_RedrawWindow *syscall.Proc
 
 // [ReleaseDC] function.
 //
 // [ReleaseDC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-releasedc
 func (hWnd HWND) ReleaseDC(hdc HDC) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ReleaseDC, "ReleaseDC"),
+		dll.Load(dll.USER32, &_user_ReleaseDC, "ReleaseDC"),
 		uintptr(hWnd),
 		uintptr(hdc))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ReleaseDC *syscall.Proc
+var _user_ReleaseDC *syscall.Proc
 
 // [ScreenToClient] function for [POINT].
 //
 // [ScreenToClient]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-screentoclient
 func (hWnd HWND) ScreenToClientPt(pt *POINT) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ScreenToClient, "ScreenToClient"),
+		dll.Load(dll.USER32, &_user_ScreenToClient, "ScreenToClient"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(pt)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ScreenToClient *syscall.Proc
+var _user_ScreenToClient *syscall.Proc
 
 // [ScreenToClient] function for [RECT].
 //
 // [ScreenToClient]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-screentoclient
 func (hWnd HWND) ScreenToClientRc(rc *RECT) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ScreenToClient, "ScreenToClient"),
+		dll.Load(dll.USER32, &_user_ScreenToClient, "ScreenToClient"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(rc)))
 	if ret == 0 {
@@ -1055,7 +1055,7 @@ func (hWnd HWND) ScreenToClientRc(rc *RECT) error {
 	}
 
 	ret, _, _ = syscall.SyscallN(
-		dll.Load(dll.USER32, &_ScreenToClient, "ScreenToClient"),
+		dll.Load(dll.USER32, &_user_ScreenToClient, "ScreenToClient"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(&rc.Right)))
 	return utl.ZeroAsSysInvalidParm(ret)
@@ -1066,7 +1066,7 @@ func (hWnd HWND) ScreenToClientRc(rc *RECT) error {
 // [SendMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessagew
 func (hWnd HWND) SendMessage(msg co.WM, wParam WPARAM, lParam LPARAM) (uintptr, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SendMessageW, "SendMessageW"),
+		dll.Load(dll.USER32, &_user_SendMessageW, "SendMessageW"),
 		uintptr(hWnd),
 		uintptr(msg),
 		uintptr(wParam),
@@ -1077,7 +1077,7 @@ func (hWnd HWND) SendMessage(msg co.WM, wParam WPARAM, lParam LPARAM) (uintptr, 
 	return ret, nil
 }
 
-var _SendMessageW *syscall.Proc
+var _user_SendMessageW *syscall.Proc
 
 // [SetFocus] function.
 //
@@ -1086,7 +1086,7 @@ var _SendMessageW *syscall.Proc
 // [SetFocus]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setfocus
 func (hWnd HWND) SetFocus() (HWND, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetFocus, "SetFocus"),
+		dll.Load(dll.USER32, &_user_SetFocus, "SetFocus"),
 		uintptr(hWnd))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return HWND(0), wErr
@@ -1095,7 +1095,7 @@ func (hWnd HWND) SetFocus() (HWND, error) {
 	}
 }
 
-var _SetFocus *syscall.Proc
+var _user_SetFocus *syscall.Proc
 
 // [SetForegroundWindow] function.
 //
@@ -1104,32 +1104,32 @@ var _SetFocus *syscall.Proc
 // [SetForegroundWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow
 func (hWnd HWND) SetForegroundWindow() bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetForegroundWindow, "SetForegroundWindow"),
+		dll.Load(dll.USER32, &_user_SetForegroundWindow, "SetForegroundWindow"),
 		uintptr(hWnd))
 	return ret != 0
 }
 
-var _SetForegroundWindow *syscall.Proc
+var _user_SetForegroundWindow *syscall.Proc
 
 // [SetMenu] function.
 //
 // [SetMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenu
 func (hWnd HWND) SetMenu(hMenu HMENU) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetMenu, "SetMenu"),
+		dll.Load(dll.USER32, &_user_SetMenu, "SetMenu"),
 		uintptr(hWnd),
 		uintptr(hMenu))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _SetMenu *syscall.Proc
+var _user_SetMenu *syscall.Proc
 
 // [SetParent] function.
 //
 // [SetParent]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setparent
 func (hWnd HWND) SetParent(hNewParent HWND) (HWND, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetParent, "SetParent"),
+		dll.Load(dll.USER32, &_user_SetParent, "SetParent"),
 		uintptr(hWnd),
 		uintptr(hNewParent))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
@@ -1138,7 +1138,7 @@ func (hWnd HWND) SetParent(hNewParent HWND) (HWND, error) {
 	return HWND(ret), nil
 }
 
-var _SetParent *syscall.Proc
+var _user_SetParent *syscall.Proc
 
 // [SetScrollInfo] function.
 //
@@ -1146,7 +1146,7 @@ var _SetParent *syscall.Proc
 func (hWnd HWND) SetScrollInfo(bar co.SBB, si *SCROLLINFO, redraw bool) int {
 	si.SetCbSize() // safety
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetScrollInfo, "SetScrollInfo"),
+		dll.Load(dll.USER32, &_user_SetScrollInfo, "SetScrollInfo"),
 		uintptr(hWnd),
 		uintptr(bar),
 		uintptr(unsafe.Pointer(si)),
@@ -1154,20 +1154,20 @@ func (hWnd HWND) SetScrollInfo(bar co.SBB, si *SCROLLINFO, redraw bool) int {
 	return int(int32(ret))
 }
 
-var _SetScrollInfo *syscall.Proc
+var _user_SetScrollInfo *syscall.Proc
 
 // [SetWindowDisplayAffinity] function.
 //
 // [SetWindowDisplayAffinity]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity
 func (hWnd HWND) SetWindowDisplayAffinity(da co.WDA) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetWindowDisplayAffinity, "SetWindowDisplayAffinity"),
+		dll.Load(dll.USER32, &_user_SetWindowDisplayAffinity, "SetWindowDisplayAffinity"),
 		uintptr(hWnd),
 		uintptr(da))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _SetWindowDisplayAffinity *syscall.Proc
+var _user_SetWindowDisplayAffinity *syscall.Proc
 
 // [SetWindowFeedbackSetting] function.
 //
@@ -1186,7 +1186,7 @@ func (hWnd HWND) SetWindowFeedbackSetting(feedback co.FEEDBACK, opt co.FEEDBACK_
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetWindowFeedbackSetting, "SetWindowFeedbackSetting"),
+		dll.Load(dll.USER32, &_user_SetWindowFeedbackSetting, "SetWindowFeedbackSetting"),
 		uintptr(hWnd),
 		uintptr(feedback),
 		0,
@@ -1195,7 +1195,7 @@ func (hWnd HWND) SetWindowFeedbackSetting(feedback co.FEEDBACK, opt co.FEEDBACK_
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _SetWindowFeedbackSetting *syscall.Proc
+var _user_SetWindowFeedbackSetting *syscall.Proc
 
 // [SetWindowPlacement] function.
 //
@@ -1203,20 +1203,20 @@ var _SetWindowFeedbackSetting *syscall.Proc
 func (hWnd HWND) SetWindowPlacement(wp *WINDOWPLACEMENT) error {
 	wp.SetLength() // safety
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetWindowPlacement, "SetWindowPlacement"),
+		dll.Load(dll.USER32, &_user_SetWindowPlacement, "SetWindowPlacement"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(wp)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _SetWindowPlacement *syscall.Proc
+var _user_SetWindowPlacement *syscall.Proc
 
 // [SetWindowPos] function.
 //
 // [SetWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
 func (hWnd HWND) SetWindowPos(hwndInsertAfter HWND, x, y, cx, cy int, flags co.SWP) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetWindowPos, "SetWindowPos"),
+		dll.Load(dll.USER32, &_user_SetWindowPos, "SetWindowPos"),
 		uintptr(hWnd),
 		uintptr(hwndInsertAfter),
 		uintptr(int32(x)),
@@ -1227,21 +1227,21 @@ func (hWnd HWND) SetWindowPos(hwndInsertAfter HWND, x, y, cx, cy int, flags co.S
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _SetWindowPos *syscall.Proc
+var _user_SetWindowPos *syscall.Proc
 
 // [SetWindowRgn] function.
 //
 // [SetWindowRgn]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowrgn
 func (hWnd HWND) SetWindowRgn(hRgn HRGN, redraw bool) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetWindowRgn, "SetWindowRgn"),
+		dll.Load(dll.USER32, &_user_SetWindowRgn, "SetWindowRgn"),
 		uintptr(hWnd),
 		uintptr(hRgn),
 		utl.BoolToUintptr(redraw))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _SetWindowRgn *syscall.Proc
+var _user_SetWindowRgn *syscall.Proc
 
 // [SetWindowText] function.
 //
@@ -1249,78 +1249,78 @@ var _SetWindowRgn *syscall.Proc
 func (hWnd HWND) SetWindowText(text string) error {
 	var wText wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_SetWindowTextW, "SetWindowTextW"),
+		dll.Load(dll.USER32, &_user_SetWindowTextW, "SetWindowTextW"),
 		uintptr(hWnd),
 		uintptr(wText.EmptyIsNil(text)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _SetWindowTextW *syscall.Proc
+var _user_SetWindowTextW *syscall.Proc
 
 // [ShowCaret] function.
 //
 // [ShowCaret]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showcaret
 func (hWnd HWND) ShowCaret() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ShowCaret, "ShowCaret"),
+		dll.Load(dll.USER32, &_user_ShowCaret, "ShowCaret"),
 		uintptr(hWnd))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _ShowCaret *syscall.Proc
+var _user_ShowCaret *syscall.Proc
 
 // [ShowOwnedPopups] function.
 //
 // [ShowOwnedPopups]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showownedpopups
 func (hWnd HWND) ShowOwnedPopups(show bool) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ShowOwnedPopups, "ShowOwnedPopups"),
+		dll.Load(dll.USER32, &_user_ShowOwnedPopups, "ShowOwnedPopups"),
 		uintptr(hWnd),
 		utl.BoolToUintptr(show))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _ShowOwnedPopups *syscall.Proc
+var _user_ShowOwnedPopups *syscall.Proc
 
 // [ShowScrollBar] function.
 //
 // [ShowScrollBar]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showscrollbar
 func (hWnd HWND) ShowScrollBar(bar co.SBB, show bool) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ShowScrollBar, "ShowScrollBar"),
+		dll.Load(dll.USER32, &_user_ShowScrollBar, "ShowScrollBar"),
 		uintptr(hWnd),
 		uintptr(bar),
 		utl.BoolToUintptr(show))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _ShowScrollBar *syscall.Proc
+var _user_ShowScrollBar *syscall.Proc
 
 // [ShowWindow] function.
 //
 // [ShowWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
 func (hWnd HWND) ShowWindow(cmdShow co.SW) bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ShowWindow, "ShowWindow"),
+		dll.Load(dll.USER32, &_user_ShowWindow, "ShowWindow"),
 		uintptr(hWnd),
 		uintptr(cmdShow))
 	return ret != 0
 }
 
-var _ShowWindow *syscall.Proc
+var _user_ShowWindow *syscall.Proc
 
 // [ShowWindowAsync] function.
 //
 // [ShowWindowAsync]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindowasync
 func (hWnd HWND) ShowWindowAsync(cmdShow co.SW) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ShowWindowAsync, "ShowWindowAsync"),
+		dll.Load(dll.USER32, &_user_ShowWindowAsync, "ShowWindowAsync"),
 		uintptr(hWnd),
 		uintptr(cmdShow))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ShowWindowAsync *syscall.Proc
+var _user_ShowWindowAsync *syscall.Proc
 
 // [ShutdownBlockReasonCreate] function.
 //
@@ -1328,25 +1328,25 @@ var _ShowWindowAsync *syscall.Proc
 func (hWnd HWND) ShutdownBlockReasonCreate(reason string) error {
 	var wReason wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ShutdownBlockReasonCreate, "ShutdownBlockReasonCreate"),
+		dll.Load(dll.USER32, &_user_ShutdownBlockReasonCreate, "ShutdownBlockReasonCreate"),
 		uintptr(hWnd),
 		uintptr(wReason.AllowEmpty(reason)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _ShutdownBlockReasonCreate *syscall.Proc
+var _user_ShutdownBlockReasonCreate *syscall.Proc
 
 // [ShutdownBlockReasonDestroy] function.
 //
 // [ShutdownBlockReasonDestroy]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-shutdownblockreasondestroy
 func (hWnd HWND) ShutdownBlockReasonDestroy() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ShutdownBlockReasonDestroy, "ShutdownBlockReasonDestroy"),
+		dll.Load(dll.USER32, &_user_ShutdownBlockReasonDestroy, "ShutdownBlockReasonDestroy"),
 		uintptr(hWnd))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _ShutdownBlockReasonDestroy *syscall.Proc
+var _user_ShutdownBlockReasonDestroy *syscall.Proc
 
 // [ShutdownBlockReasonQuery] function.
 //
@@ -1354,7 +1354,7 @@ var _ShutdownBlockReasonDestroy *syscall.Proc
 func (hWnd HWND) ShutdownBlockReasonQuery() (string, error) {
 	var bufSz uint32
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_ShutdownBlockReasonQuery, "ShutdownBlockReasonQuery"),
+		dll.Load(dll.USER32, &_user_ShutdownBlockReasonQuery, "ShutdownBlockReasonQuery"),
 		uintptr(hWnd),
 		0,
 		uintptr(unsafe.Pointer(&bufSz)))
@@ -1366,7 +1366,7 @@ func (hWnd HWND) ShutdownBlockReasonQuery() (string, error) {
 	wBuf.Alloc(int(bufSz))
 
 	ret, _, err = syscall.SyscallN(
-		dll.Load(dll.USER32, &_ShutdownBlockReasonQuery, "ShutdownBlockReasonQuery"),
+		dll.Load(dll.USER32, &_user_ShutdownBlockReasonQuery, "ShutdownBlockReasonQuery"),
 		uintptr(hWnd),
 		uintptr(wBuf.Ptr()),
 		uintptr(unsafe.Pointer(&bufSz)))
@@ -1376,7 +1376,7 @@ func (hWnd HWND) ShutdownBlockReasonQuery() (string, error) {
 	return wBuf.String(), nil
 }
 
-var _ShutdownBlockReasonQuery *syscall.Proc
+var _user_ShutdownBlockReasonQuery *syscall.Proc
 
 // Calls [HWND.GetWindowLongPtr] to retrieve the window style.
 func (hWnd HWND) Style() (co.WS, error) {
@@ -1389,23 +1389,23 @@ func (hWnd HWND) Style() (co.WS, error) {
 // [TranslateAccelerator]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translateacceleratorw
 func (hWnd HWND) TranslateAccelerator(hAccel HACCEL, msg *MSG) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_TranslateAcceleratorW, "TranslateAcceleratorW"),
+		dll.Load(dll.USER32, &_user_TranslateAcceleratorW, "TranslateAcceleratorW"),
 		uintptr(hWnd),
 		uintptr(hAccel),
 		uintptr(unsafe.Pointer(msg)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _TranslateAcceleratorW *syscall.Proc
+var _user_TranslateAcceleratorW *syscall.Proc
 
 // [UpdateWindow] function.
 //
 // [UpdateWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-updatewindow
 func (hWnd HWND) UpdateWindow() bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_UpdateWindow, "UpdateWindow"),
+		dll.Load(dll.USER32, &_user_UpdateWindow, "UpdateWindow"),
 		uintptr(hWnd))
 	return ret != 0
 }
 
-var _UpdateWindow *syscall.Proc
+var _user_UpdateWindow *syscall.Proc

@@ -29,11 +29,11 @@ type VARIANT struct {
 // Implements [OleResource].
 func (me *VARIANT) release() {
 	syscall.SyscallN(
-		dll.Load(dll.OLEAUT32, &_VariantClear, "VariantClear"),
+		dll.Load(dll.OLEAUT32, &_oleaut_VariantClear, "VariantClear"),
 		uintptr(unsafe.Pointer(me))) // ignore errors
 }
 
-var _VariantClear *syscall.Proc
+var _oleaut_VariantClear *syscall.Proc
 
 // Returns the type of the VARIANT.
 func (vt *VARIANT) Type() co.VT {
@@ -53,13 +53,13 @@ func (vt *VARIANT) Type() co.VT {
 func NewVariantEmpty(releaser *OleReleaser) *VARIANT {
 	v := new(VARIANT)
 	syscall.SyscallN(
-		dll.Load(dll.OLEAUT32, &_VariantInit, "VariantInit"),
+		dll.Load(dll.OLEAUT32, &_oleaut_VariantInit, "VariantInit"),
 		uintptr(unsafe.Pointer(v)))
 	releaser.Add(v)
 	return v
 }
 
-var _VariantInit *syscall.Proc
+var _oleaut_VariantInit *syscall.Proc
 
 // Returns true if current type is VT_EMPTY.
 func (v *VARIANT) IsEmpty() bool {
@@ -135,7 +135,7 @@ func NewVariant(releaser *OleReleaser, value interface{}) *VARIANT {
 		st.SetTime(val)
 
 		ret, _, _ := syscall.SyscallN(
-			dll.Load(dll.OLEAUT32, &_SystemTimeToVariantTime, "SystemTimeToVariantTime"),
+			dll.Load(dll.OLEAUT32, &_oleaut_SystemTimeToVariantTime, "SystemTimeToVariantTime"),
 			uintptr(unsafe.Pointer(&st)),
 			uintptr(unsafe.Pointer(&double)))
 		if ret == 0 {
@@ -161,7 +161,7 @@ func NewVariant(releaser *OleReleaser, value interface{}) *VARIANT {
 	return v
 }
 
-var _SystemTimeToVariantTime *syscall.Proc
+var _oleaut_SystemTimeToVariantTime *syscall.Proc
 
 // If the object has type [co.VT_BOOL], returns the value and true. Otherwise,
 // returns a default value and false.
@@ -379,7 +379,7 @@ func (v *VARIANT) Date() (time.Time, bool) {
 		var st SYSTEMTIME
 
 		ret, _, _ := syscall.SyscallN(
-			dll.Load(dll.OLEAUT32, &_VariantTimeToSystemTime, "VariantTimeToSystemTime"),
+			dll.Load(dll.OLEAUT32, &_oleaut_VariantTimeToSystemTime, "VariantTimeToSystemTime"),
 			uintptr(math.Float64bits(double)),
 			uintptr(unsafe.Pointer(&st)))
 		if ret == 0 {
@@ -390,7 +390,7 @@ func (v *VARIANT) Date() (time.Time, bool) {
 	return time.Time{}, false
 }
 
-var _VariantTimeToSystemTime *syscall.Proc
+var _oleaut_VariantTimeToSystemTime *syscall.Proc
 
 // If the object has type [co.VT_UI1], returns the value and true. Otherwise,
 // returns a default value and false.

@@ -43,7 +43,7 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	var guid GUID
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_CLSIDFromProgID, "CLSIDFromProgID"),
+		dll.Load(dll.OLE32, &_ole_CLSIDFromProgID, "CLSIDFromProgID"),
 		uintptr(wProgId.AllowEmpty(progId)),
 		uintptr(unsafe.Pointer(&guid)))
 
@@ -54,7 +54,7 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	}
 }
 
-var _CLSIDFromProgID *syscall.Proc
+var _ole_CLSIDFromProgID *syscall.Proc
 
 // [CoCreateInstance] function.
 //
@@ -92,7 +92,7 @@ func CoCreateInstance(
 	guidIid := GuidFrom(pOut.IID())
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_CoCreateInstance, "CoCreateInstance"),
+		dll.Load(dll.OLE32, &_ole_CoCreateInstance, "CoCreateInstance"),
 		uintptr(unsafe.Pointer(&guidClsid)),
 		uintptr(ppvtOrNil(unkOuter)),
 		uintptr(dwClsContext),
@@ -108,7 +108,7 @@ func CoCreateInstance(
 	}
 }
 
-var _CoCreateInstance *syscall.Proc
+var _ole_CoCreateInstance *syscall.Proc
 
 // [CoInitializeEx] function.
 //
@@ -123,7 +123,7 @@ var _CoCreateInstance *syscall.Proc
 // [CoInitializeEx]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 func CoInitializeEx(coInit co.COINIT) (alreadyInitialized bool, hr error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_CoInitializeEx, "CoInitializeEx"),
+		dll.Load(dll.OLE32, &_ole_CoInitializeEx, "CoInitializeEx"),
 		0,
 		uintptr(coInit))
 
@@ -137,7 +137,7 @@ func CoInitializeEx(coInit co.COINIT) (alreadyInitialized bool, hr error) {
 	return
 }
 
-var _CoInitializeEx *syscall.Proc
+var _ole_CoInitializeEx *syscall.Proc
 
 // [CoUninitialize] function.
 //
@@ -146,10 +146,10 @@ var _CoInitializeEx *syscall.Proc
 // [CoUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
 func CoUninitialize() {
 	syscall.SyscallN(
-		dll.Load(dll.OLE32, &_CoUninitialize, "CoUninitialize"))
+		dll.Load(dll.OLE32, &_ole_CoUninitialize, "CoUninitialize"))
 }
 
-var _CoUninitialize *syscall.Proc
+var _ole_CoUninitialize *syscall.Proc
 
 // [CreateBindCtx] function.
 //
@@ -164,7 +164,7 @@ var _CoUninitialize *syscall.Proc
 func CreateBindCtx(releaser *OleReleaser) (*IBindCtx, error) {
 	var ppvtQueried **_IUnknownVt
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_CreateBindCtx, "CreateBindCtx"),
+		dll.Load(dll.OLE32, &_ole_CreateBindCtx, "CreateBindCtx"),
 		0,
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -177,7 +177,7 @@ func CreateBindCtx(releaser *OleReleaser) (*IBindCtx, error) {
 	}
 }
 
-var _CreateBindCtx *syscall.Proc
+var _ole_CreateBindCtx *syscall.Proc
 
 // [OleInitialize] function.
 //
@@ -191,12 +191,12 @@ var _CreateBindCtx *syscall.Proc
 // [OleInitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-oleinitialize
 func OleInitialize() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_OleInitialize, "OleInitialize"),
+		dll.Load(dll.OLE32, &_ole_OleInitialize, "OleInitialize"),
 		0)
 	return utl.ErrorAsHResult(ret)
 }
 
-var _OleInitialize *syscall.Proc
+var _ole_OleInitialize *syscall.Proc
 
 // [OleUninitialize] function.
 //
@@ -205,10 +205,10 @@ var _OleInitialize *syscall.Proc
 // [OleUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-oleuninitialize
 func OleUninitialize() {
 	syscall.SyscallN(
-		dll.Load(dll.OLE32, &_OleUninitialize, "OleUninitialize"))
+		dll.Load(dll.OLE32, &_ole_OleUninitialize, "OleUninitialize"))
 }
 
-var _OleUninitialize *syscall.Proc
+var _ole_OleUninitialize *syscall.Proc
 
 // [ReleaseStgMedium] function.
 //
@@ -217,11 +217,11 @@ var _OleUninitialize *syscall.Proc
 // [ReleaseStgMedium]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-releasestgmedium
 func ReleaseStgMedium(stg *STGMEDIUM) {
 	syscall.SyscallN(
-		dll.Load(dll.OLE32, &_ReleaseStgMedium, "ReleaseStgMedium"),
+		dll.Load(dll.OLE32, &_ole_ReleaseStgMedium, "ReleaseStgMedium"),
 		uintptr(unsafe.Pointer(stg)))
 }
 
-var _ReleaseStgMedium *syscall.Proc
+var _ole_ReleaseStgMedium *syscall.Proc
 
 // [SHCreateMemStream] function.
 //
@@ -241,7 +241,7 @@ var _ReleaseStgMedium *syscall.Proc
 // [SHCreateMemStream]: https://learn.microsoft.com/en-us/windows/win32/api/shlwapi/nf-shlwapi-shcreatememstream
 func SHCreateMemStream(releaser *OleReleaser, src []byte) (*IStream, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHLWAPI, &_SHCreateMemStream, "SHCreateMemStream"),
+		dll.Load(dll.SHLWAPI, &_ole_SHCreateMemStream, "SHCreateMemStream"),
 		uintptr(unsafe.Pointer(&src[0])),
 		uintptr(uint32(len(src))))
 	if ret == 0 {
@@ -254,4 +254,4 @@ func SHCreateMemStream(releaser *OleReleaser, src []byte) (*IStream, error) {
 	return pObj, nil
 }
 
-var _SHCreateMemStream *syscall.Proc
+var _ole_SHCreateMemStream *syscall.Proc

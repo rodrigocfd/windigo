@@ -25,7 +25,7 @@ type HDWP HANDLE
 func BeginDeferWindowPos(numWindows int) (HDWP, error) {
 	utl.PanicNeg(numWindows)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_BeginDeferWindowPos, "BeginDeferWindowPos"),
+		dll.Load(dll.USER32, &_user_BeginDeferWindowPos, "BeginDeferWindowPos"),
 		uintptr(int32(numWindows)))
 	if ret == 0 {
 		return HDWP(0), co.ERROR(err)
@@ -33,7 +33,7 @@ func BeginDeferWindowPos(numWindows int) (HDWP, error) {
 	return HDWP(ret), nil
 }
 
-var _BeginDeferWindowPos *syscall.Proc
+var _user_BeginDeferWindowPos *syscall.Proc
 
 // [DeferWindowPos] function.
 //
@@ -44,7 +44,7 @@ func (hDwp HDWP) DeferWindowPos(
 	uFlags co.SWP,
 ) (HDWP, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_DeferWindowPos, "DeferWindowPos"),
+		dll.Load(dll.USER32, &_user_DeferWindowPos, "DeferWindowPos"),
 		uintptr(hDwp),
 		uintptr(hWnd),
 		uintptr(hwndInsertAfter),
@@ -59,7 +59,7 @@ func (hDwp HDWP) DeferWindowPos(
 	return HDWP(ret), nil
 }
 
-var _DeferWindowPos *syscall.Proc
+var _user_DeferWindowPos *syscall.Proc
 
 // [EndDeferWindowPos] function.
 //
@@ -69,9 +69,9 @@ var _DeferWindowPos *syscall.Proc
 // [BeginDeferWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-begindeferwindowpos
 func (hDwp HDWP) EndDeferWindowPos() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_EndDeferWindowPos, "EndDeferWindowPos"),
+		dll.Load(dll.USER32, &_user_EndDeferWindowPos, "EndDeferWindowPos"),
 		uintptr(hDwp))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _EndDeferWindowPos *syscall.Proc
+var _user_EndDeferWindowPos *syscall.Proc

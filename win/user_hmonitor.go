@@ -20,26 +20,26 @@ type HMONITOR HANDLE
 // [MonitorFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfrompoint
 func MonitorFromPoint(pt POINT, flags co.MONITOR) HMONITOR {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_MonitorFromPoint, "MonitorFromPoint"),
+		dll.Load(dll.USER32, &_user_MonitorFromPoint, "MonitorFromPoint"),
 		pt.serializeUint64(),
 		uintptr(flags))
 	return HMONITOR(ret)
 }
 
-var _MonitorFromPoint *syscall.Proc
+var _user_MonitorFromPoint *syscall.Proc
 
 // [MonitorFromRect] function.
 //
 // [MonitorFromRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromrect
 func MonitorFromRect(rc *RECT, flags co.MONITOR) HMONITOR {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_MonitorFromRect, "MonitorFromRect"),
+		dll.Load(dll.USER32, &_user_MonitorFromRect, "MonitorFromRect"),
 		uintptr(unsafe.Pointer(rc)),
 		uintptr(flags))
 	return HMONITOR(ret)
 }
 
-var _MonitorFromRect *syscall.Proc
+var _user_MonitorFromRect *syscall.Proc
 
 // [GetMonitorInfo] function.
 //
@@ -49,7 +49,7 @@ func (hMon HMONITOR) GetMonitorInfo() (MONITORINFOEX, error) {
 	mix.SetCbSize()
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_GetMonitorInfoW, "GetMonitorInfoW"),
+		dll.Load(dll.USER32, &_user_GetMonitorInfoW, "GetMonitorInfoW"),
 		uintptr(hMon),
 		uintptr(unsafe.Pointer(&mix)))
 	if ret == 0 {
@@ -58,4 +58,4 @@ func (hMon HMONITOR) GetMonitorInfo() (MONITORINFOEX, error) {
 	return mix, nil
 }
 
-var _GetMonitorInfoW *syscall.Proc
+var _user_GetMonitorInfoW *syscall.Proc

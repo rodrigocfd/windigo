@@ -37,7 +37,7 @@ type HIMAGELIST HANDLE
 func ImageListCreate(cx, cy int, flags co.ILC, szInitial, szGrow int) (HIMAGELIST, error) {
 	utl.PanicNeg(szInitial, szGrow)
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_Create, "ImageList_Create"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_Create, "ImageList_Create"),
 		uintptr(int32(cx)),
 		uintptr(int32(cy)),
 		uintptr(flags),
@@ -49,21 +49,21 @@ func ImageListCreate(cx, cy int, flags co.ILC, szInitial, szGrow int) (HIMAGELIS
 	return HIMAGELIST(ret), nil
 }
 
-var _ImageList_Create *syscall.Proc
+var _comctl_ImageList_Create *syscall.Proc
 
 // [ImageList_Add] function.
 //
 // [ImageList_Add]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_add
 func (hImg HIMAGELIST) Add(hbmp, hbmpMask HBITMAP) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_Add, "ImageList_Add"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_Add, "ImageList_Add"),
 		uintptr(hImg),
 		uintptr(hbmp),
 		uintptr(hbmpMask))
 	return utl.Minus1AsSysInvalidParm(ret)
 }
 
-var _ImageList_Add *syscall.Proc
+var _comctl_ImageList_Add *syscall.Proc
 
 // [ImageList_AddIcon] function.
 //
@@ -148,21 +148,21 @@ func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) error {
 // [ImageList_AddMasked]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_add
 func (hImg HIMAGELIST) AddMasked(hbmp HBITMAP, mask COLORREF) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_AddMasked, "ImageList_AddMasked"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_AddMasked, "ImageList_AddMasked"),
 		uintptr(hImg),
 		uintptr(hbmp),
 		uintptr(mask))
 	return utl.Minus1AsSysInvalidParm(ret)
 }
 
-var _ImageList_AddMasked *syscall.Proc
+var _comctl_ImageList_AddMasked *syscall.Proc
 
 // [ImageList_BeginDrag] function.
 //
 // [ImageList_BeginDrag]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_begindrag
 func (hImg HIMAGELIST) BeginDrag(index, dxHotspot, dyHotspot int) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_BeginDrag, "ImageList_BeginDrag"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_BeginDrag, "ImageList_BeginDrag"),
 		uintptr(hImg),
 		uintptr(int32(index)),
 		uintptr(int32(dxHotspot)),
@@ -170,7 +170,7 @@ func (hImg HIMAGELIST) BeginDrag(index, dxHotspot, dyHotspot int) error {
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ImageList_BeginDrag *syscall.Proc
+var _comctl_ImageList_BeginDrag *syscall.Proc
 
 // [ImageList_Destroy] function.
 //
@@ -179,12 +179,12 @@ func (hImg HIMAGELIST) Destroy() error {
 	// http://www.catch22.net/tuts/win32/system-image-list
 	// https://www.autohotkey.com/docs/commands/ListView.htm
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_Destroy, "ImageList_Destroy"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_Destroy, "ImageList_Destroy"),
 		uintptr(hImg))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ImageList_Destroy *syscall.Proc
+var _comctl_ImageList_Destroy *syscall.Proc
 
 // [ImageList_DrawEx] function.
 //
@@ -198,7 +198,7 @@ func (hImg HIMAGELIST) DrawEx(
 	style co.ILD,
 ) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_DrawEx, "ImageList_DrawEx"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_DrawEx, "ImageList_DrawEx"),
 		uintptr(hImg),
 		uintptr(int32(index)),
 		uintptr(hdcDest),
@@ -212,7 +212,7 @@ func (hImg HIMAGELIST) DrawEx(
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ImageList_DrawEx *syscall.Proc
+var _comctl_ImageList_DrawEx *syscall.Proc
 
 // [ImageList_Duplicate] function.
 //
@@ -229,7 +229,7 @@ var _ImageList_DrawEx *syscall.Proc
 // [ImageList_Duplicate]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_duplicate
 func (hImg HIMAGELIST) Duplicate() (HIMAGELIST, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_Duplicate, "ImageList_Duplicate"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_Duplicate, "ImageList_Duplicate"),
 		uintptr(hImg))
 	if ret == 0 {
 		return HIMAGELIST(0), co.ERROR_INVALID_PARAMETER
@@ -237,19 +237,19 @@ func (hImg HIMAGELIST) Duplicate() (HIMAGELIST, error) {
 	return HIMAGELIST(ret), nil
 }
 
-var _ImageList_Duplicate *syscall.Proc
+var _comctl_ImageList_Duplicate *syscall.Proc
 
 // [ImageList_GetBkColor] function.
 //
 // [ImageList_GetBkColor]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_getbkcolor
 func (hImg HIMAGELIST) GetBkColor() COLORREF {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_GetBkColor, "ImageList_GetBkColor"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_GetBkColor, "ImageList_GetBkColor"),
 		uintptr(hImg))
 	return COLORREF(ret)
 }
 
-var _ImageList_GetBkColor *syscall.Proc
+var _comctl_ImageList_GetBkColor *syscall.Proc
 
 // [ImageList_GetIconSize] function.
 //
@@ -257,7 +257,7 @@ var _ImageList_GetBkColor *syscall.Proc
 func (hImg HIMAGELIST) GetIconSize() (SIZE, error) {
 	var sz SIZE
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_GetIconSize, "ImageList_GetIconSize"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_GetIconSize, "ImageList_GetIconSize"),
 		uintptr(hImg),
 		uintptr(unsafe.Pointer(&sz.Cx)),
 		uintptr(unsafe.Pointer(&sz.Cy)))
@@ -267,19 +267,19 @@ func (hImg HIMAGELIST) GetIconSize() (SIZE, error) {
 	return sz, nil
 }
 
-var _ImageList_GetIconSize *syscall.Proc
+var _comctl_ImageList_GetIconSize *syscall.Proc
 
 // [ImageList_GetImageCount] function.
 //
 // [ImageList_GetImageCount]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_getimagecount
 func (hImg HIMAGELIST) GetImageCount() int {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_GetImageCount, "ImageList_GetImageCount"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_GetImageCount, "ImageList_GetImageCount"),
 		uintptr(hImg))
 	return int(ret)
 }
 
-var _ImageList_GetImageCount *syscall.Proc
+var _comctl_ImageList_GetImageCount *syscall.Proc
 
 // [ImageList_GetImageInfo] function.
 //
@@ -287,7 +287,7 @@ var _ImageList_GetImageCount *syscall.Proc
 func (hImg HIMAGELIST) GetImageInfo(index int) (IMAGEINFO, error) {
 	var nfo IMAGEINFO
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_GetImageInfo, "ImageList_GetImageInfo"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_GetImageInfo, "ImageList_GetImageInfo"),
 		uintptr(hImg),
 		uintptr(int32(index)),
 		uintptr(unsafe.Pointer(&nfo)))
@@ -297,20 +297,20 @@ func (hImg HIMAGELIST) GetImageInfo(index int) (IMAGEINFO, error) {
 	return nfo, nil
 }
 
-var _ImageList_GetImageInfo *syscall.Proc
+var _comctl_ImageList_GetImageInfo *syscall.Proc
 
 // [ImageList_Remove] function.
 //
 // [ImageList_Remove]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_remove
 func (hImg HIMAGELIST) Remove(index int) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_Remove, "ImageList_Remove"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_Remove, "ImageList_Remove"),
 		uintptr(hImg),
 		uintptr(int32(index)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ImageList_Remove *syscall.Proc
+var _comctl_ImageList_Remove *syscall.Proc
 
 // [ImageList_RemoveAll] macro.
 //
@@ -327,21 +327,21 @@ func (hImg HIMAGELIST) RemoveAll() error {
 // [ImageList_ReplaceIcon]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_replaceicon
 func (hImg HIMAGELIST) ReplaceIcon(index int, hIcon HICON) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_ReplaceIcon, "ImageList_ReplaceIcon"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_ReplaceIcon, "ImageList_ReplaceIcon"),
 		uintptr(hImg),
 		uintptr(int32(index)),
 		uintptr(hIcon))
 	return utl.Minus1AsSysInvalidParm(ret)
 }
 
-var _ImageList_ReplaceIcon *syscall.Proc
+var _comctl_ImageList_ReplaceIcon *syscall.Proc
 
 // [ImageList_SetDragCursorImage] function.
 //
 // [ImageList_SetDragCursorImage]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_setdragcursorimage
 func (hImg HIMAGELIST) SetDragCursorImage(index, dxHotspot, dyHotspot int) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_SetDragCursorImage, "ImageList_SetDragCursorImage"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_SetDragCursorImage, "ImageList_SetDragCursorImage"),
 		uintptr(hImg),
 		uintptr(int32(index)),
 		uintptr(int32(dxHotspot)),
@@ -349,21 +349,21 @@ func (hImg HIMAGELIST) SetDragCursorImage(index, dxHotspot, dyHotspot int) error
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ImageList_SetDragCursorImage *syscall.Proc
+var _comctl_ImageList_SetDragCursorImage *syscall.Proc
 
 // [ImageList_SetIconSize] function.
 //
 // [ImageList_SetIconSize]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_seticonsize
 func (hImg HIMAGELIST) SetIconSize(cx, cy int) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_SetIconSize, "ImageList_SetIconSize"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_SetIconSize, "ImageList_SetIconSize"),
 		uintptr(hImg),
 		uintptr(int32(cx)),
 		uintptr(int32(cy)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ImageList_SetIconSize *syscall.Proc
+var _comctl_ImageList_SetIconSize *syscall.Proc
 
 // [ImageList_SetImageCount] function.
 //
@@ -373,24 +373,24 @@ var _ImageList_SetIconSize *syscall.Proc
 func (hImg HIMAGELIST) SetImageCount(count int) error {
 	utl.PanicNeg(count)
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_SetImageCount, "ImageList_SetImageCount"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_SetImageCount, "ImageList_SetImageCount"),
 		uintptr(hImg),
 		uintptr(uint32(count)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ImageList_SetImageCount *syscall.Proc
+var _comctl_ImageList_SetImageCount *syscall.Proc
 
 // [ImageList_SetOverlayImage] function.
 //
 // [ImageList_SetOverlayImage]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_setoverlayimage
 func (hImg HIMAGELIST) SetOverlayImage(index, overlayIndex int) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_SetOverlayImage, "ImageList_SetOverlayImage"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_SetOverlayImage, "ImageList_SetOverlayImage"),
 		uintptr(hImg),
 		uintptr(int32(index)),
 		uintptr(int32(overlayIndex)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ImageList_SetOverlayImage *syscall.Proc
+var _comctl_ImageList_SetOverlayImage *syscall.Proc

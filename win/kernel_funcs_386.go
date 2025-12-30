@@ -19,7 +19,7 @@ func VerifyVersionInfo(ovi *OSVERSIONINFOEX, typeMask co.VER, conditionMask uint
 	cMaskLo, cMaskHi := utl.Break64(conditionMask)
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_VerifyVersionInfoW, "VerifyVersionInfoW"),
+		dll.Load(dll.KERNEL32, &_kernel_VerifyVersionInfoW, "VerifyVersionInfoW"),
 		uintptr(unsafe.Pointer(ovi)),
 		uintptr(typeMask),
 		uintptr(cMaskLo),
@@ -34,7 +34,7 @@ func VerifyVersionInfo(ovi *OSVERSIONINFOEX, typeMask co.VER, conditionMask uint
 	}
 }
 
-var _VerifyVersionInfoW *syscall.Proc
+var _kernel_VerifyVersionInfoW *syscall.Proc
 
 // [VerSetConditionMask] function.
 //
@@ -42,7 +42,7 @@ var _VerifyVersionInfoW *syscall.Proc
 func VerSetConditionMask(conditionMask uint64, typeMask co.VER, condition co.VER_COND) uint64 {
 	cMaskLo, cMaskHi := utl.Break64(conditionMask)
 	retLo, retHi, _ := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_VerSetConditionMask, "VerSetConditionMask"),
+		dll.Load(dll.KERNEL32, &_kernel_VerSetConditionMask, "VerSetConditionMask"),
 		uintptr(cMaskLo),
 		uintptr(cMaskHi),
 		uintptr(typeMask),
@@ -50,4 +50,4 @@ func VerSetConditionMask(conditionMask uint64, typeMask co.VER, condition co.VER
 	return utl.Make64(uint32(retLo), uint32(retHi))
 }
 
-var _VerSetConditionMask *syscall.Proc
+var _kernel_VerSetConditionMask *syscall.Proc

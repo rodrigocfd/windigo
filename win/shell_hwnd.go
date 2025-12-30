@@ -16,7 +16,7 @@ import (
 func (hWnd HWND) ShellAbout(app, otherStuff string, hIcon HICON) error {
 	var wApp, wOtherStuff wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_ShellAboutW, "ShellAboutW"),
+		dll.Load(dll.SHELL32, &_shell_ShellAboutW, "ShellAboutW"),
 		uintptr(hWnd),
 		uintptr(wApp.AllowEmpty(app)),
 		uintptr(wOtherStuff.EmptyIsNil(otherStuff)),
@@ -24,4 +24,4 @@ func (hWnd HWND) ShellAbout(app, otherStuff string, hIcon HICON) error {
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ShellAboutW *syscall.Proc
+var _shell_ShellAboutW *syscall.Proc

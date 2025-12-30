@@ -17,57 +17,57 @@ import (
 // [ImageList_DragMove]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_dragmove
 func ImageListDragMove(x, y int) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_DragMove, "ImageList_DragMove"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_DragMove, "ImageList_DragMove"),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ImageList_DragMove *syscall.Proc
+var _comctl_ImageList_DragMove *syscall.Proc
 
 // [ImageList_DragShowNolock] function.
 //
 // [ImageList_DragShowNolock]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_dragshownolock
 func ImageListDragShowNolock(show bool) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_DragShowNolock, "ImageList_DragShowNolock"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_DragShowNolock, "ImageList_DragShowNolock"),
 		utl.BoolToUintptr(show))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ImageList_DragShowNolock *syscall.Proc
+var _comctl_ImageList_DragShowNolock *syscall.Proc
 
 // [ImageList_DrawIndirect] function.
 //
 // [ImageList_DrawIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_drawindirect
 func ImageListDrawIndirect(imldp *IMAGELISTDRAWPARAMS) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_DrawIndirect, "ImageList_DrawIndirect"),
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_DrawIndirect, "ImageList_DrawIndirect"),
 		uintptr(unsafe.Pointer(imldp)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _ImageList_DrawIndirect *syscall.Proc
+var _comctl_ImageList_DrawIndirect *syscall.Proc
 
 // [ImageList_EndDrag] function.
 //
 // [ImageList_EndDrag]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_enddrag
 func ImageListEndDrag() {
 	syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_ImageList_EndDrag, "ImageList_EndDrag"))
+		dll.Load(dll.COMCTL32, &_comctl_ImageList_EndDrag, "ImageList_EndDrag"))
 }
 
-var _ImageList_EndDrag *syscall.Proc
+var _comctl_ImageList_EndDrag *syscall.Proc
 
 // [InitCommonControls] function.
 //
 // [InitCommonControls]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
 func InitCommonControls() {
 	syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_InitCommonControls, "InitCommonControls"))
+		dll.Load(dll.COMCTL32, &_comctl_InitCommonControls, "InitCommonControls"))
 }
 
-var _InitCommonControls *syscall.Proc
+var _comctl_InitCommonControls *syscall.Proc
 
 // [InitCommonControlsEx] function.
 //
@@ -78,23 +78,23 @@ func InitCommonControlsEx(icc co.ICC) error {
 	iccx.DwICC = icc
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_InitCommonControlsEx, "InitCommonControlsEx"),
+		dll.Load(dll.COMCTL32, &_comctl_InitCommonControlsEx, "InitCommonControlsEx"),
 		uintptr(unsafe.Pointer(&iccx)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
-var _InitCommonControlsEx *syscall.Proc
+var _comctl_InitCommonControlsEx *syscall.Proc
 
 // [InitMUILanguage] function.
 //
 // [InitMUILanguage]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initmuilanguage
 func InitMUILanguage(lang LANGID) {
 	syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_InitMUILanguage, "InitMUILanguage"),
+		dll.Load(dll.COMCTL32, &_comctl_InitMUILanguage, "InitMUILanguage"),
 		uintptr(lang))
 }
 
-var _InitMUILanguage *syscall.Proc
+var _comctl_InitMUILanguage *syscall.Proc
 
 // [TaskDialogIndirect] function.
 //
@@ -158,7 +158,7 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 	taskConfig.serialize(tdcBuf, btnsBuf, radsBuf, bufPtrStrs16)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_TaskDialogIndirect, "TaskDialogIndirect"),
+		dll.Load(dll.COMCTL32, &_comctl_TaskDialogIndirect, "TaskDialogIndirect"),
 		uintptr(unsafe.Pointer(&tdcBuf[0])),
 		uintptr(unsafe.Pointer(&bufRetBtn[0])),
 		uintptr(unsafe.Pointer(&bufRetRad[0])),
@@ -171,7 +171,7 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 	return co.ID(*pBtnId), nil
 }
 
-var _TaskDialogIndirect *syscall.Proc
+var _comctl_TaskDialogIndirect *syscall.Proc
 
 func tdiStrLenIfAny(s string) int {
 	if s != "" {

@@ -43,7 +43,7 @@ type HGLOBAL HANDLE
 func GlobalAlloc(flags co.GMEM, numBytes int) (HGLOBAL, error) {
 	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GlobalAlloc, "GlobalAlloc"),
+		dll.Load(dll.KERNEL32, &_kernel_GlobalAlloc, "GlobalAlloc"),
 		uintptr(flags),
 		uintptr(uint64(numBytes)))
 	if ret == 0 {
@@ -52,14 +52,14 @@ func GlobalAlloc(flags co.GMEM, numBytes int) (HGLOBAL, error) {
 	return HGLOBAL(ret), nil
 }
 
-var _GlobalAlloc *syscall.Proc
+var _kernel_GlobalAlloc *syscall.Proc
 
 // [GlobalFlags] function.
 //
 // [GlobalFlags]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalflags
 func (hGlobal HGLOBAL) GlobalFlags() (co.GMEM, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GlobalFlags, "GlobalFlags"),
+		dll.Load(dll.KERNEL32, &_kernel_GlobalFlags, "GlobalFlags"),
 		uintptr(hGlobal))
 	if ret == utl.GMEM_INVALID_HANDLE {
 		return co.GMEM(0), co.ERROR(err)
@@ -67,7 +67,7 @@ func (hGlobal HGLOBAL) GlobalFlags() (co.GMEM, error) {
 	return co.GMEM(ret), nil
 }
 
-var _GlobalFlags *syscall.Proc
+var _kernel_GlobalFlags *syscall.Proc
 
 // [GlobalFree] function.
 //
@@ -82,7 +82,7 @@ func (hGlobal HGLOBAL) GlobalFree() error {
 	}
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GlobalFree, "GlobalFree"),
+		dll.Load(dll.KERNEL32, &_kernel_GlobalFree, "GlobalFree"),
 		uintptr(hGlobal))
 	if ret != 0 {
 		return co.ERROR(err)
@@ -90,7 +90,7 @@ func (hGlobal HGLOBAL) GlobalFree() error {
 	return nil
 }
 
-var _GlobalFree *syscall.Proc
+var _kernel_GlobalFree *syscall.Proc
 
 // [GlobalLock] function.
 //
@@ -116,7 +116,7 @@ var _GlobalFree *syscall.Proc
 // [GlobalLock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globallock
 func (hGlobal HGLOBAL) GlobalLock() (unsafe.Pointer, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GlobalLock, "GlobalLock"),
+		dll.Load(dll.KERNEL32, &_kernel_GlobalLock, "GlobalLock"),
 		uintptr(hGlobal))
 	if ret == 0 {
 		return nil, co.ERROR(err)
@@ -124,7 +124,7 @@ func (hGlobal HGLOBAL) GlobalLock() (unsafe.Pointer, error) {
 	return unsafe.Pointer(ret), nil
 }
 
-var _GlobalLock *syscall.Proc
+var _kernel_GlobalLock *syscall.Proc
 
 // Calls [HGLOBAL.GlobalSize] and [HGLOBAL.GlobalLock] to retrieve the size and
 // pointer to the allocated memory, then converts it to a slice over it.
@@ -169,7 +169,7 @@ func (hGlobal HGLOBAL) GlobalLockSlice() ([]byte, error) {
 func (hGlobal HGLOBAL) GlobalReAlloc(numBytes int, flags co.GMEM) (HGLOBAL, error) {
 	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GlobalReAlloc, "GlobalReAlloc"),
+		dll.Load(dll.KERNEL32, &_kernel_GlobalReAlloc, "GlobalReAlloc"),
 		uintptr(hGlobal),
 		uintptr(uint64(numBytes)),
 		uintptr(flags))
@@ -179,14 +179,14 @@ func (hGlobal HGLOBAL) GlobalReAlloc(numBytes int, flags co.GMEM) (HGLOBAL, erro
 	return HGLOBAL(ret), nil
 }
 
-var _GlobalReAlloc *syscall.Proc
+var _kernel_GlobalReAlloc *syscall.Proc
 
 // [GlobalSize] function.
 //
 // [GlobalSize]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalsize
 func (hGlobal HGLOBAL) GlobalSize() (int, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GlobalSize, "GlobalSize"),
+		dll.Load(dll.KERNEL32, &_kernel_GlobalSize, "GlobalSize"),
 		uintptr(hGlobal))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -194,14 +194,14 @@ func (hGlobal HGLOBAL) GlobalSize() (int, error) {
 	return int(uint64(ret)), nil
 }
 
-var _GlobalSize *syscall.Proc
+var _kernel_GlobalSize *syscall.Proc
 
 // [GlobalUnlock] function.
 //
 // [GlobalUnlock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalunlock
 func (hGlobal HGLOBAL) GlobalUnlock() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GlobalUnlock, "GlobalUnlock"),
+		dll.Load(dll.KERNEL32, &_kernel_GlobalUnlock, "GlobalUnlock"),
 		uintptr(hGlobal))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return wErr
@@ -209,4 +209,4 @@ func (hGlobal HGLOBAL) GlobalUnlock() error {
 	return nil
 }
 
-var _GlobalUnlock *syscall.Proc
+var _kernel_GlobalUnlock *syscall.Proc

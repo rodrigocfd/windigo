@@ -28,7 +28,7 @@ type HINSTANCE HANDLE
 func GetModuleHandle(moduleName string) (HINSTANCE, error) {
 	var wModuleName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetModuleHandleW, "GetModuleHandleW"),
+		dll.Load(dll.KERNEL32, &_kernel_GetModuleHandleW, "GetModuleHandleW"),
 		uintptr(wModuleName.EmptyIsNil(moduleName)))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
@@ -36,7 +36,7 @@ func GetModuleHandle(moduleName string) (HINSTANCE, error) {
 	return HINSTANCE(ret), nil
 }
 
-var _GetModuleHandleW *syscall.Proc
+var _kernel_GetModuleHandleW *syscall.Proc
 
 // [LoadLibrary] function.
 //
@@ -46,7 +46,7 @@ var _GetModuleHandleW *syscall.Proc
 func LoadLibrary(libFileName string) (HINSTANCE, error) {
 	var wLibFileName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_LoadLibraryW, "LoadLibraryW"),
+		dll.Load(dll.KERNEL32, &_kernel_LoadLibraryW, "LoadLibraryW"),
 		uintptr(wLibFileName.EmptyIsNil(libFileName)))
 	if ret == 0 {
 		return HINSTANCE(0), co.ERROR(err)
@@ -54,7 +54,7 @@ func LoadLibrary(libFileName string) (HINSTANCE, error) {
 	return HINSTANCE(ret), nil
 }
 
-var _LoadLibraryW *syscall.Proc
+var _kernel_LoadLibraryW *syscall.Proc
 
 // [FreeLibrary] function.
 //
@@ -63,12 +63,12 @@ var _LoadLibraryW *syscall.Proc
 // [FreeLibrary]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
 func (hInst HINSTANCE) FreeLibrary() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_FreeLibrary, "FreeLibrary"),
+		dll.Load(dll.KERNEL32, &_kernel_FreeLibrary, "FreeLibrary"),
 		uintptr(hInst))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _FreeLibrary *syscall.Proc
+var _kernel_FreeLibrary *syscall.Proc
 
 // [GetModuleFileName] function.
 //
@@ -87,7 +87,7 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 
 	for {
 		ret, _, err := syscall.SyscallN(
-			dll.Load(dll.KERNEL32, &_GetModuleFileNameW, "GetModuleFileNameW"),
+			dll.Load(dll.KERNEL32, &_kernel_GetModuleFileNameW, "GetModuleFileNameW"),
 			uintptr(hInst),
 			uintptr(wBuf.Ptr()),
 			uintptr(uint32(sz)))
@@ -105,4 +105,4 @@ func (hInst HINSTANCE) GetModuleFileName() (string, error) {
 	}
 }
 
-var _GetModuleFileNameW *syscall.Proc
+var _kernel_GetModuleFileNameW *syscall.Proc

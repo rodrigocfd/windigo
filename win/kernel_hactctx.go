@@ -23,7 +23,7 @@ type HACTCTX HANDLE
 // [CreateActCtx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createactctxw
 func CreateActCtx(actctx *ACTCTX) (HACTCTX, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_CreateActCtx, "CreateActCtx"),
+		dll.Load(dll.KERNEL32, &_kernel_CreateActCtx, "CreateActCtx"),
 		uintptr(unsafe.Pointer(actctx)))
 
 	if int(ret) == utl.INVALID_HANDLE_VALUE {
@@ -32,7 +32,7 @@ func CreateActCtx(actctx *ACTCTX) (HACTCTX, error) {
 	return HACTCTX(ret), nil
 }
 
-var _CreateActCtx *syscall.Proc
+var _kernel_CreateActCtx *syscall.Proc
 
 // [GetCurrentActCtx] function.
 //
@@ -42,7 +42,7 @@ var _CreateActCtx *syscall.Proc
 func GetCurrentActCtx() (HACTCTX, error) {
 	var hActCtx HACTCTX
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_GetCurrentActCtx, "GetCurrentActCtx"),
+		dll.Load(dll.KERNEL32, &_kernel_GetCurrentActCtx, "GetCurrentActCtx"),
 		uintptr(unsafe.Pointer(hActCtx)))
 	if ret == 0 {
 		return HACTCTX(0), co.ERROR(err)
@@ -50,7 +50,7 @@ func GetCurrentActCtx() (HACTCTX, error) {
 	return HACTCTX(ret), nil
 }
 
-var _GetCurrentActCtx *syscall.Proc
+var _kernel_GetCurrentActCtx *syscall.Proc
 
 // [ActivateActCtx] function.
 //
@@ -60,7 +60,7 @@ var _GetCurrentActCtx *syscall.Proc
 func (hActCtx HACTCTX) ActivateActCtx() (int, error) {
 	var cookie uintptr
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_ActivateActCtx, "ActivateActCtx"),
+		dll.Load(dll.KERNEL32, &_kernel_ActivateActCtx, "ActivateActCtx"),
 		uintptr(unsafe.Pointer(hActCtx)),
 		uintptr(unsafe.Pointer(&cookie)))
 	if ret == 0 {
@@ -69,7 +69,7 @@ func (hActCtx HACTCTX) ActivateActCtx() (int, error) {
 	return int(cookie), nil
 }
 
-var _ActivateActCtx *syscall.Proc
+var _kernel_ActivateActCtx *syscall.Proc
 
 // [AddRefActCtx] function.
 //
@@ -78,32 +78,32 @@ var _ActivateActCtx *syscall.Proc
 // [AddRefActCtx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-addrefactctx
 func (hActCtx HACTCTX) AddRefActCtx() HACTCTX {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_AddRefActCtx, "AddRefActCtx"),
+		dll.Load(dll.KERNEL32, &_kernel_AddRefActCtx, "AddRefActCtx"),
 		uintptr(hActCtx))
 	return HACTCTX(ret)
 }
 
-var _AddRefActCtx *syscall.Proc
+var _kernel_AddRefActCtx *syscall.Proc
 
 // [ReleaseActCtx] function.
 //
 // [ReleaseActCtx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-releaseactctx
 func (hActCtx HACTCTX) ReleaseActCtx() {
 	syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_ReleaseActCtx, "ReleaseActCtx"),
+		dll.Load(dll.KERNEL32, &_kernel_ReleaseActCtx, "ReleaseActCtx"),
 		uintptr(hActCtx))
 }
 
-var _ReleaseActCtx *syscall.Proc
+var _kernel_ReleaseActCtx *syscall.Proc
 
 // [ZombifyActCtx] function.
 //
 // [ZombifyActCtx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-zombifyactctx
 func (hActCtx HACTCTX) ZombifyActCtx() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_ZombifyActCtx, "ZombifyActCtx"),
+		dll.Load(dll.KERNEL32, &_kernel_ZombifyActCtx, "ZombifyActCtx"),
 		uintptr(hActCtx))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _ZombifyActCtx *syscall.Proc
+var _kernel_ZombifyActCtx *syscall.Proc
