@@ -47,6 +47,8 @@ func ppvtOrNil(obj OleObj) unsafe.Pointer {
 	return nil
 }
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 // Stores multiple [COM] resources, releasing all them at once.
 //
 // Every function which returns a COM resource will require an [OleReleaser]
