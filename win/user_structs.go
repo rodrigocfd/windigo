@@ -3,6 +3,7 @@
 package win
 
 import (
+	"time"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
@@ -78,6 +79,44 @@ type CURSORINFO struct {
 // Sets the cbSize field to the size of the struct, correctly initializing it.
 func (ci *CURSORINFO) SetCbSize() {
 	ci.cbSize = uint32(unsafe.Sizeof(*ci))
+}
+
+// [CWPRETSTRUCT] struct.
+//
+// Passed to [SetWindowsHookEx] callback with [co.WH_CALLWNDPROCRET].
+//
+// [CWPRETSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-cwpretstruct
+type CWPRETSTRUCT struct {
+	LResult uintptr // LRESULT
+	LParam  LPARAM
+	WParam  WPARAM
+	Message co.WM
+	HWnd    HWND
+}
+
+// [CWPSTRUCT] struct.
+//
+// Passed to [SetWindowsHookEx] callback with [co.WH_CALLWNDPROC].
+//
+// [CWPSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-cwpstruct
+type CWPSTRUCT struct {
+	Lparam  LPARAM
+	WParam  WPARAM
+	Message co.WM
+	HWnd    HWND
+}
+
+// [DEBUGHOOKINFO] struct.
+//
+// Passed to [SetWindowsHookEx] callback with [co.WH_DEBUG].
+//
+// [DEBUGHOOKINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-debughookinfo
+type DEBUGHOOKINFO struct {
+	IdThread          uint32
+	IdThreadInstaller uint32
+	LParam            LPARAM
+	WParam            WPARAM
+	Code              int32
 }
 
 // [DELETEITEMSTRUCT] struct.
@@ -297,6 +336,29 @@ func (i *INPUT) SetHardwareInput(hi HARDWAREINPUT) {
 	*i.HardwareInput() = hi
 }
 
+// [KBDLLHOOKSTRUCT] struct.
+//
+// Passed to [SetWindowsHookEx] callback with [co.WH_KEYBOARD_LL].
+//
+// [KBDLLHOOKSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-kbdllhookstruct
+type KBDLLHOOKSTRUCT struct {
+	vkCode      uint32
+	ScanCode    uint32
+	Flags       co.LLKHF
+	time        uint32
+	DwExtraInfo uintptr // ULONG_PTR
+}
+
+// Returns the virtual-key code.
+func (khs *KBDLLHOOKSTRUCT) VkCode() co.VK {
+	return co.VK(khs.vkCode)
+}
+
+// Equivalent to [GetMessageTime].
+func (khs *KBDLLHOOKSTRUCT) Time() time.Duration {
+	return time.Duration(uintptr(khs.time) * uintptr(time.Millisecond))
+}
+
 // [KEYBDINPUT] struct.
 //
 // [KEYBDINPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-keybdinput
@@ -478,6 +540,24 @@ type MSG struct {
 	LParam LPARAM
 	Time   uint32
 	Pt     POINT
+}
+
+// [MSLLHOOKSTRUCT] struct.
+//
+// Passed to [SetWindowsHookEx] callback with [co.WH_MOUSE_LL].
+//
+// [MSLLHOOKSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msllhookstruct
+type MSLLHOOKSTRUCT struct {
+	Pt          POINT
+	MouseData   uint32
+	Flags       co.LLMHF
+	time        uint32
+	DwExtraInfo uintptr // ULONG_PTR
+}
+
+// Equivalent to [GetMessageTime].
+func (mhs *MSLLHOOKSTRUCT) Time() time.Duration {
+	return time.Duration(uintptr(mhs.time) * uintptr(time.Millisecond))
 }
 
 // [NCCALCSIZE_PARAMS] struct.

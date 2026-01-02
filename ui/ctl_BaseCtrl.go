@@ -128,40 +128,38 @@ var (
 )
 
 func subclassProcCallback() uintptr {
-	if _subclassProcCallback != 0 {
-		return _subclassProcCallback
-	}
+	if _subclassProcCallback == 0 {
+		_subclassProcCallback = syscall.NewCallback(
+			func(
+				hWnd win.HWND,
+				uMsg co.WM,
+				wParam win.WPARAM,
+				lParam win.LPARAM,
+				uIdSubclass, dwRefData uintptr,
+			) uintptr {
+				pMe := (*_BaseCtrl)(unsafe.Pointer(dwRefData)) // retrieve passed pointer
 
-	_subclassProcCallback = syscall.NewCallback(
-		func(
-			hWnd win.HWND,
-			uMsg co.WM,
-			wParam win.WPARAM,
-			lParam win.LPARAM,
-			uIdSubclass, dwRefData uintptr,
-		) uintptr {
-			pMe := (*_BaseCtrl)(unsafe.Pointer(dwRefData)) // retrieve passed pointer
+				userRet, hasUserRet := uintptr(0), false
 
-			userRet, hasUserRet := uintptr(0), false
-
-			if pMe != nil {
-				msg := Wm{uMsg, wParam, lParam}
-				userRet, hasUserRet = pMe.subclassEvents.processLast(msg)
-			}
-
-			if uMsg == co.WM_NCDESTROY { // always check
-				hWnd.RemoveWindowSubclass(pMe.subclassProc, uint32(uIdSubclass)) // https://devblogs.microsoft.com/oldnewthing/20031111-00/?p=41883
 				if pMe != nil {
-					pMe.subclassEvents.clear()
+					msg := Wm{uMsg, wParam, lParam}
+					userRet, hasUserRet = pMe.subclassEvents.processLast(msg)
 				}
-			}
 
-			if hasUserRet {
-				return userRet
-			} else {
-				return hWnd.DefSubclassProc(uMsg, wParam, lParam)
-			}
-		},
-	)
+				if uMsg == co.WM_NCDESTROY { // always check
+					hWnd.RemoveWindowSubclass(pMe.subclassProc, uint32(uIdSubclass)) // https://devblogs.microsoft.com/oldnewthing/20031111-00/?p=41883
+					if pMe != nil {
+						pMe.subclassEvents.clear()
+					}
+				}
+
+				if hasUserRet {
+					return userRet
+				} else {
+					return hWnd.DefSubclassProc(uMsg, wParam, lParam)
+				}
+			},
+		)
+	}
 	return _subclassProcCallback
 }

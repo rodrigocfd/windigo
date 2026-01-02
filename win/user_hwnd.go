@@ -411,37 +411,35 @@ var _user_EndPaint *syscall.Proc
 //
 // [EnumChildWindows]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumchildwindows
 func (hWnd HWND) EnumChildWindows() []HWND {
-	pPack := &_EnumChildWindowsPack{
+	pPack := &callbackPack_EnumChildWindows{
 		arr: make([]HWND, 0),
 	}
 
 	syscall.SyscallN(
 		dll.Load(dll.USER32, &_user_EnumChildWindows, "EnumChildWindows"),
 		uintptr(hWnd),
-		enumChildWindowsCallback(),
+		callbackGet_EnumChildWindows(),
 		uintptr(unsafe.Pointer(pPack)))
 	return pPack.arr
 }
 
 var _user_EnumChildWindows *syscall.Proc
 
-type _EnumChildWindowsPack struct{ arr []HWND }
+type callbackPack_EnumChildWindows struct{ arr []HWND }
 
-var _enumChildWindowsCallback uintptr
+var callback_EnumChildWindows uintptr
 
-func enumChildWindowsCallback() uintptr {
-	if _enumChildWindowsCallback != 0 {
-		return _enumChildWindowsCallback
+func callbackGet_EnumChildWindows() uintptr {
+	if callback_EnumChildWindows == 0 {
+		callback_EnumChildWindows = syscall.NewCallback(
+			func(hChild HWND, lParam LPARAM) uintptr {
+				pPack := (*callbackPack_EnumChildWindows)(unsafe.Pointer(lParam))
+				pPack.arr = append(pPack.arr, hChild)
+				return 1
+			},
+		)
 	}
-
-	_enumChildWindowsCallback = syscall.NewCallback(
-		func(hChild HWND, lParam LPARAM) uintptr {
-			pPack := (*_EnumChildWindowsPack)(unsafe.Pointer(lParam))
-			pPack.arr = append(pPack.arr, hChild)
-			return 1
-		},
-	)
-	return _enumChildWindowsCallback
+	return callback_EnumChildWindows
 }
 
 // Calls [HWND.GetWindowLongPtr] to retrieve the window extended style.

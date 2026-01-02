@@ -292,18 +292,16 @@ type _ListViewSortPack struct {
 var _listViewSortCallback uintptr
 
 func listViewSortCallback() uintptr {
-	if _listViewSortCallback != 0 {
-		return _listViewSortCallback
+	if _listViewSortCallback == 0 {
+		_listViewSortCallback = syscall.NewCallback(
+			func(idxA, idxB, lParam uintptr) uintptr {
+				pPack := (*_ListViewSortPack)(unsafe.Pointer(lParam))
+				itemA := pPack.lv.Items.Get(int(idxA))
+				itemB := pPack.lv.Items.Get(int(idxB))
+				return uintptr(pPack.f(itemA, itemB))
+			},
+		)
 	}
-
-	_listViewSortCallback = syscall.NewCallback(
-		func(idxA, idxB, lParam uintptr) uintptr {
-			pPack := (*_ListViewSortPack)(unsafe.Pointer(lParam))
-			itemA := pPack.lv.Items.Get(int(idxA))
-			itemB := pPack.lv.Items.Get(int(idxB))
-			return uintptr(pPack.f(itemA, itemB))
-		},
-	)
 	return _listViewSortCallback
 }
 

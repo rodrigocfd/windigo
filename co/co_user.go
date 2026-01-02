@@ -734,6 +734,33 @@ const (
 	LAYOUT_RTL    LAYOUT = 0x0000_0001
 )
 
+// [KBDLLHOOKSTRUCT] flags.
+//
+// [KBDLLHOOKSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-kbdllhookstruct
+type LLKHF uint32
+
+const (
+	_KF_EXTENDED = 0x0100
+	_KF_ALTDOWN  = 0x2000
+	_KF_UP       = 0x8000
+
+	LLKHF_EXTENDED                = LLKHF(_KF_EXTENDED >> 8)
+	LLKHF_LOWER_IL_INJECTED LLKHF = 0x0000_0002
+	LLKHF_INJECTED          LLKHF = 0x0000_0010
+	LLKHF_ALTDOWN                 = LLKHF(_KF_ALTDOWN)
+	LLKHF_UP                      = LLKHF(_KF_UP)
+)
+
+// [MSLLHOOKSTRUCT] flags.
+//
+// [MSLLHOOKSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msllhookstruct
+type LLMHF uint32
+
+const (
+	LLMHF_INJECTED          LLMHF = 0x0000_0001
+	LLMHF_LOWER_IL_INJECTED LLMHF = 0x0000_0002
+)
+
 // [LoadImage] fuLoad.
 //
 // [LoadImage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
@@ -2029,6 +2056,27 @@ const (
 	WDA_NONE               WDA = 0x0000_0000
 	WDA_MONITOR            WDA = 0x0000_0001
 	WDA_EXCLUDEFROMCAPTURE WDA = 0x0000_0011
+)
+
+// [SetWindowsHookEx] idHook.
+//
+// [SetWindowsHookEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
+type WH int32
+
+const (
+	WH_CALLWNDPROC    WH = 4  // Installs a hook procedure that monitors messages before the system sends them to the destination window procedure.
+	WH_CALLWNDPROCRET WH = 12 // Installs a hook procedure that monitors messages after they have been processed by the destination window procedure
+	WH_CBT            WH = 5  // Installs a hook procedure that receives notifications useful to a CBT application.
+	WH_DEBUG          WH = 9  // Installs a hook procedure useful for debugging other hook procedures.
+	WH_FOREGROUNDIDLE WH = 11 // Installs a hook procedure that will be called when the application's foreground thread is about to become idle. This hook is useful for performing low priority tasks during idle time.
+	WH_GETMESSAGE     WH = 3  // Installs a hook procedure that monitors messages posted to a message queue.
+	WH_KEYBOARD       WH = 2  // Installs a hook procedure that monitors keystroke messages.
+	WH_KEYBOARD_LL    WH = 13 // Installs a hook procedure that monitors low-level keyboard input events.
+	WH_MOUSE          WH = 7  // Installs a hook procedure that monitors mouse messages.
+	WH_MOUSE_LL       WH = 14 // Installs a hook procedure that monitors low-level mouse input events.
+	WH_MSGFILTER      WH = -1 // Installs a hook procedure that monitors messages generated as a result of an input event in a dialog box, message box, menu, or scroll bar.
+	WH_SHELL          WH = 10 // Installs a hook procedure that receives notifications useful to shell applications.
+	WH_SYSMSGFILTER   WH = 6  // Installs a hook procedure that monitors messages generated as a result of an input event in a dialog box, message box, menu, or scroll bar. The hook procedure monitors these messages for all applications in the same desktop as the calling thread.
 )
 
 // [WM_PARENTNOTIFY] event.

@@ -58,14 +58,14 @@ var _user_DrawIconEx *syscall.Proc
 //
 // [EnumDisplayMonitors]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
 func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) ([]EnumDisplayMonitorsInfo, error) {
-	pPack := &_EnumDisplayMonitorsPack{
+	pPack := &callbackPack_EnumDisplayMonitors{
 		arr: make([]EnumDisplayMonitorsInfo, 0),
 	}
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.USER32, &_user_EnumDisplayMonitors, "EnumDisplayMonitors"),
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(rcClip)),
-		enumDisplayMonitorsCallback(),
+		callbackGet_EnumDisplayMonitors(),
 		uintptr(unsafe.Pointer(pPack)))
 	runtime.KeepAlive(pPack)
 	if ret == 0 {
@@ -77,31 +77,29 @@ func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) ([]EnumDisplayMonitorsInfo, err
 var _user_EnumDisplayMonitors *syscall.Proc
 
 type (
-	_EnumDisplayMonitorsPack struct{ arr []EnumDisplayMonitorsInfo }
-
 	// Returned by [HDC.EnumDisplayMonitors].
 	EnumDisplayMonitorsInfo struct {
 		HMon   HMONITOR
 		HdcMon HDC
 		Rc     RECT
 	}
+
+	callbackPack_EnumDisplayMonitors struct{ arr []EnumDisplayMonitorsInfo }
 )
 
-var _enumDisplayMonitorsCallback uintptr
+var callback_EnumDisplayMonitors uintptr
 
-func enumDisplayMonitorsCallback() uintptr {
-	if _enumDisplayMonitorsCallback != 0 {
-		return _enumDisplayMonitorsCallback
+func callbackGet_EnumDisplayMonitors() uintptr {
+	if callback_EnumDisplayMonitors == 0 {
+		callback_EnumDisplayMonitors = syscall.NewCallback(
+			func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lParam LPARAM) uintptr {
+				pPack := (*callbackPack_EnumDisplayMonitors)(unsafe.Pointer(lParam))
+				pPack.arr = append(pPack.arr, EnumDisplayMonitorsInfo{hMon, hdcMon, *rcMon})
+				return 1
+			},
+		)
 	}
-
-	_enumDisplayMonitorsCallback = syscall.NewCallback(
-		func(hMon HMONITOR, hdcMon HDC, rcMon *RECT, lParam LPARAM) uintptr {
-			pPack := (*_EnumDisplayMonitorsPack)(unsafe.Pointer(lParam))
-			pPack.arr = append(pPack.arr, EnumDisplayMonitorsInfo{hMon, hdcMon, *rcMon})
-			return 1
-		},
-	)
-	return _enumDisplayMonitorsCallback
+	return callback_EnumDisplayMonitors
 }
 
 // [FrameRect] function.

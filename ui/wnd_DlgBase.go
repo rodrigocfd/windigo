@@ -77,62 +77,60 @@ func (me *_DlgBase) setIcon(hInst win.HINSTANCE, iconId uint16) error {
 var _dlgProcCallback uintptr
 
 func dlgProcCallback() uintptr {
-	if _dlgProcCallback != 0 {
-		return _dlgProcCallback
-	}
+	if _dlgProcCallback == 0 {
+		_dlgProcCallback = syscall.NewCallback(
+			func(hDlg win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
+				var pMe *_DlgBase
 
-	_dlgProcCallback = syscall.NewCallback(
-		func(hDlg win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
-			var pMe *_DlgBase
-
-			if uMsg == co.WM_INITDIALOG {
-				pMe = (*_DlgBase)(unsafe.Pointer(lParam))
-				pMe.hWnd = hDlg
-				hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, uintptr(unsafe.Pointer(pMe)))
-			} else {
-				ptr, _ := hDlg.GetWindowLongPtr(co.GWLP_DWLP_USER) // retrieve
-				pMe = (*_DlgBase)(unsafe.Pointer(ptr))
-			}
-
-			// If no pointer stored, then no processing is done.
-			// Prevents processing before WM_INITDIALOG and after WM_NCDESTROY.
-			if pMe == nil {
-				return 0 // FALSE
-			}
-
-			// Execute before-user closures, keep track if at least one was executed.
-			msg := Wm{uMsg, wParam, lParam}
-			atLeastOneBeforeUser := pMe.beforeUserEvents.processAll(msg)
-
-			// Execute user closure, if any.
-			userRet, hasUserRet := pMe.userEvents.processLast(msg)
-
-			// Execute post-user closures, keep track if at least one was executed.
-			atLeastOneAfterUser := pMe.afterUserEvents.processAll(msg)
-
-			switch uMsg {
-			case co.WM_INITDIALOG:
-				pMe.removeWmCreateInitdialog() // will release all memory in these closures
-			case co.WM_NCDESTROY: // always check
-				hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, 0)
-				pMe.hWnd = win.HWND(0)
-				pMe.clearMessages()
-			}
-
-			if hasUserRet {
-				switch uMsg {
-				case co.WM_GETDLGCODE, co.WM_SETCURSOR: // demands special treatment
-					hDlg.SetWindowLongPtr(co.GWLP_DWLP_MSGRESULT, userRet)
-					return 1 // TRUE
-				default:
-					return userRet
+				if uMsg == co.WM_INITDIALOG {
+					pMe = (*_DlgBase)(unsafe.Pointer(lParam))
+					pMe.hWnd = hDlg
+					hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, uintptr(unsafe.Pointer(pMe)))
+				} else {
+					ptr, _ := hDlg.GetWindowLongPtr(co.GWLP_DWLP_USER) // retrieve
+					pMe = (*_DlgBase)(unsafe.Pointer(ptr))
 				}
-			} else if atLeastOneBeforeUser || atLeastOneAfterUser {
-				return 1 // TRUE
-			} else {
-				return 0 // FALSE
-			}
-		},
-	)
+
+				// If no pointer stored, then no processing is done.
+				// Prevents processing before WM_INITDIALOG and after WM_NCDESTROY.
+				if pMe == nil {
+					return 0 // FALSE
+				}
+
+				// Execute before-user closures, keep track if at least one was executed.
+				msg := Wm{uMsg, wParam, lParam}
+				atLeastOneBeforeUser := pMe.beforeUserEvents.processAll(msg)
+
+				// Execute user closure, if any.
+				userRet, hasUserRet := pMe.userEvents.processLast(msg)
+
+				// Execute post-user closures, keep track if at least one was executed.
+				atLeastOneAfterUser := pMe.afterUserEvents.processAll(msg)
+
+				switch uMsg {
+				case co.WM_INITDIALOG:
+					pMe.removeWmCreateInitdialog() // will release all memory in these closures
+				case co.WM_NCDESTROY: // always check
+					hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, 0)
+					pMe.hWnd = win.HWND(0)
+					pMe.clearMessages()
+				}
+
+				if hasUserRet {
+					switch uMsg {
+					case co.WM_GETDLGCODE, co.WM_SETCURSOR: // demands special treatment
+						hDlg.SetWindowLongPtr(co.GWLP_DWLP_MSGRESULT, userRet)
+						return 1 // TRUE
+					default:
+						return userRet
+					}
+				} else if atLeastOneBeforeUser || atLeastOneAfterUser {
+					return 1 // TRUE
+				} else {
+					return 0 // FALSE
+				}
+			},
+		)
+	}
 	return _dlgProcCallback
 }

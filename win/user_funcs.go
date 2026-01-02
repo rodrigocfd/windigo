@@ -79,6 +79,19 @@ func BroadcastSystemMessage(
 
 var _user_BroadcastSystemMessageW *syscall.Proc
 
+// [CallMsgFilter] function.
+//
+// [CallMsgFilter]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-callmsgfilterw
+func CallMsgFilter(msg *MSG, code int32) bool {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_user_CallMsgFilterW, "CallMsgFilterW"),
+		uintptr(unsafe.Pointer(msg)),
+		uintptr(code))
+	return ret != 0
+}
+
+var _user_CallMsgFilterW *syscall.Proc
+
 // [CallNextHookEx] function.
 //
 // [CallNextHookEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-callnexthookex
@@ -93,6 +106,22 @@ func CallNextHookEx(nCode int32, wParam WPARAM, lParam LPARAM) uintptr {
 }
 
 var _user_CallNextHookEx *syscall.Proc
+
+// [CallWindowProc] function.
+//
+// [CallWindowProc]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-callwindowprocw
+func CallWindowProc(prevWndFunc uintptr, hWnd HWND, msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.USER32, &_user_CallWindowProcW, "CallWindowProcW"),
+		prevWndFunc,
+		uintptr(hWnd),
+		uintptr(msg),
+		uintptr(wParam),
+		uintptr(lParam))
+	return ret
+}
+
+var _user_CallWindowProcW *syscall.Proc
 
 // [CreateIconFromResourceEx] function for cursor.
 //
@@ -111,22 +140,6 @@ func CreateCursorFromResourceEx(
 	hIcon, err := CreateIconFromResourceEx(resBits, fmtVersion, cxDesired, cyDesired, flags)
 	return HCURSOR(hIcon), err
 }
-
-// [CallWindowProc] function.
-//
-// [CallWindowProc]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-callwindowprocw
-func CallWindowProcW(prevWndFunc uintptr, hWnd HWND, msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
-	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_CallWindowProcW, "CallWindowProcW"),
-		prevWndFunc,
-		uintptr(hWnd),
-		uintptr(msg),
-		uintptr(wParam),
-		uintptr(lParam))
-	return ret
-}
-
-var _user_CallWindowProcW *syscall.Proc
 
 // [CreateIconFromResourceEx] function.
 //
@@ -235,72 +248,68 @@ var _user_EnumDisplayDevicesW *syscall.Proc
 //
 // [EnumThreadWindows]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumthreadwindows
 func EnumThreadWindows(threadId uint32) []HWND {
-	pPack := &_EnumThreadWindowsPack{
+	pPack := &callbackPack_EnumThreadWindows{
 		arr: make([]HWND, 0),
 	}
 
 	syscall.SyscallN(
 		dll.Load(dll.USER32, &_user_EnumThreadWindows, "EnumThreadWindows"),
-		enumThreadWindowsCallback(),
+		callbackGet_EnumThreadWindows(),
 		uintptr(unsafe.Pointer(pPack)))
 	return pPack.arr
 }
 
 var _user_EnumThreadWindows *syscall.Proc
 
-type _EnumThreadWindowsPack struct{ arr []HWND }
+type callbackPack_EnumThreadWindows struct{ arr []HWND }
 
-func enumThreadWindowsCallback() uintptr {
-	if _enumThreadWindowsCallback != 0 {
-		return _enumThreadWindowsCallback
+var callback_EnumThreadWindows uintptr
+
+func callbackGet_EnumThreadWindows() uintptr {
+	if callback_EnumThreadWindows == 0 {
+		callback_EnumThreadWindows = syscall.NewCallback(
+			func(hWnd HWND, lParam LPARAM) uintptr {
+				pPack := (*callbackPack_EnumThreadWindows)(unsafe.Pointer(lParam))
+				pPack.arr = append(pPack.arr, hWnd)
+				return 1
+			},
+		)
 	}
-
-	_enumThreadWindowsCallback = syscall.NewCallback(
-		func(hWnd HWND, lParam LPARAM) uintptr {
-			pPack := (*_EnumThreadWindowsPack)(unsafe.Pointer(lParam))
-			pPack.arr = append(pPack.arr, hWnd)
-			return 1
-		},
-	)
-	return _enumThreadWindowsCallback
+	return callback_EnumThreadWindows
 }
-
-var _enumThreadWindowsCallback uintptr
 
 // [EnumWindows] function.
 //
 // [EnumWindows]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
 func EnumWindows() []HWND {
-	pPack := &_EnumWindowsPack{
+	pPack := &callbackPack_EnumWindows{
 		arr: make([]HWND, 0),
 	}
 
 	syscall.SyscallN(
 		dll.Load(dll.USER32, &_user_EnumWindows, "EnumWindows"),
-		enumWindowsCallback(),
+		callbackGet_EnumWindows(),
 		uintptr(unsafe.Pointer(pPack)))
 	return pPack.arr
 }
 
 var _user_EnumWindows *syscall.Proc
 
-type _EnumWindowsPack struct{ arr []HWND }
+type callbackPack_EnumWindows struct{ arr []HWND }
 
-var _enumWindowsCallback uintptr
+var callback_EnumWindows uintptr
 
-func enumWindowsCallback() uintptr {
-	if _enumWindowsCallback != 0 {
-		return _enumWindowsCallback
+func callbackGet_EnumWindows() uintptr {
+	if callback_EnumWindows == 0 {
+		callback_EnumWindows = syscall.NewCallback(
+			func(hWnd HWND, lParam LPARAM) uintptr {
+				pPack := (*callbackPack_EnumWindows)(unsafe.Pointer(lParam))
+				pPack.arr = append(pPack.arr, hWnd)
+				return 1
+			},
+		)
 	}
-
-	_enumWindowsCallback = syscall.NewCallback(
-		func(hWnd HWND, lParam LPARAM) uintptr {
-			pPack := (*_EnumWindowsPack)(unsafe.Pointer(lParam))
-			pPack.arr = append(pPack.arr, hWnd)
-			return 1
-		},
-	)
-	return _enumWindowsCallback
+	return callback_EnumWindows
 }
 
 // [ExitWindowsEx] function.

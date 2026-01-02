@@ -85,6 +85,8 @@ func (me *ClassName) raw(wBuf *wstr.BufEncoder) uintptr {
 	}
 }
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 // Tagged union for a [cursor resource] identifier, which can be:
 //   - [co.IDC]
 //   - uint16
@@ -170,6 +172,8 @@ func (me *CursorRes) raw(wBuf *wstr.BufEncoder) uintptr {
 	}
 }
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 // Tagged union for an [icon resource] identifier, which can be:
 //   - [co.IDI]
 //   - uint16
@@ -254,6 +258,8 @@ func (me *IconRes) raw(wBuf *wstr.BufEncoder) uintptr {
 		panic("Invalid IconRes value.")
 	}
 }
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // Tagged union for a resource identifier, which can be:
 //   - uint16
