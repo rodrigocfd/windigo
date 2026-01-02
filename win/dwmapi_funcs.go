@@ -18,7 +18,7 @@ func DwmEnableMMCSS(enable bool) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.DWMAPI, &_dwmapi_DwmEnableMMCSS, "DwmEnableMMCSS"),
 		utl.BoolToUintptr(enable))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _dwmapi_DwmEnableMMCSS *syscall.Proc
@@ -29,7 +29,7 @@ var _dwmapi_DwmEnableMMCSS *syscall.Proc
 func DwmFlush() error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.DWMAPI, &_dwmapi_DwmFlush, "DwmFlush"))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _dwmapi_DwmFlush *syscall.Proc
@@ -39,7 +39,7 @@ var _dwmapi_DwmFlush *syscall.Proc
 // [DwmGetColorizationColor]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmgetcolorizationcolor
 func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool, hr error) {
 	var clr COLORREF
-	var bOpaque int32 // BOOL
+	var bOpaque BOOL
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.DWMAPI, &_dwmapi_DwmGetColorizationColor, "DwmGetColorizationColor"),
@@ -48,7 +48,7 @@ func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool, hr error) {
 	if hr = co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return COLORREF(0), false, hr
 	}
-	return clr, bOpaque != 0, nil
+	return clr, bOpaque.Get(), nil
 }
 
 var _dwmapi_DwmGetColorizationColor *syscall.Proc
@@ -57,14 +57,14 @@ var _dwmapi_DwmGetColorizationColor *syscall.Proc
 //
 // [DwmIsCompositionEnabled]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmiscompositionenabled
 func DwmIsCompositionEnabled() (bool, error) {
-	var pfEnabled int32 // BOOL
+	var pfEnabled BOOL
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.DWMAPI, &_dwmapi_DwmIsCompositionEnabled, "DwmIsCompositionEnabled"),
 		uintptr(unsafe.Pointer(&pfEnabled)))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		panic(hr)
 	}
-	return pfEnabled != 0, nil
+	return pfEnabled.Get(), nil
 }
 
 var _dwmapi_DwmIsCompositionEnabled *syscall.Proc
@@ -80,7 +80,7 @@ func DwmShowContact(pointerId int, showContact co.DWMSC) error {
 		dll.Load(dll.DWMAPI, &_dwmapi_DwmShowContact, "DwmShowContact"),
 		uintptr(uint32(pointerId)),
 		uintptr(showContact))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _dwmapi_DwmShowContact *syscall.Proc

@@ -659,7 +659,7 @@ var _advapi_RegQueryMultipleValuesW *syscall.Proc
 //
 // [RegQueryReflectionKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryreflectionkey
 func (hKey HKEY) RegQueryReflectionKey() (bool, error) {
-	var bVal int32 // BOOL
+	var bVal BOOL
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.ADVAPI32, &_advapi_RegQueryReflectionKey, "RegQueryReflectionKey"),
 		uintptr(hKey),
@@ -667,7 +667,7 @@ func (hKey HKEY) RegQueryReflectionKey() (bool, error) {
 	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
 		return false, wErr
 	}
-	return bVal != 0, nil
+	return bVal.Get(), nil
 }
 
 var _advapi_RegQueryReflectionKey *syscall.Proc

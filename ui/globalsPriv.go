@@ -27,7 +27,7 @@ func initalGuiSetup() {
 	win.InitCommonControls()
 
 	if win.IsWindows8OrGreater() {
-		bVal := int32(0) // BOOL=FALSE; SetTimer() safety
+		var bVal win.BOOL // SetTimer() safety
 		err := win.GetCurrentProcess().SetUserObjectInformation(
 			co.UOI_TIMERPROC_EXCEPTION_SUPPRESSION, unsafe.Pointer(&bVal), unsafe.Sizeof(bVal))
 		if err != nil {

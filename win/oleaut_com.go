@@ -534,17 +534,12 @@ func (me *IPicture) HPal() (HPALETTE, error) {
 //
 // [get_KeepOriginalFormat]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_keeporiginalformat
 func (me *IPicture) KeepOriginalFormat() (bool, error) {
-	var keep int32 // BOOL
+	var keep BOOL
 	ret, _, _ := syscall.SyscallN(
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_KeepOriginalFormat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&keep)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return keep != 0, nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(keep), ret)
 }
 
 // [PictureChanged] method.
@@ -554,7 +549,7 @@ func (me *IPicture) PictureChanged() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).PictureChanged,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Render] method.
@@ -656,7 +651,7 @@ func (me *IPicture) SetKeepOriginalFormat(keep bool) error {
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Put_KeepOriginalFormat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		utl.BoolToUintptr(keep))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [set_hPal] method.
@@ -667,7 +662,7 @@ func (me *IPicture) SetHPal(hPal HPALETTE) error {
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Set_hPal,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hPal))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // Calls [IPicture.Width] and [IPicture.Height] at once.
@@ -808,7 +803,7 @@ func (me *IPropertyStore) Commit() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IPropertyStoreVt)(unsafe.Pointer(*me.Ppvt())).Commit,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // Returns all [co.PKEY] values by calling [IPropertyStore.GetCount] and
@@ -1149,7 +1144,7 @@ func (me *ITypeInfo) _ReleaseFuncDesc(pFuncDesc *FUNCDESC) error {
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).ReleaseFuncDesc,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(pFuncDesc)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _ITypeInfoVt struct {

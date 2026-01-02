@@ -102,7 +102,7 @@ func (me *IBindCtx) RegisterObjectBound(obj *IUnknown) error {
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).RegisterObjectBound,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(obj.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [ReleaseBoundObjects] method.
@@ -112,7 +112,7 @@ func (me *IBindCtx) ReleaseBoundObjects() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).ReleaseBoundObjects,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [RevokeObjectBound] method.
@@ -123,7 +123,7 @@ func (me *IBindCtx) RevokeObjectBound(obj *IUnknown) error {
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).RevokeObjectBound,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(obj.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetBindOptions] method.
@@ -134,7 +134,7 @@ func (me *IBindCtx) SetBindOptions(bindOpts *BIND_OPTS3) error {
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).SetBindOptions,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(bindOpts)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IBindCtxVt struct {
@@ -211,7 +211,7 @@ func (me *IDataObject) QueryGetData(etc *FORMATETC) error {
 		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).QueryGetData,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(etc)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IDataObjectVt struct {
@@ -312,7 +312,7 @@ func (me *IEnumString) Reset() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Reset,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Skip] method.
@@ -326,7 +326,7 @@ func (me *IEnumString) Skip(count int) error {
 		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Skip,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(count)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IEnumStringVt struct {
@@ -443,7 +443,7 @@ func (me *IStream) Commit(flags co.STGC) error {
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Commit,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(flags))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [CopyTo] method.
@@ -488,7 +488,7 @@ func (me *IStream) LockRegion(offset, length int, lockType co.LOCKTYPE) error {
 		uintptr(uint64(offset)),
 		uintptr(uint64(length)),
 		uintptr(lockType))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Revert] method.
@@ -498,7 +498,7 @@ func (me *IStream) Revert() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Revert,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Seek] method.
@@ -531,7 +531,7 @@ func (me *IStream) SetSize(newSize int) error {
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).SetSize,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint64(newSize)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Stat] method.
@@ -567,7 +567,7 @@ func (me *IStream) UnlockRegion(offset, length int, lockType co.LOCKTYPE) error 
 		uintptr(uint64(offset)),
 		uintptr(uint64(length)),
 		uintptr(lockType))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IStreamVt struct {

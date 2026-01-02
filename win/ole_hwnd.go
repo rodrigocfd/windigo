@@ -47,7 +47,7 @@ func (hWnd HWND) RevokeDragDrop() error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.OLE32, &_ole_RevokeDragDrop, "RevokeDragDrop"),
 		uintptr(hWnd))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _ole_RevokeDragDrop *syscall.Proc

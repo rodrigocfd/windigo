@@ -138,7 +138,7 @@ var _kernel_GetProcessId *syscall.Proc
 //
 // [GetProcessPriorityBoost]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesspriorityboost
 func (hProcess HPROCESS) GetProcessPriorityBoost() (bool, error) {
-	var bVal int32 // BOOL
+	var bVal BOOL
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_kernel_GetProcessPriorityBoost, "GetProcessPriorityBoost"),
 		uintptr(hProcess),
@@ -146,7 +146,7 @@ func (hProcess HPROCESS) GetProcessPriorityBoost() (bool, error) {
 	if ret == 0 {
 		return false, co.ERROR(err)
 	}
-	return bVal != 0, nil
+	return bVal.Get(), nil
 }
 
 var _kernel_GetProcessPriorityBoost *syscall.Proc
@@ -221,7 +221,7 @@ var _kernel_GetProcessVersion *syscall.Proc
 //
 // [IsProcessCritical]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-isprocesscritical
 func (hProcess HPROCESS) IsProcessCritical() (bool, error) {
-	var bVal int32 // BOOL
+	var bVal BOOL
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_kernel_IsProcessCritical, "IsProcessCritical"),
 		uintptr(hProcess),
@@ -229,7 +229,7 @@ func (hProcess HPROCESS) IsProcessCritical() (bool, error) {
 	if ret == 0 {
 		return false, co.ERROR(err)
 	}
-	return bVal != 0, nil
+	return bVal.Get(), nil
 }
 
 var _kernel_IsProcessCritical *syscall.Proc
@@ -238,7 +238,7 @@ var _kernel_IsProcessCritical *syscall.Proc
 //
 // [IsWow64Process]: https://learn.microsoft.com/en-us/windows/win32/api/wow64apiset/nf-wow64apiset-iswow64process
 func (hProcess HPROCESS) IsWow64Process() (bool, error) {
-	var bVal int32 // BOOL
+	var bVal BOOL
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_kernel_IsWow64Process, "IsWow64Process"),
 		uintptr(hProcess),
@@ -246,7 +246,7 @@ func (hProcess HPROCESS) IsWow64Process() (bool, error) {
 	if ret == 0 {
 		return false, co.ERROR(err)
 	}
-	return bVal != 0, nil
+	return bVal.Get(), nil
 }
 
 var _kernel_IsWow64Process *syscall.Proc

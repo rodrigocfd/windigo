@@ -101,7 +101,7 @@ var _kernel_GetThreadIdealProcessorEx *syscall.Proc
 //
 // [GetThreadIOPendingFlag]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadiopendingflag
 func (hThread HTHREAD) GetThreadIOPendingFlag() (bool, error) {
-	var bVal int32 // BOOL
+	var bVal BOOL
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_kernel_GetThreadIOPendingFlag, "GetThreadIOPendingFlag"),
 		uintptr(hThread),
@@ -109,7 +109,7 @@ func (hThread HTHREAD) GetThreadIOPendingFlag() (bool, error) {
 	if ret == 0 {
 		return false, co.ERROR(err)
 	}
-	return bVal != 0, nil
+	return bVal.Get(), nil
 }
 
 var _kernel_GetThreadIOPendingFlag *syscall.Proc
@@ -133,7 +133,7 @@ var _kernel_GetThreadPriority *syscall.Proc
 //
 // [GetThreadPriorityBoost]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadpriorityboost
 func (hThread HTHREAD) GetThreadPriorityBoost() (bool, error) {
-	var bVal int32 // BOOL
+	var bVal BOOL
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_kernel_GetThreadPriorityBoost, "GetThreadPriorityBoost"),
 		uintptr(hThread),
@@ -141,7 +141,7 @@ func (hThread HTHREAD) GetThreadPriorityBoost() (bool, error) {
 	if ret == 0 {
 		return false, co.ERROR(err)
 	}
-	return bVal != 0, nil
+	return bVal.Get(), nil
 }
 
 var _kernel_GetThreadPriorityBoost *syscall.Proc

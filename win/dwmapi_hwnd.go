@@ -19,7 +19,7 @@ func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) error {
 		dll.Load(dll.DWMAPI, &_dwmapi_DwmExtendFrameIntoClientArea, "DwmExtendFrameIntoClientArea"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(marginsInset)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _dwmapi_DwmExtendFrameIntoClientArea *syscall.Proc
@@ -69,7 +69,7 @@ func (hWnd HWND) DwmInvalidateIconicBitmaps() error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.DWMAPI, &_dwmapi_DwmInvalidateIconicBitmaps, "DwmInvalidateIconicBitmaps"),
 		uintptr(hWnd))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _dwmapi_DwmInvalidateIconicBitmaps *syscall.Proc
@@ -86,7 +86,7 @@ func (hWnd HWND) DwmModifyPreviousDxFrameDuration(numRefreshes int, relative boo
 		uintptr(hWnd),
 		uintptr(int32(numRefreshes)),
 		utl.BoolToUintptr(relative))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _dwmapi_DwmModifyPreviousDxFrameDuration *syscall.Proc
@@ -101,7 +101,7 @@ func (hWnd HWND) DwmSetIconicLivePreviewBitmap(hBmp HBITMAP, ptClient POINT, sit
 		uintptr(hBmp),
 		uintptr(unsafe.Pointer(&ptClient)),
 		uintptr(sitFlags))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _dwmapi_DwmSetIconicLivePreviewBitmap *syscall.Proc
@@ -115,7 +115,7 @@ func (hWnd HWND) DwmSetIconicThumbnail(hBmp HBITMAP, sitFlags co.DWM_SIT) error 
 		uintptr(hWnd),
 		uintptr(hBmp),
 		uintptr(sitFlags))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _dwmapi_DwmSetIconicThumbnail *syscall.Proc
@@ -150,7 +150,7 @@ func (hWnd HWND) DwmSetWindowAttribute(attr DwmAttr) error {
 		uintptr(attr.tag),
 		uintptr(ptrBuf),
 		szBuf)
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _dwmapi_DwmSetWindowAttribute *syscall.Proc

@@ -193,7 +193,7 @@ func OleInitialize() error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.OLE32, &_ole_OleInitialize, "OleInitialize"),
 		0)
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _ole_OleInitialize *syscall.Proc

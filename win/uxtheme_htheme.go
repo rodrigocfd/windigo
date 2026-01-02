@@ -42,7 +42,7 @@ func (hTheme HTHEME) DrawThemeBackground(hdc HDC, partStateId co.VS, rc *RECT, c
 		uintptr(partStateId.State()),
 		uintptr(unsafe.Pointer(rc)),
 		uintptr(unsafe.Pointer(clipRc)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 var _uxtheme_DrawThemeBackground *syscall.Proc

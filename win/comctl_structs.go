@@ -722,7 +722,7 @@ func (di *NMTBDISPINFO) SetPszText(val []uint16) {
 type NMTBDUPACCELERATOR struct {
 	Hdr  NMHDR
 	Ch   uint32
-	FDup int32 // This is a BOOL value.
+	FDup BOOL
 }
 
 // [NMTBGETINFOTIP] struct.

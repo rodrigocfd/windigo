@@ -145,10 +145,10 @@ func (me *UpDown) SetValue(val int) *UpDown {
 //
 // [UDM_GETPOS32]: https://learn.microsoft.com/en-us/windows/win32/controls/udm-getpos32
 func (me *UpDown) Value() (int, bool) {
-	var valid int32 // BOOL
+	var valid win.BOOL
 	ret, err := me.hWnd.SendMessage(co.UDM_GETPOS32,
 		0, win.LPARAM(unsafe.Pointer(&valid)))
-	if valid == 0 || err != nil {
+	if !valid.Get() || err != nil {
 		return 0, false
 	}
 	return int(ret), true

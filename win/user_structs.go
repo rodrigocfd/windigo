@@ -257,7 +257,7 @@ func (hi *HELPINFO) SetCbSize() {
 //
 // [ICONINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfo
 type ICONINFO struct {
-	FIcon    int32 // This is a BOOL value.
+	FIcon    BOOL
 	XHotspot uint32
 	YHotspot uint32
 	HbmMask  HBITMAP
@@ -276,7 +276,7 @@ type ICONINFO struct {
 // [ICONINFOEX]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfoexw
 type ICONINFOEX struct {
 	cbSize    uint32
-	FIcon     int32 // This is a BOOL value.
+	FIcon     BOOL
 	XHotspot  uint32
 	YHotspot  uint32
 	HbmMask   HBITMAP
@@ -614,10 +614,10 @@ func (ncm *NONCLIENTMETRICS) SetCbSize() {
 // [PAINTSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-paintstruct
 type PAINTSTRUCT struct {
 	Hdc         HDC
-	FErase      int32 // This is a BOOL value.
+	FErase      BOOL
 	RcPaint     RECT
-	fRestore    int32 // This is a BOOL value.
-	fIncUpdate  int32 // This is a BOOL value.
+	fRestore    BOOL
+	fIncUpdate  BOOL
 	rgbReserved [32]byte
 }
 

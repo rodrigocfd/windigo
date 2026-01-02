@@ -53,9 +53,18 @@ func Minus1AsSysInvalidParm(ret uintptr) error {
 }
 
 // Error handling syntactic sugar for syscalls directly returning an HRESULT.
-func ErrorAsHResult(ret uintptr) error {
+func HresultToError(ret uintptr) error {
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return hr
 	}
 	return nil
+}
+
+// Error handling syntactic sugar for syscalls directly returning bool + HRESULT.
+func HresultToBoolError(bVal int32, ret uintptr) (bool, error) {
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return bVal != 0, nil
+	} else {
+		return false, hr
+	}
 }

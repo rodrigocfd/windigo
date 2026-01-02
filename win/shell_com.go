@@ -147,7 +147,7 @@ func (me *IEnumIDList) Reset() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IEnumIDListVt)(unsafe.Pointer(*me.Ppvt())).Reset,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Skip] method.
@@ -161,7 +161,7 @@ func (me *IEnumIDList) Skip(count int) error {
 		(*_IEnumIDListVt)(unsafe.Pointer(*me.Ppvt())).Skip,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(count)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IEnumIDListVt struct {
@@ -315,7 +315,7 @@ func (me *IEnumShellItems) Reset() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IEnumShellItemsVt)(unsafe.Pointer(*me.Ppvt())).Reset,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Skip] method.
@@ -329,7 +329,7 @@ func (me *IEnumShellItems) Skip(count int) error {
 		(*_IEnumShellItemsVt)(unsafe.Pointer(*me.Ppvt())).Skip,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(count)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IEnumShellItemsVt struct {
@@ -365,7 +365,7 @@ func (me *IFileDialog) AddPlace(si *IShellItem, fdap co.FDAP) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(si.Ppvt())),
 		uintptr(fdap))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Advise] method.
@@ -392,7 +392,7 @@ func (me *IFileDialog) ClearClientData() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).ClearClientData,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Close] method.
@@ -403,7 +403,7 @@ func (me *IFileDialog) Close(hr co.ERROR) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).Close,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hr))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [GetCurrentSelection] method.
@@ -529,7 +529,7 @@ func (me *IFileDialog) SetClientGuid(guid *GUID) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetClientGuid,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(guid)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetDefaultExtension] method.
@@ -541,7 +541,7 @@ func (me *IFileDialog) SetDefaultExtension(defaultExt string) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetDefaultExtension,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wDefaultExt.EmptyIsNil(defaultExt)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetDefaultFolder] method.
@@ -552,7 +552,7 @@ func (me *IFileDialog) SetDefaultFolder(si *IShellItem) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetDefaultFolder,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(si.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetFileName] method.
@@ -564,7 +564,7 @@ func (me *IFileDialog) SetFileName(name string) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFileName,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wName.EmptyIsNil(name)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetFileNameLabel] method.
@@ -576,7 +576,7 @@ func (me *IFileDialog) SetFileNameLabel(label string) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFileNameLabel,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wLabel.EmptyIsNil(label)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetFileTypeIndex] method.
@@ -593,7 +593,7 @@ func (me *IFileDialog) SetFileTypeIndex(index int) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFileTypeIndex,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(index)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetFileTypes] method.
@@ -622,7 +622,7 @@ func (me *IFileDialog) SetFileTypes(filterSpec []COMDLG_FILTERSPEC) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(len(filterSpec))),
 		uintptr(unsafe.Pointer(&nativeFilters[0])))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetFilter] method.
@@ -633,7 +633,7 @@ func (me *IFileDialog) SetFilter(filter *IShellItemFilter) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFilter,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(filter.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetFolder] method.
@@ -644,7 +644,7 @@ func (me *IFileDialog) SetFolder(si *IShellItem) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFolder,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(si.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetOkButtonLabel] method.
@@ -656,7 +656,7 @@ func (me *IFileDialog) SetOkButtonLabel(text string) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetOkButtonLabel,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wText.EmptyIsNil(text)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetOptions] method.
@@ -678,7 +678,7 @@ func (me *IFileDialog) SetOptions(fos co.FOS) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetOptions,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(fos))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetTitle] method.
@@ -690,7 +690,7 @@ func (me *IFileDialog) SetTitle(title string) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetTitle,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wTitle.EmptyIsNil(title)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Unadvise] method.
@@ -703,7 +703,7 @@ func (me *IFileDialog) Unadvise(cookie uint32) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).Unadvise,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(cookie))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IFileDialogVt struct {
@@ -898,7 +898,7 @@ func (me *IFileOperation) ApplyPropertiesToItem(item *IShellItem) error {
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).ApplyPropertiesToItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [CopyItem] method.
@@ -942,7 +942,7 @@ func (me *IFileOperation) CopyItem(
 		uintptr(unsafe.Pointer(destFolder.Ppvt())),
 		uintptr(wCopyName.EmptyIsNil(copyName)),
 		uintptr(ppvtOrNil(fops)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [DeleteItem] method.
@@ -954,24 +954,19 @@ func (me *IFileOperation) DeleteItem(item *IShellItem, fops *IFileOperationProgr
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())),
 		uintptr(ppvtOrNil(fops)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [GetAnyOperationsAborted] method.
 //
 // [GetAnyOperationsAborted]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperation-getanyoperationsaborted
 func (me *IFileOperation) GetAnyOperationsAborted() (bool, error) {
-	var bVal int32 // BOOL
+	var bVal BOOL
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).GetAnyOperationsAborted,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&bVal)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return bVal != 0, nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(bVal), ret)
 }
 
 // [MoveItem] method.
@@ -990,7 +985,7 @@ func (me *IFileOperation) MoveItem(
 		uintptr(unsafe.Pointer(destFolder.Ppvt())),
 		uintptr(wNewName.AllowEmpty(newName)),
 		uintptr(ppvtOrNil(fops)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [NewItem] method.
@@ -1011,7 +1006,7 @@ func (me *IFileOperation) NewItem(
 		uintptr(wName.AllowEmpty(name)),
 		uintptr(wTemplateName.EmptyIsNil(templateName)),
 		uintptr(ppvtOrNil(fops)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [PerformOperations] method.
@@ -1021,7 +1016,7 @@ func (me *IFileOperation) PerformOperations() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).PerformOperations,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [RenameItem] method.
@@ -1039,7 +1034,7 @@ func (me *IFileOperation) RenameItem(
 		uintptr(unsafe.Pointer(item.Ppvt())),
 		uintptr(wNewName.EmptyIsNil(newName)),
 		uintptr(ppvtOrNil(fops)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetOperationFlags] method.
@@ -1050,7 +1045,7 @@ func (me *IFileOperation) SetOperationFlags(flags co.FOF) error {
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).SetOperationFlags,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(flags))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetOwnerWindow] method.
@@ -1061,7 +1056,7 @@ func (me *IFileOperation) SetOwnerWindow(hWnd HWND) error {
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).SetOwnerWindow,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetProgressMessage] method.
@@ -1073,7 +1068,7 @@ func (me *IFileOperation) SetProgressMessage(message string) error {
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).SetProgressMessage,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wMessage.EmptyIsNil(message)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Unadvise] method.
@@ -1086,7 +1081,7 @@ func (me *IFileOperation) Unadvise(cookie uint32) error {
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).Unadvise,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(cookie))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IFileOperationVt struct {
@@ -1175,7 +1170,7 @@ func (me *IFileSaveDialog) ApplyProperties(
 		uintptr(unsafe.Pointer(store.Ppvt())),
 		uintptr(hwnd),
 		uintptr(ppvtOrNil(sink)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [GetProperties] method.
@@ -1205,7 +1200,7 @@ func (me *IFileSaveDialog) SetProperties(store *IPropertyStore) error {
 		(*_IFileSaveDialogVt)(unsafe.Pointer(*me.Ppvt())).SetProperties,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(store.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetSaveAsItem] method.
@@ -1216,7 +1211,7 @@ func (me *IFileSaveDialog) SetSaveAsItem(item *IShellItem) error {
 		(*_IFileSaveDialogVt)(unsafe.Pointer(*me.Ppvt())).SetSaveAsItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IFileSaveDialogVt struct {
@@ -1289,17 +1284,12 @@ func (*IOleWindow) IID() co.IID {
 //
 // [ContextSensitiveHelp]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-iolewindow-contextsensitivehelp
 func (me *IOleWindow) ContextSensitiveHelp() (bool, error) {
-	var bVal int32 // BOOL
+	var bVal BOOL
 	ret, _, _ := syscall.SyscallN(
 		(*_IOleWindowVt)(unsafe.Pointer(*me.Ppvt())).ContextSensitiveHelp,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&bVal)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return bVal != 0, nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(bVal), ret)
 }
 
 // [GetWindow] method.
@@ -1687,7 +1677,7 @@ func (me *IShellItem) BindToHandler(
 //
 // [Compare]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-compare
 func (me *IShellItem) Compare(si *IShellItem, hint co.SICHINT) (bool, error) {
-	var piOrder uint32
+	var piOrder int32
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).Compare,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -1828,19 +1818,14 @@ func (*IShellItem2) IID() co.IID {
 // [GetBool]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getbool
 func (me *IShellItem2) GetBool(pkey co.PKEY) (bool, error) {
 	guidPkey := PropertykeyFrom(pkey)
-	var bVal int32 // BOOL
+	var bVal BOOL
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetBool,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidPkey)),
 		uintptr(unsafe.Pointer(&bVal)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return bVal != 0, nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(bVal), ret)
 }
 
 // [GetCLSID] method.
@@ -2011,7 +1996,7 @@ func (me *IShellItem2) Update(bc *IBindCtx) error {
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetUInt64,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(bc.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IShellItem2Vt struct {
@@ -2338,7 +2323,7 @@ func (me *IShellLink) Resolve(hWnd HWND, flags co.SLR) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(flags))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetArguments] method.
@@ -2350,7 +2335,7 @@ func (me *IShellLink) SetArguments(args string) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetArguments,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wArgs.AllowEmpty(args)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetDescription] method.
@@ -2362,7 +2347,7 @@ func (me *IShellLink) SetDescription(descr string) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetDescription,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wDescr.AllowEmpty(descr)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetHotkey] method.
@@ -2373,7 +2358,7 @@ func (me *IShellLink) SetHotkey(hotkey co.HOTKEYF) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetHotkey,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hotkey))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetIconLocation] method.
@@ -2386,7 +2371,7 @@ func (me *IShellLink) SetIconLocation(path string, index int) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wPath.AllowEmpty(path)),
 		uintptr(int32(index)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetPath] method.
@@ -2398,7 +2383,7 @@ func (me *IShellLink) SetPath(path string) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetPath,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wPath.AllowEmpty(path)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetRelativePath] method.
@@ -2410,7 +2395,7 @@ func (me *IShellLink) SetRelativePath(path string) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetRelativePath,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wPath.AllowEmpty(path)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetShowCmd] method.
@@ -2421,7 +2406,7 @@ func (me *IShellLink) SetShowCmd(cmd co.SW) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetShowCmd,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(cmd))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetWorkingDirectory] method.
@@ -2433,7 +2418,7 @@ func (me *IShellLink) SetWorkingDirectory(path string) error {
 		(*_IShellLinkVt)(unsafe.Pointer(*me.Ppvt())).SetWorkingDirectory,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wPath.AllowEmpty(path)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IShellLinkVt struct {
@@ -2481,7 +2466,7 @@ func (me *IShellView) DestroyViewWindow() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).DestroyViewWindow,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [EnableModeless] method.
@@ -2492,7 +2477,7 @@ func (me *IShellView) EnableModeless(enable bool) error {
 		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).EnableModeless,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		utl.BoolToUintptr(enable))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [Refresh] method.
@@ -2502,7 +2487,7 @@ func (me *IShellView) Refresh() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).Refresh,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SaveViewState] method.
@@ -2512,7 +2497,7 @@ func (me *IShellView) SaveViewState() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).SaveViewState,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [TranslateAccelerator] method.
@@ -2523,7 +2508,7 @@ func (me *IShellView) TranslateAccelerator(msg *MSG) error {
 		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).TranslateAccelerator,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(msg)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [UIActivate] method.
@@ -2534,7 +2519,7 @@ func (me *IShellView) UIActivate(state co.SVUIA) error {
 		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).UIActivate,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(state))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _IShellViewVt struct {
@@ -2594,7 +2579,7 @@ func (me *ITaskbarList) ActivateTab(hWnd HWND) error {
 		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).ActivateTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [AddTab] method.
@@ -2605,7 +2590,7 @@ func (me *ITaskbarList) AddTab(hWnd HWND) error {
 		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).AddTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [DeleteTab] method.
@@ -2616,7 +2601,7 @@ func (me *ITaskbarList) DeleteTab(hWnd HWND) error {
 		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).DeleteTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [HrInit] method.
@@ -2626,7 +2611,7 @@ func (me *ITaskbarList) HrInit() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).HrInit,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetActiveAlt] method.
@@ -2637,7 +2622,7 @@ func (me *ITaskbarList) SetActiveAlt(hWnd HWND) error {
 		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).SetActiveAlt,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _ITaskbarListVt struct {
@@ -2692,7 +2677,7 @@ func (me *ITaskbarList2) MarkFullscreenWindow(hwnd HWND, fullScreen bool) error 
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwnd),
 		utl.BoolToUintptr(fullScreen))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _ITaskbarList2Vt struct {
@@ -2743,7 +2728,7 @@ func (me *ITaskbarList3) RegisterTab(hwndTab, hwndMDI HWND) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndTab),
 		uintptr(hwndMDI))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetOverlayIcon] method.
@@ -2757,7 +2742,7 @@ func (me *ITaskbarList3) SetOverlayIcon(hWnd HWND, hIcon HICON, description stri
 		uintptr(hWnd),
 		uintptr(hIcon),
 		uintptr(wDescription.AllowEmpty(description)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetProgressState] method.
@@ -2769,7 +2754,7 @@ func (me *ITaskbarList3) SetProgressState(hWnd HWND, flags co.TBPF) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(flags))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetProgressValue] method.
@@ -2785,7 +2770,7 @@ func (me *ITaskbarList3) SetProgressValue(hWnd HWND, completed, total int) error
 		uintptr(hWnd),
 		uintptr(completed),
 		uintptr(total))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetTabActive] method.
@@ -2797,7 +2782,7 @@ func (me *ITaskbarList3) SetTabActive(hwndTab, hwndMDI HWND) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndTab),
 		uintptr(hwndMDI))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetTabOrder] method.
@@ -2809,7 +2794,7 @@ func (me *ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore HWND) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndTab),
 		uintptr(hwndInsertBefore))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetThumbnailClip] method.
@@ -2821,7 +2806,7 @@ func (me *ITaskbarList3) SetThumbnailClip(hWnd HWND, rcClip *RECT) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(rcClip)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [SetThumbnailTooltip] method.
@@ -2834,7 +2819,7 @@ func (me *ITaskbarList3) SetThumbnailTooltip(hWnd HWND, tip string) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(wTip.EmptyIsNil(tip)))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [ThumbBarAddButtons] method.
@@ -2847,7 +2832,7 @@ func (me *ITaskbarList3) ThumbBarAddButtons(hWnd HWND, buttons []THUMBBUTTON) er
 		uintptr(hWnd),
 		uintptr(uint32(len(buttons))),
 		uintptr(unsafe.Pointer(&buttons[0])))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [ThumbBarSetImageList] method.
@@ -2859,7 +2844,7 @@ func (me *ITaskbarList3) ThumbBarSetImageList(hWnd HWND, hImgl HIMAGELIST) error
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(hImgl))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [ThumbBarUpdateButtons] method.
@@ -2872,7 +2857,7 @@ func (me *ITaskbarList3) ThumbBarUpdateButtons(hWnd HWND, buttons []THUMBBUTTON)
 		uintptr(hWnd),
 		uintptr(uint32(len(buttons))),
 		uintptr(unsafe.Pointer(&buttons[0])))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 // [UnregisterTab] method.
@@ -2883,7 +2868,7 @@ func (me *ITaskbarList3) UnregisterTab(hwndTab HWND) error {
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).UnregisterTab,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndTab))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _ITaskbarList3Vt struct {
@@ -2945,7 +2930,7 @@ func (me *ITaskbarList4) SetProperties(hwndTab HWND, flags co.STPFLAG) error {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndTab),
 		uintptr(flags))
-	return utl.ErrorAsHResult(ret)
+	return utl.HresultToError(ret)
 }
 
 type _ITaskbarList4Vt struct {

@@ -1173,13 +1173,13 @@ var _user_SetWindowDisplayAffinity *syscall.Proc
 func (hWnd HWND) SetWindowFeedbackSetting(feedback co.FEEDBACK, opt co.FEEDBACK_OPT) error {
 	var sz uint32
 	if opt == co.FEEDBACK_OPT_FALSE || opt == co.FEEDBACK_OPT_TRUE {
-		sz = uint32(unsafe.Sizeof(int32(0))) // BOOL
+		sz = uint32(unsafe.Sizeof(BOOL(0)))
 	}
 
-	var config int32 // BOOL
+	var config BOOL
 	var pConfig unsafe.Pointer
 	if opt == co.FEEDBACK_OPT_FALSE || opt == co.FEEDBACK_OPT_TRUE {
-		config = int32(opt)
+		config = BOOL(opt)
 		pConfig = unsafe.Pointer(&config)
 	}
 

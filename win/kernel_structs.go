@@ -45,12 +45,31 @@ func (ac *ACTCTX) SetCbSize() {
 // [atom]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#atom
 type ATOM uint16
 
+// [BOOL] type, which represents a boolean value as an int32, with false=0 and true=1.
+//
+// [BOOL]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#BOOL
+type BOOL int32
+
+// Sets the int32 value with a bool.
+func (b *BOOL) Set(v bool) {
+	if v {
+		*b = BOOL(1)
+	} else {
+		*b = BOOL(0)
+	}
+}
+
+// Converts the int32 value to bool.
+func (b BOOL) Get() bool {
+	return b != 0
+}
+
 // [CONSOLE_CURSOR_INFO] struct.
 //
 // [CONSOLE_CURSOR_INFO]: https://learn.microsoft.com/en-us/windows/console/console-cursor-info-str
 type CONSOLE_CURSOR_INFO struct {
 	DwSize   uint32
-	BVisible int32 // This is a BOOL value.
+	BVisible BOOL
 }
 
 // [CONSOLE_FONT_INFO] struct.
@@ -505,7 +524,7 @@ type PROCESSOR_NUMBER struct {
 type SECURITY_ATTRIBUTES struct {
 	nLength              uint32
 	LpSecurityDescriptor uintptr // LPVOID
-	BInheritHandle       int32   // This is a BOOL value.
+	BInheritHandle       BOOL
 }
 
 // Sets the nLength field to the size of the struct, correctly initializing it.
