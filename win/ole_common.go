@@ -106,7 +106,13 @@ func (me *OleReleaser) Release() {
 //
 // These objects will be removed from the internal list, thus not being released
 // when [OleReleaser.Release] is further called.
+//
+// Panics if no object is passed.
 func (me *OleReleaser) ReleaseNow(objs ...OleResource) {
+	if len(objs) == 0 {
+		panic("No objects passed to ReleaseNow")
+	}
+
 NextHisObj:
 	for _, hisObj := range objs {
 		if utl.IsNil(hisObj) {
