@@ -84,7 +84,7 @@ func MsgOk(wnd Parent, title, caption, body string) {
 // Syntactic sugar to [win.TaskDialogIndirect] to display a message box prompting
 // the user to choose "Ok" or "Cancel". The "Ok" text can be customized.
 //
-// Returns co.ID_OK or co.ID_CANCEL.
+// Returns true if the user clicks "Ok".
 //
 // Panics on error.
 //
@@ -92,18 +92,18 @@ func MsgOk(wnd Parent, title, caption, body string) {
 //
 //	var wndOwner ui.Parent // initialized somewhere
 //
-//	ret := ui.MsgOkCancel(
+//	clickedOk := ui.MsgOkCancel(
 //		wndOwner,
 //		"Title",
 //		"Big caption above text",
 //		"Here goes the text",
 //		"&Confirm",
 //	)
-//	if ret == co.ID_OK {
+//	if clickedOk {
 //		// ...
 //	}
-func MsgOkCancel(wnd Parent, title, caption, body, okText string) co.ID {
-	return msgBuild(wnd, title, caption, body, co.TDICON_INFORMATION, okText, true)
+func MsgOkCancel(wnd Parent, title, caption, body, okText string) bool {
+	return msgBuild(wnd, title, caption, body, co.TDICON_WARNING, okText, true) == co.ID_OK
 }
 
 func msgBuild(
