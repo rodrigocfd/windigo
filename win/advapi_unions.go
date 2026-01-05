@@ -4,7 +4,6 @@ package win
 
 import (
 	"encoding/binary"
-	"syscall"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
@@ -64,8 +63,8 @@ func (me *RegVal) Binary() ([]byte, bool) {
 //
 // The environment variables can be expanded with [ExpandEnvironmentStrings].
 func RegValExpandSz(s string) RegVal {
-	str16, _ := syscall.UTF16FromString(s)
-	data := unsafe.Slice((*byte)(unsafe.Pointer(&str16[0])), len(str16)*2)
+	str16 := wstr.EncodeToSlice(s)
+	data := unsafe.Slice((*byte)(unsafe.Pointer(unsafe.SliceData(str16))), len(str16)*2)
 
 	return RegVal{
 		tag:  co.REG_EXPAND_SZ,
@@ -78,7 +77,7 @@ func RegValExpandSz(s string) RegVal {
 // The environment variables can be expanded with [ExpandEnvironmentStrings].
 func (me *RegVal) ExpandSz() (string, bool) {
 	if me.tag == co.REG_EXPAND_SZ {
-		str16 := unsafe.Slice((*uint16)(unsafe.Pointer(&me.data[0])), len(me.data)/2)
+		str16 := unsafe.Slice((*uint16)(unsafe.Pointer(unsafe.SliceData(me.data))), len(me.data)/2)
 		return wstr.DecodeSlice(str16), true
 	}
 	return "", false
@@ -128,7 +127,7 @@ func (me *RegVal) DwordBigEndian() (uint32, bool) {
 // Constructs a new [RegVal] with a [co.REG_MULTI_SZ] value.
 func RegValMultiSz(strs ...string) RegVal {
 	buf := wstr.EncodeArrToSlice(strs...)
-	data := unsafe.Slice((*byte)(unsafe.Pointer(&buf[0])), len(buf)*2)
+	data := unsafe.Slice((*byte)(unsafe.Pointer(unsafe.SliceData(buf))), len(buf)*2)
 
 	return RegVal{
 		tag:  co.REG_MULTI_SZ,
@@ -139,7 +138,7 @@ func RegValMultiSz(strs ...string) RegVal {
 // If the value is [co.REG_MULTI_SZ], returns it and true.
 func (me *RegVal) MultiSz() ([]string, bool) {
 	if me.tag == co.REG_MULTI_SZ {
-		pStr16 := (*uint16)(unsafe.Pointer(&me.data[0]))
+		pStr16 := (*uint16)(unsafe.Pointer(unsafe.SliceData(me.data)))
 		return wstr.DecodeArrPtr(pStr16), true
 	}
 	return nil, false
@@ -169,8 +168,8 @@ func (me *RegVal) Qword() (uint64, bool) {
 
 // Constructs a new [RegVal] with a [co.REG_SZ] value.
 func RegValSz(s string) RegVal {
-	str16, _ := syscall.UTF16FromString(s)
-	data := unsafe.Slice((*byte)(unsafe.Pointer(&str16[0])), len(str16)*2)
+	str16 := wstr.EncodeToSlice(s)
+	data := unsafe.Slice((*byte)(unsafe.Pointer(unsafe.SliceData(str16))), len(str16)*2)
 
 	return RegVal{
 		tag:  co.REG_SZ,
@@ -189,7 +188,7 @@ func RegValSz(s string) RegVal {
 //	}
 func (me *RegVal) Sz() (string, bool) {
 	if me.tag == co.REG_SZ {
-		str16 := unsafe.Slice((*uint16)(unsafe.Pointer(&me.data[0])), len(me.data)/2)
+		str16 := unsafe.Slice((*uint16)(unsafe.Pointer(unsafe.SliceData(me.data))), len(me.data)/2)
 		return wstr.DecodeSlice(str16), true
 	}
 	return "", false

@@ -621,7 +621,7 @@ func (me *IFileDialog) SetFileTypes(filterSpec []COMDLG_FILTERSPEC) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFileTypes,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(len(filterSpec))),
-		uintptr(unsafe.Pointer(&nativeFilters[0])))
+		uintptr(unsafe.Pointer(unsafe.SliceData(nativeFilters))))
 	return utl.HresultToError(ret)
 }
 
@@ -2831,7 +2831,7 @@ func (me *ITaskbarList3) ThumbBarAddButtons(hWnd HWND, buttons []THUMBBUTTON) er
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(uint32(len(buttons))),
-		uintptr(unsafe.Pointer(&buttons[0])))
+		uintptr(unsafe.Pointer(unsafe.SliceData(buttons))))
 	return utl.HresultToError(ret)
 }
 
@@ -2856,7 +2856,7 @@ func (me *ITaskbarList3) ThumbBarUpdateButtons(hWnd HWND, buttons []THUMBBUTTON)
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(uint32(len(buttons))),
-		uintptr(unsafe.Pointer(&buttons[0])))
+		uintptr(unsafe.Pointer(unsafe.SliceData(buttons))))
 	return utl.HresultToError(ret)
 }
 

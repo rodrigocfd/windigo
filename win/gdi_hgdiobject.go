@@ -101,7 +101,7 @@ func CreateBitmap(width, height, numPlanes, bitCount int, bits []byte) (HBITMAP,
 		uintptr(int32(height)),
 		uintptr(uint32(numPlanes)),
 		uintptr(uint32(bitCount)),
-		uintptr(unsafe.Pointer(&bits[0])))
+		uintptr(unsafe.Pointer(unsafe.SliceData(bits))))
 	if ret == 0 {
 		return HBITMAP(0), co.ERROR_INVALID_PARAMETER
 	}
@@ -355,7 +355,7 @@ func ExtCreatePen(
 		for _, sl := range styleLengths {
 			lens32 = append(lens32, uint32(sl))
 		}
-		pLens = unsafe.Pointer(&lens32[0])
+		pLens = unsafe.Pointer(unsafe.SliceData(lens32))
 	}
 
 	ret, _, _ := syscall.SyscallN(

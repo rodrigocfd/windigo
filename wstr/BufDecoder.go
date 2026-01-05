@@ -67,9 +67,9 @@ func (me *BufDecoder) Len() int {
 // Returns a pointer to the internal memory block, either stack or heap.
 func (me *BufDecoder) Ptr() unsafe.Pointer {
 	if me.heap != nil {
-		return unsafe.Pointer(&me.heap[0])
+		return unsafe.Pointer(unsafe.SliceData(me.heap))
 	} else {
-		return unsafe.Pointer(&me.stack)
+		return unsafe.Pointer(unsafe.SliceData(me.stack[:]))
 	}
 }
 

@@ -165,10 +165,10 @@ func PropertykeyFrom(pkey co.PKEY) PROPERTYKEY {
 }
 
 func (pk *PROPERTYKEY) FmtId() GUID {
-	return *(*GUID)(unsafe.Pointer(&pk.data[0]))
+	return *(*GUID)(unsafe.Pointer(unsafe.SliceData(pk.data[:])))
 }
 func (pk *PROPERTYKEY) SetFmdId(fmtId GUID) {
-	*(*GUID)(unsafe.Pointer(&pk.data[0])) = fmtId
+	*(*GUID)(unsafe.Pointer(unsafe.SliceData(pk.data[:]))) = fmtId
 }
 
 func (pk *PROPERTYKEY) PId() uint32 {

@@ -71,7 +71,7 @@ func (hdi *HDITEM) PszText() []uint16 {
 }
 func (hdi *HDITEM) SetPszText(val []uint16) {
 	hdi.cchTextMax = int32(len(val))
-	hdi.pszText = &val[0]
+	hdi.pszText = unsafe.SliceData(val)
 }
 
 // [IMAGEINFO] struct.
@@ -185,7 +185,7 @@ func (lvc *LVCOLUMN) PszText() []uint16 {
 }
 func (lvc *LVCOLUMN) SetPszText(val []uint16) {
 	lvc.cchTextMax = int32(len(val))
-	lvc.pszText = &val[0]
+	lvc.pszText = unsafe.SliceData(val)
 }
 
 // [LVFINDINFO] struct.
@@ -243,7 +243,7 @@ func (lvi *LVITEM) PszText() []uint16 {
 }
 func (lvi *LVITEM) SetPszText(val []uint16) {
 	lvi.cchTextMax = int32(len(val))
-	lvi.pszText = &val[0]
+	lvi.pszText = unsafe.SliceData(val)
 }
 
 // [LVITEMINDEX] struct.
@@ -384,7 +384,7 @@ func (hdi *NMHDDISPINFO) PszText() []uint16 {
 }
 func (hdi *NMHDDISPINFO) SetPszText(val []uint16) {
 	hdi.cchTextMax = int32(len(val))
-	hdi.pszText = &val[0]
+	hdi.pszText = unsafe.SliceData(val)
 }
 
 // [NMHDFILTERBTNCLICK] struct.
@@ -602,7 +602,7 @@ func (git *NMLVGETINFOTIP) PszText() []uint16 {
 }
 func (git *NMLVGETINFOTIP) SetPszText(val []uint16) {
 	git.cchTextMax = int32(len(val))
-	git.pszText = &val[0]
+	git.pszText = unsafe.SliceData(val)
 }
 
 // [NMLVKEYDOWN] struct.
@@ -713,7 +713,7 @@ func (di *NMTBDISPINFO) PszText() []uint16 {
 }
 func (di *NMTBDISPINFO) SetPszText(val []uint16) {
 	di.cchText = int32(len(val))
-	di.pszText = &val[0]
+	di.pszText = unsafe.SliceData(val)
 }
 
 // [NMTBDUPACCELERATOR] struct.
@@ -741,7 +741,7 @@ func (git *NMTBGETINFOTIP) PszText() []uint16 {
 }
 func (git *NMTBGETINFOTIP) SetPszText(val []uint16) {
 	git.cchTextMax = int32(len(val))
-	git.pszText = &val[0]
+	git.pszText = unsafe.SliceData(val)
 }
 
 // [NMTBHOTITEM] struct.
@@ -826,7 +826,7 @@ func (tb *NMTOOLBAR) PszText() []uint16 {
 }
 func (tb *NMTOOLBAR) SetPszText(val []uint16) {
 	tb.cchText = int32(len(val))
-	tb.pszText = &val[0]
+	tb.pszText = unsafe.SliceData(val)
 }
 
 // [NMTOOLTIPSCREATED] struct.
@@ -904,7 +904,7 @@ func (git *NMTVGETINFOTIP) PszText() []uint16 {
 }
 func (git *NMTVGETINFOTIP) SetPszText(val []uint16) {
 	git.cchTextMax = int32(len(val))
-	git.pszText = &val[0]
+	git.pszText = unsafe.SliceData(val)
 }
 
 // [NMTVKEYDOWN] struct.
@@ -956,8 +956,8 @@ type PBRANGE struct {
 
 // [TASKDIALOG_BUTTON] struct syntactic sugar.
 //
-// This struct originally has a packed alignment, so we serialized it before the
-// syscall.
+// This struct originally has a packed alignment, so it will be serialized by
+// the library before the syscall.
 //
 // [TASKDIALOG_BUTTON]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialog_button
 type TASKDIALOG_BUTTON struct {
@@ -967,8 +967,8 @@ type TASKDIALOG_BUTTON struct {
 
 // [TASKDIALOGCONFIG] struct syntactic sugar.
 //
-// This struct originally has a packed alignment, so we serialized it before the
-// syscall.
+// This struct originally has a packed alignment, so it will be serialized by
+// the library before the syscall.
 //
 // [TASKDIALOGCONFIG]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig
 type TASKDIALOGCONFIG struct {
@@ -1018,8 +1018,8 @@ func (tdc *TASKDIALOGCONFIG) serialize(
 	_, strsBuf = tdc.putStr(tdcBuf[52:], strsBuf, tdc.Content)
 
 	if len(tdc.Buttons) > 0 {
-		tdc.put32(tdcBuf[60:], uint32(len(tdc.Buttons)))     // number of buttons
-		tdc.putPtr(tdcBuf[64:], unsafe.Pointer(&btnsBuf[0])) // pointer to TASKDIALOG_BUTTON block
+		tdc.put32(tdcBuf[60:], uint32(len(tdc.Buttons)))                   // number of buttons
+		tdc.putPtr(tdcBuf[64:], unsafe.Pointer(unsafe.SliceData(btnsBuf))) // pointer to TASKDIALOG_BUTTON block
 		for _, btn := range tdc.Buttons {
 			btnsBuf = tdc.put32(btnsBuf, uint32(btn.Id))
 			btnsBuf, strsBuf = tdc.putStr(btnsBuf, strsBuf, btn.Text)
@@ -1029,8 +1029,8 @@ func (tdc *TASKDIALOGCONFIG) serialize(
 	tdc.put32(tdcBuf[72:], uint32(tdc.DefaultButtonId))
 
 	if len(tdc.RadioButtons) > 0 {
-		tdc.put32(tdcBuf[76:], uint32(len(tdc.RadioButtons))) // number of radios
-		tdc.putPtr(tdcBuf[80:], unsafe.Pointer(&radsBuf[0]))  // pointer to TASKDIALOG_BUTTON block
+		tdc.put32(tdcBuf[76:], uint32(len(tdc.RadioButtons)))              // number of radios
+		tdc.putPtr(tdcBuf[80:], unsafe.Pointer(unsafe.SliceData(radsBuf))) // pointer to TASKDIALOG_BUTTON block
 		for _, rad := range tdc.RadioButtons {
 			radsBuf = tdc.put32(radsBuf, uint32(rad.Id))
 			radsBuf, strsBuf = tdc.putStr(radsBuf, strsBuf, rad.Text)
@@ -1055,24 +1055,24 @@ func (tdc *TASKDIALOGCONFIG) serialize(
 	tdc.put32(tdcBuf[156:], uint32(tdc.Width))
 }
 
-func (*TASKDIALOGCONFIG) put32(b []byte, v uint32) []byte {
-	binary.LittleEndian.PutUint32(b, v)
-	return b[4:]
+func (*TASKDIALOGCONFIG) put32(dest []byte, v uint32) []byte {
+	binary.LittleEndian.PutUint32(dest, v)
+	return dest[4:]
 }
-func (*TASKDIALOGCONFIG) put64(b []byte, v uint64) []byte {
-	binary.LittleEndian.PutUint64(b, v)
-	return b[8:]
+func (*TASKDIALOGCONFIG) put64(dest []byte, v uint64) []byte {
+	binary.LittleEndian.PutUint64(dest, v)
+	return dest[8:]
 }
-func (tdc *TASKDIALOGCONFIG) putPtr(b []byte, p unsafe.Pointer) []byte {
-	return tdc.put64(b, uint64(uintptr(p)))
+func (tdc *TASKDIALOGCONFIG) putPtr(dest []byte, p unsafe.Pointer) []byte {
+	return tdc.put64(dest, uint64(uintptr(p)))
 }
-func (tdc *TASKDIALOGCONFIG) putStr(b []byte, bStr []uint16, s string) ([]byte, []uint16) {
+func (tdc *TASKDIALOGCONFIG) putStr(dest []byte, destWchar []uint16, s string) ([]byte, []uint16) {
 	if s != "" {
-		nWords := wstr.EncodeToBuf(bStr, s)
-		tdc.putPtr(b, unsafe.Pointer(&bStr[0]))
-		return b[8:], bStr[nWords:]
+		numWchars := wstr.EncodeToBuf(destWchar, s)
+		tdc.putPtr(dest, unsafe.Pointer(unsafe.SliceData(destWchar)))
+		return dest[8:], destWchar[numWchars:]
 	}
-	return b[8:], bStr // empty string puts a nil pointer
+	return dest[8:], destWchar // empty string puts a nil pointer
 }
 
 // [TCITEM] struct.
@@ -1093,7 +1093,7 @@ func (tci *TCITEM) PszText() []uint16 {
 }
 func (tci *TCITEM) SetPszText(val []uint16) {
 	tci.cchTextMax = int32(len(val))
-	tci.pszText = &val[0]
+	tci.pszText = unsafe.SliceData(val)
 }
 
 // [TBBUTTON] struct.
@@ -1139,7 +1139,7 @@ func (tvi *TVITEM) PszText() []uint16 {
 }
 func (tvi *TVITEM) SetPszText(val []uint16) {
 	tvi.cchTextMax = int32(len(val))
-	tvi.pszText = &val[0]
+	tvi.pszText = unsafe.SliceData(val)
 }
 
 // [TVITEMEX] struct.
@@ -1168,5 +1168,5 @@ func (tvx *TVITEMEX) PszText() []uint16 {
 }
 func (tvx *TVITEMEX) SetPszText(val []uint16) {
 	tvx.cchTextMax = int32(len(val))
-	tvx.pszText = &val[0]
+	tvx.pszText = unsafe.SliceData(val)
 }

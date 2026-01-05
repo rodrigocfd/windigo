@@ -242,7 +242,7 @@ var _ole_ReleaseStgMedium *syscall.Proc
 func SHCreateMemStream(releaser *OleReleaser, src []byte) (*IStream, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHLWAPI, &_ole_SHCreateMemStream, "SHCreateMemStream"),
-		uintptr(unsafe.Pointer(&src[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(src))),
 		uintptr(uint32(len(src))))
 	if ret == 0 {
 		return nil, co.HRESULT_E_OUTOFMEMORY

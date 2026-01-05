@@ -157,7 +157,7 @@ func CreateIconFromResourceEx(
 ) (HICON, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_user_CreateIconFromResourceEx, "CreateIconFromResourceEx"),
-		uintptr(unsafe.Pointer(&resBits[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(resBits))),
 		uintptr(uint32(len(resBits))),
 		1,
 		uintptr(fmtVersion),
@@ -791,7 +791,7 @@ func SendInput(inputs []INPUT) (int, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_user_SendInput, "SendInput"),
 		uintptr(uint32(len(inputs))),
-		uintptr(unsafe.Pointer(&inputs[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(inputs))),
 		uintptr(uint32(unsafe.Sizeof(INPUT{}))))
 
 	if wErr := co.ERROR(err); wErr != co.ERROR_SUCCESS {

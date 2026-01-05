@@ -62,7 +62,7 @@ func (me *CollectionHeaderItems) AllOrdered() []HeaderItem {
 	indexes := make([]int32, nItems)
 
 	me.owner.hWnd.SendMessage(co.HDM_GETORDERARRAY,
-		win.WPARAM(int32(nItems)), win.LPARAM(unsafe.Pointer(&indexes[0])))
+		win.WPARAM(int32(nItems)), win.LPARAM(unsafe.Pointer(unsafe.SliceData(indexes))))
 
 	items := make([]HeaderItem, 0, nItems)
 	for _, index := range indexes {
@@ -116,5 +116,5 @@ func (me *CollectionHeaderItems) Reorder(indexes []int) {
 	}
 
 	me.owner.hWnd.SendMessage(co.HDM_SETORDERARRAY,
-		win.WPARAM(int32(len(buf))), win.LPARAM(unsafe.Pointer(&buf[0])))
+		win.WPARAM(int32(len(buf))), win.LPARAM(unsafe.Pointer(unsafe.SliceData(buf))))
 }

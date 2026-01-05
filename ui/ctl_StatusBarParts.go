@@ -70,7 +70,7 @@ func (me *CollectionStatusBarParts) resizeToFitParent(parm WmSize) {
 	}
 	me.owner.hWnd.SendMessage(co.SB_SETPARTS,
 		win.WPARAM(int32(len(me.rightEdges))),
-		win.LPARAM(unsafe.Pointer(&me.rightEdges[0])))
+		win.LPARAM(unsafe.Pointer(unsafe.SliceData(me.rightEdges))))
 }
 
 // Adds a fixed part.

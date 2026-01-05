@@ -24,7 +24,7 @@ type HACCEL HANDLE
 func CreateAcceleratorTable(accelList []ACCEL) (HACCEL, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.USER32, &_user_CreateAcceleratorTableW, "CreateAcceleratorTableW"),
-		uintptr(unsafe.Pointer(&accelList[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(accelList))),
 		uintptr(int32(len(accelList))))
 	if ret == 0 {
 		return HACCEL(0), co.ERROR(err)
@@ -45,11 +45,12 @@ func (hAccel HACCEL) CopyAcceleratorTable() []ACCEL {
 	if szRet == 0 {
 		return []ACCEL{}
 	}
+
 	accelList := make([]ACCEL, szRet)
 	syscall.SyscallN(
 		dll.Load(dll.USER32, &_user_CopyAcceleratorTableW, "CopyAcceleratorTableW"),
 		uintptr(hAccel),
-		uintptr(unsafe.Pointer(&accelList[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(accelList))),
 		szRet)
 	return accelList
 }

@@ -331,7 +331,7 @@ func (hdc HDC) CreateDIBitmap(
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(pBmih)),
 		utl.CBM_INIT,
-		uintptr(unsafe.Pointer(&initialBitmapData[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(initialBitmapData))),
 		uintptr(unsafe.Pointer(pBmi)),
 		uintptr(usage))
 	return utl.ZeroAsSysError(ret)
@@ -668,13 +668,13 @@ var _gdi_GetDeviceCaps *syscall.Proc
 // [GetDIBColorTable] function.
 //
 // [GetDIBColorTable]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibcolortable
-func (hdc HDC) GetDIBColorTable(iStart int, buf []RGBQUAD) error {
+func (hdc HDC) GetDIBColorTable(iStart int, destBuf []RGBQUAD) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_GetDIBColorTable, "GetDIBColorTable"),
 		uintptr(hdc),
 		uintptr(uint32(iStart)),
-		uintptr(uint32(len(buf))),
-		uintptr(unsafe.Pointer(&buf[0])))
+		uintptr(uint32(len(destBuf))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(destBuf))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -760,24 +760,18 @@ var _gdi_GetDIBColorTable *syscall.Proc
 func (hdc HDC) GetDIBits(
 	hbm HBITMAP,
 	firstScanLine, numScanLines int,
-	bitmapDataBuffer []byte,
+	bitmapDataBuf []byte,
 	bmi *BITMAPINFO,
 	usage co.DIB_COLORS,
 ) (int, error) {
-	var dataBufPtr *byte
-	if bitmapDataBuffer != nil {
-		dataBufPtr = &bitmapDataBuffer[0]
-	}
-
 	bmi.BmiHeader.SetSize() // safety
-
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_GetDIBits, "GetDIBits"),
 		uintptr(hdc),
 		uintptr(hbm),
 		uintptr(uint32(firstScanLine)),
 		uintptr(uint32(numScanLines)),
-		uintptr(unsafe.Pointer(dataBufPtr)),
+		uintptr(unsafe.Pointer(unsafe.SliceData(bitmapDataBuf))),
 		uintptr(unsafe.Pointer(bmi)),
 		uintptr(usage))
 
@@ -879,7 +873,7 @@ func (hdc HDC) GetTextFace() (string, error) {
 		dll.Load(dll.GDI32, &_gdi_GetTextFaceW, "GetTextFaceW"),
 		uintptr(hdc),
 		uintptr(int32(len(buf))),
-		uintptr(unsafe.Pointer(&buf[0])))
+		uintptr(unsafe.Pointer(unsafe.SliceData(buf[:]))))
 	if ret == 0 {
 		return "", co.ERROR_INVALID_PARAMETER
 	}
@@ -993,17 +987,17 @@ func (hdc HDC) GradientFill(
 	var pMesh unsafe.Pointer
 	var nMesh int
 	if meshTriangle != nil {
-		pMesh = unsafe.Pointer(&meshTriangle[0])
+		pMesh = unsafe.Pointer(unsafe.SliceData(meshTriangle))
 		nMesh = len(meshTriangle)
 	} else {
-		pMesh = unsafe.Pointer(&meshRect[0])
+		pMesh = unsafe.Pointer(unsafe.SliceData(meshRect))
 		nMesh = len(meshRect)
 	}
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_GradientFill, "GradientFill"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(&vertex[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(vertex))),
 		uintptr(uint32(len(vertex))),
 		uintptr(pMesh),
 		uintptr(uint32(nMesh)),
@@ -1083,7 +1077,7 @@ func (hdc HDC) LPtoDP(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_LPtoDP, "LPtoDP"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(&pts[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(pts))),
 		uintptr(int32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -1229,7 +1223,7 @@ func (hdc HDC) PolyBezier(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_PolyBezier, "PolyBezier"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(&pts[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(pts))),
 		uintptr(uint32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -1243,7 +1237,7 @@ func (hdc HDC) PolyBezierTo(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_PolyBezierTo, "PolyBezierTo"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(&pts[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(pts))),
 		uintptr(uint32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -1264,8 +1258,8 @@ func (hdc HDC) PolyDraw(pts []POINT, usage []co.PT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_PolyDraw, "PolyDraw"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(&pts[0])),
-		uintptr(unsafe.Pointer(&usage[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(pts))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(usage))),
 		uintptr(int32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -1279,7 +1273,7 @@ func (hdc HDC) Polygon(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_Polygon, "Polygon"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(&pts[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(pts))),
 		uintptr(uint32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -1293,7 +1287,7 @@ func (hdc HDC) Polyline(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_Polyline, "Polyline"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(&pts[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(pts))),
 		uintptr(int32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -1307,7 +1301,7 @@ func (hdc HDC) PolylineTo(pts []POINT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_PolylineTo, "PolylineTo"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(&pts[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(pts))),
 		uintptr(uint32(len(pts))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -1335,8 +1329,8 @@ func (hdc HDC) PolyPolygon(polygons [][]POINT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_PolyPolygon, "PolyPolygon"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(&allPtsFlat[0])),
-		uintptr(unsafe.Pointer(&ptsPerPolygon[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(allPtsFlat))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(ptsPerPolygon))),
 		uintptr(int32(len(polygons))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -1364,8 +1358,8 @@ func (hdc HDC) PolyPolyline(polyLines [][]POINT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.GDI32, &_gdi_PolyPolyline, "PolyPolyline"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(&allPtsFlat[0])),
-		uintptr(unsafe.Pointer(&ptsPerPolyLine[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(allPtsFlat))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(ptsPerPolyLine))),
 		uintptr(uint32(len(polyLines))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }

@@ -358,7 +358,7 @@ func (hKey HKEY) RegEnumValue() ([]HkeyNameVal, error) {
 			uintptr(unsafe.Pointer(&szValueNameBuf)),
 			0,
 			uintptr(unsafe.Pointer(&dataType)),
-			uintptr(unsafe.Pointer(&dataBuf[0])),
+			uintptr(unsafe.Pointer(unsafe.SliceData(dataBuf))),
 			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
@@ -446,7 +446,7 @@ func (hKey HKEY) RegGetValue(subKey, valueName string, flags co.RRF) (RegVal, er
 			uintptr(pValueName),
 			uintptr(flags),
 			uintptr(unsafe.Pointer(&dataType)),
-			uintptr(unsafe.Pointer(&dataBuf[0])),
+			uintptr(unsafe.Pointer(unsafe.SliceData(dataBuf))),
 			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr == co.ERROR_SUCCESS {
@@ -616,7 +616,7 @@ func (hKey HKEY) RegQueryMultipleValues(valueNames ...string) ([]RegVal, error) 
 		ret, _, _ := syscall.SyscallN( // 1st call to retrieve size only
 			dll.Load(dll.ADVAPI32, &_advapi_RegQueryMultipleValuesW, "RegQueryMultipleValuesW"),
 			uintptr(hKey),
-			uintptr(unsafe.Pointer(&valents[0])),
+			uintptr(unsafe.Pointer(unsafe.SliceData(valents))),
 			uintptr(uint32(len(valueNames))),
 			0,
 			uintptr(unsafe.Pointer(&szDataBytes)))
@@ -629,9 +629,9 @@ func (hKey HKEY) RegQueryMultipleValues(valueNames ...string) ([]RegVal, error) 
 		ret, _, _ = syscall.SyscallN( // 2nd call to retrieve the data
 			dll.Load(dll.ADVAPI32, &_advapi_RegQueryMultipleValuesW, "RegQueryMultipleValuesW"),
 			uintptr(hKey),
-			uintptr(unsafe.Pointer(&valents[0])),
+			uintptr(unsafe.Pointer(unsafe.SliceData(valents))),
 			uintptr(uint32(len(valueNames))),
-			uintptr(unsafe.Pointer(&dataBuf[0])),
+			uintptr(unsafe.Pointer(unsafe.SliceData(dataBuf))),
 			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr == co.ERROR_SUCCESS {
@@ -714,7 +714,7 @@ func (hKey HKEY) RegQueryValueEx(valueName string) (RegVal, error) {
 			uintptr(pValueName),
 			0,
 			uintptr(unsafe.Pointer(&dataType)),
-			uintptr(unsafe.Pointer(&dataBuf[0])),
+			uintptr(unsafe.Pointer(unsafe.SliceData(dataBuf))),
 			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr == co.ERROR_SUCCESS {
@@ -828,7 +828,7 @@ func (hKey HKEY) RegSetKeyValue(subKey, valueName string, data RegVal) error {
 		uintptr(wSubKey.AllowEmpty(subKey)),
 		uintptr(wValueName.EmptyIsNil(valueName)),
 		uintptr(data.Type()),
-		uintptr(unsafe.Pointer(&data.data[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(data.data))),
 		uintptr(uint32(len(data.data))))
 	return utl.ZeroAsSysError(ret)
 }
@@ -846,7 +846,7 @@ func (hKey HKEY) RegSetValueEx(valueName string, data RegVal) error {
 		uintptr(wValueName.EmptyIsNil(valueName)),
 		0,
 		uintptr(data.Type()),
-		uintptr(unsafe.Pointer(&data.data[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(data.data))),
 		uintptr(uint32(len(data.data))))
 	return utl.ZeroAsSysError(ret)
 }

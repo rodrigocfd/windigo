@@ -199,7 +199,7 @@ func SHCreateShellItemArray(
 		for _, pidl := range pidlChildren {
 			pidlChildrenObjs = append(pidlChildrenObjs, *pidl)
 		}
-		pidlChildrenObjsPtr = &pidlChildrenObjs[0]
+		pidlChildrenObjsPtr = unsafe.SliceData(pidlChildrenObjs)
 	}
 
 	ret, _, _ := syscall.SyscallN(
@@ -256,7 +256,7 @@ func SHCreateShellItemArrayFromIDLists(
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_shell_SHCreateShellItemArrayFromIDLists, "SHCreateShellItemArrayFromIDLists"),
 		uintptr(uint32(len(pidls))),
-		uintptr(unsafe.Pointer(&pidlObjs[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(pidlObjs))),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {

@@ -33,7 +33,7 @@ type BufEncoder struct {
 // pointer will point to a new heap-allocated slice.
 func (me *BufEncoder) AllowEmpty(s string) unsafe.Pointer {
 	slice := me.Slice(s)
-	return unsafe.Pointer(&slice[0])
+	return unsafe.Pointer(unsafe.SliceData(slice))
 }
 
 // Encodes a Go string into a null-terminated UTF-16, returning a pointer to it.

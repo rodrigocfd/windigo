@@ -43,12 +43,12 @@ type DISPPARAMS struct {
 
 func (dp *DISPPARAMS) SetArgs(v []VARIANT) {
 	dp.cArgs = uint32(len(v))
-	dp.rgvarg = &v[0]
+	dp.rgvarg = unsafe.SliceData(v)
 }
 
 func (dp *DISPPARAMS) SetNamedArgs(v ...co.DISPID) {
 	dp.cNamedArgs = uint32(len(v))
-	dp.rgdispidNamedArgs = &v[0]
+	dp.rgdispidNamedArgs = unsafe.SliceData(v)
 }
 
 // [ELEMDESC] struct.
@@ -60,11 +60,11 @@ type ELEMDESC struct {
 }
 
 func (ed *ELEMDESC) IdlDesc() *IDLDESC {
-	return (*IDLDESC)(unsafe.Pointer(&ed.union[0]))
+	return (*IDLDESC)(unsafe.Pointer(unsafe.SliceData(ed.union[:])))
 }
 
 func (ed *ELEMDESC) ParmDesc() *PARAMDESC {
-	return (*PARAMDESC)(unsafe.Pointer(&ed.union[0]))
+	return (*PARAMDESC)(unsafe.Pointer(unsafe.SliceData(ed.union[:])))
 }
 
 // [EXCEPINFO] struct syntactic sugar.

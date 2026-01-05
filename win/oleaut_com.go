@@ -48,10 +48,10 @@ func (me *IDispatch) GetIDsOfNames(
 		(*_IDispatchVt)(unsafe.Pointer(*me.Ppvt())).GetIDsOfNames,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&nullGuid)),
-		uintptr(unsafe.Pointer(&strPtrs[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(strPtrs))),
 		uintptr(uint32(nParams)),
 		uintptr(lcid),
-		uintptr(unsafe.Pointer(&memberIds[0])))
+		uintptr(unsafe.Pointer(unsafe.SliceData(memberIds))))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return memberIds, nil
@@ -1087,9 +1087,9 @@ func (me *ITypeInfo) GetIDsOfNames(names ...string) ([]MEMBERID, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetIDsOfNames,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&strPtrs[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(strPtrs))),
 		uintptr(uint32(len(names))),
-		uintptr(unsafe.Pointer(&memIds[0])))
+		uintptr(unsafe.Pointer(unsafe.SliceData(memIds))))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return memIds, nil

@@ -128,7 +128,7 @@ func (hPipe HPIPE) PeekNamedPipe(buffer []byte) (HpipePeek, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_kernel_PeekNamedPipe, "PeekNamedPipe"),
 		uintptr(hPipe),
-		uintptr(unsafe.Pointer(&buffer[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(buffer))),
 		uintptr(uint32(len(buffer))),
 		uintptr(unsafe.Pointer(&info.Read)),
 		uintptr(unsafe.Pointer(&info.Available)),

@@ -23,7 +23,7 @@ func (hPal HPALETTE) AnimatePalette(startIndex int, entries []PALETTEENTRY) erro
 		uintptr(hPal),
 		uintptr(uint32(startIndex)),
 		uintptr(uint32(len(entries))),
-		uintptr(unsafe.Pointer(&entries[0])))
+		uintptr(unsafe.Pointer(unsafe.SliceData(entries))))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 

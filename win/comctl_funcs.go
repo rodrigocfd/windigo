@@ -118,7 +118,8 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 	const TASKDIALOGCONFIG_SZ = 160
 	const TASKDIALOG_BUTTON_SZ = 12
 
-	totTextUtf16Words := tdiStrLenIfAny(taskConfig.WindowTitle) + // counts terminating nulls
+	// Sizes of all texts written by the user, counting terminating nulls.
+	totTextUtf16Words := tdiStrLenIfAny(taskConfig.WindowTitle) +
 		tdiStrLenIfAny(taskConfig.MainInstruction) +
 		tdiStrLenIfAny(taskConfig.Content) +
 		tdiStrLenIfAny(taskConfig.VerificationText) +
@@ -133,7 +134,8 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 		totTextUtf16Words += tdiStrLenIfAny(btn.Text)
 	}
 
-	szTdc := TASKDIALOGCONFIG_SZ // sizes of all blocks in bytes
+	// Sizes of each block, in bytes.
+	szTdc := TASKDIALOGCONFIG_SZ
 	szBtns := len(taskConfig.Buttons) * TASKDIALOG_BUTTON_SZ
 	szRads := len(taskConfig.RadioButtons) * TASKDIALOG_BUTTON_SZ
 	szTexts := totTextUtf16Words * 2
@@ -142,10 +144,12 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 		3*4 + // button, radio and check values returned (int32)
 		szTexts // all strings, null-terminated
 
-	buf := NewVecSized(totSize, byte(0)) // alloc a single buffer to keep everything
+	// Alloc a single buffer to keep everything.
+	buf := NewVecSized(totSize, byte(0))
 	defer buf.Free()
 
-	tdcBuf := buf.HotSlice()[:szTdc] // subslices over the single buffer
+	// Subslices over the single buffer.
+	tdcBuf := buf.HotSlice()[:szTdc]
 	btnsBuf := buf.HotSlice()[szTdc : szTdc+szBtns]
 	radsBuf := buf.HotSlice()[szTdc+szBtns : szTdc+szBtns+szRads]
 	bufRetBtn := buf.HotSlice()[szTdc+szBtns+szRads : szTdc+szBtns+szRads+4]
@@ -153,21 +157,22 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 	bufRetChk := buf.HotSlice()[szTdc+szBtns+szRads+8 : szTdc+szBtns+szRads+12]
 	bufPtrStrs := buf.HotSlice()[szTdc+szBtns+szRads+12:]
 
-	bufPtrStrs16 := unsafe.Slice((*uint16)(unsafe.Pointer(&bufPtrStrs[0])), len(bufPtrStrs)/2)
+	bufPtrStrs16 := unsafe.Slice( // wchar buffer for all strings
+		(*uint16)(unsafe.Pointer(unsafe.SliceData(bufPtrStrs))), len(bufPtrStrs)/2)
 
 	taskConfig.serialize(tdcBuf, btnsBuf, radsBuf, bufPtrStrs16)
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.COMCTL32, &_comctl_TaskDialogIndirect, "TaskDialogIndirect"),
-		uintptr(unsafe.Pointer(&tdcBuf[0])),
-		uintptr(unsafe.Pointer(&bufRetBtn[0])),
-		uintptr(unsafe.Pointer(&bufRetRad[0])),
-		uintptr(unsafe.Pointer(&bufRetChk[0])))
+		uintptr(unsafe.Pointer(unsafe.SliceData(tdcBuf))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(bufRetBtn))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(bufRetRad))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(bufRetChk))))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return co.ID(0), hr
 	}
 
-	pBtnId := (*int32)(unsafe.Pointer(&bufRetBtn[0]))
+	pBtnId := (*int32)(unsafe.Pointer(unsafe.SliceData(bufRetBtn)))
 	return co.ID(*pBtnId), nil
 }
 

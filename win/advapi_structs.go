@@ -20,7 +20,7 @@ type _VALENT struct {
 
 // Returns a projection over src, delimited by ValuePtr and ValueLen fields.
 func (v *_VALENT) bufProjection(src []byte) []byte {
-	srcPtrVal := uintptr(unsafe.Pointer(&src[0]))
+	srcPtrVal := uintptr(unsafe.Pointer(unsafe.SliceData(src)))
 	offsetIdx := v.ValuePtr - srcPtrVal
 	pastIdx := offsetIdx + uintptr(v.ValueLen)
 	return src[offsetIdx:pastIdx]

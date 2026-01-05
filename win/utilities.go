@@ -902,7 +902,7 @@ func PathSwapExtension(path, newExtension string) string {
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-// Dynamic, manually [heap-allocated] memory block array.
+// Dynamic, manually OS [heap-allocated] memory block array.
 //
 // Created with:
 //   - [NewVec]
@@ -914,7 +914,7 @@ func PathSwapExtension(path, newExtension string) string {
 //
 // [heap-allocated]: https://learn.microsoft.com/en-us/windows/win32/Memory/heap-functions
 type Vec[T any] struct {
-	data  []T // Slice to the heap-allocated memory.
+	data  []T // Slice to the heap-allocated memory, its length is the capacity.
 	inUse int // Number of elements effectively being used.
 }
 
@@ -1017,7 +1017,7 @@ func (me *Vec[T]) Clear() {
 func (me *Vec[T]) Free() {
 	if me.data != nil {
 		hHeap, _ := GetProcessHeap()
-		hHeap.HeapFree(co.HEAP_NS_NONE, unsafe.Pointer(&me.data[0]))
+		hHeap.HeapFree(co.HEAP_NS_NONE, unsafe.Pointer(unsafe.SliceData(me.data)))
 		me.data = nil
 		me.inUse = 0
 	}
@@ -1064,7 +1064,7 @@ func (me *Vec[T]) Ptr() unsafe.Pointer {
 	if me.IsEmpty() {
 		return nil
 	} else {
-		return unsafe.Pointer(&me.data[0])
+		return unsafe.Pointer(unsafe.SliceData(me.data))
 	}
 }
 
@@ -1083,13 +1083,13 @@ func (me *Vec[T]) Reserve(numElems int) {
 	if numElems > len(me.data) {
 		newSizeBytes := numElems * me.szElem()
 		hHeap, _ := GetProcessHeap()
-		if me.data == nil {
+		if me.data == nil { // first allocation
 			ptr, _ := hHeap.HeapAlloc(co.HEAP_ALLOC_ZERO_MEMORY, newSizeBytes)
-			me.data = unsafe.Slice((*T)(ptr), numElems)
+			me.data = unsafe.Slice((*T)(ptr), numElems) // store slice
 		} else {
-			curPtr := unsafe.Pointer(&me.data[0])
+			curPtr := unsafe.Pointer(unsafe.SliceData(me.data))
 			newPtr, _ := hHeap.HeapReAlloc(co.HEAP_REALLOC_ZERO_MEMORY, curPtr, newSizeBytes)
-			me.data = unsafe.Slice((*T)(newPtr), numElems)
+			me.data = unsafe.Slice((*T)(newPtr), numElems) // store new slice
 		}
 	}
 }

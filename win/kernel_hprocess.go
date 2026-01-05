@@ -313,15 +313,15 @@ var _kernel_QueryProcessCycleTime *syscall.Proc
 // [ReadProcessMemory]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory
 func (hProcess HPROCESS) ReadProcessMemory(
 	baseAddress uintptr,
-	dest []byte,
+	destBuf []byte,
 ) (numBytesRead int, wErr error) {
 	var read64 uint64
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_kernel_ReadProcessMemory, "ReadProcessMemory"),
 		uintptr(hProcess),
 		baseAddress,
-		uintptr(unsafe.Pointer(&dest[0])),
-		uintptr(uint64(len(dest))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(destBuf))),
+		uintptr(uint64(len(destBuf))),
 		uintptr(unsafe.Pointer(&read64)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -401,7 +401,7 @@ func (hProcess HPROCESS) WriteProcessMemory(
 		dll.Load(dll.KERNEL32, &_kernel_WriteProcessMemory, "WriteProcessMemory"),
 		uintptr(hProcess),
 		baseAddress,
-		uintptr(unsafe.Pointer(&src[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(src))),
 		uintptr(uint64(len(src))),
 		uintptr(unsafe.Pointer(&written64)))
 	if ret == 0 {

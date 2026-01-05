@@ -54,7 +54,7 @@ func (coai *COAUTHIDENTITY) User() string {
 }
 func (coai *COAUTHIDENTITY) SetUser(val string) {
 	buf := wstr.EncodeToSlice(val)
-	coai.user = &buf[0]
+	coai.user = unsafe.SliceData(buf)
 	coai.userLength = uint32(len(buf) - 1) // without terminating null
 }
 
@@ -63,7 +63,7 @@ func (coai *COAUTHIDENTITY) Domain() string {
 }
 func (coai *COAUTHIDENTITY) SetDomain(val string) {
 	buf := wstr.EncodeToSlice(val)
-	coai.domain = &buf[0]
+	coai.domain = unsafe.SliceData(buf)
 	coai.domainLength = uint32(len(buf) - 1) // without terminating null
 }
 
@@ -72,7 +72,7 @@ func (coai *COAUTHIDENTITY) Password() string {
 }
 func (coai *COAUTHIDENTITY) SetPassword(val string) {
 	buf := wstr.EncodeToSlice(val)
-	coai.password = &buf[0]
+	coai.password = unsafe.SliceData(buf)
 	coai.passwordLength = uint32(len(buf) - 1) // without terminating null
 }
 

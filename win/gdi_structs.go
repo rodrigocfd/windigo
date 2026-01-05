@@ -494,30 +494,32 @@ func (mix *PIXELFORMATDESCRIPTOR) SetNSize() {
 
 // [RGBQUAD] struct.
 //
+// Stores red, green and blue values in the range 0-255.
+//
 // [RGBQUAD]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-rgbquad
 type RGBQUAD struct {
-	data [4]byte
+	data [4]uint8
 }
 
 func (rq *RGBQUAD) Blue() uint8 {
-	return *(*uint8)(unsafe.Pointer(&rq.data[0]))
+	return rq.data[0]
 }
 func (rq *RGBQUAD) SetBlue(val uint8) {
-	*(*uint8)(unsafe.Pointer(&rq.data[0])) = val
+	rq.data[0] = val
 }
 
 func (rq *RGBQUAD) Green() uint8 {
-	return *(*uint8)(unsafe.Pointer(&rq.data[1]))
+	return rq.data[1]
 }
 func (rq *RGBQUAD) SetGreen(val uint8) {
-	*(*uint8)(unsafe.Pointer(&rq.data[1])) = val
+	rq.data[1] = val
 }
 
 func (rq *RGBQUAD) Red() uint8 {
-	return *(*uint8)(unsafe.Pointer(&rq.data[2]))
+	return rq.data[2]
 }
 func (rq *RGBQUAD) SetRed(val uint8) {
-	*(*uint8)(unsafe.Pointer(&rq.data[2])) = val
+	rq.data[2] = val
 }
 
 func (rq *RGBQUAD) ToColorref() COLORREF {

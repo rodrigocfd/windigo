@@ -194,15 +194,15 @@ var _kernel_LockFileEx *syscall.Proc
 //
 // [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hFile HFILE) ReadFile(
-	buffer []byte,
+	destBuf []byte,
 	overlapped *OVERLAPPED,
 ) (numBytesRead int, wErr error) {
 	var numBytesRead32 uint32
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_kernel_ReadFile, "ReadFile"),
 		uintptr(hFile),
-		uintptr(unsafe.Pointer(&buffer[0])),
-		uintptr(uint32(len(buffer))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(destBuf))),
+		uintptr(uint32(len(destBuf))),
 		uintptr(unsafe.Pointer(&numBytesRead32)),
 		uintptr(unsafe.Pointer(overlapped)))
 
@@ -287,7 +287,7 @@ func (hFile HFILE) WriteFile(
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_kernel_WriteFile, "WriteFile"),
 		uintptr(hFile),
-		uintptr(unsafe.Pointer(&data[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(data))),
 		uintptr(uint32(len(data))),
 		uintptr(unsafe.Pointer(&written32)),
 		uintptr(unsafe.Pointer(overlapped)))

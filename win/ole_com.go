@@ -359,13 +359,13 @@ func (*ISequentialStream) IID() co.IID {
 // the end of stream was reached.
 //
 // [Read]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-isequentialstream-read
-func (me *ISequentialStream) Read(buffer []byte) (numBytesRead int, hr error) {
+func (me *ISequentialStream) Read(destBuf []byte) (numBytesRead int, hr error) {
 	var read32 uint32
 	ret, _, _ := syscall.SyscallN(
 		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Read,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&buffer[0])),
-		uintptr(uint32(len(buffer))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(destBuf))),
+		uintptr(uint32(len(destBuf))),
 		uintptr(unsafe.Pointer(&read32)))
 
 	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -383,7 +383,7 @@ func (me *ISequentialStream) Write(data []byte) (numBytesWritten int, hr error) 
 	ret, _, _ := syscall.SyscallN(
 		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Write,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&data[0])),
+		uintptr(unsafe.Pointer(unsafe.SliceData(data))),
 		uintptr(uint32(len(data))),
 		uintptr(unsafe.Pointer(&written32)))
 
