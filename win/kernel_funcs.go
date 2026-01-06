@@ -60,7 +60,10 @@ var _kernel_CreateDirectoryW *syscall.Proc
 //		nil,
 //		false,
 //		co.CREATE_NONE,
-//		[]string{"FOO=bar", "BAR=44"},
+//		map[string]string{
+//			"FOO": "bar",
+//			"BAZ": "44",
+//		},
 //		"",
 //		&si,
 //	)
@@ -74,13 +77,25 @@ func CreateProcess(
 	processAttributes, threadAttributes *SECURITY_ATTRIBUTES,
 	inheritHandles bool,
 	creationFlags co.CREATE,
-	environment []string,
+	environment map[string]string,
 	currentDirectory string,
 	startupInfo *STARTUPINFO,
 ) (PROCESS_INFORMATION, error) {
 	var wApplicationName, wCommandLine, wCurrentDirectory wstr.BufEncoder
-	pEnvironment := wstr.EncodeArrToPtr(environment...)
 	var pi PROCESS_INFORMATION
+
+	var pEnvironment *uint16
+	if len(environment) > 0 {
+		envStrs := make([]string, 0, len(environment))
+		for k, v := range environment {
+			envStrs = append(envStrs, k+"="+v) // concat key=value for each env var
+		}
+		pEnvironment = wstr.EncodeArrToPtr(envStrs...)
+	}
+
+	if startupInfo != nil {
+		startupInfo.SetCb() // safety
+	}
 
 	ret, _, err := syscall.SyscallN(
 		dll.Load(dll.KERNEL32, &_kernel_CreateProcessW, "CreateProcessW"),
