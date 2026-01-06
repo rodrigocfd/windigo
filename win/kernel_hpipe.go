@@ -46,12 +46,33 @@ func CreateNamedPipe(
 		uintptr(uint32(nDefaultTimeOut)),
 		uintptr(unsafe.Pointer(securityAttributes)))
 	if ret == 0 {
-		return 0, co.ERROR(err)
+		return HPIPE(0), co.ERROR(err)
 	}
 	return HPIPE(ret), nil
 }
 
 var _kernel_CreateNamedPipeW *syscall.Proc
+
+// [CreatePipe] function.
+//
+// [CreatePipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createpipe
+func CreatePipe(
+	securityAttributes *SECURITY_ATTRIBUTES,
+	size int,
+) (hPipeRead, hPipeWrite HPIPE, wErr error) {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_kernel_CreatePipe, "CreatePipe"),
+		uintptr(unsafe.Pointer(&hPipeRead)),
+		uintptr(unsafe.Pointer(&hPipeWrite)),
+		uintptr(unsafe.Pointer(securityAttributes)),
+		uintptr(uint32(size)))
+	if ret == 0 {
+		return HPIPE(0), HPIPE(0), co.ERROR(err)
+	}
+	return hPipeRead, hPipeWrite, nil
+}
+
+var _kernel_CreatePipe *syscall.Proc
 
 // [CloseHandle] function.
 //
