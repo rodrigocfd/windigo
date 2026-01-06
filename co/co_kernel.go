@@ -384,6 +384,16 @@ const (
 	GMEM_LOCKCOUNT      GMEM = 0x00ff
 )
 
+// [SetHandleInformation] flags.
+//
+// [SetHandleInformation]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-sethandleinformation
+type HANDLE_FLAG uint32
+
+const (
+	HANDLE_FLAG_INHERIT            HANDLE_FLAG = 0x0000_0001
+	HANDLE_FLAG_PROTECT_FROM_CLOSE HANDLE_FLAG = 0x0000_0002
+)
+
 // [HeapAlloc] flags.
 //
 // [HeapAlloc]: https://learn.microsoft.com/en-us/windows/win32/api/heapapi/nf-heapapi-heapalloc

@@ -179,6 +179,13 @@ func (hPipe HPIPE) ReadFile(
 	return HFILE(hPipe).ReadFile(buffer, overlapped)
 }
 
+// [SetHandleInformation] function.
+//
+// [SetHandleInformation]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-sethandleinformation
+func (hPipe HPIPE) SetHandleInformation(mask, flags co.HANDLE_FLAG) error {
+	return HFILE(hPipe).SetHandleInformation(mask, flags)
+}
+
 // [WriteFile] function.
 //
 // [WriteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile

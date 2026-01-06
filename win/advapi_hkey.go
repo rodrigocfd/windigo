@@ -866,3 +866,10 @@ func (hKey HKEY) RegUnLoadKey(subKey string) error {
 }
 
 var _advapi_RegUnLoadKeyW *syscall.Proc
+
+// [SetHandleInformation] function.
+//
+// [SetHandleInformation]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-sethandleinformation
+func (hKey HKEY) SetHandleInformation(mask, flags co.HANDLE_FLAG) error {
+	return HFILE(hKey).SetHandleInformation(mask, flags)
+}

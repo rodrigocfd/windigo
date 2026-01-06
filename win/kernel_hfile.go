@@ -229,6 +229,20 @@ func (hFile HFILE) SetEndOfFile() error {
 
 var _kernel_SetEndOfFile *syscall.Proc
 
+// [SetHandleInformation] function.
+//
+// [SetHandleInformation]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-sethandleinformation
+func (hFile HFILE) SetHandleInformation(mask, flags co.HANDLE_FLAG) error {
+	ret, _, err := syscall.SyscallN(
+		dll.Load(dll.KERNEL32, &_kernel_SetHandleInformation, "SetHandleInformation"),
+		uintptr(hFile),
+		uintptr(mask),
+		uintptr(flags))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _kernel_SetHandleInformation *syscall.Proc
+
 // [UnlockFile] function.
 //
 // Paired with [HFILE.LockFile].
@@ -352,6 +366,13 @@ func (hMap HFILEMAP) MapViewOfFile(
 }
 
 var _kernel_MapViewOfFileFromApp *syscall.Proc
+
+// [SetHandleInformation] function.
+//
+// [SetHandleInformation]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-sethandleinformation
+func (hMap HFILEMAP) SetHandleInformation(mask, flags co.HANDLE_FLAG) error {
+	return HFILE(hMap).SetHandleInformation(mask, flags)
+}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
