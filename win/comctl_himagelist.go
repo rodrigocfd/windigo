@@ -3,7 +3,7 @@
 package win
 
 import (
-	"errors"
+	"fmt"
 	"syscall"
 	"unsafe"
 
@@ -118,7 +118,7 @@ func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) error {
 	isIco16 := sz.Cx == 16 && sz.Cy == 16
 	isIco32 := sz.Cx == 32 && sz.Cy == 32
 	if !isIco16 && !isIco32 {
-		return errors.New("AddIconFromShell can load only 16x16 or 32x32 icons")
+		return fmt.Errorf("AddIconFromShell can load only 16x16 or 32x32 icons")
 	}
 
 	shgfi := co.SHGFI_USEFILEATTRIBUTES | co.SHGFI_ICON

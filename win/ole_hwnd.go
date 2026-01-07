@@ -3,7 +3,7 @@
 package win
 
 import (
-	"errors"
+	"fmt"
 	"syscall"
 	"unsafe"
 
@@ -20,7 +20,7 @@ import (
 func (hWnd HWND) RegisterDragDrop(dropTarget *IDropTarget) error {
 	exStyle, _ := hWnd.ExStyle()
 	if (exStyle & co.WS_EX_ACCEPTFILES) != 0 {
-		return errors.New("do not use WS_EX_ACCEPTFILES with RegisterDragDrop")
+		return fmt.Errorf("do not use WS_EX_ACCEPTFILES with RegisterDragDrop")
 	}
 
 	ret, _, _ := syscall.SyscallN(
@@ -29,7 +29,7 @@ func (hWnd HWND) RegisterDragDrop(dropTarget *IDropTarget) error {
 		uintptr(unsafe.Pointer(dropTarget.Ppvt())))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		if hr == co.HRESULT_E_OUTOFMEMORY {
-			return errors.New("RegisterDragDrop failed, did you call OleInitialize?")
+			return fmt.Errorf("RegisterDragDrop failed, did you call OleInitialize?")
 		}
 		return hr
 	}
