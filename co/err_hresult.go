@@ -10,8 +10,8 @@ import (
 // [HRESULT] error codes.
 //
 // We can't simply use syscall.Errno because it's an uintptr (8 bytes), thus a
-// native struct with such a field type would be wrong. However, the Unwrap()
-// method will return the syscall.Errno value.
+// native struct with such a field type would be wrong. However, the
+// [HRESULT.Unwrap] method will return the syscall.Errno value.
 //
 // [HRESULT]: https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/0642cb2f-2075-4469-918c-4441e69c548a
 type HRESULT uint32
@@ -274,4 +274,47 @@ const (
 	_HRESULT_SELFREG_E_FIRST  = HRESULT(SEVERITY_ERROR)<<31 | HRESULT(FACILITY_ITF)<<16 | 0x0200
 	HRESULT_SELFREG_E_TYPELIB = _HRESULT_SELFREG_E_FIRST + 0 // Failed to register/unregister type library.
 	HRESULT_SELFREG_E_CLASS   = _HRESULT_SELFREG_E_FIRST + 1 // Failed to register/unregister class.
+
+	HRESULT_WINCODEC_ERR_WRONGSTATE                       HRESULT = 0x8898_2f04 // The codec is in the wrong state.
+	HRESULT_WINCODEC_ERR_VALUEOUTOFRANGE                  HRESULT = 0x8898_2f05 // The value is out of range.
+	HRESULT_WINCODEC_ERR_UNKNOWNIMAGEFORMAT               HRESULT = 0x8898_2f07 // The image format is unknown.
+	HRESULT_WINCODEC_ERR_UNSUPPORTEDVERSION               HRESULT = 0x8898_2f0b // The SDK version is unsupported.
+	HRESULT_WINCODEC_ERR_NOTINITIALIZED                   HRESULT = 0x8898_2f0c // The component is not initialized.
+	HRESULT_WINCODEC_ERR_ALREADYLOCKED                    HRESULT = 0x8898_2f0d // There is already an outstanding read or write lock.
+	HRESULT_WINCODEC_ERR_PROPERTYNOTFOUND                 HRESULT = 0x8898_2f40 // The specified bitmap property cannot be found.
+	HRESULT_WINCODEC_ERR_PROPERTYNOTSUPPORTED             HRESULT = 0x8898_2f41 // The bitmap codec does not support the bitmap property.
+	HRESULT_WINCODEC_ERR_PROPERTYSIZE                     HRESULT = 0x8898_2f42 // The bitmap property size is invalid.
+	HRESULT_WINCODEC_ERR_CODECPRESENT                     HRESULT = 0x8898_2f43 // An unknown error has occurred.
+	HRESULT_WINCODEC_ERR_CODECNOTHUMBNAIL                 HRESULT = 0x8898_2f44 // The bitmap codec does not support a thumbnail.
+	HRESULT_WINCODEC_ERR_PALETTEUNAVAILABLE               HRESULT = 0x8898_2f45 // The bitmap palette is unavailable.
+	HRESULT_WINCODEC_ERR_CODECTOOMANYSCANLINES            HRESULT = 0x8898_2f46 // Too many scanlines were requested.
+	HRESULT_WINCODEC_ERR_INTERNALERROR                    HRESULT = 0x8898_2f48 // An internal error occurred.
+	HRESULT_WINCODEC_ERR_SOURCERECTDOESNOTMATCHDIMENSIONS HRESULT = 0x8898_2f49 // The bitmap bounds do not match the bitmap dimensions.
+	HRESULT_WINCODEC_ERR_COMPONENTNOTFOUND                HRESULT = 0x8898_2f50 // The component cannot be found.
+	HRESULT_WINCODEC_ERR_IMAGESIZEOUTOFRANGE              HRESULT = 0x8898_2f51 // The bitmap size is outside the valid range.
+	HRESULT_WINCODEC_ERR_TOOMUCHMETADATA                  HRESULT = 0x8898_2f52 // There is too much metadata to be written to the bitmap.
+	HRESULT_WINCODEC_ERR_BADIMAGE                         HRESULT = 0x8898_2f60 // The image is unrecognized.
+	HRESULT_WINCODEC_ERR_BADHEADER                        HRESULT = 0x8898_2f61 // The image header is unrecognized.
+	HRESULT_WINCODEC_ERR_FRAMEMISSING                     HRESULT = 0x8898_2f62 // The bitmap frame is missing.
+	HRESULT_WINCODEC_ERR_BADMETADATAHEADER                HRESULT = 0x8898_2f63 // The image metadata header is unrecognized.
+	HRESULT_WINCODEC_ERR_BADSTREAMDATA                    HRESULT = 0x8898_2f70 // The stream data is unrecognized.
+	HRESULT_WINCODEC_ERR_STREAMWRITE                      HRESULT = 0x8898_2f71 // Failed to write to the stream.
+	HRESULT_WINCODEC_ERR_STREAMREAD                       HRESULT = 0x8898_2f72 // Failed to read from the stream.
+	HRESULT_WINCODEC_ERR_STREAMNOTAVAILABLE               HRESULT = 0x8898_2f73 // The stream is not available.
+	HRESULT_WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT           HRESULT = 0x8898_2f80 // The bitmap pixel format is unsupported.
+	HRESULT_WINCODEC_ERR_UNSUPPORTEDOPERATION             HRESULT = 0x8898_2f81 // The operation is unsupported.
+	HRESULT_WINCODEC_ERR_INVALIDREGISTRATION              HRESULT = 0x8898_2f8a // The component registration is invalid.
+	HRESULT_WINCODEC_ERR_COMPONENTINITIALIZEFAILURE       HRESULT = 0x8898_2f8b // The component initialization has failed.
+	HRESULT_WINCODEC_ERR_INSUFFICIENTBUFFER               HRESULT = 0x8898_2f8c // The buffer allocated is insufficient.
+	HRESULT_WINCODEC_ERR_DUPLICATEMETADATAPRESENT         HRESULT = 0x8898_2f8d // Duplicate metadata is present.
+	HRESULT_WINCODEC_ERR_PROPERTYUNEXPECTEDTYPE           HRESULT = 0x8898_2f8e // The bitmap property type is unexpected.
+	HRESULT_WINCODEC_ERR_UNEXPECTEDSIZE                   HRESULT = 0x8898_2f8f // The size is unexpected.
+	HRESULT_WINCODEC_ERR_INVALIDQUERYREQUEST              HRESULT = 0x8898_2f90 // The property query is invalid.
+	HRESULT_WINCODEC_ERR_UNEXPECTEDMETADATATYPE           HRESULT = 0x8898_2f91 // The metadata type is unexpected.
+	HRESULT_WINCODEC_ERR_REQUESTONLYVALIDATMETADATAROOT   HRESULT = 0x8898_2f92 // The specified bitmap property is only valid at root level.
+	HRESULT_WINCODEC_ERR_INVALIDQUERYCHARACTER            HRESULT = 0x8898_2f93 // The query string contains an invalid character.
+	HRESULT_WINCODEC_ERR_WIN32ERROR                       HRESULT = 0x8898_2f94 // Windows Codecs received an error from the Win32 system.
+	HRESULT_WINCODEC_ERR_INVALIDPROGRESSIVELEVEL          HRESULT = 0x8898_2f95 // The requested level of detail is not present.
+	HRESULT_WINCODEC_ERR_INVALIDJPEGSCANINDEX             HRESULT = 0x8898_2f96 // The scan index is invalid.
+	HRESULT_WINCODEC_ERR_UNSUPPORTEDTONEMAPPING           HRESULT = 0x8898_2f97 // The tone mapping mode is not supported.
 )
