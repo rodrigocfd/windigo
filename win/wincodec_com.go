@@ -299,7 +299,7 @@ func (me *IWICBitmapDecoder) CopyPalette(palette *IWICPalette) error {
 // [GetContainerFormat] method.
 //
 // [GetContainerFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapdecoder-getcontainerformat
-func (me *IWICBitmapDecoder) GetContainerFormat() (co.GUID, error) {
+func (me *IWICBitmapDecoder) GetContainerFormat() (co.WIC_CONTAINER, error) {
 	var guid GUID
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).GetContainerFormat,
@@ -307,7 +307,7 @@ func (me *IWICBitmapDecoder) GetContainerFormat() (co.GUID, error) {
 		uintptr(unsafe.Pointer(&guid)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.GUID(guid.String()), nil
+		return co.WIC_CONTAINER(guid.String()), nil
 	} else {
 		return "", hr
 	}
@@ -410,12 +410,12 @@ func (me *IWICBitmapDecoder) GetThumbnail(releaser *OleReleaser) (*IWICBitmapSou
 // [Initialize] method.
 //
 // [Initialize]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapdecoder-initialize
-func (me *IWICBitmapDecoder) Initialize(stream *IStream, cacheOptions co.WICDEC_METADATACACHE) error {
+func (me *IWICBitmapDecoder) Initialize(stream *IStream, cacheOpts co.WICDEC_METADATACACHE) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).Initialize,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
-		uintptr(cacheOptions))
+		uintptr(cacheOpts))
 	return utl.HresultToError(ret)
 }
 
