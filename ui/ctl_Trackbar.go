@@ -120,7 +120,7 @@ func (me *Trackbar) SetPageSize(pageSize int) *Trackbar {
 	return me
 }
 
-// Sets the current position witn [TBM_SETPOS].
+// Sets the current position with [TBM_SETPOS].
 //
 // [TBM_SETPOS]: https://learn.microsoft.com/en-us/windows/win32/controls/tbm-setpos
 func (me *Trackbar) SetPos(pos int) *Trackbar {

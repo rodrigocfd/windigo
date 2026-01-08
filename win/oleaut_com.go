@@ -689,7 +689,7 @@ func (me *IPicture) Size() (SIZE, error) {
 	return SIZE{Cx: int32(width), Cy: int32(height)}, nil
 }
 
-// Calls [IPicture.Width] and [IPicture.Height], then convers from HIMETRIC
+// Calls [IPicture.Width] and [IPicture.Height], then converts from HIMETRIC
 // units to pixels with [HDC.HiMetricToPixel].
 //
 // If hdc is zero, the method will retrieve the HDC for the whole screen with

@@ -186,7 +186,7 @@ func (stg *STGMEDIUM) Tymed() co.TYMED {
 	return stg.tymed
 }
 
-// Attemps to return the [HBITMAP] if tymed == co.TYMED_GDI.
+// Attempts to return the [HBITMAP] if tymed == co.TYMED_GDI.
 func (stg *STGMEDIUM) HBitmap() (HBITMAP, bool) {
 	if stg.tymed == co.TYMED_GDI {
 		return HBITMAP(stg.data), true
@@ -194,7 +194,7 @@ func (stg *STGMEDIUM) HBitmap() (HBITMAP, bool) {
 	return HBITMAP(0), false
 }
 
-// Attemps to return the [HGLOBAL] if tymed == co.TYMED_HGLOBAL.
+// Attempts to return the [HGLOBAL] if tymed == co.TYMED_HGLOBAL.
 func (stg *STGMEDIUM) HGlobal() (HGLOBAL, bool) {
 	if stg.tymed == co.TYMED_HGLOBAL {
 		return HGLOBAL(stg.data), true
@@ -202,7 +202,7 @@ func (stg *STGMEDIUM) HGlobal() (HGLOBAL, bool) {
 	return HGLOBAL(0), false
 }
 
-// Attemps to return the string if tymed == co.TYMED_FILE.
+// Attempts to return the string if tymed == co.TYMED_FILE.
 func (stg *STGMEDIUM) FileName() (string, bool) {
 	if stg.tymed == co.TYMED_FILE {
 		return wstr.DecodePtr((*uint16)(unsafe.Pointer(stg.data))), true
@@ -210,7 +210,7 @@ func (stg *STGMEDIUM) FileName() (string, bool) {
 	return "", false
 }
 
-// Attemps to return the [IStream] if tymed == co.TYMED_ISTREAM.
+// Attempts to return the [IStream] if tymed == co.TYMED_ISTREAM.
 func (stg *STGMEDIUM) IStream(releaser *OleReleaser) (*IStream, bool) {
 	if stg.tymed == co.TYMED_ISTREAM {
 		ppvt := (**_IUnknownVt)(unsafe.Pointer(stg.data))

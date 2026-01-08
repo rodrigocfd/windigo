@@ -512,7 +512,7 @@ const (
 	ERROR_DEVICE_ENUMERATION_ERROR                                            ERROR = 648
 	ERROR_MOUNT_POINT_NOT_RESOLVED                                            ERROR = 649
 	ERROR_INVALID_DEVICE_OBJECT_PARAMETER                                     ERROR = 650
-	ERROR_MCA_OCCURED                                                         ERROR = 651
+	ERROR_MCA_OCCURRED                                                        ERROR = 651
 	ERROR_DRIVER_DATABASE_ERROR                                               ERROR = 652
 	ERROR_SYSTEM_HIVE_TOO_LARGE                                               ERROR = 653
 	ERROR_DRIVER_FAILED_PRIOR_UNLOAD                                          ERROR = 654
@@ -2391,7 +2391,7 @@ const (
 	ERROR_SXS_XML_E_EXPECTINGCLOSEQUOTE                                       ERROR = 14045
 	ERROR_SXS_XML_E_MULTIPLE_COLONS                                           ERROR = 14046
 	ERROR_SXS_XML_E_INVALID_DECIMAL                                           ERROR = 14047
-	ERROR_SXS_XML_E_INVALID_HEXIDECIMAL                                       ERROR = 14048
+	ERROR_SXS_XML_E_INVALID_HEXADECIMAL                                       ERROR = 14048
 	ERROR_SXS_XML_E_INVALID_UNICODE                                           ERROR = 14049
 	ERROR_SXS_XML_E_WHITESPACEORQUESTIONMARK                                  ERROR = 14050
 	ERROR_SXS_XML_E_UNEXPECTEDENDTAG                                          ERROR = 14051
