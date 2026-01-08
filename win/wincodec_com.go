@@ -1414,19 +1414,13 @@ func (me *IWICImagingFactory) CreateDecoderFromFileHandle(
 	metadataOpts co.WICDEC_METADATACACHE,
 ) (*IWICBitmapDecoder, error) {
 	var ppvtQueried **_IUnknownVt
-
 	var guidGuidVendor GUID
-	var pGuidGuidVendor *GUID
-	if len(guidVendor) > 0 {
-		guidGuidVendor = GuidFrom(guidVendor)
-		pGuidGuidVendor = &guidGuidVendor
-	}
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromFileHandle,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hFile),
-		uintptr(unsafe.Pointer(pGuidGuidVendor)),
+		uintptr(nullableGuidPtr(guidVendor, &guidGuidVendor)),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -1475,19 +1469,13 @@ func (me *IWICImagingFactory) CreateDecoderFromFilename(
 ) (*IWICBitmapDecoder, error) {
 	var ppvtQueried **_IUnknownVt
 	var wFilename wstr.BufEncoder
-
 	var guidGuidVendor GUID
-	var pGuidGuidVendor *GUID
-	if len(guidVendor) > 0 {
-		guidGuidVendor = GuidFrom(guidVendor)
-		pGuidGuidVendor = &guidGuidVendor
-	}
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromFilename,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wFilename.AllowEmpty(filename)),
-		uintptr(unsafe.Pointer(pGuidGuidVendor)),
+		uintptr(nullableGuidPtr(guidVendor, &guidGuidVendor)),
 		uintptr(desiredAccess),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
@@ -1513,19 +1501,13 @@ func (me *IWICImagingFactory) CreateDecoderFromStream(
 	metadataOpts co.WICDEC_METADATACACHE,
 ) (*IWICBitmapDecoder, error) {
 	var ppvtQueried **_IUnknownVt
-
 	var guidGuidVendor GUID
-	var pGuidGuidVendor *GUID
-	if len(guidVendor) > 0 {
-		guidGuidVendor = GuidFrom(guidVendor)
-		pGuidGuidVendor = &guidGuidVendor
-	}
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromStream,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
-		uintptr(unsafe.Pointer(pGuidGuidVendor)),
+		uintptr(nullableGuidPtr(guidVendor, &guidGuidVendor)),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -1566,19 +1548,13 @@ func (me *IWICImagingFactory) CreateEncoder(
 ) (*IWICBitmapEncoder, error) {
 	var ppvtQueried **_IUnknownVt
 	guidGuidContainer := GuidFrom(guidContainer)
-
 	var guidGuidVendor GUID
-	var pGuidGuidVendor *GUID
-	if len(guidVendor) > 0 {
-		guidGuidVendor = GuidFrom(guidVendor)
-		pGuidGuidVendor = &guidGuidVendor
-	}
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateEncoder,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidGuidContainer)),
-		uintptr(unsafe.Pointer(pGuidGuidVendor)),
+		uintptr(nullableGuidPtr(guidVendor, &guidGuidVendor)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
