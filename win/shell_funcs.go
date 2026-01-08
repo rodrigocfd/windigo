@@ -68,7 +68,7 @@ var _shell_CommandLineToArgvW *syscall.Proc
 // [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
 func SHCreateItemFromIDList(releaser *OleReleaser, pidl *ITEMIDLIST, ppOut interface{}) error {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())
@@ -117,7 +117,7 @@ func SHCreateItemFromParsingName(
 	ppOut interface{},
 ) error {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())
@@ -152,7 +152,7 @@ func SHCreateItemFromRelativeName(
 	ppOut interface{},
 ) error {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())
@@ -331,7 +331,7 @@ func SHGetKnownFolderItem(
 	ppOut interface{},
 ) error {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	var ppvtQueried **_IUnknownVt
 	guidKfid := GuidFrom(kfid)

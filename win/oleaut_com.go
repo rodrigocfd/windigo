@@ -916,7 +916,7 @@ func (me *ITypeInfo) CreateInstance(
 	ppOut interface{},
 ) error {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())

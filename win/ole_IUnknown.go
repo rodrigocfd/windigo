@@ -60,7 +60,7 @@ func (me *IUnknown) Ppvt() **_IUnknownVt {
 // [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	syscall.SyscallN((*me.Ppvt()).AddRef,
 		uintptr(unsafe.Pointer(me.Ppvt())))
@@ -89,7 +89,7 @@ func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
 // [QueryInterface]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IUnknown) QueryInterface(releaser *OleReleaser, ppOut interface{}) error {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())

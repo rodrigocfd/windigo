@@ -85,7 +85,7 @@ func CoCreateInstance(
 	ppOut interface{},
 ) error {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	var ppvtQueried **_IUnknownVt
 	guidClsid := GuidFrom(rclsid)

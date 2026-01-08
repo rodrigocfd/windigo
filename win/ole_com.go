@@ -75,7 +75,7 @@ func (me *IBindCtx) GetBindOptions() (BIND_OPTS3, error) {
 // [GetObjectParam]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-getobjectparam
 func (me *IBindCtx) GetObjectParam(releaser *OleReleaser, key string, ppOut interface{}) error {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	var ppvtQueried **_IUnknownVt
 	var wKey wstr.BufEncoder

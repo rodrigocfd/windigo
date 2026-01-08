@@ -1356,7 +1356,7 @@ func (me *IShellFolder) BindToObject(
 	ppOut interface{},
 ) error {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())
@@ -1388,7 +1388,7 @@ func (me *IShellFolder) BindToStorage(
 	ppOut interface{},
 ) error {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())
@@ -1443,7 +1443,7 @@ func (me *IShellFolder) CreateViewObject(
 	ppOut interface{},
 ) error {
 	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
+	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
 
 	var ppvtQueried **_IUnknownVt
 	guidIid := GuidFrom(pOut.IID())
