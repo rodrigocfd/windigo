@@ -159,16 +159,16 @@ const (
 	HRESULT_DRAGDROP_E_INVALIDHWND               HRESULT = 0x8004_0102 // Invalid window handle.
 	HRESULT_DRAGDROP_E_CONCURRENT_DRAG_ATTEMPTED HRESULT = 0x8004_0103 // A drag operation is already in progress.
 
-	HRESULT_DV_E_FORMATETC           HRESULT = 0x80040064 // Invalid FORMATETC structure.
-	HRESULT_DV_E_DVTARGETDEVICE      HRESULT = 0x80040065 // Invalid DVTARGETDEVICE structure.
-	HRESULT_DV_E_STGMEDIUM           HRESULT = 0x80040066 // Invalid STDGMEDIUM structure.
-	HRESULT_DV_E_STATDATA            HRESULT = 0x80040067 // Invalid STATDATA structure.
-	HRESULT_DV_E_LINDEX              HRESULT = 0x80040068 // Invalid lindex.
-	HRESULT_DV_E_TYMED               HRESULT = 0x80040069 // Invalid tymed.
-	HRESULT_DV_E_CLIPFORMAT          HRESULT = 0x8004006a // Invalid clipboard format.
-	HRESULT_DV_E_DVASPECT            HRESULT = 0x8004006b // Invalid aspect(s).
-	HRESULT_DV_E_DVTARGETDEVICE_SIZE HRESULT = 0x8004006c // tdSize parameter of the DVTARGETDEVICE structure is invalid.
-	HRESULT_DV_E_NOIVIEWOBJECT       HRESULT = 0x8004006d // Object doesn't support IViewObject interface.
+	HRESULT_DV_E_FORMATETC           HRESULT = 0x8004_0064 // Invalid FORMATETC structure.
+	HRESULT_DV_E_DVTARGETDEVICE      HRESULT = 0x8004_0065 // Invalid DVTARGETDEVICE structure.
+	HRESULT_DV_E_STGMEDIUM           HRESULT = 0x8004_0066 // Invalid STDGMEDIUM structure.
+	HRESULT_DV_E_STATDATA            HRESULT = 0x8004_0067 // Invalid STATDATA structure.
+	HRESULT_DV_E_LINDEX              HRESULT = 0x8004_0068 // Invalid lindex.
+	HRESULT_DV_E_TYMED               HRESULT = 0x8004_0069 // Invalid tymed.
+	HRESULT_DV_E_CLIPFORMAT          HRESULT = 0x8004_006a // Invalid clipboard format.
+	HRESULT_DV_E_DVASPECT            HRESULT = 0x8004_006b // Invalid aspect(s).
+	HRESULT_DV_E_DVTARGETDEVICE_SIZE HRESULT = 0x8004_006c // tdSize parameter of the DVTARGETDEVICE structure is invalid.
+	HRESULT_DV_E_NOIVIEWOBJECT       HRESULT = 0x8004_006d // Object doesn't support IViewObject interface.
 
 	HRESULT_E_UNEXPECTED           HRESULT = 0x8000_ffff // Catastrophic failure.
 	HRESULT_E_NOTIMPL              HRESULT = 0x8000_4001 // Not implemented.
@@ -274,6 +274,33 @@ const (
 	_HRESULT_SELFREG_E_FIRST  = HRESULT(SEVERITY_ERROR)<<31 | HRESULT(FACILITY_ITF)<<16 | 0x0200
 	HRESULT_SELFREG_E_TYPELIB = _HRESULT_SELFREG_E_FIRST + 0 // Failed to register/unregister type library.
 	HRESULT_SELFREG_E_CLASS   = _HRESULT_SELFREG_E_FIRST + 1 // Failed to register/unregister class.
+
+	TYPE_E_BUFFERTOOSMALL          HRESULT = 0x8002_8016 // Buffer too small.
+	TYPE_E_FIELDNOTFOUND           HRESULT = 0x8002_8017 // Field name not defined in the record.
+	TYPE_E_INVDATAREAD             HRESULT = 0x8002_8018 // Old format or invalid type library.
+	TYPE_E_UNSUPFORMAT             HRESULT = 0x8002_8019 // Old format or invalid type library.
+	TYPE_E_REGISTRYACCESS          HRESULT = 0x8002_801c // Error accessing the OLE registry.
+	TYPE_E_LIBNOTREGISTERED        HRESULT = 0x8002_801d // Library not registered.
+	TYPE_E_UNDEFINEDTYPE           HRESULT = 0x8002_8027 // Bound to unknown type.
+	TYPE_E_QUALIFIEDNAMEDISALLOWED HRESULT = 0x8002_8028 // Qualified name disallowed.
+	TYPE_E_INVALIDSTATE            HRESULT = 0x8002_8029 // Invalid forward reference, or reference to uncompiled type.
+	TYPE_E_WRONGTYPEKIND           HRESULT = 0x8002_802a // Type mismatch.
+	TYPE_E_ELEMENTNOTFOUND         HRESULT = 0x8002_802b // Element not found.
+	TYPE_E_AMBIGUOUSNAME           HRESULT = 0x8002_802c // Ambiguous name.
+	TYPE_E_NAMECONFLICT            HRESULT = 0x8002_802d // Name already exists in the library.
+	TYPE_E_UNKNOWNLCID             HRESULT = 0x8002_802e // Unknown LCID.
+	TYPE_E_DLLFUNCTIONNOTFOUND     HRESULT = 0x8002_802f // Function not defined in specified DLL.
+	TYPE_E_BADMODULEKIND           HRESULT = 0x8002_88bd // Wrong module kind for the operation.
+	TYPE_E_SIZETOOBIG              HRESULT = 0x8002_88c5 // Size may not exceed 64K.
+	TYPE_E_DUPLICATEID             HRESULT = 0x8002_88c6 // Duplicate ID in inheritance hierarchy.
+	TYPE_E_INVALIDID               HRESULT = 0x8002_88cf // Incorrect inheritance depth in standard OLE hmember.
+	TYPE_E_TYPEMISMATCH            HRESULT = 0x8002_8ca0 // Type mismatch.
+	TYPE_E_OUTOFBOUNDS             HRESULT = 0x8002_8ca1 // Invalid number of arguments.
+	TYPE_E_IOERROR                 HRESULT = 0x8002_8ca2 // I/O Error.
+	TYPE_E_CANTCREATETMPFILE       HRESULT = 0x8002_8ca3 // Error creating unique tmp file.
+	TYPE_E_CANTLOADLIBRARY         HRESULT = 0x8002_9c4a // Error loading type library/DLL.
+	TYPE_E_INCONSISTENTPROPFUNCS   HRESULT = 0x8002_9c83 // Inconsistent property functions.
+	TYPE_E_CIRCULARTYPE            HRESULT = 0x8002_9c84 // Circular dependency between types/modules.
 
 	HRESULT_WINCODEC_ERR_WRONGSTATE                       HRESULT = 0x8898_2f04 // The codec is in the wrong state.
 	HRESULT_WINCODEC_ERR_VALUEOUTOFRANGE                  HRESULT = 0x8898_2f05 // The value is out of range.

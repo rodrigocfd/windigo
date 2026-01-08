@@ -967,7 +967,7 @@ func (me *ITypeInfo) GetContainingTypeLib(releaser *OleReleaser) (*ITypeLib, int
 func (me *ITypeInfo) GetDllEntry(
 	memberId MEMBERID,
 	invokeKind co.INVOKEKIND,
-) (ITypeInfoDllEntry, error) {
+) (TypeInfoDllEntry, error) {
 	var dllName, name BSTR
 	defer dllName.SysFreeString()
 	defer name.SysFreeString()
@@ -983,18 +983,18 @@ func (me *ITypeInfo) GetDllEntry(
 		uintptr(unsafe.Pointer(&ordinal16)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return ITypeInfoDllEntry{
+		return TypeInfoDllEntry{
 			DllName: dllName.String(),
 			Name:    name.String(),
 			Ordinal: int(ordinal16),
 		}, nil
 	} else {
-		return ITypeInfoDllEntry{}, hr
+		return TypeInfoDllEntry{}, hr
 	}
 }
 
 // Returned by [ITypeInfo.GetDllEntry].
-type ITypeInfoDllEntry struct {
+type TypeInfoDllEntry struct {
 	DllName string
 	Name    string
 	Ordinal int
@@ -1003,7 +1003,7 @@ type ITypeInfoDllEntry struct {
 // [GetDocumentation] method.
 //
 // [GetDocumentation]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-getdocumentation
-func (me *ITypeInfo) GetDocumentation(memberId MEMBERID) (ITypeInfoDoc, error) {
+func (me *ITypeInfo) GetDocumentation(memberId MEMBERID) (TypeInfoDoc, error) {
 	var name, docStr, helpFile BSTR
 	defer name.SysFreeString()
 	defer docStr.SysFreeString()
@@ -1020,19 +1020,19 @@ func (me *ITypeInfo) GetDocumentation(memberId MEMBERID) (ITypeInfoDoc, error) {
 		uintptr(unsafe.Pointer(&helpFile)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return ITypeInfoDoc{
+		return TypeInfoDoc{
 			Name:        name.String(),
 			DocString:   docStr.String(),
 			HelpContext: int(helpCtx),
 			HelpFile:    helpFile.String(),
 		}, nil
 	} else {
-		return ITypeInfoDoc{}, hr
+		return TypeInfoDoc{}, hr
 	}
 }
 
 // Returned by [ITypeInfo.GetDocumentation].
-type ITypeInfoDoc struct {
+type TypeInfoDoc struct {
 	Name        string
 	DocString   string
 	HelpContext int
@@ -1184,6 +1184,58 @@ type ITypeLib struct{ IUnknown }
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*ITypeLib) IID() co.IID {
 	return co.IID_ITypeLib
+}
+
+// [GetTypeInfo] method.
+//
+// [GetTypeInfo]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypelib-gettypeinfo
+func (me *ITypeLib) GetTypeInfo(releaser *OleReleaser, index int) (*ITypeInfo, error) {
+	var ppvtQueried **_IUnknownVt
+	ret, _, _ := syscall.SyscallN(
+		(*_ITypeLibVt)(unsafe.Pointer(*me.Ppvt())).GetTypeInfo,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(uint32(index)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := &ITypeInfo{IUnknown{ppvtQueried}}
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
+}
+
+// [GetTypeInfoCount] method.
+//
+// [GetTypeInfoCount]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypelib-gettypeinfocount
+func (me *ITypeLib) GetTypeInfoCount() int {
+	ret, _, _ := syscall.SyscallN(
+		(*_ITypeLibVt)(unsafe.Pointer(*me.Ppvt())).GetTypeInfoCount,
+		uintptr(unsafe.Pointer(me.Ppvt())))
+	return int(ret)
+}
+
+// [GetTypeInfoOfGuid] method.
+//
+// [GetTypeInfoOfGuid]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypelib-gettypeinfoofguid
+func (me *ITypeLib) GetTypeInfoOfGuid(releaser *OleReleaser, guid co.GUID) (*ITypeInfo, error) {
+	var ppvtQueried **_IUnknownVt
+	guidGuid := GuidFrom(guid)
+
+	ret, _, _ := syscall.SyscallN(
+		(*_ITypeLibVt)(unsafe.Pointer(*me.Ppvt())).GetTypeInfo,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&guidGuid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := &ITypeInfo{IUnknown{ppvtQueried}}
+		releaser.Add(pObj)
+		return pObj, nil
+	} else {
+		return nil, hr
+	}
 }
 
 type _ITypeLibVt struct {
