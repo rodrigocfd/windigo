@@ -128,15 +128,13 @@ func (me *_IFileDialogEventsVt) init() {
 		_IUnknownVt: _IUnknownVt{
 			QueryInterface: iunknownQueryInterfaceImpl(),
 			AddRef: syscall.NewCallback(
-				func(p uintptr) uintptr {
-					ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
+				func(ppImpl **_IFileDialogEventsImpl) uintptr {
 					newCount := atomic.AddUint32(&(**ppImpl).counter, 1)
 					return uintptr(newCount)
 				},
 			),
 			Release: syscall.NewCallback(
-				func(p uintptr) uintptr {
-					ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
+				func(ppImpl **_IFileDialogEventsImpl) uintptr {
 					newCount := atomic.AddUint32(&(**ppImpl).counter, ^uint32(0)) // decrement 1
 					if newCount == 0 {
 						utl.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
@@ -147,8 +145,7 @@ func (me *_IFileDialogEventsVt) init() {
 			),
 		},
 		OnFileOk: syscall.NewCallback(
-			func(p uintptr, _ **_IUnknownVt) uintptr {
-				ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
+			func(ppImpl **_IFileDialogEventsImpl, _ **_IUnknownVt) uintptr {
 				if fun := (*ppImpl).onFileOk; fun == nil { // user didn't define a callback
 					return uintptr(co.HRESULT_S_OK)
 				} else {
@@ -157,8 +154,7 @@ func (me *_IFileDialogEventsVt) init() {
 			},
 		),
 		OnFolderChanging: syscall.NewCallback(
-			func(p uintptr, _ **_IUnknownVt, vtSi **_IUnknownVt) uintptr {
-				ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
+			func(ppImpl **_IFileDialogEventsImpl, _, vtSi **_IUnknownVt) uintptr {
 				if fun := (*ppImpl).onFolderChanging; fun == nil { // user didn't define a callback
 					return uintptr(co.HRESULT_S_OK)
 				} else {
@@ -167,8 +163,7 @@ func (me *_IFileDialogEventsVt) init() {
 			},
 		),
 		OnFolderChange: syscall.NewCallback(
-			func(p uintptr, _ **_IUnknownVt) uintptr {
-				ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
+			func(ppImpl **_IFileDialogEventsImpl, _ **_IUnknownVt) uintptr {
 				if fun := (*ppImpl).onFolderChange; fun == nil { // user didn't define a callback
 					return uintptr(co.HRESULT_S_OK)
 				} else {
@@ -177,8 +172,7 @@ func (me *_IFileDialogEventsVt) init() {
 			},
 		),
 		OnSelectionChange: syscall.NewCallback(
-			func(p uintptr, _ **_IUnknownVt) uintptr {
-				ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
+			func(ppImpl **_IFileDialogEventsImpl, _ **_IUnknownVt) uintptr {
 				if fun := (*ppImpl).onSelectionChange; fun == nil { // user didn't define a callback
 					return uintptr(co.HRESULT_S_OK)
 				} else {
@@ -187,21 +181,19 @@ func (me *_IFileDialogEventsVt) init() {
 			},
 		),
 		OnShareViolation: syscall.NewCallback(
-			func(p uintptr, _ **_IUnknownVt, vtSi **_IUnknownVt, pResponse *uint32) uintptr {
-				ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
+			func(ppImpl **_IFileDialogEventsImpl, _, vtSi **_IUnknownVt, pResponse *co.FDESVR) uintptr {
 				if fun := (*ppImpl).onShareViolation; fun == nil { // user didn't define a callback
 					return uintptr(co.HRESULT_S_OK)
 				} else {
 					return uintptr(fun(
 						&IShellItem{IUnknown{vtSi}},
-						(*co.FDESVR)(pResponse),
+						pResponse,
 					))
 				}
 			},
 		),
 		OnTypeChange: syscall.NewCallback(
-			func(p uintptr, _ **_IUnknownVt) uintptr {
-				ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
+			func(ppImpl **_IFileDialogEventsImpl, _ **_IUnknownVt) uintptr {
 				if fun := (*ppImpl).onTypeChange; fun == nil { // user didn't define a callback
 					return uintptr(co.HRESULT_S_OK)
 				} else {
@@ -210,14 +202,13 @@ func (me *_IFileDialogEventsVt) init() {
 			},
 		),
 		OnOverwrite: syscall.NewCallback(
-			func(p uintptr, _ **_IUnknownVt, vtSi **_IUnknownVt, pResponse *uint32) uintptr {
-				ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
+			func(ppImpl **_IFileDialogEventsImpl, _, vtSi **_IUnknownVt, pResponse *co.FDEOR) uintptr {
 				if fun := (*ppImpl).onOverwrite; fun == nil { // user didn't define a callback
 					return uintptr(co.HRESULT_S_OK)
 				} else {
 					return uintptr(fun(
 						&IShellItem{IUnknown{vtSi}},
-						(*co.FDEOR)(pResponse),
+						pResponse,
 					))
 				}
 			},

@@ -14,7 +14,7 @@ import (
 
 // [RegisterDragDrop] function.
 //
-// Paired with [HWND.RevokeDragDrop].
+// ⚠️ You must defer [HWND.RevokeDragDrop].
 //
 // [RegisterDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole2/nf-ole2-registerdragdrop
 func (hWnd HWND) RegisterDragDrop(dropTarget *IDropTarget) error {

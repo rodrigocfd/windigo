@@ -83,15 +83,13 @@ func (me *_IShellItemFilterVt) init() {
 		_IUnknownVt: _IUnknownVt{
 			QueryInterface: iunknownQueryInterfaceImpl(),
 			AddRef: syscall.NewCallback(
-				func(p uintptr) uintptr {
-					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
+				func(ppImpl **_IShellItemFilterImpl) uintptr {
 					newCount := atomic.AddUint32(&(**ppImpl).counter, 1)
 					return uintptr(newCount)
 				},
 			),
 			Release: syscall.NewCallback(
-				func(p uintptr) uintptr {
-					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
+				func(ppImpl **_IShellItemFilterImpl) uintptr {
 					newCount := atomic.AddUint32(&(**ppImpl).counter, ^uint32(0)) // decrement 1
 					if newCount == 0 {
 						utl.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
@@ -102,8 +100,7 @@ func (me *_IShellItemFilterVt) init() {
 			),
 		},
 		IncludeItem: syscall.NewCallback(
-			func(p uintptr, psi **_IUnknownVt) uintptr {
-				ppImpl := (**_IShellItemFilterImpl)(unsafe.Pointer(p))
+			func(ppImpl **_IShellItemFilterImpl, psi **_IUnknownVt) uintptr {
 				if fun := (**ppImpl).includeItem; fun == nil { // user didn't define a callback
 					return uintptr(co.HRESULT_S_OK)
 				} else {
@@ -112,14 +109,13 @@ func (me *_IShellItemFilterVt) init() {
 			},
 		),
 		GetEnumFlagsForItem: syscall.NewCallback(
-			func(p uintptr, psi **_IUnknownVt, pgrfFlags *uint32) uintptr {
-				ppImpl := (**_IShellItemFilterImpl)(unsafe.Pointer(p))
+			func(ppImpl **_IShellItemFilterImpl, psi **_IUnknownVt, pgrfFlags *co.SHCONTF) uintptr {
 				if fun := (**ppImpl).getEnumFlagsForItem; fun == nil { // user didn't define a callback
 					return uintptr(co.HRESULT_S_OK)
 				} else {
 					return uintptr(fun(
 						&IShellItem{IUnknown{psi}},
-						(*co.SHCONTF)(pgrfFlags),
+						pgrfFlags,
 					))
 				}
 			},
