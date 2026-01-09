@@ -442,7 +442,7 @@ func (*IPicture) IID() co.IID {
 // [get_Attributes] method.
 //
 // [get_Attributes]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_attributes
-func (me *IPicture) Attributes() (co.PICATTR, error) {
+func (me *IPicture) GetAttributes() (co.PICATTR, error) {
 	var attr co.PICATTR
 	ret, _, _ := syscall.SyscallN(
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Attributes,
@@ -459,7 +459,7 @@ func (me *IPicture) Attributes() (co.PICATTR, error) {
 // [get_CurDC] method.
 //
 // [get_CurDC]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_curdc
-func (me *IPicture) CurDC() (HDC, error) {
+func (me *IPicture) GetCurDC() (HDC, error) {
 	var hdc HDC
 	ret, _, _ := syscall.SyscallN(
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_CurDC,
@@ -476,7 +476,7 @@ func (me *IPicture) CurDC() (HDC, error) {
 // [get_Handle] method.
 //
 // [get_Handle]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_handle
-func (me *IPicture) Handle() (HBITMAP, error) {
+func (me *IPicture) GetHandle() (HBITMAP, error) {
 	var hBmp HBITMAP
 	ret, _, _ := syscall.SyscallN(
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Handle,
@@ -499,7 +499,7 @@ func (me *IPicture) Handle() (HBITMAP, error) {
 // method, which already performs the conversion.
 //
 // [get_Height]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_height
-func (me *IPicture) Height() (int, error) {
+func (me *IPicture) GetHeight() (int, error) {
 	var cy int32
 	ret, _, _ := syscall.SyscallN(
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Height,
@@ -516,7 +516,7 @@ func (me *IPicture) Height() (int, error) {
 // [get_hPal] method.
 //
 // [get_hPal]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_hpal
-func (me *IPicture) HPal() (HPALETTE, error) {
+func (me *IPicture) GetHPal() (HPALETTE, error) {
 	var hPal HPALETTE
 	ret, _, _ := syscall.SyscallN(
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_hPal,
@@ -533,13 +533,51 @@ func (me *IPicture) HPal() (HPALETTE, error) {
 // [get_KeepOriginalFormat] method.
 //
 // [get_KeepOriginalFormat]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_keeporiginalformat
-func (me *IPicture) KeepOriginalFormat() (bool, error) {
+func (me *IPicture) GetKeepOriginalFormat() (bool, error) {
 	var keep BOOL
 	ret, _, _ := syscall.SyscallN(
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_KeepOriginalFormat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&keep)))
 	return utl.HresultToBoolError(int32(keep), ret)
+}
+
+// [get_Type] method.
+//
+// [get_Type]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_type
+func (me *IPicture) GetType() (co.PICTYPE, error) {
+	var picty co.PICTYPE
+	ret, _, _ := syscall.SyscallN(
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Type,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&picty)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return picty, nil
+	} else {
+		return co.PICTYPE(0), hr
+	}
+}
+
+// [get_Width] method.
+//
+// Note that this method returns the width in HIMETRIC units. To convert it to
+// pixels, use [HDC.HiMetricToPixel], or simply call [IPicture.SizePixels]
+// method, which already performs the conversion.
+//
+// [get_Width]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_width
+func (me *IPicture) GetWidth() (int, error) {
+	var cx int32
+	ret, _, _ := syscall.SyscallN(
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Width,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&cx)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return int(cx), nil
+	} else {
+		return 0, hr
+	}
 }
 
 // [PictureChanged] method.
@@ -549,6 +587,17 @@ func (me *IPicture) PictureChanged() error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).PictureChanged,
 		uintptr(unsafe.Pointer(me.Ppvt())))
+	return utl.HresultToError(ret)
+}
+
+// [put_KeepOriginalFormat] method.
+//
+// [put_KeepOriginalFormat]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-put_keeporiginalformat
+func (me *IPicture) PutKeepOriginalFormat(keep bool) error {
+	ret, _, _ := syscall.SyscallN(
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Put_KeepOriginalFormat,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.BoolToUintptr(keep))
 	return utl.HresultToError(ret)
 }
 
@@ -643,17 +692,6 @@ func (me *IPicture) SelectPicture(hdc HDC) (HDC, HBITMAP, error) {
 	}
 }
 
-// [put_KeepOriginalFormat] method.
-//
-// [put_KeepOriginalFormat]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-put_keeporiginalformat
-func (me *IPicture) SetKeepOriginalFormat(keep bool) error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Put_KeepOriginalFormat,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		utl.BoolToUintptr(keep))
-	return utl.HresultToError(ret)
-}
-
 // [set_hPal] method.
 //
 // [set_hPal]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-set_hpal
@@ -665,7 +703,7 @@ func (me *IPicture) SetHPal(hPal HPALETTE) error {
 	return utl.HresultToError(ret)
 }
 
-// Calls [IPicture.Width] and [IPicture.Height] at once.
+// Calls [IPicture.GetWidth] and [IPicture.GetHeight] at once.
 //
 // If you need both width and height, call [IPicture.Size], which returns both.
 //
@@ -676,12 +714,12 @@ func (me *IPicture) SetHPal(hPal HPALETTE) error {
 // [IPicture.Width]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_width
 // [IPicture.Height]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_height
 func (me *IPicture) Size() (SIZE, error) {
-	width, err := me.Width()
+	width, err := me.GetWidth()
 	if err != nil {
 		return SIZE{}, err
 	}
 
-	height, err := me.Height()
+	height, err := me.GetHeight()
 	if err != nil {
 		return SIZE{}, err
 	}
@@ -689,7 +727,7 @@ func (me *IPicture) Size() (SIZE, error) {
 	return SIZE{Cx: int32(width), Cy: int32(height)}, nil
 }
 
-// Calls [IPicture.Width] and [IPicture.Height], then converts from HIMETRIC
+// Calls [IPicture.GetWidth] and [IPicture.GetHeight], then converts from HIMETRIC
 // units to pixels with [HDC.HiMetricToPixel].
 //
 // If hdc is zero, the method will retrieve the HDC for the whole screen with
@@ -711,55 +749,17 @@ func (me *IPicture) SizePixels(hdc HDC) (SIZE, error) {
 		defer HWND(0).ReleaseDC(myHdc)
 	}
 
-	himetricX, err := me.Width()
+	himetricX, err := me.GetWidth()
 	if err != nil {
 		return SIZE{}, err
 	}
-	himetricY, err := me.Height()
+	himetricY, err := me.GetHeight()
 	if err != nil {
 		return SIZE{}, err
 	}
 
 	pixelX, pixelY := myHdc.HiMetricToPixel(himetricX, himetricY)
 	return SIZE{Cx: int32(pixelX), Cy: int32(pixelY)}, nil
-}
-
-// [get_Type] method.
-//
-// [get_Type]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_type
-func (me *IPicture) Type() (co.PICTYPE, error) {
-	var picty co.PICTYPE
-	ret, _, _ := syscall.SyscallN(
-		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Type,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&picty)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return picty, nil
-	} else {
-		return co.PICTYPE(0), hr
-	}
-}
-
-// [get_Width] method.
-//
-// Note that this method returns the width in HIMETRIC units. To convert it to
-// pixels, use [HDC.HiMetricToPixel], or simply call [IPicture.SizePixels]
-// method, which already performs the conversion.
-//
-// [get_Width]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_width
-func (me *IPicture) Width() (int, error) {
-	var cx int32
-	ret, _, _ := syscall.SyscallN(
-		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Width,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&cx)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(cx), nil
-	} else {
-		return 0, hr
-	}
 }
 
 type _IPictureVt struct {
