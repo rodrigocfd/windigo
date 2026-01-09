@@ -53,9 +53,9 @@ type _IDropTargetImpl struct {
 //
 // [IDropTarget]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
 func NewIDropTargetImpl(releaser *OleReleaser) *IDropTarget {
-	_iDropTargetVtPtrs.init()
+	native_IDropTargetVt.init()
 	pImpl := &_IDropTargetImpl{ // has Go function pointers, so cannot be allocated on the OS heap
-		vt:      _iDropTargetVtPtrs, // simply copy the syscall callback pointers
+		vt:      native_IDropTargetVt, // simply copy the syscall callback pointers
 		counter: 1,
 	}
 	utl.PtrCache.Add(unsafe.Pointer(pImpl)) // keep ptr
@@ -148,7 +148,7 @@ type _IDropTargetVt struct {
 	Drop      uintptr
 }
 
-var _iDropTargetVtPtrs _IDropTargetVt // Global to keep the syscall callback pointers.
+var native_IDropTargetVt _IDropTargetVt // Global to keep the syscall callback pointers.
 
 func (me *_IDropTargetVt) init() {
 	if me.QueryInterface != 0 {
@@ -168,7 +168,7 @@ func (me *_IDropTargetVt) init() {
 			Release: syscall.NewCallback(
 				func(p uintptr) uintptr {
 					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-					newCount := atomic.AddUint32(&(*ppImpl).counter, ^uint32(0)) // decrement 1
+					newCount := atomic.AddUint32(&(**ppImpl).counter, ^uint32(0)) // decrement 1
 					if newCount == 0 {
 						utl.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
 						utl.PtrCache.Delete(unsafe.Pointer(ppImpl))

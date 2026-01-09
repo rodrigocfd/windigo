@@ -37,9 +37,9 @@ type _IShellItemFilterImpl struct {
 //
 // [IShellItemFilter]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemfilter
 func NewIShellItemFilterImpl(releaser *OleReleaser) *IShellItemFilter {
-	_iShellItemFilterVtPtrs.init()
+	native_IShellItemFilterVt.init()
 	pImpl := &_IShellItemFilterImpl{ // has Go function pointers, so cannot be allocated on the OS heap
-		vt:      _iShellItemFilterVtPtrs, // simply copy the syscall callback pointers
+		vt:      native_IShellItemFilterVt, // simply copy the syscall callback pointers
 		counter: 1,
 	}
 	utl.PtrCache.Add(unsafe.Pointer(pImpl)) // keep ptr
@@ -72,7 +72,7 @@ type _IShellItemFilterVt struct {
 	GetEnumFlagsForItem uintptr
 }
 
-var _iShellItemFilterVtPtrs _IShellItemFilterVt // Global to keep the syscall callback pointers.
+var native_IShellItemFilterVt _IShellItemFilterVt // Global to keep the syscall callback pointers.
 
 func (me *_IShellItemFilterVt) init() {
 	if me.QueryInterface != 0 {
@@ -92,7 +92,7 @@ func (me *_IShellItemFilterVt) init() {
 			Release: syscall.NewCallback(
 				func(p uintptr) uintptr {
 					ppImpl := (**_IDropTargetImpl)(unsafe.Pointer(p))
-					newCount := atomic.AddUint32(&(*ppImpl).counter, ^uint32(0)) // decrement 1
+					newCount := atomic.AddUint32(&(**ppImpl).counter, ^uint32(0)) // decrement 1
 					if newCount == 0 {
 						utl.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
 						utl.PtrCache.Delete(unsafe.Pointer(ppImpl))

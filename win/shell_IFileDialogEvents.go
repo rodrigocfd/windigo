@@ -42,9 +42,9 @@ type _IFileDialogEventsImpl struct {
 //
 // [IFileDialogEvents]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialogevents
 func NewIFileDialogEventsImpl(releaser *OleReleaser) *IFileDialogEvents {
-	_iFileDialogEventsVtPtrs.init()
+	native_IFileDialogEventsVt.init()
 	pImpl := &_IFileDialogEventsImpl{ // has Go function pointers, so cannot be allocated on the OS heap
-		vt:      _iFileDialogEventsVtPtrs, // simply copy the syscall callback pointers
+		vt:      native_IFileDialogEventsVt, // simply copy the syscall callback pointers
 		counter: 1,
 	}
 	utl.PtrCache.Add(unsafe.Pointer(pImpl)) // keep ptr
@@ -117,7 +117,7 @@ type _IFileDialogEventsVt struct {
 	OnOverwrite       uintptr
 }
 
-var _iFileDialogEventsVtPtrs _IFileDialogEventsVt // Global to keep the syscall callback pointers.
+var native_IFileDialogEventsVt _IFileDialogEventsVt // Global to keep the syscall callback pointers.
 
 func (me *_IFileDialogEventsVt) init() {
 	if me.QueryInterface != 0 {
@@ -137,7 +137,7 @@ func (me *_IFileDialogEventsVt) init() {
 			Release: syscall.NewCallback(
 				func(p uintptr) uintptr {
 					ppImpl := (**_IFileDialogEventsImpl)(unsafe.Pointer(p))
-					newCount := atomic.AddUint32(&(*ppImpl).counter, ^uint32(0)) // decrement 1
+					newCount := atomic.AddUint32(&(**ppImpl).counter, ^uint32(0)) // decrement 1
 					if newCount == 0 {
 						utl.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
 						utl.PtrCache.Delete(unsafe.Pointer(ppImpl))

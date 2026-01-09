@@ -112,9 +112,9 @@ type _IFileOperationProgressSinkImpl struct {
 //
 // [IFileOperationProgressSink]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileoperationprogresssink
 func NewIFileOperationProgressSinkImpl(releaser *OleReleaser) *IFileOperationProgressSink {
-	_iFileOperationProgressSinkVtPtrs.init()
+	native_IFileOperationProgressSinkVt.init()
 	pImpl := &_IFileOperationProgressSinkImpl{ // has Go function pointers, so cannot be allocated on the OS heap
-		vt:      _iFileOperationProgressSinkVtPtrs, // simply copy the syscall callback pointers
+		vt:      native_IFileOperationProgressSinkVt, // simply copy the syscall callback pointers
 		counter: 1,
 	}
 	utl.PtrCache.Add(unsafe.Pointer(pImpl)) // keep ptr
@@ -279,7 +279,7 @@ type _IFileOperationProgressSinkVt struct {
 	ResumeTimer      uintptr
 }
 
-var _iFileOperationProgressSinkVtPtrs _IFileOperationProgressSinkVt // Global to keep the syscall callback pointers.
+var native_IFileOperationProgressSinkVt _IFileOperationProgressSinkVt // Global to keep the syscall callback pointers.
 
 func (me *_IFileOperationProgressSinkVt) init() {
 	if me.QueryInterface != 0 {
@@ -299,7 +299,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 			Release: syscall.NewCallback(
 				func(p uintptr) uintptr {
 					ppImpl := (**_IFileOperationProgressSinkImpl)(unsafe.Pointer(p))
-					newCount := atomic.AddUint32(&(*ppImpl).counter, ^uint32(0)) // decrement 1
+					newCount := atomic.AddUint32(&(**ppImpl).counter, ^uint32(0)) // decrement 1
 					if newCount == 0 {
 						utl.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
 						utl.PtrCache.Delete(unsafe.Pointer(ppImpl))

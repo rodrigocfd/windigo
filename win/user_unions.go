@@ -20,65 +20,65 @@ import (
 //		println(s)
 //	}
 type ClassName struct {
-	tag  _ClassNameTag
+	tag  _TagClassName
 	atom ATOM
 	str  string
 }
 
-type _ClassNameTag uint8
+type _TagClassName uint8
 
 const (
-	_ClassNameTag_none _ClassNameTag = iota
-	_ClassNameTag_atom
-	_ClassNameTag_str
+	_TagClassName_none _TagClassName = iota
+	_TagClassName_atom
+	_TagClassName_str
 )
 
 // Constructs a new [ClassName] with an empty value.
 func ClassNameNone() ClassName {
 	return ClassName{
-		tag: _ClassNameTag_none,
+		tag: _TagClassName_none,
 	}
 }
 
 // Returns true if there is no value.
 func (me *ClassName) IsNone() bool {
-	return me.tag == _ClassNameTag_none
+	return me.tag == _TagClassName_none
 }
 
 // Constructs a new [ClassName] with an [ATOM] value.
 func ClassNameAtom(atom ATOM) ClassName {
 	return ClassName{
-		tag:  _ClassNameTag_atom,
+		tag:  _TagClassName_atom,
 		atom: atom,
 	}
 }
 
 // If the value is an [ATOM], returns it and true.
 func (me *ClassName) Atom() (ATOM, bool) {
-	return me.atom, me.tag == _ClassNameTag_atom
+	return me.atom, me.tag == _TagClassName_atom
 }
 
 // Constructs a new [ClassName] with a string value.
 func ClassNameStr(s string) ClassName {
 	return ClassName{
-		tag: _ClassNameTag_str,
+		tag: _TagClassName_str,
 		str: s,
 	}
 }
 
 // If the value is a string, returns it and true.
 func (me *ClassName) Str() (string, bool) {
-	return me.str, me.tag == _ClassNameTag_str
+	return me.str, me.tag == _TagClassName_str
 }
 
 // Converts the internal value to uintptr.
 func (me *ClassName) raw(wBuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
-	case _ClassNameTag_none:
+	case _TagClassName_none:
 		return 0
-	case _ClassNameTag_atom:
+	case _TagClassName_atom:
 		return uintptr(me.atom)
-	case _ClassNameTag_str:
+	case _TagClassName_str:
 		return uintptr(wBuf.EmptyIsNil(me.str))
 	default:
 		panic("Invalid ClassName value.")
@@ -102,30 +102,30 @@ func (me *ClassName) raw(wBuf *wstr.BufEncoder) uintptr {
 //
 // [cursor resource]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 type CursorRes struct {
-	tag  _CursorResTag
+	tag  _TagCursorRes
 	data uintptr
 	str  string
 }
 
-type _CursorResTag uint8
+type _TagCursorRes uint8
 
 const (
-	_CursorTag_idc _CursorResTag = 1 + iota
-	_CursorTag_id
-	_CursorTag_str
+	_TagCursorRes_idc _TagCursorRes = 1 + iota
+	_TagCursorRes_id
+	_TagCursorRes_str
 )
 
 // Constructs a new [CursorRes] with a [co.IDC] value.
 func CursorResIdc(idc co.IDC) CursorRes {
 	return CursorRes{
-		tag:  _CursorTag_idc,
+		tag:  _TagCursorRes_idc,
 		data: uintptr(idc),
 	}
 }
 
 // If the value is a [co.IDC], returns it and true.
 func (me *CursorRes) Idc() (co.IDC, bool) {
-	if me.tag == _CursorTag_idc {
+	if me.tag == _TagCursorRes_idc {
 		return co.IDC(me.data), true
 	}
 	return co.IDC(0), false
@@ -134,14 +134,14 @@ func (me *CursorRes) Idc() (co.IDC, bool) {
 // Constructs a new [CursorRes] with an ID value.
 func CursorResId(id uint16) CursorRes {
 	return CursorRes{
-		tag:  _CursorTag_id,
+		tag:  _TagCursorRes_id,
 		data: uintptr(id),
 	}
 }
 
 // If the value is an ID, returns it and true.
 func (me *CursorRes) Id() (uint16, bool) {
-	if me.tag == _CursorTag_id {
+	if me.tag == _TagCursorRes_id {
 		return uint16(me.data), true
 	}
 	return 0, false
@@ -150,22 +150,22 @@ func (me *CursorRes) Id() (uint16, bool) {
 // Constructs a new [CursorRes] with a string value.
 func CursorResStr(s string) CursorRes {
 	return CursorRes{
-		tag: _CursorTag_str,
+		tag: _TagCursorRes_str,
 		str: s,
 	}
 }
 
 // If the value is a string, returns it and true.
 func (me *CursorRes) Str() (string, bool) {
-	return me.str, me.tag == _CursorTag_str
+	return me.str, me.tag == _TagCursorRes_str
 }
 
 // Converts the internal value to uintptr.
 func (me *CursorRes) raw(wBuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
-	case _CursorTag_idc, _CursorTag_id:
+	case _TagCursorRes_idc, _TagCursorRes_id:
 		return me.data
-	case _CursorTag_str:
+	case _TagCursorRes_str:
 		return uintptr(wBuf.EmptyIsNil(me.str))
 	default:
 		panic("Invalid CursorRes value.")
@@ -189,30 +189,30 @@ func (me *CursorRes) raw(wBuf *wstr.BufEncoder) uintptr {
 //
 // [icon resource]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 type IconRes struct {
-	tag  _IconResTag
+	tag  _TagIconRes
 	data uintptr
 	str  string
 }
 
-type _IconResTag uint8
+type _TagIconRes uint8
 
 const (
-	_IconResTag_idi _IconResTag = 1 + iota
-	_IconResTag_id
-	_IconResTag_str
+	_TagIconRes_idi _TagIconRes = 1 + iota
+	_TagIconRes_id
+	_TagIconRes_str
 )
 
 // Constructs a new [IconRes] with a [co.IDI] value.
 func IconResIdi(idi co.IDI) IconRes {
 	return IconRes{
-		tag:  _IconResTag_idi,
+		tag:  _TagIconRes_idi,
 		data: uintptr(idi),
 	}
 }
 
 // If the value is a [co.IDI], returns it and true.
 func (me *IconRes) Idi() (co.IDI, bool) {
-	if me.tag == _IconResTag_idi {
+	if me.tag == _TagIconRes_idi {
 		return co.IDI(me.data), true
 	}
 	return co.IDI(0), false
@@ -221,14 +221,14 @@ func (me *IconRes) Idi() (co.IDI, bool) {
 // Constructs a new [IconRes] with an ID value.
 func IconResId(id uint16) IconRes {
 	return IconRes{
-		tag:  _IconResTag_id,
+		tag:  _TagIconRes_id,
 		data: uintptr(id),
 	}
 }
 
 // If the value is an ID, returns it and true.
 func (me *IconRes) Id() (uint16, bool) {
-	if me.tag == _IconResTag_id {
+	if me.tag == _TagIconRes_id {
 		return uint16(me.data), true
 	}
 	return 0, false
@@ -237,22 +237,22 @@ func (me *IconRes) Id() (uint16, bool) {
 // Constructs a new [IconRes] with a string value.
 func IconResStr(s string) IconRes {
 	return IconRes{
-		tag: _IconResTag_str,
+		tag: _TagIconRes_str,
 		str: s,
 	}
 }
 
 // If the value is a string, returns it and true.
 func (me *IconRes) Str() (string, bool) {
-	return me.str, me.tag == _IconResTag_str
+	return me.str, me.tag == _TagIconRes_str
 }
 
 // Converts the internal value to uintptr.
 func (me *IconRes) raw(wBuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
-	case _IconResTag_idi, _IconResTag_id:
+	case _TagIconRes_idi, _TagIconRes_id:
 		return me.data
-	case _IconResTag_str:
+	case _TagIconRes_str:
 		return uintptr(wBuf.EmptyIsNil(me.str))
 	default:
 		panic("Invalid IconRes value.")
@@ -273,50 +273,50 @@ func (me *IconRes) raw(wBuf *wstr.BufEncoder) uintptr {
 //		println(id)
 //	}
 type ResId struct {
-	tag _ResIdTag
+	tag _TagResId
 	id  uint16
 	str string
 }
 
-type _ResIdTag uint8
+type _TagResId uint8
 
 const (
-	_ResIdTag_id _ResIdTag = 1 + iota
-	_ResIdTag_str
+	_TagResId_id _TagResId = 1 + iota
+	_TagResId_str
 )
 
 // Constructs a new [ResId] with an integer value.
 func ResIdInt(id uint16) ResId {
 	return ResId{
-		tag: _ResIdTag_id,
+		tag: _TagResId_id,
 		id:  id,
 	}
 }
 
 // If the value is an integer, returns it and true.
 func (me *ResId) Int() (uint16, bool) {
-	return me.id, me.tag == _ResIdTag_id
+	return me.id, me.tag == _TagResId_id
 }
 
 // Constructs a new [ResId] with a string value.
 func ResIdStr(s string) ResId {
 	return ResId{
-		tag: _ResIdTag_str,
+		tag: _TagResId_str,
 		str: s,
 	}
 }
 
 // If the value is a string, returns it and true.
 func (me *ResId) Str() (string, bool) {
-	return me.str, me.tag == _ResIdTag_str
+	return me.str, me.tag == _TagResId_str
 }
 
 // Converts the internal value to uintptr.
 func (me *ResId) raw(wBuf *wstr.BufEncoder) uintptr {
 	switch me.tag {
-	case _ResIdTag_id:
+	case _TagResId_id:
 		return uintptr(me.id)
-	case _ResIdTag_str:
+	case _TagResId_str:
 		return uintptr(wBuf.EmptyIsNil(me.str))
 	default:
 		panic("Invalid ResId value.")

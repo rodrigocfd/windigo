@@ -20,42 +20,42 @@ import (
 //		println(tdi)
 //	}
 type TdcIcon struct {
-	tag  _TdcIconTag
+	tag  _TagTdcIcon
 	data uint64
 }
 
-type _TdcIconTag uint8
+type _TagTdcIcon uint8
 
 const (
-	_TdcIconTag_none _TdcIconTag = iota
-	_TdcIconTag_hIcon
-	_TdcIconTag_id
-	_TdcIconTag_tdIcon
+	_TagTdcIcon_none _TagTdcIcon = iota
+	_TagTdcIcon_hIcon
+	_TagTdcIcon_id
+	_TagTdcIcon_tdIcon
 )
 
 // Constructs a new [TdcIcon] with an empty value.
 func TdcIconNone() TdcIcon {
 	return TdcIcon{
-		tag: _TdcIconTag_none,
+		tag: _TagTdcIcon_none,
 	}
 }
 
 // Returns true if there is no value.
 func (me *TdcIcon) IsNone() bool {
-	return me.tag == _TdcIconTag_none
+	return me.tag == _TagTdcIcon_none
 }
 
 // Constructs a new [TdcIcon] with a [HICON] value.
 func TdcIconHicon(hIcon HICON) TdcIcon {
 	return TdcIcon{
-		tag:  _TdcIconTag_hIcon,
+		tag:  _TagTdcIcon_hIcon,
 		data: uint64(hIcon),
 	}
 }
 
 // If the value is a [HICON], returns it and true.
 func (me *TdcIcon) HIcon() (HICON, bool) {
-	if me.tag == _TdcIconTag_hIcon {
+	if me.tag == _TagTdcIcon_hIcon {
 		return HICON(me.data), true
 	}
 	return HICON(0), false
@@ -64,14 +64,14 @@ func (me *TdcIcon) HIcon() (HICON, bool) {
 // Constructs a new [TdcIcon] with an ID value.
 func TdcIconId(id uint16) TdcIcon {
 	return TdcIcon{
-		tag:  _TdcIconTag_id,
+		tag:  _TagTdcIcon_id,
 		data: uint64(uint16(id)),
 	}
 }
 
 // If the value is an ID, returns it and true.
 func (me *TdcIcon) Id() (uint16, bool) {
-	if me.tag == _TdcIconTag_id {
+	if me.tag == _TagTdcIcon_id {
 		return uint16(me.data), true
 	}
 	return 0, false
@@ -80,14 +80,14 @@ func (me *TdcIcon) Id() (uint16, bool) {
 // Constructs a new [TdcIcon] with a [co.TDICON] value.
 func TdcIconTdi(tdIcon co.TDICON) TdcIcon {
 	return TdcIcon{
-		tag:  _TdcIconTag_tdIcon,
+		tag:  _TagTdcIcon_tdIcon,
 		data: uint64(tdIcon),
 	}
 }
 
 // If the value is a [co.TDICON], returns it and true.
 func (me *TdcIcon) Tdi() (co.TDICON, bool) {
-	if me.tag == _TdcIconTag_tdIcon {
+	if me.tag == _TagTdcIcon_tdIcon {
 		return co.TDICON(me.data), true
 	}
 	return co.TDICON(0), false
