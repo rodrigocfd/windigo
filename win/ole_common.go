@@ -50,7 +50,7 @@ func ppvtOrNil(obj OleObj) unsafe.Pointer {
 // Converts a GUID string into the GUID struct buffer, returning its pointer.
 //
 // If strGuid is empty, returns nil.
-func nullableGuidPtr[T ~string](strGuid T, guidStructBuf *GUID) unsafe.Pointer {
+func guidStructPtrOrNil[T ~string](strGuid T, guidStructBuf *GUID) unsafe.Pointer {
 	if len(strGuid) == 0 {
 		return nil
 	}

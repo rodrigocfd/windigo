@@ -1420,7 +1420,7 @@ func (me *IWICImagingFactory) CreateDecoderFromFileHandle(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromFileHandle,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hFile),
-		uintptr(nullableGuidPtr(guidVendor, &guidGuidVendor)),
+		uintptr(guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -1475,7 +1475,7 @@ func (me *IWICImagingFactory) CreateDecoderFromFilename(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromFilename,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wFilename.AllowEmpty(filename)),
-		uintptr(nullableGuidPtr(guidVendor, &guidGuidVendor)),
+		uintptr(guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
 		uintptr(desiredAccess),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
@@ -1507,7 +1507,7 @@ func (me *IWICImagingFactory) CreateDecoderFromStream(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromStream,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
-		uintptr(nullableGuidPtr(guidVendor, &guidGuidVendor)),
+		uintptr(guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
@@ -1554,7 +1554,7 @@ func (me *IWICImagingFactory) CreateEncoder(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateEncoder,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidGuidContainer)),
-		uintptr(nullableGuidPtr(guidVendor, &guidGuidVendor)),
+		uintptr(guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {

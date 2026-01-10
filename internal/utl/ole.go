@@ -46,7 +46,10 @@ func OleValidateObj(ppOut interface{}) interface{} {
 		panic("You must a pass a pointer to a pointer COM object [*Ty failed].")
 	}
 
-	// ty := pTy.Elem() // IUnknown
+	ty := pTy.Elem() // IUnknown
+	if ty.Kind() != reflect.Struct {
+		panic("You must a pass a pointer to a pointer COM object [Ty failed].")
+	}
 
 	pTarget := reflect.ValueOf(ppOut).Elem() // *IUnknown
 	if !pTarget.CanSet() {
