@@ -228,10 +228,10 @@ NextHisObj:
 		if utl.IsNil(hisObj) {
 			continue // skip nil objects
 		}
+		hisObj.release() // release no matter what
 
 		for ourIdx, ourObj := range me.objs {
 			if ourObj == hisObj { // we found the passed object in our array
-				hisObj.release()
 				copy(me.objs[ourIdx:len(me.objs)-1], me.objs[ourIdx+1:len(me.objs)]) // move subsequent elements into the gap
 				me.objs[len(me.objs)-1] = nil
 				me.objs = me.objs[:len(me.objs)-1] // shrink our slice over the same memory
