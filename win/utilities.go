@@ -728,8 +728,7 @@ func PathEnum(searchPath, fileExtension string) ([]string, error) {
 	} else if strings.Contains(fileExtension, "*") {
 		return nil, fmt.Errorf("invalid file extension: %s", fileExtension)
 	}
-	searchPath = strings.TrimSpace(searchPath)
-	searchPath = strings.TrimSuffix(searchPath, "\\")
+	searchPath = PathTrimBackslash(searchPath)
 	basePath := searchPath
 	searchPath += "\\*"
 	fileExtension = strings.TrimSpace(fileExtension)
@@ -898,6 +897,16 @@ func PathSwapExtension(path, newExtension string) string {
 	} else {
 		return path[:idxDot] + newExtension
 	}
+}
+
+// Returns a new string removing any trailing backslash.
+func PathTrimBackslash(path string) string {
+	path = strings.TrimSpace(path)
+	lastIdx := len(path) - 1
+	for path[lastIdx] == '\\' {
+		lastIdx--
+	}
+	return path[:lastIdx+1]
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
