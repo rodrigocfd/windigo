@@ -36,19 +36,8 @@ func (*IBindCtx) IID() co.IID {
 //
 // [EnumObjectParam]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-enumobjectparam
 func (me *IBindCtx) EnumObjectParam(releaser *OleReleaser) (*IEnumString, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).EnumObjectParam,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IEnumString{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IEnumString](me, releaser,
+		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).EnumObjectParam)
 }
 
 // [GetBindOptions] method.
@@ -74,9 +63,7 @@ func (me *IBindCtx) GetBindOptions() (BIND_OPTS3, error) {
 //
 // [GetObjectParam]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-getobjectparam
 func (me *IBindCtx) GetObjectParam(releaser *OleReleaser, key string, ppOut interface{}) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
 	var wKey wstr.BufEncoder
 
@@ -84,14 +71,7 @@ func (me *IBindCtx) GetObjectParam(releaser *OleReleaser, key string, ppOut inte
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).GetObjectParam,
 		uintptr(wKey.AllowEmpty(key)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 // [RegisterObjectBound] method.
@@ -109,10 +89,8 @@ func (me *IBindCtx) RegisterObjectBound(obj *IUnknown) error {
 //
 // [ReleaseBoundObjects]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-releaseboundobjects
 func (me *IBindCtx) ReleaseBoundObjects() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).ReleaseBoundObjects,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).ReleaseBoundObjects)
 }
 
 // [RevokeObjectBound] method.
@@ -247,19 +225,8 @@ func (*IEnumString) IID() co.IID {
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumstring-clone
 func (me *IEnumString) Clone(releaser *OleReleaser) (*IEnumString, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Clone,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IEnumString{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IEnumString](me, releaser,
+		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Clone)
 }
 
 // Returns all string values by calling [IEnumString.Next].
@@ -309,10 +276,8 @@ func (me *IEnumString) Next() (string, error) {
 //
 // [Reset]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumstring-reset
 func (me *IEnumString) Reset() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Reset,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Reset)
 }
 
 // [Skip] method.
@@ -420,19 +385,8 @@ func (*IStream) IID() co.IID {
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-clone
 func (me *IStream) Clone(releaser *OleReleaser) (*IStream, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Clone,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IStream{ISequentialStream{IUnknown{ppvtQueried}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IStream](me, releaser,
+		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Clone)
 }
 
 // [Commit] method.
@@ -495,10 +449,8 @@ func (me *IStream) LockRegion(offset, length int, lockType co.LOCKTYPE) error {
 //
 // [Revert]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-revert
 func (me *IStream) Revert() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Revert,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Revert)
 }
 
 // [Seek] method.

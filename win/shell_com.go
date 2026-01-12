@@ -49,19 +49,8 @@ func (*IEnumIDList) IID() co.IID {
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumidlist-clone
 func (me *IEnumIDList) Clone(releaser *OleReleaser) (*IEnumIDList, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IEnumIDListVt)(unsafe.Pointer(*me.Ppvt())).Clone,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IEnumIDList{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IEnumIDList](me, releaser,
+		(*_IEnumIDListVt)(unsafe.Pointer(*me.Ppvt())).Clone)
 }
 
 // Returns all [ITEMIDLIST] values by calling [IEnumIDList.Next].
@@ -144,10 +133,8 @@ func (me *IEnumIDList) Next(releaser *OleReleaser) (*ITEMIDLIST, error) {
 //
 // [Reset]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumidlist-reset
 func (me *IEnumIDList) Reset() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IEnumIDListVt)(unsafe.Pointer(*me.Ppvt())).Reset,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IEnumIDListVt)(unsafe.Pointer(*me.Ppvt())).Reset)
 }
 
 // [Skip] method.
@@ -219,19 +206,8 @@ func (*IEnumShellItems) IID() co.IID {
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumshellitems-clone
 func (me *IEnumShellItems) Clone(releaser *OleReleaser) (*IEnumShellItems, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IEnumShellItemsVt)(unsafe.Pointer(*me.Ppvt())).Clone,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IEnumShellItems{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IEnumShellItems](me, releaser,
+		(*_IEnumShellItemsVt)(unsafe.Pointer(*me.Ppvt())).Clone)
 }
 
 // Returns all [IShellItem] values by calling [IEnumShellItems.Next].
@@ -298,8 +274,8 @@ func (me *IEnumShellItems) Next(releaser *OleReleaser) (*IShellItem, error) {
 		uintptr(unsafe.Pointer(&numFetched)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IShellItem{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
+		var pObj *IShellItem
+		com_buildObj(&pObj, ppvtQueried, releaser)
 		return pObj, nil
 	} else if hr == co.HRESULT_S_FALSE {
 		return nil, nil
@@ -312,10 +288,8 @@ func (me *IEnumShellItems) Next(releaser *OleReleaser) (*IShellItem, error) {
 //
 // [Reset]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumshellitems-reset
 func (me *IEnumShellItems) Reset() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IEnumShellItemsVt)(unsafe.Pointer(*me.Ppvt())).Reset,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IEnumShellItemsVt)(unsafe.Pointer(*me.Ppvt())).Reset)
 }
 
 // [Skip] method.
@@ -389,10 +363,8 @@ func (me *IFileDialog) Advise(events *IFileDialogEvents) (cookie uint32, hr erro
 //
 // [ClearClientData]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-clearclientdata
 func (me *IFileDialog) ClearClientData() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).ClearClientData,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).ClearClientData)
 }
 
 // [Close] method.
@@ -410,19 +382,8 @@ func (me *IFileDialog) Close(hr co.ERROR) error {
 //
 // [GetCurrentSelection]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getcurrentselection
 func (me *IFileDialog) GetCurrentSelection(releaser *OleReleaser) (*IShellItem, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).GetCurrentSelection,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IShellItem{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IShellItem](me, releaser,
+		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).GetCurrentSelection)
 }
 
 // [GetFileName] method.
@@ -465,19 +426,8 @@ func (me *IFileDialog) GetFileTypeIndex() (int, error) {
 //
 // [GetFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfolder
 func (me *IFileDialog) GetFolder(releaser *OleReleaser) (*IShellItem, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).GetFolder,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IShellItem{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IShellItem](me, releaser,
+		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).GetFolder)
 }
 
 // [GetOptions] method.
@@ -506,19 +456,8 @@ func (me *IFileDialog) GetOptions() (co.FOS, error) {
 //
 // [GetResult]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getresult
 func (me *IFileDialog) GetResult(releaser *OleReleaser) (*IShellItem, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).GetResult,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IShellItem{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IShellItem](me, releaser,
+		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).GetResult)
 }
 
 // [SetClientGuid] method.
@@ -796,38 +735,16 @@ func (*IFileOpenDialog) IID() co.IID {
 //
 // [GetResults]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
 func (me *IFileOpenDialog) GetResults(releaser *OleReleaser) (*IShellItemArray, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IFileOpenDialogVt)(unsafe.Pointer(*me.Ppvt())).GetResults,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IShellItemArray{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IShellItemArray](me, releaser,
+		(*_IFileOpenDialogVt)(unsafe.Pointer(*me.Ppvt())).GetResults)
 }
 
 // [GetSelectedItems] method.
 //
 // [GetSelectedItems]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
 func (me *IFileOpenDialog) GetSelectedItems(releaser *OleReleaser) (*IShellItemArray, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IFileOpenDialogVt)(unsafe.Pointer(*me.Ppvt())).GetSelectedItems,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IShellItemArray{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IShellItemArray](me, releaser,
+		(*_IFileOpenDialogVt)(unsafe.Pointer(*me.Ppvt())).GetSelectedItems)
 }
 
 type _IFileOpenDialogVt struct {
@@ -941,7 +858,7 @@ func (me *IFileOperation) CopyItem(
 		uintptr(unsafe.Pointer(item.Ppvt())),
 		uintptr(unsafe.Pointer(destFolder.Ppvt())),
 		uintptr(wCopyName.EmptyIsNil(copyName)),
-		uintptr(ppvtOrNil(fops)))
+		uintptr(com_ppvtOrNil(fops)))
 	return utl.HresultToError(ret)
 }
 
@@ -953,7 +870,7 @@ func (me *IFileOperation) DeleteItem(item *IShellItem, fops *IFileOperationProgr
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).DeleteItem,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())),
-		uintptr(ppvtOrNil(fops)))
+		uintptr(com_ppvtOrNil(fops)))
 	return utl.HresultToError(ret)
 }
 
@@ -984,7 +901,7 @@ func (me *IFileOperation) MoveItem(
 		uintptr(unsafe.Pointer(item.Ppvt())),
 		uintptr(unsafe.Pointer(destFolder.Ppvt())),
 		uintptr(wNewName.AllowEmpty(newName)),
-		uintptr(ppvtOrNil(fops)))
+		uintptr(com_ppvtOrNil(fops)))
 	return utl.HresultToError(ret)
 }
 
@@ -1005,7 +922,7 @@ func (me *IFileOperation) NewItem(
 		uintptr(fileAtt),
 		uintptr(wName.AllowEmpty(name)),
 		uintptr(wTemplateName.EmptyIsNil(templateName)),
-		uintptr(ppvtOrNil(fops)))
+		uintptr(com_ppvtOrNil(fops)))
 	return utl.HresultToError(ret)
 }
 
@@ -1013,10 +930,8 @@ func (me *IFileOperation) NewItem(
 //
 // [PerformOperations]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperation-performoperations
 func (me *IFileOperation) PerformOperations() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).PerformOperations,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).PerformOperations)
 }
 
 // [RenameItem] method.
@@ -1033,7 +948,7 @@ func (me *IFileOperation) RenameItem(
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(item.Ppvt())),
 		uintptr(wNewName.EmptyIsNil(newName)),
-		uintptr(ppvtOrNil(fops)))
+		uintptr(com_ppvtOrNil(fops)))
 	return utl.HresultToError(ret)
 }
 
@@ -1169,7 +1084,7 @@ func (me *IFileSaveDialog) ApplyProperties(
 		uintptr(unsafe.Pointer(item.Ppvt())),
 		uintptr(unsafe.Pointer(store.Ppvt())),
 		uintptr(hwnd),
-		uintptr(ppvtOrNil(sink)))
+		uintptr(com_ppvtOrNil(sink)))
 	return utl.HresultToError(ret)
 }
 
@@ -1177,19 +1092,8 @@ func (me *IFileSaveDialog) ApplyProperties(
 //
 // [GetProperties]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-getproperties
 func (me *IFileSaveDialog) GetProperties(releaser *OleReleaser) (*IPropertyStore, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IFileSaveDialogVt)(unsafe.Pointer(*me.Ppvt())).GetProperties,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IPropertyStore{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IPropertyStore](me, releaser,
+		(*_IFileSaveDialogVt)(unsafe.Pointer(*me.Ppvt())).GetProperties)
 }
 
 // [SetProperties] method.
@@ -1355,27 +1259,18 @@ func (me *IShellFolder) BindToObject(
 	bindCtx *IBindCtx,
 	ppOut interface{},
 ) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	iid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(pOut.IID())
+	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).BindToObject,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(*pidl),
-		uintptr(ppvtOrNil(bindCtx)),
+		uintptr(com_ppvtOrNil(bindCtx)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 // [BindToStorage] method.
@@ -1387,27 +1282,18 @@ func (me *IShellFolder) BindToStorage(
 	bindCtx *IBindCtx,
 	ppOut interface{},
 ) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	iid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(pOut.IID())
+	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).BindToStorage,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(*pidl),
-		uintptr(ppvtOrNil(bindCtx)),
+		uintptr(com_ppvtOrNil(bindCtx)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 // [CompareIDs] method.
@@ -1442,11 +1328,9 @@ func (me *IShellFolder) CreateViewObject(
 	hwndOwner HWND,
 	ppOut interface{},
 ) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	iid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(pOut.IID())
+	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).CreateViewObject,
@@ -1454,14 +1338,7 @@ func (me *IShellFolder) CreateViewObject(
 		uintptr(hwndOwner),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 // [EnumObjects] method.
@@ -1493,21 +1370,8 @@ func (me *IShellFolder) EnumObjects(
 	hWnd HWND,
 	flags co.SHCONTF,
 ) (*IEnumIDList, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).EnumObjects,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(hWnd),
-		uintptr(flags),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IEnumIDList{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IEnumIDList](me, releaser,
+		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).EnumObjects)
 }
 
 // [ParseDisplayName] method.
@@ -1533,7 +1397,7 @@ func (me *IShellFolder) ParseDisplayName(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).ParseDisplayName,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
-		uintptr(ppvtOrNil(bindCtx)),
+		uintptr(com_ppvtOrNil(bindCtx)),
 		uintptr(wDisplayName.AllowEmpty(displayName)),
 		uintptr(unsafe.Pointer(&chEaten)),
 		uintptr(unsafe.Pointer(&idl)),
@@ -1649,28 +1513,19 @@ func (me *IShellItem) BindToHandler(
 	bhid co.BHID,
 	ppOut interface{},
 ) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut)
-
+	iid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
 	guidBhid := GuidFrom(bhid)
-	guidIid := GuidFrom(pOut.IID())
+	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).BindToHandler,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(ppvtOrNil(bindCtx)),
+		uintptr(com_ppvtOrNil(bindCtx)),
 		uintptr(unsafe.Pointer(&guidBhid)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 // [Compare] method.
@@ -1744,19 +1599,8 @@ func (me *IShellItem) GetDisplayName(sigdnName co.SIGDN) (string, error) {
 //
 // [GetParent]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
 func (me *IShellItem) GetParent(releaser *OleReleaser) (*IShellItem, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).GetParent,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IShellItem{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IShellItem](me, releaser,
+		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).GetParent)
 }
 
 type _IShellItemVt struct {
@@ -1901,14 +1745,7 @@ func (me *IShellItem2) GetPropertyStore(releaser *OleReleaser, flags co.GPS) (*I
 		uintptr(flags),
 		uintptr(unsafe.Pointer(&guid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IPropertyStore{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IPropertyStore](ret, ppvtQueried, releaser)
 }
 
 // [GetString] method.
@@ -2138,14 +1975,7 @@ func (me *IShellItemArray) GetItemAt(releaser *OleReleaser, index int) (*IShellI
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(index)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IShellItem{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IShellItem](ret, ppvtQueried, releaser)
 }
 
 type _IShellItemArrayVt struct {
@@ -2463,10 +2293,8 @@ func (*IShellView) IID() co.IID {
 //
 // [DestroyViewWindow]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellview-destroyviewwindow
 func (me *IShellView) DestroyViewWindow() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).DestroyViewWindow,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).DestroyViewWindow)
 }
 
 // [EnableModeless] method.
@@ -2484,20 +2312,16 @@ func (me *IShellView) EnableModeless(enable bool) error {
 //
 // [Refresh]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellview-refresh
 func (me *IShellView) Refresh() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).Refresh,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).Refresh)
 }
 
 // [SaveViewState] method.
 //
 // [SaveViewState]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellview-saveviewstate
 func (me *IShellView) SaveViewState() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).SaveViewState,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).SaveViewState)
 }
 
 // [TranslateAccelerator] method.
@@ -2608,10 +2432,8 @@ func (me *ITaskbarList) DeleteTab(hWnd HWND) error {
 //
 // [HrInit]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-hrinit
 func (me *ITaskbarList) HrInit() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).HrInit,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).HrInit)
 }
 
 // [SetActiveAlt] method.

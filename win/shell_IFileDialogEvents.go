@@ -126,7 +126,7 @@ func (me *_IFileDialogEventsVt) init() {
 
 	*me = _IFileDialogEventsVt{
 		_IUnknownVt: _IUnknownVt{
-			QueryInterface: iunknownQueryInterfaceImpl(),
+			QueryInterface: com_iunknownQueryInterfaceImpl(),
 			AddRef: syscall.NewCallback(
 				func(ppImpl **_IFileDialogEventsImpl) uintptr {
 					newCount := atomic.AddUint32(&(**ppImpl).counter, 1)

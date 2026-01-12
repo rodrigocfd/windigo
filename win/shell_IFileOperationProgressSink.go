@@ -288,7 +288,7 @@ func (me *_IFileOperationProgressSinkVt) init() {
 
 	*me = _IFileOperationProgressSinkVt{
 		_IUnknownVt: _IUnknownVt{
-			QueryInterface: iunknownQueryInterfaceImpl(),
+			QueryInterface: com_iunknownQueryInterfaceImpl(),
 			AddRef: syscall.NewCallback(
 				func(ppImpl **_IFileOperationProgressSinkImpl) uintptr {
 					newCount := atomic.AddUint32(&(**ppImpl).counter, 1)

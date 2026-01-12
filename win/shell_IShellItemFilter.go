@@ -81,7 +81,7 @@ func (me *_IShellItemFilterVt) init() {
 
 	*me = _IShellItemFilterVt{
 		_IUnknownVt: _IUnknownVt{
-			QueryInterface: iunknownQueryInterfaceImpl(),
+			QueryInterface: com_iunknownQueryInterfaceImpl(),
 			AddRef: syscall.NewCallback(
 				func(ppImpl **_IShellItemFilterImpl) uintptr {
 					newCount := atomic.AddUint32(&(**ppImpl).counter, 1)

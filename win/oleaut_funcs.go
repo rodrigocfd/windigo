@@ -57,14 +57,7 @@ func OleLoadPicture(
 		utl.BoolToUintptr(!keepOriginalFormat), // note: reversed
 		uintptr(unsafe.Pointer(&guid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IPicture{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IPicture](ret, ppvtQueried, releaser)
 }
 
 var _oleaut_OleLoadPicture *syscall.Proc
@@ -98,14 +91,7 @@ func OleLoadPicturePath(
 		uintptr(transparentColor),
 		uintptr(unsafe.Pointer(&guid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IPicture{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IPicture](ret, ppvtQueried, releaser)
 }
 
 var _oleaut_OleLoadPicturePath *syscall.Proc

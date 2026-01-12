@@ -157,7 +157,7 @@ func (me *_IDropTargetVt) init() {
 
 	*me = _IDropTargetVt{
 		_IUnknownVt: _IUnknownVt{
-			QueryInterface: iunknownQueryInterfaceImpl(),
+			QueryInterface: com_iunknownQueryInterfaceImpl(),
 			AddRef: syscall.NewCallback(
 				func(ppImpl **_IDropTargetImpl) uintptr {
 					newCount := atomic.AddUint32(&(**ppImpl).counter, 1)

@@ -7,7 +7,6 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
-	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
 // [IUnknown] [COM] interface, base to all COM interfaces.
@@ -59,14 +58,10 @@ func (me *IUnknown) Ppvt() **_IUnknownVt {
 //
 // [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	com_validateAndRelease(ppOut, releaser)
 	syscall.SyscallN((*me.Ppvt()).AddRef,
 		uintptr(unsafe.Pointer(me.Ppvt())))
-
-	pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(me.ppvt)).(OleObj)
-	releaser.Add(pOut)
+	com_buildObj(ppOut, me.ppvt, releaser)
 }
 
 // [QueryInterface] method.
@@ -88,24 +83,15 @@ func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
 //
 // [QueryInterface]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IUnknown) QueryInterface(releaser *OleReleaser, ppOut interface{}) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	iid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(pOut.IID())
+	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN((*me.Ppvt()).QueryInterface,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 // Implements [OleResource].
@@ -130,7 +116,7 @@ type _IUnknownVt struct {
 // IUnknown.QueryInterface method for custom-implemented interfaces.
 var _iunknownQueryInterfaceImpl uintptr
 
-func iunknownQueryInterfaceImpl() uintptr {
+func com_iunknownQueryInterfaceImpl() uintptr {
 	if _iunknownQueryInterfaceImpl == 0 {
 		_iunknownQueryInterfaceImpl = syscall.NewCallback(
 			func(_p uintptr, _riid uintptr, ppv ***_IUnknownVt) uintptr {

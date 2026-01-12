@@ -8,7 +8,6 @@ import (
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/dll"
-	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/wstr"
 )
 
@@ -67,25 +66,16 @@ var _shell_CommandLineToArgvW *syscall.Proc
 //
 // [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
 func SHCreateItemFromIDList(releaser *OleReleaser, pidl *ITEMIDLIST, ppOut interface{}) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	iid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(pOut.IID())
+	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_shell_SHCreateItemFromIDList, "SHCreateItemFromIDList"),
 		uintptr(*pidl),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 var _shell_SHCreateItemFromIDList *syscall.Proc
@@ -116,11 +106,9 @@ func SHCreateItemFromParsingName(
 	folderOrFilePath string,
 	ppOut interface{},
 ) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	iid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(pOut.IID())
+	guidIid := GuidFrom(iid)
 	var wFolderOrFilePath wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
@@ -129,14 +117,7 @@ func SHCreateItemFromParsingName(
 		0,
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 var _shell_SHCreateItemFromParsingName *syscall.Proc
@@ -151,28 +132,19 @@ func SHCreateItemFromRelativeName(
 	bindCtx *IBindCtx,
 	ppOut interface{},
 ) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	iid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(pOut.IID())
+	guidIid := GuidFrom(iid)
 	var wName wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_shell_SHCreateItemFromRelativeName, "SHCreateItemFromRelativeName"),
 		uintptr(unsafe.Pointer(parent.Ppvt())),
 		uintptr(wName.AllowEmpty(name)),
-		uintptr(ppvtOrNil(bindCtx)),
+		uintptr(com_ppvtOrNil(bindCtx)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 var _shell_SHCreateItemFromRelativeName *syscall.Proc
@@ -205,18 +177,11 @@ func SHCreateShellItemArray(
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_shell_SHCreateShellItemArray, "SHCreateShellItemArray"),
 		uintptr(pidlParentObj),
-		uintptr(ppvtOrNil(parent)),
+		uintptr(com_ppvtOrNil(parent)),
 		uintptr(uint32(len(pidlChildren))),
 		uintptr(unsafe.Pointer(pidlChildrenObjsPtr)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IShellItemArray{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IShellItemArray](ret, ppvtQueried, releaser)
 }
 
 var _shell_SHCreateShellItemArray *syscall.Proc
@@ -258,14 +223,7 @@ func SHCreateShellItemArrayFromIDLists(
 		uintptr(uint32(len(pidls))),
 		uintptr(unsafe.Pointer(unsafe.SliceData(pidlObjs))),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IShellItemArray{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IShellItemArray](ret, ppvtQueried, releaser)
 }
 
 var _shell_SHCreateShellItemArrayFromIDLists *syscall.Proc
@@ -285,14 +243,7 @@ func SHGetDesktopFolder(releaser *OleReleaser) (*IShellFolder, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_shell_SHGetDesktopFolder, "SHGetDesktopFolder"),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IShellFolder{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IShellFolder](ret, ppvtQueried, releaser)
 }
 
 var _shell_SHGetDesktopFolder *syscall.Proc
@@ -330,12 +281,10 @@ func SHGetKnownFolderItem(
 	hToken HANDLE, // HACCESSTOKEN
 	ppOut interface{},
 ) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	iid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
 	guidKfid := GuidFrom(kfid)
-	guidIid := GuidFrom(pOut.IID())
+	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_shell_SHGetKnownFolderItem, "SHGetKnownFolderItem"),
@@ -344,14 +293,7 @@ func SHGetKnownFolderItem(
 		uintptr(hToken),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 var _shell_SHGetKnownFolderItem *syscall.Proc
@@ -411,14 +353,7 @@ func SHGetPropertyStoreFromIDList(
 		uintptr(flags),
 		uintptr(unsafe.Pointer(&guid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IPropertyStore{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IPropertyStore](ret, ppvtQueried, releaser)
 }
 
 var _shell_SHGetPropertyStoreFromIDList *syscall.Proc
@@ -439,18 +374,11 @@ func SHGetPropertyStoreFromParsingName(
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.SHELL32, &_shell_SHGetPropertyStoreFromParsingName, "SHGetPropertyStoreFromParsingName"),
 		uintptr(wFolderOrFilePath.AllowEmpty(folderOrFilePath)),
-		uintptr(ppvtOrNil(bindCtx)),
+		uintptr(com_ppvtOrNil(bindCtx)),
 		uintptr(flags),
 		uintptr(unsafe.Pointer(&guid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IPropertyStore{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IPropertyStore](ret, ppvtQueried, releaser)
 }
 
 var _shell_SHGetPropertyStoreFromParsingName *syscall.Proc

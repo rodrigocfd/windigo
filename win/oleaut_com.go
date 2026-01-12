@@ -80,14 +80,7 @@ func (me *IDispatch) GetTypeInfo(releaser *OleReleaser, lcid LCID) (*ITypeInfo, 
 		0,
 		uintptr(lcid),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &ITypeInfo{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*ITypeInfo](ret, ppvtQueried, releaser)
 }
 
 // [GetTypeInfoCount] method.
@@ -584,10 +577,8 @@ func (me *IPicture) GetWidth() (int, error) {
 //
 // [PictureChanged]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-picturechanged
 func (me *IPicture) PictureChanged() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).PictureChanged,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).PictureChanged)
 }
 
 // [put_KeepOriginalFormat] method.
@@ -800,10 +791,8 @@ func (*IPropertyStore) IID() co.IID {
 //
 // [Commit]: https://learn.microsoft.com/en-us/windows/win32/api/propsys/nf-propsys-ipropertystore-commit
 func (me *IPropertyStore) Commit() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IPropertyStoreVt)(unsafe.Pointer(*me.Ppvt())).Commit,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IPropertyStoreVt)(unsafe.Pointer(*me.Ppvt())).Commit)
 }
 
 // Returns all [co.PKEY] values by calling [IPropertyStore.GetCount] and
@@ -915,26 +904,17 @@ func (me *ITypeInfo) CreateInstance(
 	unkOuter *IUnknown,
 	ppOut interface{},
 ) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	iid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(pOut.IID())
+	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(ppvtOrNil(unkOuter)),
+		uintptr(com_ppvtOrNil(unkOuter)),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 // [GetContainingTypeLib] method.
@@ -953,8 +933,8 @@ func (me *ITypeInfo) GetContainingTypeLib(releaser *OleReleaser) (*ITypeLib, int
 		uintptr(unsafe.Pointer(&index)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &ITypeLib{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
+		var pObj *ITypeLib
+		com_buildObj(&pObj, ppvtQueried, releaser)
 		return pObj, int(index), nil
 	} else {
 		return nil, 0, hr
@@ -1196,14 +1176,7 @@ func (me *ITypeLib) GetTypeInfo(releaser *OleReleaser, index int) (*ITypeInfo, e
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(index)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &ITypeInfo{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*ITypeInfo](ret, ppvtQueried, releaser)
 }
 
 // [GetTypeInfoCount] method.
@@ -1228,14 +1201,7 @@ func (me *ITypeLib) GetTypeInfoOfGuid(releaser *OleReleaser, guid co.GUID) (*ITy
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidGuid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &ITypeInfo{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*ITypeInfo](ret, ppvtQueried, releaser)
 }
 
 type _ITypeLibVt struct {

@@ -84,28 +84,19 @@ func CoCreateInstance(
 	dwClsContext co.CLSCTX,
 	ppOut interface{},
 ) error {
-	pOut := utl.OleValidateObj(ppOut).(OleObj)
-	releaser.ReleaseNow(pOut) // safety, because pOut will receive the new COM object
-
+	iid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
 	guidClsid := GuidFrom(rclsid)
-	guidIid := GuidFrom(pOut.IID())
+	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Load(dll.OLE32, &_ole_CoCreateInstance, "CoCreateInstance"),
 		uintptr(unsafe.Pointer(&guidClsid)),
-		uintptr(ppvtOrNil(unkOuter)),
+		uintptr(com_ppvtOrNil(unkOuter)),
 		uintptr(dwClsContext),
 		uintptr(unsafe.Pointer(&guidIid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pOut = utl.OleCreateObj(ppOut, unsafe.Pointer(ppvtQueried)).(OleObj)
-		releaser.Add(pOut)
-		return nil
-	} else {
-		return hr
-	}
+	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
 
 var _ole_CoCreateInstance *syscall.Proc
@@ -167,14 +158,7 @@ func CreateBindCtx(releaser *OleReleaser) (*IBindCtx, error) {
 		dll.Load(dll.OLE32, &_ole_CreateBindCtx, "CreateBindCtx"),
 		0,
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IBindCtx{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IBindCtx](ret, ppvtQueried, releaser)
 }
 
 var _ole_CreateBindCtx *syscall.Proc
@@ -248,9 +232,8 @@ func SHCreateMemStream(releaser *OleReleaser, src []byte) (*IStream, error) {
 		return nil, co.HRESULT_E_OUTOFMEMORY
 	}
 
-	ppvt := (**_IUnknownVt)(unsafe.Pointer(ret))
-	pObj := &IStream{ISequentialStream{IUnknown{ppvt}}}
-	releaser.Add(pObj)
+	var pObj *IStream
+	com_buildObj(&pObj, (**_IUnknownVt)(unsafe.Pointer(ret)), releaser)
 	return pObj, nil
 }
 

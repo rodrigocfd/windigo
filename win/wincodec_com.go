@@ -36,14 +36,7 @@ func (me *IWICBitmap) Lock(releaser *OleReleaser, lock *WICRect, flags co.WICBMP
 		uintptr(unsafe.Pointer(lock)),
 		uintptr(flags),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapLock{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmapLock](ret, ppvtQueried, releaser)
 }
 
 // [SetPalette] method.
@@ -317,19 +310,8 @@ func (me *IWICBitmapDecoder) GetContainerFormat() (co.WIC_CONTAINER, error) {
 //
 // [GetDecoderInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapdecoder-getdecoderinfo
 func (me *IWICBitmapDecoder) GetDecoderInfo(releaser *OleReleaser) (*IWICBitmapDecoderInfo, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).GetDecoderInfo,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapDecoderInfo{IWICBitmapCodecInfo{IWICComponentInfo{IUnknown{ppvtQueried}}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IWICBitmapDecoderInfo](me, releaser,
+		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).GetDecoderInfo)
 }
 
 // [GetFrame] method.
@@ -342,14 +324,7 @@ func (me *IWICBitmapDecoder) GetFrame(releaser *OleReleaser, index int) (*IWICBi
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(index)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapFrameDecode{IWICBitmapSource{IUnknown{ppvtQueried}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmapFrameDecode](ret, ppvtQueried, releaser)
 }
 
 // [GetFrameCount] method.
@@ -373,38 +348,16 @@ func (me *IWICBitmapDecoder) GetFrameCount() (int, error) {
 //
 // [GetPreview]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapdecoder-getpreview
 func (me *IWICBitmapDecoder) GetPreview(releaser *OleReleaser) (*IWICBitmapSource, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).GetPreview,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapSource{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IWICBitmapSource](me, releaser,
+		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).GetPreview)
 }
 
 // [GetThumbnail] method.
 //
 // [GetThumbnail]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapdecoder-getthumbnail
 func (me *IWICBitmapDecoder) GetThumbnail(releaser *OleReleaser) (*IWICBitmapSource, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).GetThumbnail,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapSource{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IWICBitmapSource](me, releaser,
+		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).GetThumbnail)
 }
 
 // [Initialize] method.
@@ -472,19 +425,8 @@ func (*IWICBitmapDecoderInfo) IID() co.IID {
 //
 // [CreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapdecoderinfo-createinstance
 func (me *IWICBitmapDecoderInfo) CreateInstance(releaser *OleReleaser) (*IWICBitmapDecoder, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IWICBitmapDecoderInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapDecoder{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IWICBitmapDecoder](me, releaser,
+		(*_IWICBitmapDecoderInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance)
 }
 
 // [MatchesPattern] method.
@@ -548,10 +490,8 @@ func (*IWICBitmapEncoder) IID() co.IID {
 //
 // [Commit]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapencoder-commit
 func (me *IWICBitmapEncoder) Commit() error {
-	ret, _, _ := syscall.SyscallN(
-		(*_IWICBitmapEncoderVt)(unsafe.Pointer(*me.Ppvt())).Commit,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
+	return com_callNoParm(me,
+		(*_IWICBitmapEncoderVt)(unsafe.Pointer(*me.Ppvt())).Commit)
 }
 
 // [GetContainerFormat] method.
@@ -575,19 +515,8 @@ func (me *IWICBitmapEncoder) GetContainerFormat() (co.WIC_CONTAINER, error) {
 //
 // [GetEncoderInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapencoder-getencoderinfo
 func (me *IWICBitmapEncoder) GetEncoderInfo(releaser *OleReleaser) (*IWICBitmapEncoderInfo, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IWICBitmapEncoderVt)(unsafe.Pointer(*me.Ppvt())).GetEncoderInfo,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapEncoderInfo{IWICBitmapCodecInfo{IWICComponentInfo{IUnknown{ppvtQueried}}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IWICBitmapEncoderInfo](me, releaser,
+		(*_IWICBitmapEncoderVt)(unsafe.Pointer(*me.Ppvt())).GetEncoderInfo)
 }
 
 // [Initialize] method.
@@ -669,19 +598,8 @@ func (*IWICBitmapEncoderInfo) IID() co.IID {
 //
 // [CreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapencoderinfo-createinstance
 func (me *IWICBitmapEncoderInfo) CreateInstance(releaser *OleReleaser) (*IWICBitmapEncoder, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IWICBitmapEncoderInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapEncoder{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IWICBitmapEncoder](me, releaser,
+		(*_IWICBitmapEncoderInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance)
 }
 
 type _IWICBitmapEncoderInfoVt struct {
@@ -733,19 +651,8 @@ func (*IWICBitmapFrameDecode) IID() co.IID {
 //
 // [GetThumbnail]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapframedecode-getthumbnail
 func (me *IWICBitmapFrameDecode) GetThumbnail(releaser *OleReleaser) (*IWICBitmapSource, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IWICBitmapFrameDecodeVt)(unsafe.Pointer(*me.Ppvt())).GetThumbnail,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapSource{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IWICBitmapSource](me, releaser,
+		(*_IWICBitmapFrameDecodeVt)(unsafe.Pointer(*me.Ppvt())).GetThumbnail)
 }
 
 type _IWICBitmapFrameDecodeVt struct {
@@ -1258,14 +1165,7 @@ func (me *IWICImagingFactory) CreateBitmap(
 		uintptr(unsafe.Pointer(&guidPixelFormat)),
 		uintptr(option),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmap{IWICBitmapSource{IUnknown{ppvtQueried}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmap](ret, ppvtQueried, releaser)
 }
 
 // [CreateBitmapFromHBITMAP] method.
@@ -1285,14 +1185,7 @@ func (me *IWICImagingFactory) CreateBitmapFromHBITMAP(
 		uintptr(hPal),
 		uintptr(options),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmap{IWICBitmapSource{IUnknown{ppvtQueried}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmap](ret, ppvtQueried, releaser)
 }
 
 // [CreateBitmapFromHICON] method.
@@ -1305,14 +1198,7 @@ func (me *IWICImagingFactory) CreateBitmapFromHICON(releaser *OleReleaser, hIcon
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hIcon),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmap{IWICBitmapSource{IUnknown{ppvtQueried}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmap](ret, ppvtQueried, releaser)
 }
 
 // [CreateBitmapFromMemory] method.
@@ -1338,14 +1224,7 @@ func (me *IWICImagingFactory) CreateBitmapFromMemory(
 		uintptr(uint32(len(srcBuf))),
 		uintptr(unsafe.Pointer(unsafe.SliceData(srcBuf))),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmap{IWICBitmapSource{IUnknown{ppvtQueried}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmap](ret, ppvtQueried, releaser)
 }
 
 // [CreateBitmapFromSource] method.
@@ -1363,14 +1242,7 @@ func (me *IWICImagingFactory) CreateBitmapFromSource(
 		uintptr(unsafe.Pointer(source.Ppvt())),
 		uintptr(option),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmap{IWICBitmapSource{IUnknown{ppvtQueried}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmap](ret, ppvtQueried, releaser)
 }
 
 // [CreateBitmapFromSourceRect] method.
@@ -1392,14 +1264,7 @@ func (me *IWICImagingFactory) CreateBitmapFromSourceRect(
 		uintptr(uint32(size.Cx)),
 		uintptr(uint32(size.Cy)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmap{IWICBitmapSource{IUnknown{ppvtQueried}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmap](ret, ppvtQueried, releaser)
 }
 
 // [CreateDecoderFromFileHandle] method.
@@ -1420,17 +1285,10 @@ func (me *IWICImagingFactory) CreateDecoderFromFileHandle(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromFileHandle,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hFile),
-		uintptr(guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
+		uintptr(com_guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapDecoder{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmapDecoder](ret, ppvtQueried, releaser)
 }
 
 // [CreateDecoderFromFilename] method.
@@ -1475,18 +1333,11 @@ func (me *IWICImagingFactory) CreateDecoderFromFilename(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromFilename,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wFilename.AllowEmpty(filename)),
-		uintptr(guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
+		uintptr(com_guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
 		uintptr(desiredAccess),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapDecoder{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmapDecoder](ret, ppvtQueried, releaser)
 }
 
 // [CreateDecoderFromStream] method.
@@ -1507,17 +1358,10 @@ func (me *IWICImagingFactory) CreateDecoderFromStream(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromStream,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
-		uintptr(guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
+		uintptr(com_guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapDecoder{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmapDecoder](ret, ppvtQueried, releaser)
 }
 
 // [CreateEncoder] method.
@@ -1554,35 +1398,17 @@ func (me *IWICImagingFactory) CreateEncoder(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateEncoder,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guidGuidContainer)),
-		uintptr(guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
+		uintptr(com_guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICBitmapEncoder{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_buildObj_retObjHres[*IWICBitmapEncoder](ret, ppvtQueried, releaser)
 }
 
 // [CreateFormatConverter] method.
 //
 // [CreateFormatConverter]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createformatconverter
 func (me *IWICImagingFactory) CreateFormatConverter(releaser *OleReleaser) (*IWICFormatConverter, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateFormatConverter,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICFormatConverter{IWICBitmapSource{IUnknown{ppvtQueried}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IWICFormatConverter](me, releaser,
+		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateFormatConverter)
 }
 
 // [CreatePalette] method.
@@ -1609,38 +1435,16 @@ func (me *IWICImagingFactory) CreateFormatConverter(releaser *OleReleaser) (*IWI
 //
 // [CreatePalette]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createpalette
 func (me *IWICImagingFactory) CreatePalette(releaser *OleReleaser) (*IWICPalette, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreatePalette,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICPalette{IUnknown{ppvtQueried}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IWICPalette](me, releaser,
+		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreatePalette)
 }
 
 // [CreateStream] method.
 //
 // [CreateStream]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createstream
 func (me *IWICImagingFactory) CreateStream(releaser *OleReleaser) (*IWICStream, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateStream,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := &IWICStream{IStream{ISequentialStream{IUnknown{ppvtQueried}}}}
-		releaser.Add(pObj)
-		return pObj, nil
-	} else {
-		return nil, hr
-	}
+	return com_callBuildObj[*IWICStream](me, releaser,
+		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateStream)
 }
 
 type _IWICImagingFactoryVt struct {
