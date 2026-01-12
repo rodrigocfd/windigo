@@ -23,14 +23,15 @@ const (
 	SHELL32
 	SHLWAPI
 	USER32
+	USERENV
 	UXTHEME
 	VERSION
 )
 
 var (
-	dllCache [13]*syscall.DLL // Indexed by DLL_INDEX.
+	dllCache [14]*syscall.DLL // Indexed by DLL_INDEX.
 	dllMutex sync.Mutex
-	dllNames = [13]string{ // Indexed by DLL_INDEX.
+	dllNames = [...]string{ // Indexed by DLL_INDEX.
 		"advapi32",
 		"comctl32",
 		"dwmapi",
@@ -42,6 +43,7 @@ var (
 		"shell32",
 		"shlwapi",
 		"user32",
+		"userenv",
 		"uxtheme",
 		"version",
 	}
