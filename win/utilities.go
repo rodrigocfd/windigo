@@ -706,6 +706,25 @@ func (me *IniSection) Set(key, value string) {
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+// Returns the path going one directory above, whether it is a file or folder.
+// If already at the root, the same path is returned.
+func PathDirUp(path string) string {
+	path = PathTrimBackslash(path)
+	parts := strings.Split(path, "\\")
+	if PathIsFolder(path) {
+		if len(parts) == 1 {
+			return path
+		}
+		return strings.Join(parts[:len(parts)-1], "\\")
+	} else {
+		if len(parts) <= 2 {
+			return path
+		}
+		fileName := parts[len(parts)-1]
+		return strings.Join(parts[:len(parts)-2], "\\") + "\\" + fileName
+	}
+}
+
 // Returns a new []string with all files and folders within searchPath.
 //
 // If fileExtension isn't empty, brings only the files and folders with this
