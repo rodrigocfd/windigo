@@ -24,6 +24,53 @@ func (hProcess HPROCESS) EmptyWorkingSet() error {
 
 var _psapi_EmptyWorkingSet *syscall.Proc
 
+// [EnumProcessModules] function.
+//
+// Example:
+//
+//	hProcess := win.GetCurrentProcess()
+//	hModules, _ := hProcess.EnumProcessModules()
+//
+//	for _, hModule := range hModules {
+//		fileName, _ := hModule.GetModuleFileName()
+//		println(fileName)
+//	}
+//
+// [EnumProcessModules]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocessmodules
+func (hProcess HPROCESS) EnumProcessModules() ([]HINSTANCE, error) {
+	for {
+		var bytesNeeded uint32
+		ret, _, err := syscall.SyscallN(
+			dll.Load(dll.PSAPI, &_psapi_EnumProcessModules, "EnumProcessModules"),
+			uintptr(hProcess),
+			0, 0,
+			uintptr(unsafe.Pointer(&bytesNeeded)))
+		if ret == 0 {
+			return nil, co.ERROR(err)
+		}
+
+		elemsNeeded := uintptr(bytesNeeded) / unsafe.Sizeof(HINSTANCE(0))
+		elems := make([]HINSTANCE, elemsNeeded)
+
+		var bytesGot uint32
+		ret, _, err = syscall.SyscallN(
+			dll.Load(dll.PSAPI, &_psapi_EnumProcessModules, "EnumProcessModules"),
+			uintptr(hProcess),
+			uintptr(unsafe.Pointer(unsafe.SliceData(elems))),
+			uintptr(bytesNeeded),
+			uintptr(unsafe.Pointer(&bytesGot)))
+		if ret == 0 {
+			return nil, co.ERROR(err)
+		}
+
+		if bytesNeeded == bytesGot {
+			return elems, nil
+		}
+	}
+}
+
+var _psapi_EnumProcessModules *syscall.Proc
+
 // [GetMappedFileName] function.
 //
 // [GetMappedFileName]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getmappedfilenamew
