@@ -265,7 +265,7 @@ type _IWICBitmapCodecInfoVt struct {
 //		"C:\\Temp\\foo.png",
 //		"",
 //		co.GENERIC_READ,
-//		co.WICDECMETADATACACHE_OnDemand,
+//		co.co.WICDEC_METADATACACHE_OnDemand,
 //	)
 //
 // [IWICBitmapDecoder]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapdecoder
@@ -474,7 +474,7 @@ type _IWICBitmapDecoderInfoVt struct {
 //		&factory,
 //	)
 //
-//	encoder, _ := factory.CreateEncoder(rel, co.WICCONTAINER_Bmp, "")
+//	encoder, _ := factory.CreateEncoder(rel, co.WIC_CONTAINER_Bmp, "")
 //
 // [IWICBitmapEncoder]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapencoder
 type IWICBitmapEncoder struct{ IUnknown }
@@ -632,7 +632,7 @@ type _IWICBitmapEncoderInfoVt struct {
 //		"C:\\Temp\\foo.png",
 //		"",
 //		co.GENERIC_READ,
-//		co.WICDECMETADATACACHE_OnDemand,
+//		co.WICDEC_METADATACACHE_OnDemand,
 //	)
 //
 //	frame, _ := decoder.GetFrame(rel, 0)
@@ -1269,7 +1269,7 @@ func (me *IWICImagingFactory) CreateBitmapFromSourceRect(
 
 // [CreateDecoderFromFileHandle] method.
 //
-// For a null guidVendor, pass an empty string.
+// For a null guidVendor, pass [co.GUID_NULL].
 //
 // [CreateDecoderFromFileHandle]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createdecoderfromfilehandle
 func (me *IWICImagingFactory) CreateDecoderFromFileHandle(
@@ -1293,7 +1293,7 @@ func (me *IWICImagingFactory) CreateDecoderFromFileHandle(
 
 // [CreateDecoderFromFilename] method.
 //
-// For a null guidVendor, pass an empty string.
+// For a null guidVendor, pass [co.GUID_NULL].
 //
 // Example:
 //
@@ -1312,9 +1312,9 @@ func (me *IWICImagingFactory) CreateDecoderFromFileHandle(
 //	decoder, _ := factory.CreateDecoderFromFilename(
 //		rel,
 //		"C:\\Temp\\foo.png",
-//		"",
+//		co.GUID_NULL,
 //		co.GENERIC_READ,
-//		co.WICDECMETADATACACHE_OnDemand,
+//		co.WICDEC_METADATACACHE_OnDemand,
 //	)
 //
 // [CreateDecoderFromFilename]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createdecoderfromfilename
@@ -1342,7 +1342,7 @@ func (me *IWICImagingFactory) CreateDecoderFromFilename(
 
 // [CreateDecoderFromStream] method.
 //
-// For a null guidVendor, pass an empty string.
+// For a null guidVendor, pass [co.GUID_NULL].
 //
 // [CreateDecoderFromStream]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createdecoderfromstream
 func (me *IWICImagingFactory) CreateDecoderFromStream(
@@ -1366,7 +1366,7 @@ func (me *IWICImagingFactory) CreateDecoderFromStream(
 
 // [CreateEncoder] method.
 //
-// For a null guidVendor, pass an empty string.
+// For a null guidVendor, pass [co.GUID_NULL].
 //
 // Example:
 //
@@ -1382,7 +1382,11 @@ func (me *IWICImagingFactory) CreateDecoderFromStream(
 //		&factory,
 //	)
 //
-//	encoder, _ := factory.CreateEncoder(rel, co.WICCONTAINER_Bmp, "")
+//	encoder, _ := factory.CreateEncoder(
+//		rel,
+//		co.WIC_CONTAINER_Bmp,
+//		co.GUID_NULL,
+//	)
 //
 // [CreateEncoder]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createencoder
 func (me *IWICImagingFactory) CreateEncoder(

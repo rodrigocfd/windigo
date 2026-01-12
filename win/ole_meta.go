@@ -53,9 +53,9 @@ func com_ppvtOrNil(obj OleObj) unsafe.Pointer {
 
 // Converts a GUID string into the GUID struct buffer, returning its pointer.
 //
-// If strGuid is empty, returns nil.
+// If strGuid is [co.GUID_NULL], returns nil.
 func com_guidStructPtrOrNil[T ~string](strGuid T, guidStructBuf *GUID) unsafe.Pointer {
-	if len(strGuid) == 0 {
+	if co.GUID(strGuid) == co.GUID_NULL {
 		return nil
 	}
 	*guidStructBuf = GuidFrom(strGuid)
