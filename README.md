@@ -18,6 +18,18 @@ Notably, Windigo is written 100% in pure Go – CGo is **not** used, just native
 go get -u github.com/rodrigocfd/windigo
 ```
 
+## Current status
+
+Native FFI items currently implemented:
+
+| Native FFI item | Count |
+| - | -: |
+| Handles | 31 |
+| Functions | 631 |
+| COM interfaces | 47 |
+| COM methods | 294 |
+| Constants | 10,868 |
+
 ## Examples
 
 *In the examples below, error checking is ommited for brevity.*
