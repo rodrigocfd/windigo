@@ -149,6 +149,38 @@ func SHCreateItemFromRelativeName(
 
 var _shell_SHCreateItemFromRelativeName *syscall.Proc
 
+// [SHCreateMemStream] function.
+//
+// Creates an [IStream] projection over a slice, which must remain valid in
+// memory throughout IStream's lifetime.
+//
+// Example:
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+//	data := []byte{0x10, 0x11, 0x12}
+//	defer runtime.KeepAlive(data)
+//
+//	stream, _ := win.SHCreateMemStream(rel, data)
+//
+// [SHCreateMemStream]: https://learn.microsoft.com/en-us/windows/win32/api/shlwapi/nf-shlwapi-shcreatememstream
+func SHCreateMemStream(releaser *OleReleaser, src []byte) (*IStream, error) {
+	ret, _, _ := syscall.SyscallN(
+		dll.Load(dll.SHLWAPI, &_shlwapi_SHCreateMemStream, "SHCreateMemStream"),
+		uintptr(unsafe.Pointer(unsafe.SliceData(src))),
+		uintptr(uint32(len(src))))
+	if ret == 0 {
+		return nil, co.HRESULT_E_OUTOFMEMORY
+	}
+
+	var pObj *IStream
+	com_buildObj(&pObj, (**_IUnknownVt)(unsafe.Pointer(ret)), releaser)
+	return pObj, nil
+}
+
+var _shlwapi_SHCreateMemStream *syscall.Proc
+
 // [SHCreateShellItemArray] function.
 //
 // [SHCreateShellItemArray]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateshellitemarray

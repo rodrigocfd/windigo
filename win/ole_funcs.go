@@ -206,35 +206,3 @@ func ReleaseStgMedium(stg *STGMEDIUM) {
 }
 
 var _ole_ReleaseStgMedium *syscall.Proc
-
-// [SHCreateMemStream] function.
-//
-// Creates an [IStream] projection over a slice, which must remain valid in
-// memory throughout IStream's lifetime.
-//
-// Example:
-//
-//	rel := win.NewOleReleaser()
-//	defer rel.Release()
-//
-//	data := []byte{0x10, 0x11, 0x12}
-//	defer runtime.KeepAlive(data)
-//
-//	stream, _ := win.SHCreateMemStream(rel, data)
-//
-// [SHCreateMemStream]: https://learn.microsoft.com/en-us/windows/win32/api/shlwapi/nf-shlwapi-shcreatememstream
-func SHCreateMemStream(releaser *OleReleaser, src []byte) (*IStream, error) {
-	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHLWAPI, &_ole_SHCreateMemStream, "SHCreateMemStream"),
-		uintptr(unsafe.Pointer(unsafe.SliceData(src))),
-		uintptr(uint32(len(src))))
-	if ret == 0 {
-		return nil, co.HRESULT_E_OUTOFMEMORY
-	}
-
-	var pObj *IStream
-	com_buildObj(&pObj, (**_IUnknownVt)(unsafe.Pointer(ret)), releaser)
-	return pObj, nil
-}
-
-var _ole_SHCreateMemStream *syscall.Proc
