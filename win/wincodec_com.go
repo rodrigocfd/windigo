@@ -18,6 +18,13 @@ import (
 // [IWICBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmap
 type IWICBitmap struct{ IWICBitmapSource }
 
+type _IWICBitmapVt struct {
+	_IUnknownVt
+	Lock          uintptr
+	SetPalette    uintptr
+	SetResolution uintptr
+}
+
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
@@ -62,21 +69,28 @@ func (me *IWICBitmap) SetResolution(dpiX, dpiY float64) error {
 	return utl.HresultToError(ret)
 }
 
-type _IWICBitmapVt struct {
-	_IUnknownVt
-	Lock          uintptr
-	SetPalette    uintptr
-	SetResolution uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICBitmapCodecInfo] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IWICBitmapCodecInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapcodecinfo
 type IWICBitmapCodecInfo struct{ IWICComponentInfo }
+
+type _IWICBitmapCodecInfoVt struct {
+	_IWICComponentInfoVt
+	GetContainerFormat        uintptr
+	GetPixelFormats           uintptr
+	GetColorManagementVersion uintptr
+	GetDeviceManufacturer     uintptr
+	GetDeviceModels           uintptr
+	GetMimeTypes              uintptr
+	GetFileExtensions         uintptr
+	DoesSupportAnimation      uintptr
+	DoesSupportChromakey      uintptr
+	DoesSupportLossless       uintptr
+	DoesSupportMultiframe     uintptr
+	MatchesMimeType           uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -224,24 +238,6 @@ func (me *IWICBitmapCodecInfo) MatchesMimeType(mimeType string) (bool, error) {
 	}
 }
 
-type _IWICBitmapCodecInfoVt struct {
-	_IWICComponentInfoVt
-	GetContainerFormat        uintptr
-	GetPixelFormats           uintptr
-	GetColorManagementVersion uintptr
-	GetDeviceManufacturer     uintptr
-	GetDeviceModels           uintptr
-	GetMimeTypes              uintptr
-	GetFileExtensions         uintptr
-	DoesSupportAnimation      uintptr
-	DoesSupportChromakey      uintptr
-	DoesSupportLossless       uintptr
-	DoesSupportMultiframe     uintptr
-	MatchesMimeType           uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICBitmapDecoder] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -270,6 +266,21 @@ type _IWICBitmapCodecInfoVt struct {
 //
 // [IWICBitmapDecoder]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapdecoder
 type IWICBitmapDecoder struct{ IUnknown }
+
+type _IWICBitmapDecoderVt struct {
+	_IUnknownVt
+	QueryCapability        uintptr
+	Initialize             uintptr
+	GetContainerFormat     uintptr
+	GetDecoderInfo         uintptr
+	CopyPalette            uintptr
+	GetMetadataQueryReader uintptr
+	GetPreview             uintptr
+	GetColorContexts       uintptr
+	GetThumbnail           uintptr
+	GetFrameCount          uintptr
+	GetFrame               uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -390,29 +401,19 @@ func (me *IWICBitmapDecoder) QueryCapability(stream *IStream) (co.WICDEC_CAP, er
 	}
 }
 
-type _IWICBitmapDecoderVt struct {
-	_IUnknownVt
-	QueryCapability        uintptr
-	Initialize             uintptr
-	GetContainerFormat     uintptr
-	GetDecoderInfo         uintptr
-	CopyPalette            uintptr
-	GetMetadataQueryReader uintptr
-	GetPreview             uintptr
-	GetColorContexts       uintptr
-	GetThumbnail           uintptr
-	GetFrameCount          uintptr
-	GetFrame               uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICBitmapDecoderInfo] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IWICBitmapDecoderInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapdecoderinfo
 type IWICBitmapDecoderInfo struct{ IWICBitmapCodecInfo }
+
+type _IWICBitmapDecoderInfoVt struct {
+	_IWICBitmapCodecInfoVt
+	GetPatterns    uintptr
+	MatchesPattern uintptr
+	CreateInstance uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -447,15 +448,6 @@ func (me *IWICBitmapDecoderInfo) MatchesPattern(stream *IStream) (bool, error) {
 	}
 }
 
-type _IWICBitmapDecoderInfoVt struct {
-	_IWICBitmapCodecInfoVt
-	GetPatterns    uintptr
-	MatchesPattern uintptr
-	CreateInstance uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICBitmapEncoder] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -478,6 +470,20 @@ type _IWICBitmapDecoderInfoVt struct {
 //
 // [IWICBitmapEncoder]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapencoder
 type IWICBitmapEncoder struct{ IUnknown }
+
+type _IWICBitmapEncoderVt struct {
+	_IUnknownVt
+	Initialize             uintptr
+	GetContainerFormat     uintptr
+	GetEncoderInfo         uintptr
+	SetColorContexts       uintptr
+	SetPalette             uintptr
+	SetThumbnail           uintptr
+	SetPreview             uintptr
+	CreateNewFrame         uintptr
+	Commit                 uintptr
+	GetMetadataQueryWriter uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -564,28 +570,17 @@ func (me *IWICBitmapEncoder) SetThumbnail(thumbnail *IWICBitmapSource) error {
 	return utl.HresultToError(ret)
 }
 
-type _IWICBitmapEncoderVt struct {
-	_IUnknownVt
-	Initialize             uintptr
-	GetContainerFormat     uintptr
-	GetEncoderInfo         uintptr
-	SetColorContexts       uintptr
-	SetPalette             uintptr
-	SetThumbnail           uintptr
-	SetPreview             uintptr
-	CreateNewFrame         uintptr
-	Commit                 uintptr
-	GetMetadataQueryWriter uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICBitmapEncoderInfo] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IWICBitmapEncoderInfo]:
 type IWICBitmapEncoderInfo struct{ IWICBitmapCodecInfo }
+
+type _IWICBitmapEncoderInfoVt struct {
+	_IWICBitmapCodecInfoVt
+	CreateInstance uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -601,13 +596,6 @@ func (me *IWICBitmapEncoderInfo) CreateInstance(releaser *OleReleaser) (*IWICBit
 	return com_callBuildObj[*IWICBitmapEncoder](me, releaser,
 		(*_IWICBitmapEncoderInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance)
 }
-
-type _IWICBitmapEncoderInfoVt struct {
-	_IWICBitmapCodecInfoVt
-	CreateInstance uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // [IWICBitmapFrameDecode] COM interface.
 //
@@ -640,6 +628,13 @@ type _IWICBitmapEncoderInfoVt struct {
 // [IWICBitmapFrameDecode]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapframedecode
 type IWICBitmapFrameDecode struct{ IWICBitmapSource }
 
+type _IWICBitmapFrameDecodeVt struct {
+	_IWICBitmapSourceVt
+	GetMetadataQueryReader uintptr
+	GetColorContexts       uintptr
+	GetThumbnail           uintptr
+}
+
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
@@ -655,21 +650,20 @@ func (me *IWICBitmapFrameDecode) GetThumbnail(releaser *OleReleaser) (*IWICBitma
 		(*_IWICBitmapFrameDecodeVt)(unsafe.Pointer(*me.Ppvt())).GetThumbnail)
 }
 
-type _IWICBitmapFrameDecodeVt struct {
-	_IWICBitmapSourceVt
-	GetMetadataQueryReader uintptr
-	GetColorContexts       uintptr
-	GetThumbnail           uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICBitmapLock] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IWICBitmapLock]:
 type IWICBitmapLock struct{ IUnknown }
+
+type _IWICBitmapLockVt struct {
+	_IUnknownVt
+	GetSize        uintptr
+	GetStride      uintptr
+	GetDataPointer uintptr
+	GetPixelFormat uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -733,22 +727,21 @@ func (me *IWICBitmapLock) GetStride() (int, error) {
 	}
 }
 
-type _IWICBitmapLockVt struct {
-	_IUnknownVt
-	GetSize        uintptr
-	GetStride      uintptr
-	GetDataPointer uintptr
-	GetPixelFormat uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICBitmapSource] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IWICBitmapSource]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapsource
 type IWICBitmapSource struct{ IUnknown }
+
+type _IWICBitmapSourceVt struct {
+	_IUnknownVt
+	GetSize        uintptr
+	GetPixelFormat uintptr
+	GetResolution  uintptr
+	CopyPalette    uintptr
+	CopyPixels     uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -835,23 +828,24 @@ func (me *IWICBitmapSource) GetSize() (SIZE, error) {
 	}
 }
 
-type _IWICBitmapSourceVt struct {
-	_IUnknownVt
-	GetSize        uintptr
-	GetPixelFormat uintptr
-	GetResolution  uintptr
-	CopyPalette    uintptr
-	CopyPixels     uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICComponentInfo] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IWICComponentInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwiccomponentinfo
 type IWICComponentInfo struct{ IUnknown }
+
+type _IWICComponentInfoVt struct {
+	_IUnknownVt
+	GetComponentType uintptr
+	GetCLSID         uintptr
+	GetSigningStatus uintptr
+	GetAuthor        uintptr
+	GetVendorGUID    uintptr
+	GetVersion       uintptr
+	GetSpecVersion   uintptr
+	GetFriendlyName  uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1031,26 +1025,18 @@ func (me *IWICComponentInfo) GetVersion() (string, error) {
 	}
 }
 
-type _IWICComponentInfoVt struct {
-	_IUnknownVt
-	GetComponentType uintptr
-	GetCLSID         uintptr
-	GetSigningStatus uintptr
-	GetAuthor        uintptr
-	GetVendorGUID    uintptr
-	GetVersion       uintptr
-	GetSpecVersion   uintptr
-	GetFriendlyName  uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICFormatConverter] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IWICFormatConverter]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicformatconverter
 type IWICFormatConverter struct{ IWICBitmapSource }
+
+type _IWICFormatConverterVt struct {
+	_IWICBitmapSourceVt
+	Initialize uintptr
+	CanConvert uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1105,14 +1091,6 @@ func (me *IWICFormatConverter) Initialize(
 	return utl.HresultToError(ret)
 }
 
-type _IWICFormatConverterVt struct {
-	_IWICBitmapSourceVt
-	Initialize uintptr
-	CanConvert uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICImagingFactory] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -1137,6 +1115,35 @@ type _IWICFormatConverterVt struct {
 //
 // [IWICImagingFactory]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicimagingfactory
 type IWICImagingFactory struct{ IUnknown }
+
+type _IWICImagingFactoryVt struct {
+	_IUnknownVt
+	CreateDecoderFromFilename                uintptr
+	CreateDecoderFromStream                  uintptr
+	CreateDecoderFromFileHandle              uintptr
+	CreateComponentInfo                      uintptr
+	CreateDecoder                            uintptr
+	CreateEncoder                            uintptr
+	CreatePalette                            uintptr
+	CreateFormatConverter                    uintptr
+	CreateBitmapScaler                       uintptr
+	CreateBitmapClipper                      uintptr
+	CreateBitmapFlipRotator                  uintptr
+	CreateStream                             uintptr
+	CreateColorContext                       uintptr
+	CreateColorTransformer                   uintptr
+	CreateBitmap                             uintptr
+	CreateBitmapFromSource                   uintptr
+	CreateBitmapFromSourceRect               uintptr
+	CreateBitmapFromMemory                   uintptr
+	CreateBitmapFromHBITMAP                  uintptr
+	CreateBitmapFromHICON                    uintptr
+	CreateComponentEnumerator                uintptr
+	CreateFastMetadataEncoderFromDecoder     uintptr
+	CreateFastMetadataEncoderFromFrameDecode uintptr
+	CreateQueryWriter                        uintptr
+	CreateQueryWriterFromReader              uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1451,37 +1458,6 @@ func (me *IWICImagingFactory) CreateStream(releaser *OleReleaser) (*IWICStream, 
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateStream)
 }
 
-type _IWICImagingFactoryVt struct {
-	_IUnknownVt
-	CreateDecoderFromFilename                uintptr
-	CreateDecoderFromStream                  uintptr
-	CreateDecoderFromFileHandle              uintptr
-	CreateComponentInfo                      uintptr
-	CreateDecoder                            uintptr
-	CreateEncoder                            uintptr
-	CreatePalette                            uintptr
-	CreateFormatConverter                    uintptr
-	CreateBitmapScaler                       uintptr
-	CreateBitmapClipper                      uintptr
-	CreateBitmapFlipRotator                  uintptr
-	CreateStream                             uintptr
-	CreateColorContext                       uintptr
-	CreateColorTransformer                   uintptr
-	CreateBitmap                             uintptr
-	CreateBitmapFromSource                   uintptr
-	CreateBitmapFromSourceRect               uintptr
-	CreateBitmapFromMemory                   uintptr
-	CreateBitmapFromHBITMAP                  uintptr
-	CreateBitmapFromHICON                    uintptr
-	CreateComponentEnumerator                uintptr
-	CreateFastMetadataEncoderFromDecoder     uintptr
-	CreateFastMetadataEncoderFromFrameDecode uintptr
-	CreateQueryWriter                        uintptr
-	CreateQueryWriterFromReader              uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICPalette] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -1508,6 +1484,20 @@ type _IWICImagingFactoryVt struct {
 //
 // [IWICPalette]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicpalette
 type IWICPalette struct{ IUnknown }
+
+type _IWICPaletteVt struct {
+	_IUnknownVt
+	InitializePredefined  uintptr
+	InitializeCustom      uintptr
+	InitializeFromBitmap  uintptr
+	InitializeFromPalette uintptr
+	GetType               uintptr
+	GetColorCount         uintptr
+	GetColors             uintptr
+	IsBlackWhite          uintptr
+	IsGrayscale           uintptr
+	HasAlpha              uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1612,28 +1602,20 @@ func (me *IWICPalette) IsGrayscale() (bool, error) {
 	}
 }
 
-type _IWICPaletteVt struct {
-	_IUnknownVt
-	InitializePredefined  uintptr
-	InitializeCustom      uintptr
-	InitializeFromBitmap  uintptr
-	InitializeFromPalette uintptr
-	GetType               uintptr
-	GetColorCount         uintptr
-	GetColors             uintptr
-	IsBlackWhite          uintptr
-	IsGrayscale           uintptr
-	HasAlpha              uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IWICStream] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IWICStream]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicstream
 type IWICStream struct{ IStream }
+
+type _IWICStreamVt struct {
+	_IStreamVt
+	InitializeFromIStream       uintptr
+	InitializeFromFilename      uintptr
+	InitializeFromMemory        uintptr
+	InitializeFromIStreamRegion uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1689,12 +1671,4 @@ func (me *IWICStream) InitializeFromMemory(buf []byte) error {
 		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
 		uintptr(uint32(len(buf))))
 	return utl.HresultToError(ret)
-}
-
-type _IWICStreamVt struct {
-	_IStreamVt
-	InitializeFromIStream       uintptr
-	InitializeFromFilename      uintptr
-	InitializeFromMemory        uintptr
-	InitializeFromIStreamRegion uintptr
 }

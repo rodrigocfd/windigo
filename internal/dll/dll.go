@@ -9,11 +9,13 @@ import (
 	"unsafe"
 )
 
+// Loads system DLLs and procedures.
 type SystemDll struct {
 	dll  *syscall.DLL
 	name string
 }
 
+// System DLL.
 var (
 	dllMutex sync.Mutex
 
@@ -33,6 +35,7 @@ var (
 	Version = SystemDll{nil, "version"}
 )
 
+// Loads the procName system procedure into pDestProc address.
 func (me *SystemDll) Load(pDestProc **syscall.Proc, procName string) uintptr {
 	if pProc := atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(pDestProc))); pProc != nil {
 		return (*syscall.Proc)(pProc).Addr() // already cached

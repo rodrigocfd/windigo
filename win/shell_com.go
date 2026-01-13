@@ -38,6 +38,14 @@ import (
 // [IEnumIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ienumidlist
 type IEnumIDList struct{ IUnknown }
 
+type _IEnumIDListVt struct {
+	_IUnknownVt
+	Next  uintptr
+	Skip  uintptr
+	Reset uintptr
+	Clone uintptr
+}
+
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
@@ -151,16 +159,6 @@ func (me *IEnumIDList) Skip(count int) error {
 	return utl.HresultToError(ret)
 }
 
-type _IEnumIDListVt struct {
-	_IUnknownVt
-	Next  uintptr
-	Skip  uintptr
-	Reset uintptr
-	Clone uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IEnumShellItems] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -194,6 +192,14 @@ type _IEnumIDListVt struct {
 //
 // [IEnumShellItems]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ienumshellitems
 type IEnumShellItems struct{ IUnknown }
+
+type _IEnumShellItemsVt struct {
+	_IUnknownVt
+	Next  uintptr
+	Skip  uintptr
+	Reset uintptr
+	Clone uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -306,22 +312,39 @@ func (me *IEnumShellItems) Skip(count int) error {
 	return utl.HresultToError(ret)
 }
 
-type _IEnumShellItemsVt struct {
-	_IUnknownVt
-	Next  uintptr
-	Skip  uintptr
-	Reset uintptr
-	Clone uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IFileDialog] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IFileDialog]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialog
 type IFileDialog struct{ IModalWindow }
+
+type _IFileDialogVt struct {
+	_IModalWindowVt
+	SetFileTypes        uintptr
+	SetFileTypeIndex    uintptr
+	GetFileTypeIndex    uintptr
+	Advise              uintptr
+	Unadvise            uintptr
+	SetOptions          uintptr
+	GetOptions          uintptr
+	SetDefaultFolder    uintptr
+	SetFolder           uintptr
+	GetFolder           uintptr
+	GetCurrentSelection uintptr
+	SetFileName         uintptr
+	GetFileName         uintptr
+	SetTitle            uintptr
+	SetOkButtonLabel    uintptr
+	SetFileNameLabel    uintptr
+	GetResult           uintptr
+	AddPlace            uintptr
+	SetDefaultExtension uintptr
+	Close               uintptr
+	SetClientGuid       uintptr
+	ClearClientData     uintptr
+	SetFilter           uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -645,35 +668,6 @@ func (me *IFileDialog) Unadvise(cookie uint32) error {
 	return utl.HresultToError(ret)
 }
 
-type _IFileDialogVt struct {
-	_IModalWindowVt
-	SetFileTypes        uintptr
-	SetFileTypeIndex    uintptr
-	GetFileTypeIndex    uintptr
-	Advise              uintptr
-	Unadvise            uintptr
-	SetOptions          uintptr
-	GetOptions          uintptr
-	SetDefaultFolder    uintptr
-	SetFolder           uintptr
-	GetFolder           uintptr
-	GetCurrentSelection uintptr
-	SetFileName         uintptr
-	GetFileName         uintptr
-	SetTitle            uintptr
-	SetOkButtonLabel    uintptr
-	SetFileNameLabel    uintptr
-	GetResult           uintptr
-	AddPlace            uintptr
-	SetDefaultExtension uintptr
-	Close               uintptr
-	SetClientGuid       uintptr
-	ClearClientData     uintptr
-	SetFilter           uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IFileOpenDialog] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -719,6 +713,12 @@ type _IFileDialogVt struct {
 // [IFileOpenDialog]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileopendialog
 type IFileOpenDialog struct{ IFileDialog }
 
+type _IFileOpenDialogVt struct {
+	_IFileDialogVt
+	GetResults       uintptr
+	GetSelectedItems uintptr
+}
+
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
@@ -747,14 +747,6 @@ func (me *IFileOpenDialog) GetSelectedItems(releaser *OleReleaser) (*IShellItemA
 		(*_IFileOpenDialogVt)(unsafe.Pointer(*me.Ppvt())).GetSelectedItems)
 }
 
-type _IFileOpenDialogVt struct {
-	_IFileDialogVt
-	GetResults       uintptr
-	GetSelectedItems uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IFileOperation] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -779,6 +771,30 @@ type _IFileOpenDialogVt struct {
 //
 // [IFileOperation]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileoperation
 type IFileOperation struct{ IUnknown }
+
+type _IFileOperationVt struct {
+	_IUnknownVt
+	Advise                  uintptr
+	Unadvise                uintptr
+	SetOperationFlags       uintptr
+	SetProgressMessage      uintptr
+	SetProgressDialog       uintptr
+	SetProperties           uintptr
+	SetOwnerWindow          uintptr
+	ApplyPropertiesToItem   uintptr
+	ApplyPropertiesToItems  uintptr
+	RenameItem              uintptr
+	RenameItems             uintptr
+	MoveItem                uintptr
+	MoveItems               uintptr
+	CopyItem                uintptr
+	CopyItems               uintptr
+	DeleteItem              uintptr
+	DeleteItems             uintptr
+	NewItem                 uintptr
+	PerformOperations       uintptr
+	GetAnyOperationsAborted uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -999,32 +1015,6 @@ func (me *IFileOperation) Unadvise(cookie uint32) error {
 	return utl.HresultToError(ret)
 }
 
-type _IFileOperationVt struct {
-	_IUnknownVt
-	Advise                  uintptr
-	Unadvise                uintptr
-	SetOperationFlags       uintptr
-	SetProgressMessage      uintptr
-	SetProgressDialog       uintptr
-	SetProperties           uintptr
-	SetOwnerWindow          uintptr
-	ApplyPropertiesToItem   uintptr
-	ApplyPropertiesToItems  uintptr
-	RenameItem              uintptr
-	RenameItems             uintptr
-	MoveItem                uintptr
-	MoveItems               uintptr
-	CopyItem                uintptr
-	CopyItems               uintptr
-	DeleteItem              uintptr
-	DeleteItems             uintptr
-	NewItem                 uintptr
-	PerformOperations       uintptr
-	GetAnyOperationsAborted uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IFileSaveDialog] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -1061,6 +1051,15 @@ type _IFileOperationVt struct {
 //
 // [IFileSaveDialog]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifilesavedialog
 type IFileSaveDialog struct{ IFileDialog }
+
+type _IFileSaveDialogVt struct {
+	_IFileDialogVt
+	SetSaveAsItem          uintptr
+	SetProperties          uintptr
+	SetCollectedProperties uintptr
+	GetProperties          uintptr
+	ApplyProperties        uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1118,23 +1117,17 @@ func (me *IFileSaveDialog) SetSaveAsItem(item *IShellItem) error {
 	return utl.HresultToError(ret)
 }
 
-type _IFileSaveDialogVt struct {
-	_IFileDialogVt
-	SetSaveAsItem          uintptr
-	SetProperties          uintptr
-	SetCollectedProperties uintptr
-	GetProperties          uintptr
-	ApplyProperties        uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IModalWindow] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IModalWindow]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
 type IModalWindow struct{ IUnknown }
+
+type _IModalWindowVt struct {
+	_IUnknownVt
+	Show uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1163,19 +1156,18 @@ func (me *IModalWindow) Show(hwndOwner HWND) (bool, error) {
 	}
 }
 
-type _IModalWindowVt struct {
-	_IUnknownVt
-	Show uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IOleWindow] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IOleWindow]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-iolewindow
 type IOleWindow struct{ IUnknown }
+
+type _IOleWindowVt struct {
+	_IUnknownVt
+	GetWindow            uintptr
+	ContextSensitiveHelp uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1213,14 +1205,6 @@ func (me *IOleWindow) GetWindow() (HWND, error) {
 	}
 }
 
-type _IOleWindowVt struct {
-	_IUnknownVt
-	GetWindow            uintptr
-	ContextSensitiveHelp uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IShellFolder] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -1242,6 +1226,20 @@ type _IOleWindowVt struct {
 //
 // [IShellFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellfolder
 type IShellFolder struct{ IUnknown }
+
+type _IShellFolderVt struct {
+	_IUnknownVt
+	ParseDisplayName uintptr
+	EnumObjects      uintptr
+	BindToObject     uintptr
+	BindToStorage    uintptr
+	CompareIDs       uintptr
+	CreateViewObject uintptr
+	GetAttributesOf  uintptr
+	GetUIObjectOf    uintptr
+	GetDisplayNameOf uintptr
+	SetNameOf        uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1443,22 +1441,6 @@ func (me *IShellFolder) SetNameOf(
 	}
 }
 
-type _IShellFolderVt struct {
-	_IUnknownVt
-	ParseDisplayName uintptr
-	EnumObjects      uintptr
-	BindToObject     uintptr
-	BindToStorage    uintptr
-	CompareIDs       uintptr
-	CreateViewObject uintptr
-	GetAttributesOf  uintptr
-	GetUIObjectOf    uintptr
-	GetDisplayNameOf uintptr
-	SetNameOf        uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IShellItem] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -1475,6 +1457,15 @@ type _IShellFolderVt struct {
 //
 // [IShellItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem
 type IShellItem struct{ IUnknown }
+
+type _IShellItemVt struct {
+	_IUnknownVt
+	BindToHandler  uintptr
+	GetParent      uintptr
+	GetDisplayName uintptr
+	GetAttributes  uintptr
+	Compare        uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1603,17 +1594,6 @@ func (me *IShellItem) GetParent(releaser *OleReleaser) (*IShellItem, error) {
 		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).GetParent)
 }
 
-type _IShellItemVt struct {
-	_IUnknownVt
-	BindToHandler  uintptr
-	GetParent      uintptr
-	GetDisplayName uintptr
-	GetAttributes  uintptr
-	Compare        uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IShellItem2] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -1649,6 +1629,23 @@ type _IShellItemVt struct {
 //
 // [IShellItem2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitem2
 type IShellItem2 struct{ IShellItem }
+
+type _IShellItem2Vt struct {
+	_IShellItemVt
+	GetPropertyStore                 uintptr
+	GetPropertyStoreWithCreateObject uintptr
+	GetPropertyStoreForKeys          uintptr
+	GetPropertyDescriptionList       uintptr
+	Update                           uintptr
+	GetProperty                      uintptr
+	GetCLSID                         uintptr
+	GetFileTime                      uintptr
+	GetInt32                         uintptr
+	GetString                        uintptr
+	GetUInt32                        uintptr
+	GetUInt64                        uintptr
+	GetBool                          uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1836,31 +1833,23 @@ func (me *IShellItem2) Update(bc *IBindCtx) error {
 	return utl.HresultToError(ret)
 }
 
-type _IShellItem2Vt struct {
-	_IShellItemVt
-	GetPropertyStore                 uintptr
-	GetPropertyStoreWithCreateObject uintptr
-	GetPropertyStoreForKeys          uintptr
-	GetPropertyDescriptionList       uintptr
-	Update                           uintptr
-	GetProperty                      uintptr
-	GetCLSID                         uintptr
-	GetFileTime                      uintptr
-	GetInt32                         uintptr
-	GetString                        uintptr
-	GetUInt32                        uintptr
-	GetUInt64                        uintptr
-	GetBool                          uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IShellItemArray] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IShellItemArray]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
 type IShellItemArray struct{ IUnknown }
+
+type _IShellItemArrayVt struct {
+	_IUnknownVt
+	BindToHandler              uintptr
+	GetPropertyStore           uintptr
+	GetPropertyDescriptionList uintptr
+	GetAttributes              uintptr
+	GetCount                   uintptr
+	GetItemAt                  uintptr
+	EnumItems                  uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1978,25 +1967,34 @@ func (me *IShellItemArray) GetItemAt(releaser *OleReleaser, index int) (*IShellI
 	return com_buildObj_retObjHres[*IShellItem](ret, ppvtQueried, releaser)
 }
 
-type _IShellItemArrayVt struct {
-	_IUnknownVt
-	BindToHandler              uintptr
-	GetPropertyStore           uintptr
-	GetPropertyDescriptionList uintptr
-	GetAttributes              uintptr
-	GetCount                   uintptr
-	GetItemAt                  uintptr
-	EnumItems                  uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IShellLink] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IShellLink]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishelllinkw
 type IShellLink struct{ IUnknown }
+
+type _IShellLinkVt struct {
+	_IUnknownVt
+	GetPath             uintptr
+	GetIDList           uintptr
+	SetIDList           uintptr
+	GetDescription      uintptr
+	SetDescription      uintptr
+	GetWorkingDirectory uintptr
+	SetWorkingDirectory uintptr
+	GetArguments        uintptr
+	SetArguments        uintptr
+	GetHotkey           uintptr
+	SetHotkey           uintptr
+	GetShowCmd          uintptr
+	SetShowCmd          uintptr
+	GetIconLocation     uintptr
+	SetIconLocation     uintptr
+	SetRelativePath     uintptr
+	Resolve             uintptr
+	SetPath             uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -2251,36 +2249,27 @@ func (me *IShellLink) SetWorkingDirectory(path string) error {
 	return utl.HresultToError(ret)
 }
 
-type _IShellLinkVt struct {
-	_IUnknownVt
-	GetPath             uintptr
-	GetIDList           uintptr
-	SetIDList           uintptr
-	GetDescription      uintptr
-	SetDescription      uintptr
-	GetWorkingDirectory uintptr
-	SetWorkingDirectory uintptr
-	GetArguments        uintptr
-	SetArguments        uintptr
-	GetHotkey           uintptr
-	SetHotkey           uintptr
-	GetShowCmd          uintptr
-	SetShowCmd          uintptr
-	GetIconLocation     uintptr
-	SetIconLocation     uintptr
-	SetRelativePath     uintptr
-	Resolve             uintptr
-	SetPath             uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IShellView] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IShellView]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellview
 type IShellView struct{ IOleWindow }
+
+type _IShellViewVt struct {
+	_IOleWindowVt
+	TranslateAccelerator  uintptr
+	EnableModeless        uintptr
+	UIActivate            uintptr
+	Refresh               uintptr
+	CreateViewWindow      uintptr
+	DestroyViewWindow     uintptr
+	GetCurrentInfo        uintptr
+	AddPropertySheetPages uintptr
+	SaveViewState         uintptr
+	SelectItem            uintptr
+	GetItemObject         uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -2346,23 +2335,6 @@ func (me *IShellView) UIActivate(state co.SVUIA) error {
 	return utl.HresultToError(ret)
 }
 
-type _IShellViewVt struct {
-	_IOleWindowVt
-	TranslateAccelerator  uintptr
-	EnableModeless        uintptr
-	UIActivate            uintptr
-	Refresh               uintptr
-	CreateViewWindow      uintptr
-	DestroyViewWindow     uintptr
-	GetCurrentInfo        uintptr
-	AddPropertySheetPages uintptr
-	SaveViewState         uintptr
-	SelectItem            uintptr
-	GetItemObject         uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [ITaskbarList] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -2387,6 +2359,15 @@ type _IShellViewVt struct {
 //
 // [ITaskbarList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist
 type ITaskbarList struct{ IUnknown }
+
+type _ITaskbarListVt struct {
+	_IUnknownVt
+	HrInit       uintptr
+	AddTab       uintptr
+	DeleteTab    uintptr
+	ActivateTab  uintptr
+	SetActiveAlt uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -2447,17 +2428,6 @@ func (me *ITaskbarList) SetActiveAlt(hWnd HWND) error {
 	return utl.HresultToError(ret)
 }
 
-type _ITaskbarListVt struct {
-	_IUnknownVt
-	HrInit       uintptr
-	AddTab       uintptr
-	DeleteTab    uintptr
-	ActivateTab  uintptr
-	SetActiveAlt uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [ITaskbarList2] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -2483,6 +2453,11 @@ type _ITaskbarListVt struct {
 // [ITaskbarList2]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist2
 type ITaskbarList2 struct{ ITaskbarList }
 
+type _ITaskbarList2Vt struct {
+	_ITaskbarListVt
+	MarkFullscreenWindow uintptr
+}
+
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
@@ -2501,13 +2476,6 @@ func (me *ITaskbarList2) MarkFullscreenWindow(hwnd HWND, fullScreen bool) error 
 		utl.BoolToUintptr(fullScreen))
 	return utl.HresultToError(ret)
 }
-
-type _ITaskbarList2Vt struct {
-	_ITaskbarListVt
-	MarkFullscreenWindow uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // [ITaskbarList3] COM interface.
 //
@@ -2533,6 +2501,22 @@ type _ITaskbarList2Vt struct {
 //
 // [ITaskbarList3]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
 type ITaskbarList3 struct{ ITaskbarList2 }
+
+type _ITaskbarList3Vt struct {
+	_ITaskbarList2Vt
+	SetProgressValue      uintptr
+	SetProgressState      uintptr
+	RegisterTab           uintptr
+	UnregisterTab         uintptr
+	SetTabOrder           uintptr
+	SetTabActive          uintptr
+	ThumbBarAddButtons    uintptr
+	ThumbBarUpdateButtons uintptr
+	ThumbBarSetImageList  uintptr
+	SetOverlayIcon        uintptr
+	SetThumbnailTooltip   uintptr
+	SetThumbnailClip      uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -2693,24 +2677,6 @@ func (me *ITaskbarList3) UnregisterTab(hwndTab HWND) error {
 	return utl.HresultToError(ret)
 }
 
-type _ITaskbarList3Vt struct {
-	_ITaskbarList2Vt
-	SetProgressValue      uintptr
-	SetProgressState      uintptr
-	RegisterTab           uintptr
-	UnregisterTab         uintptr
-	SetTabOrder           uintptr
-	SetTabActive          uintptr
-	ThumbBarAddButtons    uintptr
-	ThumbBarUpdateButtons uintptr
-	ThumbBarSetImageList  uintptr
-	SetOverlayIcon        uintptr
-	SetThumbnailTooltip   uintptr
-	SetThumbnailClip      uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [ITaskbarList4] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -2736,6 +2702,11 @@ type _ITaskbarList3Vt struct {
 // [ITaskbarList4]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist4
 type ITaskbarList4 struct{ ITaskbarList3 }
 
+type _ITaskbarList4Vt struct {
+	_ITaskbarList3Vt
+	SetTabProperties uintptr
+}
+
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
@@ -2753,9 +2724,4 @@ func (me *ITaskbarList4) SetProperties(hwndTab HWND, flags co.STPFLAG) error {
 		uintptr(hwndTab),
 		uintptr(flags))
 	return utl.HresultToError(ret)
-}
-
-type _ITaskbarList4Vt struct {
-	_ITaskbarList3Vt
-	SetTabProperties uintptr
 }

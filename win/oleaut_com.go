@@ -19,6 +19,14 @@ import (
 // [IDispatch]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 type IDispatch struct{ IUnknown }
 
+type _IDispatchVt struct {
+	_IUnknownVt
+	GetTypeInfoCount uintptr
+	GetTypeInfo      uintptr
+	GetIDsOfNames    uintptr
+	Invoke           uintptr
+}
+
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
@@ -408,22 +416,30 @@ func (me *IDispatch) rawInvoke(
 	return v, nil
 }
 
-type _IDispatchVt struct {
-	_IUnknownVt
-	GetTypeInfoCount uintptr
-	GetTypeInfo      uintptr
-	GetIDsOfNames    uintptr
-	Invoke           uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IPicture] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IPicture]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nn-ocidl-ipicture
 type IPicture struct{ IUnknown }
+
+type _IPictureVt struct {
+	_IUnknownVt
+	Get_Handle             uintptr
+	Get_hPal               uintptr
+	Get_Type               uintptr
+	Get_Width              uintptr
+	Get_Height             uintptr
+	Render                 uintptr
+	Set_hPal               uintptr
+	Get_CurDC              uintptr
+	SelectPicture          uintptr
+	Get_KeepOriginalFormat uintptr
+	Put_KeepOriginalFormat uintptr
+	PictureChanged         uintptr
+	SaveAsFile             uintptr
+	Get_Attributes         uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -753,32 +769,21 @@ func (me *IPicture) SizePixels(hdc HDC) (SIZE, error) {
 	return SIZE{Cx: int32(pixelX), Cy: int32(pixelY)}, nil
 }
 
-type _IPictureVt struct {
-	_IUnknownVt
-	Get_Handle             uintptr
-	Get_hPal               uintptr
-	Get_Type               uintptr
-	Get_Width              uintptr
-	Get_Height             uintptr
-	Render                 uintptr
-	Set_hPal               uintptr
-	Get_CurDC              uintptr
-	SelectPicture          uintptr
-	Get_KeepOriginalFormat uintptr
-	Put_KeepOriginalFormat uintptr
-	PictureChanged         uintptr
-	SaveAsFile             uintptr
-	Get_Attributes         uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IPropertyStore] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IPropertyStore]: https://learn.microsoft.com/en-us/windows/win32/api/propsys/nn-propsys-ipropertystore
 type IPropertyStore struct{ IUnknown }
+
+type _IPropertyStoreVt struct {
+	_IUnknownVt
+	GetCount uintptr
+	GetAt    uintptr
+	GetValue uintptr
+	SetValue uintptr
+	Commit   uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -849,23 +854,35 @@ func (me *IPropertyStore) GetCount() (int, error) {
 	}
 }
 
-type _IPropertyStoreVt struct {
-	_IUnknownVt
-	GetCount uintptr
-	GetAt    uintptr
-	GetValue uintptr
-	SetValue uintptr
-	Commit   uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [ITypeInfo] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [ITypeInfo]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
 type ITypeInfo struct{ IUnknown }
+
+type _ITypeInfoVt struct {
+	_IUnknownVt
+	GetTypeAttr          uintptr
+	GetTypeComp          uintptr
+	GetFuncDesc          uintptr
+	GetVarDesc           uintptr
+	GetNames             uintptr
+	GetRefTypeOfImplType uintptr
+	GetImplTypeFlags     uintptr
+	GetIDsOfNames        uintptr
+	Invoke               uintptr
+	GetDocumentation     uintptr
+	GetDllEntry          uintptr
+	GetRefTypeInfo       uintptr
+	AddressOfMember      uintptr
+	CreateInstance       uintptr
+	GetMops              uintptr
+	GetContainingTypeLib uintptr
+	ReleaseTypeAttr      uintptr
+	ReleaseFuncDesc      uintptr
+	ReleaseVarDesc       uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1127,37 +1144,25 @@ func (me *ITypeInfo) _ReleaseFuncDesc(pFuncDesc *FUNCDESC) error {
 	return utl.HresultToError(ret)
 }
 
-type _ITypeInfoVt struct {
-	_IUnknownVt
-	GetTypeAttr          uintptr
-	GetTypeComp          uintptr
-	GetFuncDesc          uintptr
-	GetVarDesc           uintptr
-	GetNames             uintptr
-	GetRefTypeOfImplType uintptr
-	GetImplTypeFlags     uintptr
-	GetIDsOfNames        uintptr
-	Invoke               uintptr
-	GetDocumentation     uintptr
-	GetDllEntry          uintptr
-	GetRefTypeInfo       uintptr
-	AddressOfMember      uintptr
-	CreateInstance       uintptr
-	GetMops              uintptr
-	GetContainingTypeLib uintptr
-	ReleaseTypeAttr      uintptr
-	ReleaseFuncDesc      uintptr
-	ReleaseVarDesc       uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [ITypeLib] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [ITypeLib]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypelib
 type ITypeLib struct{ IUnknown }
+
+type _ITypeLibVt struct {
+	GetTypeInfoCount  uintptr
+	GetTypeInfo       uintptr
+	GetTypeInfoType   uintptr
+	GetTypeInfoOfGuid uintptr
+	GetLibAttr        uintptr
+	GetTypeComp       uintptr
+	GetDocumentation  uintptr
+	IsName            uintptr
+	FindName          uintptr
+	ReleaseTLibAttr   uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -1202,17 +1207,4 @@ func (me *ITypeLib) GetTypeInfoOfGuid(releaser *OleReleaser, guid co.GUID) (*ITy
 		uintptr(unsafe.Pointer(&guidGuid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*ITypeInfo](ret, ppvtQueried, releaser)
-}
-
-type _ITypeLibVt struct {
-	GetTypeInfoCount  uintptr
-	GetTypeInfo       uintptr
-	GetTypeInfoType   uintptr
-	GetTypeInfoOfGuid uintptr
-	GetLibAttr        uintptr
-	GetTypeComp       uintptr
-	GetDocumentation  uintptr
-	IsName            uintptr
-	FindName          uintptr
-	ReleaseTLibAttr   uintptr
 }

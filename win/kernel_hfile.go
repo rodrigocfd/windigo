@@ -314,8 +314,6 @@ func (hFile HFILE) WriteFile(
 
 var _kernel_WriteFile *syscall.Proc
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // Handle to a memory-mapped [file].
 //
 // [file]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
@@ -373,8 +371,6 @@ var _kernel_MapViewOfFileFromApp *syscall.Proc
 func (hMap HFILEMAP) SetHandleInformation(mask, flags co.HANDLE_FLAG) error {
 	return HFILE(hMap).SetHandleInformation(mask, flags)
 }
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // Handle to the memory block of a memory-mapped [file]. Actually, this is the
 // starting address of the mapped view.

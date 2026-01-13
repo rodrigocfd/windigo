@@ -79,8 +79,6 @@ func (hdc HDC) SelectObject(hGdiObj HGDIOBJ) (HGDIOBJ, error) {
 
 var _gdi_SelectObject *syscall.Proc
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // Handle to a [bitmap].
 //
 // [bitmap]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbitmap
@@ -146,8 +144,6 @@ func (hBmp HBITMAP) GetObject() (BITMAP, error) {
 	}
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // Handle to a [brush].
 //
 // [brush]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hbrush
@@ -205,8 +201,6 @@ func (hBrush HBRUSH) GetObject() (LOGBRUSH, error) {
 		return lb, nil
 	}
 }
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // Handle to a [font].
 //
@@ -292,8 +286,6 @@ func (hFont HFONT) GetObject() (LOGFONT, error) {
 		return lf, nil
 	}
 }
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // Handle to a [pen].
 //
@@ -391,8 +383,6 @@ func (hPen HPEN) GetObject() (LOGPEN, error) {
 		return lp, nil
 	}
 }
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // Handle to a [region].
 //

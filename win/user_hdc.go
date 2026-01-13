@@ -76,16 +76,14 @@ func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) ([]EnumDisplayMonitorsInfo, err
 
 var _user_EnumDisplayMonitors *syscall.Proc
 
-type (
-	// Returned by [HDC.EnumDisplayMonitors].
-	EnumDisplayMonitorsInfo struct {
-		HMon   HMONITOR
-		HdcMon HDC
-		Rc     RECT
-	}
+// Returned by [HDC.EnumDisplayMonitors].
+type EnumDisplayMonitorsInfo struct {
+	HMon   HMONITOR
+	HdcMon HDC
+	Rc     RECT
+}
 
-	callbackPack_EnumDisplayMonitors struct{ arr []EnumDisplayMonitorsInfo }
-)
+type callbackPack_EnumDisplayMonitors struct{ arr []EnumDisplayMonitorsInfo }
 
 var callback_EnumDisplayMonitors uintptr
 

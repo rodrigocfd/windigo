@@ -25,6 +25,20 @@ import (
 // [IBindCtx]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ibindctx
 type IBindCtx struct{ IUnknown }
 
+type _IBindCtxVt struct {
+	_IUnknownVt
+	RegisterObjectBound   uintptr
+	RevokeObjectBound     uintptr
+	ReleaseBoundObjects   uintptr
+	SetBindOptions        uintptr
+	GetBindOptions        uintptr
+	GetRunningObjectTable uintptr
+	RegisterObjectParam   uintptr
+	GetObjectParam        uintptr
+	EnumObjectParam       uintptr
+	RevokeObjectParam     uintptr
+}
+
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
@@ -115,28 +129,25 @@ func (me *IBindCtx) SetBindOptions(bindOpts *BIND_OPTS3) error {
 	return utl.HresultToError(ret)
 }
 
-type _IBindCtxVt struct {
-	_IUnknownVt
-	RegisterObjectBound   uintptr
-	RevokeObjectBound     uintptr
-	ReleaseBoundObjects   uintptr
-	SetBindOptions        uintptr
-	GetBindOptions        uintptr
-	GetRunningObjectTable uintptr
-	RegisterObjectParam   uintptr
-	GetObjectParam        uintptr
-	EnumObjectParam       uintptr
-	RevokeObjectParam     uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IDataObject] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IDataObject]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
 type IDataObject struct{ IUnknown }
+
+type _IDataObjectVt struct {
+	_IUnknownVt
+	GetData               uintptr
+	GetDataHere           uintptr
+	QueryGetData          uintptr
+	GetCanonicalFormatEtc uintptr
+	SetData               uintptr
+	EnumFormatEtc         uintptr
+	DAdvise               uintptr
+	DUnadvise             uintptr
+	EnumDAdvise           uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -192,27 +203,20 @@ func (me *IDataObject) QueryGetData(etc *FORMATETC) error {
 	return utl.HresultToError(ret)
 }
 
-type _IDataObjectVt struct {
-	_IUnknownVt
-	GetData               uintptr
-	GetDataHere           uintptr
-	QueryGetData          uintptr
-	GetCanonicalFormatEtc uintptr
-	SetData               uintptr
-	EnumFormatEtc         uintptr
-	DAdvise               uintptr
-	DUnadvise             uintptr
-	EnumDAdvise           uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IEnumString] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IEnumString]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ienumstring
 type IEnumString struct{ IUnknown }
+
+type _IEnumStringVt struct {
+	_IUnknownVt
+	Next  uintptr
+	Skip  uintptr
+	Reset uintptr
+	Clone uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -294,22 +298,18 @@ func (me *IEnumString) Skip(count int) error {
 	return utl.HresultToError(ret)
 }
 
-type _IEnumStringVt struct {
-	_IUnknownVt
-	Next  uintptr
-	Skip  uintptr
-	Reset uintptr
-	Clone uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [ISequentialStream] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [ISequentialStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-isequentialstream
 type ISequentialStream struct{ IUnknown }
+
+type _ISequentialStreamVt struct {
+	_IUnknownVt
+	Read  uintptr
+	Write uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -359,20 +359,25 @@ func (me *ISequentialStream) Write(data []byte) (numBytesWritten int, hr error) 
 	}
 }
 
-type _ISequentialStreamVt struct {
-	_IUnknownVt
-	Read  uintptr
-	Write uintptr
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // [IStream] COM interface.
 //
 // Implements [OleObj] and [OleResource].
 //
 // [IStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
 type IStream struct{ ISequentialStream }
+
+type _IStreamVt struct {
+	_ISequentialStreamVt
+	Seek         uintptr
+	SetSize      uintptr
+	CopyTo       uintptr
+	Commit       uintptr
+	Revert       uintptr
+	LockRegion   uintptr
+	UnlockRegion uintptr
+	Stat         uintptr
+	Clone        uintptr
+}
 
 // Returns the unique COM [interface ID].
 //
@@ -520,17 +525,4 @@ func (me *IStream) UnlockRegion(offset, length int, lockType co.LOCKTYPE) error 
 		uintptr(uint64(length)),
 		uintptr(lockType))
 	return utl.HresultToError(ret)
-}
-
-type _IStreamVt struct {
-	_ISequentialStreamVt
-	Seek         uintptr
-	SetSize      uintptr
-	CopyTo       uintptr
-	Commit       uintptr
-	Revert       uintptr
-	LockRegion   uintptr
-	UnlockRegion uintptr
-	Stat         uintptr
-	Clone        uintptr
 }

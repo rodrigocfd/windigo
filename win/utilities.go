@@ -360,8 +360,6 @@ func (me *File) WriteString(s string) (int, error) {
 	return written, nil
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // High-level abstraction to [HFILEMAP], providing several operations.
 //
 // Note that memory-mapped files may present issues in x86 architectures; if so,
@@ -538,37 +536,33 @@ func (me *FileMap) Size() int {
 	return me.sz
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// High-level abstraction for .ini file contents, loaded with [IniLoad].
+type Ini struct {
+	// Path to the .ini file that has been loaded. If you want to save the
+	// .ini somewhere else, you may change this value.
+	Path string
+	// Sections of the .ini file. You may modify or rearrange these before
+	// saving the file.
+	Sections []IniSection
+}
 
-type (
-	// High-level abstraction for .ini file contents, loaded with [IniLoad].
-	Ini struct {
-		// Path to the .ini file that has been loaded. If you want to save the
-		// .ini somewhere else, you may change this value.
-		Path string
-		// Sections of the .ini file. You may modify or rearrange these before
-		// saving the file.
-		Sections []IniSection
-	}
+// High-level abstraction for .ini file sections.
+type IniSection struct {
+	// Name of the section. You may change this value before saving the
+	// file.
+	Name string
+	// Entries of the section. You may modify or rearrange these before
+	// saving the file.
+	Entries []IniEntry
+}
 
-	// High-level abstraction for .ini file sections.
-	IniSection struct {
-		// Name of the section. You may change this value before saving the
-		// file.
-		Name string
-		// Entries of the section. You may modify or rearrange these before
-		// saving the file.
-		Entries []IniEntry
-	}
-
-	// High-level abstracion for .ini entries.
-	IniEntry struct {
-		// Name of the key. You may change this value before saving the file.
-		Key string
-		// Actual value. You may change this value before saving the file.
-		Value string
-	}
-)
+// High-level abstracion for .ini entries.
+type IniEntry struct {
+	// Name of the key. You may change this value before saving the file.
+	Key string
+	// Actual value. You may change this value before saving the file.
+	Value string
+}
 
 // Constructs a new [Ini] object by reading an .ini file, parsing its contents.
 //
@@ -703,8 +697,6 @@ func (me *IniSection) Set(key, value string) {
 	}
 	me.Entries = append(me.Entries, IniEntry{key, value}) // key doesn't exist
 }
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // Returns the path going one directory above, whether it is a file or folder.
 // If already at the root, the same path is returned.
@@ -927,8 +919,6 @@ func PathTrimBackslash(path string) string {
 	}
 	return path[:lastIdx+1]
 }
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // Dynamic, manually OS [heap-allocated] memory block array.
 //

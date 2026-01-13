@@ -41,8 +41,6 @@ type OleObj interface {
 	Ppvt() **_IUnknownVt
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
 // Returns the virtual table pointer, performing a nil check.
 func com_ppvtOrNil(obj OleObj) unsafe.Pointer {
 	if !utl.IsNil(obj) {
@@ -156,8 +154,6 @@ func com_callNoParm(me OleObj, pMethod uintptr) error {
 		uintptr(unsafe.Pointer(me.Ppvt())))
 	return utl.HresultToError(ret)
 }
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 // Stores multiple [COM] resources, releasing all them at once.
 //
