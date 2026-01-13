@@ -17,7 +17,7 @@ import (
 // [EmptyWorkingSet]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-emptyworkingset
 func (hProcess HPROCESS) EmptyWorkingSet() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.PSAPI, &_psapi_EmptyWorkingSet, "EmptyWorkingSet"),
+		dll.Psapi.Load(&_psapi_EmptyWorkingSet, "EmptyWorkingSet"),
 		uintptr(hProcess))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -41,7 +41,7 @@ func (hProcess HPROCESS) EnumProcessModules() ([]HINSTANCE, error) {
 	for {
 		var bytesNeeded uint32
 		ret, _, err := syscall.SyscallN(
-			dll.Load(dll.PSAPI, &_psapi_EnumProcessModules, "EnumProcessModules"),
+			dll.Psapi.Load(&_psapi_EnumProcessModules, "EnumProcessModules"),
 			uintptr(hProcess),
 			0, 0,
 			uintptr(unsafe.Pointer(&bytesNeeded)))
@@ -54,7 +54,7 @@ func (hProcess HPROCESS) EnumProcessModules() ([]HINSTANCE, error) {
 
 		var bytesGot uint32
 		ret, _, err = syscall.SyscallN(
-			dll.Load(dll.PSAPI, &_psapi_EnumProcessModules, "EnumProcessModules"),
+			dll.Psapi.Load(&_psapi_EnumProcessModules, "EnumProcessModules"),
 			uintptr(hProcess),
 			uintptr(unsafe.Pointer(unsafe.SliceData(elems))),
 			uintptr(bytesNeeded),
@@ -79,7 +79,7 @@ func (hProcess HPROCESS) GetMappedFileName(address uintptr) (string, error) {
 	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.PSAPI, &_psapi_GetMappedFileNameW, "GetMappedFileNameW"),
+		dll.Psapi.Load(&_psapi_GetMappedFileNameW, "GetMappedFileNameW"),
 		uintptr(hProcess),
 		address,
 		uintptr(wBuf.Ptr()),
@@ -100,7 +100,7 @@ func (hProcess HPROCESS) GetModuleBaseName(hModule HINSTANCE) (string, error) {
 	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.PSAPI, &_psapi_GetModuleBaseNameW, "GetModuleBaseNameW"),
+		dll.Psapi.Load(&_psapi_GetModuleBaseNameW, "GetModuleBaseNameW"),
 		uintptr(hProcess),
 		uintptr(hModule),
 		uintptr(wBuf.Ptr()),
@@ -121,7 +121,7 @@ func (hProcess HPROCESS) GetModuleFileNameEx(hModule HINSTANCE) (string, error) 
 	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.PSAPI, &_psapi_GetModuleFileNameExW, "GetModuleFileNameExW"),
+		dll.Psapi.Load(&_psapi_GetModuleFileNameExW, "GetModuleFileNameExW"),
 		uintptr(hProcess),
 		uintptr(hModule),
 		uintptr(wBuf.Ptr()),
@@ -140,7 +140,7 @@ var _psapi_GetModuleFileNameExW *syscall.Proc
 func (hProcess HPROCESS) GetModuleInformation(hModule HINSTANCE) (MODULEINFO, error) {
 	var mi MODULEINFO
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.PSAPI, &_psapi_GetModuleInformation, "GetModuleInformation"),
+		dll.Psapi.Load(&_psapi_GetModuleInformation, "GetModuleInformation"),
 		uintptr(hProcess),
 		uintptr(hModule),
 		uintptr(unsafe.Pointer(&mi)),
@@ -161,7 +161,7 @@ func (hProcess HPROCESS) GetProcessImageFileName() (string, error) {
 	wBuf.Alloc(wstr.BUF_MAX)
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.PSAPI, &_psapi_K32GetProcessImageFileNameW, "K32GetProcessImageFileNameW"),
+		dll.Psapi.Load(&_psapi_K32GetProcessImageFileNameW, "K32GetProcessImageFileNameW"),
 		uintptr(hProcess),
 		uintptr(wBuf.Ptr()),
 		uintptr(uint32(wBuf.Len())))
@@ -181,7 +181,7 @@ func (hProcess HPROCESS) GetProcessMemoryInfo() (PROCESS_MEMORY_COUNTERS_EX, err
 	pmc.SetCb()
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.PSAPI, &_psapi_GetProcessMemoryInfo, "GetProcessMemoryInfo"),
+		dll.Psapi.Load(&_psapi_GetProcessMemoryInfo, "GetProcessMemoryInfo"),
 		uintptr(hProcess),
 		uintptr(unsafe.Pointer(&pmc)),
 		uintptr(uint32(unsafe.Sizeof(pmc))))

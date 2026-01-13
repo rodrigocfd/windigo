@@ -17,7 +17,7 @@ func VerifyVersionInfo(ovi *OSVERSIONINFOEX, typeMask co.VER, conditionMask uint
 	ovi.SetDwOsVersionInfoSize() // safety
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_VerifyVersionInfoW, "VerifyVersionInfoW"),
+		dll.Kernel.Load(&_kernel_VerifyVersionInfoW, "VerifyVersionInfoW"),
 		uintptr(unsafe.Pointer(ovi)),
 		uintptr(typeMask),
 		uintptr(conditionMask))
@@ -38,7 +38,7 @@ var _kernel_VerifyVersionInfoW *syscall.Proc
 // [VerSetConditionMask]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-versetconditionmask
 func VerSetConditionMask(conditionMask uint64, typeMask co.VER, condition co.VER_COND) uint64 {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_VerSetConditionMask, "VerSetConditionMask"),
+		dll.Kernel.Load(&_kernel_VerSetConditionMask, "VerSetConditionMask"),
 		uintptr(conditionMask),
 		uintptr(typeMask),
 		uintptr(condition))

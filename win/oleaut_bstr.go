@@ -29,7 +29,7 @@ type BSTR uintptr
 func SysAllocString(s string) (BSTR, error) {
 	var wS wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLEAUT32, &_oleaut_SysAllocString, "SysAllocString"),
+		dll.Oleaut.Load(&_oleaut_SysAllocString, "SysAllocString"),
 		uintptr(wS.AllowEmpty(s)))
 	if ret == 0 {
 		return BSTR(0), co.HRESULT_E_OUTOFMEMORY
@@ -45,7 +45,7 @@ var _oleaut_SysAllocString *syscall.Proc
 func (bstr BSTR) SysFreeString() {
 	if bstr != 0 {
 		syscall.SyscallN(
-			dll.Load(dll.OLEAUT32, &_oleaut_SysFreeString, "SysFreeString"),
+			dll.Oleaut.Load(&_oleaut_SysFreeString, "SysFreeString"),
 			uintptr(bstr))
 	}
 }
@@ -65,7 +65,7 @@ var _oleaut_SysFreeString *syscall.Proc
 func (bstr BSTR) SysReAllocString(s string) (BSTR, error) {
 	var wS wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLEAUT32, &_oleaut_SysReAllocString, "SysReAllocString"),
+		dll.Oleaut.Load(&_oleaut_SysReAllocString, "SysReAllocString"),
 		uintptr(bstr),
 		uintptr(wS.AllowEmpty(s)))
 	if ret == 0 {

@@ -43,7 +43,7 @@ type HGLOBAL HANDLE
 func GlobalAlloc(flags co.GMEM, numBytes int) (HGLOBAL, error) {
 	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GlobalAlloc, "GlobalAlloc"),
+		dll.Kernel.Load(&_kernel_GlobalAlloc, "GlobalAlloc"),
 		uintptr(flags),
 		uintptr(uint64(numBytes)))
 	if ret == 0 {
@@ -59,7 +59,7 @@ var _kernel_GlobalAlloc *syscall.Proc
 // [GlobalFlags]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalflags
 func (hGlobal HGLOBAL) GlobalFlags() (co.GMEM, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GlobalFlags, "GlobalFlags"),
+		dll.Kernel.Load(&_kernel_GlobalFlags, "GlobalFlags"),
 		uintptr(hGlobal))
 	if ret == utl.GMEM_INVALID_HANDLE {
 		return co.GMEM(0), co.ERROR(err)
@@ -82,7 +82,7 @@ func (hGlobal HGLOBAL) GlobalFree() error {
 	}
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GlobalFree, "GlobalFree"),
+		dll.Kernel.Load(&_kernel_GlobalFree, "GlobalFree"),
 		uintptr(hGlobal))
 	if ret != 0 {
 		return co.ERROR(err)
@@ -116,7 +116,7 @@ var _kernel_GlobalFree *syscall.Proc
 // [GlobalLock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globallock
 func (hGlobal HGLOBAL) GlobalLock() (unsafe.Pointer, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GlobalLock, "GlobalLock"),
+		dll.Kernel.Load(&_kernel_GlobalLock, "GlobalLock"),
 		uintptr(hGlobal))
 	if ret == 0 {
 		return nil, co.ERROR(err)
@@ -169,7 +169,7 @@ func (hGlobal HGLOBAL) GlobalLockSlice() ([]byte, error) {
 func (hGlobal HGLOBAL) GlobalReAlloc(numBytes int, flags co.GMEM) (HGLOBAL, error) {
 	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GlobalReAlloc, "GlobalReAlloc"),
+		dll.Kernel.Load(&_kernel_GlobalReAlloc, "GlobalReAlloc"),
 		uintptr(hGlobal),
 		uintptr(uint64(numBytes)),
 		uintptr(flags))
@@ -186,7 +186,7 @@ var _kernel_GlobalReAlloc *syscall.Proc
 // [GlobalSize]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalsize
 func (hGlobal HGLOBAL) GlobalSize() (int, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GlobalSize, "GlobalSize"),
+		dll.Kernel.Load(&_kernel_GlobalSize, "GlobalSize"),
 		uintptr(hGlobal))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -201,7 +201,7 @@ var _kernel_GlobalSize *syscall.Proc
 // [GlobalUnlock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globalunlock
 func (hGlobal HGLOBAL) GlobalUnlock() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GlobalUnlock, "GlobalUnlock"),
+		dll.Kernel.Load(&_kernel_GlobalUnlock, "GlobalUnlock"),
 		uintptr(hGlobal))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return wErr

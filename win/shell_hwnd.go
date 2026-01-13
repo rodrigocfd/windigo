@@ -16,7 +16,7 @@ import (
 func (hWnd HWND) ShellAbout(app, otherStuff string, hIcon HICON) error {
 	var wApp, wOtherStuff wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.SHELL32, &_shell_ShellAboutW, "ShellAboutW"),
+		dll.Shell.Load(&_shell_ShellAboutW, "ShellAboutW"),
 		uintptr(hWnd),
 		uintptr(wApp.AllowEmpty(app)),
 		uintptr(wOtherStuff.EmptyIsNil(otherStuff)),

@@ -16,7 +16,7 @@ import (
 // [DwmEnableMMCSS]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmenablemmcss
 func DwmEnableMMCSS(enable bool) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.DWMAPI, &_dwmapi_DwmEnableMMCSS, "DwmEnableMMCSS"),
+		dll.Dwmapi.Load(&_dwmapi_DwmEnableMMCSS, "DwmEnableMMCSS"),
 		utl.BoolToUintptr(enable))
 	return utl.HresultToError(ret)
 }
@@ -28,7 +28,7 @@ var _dwmapi_DwmEnableMMCSS *syscall.Proc
 // [DwmFlush]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmflush
 func DwmFlush() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.DWMAPI, &_dwmapi_DwmFlush, "DwmFlush"))
+		dll.Dwmapi.Load(&_dwmapi_DwmFlush, "DwmFlush"))
 	return utl.HresultToError(ret)
 }
 
@@ -42,7 +42,7 @@ func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool, hr error) {
 	var bOpaque BOOL
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.DWMAPI, &_dwmapi_DwmGetColorizationColor, "DwmGetColorizationColor"),
+		dll.Dwmapi.Load(&_dwmapi_DwmGetColorizationColor, "DwmGetColorizationColor"),
 		uintptr(unsafe.Pointer(&clr)),
 		uintptr(unsafe.Pointer(&bOpaque)))
 	if hr = co.HRESULT(ret); hr != co.HRESULT_S_OK {
@@ -59,7 +59,7 @@ var _dwmapi_DwmGetColorizationColor *syscall.Proc
 func DwmIsCompositionEnabled() (bool, error) {
 	var pfEnabled BOOL
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.DWMAPI, &_dwmapi_DwmIsCompositionEnabled, "DwmIsCompositionEnabled"),
+		dll.Dwmapi.Load(&_dwmapi_DwmIsCompositionEnabled, "DwmIsCompositionEnabled"),
 		uintptr(unsafe.Pointer(&pfEnabled)))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		panic(hr)
@@ -77,7 +77,7 @@ var _dwmapi_DwmIsCompositionEnabled *syscall.Proc
 func DwmShowContact(pointerId int, showContact co.DWMSC) error {
 	utl.PanicNeg(pointerId)
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.DWMAPI, &_dwmapi_DwmShowContact, "DwmShowContact"),
+		dll.Dwmapi.Load(&_dwmapi_DwmShowContact, "DwmShowContact"),
 		uintptr(uint32(pointerId)),
 		uintptr(showContact))
 	return utl.HresultToError(ret)

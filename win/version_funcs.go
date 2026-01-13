@@ -31,7 +31,7 @@ import (
 func GetFileVersionInfo(fileName string, dest []byte) error {
 	var wFileName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.VERSION, &_version_GetFileVersionInfoW, "GetFileVersionInfoW"),
+		dll.Version.Load(&_version_GetFileVersionInfoW, "GetFileVersionInfoW"),
 		uintptr(wFileName.EmptyIsNil(fileName)),
 		0,
 		uintptr(uint32(len(dest))),
@@ -49,7 +49,7 @@ func GetFileVersionInfoSize(fileName string) (int, error) {
 	var dummy uint32
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.VERSION, &_version_GetFileVersionInfoSizeW, "GetFileVersionInfoSizeW"),
+		dll.Version.Load(&_version_GetFileVersionInfoSizeW, "GetFileVersionInfoSizeW"),
 		uintptr(wFileName.EmptyIsNil(fileName)),
 		uintptr(unsafe.Pointer(&dummy)))
 	if ret == 0 {
@@ -108,7 +108,7 @@ func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, int, bool) {
 	var puLen uint32
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.VERSION, &_version_VerQueryValueW, "VerQueryValueW"),
+		dll.Version.Load(&_version_VerQueryValueW, "VerQueryValueW"),
 		uintptr(unsafe.Pointer(unsafe.SliceData(block))),
 		uintptr(wSubBlock.AllowEmpty(subBlock)),
 		uintptr(unsafe.Pointer(&lplpBuffer)),

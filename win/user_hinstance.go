@@ -22,7 +22,7 @@ func (hInst HINSTANCE) CreateDialogParam(
 ) (HWND, error) {
 	var wTemplateName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_CreateDialogParamW, "CreateDialogParamW"),
+		dll.User.Load(&_user_CreateDialogParamW, "CreateDialogParamW"),
 		uintptr(hInst),
 		templateName.raw(&wTemplateName),
 		uintptr(hwndParent),
@@ -46,7 +46,7 @@ func (hInst HINSTANCE) DialogBoxIndirectParam(
 	dwInitParam LPARAM,
 ) (uintptr, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_DialogBoxIndirectParamW, "DialogBoxIndirectParamW"),
+		dll.User.Load(&_user_DialogBoxIndirectParamW, "DialogBoxIndirectParamW"),
 		uintptr(hInst),
 		uintptr(unsafe.Pointer(template)),
 		uintptr(hwndParent),
@@ -71,7 +71,7 @@ func (hInst HINSTANCE) DialogBoxParam(
 ) (uintptr, error) {
 	var wTemplateName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_DialogBoxParamW, "DialogBoxParamW"),
+		dll.User.Load(&_user_DialogBoxParamW, "DialogBoxParamW"),
 		uintptr(hInst),
 		templateName.raw(&wTemplateName),
 		uintptr(hwndParent),
@@ -93,7 +93,7 @@ func (hInst HINSTANCE) GetClassInfoEx(
 	destBuf *WNDCLASSEX,
 ) (ATOM, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_GetClassInfoExW, "GetClassInfoExW"),
+		dll.User.Load(&_user_GetClassInfoExW, "GetClassInfoExW"),
 		uintptr(hInst),
 		uintptr(unsafe.Pointer(className)),
 		uintptr(unsafe.Pointer(destBuf)))
@@ -114,7 +114,7 @@ var _user_GetClassInfoExW *syscall.Proc
 func (hInst HINSTANCE) LoadAccelerators(tableName ResId) (HACCEL, error) {
 	var wTableName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_LoadAcceleratorsW, "LoadAcceleratorsW"),
+		dll.User.Load(&_user_LoadAcceleratorsW, "LoadAcceleratorsW"),
 		uintptr(hInst),
 		tableName.raw(&wTableName))
 	if ret == 0 {
@@ -133,7 +133,7 @@ var _user_LoadAcceleratorsW *syscall.Proc
 func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) (HCURSOR, error) {
 	var wCursorName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_LoadCursorW, "LoadCursorW"),
+		dll.User.Load(&_user_LoadCursorW, "LoadCursorW"),
 		uintptr(hInst),
 		cursorName.raw(&wCursorName))
 	if ret == 0 {
@@ -159,7 +159,7 @@ var _user_LoadCursorW *syscall.Proc
 func (hInst HINSTANCE) LoadIcon(iconName IconRes) (HICON, error) {
 	var wIconName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_LoadIconW, "LoadIconW"),
+		dll.User.Load(&_user_LoadIconW, "LoadIconW"),
 		uintptr(hInst),
 		iconName.raw(&wIconName))
 	if ret == 0 {
@@ -215,7 +215,7 @@ func (hInst HINSTANCE) LoadImage(
 ) (HGDIOBJ, error) {
 	var wName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_LoadImageW, "LoadImageW"),
+		dll.User.Load(&_user_LoadImageW, "LoadImageW"),
 		uintptr(hInst),
 		name.raw(&wName),
 		uintptr(imgType),
@@ -238,7 +238,7 @@ var _user_LoadImageW *syscall.Proc
 func (hInst HINSTANCE) LoadMenu(menuName ResId) (HMENU, error) {
 	var wMenuName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_LoadMenuW, "LoadMenuW"),
+		dll.User.Load(&_user_LoadMenuW, "LoadMenuW"),
 		uintptr(hInst),
 		menuName.raw(&wMenuName))
 	if ret == 0 {

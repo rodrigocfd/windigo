@@ -19,7 +19,7 @@ type HPALETTE HANDLE
 // [AnimatePalette]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-animatepalette
 func (hPal HPALETTE) AnimatePalette(startIndex int, entries []PALETTEENTRY) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.GDI32, &_gdi_AnimatePalette, "AnimatePalette"),
+		dll.Gdi.Load(&_gdi_AnimatePalette, "AnimatePalette"),
 		uintptr(hPal),
 		uintptr(uint32(startIndex)),
 		uintptr(uint32(len(entries))),

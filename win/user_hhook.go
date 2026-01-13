@@ -37,7 +37,7 @@ func SetWindowsHookEx(
 	)
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_SetWindowsHookExW, "SetWindowsHookExW"),
+		dll.User.Load(&_user_SetWindowsHookExW, "SetWindowsHookExW"),
 		uintptr(idHook),
 		hookCallback,
 		uintptr(hMod),
@@ -55,7 +55,7 @@ var _user_SetWindowsHookExW *syscall.Proc
 // [UnhookWindowsHookEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unhookwindowshookex
 func (me HHOOK) UnhookWindowsHookEx() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_UnhookWindowsHookEx, "UnhookWindowsHookEx"))
+		dll.User.Load(&_user_UnhookWindowsHookEx, "UnhookWindowsHookEx"))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

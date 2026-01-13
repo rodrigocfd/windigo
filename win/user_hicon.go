@@ -23,7 +23,7 @@ type HICON HANDLE
 // [CreateIconIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconindirect
 func CreateIconIndirect(info *ICONINFO) (HICON, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_CreateIconIndirect, "CreateIconIndirect"),
+		dll.User.Load(&_user_CreateIconIndirect, "CreateIconIndirect"),
 		uintptr(unsafe.Pointer(info)))
 	if ret == 0 {
 		return HICON(0), co.ERROR(err)
@@ -40,7 +40,7 @@ var _user_CreateIconIndirect *syscall.Proc
 // [CopyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyicon
 func (hIcon HICON) CopyIcon() (HICON, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_CopyIcon, "CopyIcon"),
+		dll.User.Load(&_user_CopyIcon, "CopyIcon"),
 		uintptr(hIcon))
 	if ret == 0 {
 		return HICON(0), co.ERROR(err)
@@ -55,7 +55,7 @@ var _user_CopyIcon *syscall.Proc
 // [DestroyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroyicon
 func (hIcon HICON) DestroyIcon() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_DestroyIcon, "DestroyIcon"),
+		dll.User.Load(&_user_DestroyIcon, "DestroyIcon"),
 		uintptr(hIcon))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -70,7 +70,7 @@ var _user_DestroyIcon *syscall.Proc
 func (hIcon HICON) GetIconInfo() (ICONINFO, error) {
 	var ii ICONINFO
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_GetIconInfo, "GetIconInfo"),
+		dll.User.Load(&_user_GetIconInfo, "GetIconInfo"),
 		uintptr(hIcon),
 		uintptr(unsafe.Pointer(&ii)))
 	if ret == 0 {
@@ -91,7 +91,7 @@ func (hIcon HICON) GetIconInfoEx() (ICONINFOEX, error) {
 	ii.SetCbSize()
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_GetIconInfoExW, "GetIconInfoExW"),
+		dll.User.Load(&_user_GetIconInfoExW, "GetIconInfoExW"),
 		uintptr(hIcon),
 		uintptr(unsafe.Pointer(&ii)))
 	if ret == 0 {

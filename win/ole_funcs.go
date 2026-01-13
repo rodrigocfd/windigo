@@ -43,7 +43,7 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	var guid GUID
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_ole_CLSIDFromProgID, "CLSIDFromProgID"),
+		dll.Ole.Load(&_ole_CLSIDFromProgID, "CLSIDFromProgID"),
 		uintptr(wProgId.AllowEmpty(progId)),
 		uintptr(unsafe.Pointer(&guid)))
 
@@ -90,7 +90,7 @@ func CoCreateInstance(
 	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_ole_CoCreateInstance, "CoCreateInstance"),
+		dll.Ole.Load(&_ole_CoCreateInstance, "CoCreateInstance"),
 		uintptr(unsafe.Pointer(&guidClsid)),
 		uintptr(com_ppvtOrNil(unkOuter)),
 		uintptr(dwClsContext),
@@ -114,7 +114,7 @@ var _ole_CoCreateInstance *syscall.Proc
 // [CoInitializeEx]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
 func CoInitializeEx(coInit co.COINIT) (alreadyInitialized bool, hr error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_ole_CoInitializeEx, "CoInitializeEx"),
+		dll.Ole.Load(&_ole_CoInitializeEx, "CoInitializeEx"),
 		0,
 		uintptr(coInit))
 
@@ -137,7 +137,7 @@ var _ole_CoInitializeEx *syscall.Proc
 // [CoUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
 func CoUninitialize() {
 	syscall.SyscallN(
-		dll.Load(dll.OLE32, &_ole_CoUninitialize, "CoUninitialize"))
+		dll.Ole.Load(&_ole_CoUninitialize, "CoUninitialize"))
 }
 
 var _ole_CoUninitialize *syscall.Proc
@@ -155,7 +155,7 @@ var _ole_CoUninitialize *syscall.Proc
 func CreateBindCtx(releaser *OleReleaser) (*IBindCtx, error) {
 	var ppvtQueried **_IUnknownVt
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_ole_CreateBindCtx, "CreateBindCtx"),
+		dll.Ole.Load(&_ole_CreateBindCtx, "CreateBindCtx"),
 		0,
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IBindCtx](ret, ppvtQueried, releaser)
@@ -175,7 +175,7 @@ var _ole_CreateBindCtx *syscall.Proc
 // [OleInitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-oleinitialize
 func OleInitialize() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.OLE32, &_ole_OleInitialize, "OleInitialize"),
+		dll.Ole.Load(&_ole_OleInitialize, "OleInitialize"),
 		0)
 	return utl.HresultToError(ret)
 }
@@ -189,7 +189,7 @@ var _ole_OleInitialize *syscall.Proc
 // [OleUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-oleuninitialize
 func OleUninitialize() {
 	syscall.SyscallN(
-		dll.Load(dll.OLE32, &_ole_OleUninitialize, "OleUninitialize"))
+		dll.Ole.Load(&_ole_OleUninitialize, "OleUninitialize"))
 }
 
 var _ole_OleUninitialize *syscall.Proc
@@ -201,7 +201,7 @@ var _ole_OleUninitialize *syscall.Proc
 // [ReleaseStgMedium]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-releasestgmedium
 func ReleaseStgMedium(stg *STGMEDIUM) {
 	syscall.SyscallN(
-		dll.Load(dll.OLE32, &_ole_ReleaseStgMedium, "ReleaseStgMedium"),
+		dll.Ole.Load(&_ole_ReleaseStgMedium, "ReleaseStgMedium"),
 		uintptr(unsafe.Pointer(stg)))
 }
 

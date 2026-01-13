@@ -20,7 +20,7 @@ import (
 func CopyFile(existingFile, newFile string, failIfExists bool) error {
 	var wExistingFile, wNewFile wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_CopyFileW, "CopyFileW"),
+		dll.Kernel.Load(&_kernel_CopyFileW, "CopyFileW"),
 		uintptr(wExistingFile.EmptyIsNil(existingFile)),
 		uintptr(wNewFile.EmptyIsNil(newFile)),
 		utl.BoolToUintptr(failIfExists))
@@ -35,7 +35,7 @@ var _kernel_CopyFileW *syscall.Proc
 func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
 	var wPathName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_CreateDirectoryW, "CreateDirectoryW"),
+		dll.Kernel.Load(&_kernel_CreateDirectoryW, "CreateDirectoryW"),
 		uintptr(wPathName.EmptyIsNil(pathName)),
 		uintptr(unsafe.Pointer(securityAttributes)))
 	return utl.ZeroAsGetLastError(ret, err)
@@ -98,7 +98,7 @@ func CreateProcess(
 	}
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_CreateProcessW, "CreateProcessW"),
+		dll.Kernel.Load(&_kernel_CreateProcessW, "CreateProcessW"),
 		uintptr(wApplicationName.EmptyIsNil(applicationName)),
 		uintptr(wCommandLine.EmptyIsNil(commandLine)),
 		uintptr(unsafe.Pointer(processAttributes)),
@@ -124,7 +124,7 @@ var _kernel_CreateProcessW *syscall.Proc
 // [DeactivateActCtx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-deactivateactctx
 func DeactivateActCtx(flags co.DEACTIVATE_ACTCTX, cookie int) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_DeactivateActCtx, "DeactivateActCtx"),
+		dll.Kernel.Load(&_kernel_DeactivateActCtx, "DeactivateActCtx"),
 		uintptr(flags),
 		uintptr(cookie))
 	return utl.ZeroAsGetLastError(ret, err)
@@ -138,7 +138,7 @@ var _kernel_DeactivateActCtx *syscall.Proc
 func DeleteFile(fileName string) error {
 	var wFileName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_DeleteFileW, "DeleteFileW"),
+		dll.Kernel.Load(&_kernel_DeleteFileW, "DeleteFileW"),
 		uintptr(wFileName.EmptyIsNil(fileName)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -150,7 +150,7 @@ var _kernel_DeleteFileW *syscall.Proc
 // [ExitProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess
 func ExitProcess(exitCode uint32) {
 	syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_ExitProcess, "ExitProcess"),
+		dll.Kernel.Load(&_kernel_ExitProcess, "ExitProcess"),
 		uintptr(exitCode))
 }
 
@@ -164,7 +164,7 @@ func ExpandEnvironmentStrings(s string) (string, error) {
 	pS := wS.AllowEmpty(s)
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_ExpandEnvironmentStringsW, "ExpandEnvironmentStringsW"),
+		dll.Kernel.Load(&_kernel_ExpandEnvironmentStringsW, "ExpandEnvironmentStringsW"),
 		uintptr(pS),
 		0, 0) // 1st call to retrieve the required length
 	if ret == 0 {
@@ -178,7 +178,7 @@ func ExpandEnvironmentStrings(s string) (string, error) {
 		wBuf.AllocAndZero(szBuf)
 
 		ret, _, err = syscall.SyscallN(
-			dll.Load(dll.KERNEL32, &_kernel_ExpandEnvironmentStringsW, "ExpandEnvironmentStringsW"),
+			dll.Kernel.Load(&_kernel_ExpandEnvironmentStringsW, "ExpandEnvironmentStringsW"),
 			uintptr(pS),
 			uintptr(wBuf.Ptr()),
 			uintptr(uint32(szBuf)))
@@ -203,7 +203,7 @@ var _kernel_ExpandEnvironmentStringsW *syscall.Proc
 func FileTimeToSystemTime(ft *FILETIME) (SYSTEMTIME, error) {
 	var st SYSTEMTIME
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_FileTimeToSystemTime, "FileTimeToSystemTime"),
+		dll.Kernel.Load(&_kernel_FileTimeToSystemTime, "FileTimeToSystemTime"),
 		uintptr(unsafe.Pointer(ft)),
 		uintptr(unsafe.Pointer(&st)))
 	if ret == 0 {
@@ -219,7 +219,7 @@ var _kernel_FileTimeToSystemTime *syscall.Proc
 // [FlushProcessWriteBuffers]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-flushprocesswritebuffers
 func FlushProcessWriteBuffers() {
 	syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_FlushProcessWriteBuffers, "FlushProcessWriteBuffers"))
+		dll.Kernel.Load(&_kernel_FlushProcessWriteBuffers, "FlushProcessWriteBuffers"))
 }
 
 var _kernel_FlushProcessWriteBuffers *syscall.Proc
@@ -234,7 +234,7 @@ var _kernel_FlushProcessWriteBuffers *syscall.Proc
 func GetActiveProcessorCount(groupNumber int) (int, error) {
 	utl.PanicNeg(groupNumber)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetActiveProcessorCount, "GetActiveProcessorCount"),
+		dll.Kernel.Load(&_kernel_GetActiveProcessorCount, "GetActiveProcessorCount"),
 		uintptr(uint16(groupNumber)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -249,7 +249,7 @@ var _kernel_GetActiveProcessorCount *syscall.Proc
 // [GetActiveProcessorGroupCount]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getactiveprocessorgroupcount
 func GetActiveProcessorGroupCount() (int, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetActiveProcessorGroupCount, "GetActiveProcessorGroupCount"))
+		dll.Kernel.Load(&_kernel_GetActiveProcessorGroupCount, "GetActiveProcessorGroupCount"))
 	if ret == 0 {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
@@ -263,7 +263,7 @@ var _kernel_GetActiveProcessorGroupCount *syscall.Proc
 // [GetCommandLine]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getcommandlinew
 func GetCommandLine() string {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetCommandLineW, "GetCommandLineW"))
+		dll.Kernel.Load(&_kernel_GetCommandLineW, "GetCommandLineW"))
 	return wstr.DecodePtr((*uint16)(unsafe.Pointer(ret)))
 }
 
@@ -274,7 +274,7 @@ var _kernel_GetCommandLineW *syscall.Proc
 // [GetCurrentProcessId]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
 func GetCurrentProcessId() uint32 {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetCurrentProcessId, "GetCurrentProcessId"))
+		dll.Kernel.Load(&_kernel_GetCurrentProcessId, "GetCurrentProcessId"))
 	return uint32(ret)
 }
 
@@ -285,7 +285,7 @@ var _kernel_GetCurrentProcessId *syscall.Proc
 // [GetCurrentProcessorNumber]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessornumber
 func GetCurrentProcessorNumber() int {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetCurrentProcessorNumber, "GetCurrentProcessorNumber"))
+		dll.Kernel.Load(&_kernel_GetCurrentProcessorNumber, "GetCurrentProcessorNumber"))
 	return int(uint16(ret))
 }
 
@@ -297,7 +297,7 @@ var _kernel_GetCurrentProcessorNumber *syscall.Proc
 func GetCurrentProcessorNumberEx() PROCESSOR_NUMBER {
 	var pn PROCESSOR_NUMBER
 	syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetCurrentProcessorNumberEx, "GetCurrentProcessorNumberEx"),
+		dll.Kernel.Load(&_kernel_GetCurrentProcessorNumberEx, "GetCurrentProcessorNumberEx"),
 		uintptr(unsafe.Pointer(&pn)))
 	return pn
 }
@@ -309,7 +309,7 @@ var _kernel_GetCurrentProcessorNumberEx *syscall.Proc
 // [GetCurrentThreadId]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentthreadid
 func GetCurrentThreadId() uint32 {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetCurrentThreadId, "GetCurrentThreadId"))
+		dll.Kernel.Load(&_kernel_GetCurrentThreadId, "GetCurrentThreadId"))
 	return uint32(ret)
 }
 
@@ -323,14 +323,14 @@ var _kernel_GetCurrentThreadId *syscall.Proc
 // [FreeEnvironmentStrings]: https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-freeenvironmentstringsw
 func GetEnvironmentStrings() (map[string]string, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetEnvironmentStringsW, "GetEnvironmentStringsW"))
+		dll.Kernel.Load(&_kernel_GetEnvironmentStringsW, "GetEnvironmentStringsW"))
 	if ret == 0 {
 		return nil, co.ERROR_NOT_CAPABLE
 	}
 	rawEntries := wstr.DecodeArrPtr((*uint16)(unsafe.Pointer(ret)))
 
 	ret, _, _ = syscall.SyscallN( // free right away
-		dll.Load(dll.KERNEL32, &_kernel_FreeEnvironmentStringsW, "FreeEnvironmentStringsW"),
+		dll.Kernel.Load(&_kernel_FreeEnvironmentStringsW, "FreeEnvironmentStringsW"),
 		ret)
 	if ret == 0 {
 		return nil, co.ERROR_NOT_CAPABLE
@@ -344,10 +344,8 @@ func GetEnvironmentStrings() (map[string]string, error) {
 	return mapEntries, nil
 }
 
-var (
-	_kernel_GetEnvironmentStringsW  *syscall.Proc
-	_kernel_FreeEnvironmentStringsW *syscall.Proc
-)
+var _kernel_GetEnvironmentStringsW *syscall.Proc
+var _kernel_FreeEnvironmentStringsW *syscall.Proc
 
 // [GetFileAttributes] function.
 //
@@ -355,7 +353,7 @@ var (
 func GetFileAttributes(fileName string) (co.FILE_ATTRIBUTE, error) {
 	var wFileName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetFileAttributesW, "GetFileAttributesW"),
+		dll.Kernel.Load(&_kernel_GetFileAttributesW, "GetFileAttributesW"),
 		uintptr(wFileName.EmptyIsNil(fileName)))
 
 	if retAttr := co.FILE_ATTRIBUTE(ret); retAttr == co.FILE_ATTRIBUTE_INVALID {
@@ -373,7 +371,7 @@ var _kernel_GetFileAttributesW *syscall.Proc
 func GetLocalTime() SYSTEMTIME {
 	var st SYSTEMTIME
 	syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetLocalTime, "GetLocalTime"),
+		dll.Kernel.Load(&_kernel_GetLocalTime, "GetLocalTime"),
 		uintptr(unsafe.Pointer(&st)))
 	return st
 }
@@ -386,7 +384,7 @@ var _kernel_GetLocalTime *syscall.Proc
 func GetNumberOfConsoleMouseButtons() (int, error) {
 	var numberOfMouseButtons uint32
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetNumberOfConsoleMouseButtons, "GetNumberOfConsoleMouseButtons"),
+		dll.Kernel.Load(&_kernel_GetNumberOfConsoleMouseButtons, "GetNumberOfConsoleMouseButtons"),
 		uintptr(unsafe.Pointer(&numberOfMouseButtons)))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -404,7 +402,7 @@ func GetStartupInfo() STARTUPINFO {
 	si.SetCb()
 
 	syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetStartupInfoW, "GetStartupInfoW"),
+		dll.Kernel.Load(&_kernel_GetStartupInfoW, "GetStartupInfoW"),
 		uintptr(unsafe.Pointer(&si)))
 	return si
 }
@@ -417,7 +415,7 @@ var _kernel_GetStartupInfoW *syscall.Proc
 func GetTimeZoneInformation() (TIME_ZONE_INFORMATION, co.TIME_ZONE_ID, error) {
 	var tzi TIME_ZONE_INFORMATION
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetTimeZoneInformation, "GetTimeZoneInformation"),
+		dll.Kernel.Load(&_kernel_GetTimeZoneInformation, "GetTimeZoneInformation"),
 		uintptr(unsafe.Pointer(&tzi)))
 	if ret == utl.TIME_ZONE_INVALID {
 		return TIME_ZONE_INFORMATION{}, co.TIME_ZONE_ID(0), co.ERROR(err)
@@ -433,7 +431,7 @@ var _kernel_GetTimeZoneInformation *syscall.Proc
 func GetSystemInfo() SYSTEM_INFO {
 	var si SYSTEM_INFO
 	syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetSystemInfo, "GetSystemInfo"),
+		dll.Kernel.Load(&_kernel_GetSystemInfo, "GetSystemInfo"),
 		uintptr(unsafe.Pointer(&si)))
 	return si
 }
@@ -614,7 +612,7 @@ func MAKEWORD(lo, hi uint8) uint16 {
 func SetConsoleTitle(title string) error {
 	var wTitle wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_SetConsoleTitleW, "SetConsoleTitleW"),
+		dll.Kernel.Load(&_kernel_SetConsoleTitleW, "SetConsoleTitleW"),
 		uintptr(wTitle.EmptyIsNil(title)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -627,7 +625,7 @@ var _kernel_SetConsoleTitleW *syscall.Proc
 func SetCurrentDirectory(pathName string) error {
 	var wPathName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_SetCurrentDirectoryW, "SetCurrentDirectoryW"),
+		dll.Kernel.Load(&_kernel_SetCurrentDirectoryW, "SetCurrentDirectoryW"),
 		uintptr(wPathName.EmptyIsNil(pathName)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -643,7 +641,7 @@ var _kernel_SetCurrentDirectoryW *syscall.Proc
 // [Sleep]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
 func Sleep(duration time.Duration) {
 	syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_Sleep, "Sleep"),
+		dll.Kernel.Load(&_kernel_Sleep, "Sleep"),
 		uintptr(uint32(duration.Milliseconds())))
 }
 
@@ -655,7 +653,7 @@ var _kernel_Sleep *syscall.Proc
 func SystemTimeToFileTime(st *SYSTEMTIME) (FILETIME, error) {
 	var ft FILETIME
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_SystemTimeToFileTime, "SystemTimeToFileTime"),
+		dll.Kernel.Load(&_kernel_SystemTimeToFileTime, "SystemTimeToFileTime"),
 		uintptr(unsafe.Pointer(st)),
 		uintptr(unsafe.Pointer(&ft)))
 	if ret == 0 {
@@ -675,7 +673,7 @@ func SystemTimeToTzSpecificLocalTime(
 ) (SYSTEMTIME, error) {
 	var st SYSTEMTIME
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_SystemTimeToTzSpecificLocalTime, "SystemTimeToTzSpecificLocalTime"),
+		dll.Kernel.Load(&_kernel_SystemTimeToTzSpecificLocalTime, "SystemTimeToTzSpecificLocalTime"),
 		uintptr(unsafe.Pointer(timeZoneInfo)),
 		uintptr(unsafe.Pointer(inUniversalTime)),
 		uintptr(unsafe.Pointer(&st)))

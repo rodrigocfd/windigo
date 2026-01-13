@@ -17,7 +17,7 @@ import (
 func GetAllUsersProfileDirectory() (string, error) {
 	var szBuf uint32
 	_, _, err := syscall.SyscallN(
-		dll.Load(dll.USERENV, &_userenv_GetAllUsersProfileDirectoryW, "GetAllUsersProfileDirectoryW"),
+		dll.Userenv.Load(&_userenv_GetAllUsersProfileDirectoryW, "GetAllUsersProfileDirectoryW"),
 		0,
 		uintptr(unsafe.Pointer(&szBuf)))
 	if wErr := co.ERROR(err); wErr != co.ERROR_INSUFFICIENT_BUFFER {
@@ -26,7 +26,7 @@ func GetAllUsersProfileDirectory() (string, error) {
 
 	buf := make([]uint16, szBuf)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USERENV, &_userenv_GetAllUsersProfileDirectoryW, "GetAllUsersProfileDirectoryW"),
+		dll.Userenv.Load(&_userenv_GetAllUsersProfileDirectoryW, "GetAllUsersProfileDirectoryW"),
 		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
 		uintptr(unsafe.Pointer(&szBuf)))
 	if ret == 0 {
@@ -43,7 +43,7 @@ var _userenv_GetAllUsersProfileDirectoryW *syscall.Proc
 func GetDefaultUserProfileDirectory() (string, error) {
 	var szBuf uint32
 	_, _, err := syscall.SyscallN(
-		dll.Load(dll.USERENV, &_userenv_GetDefaultUserProfileDirectoryW, "GetDefaultUserProfileDirectoryW"),
+		dll.Userenv.Load(&_userenv_GetDefaultUserProfileDirectoryW, "GetDefaultUserProfileDirectoryW"),
 		0,
 		uintptr(unsafe.Pointer(&szBuf)))
 	if wErr := co.ERROR(err); wErr != co.ERROR_INSUFFICIENT_BUFFER {
@@ -52,7 +52,7 @@ func GetDefaultUserProfileDirectory() (string, error) {
 
 	buf := make([]uint16, szBuf)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USERENV, &_userenv_GetDefaultUserProfileDirectoryW, "GetDefaultUserProfileDirectoryW"),
+		dll.Userenv.Load(&_userenv_GetDefaultUserProfileDirectoryW, "GetDefaultUserProfileDirectoryW"),
 		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
 		uintptr(unsafe.Pointer(&szBuf)))
 	if ret == 0 {
@@ -69,7 +69,7 @@ var _userenv_GetDefaultUserProfileDirectoryW *syscall.Proc
 func GetProfilesDirectory() (string, error) {
 	var szBuf uint32
 	_, _, err := syscall.SyscallN(
-		dll.Load(dll.USERENV, &_userenv_GetProfilesDirectoryW, "GetProfilesDirectoryW"),
+		dll.Userenv.Load(&_userenv_GetProfilesDirectoryW, "GetProfilesDirectoryW"),
 		0,
 		uintptr(unsafe.Pointer(&szBuf)))
 	if wErr := co.ERROR(err); wErr != co.ERROR_INSUFFICIENT_BUFFER {
@@ -78,7 +78,7 @@ func GetProfilesDirectory() (string, error) {
 
 	buf := make([]uint16, szBuf)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USERENV, &_userenv_GetProfilesDirectoryW, "GetProfilesDirectoryW"),
+		dll.Userenv.Load(&_userenv_GetProfilesDirectoryW, "GetProfilesDirectoryW"),
 		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
 		uintptr(unsafe.Pointer(&szBuf)))
 	if ret == 0 {

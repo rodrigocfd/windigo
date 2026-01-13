@@ -16,7 +16,7 @@ import (
 // [DefSubclassProc]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-defsubclassproc
 func (hWnd HWND) DefSubclassProc(msg co.WM, wParam WPARAM, lParam LPARAM) uintptr {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_comctl_DefSubclassProc, "DefSubclassProc"),
+		dll.Comctl.Load(&_comctl_DefSubclassProc, "DefSubclassProc"),
 		uintptr(hWnd),
 		uintptr(msg),
 		uintptr(wParam),
@@ -31,7 +31,7 @@ var _comctl_DefSubclassProc *syscall.Proc
 // [ImageList_DragEnter]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_dragenter
 func (hWnd HWND) ImageListDragEnter(x, y int) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_comctl_ImageList_DragEnter, "ImageList_DragEnter"),
+		dll.Comctl.Load(&_comctl_ImageList_DragEnter, "ImageList_DragEnter"),
 		uintptr(hWnd),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
@@ -45,7 +45,7 @@ var _comctl_ImageList_DragEnter *syscall.Proc
 // [ImageList_DragLeave]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_dragleave
 func (hWnd HWND) ImageListDragLeave() error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_comctl_ImageList_DragLeave, "ImageList_DragLeave"),
+		dll.Comctl.Load(&_comctl_ImageList_DragLeave, "ImageList_DragLeave"),
 		uintptr(hWnd))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -57,7 +57,7 @@ var _comctl_ImageList_DragLeave *syscall.Proc
 // [RemoveWindowSubclass]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-removewindowsubclass
 func (hWnd HWND) RemoveWindowSubclass(subclassProc uintptr, idSubclass uint32) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_comctl_RemoveWindowSubclass, "RemoveWindowSubclass"),
+		dll.Comctl.Load(&_comctl_RemoveWindowSubclass, "RemoveWindowSubclass"),
 		uintptr(hWnd),
 		subclassProc,
 		uintptr(idSubclass))
@@ -75,7 +75,7 @@ func (hWnd HWND) SetWindowSubclass(
 	refData unsafe.Pointer,
 ) error {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.COMCTL32, &_comctl_SetWindowSubclass, "SetWindowSubclass"),
+		dll.Comctl.Load(&_comctl_SetWindowSubclass, "SetWindowSubclass"),
 		uintptr(hWnd),
 		subclassProc,
 		uintptr(idSubclass),

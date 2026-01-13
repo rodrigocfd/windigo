@@ -43,7 +43,7 @@ type HLOCAL HANDLE
 func LocalAlloc(flags co.LMEM, numBytes int) (HLOCAL, error) {
 	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_LocalAlloc, "LocalAlloc"),
+		dll.Kernel.Load(&_kernel_LocalAlloc, "LocalAlloc"),
 		uintptr(flags),
 		uintptr(uint64(numBytes)))
 	if ret == 0 {
@@ -59,7 +59,7 @@ var _kernel_LocalAlloc *syscall.Proc
 // [LocalFlags]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-localflags
 func (hLocal HLOCAL) LocalFlags() (co.LMEM, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_LocalFlags, "LocalFlags"),
+		dll.Kernel.Load(&_kernel_LocalFlags, "LocalFlags"),
 		uintptr(hLocal))
 	if ret == utl.LMEM_INVALID_HANDLE {
 		return co.LMEM(0), co.ERROR(err)
@@ -82,7 +82,7 @@ func (hLocal HLOCAL) LocalFree() error {
 	}
 
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_LocalFree, "LocalFree"),
+		dll.Kernel.Load(&_kernel_LocalFree, "LocalFree"),
 		uintptr(hLocal))
 	if ret != 0 {
 		return co.ERROR(err)
@@ -116,7 +116,7 @@ var _kernel_LocalFree *syscall.Proc
 // [LocalLock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-locallock
 func (hLocal HLOCAL) LocalLock() (unsafe.Pointer, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_LocalLock, "LocalLock"),
+		dll.Kernel.Load(&_kernel_LocalLock, "LocalLock"),
 		uintptr(hLocal))
 	if ret == 0 {
 		return nil, co.ERROR(err)
@@ -169,7 +169,7 @@ func (hLocal HLOCAL) LocalLockSlice() ([]byte, error) {
 func (hLocal HLOCAL) LocalReAlloc(numBytes int, flags co.LMEM) (HLOCAL, error) {
 	utl.PanicNeg(numBytes)
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_LocalReAlloc, "LocalReAlloc"),
+		dll.Kernel.Load(&_kernel_LocalReAlloc, "LocalReAlloc"),
 		uintptr(hLocal),
 		uintptr(uint64(numBytes)),
 		uintptr(flags))
@@ -186,7 +186,7 @@ var _kernel_LocalReAlloc *syscall.Proc
 // [LocalSize]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-localsize
 func (hLocal HLOCAL) LocalSize() (int, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_LocalSize, "LocalSize"),
+		dll.Kernel.Load(&_kernel_LocalSize, "LocalSize"),
 		uintptr(hLocal))
 	if ret == 0 {
 		return 0, co.ERROR(err)
@@ -201,7 +201,7 @@ var _kernel_LocalSize *syscall.Proc
 // [LocalUnlock]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-localunlock
 func (hLocal HLOCAL) LocalUnlock() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_LocalUnlock, "LocalUnlock"),
+		dll.Kernel.Load(&_kernel_LocalUnlock, "LocalUnlock"),
 		uintptr(hLocal))
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return wErr

@@ -15,7 +15,7 @@ import (
 // [IsThemeDialogTextureEnabled]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemedialogtextureenabled
 func (hWnd HWND) IsThemeDialogTextureEnabled() bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_uxtheme_IsThemeDialogTextureEnabled, "IsThemeDialogTextureEnabled"),
+		dll.Uxtheme.Load(&_uxtheme_IsThemeDialogTextureEnabled, "IsThemeDialogTextureEnabled"),
 		uintptr(hWnd))
 	return ret != 0
 }
@@ -30,7 +30,7 @@ var _uxtheme_IsThemeDialogTextureEnabled *syscall.Proc
 func (hWnd HWND) OpenThemeData(classNames string) (HTHEME, error) {
 	var wClassNames wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_uxtheme_OpenThemeData, "OpenThemeData"),
+		dll.Uxtheme.Load(&_uxtheme_OpenThemeData, "OpenThemeData"),
 		uintptr(hWnd),
 		uintptr(wClassNames.EmptyIsNil(classNames)))
 	if ret == 0 {

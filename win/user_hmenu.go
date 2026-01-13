@@ -23,7 +23,7 @@ type HMENU HANDLE
 // [CreateMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createmenu
 func CreateMenu() (HMENU, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_CreateMenu, "CreateMenu"))
+		dll.User.Load(&_user_CreateMenu, "CreateMenu"))
 	if ret == 0 {
 		return HMENU(0), co.ERROR(err)
 	}
@@ -39,7 +39,7 @@ var _user_CreateMenu *syscall.Proc
 // [CreatePopupMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createpopupmenu
 func CreatePopupMenu() (HMENU, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_CreatePopupMenu, "CreatePopupMenu"))
+		dll.User.Load(&_user_CreatePopupMenu, "CreatePopupMenu"))
 	if ret == 0 {
 		return HMENU(0), co.ERROR(err)
 	}
@@ -81,7 +81,7 @@ func (hMenu HMENU) checkMenuItem(check bool, flagPosCmd co.MF, item int) error {
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_CheckMenuItem, "CheckMenuItem"),
+		dll.User.Load(&_user_CheckMenuItem, "CheckMenuItem"),
 		uintptr(hMenu),
 		uintptr(uint32(item)),
 		uintptr(flagPosCmd))
@@ -96,7 +96,7 @@ var _user_CheckMenuItem *syscall.Proc
 func (hMenu HMENU) DeleteMenuByCmd(cmdIds ...uint16) error {
 	for _, cmdId := range cmdIds {
 		ret, _, err := syscall.SyscallN(
-			dll.Load(dll.USER32, &_user_DeleteMenu, "DeleteMenu"),
+			dll.User.Load(&_user_DeleteMenu, "DeleteMenu"),
 			uintptr(hMenu),
 			uintptr(uint32(cmdId)),
 			uintptr(co.MF_BYCOMMAND))
@@ -115,7 +115,7 @@ var _user_DeleteMenu *syscall.Proc
 func (hMenu HMENU) DeleteMenuByPos(indexes ...int) error {
 	for _, index := range indexes {
 		ret, _, err := syscall.SyscallN(
-			dll.Load(dll.USER32, &_user_DeleteMenu, "DeleteMenu"),
+			dll.User.Load(&_user_DeleteMenu, "DeleteMenu"),
 			uintptr(hMenu),
 			uintptr(uint32(index)),
 			uintptr(co.MF_BYPOSITION))
@@ -131,7 +131,7 @@ func (hMenu HMENU) DeleteMenuByPos(indexes ...int) error {
 // [DestroyMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroymenu
 func (hMenu HMENU) DestroyMenu() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_DestroyMenu, "DestroyMenu"),
+		dll.User.Load(&_user_DestroyMenu, "DestroyMenu"),
 		uintptr(hMenu))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -181,7 +181,7 @@ func (hMenu HMENU) enableMenuItem(enable bool, flagPosCmd co.MF, item int) error
 	}
 
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_EnableMenuItem, "EnableMenuItem"),
+		dll.User.Load(&_user_EnableMenuItem, "EnableMenuItem"),
 		uintptr(hMenu),
 		uintptr(uint32(item)),
 		uintptr(flagPosCmd))
@@ -197,7 +197,7 @@ var _user_EnableMenuItem *syscall.Proc
 // [GetMenuDefaultItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenudefaultitem
 func (hMenu HMENU) GetMenuDefaultItem(gmdiFlags co.GMDI) (int, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_GetMenuDefaultItem, "GetMenuDefaultItem"),
+		dll.User.Load(&_user_GetMenuDefaultItem, "GetMenuDefaultItem"),
 		uintptr(hMenu),
 		1,
 		uintptr(gmdiFlags))
@@ -216,7 +216,7 @@ var _user_GetMenuDefaultItem *syscall.Proc
 // [GetMenuItemID]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuitemid
 func (hMenu HMENU) GetMenuItemID(index int) (uint16, error) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_GetMenuItemID, "GetMenuItemID"),
+		dll.User.Load(&_user_GetMenuItemID, "GetMenuItemID"),
 		uintptr(hMenu),
 		uintptr(int32(index)))
 	if int32(ret) == -1 {
@@ -232,7 +232,7 @@ var _user_GetMenuItemID *syscall.Proc
 // [GetMenuItemCount]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuitemcount
 func (hMenu HMENU) GetMenuItemCount() (int, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_GetMenuItemCount, "GetMenuItemCount"),
+		dll.User.Load(&_user_GetMenuItemCount, "GetMenuItemCount"),
 		uintptr(hMenu))
 	if int32(ret) == -1 {
 		return 0, co.ERROR(err)
@@ -248,7 +248,7 @@ var _user_GetMenuItemCount *syscall.Proc
 func (hMenu HMENU) GetMenuItemInfoByCmd(cmdId uint16, mii *MENUITEMINFO) error {
 	mii.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_GetMenuItemInfoW, "GetMenuItemInfoW"),
+		dll.User.Load(&_user_GetMenuItemInfoW, "GetMenuItemInfoW"),
 		uintptr(hMenu),
 		uintptr(uint32(cmdId)),
 		uintptr(co.MF_BYCOMMAND),
@@ -264,7 +264,7 @@ var _user_GetMenuItemInfoW *syscall.Proc
 func (hMenu HMENU) GetMenuItemInfoByPos(index int, mii *MENUITEMINFO) error {
 	mii.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_GetMenuItemInfoW, "GetMenuItemInfoW"),
+		dll.User.Load(&_user_GetMenuItemInfoW, "GetMenuItemInfoW"),
 		uintptr(hMenu),
 		uintptr(uint32(index)),
 		uintptr(co.MF_BYPOSITION),
@@ -277,7 +277,7 @@ func (hMenu HMENU) GetMenuItemInfoByPos(index int, mii *MENUITEMINFO) error {
 // [GetSubMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsubmenu
 func (hMenu HMENU) GetSubMenu(index int) (HMENU, bool) {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_GetSubMenu, "GetSubMenu"),
+		dll.User.Load(&_user_GetSubMenu, "GetSubMenu"),
 		uintptr(hMenu),
 		uintptr(int32(index)))
 	hSub := HMENU(ret)
@@ -291,7 +291,7 @@ var _user_GetSubMenu *syscall.Proc
 // [InsertMenuItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenuitemw
 func (hMenu HMENU) InsertMenuItemByCmd(cmdId uint16, mii *MENUITEMINFO) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_InsertMenuItemW, "InsertMenuItemW"),
+		dll.User.Load(&_user_InsertMenuItemW, "InsertMenuItemW"),
 		uintptr(hMenu),
 		uintptr(uint32(cmdId)),
 		uintptr(co.MF_BYCOMMAND),
@@ -306,7 +306,7 @@ var _user_InsertMenuItemW *syscall.Proc
 // [InsertMenuItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenuitemw
 func (hMenu HMENU) InsertMenuItemByPos(index int, mii *MENUITEMINFO) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_InsertMenuItemW, "InsertMenuItemW"),
+		dll.User.Load(&_user_InsertMenuItemW, "InsertMenuItemW"),
 		uintptr(hMenu),
 		uintptr(uint32(index)),
 		uintptr(co.MF_BYPOSITION),
@@ -320,7 +320,7 @@ func (hMenu HMENU) InsertMenuItemByPos(index int, mii *MENUITEMINFO) error {
 func (hMenu HMENU) RemoveMenuByCmd(cmdIds ...uint16) error {
 	for _, cmdId := range cmdIds {
 		ret, _, err := syscall.SyscallN(
-			dll.Load(dll.USER32, &_user_RemoveMenu, "RemoveMenu"),
+			dll.User.Load(&_user_RemoveMenu, "RemoveMenu"),
 			uintptr(hMenu),
 			uintptr(uint32(cmdId)),
 			uintptr(co.MF_BYCOMMAND))
@@ -339,7 +339,7 @@ var _user_RemoveMenu *syscall.Proc
 func (hMenu HMENU) RemoveMenuByPos(indexes ...int) error {
 	for _, index := range indexes {
 		ret, _, err := syscall.SyscallN(
-			dll.Load(dll.USER32, &_user_RemoveMenu, "RemoveMenu"),
+			dll.User.Load(&_user_RemoveMenu, "RemoveMenu"),
 			uintptr(hMenu),
 			uintptr(uint32(index)),
 			uintptr(co.MF_BYPOSITION))
@@ -355,7 +355,7 @@ func (hMenu HMENU) RemoveMenuByPos(indexes ...int) error {
 // [SetMenuDefaultItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenudefaultitem
 func (hMenu HMENU) SetMenuDefaultItemByCmd(cmdId uint16) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_SetMenuDefaultItem, "SetMenuDefaultItem"),
+		dll.User.Load(&_user_SetMenuDefaultItem, "SetMenuDefaultItem"),
 		uintptr(hMenu),
 		uintptr(uint32(cmdId)),
 		uintptr(co.MF_BYCOMMAND))
@@ -369,7 +369,7 @@ var _user_SetMenuDefaultItem *syscall.Proc
 // [SetMenuDefaultItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenudefaultitem
 func (hMenu HMENU) SetMenuDefaultItemByPos(index int) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_SetMenuDefaultItem, "SetMenuDefaultItem"),
+		dll.User.Load(&_user_SetMenuDefaultItem, "SetMenuDefaultItem"),
 		uintptr(hMenu),
 		uintptr(uint32(index)),
 		uintptr(co.MF_BYPOSITION))
@@ -381,7 +381,7 @@ func (hMenu HMENU) SetMenuDefaultItemByPos(index int) error {
 // [SetMenuInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuinfo
 func (hMenu HMENU) SetMenuInfo(info *MENUINFO) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_SetMenuInfo, "SetMenuInfo"),
+		dll.User.Load(&_user_SetMenuInfo, "SetMenuInfo"),
 		uintptr(hMenu),
 		uintptr(unsafe.Pointer(info)))
 	return utl.ZeroAsGetLastError(ret, err)
@@ -394,7 +394,7 @@ var _user_SetMenuInfo *syscall.Proc
 // [SetMenuItemBitmaps]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuitembitmaps
 func (hMenu HMENU) SetMenuItemBitmapsByCmd(cmdId uint16, hBmpUnchecked, hBmpChecked HBITMAP) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_SetMenuItemBitmaps, "SetMenuItemBitmaps"),
+		dll.User.Load(&_user_SetMenuItemBitmaps, "SetMenuItemBitmaps"),
 		uintptr(hMenu),
 		uintptr(uint32(cmdId)),
 		uintptr(co.MF_BYCOMMAND),
@@ -410,7 +410,7 @@ var _user_SetMenuItemBitmaps *syscall.Proc
 // [SetMenuItemBitmaps]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuitembitmaps
 func (hMenu HMENU) SetMenuItemBitmapsByPos(index int, hBmpUnchecked, hBmpChecked HBITMAP) error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_SetMenuItemBitmaps, "SetMenuItemBitmaps"),
+		dll.User.Load(&_user_SetMenuItemBitmaps, "SetMenuItemBitmaps"),
 		uintptr(hMenu),
 		uintptr(uint32(index)),
 		uintptr(co.MF_BYPOSITION),
@@ -425,7 +425,7 @@ func (hMenu HMENU) SetMenuItemBitmapsByPos(index int, hBmpUnchecked, hBmpChecked
 func (hMenu HMENU) SetMenuItemInfoByCmd(cmdId uint16, info *MENUITEMINFO) error {
 	info.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_SetMenuItemInfo, "SetMenuItemInfo"),
+		dll.User.Load(&_user_SetMenuItemInfo, "SetMenuItemInfo"),
 		uintptr(hMenu),
 		uintptr(uint32(cmdId)),
 		uintptr(co.MF_BYCOMMAND),
@@ -441,7 +441,7 @@ var _user_SetMenuItemInfo *syscall.Proc
 func (hMenu HMENU) SetMenuItemInfoByPos(index int, info *MENUITEMINFO) error {
 	info.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_SetMenuItemInfo, "SetMenuItemInfo"),
+		dll.User.Load(&_user_SetMenuItemInfo, "SetMenuItemInfo"),
 		uintptr(hMenu),
 		uintptr(uint32(index)),
 		uintptr(co.MF_BYPOSITION),
@@ -475,7 +475,7 @@ func (hMenu HMENU) ShowAtPoint(pos POINT, hParent, hCoordsRelativeTo HWND) {
 // [TrackPopupMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu
 func (hMenu HMENU) TrackPopupMenu(flags co.TPM, x, y int, hWnd HWND) (int, error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.USER32, &_user_TrackPopupMenu, "TrackPopupMenu"),
+		dll.User.Load(&_user_TrackPopupMenu, "TrackPopupMenu"),
 		uintptr(hMenu),
 		uintptr(flags),
 		uintptr(int32(x)),

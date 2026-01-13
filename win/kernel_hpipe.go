@@ -36,7 +36,7 @@ func CreateNamedPipe(
 ) (HPIPE, error) {
 	var wName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_CreateNamedPipeW, "CreateNamedPipeW"),
+		dll.Kernel.Load(&_kernel_CreateNamedPipeW, "CreateNamedPipeW"),
 		uintptr(wName.AllowEmpty(name)),
 		uintptr(dwOpenMode),
 		uintptr(dwPipeMode),
@@ -61,7 +61,7 @@ func CreatePipe(
 	size int,
 ) (hPipeRead, hPipeWrite HPIPE, wErr error) {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_CreatePipe, "CreatePipe"),
+		dll.Kernel.Load(&_kernel_CreatePipe, "CreatePipe"),
 		uintptr(unsafe.Pointer(&hPipeRead)),
 		uintptr(unsafe.Pointer(&hPipeWrite)),
 		uintptr(unsafe.Pointer(securityAttributes)),
@@ -86,7 +86,7 @@ func (hPipe HPIPE) CloseHandle() error {
 // [ConnectNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-connectnamedpipe
 func (hPipe HPIPE) ConnectNamedPipe() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_ConnectNamedPipe, "ConnectNamedPipe"),
+		dll.Kernel.Load(&_kernel_ConnectNamedPipe, "ConnectNamedPipe"),
 		uintptr(hPipe),
 		uintptr(0))
 	if ret == 0 {
@@ -102,7 +102,7 @@ var _kernel_ConnectNamedPipe *syscall.Proc
 // [DisconnectNamedPipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-disconnectnamedpipe
 func (hPipe HPIPE) DisconnectNamedPipe() error {
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_DisconnectNamedPipe, "DisconnectNamedPipe"),
+		dll.Kernel.Load(&_kernel_DisconnectNamedPipe, "DisconnectNamedPipe"),
 		uintptr(hPipe),
 		uintptr(0))
 	if ret == 0 {
@@ -119,7 +119,7 @@ var _kernel_DisconnectNamedPipe *syscall.Proc
 func (hPipe HPIPE) GetNamedPipeInfo() (HpipeInfo, error) {
 	var info HpipeInfo
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_GetNamedPipeInfo, "GetNamedPipeInfo"),
+		dll.Kernel.Load(&_kernel_GetNamedPipeInfo, "GetNamedPipeInfo"),
 		uintptr(hPipe),
 		uintptr(unsafe.Pointer(&info.Flags)),
 		uintptr(unsafe.Pointer(&info.OutBuffer)),
@@ -147,7 +147,7 @@ type HpipeInfo struct {
 func (hPipe HPIPE) PeekNamedPipe(buffer []byte) (HpipePeek, error) {
 	var info HpipePeek
 	ret, _, err := syscall.SyscallN(
-		dll.Load(dll.KERNEL32, &_kernel_PeekNamedPipe, "PeekNamedPipe"),
+		dll.Kernel.Load(&_kernel_PeekNamedPipe, "PeekNamedPipe"),
 		uintptr(hPipe),
 		uintptr(unsafe.Pointer(unsafe.SliceData(buffer))),
 		uintptr(uint32(len(buffer))),

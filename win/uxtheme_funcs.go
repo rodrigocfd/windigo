@@ -13,7 +13,7 @@ import (
 // [IsAppThemed]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isappthemed
 func IsAppThemed() bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_uxtheme_IsAppThemed, "IsAppThemed"))
+		dll.Uxtheme.Load(&_uxtheme_IsAppThemed, "IsAppThemed"))
 	return ret != 0
 }
 
@@ -24,7 +24,7 @@ var _uxtheme_IsAppThemed *syscall.Proc
 // [IsCompositionActive]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-iscompositionactive
 func IsCompositionActive() bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_uxtheme_IsCompositionActive, "IsCompositionActive"))
+		dll.Uxtheme.Load(&_uxtheme_IsCompositionActive, "IsCompositionActive"))
 	return ret != 0
 }
 
@@ -35,7 +35,7 @@ var _uxtheme_IsCompositionActive *syscall.Proc
 // [IsThemeActive]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-isthemeactive
 func IsThemeActive() bool {
 	ret, _, _ := syscall.SyscallN(
-		dll.Load(dll.UXTHEME, &_uxtheme_IsThemeActive, "IsThemeActive"))
+		dll.Uxtheme.Load(&_uxtheme_IsThemeActive, "IsThemeActive"))
 	return ret != 0
 }
 
