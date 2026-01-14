@@ -123,54 +123,17 @@ func CallWindowProc(prevWndFunc uintptr, hWnd HWND, msg co.WM, wParam WPARAM, lP
 
 var _user_CallWindowProcW *syscall.Proc
 
-// [CreateIconFromResourceEx] function for cursor.
+// [ClipCursor] function.
 //
-// This function creates [HCURSOR] only. The [HICON] variation is
-// [CreateIconFromResourceEx].
-//
-// ⚠️ You must defer [HCURSOR.DestroyCursor].
-//
-// [CreateIconFromResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconfromresourceex
-func CreateCursorFromResourceEx(
-	resBits []byte,
-	fmtVersion uint32,
-	cxDesired, cyDesired int,
-	flags co.LR,
-) (HCURSOR, error) {
-	hIcon, err := CreateIconFromResourceEx(resBits, fmtVersion, cxDesired, cyDesired, flags)
-	return HCURSOR(hIcon), err
-}
-
-// [CreateIconFromResourceEx] function.
-//
-// This function creates [HICON] only. The [HCURSOR] variation is
-// [CreateCursorFromResourceEx].
-//
-// ⚠️ You must defer [HICON.DestroyIcon].
-//
-// [CreateIconFromResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconfromresourceex
-func CreateIconFromResourceEx(
-	resBits []byte,
-	fmtVersion uint32,
-	cxDesired, cyDesired int,
-	flags co.LR,
-) (HICON, error) {
+// [ClipCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clipcursor
+func ClipCursor(pRc *RECT) error {
 	ret, _, err := syscall.SyscallN(
-		dll.User.Load(&_user_CreateIconFromResourceEx, "CreateIconFromResourceEx"),
-		uintptr(unsafe.Pointer(unsafe.SliceData(resBits))),
-		uintptr(uint32(len(resBits))),
-		1,
-		uintptr(fmtVersion),
-		uintptr(int32(cxDesired)),
-		uintptr(int32(cyDesired)),
-		uintptr(flags))
-	if ret == 0 {
-		return HICON(0), co.ERROR(err)
-	}
-	return HICON(ret), nil
+		dll.User.Load(&_user_ClipCursor, "ClipCursor"),
+		uintptr(unsafe.Pointer(pRc)))
+	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _user_CreateIconFromResourceEx *syscall.Proc
+var _user_ClipCursor *syscall.Proc
 
 // [DestroyCaret] function.
 //
@@ -353,6 +316,22 @@ func GetCaretPos() (RECT, error) {
 
 var _user_GetCaretPos *syscall.Proc
 
+// [GetClipCursor] function.
+//
+// [GetClipCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipcursor
+func GetClipCursor() (RECT, error) {
+	var rc RECT
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_GetClipCursor, "GetClipCursor"),
+		uintptr(unsafe.Pointer(&rc)))
+	if ret == 0 {
+		return RECT{}, co.ERROR(err)
+	}
+	return rc, nil
+}
+
+var _user_GetClipCursor *syscall.Proc
+
 // [GetCursorInfo] function.
 //
 // [GetCursorInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcursorinfo
@@ -482,6 +461,18 @@ func GetMessageTime() time.Duration {
 }
 
 var _user_GetMessageTime *syscall.Proc
+
+// [GetSystemMetricsForDpi] function.
+//
+// [GetSystemMetricsForDpi]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetricsfordpi
+func GetSystemMetricsForDpi(index co.SM) int32 {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetSystemMetricsForDpi, "GetSystemMetricsForDpi"),
+		uintptr(index))
+	return int32(ret)
+}
+
+var _user_GetSystemMetricsForDpi *syscall.Proc
 
 // [GetPhysicalCursorPos] function.
 //

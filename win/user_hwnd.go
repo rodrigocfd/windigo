@@ -846,6 +846,18 @@ func (hWnd HWND) GetWindowThreadProcessId() (threadId, processId uint32, wErr er
 
 var _user_GetWindowThreadProcessId *syscall.Proc
 
+// [HideCaret] function.
+//
+// [HideCaret]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-hidecaret
+func (hWnd HWND) HideCaret() error {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_HideCaret, "HideCaret"),
+		uintptr(hWnd))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _user_HideCaret *syscall.Proc
+
 // Calls [HWND.GetWindowLongPtr] to retrieve the instance to which this window
 // belongs.
 func (hWnd HWND) HInstance() (HINSTANCE, error) {

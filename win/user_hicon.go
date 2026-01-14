@@ -16,6 +16,37 @@ import (
 // [icon]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hicon
 type HICON HANDLE
 
+// [CreateIconFromResourceEx] function.
+//
+// This function creates [HICON] only. The [HCURSOR] variation is
+// [CreateCursorFromResourceEx].
+//
+// ⚠️ You must defer [HICON.DestroyIcon].
+//
+// [CreateIconFromResourceEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconfromresourceex
+func CreateIconFromResourceEx(
+	resBits []byte,
+	fmtVersion uint32,
+	cxDesired, cyDesired int,
+	flags co.LR,
+) (HICON, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_CreateIconFromResourceEx, "CreateIconFromResourceEx"),
+		uintptr(unsafe.Pointer(unsafe.SliceData(resBits))),
+		uintptr(uint32(len(resBits))),
+		1,
+		uintptr(fmtVersion),
+		uintptr(int32(cxDesired)),
+		uintptr(int32(cyDesired)),
+		uintptr(flags))
+	if ret == 0 {
+		return HICON(0), co.ERROR(err)
+	}
+	return HICON(ret), nil
+}
+
+var _user_CreateIconFromResourceEx *syscall.Proc
+
 // [CreateIconIndirect] function.
 //
 // ⚠️ You must defer [HICON.DestroyIcon].

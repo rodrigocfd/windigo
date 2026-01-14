@@ -11,6 +11,28 @@ import (
 	"github.com/rodrigocfd/windigo/wstr"
 )
 
+// [CreateCursor] function.
+//
+// ⚠️ You must defer [HCURSOR.DestroyCursor].
+//
+// [CreateCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createcursor
+func (hInst HINSTANCE) CreateCursor(hotSpot POINT, sz SIZE, andPlane, xorPlane []byte) (HCURSOR, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_CreateCursor, "CreateCursor"),
+		uintptr(hotSpot.X),
+		uintptr(hotSpot.Y),
+		uintptr(sz.Cx),
+		uintptr(sz.Cy),
+		uintptr(unsafe.Pointer(unsafe.SliceData(andPlane))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(xorPlane))))
+	if ret == 0 {
+		return HCURSOR(0), co.ERROR(err)
+	}
+	return HCURSOR(ret), nil
+}
+
+var _user_CreateCursor *syscall.Proc
+
 // [CreateDialogParam] function.
 //
 // [CreateDialogParam]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdialogparamw
