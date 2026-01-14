@@ -8,6 +8,28 @@ import (
 	"unicode/utf16"
 )
 
+// Returns a new string with the first character converted to uppercase.
+func Capitalize(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+
+	var buf strings.Builder
+	buf.Grow(CountRunes(s))
+
+	first := true
+	for _, ch := range s {
+		if first {
+			buf.WriteString(strings.ToUpper(string(ch)))
+			first = false
+		} else {
+			buf.WriteRune(ch)
+		}
+	}
+
+	return buf.String()
+}
+
 // Compares two strings [lexographically].
 //
 // [lexographically]: https://stackoverflow.com/a/52831144/6923555
