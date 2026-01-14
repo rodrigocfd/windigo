@@ -434,7 +434,7 @@ var _user_GetInputState *syscall.Proc
 // [GetMessage] function.
 //
 // [GetMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagew
-func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) (int32, error) {
+func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax co.WM) (int, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_GetMessageW, "GetMessageW"),
 		uintptr(unsafe.Pointer(msg)),
@@ -444,7 +444,7 @@ func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax uint32) (int32, 
 	if int32(ret) == -1 {
 		return 0, co.ERROR(err)
 	}
-	return int32(ret), nil
+	return int(int32(ret)), nil
 }
 
 var _user_GetMessageW *syscall.Proc

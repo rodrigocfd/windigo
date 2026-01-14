@@ -655,12 +655,12 @@ var _gdi_GetDCPenColor *syscall.Proc
 // [GetDeviceCaps] function.
 //
 // [GetDeviceCaps]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdevicecaps
-func (hdc HDC) GetDeviceCaps(index co.GDC) int32 {
+func (hdc HDC) GetDeviceCaps(index co.GDC) int {
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_GetDeviceCaps, "GetDeviceCaps"),
 		uintptr(hdc),
 		uintptr(index))
-	return int32(ret)
+	return int(int32(ret))
 }
 
 var _gdi_GetDeviceCaps *syscall.Proc
@@ -1435,10 +1435,10 @@ var _gdi_ResetDCW *syscall.Proc
 // Paired with [HDC.SaveDC].
 //
 // [RestoreDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-restoredc
-func (hdc HDC) RestoreDC(savedDC int32) error {
+func (hdc HDC) RestoreDC(savedDC int) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_RestoreDC, "RestoreDC"),
-		uintptr(hdc),
+		uintptr(int32(hdc)),
 		uintptr(savedDC))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -1468,14 +1468,14 @@ var _gdi_RoundRect *syscall.Proc
 // Paired with [HDC.RestoreDC].
 //
 // [SaveDC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-savedc
-func (hdc HDC) SaveDC() (int32, error) {
+func (hdc HDC) SaveDC() (int, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_SaveDC, "SaveDC"),
 		uintptr(hdc))
 	if ret == 0 {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
-	return int32(ret), nil
+	return int(int32(ret)), nil
 }
 
 var _gdi_SaveDC *syscall.Proc
