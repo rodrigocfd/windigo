@@ -378,6 +378,29 @@ func GetDialogBaseUnits() (horz, vert uint16) {
 
 var _user_GetDialogBaseUnits *syscall.Proc
 
+// [GetDpiForSystem] function.
+//
+// [GetDpiForSystem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforsystem
+func GetDpiForSystem() int {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetDpiForSystem, "GetDpiForSystem"))
+	return int(uint32(ret))
+}
+
+var _user_GetDpiForSystem *syscall.Proc
+
+// [GetDpiFromDpiAwarenessContext] function.
+//
+// [GetDpiFromDpiAwarenessContext]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpifromdpiawarenesscontext
+func GetDpiFromDpiAwarenessContext(value co.DPI_AWARENESS_CONTEXT) int {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetDpiFromDpiAwarenessContext, "GetDpiFromDpiAwarenessContext"),
+		uintptr(value))
+	return int(uint32(ret))
+}
+
+var _user_GetDpiFromDpiAwarenessContext *syscall.Proc
+
 // [GetGUIThreadInfo] function.
 //
 // [GetGUIThreadInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getguithreadinfo
@@ -462,18 +485,6 @@ func GetMessageTime() time.Duration {
 
 var _user_GetMessageTime *syscall.Proc
 
-// [GetSystemMetricsForDpi] function.
-//
-// [GetSystemMetricsForDpi]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetricsfordpi
-func GetSystemMetricsForDpi(index co.SM) int32 {
-	ret, _, _ := syscall.SyscallN(
-		dll.User.Load(&_user_GetSystemMetricsForDpi, "GetSystemMetricsForDpi"),
-		uintptr(index))
-	return int32(ret)
-}
-
-var _user_GetSystemMetricsForDpi *syscall.Proc
-
 // [GetPhysicalCursorPos] function.
 //
 // [GetPhysicalCursorPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getphysicalcursorpos
@@ -543,6 +554,29 @@ func GetSystemMetrics(index co.SM) int32 {
 }
 
 var _user_GetSystemMetrics *syscall.Proc
+
+// [GetSystemMetricsForDpi] function.
+//
+// [GetSystemMetricsForDpi]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetricsfordpi
+func GetSystemMetricsForDpi(index co.SM) int32 {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetSystemMetricsForDpi, "GetSystemMetricsForDpi"),
+		uintptr(index))
+	return int32(ret)
+}
+
+var _user_GetSystemMetricsForDpi *syscall.Proc
+
+// [GetThreadDpiAwarenessContext] function.
+//
+// [GetThreadDpiAwarenessContext]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getthreaddpiawarenesscontext
+func GetThreadDpiAwarenessContext() co.DPI_AWARENESS_CONTEXT {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetThreadDpiAwarenessContext, "GetThreadDpiAwarenessContext"))
+	return co.DPI_AWARENESS_CONTEXT(ret)
+}
+
+var _user_GetThreadDpiAwarenessContext *syscall.Proc
 
 // [InflateRect] function.
 //

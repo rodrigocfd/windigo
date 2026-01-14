@@ -575,6 +575,18 @@ func (hWnd HWND) GetDlgItem(dlgId uint16) (HWND, error) {
 
 var _user_GetDlgItem *syscall.Proc
 
+// [GetDpiForWindow] function.
+//
+// [GetDpiForWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforwindow
+func (hWnd HWND) GetDpiForWindow() int {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetDpiForWindow, "GetDpiForWindow"),
+		uintptr(hWnd))
+	return int(uint32(ret))
+}
+
+var _user_GetDpiForWindow *syscall.Proc
+
 // [GetLastActivePopup] function.
 //
 // [GetLastActivePopup]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getlastactivepopup

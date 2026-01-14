@@ -11,6 +11,18 @@ import (
 	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
+// [GetSystemDpiForProcess] function.
+//
+// [GetSystemDpiForProcess]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemdpiforprocess
+func (hProcess HPROCESS) GetSystemDpiForProcess() int {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetSystemDpiForProcess, "GetSystemDpiForProcess"),
+		uintptr(hProcess))
+	return int(uint32(ret))
+}
+
+var _user_GetSystemDpiForProcess *syscall.Proc
+
 // [SetUserObjectInformation] function.
 //
 // [SetUserObjectInformation]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setuserobjectinformationw

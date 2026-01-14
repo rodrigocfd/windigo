@@ -372,6 +372,19 @@ const (
 	DLGC_BUTTON          DLGC = 0x2000
 )
 
+// [DPI_AWARENESS_CONTEXT] values.
+//
+// [DPI_AWARENESS_CONTEXT]: https://learn.microsoft.com/en-us/windows/win32/hidpi/dpi-awareness-context
+type DPI_AWARENESS_CONTEXT int
+
+const (
+	DPI_AWARENESS_CONTEXT_UNAWARE              DPI_AWARENESS_CONTEXT = -1
+	DPI_AWARENESS_CONTEXT_SYSTEM_AWARE         DPI_AWARENESS_CONTEXT = -2
+	DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE    DPI_AWARENESS_CONTEXT = -3
+	DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 DPI_AWARENESS_CONTEXT = -4
+	DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED    DPI_AWARENESS_CONTEXT = -5
+)
+
 // [EnumDisplayDevices] flags.
 //
 // [EnumDisplayDevices]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw
