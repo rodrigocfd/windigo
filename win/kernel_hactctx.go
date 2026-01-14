@@ -89,7 +89,7 @@ var _kernel_AddRefActCtx *syscall.Proc
 //
 // [ReleaseActCtx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-releaseactctx
 func (hActCtx HACTCTX) ReleaseActCtx() {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_ReleaseActCtx, "ReleaseActCtx"),
 		uintptr(hActCtx))
 }

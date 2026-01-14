@@ -51,7 +51,7 @@ var _ole_CoTaskMemAlloc *syscall.Proc
 // [CoTaskMemFree]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
 func (hMem HTASKMEM) CoTaskMemFree() {
 	if hMem != 0 {
-		syscall.SyscallN(
+		_, _, _ = syscall.SyscallN(
 			dll.Ole.Load(&_ole_CoTaskMemFree, "CoTaskMemFree"),
 			uintptr(hMem))
 	}

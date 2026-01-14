@@ -53,7 +53,7 @@ var _comctl_ImageList_DrawIndirect *syscall.Proc
 //
 // [ImageList_EndDrag]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_enddrag
 func ImageListEndDrag() {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Comctl.Load(&_comctl_ImageList_EndDrag, "ImageList_EndDrag"))
 }
 
@@ -63,7 +63,7 @@ var _comctl_ImageList_EndDrag *syscall.Proc
 //
 // [InitCommonControls]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initcommoncontrols
 func InitCommonControls() {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Comctl.Load(&_comctl_InitCommonControls, "InitCommonControls"))
 }
 
@@ -89,7 +89,7 @@ var _comctl_InitCommonControlsEx *syscall.Proc
 //
 // [InitMUILanguage]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-initmuilanguage
 func InitMUILanguage(lang LANGID) {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Comctl.Load(&_comctl_InitMUILanguage, "InitMUILanguage"),
 		uintptr(lang))
 }

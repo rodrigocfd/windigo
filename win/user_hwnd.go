@@ -399,7 +399,7 @@ var _user_EndDialog *syscall.Proc
 //
 // [EndPaint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endpaint
 func (hWnd HWND) EndPaint(ps *PAINTSTRUCT) {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.User.Load(&_user_EndPaint, "EndPaint"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(ps)))
@@ -415,7 +415,7 @@ func (hWnd HWND) EnumChildWindows() []HWND {
 		arr: make([]HWND, 0),
 	}
 
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.User.Load(&_user_EnumChildWindows, "EnumChildWindows"),
 		uintptr(hWnd),
 		callbackGet_EnumChildWindows(),

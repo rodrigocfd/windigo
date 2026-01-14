@@ -23,7 +23,7 @@ type HTHEME HANDLE
 //
 // [CloseThemeData]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-closethemedata
 func (hTheme HTHEME) CloseThemeData() {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Uxtheme.Load(&_uxtheme_CloseThemeData, "CloseThemeData"),
 		uintptr(hTheme))
 }

@@ -59,7 +59,7 @@ func (me *IUnknown) Ppvt() **_IUnknownVt {
 // [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
 	com_validateAndRelease(ppOut, releaser)
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		(*me.Ppvt()).AddRef,
 		uintptr(unsafe.Pointer(me.Ppvt())))
 	com_buildObj(ppOut, me.ppvt, releaser)
@@ -99,7 +99,7 @@ func (me *IUnknown) QueryInterface(releaser *OleReleaser, ppOut interface{}) err
 // Implements [OleResource].
 func (me *IUnknown) release() {
 	if me.ppvt != nil {
-		syscall.SyscallN(
+		_, _, _ = syscall.SyscallN(
 			(*me.ppvt).Release,
 			uintptr(unsafe.Pointer(me.ppvt)))
 		me.ppvt = nil

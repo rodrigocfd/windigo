@@ -23,7 +23,7 @@ type HDROP HANDLE
 // [DragFinish]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragfinish
 // [RegisterDragDrop]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-registerdragdrop
 func (hDrop HDROP) DragFinish() {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Shell.Load(&_shell_DragFinish, "DragFinish"),
 		uintptr(hDrop))
 }

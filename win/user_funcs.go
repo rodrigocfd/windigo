@@ -252,7 +252,7 @@ func EnumThreadWindows(threadId uint32) []HWND {
 		arr: make([]HWND, 0),
 	}
 
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.User.Load(&_user_EnumThreadWindows, "EnumThreadWindows"),
 		callbackGet_EnumThreadWindows(),
 		uintptr(unsafe.Pointer(pPack)))
@@ -286,7 +286,7 @@ func EnumWindows() []HWND {
 		arr: make([]HWND, 0),
 	}
 
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.User.Load(&_user_EnumWindows, "EnumWindows"),
 		callbackGet_EnumWindows(),
 		uintptr(unsafe.Pointer(pPack)))
@@ -685,7 +685,7 @@ var _user_PeekMessageW *syscall.Proc
 //
 // [PostQuitMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postquitmessage
 func PostQuitMessage(exitCode int) {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.User.Load(&_user_PostQuitMessage, "PostQuitMessage"),
 		uintptr(exitCode))
 }

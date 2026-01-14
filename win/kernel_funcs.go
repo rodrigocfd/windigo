@@ -149,7 +149,7 @@ var _kernel_DeleteFileW *syscall.Proc
 //
 // [ExitProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess
 func ExitProcess(exitCode uint32) {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_ExitProcess, "ExitProcess"),
 		uintptr(exitCode))
 }
@@ -218,7 +218,7 @@ var _kernel_FileTimeToSystemTime *syscall.Proc
 //
 // [FlushProcessWriteBuffers]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-flushprocesswritebuffers
 func FlushProcessWriteBuffers() {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_FlushProcessWriteBuffers, "FlushProcessWriteBuffers"))
 }
 
@@ -296,7 +296,7 @@ var _kernel_GetCurrentProcessorNumber *syscall.Proc
 // [GetCurrentProcessorNumberEx]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessornumberex
 func GetCurrentProcessorNumberEx() PROCESSOR_NUMBER {
 	var pn PROCESSOR_NUMBER
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_GetCurrentProcessorNumberEx, "GetCurrentProcessorNumberEx"),
 		uintptr(unsafe.Pointer(&pn)))
 	return pn
@@ -370,7 +370,7 @@ var _kernel_GetFileAttributesW *syscall.Proc
 // [GetLocalTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getlocaltime
 func GetLocalTime() SYSTEMTIME {
 	var st SYSTEMTIME
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_GetLocalTime, "GetLocalTime"),
 		uintptr(unsafe.Pointer(&st)))
 	return st
@@ -401,7 +401,7 @@ func GetStartupInfo() STARTUPINFO {
 	var si STARTUPINFO
 	si.SetCb()
 
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_GetStartupInfoW, "GetStartupInfoW"),
 		uintptr(unsafe.Pointer(&si)))
 	return si
@@ -430,7 +430,7 @@ var _kernel_GetTimeZoneInformation *syscall.Proc
 // [GetSystemInfo]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsysteminfo
 func GetSystemInfo() SYSTEM_INFO {
 	var si SYSTEM_INFO
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_GetSystemInfo, "GetSystemInfo"),
 		uintptr(unsafe.Pointer(&si)))
 	return si
@@ -640,7 +640,7 @@ var _kernel_SetCurrentDirectoryW *syscall.Proc
 //
 // [Sleep]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
 func Sleep(duration time.Duration) {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_Sleep, "Sleep"),
 		uintptr(uint32(duration.Milliseconds())))
 }

@@ -243,7 +243,7 @@ type VARIANT struct {
 
 // Implements [OleResource].
 func (me *VARIANT) release() {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Oleaut.Load(&_oleaut_VariantClear, "VariantClear"),
 		uintptr(unsafe.Pointer(me))) // ignore errors
 }
@@ -267,7 +267,7 @@ func (vt *VARIANT) Type() co.VT {
 // [VariantInit]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantinit
 func NewVariantEmpty(releaser *OleReleaser) *VARIANT {
 	v := new(VARIANT)
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Oleaut.Load(&_oleaut_VariantInit, "VariantInit"),
 		uintptr(unsafe.Pointer(v)))
 	releaser.Add(v)
@@ -322,7 +322,7 @@ func NewVariant(releaser *OleReleaser, value interface{}) *VARIANT {
 		binary.LittleEndian.PutUint64(v.data[:], math.Float64bits(val))
 	case *IDispatch:
 		v.tag = co.VT_DISPATCH
-		syscall.SyscallN((*val.Ppvt()).AddRef, // clone, because we'll release it independently
+		_, _, _ = syscall.SyscallN((*val.Ppvt()).AddRef, // clone, because we'll release it independently
 			uintptr(unsafe.Pointer(val.Ppvt())))
 		rawPpvt := uintptr(unsafe.Pointer(val.Ppvt()))
 		binary.LittleEndian.PutUint64(v.data[:], uint64(rawPpvt))

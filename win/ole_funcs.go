@@ -136,7 +136,7 @@ var _ole_CoInitializeEx *syscall.Proc
 //
 // [CoUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-couninitialize
 func CoUninitialize() {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Ole.Load(&_ole_CoUninitialize, "CoUninitialize"))
 }
 
@@ -188,7 +188,7 @@ var _ole_OleInitialize *syscall.Proc
 //
 // [OleUninitialize]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-oleuninitialize
 func OleUninitialize() {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Ole.Load(&_ole_OleUninitialize, "OleUninitialize"))
 }
 
@@ -200,7 +200,7 @@ var _ole_OleUninitialize *syscall.Proc
 //
 // [ReleaseStgMedium]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-releasestgmedium
 func ReleaseStgMedium(stg *STGMEDIUM) {
-	syscall.SyscallN(
+	_, _, _ = syscall.SyscallN(
 		dll.Ole.Load(&_ole_ReleaseStgMedium, "ReleaseStgMedium"),
 		uintptr(unsafe.Pointer(stg)))
 }
