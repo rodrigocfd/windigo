@@ -1050,7 +1050,7 @@ func (me *IWICFormatConverter) Initialize(
 		uintptr(unsafe.Pointer(source.Ppvt())),
 		uintptr(unsafe.Pointer(&guidDestFormat)),
 		uintptr(unsafe.Pointer(&dither)),
-		uintptr(unsafe.Pointer(palette.Ppvt())),
+		uintptr(com_ppvtOrNil(palette)),
 		uintptr(alphaThresholdPercent),
 		uintptr(paletteTranslate))
 	return utl.HresultToError(ret)
