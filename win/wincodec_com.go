@@ -544,7 +544,7 @@ func (me *IWICBitmapEncoder) SetThumbnail(thumbnail *IWICBitmapSource) error {
 //
 // Implements [OleObj] and [OleResource].
 //
-// [IWICBitmapEncoderInfo]:
+// [IWICBitmapEncoderInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapencoderinfo
 type IWICBitmapEncoderInfo struct{ IWICBitmapCodecInfo }
 
 type _IWICBitmapEncoderInfoVt struct {
@@ -624,7 +624,7 @@ func (me *IWICBitmapFrameDecode) GetThumbnail(releaser *OleReleaser) (*IWICBitma
 //
 // Implements [OleObj] and [OleResource].
 //
-// [IWICBitmapLock]:
+// [IWICBitmapLock]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmaplock
 type IWICBitmapLock struct{ IUnknown }
 
 type _IWICBitmapLockVt struct {
