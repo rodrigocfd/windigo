@@ -57,7 +57,7 @@ func (*IEnumIDList) IID() co.IID {
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumidlist-clone
 func (me *IEnumIDList) Clone(releaser *OleReleaser) (*IEnumIDList, error) {
-	return com_callBuildObj[*IEnumIDList](me, releaser,
+	return com_callObj[*IEnumIDList](me, releaser,
 		(*_IEnumIDListVt)(unsafe.Pointer(*me.Ppvt())).Clone)
 }
 
@@ -141,7 +141,7 @@ func (me *IEnumIDList) Next(releaser *OleReleaser) (*ITEMIDLIST, error) {
 //
 // [Reset]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumidlist-reset
 func (me *IEnumIDList) Reset() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IEnumIDListVt)(unsafe.Pointer(*me.Ppvt())).Reset)
 }
 
@@ -212,7 +212,7 @@ func (*IEnumShellItems) IID() co.IID {
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumshellitems-clone
 func (me *IEnumShellItems) Clone(releaser *OleReleaser) (*IEnumShellItems, error) {
-	return com_callBuildObj[*IEnumShellItems](me, releaser,
+	return com_callObj[*IEnumShellItems](me, releaser,
 		(*_IEnumShellItemsVt)(unsafe.Pointer(*me.Ppvt())).Clone)
 }
 
@@ -294,7 +294,7 @@ func (me *IEnumShellItems) Next(releaser *OleReleaser) (*IShellItem, error) {
 //
 // [Reset]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumshellitems-reset
 func (me *IEnumShellItems) Reset() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IEnumShellItemsVt)(unsafe.Pointer(*me.Ppvt())).Reset)
 }
 
@@ -386,7 +386,7 @@ func (me *IFileDialog) Advise(events *IFileDialogEvents) (cookie uint32, hr erro
 //
 // [ClearClientData]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-clearclientdata
 func (me *IFileDialog) ClearClientData() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).ClearClientData)
 }
 
@@ -405,7 +405,7 @@ func (me *IFileDialog) Close(hr co.ERROR) error {
 //
 // [GetCurrentSelection]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getcurrentselection
 func (me *IFileDialog) GetCurrentSelection(releaser *OleReleaser) (*IShellItem, error) {
-	return com_callBuildObj[*IShellItem](me, releaser,
+	return com_callObj[*IShellItem](me, releaser,
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).GetCurrentSelection)
 }
 
@@ -449,7 +449,7 @@ func (me *IFileDialog) GetFileTypeIndex() (int, error) {
 //
 // [GetFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getfolder
 func (me *IFileDialog) GetFolder(releaser *OleReleaser) (*IShellItem, error) {
-	return com_callBuildObj[*IShellItem](me, releaser,
+	return com_callObj[*IShellItem](me, releaser,
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).GetFolder)
 }
 
@@ -479,7 +479,7 @@ func (me *IFileDialog) GetOptions() (co.FOS, error) {
 //
 // [GetResult]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getresult
 func (me *IFileDialog) GetResult(releaser *OleReleaser) (*IShellItem, error) {
-	return com_callBuildObj[*IShellItem](me, releaser,
+	return com_callObj[*IShellItem](me, releaser,
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).GetResult)
 }
 
@@ -735,7 +735,7 @@ func (*IFileOpenDialog) IID() co.IID {
 //
 // [GetResults]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getresults
 func (me *IFileOpenDialog) GetResults(releaser *OleReleaser) (*IShellItemArray, error) {
-	return com_callBuildObj[*IShellItemArray](me, releaser,
+	return com_callObj[*IShellItemArray](me, releaser,
 		(*_IFileOpenDialogVt)(unsafe.Pointer(*me.Ppvt())).GetResults)
 }
 
@@ -743,7 +743,7 @@ func (me *IFileOpenDialog) GetResults(releaser *OleReleaser) (*IShellItemArray, 
 //
 // [GetSelectedItems]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileopendialog-getselecteditems
 func (me *IFileOpenDialog) GetSelectedItems(releaser *OleReleaser) (*IShellItemArray, error) {
-	return com_callBuildObj[*IShellItemArray](me, releaser,
+	return com_callObj[*IShellItemArray](me, releaser,
 		(*_IFileOpenDialogVt)(unsafe.Pointer(*me.Ppvt())).GetSelectedItems)
 }
 
@@ -946,7 +946,7 @@ func (me *IFileOperation) NewItem(
 //
 // [PerformOperations]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperation-performoperations
 func (me *IFileOperation) PerformOperations() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IFileOperationVt)(unsafe.Pointer(*me.Ppvt())).PerformOperations)
 }
 
@@ -1091,7 +1091,7 @@ func (me *IFileSaveDialog) ApplyProperties(
 //
 // [GetProperties]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-getproperties
 func (me *IFileSaveDialog) GetProperties(releaser *OleReleaser) (*IPropertyStore, error) {
-	return com_callBuildObj[*IPropertyStore](me, releaser,
+	return com_callObj[*IPropertyStore](me, releaser,
 		(*_IFileSaveDialogVt)(unsafe.Pointer(*me.Ppvt())).GetProperties)
 }
 
@@ -1368,7 +1368,7 @@ func (me *IShellFolder) EnumObjects(
 	hWnd HWND,
 	flags co.SHCONTF,
 ) (*IEnumIDList, error) {
-	return com_callBuildObj[*IEnumIDList](me, releaser,
+	return com_callObj[*IEnumIDList](me, releaser,
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).EnumObjects)
 }
 
@@ -1590,7 +1590,7 @@ func (me *IShellItem) GetDisplayName(sigdnName co.SIGDN) (string, error) {
 //
 // [GetParent]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-getparent
 func (me *IShellItem) GetParent(releaser *OleReleaser) (*IShellItem, error) {
-	return com_callBuildObj[*IShellItem](me, releaser,
+	return com_callObj[*IShellItem](me, releaser,
 		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).GetParent)
 }
 
@@ -2282,7 +2282,7 @@ func (*IShellView) IID() co.IID {
 //
 // [DestroyViewWindow]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellview-destroyviewwindow
 func (me *IShellView) DestroyViewWindow() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).DestroyViewWindow)
 }
 
@@ -2301,7 +2301,7 @@ func (me *IShellView) EnableModeless(enable bool) error {
 //
 // [Refresh]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellview-refresh
 func (me *IShellView) Refresh() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).Refresh)
 }
 
@@ -2309,7 +2309,7 @@ func (me *IShellView) Refresh() error {
 //
 // [SaveViewState]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellview-saveviewstate
 func (me *IShellView) SaveViewState() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).SaveViewState)
 }
 
@@ -2413,7 +2413,7 @@ func (me *ITaskbarList) DeleteTab(hWnd HWND) error {
 //
 // [HrInit]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-hrinit
 func (me *ITaskbarList) HrInit() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_ITaskbarListVt)(unsafe.Pointer(*me.Ppvt())).HrInit)
 }
 

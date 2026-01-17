@@ -38,6 +38,114 @@ const (
 	BIND_JUSTTESTEXISTENCE BIND = 2
 )
 
+// [CoCreateInstance] dwClsContext.
+//
+// [CoCreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
+type CLSCTX uint32
+
+const (
+	CLSCTX_INPROC_SERVER          CLSCTX = 0x1
+	CLSCTX_INPROC_HANDLER         CLSCTX = 0x2
+	CLSCTX_LOCAL_SERVER           CLSCTX = 0x4
+	CLSCTX_INPROC_SERVER16        CLSCTX = 0x8
+	CLSCTX_REMOTE_SERVER          CLSCTX = 0x10
+	CLSCTX_INPROC_HANDLER16       CLSCTX = 0x20
+	CLSCTX_NO_CODE_DOWNLOAD       CLSCTX = 0x400
+	CLSCTX_NO_CUSTOM_MARSHAL      CLSCTX = 0x1000
+	CLSCTX_ENABLE_CODE_DOWNLOAD   CLSCTX = 0x2000
+	CLSCTX_NO_FAILURE_LOG         CLSCTX = 0x4000
+	CLSCTX_DISABLE_AAA            CLSCTX = 0x8000
+	CLSCTX_ENABLE_AAA             CLSCTX = 0x1_0000
+	CLSCTX_FROM_DEFAULT_CONTEXT   CLSCTX = 0x2_0000
+	CLSCTX_ACTIVATE_X86_SERVER    CLSCTX = 0x4_0000
+	CLSCTX_ACTIVATE_32_BIT_SERVER        = CLSCTX_ACTIVATE_X86_SERVER
+	CLSCTX_ACTIVATE_64_BIT_SERVER CLSCTX = 0x8_0000
+	CLSCTX_ENABLE_CLOAKING        CLSCTX = 0x10_0000
+	CLSCTX_APPCONTAINER           CLSCTX = 0x40_0000
+	CLSCTX_ACTIVATE_AAA_AS_IU     CLSCTX = 0x80_0000
+	CLSCTX_ACTIVATE_ARM32_SERVER  CLSCTX = 0x200_0000
+	CLSCTX_PS_DLL                 CLSCTX = 0x8000_0000
+	CLSCTX_ALL                           = CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER
+	CLSCTX_SERVER                        = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER
+)
+
+// A COM [class ID], represented as a string.
+//
+// [class ID]: https://learn.microsoft.com/en-us/windows/win32/com/clsid-key-hklm
+type CLSID GUID
+
+// [CoInitializeEx] dwCoInit.
+//
+// [CoInitializeEx]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
+type COINIT uint32
+
+const (
+	COINIT_APARTMENTTHREADED COINIT = 0x2
+	COINIT_MULTITHREADED     COINIT = 0x0
+	COINIT_DISABLE_OLE1DDE   COINIT = 0x4
+	COINIT_SPEED_OVER_MEMORY COINIT = 0x8
+)
+
+// [DROPEFFECT] constants.
+//
+// [DROPEFFECT]: https://learn.microsoft.com/en-us/windows/win32/com/dropeffect-constants
+type DROPEFFECT uint32
+
+const (
+	DROPEFFECT_NONE   DROPEFFECT = 0
+	DROPEFFECT_COPY   DROPEFFECT = 1
+	DROPEFFECT_MOVE   DROPEFFECT = 2
+	DROPEFFECT_LINK   DROPEFFECT = 4
+	DROPEFFECT_SCROLL DROPEFFECT = 0x8000_0000
+)
+
+// [DVASPECT] enumeration.
+//
+// [DVASPECT]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-dvaspect
+type DVASPECT uint32
+
+const (
+	DVASPECT_CONTENT   DVASPECT = 1
+	DVASPECT_THUMBNAIL DVASPECT = 2
+	DVASPECT_ICON      DVASPECT = 4
+	DVASPECT_DOCPRINT  DVASPECT = 8
+)
+
+// [EOLE_AUTHENTICATION_CAPABILITIES] enumeration.
+//
+// [EOLE_AUTHENTICATION_CAPABILITIES]: https://learn.microsoft.com/en-us/windows/win32/api/objidlbase/ne-objidlbase-eole_authentication_capabilities
+type EOAC uint32
+
+const (
+	EOAC_NONE              EOAC = 0
+	EOAC_MUTUAL_AUTH       EOAC = 0x1
+	EOAC_STATIC_CLOAKING   EOAC = 0x20
+	EOAC_DYNAMIC_CLOAKING  EOAC = 0x40
+	EOAC_ANY_AUTHORITY     EOAC = 0x80
+	EOAC_MAKE_FULLSIC      EOAC = 0x100
+	EOAC_DEFAULT           EOAC = 0x800
+	EOAC_SECURE_REFS       EOAC = 0x2
+	EOAC_ACCESS_CONTROL    EOAC = 0x4
+	EOAC_APPID             EOAC = 0x8
+	EOAC_DYNAMIC           EOAC = 0x10
+	EOAC_REQUIRE_FULLSIC   EOAC = 0x200
+	EOAC_AUTO_IMPERSONATE  EOAC = 0x400
+	EOAC_DISABLE_AAA       EOAC = 0x1000
+	EOAC_NO_CUSTOM_MARSHAL EOAC = 0x2000
+	EOAC_RESERVED1         EOAC = 0x4000
+)
+
+// [COAUTHINFO] dwCapabilities, with flags from [EOAC] and
+// [RPC_C_QOS_CAPABILITIES].
+//
+// [COAUTHINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wtypesbase/ns-wtypesbase-coauthinfo
+type EOAC_QOS uint32
+
+const (
+	EOAC_QOS_NONE        = EOAC_QOS(EOAC_NONE)
+	EOAC_QOS_MUTUAL_AUTH = EOAC_QOS(RPC_C_QOS_CAPABILITIES_MUTUAL_AUTH)
+)
+
 // [HRESULT] facility.
 //
 // [HRESULT]: https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/0642cb2f-2075-4469-918c-4441e69c548a
@@ -189,107 +297,30 @@ const (
 	FACILITY_PIX                                      FACILITY = 2748
 )
 
-// [CoCreateInstance] dwClsContext.
+// A [GUID] struct, represented as a string.
 //
-// [CoCreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
-type CLSCTX uint32
+// [GUID]: https://learn.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
+type GUID string
 
 const (
-	CLSCTX_INPROC_SERVER          CLSCTX = 0x1
-	CLSCTX_INPROC_HANDLER         CLSCTX = 0x2
-	CLSCTX_LOCAL_SERVER           CLSCTX = 0x4
-	CLSCTX_INPROC_SERVER16        CLSCTX = 0x8
-	CLSCTX_REMOTE_SERVER          CLSCTX = 0x10
-	CLSCTX_INPROC_HANDLER16       CLSCTX = 0x20
-	CLSCTX_NO_CODE_DOWNLOAD       CLSCTX = 0x400
-	CLSCTX_NO_CUSTOM_MARSHAL      CLSCTX = 0x1000
-	CLSCTX_ENABLE_CODE_DOWNLOAD   CLSCTX = 0x2000
-	CLSCTX_NO_FAILURE_LOG         CLSCTX = 0x4000
-	CLSCTX_DISABLE_AAA            CLSCTX = 0x8000
-	CLSCTX_ENABLE_AAA             CLSCTX = 0x1_0000
-	CLSCTX_FROM_DEFAULT_CONTEXT   CLSCTX = 0x2_0000
-	CLSCTX_ACTIVATE_X86_SERVER    CLSCTX = 0x4_0000
-	CLSCTX_ACTIVATE_32_BIT_SERVER        = CLSCTX_ACTIVATE_X86_SERVER
-	CLSCTX_ACTIVATE_64_BIT_SERVER CLSCTX = 0x8_0000
-	CLSCTX_ENABLE_CLOAKING        CLSCTX = 0x10_0000
-	CLSCTX_APPCONTAINER           CLSCTX = 0x40_0000
-	CLSCTX_ACTIVATE_AAA_AS_IU     CLSCTX = 0x80_0000
-	CLSCTX_ACTIVATE_ARM32_SERVER  CLSCTX = 0x200_0000
-	CLSCTX_PS_DLL                 CLSCTX = 0x8000_0000
-	CLSCTX_ALL                           = CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER
-	CLSCTX_SERVER                        = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER
+	GUID_NULL GUID = "00000000-0000-0000-0000-000000000000"
 )
 
-// [CoInitializeEx] dwCoInit.
+// A COM [interface ID], represented as a string.
 //
-// [CoInitializeEx]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
-type COINIT uint32
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
+type IID GUID
 
+// Ole IID identifier.
 const (
-	COINIT_APARTMENTTHREADED COINIT = 0x2
-	COINIT_MULTITHREADED     COINIT = 0x0
-	COINIT_DISABLE_OLE1DDE   COINIT = 0x4
-	COINIT_SPEED_OVER_MEMORY COINIT = 0x8
-)
-
-// [DROPEFFECT] constants.
-//
-// [DROPEFFECT]: https://learn.microsoft.com/en-us/windows/win32/com/dropeffect-constants
-type DROPEFFECT uint32
-
-const (
-	DROPEFFECT_NONE   DROPEFFECT = 0
-	DROPEFFECT_COPY   DROPEFFECT = 1
-	DROPEFFECT_MOVE   DROPEFFECT = 2
-	DROPEFFECT_LINK   DROPEFFECT = 4
-	DROPEFFECT_SCROLL DROPEFFECT = 0x8000_0000
-)
-
-// [DVASPECT] enumeration.
-//
-// [DVASPECT]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-dvaspect
-type DVASPECT uint32
-
-const (
-	DVASPECT_CONTENT   DVASPECT = 1
-	DVASPECT_THUMBNAIL DVASPECT = 2
-	DVASPECT_ICON      DVASPECT = 4
-	DVASPECT_DOCPRINT  DVASPECT = 8
-)
-
-// [EOLE_AUTHENTICATION_CAPABILITIES] enumeration.
-//
-// [EOLE_AUTHENTICATION_CAPABILITIES]: https://learn.microsoft.com/en-us/windows/win32/api/objidlbase/ne-objidlbase-eole_authentication_capabilities
-type EOAC uint32
-
-const (
-	EOAC_NONE              EOAC = 0
-	EOAC_MUTUAL_AUTH       EOAC = 0x1
-	EOAC_STATIC_CLOAKING   EOAC = 0x20
-	EOAC_DYNAMIC_CLOAKING  EOAC = 0x40
-	EOAC_ANY_AUTHORITY     EOAC = 0x80
-	EOAC_MAKE_FULLSIC      EOAC = 0x100
-	EOAC_DEFAULT           EOAC = 0x800
-	EOAC_SECURE_REFS       EOAC = 0x2
-	EOAC_ACCESS_CONTROL    EOAC = 0x4
-	EOAC_APPID             EOAC = 0x8
-	EOAC_DYNAMIC           EOAC = 0x10
-	EOAC_REQUIRE_FULLSIC   EOAC = 0x200
-	EOAC_AUTO_IMPERSONATE  EOAC = 0x400
-	EOAC_DISABLE_AAA       EOAC = 0x1000
-	EOAC_NO_CUSTOM_MARSHAL EOAC = 0x2000
-	EOAC_RESERVED1         EOAC = 0x4000
-)
-
-// [COAUTHINFO] dwCapabilities, with flags from [EOAC] and
-// [RPC_C_QOS_CAPABILITIES].
-//
-// [COAUTHINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wtypesbase/ns-wtypesbase-coauthinfo
-type EOAC_QOS uint32
-
-const (
-	EOAC_QOS_NONE        = EOAC_QOS(EOAC_NONE)
-	EOAC_QOS_MUTUAL_AUTH = EOAC_QOS(RPC_C_QOS_CAPABILITIES_MUTUAL_AUTH)
+	IID_IBindCtx          IID = "0000000e-0000-0000-c000-000000000046"
+	IID_IDataObject       IID = "0000010e-0000-0000-c000-000000000046"
+	IID_IDropTarget       IID = "00000122-0000-0000-c000-000000000046"
+	IID_IEnumString       IID = "00000101-0000-0000-c000-000000000046"
+	IID_ISequentialStream IID = "0c733a30-2a1c-11ce-ade5-00aa0044773d"
+	IID_IStream           IID = "0000000c-0000-0000-c000-000000000046"
+	IID_IUnknown          IID = "00000000-0000-0000-c000-000000000046"
+	IID_NULL                  = IID(GUID_NULL)
 )
 
 // [LOCKTYPE] enumeration.

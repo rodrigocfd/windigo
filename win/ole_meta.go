@@ -137,8 +137,16 @@ func com_buildObj_retObjHres[T OleObj](ret uintptr, ppvtQueried **_IUnknownVt, r
 	}
 }
 
+// Calls the COM method, without parameters, returns error.
+func com_callErr(me OleObj, pMethod uintptr) error {
+	ret, _, _ := syscall.SyscallN(
+		pMethod,
+		uintptr(unsafe.Pointer(me.Ppvt())))
+	return utl.HresultToError(ret)
+}
+
 // Calls the COM method which returns a single COM object.
-func com_callBuildObj[T OleObj](me OleObj, releaser *OleReleaser, pMethod uintptr) (T, error) {
+func com_callObj[T OleObj](me OleObj, releaser *OleReleaser, pMethod uintptr) (T, error) {
 	var ppvtQueried **_IUnknownVt
 	ret, _, _ := syscall.SyscallN(
 		pMethod,
@@ -147,11 +155,35 @@ func com_callBuildObj[T OleObj](me OleObj, releaser *OleReleaser, pMethod uintpt
 	return com_buildObj_retObjHres[T](ret, ppvtQueried, releaser)
 }
 
-// Calls the COM method, without parameters, returns error.
-func com_callNoParm(me OleObj, pMethod uintptr) error {
+// Calls the COM method, without parameters, returning BSTR and error.
+func com_callBstrGet(me OleObj, pMethod uintptr) (string, error) {
+	var name BSTR
+	defer name.SysFreeString()
+
 	ret, _, _ := syscall.SyscallN(
 		pMethod,
-		uintptr(unsafe.Pointer(me.Ppvt())))
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&name)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return name.String(), nil
+	} else {
+		return "", hr
+	}
+}
+
+// Calls COM method, receives a BSTR and returns error.
+func com_callBstrSet(me OleObj, s string, pMethod uintptr) error {
+	bstrS, err := SysAllocString(s)
+	if err != nil {
+		return err
+	}
+	defer bstrS.SysFreeString()
+
+	ret, _, _ := syscall.SyscallN(
+		pMethod,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(bstrS))
 	return utl.HresultToError(ret)
 }
 

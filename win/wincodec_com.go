@@ -108,12 +108,7 @@ func (me *IWICBitmapCodecInfo) DoesSupportAnimation() (bool, error) {
 		(*_IWICBitmapCodecInfoVt)(unsafe.Pointer(*me.Ppvt())).DoesSupportAnimation,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&supportAnim)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return supportAnim.Get(), nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(supportAnim), ret)
 }
 
 // [DoesSupportChromakey] method.
@@ -125,12 +120,7 @@ func (me *IWICBitmapCodecInfo) DoesSupportChromakey() (bool, error) {
 		(*_IWICBitmapCodecInfoVt)(unsafe.Pointer(*me.Ppvt())).DoesSupportChromakey,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&supportChr)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return supportChr.Get(), nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(supportChr), ret)
 }
 
 // [DoesSupportLossless] method.
@@ -142,12 +132,7 @@ func (me *IWICBitmapCodecInfo) DoesSupportLossless() (bool, error) {
 		(*_IWICBitmapCodecInfoVt)(unsafe.Pointer(*me.Ppvt())).DoesSupportLossless,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&supportLossless)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return supportLossless.Get(), nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(supportLossless), ret)
 }
 
 // [DoesSupportMultiframe] method.
@@ -159,12 +144,7 @@ func (me *IWICBitmapCodecInfo) DoesSupportMultiframe() (bool, error) {
 		(*_IWICBitmapCodecInfoVt)(unsafe.Pointer(*me.Ppvt())).DoesSupportMultiframe,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&supportMulti)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return supportMulti.Get(), nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(supportMulti), ret)
 }
 
 // [GetContainerFormat] method.
@@ -230,12 +210,7 @@ func (me *IWICBitmapCodecInfo) MatchesMimeType(mimeType string) (bool, error) {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wText.AllowEmpty(mimeType)),
 		uintptr(unsafe.Pointer(&matches)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return matches.Get(), nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(matches), ret)
 }
 
 // [IWICBitmapDecoder] COM interface.
@@ -321,7 +296,7 @@ func (me *IWICBitmapDecoder) GetContainerFormat() (co.WIC_CONTAINER, error) {
 //
 // [GetDecoderInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapdecoder-getdecoderinfo
 func (me *IWICBitmapDecoder) GetDecoderInfo(releaser *OleReleaser) (*IWICBitmapDecoderInfo, error) {
-	return com_callBuildObj[*IWICBitmapDecoderInfo](me, releaser,
+	return com_callObj[*IWICBitmapDecoderInfo](me, releaser,
 		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).GetDecoderInfo)
 }
 
@@ -359,7 +334,7 @@ func (me *IWICBitmapDecoder) GetFrameCount() (int, error) {
 //
 // [GetPreview]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapdecoder-getpreview
 func (me *IWICBitmapDecoder) GetPreview(releaser *OleReleaser) (*IWICBitmapSource, error) {
-	return com_callBuildObj[*IWICBitmapSource](me, releaser,
+	return com_callObj[*IWICBitmapSource](me, releaser,
 		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).GetPreview)
 }
 
@@ -367,7 +342,7 @@ func (me *IWICBitmapDecoder) GetPreview(releaser *OleReleaser) (*IWICBitmapSourc
 //
 // [GetThumbnail]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapdecoder-getthumbnail
 func (me *IWICBitmapDecoder) GetThumbnail(releaser *OleReleaser) (*IWICBitmapSource, error) {
-	return com_callBuildObj[*IWICBitmapSource](me, releaser,
+	return com_callObj[*IWICBitmapSource](me, releaser,
 		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).GetThumbnail)
 }
 
@@ -426,7 +401,7 @@ func (*IWICBitmapDecoderInfo) IID() co.IID {
 //
 // [CreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapdecoderinfo-createinstance
 func (me *IWICBitmapDecoderInfo) CreateInstance(releaser *OleReleaser) (*IWICBitmapDecoder, error) {
-	return com_callBuildObj[*IWICBitmapDecoder](me, releaser,
+	return com_callObj[*IWICBitmapDecoder](me, releaser,
 		(*_IWICBitmapDecoderInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance)
 }
 
@@ -440,12 +415,7 @@ func (me *IWICBitmapDecoderInfo) MatchesPattern(stream *IStream) (bool, error) {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
 		uintptr(unsafe.Pointer(&matches)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return matches.Get(), nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(matches), ret)
 }
 
 // [IWICBitmapEncoder] COM interface.
@@ -496,7 +466,7 @@ func (*IWICBitmapEncoder) IID() co.IID {
 //
 // [Commit]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapencoder-commit
 func (me *IWICBitmapEncoder) Commit() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IWICBitmapEncoderVt)(unsafe.Pointer(*me.Ppvt())).Commit)
 }
 
@@ -521,7 +491,7 @@ func (me *IWICBitmapEncoder) GetContainerFormat() (co.WIC_CONTAINER, error) {
 //
 // [GetEncoderInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapencoder-getencoderinfo
 func (me *IWICBitmapEncoder) GetEncoderInfo(releaser *OleReleaser) (*IWICBitmapEncoderInfo, error) {
-	return com_callBuildObj[*IWICBitmapEncoderInfo](me, releaser,
+	return com_callObj[*IWICBitmapEncoderInfo](me, releaser,
 		(*_IWICBitmapEncoderVt)(unsafe.Pointer(*me.Ppvt())).GetEncoderInfo)
 }
 
@@ -593,7 +563,7 @@ func (*IWICBitmapEncoderInfo) IID() co.IID {
 //
 // [CreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapencoderinfo-createinstance
 func (me *IWICBitmapEncoderInfo) CreateInstance(releaser *OleReleaser) (*IWICBitmapEncoder, error) {
-	return com_callBuildObj[*IWICBitmapEncoder](me, releaser,
+	return com_callObj[*IWICBitmapEncoder](me, releaser,
 		(*_IWICBitmapEncoderInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance)
 }
 
@@ -646,7 +616,7 @@ func (*IWICBitmapFrameDecode) IID() co.IID {
 //
 // [GetThumbnail]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapframedecode-getthumbnail
 func (me *IWICBitmapFrameDecode) GetThumbnail(releaser *OleReleaser) (*IWICBitmapSource, error) {
-	return com_callBuildObj[*IWICBitmapSource](me, releaser,
+	return com_callObj[*IWICBitmapSource](me, releaser,
 		(*_IWICBitmapFrameDecodeVt)(unsafe.Pointer(*me.Ppvt())).GetThumbnail)
 }
 
@@ -1059,12 +1029,7 @@ func (me *IWICFormatConverter) CanConvert(srcPixelFormat, destPixelFormat co.WIC
 		uintptr(unsafe.Pointer(&guidSrc)),
 		uintptr(unsafe.Pointer(&guidDest)),
 		uintptr(unsafe.Pointer(&canConvert)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return canConvert.Get(), nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(canConvert), ret)
 }
 
 // [Initialize] method.
@@ -1418,7 +1383,7 @@ func (me *IWICImagingFactory) CreateEncoder(
 //
 // [CreateFormatConverter]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createformatconverter
 func (me *IWICImagingFactory) CreateFormatConverter(releaser *OleReleaser) (*IWICFormatConverter, error) {
-	return com_callBuildObj[*IWICFormatConverter](me, releaser,
+	return com_callObj[*IWICFormatConverter](me, releaser,
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateFormatConverter)
 }
 
@@ -1446,7 +1411,7 @@ func (me *IWICImagingFactory) CreateFormatConverter(releaser *OleReleaser) (*IWI
 //
 // [CreatePalette]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createpalette
 func (me *IWICImagingFactory) CreatePalette(releaser *OleReleaser) (*IWICPalette, error) {
-	return com_callBuildObj[*IWICPalette](me, releaser,
+	return com_callObj[*IWICPalette](me, releaser,
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreatePalette)
 }
 
@@ -1454,7 +1419,7 @@ func (me *IWICImagingFactory) CreatePalette(releaser *OleReleaser) (*IWICPalette
 //
 // [CreateStream]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createstream
 func (me *IWICImagingFactory) CreateStream(releaser *OleReleaser) (*IWICStream, error) {
-	return com_callBuildObj[*IWICStream](me, releaser,
+	return com_callObj[*IWICStream](me, releaser,
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateStream)
 }
 
@@ -1532,12 +1497,7 @@ func (me *IWICPalette) HasAlpha() (bool, error) {
 		(*_IWICPaletteVt)(unsafe.Pointer(*me.Ppvt())).HasAlpha,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&hasAlpha)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return hasAlpha.Get(), nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(hasAlpha), ret)
 }
 
 // [InitializeFromBitmap] method.
@@ -1577,12 +1537,7 @@ func (me *IWICPalette) IsBlackWhite() (bool, error) {
 		(*_IWICPaletteVt)(unsafe.Pointer(*me.Ppvt())).IsBlackWhite,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&isBW)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return isBW.Get(), nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(isBW), ret)
 }
 
 // [IsGrayscale] method.
@@ -1594,12 +1549,7 @@ func (me *IWICPalette) IsGrayscale() (bool, error) {
 		(*_IWICPaletteVt)(unsafe.Pointer(*me.Ppvt())).IsGrayscale,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&isGrayscale)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return isGrayscale.Get(), nil
-	} else {
-		return false, hr
-	}
+	return utl.HresultToBoolError(int32(isGrayscale), ret)
 }
 
 // [IWICStream] COM interface.

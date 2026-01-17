@@ -593,7 +593,7 @@ func (me *IPicture) GetWidth() (int, error) {
 //
 // [PictureChanged]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-picturechanged
 func (me *IPicture) PictureChanged() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).PictureChanged)
 }
 
@@ -796,7 +796,7 @@ func (*IPropertyStore) IID() co.IID {
 //
 // [Commit]: https://learn.microsoft.com/en-us/windows/win32/api/propsys/nf-propsys-ipropertystore-commit
 func (me *IPropertyStore) Commit() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IPropertyStoreVt)(unsafe.Pointer(*me.Ppvt())).Commit)
 }
 

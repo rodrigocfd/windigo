@@ -50,7 +50,7 @@ func (*IBindCtx) IID() co.IID {
 //
 // [EnumObjectParam]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-enumobjectparam
 func (me *IBindCtx) EnumObjectParam(releaser *OleReleaser) (*IEnumString, error) {
-	return com_callBuildObj[*IEnumString](me, releaser,
+	return com_callObj[*IEnumString](me, releaser,
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).EnumObjectParam)
 }
 
@@ -103,7 +103,7 @@ func (me *IBindCtx) RegisterObjectBound(obj *IUnknown) error {
 //
 // [ReleaseBoundObjects]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-releaseboundobjects
 func (me *IBindCtx) ReleaseBoundObjects() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).ReleaseBoundObjects)
 }
 
@@ -229,7 +229,7 @@ func (*IEnumString) IID() co.IID {
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumstring-clone
 func (me *IEnumString) Clone(releaser *OleReleaser) (*IEnumString, error) {
-	return com_callBuildObj[*IEnumString](me, releaser,
+	return com_callObj[*IEnumString](me, releaser,
 		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Clone)
 }
 
@@ -280,7 +280,7 @@ func (me *IEnumString) Next() (string, error) {
 //
 // [Reset]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumstring-reset
 func (me *IEnumString) Reset() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Reset)
 }
 
@@ -390,7 +390,7 @@ func (*IStream) IID() co.IID {
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-clone
 func (me *IStream) Clone(releaser *OleReleaser) (*IStream, error) {
-	return com_callBuildObj[*IStream](me, releaser,
+	return com_callObj[*IStream](me, releaser,
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Clone)
 }
 
@@ -454,7 +454,7 @@ func (me *IStream) LockRegion(offset, length int, lockType co.LOCKTYPE) error {
 //
 // [Revert]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-revert
 func (me *IStream) Revert() error {
-	return com_callNoParm(me,
+	return com_callErr(me,
 		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Revert)
 }
 
