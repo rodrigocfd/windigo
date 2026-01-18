@@ -27,6 +27,9 @@ func (me *CollectionTabItems) add(title string) TabItem {
 	var wBuf wstr.BufEncoder
 	tci.SetPszText(wBuf.Slice(title))
 
+	// Simply add the visual tab with title. The child control itself will be
+	// shown/hidden on demand with [TabItem.displayContent].
+
 	newIdxRet, err := me.owner.hWnd.SendMessage(co.TCM_INSERTITEM,
 		0x0fff_ffff, win.LPARAM(unsafe.Pointer(&tci)))
 	newIdx := int(newIdxRet)

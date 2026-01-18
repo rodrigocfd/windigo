@@ -12,6 +12,10 @@ import (
 
 // Native [tab] control.
 //
+// Before creating the tab, you must create an [ui.Control] to each tab content.
+// They behave like ordinary child control windows, being shown/hidden by the
+// tab control.
+//
 // [tab]: https://learn.microsoft.com/en-us/windows/win32/controls/tab-controls
 type Tab struct {
 	_BaseCtrl
@@ -21,6 +25,10 @@ type Tab struct {
 }
 
 // Creates a new [Tab] with [win.CreateWindowEx].
+//
+// Before creating the tab, you must create an [ui.Control] to each tab content.
+// They behave like ordinary child control windows, being shown/hidden by the
+// tab control.
 //
 // Example:
 //
@@ -68,6 +76,28 @@ func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 
 // Instantiates a new [Tab] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
+//
+// Before creating the tab, you must create an [ui.Control] to each tab content.
+// They behave like ordinary child control windows, being shown/hidden by the
+// tab control.
+//
+// Example:
+//
+//	const ID_TAB uint16 = 0x100
+//
+//	var (
+//		wndOwner ui.Parent // initialized somewhere
+//		child1   *ui.Control
+//		child2   *ui.Control
+//	)
+//
+//	tab := ui.NewTabDlg(
+//		wndOwner,
+//		ID_TAB,
+//		ui.LAY_HOLD_HOLD,
+//		ui.TabIns{Title: "First", Content: child1},
+//		ui.TabIns{Title: "Second", Content: child2},
+//	)
 func NewTabDlg(parent Parent, ctrlId uint16, layout LAY, items ...TabIns) *Tab {
 	me := &Tab{
 		_BaseCtrl: newBaseCtrl(ctrlId),
