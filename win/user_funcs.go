@@ -16,10 +16,10 @@ import (
 // [AdjustWindowRectEx] function.
 //
 // [AdjustWindowRectEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-adjustwindowrectex
-func AdjustWindowRectEx(rc *RECT, style co.WS, hasMenu bool, exStyle co.WS_EX) error {
+func AdjustWindowRectEx(pRc *RECT, style co.WS, hasMenu bool, exStyle co.WS_EX) error {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_AdjustWindowRectEx, "AdjustWindowRectEx"),
-		uintptr(unsafe.Pointer(rc)),
+		uintptr(unsafe.Pointer(pRc)),
 		uintptr(style),
 		utl.BoolToUintptr(hasMenu),
 		uintptr(exStyle))
@@ -27,6 +27,22 @@ func AdjustWindowRectEx(rc *RECT, style co.WS, hasMenu bool, exStyle co.WS_EX) e
 }
 
 var _user_AdjustWindowRectEx *syscall.Proc
+
+// [AdjustWindowRectExForDpi] function.
+//
+// [AdjustWindowRectExForDpi]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-adjustwindowrectexfordpi
+func AdjustWindowRectExForDpi(pRc *RECT, style co.WS, hasMenu bool, exStyle co.WS_EX, dpi int) error {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_AdjustWindowRectExForDpi, "AdjustWindowRectExForDpi"),
+		uintptr(unsafe.Pointer(pRc)),
+		uintptr(style),
+		utl.BoolToUintptr(hasMenu),
+		uintptr(exStyle),
+		uintptr(uint32(dpi)))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _user_AdjustWindowRectExForDpi *syscall.Proc
 
 // [AllowSetForegroundWindow] function.
 //
@@ -578,13 +594,24 @@ func GetThreadDpiAwarenessContext() co.DPI_AWARENESS_CONTEXT {
 
 var _user_GetThreadDpiAwarenessContext *syscall.Proc
 
+// [GetThreadDpiHostingBehavior] function.
+//
+// [GetThreadDpiHostingBehavior]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getthreaddpihostingbehavior
+func GetThreadDpiHostingBehavior() co.DPI_HOSTING_BEHAVIOR {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetThreadDpiHostingBehavior, "GetThreadDpiHostingBehavior"))
+	return co.DPI_HOSTING_BEHAVIOR(ret)
+}
+
+var _user_GetThreadDpiHostingBehavior *syscall.Proc
+
 // [InflateRect] function.
 //
 // [InflateRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-inflaterect
-func InflateRect(rc *RECT, dx, dy int) error {
+func InflateRect(pRc *RECT, dx, dy int) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_InflateRect, "InflateRect"),
-		uintptr(unsafe.Pointer(rc)),
+		uintptr(unsafe.Pointer(pRc)),
 		uintptr(dx),
 		uintptr(dy))
 	return utl.ZeroAsSysInvalidParm(ret)
@@ -679,10 +706,10 @@ var _user_MapVirtualKeyW *syscall.Proc
 // [OffsetRect] function.
 //
 // [OffsetRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-offsetrect
-func OffsetRect(rc *RECT, dx, dy int) error {
+func OffsetRect(pRc *RECT, dx, dy int) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_OffsetRect, "OffsetRect"),
-		uintptr(unsafe.Pointer(rc)),
+		uintptr(unsafe.Pointer(pRc)),
 		uintptr(dx),
 		uintptr(dy))
 	return utl.ZeroAsSysInvalidParm(ret)

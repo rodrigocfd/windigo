@@ -31,10 +31,10 @@ var _user_MonitorFromPoint *syscall.Proc
 // [MonitorFromRect] function.
 //
 // [MonitorFromRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromrect
-func MonitorFromRect(rc *RECT, flags co.MONITOR) HMONITOR {
+func MonitorFromRect(pRc *RECT, flags co.MONITOR) HMONITOR {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_MonitorFromRect, "MonitorFromRect"),
-		uintptr(unsafe.Pointer(rc)),
+		uintptr(unsafe.Pointer(pRc)),
 		uintptr(flags))
 	return HMONITOR(ret)
 }

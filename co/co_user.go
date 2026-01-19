@@ -385,6 +385,17 @@ const (
 	DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED    DPI_AWARENESS_CONTEXT = -5
 )
 
+// [DPI_HOSTING_BEHAVIOR] enumeration.
+//
+// [DPI_HOSTING_BEHAVIOR]: https://learn.microsoft.com/en-us/windows/win32/api/windef/ne-windef-dpi_hosting_behavior
+type DPI_HOSTING_BEHAVIOR int32
+
+const (
+	DPI_HOSTING_BEHAVIOR_INVALID DPI_HOSTING_BEHAVIOR = -1
+	DPI_HOSTING_BEHAVIOR_DEFAULT DPI_HOSTING_BEHAVIOR = 0
+	DPI_HOSTING_BEHAVIOR_MIXED   DPI_HOSTING_BEHAVIOR = 1
+)
+
 // [EnumDisplayDevices] flags.
 //
 // [EnumDisplayDevices]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw

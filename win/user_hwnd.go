@@ -268,11 +268,11 @@ var _user_ClientToScreen *syscall.Proc
 // [ClientToScreen] function for [RECT].
 //
 // [ClientToScreen]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clienttoscreen
-func (hWnd HWND) ClientToScreenRc(rc *RECT) error {
+func (hWnd HWND) ClientToScreenRc(pRc *RECT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_ClientToScreen, "ClientToScreen"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(rc)))
+		uintptr(unsafe.Pointer(pRc)))
 	if ret == 0 {
 		return co.ERROR_INVALID_PARAMETER
 	}
@@ -280,7 +280,7 @@ func (hWnd HWND) ClientToScreenRc(rc *RECT) error {
 	ret, _, _ = syscall.SyscallN(
 		dll.User.Load(&_user_ClientToScreen, "ClientToScreen"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(&rc.Right)))
+		uintptr(unsafe.Pointer(&pRc.Right)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -725,6 +725,30 @@ func (hWnd HWND) GetWindow(cmd co.GW) (HWND, error) {
 
 var _user_GetWindow *syscall.Proc
 
+// [GetWindowDpiAwarenessContext] function.
+//
+// [GetWindowDpiAwarenessContext]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowdpiawarenesscontext
+func (hWnd HWND) GetWindowDpiAwarenessContext() co.DPI_AWARENESS_CONTEXT {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetWindowDpiAwarenessContext, "GetWindowDpiAwarenessContext"),
+		uintptr(hWnd))
+	return co.DPI_AWARENESS_CONTEXT(ret)
+}
+
+var _user_GetWindowDpiAwarenessContext *syscall.Proc
+
+// [GetWindowDpiHostingBehavior] function.
+//
+// [GetWindowDpiHostingBehavior]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowdpihostingbehavior
+func (hWnd HWND) GetWindowDpiHostingBehavior() co.DPI_HOSTING_BEHAVIOR {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetWindowDpiHostingBehavior, "GetWindowDpiHostingBehavior"),
+		uintptr(hWnd))
+	return co.DPI_HOSTING_BEHAVIOR(ret)
+}
+
+var _user_GetWindowDpiHostingBehavior *syscall.Proc
+
 // [GetWindowDC] function.
 //
 // ⚠️ You must defer [HWND.ReleaseDC].
@@ -877,14 +901,26 @@ func (hWnd HWND) HInstance() (HINSTANCE, error) {
 	return HINSTANCE(hInst), err
 }
 
+// [InheritWindowMonitor] function.
+//
+// [InheritWindowMonitor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-inheritwindowmonitor
+func (hWnd HWND) InheritWindowMonitor(hWndInherit HWND) error {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_InheritWindowMonitor, "InheritWindowMonitor"),
+		uintptr(hWnd))
+	return utl.ZeroAsSysInvalidParm(ret)
+}
+
+var _user_InheritWindowMonitor *syscall.Proc
+
 // [InvalidateRect] function.
 //
 // [InvalidateRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invalidaterect
-func (hWnd HWND) InvalidateRect(rc *RECT, erase bool) error {
+func (hWnd HWND) InvalidateRect(pRc *RECT, erase bool) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_InvalidateRect, "InvalidateRect"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(rc)),
+		uintptr(unsafe.Pointer(pRc)),
 		utl.BoolToUintptr(erase))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
@@ -950,14 +986,27 @@ func (hWnd HWND) IsWindow() bool {
 
 var _user_IsWindow *syscall.Proc
 
+// [LogicalToPhysicalPointForPerMonitorDPI] function.
+//
+// [LogicalToPhysicalPointForPerMonitorDPI]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-logicaltophysicalpointforpermonitordpi
+func (hWnd HWND) LogicalToPhysicalPointForPerMonitorDPI(pPt *POINT) error {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_LogicalToPhysicalPointForPerMonitorDPI, "LogicalToPhysicalPointForPerMonitorDPI"),
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(pPt)))
+	return utl.ZeroAsSysInvalidParm(ret)
+}
+
+var _user_LogicalToPhysicalPointForPerMonitorDPI *syscall.Proc
+
 // [MapDialogRect] function.
 //
 // [MapDialogRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mapdialogrect
-func (hWnd HWND) MapDialogRect(rc *RECT) error {
+func (hWnd HWND) MapDialogRect(pRc *RECT) error {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_MapDialogRect, "MapDialogRect"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(rc)))
+		uintptr(unsafe.Pointer(pRc)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -994,6 +1043,19 @@ func (hWnd HWND) MonitorFromWindow(flags co.MONITOR) HMONITOR {
 }
 
 var _user_MonitorFromWindow *syscall.Proc
+
+// [PhysicalToLogicalPointForPerMonitorDPI] function.
+//
+// [PhysicalToLogicalPointForPerMonitorDPI]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-physicaltologicalpointforpermonitordpi
+func (hWnd HWND) PhysicalToLogicalPointForPerMonitorDPI(pPt *POINT) error {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_PhysicalToLogicalPointForPerMonitorDPI, "PhysicalToLogicalPointForPerMonitorDPI"),
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(pPt)))
+	return utl.ZeroAsSysInvalidParm(ret)
+}
+
+var _user_PhysicalToLogicalPointForPerMonitorDPI *syscall.Proc
 
 // [PostMessage] function.
 //
@@ -1067,11 +1129,11 @@ var _user_ScreenToClient *syscall.Proc
 // [ScreenToClient] function for [RECT].
 //
 // [ScreenToClient]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-screentoclient
-func (hWnd HWND) ScreenToClientRc(rc *RECT) error {
+func (hWnd HWND) ScreenToClientRc(pRc *RECT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_ScreenToClient, "ScreenToClient"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(rc)))
+		uintptr(unsafe.Pointer(pRc)))
 	if ret == 0 {
 		return co.ERROR_INVALID_PARAMETER
 	}
@@ -1079,7 +1141,7 @@ func (hWnd HWND) ScreenToClientRc(rc *RECT) error {
 	ret, _, _ = syscall.SyscallN(
 		dll.User.Load(&_user_ScreenToClient, "ScreenToClient"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(&rc.Right)))
+		uintptr(unsafe.Pointer(&pRc.Right)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 

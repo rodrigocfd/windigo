@@ -103,11 +103,11 @@ func callbackGet_EnumDisplayMonitors() uintptr {
 // [FrameRect] function.
 //
 // [FrameRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-framerect
-func (hdc HDC) FrameRect(rc *RECT, hBrush HBRUSH) error {
+func (hdc HDC) FrameRect(pRc *RECT, hBrush HBRUSH) error {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_FrameRect, "FrameRect"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(rc)),
+		uintptr(unsafe.Pointer(pRc)),
 		uintptr(hBrush))
 	return utl.ZeroAsGetLastError(ret, err)
 }
@@ -117,11 +117,11 @@ var _user_FrameRect *syscall.Proc
 // [InvertRect] function.
 //
 // [InvertRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invertrect
-func (hdc HDC) InvertRect(rc *RECT) error {
+func (hdc HDC) InvertRect(pRc *RECT) error {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_InvertRect, "InvertRect"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(rc)))
+		uintptr(unsafe.Pointer(pRc)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

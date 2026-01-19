@@ -505,11 +505,11 @@ var _gdi_FillPath *syscall.Proc
 // [FillRect] function.
 //
 // [FillRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-fillrect
-func (hdc HDC) FillRect(rc *RECT, hBrush HBRUSH) error {
+func (hdc HDC) FillRect(pRc *RECT, hBrush HBRUSH) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_FillRect, "FillRect"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(rc)),
+		uintptr(unsafe.Pointer(pRc)),
 		uintptr(hBrush))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
