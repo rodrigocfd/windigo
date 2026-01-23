@@ -116,7 +116,7 @@ func (me *Trackbar) Range() (int, int) {
 //
 // [TBM_SETPAGESIZE]: https://learn.microsoft.com/en-us/windows/win32/controls/tbm-setpagesize
 func (me *Trackbar) SetPageSize(pageSize int) *Trackbar {
-	me.Hwnd().SendMessage(co.TBM_SETPAGESIZE, 1, win.LPARAM(int32(pageSize)))
+	me.Hwnd().SendMessage(co.TBM_SETPAGESIZE, 0, win.LPARAM(int32(pageSize)))
 	return me
 }
 
@@ -252,20 +252,28 @@ func (me *EventsTrackbar) ThumbPosChanging(fun func(p *win.NMTRBTHUMBPOSCHANGING
 
 // [WM_HSCROLL] message handler.
 //
-// [WM_HSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-hscroll
+// [WM_HSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-hscroll--trackbar-
 func (me *EventsTrackbar) WmHScroll(fun func(p WmScroll)) {
 	me.parentEvents.Wm(co.WM_HSCROLL, func(p Wm) uintptr {
-		fun(WmScroll{p})
+		hs := WmScroll{p}
+		incomingId, _ := hs.HwndScrollbar().GetDlgCtrlID()
+		if me.ctrlId == incomingId {
+			fun(hs)
+		}
 		return me.parentEvents.defProcVal
 	})
 }
 
 // [WM_VSCROLL] message handler.
 //
-// [WM_VSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-vscroll
+// [WM_VSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-hscroll--trackbar-
 func (me *EventsTrackbar) WmVScroll(fun func(p WmScroll)) {
 	me.parentEvents.Wm(co.WM_VSCROLL, func(p Wm) uintptr {
-		fun(WmScroll{p})
+		vs := WmScroll{p}
+		incomingId, _ := vs.HwndScrollbar().GetDlgCtrlID()
+		if me.ctrlId == incomingId {
+			fun(vs)
+		}
 		return me.parentEvents.defProcVal
 	})
 }
