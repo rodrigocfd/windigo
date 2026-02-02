@@ -45,7 +45,7 @@ func ExampleCountUtf16Len() {
 }
 
 func ExampleFmtBytes() {
-	s := wstr.FmtBytes(2 * 1024 * 1024)
+	s := wstr.FmtBytes(2 * 1000 * 1000)
 	fmt.Println(s)
 	// Output: 2.00 MB
 }
