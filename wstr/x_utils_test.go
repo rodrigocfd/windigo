@@ -8,6 +8,12 @@ import (
 	"github.com/rodrigocfd/windigo/wstr"
 )
 
+func ExampleCapitalize() {
+	s := wstr.Capitalize("abc")
+	fmt.Println(s)
+	// Output: Abc
+}
+
 func ExampleCmp() {
 	compare1 := wstr.Cmp("aa", "bb")
 	compare2 := wstr.Cmp("bb", "aa")
