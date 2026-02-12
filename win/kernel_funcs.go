@@ -438,6 +438,24 @@ func GetSystemInfo() SYSTEM_INFO {
 
 var _kernel_GetSystemInfo *syscall.Proc
 
+// [GlobalMemoryStatusEx] function.
+//
+// [GlobalMemoryStatusEx]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-globalmemorystatusex
+func GlobalMemoryStatusEx() (MEMORYSTATUSEX, error) {
+	var ms MEMORYSTATUSEX
+	ms.SetDwLength()
+
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GlobalMemoryStatusEx, "GlobalMemoryStatusEx"),
+		uintptr(unsafe.Pointer(&ms)))
+	if ret == 0 {
+		return MEMORYSTATUSEX{}, co.ERROR(err)
+	}
+	return ms, nil
+}
+
+var _kernel_GlobalMemoryStatusEx *syscall.Proc
+
 // [IsWindows10OrGreater] function.
 //
 // Panics on error.

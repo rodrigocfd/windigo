@@ -367,6 +367,33 @@ type MEMORY_BASIC_INFORMATION struct {
 	Type              co.MEM
 }
 
+// [MEMORYSTATUSEX] struct.
+//
+// ⚠️ You must call [MEMORYSTATUSEX.SetDwLength] to initialize the struct.
+//
+// Example:
+//
+//	var ms win.MEMORYSTATUSEX
+//	ms.SetDwLength()
+//
+// [MEMORYSTATUSEX]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-memorystatusex
+type MEMORYSTATUSEX struct {
+	dwLength                uint32
+	DwMemoryLoad            uint32
+	UllTotalPhys            uint64
+	UllAvailPhys            uint64
+	UllTotalPageFile        uint64
+	UllAvailPageFile        uint64
+	UllTotalVirtual         uint64
+	UllAvailVirtual         uint64
+	ullAvailExtendedVirtual uint64
+}
+
+// Sets the dwLength field to the size of the struct, correctly initializing it.
+func (ms *MEMORYSTATUSEX) SetDwLength() {
+	ms.dwLength = uint32(unsafe.Sizeof(*ms))
+}
+
 // [MODULEENTRY32] struct.
 //
 // ⚠️ You must call [MODULEENTRY32.SetDwSize] to initialize the struct.
