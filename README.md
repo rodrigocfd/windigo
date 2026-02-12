@@ -12,6 +12,14 @@ Windigo is designed to be familiar to C/C++ Win32 programmers, using the same co
 
 Notably, Windigo is written 100% in pure Go – CGo is **not** used, just native syscalls. 
 
+## Go 1.26 linker bug
+
+Go 1.26 linker currently has a bug with embedded resources, so if you find any problems in running your GUI application, try downgrading to Go 1.25.
+
+Here is the issue in the official Go repo:
+
+* https://github.com/golang/go/issues/77555
+
 ## Install
 
 ```
