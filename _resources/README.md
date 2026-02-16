@@ -6,9 +6,13 @@ This folder contains several [resources](https://learn.microsoft.com/en-us/windo
 | - | - |
 | `gopher.ico` | An icon that can be used as default. |
 | `win10.exe.manifest` | A basic manifest file that enables your application to be recognized as a Windows 10 one. |
-| `minimal.syso` | A syso file, ready to use, that contains the icon and the manifest. Just place it at the root folder of your project. You can load the icon using the resource ID 101. |
+| `minimal.res` | A compiled Win32 resource script, which contains the icon and the manifest. |
+| `minimal.syso` | A syso file, ready to use, which contains the icon and the manifest, built from `minimal.syso`. Just place it at the root folder of your project. You can load the icon using the resource ID 101. |
 
-If you wish, you can build your own syso:
+The `.res` file can be created/edited with [Visual Studio](https://visualstudio.microsoft.com/) or [Resoure Hacker](https://www.angusj.com/resourcehacker/).
 
-* with the [rsrc](https://github.com/akavel/rsrc) tool;
-* creating a `.rc` file from scratch and using a resource compiler, like [MSVC/RC](https://learn.microsoft.com/en-us/windows/win32/menurc/resource-compiler).
+The `.res` file can be converted into `.syso` with [windres](https://winlibs.com/#download-release):
+
+```
+windres.exe -i minimal.res -o minimal.syso
+```
