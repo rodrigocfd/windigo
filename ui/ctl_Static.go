@@ -17,6 +17,22 @@ type Static struct {
 }
 
 // Creates a new [Static] with [win.CreateWindowEx].
+//
+// Example:
+//
+//	runtime.LockOSThread()
+//
+//	wnd := ui.NewMain(
+//		ui.OptsMain().
+//			Title("Hello world"),
+//	)
+//	lbl := ui.NewStatic(
+//		wnd,
+//		ui.OptsStatic().
+//			Position(ui.Dpi(10, 10)).
+//			Text("Hello"),
+//	)
+//	wnd.RunAsMain()
 func NewStatic(parent Parent, opts *VarOptsStatic) *Static {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Static{
@@ -38,6 +54,22 @@ func NewStatic(parent Parent, opts *VarOptsStatic) *Static {
 
 // Instantiates a new [Static] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
+//
+// Example:
+//
+//	const (
+//		ID_MAIN_DLG uint16 = 1000
+//		ID_LBL_FOO  uint16 = 1001
+//	)
+//
+//	runtime.LockOSThread()
+//
+//	wnd := ui.NewMainDlg(
+//		ui.OptsMainDlg().
+//			DlgId(ID_MAIN_DLG),
+//	)
+//	lbl := ui.NewStaticDlg(wnd, ID_LBL_FOO, ui.LAY_HOLD_HOLD)
+//	wnd.RunAsMain()
 func NewStaticDlg(parent Parent, ctrlId uint16, layout LAY) *Static {
 	me := &Static{
 		_BaseCtrl: newBaseCtrl(ctrlId),

@@ -21,14 +21,19 @@ type Button struct {
 //
 // Example:
 //
-//	var wndOwner ui.Parent // initialized somewhere
+//	runtime.LockOSThread()
 //
+//	wnd := ui.NewMain(
+//		ui.OptsMain().
+//			Title("Hello world"),
+//	)
 //	btn := ui.NewButton(
-//		wndOwner,
+//		wnd,
 //		ui.OptsButton().
 //			Text("Click").
-//			Position(ui.Dpi(20, 10)),
+//			Position(ui.Dpi(10, 10)),
 //	)
+//	wnd.RunAsMain()
 func NewButton(parent Parent, opts *VarOptsButton) *Button {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Button{
@@ -50,12 +55,19 @@ func NewButton(parent Parent, opts *VarOptsButton) *Button {
 //
 // Example:
 //
-//	const ID_BTN uint16 = 0x100
+//	const (
+//		ID_MAIN_DLG uint16 = 1000
+//		ID_BTN_FOO  uint16 = 1001
+//	)
 //
-//	var wndOwner ui.Parent // initialized somewhere
+//	runtime.LockOSThread()
 //
-//	btn := ui.NewButtonDlg(
-//		wndOwner, ID_BTN, ui.LAY_HOLD_HOLD)
+//	wnd := ui.NewMainDlg(
+//		ui.OptsMainDlg().
+//			DlgId(ID_MAIN_DLG),
+//	)
+//	btn := ui.NewButtonDlg(wnd, ID_BTN_FOO, ui.LAY_HOLD_HOLD)
+//	wnd.RunAsMain()
 func NewButtonDlg(parent Parent, ctrlId uint16, layout LAY) *Button {
 	me := &Button{
 		_BaseCtrl: newBaseCtrl(ctrlId),

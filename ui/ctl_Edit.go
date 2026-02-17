@@ -22,13 +22,18 @@ type Edit struct {
 //
 // Example:
 //
-//	var wndOwner ui.Parent // initialized somewhere
+//	runtime.LockOSThread()
 //
-//	myEdit := ui.NewEdit(
-//		wndOwner,
-//		ui.OptsEdit().
-//			Position(ui.Dpi(20, 10)),
+//	wnd := ui.NewMain(
+//		ui.OptsMain().
+//			Title("Hello world"),
 //	)
+//	txtBox := ui.NewEdit(
+//		wnd,
+//		ui.OptsEdit().
+//			Position(ui.Dpi(10, 10)),
+//	)
+//	wnd.RunAsMain()
 func NewEdit(parent Parent, opts *VarOptsEdit) *Edit {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Edit{
@@ -50,12 +55,19 @@ func NewEdit(parent Parent, opts *VarOptsEdit) *Edit {
 //
 // Example:
 //
-//	const ID_TXT uint16 = 0x100
+//	const (
+//		ID_MAIN_DLG uint16 = 1000
+//		ID_TXT_FOO  uint16 = 1001
+//	)
 //
-//	var wndOwner ui.Parent // initialized somewhere
+//	runtime.LockOSThread()
 //
-//	txt := ui.NewEditDlg(
-//		wndOwner, ID_TXT, ui.LAY_HOLD_HOLD)
+//	wnd := ui.NewMainDlg(
+//		ui.OptsMainDlg().
+//			DlgId(ID_MAIN_DLG),
+//	)
+//	txtBox := ui.NewEditDlg(wnd, ID_TXT_FOO, ui.LAY_HOLD_HOLD)
+//	wnd.RunAsMain()
 func NewEditDlg(parent Parent, ctrlId uint16, layout LAY) *Edit {
 	me := &Edit{
 		_BaseCtrl: newBaseCtrl(ctrlId),

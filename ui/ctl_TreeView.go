@@ -21,6 +21,22 @@ type TreeView struct {
 }
 
 // Creates a new [TreeView] with [win.CreateWindowEx].
+//
+// Example:
+//
+//	runtime.LockOSThread()
+//
+//	wnd := ui.NewMain(
+//		ui.OptsMain().
+//			Title("Hello world"),
+//	)
+//	tv := ui.NewTreeView(
+//		wnd,
+//		ui.OptsTreeView().
+//			Position(ui.Dpi(10, 10)).
+//			Size(ui.Dpi(120, 120)),
+//	)
+//	wnd.RunAsMain()
 func NewTreeView(parent Parent, opts *VarOptsTreeView) *TreeView {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &TreeView{
@@ -44,6 +60,22 @@ func NewTreeView(parent Parent, opts *VarOptsTreeView) *TreeView {
 
 // Instantiates a new [TreeView] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
+//
+// Example:
+//
+//	const (
+//		ID_MAIN_DLG uint16 = 1000
+//		ID_TREE_FOO uint16 = 1001
+//	)
+//
+//	runtime.LockOSThread()
+//
+//	wnd := ui.NewTreeViewDlg(
+//		ui.OptsMainDlg().
+//			DlgId(ID_MAIN_DLG),
+//	)
+//	tv := ui.NewStaticDlg(wnd, ID_TREE_FOO, ui.LAY_HOLD_HOLD)
+//	wnd.RunAsMain()
 func NewTreeViewDlg(parent Parent, ctrlId uint16, layout LAY) *TreeView {
 	me := &TreeView{
 		_BaseCtrl: newBaseCtrl(ctrlId),

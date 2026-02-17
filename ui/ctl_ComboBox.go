@@ -20,15 +20,20 @@ type ComboBox struct {
 //
 // Example:
 //
-//	var wndOwner ui.Parent // initialized somewhere
+//	runtime.LockOSThread()
 //
+//	wnd := ui.NewMain(
+//		ui.OptsMain().
+//			Title("Hello world"),
+//	)
 //	cmb := ui.NewComboBox(
-//		wndOwner,
+//		wnd,
 //		ui.OptsComboBox().
-//			Position(ui.Dpi(20, 92)).
+//			Position(ui.Dpi(10, 10)).
 //			Texts("Avocado", "Banana", "Pineapple").
 //			Selected(2),
 //	)
+//	wnd.RunAsMain()
 func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &ComboBox{
@@ -54,12 +59,19 @@ func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
 //
 // Example:
 //
-//	const ID_CMB uint16 = 0x100
+//	const (
+//		ID_MAIN_DLG uint16 = 1000
+//		ID_CMB_FOO  uint16 = 1001
+//	)
 //
-//	var wndOwner ui.Parent // initialized somewhere
+//	runtime.LockOSThread()
 //
-//	cmb := ui.NewComboBoxDlg(
-//		wndOwner, ID_CMB, ui.LAY_HOLD_HOLD)
+//	wnd := ui.NewTreeViewDlg(
+//		ui.OptsMainDlg().
+//			DlgId(ID_MAIN_DLG),
+//	)
+//	cmb := ui.NewComboBoxDlg(wnd, ID_CMB_FOO, ui.LAY_HOLD_HOLD)
+//	wnd.RunAsMain()
 func NewComboBoxDlg(parent Parent, ctrlId uint16, layout LAY) *ComboBox {
 	me := &ComboBox{
 		_BaseCtrl: newBaseCtrl(ctrlId),

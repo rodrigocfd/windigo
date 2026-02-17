@@ -20,6 +20,17 @@ type StatusBar struct {
 }
 
 // Creates a new [StatusBar] with [win.CreateWindowEx].
+//
+// Example:
+//
+//	runtime.LockOSThread()
+//
+//	wnd := ui.NewMain(
+//		ui.OptsMain().
+//			Title("Hello world"),
+//	)
+//	sbar := ui.NewStatusBar(wnd)
+//	wnd.RunAsMain()
 func NewStatusBar(parent Parent) *StatusBar {
 	ctrlId := nextCtrlId() // always give it an auto ID
 	me := &StatusBar{

@@ -20,15 +20,20 @@ type CheckBox struct {
 //
 // Example:
 //
-//	var wndOwner ui.Parent // initialized somewhere
+//	runtime.LockOSThread()
 //
+//	wnd := ui.NewMain(
+//		ui.OptsMain().
+//			Title("Hello world"),
+//	)
 //	chk := ui.NewCheckBox(
-//		wndOwner,
+//		wnd,
 //		ui.OptsCheckBox().
 //			Text("&Click me").
-//			Position(ui.Dpi(128, 75)).
+//			Position(ui.Dpi(10, 10)).
 //			State(co.BST_CHECKED),
 //	)
+//	wnd.RunAsMain()
 func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &CheckBox{
@@ -54,12 +59,19 @@ func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 //
 // Example:
 //
-//	const ID_CHK uint16 = 0x100
+//	const (
+//		ID_MAIN_DLG uint16 = 1000
+//		ID_CHK_FOO  uint16 = 1001
+//	)
 //
-//	var wndOwner ui.Parent // initialized somewhere
+//	runtime.LockOSThread()
 //
-//	chk := ui.NewCheckBoxDlg(
-//		wndOwner, ID_CHK, ui.LAY_HOLD_HOLD)
+//	wnd := ui.NewTreeViewDlg(
+//		ui.OptsMainDlg().
+//			DlgId(ID_MAIN_DLG),
+//	)
+//	chk := ui.NewCheckBoxDlg(wnd, ID_CHK, ui.LAY_HOLD_HOLD)
+//	wnd.RunAsMain()
 func NewCheckBoxDlg(parent Parent, ctrlId uint16, layout LAY) *CheckBox {
 	me := &CheckBox{
 		_BaseCtrl: newBaseCtrl(ctrlId),
