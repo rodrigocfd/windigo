@@ -12,6 +12,7 @@ type _DlgMain struct {
 	_DlgBase
 	iconId       uint16
 	accelTableId uint16
+	dropFiles    bool
 }
 
 // Constructor.
@@ -20,12 +21,18 @@ func newMainDlg(opts *VarOptsMainDlg) *_DlgMain {
 		_DlgBase:     newBaseDlg(opts.dlgId),
 		iconId:       opts.iconId,
 		accelTableId: opts.accelTableId,
+		dropFiles:    opts.dropFiles,
 	}
 	me.defaultMessageHandlers()
 	return me
 }
 
 func (me *_DlgMain) runAsMain(hInst win.HINSTANCE) int {
+	if me.dropFiles {
+		oleRel := me._DlgBase._BaseContainer.initDropTarget()
+		defer oleRel.Release()
+	}
+
 	me.createDialogParam(hInst, win.HWND(0))
 
 	if me.iconId != 0 {
@@ -62,6 +69,7 @@ type VarOptsMainDlg struct {
 	dlgId        uint16
 	iconId       uint16
 	accelTableId uint16
+	dropFiles    bool
 }
 
 // Options for [NewMainDlg].
@@ -89,3 +97,19 @@ func (o *VarOptsMainDlg) IconId(id uint16) *VarOptsMainDlg { o.iconId = id; retu
 //
 // [LoadAccelerators]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadacceleratorsw
 func (o *VarOptsMainDlg) AccelTableId(id uint16) *VarOptsMainDlg { o.accelTableId = id; return o }
+
+// Declares an internal [IDropTarget] object, so files can be [dragged] onto the
+// window.
+//
+// When a drag and drop happens, the window will automatically receive a
+// [WM_DROPFILES] message:
+//
+//	wnd.On().WmDropFiles(func(p ui.WmDropFiles) {
+//		filePaths, _ := p.HDrop().DragQueryFile()
+//		// ...
+//	})
+//
+// [IDropTarget]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
+// [dragged]: https://learn.microsoft.com/en-us/windows/win32/com/drag-and-drop
+// [WM_DROPFILES]: https://learn.microsoft.com/en-us/windows/win32/shell/wm-dropfiles
+func (o *VarOptsMainDlg) DropFiles(d bool) *VarOptsMainDlg { o.dropFiles = d; return o }

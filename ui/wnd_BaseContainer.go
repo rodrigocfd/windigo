@@ -45,6 +45,44 @@ func (me *_BaseContainer) clearMessages() {
 	me.afterUserEvents.clear()
 }
 
+func (me *_BaseContainer) initDropTarget() *win.OleReleaser {
+	oleRel := win.NewOleReleaser() // will be returned
+	dropTarget := win.NewIDropTargetImpl(oleRel)
+	dropTarget.Drop(
+		func(dataObj *win.IDataObject, _ co.MK, _ win.POINT, _ *co.DROPEFFECT) co.HRESULT {
+			fetc := win.FORMATETC{
+				CfFormat: co.CF_HDROP,
+				Aspect:   co.DVASPECT_CONTENT,
+				Lindex:   -1,
+				Tymed:    co.TYMED_HGLOBAL,
+			}
+			stg, err := dataObj.GetData(&fetc)
+			if err != nil {
+				panic("Drop error: " + err.Error())
+			}
+			defer win.ReleaseStgMedium(&stg)
+
+			if hGlobal, ok := stg.HGlobal(); ok {
+				hMem, _ := hGlobal.GlobalLock()
+				defer hGlobal.GlobalUnlock()
+
+				hDrop := win.HDROP(hMem) // DragFinish() crashes ReleaseStgMedium(), don't call
+				me.hWnd.SendMessage(co.WM_DROPFILES, win.WPARAM(hDrop), 0)
+			}
+			return co.HRESULT_S_OK
+		},
+	)
+
+	me.beforeUserEvents.wmCreateOrInitdialog(func() {
+		me.hWnd.RegisterDragDrop(dropTarget)
+	})
+	me.afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
+		me.hWnd.RevokeDragDrop()
+	})
+
+	return oleRel // must be released
+}
+
 func (me *_BaseContainer) uiThread(fun func()) {
 	pPack := &_ThreadPack{fun}
 	utl.PtrCache.Add(unsafe.Pointer(pPack))

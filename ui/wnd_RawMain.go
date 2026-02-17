@@ -26,6 +26,11 @@ func newMainRaw(opts *VarOptsMain) *_RawMain {
 }
 
 func (me *_RawMain) runAsMain(hInst win.HINSTANCE) int {
+	if me.opts.dropFiles {
+		oleRel := me._RawBase._BaseContainer.initDropTarget()
+		defer oleRel.Release()
+	}
+
 	atom := me.registerClass(hInst, me.opts.className, me.opts.classStyle,
 		me.opts.classIconId, me.opts.classBrush, me.opts.classCursor)
 
@@ -102,6 +107,7 @@ type VarOptsMain struct {
 	accelTable win.HACCEL
 
 	cmdShow        co.SW
+	dropFiles      bool
 	processDlgMsgs bool
 }
 
@@ -221,6 +227,22 @@ func (o *VarOptsMain) AccelTable(a win.HACCEL) *VarOptsMain { o.accelTable = a; 
 //
 // [ShowWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
 func (o *VarOptsMain) CmdShow(c co.SW) *VarOptsMain { o.cmdShow = c; return o }
+
+// Declares an internal [IDropTarget] object, so files can be [dragged] onto the
+// window.
+//
+// When a drag and drop happens, the window will automatically receive a
+// [WM_DROPFILES] message:
+//
+//	wnd.On().WmDropFiles(func(p ui.WmDropFiles) {
+//		filePaths, _ := p.HDrop().DragQueryFile()
+//		// ...
+//	})
+//
+// [IDropTarget]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
+// [dragged]: https://learn.microsoft.com/en-us/windows/win32/com/drag-and-drop
+// [WM_DROPFILES]: https://learn.microsoft.com/en-us/windows/win32/shell/wm-dropfiles
+func (o *VarOptsMain) DropFiles(d bool) *VarOptsMain { o.dropFiles = d; return o }
 
 // In most applications, the window loop calls [IsDialogMessage] so child
 // control messages will properly work. However, this has the side effect of
