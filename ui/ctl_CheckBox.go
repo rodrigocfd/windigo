@@ -13,7 +13,7 @@ import (
 // [check box]: https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#check-boxes
 type CheckBox struct {
 	_BaseCtrl
-	events EventsButton
+	events ButtonEvents
 }
 
 // Creates a new [CheckBox] with [win.CreateWindowEx].
@@ -38,7 +38,7 @@ func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &CheckBox{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsButton{opts.ctrlId, &parent.base().userEvents},
+		events:    ButtonEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -75,7 +75,7 @@ func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 func NewCheckBoxDlg(parent Parent, ctrlId uint16, layout LAY) *CheckBox {
 	me := &CheckBox{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsButton{ctrlId, &parent.base().userEvents},
+		events:    ButtonEvents{ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -89,7 +89,7 @@ func NewCheckBoxDlg(parent Parent, ctrlId uint16, layout LAY) *CheckBox {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *CheckBox) On() *EventsButton {
+func (me *CheckBox) On() *ButtonEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }

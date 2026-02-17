@@ -11,7 +11,7 @@ import (
 //
 // You cannot create this object directly, it will be created automatically
 // by the owning [TreeView].
-type CollectionTreeViewItems struct {
+type TreeViewItemCollection struct {
 	owner *TreeView
 }
 
@@ -21,7 +21,7 @@ type CollectionTreeViewItems struct {
 // the control's image list, or -1 for no icon.
 //
 // [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
-func (me *CollectionTreeViewItems) AddRoot(text string, iconIndex int) TreeViewItem {
+func (me *TreeViewItemCollection) AddRoot(text string, iconIndex int) TreeViewItem {
 	return me.Get(win.HTREEITEM(0)).
 		AddChild(text, iconIndex)
 }
@@ -29,7 +29,7 @@ func (me *CollectionTreeViewItems) AddRoot(text string, iconIndex int) TreeViewI
 // Retrieves the total number of items in the control, with [TVM_GETCOUNT].
 //
 // [TVM_GETCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getcount
-func (me *CollectionTreeViewItems) Count() int {
+func (me *TreeViewItemCollection) Count() int {
 	c, _ := me.owner.hWnd.SendMessage(co.TVM_GETCOUNT, 0, 0)
 	return int(c)
 }
@@ -39,7 +39,7 @@ func (me *CollectionTreeViewItems) Count() int {
 // Panics on error.
 //
 // [TVM_DELETEITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-deleteitem
-func (me *CollectionTreeViewItems) DeleteAll() {
+func (me *TreeViewItemCollection) DeleteAll() {
 	ret, err := me.owner.hWnd.SendMessage(co.TVM_DELETEITEM,
 		0, win.LPARAM(win.HTREEITEM(0)))
 	if ret == 0 || err != nil {
@@ -50,7 +50,7 @@ func (me *CollectionTreeViewItems) DeleteAll() {
 // Retrieves the first visible item, if any, with [TVM_GETNEXTITEM].
 //
 // [TVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getnextitem
-func (me *CollectionTreeViewItems) FirstVisible() (TreeViewItem, bool) {
+func (me *TreeViewItemCollection) FirstVisible() (TreeViewItem, bool) {
 	hVisible, _ := me.owner.hWnd.SendMessage(co.TVM_GETNEXTITEM,
 		win.WPARAM(co.TVGN_FIRSTVISIBLE), win.LPARAM(win.HTREEITEM(0)))
 	if hVisible != 0 {
@@ -60,14 +60,14 @@ func (me *CollectionTreeViewItems) FirstVisible() (TreeViewItem, bool) {
 }
 
 // Returns the item with the given handle.
-func (me *CollectionTreeViewItems) Get(hItem win.HTREEITEM) TreeViewItem {
+func (me *TreeViewItemCollection) Get(hItem win.HTREEITEM) TreeViewItem {
 	return TreeViewItem{me.owner, hItem}
 }
 
 // Returns the root items with [TVM_GETNEXTITEM].
 //
 // [TVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getnextitem
-func (me *CollectionTreeViewItems) Roots() []TreeViewItem {
+func (me *TreeViewItemCollection) Roots() []TreeViewItem {
 	roof := TreeViewItem{me.owner, win.HTREEITEM(0)}
 	return roof.Children()
 }
@@ -75,7 +75,7 @@ func (me *CollectionTreeViewItems) Roots() []TreeViewItem {
 // Retrieves the selected item, if any, with [TVM_GETNEXTITEM].
 //
 // [TVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getnextitem
-func (me *CollectionTreeViewItems) Selected() (TreeViewItem, bool) {
+func (me *TreeViewItemCollection) Selected() (TreeViewItem, bool) {
 	hItem, _ := me.owner.hWnd.SendMessage(co.TVM_GETNEXTITEM,
 		win.WPARAM(co.TVGN_CARET), win.LPARAM(win.HTREEITEM(0)))
 	if hItem != 0 {

@@ -38,7 +38,7 @@ type Parent interface {
 	// Exposes all the window notifications the can be handled.
 	//
 	// Panics if called after the window has been created.
-	On() *EventsWindow
+	On() *WindowEvents
 
 	// This method is analog to [SendMessage] (synchronous), but intended to be
 	// called from another thread, so a callback function can, tunelled by

@@ -15,7 +15,7 @@ import (
 //
 // You cannot create this object directly, it will be created automatically
 // by the owning [Header].
-type CollectionHeaderItems struct {
+type HeaderItemCollection struct {
 	owner *Header
 }
 
@@ -25,7 +25,7 @@ type CollectionHeaderItems struct {
 // Panics on error.
 //
 // [HDM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-insertitem
-func (me *CollectionHeaderItems) Add(text string, width int) HeaderItem {
+func (me *HeaderItemCollection) Add(text string, width int) HeaderItem {
 	hdi := win.HDITEM{
 		Mask: co.HDI_TEXT | co.HDI_WIDTH,
 		Cxy:  int32(width),
@@ -45,7 +45,7 @@ func (me *CollectionHeaderItems) Add(text string, width int) HeaderItem {
 }
 
 // Returns all items.
-func (me *CollectionHeaderItems) All() []HeaderItem {
+func (me *HeaderItemCollection) All() []HeaderItem {
 	nItems := me.Count()
 	items := make([]HeaderItem, 0, nItems)
 	for i := 0; i < nItems; i++ {
@@ -57,7 +57,7 @@ func (me *CollectionHeaderItems) All() []HeaderItem {
 // Sends [HDM_GETORDERARRAY] to retrieve the items in the current order.
 //
 // [HDM_GETORDERARRAY]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getorderarray
-func (me *CollectionHeaderItems) AllOrdered() []HeaderItem {
+func (me *HeaderItemCollection) AllOrdered() []HeaderItem {
 	nItems := me.Count()
 	indexes := make([]int32, nItems)
 
@@ -76,7 +76,7 @@ func (me *CollectionHeaderItems) AllOrdered() []HeaderItem {
 // Panics on error.
 //
 // [HDM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getitemcount
-func (me *CollectionHeaderItems) Count() int {
+func (me *HeaderItemCollection) Count() int {
 	countRet, err := me.owner.hWnd.SendMessage(co.HDM_GETITEMCOUNT, 0, 0)
 	count := int(countRet)
 	if err != nil || count == -1 {
@@ -86,7 +86,7 @@ func (me *CollectionHeaderItems) Count() int {
 }
 
 // Returns the item at the given index.
-func (me *CollectionHeaderItems) Get(index int) HeaderItem {
+func (me *HeaderItemCollection) Get(index int) HeaderItem {
 	return HeaderItem{
 		owner: me.owner,
 		index: int32(index),
@@ -96,20 +96,20 @@ func (me *CollectionHeaderItems) Get(index int) HeaderItem {
 // Sends [HDM_ORDERTOINDEX] to retrieve the item at the given order.
 //
 // [HDM_ORDERTOINDEX]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-ordertoindex
-func (me *CollectionHeaderItems) GetByOrder(order int) HeaderItem {
+func (me *HeaderItemCollection) GetByOrder(order int) HeaderItem {
 	idx, _ := me.owner.hWnd.SendMessage(co.HDM_ORDERTOINDEX, win.WPARAM(int32(order)), 0)
 	return me.Get(int(idx))
 }
 
 // Returns the last item.
-func (me *CollectionHeaderItems) Last() HeaderItem {
+func (me *HeaderItemCollection) Last() HeaderItem {
 	return me.Get(me.Count() - 1)
 }
 
 // Sends a [HDM_SETORDERARRAY] to reorder the items with the given order.
 //
 // [HDM_SETORDERARRAY]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-setorderarray
-func (me *CollectionHeaderItems) Reorder(indexes []int) {
+func (me *HeaderItemCollection) Reorder(indexes []int) {
 	buf := make([]int32, 0, len(indexes))
 	for _, index := range indexes {
 		buf = append(buf, int32(index))

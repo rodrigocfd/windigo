@@ -15,7 +15,7 @@ import (
 // [month calendar]: https://learn.microsoft.com/en-us/windows/win32/controls/month-calendar-controls
 type MonthCalendar struct {
 	_BaseCtrl
-	events EventsMonthCalendar
+	events MonthCalendarEvents
 }
 
 // Creates a new [MonthCalendar] with [win.CreateWindowEx].
@@ -34,7 +34,7 @@ func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar 
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &MonthCalendar{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsMonthCalendar{opts.ctrlId, &parent.base().userEvents},
+		events:    MonthCalendarEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -70,7 +70,7 @@ func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar 
 func NewMonthCalendarDlg(parent Parent, ctrlId uint16, layout LAY) *MonthCalendar {
 	me := &MonthCalendar{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsMonthCalendar{ctrlId, &parent.base().userEvents},
+		events:    MonthCalendarEvents{ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -84,7 +84,7 @@ func NewMonthCalendarDlg(parent Parent, ctrlId uint16, layout LAY) *MonthCalenda
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *MonthCalendar) On() *EventsMonthCalendar {
+func (me *MonthCalendar) On() *MonthCalendarEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -180,15 +180,15 @@ func (o *VarOptsMonthCalendar) Value(t time.Time) *VarOptsMonthCalendar { o.valu
 // by the owning control.
 //
 // [month calendar]: https://learn.microsoft.com/en-us/windows/win32/controls/month-calendar-controls
-type EventsMonthCalendar struct {
+type MonthCalendarEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [MCN_GETDAYSTATE] message handler.
 //
 // [MCN_GETDAYSTATE]: https://learn.microsoft.com/en-us/windows/win32/controls/mcn-getdaystate
-func (me *EventsMonthCalendar) McnGetDayState(fun func(p *win.NMDAYSTATE)) {
+func (me *MonthCalendarEvents) McnGetDayState(fun func(p *win.NMDAYSTATE)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.MCN_GETDAYSTATE, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMDAYSTATE)(p))
 		return me.parentEvents.defProcVal
@@ -198,7 +198,7 @@ func (me *EventsMonthCalendar) McnGetDayState(fun func(p *win.NMDAYSTATE)) {
 // [MCN_SELCHANGE] message handler.
 //
 // [MCN_SELCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/mcn-selchange
-func (me *EventsMonthCalendar) McnSelChange(fun func(p *win.NMSELCHANGE)) {
+func (me *MonthCalendarEvents) McnSelChange(fun func(p *win.NMSELCHANGE)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.MCN_SELCHANGE, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMSELCHANGE)(p))
 		return me.parentEvents.defProcVal
@@ -208,7 +208,7 @@ func (me *EventsMonthCalendar) McnSelChange(fun func(p *win.NMSELCHANGE)) {
 // [MCN_SELECT] message handler.
 //
 // [MCN_SELECT]: https://learn.microsoft.com/en-us/windows/win32/controls/mcn-select
-func (me *EventsMonthCalendar) McnSelect(fun func(p *win.NMSELCHANGE)) {
+func (me *MonthCalendarEvents) McnSelect(fun func(p *win.NMSELCHANGE)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.MCN_SELECT, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMSELCHANGE)(p))
 		return me.parentEvents.defProcVal
@@ -218,7 +218,7 @@ func (me *EventsMonthCalendar) McnSelect(fun func(p *win.NMSELCHANGE)) {
 // [MCN_VIEWCHANGE] message handler.
 //
 // [MCN_VIEWCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/mcn-viewchange
-func (me *EventsMonthCalendar) McnViewChange(fun func(p *win.NMVIEWCHANGE)) {
+func (me *MonthCalendarEvents) McnViewChange(fun func(p *win.NMVIEWCHANGE)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.MCN_VIEWCHANGE, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMVIEWCHANGE)(p))
 		return me.parentEvents.defProcVal
@@ -228,7 +228,7 @@ func (me *EventsMonthCalendar) McnViewChange(fun func(p *win.NMVIEWCHANGE)) {
 // [NM_RELEASEDCAPTURE] message handler.
 //
 // [NM_RELEASEDCAPTURE]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-monthcal-
-func (me *EventsMonthCalendar) NmReleasedCapture(fun func()) {
+func (me *MonthCalendarEvents) NmReleasedCapture(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal

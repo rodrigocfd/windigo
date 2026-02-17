@@ -15,7 +15,7 @@ import (
 // [syslink]: https://learn.microsoft.com/en-us/windows/win32/controls/syslink-control-entry
 type SysLink struct {
 	_BaseCtrl
-	events EventsSysLink
+	events SysLinkEvents
 }
 
 // Creates a new [SysLink] with [win.CreateWindowEx].
@@ -23,7 +23,7 @@ func NewSysLink(parent Parent, opts *VarOptsSysLink) *SysLink {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &SysLink{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsSysLink{opts.ctrlId, &parent.base().userEvents},
+		events:    SysLinkEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -43,7 +43,7 @@ func NewSysLink(parent Parent, opts *VarOptsSysLink) *SysLink {
 func NewSysLinkDlg(parent Parent, ctrlId uint16, layout LAY) *SysLink {
 	me := &SysLink{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsSysLink{ctrlId, &parent.base().userEvents},
+		events:    SysLinkEvents{ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -57,7 +57,7 @@ func NewSysLinkDlg(parent Parent, ctrlId uint16, layout LAY) *SysLink {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *SysLink) On() *EventsSysLink {
+func (me *SysLink) On() *SysLinkEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -168,15 +168,15 @@ func (o *VarOptsSysLink) WndExStyle(s co.WS_EX) *VarOptsSysLink { o.wndExStyle =
 // by the owning control.
 //
 // [syslink]: https://learn.microsoft.com/en-us/windows/win32/controls/syslink-control-entry
-type EventsSysLink struct {
+type SysLinkEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [NM_CLICK] message handler.
 //
 // [NM_CLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-syslink
-func (me *EventsSysLink) NmClick(fun func(p *win.NMLINK)) {
+func (me *SysLinkEvents) NmClick(fun func(p *win.NMLINK)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_CLICK, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMLINK)(p))
 		return me.parentEvents.defProcVal

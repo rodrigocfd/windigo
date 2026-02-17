@@ -23,21 +23,21 @@ func (me *_StatusBarPartData) IsFixedWidth() bool {
 //
 // You cannot create this object directly, it will be created automatically
 // by the owning [StatusBar].
-type CollectionStatusBarParts struct {
+type StatusBarPartCollection struct {
 	owner           *StatusBar
 	partsData       []_StatusBarPartData
 	rightEdges      []int32 // buffer to speed up ResizeToFitParent() calls
 	initialParentCx int     // cache used when adding parts
 }
 
-func (me *CollectionStatusBarParts) cacheInitialParentCx() {
+func (me *StatusBarPartCollection) cacheInitialParentCx() {
 	if me.initialParentCx == 0 { // not cached yet?
 		rc, _ := me.owner.hWnd.GetClientRect()
 		me.initialParentCx = int(rc.Right) // initial width of parent's client area
 	}
 }
 
-func (me *CollectionStatusBarParts) resizeToFitParent(parm WmSize) {
+func (me *StatusBarPartCollection) resizeToFitParent(parm WmSize) {
 	if parm.Request() == co.SIZE_REQ_MINIMIZED || me.owner.hWnd == 0 {
 		return
 	}
@@ -82,7 +82,7 @@ func (me *CollectionStatusBarParts) resizeToFitParent(parm WmSize) {
 //	var sbar ui.StatusBar // initialized somewhere
 //
 //	sbar.Parts.AddFixed("Text", ui.DpiX(200))
-func (me *CollectionStatusBarParts) AddFixed(text string, width int) {
+func (me *StatusBarPartCollection) AddFixed(text string, width int) {
 	me.cacheInitialParentCx()
 
 	if width == 0 {
@@ -118,7 +118,7 @@ func (me *CollectionStatusBarParts) AddFixed(text string, width int) {
 //	var sbar ui.StatusBar // initialized somewhere
 //
 //	sbar.Parts.AddResizable("Text", 1)
-func (me *CollectionStatusBarParts) AddResizable(text string, resizeWeight int) {
+func (me *StatusBarPartCollection) AddResizable(text string, resizeWeight int) {
 	me.cacheInitialParentCx()
 
 	if resizeWeight < 1 {
@@ -142,7 +142,7 @@ func (me *CollectionStatusBarParts) AddResizable(text string, resizeWeight int) 
 }
 
 // Returns all parts.
-func (me *CollectionStatusBarParts) All() []StatusBarPart {
+func (me *StatusBarPartCollection) All() []StatusBarPart {
 	nParts := me.Count()
 	parts := make([]StatusBarPart, 0, nParts)
 	for i := 0; i < nParts; i++ {
@@ -152,12 +152,12 @@ func (me *CollectionStatusBarParts) All() []StatusBarPart {
 }
 
 // Returns the number of parts.
-func (me *CollectionStatusBarParts) Count() int {
+func (me *StatusBarPartCollection) Count() int {
 	return len(me.partsData)
 }
 
 // Returns the part at the given index.
-func (me *CollectionStatusBarParts) Get(index int) StatusBarPart {
+func (me *StatusBarPartCollection) Get(index int) StatusBarPart {
 	return StatusBarPart{
 		owner: me.owner,
 		index: int32(index),
@@ -165,6 +165,6 @@ func (me *CollectionStatusBarParts) Get(index int) StatusBarPart {
 }
 
 // Returns the last part.
-func (me *CollectionStatusBarParts) Last() StatusBarPart {
+func (me *StatusBarPartCollection) Last() StatusBarPart {
 	return me.Get(me.Count() - 1)
 }

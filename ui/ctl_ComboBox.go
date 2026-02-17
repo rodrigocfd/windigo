@@ -12,8 +12,8 @@ import (
 // [combo box]: https://learn.microsoft.com/en-us/windows/win32/controls/about-combo-boxes
 type ComboBox struct {
 	_BaseCtrl
-	events EventsComboBox
-	Items  CollectionComboBoxItems // Methods to interact with the items collection.
+	events ComboBoxEvents
+	Items  ComboBoxItemCollection // Methods to interact with the items collection.
 }
 
 // Creates a new [ComboBox] with [win.CreateWindowEx].
@@ -38,7 +38,7 @@ func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &ComboBox{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsComboBox{opts.ctrlId, &parent.base().userEvents},
+		events:    ComboBoxEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 	me.Items.owner = me
 
@@ -75,7 +75,7 @@ func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
 func NewComboBoxDlg(parent Parent, ctrlId uint16, layout LAY) *ComboBox {
 	me := &ComboBox{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsComboBox{ctrlId, &parent.base().userEvents},
+		events:    ComboBoxEvents{ctrlId, &parent.base().userEvents},
 	}
 	me.Items.owner = me
 
@@ -90,7 +90,7 @@ func NewComboBoxDlg(parent Parent, ctrlId uint16, layout LAY) *ComboBox {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *ComboBox) On() *EventsComboBox {
+func (me *ComboBox) On() *ComboBoxEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -184,84 +184,84 @@ func (o *VarOptsComboBox) Selected(i int) *VarOptsComboBox { o.selected = i; ret
 // by the owning control.
 //
 // [combo box]: https://learn.microsoft.com/en-us/windows/win32/controls/about-combo-boxes
-type EventsComboBox struct {
+type ComboBoxEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [CBN_CLOSEUP] message handler.
 //
 // [CBN_CLOSEUP]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-closeup
-func (me *EventsComboBox) CbnCloseUp(fun func()) {
+func (me *ComboBoxEvents) CbnCloseUp(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.CBN_CLOSEUP, fun)
 }
 
 // [CBN_DBLCLK] message handler.
 //
 // [CBN_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-dblclk
-func (me *EventsComboBox) CbnDblClk(fun func()) {
+func (me *ComboBoxEvents) CbnDblClk(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.CBN_DBLCLK, fun)
 }
 
 // [CBN_DROPDOWN] message handler.
 //
 // [CBN_DROPDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-dropdown
-func (me *EventsComboBox) CbnDropDown(fun func()) {
+func (me *ComboBoxEvents) CbnDropDown(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.CBN_DROPDOWN, fun)
 }
 
 // [CBN_EDITCHANGE] message handler.
 //
 // [CBN_EDITCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-editchange
-func (me *EventsComboBox) CbnEditChange(fun func()) {
+func (me *ComboBoxEvents) CbnEditChange(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.CBN_EDITCHANGE, fun)
 }
 
 // [CBN_EDITUPDATE] message handler.
 //
 // [CBN_EDITUPDATE]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-editupdate
-func (me *EventsComboBox) CbnEditUpdate(fun func()) {
+func (me *ComboBoxEvents) CbnEditUpdate(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.CBN_EDITUPDATE, fun)
 }
 
 // [CBN_ERRSPACE] message handler.
 //
 // [CBN_ERRSPACE]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-errspace
-func (me *EventsComboBox) CbnErrSpace(fun func()) {
+func (me *ComboBoxEvents) CbnErrSpace(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.CBN_ERRSPACE, fun)
 }
 
 // [CBN_KILLFOCUS] message handler.
 //
 // [CBN_KILLFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-killfocus
-func (me *EventsComboBox) CbnKillFocus(fun func()) {
+func (me *ComboBoxEvents) CbnKillFocus(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.CBN_KILLFOCUS, fun)
 }
 
 // [CBN_SELCHANGE] message handler.
 //
 // [CBN_SELCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selchange
-func (me *EventsComboBox) CbnSelChange(fun func()) {
+func (me *ComboBoxEvents) CbnSelChange(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.CBN_SELCHANGE, fun)
 }
 
 // [CBN_SELENDCANCEL] message handler.
 //
 // [CBN_SELENDCANCEL]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selendcancel
-func (me *EventsComboBox) CbnSelEndCancel(fun func()) {
+func (me *ComboBoxEvents) CbnSelEndCancel(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.CBN_SELENDCANCEL, fun)
 }
 
 // [CBN_SELENDOK] message handler.
 //
 // [CBN_SELENDOK]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-selendok
-func (me *EventsComboBox) CbnSelEndOk(fun func()) {
+func (me *ComboBoxEvents) CbnSelEndOk(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.CBN_SELENDOK, fun)
 }
 
 // [CBN_SETFOCUS] message handler.
 //
 // [CBN_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/cbn-setfocus
-func (me *EventsComboBox) CbnSetFocus(fun func()) {
+func (me *ComboBoxEvents) CbnSetFocus(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.CBN_SETFOCUS, fun)
 }

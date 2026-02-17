@@ -15,11 +15,11 @@ import (
 //
 // You cannot create this object directly, it will be created automatically
 // by the owning [Tab].
-type CollectionTabItems struct {
+type TabItemCollection struct {
 	owner *Tab
 }
 
-func (me *CollectionTabItems) add(title string) TabItem {
+func (me *TabItemCollection) add(title string) TabItem {
 	tci := win.TCITEM{
 		Mask: co.TCIF_TEXT,
 	}
@@ -45,7 +45,7 @@ func (me *CollectionTabItems) add(title string) TabItem {
 // Panics on error.
 //
 // [TCM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-getitemcount
-func (me *CollectionTabItems) Count() int {
+func (me *TabItemCollection) Count() int {
 	countRet, err := me.owner.hWnd.SendMessage(co.TCM_GETITEMCOUNT, 0, 0)
 	count := int(countRet)
 	if err != nil || count == -1 {
@@ -57,7 +57,7 @@ func (me *CollectionTabItems) Count() int {
 // Retrieves the focused item with [TCM_GETCURFOCUS], if any
 //
 // [TCM_GETCURFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-getcurfocus
-func (me *CollectionTabItems) Focused() (TabItem, bool) {
+func (me *TabItemCollection) Focused() (TabItem, bool) {
 	idxRet, _ := me.owner.hWnd.SendMessage(co.TCM_GETCURFOCUS, 0, 0)
 	idx := int(idxRet)
 	if idx == -1 {
@@ -67,7 +67,7 @@ func (me *CollectionTabItems) Focused() (TabItem, bool) {
 }
 
 // Returns the item at the given index.
-func (me *CollectionTabItems) Get(index int) TabItem {
+func (me *TabItemCollection) Get(index int) TabItem {
 	return TabItem{
 		owner: me.owner,
 		index: int32(index),
@@ -77,7 +77,7 @@ func (me *CollectionTabItems) Get(index int) TabItem {
 // Retrieves the selected item with [TCM_GETCURSEL], if any
 //
 // [TCM_GETCURSEL]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-getcursel
-func (me *CollectionTabItems) Selected() (TabItem, bool) {
+func (me *TabItemCollection) Selected() (TabItem, bool) {
 	idxRet, _ := me.owner.hWnd.SendMessage(co.TCM_GETCURSEL, 0, 0)
 	idx := int(idxRet)
 	if idx == -1 {

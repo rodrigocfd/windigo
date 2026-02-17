@@ -15,7 +15,7 @@ import (
 // [edit]: https://learn.microsoft.com/en-us/windows/win32/controls/about-edit-controls
 type Edit struct {
 	_BaseCtrl
-	events EventsEdit
+	events EditEvents
 }
 
 // Creates a new [Edit] with [win.CreateWindowEx].
@@ -38,7 +38,7 @@ func NewEdit(parent Parent, opts *VarOptsEdit) *Edit {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Edit{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsEdit{opts.ctrlId, &parent.base().userEvents},
+		events:    EditEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -71,7 +71,7 @@ func NewEdit(parent Parent, opts *VarOptsEdit) *Edit {
 func NewEditDlg(parent Parent, ctrlId uint16, layout LAY) *Edit {
 	me := &Edit{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsEdit{ctrlId, &parent.base().userEvents},
+		events:    EditEvents{ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -85,7 +85,7 @@ func NewEditDlg(parent Parent, ctrlId uint16, layout LAY) *Edit {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *Edit) On() *EventsEdit {
+func (me *Edit) On() *EditEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -235,77 +235,77 @@ func (o *VarOptsEdit) WndExStyle(s co.WS_EX) *VarOptsEdit { o.wndExStyle = s; re
 // by the owning control.
 //
 // [edit]: https://learn.microsoft.com/en-us/windows/win32/controls/about-edit-controls
-type EventsEdit struct {
+type EditEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [EN_ALIGN_LTR_EC] message handler.
 //
 // [EN_ALIGN_LTR_EC]: https://learn.microsoft.com/en-us/windows/win32/controls/en-align-ltr-ec
-func (me *EventsEdit) EnAlignLtrEc(fun func()) {
+func (me *EditEvents) EnAlignLtrEc(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.EN_ALIGN_LTR_EC, fun)
 }
 
 // [EN_ALIGN_RTL_EC] message handler.
 //
 // [EN_ALIGN_RTL_EC]: https://learn.microsoft.com/en-us/windows/win32/controls/en-align-rtl-ec
-func (me *EventsEdit) EnAlignRtlEc(fun func()) {
+func (me *EditEvents) EnAlignRtlEc(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.EN_ALIGN_RTL_EC, fun)
 }
 
 // [EN_CHANGE] message handler.
 //
 // [EN_CHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/en-change
-func (me *EventsEdit) EnChange(fun func()) {
+func (me *EditEvents) EnChange(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.EN_CHANGE, fun)
 }
 
 // [EN_ERRSPACE] message handler.
 //
 // [EN_ERRSPACE]: https://learn.microsoft.com/en-us/windows/win32/controls/en-errspace
-func (me *EventsEdit) EnErrSpace(fun func()) {
+func (me *EditEvents) EnErrSpace(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.EN_ERRSPACE, fun)
 }
 
 // [EN_HSCROLL] message handler.
 //
 // [EN_HSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/en-hscroll
-func (me *EventsEdit) EnHScroll(fun func()) {
+func (me *EditEvents) EnHScroll(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.EN_HSCROLL, fun)
 }
 
 // [EN_KILLFOCUS] message handler.
 //
 // [EN_KILLFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/en-killfocus
-func (me *EventsEdit) EnKillFocus(fun func()) {
+func (me *EditEvents) EnKillFocus(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.EN_KILLFOCUS, fun)
 }
 
 // [EN_MAXTEXT] message handler.
 //
 // [EN_MAXTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/en-maxtext
-func (me *EventsEdit) EnMaxText(fun func()) {
+func (me *EditEvents) EnMaxText(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.EN_MAXTEXT, fun)
 }
 
 // [EN_SETFOCUS] message handler.
 //
 // [EN_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/en-setfocus
-func (me *EventsEdit) EnSetFocus(fun func()) {
+func (me *EditEvents) EnSetFocus(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.EN_SETFOCUS, fun)
 }
 
 // [EN_UPDATE] message handler.
 //
 // [EN_UPDATE]: https://learn.microsoft.com/en-us/windows/win32/controls/en-update
-func (me *EventsEdit) EnUpdate(fun func()) {
+func (me *EditEvents) EnUpdate(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.EN_UPDATE, fun)
 }
 
 // [EN_VSCROLL] message handler.
 //
 // [EN_VSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/en-vscroll
-func (me *EventsEdit) EnVScroll(fun func()) {
+func (me *EditEvents) EnVScroll(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.EN_VSCROLL, fun)
 }

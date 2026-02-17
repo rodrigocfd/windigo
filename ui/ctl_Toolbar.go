@@ -15,8 +15,8 @@ import (
 // [toolbar]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-controls-overview
 type Toolbar struct {
 	_BaseCtrl
-	events  EventsToolbar
-	Buttons CollectionToolbarButtons // Methods to interact with the buttons collection.
+	events  ToolbarEvents
+	Buttons ToolbarBtnCollection // Methods to interact with the buttons collection.
 }
 
 // Creates a new [Toolbar] with [win.CreateWindowEx].
@@ -24,7 +24,7 @@ func NewToolbar(parent Parent, opts *VarOptsToolbar) *Toolbar {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Toolbar{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsToolbar{opts.ctrlId, &parent.base().userEvents},
+		events:    ToolbarEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 	me.Buttons.owner = me
 
@@ -56,7 +56,7 @@ func (me *Toolbar) defaultMessageHandlers(parent Parent) {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *Toolbar) On() *EventsToolbar {
+func (me *Toolbar) On() *ToolbarEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -158,15 +158,15 @@ func (o *VarOptsToolbar) WndExStyle(s co.WS_EX) *VarOptsToolbar { o.wndExStyle =
 // by the owning control.
 //
 // [toolbar]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-controls-overview
-type EventsToolbar struct {
+type ToolbarEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [TBN_BEGINADJUST] message handler.
 //
 // [TBN_BEGINADJUST]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-beginadjust
-func (me *EventsToolbar) TbnBeginAdjust(fun func()) {
+func (me *ToolbarEvents) TbnBeginAdjust(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_BEGINADJUST, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -176,7 +176,7 @@ func (me *EventsToolbar) TbnBeginAdjust(fun func()) {
 // [TBN_BEGINDRAG] message handler.
 //
 // [TBN_BEGINDRAG]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-begindrag
-func (me *EventsToolbar) TbnBeginDrag(fun func(p *win.NMTOOLBAR)) {
+func (me *ToolbarEvents) TbnBeginDrag(fun func(p *win.NMTOOLBAR)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_BEGINDRAG, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMTOOLBAR)(p))
 		return me.parentEvents.defProcVal
@@ -186,7 +186,7 @@ func (me *EventsToolbar) TbnBeginDrag(fun func(p *win.NMTOOLBAR)) {
 // [TBN_CUSTHELP] message handler.
 //
 // [TBN_CUSTHELP]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-custhelp
-func (me *EventsToolbar) TbnCustHelp(fun func()) {
+func (me *ToolbarEvents) TbnCustHelp(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_CUSTHELP, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -196,7 +196,7 @@ func (me *EventsToolbar) TbnCustHelp(fun func()) {
 // [TBN_DELETINGBUTTON] message handler.
 //
 // [TBN_DELETINGBUTTON]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-deletingbutton
-func (me *EventsToolbar) TbnDeletingButton(fun func(p *win.NMTOOLBAR)) {
+func (me *ToolbarEvents) TbnDeletingButton(fun func(p *win.NMTOOLBAR)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_DELETINGBUTTON, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMTOOLBAR)(p))
 		return me.parentEvents.defProcVal
@@ -206,7 +206,7 @@ func (me *EventsToolbar) TbnDeletingButton(fun func(p *win.NMTOOLBAR)) {
 // [TBN_DRAGOUT] message handler.
 //
 // [TBN_DRAGOUT]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-dragout
-func (me *EventsToolbar) TbnDragOut(fun func(p *win.NMTOOLBAR)) {
+func (me *ToolbarEvents) TbnDragOut(fun func(p *win.NMTOOLBAR)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_DRAGOUT, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMTOOLBAR)(p))
 		return me.parentEvents.defProcVal
@@ -216,7 +216,7 @@ func (me *EventsToolbar) TbnDragOut(fun func(p *win.NMTOOLBAR)) {
 // [TBN_DRAGOVER] message handler.
 //
 // [TBN_DRAGOVER]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-dragover
-func (me *EventsToolbar) TbnDragOver(fun func(p *win.NMTBHOTITEM) bool) {
+func (me *ToolbarEvents) TbnDragOver(fun func(p *win.NMTBHOTITEM) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_DRAGOVER, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMTBHOTITEM)(p)))
 	})
@@ -225,7 +225,7 @@ func (me *EventsToolbar) TbnDragOver(fun func(p *win.NMTBHOTITEM) bool) {
 // [TBN_DROPDOWN] message handler.
 //
 // [TBN_DROPDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-dropdown
-func (me *EventsToolbar) TbnDropDown(fun func(p *win.NMTOOLBAR) co.TBDDRET) {
+func (me *ToolbarEvents) TbnDropDown(fun func(p *win.NMTOOLBAR) co.TBDDRET) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_DROPDOWN, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun((*win.NMTOOLBAR)(p)))
 	})
@@ -234,7 +234,7 @@ func (me *EventsToolbar) TbnDropDown(fun func(p *win.NMTOOLBAR) co.TBDDRET) {
 // [TBN_DUPACCELERATOR] message handler.
 //
 // [TBN_DUPACCELERATOR]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-dupaccelerator
-func (me *EventsToolbar) TbnDupAccelerator(fun func(p *win.NMTBDUPACCELERATOR) bool) {
+func (me *ToolbarEvents) TbnDupAccelerator(fun func(p *win.NMTBDUPACCELERATOR) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_DUPACCELERATOR, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMTBDUPACCELERATOR)(p)))
 	})
@@ -243,7 +243,7 @@ func (me *EventsToolbar) TbnDupAccelerator(fun func(p *win.NMTBDUPACCELERATOR) b
 // [TBN_ENDADJUST] message handler.
 //
 // [TBN_ENDADJUST]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-endadjust
-func (me *EventsToolbar) TbnEndAdjust(fun func()) {
+func (me *ToolbarEvents) TbnEndAdjust(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_ENDADJUST, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -253,7 +253,7 @@ func (me *EventsToolbar) TbnEndAdjust(fun func()) {
 // [TBN_ENDDRAG] message handler.
 //
 // [TBN_ENDDRAG]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-enddrag
-func (me *EventsToolbar) TbnEndDrag(fun func(p *win.NMTOOLBAR)) {
+func (me *ToolbarEvents) TbnEndDrag(fun func(p *win.NMTOOLBAR)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_ENDDRAG, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMTOOLBAR)(p))
 		return me.parentEvents.defProcVal
@@ -263,7 +263,7 @@ func (me *EventsToolbar) TbnEndDrag(fun func(p *win.NMTOOLBAR)) {
 // [TBN_GETBUTTONINFO] message handler.
 //
 // [TBN_GETBUTTONINFO]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-getbuttoninfo
-func (me *EventsToolbar) TbnGetButtonInfo(fun func(p *win.NMTOOLBAR) bool) {
+func (me *ToolbarEvents) TbnGetButtonInfo(fun func(p *win.NMTOOLBAR) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_GETBUTTONINFO, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMTOOLBAR)(p)))
 	})
@@ -272,7 +272,7 @@ func (me *EventsToolbar) TbnGetButtonInfo(fun func(p *win.NMTOOLBAR) bool) {
 // [TBN_GETDISPINFO] message handler.
 //
 // [TBN_GETDISPINFO]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-getdispinfo
-func (me *EventsToolbar) TbnGetDispInfo(fun func(p *win.NMTBDISPINFO)) {
+func (me *ToolbarEvents) TbnGetDispInfo(fun func(p *win.NMTBDISPINFO)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_GETDISPINFO, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMTBDISPINFO)(p))
 		return me.parentEvents.defProcVal
@@ -282,7 +282,7 @@ func (me *EventsToolbar) TbnGetDispInfo(fun func(p *win.NMTBDISPINFO)) {
 // [TBN_GETINFOTIP] message handler.
 //
 // [TBN_GETINFOTIP]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-getinfotip
-func (me *EventsToolbar) TbnGetInfoTip(fun func(p *win.NMTBGETINFOTIP)) {
+func (me *ToolbarEvents) TbnGetInfoTip(fun func(p *win.NMTBGETINFOTIP)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_GETINFOTIP, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMTBGETINFOTIP)(p))
 		return me.parentEvents.defProcVal
@@ -292,7 +292,7 @@ func (me *EventsToolbar) TbnGetInfoTip(fun func(p *win.NMTBGETINFOTIP)) {
 // [TBN_GETOBJECT] message handler.
 //
 // [TBN_GETOBJECT]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-getobject
-func (me *EventsToolbar) TbnGetObject(fun func(p *win.NMOBJECTNOTIFY)) {
+func (me *ToolbarEvents) TbnGetObject(fun func(p *win.NMOBJECTNOTIFY)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_GETOBJECT, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMOBJECTNOTIFY)(p))
 		return me.parentEvents.defProcVal
@@ -302,7 +302,7 @@ func (me *EventsToolbar) TbnGetObject(fun func(p *win.NMOBJECTNOTIFY)) {
 // [TBN_HOTITEMCHANGE] message handler.
 //
 // [TBN_HOTITEMCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-hotitemchange
-func (me *EventsToolbar) TbnHotItemChange(fun func(*win.NMTBHOTITEM) int) {
+func (me *ToolbarEvents) TbnHotItemChange(fun func(*win.NMTBHOTITEM) int) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_HOTITEMCHANGE, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun((*win.NMTBHOTITEM)(p)))
 	})
@@ -311,7 +311,7 @@ func (me *EventsToolbar) TbnHotItemChange(fun func(*win.NMTBHOTITEM) int) {
 // [TBN_INITCUSTOMIZE] message handler.
 //
 // [TBN_INITCUSTOMIZE]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-initcustomize
-func (me *EventsToolbar) TbnInitCustomize(fun func() co.TBNRF) {
+func (me *ToolbarEvents) TbnInitCustomize(fun func() co.TBNRF) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_INITCUSTOMIZE, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun())
 	})
@@ -320,7 +320,7 @@ func (me *EventsToolbar) TbnInitCustomize(fun func() co.TBNRF) {
 // [TBN_MAPACCELERATOR] message handler.
 //
 // [TBN_MAPACCELERATOR]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-mapaccelerator
-func (me *EventsToolbar) TbnMapAccelerator(fun func(p *win.NMCHAR) bool) {
+func (me *ToolbarEvents) TbnMapAccelerator(fun func(p *win.NMCHAR) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_MAPACCELERATOR, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMCHAR)(p)))
 	})
@@ -329,7 +329,7 @@ func (me *EventsToolbar) TbnMapAccelerator(fun func(p *win.NMCHAR) bool) {
 // [TBN_QUERYDELETE] message handler.
 //
 // [TBN_QUERYDELETE]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-querydelete
-func (me *EventsToolbar) TbnQueryDelete(fun func(p *win.NMTOOLBAR) bool) {
+func (me *ToolbarEvents) TbnQueryDelete(fun func(p *win.NMTOOLBAR) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_QUERYDELETE, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMTOOLBAR)(p)))
 	})
@@ -338,7 +338,7 @@ func (me *EventsToolbar) TbnQueryDelete(fun func(p *win.NMTOOLBAR) bool) {
 // [TBN_QUERYINSERT] message handler.
 //
 // [TBN_QUERYINSERT]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-queryinsert
-func (me *EventsToolbar) TbnQueryInsert(fun func(p *win.NMTOOLBAR) bool) {
+func (me *ToolbarEvents) TbnQueryInsert(fun func(p *win.NMTOOLBAR) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_QUERYINSERT, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMTOOLBAR)(p)))
 	})
@@ -347,7 +347,7 @@ func (me *EventsToolbar) TbnQueryInsert(fun func(p *win.NMTOOLBAR) bool) {
 // [TBN_RESET] message handler.
 //
 // [TBN_RESET]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-reset
-func (me *EventsToolbar) TbnReset(fun func() co.TBNRF) {
+func (me *ToolbarEvents) TbnReset(fun func() co.TBNRF) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_RESET, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun())
 	})
@@ -356,7 +356,7 @@ func (me *EventsToolbar) TbnReset(fun func() co.TBNRF) {
 // [TBN_RESTORE] message handler.
 //
 // [TBN_RESTORE]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-restore
-func (me *EventsToolbar) TbnRestore(fun func(p *win.NMTBRESTORE) int) {
+func (me *ToolbarEvents) TbnRestore(fun func(p *win.NMTBRESTORE) int) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_RESTORE, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun((*win.NMTBRESTORE)(p)))
 	})
@@ -365,7 +365,7 @@ func (me *EventsToolbar) TbnRestore(fun func(p *win.NMTBRESTORE) int) {
 // [TBN_SAVE] message handler.
 //
 // [TBN_SAVE]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-save
-func (me *EventsToolbar) TbnSave(fun func(p *win.NMTBSAVE)) {
+func (me *ToolbarEvents) TbnSave(fun func(p *win.NMTBSAVE)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_SAVE, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMTBSAVE)(p))
 		return me.parentEvents.defProcVal
@@ -375,7 +375,7 @@ func (me *EventsToolbar) TbnSave(fun func(p *win.NMTBSAVE)) {
 // [TBN_TOOLBARCHANGE] message handler.
 //
 // [TBN_TOOLBARCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-toolbarchange
-func (me *EventsToolbar) TbnToolbarChange(fun func()) {
+func (me *ToolbarEvents) TbnToolbarChange(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_TOOLBARCHANGE, func(p unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -385,7 +385,7 @@ func (me *EventsToolbar) TbnToolbarChange(fun func()) {
 // [TBN_WRAPACCELERATOR] message handler.
 //
 // [TBN_WRAPACCELERATOR]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-wrapaccelerator
-func (me *EventsToolbar) TbnWrapAccelerator(fun func(p *win.NMTBWRAPACCELERATOR) bool) {
+func (me *ToolbarEvents) TbnWrapAccelerator(fun func(p *win.NMTBWRAPACCELERATOR) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_WRAPACCELERATOR, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMTBWRAPACCELERATOR)(p)))
 	})
@@ -394,7 +394,7 @@ func (me *EventsToolbar) TbnWrapAccelerator(fun func(p *win.NMTBWRAPACCELERATOR)
 // [TBN_WRAPHOTITEM] message handler.
 //
 // [TBN_WRAPHOTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tbn-wraphotitem
-func (me *EventsToolbar) TbnWrapHotItem(fun func(p *win.NMTBWRAPHOTITEM) bool) {
+func (me *ToolbarEvents) TbnWrapHotItem(fun func(p *win.NMTBWRAPHOTITEM) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TBN_WRAPHOTITEM, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMTBWRAPHOTITEM)(p)))
 	})
@@ -403,7 +403,7 @@ func (me *EventsToolbar) TbnWrapHotItem(fun func(p *win.NMTBWRAPHOTITEM) bool) {
 // [NM_CHAR] message handler.
 //
 // [NM_CHAR]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-char-toolbar
-func (me *EventsToolbar) NmChar(fun func(p *win.NMCHAR) bool) {
+func (me *ToolbarEvents) NmChar(fun func(p *win.NMCHAR) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_CHAR, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMCHAR)(p)))
 	})
@@ -412,7 +412,7 @@ func (me *EventsToolbar) NmChar(fun func(p *win.NMCHAR) bool) {
 // [NM_CLICK] message handler.
 //
 // [NM_CLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-toolbar
-func (me *EventsToolbar) NmClick(fun func(p *win.NMMOUSE) bool) {
+func (me *ToolbarEvents) NmClick(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_CLICK, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
@@ -421,7 +421,7 @@ func (me *EventsToolbar) NmClick(fun func(p *win.NMMOUSE) bool) {
 // [NM_CUSTOMDRAW] message handler.
 //
 // [NM_CUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-customdraw-toolbar
-func (me *EventsToolbar) NmCustomDraw(fun func(p *win.NMTBCUSTOMDRAW) co.CDRF) {
+func (me *ToolbarEvents) NmCustomDraw(fun func(p *win.NMTBCUSTOMDRAW) co.CDRF) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_CUSTOMDRAW, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun((*win.NMTBCUSTOMDRAW)(p)))
 	})
@@ -430,7 +430,7 @@ func (me *EventsToolbar) NmCustomDraw(fun func(p *win.NMTBCUSTOMDRAW) co.CDRF) {
 // [NM_DBLCLK] message handler.
 //
 // [NM_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-dblclk-toolbar
-func (me *EventsToolbar) NmDblClk(fun func(p *win.NMMOUSE) bool) {
+func (me *ToolbarEvents) NmDblClk(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_DBLCLK, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
@@ -439,7 +439,7 @@ func (me *EventsToolbar) NmDblClk(fun func(p *win.NMMOUSE) bool) {
 // [NM_KEYDOWN] message handler.
 //
 // [NM_KEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-keydown-toolbar
-func (me *EventsToolbar) NmKeyDown(fun func(p *win.NMKEY) int) {
+func (me *ToolbarEvents) NmKeyDown(fun func(p *win.NMKEY) int) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_KEYDOWN, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun((*win.NMKEY)(p)))
 	})
@@ -448,7 +448,7 @@ func (me *EventsToolbar) NmKeyDown(fun func(p *win.NMKEY) int) {
 // [NM_LDOWN] message handler.
 //
 // [NM_LDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-ldown-toolbar
-func (me *EventsToolbar) NmLDown(fun func(p *win.NMMOUSE) bool) {
+func (me *ToolbarEvents) NmLDown(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_LDOWN, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
@@ -457,7 +457,7 @@ func (me *EventsToolbar) NmLDown(fun func(p *win.NMMOUSE) bool) {
 // [NM_RCLICK] message handler.
 //
 // [NM_RCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rclick-toolbar
-func (me *EventsToolbar) NmRClick(fun func(p *win.NMMOUSE) bool) {
+func (me *ToolbarEvents) NmRClick(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RCLICK, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
@@ -466,7 +466,7 @@ func (me *EventsToolbar) NmRClick(fun func(p *win.NMMOUSE) bool) {
 // [NM_RDBLCLK] message handler.
 //
 // [NM_RDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-toolbar
-func (me *EventsToolbar) NmRDblClk(fun func(p *win.NMMOUSE) bool) {
+func (me *ToolbarEvents) NmRDblClk(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RDBLCLK, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
@@ -475,7 +475,7 @@ func (me *EventsToolbar) NmRDblClk(fun func(p *win.NMMOUSE) bool) {
 // [NM_RELEASEDCAPTURE] message handler.
 //
 // [NM_RELEASEDCAPTURE]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-list-view-
-func (me *EventsToolbar) NmReleasedCapture(fun func()) {
+func (me *ToolbarEvents) NmReleasedCapture(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -485,7 +485,7 @@ func (me *EventsToolbar) NmReleasedCapture(fun func()) {
 // [NM_TOOLTIPSCREATED] message handler.
 //
 // [NM_TOOLTIPSCREATED]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-tooltipscreated-toolbar-
-func (me *EventsToolbar) NmTooltipsCreated(fun func(p *win.NMTOOLTIPSCREATED)) {
+func (me *ToolbarEvents) NmTooltipsCreated(fun func(p *win.NMTOOLTIPSCREATED)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_TOOLTIPSCREATED, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMTOOLTIPSCREATED)(p))
 		return me.parentEvents.defProcVal

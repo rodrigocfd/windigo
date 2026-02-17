@@ -15,7 +15,7 @@ type _BaseCtrl struct {
 	ctrlId uint16   // Control identifier.
 	hWnd   win.HWND // Handle to the control.
 
-	subclassEvents EventsWindow
+	subclassEvents WindowEvents
 	subclassProc   uintptr // Prevents InvalidInitCycle.
 }
 
@@ -61,7 +61,7 @@ func (me *_BaseCtrl) Focus() {
 //
 // Note that subclassing is a potentially slow technique, prefer using ordinary
 // events.
-func (me *_BaseCtrl) OnSubclass() *EventsWindow {
+func (me *_BaseCtrl) OnSubclass() *WindowEvents {
 	if me.hWnd != 0 {
 		panic("Cannot subclass a control after it is created.")
 	}

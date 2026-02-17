@@ -104,7 +104,7 @@ func (me *Main) Hwnd() win.HWND {
 // Implements [Parent].
 //
 // Panics if called after the window has been created.
-func (me *Main) On() *EventsWindow {
+func (me *Main) On() *WindowEvents {
 	if me.Hwnd() != 0 {
 		panic("Cannot add event handling after the window has been created.")
 	}

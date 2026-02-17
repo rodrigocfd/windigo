@@ -15,7 +15,7 @@ import (
 // [date and time picker]: https://learn.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-controls
 type DateTimePicker struct {
 	_BaseCtrl
-	events EventsDateTimePicker
+	events DateTimePickerEvents
 }
 
 // Creates a new [DateTimePicker] with [win.CreateWindowEx].
@@ -34,7 +34,7 @@ func NewDateTimePicker(parent Parent, opts *VarOptsDateTimePicker) *DateTimePick
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &DateTimePicker{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsDateTimePicker{opts.ctrlId, &parent.base().userEvents},
+		events:    DateTimePickerEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -63,7 +63,7 @@ func NewDateTimePicker(parent Parent, opts *VarOptsDateTimePicker) *DateTimePick
 func NewDateTimePickerDlg(parent Parent, ctrlId uint16, layout LAY) *DateTimePicker {
 	me := &DateTimePicker{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsDateTimePicker{ctrlId, &parent.base().userEvents},
+		events:    DateTimePickerEvents{ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -77,7 +77,7 @@ func NewDateTimePickerDlg(parent Parent, ctrlId uint16, layout LAY) *DateTimePic
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *DateTimePicker) On() *EventsDateTimePicker {
+func (me *DateTimePicker) On() *DateTimePickerEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -193,15 +193,15 @@ func (o *VarOptsDateTimePicker) Value(t time.Time) *VarOptsDateTimePicker { o.va
 // by the owning control.
 //
 // [date and time picker]: https://learn.microsoft.com/en-us/windows/win32/controls/date-and-time-picker-controls
-type EventsDateTimePicker struct {
+type DateTimePickerEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [DTN_CLOSEUP] message handler.
 //
 // [DTN_CLOSEUP]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-closeup
-func (me *EventsDateTimePicker) DtnCloseUp(fun func()) {
+func (me *DateTimePickerEvents) DtnCloseUp(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.DTN_CLOSEUP, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -211,7 +211,7 @@ func (me *EventsDateTimePicker) DtnCloseUp(fun func()) {
 // [DTN_DATETIMECHANGE] message handler.
 //
 // [DTN_DATETIMECHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-datetimechange
-func (me *EventsDateTimePicker) DtnDateTimeChange(fun func(p *win.NMDATETIMECHANGE)) {
+func (me *DateTimePickerEvents) DtnDateTimeChange(fun func(p *win.NMDATETIMECHANGE)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.DTN_DATETIMECHANGE, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMDATETIMECHANGE)(p))
 		return me.parentEvents.defProcVal
@@ -221,7 +221,7 @@ func (me *EventsDateTimePicker) DtnDateTimeChange(fun func(p *win.NMDATETIMECHAN
 // [DTN_DROPDOWN] message handler.
 //
 // [DTN_DROPDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-dropdown
-func (me *EventsDateTimePicker) DtnDropDown(fun func()) {
+func (me *DateTimePickerEvents) DtnDropDown(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.DTN_DROPDOWN, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -231,7 +231,7 @@ func (me *EventsDateTimePicker) DtnDropDown(fun func()) {
 // [DTN_FORMAT] message handler.
 //
 // [DTN_FORMAT]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-format
-func (me *EventsDateTimePicker) DtnFormat(fun func(p *win.NMDATETIMEFORMAT)) {
+func (me *DateTimePickerEvents) DtnFormat(fun func(p *win.NMDATETIMEFORMAT)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.DTN_FORMAT, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMDATETIMEFORMAT)(p))
 		return me.parentEvents.defProcVal
@@ -241,7 +241,7 @@ func (me *EventsDateTimePicker) DtnFormat(fun func(p *win.NMDATETIMEFORMAT)) {
 // [DTN_FORMATQUERY] message handler.
 //
 // [DTN_FORMATQUERY]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-formatquery
-func (me *EventsDateTimePicker) DtnFormatQuery(fun func(p *win.NMDATETIMEFORMATQUERY)) {
+func (me *DateTimePickerEvents) DtnFormatQuery(fun func(p *win.NMDATETIMEFORMATQUERY)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.DTN_FORMATQUERY, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMDATETIMEFORMATQUERY)(p))
 		return me.parentEvents.defProcVal
@@ -251,7 +251,7 @@ func (me *EventsDateTimePicker) DtnFormatQuery(fun func(p *win.NMDATETIMEFORMATQ
 // [DTN_USERSTRING] message handler.
 //
 // [DTN_USERSTRING]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-userstring
-func (me *EventsDateTimePicker) DtnUserString(fun func(p *win.NMDATETIMESTRING)) {
+func (me *DateTimePickerEvents) DtnUserString(fun func(p *win.NMDATETIMESTRING)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.DTN_USERSTRING, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMDATETIMESTRING)(p))
 		return me.parentEvents.defProcVal
@@ -261,7 +261,7 @@ func (me *EventsDateTimePicker) DtnUserString(fun func(p *win.NMDATETIMESTRING))
 // [DTN_WMKEYDOWN] message handler.
 //
 // [DTN_WMKEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/dtn-wmkeydown
-func (me *EventsDateTimePicker) DtnWmKeyDown(fun func(p *win.NMDATETIMEWMKEYDOWN)) {
+func (me *DateTimePickerEvents) DtnWmKeyDown(fun func(p *win.NMDATETIMEWMKEYDOWN)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.DTN_WMKEYDOWN, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMDATETIMEWMKEYDOWN)(p))
 		return me.parentEvents.defProcVal
@@ -271,7 +271,7 @@ func (me *EventsDateTimePicker) DtnWmKeyDown(fun func(p *win.NMDATETIMEWMKEYDOWN
 // [NM_KILLFOCUS] message handler.
 //
 // [NM_KILLFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-killfocus-date-time
-func (me *EventsDateTimePicker) NmKillFocus(fun func()) {
+func (me *DateTimePickerEvents) NmKillFocus(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_KILLFOCUS, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -281,7 +281,7 @@ func (me *EventsDateTimePicker) NmKillFocus(fun func()) {
 // [NM_SETFOCUS] message handler.
 //
 // [NM_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-setfocus-date-time-
-func (me *EventsDateTimePicker) NmSetFocus(fun func()) {
+func (me *DateTimePickerEvents) NmSetFocus(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_SETFOCUS, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal

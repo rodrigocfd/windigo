@@ -14,7 +14,7 @@ import (
 // [button]: https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#push-buttons
 type Button struct {
 	_BaseCtrl
-	events EventsButton
+	events ButtonEvents
 }
 
 // Creates a new [Button] with [win.CreateWindowEx].
@@ -38,7 +38,7 @@ func NewButton(parent Parent, opts *VarOptsButton) *Button {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Button{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsButton{opts.ctrlId, &parent.base().userEvents},
+		events:    ButtonEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -71,7 +71,7 @@ func NewButton(parent Parent, opts *VarOptsButton) *Button {
 func NewButtonDlg(parent Parent, ctrlId uint16, layout LAY) *Button {
 	me := &Button{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsButton{ctrlId, &parent.base().userEvents},
+		events:    ButtonEvents{ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -85,7 +85,7 @@ func NewButtonDlg(parent Parent, ctrlId uint16, layout LAY) *Button {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *Button) On() *EventsButton {
+func (me *Button) On() *ButtonEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -194,15 +194,15 @@ func (o *VarOptsButton) WndExStyle(s co.WS_EX) *VarOptsButton { o.wndExStyle = s
 // by the owning control.
 //
 // [button]: https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#push-buttons
-type EventsButton struct {
+type ButtonEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [BCN_DROPDOWN] message handler.
 //
 // [BCN_DROPDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/bcn-dropdown
-func (me *EventsButton) BcnDropDown(fun func(p *win.NMBCDROPDOWN)) {
+func (me *ButtonEvents) BcnDropDown(fun func(p *win.NMBCDROPDOWN)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.BCN_DROPDOWN, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMBCDROPDOWN)(p))
 		return me.parentEvents.defProcVal
@@ -212,7 +212,7 @@ func (me *EventsButton) BcnDropDown(fun func(p *win.NMBCDROPDOWN)) {
 // [BCN_HOTITEMCHANGE] message handler.
 //
 // [BCN_HOTITEMCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/bcn-hotitemchange
-func (me *EventsButton) BcnHotItemChange(fun func(p *win.NMBCHOTITEM)) {
+func (me *ButtonEvents) BcnHotItemChange(fun func(p *win.NMBCHOTITEM)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.BCN_HOTITEMCHANGE, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMBCHOTITEM)(p))
 		return me.parentEvents.defProcVal
@@ -222,28 +222,28 @@ func (me *EventsButton) BcnHotItemChange(fun func(p *win.NMBCHOTITEM)) {
 // [BN_CLICKED] message handler.
 //
 // [BN_CLICKED]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
-func (me *EventsButton) BnClicked(fun func()) {
+func (me *ButtonEvents) BnClicked(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.BN_CLICKED, fun)
 }
 
 // [BN_DBLCLK] message handler.
 //
 // [BN_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-dblclk
-func (me *EventsButton) BnDblClk(fun func()) {
+func (me *ButtonEvents) BnDblClk(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.BN_DBLCLK, fun)
 }
 
 // [BN_KILLFOCUS] message handler.
 //
 // [BN_KILLFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-killfocus
-func (me *EventsButton) BnKillFocus(fun func()) {
+func (me *ButtonEvents) BnKillFocus(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.BN_KILLFOCUS, fun)
 }
 
 // [BN_SETFOCUS] message handler.
 //
 // [BN_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-setfocus
-func (me *EventsButton) BnSetFocus(fun func()) {
+func (me *ButtonEvents) BnSetFocus(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.BN_SETFOCUS, func() {
 		fun()
 	})
@@ -252,7 +252,7 @@ func (me *EventsButton) BnSetFocus(fun func()) {
 // [NM_CUSTOMDRAW] message handler.
 //
 // [NM_CUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-customdraw-button
-func (me *EventsButton) NmCustomDraw(fun func(p *win.NMCUSTOMDRAW) co.CDRF) {
+func (me *ButtonEvents) NmCustomDraw(fun func(p *win.NMCUSTOMDRAW) co.CDRF) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_CUSTOMDRAW, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun((*win.NMCUSTOMDRAW)(p)))
 	})

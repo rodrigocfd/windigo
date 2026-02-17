@@ -13,7 +13,7 @@ import (
 // [static]: https://learn.microsoft.com/en-us/windows/win32/controls/about-static-controls
 type Static struct {
 	_BaseCtrl
-	events EventsStatic
+	events StaticEvents
 }
 
 // Creates a new [Static] with [win.CreateWindowEx].
@@ -37,7 +37,7 @@ func NewStatic(parent Parent, opts *VarOptsStatic) *Static {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Static{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsStatic{opts.ctrlId, &parent.base().userEvents},
+		events:    StaticEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -73,7 +73,7 @@ func NewStatic(parent Parent, opts *VarOptsStatic) *Static {
 func NewStaticDlg(parent Parent, ctrlId uint16, layout LAY) *Static {
 	me := &Static{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsStatic{ctrlId, &parent.base().userEvents},
+		events:    StaticEvents{ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -87,7 +87,7 @@ func NewStaticDlg(parent Parent, ctrlId uint16, layout LAY) *Static {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *Static) On() *EventsStatic {
+func (me *Static) On() *StaticEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -185,35 +185,35 @@ func (o *VarOptsStatic) WndExStyle(s co.WS_EX) *VarOptsStatic { o.wndExStyle = s
 // by the owning control.
 //
 // [static]: https://learn.microsoft.com/en-us/windows/win32/controls/about-static-controls
-type EventsStatic struct {
+type StaticEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [STN_CLICKED] message handler.
 //
 // [STN_CLICKED]: https://learn.microsoft.com/en-us/windows/win32/controls/stn-clicked
-func (me *EventsStatic) StnClicked(fun func()) {
+func (me *StaticEvents) StnClicked(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.STN_CLICKED, fun)
 }
 
 // [STN_DBLCLK] message handler.
 //
 // [STN_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/stn-dblclk
-func (me *EventsStatic) StnDblClk(fun func()) {
+func (me *StaticEvents) StnDblClk(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.STN_DBLCLK, fun)
 }
 
 // [STN_DISABLE] message handler.
 //
 // [STN_DISABLE]: https://learn.microsoft.com/en-us/windows/win32/controls/stn-disable
-func (me *EventsStatic) StnDisable(fun func()) {
+func (me *StaticEvents) StnDisable(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.STN_DISABLE, fun)
 }
 
 // [STN_ENABLE] message handler.
 //
 // [STN_ENABLE]: https://learn.microsoft.com/en-us/windows/win32/controls/stn-enable
-func (me *EventsStatic) StnEnable(fun func()) {
+func (me *StaticEvents) StnEnable(fun func()) {
 	me.parentEvents.WmCommand(me.ctrlId, co.STN_ENABLE, fun)
 }

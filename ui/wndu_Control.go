@@ -91,7 +91,7 @@ func (me *Control) Focus() {
 // Implements [Parent].
 //
 // Panics if called after the window has been created.
-func (me *Control) On() *EventsWindow {
+func (me *Control) On() *WindowEvents {
 	if me.Hwnd() != 0 {
 		panic("Cannot add event handling after the window has been created.")
 	}

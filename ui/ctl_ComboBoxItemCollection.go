@@ -15,14 +15,14 @@ import (
 //
 // You cannot create this object directly, it will be created automatically
 // by the owning [ComboBox].
-type CollectionComboBoxItems struct {
+type ComboBoxItemCollection struct {
 	owner *ComboBox
 }
 
 // Adds one or more items using [CB_ADDSTRING].
 //
 // [CB_ADDSTRING]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-addstring
-func (me *CollectionComboBoxItems) Add(texts ...string) {
+func (me *ComboBoxItemCollection) Add(texts ...string) {
 	var wText wstr.BufEncoder
 	for _, text := range texts {
 		me.owner.hWnd.SendMessage(co.CB_ADDSTRING,
@@ -33,7 +33,7 @@ func (me *CollectionComboBoxItems) Add(texts ...string) {
 // Returns all items with [CB_GETLBTEXT].
 //
 // [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
-func (me *CollectionComboBoxItems) All() []string {
+func (me *ComboBoxItemCollection) All() []string {
 	var wBuf wstr.BufDecoder
 	wBuf.Alloc(wstr.BUF_MAX)
 
@@ -56,7 +56,7 @@ func (me *CollectionComboBoxItems) All() []string {
 // Retrieves the number of items with [CB_GETCOUNT].
 //
 // [CB_GETCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getcount
-func (me *CollectionComboBoxItems) Count() int {
+func (me *ComboBoxItemCollection) Count() int {
 	n, _ := me.owner.hWnd.SendMessage(co.CB_GETCOUNT, 0, 0)
 	return int(n)
 }
@@ -64,7 +64,7 @@ func (me *CollectionComboBoxItems) Count() int {
 // Deletes all items with [CB_RESETCONTENT].
 //
 // [CB_RESETCONTENT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-resetcontent
-func (me *CollectionComboBoxItems) DeleteAll() {
+func (me *ComboBoxItemCollection) DeleteAll() {
 	me.owner.hWnd.SendMessage(co.CB_RESETCONTENT, 0, 0)
 }
 
@@ -73,7 +73,7 @@ func (me *CollectionComboBoxItems) DeleteAll() {
 // Panics if the index is not valid.
 //
 // [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
-func (me *CollectionComboBoxItems) Get(index int) string {
+func (me *ComboBoxItemCollection) Get(index int) string {
 	var wBuf wstr.BufDecoder
 	wBuf.Alloc(wstr.BUF_MAX)
 
@@ -93,7 +93,7 @@ func (me *CollectionComboBoxItems) Get(index int) string {
 // Panics if empty.
 //
 // [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
-func (me *CollectionComboBoxItems) Last() string {
+func (me *ComboBoxItemCollection) Last() string {
 	return me.Get(int(me.Count()) - 1)
 }
 
@@ -102,7 +102,7 @@ func (me *CollectionComboBoxItems) Last() string {
 // If index is -1, selection is cleared.
 //
 // [CB_SETCURSEL]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-setcursel
-func (me *CollectionComboBoxItems) Select(index int) {
+func (me *ComboBoxItemCollection) Select(index int) {
 	me.owner.hWnd.SendMessage(co.CB_SETCURSEL, win.WPARAM(int32(index)), 0)
 }
 
@@ -111,7 +111,7 @@ func (me *CollectionComboBoxItems) Select(index int) {
 // If no item is selected, returns -1.
 //
 // [CB_GETCURSEL]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getcursel
-func (me *CollectionComboBoxItems) Selected() int {
+func (me *ComboBoxItemCollection) Selected() int {
 	n, _ := me.owner.hWnd.SendMessage(co.CB_GETCURSEL, 0, 0)
 	return int(n)
 }
@@ -121,7 +121,7 @@ func (me *CollectionComboBoxItems) Selected() int {
 // Panics on error.
 //
 // [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
-func (me *CollectionComboBoxItems) Text(index int) string {
+func (me *ComboBoxItemCollection) Text(index int) string {
 	// nChars, _ := me.owner.hWnd.SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(index), 0)
 	// if int32(nChars) == -1 {
 	// 	panic(fmt.Sprintf("CB_GETLBTEXTLEN failed at item %d.", index))

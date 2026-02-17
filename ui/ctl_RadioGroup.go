@@ -12,7 +12,7 @@ import (
 // [radio buttons]: https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioGroup struct {
 	radios []*RadioButton
-	events EventsRadioGroup
+	events RadioGroupEvents
 }
 
 // Creates the [RadioButton] controls with [win.CreateWindowEx].
@@ -53,11 +53,11 @@ func NewRadioGroup(parent Parent, allOpts ...*VarOptsRadioButton) *RadioGroup {
 
 		me.radios = append(me.radios, &RadioButton{
 			_BaseCtrl: newBaseCtrl(opts.ctrlId),
-			events:    EventsButton{opts.ctrlId, &parent.base().userEvents},
+			events:    ButtonEvents{opts.ctrlId, &parent.base().userEvents},
 			index:     idx,
 		})
 	}
-	me.events = EventsRadioGroup{me, &parent.base().userEvents}
+	me.events = RadioGroupEvents{me, &parent.base().userEvents}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		for idx, opts := range allOpts {
@@ -92,11 +92,11 @@ func NewRadioGroupDlg(parent Parent, layout LAY, ctrlIds ...uint16) *RadioGroup 
 	for idx, ctrlId := range ctrlIds {
 		me.radios = append(me.radios, &RadioButton{
 			_BaseCtrl: newBaseCtrl(ctrlId),
-			events:    EventsButton{ctrlId, &parent.base().userEvents},
+			events:    ButtonEvents{ctrlId, &parent.base().userEvents},
 			index:     idx,
 		})
 	}
-	me.events = EventsRadioGroup{me, &parent.base().userEvents}
+	me.events = RadioGroupEvents{me, &parent.base().userEvents}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		for _, radio := range me.radios {
@@ -112,7 +112,7 @@ func NewRadioGroupDlg(parent Parent, layout LAY, ctrlIds ...uint16) *RadioGroup 
 // [RadioButton] controls at once.
 //
 // Panics if called after the controls have been created.
-func (me *RadioGroup) On() *EventsRadioGroup {
+func (me *RadioGroup) On() *RadioGroupEvents {
 	if me.radios[0].hWnd != 0 {
 		panic("Cannot add event handling after the control has been created.")
 	}
@@ -166,15 +166,15 @@ func (me *RadioGroup) Selected() *RadioButton {
 // by the owning control.
 //
 // [radio button]: https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
-type EventsRadioGroup struct {
+type RadioGroupEvents struct {
 	radioGroup   *RadioGroup
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [BN_CLICKED] message handler.
 //
 // [BN_CLICKED]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
-func (me *EventsRadioGroup) BnClicked(fun func(radio *RadioButton)) {
+func (me *RadioGroupEvents) BnClicked(fun func(radio *RadioButton)) {
 	for _, radio := range me.radioGroup.radios {
 		radio := radio
 		me.parentEvents.WmCommand(radio.ctrlId, co.BN_CLICKED, func() {
@@ -186,7 +186,7 @@ func (me *EventsRadioGroup) BnClicked(fun func(radio *RadioButton)) {
 // [BN_DBLCLK] message handler.
 //
 // [BN_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-dblclk
-func (me *EventsRadioGroup) BnDblClk(fun func(radio *RadioButton)) {
+func (me *RadioGroupEvents) BnDblClk(fun func(radio *RadioButton)) {
 	for _, radio := range me.radioGroup.radios {
 		radio := radio
 		me.parentEvents.WmCommand(radio.ctrlId, co.BN_DBLCLK, func() {
@@ -198,7 +198,7 @@ func (me *EventsRadioGroup) BnDblClk(fun func(radio *RadioButton)) {
 // [BN_KILLFOCUS] message handler.
 //
 // [BN_KILLFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-killfocus
-func (me *EventsRadioGroup) BnKillFocus(fun func(radio *RadioButton)) {
+func (me *RadioGroupEvents) BnKillFocus(fun func(radio *RadioButton)) {
 	for _, radio := range me.radioGroup.radios {
 		radio := radio
 		me.parentEvents.WmCommand(radio.ctrlId, co.BN_KILLFOCUS, func() {
@@ -210,7 +210,7 @@ func (me *EventsRadioGroup) BnKillFocus(fun func(radio *RadioButton)) {
 // [BN_SETFOCUS] message handler.
 //
 // [BN_SETFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/bn-setfocus
-func (me *EventsRadioGroup) BnSetFocus(fun func(radio *RadioButton)) {
+func (me *RadioGroupEvents) BnSetFocus(fun func(radio *RadioButton)) {
 	for _, radio := range me.radioGroup.radios {
 		radio := radio
 		me.parentEvents.WmCommand(radio.ctrlId, co.BN_SETFOCUS, func() {

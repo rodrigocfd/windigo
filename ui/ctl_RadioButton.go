@@ -16,7 +16,7 @@ import (
 // [radio button]: https://learn.microsoft.com/en-us/windows/win32/controls/button-types-and-styles#radio-buttons
 type RadioButton struct {
 	_BaseCtrl
-	events EventsButton
+	events ButtonEvents
 	index  int
 }
 
@@ -26,7 +26,7 @@ type RadioButton struct {
 //
 // Prefer using the [RadioGroup] notifications, which can handle all radio
 // buttons in the group at once.
-func (me *RadioButton) On() *EventsButton {
+func (me *RadioButton) On() *ButtonEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }

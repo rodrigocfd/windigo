@@ -15,7 +15,7 @@ import (
 //
 // You cannot create this object directly, it will be created automatically
 // by the owning [Toolbar].
-type CollectionToolbarButtons struct {
+type ToolbarBtnCollection struct {
 	owner *Toolbar
 }
 
@@ -25,7 +25,7 @@ type CollectionToolbarButtons struct {
 // the control's image list.
 //
 // [TB_ADDBUTTONS]: https://learn.microsoft.com/en-us/windows/win32/controls/tb-addbuttons
-func (me *CollectionToolbarButtons) Add(cmdId uint16, text string, iconIndex int) {
+func (me *ToolbarBtnCollection) Add(cmdId uint16, text string, iconIndex int) {
 	var wText wstr.BufEncoder
 
 	tbb := win.TBBUTTON{
@@ -48,7 +48,7 @@ func (me *CollectionToolbarButtons) Add(cmdId uint16, text string, iconIndex int
 // Retrieves the number of buttons with [TB_BUTTONCOUNT].
 //
 // [TB_BUTTONCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/tb-buttoncount
-func (me *CollectionToolbarButtons) Count() int {
+func (me *ToolbarBtnCollection) Count() int {
 	ret, _ := me.owner.hWnd.SendMessage(co.TB_BUTTONCOUNT, 0, 0)
 	return int(ret)
 }

@@ -17,7 +17,7 @@ import (
 //
 // You cannot create this object directly, it will be created automatically
 // by the owning [ListView].
-type CollectionListViewItems struct {
+type ListViewItemCollection struct {
 	owner *ListView
 }
 
@@ -27,12 +27,12 @@ type CollectionListViewItems struct {
 // Panics if no text is informed; panics on error.
 //
 // [LVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertitem
-func (me *CollectionListViewItems) Add(texts ...string) ListViewItem {
+func (me *ListViewItemCollection) Add(texts ...string) ListViewItem {
 	return me.AddWithIcon(-1, texts...)
 }
 
 // Returns all items.
-func (me *CollectionListViewItems) All() []ListViewItem {
+func (me *ListViewItemCollection) All() []ListViewItem {
 	nItems := me.Count()
 	items := make([]ListViewItem, 0, nItems)
 	for i := 0; i < nItems; i++ {
@@ -50,7 +50,7 @@ func (me *CollectionListViewItems) All() []ListViewItem {
 // Panics if no text is informed; panics on error.
 //
 // [LVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertitem
-func (me *CollectionListViewItems) AddWithIcon(iconIndex int, texts ...string) ListViewItem {
+func (me *ListViewItemCollection) AddWithIcon(iconIndex int, texts ...string) ListViewItem {
 	if len(texts) == 0 {
 		panic("You must inform at least 1 text when adding a ListView item.")
 	}
@@ -93,7 +93,7 @@ func (me *CollectionListViewItems) AddWithIcon(iconIndex int, texts ...string) L
 // Retrieves the number of items with [LVM_GETITEMCOUNT].
 //
 // [LVM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitemcount
-func (me *CollectionListViewItems) Count() int {
+func (me *ListViewItemCollection) Count() int {
 	count, _ := me.owner.hWnd.SendMessage(co.LVM_GETITEMCOUNT, 0, 0)
 	return int(count)
 }
@@ -101,7 +101,7 @@ func (me *CollectionListViewItems) Count() int {
 // Deletes all items at once with [LVM_DELETEALLITEMS].
 //
 // [LVM_DELETEALLITEMS]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-deleteallitems
-func (me *CollectionListViewItems) DeleteAll() {
+func (me *ListViewItemCollection) DeleteAll() {
 	me.owner.hWnd.SendMessage(co.LVM_DELETEALLITEMS, 0, 0)
 }
 
@@ -112,7 +112,7 @@ func (me *CollectionListViewItems) DeleteAll() {
 //
 // [LVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getnextitem
 // [LVM_DELETEITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-deleteitem
-func (me *CollectionListViewItems) DeleteSelected() {
+func (me *ListViewItemCollection) DeleteSelected() {
 	for {
 		idxBaseSearch := -1 // always search the first one
 		idxRet, _ := me.owner.hWnd.SendMessage(co.LVM_GETNEXTITEM,
@@ -133,7 +133,7 @@ func (me *CollectionListViewItems) DeleteSelected() {
 // Retrieves the focused item with [LVM_GETNEXTITEM], if any.
 //
 // [LVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getnextitem
-func (me *CollectionListViewItems) Focused() (ListViewItem, bool) {
+func (me *ListViewItemCollection) Focused() (ListViewItem, bool) {
 	idxBaseSearch := -1
 	idxRet, _ := me.owner.hWnd.SendMessage(co.LVM_GETNEXTITEM,
 		win.WPARAM(int32(idxBaseSearch)), win.LPARAM(co.LVNI_FOCUSED))
@@ -149,7 +149,7 @@ func (me *CollectionListViewItems) Focused() (ListViewItem, bool) {
 // case-insensitive.
 //
 // [LVM_FINDITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-finditem
-func (me *CollectionListViewItems) Find(text string) (ListViewItem, bool) {
+func (me *ListViewItemCollection) Find(text string) (ListViewItem, bool) {
 	var wText wstr.BufEncoder
 
 	lvfi := win.LVFINDINFO{
@@ -169,14 +169,14 @@ func (me *CollectionListViewItems) Find(text string) (ListViewItem, bool) {
 }
 
 // Returns the item at the given index.
-func (me *CollectionListViewItems) Get(index int) ListViewItem {
+func (me *ListViewItemCollection) Get(index int) ListViewItem {
 	return ListViewItem{me.owner, int32(index)}
 }
 
 // Calls [LVM_MAPIDTOINDEX] to return the item associated to the unique ID.
 //
 // [LVM_MAPIDTOINDEX]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-mapidtoindex
-func (me *CollectionListViewItems) GetByUid(uid int) ListViewItem {
+func (me *ListViewItemCollection) GetByUid(uid int) ListViewItem {
 	idx, _ := me.owner.hWnd.SendMessage(co.LVM_MAPIDTOINDEX, win.WPARAM(int32(uid)), 0)
 	return me.Get(int(idx))
 }
@@ -186,7 +186,7 @@ func (me *CollectionListViewItems) GetByUid(uid int) ListViewItem {
 // The coordinates must be relative to the ListView.
 //
 // [LVM_HITTEST]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-hittest
-func (me *CollectionListViewItems) HitTest(pos win.POINT) (ListViewItem, bool) {
+func (me *ListViewItemCollection) HitTest(pos win.POINT) (ListViewItem, bool) {
 	lvhti := win.LVHITTESTINFO{
 		Pt: pos,
 	}
@@ -202,7 +202,7 @@ func (me *CollectionListViewItems) HitTest(pos win.POINT) (ListViewItem, bool) {
 }
 
 // Returns the last item.
-func (me *CollectionListViewItems) Last() ListViewItem {
+func (me *ListViewItemCollection) Last() ListViewItem {
 	return me.Get(me.Count() - 1)
 }
 
@@ -211,7 +211,7 @@ func (me *CollectionListViewItems) Last() ListViewItem {
 // Panics on error.
 //
 // [LVM_SETITEMSTATE]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setitemstate
-func (me *CollectionListViewItems) SelectAll(doSelect bool) {
+func (me *ListViewItemCollection) SelectAll(doSelect bool) {
 	stylesRet, _ := me.owner.hWnd.GetWindowLongPtr(co.GWLP_STYLE)
 	styles := co.LVS(stylesRet)
 	if (styles & co.LVS_SINGLESEL) != 0 {
@@ -239,7 +239,7 @@ func (me *CollectionListViewItems) SelectAll(doSelect bool) {
 // Returns the selected items with [LVM_GETNEXTITEM].
 //
 // [LVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getnextitem
-func (me *CollectionListViewItems) Selected() []ListViewItem {
+func (me *ListViewItemCollection) Selected() []ListViewItem {
 	nSel := me.SelectedCount()
 	items := make([]ListViewItem, 0, nSel)
 
@@ -260,7 +260,7 @@ func (me *CollectionListViewItems) Selected() []ListViewItem {
 // Retrieves the number of selected items with [LVM_GETSELECTEDCOUNT].
 //
 // [LVM_GETSELECTEDCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getselectedcount
-func (me *CollectionListViewItems) SelectedCount() int {
+func (me *ListViewItemCollection) SelectedCount() int {
 	ret, _ := me.owner.hWnd.SendMessage(co.LVM_GETSELECTEDCOUNT, 0, 0)
 	return int(ret)
 }
@@ -276,7 +276,7 @@ func (me *CollectionListViewItems) SelectedCount() int {
 //	})
 //
 // [LVM_SORTITEMSEX]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-sortitemsex
-func (me *CollectionListViewItems) Sort(fun func(a, b ListViewItem) int) {
+func (me *ListViewItemCollection) Sort(fun func(a, b ListViewItem) int) {
 	listViewSortCallback()
 	pPack := &_ListViewSortPack{lv: me.owner, f: fun}
 	me.owner.hWnd.SendMessage(co.LVM_SORTITEMSEX,
@@ -308,7 +308,7 @@ func listViewSortCallback() uintptr {
 // Retrieves the topmost visible item with [LVM_GETTOPINDEX], if any.
 //
 // [LVM_GETTOPINDEX]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-gettopindex
-func (me *CollectionListViewItems) TopmostVisible() (ListViewItem, bool) {
+func (me *ListViewItemCollection) TopmostVisible() (ListViewItem, bool) {
 	idxRet, _ := me.owner.hWnd.SendMessage(co.LVM_GETTOPINDEX, 0, 0)
 	idx := int(idxRet)
 	if idx == -1 {

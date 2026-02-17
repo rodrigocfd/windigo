@@ -15,7 +15,7 @@ import (
 //
 // You cannot create this object directly, it will be created automatically
 // by the owning [ListView].
-type CollectionListViewCols struct {
+type ListViewColCollection struct {
 	owner *ListView
 }
 
@@ -31,7 +31,7 @@ type CollectionListViewCols struct {
 //	list.Cols.Add("Title", ui.DpiX(80))
 //
 // [LVM_INSERTCOLUMN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertcolumn
-func (me *CollectionListViewCols) Add(title string, width int) ListViewCol {
+func (me *ListViewColCollection) Add(title string, width int) ListViewCol {
 	lvc := win.LVCOLUMN{
 		Mask: co.LVCF_TEXT | co.LVCF_WIDTH,
 		Cx:   int32(width),
@@ -51,7 +51,7 @@ func (me *CollectionListViewCols) Add(title string, width int) ListViewCol {
 }
 
 // Returns all columns.
-func (me *CollectionListViewCols) All() []ListViewCol {
+func (me *ListViewColCollection) All() []ListViewCol {
 	nCols := me.Count()
 	cols := make([]ListViewCol, 0, nCols)
 	for i := 0; i < nCols; i++ {
@@ -65,7 +65,7 @@ func (me *CollectionListViewCols) All() []ListViewCol {
 // Panics if the list view has no header.
 //
 // [HDM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getitemcount
-func (me *CollectionListViewCols) Count() int {
+func (me *ListViewColCollection) Count() int {
 	if me.owner.Header() == nil {
 		panic("This ListView has no header.")
 	}
@@ -73,7 +73,7 @@ func (me *CollectionListViewCols) Count() int {
 }
 
 // Returns the column at the given index.
-func (me *CollectionListViewCols) Get(index int) ListViewCol {
+func (me *ListViewColCollection) Get(index int) ListViewCol {
 	return ListViewCol{
 		owner: me.owner,
 		index: int32(index),
@@ -81,6 +81,6 @@ func (me *CollectionListViewCols) Get(index int) ListViewCol {
 }
 
 // Returns the last column.
-func (me *CollectionListViewCols) Last() ListViewCol {
+func (me *ListViewColCollection) Last() ListViewCol {
 	return me.Get(me.Count() - 1)
 }

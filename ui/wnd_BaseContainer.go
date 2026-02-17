@@ -17,9 +17,9 @@ type _BaseContainer struct {
 	hWnd   win.HWND
 	layout _Layout
 
-	beforeUserEvents _EventsWindowLib
-	userEvents       EventsWindow
-	afterUserEvents  _EventsWindowLib
+	beforeUserEvents _WindowLibEvents
+	userEvents       WindowEvents
+	afterUserEvents  _WindowLibEvents
 }
 
 // Constructor.

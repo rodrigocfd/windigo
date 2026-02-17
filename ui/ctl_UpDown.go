@@ -14,7 +14,7 @@ import (
 // [up-down]: https://learn.microsoft.com/en-us/windows/win32/controls/up-down-controls
 type UpDown struct {
 	_BaseCtrl
-	events EventsUpDown
+	events UpDownEvents
 }
 
 // Creates a new [UpDown] with [win.CreateWindowEx].
@@ -42,7 +42,7 @@ func NewUpDown(parent Parent, opts *VarOptsUpDown) *UpDown {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &UpDown{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsUpDown{opts.ctrlId, &parent.base().userEvents},
+		events:    UpDownEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -72,7 +72,7 @@ func NewUpDown(parent Parent, opts *VarOptsUpDown) *UpDown {
 func NewUpDownDlg(parent Parent, ctrlId uint16, layout LAY) *UpDown {
 	me := &UpDown{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsUpDown{ctrlId, &parent.base().userEvents},
+		events:    UpDownEvents{ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -86,7 +86,7 @@ func NewUpDownDlg(parent Parent, ctrlId uint16, layout LAY) *UpDown {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *UpDown) On() *EventsUpDown {
+func (me *UpDown) On() *UpDownEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -250,15 +250,15 @@ func (o *VarOptsUpDown) Value(v int) *VarOptsUpDown { o.value = v; return o }
 // by the owning control.
 //
 // [up-down]: https://learn.microsoft.com/en-us/windows/win32/controls/up-down-controls
-type EventsUpDown struct {
+type UpDownEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [NM_RELEASEDCAPTURE] message handler.
 //
 // [NM_RELEASEDCAPTURE]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-up-down-
-func (me *EventsUpDown) NmReleasedCapture(fun func()) {
+func (me *UpDownEvents) NmReleasedCapture(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -268,7 +268,7 @@ func (me *EventsUpDown) NmReleasedCapture(fun func()) {
 // [UDN_DELTAPOS] message handler.
 //
 // [UDN_DELTAPOS]: https://learn.microsoft.com/en-us/windows/win32/controls/udn-deltapos
-func (me *EventsUpDown) UdnDeltaPos(fun func(p *win.NMUPDOWN) int) {
+func (me *UpDownEvents) UdnDeltaPos(fun func(p *win.NMUPDOWN) int) {
 	me.parentEvents.WmNotify(me.ctrlId, co.UDN_DELTAPOS, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun((*win.NMUPDOWN)(p)))
 	})

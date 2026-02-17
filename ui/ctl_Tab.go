@@ -19,9 +19,9 @@ import (
 // [tab]: https://learn.microsoft.com/en-us/windows/win32/controls/tab-controls
 type Tab struct {
 	_BaseCtrl
-	events   EventsTab
+	events   TabEvents
 	children []TabIns
-	Items    CollectionTabItems // Methods to interact with the items collection.
+	Items    TabItemCollection // Methods to interact with the items collection.
 }
 
 // Creates a new [Tab] with [win.CreateWindowEx].
@@ -53,7 +53,7 @@ func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 	me := &Tab{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
 		children:  opts.items,
-		events:    EventsTab{opts.ctrlId, &parent.base().userEvents},
+		events:    TabEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 	me.Items.owner = me
 
@@ -102,7 +102,7 @@ func NewTabDlg(parent Parent, ctrlId uint16, layout LAY, items ...TabIns) *Tab {
 	me := &Tab{
 		_BaseCtrl: newBaseCtrl(ctrlId),
 		children:  items,
-		events:    EventsTab{ctrlId, &parent.base().userEvents},
+		events:    TabEvents{ctrlId, &parent.base().userEvents},
 	}
 	me.Items.owner = me
 
@@ -130,7 +130,7 @@ func (me *Tab) defaultMessageHandlers(parent Parent) {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *Tab) On() *EventsTab {
+func (me *Tab) On() *TabEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -249,15 +249,15 @@ func (o *VarOptsTab) Selected(i int) *VarOptsTab { o.selected = i; return o }
 // by the owning control.
 //
 // [tab]: https://learn.microsoft.com/en-us/windows/win32/controls/tab-controls
-type EventsTab struct {
+type TabEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [NM_CLICK] message handler.
 //
 // [NM_CLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-tab
-func (me *EventsTab) NmClick(fun func()) {
+func (me *TabEvents) NmClick(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_CLICK, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -267,7 +267,7 @@ func (me *EventsTab) NmClick(fun func()) {
 // [NM_DBLCLK] message handler.
 //
 // [NM_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-dblclk-tab
-func (me *EventsTab) NmDblClk(fun func()) {
+func (me *TabEvents) NmDblClk(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_DBLCLK, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -277,7 +277,7 @@ func (me *EventsTab) NmDblClk(fun func()) {
 // [NM_RCLICK] message handler.
 //
 // [NM_RCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rclick-tab
-func (me *EventsTab) NmRClick(fun func()) {
+func (me *TabEvents) NmRClick(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RCLICK, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -287,7 +287,7 @@ func (me *EventsTab) NmRClick(fun func()) {
 // [NM_RDBLCLK] message handler.
 //
 // [NM_RDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-tab
-func (me *EventsTab) NmRDblClk(fun func()) {
+func (me *TabEvents) NmRDblClk(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RDBLCLK, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -297,7 +297,7 @@ func (me *EventsTab) NmRDblClk(fun func()) {
 // [NM_RELEASEDCAPTURE] message handler.
 //
 // [NM_RELEASEDCAPTURE]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-tab
-func (me *EventsTab) NmReleasedCapture(fun func()) {
+func (me *TabEvents) NmReleasedCapture(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -307,7 +307,7 @@ func (me *EventsTab) NmReleasedCapture(fun func()) {
 // [TCN_FOCUSCHANGE] message handler.
 //
 // [TCN_FOCUSCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/tcn-focuschange
-func (me *EventsTab) TcnFocusChange(fun func()) {
+func (me *TabEvents) TcnFocusChange(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TCN_FOCUSCHANGE, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -317,7 +317,7 @@ func (me *EventsTab) TcnFocusChange(fun func()) {
 // [TCN_GETOBJECT] message handler.
 //
 // [TCN_GETOBJECT]: https://learn.microsoft.com/en-us/windows/win32/controls/tcn-getobject
-func (me *EventsTab) TcnGetObject(fun func(p *win.NMOBJECTNOTIFY)) {
+func (me *TabEvents) TcnGetObject(fun func(p *win.NMOBJECTNOTIFY)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TCN_GETOBJECT, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMOBJECTNOTIFY)(p))
 		return me.parentEvents.defProcVal
@@ -327,7 +327,7 @@ func (me *EventsTab) TcnGetObject(fun func(p *win.NMOBJECTNOTIFY)) {
 // [TCN_KEYDOWN] message handler.
 //
 // [TCN_KEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/tcn-keydown
-func (me *EventsTab) TcnKeyDown(fun func(p *win.NMTCKEYDOWN)) {
+func (me *TabEvents) TcnKeyDown(fun func(p *win.NMTCKEYDOWN)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TCN_KEYDOWN, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMTCKEYDOWN)(p))
 		return me.parentEvents.defProcVal
@@ -337,7 +337,7 @@ func (me *EventsTab) TcnKeyDown(fun func(p *win.NMTCKEYDOWN)) {
 // [TCN_SELCHANGE] message handler.
 //
 // [TCN_SELCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/tcn-selchange
-func (me *EventsTab) TcnSelChange(fun func()) {
+func (me *TabEvents) TcnSelChange(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TCN_SELCHANGE, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -347,7 +347,7 @@ func (me *EventsTab) TcnSelChange(fun func()) {
 // [TCN_SELCHANGING] message handler.
 //
 // [TCN_SELCHANGING]: https://learn.microsoft.com/en-us/windows/win32/controls/tcn-selchanging
-func (me *EventsTab) TcnSelChanging(fun func() bool) {
+func (me *TabEvents) TcnSelChanging(fun func() bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TCN_SELCHANGING, func(_ unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun())
 	})

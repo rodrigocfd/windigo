@@ -15,8 +15,8 @@ import (
 // [status bar]: https://learn.microsoft.com/en-us/windows/win32/controls/status-bars
 type StatusBar struct {
 	_BaseCtrl
-	events EventsStatusBar
-	Parts  CollectionStatusBarParts // Methods to interact with the parts collection.
+	events StatusBarEvents
+	Parts  StatusBarPartCollection // Methods to interact with the parts collection.
 }
 
 // Creates a new [StatusBar] with [win.CreateWindowEx].
@@ -35,7 +35,7 @@ func NewStatusBar(parent Parent) *StatusBar {
 	ctrlId := nextCtrlId() // always give it an auto ID
 	me := &StatusBar{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsStatusBar{ctrlId, &parent.base().userEvents},
+		events:    StatusBarEvents{ctrlId, &parent.base().userEvents},
 	}
 	me.Parts.owner = me
 
@@ -62,7 +62,7 @@ func NewStatusBar(parent Parent) *StatusBar {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *StatusBar) On() *EventsStatusBar {
+func (me *StatusBar) On() *StatusBarEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -73,15 +73,15 @@ func (me *StatusBar) On() *EventsStatusBar {
 // by the owning control.
 //
 // [status bar]: https://learn.microsoft.com/en-us/windows/win32/controls/status-bars
-type EventsStatusBar struct {
+type StatusBarEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [NM_CLICK] message handler.
 //
 // [NM_CLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-click-status-bar
-func (me *EventsStatusBar) NmClick(fun func(p *win.NMMOUSE) bool) {
+func (me *StatusBarEvents) NmClick(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_CLICK, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
@@ -90,7 +90,7 @@ func (me *EventsStatusBar) NmClick(fun func(p *win.NMMOUSE) bool) {
 // [NM_DBLCLK] message handler.
 //
 // [NM_DBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-dblclk-status-bar
-func (me *EventsStatusBar) NmDblClk(fun func(p *win.NMMOUSE) bool) {
+func (me *StatusBarEvents) NmDblClk(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_DBLCLK, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
@@ -99,7 +99,7 @@ func (me *EventsStatusBar) NmDblClk(fun func(p *win.NMMOUSE) bool) {
 // [NM_RCLICK] message handler.
 //
 // [NM_RCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rclick-status-bar
-func (me *EventsStatusBar) NmRClick(fun func(p *win.NMMOUSE) bool) {
+func (me *StatusBarEvents) NmRClick(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RCLICK, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
@@ -108,7 +108,7 @@ func (me *EventsStatusBar) NmRClick(fun func(p *win.NMMOUSE) bool) {
 // [NM_RDBLCLK] message handler.
 //
 // [NM_RDBLCLK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rdblclk-status-bar
-func (me *EventsStatusBar) NmRDblClk(fun func(p *win.NMMOUSE) bool) {
+func (me *StatusBarEvents) NmRDblClk(fun func(p *win.NMMOUSE) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RDBLCLK, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMMOUSE)(p)))
 	})
@@ -117,7 +117,7 @@ func (me *EventsStatusBar) NmRDblClk(fun func(p *win.NMMOUSE) bool) {
 // [SBN_SIMPLEMODECHANGE] message handler.
 //
 // [SBN_SIMPLEMODECHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/sbn-simplemodechange
-func (me *EventsStatusBar) SbnSimpleModeChange(fun func(p *win.NMMOUSE)) {
+func (me *StatusBarEvents) SbnSimpleModeChange(fun func(p *win.NMMOUSE)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.SBN_SIMPLEMODECHANGE, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMMOUSE)(p))
 		return me.parentEvents.defProcVal

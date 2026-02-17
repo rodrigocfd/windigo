@@ -15,8 +15,8 @@ import (
 // [header]: https://learn.microsoft.com/en-us/windows/win32/controls/header-controls
 type Header struct {
 	_BaseCtrl
-	events EventsHeader
-	Items  CollectionHeaderItems // Methods to interact with the items collection.
+	events HeaderEvents
+	Items  HeaderItemCollection // Methods to interact with the items collection.
 }
 
 // Creates a new [Header] with [win.CreateWindowEx].
@@ -35,7 +35,7 @@ func NewHeader(parent Parent, opts *VarOptsHeader) *Header {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Header{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsHeader{opts.ctrlId, &parent.base().userEvents},
+		events:    HeaderEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 	me.Items.owner = me
 
@@ -63,7 +63,7 @@ func NewHeader(parent Parent, opts *VarOptsHeader) *Header {
 func NewHeaderDlg(parent Parent, ctrlId uint16, layout LAY) *Header {
 	me := &Header{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsHeader{ctrlId, &parent.base().userEvents},
+		events:    HeaderEvents{ctrlId, &parent.base().userEvents},
 	}
 	me.Items.owner = me
 
@@ -81,7 +81,7 @@ func newHeaderFromListView(parent Parent) *Header {
 	ctrlId := nextCtrlId()
 	me := &Header{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsHeader{ctrlId, &parent.base().userEvents},
+		events:    HeaderEvents{ctrlId, &parent.base().userEvents},
 	}
 	me.Items.owner = me
 
@@ -111,7 +111,7 @@ func (me *Header) defaultMessageHandlers(parent Parent) {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *Header) On() *EventsHeader {
+func (me *Header) On() *HeaderEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -207,15 +207,15 @@ func (o *VarOptsHeader) WndExStyle(s co.WS_EX) *VarOptsHeader { o.wndExStyle = s
 // by the owning control.
 //
 // [header]: https://learn.microsoft.com/en-us/windows/win32/controls/header-controls
-type EventsHeader struct {
+type HeaderEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [HDN_BEGINDRAG] message handler.
 //
 // [HDN_BEGINDRAG]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-begindrag
-func (me *EventsHeader) HdnBeginDrag(fun func(p *win.NMHEADER) bool) {
+func (me *HeaderEvents) HdnBeginDrag(fun func(p *win.NMHEADER) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_BEGINDRAG, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMHEADER)(p)))
 	})
@@ -224,7 +224,7 @@ func (me *EventsHeader) HdnBeginDrag(fun func(p *win.NMHEADER) bool) {
 // [HDN_BEGINFILTEREDIT] message handler.
 //
 // [HDN_BEGINFILTEREDIT]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-beginfilteredit
-func (me *EventsHeader) HdnBeginFilterEdit(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnBeginFilterEdit(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_BEGINFILTEREDIT, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -234,7 +234,7 @@ func (me *EventsHeader) HdnBeginFilterEdit(fun func(p *win.NMHEADER)) {
 // [HDN_BEGINTRACK] message handler.
 //
 // [HDN_BEGINTRACK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-begintrack
-func (me *EventsHeader) HdnBeginTrack(fun func(p *win.NMHEADER) bool) {
+func (me *HeaderEvents) HdnBeginTrack(fun func(p *win.NMHEADER) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_BEGINTRACK, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMHEADER)(p)))
 	})
@@ -243,7 +243,7 @@ func (me *EventsHeader) HdnBeginTrack(fun func(p *win.NMHEADER) bool) {
 // [HDN_DIVIDERDBLCLICK] message handler.
 //
 // [HDN_DIVIDERDBLCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-dividerdblclick
-func (me *EventsHeader) HdnDividerDblClick(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnDividerDblClick(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_DIVIDERDBLCLICK, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -253,7 +253,7 @@ func (me *EventsHeader) HdnDividerDblClick(fun func(p *win.NMHEADER)) {
 // [HDN_DROPDOWN] message handler.
 //
 // [HDN_DROPDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-dropdown
-func (me *EventsHeader) HdnDropDown(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnDropDown(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_DROPDOWN, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -263,7 +263,7 @@ func (me *EventsHeader) HdnDropDown(fun func(p *win.NMHEADER)) {
 // [HDN_ENDDRAG] message handler.
 //
 // [HDN_ENDDRAG]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-enddrag
-func (me *EventsHeader) HdnEndDrag(fun func(p *win.NMHEADER) bool) {
+func (me *HeaderEvents) HdnEndDrag(fun func(p *win.NMHEADER) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_ENDDRAG, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMHEADER)(p)))
 	})
@@ -272,7 +272,7 @@ func (me *EventsHeader) HdnEndDrag(fun func(p *win.NMHEADER) bool) {
 // [HDN_ENDFILTEREDIT] message handler.
 //
 // [HDN_ENDFILTEREDIT]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-endfilteredit
-func (me *EventsHeader) HdnEndFilterEdit(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnEndFilterEdit(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_ENDFILTEREDIT, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -282,7 +282,7 @@ func (me *EventsHeader) HdnEndFilterEdit(fun func(p *win.NMHEADER)) {
 // [HDN_ENDTRACK] message handler.
 //
 // [HDN_ENDTRACK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-endtrack
-func (me *EventsHeader) HdnEndTrack(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnEndTrack(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_ENDTRACK, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -292,7 +292,7 @@ func (me *EventsHeader) HdnEndTrack(fun func(p *win.NMHEADER)) {
 // [HDN_FILTERBTNCLICK] message handler.
 //
 // [HDN_FILTERBTNCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-filterbtnclick
-func (me *EventsHeader) HdnFilterBtnClick(fun func(p *win.NMHDFILTERBTNCLICK) bool) {
+func (me *HeaderEvents) HdnFilterBtnClick(fun func(p *win.NMHDFILTERBTNCLICK) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_FILTERBTNCLICK, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMHDFILTERBTNCLICK)(p)))
 	})
@@ -301,7 +301,7 @@ func (me *EventsHeader) HdnFilterBtnClick(fun func(p *win.NMHDFILTERBTNCLICK) bo
 // [HDN_FILTERCHANGE] message handler.
 //
 // [HDN_FILTERCHANGE]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-filterchange
-func (me *EventsHeader) HdnFilterChange(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnFilterChange(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_FILTERCHANGE, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -311,7 +311,7 @@ func (me *EventsHeader) HdnFilterChange(fun func(p *win.NMHEADER)) {
 // [HDN_GETDISPINFO] message handler.
 //
 // [HDN_GETDISPINFO]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-getdispinfo
-func (me *EventsHeader) HdnGetDispInfo(fun func(p *win.NMHDDISPINFO) uintptr) {
+func (me *HeaderEvents) HdnGetDispInfo(fun func(p *win.NMHDDISPINFO) uintptr) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_GETDISPINFO, func(p unsafe.Pointer) uintptr {
 		return fun((*win.NMHDDISPINFO)(p))
 	})
@@ -320,7 +320,7 @@ func (me *EventsHeader) HdnGetDispInfo(fun func(p *win.NMHDDISPINFO) uintptr) {
 // [HDN_ITEMCHANGED] message handler.
 //
 // [HDN_ITEMCHANGED]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-itemchanged
-func (me *EventsHeader) HdnItemChanged(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnItemChanged(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_ITEMCHANGED, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -330,7 +330,7 @@ func (me *EventsHeader) HdnItemChanged(fun func(p *win.NMHEADER)) {
 // [HDN_ITEMCHANGING] message handler.
 //
 // [HDN_ITEMCHANGING]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-itemchanging
-func (me *EventsHeader) HdnItemChanging(fun func(p *win.NMHEADER) bool) {
+func (me *HeaderEvents) HdnItemChanging(fun func(p *win.NMHEADER) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_ITEMCHANGING, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMHEADER)(p)))
 	})
@@ -339,7 +339,7 @@ func (me *EventsHeader) HdnItemChanging(fun func(p *win.NMHEADER) bool) {
 // [HDN_ITEMCLICK] message handler.
 //
 // [HDN_ITEMCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-itemclick
-func (me *EventsHeader) HdnItemClick(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnItemClick(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_ITEMCLICK, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -349,7 +349,7 @@ func (me *EventsHeader) HdnItemClick(fun func(p *win.NMHEADER)) {
 // [HDN_ITEMDBLCLICK] message handler.
 //
 // [HDN_ITEMDBLCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-itemdblclick
-func (me *EventsHeader) HdnItemDblClick(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnItemDblClick(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_ITEMDBLCLICK, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -359,7 +359,7 @@ func (me *EventsHeader) HdnItemDblClick(fun func(p *win.NMHEADER)) {
 // [HDN_ITEMKEYDOWN] message handler.
 //
 // [HDN_ITEMKEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-itemkeydown
-func (me *EventsHeader) HdnItemKeyDown(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnItemKeyDown(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_ITEMKEYDOWN, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -369,7 +369,7 @@ func (me *EventsHeader) HdnItemKeyDown(fun func(p *win.NMHEADER)) {
 // [HDN_ITEMSTATEICONCLICK] message handler.
 //
 // [HDN_ITEMSTATEICONCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-itemstateiconclick
-func (me *EventsHeader) HdnItemStateIconClick(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnItemStateIconClick(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_ITEMSTATEICONCLICK, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -379,7 +379,7 @@ func (me *EventsHeader) HdnItemStateIconClick(fun func(p *win.NMHEADER)) {
 // [HDN_OVERFLOWCLICK] message handler.
 //
 // [HDN_OVERFLOWCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-overflowclick
-func (me *EventsHeader) HdnOverflowClick(fun func(p *win.NMHEADER)) {
+func (me *HeaderEvents) HdnOverflowClick(fun func(p *win.NMHEADER)) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_OVERFLOWCLICK, func(p unsafe.Pointer) uintptr {
 		fun((*win.NMHEADER)(p))
 		return me.parentEvents.defProcVal
@@ -389,7 +389,7 @@ func (me *EventsHeader) HdnOverflowClick(fun func(p *win.NMHEADER)) {
 // [HDN_TRACK] message handler.
 //
 // [HDN_TRACK]: https://learn.microsoft.com/en-us/windows/win32/controls/hdn-track
-func (me *EventsHeader) HdnTrack(fun func(p *win.NMHEADER) bool) {
+func (me *HeaderEvents) HdnTrack(fun func(p *win.NMHEADER) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.HDN_TRACK, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMHEADER)(p)))
 	})
@@ -398,7 +398,7 @@ func (me *EventsHeader) HdnTrack(fun func(p *win.NMHEADER) bool) {
 // [NM_CUSTOMDRAW] message handler.
 //
 // [NM_CUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-customdraw-header
-func (me *EventsHeader) NmCustomDraw(fun func(p *win.NMCUSTOMDRAW) co.CDRF) {
+func (me *HeaderEvents) NmCustomDraw(fun func(p *win.NMCUSTOMDRAW) co.CDRF) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_CUSTOMDRAW, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun((*win.NMCUSTOMDRAW)(p)))
 	})
@@ -407,7 +407,7 @@ func (me *EventsHeader) NmCustomDraw(fun func(p *win.NMCUSTOMDRAW) co.CDRF) {
 // [NM_RCLICK] message handler.
 //
 // [NM_RCLICK]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-rclick-header
-func (me *EventsHeader) NmRClick(fun func()) {
+func (me *HeaderEvents) NmRClick(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RCLICK, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
@@ -417,7 +417,7 @@ func (me *EventsHeader) NmRClick(fun func()) {
 // [NM_RELEASEDCAPTURE] message handler.
 //
 // [NM_RELEASEDCAPTURE]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-header-
-func (me *EventsHeader) NmReleasedCapture(fun func()) {
+func (me *HeaderEvents) NmReleasedCapture(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal

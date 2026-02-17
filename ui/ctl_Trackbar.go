@@ -15,7 +15,7 @@ import (
 // [trackbar]: https://learn.microsoft.com/en-us/windows/win32/controls/trackbar-controls
 type Trackbar struct {
 	_BaseCtrl
-	events EventsTrackbar
+	events TrackbarEvents
 }
 
 // Creates a new [Trackbar] with [win.CreateWindowEx].
@@ -38,7 +38,7 @@ func NewTrackbar(parent Parent, opts *VarOptsTrackbar) *Trackbar {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Trackbar{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    EventsTrackbar{opts.ctrlId, &parent.base().userEvents},
+		events:    TrackbarEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -66,7 +66,7 @@ func NewTrackbar(parent Parent, opts *VarOptsTrackbar) *Trackbar {
 func NewTrackbarDlg(parent Parent, ctrlId uint16, layout LAY) *Trackbar {
 	me := &Trackbar{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    EventsTrackbar{ctrlId, &parent.base().userEvents},
+		events:    TrackbarEvents{ctrlId, &parent.base().userEvents},
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -80,7 +80,7 @@ func NewTrackbarDlg(parent Parent, ctrlId uint16, layout LAY) *Trackbar {
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
-func (me *Trackbar) On() *EventsTrackbar {
+func (me *Trackbar) On() *TrackbarEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
 }
@@ -236,15 +236,15 @@ func (o *VarOptsTrackbar) Value(v int) *VarOptsTrackbar { o.value = v; return o 
 // by the owning control.
 //
 // [trackbar]: https://learn.microsoft.com/en-us/windows/win32/controls/trackbar-controls
-type EventsTrackbar struct {
+type TrackbarEvents struct {
 	ctrlId       uint16
-	parentEvents *EventsWindow
+	parentEvents *WindowEvents
 }
 
 // [TRBN_THUMBPOSCHANGING] message handler.
 //
 // [TRBN_THUMBPOSCHANGING]: https://learn.microsoft.com/en-us/windows/win32/controls/trbn-thumbposchanging
-func (me *EventsTrackbar) ThumbPosChanging(fun func(p *win.NMTRBTHUMBPOSCHANGING) bool) {
+func (me *TrackbarEvents) ThumbPosChanging(fun func(p *win.NMTRBTHUMBPOSCHANGING) bool) {
 	me.parentEvents.WmNotify(me.ctrlId, co.TRBN_THUMBPOSCHANGING, func(p unsafe.Pointer) uintptr {
 		return utl.BoolToUintptr(fun((*win.NMTRBTHUMBPOSCHANGING)(p)))
 	})
@@ -253,7 +253,7 @@ func (me *EventsTrackbar) ThumbPosChanging(fun func(p *win.NMTRBTHUMBPOSCHANGING
 // [WM_HSCROLL] message handler.
 //
 // [WM_HSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-hscroll--trackbar-
-func (me *EventsTrackbar) WmHScroll(fun func(p WmScroll)) {
+func (me *TrackbarEvents) WmHScroll(fun func(p WmScroll)) {
 	me.parentEvents.Wm(co.WM_HSCROLL, func(p Wm) uintptr {
 		hs := WmScroll{p}
 		incomingId, _ := hs.HwndScrollbar().GetDlgCtrlID()
@@ -267,7 +267,7 @@ func (me *EventsTrackbar) WmHScroll(fun func(p WmScroll)) {
 // [WM_VSCROLL] message handler.
 //
 // [WM_VSCROLL]: https://learn.microsoft.com/en-us/windows/win32/controls/wm-hscroll--trackbar-
-func (me *EventsTrackbar) WmVScroll(fun func(p WmScroll)) {
+func (me *TrackbarEvents) WmVScroll(fun func(p WmScroll)) {
 	me.parentEvents.Wm(co.WM_VSCROLL, func(p Wm) uintptr {
 		vs := WmScroll{p}
 		incomingId, _ := vs.HwndScrollbar().GetDlgCtrlID()
@@ -281,7 +281,7 @@ func (me *EventsTrackbar) WmVScroll(fun func(p WmScroll)) {
 // [NM_CUSTOMDRAW] message handler.
 //
 // [NM_CUSTOMDRAW]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-customdraw-trackbar
-func (me *EventsTrackbar) NmCustomDraw(fun func(p *win.NMCUSTOMDRAW) co.CDRF) {
+func (me *TrackbarEvents) NmCustomDraw(fun func(p *win.NMCUSTOMDRAW) co.CDRF) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_CUSTOMDRAW, func(p unsafe.Pointer) uintptr {
 		return uintptr(fun((*win.NMCUSTOMDRAW)(p)))
 	})
@@ -290,7 +290,7 @@ func (me *EventsTrackbar) NmCustomDraw(fun func(p *win.NMCUSTOMDRAW) co.CDRF) {
 // [NM_RELEASEDCAPTURE] message handler.
 //
 // [NM_RELEASEDCAPTURE]: https://learn.microsoft.com/en-us/windows/win32/controls/nm-releasedcapture-trackbar-
-func (me *EventsTrackbar) NmReleasedCapture(fun func()) {
+func (me *TrackbarEvents) NmReleasedCapture(fun func()) {
 	me.parentEvents.WmNotify(me.ctrlId, co.NM_RELEASEDCAPTURE, func(_ unsafe.Pointer) uintptr {
 		fun()
 		return me.parentEvents.defProcVal
