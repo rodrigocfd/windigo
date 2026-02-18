@@ -639,13 +639,13 @@ func (p *POINT) serializeUint64() uintptr {
 //
 // [POWERBROADCAST_SETTING]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-powerbroadcast_setting
 type POWERBROADCAST_SETTING struct {
-	PowerSetting GUID
+	PowerSetting co.POWER_GUID
 	DataLength   uint32
 	data         [1]uint8
 }
 
-func (pbs *POWERBROADCAST_SETTING) Data(i int) *uint8 {
-	return &pbs.data[i]
+func (pbs *POWERBROADCAST_SETTING) Data(i int) unsafe.Pointer {
+	return unsafe.Pointer(&pbs.data[i])
 }
 
 // [RECT] struct.

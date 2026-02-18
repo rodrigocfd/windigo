@@ -30,8 +30,8 @@ type _IDispatchVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IDispatch) IID() co.IID {
-	return co.IID_IDispatch
+func (*IDispatch) IID() *co.IID {
+	return &co.IID_IDispatch
 }
 
 // [GetIDsOfNames] method.
@@ -42,8 +42,8 @@ func (me *IDispatch) GetIDsOfNames(
 	member string,
 	parameters ...string,
 ) ([]MEMBERID, error) {
-	nParams := 1 + len(parameters) // member + parameters
-	nullGuid := GuidFrom(co.IID_NULL)
+	var iidNull co.IID
+	nParams := 1 + len(parameters)         // member + parameters
 	memberIds := make([]MEMBERID, nParams) // to be returned
 
 	strPtrs := make([]*uint16, 0, nParams)
@@ -55,7 +55,7 @@ func (me *IDispatch) GetIDsOfNames(
 	ret, _, _ := syscall.SyscallN(
 		(*_IDispatchVt)(unsafe.Pointer(*me.Ppvt())).GetIDsOfNames,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&nullGuid)),
+		uintptr(unsafe.Pointer(&iidNull)),
 		uintptr(unsafe.Pointer(unsafe.SliceData(strPtrs))),
 		uintptr(uint32(nParams)),
 		uintptr(lcid),
@@ -130,14 +130,14 @@ func (me *IDispatch) Invoke(
 	var remoteErr _EXCEPINFO // in case of remote error, will be converted to *EXCEPINFO
 	defer remoteErr.Free()
 
+	var iidNull co.IID
 	remoteResult := NewVariantEmpty(releaser) // result returned from the remote call
-	nullGuid := GuidFrom(co.IID_NULL)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IDispatchVt)(unsafe.Pointer(*me.Ppvt())).Invoke,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(dispIdMember),
-		uintptr(unsafe.Pointer(&nullGuid)),
+		uintptr(unsafe.Pointer(&iidNull)),
 		uintptr(lcid),
 		uintptr(flags),
 		uintptr(unsafe.Pointer(dispParams)),
@@ -175,7 +175,7 @@ func (me *IDispatch) Invoke(
 //	var excel *win.IDispatch
 //	_ = win.CoCreateInstance(
 //		rel,
-//		clsId,
+//		&clsId,
 //		nil,
 //		co.CLSCTX_LOCAL_SERVER,
 //		&excel,
@@ -216,7 +216,7 @@ func (me *IDispatch) InvokeGet(
 //	var excel *win.IDispatch
 //	_ = win.CoCreateInstance(
 //		rel,
-//		clsId,
+//		&clsId,
 //		nil,
 //		co.CLSCTX_LOCAL_SERVER,
 //		&excel,
@@ -263,7 +263,7 @@ func (me *IDispatch) InvokeGetIDispatch(
 //	var excel *win.IDispatch
 //	_ = win.CoCreateInstance(
 //		rel,
-//		clsId,
+//		&clsId,
 //		nil,
 //		co.CLSCTX_LOCAL_SERVER,
 //		&excel,
@@ -310,7 +310,7 @@ func (me *IDispatch) InvokeMethod(
 //	var excel *win.IDispatch
 //	_ = win.CoCreateInstance(
 //		rel,
-//		clsId,
+//		&clsId,
 //		nil,
 //		co.CLSCTX_LOCAL_SERVER,
 //		&excel,
@@ -444,8 +444,8 @@ type _IPictureVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IPicture) IID() co.IID {
-	return co.IID_ITaskbarList
+func (*IPicture) IID() *co.IID {
+	return &co.IID_ITaskbarList
 }
 
 // [get_Attributes] method.
@@ -788,8 +788,8 @@ type _IPropertyStoreVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IPropertyStore) IID() co.IID {
-	return co.IID_IPropertyStore
+func (*IPropertyStore) IID() *co.IID {
+	return &co.IID_IPropertyStore
 }
 
 // [Commit] method.
@@ -800,15 +800,15 @@ func (me *IPropertyStore) Commit() error {
 		(*_IPropertyStoreVt)(unsafe.Pointer(*me.Ppvt())).Commit)
 }
 
-// Returns all [co.PKEY] values by calling [IPropertyStore.GetCount] and
+// Returns all [co.PROPERTYKEY] values by calling [IPropertyStore.GetCount] and
 // [IPropertyStore.GetAt].
-func (me *IPropertyStore) Enum() ([]co.PKEY, error) {
+func (me *IPropertyStore) Enum() ([]co.PROPERTYKEY, error) {
 	count, hr := me.GetCount()
 	if hr != nil {
 		return nil, hr
 	}
 
-	pkeys := make([]co.PKEY, 0, count)
+	pkeys := make([]co.PROPERTYKEY, 0, count)
 	for i := 0; i < count; i++ {
 		pkey, hr := me.GetAt(i)
 		if hr != nil {
@@ -822,18 +822,18 @@ func (me *IPropertyStore) Enum() ([]co.PKEY, error) {
 // [GetAt] method.
 //
 // [GetAt]: https://learn.microsoft.com/en-us/windows/win32/api/propsys/nf-propsys-ipropertystore-getat
-func (me *IPropertyStore) GetAt(index int) (co.PKEY, error) {
-	var guidPkey GUID
+func (me *IPropertyStore) GetAt(index int) (co.PROPERTYKEY, error) {
+	var key co.PROPERTYKEY
 	ret, _, _ := syscall.SyscallN(
 		(*_IPropertyStoreVt)(unsafe.Pointer(*me.Ppvt())).GetAt,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(index)),
-		uintptr(unsafe.Pointer(&guidPkey)))
+		uintptr(unsafe.Pointer(&key)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.PKEY(guidPkey.String()), nil
+		return key, nil
 	} else {
-		return co.PKEY(""), hr
+		return co.PROPERTYKEY{}, hr
 	}
 }
 
@@ -887,8 +887,8 @@ type _ITypeInfoVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITypeInfo) IID() co.IID {
-	return co.IID_ITypeInfo
+func (*ITypeInfo) IID() *co.IID {
+	return &co.IID_ITypeInfo
 }
 
 // [AddressOfMember] method.
@@ -921,15 +921,14 @@ func (me *ITypeInfo) CreateInstance(
 	unkOuter *IUnknown,
 	ppOut interface{},
 ) error {
-	iid := com_validateAndRelease(ppOut, releaser)
+	piid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).CreateInstance,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(com_ppvtOrNil(unkOuter)),
-		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
@@ -1167,8 +1166,8 @@ type _ITypeLibVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITypeLib) IID() co.IID {
-	return co.IID_ITypeLib
+func (*ITypeLib) IID() *co.IID {
+	return &co.IID_ITypeLib
 }
 
 // [GetTypeInfo] method.
@@ -1197,14 +1196,12 @@ func (me *ITypeLib) GetTypeInfoCount() int {
 // [GetTypeInfoOfGuid] method.
 //
 // [GetTypeInfoOfGuid]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypelib-gettypeinfoofguid
-func (me *ITypeLib) GetTypeInfoOfGuid(releaser *OleReleaser, guid co.GUID) (*ITypeInfo, error) {
+func (me *ITypeLib) GetTypeInfoOfGuid(releaser *OleReleaser, pGuid *co.GUID) (*ITypeInfo, error) {
 	var ppvtQueried **_IUnknownVt
-	guidGuid := GuidFrom(guid)
-
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeLibVt)(unsafe.Pointer(*me.Ppvt())).GetTypeInfo,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidGuid)),
+		uintptr(unsafe.Pointer(pGuid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*ITypeInfo](ret, ppvtQueried, releaser)
 }

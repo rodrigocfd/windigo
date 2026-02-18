@@ -66,14 +66,13 @@ var _shell_CommandLineToArgvW *syscall.Proc
 //
 // [SHCreateItemFromIDList]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shcreateitemfromidlist
 func SHCreateItemFromIDList(releaser *OleReleaser, pidl *ITEMIDLIST, ppOut interface{}) error {
-	iid := com_validateAndRelease(ppOut, releaser)
+	piid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Shell.Load(&_shell_SHCreateItemFromIDList, "SHCreateItemFromIDList"),
 		uintptr(*pidl),
-		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
@@ -106,16 +105,15 @@ func SHCreateItemFromParsingName(
 	folderOrFilePath string,
 	ppOut interface{},
 ) error {
-	iid := com_validateAndRelease(ppOut, releaser)
+	piid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(iid)
 	var wFolderOrFilePath wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Shell.Load(&_shell_SHCreateItemFromParsingName, "SHCreateItemFromParsingName"),
 		uintptr(wFolderOrFilePath.EmptyIsNil(folderOrFilePath)),
 		0,
-		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
@@ -132,9 +130,8 @@ func SHCreateItemFromRelativeName(
 	bindCtx *IBindCtx,
 	ppOut interface{},
 ) error {
-	iid := com_validateAndRelease(ppOut, releaser)
+	piid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(iid)
 	var wName wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
@@ -142,7 +139,7 @@ func SHCreateItemFromRelativeName(
 		uintptr(unsafe.Pointer(parent.Ppvt())),
 		uintptr(wName.AllowEmpty(name)),
 		uintptr(com_ppvtOrNil(bindCtx)),
-		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
@@ -296,7 +293,7 @@ var _shell_SHGetDesktopFolder *syscall.Proc
 //	var desktop *win.IShellItem
 //	_ = win.SHGetKnownFolderItem(
 //		rel,
-//		co.FOLDERID_Desktop,
+//		&co.FOLDERID_Desktop,
 //		co.KF_DEFAULT,
 //		win.HANDLE(0),
 //		&desktop,
@@ -308,22 +305,20 @@ var _shell_SHGetDesktopFolder *syscall.Proc
 // [SHGetKnownFolderItem]: https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetknownfolderitem
 func SHGetKnownFolderItem(
 	releaser *OleReleaser,
-	kfid co.FOLDERID,
+	pKfid *co.FOLDERID,
 	flags co.KF,
 	hToken HANDLE, // HACCESSTOKEN
 	ppOut interface{},
 ) error {
-	iid := com_validateAndRelease(ppOut, releaser)
+	piid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidKfid := GuidFrom(kfid)
-	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Shell.Load(&_shell_SHGetKnownFolderItem, "SHGetKnownFolderItem"),
-		uintptr(unsafe.Pointer(&guidKfid)),
+		uintptr(unsafe.Pointer(pKfid)),
 		uintptr(flags),
 		uintptr(hToken),
-		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
@@ -377,13 +372,11 @@ func SHGetPropertyStoreFromIDList(
 	flags co.GPS,
 ) (*IPropertyStore, error) {
 	var ppvtQueried **_IUnknownVt
-	guid := GuidFrom(co.IID_IPropertyStore)
-
 	ret, _, _ := syscall.SyscallN(
 		dll.Shell.Load(&_shell_SHGetPropertyStoreFromIDList, "SHGetPropertyStoreFromIDList"),
 		uintptr(*pidl),
 		uintptr(flags),
-		uintptr(unsafe.Pointer(&guid)),
+		uintptr(unsafe.Pointer(&co.IID_IPropertyStore)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IPropertyStore](ret, ppvtQueried, releaser)
 }
@@ -400,7 +393,6 @@ func SHGetPropertyStoreFromParsingName(
 	flags co.GPS,
 ) (*IPropertyStore, error) {
 	var ppvtQueried **_IUnknownVt
-	guid := GuidFrom(co.IID_IPropertyStore)
 	var wFolderOrFilePath wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
@@ -408,7 +400,7 @@ func SHGetPropertyStoreFromParsingName(
 		uintptr(wFolderOrFilePath.AllowEmpty(folderOrFilePath)),
 		uintptr(com_ppvtOrNil(bindCtx)),
 		uintptr(flags),
-		uintptr(unsafe.Pointer(&guid)),
+		uintptr(unsafe.Pointer(&co.IID_IPropertyStore)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IPropertyStore](ret, ppvtQueried, releaser)
 }

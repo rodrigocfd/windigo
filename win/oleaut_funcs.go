@@ -48,14 +48,12 @@ func OleLoadPicture(
 	keepOriginalFormat bool,
 ) (*IPicture, error) {
 	var ppvtQueried **_IUnknownVt
-	guid := GuidFrom(co.IID_IPicture)
-
 	ret, _, _ := syscall.SyscallN(
 		dll.Oleaut.Load(&_oleaut_OleLoadPicture, "OleLoadPicture"),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
 		uintptr(int32(size)),
 		utl.BoolToUintptr(!keepOriginalFormat), // note: reversed
-		uintptr(unsafe.Pointer(&guid)),
+		uintptr(unsafe.Pointer(&co.IID_IPicture)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IPicture](ret, ppvtQueried, releaser)
 }
@@ -82,14 +80,13 @@ func OleLoadPicturePath(
 ) (*IPicture, error) {
 	var wPath wstr.BufEncoder
 	var ppvtQueried **_IUnknownVt
-	guid := GuidFrom(co.IID_IPicture)
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Oleaut.Load(&_oleaut_OleLoadPicturePath, "OleLoadPicturePath"),
 		uintptr(wPath.EmptyIsNil(path)),
 		0, 0,
 		uintptr(transparentColor),
-		uintptr(unsafe.Pointer(&guid)),
+		uintptr(unsafe.Pointer(&co.IID_IPicture)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IPicture](ret, ppvtQueried, releaser)
 }

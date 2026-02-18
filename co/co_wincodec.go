@@ -3,51 +3,51 @@
 package co
 
 // Wincodec CLSID identifier.
-const (
-	_CLSID_WICImagingFactory2         CLSID = "317d06e8-5f24-433d-bdf7-79ce68d8abc2"
-	_CLSID_WICPngDecoder2             CLSID = "e018945b-aa86-4008-9bd4-6777a1e40c11"
-	CLSID_WICBmpDecoder               CLSID = "6b462062-7cbf-400d-9fdb-813dd10f2778"
-	CLSID_WICDdsDecoder               CLSID = "9053699f-a341-429d-9e90-ee437cf80c73"
-	CLSID_WICGifDecoder               CLSID = "381dda3c-9ce9-4834-a23e-1f98f8fc52be"
-	CLSID_WICIcoDecoder               CLSID = "c61bfcdf-2e0f-4aad-a8d7-e06bafebcdfe"
-	CLSID_WICImagingFactory                 = _CLSID_WICImagingFactory2
-	CLSID_WICJpegDecoder              CLSID = "9456a480-e88b-43ea-9e73-0b2d9b71b1ca"
-	CLSID_WICPngDecoder                     = _CLSID_WICPngDecoder2
-	CLSID_WICTiffDecoder              CLSID = "b54e85d9-fe23-499f-8b88-6acea713752b"
-	CLSID_WICWmpDecoder               CLSID = "a26cec36-234c-4950-ae16-e34aace71d0d"
-	CLSID_WICBmpEncoder               CLSID = "69be8bb4-d66d-47c8-865a-ed1589433782"
-	CLSID_WICPngEncoder               CLSID = "27949969-876a-41d7-9447-568f6a35a4dc"
-	CLSID_WICJpegEncoder              CLSID = "1a34f5c1-4a5a-46dc-b644-1f4567e7a676"
-	CLSID_WICGifEncoder               CLSID = "114f5598-0b22-40a0-86a1-c83ea495adbd"
-	CLSID_WICTiffEncoder              CLSID = "0131be10-2001-4c5f-a9b0-cc88fab64ce8"
-	CLSID_WICWmpEncoder               CLSID = "ac4ce3cb-e1c1-44cd-8215-5a1665509ec2"
-	CLSID_WICDdsEncode                CLSID = "a61dde94-66ce-4ac1-881b-71680588895e"
-	CLSID_WICAdngDecoder              CLSID = "981d9411-909e-42a7-8f5d-a747ff052edb"
-	CLSID_WICJpegQualcommPhoneEncoder CLSID = "68ed5c62-f534-4979-b2b3-686a12b2b34c"
-	CLSID_WICHeifDecoder              CLSID = "e9a4a80a-44fe-4de4-8971-7150b10a5199"
-	CLSID_WICHeifEncoder              CLSID = "0dbecec1-9eb3-4860-9c6f-ddbe86634575"
-	CLSID_WICWebpDecoder              CLSID = "7693e886-51c9-4070-8419-9f70738ec8fa"
-	CLSID_WICRAWDecoder               CLSID = "41945702-8302-44a6-9445-ac98e8afa086"
-	CLSID_WICJpegXLDecoder            CLSID = "fc6ceece-aef5-4a23-96ec-5984ffb486d9"
-	CLSID_WICJpegXLEncoder            CLSID = "0e4ecd3b-1ba6-4636-8198-56c73040964a"
+var (
+	_CLSID_WICImagingFactory2         = CLSID(GUID{0x317d06e8, 0x5f24, 0x433d, [8]byte{0xbd, 0xf7, 0x79, 0xce, 0x68, 0xd8, 0xab, 0xc2}})
+	_CLSID_WICPngDecoder2             = CLSID(GUID{0xe018945b, 0xaa86, 0x4008, [8]byte{0x9b, 0xd4, 0x67, 0x77, 0xa1, 0xe4, 0x0c, 0x11}})
+	CLSID_WICBmpDecoder               = CLSID(GUID{0x6b462062, 0x7cbf, 0x400d, [8]byte{0x9f, 0xdb, 0x81, 0x3d, 0xd1, 0x0f, 0x27, 0x78}})
+	CLSID_WICDdsDecoder               = CLSID(GUID{0x9053699f, 0xa341, 0x429d, [8]byte{0x9e, 0x90, 0xee, 0x43, 0x7c, 0xf8, 0x0c, 0x73}})
+	CLSID_WICGifDecoder               = CLSID(GUID{0x381dda3c, 0x9ce9, 0x4834, [8]byte{0xa2, 0x3e, 0x1f, 0x98, 0xf8, 0xfc, 0x52, 0xbe}})
+	CLSID_WICIcoDecoder               = CLSID(GUID{0xc61bfcdf, 0x2e0f, 0x4aad, [8]byte{0xa8, 0xd7, 0xe0, 0x6b, 0xaf, 0xeb, 0xcd, 0xfe}})
+	CLSID_WICImagingFactory           = _CLSID_WICImagingFactory2
+	CLSID_WICJpegDecoder              = CLSID(GUID{0x9456a480, 0xe88b, 0x43ea, [8]byte{0x9e, 0x73, 0x0b, 0x2d, 0x9b, 0x71, 0xb1, 0xca}})
+	CLSID_WICPngDecoder               = _CLSID_WICPngDecoder2
+	CLSID_WICTiffDecoder              = CLSID(GUID{0xb54e85d9, 0xfe23, 0x499f, [8]byte{0x8b, 0x88, 0x6a, 0xce, 0xa7, 0x13, 0x75, 0x2b}})
+	CLSID_WICWmpDecoder               = CLSID(GUID{0xa26cec36, 0x234c, 0x4950, [8]byte{0xae, 0x16, 0xe3, 0x4a, 0xac, 0xe7, 0x1d, 0x0d}})
+	CLSID_WICBmpEncoder               = CLSID(GUID{0x69be8bb4, 0xd66d, 0x47c8, [8]byte{0x86, 0x5a, 0xed, 0x15, 0x89, 0x43, 0x37, 0x82}})
+	CLSID_WICPngEncoder               = CLSID(GUID{0x27949969, 0x876a, 0x41d7, [8]byte{0x94, 0x47, 0x56, 0x8f, 0x6a, 0x35, 0xa4, 0xdc}})
+	CLSID_WICJpegEncoder              = CLSID(GUID{0x1a34f5c1, 0x4a5a, 0x46dc, [8]byte{0xb6, 0x44, 0x1f, 0x45, 0x67, 0xe7, 0xa6, 0x76}})
+	CLSID_WICGifEncoder               = CLSID(GUID{0x114f5598, 0x0b22, 0x40a0, [8]byte{0x86, 0xa1, 0xc8, 0x3e, 0xa4, 0x95, 0xad, 0xbd}})
+	CLSID_WICTiffEncoder              = CLSID(GUID{0x0131be10, 0x2001, 0x4c5f, [8]byte{0xa9, 0xb0, 0xcc, 0x88, 0xfa, 0xb6, 0x4c, 0xe8}})
+	CLSID_WICWmpEncoder               = CLSID(GUID{0xac4ce3cb, 0xe1c1, 0x44cd, [8]byte{0x82, 0x15, 0x5a, 0x16, 0x65, 0x50, 0x9e, 0xc2}})
+	CLSID_WICDdsEncode                = CLSID(GUID{0xa61dde94, 0x66ce, 0x4ac1, [8]byte{0x88, 0x1b, 0x71, 0x68, 0x05, 0x88, 0x89, 0x5e}})
+	CLSID_WICAdngDecoder              = CLSID(GUID{0x981d9411, 0x909e, 0x42a7, [8]byte{0x8f, 0x5d, 0xa7, 0x47, 0xff, 0x05, 0x2e, 0xdb}})
+	CLSID_WICJpegQualcommPhoneEncoder = CLSID(GUID{0x68ed5c62, 0xf534, 0x4979, [8]byte{0xb2, 0xb3, 0x68, 0x6a, 0x12, 0xb2, 0xb3, 0x4c}})
+	CLSID_WICHeifDecoder              = CLSID(GUID{0xe9a4a80a, 0x44fe, 0x4de4, [8]byte{0x89, 0x71, 0x71, 0x50, 0xb1, 0x0a, 0x51, 0x99}})
+	CLSID_WICHeifEncoder              = CLSID(GUID{0x0dbecec1, 0x9eb3, 0x4860, [8]byte{0x9c, 0x6f, 0xdd, 0xbe, 0x86, 0x63, 0x45, 0x75}})
+	CLSID_WICWebpDecoder              = CLSID(GUID{0x7693e886, 0x51c9, 0x4070, [8]byte{0x84, 0x19, 0x9f, 0x70, 0x73, 0x8e, 0xc8, 0xfa}})
+	CLSID_WICRAWDecoder               = CLSID(GUID{0x41945702, 0x8302, 0x44a6, [8]byte{0x94, 0x45, 0xac, 0x98, 0xe8, 0xaf, 0xa0, 0x86}})
+	CLSID_WICJpegXLDecoder            = CLSID(GUID{0xfc6ceece, 0xaef5, 0x4a23, [8]byte{0x96, 0xec, 0x59, 0x84, 0xff, 0xb4, 0x86, 0xd9}})
+	CLSID_WICJpegXLEncoder            = CLSID(GUID{0x0e4ecd3b, 0x1ba6, 0x4636, [8]byte{0x81, 0x98, 0x56, 0xc7, 0x30, 0x40, 0x96, 0x4a}})
 )
 
 // Wincodec IID identifier.
-const (
-	IID_IWICBitmap            IID = "00000121-a8f2-4877-ba0a-fd2b6645fb94"
-	IID_IWICBitmapCodecInfo   IID = "e87a44c4-b76e-4c47-8b09-298eb12a2714"
-	IID_IWICBitmapDecoder     IID = "9edde9e7-8dee-47ea-99df-e6faf2ed44bf"
-	IID_IWICBitmapDecoderInfo IID = "d8cd007f-d08f-4191-9bfc-236ea7f0e4b5"
-	IID_IWICBitmapEncoder     IID = "00000103-a8f2-4877-ba0a-fd2b6645fb94"
-	IID_IWICBitmapEncoderInfo IID = "94c9b4ee-a09f-4f92-8a1e-4a9bce7e76fb"
-	IID_IWICBitmapFrameDecode IID = "3b16811b-6a43-4ec9-a813-3d930c13b940"
-	IID_IWICBitmapLock        IID = "00000123-a8f2-4877-ba0a-fd2b6645fb94"
-	IID_IWICBitmapSource      IID = "00000120-a8f2-4877-ba0a-fd2b6645fb94"
-	IID_IWICComponentInfo     IID = "23bc3f0a-698b-4357-886b-f24d50671334"
-	IID_IWICFormatConverter   IID = "00000301-a8f2-4877-ba0a-fd2b6645fb94"
-	IID_IWICImagingFactory    IID = "ec5ec8a9-c395-4314-9c77-54d7a935ff70"
-	IID_IWICPalette           IID = "00000040-a8f2-4877-ba0a-fd2b6645fb94"
-	IID_IWICStream            IID = "135ff860-22b7-4ddf-b0f6-218f4f299a43"
+var (
+	IID_IWICBitmap            = IID(GUID{0x00000121, 0xa8f2, 0x4877, [8]byte{0xba, 0x0a, 0xfd, 0x2b, 0x66, 0x45, 0xfb, 0x94}})
+	IID_IWICBitmapCodecInfo   = IID(GUID{0xe87a44c4, 0xb76e, 0x4c47, [8]byte{0x8b, 0x09, 0x29, 0x8e, 0xb1, 0x2a, 0x27, 0x14}})
+	IID_IWICBitmapDecoder     = IID(GUID{0x9edde9e7, 0x8dee, 0x47ea, [8]byte{0x99, 0xdf, 0xe6, 0xfa, 0xf2, 0xed, 0x44, 0xbf}})
+	IID_IWICBitmapDecoderInfo = IID(GUID{0xd8cd007f, 0xd08f, 0x4191, [8]byte{0x9b, 0xfc, 0x23, 0x6e, 0xa7, 0xf0, 0xe4, 0xb5}})
+	IID_IWICBitmapEncoder     = IID(GUID{0x00000103, 0xa8f2, 0x4877, [8]byte{0xba, 0x0a, 0xfd, 0x2b, 0x66, 0x45, 0xfb, 0x94}})
+	IID_IWICBitmapEncoderInfo = IID(GUID{0x94c9b4ee, 0xa09f, 0x4f92, [8]byte{0x8a, 0x1e, 0x4a, 0x9b, 0xce, 0x7e, 0x76, 0xfb}})
+	IID_IWICBitmapFrameDecode = IID(GUID{0x3b16811b, 0x6a43, 0x4ec9, [8]byte{0xa8, 0x13, 0x3d, 0x93, 0x0c, 0x13, 0xb9, 0x40}})
+	IID_IWICBitmapLock        = IID(GUID{0x00000123, 0xa8f2, 0x4877, [8]byte{0xba, 0x0a, 0xfd, 0x2b, 0x66, 0x45, 0xfb, 0x94}})
+	IID_IWICBitmapSource      = IID(GUID{0x00000120, 0xa8f2, 0x4877, [8]byte{0xba, 0x0a, 0xfd, 0x2b, 0x66, 0x45, 0xfb, 0x94}})
+	IID_IWICComponentInfo     = IID(GUID{0x23bc3f0a, 0x698b, 0x4357, [8]byte{0x88, 0x6b, 0xf2, 0x4d, 0x50, 0x67, 0x13, 0x34}})
+	IID_IWICFormatConverter   = IID(GUID{0x00000301, 0xa8f2, 0x4877, [8]byte{0xba, 0x0a, 0xfd, 0x2b, 0x66, 0x45, 0xfb, 0x94}})
+	IID_IWICImagingFactory    = IID(GUID{0xec5ec8a9, 0xc395, 0x4314, [8]byte{0x9c, 0x77, 0x54, 0xd7, 0xa9, 0x35, 0xff, 0x70}})
+	IID_IWICPalette           = IID(GUID{0x00000040, 0xa8f2, 0x4877, [8]byte{0xba, 0x0a, 0xfd, 0x2b, 0x66, 0x45, 0xfb, 0x94}})
+	IID_IWICStream            = IID(GUID{0x135ff860, 0x22b7, 0x4ddf, [8]byte{0xb0, 0xf6, 0x21, 0x8f, 0x4f, 0x29, 0x9a, 0x43}})
 )
 
 // [WICComponentSigning] enumeration.
@@ -62,125 +62,125 @@ const (
 	WIC_COMPONENTSIGN_Disabled WIC_COMPONENTSIGN = 0x8000_0000
 )
 
-// WIC [container format] [GUID], represented as a string.
+// WIC [container format] [GUID].
 //
 // [container format]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createencoder
 type WIC_CONTAINER GUID
 
-const (
-	WIC_CONTAINER_Bmp    WIC_CONTAINER = "0af1d87e-fcfe-4188-bdeb-a7906471cbe3"
-	WIC_CONTAINER_Png    WIC_CONTAINER = "1b7cfaf4-713f-473c-bbcd-6137425faeaf"
-	WIC_CONTAINER_Ico    WIC_CONTAINER = "a3a860c4-338f-4c17-919a-fba4b5628f21"
-	WIC_CONTAINER_Jpeg   WIC_CONTAINER = "19e4a5aa-5662-4fc5-a0c0-1758028e1057"
-	WIC_CONTAINER_Tiff   WIC_CONTAINER = "163bcc30-e2e9-4f0b-961d-a3e9fdb788a3"
-	WIC_CONTAINER_Gif    WIC_CONTAINER = "1f8a5601-7d4d-4cbd-9c82-1bc8d4eeb9a5"
-	WIC_CONTAINER_Wmp    WIC_CONTAINER = "57a37caa-367a-4540-916b-f183c5093a4b"
-	WIC_CONTAINER_Dds    WIC_CONTAINER = "9967cb95-2e85-4ac8-8ca2-83d7ccd425c9"
-	WIC_CONTAINER_Adng   WIC_CONTAINER = "f3ff6d0d-38c0-41c4-b1fe-1f3824f17b84"
-	WIC_CONTAINER_Heif   WIC_CONTAINER = "e1e62521-6787-405b-a339-500715b5763f"
-	WIC_CONTAINER_Webp   WIC_CONTAINER = "e094b0e2-67f2-45b3-b0ea-115337ca7cf3"
-	WIC_CONTAINER_Raw    WIC_CONTAINER = "fe99ce60-f19c-433c-a3ae-00acefa9ca21"
-	WIC_CONTAINER_JpegXL WIC_CONTAINER = "fec14e3f-427a-4736-aae6-27ed84f69322"
+var (
+	WIC_CONTAINER_Bmp    = WIC_CONTAINER(GUID{0x0af1d87e, 0xfcfe, 0x4188, [8]byte{0xbd, 0xeb, 0xa7, 0x90, 0x64, 0x71, 0xcb, 0xe3}})
+	WIC_CONTAINER_Png    = WIC_CONTAINER(GUID{0x1b7cfaf4, 0x713f, 0x473c, [8]byte{0xbb, 0xcd, 0x61, 0x37, 0x42, 0x5f, 0xae, 0xaf}})
+	WIC_CONTAINER_Ico    = WIC_CONTAINER(GUID{0xa3a860c4, 0x338f, 0x4c17, [8]byte{0x91, 0x9a, 0xfb, 0xa4, 0xb5, 0x62, 0x8f, 0x21}})
+	WIC_CONTAINER_Jpeg   = WIC_CONTAINER(GUID{0x19e4a5aa, 0x5662, 0x4fc5, [8]byte{0xa0, 0xc0, 0x17, 0x58, 0x02, 0x8e, 0x10, 0x57}})
+	WIC_CONTAINER_Tiff   = WIC_CONTAINER(GUID{0x163bcc30, 0xe2e9, 0x4f0b, [8]byte{0x96, 0x1d, 0xa3, 0xe9, 0xfd, 0xb7, 0x88, 0xa3}})
+	WIC_CONTAINER_Gif    = WIC_CONTAINER(GUID{0x1f8a5601, 0x7d4d, 0x4cbd, [8]byte{0x9c, 0x82, 0x1b, 0xc8, 0xd4, 0xee, 0xb9, 0xa5}})
+	WIC_CONTAINER_Wmp    = WIC_CONTAINER(GUID{0x57a37caa, 0x367a, 0x4540, [8]byte{0x91, 0x6b, 0xf1, 0x83, 0xc5, 0x09, 0x3a, 0x4b}})
+	WIC_CONTAINER_Dds    = WIC_CONTAINER(GUID{0x9967cb95, 0x2e85, 0x4ac8, [8]byte{0x8c, 0xa2, 0x83, 0xd7, 0xcc, 0xd4, 0x25, 0xc9}})
+	WIC_CONTAINER_Adng   = WIC_CONTAINER(GUID{0xf3ff6d0d, 0x38c0, 0x41c4, [8]byte{0xb1, 0xfe, 0x1f, 0x38, 0x24, 0xf1, 0x7b, 0x84}})
+	WIC_CONTAINER_Heif   = WIC_CONTAINER(GUID{0xe1e62521, 0x6787, 0x405b, [8]byte{0xa3, 0x39, 0x50, 0x07, 0x15, 0xb5, 0x76, 0x3f}})
+	WIC_CONTAINER_Webp   = WIC_CONTAINER(GUID{0xe094b0e2, 0x67f2, 0x45b3, [8]byte{0xb0, 0xea, 0x11, 0x53, 0x37, 0xca, 0x7c, 0xf3}})
+	WIC_CONTAINER_Raw    = WIC_CONTAINER(GUID{0xfe99ce60, 0xf19c, 0x433c, [8]byte{0xa3, 0xae, 0x00, 0xac, 0xef, 0xa9, 0xca, 0x21}})
+	WIC_CONTAINER_JpegXL = WIC_CONTAINER(GUID{0xfec14e3f, 0x427a, 0x4736, [8]byte{0xaa, 0xe6, 0x27, 0xed, 0x84, 0xf6, 0x93, 0x22}})
 )
 
-// REFWICPixelFormatGUID, the WIC pixel format [GUID], represented as a string.
+// REFWICPixelFormatGUID, the WIC pixel format [GUID].
 type WIC_PIXELFORMAT GUID
 
-const (
-	WIC_PIXELFORMAT_DontCare                        WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc900"
-	WIC_PIXELFORMAT_1bppIndexed                     WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc901"
-	WIC_PIXELFORMAT_2bppIndexed                     WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc902"
-	WIC_PIXELFORMAT_4bppIndexed                     WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc903"
-	WIC_PIXELFORMAT_8bppIndexed                     WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc904"
-	WIC_PIXELFORMAT_BlackWhite                      WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc905"
-	WIC_PIXELFORMAT_2bppGray                        WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc906"
-	WIC_PIXELFORMAT_4bppGray                        WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc907"
-	WIC_PIXELFORMAT_8bppGray                        WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc908"
-	WIC_PIXELFORMAT_8bppAlpha                       WIC_PIXELFORMAT = "e6cd0116-eeba-4161-aa85-27dd9fb3a895"
-	WIC_PIXELFORMAT_8bppDepth                       WIC_PIXELFORMAT = "4c9c9f45-1d89-4e31-9bc7-69343a0dca69"
-	WIC_PIXELFORMAT_8bppGain                        WIC_PIXELFORMAT = "a884022a-af13-4c16-b746-619bf618b878"
-	WIC_PIXELFORMAT_24bppRGBGain                    WIC_PIXELFORMAT = "a5022b24-7109-443b-9948-25b6ed8f39fd"
-	WIC_PIXELFORMAT_32bppBGRGain                    WIC_PIXELFORMAT = "837d6738-208a-43e0-8995-79ab74407402"
-	WIC_PIXELFORMAT_16bppBGR555                     WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc909"
-	WIC_PIXELFORMAT_16bppBGR565                     WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc90a"
-	WIC_PIXELFORMAT_16bppBGRA5551                   WIC_PIXELFORMAT = "05ec7c2b-f1e6-4961-ad46-e1cc810a87d2"
-	WIC_PIXELFORMAT_16bppGray                       WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc90b"
-	WIC_PIXELFORMAT_24bppBGR                        WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc90c"
-	WIC_PIXELFORMAT_24bppRGB                        WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc90d"
-	WIC_PIXELFORMAT_32bppBGR                        WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc90e"
-	WIC_PIXELFORMAT_32bppBGRA                       WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc90f"
-	WIC_PIXELFORMAT_32bppPBGRA                      WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc910"
-	WIC_PIXELFORMAT_32bppGrayFloat                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc911"
-	WIC_PIXELFORMAT_32bppRGB                        WIC_PIXELFORMAT = "d98c6b95-3efe-47d6-bb25-eb1748ab0cf1"
-	WIC_PIXELFORMAT_32bppRGBA                       WIC_PIXELFORMAT = "f5c7ad2d-6a8d-43dd-a7a8-a29935261ae9"
-	WIC_PIXELFORMAT_32bppPRGBA                      WIC_PIXELFORMAT = "3cc4a650-a527-4d37-a916-3142c7ebedba"
-	WIC_PIXELFORMAT_48bppRGB                        WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc915"
-	WIC_PIXELFORMAT_48bppBGR                        WIC_PIXELFORMAT = "e605a384-b468-46ce-bb2e-36f180e64313"
-	WIC_PIXELFORMAT_64bppRGB                        WIC_PIXELFORMAT = "a1182111-186d-4d42-bc6a-9c8303a8dff9"
-	WIC_PIXELFORMAT_64bppRGBA                       WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc916"
-	WIC_PIXELFORMAT_64bppBGRA                       WIC_PIXELFORMAT = "1562ff7c-d352-46f9-979e-42976b792246"
-	WIC_PIXELFORMAT_64bppPRGBA                      WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc917"
-	WIC_PIXELFORMAT_64bppPBGRA                      WIC_PIXELFORMAT = "8c518e8e-a4ec-468b-ae70-c9a35a9c5530"
-	WIC_PIXELFORMAT_16bppGrayFixedPoint             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc913"
-	WIC_PIXELFORMAT_32bppBGR101010                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc914"
-	WIC_PIXELFORMAT_48bppRGBFixedPoint              WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc912"
-	WIC_PIXELFORMAT_48bppBGRFixedPoint              WIC_PIXELFORMAT = "49ca140e-cab6-493b-9ddf-60187c37532a"
-	WIC_PIXELFORMAT_96bppRGBFixedPoint              WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc918"
-	WIC_PIXELFORMAT_96bppRGBFloat                   WIC_PIXELFORMAT = "e3fed78f-e8db-4acf-84c1-e97f6136b327"
-	WIC_PIXELFORMAT_128bppRGBAFloat                 WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc919"
-	WIC_PIXELFORMAT_128bppPRGBAFloat                WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc91a"
-	WIC_PIXELFORMAT_128bppRGBFloat                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc91b"
-	WIC_PIXELFORMAT_32bppCMYK                       WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc91c"
-	WIC_PIXELFORMAT_64bppRGBAFixedPoint             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc91d"
-	WIC_PIXELFORMAT_64bppBGRAFixedPoint             WIC_PIXELFORMAT = "356de33c-54d2-4a23-bb4-9b7bf9b1d42d"
-	WIC_PIXELFORMAT_64bppRGBFixedPoint              WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc940"
-	WIC_PIXELFORMAT_128bppRGBAFixedPoint            WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc91e"
-	WIC_PIXELFORMAT_128bppRGBFixedPoint             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc941"
-	WIC_PIXELFORMAT_64bppRGBAHalf                   WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc93a"
-	WIC_PIXELFORMAT_64bppPRGBAHalf                  WIC_PIXELFORMAT = "58ad26c2-c623-4d9d-b320-387e49f8c442"
-	WIC_PIXELFORMAT_64bppRGBHalf                    WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc942"
-	WIC_PIXELFORMAT_48bppRGBHalf                    WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc93b"
-	WIC_PIXELFORMAT_32bppRGBE                       WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc93d"
-	WIC_PIXELFORMAT_16bppGrayHalf                   WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc93e"
-	WIC_PIXELFORMAT_32bppGrayFixedPoint             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc93f"
-	WIC_PIXELFORMAT_32bppRGBA1010102                WIC_PIXELFORMAT = "25238d72-fcf9-4522-b514-5578e5ad55e0"
-	WIC_PIXELFORMAT_32bppRGBA1010102XR              WIC_PIXELFORMAT = "00de6b9a-c101-434b-b502-d0165ee1122c"
-	WIC_PIXELFORMAT_32bppR10G10B10A2                WIC_PIXELFORMAT = "604e1bb5-8a3c-4b65-b11c-bc0b8dd75b7f"
-	WIC_PIXELFORMAT_32bppR10G10B10A2HDR10           WIC_PIXELFORMAT = "9c215c5d-1acc-4f0e-a4bc-70fb3ae8fd28"
-	WIC_PIXELFORMAT_64bppCMYK                       WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc91f"
-	WIC_PIXELFORMAT_24bpp3Channels                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc920"
-	WIC_PIXELFORMAT_32bpp4Channels                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc921"
-	WIC_PIXELFORMAT_40bpp5Channels                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc922"
-	WIC_PIXELFORMAT_48bpp6Channels                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc923"
-	WIC_PIXELFORMAT_56bpp7Channels                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc924"
-	WIC_PIXELFORMAT_64bpp8Channels                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc925"
-	WIC_PIXELFORMAT_48bpp3Channels                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc926"
-	WIC_PIXELFORMAT_64bpp4Channels                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc927"
-	WIC_PIXELFORMAT_80bpp5Channels                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc928"
-	WIC_PIXELFORMAT_96bpp6Channels                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc929"
-	WIC_PIXELFORMAT_112bpp7Channels                 WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc92a"
-	WIC_PIXELFORMAT_128bpp8Channels                 WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc92b"
-	WIC_PIXELFORMAT_40bppCMYKAlpha                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc92c"
-	WIC_PIXELFORMAT_80bppCMYKAlpha                  WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc92d"
-	WIC_PIXELFORMAT_32bpp3ChannelsAlpha             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc92e"
-	WIC_PIXELFORMAT_40bpp4ChannelsAlpha             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc92f"
-	WIC_PIXELFORMAT_48bpp5ChannelsAlpha             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc930"
-	WIC_PIXELFORMAT_56bpp6ChannelsAlpha             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc931"
-	WIC_PIXELFORMAT_64bpp7ChannelsAlpha             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc932"
-	WIC_PIXELFORMAT_72bpp8ChannelsAlpha             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc933"
-	WIC_PIXELFORMAT_64bpp3ChannelsAlpha             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc934"
-	WIC_PIXELFORMAT_80bpp4ChannelsAlpha             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc935"
-	WIC_PIXELFORMAT_96bpp5ChannelsAlpha             WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc936"
-	WIC_PIXELFORMAT_112bpp6ChannelsAlpha            WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc937"
-	WIC_PIXELFORMAT_128bpp7ChannelsAlpha            WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc938"
-	WIC_PIXELFORMAT_144bpp8ChannelsAlpha            WIC_PIXELFORMAT = "6fddc324-4e03-4bfe-b185-3d77768dc939"
-	WIC_PIXELFORMAT_8bppY                           WIC_PIXELFORMAT = "91b4db54-2df9-42f0-b449-2909bb3df88e"
-	WIC_PIXELFORMAT_8bppCb                          WIC_PIXELFORMAT = "1339f224-6bfe-4c3e-9302-e4f3a6d0ca2a"
-	WIC_PIXELFORMAT_8bppCr                          WIC_PIXELFORMAT = "b8145053-2116-49f0-8835-ed844b205c51"
-	WIC_PIXELFORMAT_16bppCbCr                       WIC_PIXELFORMAT = "ff95ba6e-11e0-4263-bb45-01721f3460a4"
-	WIC_PIXELFORMAT_16bppYQuantizedDctCoefficients  WIC_PIXELFORMAT = "a355f433-48e8-4a42-84d8-e2aa26ca80a4"
-	WIC_PIXELFORMAT_16bppCbQuantizedDctCoefficients WIC_PIXELFORMAT = "d2c4ff61-56a5-49c2-8b5c-4c1925964837"
-	WIC_PIXELFORMAT_16bppCrQuantizedDctCoefficients WIC_PIXELFORMAT = "2fe354f0-1680-42d8-9231-e73c0565bfc1"
+var (
+	WIC_PIXELFORMAT_DontCare                        = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x00}})
+	WIC_PIXELFORMAT_1bppIndexed                     = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x01}})
+	WIC_PIXELFORMAT_2bppIndexed                     = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x02}})
+	WIC_PIXELFORMAT_4bppIndexed                     = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x03}})
+	WIC_PIXELFORMAT_8bppIndexed                     = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x04}})
+	WIC_PIXELFORMAT_BlackWhite                      = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x05}})
+	WIC_PIXELFORMAT_2bppGray                        = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x06}})
+	WIC_PIXELFORMAT_4bppGray                        = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x07}})
+	WIC_PIXELFORMAT_8bppGray                        = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x08}})
+	WIC_PIXELFORMAT_8bppAlpha                       = WIC_PIXELFORMAT(GUID{0xe6cd0116, 0xeeba, 0x4161, [8]byte{0xaa, 0x85, 0x27, 0xdd, 0x9f, 0xb3, 0xa8, 0x95}})
+	WIC_PIXELFORMAT_8bppDepth                       = WIC_PIXELFORMAT(GUID{0x4c9c9f45, 0x1d89, 0x4e31, [8]byte{0x9b, 0xc7, 0x69, 0x34, 0x3a, 0x0d, 0xca, 0x69}})
+	WIC_PIXELFORMAT_8bppGain                        = WIC_PIXELFORMAT(GUID{0xa884022a, 0xaf13, 0x4c16, [8]byte{0xb7, 0x46, 0x61, 0x9b, 0xf6, 0x18, 0xb8, 0x78}})
+	WIC_PIXELFORMAT_24bppRGBGain                    = WIC_PIXELFORMAT(GUID{0xa5022b24, 0x7109, 0x443b, [8]byte{0x99, 0x48, 0x25, 0xb6, 0xed, 0x8f, 0x39, 0xfd}})
+	WIC_PIXELFORMAT_32bppBGRGain                    = WIC_PIXELFORMAT(GUID{0x837d6738, 0x208a, 0x43e0, [8]byte{0x89, 0x95, 0x79, 0xab, 0x74, 0x40, 0x74, 0x02}})
+	WIC_PIXELFORMAT_16bppBGR555                     = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x09}})
+	WIC_PIXELFORMAT_16bppBGR565                     = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x0a}})
+	WIC_PIXELFORMAT_16bppBGRA5551                   = WIC_PIXELFORMAT(GUID{0x05ec7c2b, 0xf1e6, 0x4961, [8]byte{0xad, 0x46, 0xe1, 0xcc, 0x81, 0x0a, 0x87, 0xd2}})
+	WIC_PIXELFORMAT_16bppGray                       = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x0b}})
+	WIC_PIXELFORMAT_24bppBGR                        = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x0c}})
+	WIC_PIXELFORMAT_24bppRGB                        = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x0d}})
+	WIC_PIXELFORMAT_32bppBGR                        = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x0e}})
+	WIC_PIXELFORMAT_32bppBGRA                       = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x0f}})
+	WIC_PIXELFORMAT_32bppPBGRA                      = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x10}})
+	WIC_PIXELFORMAT_32bppGrayFloat                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x11}})
+	WIC_PIXELFORMAT_32bppRGB                        = WIC_PIXELFORMAT(GUID{0xd98c6b95, 0x3efe, 0x47d6, [8]byte{0xbb, 0x25, 0xeb, 0x17, 0x48, 0xab, 0x0c, 0xf1}})
+	WIC_PIXELFORMAT_32bppRGBA                       = WIC_PIXELFORMAT(GUID{0xf5c7ad2d, 0x6a8d, 0x43dd, [8]byte{0xa7, 0xa8, 0xa2, 0x99, 0x35, 0x26, 0x1a, 0xe9}})
+	WIC_PIXELFORMAT_32bppPRGBA                      = WIC_PIXELFORMAT(GUID{0x3cc4a650, 0xa527, 0x4d37, [8]byte{0xa9, 0x16, 0x31, 0x42, 0xc7, 0xeb, 0xed, 0xba}})
+	WIC_PIXELFORMAT_48bppRGB                        = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x15}})
+	WIC_PIXELFORMAT_48bppBGR                        = WIC_PIXELFORMAT(GUID{0xe605a384, 0xb468, 0x46ce, [8]byte{0xbb, 0x2e, 0x36, 0xf1, 0x80, 0xe6, 0x43, 0x13}})
+	WIC_PIXELFORMAT_64bppRGB                        = WIC_PIXELFORMAT(GUID{0xa1182111, 0x186d, 0x4d42, [8]byte{0xbc, 0x6a, 0x9c, 0x83, 0x03, 0xa8, 0xdf, 0xf9}})
+	WIC_PIXELFORMAT_64bppRGBA                       = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x16}})
+	WIC_PIXELFORMAT_64bppBGRA                       = WIC_PIXELFORMAT(GUID{0x1562ff7c, 0xd352, 0x46f9, [8]byte{0x97, 0x9e, 0x42, 0x97, 0x6b, 0x79, 0x22, 0x46}})
+	WIC_PIXELFORMAT_64bppPRGBA                      = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x17}})
+	WIC_PIXELFORMAT_64bppPBGRA                      = WIC_PIXELFORMAT(GUID{0x8c518e8e, 0xa4ec, 0x468b, [8]byte{0xae, 0x70, 0xc9, 0xa3, 0x5a, 0x9c, 0x55, 0x30}})
+	WIC_PIXELFORMAT_16bppGrayFixedPoint             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x13}})
+	WIC_PIXELFORMAT_32bppBGR101010                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x14}})
+	WIC_PIXELFORMAT_48bppRGBFixedPoint              = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x12}})
+	WIC_PIXELFORMAT_48bppBGRFixedPoint              = WIC_PIXELFORMAT(GUID{0x49ca140e, 0xcab6, 0x493b, [8]byte{0x9d, 0xdf, 0x60, 0x18, 0x7c, 0x37, 0x53, 0x2a}})
+	WIC_PIXELFORMAT_96bppRGBFixedPoint              = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x18}})
+	WIC_PIXELFORMAT_96bppRGBFloat                   = WIC_PIXELFORMAT(GUID{0xe3fed78f, 0xe8db, 0x4acf, [8]byte{0x84, 0xc1, 0xe9, 0x7f, 0x61, 0x36, 0xb3, 0x27}})
+	WIC_PIXELFORMAT_128bppRGBAFloat                 = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x19}})
+	WIC_PIXELFORMAT_128bppPRGBAFloat                = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x1a}})
+	WIC_PIXELFORMAT_128bppRGBFloat                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x1b}})
+	WIC_PIXELFORMAT_32bppCMYK                       = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x1c}})
+	WIC_PIXELFORMAT_64bppRGBAFixedPoint             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x1d}})
+	WIC_PIXELFORMAT_64bppBGRAFixedPoint             = WIC_PIXELFORMAT(GUID{0x356de33c, 0x54d2, 0x4a23, [8]byte{0xbb, 0x04, 0x9b, 0x7b, 0xf9, 0xb1, 0xd4, 0x2d}})
+	WIC_PIXELFORMAT_64bppRGBFixedPoint              = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x40}})
+	WIC_PIXELFORMAT_128bppRGBAFixedPoint            = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x1e}})
+	WIC_PIXELFORMAT_128bppRGBFixedPoint             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x41}})
+	WIC_PIXELFORMAT_64bppRGBAHalf                   = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x3a}})
+	WIC_PIXELFORMAT_64bppPRGBAHalf                  = WIC_PIXELFORMAT(GUID{0x58ad26c2, 0xc623, 0x4d9d, [8]byte{0xb3, 0x20, 0x38, 0x7e, 0x49, 0xf8, 0xc4, 0x42}})
+	WIC_PIXELFORMAT_64bppRGBHalf                    = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x42}})
+	WIC_PIXELFORMAT_48bppRGBHalf                    = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x3b}})
+	WIC_PIXELFORMAT_32bppRGBE                       = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x3d}})
+	WIC_PIXELFORMAT_16bppGrayHalf                   = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x3e}})
+	WIC_PIXELFORMAT_32bppGrayFixedPoint             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x3f}})
+	WIC_PIXELFORMAT_32bppRGBA1010102                = WIC_PIXELFORMAT(GUID{0x25238d72, 0xfcf9, 0x4522, [8]byte{0xb5, 0x14, 0x55, 0x78, 0xe5, 0xad, 0x55, 0xe0}})
+	WIC_PIXELFORMAT_32bppRGBA1010102XR              = WIC_PIXELFORMAT(GUID{0x00de6b9a, 0xc101, 0x434b, [8]byte{0xb5, 0x02, 0xd0, 0x16, 0x5e, 0xe1, 0x12, 0x2c}})
+	WIC_PIXELFORMAT_32bppR10G10B10A2                = WIC_PIXELFORMAT(GUID{0x604e1bb5, 0x8a3c, 0x4b65, [8]byte{0xb1, 0x1c, 0xbc, 0x0b, 0x8d, 0xd7, 0x5b, 0x7f}})
+	WIC_PIXELFORMAT_32bppR10G10B10A2HDR10           = WIC_PIXELFORMAT(GUID{0x9c215c5d, 0x1acc, 0x4f0e, [8]byte{0xa4, 0xbc, 0x70, 0xfb, 0x3a, 0xe8, 0xfd, 0x28}})
+	WIC_PIXELFORMAT_64bppCMYK                       = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x1f}})
+	WIC_PIXELFORMAT_24bpp3Channels                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x20}})
+	WIC_PIXELFORMAT_32bpp4Channels                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x21}})
+	WIC_PIXELFORMAT_40bpp5Channels                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x22}})
+	WIC_PIXELFORMAT_48bpp6Channels                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x23}})
+	WIC_PIXELFORMAT_56bpp7Channels                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x24}})
+	WIC_PIXELFORMAT_64bpp8Channels                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x25}})
+	WIC_PIXELFORMAT_48bpp3Channels                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x26}})
+	WIC_PIXELFORMAT_64bpp4Channels                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x27}})
+	WIC_PIXELFORMAT_80bpp5Channels                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x28}})
+	WIC_PIXELFORMAT_96bpp6Channels                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x29}})
+	WIC_PIXELFORMAT_112bpp7Channels                 = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x2a}})
+	WIC_PIXELFORMAT_128bpp8Channels                 = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x2b}})
+	WIC_PIXELFORMAT_40bppCMYKAlpha                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x2c}})
+	WIC_PIXELFORMAT_80bppCMYKAlpha                  = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x2d}})
+	WIC_PIXELFORMAT_32bpp3ChannelsAlpha             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x2e}})
+	WIC_PIXELFORMAT_40bpp4ChannelsAlpha             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x2f}})
+	WIC_PIXELFORMAT_48bpp5ChannelsAlpha             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x30}})
+	WIC_PIXELFORMAT_56bpp6ChannelsAlpha             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x31}})
+	WIC_PIXELFORMAT_64bpp7ChannelsAlpha             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x32}})
+	WIC_PIXELFORMAT_72bpp8ChannelsAlpha             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x33}})
+	WIC_PIXELFORMAT_64bpp3ChannelsAlpha             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x34}})
+	WIC_PIXELFORMAT_80bpp4ChannelsAlpha             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x35}})
+	WIC_PIXELFORMAT_96bpp5ChannelsAlpha             = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x36}})
+	WIC_PIXELFORMAT_112bpp6ChannelsAlpha            = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x37}})
+	WIC_PIXELFORMAT_128bpp7ChannelsAlpha            = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x38}})
+	WIC_PIXELFORMAT_144bpp8ChannelsAlpha            = WIC_PIXELFORMAT(GUID{0x6fddc324, 0x4e03, 0x4bfe, [8]byte{0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x39}})
+	WIC_PIXELFORMAT_8bppY                           = WIC_PIXELFORMAT(GUID{0x91b4db54, 0x2df9, 0x42f0, [8]byte{0xb4, 0x49, 0x29, 0x09, 0xbb, 0x3d, 0xf8, 0x8e}})
+	WIC_PIXELFORMAT_8bppCb                          = WIC_PIXELFORMAT(GUID{0x1339f224, 0x6bfe, 0x4c3e, [8]byte{0x93, 0x02, 0xe4, 0xf3, 0xa6, 0xd0, 0xca, 0x2a}})
+	WIC_PIXELFORMAT_8bppCr                          = WIC_PIXELFORMAT(GUID{0xb8145053, 0x2116, 0x49f0, [8]byte{0x88, 0x35, 0xed, 0x84, 0x4b, 0x20, 0x5c, 0x51}})
+	WIC_PIXELFORMAT_16bppCbCr                       = WIC_PIXELFORMAT(GUID{0xff95ba6e, 0x11e0, 0x4263, [8]byte{0xbb, 0x45, 0x01, 0x72, 0x1f, 0x34, 0x60, 0xa4}})
+	WIC_PIXELFORMAT_16bppYQuantizedDctCoefficients  = WIC_PIXELFORMAT(GUID{0xa355f433, 0x48e8, 0x4a42, [8]byte{0x84, 0xd8, 0xe2, 0xaa, 0x26, 0xca, 0x80, 0xa4}})
+	WIC_PIXELFORMAT_16bppCbQuantizedDctCoefficients = WIC_PIXELFORMAT(GUID{0xd2c4ff61, 0x56a5, 0x49c2, [8]byte{0x8b, 0x5c, 0x4c, 0x19, 0x25, 0x96, 0x48, 0x37}})
+	WIC_PIXELFORMAT_16bppCrQuantizedDctCoefficients = WIC_PIXELFORMAT(GUID{0x2fe354f0, 0x1680, 0x42d8, [8]byte{0x92, 0x31, 0xe7, 0x3c, 0x05, 0x65, 0xbf, 0xc1}})
 )
 
 // [WICBitmapAlphaChannelOption] enumeration.

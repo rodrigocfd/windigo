@@ -22,8 +22,8 @@ type IFileDialogEvents struct{ IUnknown }
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IFileDialogEvents) IID() co.IID {
-	return co.IID_IFileDialogEvents
+func (*IFileDialogEvents) IID() *co.IID {
+	return &co.IID_IFileDialogEvents
 }
 
 type _IFileDialogEventsImpl struct {

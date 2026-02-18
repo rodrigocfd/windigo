@@ -27,8 +27,8 @@ type _IActionVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IAction) IID() co.IID {
-	return co.IID_IAction
+func (*IAction) IID() *co.IID {
+	return &co.IID_IAction
 }
 
 // [get_Id] method.
@@ -88,8 +88,8 @@ type _IActionCollectionVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IActionCollection) IID() co.IID {
-	return co.IID_IAction
+func (*IActionCollection) IID() *co.IID {
+	return &co.IID_IAction
 }
 
 // [Clear] method.
@@ -213,8 +213,8 @@ type _IBootTriggerVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IBootTrigger) IID() co.IID {
-	return co.IID_IBootTrigger
+func (*IBootTrigger) IID() *co.IID {
+	return &co.IID_IBootTrigger
 }
 
 // [get_Delay] method.
@@ -251,8 +251,8 @@ type _IComHandlerActionVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IComHandlerAction) IID() co.IID {
-	return co.IID_IComHandlerAction
+func (*IComHandlerAction) IID() *co.IID {
+	return &co.IID_IComHandlerAction
 }
 
 // [get_ClassId] method.
@@ -305,8 +305,8 @@ type _IDailyTriggerVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IDailyTrigger) IID() co.IID {
-	return co.IID_IDailyTrigger
+func (*IDailyTrigger) IID() *co.IID {
+	return &co.IID_IDailyTrigger
 }
 
 // [get_DaysInterval] method.
@@ -387,8 +387,8 @@ type _IEmailActionVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IEmailAction) IID() co.IID {
-	return co.IID_IEmailAction
+func (*IEmailAction) IID() *co.IID {
+	return &co.IID_IEmailAction
 }
 
 // [get_Bcc] method.
@@ -539,8 +539,8 @@ type _IEventTriggerVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IEventTrigger) IID() co.IID {
-	return co.IID_IEventTrigger
+func (*IEventTrigger) IID() *co.IID {
+	return &co.IID_IEventTrigger
 }
 
 // [get_Delay] method.
@@ -614,8 +614,8 @@ type _IExecActionVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IExecAction) IID() co.IID {
-	return co.IID_IExecAction
+func (*IExecAction) IID() *co.IID {
+	return &co.IID_IExecAction
 }
 
 // [get_Arguments] method.
@@ -684,8 +684,8 @@ type _ILogonTriggerVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ILogonTrigger) IID() co.IID {
-	return co.IID_ILogonTrigger
+func (*ILogonTrigger) IID() *co.IID {
+	return &co.IID_ILogonTrigger
 }
 
 // [get_Delay] method.
@@ -746,8 +746,8 @@ type _IPrincipalVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IPrincipal) IID() co.IID {
-	return co.IID_IPrincipal
+func (*IPrincipal) IID() *co.IID {
+	return &co.IID_IPrincipal
 }
 
 // [get_DisplayName] method.
@@ -902,8 +902,8 @@ type _IRegisteredTaskVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IRegisteredTask) IID() co.IID {
-	return co.IID_IRegisteredTask
+func (*IRegisteredTask) IID() *co.IID {
+	return &co.IID_IRegisteredTask
 }
 
 // [get_Definition] method.
@@ -1083,8 +1083,8 @@ type _IRegistrationInfoVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IRegistrationInfo) IID() co.IID {
-	return co.IID_IRegistrationInfo
+func (*IRegistrationInfo) IID() *co.IID {
+	return &co.IID_IRegistrationInfo
 }
 
 // [get_Author] method.
@@ -1243,8 +1243,8 @@ type _ITaskDefinitionVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITaskDefinition) IID() co.IID {
-	return co.IID_ITaskDefinition
+func (*ITaskDefinition) IID() *co.IID {
+	return &co.IID_ITaskDefinition
 }
 
 // [get_Actions] method.
@@ -1390,8 +1390,8 @@ type _ITaskFolderVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITaskFolder) IID() co.IID {
-	return co.IID_ITaskFolder
+func (*ITaskFolder) IID() *co.IID {
+	return &co.IID_ITaskFolder
 }
 
 // [DeleteFolder] method.
@@ -1506,8 +1506,8 @@ type _ITaskNamedValueCollectionVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITaskNamedValueCollection) IID() co.IID {
-	return co.IID_ITaskNamedValueCollection
+func (*ITaskNamedValueCollection) IID() *co.IID {
+	return &co.IID_ITaskNamedValueCollection
 }
 
 // [Clear] method;
@@ -1626,8 +1626,8 @@ type _ITaskNamedValuePairVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITaskNamedValuePair) IID() co.IID {
-	return co.IID_ITaskNamedValuePair
+func (*ITaskNamedValuePair) IID() *co.IID {
+	return &co.IID_ITaskNamedValuePair
 }
 
 // [get_Name] method.
@@ -1685,8 +1685,8 @@ type _ITaskServiceVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITaskService) IID() co.IID {
-	return co.IID_ITaskService
+func (*ITaskService) IID() *co.IID {
+	return &co.IID_ITaskService
 }
 
 // [Connect] method.
@@ -1851,8 +1851,8 @@ type _ITaskSettingsVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITaskSettings) IID() co.IID {
-	return co.IID_ITaskSettings
+func (*ITaskSettings) IID() *co.IID {
+	return &co.IID_ITaskSettings
 }
 
 // [get_AllowDemandStart] method.
@@ -2277,8 +2277,8 @@ type _ITriggerVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITrigger) IID() co.IID {
-	return co.IID_ITrigger
+func (*ITrigger) IID() *co.IID {
+	return &co.IID_ITrigger
 }
 
 // [get_Enabled] method.
@@ -2405,8 +2405,8 @@ type _ITriggerCollectionVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITriggerCollection) IID() co.IID {
-	return co.IID_ITriggerCollection
+func (*ITriggerCollection) IID() *co.IID {
+	return &co.IID_ITriggerCollection
 }
 
 // [Clear] method.

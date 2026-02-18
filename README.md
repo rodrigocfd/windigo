@@ -2,7 +2,7 @@
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/rodrigocfd/windigo?style=flat-square&color=03a7ed)](https://github.com/rodrigocfd/windigo)
 [![Go Report Card](https://goreportcard.com/badge/github.com/rodrigocfd/windigo?style=flat-square)](https://goreportcard.com/report/github.com/rodrigocfd/windigo)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/rodrigocfd/windigo/blob/master/LICENSE.md)
-[![Lines of code](https://img.shields.io/badge/LoC-54.3k-blue?style=flat-square)](https://github.com/rodrigocfd/windigo)
+[![Lines of code](https://img.shields.io/badge/LoC-54.2k-blue?style=flat-square)](https://github.com/rodrigocfd/windigo)
 
 # Windigo
 
@@ -28,7 +28,7 @@ Native FFI items currently implemented:
 | Functions | 656 |
 | COM interfaces | 67 |
 | COM methods | 475 |
-| Constants | 10,826 |
+| Constants | 10,840 |
 
 ## Examples
 
@@ -309,7 +309,7 @@ func main() {
 	var fod *win.IFileOpenDialog
 	_ = win.CoCreateInstance(
 		releaser,
-		co.CLSID_FileOpenDialog,
+		&co.CLSID_FileOpenDialog,
 		nil,
 		co.CLSCTX_INPROC_SERVER,
 		&fod,
@@ -366,7 +366,7 @@ func main() {
 	var excel *win.IDispatch
 	_ = win.CoCreateInstance(
 		rel,
-		clsId,
+		&clsId,
 		nil,
 		co.CLSCTX_LOCAL_SERVER,
 		&excel,

@@ -23,8 +23,8 @@ type IUnknown struct {
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IUnknown) IID() co.IID {
-	return co.IID_IUnknown
+func (*IUnknown) IID() *co.IID {
+	return &co.IID_IUnknown
 }
 
 // Returns the [COM] virtual table pointer.
@@ -84,14 +84,13 @@ func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
 //
 // [QueryInterface]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IUnknown) QueryInterface(releaser *OleReleaser, ppOut interface{}) error {
-	iid := com_validateAndRelease(ppOut, releaser)
+	piid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		(*me.Ppvt()).QueryInterface,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }

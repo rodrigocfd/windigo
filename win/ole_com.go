@@ -42,8 +42,8 @@ type _IBindCtxVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IBindCtx) IID() co.IID {
-	return co.IID_IBindCtx
+func (*IBindCtx) IID() *co.IID {
+	return &co.IID_IBindCtx
 }
 
 // [EnumObjectParam] method.
@@ -152,8 +152,8 @@ type _IDataObjectVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IDataObject) IID() co.IID {
-	return co.IID_IDataObject
+func (*IDataObject) IID() *co.IID {
+	return &co.IID_IDataObject
 }
 
 // [GetCanonicalFormatEtc] method.
@@ -221,8 +221,8 @@ type _IEnumStringVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IEnumString) IID() co.IID {
-	return co.IID_IEnumString
+func (*IEnumString) IID() *co.IID {
+	return &co.IID_IEnumString
 }
 
 // [Clone] method.
@@ -314,8 +314,8 @@ type _ISequentialStreamVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ISequentialStream) IID() co.IID {
-	return co.IID_ISequentialStream
+func (*ISequentialStream) IID() *co.IID {
+	return &co.IID_ISequentialStream
 }
 
 // [Read] method.
@@ -382,8 +382,8 @@ type _IStreamVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IStream) IID() co.IID {
-	return co.IID_IStream
+func (*IStream) IID() *co.IID {
+	return &co.IID_IStream
 }
 
 // [Clone] method.

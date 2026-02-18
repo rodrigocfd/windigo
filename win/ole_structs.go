@@ -164,7 +164,7 @@ type STATSTG struct {
 	ATime             FILETIME
 	GrfMode           uint32
 	GrfLocksSupported co.LOCKTYPE
-	ClsId             GUID
+	ClsId             co.CLSID
 	GrfStateBits      uint32
 	reserved          uint32
 }

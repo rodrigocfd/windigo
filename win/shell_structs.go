@@ -3,7 +3,6 @@
 package win
 
 import (
-	"strconv"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
@@ -75,7 +74,7 @@ type NOTIFYICONDATA struct {
 	uVersion         uint32
 	szInfoTitle      [64]uint16
 	DwInfoFlags      co.NIIF // Modifies the behavior of the balloon notification.
-	GuidItem         GUID    // A registered GUID that identifies the icon, overriding UID. Requires co.NIF_GUID in UFlags.
+	GuidItem         co.GUID // A registered [co.GUID] that identifies the icon, overriding UID. Requires [co.NIF_GUID] in UFlags.
 	HBalloonIcon     HICON   // Handle to the icon of the balloon notification.
 }
 
@@ -128,54 +127,12 @@ type NOTIFYICONIDENTIFIER struct {
 	cbSize   uint32
 	HWnd     HWND
 	UID      uint32
-	GuidItem GUID
+	GuidItem co.GUID
 }
 
 // Sets the cbSize field to the size of the struct, correctly initializing it.
 func (nii *NOTIFYICONIDENTIFIER) SetCbSize() {
 	nii.cbSize = uint32(unsafe.Sizeof(*nii))
-}
-
-// [PROPERTYKEY] struct.
-//
-// Constructible from a [co.PKEY] with [PropertykeyFrom].
-//
-// Example:
-//
-//	pkey := PropertykeyFrom(co.PKEY_ComputerName)
-//
-// [PROPERTYKEY]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ns-wtypes-propertykey
-type PROPERTYKEY struct {
-	data [20]byte // packed
-}
-
-// Constructs a [PROPERTYKEY] from a string representation.
-//
-// Example:
-//
-//	pkey := PropertykeyFrom(co.PKEY_ComputerName)
-func PropertykeyFrom(pkey co.PKEY) PROPERTYKEY {
-	fmtId := GuidFrom(string(pkey)[0:36])
-	pId, _ := strconv.ParseUint(string(pkey)[37:], 10, 32)
-
-	var out PROPERTYKEY
-	out.SetFmdId(fmtId)
-	out.SetPId(uint32(pId))
-	return out
-}
-
-func (pk *PROPERTYKEY) FmtId() GUID {
-	return *(*GUID)(unsafe.Pointer(unsafe.SliceData(pk.data[:])))
-}
-func (pk *PROPERTYKEY) SetFmdId(fmtId GUID) {
-	*(*GUID)(unsafe.Pointer(unsafe.SliceData(pk.data[:]))) = fmtId
-}
-
-func (pk *PROPERTYKEY) PId() uint32 {
-	return *(*uint32)(unsafe.Pointer(&pk.data[16]))
-}
-func (pk *PROPERTYKEY) SetPId(pId uint32) {
-	*(*uint32)(unsafe.Pointer(&pk.data[16])) = pId
 }
 
 // [SHFILEINFO] struct.

@@ -31,7 +31,7 @@ import (
 //	var excel *win.IDispatch
 //	_ = win.CoCreateInstance(
 //		rel,
-//		clsId,
+//		&clsId,
 //		nil,
 //		co.CLSCTX_LOCAL_SERVER,
 //		&excel,
@@ -40,7 +40,7 @@ import (
 // [CLSIDFromProgID]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-clsidfromprogid
 func CLSIDFromProgID(progId string) (co.CLSID, error) {
 	var wProgId wstr.BufEncoder
-	var guid GUID
+	var guid co.CLSID
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Ole.Load(&_ole_CLSIDFromProgID, "CLSIDFromProgID"),
@@ -48,9 +48,9 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 		uintptr(unsafe.Pointer(&guid)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.CLSID(guid.String()), nil
+		return guid, nil
 	} else {
-		return "", hr
+		return co.CLSID{}, hr
 	}
 }
 
@@ -70,7 +70,7 @@ var _ole_CLSIDFromProgID *syscall.Proc
 //	var taskbl *win.ITaskbarList
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_TaskbarList,
+//		&co.CLSID_TaskbarList,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&taskbl,
@@ -79,22 +79,20 @@ var _ole_CLSIDFromProgID *syscall.Proc
 // [CoCreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
 func CoCreateInstance(
 	releaser *OleReleaser,
-	rclsid co.CLSID,
+	pClsid *co.CLSID,
 	unkOuter *IUnknown,
 	dwClsContext co.CLSCTX,
 	ppOut interface{},
 ) error {
-	iid := com_validateAndRelease(ppOut, releaser)
+	piid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidClsid := GuidFrom(rclsid)
-	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Ole.Load(&_ole_CoCreateInstance, "CoCreateInstance"),
-		uintptr(unsafe.Pointer(&guidClsid)),
+		uintptr(unsafe.Pointer(pClsid)),
 		uintptr(com_ppvtOrNil(unkOuter)),
 		uintptr(dwClsContext),
-		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }

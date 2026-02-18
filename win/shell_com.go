@@ -30,7 +30,7 @@ import (
 //	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
 //
 //	var folder *win.IShellFolder
-//	_ = item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
+//	_ = item.BindToHandler(rel, nil, &co.BHID_SFObject, &folder)
 //
 //	pidlList, _ := folder.EnumObjects(rel, win.HWND(0),
 //		co.SHCONTF_FOLDERS|co.SHCONTF_NONFOLDERS|co.SHCONTF_INCLUDEHIDDEN)
@@ -49,8 +49,8 @@ type _IEnumIDListVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IEnumIDList) IID() co.IID {
-	return co.IID_IEnumIDList
+func (*IEnumIDList) IID() *co.IID {
+	return &co.IID_IEnumIDList
 }
 
 // [Clone] method.
@@ -76,7 +76,7 @@ func (me *IEnumIDList) Clone(releaser *OleReleaser) (*IEnumIDList, error) {
 //	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
 //
 //	var folder *win.IShellFolder
-//	_ = item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
+//	_ = item.BindToHandler(rel, nil, &co.BHID_SFObject, &folder)
 //
 //	pidlList, _ := folder.EnumObjects(
 //		rel,
@@ -175,14 +175,14 @@ func (me *IEnumIDList) Skip(count int) error {
 //	var desktop *win.IShellItem
 //	_ = win.SHGetKnownFolderItem(
 //		rel,
-//		co.FOLDERID_Desktop,
+//		&co.FOLDERID_Desktop,
 //		co.KF_DEFAULT,
 //		win.HANDLE(0),
 //		&desktop,
 //	)
 //
 //	var enumItems *win.IEnumShellItems
-//	_ = desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
+//	_ = desktop.BindToHandler(rel, nil, &co.BHID_EnumItems, &enumItems)
 //
 //	items, _ := enumItems.Enum(rel)
 //	for _, item := range items {
@@ -204,8 +204,8 @@ type _IEnumShellItemsVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IEnumShellItems) IID() co.IID {
-	return co.IID_IEnumShellItems
+func (*IEnumShellItems) IID() *co.IID {
+	return &co.IID_IEnumShellItems
 }
 
 // [Clone] method.
@@ -230,14 +230,14 @@ func (me *IEnumShellItems) Clone(releaser *OleReleaser) (*IEnumShellItems, error
 //	var desktop *win.IShellItem
 //	_ = win.SHGetKnownFolderItem(
 //		rel,
-//		co.FOLDERID_Desktop,
+//		&co.FOLDERID_Desktop,
 //		co.KF_DEFAULT,
 //		win.HANDLE(0),
 //		&desktop,
 //	)
 //
 //	var enumItems *win.IEnumShellItems
-//	_ = desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
+//	_ = desktop.BindToHandler(rel, nil, &co.BHID_EnumItems, &enumItems)
 //
 //	items, _ := enumItems.Enum(rel)
 //	for _, item := range items {
@@ -349,8 +349,8 @@ type _IFileDialogVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IFileDialog) IID() co.IID {
-	return co.IID_IFileDialog
+func (*IFileDialog) IID() *co.IID {
+	return &co.IID_IFileDialog
 }
 
 // [AddPlace] method.
@@ -486,11 +486,11 @@ func (me *IFileDialog) GetResult(releaser *OleReleaser) (*IShellItem, error) {
 // [SetClientGuid] method.
 //
 // [SetClientGuid]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setclientguid
-func (me *IFileDialog) SetClientGuid(guid *GUID) error {
+func (me *IFileDialog) SetClientGuid(pGuid *co.GUID) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetClientGuid,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(guid)))
+		uintptr(unsafe.Pointer(pGuid)))
 	return utl.HresultToError(ret)
 }
 
@@ -686,7 +686,7 @@ func (me *IFileDialog) Unadvise(cookie uint32) error {
 //	var fod *win.IFileOpenDialog
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_FileOpenDialog,
+//		&co.CLSID_FileOpenDialog,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&fod,
@@ -722,8 +722,8 @@ type _IFileOpenDialogVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IFileOpenDialog) IID() co.IID {
-	return co.IID_IFileOpenDialog
+func (*IFileOpenDialog) IID() *co.IID {
+	return &co.IID_IFileOpenDialog
 }
 
 // [GetResults] method.
@@ -763,7 +763,7 @@ func (me *IFileOpenDialog) GetSelectedItems(releaser *OleReleaser) (*IShellItemA
 //	var op *win.IFileOperation
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_FileOperation,
+//		&co.CLSID_FileOperation,
 //		nil,
 //		co.CLSCTX_ALL,
 //		&op,
@@ -799,8 +799,8 @@ type _IFileOperationVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IFileOperation) IID() co.IID {
-	return co.IID_IFileOperation
+func (*IFileOperation) IID() *co.IID {
+	return &co.IID_IFileOperation
 }
 
 // [Advise] method.
@@ -848,7 +848,7 @@ func (me *IFileOperation) ApplyPropertiesToItem(item *IShellItem) error {
 //	var op *win.IFileOperation
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_FileOperation,
+//		&co.CLSID_FileOperation,
 //		nil,
 //		co.CLSCTX_ALL,
 //		&op,
@@ -1029,7 +1029,7 @@ func (me *IFileOperation) Unadvise(cookie uint32) error {
 //	var fsd *win.IFileSaveDialog
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_FileSaveDialog,
+//		&co.CLSID_FileSaveDialog,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&fsd,
@@ -1064,8 +1064,8 @@ type _IFileSaveDialogVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IFileSaveDialog) IID() co.IID {
-	return co.IID_IFileSaveDialog
+func (*IFileSaveDialog) IID() *co.IID {
+	return &co.IID_IFileSaveDialog
 }
 
 // [ApplyProperties] method.
@@ -1132,8 +1132,8 @@ type _IModalWindowVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IModalWindow) IID() co.IID {
-	return co.IID_IModalWindow
+func (*IModalWindow) IID() *co.IID {
+	return &co.IID_IModalWindow
 }
 
 // [Show] method.
@@ -1172,8 +1172,8 @@ type _IOleWindowVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IOleWindow) IID() co.IID {
-	return co.IID_IOleWindow
+func (*IOleWindow) IID() *co.IID {
+	return &co.IID_IOleWindow
 }
 
 // [ContextSensitiveHelp] method.
@@ -1222,7 +1222,7 @@ func (me *IOleWindow) GetWindow() (HWND, error) {
 //	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
 //
 //	var folder *win.IShellFolder
-//	_ = item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
+//	_ = item.BindToHandler(rel, nil, &co.BHID_SFObject, &folder)
 //
 // [IShellFolder]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellfolder
 type IShellFolder struct{ IUnknown }
@@ -1244,8 +1244,8 @@ type _IShellFolderVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IShellFolder) IID() co.IID {
-	return co.IID_IShellFolder
+func (*IShellFolder) IID() *co.IID {
+	return &co.IID_IShellFolder
 }
 
 // [BindToObject] method.
@@ -1257,16 +1257,15 @@ func (me *IShellFolder) BindToObject(
 	bindCtx *IBindCtx,
 	ppOut interface{},
 ) error {
-	iid := com_validateAndRelease(ppOut, releaser)
+	piid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).BindToObject,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(*pidl),
 		uintptr(com_ppvtOrNil(bindCtx)),
-		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
@@ -1280,16 +1279,15 @@ func (me *IShellFolder) BindToStorage(
 	bindCtx *IBindCtx,
 	ppOut interface{},
 ) error {
-	iid := com_validateAndRelease(ppOut, releaser)
+	piid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).BindToStorage,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(*pidl),
 		uintptr(com_ppvtOrNil(bindCtx)),
-		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
@@ -1326,15 +1324,14 @@ func (me *IShellFolder) CreateViewObject(
 	hwndOwner HWND,
 	ppOut interface{},
 ) error {
-	iid := com_validateAndRelease(ppOut, releaser)
+	piid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellFolderVt)(unsafe.Pointer(*me.Ppvt())).CreateViewObject,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hwndOwner),
-		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
@@ -1354,7 +1351,7 @@ func (me *IShellFolder) CreateViewObject(
 //	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp", &item)
 //
 //	var folder *win.IShellFolder
-//	_ = item.BindToHandler(rel, nil, co.BHID_SFObject, &folder)
+//	_ = item.BindToHandler(rel, nil, &co.BHID_SFObject, &folder)
 //
 //	pidlList, _ := folder.EnumObjects(
 //		rel,
@@ -1470,8 +1467,8 @@ type _IShellItemVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IShellItem) IID() co.IID {
-	return co.IID_IShellItem
+func (*IShellItem) IID() *co.IID {
+	return &co.IID_IShellItem
 }
 
 // [BindToHandler] method.
@@ -1488,33 +1485,31 @@ func (*IShellItem) IID() co.IID {
 //	var desktop *win.IShellItem
 //	_ = win.SHGetKnownFolderItem(
 //		rel,
-//		co.FOLDERID_Desktop,
+//		&co.FOLDERID_Desktop,
 //		co.KF_DEFAULT,
 //		win.HANDLE(0),
 //		&desktop,
 //	)
 //
 //	var enumItems *win.IEnumShellItems
-//	_ = desktop.BindToHandler(rel, nil, co.BHID_EnumItems, &enumItems)
+//	_ = desktop.BindToHandler(rel, nil, &co.BHID_EnumItems, &enumItems)
 //
 // [BindToHandler]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-bindtohandler
 func (me *IShellItem) BindToHandler(
 	releaser *OleReleaser,
 	bindCtx *IBindCtx,
-	bhid co.BHID,
+	pBhid *co.BHID,
 	ppOut interface{},
 ) error {
-	iid := com_validateAndRelease(ppOut, releaser)
+	piid := com_validateAndRelease(ppOut, releaser)
 	var ppvtQueried **_IUnknownVt
-	guidBhid := GuidFrom(bhid)
-	guidIid := GuidFrom(iid)
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItemVt)(unsafe.Pointer(*me.Ppvt())).BindToHandler,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(com_ppvtOrNil(bindCtx)),
-		uintptr(unsafe.Pointer(&guidBhid)),
-		uintptr(unsafe.Pointer(&guidIid)),
+		uintptr(unsafe.Pointer(pBhid)),
+		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
 }
@@ -1650,21 +1645,19 @@ type _IShellItem2Vt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IShellItem2) IID() co.IID {
-	return co.IID_IShellItem2
+func (*IShellItem2) IID() *co.IID {
+	return &co.IID_IShellItem2
 }
 
 // [GetBool] method.
 //
 // [GetBool]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getbool
-func (me *IShellItem2) GetBool(pkey co.PKEY) (bool, error) {
-	guidPkey := PropertykeyFrom(pkey)
+func (me *IShellItem2) GetBool(pKey *co.PROPERTYKEY) (bool, error) {
 	var bVal BOOL
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetBool,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&bVal)))
 	return utl.HresultToBoolError(int32(bVal), ret)
 }
@@ -1672,34 +1665,30 @@ func (me *IShellItem2) GetBool(pkey co.PKEY) (bool, error) {
 // [GetCLSID] method.
 //
 // [GetCLSID]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getclsid
-func (me *IShellItem2) GetCLSID(pkey co.PKEY) (co.CLSID, error) {
-	guidPkey := PropertykeyFrom(pkey)
-	var guidClsid GUID
-
+func (me *IShellItem2) GetCLSID(pKey *co.PROPERTYKEY) (co.CLSID, error) {
+	var clsid co.CLSID
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetCLSID,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)),
-		uintptr(unsafe.Pointer(&guidClsid)))
+		uintptr(unsafe.Pointer(pKey)),
+		uintptr(unsafe.Pointer(&clsid)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.CLSID(guidClsid.String()), nil
+		return clsid, nil
 	} else {
-		return co.CLSID(""), hr
+		return co.CLSID{}, hr
 	}
 }
 
 // [GetFileTime] method.
 //
 // [GetFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getfiletime
-func (me *IShellItem2) GetFileTime(pkey co.PKEY) (time.Time, error) {
-	guidPkey := PropertykeyFrom(pkey)
+func (me *IShellItem2) GetFileTime(pKey *co.PROPERTYKEY) (time.Time, error) {
 	var ft FILETIME
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetFileTime,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&ft)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -1712,14 +1701,12 @@ func (me *IShellItem2) GetFileTime(pkey co.PKEY) (time.Time, error) {
 // [GetInt32] method.
 //
 // [GetInt32]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getint32
-func (me *IShellItem2) GetInt32(pkey co.PKEY) (int32, error) {
-	guidPkey := PropertykeyFrom(pkey)
+func (me *IShellItem2) GetInt32(pKey *co.PROPERTYKEY) (int32, error) {
 	var i int32
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetInt32,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&i)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -1734,13 +1721,11 @@ func (me *IShellItem2) GetInt32(pkey co.PKEY) (int32, error) {
 // [GetPropertyStore]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getpropertystore
 func (me *IShellItem2) GetPropertyStore(releaser *OleReleaser, flags co.GPS) (*IPropertyStore, error) {
 	var ppvtQueried **_IUnknownVt
-	guid := GuidFrom(co.IID_IPropertyStore)
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetPropertyStore,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(flags),
-		uintptr(unsafe.Pointer(&guid)),
+		uintptr(unsafe.Pointer(&co.IID_IPropertyStore)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IPropertyStore](ret, ppvtQueried, releaser)
 }
@@ -1763,14 +1748,12 @@ func (me *IShellItem2) GetPropertyStore(releaser *OleReleaser, flags co.GPS) (*I
 //	println(ty)
 //
 // [GetString]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getstring
-func (me *IShellItem2) GetString(pkey co.PKEY) (string, error) {
-	guidPkey := PropertykeyFrom(pkey)
+func (me *IShellItem2) GetString(pKey *co.PROPERTYKEY) (string, error) {
 	var psz uintptr
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetString,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&psz)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -1785,14 +1768,12 @@ func (me *IShellItem2) GetString(pkey co.PKEY) (string, error) {
 // [GetUInt32] method.
 //
 // [GetUInt32]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getuint32
-func (me *IShellItem2) GetUInt32(pkey co.PKEY) (uint32, error) {
-	guidPkey := PropertykeyFrom(pkey)
+func (me *IShellItem2) GetUInt32(pKey *co.PROPERTYKEY) (uint32, error) {
 	var ui uint32
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetUInt32,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&ui)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -1805,14 +1786,12 @@ func (me *IShellItem2) GetUInt32(pkey co.PKEY) (uint32, error) {
 // [GetUInt64] method.
 //
 // [GetUInt64]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getuint64
-func (me *IShellItem2) GetUInt64(pkey co.PKEY) (uint64, error) {
-	guidPkey := PropertykeyFrom(pkey)
+func (me *IShellItem2) GetUInt64(pKey *co.PROPERTYKEY) (uint64, error) {
 	var ull uint64
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellItem2Vt)(unsafe.Pointer(*me.Ppvt())).GetUInt64,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidPkey)),
+		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&ull)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -1854,8 +1833,8 @@ type _IShellItemArrayVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IShellItemArray) IID() co.IID {
-	return co.IID_IShellItemArray
+func (*IShellItemArray) IID() *co.IID {
+	return &co.IID_IShellItemArray
 }
 
 // Returns the path names of each [IShellItem] object by calling
@@ -1999,8 +1978,8 @@ type _IShellLinkVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IShellLink) IID() co.IID {
-	return co.IID_IShellLink
+func (*IShellLink) IID() *co.IID {
+	return &co.IID_IShellLink
 }
 
 // [GetArguments] method.
@@ -2274,8 +2253,8 @@ type _IShellViewVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IShellView) IID() co.IID {
-	return co.IID_IShellView
+func (*IShellView) IID() *co.IID {
+	return &co.IID_IShellView
 }
 
 // [DestroyViewWindow] method.
@@ -2351,7 +2330,7 @@ func (me *IShellView) UIActivate(state co.SVUIA) error {
 //	var taskbl *win.ITaskbarList
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_TaskbarList,
+//		&co.CLSID_TaskbarList,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&taskbl,
@@ -2372,8 +2351,8 @@ type _ITaskbarListVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITaskbarList) IID() co.IID {
-	return co.IID_ITaskbarList
+func (*ITaskbarList) IID() *co.IID {
+	return &co.IID_ITaskbarList
 }
 
 // [ActivateTab] method.
@@ -2444,7 +2423,7 @@ func (me *ITaskbarList) SetActiveAlt(hWnd HWND) error {
 //	var taskbl *win.ITaskbarList2
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_TaskbarList,
+//		&co.CLSID_TaskbarList,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&taskbl,
@@ -2461,8 +2440,8 @@ type _ITaskbarList2Vt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITaskbarList2) IID() co.IID {
-	return co.IID_ITaskbarList2
+func (*ITaskbarList2) IID() *co.IID {
+	return &co.IID_ITaskbarList2
 }
 
 // [MarkFullscreenWindow] method.
@@ -2493,7 +2472,7 @@ func (me *ITaskbarList2) MarkFullscreenWindow(hwnd HWND, fullScreen bool) error 
 //	var taskbl *win.ITaskbarList3
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_TaskbarList,
+//		&co.CLSID_TaskbarList,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&taskbl,
@@ -2521,8 +2500,8 @@ type _ITaskbarList3Vt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITaskbarList3) IID() co.IID {
-	return co.IID_ITaskbarList3
+func (*ITaskbarList3) IID() *co.IID {
+	return &co.IID_ITaskbarList3
 }
 
 // [RegisterTab] method.
@@ -2693,7 +2672,7 @@ func (me *ITaskbarList3) UnregisterTab(hwndTab HWND) error {
 //	var taskbl *win.ITaskbarList4
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_TaskbarList,
+//		&co.CLSID_TaskbarList,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&taskbl,
@@ -2710,8 +2689,8 @@ type _ITaskbarList4Vt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*ITaskbarList4) IID() co.IID {
-	return co.IID_ITaskbarList4
+func (*ITaskbarList4) IID() *co.IID {
+	return &co.IID_ITaskbarList4
 }
 
 // [SetProperties] method.

@@ -2,30 +2,35 @@
 
 package co
 
-// IBindCtx [BindToHandler] bhid, represented as a string.
+import (
+	"fmt"
+	"strconv"
+)
+
+// IBindCtx [BindToHandler] bhid.
 //
 // [BindToHandler]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem-bindtohandler
 type BHID GUID
 
-const (
-	BHID_SFObject           BHID = "3981e224-f559-11d3-8e3a-00c04f6837d5"
-	BHID_SFUIObject         BHID = "3981e225-f559-11d3-8e3a-00c04f6837d5"
-	BHID_SFViewObject       BHID = "3981e226-f559-11d3-8e3a-00c04f6837d5"
-	BHID_Storage            BHID = "3981e227-f559-11d3-8e3a-00c04f6837d5"
-	BHID_Stream             BHID = "1cebb3ab-7c10-499a-a417-92ca16c4cb83"
-	BHID_RandomAccessStream BHID = "f16fc93b-77ae-4cfe-bda7-a866eea6878d"
-	BHID_LinkTargetItem     BHID = "3981e228-f559-11d3-8e3a-00c04f6837d5"
-	BHID_StorageEnum        BHID = "4621a4e3-f0d6-4773-8a9c-46e77b174840"
-	BHID_Transfer           BHID = "5d080304-fe2c-48fc-84ce-cf620b0f3c53"
-	BHID_PropertyStore      BHID = "0384e1a4-1523-439c-a4c8-ab911052f586"
-	BHID_ThumbnailHandler   BHID = "7b2e650a-8e20-4f4a-b09e-6597afc72fb0"
-	BHID_EnumItems          BHID = "94f60519-2850-4924-aa5a-d15e84868039"
-	BHID_DataObject         BHID = "b8c0bd9f-ed24-455c-83e6-d5390c4fe8c4"
-	BHID_AssociationArray   BHID = "bea9ef17-82f1-4f60-9284-4f8db75c3be9"
-	BHID_Filter             BHID = "38d08778-f557-4690-9ebf-ba54706ad8f7"
-	BHID_EnumAssocHandlers  BHID = "b8ab0b9c-c2ec-4f7a-918d-314900e6280a"
-	BHID_StorageItem        BHID = "404e2109-77d2-4699-a5a0-4fdf10db9837"
-	BHID_FilePlaceholder    BHID = "8677dceb-aae0-4005-8d3d-547fa852f825"
+var (
+	BHID_SFObject           = BHID(GUID{0x3981e224, 0xf559, 0x11d3, [8]byte{0x8e, 0x3a, 0x00, 0xc0, 0x4f, 0x68, 0x37, 0xd5}})
+	BHID_SFUIObject         = BHID(GUID{0x3981e225, 0xf559, 0x11d3, [8]byte{0x8e, 0x3a, 0x00, 0xc0, 0x4f, 0x68, 0x37, 0xd5}})
+	BHID_SFViewObject       = BHID(GUID{0x3981e226, 0xf559, 0x11d3, [8]byte{0x8e, 0x3a, 0x00, 0xc0, 0x4f, 0x68, 0x37, 0xd5}})
+	BHID_Storage            = BHID(GUID{0x3981e227, 0xf559, 0x11d3, [8]byte{0x8e, 0x3a, 0x00, 0xc0, 0x4f, 0x68, 0x37, 0xd5}})
+	BHID_Stream             = BHID(GUID{0x1cebb3ab, 0x7c10, 0x499a, [8]byte{0xa4, 0x17, 0x92, 0xca, 0x16, 0xc4, 0xcb, 0x83}})
+	BHID_RandomAccessStream = BHID(GUID{0xf16fc93b, 0x77ae, 0x4cfe, [8]byte{0xbd, 0xa7, 0xa8, 0x66, 0xee, 0xa6, 0x87, 0x8d}})
+	BHID_LinkTargetItem     = BHID(GUID{0x3981e228, 0xf559, 0x11d3, [8]byte{0x8e, 0x3a, 0x00, 0xc0, 0x4f, 0x68, 0x37, 0xd5}})
+	BHID_StorageEnum        = BHID(GUID{0x4621a4e3, 0xf0d6, 0x4773, [8]byte{0x8a, 0x9c, 0x46, 0xe7, 0x7b, 0x17, 0x48, 0x40}})
+	BHID_Transfer           = BHID(GUID{0x5d080304, 0xfe2c, 0x48fc, [8]byte{0x84, 0xce, 0xcf, 0x62, 0x0b, 0x0f, 0x3c, 0x53}})
+	BHID_PropertyStore      = BHID(GUID{0x0384e1a4, 0x1523, 0x439c, [8]byte{0xa4, 0xc8, 0xab, 0x91, 0x10, 0x52, 0xf5, 0x86}})
+	BHID_ThumbnailHandler   = BHID(GUID{0x7b2e650a, 0x8e20, 0x4f4a, [8]byte{0xb0, 0x9e, 0x65, 0x97, 0xaf, 0xc7, 0x2f, 0xb0}})
+	BHID_EnumItems          = BHID(GUID{0x94f60519, 0x2850, 0x4924, [8]byte{0xaa, 0x5a, 0xd1, 0x5e, 0x84, 0x86, 0x80, 0x39}})
+	BHID_DataObject         = BHID(GUID{0xb8c0bd9f, 0xed24, 0x455c, [8]byte{0x83, 0xe6, 0xd5, 0x39, 0x0c, 0x4f, 0xe8, 0xc4}})
+	BHID_AssociationArray   = BHID(GUID{0xbea9ef17, 0x82f1, 0x4f60, [8]byte{0x92, 0x84, 0x4f, 0x8d, 0xb7, 0x5c, 0x3b, 0xe9}})
+	BHID_Filter             = BHID(GUID{0x38d08778, 0xf557, 0x4690, [8]byte{0x9e, 0xbf, 0xba, 0x54, 0x70, 0x6a, 0xd8, 0xf7}})
+	BHID_EnumAssocHandlers  = BHID(GUID{0xb8ab0b9c, 0xc2ec, 0x4f7a, [8]byte{0x91, 0x8d, 0x31, 0x49, 0x00, 0xe6, 0x28, 0x0a}})
+	BHID_StorageItem        = BHID(GUID{0x404e2109, 0x77d2, 0x4699, [8]byte{0xa5, 0xa0, 0x4f, 0xdf, 0x10, 0xdb, 0x98, 0x37}})
+	BHID_FilePlaceholder    = BHID(GUID{0x8677dceb, 0xaae0, 0x4005, [8]byte{0x8d, 0x3d, 0x54, 0x7f, 0xa8, 0x52, 0xf8, 0x25}})
 )
 
 // [BIND_FLAGS] enumeration.
@@ -69,7 +74,7 @@ const (
 	CLSCTX_SERVER                        = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER
 )
 
-// A COM [class ID], represented as a string.
+// A COM [class ID].
 //
 // [class ID]: https://learn.microsoft.com/en-us/windows/win32/com/clsid-key-hklm
 type CLSID GUID
@@ -297,30 +302,92 @@ const (
 	FACILITY_PIX                                      FACILITY = 2748
 )
 
-// A [GUID] struct, represented as a string.
+// [GUID] struct.
 //
 // [GUID]: https://learn.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
-type GUID string
+type GUID struct {
+	Data1 uint32
+	Data2 uint16
+	Data3 uint16
+	Data4 [8]uint8
+}
 
-const (
-	GUID_NULL GUID = "00000000-0000-0000-0000-000000000000"
-)
+// Parses the string in the format "00000000-0000-0000-c000-000000000046" into
+// the GUID.
+//
+// Example:
+//
+//	var guid co.GUID
+//	guid.FromString("00000000-0000-0000-c000-000000000046")
+func (g *GUID) FromString(s string) error {
+	if len(s) != 36 || s[8] != '-' || s[13] != '-' || s[18] != '-' || s[23] != '-' {
+		return fmt.Errorf("Malformed GUID string '%s'", s)
+	}
 
-// A COM [interface ID], represented as a string.
+	p1, err := strconv.ParseUint(s[0:8], 16, 32)
+	if err != nil {
+		return fmt.Errorf("GUID part 1 '%s': %w", s[0:8], err)
+	}
+	p2, err := strconv.ParseUint(s[9:13], 16, 16)
+	if err != nil {
+		return fmt.Errorf("GUID part 2 '%s': %w", s[9:13], err)
+	}
+	p3, err := strconv.ParseUint(s[14:18], 16, 16)
+	if err != nil {
+		return fmt.Errorf("GUID part 3 '%s': %w", s[14:18], err)
+	}
+	p4, err := strconv.ParseUint(s[19:23], 16, 16)
+	if err != nil {
+		return fmt.Errorf("GUID part 4 '%s': %w", s[19:23], err)
+	}
+	p5, err := strconv.ParseUint(s[24:36], 16, 64)
+	if err != nil {
+		return fmt.Errorf("GUID part 5 '%s': %w", s[24:36], err)
+	}
+
+	g.Data1 = uint32(p1)
+	g.Data2 = uint16(p2)
+	g.Data3 = uint16(p3)
+	g.Data4[0] = uint8(p4 >> 8)
+	g.Data4[1] = uint8(p4)
+	g.Data4[2] = uint8(p5 >> 40)
+	g.Data4[3] = uint8(p5 >> 32)
+	g.Data4[4] = uint8(p5 >> 24)
+	g.Data4[5] = uint8(p5 >> 16)
+	g.Data4[6] = uint8(p5 >> 8)
+	g.Data4[7] = uint8(p5)
+	return nil
+}
+
+// Returns a string with the GUID formatted as
+// "00000000-0000-0000-c000-000000000046".
+//
+// Example:
+//
+//	var guid co.GUID
+//	guid.FromString("00000000-0000-0000-c000-000000000046")
+//	println(guid.String())
+func (g *GUID) String() string {
+	return fmt.Sprintf("%08x-%04x-%04x-%04x-%02x%02x%02x%02x%02x%02x",
+		g.Data1, g.Data2, g.Data3,
+		uint16(g.Data4[1])|((uint16(g.Data4[0]))<<8),
+		g.Data4[2], g.Data4[3], g.Data4[4], g.Data4[5], g.Data4[6], g.Data4[7])
+}
+
+// A COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 type IID GUID
 
 // Ole IID identifier.
-const (
-	IID_IBindCtx          IID = "0000000e-0000-0000-c000-000000000046"
-	IID_IDataObject       IID = "0000010e-0000-0000-c000-000000000046"
-	IID_IDropTarget       IID = "00000122-0000-0000-c000-000000000046"
-	IID_IEnumString       IID = "00000101-0000-0000-c000-000000000046"
-	IID_ISequentialStream IID = "0c733a30-2a1c-11ce-ade5-00aa0044773d"
-	IID_IStream           IID = "0000000c-0000-0000-c000-000000000046"
-	IID_IUnknown          IID = "00000000-0000-0000-c000-000000000046"
-	IID_NULL                  = IID(GUID_NULL)
+var (
+	IID_IBindCtx          = IID(GUID{0x0000000e, 0x0000, 0x0000, [8]byte{0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46}})
+	IID_IDataObject       = IID(GUID{0x0000010e, 0x0000, 0x0000, [8]byte{0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46}})
+	IID_IDropTarget       = IID(GUID{0x00000122, 0x0000, 0x0000, [8]byte{0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46}})
+	IID_IEnumString       = IID(GUID{0x00000101, 0x0000, 0x0000, [8]byte{0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46}})
+	IID_ISequentialStream = IID(GUID{0x0c733a30, 0x2a1c, 0x11ce, [8]byte{0xad, 0xe5, 0x00, 0xaa, 0x00, 0x44, 0x77, 0x3d}})
+	IID_IStream           = IID(GUID{0x0000000c, 0x0000, 0x0000, [8]byte{0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46}})
+	IID_IUnknown          = IID(GUID{0x00000000, 0x0000, 0x0000, [8]byte{0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46}})
 )
 
 // [LOCKTYPE] enumeration.

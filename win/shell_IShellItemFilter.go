@@ -22,8 +22,8 @@ type IShellItemFilter struct{ IUnknown }
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IShellItemFilter) IID() co.IID {
-	return co.IID_IShellItemFilter
+func (*IShellItemFilter) IID() *co.IID {
+	return &co.IID_IShellItemFilter
 }
 
 type _IShellItemFilterImpl struct {

@@ -28,8 +28,8 @@ type _IWICBitmapVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICBitmap) IID() co.IID {
-	return co.IID_IWICBitmap
+func (*IWICBitmap) IID() *co.IID {
+	return &co.IID_IWICBitmap
 }
 
 // [Lock] method.
@@ -95,8 +95,8 @@ type _IWICBitmapCodecInfoVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICBitmapCodecInfo) IID() co.IID {
-	return co.IID_IWICBitmapCodecInfo
+func (*IWICBitmapCodecInfo) IID() *co.IID {
+	return &co.IID_IWICBitmapCodecInfo
 }
 
 // [DoesSupportAnimation] method.
@@ -151,16 +151,16 @@ func (me *IWICBitmapCodecInfo) DoesSupportMultiframe() (bool, error) {
 //
 // [GetContainerFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getcontainerformat
 func (me *IWICBitmapCodecInfo) GetContainerFormat() (co.WIC_CONTAINER, error) {
-	var guid GUID
+	var wc co.WIC_CONTAINER
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICBitmapCodecInfoVt)(unsafe.Pointer(*me.Ppvt())).GetContainerFormat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guid)))
+		uintptr(unsafe.Pointer(&wc)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.WIC_CONTAINER(guid.String()), nil
+		return wc, nil
 	} else {
-		return "", hr
+		return co.WIC_CONTAINER{}, hr
 	}
 }
 
@@ -174,24 +174,18 @@ func (me *IWICBitmapCodecInfo) GetPixelFormats() ([]co.WIC_PIXELFORMAT, error) {
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		0, 0,
 		uintptr(unsafe.Pointer(&numFormats)))
-
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, hr
 	}
 
-	formatGuids := make([]GUID, numFormats)
+	formats := make([]co.WIC_PIXELFORMAT, numFormats)
 	ret, _, _ = syscall.SyscallN(
 		(*_IWICBitmapCodecInfoVt)(unsafe.Pointer(*me.Ppvt())).GetPixelFormats,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(numFormats),
-		uintptr(unsafe.Pointer(unsafe.SliceData(formatGuids))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(formats))),
 		uintptr(unsafe.Pointer(&numFormats)))
-
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		formats := make([]co.WIC_PIXELFORMAT, 0, numFormats)
-		for _, guid := range formatGuids {
-			formats = append(formats, co.WIC_PIXELFORMAT(guid.String()))
-		}
 		return formats, nil
 	} else {
 		return nil, hr
@@ -225,7 +219,7 @@ func (me *IWICBitmapCodecInfo) MatchesMimeType(mimeType string) (bool, error) {
 //	var factory *win.IWICImagingFactory
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_WICImagingFactory,
+//		&co.CLSID_WICImagingFactory,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&factory,
@@ -260,8 +254,8 @@ type _IWICBitmapDecoderVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICBitmapDecoder) IID() co.IID {
-	return co.IID_IWICBitmapDecoder
+func (*IWICBitmapDecoder) IID() *co.IID {
+	return &co.IID_IWICBitmapDecoder
 }
 
 // [CopyPalette] method.
@@ -279,16 +273,16 @@ func (me *IWICBitmapDecoder) CopyPalette(palette *IWICPalette) error {
 //
 // [GetContainerFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapdecoder-getcontainerformat
 func (me *IWICBitmapDecoder) GetContainerFormat() (co.WIC_CONTAINER, error) {
-	var guid GUID
+	var wc co.WIC_CONTAINER
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICBitmapDecoderVt)(unsafe.Pointer(*me.Ppvt())).GetContainerFormat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guid)))
+		uintptr(unsafe.Pointer(&wc)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.WIC_CONTAINER(guid.String()), nil
+		return wc, nil
 	} else {
-		return "", hr
+		return co.WIC_CONTAINER{}, hr
 	}
 }
 
@@ -393,8 +387,8 @@ type _IWICBitmapDecoderInfoVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICBitmapDecoderInfo) IID() co.IID {
-	return co.IID_IWICBitmapDecoderInfo
+func (*IWICBitmapDecoderInfo) IID() *co.IID {
+	return &co.IID_IWICBitmapDecoderInfo
 }
 
 // [CreateInstance] method.
@@ -430,7 +424,7 @@ func (me *IWICBitmapDecoderInfo) MatchesPattern(stream *IStream) (bool, error) {
 //	var factory *win.IWICImagingFactory
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_WICImagingFactory,
+//		&co.CLSID_WICImagingFactory,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&factory,
@@ -458,8 +452,8 @@ type _IWICBitmapEncoderVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICBitmapEncoder) IID() co.IID {
-	return co.IID_IWICBitmapEncoder
+func (*IWICBitmapEncoder) IID() *co.IID {
+	return &co.IID_IWICBitmapEncoder
 }
 
 // [Commit] method.
@@ -474,16 +468,16 @@ func (me *IWICBitmapEncoder) Commit() error {
 //
 // [GetContainerFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapencoder-getcontainerformat
 func (me *IWICBitmapEncoder) GetContainerFormat() (co.WIC_CONTAINER, error) {
-	var guid GUID
+	var wc co.WIC_CONTAINER
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICBitmapEncoderVt)(unsafe.Pointer(*me.Ppvt())).GetContainerFormat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guid)))
+		uintptr(unsafe.Pointer(&wc)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.WIC_CONTAINER(guid.String()), nil
+		return wc, nil
 	} else {
-		return "", hr
+		return co.WIC_CONTAINER{}, hr
 	}
 }
 
@@ -555,8 +549,8 @@ type _IWICBitmapEncoderInfoVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICBitmapEncoderInfo) IID() co.IID {
-	return co.IID_IWICBitmapEncoderInfo
+func (*IWICBitmapEncoderInfo) IID() *co.IID {
+	return &co.IID_IWICBitmapEncoderInfo
 }
 
 // [CreateInstance] method.
@@ -579,7 +573,7 @@ func (me *IWICBitmapEncoderInfo) CreateInstance(releaser *OleReleaser) (*IWICBit
 //	var factory *win.IWICImagingFactory
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_WICImagingFactory,
+//		&co.CLSID_WICImagingFactory,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&factory,
@@ -608,8 +602,8 @@ type _IWICBitmapFrameDecodeVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICBitmapFrameDecode) IID() co.IID {
-	return co.IID_IWICBitmapFrameDecode
+func (*IWICBitmapFrameDecode) IID() *co.IID {
+	return &co.IID_IWICBitmapFrameDecode
 }
 
 // [GetThumbnail] method.
@@ -638,8 +632,8 @@ type _IWICBitmapLockVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICBitmapLock) IID() co.IID {
-	return co.IID_IWICBitmapLock
+func (*IWICBitmapLock) IID() *co.IID {
+	return &co.IID_IWICBitmapLock
 }
 
 // [GetDataPointer] method.
@@ -716,8 +710,8 @@ type _IWICBitmapSourceVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICBitmapSource) IID() co.IID {
-	return co.IID_IWICBitmapSource
+func (*IWICBitmapSource) IID() *co.IID {
+	return &co.IID_IWICBitmapSource
 }
 
 // [CopyPalette] method.
@@ -749,16 +743,16 @@ func (me *IWICBitmapSource) CopyPixels(rc *WICRect, stride, szBuffer int, pBuffe
 //
 // [GetPixelFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapsource-getpixelformat
 func (me *IWICBitmapSource) GetPixelFormat() (co.WIC_PIXELFORMAT, error) {
-	var guid GUID
+	var pf co.WIC_PIXELFORMAT
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICBitmapSourceVt)(unsafe.Pointer(*me.Ppvt())).GetPixelFormat,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guid)))
+		uintptr(unsafe.Pointer(&pf)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.WIC_PIXELFORMAT(guid.String()), nil
+		return pf, nil
 	} else {
-		return "", hr
+		return co.WIC_PIXELFORMAT{}, hr
 	}
 }
 
@@ -820,8 +814,8 @@ type _IWICComponentInfoVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICComponentInfo) IID() co.IID {
-	return co.IID_IWICComponentInfo
+func (*IWICComponentInfo) IID() *co.IID {
+	return &co.IID_IWICComponentInfo
 }
 
 // [GetAuthor] method.
@@ -858,16 +852,16 @@ func (me *IWICComponentInfo) GetAuthor() (string, error) {
 //
 // [GetCLSID]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwiccomponentinfo-getclsid
 func (me *IWICComponentInfo) GetCLSID() (co.CLSID, error) {
-	var guid GUID
+	var clsid co.CLSID
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICComponentInfoVt)(unsafe.Pointer(*me.Ppvt())).GetCLSID,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guid)))
+		uintptr(unsafe.Pointer(&clsid)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.CLSID(guid.String()), nil
+		return clsid, nil
 	} else {
-		return "", hr
+		return co.CLSID{}, hr
 	}
 }
 
@@ -952,16 +946,16 @@ func (me *IWICComponentInfo) GetSpecVersion() (string, error) {
 //
 // [GetVendorGUID]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwiccomponentinfo-getvendorguid
 func (me *IWICComponentInfo) GetVendorGUID() (co.GUID, error) {
-	var guid GUID
+	var guid co.GUID
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICComponentInfoVt)(unsafe.Pointer(*me.Ppvt())).GetVendorGUID,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&guid)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.GUID(guid.String()), nil
+		return guid, nil
 	} else {
-		return "", hr
+		return co.GUID{}, hr
 	}
 }
 
@@ -1011,23 +1005,20 @@ type _IWICFormatConverterVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICFormatConverter) IID() co.IID {
-	return co.IID_IWICFormatConverter
+func (*IWICFormatConverter) IID() *co.IID {
+	return &co.IID_IWICFormatConverter
 }
 
 // [CanConvert] method.
 //
 // [CanConvert]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicformatconverter-canconvert
 func (me *IWICFormatConverter) CanConvert(srcPixelFormat, destPixelFormat co.WIC_PIXELFORMAT) (bool, error) {
-	guidSrc := GuidFrom(srcPixelFormat)
-	guidDest := GuidFrom(destPixelFormat)
 	var canConvert BOOL
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICFormatConverterVt)(unsafe.Pointer(*me.Ppvt())).CanConvert,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidSrc)),
-		uintptr(unsafe.Pointer(&guidDest)),
+		uintptr(unsafe.Pointer(&srcPixelFormat)),
+		uintptr(unsafe.Pointer(&destPixelFormat)),
 		uintptr(unsafe.Pointer(&canConvert)))
 	return utl.HresultToBoolError(int32(canConvert), ret)
 }
@@ -1043,12 +1034,11 @@ func (me *IWICFormatConverter) Initialize(
 	alphaThresholdPercent float64,
 	paletteTranslate co.WICBMP_PAL,
 ) error {
-	guidDestFormat := GuidFrom(destFormat)
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICFormatConverterVt)(unsafe.Pointer(*me.Ppvt())).Initialize,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(source.Ppvt())),
-		uintptr(unsafe.Pointer(&guidDestFormat)),
+		uintptr(unsafe.Pointer(&destFormat)),
 		uintptr(unsafe.Pointer(&dither)),
 		uintptr(com_ppvtOrNil(palette)),
 		uintptr(alphaThresholdPercent),
@@ -1072,7 +1062,7 @@ func (me *IWICFormatConverter) Initialize(
 //	var factory *win.IWICImagingFactory
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_WICImagingFactory,
+//		&co.CLSID_WICImagingFactory,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&factory,
@@ -1113,8 +1103,8 @@ type _IWICImagingFactoryVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICImagingFactory) IID() co.IID {
-	return co.IID_IWICImagingFactory
+func (*IWICImagingFactory) IID() *co.IID {
+	return &co.IID_IWICImagingFactory
 }
 
 // [CreateBitmap] method.
@@ -1127,14 +1117,12 @@ func (me *IWICImagingFactory) CreateBitmap(
 	option co.WICBMP_CACHE,
 ) (*IWICBitmap, error) {
 	var ppvtQueried **_IUnknownVt
-	guidPixelFormat := GuidFrom(pixelFormat)
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateBitmap,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(sz.Cx)),
 		uintptr(uint32(sz.Cy)),
-		uintptr(unsafe.Pointer(&guidPixelFormat)),
+		uintptr(unsafe.Pointer(&pixelFormat)),
 		uintptr(option),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IWICBitmap](ret, ppvtQueried, releaser)
@@ -1184,14 +1172,12 @@ func (me *IWICImagingFactory) CreateBitmapFromMemory(
 	srcBuf []byte,
 ) (*IWICBitmap, error) {
 	var ppvtQueried **_IUnknownVt
-	guidPixelFormat := GuidFrom(pixelFormat)
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateBitmapFromMemory,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(newBmpSz.Cx)),
 		uintptr(uint32(newBmpSz.Cy)),
-		uintptr(unsafe.Pointer(&guidPixelFormat)),
+		uintptr(unsafe.Pointer(&pixelFormat)),
 		uintptr(uint32(stride)),
 		uintptr(uint32(len(srcBuf))),
 		uintptr(unsafe.Pointer(unsafe.SliceData(srcBuf))),
@@ -1241,31 +1227,25 @@ func (me *IWICImagingFactory) CreateBitmapFromSourceRect(
 
 // [CreateDecoderFromFileHandle] method.
 //
-// For a null guidVendor, pass [co.GUID_NULL].
-//
 // [CreateDecoderFromFileHandle]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createdecoderfromfilehandle
 func (me *IWICImagingFactory) CreateDecoderFromFileHandle(
 	releaser *OleReleaser,
 	hFile HFILE,
-	guidVendor co.GUID,
+	pGuidVendor *co.GUID,
 	metadataOpts co.WICDEC_METADATACACHE,
 ) (*IWICBitmapDecoder, error) {
 	var ppvtQueried **_IUnknownVt
-	var guidGuidVendor GUID
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromFileHandle,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hFile),
-		uintptr(com_guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
+		uintptr(unsafe.Pointer(pGuidVendor)),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IWICBitmapDecoder](ret, ppvtQueried, releaser)
 }
 
 // [CreateDecoderFromFilename] method.
-//
-// For a null guidVendor, pass [co.GUID_NULL].
 //
 // Example:
 //
@@ -1275,7 +1255,7 @@ func (me *IWICImagingFactory) CreateDecoderFromFileHandle(
 //	var factory *win.IWICImagingFactory
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_WICImagingFactory,
+//		&co.CLSID_WICImagingFactory,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&factory,
@@ -1284,7 +1264,7 @@ func (me *IWICImagingFactory) CreateDecoderFromFileHandle(
 //	decoder, _ := factory.CreateDecoderFromFilename(
 //		rel,
 //		"C:\\Temp\\foo.png",
-//		co.GUID_NULL,
+//		nil,
 //		co.GENERIC_READ,
 //		co.WICDEC_METADATACACHE_OnDemand,
 //	)
@@ -1293,19 +1273,18 @@ func (me *IWICImagingFactory) CreateDecoderFromFileHandle(
 func (me *IWICImagingFactory) CreateDecoderFromFilename(
 	releaser *OleReleaser,
 	filename string,
-	guidVendor co.GUID,
+	pGuidVendor *co.GUID,
 	desiredAccess co.GENERIC,
 	metadataOpts co.WICDEC_METADATACACHE,
 ) (*IWICBitmapDecoder, error) {
 	var ppvtQueried **_IUnknownVt
 	var wFilename wstr.BufEncoder
-	var guidGuidVendor GUID
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromFilename,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wFilename.AllowEmpty(filename)),
-		uintptr(com_guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
+		uintptr(unsafe.Pointer(pGuidVendor)),
 		uintptr(desiredAccess),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
@@ -1314,31 +1293,25 @@ func (me *IWICImagingFactory) CreateDecoderFromFilename(
 
 // [CreateDecoderFromStream] method.
 //
-// For a null guidVendor, pass [co.GUID_NULL].
-//
 // [CreateDecoderFromStream]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createdecoderfromstream
 func (me *IWICImagingFactory) CreateDecoderFromStream(
 	releaser *OleReleaser,
 	stream *IStream,
-	guidVendor co.GUID,
+	pGuidVendor *co.GUID,
 	metadataOpts co.WICDEC_METADATACACHE,
 ) (*IWICBitmapDecoder, error) {
 	var ppvtQueried **_IUnknownVt
-	var guidGuidVendor GUID
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateDecoderFromStream,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(stream.Ppvt())),
-		uintptr(com_guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
+		uintptr(unsafe.Pointer(pGuidVendor)),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IWICBitmapDecoder](ret, ppvtQueried, releaser)
 }
 
 // [CreateEncoder] method.
-//
-// For a null guidVendor, pass [co.GUID_NULL].
 //
 // Example:
 //
@@ -1348,7 +1321,7 @@ func (me *IWICImagingFactory) CreateDecoderFromStream(
 //	var factory *win.IWICImagingFactory
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_WICImagingFactory,
+//		&co.CLSID_WICImagingFactory,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&factory,
@@ -1356,25 +1329,22 @@ func (me *IWICImagingFactory) CreateDecoderFromStream(
 //
 //	encoder, _ := factory.CreateEncoder(
 //		rel,
-//		co.WIC_CONTAINER_Bmp,
-//		co.GUID_NULL,
+//		&co.WIC_CONTAINER_Bmp,
+//		nil,
 //	)
 //
 // [CreateEncoder]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createencoder
 func (me *IWICImagingFactory) CreateEncoder(
 	releaser *OleReleaser,
-	guidContainer co.WIC_CONTAINER,
-	guidVendor co.GUID,
+	pGuidContainer *co.WIC_CONTAINER,
+	pGuidVendor *co.GUID,
 ) (*IWICBitmapEncoder, error) {
 	var ppvtQueried **_IUnknownVt
-	guidGuidContainer := GuidFrom(guidContainer)
-	var guidGuidVendor GUID
-
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICImagingFactoryVt)(unsafe.Pointer(*me.Ppvt())).CreateEncoder,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&guidGuidContainer)),
-		uintptr(com_guidStructPtrOrNil(guidVendor, &guidGuidVendor)),
+		uintptr(unsafe.Pointer(pGuidContainer)),
+		uintptr(unsafe.Pointer(pGuidVendor)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IWICBitmapEncoder](ret, ppvtQueried, releaser)
 }
@@ -1401,7 +1371,7 @@ func (me *IWICImagingFactory) CreateFormatConverter(releaser *OleReleaser) (*IWI
 //	var factory *win.IWICImagingFactory
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_WICImagingFactory,
+//		&co.CLSID_WICImagingFactory,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&factory,
@@ -1439,7 +1409,7 @@ func (me *IWICImagingFactory) CreateStream(releaser *OleReleaser) (*IWICStream, 
 //	var factory *win.IWICImagingFactory
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_WICImagingFactory,
+//		&co.CLSID_WICImagingFactory,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&factory,
@@ -1467,8 +1437,8 @@ type _IWICPaletteVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICPalette) IID() co.IID {
-	return co.IID_IWICPalette
+func (*IWICPalette) IID() *co.IID {
+	return &co.IID_IWICPalette
 }
 
 // [GetColorCount] method.
@@ -1570,8 +1540,8 @@ type _IWICStreamVt struct {
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IWICStream) IID() co.IID {
-	return co.IID_IWICStream
+func (*IWICStream) IID() *co.IID {
+	return &co.IID_IWICStream
 }
 
 // [InitializeFromFilename] method.

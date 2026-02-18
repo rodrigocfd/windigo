@@ -28,9 +28,10 @@ import (
 //	var op *win.IFileOperation
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_FileOperation,
+//		&co.CLSID_FileOperation,
 //		nil,
-//		co.CLSCTX_ALL, &op,
+//		co.CLSCTX_ALL,
+//		&op,
 //	)
 //
 //	sink := win.NewIFileOperationProgressSinkImpl(rel)
@@ -53,8 +54,8 @@ type IFileOperationProgressSink struct{ IUnknown }
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-func (*IFileOperationProgressSink) IID() co.IID {
-	return co.IID_IFileOperationProgressSink
+func (*IFileOperationProgressSink) IID() *co.IID {
+	return &co.IID_IFileOperationProgressSink
 }
 
 type _IFileOperationProgressSinkImpl struct {
@@ -92,9 +93,10 @@ type _IFileOperationProgressSinkImpl struct {
 //	var op *win.IFileOperation
 //	_ = win.CoCreateInstance(
 //		rel,
-//		co.CLSID_FileOperation,
+//		&co.CLSID_FileOperation,
 //		nil,
-//		co.CLSCTX_ALL, &op,
+//		co.CLSCTX_ALL,
+//		&op,
 //	)
 //
 //	sink := win.NewIFileOperationProgressSinkImpl(rel)

@@ -30,12 +30,12 @@ type OleObj interface {
 	//
 	// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 	// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
-	IID() co.IID
+	IID() *co.IID
 
 	// Returns the [COM] virtual table pointer.
 	//
-	// This is a low-level method, used internally by the library. Incorrect usage
-	// may lead to segmentation faults.
+	// This is a low-level method, used internally by the library. Incorrect
+	// usage may lead to segmentation faults.
 	//
 	// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 	Ppvt() **_IUnknownVt
@@ -49,23 +49,12 @@ func com_ppvtOrNil(obj OleObj) unsafe.Pointer {
 	return nil
 }
 
-// Converts a GUID string into the GUID struct buffer, returning its pointer.
-//
-// If strGuid is [co.GUID_NULL], returns nil.
-func com_guidStructPtrOrNil[T ~string](strGuid T, guidStructBuf *GUID) unsafe.Pointer {
-	if co.GUID(strGuid) == co.GUID_NULL {
-		return nil
-	}
-	*guidStructBuf = GuidFrom(strGuid)
-	return unsafe.Pointer(guidStructBuf)
-}
-
 // Validates the pointer to pointer to COM object. Panics if fails.
 //
 // If the object is fine, calls [OleReleaser.ReleaseNow].
 //
 // Returns the [OleObj.IID] of the underlying pointed-to object.
-func com_validateAndRelease(ppOut interface{}, releaser *OleReleaser) co.IID {
+func com_validateAndRelease(ppOut interface{}, releaser *OleReleaser) *co.IID {
 	ppTy := reflect.TypeOf(ppOut) // **IUnknown
 	if ppTy.Kind() != reflect.Ptr {
 		panic("You must a pass a pointer to a pointer COM object [**Ty failed].")
