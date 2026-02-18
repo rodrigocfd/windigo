@@ -26,7 +26,7 @@ func (me TabItem) displayContent() {
 
 	for idx, child := range me.owner.children {
 		if idx != int(me.index) {
-			child.Content.Hwnd().ShowWindow(co.SW_HIDE) // hide all others
+			child.Hwnd().ShowWindow(co.SW_HIDE) // hide all others
 		}
 	}
 
@@ -34,10 +34,15 @@ func (me TabItem) displayContent() {
 	rcTab, _ := me.owner.hWnd.GetWindowRect()
 	hParent.ScreenToClientRc(&rcTab)
 	me.owner.hWnd.SendMessage(co.TCM_ADJUSTRECT, 0, win.LPARAM(unsafe.Pointer(&rcTab))) // ideal child size
-	me.owner.children[me.index].Content.Hwnd().
+	me.owner.children[me.index].Hwnd().
 		SetWindowPos(win.HWND(0), int(rcTab.Left), int(rcTab.Top), // resize child to ideal size
 			int(rcTab.Right-rcTab.Left), int(rcTab.Bottom-rcTab.Top),
 			co.SWP_NOZORDER|co.SWP_SHOWWINDOW)
+}
+
+// Returns the [Control] window rendered inside this item.
+func (me TabItem) Child() *Control {
+	return me.owner.children[me.index]
 }
 
 // Returns the zero-based index of the item.

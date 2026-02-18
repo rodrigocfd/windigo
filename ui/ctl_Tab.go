@@ -20,42 +20,52 @@ import (
 type Tab struct {
 	_BaseCtrl
 	events   TabEvents
-	children []TabIns
+	children []*Control
 	Items    TabItemCollection // Methods to interact with the items collection.
 }
 
 // Creates a new [Tab] with [win.CreateWindowEx].
 //
-// Before creating the tab, you must create an [ui.Control] to each tab content.
-// They behave like ordinary child control windows, being shown/hidden by the
-// tab control.
+// Panics if no titles are defined for the tab items.
 //
 // Example:
 //
-//	var (
-//		wndOwner ui.Parent // initialized somewhere
-//		child1   *ui.Control
-//		child2   *ui.Control
-//	)
+//	runtime.LockOSThread()
 //
-//	tab := ui.NewTab(
-//		wndOwner,
-//		ui.OptsTab().
-//			Position(ui.Dpi(510, 20)).
-//			Size(ui.Dpi(170, 180)).
-//			Items(
-//				ui.TabIns{Title: "First", Content: child1},
-//				ui.TabIns{Title: "Second", Content: child2},
-//			),
+//	wnd := ui.NewMain(
+//		ui.OptsMain().
+//			Title("Hello world"),
 //	)
+//	tab := ui.NewTab(
+//		wnd,
+//		ui.OptsTab().
+//			Title("First", "Second").
+//			Position(ui.Dpi(10, 10)).
+//			Size(ui.Dpi(200, 200)),
+//	)
+//	btn := ui.NewButton(
+//		tab.Items.Get(0).Child(), // this button belongs to 1st tab
+//		ui.OptsButton().
+//			Text("Click").
+//			Position(ui.Dpi(10, 10)),
+//	)
+//	wnd.RunAsMain()
 func NewTab(parent Parent, opts *VarOptsTab) *Tab {
+	if len(opts.titles) == 0 {
+		panic("Cannot create a Tab control without tab items.")
+	}
+
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Tab{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		children:  opts.items,
+		children:  make([]*Control, 0, len(opts.titles)),
 		events:    TabEvents{opts.ctrlId, &parent.base().userEvents},
 	}
 	me.Items.owner = me
+	for i := 0; i < len(opts.titles); i++ {
+		me.children = append(me.children,
+			NewControl(parent, OptsControl().ExStyle(co.WS_EX_LEFT))) // create the Control containers
+	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysTabControl32", "",
@@ -63,8 +73,8 @@ func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 		if opts.ctrlExStyle != co.TCS_EX(0) {
 			me.SetExtendedStyle(true, opts.ctrlExStyle)
 		}
-		for _, child := range me.children {
-			me.Items.add(child.Title) // add each tab
+		for _, title := range opts.titles {
+			me.Items.add(title) // add each tab item
 		}
 		me.Items.Get(opts.selected).Select()
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
@@ -77,39 +87,45 @@ func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 // Instantiates a new [Tab] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
 //
-// Before creating the tab, you must create an [ui.Control] to each tab content.
-// They behave like ordinary child control windows, being shown/hidden by the
-// tab control.
+// Panics if no titles are defined for the tab items.
 //
 // Example:
 //
-//	const ID_TAB uint16 = 0x100
-//
-//	var (
-//		wndOwner ui.Parent // initialized somewhere
-//		child1   *ui.Control
-//		child2   *ui.Control
+//	const (
+//		ID_MAIN_DLG uint16 = 1000
+//		ID_TAB_FOO  uint16 = 1001
+//		ID_BTN_FOO  uint16 = 1002
 //	)
 //
-//	tab := ui.NewTabDlg(
-//		wndOwner,
-//		ID_TAB,
-//		ui.LAY_HOLD_HOLD,
-//		ui.TabIns{Title: "First", Content: child1},
-//		ui.TabIns{Title: "Second", Content: child2},
+//	runtime.LockOSThread()
+//
+//	wnd := ui.NewMainDlg(
+//		ui.OptsMainDlg().
+//			DlgId(ID_MAIN_DLG),
 //	)
-func NewTabDlg(parent Parent, ctrlId uint16, layout LAY, items ...TabIns) *Tab {
+//	tab := ui.NewTabDlg(wnd, ID_TAB_FOO, ui.LAY_HOLD_HOLD, "First", "Second")
+//	btn := ui.NewButtonDlg(tab.Items.Get(0).Child(), ID_BTN_FOO, ui.LAY_HOLD_HOLD)
+//	wnd.RunAsMain()
+func NewTabDlg(parent Parent, ctrlId uint16, layout LAY, titles ...string) *Tab {
+	if len(titles) == 0 {
+		panic("Cannot create a Tab control without tab items.")
+	}
+
 	me := &Tab{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		children:  items,
+		children:  make([]*Control, 0, len(titles)),
 		events:    TabEvents{ctrlId, &parent.base().userEvents},
 	}
 	me.Items.owner = me
+	for i := 0; i < len(titles); i++ {
+		me.children = append(me.children,
+			NewControl(parent, OptsControl().ExStyle(co.WS_EX_LEFT))) // create the Control containers
+	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
-		for _, child := range me.children {
-			me.Items.add(child.Title) // add each tab
+		for _, title := range titles {
+			me.Items.add(title) // add each tab item
 		}
 		me.Items.Get(0).displayContent() // 1st tab selected by default
 		parent.base().layout.Add(parent, me.hWnd, layout)
@@ -161,14 +177,8 @@ type VarOptsTab struct {
 	wndStyle    co.WS
 	wndExStyle  co.WS_EX
 
-	items    []TabIns
+	titles   []string
 	selected int
-}
-
-// Title and content of a tab to be added to a [Tab] control in [NewTab].
-type TabIns struct {
-	Title   string   // Title of the tab.
-	Content *Control // Custom control to be rendered inside the tab.
 }
 
 // Options for [NewTab].
@@ -233,10 +243,8 @@ func (o *VarOptsTab) WndStyle(s co.WS) *VarOptsTab { o.wndStyle = s; return o }
 // Defaults to co.WS_EX_LEFT.
 func (o *VarOptsTab) WndExStyle(s co.WS_EX) *VarOptsTab { o.wndExStyle = s; return o }
 
-// Items to be added as soon as the control is created.
-//
-// Defaults to none.
-func (o *VarOptsTab) Items(t ...TabIns) *VarOptsTab { o.items = t; return o }
+// Titles of the tab items to be created.
+func (o *VarOptsTab) Titles(t ...string) *VarOptsTab { o.titles = t; return o }
 
 // Zero-based index of the item initially selected.
 //
