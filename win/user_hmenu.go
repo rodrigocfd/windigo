@@ -9,6 +9,7 @@ import (
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/dll"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // Handle to a [menu].
@@ -47,6 +48,22 @@ func CreatePopupMenu() (HMENU, error) {
 }
 
 var _user_CreatePopupMenu *syscall.Proc
+
+// [AppendMenu] function.
+//
+// [AppendMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-appendmenuw
+func (hMenu HMENU) AppendMenu(flags co.MFT, cmdId uint16, title string) error {
+	var wTitle wstr.BufEncoder
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_AppendMenu, "AppendMenuW"),
+		uintptr(hMenu),
+		uintptr(flags),
+		uintptr(uint32(cmdId)),
+		uintptr(wTitle.AllowEmpty(title)))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _user_AppendMenu *syscall.Proc
 
 // [CheckMenuItem] function for multiple items, using the item command ID.
 //
