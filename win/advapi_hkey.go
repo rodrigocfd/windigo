@@ -119,6 +119,31 @@ func (hKey HKEY) RegCopyTree(subKey string, dest HKEY) error {
 
 var _advapi_RegCopyTreeW *syscall.Proc
 
+// [RegCreateKey] function.
+//
+// ⚠️ You must defer [HKEY.RegCloseKey].
+//
+// [RegCreateKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regcreatekeyw
+func (hKey HKEY) RegCreateKey(
+	subKey string,
+) (HKEY, error) {
+	var wSubKey wstr.BufEncoder
+	var openedKey HKEY
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Advapi.Load(&_advapi_RegCreateKeyW, "RegCreateKeyW"),
+		uintptr(hKey),
+		uintptr(wSubKey.EmptyIsNil(subKey)),
+		uintptr(unsafe.Pointer(&openedKey)))
+
+	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
+		return HKEY(0), wErr
+	}
+	return openedKey, nil
+}
+
+var _advapi_RegCreateKeyW *syscall.Proc
+
 // [RegCreateKeyEx] function.
 //
 // ⚠️ You must defer [HKEY.RegCloseKey].
