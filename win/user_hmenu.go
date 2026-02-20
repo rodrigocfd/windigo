@@ -55,7 +55,7 @@ var _user_CreatePopupMenu *syscall.Proc
 func (hMenu HMENU) AppendMenu(flags co.MFT, cmdId uint16, title string) error {
 	var wTitle wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
-		dll.User.Load(&_user_AppendMenu, "AppendMenuW"),
+		dll.User.Load(&_user_AppendMenuW, "AppendMenuW"),
 		uintptr(hMenu),
 		uintptr(flags),
 		uintptr(uint32(cmdId)),
@@ -63,7 +63,7 @@ func (hMenu HMENU) AppendMenu(flags co.MFT, cmdId uint16, title string) error {
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
-var _user_AppendMenu *syscall.Proc
+var _user_AppendMenuW *syscall.Proc
 
 // [CheckMenuItem] function for multiple items, using the item command ID.
 //
