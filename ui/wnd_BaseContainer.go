@@ -10,7 +10,7 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 )
 
-const _WM_UI_THREAD = 0xbfff // Internal message to run closures from another thread (last WM_APP value).
+const _WM_UI_THREAD co.WM = 0xbfff // Internal message to run closures from another thread (last WM_APP value).
 
 // Base to raw and dialog container windows.
 type _BaseContainer struct {

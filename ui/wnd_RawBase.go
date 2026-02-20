@@ -8,6 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/wstr"
 )
@@ -126,7 +127,8 @@ func wndProcCallback() uintptr {
 					cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
 					pMe = (*_RawBase)(unsafe.Pointer(cs.LpCreateParams))
 					pMe.hWnd = hWnd
-					hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe))) // store
+					utl.PtrCache.Add(unsafe.Pointer(pMe)) // released in WM_NCDESTROY
+					hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 				} else {
 					ptr, _ := hWnd.GetWindowLongPtr(co.GWLP_USERDATA) // retrieve
 					pMe = (*_RawBase)(unsafe.Pointer(ptr))
@@ -155,6 +157,7 @@ func wndProcCallback() uintptr {
 					hWnd.SetWindowLongPtr(co.GWLP_USERDATA, 0)
 					pMe.hWnd = win.HWND(0)
 					pMe.clearMessages()
+					utl.PtrCache.Delete(unsafe.Pointer(pMe))
 				}
 
 				if hasUserRet {
