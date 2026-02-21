@@ -577,6 +577,11 @@ func (st *SYSTEMTIME) SetDuration(dur time.Duration) {
 }
 
 // Converts this SYSTEMTIME to [time.Time].
+//
+// Example:
+//
+//	st := win.GetLocalTime()
+//	t := st.ToTime()
 func (st *SYSTEMTIME) ToTime() time.Time {
 	return time.Date(int(st.WYear), time.Month(st.WMonth), int(st.WDay),
 		int(st.WHour), int(st.WMinute), int(st.WSecond),

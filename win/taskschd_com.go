@@ -4,6 +4,7 @@ package win
 
 import (
 	"syscall"
+	"time"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
@@ -923,26 +924,30 @@ func (me *IRegisteredTask) GetPath() (string, error) {
 // [GetRunTimes] method.
 //
 // [GetRunTimes]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregisteredtask-getruntimes
-func (me *IRegisteredTask) GetRunTimes(pStart, pEnd *SYSTEMTIME, count int) ([]SYSTEMTIME, error) {
+func (me *IRegisteredTask) GetRunTimes(start, end time.Time, count int) ([]time.Time, error) {
+	var stStart, stEnd SYSTEMTIME
+	stStart.SetTime(start)
+	stEnd.SetTime(end)
+
 	count32 := uint32(count)
-	var pRunTimes HTASKMEM
+	var pRunTimes HTASKMEM // will be allocated by the OS
 	defer pRunTimes.CoTaskMemFree()
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IRegisteredTaskVt)(unsafe.Pointer(*me.Ppvt())).GetRunTimes,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(pStart)),
-		uintptr(unsafe.Pointer(pEnd)),
+		uintptr(unsafe.Pointer(&stStart)),
+		uintptr(unsafe.Pointer(&stEnd)),
 		uintptr(unsafe.Pointer(&count32)),
 		uintptr(unsafe.Pointer(&pRunTimes)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		hTaskST := unsafe.Slice((*SYSTEMTIME)(unsafe.Pointer(pRunTimes)), count32)
-		buf := make([]SYSTEMTIME, 0, count32)
-		for _, st := range hTaskST {
-			buf = append(buf, st)
+		memStRunTimes := unsafe.Slice((*SYSTEMTIME)(unsafe.Pointer(pRunTimes)), count32)
+		runTimes := make([]time.Time, 0, count32)
+		for _, st := range memStRunTimes {
+			runTimes = append(runTimes, st.ToTime())
 		}
-		return buf, nil
+		return runTimes, nil
 	} else {
 		return nil, hr
 	}
