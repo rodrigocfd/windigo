@@ -430,7 +430,11 @@ func (me *IWICBitmapDecoderInfo) MatchesPattern(stream *IStream) (bool, error) {
 //		&factory,
 //	)
 //
-//	encoder, _ := factory.CreateEncoder(rel, co.WIC_CONTAINER_Bmp, "")
+//	encoder, _ := factory.CreateEncoder(
+//		rel,
+//		&co.WIC_CONTAINER_Bmp,
+//		nil,
+//	)
 //
 // [IWICBitmapEncoder]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapencoder
 type IWICBitmapEncoder struct{ IUnknown }
@@ -1012,13 +1016,13 @@ func (*IWICFormatConverter) IID() *co.IID {
 // [CanConvert] method.
 //
 // [CanConvert]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicformatconverter-canconvert
-func (me *IWICFormatConverter) CanConvert(srcPixelFormat, destPixelFormat co.WIC_PIXELFORMAT) (bool, error) {
+func (me *IWICFormatConverter) CanConvert(pSrcPixelFormat, pDestPixelFormat *co.WIC_PIXELFORMAT) (bool, error) {
 	var canConvert BOOL
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICFormatConverterVt)(unsafe.Pointer(*me.Ppvt())).CanConvert,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&srcPixelFormat)),
-		uintptr(unsafe.Pointer(&destPixelFormat)),
+		uintptr(unsafe.Pointer(pSrcPixelFormat)),
+		uintptr(unsafe.Pointer(pDestPixelFormat)),
 		uintptr(unsafe.Pointer(&canConvert)))
 	return utl.HresultToBoolError(int32(canConvert), ret)
 }
@@ -1028,7 +1032,7 @@ func (me *IWICFormatConverter) CanConvert(srcPixelFormat, destPixelFormat co.WIC
 // [Initialize]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicformatconverter-initialize
 func (me *IWICFormatConverter) Initialize(
 	source *IWICBitmapSource,
-	destFormat co.WIC_PIXELFORMAT,
+	pDestFormat *co.WIC_PIXELFORMAT,
 	dither co.WICBMP_DITHER,
 	palette *IWICPalette,
 	alphaThresholdPercent float64,
@@ -1038,7 +1042,7 @@ func (me *IWICFormatConverter) Initialize(
 		(*_IWICFormatConverterVt)(unsafe.Pointer(*me.Ppvt())).Initialize,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(source.Ppvt())),
-		uintptr(unsafe.Pointer(&destFormat)),
+		uintptr(unsafe.Pointer(pDestFormat)),
 		uintptr(unsafe.Pointer(&dither)),
 		uintptr(com_ppvtOrNil(palette)),
 		uintptr(alphaThresholdPercent),
@@ -1113,7 +1117,7 @@ func (*IWICImagingFactory) IID() *co.IID {
 func (me *IWICImagingFactory) CreateBitmap(
 	releaser *OleReleaser,
 	sz SIZE,
-	pixelFormat co.WIC_PIXELFORMAT,
+	pPixelFormat *co.WIC_PIXELFORMAT,
 	option co.WICBMP_CACHE,
 ) (*IWICBitmap, error) {
 	var ppvtQueried **_IUnknownVt
@@ -1122,7 +1126,7 @@ func (me *IWICImagingFactory) CreateBitmap(
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(sz.Cx)),
 		uintptr(uint32(sz.Cy)),
-		uintptr(unsafe.Pointer(&pixelFormat)),
+		uintptr(unsafe.Pointer(pPixelFormat)),
 		uintptr(option),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IWICBitmap](ret, ppvtQueried, releaser)
@@ -1167,7 +1171,7 @@ func (me *IWICImagingFactory) CreateBitmapFromHICON(releaser *OleReleaser, hIcon
 func (me *IWICImagingFactory) CreateBitmapFromMemory(
 	releaser *OleReleaser,
 	newBmpSz SIZE,
-	pixelFormat co.WIC_PIXELFORMAT,
+	pPixelFormat *co.WIC_PIXELFORMAT,
 	stride int,
 	srcBuf []byte,
 ) (*IWICBitmap, error) {
@@ -1177,7 +1181,7 @@ func (me *IWICImagingFactory) CreateBitmapFromMemory(
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(newBmpSz.Cx)),
 		uintptr(uint32(newBmpSz.Cy)),
-		uintptr(unsafe.Pointer(&pixelFormat)),
+		uintptr(unsafe.Pointer(pPixelFormat)),
 		uintptr(uint32(stride)),
 		uintptr(uint32(len(srcBuf))),
 		uintptr(unsafe.Pointer(unsafe.SliceData(srcBuf))),
