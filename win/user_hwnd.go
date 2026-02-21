@@ -193,11 +193,11 @@ var _user_AnimateWindow *syscall.Proc
 //	defer hWnd.EndPaint(&ps)
 //
 // [BeginPaint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-beginpaint
-func (hWnd HWND) BeginPaint(ps *PAINTSTRUCT) (HDC, error) {
+func (hWnd HWND) BeginPaint(pPs *PAINTSTRUCT) (HDC, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_BeginPaint, "BeginPaint"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(ps)))
+		uintptr(unsafe.Pointer(pPs)))
 	if ret == 0 {
 		return HDC(0), co.ERROR_INVALID_PARAMETER
 	}
@@ -255,11 +255,11 @@ var _user_ChildWindowFromPointEx *syscall.Proc
 // [ClientToScreen] function for [POINT].
 //
 // [ClientToScreen]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clienttoscreen
-func (hWnd HWND) ClientToScreenPt(pt *POINT) error {
+func (hWnd HWND) ClientToScreenPt(pPt *POINT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_ClientToScreen, "ClientToScreen"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(pt)))
+		uintptr(unsafe.Pointer(pPt)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -398,11 +398,11 @@ var _user_EndDialog *syscall.Proc
 // Paired with [HWND.BeginPaint].
 //
 // [EndPaint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-endpaint
-func (hWnd HWND) EndPaint(ps *PAINTSTRUCT) {
+func (hWnd HWND) EndPaint(pPs *PAINTSTRUCT) {
 	_, _, _ = syscall.SyscallN(
 		dll.User.Load(&_user_EndPaint, "EndPaint"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(ps)))
+		uintptr(unsafe.Pointer(pPs)))
 }
 
 var _user_EndPaint *syscall.Proc
@@ -663,13 +663,13 @@ var _user_GetParent *syscall.Proc
 // [GetScrollInfo] function.
 //
 // [GetScrollInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getscrollinfo
-func (hWnd HWND) GetScrollInfo(bar co.SBB, si *SCROLLINFO) error {
-	si.SetCbSize() // safety
+func (hWnd HWND) GetScrollInfo(bar co.SBB, pSi *SCROLLINFO) error {
+	pSi.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_GetScrollInfo, "GetScrollInfo"),
 		uintptr(hWnd),
 		uintptr(bar),
-		uintptr(unsafe.Pointer(si)))
+		uintptr(unsafe.Pointer(pSi)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -952,11 +952,11 @@ func (hWnd HWND) IsDialog() (bool, error) {
 // [IsDialogMessage] function.
 //
 // [IsDialogMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isdialogmessagew
-func (hWnd HWND) IsDialogMessage(msg *MSG) bool {
+func (hWnd HWND) IsDialogMessage(pMsg *MSG) bool {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_IsDialogMessageW, "IsDialogMessageW"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(msg)))
+		uintptr(unsafe.Pointer(pMsg)))
 	return ret != 0
 }
 
@@ -1088,11 +1088,11 @@ var _user_RealChildWindowFromPoint *syscall.Proc
 // [RedrawWindow] function.
 //
 // [RedrawWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-redrawwindow
-func (hWnd HWND) RedrawWindow(rcUpdate *RECT, hrgnUpdate HRGN, flags co.RDW) error {
+func (hWnd HWND) RedrawWindow(pRcUpdate *RECT, hrgnUpdate HRGN, flags co.RDW) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_RedrawWindow, "RedrawWindow"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(rcUpdate)),
+		uintptr(unsafe.Pointer(pRcUpdate)),
 		uintptr(hrgnUpdate),
 		uintptr(flags))
 	return utl.ZeroAsSysInvalidParm(ret)
@@ -1116,11 +1116,11 @@ var _user_ReleaseDC *syscall.Proc
 // [ScreenToClient] function for [POINT].
 //
 // [ScreenToClient]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-screentoclient
-func (hWnd HWND) ScreenToClientPt(pt *POINT) error {
+func (hWnd HWND) ScreenToClientPt(pPt *POINT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_ScreenToClient, "ScreenToClient"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(pt)))
+		uintptr(unsafe.Pointer(pPt)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -1227,13 +1227,13 @@ var _user_SetParent *syscall.Proc
 // [SetScrollInfo] function.
 //
 // [SetScrollInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setscrollinfo
-func (hWnd HWND) SetScrollInfo(bar co.SBB, si *SCROLLINFO, redraw bool) int {
-	si.SetCbSize() // safety
+func (hWnd HWND) SetScrollInfo(bar co.SBB, pSi *SCROLLINFO, redraw bool) int {
+	pSi.SetCbSize() // safety
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_SetScrollInfo, "SetScrollInfo"),
 		uintptr(hWnd),
 		uintptr(bar),
-		uintptr(unsafe.Pointer(si)),
+		uintptr(unsafe.Pointer(pSi)),
 		utl.BoolToUintptr(redraw))
 	return int(int32(ret))
 }
@@ -1284,12 +1284,12 @@ var _user_SetWindowFeedbackSetting *syscall.Proc
 // [SetWindowPlacement] function.
 //
 // [SetWindowPlacement]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowplacement
-func (hWnd HWND) SetWindowPlacement(wp *WINDOWPLACEMENT) error {
-	wp.SetLength() // safety
+func (hWnd HWND) SetWindowPlacement(pWp *WINDOWPLACEMENT) error {
+	pWp.SetLength() // safety
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_SetWindowPlacement, "SetWindowPlacement"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(wp)))
+		uintptr(unsafe.Pointer(pWp)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -1471,12 +1471,12 @@ func (hWnd HWND) Style() (co.WS, error) {
 // [TranslateAccelerator] function.
 //
 // [TranslateAccelerator]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translateacceleratorw
-func (hWnd HWND) TranslateAccelerator(hAccel HACCEL, msg *MSG) error {
+func (hWnd HWND) TranslateAccelerator(hAccel HACCEL, pMsg *MSG) error {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_TranslateAcceleratorW, "TranslateAcceleratorW"),
 		uintptr(hWnd),
 		uintptr(hAccel),
-		uintptr(unsafe.Pointer(msg)))
+		uintptr(unsafe.Pointer(pMsg)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

@@ -165,7 +165,7 @@ var _shell_SHCreateItemFromRelativeName *syscall.Proc
 func SHCreateMemStream(releaser *OleReleaser, src []byte) (*IStream, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Shlwapi.Load(&_shlwapi_SHCreateMemStream, "SHCreateMemStream"),
-		uintptr(unsafe.Pointer(unsafe.SliceData(src))),
+		uintptr(unsafe.Pointer(&src[0])),
 		uintptr(uint32(len(src))))
 	if ret == 0 {
 		return nil, co.HRESULT_E_OUTOFMEMORY
@@ -200,7 +200,7 @@ func SHCreateShellItemArray(
 		for _, pidl := range pidlChildren {
 			pidlChildrenObjs = append(pidlChildrenObjs, *pidl)
 		}
-		pidlChildrenObjsPtr = unsafe.SliceData(pidlChildrenObjs)
+		pidlChildrenObjsPtr = &pidlChildrenObjs[0]
 	}
 
 	ret, _, _ := syscall.SyscallN(
@@ -250,7 +250,7 @@ func SHCreateShellItemArrayFromIDLists(
 	ret, _, _ := syscall.SyscallN(
 		dll.Shell.Load(&_shell_SHCreateShellItemArrayFromIDLists, "SHCreateShellItemArrayFromIDLists"),
 		uintptr(uint32(len(pidls))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(pidlObjs))),
+		uintptr(unsafe.Pointer(&pidlObjs[0])),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IShellItemArray](ret, ppvtQueried, releaser)
 }
@@ -410,11 +410,11 @@ var _shell_SHGetPropertyStoreFromParsingName *syscall.Proc
 // [Shell_NotifyIcon] function.
 //
 // [Shell_NotifyIcon]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-func Shell_NotifyIcon(message co.NIM, data *NOTIFYICONDATA) error {
+func Shell_NotifyIcon(message co.NIM, pData *NOTIFYICONDATA) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Shell.Load(&_shell_Shell_NotifyIconW, "Shell_NotifyIconW"),
 		uintptr(message),
-		uintptr(unsafe.Pointer(data)))
+		uintptr(unsafe.Pointer(pData)))
 	if ret == 0 {
 		return co.ERROR_INVALID_PARAMETER
 	}
@@ -426,11 +426,11 @@ var _shell_Shell_NotifyIconW *syscall.Proc
 // [Shell_NotifyIconGetRect] function.
 //
 // [Shell_NotifyIconGetRect]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyicongetrect
-func Shell_NotifyIconGetRect(identifier *NOTIFYICONIDENTIFIER) (RECT, error) {
+func Shell_NotifyIconGetRect(pIdent *NOTIFYICONIDENTIFIER) (RECT, error) {
 	var rc RECT
 	ret, _, _ := syscall.SyscallN(
 		dll.Shell.Load(&_shell_Shell_NotifyIconGetRect, "Shell_NotifyIconGetRect"),
-		uintptr(unsafe.Pointer(identifier)),
+		uintptr(unsafe.Pointer(pIdent)),
 		uintptr(unsafe.Pointer(&rc)))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return RECT{}, hr

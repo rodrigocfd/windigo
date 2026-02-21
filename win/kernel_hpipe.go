@@ -32,7 +32,7 @@ func CreateNamedPipe(
 	nOutBufferSize int,
 	nInBufferSize int,
 	nDefaultTimeOut int,
-	securityAttributes *SECURITY_ATTRIBUTES,
+	pSecurityAttributes *SECURITY_ATTRIBUTES,
 ) (HPIPE, error) {
 	var wName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
@@ -44,7 +44,7 @@ func CreateNamedPipe(
 		uintptr(uint32(nOutBufferSize)),
 		uintptr(uint32(nInBufferSize)),
 		uintptr(uint32(nDefaultTimeOut)),
-		uintptr(unsafe.Pointer(securityAttributes)))
+		uintptr(unsafe.Pointer(pSecurityAttributes)))
 	if ret == 0 {
 		return HPIPE(0), co.ERROR(err)
 	}
@@ -57,14 +57,14 @@ var _kernel_CreateNamedPipeW *syscall.Proc
 //
 // [CreatePipe]: https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createpipe
 func CreatePipe(
-	securityAttributes *SECURITY_ATTRIBUTES,
+	pSecurityAttributes *SECURITY_ATTRIBUTES,
 	size int,
 ) (hPipeRead, hPipeWrite HPIPE, wErr error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_CreatePipe, "CreatePipe"),
 		uintptr(unsafe.Pointer(&hPipeRead)),
 		uintptr(unsafe.Pointer(&hPipeWrite)),
-		uintptr(unsafe.Pointer(securityAttributes)),
+		uintptr(unsafe.Pointer(pSecurityAttributes)),
 		uintptr(uint32(size)))
 	if ret == 0 {
 		return HPIPE(0), HPIPE(0), co.ERROR(err)
@@ -149,7 +149,7 @@ func (hPipe HPIPE) PeekNamedPipe(buffer []byte) (HpipePeek, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_PeekNamedPipe, "PeekNamedPipe"),
 		uintptr(hPipe),
-		uintptr(unsafe.Pointer(unsafe.SliceData(buffer))),
+		uintptr(unsafe.Pointer(&buffer[0])),
 		uintptr(uint32(len(buffer))),
 		uintptr(unsafe.Pointer(&info.Read)),
 		uintptr(unsafe.Pointer(&info.Available)),
@@ -174,9 +174,9 @@ type HpipePeek struct {
 // [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hPipe HPIPE) ReadFile(
 	buffer []byte,
-	overlapped *OVERLAPPED,
+	pOverlapped *OVERLAPPED,
 ) (numBytesRead int, wErr error) {
-	return HFILE(hPipe).ReadFile(buffer, overlapped)
+	return HFILE(hPipe).ReadFile(buffer, pOverlapped)
 }
 
 // [SetHandleInformation] function.
@@ -191,7 +191,7 @@ func (hPipe HPIPE) SetHandleInformation(mask, flags co.HANDLE_FLAG) error {
 // [WriteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
 func (hPipe HPIPE) WriteFile(
 	data []byte,
-	overlapped *OVERLAPPED,
+	pOverlapped *OVERLAPPED,
 ) (numBytesWritten int, wErr error) {
-	return HFILE(hPipe).WriteFile(data, overlapped)
+	return HFILE(hPipe).WriteFile(data, pOverlapped)
 }

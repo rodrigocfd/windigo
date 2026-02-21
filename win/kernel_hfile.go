@@ -30,7 +30,7 @@ func CreateFile(
 	fileName string,
 	desiredAccess co.GENERIC,
 	shareMode co.FILE_SHARE,
-	securityAttributes *SECURITY_ATTRIBUTES,
+	pSecurityAttributes *SECURITY_ATTRIBUTES,
 	creationDisposition co.DISPOSITION,
 	attributes co.FILE_ATTRIBUTE,
 	flags co.FILE_FLAG,
@@ -43,7 +43,7 @@ func CreateFile(
 		uintptr(wFileName.EmptyIsNil(fileName)),
 		uintptr(desiredAccess),
 		uintptr(shareMode),
-		uintptr(unsafe.Pointer(securityAttributes)),
+		uintptr(unsafe.Pointer(pSecurityAttributes)),
 		uintptr(creationDisposition),
 		uintptr(uint32(attributes)|uint32(flags)|uint32(security)),
 		uintptr(hTemplateFile))
@@ -92,7 +92,7 @@ var _kernel_GetFileSizeEx *syscall.Proc
 //
 // [CreateFileMapping]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-createfilemappingw
 func (hFile HFILE) CreateFileMapping(
-	securityAttributes *SECURITY_ATTRIBUTES,
+	pSecurityAttributes *SECURITY_ATTRIBUTES,
 	protectPage co.PAGE,
 	protectSec co.SEC,
 	maxSize int,
@@ -106,7 +106,7 @@ func (hFile HFILE) CreateFileMapping(
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_CreateFileMappingFromApp, "CreateFileMappingFromApp"),
 		uintptr(hFile),
-		uintptr(unsafe.Pointer(securityAttributes)),
+		uintptr(unsafe.Pointer(pSecurityAttributes)),
 		uintptr(uint32(protectPage)|uint32(protectSec)),
 		uintptr(maxHi),
 		uintptr(maxLo),
@@ -172,7 +172,7 @@ var _kernel_LockFile *syscall.Proc
 func (hFile HFILE) LockFileEx(
 	flags co.LOCKFILE,
 	numBytes int,
-	overlapped *OVERLAPPED,
+	pOverlapped *OVERLAPPED,
 ) error {
 	utl.PanicNeg(numBytes)
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
@@ -184,7 +184,7 @@ func (hFile HFILE) LockFileEx(
 		0,
 		uintptr(numBytesLo),
 		uintptr(numBytesHi),
-		uintptr(unsafe.Pointer(overlapped)))
+		uintptr(unsafe.Pointer(pOverlapped)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -195,16 +195,16 @@ var _kernel_LockFileEx *syscall.Proc
 // [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hFile HFILE) ReadFile(
 	destBuf []byte,
-	overlapped *OVERLAPPED,
+	pOverlapped *OVERLAPPED,
 ) (numBytesRead int, wErr error) {
 	var numBytesRead32 uint32
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_ReadFile, "ReadFile"),
 		uintptr(hFile),
-		uintptr(unsafe.Pointer(unsafe.SliceData(destBuf))),
+		uintptr(unsafe.Pointer(&destBuf[0])),
 		uintptr(uint32(len(destBuf))),
 		uintptr(unsafe.Pointer(&numBytesRead32)),
-		uintptr(unsafe.Pointer(overlapped)))
+		uintptr(unsafe.Pointer(pOverlapped)))
 
 	if wErr = co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return 0, wErr
@@ -274,7 +274,7 @@ var _kernel_UnlockFile *syscall.Proc
 // Panics if numBytes is negative.
 //
 // [UnlockFileEx]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-unlockfileex
-func (hFile HFILE) UnlockFileEx(numBytes int, overlapped *OVERLAPPED) error {
+func (hFile HFILE) UnlockFileEx(numBytes int, pOverlapped *OVERLAPPED) error {
 	utl.PanicNeg(numBytes)
 	numBytesLo, numBytesHi := utl.Break64(uint64(numBytes))
 
@@ -284,7 +284,7 @@ func (hFile HFILE) UnlockFileEx(numBytes int, overlapped *OVERLAPPED) error {
 		0,
 		uintptr(numBytesLo),
 		uintptr(numBytesHi),
-		uintptr(unsafe.Pointer(overlapped)))
+		uintptr(unsafe.Pointer(pOverlapped)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -295,16 +295,16 @@ var _kernel_UnlockFileEx *syscall.Proc
 // [WriteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
 func (hFile HFILE) WriteFile(
 	data []byte,
-	overlapped *OVERLAPPED,
+	pOverlapped *OVERLAPPED,
 ) (numBytesWritten int, wErr error) {
 	var written32 uint32
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_WriteFile, "WriteFile"),
 		uintptr(hFile),
-		uintptr(unsafe.Pointer(unsafe.SliceData(data))),
+		uintptr(unsafe.Pointer(&data[0])),
 		uintptr(uint32(len(data))),
 		uintptr(unsafe.Pointer(&written32)),
-		uintptr(unsafe.Pointer(overlapped)))
+		uintptr(unsafe.Pointer(pOverlapped)))
 
 	if wErr = co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return 0, wErr

@@ -21,10 +21,10 @@ type HACTCTX HANDLE
 // ⚠️ You must defer [HACTCTX.ReleaseActCtx].
 //
 // [CreateActCtx]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createactctxw
-func CreateActCtx(actctx *ACTCTX) (HACTCTX, error) {
+func CreateActCtx(pActctx *ACTCTX) (HACTCTX, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_CreateActCtx, "CreateActCtx"),
-		uintptr(unsafe.Pointer(actctx)))
+		uintptr(unsafe.Pointer(pActctx)))
 
 	if int(ret) == utl.INVALID_HANDLE_VALUE {
 		return HACTCTX(0), co.ERROR(err)

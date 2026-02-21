@@ -26,12 +26,12 @@ type HFIND HANDLE
 // ⚠️ You must defer [HFIND.FindClose].
 //
 // [FindFirstFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
-func FindFirstFile(fileName string, findFileData *WIN32_FIND_DATA) (HFIND, bool, error) {
+func FindFirstFile(fileName string, pWfd *WIN32_FIND_DATA) (HFIND, bool, error) {
 	var wFileName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_FindFirstFileW, "FindFirstFileW"),
 		uintptr(wFileName.EmptyIsNil(fileName)),
-		uintptr(unsafe.Pointer(findFileData)))
+		uintptr(unsafe.Pointer(pWfd)))
 
 	if int(ret) == utl.INVALID_HANDLE_VALUE {
 		if wErr := co.ERROR(err); wErr == co.ERROR_FILE_NOT_FOUND || wErr == co.ERROR_PATH_NOT_FOUND {
@@ -66,11 +66,11 @@ var _kernel_FindClose *syscall.Proc
 // This is a low-level function, prefer using [PathEnum] or [PathEnumDeep].
 //
 // [FindNextFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
-func (hFind HFIND) FindNextFile(findFileData *WIN32_FIND_DATA) (bool, error) {
+func (hFind HFIND) FindNextFile(pWfd *WIN32_FIND_DATA) (bool, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_FindNextFileW, "FindNextFileW"),
 		uintptr(hFind),
-		uintptr(unsafe.Pointer(findFileData)))
+		uintptr(unsafe.Pointer(pWfd)))
 
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {

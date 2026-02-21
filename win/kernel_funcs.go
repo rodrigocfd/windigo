@@ -32,12 +32,12 @@ var _kernel_CopyFileW *syscall.Proc
 // [CreateDirectory] function.
 //
 // [CreateDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw
-func CreateDirectory(pathName string, securityAttributes *SECURITY_ATTRIBUTES) error {
+func CreateDirectory(pathName string, pSecurityAttributes *SECURITY_ATTRIBUTES) error {
 	var wPathName wstr.BufEncoder
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_CreateDirectoryW, "CreateDirectoryW"),
 		uintptr(wPathName.EmptyIsNil(pathName)),
-		uintptr(unsafe.Pointer(securityAttributes)))
+		uintptr(unsafe.Pointer(pSecurityAttributes)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -74,12 +74,12 @@ var _kernel_CreateDirectoryW *syscall.Proc
 // [CreateProcess]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw
 func CreateProcess(
 	applicationName, commandLine string,
-	processAttributes, threadAttributes *SECURITY_ATTRIBUTES,
+	pProcessAttributes, pThreadAttributes *SECURITY_ATTRIBUTES,
 	inheritHandles bool,
 	creationFlags co.CREATE,
 	environment map[string]string,
 	currentDirectory string,
-	startupInfo *STARTUPINFO,
+	pStartupInfo *STARTUPINFO,
 ) (PROCESS_INFORMATION, error) {
 	var wApplicationName, wCommandLine, wCurrentDirectory wstr.BufEncoder
 	var pi PROCESS_INFORMATION
@@ -93,21 +93,21 @@ func CreateProcess(
 		pEnvironment = wstr.EncodeArrToPtr(envStrs...)
 	}
 
-	if startupInfo != nil {
-		startupInfo.SetCb() // safety
+	if pStartupInfo != nil {
+		pStartupInfo.SetCb() // safety
 	}
 
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_CreateProcessW, "CreateProcessW"),
 		uintptr(wApplicationName.EmptyIsNil(applicationName)),
 		uintptr(wCommandLine.EmptyIsNil(commandLine)),
-		uintptr(unsafe.Pointer(processAttributes)),
-		uintptr(unsafe.Pointer(threadAttributes)),
+		uintptr(unsafe.Pointer(pProcessAttributes)),
+		uintptr(unsafe.Pointer(pThreadAttributes)),
 		utl.BoolToUintptr(inheritHandles),
 		uintptr(creationFlags|co.CREATE_UNICODE_ENVIRONMENT), // env strings are always UTF-16
 		uintptr(unsafe.Pointer(pEnvironment)),
 		uintptr(wCurrentDirectory.EmptyIsNil(currentDirectory)),
-		uintptr(unsafe.Pointer(startupInfo)),
+		uintptr(unsafe.Pointer(pStartupInfo)),
 		uintptr(unsafe.Pointer(&pi)))
 	if ret == 0 {
 		return PROCESS_INFORMATION{}, co.ERROR(err)
@@ -205,11 +205,11 @@ var _kernel_ExpandEnvironmentStringsW *syscall.Proc
 //	stUtc := win.FileTimeToSystemTime(&ftUtc)
 //
 // [FileTimeToSystemTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
-func FileTimeToSystemTime(ft *FILETIME) (SYSTEMTIME, error) {
+func FileTimeToSystemTime(pFt *FILETIME) (SYSTEMTIME, error) {
 	var st SYSTEMTIME
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_FileTimeToSystemTime, "FileTimeToSystemTime"),
-		uintptr(unsafe.Pointer(ft)),
+		uintptr(unsafe.Pointer(pFt)),
 		uintptr(unsafe.Pointer(&st)))
 	if ret == 0 {
 		return SYSTEMTIME{}, co.ERROR(err)
@@ -717,11 +717,11 @@ var _kernel_Sleep *syscall.Proc
 //	ftUtc := win.SystemTimeToFileTime(&stUtc)
 //
 // [SystemTimeToFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetofiletime
-func SystemTimeToFileTime(st *SYSTEMTIME) (FILETIME, error) {
+func SystemTimeToFileTime(pSt *SYSTEMTIME) (FILETIME, error) {
 	var ft FILETIME
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_SystemTimeToFileTime, "SystemTimeToFileTime"),
-		uintptr(unsafe.Pointer(st)),
+		uintptr(unsafe.Pointer(pSt)),
 		uintptr(unsafe.Pointer(&ft)))
 	if ret == 0 {
 		return FILETIME{}, co.ERROR(err)
@@ -739,15 +739,12 @@ var _kernel_SystemTimeToFileTime *syscall.Proc
 //	stLocal, _ := win.SystemTimeToTzSpecificLocalTime(nil, &stUtc)
 //
 // [SystemTimeToTzSpecificLocalTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetotzspecificlocaltime
-func SystemTimeToTzSpecificLocalTime(
-	timeZoneInfo *TIME_ZONE_INFORMATION,
-	inUniversalTime *SYSTEMTIME,
-) (SYSTEMTIME, error) {
+func SystemTimeToTzSpecificLocalTime(pTzInfo *TIME_ZONE_INFORMATION, pStUtc *SYSTEMTIME) (SYSTEMTIME, error) {
 	var st SYSTEMTIME
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_SystemTimeToTzSpecificLocalTime, "SystemTimeToTzSpecificLocalTime"),
-		uintptr(unsafe.Pointer(timeZoneInfo)),
-		uintptr(unsafe.Pointer(inUniversalTime)),
+		uintptr(unsafe.Pointer(pTzInfo)),
+		uintptr(unsafe.Pointer(pStUtc)),
 		uintptr(unsafe.Pointer(&st)))
 	if ret == 0 {
 		return SYSTEMTIME{}, co.ERROR(err)

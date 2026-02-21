@@ -455,6 +455,11 @@ type PALETTEENTRY struct {
 //
 // ⚠️ You must call [PIXELFORMATDESCRIPTOR.SetNSize] to initialize the struct.
 //
+// Example:
+//
+//	var pfd win.PIXELFORMATDESCRIPTOR
+//	pfd.SetNSize()
+//
 // [PIXELFORMATDESCRIPTOR]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-pixelformatdescriptor
 type PIXELFORMATDESCRIPTOR struct {
 	nSize           uint16

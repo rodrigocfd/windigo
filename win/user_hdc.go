@@ -57,14 +57,14 @@ var _user_DrawIconEx *syscall.Proc
 // [EnumDisplayMonitors] function.
 //
 // [EnumDisplayMonitors]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
-func (hdc HDC) EnumDisplayMonitors(rcClip *RECT) ([]EnumDisplayMonitorsInfo, error) {
+func (hdc HDC) EnumDisplayMonitors(pRcClip *RECT) ([]EnumDisplayMonitorsInfo, error) {
 	pPack := &callbackPack_EnumDisplayMonitors{
 		arr: make([]EnumDisplayMonitorsInfo, 0),
 	}
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_EnumDisplayMonitors, "EnumDisplayMonitors"),
 		uintptr(hdc),
-		uintptr(unsafe.Pointer(rcClip)),
+		uintptr(unsafe.Pointer(pRcClip)),
 		callbackGet_EnumDisplayMonitors(),
 		uintptr(unsafe.Pointer(pPack)))
 	runtime.KeepAlive(pPack)

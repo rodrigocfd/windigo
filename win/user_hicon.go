@@ -27,17 +27,17 @@ type HICON HANDLE
 func CreateIconFromResourceEx(
 	resBits []byte,
 	fmtVersion uint32,
-	cxDesired, cyDesired int,
+	szDesired SIZE,
 	flags co.LR,
 ) (HICON, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_CreateIconFromResourceEx, "CreateIconFromResourceEx"),
-		uintptr(unsafe.Pointer(unsafe.SliceData(resBits))),
+		uintptr(unsafe.Pointer(&resBits[0])),
 		uintptr(uint32(len(resBits))),
 		1,
 		uintptr(fmtVersion),
-		uintptr(int32(cxDesired)),
-		uintptr(int32(cyDesired)),
+		uintptr(szDesired.Cx),
+		uintptr(szDesired.Cy),
 		uintptr(flags))
 	if ret == 0 {
 		return HICON(0), co.ERROR(err)
@@ -52,10 +52,10 @@ var _user_CreateIconFromResourceEx *syscall.Proc
 // ⚠️ You must defer [HICON.DestroyIcon].
 //
 // [CreateIconIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconindirect
-func CreateIconIndirect(info *ICONINFO) (HICON, error) {
+func CreateIconIndirect(pInfo *ICONINFO) (HICON, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_CreateIconIndirect, "CreateIconIndirect"),
-		uintptr(unsafe.Pointer(info)))
+		uintptr(unsafe.Pointer(pInfo)))
 	if ret == 0 {
 		return HICON(0), co.ERROR(err)
 	}

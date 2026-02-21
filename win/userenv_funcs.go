@@ -27,7 +27,7 @@ func GetAllUsersProfileDirectory() (string, error) {
 	buf := make([]uint16, szBuf)
 	ret, _, err := syscall.SyscallN(
 		dll.Userenv.Load(&_userenv_GetAllUsersProfileDirectoryW, "GetAllUsersProfileDirectoryW"),
-		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
+		uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(unsafe.Pointer(&szBuf)))
 	if ret == 0 {
 		return "", co.ERROR(err)
@@ -53,7 +53,7 @@ func GetDefaultUserProfileDirectory() (string, error) {
 	buf := make([]uint16, szBuf)
 	ret, _, err := syscall.SyscallN(
 		dll.Userenv.Load(&_userenv_GetDefaultUserProfileDirectoryW, "GetDefaultUserProfileDirectoryW"),
-		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
+		uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(unsafe.Pointer(&szBuf)))
 	if ret == 0 {
 		return "", co.ERROR(err)
@@ -79,7 +79,7 @@ func GetProfilesDirectory() (string, error) {
 	buf := make([]uint16, szBuf)
 	ret, _, err := syscall.SyscallN(
 		dll.Userenv.Load(&_userenv_GetProfilesDirectoryW, "GetProfilesDirectoryW"),
-		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
+		uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(unsafe.Pointer(&szBuf)))
 	if ret == 0 {
 		return "", co.ERROR(err)

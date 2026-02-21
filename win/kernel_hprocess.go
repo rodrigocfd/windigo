@@ -320,7 +320,7 @@ func (hProcess HPROCESS) ReadProcessMemory(
 		dll.Kernel.Load(&_kernel_ReadProcessMemory, "ReadProcessMemory"),
 		uintptr(hProcess),
 		baseAddress,
-		uintptr(unsafe.Pointer(unsafe.SliceData(destBuf))),
+		uintptr(unsafe.Pointer(&destBuf[0])),
 		uintptr(uint64(len(destBuf))),
 		uintptr(unsafe.Pointer(&read64)))
 	if ret == 0 {
@@ -401,7 +401,7 @@ func (hProcess HPROCESS) WriteProcessMemory(
 		dll.Kernel.Load(&_kernel_WriteProcessMemory, "WriteProcessMemory"),
 		uintptr(hProcess),
 		baseAddress,
-		uintptr(unsafe.Pointer(unsafe.SliceData(src))),
+		uintptr(unsafe.Pointer(&src[0])),
 		uintptr(uint64(len(src))),
 		uintptr(unsafe.Pointer(&written64)))
 	if ret == 0 {

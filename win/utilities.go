@@ -1035,7 +1035,7 @@ func (me *Vec[T]) Clear() {
 func (me *Vec[T]) Free() {
 	if me.data != nil {
 		hHeap, _ := GetProcessHeap()
-		hHeap.HeapFree(co.HEAP_NS_NONE, unsafe.Pointer(unsafe.SliceData(me.data)))
+		hHeap.HeapFree(co.HEAP_NS_NONE, unsafe.Pointer(&me.data[0]))
 		me.data = nil
 		me.inUse = 0
 	}
@@ -1082,7 +1082,7 @@ func (me *Vec[T]) Ptr() unsafe.Pointer {
 	if me.IsEmpty() {
 		return nil
 	} else {
-		return unsafe.Pointer(unsafe.SliceData(me.data))
+		return unsafe.Pointer(&me.data[0])
 	}
 }
 
@@ -1105,7 +1105,7 @@ func (me *Vec[T]) Reserve(numElems int) {
 			ptr, _ := hHeap.HeapAlloc(co.HEAP_ALLOC_ZERO_MEMORY, newSizeBytes)
 			me.data = unsafe.Slice((*T)(ptr), numElems) // store slice
 		} else {
-			curPtr := unsafe.Pointer(unsafe.SliceData(me.data))
+			curPtr := unsafe.Pointer(&me.data[0])
 			newPtr, _ := hHeap.HeapReAlloc(co.HEAP_REALLOC_ZERO_MEMORY, curPtr, newSizeBytes)
 			me.data = unsafe.Slice((*T)(newPtr), numElems) // store new slice
 		}

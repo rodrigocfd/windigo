@@ -26,10 +26,10 @@ type HCURSOR HANDLE
 func CreateCursorFromResourceEx(
 	resBits []byte,
 	fmtVersion uint32,
-	cxDesired, cyDesired int,
+	szDesired SIZE,
 	flags co.LR,
 ) (HCURSOR, error) {
-	hIcon, err := CreateIconFromResourceEx(resBits, fmtVersion, cxDesired, cyDesired, flags)
+	hIcon, err := CreateIconFromResourceEx(resBits, fmtVersion, szDesired, flags)
 	return HCURSOR(hIcon), err
 }
 

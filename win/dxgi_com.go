@@ -399,7 +399,7 @@ func (me *IDXGIOutput) GetDisplayModeList(
 		uintptr(enumFormat),
 		uintptr(flags),
 		uintptr(unsafe.Pointer(&numModes)),
-		uintptr(unsafe.Pointer(unsafe.SliceData(desc))))
+		uintptr(unsafe.Pointer(&desc[0])))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return desc, nil

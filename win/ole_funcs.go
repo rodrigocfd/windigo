@@ -197,10 +197,10 @@ var _ole_OleUninitialize *syscall.Proc
 // Paired with [IDataObject.GetData].
 //
 // [ReleaseStgMedium]: https://learn.microsoft.com/en-us/windows/win32/api/ole/nf-ole-releasestgmedium
-func ReleaseStgMedium(stg *STGMEDIUM) {
+func ReleaseStgMedium(pStg *STGMEDIUM) {
 	_, _, _ = syscall.SyscallN(
 		dll.Ole.Load(&_ole_ReleaseStgMedium, "ReleaseStgMedium"),
-		uintptr(unsafe.Pointer(stg)))
+		uintptr(unsafe.Pointer(pStg)))
 }
 
 var _ole_ReleaseStgMedium *syscall.Proc

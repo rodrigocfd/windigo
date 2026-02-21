@@ -23,8 +23,8 @@ func (hInst HINSTANCE) CreateCursor(hotSpot POINT, sz SIZE, andPlane, xorPlane [
 		uintptr(hotSpot.Y),
 		uintptr(sz.Cx),
 		uintptr(sz.Cy),
-		uintptr(unsafe.Pointer(unsafe.SliceData(andPlane))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(xorPlane))))
+		uintptr(unsafe.Pointer(&andPlane[0])),
+		uintptr(unsafe.Pointer(&xorPlane[0])))
 	if ret == 0 {
 		return HCURSOR(0), co.ERROR(err)
 	}
@@ -62,7 +62,7 @@ var _user_CreateDialogParamW *syscall.Proc
 //
 // [DialogBoxIndirectParam]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxindirectparamw
 func (hInst HINSTANCE) DialogBoxIndirectParam(
-	template *DLGTEMPLATE,
+	pTemplate *DLGTEMPLATE,
 	hwndParent HWND,
 	dialogFunc uintptr,
 	dwInitParam LPARAM,
@@ -70,7 +70,7 @@ func (hInst HINSTANCE) DialogBoxIndirectParam(
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_DialogBoxIndirectParamW, "DialogBoxIndirectParamW"),
 		uintptr(hInst),
-		uintptr(unsafe.Pointer(template)),
+		uintptr(unsafe.Pointer(pTemplate)),
 		uintptr(hwndParent),
 		dialogFunc,
 		uintptr(dwInitParam))
@@ -112,13 +112,13 @@ var _user_DialogBoxParamW *syscall.Proc
 // [GetClassInfoEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclassinfoexw
 func (hInst HINSTANCE) GetClassInfoEx(
 	className *uint16,
-	destBuf *WNDCLASSEX,
+	pDestWcx *WNDCLASSEX,
 ) (ATOM, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_GetClassInfoExW, "GetClassInfoExW"),
 		uintptr(hInst),
 		uintptr(unsafe.Pointer(className)),
-		uintptr(unsafe.Pointer(destBuf)))
+		uintptr(unsafe.Pointer(pDestWcx)))
 	if ret == 0 {
 		return ATOM(0), co.ERROR(err)
 	}

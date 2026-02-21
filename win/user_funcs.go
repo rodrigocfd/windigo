@@ -98,10 +98,10 @@ var _user_BroadcastSystemMessageW *syscall.Proc
 // [CallMsgFilter] function.
 //
 // [CallMsgFilter]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-callmsgfilterw
-func CallMsgFilter(msg *MSG, code int32) bool {
+func CallMsgFilter(pMsg *MSG, code int32) bool {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_CallMsgFilterW, "CallMsgFilterW"),
-		uintptr(unsafe.Pointer(msg)),
+		uintptr(unsafe.Pointer(pMsg)),
 		uintptr(code))
 	return ret != 0
 }
@@ -165,10 +165,10 @@ var _user_DestroyCaret *syscall.Proc
 // [DispatchMessage] function.
 //
 // [DispatchMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dispatchmessage
-func DispatchMessage(msg *MSG) uintptr {
+func DispatchMessage(pMsg *MSG) uintptr {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_DispatchMessageW, "DispatchMessageW"),
-		uintptr(unsafe.Pointer(msg)))
+		uintptr(unsafe.Pointer(pMsg)))
 	return ret
 }
 
@@ -450,10 +450,10 @@ var _user_GetInputState *syscall.Proc
 // [GetMessage] function.
 //
 // [GetMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagew
-func GetMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax co.WM) (int, error) {
+func GetMessage(pMsg *MSG, hWnd HWND, msgFilterMin, msgFilterMax co.WM) (int, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_GetMessageW, "GetMessageW"),
-		uintptr(unsafe.Pointer(msg)),
+		uintptr(unsafe.Pointer(pMsg)),
 		uintptr(hWnd),
 		uintptr(msgFilterMin),
 		uintptr(msgFilterMax))
@@ -720,10 +720,10 @@ var _user_OffsetRect *syscall.Proc
 // [PeekMessage] function.
 //
 // [PeekMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew
-func PeekMessage(msg *MSG, hWnd HWND, msgFilterMin, msgFilterMax co.WM, removeMsg co.PM) bool {
+func PeekMessage(pMsg *MSG, hWnd HWND, msgFilterMin, msgFilterMax co.WM, removeMsg co.PM) bool {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_PeekMessageW, "PeekMessageW"),
-		uintptr(unsafe.Pointer(msg)),
+		uintptr(unsafe.Pointer(pMsg)),
 		uintptr(hWnd),
 		uintptr(msgFilterMin),
 		uintptr(msgFilterMax),
@@ -775,11 +775,11 @@ var _user_PtInRect *syscall.Proc
 // [RegisterClassEx] function.
 //
 // [RegisterClassEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassexw
-func RegisterClassEx(wcx *WNDCLASSEX) (ATOM, error) {
-	wcx.SetCbSize() // safety
+func RegisterClassEx(pWcx *WNDCLASSEX) (ATOM, error) {
+	pWcx.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_RegisterClassExW, "RegisterClassExW"),
-		uintptr(unsafe.Pointer(wcx)))
+		uintptr(unsafe.Pointer(pWcx)))
 
 	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
 		return ATOM(0), wErr
@@ -843,7 +843,7 @@ func SendInput(inputs []INPUT) (int, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_SendInput, "SendInput"),
 		uintptr(uint32(len(inputs))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(inputs))),
+		uintptr(unsafe.Pointer(&inputs[0])),
 		uintptr(uint32(unsafe.Sizeof(INPUT{}))))
 
 	if wErr := co.ERROR(err); wErr != co.ERROR_SUCCESS {
@@ -961,10 +961,10 @@ var _user_SystemParametersInfoW *syscall.Proc
 // [TranslateMessage] function.
 //
 // [TranslateMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translatemessage
-func TranslateMessage(msg *MSG) bool {
+func TranslateMessage(pMsg *MSG) bool {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_TranslateMessage, "TranslateMessage"),
-		uintptr(unsafe.Pointer(msg)))
+		uintptr(unsafe.Pointer(pMsg)))
 	return ret != 0
 }
 

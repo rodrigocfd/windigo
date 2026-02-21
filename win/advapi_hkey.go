@@ -128,7 +128,7 @@ func (hKey HKEY) RegCreateKeyEx(
 	subKey string,
 	options co.REG_OPTION,
 	accessRights co.KEY,
-	securityAttributes *SECURITY_ATTRIBUTES,
+	pSecurityAttributes *SECURITY_ATTRIBUTES,
 ) (HKEY, error) {
 	var wSubKey wstr.BufEncoder
 	var openedKey HKEY
@@ -140,7 +140,7 @@ func (hKey HKEY) RegCreateKeyEx(
 		0, 0,
 		uintptr(options),
 		uintptr(accessRights),
-		uintptr(unsafe.Pointer(securityAttributes)),
+		uintptr(unsafe.Pointer(pSecurityAttributes)),
 		uintptr(unsafe.Pointer(&openedKey)))
 
 	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
@@ -358,7 +358,7 @@ func (hKey HKEY) RegEnumValue() ([]HkeyNameVal, error) {
 			uintptr(unsafe.Pointer(&szValueNameBuf)),
 			0,
 			uintptr(unsafe.Pointer(&dataType)),
-			uintptr(unsafe.Pointer(unsafe.SliceData(dataBuf))),
+			uintptr(unsafe.Pointer(&dataBuf[0])),
 			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
@@ -446,7 +446,7 @@ func (hKey HKEY) RegGetValue(subKey, valueName string, flags co.RRF) (RegVal, er
 			uintptr(pValueName),
 			uintptr(flags),
 			uintptr(unsafe.Pointer(&dataType)),
-			uintptr(unsafe.Pointer(unsafe.SliceData(dataBuf))),
+			uintptr(unsafe.Pointer(&dataBuf[0])),
 			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr == co.ERROR_SUCCESS {
@@ -604,6 +604,10 @@ type HkeyInfo struct {
 //
 // [RegQueryMultipleValues]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regquerymultiplevaluesw
 func (hKey HKEY) RegQueryMultipleValues(valueNames ...string) ([]RegVal, error) {
+	if len(valueNames) == 0 { // nothing to do
+		return []RegVal{}, nil
+	}
+
 	valents := make([]_VALENT, 0, len(valueNames))
 	for _, valueName := range valueNames {
 		valents = append(valents, _VALENT{
@@ -616,7 +620,7 @@ func (hKey HKEY) RegQueryMultipleValues(valueNames ...string) ([]RegVal, error) 
 		ret, _, _ := syscall.SyscallN( // 1st call to retrieve size only
 			dll.Advapi.Load(&_advapi_RegQueryMultipleValuesW, "RegQueryMultipleValuesW"),
 			uintptr(hKey),
-			uintptr(unsafe.Pointer(unsafe.SliceData(valents))),
+			uintptr(unsafe.Pointer(&valents[0])),
 			uintptr(uint32(len(valueNames))),
 			0,
 			uintptr(unsafe.Pointer(&szDataBytes)))
@@ -629,9 +633,9 @@ func (hKey HKEY) RegQueryMultipleValues(valueNames ...string) ([]RegVal, error) 
 		ret, _, _ = syscall.SyscallN( // 2nd call to retrieve the data
 			dll.Advapi.Load(&_advapi_RegQueryMultipleValuesW, "RegQueryMultipleValuesW"),
 			uintptr(hKey),
-			uintptr(unsafe.Pointer(unsafe.SliceData(valents))),
+			uintptr(unsafe.Pointer(&valents[0])),
 			uintptr(uint32(len(valueNames))),
-			uintptr(unsafe.Pointer(unsafe.SliceData(dataBuf))),
+			uintptr(unsafe.Pointer(&dataBuf[0])),
 			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr == co.ERROR_SUCCESS {
@@ -714,7 +718,7 @@ func (hKey HKEY) RegQueryValueEx(valueName string) (RegVal, error) {
 			uintptr(pValueName),
 			0,
 			uintptr(unsafe.Pointer(&dataType)),
-			uintptr(unsafe.Pointer(unsafe.SliceData(dataBuf))),
+			uintptr(unsafe.Pointer(&dataBuf[0])),
 			uintptr(unsafe.Pointer(&szDataBytes)))
 
 		if wErr := co.ERROR(ret); wErr == co.ERROR_SUCCESS {
@@ -783,13 +787,13 @@ var _advapi_RegRestoreKeyW *syscall.Proc
 // Paired with [HKEY.RegRestoreKey].
 //
 // [RegSaveKey]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsavekeyw
-func (hKey HKEY) RegSaveKey(destFile string, securityAttributes *SECURITY_ATTRIBUTES) error {
+func (hKey HKEY) RegSaveKey(destFile string, pSecurityAttributes *SECURITY_ATTRIBUTES) error {
 	var wDestFile wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Advapi.Load(&_advapi_RegSaveKeyW, "RegSaveKeyW"),
 		uintptr(hKey),
 		uintptr(wDestFile.AllowEmpty(destFile)),
-		uintptr(unsafe.Pointer(securityAttributes)))
+		uintptr(unsafe.Pointer(pSecurityAttributes)))
 	return utl.ZeroAsSysError(ret)
 }
 
@@ -802,7 +806,7 @@ var _advapi_RegSaveKeyW *syscall.Proc
 // [RegSaveKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsavekeyexw
 func (hKey HKEY) RegSaveKeyEx(
 	destFile string,
-	securityAttributes *SECURITY_ATTRIBUTES,
+	pSecurityAttributes *SECURITY_ATTRIBUTES,
 	flags co.REG_SAVE,
 ) error {
 	var wDestFile wstr.BufEncoder
@@ -810,7 +814,7 @@ func (hKey HKEY) RegSaveKeyEx(
 		dll.Advapi.Load(&_advapi_RegSaveKeyExW, "RegSaveKeyExW"),
 		uintptr(hKey),
 		uintptr(wDestFile.AllowEmpty(destFile)),
-		uintptr(unsafe.Pointer(securityAttributes)),
+		uintptr(unsafe.Pointer(pSecurityAttributes)),
 		uintptr(flags))
 	return utl.ZeroAsSysError(ret)
 }
@@ -828,7 +832,7 @@ func (hKey HKEY) RegSetKeyValue(subKey, valueName string, data RegVal) error {
 		uintptr(wSubKey.AllowEmpty(subKey)),
 		uintptr(wValueName.EmptyIsNil(valueName)),
 		uintptr(data.Type()),
-		uintptr(unsafe.Pointer(unsafe.SliceData(data.data))),
+		uintptr(unsafe.Pointer(&data.data[0])),
 		uintptr(uint32(len(data.data))))
 	return utl.ZeroAsSysError(ret)
 }
@@ -846,7 +850,7 @@ func (hKey HKEY) RegSetValueEx(valueName string, data RegVal) error {
 		uintptr(wValueName.EmptyIsNil(valueName)),
 		0,
 		uintptr(data.Type()),
-		uintptr(unsafe.Pointer(unsafe.SliceData(data.data))),
+		uintptr(unsafe.Pointer(&data.data[0])),
 		uintptr(uint32(len(data.data))))
 	return utl.ZeroAsSysError(ret)
 }

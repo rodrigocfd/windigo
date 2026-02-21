@@ -40,10 +40,10 @@ var _comctl_ImageList_DragShowNolock *syscall.Proc
 // [ImageList_DrawIndirect] function.
 //
 // [ImageList_DrawIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_drawindirect
-func ImageListDrawIndirect(imldp *IMAGELISTDRAWPARAMS) error {
+func ImageListDrawIndirect(pImldp *IMAGELISTDRAWPARAMS) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Comctl.Load(&_comctl_ImageList_DrawIndirect, "ImageList_DrawIndirect"),
-		uintptr(unsafe.Pointer(imldp)))
+		uintptr(unsafe.Pointer(pImldp)))
 	return utl.ZeroAsSysInvalidParm(ret)
 }
 
@@ -158,21 +158,21 @@ func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
 	bufPtrStrs := buf.HotSlice()[szTdc+szBtns+szRads+12:]
 
 	bufPtrStrs16 := unsafe.Slice( // wchar buffer for all strings
-		(*uint16)(unsafe.Pointer(unsafe.SliceData(bufPtrStrs))), len(bufPtrStrs)/2)
+		(*uint16)(unsafe.Pointer(&bufPtrStrs[0])), len(bufPtrStrs)/2)
 
 	taskConfig.serialize(tdcBuf, btnsBuf, radsBuf, bufPtrStrs16)
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Comctl.Load(&_comctl_TaskDialogIndirect, "TaskDialogIndirect"),
-		uintptr(unsafe.Pointer(unsafe.SliceData(tdcBuf))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(bufRetBtn))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(bufRetRad))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(bufRetChk))))
+		uintptr(unsafe.Pointer(&tdcBuf[0])),
+		uintptr(unsafe.Pointer(&bufRetBtn[0])),
+		uintptr(unsafe.Pointer(&bufRetRad[0])),
+		uintptr(unsafe.Pointer(&bufRetChk[0])))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return co.ID(0), hr
 	}
 
-	pBtnId := (*int32)(unsafe.Pointer(unsafe.SliceData(bufRetBtn)))
+	pBtnId := (*int32)(unsafe.Pointer(&bufRetBtn[0]))
 	return co.ID(*pBtnId), nil
 }
 

@@ -245,14 +245,14 @@ var _user_GetMenuItemCount *syscall.Proc
 // [GetMenuItemInfo] function, using the item command ID.
 //
 // [GetMenuItemInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuiteminfow
-func (hMenu HMENU) GetMenuItemInfoByCmd(cmdId uint16, mii *MENUITEMINFO) error {
-	mii.SetCbSize() // safety
+func (hMenu HMENU) GetMenuItemInfoByCmd(cmdId uint16, pMii *MENUITEMINFO) error {
+	pMii.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_GetMenuItemInfoW, "GetMenuItemInfoW"),
 		uintptr(hMenu),
 		uintptr(uint32(cmdId)),
 		uintptr(co.MF_BYCOMMAND),
-		uintptr(unsafe.Pointer(mii)))
+		uintptr(unsafe.Pointer(pMii)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -261,14 +261,14 @@ var _user_GetMenuItemInfoW *syscall.Proc
 // [GetMenuItemInfo] function, using the zero-based item position.
 //
 // [GetMenuItemInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmenuiteminfow
-func (hMenu HMENU) GetMenuItemInfoByPos(index int, mii *MENUITEMINFO) error {
-	mii.SetCbSize() // safety
+func (hMenu HMENU) GetMenuItemInfoByPos(index int, pMii *MENUITEMINFO) error {
+	pMii.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_GetMenuItemInfoW, "GetMenuItemInfoW"),
 		uintptr(hMenu),
 		uintptr(uint32(index)),
 		uintptr(co.MF_BYPOSITION),
-		uintptr(unsafe.Pointer(mii)))
+		uintptr(unsafe.Pointer(pMii)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -289,13 +289,13 @@ var _user_GetSubMenu *syscall.Proc
 // [InsertMenuItem] function, using the item command ID.
 //
 // [InsertMenuItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenuitemw
-func (hMenu HMENU) InsertMenuItemByCmd(cmdId uint16, mii *MENUITEMINFO) error {
+func (hMenu HMENU) InsertMenuItemByCmd(cmdId uint16, pMii *MENUITEMINFO) error {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_InsertMenuItemW, "InsertMenuItemW"),
 		uintptr(hMenu),
 		uintptr(uint32(cmdId)),
 		uintptr(co.MF_BYCOMMAND),
-		uintptr(unsafe.Pointer(mii)))
+		uintptr(unsafe.Pointer(pMii)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -304,13 +304,13 @@ var _user_InsertMenuItemW *syscall.Proc
 // [InsertMenuItem] function, using the zero-based item position.
 //
 // [InsertMenuItem]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenuitemw
-func (hMenu HMENU) InsertMenuItemByPos(index int, mii *MENUITEMINFO) error {
+func (hMenu HMENU) InsertMenuItemByPos(index int, pMii *MENUITEMINFO) error {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_InsertMenuItemW, "InsertMenuItemW"),
 		uintptr(hMenu),
 		uintptr(uint32(index)),
 		uintptr(co.MF_BYPOSITION),
-		uintptr(unsafe.Pointer(mii)))
+		uintptr(unsafe.Pointer(pMii)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -379,11 +379,11 @@ func (hMenu HMENU) SetMenuDefaultItemByPos(index int) error {
 // [SetMenuInfo] function.
 //
 // [SetMenuInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuinfo
-func (hMenu HMENU) SetMenuInfo(info *MENUINFO) error {
+func (hMenu HMENU) SetMenuInfo(pInfo *MENUINFO) error {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_SetMenuInfo, "SetMenuInfo"),
 		uintptr(hMenu),
-		uintptr(unsafe.Pointer(info)))
+		uintptr(unsafe.Pointer(pInfo)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -422,14 +422,14 @@ func (hMenu HMENU) SetMenuItemBitmapsByPos(index int, hBmpUnchecked, hBmpChecked
 // [SetMenuItemInfo] function, using the item command ID.
 //
 // [SetMenuItemInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuiteminfow
-func (hMenu HMENU) SetMenuItemInfoByCmd(cmdId uint16, info *MENUITEMINFO) error {
-	info.SetCbSize() // safety
+func (hMenu HMENU) SetMenuItemInfoByCmd(cmdId uint16, pInfo *MENUITEMINFO) error {
+	pInfo.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_SetMenuItemInfo, "SetMenuItemInfo"),
 		uintptr(hMenu),
 		uintptr(uint32(cmdId)),
 		uintptr(co.MF_BYCOMMAND),
-		uintptr(unsafe.Pointer(info)))
+		uintptr(unsafe.Pointer(pInfo)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -438,14 +438,14 @@ var _user_SetMenuItemInfo *syscall.Proc
 // [SetMenuItemInfo] function, using the zero-based item position.
 //
 // [SetMenuItemInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenuiteminfow
-func (hMenu HMENU) SetMenuItemInfoByPos(index int, info *MENUITEMINFO) error {
-	info.SetCbSize() // safety
+func (hMenu HMENU) SetMenuItemInfoByPos(index int, pInfo *MENUITEMINFO) error {
+	pInfo.SetCbSize() // safety
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_SetMenuItemInfo, "SetMenuItemInfo"),
 		uintptr(hMenu),
 		uintptr(uint32(index)),
 		uintptr(co.MF_BYPOSITION),
-		uintptr(unsafe.Pointer(info)))
+		uintptr(unsafe.Pointer(pInfo)))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

@@ -14,11 +14,11 @@ import (
 // [DwmExtendFrameIntoClientArea] function.
 //
 // [DwmExtendFrameIntoClientArea]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea
-func (hWnd HWND) DwmExtendFrameIntoClientArea(marginsInset *MARGINS) error {
+func (hWnd HWND) DwmExtendFrameIntoClientArea(pMarginsInset *MARGINS) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Dwmapi.Load(&_dwmapi_DwmExtendFrameIntoClientArea, "DwmExtendFrameIntoClientArea"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(marginsInset)))
+		uintptr(unsafe.Pointer(pMarginsInset)))
 	return utl.HresultToError(ret)
 }
 

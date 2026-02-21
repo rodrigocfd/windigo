@@ -4,7 +4,6 @@ package wstr
 
 import (
 	"unicode/utf16"
-	"unsafe"
 )
 
 // Converts multiple Go strings into multiple null-terminated UTF-16 strings,
@@ -37,7 +36,7 @@ func EncodeArrToBuf(dest []uint16, strs ...string) int {
 // with a double null terminator. Returns a new heap-allocated *uint16.
 func EncodeArrToPtr(strs ...string) *uint16 {
 	buf := EncodeArrToSlice(strs...)
-	return unsafe.SliceData(buf)
+	return &buf[0]
 }
 
 // Converts multiple Go strings into multiple null-terminated UTF-16 strings,
@@ -109,7 +108,7 @@ EachRune:
 // heap-allocated *uint16.
 func EncodeToPtr(s string) *uint16 {
 	buf := EncodeToSlice(s)
-	return unsafe.SliceData(buf)
+	return &buf[0]
 }
 
 // Converts a Go string into a null-terminated UTF-16 string. Returns a new

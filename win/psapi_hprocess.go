@@ -56,7 +56,7 @@ func (hProcess HPROCESS) EnumProcessModules() ([]HINSTANCE, error) {
 		ret, _, err = syscall.SyscallN(
 			dll.Psapi.Load(&_psapi_EnumProcessModules, "EnumProcessModules"),
 			uintptr(hProcess),
-			uintptr(unsafe.Pointer(unsafe.SliceData(elems))),
+			uintptr(unsafe.Pointer(&elems[0])),
 			uintptr(bytesNeeded),
 			uintptr(unsafe.Pointer(&bytesGot)))
 		if ret == 0 {

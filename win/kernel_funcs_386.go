@@ -14,13 +14,13 @@ import (
 // [VerifyVersionInfo] function.
 //
 // [VerifyVersionInfo]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-verifyversioninfow
-func VerifyVersionInfo(ovi *OSVERSIONINFOEX, typeMask co.VER, conditionMask uint64) (bool, error) {
-	ovi.SetDwOsVersionInfoSize() // safety
+func VerifyVersionInfo(pOvi *OSVERSIONINFOEX, typeMask co.VER, conditionMask uint64) (bool, error) {
+	pOvi.SetDwOsVersionInfoSize() // safety
 	cMaskLo, cMaskHi := utl.Break64(conditionMask)
 
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_VerifyVersionInfoW, "VerifyVersionInfoW"),
-		uintptr(unsafe.Pointer(ovi)),
+		uintptr(unsafe.Pointer(pOvi)),
 		uintptr(typeMask),
 		uintptr(cMaskLo),
 		uintptr(cMaskHi))

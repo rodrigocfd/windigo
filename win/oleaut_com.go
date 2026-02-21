@@ -56,10 +56,10 @@ func (me *IDispatch) GetIDsOfNames(
 		(*_IDispatchVt)(unsafe.Pointer(*me.Ppvt())).GetIDsOfNames,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(unsafe.Pointer(&iidNull)),
-		uintptr(unsafe.Pointer(unsafe.SliceData(strPtrs))),
+		uintptr(unsafe.Pointer(&strPtrs[0])),
 		uintptr(uint32(nParams)),
 		uintptr(lcid),
-		uintptr(unsafe.Pointer(unsafe.SliceData(memberIds))))
+		uintptr(unsafe.Pointer(&memberIds[0])))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return memberIds, nil
@@ -125,7 +125,7 @@ func (me *IDispatch) Invoke(
 	dispIdMember MEMBERID,
 	lcid LCID,
 	flags co.DISPATCH,
-	dispParams *DISPPARAMS,
+	pDispParams *DISPPARAMS,
 ) (*VARIANT, error) {
 	var remoteErr _EXCEPINFO // in case of remote error, will be converted to *EXCEPINFO
 	defer remoteErr.Free()
@@ -140,7 +140,7 @@ func (me *IDispatch) Invoke(
 		uintptr(unsafe.Pointer(&iidNull)),
 		uintptr(lcid),
 		uintptr(flags),
-		uintptr(unsafe.Pointer(dispParams)),
+		uintptr(unsafe.Pointer(pDispParams)),
 		uintptr(unsafe.Pointer(remoteResult)),
 		uintptr(unsafe.Pointer(&remoteErr)),
 		0) // puArgErr is not retrieved
@@ -1036,9 +1036,9 @@ func (me *ITypeInfo) GetIDsOfNames(names ...string) ([]MEMBERID, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_ITypeInfoVt)(unsafe.Pointer(*me.Ppvt())).GetIDsOfNames,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(unsafe.SliceData(strPtrs))),
+		uintptr(unsafe.Pointer(&strPtrs[0])),
 		uintptr(uint32(len(names))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(memIds))))
+		uintptr(unsafe.Pointer(&memIds[0])))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return memIds, nil

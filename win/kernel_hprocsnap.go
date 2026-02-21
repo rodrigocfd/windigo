@@ -142,11 +142,11 @@ func (hProcSnap HPROCSNAP) EnumThreads() ([]THREADENTRY32, error) {
 // This is a low-level function, prefer using [HPROCSNAP.EnumModules].
 //
 // [Module32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32firstw
-func (hProcSnap HPROCSNAP) Module32First(buf *MODULEENTRY32) (bool, error) {
+func (hProcSnap HPROCSNAP) Module32First(pBuf *MODULEENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_Module32FirstW, "Module32FirstW"),
 		uintptr(hProcSnap),
-		uintptr(unsafe.Pointer(buf)))
+		uintptr(unsafe.Pointer(pBuf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended
@@ -164,11 +164,11 @@ var _kernel_Module32FirstW *syscall.Proc
 // This is a low-level function, prefer using [HPROCSNAP.EnumModules].
 //
 // [Module32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-module32nextw
-func (hProcSnap HPROCSNAP) Module32Next(buf *MODULEENTRY32) (bool, error) {
+func (hProcSnap HPROCSNAP) Module32Next(pBuf *MODULEENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_Module32NextW, "Module32NextW"),
 		uintptr(hProcSnap),
-		uintptr(unsafe.Pointer(buf)))
+		uintptr(unsafe.Pointer(pBuf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended
@@ -186,11 +186,11 @@ var _kernel_Module32NextW *syscall.Proc
 // This is a low-level function, prefer using [HPROCSNAP.EnumProcesses].
 //
 // [Process32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
-func (hProcSnap HPROCSNAP) Process32First(buf *PROCESSENTRY32) (bool, error) {
+func (hProcSnap HPROCSNAP) Process32First(pBuf *PROCESSENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_Process32FirstW, "Process32FirstW"),
 		uintptr(hProcSnap),
-		uintptr(unsafe.Pointer(buf)))
+		uintptr(unsafe.Pointer(pBuf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended
@@ -208,11 +208,11 @@ var _kernel_Process32FirstW *syscall.Proc
 // This is a low-level function, prefer using [HPROCSNAP.EnumProcesses].
 //
 // [Process32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32firstw
-func (hProcSnap HPROCSNAP) Process32Next(buf *PROCESSENTRY32) (bool, error) {
+func (hProcSnap HPROCSNAP) Process32Next(pBuf *PROCESSENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_Process32NextW, "Process32NextW"),
 		uintptr(hProcSnap),
-		uintptr(unsafe.Pointer(buf)))
+		uintptr(unsafe.Pointer(pBuf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended
@@ -230,11 +230,11 @@ var _kernel_Process32NextW *syscall.Proc
 // This is a low-level function, prefer using [HPROCSNAP.EnumThreads].
 //
 // [Thread32First]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32first
-func (hProcSnap HPROCSNAP) Thread32First(buf *THREADENTRY32) (bool, error) {
+func (hProcSnap HPROCSNAP) Thread32First(pBuf *THREADENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_Thread32First, "Thread32First"),
 		uintptr(hProcSnap),
-		uintptr(unsafe.Pointer(buf)))
+		uintptr(unsafe.Pointer(pBuf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended
@@ -252,11 +252,11 @@ var _kernel_Thread32First *syscall.Proc
 // This is a low-level function, prefer using [HPROCSNAP.EnumThreads].
 //
 // [Thread32Next]: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-thread32next
-func (hProcSnap HPROCSNAP) Thread32Next(buf *THREADENTRY32) (bool, error) {
+func (hProcSnap HPROCSNAP) Thread32Next(pBuf *THREADENTRY32) (bool, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_Thread32Next, "Thread32Next"),
 		uintptr(hProcSnap),
-		uintptr(unsafe.Pointer(buf)))
+		uintptr(unsafe.Pointer(pBuf)))
 	if ret == 0 {
 		if wErr := co.ERROR(err); wErr == co.ERROR_NO_MORE_FILES {
 			return false, nil // not an error, search ended

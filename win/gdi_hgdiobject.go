@@ -91,15 +91,15 @@ type HBITMAP HGDIOBJ
 // ⚠️ You must defer [HBITMAP.DeleteObject].
 //
 // [CreateBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmap
-func CreateBitmap(width, height, numPlanes, bitCount int, bits []byte) (HBITMAP, error) {
+func CreateBitmap(szBmp SIZE, numPlanes, bitCount int, bits []byte) (HBITMAP, error) {
 	utl.PanicNeg(numPlanes, bitCount)
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_CreateBitmap, "CreateBitmap"),
-		uintptr(int32(width)),
-		uintptr(int32(height)),
+		uintptr(szBmp.Cx),
+		uintptr(szBmp.Cy),
 		uintptr(uint32(numPlanes)),
 		uintptr(uint32(bitCount)),
-		uintptr(unsafe.Pointer(unsafe.SliceData(bits))))
+		uintptr(unsafe.Pointer(&bits[0])))
 	if ret == 0 {
 		return HBITMAP(0), co.ERROR_INVALID_PARAMETER
 	}
@@ -113,10 +113,10 @@ var _gdi_CreateBitmap *syscall.Proc
 // ⚠️ You must defer [HBITMAP.DeleteObject].
 //
 // [CreateBitmapIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbitmapindirect
-func CreateBitmapIndirect(bm *BITMAP) (HBITMAP, error) {
+func CreateBitmapIndirect(pBmp *BITMAP) (HBITMAP, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_CreateBitmapIndirect, "CreateBitmapIndirect"),
-		uintptr(unsafe.Pointer(bm)))
+		uintptr(unsafe.Pointer(pBmp)))
 	if ret == 0 {
 		return HBITMAP(0), co.ERROR_INVALID_PARAMETER
 	}
@@ -154,10 +154,10 @@ type HBRUSH HGDIOBJ
 // ⚠️ You must defer [HBRUSH.DeleteObject].
 //
 // [CreateBrushIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createbrushindirect
-func CreateBrushIndirect(lb *LOGBRUSH) (HBRUSH, error) {
+func CreateBrushIndirect(pLogBrush *LOGBRUSH) (HBRUSH, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_CreateBrushIndirect, "CreateBrushIndirect"),
-		uintptr(unsafe.Pointer(lb)))
+		uintptr(unsafe.Pointer(pLogBrush)))
 	if ret == 0 {
 		return HBRUSH(0), co.ERROR_INVALID_PARAMETER
 	}
@@ -256,10 +256,10 @@ var _gdi_CreateFontW *syscall.Proc
 // ⚠️ You must defer [HFONT.DeleteObject].
 //
 // [CreateFontIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontindirectw
-func CreateFontIndirect(lf *LOGFONT) (HFONT, error) {
+func CreateFontIndirect(pLogFont *LOGFONT) (HFONT, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_CreateFontIndirectW, "CreateFontIndirectW"),
-		uintptr(unsafe.Pointer(lf)))
+		uintptr(unsafe.Pointer(pLogFont)))
 	if ret == 0 {
 		return HFONT(0), co.ERROR_INVALID_PARAMETER
 	}
@@ -316,10 +316,10 @@ var _gdi_CreatePen *syscall.Proc
 // ⚠️ You must defer [HPEN.DeleteObject].
 //
 // [CreatePenIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createpenindirect
-func CreatePenIndirect(lp *LOGPEN) (HPEN, error) {
+func CreatePenIndirect(pLogPen *LOGPEN) (HPEN, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_CreatePenIndirect, "CreatePenIndirect"),
-		uintptr(unsafe.Pointer(lp)))
+		uintptr(unsafe.Pointer(pLogPen)))
 	if ret == 0 {
 		return HPEN(0), co.ERROR_INVALID_PARAMETER
 	}
@@ -338,7 +338,7 @@ func ExtCreatePen(
 	penStyle co.PS_STYLE,
 	endCap co.PS_ENDCAP,
 	width int,
-	brush *LOGBRUSH,
+	pLogBrush *LOGBRUSH,
 	styleLengths []int,
 ) (HPEN, error) {
 	var pLens unsafe.Pointer
@@ -347,14 +347,14 @@ func ExtCreatePen(
 		for _, sl := range styleLengths {
 			lens32 = append(lens32, uint32(sl))
 		}
-		pLens = unsafe.Pointer(unsafe.SliceData(lens32))
+		pLens = unsafe.Pointer(&lens32[0])
 	}
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_ExtCreatePen, "ExtCreatePen"),
 		uintptr(uint32(penType)|uint32(penStyle)|uint32(endCap)),
 		uintptr(uint32(width)),
-		uintptr(unsafe.Pointer(brush)),
+		uintptr(unsafe.Pointer(pLogBrush)),
 		uintptr(uint32(len(styleLengths))),
 		uintptr(pLens))
 	if ret == 0 {

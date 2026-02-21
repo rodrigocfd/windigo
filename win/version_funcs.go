@@ -35,7 +35,7 @@ func GetFileVersionInfo(fileName string, dest []byte) error {
 		uintptr(wFileName.EmptyIsNil(fileName)),
 		0,
 		uintptr(uint32(len(dest))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(dest))))
+		uintptr(unsafe.Pointer(&dest[0])))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 
@@ -109,7 +109,7 @@ func VerQueryValue(block []byte, subBlock string) (unsafe.Pointer, int, bool) {
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Version.Load(&_version_VerQueryValueW, "VerQueryValueW"),
-		uintptr(unsafe.Pointer(unsafe.SliceData(block))),
+		uintptr(unsafe.Pointer(&block[0])),
 		uintptr(wSubBlock.AllowEmpty(subBlock)),
 		uintptr(unsafe.Pointer(&lplpBuffer)),
 		uintptr(unsafe.Pointer(&puLen)))

@@ -120,11 +120,11 @@ func (me *IBindCtx) RevokeObjectBound(obj OleObj) error {
 // [SetBindOptions] method.
 //
 // [SetBindOptions]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-setbindoptions
-func (me *IBindCtx) SetBindOptions(bindOpts *BIND_OPTS3) error {
+func (me *IBindCtx) SetBindOptions(pBindOpts *BIND_OPTS3) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).SetBindOptions,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(bindOpts)))
+		uintptr(unsafe.Pointer(pBindOpts)))
 	return utl.HresultToError(ret)
 }
 
@@ -158,12 +158,12 @@ func (*IDataObject) IID() *co.IID {
 // [GetCanonicalFormatEtc] method.
 //
 // [GetCanonicalFormatEtc]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-idataobject-getcanonicalformatetc
-func (me *IDataObject) GetCanonicalFormatEtc(etcIn *FORMATETC) (FORMATETC, error) {
+func (me *IDataObject) GetCanonicalFormatEtc(pEtcIn *FORMATETC) (FORMATETC, error) {
 	var etcOut FORMATETC
 	ret, _, _ := syscall.SyscallN(
 		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).GetCanonicalFormatEtc,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(etcIn)),
+		uintptr(unsafe.Pointer(pEtcIn)),
 		uintptr(unsafe.Pointer(&etcOut)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return etcOut, nil
@@ -177,12 +177,12 @@ func (me *IDataObject) GetCanonicalFormatEtc(etcIn *FORMATETC) (FORMATETC, error
 // ⚠️ You must defer [ReleaseStgMedium] on the returned object.
 //
 // [GetData]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-idataobject-getdata
-func (me *IDataObject) GetData(etc *FORMATETC) (STGMEDIUM, error) {
+func (me *IDataObject) GetData(pEtc *FORMATETC) (STGMEDIUM, error) {
 	var stg STGMEDIUM
 	ret, _, _ := syscall.SyscallN(
 		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).GetData,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(etc)),
+		uintptr(unsafe.Pointer(pEtc)),
 		uintptr(unsafe.Pointer(&stg)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return stg, nil
@@ -194,11 +194,11 @@ func (me *IDataObject) GetData(etc *FORMATETC) (STGMEDIUM, error) {
 // [QueryGetData] method.
 //
 // [QueryGetData]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-idataobject-querygetdata
-func (me *IDataObject) QueryGetData(etc *FORMATETC) error {
+func (me *IDataObject) QueryGetData(pEtc *FORMATETC) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).QueryGetData,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(etc)))
+		uintptr(unsafe.Pointer(pEtc)))
 	return utl.HresultToError(ret)
 }
 
@@ -327,7 +327,7 @@ func (me *ISequentialStream) Read(destBuf []byte) (numBytesRead int, hr error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Read,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(unsafe.SliceData(destBuf))),
+		uintptr(unsafe.Pointer(&destBuf[0])),
 		uintptr(uint32(len(destBuf))),
 		uintptr(unsafe.Pointer(&read32)))
 
@@ -346,7 +346,7 @@ func (me *ISequentialStream) Write(data []byte) (numBytesWritten int, hr error) 
 	ret, _, _ := syscall.SyscallN(
 		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Write,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(unsafe.SliceData(data))),
+		uintptr(unsafe.Pointer(&data[0])),
 		uintptr(uint32(len(data))),
 		uintptr(unsafe.Pointer(&written32)))
 

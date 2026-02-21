@@ -33,7 +33,7 @@ var _uxtheme_CloseThemeData *syscall.Proc
 // [DrawThemeBackground] function.
 //
 // [DrawThemeBackground]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/nf-uxtheme-drawthemebackground
-func (hTheme HTHEME) DrawThemeBackground(hdc HDC, partStateId co.VS, pRc *RECT, clipRc *RECT) error {
+func (hTheme HTHEME) DrawThemeBackground(hdc HDC, partStateId co.VS, pRc *RECT, pClipRc *RECT) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Uxtheme.Load(&_uxtheme_DrawThemeBackground, "DrawThemeBackground"),
 		uintptr(hTheme),
@@ -41,7 +41,7 @@ func (hTheme HTHEME) DrawThemeBackground(hdc HDC, partStateId co.VS, pRc *RECT, 
 		uintptr(partStateId.Part()),
 		uintptr(partStateId.State()),
 		uintptr(unsafe.Pointer(pRc)),
-		uintptr(unsafe.Pointer(clipRc)))
+		uintptr(unsafe.Pointer(pClipRc)))
 	return utl.HresultToError(ret)
 }
 

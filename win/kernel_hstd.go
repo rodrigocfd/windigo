@@ -108,7 +108,7 @@ var _kernel_GetNumberOfConsoleInputEvents *syscall.Proc
 // [ReadConsole]: https://learn.microsoft.com/en-us/windows/console/readconsole
 func (hStd HSTD) ReadConsole(
 	maxCharsToRead int,
-	inputControl *CONSOLE_READCONSOLE_CONTROL,
+	pInputControl *CONSOLE_READCONSOLE_CONTROL,
 ) (text string, numCharsRead int, wErr error) {
 	utl.PanicNeg(maxCharsToRead)
 
@@ -123,7 +123,7 @@ func (hStd HSTD) ReadConsole(
 		uintptr(wBuf.Ptr()),
 		uintptr(uint32(maxCharsToRead)),
 		uintptr(unsafe.Pointer(&numRead32)),
-		uintptr(unsafe.Pointer(inputControl)))
+		uintptr(unsafe.Pointer(pInputControl)))
 	if ret == 0 {
 		return "", 0, co.ERROR(err)
 	}
@@ -137,19 +137,19 @@ var _kernel_ReadConsoleW *syscall.Proc
 // [ReadFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 func (hStd HSTD) ReadFile(
 	buffer []byte,
-	overlapped *OVERLAPPED,
+	pOverlapped *OVERLAPPED,
 ) (numBytesRead int, wErr error) {
-	return HFILE(hStd).ReadFile(buffer, overlapped)
+	return HFILE(hStd).ReadFile(buffer, pOverlapped)
 }
 
 // [SetConsoleCursorInfo] function.
 //
 // [SetConsoleCursorInfo]: https://learn.microsoft.com/en-us/windows/console/setconsolecursorinfo
-func (hStd HSTD) SetConsoleCursorInfo(info *CONSOLE_CURSOR_INFO) error {
+func (hStd HSTD) SetConsoleCursorInfo(pInfo *CONSOLE_CURSOR_INFO) error {
 	ret, _, err := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_SetConsoleCursorInfo, "SetConsoleCursorInfo"),
 		uintptr(hStd),
-		uintptr(unsafe.Pointer(info)))
+		uintptr(unsafe.Pointer(pInfo)))
 	if ret == 0 {
 		return co.ERROR(err)
 	}
@@ -269,7 +269,7 @@ var _kernel_WriteConsoleW *syscall.Proc
 // [WriteFile]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
 func (hStd HSTD) WriteFile(
 	data []byte,
-	overlapped *OVERLAPPED,
+	pOverlapped *OVERLAPPED,
 ) (numBytesWritten int, wErr error) {
-	return HFILE(hStd).WriteFile(data, overlapped)
+	return HFILE(hStd).WriteFile(data, pOverlapped)
 }

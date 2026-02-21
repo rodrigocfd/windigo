@@ -174,7 +174,7 @@ func (me *IWICBitmapCodecInfo) GetPixelFormats() ([]co.WIC_PIXELFORMAT, error) {
 		(*_IWICBitmapCodecInfoVt)(unsafe.Pointer(*me.Ppvt())).GetPixelFormats,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(numFormats),
-		uintptr(unsafe.Pointer(unsafe.SliceData(formats))),
+		uintptr(unsafe.Pointer(&formats[0])),
 		uintptr(unsafe.Pointer(&numFormats)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return formats, nil
@@ -704,11 +704,11 @@ func (me *IWICBitmapSource) CopyPalette(palette *IWICPalette) error {
 // [CopyPixels] method.
 //
 // [CopyPixels]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapsource-copypixels
-func (me *IWICBitmapSource) CopyPixels(rc *WICRect, stride, szBuffer int, pBuffer *byte) error {
+func (me *IWICBitmapSource) CopyPixels(pRc *WICRect, stride, szBuffer int, pBuffer *byte) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICBitmapSourceVt)(unsafe.Pointer(*me.Ppvt())).CopyPixels,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(rc)),
+		uintptr(unsafe.Pointer(pRc)),
 		uintptr(uint32(stride)),
 		uintptr(uint32(szBuffer)),
 		uintptr(unsafe.Pointer(pBuffer)))
@@ -805,7 +805,7 @@ func (me *IWICComponentInfo) GetAuthor() (string, error) {
 		(*_IWICComponentInfoVt)(unsafe.Pointer(*me.Ppvt())).GetAuthor,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(szRequired),
-		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
+		uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(unsafe.Pointer(&szRequired)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -843,7 +843,7 @@ func (me *IWICComponentInfo) GetFriendlyName() (string, error) {
 		(*_IWICComponentInfoVt)(unsafe.Pointer(*me.Ppvt())).GetFriendlyName,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(szRequired),
-		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
+		uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(unsafe.Pointer(&szRequired)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -881,7 +881,7 @@ func (me *IWICComponentInfo) GetSpecVersion() (string, error) {
 		(*_IWICComponentInfoVt)(unsafe.Pointer(*me.Ppvt())).GetSpecVersion,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(szRequired),
-		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
+		uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(unsafe.Pointer(&szRequired)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -919,7 +919,7 @@ func (me *IWICComponentInfo) GetVersion() (string, error) {
 		(*_IWICComponentInfoVt)(unsafe.Pointer(*me.Ppvt())).GetVersion,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(szRequired),
-		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
+		uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(unsafe.Pointer(&szRequired)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -1120,7 +1120,7 @@ func (me *IWICImagingFactory) CreateBitmapFromMemory(
 		uintptr(unsafe.Pointer(pPixelFormat)),
 		uintptr(uint32(stride)),
 		uintptr(uint32(len(srcBuf))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(srcBuf))),
+		uintptr(unsafe.Pointer(&srcBuf[0])),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return com_buildObj_retObjHres[*IWICBitmap](ret, ppvtQueried, releaser)
 }
@@ -1528,7 +1528,7 @@ func (me *IWICStream) InitializeFromMemory(buf []byte) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IWICStreamVt)(unsafe.Pointer(*me.Ppvt())).InitializeFromMemory,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(unsafe.SliceData(buf))),
+		uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(uint32(len(buf))))
 	return utl.HresultToError(ret)
 }

@@ -571,7 +571,7 @@ func (me *IFileDialog) SetFileTypes(filterSpec []COMDLG_FILTERSPEC) error {
 		(*_IFileDialogVt)(unsafe.Pointer(*me.Ppvt())).SetFileTypes,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(uint32(len(filterSpec))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(nativeFilters))))
+		uintptr(unsafe.Pointer(&nativeFilters[0])))
 	return utl.HresultToError(ret)
 }
 
@@ -2034,7 +2034,7 @@ func (me *IShellLink) GetIconLocation() (path string, index int, hr error) {
 // [GetPath] method.
 //
 // [GetPath]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getpath
-func (me *IShellLink) GetPath(fd *WIN32_FIND_DATA, flags co.SLGP) (string, error) {
+func (me *IShellLink) GetPath(pWfd *WIN32_FIND_DATA, flags co.SLGP) (string, error) {
 	var wBuf wstr.BufDecoder
 	wBuf.Alloc(wstr.BUF_MAX)
 
@@ -2043,7 +2043,7 @@ func (me *IShellLink) GetPath(fd *WIN32_FIND_DATA, flags co.SLGP) (string, error
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(wBuf.Ptr()),
 		uintptr(int32(wBuf.Len()-1)),
-		uintptr(unsafe.Pointer(fd)),
+		uintptr(unsafe.Pointer(pWfd)),
 		uintptr(flags))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -2252,11 +2252,11 @@ func (me *IShellView) SaveViewState() error {
 // [TranslateAccelerator] method.
 //
 // [TranslateAccelerator]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellview-translateaccelerator
-func (me *IShellView) TranslateAccelerator(msg *MSG) error {
+func (me *IShellView) TranslateAccelerator(pMsg *MSG) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IShellViewVt)(unsafe.Pointer(*me.Ppvt())).TranslateAccelerator,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(msg)))
+		uintptr(unsafe.Pointer(pMsg)))
 	return utl.HresultToError(ret)
 }
 
@@ -2541,12 +2541,12 @@ func (me *ITaskbarList3) SetTabOrder(hwndTab, hwndInsertBefore HWND) error {
 // [SetThumbnailClip] method.
 //
 // [SetThumbnailClip]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setthumbnailclip
-func (me *ITaskbarList3) SetThumbnailClip(hWnd HWND, rcClip *RECT) error {
+func (me *ITaskbarList3) SetThumbnailClip(hWnd HWND, pRcClip *RECT) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_ITaskbarList3Vt)(unsafe.Pointer(*me.Ppvt())).SetThumbnailClip,
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(rcClip)))
+		uintptr(unsafe.Pointer(pRcClip)))
 	return utl.HresultToError(ret)
 }
 
@@ -2572,7 +2572,7 @@ func (me *ITaskbarList3) ThumbBarAddButtons(hWnd HWND, buttons []THUMBBUTTON) er
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(uint32(len(buttons))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(buttons))))
+		uintptr(unsafe.Pointer(&buttons[0])))
 	return utl.HresultToError(ret)
 }
 
@@ -2597,7 +2597,7 @@ func (me *ITaskbarList3) ThumbBarUpdateButtons(hWnd HWND, buttons []THUMBBUTTON)
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		uintptr(hWnd),
 		uintptr(uint32(len(buttons))),
-		uintptr(unsafe.Pointer(unsafe.SliceData(buttons))))
+		uintptr(unsafe.Pointer(&buttons[0])))
 	return utl.HresultToError(ret)
 }
 
