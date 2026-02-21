@@ -48,7 +48,7 @@ func DwmGetColorizationColor() (color COLORREF, isOpaqueBlend bool, hr error) {
 	if hr = co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return COLORREF(0), false, hr
 	}
-	return clr, bOpaque.Get(), nil
+	return clr, bOpaque.Ok(), nil
 }
 
 var _dwmapi_DwmGetColorizationColor *syscall.Proc
@@ -64,7 +64,7 @@ func DwmIsCompositionEnabled() (bool, error) {
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		panic(hr)
 	}
-	return pfEnabled.Get(), nil
+	return pfEnabled.Ok(), nil
 }
 
 var _dwmapi_DwmIsCompositionEnabled *syscall.Proc

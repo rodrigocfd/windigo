@@ -146,7 +146,7 @@ func (hProcess HPROCESS) GetProcessPriorityBoost() (bool, error) {
 	if ret == 0 {
 		return false, co.ERROR(err)
 	}
-	return bVal.Get(), nil
+	return bVal.Ok(), nil
 }
 
 var _kernel_GetProcessPriorityBoost *syscall.Proc
@@ -229,7 +229,7 @@ func (hProcess HPROCESS) IsProcessCritical() (bool, error) {
 	if ret == 0 {
 		return false, co.ERROR(err)
 	}
-	return bVal.Get(), nil
+	return bVal.Ok(), nil
 }
 
 var _kernel_IsProcessCritical *syscall.Proc
@@ -246,7 +246,7 @@ func (hProcess HPROCESS) IsWow64Process() (bool, error) {
 	if ret == 0 {
 		return false, co.ERROR(err)
 	}
-	return bVal.Get(), nil
+	return bVal.Ok(), nil
 }
 
 var _kernel_IsWow64Process *syscall.Proc

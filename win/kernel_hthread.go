@@ -109,7 +109,7 @@ func (hThread HTHREAD) GetThreadIOPendingFlag() (bool, error) {
 	if ret == 0 {
 		return false, co.ERROR(err)
 	}
-	return bVal.Get(), nil
+	return bVal.Ok(), nil
 }
 
 var _kernel_GetThreadIOPendingFlag *syscall.Proc
@@ -141,7 +141,7 @@ func (hThread HTHREAD) GetThreadPriorityBoost() (bool, error) {
 	if ret == 0 {
 		return false, co.ERROR(err)
 	}
-	return bVal.Get(), nil
+	return bVal.Ok(), nil
 }
 
 var _kernel_GetThreadPriorityBoost *syscall.Proc

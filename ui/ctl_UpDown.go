@@ -148,7 +148,7 @@ func (me *UpDown) Value() (int, bool) {
 	var valid win.BOOL
 	ret, err := me.hWnd.SendMessage(co.UDM_GETPOS32,
 		0, win.LPARAM(unsafe.Pointer(&valid)))
-	if !valid.Get() || err != nil {
+	if !valid.Ok() || err != nil {
 		return 0, false
 	}
 	return int(ret), true

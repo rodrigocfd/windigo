@@ -48,6 +48,11 @@ type ATOM uint16
 // [BOOL]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#BOOL
 type BOOL int32
 
+// Converts the int32 value to bool.
+func (b BOOL) Ok() bool {
+	return b != 0
+}
+
 // Sets the int32 value with a bool.
 func (b *BOOL) Set(v bool) {
 	if v {
@@ -55,11 +60,6 @@ func (b *BOOL) Set(v bool) {
 	} else {
 		*b = BOOL(0)
 	}
-}
-
-// Converts the int32 value to bool.
-func (b BOOL) Get() bool {
-	return b != 0
 }
 
 // [CONSOLE_CURSOR_INFO] struct.

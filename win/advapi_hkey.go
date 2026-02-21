@@ -667,7 +667,7 @@ func (hKey HKEY) RegQueryReflectionKey() (bool, error) {
 	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
 		return false, wErr
 	}
-	return bVal.Get(), nil
+	return bVal.Ok(), nil
 }
 
 var _advapi_RegQueryReflectionKey *syscall.Proc
