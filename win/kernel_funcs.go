@@ -199,6 +199,11 @@ var _kernel_ExpandEnvironmentStringsW *syscall.Proc
 
 // [FileTimeToSystemTime] function.
 //
+// Example:
+//
+//	ftUtc := win.GetSystemTimeAsFileTime()
+//	stUtc := win.FileTimeToSystemTime(&ftUtc)
+//
 // [FileTimeToSystemTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime
 func FileTimeToSystemTime(ft *FILETIME) (SYSTEMTIME, error) {
 	var st SYSTEMTIME
@@ -408,6 +413,45 @@ func GetStartupInfo() STARTUPINFO {
 }
 
 var _kernel_GetStartupInfoW *syscall.Proc
+
+// [GetSystemTime] function.
+//
+// [GetSystemTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtime
+func GetSystemTime() SYSTEMTIME {
+	var st SYSTEMTIME
+	_, _, _ = syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GetSystemTime, "GetSystemTime"),
+		uintptr(unsafe.Pointer(&st)))
+	return st
+}
+
+var _kernel_GetSystemTime *syscall.Proc
+
+// [GetSystemTimeAsFileTime] function.
+//
+// [GetSystemTimeAsFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimeasfiletime
+func GetSystemTimeAsFileTime() FILETIME {
+	var ft FILETIME
+	_, _, _ = syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GetSystemTimeAsFileTime, "GetSystemTimeAsFileTime"),
+		uintptr(unsafe.Pointer(&ft)))
+	return ft
+}
+
+var _kernel_GetSystemTimeAsFileTime *syscall.Proc
+
+// [GetSystemTimePreciseAsFileTime] function.
+//
+// [GetSystemTimePreciseAsFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimepreciseasfiletime
+func GetSystemTimePreciseAsFileTime() FILETIME {
+	var ft FILETIME
+	_, _, _ = syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GetSystemTimePreciseAsFileTime, "GetSystemTimePreciseAsFileTime"),
+		uintptr(unsafe.Pointer(&ft)))
+	return ft
+}
+
+var _kernel_GetSystemTimePreciseAsFileTime *syscall.Proc
 
 // [GetTimeZoneInformation] function.
 //
@@ -667,6 +711,11 @@ var _kernel_Sleep *syscall.Proc
 
 // [SystemTimeToFileTime] function.
 //
+// Example:
+//
+//	stUtc := win.GetSystemTime()
+//	ftUtc := win.SystemTimeToFileTime(&stUtc)
+//
 // [SystemTimeToFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetofiletime
 func SystemTimeToFileTime(st *SYSTEMTIME) (FILETIME, error) {
 	var ft FILETIME
@@ -683,6 +732,11 @@ func SystemTimeToFileTime(st *SYSTEMTIME) (FILETIME, error) {
 var _kernel_SystemTimeToFileTime *syscall.Proc
 
 // [SystemTimeToTzSpecificLocalTime] function.
+//
+// Example:
+//
+//	stUtc := win.GetSystemTime()
+//	stLocal, _ := win.SystemTimeToTzSpecificLocalTime(nil, &stUtc)
 //
 // [SystemTimeToTzSpecificLocalTime]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetotzspecificlocaltime
 func SystemTimeToTzSpecificLocalTime(
