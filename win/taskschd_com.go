@@ -35,32 +35,22 @@ func (*IAction) IID() *co.IID {
 //
 // [get_Id]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iaction-get_id
 func (me *IAction) GetId() (string, error) {
-	return com_callBstrGet(me,
-		(*_IActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Id)
+	return me.callRetBstr((*_IActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Id)
 }
 
 // [get_Type] method.
 //
 // [get_Type]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iaction-get_type
 func (me *IAction) GetType() (co.TASK_ACTION, error) {
-	var tat uint32
-	ret, _, _ := syscall.SyscallN(
-		(*_IActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Type,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&tat)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.TASK_ACTION(tat), nil
-	} else {
-		return co.TASK_ACTION(0), hr
-	}
+	return com_callRetStruct[co.TASK_ACTION](me,
+		(*_IActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Type)
 }
 
 // [put_Id] method.
 //
 // [put_Id]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iaction-put_id
 func (me *IAction) PutId(id string) error {
-	return com_callBstrSet(me, id,
+	return me.callSetBstr(id,
 		(*_IActionVt)(unsafe.Pointer(*me.Ppvt())).Put_Id)
 }
 
@@ -96,8 +86,7 @@ func (*IActionCollection) IID() *co.IID {
 //
 // [Clear]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iactioncollection-clear
 func (me *IActionCollection) Clear() error {
-	return com_callErr(me,
-		(*_IActionCollectionVt)(unsafe.Pointer(*me.Ppvt())).Clear)
+	return me.callNoParm((*_IActionCollectionVt)(unsafe.Pointer(*me.Ppvt())).Clear)
 }
 
 // [Create] method.
@@ -139,8 +128,7 @@ func (me *IActionCollection) Enum(releaser *OleReleaser) ([]*IAction, error) {
 //
 // [get_Context]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iactioncollection-get_context
 func (me *IActionCollection) GetContext() (string, error) {
-	return com_callBstrGet(me,
-		(*_IActionCollectionVt)(unsafe.Pointer(*me.Ppvt())).Get_Context)
+	return me.callRetBstr((*_IActionCollectionVt)(unsafe.Pointer(*me.Ppvt())).Get_Context)
 }
 
 // [get_Count] method.
@@ -177,15 +165,14 @@ func (me *IActionCollection) GetItem(releaser *OleReleaser, index int) (*IAction
 //
 // [get_XmlText]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iactioncollection-get_xmltext
 func (me *IActionCollection) GetXmlText() (string, error) {
-	return com_callBstrGet(me,
-		(*_IActionCollectionVt)(unsafe.Pointer(*me.Ppvt())).Get_XmlText)
+	return me.callRetBstr((*_IActionCollectionVt)(unsafe.Pointer(*me.Ppvt())).Get_XmlText)
 }
 
 // [put_Context] method.
 //
 // [put_Context]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iactioncollection-put_context
 func (me *IActionCollection) PutContext(context string) error {
-	return com_callBstrSet(me, context,
+	return me.callSetBstr(context,
 		(*_IActionCollectionVt)(unsafe.Pointer(*me.Ppvt())).Put_Context)
 }
 
@@ -193,7 +180,7 @@ func (me *IActionCollection) PutContext(context string) error {
 //
 // [put_XmlText]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iactioncollection-put_xmltext
 func (me *IActionCollection) PutXmlText(text string) error {
-	return com_callBstrSet(me, text,
+	return me.callSetBstr(text,
 		(*_IActionCollectionVt)(unsafe.Pointer(*me.Ppvt())).Put_XmlText)
 }
 
@@ -221,15 +208,14 @@ func (*IBootTrigger) IID() *co.IID {
 //
 // [get_Delay]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iboottrigger-get_delay
 func (me *IBootTrigger) GetDelay() (string, error) {
-	return com_callBstrGet(me,
-		(*_IBootTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Delay)
+	return me.callRetBstr((*_IBootTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Delay)
 }
 
 // [put_Delay] method.
 //
 // [put_Delay]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iboottrigger-put_delay
 func (me *IBootTrigger) PutDelay(delay string) error {
-	return com_callBstrSet(me, delay,
+	return me.callSetBstr(delay,
 		(*_IBootTriggerVt)(unsafe.Pointer(*me.Ppvt())).Put_Delay)
 }
 
@@ -259,23 +245,21 @@ func (*IComHandlerAction) IID() *co.IID {
 //
 // [get_ClassId]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-icomhandleraction-get_classid
 func (me *IComHandlerAction) GetClassId() (string, error) {
-	return com_callBstrGet(me,
-		(*_IComHandlerActionVt)(unsafe.Pointer(*me.Ppvt())).Get_ClassId)
+	return me.callRetBstr((*_IComHandlerActionVt)(unsafe.Pointer(*me.Ppvt())).Get_ClassId)
 }
 
 // [get_Data] method.
 //
 // [get_Data]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-icomhandleraction-get_data
 func (me *IComHandlerAction) GetData() (string, error) {
-	return com_callBstrGet(me,
-		(*_IComHandlerActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Data)
+	return me.callRetBstr((*_IComHandlerActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Data)
 }
 
 // [put_ClassId] method.
 //
 // [put_ClassId]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-icomhandleraction-put_classid
 func (me *IComHandlerAction) PutClassId(clsId string) error {
-	return com_callBstrSet(me, clsId,
+	return me.callSetBstr(clsId,
 		(*_IComHandlerActionVt)(unsafe.Pointer(*me.Ppvt())).Put_ClassId)
 }
 
@@ -283,7 +267,7 @@ func (me *IComHandlerAction) PutClassId(clsId string) error {
 //
 // [put_Data]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-icomhandleraction-put_data
 func (me *IComHandlerAction) PutData(data string) error {
-	return com_callBstrSet(me, data,
+	return me.callSetBstr(data,
 		(*_IComHandlerActionVt)(unsafe.Pointer(*me.Ppvt())).Put_Data)
 }
 
@@ -330,8 +314,7 @@ func (me *IDailyTrigger) GetDaysInterval() (int, error) {
 //
 // [get_RandomDelay]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-idailytrigger-get_randomdelay
 func (me *IDailyTrigger) GetRandomDelay() (string, error) {
-	return com_callBstrGet(me,
-		(*_IDailyTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_RandomDelay)
+	return me.callRetBstr((*_IDailyTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_RandomDelay)
 }
 
 // [put_DaysInterval] method.
@@ -349,7 +332,7 @@ func (me *IDailyTrigger) PutDaysInterval(days int) error {
 //
 // [put_RandomDelay]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-idailytrigger-put_randomdelay
 func (me *IDailyTrigger) PutRandomDelay(randomDelay string) error {
-	return com_callBstrSet(me, randomDelay,
+	return me.callSetBstr(randomDelay,
 		(*_IDailyTriggerVt)(unsafe.Pointer(*me.Ppvt())).Put_RandomDelay)
 }
 
@@ -395,71 +378,63 @@ func (*IEmailAction) IID() *co.IID {
 //
 // [get_Bcc]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-get_bcc
 func (me *IEmailAction) GetBcc() (string, error) {
-	return com_callBstrGet(me,
-		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Bcc)
+	return me.callRetBstr((*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Bcc)
 }
 
 // [get_Body] method.
 //
 // [get_Body]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-get_body
 func (me *IEmailAction) GetBody() (string, error) {
-	return com_callBstrGet(me,
-		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Body)
+	return me.callRetBstr((*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Body)
 }
 
 // [get_Cc] method.
 //
 // [get_Cc]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-get_cc
 func (me *IEmailAction) GetCc() (string, error) {
-	return com_callBstrGet(me,
-		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Cc)
+	return me.callRetBstr((*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Cc)
 }
 
 // [get_From] method.
 //
 // [get_From]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-get_from
 func (me *IEmailAction) GetFrom() (string, error) {
-	return com_callBstrGet(me,
-		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_From)
+	return me.callRetBstr((*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_From)
 }
 
 // [get_ReplyTo] method.
 //
 // [get_ReplyTo]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-get_replyto
 func (me *IEmailAction) GetReplyTo() (string, error) {
-	return com_callBstrGet(me,
-		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_ReplyTo)
+	return me.callRetBstr((*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_ReplyTo)
 }
 
 // [get_Server] method.
 //
 // [get_Server]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-get_server
 func (me *IEmailAction) GetServer() (string, error) {
-	return com_callBstrGet(me,
-		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Server)
+	return me.callRetBstr((*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Server)
 }
 
 // [get_Subject] method.
 //
 // [get_Subject]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-get_subject
 func (me *IEmailAction) GetSubject() (string, error) {
-	return com_callBstrGet(me,
-		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Subject)
+	return me.callRetBstr((*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Subject)
 }
 
 // [get_To] method.
 //
 // [get_To]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-get_to
 func (me *IEmailAction) GetTo() (string, error) {
-	return com_callBstrGet(me,
-		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_To)
+	return me.callRetBstr((*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Get_To)
 }
 
 // [put_Bcc] method.
 //
 // [put_Bcc]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-put_bcc
 func (me *IEmailAction) PutBcc(bcc string) error {
-	return com_callBstrSet(me, bcc,
+	return me.callSetBstr(bcc,
 		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Put_Bcc)
 }
 
@@ -467,7 +442,7 @@ func (me *IEmailAction) PutBcc(bcc string) error {
 //
 // [put_Body]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-put_body
 func (me *IEmailAction) PutBody(bcc string) error {
-	return com_callBstrSet(me, bcc,
+	return me.callSetBstr(bcc,
 		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Put_Body)
 }
 
@@ -475,7 +450,7 @@ func (me *IEmailAction) PutBody(bcc string) error {
 //
 // [put_Cc]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-put_cc
 func (me *IEmailAction) PutCc(cc string) error {
-	return com_callBstrSet(me, cc,
+	return me.callSetBstr(cc,
 		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Put_Cc)
 }
 
@@ -483,7 +458,7 @@ func (me *IEmailAction) PutCc(cc string) error {
 //
 // [put_From]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-put_from
 func (me *IEmailAction) PutFrom(from string) error {
-	return com_callBstrSet(me, from,
+	return me.callSetBstr(from,
 		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Put_From)
 }
 
@@ -491,7 +466,7 @@ func (me *IEmailAction) PutFrom(from string) error {
 //
 // [put_ReplyTo]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-put_replyto
 func (me *IEmailAction) PutReplyTo(replyTo string) error {
-	return com_callBstrSet(me, replyTo,
+	return me.callSetBstr(replyTo,
 		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Put_ReplyTo)
 }
 
@@ -499,7 +474,7 @@ func (me *IEmailAction) PutReplyTo(replyTo string) error {
 //
 // [put_Server]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-put_server
 func (me *IEmailAction) PutServer(server string) error {
-	return com_callBstrSet(me, server,
+	return me.callSetBstr(server,
 		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Put_Server)
 }
 
@@ -507,7 +482,7 @@ func (me *IEmailAction) PutServer(server string) error {
 //
 // [put_Subject]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-put_subject
 func (me *IEmailAction) PutSubject(subject string) error {
-	return com_callBstrSet(me, subject,
+	return me.callSetBstr(subject,
 		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Put_Subject)
 }
 
@@ -515,7 +490,7 @@ func (me *IEmailAction) PutSubject(subject string) error {
 //
 // [put_To]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iemailaction-put_to
 func (me *IEmailAction) PutTo(to string) error {
-	return com_callBstrSet(me, to,
+	return me.callSetBstr(to,
 		(*_IEmailActionVt)(unsafe.Pointer(*me.Ppvt())).Put_To)
 }
 
@@ -547,23 +522,21 @@ func (*IEventTrigger) IID() *co.IID {
 //
 // [get_Delay]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-ieventtrigger-get_delay
 func (me *IEventTrigger) GetDelay() (string, error) {
-	return com_callBstrGet(me,
-		(*_IEventTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Delay)
+	return me.callRetBstr((*_IEventTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Delay)
 }
 
 // [get_Subscription] method.
 //
 // [get_Subscription]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-ieventtrigger-get_subscription
 func (me *IEventTrigger) GetSubscription() (string, error) {
-	return com_callBstrGet(me,
-		(*_IEventTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Subscription)
+	return me.callRetBstr((*_IEventTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Subscription)
 }
 
 // [get_ValueQueries] method.
 //
 // [get_ValueQueries]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-ieventtrigger-get_valuequeries
 func (me *IEventTrigger) GetValueQueries(releaser *OleReleaser) (*ITaskNamedValueCollection, error) {
-	return com_callObj[*ITaskNamedValueCollection](me, releaser,
+	return com_callRetCom[*ITaskNamedValueCollection](me, releaser,
 		(*_IEventTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_ValueQueries)
 }
 
@@ -571,7 +544,7 @@ func (me *IEventTrigger) GetValueQueries(releaser *OleReleaser) (*ITaskNamedValu
 //
 // [put_Delay]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-ieventtrigger-put_delay
 func (me *IEventTrigger) PutDelay(delay string) error {
-	return com_callBstrSet(me, delay,
+	return me.callSetBstr(delay,
 		(*_IEventTriggerVt)(unsafe.Pointer(*me.Ppvt())).Put_Delay)
 }
 
@@ -579,7 +552,7 @@ func (me *IEventTrigger) PutDelay(delay string) error {
 //
 // [put_Subscription]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-ieventtrigger-put_subscription
 func (me *IEventTrigger) PutSubscription(subscription string) error {
-	return com_callBstrSet(me, subscription,
+	return me.callSetBstr(subscription,
 		(*_IEventTriggerVt)(unsafe.Pointer(*me.Ppvt())).Put_Subscription)
 }
 
@@ -622,31 +595,28 @@ func (*IExecAction) IID() *co.IID {
 //
 // [get_Arguments]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iexecaction-get_arguments
 func (me *IExecAction) GetArguments() (string, error) {
-	return com_callBstrGet(me,
-		(*_IExecActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Arguments)
+	return me.callRetBstr((*_IExecActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Arguments)
 }
 
 // [get_Path] method.
 //
 // [get_Path]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iexecaction-get_path
 func (me *IExecAction) GetPath() (string, error) {
-	return com_callBstrGet(me,
-		(*_IExecActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Path)
+	return me.callRetBstr((*_IExecActionVt)(unsafe.Pointer(*me.Ppvt())).Get_Path)
 }
 
 // [get_WorkingDirectory] method.
 //
 // [get_WorkingDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iexecaction-get_workingdirectory
 func (me *IExecAction) GetWorkingDirectory() (string, error) {
-	return com_callBstrGet(me,
-		(*_IExecActionVt)(unsafe.Pointer(*me.Ppvt())).Get_WorkingDirectory)
+	return me.callRetBstr((*_IExecActionVt)(unsafe.Pointer(*me.Ppvt())).Get_WorkingDirectory)
 }
 
 // [put_Arguments] method.
 //
 // [put_Arguments]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iexecaction-put_arguments
 func (me *IExecAction) PutArguments(arguments string) error {
-	return com_callBstrSet(me, arguments,
+	return me.callSetBstr(arguments,
 		(*_IExecActionVt)(unsafe.Pointer(*me.Ppvt())).Put_Arguments)
 }
 
@@ -654,7 +624,7 @@ func (me *IExecAction) PutArguments(arguments string) error {
 //
 // [put_Path]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iexecaction-put_path
 func (me *IExecAction) PutPath(path string) error {
-	return com_callBstrSet(me, path,
+	return me.callSetBstr(path,
 		(*_IExecActionVt)(unsafe.Pointer(*me.Ppvt())).Put_Path)
 }
 
@@ -662,7 +632,7 @@ func (me *IExecAction) PutPath(path string) error {
 //
 // [put_WorkingDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iexecaction-put_workingdirectory
 func (me *IExecAction) PutWorkingDirectory(workingDirectory string) error {
-	return com_callBstrSet(me, workingDirectory,
+	return me.callSetBstr(workingDirectory,
 		(*_IExecActionVt)(unsafe.Pointer(*me.Ppvt())).Put_WorkingDirectory)
 }
 
@@ -692,23 +662,21 @@ func (*ILogonTrigger) IID() *co.IID {
 //
 // [get_Delay]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-ilogontrigger-get_delay
 func (me *ILogonTrigger) GetDelay() (string, error) {
-	return com_callBstrGet(me,
-		(*_ILogonTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Delay)
+	return me.callRetBstr((*_ILogonTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Delay)
 }
 
 // [get_UserId] method.
 //
 // [get_UserId]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-ilogontrigger-get_userid
 func (me *ILogonTrigger) GetUserId() (string, error) {
-	return com_callBstrGet(me,
-		(*_ILogonTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_UserId)
+	return me.callRetBstr((*_ILogonTriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_UserId)
 }
 
 // [put_Delay] method.
 //
 // [put_Delay]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-ilogontrigger-put_delay
 func (me *ILogonTrigger) PutDelay(delay string) error {
-	return com_callBstrSet(me, delay,
+	return me.callSetBstr(delay,
 		(*_ILogonTriggerVt)(unsafe.Pointer(*me.Ppvt())).Put_Delay)
 }
 
@@ -716,7 +684,7 @@ func (me *ILogonTrigger) PutDelay(delay string) error {
 //
 // [put_UserId]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-ilogontrigger-put_userid
 func (me *ILogonTrigger) PutUserId(userId string) error {
-	return com_callBstrSet(me, userId,
+	return me.callSetBstr(userId,
 		(*_ILogonTriggerVt)(unsafe.Pointer(*me.Ppvt())).Put_UserId)
 }
 
@@ -754,73 +722,51 @@ func (*IPrincipal) IID() *co.IID {
 //
 // [get_DisplayName]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iprincipal-get_displayname
 func (me *IPrincipal) GetDisplayName() (string, error) {
-	return com_callBstrGet(me,
-		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_DisplayName)
+	return me.callRetBstr((*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_DisplayName)
 }
 
 // [get_GroupId] method.
 //
 // [get_GroupId]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iprincipal-get_groupid
 func (me *IPrincipal) GetGroupId() (string, error) {
-	return com_callBstrGet(me,
-		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_GroupId)
+	return me.callRetBstr((*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_GroupId)
 }
 
 // [get_Id] method.
 //
 // [get_Id]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iprincipal-get_id
 func (me *IPrincipal) GetId() (string, error) {
-	return com_callBstrGet(me,
-		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_Id)
+	return me.callRetBstr((*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_Id)
 }
 
 // [get_LogonType] method.
 //
 // [get_LogonType]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iprincipal-get_logontype
 func (me *IPrincipal) GetLogonType() (co.TASK_LOGON, error) {
-	var taskLogon uint32
-	ret, _, _ := syscall.SyscallN(
-		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_LogonType,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&taskLogon)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.TASK_LOGON(taskLogon), nil
-	} else {
-		return co.TASK_LOGON(0), hr
-	}
+	return com_callRetStruct[co.TASK_LOGON](me,
+		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_LogonType)
 }
 
 // [get_RunLevel] method.
 //
 // [get_RunLevel]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iprincipal-get_runlevel
 func (me *IPrincipal) GetRunLevel() (co.TASK_RUNLEVEL, error) {
-	var rl uint32
-	ret, _, _ := syscall.SyscallN(
-		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_RunLevel,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&rl)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.TASK_RUNLEVEL(rl), nil
-	} else {
-		return co.TASK_RUNLEVEL(0), hr
-	}
+	return com_callRetStruct[co.TASK_RUNLEVEL](me,
+		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_RunLevel)
 }
 
 // [get_UserId] method.
 //
 // [get_UserId]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iprincipal-get_userid
 func (me *IPrincipal) GetUserId() (string, error) {
-	return com_callBstrGet(me,
-		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_UserId)
+	return me.callRetBstr((*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Get_UserId)
 }
 
 // [put_DisplayName] method.
 //
 // [put_DisplayName]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iprincipal-put_displayname
 func (me *IPrincipal) PutDisplayName(name string) error {
-	return com_callBstrSet(me, name,
+	return me.callSetBstr(name,
 		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Put_DisplayName)
 }
 
@@ -828,7 +774,7 @@ func (me *IPrincipal) PutDisplayName(name string) error {
 //
 // [put_GroupId]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iprincipal-put_groupid
 func (me *IPrincipal) PutGroupId(group string) error {
-	return com_callBstrSet(me, group,
+	return me.callSetBstr(group,
 		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Put_GroupId)
 }
 
@@ -836,7 +782,7 @@ func (me *IPrincipal) PutGroupId(group string) error {
 //
 // [put_Id]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iprincipal-put_id
 func (me *IPrincipal) PutId(id string) error {
-	return com_callBstrSet(me, id,
+	return me.callSetBstr(id,
 		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Put_Id)
 }
 
@@ -866,7 +812,7 @@ func (me *IPrincipal) PutRunLevel(runLevel co.TASK_RUNLEVEL) error {
 //
 // [put_UserId]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iprincipal-put_userid
 func (me *IPrincipal) PutUserId(user string) error {
-	return com_callBstrSet(me, user,
+	return me.callSetBstr(user,
 		(*_IPrincipalVt)(unsafe.Pointer(*me.Ppvt())).Put_UserId)
 }
 
@@ -910,7 +856,7 @@ func (*IRegisteredTask) IID() *co.IID {
 //
 // [get_Definition]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregisteredtask-get_definition
 func (me *IRegisteredTask) GetDefinition(releaser *OleReleaser) (*ITaskDefinition, error) {
-	return com_callObj[*ITaskDefinition](me, releaser,
+	return com_callRetCom[*ITaskDefinition](me, releaser,
 		(*_IRegisteredTaskVt)(unsafe.Pointer(*me.Ppvt())).Get_Definition)
 }
 
@@ -947,8 +893,7 @@ func (me *IRegisteredTask) GetLastTaskResult() (int, error) {
 //
 // [get_Name]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregisteredtask-get_name
 func (me *IRegisteredTask) GetName() (string, error) {
-	return com_callBstrGet(me,
-		(*_IRegisteredTaskVt)(unsafe.Pointer(*me.Ppvt())).Get_Name)
+	return me.callRetBstr((*_IRegisteredTaskVt)(unsafe.Pointer(*me.Ppvt())).Get_Name)
 }
 
 // [get_NumberOfMissedRuns] method.
@@ -972,8 +917,7 @@ func (me *IRegisteredTask) GetNumberOfMissedRuns() (int, error) {
 //
 // [get_Path]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregisteredtask-get_path
 func (me *IRegisteredTask) GetPath() (string, error) {
-	return com_callBstrGet(me,
-		(*_IRegisteredTaskVt)(unsafe.Pointer(*me.Ppvt())).Get_Path)
+	return me.callRetBstr((*_IRegisteredTaskVt)(unsafe.Pointer(*me.Ppvt())).Get_Path)
 }
 
 // [GetRunTimes] method.
@@ -1008,25 +952,15 @@ func (me *IRegisteredTask) GetRunTimes(pStart, pEnd *SYSTEMTIME, count int) ([]S
 //
 // [get_State]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregisteredtask-get_state
 func (me *IRegisteredTask) GetState() (co.TASK_STATE, error) {
-	var state uint32
-	ret, _, _ := syscall.SyscallN(
-		(*_IRegisteredTaskVt)(unsafe.Pointer(*me.Ppvt())).Get_State,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&state)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.TASK_STATE(state), nil
-	} else {
-		return co.TASK_STATE(0), hr
-	}
+	return com_callRetStruct[co.TASK_STATE](me,
+		(*_IRegisteredTaskVt)(unsafe.Pointer(*me.Ppvt())).Get_State)
 }
 
 // [get_Xml] method.
 //
 // [get_Xml]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregisteredtask-get_xml
 func (me *IRegisteredTask) GetXml() (string, error) {
-	return com_callBstrGet(me,
-		(*_IRegisteredTaskVt)(unsafe.Pointer(*me.Ppvt())).Get_Xml)
+	return me.callRetBstr((*_IRegisteredTaskVt)(unsafe.Pointer(*me.Ppvt())).Get_Xml)
 }
 
 // [put_Enabled] method.
@@ -1091,71 +1025,63 @@ func (*IRegistrationInfo) IID() *co.IID {
 //
 // [get_Author]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-get_author
 func (me *IRegistrationInfo) GetAuthor() (string, error) {
-	return com_callBstrGet(me,
-		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Author)
+	return me.callRetBstr((*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Author)
 }
 
 // [get_Date] method.
 //
 // [get_Date]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-get_date
 func (me *IRegistrationInfo) GetDate() (string, error) {
-	return com_callBstrGet(me,
-		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Date)
+	return me.callRetBstr((*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Date)
 }
 
 // [get_Description] method.
 //
 // [get_Description]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-get_description
 func (me *IRegistrationInfo) GetDescription() (string, error) {
-	return com_callBstrGet(me,
-		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Description)
+	return me.callRetBstr((*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Description)
 }
 
 // [get_Documentation] method.
 //
 // [get_Documentation]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-get_documentation
 func (me *IRegistrationInfo) GetDocumentation() (string, error) {
-	return com_callBstrGet(me,
-		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Documentation)
+	return me.callRetBstr((*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Documentation)
 }
 
 // [get_Source] method.
 //
 // [get_Source]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-get_source
 func (me *IRegistrationInfo) GetSource() (string, error) {
-	return com_callBstrGet(me,
-		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Source)
+	return me.callRetBstr((*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Source)
 }
 
 // [get_URI] method.
 //
 // [get_URI]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-get_uri
 func (me *IRegistrationInfo) GetURI() (string, error) {
-	return com_callBstrGet(me,
-		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_URI)
+	return me.callRetBstr((*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_URI)
 }
 
 // [get_Version] method.
 //
 // [get_Version]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-get_version
 func (me *IRegistrationInfo) GetVersion() (string, error) {
-	return com_callBstrGet(me,
-		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Version)
+	return me.callRetBstr((*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_Version)
 }
 
 // [get_XmlText] method.
 //
 // [get_XmlText]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-get_xmltext
 func (me *IRegistrationInfo) GetXmlText() (string, error) {
-	return com_callBstrGet(me,
-		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_XmlText)
+	return me.callRetBstr((*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Get_XmlText)
 }
 
 // [put_Author] method.
 //
 // [put_Author]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-put_author
 func (me *IRegistrationInfo) PutAuthor(author string) error {
-	return com_callBstrSet(me, author,
+	return me.callSetBstr(author,
 		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Put_Author)
 }
 
@@ -1163,7 +1089,7 @@ func (me *IRegistrationInfo) PutAuthor(author string) error {
 //
 // [put_Date]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-put_date
 func (me *IRegistrationInfo) PutDate(date string) error {
-	return com_callBstrSet(me, date,
+	return me.callSetBstr(date,
 		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Put_Date)
 }
 
@@ -1171,7 +1097,7 @@ func (me *IRegistrationInfo) PutDate(date string) error {
 //
 // [put_Description]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-put_description
 func (me *IRegistrationInfo) PutDescription(description string) error {
-	return com_callBstrSet(me, description,
+	return me.callSetBstr(description,
 		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Put_Description)
 }
 
@@ -1179,7 +1105,7 @@ func (me *IRegistrationInfo) PutDescription(description string) error {
 //
 // [put_Documentation]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-put_documentation
 func (me *IRegistrationInfo) PutDocumentation(documentation string) error {
-	return com_callBstrSet(me, documentation,
+	return me.callSetBstr(documentation,
 		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Put_Documentation)
 }
 
@@ -1187,7 +1113,7 @@ func (me *IRegistrationInfo) PutDocumentation(documentation string) error {
 //
 // [put_Source]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-put_source
 func (me *IRegistrationInfo) PutSource(source string) error {
-	return com_callBstrSet(me, source,
+	return me.callSetBstr(source,
 		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Put_Source)
 }
 
@@ -1195,7 +1121,7 @@ func (me *IRegistrationInfo) PutSource(source string) error {
 //
 // [put_URI]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-put_uri
 func (me *IRegistrationInfo) PutURI(uri string) error {
-	return com_callBstrSet(me, uri,
+	return me.callSetBstr(uri,
 		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Put_URI)
 }
 
@@ -1203,7 +1129,7 @@ func (me *IRegistrationInfo) PutURI(uri string) error {
 //
 // [put_Version]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-put_version
 func (me *IRegistrationInfo) PutVersion(version string) error {
-	return com_callBstrSet(me, version,
+	return me.callSetBstr(version,
 		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Put_Version)
 }
 
@@ -1211,7 +1137,7 @@ func (me *IRegistrationInfo) PutVersion(version string) error {
 //
 // [put_XmlText]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregistrationinfo-put_xmltext
 func (me *IRegistrationInfo) PutXmlText(text string) error {
-	return com_callBstrSet(me, text,
+	return me.callSetBstr(text,
 		(*_IRegistrationInfoVt)(unsafe.Pointer(*me.Ppvt())).Put_XmlText)
 }
 
@@ -1251,7 +1177,7 @@ func (*ITaskDefinition) IID() *co.IID {
 //
 // [get_Actions]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskdefinition-get_actions
 func (me *ITaskDefinition) GetActions(releaser *OleReleaser) (*IActionCollection, error) {
-	return com_callObj[*IActionCollection](me, releaser,
+	return com_callRetCom[*IActionCollection](me, releaser,
 		(*_ITaskDefinitionVt)(unsafe.Pointer(*me.Ppvt())).Get_Actions)
 }
 
@@ -1259,15 +1185,14 @@ func (me *ITaskDefinition) GetActions(releaser *OleReleaser) (*IActionCollection
 //
 // [get_Data]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskdefinition-get_data
 func (me *ITaskDefinition) GetData() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskDefinitionVt)(unsafe.Pointer(*me.Ppvt())).Get_Data)
+	return me.callRetBstr((*_ITaskDefinitionVt)(unsafe.Pointer(*me.Ppvt())).Get_Data)
 }
 
 // [get_Principal] method.
 //
 // [get_Principal]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskdefinition-get_principal
 func (me *ITaskDefinition) GetPrincipal(releaser *OleReleaser) (*IPrincipal, error) {
-	return com_callObj[*IPrincipal](me, releaser,
+	return com_callRetCom[*IPrincipal](me, releaser,
 		(*_ITaskDefinitionVt)(unsafe.Pointer(*me.Ppvt())).Get_Principal)
 }
 
@@ -1275,7 +1200,7 @@ func (me *ITaskDefinition) GetPrincipal(releaser *OleReleaser) (*IPrincipal, err
 //
 // [get_RegistrationInfo]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskdefinition-get_registrationinfo
 func (me *ITaskDefinition) GetRegistrationInfo(releaser *OleReleaser) (*IRegistrationInfo, error) {
-	return com_callObj[*IRegistrationInfo](me, releaser,
+	return com_callRetCom[*IRegistrationInfo](me, releaser,
 		(*_ITaskDefinitionVt)(unsafe.Pointer(*me.Ppvt())).Get_RegistrationInfo)
 }
 
@@ -1283,7 +1208,7 @@ func (me *ITaskDefinition) GetRegistrationInfo(releaser *OleReleaser) (*IRegistr
 //
 // [get_Settings]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskdefinition-get_settings
 func (me *ITaskDefinition) GetSettings(releaser *OleReleaser) (*ITaskSettings, error) {
-	return com_callObj[*ITaskSettings](me, releaser,
+	return com_callRetCom[*ITaskSettings](me, releaser,
 		(*_ITaskDefinitionVt)(unsafe.Pointer(*me.Ppvt())).Get_Settings)
 }
 
@@ -1291,7 +1216,7 @@ func (me *ITaskDefinition) GetSettings(releaser *OleReleaser) (*ITaskSettings, e
 //
 // [get_Triggers]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskdefinition-get_triggers
 func (me *ITaskDefinition) GetTriggers(releaser *OleReleaser) (*ITriggerCollection, error) {
-	return com_callObj[*ITriggerCollection](me, releaser,
+	return com_callRetCom[*ITriggerCollection](me, releaser,
 		(*_ITaskDefinitionVt)(unsafe.Pointer(*me.Ppvt())).Get_Triggers)
 }
 
@@ -1299,15 +1224,14 @@ func (me *ITaskDefinition) GetTriggers(releaser *OleReleaser) (*ITriggerCollecti
 //
 // [get_XmlText]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskdefinition-get_xmltext
 func (me *ITaskDefinition) GetXmlText() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskDefinitionVt)(unsafe.Pointer(*me.Ppvt())).Get_XmlText)
+	return me.callRetBstr((*_ITaskDefinitionVt)(unsafe.Pointer(*me.Ppvt())).Get_XmlText)
 }
 
 // [put_Data] method.
 //
 // [put_Data]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskdefinition-put_data
 func (me *ITaskDefinition) PutData(data string) error {
-	return com_callBstrSet(me, data,
+	return me.callSetBstr(data,
 		(*_ITaskDefinitionVt)(unsafe.Pointer(*me.Ppvt())).Put_Data)
 }
 
@@ -1359,7 +1283,7 @@ func (me *ITaskDefinition) PutTriggers(triggers *ITriggerCollection) error {
 //
 // [put_XmlText]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskdefinition-put_xmltext
 func (me *ITaskDefinition) PutXmlText(xml string) error {
-	return com_callBstrSet(me, xml,
+	return me.callSetBstr(xml,
 		(*_ITaskDefinitionVt)(unsafe.Pointer(*me.Ppvt())).Put_XmlText)
 }
 
@@ -1434,16 +1358,14 @@ func (me *ITaskFolder) DeleteTask(name string) error {
 //
 // [get_Name]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskfolder-get_name
 func (me *ITaskFolder) GetName() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskFolderVt)(unsafe.Pointer(*me.Ppvt())).Get_Name)
+	return me.callRetBstr((*_ITaskFolderVt)(unsafe.Pointer(*me.Ppvt())).Get_Name)
 }
 
 // [get_Path] method.
 //
 // [get_Path]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskfolder-get_path
 func (me *ITaskFolder) GetPath() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskFolderVt)(unsafe.Pointer(*me.Ppvt())).Get_Path)
+	return me.callRetBstr((*_ITaskFolderVt)(unsafe.Pointer(*me.Ppvt())).Get_Path)
 }
 
 // [GetFolder] method.
@@ -1514,8 +1436,7 @@ func (*ITaskNamedValueCollection) IID() *co.IID {
 //
 // [Clear]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasknamedvaluecollection-clear
 func (me *ITaskNamedValueCollection) Clear() error {
-	return com_callErr(me,
-		(*_ITaskNamedValueCollectionVt)(unsafe.Pointer(*me.Ppvt())).Clear)
+	return me.callNoParm((*_ITaskNamedValueCollectionVt)(unsafe.Pointer(*me.Ppvt())).Clear)
 }
 
 // [Create] method.
@@ -1634,23 +1555,21 @@ func (*ITaskNamedValuePair) IID() *co.IID {
 //
 // [get_Name]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasknamedvaluepair-get_name
 func (me *ITaskNamedValuePair) GetName() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskNamedValuePairVt)(unsafe.Pointer(*me.Ppvt())).Get_Name)
+	return me.callRetBstr((*_ITaskNamedValuePairVt)(unsafe.Pointer(*me.Ppvt())).Get_Name)
 }
 
 // [get_Value] method.
 //
 // [get_Value]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasknamedvaluepair-get_value
 func (me *ITaskNamedValuePair) GetValue() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskNamedValuePairVt)(unsafe.Pointer(*me.Ppvt())).Get_Value)
+	return me.callRetBstr((*_ITaskNamedValuePairVt)(unsafe.Pointer(*me.Ppvt())).Get_Value)
 }
 
 // [put_Name] method.
 //
 // [put_Name]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasknamedvaluepair-put_name
 func (me *ITaskNamedValuePair) PutName(name string) error {
-	return com_callBstrSet(me, name,
+	return me.callSetBstr(name,
 		(*_ITaskNamedValuePairVt)(unsafe.Pointer(*me.Ppvt())).Put_Name)
 }
 
@@ -1658,7 +1577,7 @@ func (me *ITaskNamedValuePair) PutName(name string) error {
 //
 // [put_Value]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasknamedvaluepair-put_value
 func (me *ITaskNamedValuePair) PutValue(value string) error {
-	return com_callBstrSet(me, value,
+	return me.callSetBstr(value,
 		(*_ITaskNamedValuePairVt)(unsafe.Pointer(*me.Ppvt())).Put_Value)
 }
 
@@ -1727,16 +1646,14 @@ func (me *ITaskService) GetConnected() (bool, error) {
 //
 // [get_ConnectedDomain]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskservice-get_connecteddomain
 func (me *ITaskService) GetConnectedDomain() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskServiceVt)(unsafe.Pointer(*me.Ppvt())).Get_ConnectedDomain)
+	return me.callRetBstr((*_ITaskServiceVt)(unsafe.Pointer(*me.Ppvt())).Get_ConnectedDomain)
 }
 
 // [get_ConnectedUser] method.
 //
 // [get_ConnectedUser]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskservice-get_connecteduser
 func (me *ITaskService) GetConnectedUser() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskServiceVt)(unsafe.Pointer(*me.Ppvt())).Get_ConnectedUser)
+	return me.callRetBstr((*_ITaskServiceVt)(unsafe.Pointer(*me.Ppvt())).Get_ConnectedUser)
 }
 
 // [get_HighestVersion] method.
@@ -1760,8 +1677,7 @@ func (me *ITaskService) GetHighestVersion() (int, error) {
 //
 // [get_TargetServer]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskservice-get_targetserver
 func (me *ITaskService) GetTargetServer() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskServiceVt)(unsafe.Pointer(*me.Ppvt())).Get_TargetServer)
+	return me.callRetBstr((*_ITaskServiceVt)(unsafe.Pointer(*me.Ppvt())).Get_TargetServer)
 }
 
 // [GetFolder] method.
@@ -1883,25 +1799,15 @@ func (me *ITaskSettings) GetAllowHardTerminate() (bool, error) {
 //
 // [get_Compatibility]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasksettings-get_compatibility
 func (me *ITaskSettings) GetCompatibility() (co.TASK_COMPATIBILITY, error) {
-	var compat uint32
-	ret, _, _ := syscall.SyscallN(
-		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_Compatibility,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&compat)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.TASK_COMPATIBILITY(compat), nil
-	} else {
-		return co.TASK_COMPATIBILITY(0), hr
-	}
+	return com_callRetStruct[co.TASK_COMPATIBILITY](me,
+		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_Compatibility)
 }
 
 // [get_DeleteExpiredTaskAfter] method.
 //
 // [get_DeleteExpiredTaskAfter]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasksettings-get_deleteexpiredtaskafter
 func (me *ITaskSettings) GetDeleteExpiredTaskAfter() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_DeleteExpiredTaskAfter)
+	return me.callRetBstr((*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_DeleteExpiredTaskAfter)
 }
 
 // [get_DisallowStartIfOnBatteries] method.
@@ -1932,8 +1838,7 @@ func (me *ITaskSettings) GetEnabled() (bool, error) {
 //
 // [get_ExecutionTimeLimit]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasksettings-get_executiontimelimit
 func (me *ITaskSettings) GetExecutionTimeLimit() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_ExecutionTimeLimit)
+	return me.callRetBstr((*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_ExecutionTimeLimit)
 }
 
 // [get_Hidden] method.
@@ -1952,17 +1857,8 @@ func (me *ITaskSettings) GetHidden() (bool, error) {
 //
 // [get_MultipleInstances]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasksettings-get_multipleinstances
 func (me *ITaskSettings) GetMultipleInstances() (co.TASK_INSTANCES, error) {
-	var compat uint32
-	ret, _, _ := syscall.SyscallN(
-		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_MultipleInstances,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&compat)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.TASK_INSTANCES(compat), nil
-	} else {
-		return co.TASK_INSTANCES(0), hr
-	}
+	return com_callRetStruct[co.TASK_INSTANCES](me,
+		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_MultipleInstances)
 }
 
 // [get_Priority] method.
@@ -2003,8 +1899,7 @@ func (me *ITaskSettings) GetRestartCount() (int, error) {
 //
 // [get_RestartInterval]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasksettings-get_restartinterval
 func (me *ITaskSettings) GetRestartInterval() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_RestartInterval)
+	return me.callRetBstr((*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_RestartInterval)
 }
 
 // [get_RunOnlyIfIdle] method.
@@ -2071,8 +1966,7 @@ func (me *ITaskSettings) GetWakeToRun() (bool, error) {
 //
 // [get_XmlText]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasksettings-get_xmltext
 func (me *ITaskSettings) GetXmlText() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_XmlText)
+	return me.callRetBstr((*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Get_XmlText)
 }
 
 // [put_AllowDemandStart] method.
@@ -2112,7 +2006,7 @@ func (me *ITaskSettings) PutCompatibility(compatLevel co.TASK_COMPATIBILITY) err
 //
 // [put_DeleteExpiredTaskAfter]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasksettings-put_deleteexpiredtaskafter
 func (me *ITaskSettings) PutDeleteExpiredTaskAfter(expirationDelay string) error {
-	return com_callBstrSet(me, expirationDelay,
+	return me.callSetBstr(expirationDelay,
 		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Put_DeleteExpiredTaskAfter)
 }
 
@@ -2131,7 +2025,7 @@ func (me *ITaskSettings) PutDisallowStartIfOnBatteries(disallowStart bool) error
 //
 // [put_ExecutionTimeLimit]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasksettings-put_executiontimelimit
 func (me *ITaskSettings) PutExecutionTimeLimit(executionTimeLimit string) error {
-	return com_callBstrSet(me, executionTimeLimit,
+	return me.callSetBstr(executionTimeLimit,
 		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Put_ExecutionTimeLimit)
 }
 
@@ -2183,7 +2077,7 @@ func (me *ITaskSettings) PutRestartCount(restartCount int) error {
 //
 // [put_RestartInterval]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasksettings-put_restartinterval
 func (me *ITaskSettings) PutRestartInterval(restartInterval string) error {
-	return com_callBstrSet(me, restartInterval,
+	return me.callSetBstr(restartInterval,
 		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Put_RestartInterval)
 }
 
@@ -2246,7 +2140,7 @@ func (me *ITaskSettings) PutWakeToRun(wake bool) error {
 //
 // [put_XmlText]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasksettings-put_xmltext
 func (me *ITaskSettings) PutXmlText(text string) error {
-	return com_callBstrSet(me, text,
+	return me.callSetBstr(text,
 		(*_ITaskSettingsVt)(unsafe.Pointer(*me.Ppvt())).Put_XmlText)
 }
 
@@ -2297,49 +2191,36 @@ func (me *ITrigger) GetEnabled() (bool, error) {
 //
 // [get_EndBoundary]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itrigger-get_endboundary
 func (me *ITrigger) GetEndBoundary() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_EndBoundary)
+	return me.callRetBstr((*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_EndBoundary)
 }
 
 // [get_ExecutionTimeLimit] method.
 //
 // [get_ExecutionTimeLimit]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itrigger-get_executiontimelimit
 func (me *ITrigger) GetExecutionTimeLimit() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_ExecutionTimeLimit)
+	return me.callRetBstr((*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_ExecutionTimeLimit)
 }
 
 // [get_Id] method.
 //
 // [get_Id]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itrigger-get_id
 func (me *ITrigger) GetId() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Id)
+	return me.callRetBstr((*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Id)
 }
 
 // [get_StartBoundary] method.
 //
 // [get_StartBoundary]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itrigger-get_startboundary
 func (me *ITrigger) GetStartBoundary() (string, error) {
-	return com_callBstrGet(me,
-		(*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_StartBoundary)
+	return me.callRetBstr((*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_StartBoundary)
 }
 
 // [get_Type] method.
 //
 // [get_Type]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itrigger-get_type
 func (me *ITrigger) GetType() (co.TASK_TRIGGER2, error) {
-	var ty uint32
-	ret, _, _ := syscall.SyscallN(
-		(*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Type,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ty)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return co.TASK_TRIGGER2(ty), nil
-	} else {
-		return co.TASK_TRIGGER2(0), hr
-	}
+	return com_callRetStruct[co.TASK_TRIGGER2](me,
+		(*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Get_Type)
 }
 
 // [put_Enabled] method.
@@ -2357,7 +2238,7 @@ func (me *ITrigger) PutEnabled(enabled bool) error {
 //
 // [put_EndBoundary]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itrigger-put_endboundary
 func (me *ITrigger) PutEndBoundary(end string) error {
-	return com_callBstrSet(me, end,
+	return me.callSetBstr(end,
 		(*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Put_EndBoundary)
 }
 
@@ -2365,7 +2246,7 @@ func (me *ITrigger) PutEndBoundary(end string) error {
 //
 // [put_ExecutionTimeLimit]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itrigger-put_executiontimelimit
 func (me *ITrigger) PutExecutionTimeLimit(timeLimit string) error {
-	return com_callBstrSet(me, timeLimit,
+	return me.callSetBstr(timeLimit,
 		(*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Put_ExecutionTimeLimit)
 }
 
@@ -2373,7 +2254,7 @@ func (me *ITrigger) PutExecutionTimeLimit(timeLimit string) error {
 //
 // [put_Id]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itrigger-put_id
 func (me *ITrigger) PutId(id string) error {
-	return com_callBstrSet(me, id,
+	return me.callSetBstr(id,
 		(*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Put_Id)
 }
 
@@ -2381,7 +2262,7 @@ func (me *ITrigger) PutId(id string) error {
 //
 // [put_StartBoundary]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itrigger-put_startboundary
 func (me *ITrigger) PutStartBoundary(start string) error {
-	return com_callBstrSet(me, start,
+	return me.callSetBstr(start,
 		(*_ITriggerVt)(unsafe.Pointer(*me.Ppvt())).Put_StartBoundary)
 }
 
@@ -2413,8 +2294,7 @@ func (*ITriggerCollection) IID() *co.IID {
 //
 // [Clear]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itriggercollection-clear
 func (me *ITriggerCollection) Clear() error {
-	return com_callErr(me,
-		(*_ITriggerCollectionVt)(unsafe.Pointer(*me.Ppvt())).Clear)
+	return me.callNoParm((*_ITriggerCollectionVt)(unsafe.Pointer(*me.Ppvt())).Clear)
 }
 
 // [Create] method.

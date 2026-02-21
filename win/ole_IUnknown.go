@@ -7,6 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
 // [IUnknown] [COM] interface, base to all COM interfaces.
@@ -103,6 +104,46 @@ func (me *IUnknown) release() {
 			uintptr(unsafe.Pointer(me.ppvt)))
 		me.ppvt = nil
 	}
+}
+
+// Calls the pointed COM method without parameters, returns HRESULT.
+func (me *IUnknown) callNoParm(pMethod uintptr) error {
+	ret, _, _ := syscall.SyscallN(
+		pMethod,
+		uintptr(unsafe.Pointer(me.Ppvt())))
+	return utl.HresultToError(ret)
+}
+
+// Calls the pointed COM method without parameters, returns BSTR and HRESULT.
+func (me *IUnknown) callRetBstr(pMethod uintptr) (string, error) {
+	var name BSTR
+	defer name.SysFreeString()
+
+	ret, _, _ := syscall.SyscallN(
+		pMethod,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(&name)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		return name.String(), nil
+	} else {
+		return "", hr
+	}
+}
+
+// Calls the pointed COM method to set a BSTR, returns HRESULT.
+func (me *IUnknown) callSetBstr(s string, pMethod uintptr) error {
+	bstrS, err := SysAllocString(s)
+	if err != nil {
+		return err
+	}
+	defer bstrS.SysFreeString()
+
+	ret, _, _ := syscall.SyscallN(
+		pMethod,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(bstrS))
+	return utl.HresultToError(ret)
 }
 
 // [IUnknown] [COM] virtual table, base to all COM virtual tables.

@@ -79,16 +79,8 @@ func (me *IDXGIAdapter) EnumOutputs(releaser *OleReleaser) ([]*IDXGIOutput, erro
 //
 // [GetDesc]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiadapter-getdesc
 func (me *IDXGIAdapter) GetDesc() (DXGI_ADAPTER_DESC, error) {
-	var ad DXGI_ADAPTER_DESC
-	ret, _, _ := syscall.SyscallN(
-		(*_IDXGIAdapterVt)(unsafe.Pointer(*me.Ppvt())).GetDesc,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ad)))
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return ad, nil
-	} else {
-		return DXGI_ADAPTER_DESC{}, hr
-	}
+	return com_callRetStruct[DXGI_ADAPTER_DESC](me,
+		(*_IDXGIAdapterVt)(unsafe.Pointer(*me.Ppvt())).GetDesc)
 }
 
 // [IDXGIDeviceSubObject] COM interface.
@@ -217,16 +209,8 @@ func (me *IDXGIFactory) EnumAdapters(releaser *OleReleaser) ([]*IDXGIAdapter, er
 //
 // [GetWindowAssociation]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgifactory-getwindowassociation
 func (me *IDXGIFactory) GetWindowAssociation() (HWND, error) {
-	var hWnd HWND
-	ret, _, _ := syscall.SyscallN(
-		(*_IDXGIFactoryVt)(unsafe.Pointer(*me.Ppvt())).GetWindowAssociation,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&hWnd)))
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return hWnd, nil
-	} else {
-		return HWND(0), hr
-	}
+	return com_callRetStruct[HWND](me,
+		(*_IDXGIFactoryVt)(unsafe.Pointer(*me.Ppvt())).GetWindowAssociation)
 }
 
 // [MakeWindowAssociation] method.
@@ -385,17 +369,8 @@ func (me *IDXGIOutput) FindClosestMatchingMode(
 //
 // [GetDesc]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgioutput-getdesc
 func (me *IDXGIOutput) GetDesc() (DXGI_OUTPUT_DESC, error) {
-	var desc DXGI_OUTPUT_DESC
-	ret, _, _ := syscall.SyscallN(
-		(*_IDXGIOutputVt)(unsafe.Pointer(*me.Ppvt())).GetDesc,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&desc)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return desc, nil
-	} else {
-		return DXGI_OUTPUT_DESC{}, hr
-	}
+	return com_callRetStruct[DXGI_OUTPUT_DESC](me,
+		(*_IDXGIOutputVt)(unsafe.Pointer(*me.Ppvt())).GetDesc)
 }
 
 // [GetDisplayModeList] method.
@@ -448,51 +423,24 @@ func (me *IDXGIOutput) GetDisplaySurfaceData(dest *IDXGISurface) error {
 //
 // [GetFrameStatistics]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_frame_statistics
 func (me *IDXGIOutput) GetFrameStatistics() (DXGI_FRAME_STATISTICS, error) {
-	var stats DXGI_FRAME_STATISTICS
-	ret, _, _ := syscall.SyscallN(
-		(*_IDXGIOutputVt)(unsafe.Pointer(*me.Ppvt())).GetFrameStatistics,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&stats)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return stats, nil
-	} else {
-		return DXGI_FRAME_STATISTICS{}, hr
-	}
+	return com_callRetStruct[DXGI_FRAME_STATISTICS](me,
+		(*_IDXGIOutputVt)(unsafe.Pointer(*me.Ppvt())).GetFrameStatistics)
 }
 
 // [GetGammaControl] method.
 //
 // [GetGammaControl]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgioutput-getgammacontrol
 func (me *IDXGIOutput) GetGammaControl() (DXGI_GAMMA_CONTROL, error) {
-	var g DXGI_GAMMA_CONTROL
-	ret, _, _ := syscall.SyscallN(
-		(*_IDXGIOutputVt)(unsafe.Pointer(*me.Ppvt())).GetGammaControl,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&g)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return g, nil
-	} else {
-		return DXGI_GAMMA_CONTROL{}, hr
-	}
+	return com_callRetStruct[DXGI_GAMMA_CONTROL](me,
+		(*_IDXGIOutputVt)(unsafe.Pointer(*me.Ppvt())).GetGammaControl)
 }
 
 // [GetGammaControlCapabilities] method.
 //
 // [GetGammaControlCapabilities]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgioutput-getgammacontrolcapabilities
 func (me *IDXGIOutput) GetGammaControlCapabilities() (DXGI_GAMMA_CONTROL_CAPABILITIES, error) {
-	var gammaCaps DXGI_GAMMA_CONTROL_CAPABILITIES
-	ret, _, _ := syscall.SyscallN(
-		(*_IDXGIOutputVt)(unsafe.Pointer(*me.Ppvt())).GetGammaControlCapabilities,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&gammaCaps)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return gammaCaps, nil
-	} else {
-		return DXGI_GAMMA_CONTROL_CAPABILITIES{}, hr
-	}
+	return com_callRetStruct[DXGI_GAMMA_CONTROL_CAPABILITIES](me,
+		(*_IDXGIOutputVt)(unsafe.Pointer(*me.Ppvt())).GetGammaControlCapabilities)
 }
 
 // [ReleaseOwnership] method.
@@ -542,8 +490,7 @@ func (me *IDXGIOutput) TakeOwnership(device OleObj, exclusive bool) error {
 //
 // [WaitForVBlank]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgioutput-waitforvblank
 func (me *IDXGIOutput) WaitForVBlank() error {
-	return com_callErr(me,
-		(*_IDXGIOutputVt)(unsafe.Pointer(*me.Ppvt())).WaitForVBlank)
+	return me.callNoParm((*_IDXGIOutputVt)(unsafe.Pointer(*me.Ppvt())).WaitForVBlank)
 }
 
 // [IDXGISurface] COM interface.
@@ -571,17 +518,8 @@ func (*IDXGISurface) IID() *co.IID {
 //
 // [GetDesc]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgisurface-getdesc
 func (me *IDXGISurface) GetDesc() (DXGI_SURFACE_DESC, error) {
-	var desc DXGI_SURFACE_DESC
-	ret, _, _ := syscall.SyscallN(
-		(*_IDXGISurfaceVt)(unsafe.Pointer(*me.Ppvt())).GetDesc,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&desc)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return desc, nil
-	} else {
-		return DXGI_SURFACE_DESC{}, hr
-	}
+	return com_callRetStruct[DXGI_SURFACE_DESC](me,
+		(*_IDXGISurfaceVt)(unsafe.Pointer(*me.Ppvt())).GetDesc)
 }
 
 // [Map] method.
@@ -592,7 +530,8 @@ func (me *IDXGISurface) Map(flags co.DXGI_MAP) (DXGI_MAPPED_RECT, error) {
 	ret, _, _ := syscall.SyscallN(
 		(*_IDXGISurfaceVt)(unsafe.Pointer(*me.Ppvt())).Map,
 		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&lockedRect)))
+		uintptr(unsafe.Pointer(&lockedRect)),
+		uintptr(flags))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		return lockedRect, nil
@@ -605,8 +544,7 @@ func (me *IDXGISurface) Map(flags co.DXGI_MAP) (DXGI_MAPPED_RECT, error) {
 //
 // [Unmap]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgisurface-unmap
 func (me *IDXGISurface) Unmap() error {
-	return com_callErr(me,
-		(*_IDXGISurfaceVt)(unsafe.Pointer(*me.Ppvt())).Unmap)
+	return me.callNoParm((*_IDXGISurfaceVt)(unsafe.Pointer(*me.Ppvt())).Unmap)
 }
 
 // [IDXGISwapChain] COM interface.
@@ -661,7 +599,7 @@ func (me *IDXGISwapChain) GetBuffer(
 //
 // [GetContainingOutput]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiswapchain-getcontainingoutput
 func (me *IDXGISwapChain) GetContainingOutput(releaser *OleReleaser) (*IDXGIOutput, error) {
-	return com_callObj[*IDXGIOutput](me, releaser,
+	return com_callRetCom[*IDXGIOutput](me, releaser,
 		(*_IDXGISwapChainVt)(unsafe.Pointer(*me.Ppvt())).GetContainingOutput)
 }
 
@@ -669,34 +607,16 @@ func (me *IDXGISwapChain) GetContainingOutput(releaser *OleReleaser) (*IDXGIOutp
 //
 // [GetDesc]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiswapchain-getdesc
 func (me *IDXGISwapChain) GetDesc() (DXGI_SWAP_CHAIN_DESC, error) {
-	var desc DXGI_SWAP_CHAIN_DESC
-	ret, _, _ := syscall.SyscallN(
-		(*_IDXGISwapChainVt)(unsafe.Pointer(*me.Ppvt())).GetDesc,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&desc)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return desc, nil
-	} else {
-		return DXGI_SWAP_CHAIN_DESC{}, hr
-	}
+	return com_callRetStruct[DXGI_SWAP_CHAIN_DESC](me,
+		(*_IDXGISwapChainVt)(unsafe.Pointer(*me.Ppvt())).GetDesc)
 }
 
 // [GetFrameStatistics] method.
 //
 // [GetFrameStatistics]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiswapchain-getframestatistics
 func (me *IDXGISwapChain) GetFrameStatistics() (DXGI_FRAME_STATISTICS, error) {
-	var stats DXGI_FRAME_STATISTICS
-	ret, _, _ := syscall.SyscallN(
-		(*_IDXGISwapChainVt)(unsafe.Pointer(*me.Ppvt())).GetFrameStatistics,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&stats)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return stats, nil
-	} else {
-		return DXGI_FRAME_STATISTICS{}, hr
-	}
+	return com_callRetStruct[DXGI_FRAME_STATISTICS](me,
+		(*_IDXGISwapChainVt)(unsafe.Pointer(*me.Ppvt())).GetFrameStatistics)
 }
 
 // [GetFullscreenState] method.

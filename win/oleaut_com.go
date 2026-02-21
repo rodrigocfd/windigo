@@ -452,51 +452,24 @@ func (*IPicture) IID() *co.IID {
 //
 // [get_Attributes]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_attributes
 func (me *IPicture) GetAttributes() (co.PICATTR, error) {
-	var attr co.PICATTR
-	ret, _, _ := syscall.SyscallN(
-		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Attributes,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&attr)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return attr, nil
-	} else {
-		return co.PICATTR(0), hr
-	}
+	return com_callRetStruct[co.PICATTR](me,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Attributes)
 }
 
 // [get_CurDC] method.
 //
 // [get_CurDC]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_curdc
 func (me *IPicture) GetCurDC() (HDC, error) {
-	var hdc HDC
-	ret, _, _ := syscall.SyscallN(
-		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_CurDC,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&hdc)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return hdc, nil
-	} else {
-		return HDC(0), hr
-	}
+	return com_callRetStruct[HDC](me,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_CurDC)
 }
 
 // [get_Handle] method.
 //
 // [get_Handle]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_handle
 func (me *IPicture) GetHandle() (HBITMAP, error) {
-	var hBmp HBITMAP
-	ret, _, _ := syscall.SyscallN(
-		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Handle,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&hBmp)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return hBmp, nil
-	} else {
-		return HBITMAP(0), hr
-	}
+	return com_callRetStruct[HBITMAP](me,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Handle)
 }
 
 // [get_Height] method.
@@ -526,17 +499,8 @@ func (me *IPicture) GetHeight() (int, error) {
 //
 // [get_hPal]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_hpal
 func (me *IPicture) GetHPal() (HPALETTE, error) {
-	var hPal HPALETTE
-	ret, _, _ := syscall.SyscallN(
-		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_hPal,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&hPal)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return hPal, nil
-	} else {
-		return HPALETTE(0), hr
-	}
+	return com_callRetStruct[HPALETTE](me,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_hPal)
 }
 
 // [get_KeepOriginalFormat] method.
@@ -555,17 +519,8 @@ func (me *IPicture) GetKeepOriginalFormat() (bool, error) {
 //
 // [get_Type]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_type
 func (me *IPicture) GetType() (co.PICTYPE, error) {
-	var picty co.PICTYPE
-	ret, _, _ := syscall.SyscallN(
-		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Type,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&picty)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return picty, nil
-	} else {
-		return co.PICTYPE(0), hr
-	}
+	return com_callRetStruct[co.PICTYPE](me,
+		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).Get_Type)
 }
 
 // [get_Width] method.
@@ -593,8 +548,7 @@ func (me *IPicture) GetWidth() (int, error) {
 //
 // [PictureChanged]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-picturechanged
 func (me *IPicture) PictureChanged() error {
-	return com_callErr(me,
-		(*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).PictureChanged)
+	return me.callNoParm((*_IPictureVt)(unsafe.Pointer(*me.Ppvt())).PictureChanged)
 }
 
 // [put_KeepOriginalFormat] method.
@@ -796,8 +750,7 @@ func (*IPropertyStore) IID() *co.IID {
 //
 // [Commit]: https://learn.microsoft.com/en-us/windows/win32/api/propsys/nf-propsys-ipropertystore-commit
 func (me *IPropertyStore) Commit() error {
-	return com_callErr(me,
-		(*_IPropertyStoreVt)(unsafe.Pointer(*me.Ppvt())).Commit)
+	return me.callNoParm((*_IPropertyStoreVt)(unsafe.Pointer(*me.Ppvt())).Commit)
 }
 
 // Returns all [co.PROPERTYKEY] values by calling [IPropertyStore.GetCount] and
