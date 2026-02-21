@@ -346,7 +346,7 @@ var _shell_SHGetKnownFolderItem *syscall.Proc
 //	idl, _ := win.SHGetIDListFromObject(rel, &item.IUnknown)
 //
 // [SHGetIDListFromObject]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-shgetidlistfromobject
-func SHGetIDListFromObject(releaser *OleReleaser, obj *IUnknown) (*ITEMIDLIST, error) {
+func SHGetIDListFromObject(releaser *OleReleaser, obj OleObj) (*ITEMIDLIST, error) {
 	var idl ITEMIDLIST
 	ret, _, _ := syscall.SyscallN(
 		dll.Shell.Load(&_shell_SHGetIDListFromObject, "SHGetIDListFromObject"),

@@ -633,6 +633,23 @@ const (
 	LOCKFILE_EXCLUSIVE_LOCK   LOCKFILE = 0x0000_0002
 )
 
+// [LUID] struct.
+//
+// [LUID]: https://learn.microsoft.com/en-us/windows/win32/api/ntdef/ns-ntdef-luid
+type LUID struct {
+	LowPart  uint32
+	HighPart int32
+}
+
+var (
+	LUID_SYSTEM              = LUID{0x3e7, 0x0}
+	LUID_ANONYMOUS_LOGON     = LUID{0x3e6, 0x0}
+	LUID_LOCALSERVICE        = LUID{0x3e5, 0x0}
+	LUID_NETWORKSERVICE      = LUID{0x3e4, 0x0}
+	LUID_IUSER               = LUID{0x3e3, 0x0}
+	LUID_PROTECTED_TO_SYSTEM = LUID{0x3e2, 0x0}
+)
+
 // [MEMORY_BASIC_INFORMATION] flags.
 //
 // [MEMORY_BASIC_INFORMATION]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-memory_basic_information

@@ -91,7 +91,7 @@ func (me *IBindCtx) GetObjectParam(releaser *OleReleaser, key string, ppOut inte
 // [RegisterObjectBound] method.
 //
 // [RegisterObjectBound]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-registerobjectbound
-func (me *IBindCtx) RegisterObjectBound(obj *IUnknown) error {
+func (me *IBindCtx) RegisterObjectBound(obj OleObj) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).RegisterObjectBound,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -110,7 +110,7 @@ func (me *IBindCtx) ReleaseBoundObjects() error {
 // [RevokeObjectBound] method.
 //
 // [RevokeObjectBound]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-revokeobjectbound
-func (me *IBindCtx) RevokeObjectBound(obj *IUnknown) error {
+func (me *IBindCtx) RevokeObjectBound(obj OleObj) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).RevokeObjectBound,
 		uintptr(unsafe.Pointer(me.Ppvt())),

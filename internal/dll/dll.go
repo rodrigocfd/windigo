@@ -22,6 +22,7 @@ var (
 	Advapi  = SystemDll{nil, "advapi32"}
 	Comctl  = SystemDll{nil, "comctl32"}
 	Dwmapi  = SystemDll{nil, "dwmapi"}
+	Dxgi    = SystemDll{nil, "dxgi"}
 	Gdi     = SystemDll{nil, "gdi32"}
 	Kernel  = SystemDll{nil, "kernel32"}
 	Ole     = SystemDll{nil, "ole32"}
