@@ -3,7 +3,6 @@
 package ui
 
 import (
-	"fmt"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
@@ -24,16 +23,36 @@ func (me *_StatusBarPartData) IsFixedWidth() bool {
 // You cannot create this object directly, it will be created automatically
 // by the owning [StatusBar].
 type StatusBarPartCollection struct {
-	owner           *StatusBar
-	partsData       []_StatusBarPartData
-	rightEdges      []int32 // buffer to speed up ResizeToFitParent() calls
-	initialParentCx int     // cache used when adding parts
+	owner      *StatusBar
+	partsData  []_StatusBarPartData
+	rightEdges []int32 // buffer to speed up ResizeToFitParent() calls
 }
 
-func (me *StatusBarPartCollection) cacheInitialParentCx() {
-	if me.initialParentCx == 0 { // not cached yet?
-		rc, _ := me.owner.hWnd.GetClientRect()
-		me.initialParentCx = int(rc.Right) // initial width of parent's client area
+func (me *StatusBarPartCollection) addParts(parts []_StatusBarOptPart) {
+	for _, part := range parts {
+		if part.width < 0 {
+			panic("StatusBar part width cannot be negative.")
+		} else if part.flex < 0 {
+			panic("StatusBar part flex cannot be negative.")
+		}
+
+		me.partsData = append(me.partsData, _StatusBarPartData{
+			sizePixels:   part.width,
+			resizeWeight: part.flex,
+		})
+	}
+
+	hParent, _ := me.owner.Hwnd().GetParent()
+	rc, _ := hParent.GetClientRect()
+	me.resizeToFitParent(WmSize{ // force the creation of the parts, so we can set text
+		Raw: Wm{
+			WParam: win.WPARAM(co.SIZE_REQ_RESTORED),
+			LParam: win.MAKELPARAM(uint16(rc.Right-rc.Left), 0),
+		},
+	})
+
+	for i, part := range parts {
+		me.owner.Parts.Get(i).SetText(part.text)
 	}
 }
 
@@ -71,74 +90,6 @@ func (me *StatusBarPartCollection) resizeToFitParent(parm WmSize) {
 	me.owner.hWnd.SendMessage(co.SB_SETPARTS,
 		win.WPARAM(int32(len(me.rightEdges))),
 		win.LPARAM(unsafe.Pointer(&me.rightEdges[0])))
-}
-
-// Adds a fixed part.
-//
-// Panics if width is zero.
-//
-// Example:
-//
-//	var sbar ui.StatusBar // initialized somewhere
-//
-//	sbar.Parts.AddFixed("Text", ui.DpiX(200))
-func (me *StatusBarPartCollection) AddFixed(text string, width int) {
-	me.cacheInitialParentCx()
-
-	if width == 0 {
-		panic(fmt.Sprintf("Width must be equal or greater than 1: %d.", width))
-	}
-
-	me.partsData = append(me.partsData, _StatusBarPartData{
-		sizePixels: width,
-	})
-	me.rightEdges = append(me.rightEdges, 0)
-
-	me.resizeToFitParent(WmSize{
-		Raw: Wm{
-			WParam: win.WPARAM(co.SIZE_REQ_RESTORED),
-			LParam: win.MAKELPARAM(uint16(me.initialParentCx), 0),
-		},
-	})
-
-	lastIndex := len(me.partsData) - 1
-	me.Get(lastIndex).SetText(text)
-}
-
-// Adds a resizable part.
-//
-// How resizeWeight works:
-//   - Suppose you have 3 parts, respectively with weights of 1, 1 and 2.
-//   - If available client area is 400px, respective part widths will be 100, 100 and 200px.
-//
-// Panics if resizeWeight is less than 1.
-//
-// Example:
-//
-//	var sbar ui.StatusBar // initialized somewhere
-//
-//	sbar.Parts.AddResizable("Text", 1)
-func (me *StatusBarPartCollection) AddResizable(text string, resizeWeight int) {
-	me.cacheInitialParentCx()
-
-	if resizeWeight < 1 {
-		panic(fmt.Sprintf("Resize weight must be equal or greater than 1: %d.", resizeWeight))
-	}
-
-	me.partsData = append(me.partsData, _StatusBarPartData{
-		resizeWeight: resizeWeight,
-	})
-	me.rightEdges = append(me.rightEdges, 0)
-
-	me.resizeToFitParent(WmSize{
-		Raw: Wm{
-			WParam: win.WPARAM(co.SIZE_REQ_RESTORED),
-			LParam: win.MAKELPARAM(uint16(me.initialParentCx), 0),
-		},
-	})
-
-	lastIndex := len(me.partsData) - 1
-	me.Get(lastIndex).SetText(text)
 }
 
 // Returns all parts.

@@ -29,13 +29,26 @@ type StatusBar struct {
 //		ui.OptsMain().
 //			Title("Hello world"),
 //	)
-//	sbar := ui.NewStatusBar(wnd)
+//	sbar := ui.NewStatusBar(
+//		wnd
+//		win.OptsStatusBar().
+//			FixedPart(ui.DpiX(100), "First").
+//			FlexPart(1, "Second"),
+//	)
 //	wnd.RunAsMain()
-func NewStatusBar(parent Parent) *StatusBar {
-	ctrlId := nextCtrlId() // always give it an auto ID
+func NewStatusBar(parent Parent, opts *VarOptsStatusBar) *StatusBar {
+	if len(opts.parts) == 0 {
+		panic("Cannot create a StatusBar control without parts.")
+	}
+
+	setUniqueCtrlId(&opts.ctrlId)
 	me := &StatusBar{
-		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    StatusBarEvents{ctrlId, &parent.base().userEvents},
+		_BaseCtrl: newBaseCtrl(opts.ctrlId),
+		events:    StatusBarEvents{opts.ctrlId, &parent.base().userEvents},
+		Parts: StatusBarPartCollection{
+			partsData:  make([]_StatusBarPartData, 0, len(opts.parts)),
+			rightEdges: make([]int32, len(opts.parts)), // initially filled with zeros
+		},
 	}
 	me.Parts.owner = me
 
@@ -50,6 +63,8 @@ func NewStatusBar(parent Parent) *StatusBar {
 
 		me.createWindow(co.WS_EX_NONE, "msctls_statusbar32", "",
 			sbStyle, win.POINT{}, win.SIZE{}, parent, false)
+
+		me.Parts.addParts(opts.parts)
 	})
 
 	parent.base().beforeUserEvents.wm(co.WM_SIZE, func(p Wm) {
@@ -65,6 +80,51 @@ func NewStatusBar(parent Parent) *StatusBar {
 func (me *StatusBar) On() *StatusBarEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
+}
+
+// Options for [NewStatusBar]; returned by [OptsStatusBar].
+type VarOptsStatusBar struct {
+	ctrlId uint16
+	parts  []_StatusBarOptPart
+}
+
+type _StatusBarOptPart struct {
+	width int
+	flex  int
+	text  string
+}
+
+// Options for [NewStatusBar].
+func OptsStatusBar() *VarOptsStatusBar {
+	return &VarOptsStatusBar{}
+}
+
+// Control ID. Must be unique within a same parent window.
+//
+// Defaults to an auto-generated ID.
+func (o *VarOptsStatusBar) CtrlId(id uint16) *VarOptsStatusBar { o.ctrlId = id; return o }
+
+// Adds a fixed-width part to the StatusBar, with the given width.
+//
+// Example:
+//
+//	win.OptsStatusBar().
+//		FixedPart(ui.DpiX(100), "Fo")
+func (o *VarOptsStatusBar) FixedPart(cx int, text string) *VarOptsStatusBar {
+	o.parts = append(o.parts, _StatusBarOptPart{cx, 0, text})
+	return o
+}
+
+// Adds a variable-sized part to the StatusBar, which will resize according to
+// the remaining space.
+//
+// Example:
+//
+//	win.OptsStatusBar().
+//		FlexPart(1, "Foo")
+func (o *VarOptsStatusBar) FlexPart(flex int, text string) *VarOptsStatusBar {
+	o.parts = append(o.parts, _StatusBarOptPart{0, flex, text})
+	return o
 }
 
 // Native [status bar] control events.
