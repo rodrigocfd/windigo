@@ -9,16 +9,17 @@ import (
 // A buffer to receive UTF-16 strings and convert them to Go strings.
 //
 // This buffer is used internally to speed up syscalls that return strings, and
-// it's prone to buffer overruns. Be sure to allocate the needed space.
+// it's prone to buffer overruns if used incorrectly. Be sure to allocate the
+// needed space.
 //
 // This struct contains a buffer intended to be stack-allocated, so don't move
 // it.
 //
 // Example:
 //
-//	var buf wstr.BufDecoder
-//	buf.Alloc(20)
-//	ptr := buf.Ptr()
+//	var wBuf wstr.BufDecoder
+//	wBuf.Alloc(20)
+//	ptr := wBuf.Ptr()
 type BufDecoder struct {
 	stack [BUF_MAX]uint16
 	heap  []uint16

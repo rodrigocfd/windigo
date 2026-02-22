@@ -14,13 +14,25 @@ const BUF_MAX = 260
 // Encodes a Go string into a null-terminated UTF-16. If the string fits the
 // stack buffer, no allocation is performed.
 //
-// This buffer is used internally to speed up syscalls with string arguments.
+// This buffer is used internally to speed up syscalls with string arguments,
+// and it's prone to buffer overruns if used incorrectly.
+//
+// This struct contains a buffer intended to be stack-allocated, so don't move
+// it.
 //
 // Example:
 //
-//	var buf1, buf2 wstr.BufEncoder
-//	p1 := buf1.AllowEmpty("abc")
-//	p2 := buf2.EmptyIsNil("def")
+//	var wFoo, wBar wstr.BufEncoder
+//
+//	_, _, _ = syscall.SyscallN(
+//		pProc,
+//		uintptr(wFoo.AllowEmpty("foo")),
+//	)
+//
+//	_, _, _ = syscall.SyscallN(
+//		pProc,
+//		uintptr(wFoo.EmptyIsNil("bar")),
+//	)
 type BufEncoder struct {
 	stack [BUF_MAX]uint16
 }
@@ -28,9 +40,19 @@ type BufEncoder struct {
 // Encodes a Go string into a null-terminated UTF-16, returning a pointer to it.
 // If the string is empty, the buffer will contain just nulls.
 //
-// If the number of UTF-16 words fit the internal stack buffer, the returned
+// If the number of UTF-16 words fits the internal stack buffer, the returned
 // pointer will point to the internal stack buffer. Otherwise, the returned
 // pointer will point to a new heap-allocated slice.
+//
+// The returned pointer can be passed to syscalls.
+//
+// Example:
+//
+//	var wFoo wstr.BufEncoder
+//	_, _, _ = syscall.SyscallN(
+//		pProc,
+//		uintptr(wFoo.AllowEmpty("foo")),
+//	)
 func (me *BufEncoder) AllowEmpty(s string) unsafe.Pointer {
 	slice := me.Slice(s)
 	return unsafe.Pointer(&slice[0])
@@ -42,6 +64,16 @@ func (me *BufEncoder) AllowEmpty(s string) unsafe.Pointer {
 // If the number of UTF-16 words fit the internal stack buffer, the returned
 // pointer will point to the internal stack buffer. Otherwise, the returned
 // pointer will point to a new heap-allocated slice.
+//
+// The returned pointer can be passed to syscalls.
+//
+// Example:
+//
+//	var wFoo wstr.BufEncoder
+//	_, _, _ = syscall.SyscallN(
+//		pProc,
+//		uintptr(wFoo.EmptyIsNil("foo")),
+//	)
 func (me *BufEncoder) EmptyIsNil(s string) unsafe.Pointer {
 	if s == "" {
 		return nil
