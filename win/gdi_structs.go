@@ -55,7 +55,7 @@ type BITMAPFILEHEADER struct {
 	data [14]byte // sizeof(BITMAPFILEHEADER) packed
 }
 
-// Sets the struct type for bitmap, correctly initializing it.
+// Sets the internal struct type for bitmap, correctly initializing it.
 func (bfh *BITMAPFILEHEADER) SetBfType() {
 	binary.LittleEndian.PutUint32(bfh.data[0:], 0x4d42) // https://learn.microsoft.com/en-gb/windows/win32/gdi/capturing-an-image
 }
@@ -96,17 +96,17 @@ type BITMAPINFO struct {
 //
 // Note that the Height field might be [twice] the actual height.
 //
-// ⚠️ You must call [BITMAPINFOHEADER.SetSize] to initialize the struct.
+// ⚠️ You must call [BITMAPINFOHEADER.SetBiSize] to initialize the struct.
 //
 // Example:
 //
 //	var bih win.BITMAPINFOHEADER
-//	bih.SetSize()
+//	bih.SetBiSize()
 //
 // [BITMAPINFOHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
 // [twice]: https://stackoverflow.com/q/5812849/6923555
 type BITMAPINFOHEADER struct {
-	size          uint32
+	biSize        uint32
 	Width         int32
 	Height        int32
 	Planes        uint16
@@ -119,9 +119,10 @@ type BITMAPINFOHEADER struct {
 	ClrImportant  uint32
 }
 
-// Sets the biSize field to the size of the struct, correctly initializing it.
-func (bih *BITMAPINFOHEADER) SetSize() {
-	bih.size = uint32(unsafe.Sizeof(*bih))
+// Sets the internal biSize field to the size of the struct, correctly
+// initializing it.
+func (bih *BITMAPINFOHEADER) SetBiSize() {
+	bih.biSize = uint32(unsafe.Sizeof(*bih))
 }
 
 func (bih *BITMAPINFOHEADER) Serialize() []byte {
@@ -130,16 +131,16 @@ func (bih *BITMAPINFOHEADER) Serialize() []byte {
 
 // [BITMAPV5HEADER] struct.
 //
-// ⚠️ You must call [BITMAPV5HEADER.SetSize] to initialize the struct.
+// ⚠️ You must call [BITMAPV5HEADER.SetBV5Size] to initialize the struct.
 //
 // Example:
 //
 //	var bvh win.BITMAPV5HEADER
-//	bih.SetSize()
+//	bih.SetBV5Size()
 //
 // [BITMAPV5HEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapv5header
 type BITMAPV5HEADER struct {
-	size          uint32
+	bV5Size       uint32
 	Width         int32
 	Height        int32
 	Planes        uint16
@@ -162,12 +163,13 @@ type BITMAPV5HEADER struct {
 	Intent        co.LCS_GM
 	ProfileData   uint32
 	ProfileSize   uint32
-	reserved      uint32
+	bV5Reserved   uint32
 }
 
-// Sets the size field to the size of the struct, correctly initializing it.
-func (bvh *BITMAPV5HEADER) SetSize() {
-	bvh.size = uint32(unsafe.Sizeof(*bvh))
+// Sets the internal bV5Size field to the size of the struct, correctly
+// initializing it.
+func (bvh *BITMAPV5HEADER) SetBV5Size() {
+	bvh.bV5Size = uint32(unsafe.Sizeof(*bvh))
 }
 
 // [COLORREF] struct.
@@ -258,7 +260,8 @@ type DOCINFO struct {
 	FwType       co.DIPJ
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (di *DOCINFO) SetCbSize() {
 	di.cbSize = int32(unsafe.Sizeof(*di))
 }
@@ -329,8 +332,8 @@ func (dm *DEVMODE) SetDmDeviceName(val string) {
 	wstr.EncodeToBuf(dm.dmDeviceName[:], val)
 }
 
-// Sets the dmSize field to the size of the struct, correctly initializing it.
-// Also sets dmSpecVersion.
+// Sets the internal dmSize field to the size of the struct, correctly
+// initializing it. Also sets dmSpecVersion.
 func (dm *DEVMODE) SetDmSize() {
 	dm.dmSpecVersion = utl.DM_SPECVERSION
 	dm.dmSize = uint16(unsafe.Sizeof(*dm))
@@ -393,18 +396,18 @@ type LOGBRUSH struct {
 //
 // [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type LOGFONT struct {
-	LfHeight         int32
-	LfWidth          int32
-	LfEscapement     int32
-	LfOrientation    int32
-	LfWeight         co.FW
-	LfItalic         uint8 // This is a BOOL value.
-	LfUnderline      uint8 // This is a BOOL value.
-	LfStrikeOut      uint8 // This is a BOOL value.
-	LfCharSet        co.CHARSET
-	LfOutPrecision   co.OUT_PRECIS
-	LfClipPrecision  co.CLIP_PRECIS
-	LfQuality        co.QUALITY
+	Height           int32
+	Width            int32
+	Escapement       int32
+	Orientation      int32
+	Weight           co.FW
+	Italic           uint8 // This is a BOOL value.
+	Underline        uint8 // This is a BOOL value.
+	StrikeOut        uint8 // This is a BOOL value.
+	CharSet          co.CHARSET
+	OutPrecision     co.OUT_PRECIS
+	ClipPrecision    co.CLIP_PRECIS
+	Quality          co.QUALITY
 	lfPitchAndFamily uint8 // combination of co.PITCH and co.FF
 	lfFaceName       [utl.LF_FACESIZE]uint16
 }
@@ -436,19 +439,19 @@ func (lf *LOGFONT) SetFamily(val co.FF) {
 //
 // [LOGPEN]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logpen
 type LOGPEN struct {
-	LopnStyle co.PS
-	LopnWidth POINT
-	LopnColor COLORREF
+	Style co.PS
+	Width POINT
+	Color COLORREF
 }
 
 // [PALETTEENTRY] struct.
 //
 // [PALETTEENTRY]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-paletteentry
 type PALETTEENTRY struct {
-	PeRed   uint8
-	PeGreen uint8
-	PeBlue  uint8
-	PeFlags co.PC
+	Red   uint8
+	Green uint8
+	Blue  uint8
+	Flags co.PC
 }
 
 // [PIXELFORMATDESCRIPTOR] struct.
@@ -490,8 +493,8 @@ type PIXELFORMATDESCRIPTOR struct {
 	dwDamageMask    uint32
 }
 
-// Sets the nSize field to the size of the struct, correctly initializing it.
-// Also sets nVersion.
+// Sets the internal nSize field to the size of the struct, correctly
+// initializing it. Also sets nVersion.
 func (mix *PIXELFORMATDESCRIPTOR) SetNSize() {
 	mix.nSize = uint16(unsafe.Sizeof(*mix))
 	mix.nVersion = 1
@@ -535,26 +538,26 @@ func (rq *RGBQUAD) ToColorref() COLORREF {
 //
 // [TEXTMETRIC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-textmetricw
 type TEXTMETRIC struct {
-	TmHeight           uint32
-	TmAscent           uint32
-	TmDescent          uint32
-	TmInternalLeading  uint32
-	TmExternalLeading  uint32
-	TmAveCharWidth     uint32
-	TmMaxCharWidth     uint32
-	TmWeight           uint32
-	TmOverhang         uint32
-	TmDigitizedAspectX uint32
-	TmDigitizedAspectY uint32
-	TmFirstChar        uint16
-	TmLastChar         uint16
-	TmDefaultChar      uint16
-	TmBreakChar        uint16
-	TmItalic           uint8
-	TmUnderlined       uint8
-	TmStruckOut        uint8
-	tmPitchAndFamily   uint8 // combination of co.TMPF and co.FF
-	TmCharSet          co.CHARSET
+	Height           uint32
+	Ascent           uint32
+	Descent          uint32
+	InternalLeading  uint32
+	ExternalLeading  uint32
+	AveCharWidth     uint32
+	MaxCharWidth     uint32
+	Weight           uint32
+	Overhang         uint32
+	DigitizedAspectX uint32
+	DigitizedAspectY uint32
+	FirstChar        uint16
+	LastChar         uint16
+	DefaultChar      uint16
+	BreakChar        uint16
+	Italic           uint8
+	Underlined       uint8
+	StruckOut        uint8
+	tmPitchAndFamily uint8 // combination of co.TMPF and co.FF
+	CharSet          co.CHARSET
 }
 
 func (tm *TEXTMETRIC) Pitch() co.TMPF {

@@ -33,7 +33,8 @@ type ACTCTX struct {
 	HModule                HINSTANCE
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (ac *ACTCTX) SetCbSize() {
 	ac.cbSize = uint32(unsafe.Sizeof(*ac))
 }
@@ -97,7 +98,8 @@ type CONSOLE_FONT_INFOEX struct {
 	faceName   [utl.LF_FACESIZE]uint16
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (cfix *CONSOLE_FONT_INFOEX) SetCbSize() {
 	cfix.cbSize = uint32(unsafe.Sizeof(*cfix))
 }
@@ -143,7 +145,8 @@ type CONSOLE_READCONSOLE_CONTROL struct {
 	DwControlKeyState co.CKS
 }
 
-// Sets the nLength field to the size of the struct, correctly initializing it.
+// Sets the internal nLength field to the size of the struct, correctly
+// initializing it.
 func (c *CONSOLE_READCONSOLE_CONTROL) SetNLength() {
 	c.nLength = uint32(unsafe.Sizeof(*c))
 }
@@ -206,7 +209,8 @@ type HEAP_OPTIMIZE_RESOURCES_INFORMATION struct {
 	Flags   uint32 // Must be set to zero.
 }
 
-// Sets the version field to the size of the struct, correctly initializing it.
+// Sets the internal version field to the size of the struct, correctly
+// initializing it.
 func (ho *HEAP_OPTIMIZE_RESOURCES_INFORMATION) SetVersion() {
 	ho.version = utl.HEAP_OPTIMIZE_RESOURCES_CURRENT_VERSION
 }
@@ -309,17 +313,18 @@ type MEMORY_BASIC_INFORMATION struct {
 // [MEMORYSTATUSEX]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-memorystatusex
 type MEMORYSTATUSEX struct {
 	dwLength                uint32
-	DwMemoryLoad            uint32
-	UllTotalPhys            uint64
-	UllAvailPhys            uint64
-	UllTotalPageFile        uint64
-	UllAvailPageFile        uint64
-	UllTotalVirtual         uint64
-	UllAvailVirtual         uint64
+	MemoryLoad              uint32 // A number between 0 and 100 that specifies the approximate percentage of physical memory that is in use.
+	TotalPhys               uint64 // The amount of actual physical memory, in bytes.
+	AvailPhys               uint64 // The amount of physical memory currently available, in bytes. This is the amount of physical memory that can be immediately reused without having to write its contents to disk first. It is the sum of the size of the standby, free, and zero lists.
+	TotalPageFile           uint64 // The current committed memory limit for the system or the current process, whichever is smaller, in bytes.
+	AvailPageFile           uint64 // The maximum amount of memory the current process can commit, in bytes. This value is equal to or smaller than the system-wide available commit value.
+	TotalVirtual            uint64 // The size of the user-mode portion of the virtual address space of the calling process, in bytes. This value depends on the type of process, the type of processor, and the configuration of the operating system.
+	AvailVirtual            uint64 // The amount of unreserved and uncommitted memory currently in the user-mode portion of the virtual address space of the calling process, in bytes.
 	ullAvailExtendedVirtual uint64
 }
 
-// Sets the dwLength field to the size of the struct, correctly initializing it.
+// Sets the internal dwLength field to the size of the struct, correctly
+// initializing it.
 func (ms *MEMORYSTATUSEX) SetDwLength() {
 	ms.dwLength = uint32(unsafe.Sizeof(*ms))
 }
@@ -347,7 +352,8 @@ type MODULEENTRY32 struct {
 	szExePath     [utl.MAX_PATH]uint16
 }
 
-// Sets the dwSize field to the size of the struct, correctly initializing it.
+// Sets the internal dwSize field to the size of the struct, correctly
+// initializing it.
 func (me *MODULEENTRY32) SetDwSize() {
 	me.dwSize = uint32(unsafe.Sizeof(*me))
 }
@@ -447,7 +453,8 @@ type PROCESSENTRY32 struct {
 	szExeFile           [utl.MAX_PATH]uint16
 }
 
-// Sets the dwSize field to the size of the struct, correctly initializing it.
+// Sets the internal dwSize field to the size of the struct, correctly
+// initializing it.
 func (pe *PROCESSENTRY32) SetDwSize() {
 	pe.dwSize = uint32(unsafe.Sizeof(*pe))
 }
@@ -484,7 +491,8 @@ type SECURITY_ATTRIBUTES struct {
 	BInheritHandle       BOOL
 }
 
-// Sets the nLength field to the size of the struct, correctly initializing it.
+// Sets the internal nLength field to the size of the struct, correctly
+// initializing it.
 func (sa *SECURITY_ATTRIBUTES) SetNLength() {
 	sa.nLength = uint32(unsafe.Sizeof(*sa))
 }
@@ -520,7 +528,8 @@ type STARTUPINFO struct {
 	HStdError       HANDLE
 }
 
-// Sets the cb field to the size of the struct, correctly initializing it.
+// Sets the internal cb field to the size of the struct, correctly
+// initializing it.
 func (si *STARTUPINFO) SetCb() {
 	si.cb = uint32(unsafe.Sizeof(*si))
 }
@@ -546,14 +555,14 @@ type SYSTEM_INFO struct {
 //
 // [SYSTEMTIME]: https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime
 type SYSTEMTIME struct {
-	WYear         uint16
-	WMonth        uint16
-	WDayOfWeek    uint16
-	WDay          uint16
-	WHour         uint16
-	WMinute       uint16
-	WSecond       uint16
-	WMilliseconds uint16
+	Year         uint16 // The valid values for this member are 1601 through 30827.
+	Month        uint16 // January=1, December=12.
+	DayOfWeek    uint16 // Sunday=0, Saturday=6.
+	Day          uint16 // The valid values for this member are 1 through 31.
+	Hour         uint16 // The valid values for this member are 0 through 23.
+	Minute       uint16 // The valid values for this member are 0 through 59.
+	Second       uint16 // The valid values for this member are 0 through 59.
+	Milliseconds uint16 // The valid values for this member are 0 through 999.
 }
 
 // Decomposes a [time.Duration] into this SYSTEMTIME fields.
@@ -564,16 +573,16 @@ type SYSTEMTIME struct {
 //	st.SetDuration(time.Minute * 3)
 func (st *SYSTEMTIME) SetDuration(dur time.Duration) {
 	*st = SYSTEMTIME{}
-	st.WHour = uint16(dur / time.Hour)
-	st.WMinute = uint16((dur -
-		time.Duration(st.WHour)*time.Hour) / time.Minute)
-	st.WSecond = uint16((dur -
-		time.Duration(st.WHour)*time.Hour -
-		time.Duration(st.WMinute)*time.Minute) / time.Second)
-	st.WMilliseconds = uint16((dur -
-		time.Duration(st.WHour)*time.Hour -
-		time.Duration(st.WMinute)*time.Minute -
-		time.Duration(st.WSecond)*time.Second) / time.Millisecond)
+	st.Hour = uint16(dur / time.Hour)
+	st.Minute = uint16((dur -
+		time.Duration(st.Hour)*time.Hour) / time.Minute)
+	st.Second = uint16((dur -
+		time.Duration(st.Hour)*time.Hour -
+		time.Duration(st.Minute)*time.Minute) / time.Second)
+	st.Milliseconds = uint16((dur -
+		time.Duration(st.Hour)*time.Hour -
+		time.Duration(st.Minute)*time.Minute -
+		time.Duration(st.Second)*time.Second) / time.Millisecond)
 }
 
 // Converts this SYSTEMTIME to [time.Time].
@@ -583,9 +592,9 @@ func (st *SYSTEMTIME) SetDuration(dur time.Duration) {
 //	st := win.GetLocalTime()
 //	t := st.ToTime()
 func (st *SYSTEMTIME) ToTime() time.Time {
-	return time.Date(int(st.WYear), time.Month(st.WMonth), int(st.WDay),
-		int(st.WHour), int(st.WMinute), int(st.WSecond),
-		int(st.WMilliseconds)*1_000_000,
+	return time.Date(int(st.Year), time.Month(st.Month), int(st.Day),
+		int(st.Hour), int(st.Minute), int(st.Second),
+		int(st.Milliseconds)*1_000_000,
 		time.Local)
 }
 
@@ -631,7 +640,8 @@ type THREADENTRY32 struct {
 	dwFlags            uint32
 }
 
-// Sets the dwSize field to the size of the struct, correctly initializing it.
+// Sets the internal dwSize field to the size of the struct, correctly
+// initializing it.
 func (te *THREADENTRY32) SetDwSize() {
 	te.dwSize = uint32(unsafe.Sizeof(*te))
 }

@@ -242,7 +242,7 @@ func main() {
 			Compression: co.BI_RGB,
 		},
 	}
-	bi.BmiHeader.SetSize()
+	bi.BmiHeader.SetBiSize()
 
 	bmpObj, _ := hBmp.GetObject()
 	bmpSize := bmpObj.CalcBitmapSize(bi.BmiHeader.BitCount)

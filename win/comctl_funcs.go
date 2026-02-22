@@ -102,65 +102,68 @@ var _comctl_InitMUILanguage *syscall.Proc
 //
 //	var hWnd win.HWND // initialized somewhere
 //
-//	_, _ = win.TaskDialogIndirect(win.TASKDIALOGCONFIG{
-//		HwndParent:      hWnd,
-//		WindowTitle:     "Title",
-//		MainInstruction: "Caption",
-//		Content:         "Body",
-//		HMainIcon:       win.TdcIconTdi(co.TDICON_INFORMATION),
-//		CommonButtons:   co.TDCBF_OK,
-//		Flags: co.TDF_ALLOW_DIALOG_CANCELLATION |
-//			co.TDF_POSITION_RELATIVE_TO_WINDOW,
-//	})
+//	_, _ = win.TaskDialogIndirect(
+//		&win.TASKDIALOGCONFIG{
+//			HwndParent:      hWnd,
+//			WindowTitle:     "Title",
+//			MainInstruction: "Caption",
+//			Content:         "Body",
+//			HMainIcon:       win.TdcIconTdi(co.TDICON_INFORMATION),
+//			CommonButtons:   co.TDCBF_OK,
+//			Flags: co.TDF_ALLOW_DIALOG_CANCELLATION |
+//				co.TDF_POSITION_RELATIVE_TO_WINDOW,
+//		},
+//	)
 //
 // [TaskDialogIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-taskdialogindirect
-func TaskDialogIndirect(taskConfig TASKDIALOGCONFIG) (co.ID, error) {
+func TaskDialogIndirect(pTaskConfig *TASKDIALOGCONFIG) (co.ID, error) {
 	const TASKDIALOGCONFIG_SZ = 160
 	const TASKDIALOG_BUTTON_SZ = 12
 
-	// Sizes of all texts written by the user, counting terminating nulls.
-	totTextUtf16Words := tdiStrLenIfAny(taskConfig.WindowTitle) +
-		tdiStrLenIfAny(taskConfig.MainInstruction) +
-		tdiStrLenIfAny(taskConfig.Content) +
-		tdiStrLenIfAny(taskConfig.VerificationText) +
-		tdiStrLenIfAny(taskConfig.ExpandedInformation) +
-		tdiStrLenIfAny(taskConfig.ExpandedControlText) +
-		tdiStrLenIfAny(taskConfig.CollapsedControlText) +
-		tdiStrLenIfAny(taskConfig.Footer)
-	for _, btn := range taskConfig.Buttons {
-		totTextUtf16Words += tdiStrLenIfAny(btn.Text)
+	// Total chars of all texts written by the user, counting terminating nulls.
+	totUserWChars := tdiStrLenIfAny(pTaskConfig.WindowTitle) +
+		tdiStrLenIfAny(pTaskConfig.MainInstruction) +
+		tdiStrLenIfAny(pTaskConfig.Content) +
+		tdiStrLenIfAny(pTaskConfig.VerificationText) +
+		tdiStrLenIfAny(pTaskConfig.ExpandedInformation) +
+		tdiStrLenIfAny(pTaskConfig.ExpandedControlText) +
+		tdiStrLenIfAny(pTaskConfig.CollapsedControlText) +
+		tdiStrLenIfAny(pTaskConfig.Footer)
+	for _, btn := range pTaskConfig.Buttons {
+		totUserWChars += tdiStrLenIfAny(btn.Text)
 	}
-	for _, btn := range taskConfig.RadioButtons {
-		totTextUtf16Words += tdiStrLenIfAny(btn.Text)
+	for _, btn := range pTaskConfig.RadioButtons {
+		totUserWChars += tdiStrLenIfAny(btn.Text)
 	}
 
 	// Sizes of each block, in bytes.
 	szTdc := TASKDIALOGCONFIG_SZ
-	szBtns := len(taskConfig.Buttons) * TASKDIALOG_BUTTON_SZ
-	szRads := len(taskConfig.RadioButtons) * TASKDIALOG_BUTTON_SZ
-	szTexts := totTextUtf16Words * 2
+	szBtns := len(pTaskConfig.Buttons) * TASKDIALOG_BUTTON_SZ
+	szRads := len(pTaskConfig.RadioButtons) * TASKDIALOG_BUTTON_SZ
+	szTexts := totUserWChars * 2
 
 	totSize := szTdc + szBtns + szRads +
 		3*4 + // button, radio and check values returned (int32)
 		szTexts // all strings, null-terminated
 
-	// Alloc a single buffer to keep everything.
+	// Alloc a single big buffer to receive the serialized TASKDIALOGCONFIG,
+	// followed by everything else.
 	buf := NewVecSized(totSize, byte(0))
 	defer buf.Free()
 
-	// Subslices over the single buffer.
-	tdcBuf := buf.HotSlice()[:szTdc]
+	// Subslices over the single big buffer.
+	tdcBuf := buf.HotSlice()[:szTdc] // will receive TASKDIALOGCONFIG itself
 	btnsBuf := buf.HotSlice()[szTdc : szTdc+szBtns]
 	radsBuf := buf.HotSlice()[szTdc+szBtns : szTdc+szBtns+szRads]
-	bufRetBtn := buf.HotSlice()[szTdc+szBtns+szRads : szTdc+szBtns+szRads+4]
+	bufRetBtn := buf.HotSlice()[szTdc+szBtns+szRads : szTdc+szBtns+szRads+4] // 4 bytes (int32)
 	bufRetRad := buf.HotSlice()[szTdc+szBtns+szRads+4 : szTdc+szBtns+szRads+8]
 	bufRetChk := buf.HotSlice()[szTdc+szBtns+szRads+8 : szTdc+szBtns+szRads+12]
-	bufPtrStrs := buf.HotSlice()[szTdc+szBtns+szRads+12:]
+	bufPtrStrs := buf.HotSlice()[szTdc+szBtns+szRads+12:] // will receive all null-terminated wide strings
 
-	bufPtrStrs16 := unsafe.Slice( // wchar buffer for all strings
+	bufPtrStrs16 := unsafe.Slice( // uint16 buffer to receive all null-terminated wide strings
 		(*uint16)(unsafe.Pointer(&bufPtrStrs[0])), len(bufPtrStrs)/2)
 
-	taskConfig.serialize(tdcBuf, btnsBuf, radsBuf, bufPtrStrs16)
+	pTaskConfig.serialize(tdcBuf, btnsBuf, radsBuf, bufPtrStrs16)
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Comctl.Load(&_comctl_TaskDialogIndirect, "TaskDialogIndirect"),

@@ -76,7 +76,8 @@ type CURSORINFO struct {
 	PtScreenPos POINT
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (ci *CURSORINFO) SetCbSize() {
 	ci.cbSize = uint32(unsafe.Sizeof(*ci))
 }
@@ -149,7 +150,8 @@ type DISPLAY_DEVICE struct {
 	deviceKey    [128]int16
 }
 
-// Sets the cb field to the size of the struct, correctly initializing it.
+// Sets the internal cb field to the size of the struct, correctly initializing
+// it.
 func (dd *DISPLAY_DEVICE) SetCb() {
 	dd.cb = uint32(unsafe.Sizeof(*dd))
 }
@@ -215,7 +217,8 @@ type GUITHREADINFO struct {
 	RcCaret       RECT
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (gti *GUITHREADINFO) SetCbSize() {
 	gti.cbSize = uint32(unsafe.Sizeof(*gti))
 }
@@ -248,7 +251,8 @@ type HELPINFO struct {
 	MousePos     POINT
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (hi *HELPINFO) SetCbSize() {
 	hi.cbSize = uint32(unsafe.Sizeof(*hi))
 }
@@ -286,7 +290,8 @@ type ICONINFOEX struct {
 	szResName [utl.MAX_PATH]uint16
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (iix *ICONINFOEX) SetCbSize() {
 	iix.cbSize = uint32(unsafe.Sizeof(*iix))
 }
@@ -454,7 +459,8 @@ type MENUINFO struct {
 	DwMenuData      uintptr // ULONG_PTR
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (mi *MENUINFO) SetCbSize() {
 	mi.cbSize = uint32(unsafe.Sizeof(*mi))
 }
@@ -484,7 +490,8 @@ type MENUITEMINFO struct {
 	HBmpItem      HBITMAP
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (mii *MENUITEMINFO) SetCbSize() {
 	mii.cbSize = uint32(unsafe.Sizeof(*mii))
 }
@@ -518,7 +525,8 @@ type MONITORINFOEX struct {
 	szDevice  [utl.CCHDEVICENAME]uint16
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (mix *MONITORINFOEX) SetCbSize() {
 	mix.cbSize = uint32(unsafe.Sizeof(*mix))
 }
@@ -601,7 +609,8 @@ func (ncm *NONCLIENTMETRICS) CbSize() uint32 {
 	return ncm.cbSize
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (ncm *NONCLIENTMETRICS) SetCbSize() {
 	ncm.cbSize = uint32(unsafe.Sizeof(*ncm))
 	if !IsWindowsVistaOrGreater() {
@@ -677,7 +686,8 @@ type SCROLLINFO struct {
 	NTrackPos int32
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (si *SCROLLINFO) SetCbSize() {
 	si.cbSize = uint32(unsafe.Sizeof(*si))
 }
@@ -723,7 +733,8 @@ type TITLEBARINFO struct {
 	Rgstate    [utl.CCHILDREN_TITLEBAR + 1]uint32
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (ti *TITLEBARINFO) SetCbSize() {
 	ti.cbSize = uint32(unsafe.Sizeof(*ti))
 }
@@ -745,7 +756,8 @@ type TITLEBARINFOEX struct {
 	Rgrect     [utl.CCHILDREN_TITLEBAR + 1]RECT
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (tix *TITLEBARINFOEX) SetCbSize() {
 	tix.cbSize = uint32(unsafe.Sizeof(*tix))
 }
@@ -769,7 +781,8 @@ type WINDOWPLACEMENT struct {
 	RcNormalPosition RECT
 }
 
-// Sets the length field to the size of the struct, correctly initializing it.
+// Sets the internal length field to the size of the struct, correctly
+// initializing it.
 func (wp *WINDOWPLACEMENT) SetLength() {
 	wp.length = uint32(unsafe.Sizeof(*wp))
 }
@@ -809,7 +822,8 @@ type WNDCLASSEX struct {
 	HIconSm       HICON
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (wcx *WNDCLASSEX) SetCbSize() {
 	wcx.cbSize = uint32(unsafe.Sizeof(*wcx))
 }

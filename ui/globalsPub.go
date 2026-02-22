@@ -195,16 +195,18 @@ func msgBuild(
 		commonButtons = co.TDCBF_OK
 	}
 
-	ret, err := win.TaskDialogIndirect(win.TASKDIALOGCONFIG{
-		HwndParent:      hParent,
-		WindowTitle:     title,
-		MainInstruction: caption,
-		Content:         body,
-		HMainIcon:       win.TdcIconTdi(icon),
-		CommonButtons:   commonButtons,
-		Flags:           co.TDF_ALLOW_DIALOG_CANCELLATION | co.TDF_POSITION_RELATIVE_TO_WINDOW,
-		Buttons:         buttons,
-	})
+	ret, err := win.TaskDialogIndirect(
+		&win.TASKDIALOGCONFIG{
+			HwndParent:      hParent,
+			WindowTitle:     title,
+			MainInstruction: caption,
+			Content:         body,
+			HMainIcon:       win.TdcIconTdi(icon),
+			CommonButtons:   commonButtons,
+			Flags:           co.TDF_ALLOW_DIALOG_CANCELLATION | co.TDF_POSITION_RELATIVE_TO_WINDOW,
+			Buttons:         buttons,
+		},
+	)
 
 	if err != nil {
 		panic(err)

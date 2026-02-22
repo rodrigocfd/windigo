@@ -42,7 +42,8 @@ type PERFORMANCE_INFORMATION struct {
 	ThreadCount       uint32
 }
 
-// Sets the cb field to the size of the struct, correctly initializing it.
+// Sets the internal cb field to the size of the struct, correctly initializing
+// it.
 func (pi *PERFORMANCE_INFORMATION) SetCb() {
 	pi.cb = uint32(unsafe.Sizeof(*pi))
 }
@@ -71,7 +72,8 @@ type PROCESS_MEMORY_COUNTERS_EX struct {
 	PrivateUsage               uintptr
 }
 
-// Sets the cb field to the size of the struct, correctly initializing it.
+// Sets the internal cb field to the size of the struct, correctly initializing
+// it.
 func (pmc *PROCESS_MEMORY_COUNTERS_EX) SetCb() {
 	pmc.cb = uint32(unsafe.Sizeof(*pmc))
 }

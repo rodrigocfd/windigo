@@ -31,7 +31,8 @@ type BIND_OPTS3 struct {
 	Hwnd                HWND
 }
 
-// Sets the cbStruct field to the size of the struct, correctly initializing it.
+// Sets the internal cbStruct field to the size of the struct, correctly
+// initializing it.
 func (bo *BIND_OPTS3) SetCbStruct() {
 	bo.cbStruct = uint32(unsafe.Sizeof(*bo))
 }
@@ -118,7 +119,8 @@ type DVTARGETDEVICE struct {
 	tdData             [1]byte
 }
 
-// Sets the tdSize field to the size of the struct, correctly initializing it.
+// Sets the internal tdSize field to the size of the struct, correctly
+// initializing it.
 func (dvt *DVTARGETDEVICE) SetTdSize() {
 	dvt.tdSize = uint32(unsafe.Sizeof(*dvt))
 }

@@ -78,7 +78,8 @@ type NOTIFYICONDATA struct {
 	HBalloonIcon     HICON   // Handle to the icon of the balloon notification.
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (nid *NOTIFYICONDATA) SetCbSize() {
 	nid.cbSize = uint32(unsafe.Sizeof(*nid))
 }
@@ -130,7 +131,8 @@ type NOTIFYICONIDENTIFIER struct {
 	GuidItem co.GUID
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (nii *NOTIFYICONIDENTIFIER) SetCbSize() {
 	nii.cbSize = uint32(unsafe.Sizeof(*nii))
 }

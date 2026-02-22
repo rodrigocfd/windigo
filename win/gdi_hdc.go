@@ -325,7 +325,7 @@ func (hdc HDC) CreateDIBitmap(
 	pBmi *BITMAPINFO,
 	usage co.DIB_COLORS,
 ) error {
-	pBmih.SetSize() // safety
+	pBmih.SetBV5Size() // safety
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_CreateDIBitmap, "CreateDIBitmap"),
 		uintptr(hdc),
@@ -721,7 +721,7 @@ var _gdi_GetDIBColorTable *syscall.Proc
 //			Compression: co.BI_RGB,
 //		},
 //	}
-//	bi.BmiHeader.SetSize()
+//	bi.BmiHeader.SetBiSize()
 //
 //	bmpObj, _ := hBmp.GetObject()
 //	bmpSize := bmpObj.CalcBitmapSize(bi.BmiHeader.BitCount)
@@ -764,7 +764,7 @@ func (hdc HDC) GetDIBits(
 	pBmi *BITMAPINFO,
 	usage co.DIB_COLORS,
 ) (int, error) {
-	pBmi.BmiHeader.SetSize() // safety
+	pBmi.BmiHeader.SetBiSize() // safety
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_GetDIBits, "GetDIBits"),
 		uintptr(hdc),

@@ -43,7 +43,8 @@ type EDITBALLOONTIP struct {
 	TtiIcon  co.TTI
 }
 
-// Sets the cbStruct field to the size of the struct, correctly initializing it.
+// Sets the internal cbStruct field to the size of the struct, correctly
+// initializing it.
 func (eb *EDITBALLOONTIP) SetCbStruct() {
 	eb.cbStruct = uint32(unsafe.Sizeof(*eb))
 }
@@ -112,7 +113,8 @@ type IMAGELISTDRAWPARAMS struct {
 	CrEffect     COLORREF
 }
 
-// Sets the cbSize field to the size of the struct, correctly initializing it.
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
 func (idp *IMAGELISTDRAWPARAMS) SetCbSize() {
 	idp.cbSize = uint32(unsafe.Sizeof(*idp))
 }
@@ -132,7 +134,8 @@ type _INITCOMMONCONTROLSEX struct {
 	DwICC  co.ICC
 }
 
-// Sets the dwSize field to the size of the struct, correctly initializing it.
+// Sets the internal dwSize field to the size of the struct, correctly
+// initializing it.
 func (icc *_INITCOMMONCONTROLSEX) SetDwSize() {
 	icc.dwSize = uint32(unsafe.Sizeof(*icc))
 }
@@ -997,10 +1000,10 @@ type TASKDIALOGCONFIG struct {
 
 // Converts the syntactic sugar struct into the packed raw one.
 func (tdc *TASKDIALOGCONFIG) serialize(
-	tdcBuf []byte, // TASKDIALOGCONFIG buffer
-	btnsBuf []byte, // buffer for Buttons
-	radsBuf []byte, // buffer for RadioButtons
-	strsBuf []uint16, // buffer for the null-terminated UTF-16 strings
+	tdcBuf []byte, // dest TASKDIALOGCONFIG buffer
+	btnsBuf []byte, // dest buffer for Buttons
+	radsBuf []byte, // dest buffer for RadioButtons
+	strsBuf []uint16, // dest buffer for the null-terminated wide strings
 ) {
 	tdc.put32(tdcBuf[0:], uint32(len(tdcBuf))) // cbSize
 	tdc.put64(tdcBuf[4:], uint64(tdc.HwndParent))
@@ -1070,7 +1073,7 @@ func (tdc *TASKDIALOGCONFIG) putStr(dest []byte, destWchar []uint16, s string) (
 	if s != "" {
 		numWchars := wstr.EncodeToBuf(destWchar, s)
 		tdc.putPtr(dest, unsafe.Pointer(&destWchar[0]))
-		return dest[8:], destWchar[numWchars:]
+		return dest[8:], destWchar[numWchars:] // return both buffers past the inserted pointer and wchars
 	}
 	return dest[8:], destWchar // empty string puts a nil pointer
 }

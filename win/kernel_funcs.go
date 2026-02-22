@@ -484,6 +484,13 @@ var _kernel_GetSystemInfo *syscall.Proc
 
 // [GlobalMemoryStatusEx] function.
 //
+// Example:
+//
+//	msex, _ := win.GlobalMemoryStatusEx()
+//	fmt.Printf("Total memory: %s, free: %s\n",
+//		wstr.FmtBytes(int(msex.TotalPhys)),
+//		wstr.FmtBytes(int(msex.AvailPhys)))
+//
 // [GlobalMemoryStatusEx]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-globalmemorystatusex
 func GlobalMemoryStatusEx() (MEMORYSTATUSEX, error) {
 	var ms MEMORYSTATUSEX
