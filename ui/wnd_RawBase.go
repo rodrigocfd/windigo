@@ -121,17 +121,15 @@ func wndProcCallback() uintptr {
 	if _wndProcCallback == 0 {
 		_wndProcCallback = syscall.NewCallback(
 			func(hWnd win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
-				var pMe *_RawBase
+				ptr, _ := hWnd.GetWindowLongPtr(co.GWLP_USERDATA) // retrieve
+				pMe := (*_RawBase)(unsafe.Pointer(ptr))
 
-				if uMsg == co.WM_NCCREATE {
+				if uMsg == co.WM_NCCREATE && pMe == nil { // prevent from init twice
 					cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
 					pMe = (*_RawBase)(unsafe.Pointer(cs.LpCreateParams))
 					pMe.hWnd = hWnd
 					utl.PtrCache.Add(unsafe.Pointer(pMe)) // released in WM_NCDESTROY
 					hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
-				} else {
-					ptr, _ := hWnd.GetWindowLongPtr(co.GWLP_USERDATA) // retrieve
-					pMe = (*_RawBase)(unsafe.Pointer(ptr))
 				}
 
 				// If no pointer stored, then no processing is done.

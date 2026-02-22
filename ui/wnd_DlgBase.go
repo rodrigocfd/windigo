@@ -81,16 +81,14 @@ func dlgProcCallback() uintptr {
 	if _dlgProcCallback == 0 {
 		_dlgProcCallback = syscall.NewCallback(
 			func(hDlg win.HWND, uMsg co.WM, wParam win.WPARAM, lParam win.LPARAM) uintptr {
-				var pMe *_DlgBase
+				ptr, _ := hDlg.GetWindowLongPtr(co.GWLP_DWLP_USER) // retrieve
+				pMe := (*_DlgBase)(unsafe.Pointer(ptr))
 
-				if uMsg == co.WM_INITDIALOG {
+				if uMsg == co.WM_INITDIALOG && pMe == nil { // prevent from init twice
 					pMe = (*_DlgBase)(unsafe.Pointer(lParam))
 					pMe.hWnd = hDlg
 					utl.PtrCache.Add(unsafe.Pointer(pMe)) // released in WM_NCDESTROY
 					hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, uintptr(unsafe.Pointer(pMe)))
-				} else {
-					ptr, _ := hDlg.GetWindowLongPtr(co.GWLP_DWLP_USER) // retrieve
-					pMe = (*_DlgBase)(unsafe.Pointer(ptr))
 				}
 
 				// If no pointer stored, then no processing is done.
