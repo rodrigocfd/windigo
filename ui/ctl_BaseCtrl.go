@@ -84,8 +84,7 @@ func (me *_BaseCtrl) createWindow(
 
 	hInst, _ := parent.Hwnd().HInstance()
 	me.hWnd, _ = win.CreateWindowEx(exStyle, win.ClassNameStr(className),
-		title, style, int(pos.X), int(pos.Y), int(size.Cx), int(size.Cy),
-		parent.Hwnd(), win.HMENU(me.ctrlId), hInst, win.LPARAM(0))
+		title, style, pos, size, parent.Hwnd(), win.HMENU(me.ctrlId), hInst, win.LPARAM(0))
 	if setGlobalUiFont {
 		me.hWnd.SendMessage(co.WM_SETFONT, win.WPARAM(globalUiFont), win.LPARAM(1))
 	}
