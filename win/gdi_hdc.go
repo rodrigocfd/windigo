@@ -1390,7 +1390,7 @@ func (hdc HDC) RealizePalette() (int, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_RealizePalette, "RealizePalette"),
 		uintptr(hdc))
-	if ret == utl.GDI_ERR {
+	if ret == utl.GDI_ERROR {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
 	return int(uint32(ret)), nil
@@ -1679,7 +1679,7 @@ func (hdc HDC) SetDIBitsToDevice(
 		uintptr(unsafe.Pointer(pBmi)),
 		uintptr(usage))
 
-	if ret == 0 || ret == utl.GDI_ERR {
+	if ret == 0 || ret == utl.GDI_ERROR {
 		return 0, co.ERROR_INVALID_PARAMETER
 	}
 	return int(int32(ret)), nil
@@ -1760,7 +1760,7 @@ func (hdc HDC) SetTextAlign(align co.TA) error {
 		dll.Gdi.Load(&_gdi_SetTextAlign, "SetTextAlign"),
 		uintptr(hdc),
 		uintptr(align))
-	if ret == utl.GDI_ERR {
+	if ret == utl.GDI_ERROR {
 		return co.ERROR_INVALID_PARAMETER
 	}
 	return nil
@@ -1858,6 +1858,43 @@ func (hdc HDC) StretchBlt(
 }
 
 var _gdi_StretchBlt *syscall.Proc
+
+// [StretchDIBits] function.
+//
+// [StretchDIBits]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-stretchdibits
+func (hdc HDC) StretchDIBits(
+	destTopLeft POINT,
+	destSz SIZE,
+	srcTopLeft POINT,
+	srcSz SIZE,
+	pBits *byte,
+	pBmi *BITMAPINFO,
+	usage co.DIB_COLORS,
+	rop co.ROP,
+) (int, error) {
+	ret, _, _ := syscall.SyscallN(
+		dll.Gdi.Load(&_gdi_StretchDIBits, "StretchDIBits"),
+		uintptr(hdc),
+		uintptr(destTopLeft.X),
+		uintptr(destTopLeft.Y),
+		uintptr(destSz.Cx),
+		uintptr(destSz.Cy),
+		uintptr(srcTopLeft.X),
+		uintptr(srcTopLeft.Y),
+		uintptr(srcSz.Cx),
+		uintptr(srcSz.Cy),
+		uintptr(unsafe.Pointer(pBits)),
+		uintptr(unsafe.Pointer(pBmi)),
+		uintptr(usage),
+		uintptr(rop))
+
+	if ret == 0 || ret == utl.GDI_ERROR {
+		return 0, co.ERROR_INVALID_PARAMETER
+	}
+	return int(int32(ret)), nil
+}
+
+var _gdi_StretchDIBits *syscall.Proc
 
 // [StrokeAndFillPath] function.
 //
