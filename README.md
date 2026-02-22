@@ -25,10 +25,11 @@ Native FFI items currently implemented:
 | Native FFI item | Count |
 | - | -: |
 | Handles | 31 |
-| Functions | 661 |
+| Functions | 655 |
 | COM interfaces | 74 |
 | COM methods | 517 |
-| Constants | 11,063 |
+| Const types | 409 |
+| Const values | 11,053 |
 
 ## Examples
 
@@ -112,7 +113,7 @@ func (me *MyWindow) events() {
 To compile the final `.exe` file, run the command:
 
 ```
-go build -ldflags "-s -w -H=windowsgui"
+go build -trimpath -ldflags "-s -w -H=windowsgui"
 ```
 </details>
 
