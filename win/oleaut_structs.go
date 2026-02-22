@@ -11,6 +11,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/dll"
+	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
 // [ARRAYDESC] struct.
@@ -250,40 +251,10 @@ func (me *VARIANT) release() {
 
 var _oleaut_VariantClear *syscall.Proc
 
-// Returns the type of the VARIANT.
-func (vt *VARIANT) Type() co.VT {
-	return vt.tag
-}
-
-// [VariantInit] function.
-//
-// Example:
-//
-//	rel := win.NewOleReleaser()
-//	defer rel.Release()
-//
-//	v := win.NewVariantEmpty(rel)
-//
-// [VariantInit]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantinit
-func NewVariantEmpty(releaser *OleReleaser) *VARIANT {
-	v := new(VARIANT)
-	_, _, _ = syscall.SyscallN(
-		dll.Oleaut.Load(&_oleaut_VariantInit, "VariantInit"),
-		uintptr(unsafe.Pointer(v)))
-	releaser.Add(v)
-	return v
-}
-
-var _oleaut_VariantInit *syscall.Proc
-
-// Returns true if current type is VT_EMPTY.
-func (v *VARIANT) IsEmpty() bool {
-	return v.tag == co.VT_EMPTY
-}
-
 // Calls [VariantInit] and sets the type and value.
 //
 // Allowed [types]:
+//   - nil([co.VT_EMPTY])
 //   - bool ([co.VT_BOOL])
 //   - float32 ([co.VT_R4])
 //   - float64 ([co.VT_R8])
@@ -301,10 +272,24 @@ func (v *VARIANT) IsEmpty() bool {
 //
 // Panics if the type of the value is not allowed.
 //
+// Example:
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+//	v := win.NewVariant(rel, nil)
+//
 // [VariantInit]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantinit
 // [types]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-varenum
 func NewVariant(releaser *OleReleaser, value interface{}) *VARIANT {
-	v := NewVariantEmpty(releaser)
+	v := new(VARIANT)
+	_, _, _ = syscall.SyscallN(
+		dll.Oleaut.Load(&_oleaut_VariantInit, "VariantInit"),
+		uintptr(unsafe.Pointer(v)))
+	releaser.Add(v)
+	if utl.IsNil(value) { // no data to be set
+		return v
+	}
 
 	switch val := value.(type) {
 	case bool:
@@ -376,7 +361,18 @@ func NewVariant(releaser *OleReleaser, value interface{}) *VARIANT {
 	return v
 }
 
+var _oleaut_VariantInit *syscall.Proc
 var _oleaut_SystemTimeToVariantTime *syscall.Proc
+
+// Returns the type of the VARIANT.
+func (vt *VARIANT) Type() co.VT {
+	return vt.tag
+}
+
+// Returns true if current type is VT_EMPTY.
+func (v *VARIANT) IsEmpty() bool {
+	return v.tag == co.VT_EMPTY
+}
 
 // If the object has type [co.VT_BOOL], returns the value and true. Otherwise,
 // returns a default value and false.

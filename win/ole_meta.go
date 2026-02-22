@@ -207,10 +207,11 @@ func (me *OleReleaser) Release() {
 	me.objs = nil
 }
 
-// Releases the specific [COM] resources, if present, immediately.
+// Releases the specific [COM] resources, if present, immediately. These objects
+// will be removed from the internal list, thus not being released when
+// [OleReleaser.Release] is further called.
 //
-// These objects will be removed from the internal list, thus not being released
-// when [OleReleaser.Release] is further called.
+// This method should be rarely needed.
 //
 // Panics if no object is passed.
 func (me *OleReleaser) ReleaseNow(objs ...OleResource) {

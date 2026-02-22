@@ -131,7 +131,7 @@ func (me *IDispatch) Invoke(
 	defer remoteErr.Free()
 
 	var iidNull co.IID
-	remoteResult := NewVariantEmpty(releaser) // result returned from the remote call
+	remoteResult := NewVariant(releaser, nil) // result returned from the remote call
 
 	ret, _, _ := syscall.SyscallN(
 		(*_IDispatchVt)(unsafe.Pointer(*me.Ppvt())).Invoke,
