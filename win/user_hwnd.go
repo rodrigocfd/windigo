@@ -1494,3 +1494,34 @@ func (hWnd HWND) UpdateWindow() bool {
 }
 
 var _user_UpdateWindow *syscall.Proc
+
+// [SetTimer] function.
+//
+// [SetTimer]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
+func (hWnd HWND) SetTimer(event uintptr, delay uint) (uintptr, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_SetTimer, "SetTimer"),
+		uintptr(hWnd),
+		uintptr(event),
+		uintptr(delay),
+		uintptr(0))
+	if ret == 0 {
+		return uintptr(0), co.ERROR(err)
+	}
+	return uintptr(ret), nil
+}
+
+var _user_SetTimer *syscall.Proc
+
+// [KillTimer] function.
+//
+// [KillTimer]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-killtimer
+func (hWnd HWND) KillTimer(event uintptr) bool {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_KillTimer, "KillTimer"),
+		uintptr(hWnd),
+		uintptr(event))
+	return ret != 0
+}
+
+var _user_KillTimer *syscall.Proc
