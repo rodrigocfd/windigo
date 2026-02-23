@@ -166,8 +166,7 @@ func (me *CheckBox) SetStateAndTrigger(state co.BST) *CheckBox {
 func (me *CheckBox) SetTextAndResize(text string) *CheckBox {
 	me.hWnd.SetWindowText(text)
 	boundBox, _ := calcTextBoundBoxWithCheck(utl.RemoveAccelAmpersands(text))
-	me.hWnd.SetWindowPos(win.HWND(0), 0, 0,
-		int(boundBox.Cx), int(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
+	me.hWnd.SetWindowPos(win.HWND(0), win.POINT{}, boundBox, co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me
 }
 

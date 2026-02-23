@@ -34,10 +34,12 @@ func (me *_DlgModal) defaultMessageHandlers() {
 		rcModal, _ := me.hWnd.GetWindowRect()
 		rcParent, _ := me.parent.Hwnd().GetWindowRect()
 
-		x := rcParent.Left + ((rcParent.Right - rcParent.Left) / 2) - (rcModal.Right-rcModal.Left)/2
-		y := rcParent.Top + ((rcParent.Bottom - rcParent.Top) / 2) - (rcModal.Bottom-rcModal.Top)/2
-
-		me.hWnd.SetWindowPos(win.HWND(0), int(x), int(y), 0, 0, co.SWP_NOSIZE|co.SWP_NOZORDER)
+		me.hWnd.SetWindowPos(win.HWND(0),
+			win.POINT{
+				X: rcParent.Left + ((rcParent.Right - rcParent.Left) / 2) - (rcModal.Right-rcModal.Left)/2,
+				Y: rcParent.Top + ((rcParent.Bottom - rcParent.Top) / 2) - (rcModal.Bottom-rcModal.Top)/2,
+			},
+			win.SIZE{}, co.SWP_NOSIZE|co.SWP_NOZORDER)
 	})
 
 	me.userEvents.WmClose(func() {

@@ -58,14 +58,10 @@ func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &Tab{
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		children:  make([]*Control, 0, len(opts.titles)),
 		events:    TabEvents{opts.ctrlId, &parent.base().userEvents},
+		children:  make([]*Control, 0, len(opts.titles)),
 	}
 	me.Items.owner = me
-	for i := 0; i < len(opts.titles); i++ {
-		me.children = append(me.children,
-			NewControl(parent, OptsControl().ExStyle(co.WS_EX_LEFT))) // create the Control containers
-	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysTabControl32", "",
@@ -76,11 +72,10 @@ func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 		for _, title := range opts.titles {
 			me.Items.add(title) // add each tab item
 		}
-		me.Items.Get(opts.selected).Select()
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
 	})
 
-	me.defaultMessageHandlers(parent)
+	me.defaultMessageHandlers(parent, opts.titles, opts.selected, opts.layout != LAY_HOLD_HOLD)
 	return me
 }
 
@@ -113,34 +108,73 @@ func NewTabDlg(parent Parent, ctrlId uint16, layout LAY, titles ...string) *Tab 
 
 	me := &Tab{
 		_BaseCtrl: newBaseCtrl(ctrlId),
-		children:  make([]*Control, 0, len(titles)),
 		events:    TabEvents{ctrlId, &parent.base().userEvents},
+		children:  make([]*Control, 0, len(titles)),
 	}
 	me.Items.owner = me
-	for i := 0; i < len(titles); i++ {
-		me.children = append(me.children,
-			NewControl(parent, OptsControl().ExStyle(co.WS_EX_LEFT))) // create the Control containers
-	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		for _, title := range titles {
 			me.Items.add(title) // add each tab item
 		}
-		me.Items.Get(0).displayContent() // 1st tab selected by default
 		parent.base().layout.Add(parent, me.hWnd, layout)
 	})
 
-	me.defaultMessageHandlers(parent)
+	me.defaultMessageHandlers(parent, titles, 0, layout != LAY_HOLD_HOLD)
 	return me
 }
 
-func (me *Tab) defaultMessageHandlers(parent Parent) {
+func (me *Tab) defaultMessageHandlers(parent Parent, titles []string, selTab int, resizable bool) {
+	for i := 0; i < len(titles); i++ {
+		me.children = append(me.children, // create the Control containers
+			NewControl(parent, OptsControl().
+				ExStyle(co.WS_EX_LEFT).
+				tabOwner(me)))
+	}
+
+	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
+		me.Items.Get(selTab).Select() // must run after all containers are created and resized
+	})
+
 	parent.base().beforeUserEvents.wmNotify(me.ctrlId, co.TCN_SELCHANGE, func(_ unsafe.Pointer) {
 		if selTab, ok := me.Items.Selected(); ok {
-			selTab.displayContent()
+			me.displayContent(selTab.Index())
 		}
 	})
+
+	if resizable { // when the Tab itself is resized, we resize the container as well
+		parent.base().beforeUserEvents.wm(co.WM_SIZE, func(_ Wm) {
+			if selTab, ok := me.Items.Selected(); ok {
+				me.resizeChildContainer(selTab.Child().Hwnd())
+			}
+		})
+	}
+}
+
+func (me *Tab) displayContent(index int) {
+	if len(me.children) == 0 {
+		return
+	}
+	for idxChild, child := range me.children {
+		if idxChild != index {
+			child.Hwnd().ShowWindow(co.SW_HIDE) // hide all others
+		}
+	}
+	me.resizeChildContainer(me.children[index].Hwnd())
+	me.Hwnd().SetWindowPos(me.children[index].Hwnd(),
+		win.POINT{}, win.SIZE{}, co.SWP_NOSIZE|co.SWP_NOMOVE) // container above the Tab
+}
+
+func (me *Tab) resizeChildContainer(hChild win.HWND) {
+	rcTab, _ := me.Hwnd().GetWindowRect()
+	hParent, _ := me.Hwnd().GetParent()
+	hParent.ScreenToClientRc(&rcTab)
+	me.Hwnd().SendMessage(co.TCM_ADJUSTRECT, 0, win.LPARAM(unsafe.Pointer(&rcTab))) // ideal child size
+	hChild.SetWindowPos(win.HWND(0),
+		win.POINT{X: rcTab.Left, Y: rcTab.Top},
+		win.SIZE{Cx: rcTab.Right - rcTab.Left, Cy: rcTab.Bottom - rcTab.Top},
+		co.SWP_NOZORDER|co.SWP_SHOWWINDOW)
 }
 
 // Exposes all the control notifications the can be handled.

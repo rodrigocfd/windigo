@@ -94,8 +94,10 @@ func (me *_Layout) Add(parent Parent, hCtrl win.HWND, layout LAY) {
 
 // Rearrange all children. To be called during WM_SIZE processing.
 func (me *_Layout) Rearrange(parm WmSize) {
-	if len(me.ctrls) == 0 || parm.Request() == co.SIZE_REQ_MINIMIZED {
-		return // no need to resize if window is minimized
+	if len(me.ctrls) == 0 || // no controls to resize
+		parm.Request() == co.SIZE_REQ_MINIMIZED || // window is minimized
+		me.szOrig == parm.ClientAreaSize() { // no change in window size
+		return
 	}
 
 	hdwp, _ := win.BeginDeferWindowPos(len(me.ctrls))
@@ -113,27 +115,29 @@ func (me *_Layout) Rearrange(parm WmSize) {
 		}
 
 		szParent := parm.ClientAreaSize()
+		var newPos win.POINT
+		var newSize win.SIZE
 
-		x := ctl.rcOrig.Left // keep original left pos
+		newPos.X = ctl.rcOrig.Left // start with original left pos
 		if (ctl.layout & _LAYH_MOVE) != 0 {
-			x = szParent.Cx - me.szOrig.Cx + ctl.rcOrig.Left
+			newPos.X = szParent.Cx - me.szOrig.Cx + ctl.rcOrig.Left
 		}
 
-		y := ctl.rcOrig.Top // keep original top pos
+		newPos.Y = ctl.rcOrig.Top // start with original top pos
 		if (ctl.layout & _LAYV_MOVE) != 0 {
-			y = szParent.Cy - me.szOrig.Cy + ctl.rcOrig.Top
+			newPos.Y = szParent.Cy - me.szOrig.Cy + ctl.rcOrig.Top
 		}
 
-		cx := ctl.rcOrig.Right - ctl.rcOrig.Left // keep original width
+		newSize.Cx = ctl.rcOrig.Right - ctl.rcOrig.Left // start with original width
 		if (ctl.layout & _LAYH_RESIZE) != 0 {
-			cx = szParent.Cx - me.szOrig.Cx + ctl.rcOrig.Right - ctl.rcOrig.Left
+			newSize.Cx = szParent.Cx - me.szOrig.Cx + ctl.rcOrig.Right - ctl.rcOrig.Left
 		}
 
-		cy := ctl.rcOrig.Bottom - ctl.rcOrig.Top // keep original height
+		newSize.Cy = ctl.rcOrig.Bottom - ctl.rcOrig.Top // keep original height
 		if (ctl.layout & _LAYV_RESIZE) != 0 {
-			cy = szParent.Cy - me.szOrig.Cy + ctl.rcOrig.Bottom - ctl.rcOrig.Top
+			newSize.Cy = szParent.Cy - me.szOrig.Cy + ctl.rcOrig.Bottom - ctl.rcOrig.Top
 		}
 
-		hdwp.DeferWindowPos(ctl.hCtrl, win.HWND(0), int(x), int(y), int(cx), int(cy), uFlags)
+		hdwp.DeferWindowPos(ctl.hCtrl, win.HWND(0), newPos, newSize, uFlags)
 	}
 }

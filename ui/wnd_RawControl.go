@@ -30,11 +30,19 @@ func newControlRaw(parent Parent, opts *VarOptsControl) *_RawControl {
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
 	})
 
-	me.defaultMessageHandlers()
+	me.defaultMessageHandlers(opts.ownerTab)
 	return me
 }
 
-func (me *_RawControl) defaultMessageHandlers() {
+func (me *_RawControl) defaultMessageHandlers(ownerTab *Tab) {
+	me._RawBase._BaseContainer.defaultMessageHandlers()
+
+	if ownerTab != nil { // we are a Tab container
+		me.beforeUserEvents.wmCreateOrInitdialog(func() {
+			ownerTab.resizeChildContainer(me.hWnd) // must run right before our childrens'
+		})
+	}
+
 	me.userEvents.WmNcPaint(func(p WmNcPaint) {
 		paintThemedBorders(me.hWnd, p)
 	})
@@ -53,6 +61,8 @@ type VarOptsControl struct {
 	size     win.SIZE
 	style    co.WS
 	exStyle  co.WS_EX
+
+	ownerTab *Tab // if the Control is a Tab container
 }
 
 // Options for [NewControl].
@@ -156,3 +166,6 @@ func (o *VarOptsControl) Style(s co.WS) *VarOptsControl { o.style = s; return o 
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsControl) ExStyle(s co.WS_EX) *VarOptsControl { o.exStyle = s; return o }
+
+// Internal; when the Control is a Tab container.
+func (o *VarOptsControl) tabOwner(t *Tab) *VarOptsControl { o.ownerTab = t; return o }

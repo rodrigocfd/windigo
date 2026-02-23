@@ -19,27 +19,6 @@ type TabItem struct {
 	index int32
 }
 
-func (me TabItem) displayContent() {
-	if len(me.owner.children) == 0 {
-		return
-	}
-
-	for idx, child := range me.owner.children {
-		if idx != int(me.index) {
-			child.Hwnd().ShowWindow(co.SW_HIDE) // hide all others
-		}
-	}
-
-	hParent, _ := me.owner.hWnd.GetParent()
-	rcTab, _ := me.owner.hWnd.GetWindowRect()
-	hParent.ScreenToClientRc(&rcTab)
-	me.owner.hWnd.SendMessage(co.TCM_ADJUSTRECT, 0, win.LPARAM(unsafe.Pointer(&rcTab))) // ideal child size
-	me.owner.children[me.index].Hwnd().
-		SetWindowPos(win.HWND(0), int(rcTab.Left), int(rcTab.Top), // resize child to ideal size
-			int(rcTab.Right-rcTab.Left), int(rcTab.Bottom-rcTab.Top),
-			co.SWP_NOZORDER|co.SWP_SHOWWINDOW)
-}
-
 // Returns the [Control] window rendered inside this item.
 func (me TabItem) Child() *Control {
 	return me.owner.children[me.index]
@@ -57,7 +36,7 @@ func (me TabItem) Index() int {
 // [TCM_SETCURSEL]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-setcursel
 func (me TabItem) Select() TabItem {
 	me.owner.hWnd.SendMessage(co.TCM_SETCURSEL, win.WPARAM(int32(me.index)), 0)
-	me.displayContent() // because notification is not sent
+	me.owner.displayContent(int(me.index)) // because notification is not sent
 	return me
 }
 

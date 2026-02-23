@@ -25,17 +25,26 @@ func newControlDlg(parent Parent, opts *VarOptsControlDlg) *_DlgControl {
 		hInst, _ := parent.Hwnd().HInstance()
 		me.createDialogParam(hInst, parent.Hwnd())
 		me.hWnd.SetWindowLongPtr(co.GWLP_ID, uintptr(opts.ctrlId)) // give the control its ID
-		me.hWnd.SetWindowPos(win.HWND(0),
-			int(opts.position.X), int(opts.position.Y), 0, 0,
-			co.SWP_NOZORDER|co.SWP_NOSIZE)
+		if opts.ownerTab == nil {
+			me.hWnd.SetWindowPos(win.HWND(0), opts.position, win.SIZE{},
+				co.SWP_NOZORDER|co.SWP_NOSIZE)
+		}
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
 	})
 
-	me.defaultMessageHandlers()
+	me.defaultMessageHandlers(opts.ownerTab)
 	return me
 }
 
-func (me *_DlgControl) defaultMessageHandlers() {
+func (me *_DlgControl) defaultMessageHandlers(ownerTab *Tab) {
+	me._DlgBase._BaseContainer.defaultMessageHandlers()
+
+	if ownerTab != nil { // we are a Tab container
+		me.beforeUserEvents.wmCreateOrInitdialog(func() {
+			ownerTab.resizeChildContainer(me.hWnd) // must run right before our childrens'
+		})
+	}
+
 	me.userEvents.WmNcPaint(func(p WmNcPaint) {
 		paintThemedBorders(me.hWnd, p)
 	})
@@ -47,6 +56,8 @@ type VarOptsControlDlg struct {
 	ctrlId   uint16
 	layout   LAY
 	position win.POINT
+
+	ownerTab *Tab // if the Control is a Tab container
 }
 
 // Options for [NewControlDlg].
@@ -82,3 +93,6 @@ func (o *VarOptsControlDlg) Position(x, y int) *VarOptsControlDlg {
 	o.position.Y = int32(y)
 	return o
 }
+
+// Internal; when the Control is a Tab container.
+func (o *VarOptsControlDlg) tabOwner(t *Tab) *VarOptsControlDlg { o.ownerTab = t; return o }

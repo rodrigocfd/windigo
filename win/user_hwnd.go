@@ -1299,15 +1299,15 @@ var _user_SetWindowPlacement *syscall.Proc
 // [SetWindowPos] function.
 //
 // [SetWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos
-func (hWnd HWND) SetWindowPos(hwndInsertAfter HWND, x, y, cx, cy int, flags co.SWP) error {
+func (hWnd HWND) SetWindowPos(hwndInsertAfter HWND, pos POINT, size SIZE, flags co.SWP) error {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_SetWindowPos, "SetWindowPos"),
 		uintptr(hWnd),
 		uintptr(hwndInsertAfter),
-		uintptr(int32(x)),
-		uintptr(int32(y)),
-		uintptr(int32(cx)),
-		uintptr(int32(cy)),
+		uintptr(pos.X),
+		uintptr(pos.Y),
+		uintptr(size.Cx),
+		uintptr(size.Cy),
 		uintptr(flags))
 	return utl.ZeroAsGetLastError(ret, err)
 }

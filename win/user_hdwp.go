@@ -40,7 +40,8 @@ var _user_BeginDeferWindowPos *syscall.Proc
 // [DeferWindowPos]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-deferwindowpos
 func (hDwp HDWP) DeferWindowPos(
 	hWnd, hwndInsertAfter HWND,
-	x, y, cx, cy int,
+	pos POINT,
+	size SIZE,
 	uFlags co.SWP,
 ) (HDWP, error) {
 	ret, _, err := syscall.SyscallN(
@@ -48,10 +49,10 @@ func (hDwp HDWP) DeferWindowPos(
 		uintptr(hDwp),
 		uintptr(hWnd),
 		uintptr(hwndInsertAfter),
-		uintptr(int32(x)),
-		uintptr(int32(y)),
-		uintptr(int32(cx)),
-		uintptr(int32(cy)),
+		uintptr(pos.X),
+		uintptr(pos.Y),
+		uintptr(size.Cx),
+		uintptr(size.Cy),
 		uintptr(uFlags))
 	if ret == 0 {
 		return HDWP(0), co.ERROR(err)

@@ -44,7 +44,8 @@ func NewMonthCalendar(parent Parent, opts *VarOptsMonthCalendar) *MonthCalendar 
 		var rcBound win.RECT
 		me.hWnd.SendMessage(co.MCM_GETMINREQRECT, // request the ideal size
 			0, win.LPARAM(unsafe.Pointer(&rcBound)))
-		me.hWnd.SetWindowPos(win.HWND(0), 0, 0, int(rcBound.Right), int(rcBound.Bottom),
+		me.hWnd.SetWindowPos(win.HWND(0), win.POINT{},
+			win.SIZE{Cx: rcBound.Right, Cy: rcBound.Bottom},
 			co.SWP_NOZORDER|co.SWP_NOMOVE)
 
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)

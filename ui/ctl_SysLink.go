@@ -73,8 +73,7 @@ func (me *SysLink) On() *SysLinkEvents {
 func (me *SysLink) SetTextAndResize(text string) *SysLink {
 	me.hWnd.SetWindowText(text)
 	boundBox, _ := calcTextBoundBox(utl.RemoveAccelAmpersands(utl.RemoveHtmlAnchor(text)))
-	me.hWnd.SetWindowPos(win.HWND(0), 0, 0,
-		int(boundBox.Cx), int(boundBox.Cy), co.SWP_NOZORDER|co.SWP_NOMOVE)
+	me.hWnd.SetWindowPos(win.HWND(0), win.POINT{}, boundBox, co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me
 }
 
