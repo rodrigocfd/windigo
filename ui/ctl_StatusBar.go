@@ -15,8 +15,18 @@ import (
 // [status bar]: https://learn.microsoft.com/en-us/windows/win32/controls/status-bars
 type StatusBar struct {
 	_BaseCtrl
-	events StatusBarEvents
-	Parts  StatusBarPartCollection // Methods to interact with the parts collection.
+	events     StatusBarEvents
+	partsData  []_StatusBarPartData
+	rightEdges []int32 // buffer to speed up ResizeToFitParent() calls
+}
+
+type _StatusBarPartData struct {
+	sizePixels   int
+	resizeWeight int
+}
+
+func (me *_StatusBarPartData) IsFixedWidth() bool {
+	return me.resizeWeight == 0
 }
 
 // Creates a new [StatusBar] with [win.CreateWindowEx].
@@ -43,14 +53,11 @@ func NewStatusBar(parent Parent, opts *VarOptsStatusBar) *StatusBar {
 
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &StatusBar{
-		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    StatusBarEvents{opts.ctrlId, &parent.base().userEvents},
-		Parts: StatusBarPartCollection{
-			partsData:  make([]_StatusBarPartData, 0, len(opts.parts)),
-			rightEdges: make([]int32, len(opts.parts)), // initially filled with zeros
-		},
+		_BaseCtrl:  newBaseCtrl(opts.ctrlId),
+		events:     StatusBarEvents{opts.ctrlId, &parent.base().userEvents},
+		partsData:  make([]_StatusBarPartData, 0, len(opts.parts)),
+		rightEdges: make([]int32, len(opts.parts)), // initially filled with zeros
 	}
-	me.Parts.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		sbStyle := co.WS_CHILD | co.WS_VISIBLE | co.WS(co.SBARS_TOOLTIPS)
@@ -64,14 +71,78 @@ func NewStatusBar(parent Parent, opts *VarOptsStatusBar) *StatusBar {
 		me.createWindow(co.WS_EX_NONE, "msctls_statusbar32", "",
 			sbStyle, win.POINT{}, win.SIZE{}, parent, false)
 
-		me.Parts.addParts(opts.parts)
+		me.addParts(opts.parts)
 	})
 
 	parent.base().beforeUserEvents.wm(co.WM_SIZE, func(p Wm) {
-		me.Parts.resizeToFitParent(WmSize{p})
+		me.resizeToFitParent(WmSize{p})
 	})
 
 	return me
+}
+
+func (me *StatusBar) addParts(parts []_StatusBarOptPart) {
+	for _, part := range parts {
+		if part.width < 0 {
+			panic("StatusBar part width cannot be negative.")
+		} else if part.flex < 0 {
+			panic("StatusBar part flex cannot be negative.")
+		}
+
+		me.partsData = append(me.partsData, _StatusBarPartData{
+			sizePixels:   part.width,
+			resizeWeight: part.flex,
+		})
+	}
+
+	hParent, _ := me.Hwnd().GetParent()
+	rc, _ := hParent.GetClientRect()
+	me.resizeToFitParent(WmSize{ // force the creation of the parts, so we can set text
+		Raw: Wm{
+			WParam: win.WPARAM(co.SIZE_REQ_RESTORED),
+			LParam: win.MAKELPARAM(uint16(rc.Right-rc.Left), 0),
+		},
+	})
+
+	for i, part := range parts {
+		me.Part(i).SetText(part.text)
+	}
+}
+
+func (me *StatusBar) resizeToFitParent(parm WmSize) {
+	if parm.Request() == co.SIZE_REQ_MINIMIZED || me.Hwnd() == 0 {
+		return
+	}
+	me.Hwnd().SendMessage(co.WM_SIZE, 0, 0) // tell status bar to fit parent
+
+	if len(me.partsData) == 0 {
+		return // no parts added, nothing else to do
+	}
+
+	cx := int(parm.ClientAreaSize().Cx) // available width
+
+	totalWeight := 0 // total weight of all variable-width parts
+	cxVariable := cx // total width to be divided among variable-width parts
+	for i := range me.partsData {
+		if me.partsData[i].IsFixedWidth() {
+			cxVariable -= me.partsData[i].sizePixels
+		} else {
+			totalWeight += me.partsData[i].resizeWeight
+		}
+	}
+
+	cxTotal := cx
+	for i := len(me.partsData) - 1; i >= 0; i-- { // fill right edges array with the right edge of each part
+		me.rightEdges[i] = int32(cxTotal)
+		if me.partsData[i].IsFixedWidth() {
+			cxTotal -= me.partsData[i].sizePixels
+		} else {
+			cxTotal -= (cxVariable / totalWeight) * me.partsData[i].resizeWeight
+		}
+	}
+	me.Hwnd().SendMessage(co.SB_SETPARTS,
+		win.WPARAM(int32(len(me.rightEdges))),
+		win.LPARAM(unsafe.Pointer(&me.rightEdges[0])))
 }
 
 // Exposes all the control notifications the can be handled.
@@ -80,6 +151,31 @@ func NewStatusBar(parent Parent, opts *VarOptsStatusBar) *StatusBar {
 func (me *StatusBar) On() *StatusBarEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
+}
+
+// Returns all parts.
+func (me *StatusBar) AllParts() []StatusBarPart {
+	nParts := me.PartCount()
+	parts := make([]StatusBarPart, 0, nParts)
+	for i := 0; i < nParts; i++ {
+		parts = append(parts, me.Part(i))
+	}
+	return parts
+}
+
+// Returns the last part.
+func (me *StatusBar) LastPart() StatusBarPart {
+	return me.Part(me.PartCount() - 1)
+}
+
+// Returns the part at the given zero-based index.
+func (me *StatusBar) Part(index int) StatusBarPart {
+	return StatusBarPart{me, int32(index)}
+}
+
+// Returns the number of parts.
+func (me *StatusBar) PartCount() int {
+	return len(me.partsData)
 }
 
 // Options for [NewStatusBar]; returned by [OptsStatusBar].

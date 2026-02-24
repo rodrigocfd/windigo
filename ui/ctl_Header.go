@@ -3,11 +3,13 @@
 package ui
 
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // Native [header] control.
@@ -16,7 +18,6 @@ import (
 type Header struct {
 	_BaseCtrl
 	events HeaderEvents
-	Items  HeaderItemCollection // Methods to interact with the items collection.
 }
 
 // Creates a new [Header] with [win.CreateWindowEx].
@@ -37,7 +38,6 @@ func NewHeader(parent Parent, opts *VarOptsHeader) *Header {
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
 		events:    HeaderEvents{opts.ctrlId, &parent.base().userEvents},
 	}
-	me.Items.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysHeader32", "",
@@ -65,7 +65,6 @@ func NewHeaderDlg(parent Parent, ctrlId uint16, layout LAY) *Header {
 		_BaseCtrl: newBaseCtrl(ctrlId),
 		events:    HeaderEvents{ctrlId, &parent.base().userEvents},
 	}
-	me.Items.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
@@ -83,7 +82,6 @@ func newHeaderFromListView(parent Parent) *Header {
 		_BaseCtrl: newBaseCtrl(ctrlId),
 		events:    HeaderEvents{ctrlId, &parent.base().userEvents},
 	}
-	me.Items.owner = me
 
 	me.defaultMessageHandlers(parent)
 	return me
@@ -116,6 +114,41 @@ func (me *Header) On() *HeaderEvents {
 	return &me.events
 }
 
+// Adds a new item with its width, using [HDM_INSERTITEM], and returns the new
+// item.
+//
+// Panics on error.
+//
+// [HDM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-insertitem
+func (me *Header) AddItem(text string, width int) HeaderItem {
+	hdi := win.HDITEM{
+		Mask: co.HDI_TEXT | co.HDI_WIDTH,
+		Cxy:  int32(width),
+	}
+
+	var wText wstr.BufEncoder
+	hdi.SetPszText(wText.Slice(text))
+
+	newIdxRet, err := me.Hwnd().SendMessage(co.HDM_INSERTITEM,
+		0xffff, win.LPARAM(unsafe.Pointer(&hdi)))
+	newIdx := int(newIdxRet)
+	if err != nil || newIdx == -1 {
+		panic(fmt.Sprintf("HDM_INSERTITEM \"%s\" failed.", text))
+	}
+
+	return me.Item(newIdx)
+}
+
+// Returns all items.
+func (me *Header) AllItems() []HeaderItem {
+	nItems := me.ItemCount()
+	items := make([]HeaderItem, 0, nItems)
+	for i := 0; i < nItems; i++ {
+		items = append(items, me.Item(i))
+	}
+	return items
+}
+
 // Retrieves the given image list with [HDM_GETIMAGELIST]. The image lists are
 // lazy-initialized: the first time you call this method for a given image list,
 // it will be created and assigned with [HDM_SETIMAGELIST].
@@ -132,6 +165,71 @@ func (me *Header) ImageList(which co.HDSIL) win.HIMAGELIST {
 		me.hWnd.SendMessage(co.HDM_SETIMAGELIST, win.WPARAM(which), win.LPARAM(hImg))
 	}
 	return hImg
+}
+
+// Returns the item at the given index.
+//
+// A negative index will give you an invalid column.
+func (me *Header) Item(index int) HeaderItem {
+	return HeaderItem{me, int32(index)}
+}
+
+// Sends [HDM_ORDERTOINDEX] to retrieve the item at the given order.
+//
+// [HDM_ORDERTOINDEX]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-ordertoindex
+func (me *Header) ItemByOrder(order int) HeaderItem {
+	idx, _ := me.Hwnd().SendMessage(co.HDM_ORDERTOINDEX, win.WPARAM(int32(order)), 0)
+	return me.Item(int(idx))
+}
+
+// Retrieves the number of items with [HDM_GETITEMCOUNT].
+//
+// Panics on error.
+//
+// [HDM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getitemcount
+func (me *Header) ItemCount() int {
+	countRet, err := me.Hwnd().SendMessage(co.HDM_GETITEMCOUNT, 0, 0)
+	count := int(countRet)
+	if err != nil || count == -1 {
+		panic("HDM_GETITEMCOUNT failed.")
+	}
+	return count
+}
+
+// Returns the last item.
+func (me *Header) LastItem() HeaderItem {
+	return me.Item(me.ItemCount() - 1)
+}
+
+// Sends [HDM_GETORDERARRAY] to retrieve the items in the current order.
+//
+// [HDM_GETORDERARRAY]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getorderarray
+func (me *Header) OrderedItems() []HeaderItem {
+	nItems := me.ItemCount()
+	indexes := make([]int32, nItems)
+
+	me.Hwnd().SendMessage(co.HDM_GETORDERARRAY,
+		win.WPARAM(int32(nItems)), win.LPARAM(unsafe.Pointer(&indexes[0])))
+
+	items := make([]HeaderItem, 0, nItems)
+	for _, index := range indexes {
+		items = append(items, me.Item(int(index)))
+	}
+	return items
+}
+
+// Sends a [HDM_SETORDERARRAY] to reorder the items according to the given list,
+// which should contain the zero-based indexes in the new desired order.
+//
+// [HDM_SETORDERARRAY]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-setorderarray
+func (me *Header) ReorderItems(indexes []int) {
+	buf := make([]int32, 0, len(indexes))
+	for _, index := range indexes {
+		buf = append(buf, int32(index))
+	}
+
+	me.Hwnd().SendMessage(co.HDM_SETORDERARRAY,
+		win.WPARAM(int32(len(buf))), win.LPARAM(unsafe.Pointer(&buf[0])))
 }
 
 // Options for [NewHeader]; returned by [OptsHeader].

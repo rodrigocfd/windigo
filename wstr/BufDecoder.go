@@ -34,7 +34,7 @@ func (me *BufDecoder) Alloc(numChars int) {
 	if numChars > BUF_MAX {
 		me.heap = make([]uint16, numChars)
 	} else {
-		me.heap = nil
+		me.heap = nil // will use stack
 	}
 	me.sz = numChars
 }

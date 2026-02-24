@@ -153,6 +153,8 @@ func (me ListViewItem) IconIndex() int {
 }
 
 // Returns the zero-based index of the item.
+//
+// A negative index means an invalid item.
 func (me ListViewItem) Index() int {
 	return int(me.index)
 }
@@ -196,7 +198,7 @@ func (me ListViewItem) ItemRect(portion co.LVIR) win.RECT {
 
 // Returns the next item, if any.
 func (me ListViewItem) Next() (ListViewItem, bool) {
-	count := me.owner.Items.Count()
+	count := me.owner.ItemCount()
 	if me.index == int32(count)-1 { // we are the last one
 		return ListViewItem{}, false
 	}

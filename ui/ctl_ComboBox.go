@@ -3,8 +3,12 @@
 package ui
 
 import (
+	"fmt"
+
 	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // Native [combo box] control.
@@ -13,7 +17,6 @@ import (
 type ComboBox struct {
 	_BaseCtrl
 	events ComboBoxEvents
-	Items  ComboBoxItemCollection // Methods to interact with the items collection.
 }
 
 // Creates a new [ComboBox] with [win.CreateWindowEx].
@@ -31,7 +34,7 @@ type ComboBox struct {
 //		ui.OptsComboBox().
 //			Position(ui.Dpi(10, 10)).
 //			Texts("Avocado", "Banana", "Pineapple").
-//			Selected(2),
+//			Select(2),
 //	)
 //	wnd.RunAsMain()
 func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
@@ -40,15 +43,14 @@ func NewComboBox(parent Parent, opts *VarOptsComboBox) *ComboBox {
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
 		events:    ComboBoxEvents{opts.ctrlId, &parent.base().userEvents},
 	}
-	me.Items.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		sz := win.SIZE{Cx: int32(opts.width)}
 		me.createWindow(opts.wndExStyle, "COMBOBOX", "",
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, sz, parent, true)
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
-		me.Items.Add(opts.texts...)
-		me.Items.Select(opts.selected)
+		me.AddItem(opts.texts...)
+		me.SelectIndex(opts.selected)
 	})
 
 	return me
@@ -77,7 +79,6 @@ func NewComboBoxDlg(parent Parent, ctrlId uint16, layout LAY) *ComboBox {
 		_BaseCtrl: newBaseCtrl(ctrlId),
 		events:    ComboBoxEvents{ctrlId, &parent.base().userEvents},
 	}
-	me.Items.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
@@ -95,10 +96,116 @@ func (me *ComboBox) On() *ComboBoxEvents {
 	return &me.events
 }
 
+// Adds one or more texts using [CB_ADDSTRING].
+//
+// Panics on error.
+//
+// [CB_ADDSTRING]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-addstring
+func (me *ComboBox) AddItem(texts ...string) {
+	var wText wstr.BufEncoder
+	for _, text := range texts {
+		ret, _ := me.Hwnd().SendMessage(co.CB_ADDSTRING,
+			0, win.LPARAM(wText.AllowEmpty(text)))
+
+		if int32(ret) == utl.CB_ERR || int32(ret) == utl.CB_ERRSPACE {
+			panic("CB_ADDSTRING failed.")
+		}
+	}
+}
+
+// Retrieves all texts with [CB_GETLBTEXT].
+//
+// [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
+func (me *ComboBox) AllItems() []string {
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
+
+	nItems := me.ItemCount()
+	items := make([]string, 0, nItems)
+
+	for i := 0; i < nItems; i++ {
+		nChars, _ := me.Hwnd().SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(int32(i)), 0)
+		wBuf.AllocAndZero(int(nChars) + 1)
+
+		me.Hwnd().SendMessage(co.CB_GETLBTEXT,
+			win.WPARAM(int32(i)), win.LPARAM(wBuf.Ptr()))
+
+		items = append(items, wBuf.String())
+	}
+
+	return items
+}
+
 // Returns the text currently on display.
-func (me *ComboBox) Text() string {
+//
+// If the ComboBox doesn't have the co.CBS_DROPDOWNLIST style, the user can type
+// freely, so this text may not be on the list.
+func (me *ComboBox) CurrentText() string {
 	txt, _ := me.hWnd.GetWindowText()
 	return txt
+}
+
+// Deletes all texts with [CB_RESETCONTENT].
+//
+// [CB_RESETCONTENT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-resetcontent
+func (me *ComboBox) DeleteAllItems() {
+	me.Hwnd().SendMessage(co.CB_RESETCONTENT, 0, 0)
+}
+
+// Returns the text at the given zero-based index with [CB_GETLBTEXT].
+//
+// Panics if the index is not valid.
+//
+// [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
+func (me *ComboBox) Item(index int) string {
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
+
+	nChars, _ := me.Hwnd().SendMessage(co.CB_GETLBTEXTLEN, win.WPARAM(int32(index)), 0)
+	if int32(nChars) == utl.CB_ERR {
+		panic(fmt.Sprintf("Invalid ComboBox index: %d", index))
+	}
+	wBuf.Alloc(int(nChars) + 1)
+
+	me.Hwnd().SendMessage(co.CB_GETLBTEXT,
+		win.WPARAM(int32(index)), win.LPARAM(wBuf.Ptr()))
+	return wBuf.String()
+}
+
+// Retrieves the number of items with [CB_GETCOUNT].
+//
+// [CB_GETCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getcount
+func (me *ComboBox) ItemCount() int {
+	n, _ := me.Hwnd().SendMessage(co.CB_GETCOUNT, 0, 0)
+	return int(n)
+}
+
+// Returns the last text with [CB_GETLBTEXT].
+//
+// Panics if empty.
+//
+// [CB_GETLBTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getlbtext
+func (me *ComboBox) LastItem() string {
+	return me.Item(int(me.ItemCount()) - 1)
+}
+
+// Selects the text with the given zero-based index with [CB_SETCURSEL].
+//
+// If index is -1, selection is cleared.
+//
+// [CB_SETCURSEL]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-setcursel
+func (me *ComboBox) SelectIndex(index int) {
+	me.Hwnd().SendMessage(co.CB_SETCURSEL, win.WPARAM(int32(index)), 0)
+}
+
+// Retrieves the selected zero-based index with [CB_GETCURSEL].
+//
+// If no item is selected, returns -1.
+//
+// [CB_GETCURSEL]: https://learn.microsoft.com/en-us/windows/win32/controls/cb-getcursel
+func (me *ComboBox) SelectedIndex() int {
+	n, _ := me.Hwnd().SendMessage(co.CB_GETCURSEL, 0, 0)
+	return int(n)
 }
 
 // Options for [NewComboBox]; returned by [OptsComboBox].
@@ -173,10 +280,10 @@ func (o *VarOptsComboBox) WndExStyle(s co.WS_EX) *VarOptsComboBox { o.wndExStyle
 // Defaults to none.
 func (o *VarOptsComboBox) Texts(t ...string) *VarOptsComboBox { o.texts = t; return o }
 
-// Zero-based index of the item initially selected.
+// Selects the item at the given zero-based index.
 //
 // Defaults to -1 (none).
-func (o *VarOptsComboBox) Selected(i int) *VarOptsComboBox { o.selected = i; return o }
+func (o *VarOptsComboBox) Select(i int) *VarOptsComboBox { o.selected = i; return o }
 
 // Native [combo box] control events.
 //

@@ -4,11 +4,14 @@ package ui
 
 import (
 	"fmt"
+	"runtime"
+	"syscall"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // Native [list view] control.
@@ -20,8 +23,6 @@ type ListView struct {
 	hContextMenu win.HMENU
 	itemsData    map[int]interface{} // data associated with each item; replaces LPARAM approach
 	header       *Header
-	Cols         ListViewColCollection  // Methods to interact with the columns collection.
-	Items        ListViewItemCollection // Methods to interact with the items collection.
 }
 
 // Creates a new [ListView] with [win.CreateWindowEx].
@@ -34,8 +35,6 @@ func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 		itemsData:    make(map[int]interface{}),
 		header:       newHeaderFromListView(parent),
 	}
-	me.Cols.owner = me
-	me.Items.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysListView32", "",
@@ -72,8 +71,6 @@ func NewListViewDlg(parent Parent, ctrlId uint16, contextMenuId uint16, layout L
 		itemsData:    make(map[int]interface{}),
 		header:       newHeaderFromListView(parent),
 	}
-	me.Cols.owner = me
-	me.Items.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
@@ -111,7 +108,7 @@ func (me *ListView) defaultMessageHandlers(parent Parent) {
 		hasShift := (win.GetAsyncKeyState(co.VK_SHIFT) & 0x8000) != 0
 
 		if hasCtrl && nmk.WVKey == 'A' { // Ctrl+A pressed?
-			me.Items.SelectAll(true)
+			me.SelectAllItems(true)
 		} else if nmk.WVKey == co.VK_APPS { // context menu key
 			me.showContextMenu(false, hasCtrl, hasShift)
 		}
@@ -127,7 +124,7 @@ func (me *ListView) defaultMessageHandlers(parent Parent) {
 
 	parent.base().afterUserEvents.wmNotify(me.ctrlId, co.LVN_DELETEITEM, func(p unsafe.Pointer) {
 		nmlv := (*win.NMLISTVIEW)(p)
-		item := me.Items.Get(int(nmlv.IItem))
+		item := me.Item(int(nmlv.IItem))
 		delete(me.itemsData, item.Uid())
 	})
 
@@ -149,8 +146,8 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		menuPos, _ = win.GetCursorPos()    // relative to screen
 		me.hWnd.ScreenToClientPt(&menuPos) // now relative to list view
 
-		if clickedItem, hasClickedItem := me.Items.HitTest(menuPos); !hasClickedItem {
-			me.Items.SelectAll(false)
+		if clickedItem, hasClickedItem := me.HitTest(menuPos); !hasClickedItem {
+			me.SelectAllItems(false)
 		} else {
 			if !hasCtrl && !hasShift {
 				clickedItem.Focus()
@@ -159,7 +156,7 @@ func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
 		me.Focus() // because a right-click won't set the focus by itself
 
 	} else { // usually fired with the context keyboard key
-		if focusItem, hasFocused := me.Items.Focused(); hasFocused && focusItem.IsVisible() {
+		if focusItem, hasFocused := me.FocusedItem(); hasFocused && focusItem.IsVisible() {
 			rcItem := focusItem.ItemRect(co.LVIR_BOUNDS)
 			menuPos.X = rcItem.Left + 16 // arbitrary
 			menuPos.Y = rcItem.Top + (rcItem.Bottom-rcItem.Top)/2
@@ -191,14 +188,233 @@ func (me *ListView) On() *ListViewEvents {
 	return &me.events
 }
 
+// Adds a column with its width, using [LVM_INSERTCOLUMN], and returns the new
+// column.
+//
+// Panics on error.
+//
+// Example:
+//
+//	var list ui.ListView // initialized somewhere
+//
+//	list.AddCol("Title", ui.DpiX(80))
+//
+// [LVM_INSERTCOLUMN]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertcolumn
+func (me *ListView) AddCol(title string, width int) ListViewCol {
+	lvc := win.LVCOLUMN{
+		Mask: co.LVCF_TEXT | co.LVCF_WIDTH,
+		Cx:   int32(width),
+	}
+
+	var wTitle wstr.BufEncoder
+	lvc.SetPszText(wTitle.Slice(title))
+
+	newIdxRet, err := me.Hwnd().SendMessage(co.LVM_INSERTCOLUMN,
+		0xffff, win.LPARAM(unsafe.Pointer(&lvc)))
+	newIdx := int(newIdxRet)
+	if err != nil || newIdx == -1 {
+		panic(fmt.Sprintf("LVM_INSERTCOLUMN \"%s\" failed.", title))
+	}
+
+	return me.Col(newIdx)
+}
+
+// Adds one item with [LVM_INSERTITEM], then sets the texts under each
+// subsequent column, returning the new item.
+//
+// Panics if no text is informed; panics on error.
+//
+// [LVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertitem
+func (me *ListView) AddItem(texts ...string) ListViewItem {
+	return me.AddItemWithIcon(-1, texts...)
+}
+
+// Adds one item with [LVM_INSERTITEM], then sets the texts under each
+// subsequent column, returning the new item.
+//
+// The iconIndex is the zero-based index of the icon previously inserted into
+// the control's image list, or -1 for no icon.
+//
+// Panics if no text is informed; panics on error.
+//
+// [LVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertitem
+func (me *ListView) AddItemWithIcon(iconIndex int, texts ...string) ListViewItem {
+	if len(texts) == 0 {
+		panic("You must inform at least 1 text when adding a ListView item.")
+	}
+
+	mask := co.LVIF_TEXT
+	if iconIndex != -1 {
+		mask |= co.LVIF_IMAGE
+	}
+
+	lvi := win.LVITEM{
+		Mask:   mask,
+		IItem:  0x0fff_ffff, // insert as last one
+		IImage: int32(iconIndex),
+	}
+
+	var wText wstr.BufEncoder
+	lvi.SetPszText(wText.Slice(texts[0]))
+
+	newIdxRet, err := me.Hwnd().SendMessage(co.LVM_INSERTITEM, // first column is inserted right away
+		0, win.LPARAM(unsafe.Pointer(&lvi)))
+	newIdx := int(newIdxRet)
+	if err != nil || newIdx == -1 {
+		panic(fmt.Sprintf("LVM_INSERTITEM col %d, \"%s\" failed.", 0, texts[0]))
+	}
+
+	for i := 1; i < len(texts); i++ { // each subsequent column
+		lvi.ISubItem = int32(i)
+		lvi.SetPszText(wText.Slice(texts[i]))
+
+		ret, err := me.Hwnd().SendMessage(co.LVM_SETITEMTEXT,
+			win.WPARAM(int32(newIdx)), win.LPARAM(unsafe.Pointer(&lvi)))
+		if err != nil || ret == 0 {
+			panic(fmt.Sprintf("LVM_SETITEMTEXT col %d, \"%s\" failed.", i, texts[i]))
+		}
+	}
+
+	return ListViewItem{me, int32(newIdx)}
+}
+
+// Returns all columns.
+func (me *ListView) AllCols() []ListViewCol {
+	nCols := me.ColCount()
+	cols := make([]ListViewCol, 0, nCols)
+	for i := 0; i < nCols; i++ {
+		cols = append(cols, me.Col(i))
+	}
+	return cols
+}
+
+// Returns all items.
+func (me *ListView) AllItems() []ListViewItem {
+	nItems := me.ItemCount()
+	items := make([]ListViewItem, 0, nItems)
+	for i := 0; i < nItems; i++ {
+		items = append(items, me.Item(i))
+	}
+	return items
+}
+
+// Returns the column at the given index.
+//
+// A negative index will give you an invalid column.
+func (me *ListView) Col(index int) ListViewCol {
+	return ListViewCol{me, int32(index)}
+}
+
+// Retrieves the number of columns with [HDM_GETITEMCOUNT].
+//
+// Panics if the list view has no header.
+//
+// [HDM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-getitemcount
+func (me *ListView) ColCount() int {
+	if me.Header() == nil {
+		panic("This ListView has no header.")
+	}
+	return me.Header().ItemCount()
+}
+
 // Returns the context menu associated to this control, if any.
 func (me *ListView) ContextMenu() win.HMENU {
 	return me.hContextMenu
 }
 
+// Deletes all items at once with [LVM_DELETEALLITEMS].
+//
+// [LVM_DELETEALLITEMS]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-deleteallitems
+func (me *ListView) DeleteAllItems() {
+	me.Hwnd().SendMessage(co.LVM_DELETEALLITEMS, 0, 0)
+}
+
+// Deletes all selected items at once by searching them with [LVM_GETNEXTITEM],
+// then calling [LVM_DELETEITEM].
+//
+// Panics on error.
+//
+// [LVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getnextitem
+// [LVM_DELETEITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-deleteitem
+func (me *ListView) DeleteSelectedItems() {
+	for {
+		idxBaseSearch := -1 // always search the first one
+		idxRet, _ := me.Hwnd().SendMessage(co.LVM_GETNEXTITEM,
+			win.WPARAM(int32(idxBaseSearch)), win.LPARAM(co.LVNI_SELECTED))
+		idx := int(idxRet)
+		if idx == -1 {
+			break
+		}
+
+		delRet, err := me.Hwnd().SendMessage(co.LVM_DELETEITEM,
+			win.WPARAM(int32(idx)), 0)
+		if err != nil || delRet == 0 {
+			panic(fmt.Sprintf("LVM_DELETEITEM %d failed.", idx))
+		}
+	}
+}
+
+// Calls [LVM_FINDITEM] to search for the first item with the given exact text,
+// case-insensitive.
+//
+// [LVM_FINDITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-finditem
+func (me *ListView) FindItem(text string) (ListViewItem, bool) {
+	var wText wstr.BufEncoder
+
+	lvfi := win.LVFINDINFO{
+		Flags: co.LVFI_STRING,
+		Psz:   (*uint16)(wText.AllowEmpty(text)),
+	}
+
+	idxBaseSearch := -1
+	idxRet, _ := me.Hwnd().SendMessage(co.LVM_FINDITEM,
+		win.WPARAM(int32(idxBaseSearch)), win.LPARAM(unsafe.Pointer(&lvfi)))
+	idx := int(idxRet)
+	if idx == -1 {
+		return ListViewItem{}, false // not found
+	}
+
+	return me.Item(idx), true
+}
+
+// Retrieves the focused item with [LVM_GETNEXTITEM], if any.
+//
+// [LVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getnextitem
+func (me *ListView) FocusedItem() (ListViewItem, bool) {
+	idxBaseSearch := -1
+	idxRet, _ := me.Hwnd().SendMessage(co.LVM_GETNEXTITEM,
+		win.WPARAM(int32(idxBaseSearch)), win.LPARAM(co.LVNI_FOCUSED))
+	idx := int(idxRet)
+	if idx == -1 {
+		return ListViewItem{}, false
+	}
+
+	return me.Item(idx), true
+}
+
 // Returns the embedded [Header] of the list view, or nil if none.
 func (me *ListView) Header() *Header {
 	return me.header
+}
+
+// Retrieves the item below the given coordinates with [LVM_HITTEST], if any.
+//
+// The coordinates must be relative to the ListView.
+//
+// [LVM_HITTEST]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-hittest
+func (me *ListView) HitTest(pos win.POINT) (ListViewItem, bool) {
+	lvhti := win.LVHITTESTINFO{
+		Pt: pos,
+	}
+
+	idxBaseSearch := -1 // Vista: retrieve iGroup and iSubItem
+	me.Hwnd().SendMessage(co.LVM_HITTEST,
+		win.WPARAM(int32(idxBaseSearch)), win.LPARAM(unsafe.Pointer(&lvhti)))
+
+	if lvhti.IItem == -1 {
+		return me.Item(-1), false
+	}
+	return me.Item(int(lvhti.IItem)), true
 }
 
 // Retrieves the given image list with [LVM_GETIMAGELIST]. The image lists are
@@ -223,6 +439,150 @@ func (me *ListView) ImageList(which co.LVSIL) win.HIMAGELIST {
 		me.hWnd.SendMessage(co.LVM_SETIMAGELIST, win.WPARAM(which), win.LPARAM(hImg))
 	}
 	return hImg
+}
+
+// Returns the item at the given index.
+//
+// A negative index will give you an invalid item.
+func (me *ListView) Item(index int) ListViewItem {
+	return ListViewItem{me, int32(index)}
+}
+
+// Calls [LVM_MAPIDTOINDEX] to return the item associated to the unique ID.
+//
+// [LVM_MAPIDTOINDEX]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-mapidtoindex
+func (me *ListView) ItemByUid(uid int) ListViewItem {
+	idx, _ := me.Hwnd().SendMessage(co.LVM_MAPIDTOINDEX, win.WPARAM(int32(uid)), 0)
+	return me.Item(int(idx))
+}
+
+// Retrieves the number of items with [LVM_GETITEMCOUNT].
+//
+// [LVM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitemcount
+func (me *ListView) ItemCount() int {
+	count, _ := me.Hwnd().SendMessage(co.LVM_GETITEMCOUNT, 0, 0)
+	return int(count)
+}
+
+// Returns the last column.
+func (me *ListView) LastCol() ListViewCol {
+	return me.Col(me.ColCount() - 1)
+}
+
+// Returns the last item.
+func (me *ListView) LastItem() ListViewItem {
+	return me.Item(me.ItemCount() - 1)
+}
+
+// Selects or deselects all items at once with [LVM_SETITEMSTATE].
+//
+// Panics on error.
+//
+// [LVM_SETITEMSTATE]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setitemstate
+func (me *ListView) SelectAllItems(doSelect bool) {
+	stylesRet, _ := me.Hwnd().GetWindowLongPtr(co.GWLP_STYLE)
+	styles := co.LVS(stylesRet)
+	if (styles & co.LVS_SINGLESEL) != 0 {
+		return // single-sel list views cannot have all items selected
+	}
+
+	state := co.LVIS_NONE
+	if doSelect {
+		state = co.LVIS_SELECTED
+	}
+
+	lvi := win.LVITEM{
+		State:     state,
+		StateMask: co.LVIS_SELECTED,
+	}
+
+	idxBaseSearch := -1
+	ret, err := me.Hwnd().SendMessage(co.LVM_SETITEMSTATE,
+		win.WPARAM(int32(idxBaseSearch)), win.LPARAM(unsafe.Pointer(&lvi)))
+	if err != nil || ret == 0 {
+		panic("LVM_SETITEMSTATE failed.")
+	}
+}
+
+// Retrieves the number of selected items with [LVM_GETSELECTEDCOUNT].
+//
+// [LVM_GETSELECTEDCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getselectedcount
+func (me *ListView) SelectedItemCount() int {
+	ret, _ := me.Hwnd().SendMessage(co.LVM_GETSELECTEDCOUNT, 0, 0)
+	return int(ret)
+}
+
+// Returns the selected items with [LVM_GETNEXTITEM].
+//
+// [LVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getnextitem
+func (me *ListView) SelectedItems() []ListViewItem {
+	nSel := me.SelectedItemCount()
+	items := make([]ListViewItem, 0, nSel)
+
+	idx := -1
+	for {
+		idxRet, _ := me.Hwnd().SendMessage(co.LVM_GETNEXTITEM,
+			win.WPARAM(int32(idx)), win.LPARAM(co.LVNI_SELECTED))
+		idx = int(idxRet)
+		if idx == -1 {
+			break
+		}
+		items = append(items, me.Item(idx))
+	}
+
+	return items
+}
+
+// Sorts the items according to the callback with [LVM_SORTITEMSEX].
+//
+// Example:
+//
+//	var lv ui.ListView // initialized somewhere
+//
+//	lv.SortItems(func(itemA, itemB ui.ListViewItem) int {
+//		return wstr.Cmp(itemA.Text(0), itemB.Text(0))
+//	})
+//
+// [LVM_SORTITEMSEX]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-sortitemsex
+func (me *ListView) SortItems(fun func(a, b ListViewItem) int) {
+	listViewSortCallback()
+	pPack := &_ListViewSortPack{me, fun}
+	me.Hwnd().SendMessage(co.LVM_SORTITEMSEX,
+		win.WPARAM(unsafe.Pointer(pPack)), win.LPARAM(listViewSortCallback()))
+	runtime.KeepAlive(pPack)
+}
+
+type _ListViewSortPack struct {
+	lv *ListView
+	f  func(a, b ListViewItem) int
+}
+
+var _listViewSortCallback uintptr
+
+func listViewSortCallback() uintptr {
+	if _listViewSortCallback == 0 {
+		_listViewSortCallback = syscall.NewCallback(
+			func(idxA, idxB, lParam uintptr) uintptr {
+				pPack := (*_ListViewSortPack)(unsafe.Pointer(lParam))
+				itemA := pPack.lv.Item(int(idxA))
+				itemB := pPack.lv.Item(int(idxB))
+				return uintptr(pPack.f(itemA, itemB))
+			},
+		)
+	}
+	return _listViewSortCallback
+}
+
+// Retrieves the topmost visible item with [LVM_GETTOPINDEX], if any.
+//
+// [LVM_GETTOPINDEX]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-gettopindex
+func (me *ListView) TopmostVisible() (ListViewItem, bool) {
+	idxRet, _ := me.Hwnd().SendMessage(co.LVM_GETTOPINDEX, 0, 0)
+	idx := int(idxRet)
+	if idx == -1 {
+		return me.Item(-1), false
+	}
+	return me.Item(idx), true
 }
 
 // Scrolls the control with [LVM_SCROLL].

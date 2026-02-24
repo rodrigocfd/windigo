@@ -93,7 +93,7 @@ func (me *BufEncoder) Slice(s string) []uint16 {
 		EncodeToBuf(heap, s)
 		return heap
 	} else {
-		EncodeToBuf(me.stack[:], s)
+		EncodeToBuf(me.stack[:], s) // use stack
 		return me.stack[:numWords]
 	}
 }

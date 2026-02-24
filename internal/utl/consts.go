@@ -43,6 +43,7 @@ const (
 // Internal constants for user.
 const (
 	CB_ERR             = int32(-1)
+	CB_ERRSPACE        = int32(-2)
 	CCHDEVICENAME      = 32
 	CCHILDREN_TITLEBAR = 5
 	WC_DIALOG          = uint16(0x8002)

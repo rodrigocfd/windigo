@@ -17,7 +17,6 @@ type TreeView struct {
 	_BaseCtrl
 	events    TreeViewEvents
 	itemsData map[win.HTREEITEM]interface{} // data associated with each item; replaces LPARAM approach
-	Items     TreeViewItemCollection        // Methods to interact with the items collection.
 }
 
 // Creates a new [TreeView] with [win.CreateWindowEx].
@@ -43,7 +42,6 @@ func NewTreeView(parent Parent, opts *VarOptsTreeView) *TreeView {
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
 		events:    TreeViewEvents{opts.ctrlId, &parent.base().userEvents},
 	}
-	me.Items.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysTreeView32", "",
@@ -81,7 +79,6 @@ func NewTreeViewDlg(parent Parent, ctrlId uint16, layout LAY) *TreeView {
 		_BaseCtrl: newBaseCtrl(ctrlId),
 		events:    TreeViewEvents{ctrlId, &parent.base().userEvents},
 	}
-	me.Items.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
@@ -118,6 +115,42 @@ func (me *TreeView) On() *TreeViewEvents {
 	return &me.events
 }
 
+// Adds a new root item with [TVM_INSERTITEM], returning the new item.
+//
+// The iconIndex is the zero-based index of the icon previously inserted into
+// the control's image list, or -1 for no icon.
+//
+// [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
+func (me *TreeView) AddRoot(text string, iconIndex int) TreeViewItem {
+	return me.Item(win.HTREEITEM(0)).
+		AddChild(text, iconIndex)
+}
+
+// Deletes all items at once with [TVM_DELETEITEM].
+//
+// Panics on error.
+//
+// [TVM_DELETEITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-deleteitem
+func (me *TreeView) DeleteAllItems() {
+	ret, err := me.Hwnd().SendMessage(co.TVM_DELETEITEM,
+		0, win.LPARAM(win.HTREEITEM(0)))
+	if ret == 0 || err != nil {
+		panic("TVM_DELETEITEM for all items failed.")
+	}
+}
+
+// Retrieves the first visible item, if any, with [TVM_GETNEXTITEM].
+//
+// [TVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getnextitem
+func (me *TreeView) FirstVisibleItem() (TreeViewItem, bool) {
+	hVisible, _ := me.Hwnd().SendMessage(co.TVM_GETNEXTITEM,
+		win.WPARAM(co.TVGN_FIRSTVISIBLE), win.LPARAM(win.HTREEITEM(0)))
+	if hVisible != 0 {
+		return TreeViewItem{me, win.HTREEITEM(hVisible)}, true
+	}
+	return TreeViewItem{}, false
+}
+
 // Retrieves the given image list with [TVM_GETIMAGELIST]. The image lists are
 // lazy-initialized: the first time you call this method for a given image list,
 // it will be created and assigned with [TVM_SETIMAGELIST].
@@ -134,6 +167,39 @@ func (me *TreeView) ImageList(which co.TVSIL) win.HIMAGELIST {
 		me.hWnd.SendMessage(co.TVM_SETIMAGELIST, win.WPARAM(which), win.LPARAM(hImg))
 	}
 	return hImg
+}
+
+// Returns the item with the given handle.
+func (me *TreeView) Item(hItem win.HTREEITEM) TreeViewItem {
+	return TreeViewItem{me, hItem}
+}
+
+// Retrieves the total number of items in the control, with [TVM_GETCOUNT].
+//
+// [TVM_GETCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getcount
+func (me *TreeView) ItemCount() int {
+	c, _ := me.Hwnd().SendMessage(co.TVM_GETCOUNT, 0, 0)
+	return int(c)
+}
+
+// Returns the root items with [TVM_GETNEXTITEM].
+//
+// [TVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getnextitem
+func (me *TreeView) Roots() []TreeViewItem {
+	roof := TreeViewItem{me, win.HTREEITEM(0)}
+	return roof.Children()
+}
+
+// Retrieves the selected item, if any, with [TVM_GETNEXTITEM].
+//
+// [TVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getnextitem
+func (me *TreeView) SelectedItem() (TreeViewItem, bool) {
+	hItem, _ := me.Hwnd().SendMessage(co.TVM_GETNEXTITEM,
+		win.WPARAM(co.TVGN_CARET), win.LPARAM(win.HTREEITEM(0)))
+	if hItem != 0 {
+		return TreeViewItem{me, win.HTREEITEM(hItem)}, true
+	}
+	return TreeViewItem{}, false
 }
 
 // Adds or removes extended styles with [TVM_SETEXTENDEDSTYLE].

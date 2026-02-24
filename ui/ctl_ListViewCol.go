@@ -23,16 +23,18 @@ type ListViewCol struct {
 //
 // [LVM_GETITEMTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitemtext
 func (me ListViewCol) AllTexts() []string {
-	nItems := me.owner.Items.Count()
+	nItems := me.owner.ItemCount()
 	texts := make([]string, 0, nItems)
 	for i := 0; i < nItems; i++ {
-		item := me.owner.Items.Get(i)
+		item := me.owner.Item(i)
 		texts = append(texts, item.Text(me.Index()))
 	}
 	return texts
 }
 
 // Returns the zero-based index of the column.
+//
+// A negative index means an invalid item.
 func (me ListViewCol) Index() int {
 	return int(me.index)
 }
@@ -52,7 +54,7 @@ func (me ListViewCol) Justification() co.HDF {
 		panic("This ListView has no header.")
 	}
 
-	return me.owner.header.Items.Get(int(me.index)).Justification()
+	return me.owner.header.Item(int(me.index)).Justification()
 }
 
 // Sets the text justification with [LVM_GETHEADER] and [HDM_SETITEM].
@@ -73,7 +75,7 @@ func (me ListViewCol) SetJustification(hdf co.HDF) ListViewCol {
 		panic("This ListView has no header.")
 	}
 
-	me.owner.header.Items.Get(int(me.index)).SetJustification(hdf)
+	me.owner.header.Item(int(me.index)).SetJustification(hdf)
 	return me
 }
 
@@ -83,7 +85,7 @@ func (me ListViewCol) SetJustification(hdf co.HDF) ListViewCol {
 // [LVM_GETNEXTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getnextitem
 // [LVM_GETITEMTEXT]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitemtext
 func (me ListViewCol) SelectedTexts() []string {
-	nSel := me.owner.Items.SelectedCount()
+	nSel := me.owner.SelectedItemCount()
 	texts := make([]string, 0, nSel)
 
 	idx := -1
@@ -95,7 +97,7 @@ func (me ListViewCol) SelectedTexts() []string {
 			break
 		}
 
-		item := me.owner.Items.Get(idx)
+		item := me.owner.Item(idx)
 		texts = append(texts, item.Text(me.Index()))
 	}
 
@@ -120,7 +122,7 @@ func (me ListViewCol) SetSortArrow(hdf co.HDF) ListViewCol {
 		panic("This ListView has no header.")
 	}
 
-	me.owner.header.Items.Get(int(me.index)).SetSortArrow(hdf)
+	me.owner.header.Item(int(me.index)).SetSortArrow(hdf)
 	return me
 }
 
@@ -174,12 +176,12 @@ func (me ListViewCol) SetWidth(width int) ListViewCol {
 //
 // [LVM_SETCOLUMNWIDTH]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setcolumnwidth
 func (me ListViewCol) SetWidthToFill() ListViewCol {
-	numCols := me.owner.Cols.Count()
+	numCols := me.owner.ColCount()
 	cxUsed := 0
 
 	for i := 0; i < numCols; i++ {
 		if i != int(me.index) {
-			cxUsed += me.owner.Cols.Get(i).Width() // retrieve cx of each column, but us
+			cxUsed += me.owner.Col(i).Width() // retrieve cx of each column, but us
 		}
 	}
 
@@ -210,7 +212,7 @@ func (me ListViewCol) SortArrow() co.HDF {
 	if me.owner.Header() == nil {
 		panic("This ListView has no header.")
 	}
-	return me.owner.header.Items.Get(int(me.index)).SortArrow()
+	return me.owner.header.Item(int(me.index)).SortArrow()
 }
 
 // Retrieves the title of the column with [LVM_GETCOLUMN].

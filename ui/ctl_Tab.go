@@ -3,11 +3,13 @@
 package ui
 
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // Native [tab] control.
@@ -21,7 +23,6 @@ type Tab struct {
 	_BaseCtrl
 	events   TabEvents
 	children []*Control
-	Items    TabItemCollection // Methods to interact with the items collection.
 }
 
 // Creates a new [Tab] with [win.CreateWindowEx].
@@ -61,7 +62,6 @@ func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 		events:    TabEvents{opts.ctrlId, &parent.base().userEvents},
 		children:  make([]*Control, 0, len(opts.titles)),
 	}
-	me.Items.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "SysTabControl32", "",
@@ -70,7 +70,7 @@ func NewTab(parent Parent, opts *VarOptsTab) *Tab {
 			me.SetExtendedStyle(true, opts.ctrlExStyle)
 		}
 		for _, title := range opts.titles {
-			me.Items.add(title) // add each tab item
+			me.addTab(title) // add each tab item
 		}
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
 	})
@@ -111,12 +111,11 @@ func NewTabDlg(parent Parent, ctrlId uint16, layout LAY, titles ...string) *Tab 
 		events:    TabEvents{ctrlId, &parent.base().userEvents},
 		children:  make([]*Control, 0, len(titles)),
 	}
-	me.Items.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.assignDialog(parent)
 		for _, title := range titles {
-			me.Items.add(title) // add each tab item
+			me.addTab(title) // add each tab item
 		}
 		parent.base().layout.Add(parent, me.hWnd, layout)
 	})
@@ -134,22 +133,51 @@ func (me *Tab) defaultMessageHandlers(parent Parent, titles []string, selTab int
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
-		me.Items.Get(selTab).Select() // must run after all containers are created and resized
+		me.Item(selTab).Select() // must run after all containers are created and resized
 	})
 
 	parent.base().beforeUserEvents.wmNotify(me.ctrlId, co.TCN_SELCHANGE, func(_ unsafe.Pointer) {
-		if selTab, ok := me.Items.Selected(); ok {
+		if selTab, ok := me.ItemSelected(); ok {
 			me.displayContent(selTab.Index())
 		}
 	})
 
 	if resizable { // when the Tab itself is resized, we resize the container as well
 		parent.base().beforeUserEvents.wm(co.WM_SIZE, func(_ Wm) {
-			if selTab, ok := me.Items.Selected(); ok {
+			if selTab, ok := me.ItemSelected(); ok {
 				me.resizeChildContainer(selTab.Child().Hwnd())
 			}
 		})
 	}
+}
+
+func (me *Tab) addTab(title string) TabItem {
+	tci := win.TCITEM{
+		Mask: co.TCIF_TEXT,
+	}
+
+	var wBuf wstr.BufEncoder
+	tci.SetPszText(wBuf.Slice(title))
+
+	newIdxRet, err := me.Hwnd().SendMessage(co.TCM_INSERTITEM,
+		0x0fff_ffff, win.LPARAM(unsafe.Pointer(&tci)))
+	newIdx := int(newIdxRet)
+	if err != nil || newIdx == -1 {
+		panic(fmt.Sprintf("TCM_INSERTITEM \"%s\" failed.", title))
+	}
+
+	return me.Item(newIdx)
+}
+
+func (me *Tab) resizeChildContainer(hChild win.HWND) {
+	rcTab, _ := me.Hwnd().GetWindowRect()
+	hParent, _ := me.Hwnd().GetParent()
+	hParent.ScreenToClientRc(&rcTab)
+	me.Hwnd().SendMessage(co.TCM_ADJUSTRECT, 0, win.LPARAM(unsafe.Pointer(&rcTab))) // ideal child size
+	hChild.SetWindowPos(win.HWND(0),
+		win.POINT{X: rcTab.Left, Y: rcTab.Top},
+		win.SIZE{Cx: rcTab.Right - rcTab.Left, Cy: rcTab.Bottom - rcTab.Top},
+		co.SWP_NOZORDER|co.SWP_SHOWWINDOW)
 }
 
 func (me *Tab) displayContent(index int) {
@@ -166,23 +194,57 @@ func (me *Tab) displayContent(index int) {
 		win.POINT{}, win.SIZE{}, co.SWP_NOSIZE|co.SWP_NOMOVE) // container above the Tab
 }
 
-func (me *Tab) resizeChildContainer(hChild win.HWND) {
-	rcTab, _ := me.Hwnd().GetWindowRect()
-	hParent, _ := me.Hwnd().GetParent()
-	hParent.ScreenToClientRc(&rcTab)
-	me.Hwnd().SendMessage(co.TCM_ADJUSTRECT, 0, win.LPARAM(unsafe.Pointer(&rcTab))) // ideal child size
-	hChild.SetWindowPos(win.HWND(0),
-		win.POINT{X: rcTab.Left, Y: rcTab.Top},
-		win.SIZE{Cx: rcTab.Right - rcTab.Left, Cy: rcTab.Bottom - rcTab.Top},
-		co.SWP_NOZORDER|co.SWP_SHOWWINDOW)
-}
-
 // Exposes all the control notifications the can be handled.
 //
 // Panics if called after the control has been created.
 func (me *Tab) On() *TabEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
+}
+
+// Returns the item at the given index.
+//
+// A negative index will give you an invalid column.
+func (me *Tab) Item(index int) TabItem {
+	return TabItem{me, int32(index)}
+}
+
+// Retrieves the number of items with [TCM_GETITEMCOUNT].
+//
+// Panics on error.
+//
+// [TCM_GETITEMCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-getitemcount
+func (me *Tab) ItemCount() int {
+	countRet, err := me.Hwnd().SendMessage(co.TCM_GETITEMCOUNT, 0, 0)
+	count := int(countRet)
+	if err != nil || count == -1 {
+		panic("TCM_GETITEMCOUNT failed.")
+	}
+	return count
+}
+
+// Retrieves the focused item with [TCM_GETCURFOCUS], if any
+//
+// [TCM_GETCURFOCUS]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-getcurfocus
+func (me *Tab) ItemFocused() (TabItem, bool) {
+	idxRet, _ := me.Hwnd().SendMessage(co.TCM_GETCURFOCUS, 0, 0)
+	idx := int(idxRet)
+	if idx == -1 {
+		return TabItem{}, false
+	}
+	return me.Item(idx), true
+}
+
+// Retrieves the selected item with [TCM_GETCURSEL], if any
+//
+// [TCM_GETCURSEL]: https://learn.microsoft.com/en-us/windows/win32/controls/tcm-getcursel
+func (me *Tab) ItemSelected() (TabItem, bool) {
+	idxRet, _ := me.Hwnd().SendMessage(co.TCM_GETCURSEL, 0, 0)
+	idx := int(idxRet)
+	if idx == -1 {
+		return TabItem{}, false
+	}
+	return me.Item(idx), true
 }
 
 // Adds or removes extended styles with [TCM_SETEXTENDEDSTYLE].

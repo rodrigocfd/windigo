@@ -66,7 +66,7 @@ func (me TreeViewItem) Children() []TreeViewItem {
 	items := make([]TreeViewItem, 0)
 
 	for hasSibling {
-		items = append(items, me.owner.Items.Get(win.HTREEITEM(hItem)))
+		items = append(items, me.owner.Item(win.HTREEITEM(hItem)))
 
 		hItem, _ = me.owner.hWnd.SendMessage(co.TVM_GETNEXTITEM,
 			win.WPARAM(co.TVGN_NEXT), win.LPARAM(hItem)) // retrieve next siblings

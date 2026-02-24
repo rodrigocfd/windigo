@@ -20,6 +20,8 @@ type HeaderItem struct {
 }
 
 // Returns the zero-based index of the item.
+//
+// A negative index means an invalid item.
 func (me HeaderItem) Index() int {
 	return int(me.index)
 }
@@ -93,7 +95,7 @@ func (me HeaderItem) SetJustification(hdf co.HDF) HeaderItem {
 //
 // [HDM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/hdm-setitem
 func (me HeaderItem) SetSortArrow(hdf co.HDF) HeaderItem {
-	count := me.owner.Items.Count()
+	count := me.owner.ItemCount()
 	for i := 0; i < count; i++ {
 		hdi := win.HDITEM{
 			Mask: co.HDI_FORMAT,

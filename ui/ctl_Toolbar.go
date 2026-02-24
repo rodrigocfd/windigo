@@ -3,11 +3,13 @@
 package ui
 
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // Native [toolbar] control.
@@ -15,8 +17,7 @@ import (
 // [toolbar]: https://learn.microsoft.com/en-us/windows/win32/controls/toolbar-controls-overview
 type Toolbar struct {
 	_BaseCtrl
-	events  ToolbarEvents
-	Buttons ToolbarBtnCollection // Methods to interact with the buttons collection.
+	events ToolbarEvents
 }
 
 // Creates a new [Toolbar] with [win.CreateWindowEx].
@@ -26,7 +27,6 @@ func NewToolbar(parent Parent, opts *VarOptsToolbar) *Toolbar {
 		_BaseCtrl: newBaseCtrl(opts.ctrlId),
 		events:    ToolbarEvents{opts.ctrlId, &parent.base().userEvents},
 	}
-	me.Buttons.owner = me
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		me.createWindow(opts.wndExStyle, "ToolbarWindow32", "",
@@ -59,6 +59,40 @@ func (me *Toolbar) defaultMessageHandlers(parent Parent) {
 func (me *Toolbar) On() *ToolbarEvents {
 	me.panicIfAddingEventAfterCreated()
 	return &me.events
+}
+
+// Adds a new button with [TB_ADDBUTTONS].
+//
+// The iconIndex is the zero-based index of the icon previously inserted into
+// the control's image list.
+//
+// [TB_ADDBUTTONS]: https://learn.microsoft.com/en-us/windows/win32/controls/tb-addbuttons
+func (me *Toolbar) AddButton(cmdId uint16, text string, iconIndex int) {
+	var wText wstr.BufEncoder
+
+	tbb := win.TBBUTTON{
+		IBitmap:   int32(iconIndex),
+		IdCommand: int32(cmdId),
+		FsStyle:   co.BTNS_AUTOSIZE,
+		FsState:   co.TBSTATE_ENABLED,
+		IString:   (*uint16)(wText.AllowEmpty(text)),
+	}
+
+	ret, _ := me.Hwnd().SendMessage(co.TB_ADDBUTTONS,
+		1, win.LPARAM(unsafe.Pointer(&tbb)))
+	if ret == 0 {
+		panic(fmt.Sprintf("TB_ADDBUTTONS \"%s\" failed.", text))
+	}
+
+	me.Hwnd().SendMessage(co.TB_AUTOSIZE, 0, 0)
+}
+
+// Retrieves the number of buttons with [TB_BUTTONCOUNT].
+//
+// [TB_BUTTONCOUNT]: https://learn.microsoft.com/en-us/windows/win32/controls/tb-buttoncount
+func (me *Toolbar) ButtonCount() int {
+	ret, _ := me.Hwnd().SendMessage(co.TB_BUTTONCOUNT, 0, 0)
+	return int(ret)
 }
 
 // Retrieves the extended style with [TB_GETEXTENDEDSTYLE].
