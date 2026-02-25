@@ -26,6 +26,21 @@ type ListView struct {
 }
 
 // Creates a new [ListView] with [win.CreateWindowEx].
+//
+// Example:
+//
+//	runtime.LockOSThread()
+//
+//	wnd := ui.NewMain(
+//		ui.OptsMain().
+//			Title("Hello world"),
+//	)
+//	lv := ui.NewListView(
+//		wnd,
+//		ui.OptsListView().
+//			Position(ui.Dpi(10, 10)),
+//	)
+//	wnd.RunAsMain()
 func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &ListView{
@@ -44,6 +59,9 @@ func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 		}
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
 		me.assignOrClearHeader()
+		for _, col := range opts.cols {
+			me.AddCol(col.title, col.width)
+		}
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -52,6 +70,22 @@ func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 
 // Instantiates a new [ListView] to be loaded from a dialog resource with
 // [win.HWND.GetDlgItem].
+//
+// Example:
+//
+//	const (
+//		ID_MAIN_DLG uint16 = 1000
+//		ID_LST_FOO  uint16 = 1001
+//	)
+//
+//	runtime.LockOSThread()
+//
+//	wnd := ui.NewMainDlg(
+//		ui.OptsMainDlg().
+//			DlgId(ID_MAIN_DLG),
+//	)
+//	lv := ui.NewListViewDlg(wnd, ID_LST_FOO, 0, ui.LAY_HOLD_HOLD)
+//	wnd.RunAsMain()
 func NewListViewDlg(parent Parent, ctrlId uint16, contextMenuId uint16, layout LAY) *ListView {
 	hInst, _ := win.GetModuleHandle("")
 
@@ -664,6 +698,12 @@ type VarOptsListView struct {
 	wndStyle    co.WS
 	wndExStyle  co.WS_EX
 	contextMenu win.HMENU
+	cols        []_ListViewAddCol
+}
+
+type _ListViewAddCol struct {
+	title string
+	width int
 }
 
 // Options for [NewListView].
@@ -750,6 +790,17 @@ func (o *VarOptsListView) WndExStyle(s co.WS_EX) *VarOptsListView { o.wndExStyle
 //	ui.ListViewOpts().
 //		ContextMenu(hMenu)
 func (o *VarOptsListView) ContextMenu(h win.HMENU) *VarOptsListView { o.contextMenu = h; return o }
+
+// Adds a column to the list view.
+//
+// Example:
+//
+//	ui.OptsListView()
+//		.Column("First", ui.Dpi(100))
+func (o *VarOptsListView) Column(title string, width int) *VarOptsListView {
+	o.cols = append(o.cols, _ListViewAddCol{title, width})
+	return o
+}
 
 // Native [list view] control events.
 //
