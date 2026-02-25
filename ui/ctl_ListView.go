@@ -62,6 +62,21 @@ func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 		for _, col := range opts.cols {
 			me.AddCol(col.title, col.width)
 		}
+
+		for _, ico16 := range opts.icons16 {
+			if ico16.id != 0 {
+				me.ImageList(co.LVSIL_SMALL).AddIconFromResource(ico16.id)
+			} else {
+				me.ImageList(co.LVSIL_SMALL).AddIconFromShell(ico16.fileExt)
+			}
+		}
+		for _, ico32 := range opts.icons32 {
+			if ico32.id != 0 {
+				me.ImageList(co.LVSIL_NORMAL).AddIconFromResource(ico32.id)
+			} else {
+				me.ImageList(co.LVSIL_NORMAL).AddIconFromShell(ico32.fileExt)
+			}
+		}
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -690,17 +705,18 @@ func (me *ListView) View() co.LV_VIEW {
 
 // Options for [NewListView]; returned by [OptsListView].
 type VarOptsListView struct {
-	ctrlId        uint16
-	layout        LAY
-	position      win.POINT
-	size          win.SIZE
-	ctrlStyle     co.LVS
-	ctrlExStyle   co.LVS_EX
-	wndStyle      co.WS
-	wndExStyle    co.WS_EX
-	contextMenu   win.HMENU
-	contextMenuId uint16
-	cols          []_ListViewAddCol
+	ctrlId           uint16
+	layout           LAY
+	position         win.POINT
+	size             win.SIZE
+	ctrlStyle        co.LVS
+	ctrlExStyle      co.LVS_EX
+	wndStyle         co.WS
+	wndExStyle       co.WS_EX
+	contextMenu      win.HMENU
+	contextMenuId    uint16
+	cols             []_ListViewAddCol
+	icons16, icons32 []_IconAdd
 }
 
 type _ListViewAddCol struct {
@@ -807,6 +823,38 @@ func (o *VarOptsListView) ContextMenuId(id uint16) *VarOptsListView { o.contextM
 //		.Column("First", ui.Dpi(100))
 func (o *VarOptsListView) Column(title string, width int) *VarOptsListView {
 	o.cols = append(o.cols, _ListViewAddCol{title, width})
+	return o
+}
+
+// Adds an icon to the 16x16 [win.HIMAGELIST] of the list view, by loading the
+// resource with the given ID. This icon can later be referenced by its
+// zero-based index, and be applied to an item.
+func (o *VarOptsListView) Icon16Id(id uint16) *VarOptsListView {
+	o.icons16 = append(o.icons16, _IconAdd{id, ""})
+	return o
+}
+
+// Adds an icon to the 16x16 [win.HIMAGELIST] of the list view, by loading the
+// icon of the given file extension, like "txt". This icon can later be
+// referenced by its zero-based index, and be applied to an item.
+func (o *VarOptsListView) Icon16Ext(fileExt string) *VarOptsListView {
+	o.icons16 = append(o.icons16, _IconAdd{0, fileExt})
+	return o
+}
+
+// Adds an icon to the 32x32 [win.HIMAGELIST] of the list view, by loading the
+// resource with the given ID. This icon can later be referenced by its
+// zero-based index, and be applied to an item.
+func (o *VarOptsListView) Icon32Id(id uint16) *VarOptsListView {
+	o.icons32 = append(o.icons32, _IconAdd{id, ""})
+	return o
+}
+
+// Adds an icon to the 32x32 [win.HIMAGELIST] of the list view, by loading the
+// icon of the given file extension, like "txt". This icon can later be
+// referenced by its zero-based index, and be applied to an item.
+func (o *VarOptsListView) Icon32Ext(fileExt string) *VarOptsListView {
+	o.icons32 = append(o.icons32, _IconAdd{0, fileExt})
 	return o
 }
 

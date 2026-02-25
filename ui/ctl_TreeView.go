@@ -50,6 +50,14 @@ func NewTreeView(parent Parent, opts *VarOptsTreeView) *TreeView {
 			me.SetExtendedStyle(true, opts.ctrlExStyle)
 		}
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
+
+		for _, ico16 := range opts.icons16 {
+			if ico16.id != 0 {
+				me.ImageList(co.TVSIL_NORMAL).AddIconFromResource(ico16.id)
+			} else {
+				me.ImageList(co.TVSIL_NORMAL).AddIconFromShell(ico16.fileExt)
+			}
+		}
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -227,6 +235,7 @@ type VarOptsTreeView struct {
 	ctrlExStyle co.TVS_EX
 	wndStyle    co.WS
 	wndExStyle  co.WS_EX
+	icons16     []_IconAdd
 }
 
 // Options for [NewTreeView].
@@ -292,6 +301,22 @@ func (o *VarOptsTreeView) WndStyle(s co.WS) *VarOptsTreeView { o.wndStyle = s; r
 //
 // Defaults to co.WS_EX_LEFT | co.WS_EX_CLIENTEDGE.
 func (o *VarOptsTreeView) WndExStyle(s co.WS_EX) *VarOptsTreeView { o.wndExStyle = s; return o }
+
+// Adds an icon to the 16x16 [win.HIMAGELIST] of the tree view, by loading the
+// resource with the given ID. This icon can later be referenced by its
+// zero-based index, and be applied to an item.
+func (o *VarOptsTreeView) IconId(id uint16) *VarOptsTreeView {
+	o.icons16 = append(o.icons16, _IconAdd{id, ""})
+	return o
+}
+
+// Adds an icon to the 16x16 [win.HIMAGELIST] of the tree view, by loading the
+// icon of the given file extension, like "txt". This icon can later be
+// referenced by its zero-based index, and be applied to an item.
+func (o *VarOptsTreeView) IconExt(fileExt string) *VarOptsTreeView {
+	o.icons16 = append(o.icons16, _IconAdd{0, fileExt})
+	return o
+}
 
 // Native [tree view] control events.
 //
