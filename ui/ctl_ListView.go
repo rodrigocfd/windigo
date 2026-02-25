@@ -46,7 +46,7 @@ func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 	me := &ListView{
 		_BaseCtrl:    newBaseCtrl(opts.ctrlId),
 		events:       ListViewEvents{opts.ctrlId, &parent.base().userEvents},
-		hContextMenu: opts.contextMenu,
+		hContextMenu: lvLoadContextMenu(opts.contextMenu, opts.contextMenuId),
 		itemsData:    make(map[int]interface{}),
 		header:       newHeaderFromListView(parent),
 	}
@@ -87,21 +87,10 @@ func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 //	lv := ui.NewListViewDlg(wnd, ID_LST_FOO, 0, ui.LAY_HOLD_HOLD)
 //	wnd.RunAsMain()
 func NewListViewDlg(parent Parent, ctrlId uint16, contextMenuId uint16, layout LAY) *ListView {
-	hInst, _ := win.GetModuleHandle("")
-
-	var hMenu win.HMENU
-	if contextMenuId != 0 {
-		var err error
-		hMenu, err = hInst.LoadMenu(win.ResIdInt(contextMenuId))
-		if err != nil {
-			panic(err)
-		}
-	}
-
 	me := &ListView{
 		_BaseCtrl:    newBaseCtrl(ctrlId),
 		events:       ListViewEvents{ctrlId, &parent.base().userEvents},
-		hContextMenu: hMenu,
+		hContextMenu: lvLoadContextMenu(win.HMENU(0), contextMenuId),
 		itemsData:    make(map[int]interface{}),
 		header:       newHeaderFromListView(parent),
 	}
@@ -167,6 +156,18 @@ func (me *ListView) defaultMessageHandlers(parent Parent) {
 			me.hContextMenu.DestroyMenu()
 		}
 	})
+}
+
+func lvLoadContextMenu(hMenu win.HMENU, id uint16) win.HMENU {
+	if id != 0 {
+		hInst, _ := win.GetModuleHandle("")
+		hMenuRes, err := hInst.LoadMenu(win.ResIdInt(id))
+		if err != nil {
+			panic(err)
+		}
+		return hMenuRes
+	}
+	return hMenu
 }
 
 func (me *ListView) showContextMenu(followCursor, hasCtrl, hasShift bool) {
@@ -689,16 +690,17 @@ func (me *ListView) View() co.LV_VIEW {
 
 // Options for [NewListView]; returned by [OptsListView].
 type VarOptsListView struct {
-	ctrlId      uint16
-	layout      LAY
-	position    win.POINT
-	size        win.SIZE
-	ctrlStyle   co.LVS
-	ctrlExStyle co.LVS_EX
-	wndStyle    co.WS
-	wndExStyle  co.WS_EX
-	contextMenu win.HMENU
-	cols        []_ListViewAddCol
+	ctrlId        uint16
+	layout        LAY
+	position      win.POINT
+	size          win.SIZE
+	ctrlStyle     co.LVS
+	ctrlExStyle   co.LVS_EX
+	wndStyle      co.WS
+	wndExStyle    co.WS_EX
+	contextMenu   win.HMENU
+	contextMenuId uint16
+	cols          []_ListViewAddCol
 }
 
 type _ListViewAddCol struct {
@@ -755,7 +757,7 @@ func (o *VarOptsListView) Size(cx, cy int) *VarOptsListView {
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/list-view-window-styles
 func (o *VarOptsListView) CtrlStyle(s co.LVS) *VarOptsListView {
-	o.ctrlStyle = s &^ co.LVS_SHAREIMAGELISTS
+	o.ctrlStyle = s &^ co.LVS_SHAREIMAGELISTS // clear bits
 	return o
 }
 
@@ -776,7 +778,7 @@ func (o *VarOptsListView) WndStyle(s co.WS) *VarOptsListView { o.wndStyle = s; r
 // Defaults to co.WS_EX_LEFT | co.WS_EX_CLIENTEDGE.
 func (o *VarOptsListView) WndExStyle(s co.WS_EX) *VarOptsListView { o.wndExStyle = s; return o }
 
-// Context menu popup.
+// Context menu popup. Will be overwritten if ContextMenuId is defined.
 //
 // This menu is owned by the list view. It will be automatically destroyed.
 //
@@ -790,6 +792,12 @@ func (o *VarOptsListView) WndExStyle(s co.WS_EX) *VarOptsListView { o.wndExStyle
 //	ui.ListViewOpts().
 //		ContextMenu(hMenu)
 func (o *VarOptsListView) ContextMenu(h win.HMENU) *VarOptsListView { o.contextMenu = h; return o }
+
+// ID of the context menu popup, to be loaded from the resource. If defined,
+// overwrites ContextMenu.
+//
+// This menu is owned by the list view. It will be automatically destroyed.
+func (o *VarOptsListView) ContextMenuId(id uint16) *VarOptsListView { o.contextMenuId = id; return o }
 
 // Adds a column to the list view.
 //
