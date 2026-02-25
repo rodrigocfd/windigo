@@ -83,6 +83,33 @@ func (me *IDXGIAdapter) GetDesc() (DXGI_ADAPTER_DESC, error) {
 		(*_IDXGIAdapterVt)(unsafe.Pointer(*me.Ppvt())).GetDesc)
 }
 
+// [IDXGIAdapter1] COM interface.
+//
+// Implements [OleObj] and [OleResource].
+//
+// [IDXGIAdapter1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgiadapter1
+type IDXGIAdapter1 struct{ IDXGIAdapter }
+
+type _IDXGIAdapter1Vt struct {
+	_IDXGIAdapterVt
+	GetDesc1 uintptr
+}
+
+// [GetDesc1] method.
+//
+// [GetDesc1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiadapter1-getdesc1
+func (me *IDXGIAdapter1) GetDesc1() (DXGI_ADAPTER_DESC1, error) {
+	return com_callRetStruct[DXGI_ADAPTER_DESC1](me,
+		(*_IDXGIAdapter1Vt)(unsafe.Pointer(*me.Ppvt())).GetDesc1)
+}
+
+// Returns the unique COM [interface ID].
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
+func (*IDXGIAdapter1) IID() *co.IID {
+	return &co.IID_IDXGIAdapter1
+}
+
 // [IDXGIDeviceSubObject] COM interface.
 //
 // Implements [OleObj] and [OleResource].
@@ -223,6 +250,63 @@ func (me *IDXGIFactory) MakeWindowAssociation(hWnd HWND, flags co.DXGI_MWA) erro
 		uintptr(hWnd),
 		uintptr(flags))
 	return utl.HresultToError(ret)
+}
+
+// [IDXGIFactory1] COM interface.
+//
+// Implements [OleObj] and [OleResource].
+//
+// [IDXGIFactory1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgifactory1
+type IDXGIFactory1 struct{ IDXGIFactory }
+
+type _IDXGIFactory1Vt struct {
+	_IDXGIFactoryVt
+	EnumAdapters1 uintptr
+	IsCurrent     uintptr
+}
+
+// Returns the unique COM [interface ID].
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
+func (*IDXGIFactory1) IID() *co.IID {
+	return &co.IID_IDXGIFactory1
+}
+
+// [EnumAdapters1] method.
+//
+// [EnumAdapters1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgifactory-enumadapters
+func (me *IDXGIFactory1) EnumAdapters1(releaser *OleReleaser) ([]*IDXGIAdapter1, error) {
+	var index uint32
+	var ppvtQueried **_IUnknownVt
+	var adapters []*IDXGIAdapter1
+
+	for {
+		ret, _, _ := syscall.SyscallN(
+			(*_IDXGIFactory1Vt)(unsafe.Pointer(*me.Ppvt())).EnumAdapters1,
+			uintptr(unsafe.Pointer(me.Ppvt())),
+			uintptr(index),
+			uintptr(unsafe.Pointer(&ppvtQueried)))
+
+		if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+			var pObj *IDXGIAdapter1
+			com_buildObj(&pObj, ppvtQueried, releaser)
+			adapters = append(adapters, pObj)
+		} else if hr == co.HRESULT_DXGI_ERROR_NOT_FOUND {
+			return adapters, nil // no further adapters
+		} else { // actual error
+			return nil, hr
+		}
+	}
+}
+
+// [IsCurrent] method.
+//
+// [IsCurrent]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgifactory1-iscurrent
+func (me *IDXGIFactory1) IsCurrent() bool {
+	ret, _, _ := syscall.SyscallN(
+		(*_IDXGIFactory1Vt)(unsafe.Pointer(*me.Ppvt())).IsCurrent,
+		uintptr(unsafe.Pointer(me.Ppvt())))
+	return ret != 0
 }
 
 // [IDXGIObject] COM interface.
