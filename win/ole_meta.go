@@ -184,7 +184,9 @@ type OleReleaser struct {
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 func NewOleReleaser() *OleReleaser {
-	return new(OleReleaser)
+	return &OleReleaser{
+		objs: make([]OleResource, 0, 5), // arbitrary
+	}
 }
 
 // Adds a new [COM] resource to have its lifetime managed by the [OleReleaser].
