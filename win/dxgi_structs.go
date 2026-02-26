@@ -121,6 +121,16 @@ func (od *DXGI_OUTPUT_DESC) SetDeviceName(val string) {
 	wstr.EncodeToBuf(od.deviceName[:], val)
 }
 
+// [DXGI_PRESENT_PARAMETERS] struct.
+//
+// [DXGI_PRESENT_PARAMETERS]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_present_parameters
+type DXGI_PRESENT_PARAMETERS struct {
+	DirtyRectsCount uint32
+	PDirtyRects     *RECT
+	PScrollRect     *RECT
+	PScrollOffset   *POINT
+}
+
 // [DXGI_RATIONAL] struct.
 //
 // [DXGI_RATIONAL]: https://learn.microsoft.com/en-us/windows/win32/api/dxgicommon/ns-dxgicommon-dxgi_rational
@@ -133,9 +143,14 @@ type DXGI_RATIONAL struct {
 //
 // [DXGI_RGB]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb173071(v=vs.85)
 type DXGI_RGB struct {
-	Red   float32
-	Green float32
-	Blue  float32
+	Red, Green, Blue float32
+}
+
+// [DXGI_RGBA] struct.
+//
+// [DXGI_RGBA]: https://learn.microsoft.com/en-us/windows/win32/direct3ddxgi/dxgi-rgba
+type DXGI_RGBA struct {
+	R, G, B, A float32
 }
 
 // [DXGI_SAMPLE_DESC] struct.
@@ -168,4 +183,31 @@ type DXGI_SWAP_CHAIN_DESC struct {
 	Windowed     BOOL
 	SwapEffect   co.DXGI_SWAP_EFFECT
 	Flags        co.DXGI_SWAP_CHAIN_FLAG
+}
+
+// [DXGI_SWAP_CHAIN_DESC1] struct.
+//
+// [DXGI_SWAP_CHAIN_DESC1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_swap_chain_desc1
+type DXGI_SWAP_CHAIN_DESC1 struct {
+	Width       uint32
+	Height      uint32
+	Format      co.DXGI_FORMAT
+	Stereo      BOOL
+	SampleDesc  DXGI_SAMPLE_DESC
+	BufferUsage co.DXGI_USAGE
+	BUfferCount uint32
+	Scaling     co.DXGI_SCALING
+	SwapEffect  co.DXGI_SWAP_EFFECT
+	AlphaMode   co.DXGI_ALPHA_MODE
+	Flags       co.DXGI_SWAP_CHAIN_FLAG
+}
+
+// [DXGI_SWAP_CHAIN_FULLSCREEN_DESC] struct.
+//
+// [DXGI_SWAP_CHAIN_FULLSCREEN_DESC]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_swap_chain_fullscreen_desc
+type DXGI_SWAP_CHAIN_FULLSCREEN_DESC struct {
+	RefreshRate      DXGI_RATIONAL
+	ScanlineOrdering co.DXGI_MODE_SCANLINE_ORDER
+	Scaling          co.DXGI_MODE_SCALING
+	Windowed         BOOL
 }

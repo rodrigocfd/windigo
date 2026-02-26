@@ -338,6 +338,50 @@ func (*IDXGIFactory2) IID() *co.IID {
 	return &co.IID_IDXGIFactory2
 }
 
+// [CreateSwapChainForComposition] method.
+//
+// [CreateSwapChainForComposition]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-createswapchainforcomposition
+func (me *IDXGIFactory2) CreateSwapChainForComposition(
+	releaser *OleReleaser,
+	device OleObj,
+	pDesc *DXGI_SWAP_CHAIN_DESC1,
+	restrictToOutput *IDXGIOutput,
+) (*IDXGISwapChain1, error) {
+	var ppvtQueried **_IUnknownVt
+	ret, _, _ := syscall.SyscallN(
+		(*_IDXGIFactory2Vt)(unsafe.Pointer(*me.Ppvt())).CreateSwapChainForComposition,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(com_ppvtOrNil(device)),
+		uintptr(unsafe.Pointer(pDesc)),
+		uintptr(com_ppvtOrNil(restrictToOutput)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+	return com_buildObj_retObjHres[*IDXGISwapChain1](ret, ppvtQueried, releaser)
+}
+
+// [CreateSwapChainForHwnd] method.
+//
+// [CreateSwapChainForHwnd]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-createswapchainforhwnd
+func (me *IDXGIFactory2) CreateSwapChainForHwnd(
+	releaser *OleReleaser,
+	device OleObj,
+	hWnd HWND,
+	pDesc *DXGI_SWAP_CHAIN_DESC1,
+	pFullscreenDesc *DXGI_SWAP_CHAIN_FULLSCREEN_DESC,
+	restrictToOutput *IDXGIOutput,
+) (*IDXGISwapChain1, error) {
+	var ppvtQueried **_IUnknownVt
+	ret, _, _ := syscall.SyscallN(
+		(*_IDXGIFactory2Vt)(unsafe.Pointer(*me.Ppvt())).CreateSwapChainForHwnd,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(com_ppvtOrNil(device)),
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(pDesc)),
+		uintptr(unsafe.Pointer(pFullscreenDesc)),
+		uintptr(com_ppvtOrNil(restrictToOutput)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+	return com_buildObj_retObjHres[*IDXGISwapChain1](ret, ppvtQueried, releaser)
+}
+
 // [GetSharedResourceAdapterLuid] method.
 //
 // [GetSharedResourceAdapterLuid]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-getsharedresourceadapterluid
@@ -847,5 +891,131 @@ func (me *IDXGISwapChain) SetFullscreenState(fullScreen bool, target *IDXGIOutpu
 		uintptr(unsafe.Pointer(me.Ppvt())),
 		utl.BoolToUintptr(fullScreen),
 		uintptr(com_ppvtOrNil(target)))
+	return utl.HresultToError(ret)
+}
+
+// [IDXGISwapChain1] COM interface.
+//
+// Implements [OleObj] and [OleResource].
+//
+// [IDXGISwapChain1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nn-dxgi1_2-idxgiswapchain1
+type IDXGISwapChain1 struct{ IDXGISwapChain }
+
+type _IDXGISwapChain1Vt struct {
+	_IDXGISwapChainVt
+	GetDesc1                 uintptr
+	GetFullscreenDesc        uintptr
+	GetHwnd                  uintptr
+	GetCoreWindow            uintptr
+	Present1                 uintptr
+	IsTemporaryMonoSupported uintptr
+	GetRestrictToOutput      uintptr
+	SetBackgroundColor       uintptr
+	GetBackgroundColor       uintptr
+	SetRotation              uintptr
+	GetRotation              uintptr
+}
+
+// Returns the unique COM [interface ID].
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
+func (*IDXGISwapChain1) IID() *co.IID {
+	return &co.IID_IDXGISwapChain1
+}
+
+// [GetBackgroundColor] method.
+//
+// [GetBackgroundColor]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-getbackgroundcolor
+func (me *IDXGISwapChain1) GetBackgroundColor() (DXGI_RGBA, error) {
+	return com_callRetStruct[DXGI_RGBA](me,
+		(*_IDXGISwapChain1Vt)(unsafe.Pointer(*me.Ppvt())).GetBackgroundColor)
+}
+
+// [GetDesc1] method.
+//
+// [GetDesc1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-getdesc1
+func (me *IDXGISwapChain1) GetDesc1() (DXGI_SWAP_CHAIN_DESC1, error) {
+	return com_callRetStruct[DXGI_SWAP_CHAIN_DESC1](me,
+		(*_IDXGISwapChain1Vt)(unsafe.Pointer(*me.Ppvt())).GetDesc1)
+}
+
+// [GetFullscreenDesc] method.
+//
+// [GetFullscreenDesc]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-getfullscreendesc
+func (me *IDXGISwapChain1) GetFullscreenDesc() (DXGI_SWAP_CHAIN_FULLSCREEN_DESC, error) {
+	return com_callRetStruct[DXGI_SWAP_CHAIN_FULLSCREEN_DESC](me,
+		(*_IDXGISwapChain1Vt)(unsafe.Pointer(*me.Ppvt())).GetFullscreenDesc)
+}
+
+// [GetHwnd] method.
+//
+// [GetHwnd]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-gethwnd
+func (me *IDXGISwapChain1) GetHwnd() (HWND, error) {
+	return com_callRetStruct[HWND](me,
+		(*_IDXGISwapChain1Vt)(unsafe.Pointer(*me.Ppvt())).GetHwnd)
+}
+
+// [GetRestrictToOutput] method.
+//
+// [GetRestrictToOutput]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-getrestricttooutput
+func (me *IDXGISwapChain1) GetRestrictToOutput(releaser *OleReleaser) (*IDXGIOutput, error) {
+	return com_callRetCom[*IDXGIOutput](me, releaser,
+		(*_IDXGISwapChain1Vt)(unsafe.Pointer(*me.Ppvt())).GetRestrictToOutput)
+}
+
+// [GetRotation] method.
+//
+// [GetRotation]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-getrotation
+func (me *IDXGISwapChain1) GetRotation() (co.DXGI_MODE_ROTATION, error) {
+	return com_callRetStruct[co.DXGI_MODE_ROTATION](me,
+		(*_IDXGISwapChain1Vt)(unsafe.Pointer(*me.Ppvt())).GetRotation)
+}
+
+// [IsTemporaryMonoSupported] method.
+//
+// [IsTemporaryMonoSupported]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-istemporarymonosupported
+func (me *IDXGISwapChain1) IsTemporaryMonoSupported() bool {
+	ret, _, _ := syscall.SyscallN(
+		(*_IDXGISwapChain1Vt)(unsafe.Pointer(*me.Ppvt())).IsTemporaryMonoSupported,
+		uintptr(unsafe.Pointer(me.Ppvt())))
+	return ret != 0
+}
+
+// [Present1] method.
+//
+// [Present1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-present1
+func (me *IDXGISwapChain1) Present1(
+	syncInterval int,
+	presentFlags co.DXGI_PRESENT,
+	pPresentParameters *DXGI_PRESENT_PARAMETERS,
+) error {
+	ret, _, _ := syscall.SyscallN(
+		(*_IDXGISwapChain1Vt)(unsafe.Pointer(*me.Ppvt())).Present1,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(uint32(syncInterval)),
+		uintptr(presentFlags),
+		uintptr(unsafe.Pointer(pPresentParameters)))
+	return utl.HresultToError(ret)
+}
+
+// [SetBackgroundColor] method.
+//
+// [SetBackgroundColor]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-setbackgroundcolor
+func (me *IDXGISwapChain1) SetBackgroundColor(pColor *DXGI_RGBA) error {
+	ret, _, _ := syscall.SyscallN(
+		(*_IDXGISwapChain1Vt)(unsafe.Pointer(*me.Ppvt())).SetBackgroundColor,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(unsafe.Pointer(pColor)))
+	return utl.HresultToError(ret)
+}
+
+// [SetRotation] method.
+//
+// [SetRotation]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-setrotation
+func (me *IDXGISwapChain1) SetRotation(rotation co.DXGI_MODE_ROTATION) error {
+	ret, _, _ := syscall.SyscallN(
+		(*_IDXGISwapChain1Vt)(unsafe.Pointer(*me.Ppvt())).SetRotation,
+		uintptr(unsafe.Pointer(me.Ppvt())),
+		uintptr(rotation))
 	return utl.HresultToError(ret)
 }

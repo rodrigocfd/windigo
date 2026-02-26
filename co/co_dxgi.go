@@ -14,6 +14,7 @@ var (
 	IID_IDXGIOutput          = IID(GUID{0xae02eedb, 0xc735, 0x4690, [8]byte{0x8d, 0x52, 0x5a, 0x8d, 0xc2, 0x02, 0x13, 0xaa}})
 	IID_IDXGISurface         = IID(GUID{0xcafcb56c, 0x6ac3, 0x4889, [8]byte{0xbf, 0x47, 0x9e, 0x23, 0xbb, 0xd2, 0x60, 0xec}})
 	IID_IDXGISwapChain       = IID(GUID{0x310d36a0, 0xd2e7, 0x4c0a, [8]byte{0xaa, 0x04, 0x6a, 0x9d, 0x23, 0xb8, 0x88, 0x6a}})
+	IID_IDXGISwapChain1      = IID(GUID{0x790a45f7, 0x0d42, 0x4876, [8]byte{0x98, 0x3a, 0x0a, 0x55, 0xcf, 0xe6, 0xf4, 0xaa}})
 )
 
 // [DXGI_ADAPTER_FLAG] enumeration.
@@ -25,6 +26,18 @@ const (
 	DXGI_ADAPTER_FLAG_NONE     DXGI_ADAPTER_FLAG = 0
 	DXGI_ADAPTER_FLAG_REMOTE   DXGI_ADAPTER_FLAG = 1
 	DXGI_ADAPTER_FLAG_SOFTWARE DXGI_ADAPTER_FLAG = 2
+)
+
+// [DXGI_ALPHA_MODE] enumeration.
+//
+// [DXGI_ALPHA_MODE]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ne-dxgi1_2-dxgi_alpha_mode
+type DXGI_ALPHA_MODE uint32
+
+const (
+	DXGI_ALPHA_MODE_UNSPECIFIED   DXGI_ALPHA_MODE = 0
+	DXGI_ALPHA_MODE_PREMULTIPLIED DXGI_ALPHA_MODE = 1
+	DXGI_ALPHA_MODE_STRAIGHT      DXGI_ALPHA_MODE = 2
+	DXGI_ALPHA_MODE_IGNORE        DXGI_ALPHA_MODE = 3
 )
 
 // [DXGI_ENUM_MODES] enumeration.
@@ -241,6 +254,17 @@ const (
 	DXGI_PRESENT_STEREO_TEMPORARY_MONO DXGI_PRESENT = 0x0000_0040
 	DXGI_PRESENT_USE_DURATION          DXGI_PRESENT = 0x0000_0100
 	DXGI_PRESENT_ALLOW_TEARING         DXGI_PRESENT = 0x0000_0200
+)
+
+// [DXGI_SCALING] enumeration.
+//
+// [DXGI_SCALING]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ne-dxgi1_2-dxgi_scaling
+type DXGI_SCALING uint32
+
+const (
+	DXGI_SCALING_STRETCH              DXGI_SCALING = 0
+	DXGI_SCALING_NONE                 DXGI_SCALING = 1
+	DXGI_SCALING_ASPECT_RATIO_STRETCH DXGI_SCALING = 2
 )
 
 // [DXGI_SWAP_CHAIN_FLAG] enumeration.
