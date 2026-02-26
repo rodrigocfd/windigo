@@ -30,3 +30,24 @@ func CreateDXGIFactory(releaser *OleReleaser) (*IDXGIFactory, error) {
 }
 
 var _dxgi_CreateDXGIFactory *syscall.Proc
+
+// [CreateDXGIFactory1] function.
+//
+// Example:
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+//	factory, _ := win.CreateDXGIFactory1(rel)
+//
+// [CreateDXGIFactory1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-createdxgifactory1
+func CreateDXGIFactory1(releaser *OleReleaser) (*IDXGIFactory1, error) {
+	var ppvtQueried **_IUnknownVt
+	ret, _, _ := syscall.SyscallN(
+		dll.Dxgi.Load(&_dxgi_CreateDXGIFactory1, "CreateDXGIFactory1"),
+		uintptr(unsafe.Pointer(&co.IID_IDXGIFactory1)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+	return com_buildObj_retObjHres[*IDXGIFactory1](ret, ppvtQueried, releaser)
+}
+
+var _dxgi_CreateDXGIFactory1 *syscall.Proc
