@@ -309,6 +309,53 @@ func (me *IDXGIFactory1) IsCurrent() bool {
 	return ret != 0
 }
 
+// [IDXGIFactory2] COM interface.
+//
+// Implements [OleObj] and [OleResource].
+//
+// [IDXGIFactory2]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nn-dxgi1_2-idxgifactory2
+type IDXGIFactory2 struct{ IDXGIFactory1 }
+
+type _IDXGIFactory2Vt struct {
+	_IDXGIFactory1Vt
+	IsWindowedStereoEnabled       uintptr
+	CreateSwapChainForHwnd        uintptr
+	CreateSwapChainForCoreWindow  uintptr
+	GetSharedResourceAdapterLuid  uintptr
+	RegisterStereoStatusWindow    uintptr
+	RegisterStereoStatusEvent     uintptr
+	UnregisterStereoStatus        uintptr
+	RegisterOcclusionStatusWindow uintptr
+	RegisterOcclusionStatusEvent  uintptr
+	UnregisterOcclusionStatus     uintptr
+	CreateSwapChainForComposition uintptr
+}
+
+// Returns the unique COM [interface ID].
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
+func (*IDXGIFactory2) IID() *co.IID {
+	return &co.IID_IDXGIFactory2
+}
+
+// [GetSharedResourceAdapterLuid] method.
+//
+// [GetSharedResourceAdapterLuid]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-getsharedresourceadapterluid
+func (me *IDXGIFactory2) GetSharedResourceAdapterLuid() (co.LUID, error) {
+	return com_callRetStruct[co.LUID](me,
+		(*_IDXGIFactory2Vt)(unsafe.Pointer(*me.Ppvt())).GetSharedResourceAdapterLuid)
+}
+
+// [IsWindowedStereoEnabled] method.
+//
+// [IsWindowedStereoEnabled]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-iswindowedstereoenabled
+func (me *IDXGIFactory2) IsWindowedStereoEnabled() bool {
+	ret, _, _ := syscall.SyscallN(
+		(*_IDXGIFactory2Vt)(unsafe.Pointer(*me.Ppvt())).IsWindowedStereoEnabled,
+		uintptr(unsafe.Pointer(me.Ppvt())))
+	return ret != 0
+}
+
 // [IDXGIObject] COM interface.
 //
 // Implements [OleObj] and [OleResource].
