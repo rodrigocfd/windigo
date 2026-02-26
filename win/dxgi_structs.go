@@ -3,6 +3,8 @@
 package win
 
 import (
+	"unsafe"
+
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/wstr"
 )
@@ -125,10 +127,21 @@ func (od *DXGI_OUTPUT_DESC) SetDeviceName(val string) {
 //
 // [DXGI_PRESENT_PARAMETERS]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_present_parameters
 type DXGI_PRESENT_PARAMETERS struct {
-	DirtyRectsCount uint32
-	PDirtyRects     *RECT
+	dirtyRectsCount uint32
+	pDirtyRects     *RECT
 	PScrollRect     *RECT
 	PScrollOffset   *POINT
+}
+
+// Returns a slice over the pDirtyRects field.
+func (pp *DXGI_PRESENT_PARAMETERS) DirtyRects() []RECT {
+	return unsafe.Slice(pp.pDirtyRects, pp.dirtyRectsCount)
+}
+
+// Sets the pDirtyRects and dirtyRectsCount fields.
+func (pp *DXGI_PRESENT_PARAMETERS) SetDirtyRects(val []RECT) {
+	pp.dirtyRectsCount = uint32(len(val))
+	pp.pDirtyRects = &val[0]
 }
 
 // [DXGI_RATIONAL] struct.
