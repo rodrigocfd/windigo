@@ -252,3 +252,23 @@ var _kernel_WaitForSingleObject *syscall.Proc
 func (hThread HTHREAD) WaitForSingleObjectInfinite() (co.WAIT, error) {
 	return hThread.WaitForSingleObject(utl.INFINITE)
 }
+
+// [OpenThread] function.
+//
+// ⚠️ You must defer [HTHREAD.CloseHandle].
+//
+// [OpenThread]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openthread
+func OpenThread(access co.THREAD, inheritHandle bool, threadId uint32) (HTHREAD, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_OpenThread, "OpenThread"),
+		uintptr(access),
+		utl.BoolToUintptr(inheritHandle),
+		uintptr(threadId))
+	if ret == 0 {
+		return HTHREAD(0), co.ERROR(err)
+	}
+	return HTHREAD(ret), nil
+}
+
+var _kernel_OpenThread *syscall.Proc
+

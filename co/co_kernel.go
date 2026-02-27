@@ -815,6 +815,33 @@ const (
 	PROCESS_VM_WRITE                  PROCESS = 0x0020
 )
 
+// Thread [security and access rights].
+//
+// [security and access rights]: https://learn.microsoft.com/en-us/windows/win32/procthread/thread-security-and-access-rights
+type THREAD uint32
+
+const (
+	THREAD_DELETE       = THREAD(STANDARD_RIGHTS_DELETE)
+	THREAD_READ_CONTROL = THREAD(STANDARD_RIGHTS_READ_CONTROL)
+	THREAD_SYNCHRONIZE  = THREAD(STANDARD_RIGHTS_SYNCHRONIZE)
+	THREAD_WRITE_DAC    = THREAD(STANDARD_RIGHTS_WRITE_DAC)
+	THREAD_WRITE_OWNER  = THREAD(STANDARD_RIGHTS_WRITE_OWNER)
+
+	THREAD_ALL_ACCESS = THREAD(STANDARD_RIGHTS_REQUIRED | STANDARD_RIGHTS_SYNCHRONIZE | 0xffff)
+
+	THREAD_DIRECT_IMPERSONATION      = THREAD(0x0200)
+	THREAD_GET_CONTEXT               = THREAD(0x0008)
+	THREAD_IMPERSONATE               = THREAD(0x0100)
+	THREAD_QUERY_INFORMATION         = THREAD(0x0040)
+	THREAD_QUERY_LIMITED_INFORMATION = THREAD(0x0800)
+	THREAD_SET_CONTEXT               = THREAD(0x0010)
+	THREAD_SET_INFORMATION           = THREAD(0x0020)
+	THREAD_SET_LIMITED_INFORMATION   = THREAD(0x0400)
+	THREAD_SET_THREAD_TOKEN          = THREAD(0x0080)
+	THREAD_SUSPEND_RESUME            = THREAD(0x0002)
+	THREAD_TERMINATE                 = THREAD(0x0001)
+)
+
 // [QueryFullProcessImageName] flags.
 //
 // [QueryFullProcessImageName]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-queryfullprocessimagenamew
