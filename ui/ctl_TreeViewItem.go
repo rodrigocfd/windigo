@@ -21,16 +21,35 @@ type TreeViewItem struct {
 
 // Adds a child to this item with [TVM_INSERTITEM], returning the new item.
 //
-// The iconIndex is the zero-based index of the icon previously inserted into
-// the control's image list, or -1 for no icon.
+// Panics on error.
+//
+// [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
+func (me TreeViewItem) AddChild(text string) TreeViewItem {
+	return me.AddChildWithIcon(text, Ico{})
+}
+
+// Adds a child with its 16x16 icon, either from the resource or from a shell
+// file extension, with [TVM_INSERTITEM], returning the new item.
+//
+// Note that, once you add an item with icon, all other items will also be
+// rendered with icons. Those which you didn't specify the icon will simply
+// display the first icon.
 //
 // Panics on error.
 //
 // [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
-func (me TreeViewItem) AddChild(text string, iconIndex int) TreeViewItem {
+func (me TreeViewItem) AddChildWithIcon(text string, icon Ico) TreeViewItem {
 	mask := co.TVIF_TEXT
-	if iconIndex != -1 {
+	idxIconActual := -1
+
+	if icon.isValid() {
 		mask |= co.TVIF_IMAGE
+		hImgList, newImgList, idxIcon := me.owner.iconCache16.IconIndex(16, icon)
+		if newImgList { // image list has just been created
+			me.owner.Hwnd().SendMessage(co.TVM_SETIMAGELIST,
+				win.WPARAM(co.TVSIL_NORMAL), win.LPARAM(hImgList))
+		}
+		idxIconActual = idxIcon
 	}
 
 	tvi := win.TVINSERTSTRUCT{
@@ -38,7 +57,7 @@ func (me TreeViewItem) AddChild(text string, iconIndex int) TreeViewItem {
 		HInsertAfter: win.HTREEITEM_LAST,
 		Itemex: win.TVITEMEX{
 			Mask:   mask,
-			IImage: int32(iconIndex),
+			IImage: int32(idxIconActual),
 		},
 	}
 
@@ -140,12 +159,12 @@ func (me TreeViewItem) Htreeitem() win.HTREEITEM {
 	return me.hItem
 }
 
-// Retrieves the zero-based icon index with [TVM_GETITEM].
+// Retrieves the 16x16 icon associated to the item, with [TVM_GETITEM].
 //
 // Panics on error.
 //
 // [TVM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getitem
-func (me TreeViewItem) IconIndex() int {
+func (me TreeViewItem) Icon() (Ico, bool) {
 	tvi := win.TVITEMEX{
 		HItem: me.hItem,
 		Mask:  co.TVIF_IMAGE,
@@ -157,7 +176,7 @@ func (me TreeViewItem) IconIndex() int {
 		panic("TVM_GETITEM failed.")
 	}
 
-	return int(tvi.IImage)
+	return me.owner.iconCache16.EntryByIndex(int(tvi.IImage))
 }
 
 // Returns true if the item is currently expanded, with [TVM_GETITEMSTATE].
@@ -230,17 +249,29 @@ func (me TreeViewItem) SetData(data interface{}) {
 	me.owner.itemsData[me.hItem] = data
 }
 
-// Sets the zero-based icon index with [TVM_SETITEM].
+// Sets the given 16x16 icon, either from the resource or from a shell file
+// extension, with [TVM_SETITEM].
+//
+// Note that, once you add an item with icon, all other items will also be
+// rendered with icons. Those which you didn't specify the icon will simply
+// display the first icon.
 //
 // Returns the same item, so further operations can be chained.
 //
 // Panics on error.
 //
 // [TVM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-setitem
-func (me TreeViewItem) SetIconIndex(iconIndex int) TreeViewItem {
+func (me TreeViewItem) SetIcon(icon Ico) TreeViewItem {
+	hImgList, newImgList, idxIcon := me.owner.iconCache16.IconIndex(16, icon)
+	if newImgList { // image list has just been created
+		me.owner.Hwnd().SendMessage(co.TVM_SETIMAGELIST,
+			win.WPARAM(co.TVSIL_NORMAL), win.LPARAM(hImgList))
+	}
+
 	tvi := win.TVITEMEX{
-		HItem: me.hItem,
-		Mask:  co.TVIF_IMAGE,
+		HItem:  me.hItem,
+		Mask:   co.TVIF_IMAGE,
+		IImage: int32(idxIcon),
 	}
 
 	ret, err := me.owner.hWnd.SendMessage(co.TVM_SETITEM,

@@ -20,7 +20,7 @@ type StatusBarPart struct {
 
 // Retrieves the icon with [SB_GETICON].
 //
-// The icon is shared, the StatusBar doesn't own it.
+// The icon is owned by the [StatusBar], don't destroy it.
 //
 // [SB_GETICON]: https://learn.microsoft.com/en-us/windows/win32/controls/sb-geticon
 func (me StatusBarPart) Icon() win.HICON {
@@ -33,14 +33,21 @@ func (me StatusBarPart) Index() int {
 	return int(me.index)
 }
 
-// Sets the icon with [SB_SETICON].
-//
-// The icon is shared, the [StatusBar] doesn't own it.
+// Sets the given 16x16 icon, either from the resource or from a shell file
+// extension, with [SB_SETICON].
 //
 // Returns the same part, so further operations can be chained.
 //
+// Example:
+//
+//	var sb win.StatusBar // initialized somewhere
+//
+//	sb.Part(0).SetIcon(ui.IcoId(101))    // icon resource with ID=101
+//	sb.Part(0).SetIcon(ui.IcoExt("txt")) // shell icon of *.txt files
+//
 // [SB_SETICON]: https://learn.microsoft.com/en-us/windows/win32/controls/sb-seticon
-func (me StatusBarPart) SetIcon(hIcon win.HICON) StatusBarPart {
+func (me StatusBarPart) SetIcon(icon Ico) StatusBarPart {
+	hIcon := me.owner.iconCache16.Handle(16, icon)
 	me.owner.hWnd.SendMessage(co.SB_SETICON,
 		win.WPARAM(int32(me.index)), win.LPARAM(hIcon))
 	return me

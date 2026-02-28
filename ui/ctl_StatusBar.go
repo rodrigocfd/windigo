@@ -15,9 +15,10 @@ import (
 // [status bar]: https://learn.microsoft.com/en-us/windows/win32/controls/status-bars
 type StatusBar struct {
 	_BaseCtrl
-	events     StatusBarEvents
-	partsData  []_StatusBarPartData
-	rightEdges []int32 // buffer to speed up ResizeToFitParent() calls
+	events      StatusBarEvents
+	iconCache16 _IconCacheHicon
+	partsData   []_StatusBarPartData
+	rightEdges  []int32 // buffer to speed up ResizeToFitParent() calls
 }
 
 type _StatusBarPartData struct {
@@ -53,10 +54,11 @@ func NewStatusBar(parent Parent, opts *VarOptsStatusBar) *StatusBar {
 
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &StatusBar{
-		_BaseCtrl:  newBaseCtrl(opts.ctrlId),
-		events:     StatusBarEvents{opts.ctrlId, &parent.base().userEvents},
-		partsData:  make([]_StatusBarPartData, 0, len(opts.parts)),
-		rightEdges: make([]int32, len(opts.parts)), // initially filled with zeros
+		_BaseCtrl:   newBaseCtrl(opts.ctrlId),
+		events:      StatusBarEvents{opts.ctrlId, &parent.base().userEvents},
+		iconCache16: newIconCacheHicon(),
+		partsData:   make([]_StatusBarPartData, 0, len(opts.parts)),
+		rightEdges:  make([]int32, len(opts.parts)), // initially filled with zeros
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -78,6 +80,10 @@ func NewStatusBar(parent Parent, opts *VarOptsStatusBar) *StatusBar {
 		me.resizeToFitParent(WmSize{p})
 	})
 
+	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
+		me.iconCache16.Release()
+	})
+
 	return me
 }
 
@@ -97,7 +103,7 @@ func (me *StatusBar) addParts(parts []_StatusBarOptPart) {
 
 	hParent, _ := me.Hwnd().GetParent()
 	rc, _ := hParent.GetClientRect()
-	me.resizeToFitParent(WmSize{ // force the creation of the parts, so we can set text
+	me.resizeToFitParent(WmSize{ // force the creation of the parts, so we can set text and icon
 		Raw: Wm{
 			WParam: win.WPARAM(co.SIZE_REQ_RESTORED),
 			LParam: win.MAKELPARAM(uint16(rc.Right-rc.Left), 0),
@@ -106,6 +112,9 @@ func (me *StatusBar) addParts(parts []_StatusBarOptPart) {
 
 	for i, part := range parts {
 		me.Part(i).SetText(part.text)
+		if part.icon.isValid() {
+			me.Part(i).SetIcon(part.icon)
+		}
 	}
 }
 
@@ -188,6 +197,7 @@ type _StatusBarOptPart struct {
 	width int
 	flex  int
 	text  string
+	icon  Ico
 }
 
 // Options for [NewStatusBar].
@@ -205,9 +215,21 @@ func (o *VarOptsStatusBar) CtrlId(id uint16) *VarOptsStatusBar { o.ctrlId = id; 
 // Example:
 //
 //	win.OptsStatusBar().
-//		FixedPart(ui.DpiX(100), "Fo")
+//		FixedPart(ui.DpiX(100), "Foo")
 func (o *VarOptsStatusBar) FixedPart(cx int, text string) *VarOptsStatusBar {
-	o.parts = append(o.parts, _StatusBarOptPart{cx, 0, text})
+	o.parts = append(o.parts, _StatusBarOptPart{cx, 0, text, Ico{}})
+	return o
+}
+
+// Adds a fixed-width part to the StatusBar, with the given width. Also adds an
+// icon, either from the resource or from a shell file extension.
+//
+// Example:
+//
+//	win.OptsStatusBar().
+//		FixedPartIcon(ui.DpiX(100), "Foo", ui.IcoId(101))
+func (o *VarOptsStatusBar) FixedPartIcon(cx int, text string, icon Ico) *VarOptsStatusBar {
+	o.parts = append(o.parts, _StatusBarOptPart{cx, 0, text, icon})
 	return o
 }
 
@@ -219,7 +241,20 @@ func (o *VarOptsStatusBar) FixedPart(cx int, text string) *VarOptsStatusBar {
 //	win.OptsStatusBar().
 //		FlexPart(1, "Foo")
 func (o *VarOptsStatusBar) FlexPart(flex int, text string) *VarOptsStatusBar {
-	o.parts = append(o.parts, _StatusBarOptPart{0, flex, text})
+	o.parts = append(o.parts, _StatusBarOptPart{0, flex, text, Ico{}})
+	return o
+}
+
+// Adds a variable-sized part to the StatusBar, which will resize according to
+// the remaining space. Also adds an icon, either from the resource or from a
+// shell file extension.
+//
+// Example:
+//
+//	win.OptsStatusBar().
+//		FlexPartIcon(1, "Foo", ui.IcoId(101))
+func (o *VarOptsStatusBar) FlexPartIcon(flex int, text string, icon Ico) *VarOptsStatusBar {
+	o.parts = append(o.parts, _StatusBarOptPart{0, flex, text, icon})
 	return o
 }
 

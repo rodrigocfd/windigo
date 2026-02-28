@@ -91,13 +91,6 @@ func setUniqueCtrlId(pCtrlId *uint16) {
 	}
 }
 
-// Used the options of controls which can keep image lists. If id is not zero,
-// we'll load a resource icon; otherwise we'll load the file extension icon.
-type _IconAdd struct {
-	id      uint16 // Resource ID of the icon.
-	fileExt string // File extension of the icon.
-}
-
 // Calculates the bound rectangle to fit the text with current UI font.
 func calcTextBoundBox(text string) (win.SIZE, error) {
 	isTextEmpty := false

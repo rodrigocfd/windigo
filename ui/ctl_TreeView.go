@@ -15,8 +15,9 @@ import (
 // [tree view]: https://learn.microsoft.com/en-us/windows/win32/controls/tree-view-controls
 type TreeView struct {
 	_BaseCtrl
-	events    TreeViewEvents
-	itemsData map[win.HTREEITEM]interface{} // data associated with each item; replaces LPARAM approach
+	events      TreeViewEvents
+	iconCache16 _IconCacheImgList
+	itemsData   map[win.HTREEITEM]interface{} // data associated with each item; replaces LPARAM approach
 }
 
 // Creates a new [TreeView] with [win.CreateWindowEx].
@@ -39,8 +40,10 @@ type TreeView struct {
 func NewTreeView(parent Parent, opts *VarOptsTreeView) *TreeView {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &TreeView{
-		_BaseCtrl: newBaseCtrl(opts.ctrlId),
-		events:    TreeViewEvents{opts.ctrlId, &parent.base().userEvents},
+		_BaseCtrl:   newBaseCtrl(opts.ctrlId),
+		events:      TreeViewEvents{opts.ctrlId, &parent.base().userEvents},
+		iconCache16: newIconCacheImgList(),
+		itemsData:   make(map[win.HTREEITEM]interface{}),
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -50,14 +53,6 @@ func NewTreeView(parent Parent, opts *VarOptsTreeView) *TreeView {
 			me.SetExtendedStyle(true, opts.ctrlExStyle)
 		}
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
-
-		for _, ico16 := range opts.icons16 {
-			if ico16.id != 0 {
-				me.ImageList(co.TVSIL_NORMAL).AddIconFromResource(ico16.id)
-			} else {
-				me.ImageList(co.TVSIL_NORMAL).AddIconFromShell(ico16.fileExt)
-			}
-		}
 	})
 
 	me.defaultMessageHandlers(parent)
@@ -84,8 +79,10 @@ func NewTreeView(parent Parent, opts *VarOptsTreeView) *TreeView {
 //	wnd.RunAsMain()
 func NewTreeViewDlg(parent Parent, ctrlId uint16, layout LAY) *TreeView {
 	me := &TreeView{
-		_BaseCtrl: newBaseCtrl(ctrlId),
-		events:    TreeViewEvents{ctrlId, &parent.base().userEvents},
+		_BaseCtrl:   newBaseCtrl(ctrlId),
+		events:      TreeViewEvents{ctrlId, &parent.base().userEvents},
+		iconCache16: newIconCacheImgList(),
+		itemsData:   make(map[win.HTREEITEM]interface{}),
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
@@ -104,14 +101,7 @@ func (me *TreeView) defaultMessageHandlers(parent Parent) {
 	})
 
 	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
-		kinds := []co.TVSIL{co.TVSIL_NORMAL, co.TVSIL_STATE}
-		for _, kind := range kinds {
-			h, _ := me.hWnd.SendMessage(co.TVM_GETIMAGELIST, win.WPARAM(kind), 0)
-			if h != 0 {
-				me.hWnd.SendMessage(co.TVM_SETIMAGELIST, win.WPARAM(kind), 0) // release image list
-				win.HIMAGELIST(h).Destroy()
-			}
-		}
+		me.iconCache16.Release()
 	})
 }
 
@@ -125,13 +115,27 @@ func (me *TreeView) On() *TreeViewEvents {
 
 // Adds a new root item with [TVM_INSERTITEM], returning the new item.
 //
-// The iconIndex is the zero-based index of the icon previously inserted into
-// the control's image list, or -1 for no icon.
+// Panics on error.
 //
 // [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
-func (me *TreeView) AddRoot(text string, iconIndex int) TreeViewItem {
+func (me *TreeView) AddRoot(text string) TreeViewItem {
 	return me.Item(win.HTREEITEM(0)).
-		AddChild(text, iconIndex)
+		AddChild(text)
+}
+
+// Adds a new root item with its 16x16 icon, either from the resource or from a
+// shell file extension, with [TVM_INSERTITEM], returning the new item.
+//
+// Note that, once you add an item with icon, all other items will also be
+// rendered with icons. Those which you didn't specify the icon will simply
+// display the first icon.
+//
+// Panics on error.
+//
+// [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
+func (me *TreeView) AddRootWithIcon(text string, icon Ico) TreeViewItem {
+	return me.Item(win.HTREEITEM(0)).
+		AddChildWithIcon(text, icon)
 }
 
 // Deletes all items at once with [TVM_DELETEITEM].
@@ -157,24 +161,6 @@ func (me *TreeView) FirstVisibleItem() (TreeViewItem, bool) {
 		return TreeViewItem{me, win.HTREEITEM(hVisible)}, true
 	}
 	return TreeViewItem{}, false
-}
-
-// Retrieves the given image list with [TVM_GETIMAGELIST]. The image lists are
-// lazy-initialized: the first time you call this method for a given image list,
-// it will be created and assigned with [TVM_SETIMAGELIST].
-//
-// The image lists will be automatically destroyed.
-//
-// [TVM_GETIMAGELIST]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-getimagelist
-// [TVM_SETIMAGELIST]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-setimagelist
-func (me *TreeView) ImageList(which co.TVSIL) win.HIMAGELIST {
-	h, _ := me.hWnd.SendMessage(co.TVM_GETIMAGELIST, win.WPARAM(which), 0)
-	hImg := win.HIMAGELIST(h)
-	if hImg == win.HIMAGELIST(0) {
-		hImg, _ = win.ImageListCreate(16, 16, co.ILC_COLOR32, 1, 1)
-		me.hWnd.SendMessage(co.TVM_SETIMAGELIST, win.WPARAM(which), win.LPARAM(hImg))
-	}
-	return hImg
 }
 
 // Returns the item with the given handle.
@@ -235,7 +221,6 @@ type VarOptsTreeView struct {
 	ctrlExStyle co.TVS_EX
 	wndStyle    co.WS
 	wndExStyle  co.WS_EX
-	icons16     []_IconAdd
 }
 
 // Options for [NewTreeView].
@@ -301,22 +286,6 @@ func (o *VarOptsTreeView) WndStyle(s co.WS) *VarOptsTreeView { o.wndStyle = s; r
 //
 // Defaults to co.WS_EX_LEFT | co.WS_EX_CLIENTEDGE.
 func (o *VarOptsTreeView) WndExStyle(s co.WS_EX) *VarOptsTreeView { o.wndExStyle = s; return o }
-
-// Adds an icon to the 16x16 [win.HIMAGELIST] of the tree view, by loading the
-// resource with the given ID. This icon can later be referenced by its
-// zero-based index, and be applied to an item.
-func (o *VarOptsTreeView) IconId(id uint16) *VarOptsTreeView {
-	o.icons16 = append(o.icons16, _IconAdd{id, ""})
-	return o
-}
-
-// Adds an icon to the 16x16 [win.HIMAGELIST] of the tree view, by loading the
-// icon of the given file extension, like "txt". This icon can later be
-// referenced by its zero-based index, and be applied to an item.
-func (o *VarOptsTreeView) IconExt(fileExt string) *VarOptsTreeView {
-	o.icons16 = append(o.icons16, _IconAdd{0, fileExt})
-	return o
-}
 
 // Native [tree view] control events.
 //

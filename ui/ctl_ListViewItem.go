@@ -132,12 +132,51 @@ func (me ListViewItem) Focus() ListViewItem {
 	return me
 }
 
-// Retrieves the zero-based icon index with [LVM_GETITEM].
+// Retrieves the 16x16 icon associated to the item, if any, with [LVM_GETITEM].
+//
+// The 16x16 icons are rendered if the list view is in details (report) or small
+// icon view, otherwise the 32x32 icons are rendered.
 //
 // Panics on error.
 //
+// Example:
+//
+//	var lv ui.ListView // initialized somewhere
+//
+//	if icon, ok := lv.Item(0).Icon16(); ok {
+//		if resourceId, ok := icon.Id(); ok {
+//			println(resourceId)
+//		}
+//	}
+//
 // [LVM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitem
-func (me ListViewItem) IconIndex() int {
+func (me ListViewItem) Icon16() (Ico, bool) {
+	return me.iconRaw(&me.owner.iconCache16)
+}
+
+// Retrieves the 32x32 icon associated to the item, if any, with [LVM_GETITEM].
+//
+// The 16x16 icons are rendered if the list view is in details (report) or small
+// icon view, otherwise the 32x32 icons are rendered.
+//
+// Panics on error.
+//
+// Example:
+//
+//	var lv ui.ListView // initialized somewhere
+//
+//	if icon, ok := lv.Item(0).Icon16(); ok {
+//		if resourceId, ok := icon.Id(); ok {
+//			println(resourceId)
+//		}
+//	}
+//
+// [LVM_GETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getitem
+func (me ListViewItem) Icon32() (Ico, bool) {
+	return me.iconRaw(&me.owner.iconCache32)
+}
+
+func (me ListViewItem) iconRaw(iconCache *_IconCacheImgList) (Ico, bool) {
 	lvi := win.LVITEM{
 		IItem: me.index,
 		Mask:  co.LVIF_IMAGE,
@@ -149,7 +188,7 @@ func (me ListViewItem) IconIndex() int {
 		panic("LVM_GETITEM failed.")
 	}
 
-	return int(lvi.IImage)
+	return iconCache.EntryByIndex(int(lvi.IImage))
 }
 
 // Returns the zero-based index of the item.
@@ -259,17 +298,64 @@ func (me ListViewItem) SetData(data interface{}) {
 	me.owner.itemsData[me.Uid()] = data
 }
 
-// Sets the zero-based icon index with [LVM_SETITEM].
+// Sets the given 16x16 icon, either from the resource or from a shell file
+// extension, with [LVM_SETITEM].
+//
+// The 16x16 icons are rendered if the list view is in details (report) or small
+// icon view, otherwise the 32x32 icons are rendered.
 //
 // Returns the same item, so further operations can be chained.
 //
 // Panics on error.
 //
+// Example:
+//
+//	var lv ui.ListView // initialized somewhere
+//
+//	lv.Item(0).SetIcon16(ui.IcoId(101))    // icon resource with ID=101
+//	lv.Item(0).SetIcon16(ui.IcoExt("txt")) // shell icon of *.txt files
+//
 // [LVM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setitem
-func (me ListViewItem) SetIconIndex(iconIndex int) ListViewItem {
+func (me ListViewItem) SetIcon16(icon Ico) ListViewItem {
+	return me.setIconRaw(16, &me.owner.iconCache16, icon)
+}
+
+// Sets the given 32x32 icon, either from the resource or from a shell file
+// extension, with [LVM_SETITEM].
+//
+// The 16x16 icons are rendered if the list view is in details (report) or small
+// icon view, otherwise the 32x32 icons are rendered.
+//
+// Returns the same item, so further operations can be chained.
+//
+// Panics on error.
+//
+// Example:
+//
+//	var lv ui.ListView // initialized somewhere
+//
+//	lv.Item(0).SetIcon32(ui.IcoId(101))    // icon resource with ID=101
+//	lv.Item(0).SetIcon32(ui.IcoExt("txt")) // shell icon of *.txt files
+//
+// [LVM_SETITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setitem
+func (me ListViewItem) SetIcon32(icon Ico) ListViewItem {
+	return me.setIconRaw(32, &me.owner.iconCache32, icon)
+}
+
+func (me ListViewItem) setIconRaw(resolution int, iconCache *_IconCacheImgList, icon Ico) ListViewItem {
+	hImgList, newImgList, idxIcon := iconCache.IconIndex(resolution, icon)
+	if newImgList { // image list has just been created
+		lvsil := co.LVSIL_NORMAL
+		if resolution == 16 {
+			lvsil = co.LVSIL_SMALL
+		}
+		me.owner.Hwnd().SendMessage(co.LVM_SETIMAGELIST, win.WPARAM(lvsil), win.LPARAM(hImgList))
+	}
+
 	lvi := win.LVITEM{
-		IItem: me.index,
-		Mask:  co.LVIF_IMAGE,
+		IItem:  me.index,
+		Mask:   co.LVIF_IMAGE,
+		IImage: int32(idxIcon),
 	}
 
 	ret, err := me.owner.hWnd.SendMessage(co.LVM_SETITEM,

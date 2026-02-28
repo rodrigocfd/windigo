@@ -1142,8 +1142,8 @@ const (
 type TVSIL uint8
 
 const (
-	TVSIL_NORMAL TVSIL = 0
-	TVSIL_STATE  TVSIL = 2
+	TVSIL_NORMAL TVSIL = 0 // Indicates the normal image list, which contains selected, nonselected, and overlay images for the items of a tree-view control.
+	TVSIL_STATE  TVSIL = 2 // Indicates the state image list. You can use state images to indicate application-defined item states. A state image is displayed to the left of an item's selected or nonselected image.
 )
 
 // UpDown control [styles].

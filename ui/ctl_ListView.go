@@ -19,10 +19,11 @@ import (
 // [list view]: https://learn.microsoft.com/en-us/windows/win32/controls/list-view-controls-overview
 type ListView struct {
 	_BaseCtrl
-	events       ListViewEvents
-	hContextMenu win.HMENU
-	itemsData    map[int]interface{} // data associated with each item; replaces LPARAM approach
-	header       *Header
+	events                   ListViewEvents
+	iconCache16, iconCache32 _IconCacheImgList
+	hContextMenu             win.HMENU
+	itemsData                map[int]interface{} // data associated with each item; replaces LPARAM approach
+	header                   *Header
 }
 
 // Creates a new [ListView] with [win.CreateWindowEx].
@@ -46,6 +47,8 @@ func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 	me := &ListView{
 		_BaseCtrl:    newBaseCtrl(opts.ctrlId),
 		events:       ListViewEvents{opts.ctrlId, &parent.base().userEvents},
+		iconCache16:  newIconCacheImgList(),
+		iconCache32:  newIconCacheImgList(),
 		hContextMenu: lvLoadContextMenu(opts.contextMenu, opts.contextMenuId),
 		itemsData:    make(map[int]interface{}),
 		header:       newHeaderFromListView(parent),
@@ -61,21 +64,6 @@ func NewListView(parent Parent, opts *VarOptsListView) *ListView {
 		me.assignOrClearHeader()
 		for _, col := range opts.cols {
 			me.AddCol(col.title, col.width)
-		}
-
-		for _, ico16 := range opts.icons16 {
-			if ico16.id != 0 {
-				me.ImageList(co.LVSIL_SMALL).AddIconFromResource(ico16.id)
-			} else {
-				me.ImageList(co.LVSIL_SMALL).AddIconFromShell(ico16.fileExt)
-			}
-		}
-		for _, ico32 := range opts.icons32 {
-			if ico32.id != 0 {
-				me.ImageList(co.LVSIL_NORMAL).AddIconFromResource(ico32.id)
-			} else {
-				me.ImageList(co.LVSIL_NORMAL).AddIconFromShell(ico32.fileExt)
-			}
 		}
 	})
 
@@ -105,6 +93,8 @@ func NewListViewDlg(parent Parent, ctrlId uint16, contextMenuId uint16, layout L
 	me := &ListView{
 		_BaseCtrl:    newBaseCtrl(ctrlId),
 		events:       ListViewEvents{ctrlId, &parent.base().userEvents},
+		iconCache16:  newIconCacheImgList(),
+		iconCache32:  newIconCacheImgList(),
 		hContextMenu: lvLoadContextMenu(win.HMENU(0), contextMenuId),
 		itemsData:    make(map[int]interface{}),
 		header:       newHeaderFromListView(parent),
@@ -170,6 +160,8 @@ func (me *ListView) defaultMessageHandlers(parent Parent) {
 		if me.hContextMenu != 0 {
 			me.hContextMenu.DestroyMenu()
 		}
+		me.iconCache32.Release()
+		me.iconCache16.Release()
 	})
 }
 
@@ -276,32 +268,76 @@ func (me *ListView) AddCol(title string, width int) ListViewCol {
 //
 // [LVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertitem
 func (me *ListView) AddItem(texts ...string) ListViewItem {
-	return me.AddItemWithIcon(-1, texts...)
+	return me.addItemRaw(0, nil, Ico{}, texts...)
 }
 
-// Adds one item with [LVM_INSERTITEM], then sets the texts under each
+// Adds one item and its 16x16 icon, either from the resource or from a shell
+// file extension, with [LVM_INSERTITEM], then sets the texts under each
 // subsequent column, returning the new item.
 //
-// The iconIndex is the zero-based index of the icon previously inserted into
-// the control's image list, or -1 for no icon.
+// The 16x16 icons are rendered if the list view is in details (report) or small
+// icon view, otherwise the 32x32 icons are rendered.
 //
 // Panics if no text is informed; panics on error.
 //
+// Example:
+//
+//	var lv ui.ListView // initialized somewhere
+//
+//	lv.AddItemWithIcon16(ui.IcoId(101), "My Item")    // icon resource with ID=101
+//	lv.AddItemWithIcon16(ui.IcoExt("txt"), "My item") // shell icon of *.txt files
+//
 // [LVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertitem
-func (me *ListView) AddItemWithIcon(iconIndex int, texts ...string) ListViewItem {
+func (me *ListView) AddItemWithIcon16(icon Ico, texts ...string) ListViewItem {
+	return me.addItemRaw(16, &me.iconCache16, icon, texts...)
+}
+
+// Adds one item and its 32x32 icon, either from the resource or from a shell
+// file extension, with [LVM_INSERTITEM], then sets the texts under each
+// subsequent column, returning the new item.
+//
+// The 16x16 icons are rendered if the list view is in details (report) or small
+// icon view, otherwise the 32x32 icons are rendered.
+//
+// Panics if no text is informed; panics on error.
+//
+// Example:
+//
+//	var lv ui.ListView // initialized somewhere
+//
+//	lv.AddItemWithIcon32(ui.IcoId(101), "My Item")    // icon resource with ID=101
+//	lv.AddItemWithIcon32(ui.IcoExt("txt"), "My item") // shell icon of *.txt files
+//
+// [LVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertitem
+func (me *ListView) AddItemWithIcon32(icon Ico, texts ...string) ListViewItem {
+	return me.addItemRaw(32, &me.iconCache32, icon, texts...)
+}
+
+func (me *ListView) addItemRaw(resolution int, iconCache *_IconCacheImgList, icon Ico, texts ...string) ListViewItem {
 	if len(texts) == 0 {
 		panic("You must inform at least 1 text when adding a ListView item.")
 	}
 
 	mask := co.LVIF_TEXT
-	if iconIndex != -1 {
+	idxIconActual := -1
+
+	if icon.isValid() {
 		mask |= co.LVIF_IMAGE
+		hImgList, newImgList, idxIcon := iconCache.IconIndex(resolution, icon)
+		if newImgList { // image list has just been created
+			lvsil := co.LVSIL_NORMAL
+			if resolution == 16 {
+				lvsil = co.LVSIL_SMALL
+			}
+			me.Hwnd().SendMessage(co.LVM_SETIMAGELIST, win.WPARAM(lvsil), win.LPARAM(hImgList))
+		}
+		idxIconActual = idxIcon
 	}
 
 	lvi := win.LVITEM{
 		Mask:   mask,
 		IItem:  0x0fff_ffff, // insert as last one
-		IImage: int32(iconIndex),
+		IImage: int32(idxIconActual),
 	}
 
 	var wText wstr.BufEncoder
@@ -465,30 +501,6 @@ func (me *ListView) HitTest(pos win.POINT) (ListViewItem, bool) {
 		return me.Item(-1), false
 	}
 	return me.Item(int(lvhti.IItem)), true
-}
-
-// Retrieves the given image list with [LVM_GETIMAGELIST]. The image lists are
-// lazy-initialized: the first time you call this method for a given image list,
-// it will be created and assigned with [LVM_SETIMAGELIST].
-//
-// Since [LVS_SHAREIMAGELISTS] style is not allowed, image lists will be
-// automatically destroyed by the OS.
-//
-// [LVM_GETIMAGELIST]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-getimagelist
-// [LVM_SETIMAGELIST]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-setimagelist
-// [LVS_SHAREIMAGELISTS]: https://learn.microsoft.com/en-us/windows/win32/controls/list-view-window-styles
-func (me *ListView) ImageList(which co.LVSIL) win.HIMAGELIST {
-	h, _ := me.hWnd.SendMessage(co.LVM_GETIMAGELIST, win.WPARAM(which), 0)
-	hImg := win.HIMAGELIST(h)
-	if hImg == win.HIMAGELIST(0) {
-		cx, cy := 16, 16
-		if which == co.LVSIL_NORMAL {
-			cx, cy = 32, 32
-		}
-		hImg, _ = win.ImageListCreate(cx, cy, co.ILC_COLOR32, 1, 1)
-		me.hWnd.SendMessage(co.LVM_SETIMAGELIST, win.WPARAM(which), win.LPARAM(hImg))
-	}
-	return hImg
 }
 
 // Returns the item at the given index.
@@ -705,18 +717,17 @@ func (me *ListView) View() co.LV_VIEW {
 
 // Options for [NewListView]; returned by [OptsListView].
 type VarOptsListView struct {
-	ctrlId           uint16
-	layout           LAY
-	position         win.POINT
-	size             win.SIZE
-	ctrlStyle        co.LVS
-	ctrlExStyle      co.LVS_EX
-	wndStyle         co.WS
-	wndExStyle       co.WS_EX
-	contextMenu      win.HMENU
-	contextMenuId    uint16
-	cols             []_ListViewAddCol
-	icons16, icons32 []_IconAdd
+	ctrlId        uint16
+	layout        LAY
+	position      win.POINT
+	size          win.SIZE
+	ctrlStyle     co.LVS
+	ctrlExStyle   co.LVS_EX
+	wndStyle      co.WS
+	wndExStyle    co.WS_EX
+	contextMenu   win.HMENU
+	contextMenuId uint16
+	cols          []_ListViewAddCol
 }
 
 type _ListViewAddCol struct {
@@ -766,14 +777,14 @@ func (o *VarOptsListView) Size(cx, cy int) *VarOptsListView {
 
 // List view control [style], passed to [win.CreateWindowEx].
 //
-// Since the image lists are managed by the control, co.LVS_SHAREIMAGELISTS
-// won't be allowed.
+// Since the image lists are managed by the control, co.LVS_SHAREIMAGELISTS is
+// always automatically set.
 //
 // Defaults to co.LVS_REPORT | co.LVS_NOSORTHEADER | co.LVS_SHOWSELALWAYS.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/list-view-window-styles
 func (o *VarOptsListView) CtrlStyle(s co.LVS) *VarOptsListView {
-	o.ctrlStyle = s &^ co.LVS_SHAREIMAGELISTS // clear bits
+	o.ctrlStyle = s | co.LVS_SHAREIMAGELISTS
 	return o
 }
 
@@ -823,38 +834,6 @@ func (o *VarOptsListView) ContextMenuId(id uint16) *VarOptsListView { o.contextM
 //		.Column("First", ui.Dpi(100))
 func (o *VarOptsListView) Column(title string, width int) *VarOptsListView {
 	o.cols = append(o.cols, _ListViewAddCol{title, width})
-	return o
-}
-
-// Adds an icon to the 16x16 [win.HIMAGELIST] of the list view, by loading the
-// resource with the given ID. This icon can later be referenced by its
-// zero-based index, and be applied to an item.
-func (o *VarOptsListView) Icon16Id(id uint16) *VarOptsListView {
-	o.icons16 = append(o.icons16, _IconAdd{id, ""})
-	return o
-}
-
-// Adds an icon to the 16x16 [win.HIMAGELIST] of the list view, by loading the
-// icon of the given file extension, like "txt". This icon can later be
-// referenced by its zero-based index, and be applied to an item.
-func (o *VarOptsListView) Icon16Ext(fileExt string) *VarOptsListView {
-	o.icons16 = append(o.icons16, _IconAdd{0, fileExt})
-	return o
-}
-
-// Adds an icon to the 32x32 [win.HIMAGELIST] of the list view, by loading the
-// resource with the given ID. This icon can later be referenced by its
-// zero-based index, and be applied to an item.
-func (o *VarOptsListView) Icon32Id(id uint16) *VarOptsListView {
-	o.icons32 = append(o.icons32, _IconAdd{id, ""})
-	return o
-}
-
-// Adds an icon to the 32x32 [win.HIMAGELIST] of the list view, by loading the
-// icon of the given file extension, like "txt". This icon can later be
-// referenced by its zero-based index, and be applied to an item.
-func (o *VarOptsListView) Icon32Ext(fileExt string) *VarOptsListView {
-	o.icons32 = append(o.icons32, _IconAdd{0, fileExt})
 	return o
 }
 
