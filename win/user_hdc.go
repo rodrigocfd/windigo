@@ -100,6 +100,20 @@ func callbackGet_EnumDisplayMonitors() uintptr {
 	return callback_EnumDisplayMonitors
 }
 
+// [FillRect] function.
+//
+// [FillRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-fillrect
+func (hdc HDC) FillRect(pRc *RECT, hBrush HBRUSH) error {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_FillRect, "FillRect"),
+		uintptr(hdc),
+		uintptr(unsafe.Pointer(pRc)),
+		uintptr(hBrush))
+	return utl.ZeroAsSysInvalidParm(ret)
+}
+
+var _user_FillRect *syscall.Proc
+
 // [FrameRect] function.
 //
 // [FrameRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-framerect

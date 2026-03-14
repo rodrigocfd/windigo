@@ -502,20 +502,6 @@ func (hdc HDC) FillPath() error {
 
 var _gdi_FillPath *syscall.Proc
 
-// [FillRect] function.
-//
-// [FillRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-fillrect
-func (hdc HDC) FillRect(pRc *RECT, hBrush HBRUSH) error {
-	ret, _, _ := syscall.SyscallN(
-		dll.Gdi.Load(&_gdi_FillRect, "FillRect"),
-		uintptr(hdc),
-		uintptr(unsafe.Pointer(pRc)),
-		uintptr(hBrush))
-	return utl.ZeroAsSysInvalidParm(ret)
-}
-
-var _gdi_FillRect *syscall.Proc
-
 // [FillRgn] function.
 //
 // [FillRgn]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-fillrgn
