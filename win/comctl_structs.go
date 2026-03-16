@@ -1173,3 +1173,40 @@ func (tvx *TVITEMEX) SetPszText(val []uint16) {
 	tvx.cchTextMax = int32(len(val))
 	tvx.pszText = &val[0]
 }
+
+// [TOOLINFO] struct.
+//
+// ⚠️ You must call [TOOLINFO.SetCbSize] to initialize the struct.
+//
+// Example:
+//
+//	var ti win.TOOLINFO
+//	ti.SetCbSize()
+//
+// [TOOLINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tttoolinfow
+type TOOLINFO struct {
+	cbSize     uint32
+	UFlags     co.TTF
+	Hwnd       HWND
+	UId        uintptr
+	Rect       RECT
+	Hinst      HINSTANCE
+	pszText    *uint16
+	cchTextMax int32
+	LParam     LPARAM
+	lpReserved *uint16
+}
+
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
+func (ti *TOOLINFO) SetCbSize() {
+	ti.cbSize = uint32(unsafe.Sizeof(*ti))
+}
+
+func (ti *TOOLINFO) PszText() []uint16 {
+	return unsafe.Slice(ti.pszText, ti.cchTextMax)
+}
+func (ti *TOOLINFO) SetPszText(val []uint16) {
+	ti.cchTextMax = int32(len(val))
+	ti.pszText = &val[0]
+}

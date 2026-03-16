@@ -1162,3 +1162,105 @@ const (
 	UDS_NOTHOUSANDS UDS = 0x0080
 	UDS_HOTTRACK    UDS = 0x0100
 )
+
+const (
+	TOOLTIP_CLASS = "tooltips_class32"
+)
+
+// [TTTOOLINFO] flags.
+//
+// [TTTOOLINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tttoolinfow
+type TTF uint32
+
+const (
+	TTF_IDISHWND    TTF = 0x0001 // uId is an HWND, not a control ID
+	TTF_CENTERTIP   TTF = 0x0002 // Center tooltip below the tool
+	TTF_RTLREADING  TTF = 0x0004 // Right-to-left text rendering
+	TTF_SUBCLASS    TTF = 0x0010 // Tooltip subclasses the tool's window
+	TTF_TRACK       TTF = 0x0020 // Manually position with TTM_TRACKPOSITION
+	TTF_ABSOLUTE    TTF = 0x0080 // Use exact TTM_TRACKPOSITION coords (needs TTF_TRACK)
+	TTF_TRANSPARENT TTF = 0x0100 // Forward mouse events through tooltip window
+	TTF_PARSELINKS  TTF = 0x1000 // Parse and display anchor tags in text
+	TTF_DI_SETITEM  TTF = 0x8000 // Used in TTN_GETDISPINFO to cache the text
+)
+
+type TTS WS
+
+const (
+	TTS_ALWAYSTIP      TTS = 0x01  // Show even when parent is inactive
+	TTS_NOPREFIX       TTS = 0x02  // Don't strip '&' ampersand characters
+	TTS_NOANIMATE      TTS = 0x10  // Disable slide/fade animation
+	TTS_NOFADE         TTS = 0x20  // Disable fade animation only
+	TTS_BALLOON        TTS = 0x40  // Balloon-style tooltip
+	TTS_CLOSE          TTS = 0x80  // Show close button (balloon style only)
+	TTS_USEVISUALSTYLE TTS = 0x100 // Use visual styles (themed rendering)
+)
+
+// TTM_ — Tooltip Messages
+const (
+	// Tool Management
+	TTM_ADDTOOLA        = (WM_USER + 4)  // Add a tool (ANSI)
+	TTM_ADDTOOLW        = (WM_USER + 50) // Add a tool (Unicode)
+	TTM_DELTOOLA        = (WM_USER + 5)  // Remove a tool (ANSI)
+	TTM_DELTOOLW        = (WM_USER + 51) // Remove a tool (Unicode)
+	TTM_NEWTOOLRECTA    = (WM_USER + 6)  // Update tool rect (ANSI)
+	TTM_NEWTOOLRECTW    = (WM_USER + 52) // Update tool rect (Unicode)
+	TTM_GETTOOLINFOA    = (WM_USER + 8)  // Get TOOLINFO (ANSI)
+	TTM_GETTOOLINFOW    = (WM_USER + 53) // Get TOOLINFO (Unicode)
+	TTM_SETTOOLINFOA    = (WM_USER + 9)  // Set TOOLINFO (ANSI)
+	TTM_SETTOOLINFOW    = (WM_USER + 54) // Set TOOLINFO (Unicode)
+	TTM_ENUMTOOLSA      = (WM_USER + 14) // Enumerate tools (ANSI)
+	TTM_ENUMTOOLSW      = (WM_USER + 58) // Enumerate tools (Unicode)
+	TTM_GETCURRENTTOOLA = (WM_USER + 15) // Get active tool (ANSI)
+	TTM_GETCURRENTTOOLW = (WM_USER + 59) // Get active tool (Unicode)
+	TTM_TOOLCOUNT       = (WM_USER + 13) // Get number of tools
+
+	// Hit Testing
+	TTM_HITTESTA = (WM_USER + 10) // Hit test a point (ANSI)
+	TTM_HITTESTW = (WM_USER + 55) // Hit test a point (Unicode)
+
+	// Text
+	TTM_GETTEXTA       = (WM_USER + 11) // Get tooltip text (ANSI)
+	TTM_GETTEXTW       = (WM_USER + 56) // Get tooltip text (Unicode)
+	TTM_UPDATETIPTEXTA = (WM_USER + 12) // Update text (ANSI)
+	TTM_UPDATETIPTEXTW = (WM_USER + 57) // Update text (Unicode)
+
+	// Visibility & Activation
+	TTM_ACTIVATE   = (WM_USER + 1)  // Enable/disable tooltip (wParam = TRUE/FALSE)
+	TTM_POPUP      = (WM_USER + 34) // Show tooltip immediately
+	TTM_POP        = (WM_USER + 28) // Hide tooltip immediately
+	TTM_UPDATE     = (WM_USER + 29) // Force redraw of current tooltip
+	TTM_RELAYEVENT = (WM_USER + 7)  // Relay mouse msg from parent (if no TTF_SUBCLASS)
+
+	// Position
+	TTM_TRACKACTIVATE = (WM_USER + 17) // Show/hide a tracking tooltip
+	TTM_TRACKPOSITION = (WM_USER + 18) // Set position of tracking tooltip
+
+	// Timing (wParam = TTDT_ constant, lParam = milliseconds)
+	TTM_SETDELAYTIME = (WM_USER + 3)  // Set a delay time
+	TTM_GETDELAYTIME = (WM_USER + 21) // Get a delay time
+
+	// Margins & Sizing
+	TTM_SETMARGIN      = (WM_USER + 26) // Set internal margins (RECT*)
+	TTM_GETMARGIN      = (WM_USER + 27) // Get internal margins
+	TTM_SETMAXTIPWIDTH = (WM_USER + 24) // Set max width (enables word wrap)
+	TTM_GETMAXTIPWIDTH = (WM_USER + 25) // Get max width
+	TTM_GETBUBBLESIZE  = (WM_USER + 30) // Get width/height of tooltip
+
+	// Colors
+	TTM_SETTIPBKCOLOR   = (WM_USER + 19) // Set background color
+	TTM_SETTIPTEXTCOLOR = (WM_USER + 20) // Set text color
+	TTM_GETTIPBKCOLOR   = (WM_USER + 22) // Get background color
+	TTM_GETTIPTEXTCOLOR = (WM_USER + 23) // Get text color
+
+	// Title (icon + title bar above tip text)
+	TTM_SETTITLEW = (WM_USER + 33) // Set ti
+)
+
+// TTDT_ — Delay Time Selectors (used with TTM_SETDELAYTIME)
+const (
+	TTDT_AUTOMATIC = 0 // Reset all three delays to default ratio
+	TTDT_RESHOW    = 1 // Delay before re-show when moving between tools
+	TTDT_AUTOPOP   = 2 // How long tooltip stays visible
+	TTDT_INITIAL   = 3 // Delay before tooltip first appears
+)
