@@ -2258,3 +2258,7 @@ const (
 	WVR_REDRAW          = WVR_HREDRAW | WVR_VREDRAW
 	WVR_VALIDRECTS  WVR = 0x0400
 )
+
+const (
+	CW_USEDEFAULT = ^int32(0x7fffffff)
+)
