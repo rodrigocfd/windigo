@@ -1192,7 +1192,6 @@ type TOOLINFO struct {
 	Rect       RECT
 	Hinst      HINSTANCE
 	pszText    *uint16
-	cchTextMax int32
 	LParam     LPARAM
 	lpReserved *uint16
 }
@@ -1203,10 +1202,6 @@ func (ti *TOOLINFO) SetCbSize() {
 	ti.cbSize = uint32(unsafe.Sizeof(*ti))
 }
 
-func (ti *TOOLINFO) PszText() []uint16 {
-	return unsafe.Slice(ti.pszText, ti.cchTextMax)
-}
 func (ti *TOOLINFO) SetPszText(val []uint16) {
-	ti.cchTextMax = int32(len(val))
 	ti.pszText = &val[0]
 }
