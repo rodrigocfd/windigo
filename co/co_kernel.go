@@ -650,6 +650,11 @@ var (
 	LUID_PROTECTED_TO_SYSTEM = LUID{0x3e2, 0x0}
 )
 
+type LUID_AND_ATTRIBUTES struct {
+	Luid       LUID
+	Attributes uint32
+}
+
 // [MEMORY_BASIC_INFORMATION] flags.
 //
 // [MEMORY_BASIC_INFORMATION]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-memory_basic_information
@@ -1474,4 +1479,94 @@ const (
 	WTS_SESSION_REMOTE_CONTROL WTS = 0x9
 	WTS_SESSION_CREATE         WTS = 0xa
 	WTS_SESSION_TERMINATE      WTS = 0xb
+)
+
+// TOKEN_ Specific Access Rights
+const (
+	TOKEN_ASSIGN_PRIMARY    = 0x0001
+	TOKEN_DUPLICATE         = 0x0002
+	TOKEN_IMPERSONATE       = 0x0004
+	TOKEN_QUERY             = 0x0008
+	TOKEN_QUERY_SOURCE      = 0x0010
+	TOKEN_ADJUST_PRIVILEGES = 0x0020
+	TOKEN_ADJUST_GROUPS     = 0x0040
+	TOKEN_ADJUST_DEFAULT    = 0x0080
+	TOKEN_ADJUST_SESSIONID  = 0x0100
+)
+
+// Composite / convenience masks
+const (
+	TOKEN_ALL_ACCESS_P = STANDARD_RIGHTS_REQUIRED |
+		TOKEN_ASSIGN_PRIMARY |
+		TOKEN_DUPLICATE |
+		TOKEN_IMPERSONATE |
+		TOKEN_QUERY |
+		TOKEN_QUERY_SOURCE |
+		TOKEN_ADJUST_PRIVILEGES |
+		TOKEN_ADJUST_GROUPS |
+		TOKEN_ADJUST_DEFAULT
+
+	TOKEN_ALL_ACCESS = TOKEN_ALL_ACCESS_P | TOKEN_ADJUST_SESSIONID // Windows > 0x0400 (Win2000+)
+
+	TOKEN_READ = STANDARD_RIGHTS_READ | TOKEN_QUERY
+
+	TOKEN_WRITE = STANDARD_RIGHTS_WRITE |
+		TOKEN_ADJUST_PRIVILEGES |
+		TOKEN_ADJUST_GROUPS |
+		TOKEN_ADJUST_DEFAULT
+
+	TOKEN_EXECUTE = STANDARD_RIGHTS_EXECUTE
+
+	TOKEN_TRUST_CONSTRAINT_MASK = STANDARD_RIGHTS_READ |
+		TOKEN_QUERY |
+		TOKEN_QUERY_SOURCE
+)
+
+// Privilege name string constants (winnt.h)
+// Used with LookupPrivilegeValue, AdjustTokenPrivileges, etc.
+const (
+	SE_CREATE_TOKEN_NAME                      = "SeCreateTokenPrivilege"
+	SE_ASSIGNPRIMARYTOKEN_NAME                = "SeAssignPrimaryTokenPrivilege"
+	SE_LOCK_MEMORY_NAME                       = "SeLockMemoryPrivilege"
+	SE_INCREASE_QUOTA_NAME                    = "SeIncreaseQuotaPrivilege"
+	SE_UNSOLICITED_INPUT_NAME                 = "SeUnsolicitedInputPrivilege"
+	SE_MACHINE_ACCOUNT_NAME                   = "SeMachineAccountPrivilege"
+	SE_TCB_NAME                               = "SeTcbPrivilege"
+	SE_SECURITY_NAME                          = "SeSecurityPrivilege"
+	SE_TAKE_OWNERSHIP_NAME                    = "SeTakeOwnershipPrivilege"
+	SE_LOAD_DRIVER_NAME                       = "SeLoadDriverPrivilege"
+	SE_SYSTEM_PROFILE_NAME                    = "SeSystemProfilePrivilege"
+	SE_SYSTEMTIME_NAME                        = "SeSystemtimePrivilege"
+	SE_PROF_SINGLE_PROCESS_NAME               = "SeProfileSingleProcessPrivilege"
+	SE_INC_BASE_PRIORITY_NAME                 = "SeIncreaseBasePriorityPrivilege"
+	SE_CREATE_PAGEFILE_NAME                   = "SeCreatePagefilePrivilege"
+	SE_CREATE_PERMANENT_NAME                  = "SeCreatePermanentPrivilege"
+	SE_BACKUP_NAME                            = "SeBackupPrivilege"
+	SE_RESTORE_NAME                           = "SeRestorePrivilege"
+	SE_SHUTDOWN_NAME                          = "SeShutdownPrivilege"
+	SE_DEBUG_NAME                             = "SeDebugPrivilege"
+	SE_AUDIT_NAME                             = "SeAuditPrivilege"
+	SE_SYSTEM_ENVIRONMENT_NAME                = "SeSystemEnvironmentPrivilege"
+	SE_CHANGE_NOTIFY_NAME                     = "SeChangeNotifyPrivilege"
+	SE_REMOTE_SHUTDOWN_NAME                   = "SeRemoteShutdownPrivilege"
+	SE_UNDOCK_NAME                            = "SeUndockPrivilege"
+	SE_SYNC_AGENT_NAME                        = "SeSyncAgentPrivilege"
+	SE_ENABLE_DELEGATION_NAME                 = "SeEnableDelegationPrivilege"
+	SE_MANAGE_VOLUME_NAME                     = "SeManageVolumePrivilege"
+	SE_IMPERSONATE_NAME                       = "SeImpersonatePrivilege"
+	SE_CREATE_GLOBAL_NAME                     = "SeCreateGlobalPrivilege"
+	SE_TRUSTED_CREDMAN_ACCESS_NAME            = "SeTrustedCredManAccessPrivilege"
+	SE_RELABEL_NAME                           = "SeRelabelPrivilege"
+	SE_INC_WORKING_SET_NAME                   = "SeIncreaseWorkingSetPrivilege"
+	SE_TIME_ZONE_NAME                         = "SeTimeZonePrivilege"
+	SE_CREATE_SYMBOLIC_LINK_NAME              = "SeCreateSymbolicLinkPrivilege"
+	SE_DELEGATE_SESSION_USER_IMPERSONATE_NAME = "SeDelegateSessionUserImpersonatePrivilege"
+)
+
+// Privilege attributes
+const (
+	SE_PRIVILEGE_ENABLED_BY_DEFAULT uint32 = 0x00000001
+	SE_PRIVILEGE_ENABLED            uint32 = 0x00000002
+	SE_PRIVILEGE_REMOVED            uint32 = 0x00000004
+	SE_PRIVILEGE_USED_FOR_ACCESS    uint32 = 0x80000000
 )
