@@ -65,7 +65,8 @@ type TOKEN_PRIVILEGES struct {
 	Privileges     [1]co.LUID_AND_ATTRIBUTES
 }
 
-func (hToken HTOKEN) AdjustTokenPrivilege(privilege co.LUID_AND_ATTRIBUTES) (co.LUID_AND_ATTRIBUTES, error) {
+func (hToken HTOKEN) AdjustTokenPrivilege(luid co.LUID, attribute uint32) (TOKEN_PRIVILEGES, error) {
+	privilege := co.LUID_AND_ATTRIBUTES{luid, attribute}
 	in := TOKEN_PRIVILEGES{PrivilegeCount: 1, Privileges: [1]co.LUID_AND_ATTRIBUTES{privilege}}
 	out := TOKEN_PRIVILEGES{}
 	var outsize uint32
@@ -77,8 +78,7 @@ func (hToken HTOKEN) AdjustTokenPrivilege(privilege co.LUID_AND_ATTRIBUTES) (co.
 		uintptr(unsafe.Sizeof(out)),
 		uintptr(unsafe.Pointer(&out)),
 		uintptr(unsafe.Pointer(&outsize)))
-	return out.Privileges[0], utl.ZeroAsGetLastError(ret, err) // XXX check error handling
+	return out, utl.ZeroAsGetLastError(ret, err) // XXX check error handling
 }
 
 var _advapi_AdjustTokenPrivileges *syscall.Proc
-
