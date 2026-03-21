@@ -430,40 +430,6 @@ func (hProcess HPROCESS) OpenProcessToken(mask uint32) (HTOKEN, error) {
 
 var _kernel_OpenProcessToken *syscall.Proc
 
-// BOOL AdjustTokenPrivileges(
-//[in]            HANDLE            TokenHandle,
-//[in]            BOOL              DisableAllPrivileges,
-//[in, optional]  PTOKEN_PRIVILEGES NewState,
-//[in]            DWORD             BufferLength,
-//[out, optional] PTOKEN_PRIVILEGES PreviousState,
-//[out, optional] PDWORD            ReturnLength
-
-type TOKEN_PRIVILEGES struct {
-	PrivilegeCount uint32
-	Privileges     [1]co.LUID_AND_ATTRIBUTES
-}
-
-func (p *TOKEN_PRIVILEGES) AllPrivileges() []co.LUID_AND_ATTRIBUTES {
-	return (*[(1 << 27) - 1]co.LUID_AND_ATTRIBUTES)(unsafe.Pointer(&p.Privileges[0]))[:p.PrivilegeCount:p.PrivilegeCount]
-}
-
-func (hToken HTOKEN) AdjustTokenPrivilege(privilege co.LUID_AND_ATTRIBUTES) (co.LUID_AND_ATTRIBUTES, error) {
-	in := TOKEN_PRIVILEGES{PrivilegeCount: 1, Privileges: [1]co.LUID_AND_ATTRIBUTES{privilege}}
-	out := TOKEN_PRIVILEGES{}
-	var outsize uint32
-	ret, _, err := syscall.SyscallN(
-		dll.Advapi.Load(&_advapi_AdjustTokenPrivileges, "AdjustTokenPrivileges"),
-		uintptr(hToken),
-		uintptr(0),
-		uintptr(unsafe.Pointer(&in)),
-		uintptr(unsafe.Sizeof(out)),
-		uintptr(unsafe.Pointer(&out)),
-		uintptr(unsafe.Pointer(&outsize)))
-	return out.Privileges[0], utl.ZeroAsGetLastError(ret, err) // XXX check error handling
-}
-
-var _advapi_AdjustTokenPrivileges *syscall.Proc
-
 func (hToken HTOKEN) Close() error {
 	return HANDLE(hToken).CloseHandle()
 }
