@@ -65,6 +65,11 @@ type TOKEN_PRIVILEGES struct {
 	Privileges     [1]co.LUID_AND_ATTRIBUTES
 }
 
+// AllPrivileges returns a slice that can be used to iterate over the privileges in p.
+func (p *TOKEN_PRIVILEGES) AllPrivileges() []co.LUID_AND_ATTRIBUTES {
+	return (*[(1 << 27) - 1]co.LUID_AND_ATTRIBUTES)(unsafe.Pointer(&p.Privileges[0]))[:p.PrivilegeCount:p.PrivilegeCount]
+}
+
 func (hToken HTOKEN) AdjustTokenPrivilege(luid co.LUID, attribute uint32) (TOKEN_PRIVILEGES, error) {
 	privilege := co.LUID_AND_ATTRIBUTES{luid, attribute}
 	in := TOKEN_PRIVILEGES{PrivilegeCount: 1, Privileges: [1]co.LUID_AND_ATTRIBUTES{privilege}}
@@ -73,7 +78,7 @@ func (hToken HTOKEN) AdjustTokenPrivilege(luid co.LUID, attribute uint32) (TOKEN
 	ret, _, err := syscall.SyscallN(
 		dll.Advapi.Load(&_advapi_AdjustTokenPrivileges, "AdjustTokenPrivileges"),
 		uintptr(hToken),
-		uintptr(0),
+		uintptr(0), // do NOT disable all privileges
 		uintptr(unsafe.Pointer(&in)),
 		uintptr(unsafe.Sizeof(out)),
 		uintptr(unsafe.Pointer(&out)),
