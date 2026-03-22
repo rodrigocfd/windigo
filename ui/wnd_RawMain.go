@@ -239,6 +239,9 @@ func (o *VarOptsMain) CmdShow(c co.SW) *VarOptsMain { o.cmdShow = c; return o }
 //		// ...
 //	})
 //
+// In order to make it work, don't forget to call [win.OleInitialize] and defer
+// [win.OleUninitialize] at the beginning of your program.
+//
 // [IDropTarget]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-idroptarget
 // [dragged]: https://learn.microsoft.com/en-us/windows/win32/com/drag-and-drop
 // [WM_DROPFILES]: https://learn.microsoft.com/en-us/windows/win32/shell/wm-dropfiles

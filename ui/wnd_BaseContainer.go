@@ -74,7 +74,9 @@ func (me *_BaseContainer) initDropTarget() *win.OleReleaser {
 	)
 
 	me.beforeUserEvents.wmCreateOrInitdialog(func() {
-		me.hWnd.RegisterDragDrop(dropTarget)
+		if err := me.hWnd.RegisterDragDrop(dropTarget); err != nil {
+			panic("RegisterDragDrop error: " + err.Error())
+		}
 	})
 	me.afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
 		me.hWnd.RevokeDragDrop()
