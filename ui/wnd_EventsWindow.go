@@ -26,7 +26,7 @@ type (
 		fun    func(p unsafe.Pointer) uintptr
 	}
 	_StorageTmr struct { // WM_TIMER
-		timerId uintptr
+		timerId int
 		fun     func()
 	}
 	_WNDTY uint8 // Tells if the window is raw or dialog.
@@ -132,7 +132,7 @@ func (me *WindowEvents) processLast(p Wm) (userRet uintptr, wasHandled bool) {
 		}
 	case co.WM_TIMER:
 		for i := len(me.tmrs) - 1; i >= 0; i-- {
-			if me.tmrs[i].timerId == uintptr(p.WParam) {
+			if me.tmrs[i].timerId == int(p.WParam) {
 				me.tmrs[i].fun()
 				return me.defProcVal, true // handled, stop here
 			}
@@ -229,7 +229,7 @@ func (me *WindowEvents) WmNotify(idFrom uint16, code co.NM, fun func(p unsafe.Po
 // [WM_TIMER] message handler.
 //
 // [WM_TIMER]: https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-timer
-func (me *WindowEvents) WmTimer(timerId uintptr, fun func()) {
+func (me *WindowEvents) WmTimer(timerId int, fun func()) {
 	me.tmrs = append(me.tmrs, _StorageTmr{timerId, fun})
 }
 

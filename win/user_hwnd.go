@@ -987,6 +987,21 @@ func (hWnd HWND) IsWindow() bool {
 
 var _user_IsWindow *syscall.Proc
 
+// [KillTimer] function.
+//
+// The timer is started with [HWND.SetTimer].
+//
+// [SetTimer]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
+func (hWnd HWND) KillTimer(timerId int) error {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_KillTimer, "KillTimer"),
+		uintptr(hWnd),
+		uintptr(timerId))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _user_KillTimer *syscall.Proc
+
 // [LogicalToPhysicalPointForPerMonitorDPI] function.
 //
 // [LogicalToPhysicalPointForPerMonitorDPI]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-logicaltophysicalpointforpermonitordpi
@@ -1240,6 +1255,55 @@ func (hWnd HWND) SetScrollInfo(bar co.SBB, pSi *SCROLLINFO, redraw bool) int {
 }
 
 var _user_SetScrollInfo *syscall.Proc
+
+// [SetTimer] function.
+//
+// The timer can be stopped with [HWND.KillTimer].
+//
+// Note that TIMERPROC callback is not supported. The reason is that, the usage
+// of such callback would imply in allocating a block of memory that would never
+// be freed, thus leaking memory.
+//
+// In order to respond to the timer events, handle the WM_TIMER message on your
+// window, passing the timerId.
+//
+// Example:
+//
+//	const TIMER_ID = 5
+//
+//	func main() {
+//		runtime.LockOSThread()
+//
+//		wnd := ui.NewMain(
+//			ui.OptsMain().
+//				Title("Hello world").
+//				Size(ui.Dpi(500, 400)),
+//		)
+//
+//		wnd.On().WmCreate(func(_ ui.WmCreate) int {
+//			wnd.Hwnd().SetTimer(TIMER_ID, 1000)
+//			return 0
+//		})
+//
+//		wnd.On().WmTimer(TIMER_ID,func() {
+//			println("Timer called!")
+//		})
+//
+//		wnd.RunAsMain()
+//	}
+//
+// [SetTimer]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
+func (hWnd HWND) SetTimer(timerId, msTimeout int) error {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_SetTimer, "SetTimer"),
+		uintptr(hWnd),
+		uintptr(timerId),
+		uintptr(uint32(msTimeout)),
+		0) // no TIMERPROC
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _user_SetTimer *syscall.Proc
 
 // [SetWindowDisplayAffinity] function.
 //
