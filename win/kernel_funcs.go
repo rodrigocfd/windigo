@@ -14,6 +14,19 @@ import (
 	"github.com/rodrigocfd/windigo/wstr"
 )
 
+// [CompareFileTime] function.
+//
+// [CompareFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-comparefiletime
+func CompareFileTime(pFt1, pFt2 *FILETIME) int {
+	ret, _, _ := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_CompareFileTime, "CompareFileTime"),
+		uintptr(unsafe.Pointer(pFt1)),
+		uintptr(unsafe.Pointer(pFt2)))
+	return int(int32(ret))
+}
+
+var _kernel_CompareFileTime *syscall.Proc
+
 // [CopyFile] function.
 //
 // [CopyFile]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-copyfilew
