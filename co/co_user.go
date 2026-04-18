@@ -396,6 +396,38 @@ const (
 	DPI_HOSTING_BEHAVIOR_MIXED   DPI_HOSTING_BEHAVIOR = 1
 )
 
+// [DrawText] flags.
+//
+// [DrawText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawtextw
+type DT uint32
+
+const (
+	DT_TOP                  DT = 0x0000_0000
+	DT_LEFT                 DT = 0x0000_0000
+	DT_CENTER               DT = 0x0000_0001
+	DT_RIGHT                DT = 0x0000_0002
+	DT_VCENTER              DT = 0x0000_0004
+	DT_BOTTOM               DT = 0x0000_0008
+	DT_WORDBREAK            DT = 0x0000_0010
+	DT_SINGLELINE           DT = 0x0000_0020
+	DT_EXPANDTABS           DT = 0x0000_0040
+	DT_TABSTOP              DT = 0x0000_0080
+	DT_NOCLIP               DT = 0x0000_0100
+	DT_EXTERNALLEADING      DT = 0x0000_0200
+	DT_CALCRECT             DT = 0x0000_0400
+	DT_NOPREFIX             DT = 0x0000_0800
+	DT_INTERNAL             DT = 0x0000_1000
+	DT_EDITCONTROL          DT = 0x0000_2000
+	DT_PATH_ELLIPSIS        DT = 0x0000_4000
+	DT_END_ELLIPSIS         DT = 0x0000_8000
+	DT_MODIFYSTRING         DT = 0x0001_0000
+	DT_RTLREADING           DT = 0x0002_0000
+	DT_WORD_ELLIPSIS        DT = 0x0004_0000
+	DT_NOFULLWIDTHCHARBREAK DT = 0x0008_0000
+	DT_HIDEPREFIX           DT = 0x0010_0000
+	DT_PREFIXONLY           DT = 0x0020_0000
+)
+
 // [EnumDisplayDevices] flags.
 //
 // [EnumDisplayDevices]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaydevicesw

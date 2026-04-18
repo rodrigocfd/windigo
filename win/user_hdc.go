@@ -10,6 +10,7 @@ import (
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/dll"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // [DrawIcon] function.
@@ -53,6 +54,26 @@ func (hdc HDC) DrawIconEx(
 }
 
 var _user_DrawIconEx *syscall.Proc
+
+// [DrawText] function.
+//
+// [DrawText]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawtextw
+func (hdc HDC) DrawText(text string, pRc *RECT, format co.DT) (int, error) {
+	var wText wstr.BufEncoder
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_DrawTextW, "DrawTextW"),
+		uintptr(hdc),
+		uintptr(wText.AllowEmpty(text)),
+		uintptr(int32(len(text))),
+		uintptr(unsafe.Pointer(pRc)),
+		uintptr(format))
+	if ret == 0 {
+		return 0, co.ERROR_INVALID_PARAMETER
+	}
+	return int(ret), nil
+}
+
+var _user_DrawTextW *syscall.Proc
 
 // [EnumDisplayMonitors] function.
 //
