@@ -4,7 +4,6 @@ package ui
 
 import (
 	"github.com/rodrigocfd/windigo/co"
-	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 )
 
@@ -42,11 +41,11 @@ func NewCheckBox(parent Parent, opts *VarOptsCheckBox) *CheckBox {
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
-		if opts.size.Cx == 0 && opts.size.Cy == 0 {
-			opts.size, _ = calcTextBoundBoxWithCheck(utl.RemoveAccelAmpersands(opts.text))
-		}
 		me.createWindow(opts.wndExStyle, "BUTTON", opts.text,
 			opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, true)
+		if opts.size.Cx == 0 && opts.size.Cy == 0 {
+			me.SetTextAndResize(opts.text)
+		}
 		parent.base().layout.Add(parent, me.hWnd, opts.layout)
 		me.SetState(opts.state)
 	})
@@ -165,7 +164,10 @@ func (me *CheckBox) SetStateAndTrigger(state co.BST) *CheckBox {
 // Returns the same object, so further operations can be chained.
 func (me *CheckBox) SetTextAndResize(text string) *CheckBox {
 	me.hWnd.SetWindowText(text)
-	boundBox, _ := calcTextBoundBoxWithCheck(utl.RemoveAccelAmpersands(text))
+	boundBox, ok := calcComctlBoundBox(me.hWnd)
+	if !ok {
+		boundBox, _ = calcTextBoundBoxWithCheck(text) // fallback, no ComCtrl v6
+	}
 	me.hWnd.SetWindowPos(win.HWND(0), win.POINT{}, boundBox, co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me
 }
@@ -200,7 +202,7 @@ type VarOptsCheckBox struct {
 // Options for NewCheckBox].
 func OptsCheckBox() *VarOptsCheckBox {
 	return &VarOptsCheckBox{
-		ctrlStyle: co.BS_AUTOCHECKBOX,
+		ctrlStyle: co.BS_AUTOCHECKBOX | co.BS_MULTILINE,
 		wndStyle:  co.WS_CHILD | co.WS_VISIBLE | co.WS_TABSTOP | co.WS_GROUP,
 	}
 }
@@ -242,7 +244,7 @@ func (o *VarOptsCheckBox) Size(cx, cy int) *VarOptsCheckBox {
 
 // Check box control [style], passed to [win.CreateWindowEx].
 //
-// Defaults to co.BS_AUTOCHECKBOX.
+// Defaults to co.BS_AUTOCHECKBOX | co.BS_MULTILINE.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/button-styles
 func (o *VarOptsCheckBox) CtrlStyle(s co.BS) *VarOptsCheckBox { o.ctrlStyle = s; return o }

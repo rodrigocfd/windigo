@@ -4,7 +4,6 @@ package ui
 
 import (
 	"github.com/rodrigocfd/windigo/co"
-	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 )
 
@@ -75,7 +74,10 @@ func (me *RadioButton) SelectAndTrigger() *RadioButton {
 // Returns the same object, so further operations can be chained.
 func (me *RadioButton) SetTextAndResize(text string) *RadioButton {
 	me.hWnd.SetWindowText(text)
-	boundBox, _ := calcTextBoundBoxWithCheck(utl.RemoveAccelAmpersands(text))
+	boundBox, ok := calcComctlBoundBox(me.hWnd)
+	if !ok {
+		boundBox, _ = calcTextBoundBoxWithCheck(text) // fallback, no ComCtrl v6
+	}
 	me.hWnd.SetWindowPos(win.HWND(0), win.POINT{}, boundBox, co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me
 }
@@ -96,7 +98,7 @@ type VarOptsRadioButton struct {
 // Options for [NewRadioGroup].
 func OptsRadioButton() *VarOptsRadioButton {
 	return &VarOptsRadioButton{
-		ctrlStyle: co.BS_AUTORADIOBUTTON,
+		ctrlStyle: co.BS_AUTORADIOBUTTON | co.BS_MULTILINE,
 		wndStyle:  co.WS_CHILD | co.WS_VISIBLE,
 	}
 }
@@ -138,7 +140,7 @@ func (o *VarOptsRadioButton) Size(cx, cy int) *VarOptsRadioButton {
 
 // Radio button control [style], passed to [win.CreateWindowEx].
 //
-// Defaults to co.BS_AUTORADIOBUTTON.
+// Defaults to co.BS_AUTORADIOBUTTON | co.BS_MULTILINE.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/button-styles
 func (o *VarOptsRadioButton) CtrlStyle(s co.BS) *VarOptsRadioButton { o.ctrlStyle = s; return o }

@@ -91,14 +91,15 @@ func setUniqueCtrlId(pCtrlId *uint16) {
 	}
 }
 
+// Calculates the bound rectangle to fit the current text.
+func calcComctlBoundBox(hCtrl win.HWND) (win.SIZE, bool) {
+	var boundBox win.SIZE // https://stackoverflow.com/a/19017062/6923555
+	ret, _ := hCtrl.SendMessage(co.BCM_GETIDEALSIZE, 0, win.LPARAM(unsafe.Pointer(&boundBox)))
+	return boundBox, ret != 0 // fails without ComCtrl v6 (missing app manifest)
+}
+
 // Calculates the bound rectangle to fit the text with current UI font.
 func calcTextBoundBox(text string) (win.SIZE, error) {
-	isTextEmpty := false
-	if len(strings.TrimSpace(text)) == 0 {
-		isTextEmpty = true
-		text = "Pj" // just a placeholder to get the text height
-	}
-
 	hwndDesktop := win.GetDesktopWindow()
 	hdcDesktop, err := hwndDesktop.GetDC()
 	if err != nil {
@@ -118,14 +119,30 @@ func calcTextBoundBox(text string) (win.SIZE, error) {
 	}
 	defer hdcCloned.SelectObjectFont(prevFont)
 
+	isTextEmpty := false
+	if len(strings.TrimSpace(text)) == 0 {
+		isTextEmpty = true
+		text = "Pj" // just a placeholder to get the text height
+	}
+
 	bounds, err := hdcCloned.GetTextExtentPoint32(text)
 	if err != nil {
 		return win.SIZE{}, err
 	}
-
 	if isTextEmpty {
 		bounds.Cx = 0 // if no text was given, return just the height
 	}
+
+	if strings.Contains(text, "\n") { // multi-line, height must be recalculated
+		var rc win.RECT
+		_, err := hdcCloned.DrawText(text, &rc, co.DT_CALCRECT|co.DT_EDITCONTROL)
+		if err != nil {
+			return win.SIZE{}, err
+		}
+		bounds.Cx = rc.Right
+		bounds.Cy = rc.Bottom
+	}
+
 	return bounds, nil
 }
 
@@ -139,6 +156,10 @@ func calcTextBoundBoxWithCheck(text string) (win.SIZE, error) {
 
 	boundBox.Cx += win.GetSystemMetrics(co.SM_CXMENUCHECK) + // https://stackoverflow.com/a/1165052/6923555
 		win.GetSystemMetrics(co.SM_CXEDGE)
+
+	if strings.Contains(text, "\n") { // multi-line
+		boundBox.Cx += int32(DpiX(6)) // arbitrary; BS_MULTILINE adds padding, enlarge anyway
+	}
 
 	cyCheck := win.GetSystemMetrics(co.SM_CYMENUCHECK)
 	if cyCheck > boundBox.Cy {

@@ -4,7 +4,6 @@ package ui
 
 import (
 	"github.com/rodrigocfd/windigo/co"
-	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
 // Manages a group of native [RadioButton] controls.
@@ -61,11 +60,11 @@ func NewRadioGroup(parent Parent, allOpts ...*VarOptsRadioButton) *RadioGroup {
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		for idx, opts := range allOpts {
-			if opts.size.Cx == 0 && opts.size.Cy == 0 {
-				opts.size, _ = calcTextBoundBoxWithCheck(utl.RemoveAccelAmpersands(opts.text))
-			}
 			me.radios[idx].createWindow(opts.wndExStyle, "BUTTON", opts.text,
 				opts.wndStyle|co.WS(opts.ctrlStyle), opts.position, opts.size, parent, true)
+			if opts.size.Cx == 0 && opts.size.Cy == 0 {
+				me.radios[idx].SetTextAndResize(opts.text)
+			}
 			parent.base().layout.Add(parent, me.radios[idx].hWnd, opts.layout)
 			if opts.selected {
 				me.radios[idx].Select()
