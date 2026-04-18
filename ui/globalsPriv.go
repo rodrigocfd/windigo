@@ -91,11 +91,15 @@ func setUniqueCtrlId(pCtrlId *uint16) {
 	}
 }
 
-// Calculates the bound rectangle to fit the current text.
-func calcComctlBoundBox(hCtrl win.HWND) (win.SIZE, bool) {
+// Calculates the bound rectangle to fit the current text with BCM_GETIDEALSIZE.
+func calcBcmBoundBox(hCtrl win.HWND) (win.SIZE, error) {
 	var boundBox win.SIZE // https://stackoverflow.com/a/19017062/6923555
 	ret, _ := hCtrl.SendMessage(co.BCM_GETIDEALSIZE, 0, win.LPARAM(unsafe.Pointer(&boundBox)))
-	return boundBox, ret != 0 // fails without ComCtrl v6 (missing app manifest)
+	if ret == 0 { // fails without ComCtrl v6 (missing app manifest)
+		text, _ := hCtrl.GetWindowText()
+		return calcTextBoundBoxWithCheck(text) // fallback
+	}
+	return boundBox, nil
 }
 
 // Calculates the bound rectangle to fit the text with current UI font.

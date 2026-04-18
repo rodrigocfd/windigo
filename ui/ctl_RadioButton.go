@@ -74,10 +74,7 @@ func (me *RadioButton) SelectAndTrigger() *RadioButton {
 // Returns the same object, so further operations can be chained.
 func (me *RadioButton) SetTextAndResize(text string) *RadioButton {
 	me.hWnd.SetWindowText(text)
-	boundBox, ok := calcComctlBoundBox(me.hWnd)
-	if !ok {
-		boundBox, _ = calcTextBoundBoxWithCheck(text) // fallback, no ComCtrl v6
-	}
+	boundBox, _ := calcBcmBoundBox(me.hWnd)
 	me.hWnd.SetWindowPos(win.HWND(0), win.POINT{}, boundBox, co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me
 }

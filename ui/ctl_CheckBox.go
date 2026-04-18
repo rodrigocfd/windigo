@@ -164,10 +164,7 @@ func (me *CheckBox) SetStateAndTrigger(state co.BST) *CheckBox {
 // Returns the same object, so further operations can be chained.
 func (me *CheckBox) SetTextAndResize(text string) *CheckBox {
 	me.hWnd.SetWindowText(text)
-	boundBox, ok := calcComctlBoundBox(me.hWnd)
-	if !ok {
-		boundBox, _ = calcTextBoundBoxWithCheck(text) // fallback, no ComCtrl v6
-	}
+	boundBox, _ := calcBcmBoundBox(me.hWnd)
 	me.hWnd.SetWindowPos(win.HWND(0), win.POINT{}, boundBox, co.SWP_NOZORDER|co.SWP_NOMOVE)
 	return me
 }
