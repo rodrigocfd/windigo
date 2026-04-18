@@ -7,6 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/win"
 )
 
@@ -75,7 +76,7 @@ func createGlobalUiFont() error {
 	return nil
 }
 
-var globalNextCtrlId uint16 = 0xdfff // https://stackoverflow.com/a/18192766/6923555
+var globalNextCtrlId uint16 = 0xdfff // https://stackoverflow.com/a/18192766
 
 // Returns an unique child control ID.
 func nextCtrlId() uint16 {
@@ -89,17 +90,6 @@ func setUniqueCtrlId(pCtrlId *uint16) {
 	if *pCtrlId == 0 {
 		*pCtrlId = nextCtrlId()
 	}
-}
-
-// Calculates the bound rectangle to fit the current text with BCM_GETIDEALSIZE.
-func calcBcmBoundBox(hCtrl win.HWND) (win.SIZE, error) {
-	var boundBox win.SIZE // https://stackoverflow.com/a/19017062/6923555
-	ret, _ := hCtrl.SendMessage(co.BCM_GETIDEALSIZE, 0, win.LPARAM(unsafe.Pointer(&boundBox)))
-	if ret == 0 { // fails without ComCtrl v6 (missing app manifest)
-		text, _ := hCtrl.GetWindowText()
-		return calcTextBoundBoxWithCheck(text) // fallback
-	}
-	return boundBox, nil
 }
 
 // Calculates the bound rectangle to fit the text with current UI font.
@@ -150,25 +140,33 @@ func calcTextBoundBox(text string) (win.SIZE, error) {
 	return bounds, nil
 }
 
-// Calculates the bound rectangle to fit the text with current UI font,
-// including the check box for a checkbox/radio.
-func calcTextBoundBoxWithCheck(text string) (win.SIZE, error) {
+// Calculates the button bound rectangle with BCM_GETIDEALSIZE.
+func calcBcmBoundBox(hCtrl win.HWND) (win.SIZE, error) {
+	var boundBox win.SIZE // https://stackoverflow.com/a/19017062
+	ret, _ := hCtrl.SendMessage(co.BCM_GETIDEALSIZE, 0, win.LPARAM(unsafe.Pointer(&boundBox)))
+	if ret != 0 {
+		return boundBox, nil
+	}
+
+	// BCM_GETIDEALSIZE returns zero without ComCtl v6 (missing app manifest); so calc manually.
+
+	text, _ := hCtrl.GetWindowText()
+	text = utl.RemoveAccelAmpersands(text)
+
 	boundBox, err := calcTextBoundBox(text)
 	if err != nil {
 		return win.SIZE{}, err
 	}
 
-	boundBox.Cx += win.GetSystemMetrics(co.SM_CXMENUCHECK) + // https://stackoverflow.com/a/1165052/6923555
-		win.GetSystemMetrics(co.SM_CXEDGE)
-
-	if strings.Contains(text, "\n") { // multi-line
-		boundBox.Cx += int32(DpiX(6)) // arbitrary; BS_MULTILINE adds padding, enlarge anyway
-	}
+	boundBox.Cx += win.GetSystemMetrics(co.SM_CXMENUCHECK) + // https://stackoverflow.com/a/1165052
+		win.GetSystemMetrics(co.SM_CXEDGE) +
+		int32(DpiX(6)) // arbitrary; BS_MULTILINE adds padding, enlarge anyway
 
 	cyCheck := win.GetSystemMetrics(co.SM_CYMENUCHECK)
 	if cyCheck > boundBox.Cy {
 		boundBox.Cy = cyCheck // if the check is taller than the font, use its height
 	}
+
 	return boundBox, nil
 }
 

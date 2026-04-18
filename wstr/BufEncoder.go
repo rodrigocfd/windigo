@@ -8,7 +8,7 @@ import (
 
 // Size of the stack buffer, equal to [MAX_PATH].
 //
-// [MAX_PATH]: https://stackoverflow.com/a/1880453/6923555
+// [MAX_PATH]: https://stackoverflow.com/a/1880453
 const BUF_MAX = 260
 
 // Encodes a Go string into a null-terminated UTF-16. If the string fits the

@@ -104,7 +104,7 @@ type BITMAPINFO struct {
 //	bih.SetBiSize()
 //
 // [BITMAPINFOHEADER]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
-// [twice]: https://stackoverflow.com/q/5812849/6923555
+// [twice]: https://stackoverflow.com/q/5812849
 type BITMAPINFOHEADER struct {
 	biSize        uint32
 	Width         int32

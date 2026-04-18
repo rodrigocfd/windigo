@@ -105,7 +105,7 @@ func (me *_RawBase) createWindow(
 
 func (me *_RawBase) delegateFocusToFirstChild() error {
 	if hFocus := win.GetFocus(); hFocus == me.hWnd {
-		// https://stackoverflow.com/a/2835220/6923555
+		// https://stackoverflow.com/a/2835220
 		hFirstChild, err := me.hWnd.GetWindow(co.GW_CHILD)
 		if err != nil {
 			return err

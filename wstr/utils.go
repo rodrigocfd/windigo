@@ -32,7 +32,7 @@ func Capitalize(s string) string {
 
 // Compares two strings [lexographically].
 //
-// [lexographically]: https://stackoverflow.com/a/52831144/6923555
+// [lexographically]: https://stackoverflow.com/a/52831144
 func Cmp(a, b string) int {
 	switch {
 	case a == b:
@@ -46,7 +46,7 @@ func Cmp(a, b string) int {
 
 // Compares two strings [lexographically], case insensitive.
 //
-// [lexographically]: https://stackoverflow.com/a/52831144/6923555
+// [lexographically]: https://stackoverflow.com/a/52831144
 func CmpI(a, b string) int {
 	return Cmp(strings.ToUpper(a), strings.ToUpper(b))
 }
@@ -172,7 +172,7 @@ func SplitLines(s string) []string {
 //
 // Panics if start or length is negative.
 //
-// [runes]: https://stackoverflow.com/a/38537764/6923555
+// [runes]: https://stackoverflow.com/a/38537764
 func SubstrRunes(s string, start, length int) string {
 	if start < 0 || length < 0 {
 		panic(fmt.Sprintf("Values start (%d) and length (%d) cannot be negative.", start, length))

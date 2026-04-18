@@ -178,7 +178,7 @@ func (ft *FILETIME) SetEpochNano100(val int) {
 
 // Returns the internal value converted to [time.Time].
 func (ft *FILETIME) ToTime() time.Time {
-	// https://stackoverflow.com/a/4135003/6923555
+	// https://stackoverflow.com/a/4135003
 	return time.Unix(0, int64(utl.Make64(ft.dwLowDateTime, ft.dwHighDateTime)-116_444_736_000_000_000)*100)
 }
 
