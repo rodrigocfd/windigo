@@ -195,6 +195,30 @@ type DRAWITEMSTRUCT struct {
 	ItemData   uintptr // ULONG_PTR
 }
 
+// [DRAWTEXTPARAMS] struct.
+//
+// ⚠️ You must call [DRAWTEXTPARAMS.SetCbSize] to initialize the struct.
+//
+// Example:
+//
+//	var dtp win.DRAWTEXTPARAMS
+//	dtp.SetCbSize()
+//
+// [DRAWTEXTPARAMS]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawtextparams
+type DRAWTEXTPARAMS struct {
+	cbSize      uint32
+	TabLength   int32
+	LeftMargin  int32
+	RightMargin int32
+	LengthDrawn uint32
+}
+
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
+func (dtp *DRAWTEXTPARAMS) SetCbSize() {
+	dtp.cbSize = uint32(unsafe.Sizeof(*dtp))
+}
+
 // [GUITHREADINFO] struct.
 //
 // ⚠️ You must call [GUITHREADINFO.SetCbSize] to initialize the struct.

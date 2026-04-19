@@ -75,6 +75,27 @@ func (hdc HDC) DrawText(text string, pRc *RECT, format co.DT) (int, error) {
 
 var _user_DrawTextW *syscall.Proc
 
+// [DrawTextEx] function.
+//
+// [DrawTextEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawtextexw
+func (hdc HDC) DrawTextEx(text string, pRc *RECT, format co.DT, pDtp *DRAWTEXTPARAMS) (int, error) {
+	var wText wstr.BufEncoder
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_DrawTextExW, "DrawTextExW"),
+		uintptr(hdc),
+		uintptr(wText.AllowEmpty(text)),
+		uintptr(int32(len(text))),
+		uintptr(unsafe.Pointer(pRc)),
+		uintptr(format),
+		uintptr(unsafe.Pointer(pDtp)))
+	if ret == 0 {
+		return 0, co.ERROR_INVALID_PARAMETER
+	}
+	return int(ret), nil
+}
+
+var _user_DrawTextExW *syscall.Proc
+
 // [EnumDisplayMonitors] function.
 //
 // [EnumDisplayMonitors]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
