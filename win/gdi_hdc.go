@@ -668,79 +668,8 @@ var _gdi_GetDIBColorTable *syscall.Proc
 
 // [GetDIBits] function.
 //
-// Note that this method fails if bitmapDataBuffer is an ordinary Go slice; it
-// must be allocated directly from the OS heap, for example with [GlobalAlloc].
-//
-// Example:
-//
-// Taking a screenshot and saving into a BMP file:
-//
-//	cxScreen := win.GetSystemMetrics(co.SM_CXSCREEN)
-//	cyScreen := win.GetSystemMetrics(co.SM_CYSCREEN)
-//
-//	hdcScreen, _ := win.HWND(0).GetDC()
-//	defer win.HWND(0).ReleaseDC(hdcScreen)
-//
-//	hBmp, _ := hdcScreen.CreateCompatibleBitmap(int(cxScreen), int(cyScreen))
-//	defer hBmp.DeleteObject()
-//
-//	hdcMem, _ := hdcScreen.CreateCompatibleDC()
-//	defer hdcMem.DeleteDC()
-//
-//	hBmpOld, _ := hdcMem.SelectObjectBmp(hBmp)
-//	defer hdcMem.SelectObjectBmp(hBmpOld)
-//
-//	_ = hdcMem.BitBlt(
-//		win.POINT{X: 0, Y: 0},
-//		win.SIZE{Cx: cxScreen, Cy: cyScreen},
-//		hdcScreen,
-//		win.POINT{X: 0, Y: 0},
-//		co.ROP_SRCCOPY,
-//	)
-//
-//	bi := win.BITMAPINFO{
-//		BmiHeader: win.BITMAPINFOHEADER{
-//			Width:       cxScreen,
-//			Height:      cyScreen,
-//			Planes:      1,
-//			BitCount:    32,
-//			Compression: co.BI_RGB,
-//		},
-//	}
-//	bi.BmiHeader.SetBiSize()
-//
-//	bmpObj, _ := hBmp.GetObject()
-//	bmpSize := bmpObj.CalcBitmapSize(bi.BmiHeader.BitCount)
-//
-//	rawMem, _ := win.GlobalAlloc(co.GMEM_FIXED|co.GMEM_ZEROINIT, bmpSize)
-//	defer rawMem.GlobalFree()
-//
-//	bmpSlice, _ := rawMem.GlobalLockSlice()
-//	defer rawMem.GlobalUnlock()
-//
-//	_, _ = hdcScreen.GetDIBits(
-//		hBmp,
-//		0,
-//		int(cyScreen),
-//		bmpSlice,
-//		&bi,
-//		co.DIB_COLORS_RGB,
-//	)
-//
-//	var bfh win.BITMAPFILEHEADER
-//	bfh.SetBfType()
-//	bfh.SetBfOffBits(uint32(unsafe.Sizeof(bfh) + unsafe.Sizeof(bi.BmiHeader)))
-//	bfh.SetBfSize(bfh.BfOffBits() + uint32(bmpSize))
-//
-//	fout, _ := win.FileOpen(
-//		"C:\\Temp\\screenshot.bmp",
-//		co.FOPEN_RW_OPEN_OR_CREATE,
-//	)
-//	defer fout.Close()
-//
-//	_, _ = fout.Write(bfh.Serialize())
-//	_, _ = fout.Write(bi.BmiHeader.Serialize())
-//	_, _ = fout.Write(bmpSlice)
+// Note that this method fails if destBmpBuf is an ordinary Go slice; it must be
+// allocated directly from the OS heap, for example with [GlobalAlloc].
 //
 // [GetDIBits]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibits
 func (hdc HDC) GetDIBits(

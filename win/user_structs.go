@@ -701,13 +701,13 @@ type RECT struct {
 //
 // [SCROLLINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-scrollinfo
 type SCROLLINFO struct {
-	cbSize    uint32
-	FMask     co.SIF
-	NMin      int32
-	NMax      int32
-	NPage     uint32
-	NPos      int32
-	NTrackPos int32
+	cbSize   uint32
+	Mask     co.SIF
+	Min      int32
+	Max      int32
+	Page     uint32
+	Pos      int32
+	TrackPos int32
 }
 
 // Sets the internal cbSize field to the size of the struct, correctly

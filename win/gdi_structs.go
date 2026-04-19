@@ -15,20 +15,20 @@ import (
 //
 // [BITMAP]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmap
 type BITMAP struct {
-	bmType       int32
-	BmWidth      int32
-	BmHeight     int32
-	BmWidthBytes int32
-	BmPlanes     uint16
-	BmBitsPixel  uint16
-	BmBits       *byte
+	bmType     int32
+	Width      int32
+	Height     int32
+	WidthBytes int32
+	Planes     uint16
+	BitsPixel  uint16
+	Bits       *byte
 }
 
 // Useful when [capturing an image].
 //
 // [capturing an image]: https://learn.microsoft.com/en-gb/windows/win32/gdi/capturing-an-image
 func (bm *BITMAP) CalcBitmapSize(bitCount co.BITCOUNT) int {
-	return int(((bm.BmWidth*int32(bitCount) + 31) / 32) * 4 * bm.BmHeight)
+	return int(((bm.Width*int32(bitCount) + 31) / 32) * 4 * bm.Height)
 }
 
 // [BLENDFUNCTION] struct.
@@ -277,59 +277,59 @@ func (di *DOCINFO) SetCbSize() {
 //
 // [DEVMODE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-devmodew
 type DEVMODE struct {
-	dmDeviceName       [utl.CCHDEVICENAME]uint16
-	dmSpecVersion      uint16
-	DmDriverVersion    uint16
-	dmSize             uint16
-	DmDriverExtra      uint16
-	DmFields           co.DM
-	union0             DEVMODE_Printer
-	DmColor            co.DMCOLOR
-	DmDuplex           co.DMDUP
-	DmYResolution      int16
-	DmTTOption         co.DMTT
-	DmCollate          co.DMCOLLATE
-	dmFormName         [utl.CCHFORMNAME]uint16
-	DmLogPixels        uint16
-	DmBitsPerPel       uint32
-	DmPelsWidth        uint32
-	DmPelsHeight       uint32
-	union1             uint32 // co.DMDISPLAYFLAGS | co.DMNUP
-	DmDisplayFrequency uint32
-	DmICMMethod        co.DMICMMETHOD
-	DmICMIntent        co.DMICM
-	DmMediaType        co.DMMEDIA
-	DmDitherType       co.DMDITHER
-	dmReserved1        uint32
-	dmReserved2        uint32
-	DmPanningWidth     uint32
-	DmPanningHeight    uint32
+	deviceName       [utl.CCHDEVICENAME]uint16
+	dmSpecVersion    uint16
+	DriverVersion    uint16
+	dmSize           uint16
+	DriverExtra      uint16
+	Fields           co.DM
+	union0           DEVMODE_Printer // or DEVMODE_Display
+	Color            co.DMCOLOR
+	Duplex           co.DMDUP
+	YResolution      int16
+	TTOption         co.DMTT
+	Collate          co.DMCOLLATE
+	formName         [utl.CCHFORMNAME]uint16
+	LogPixels        uint16
+	BitsPerPel       uint32
+	PelsWidth        uint32
+	PelsHeight       uint32
+	union1           uint32 // co.DMDISPLAYFLAGS or co.DMNUP
+	DisplayFrequency uint32
+	ICMMethod        co.DMICMMETHOD
+	ICMIntent        co.DMICM
+	MediaType        co.DMMEDIA
+	DitherType       co.DMDITHER
+	reserved1        uint32
+	reserved2        uint32
+	PanningWidth     uint32
+	PanningHeight    uint32
 }
 
 // 1st variation of 1st union of [DEVMODE] struct.
 type DEVMODE_Printer struct {
-	DmOrientation   co.DMORIENT
-	DmPaperSize     co.DMPAPER
-	DmPaperLength   int16
-	DmPaperWidth    int16
-	DmScale         int16
-	DmCopies        int16
-	DmDefaultSource co.DMBIN
-	DmPrintQuality  co.DMRES
+	Orientation   co.DMORIENT
+	PaperSize     co.DMPAPER
+	PaperLength   int16
+	PaperWidth    int16
+	Scale         int16
+	Copies        int16
+	DefaultSource co.DMBIN
+	PrintQuality  co.DMRES
 }
 
 // 2st variation of 1st union of [DEVMODE] struct.
 type DEVMODE_Display struct {
-	DmPosition           POINT
-	DmDisplayOrientation co.DMDO
-	DmDisplayFixedOutput co.DMDFO
+	Position           POINT
+	DisplayOrientation co.DMDO
+	DisplayFixedOutput co.DMDFO
 }
 
-func (dm *DEVMODE) DmDeviceName() string {
-	return wstr.DecodeSlice(dm.dmDeviceName[:])
+func (dm *DEVMODE) DeviceName() string {
+	return wstr.DecodeSlice(dm.deviceName[:])
 }
-func (dm *DEVMODE) SetDmDeviceName(val string) {
-	wstr.EncodeToBuf(dm.dmDeviceName[:], val)
+func (dm *DEVMODE) SetDeviceName(val string) {
+	wstr.EncodeToBuf(dm.deviceName[:], val)
 }
 
 // Sets the internal dmSize field to the size of the struct, correctly
@@ -349,11 +349,11 @@ func (dm *DEVMODE) Display() *DEVMODE_Display {
 	return (*DEVMODE_Display)(unsafe.Pointer(&dm.union0))
 }
 
-func (dm *DEVMODE) DmFormName() string {
-	return wstr.DecodeSlice(dm.dmFormName[:])
+func (dm *DEVMODE) FormName() string {
+	return wstr.DecodeSlice(dm.formName[:])
 }
-func (dm *DEVMODE) SetDmFormName(val string) {
-	wstr.EncodeToBuf(dm.dmFormName[:], val)
+func (dm *DEVMODE) SetFormName(val string) {
+	wstr.EncodeToBuf(dm.formName[:], val)
 }
 
 // Returns the 1st variation of the 2nd union.
@@ -387,52 +387,52 @@ type GRADIENT_TRIANGLE struct {
 //
 // [LOGBRUSH]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
 type LOGBRUSH struct {
-	LbStyle co.BRS
-	LbColor COLORREF
-	LbHatch uintptr // ULONG_PTR
+	Style co.BRS
+	Color COLORREF
+	Hatch uintptr // ULONG_PTR
 }
 
 // [LOGFONT] struct.
 //
 // [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type LOGFONT struct {
-	Height           int32
-	Width            int32
-	Escapement       int32
-	Orientation      int32
-	Weight           co.FW
-	Italic           uint8 // This is a BOOL value.
-	Underline        uint8 // This is a BOOL value.
-	StrikeOut        uint8 // This is a BOOL value.
-	CharSet          co.CHARSET
-	OutPrecision     co.OUT_PRECIS
-	ClipPrecision    co.CLIP_PRECIS
-	Quality          co.QUALITY
-	lfPitchAndFamily uint8 // combination of co.PITCH and co.FF
-	lfFaceName       [utl.LF_FACESIZE]uint16
+	Height         int32
+	Width          int32
+	Escapement     int32
+	Orientation    int32
+	Weight         co.FW
+	Italic         uint8 // This is a BOOL value.
+	Underline      uint8 // This is a BOOL value.
+	StrikeOut      uint8 // This is a BOOL value.
+	CharSet        co.CHARSET
+	OutPrecision   co.OUT_PRECIS
+	ClipPrecision  co.CLIP_PRECIS
+	Quality        co.QUALITY
+	pitchAndFamily uint8 // combination of co.PITCH and co.FF
+	faceName       [utl.LF_FACESIZE]uint16
 }
 
-func (lf *LOGFONT) LfFaceName() string {
-	return wstr.DecodeSlice(lf.lfFaceName[:])
+func (lf *LOGFONT) FaceName() string {
+	return wstr.DecodeSlice(lf.faceName[:])
 }
-func (lf *LOGFONT) SetLfFaceName(val string) {
-	wstr.EncodeToBuf(lf.lfFaceName[:], val)
+func (lf *LOGFONT) SetFaceName(val string) {
+	wstr.EncodeToBuf(lf.faceName[:], val)
 }
 
 func (lf *LOGFONT) Pitch() co.PITCH {
-	return co.PITCH(lf.lfPitchAndFamily & 0b1111)
+	return co.PITCH(lf.pitchAndFamily & 0b1111)
 }
 func (lf *LOGFONT) SetPitch(val co.PITCH) {
-	lf.lfPitchAndFamily &^= 0b1111 // clear bits
-	lf.lfPitchAndFamily |= uint8(val & 0b1111)
+	lf.pitchAndFamily &^= 0b1111 // clear bits
+	lf.pitchAndFamily |= uint8(val & 0b1111)
 }
 
 func (lf *LOGFONT) Family() co.FF {
-	return co.FF(lf.lfPitchAndFamily & 0b1111_0000)
+	return co.FF(lf.pitchAndFamily & 0b1111_0000)
 }
 func (lf *LOGFONT) SetFamily(val co.FF) {
-	lf.lfPitchAndFamily &^= 0b1111_0000 // clear bits
-	lf.lfPitchAndFamily |= uint8(val & 0b1111_0000)
+	lf.pitchAndFamily &^= 0b1111_0000 // clear bits
+	lf.pitchAndFamily |= uint8(val & 0b1111_0000)
 }
 
 // [LOGPEN] struct.
@@ -556,24 +556,24 @@ type TEXTMETRIC struct {
 	Italic           uint8
 	Underlined       uint8
 	StruckOut        uint8
-	tmPitchAndFamily uint8 // combination of co.TMPF and co.FF
+	pitchAndFamily   uint8 // combination of co.TMPF and co.FF
 	CharSet          co.CHARSET
 }
 
 func (tm *TEXTMETRIC) Pitch() co.TMPF {
-	return co.TMPF(tm.tmPitchAndFamily & 0b1111)
+	return co.TMPF(tm.pitchAndFamily & 0b1111)
 }
 func (tm *TEXTMETRIC) SetPitch(val co.TMPF) {
-	tm.tmPitchAndFamily &^= 0b1111 // clear bits
-	tm.tmPitchAndFamily |= uint8(val & 0b1111)
+	tm.pitchAndFamily &^= 0b1111 // clear bits
+	tm.pitchAndFamily |= uint8(val & 0b1111)
 }
 
 func (tm *TEXTMETRIC) Family() co.FF {
-	return co.FF(tm.tmPitchAndFamily & 0b1111_0000)
+	return co.FF(tm.pitchAndFamily & 0b1111_0000)
 }
 func (tm *TEXTMETRIC) SetFamily(val co.FF) {
-	tm.tmPitchAndFamily &^= 0b1111_0000 // clear bits
-	tm.tmPitchAndFamily |= uint8(val & 0b1111_0000)
+	tm.pitchAndFamily &^= 0b1111_0000 // clear bits
+	tm.pitchAndFamily |= uint8(val & 0b1111_0000)
 }
 
 // [TRIVERTEX] struct.
