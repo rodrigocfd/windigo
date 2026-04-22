@@ -202,6 +202,16 @@ const (
 	DISPOSITION_TRUNCATE_EXISTING DISPOSITION = 5
 )
 
+// [DuplicateHandle] dwOptions.
+//
+// [DuplicateHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle
+type DUPLICATE uint32
+
+const (
+	DUPLICATE_CLOSE_SOURCE DUPLICATE = 0x0000_0001 // Closes the source handle. This occurs regardless of any error status returned.
+	DUPLICATE_SAME_ACCESS  DUPLICATE = 0x0000_0002 // Ignores the dwDesiredAccess parameter. The duplicate handle has the same access as the source handle.
+)
+
 // [SetConsoleMode] mode.
 //
 // [SetConsoleMode]: https://learn.microsoft.com/en-us/windows/console/setconsolemode

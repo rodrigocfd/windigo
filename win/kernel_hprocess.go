@@ -53,6 +53,116 @@ func (hProcess HPROCESS) CloseHandle() error {
 	return HANDLE(hProcess).CloseHandle()
 }
 
+// [DuplicateHandle] function for [HFILE].
+//
+// ⚠️ You must defer [HFILE.CloseHandle].
+//
+// [DuplicateHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle
+func (hProcess HPROCESS) DuplicateHandleFile(
+	hSourceHandle HPROCESS,
+	hTargetProcessHandle HFILE,
+	desiredAccess co.GENERIC,
+	inheritHandle bool,
+	options co.DUPLICATE,
+) (HFILE, error) {
+	handle, err := hProcess.DuplicateHandleProcess(hSourceHandle, HPROCESS(hTargetProcessHandle),
+		co.PROCESS(desiredAccess), inheritHandle, options)
+	if err != nil {
+		return HFILE(0), err
+	}
+	return HFILE(handle), nil
+}
+
+// [DuplicateHandle] function for [HFILEMAP].
+//
+// ⚠️ You must defer [HFILEMAP.CloseHandle].
+//
+// [DuplicateHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle
+func (hProcess HPROCESS) DuplicateHandleFilemap(
+	hSourceHandle HPROCESS,
+	hTargetProcessHandle HFILEMAP,
+	desiredAccess co.FILE_MAP,
+	inheritHandle bool,
+	options co.DUPLICATE,
+) (HFILEMAP, error) {
+	handle, err := hProcess.DuplicateHandleProcess(hSourceHandle, HPROCESS(hTargetProcessHandle),
+		co.PROCESS(desiredAccess), inheritHandle, options)
+	if err != nil {
+		return HFILEMAP(0), err
+	}
+	return HFILEMAP(handle), nil
+}
+
+// [DuplicateHandle] function for [HKEY].
+//
+// ⚠️ You must defer [HKEY.RegCloseKey].
+//
+// [DuplicateHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle
+func (hProcess HPROCESS) DuplicateHandleKey(
+	hSourceHandle HPROCESS,
+	hTargetProcessHandle HKEY,
+	desiredAccess co.KEY,
+	inheritHandle bool,
+	options co.DUPLICATE,
+) (HKEY, error) {
+	handle, err := hProcess.DuplicateHandleProcess(hSourceHandle, HPROCESS(hTargetProcessHandle),
+		co.PROCESS(desiredAccess), inheritHandle, options)
+	if err != nil {
+		return HKEY(0), err
+	}
+	return HKEY(handle), nil
+}
+
+// [DuplicateHandle] function for [HPIPE].
+//
+// ⚠️ You must defer [HPIPE.CloseHandle].
+//
+// [DuplicateHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle
+func (hProcess HPROCESS) DuplicateHandlePipe(
+	hSourceHandle HPROCESS,
+	hTargetProcessHandle HPIPE,
+	desiredAccess co.PIPE_ACCESS,
+	inheritHandle bool,
+	options co.DUPLICATE,
+) (HPIPE, error) {
+	handle, err := hProcess.DuplicateHandleProcess(hSourceHandle, HPROCESS(hTargetProcessHandle),
+		co.PROCESS(desiredAccess), inheritHandle, options)
+	if err != nil {
+		return HPIPE(0), err
+	}
+	return HPIPE(handle), nil
+}
+
+// [DuplicateHandle] function for [HPROCESS].
+//
+// ⚠️ You must defer [HPROCESS.CloseHandle].
+//
+// [DuplicateHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle
+func (hProcess HPROCESS) DuplicateHandleProcess(
+	hSourceHandle HPROCESS,
+	hTargetProcessHandle HPROCESS,
+	desiredAccess co.PROCESS,
+	inheritHandle bool,
+	options co.DUPLICATE,
+) (HPROCESS, error) {
+	var hTargetHandle HPROCESS
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_DuplicateHandle, "DuplicateHandle"),
+		uintptr(hProcess),
+		uintptr(hSourceHandle),
+		uintptr(hTargetProcessHandle),
+		uintptr(unsafe.Pointer(&hTargetHandle)),
+		uintptr(desiredAccess),
+		utl.BoolToUintptr(inheritHandle),
+		uintptr(options))
+	if ret == 0 {
+		return HPROCESS(0), co.ERROR(err)
+	}
+	return HPROCESS(hTargetHandle), nil
+}
+
+var _kernel_DuplicateHandle *syscall.Proc
+
 // [FlushInstructionCache] function.
 //
 // Panics if size is negative.

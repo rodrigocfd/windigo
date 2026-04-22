@@ -25,11 +25,11 @@ Native FFI items currently implemented:
 | Native FFI item | Count |
 | - | -: |
 | Handles | 31 |
-| Functions | 661 |
+| Functions | 662 |
 | COM interfaces | 78 |
 | COM methods | 534 |
-| Const types | 413 |
-| Const values | 11,091 |
+| Const types | 414 |
+| Const values | 11,093 |
 
 ## Examples
 
