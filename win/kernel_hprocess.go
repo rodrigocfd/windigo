@@ -59,13 +59,13 @@ func (hProcess HPROCESS) CloseHandle() error {
 //
 // [DuplicateHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle
 func (hProcess HPROCESS) DuplicateHandleFile(
-	hSourceHandle HPROCESS,
-	hTargetProcessHandle HFILE,
+	hSourceHandle HFILE,
+	hTargetProcessHandle HPROCESS,
 	desiredAccess co.GENERIC,
 	inheritHandle bool,
 	options co.DUPLICATE,
 ) (HFILE, error) {
-	handle, err := hProcess.DuplicateHandleProcess(hSourceHandle, HPROCESS(hTargetProcessHandle),
+	handle, err := hProcess.DuplicateHandleProcess(HPROCESS(hSourceHandle), hTargetProcessHandle,
 		co.PROCESS(desiredAccess), inheritHandle, options)
 	if err != nil {
 		return HFILE(0), err
@@ -79,13 +79,13 @@ func (hProcess HPROCESS) DuplicateHandleFile(
 //
 // [DuplicateHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle
 func (hProcess HPROCESS) DuplicateHandleFilemap(
-	hSourceHandle HPROCESS,
-	hTargetProcessHandle HFILEMAP,
+	hSourceHandle HFILEMAP,
+	hTargetProcessHandle HPROCESS,
 	desiredAccess co.FILE_MAP,
 	inheritHandle bool,
 	options co.DUPLICATE,
 ) (HFILEMAP, error) {
-	handle, err := hProcess.DuplicateHandleProcess(hSourceHandle, HPROCESS(hTargetProcessHandle),
+	handle, err := hProcess.DuplicateHandleProcess(HPROCESS(hSourceHandle), hTargetProcessHandle,
 		co.PROCESS(desiredAccess), inheritHandle, options)
 	if err != nil {
 		return HFILEMAP(0), err
@@ -99,13 +99,13 @@ func (hProcess HPROCESS) DuplicateHandleFilemap(
 //
 // [DuplicateHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle
 func (hProcess HPROCESS) DuplicateHandleKey(
-	hSourceHandle HPROCESS,
-	hTargetProcessHandle HKEY,
+	hSourceHandle HKEY,
+	hTargetProcessHandle HPROCESS,
 	desiredAccess co.KEY,
 	inheritHandle bool,
 	options co.DUPLICATE,
 ) (HKEY, error) {
-	handle, err := hProcess.DuplicateHandleProcess(hSourceHandle, HPROCESS(hTargetProcessHandle),
+	handle, err := hProcess.DuplicateHandleProcess(HPROCESS(hSourceHandle), hTargetProcessHandle,
 		co.PROCESS(desiredAccess), inheritHandle, options)
 	if err != nil {
 		return HKEY(0), err
@@ -119,13 +119,13 @@ func (hProcess HPROCESS) DuplicateHandleKey(
 //
 // [DuplicateHandle]: https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle
 func (hProcess HPROCESS) DuplicateHandlePipe(
-	hSourceHandle HPROCESS,
-	hTargetProcessHandle HPIPE,
+	hSourceHandle HPIPE,
+	hTargetProcessHandle HPROCESS,
 	desiredAccess co.PIPE_ACCESS,
 	inheritHandle bool,
 	options co.DUPLICATE,
 ) (HPIPE, error) {
-	handle, err := hProcess.DuplicateHandleProcess(hSourceHandle, HPROCESS(hTargetProcessHandle),
+	handle, err := hProcess.DuplicateHandleProcess(HPROCESS(hSourceHandle), hTargetProcessHandle,
 		co.PROCESS(desiredAccess), inheritHandle, options)
 	if err != nil {
 		return HPIPE(0), err
