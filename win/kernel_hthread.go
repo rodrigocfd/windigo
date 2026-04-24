@@ -250,5 +250,12 @@ var _kernel_WaitForSingleObject *syscall.Proc
 
 // [HTHREAD.WaitForSingleObject] function with INFINITE value.
 func (hThread HTHREAD) WaitForSingleObjectInfinite() (co.WAIT, error) {
-	return hThread.WaitForSingleObject(utl.INFINITE)
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_WaitForSingleObject, "WaitForSingleObject"),
+		uintptr(hThread),
+		uintptr(uint32(utl.INFINITE)))
+	if co.WAIT(ret) == co.WAIT_FAILED {
+		return co.WAIT_FAILED, co.ERROR(err)
+	}
+	return co.WAIT(ret), nil
 }
