@@ -1,5 +1,3 @@
-//go:build windows
-
 package wstr_test
 
 import (
