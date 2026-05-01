@@ -40,12 +40,23 @@ type VersionInfo struct {
 // Loads the embedded version information from an EXE or DLL, with
 // [GetFileVersionInfo] and [VerQueryValue].
 //
+// If moduleName is empty, loads the version information from current EXE.
+//
 // Example:
 //
-//	hInst, _ := win.GetModuleHandle("")
-//	exeName, _ := hInst.GetModuleFileName()
-//	info, _ := win.VersionLoad(exeName)
+//	info, _ := win.VersionLoad("")
 func VersionLoad(moduleName string) (VersionInfo, error) {
+	if moduleName == "" {
+		hInst, err := GetModuleHandle("")
+		if err != nil {
+			return VersionInfo{}, err
+		}
+		moduleName, err = hInst.GetModuleFileName()
+		if err != nil {
+			return VersionInfo{}, err
+		}
+	}
+
 	szData, err := GetFileVersionInfoSize(moduleName)
 	if err != nil {
 		return VersionInfo{}, fmt.Errorf("VersionLoad GetFileVersionInfoSize: %w", err)
