@@ -9,6 +9,9 @@ import (
 // "&He && she" becomes "He & she".
 func RemoveAccelAmpersands(text string) string {
 	runes := []rune(text)
+	if len(runes) == 0 {
+		return ""
+	}
 	var buf strings.Builder
 	buf.Grow(len(runes)) // prealloc for performance
 
