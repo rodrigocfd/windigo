@@ -895,10 +895,10 @@ var _user_SetMessageExtraInfo *syscall.Proc
 // [SetProcessDefaultLayout] function.
 //
 // [SetProcessDefaultLayout]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdefaultlayout
-func SetProcessDefaultLayout(defaultLayout co.LAYOUT) error {
+func SetProcessDefaultLayout(layout co.LAYOUT) error {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_SetProcessDefaultLayout, "SetProcessDefaultLayout"),
-		uintptr(defaultLayout))
+		uintptr(layout))
 	return utl.ZeroAsGetLastError(ret, err)
 }
 

@@ -698,6 +698,21 @@ func (hdc HDC) GetDIBits(
 
 var _gdi_GetDIBits *syscall.Proc
 
+// [GeLayout] function.
+//
+// [GeLayout]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getlayout
+func (hdc HDC) GeLayout() (co.LAYOUT, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.Gdi.Load(&_gdi_GetLayout, "GetLayout"),
+		uintptr(hdc))
+	if ret == utl.GDI_ERROR {
+		return co.LAYOUT(0), co.ERROR(err)
+	}
+	return co.LAYOUT(ret), nil
+}
+
+var _gdi_GetLayout *syscall.Proc
+
 // [GetPixel] function.
 //
 // [GetPixel]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getpixel
@@ -1601,6 +1616,22 @@ func (hdc HDC) SetDIBitsToDevice(
 }
 
 var _gdi_SetDIBitsToDevice *syscall.Proc
+
+// [SetLayout] function.
+//
+// [SetLayout]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setlayout
+func (hdc HDC) SetLayout(layout co.LAYOUT) (co.LAYOUT, error) {
+	ret, _, _ := syscall.SyscallN(
+		dll.Gdi.Load(&_gdi_SetLayout, "SetLayout"),
+		uintptr(hdc),
+		uintptr(layout))
+	if ret == utl.GDI_ERROR {
+		return co.LAYOUT(0), co.ERROR_INVALID_PARAMETER
+	}
+	return co.LAYOUT(ret), nil
+}
+
+var _gdi_SetLayout *syscall.Proc
 
 // [SetPixel] function.
 //

@@ -780,14 +780,26 @@ const (
 	KEYEVENTF_SCANCODE    KEYEVENTF = 0x0008
 )
 
-// [SetProcessDefaultLayout] dwDefaultLayout.
+// [GetProcessDefaultLayout], [SetProcessDefaultLayout], [GetLayout] and
+// [SetLayout] layout.
 //
+// [GetProcessDefaultLayout]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getprocessdefaultlayout
 // [SetProcessDefaultLayout]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdefaultlayout
+// [GetLayout]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getlayout
+// [SetLayout]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setlayout
 type LAYOUT uint32
 
 const (
-	LAYOUT_NORMAL LAYOUT = 0
-	LAYOUT_RTL    LAYOUT = 0x0000_0001
+	LAYOUT_LTR LAYOUT = 0x0000_0000 // Left to right.
+	LAYOUT_RTL LAYOUT = 0x0000_0001 // Right to left.
+	LAYOUT_BTT LAYOUT = 0x0000_0002 // Bottom to top.
+	LAYOUT_VBH LAYOUT = 0x0000_0004 // Vertical before horizontal.
+
+	// Disables any reflection during [BitBlt] and [StretchBlt] operations.
+	//
+	// [BitBlt]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-bitblt
+	// [StretchBlt]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-stretchblt
+	LAYOUT_BITMAPORIENTATIONPRESERVED LAYOUT = 0x0000_0008
 )
 
 // [KBDLLHOOKSTRUCT] flags.
