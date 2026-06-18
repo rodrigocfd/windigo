@@ -229,33 +229,7 @@ var _kernel_SuspendThread *syscall.Proc
 
 // [WaitForSingleObject] function.
 //
-// For INFINITE, use [HTHREAD.WaitForSingleObjectInfinite].
-//
-// Panics if milliseconds is negative.
-//
 // [WaitForSingleObject]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
-func (hThread HTHREAD) WaitForSingleObject(milliseconds int) (co.WAIT, error) {
-	utl.PanicNeg(milliseconds)
-	ret, _, err := syscall.SyscallN(
-		dll.Kernel.Load(&_kernel_WaitForSingleObject, "WaitForSingleObject"),
-		uintptr(hThread),
-		uintptr(uint32(milliseconds)))
-	if co.WAIT(ret) == co.WAIT_FAILED {
-		return co.WAIT_FAILED, co.ERROR(err)
-	}
-	return co.WAIT(ret), nil
-}
-
-var _kernel_WaitForSingleObject *syscall.Proc
-
-// [HTHREAD.WaitForSingleObject] function with INFINITE value.
-func (hThread HTHREAD) WaitForSingleObjectInfinite() (co.WAIT, error) {
-	ret, _, err := syscall.SyscallN(
-		dll.Kernel.Load(&_kernel_WaitForSingleObject, "WaitForSingleObject"),
-		uintptr(hThread),
-		uintptr(uint32(utl.INFINITE)))
-	if co.WAIT(ret) == co.WAIT_FAILED {
-		return co.WAIT_FAILED, co.ERROR(err)
-	}
-	return co.WAIT(ret), nil
+func (hThread HTHREAD) WaitForSingleObject(timeout Timeout) (co.WAIT, error) {
+	return HPROCESS(hThread).WaitForSingleObject(timeout)
 }

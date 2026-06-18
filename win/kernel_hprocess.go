@@ -499,6 +499,22 @@ func (hProcess HPROCESS) VirtualQueryEx(baseAddress uintptr) (MEMORY_BASIC_INFOR
 
 var _kernel_VirtualQueryEx *syscall.Proc
 
+// [WaitForSingleObject] function.
+//
+// [WaitForSingleObject]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+func (hProcess HPROCESS) WaitForSingleObject(timeout Timeout) (co.WAIT, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_WaitForSingleObject, "WaitForSingleObject"),
+		uintptr(hProcess),
+		uintptr(timeout.raw()))
+	if co.WAIT(ret) == co.WAIT_FAILED {
+		return co.WAIT_FAILED, co.ERROR(err)
+	}
+	return co.WAIT(ret), nil
+}
+
+var _kernel_WaitForSingleObject *syscall.Proc
+
 // [WriteProcessMemory] function.
 //
 // [WriteProcessMemory]: https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
