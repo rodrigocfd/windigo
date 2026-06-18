@@ -44,7 +44,7 @@ func ImageListCreate(cx, cy int, flags co.ILC, szInitial, szGrow int) (HIMAGELIS
 		uintptr(int32(szInitial)),
 		uintptr(int32(szGrow)))
 	if ret == 0 {
-		return HIMAGELIST(0), co.ERROR_INVALID_PARAMETER
+		return HIMAGELIST(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HIMAGELIST(ret), nil
 }
@@ -60,7 +60,7 @@ func (hImg HIMAGELIST) Add(hbmp, hbmpMask HBITMAP) error {
 		uintptr(hImg),
 		uintptr(hbmp),
 		uintptr(hbmpMask))
-	return utl.Minus1AsSysInvalidParm(ret)
+	return utl.Minus1AsAnySysError(ret)
 }
 
 var _comctl_ImageList_Add *syscall.Proc
@@ -152,7 +152,7 @@ func (hImg HIMAGELIST) AddMasked(hbmp HBITMAP, mask COLORREF) error {
 		uintptr(hImg),
 		uintptr(hbmp),
 		uintptr(mask))
-	return utl.Minus1AsSysInvalidParm(ret)
+	return utl.Minus1AsAnySysError(ret)
 }
 
 var _comctl_ImageList_AddMasked *syscall.Proc
@@ -167,7 +167,7 @@ func (hImg HIMAGELIST) BeginDrag(index, dxHotspot, dyHotspot int) error {
 		uintptr(int32(index)),
 		uintptr(int32(dxHotspot)),
 		uintptr(int32(dyHotspot)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_BeginDrag *syscall.Proc
@@ -181,7 +181,7 @@ func (hImg HIMAGELIST) Destroy() error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Comctl.Load(&_comctl_ImageList_Destroy, "ImageList_Destroy"),
 		uintptr(hImg))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_Destroy *syscall.Proc
@@ -209,7 +209,7 @@ func (hImg HIMAGELIST) DrawEx(
 		uintptr(bk),
 		uintptr(fg),
 		uintptr(style))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_DrawEx *syscall.Proc
@@ -232,7 +232,7 @@ func (hImg HIMAGELIST) Duplicate() (HIMAGELIST, error) {
 		dll.Comctl.Load(&_comctl_ImageList_Duplicate, "ImageList_Duplicate"),
 		uintptr(hImg))
 	if ret == 0 {
-		return HIMAGELIST(0), co.ERROR_INVALID_PARAMETER
+		return HIMAGELIST(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HIMAGELIST(ret), nil
 }
@@ -262,7 +262,7 @@ func (hImg HIMAGELIST) GetIconSize() (SIZE, error) {
 		uintptr(unsafe.Pointer(&sz.Cx)),
 		uintptr(unsafe.Pointer(&sz.Cy)))
 	if ret == 0 {
-		return SIZE{}, co.ERROR_INVALID_PARAMETER
+		return SIZE{}, co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return sz, nil
 }
@@ -292,7 +292,7 @@ func (hImg HIMAGELIST) GetImageInfo(index int) (IMAGEINFO, error) {
 		uintptr(int32(index)),
 		uintptr(unsafe.Pointer(&nfo)))
 	if ret == 0 {
-		return IMAGEINFO{}, co.ERROR_INVALID_PARAMETER
+		return IMAGEINFO{}, co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return nfo, nil
 }
@@ -307,7 +307,7 @@ func (hImg HIMAGELIST) Remove(index int) error {
 		dll.Comctl.Load(&_comctl_ImageList_Remove, "ImageList_Remove"),
 		uintptr(hImg),
 		uintptr(int32(index)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_Remove *syscall.Proc
@@ -331,7 +331,7 @@ func (hImg HIMAGELIST) ReplaceIcon(index int, hIcon HICON) error {
 		uintptr(hImg),
 		uintptr(int32(index)),
 		uintptr(hIcon))
-	return utl.Minus1AsSysInvalidParm(ret)
+	return utl.Minus1AsAnySysError(ret)
 }
 
 var _comctl_ImageList_ReplaceIcon *syscall.Proc
@@ -346,7 +346,7 @@ func (hImg HIMAGELIST) SetDragCursorImage(index, dxHotspot, dyHotspot int) error
 		uintptr(int32(index)),
 		uintptr(int32(dxHotspot)),
 		uintptr(int32(dyHotspot)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_SetDragCursorImage *syscall.Proc
@@ -360,7 +360,7 @@ func (hImg HIMAGELIST) SetIconSize(cx, cy int) error {
 		uintptr(hImg),
 		uintptr(int32(cx)),
 		uintptr(int32(cy)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_SetIconSize *syscall.Proc
@@ -376,7 +376,7 @@ func (hImg HIMAGELIST) SetImageCount(count int) error {
 		dll.Comctl.Load(&_comctl_ImageList_SetImageCount, "ImageList_SetImageCount"),
 		uintptr(hImg),
 		uintptr(uint32(count)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_SetImageCount *syscall.Proc
@@ -390,7 +390,7 @@ func (hImg HIMAGELIST) SetOverlayImage(index, overlayIndex int) error {
 		uintptr(hImg),
 		uintptr(int32(index)),
 		uintptr(int32(overlayIndex)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_SetOverlayImage *syscall.Proc

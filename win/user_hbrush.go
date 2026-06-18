@@ -17,7 +17,7 @@ func GetSysColorBrush(index co.COLOR) (HBRUSH, error) {
 		dll.User.Load(&_user_GetSysColorBrush, "GetSysColorBrush"),
 		uintptr(index))
 	if ret == 0 {
-		return HBRUSH(0), co.ERROR_INVALID_PARAMETER
+		return HBRUSH(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HBRUSH(ret), nil
 }

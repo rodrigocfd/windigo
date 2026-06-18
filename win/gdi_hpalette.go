@@ -24,7 +24,7 @@ func (hPal HPALETTE) AnimatePalette(startIndex int, entries []PALETTEENTRY) erro
 		uintptr(uint32(startIndex)),
 		uintptr(uint32(len(entries))),
 		uintptr(unsafe.Pointer(&entries[0])))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _gdi_AnimatePalette *syscall.Proc

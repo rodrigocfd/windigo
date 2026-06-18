@@ -21,7 +21,7 @@ func AddFontResourceEx(name string, fl co.FR) (int, error) {
 		uintptr(fl),
 		0)
 	if ret == 0 {
-		return 0, co.ERROR_INVALID_PARAMETER
+		return 0, co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return int(int32(ret)), nil
 }

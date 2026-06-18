@@ -269,7 +269,7 @@ func GetActiveProcessorGroupCount() (int, error) {
 	ret, _, _ := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_GetActiveProcessorGroupCount, "GetActiveProcessorGroupCount"))
 	if ret == 0 {
-		return 0, co.ERROR_INVALID_PARAMETER
+		return 0, co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return int(uint16(ret)), nil
 }

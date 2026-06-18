@@ -53,7 +53,7 @@ func (hMon HMONITOR) GetMonitorInfo() (MONITORINFOEX, error) {
 		uintptr(hMon),
 		uintptr(unsafe.Pointer(&mix)))
 	if ret == 0 {
-		return MONITORINFOEX{}, co.ERROR_INVALID_PARAMETER
+		return MONITORINFOEX{}, co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return mix, nil
 }

@@ -68,7 +68,7 @@ func (hdc HDC) DrawText(text string, pRc *RECT, format co.DT) (int, error) {
 		uintptr(unsafe.Pointer(pRc)),
 		uintptr(format))
 	if ret == 0 {
-		return 0, co.ERROR_INVALID_PARAMETER
+		return 0, co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return int(ret), nil
 }
@@ -89,7 +89,7 @@ func (hdc HDC) DrawTextEx(text string, pRc *RECT, format co.DT, pDtp *DRAWTEXTPA
 		uintptr(format),
 		uintptr(unsafe.Pointer(pDtp)))
 	if ret == 0 {
-		return 0, co.ERROR_INVALID_PARAMETER
+		return 0, co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return int(ret), nil
 }
@@ -111,7 +111,7 @@ func (hdc HDC) EnumDisplayMonitors(pRcClip *RECT) ([]EnumDisplayMonitorsInfo, er
 		uintptr(unsafe.Pointer(pPack)))
 	runtime.KeepAlive(pPack)
 	if ret == 0 {
-		return nil, co.ERROR_INVALID_PARAMETER
+		return nil, co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return pPack.arr, nil
 }
@@ -151,7 +151,7 @@ func (hdc HDC) FillRect(pRc *RECT, hBrush HBRUSH) error {
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(pRc)),
 		uintptr(hBrush))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_FillRect *syscall.Proc

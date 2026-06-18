@@ -30,7 +30,7 @@ func GetStockObject(ty co.STOCK) (HGDIOBJ, error) {
 		dll.Gdi.Load(&_gdi_GetStockObject, "GetStockObject"),
 		uintptr(ty))
 	if ret == 0 {
-		return HGDIOBJ(0), co.ERROR_INVALID_PARAMETER
+		return HGDIOBJ(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HGDIOBJ(ret), nil
 }
@@ -44,7 +44,7 @@ func (hGdiObj HGDIOBJ) DeleteObject() error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Gdi.Load(&_gdi_DeleteObject, "DeleteObject"),
 		uintptr(hGdiObj))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _gdi_DeleteObject *syscall.Proc
@@ -58,7 +58,7 @@ func (hGdiObj HGDIOBJ) GetObject(szBuf uintptr, buf unsafe.Pointer) error {
 		uintptr(hGdiObj),
 		uintptr(int32(szBuf)),
 		uintptr(buf))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _gdi_GetObjectW *syscall.Proc
@@ -72,7 +72,7 @@ func (hdc HDC) SelectObject(hGdiObj HGDIOBJ) (HGDIOBJ, error) {
 		uintptr(hdc),
 		uintptr(hGdiObj))
 	if ret == 0 {
-		return HGDIOBJ(0), co.ERROR_INVALID_PARAMETER
+		return HGDIOBJ(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HGDIOBJ(ret), nil
 }
@@ -101,7 +101,7 @@ func CreateBitmap(szBmp SIZE, numPlanes, bitCount int, bits []byte) (HBITMAP, er
 		uintptr(uint32(bitCount)),
 		uintptr(unsafe.Pointer(&bits[0])))
 	if ret == 0 {
-		return HBITMAP(0), co.ERROR_INVALID_PARAMETER
+		return HBITMAP(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HBITMAP(ret), nil
 }
@@ -118,7 +118,7 @@ func CreateBitmapIndirect(pBmp *BITMAP) (HBITMAP, error) {
 		dll.Gdi.Load(&_gdi_CreateBitmapIndirect, "CreateBitmapIndirect"),
 		uintptr(unsafe.Pointer(pBmp)))
 	if ret == 0 {
-		return HBITMAP(0), co.ERROR_INVALID_PARAMETER
+		return HBITMAP(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HBITMAP(ret), nil
 }
@@ -159,7 +159,7 @@ func CreateBrushIndirect(pLogBrush *LOGBRUSH) (HBRUSH, error) {
 		dll.Gdi.Load(&_gdi_CreateBrushIndirect, "CreateBrushIndirect"),
 		uintptr(unsafe.Pointer(pLogBrush)))
 	if ret == 0 {
-		return HBRUSH(0), co.ERROR_INVALID_PARAMETER
+		return HBRUSH(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HBRUSH(ret), nil
 }
@@ -176,7 +176,7 @@ func CreatePatternBrush(hbm HBITMAP) (HBRUSH, error) {
 		dll.Gdi.Load(&_gdi_CreatePatternBrush, "CreatePatternBrush"),
 		uintptr(hbm))
 	if ret == 0 {
-		return HBRUSH(0), co.ERROR_INVALID_PARAMETER
+		return HBRUSH(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HBRUSH(ret), nil
 }
@@ -244,7 +244,7 @@ func CreateFont(
 		uintptr(uint8(pitch)|uint8(family)),
 		uintptr(wFaceName.EmptyIsNil(faceName)))
 	if ret == 0 {
-		return HFONT(0), co.ERROR_INVALID_PARAMETER
+		return HFONT(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HFONT(ret), nil
 }
@@ -261,7 +261,7 @@ func CreateFontIndirect(pLogFont *LOGFONT) (HFONT, error) {
 		dll.Gdi.Load(&_gdi_CreateFontIndirectW, "CreateFontIndirectW"),
 		uintptr(unsafe.Pointer(pLogFont)))
 	if ret == 0 {
-		return HFONT(0), co.ERROR_INVALID_PARAMETER
+		return HFONT(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HFONT(ret), nil
 }
@@ -304,7 +304,7 @@ func CreatePen(style co.PS, width int, color COLORREF) (HPEN, error) {
 		uintptr(int32(width)),
 		uintptr(color))
 	if ret == 0 {
-		return HPEN(0), co.ERROR_INVALID_PARAMETER
+		return HPEN(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HPEN(ret), nil
 }
@@ -321,7 +321,7 @@ func CreatePenIndirect(pLogPen *LOGPEN) (HPEN, error) {
 		dll.Gdi.Load(&_gdi_CreatePenIndirect, "CreatePenIndirect"),
 		uintptr(unsafe.Pointer(pLogPen)))
 	if ret == 0 {
-		return HPEN(0), co.ERROR_INVALID_PARAMETER
+		return HPEN(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HPEN(ret), nil
 }
@@ -358,7 +358,7 @@ func ExtCreatePen(
 		uintptr(uint32(len(styleLengths))),
 		uintptr(pLens))
 	if ret == 0 {
-		return HPEN(0), co.ERROR_INVALID_PARAMETER
+		return HPEN(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HPEN(ret), nil
 }
@@ -399,7 +399,7 @@ func CreateRectRgnIndirect(bounds RECT) (HRGN, error) {
 		dll.Gdi.Load(&_gdi_CreateRectRgnIndirect, "CreateRectRgnIndirect"),
 		uintptr(unsafe.Pointer(&bounds)))
 	if ret == 0 {
-		return HRGN(0), co.ERROR_INVALID_PARAMETER
+		return HRGN(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HRGN(ret), nil
 }
@@ -417,7 +417,7 @@ func (hRgn HRGN) CombineRgn(src1, src2 HRGN, mode co.RGN) (co.REGION, error) {
 		uintptr(src2),
 		uintptr(mode))
 	if ret == 0 {
-		return co.REGION(0), co.ERROR_INVALID_PARAMETER
+		return co.REGION(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return co.REGION(ret), nil
 }
@@ -454,7 +454,7 @@ func (hRgn HRGN) GetRgnBox() (RECT, co.REGION, error) {
 		uintptr(hRgn),
 		uintptr(unsafe.Pointer(&rc)))
 	if ret == utl.REGION_ERROR {
-		return RECT{}, co.REGION(0), co.ERROR_INVALID_PARAMETER
+		return RECT{}, co.REGION(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return rc, co.REGION(ret), nil
 }
@@ -471,7 +471,7 @@ func (hRgn HRGN) OffsetClipRgn(x, y int) (co.REGION, error) {
 		uintptr(int32(x)),
 		uintptr(int32(y)))
 	if ret == 0 {
-		return co.REGION(0), co.ERROR_INVALID_PARAMETER
+		return co.REGION(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return co.REGION(ret), nil
 }
@@ -488,7 +488,7 @@ func (hRgn HRGN) OffsetRgn(x, y int) (co.REGION, error) {
 		uintptr(int32(x)),
 		uintptr(int32(y)))
 	if ret == 0 {
-		return co.REGION(0), co.ERROR_INVALID_PARAMETER
+		return co.REGION(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return co.REGION(ret), nil
 }

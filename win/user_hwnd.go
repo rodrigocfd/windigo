@@ -200,7 +200,7 @@ func (hWnd HWND) BeginPaint(pPs *PAINTSTRUCT) (HDC, error) {
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(pPs)))
 	if ret == 0 {
-		return HDC(0), co.ERROR_INVALID_PARAMETER
+		return HDC(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HDC(ret), nil
 }
@@ -261,7 +261,7 @@ func (hWnd HWND) ClientToScreenPt(pPt *POINT) error {
 		dll.User.Load(&_user_ClientToScreen, "ClientToScreen"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(pPt)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_ClientToScreen *syscall.Proc
@@ -275,14 +275,14 @@ func (hWnd HWND) ClientToScreenRc(pRc *RECT) error {
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(pRc)))
 	if ret == 0 {
-		return co.ERROR_INVALID_PARAMETER
+		return co.ERROR_UNIDENTIFIED_ERROR
 	}
 
 	ret, _, _ = syscall.SyscallN(
 		dll.User.Load(&_user_ClientToScreen, "ClientToScreen"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(&pRc.Right)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 // [CloseWindow] function.
@@ -294,7 +294,7 @@ func (hWnd HWND) CloseWindow() error {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_CloseWindow, "CloseWindow"),
 		uintptr(hWnd))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_CloseWindow *syscall.Proc
@@ -519,7 +519,7 @@ func (hWnd HWND) GetDC() (HDC, error) {
 		dll.User.Load(&_user_GetDC, "GetDC"),
 		uintptr(hWnd))
 	if ret == 0 {
-		return HDC(0), co.ERROR_INVALID_PARAMETER
+		return HDC(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HDC(ret), nil
 }
@@ -538,7 +538,7 @@ func (hWnd HWND) GetDCEx(hRgnClip HRGN, flags co.DCX) (HDC, error) {
 		uintptr(hRgnClip),
 		uintptr(flags))
 	if ret == 0 {
-		return HDC(0), co.ERROR_INVALID_PARAMETER
+		return HDC(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HDC(ret), nil
 }
@@ -760,7 +760,7 @@ func (hWnd HWND) GetWindowDC() (HDC, error) {
 		dll.User.Load(&_user_GetWindowDC, "GetWindowDC"),
 		uintptr(hWnd))
 	if ret == 0 {
-		return HDC(0), co.ERROR_INVALID_PARAMETER
+		return HDC(0), co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return HDC(ret), nil
 }
@@ -909,7 +909,7 @@ func (hWnd HWND) InheritWindowMonitor(hWndInherit HWND) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.User.Load(&_user_InheritWindowMonitor, "InheritWindowMonitor"),
 		uintptr(hWnd))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_InheritWindowMonitor *syscall.Proc
@@ -923,7 +923,7 @@ func (hWnd HWND) InvalidateRect(pRc *RECT, erase bool) error {
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(pRc)),
 		utl.BoolToUintptr(erase))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_InvalidateRect *syscall.Proc
@@ -1010,7 +1010,7 @@ func (hWnd HWND) LogicalToPhysicalPointForPerMonitorDPI(pPt *POINT) error {
 		dll.User.Load(&_user_LogicalToPhysicalPointForPerMonitorDPI, "LogicalToPhysicalPointForPerMonitorDPI"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(pPt)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_LogicalToPhysicalPointForPerMonitorDPI *syscall.Proc
@@ -1068,7 +1068,7 @@ func (hWnd HWND) PhysicalToLogicalPointForPerMonitorDPI(pPt *POINT) error {
 		dll.User.Load(&_user_PhysicalToLogicalPointForPerMonitorDPI, "PhysicalToLogicalPointForPerMonitorDPI"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(pPt)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_PhysicalToLogicalPointForPerMonitorDPI *syscall.Proc
@@ -1111,7 +1111,7 @@ func (hWnd HWND) RedrawWindow(pRcUpdate *RECT, hrgnUpdate HRGN, flags co.RDW) er
 		uintptr(unsafe.Pointer(pRcUpdate)),
 		uintptr(hrgnUpdate),
 		uintptr(flags))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_RedrawWindow *syscall.Proc
@@ -1124,7 +1124,7 @@ func (hWnd HWND) ReleaseDC(hdc HDC) error {
 		dll.User.Load(&_user_ReleaseDC, "ReleaseDC"),
 		uintptr(hWnd),
 		uintptr(hdc))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_ReleaseDC *syscall.Proc
@@ -1137,7 +1137,7 @@ func (hWnd HWND) ScreenToClientPt(pPt *POINT) error {
 		dll.User.Load(&_user_ScreenToClient, "ScreenToClient"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(pPt)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_ScreenToClient *syscall.Proc
@@ -1151,14 +1151,14 @@ func (hWnd HWND) ScreenToClientRc(pRc *RECT) error {
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(pRc)))
 	if ret == 0 {
-		return co.ERROR_INVALID_PARAMETER
+		return co.ERROR_UNIDENTIFIED_ERROR
 	}
 
 	ret, _, _ = syscall.SyscallN(
 		dll.User.Load(&_user_ScreenToClient, "ScreenToClient"),
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(&pRc.Right)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 // [SendMessage] function.
@@ -1341,7 +1341,7 @@ func (hWnd HWND) SetWindowFeedbackSetting(feedback co.FEEDBACK, opt co.FEEDBACK_
 		0,
 		uintptr(sz),
 		uintptr(pConfig))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_SetWindowFeedbackSetting *syscall.Proc
@@ -1387,7 +1387,7 @@ func (hWnd HWND) SetWindowRgn(hRgn HRGN, redraw bool) error {
 		uintptr(hWnd),
 		uintptr(hRgn),
 		utl.BoolToUintptr(redraw))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_SetWindowRgn *syscall.Proc
@@ -1466,7 +1466,7 @@ func (hWnd HWND) ShowWindowAsync(cmdShow co.SW) error {
 		dll.User.Load(&_user_ShowWindowAsync, "ShowWindowAsync"),
 		uintptr(hWnd),
 		uintptr(cmdShow))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_ShowWindowAsync *syscall.Proc

@@ -614,7 +614,7 @@ func InflateRect(pRc *RECT, dx, dy int) error {
 		uintptr(unsafe.Pointer(pRc)),
 		uintptr(dx),
 		uintptr(dy))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_InflateRect *syscall.Proc
@@ -712,7 +712,7 @@ func OffsetRect(pRc *RECT, dx, dy int) error {
 		uintptr(unsafe.Pointer(pRc)),
 		uintptr(dx),
 		uintptr(dy))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _user_OffsetRect *syscall.Proc

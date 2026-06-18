@@ -126,7 +126,7 @@ func (hIcon HICON) GetIconInfoEx() (ICONINFOEX, error) {
 		uintptr(hIcon),
 		uintptr(unsafe.Pointer(&ii)))
 	if ret == 0 {
-		return ICONINFOEX{}, co.ERROR_INVALID_PARAMETER
+		return ICONINFOEX{}, co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return ii, nil
 }

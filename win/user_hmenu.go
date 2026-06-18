@@ -85,7 +85,7 @@ func (hMenu HMENU) checkMenuItem(check bool, flagPosCmd co.MF, item int) error {
 		uintptr(hMenu),
 		uintptr(uint32(item)),
 		uintptr(flagPosCmd))
-	return utl.Minus1AsSysInvalidParm(ret)
+	return utl.Minus1AsAnySysError(ret)
 }
 
 var _user_CheckMenuItem *syscall.Proc
@@ -185,7 +185,7 @@ func (hMenu HMENU) enableMenuItem(enable bool, flagPosCmd co.MF, item int) error
 		uintptr(hMenu),
 		uintptr(uint32(item)),
 		uintptr(flagPosCmd))
-	return utl.Minus1AsSysInvalidParm(ret)
+	return utl.Minus1AsAnySysError(ret)
 }
 
 var _user_EnableMenuItem *syscall.Proc
@@ -220,7 +220,7 @@ func (hMenu HMENU) GetMenuItemID(index int) (uint16, error) {
 		uintptr(hMenu),
 		uintptr(int32(index)))
 	if int32(ret) == -1 {
-		return 0, co.ERROR_INVALID_PARAMETER
+		return 0, co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return uint16(ret), nil
 }

@@ -21,7 +21,7 @@ func (hWnd HWND) ShellAbout(app, otherStuff string, hIcon HICON) error {
 		uintptr(wApp.AllowEmpty(app)),
 		uintptr(wOtherStuff.EmptyIsNil(otherStuff)),
 		uintptr(hIcon))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _shell_ShellAboutW *syscall.Proc

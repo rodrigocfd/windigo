@@ -416,7 +416,7 @@ func Shell_NotifyIcon(message co.NIM, pData *NOTIFYICONDATA) error {
 		uintptr(message),
 		uintptr(unsafe.Pointer(pData)))
 	if ret == 0 {
-		return co.ERROR_INVALID_PARAMETER
+		return co.ERROR_UNIDENTIFIED_ERROR
 	}
 	return nil
 }
@@ -460,12 +460,12 @@ func SHGetFileInfo(path string, fileAttrs co.FILE_ATTRIBUTE, flags co.SHGFI) (SH
 
 	if (flags&co.SHGFI_EXETYPE) == 0 || (flags&co.SHGFI_SYSICONINDEX) == 0 {
 		if ret == 0 {
-			return SHFILEINFO{}, co.ERROR_INVALID_PARAMETER
+			return SHFILEINFO{}, co.ERROR_UNIDENTIFIED_ERROR
 		}
 	}
 	if (flags & co.SHGFI_EXETYPE) != 0 {
 		if ret == 0 {
-			return SHFILEINFO{}, co.ERROR_INVALID_PARAMETER
+			return SHFILEINFO{}, co.ERROR_UNIDENTIFIED_ERROR
 		}
 	}
 

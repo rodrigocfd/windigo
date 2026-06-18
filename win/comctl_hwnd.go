@@ -35,7 +35,7 @@ func (hWnd HWND) ImageListDragEnter(x, y int) error {
 		uintptr(hWnd),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_DragEnter *syscall.Proc
@@ -47,7 +47,7 @@ func (hWnd HWND) ImageListDragLeave() error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Comctl.Load(&_comctl_ImageList_DragLeave, "ImageList_DragLeave"),
 		uintptr(hWnd))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_DragLeave *syscall.Proc
@@ -61,7 +61,7 @@ func (hWnd HWND) RemoveWindowSubclass(subclassProc uintptr, idSubclass uint32) e
 		uintptr(hWnd),
 		subclassProc,
 		uintptr(idSubclass))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_RemoveWindowSubclass *syscall.Proc
@@ -80,7 +80,7 @@ func (hWnd HWND) SetWindowSubclass(
 		subclassProc,
 		uintptr(idSubclass),
 		uintptr(refData))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_SetWindowSubclass *syscall.Proc

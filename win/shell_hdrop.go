@@ -56,7 +56,7 @@ func (hDrop HDROP) DragQueryFile() ([]string, error) {
 		uintptr(hDrop),
 		uintptr(0xffff_ffff), 0, 0)
 	if ret == 0 {
-		return nil, co.ERROR_INVALID_PARAMETER
+		return nil, co.ERROR_UNIDENTIFIED_ERROR
 	}
 
 	var wBuf wstr.BufDecoder
@@ -74,7 +74,7 @@ func (hDrop HDROP) DragQueryFile() ([]string, error) {
 			uintptr(wBuf.Ptr()),
 			uintptr(uint32(wBuf.Len())))
 		if ret == 0 {
-			return nil, co.ERROR_INVALID_PARAMETER
+			return nil, co.ERROR_UNIDENTIFIED_ERROR
 		}
 		paths = append(paths, wBuf.String())
 	}

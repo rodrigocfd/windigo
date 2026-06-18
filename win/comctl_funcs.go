@@ -20,7 +20,7 @@ func ImageListDragMove(x, y int) error {
 		dll.Comctl.Load(&_comctl_ImageList_DragMove, "ImageList_DragMove"),
 		uintptr(int32(x)),
 		uintptr(int32(y)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_DragMove *syscall.Proc
@@ -32,7 +32,7 @@ func ImageListDragShowNolock(show bool) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Comctl.Load(&_comctl_ImageList_DragShowNolock, "ImageList_DragShowNolock"),
 		utl.BoolToUintptr(show))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_DragShowNolock *syscall.Proc
@@ -44,7 +44,7 @@ func ImageListDrawIndirect(pImldp *IMAGELISTDRAWPARAMS) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Comctl.Load(&_comctl_ImageList_DrawIndirect, "ImageList_DrawIndirect"),
 		uintptr(unsafe.Pointer(pImldp)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_ImageList_DrawIndirect *syscall.Proc
@@ -80,7 +80,7 @@ func InitCommonControlsEx(icc co.ICC) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Comctl.Load(&_comctl_InitCommonControlsEx, "InitCommonControlsEx"),
 		uintptr(unsafe.Pointer(&iccx)))
-	return utl.ZeroAsSysInvalidParm(ret)
+	return utl.ZeroAsAnySysError(ret)
 }
 
 var _comctl_InitCommonControlsEx *syscall.Proc
