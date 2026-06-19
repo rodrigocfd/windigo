@@ -25,6 +25,7 @@ var (
 	Dxgi    = SystemDll{nil, "dxgi"}
 	Gdi     = SystemDll{nil, "gdi32"}
 	Kernel  = SystemDll{nil, "kernel32"}
+	Ktmw    = SystemDll{nil, "ktmw32"}
 	Ole     = SystemDll{nil, "ole32"}
 	Oleaut  = SystemDll{nil, "oleaut32"}
 	Psapi   = SystemDll{nil, "psapi"}

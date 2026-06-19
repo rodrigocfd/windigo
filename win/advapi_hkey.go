@@ -126,30 +126,73 @@ var _advapi_RegCopyTreeW *syscall.Proc
 // [RegCreateKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regcreatekeyexw
 func (hKey HKEY) RegCreateKeyEx(
 	subKey string,
+	class string,
 	options co.REG_OPTION,
 	accessRights co.KEY,
 	pSecurityAttributes *SECURITY_ATTRIBUTES,
-) (HKEY, error) {
-	var wSubKey wstr.BufEncoder
+) (HKEY, co.REG_DISPOSITION, error) {
+	var wSubKey, wClass wstr.BufEncoder
 	var openedKey HKEY
+	var disposition co.REG_DISPOSITION
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Advapi.Load(&_advapi_RegCreateKeyExW, "RegCreateKeyExW"),
 		uintptr(hKey),
 		uintptr(wSubKey.EmptyIsNil(subKey)),
-		0, 0,
+		0,
+		uintptr(wClass.EmptyIsNil(class)),
 		uintptr(options),
 		uintptr(accessRights),
 		uintptr(unsafe.Pointer(pSecurityAttributes)),
-		uintptr(unsafe.Pointer(&openedKey)))
+		uintptr(unsafe.Pointer(&openedKey)),
+		uintptr(unsafe.Pointer(&disposition)))
 
 	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
-		return HKEY(0), wErr
+		return HKEY(0), co.REG_DISPOSITION(0), wErr
 	}
-	return openedKey, nil
+	return openedKey, disposition, nil
 }
 
 var _advapi_RegCreateKeyExW *syscall.Proc
+
+// [RegCreateKeyTransacted] function.
+//
+// ⚠️ You must defer [HKEY.RegCloseKey].
+//
+// [RegCreateKeyTransacted]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regcreatekeytransactedw
+func (hKey HKEY) RegCreateKeyTransacted(
+	subKey string,
+	class string,
+	options co.REG_OPTION,
+	accessRights co.KEY,
+	pSecurityAttributes *SECURITY_ATTRIBUTES,
+	hTransaction HTRANSACTION,
+) (HKEY, co.REG_DISPOSITION, error) {
+	var wSubKey, wClass wstr.BufEncoder
+	var openedKey HKEY
+	var disposition co.REG_DISPOSITION
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Advapi.Load(&_advapi_RegCreateKeyTransactedW, "RegCreateKeyTransactedW"),
+		uintptr(hKey),
+		uintptr(wSubKey.EmptyIsNil(subKey)),
+		0,
+		uintptr(wClass.EmptyIsNil(class)),
+		uintptr(options),
+		uintptr(accessRights),
+		uintptr(unsafe.Pointer(pSecurityAttributes)),
+		uintptr(unsafe.Pointer(&openedKey)),
+		uintptr(unsafe.Pointer(&disposition)),
+		uintptr(hTransaction),
+		0)
+
+	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
+		return HKEY(0), co.REG_DISPOSITION(0), wErr
+	}
+	return openedKey, disposition, nil
+}
+
+var _advapi_RegCreateKeyTransactedW *syscall.Proc
 
 // [RegDeleteKey] function.
 //
@@ -167,21 +210,53 @@ var _advapi_RegDeleteKeyW *syscall.Proc
 
 // [RegDeleteKeyEx] function.
 //
-// samDesired must be [co.KEY_WOW64_32KEY] or [co.KEY_WOW64_64KEY].
+// Panics if accessRights is not [co.KEY_WOW64_32KEY] or [co.KEY_WOW64_64KEY].
 //
 // [RegDeleteKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeyexw
-func (hKey HKEY) RegDeleteKeyEx(subKey string, samDesired co.KEY) error {
+func (hKey HKEY) RegDeleteKeyEx(subKey string, accessRights co.KEY) error {
+	if accessRights != co.KEY_WOW64_32KEY && accessRights != co.KEY_WOW64_64KEY {
+		panic("Invalid access rights.")
+	}
+
 	var wSubKey wstr.BufEncoder
 	ret, _, _ := syscall.SyscallN(
 		dll.Advapi.Load(&_advapi_RegDeleteKeyExW, "RegDeleteKeyExW"),
 		uintptr(hKey),
 		uintptr(wSubKey.AllowEmpty(subKey)),
-		uintptr(samDesired&(co.KEY_WOW64_32KEY|co.KEY_WOW64_64KEY)),
+		uintptr(accessRights&(co.KEY_WOW64_32KEY|co.KEY_WOW64_64KEY)),
 		0)
 	return utl.ZeroAsSysError(ret)
 }
 
 var _advapi_RegDeleteKeyExW *syscall.Proc
+
+// [RegDeleteKeyTransacted] function.
+//
+// Panics if accessRights is not [co.KEY_WOW64_32KEY] or [co.KEY_WOW64_64KEY].
+//
+// [RegDeleteKeyTransacted]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeytransactedw
+func (hKey HKEY) RegDeleteKeyTransacted(
+	subKey string,
+	accessRights co.KEY,
+	hTransaction HTRANSACTION,
+) error {
+	if accessRights != co.KEY_WOW64_32KEY && accessRights != co.KEY_WOW64_64KEY {
+		panic("Invalid access rights.")
+	}
+
+	var wSubKey wstr.BufEncoder
+	ret, _, _ := syscall.SyscallN(
+		dll.Advapi.Load(&_advapi_RegDeleteKeyTransactedW, "RegDeleteKeyTransactedW"),
+		uintptr(hKey),
+		uintptr(wSubKey.AllowEmpty(subKey)),
+		uintptr(accessRights&(co.KEY_WOW64_32KEY|co.KEY_WOW64_64KEY)),
+		0,
+		uintptr(hTransaction),
+		0)
+	return utl.ZeroAsSysError(ret)
+}
+
+var _advapi_RegDeleteKeyTransactedW *syscall.Proc
 
 // [RegDeleteKeyValue] function.
 //
@@ -513,6 +588,36 @@ func (hKey HKEY) RegOpenKeyEx(
 }
 
 var _advapi_RegOpenKeyExW *syscall.Proc
+
+// [RegOpenKeyTransacted] function.
+//
+// [RegOpenKeyTransacted]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeytransactedw
+func (hKey HKEY) RegOpenKeyTransacted(
+	subKey string,
+	options co.REG_OPTION,
+	accessRights co.KEY,
+	hTransaction HTRANSACTION,
+) (HKEY, error) {
+	var wSubKey wstr.BufEncoder
+	var openedKey HKEY
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Advapi.Load(&_advapi_RegOpenKeyTransactedW, "RegOpenKeyTransactedW"),
+		uintptr(hKey),
+		uintptr(wSubKey.EmptyIsNil(subKey)),
+		uintptr(options),
+		uintptr(accessRights),
+		uintptr(unsafe.Pointer(&openedKey)),
+		uintptr(hTransaction),
+		0)
+
+	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
+		return HKEY(0), wErr
+	}
+	return openedKey, nil
+}
+
+var _advapi_RegOpenKeyTransactedW *syscall.Proc
 
 // [RegQueryInfoKey] function.
 //

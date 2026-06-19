@@ -54,6 +54,19 @@ const (
 	REG_QWORD_LITTLE_ENDIAN        REG = 11
 )
 
+// [RegCreateKeyEx] and [RegCreateKeyTransacted] creation disposition.
+// Originally has REG prefix and KEY suffix.
+//
+// [RegCreateKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regcreatekeyexw
+// [RegCreateKeyTransacted]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regcreatekeytransactedw
+type REG_DISPOSITION uint32
+
+const (
+	REG_DISPOSITION_NONE        REG_DISPOSITION = 0
+	REG_DISPOSITION_CREATED_NEW REG_DISPOSITION = 0x0000_0001
+	REG_DISPOSITION_EXISTING    REG_DISPOSITION = 0x0000_0002
+)
+
 // [RegCreateKeyEx] and [RegOpenKeyEx] options.
 //
 // [RegCreateKeyEx]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regcreatekeyexw
@@ -115,4 +128,34 @@ const (
 
 	RRF_NOEXPAND      RRF = 0x1000_0000
 	RRF_ZEROONFAILURE RRF = 0x2000_0000
+)
+
+// [OpenTransaction] access masks. Originally has TRANSACTION prefix.
+//
+// [OpenTransaction]: https://learn.microsoft.com/en-us/windows/win32/api/ktmw32/nf-ktmw32-opentransaction
+type TRANSACTION uint32
+
+const (
+	TRANSACTION_QUERY_INFORMATION       TRANSACTION = 0x0001
+	TRANSACTION_SET_INFORMATION         TRANSACTION = 0x0002
+	TRANSACTION_ENLIST                  TRANSACTION = 0x0004
+	TRANSACTION_COMMIT                  TRANSACTION = 0x0008
+	TRANSACTION_ROLLBACK                TRANSACTION = 0x0010
+	TRANSACTION_PROPAGATE               TRANSACTION = 0x0020
+	TRANSACTION_RIGHT_RESERVED1         TRANSACTION = 0x0040
+	TRANSACTION_GENERIC_READ            TRANSACTION = TRANSACTION(STANDARD_RIGHTS_READ|STANDARD_RIGHTS_SYNCHRONIZE) | TRANSACTION_QUERY_INFORMATION
+	TRANSACTION_GENERIC_WRITE                       = TRANSACTION(STANDARD_RIGHTS_WRITE|STANDARD_RIGHTS_SYNCHRONIZE) | TRANSACTION_SET_INFORMATION | TRANSACTION_COMMIT | TRANSACTION_ENLIST | TRANSACTION_ROLLBACK | TRANSACTION_PROPAGATE
+	TRANSACTION_GENERIC_EXECUTE                     = TRANSACTION(STANDARD_RIGHTS_EXECUTE|STANDARD_RIGHTS_SYNCHRONIZE) | TRANSACTION_COMMIT | TRANSACTION_ROLLBACK
+	TRANSACTION_ALL_ACCESS                          = TRANSACTION(STANDARD_RIGHTS_REQUIRED) | TRANSACTION_GENERIC_READ | TRANSACTION_GENERIC_WRITE | TRANSACTION_GENERIC_EXECUTE
+	TRANSACTION_RESOURCE_MANAGER_RIGHTS             = TRANSACTION(STANDARD_RIGHTS_WRITE|STANDARD_RIGHTS_SYNCHRONIZE) | TRANSACTION_GENERIC_READ | TRANSACTION_SET_INFORMATION | TRANSACTION_ENLIST | TRANSACTION_ROLLBACK | TRANSACTION_PROPAGATE
+)
+
+// [CreateTransaction] options. Originally has TRANSACTION prefix.
+//
+// [CreateTransaction]: https://rodrigocfd.github.io/winsafe/winsafe/struct.HTRANSACTION.html#method.CreateTransaction
+type TRANSACTION_OPT uint32
+
+const (
+	TRANSACTION_OPT_NONE           TRANSACTION_OPT = 0
+	TRANSACTION_OPT_DO_NOT_PROMOTE TRANSACTION_OPT = 0x0000_0001
 )
