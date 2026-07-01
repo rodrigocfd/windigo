@@ -40,6 +40,18 @@ func AllocConsole() error {
 
 var _kernel_AllocConsole *syscall.Proc
 
+// [AttachConsole] function.
+//
+// [AttachConsole]: https://learn.microsoft.com/en-us/windows/console/attachconsole
+func AttachConsole(processId int) error {
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_AttachConsole, "AttachConsole"),
+		uintptr(uint32(processId)))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _kernel_AttachConsole *syscall.Proc
+
 // [CompareFileTime] function.
 //
 // [CompareFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-comparefiletime
