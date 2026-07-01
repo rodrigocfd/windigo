@@ -14,6 +14,21 @@ import (
 	"github.com/rodrigocfd/windigo/wstr"
 )
 
+// [AddConsoleAlias] function.
+//
+// [AddConsoleAlias]: https://learn.microsoft.com/en-us/windows/console/addconsolealias
+func AddConsoleAlias(source, target, exeName string) error {
+	var wSource, wTarget, wExeName wstr.BufEncoder
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_AddConsoleAliasW, "AddConsoleAliasW"),
+		uintptr(wSource.EmptyIsNil(source)),
+		uintptr(wTarget.EmptyIsNil(target)),
+		uintptr(wExeName.EmptyIsNil(exeName)))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _kernel_AddConsoleAliasW *syscall.Proc
+
 // [CompareFileTime] function.
 //
 // [CompareFileTime]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-comparefiletime
