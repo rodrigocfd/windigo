@@ -242,6 +242,17 @@ func FlushProcessWriteBuffers() {
 
 var _kernel_FlushProcessWriteBuffers *syscall.Proc
 
+// [FreeConsole] function.
+//
+// [FreeConsole]: https://learn.microsoft.com/en-us/windows/console/freeconsole
+func FreeConsole() error {
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_FreeConsole, "FreeConsole"))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _kernel_FreeConsole *syscall.Proc
+
 // [GetActiveProcessorCount] function.
 //
 // For ALL_PROCESSOR_GROUPS, pass 0xffff.
