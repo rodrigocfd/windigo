@@ -915,6 +915,18 @@ func SetProcessDPIAware() error {
 
 var _user_SetProcessDPIAware *syscall.Proc
 
+// [SetProcessDpiAwarenessContext] function.
+//
+// [SetProcessDpiAwarenessContext]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
+func SetProcessDpiAwarenessContext(value co.DPI_AWARENESS_CONTEXT) error {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_SetProcessDpiAwarenessContext, "SetProcessDpiAwarenessContext"),
+		uintptr(value))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _user_SetProcessDpiAwarenessContext *syscall.Proc
+
 // [ShowCursor] function.
 //
 // [ShowCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showcursor
