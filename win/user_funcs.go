@@ -447,6 +447,18 @@ func GetInputState() bool {
 
 var _user_GetInputState *syscall.Proc
 
+// [GetKeyState] function.
+//
+// [GetKeyState]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getkeystate
+func GetKeyState(virtKey co.VK) (isDown, isToggled bool) {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetKeyState, "GetKeyState"),
+		uintptr(virtKey))
+	return (ret & 0x8000) != 0, (ret & 0x0001) != 0
+}
+
+var _user_GetKeyState *syscall.Proc
+
 // [GetMessage] function.
 //
 // [GetMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getmessagew

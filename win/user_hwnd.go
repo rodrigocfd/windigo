@@ -1260,7 +1260,7 @@ var _user_SetScrollInfo *syscall.Proc
 //
 // The timer can be stopped with [HWND.KillTimer].
 //
-// Note that TIMERPROC callback is not supported. The reason is that, the usage
+// Note that TIMERPROC callback is not supported. The reason is that the usage
 // of such callback would imply in allocating a block of memory that would never
 // be freed, thus leaking memory.
 //
@@ -1285,7 +1285,7 @@ var _user_SetScrollInfo *syscall.Proc
 //			return 0
 //		})
 //
-//		wnd.On().WmTimer(TIMER_ID,func() {
+//		wnd.On().WmTimer(TIMER_ID, func() {
 //			println("Timer called!")
 //		})
 //
