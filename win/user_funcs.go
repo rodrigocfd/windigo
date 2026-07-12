@@ -836,6 +836,19 @@ func RegisterWindowMessage(message string) (co.WM, error) {
 
 var _user_RegisterWindowMessageW *syscall.Proc
 
+// [ReleaseCapture] function.
+//
+// Paired with [HWND.SetCapture].
+//
+// [ReleaseCapture]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-releasecapture
+func ReleaseCapture() error {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_ReleaseCapture, "ReleaseCapture"))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _user_ReleaseCapture *syscall.Proc
+
 // [ReplyMessage] function.
 //
 // [ReplyMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-replymessage

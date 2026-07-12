@@ -1179,6 +1179,20 @@ func (hWnd HWND) SendMessage(msg co.WM, wParam WPARAM, lParam LPARAM) (uintptr, 
 
 var _user_SendMessageW *syscall.Proc
 
+// [SetCapture] function.
+//
+// Paired with [ReleaseCapture].
+//
+// [SetCapture]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setcapture
+func (hWnd HWND) SetCapture() HWND {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_SetCapture, "SetCapture"),
+		uintptr(hWnd))
+	return HWND(ret)
+}
+
+var _user_SetCapture *syscall.Proc
+
 // [SetFocus] function.
 //
 // Returns a handle to the previously focused window.
