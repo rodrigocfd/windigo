@@ -255,6 +255,17 @@ var _gdi_CreateFontW *syscall.Proc
 //
 // ⚠️ You must defer [HFONT.DeleteObject].
 //
+// Example:
+//
+//	var lf win.LOGFONT
+//	lf.Height = -24
+//	lf.Weight = co.FW_NORMAL
+//	lf.CharSet = co.CHARSET_DEFAULT
+//	lf.SetFaceName("Consolas")
+//
+//	hFont, _ := win.CreateFontIndirect(&lf)
+//	defer hFont.DeleteObject()
+//
 // [CreateFontIndirect]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontindirectw
 func CreateFontIndirect(pLogFont *LOGFONT) (HFONT, error) {
 	ret, _, _ := syscall.SyscallN(
