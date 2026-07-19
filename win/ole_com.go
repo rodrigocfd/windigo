@@ -3,6 +3,7 @@
 package win
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 
@@ -189,6 +190,45 @@ func (me *IDataObject) GetData(pEtc *FORMATETC) (STGMEDIUM, error) {
 	} else {
 		return STGMEDIUM{}, hr
 	}
+}
+
+// Calls [IDataObject.QueryGetData] to check whether it contains [HDROP]
+// contents. If so, calls [IDataObject.GetData] to retrieve the strings.
+//
+// This method is intended to be used with [IDropTarget.DragEnter] and
+// [IDropTarget.Drop], where files are dropped onto a window.
+func (me *IDataObject) GetDataHDrop() ([]string, error) {
+	fetc := FORMATETC{
+		CfFormat: co.CF_HDROP,
+		Aspect:   co.DVASPECT_CONTENT,
+		Lindex:   -1,
+		Tymed:    co.TYMED_HGLOBAL,
+	}
+	if err := me.QueryGetData(&fetc); err != nil {
+		return nil, err
+	}
+
+	stg, err := me.GetData(&fetc)
+	if err != nil {
+		return nil, err
+	}
+	defer ReleaseStgMedium(&stg)
+
+	hGlobal, ok := stg.HGlobal()
+	if !ok {
+		return nil, fmt.Errorf("STGMEDIUM didn't have HGLOBAL")
+	}
+
+	hMem, _ := hGlobal.GlobalLock()
+	defer hGlobal.GlobalUnlock()
+
+	hDrop := HDROP(hMem) // DragFinish() crashes ReleaseStgMedium(), don't call
+	files, err := hDrop.DragQueryFile()
+	if err != nil {
+		return nil, err
+	}
+
+	return files, nil
 }
 
 // [QueryGetData] method.
