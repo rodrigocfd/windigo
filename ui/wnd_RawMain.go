@@ -29,23 +29,34 @@ func (me *_RawMain) runAsMain(hInst win.HINSTANCE) int {
 	atom := me.registerClass(hInst, me.opts.className, me.opts.classStyle,
 		me.opts.classIconId, me.opts.classBrush, me.opts.classCursor)
 
-	szScreen := win.SIZE{
-		Cx: win.GetSystemMetrics(co.SM_CXSCREEN),
-		Cy: win.GetSystemMetrics(co.SM_CYSCREEN),
-	}
-
-	ptWnd := win.POINT{
-		X: szScreen.Cx/2 - me.opts.size.Cx/2, // center on screen
-		Y: szScreen.Cy/2 - me.opts.size.Cy/2,
-	}
-
 	rcWnd := win.RECT{ // client area, will be adjusted to size with title bar and borders
-		Left:   ptWnd.X,
-		Top:    ptWnd.Y,
-		Right:  ptWnd.X + me.opts.size.Cx,
-		Bottom: ptWnd.Y + me.opts.size.Cy,
+		Right:  me.opts.size.Cx,
+		Bottom: me.opts.size.Cy,
 	}
 	win.AdjustWindowRectEx(&rcWnd, me.opts.style, me.opts.menu != 0, me.opts.exStyle)
+	szAdjusted := win.SIZE{
+		Cx: rcWnd.Right - rcWnd.Left,
+		Cy: rcWnd.Bottom - rcWnd.Top,
+	}
+	rcWnd = win.RECT{}
+
+	ptCursor, _ := win.GetCursorPos()
+	hMon := win.MonitorFromPoint(ptCursor, co.MONITOR_DEFAULTTONEAREST)
+	mon, _ := hMon.GetMonitorInfo() // important to exclude taskbar from positioning
+
+	if me.opts.center { // center on screen
+		szScreen := win.SIZE{
+			Cx: mon.RcWork.Right - mon.RcWork.Left,
+			Cy: mon.RcWork.Bottom - mon.RcWork.Top,
+		}
+		rcWnd.Left = mon.RcWork.Left + szScreen.Cx/2 - szAdjusted.Cx/2
+		rcWnd.Top = mon.RcWork.Top + szScreen.Cy/2 - szAdjusted.Cy/2
+	} else { // use provided position
+		rcWnd.Left = mon.RcWork.Left + me.opts.position.X
+		rcWnd.Top = mon.RcWork.Top + me.opts.position.Y
+	}
+	rcWnd.Right = rcWnd.Left + szAdjusted.Cx
+	rcWnd.Bottom = rcWnd.Top + szAdjusted.Cy
 
 	me.createWindow(me.opts.exStyle, atom, me.opts.title, me.opts.style,
 		win.POINT{X: rcWnd.Left, Y: rcWnd.Top},
@@ -95,12 +106,14 @@ type VarOptsMain struct {
 	classBrush  win.HBRUSH
 
 	title      string
+	position   win.POINT
 	size       win.SIZE
 	style      co.WS
 	exStyle    co.WS_EX
 	menu       win.HMENU
 	accelTable win.HACCEL
 
+	center         bool
 	cmdShow        co.SW
 	processDlgMsgs bool
 }
@@ -177,6 +190,20 @@ func (o *VarOptsMain) ClassBrush(h win.HBRUSH) *VarOptsMain { o.classBrush = h; 
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsMain) Title(t string) *VarOptsMain { o.title = t; return o }
 
+// Position coordinates of the window, in pixels, passed to [CreateWindowEx].
+//
+// If Center is true, these values are ignored, and the window will be initially
+// centered on the screen.
+//
+// Defaults to ui.Dpi(0, 0).
+//
+// [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
+func (o *VarOptsMain) Position(x, y int) *VarOptsMain {
+	o.position.X = int32(x)
+	o.position.Y = int32(y)
+	return o
+}
+
 // Size of client area in pixels, passed to [CreateWindowEx].
 //
 // Defaults to ui.Dpi(500, 400).
@@ -210,10 +237,17 @@ func (o *VarOptsMain) ExStyle(s co.WS_EX) *VarOptsMain { o.exStyle = s; return o
 func (o *VarOptsMain) Menu(m win.HMENU) *VarOptsMain { o.menu = m; return o }
 
 // Main accelerator table to the window, passed to [CreateWindowEx].
+//
 // Defaults to none.
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsMain) AccelTable(a win.HACCEL) *VarOptsMain { o.accelTable = a; return o }
+
+// If true, Position values will be ignored, and the window will be initially
+// centered on the screen.
+//
+// Defaults to false.
+func (o *VarOptsMain) Center(c bool) *VarOptsMain { o.center = c; return o }
 
 // Initial window exhibition state, passed to [ShowWindow].
 //

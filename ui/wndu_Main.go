@@ -25,6 +25,7 @@ type Main struct {
 //	wnd := ui.NewMain(
 //		ui.OptsMain().
 //			Title("Hello world").
+//			Center(true).
 //			Size(ui.Dpi(500, 400)).
 //			Style(co.WS_CAPTION | co.WS_SYSMENU | co.WS_CLIPCHILDREN |
 //				co.WS_BORDER | co.WS_VISIBLE | co.WS_MINIMIZEBOX |
