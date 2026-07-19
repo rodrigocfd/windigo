@@ -233,6 +233,13 @@ func (td *TYPEDESC) HRefType() uint32 {
 //
 // Implements [OleResource].
 //
+// Example:
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+//	v := win.NewVariant(rel, "foo")
+//
 // [VARIANT]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-variant
 type VARIANT struct {
 	tag        co.VT
@@ -254,7 +261,7 @@ var _oleaut_VariantClear *syscall.Proc
 // Calls [VariantInit] and sets the type and value.
 //
 // Allowed [types]:
-//   - nil([co.VT_EMPTY])
+//   - nil ([co.VT_EMPTY])
 //   - bool ([co.VT_BOOL])
 //   - float32 ([co.VT_R4])
 //   - float64 ([co.VT_R8])
@@ -277,7 +284,7 @@ var _oleaut_VariantClear *syscall.Proc
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
-//	v := win.NewVariant(rel, nil)
+//	v := win.NewVariant(rel, "foo")
 //
 // [VariantInit]: https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-variantinit
 // [types]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ne-wtypes-varenum

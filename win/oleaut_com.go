@@ -222,11 +222,11 @@ func (me *IDispatch) InvokeGet(
 //		&excel,
 //	)
 //
-//	books, _ := excel.InvokeGetIDispatch(rel, "Workbooks")
+//	books, _ := excel.InvokeGetAsIDispatch(rel, "Workbooks")
 //
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
-func (me *IDispatch) InvokeGetIDispatch(
+func (me *IDispatch) InvokeGetAsIDispatch(
 	releaser *OleReleaser,
 	propertyName string,
 	params ...interface{},
@@ -317,13 +317,13 @@ func (me *IDispatch) InvokeMethod(
 //	)
 //
 //	books, _ := excel.InvokeGetIDispatch(rel, "Workbooks")
-//	file, _ := books.InvokeMethodIDispatch(rel, "Open", "C:\\Temp\\file.xlsx")
+//	file, _ := books.InvokeMethodAsIDispatch(rel, "Open", "C:\\Temp\\file.xlsx")
 //	_, _ = file.InvokeMethod(rel, "SaveAs", "C:\\Temp\\copy.xlsx")
 //	_, _ = file.InvokeMethod(rel, "Close")
 //
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
-func (me *IDispatch) InvokeMethodIDispatch(
+func (me *IDispatch) InvokeMethodAsIDispatch(
 	releaser *OleReleaser,
 	methodName string,
 	params ...interface{},
@@ -366,7 +366,7 @@ func (me *IDispatch) InvokePut(
 //
 // [Invoke]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-invoke
 // [EXCEPINFO]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-excepinfo
-func (me *IDispatch) InvokePutIDispatch(
+func (me *IDispatch) InvokePutAsIDispatch(
 	releaser *OleReleaser,
 	propertyName string,
 	value interface{},
