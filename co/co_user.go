@@ -1939,7 +1939,7 @@ const (
 	VK_RETURN     VK = 0x0d // Enter key.
 	VK_SHIFT      VK = 0x10
 	VK_CONTROL    VK = 0x11
-	VK_MENU       VK = 0x12 // Alt key.
+	VK_MENU       VK = 0x12 // Either left or right alt key.
 	VK_PAUSE      VK = 0x13
 	VK_CAPITAL    VK = 0x14 // Caps lock key.
 	VK_KANA       VK = 0x15
@@ -1971,7 +1971,7 @@ const (
 	VK_DELETE     VK = 0x2e
 	VK_HELP       VK = 0x2f
 
-	VK_0 VK = 0x30
+	VK_0 VK = 0x30 // Zero number, not letter "O".
 	VK_1 VK = 0x31
 	VK_2 VK = 0x32
 	VK_3 VK = 0x33
@@ -1996,7 +1996,7 @@ const (
 	VK_L VK = 0x4c
 	VK_M VK = 0x4d
 	VK_N VK = 0x4e
-	VK_O VK = 0x4f
+	VK_O VK = 0x4f // "O" letter, not zero.
 	VK_P VK = 0x50
 	VK_Q VK = 0x51
 	VK_R VK = 0x52
@@ -2011,7 +2011,7 @@ const (
 
 	VK_LWIN                VK = 0x5b // Left Windows key.
 	VK_RWIN                VK = 0x5c // Right Windows key.
-	VK_APPS                VK = 0x5d
+	VK_APPS                VK = 0x5d // Context menu key.
 	VK_SLEEP               VK = 0x5f // Computer sleep key.
 	VK_NUMPAD0             VK = 0x60
 	VK_NUMPAD1             VK = 0x61
@@ -2061,12 +2061,12 @@ const (
 	VK_OEM_FJ_TOUROKU      VK = 0x94
 	VK_OEM_FJ_LOYA         VK = 0x95
 	VK_OEM_FJ_ROYA         VK = 0x96
-	VK_LSHIFT              VK = 0xa0
-	VK_RSHIFT              VK = 0xa1
-	VK_LCONTROL            VK = 0xa2
-	VK_RCONTROL            VK = 0xa3
-	VK_LMENU               VK = 0xa4
-	VK_RMENU               VK = 0xa5
+	VK_LSHIFT              VK = 0xa0 // Left shift key.
+	VK_RSHIFT              VK = 0xa1 // Right shift key.
+	VK_LCONTROL            VK = 0xa2 // Left control key.
+	VK_RCONTROL            VK = 0xa3 // Right control key.
+	VK_LMENU               VK = 0xa4 // Left alt key.
+	VK_RMENU               VK = 0xa5 // Right alt key.
 	VK_BROWSER_BACK        VK = 0xa6
 	VK_BROWSER_FORWARD     VK = 0xa7
 	VK_BROWSER_REFRESH     VK = 0xa8
@@ -2121,7 +2121,7 @@ const (
 	VK_CRSEL               VK = 0xf7
 	VK_EXSEL               VK = 0xf8
 	VK_EREOF               VK = 0xf9
-	VK_PLAY                VK = 0xfa
+	VK_PLAY                VK = 0xfa // Legacy "play" key, not the modern multimedia play/pause key.
 	VK_ZOOM                VK = 0xfb
 	VK_NONAME              VK = 0xfc
 	VK_PA1                 VK = 0xfd
