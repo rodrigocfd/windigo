@@ -20,8 +20,24 @@ type HACCEL HANDLE
 //
 // ⚠️ You must defer [HACCEL.DestroyAcceleratorTable].
 //
+// Example:
+//
+//	accTbl, _ := win.CreateAcceleratorTable(
+//		win.ACCEL{
+//			FVirt: co.ACCELF_VIRTKEY,
+//			Key:   co.VK_F1,
+//			Cmd:   1001,
+//		},
+//		win.ACCEL{
+//			FVirt: co.ACCELF_VIRTKEY | co.ACCELF_CONTROL,
+//			Key:   co.VK_O,
+//			Cmd:   1002,
+//		},
+//	)
+//	defer accTbl.DestroyAcceleratorTable()
+//
 // [CreateAcceleratorTable]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createacceleratortablew
-func CreateAcceleratorTable(accelList []ACCEL) (HACCEL, error) {
+func CreateAcceleratorTable(accelList ...ACCEL) (HACCEL, error) {
 	ret, _, err := syscall.SyscallN(
 		dll.User.Load(&_user_CreateAcceleratorTableW, "CreateAcceleratorTableW"),
 		uintptr(unsafe.Pointer(&accelList[0])),
