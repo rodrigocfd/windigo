@@ -3,7 +3,6 @@ package wstr
 import (
 	"fmt"
 	"strings"
-	"unicode/utf16"
 )
 
 // Returns a new string with the first character converted to uppercase.
@@ -69,14 +68,12 @@ func CountRunes(s string) int {
 // zero.
 func CountUtf16Len(s string) int {
 	numWords := 0
+	// Ranging over a string yields valid Unicode scalar values; invalid UTF-8
+	// bytes become U+FFFD, which fits in one UTF-16 word.
 	for _, ch := range s {
-		switch utf16.RuneLen(ch) {
-		case 2:
+		if ch > '\uffff' {
 			numWords += 2 // surrogate sequence
-		default:
-			// If 1, is an ordinary char.
-			// If -1, it's a rune which cannot be encoded to UTF-16; in such
-			// case, encoding will simply place a '\uFFFD' word.
+		} else {
 			numWords++
 		}
 	}

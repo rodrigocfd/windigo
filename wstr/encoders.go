@@ -63,10 +63,7 @@ func EncodeArrToSlice(strs ...string) []uint16 {
 //	buf := make([]uint16, 10)
 //	wstr.EncodeToBuf(buf, "abc")
 func EncodeToBuf(dest []uint16, s string) int {
-	const (
-		_SURR_SELF   = 0x10000
-		_REPLAC_CHAR = '\uFFFD'
-	)
+	const _SURR_SELF = 0x10000
 
 	szDest := len(dest)
 	if szDest == 0 {
@@ -75,16 +72,17 @@ func EncodeToBuf(dest []uint16, s string) int {
 
 	idx := 0
 EachRune:
+	// Ranging over a string yields valid Unicode scalar values; invalid UTF-8
+	// bytes become U+FFFD, which fits in one UTF-16 word.
 	for _, ch := range s {
 		if idx >= szDest-1 {
 			break // truncate to prevent buffer overrun
 		}
 
-		switch utf16.RuneLen(ch) {
-		case 1: // normal rune
+		if ch < _SURR_SELF { // normal rune
 			dest[idx] = uint16(ch)
 			idx++
-		case 2: // needs surrogate sequence
+		} else { // needs surrogate sequence
 			if idx+1 >= szDest-1 {
 				break EachRune // no room for surrogate pair
 			} else {
@@ -93,9 +91,6 @@ EachRune:
 				dest[idx+1] = uint16(r2)
 				idx += 2
 			}
-		default: // cannot be properly encoded
-			dest[idx] = uint16(_REPLAC_CHAR)
-			idx++
 		}
 	}
 	dest[idx] = 0x0000 // terminating null
