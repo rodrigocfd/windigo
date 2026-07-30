@@ -2,7 +2,6 @@ package wstr_test
 
 import (
 	"fmt"
-	"testing"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/wstr"
@@ -126,32 +125,13 @@ func ExampleCountRunes() {
 }
 
 func ExampleCountUtf16Len() {
+	c0 := wstr.CountUtf16Len("")
 	c1 := wstr.CountUtf16Len("foo")
 	c2 := wstr.CountUtf16Len("🙂")
-	fmt.Println(c1, c2)
-	// Output: 3 2
-}
-
-func TestCountUtf16Len(t *testing.T) {
-	tests := []struct {
-		name string
-		text string
-		want int
-	}{
-		{"empty", "", 0},
-		{"ASCII", "foo", 3},
-		{"BMP", "世界", 2},
-		{"supplementary", "🙂", 2},
-		{"mixed", "A世🙂", 4},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := wstr.CountUtf16Len(tt.text); got != tt.want {
-				t.Fatalf("CountUtf16Len(%q) = %d; want %d", tt.text, got, tt.want)
-			}
-		})
-	}
+	c3 := wstr.CountUtf16Len("世界")
+	c4 := wstr.CountUtf16Len("A世🙂")
+	fmt.Println(c0, c1, c2, c3, c4)
+	// Output: 0 3 2 2 4
 }
 
 func ExampleFmtBytes() {
