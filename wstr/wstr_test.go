@@ -125,10 +125,13 @@ func ExampleCountRunes() {
 }
 
 func ExampleCountUtf16Len() {
+	c0 := wstr.CountUtf16Len("")
 	c1 := wstr.CountUtf16Len("foo")
 	c2 := wstr.CountUtf16Len("🙂")
-	fmt.Println(c1, c2)
-	// Output: 3 2
+	c3 := wstr.CountUtf16Len("世界")
+	c4 := wstr.CountUtf16Len("A世🙂")
+	fmt.Println(c0, c1, c2, c3, c4)
+	// Output: 0 3 2 2 4
 }
 
 func ExampleFmtBytes() {
