@@ -681,15 +681,15 @@ type WIN32_FIND_DATA struct {
 	FtCreationTime     FILETIME
 	FtLastAccessTime   FILETIME
 	FtLastWriteTime    FILETIME
-	NFileSizeHigh      uint32
-	NFileSizeLow       uint32
+	nFileSizeHigh      uint32
+	nFileSizeLow       uint32
 	dwReserved0        uint32
 	dwReserved1        uint32
 	cFileName          [utl.MAX_PATH]uint16
 	cAlternateFileName [14]uint16
-	DwFileType         uint32
-	DwCreatorType      uint32
-	WFinderFlags       uint16
+	dwFileType         uint32
+	dwCreatorType      uint32
+	wFinderFlags       uint16
 }
 
 func (wfd *WIN32_FIND_DATA) CFileName() string {
@@ -697,6 +697,15 @@ func (wfd *WIN32_FIND_DATA) CFileName() string {
 }
 func (wfd *WIN32_FIND_DATA) SetCFileName(val string) {
 	wstr.EncodeToBuf(wfd.cFileName[:], val)
+}
+
+func (wfd *WIN32_FIND_DATA) NFileSize() int {
+	return int(utl.Make64(wfd.nFileSizeLow, wfd.nFileSizeHigh))
+}
+func (wfd *WIN32_FIND_DATA) SetNFileSize(val int) {
+	lo, hi := utl.Break64(uint64(val))
+	wfd.nFileSizeLow = lo
+	wfd.nFileSizeHigh = hi
 }
 
 func (wfd *WIN32_FIND_DATA) CAlternateFileName() string {

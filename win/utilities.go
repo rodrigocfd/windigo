@@ -7,6 +7,7 @@ import (
 	"io"
 	"sort"
 	"strings"
+	"time"
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
@@ -717,12 +718,9 @@ func PathDirUp(path string) string {
 	}
 }
 
-// Returns a new []string with all files and folders within searchPath.
+// Enumerates each file and directory in path.
 //
-// If fileExtension isn't empty, brings only the files and folders with this
-// extension.
-//
-// Does not search recursively. For a recursive search, use [PathEnumDeep].
+// For a recursive search, use [PathEnumDeep].
 //
 // Calls:
 //   - [FindFirstFile]
@@ -731,51 +729,24 @@ func PathDirUp(path string) string {
 //
 // Example:
 //
-//	paths := win.PathEnum("C:\\Temp", "")
-//	mp3s := win.PathEnum("C:\\Temp", "mp3")
-func PathEnum(searchPath, fileExtension string) ([]string, error) {
-	if strings.Contains(searchPath, "*") {
-		return nil, fmt.Errorf("invalid path: %s", searchPath)
-	} else if strings.Contains(fileExtension, "*") {
-		return nil, fmt.Errorf("invalid file extension: %s", fileExtension)
-	}
-	searchPath = PathTrimBackslash(searchPath)
-	basePath := searchPath
-	searchPath += "\\*"
-	fileExtension = strings.TrimSpace(fileExtension)
-	if fileExtension != "" {
-		searchPath += "." + fileExtension
-	}
-
-	var wfd WIN32_FIND_DATA
-	hFind, found, err := FindFirstFile(searchPath, &wfd)
-	if err != nil {
-		return nil, fmt.Errorf("PathEnum FindFirstFile: %w", err)
-	} else if !found {
-		return []string{}, nil // empty, not an error
-	}
-	defer hFind.FindClose()
-
+//	paths := win.PathEnum("C:\\Temp")
+func PathEnum(path string) ([]string, error) {
 	files := make([]string, 0, 20) // arbitrary
-	for found {
-		fileNameFound := wfd.CFileName()
-		if fileNameFound != ".." && fileNameFound != "." {
-			files = append(files, basePath+"\\"+fileNameFound)
-		}
+	err := PathEnumFunc(path, func(fileInfo *PathEnumInfo) bool {
+		files = append(files, fileInfo.Path)
+		return true
+	})
 
-		if found, err = hFind.FindNextFile(&wfd); err != nil {
-			return nil, fmt.Errorf("PathEnum HFIND.FindNextFile: %w", err)
-		}
+	if err != nil {
+		return nil, err
 	}
 	PathSort(files)
 	return files, nil
 }
 
-// Returns a new []string with all files within searchPath.
+// Enumerates each file in path, recursively.
 //
-// If fileExtension isn't empty, brings only the files with this extension.
-//
-// Searches recursively. For a non-recursive search, use [PathEnum].
+// For a non-recursive search, use [PathEnum].
 //
 // Calls:
 //   - [FindFirstFile]
@@ -784,32 +755,119 @@ func PathEnum(searchPath, fileExtension string) ([]string, error) {
 //
 // Example:
 //
-//	paths := win.PathEnumDeep("C:\\Temp", "")
-//	mp3s := win.PathEnumDeep("C:\\Temp", "mp3")
-func PathEnumDeep(searchPath, fileExtension string) ([]string, error) {
-	foundFiles, err := PathEnum(searchPath, "") // if we pass extension, subfolders will be skipped
-	if err != nil {
-		return nil, fmt.Errorf("PathEnumDeep: %w", err)
-	}
-	if len(foundFiles) == 0 {
-		return []string{}, nil
-	}
+//	paths := win.PathEnumDeep("C:\\Temp")
+func PathEnumDeep(path string) ([]string, error) {
+	files := make([]string, 0, 20) // arbitrary
+	err := PathEnumDeepFunc(path, func(fileInfo *PathEnumInfo) bool {
+		files = append(files, fileInfo.Path)
+		return true
+	})
 
-	files := make([]string, 0, len(foundFiles)+20) // arbitrary
-	for _, f := range foundFiles {
-		if !PathIsFolder(f) {
-			if fileExtension == "" || PathHasExtension(f, fileExtension) { // manual extension filter
-				files = append(files, f)
+	if err != nil {
+		return nil, err
+	}
+	PathSort(files)
+	return files, nil
+}
+
+// Sent to the callback of [PathEnumFunc].
+type PathEnumInfo struct {
+	Path           string // Full path of the file or directory.
+	CreationTime   time.Time
+	LastAccessTime time.Time
+	LastWriteTime  time.Time
+	Size           int  // File size in bytes. Zero if a directory.
+	IsDir          bool // True if a directory.
+}
+
+// Enumerates each file and directory in path, calling fun to each one. Inside
+// fun, return true to keep going.
+//
+// Calls:
+//   - [FindFirstFile]
+//   - [HFIND.FindNextFile]
+//   - [HFIND.FindClose]
+//
+// For a recursive search, use [PathEnumDeepFunc].
+//
+// Example:
+//
+//	win.PathEnumFunc("C:\\Temp", func(fileInfo *win.PathEnumInfo) bool {
+//		println(fileInfo.Path)
+//		return true
+//	})
+func PathEnumFunc(path string, fun func(fileInfo *PathEnumInfo) bool) error {
+	path = PathTrimBackslash(path) + "\\"
+
+	var wfd WIN32_FIND_DATA
+	hFind, found, err := FindFirstFile(path+"*", &wfd)
+	if err != nil {
+		return fmt.Errorf("PathEnum FindFirstFile: %w", err)
+	} else if !found {
+		return nil // not an error: no files found
+	}
+	defer hFind.FindClose()
+
+	var nfo PathEnumInfo
+	for found {
+		fileNameFound := wfd.CFileName()
+		if fileNameFound != ".." && fileNameFound != "." {
+			att := wfd.DwFileAttributes
+			nfo = PathEnumInfo{
+				Path:           path + fileNameFound,
+				CreationTime:   wfd.FtCreationTime.ToTime(),
+				LastAccessTime: wfd.FtLastWriteTime.ToTime(),
+				LastWriteTime:  wfd.FtLastWriteTime.ToTime(),
+				Size:           wfd.NFileSize(),
+				IsDir:          att != co.FILE_ATTRIBUTE_INVALID && (att&co.FILE_ATTRIBUTE_DIRECTORY) != 0,
 			}
-		} else {
-			nestedFiles, err := PathEnumDeep(f, fileExtension) // recursively
-			if err != nil {
-				return nil, err // don't wrap to avoid recursion repetition
+			if !fun(&nfo) {
+				break
 			}
-			files = append(files, nestedFiles...)
+		}
+
+		if found, err = hFind.FindNextFile(&wfd); err != nil {
+			return fmt.Errorf("PathEnum HFIND.FindNextFile: %w", err)
 		}
 	}
-	return files, nil
+	return nil
+}
+
+// Enumerates each file in path, recursively, calling fun to each one. Inside
+// fun, return true to keep going.
+//
+// Calls:
+//   - [FindFirstFile]
+//   - [HFIND.FindNextFile]
+//   - [HFIND.FindClose]
+//
+// For a non-recursive search, use [PathEnumFunc].
+//
+// Example:
+//
+//	win.PathEnumDeepFunc("C:\\Temp", func(fileInfo *win.PathEnumInfo) bool {
+//		println(fileInfo.Path)
+//		return true
+//	})
+func PathEnumDeepFunc(path string, fun func(fileInfo *PathEnumInfo) bool) error {
+	var errDeep error
+	err := PathEnumFunc(path, func(fileInfo *PathEnumInfo) bool {
+		if fileInfo.IsDir {
+			errDeep = PathEnumDeepFunc(fileInfo.Path, func(fileInfo *PathEnumInfo) bool { // recursively
+				return fun(fileInfo)
+			})
+			return errDeep != nil // stop on error
+		} else {
+			return fun(fileInfo)
+		}
+	})
+
+	if err != nil {
+		return err
+	} else if errDeep != nil {
+		return errDeep
+	}
+	return nil
 }
 
 // Returns true if the given file or folder exists. Calls [GetFileAttributes].
