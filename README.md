@@ -9,7 +9,9 @@ Win32 API and GUI in idiomatic Go.
 
 Windigo is designed to be familiar to C/C++ Win32 programmers, using the same concepts, and an API as close as possible to the original Win32 API. This allows most C/C++ Win32 tutorials and examples to be translated to Go.
 
-Notably, Windigo is written 100% in pure Go – CGo is **not** used, just native syscalls. 
+Notably, Windigo is written 100% in pure Go – CGo is **not** used, just native syscalls.
+
+Windigo is based in Go 1.20 because it's the [last](https://go.dev/doc/go1.20#windows) Go version to support systems older than Windows 10, and many people requested that.
 
 ## Install
 
