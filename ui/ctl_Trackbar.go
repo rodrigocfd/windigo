@@ -180,8 +180,7 @@ func (o *VarOptsTrackbar) Layout(l LAY) *VarOptsTrackbar { o.layout = l; return 
 //
 // Defaults to ui.Dpi(0, 0).
 func (o *VarOptsTrackbar) Position(x, y int) *VarOptsTrackbar {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 
@@ -189,8 +188,7 @@ func (o *VarOptsTrackbar) Position(x, y int) *VarOptsTrackbar {
 //
 // Defaults to ui.Dpi(175, 28).
 func (o *VarOptsTrackbar) Size(cx, cy int) *VarOptsTrackbar {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 

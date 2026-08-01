@@ -167,8 +167,7 @@ func (o *VarOptsModal) Title(t string) *VarOptsModal { o.title = t; return o }
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsModal) Size(cx, cy int) *VarOptsModal {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 

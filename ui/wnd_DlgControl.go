@@ -89,10 +89,6 @@ func (o *VarOptsControlDlg) Layout(l LAY) *VarOptsControlDlg { o.layout = l; ret
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsControlDlg) Position(x, y int) *VarOptsControlDlg {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
-
-// Internal; when the Control is a Tab container.
-func (o *VarOptsControlDlg) tabOwner(t *Tab) *VarOptsControlDlg { o.ownerTab = t; return o }

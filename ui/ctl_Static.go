@@ -147,8 +147,7 @@ func (o *VarOptsStatic) Text(t string) *VarOptsStatic { o.text = t; return o }
 //
 // Defaults to ui.Dpi(0, 0).
 func (o *VarOptsStatic) Position(x, y int) *VarOptsStatic {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 
@@ -156,8 +155,7 @@ func (o *VarOptsStatic) Position(x, y int) *VarOptsStatic {
 //
 // Defaults to fit current text.
 func (o *VarOptsStatic) Size(cx, cy int) *VarOptsStatic {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 

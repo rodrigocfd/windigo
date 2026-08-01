@@ -177,8 +177,7 @@ func (o *VarOptsProgressBar) Layout(l LAY) *VarOptsProgressBar { o.layout = l; r
 //
 // Defaults to ui.Dpi(0, 0).
 func (o *VarOptsProgressBar) Position(x, y int) *VarOptsProgressBar {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 
@@ -186,8 +185,7 @@ func (o *VarOptsProgressBar) Position(x, y int) *VarOptsProgressBar {
 //
 // Defaults to ui.Dpi(140, 26).
 func (o *VarOptsProgressBar) Size(cx, cy int) *VarOptsProgressBar {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 

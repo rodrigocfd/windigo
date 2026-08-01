@@ -249,8 +249,7 @@ func (o *VarOptsTreeView) Layout(l LAY) *VarOptsTreeView { o.layout = l; return 
 //
 // Defaults to ui.Dpi(0, 0).
 func (o *VarOptsTreeView) Position(x, y int) *VarOptsTreeView {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 
@@ -258,8 +257,7 @@ func (o *VarOptsTreeView) Position(x, y int) *VarOptsTreeView {
 //
 // Defaults to ui.Dpi(120, 120).
 func (o *VarOptsTreeView) Size(cx, cy int) *VarOptsTreeView {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 

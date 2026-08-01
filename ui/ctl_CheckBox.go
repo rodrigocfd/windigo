@@ -225,8 +225,7 @@ func (o *VarOptsCheckBox) Text(t string) *VarOptsCheckBox { o.text = t; return o
 //
 // Defaults to ui.Dpi(0, 0).
 func (o *VarOptsCheckBox) Position(x, y int) *VarOptsCheckBox {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 
@@ -234,8 +233,7 @@ func (o *VarOptsCheckBox) Position(x, y int) *VarOptsCheckBox {
 //
 // Defaults to fit current text.
 func (o *VarOptsCheckBox) Size(cx, cy int) *VarOptsCheckBox {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 

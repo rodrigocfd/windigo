@@ -199,8 +199,7 @@ func (o *VarOptsMain) Title(t string) *VarOptsMain { o.title = t; return o }
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsMain) Position(x, y int) *VarOptsMain {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 
@@ -210,8 +209,7 @@ func (o *VarOptsMain) Position(x, y int) *VarOptsMain {
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsMain) Size(cx, cy int) *VarOptsMain {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 

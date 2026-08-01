@@ -137,8 +137,7 @@ func (o *VarOptsControl) Layout(l LAY) *VarOptsControl { o.layout = l; return o 
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsControl) Position(x, y int) *VarOptsControl {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 
@@ -148,8 +147,7 @@ func (o *VarOptsControl) Position(x, y int) *VarOptsControl {
 //
 // [CreateWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexw
 func (o *VarOptsControl) Size(cx, cy int) *VarOptsControl {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 

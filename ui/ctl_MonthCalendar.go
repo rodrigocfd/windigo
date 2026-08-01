@@ -145,8 +145,7 @@ func (o *VarOptsMonthCalendar) Layout(l LAY) *VarOptsMonthCalendar { o.layout = 
 //
 // Defaults to ui.Dpi(0, 0).
 func (o *VarOptsMonthCalendar) Position(x, y int) *VarOptsMonthCalendar {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 

@@ -761,8 +761,7 @@ func (o *VarOptsListView) Layout(l LAY) *VarOptsListView { o.layout = l; return 
 //
 // Defaults to ui.Dpi(0, 0).
 func (o *VarOptsListView) Position(x, y int) *VarOptsListView {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 
@@ -770,8 +769,7 @@ func (o *VarOptsListView) Position(x, y int) *VarOptsListView {
 //
 // Defaults to ui.Dpi(120, 120).
 func (o *VarOptsListView) Size(cx, cy int) *VarOptsListView {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 

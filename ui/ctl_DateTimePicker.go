@@ -148,8 +148,7 @@ func (o *VarOptsDateTimePicker) Layout(l LAY) *VarOptsDateTimePicker { o.layout 
 //
 // Defaults to ui.Dpi(0, 0).
 func (o *VarOptsDateTimePicker) Position(x, y int) *VarOptsDateTimePicker {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 
@@ -157,8 +156,7 @@ func (o *VarOptsDateTimePicker) Position(x, y int) *VarOptsDateTimePicker {
 //
 // Defaults to ui.Dpi(230, 23).
 func (o *VarOptsDateTimePicker) Size(cx, cy int) *VarOptsDateTimePicker {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 

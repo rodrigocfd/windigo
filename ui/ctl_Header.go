@@ -268,8 +268,7 @@ func (o *VarOptsHeader) Layout(l LAY) *VarOptsHeader { o.layout = l; return o }
 //
 // Defaults to ui.Dpi(0, 0).
 func (o *VarOptsHeader) Position(x, y int) *VarOptsHeader {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 
@@ -277,8 +276,7 @@ func (o *VarOptsHeader) Position(x, y int) *VarOptsHeader {
 //
 // Defaults to ui.Dpi(100, 23).
 func (o *VarOptsHeader) Size(cx, cy int) *VarOptsHeader {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 

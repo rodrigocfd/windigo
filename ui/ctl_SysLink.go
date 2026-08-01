@@ -130,8 +130,7 @@ func (o *VarOptsSysLink) Text(t string) *VarOptsSysLink { o.text = t; return o }
 //
 // Defaults to ui.Dpi(0, 0).
 func (o *VarOptsSysLink) Position(x, y int) *VarOptsSysLink {
-	o.position.X = int32(x)
-	o.position.Y = int32(y)
+	o.position = win.POINT{X: int32(x), Y: int32(y)}
 	return o
 }
 
@@ -139,8 +138,7 @@ func (o *VarOptsSysLink) Position(x, y int) *VarOptsSysLink {
 //
 // Defaults to fit current text.
 func (o *VarOptsSysLink) Size(cx, cy int) *VarOptsSysLink {
-	o.size.Cx = int32(cx)
-	o.size.Cy = int32(cy)
+	o.size = win.SIZE{Cx: int32(cx), Cy: int32(cy)}
 	return o
 }
 
