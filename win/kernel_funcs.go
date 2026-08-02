@@ -336,6 +336,26 @@ func GetCommandLine() string {
 
 var _kernel_GetCommandLineW *syscall.Proc
 
+// [GetCurrentPackageId] function.
+//
+// [GetCurrentPackageId]: https://learn.microsoft.com/en-us/windows/win32/api/appmodel/nf-appmodel-getcurrentpackageid
+func GetCurrentPackageId() (PACKAGE_ID, error) {
+	bufLen := uint32(unsafe.Sizeof(PACKAGE_ID{}))
+	var buf PACKAGE_ID
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GetCurrentPackageId, "GetCurrentPackageId"),
+		uintptr(unsafe.Pointer(&bufLen)),
+		uintptr(unsafe.Pointer(&buf)))
+
+	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
+		return PACKAGE_ID{}, wErr
+	}
+	return buf, nil
+}
+
+var _kernel_GetCurrentPackageId *syscall.Proc
+
 // [GetCurrentProcessId] function.
 //
 // [GetCurrentProcessId]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
