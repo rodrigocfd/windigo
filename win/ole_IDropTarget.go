@@ -11,7 +11,7 @@ import (
 	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
-// [IDropTarget] COM interface.
+// [IDropTarget] COM interface. Usually passed to [HWND.RegisterDragDrop].
 //
 // Implements [OleObj] and [OleResource].
 //
@@ -106,28 +106,9 @@ func (me *IDropTarget) DragLeave(fun func() co.HRESULT) {
 //			pt win.POINT,
 //			effect *co.DROPEFFECT,
 //		) co.HRESULT {
-//			fetc := win.FORMATETC{
-//				CfFormat: co.CF_HDROP,
-//				Aspect:   co.DVASPECT_CONTENT,
-//				Lindex:   -1,
-//				Tymed:    co.TYMED_HGLOBAL,
-//			}
-//
-//			stg, err := dataObj.GetData(&fetc)
-//			if err != nil {
-//				panic(err)
-//			}
-//			defer win.ReleaseStgMedium(&stg)
-//
-//			if hGlobal, ok := stg.HGlobal(); ok {
-//				hMem, _ := hGlobal.GlobalLock()
-//				defer hGlobal.GlobalUnlock()
-//
-//				// DragFinish() crashes ReleaseStgMedium(), don't call
-//				hDrop := win.HDROP(hMem)
-//				for path, _ := range hDrop.Iter() {
-//					println(path)
-//				}
+//			paths, _ := dataObj.GetDataHDrop() // retrieve dropped paths
+//			for _, path := range paths {
+//				println(path)
 //			}
 //			return co.HRESULT_S_OK
 //		},

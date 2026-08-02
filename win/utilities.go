@@ -729,7 +729,7 @@ func PathDirUp(path string) string {
 //
 // Example:
 //
-//	paths := win.PathEnum("C:\\Temp")
+//	paths, _ := win.PathEnum("C:\\Temp")
 func PathEnum(path string) ([]string, error) {
 	files := make([]string, 0, 20) // arbitrary
 	err := PathEnumFunc(path, func(fileInfo *PathEnumInfo) bool {
@@ -755,7 +755,7 @@ func PathEnum(path string) ([]string, error) {
 //
 // Example:
 //
-//	paths := win.PathEnumDeep("C:\\Temp")
+//	paths, _ := win.PathEnumDeep("C:\\Temp")
 func PathEnumDeep(path string) ([]string, error) {
 	files := make([]string, 0, 20) // arbitrary
 	err := PathEnumDeepFunc(path, func(fileInfo *PathEnumInfo) bool {
@@ -792,7 +792,7 @@ type PathEnumInfo struct {
 //
 // Example:
 //
-//	win.PathEnumFunc("C:\\Temp", func(fileInfo *win.PathEnumInfo) bool {
+//	_ = win.PathEnumFunc("C:\\Temp", func(fileInfo *win.PathEnumInfo) bool {
 //		println(fileInfo.Path)
 //		return true
 //	})
@@ -845,7 +845,7 @@ func PathEnumFunc(path string, fun func(fileInfo *PathEnumInfo) bool) error {
 //
 // Example:
 //
-//	win.PathEnumDeepFunc("C:\\Temp", func(fileInfo *win.PathEnumInfo) bool {
+//	_ = win.PathEnumDeepFunc("C:\\Temp", func(fileInfo *win.PathEnumInfo) bool {
 //		println(fileInfo.Path)
 //		return true
 //	})
@@ -920,6 +920,11 @@ func PathHasExtension(path string, extensions ...string) bool {
 // [GetFileAttributes].
 //
 // Panics on error.
+//
+// Example:
+//
+//	tmp := "C:\\Temp"
+//	isFolder := win.PathIsFolder(tmp)
 func PathIsFolder(path string) bool {
 	attr, err := GetFileAttributes(path)
 	if err != nil {
