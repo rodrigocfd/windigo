@@ -866,6 +866,22 @@ const (
 	PROCESSOR_OPTIL         PROCESSOR = 0x494f
 )
 
+// [ProcessorArchitecture] enum for [PACKAGE_ID] processorArchitecture.
+//
+// [ProcessorArchitecture]: https://learn.microsoft.com/en-us/uwp/api/windows.system.processorarchitecture
+// [PACKAGE_ID]: https://learn.microsoft.com/en-us/windows/win32/api/appmodel/ns-appmodel-package_id
+type PROCESSOR_ARCH_ENUM uint32
+
+const (
+	PROCESSOR_ARCH_ENUM_X86        PROCESSOR_ARCH_ENUM = 0
+	PROCESSOR_ARCH_ENUM_ARM        PROCESSOR_ARCH_ENUM = 5
+	PROCESSOR_ARCH_ENUM_X64        PROCESSOR_ARCH_ENUM = 9
+	PROCESSOR_ARCH_ENUM_NEUTRAL    PROCESSOR_ARCH_ENUM = 11
+	PROCESSOR_ARCH_ENUM_ARM64      PROCESSOR_ARCH_ENUM = 12
+	PROCESSOR_ARCH_ENUM_X86ONARM64 PROCESSOR_ARCH_ENUM = 14
+	PROCESSOR_ARCH_ENUM_UNKNOWN    PROCESSOR_ARCH_ENUM = 65535
+)
+
 // [SYSTEM_INFO] wProcessorArchitecture.
 //
 // [SYSTEM_INFO]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info

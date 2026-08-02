@@ -46,7 +46,7 @@ type ATOM uint16
 
 // [BOOL] type, which represents a boolean value as an int32, with false=0 and true=1.
 //
-// [BOOL]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#BOOL
+// [BOOL]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#bool
 type BOOL int32
 
 // Converts the int32 value to bool.
@@ -425,19 +425,12 @@ type OVERLAPPED struct {
 // [PACKAGE_ID]: https://learn.microsoft.com/en-us/windows/win32/api/appmodel/ns-appmodel-package_id
 type PACKAGE_ID struct {
 	reserved              uint32
-	processorArchitecture uint32 // should be uint16
+	ProcessorArchitecture co.PROCESSOR_ARCH_ENUM
 	Version               PACKAGE_VERSION
 	Name                  *uint16
 	Publisher             *uint16
 	ResourceId            *uint16
 	PublisherId           *uint16
-}
-
-func (me *PACKAGE_ID) ProcessorArchitecture() co.PROCESSOR_ARCHITECTURE {
-	return co.PROCESSOR_ARCHITECTURE(me.processorArchitecture)
-}
-func (me *PACKAGE_ID) SetProcessorArchitecture(val co.PROCESSOR_ARCHITECTURE) {
-	me.processorArchitecture = uint32(val)
 }
 
 // [PACKAGE_VERSION] struct.
