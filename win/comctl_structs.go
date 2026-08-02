@@ -38,8 +38,8 @@ const (
 // [EDITBALLOONTIP]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-editballoontip
 type EDITBALLOONTIP struct {
 	cbStruct uint32
-	PszTitle *uint16
-	PszText  *uint16
+	PszTitle *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	PszText  *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	TtiIcon  co.TTI
 }
 
@@ -196,7 +196,7 @@ func (lvc *LVCOLUMN) SetPszText(val []uint16) {
 // [LVFINDINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvfindinfow
 type LVFINDINFO struct {
 	Flags       co.LVFI
-	Psz         *uint16
+	Psz         *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	LParam      LPARAM
 	Pt          POINT
 	vkDirection uint32 // should bt uint16
@@ -310,9 +310,9 @@ type NMDATETIMECHANGE struct {
 // [NMDATETIMEFORMAT]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatw
 type NMDATETIMEFORMAT struct {
 	Nmhdr      NMHDR
-	PszFormat  *uint16
+	PszFormat  *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	St         SYSTEMTIME
-	PszDisplay *uint16
+	PszDisplay *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	szDisplay  [64]uint16
 }
 
@@ -328,7 +328,7 @@ func (dtf *NMDATETIMEFORMAT) SetSzDisplay(val string) {
 // [NMDATETIMEFORMATQUERY]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimeformatqueryw
 type NMDATETIMEFORMATQUERY struct {
 	Nmhdr     NMHDR
-	PszFormat *uint16
+	PszFormat *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	SzMax     SIZE
 }
 
@@ -337,7 +337,7 @@ type NMDATETIMEFORMATQUERY struct {
 // [NMDATETIMESTRING]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimestringw
 type NMDATETIMESTRING struct {
 	Nmhdr         NMHDR
-	PszUserString *uint16
+	PszUserString *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	St            SYSTEMTIME
 	DwFlags       co.GDT
 }
@@ -347,8 +347,8 @@ type NMDATETIMESTRING struct {
 // [NMDATETIMEWMKEYDOWN]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-nmdatetimewmkeydownw
 type NMDATETIMEWMKEYDOWN struct {
 	Nmhdr     NMHDR
-	nVirtKey  int32 // should be uint16
-	PszFormat *uint16
+	nVirtKey  int32   // should be uint16
+	PszFormat *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	St        SYSTEMTIME
 }
 
@@ -1109,7 +1109,7 @@ type TBBUTTON struct {
 	FsStyle   co.BTNS
 	bReserved [6]uint8 // This padding is 2 in 32-bit environments.
 	DwData    uintptr
-	IString   *uint16 // Can also be the index in the string list.
+	IString   *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr]; can also be the index in the string list.
 }
 
 // [TVINSERTSTRUCT] struct.

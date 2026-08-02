@@ -254,9 +254,9 @@ type CIEXYZTRIPLE struct {
 // [DOCINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-docinfow
 type DOCINFO struct {
 	cbSize       int32
-	LpszDocName  *uint16
-	LpszOutput   *uint16
-	LpszDataType *uint16
+	LpszDocName  *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	LpszOutput   *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	LpszDataType *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	FwType       co.DIPJ
 }
 

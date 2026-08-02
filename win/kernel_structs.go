@@ -24,12 +24,12 @@ import (
 type ACTCTX struct {
 	cbSize                 uint32
 	DwFlags                co.ACTCTX
-	LpSource               *uint16
+	LpSource               *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	WProcessorArchitecture co.PROCESSOR_ARCHITECTURE
 	WLangId                LANGID
-	LpAssemblyDirectory    *uint16
-	LpResourceName         *uint16
-	LpApplicationName      *uint16
+	LpAssemblyDirectory    *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	LpResourceName         *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	LpApplicationName      *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	HModule                HINSTANCE
 }
 
@@ -427,10 +427,10 @@ type PACKAGE_ID struct {
 	reserved              uint32
 	ProcessorArchitecture co.PROCESSOR_ARCH_ENUM
 	Version               PACKAGE_VERSION
-	Name                  *uint16
-	Publisher             *uint16
-	ResourceId            *uint16
-	PublisherId           *uint16
+	Name                  *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	Publisher             *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	ResourceId            *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	PublisherId           *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 }
 
 // [PACKAGE_VERSION] struct.
@@ -533,8 +533,8 @@ func (sa *SECURITY_ATTRIBUTES) SetNLength() {
 type STARTUPINFO struct {
 	cb              uint32
 	lpReserved      *uint16
-	LpDesktop       *uint16
-	LpTitle         *uint16
+	LpDesktop       *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	LpTitle         *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	DwX             uint32
 	DwY             uint32
 	DwXSize         uint32

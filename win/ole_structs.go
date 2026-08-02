@@ -83,7 +83,7 @@ func (coai *COAUTHIDENTITY) SetPassword(val string) {
 type COAUTHINFO struct {
 	DwAuthnSvc           co.RPC_C_AUTHN
 	DwAuthzSvc           co.RPC_C_AUTHZ
-	PwszServerPrincName  *uint16
+	PwszServerPrincName  *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	DwAuthnLevel         co.RPC_C_AUTHN_LEVEL
 	DwImpersonationLevel co.RPC_C_IMP_LEVEL
 	PAuthIdentityData    *COAUTHIDENTITY
@@ -95,7 +95,7 @@ type COAUTHINFO struct {
 // [COSERVERINFO]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ns-objidl-coserverinfo
 type COSERVERINFO struct {
 	dwReserved1 uint32
-	PwszName    *uint16
+	PwszName    *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	PAuthInfo   *COAUTHINFO
 	dwReserved2 uint32
 }
@@ -158,7 +158,7 @@ type FORMATETC struct {
 //
 // [STATSTG]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ns-objidl-statstg
 type STATSTG struct {
-	PwcsName          *uint16
+	PwcsName          *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	Type              co.STGTY
 	CbSize            uint64
 	MTime             FILETIME

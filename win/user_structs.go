@@ -54,8 +54,8 @@ type CREATESTRUCT struct {
 	Cy, Cx         int32
 	Y, X           int32
 	Style          co.WS
-	LpszName       *uint16
-	LpszClass      *uint16
+	LpszName       *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	LpszClass      *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	ExStyle        co.WS_EX
 }
 
@@ -509,7 +509,7 @@ type MENUITEMINFO struct {
 	HBmpChecked   HBITMAP
 	HBmpUnchecked HBITMAP
 	DwItemData    uintptr // ULONG_PTR
-	DwTypeData    *uint16 // content changes according to fType
+	DwTypeData    *uint16 // Content changes according to fType.
 	Cch           uint32
 	HBmpItem      HBITMAP
 }
@@ -842,7 +842,7 @@ type WNDCLASSEX struct {
 	HCursor       HCURSOR
 	HbrBackground HBRUSH
 	LpszMenuName  uintptr
-	LpszClassName *uint16
+	LpszClassName *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	HIconSm       HICON
 }
 
