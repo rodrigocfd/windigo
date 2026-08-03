@@ -440,7 +440,7 @@ var _kernel_GetCurrentPackagePath *syscall.Proc
 func GetCurrentPackagePath2(packagePathType co.PACKAGE_PATH_TYPE) (string, error) {
 	var szBuf uint32
 	ret, _, _ := syscall.SyscallN(
-		dll.Kernel.Load(&_kernel_GetCurrentPackagePath2, "GetCurrentPackagePath2"),
+		dll.Kernelbase.Load(&_kernelbase_GetCurrentPackagePath2, "GetCurrentPackagePath2"),
 		uintptr(packagePathType),
 		uintptr(unsafe.Pointer(&szBuf)),
 		0)
@@ -450,7 +450,7 @@ func GetCurrentPackagePath2(packagePathType co.PACKAGE_PATH_TYPE) (string, error
 
 	buf := make([]uint16, szBuf)
 	ret, _, _ = syscall.SyscallN(
-		dll.Kernel.Load(&_kernel_GetCurrentPackagePath2, "GetCurrentPackagePath2"),
+		dll.Kernelbase.Load(&_kernelbase_GetCurrentPackagePath2, "GetCurrentPackagePath2"),
 		uintptr(packagePathType),
 		uintptr(unsafe.Pointer(&szBuf)),
 		uintptr(unsafe.Pointer(&buf[0])))
@@ -460,7 +460,7 @@ func GetCurrentPackagePath2(packagePathType co.PACKAGE_PATH_TYPE) (string, error
 	return wstr.DecodeSlice(buf[:]), nil
 }
 
-var _kernel_GetCurrentPackagePath2 *syscall.Proc
+var _kernelbase_GetCurrentPackagePath2 *syscall.Proc
 
 // [GetCurrentProcessId] function.
 //

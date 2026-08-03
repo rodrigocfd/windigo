@@ -19,22 +19,23 @@ type SystemDll struct {
 var (
 	dllMutex sync.Mutex
 
-	Advapi  = SystemDll{nil, "advapi32"}
-	Comctl  = SystemDll{nil, "comctl32"}
-	Dwmapi  = SystemDll{nil, "dwmapi"}
-	Dxgi    = SystemDll{nil, "dxgi"}
-	Gdi     = SystemDll{nil, "gdi32"}
-	Kernel  = SystemDll{nil, "kernel32"}
-	Ktmw    = SystemDll{nil, "ktmw32"}
-	Ole     = SystemDll{nil, "ole32"}
-	Oleaut  = SystemDll{nil, "oleaut32"}
-	Psapi   = SystemDll{nil, "psapi"}
-	Shell   = SystemDll{nil, "shell32"}
-	Shlwapi = SystemDll{nil, "shlwapi"}
-	User    = SystemDll{nil, "user32"}
-	Userenv = SystemDll{nil, "userenv"}
-	Uxtheme = SystemDll{nil, "uxtheme"}
-	Version = SystemDll{nil, "version"}
+	Advapi     = SystemDll{nil, "advapi32"}
+	Comctl     = SystemDll{nil, "comctl32"}
+	Dwmapi     = SystemDll{nil, "dwmapi"}
+	Dxgi       = SystemDll{nil, "dxgi"}
+	Gdi        = SystemDll{nil, "gdi32"}
+	Kernel     = SystemDll{nil, "kernel32"}
+	Kernelbase = SystemDll{nil, "kernelbase"}
+	Ktmw       = SystemDll{nil, "ktmw32"}
+	Ole        = SystemDll{nil, "ole32"}
+	Oleaut     = SystemDll{nil, "oleaut32"}
+	Psapi      = SystemDll{nil, "psapi"}
+	Shell      = SystemDll{nil, "shell32"}
+	Shlwapi    = SystemDll{nil, "shlwapi"}
+	User       = SystemDll{nil, "user32"}
+	Userenv    = SystemDll{nil, "userenv"}
+	Uxtheme    = SystemDll{nil, "uxtheme"}
+	Version    = SystemDll{nil, "version"}
 )
 
 // Loads the procName system procedure into pDestProc address.
