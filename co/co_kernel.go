@@ -688,6 +688,20 @@ const (
 	MEM_FREE                       MEM = 0x0001_0000
 )
 
+// [PackagePathType] enumeration.
+//
+// [PackagePathType]: https://learn.microsoft.com/en-us/windows/win32/api/appmodel/ne-appmodel-packagepathtype
+type PACKAGE_PATH_TYPE uint32
+
+const (
+	PACKAGE_PATH_TYPE_Install           PACKAGE_PATH_TYPE = 0
+	PACKAGE_PATH_TYPE_Mutable           PACKAGE_PATH_TYPE = 1
+	PACKAGE_PATH_TYPE_Effective         PACKAGE_PATH_TYPE = 2
+	PACKAGE_PATH_TYPE_MachineExternal   PACKAGE_PATH_TYPE = 3
+	PACKAGE_PATH_TYPE_UserExternal      PACKAGE_PATH_TYPE = 4
+	PACKAGE_PATH_TYPE_EffectiveExternal PACKAGE_PATH_TYPE = 5
+)
+
 // Memory protection [constants].
 //
 // [constants]: https://learn.microsoft.com/en-us/windows/win32/memory/memory-protection-constants
