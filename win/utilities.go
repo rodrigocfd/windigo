@@ -732,11 +732,10 @@ func PathDirUp(path string) string {
 //	paths, _ := win.PathEnum("C:\\Temp")
 func PathEnum(path string) ([]string, error) {
 	files := make([]string, 0, 20) // arbitrary
-	err := PathEnumFunc(path, func(fileInfo *PathEnumInfo) bool {
+	err := PathEnumFunc(path, func(fileInfo *PathEnumInfo) error {
 		files = append(files, fileInfo.Path)
-		return true
+		return nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -758,11 +757,10 @@ func PathEnum(path string) ([]string, error) {
 //	paths, _ := win.PathEnumDeep("C:\\Temp")
 func PathEnumDeep(path string) ([]string, error) {
 	files := make([]string, 0, 20) // arbitrary
-	err := PathEnumDeepFunc(path, func(fileInfo *PathEnumInfo) bool {
+	err := PathEnumDeepFunc(path, func(fileInfo *PathEnumInfo) error {
 		files = append(files, fileInfo.Path)
-		return true
+		return nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -780,8 +778,10 @@ type PathEnumInfo struct {
 	IsDir          bool // True if a directory.
 }
 
-// Enumerates each file and directory in path, calling fun to each one. Inside
-// fun, return true to keep going.
+// Enumerates each file and directory in path, calling fun to each one.
+//
+// Inside fun, return a non-nil error to stop the enumeration. This error will
+// be returned by PathEnumFunc itself.
 //
 // Calls:
 //   - [FindFirstFile]
@@ -792,11 +792,14 @@ type PathEnumInfo struct {
 //
 // Example:
 //
-//	_ = win.PathEnumFunc("C:\\Temp", func(fileInfo *win.PathEnumInfo) bool {
-//		println(fileInfo.Path)
-//		return true
-//	})
-func PathEnumFunc(path string, fun func(fileInfo *PathEnumInfo) bool) error {
+//	_ = win.PathEnumFunc(
+//		"C:\\Temp",
+//		func(fileInfo *win.PathEnumInfo) error {
+//			println(fileInfo.Path)
+//			return nil
+//		},
+//	)
+func PathEnumFunc(path string, fun func(fileInfo *PathEnumInfo) error) error {
 	path = PathTrimBackslash(path) + "\\"
 
 	var wfd WIN32_FIND_DATA
@@ -821,8 +824,8 @@ func PathEnumFunc(path string, fun func(fileInfo *PathEnumInfo) bool) error {
 				Size:           wfd.NFileSize(),
 				IsDir:          att != co.FILE_ATTRIBUTE_INVALID && (att&co.FILE_ATTRIBUTE_DIRECTORY) != 0,
 			}
-			if !fun(&nfo) {
-				break
+			if userErr := fun(&nfo); userErr != nil {
+				return userErr // stop the enumeration and return the user error
 			}
 		}
 
@@ -833,8 +836,10 @@ func PathEnumFunc(path string, fun func(fileInfo *PathEnumInfo) bool) error {
 	return nil
 }
 
-// Enumerates each file in path, recursively, calling fun to each one. Inside
-// fun, return true to keep going.
+// Enumerates each file in path, recursively, calling fun to each one.
+//
+// Inside fun, return a non-nil error to stop the enumeration. This error will
+// be returned by PathEnumFunc itself.
 //
 // Calls:
 //   - [FindFirstFile]
@@ -845,29 +850,23 @@ func PathEnumFunc(path string, fun func(fileInfo *PathEnumInfo) bool) error {
 //
 // Example:
 //
-//	_ = win.PathEnumDeepFunc("C:\\Temp", func(fileInfo *win.PathEnumInfo) bool {
-//		println(fileInfo.Path)
-//		return true
-//	})
-func PathEnumDeepFunc(path string, fun func(fileInfo *PathEnumInfo) bool) error {
-	var errDeep error
-	err := PathEnumFunc(path, func(fileInfo *PathEnumInfo) bool {
+//	_ = win.PathEnumDeepFunc(
+//		"C:\\Temp",
+//		func(fileInfo *win.PathEnumInfo) error {
+//			println(fileInfo.Path)
+//			return nil
+//		},
+//	)
+func PathEnumDeepFunc(path string, fun func(fileInfo *PathEnumInfo) error) error {
+	return PathEnumFunc(path, func(fileInfo *PathEnumInfo) error {
 		if fileInfo.IsDir {
-			errDeep = PathEnumDeepFunc(fileInfo.Path, func(fileInfo *PathEnumInfo) bool { // recursively
+			return PathEnumDeepFunc(fileInfo.Path, func(fileInfo *PathEnumInfo) error { // recursively
 				return fun(fileInfo)
 			})
-			return errDeep != nil // stop on error
 		} else {
 			return fun(fileInfo)
 		}
 	})
-
-	if err != nil {
-		return err
-	} else if errDeep != nil {
-		return errDeep
-	}
-	return nil
 }
 
 // Returns true if the given file or folder exists. Calls [GetFileAttributes].
