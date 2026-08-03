@@ -408,6 +408,32 @@ func GetCurrentPackageId() (PACKAGE_ID, error) {
 
 var _kernel_GetCurrentPackageId *syscall.Proc
 
+// [GetCurrentPackagePath] function.
+//
+// [GetCurrentPackagePath]: https://learn.microsoft.com/en-us/windows/win32/api/appmodel/nf-appmodel-getcurrentpackagepath
+func GetCurrentPackagePath() (string, error) {
+	var szBuf uint32
+	ret, _, _ := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GetCurrentPackagePath, "GetCurrentPackagePath"),
+		uintptr(unsafe.Pointer(&szBuf)),
+		0)
+	if wErr := co.ERROR(ret); wErr != co.ERROR_INSUFFICIENT_BUFFER {
+		return "", wErr
+	}
+
+	buf := make([]uint16, szBuf)
+	ret, _, _ = syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GetCurrentPackagePath, "GetCurrentPackagePath"),
+		uintptr(unsafe.Pointer(&szBuf)),
+		uintptr(unsafe.Pointer(&buf[0])))
+	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
+		return "", wErr
+	}
+	return wstr.DecodeSlice(buf[:]), nil
+}
+
+var _kernel_GetCurrentPackagePath *syscall.Proc
+
 // [GetCurrentProcessId] function.
 //
 // [GetCurrentProcessId]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid
