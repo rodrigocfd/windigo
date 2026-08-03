@@ -336,6 +336,32 @@ func GetCommandLine() string {
 
 var _kernel_GetCommandLineW *syscall.Proc
 
+// [GetCurrentPackageFullName] function.
+//
+// [GetCurrentPackageFullName]: https://learn.microsoft.com/en-us/windows/win32/api/appmodel/nf-appmodel-getcurrentpackagefullname
+func GetCurrentPackageFullName() (string, error) {
+	var szBuf uint32
+	ret, _, _ := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GetCurrentPackageFullName, "GetCurrentPackageFullName"),
+		uintptr(unsafe.Pointer(&szBuf)),
+		0)
+	if wErr := co.ERROR(ret); wErr != co.ERROR_INSUFFICIENT_BUFFER {
+		return "", wErr
+	}
+
+	buf := make([]uint16, szBuf)
+	ret, _, _ = syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GetCurrentPackageFullName, "GetCurrentPackageFullName"),
+		uintptr(unsafe.Pointer(&szBuf)),
+		uintptr(unsafe.Pointer(&buf[0])))
+	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
+		return "", wErr
+	}
+	return wstr.DecodeSlice(buf[:]), nil
+}
+
+var _kernel_GetCurrentPackageFullName *syscall.Proc
+
 // [GetCurrentPackageId] function.
 //
 // [GetCurrentPackageId]: https://learn.microsoft.com/en-us/windows/win32/api/appmodel/nf-appmodel-getcurrentpackageid
