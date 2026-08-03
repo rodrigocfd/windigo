@@ -12,7 +12,7 @@ import (
 
 // [IDXGIAdapter] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDXGIAdapter]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgiadapter
 type IDXGIAdapter struct{ IDXGIObject }
@@ -85,7 +85,7 @@ func (me *IDXGIAdapter) GetDesc() (DXGI_ADAPTER_DESC, error) {
 
 // [IDXGIAdapter1] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDXGIAdapter1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgiadapter1
 type IDXGIAdapter1 struct{ IDXGIAdapter }
@@ -112,7 +112,7 @@ func (*IDXGIAdapter1) IID() *co.IID {
 
 // [IDXGIDeviceSubObject] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDXGIDeviceSubObject]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgidevicesubobject
 type IDXGIDeviceSubObject struct{ IDXGIObject }
@@ -146,7 +146,7 @@ func (me *IDXGIDeviceSubObject) GetDevice(releaser *OleReleaser, ppOut interface
 
 // [IDXGIFactory] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -192,7 +192,7 @@ func (me *IDXGIFactory) CreateSoftwareAdapter(releaser *OleReleaser, hModule HIN
 // [CreateSwapChain]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgifactory-createswapchain
 func (me *IDXGIFactory) CreateSwapChain(
 	releaser *OleReleaser,
-	device OleObj,
+	device *IUnknown,
 	pDesc *DXGI_SWAP_CHAIN_DESC,
 ) (*IDXGISwapChain, error) {
 	var ppvtQueried **_IUnknownVt
@@ -254,7 +254,7 @@ func (me *IDXGIFactory) MakeWindowAssociation(hWnd HWND, flags co.DXGI_MWA) erro
 
 // [IDXGIFactory1] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDXGIFactory1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgifactory1
 type IDXGIFactory1 struct{ IDXGIFactory }
@@ -311,7 +311,7 @@ func (me *IDXGIFactory1) IsCurrent() bool {
 
 // [IDXGIFactory2] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDXGIFactory2]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nn-dxgi1_2-idxgifactory2
 type IDXGIFactory2 struct{ IDXGIFactory1 }
@@ -343,7 +343,7 @@ func (*IDXGIFactory2) IID() *co.IID {
 // [CreateSwapChainForComposition]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-createswapchainforcomposition
 func (me *IDXGIFactory2) CreateSwapChainForComposition(
 	releaser *OleReleaser,
-	device OleObj,
+	device *IUnknown,
 	pDesc *DXGI_SWAP_CHAIN_DESC1,
 	restrictToOutput *IDXGIOutput,
 ) (*IDXGISwapChain1, error) {
@@ -363,7 +363,7 @@ func (me *IDXGIFactory2) CreateSwapChainForComposition(
 // [CreateSwapChainForHwnd]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-createswapchainforhwnd
 func (me *IDXGIFactory2) CreateSwapChainForHwnd(
 	releaser *OleReleaser,
-	device OleObj,
+	device *IUnknown,
 	hWnd HWND,
 	pDesc *DXGI_SWAP_CHAIN_DESC1,
 	pFullscreenDesc *DXGI_SWAP_CHAIN_FULLSCREEN_DESC,
@@ -402,7 +402,7 @@ func (me *IDXGIFactory2) IsWindowedStereoEnabled() bool {
 
 // [IDXGIObject] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDXGIObject]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgiobject
 type IDXGIObject struct{ IUnknown }
@@ -479,7 +479,7 @@ func (me *IDXGIObject) SetPrivateData(pName *co.GUID, szData int, pData unsafe.P
 // [SetPrivateDataInterface] method.
 //
 // [SetPrivateDataInterface]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiobject-setprivatedatainterface
-func (me *IDXGIObject) SetPrivateDataInterface(pName *co.GUID, obj OleObj) error {
+func (me *IDXGIObject) SetPrivateDataInterface(pName *co.GUID, obj *IUnknown) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IDXGIObjectVt)(unsafe.Pointer(*me.Ppvt())).SetPrivateDataInterface,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -490,7 +490,7 @@ func (me *IDXGIObject) SetPrivateDataInterface(pName *co.GUID, obj OleObj) error
 
 // [IDXGIOutput] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDXGIOutput]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgioutput
 type IDXGIOutput struct{ IDXGIObject }
@@ -523,7 +523,7 @@ func (*IDXGIOutput) IID() *co.IID {
 // [FindClosestMatchingMode]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgioutput-findclosestmatchingmode
 func (me *IDXGIOutput) FindClosestMatchingMode(
 	pModeToMatch *DXGI_MODE_DESC,
-	concernedDevice OleObj,
+	concernedDevice *IUnknown,
 ) (DXGI_MODE_DESC, error) {
 	var closestMatch DXGI_MODE_DESC
 	ret, _, _ := syscall.SyscallN(
@@ -652,7 +652,7 @@ func (me *IDXGIOutput) SetGammaControl(pArray *DXGI_GAMMA_CONTROL) error {
 // [TakeOwnership] method.
 //
 // [TakeOwnership]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgioutput-takeownership
-func (me *IDXGIOutput) TakeOwnership(device OleObj, exclusive bool) error {
+func (me *IDXGIOutput) TakeOwnership(device *IUnknown, exclusive bool) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IDXGIOutputVt)(unsafe.Pointer(*me.Ppvt())).TakeOwnership,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -670,7 +670,7 @@ func (me *IDXGIOutput) WaitForVBlank() error {
 
 // [IDXGISurface] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDXGISurface]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgisurface
 type IDXGISurface struct{ IDXGIDeviceSubObject }
@@ -724,7 +724,7 @@ func (me *IDXGISurface) Unmap() error {
 
 // [IDXGISwapChain] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDXGISwapChain]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgiswapchain
 type IDXGISwapChain struct{ IDXGIDeviceSubObject }
@@ -896,7 +896,7 @@ func (me *IDXGISwapChain) SetFullscreenState(fullScreen bool, target *IDXGIOutpu
 
 // [IDXGISwapChain1] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDXGISwapChain1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nn-dxgi1_2-idxgiswapchain1
 type IDXGISwapChain1 struct{ IDXGISwapChain }

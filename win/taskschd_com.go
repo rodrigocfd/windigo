@@ -13,7 +13,7 @@ import (
 
 // [IAction] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IAction]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iaction
 type IAction struct{ IDispatch }
@@ -55,9 +55,9 @@ func (me *IAction) PutId(id string) error {
 		(*_IActionVt)(unsafe.Pointer(*me.Ppvt())).Put_Id)
 }
 
-// [IActionCollection] method.
+// [IActionCollection] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IActionCollection]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iactioncollection
 type IActionCollection struct{ IDispatch }
@@ -187,7 +187,7 @@ func (me *IActionCollection) PutXmlText(text string) error {
 
 // [IBootTrigger] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IBootTrigger]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iboottrigger
 type IBootTrigger struct{ ITrigger }
@@ -222,7 +222,7 @@ func (me *IBootTrigger) PutDelay(delay string) error {
 
 // [IComHandlerAction] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IComHandlerAction]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-icomhandleraction
 type IComHandlerAction struct{ IAction }
@@ -274,7 +274,7 @@ func (me *IComHandlerAction) PutData(data string) error {
 
 // [IDailyTrigger] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDailyTrigger]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-idailytrigger
 type IDailyTrigger struct{ ITrigger }
@@ -339,7 +339,7 @@ func (me *IDailyTrigger) PutRandomDelay(randomDelay string) error {
 
 // [IEmailAction] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IEmailAction]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iemailaction
 type IEmailAction struct{ IAction }
@@ -497,7 +497,7 @@ func (me *IEmailAction) PutTo(to string) error {
 
 // [IEventTrigger] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IEventTrigger]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-ieventtrigger
 type IEventTrigger struct{ ITrigger }
@@ -570,7 +570,7 @@ func (me *IEventTrigger) PutValueQueries(namedXPaths *ITaskNamedValueCollection)
 
 // [IExecAction] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IExecAction]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iexecaction
 type IExecAction struct{ IAction }
@@ -639,7 +639,7 @@ func (me *IExecAction) PutWorkingDirectory(workingDirectory string) error {
 
 // [ILogonTrigger] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ILogonTrigger]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iLogontrigger
 type ILogonTrigger struct{ ITrigger }
@@ -691,7 +691,7 @@ func (me *ILogonTrigger) PutUserId(userId string) error {
 
 // [IPrincipal] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IPrincipal]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iprincipal
 type IPrincipal struct{ IDispatch }
@@ -819,7 +819,7 @@ func (me *IPrincipal) PutUserId(user string) error {
 
 // [IRegisteredTask] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IRegisteredTask]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iregisteredtask
 type IRegisteredTask struct{ IDispatch }
@@ -992,7 +992,7 @@ func (me *IRegisteredTask) Stop() error {
 
 // [IRegistrationInfo] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IRegistrationInfo]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iregistrationinfo
 type IRegistrationInfo struct{ IDispatch }
@@ -1148,7 +1148,7 @@ func (me *IRegistrationInfo) PutXmlText(text string) error {
 
 // [ITaskDefinition] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ITaskDefinition]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itaskdefinition
 type ITaskDefinition struct{ IDispatch }
@@ -1294,7 +1294,7 @@ func (me *ITaskDefinition) PutXmlText(xml string) error {
 
 // [ITaskFolder] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ITaskFolder]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itaskfolder
 type ITaskFolder struct{ IDispatch }
@@ -1415,7 +1415,7 @@ func (me *ITaskFolder) GetTask(releaser *OleReleaser, path string) (*IRegistered
 
 // [ITaskNamedValueCollection] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ITaskNamedValueCollection]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itasknamedvaluecollection
 type ITaskNamedValueCollection struct{ IDispatch }
@@ -1536,7 +1536,7 @@ func (me *ITaskNamedValueCollection) Remove(index int) error {
 
 // [ITaskNamedValuePair] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ITaskNamedValuePair]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itasknamedvaluepair
 type ITaskNamedValuePair struct{ IDispatch }
@@ -1588,7 +1588,7 @@ func (me *ITaskNamedValuePair) PutValue(value string) error {
 
 // [ITaskService] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ITaskService]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itaskservice
 type ITaskService struct{ IDispatch }
@@ -1720,7 +1720,7 @@ func (me *ITaskService) NewTask(releaser *OleReleaser) (*ITaskDefinition, error)
 
 // [ITaskSettings] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ITaskSettings]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itasksettings
 type ITaskSettings struct{ IDispatch }
@@ -2151,7 +2151,7 @@ func (me *ITaskSettings) PutXmlText(text string) error {
 
 // [ITrigger] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ITrigger]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itrigger
 type ITrigger struct{ IDispatch }
@@ -2273,7 +2273,7 @@ func (me *ITrigger) PutStartBoundary(start string) error {
 
 // [ITriggerCollection] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ITriggerCollection]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itriggercollection
 type ITriggerCollection struct{ IDispatch }

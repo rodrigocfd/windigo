@@ -13,7 +13,7 @@ import (
 
 // [IWICBitmap] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IWICBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmap
 type IWICBitmap struct{ IWICBitmapSource }
@@ -71,7 +71,7 @@ func (me *IWICBitmap) SetResolution(dpiX, dpiY float64) error {
 
 // [IWICBitmapCodecInfo] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IWICBitmapCodecInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapcodecinfo
 type IWICBitmapCodecInfo struct{ IWICComponentInfo }
@@ -200,7 +200,7 @@ func (me *IWICBitmapCodecInfo) MatchesMimeType(mimeType string) (bool, error) {
 
 // [IWICBitmapDecoder] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -354,7 +354,7 @@ func (me *IWICBitmapDecoder) QueryCapability(stream *IStream) (co.WICDEC_CAP, er
 
 // [IWICBitmapDecoderInfo] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IWICBitmapDecoderInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapdecoderinfo
 type IWICBitmapDecoderInfo struct{ IWICBitmapCodecInfo }
@@ -396,7 +396,7 @@ func (me *IWICBitmapDecoderInfo) MatchesPattern(stream *IStream) (bool, error) {
 
 // [IWICBitmapEncoder] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -512,7 +512,7 @@ func (me *IWICBitmapEncoder) SetThumbnail(thumbnail *IWICBitmapSource) error {
 
 // [IWICBitmapEncoderInfo] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IWICBitmapEncoderInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapencoderinfo
 type IWICBitmapEncoderInfo struct{ IWICBitmapCodecInfo }
@@ -539,7 +539,7 @@ func (me *IWICBitmapEncoderInfo) CreateInstance(releaser *OleReleaser) (*IWICBit
 
 // [IWICBitmapFrameDecode] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -592,7 +592,7 @@ func (me *IWICBitmapFrameDecode) GetThumbnail(releaser *OleReleaser) (*IWICBitma
 
 // [IWICBitmapLock] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IWICBitmapLock]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmaplock
 type IWICBitmapLock struct{ IUnknown }
@@ -669,7 +669,7 @@ func (me *IWICBitmapLock) GetStride() (int, error) {
 
 // [IWICBitmapSource] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IWICBitmapSource]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmapsource
 type IWICBitmapSource struct{ IUnknown }
@@ -761,7 +761,7 @@ func (me *IWICBitmapSource) GetSize() (SIZE, error) {
 
 // [IWICComponentInfo] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IWICComponentInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwiccomponentinfo
 type IWICComponentInfo struct{ IUnknown }
@@ -931,7 +931,7 @@ func (me *IWICComponentInfo) GetVersion() (string, error) {
 
 // [IWICFormatConverter] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IWICFormatConverter]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicformatconverter
 type IWICFormatConverter struct{ IWICBitmapSource }
@@ -988,7 +988,7 @@ func (me *IWICFormatConverter) Initialize(
 
 // [IWICImagingFactory] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -1335,7 +1335,7 @@ func (me *IWICImagingFactory) CreateStream(releaser *OleReleaser) (*IWICStream, 
 
 // [IWICPalette] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -1464,7 +1464,7 @@ func (me *IWICPalette) IsGrayscale() (bool, error) {
 
 // [IWICStream] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IWICStream]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicstream
 type IWICStream struct{ IStream }

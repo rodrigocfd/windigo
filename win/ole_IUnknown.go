@@ -12,7 +12,7 @@ import (
 
 // [IUnknown] [COM] interface, base to all COM interfaces.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal

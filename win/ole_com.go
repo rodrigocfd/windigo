@@ -14,7 +14,7 @@ import (
 
 // [IBindCtx] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -92,7 +92,7 @@ func (me *IBindCtx) GetObjectParam(releaser *OleReleaser, key string, ppOut inte
 // [RegisterObjectBound] method.
 //
 // [RegisterObjectBound]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-registerobjectbound
-func (me *IBindCtx) RegisterObjectBound(obj OleObj) error {
+func (me *IBindCtx) RegisterObjectBound(obj *IUnknown) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).RegisterObjectBound,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -110,7 +110,7 @@ func (me *IBindCtx) ReleaseBoundObjects() error {
 // [RevokeObjectBound] method.
 //
 // [RevokeObjectBound]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-revokeobjectbound
-func (me *IBindCtx) RevokeObjectBound(obj OleObj) error {
+func (me *IBindCtx) RevokeObjectBound(obj *IUnknown) error {
 	ret, _, _ := syscall.SyscallN(
 		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).RevokeObjectBound,
 		uintptr(unsafe.Pointer(me.Ppvt())),
@@ -131,7 +131,7 @@ func (me *IBindCtx) SetBindOptions(pBindOpts *BIND_OPTS3) error {
 
 // [IDataObject] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDataObject]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
 type IDataObject struct{ IUnknown }
@@ -244,7 +244,7 @@ func (me *IDataObject) QueryGetData(pEtc *FORMATETC) error {
 
 // [IEnumString] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IEnumString]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ienumstring
 type IEnumString struct{ IUnknown }
@@ -338,7 +338,7 @@ func (me *IEnumString) Skip(count int) error {
 
 // [ISequentialStream] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ISequentialStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-isequentialstream
 type ISequentialStream struct{ IUnknown }
@@ -399,7 +399,7 @@ func (me *ISequentialStream) Write(data []byte) (numBytesWritten int, hr error) 
 
 // [IStream] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
 type IStream struct{ ISequentialStream }

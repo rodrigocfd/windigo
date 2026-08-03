@@ -13,7 +13,7 @@ import (
 
 // [IDropTarget] COM interface. Usually passed to [HWND.RegisterDragDrop].
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //

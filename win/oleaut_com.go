@@ -14,7 +14,7 @@ import (
 
 // [IDispatch] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IDispatch]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-idispatch
 type IDispatch struct{ IUnknown }
@@ -316,7 +316,7 @@ func (me *IDispatch) InvokeMethod(
 //		&excel,
 //	)
 //
-//	books, _ := excel.InvokeGetIDispatch(rel, "Workbooks")
+//	books, _ := excel.InvokeGetAsIDispatch(rel, "Workbooks")
 //	file, _ := books.InvokeMethodAsIDispatch(rel, "Open", "C:\\Temp\\file.xlsx")
 //	_, _ = file.InvokeMethod(rel, "SaveAs", "C:\\Temp\\copy.xlsx")
 //	_, _ = file.InvokeMethod(rel, "Close")
@@ -418,7 +418,7 @@ func (me *IDispatch) rawInvoke(
 
 // [IPicture] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IPicture]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nn-ocidl-ipicture
 type IPicture struct{ IUnknown }
@@ -725,7 +725,7 @@ func (me *IPicture) SizePixels(hdc HDC) (SIZE, error) {
 
 // [IPropertyStore] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IPropertyStore]: https://learn.microsoft.com/en-us/windows/win32/api/propsys/nn-propsys-ipropertystore
 type IPropertyStore struct{ IUnknown }
@@ -809,7 +809,7 @@ func (me *IPropertyStore) GetCount() (int, error) {
 
 // [ITypeInfo] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ITypeInfo]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
 type ITypeInfo struct{ IUnknown }
@@ -1098,7 +1098,7 @@ func (me *ITypeInfo) _ReleaseFuncDesc(pFuncDesc *FUNCDESC) error {
 
 // [ITypeLib] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [ITypeLib]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypelib
 type ITypeLib struct{ IUnknown }

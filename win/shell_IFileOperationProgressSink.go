@@ -14,7 +14,7 @@ import (
 
 // [IFileOperationProgressSink] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //

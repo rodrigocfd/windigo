@@ -13,7 +13,7 @@ import (
 
 // [IFileDialogEvents] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IFileDialogEvents]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialogevents
 type IFileDialogEvents struct{ IUnknown }

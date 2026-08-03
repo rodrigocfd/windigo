@@ -19,30 +19,15 @@ type OleResource interface {
 	release()
 }
 
-// A [COM] object, derived from [IUnknown].
-//
-// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
-// [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
-type OleObj interface {
+// IUnknown interface, for internal usage.
+type _IIUnknown interface {
 	OleResource
-
-	// Returns the unique [COM] [interface ID].
-	//
-	// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
-	// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 	IID() *co.IID
-
-	// Returns the [COM] virtual table pointer.
-	//
-	// This is a low-level method, used internally by the library. Incorrect
-	// usage may lead to segmentation faults.
-	//
-	// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 	Ppvt() **_IUnknownVt
 }
 
 // Returns the virtual table pointer, performing a nil check.
-func com_ppvtOrNil(obj OleObj) unsafe.Pointer {
+func com_ppvtOrNil(obj _IIUnknown) unsafe.Pointer {
 	if !utl.IsNil(obj) {
 		return unsafe.Pointer(obj.Ppvt())
 	}
@@ -53,7 +38,7 @@ func com_ppvtOrNil(obj OleObj) unsafe.Pointer {
 //
 // If the object is fine, calls [OleReleaser.ReleaseNow].
 //
-// Returns the [OleObj.IID] of the underlying pointed-to object.
+// Returns the [co.IID] of the underlying pointed-to object.
 func com_validateAndRelease(ppOut interface{}, releaser *OleReleaser) *co.IID {
 	ppTy := reflect.TypeOf(ppOut) // **IUnknown
 	if ppTy.Kind() != reflect.Ptr {
@@ -79,8 +64,8 @@ func com_validateAndRelease(ppOut interface{}, releaser *OleReleaser) *co.IID {
 		panic("You must a pass a pointer to a pointer COM object [target IID() failed].")
 	}
 
-	pObj := pTarget.Interface().(OleObj) // *IUnknown
-	releaser.ReleaseNow(pObj)            // safety, because pOut will receive the new COM object
+	pObj := pTarget.Interface().(_IIUnknown) // *IUnknown
+	releaser.ReleaseNow(pObj)                // safety, because pOut will receive the new COM object
 	return pObj.IID()
 }
 
@@ -96,7 +81,7 @@ func com_buildObj(ppOut interface{}, ppvtQueried **_IUnknownVt, releaser *OleRel
 	addrField0 := pTarget.Elem().Field(0).UnsafeAddr()
 	*(*uintptr)(unsafe.Pointer(addrField0)) = uintptr(unsafe.Pointer(ppvtQueried)) // assign ppvt field
 
-	pObj := pTarget.Interface().(OleObj) // *IUnknown
+	pObj := pTarget.Interface().(_IIUnknown) // *IUnknown
 	releaser.Add(pObj)
 	return nil
 }
@@ -115,7 +100,11 @@ func com_buildObj_retHres(ret uintptr, ppOut interface{}, ppvtQueried **_IUnknow
 // Validates the HRESULT, and constructs a new COM object within ppOut.
 //
 // Returns object and HRESULT.
-func com_buildObj_retObjHres[T OleObj](ret uintptr, ppvtQueried **_IUnknownVt, releaser *OleReleaser) (T, error) {
+func com_buildObj_retObjHres[T _IIUnknown](
+	ret uintptr,
+	ppvtQueried **_IUnknownVt,
+	releaser *OleReleaser,
+) (T, error) {
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		var pObj T
 		com_buildObj(&pObj, ppvtQueried, releaser)
@@ -128,7 +117,7 @@ func com_buildObj_retObjHres[T OleObj](ret uintptr, ppvtQueried **_IUnknownVt, r
 
 // Calls the pointed COM method without parameters, returns struct or newtype,
 // and HRESULT.
-func com_callRetStruct[T any](me OleObj, pMethod uintptr) (T, error) {
+func com_callRetStruct[T any](me _IIUnknown, pMethod uintptr) (T, error) {
 	var obj T
 	ret, _, _ := syscall.SyscallN(
 		pMethod,
@@ -145,7 +134,7 @@ func com_callRetStruct[T any](me OleObj, pMethod uintptr) (T, error) {
 
 // Calls the pointed COM method without parameters, returns a single COM object
 // and HRESULT.
-func com_callRetCom[T OleObj](me OleObj, releaser *OleReleaser, pMethod uintptr) (T, error) {
+func com_callRetCom[T _IIUnknown](me _IIUnknown, releaser *OleReleaser, pMethod uintptr) (T, error) {
 	var ppvtQueried **_IUnknownVt
 	ret, _, _ := syscall.SyscallN(
 		pMethod,

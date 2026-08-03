@@ -15,7 +15,7 @@ import (
 
 // [IEnumIDList] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -160,7 +160,7 @@ func (me *IEnumIDList) Skip(count int) error {
 
 // [IEnumShellItems] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -312,7 +312,7 @@ func (me *IEnumShellItems) Skip(count int) error {
 
 // [IFileDialog] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IFileDialog]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifiledialog
 type IFileDialog struct{ IModalWindow }
@@ -658,7 +658,7 @@ func (me *IFileDialog) Unadvise(cookie uint32) error {
 
 // [IFileOpenDialog] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -737,7 +737,7 @@ func (me *IFileOpenDialog) GetSelectedItems(releaser *OleReleaser) (*IShellItemA
 
 // [IFileOperation] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -1004,7 +1004,7 @@ func (me *IFileOperation) Unadvise(cookie uint32) error {
 
 // [IFileSaveDialog] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -1106,7 +1106,7 @@ func (me *IFileSaveDialog) SetSaveAsItem(item *IShellItem) error {
 
 // [IModalWindow] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IModalWindow]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-imodalwindow
 type IModalWindow struct{ IUnknown }
@@ -1145,7 +1145,7 @@ func (me *IModalWindow) Show(hwndOwner HWND) (bool, error) {
 
 // [IOleWindow] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IOleWindow]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-iolewindow
 type IOleWindow struct{ IUnknown }
@@ -1185,7 +1185,7 @@ func (me *IOleWindow) GetWindow() (HWND, error) {
 
 // [IShellFolder] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -1418,7 +1418,7 @@ func (me *IShellFolder) SetNameOf(
 
 // [IShellItem] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Usually created with [SHCreateItemFromParsingName].
 //
@@ -1569,7 +1569,7 @@ func (me *IShellItem) GetParent(releaser *OleReleaser) (*IShellItem, error) {
 
 // [IShellItem2] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Usually created with [SHCreateItemFromParsingName].
 //
@@ -1792,7 +1792,7 @@ func (me *IShellItem2) Update(bc *IBindCtx) error {
 
 // [IShellItemArray] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IShellItemArray]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
 type IShellItemArray struct{ IUnknown }
@@ -1926,7 +1926,7 @@ func (me *IShellItemArray) GetItemAt(releaser *OleReleaser, index int) (*IShellI
 
 // [IShellLink] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IShellLink]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishelllinkw
 type IShellLink struct{ IUnknown }
@@ -2190,7 +2190,7 @@ func (me *IShellLink) SetWorkingDirectory(path string) error {
 
 // [IShellView] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // [IShellView]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellview
 type IShellView struct{ IOleWindow }
@@ -2273,7 +2273,7 @@ func (me *IShellView) UIActivate(state co.SVUIA) error {
 
 // [ITaskbarList] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -2365,7 +2365,7 @@ func (me *ITaskbarList) SetActiveAlt(hWnd HWND) error {
 
 // [ITaskbarList2] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -2414,7 +2414,7 @@ func (me *ITaskbarList2) MarkFullscreenWindow(hwnd HWND, fullScreen bool) error 
 
 // [ITaskbarList3] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //
@@ -2614,7 +2614,7 @@ func (me *ITaskbarList3) UnregisterTab(hwndTab HWND) error {
 
 // [ITaskbarList4] COM interface.
 //
-// Implements [OleObj] and [OleResource].
+// Implements [OleResource].
 //
 // Example:
 //

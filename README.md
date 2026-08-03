@@ -375,8 +375,8 @@ func main() {
 		&excel,
 	)
 
-	books, _ := excel.InvokeGetIDispatch(rel, "Workbooks")
-	file, _ := books.InvokeMethodIDispatch(rel, "Open", "C:\\Temp\\foo.xlsx")
+	books, _ := excel.InvokeGetAsIDispatch(rel, "Workbooks")
+	file, _ := books.InvokeMethodAsIDispatch(rel, "Open", "C:\\Temp\\foo.xlsx")
 	_, _ = file.InvokeMethod(rel, "SaveAs", "C:\\Temp\\foo copy.xlsx")
 	_, _ = file.InvokeMethod(rel, "Close")
 }
