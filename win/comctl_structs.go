@@ -38,8 +38,8 @@ const (
 // [EDITBALLOONTIP]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-editballoontip
 type EDITBALLOONTIP struct {
 	cbStruct uint32
-	pszTitle *uint16
-	pszText  *uint16
+	PszTitle *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	PszText  *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	TtiIcon  co.TTI
 }
 
@@ -47,20 +47,6 @@ type EDITBALLOONTIP struct {
 // initializing it.
 func (eb *EDITBALLOONTIP) SetCbStruct() {
 	eb.cbStruct = uint32(unsafe.Sizeof(*eb))
-}
-
-func (eb *EDITBALLOONTIP) PszTitle() string {
-	return wstr.DecodePtr(eb.pszTitle)
-}
-func (eb *EDITBALLOONTIP) SetPszTitle(val string) {
-	eb.pszTitle = wstr.EncodeToPtr(val)
-}
-
-func (eb *EDITBALLOONTIP) PszText() string {
-	return wstr.DecodePtr(eb.pszText)
-}
-func (eb *EDITBALLOONTIP) SetPszText(val string) {
-	eb.pszText = wstr.EncodeToPtr(val)
 }
 
 // [HDITEM] struct.
@@ -210,17 +196,10 @@ func (lvc *LVCOLUMN) SetPszText(val []uint16) {
 // [LVFINDINFO]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvfindinfow
 type LVFINDINFO struct {
 	Flags       co.LVFI
-	psz         *uint16
+	Psz         *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	LParam      LPARAM
 	Pt          POINT
-	vkDirection uint32 // should be uint16
-}
-
-func (fi *LVFINDINFO) Psz() string {
-	return wstr.DecodePtr(fi.psz)
-}
-func (fi *LVFINDINFO) SetPsz(val string) {
-	fi.psz = wstr.EncodeToPtr(val)
+	vkDirection uint32 // should bt uint16
 }
 
 func (fi *LVFINDINFO) VkDirection() co.VK {
