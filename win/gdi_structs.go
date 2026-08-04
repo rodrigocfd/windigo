@@ -11,7 +11,7 @@ import (
 	"github.com/rodrigocfd/windigo/wstr"
 )
 
-// [BITMAP] struct.
+// [BITMAP] struct, with C memory layout.
 //
 // [BITMAP]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmap
 type BITMAP struct {
@@ -31,7 +31,7 @@ func (bm *BITMAP) CalcBitmapSize(bitCount co.BITCOUNT) int {
 	return int(((bm.Width*int32(bitCount) + 31) / 32) * 4 * bm.Height)
 }
 
-// [BLENDFUNCTION] struct.
+// [BLENDFUNCTION] struct, with C memory layout.
 //
 // [BLENDFUNCTION]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-blendfunction
 type BLENDFUNCTION struct {
@@ -41,7 +41,7 @@ type BLENDFUNCTION struct {
 	AlphaFormat         byte
 }
 
-// [BITMAPFILEHEADER] struct.
+// [BITMAPFILEHEADER] struct, with C memory layout.
 //
 // ⚠️ You must call [BITMAPFILEHEADER.SetBfType] to initialize the struct.
 //
@@ -74,9 +74,11 @@ func (bfh *BITMAPFILEHEADER) SetBfOffBits(val uint32) {
 	binary.LittleEndian.PutUint32(bfh.data[10:], val)
 }
 
-func (bfh *BITMAPFILEHEADER) Serialize() []byte { return bfh.data[:] }
+func (bfh *BITMAPFILEHEADER) Serialize() []byte {
+	return bfh.data[:]
+}
 
-// [BITMAPINFO] struct.
+// [BITMAPINFO] struct, with C memory layout.
 //
 // ⚠️ You must call [BITMAPINFOHEADER.SetBiSize] on BmiHeader field, to
 // initialize the struct.
@@ -92,7 +94,7 @@ type BITMAPINFO struct {
 	BmiColors [1]RGBQUAD
 }
 
-// [BITMAPINFOHEADER] struct.
+// [BITMAPINFOHEADER] struct, with C memory layout.
 //
 // Note that the Height field might be [twice] the actual height.
 //
@@ -129,7 +131,7 @@ func (bih *BITMAPINFOHEADER) Serialize() []byte {
 	return unsafe.Slice((*byte)(unsafe.Pointer(bih)), unsafe.Sizeof(*bih))
 }
 
-// [BITMAPV5HEADER] struct.
+// [BITMAPV5HEADER] struct, with C memory layout.
 //
 // ⚠️ You must call [BITMAPV5HEADER.SetBV5Size] to initialize the struct.
 //
@@ -224,7 +226,7 @@ func (c COLORREF) ToRgbquad() RGBQUAD {
 	return rq
 }
 
-// [CIEXYZ] struct.
+// [CIEXYZ] struct, with C memory layout.
 //
 // [CIEXYZ]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-ciexyz
 type CIEXYZ struct {
@@ -233,7 +235,7 @@ type CIEXYZ struct {
 	CiexyzZ int32
 }
 
-// [CIEXYZTRIPLE] struct.
+// [CIEXYZTRIPLE] struct, with C memory layout.
 //
 // [CIEXYZTRIPLE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-ciexyztriple
 type CIEXYZTRIPLE struct {
@@ -242,7 +244,7 @@ type CIEXYZTRIPLE struct {
 	CiexyzBlue  CIEXYZ
 }
 
-// [DOCINFO] struct.
+// [DOCINFO] struct, with C memory layout.
 //
 // ⚠️ You must call [DOCINFO.SetCbSize] to initialize the struct.
 //
@@ -266,7 +268,7 @@ func (di *DOCINFO) SetCbSize() {
 	di.cbSize = int32(unsafe.Sizeof(*di))
 }
 
-// [DEVMODE] struct.
+// [DEVMODE] struct, with C memory layout.
 //
 // ⚠️ You must call [DEVMODE.SetDmSize] to initialize the struct.
 //
@@ -366,7 +368,7 @@ func (dm *DEVMODE) DmNup() *co.DMNUP {
 	return (*co.DMNUP)(unsafe.Pointer(&dm.union1))
 }
 
-// [GRADIENT_RECT] struct.
+// [GRADIENT_RECT] struct, with C memory layout.
 //
 // [GRADIENT_RECT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-gradient_rect
 type GRADIENT_RECT struct {
@@ -374,7 +376,7 @@ type GRADIENT_RECT struct {
 	LowerRight uint32
 }
 
-// [GRADIENT_TRIANGLE] struct.
+// [GRADIENT_TRIANGLE] struct, with C memory layout.
 //
 // [GRADIENT_TRIANGLE]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-gradient_triangle
 type GRADIENT_TRIANGLE struct {
@@ -383,7 +385,7 @@ type GRADIENT_TRIANGLE struct {
 	Vertex3 uint32
 }
 
-// [LOGBRUSH] struct.
+// [LOGBRUSH] struct, with C memory layout.
 //
 // [LOGBRUSH]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logbrush
 type LOGBRUSH struct {
@@ -392,7 +394,7 @@ type LOGBRUSH struct {
 	Hatch uintptr // ULONG_PTR
 }
 
-// [LOGFONT] struct.
+// [LOGFONT] struct, with C memory layout.
 //
 // [LOGFONT]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
 type LOGFONT struct {
@@ -435,7 +437,7 @@ func (lf *LOGFONT) SetFamily(val co.FF) {
 	lf.pitchAndFamily |= uint8(val & 0b1111_0000)
 }
 
-// [LOGPEN] struct.
+// [LOGPEN] struct, with C memory layout.
 //
 // [LOGPEN]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logpen
 type LOGPEN struct {
@@ -444,7 +446,7 @@ type LOGPEN struct {
 	Color COLORREF
 }
 
-// [PALETTEENTRY] struct.
+// [PALETTEENTRY] struct, with C memory layout.
 //
 // [PALETTEENTRY]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-paletteentry
 type PALETTEENTRY struct {
@@ -454,7 +456,7 @@ type PALETTEENTRY struct {
 	Flags co.PC
 }
 
-// [PIXELFORMATDESCRIPTOR] struct.
+// [PIXELFORMATDESCRIPTOR] struct, with C memory layout.
 //
 // ⚠️ You must call [PIXELFORMATDESCRIPTOR.SetNSize] to initialize the struct.
 //
@@ -500,7 +502,7 @@ func (mix *PIXELFORMATDESCRIPTOR) SetNSize() {
 	mix.nVersion = 1
 }
 
-// [RGBQUAD] struct.
+// [RGBQUAD] struct, with C memory layout.
 //
 // Stores red, green and blue values in the range 0-255.
 //
@@ -534,7 +536,7 @@ func (rq *RGBQUAD) ToColorref() COLORREF {
 	return RGB(rq.Red(), rq.Green(), rq.Blue())
 }
 
-// [TEXTMETRIC] struct.
+// [TEXTMETRIC] struct, with C memory layout.
 //
 // [TEXTMETRIC]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-textmetricw
 type TEXTMETRIC struct {
@@ -576,7 +578,7 @@ func (tm *TEXTMETRIC) SetFamily(val co.FF) {
 	tm.pitchAndFamily |= uint8(val & 0b1111_0000)
 }
 
-// [TRIVERTEX] struct.
+// [TRIVERTEX] struct, with C memory layout.
 //
 // [TRIVERTEX]: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-trivertex
 type TRIVERTEX struct {

@@ -643,7 +643,7 @@ const (
 	LOCKFILE_EXCLUSIVE_LOCK   LOCKFILE = 0x0000_0002
 )
 
-// [LUID] struct.
+// [LUID] struct, with C memory layout.
 //
 // [LUID]: https://learn.microsoft.com/en-us/windows/win32/api/ntdef/ns-ntdef-luid
 type LUID struct {

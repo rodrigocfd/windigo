@@ -14,7 +14,7 @@ import (
 	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
-// [ARRAYDESC] struct.
+// [ARRAYDESC] struct, with C memory layout.
 //
 // [ARRAYDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-arraydesc
 type ARRAYDESC struct {
@@ -37,7 +37,7 @@ type MEMBERID int32
 // [MEMBERID]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/automat/memberid
 const MEMBERID_NIL = MEMBERID(co.DISPID_UNKNOWN)
 
-// [DISPPARAMS] sruct.
+// [DISPPARAMS] struct, with C memory layout.
 //
 // [DISPPARAMS]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-dispparams
 type DISPPARAMS struct {
@@ -57,7 +57,7 @@ func (dp *DISPPARAMS) SetNamedArgs(v ...co.DISPID) {
 	dp.rgdispidNamedArgs = &v[0]
 }
 
-// [ELEMDESC] struct.
+// [ELEMDESC] struct, with C memory layout.
 //
 // [ELEMDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-elemdesc-r1
 type ELEMDESC struct {
@@ -93,7 +93,7 @@ func (e *EXCEPINFO) Error() string {
 	return e.Source + ": " + e.Description
 }
 
-// [EXCEPINFO] struct.
+// [EXCEPINFO] struct, with C memory layout.
 //
 // ⚠️ You must call [_EXCEPINFO.Free] to release the pointers.
 //
@@ -144,7 +144,7 @@ func (e *_EXCEPINFO) Free() {
 	BSTR(e.BstrHelpFile).SysFreeString()
 }
 
-// [FUNCDESC] struct.
+// [FUNCDESC] struct, with C memory layout.
 //
 // [FUNCDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type FUNCDESC struct {
@@ -162,7 +162,7 @@ type FUNCDESC struct {
 	WFuncFlags        co.FUNCFLAG
 }
 
-// [FUNCDESC] struct.
+// [FUNCDESC] struct wrapper.
 //
 // Implements [OleResource].
 //
@@ -177,7 +177,7 @@ func (me *FuncDescData) release() {
 	me.owner._ReleaseFuncDesc(me.FUNCDESC)
 }
 
-// [IDLDESC] struct.
+// [IDLDESC] struct, with C memory layout.
 //
 // [IDLDESC]: https://learn.microsoft.com/en-us/previous-versions/windows/embedded/aa515591(v=msdn.10)
 type IDLDESC struct {
@@ -185,7 +185,7 @@ type IDLDESC struct {
 	WIDLFlags  co.IDLFLAG
 }
 
-// [PARAMDESC] struct.
+// [PARAMDESC] struct, with C memory layout.
 //
 // [PARAMDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-paramdesc
 type PARAMDESC struct {
@@ -193,7 +193,7 @@ type PARAMDESC struct {
 	WParamFlags  co.PARAMFLAG
 }
 
-// [PARAMDESCEX] struct.
+// [PARAMDESCEX] struct, with C memory layout.
 //
 // [PARAMDESCEX]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-paramdescex
 type PARAMDESCEX struct {
@@ -201,7 +201,7 @@ type PARAMDESCEX struct {
 	VarDefaultValue VARIANT
 }
 
-// [SAFEARRAYBOUND] struct.
+// [SAFEARRAYBOUND] struct, with C memory layout.
 //
 // [SAFEARRAYBOUND]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-safearraybound
 type SAFEARRAYBOUND struct {
@@ -209,7 +209,7 @@ type SAFEARRAYBOUND struct {
 	LLbound   int32
 }
 
-// [TYPEDESC] struct.
+// [TYPEDESC] struct, with C memory layout.
 //
 // [TYPEDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-typedesc
 type TYPEDESC struct {
@@ -229,7 +229,7 @@ func (td *TYPEDESC) HRefType() uint32 {
 	return uint32(td.union)
 }
 
-// OLE Automation [VARIANT] type.
+// OLE Automation [VARIANT] struct, with C memory layout.
 //
 // Implements [OleResource].
 //

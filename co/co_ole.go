@@ -302,7 +302,7 @@ const (
 	FACILITY_PIX                                      FACILITY = 2748
 )
 
-// [GUID] struct.
+// [GUID] struct, with C memory layout.
 //
 // [GUID]: https://learn.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid
 type GUID struct {

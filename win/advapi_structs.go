@@ -8,7 +8,7 @@ import (
 	"github.com/rodrigocfd/windigo/co"
 )
 
-// [VALENT] struct.
+// [VALENT] struct, with C memory layout.
 //
 // [VALENT]: https://learn.microsoft.com/en-us/windows/win32/api/winreg/ns-winreg-valentw
 type _VALENT struct {

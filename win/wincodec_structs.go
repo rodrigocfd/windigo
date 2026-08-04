@@ -2,7 +2,7 @@
 
 package win
 
-// [WICRect] struct.
+// [WICRect] struct, with C memory layout.
 //
 // [WICRect]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/ns-wincodec-wicrect
 type WICRect struct {

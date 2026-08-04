@@ -409,7 +409,7 @@ const (
 	NIS_SHAREDICON NIS = 0x0000_0002
 )
 
-// [PROPERTYKEY] struct.
+// [PROPERTYKEY] struct, with C memory layout.
 //
 // [PROPERTYKEY]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ns-wtypes-propertykey
 type PROPERTYKEY struct {

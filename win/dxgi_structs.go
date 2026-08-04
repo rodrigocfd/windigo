@@ -9,7 +9,7 @@ import (
 	"github.com/rodrigocfd/windigo/wstr"
 )
 
-// [DXGI_ADAPTER_DESC] struct.
+// [DXGI_ADAPTER_DESC] struct, with C memory layout.
 //
 // [DXGI_ADAPTER_DESC]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_adapter_desc
 type DXGI_ADAPTER_DESC struct {
@@ -31,7 +31,7 @@ func (ad *DXGI_ADAPTER_DESC) SetDescription(val string) {
 	wstr.EncodeToBuf(ad.description[:], val)
 }
 
-// [DXGI_ADAPTER_DESC1] struct.
+// [DXGI_ADAPTER_DESC1] struct, with C memory layout.
 //
 // [DXGI_ADAPTER_DESC1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_adapter_desc1
 type DXGI_ADAPTER_DESC1 struct {
@@ -54,7 +54,7 @@ func (ad *DXGI_ADAPTER_DESC1) SetDescription(val string) {
 	wstr.EncodeToBuf(ad.description[:], val)
 }
 
-// [DXGI_FRAME_STATISTICS] struct.
+// [DXGI_FRAME_STATISTICS] struct, with C memory layout.
 //
 // [DXGI_FRAME_STATISTICS]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_frame_statistics)
 type DXGI_FRAME_STATISTICS struct {
@@ -65,7 +65,7 @@ type DXGI_FRAME_STATISTICS struct {
 	SyncGPUTime         int64
 }
 
-// [DXGI_GAMMA_CONTROL] struct.
+// [DXGI_GAMMA_CONTROL] struct, with C memory layout.
 //
 // [DXGI_GAMMA_CONTROL]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb173061(v=vs.85)
 type DXGI_GAMMA_CONTROL struct {
@@ -74,7 +74,7 @@ type DXGI_GAMMA_CONTROL struct {
 	GammaCurve [1025]DXGI_RGB
 }
 
-// [DXGI_GAMMA_CONTROL_CAPABILITIES] struct.
+// [DXGI_GAMMA_CONTROL_CAPABILITIES] struct, with C memory layout.
 //
 // [DXGI_GAMMA_CONTROL_CAPABILITIES]: https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/dxgitype/ns-dxgitype-dxgi_gamma_control_capabilities
 type DXGI_GAMMA_CONTROL_CAPABILITIES struct {
@@ -85,7 +85,7 @@ type DXGI_GAMMA_CONTROL_CAPABILITIES struct {
 	ControlPointPositions   [1025]float32
 }
 
-// [DXGI_MAPPED_RECT] struct.
+// [DXGI_MAPPED_RECT] struct, with C memory layout.
 //
 // [DXGI_MAPPED_RECT]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_mapped_rect
 type DXGI_MAPPED_RECT struct {
@@ -93,7 +93,7 @@ type DXGI_MAPPED_RECT struct {
 	PBits *byte
 }
 
-// [DXGI_MODE_DESC] struct.
+// [DXGI_MODE_DESC] struct, with C memory layout.
 //
 // [DXGI_MODE_DESC]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb173064(v=vs.85)
 type DXGI_MODE_DESC struct {
@@ -105,7 +105,7 @@ type DXGI_MODE_DESC struct {
 	Scaling          co.DXGI_MODE_SCALING
 }
 
-// [DXGI_OUTPUT_DESC] struct.
+// [DXGI_OUTPUT_DESC] struct, with C memory layout.
 //
 // [DXGI_OUTPUT_DESC]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_output_desc
 type DXGI_OUTPUT_DESC struct {
@@ -123,7 +123,7 @@ func (od *DXGI_OUTPUT_DESC) SetDeviceName(val string) {
 	wstr.EncodeToBuf(od.deviceName[:], val)
 }
 
-// [DXGI_PRESENT_PARAMETERS] struct.
+// [DXGI_PRESENT_PARAMETERS] struct, with C memory layout.
 //
 // [DXGI_PRESENT_PARAMETERS]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_present_parameters
 type DXGI_PRESENT_PARAMETERS struct {
@@ -144,7 +144,7 @@ func (pp *DXGI_PRESENT_PARAMETERS) SetDirtyRects(val []RECT) {
 	pp.pDirtyRects = &val[0]
 }
 
-// [DXGI_RATIONAL] struct.
+// [DXGI_RATIONAL] struct, with C memory layout.
 //
 // [DXGI_RATIONAL]: https://learn.microsoft.com/en-us/windows/win32/api/dxgicommon/ns-dxgicommon-dxgi_rational
 type DXGI_RATIONAL struct {
@@ -152,21 +152,21 @@ type DXGI_RATIONAL struct {
 	Denominator uint32
 }
 
-// [DXGI_RGB] struct.
+// [DXGI_RGB] struct, with C memory layout.
 //
 // [DXGI_RGB]: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb173071(v=vs.85)
 type DXGI_RGB struct {
 	Red, Green, Blue float32
 }
 
-// [DXGI_RGBA] struct.
+// [DXGI_RGBA] struct, with C memory layout.
 //
 // [DXGI_RGBA]: https://learn.microsoft.com/en-us/windows/win32/direct3ddxgi/dxgi-rgba
 type DXGI_RGBA struct {
 	R, G, B, A float32
 }
 
-// [DXGI_SAMPLE_DESC] struct.
+// [DXGI_SAMPLE_DESC] struct, with C memory layout.
 //
 // [DXGI_SAMPLE_DESC]: https://learn.microsoft.com/en-us/windows/win32/api/dxgicommon/ns-dxgicommon-dxgi_sample_desc
 type DXGI_SAMPLE_DESC struct {
@@ -174,7 +174,7 @@ type DXGI_SAMPLE_DESC struct {
 	Quality uint32
 }
 
-// [DXGI_SURFACE_DESC] struct.
+// [DXGI_SURFACE_DESC] struct, with C memory layout.
 //
 // [DXGI_SURFACE_DESC]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_surface_desc
 type DXGI_SURFACE_DESC struct {
@@ -184,7 +184,7 @@ type DXGI_SURFACE_DESC struct {
 	SampleDesc DXGI_SAMPLE_DESC
 }
 
-// [DXGI_SWAP_CHAIN_DESC] struct.
+// [DXGI_SWAP_CHAIN_DESC] struct, with C memory layout.
 //
 // [DXGI_SWAP_CHAIN_DESC]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_swap_chain_desc
 type DXGI_SWAP_CHAIN_DESC struct {
@@ -198,7 +198,7 @@ type DXGI_SWAP_CHAIN_DESC struct {
 	Flags        co.DXGI_SWAP_CHAIN_FLAG
 }
 
-// [DXGI_SWAP_CHAIN_DESC1] struct.
+// [DXGI_SWAP_CHAIN_DESC1] struct, with C memory layout.
 //
 // [DXGI_SWAP_CHAIN_DESC1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_swap_chain_desc1
 type DXGI_SWAP_CHAIN_DESC1 struct {
@@ -215,7 +215,7 @@ type DXGI_SWAP_CHAIN_DESC1 struct {
 	Flags       co.DXGI_SWAP_CHAIN_FLAG
 }
 
-// [DXGI_SWAP_CHAIN_FULLSCREEN_DESC] struct.
+// [DXGI_SWAP_CHAIN_FULLSCREEN_DESC] struct, with C memory layout.
 //
 // [DXGI_SWAP_CHAIN_FULLSCREEN_DESC]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_swap_chain_fullscreen_desc
 type DXGI_SWAP_CHAIN_FULLSCREEN_DESC struct {

@@ -11,7 +11,7 @@ import (
 	"github.com/rodrigocfd/windigo/wstr"
 )
 
-// [ACTCTX] struct.
+// [ACTCTX] struct, with C memory layout.
 //
 // ⚠️ You must call [ACTCTX.SetCbSize] to initialize the struct.
 //
@@ -63,7 +63,7 @@ func (b *BOOL) Set(v bool) {
 	}
 }
 
-// [CONSOLE_CURSOR_INFO] struct.
+// [CONSOLE_CURSOR_INFO] struct, with C memory layout.
 //
 // [CONSOLE_CURSOR_INFO]: https://learn.microsoft.com/en-us/windows/console/console-cursor-info-str
 type CONSOLE_CURSOR_INFO struct {
@@ -71,7 +71,7 @@ type CONSOLE_CURSOR_INFO struct {
 	BVisible BOOL
 }
 
-// [CONSOLE_FONT_INFO] struct.
+// [CONSOLE_FONT_INFO] struct, with C memory layout.
 //
 // [CONSOLE_FONT_INFO]: https://learn.microsoft.com/en-us/windows/console/console-font-info-str
 type CONSOLE_FONT_INFO struct {
@@ -79,7 +79,7 @@ type CONSOLE_FONT_INFO struct {
 	DwFontSize COORD
 }
 
-// [CONSOLE_FONT_INFOEX] struct.
+// [CONSOLE_FONT_INFOEX] struct, with C memory layout.
 //
 // ⚠️ You must call [CONSOLE_FONT_INFOEX.SetCbSize] to initialize the struct.
 //
@@ -127,7 +127,7 @@ func (ac *CONSOLE_FONT_INFOEX) SetFaceName(val string) {
 	wstr.EncodeToBuf(ac.faceName[:], val)
 }
 
-// [CONSOLE_READCONSOLE_CONTROL] struct.
+// [CONSOLE_READCONSOLE_CONTROL] struct, with C memory layout.
 //
 // ⚠️ You must call [CONSOLE_READCONSOLE_CONTROL.SetNLength] to initialize the
 // struct.
@@ -151,14 +151,14 @@ func (c *CONSOLE_READCONSOLE_CONTROL) SetNLength() {
 	c.nLength = uint32(unsafe.Sizeof(*c))
 }
 
-// [COORD] struct.
+// [COORD] struct, with C memory layout.
 //
 // [COORD]: https://learn.microsoft.com/en-us/windows/console/coord-str
 type COORD struct {
 	X, Y int16
 }
 
-// [FILETIME] struct.
+// [FILETIME] struct, with C memory layout.
 //
 // [FILETIME]: https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime
 type FILETIME struct {
@@ -194,7 +194,7 @@ func (ft *FILETIME) SetTime(val time.Time) {
 	)
 }
 
-// [HEAP_OPTIMIZE_RESOURCES_INFORMATION] struct.
+// [HEAP_OPTIMIZE_RESOURCES_INFORMATION] struct, with C memory layout.
 //
 // ⚠️ You must call [HEAP_OPTIMIZE_RESOURCES_INFORMATION.SetVersion] to initialize the struct.
 //
@@ -287,7 +287,7 @@ func (lcid LCID) SortId() co.SORT {
 	return co.SORT((uint32(lcid) >> 16) & 0xf)
 }
 
-// [MEMORY_BASIC_INFORMATION] struct.
+// [MEMORY_BASIC_INFORMATION] struct, with C memory layout.
 //
 // [MEMORY_BASIC_INFORMATION]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-memory_basic_information
 type MEMORY_BASIC_INFORMATION struct {
@@ -301,7 +301,7 @@ type MEMORY_BASIC_INFORMATION struct {
 	Type              co.MEM
 }
 
-// [MEMORYSTATUSEX] struct.
+// [MEMORYSTATUSEX] struct, with C memory layout.
 //
 // ⚠️ You must call [MEMORYSTATUSEX.SetDwLength] to initialize the struct.
 //
@@ -329,7 +329,7 @@ func (ms *MEMORYSTATUSEX) SetDwLength() {
 	ms.dwLength = uint32(unsafe.Sizeof(*ms))
 }
 
-// [MODULEENTRY32] struct.
+// [MODULEENTRY32] struct, with C memory layout.
 //
 // ⚠️ You must call [MODULEENTRY32.SetDwSize] to initialize the struct.
 //
@@ -372,7 +372,7 @@ func (me *MODULEENTRY32) SetSzExePath(val string) {
 	wstr.EncodeToBuf(me.szExePath[:], val)
 }
 
-// [OSVERSIONINFOEX] struct.
+// [OSVERSIONINFOEX] struct, with C memory layout.
 //
 // ⚠️ You must call [OSVERSIONINFOEX.SetDwOsVersionInfoSize] to initialize the
 // struct.
@@ -410,7 +410,7 @@ func (osv *OSVERSIONINFOEX) SetSzCSDVersion(val string) {
 	wstr.EncodeToBuf(osv.szCSDVersion[:], val)
 }
 
-// [OVERLAPPED] struct.
+// [OVERLAPPED] struct, with C memory layout.
 //
 // [OVERLAPPED]: https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-overlapped
 type OVERLAPPED struct {
@@ -420,7 +420,7 @@ type OVERLAPPED struct {
 	HEvent       uintptr // HEVENT
 }
 
-// [PACKAGE_ID] struct.
+// [PACKAGE_ID] struct, with C memory layout.
 //
 // [PACKAGE_ID]: https://learn.microsoft.com/en-us/windows/win32/api/appmodel/ns-appmodel-package_id
 type PACKAGE_ID struct {
@@ -446,7 +446,7 @@ func (pi *PACKAGE_ID) PublisherId() string {
 	return wstr.DecodePtr(pi.publisherId)
 }
 
-// [PACKAGE_VERSION] struct.
+// [PACKAGE_VERSION] struct, with C memory layout.
 //
 // [PACKAGE_VERSION]: https://learn.microsoft.com/en-us/windows/win32/api/appmodel/ns-appmodel-package_version
 type PACKAGE_VERSION struct {
@@ -456,7 +456,7 @@ type PACKAGE_VERSION struct {
 	Major    uint16
 }
 
-// [PROCESS_INFORMATION] struct.
+// [PROCESS_INFORMATION] struct, with C memory layout.
 //
 // [PROCESS_INFORMATION]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-process_information
 type PROCESS_INFORMATION struct {
@@ -466,7 +466,7 @@ type PROCESS_INFORMATION struct {
 	DwThreadId  uint32
 }
 
-// [PROCESSENTRY32] struct.
+// [PROCESSENTRY32] struct, with C memory layout.
 //
 // ⚠️ You must call [PROCESSENTRY32.SetDwSize] to initialize the struct.
 //
@@ -502,7 +502,7 @@ func (me *PROCESSENTRY32) SetSzExeFile(val string) {
 	wstr.EncodeToBuf(me.szExeFile[:], val)
 }
 
-// [PROCESSOR_NUMBER] struct.
+// [PROCESSOR_NUMBER] struct, with C memory layout.
 //
 // [PROCESSOR_NUMBER]: https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-processor_number
 type PROCESSOR_NUMBER struct {
@@ -511,7 +511,7 @@ type PROCESSOR_NUMBER struct {
 	reserved uint8
 }
 
-// [SECURITY_ATTRIBUTES] struct.
+// [SECURITY_ATTRIBUTES] struct, with C memory layout.
 //
 // ⚠️ You must call [SECURITY_ATTRIBUTES.SetNLength] to initialize the struct.
 //
@@ -533,7 +533,7 @@ func (sa *SECURITY_ATTRIBUTES) SetNLength() {
 	sa.nLength = uint32(unsafe.Sizeof(*sa))
 }
 
-// [STARTUPINFO] struct.
+// [STARTUPINFO] struct, with C memory layout.
 //
 // ⚠️ You must call [STARTUPINFO.SetCb] to initialize the struct.
 //
@@ -570,7 +570,7 @@ func (si *STARTUPINFO) SetCb() {
 	si.cb = uint32(unsafe.Sizeof(*si))
 }
 
-// [SYSTEM_INFO] struct.
+// [SYSTEM_INFO] struct, with C memory layout.
 //
 // [SYSTEM_INFO]: https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info
 type SYSTEM_INFO struct {
@@ -587,7 +587,7 @@ type SYSTEM_INFO struct {
 	WProcessorRevision          uint16
 }
 
-// [SYSTEMTIME] struct.
+// [SYSTEMTIME] struct, with C memory layout.
 //
 // [SYSTEMTIME]: https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime
 type SYSTEMTIME struct {
@@ -656,7 +656,7 @@ func (st *SYSTEMTIME) SetTime(val time.Time) error {
 	return err
 }
 
-// [THREADENTRY32] struct.
+// [THREADENTRY32] struct, with C memory layout.
 //
 // ⚠️ You must call [THREADENTRY32.SetDwSize] to initialize the struct.
 //
@@ -682,7 +682,7 @@ func (te *THREADENTRY32) SetDwSize() {
 	te.dwSize = uint32(unsafe.Sizeof(*te))
 }
 
-// [TIME_ZONE_INFORMATION] struct.
+// [TIME_ZONE_INFORMATION] struct, with C memory layout.
 //
 // [TIME_ZONE_INFORMATION]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-time_zone_information
 type TIME_ZONE_INFORMATION struct {
@@ -709,7 +709,7 @@ func (tzi *TIME_ZONE_INFORMATION) SetDaylightName(val string) {
 	wstr.EncodeToBuf(tzi.daylightName[:], val)
 }
 
-// [WIN32_FIND_DATA] struct.
+// [WIN32_FIND_DATA] struct, with C memory layout.
 //
 // [WIN32_FIND_DATA]: https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw
 type WIN32_FIND_DATA struct {

@@ -9,7 +9,7 @@ import (
 	"github.com/rodrigocfd/windigo/wstr"
 )
 
-// [BIND_OPTS3] struct.
+// [BIND_OPTS3] struct, with C memory layout.
 //
 // ⚠️ You must call [BIND_OPTS3.SetCbStruct] to initialize the struct.
 //
@@ -37,7 +37,7 @@ func (bo *BIND_OPTS3) SetCbStruct() {
 	bo.cbStruct = uint32(unsafe.Sizeof(*bo))
 }
 
-// [COAUTHIDENTITY] struct.
+// [COAUTHIDENTITY] struct, with C memory layout.
 //
 // [COAUTHIDENTITY]: https://learn.microsoft.com/en-us/windows/win32/api/wtypesbase/ns-wtypesbase-coauthidentity
 type COAUTHIDENTITY struct {
@@ -77,7 +77,7 @@ func (coai *COAUTHIDENTITY) SetPassword(val string) {
 	coai.passwordLength = uint32(len(buf) - 1) // without terminating null
 }
 
-// [COAUTHINFO] struct.
+// [COAUTHINFO] struct, with C memory layout.
 //
 // [COAUTHINFO]: https://learn.microsoft.com/en-us/windows/win32/api/wtypesbase/ns-wtypesbase-coauthinfo
 type COAUTHINFO struct {
@@ -90,7 +90,7 @@ type COAUTHINFO struct {
 	DwCapabilities       co.EOAC_QOS
 }
 
-// [COSERVERINFO] struct.
+// [COSERVERINFO] struct, with C memory layout.
 //
 // [COSERVERINFO]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ns-objidl-coserverinfo
 type COSERVERINFO struct {
@@ -100,7 +100,7 @@ type COSERVERINFO struct {
 	dwReserved2 uint32
 }
 
-// [DVTARGETDEVICE] struct.
+// [DVTARGETDEVICE] struct, with C memory layout.
 //
 // ⚠️ You must call [DVTARGETDEVICE.SetTdSize] to initialize the struct.
 //
@@ -143,7 +143,7 @@ func (dvt *DVTARGETDEVICE) PortName() string {
 	return wstr.DecodePtr((*uint16)(ptr))
 }
 
-// [FORMATETC] struct.
+// [FORMATETC] struct, with C memory layout.
 //
 // [FORMATETC]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ns-objidl-formatetc
 type FORMATETC struct {
@@ -154,7 +154,7 @@ type FORMATETC struct {
 	Tymed    co.TYMED
 }
 
-// [STATSTG] struct.
+// [STATSTG] struct, with C memory layout.
 //
 // [STATSTG]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/ns-objidl-statstg
 type STATSTG struct {
@@ -171,7 +171,7 @@ type STATSTG struct {
 	reserved          uint32
 }
 
-// [STGMEDIUM] struct.
+// [STGMEDIUM] struct, with C memory layout.
 //
 // If you received this struct from a COM call, you'll have to free the memory
 // with [ReleaseStgMedium].

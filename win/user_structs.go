@@ -11,7 +11,7 @@ import (
 	"github.com/rodrigocfd/windigo/wstr"
 )
 
-// [ACCEL] struct.
+// [ACCEL] struct, with C memory layout.
 //
 // [ACCEL]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-accel
 type ACCEL struct {
@@ -20,7 +20,7 @@ type ACCEL struct {
 	Cmd   uint16    // LOWORD(wParam) value.
 }
 
-// [COMPAREITEMSTRUCT] struct.
+// [COMPAREITEMSTRUCT] struct, with C memory layout.
 //
 // [COMPAREITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct
 type COMPAREITEMSTRUCT struct {
@@ -34,7 +34,7 @@ type COMPAREITEMSTRUCT struct {
 	DwLocaleId uint32
 }
 
-// [COPYDATASTRUCT] struct.
+// [COPYDATASTRUCT] struct, with C memory layout.
 //
 // [COPYDATASTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-copydatastruct
 type COPYDATASTRUCT struct {
@@ -43,7 +43,7 @@ type COPYDATASTRUCT struct {
 	LpData uintptr // PVOID
 }
 
-// [CREATESTRUCT] struct.
+// [CREATESTRUCT] struct, with C memory layout.
 //
 // [CREATESTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-createstructw
 type CREATESTRUCT struct {
@@ -59,7 +59,7 @@ type CREATESTRUCT struct {
 	ExStyle        co.WS_EX
 }
 
-// [CURSORINFO] struct.
+// [CURSORINFO] struct, with C memory layout.
 //
 // ⚠️ You must call [CURSORINFO.SetCbSize] to initialize the struct.
 //
@@ -82,7 +82,7 @@ func (ci *CURSORINFO) SetCbSize() {
 	ci.cbSize = uint32(unsafe.Sizeof(*ci))
 }
 
-// [CWPRETSTRUCT] struct.
+// [CWPRETSTRUCT] struct, with C memory layout.
 //
 // Passed to [SetWindowsHookEx] callback with [co.WH_CALLWNDPROCRET].
 //
@@ -95,7 +95,7 @@ type CWPRETSTRUCT struct {
 	HWnd    HWND
 }
 
-// [CWPSTRUCT] struct.
+// [CWPSTRUCT] struct, with C memory layout.
 //
 // Passed to [SetWindowsHookEx] callback with [co.WH_CALLWNDPROC].
 //
@@ -107,7 +107,7 @@ type CWPSTRUCT struct {
 	HWnd    HWND
 }
 
-// [DEBUGHOOKINFO] struct.
+// [DEBUGHOOKINFO] struct, with C memory layout.
 //
 // Passed to [SetWindowsHookEx] callback with [co.WH_DEBUG].
 //
@@ -120,7 +120,7 @@ type DEBUGHOOKINFO struct {
 	Code              int32
 }
 
-// [DELETEITEMSTRUCT] struct.
+// [DELETEITEMSTRUCT] struct, with C memory layout.
 //
 // [DELETEITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-deleteitemstruct
 type DELETEITEMSTRUCT struct {
@@ -131,7 +131,7 @@ type DELETEITEMSTRUCT struct {
 	ItemData uintptr // ULONG_PTR
 }
 
-// [DISPLAY_DEVICE] struct.
+// [DISPLAY_DEVICE] struct, with C memory layout.
 //
 // ⚠️ You must call [DISPLAY_DEVICE.SetCb] to initialize the struct.
 //
@@ -170,7 +170,7 @@ func (dd *DISPLAY_DEVICE) SetDeviceString(val string) {
 	wstr.EncodeToBuf(dd.deviceString[:], val)
 }
 
-// [DLGTEMPLATE] struct.
+// [DLGTEMPLATE] struct, with C memory layout.
 //
 // [DLGTEMPLATE]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-dlgtemplate
 type DLGTEMPLATE struct {
@@ -180,7 +180,7 @@ type DLGTEMPLATE struct {
 	X, Y, Cx, Cy    int16
 }
 
-// [DRAWITEMSTRUCT] struct.
+// [DRAWITEMSTRUCT] struct, with C memory layout.
 //
 // [DRAWITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct
 type DRAWITEMSTRUCT struct {
@@ -195,7 +195,7 @@ type DRAWITEMSTRUCT struct {
 	ItemData   uintptr // ULONG_PTR
 }
 
-// [DRAWTEXTPARAMS] struct.
+// [DRAWTEXTPARAMS] struct, with C memory layout.
 //
 // ⚠️ You must call [DRAWTEXTPARAMS.SetCbSize] to initialize the struct.
 //
@@ -219,7 +219,7 @@ func (dtp *DRAWTEXTPARAMS) SetCbSize() {
 	dtp.cbSize = uint32(unsafe.Sizeof(*dtp))
 }
 
-// [GUITHREADINFO] struct.
+// [GUITHREADINFO] struct, with C memory layout.
 //
 // ⚠️ You must call [GUITHREADINFO.SetCbSize] to initialize the struct.
 //
@@ -247,7 +247,7 @@ func (gti *GUITHREADINFO) SetCbSize() {
 	gti.cbSize = uint32(unsafe.Sizeof(*gti))
 }
 
-// [HARDWAREINPUT] struct.
+// [HARDWAREINPUT] struct, with C memory layout.
 //
 // [HARDWAREINPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-hardwareinput
 type HARDWAREINPUT struct {
@@ -256,7 +256,7 @@ type HARDWAREINPUT struct {
 	WParamH uint16
 }
 
-// [HELPINFO] struct.
+// [HELPINFO] struct, with C memory layout.
 //
 // ⚠️ You must call [HELPINFO.SetCbSize] to initialize the struct.
 //
@@ -281,7 +281,7 @@ func (hi *HELPINFO) SetCbSize() {
 	hi.cbSize = uint32(unsafe.Sizeof(*hi))
 }
 
-// [ICONINFO] struct.
+// [ICONINFO] struct, with C memory layout.
 //
 // [ICONINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfo
 type ICONINFO struct {
@@ -292,7 +292,7 @@ type ICONINFO struct {
 	HbmColor HBITMAP
 }
 
-// [ICONINFOEX] struct.
+// [ICONINFOEX] struct, with C memory layout.
 //
 // ⚠️ You must call [ICONINFOEX.SetCbSize] to initialize the struct.
 //
@@ -334,7 +334,7 @@ func (iix *ICONINFOEX) SetSzResName(val string) {
 	wstr.EncodeToBuf(iix.szResName[:], val)
 }
 
-// [INPUT] struct.
+// [INPUT] struct, with C memory layout.
 //
 // [INPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-input
 type INPUT struct {
@@ -365,13 +365,13 @@ func (i *INPUT) SetHardwareInput(hi HARDWAREINPUT) {
 	*i.HardwareInput() = hi
 }
 
-// [KBDLLHOOKSTRUCT] struct.
+// [KBDLLHOOKSTRUCT] struct, with C memory layout.
 //
 // Passed to [SetWindowsHookEx] callback with [co.WH_KEYBOARD_LL].
 //
 // [KBDLLHOOKSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-kbdllhookstruct
 type KBDLLHOOKSTRUCT struct {
-	vkCode      uint32
+	vkCode      uint32 // should be uint16
 	ScanCode    uint32
 	Flags       co.LLKHF
 	time        uint32
@@ -388,7 +388,7 @@ func (khs *KBDLLHOOKSTRUCT) Time() time.Duration {
 	return time.Duration(uintptr(khs.time) * uintptr(time.Millisecond))
 }
 
-// [KEYBDINPUT] struct.
+// [KEYBDINPUT] struct, with C memory layout.
 //
 // [KEYBDINPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-keybdinput
 type KEYBDINPUT struct {
@@ -399,7 +399,7 @@ type KEYBDINPUT struct {
 	DwExtraInfo uintptr
 }
 
-// [MOUSEINPUT] struct.
+// [MOUSEINPUT] struct, with C memory layout.
 //
 // [MOUSEINPUT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-mouseinput
 type MOUSEINPUT struct {
@@ -443,7 +443,7 @@ func (lp LPARAM) MakeSize() SIZE {
 	}
 }
 
-// [MDINEXTMENU] struct.
+// [MDINEXTMENU] struct, with C memory layout.
 //
 // [MDINEXTMENU]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-mdinextmenu
 type MDINEXTMENU struct {
@@ -452,7 +452,7 @@ type MDINEXTMENU struct {
 	HwndNext  HWND
 }
 
-// [MENUGETOBJECTINFO] struct.
+// [MENUGETOBJECTINFO] struct, with C memory layout.
 //
 // [MENUGETOBJECTINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menugetobjectinfo
 type MENUGETOBJECTINFO struct {
@@ -463,7 +463,7 @@ type MENUGETOBJECTINFO struct {
 	PvObj   uintptr // PVOID
 }
 
-// [MENUINFO] struct.
+// [MENUINFO] struct, with C memory layout.
 //
 // ⚠️ You must call [MENUINFO.SetCbSize] to initialize the struct.
 //
@@ -489,7 +489,7 @@ func (mi *MENUINFO) SetCbSize() {
 	mi.cbSize = uint32(unsafe.Sizeof(*mi))
 }
 
-// [MENUITEMINFO] struct.
+// [MENUITEMINFO] struct, with C memory layout.
 //
 // ⚠️ You must call [MENUITEMINFO.SetCbSize] to initialize the struct.
 //
@@ -520,7 +520,7 @@ func (mii *MENUITEMINFO) SetCbSize() {
 	mii.cbSize = uint32(unsafe.Sizeof(*mii))
 }
 
-// [MINMAXINFO] struct.
+// [MINMAXINFO] struct, with C memory layout.
 //
 // [MINMAXINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-minmaxinfo
 type MINMAXINFO struct {
@@ -531,7 +531,7 @@ type MINMAXINFO struct {
 	PtMaxTrackSize POINT
 }
 
-// [MONITORINFOEX] struct.
+// [MONITORINFOEX] struct, with C memory layout.
 //
 // ⚠️ You must call [MONITORINFOEX.SetCbSize] to initialize the struct.
 //
@@ -562,7 +562,7 @@ func (mix *MONITORINFOEX) SetSzDevice(val string) {
 	wstr.EncodeToBuf(mix.szDevice[:], val)
 }
 
-// [MSG] struct.
+// [MSG] struct, with C memory layout.
 //
 // [MSG]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msg
 type MSG struct {
@@ -574,7 +574,7 @@ type MSG struct {
 	Pt     POINT
 }
 
-// [MSLLHOOKSTRUCT] struct.
+// [MSLLHOOKSTRUCT] struct, with C memory layout.
 //
 // Passed to [SetWindowsHookEx] callback with [co.WH_MOUSE_LL].
 //
@@ -592,7 +592,7 @@ func (mhs *MSLLHOOKSTRUCT) Time() time.Duration {
 	return time.Duration(uintptr(mhs.time) * uintptr(time.Millisecond))
 }
 
-// [NCCALCSIZE_PARAMS] struct.
+// [NCCALCSIZE_PARAMS] struct, with C memory layout.
 //
 // [NCCALCSIZE_PARAMS]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-nccalcsize_params
 type NCCALCSIZE_PARAMS struct {
@@ -600,7 +600,7 @@ type NCCALCSIZE_PARAMS struct {
 	Lppos *WINDOWPOS
 }
 
-// [NONCLIENTMETRICS] struct.
+// [NONCLIENTMETRICS] struct, with C memory layout.
 //
 // ⚠️ You must call [NONCLIENTMETRICS.SetCbSize] to initialize the struct.
 //
@@ -642,7 +642,7 @@ func (ncm *NONCLIENTMETRICS) SetCbSize() {
 	}
 }
 
-// [PAINTSTRUCT] struct.
+// [PAINTSTRUCT] struct, with C memory layout.
 //
 // [PAINTSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-paintstruct
 type PAINTSTRUCT struct {
@@ -654,7 +654,7 @@ type PAINTSTRUCT struct {
 	rgbReserved [32]byte
 }
 
-// [POINT] struct.
+// [POINT] struct, with C memory layout.
 //
 // Basic point structure, with x and y coordinates.
 //
@@ -668,7 +668,7 @@ func (p *POINT) serializeUint64() uintptr {
 	return uintptr(utl.Make64(uint32(p.X), uint32(p.Y)))
 }
 
-// [POWERBROADCAST_SETTING] struct.
+// [POWERBROADCAST_SETTING] struct, with C memory layout.
 //
 // [POWERBROADCAST_SETTING]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-powerbroadcast_setting
 type POWERBROADCAST_SETTING struct {
@@ -681,7 +681,7 @@ func (pbs *POWERBROADCAST_SETTING) Data(i int) unsafe.Pointer {
 	return unsafe.Pointer(&pbs.data[i])
 }
 
-// [RECT] struct.
+// [RECT] struct, with C memory layout.
 //
 // Basic rectangle structure, with left, top, right and bottom values.
 //
@@ -690,7 +690,7 @@ type RECT struct {
 	Left, Top, Right, Bottom int32
 }
 
-// [SCROLLINFO] struct.
+// [SCROLLINFO] struct, with C memory layout.
 //
 // ⚠️ You must call [SCROLLINFO.SetCbSize] to initialize the struct.
 //
@@ -716,7 +716,7 @@ func (si *SCROLLINFO) SetCbSize() {
 	si.cbSize = uint32(unsafe.Sizeof(*si))
 }
 
-// [SIZE] struct.
+// [SIZE] struct, with C memory layout.
 //
 // Basic area size structure, with cx and cy values.
 //
@@ -725,7 +725,7 @@ type SIZE struct {
 	Cx, Cy int32
 }
 
-// [STYLESTRUCT] for WS styles.
+// [STYLESTRUCT] for WS styles, with C memory layout.
 //
 // [STYLESTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-stylestruct
 type STYLESTRUCT_WS struct {
@@ -733,7 +733,7 @@ type STYLESTRUCT_WS struct {
 	StyleNew co.WS
 }
 
-// [STYLESTRUCT] for WS_EX styles.
+// [STYLESTRUCT] for WS_EX styles, with C memory layout.
 //
 // [STYLESTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-stylestruct
 type STYLESTRUCT_WSEX struct {
@@ -741,7 +741,7 @@ type STYLESTRUCT_WSEX struct {
 	StyleNew co.WS_EX
 }
 
-// [TITLEBARINFO] struct.
+// [TITLEBARINFO] struct, with C memory layout.
 //
 // ⚠️ You must call [TITLEBARINFO.SetCbSize] to initialize the struct.
 //
@@ -763,7 +763,7 @@ func (ti *TITLEBARINFO) SetCbSize() {
 	ti.cbSize = uint32(unsafe.Sizeof(*ti))
 }
 
-// [TITLEBARINFOEX] struct.
+// [TITLEBARINFOEX] struct, with C memory layout.
 //
 // ⚠️ You must call [TITLEBARINFOEX.SetCbSize] to initialize the struct.
 //
@@ -786,7 +786,7 @@ func (tix *TITLEBARINFOEX) SetCbSize() {
 	tix.cbSize = uint32(unsafe.Sizeof(*tix))
 }
 
-// [WINDOWPLACEMENT] struct.
+// [WINDOWPLACEMENT] struct, with C memory layout.
 //
 // ⚠️ You must call [WINDOWPLACEMENT.SetLength] to initialize the struct.
 //
@@ -811,7 +811,7 @@ func (wp *WINDOWPLACEMENT) SetLength() {
 	wp.length = uint32(unsafe.Sizeof(*wp))
 }
 
-// [WINDOWPOS] struct.
+// [WINDOWPOS] struct, with C memory layout.
 //
 // [WINDOWPOS]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowpos
 type WINDOWPOS struct {
@@ -821,7 +821,7 @@ type WINDOWPOS struct {
 	Flags           co.SWP
 }
 
-// [WNDCLASSEX] struct.
+// [WNDCLASSEX] struct, with C memory layout.
 //
 // ⚠️ You must call [WNDCLASSEX.SetCbSize] to initialize the struct.
 //

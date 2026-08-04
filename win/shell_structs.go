@@ -21,7 +21,7 @@ type COMDLG_FILTERSPEC struct {
 	Spec string
 }
 
-// [COMDLG_FILTERSPEC] struct.
+// [COMDLG_FILTERSPEC] struct, with C memory layout.
 //
 // [COMDLG_FILTERSPEC]: https://learn.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-comdlg_filterspec
 type _COMDLG_FILTERSPEC struct {
@@ -50,7 +50,7 @@ func (il *ITEMIDLIST) release() {
 	}
 }
 
-// [NOTIFYICONDATA] struct.
+// [NOTIFYICONDATA] struct, with C memory layout.
 //
 // ⚠️ You must call [NOTIFYICONDATA.SetCbSize] to initialize the struct.
 //
@@ -114,7 +114,7 @@ func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
 	wstr.EncodeToBuf(nid.szInfoTitle[:], val)
 }
 
-// [NOTIFYICONIDENTIFIER] struct.
+// [NOTIFYICONIDENTIFIER] struct, with C memory layout.
 //
 // ⚠️ You must call [NOTIFYICONIDENTIFIER.SetCbSize] to initialize the struct.
 //
@@ -137,7 +137,7 @@ func (nii *NOTIFYICONIDENTIFIER) SetCbSize() {
 	nii.cbSize = uint32(unsafe.Sizeof(*nii))
 }
 
-// [SHFILEINFO] struct.
+// [SHFILEINFO] struct, with C memory layout.
 //
 // [SHFILEINFO]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
 type SHFILEINFO struct {
@@ -162,7 +162,7 @@ func (shf *SHFILEINFO) SetSzTypeName(val string) {
 	wstr.EncodeToBuf(shf.szTypeName[:], val)
 }
 
-// [THUMBBUTTON] struct.
+// [THUMBBUTTON] struct, with C memory layout.
 //
 // [THUMBBUTTON]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ns-shobjidl_core-thumbbutton
 type THUMBBUTTON struct {

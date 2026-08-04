@@ -6,7 +6,7 @@ import (
 	"unsafe"
 )
 
-// [MODULEINFO] struct.
+// [MODULEINFO] struct, with C memory layout.
 //
 // [MODULEINFO]: https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-moduleinfo
 type MODULEINFO struct {
@@ -15,7 +15,7 @@ type MODULEINFO struct {
 	EntryPoint  uintptr
 }
 
-// [PERFORMANCE_INFORMATION] struct.
+// [PERFORMANCE_INFORMATION] struct, with C memory layout.
 //
 // ⚠️ You must call [PERFORMANCE_INFORMATION.SetCb] to initialize the struct.
 //
@@ -48,7 +48,7 @@ func (pi *PERFORMANCE_INFORMATION) SetCb() {
 	pi.cb = uint32(unsafe.Sizeof(*pi))
 }
 
-// [PROCESS_MEMORY_COUNTERS_EX] struct.
+// [PROCESS_MEMORY_COUNTERS_EX] struct, with C memory layout.
 //
 // ⚠️ You must call [PROCESS_MEMORY_COUNTERS_EX.SetCb] to initialize the struct.
 //

@@ -2,7 +2,7 @@
 
 package win
 
-// [MARGINS] struct.
+// [MARGINS] struct, with C memory layout.
 //
 // [MARGINS]: https://learn.microsoft.com/en-us/windows/win32/api/uxtheme/ns-uxtheme-margins
 type MARGINS struct {
