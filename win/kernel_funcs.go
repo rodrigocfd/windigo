@@ -391,19 +391,25 @@ var _kernel_GetCurrentPackageFullName *syscall.Proc
 // [GetCurrentPackageId] function.
 //
 // [GetCurrentPackageId]: https://learn.microsoft.com/en-us/windows/win32/api/appmodel/nf-appmodel-getcurrentpackageid
-func GetCurrentPackageId() (PACKAGE_ID, error) {
-	bufLen := uint32(unsafe.Sizeof(PACKAGE_ID{}))
-	var buf PACKAGE_ID
-
+func GetCurrentPackageId() (*PACKAGE_ID, error) {
+	var szBuf uint32
 	ret, _, _ := syscall.SyscallN(
 		dll.Kernel.Load(&_kernel_GetCurrentPackageId, "GetCurrentPackageId"),
-		uintptr(unsafe.Pointer(&bufLen)),
-		uintptr(unsafe.Pointer(&buf)))
-
-	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
-		return PACKAGE_ID{}, wErr
+		uintptr(unsafe.Pointer(&szBuf)),
+		0)
+	if wErr := co.ERROR(ret); wErr != co.ERROR_INSUFFICIENT_BUFFER {
+		return nil, wErr
 	}
-	return buf, nil
+
+	buf := make([]byte, szBuf)
+	ret, _, _ = syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GetCurrentPackageId, "GetCurrentPackageId"),
+		uintptr(unsafe.Pointer(&szBuf)),
+		uintptr(unsafe.Pointer(&buf[0])))
+	if wErr := co.ERROR(ret); wErr != co.ERROR_SUCCESS {
+		return nil, wErr
+	}
+	return (*PACKAGE_ID)(unsafe.Pointer(&buf[0])), nil
 }
 
 var _kernel_GetCurrentPackageId *syscall.Proc
