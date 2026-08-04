@@ -427,10 +427,23 @@ type PACKAGE_ID struct {
 	reserved              uint32
 	ProcessorArchitecture co.PROCESSOR_ARCH_ENUM
 	Version               PACKAGE_VERSION
-	Name                  *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
-	Publisher             *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
-	ResourceId            *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
-	PublisherId           *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	name                  *uint16
+	publisher             *uint16
+	resourceId            *uint16
+	publisherId           *uint16
+}
+
+func (pi *PACKAGE_ID) Name() string {
+	return wstr.DecodePtr(pi.name)
+}
+func (pi *PACKAGE_ID) Publisher() string {
+	return wstr.DecodePtr(pi.publisher)
+}
+func (pi *PACKAGE_ID) ResourceId() string {
+	return wstr.DecodePtr(pi.resourceId)
+}
+func (pi *PACKAGE_ID) PublisherId() string {
+	return wstr.DecodePtr(pi.publisherId)
 }
 
 // [PACKAGE_VERSION] struct.
