@@ -77,7 +77,7 @@ func NewHeaderDlg(parent Parent, ctrlId uint16, layout LAY) *Header {
 
 // Instantiates a [Header] from a [ListView] control.
 func newHeaderFromListView(parent Parent) *Header {
-	ctrlId := nextCtrlId()
+	ctrlId := nextUniqueCtrlId()
 	me := &Header{
 		_BaseCtrl: newBaseCtrl(ctrlId),
 		events:    HeaderEvents{ctrlId, &parent.base().userEvents},

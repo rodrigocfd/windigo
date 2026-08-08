@@ -7,7 +7,8 @@ import (
 	"github.com/rodrigocfd/windigo/win"
 )
 
-// An icon to be loaded, either from resource or from a shell file extension.
+// An icon to be loaded, either from resource or from a Windows Explorer file
+// extension.
 type Ico struct {
 	id  uint16 // Resource ID.
 	ext string // File extension.
@@ -18,12 +19,13 @@ func IcoId(iconId uint16) Ico {
 	return Ico{iconId, ""}
 }
 
-// Will load the icon of the given file extension, as displayed by the shell.
+// Will load the icon of the given file extension, as displayed by the Windows
+// Explorer, like "mp3".
 func IcoExt(fileExtension string) Ico {
 	return Ico{0, fileExtension}
 }
 
-// Returns true if there is an icon ID or a shell extension.
+// Returns true if there is an icon ID or a Windows Explorer file extension.
 func (me *Ico) isValid() bool {
 	return me.id > 0 || len(me.ext) > 0
 }
@@ -108,8 +110,10 @@ func (me *_IconCacheImgList) IconIndex(
 
 // Caches raw [win.HICON] handles.
 type _IconCacheHicon struct {
-	hIcons  []win.HICON
-	entries []Ico
+	icons []struct {
+		hIcon win.HICON
+		entry Ico
+	}
 }
 
 // Constructor.
@@ -119,18 +123,17 @@ func newIconCacheHicon() _IconCacheHicon {
 
 // Destroys all icons.
 func (me *_IconCacheHicon) Release() {
-	for _, hIcon := range me.hIcons {
-		hIcon.DestroyIcon()
+	for _, icon := range me.icons {
+		icon.hIcon.DestroyIcon()
 	}
-	me.hIcons = nil
-	me.entries = nil
+	me.icons = nil
 }
 
 // Loads the icon, if not yet. Returns its handle.
 func (me *_IconCacheHicon) Handle(resolution int, ico Ico) win.HICON {
-	for idx, entry := range me.entries {
-		if entry == ico {
-			return me.hIcons[idx] // already cached
+	for _, icon := range me.icons {
+		if ico == icon.entry {
+			return icon.hIcon // already cached
 		}
 	}
 
@@ -143,20 +146,16 @@ func (me *_IconCacheHicon) Handle(resolution int, ico Ico) win.HICON {
 		}
 		hIconNew = hIcon
 	} else {
-		shgfi := co.SHGFI_USEFILEATTRIBUTES | co.SHGFI_ICON
-		if resolution == 16 {
-			shgfi |= co.SHGFI_SMALLICON
-		} else {
-			shgfi |= co.SHGFI_LARGEICON
-		}
-		fi, err := win.SHGetFileInfo("*."+ico.ext, co.FILE_ATTRIBUTE_NORMAL, shgfi)
+		hIcon, err := win.LoadIconOfFileExt(ico.ext, resolution)
 		if err != nil {
-			panic("SHGetFileInfo failed: " + err.Error())
+			panic("Failed to load file extension icon.")
 		}
-		hIconNew = fi.HIcon
+		hIconNew = hIcon
 	}
 
-	me.hIcons = append(me.hIcons, hIconNew)
-	me.entries = append(me.entries, ico)
+	me.icons = append(me.icons, struct {
+		hIcon win.HICON
+		entry Ico
+	}{hIconNew, ico})
 	return hIconNew
 }

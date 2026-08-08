@@ -79,7 +79,7 @@ func createGlobalUiFont() error {
 var globalNextCtrlId uint16 = 0xdfff // https://stackoverflow.com/a/18192766
 
 // Returns an unique child control ID.
-func nextCtrlId() uint16 {
+func nextUniqueCtrlId() uint16 {
 	nextId := globalNextCtrlId
 	globalNextCtrlId-- // go down
 	return nextId
@@ -88,7 +88,7 @@ func nextCtrlId() uint16 {
 // If ctrlId is zero, assigns a new unique control ID.
 func setUniqueCtrlId(pCtrlId *uint16) {
 	if *pCtrlId == 0 {
-		*pCtrlId = nextCtrlId()
+		*pCtrlId = nextUniqueCtrlId()
 	}
 }
 

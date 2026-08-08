@@ -268,76 +268,13 @@ func (me *ListView) AddCol(title string, width int) ListViewCol {
 //
 // [LVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertitem
 func (me *ListView) AddItem(texts ...string) ListViewItem {
-	return me.addItemRaw(0, nil, Ico{}, texts...)
-}
-
-// Adds one item and its 16x16 icon, either from the resource or from a shell
-// file extension, with [LVM_INSERTITEM], then sets the texts under each
-// subsequent column, returning the new item.
-//
-// The 16x16 icons are rendered if the list view is in details (report) or small
-// icon view, otherwise the 32x32 icons are rendered.
-//
-// Panics if no text is informed; panics on error.
-//
-// Example:
-//
-//	var lv ui.ListView // initialized somewhere
-//
-//	lv.AddItemWithIcon16(ui.IcoId(101), "My Item")    // icon resource with ID=101
-//	lv.AddItemWithIcon16(ui.IcoExt("txt"), "My item") // shell icon of *.txt files
-//
-// [LVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertitem
-func (me *ListView) AddItemWithIcon16(icon Ico, texts ...string) ListViewItem {
-	return me.addItemRaw(16, &me.iconCache16, icon, texts...)
-}
-
-// Adds one item and its 32x32 icon, either from the resource or from a shell
-// file extension, with [LVM_INSERTITEM], then sets the texts under each
-// subsequent column, returning the new item.
-//
-// The 16x16 icons are rendered if the list view is in details (report) or small
-// icon view, otherwise the 32x32 icons are rendered.
-//
-// Panics if no text is informed; panics on error.
-//
-// Example:
-//
-//	var lv ui.ListView // initialized somewhere
-//
-//	lv.AddItemWithIcon32(ui.IcoId(101), "My Item")    // icon resource with ID=101
-//	lv.AddItemWithIcon32(ui.IcoExt("txt"), "My item") // shell icon of *.txt files
-//
-// [LVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/lvm-insertitem
-func (me *ListView) AddItemWithIcon32(icon Ico, texts ...string) ListViewItem {
-	return me.addItemRaw(32, &me.iconCache32, icon, texts...)
-}
-
-func (me *ListView) addItemRaw(resolution int, iconCache *_IconCacheImgList, icon Ico, texts ...string) ListViewItem {
 	if len(texts) == 0 {
 		panic("You must inform at least 1 text when adding a ListView item.")
 	}
 
-	mask := co.LVIF_TEXT
-	idxIconActual := -1
-
-	if icon.isValid() {
-		mask |= co.LVIF_IMAGE
-		hImgList, newImgList, idxIcon := iconCache.IconIndex(resolution, icon)
-		if newImgList { // image list has just been created
-			lvsil := co.LVSIL_NORMAL
-			if resolution == 16 {
-				lvsil = co.LVSIL_SMALL
-			}
-			me.Hwnd().SendMessage(co.LVM_SETIMAGELIST, win.WPARAM(lvsil), win.LPARAM(hImgList))
-		}
-		idxIconActual = idxIcon
-	}
-
 	lvi := win.LVITEM{
-		Mask:   mask,
-		IItem:  0x0fff_ffff, // insert as last one
-		IImage: int32(idxIconActual),
+		Mask:  co.LVIF_TEXT,
+		IItem: 0x0fff_ffff, // insert as last one
 	}
 
 	var wText wstr.BufEncoder
@@ -364,26 +301,6 @@ func (me *ListView) addItemRaw(resolution int, iconCache *_IconCacheImgList, ico
 	return ListViewItem{me, int32(newIdx)}
 }
 
-// Returns all columns.
-func (me *ListView) AllCols() []ListViewCol {
-	nCols := me.ColCount()
-	cols := make([]ListViewCol, 0, nCols)
-	for i := 0; i < nCols; i++ {
-		cols = append(cols, me.Col(i))
-	}
-	return cols
-}
-
-// Returns all items.
-func (me *ListView) AllItems() []ListViewItem {
-	nItems := me.ItemCount()
-	items := make([]ListViewItem, 0, nItems)
-	for i := 0; i < nItems; i++ {
-		items = append(items, me.Item(i))
-	}
-	return items
-}
-
 // Returns the column at the given index.
 //
 // A negative index will give you an invalid column.
@@ -401,6 +318,18 @@ func (me *ListView) ColCount() int {
 		panic("This ListView has no header.")
 	}
 	return me.Header().ItemCount()
+}
+
+// Returns all columns.
+//
+// Panics if the list view has no header.
+func (me *ListView) Cols() []ListViewCol {
+	nCols := me.ColCount()
+	cols := make([]ListViewCol, 0, nCols)
+	for i := 0; i < nCols; i++ {
+		cols = append(cols, me.Col(i))
+	}
+	return cols
 }
 
 // Returns the context menu associated to this control, if any.
@@ -524,6 +453,16 @@ func (me *ListView) ItemByUid(uid int) ListViewItem {
 func (me *ListView) ItemCount() int {
 	count, _ := me.Hwnd().SendMessage(co.LVM_GETITEMCOUNT, 0, 0)
 	return int(count)
+}
+
+// Returns all items.
+func (me *ListView) Items() []ListViewItem {
+	nItems := me.ItemCount()
+	items := make([]ListViewItem, 0, nItems)
+	for i := 0; i < nItems; i++ {
+		items = append(items, me.Item(i))
+	}
+	return items
 }
 
 // Returns the last column.
@@ -739,7 +678,7 @@ type _ListViewAddCol struct {
 func OptsListView() *VarOptsListView {
 	return &VarOptsListView{
 		size:       win.SIZE{Cx: int32(DpiX(120)), Cy: int32(DpiY(120))},
-		ctrlStyle:  co.LVS_REPORT | co.LVS_NOSORTHEADER | co.LVS_SHOWSELALWAYS,
+		ctrlStyle:  co.LVS_REPORT | co.LVS_NOSORTHEADER | co.LVS_SHOWSELALWAYS | co.LVS_SHAREIMAGELISTS,
 		wndStyle:   co.WS_CHILD | co.WS_GROUP | co.WS_TABSTOP | co.WS_VISIBLE,
 		wndExStyle: co.WS_EX_LEFT | co.WS_EX_CLIENTEDGE,
 	}
@@ -778,7 +717,7 @@ func (o *VarOptsListView) Size(cx, cy int) *VarOptsListView {
 // Since the image lists are managed by the control, co.LVS_SHAREIMAGELISTS is
 // always automatically set.
 //
-// Defaults to co.LVS_REPORT | co.LVS_NOSORTHEADER | co.LVS_SHOWSELALWAYS.
+// Defaults to co.LVS_REPORT | co.LVS_NOSORTHEADER | co.LVS_SHOWSELALWAYS | co.LVS_SHAREIMAGELISTS.
 //
 // [style]: https://learn.microsoft.com/en-us/windows/win32/controls/list-view-window-styles
 func (o *VarOptsListView) CtrlStyle(s co.LVS) *VarOptsListView {

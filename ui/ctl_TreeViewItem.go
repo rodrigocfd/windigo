@@ -25,39 +25,11 @@ type TreeViewItem struct {
 //
 // [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
 func (me TreeViewItem) AddChild(text string) TreeViewItem {
-	return me.AddChildWithIcon(text, Ico{})
-}
-
-// Adds a child with its 16x16 icon, either from the resource or from a shell
-// file extension, with [TVM_INSERTITEM], returning the new item.
-//
-// Note that, once you add an item with icon, all other items will also be
-// rendered with icons. Those which you didn't specify the icon will simply
-// display the first icon.
-//
-// Panics on error.
-//
-// [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
-func (me TreeViewItem) AddChildWithIcon(text string, icon Ico) TreeViewItem {
-	mask := co.TVIF_TEXT
-	idxIconActual := -1
-
-	if icon.isValid() {
-		mask |= co.TVIF_IMAGE
-		hImgList, newImgList, idxIcon := me.owner.iconCache16.IconIndex(16, icon)
-		if newImgList { // image list has just been created
-			me.owner.Hwnd().SendMessage(co.TVM_SETIMAGELIST,
-				win.WPARAM(co.TVSIL_NORMAL), win.LPARAM(hImgList))
-		}
-		idxIconActual = idxIcon
-	}
-
 	tvi := win.TVINSERTSTRUCT{
 		HParent:      me.hItem,
 		HInsertAfter: win.HTREEITEM_LAST,
 		Itemex: win.TVITEMEX{
-			Mask:   mask,
-			IImage: int32(idxIconActual),
+			Mask: co.TVIF_TEXT,
 		},
 	}
 
@@ -249,8 +221,8 @@ func (me TreeViewItem) SetData(data interface{}) {
 	me.owner.itemsData[me.hItem] = data
 }
 
-// Sets the given 16x16 icon, either from the resource or from a shell file
-// extension, with [TVM_SETITEM].
+// Sets the given 16x16 icon, either from the resource or from a Windows
+// Explorer file extension, with [TVM_SETITEM].
 //
 // Note that, once you add an item with icon, all other items will also be
 // rendered with icons. Those which you didn't specify the icon will simply

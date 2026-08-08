@@ -61,11 +61,7 @@ func NewIDropTargetImpl(releaser *OleReleaser) *IDropTarget {
 	utl.PtrCache.Add(unsafe.Pointer(pImpl)) // keep ptr
 	ppImpl := &pImpl
 	utl.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
-
-	ppFakeVtbl := (**_IUnknownVt)(unsafe.Pointer(ppImpl))
-	pObj := &IDropTarget{IUnknown{ppFakeVtbl}}
-	releaser.Add(pObj)
-	return pObj
+	return utl.OleNew[*IDropTarget](uintptr(unsafe.Pointer(ppImpl)), releaser)
 }
 
 // Defines [DragEnter] method.
@@ -122,7 +118,7 @@ func (me *IDropTarget) Drop(
 }
 
 type _IDropTargetVt struct {
-	_IUnknownVt
+	utl.IUnknownVt
 	DragEnter uintptr
 	DragOver  uintptr
 	DragLeave uintptr
@@ -137,8 +133,8 @@ func (me *_IDropTargetVt) init() {
 	}
 
 	*me = _IDropTargetVt{
-		_IUnknownVt: _IUnknownVt{
-			QueryInterface: com_iunknownQueryInterfaceImpl(),
+		IUnknownVt: utl.IUnknownVt{
+			QueryInterface: utl.OleQueryInterfaceImpl(),
 			AddRef: syscall.NewCallback(
 				func(ppImpl **_IDropTargetImpl) uintptr {
 					newCount := atomic.AddUint32(&(**ppImpl).counter, 1)
@@ -159,7 +155,7 @@ func (me *_IDropTargetVt) init() {
 		DragEnter: syscall.NewCallback(
 			func(
 				ppImpl **_IDropTargetImpl,
-				vtDataObj **_IUnknownVt,
+				pDataObj uintptr,
 				grfKeyState uint32,
 				pt POINT,
 				pdwEffect *co.DROPEFFECT,
@@ -168,7 +164,7 @@ func (me *_IDropTargetVt) init() {
 					return uintptr(co.HRESULT_S_OK)
 				} else {
 					return uintptr(fun(
-						&IDataObject{IUnknown{vtDataObj}},
+						utl.OleNewWithoutReleaser[*IDataObject](pDataObj),
 						co.MK(grfKeyState),
 						pt,
 						pdwEffect,
@@ -201,7 +197,7 @@ func (me *_IDropTargetVt) init() {
 		Drop: syscall.NewCallback(
 			func(
 				ppImpl **_IDropTargetImpl,
-				vtDataObj **_IUnknownVt,
+				pDataObj uintptr,
 				grfKeyState uint32,
 				pt POINT,
 				pdwEffect *co.DROPEFFECT,
@@ -210,7 +206,7 @@ func (me *_IDropTargetVt) init() {
 					return uintptr(co.HRESULT_S_OK)
 				} else {
 					return uintptr(fun(
-						&IDataObject{IUnknown{vtDataObj}},
+						utl.OleNewWithoutReleaser[*IDataObject](pDataObj),
 						co.MK(grfKeyState),
 						pt,
 						pdwEffect,

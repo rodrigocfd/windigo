@@ -132,7 +132,7 @@ func (me ListViewItem) Focus() ListViewItem {
 	return me
 }
 
-// Retrieves the 16x16 icon associated to the item, if any, with [LVM_GETITEM].
+// Retrieves the 16x16 [Ico] associated to the item, if any, with [LVM_GETITEM].
 //
 // The 16x16 icons are rendered if the list view is in details (report) or small
 // icon view, otherwise the 32x32 icons are rendered.
@@ -154,7 +154,7 @@ func (me ListViewItem) Icon16() (Ico, bool) {
 	return me.iconRaw(&me.owner.iconCache16)
 }
 
-// Retrieves the 32x32 icon associated to the item, if any, with [LVM_GETITEM].
+// Retrieves the 32x32 [Ico] associated to the item, if any, with [LVM_GETITEM].
 //
 // The 16x16 icons are rendered if the list view is in details (report) or small
 // icon view, otherwise the 32x32 icons are rendered.
@@ -165,7 +165,7 @@ func (me ListViewItem) Icon16() (Ico, bool) {
 //
 //	var lv ui.ListView // initialized somewhere
 //
-//	if icon, ok := lv.Item(0).Icon16(); ok {
+//	if icon, ok := lv.Item(0).Icon32(); ok {
 //		if resourceId, ok := icon.Id(); ok {
 //			println(resourceId)
 //		}
@@ -298,8 +298,8 @@ func (me ListViewItem) SetData(data interface{}) {
 	me.owner.itemsData[me.Uid()] = data
 }
 
-// Sets the given 16x16 icon, either from the resource or from a shell file
-// extension, with [LVM_SETITEM].
+// Sets the given 16x16 icon, either from the resource or from a Windows
+// Explorer file extension, with [LVM_SETITEM].
 //
 // The 16x16 icons are rendered if the list view is in details (report) or small
 // icon view, otherwise the 32x32 icons are rendered.
@@ -320,8 +320,8 @@ func (me ListViewItem) SetIcon16(icon Ico) ListViewItem {
 	return me.setIconRaw(16, &me.owner.iconCache16, icon)
 }
 
-// Sets the given 32x32 icon, either from the resource or from a shell file
-// extension, with [LVM_SETITEM].
+// Sets the given 32x32 icon, either from the resource or from a Windows
+// Explorer file extension, with [LVM_SETITEM].
 //
 // The 16x16 icons are rendered if the list view is in details (report) or small
 // icon view, otherwise the 32x32 icons are rendered.

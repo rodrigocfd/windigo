@@ -121,25 +121,17 @@ func (hImg HIMAGELIST) AddIconFromShell(fileExtensions ...string) error {
 		return fmt.Errorf("AddIconFromShell can load only 16x16 or 32x32 icons")
 	}
 
-	shgfi := co.SHGFI_USEFILEATTRIBUTES | co.SHGFI_ICON
-	if isIco16 {
-		shgfi |= co.SHGFI_SMALLICON
-	} else if isIco32 {
-		shgfi |= co.SHGFI_LARGEICON
-	}
-
 	for _, fileExt := range fileExtensions {
-		fi, err := SHGetFileInfo("*."+fileExt, co.FILE_ATTRIBUTE_NORMAL, shgfi)
+		hIcon, err := LoadIconOfFileExt(fileExt, int(sz.Cx))
 		if err != nil {
 			return err
 		}
-		defer fi.HIcon.DestroyIcon()
+		defer hIcon.DestroyIcon()
 
-		if err := hImg.AddIcon(fi.HIcon); err != nil {
+		if err := hImg.AddIcon(hIcon); err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
 

@@ -3,145 +3,62 @@
 package win
 
 import (
-	"reflect"
-	"syscall"
-	"unsafe"
-
-	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
-// A [COM] object whose lifetime can be managed by an [OleReleaser], automating
-// the cleanup.
-//
-// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
-type OleResource interface {
-	release()
-}
+// // Validates the HRESULT, and constructs a new COM object within ppOut.
+// //
+// // Returns object and HRESULT.
+// func com_buildObj_retObjHres[T _IIUnknown](
+// 	ret uintptr,
+// 	ppvtQueried **_IUnknownVt,
+// 	releaser *OleReleaser,
+// ) (T, error) {
+// 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+// 		var pObj T
+// 		com_buildObj(&pObj, ppvtQueried, releaser)
+// 		return pObj, nil
+// 	} else {
+// 		var dummy T // will be a nil pointer
+// 		return dummy, hr
+// 	}
+// }
 
-// IUnknown interface, for internal usage.
-type _IIUnknown interface {
-	OleResource
-	IID() *co.IID
-	Ppvt() **_IUnknownVt
-}
+// // Calls the pointed COM method without parameters, returns struct or newtype,
+// // and HRESULT.
+// func com_callRetStruct[T any](me _IIUnknown, pMethod uintptr) (T, error) {
+// 	var obj T
+// 	ret, _, _ := syscall.SyscallN(
+// 		pMethod,
+// 		me.Ppvt(),
+// 		uintptr(unsafe.Pointer(&obj)))
 
-// Returns the virtual table pointer, performing a nil check.
-func com_ppvtOrNil(obj _IIUnknown) unsafe.Pointer {
-	if !utl.IsNil(obj) {
-		return unsafe.Pointer(obj.Ppvt())
-	}
-	return nil
-}
+// 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+// 		return obj, nil
+// 	} else {
+// 		var dummy T
+// 		return dummy, hr
+// 	}
+// }
 
-// Validates the pointer to pointer to COM object. Panics if fails.
-//
-// If the object is fine, calls [OleReleaser.ReleaseNow].
-//
-// Returns the [co.IID] of the underlying pointed-to object.
-func com_validateAndRelease(ppOut interface{}, releaser *OleReleaser) *co.IID {
-	ppTy := reflect.TypeOf(ppOut) // **IUnknown
-	if ppTy.Kind() != reflect.Ptr {
-		panic("You must a pass a pointer to a pointer COM object [**Ty failed].")
-	}
+// // Calls the pointed COM method without parameters, returns a single COM object
+// // and HRESULT.
+// func com_callRetCom[T _IIUnknown](me _IIUnknown, releaser *OleReleaser, pMethod uintptr) (T, error) {
+// 	var ppvtQueried **_IUnknownVt
+// 	ret, _, _ := syscall.SyscallN(
+// 		pMethod,
+// 		me.Ppvt(),
+// 		uintptr(unsafe.Pointer(&ppvtQueried)))
+// 	return com_buildObj_retObjHres[T](ret, ppvtQueried, releaser)
+// }
 
-	pTy := ppTy.Elem() // *IUnknown
-	if pTy.Kind() != reflect.Ptr {
-		panic("You must a pass a pointer to a pointer COM object [*Ty failed].")
-	}
-
-	ty := pTy.Elem() // IUnknown
-	if ty.Kind() != reflect.Struct {
-		panic("You must a pass a pointer to a pointer COM object [Ty failed].")
-	}
-
-	pTarget := reflect.ValueOf(ppOut).Elem() // *IUnknown
-	if !pTarget.CanSet() {
-		panic("You must a pass a pointer to a pointer COM object [target CanSet() failed].")
-	}
-	var emptyVal reflect.Value
-	if pTarget.MethodByName("IID") == emptyVal {
-		panic("You must a pass a pointer to a pointer COM object [target IID() failed].")
-	}
-
-	pObj := pTarget.Interface().(_IIUnknown) // *IUnknown
-	releaser.ReleaseNow(pObj)                // safety, because pOut will receive the new COM object
-	return pObj.IID()
-}
-
-// Constructs a new COM object within the ppOut, writing ppvtQueried in its
-// first field.
-//
-// Always returns a nil error.
-func com_buildObj(ppOut interface{}, ppvtQueried **_IUnknownVt, releaser *OleReleaser) error {
-	pTarget := reflect.ValueOf(ppOut).Elem()  // *IUnknown
-	ty := reflect.TypeOf(ppOut).Elem().Elem() // IUnknown
-	pTarget.Set(reflect.New(ty))              // instantiate new object on the heap and assign its pointer
-
-	addrField0 := pTarget.Elem().Field(0).UnsafeAddr()
-	*(*uintptr)(unsafe.Pointer(addrField0)) = uintptr(unsafe.Pointer(ppvtQueried)) // assign ppvt field
-
-	pObj := pTarget.Interface().(_IIUnknown) // *IUnknown
-	releaser.Add(pObj)
-	return nil
-}
-
-// Validates the HRESULT, and constructs a new COM object within ppOut.
-//
-// Returns HRESULT.
-func com_buildObj_retHres(ret uintptr, ppOut interface{}, ppvtQueried **_IUnknownVt, releaser *OleReleaser) error {
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return com_buildObj(ppOut, ppvtQueried, releaser)
-	} else {
-		return hr
-	}
-}
-
-// Validates the HRESULT, and constructs a new COM object within ppOut.
-//
-// Returns object and HRESULT.
-func com_buildObj_retObjHres[T _IIUnknown](
-	ret uintptr,
-	ppvtQueried **_IUnknownVt,
-	releaser *OleReleaser,
-) (T, error) {
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		var pObj T
-		com_buildObj(&pObj, ppvtQueried, releaser)
-		return pObj, nil
-	} else {
-		var dummy T // will be a nil pointer
-		return dummy, hr
-	}
-}
-
-// Calls the pointed COM method without parameters, returns struct or newtype,
-// and HRESULT.
-func com_callRetStruct[T any](me _IIUnknown, pMethod uintptr) (T, error) {
-	var obj T
-	ret, _, _ := syscall.SyscallN(
-		pMethod,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&obj)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return obj, nil
-	} else {
-		var dummy T
-		return dummy, hr
-	}
-}
-
-// Calls the pointed COM method without parameters, returns a single COM object
-// and HRESULT.
-func com_callRetCom[T _IIUnknown](me _IIUnknown, releaser *OleReleaser, pMethod uintptr) (T, error) {
-	var ppvtQueried **_IUnknownVt
-	ret, _, _ := syscall.SyscallN(
-		pMethod,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&ppvtQueried)))
-	return com_buildObj_retObjHres[T](ret, ppvtQueried, releaser)
-}
+// // A [COM] object whose lifetime can be managed by an [OleReleaser], automating
+// // the cleanup.
+// //
+// // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+// type OleResource interface {
+// 	utl.CanRelease
+// }
 
 // Stores multiple [COM] resources, releasing all them at once.
 //
@@ -155,7 +72,7 @@ func com_callRetCom[T _IIUnknown](me _IIUnknown, releaser *OleReleaser, pMethod 
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 type OleReleaser struct {
-	objs []OleResource
+	r utl.OleBatchReleaser
 }
 
 // Constructs a new [OleReleaser] to store multiple [COM] resources, releasing
@@ -174,13 +91,13 @@ type OleReleaser struct {
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 func NewOleReleaser() *OleReleaser {
 	return &OleReleaser{
-		objs: make([]OleResource, 0, 5), // arbitrary
+		r: utl.NewOleBatchReleaser(),
 	}
 }
 
 // Adds a new [COM] resource to have its lifetime managed by the [OleReleaser].
-func (me *OleReleaser) Add(objs ...OleResource) {
-	me.objs = append(me.objs, objs...)
+func (me *OleReleaser) Add(obj interface{ Release() }) {
+	me.r.Add(obj)
 }
 
 // Releases all added [COM] resource, in the reverse order they were added.
@@ -192,38 +109,5 @@ func (me *OleReleaser) Add(objs ...OleResource) {
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 func (me *OleReleaser) Release() {
-	for i := len(me.objs) - 1; i >= 0; i-- {
-		me.objs[i].release()
-	}
-	me.objs = nil
-}
-
-// Releases the specific [COM] resources, if present, immediately. These objects
-// will be removed from the internal list, thus not being released when
-// [OleReleaser.Release] is further called.
-//
-// This method should be rarely needed.
-//
-// Panics if no object is passed.
-func (me *OleReleaser) ReleaseNow(objs ...OleResource) {
-	if len(objs) == 0 {
-		panic("No objects passed to ReleaseNow.")
-	}
-
-NextHisObj:
-	for _, hisObj := range objs {
-		if utl.IsNil(hisObj) {
-			continue // skip nil objects
-		}
-		hisObj.release() // release no matter what
-
-		for ourIdx, ourObj := range me.objs {
-			if ourObj == hisObj { // we found the passed object in our array
-				copy(me.objs[ourIdx:len(me.objs)-1], me.objs[ourIdx+1:len(me.objs)]) // move subsequent elements into the gap
-				me.objs[len(me.objs)-1] = nil
-				me.objs = me.objs[:len(me.objs)-1] // shrink our slice over the same memory
-				continue NextHisObj
-			}
-		}
-	}
+	me.r.Release()
 }

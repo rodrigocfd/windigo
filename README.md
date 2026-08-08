@@ -1,7 +1,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/rodrigocfd/windigo.svg)](https://pkg.go.dev/github.com/rodrigocfd/windigo)
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/rodrigocfd/windigo?style=flat-square&color=03a7ed)](https://github.com/rodrigocfd/windigo)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/rodrigocfd/windigo/blob/master/LICENSE.md)
-[![Lines of code](https://img.shields.io/badge/LoC-57.0k-blue?style=flat-square)](https://github.com/rodrigocfd/windigo)
+[![Lines of code](https://img.shields.io/badge/LoC-57.8k-blue?style=flat-square)](https://github.com/rodrigocfd/windigo)
 
 # Windigo
 
@@ -11,7 +11,8 @@ Windigo is designed to be familiar to C/C++ Win32 programmers, using the same co
 
 Notably, Windigo is written 100% in pure Go – CGo is **not** used, just native syscalls.
 
-Windigo is based in Go 1.20 because it's the [last](https://go.dev/doc/go1.20#windows) Go version to support systems older than Windows 10, and many people requested that.
+Windigo is based in Go 1.20, so it can be built in [Windows 7](https://go.dev/doc/go1.20#windows) and above.
+
 
 ## Install
 
@@ -29,9 +30,9 @@ Native FFI items currently implemented:
 | Structs | 206 |
 | Functions | 685 |
 | COM interfaces | 78 |
-| COM methods | 535 |
+| COM methods | 532 |
 | Const types | 419 |
-| Const values | 11,134 |
+| Const values | 11,177 |
 
 ## Examples
 
@@ -386,16 +387,21 @@ func main() {
 
 ## Architecture
 
-The library is divided in four packages:
+The library is divided in several packages. Core packages are located at at the root of the library, extended packages under `x/` subdirectory.
 
-| Package | Description |
-| - | - |
-| [`co`](https://pkg.go.dev/github.com/rodrigocfd/windigo/co) | Native Win32 constants, all typed. |
-| [`ui`](https://pkg.go.dev/github.com/rodrigocfd/windigo/ui) | High-level UI windows and controls. |
-| [`win`](https://pkg.go.dev/github.com/rodrigocfd/windigo/win) | Native Win32 structs, handles and functions. |
-| [`wstr`](https://pkg.go.dev/github.com/rodrigocfd/windigo/wstr) | String and UTF-16 wide string management. |
+| Entities | Consts | Description |
+| - | - | - |
+| [`ui`](https://pkg.go.dev/github.com/rodrigocfd/windigo/ui) | – | Core high-level UI windows and controls |
+| [`wstr`](https://pkg.go.dev/github.com/rodrigocfd/windigo/wstr) | – | Core string and UTF-16 wide string management |
+| [`win`](https://pkg.go.dev/github.com/rodrigocfd/windigo/win) | [`co`](https://pkg.go.dev/github.com/rodrigocfd/windigo/co) | Core Win32 components |
+| `winaut` | `coaut` | [Automation](https://learn.microsoft.com/en-us/windows/win32/api/_automat/) |
+| `windxgi` | `codxgi` | [DirectX Graphics Infrastructure](https://learn.microsoft.com/en-us/windows/win32/direct3ddxgi/dx-graphics-dxgi) |
+| `winsh` | `cosh` | [Windows Shell](https://learn.microsoft.com/en-us/windows/win32/shell/shell-entry) |
+| `wintasks` | `cotasks` | [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-start-page) |
+| `winwic` | `cowic` | [Windows Imaging Component](https://learn.microsoft.com/en-us/windows/win32/wic/-wic-lh) |
+| `winver` | `cover` | Version API |
 
-Package dependency:
+Core packages dependency:
 
 ```mermaid
 flowchart BT

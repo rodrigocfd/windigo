@@ -17,7 +17,7 @@ import (
 // [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 type IUnknown struct {
-	ppvt **_IUnknownVt
+	ppvt uintptr
 }
 
 // Returns the unique [COM] [interface ID].
@@ -34,7 +34,7 @@ func (*IUnknown) IID() *co.IID {
 // may lead to segmentation faults.
 //
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
-func (me *IUnknown) Ppvt() **_IUnknownVt {
+func (me *IUnknown) Ppvt() uintptr {
 	return me.ppvt
 }
 
@@ -51,19 +51,19 @@ func (me *IUnknown) Ppvt() **_IUnknownVt {
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
-//	var folder *win.IShellItem
-//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp", &folder)
+//	var folder *winsh.IShellItem
+//	_ = winsh.SHCreateItemFromParsingName(rel, "C:\\Temp", &folder)
 //
-//	var folderCopy *win.IShellItem
+//	var folderCopy *winsh.IShellItem
 //	folder.AddRef(rel, &folderCopy)
 //
 // [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
-	com_validateAndRelease(ppOut, releaser)
+	utl.OleValidateRelease(ppOut)
 	_, _, _ = syscall.SyscallN(
-		(*me.Ppvt()).AddRef,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	com_buildObj(ppOut, me.ppvt, releaser)
+		utl.Vt[utl.IUnknownVt](me.ppvt).AddRef,
+		me.ppvt)
+	utl.OleInject(ppOut, me.ppvt, releaser)
 }
 
 // [QueryInterface] method.
@@ -78,95 +78,35 @@ func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
 //	defer rel.Release()
 //
 //	var item *win.IShellItem
-//	_ = win.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
+//	_ = winsh.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
 //
-//	var item2 *win.IShellItem2
+//	var item2 *winsh.IShellItem2
 //	_ = item.QueryInterface(rel, &item2)
 //
 // [QueryInterface]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)
 func (me *IUnknown) QueryInterface(releaser *OleReleaser, ppOut interface{}) error {
-	piid := com_validateAndRelease(ppOut, releaser)
-	var ppvtQueried **_IUnknownVt
+	piid := utl.OleValidateRelease(ppOut)
+	var ppvtQueried uintptr
 
 	ret, _, _ := syscall.SyscallN(
-		(*me.Ppvt()).QueryInterface,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[utl.IUnknownVt](me.ppvt).QueryInterface,
+		me.ppvt,
 		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
+	return utl.OleInjectIfOk(ret, ppOut, ppvtQueried, releaser)
 }
 
-// Implements [OleResource].
-func (me *IUnknown) release() {
-	if me.ppvt != nil {
-		_, _, _ = syscall.SyscallN(
-			(*me.ppvt).Release,
-			uintptr(unsafe.Pointer(me.ppvt)))
-		me.ppvt = nil
-	}
-}
-
-// Calls the pointed COM method without parameters, returns HRESULT.
-func (me *IUnknown) callNoParm(pMethod uintptr) error {
-	ret, _, _ := syscall.SyscallN(
-		pMethod,
-		uintptr(unsafe.Pointer(me.Ppvt())))
-	return utl.HresultToError(ret)
-}
-
-// Calls the pointed COM method without parameters, returns BSTR and HRESULT.
-func (me *IUnknown) callRetBstr(pMethod uintptr) (string, error) {
-	var name BSTR
-	defer name.SysFreeString()
-
-	ret, _, _ := syscall.SyscallN(
-		pMethod,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(&name)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return name.String(), nil
-	} else {
-		return "", hr
-	}
-}
-
-// Calls the pointed COM method to set a BSTR, returns HRESULT.
-func (me *IUnknown) callSetBstr(s string, pMethod uintptr) error {
-	bstrS, err := SysAllocString(s)
-	if err != nil {
-		return err
-	}
-	defer bstrS.SysFreeString()
-
-	ret, _, _ := syscall.SyscallN(
-		pMethod,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(bstrS))
-	return utl.HresultToError(ret)
-}
-
-// [IUnknown] [COM] virtual table, base to all COM virtual tables.
+// [Release] method.
 //
-// [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
-// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
-type _IUnknownVt struct {
-	QueryInterface uintptr
-	AddRef         uintptr
-	Release        uintptr
-}
-
-// IUnknown.QueryInterface method for custom-implemented interfaces.
-var _iunknownQueryInterfaceImpl uintptr
-
-func com_iunknownQueryInterfaceImpl() uintptr {
-	if _iunknownQueryInterfaceImpl == 0 {
-		_iunknownQueryInterfaceImpl = syscall.NewCallback(
-			func(_p uintptr, _riid uintptr, ppv ***_IUnknownVt) uintptr {
-				*ppv = nil
-				return uintptr(co.HRESULT_E_NOTIMPL)
-			},
-		)
+// You usually don't need to call this method, it's called automatically by
+// [OleReleaser].
+//
+// [Release]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release
+func (me *IUnknown) Release() {
+	if me.ppvt != 0 {
+		_, _, _ = syscall.SyscallN(
+			utl.Vt[utl.IUnknownVt](me.ppvt).Release,
+			me.ppvt)
+		me.ppvt = 0
 	}
-	return _iunknownQueryInterfaceImpl
 }

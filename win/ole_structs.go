@@ -6,6 +6,7 @@ import (
 	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/internal/utl"
 	"github.com/rodrigocfd/windigo/wstr"
 )
 
@@ -215,9 +216,7 @@ func (stg *STGMEDIUM) FileName() (string, bool) {
 // Attempts to return the [IStream] if tymed == co.TYMED_ISTREAM.
 func (stg *STGMEDIUM) IStream(releaser *OleReleaser) (*IStream, bool) {
 	if stg.tymed == co.TYMED_ISTREAM {
-		ppvt := (**_IUnknownVt)(unsafe.Pointer(stg.data))
-		pCurrent := &IStream{ISequentialStream{IUnknown{ppvt}}}
-
+		pCurrent := utl.OleNew[*IStream](stg.data, releaser)
 		var pCloned *IStream
 		pCurrent.AddRef(releaser, &pCloned) // clone, because we'll release it independently
 		return pCloned, true

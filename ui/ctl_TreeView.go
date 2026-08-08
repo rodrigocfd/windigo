@@ -123,21 +123,6 @@ func (me *TreeView) AddRoot(text string) TreeViewItem {
 		AddChild(text)
 }
 
-// Adds a new root item with its 16x16 icon, either from the resource or from a
-// shell file extension, with [TVM_INSERTITEM], returning the new item.
-//
-// Note that, once you add an item with icon, all other items will also be
-// rendered with icons. Those which you didn't specify the icon will simply
-// display the first icon.
-//
-// Panics on error.
-//
-// [TVM_INSERTITEM]: https://learn.microsoft.com/en-us/windows/win32/controls/tvm-insertitem
-func (me *TreeView) AddRootWithIcon(text string, icon Ico) TreeViewItem {
-	return me.Item(win.HTREEITEM(0)).
-		AddChildWithIcon(text, icon)
-}
-
 // Deletes all items at once with [TVM_DELETEITEM].
 //
 // Panics on error.

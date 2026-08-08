@@ -84,17 +84,17 @@ func CoCreateInstance(
 	dwClsContext co.CLSCTX,
 	ppOut interface{},
 ) error {
-	piid := com_validateAndRelease(ppOut, releaser)
-	var ppvtQueried **_IUnknownVt
+	piid := utl.OleValidateRelease(ppOut)
+	var ppvtQueried uintptr
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Ole.Load(&_ole_CoCreateInstance, "CoCreateInstance"),
 		uintptr(unsafe.Pointer(pClsid)),
-		uintptr(com_ppvtOrNil(unkOuter)),
+		utl.OlePpvtOrNil(unkOuter),
 		uintptr(dwClsContext),
 		uintptr(unsafe.Pointer(piid)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
+	return utl.OleInjectIfOk(ret, ppOut, ppvtQueried, releaser)
 }
 
 var _ole_CoCreateInstance *syscall.Proc
@@ -151,12 +151,12 @@ var _ole_CoUninitialize *syscall.Proc
 //
 // [CreateBindCtx]: https://learn.microsoft.com/en-us/windows/win32/api/objbase/nf-objbase-createbindctx
 func CreateBindCtx(releaser *OleReleaser) (*IBindCtx, error) {
-	var ppvtQueried **_IUnknownVt
+	var ppvtQueried uintptr
 	ret, _, _ := syscall.SyscallN(
 		dll.Ole.Load(&_ole_CreateBindCtx, "CreateBindCtx"),
 		0,
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-	return com_buildObj_retObjHres[*IBindCtx](ret, ppvtQueried, releaser)
+	return utl.OleNewIfOk[*IBindCtx](ret, ppvtQueried, releaser)
 }
 
 var _ole_CreateBindCtx *syscall.Proc

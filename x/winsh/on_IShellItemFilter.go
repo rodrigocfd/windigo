@@ -1,0 +1,122 @@
+//go:build windows
+
+package winsh
+
+import (
+	"sync/atomic"
+	"syscall"
+	"unsafe"
+
+	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/x/cosh"
+)
+
+// [IShellItemFilter] COM interface.
+//
+// Implements [OleResource].
+//
+// [IShellItemFilter]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemfilter
+type IShellItemFilter struct{ win.IUnknown }
+
+// Returns the unique [COM] [interface ID].
+//
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
+func (*IShellItemFilter) IID() *co.IID {
+	return &cosh.IID_IShellItemFilter
+}
+
+type _IShellItemFilterImpl struct {
+	vt                  _IShellItemFilterVt
+	counter             uint32
+	includeItem         func(item *IShellItem) co.HRESULT
+	getEnumFlagsForItem func(item *IShellItem, flags *cosh.SHCONTF) co.HRESULT
+}
+
+// Implements [IShellItemFilter].
+//
+// [IShellItemFilter]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemfilter
+func NewIShellItemFilterImpl(releaser *win.OleReleaser) *IShellItemFilter {
+	native_IShellItemFilterVt.init()
+	pImpl := &_IShellItemFilterImpl{ // has Go function pointers, so cannot be allocated on the OS heap
+		vt:      native_IShellItemFilterVt, // simply copy the syscall callback pointers
+		counter: 1,
+	}
+	utl.PtrCache.Add(unsafe.Pointer(pImpl)) // keep ptr
+	ppImpl := &pImpl
+	utl.PtrCache.Add(unsafe.Pointer(ppImpl)) // also keep ptr ptr
+	return utl.OleNew[*IShellItemFilter](uintptr(unsafe.Pointer(ppImpl)), releaser)
+}
+
+// Defines [GetEnumFlagsForItem] method.
+//
+// [GetEnumFlagsForItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemfilter-getenumflagsforitem
+func (me *IShellItemFilter) GetEnumFlagsForItem(fun func(item *IShellItem, flags *cosh.SHCONTF) co.HRESULT) {
+	(*(**_IShellItemFilterImpl)(unsafe.Pointer(me.Ppvt()))).getEnumFlagsForItem = fun
+}
+
+// Defines [IncludeItem] method.
+//
+// [IncludeItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemfilter-includeitem
+func (me *IShellItemFilter) IncludeItem(fun func(item *IShellItem) co.HRESULT) {
+	(*(**_IShellItemFilterImpl)(unsafe.Pointer(me.Ppvt()))).includeItem = fun
+}
+
+type _IShellItemFilterVt struct {
+	utl.IUnknownVt
+	IncludeItem         uintptr
+	GetEnumFlagsForItem uintptr
+}
+
+var native_IShellItemFilterVt _IShellItemFilterVt // Global to keep the syscall callback pointers.
+
+func (me *_IShellItemFilterVt) init() {
+	if me.QueryInterface != 0 {
+		return
+	}
+
+	*me = _IShellItemFilterVt{
+		IUnknownVt: utl.IUnknownVt{
+			QueryInterface: utl.OleQueryInterfaceImpl(),
+			AddRef: syscall.NewCallback(
+				func(ppImpl **_IShellItemFilterImpl) uintptr {
+					newCount := atomic.AddUint32(&(**ppImpl).counter, 1)
+					return uintptr(newCount)
+				},
+			),
+			Release: syscall.NewCallback(
+				func(ppImpl **_IShellItemFilterImpl) uintptr {
+					newCount := atomic.AddUint32(&(**ppImpl).counter, ^uint32(0)) // decrement 1
+					if newCount == 0 {
+						utl.PtrCache.Delete(unsafe.Pointer(*ppImpl)) // now GC can collect them
+						utl.PtrCache.Delete(unsafe.Pointer(ppImpl))
+					}
+					return uintptr(newCount)
+				},
+			),
+		},
+		IncludeItem: syscall.NewCallback(
+			func(ppImpl **_IShellItemFilterImpl, psi uintptr) uintptr {
+				if fun := (**ppImpl).includeItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(utl.OleNewWithoutReleaser[*IShellItem](psi)))
+				}
+			},
+		),
+		GetEnumFlagsForItem: syscall.NewCallback(
+			func(ppImpl **_IShellItemFilterImpl, psi uintptr, pgrfFlags *cosh.SHCONTF) uintptr {
+				if fun := (**ppImpl).getEnumFlagsForItem; fun == nil { // user didn't define a callback
+					return uintptr(co.HRESULT_S_OK)
+				} else {
+					return uintptr(fun(
+						utl.OleNewWithoutReleaser[*IShellItem](psi),
+						pgrfFlags,
+					))
+				}
+			},
+		),
+	}
+}

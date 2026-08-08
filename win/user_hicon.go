@@ -9,6 +9,7 @@ import (
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/dll"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // Handle to an [icon].
@@ -46,6 +47,62 @@ func CreateIconFromResourceEx(
 }
 
 var _user_CreateIconFromResourceEx *syscall.Proc
+
+// Calls [SHGetFileInfo] to retrieve the icon correspondent to the given file
+// extension in Windows Explorer.
+//
+// This function is fully implemented in Shell package, but a minimal subset is
+// available here to avoid a circular dependency, since it's required by
+// HIMAGELIST and ui.
+//
+// Panics if size is different from 16 or 32. Only 16x16 and 32x32 icons can be
+// retrieved.
+//
+// ⚠️ You must defer [HICON.DestroyIcon].
+//
+// [SHGetFileInfo]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shgetfileinfow
+func LoadIconOfFileExt(fileExtension string, size int) (HICON, error) {
+	if size != 16 && size != 32 {
+		panic("Size of icons from file extension must be 16 or 32.")
+	}
+
+	var pathBuf [20]uint16
+	wstr.EncodeToBuf(pathBuf[:], "*."+fileExtension)
+
+	type SHFILEINFO struct {
+		HIcon         HICON
+		IIcon         int32
+		DwAttributes  uint32
+		szDisplayName [utl.MAX_PATH]uint16
+		szTypeName    [80]uint16
+	}
+	var sfi SHFILEINFO
+
+	const (
+		SHGFI_ICON              = 0x0000_0100
+		SHGFI_LARGEICON         = 0x0000_0000
+		SHGFI_SMALLICON         = 0x0000_0001
+		SHGFI_USEFILEATTRIBUTES = 0x0000_0010
+	)
+	shgfi := SHGFI_USEFILEATTRIBUTES | SHGFI_ICON
+	if size == 16 {
+		shgfi |= SHGFI_SMALLICON
+	} else {
+		shgfi |= SHGFI_LARGEICON
+	}
+
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell.Load(&utl.Shell_SHGetFileInfoW, "SHGetFileInfoW"), // note: syscall.Proc from utl
+		uintptr(unsafe.Pointer(&pathBuf[0])),
+		uintptr(co.FILE_ATTRIBUTE_NORMAL),
+		uintptr(unsafe.Pointer(&sfi)),
+		unsafe.Sizeof(sfi),
+		uintptr(shgfi))
+	if ret == 0 {
+		return HICON(0), co.ERROR_UNIDENTIFIED_ERROR
+	}
+	return sfi.HIcon, nil
+}
 
 // [CreateIconIndirect] function.
 //

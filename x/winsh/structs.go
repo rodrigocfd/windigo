@@ -1,0 +1,188 @@
+//go:build windows
+
+package winsh
+
+import (
+	"unsafe"
+
+	"github.com/rodrigocfd/windigo/co"
+	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/wstr"
+	"github.com/rodrigocfd/windigo/x/cosh"
+)
+
+// [COMDLG_FILTERSPEC] struct syntactic sugar.
+//
+// When the native syscall is made, this struct is converted into the raw
+// struct.
+//
+// [COMDLG_FILTERSPEC]: https://learn.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-comdlg_filterspec
+type COMDLG_FILTERSPEC struct {
+	Name string
+	Spec string
+}
+
+// [COMDLG_FILTERSPEC] struct, with C memory layout.
+//
+// [COMDLG_FILTERSPEC]: https://learn.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-comdlg_filterspec
+type _COMDLG_FILTERSPEC struct {
+	PszName *uint16
+	PszSpec *uint16
+}
+
+// [ITEMIDLIST] struct.
+//
+// Implements [OleResource].
+//
+// You can retrieve the ITEMIDLIST of an [IShellItem] with
+// [SHGetIDListFromObject].
+//
+// You can retrieve the [IShellItem] if an ITEMIDLIST with
+// [SHCreateItemFromIDList].
+//
+// [ITEMIDLIST]: https://learn.microsoft.com/en-us/windows/win32/api/shtypes/ns-shtypes-itemidlist
+type ITEMIDLIST uintptr
+
+// Calls [CoTaskMemFree] to deallocate the resources.
+//
+// Safe to call even if ITEMIDLIST pointer is zero.
+//
+// [CoTaskMemFree]: https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cotaskmemfree
+func (il *ITEMIDLIST) Release() {
+	if *il != 0 {
+		win.HTASKMEM(*il).CoTaskMemFree()
+		*il = 0
+	}
+}
+
+// [NOTIFYICONDATA] struct, with C memory layout.
+//
+// ⚠️ You must call [NOTIFYICONDATA.SetCbSize] to initialize the struct.
+//
+// Example:
+//
+//	var nid win.NOTIFYICONDATA
+//	nid.SetCbSize()
+//
+// [NOTIFYICONDATA]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
+type NOTIFYICONDATA struct {
+	cbSize           uint32
+	HWnd             win.HWND  // Handle to the window that receives notifications from the icon in the notification area.
+	UID              uint32    // Application-defined identifier of the taskbar icon.
+	UFlags           cosh.NIF  // Indicate which other members of the struct are valid, also provides other information.
+	UCallbackMessage co.WM     // Application-defined message identifier. Sent to the hWnd as an ordinary message.
+	HIcon            win.HICON // Handle to the icon to be added, modified or deleted.
+	szTip            [128]uint16
+	DwState          cosh.NIS // State of the icon.
+	DwStateMask      cosh.NIS // Specifies which bits of DwState are retrieved of modified.
+	szInfo           [256]uint16
+	uVersion         uint32
+	szInfoTitle      [64]uint16
+	DwInfoFlags      cosh.NIIF // Modifies the behavior of the balloon notification.
+	GuidItem         co.GUID   // A registered [co.GUID] that identifies the icon, overriding UID. Requires [co.NIF_GUID] in UFlags.
+	HBalloonIcon     win.HICON // Handle to the icon of the balloon notification.
+}
+
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
+func (nid *NOTIFYICONDATA) SetCbSize() {
+	nid.cbSize = uint32(unsafe.Sizeof(*nid))
+}
+
+// Retrieves the text of the icon tooltip.
+func (nid *NOTIFYICONDATA) SzTip() string {
+	return wstr.DecodeSlice(nid.szTip[:])
+}
+
+// Sets the text of the icon tooltip.
+func (nid *NOTIFYICONDATA) SetSzTip(val string) {
+	wstr.EncodeToBuf(nid.szTip[:], val)
+}
+
+// Retrieves the text displayed in a balloon notification.
+func (nid *NOTIFYICONDATA) SzInfo() string {
+	return wstr.DecodeSlice(nid.szInfo[:])
+}
+
+// Sets the text displayed in a balloon notification.
+func (nid *NOTIFYICONDATA) SetSzInfo(val string) {
+	wstr.EncodeToBuf(nid.szInfo[:], val)
+}
+
+// Retrieves the title of the ballon notification.
+func (nid *NOTIFYICONDATA) SzInfoTitle() string {
+	return wstr.DecodeSlice(nid.szInfoTitle[:])
+}
+
+// Sets the title of the ballon notification.
+func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
+	wstr.EncodeToBuf(nid.szInfoTitle[:], val)
+}
+
+// [NOTIFYICONIDENTIFIER] struct, with C memory layout.
+//
+// ⚠️ You must call [NOTIFYICONIDENTIFIER.SetCbSize] to initialize the struct.
+//
+// Example:
+//
+//	var nii win.NOTIFYICONIDENTIFIER
+//	nii.SetCbSize()
+//
+// [NOTIFYICONIDENTIFIER]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyiconidentifier
+type NOTIFYICONIDENTIFIER struct {
+	cbSize   uint32
+	HWnd     win.HWND
+	UID      uint32
+	GuidItem co.GUID
+}
+
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
+func (nii *NOTIFYICONIDENTIFIER) SetCbSize() {
+	nii.cbSize = uint32(unsafe.Sizeof(*nii))
+}
+
+// [SHFILEINFO] struct, with C memory layout.
+//
+// [SHFILEINFO]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shfileinfow
+type SHFILEINFO struct {
+	HIcon         win.HICON
+	IIcon         int32
+	DwAttributes  cosh.SFGAO
+	szDisplayName [utl.MAX_PATH]uint16
+	szTypeName    [80]uint16
+}
+
+func (shf *SHFILEINFO) SzDisplayName() string {
+	return wstr.DecodeSlice(shf.szDisplayName[:])
+}
+func (shf *SHFILEINFO) SetSzDisplayName(val string) {
+	wstr.EncodeToBuf(shf.szDisplayName[:], val)
+}
+
+func (shf *SHFILEINFO) SzTypeName() string {
+	return wstr.DecodeSlice(shf.szTypeName[:])
+}
+func (shf *SHFILEINFO) SetSzTypeName(val string) {
+	wstr.EncodeToBuf(shf.szTypeName[:], val)
+}
+
+// [THUMBBUTTON] struct, with C memory layout.
+//
+// [THUMBBUTTON]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ns-shobjidl_core-thumbbutton
+type THUMBBUTTON struct {
+	DwMask  cosh.THB
+	IId     uint32
+	IBitmap uint32
+	HIcon   win.HICON
+	szTip   [260]uint16
+	DwFlags cosh.THBF
+}
+
+func (tb *THUMBBUTTON) SzTip() string {
+	return wstr.DecodeSlice(tb.szTip[:])
+}
+func (tb *THUMBBUTTON) SetSzTip(val string) {
+	wstr.EncodeToBuf(tb.szTip[:], val)
+}

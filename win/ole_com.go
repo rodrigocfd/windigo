@@ -27,7 +27,7 @@ import (
 type IBindCtx struct{ IUnknown }
 
 type _IBindCtxVt struct {
-	_IUnknownVt
+	utl.IUnknownVt
 	RegisterObjectBound   uintptr
 	RevokeObjectBound     uintptr
 	ReleaseBoundObjects   uintptr
@@ -51,8 +51,8 @@ func (*IBindCtx) IID() *co.IID {
 //
 // [EnumObjectParam]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-enumobjectparam
 func (me *IBindCtx) EnumObjectParam(releaser *OleReleaser) (*IEnumString, error) {
-	return com_callRetCom[*IEnumString](me, releaser,
-		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).EnumObjectParam)
+	return utl.OleNewFromCallWithoutParms[*IEnumString](me, releaser,
+		utl.Vt[_IBindCtxVt](me.ppvt).EnumObjectParam)
 }
 
 // [GetBindOptions] method.
@@ -63,8 +63,8 @@ func (me *IBindCtx) GetBindOptions() (BIND_OPTS3, error) {
 	bo.SetCbStruct()
 
 	ret, _, _ := syscall.SyscallN(
-		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).GetBindOptions,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[_IBindCtxVt](me.ppvt).GetBindOptions,
+		me.ppvt,
 		uintptr(unsafe.Pointer(&bo)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -78,15 +78,16 @@ func (me *IBindCtx) GetBindOptions() (BIND_OPTS3, error) {
 //
 // [GetObjectParam]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-getobjectparam
 func (me *IBindCtx) GetObjectParam(releaser *OleReleaser, key string, ppOut interface{}) error {
-	com_validateAndRelease(ppOut, releaser)
-	var ppvtQueried **_IUnknownVt
+	utl.OleValidateRelease(ppOut)
+	var ppvtQueried uintptr
 	var wKey wstr.BufEncoder
 
 	ret, _, _ := syscall.SyscallN(
-		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).GetObjectParam,
+		utl.Vt[_IBindCtxVt](me.ppvt).GetObjectParam,
+		me.ppvt,
 		uintptr(wKey.AllowEmpty(key)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-	return com_buildObj_retHres(ret, ppOut, ppvtQueried, releaser)
+	return utl.OleInjectIfOk(ret, ppOut, ppvtQueried, releaser)
 }
 
 // [RegisterObjectBound] method.
@@ -94,9 +95,9 @@ func (me *IBindCtx) GetObjectParam(releaser *OleReleaser, key string, ppOut inte
 // [RegisterObjectBound]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-registerobjectbound
 func (me *IBindCtx) RegisterObjectBound(obj *IUnknown) error {
 	ret, _, _ := syscall.SyscallN(
-		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).RegisterObjectBound,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(obj.Ppvt())))
+		utl.Vt[_IBindCtxVt](me.ppvt).RegisterObjectBound,
+		me.ppvt,
+		obj.ppvt)
 	return utl.HresultToError(ret)
 }
 
@@ -104,7 +105,7 @@ func (me *IBindCtx) RegisterObjectBound(obj *IUnknown) error {
 //
 // [ReleaseBoundObjects]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-releaseboundobjects
 func (me *IBindCtx) ReleaseBoundObjects() error {
-	return me.callNoParm((*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).ReleaseBoundObjects)
+	return utl.OleCallWithoutParms(me, utl.Vt[_IBindCtxVt](me.ppvt).ReleaseBoundObjects)
 }
 
 // [RevokeObjectBound] method.
@@ -112,9 +113,9 @@ func (me *IBindCtx) ReleaseBoundObjects() error {
 // [RevokeObjectBound]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-revokeobjectbound
 func (me *IBindCtx) RevokeObjectBound(obj *IUnknown) error {
 	ret, _, _ := syscall.SyscallN(
-		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).RevokeObjectBound,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(obj.Ppvt())))
+		utl.Vt[_IBindCtxVt](me.ppvt).RevokeObjectBound,
+		me.ppvt,
+		obj.ppvt)
 	return utl.HresultToError(ret)
 }
 
@@ -123,8 +124,8 @@ func (me *IBindCtx) RevokeObjectBound(obj *IUnknown) error {
 // [SetBindOptions]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-setbindoptions
 func (me *IBindCtx) SetBindOptions(pBindOpts *BIND_OPTS3) error {
 	ret, _, _ := syscall.SyscallN(
-		(*_IBindCtxVt)(unsafe.Pointer(*me.Ppvt())).SetBindOptions,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[_IBindCtxVt](me.ppvt).SetBindOptions,
+		me.ppvt,
 		uintptr(unsafe.Pointer(pBindOpts)))
 	return utl.HresultToError(ret)
 }
@@ -137,7 +138,7 @@ func (me *IBindCtx) SetBindOptions(pBindOpts *BIND_OPTS3) error {
 type IDataObject struct{ IUnknown }
 
 type _IDataObjectVt struct {
-	_IUnknownVt
+	utl.IUnknownVt
 	GetData               uintptr
 	GetDataHere           uintptr
 	QueryGetData          uintptr
@@ -162,8 +163,8 @@ func (*IDataObject) IID() *co.IID {
 func (me *IDataObject) GetCanonicalFormatEtc(pEtcIn *FORMATETC) (FORMATETC, error) {
 	var etcOut FORMATETC
 	ret, _, _ := syscall.SyscallN(
-		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).GetCanonicalFormatEtc,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[_IDataObjectVt](me.ppvt).GetCanonicalFormatEtc,
+		me.ppvt,
 		uintptr(unsafe.Pointer(pEtcIn)),
 		uintptr(unsafe.Pointer(&etcOut)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -181,8 +182,8 @@ func (me *IDataObject) GetCanonicalFormatEtc(pEtcIn *FORMATETC) (FORMATETC, erro
 func (me *IDataObject) GetData(pEtc *FORMATETC) (STGMEDIUM, error) {
 	var stg STGMEDIUM
 	ret, _, _ := syscall.SyscallN(
-		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).GetData,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[_IDataObjectVt](me.ppvt).GetData,
+		me.ppvt,
 		uintptr(unsafe.Pointer(pEtc)),
 		uintptr(unsafe.Pointer(&stg)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
@@ -236,8 +237,8 @@ func (me *IDataObject) GetDataHDrop() ([]string, error) {
 // [QueryGetData]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-idataobject-querygetdata
 func (me *IDataObject) QueryGetData(pEtc *FORMATETC) error {
 	ret, _, _ := syscall.SyscallN(
-		(*_IDataObjectVt)(unsafe.Pointer(*me.Ppvt())).QueryGetData,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[_IDataObjectVt](me.ppvt).QueryGetData,
+		me.ppvt,
 		uintptr(unsafe.Pointer(pEtc)))
 	return utl.HresultToError(ret)
 }
@@ -250,7 +251,7 @@ func (me *IDataObject) QueryGetData(pEtc *FORMATETC) error {
 type IEnumString struct{ IUnknown }
 
 type _IEnumStringVt struct {
-	_IUnknownVt
+	utl.IUnknownVt
 	Next  uintptr
 	Skip  uintptr
 	Reset uintptr
@@ -268,8 +269,8 @@ func (*IEnumString) IID() *co.IID {
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumstring-clone
 func (me *IEnumString) Clone(releaser *OleReleaser) (*IEnumString, error) {
-	return com_callRetCom[*IEnumString](me, releaser,
-		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Clone)
+	return utl.OleNewFromCallWithoutParms[*IEnumString](me, releaser,
+		utl.Vt[_IEnumStringVt](me.ppvt).Clone)
 }
 
 // Returns all string values by calling [IEnumString.Next].
@@ -298,8 +299,8 @@ func (me *IEnumString) Next() (string, error) {
 	var numFetched uint32
 
 	ret, _, _ := syscall.SyscallN(
-		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Next,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[_IEnumStringVt](me.ppvt).Next,
+		me.ppvt,
 		1,
 		uintptr(unsafe.Pointer(&pv)),
 		uintptr(unsafe.Pointer(&numFetched)))
@@ -319,7 +320,7 @@ func (me *IEnumString) Next() (string, error) {
 //
 // [Reset]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumstring-reset
 func (me *IEnumString) Reset() error {
-	return me.callNoParm((*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Reset)
+	return utl.OleCallWithoutParms(me, utl.Vt[_IEnumStringVt](me.ppvt).Reset)
 }
 
 // [Skip] method.
@@ -330,8 +331,8 @@ func (me *IEnumString) Reset() error {
 func (me *IEnumString) Skip(count int) error {
 	utl.PanicNeg(count)
 	ret, _, _ := syscall.SyscallN(
-		(*_IEnumStringVt)(unsafe.Pointer(*me.Ppvt())).Skip,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[_IEnumStringVt](me.ppvt).Skip,
+		me.ppvt,
 		uintptr(uint32(count)))
 	return utl.HresultToError(ret)
 }
@@ -342,12 +343,6 @@ func (me *IEnumString) Skip(count int) error {
 //
 // [ISequentialStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-isequentialstream
 type ISequentialStream struct{ IUnknown }
-
-type _ISequentialStreamVt struct {
-	_IUnknownVt
-	Read  uintptr
-	Write uintptr
-}
 
 // Returns the unique COM [interface ID].
 //
@@ -365,8 +360,8 @@ func (*ISequentialStream) IID() *co.IID {
 func (me *ISequentialStream) Read(destBuf []byte) (numBytesRead int, hr error) {
 	var read32 uint32
 	ret, _, _ := syscall.SyscallN(
-		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Read,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[utl.ISequentialStreamVt](me.ppvt).Read,
+		me.ppvt,
 		uintptr(unsafe.Pointer(&destBuf[0])),
 		uintptr(uint32(len(destBuf))),
 		uintptr(unsafe.Pointer(&read32)))
@@ -384,8 +379,8 @@ func (me *ISequentialStream) Read(destBuf []byte) (numBytesRead int, hr error) {
 func (me *ISequentialStream) Write(data []byte) (numBytesWritten int, hr error) {
 	var written32 uint32
 	ret, _, _ := syscall.SyscallN(
-		(*_ISequentialStreamVt)(unsafe.Pointer(*me.Ppvt())).Write,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[utl.ISequentialStreamVt](me.ppvt).Write,
+		me.ppvt,
 		uintptr(unsafe.Pointer(&data[0])),
 		uintptr(uint32(len(data))),
 		uintptr(unsafe.Pointer(&written32)))
@@ -404,19 +399,6 @@ func (me *ISequentialStream) Write(data []byte) (numBytesWritten int, hr error) 
 // [IStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
 type IStream struct{ ISequentialStream }
 
-type _IStreamVt struct {
-	_ISequentialStreamVt
-	Seek         uintptr
-	SetSize      uintptr
-	CopyTo       uintptr
-	Commit       uintptr
-	Revert       uintptr
-	LockRegion   uintptr
-	UnlockRegion uintptr
-	Stat         uintptr
-	Clone        uintptr
-}
-
 // Returns the unique COM [interface ID].
 //
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
@@ -428,8 +410,8 @@ func (*IStream) IID() *co.IID {
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-clone
 func (me *IStream) Clone(releaser *OleReleaser) (*IStream, error) {
-	return com_callRetCom[*IStream](me, releaser,
-		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Clone)
+	return utl.OleNewFromCallWithoutParms[*IStream](me, releaser,
+		utl.Vt[utl.IStreamVt](me.ppvt).Clone)
 }
 
 // [Commit] method.
@@ -437,8 +419,8 @@ func (me *IStream) Clone(releaser *OleReleaser) (*IStream, error) {
 // [Commit]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-commit
 func (me *IStream) Commit(flags co.STGC) error {
 	ret, _, _ := syscall.SyscallN(
-		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Commit,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[utl.IStreamVt](me.ppvt).Commit,
+		me.ppvt,
 		uintptr(flags))
 	return utl.HresultToError(ret)
 }
@@ -456,9 +438,9 @@ func (me *IStream) CopyTo(
 	var read64, written64 uint64
 
 	ret, _, _ := syscall.SyscallN(
-		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).CopyTo,
-		uintptr(unsafe.Pointer(me.Ppvt())),
-		uintptr(unsafe.Pointer(dest.Ppvt())),
+		utl.Vt[utl.IStreamVt](me.ppvt).CopyTo,
+		me.ppvt,
+		dest.ppvt,
 		uintptr(uint64(numBytes)),
 		uintptr(unsafe.Pointer(&read64)),
 		uintptr(unsafe.Pointer(&written64)))
@@ -480,8 +462,8 @@ func (me *IStream) CopyTo(
 func (me *IStream) LockRegion(offset, length int, lockType co.LOCKTYPE) error {
 	utl.PanicNeg(offset, length)
 	ret, _, _ := syscall.SyscallN(
-		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).LockRegion,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[utl.IStreamVt](me.ppvt).LockRegion,
+		me.ppvt,
 		uintptr(uint64(offset)),
 		uintptr(uint64(length)),
 		uintptr(lockType))
@@ -492,7 +474,7 @@ func (me *IStream) LockRegion(offset, length int, lockType co.LOCKTYPE) error {
 //
 // [Revert]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-istream-revert
 func (me *IStream) Revert() error {
-	return me.callNoParm((*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Revert)
+	return utl.OleCallWithoutParms(me, utl.Vt[utl.IStreamVt](me.ppvt).Revert)
 }
 
 // [Seek] method.
@@ -501,8 +483,8 @@ func (me *IStream) Revert() error {
 func (me *IStream) Seek(displacement int, origin co.STREAM_SEEK) (newOffset int, hr error) {
 	var newOff64 uint64
 	ret, _, _ := syscall.SyscallN(
-		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Seek,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[utl.IStreamVt](me.ppvt).Seek,
+		me.ppvt,
 		uintptr(int64(displacement)),
 		uintptr(origin),
 		uintptr(unsafe.Pointer(&newOff64)))
@@ -522,8 +504,8 @@ func (me *IStream) Seek(displacement int, origin co.STREAM_SEEK) (newOffset int,
 func (me *IStream) SetSize(newSize int) error {
 	utl.PanicNeg(newSize)
 	ret, _, _ := syscall.SyscallN(
-		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).SetSize,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[utl.IStreamVt](me.ppvt).SetSize,
+		me.ppvt,
 		uintptr(uint64(newSize)))
 	return utl.HresultToError(ret)
 }
@@ -534,8 +516,8 @@ func (me *IStream) SetSize(newSize int) error {
 func (me *IStream) Stat(flag co.STATFLAG) (STATSTG, error) {
 	var stg STATSTG
 	ret, _, _ := syscall.SyscallN(
-		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).Stat,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[utl.IStreamVt](me.ppvt).Stat,
+		me.ppvt,
 		uintptr(unsafe.Pointer(&stg)),
 		uintptr(flag))
 
@@ -556,8 +538,8 @@ func (me *IStream) Stat(flag co.STATFLAG) (STATSTG, error) {
 func (me *IStream) UnlockRegion(offset, length int, lockType co.LOCKTYPE) error {
 	utl.PanicNeg(offset, length)
 	ret, _, _ := syscall.SyscallN(
-		(*_IStreamVt)(unsafe.Pointer(*me.Ppvt())).UnlockRegion,
-		uintptr(unsafe.Pointer(me.Ppvt())),
+		utl.Vt[utl.IStreamVt](me.ppvt).UnlockRegion,
+		me.ppvt,
 		uintptr(uint64(offset)),
 		uintptr(uint64(length)),
 		uintptr(lockType))
