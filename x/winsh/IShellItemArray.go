@@ -43,7 +43,7 @@ func (*IShellItemArray) IID() *co.IID {
 //
 // Example:
 //
-//	var arr winsh.IShellItemArray // initialized somewhere
+//	var arr *winsh.IShellItemArray // initialized somewhere
 //
 //	names, _ := arr.EnumDisplayNames(cosh.SIGDN_FILESYSPATH)
 //	for _, fullPath := range names {
@@ -82,7 +82,7 @@ func (me *IShellItemArray) EnumDisplayNames(sigdnName cosh.SIGDN) ([]string, err
 //
 // Example:
 //
-//	var arr winsh.IShellItemArray // initialized somewhere
+//	var arr *winsh.IShellItemArray // initialized somewhere
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()

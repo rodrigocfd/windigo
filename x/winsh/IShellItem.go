@@ -134,7 +134,7 @@ func (me *IShellItem) GetAttributes(mask cosh.SFGAO) (attrs cosh.SFGAO, exactMat
 //
 // Example:
 //
-//	var shi winsh.IShellItem // initialized somewhere
+//	var shi *winsh.IShellItem // initialized somewhere
 //
 //	fullPath, _ := shi.GetDisplayName(cosh.SIGDN_FILESYSPATH)
 //

@@ -66,7 +66,7 @@ func (me *IDispatch) GetIDsOfNames(
 //
 // Example:
 //
-//	var iDisp winaut.IDispatch // initialized somewhere
+//	var iDisp *winaut.IDispatch // initialized somewhere
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()

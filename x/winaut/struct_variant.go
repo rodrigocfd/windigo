@@ -237,7 +237,7 @@ func (v *VARIANT) Float64() (float64, bool) {
 //
 // Example:
 //
-//	var pDisp winaut.IDispatch // initialized somewhere
+//	var pDisp *winaut.IDispatch // initialized somewhere
 //
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()

@@ -66,7 +66,7 @@ func (me *SysLink) On() *SysLinkEvents {
 //
 // Example:
 //
-//	var link ui.SysLink // initialized somewhere
+//	var link *ui.SysLink // initialized somewhere
 //
 //	link.SetTextAndResize(
 //		"Link <a href=\"https://google.com\">here</a>")

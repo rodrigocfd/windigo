@@ -237,7 +237,7 @@ func (me *ListView) On() *ListViewEvents {
 //
 // Example:
 //
-//	var list ui.ListView // initialized somewhere
+//	var list *ui.ListView // initialized somewhere
 //
 //	list.AddCol("Title", ui.DpiX(80))
 //
@@ -538,7 +538,7 @@ func (me *ListView) SelectedItems() []ListViewItem {
 //
 // Example:
 //
-//	var lv ui.ListView // initialized somewhere
+//	var lv *ui.ListView // initialized somewhere
 //
 //	lv.SortItems(func(itemA, itemB ui.ListViewItem) int {
 //		return wstr.Cmp(itemA.Text(0), itemB.Text(0))

@@ -299,6 +299,8 @@ package main
 import (
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/x/cosh"
+	"github.com/rodrigocfd/windigo/x/winsh"
 )
 
 func main() {
@@ -311,10 +313,10 @@ func main() {
 	releaser := win.NewOleReleaser() // will release all COM objects created here
 	defer releaser.Release()
 
-	var fod *win.IFileOpenDialog
+	var fod *winsh.IFileOpenDialog
 	_ = win.CoCreateInstance(
 		releaser,
-		&co.CLSID_FileOpenDialog,
+		&cosh.CLSID_FileOpenDialog,
 		nil,
 		co.CLSCTX_INPROC_SERVER,
 		&fod,
@@ -322,11 +324,11 @@ func main() {
 
 	defOpts, _ := fod.GetOptions()
 	_ = fod.SetOptions(defOpts |
-		co.FOS_FORCEFILESYSTEM |
-		co.FOS_FILEMUSTEXIST,
+		cosh.FOS_FORCEFILESYSTEM |
+		cosh.FOS_FILEMUSTEXIST,
 	)
 
-	_ = fod.SetFileTypes([]win.COMDLG_FILTERSPEC{
+	_ = fod.SetFileTypes([]winsh.COMDLG_FILTERSPEC{
 		{Name: "Text files", Spec: "*.txt"},
 		{Name: "All files", Spec: "*.*"},
 	})
@@ -334,7 +336,7 @@ func main() {
 
 	if ok, _ := fod.Show(win.HWND(0)); ok { // in real applications, pass the parent HWND
 		item, _ := fod.GetResult(releaser)
-		fileName, _ := item.GetDisplayName(co.SIGDN_FILESYSPATH)
+		fileName, _ := item.GetDisplayName(cosh.SIGDN_FILESYSPATH)
 		println(fileName)
 	}
 }
@@ -356,6 +358,7 @@ package main
 import (
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/x/winaut"
 )
 
 func main() {
@@ -368,7 +371,7 @@ func main() {
 
 	clsId, _ := win.CLSIDFromProgID("Excel.Application")
 
-	var excel *win.IDispatch
+	var excel *winaut.IDispatch
 	_ = win.CoCreateInstance(
 		rel,
 		&clsId,
@@ -399,7 +402,6 @@ The library is divided in several packages. Core packages are located at at the 
 | `winsh` | `cosh` | [Windows Shell](https://learn.microsoft.com/en-us/windows/win32/shell/shell-entry) |
 | `wintasks` | `cotasks` | [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-start-page) |
 | `winwic` | `cowic` | [Windows Imaging Component](https://learn.microsoft.com/en-us/windows/win32/wic/-wic-lh) |
-| `winver` | `cover` | Version API |
 
 Core packages dependency:
 

@@ -39,7 +39,7 @@ func (me ListViewItem) Delete() {
 //		Name string
 //	}
 //
-//	var item ui.ListViewItem // initialized somewhere
+//	var item *ui.ListViewItem // initialized somewhere
 //
 //	item.SetData(&Person{Name: "foo"})
 //
@@ -141,7 +141,7 @@ func (me ListViewItem) Focus() ListViewItem {
 //
 // Example:
 //
-//	var lv ui.ListView // initialized somewhere
+//	var lv *ui.ListView // initialized somewhere
 //
 //	if icon, ok := lv.Item(0).Icon16(); ok {
 //		if resourceId, ok := icon.Id(); ok {
@@ -163,7 +163,7 @@ func (me ListViewItem) Icon16() (Ico, bool) {
 //
 // Example:
 //
-//	var lv ui.ListView // initialized somewhere
+//	var lv *ui.ListView // initialized somewhere
 //
 //	if icon, ok := lv.Item(0).Icon32(); ok {
 //		if resourceId, ok := icon.Id(); ok {
@@ -287,7 +287,7 @@ func (me ListViewItem) Select(isSelected bool) ListViewItem {
 //		Name string
 //	}
 //
-//	var item ui.ListViewItem // initialized somewhere
+//	var item *ui.ListViewItem // initialized somewhere
 //
 //	item.SetData(&Person{Name: "foo"})
 //
@@ -310,7 +310,7 @@ func (me ListViewItem) SetData(data interface{}) {
 //
 // Example:
 //
-//	var lv ui.ListView // initialized somewhere
+//	var lv *ui.ListView // initialized somewhere
 //
 //	lv.Item(0).SetIcon16(ui.IcoId(101))    // icon resource with ID=101
 //	lv.Item(0).SetIcon16(ui.IcoExt("txt")) // shell icon of *.txt files
@@ -332,7 +332,7 @@ func (me ListViewItem) SetIcon16(icon Ico) ListViewItem {
 //
 // Example:
 //
-//	var lv ui.ListView // initialized somewhere
+//	var lv *ui.ListView // initialized somewhere
 //
 //	lv.Item(0).SetIcon32(ui.IcoId(101))    // icon resource with ID=101
 //	lv.Item(0).SetIcon32(ui.IcoExt("txt")) // shell icon of *.txt files

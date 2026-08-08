@@ -40,7 +40,7 @@ func (me StatusBarPart) Index() int {
 //
 // Example:
 //
-//	var sb win.StatusBar // initialized somewhere
+//	var sb *win.StatusBar // initialized somewhere
 //
 //	sb.Part(0).SetIcon(ui.IcoId(101))    // icon resource with ID=101
 //	sb.Part(0).SetIcon(ui.IcoExt("txt")) // shell icon of *.txt files

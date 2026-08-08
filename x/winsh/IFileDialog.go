@@ -254,7 +254,7 @@ func (me *IFileDialog) SetFileTypeIndex(index int) error {
 //
 // Example:
 //
-//	var fd winsh.IFileDialog // initialized somewhere
+//	var fd *winsh.IFileDialog // initialized somewhere
 //
 //	_ = fd.SetFileTypes([]winsh.COMDLG_FILTERSPEC{
 //		{Name: "MP3 audio files", Spec: "*.mp3"},
@@ -317,7 +317,7 @@ func (me *IFileDialog) SetOkButtonLabel(text string) error {
 //
 // Example:
 //
-//	var fd win.IFileDialog // initialized somewhere
+//	var fd *win.IFileDialog // initialized somewhere
 //
 //	curOpts, _ := fd.GetOptions()
 //	_ = fd.SetOptions(curOpts |
