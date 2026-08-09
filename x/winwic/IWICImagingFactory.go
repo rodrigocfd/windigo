@@ -195,6 +195,24 @@ func (me *IWICImagingFactory) CreateBitmapFromSourceRect(
 	return utl.OleNewIfOk[*IWICBitmap](ret, ppvtQueried, releaser)
 }
 
+// [CreateComponentEnumerator] method.
+//
+// [CreateComponentEnumerator]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createcomponentenumerator
+func (me *IWICImagingFactory) CreateComponentEnumerator(
+	releaser *win.OleReleaser,
+	componentTypes cowic.WIC_COMPONENTTYPE,
+	options cowic.WIC_COMPONENTENUM,
+) (*win.IEnumUnknown, error) {
+	var ppvtQueried uintptr
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IWICImagingFactoryVt](me.Ppvt()).CreateComponentEnumerator,
+		me.Ppvt(),
+		uintptr(componentTypes),
+		uintptr(options),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+	return utl.OleNewIfOk[*win.IEnumUnknown](ret, ppvtQueried, releaser)
+}
+
 // [CreateComponentInfo] method.
 //
 // [CreateComponentInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createcomponentinfo

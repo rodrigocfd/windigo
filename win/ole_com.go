@@ -337,6 +337,99 @@ func (me *IEnumString) Skip(count int) error {
 	return utl.HresultToError(ret)
 }
 
+// [IEnumUnknown] COM interface.
+//
+// Implements [OleResource].
+//
+// [IEnumUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ienumunknown
+type IEnumUnknown struct{ IUnknown }
+
+type _IEnumUnknownVt struct {
+	utl.IUnknownVt
+	Next  uintptr
+	Skip  uintptr
+	Reset uintptr
+	Clone uintptr
+}
+
+// Returns the unique COM [interface ID].
+//
+// [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
+func (*IEnumUnknown) IID() *co.IID {
+	return &co.IID_IEnumUnknown
+}
+
+// [Clone] method.
+//
+// [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumunknown-clone
+func (me *IEnumUnknown) Clone(releaser *OleReleaser) (*IEnumUnknown, error) {
+	return utl.OleNewFromCallWithoutParms[*IEnumUnknown](me, releaser,
+		utl.Vt[_IEnumUnknownVt](me.ppvt).Clone)
+}
+
+// Returns all [IUnknown] values by calling [IEnumUnknown.Next].
+func (me *IEnumUnknown) Enum(releaser *OleReleaser) ([]*IUnknown, error) {
+	objs := make([]*IUnknown, 0)
+	var pObj *IUnknown
+	var hr error
+
+	for {
+		pObj, hr = me.Next(releaser)
+		if hr != nil { // actual error
+			return nil, hr
+		} else if pObj == nil { // no more items to fetch
+			return objs, nil
+		} else { // item fetched
+			objs = append(objs, pObj)
+		}
+	}
+}
+
+// [Next] method.
+//
+// [Next]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumunknown-next
+func (me *IEnumUnknown) Next(releaser *OleReleaser) (*IUnknown, error) {
+	var ppvtQueried uintptr
+	var numFetched uint32
+
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IEnumUnknownVt](me.ppvt).Next,
+		me.ppvt,
+		1,
+		uintptr(unsafe.Pointer(&ppvtQueried)),
+		uintptr(unsafe.Pointer(&numFetched)))
+
+	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
+		pObj := utl.OleNew[*IUnknown](ppvtQueried, releaser)
+		return pObj, nil
+	} else if hr == co.HRESULT_S_FALSE {
+		return nil, nil
+	} else {
+		return nil, hr
+	}
+}
+
+// [Reset] method.
+//
+// [Reset]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumunknown-reset
+func (me *IEnumUnknown) Reset() error {
+	return utl.OleCallWithoutParms(me, utl.Vt[_IEnumUnknownVt](me.ppvt).Reset)
+}
+
+// [Skip] method.
+//
+// Panics if count is negative.
+//
+// [Skip]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumunknown-skip
+func (me *IEnumUnknown) Skip(count int) error {
+	utl.PanicNeg(count)
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IEnumUnknownVt](me.ppvt).Skip,
+		me.ppvt,
+		uintptr(uint32(count)))
+	return utl.HresultToError(ret)
+}
+
 // [ISequentialStream] COM interface.
 //
 // Implements [OleResource].

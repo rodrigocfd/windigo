@@ -54,6 +54,19 @@ var (
 	IID_IWICStream            = co.IID(co.GUID{0x135ff860, 0x22b7, 0x4ddf, [8]byte{0xb0, 0xf6, 0x21, 0x8f, 0x4f, 0x29, 0x9a, 0x43}})
 )
 
+// [WICComponentEnumerateOptions] enumeration.
+//
+// [WICComponentEnumerateOptions]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/ne-wincodec-wiccomponentenumerateoptions
+type WIC_COMPONENTENUM uint32
+
+const (
+	WIC_COMPONENTENUM_Default     WIC_COMPONENTENUM = 0
+	WIC_COMPONENTENUM_Refresh     WIC_COMPONENTENUM = 0x1
+	WIC_COMPONENTENUM_Disabled    WIC_COMPONENTENUM = 0x8000_0000
+	WIC_COMPONENTENUM_Unsigned    WIC_COMPONENTENUM = 0x4000_0000
+	WIC_COMPONENTENUM_BuiltInOnly WIC_COMPONENTENUM = 0x2000_0000
+)
+
 // [WICComponentSigning] enumeration.
 //
 // [WICComponentSigning]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/ne-wincodec-wiccomponentsigning
@@ -64,6 +77,21 @@ const (
 	WIC_COMPONENTSIGN_Unsigned WIC_COMPONENTSIGN = 0x2
 	WIC_COMPONENTSIGN_Safe     WIC_COMPONENTSIGN = 0x4
 	WIC_COMPONENTSIGN_Disabled WIC_COMPONENTSIGN = 0x8000_0000
+)
+
+// [WICComponentType] enumeration.
+//
+// [WICComponentType]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/ne-wincodec-wiccomponenttype
+type WIC_COMPONENTTYPE uint32
+
+const (
+	WIC_COMPONENTTYPE_Decoder              WIC_COMPONENTTYPE = 0x1
+	WIC_COMPONENTTYPE_Encoder              WIC_COMPONENTTYPE = 0x2
+	WIC_COMPONENTTYPE_PixelFormatConverter WIC_COMPONENTTYPE = 0x4
+	WIC_COMPONENTTYPE_MetadataReader       WIC_COMPONENTTYPE = 0x8
+	WIC_COMPONENTTYPE_MetadataWriter       WIC_COMPONENTTYPE = 0x10
+	WIC_COMPONENTTYPE_PixelFormat          WIC_COMPONENTTYPE = 0x20
+	WIC_COMPONENTTYPE_AllComponents        WIC_COMPONENTTYPE = 0x3f
 )
 
 // WIC [container format] [co.GUID].
