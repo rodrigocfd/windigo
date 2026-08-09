@@ -66,7 +66,7 @@ const (
 	WIC_COMPONENTSIGN_Disabled WIC_COMPONENTSIGN = 0x8000_0000
 )
 
-// WIC [container format] [GUID].
+// WIC [container format] [co.GUID].
 //
 // [container format]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createencoder
 type WIC_CONTAINER co.GUID
@@ -87,7 +87,7 @@ var (
 	WIC_CONTAINER_JpegXL = WIC_CONTAINER(co.GUID{0xfec14e3f, 0x427a, 0x4736, [8]byte{0xaa, 0xe6, 0x27, 0xed, 0x84, 0xf6, 0x93, 0x22}})
 )
 
-// REFWICPixelFormatGUID, the WIC pixel format [GUID].
+// REFWICPixelFormatGUID, the WIC pixel format [co.GUID].
 type WIC_PIXELFORMAT co.GUID
 
 var (
@@ -185,6 +185,16 @@ var (
 	WIC_PIXELFORMAT_16bppYQuantizedDctCoefficients  = WIC_PIXELFORMAT(co.GUID{0xa355f433, 0x48e8, 0x4a42, [8]byte{0x84, 0xd8, 0xe2, 0xaa, 0x26, 0xca, 0x80, 0xa4}})
 	WIC_PIXELFORMAT_16bppCbQuantizedDctCoefficients = WIC_PIXELFORMAT(co.GUID{0xd2c4ff61, 0x56a5, 0x49c2, [8]byte{0x8b, 0x5c, 0x4c, 0x19, 0x25, 0x96, 0x48, 0x37}})
 	WIC_PIXELFORMAT_16bppCrQuantizedDctCoefficients = WIC_PIXELFORMAT(co.GUID{0x2fe354f0, 0x1680, 0x42d8, [8]byte{0x92, 0x31, 0xe7, 0x3c, 0x05, 0x65, 0xbf, 0xc1}})
+)
+
+// WIC [GUID] [encoder vendor].
+//
+// [encoder vendor]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createdecoder
+type WIC_VENDOR co.GUID
+
+var (
+	WIC_VENDOR_Microsoft        = WIC_VENDOR(co.GUID{0xf0e749ca, 0xedef, 0x4589, [8]byte{0xa7, 0x3a, 0xee, 0x0e, 0x62, 0x6a, 0x2a, 0x2b}})
+	WIC_VENDOR_MicrosoftBuiltIn = WIC_VENDOR(co.GUID{0x257a30fd, 0x06b6, 0x462b, [8]byte{0xae, 0xa4, 0x63, 0xf7, 0x0b, 0x86, 0xe5, 0x33}})
 )
 
 // [WICBitmapAlphaChannelOption] enumeration.

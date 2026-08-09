@@ -195,6 +195,40 @@ func (me *IWICImagingFactory) CreateBitmapFromSourceRect(
 	return utl.OleNewIfOk[*IWICBitmap](ret, ppvtQueried, releaser)
 }
 
+// [CreateComponentInfo] method.
+//
+// [CreateComponentInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createcomponentinfo
+func (me *IWICImagingFactory) CreateComponentInfo(
+	releaser *win.OleReleaser,
+	pClsidComponent *co.CLSID,
+) (*IWICComponentInfo, error) {
+	var ppvtQueried uintptr
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IWICImagingFactoryVt](me.Ppvt()).CreateComponentInfo,
+		me.Ppvt(),
+		uintptr(unsafe.Pointer(pClsidComponent)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+	return utl.OleNewIfOk[*IWICComponentInfo](ret, ppvtQueried, releaser)
+}
+
+// [CreateDecoder] method.
+//
+// [CreateDecoder]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createdecoder
+func (me *IWICImagingFactory) CreateDecoder(
+	releaser *win.OleReleaser,
+	pGuidContainerFormat *cowic.WIC_CONTAINER,
+	pGuidVendor *cowic.WIC_VENDOR,
+) (*IWICBitmapDecoder, error) {
+	var ppvtQueried uintptr
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IWICImagingFactoryVt](me.Ppvt()).CreateDecoder,
+		me.Ppvt(),
+		uintptr(unsafe.Pointer(pGuidContainerFormat)),
+		uintptr(unsafe.Pointer(pGuidVendor)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+	return utl.OleNewIfOk[*IWICBitmapDecoder](ret, ppvtQueried, releaser)
+}
+
 // [CreateDecoderFromFileHandle] method.
 //
 // [CreateDecoderFromFileHandle]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createdecoderfromfilehandle
