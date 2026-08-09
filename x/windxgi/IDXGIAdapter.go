@@ -14,8 +14,6 @@ import (
 
 // [IDXGIAdapter] COM interface.
 //
-// Implements [OleResource].
-//
 // [IDXGIAdapter]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgiadapter
 type IDXGIAdapter struct{ IDXGIObject }
 

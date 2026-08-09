@@ -33,8 +33,6 @@ type _COMDLG_FILTERSPEC struct {
 
 // [ITEMIDLIST] struct.
 //
-// Implements [OleResource].
-//
 // You can retrieve the ITEMIDLIST of an [IShellItem] with
 // [SHGetIDListFromObject].
 //

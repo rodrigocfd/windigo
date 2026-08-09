@@ -153,8 +153,6 @@ type FUNCDESC struct {
 
 // [FUNCDESC] struct wrapper.
 //
-// Implements [OleResource].
-//
 // [FUNCDESC]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-funcdesc
 type FuncDescData struct {
 	*FUNCDESC

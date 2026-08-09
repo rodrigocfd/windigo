@@ -10,8 +10,6 @@ import (
 
 // [IEmailAction] COM interface.
 //
-// Implements [OleResource].
-//
 // [IEmailAction]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iemailaction
 type IEmailAction struct{ IAction }
 

@@ -15,8 +15,6 @@ import (
 
 // [ITriggerCollection] COM interface.
 //
-// Implements [OleResource].
-//
 // [ITriggerCollection]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itriggercollection
 type ITriggerCollection struct{ winaut.IDispatch }
 

@@ -14,8 +14,6 @@ import (
 
 // [IPropertyStore] COM interface.
 //
-// Implements [OleResource].
-//
 // [IPropertyStore]: https://learn.microsoft.com/en-us/windows/win32/api/propsys/nn-propsys-ipropertystore
 type IPropertyStore struct{ win.IUnknown }
 

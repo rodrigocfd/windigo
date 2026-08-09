@@ -13,8 +13,6 @@ import (
 
 // [IDailyTrigger] COM interface.
 //
-// Implements [OleResource].
-//
 // [IDailyTrigger]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-idailytrigger
 type IDailyTrigger struct{ ITrigger }
 

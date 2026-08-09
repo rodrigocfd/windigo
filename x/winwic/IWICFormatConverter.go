@@ -14,8 +14,6 @@ import (
 
 // [IWICFormatConverter] COM interface.
 //
-// Implements [OleResource].
-//
 // [IWICFormatConverter]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicformatconverter
 type IWICFormatConverter struct{ IWICBitmapSource }
 

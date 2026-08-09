@@ -10,8 +10,6 @@ import (
 
 // [IComHandlerAction] COM interface.
 //
-// Implements [OleResource].
-//
 // [IComHandlerAction]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-icomhandleraction
 type IComHandlerAction struct{ IAction }
 

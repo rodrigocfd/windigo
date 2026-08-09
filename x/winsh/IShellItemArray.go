@@ -14,8 +14,6 @@ import (
 
 // [IShellItemArray] COM interface.
 //
-// Implements [OleResource].
-//
 // [IShellItemArray]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemarray
 type IShellItemArray struct{ win.IUnknown }
 

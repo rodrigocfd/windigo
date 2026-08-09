@@ -15,8 +15,6 @@ import (
 
 // [ITaskNamedValueCollection] COM interface.
 //
-// Implements [OleResource].
-//
 // [ITaskNamedValueCollection]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itasknamedvaluecollection
 type ITaskNamedValueCollection struct{ winaut.IDispatch }
 

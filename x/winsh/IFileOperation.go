@@ -15,8 +15,6 @@ import (
 
 // [IFileOperation] COM interface.
 //
-// Implements [OleResource].
-//
 // Example:
 //
 //	_, _ = win.CoInitializeEx(

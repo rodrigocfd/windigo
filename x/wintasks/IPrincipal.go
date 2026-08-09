@@ -14,8 +14,6 @@ import (
 
 // [IPrincipal] COM interface.
 //
-// Implements [OleResource].
-//
 // [IPrincipal]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iprincipal
 type IPrincipal struct{ winaut.IDispatch }
 

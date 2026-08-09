@@ -14,8 +14,6 @@ import (
 
 // [IWICBitmap] COM interface.
 //
-// Implements [OleResource].
-//
 // [IWICBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmap
 type IWICBitmap struct{ IWICBitmapSource }
 

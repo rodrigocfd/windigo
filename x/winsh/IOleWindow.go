@@ -14,8 +14,6 @@ import (
 
 // [IOleWindow] COM interface.
 //
-// Implements [OleResource].
-//
 // [IOleWindow]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nn-oleidl-iolewindow
 type IOleWindow struct{ win.IUnknown }
 

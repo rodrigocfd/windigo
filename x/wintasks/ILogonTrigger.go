@@ -10,8 +10,6 @@ import (
 
 // [ILogonTrigger] COM interface.
 //
-// Implements [OleResource].
-//
 // [ILogonTrigger]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iLogontrigger
 type ILogonTrigger struct{ ITrigger }
 

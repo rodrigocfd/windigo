@@ -10,8 +10,6 @@ import (
 
 // [IBootTrigger] COM interface.
 //
-// Implements [OleResource].
-//
 // [IBootTrigger]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iboottrigger
 type IBootTrigger struct{ ITrigger }
 

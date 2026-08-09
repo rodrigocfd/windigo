@@ -14,8 +14,6 @@ import (
 
 // [IDXGISwapChain] COM interface.
 //
-// Implements [OleResource].
-//
 // [IDXGISwapChain]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgiswapchain
 type IDXGISwapChain struct{ IDXGIDeviceSubObject }
 

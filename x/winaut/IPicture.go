@@ -14,8 +14,6 @@ import (
 
 // [IPicture] COM interface.
 //
-// Implements [OleResource].
-//
 // [IPicture]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nn-ocidl-ipicture
 type IPicture struct{ win.IUnknown }
 

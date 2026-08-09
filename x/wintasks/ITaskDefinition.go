@@ -14,8 +14,6 @@ import (
 
 // [ITaskDefinition] COM interface.
 //
-// Implements [OleResource].
-//
 // [ITaskDefinition]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itaskdefinition
 type ITaskDefinition struct{ winaut.IDispatch }
 

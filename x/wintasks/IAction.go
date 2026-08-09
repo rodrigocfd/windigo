@@ -11,8 +11,6 @@ import (
 
 // [IAction] COM interface.
 //
-// Implements [OleResource].
-//
 // [IAction]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iaction
 type IAction struct{ winaut.IDispatch }
 

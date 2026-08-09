@@ -13,8 +13,6 @@ import (
 
 // [IDXGISurface] COM interface.
 //
-// Implements [OleResource].
-//
 // [IDXGISurface]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgisurface
 type IDXGISurface struct{ IDXGIDeviceSubObject }
 

@@ -14,8 +14,6 @@ import (
 
 // [IDXGIObject] COM interface.
 //
-// Implements [OleResource].
-//
 // [IDXGIObject]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgiobject
 type IDXGIObject struct{ win.IUnknown }
 

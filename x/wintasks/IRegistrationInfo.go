@@ -11,8 +11,6 @@ import (
 
 // [IRegistrationInfo] COM interface.
 //
-// Implements [OleResource].
-//
 // [IRegistrationInfo]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iregistrationinfo
 type IRegistrationInfo struct{ winaut.IDispatch }
 

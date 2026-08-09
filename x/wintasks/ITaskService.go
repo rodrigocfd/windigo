@@ -15,8 +15,6 @@ import (
 
 // [ITaskService] COM interface.
 //
-// Implements [OleResource].
-//
 // [ITaskService]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itaskservice
 type ITaskService struct{ winaut.IDispatch }
 

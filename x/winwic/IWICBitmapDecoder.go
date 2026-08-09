@@ -14,8 +14,6 @@ import (
 
 // [IWICBitmapDecoder] COM interface.
 //
-// Implements [OleResource].
-//
 // Example:
 //
 //	rel := win.NewOleReleaser()

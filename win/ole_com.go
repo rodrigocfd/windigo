@@ -14,8 +14,6 @@ import (
 
 // [IBindCtx] COM interface.
 //
-// Implements [OleResource].
-//
 // Example:
 //
 //	rel := win.NewOleReleaser()
@@ -132,8 +130,6 @@ func (me *IBindCtx) SetBindOptions(pBindOpts *BIND_OPTS3) error {
 
 // [IDataObject] COM interface.
 //
-// Implements [OleResource].
-//
 // [IDataObject]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-idataobject
 type IDataObject struct{ IUnknown }
 
@@ -245,8 +241,6 @@ func (me *IDataObject) QueryGetData(pEtc *FORMATETC) error {
 
 // [IEnumString] COM interface.
 //
-// Implements [OleResource].
-//
 // [IEnumString]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ienumstring
 type IEnumString struct{ IUnknown }
 
@@ -339,8 +333,6 @@ func (me *IEnumString) Skip(count int) error {
 
 // [IEnumUnknown] COM interface.
 //
-// Implements [OleResource].
-//
 // [IEnumUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-ienumunknown
 type IEnumUnknown struct{ IUnknown }
 
@@ -432,8 +424,6 @@ func (me *IEnumUnknown) Skip(count int) error {
 
 // [ISequentialStream] COM interface.
 //
-// Implements [OleResource].
-//
 // [ISequentialStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-isequentialstream
 type ISequentialStream struct{ IUnknown }
 
@@ -486,8 +476,6 @@ func (me *ISequentialStream) Write(data []byte) (numBytesWritten int, hr error) 
 }
 
 // [IStream] COM interface.
-//
-// Implements [OleResource].
 //
 // [IStream]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nn-objidl-istream
 type IStream struct{ ISequentialStream }

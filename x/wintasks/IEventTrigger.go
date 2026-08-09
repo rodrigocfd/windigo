@@ -13,8 +13,6 @@ import (
 
 // [IEventTrigger] COM interface.
 //
-// Implements [OleResource].
-//
 // [IEventTrigger]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-ieventtrigger
 type IEventTrigger struct{ ITrigger }
 

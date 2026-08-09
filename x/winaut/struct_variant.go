@@ -17,8 +17,6 @@ import (
 
 // [VARIANT] struct, with C memory layout.
 //
-// Implements [OleResource].
-//
 // Example:
 //
 //	rel := win.NewOleReleaser()

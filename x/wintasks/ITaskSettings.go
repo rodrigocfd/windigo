@@ -14,8 +14,6 @@ import (
 
 // [ITaskSettings] COM interface.
 //
-// Implements [OleResource].
-//
 // [ITaskSettings]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itasksettings
 type ITaskSettings struct{ winaut.IDispatch }
 

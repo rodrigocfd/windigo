@@ -14,8 +14,6 @@ import (
 
 // [IWICBitmapLock] COM interface.
 //
-// Implements [OleResource].
-//
 // [IWICBitmapLock]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicbitmaplock
 type IWICBitmapLock struct{ win.IUnknown }
 

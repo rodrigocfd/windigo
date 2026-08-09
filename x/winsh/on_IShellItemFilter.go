@@ -15,8 +15,6 @@ import (
 
 // [IShellItemFilter] COM interface.
 //
-// Implements [OleResource].
-//
 // [IShellItemFilter]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellitemfilter
 type IShellItemFilter struct{ win.IUnknown }
 

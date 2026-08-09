@@ -14,8 +14,6 @@ import (
 
 // [IDXGIFactory1] COM interface.
 //
-// Implements [OleResource].
-//
 // [IDXGIFactory1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgifactory1
 type IDXGIFactory1 struct{ IDXGIFactory }
 

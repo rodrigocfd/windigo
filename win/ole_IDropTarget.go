@@ -13,8 +13,6 @@ import (
 
 // [IDropTarget] COM interface. Usually passed to [HWND.RegisterDragDrop].
 //
-// Implements [OleResource].
-//
 // Example:
 //
 //	rel := win.NewOleReleaser()

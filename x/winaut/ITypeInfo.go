@@ -15,8 +15,6 @@ import (
 
 // [ITypeInfo] COM interface.
 //
-// Implements [OleResource].
-//
 // [ITypeInfo]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nn-oaidl-itypeinfo
 type ITypeInfo struct{ win.IUnknown }
 

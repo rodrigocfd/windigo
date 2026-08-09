@@ -16,8 +16,6 @@ import (
 
 // [IRegisteredTask] COM interface.
 //
-// Implements [OleResource].
-//
 // [IRegisteredTask]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iregisteredtask
 type IRegisteredTask struct{ winaut.IDispatch }
 

@@ -12,8 +12,6 @@ import (
 
 // [IUnknown] [COM] interface, base to all COM interfaces.
 //
-// Implements [OleResource].
-//
 // [IUnknown]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown
 // [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
 type IUnknown struct {
@@ -109,4 +107,56 @@ func (me *IUnknown) Release() {
 			me.ppvt)
 		me.ppvt = 0
 	}
+}
+
+// Stores multiple [COM] resources, releasing all them at once.
+//
+// Every function which returns a COM resource will require an [OleReleaser]
+// to manage the object's lifetime.
+//
+// Example:
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+type OleReleaser struct {
+	r utl.OleBatchReleaser
+}
+
+// Constructs a new [OleReleaser] to store multiple [COM] resources, releasing
+// them all at once.
+//
+// Every function which returns a COM resource will require an [OleReleaser] to
+// manage the object's lifetime.
+//
+// ⚠️ You must defer [OleReleaser.Release].
+//
+// Example:
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+func NewOleReleaser() *OleReleaser {
+	return &OleReleaser{
+		r: utl.NewOleBatchReleaser(),
+	}
+}
+
+// Adds a new [COM] resource to have its lifetime managed by the [OleReleaser].
+func (me *OleReleaser) Add(obj interface{ Release() }) {
+	me.r.Add(obj)
+}
+
+// Releases all added [COM] resource, in the reverse order they were added.
+//
+// Example:
+//
+//	rel := win.NewOleReleaser()
+//	defer rel.Release()
+//
+// [COM]: https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal
+func (me *OleReleaser) Release() {
+	me.r.Release()
 }

@@ -15,8 +15,6 @@ import (
 
 // [IWICComponentInfo] COM interface.
 //
-// Implements [OleResource].
-//
 // [IWICComponentInfo]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwiccomponentinfo
 type IWICComponentInfo struct{ win.IUnknown }
 

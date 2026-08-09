@@ -15,8 +15,6 @@ import (
 
 // [IWICStream] COM interface.
 //
-// Implements [OleResource].
-//
 // [IWICStream]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nn-wincodec-iwicstream
 type IWICStream struct{ win.IStream }
 

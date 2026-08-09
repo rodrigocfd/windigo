@@ -16,8 +16,6 @@ import (
 
 // [IShellItem2] COM interface.
 //
-// Implements [OleResource].
-//
 // Usually created with [SHCreateItemFromParsingName].
 //
 // Example:

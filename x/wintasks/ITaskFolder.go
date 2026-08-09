@@ -15,8 +15,6 @@ import (
 
 // [ITaskFolder] COM interface.
 //
-// Implements [OleResource].
-//
 // [ITaskFolder]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-itaskfolder
 type ITaskFolder struct{ winaut.IDispatch }
 

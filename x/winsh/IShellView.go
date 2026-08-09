@@ -14,8 +14,6 @@ import (
 
 // [IShellView] COM interface.
 //
-// Implements [OleResource].
-//
 // [IShellView]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-ishellview
 type IShellView struct{ IOleWindow }
 

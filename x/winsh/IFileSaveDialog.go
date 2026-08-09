@@ -13,8 +13,6 @@ import (
 
 // [IFileSaveDialog] COM interface.
 //
-// Implements [OleResource].
-//
 // Example:
 //
 //	var hWnd win.HWND // initialized somewhere

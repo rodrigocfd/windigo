@@ -10,8 +10,6 @@ import (
 
 // [IExecAction] COM interface.
 //
-// Implements [OleResource].
-//
 // [IExecAction]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nn-taskschd-iexecaction
 type IExecAction struct{ IAction }
 

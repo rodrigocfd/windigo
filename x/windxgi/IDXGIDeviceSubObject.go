@@ -14,8 +14,6 @@ import (
 
 // [IDXGIDeviceSubObject] COM interface.
 //
-// Implements [OleResource].
-//
 // [IDXGIDeviceSubObject]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nn-dxgi-idxgidevicesubobject
 type IDXGIDeviceSubObject struct{ IDXGIObject }
 
