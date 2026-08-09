@@ -68,7 +68,7 @@ func (me *IDXGIObject) GetPrivateDataInterface(
 	pName *co.GUID,
 	ppOut interface{},
 ) error {
-	utl.OleValidateRelease(ppOut)
+	_ = utl.OleValidateRelease(ppOut)
 	var ppvtQueried uintptr
 
 	if err := me.GetPrivateData(pName, int(unsafe.Sizeof(uintptr(0))), unsafe.Pointer(&ppvtQueried)); err != nil {

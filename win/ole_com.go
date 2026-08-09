@@ -76,7 +76,7 @@ func (me *IBindCtx) GetBindOptions() (BIND_OPTS3, error) {
 //
 // [GetObjectParam]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-getobjectparam
 func (me *IBindCtx) GetObjectParam(releaser *OleReleaser, key string, ppOut interface{}) error {
-	utl.OleValidateRelease(ppOut)
+	_ = utl.OleValidateRelease(ppOut)
 	var ppvtQueried uintptr
 	var wKey wstr.BufEncoder
 

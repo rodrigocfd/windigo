@@ -28,7 +28,7 @@ import (
 //
 //	clsId, _ := win.CLSIDFromProgID("Excel.Application")
 //
-//	var excel *win.IDispatch
+//	var excel *winaut.IDispatch
 //	_ = win.CoCreateInstance(
 //		rel,
 //		&clsId,
@@ -67,10 +67,10 @@ var _ole_CLSIDFromProgID *syscall.Proc
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
-//	var taskbl *win.ITaskbarList
+//	var taskbl *winsh.ITaskbarList
 //	_ = win.CoCreateInstance(
 //		rel,
-//		&co.CLSID_TaskbarList,
+//		&cosh.CLSID_TaskbarList,
 //		nil,
 //		co.CLSCTX_INPROC_SERVER,
 //		&taskbl,

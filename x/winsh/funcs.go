@@ -228,7 +228,7 @@ var _shell_SHCreateShellItemArray *syscall.Proc
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
-//	var item1, item2 *win.IShellItem
+//	var item1, item2 *winsh.IShellItem
 //	_ = winsh.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item1)
 //	_ = winsh.SHCreateItemFromParsingName(rel, "C:\\Temp\\bar.txt", &item2)
 //
@@ -349,16 +349,16 @@ func SHGetFileInfo(path string, fileAttrs co.FILE_ATTRIBUTE, flags cosh.SHGFI) (
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
-//	var desktop *win.IShellItem
+//	var desktop *winsh.IShellItem
 //	_ = winsh.SHGetKnownFolderItem(
 //		rel,
-//		&co.FOLDERID_Desktop,
-//		co.KF_DEFAULT,
+//		&cosh.FOLDERID_Desktop,
+//		cosh.KF_DEFAULT,
 //		win.HANDLE(0),
 //		&desktop,
 //	)
 //
-//	path, _ := desktop.GetDisplayName(co.SIGDN_FILESYSPATH)
+//	path, _ := desktop.GetDisplayName(cosh.SIGDN_FILESYSPATH)
 //	println(path)
 //
 // [SHGetKnownFolderItem]: https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetknownfolderitem

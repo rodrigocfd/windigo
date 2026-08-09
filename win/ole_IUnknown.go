@@ -38,7 +38,9 @@ func (me *IUnknown) Ppvt() uintptr {
 
 // [AddRef] method.
 //
-// The returned object must have the same type of the caller.
+// This method is very dangerous: if ppOut doesn't have the correct underlying
+// virtual table type, you'll have an invalid memory access. However, this
+// flexibility allows downcasting a generic *IUnknown into a derived type.
 //
 // Example:
 //
@@ -52,12 +54,12 @@ func (me *IUnknown) Ppvt() uintptr {
 //	var folder *winsh.IShellItem
 //	_ = winsh.SHCreateItemFromParsingName(rel, "C:\\Temp", &folder)
 //
-//	var folderCopy *winsh.IShellItem
-//	folder.AddRef(rel, &folderCopy)
+//	var folderClone *winsh.IShellItem
+//	folder.AddRef(rel, &folderClone)
 //
 // [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
 func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
-	utl.OleValidateRelease(ppOut)
+	_ = utl.OleValidateRelease(ppOut)
 	_, _, _ = syscall.SyscallN(
 		utl.Vt[utl.IUnknownVt](me.ppvt).AddRef,
 		me.ppvt)
@@ -75,7 +77,7 @@ func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
 //	rel := win.NewOleReleaser()
 //	defer rel.Release()
 //
-//	var item *win.IShellItem
+//	var item *winsh.IShellItem
 //	_ = winsh.SHCreateItemFromParsingName(rel, "C:\\Temp\\foo.txt", &item)
 //
 //	var item2 *winsh.IShellItem2
