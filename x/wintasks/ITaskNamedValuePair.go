@@ -5,6 +5,7 @@ package wintasks
 import (
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/x/cotasks"
 	"github.com/rodrigocfd/windigo/x/winaut"
 )
@@ -27,6 +28,13 @@ type _ITaskNamedValuePairVt struct {
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*ITaskNamedValuePair) IID() *co.IID {
 	return &cotasks.IID_ITaskNamedValuePair
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITaskNamedValuePair) AddRef(releaser *win.OleReleaser) *ITaskNamedValuePair {
+	return utl.OleNewFromAddRef[*ITaskNamedValuePair](me, releaser)
 }
 
 // [get_Name] method.

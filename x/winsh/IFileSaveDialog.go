@@ -62,6 +62,13 @@ func (*IFileSaveDialog) IID() *co.IID {
 	return &cosh.IID_IFileSaveDialog
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IFileSaveDialog) AddRef(releaser *win.OleReleaser) *IFileSaveDialog {
+	return utl.OleNewFromAddRef[*IFileSaveDialog](me, releaser)
+}
+
 // [ApplyProperties] method.
 //
 // [ApplyProperties]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifilesavedialog-applyproperties

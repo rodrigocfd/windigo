@@ -52,6 +52,13 @@ func (*IWICBitmapFrameDecode) IID() *co.IID {
 	return &cowic.IID_IWICBitmapFrameDecode
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IWICBitmapFrameDecode) AddRef(releaser *win.OleReleaser) *IWICBitmapFrameDecode {
+	return utl.OleNewFromAddRef[*IWICBitmapFrameDecode](me, releaser)
+}
+
 // [GetThumbnail] method.
 //
 // [GetThumbnail]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapframedecode-getthumbnail

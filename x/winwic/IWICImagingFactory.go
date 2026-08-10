@@ -72,6 +72,13 @@ func (*IWICImagingFactory) IID() *co.IID {
 	return &cowic.IID_IWICImagingFactory
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IWICImagingFactory) AddRef(releaser *win.OleReleaser) *IWICImagingFactory {
+	return utl.OleNewFromAddRef[*IWICImagingFactory](me, releaser)
+}
+
 // [CreateBitmap] method.
 //
 // [CreateBitmap]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicimagingfactory-createbitmap

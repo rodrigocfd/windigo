@@ -8,6 +8,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/x/cotasks"
 	"github.com/rodrigocfd/windigo/x/winaut"
 )
@@ -39,6 +40,13 @@ type _ITriggerVt struct {
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*ITrigger) IID() *co.IID {
 	return &cotasks.IID_ITrigger
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITrigger) AddRef(releaser *win.OleReleaser) *ITrigger {
+	return utl.OleNewFromAddRef[*ITrigger](me, releaser)
 }
 
 // [get_Enabled] method.

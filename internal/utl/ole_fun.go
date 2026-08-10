@@ -187,6 +187,23 @@ func OleNewIfOk[T interface{ IID() *co.IID }](
 }
 
 // Actions:
+//   - calls AddRef on ppvt;
+//   - creates new object T with same ppvt;
+//   - adds to the releaser;
+//   - returns it.
+func OleNewFromAddRef[T interface{ IID() *co.IID }](
+	me interface{ Ppvt() uintptr },
+	releaser interface {
+		Add(obj interface{ Release() })
+	},
+) T {
+	_, _, _ = syscall.SyscallN(
+		Vt[IUnknownVt](me.Ppvt()).AddRef,
+		me.Ppvt())
+	return OleNew[T](me.Ppvt(), releaser)
+}
+
+// Actions:
 //   - calls pMethod without parameters;
 //   - continues if S_OK, otherwise returns HRESULT;
 //   - returns the object returned by pMethod.

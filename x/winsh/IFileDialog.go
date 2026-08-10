@@ -53,6 +53,13 @@ func (*IFileDialog) IID() *co.IID {
 	return &cosh.IID_IFileDialog
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IFileDialog) AddRef(releaser *win.OleReleaser) *IFileDialog {
+	return utl.OleNewFromAddRef[*IFileDialog](me, releaser)
+}
+
 // [AddPlace] method.
 //
 // [AddPlace]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-addplace

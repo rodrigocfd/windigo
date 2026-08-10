@@ -26,6 +26,13 @@ func (*IFileDialogEvents) IID() *co.IID {
 	return &cosh.IID_IFileDialogEvents
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IFileDialogEvents) AddRef(releaser *win.OleReleaser) *IFileDialogEvents {
+	return utl.OleNewFromAddRef[*IFileDialogEvents](me, releaser)
+}
+
 type _IFileDialogEventsImpl struct {
 	vt                _IFileDialogEventsVt
 	counter           uint32

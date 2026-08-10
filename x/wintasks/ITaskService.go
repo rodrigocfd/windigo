@@ -38,6 +38,13 @@ func (*ITaskService) IID() *co.IID {
 	return &cotasks.IID_ITaskService
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITaskService) AddRef(releaser *win.OleReleaser) *ITaskService {
+	return utl.OleNewFromAddRef[*ITaskService](me, releaser)
+}
+
 // [Connect] method.
 //
 // [Connect]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskservice-connect

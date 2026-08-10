@@ -33,6 +33,13 @@ func (*IEventTrigger) IID() *co.IID {
 	return &cotasks.IID_IEventTrigger
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IEventTrigger) AddRef(releaser *win.OleReleaser) *IEventTrigger {
+	return utl.OleNewFromAddRef[*IEventTrigger](me, releaser)
+}
+
 // [get_Delay] method.
 //
 // [get_Delay]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-ieventtrigger-get_delay

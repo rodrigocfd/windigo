@@ -8,6 +8,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/x/cotasks"
 	"github.com/rodrigocfd/windigo/x/winaut"
 )
@@ -66,6 +67,13 @@ type _ITaskSettingsVt struct {
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*ITaskSettings) IID() *co.IID {
 	return &cotasks.IID_ITaskSettings
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITaskSettings) AddRef(releaser *win.OleReleaser) *ITaskSettings {
+	return utl.OleNewFromAddRef[*ITaskSettings](me, releaser)
 }
 
 // [get_AllowDemandStart] method.

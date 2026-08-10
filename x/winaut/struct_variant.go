@@ -248,11 +248,8 @@ func (v *VARIANT) Float64() (float64, bool) {
 func (v *VARIANT) IDispatch(releaser *win.OleReleaser) (*IDispatch, bool) {
 	if v.tag == coaut.VT_DISPATCH {
 		rawPpvt := uintptr(binary.LittleEndian.Uint64(v.data[:]))
-		pCurrent := utl.OleNew[*IDispatch](rawPpvt, releaser) // just a view, won't be released here
-
-		var pCloned *IDispatch
-		pCurrent.AddRef(releaser, &pCloned) // clone, because we'll release it independently
-		return pCloned, true
+		pCurrent := utl.OleNewWithoutReleaser[*IDispatch](rawPpvt)
+		return pCurrent.AddRef(releaser), true // clone, because we'll release it independently
 	}
 	return nil, false
 }

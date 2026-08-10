@@ -59,6 +59,13 @@ func (*IEnumShellItems) IID() *co.IID {
 	return &cosh.IID_IEnumShellItems
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IEnumShellItems) AddRef(releaser *win.OleReleaser) *IEnumShellItems {
+	return utl.OleNewFromAddRef[*IEnumShellItems](me, releaser)
+}
+
 // [Clone] method.
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumshellitems-clone

@@ -216,10 +216,8 @@ func (stg *STGMEDIUM) FileName() (string, bool) {
 // Attempts to return the [IStream] if tymed == co.TYMED_ISTREAM.
 func (stg *STGMEDIUM) IStream(releaser *OleReleaser) (*IStream, bool) {
 	if stg.tymed == co.TYMED_ISTREAM {
-		pCurrent := utl.OleNew[*IStream](stg.data, releaser)
-		var pCloned *IStream
-		pCurrent.AddRef(releaser, &pCloned) // clone, because we'll release it independently
-		return pCloned, true
+		pCurrent := utl.OleNewWithoutReleaser[*IStream](stg.data)
+		return pCurrent.AddRef(releaser), true // clone, because we'll release it independently
 	}
 	return nil, false
 }

@@ -67,6 +67,13 @@ func (*IFileOperation) IID() *co.IID {
 	return &cosh.IID_IFileOperation
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IFileOperation) AddRef(releaser *win.OleReleaser) *IFileOperation {
+	return utl.OleNewFromAddRef[*IFileOperation](me, releaser)
+}
+
 // [Advise] method.
 //
 // Paired with [IFileOperation.Unadvise].

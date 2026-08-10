@@ -44,6 +44,13 @@ func (*IShellItem) IID() *co.IID {
 	return &cosh.IID_IShellItem
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IShellItem) AddRef(releaser *win.OleReleaser) *IShellItem {
+	return utl.OleNewFromAddRef[*IShellItem](me, releaser)
+}
+
 // [BindToHandler] method.
 //
 // Example:

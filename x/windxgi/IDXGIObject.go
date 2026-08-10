@@ -32,6 +32,13 @@ func (*IDXGIObject) IID() *co.IID {
 	return &codxgi.IID_IDXGIObject
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDXGIObject) AddRef(releaser *win.OleReleaser) *IDXGIObject {
+	return utl.OleNewFromAddRef[*IDXGIObject](me, releaser)
+}
+
 // [GetParent] method.
 //
 // [GetParent]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiobject-getparent

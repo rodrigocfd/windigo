@@ -5,6 +5,7 @@ package wintasks
 import (
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/x/cotasks"
 )
 
@@ -24,6 +25,13 @@ type _IBootTriggerVt struct {
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IBootTrigger) IID() *co.IID {
 	return &cotasks.IID_IBootTrigger
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IBootTrigger) AddRef(releaser *win.OleReleaser) *IBootTrigger {
+	return utl.OleNewFromAddRef[*IBootTrigger](me, releaser)
 }
 
 // [get_Delay] method.

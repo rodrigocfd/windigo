@@ -48,6 +48,13 @@ func (*IRegisteredTask) IID() *co.IID {
 	return &cotasks.IID_IRegisteredTask
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IRegisteredTask) AddRef(releaser *win.OleReleaser) *IRegisteredTask {
+	return utl.OleNewFromAddRef[*IRegisteredTask](me, releaser)
+}
+
 // [get_Definition] method.
 //
 // [get_Definition]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iregisteredtask-get_definition

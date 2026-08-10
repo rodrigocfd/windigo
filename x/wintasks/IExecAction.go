@@ -5,6 +5,7 @@ package wintasks
 import (
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/x/cotasks"
 )
 
@@ -28,6 +29,13 @@ type _IExecActionVt struct {
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IExecAction) IID() *co.IID {
 	return &cotasks.IID_IExecAction
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IExecAction) AddRef(releaser *win.OleReleaser) *IExecAction {
+	return utl.OleNewFromAddRef[*IExecAction](me, releaser)
 }
 
 // [get_Arguments] method.

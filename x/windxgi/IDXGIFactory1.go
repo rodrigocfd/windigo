@@ -30,6 +30,13 @@ func (*IDXGIFactory1) IID() *co.IID {
 	return &codxgi.IID_IDXGIFactory1
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDXGIFactory1) AddRef(releaser *win.OleReleaser) *IDXGIFactory1 {
+	return utl.OleNewFromAddRef[*IDXGIFactory1](me, releaser)
+}
+
 // [EnumAdapters1] method.
 //
 // [EnumAdapters1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgifactory-enumadapters

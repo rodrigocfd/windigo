@@ -65,6 +65,13 @@ func (*IFileOpenDialog) IID() *co.IID {
 	return &cosh.IID_IFileOpenDialog
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IFileOpenDialog) AddRef(releaser *win.OleReleaser) *IFileOpenDialog {
+	return utl.OleNewFromAddRef[*IFileOpenDialog](me, releaser)
+}
+
 // [GetResults] method.
 //
 // Returns the selected items after user confirmation, for multi-selection

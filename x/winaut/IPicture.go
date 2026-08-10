@@ -42,6 +42,13 @@ func (*IPicture) IID() *co.IID {
 	return &coaut.IID_IPicture
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IPicture) AddRef(releaser *win.OleReleaser) *IPicture {
+	return utl.OleNewFromAddRef[*IPicture](me, releaser)
+}
+
 // [get_Attributes] method.
 //
 // [get_Attributes]: https://learn.microsoft.com/en-us/windows/win32/api/ocidl/nf-ocidl-ipicture-get_attributes

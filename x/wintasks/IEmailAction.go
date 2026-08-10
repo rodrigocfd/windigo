@@ -5,6 +5,7 @@ package wintasks
 import (
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/x/cotasks"
 )
 
@@ -42,6 +43,13 @@ type _IEmailActionVt struct {
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IEmailAction) IID() *co.IID {
 	return &cotasks.IID_IEmailAction
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IEmailAction) AddRef(releaser *win.OleReleaser) *IEmailAction {
+	return utl.OleNewFromAddRef[*IEmailAction](me, releaser)
 }
 
 // [get_Bcc] method.

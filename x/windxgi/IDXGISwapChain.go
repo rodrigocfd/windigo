@@ -38,6 +38,13 @@ func (*IDXGISwapChain) IID() *co.IID {
 	return &codxgi.IID_IDXGISwapChain
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDXGISwapChain) AddRef(releaser *win.OleReleaser) *IDXGISwapChain {
+	return utl.OleNewFromAddRef[*IDXGISwapChain](me, releaser)
+}
+
 // [GetBuffer] method.
 //
 // [GetBuffer]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiswapchain-getbuffer

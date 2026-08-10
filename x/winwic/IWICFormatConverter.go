@@ -30,6 +30,13 @@ func (*IWICFormatConverter) IID() *co.IID {
 	return &cowic.IID_IWICFormatConverter
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IWICFormatConverter) AddRef(releaser *win.OleReleaser) *IWICFormatConverter {
+	return utl.OleNewFromAddRef[*IWICFormatConverter](me, releaser)
+}
+
 // [CanConvert] method.
 //
 // [CanConvert]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicformatconverter-canconvert

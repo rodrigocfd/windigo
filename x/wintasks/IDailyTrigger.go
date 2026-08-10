@@ -8,6 +8,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/x/cotasks"
 )
 
@@ -29,6 +30,13 @@ type _IDailyTriggerVt struct {
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IDailyTrigger) IID() *co.IID {
 	return &cotasks.IID_IDailyTrigger
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDailyTrigger) AddRef(releaser *win.OleReleaser) *IDailyTrigger {
+	return utl.OleNewFromAddRef[*IDailyTrigger](me, releaser)
 }
 
 // [get_DaysInterval] method.

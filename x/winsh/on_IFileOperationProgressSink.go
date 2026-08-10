@@ -58,6 +58,13 @@ func (*IFileOperationProgressSink) IID() *co.IID {
 	return &cosh.IID_IFileOperationProgressSink
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IFileOperationProgressSink) AddRef(releaser *win.OleReleaser) *IFileOperationProgressSink {
+	return utl.OleNewFromAddRef[*IFileOperationProgressSink](me, releaser)
+}
+
 type _IFileOperationProgressSinkImpl struct {
 	vt               _IFileOperationProgressSinkVt
 	counter          uint32

@@ -50,6 +50,13 @@ func (*IEnumIDList) IID() *co.IID {
 	return &cosh.IID_IEnumIDList
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IEnumIDList) AddRef(releaser *win.OleReleaser) *IEnumIDList {
+	return utl.OleNewFromAddRef[*IEnumIDList](me, releaser)
+}
+
 // [Clone] method.
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ienumidlist-clone

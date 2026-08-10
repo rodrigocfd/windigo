@@ -59,6 +59,13 @@ func (*ITaskbarList3) IID() *co.IID {
 	return &cosh.IID_ITaskbarList3
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITaskbarList3) AddRef(releaser *win.OleReleaser) *ITaskbarList3 {
+	return utl.OleNewFromAddRef[*ITaskbarList3](me, releaser)
+}
+
 // [RegisterTab] method.
 //
 // [RegisterTab]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-registertab

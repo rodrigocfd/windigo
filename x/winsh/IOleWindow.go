@@ -30,6 +30,13 @@ func (*IOleWindow) IID() *co.IID {
 	return &cosh.IID_IOleWindow
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IOleWindow) AddRef(releaser *win.OleReleaser) *IOleWindow {
+	return utl.OleNewFromAddRef[*IOleWindow](me, releaser)
+}
+
 // [ContextSensitiveHelp] method.
 //
 // [ContextSensitiveHelp]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-iolewindow-contextsensitivehelp

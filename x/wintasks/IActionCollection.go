@@ -39,6 +39,13 @@ func (*IActionCollection) IID() *co.IID {
 	return &cotasks.IID_IAction
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IActionCollection) AddRef(releaser *win.OleReleaser) *IActionCollection {
+	return utl.OleNewFromAddRef[*IActionCollection](me, releaser)
+}
+
 // [Clear] method.
 //
 // [Clear]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-iactioncollection-clear
@@ -70,7 +77,7 @@ func (me *IActionCollection) Enum(releaser *win.OleReleaser) ([]*IAction, error)
 		return nil, err
 	}
 
-	actions := make([]*IAction, count)
+	actions := make([]*IAction, 0, count)
 	for i := 0; i < count; i++ {
 		action, err := me.GetItem(releaser, i)
 		if err != nil {

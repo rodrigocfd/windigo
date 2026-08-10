@@ -48,6 +48,13 @@ func (*ITypeInfo) IID() *co.IID {
 	return &coaut.IID_ITypeInfo
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITypeInfo) AddRef(releaser *win.OleReleaser) *ITypeInfo {
+	return utl.OleNewFromAddRef[*ITypeInfo](me, releaser)
+}
+
 // [AddressOfMember] method.
 //
 // [AddressOfMember]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypeinfo-addressofmember

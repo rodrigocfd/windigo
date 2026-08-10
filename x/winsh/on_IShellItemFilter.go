@@ -26,6 +26,13 @@ func (*IShellItemFilter) IID() *co.IID {
 	return &cosh.IID_IShellItemFilter
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IShellItemFilter) AddRef(releaser *win.OleReleaser) *IShellItemFilter {
+	return utl.OleNewFromAddRef[*IShellItemFilter](me, releaser)
+}
+
 type _IShellItemFilterImpl struct {
 	vt                  _IShellItemFilterVt
 	counter             uint32

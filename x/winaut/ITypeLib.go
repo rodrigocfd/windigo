@@ -38,6 +38,13 @@ func (*ITypeLib) IID() *co.IID {
 	return &coaut.IID_ITypeLib
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITypeLib) AddRef(releaser *win.OleReleaser) *ITypeLib {
+	return utl.OleNewFromAddRef[*ITypeLib](me, releaser)
+}
+
 // [GetTypeInfo] method.
 //
 // [GetTypeInfo]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-itypelib-gettypeinfo

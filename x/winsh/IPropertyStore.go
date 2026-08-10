@@ -33,6 +33,13 @@ func (*IPropertyStore) IID() *co.IID {
 	return &cosh.IID_IPropertyStore
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IPropertyStore) AddRef(releaser *win.OleReleaser) *IPropertyStore {
+	return utl.OleNewFromAddRef[*IPropertyStore](me, releaser)
+}
+
 // [Commit] method.
 //
 // [Commit]: https://learn.microsoft.com/en-us/windows/win32/api/propsys/nf-propsys-ipropertystore-commit

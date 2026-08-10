@@ -46,6 +46,13 @@ func (*ITaskbarList4) IID() *co.IID {
 	return &cosh.IID_ITaskbarList4
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITaskbarList4) AddRef(releaser *win.OleReleaser) *ITaskbarList4 {
+	return utl.OleNewFromAddRef[*ITaskbarList4](me, releaser)
+}
+
 // [SetProperties] method.
 //
 // [SetProperties]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist4-settabproperties

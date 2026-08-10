@@ -8,6 +8,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/x/cotasks"
 	"github.com/rodrigocfd/windigo/x/winaut"
 )
@@ -38,6 +39,13 @@ type _IPrincipalVt struct {
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IPrincipal) IID() *co.IID {
 	return &cotasks.IID_IPrincipal
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IPrincipal) AddRef(releaser *win.OleReleaser) *IPrincipal {
+	return utl.OleNewFromAddRef[*IPrincipal](me, releaser)
 }
 
 // [get_DisplayName] method.

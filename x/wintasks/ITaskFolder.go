@@ -42,6 +42,13 @@ func (*ITaskFolder) IID() *co.IID {
 	return &cotasks.IID_ITaskFolder
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITaskFolder) AddRef(releaser *win.OleReleaser) *ITaskFolder {
+	return utl.OleNewFromAddRef[*ITaskFolder](me, releaser)
+}
+
 // [DeleteFolder] method.
 //
 // [DeleteFolder]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskfolder-deletefolder

@@ -33,6 +33,13 @@ func (*IWICStream) IID() *co.IID {
 	return &cowic.IID_IWICStream
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IWICStream) AddRef(releaser *win.OleReleaser) *IWICStream {
+	return utl.OleNewFromAddRef[*IWICStream](me, releaser)
+}
+
 // [InitializeFromFilename] method.
 //
 // [InitializeFromFilename]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicstream-initializefromfilename

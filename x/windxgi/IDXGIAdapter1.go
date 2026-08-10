@@ -5,6 +5,7 @@ package windxgi
 import (
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/x/codxgi"
 )
 
@@ -23,6 +24,13 @@ type _IDXGIAdapter1Vt struct {
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IDXGIAdapter1) IID() *co.IID {
 	return &codxgi.IID_IDXGIAdapter1
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDXGIAdapter1) AddRef(releaser *win.OleReleaser) *IDXGIAdapter1 {
+	return utl.OleNewFromAddRef[*IDXGIAdapter1](me, releaser)
 }
 
 // [GetDesc1] method.

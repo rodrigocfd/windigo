@@ -50,6 +50,13 @@ func (*ITaskbarList) IID() *co.IID {
 	return &cosh.IID_ITaskbarList
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITaskbarList) AddRef(releaser *win.OleReleaser) *ITaskbarList {
+	return utl.OleNewFromAddRef[*ITaskbarList](me, releaser)
+}
+
 // [ActivateTab] method.
 //
 // [ActivateTab]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist-activatetab

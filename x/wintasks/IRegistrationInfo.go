@@ -5,6 +5,7 @@ package wintasks
 import (
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/x/cotasks"
 	"github.com/rodrigocfd/windigo/x/winaut"
 )
@@ -41,6 +42,13 @@ type _IRegistrationInfoVt struct {
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IRegistrationInfo) IID() *co.IID {
 	return &cotasks.IID_IRegistrationInfo
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IRegistrationInfo) AddRef(releaser *win.OleReleaser) *IRegistrationInfo {
+	return utl.OleNewFromAddRef[*IRegistrationInfo](me, releaser)
 }
 
 // [get_Author] method.

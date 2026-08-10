@@ -72,6 +72,13 @@ func (*IShellItem2) IID() *co.IID {
 	return &cosh.IID_IShellItem2
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IShellItem2) AddRef(releaser *win.OleReleaser) *IShellItem2 {
+	return utl.OleNewFromAddRef[*IShellItem2](me, releaser)
+}
+
 // [GetBool] method.
 //
 // [GetBool]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitem2-getbool

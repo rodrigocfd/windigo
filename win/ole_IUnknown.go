@@ -38,9 +38,8 @@ func (me *IUnknown) Ppvt() uintptr {
 
 // [AddRef] method.
 //
-// This method is very dangerous: if ppOut doesn't have the correct underlying
-// virtual table type, you'll have an invalid memory access. However, this
-// flexibility allows downcasting a generic *IUnknown into a derived type.
+// Essentially clones the COM object, so its lifetime can be managed by
+// different [OleReleaser].
 //
 // Example:
 //
@@ -54,16 +53,14 @@ func (me *IUnknown) Ppvt() uintptr {
 //	var folder *winsh.IShellItem
 //	_ = winsh.SHCreateItemFromParsingName(rel, "C:\\Temp", &folder)
 //
-//	var folderClone *winsh.IShellItem
-//	folder.AddRef(rel, &folderClone)
+//	rel2 := win.NewOleReleaser()
+//	defer rel2.Release()
+//
+//	folderClone := folder.AddRef(rel2)
 //
 // [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
-func (me *IUnknown) AddRef(releaser *OleReleaser, ppOut interface{}) {
-	_ = utl.OleValidateRelease(ppOut)
-	_, _, _ = syscall.SyscallN(
-		utl.Vt[utl.IUnknownVt](me.ppvt).AddRef,
-		me.ppvt)
-	utl.OleInject(ppOut, me.ppvt, releaser)
+func (me *IUnknown) AddRef(releaser *OleReleaser) *IUnknown {
+	return utl.OleNewFromAddRef[*IUnknown](me, releaser)
 }
 
 // [QueryInterface] method.

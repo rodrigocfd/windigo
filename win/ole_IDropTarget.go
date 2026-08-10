@@ -31,6 +31,13 @@ func (*IDropTarget) IID() *co.IID {
 	return &co.IID_IDropTarget
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDropTarget) AddRef(releaser *OleReleaser) *IDropTarget {
+	return utl.OleNewFromAddRef[*IDropTarget](me, releaser)
+}
+
 type _IDropTargetImpl struct {
 	vt        _IDropTargetVt
 	counter   uint32

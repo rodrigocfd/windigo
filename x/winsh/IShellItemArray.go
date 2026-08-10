@@ -35,6 +35,13 @@ func (*IShellItemArray) IID() *co.IID {
 	return &cosh.IID_IShellItemArray
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IShellItemArray) AddRef(releaser *win.OleReleaser) *IShellItemArray {
+	return utl.OleNewFromAddRef[*IShellItemArray](me, releaser)
+}
+
 // Returns the path names of each [IShellItem] object by calling
 // [IShellItemArray.GetCount], [IShellItemArray.GetItemAt] and
 // [IShellItem.GetDisplayName].

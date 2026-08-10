@@ -58,6 +58,13 @@ func (*IWICPalette) IID() *co.IID {
 	return &cowic.IID_IWICPalette
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IWICPalette) AddRef(releaser *win.OleReleaser) *IWICPalette {
+	return utl.OleNewFromAddRef[*IWICPalette](me, releaser)
+}
+
 // [GetColorCount] method.
 //
 // [GetColorCount]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicpalette-getcolorcount

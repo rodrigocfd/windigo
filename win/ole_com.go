@@ -45,6 +45,13 @@ func (*IBindCtx) IID() *co.IID {
 	return &co.IID_IBindCtx
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IBindCtx) AddRef(releaser *OleReleaser) *IBindCtx {
+	return utl.OleNewFromAddRef[*IBindCtx](me, releaser)
+}
+
 // [EnumObjectParam] method.
 //
 // [EnumObjectParam]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ibindctx-enumobjectparam
@@ -153,6 +160,13 @@ func (*IDataObject) IID() *co.IID {
 	return &co.IID_IDataObject
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDataObject) AddRef(releaser *OleReleaser) *IDataObject {
+	return utl.OleNewFromAddRef[*IDataObject](me, releaser)
+}
+
 // [GetCanonicalFormatEtc] method.
 //
 // [GetCanonicalFormatEtc]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-idataobject-getcanonicalformatetc
@@ -259,6 +273,13 @@ func (*IEnumString) IID() *co.IID {
 	return &co.IID_IEnumString
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IEnumString) AddRef(releaser *OleReleaser) *IEnumString {
+	return utl.OleNewFromAddRef[*IEnumString](me, releaser)
+}
+
 // [Clone] method.
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumstring-clone
@@ -351,6 +372,13 @@ func (*IEnumUnknown) IID() *co.IID {
 	return &co.IID_IEnumUnknown
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IEnumUnknown) AddRef(releaser *OleReleaser) *IEnumUnknown {
+	return utl.OleNewFromAddRef[*IEnumUnknown](me, releaser)
+}
+
 // [Clone] method.
 //
 // [Clone]: https://learn.microsoft.com/en-us/windows/win32/api/objidl/nf-objidl-ienumunknown-clone
@@ -434,6 +462,13 @@ func (*ISequentialStream) IID() *co.IID {
 	return &co.IID_ISequentialStream
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ISequentialStream) AddRef(releaser *OleReleaser) *ISequentialStream {
+	return utl.OleNewFromAddRef[*ISequentialStream](me, releaser)
+}
+
 // [Read] method.
 //
 // If returned numBytesRead is lower than requested buffer size, it means
@@ -485,6 +520,13 @@ type IStream struct{ ISequentialStream }
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IStream) IID() *co.IID {
 	return &co.IID_IStream
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IStream) AddRef(releaser *OleReleaser) *IStream {
+	return utl.OleNewFromAddRef[*IStream](me, releaser)
 }
 
 // [Clone] method.

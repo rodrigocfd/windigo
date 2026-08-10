@@ -8,6 +8,7 @@ import (
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/utl"
+	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/x/codxgi"
 )
 
@@ -28,6 +29,13 @@ type _IDXGISurfaceVt struct {
 // [interface ID]: https://learn.microsoft.com/en-us/office/client-developer/outlook/mapi/iid
 func (*IDXGISurface) IID() *co.IID {
 	return &codxgi.IID_IDXGISurface
+}
+
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDXGISurface) AddRef(releaser *win.OleReleaser) *IDXGISurface {
+	return utl.OleNewFromAddRef[*IDXGISurface](me, releaser)
 }
 
 // [GetDesc] method.

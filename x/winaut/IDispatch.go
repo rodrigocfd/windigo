@@ -26,6 +26,13 @@ func (*IDispatch) IID() *co.IID {
 	return &coaut.IID_IDispatch
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDispatch) AddRef(releaser *win.OleReleaser) *IDispatch {
+	return utl.OleNewFromAddRef[*IDispatch](me, releaser)
+}
+
 // [GetIDsOfNames] method.
 //
 // [GetIDsOfNames]: https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-getidsofnames

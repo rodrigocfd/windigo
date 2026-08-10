@@ -46,6 +46,13 @@ func (*ITaskbarList2) IID() *co.IID {
 	return &cosh.IID_ITaskbarList2
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITaskbarList2) AddRef(releaser *win.OleReleaser) *ITaskbarList2 {
+	return utl.OleNewFromAddRef[*ITaskbarList2](me, releaser)
+}
+
 // [MarkFullscreenWindow] method.
 //
 // [MarkFullscreenWindow]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist2-markfullscreenwindow

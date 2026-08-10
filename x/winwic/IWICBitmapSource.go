@@ -33,6 +33,13 @@ func (*IWICBitmapSource) IID() *co.IID {
 	return &cowic.IID_IWICBitmapSource
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IWICBitmapSource) AddRef(releaser *win.OleReleaser) *IWICBitmapSource {
+	return utl.OleNewFromAddRef[*IWICBitmapSource](me, releaser)
+}
+
 // [CopyPalette] method.
 //
 // [CopyPalette]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapsource-copypalette

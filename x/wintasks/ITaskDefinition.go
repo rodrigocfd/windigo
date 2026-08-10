@@ -42,6 +42,13 @@ func (*ITaskDefinition) IID() *co.IID {
 	return &cotasks.IID_ITaskDefinition
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITaskDefinition) AddRef(releaser *win.OleReleaser) *ITaskDefinition {
+	return utl.OleNewFromAddRef[*ITaskDefinition](me, releaser)
+}
+
 // [get_Actions] method.
 //
 // [get_Actions]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itaskdefinition-get_actions

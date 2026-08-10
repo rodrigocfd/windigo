@@ -40,6 +40,13 @@ func (*IDXGIOutput) IID() *co.IID {
 	return &codxgi.IID_IDXGIOutput
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDXGIOutput) AddRef(releaser *win.OleReleaser) *IDXGIOutput {
+	return utl.OleNewFromAddRef[*IDXGIOutput](me, releaser)
+}
+
 // [FindClosestMatchingMode] method.
 //
 // [FindClosestMatchingMode]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgioutput-findclosestmatchingmode

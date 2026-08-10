@@ -31,6 +31,13 @@ func (*IWICBitmap) IID() *co.IID {
 	return &cowic.IID_IWICBitmap
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IWICBitmap) AddRef(releaser *win.OleReleaser) *IWICBitmap {
+	return utl.OleNewFromAddRef[*IWICBitmap](me, releaser)
+}
+
 // [Lock] method.
 //
 // [Lock]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmap-lock

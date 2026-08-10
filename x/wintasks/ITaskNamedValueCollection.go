@@ -35,6 +35,13 @@ func (*ITaskNamedValueCollection) IID() *co.IID {
 	return &cotasks.IID_ITaskNamedValueCollection
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITaskNamedValueCollection) AddRef(releaser *win.OleReleaser) *ITaskNamedValueCollection {
+	return utl.OleNewFromAddRef[*ITaskNamedValueCollection](me, releaser)
+}
+
 // [Clear] method;
 //
 // [Clear]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasknamedvaluecollection-clear
@@ -81,7 +88,7 @@ func (me *ITaskNamedValueCollection) Enum(releaser *win.OleReleaser) ([]*ITaskNa
 		return nil, err
 	}
 
-	pairs := make([]*ITaskNamedValuePair, count)
+	pairs := make([]*ITaskNamedValuePair, 0, count)
 	for i := 0; i < count; i++ {
 		pair, err := me.GetItem(releaser, i)
 		if err != nil {

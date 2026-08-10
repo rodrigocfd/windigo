@@ -39,6 +39,13 @@ func (*IShellView) IID() *co.IID {
 	return &cosh.IID_IShellView
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IShellView) AddRef(releaser *win.OleReleaser) *IShellView {
+	return utl.OleNewFromAddRef[*IShellView](me, releaser)
+}
+
 // [DestroyViewWindow] method.
 //
 // [DestroyViewWindow]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellview-destroyviewwindow

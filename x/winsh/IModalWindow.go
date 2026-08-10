@@ -28,6 +28,13 @@ func (*IModalWindow) IID() *co.IID {
 	return &cosh.IID_IModalWindow
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IModalWindow) AddRef(releaser *win.OleReleaser) *IModalWindow {
+	return utl.OleNewFromAddRef[*IModalWindow](me, releaser)
+}
+
 // [Show] method.
 //
 // Returns false if user cancelled.

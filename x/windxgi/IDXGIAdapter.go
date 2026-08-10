@@ -31,6 +31,13 @@ func (*IDXGIAdapter) IID() *co.IID {
 	return &codxgi.IID_IDXGIAdapter
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDXGIAdapter) AddRef(releaser *win.OleReleaser) *IDXGIAdapter {
+	return utl.OleNewFromAddRef[*IDXGIAdapter](me, releaser)
+}
+
 // [CheckInterfaceSupport] method.
 //
 // [CheckInterfaceSupport]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiadapter-checkinterfacesupport

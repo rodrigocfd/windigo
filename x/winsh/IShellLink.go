@@ -47,6 +47,13 @@ func (*IShellLink) IID() *co.IID {
 	return &cosh.IID_IShellLink
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IShellLink) AddRef(releaser *win.OleReleaser) *IShellLink {
+	return utl.OleNewFromAddRef[*IShellLink](me, releaser)
+}
+
 // [GetArguments] method.
 //
 // [GetArguments]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllinkw-getarguments

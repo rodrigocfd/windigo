@@ -32,6 +32,13 @@ func (*IWICBitmapLock) IID() *co.IID {
 	return &cowic.IID_IWICBitmapLock
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IWICBitmapLock) AddRef(releaser *win.OleReleaser) *IWICBitmapLock {
+	return utl.OleNewFromAddRef[*IWICBitmapLock](me, releaser)
+}
+
 // [GetDataPointer] method.
 //
 // [GetDataPointer]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmaplock-getdatapointer

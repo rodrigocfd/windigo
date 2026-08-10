@@ -26,6 +26,13 @@ func (*IWICBitmapEncoderInfo) IID() *co.IID {
 	return &cowic.IID_IWICBitmapEncoderInfo
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IWICBitmapEncoderInfo) AddRef(releaser *win.OleReleaser) *IWICBitmapEncoderInfo {
+	return utl.OleNewFromAddRef[*IWICBitmapEncoderInfo](me, releaser)
+}
+
 // [CreateInstance] method.
 //
 // [CreateInstance]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapencoderinfo-createinstance

@@ -39,6 +39,13 @@ func (*IDXGISwapChain1) IID() *co.IID {
 	return &codxgi.IID_IDXGISwapChain1
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDXGISwapChain1) AddRef(releaser *win.OleReleaser) *IDXGISwapChain1 {
+	return utl.OleNewFromAddRef[*IDXGISwapChain1](me, releaser)
+}
+
 // [GetBackgroundColor] method.
 //
 // [GetBackgroundColor]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-getbackgroundcolor

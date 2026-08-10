@@ -37,6 +37,13 @@ func (*IWICComponentInfo) IID() *co.IID {
 	return &cowic.IID_IWICComponentInfo
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IWICComponentInfo) AddRef(releaser *win.OleReleaser) *IWICComponentInfo {
+	return utl.OleNewFromAddRef[*IWICComponentInfo](me, releaser)
+}
+
 // [GetAuthor] method.
 //
 // [GetAuthor]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwiccomponentinfo-getauthor

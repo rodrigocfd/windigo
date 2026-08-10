@@ -35,6 +35,13 @@ func (*ITriggerCollection) IID() *co.IID {
 	return &cotasks.IID_ITriggerCollection
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *ITriggerCollection) AddRef(releaser *win.OleReleaser) *ITriggerCollection {
+	return utl.OleNewFromAddRef[*ITriggerCollection](me, releaser)
+}
+
 // [Clear] method.
 //
 // [Clear]: https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itriggercollection-clear
@@ -66,7 +73,7 @@ func (me *ITriggerCollection) Enum(releaser *win.OleReleaser) ([]*ITrigger, erro
 		return nil, err
 	}
 
-	triggers := make([]*ITrigger, count)
+	triggers := make([]*ITrigger, 0, count)
 	for i := 0; i < count; i++ {
 		trigger, err := me.GetItem(releaser, i)
 		if err != nil {

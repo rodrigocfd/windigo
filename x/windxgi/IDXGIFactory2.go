@@ -39,6 +39,13 @@ func (*IDXGIFactory2) IID() *co.IID {
 	return &codxgi.IID_IDXGIFactory2
 }
 
+// [AddRef] method.
+//
+// [AddRef]: https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref
+func (me *IDXGIFactory2) AddRef(releaser *win.OleReleaser) *IDXGIFactory2 {
+	return utl.OleNewFromAddRef[*IDXGIFactory2](me, releaser)
+}
+
 // [CreateSwapChainForComposition] method.
 //
 // [CreateSwapChainForComposition]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-createswapchainforcomposition
