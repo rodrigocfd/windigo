@@ -369,6 +369,18 @@ func (hWnd HWND) DrawMenuBar() error {
 
 var _user_DrawMenuBar *syscall.Proc
 
+// [EnableNonClientDpiScaling] function.
+//
+// [EnableNonClientDpiScaling]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablenonclientdpiscaling
+func (hWnd HWND) EnableNonClientDpiScaling() error {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_EnableNonClientDpiScaling, "EnableNonClientDpiScaling"),
+		uintptr(hWnd))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _user_EnableNonClientDpiScaling *syscall.Proc
+
 // [EnableWindow] function.
 //
 // [EnableWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablewindow
