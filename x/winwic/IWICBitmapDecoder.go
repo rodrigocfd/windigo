@@ -148,7 +148,7 @@ func (me *IWICBitmapDecoder) Initialize(stream *win.IStream, cacheOpts cowic.WIC
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IWICBitmapDecoderVt](me.Ppvt()).Initialize,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(stream.Ppvt())),
+		stream.Ppvt(),
 		uintptr(cacheOpts))
 	return utl.HresultToError(ret)
 }
@@ -161,7 +161,7 @@ func (me *IWICBitmapDecoder) QueryCapability(stream *win.IStream) (cowic.WICDEC_
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IWICBitmapDecoderVt](me.Ppvt()).QueryCapability,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(stream.Ppvt())),
+		stream.Ppvt(),
 		uintptr(unsafe.Pointer(&capability)))
 
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {

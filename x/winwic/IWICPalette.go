@@ -105,7 +105,7 @@ func (me *IWICPalette) InitializeFromBitmap(
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IWICPaletteVt](me.Ppvt()).InitializeFromBitmap,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(surface.Ppvt())),
+		surface.Ppvt(),
 		uintptr(uint32(numColors)),
 		utl.BoolToUintptr(addTransparentColor))
 	return utl.HresultToError(ret)
@@ -118,7 +118,7 @@ func (me *IWICPalette) InitializeFromPalette(palette *IWICPalette) error {
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IWICPaletteVt](me.Ppvt()).InitializeFromPalette,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(palette.Ppvt())))
+		palette.Ppvt())
 	return utl.HresultToError(ret)
 }
 

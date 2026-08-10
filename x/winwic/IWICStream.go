@@ -60,7 +60,7 @@ func (me *IWICStream) InitializeFromIStream(stream *win.IStream) error {
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IWICStreamVt](me.Ppvt()).InitializeFromIStream,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(stream.Ppvt())))
+		stream.Ppvt())
 	return utl.HresultToError(ret)
 }
 
@@ -71,7 +71,7 @@ func (me *IWICStream) InitializeFromIStreamRegion(stream *win.IStream, offset, m
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IWICStreamVt](me.Ppvt()).InitializeFromIStreamRegion,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(stream.Ppvt())),
+		stream.Ppvt(),
 		uintptr(uint64(offset)),
 		uintptr(uint64(maxSize)))
 	return utl.HresultToError(ret)

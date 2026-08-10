@@ -119,7 +119,7 @@ func (me *IDXGIOutput) GetDisplaySurfaceData(dest *IDXGISurface) error {
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IDXGIOutputVt](me.Ppvt()).GetDisplaySurfaceData,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(dest.Ppvt())))
+		dest.Ppvt())
 	return utl.HresultToError(ret)
 }
 
@@ -161,7 +161,7 @@ func (me *IDXGIOutput) SetDisplaySurface(scanoutSurface *IDXGISurface) error {
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IDXGIOutputVt](me.Ppvt()).SetDisplaySurface,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(scanoutSurface.Ppvt())))
+		scanoutSurface.Ppvt())
 	return utl.HresultToError(ret)
 }
 

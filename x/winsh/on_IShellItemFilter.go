@@ -59,14 +59,14 @@ func NewIShellItemFilterImpl(releaser *win.OleReleaser) *IShellItemFilter {
 //
 // [GetEnumFlagsForItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemfilter-getenumflagsforitem
 func (me *IShellItemFilter) GetEnumFlagsForItem(fun func(item *IShellItem, flags *cosh.SHCONTF) co.HRESULT) {
-	(*(**_IShellItemFilterImpl)(unsafe.Pointer(me.Ppvt()))).getEnumFlagsForItem = fun
+	utl.Vt[_IShellItemFilterImpl](me.Ppvt()).getEnumFlagsForItem = fun
 }
 
 // Defines [IncludeItem] method.
 //
 // [IncludeItem]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishellitemfilter-includeitem
 func (me *IShellItemFilter) IncludeItem(fun func(item *IShellItem) co.HRESULT) {
-	(*(**_IShellItemFilterImpl)(unsafe.Pointer(me.Ppvt()))).includeItem = fun
+	utl.Vt[_IShellItemFilterImpl](me.Ppvt()).includeItem = fun
 }
 
 type _IShellItemFilterVt struct {

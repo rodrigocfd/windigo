@@ -75,7 +75,7 @@ func NewIDropTargetImpl(releaser *OleReleaser) *IDropTarget {
 func (me *IDropTarget) DragEnter(
 	fun func(dataObj *IDataObject, keyState co.MK, pt POINT, effect *co.DROPEFFECT) co.HRESULT,
 ) {
-	(*(**_IDropTargetImpl)(unsafe.Pointer(me.Ppvt()))).dragEnter = fun
+	utl.Vt[_IDropTargetImpl](me.Ppvt()).dragEnter = fun
 }
 
 // Defines [DragOver] method.
@@ -84,14 +84,14 @@ func (me *IDropTarget) DragEnter(
 func (me *IDropTarget) DragOver(
 	fun func(keyState co.MK, pt POINT, effect *co.DROPEFFECT) co.HRESULT,
 ) {
-	(*(**_IDropTargetImpl)(unsafe.Pointer(me.Ppvt()))).dragOver = fun
+	utl.Vt[_IDropTargetImpl](me.Ppvt()).dragOver = fun
 }
 
 // Defines [DragLeave] method.
 //
 // [DragLeave]: https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragleave
 func (me *IDropTarget) DragLeave(fun func() co.HRESULT) {
-	(*(**_IDropTargetImpl)(unsafe.Pointer(me.Ppvt()))).dragLeave = fun
+	utl.Vt[_IDropTargetImpl](me.Ppvt()).dragLeave = fun
 }
 
 // Defines [Drop] method.
@@ -119,7 +119,7 @@ func (me *IDropTarget) DragLeave(fun func() co.HRESULT) {
 func (me *IDropTarget) Drop(
 	fun func(dataObj *IDataObject, keyState co.MK, pt POINT, effect *co.DROPEFFECT) co.HRESULT,
 ) {
-	(*(**_IDropTargetImpl)(unsafe.Pointer(me.Ppvt()))).drop = fun
+	utl.Vt[_IDropTargetImpl](me.Ppvt()).drop = fun
 }
 
 type _IDropTargetVt struct {

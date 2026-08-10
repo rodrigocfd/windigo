@@ -139,7 +139,7 @@ func SHCreateItemFromRelativeName(
 
 	ret, _, _ := syscall.SyscallN(
 		dll.Shell.Load(&_shell_SHCreateItemFromRelativeName, "SHCreateItemFromRelativeName"),
-		uintptr(unsafe.Pointer(parent.Ppvt())),
+		parent.Ppvt(),
 		uintptr(wName.AllowEmpty(name)),
 		utl.OlePpvtOrNil(bindCtx),
 		uintptr(unsafe.Pointer(piid)),
@@ -409,7 +409,7 @@ func SHGetIDListFromObject(releaser *win.OleReleaser, obj *win.IUnknown) (*ITEMI
 	var idl ITEMIDLIST
 	ret, _, _ := syscall.SyscallN(
 		dll.Shell.Load(&_shell_SHGetIDListFromObject, "SHGetIDListFromObject"),
-		uintptr(unsafe.Pointer(obj.Ppvt())),
+		obj.Ppvt(),
 		uintptr(unsafe.Pointer(&idl)))
 	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 		pIdl := &idl

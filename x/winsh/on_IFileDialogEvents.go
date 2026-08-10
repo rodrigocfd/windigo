@@ -64,49 +64,49 @@ func NewIFileDialogEventsImpl(releaser *win.OleReleaser) *IFileDialogEvents {
 //
 // [OnFileOk]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialogevents-onfileok
 func (me *IFileDialogEvents) OnFileOk(fun func() co.HRESULT) {
-	(*(**_IFileDialogEventsImpl)(unsafe.Pointer(me.Ppvt()))).onFileOk = fun
+	utl.Vt[_IFileDialogEventsImpl](me.Ppvt()).onFileOk = fun
 }
 
 // Defines [OnFolderChanging] method.
 //
 // [OnFolderChanging]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialogevents-onfolderchanging
 func (me *IFileDialogEvents) OnFolderChanging(fun func(item *IShellItem) co.HRESULT) {
-	(*(**_IFileDialogEventsImpl)(unsafe.Pointer(me.Ppvt()))).onFolderChanging = fun
+	utl.Vt[_IFileDialogEventsImpl](me.Ppvt()).onFolderChanging = fun
 }
 
 // Defines [OnFolderChange] method.
 //
 // [OnFolderChange]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialogevents-onfolderchange
 func (me *IFileDialogEvents) OnFolderChange(fun func() co.HRESULT) {
-	(*(**_IFileDialogEventsImpl)(unsafe.Pointer(me.Ppvt()))).onFolderChange = fun
+	utl.Vt[_IFileDialogEventsImpl](me.Ppvt()).onFolderChange = fun
 }
 
 // Defines [OnSelectionChange] method.
 //
 // [OnSelectionChange]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialogevents-onselectionchange
 func (me *IFileDialogEvents) OnSelectionChange(fun func() co.HRESULT) {
-	(*(**_IFileDialogEventsImpl)(unsafe.Pointer(me.Ppvt()))).onSelectionChange = fun
+	utl.Vt[_IFileDialogEventsImpl](me.Ppvt()).onSelectionChange = fun
 }
 
 // Defines [OnShareViolation] method.
 //
 // [OnShareViolation]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialogevents-onshareviolation
 func (me *IFileDialogEvents) OnShareViolation(fun func(item *IShellItem, pResponse *cosh.FDESVR) co.HRESULT) {
-	(*(**_IFileDialogEventsImpl)(unsafe.Pointer(me.Ppvt()))).onShareViolation = fun
+	utl.Vt[_IFileDialogEventsImpl](me.Ppvt()).onShareViolation = fun
 }
 
 // Defines [OnTypeChange] method.
 //
 // [OnTypeChange]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialogevents-ontypechange
 func (me *IFileDialogEvents) OnTypeChange(fun func() co.HRESULT) {
-	(*(**_IFileDialogEventsImpl)(unsafe.Pointer(me.Ppvt()))).onTypeChange = fun
+	utl.Vt[_IFileDialogEventsImpl](me.Ppvt()).onTypeChange = fun
 }
 
 // Defines [OnOverwrite] method.
 //
 // [OnOverwrite]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialogevents-onoverwrite
 func (me *IFileDialogEvents) OnOverwrite(fun func(item *IShellItem, pResponse *cosh.FDEOR) co.HRESULT) {
-	(*(**_IFileDialogEventsImpl)(unsafe.Pointer(me.Ppvt()))).onOverwrite = fun
+	utl.Vt[_IFileDialogEventsImpl](me.Ppvt()).onOverwrite = fun
 }
 
 type _IFileDialogEventsVt struct {

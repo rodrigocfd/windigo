@@ -5,7 +5,6 @@ package win
 import (
 	"fmt"
 	"syscall"
-	"unsafe"
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/internal/dll"
@@ -26,7 +25,7 @@ func (hWnd HWND) RegisterDragDrop(dropTarget *IDropTarget) error {
 	ret, _, _ := syscall.SyscallN(
 		dll.Ole.Load(&_ole_RegisterDragDrop, "RegisterDragDrop"),
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(dropTarget.Ppvt())))
+		dropTarget.Ppvt())
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		if hr == co.HRESULT_E_OUTOFMEMORY {
 			return fmt.Errorf("RegisterDragDrop failed, did you call OleInitialize?")

@@ -65,7 +65,7 @@ func (me *IWICFormatConverter) Initialize(
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IWICFormatConverterVt](me.Ppvt()).Initialize,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(source.Ppvt())),
+		source.Ppvt(),
 		uintptr(unsafe.Pointer(pDestFormat)),
 		uintptr(unsafe.Pointer(&dither)),
 		utl.OlePpvtOrNil(palette),

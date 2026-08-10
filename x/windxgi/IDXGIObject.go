@@ -106,6 +106,6 @@ func (me *IDXGIObject) SetPrivateDataInterface(pName *co.GUID, obj *win.IUnknown
 		utl.Vt[_IDXGIObjectVt](me.Ppvt()).SetPrivateDataInterface,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(pName)),
-		uintptr(unsafe.Pointer(obj.Ppvt())))
+		obj.Ppvt())
 	return utl.HresultToError(ret)
 }

@@ -55,6 +55,7 @@ func (me *IDXGIFactory1) EnumAdapters1(releaser *win.OleReleaser) ([]*IDXGIAdapt
 		if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
 			pObj := utl.OleNew[*IDXGIAdapter1](ppvtQueried, releaser)
 			adapters = append(adapters, pObj)
+			index++
 		} else if hr == codxgi.HRESULT_DXGI_ERROR_NOT_FOUND {
 			return adapters, nil // no further adapters
 		} else { // actual error

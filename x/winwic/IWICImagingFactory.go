@@ -172,7 +172,7 @@ func (me *IWICImagingFactory) CreateBitmapFromSource(
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IWICImagingFactoryVt](me.Ppvt()).CreateBitmapFromSource,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(source.Ppvt())),
+		source.Ppvt(),
 		uintptr(option),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
 	return utl.OleNewIfOk[*IWICBitmap](ret, ppvtQueried, releaser)
@@ -191,7 +191,7 @@ func (me *IWICImagingFactory) CreateBitmapFromSourceRect(
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IWICImagingFactoryVt](me.Ppvt()).CreateBitmapFromSourceRect,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(source.Ppvt())),
+		source.Ppvt(),
 		uintptr(uint32(pos.X)),
 		uintptr(uint32(pos.Y)),
 		uintptr(uint32(size.Cx)),
@@ -331,7 +331,7 @@ func (me *IWICImagingFactory) CreateDecoderFromStream(
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IWICImagingFactoryVt](me.Ppvt()).CreateDecoderFromStream,
 		me.Ppvt(),
-		uintptr(unsafe.Pointer(stream.Ppvt())),
+		stream.Ppvt(),
 		uintptr(unsafe.Pointer(pGuidVendor)),
 		uintptr(metadataOpts),
 		uintptr(unsafe.Pointer(&ppvtQueried)))

@@ -136,14 +136,14 @@ func NewIFileOperationProgressSinkImpl(releaser *win.OleReleaser) *IFileOperatio
 //
 // [StartOperations]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperationprogresssink-startoperations
 func (me *IFileOperationProgressSink) StartOperations(fun func() co.HRESULT) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).startOperations = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).startOperations = fun
 }
 
 // Defines [FinishOperations] method.
 //
 // [FinishOperations]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperationprogresssink-finishoperations
 func (me *IFileOperationProgressSink) FinishOperations(fun func(result co.HRESULT) co.HRESULT) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).finishOperations = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).finishOperations = fun
 }
 
 // Defines [PreRenameItem] method.
@@ -152,7 +152,7 @@ func (me *IFileOperationProgressSink) FinishOperations(fun func(result co.HRESUL
 func (me *IFileOperationProgressSink) PreRenameItem(
 	fun func(flags cosh.TSF, item *IShellItem, newName string) co.HRESULT,
 ) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).preRenameItem = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).preRenameItem = fun
 }
 
 // Defines [PostRenameItem] method.
@@ -161,7 +161,7 @@ func (me *IFileOperationProgressSink) PreRenameItem(
 func (me *IFileOperationProgressSink) PostRenameItem(
 	fun func(flags cosh.TSF, item *IShellItem, newName string, hrRename co.HRESULT, newlyCreated *IShellItem) co.HRESULT,
 ) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).postRenameItem = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).postRenameItem = fun
 }
 
 // Defines [PreMoveItem] method.
@@ -170,7 +170,7 @@ func (me *IFileOperationProgressSink) PostRenameItem(
 func (me *IFileOperationProgressSink) PreMoveItem(
 	fun func(flags cosh.TSF, item, destFolder *IShellItem, newName string) co.HRESULT,
 ) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).preMoveItem = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).preMoveItem = fun
 }
 
 // Defines [PostMoveItem] method.
@@ -179,7 +179,7 @@ func (me *IFileOperationProgressSink) PreMoveItem(
 func (me *IFileOperationProgressSink) PostMoveItem(
 	fun func(flags cosh.TSF, item, destFolder *IShellItem, newName string, hrMove co.HRESULT, newlyCreated *IShellItem) co.HRESULT,
 ) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).postMoveItem = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).postMoveItem = fun
 }
 
 // Defines [PreCopyItem] method.
@@ -188,7 +188,7 @@ func (me *IFileOperationProgressSink) PostMoveItem(
 func (me *IFileOperationProgressSink) PreCopyItem(
 	fun func(flags cosh.TSF, item, destFolder *IShellItem, newName string) co.HRESULT,
 ) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).preCopyItem = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).preCopyItem = fun
 }
 
 // Defines [PostCopyItem] method.
@@ -197,7 +197,7 @@ func (me *IFileOperationProgressSink) PreCopyItem(
 func (me *IFileOperationProgressSink) PostCopyItem(
 	fun func(flags cosh.TSF, item, destFolder *IShellItem, newName string, hrMove co.HRESULT, newlyCreated *IShellItem) co.HRESULT,
 ) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).postCopyItem = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).postCopyItem = fun
 }
 
 // Defines [PreDeleteItem] method.
@@ -206,7 +206,7 @@ func (me *IFileOperationProgressSink) PostCopyItem(
 func (me *IFileOperationProgressSink) PreDeleteItem(
 	fun func(flags cosh.TSF, item *IShellItem) co.HRESULT,
 ) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).preDeleteItem = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).preDeleteItem = fun
 }
 
 // Defines [PostDeleteItem] method.
@@ -215,7 +215,7 @@ func (me *IFileOperationProgressSink) PreDeleteItem(
 func (me *IFileOperationProgressSink) PostDeleteItem(
 	fun func(flags cosh.TSF, item *IShellItem, hrDelete co.HRESULT, newlyCreated *IShellItem) co.HRESULT,
 ) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).postDeleteItem = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).postDeleteItem = fun
 }
 
 // Defines [PreNewItem] method.
@@ -224,7 +224,7 @@ func (me *IFileOperationProgressSink) PostDeleteItem(
 func (me *IFileOperationProgressSink) PreNewItem(
 	fun func(flags cosh.TSF, destFolder *IShellItem, newName string) co.HRESULT,
 ) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).preNewItem = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).preNewItem = fun
 }
 
 // Defines [PostNewItem] method.
@@ -233,35 +233,35 @@ func (me *IFileOperationProgressSink) PreNewItem(
 func (me *IFileOperationProgressSink) PostNewItem(
 	fun func(flags cosh.TSF, destFolder *IShellItem, newName, templateName string, attr co.FILE_ATTRIBUTE, hrNew co.HRESULT, newItem *IShellItem) co.HRESULT,
 ) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).postNewItem = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).postNewItem = fun
 }
 
 // Defines [UpdateProgress] method.
 //
 // [UpdateProgress]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperationprogresssink-updateprogress
 func (me *IFileOperationProgressSink) UpdateProgress(fun func(workTotal, workSoFar int) co.HRESULT) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).updateProgress = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).updateProgress = fun
 }
 
 // Defines [ResetTimer] method.
 //
 // [ResetTimer]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperationprogresssink-resettimer
 func (me *IFileOperationProgressSink) ResetTimer(fun func() co.HRESULT) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).resetTimer = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).resetTimer = fun
 }
 
 // Defines [PauseTimer] method.
 //
 // [PauseTimer]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperationprogresssink-pausetimer
 func (me *IFileOperationProgressSink) PauseTimer(fun func() co.HRESULT) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).pauseTimer = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).pauseTimer = fun
 }
 
 // Defines [ResumeTimer] method.
 //
 // [ResumeTimer]: https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperationprogresssink-resumetimer
 func (me *IFileOperationProgressSink) ResumeTimer(fun func() co.HRESULT) {
-	(*(**_IFileOperationProgressSinkImpl)(unsafe.Pointer(me.Ppvt()))).resumeTimer = fun
+	utl.Vt[_IFileOperationProgressSinkImpl](me.Ppvt()).resumeTimer = fun
 }
 
 type _IFileOperationProgressSinkVt struct {
