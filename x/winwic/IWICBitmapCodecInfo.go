@@ -3,6 +3,7 @@
 package winwic
 
 import (
+	"strings"
 	"syscall"
 	"unsafe"
 
@@ -123,6 +124,14 @@ func (me *IWICBitmapCodecInfo) GetColorManagementVersion() (string, error) {
 	return wstr.DecodeSlice(buf), nil
 }
 
+// [GetContainerFormat] method.
+//
+// [GetContainerFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getcontainerformat
+func (me *IWICBitmapCodecInfo) GetContainerFormat() (cowic.WIC_CONTAINER, error) {
+	return utl.OleCallReturnStruct[cowic.WIC_CONTAINER](me,
+		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetContainerFormat)
+}
+
 // [GetDeviceManufacturer] method.
 //
 // [GetDeviceManufacturer]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getdevicemanufacturer
@@ -150,12 +159,31 @@ func (me *IWICBitmapCodecInfo) GetDeviceManufacturer() (string, error) {
 	return wstr.DecodeSlice(buf), nil
 }
 
-// [GetContainerFormat] method.
+// [GetDeviceModels] method.
 //
-// [GetContainerFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getcontainerformat
-func (me *IWICBitmapCodecInfo) GetContainerFormat() (cowic.WIC_CONTAINER, error) {
-	return utl.OleCallReturnStruct[cowic.WIC_CONTAINER](me,
-		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetContainerFormat)
+// [GetDeviceModels]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getdevicemodels
+func (me *IWICBitmapCodecInfo) GetDeviceModels() ([]string, error) {
+	var szBuf uint32
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetDeviceModels,
+		me.Ppvt(),
+		0, 0,
+		uintptr(unsafe.Pointer(&szBuf)))
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return nil, hr
+	}
+
+	buf := make([]uint16, szBuf)
+	ret, _, _ = syscall.SyscallN(
+		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetDeviceModels,
+		me.Ppvt(),
+		uintptr(szBuf),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(unsafe.Pointer(&szBuf)))
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return nil, hr
+	}
+	return strings.Split(wstr.DecodeSlice(buf), ","), nil
 }
 
 // [GetPixelFormats] method.
