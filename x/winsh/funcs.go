@@ -292,6 +292,22 @@ func Shell_NotifyIconGetRect(pIdent *NOTIFYICONIDENTIFIER) (win.RECT, error) {
 
 var _shell_Shell_NotifyIconGetRect *syscall.Proc
 
+// [ShellAbout] function.
+//
+// [ShellAbout]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shellaboutw
+func ShellAbout(hWnd win.HWND, app, otherStuff string, hIcon win.HICON) error {
+	var wApp, wOtherStuff wstr.BufEncoder
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell.Load(&_shell_ShellAboutW, "ShellAboutW"),
+		uintptr(hWnd),
+		uintptr(wApp.AllowEmpty(app)),
+		uintptr(wOtherStuff.EmptyIsNil(otherStuff)),
+		uintptr(hIcon))
+	return utl.ZeroAsAnySysError(ret)
+}
+
+var _shell_ShellAboutW *syscall.Proc
+
 // [SHGetDesktopFolder] function.
 //
 // Example:
