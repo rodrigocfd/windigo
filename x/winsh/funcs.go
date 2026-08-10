@@ -61,6 +61,23 @@ func GetDpiForMonitor(hMon win.HMONITOR, dpiType cosh.MDT) (dpiX, dpiY int, hr e
 
 var _shcore_GetDpiForMonitor *syscall.Proc
 
+// [GetProcessDpiAwareness] function.
+//
+// [GetProcessDpiAwareness]: https://learn.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-getprocessdpiawareness
+func GetProcessDpiAwareness(hProcess win.HPROCESS) (cosh.PROCESS_DA, error) {
+	var pda cosh.PROCESS_DA
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell.Load(&_shcore_GetProcessDpiAwareness, "GetProcessDpiAwareness"),
+		uintptr(hProcess),
+		uintptr(unsafe.Pointer(&pda)))
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return cosh.PROCESS_DA(0), hr
+	}
+	return pda, nil
+}
+
+var _shcore_GetProcessDpiAwareness *syscall.Proc
+
 // [SHCreateItemFromIDList] function.
 //
 // Return type is typically [IShellItem] of [IShellItem2].

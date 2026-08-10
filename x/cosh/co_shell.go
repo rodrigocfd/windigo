@@ -426,6 +426,17 @@ const (
 	NIS_SHAREDICON NIS = 0x0000_0002
 )
 
+// [PROCESS_DPI_AWARENESS] enumeration. Originally has PROCESS prefix.
+//
+// [PROCESS_DPI_AWARENESS]: https://learn.microsoft.com/en-us/windows/win32/api/shellscalingapi/ne-shellscalingapi-process_dpi_awareness
+type PROCESS_DA uint32
+
+const (
+	PROCESS_DA_UNAWARE           PROCESS_DA = 0
+	PROCESS_DA_SYSTEM_AWARE      PROCESS_DA = 1
+	PROCESS_DA_PER_MONITOR_AWARE PROCESS_DA = 2
+)
+
 // [PROPERTYKEY] struct, with C memory layout.
 //
 // [PROPERTYKEY]: https://learn.microsoft.com/en-us/windows/win32/api/wtypes/ns-wtypes-propertykey
