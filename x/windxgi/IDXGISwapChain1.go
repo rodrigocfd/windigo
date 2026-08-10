@@ -54,6 +54,25 @@ func (me *IDXGISwapChain1) GetBackgroundColor() (DXGI_RGBA, error) {
 		utl.Vt[_IDXGISwapChain1Vt](me.Ppvt()).GetBackgroundColor)
 }
 
+// [GetCoreWindow] method.
+//
+// [GetCoreWindow]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-getcorewindow
+func (me *IDXGISwapChain1) GetCoreWindow(
+	releaser *win.OleReleaser,
+	piid *co.IID,
+	ppOut interface{},
+) error {
+	_ = utl.OleValidateRelease(ppOut)
+	var ppvtQueried uintptr
+
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IDXGISwapChain1Vt](me.Ppvt()).GetCoreWindow,
+		me.Ppvt(),
+		uintptr(unsafe.Pointer(piid)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+	return utl.OleInjectIfOk(ret, ppOut, ppvtQueried, releaser)
+}
+
 // [GetDesc1] method.
 //
 // [GetDesc1]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiswapchain1-getdesc1

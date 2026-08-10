@@ -11,6 +11,19 @@ import (
 	"github.com/rodrigocfd/windigo/internal/utl"
 )
 
+// [DwmEnableBlurBehindWindow] function.
+//
+// [DwmEnableBlurBehindWindow]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmenableblurbehindwindow
+func (hWnd HWND) DwmEnableBlurBehindWindow(pBlurBehind *DWM_BLURBEHIND) error {
+	ret, _, _ := syscall.SyscallN(
+		dll.Dwmapi.Load(&_dwmapi_DwmEnableBlurBehindWindow, "DwmEnableBlurBehindWindow"),
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(pBlurBehind)))
+	return utl.HresultToError(ret)
+}
+
+var _dwmapi_DwmEnableBlurBehindWindow *syscall.Proc
+
 // [DwmExtendFrameIntoClientArea] function.
 //
 // [DwmExtendFrameIntoClientArea]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea

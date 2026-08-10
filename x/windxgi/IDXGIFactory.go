@@ -73,7 +73,7 @@ func (me *IDXGIFactory) CreateSwapChain(
 ) (*IDXGISwapChain, error) {
 	var ppvtQueried uintptr
 	ret, _, _ := syscall.SyscallN(
-		utl.Vt[_IDXGIFactoryVt](me.Ppvt()).CreateSoftwareAdapter,
+		utl.Vt[_IDXGIFactoryVt](me.Ppvt()).CreateSwapChain,
 		me.Ppvt(),
 		device.Ppvt(),
 		uintptr(unsafe.Pointer(pDesc)),

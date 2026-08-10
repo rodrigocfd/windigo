@@ -2,6 +2,17 @@
 
 package co
 
+// [DWM Blur Behind] constants.
+//
+// [DWM Blur Behind]: https://learn.microsoft.com/en-us/windows/win32/dwm/dwm-bb-constants
+type DWM_BB uint32
+
+const (
+	DWM_BB_ENABLE                DWM_BB = 0x0000_0001
+	DWM_BB_BLURREGION            DWM_BB = 0x0000_0002
+	DWM_BB_TRANSITIONONMAXIMIZED DWM_BB = 0x0000_0004
+)
+
 // [DWMWA_GET_CLOAKED] return values.
 //
 // [DWMWA_GET_CLOAKED]: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
