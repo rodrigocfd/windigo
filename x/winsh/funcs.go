@@ -78,6 +78,18 @@ func GetProcessDpiAwareness(hProcess win.HPROCESS) (cosh.PROCESS_DA, error) {
 
 var _shcore_GetProcessDpiAwareness *syscall.Proc
 
+// [SetProcessDpiAwareness] function.
+//
+// [SetProcessDpiAwareness]: https://learn.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-setprocessdpiawareness
+func SetProcessDpiAwareness(value cosh.PROCESS_DA) error {
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell.Load(&_shcore_SetProcessDpiAwareness, "SetProcessDpiAwareness"),
+		uintptr(value))
+	return utl.HresultToError(ret)
+}
+
+var _shcore_SetProcessDpiAwareness *syscall.Proc
+
 // [SHCreateItemFromIDList] function.
 //
 // Return type is typically [IShellItem] of [IShellItem2].
