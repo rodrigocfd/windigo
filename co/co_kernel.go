@@ -246,6 +246,19 @@ const (
 	ENDSESSION_LOGOFF            ENDSESSION = 0x8000_0000
 )
 
+// [SetThreadExecutionState] esFlags. Originally has ES prefix.
+//
+// [SetThreadExecutionState]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setthreadexecutionstate
+type EXS uint32
+
+const (
+	EXS_AWAYMODE_REQUIRED EXS = 0x0000_0040
+	EXS_CONTINUOUS        EXS = 0x8000_0000
+	EXS_DISPLAY_REQUIRED  EXS = 0x0000_0002
+	EXS_SYSTEM_REQUIRED   EXS = 0x0000_0001
+	EXS_USER_PRESENT      EXS = 0x0000_0004
+)
+
 // File attribute [constants].
 //
 // [constants]: https://learn.microsoft.com/en-us/windows/win32/fileio/file-attribute-constants

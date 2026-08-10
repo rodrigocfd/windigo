@@ -895,6 +895,21 @@ func SetCurrentDirectory(pathName string) error {
 
 var _kernel_SetCurrentDirectoryW *syscall.Proc
 
+// [SetThreadExecutionState] function.
+//
+// [SetThreadExecutionState]: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setthreadexecutionstate
+func SetThreadExecutionState(esFlags co.EXS) (co.EXS, error) {
+	ret, _, _ := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_SetThreadExecutionState, "SetThreadExecutionState"),
+		uintptr(esFlags))
+	if ret == 0 {
+		return co.EXS(0), co.ERROR_UNIDENTIFIED_ERROR
+	}
+	return co.EXS(ret), nil
+}
+
+var _kernel_SetThreadExecutionState *syscall.Proc
+
 // [Sleep] function.
 //
 // Example:
