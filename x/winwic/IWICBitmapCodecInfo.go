@@ -96,6 +96,33 @@ func (me *IWICBitmapCodecInfo) DoesSupportMultiframe() (bool, error) {
 	return utl.HresultToBoolError(int32(supportMulti), ret)
 }
 
+// [GetColorManagementVersion] method.
+//
+// [GetColorManagementVersion]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getcolormanagementversion
+func (me *IWICBitmapCodecInfo) GetColorManagementVersion() (string, error) {
+	var szBuf uint32
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetColorManagementVersion,
+		me.Ppvt(),
+		0, 0,
+		uintptr(unsafe.Pointer(&szBuf)))
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return "", hr
+	}
+
+	buf := make([]uint16, szBuf)
+	ret, _, _ = syscall.SyscallN(
+		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetColorManagementVersion,
+		me.Ppvt(),
+		uintptr(szBuf),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(unsafe.Pointer(&szBuf)))
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return "", hr
+	}
+	return wstr.DecodeSlice(buf), nil
+}
+
 // [GetContainerFormat] method.
 //
 // [GetContainerFormat]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getcontainerformat
@@ -125,11 +152,10 @@ func (me *IWICBitmapCodecInfo) GetPixelFormats() ([]cowic.WIC_PIXELFORMAT, error
 		uintptr(numFormats),
 		uintptr(unsafe.Pointer(&formats[0])),
 		uintptr(unsafe.Pointer(&numFormats)))
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return formats, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, hr
 	}
+	return formats, nil
 }
 
 // [MatchesMimeType] method.
