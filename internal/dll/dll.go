@@ -30,6 +30,7 @@ var (
 	Ole        = SystemDll{nil, "ole32"}
 	Oleaut     = SystemDll{nil, "oleaut32"}
 	Psapi      = SystemDll{nil, "psapi"}
+	Shcore     = SystemDll{nil, "shcore"}
 	Shell      = SystemDll{nil, "shell32"}
 	Shlwapi    = SystemDll{nil, "shlwapi"}
 	User       = SystemDll{nil, "user32"}

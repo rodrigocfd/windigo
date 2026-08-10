@@ -42,6 +42,25 @@ func CommandLineToArgv(cmdLine string) ([]string, error) {
 
 var _shell_CommandLineToArgvW *syscall.Proc
 
+// [GetDpiForMonitor] function.
+//
+// [GetDpiForMonitor]: https://learn.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-getdpiformonitor
+func GetDpiForMonitor(hMon win.HMONITOR, dpiType cosh.MDT) (dpiX, dpiY int, hr error) {
+	var dpi32X, dpi32Y uint32
+	ret, _, _ := syscall.SyscallN(
+		dll.Shell.Load(&_shcore_GetDpiForMonitor, "GetDpiForMonitor"),
+		uintptr(hMon),
+		uintptr(dpiType),
+		uintptr(unsafe.Pointer(&dpi32X)),
+		uintptr(unsafe.Pointer(&dpi32Y)))
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return 0, 0, hr
+	}
+	return int(dpiX), int(dpiY), nil
+}
+
+var _shcore_GetDpiForMonitor *syscall.Proc
+
 // [SHCreateItemFromIDList] function.
 //
 // Return type is typically [IShellItem] of [IShellItem2].

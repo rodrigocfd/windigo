@@ -338,6 +338,18 @@ const (
 	KF_ALIAS_ONLY                       KF = 0x8000_0000
 )
 
+// [MONITOR_DPI_TYPE] enumeration.
+//
+// [MONITOR_DPI_TYPE]: https://learn.microsoft.com/en-us/windows/win32/api/shellscalingapi/ne-shellscalingapi-monitor_dpi_type
+type MDT uint32
+
+const (
+	MDT_EFFECTIVE_DPI MDT = 0
+	MDT_ANGULAR_DPI   MDT = 1
+	MDT_RAW_DPI       MDT = 2
+	MDT_DEFAULT           = MDT_EFFECTIVE_DPI
+)
+
 // [NOTIFYICONDATA] uFlags.
 //
 // [NOTIFYICONDATA]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
