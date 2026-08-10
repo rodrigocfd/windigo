@@ -101,27 +101,7 @@ func (me *IWICBitmapCodecInfo) DoesSupportMultiframe() (bool, error) {
 //
 // [GetColorManagementVersion]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getcolormanagementversion
 func (me *IWICBitmapCodecInfo) GetColorManagementVersion() (string, error) {
-	var szBuf uint32
-	ret, _, _ := syscall.SyscallN(
-		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetColorManagementVersion,
-		me.Ppvt(),
-		0, 0,
-		uintptr(unsafe.Pointer(&szBuf)))
-	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
-		return "", hr
-	}
-
-	buf := make([]uint16, szBuf)
-	ret, _, _ = syscall.SyscallN(
-		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetColorManagementVersion,
-		me.Ppvt(),
-		uintptr(szBuf),
-		uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(unsafe.Pointer(&szBuf)))
-	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
-		return "", hr
-	}
-	return wstr.DecodeSlice(buf), nil
+	return oleCallAllocBufRetStr(me, utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetColorManagementVersion)
 }
 
 // [GetContainerFormat] method.
@@ -136,54 +116,40 @@ func (me *IWICBitmapCodecInfo) GetContainerFormat() (cowic.WIC_CONTAINER, error)
 //
 // [GetDeviceManufacturer]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getdevicemanufacturer
 func (me *IWICBitmapCodecInfo) GetDeviceManufacturer() (string, error) {
-	var szBuf uint32
-	ret, _, _ := syscall.SyscallN(
-		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetDeviceManufacturer,
-		me.Ppvt(),
-		0, 0,
-		uintptr(unsafe.Pointer(&szBuf)))
-	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
-		return "", hr
-	}
-
-	buf := make([]uint16, szBuf)
-	ret, _, _ = syscall.SyscallN(
-		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetDeviceManufacturer,
-		me.Ppvt(),
-		uintptr(szBuf),
-		uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(unsafe.Pointer(&szBuf)))
-	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
-		return "", hr
-	}
-	return wstr.DecodeSlice(buf), nil
+	return oleCallAllocBufRetStr(me, utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetDeviceManufacturer)
 }
 
 // [GetDeviceModels] method.
 //
 // [GetDeviceModels]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getdevicemodels
 func (me *IWICBitmapCodecInfo) GetDeviceModels() ([]string, error) {
-	var szBuf uint32
-	ret, _, _ := syscall.SyscallN(
-		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetDeviceModels,
-		me.Ppvt(),
-		0, 0,
-		uintptr(unsafe.Pointer(&szBuf)))
-	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
-		return nil, hr
+	str, err := oleCallAllocBufRetStr(me, utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetDeviceModels)
+	if err != nil {
+		return nil, err
 	}
+	return strings.Split(str, ","), nil
+}
 
-	buf := make([]uint16, szBuf)
-	ret, _, _ = syscall.SyscallN(
-		utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetDeviceModels,
-		me.Ppvt(),
-		uintptr(szBuf),
-		uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(unsafe.Pointer(&szBuf)))
-	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
-		return nil, hr
+// [GetFileExtensions] method.
+//
+// [GetFileExtensions]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getfileextensions
+func (me *IWICBitmapCodecInfo) GetFileExtensions() ([]string, error) {
+	str, err := oleCallAllocBufRetStr(me, utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetFileExtensions)
+	if err != nil {
+		return nil, err
 	}
-	return strings.Split(wstr.DecodeSlice(buf), ","), nil
+	return strings.Split(str, ","), nil
+}
+
+// [GetMimeTypes] method.
+//
+// [GetMimeTypes]: https://learn.microsoft.com/en-us/windows/win32/api/wincodec/nf-wincodec-iwicbitmapcodecinfo-getmimetypes
+func (me *IWICBitmapCodecInfo) GetMimeTypes() ([]string, error) {
+	str, err := oleCallAllocBufRetStr(me, utl.Vt[_IWICBitmapCodecInfoVt](me.Ppvt()).GetMimeTypes)
+	if err != nil {
+		return nil, err
+	}
+	return strings.Split(str, ","), nil
 }
 
 // [GetPixelFormats] method.

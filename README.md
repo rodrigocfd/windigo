@@ -30,7 +30,7 @@ Native FFI items currently implemented:
 | Structs | 206 |
 | Functions | 685 |
 | COM interfaces | 79 |
-| COM methods | 543 |
+| COM methods | 545 |
 | Const types | 422 |
 | Const values | 11,192 |
 
