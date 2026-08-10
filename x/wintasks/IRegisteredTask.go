@@ -84,12 +84,10 @@ func (me *IRegisteredTask) GetLastTaskResult() (int, error) {
 		utl.Vt[_IRegisteredTaskVt](me.Ppvt()).Get_LastTaskResult,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&last)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(last), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(last), nil
 }
 
 // [get_Name] method.
@@ -108,12 +106,10 @@ func (me *IRegisteredTask) GetNumberOfMissedRuns() (int, error) {
 		utl.Vt[_IRegisteredTaskVt](me.Ppvt()).Get_NumberOfMissedRuns,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&nmr)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(nmr), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(nmr), nil
 }
 
 // [get_Path] method.
@@ -142,17 +138,16 @@ func (me *IRegisteredTask) GetRunTimes(start, end time.Time, count int) ([]time.
 		uintptr(unsafe.Pointer(&stEnd)),
 		uintptr(unsafe.Pointer(&count32)),
 		uintptr(unsafe.Pointer(&pRunTimes)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		memStRunTimes := unsafe.Slice((*win.SYSTEMTIME)(unsafe.Pointer(pRunTimes)), count32)
-		runTimes := make([]time.Time, 0, count32)
-		for _, st := range memStRunTimes {
-			runTimes = append(runTimes, st.ToTime())
-		}
-		return runTimes, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, hr
 	}
+
+	memStRunTimes := unsafe.Slice((*win.SYSTEMTIME)(unsafe.Pointer(pRunTimes)), count32)
+	runTimes := make([]time.Time, 0, count32)
+	for _, st := range memStRunTimes {
+		runTimes = append(runTimes, st.ToTime())
+	}
+	return runTimes, nil
 }
 
 // [get_State] method.

@@ -102,12 +102,10 @@ func (me *IShellItem2) GetCLSID(pKey *cosh.PROPERTYKEY) (co.CLSID, error) {
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&clsid)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return clsid, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return co.CLSID{}, hr
 	}
+	return clsid, nil
 }
 
 // [GetFileTime] method.
@@ -120,12 +118,10 @@ func (me *IShellItem2) GetFileTime(pKey *cosh.PROPERTYKEY) (time.Time, error) {
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&ft)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return ft.ToTime(), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return time.Time{}, hr
 	}
+	return ft.ToTime(), nil
 }
 
 // [GetInt32] method.
@@ -138,12 +134,10 @@ func (me *IShellItem2) GetInt32(pKey *cosh.PROPERTYKEY) (int32, error) {
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&i)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return i, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return i, nil
 }
 
 // [GetPropertyStore] method.
@@ -185,14 +179,13 @@ func (me *IShellItem2) GetString(pKey *cosh.PROPERTYKEY) (string, error) {
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&psz)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		defer win.HTASKMEM(psz).CoTaskMemFree()
-		name := wstr.DecodePtr((*uint16)(unsafe.Pointer(psz)))
-		return name, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
+
+	defer win.HTASKMEM(psz).CoTaskMemFree()
+	name := wstr.DecodePtr((*uint16)(unsafe.Pointer(psz)))
+	return name, nil
 }
 
 // [GetUInt32] method.
@@ -205,12 +198,10 @@ func (me *IShellItem2) GetUInt32(pKey *cosh.PROPERTYKEY) (uint32, error) {
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&ui)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return ui, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return ui, nil
 }
 
 // [GetUInt64] method.
@@ -223,12 +214,10 @@ func (me *IShellItem2) GetUInt64(pKey *cosh.PROPERTYKEY) (uint64, error) {
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(pKey)),
 		uintptr(unsafe.Pointer(&ull)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return ull, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return ull, nil
 }
 
 // [Update] method.

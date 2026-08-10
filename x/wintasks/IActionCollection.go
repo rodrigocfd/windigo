@@ -104,12 +104,10 @@ func (me *IActionCollection) GetCount() (int, error) {
 		utl.Vt[_IActionCollectionVt](me.Ppvt()).Get_Count,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&count)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(count), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(count), nil
 }
 
 // [get_Item] method.

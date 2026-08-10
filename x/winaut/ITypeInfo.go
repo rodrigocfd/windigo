@@ -69,12 +69,10 @@ func (me *ITypeInfo) AddressOfMember(
 		uintptr(memberId),
 		uintptr(invokeKind),
 		uintptr(unsafe.Pointer(&addr)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return addr, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return addr, nil
 }
 
 // [CreateInstance] method.
@@ -111,13 +109,11 @@ func (me *ITypeInfo) GetContainingTypeLib(releaser *win.OleReleaser) (*ITypeLib,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&ppvtQueried)),
 		uintptr(unsafe.Pointer(&index)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pObj := utl.OleNew[*ITypeLib](ppvtQueried, releaser)
-		return pObj, int(index), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, 0, hr
 	}
+	pObj := utl.OleNew[*ITypeLib](ppvtQueried, releaser)
+	return pObj, int(index), nil
 }
 
 // [GetDllEntry] method.
@@ -140,16 +136,14 @@ func (me *ITypeInfo) GetDllEntry(
 		uintptr(unsafe.Pointer(&dllName)),
 		uintptr(unsafe.Pointer(&name)),
 		uintptr(unsafe.Pointer(&ordinal16)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return TypeInfoDllEntry{
-			DllName: dllName.String(),
-			Name:    name.String(),
-			Ordinal: int(ordinal16),
-		}, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return TypeInfoDllEntry{}, hr
 	}
+	return TypeInfoDllEntry{
+		DllName: dllName.String(),
+		Name:    name.String(),
+		Ordinal: int(ordinal16),
+	}, nil
 }
 
 // Returned by [ITypeInfo.GetDllEntry].
@@ -177,17 +171,15 @@ func (me *ITypeInfo) GetDocumentation(memberId MEMBERID) (TypeInfoDoc, error) {
 		uintptr(unsafe.Pointer(&docStr)),
 		uintptr(unsafe.Pointer(&helpCtx)),
 		uintptr(unsafe.Pointer(&helpFile)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return TypeInfoDoc{
-			Name:        name.String(),
-			DocString:   docStr.String(),
-			HelpContext: int(helpCtx),
-			HelpFile:    helpFile.String(),
-		}, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return TypeInfoDoc{}, hr
 	}
+	return TypeInfoDoc{
+		Name:        name.String(),
+		DocString:   docStr.String(),
+		HelpContext: int(helpCtx),
+		HelpFile:    helpFile.String(),
+	}, nil
 }
 
 // Returned by [ITypeInfo.GetDocumentation].
@@ -222,14 +214,12 @@ func (me *ITypeInfo) GetFuncDesc(releaser *win.OleReleaser, index int) (*FuncDes
 		me.Ppvt(),
 		uintptr(uint32(index)),
 		uintptr(unsafe.Pointer(&pFuncDesc)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pData := &FuncDescData{pFuncDesc, me}
-		releaser.Add(pData)
-		return pData, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, hr
 	}
+	pData := &FuncDescData{pFuncDesc, me}
+	releaser.Add(pData)
+	return pData, nil
 }
 
 // [GetIDsOfNames] method.
@@ -249,12 +239,10 @@ func (me *ITypeInfo) GetIDsOfNames(names ...string) ([]MEMBERID, error) {
 		uintptr(unsafe.Pointer(&strPtrs[0])),
 		uintptr(uint32(len(names))),
 		uintptr(unsafe.Pointer(&memIds[0])))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return memIds, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, hr
 	}
+	return memIds, nil
 }
 
 // [GetImplTypeFlags] method.
@@ -267,12 +255,10 @@ func (me *ITypeInfo) GetImplTypeFlags(index int) (coaut.IMPLTYPEFLAG, error) {
 		me.Ppvt(),
 		uintptr(uint32(index)),
 		uintptr(unsafe.Pointer(&flags)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return flags, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return coaut.IMPLTYPEFLAG(0), hr
 	}
+	return flags, nil
 }
 
 // [GetMops] method.
@@ -287,12 +273,10 @@ func (me *ITypeInfo) GetMops(memberId MEMBERID) (string, error) {
 		me.Ppvt(),
 		uintptr(memberId),
 		uintptr(unsafe.Pointer(&mops)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return mops.String(), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
+	return mops.String(), nil
 }
 
 // [ReleaseFuncDesc] method.

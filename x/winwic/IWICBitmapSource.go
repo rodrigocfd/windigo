@@ -83,12 +83,10 @@ func (me *IWICBitmapSource) GetResolution() (dpiX float64, dpiY float64, hr erro
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&cx)),
 		uintptr(unsafe.Pointer(&cy)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return cx, cy, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, 0, hr
 	}
+	return cx, cy, nil
 }
 
 // [GetSize] method.
@@ -101,10 +99,8 @@ func (me *IWICBitmapSource) GetSize() (win.SIZE, error) {
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&cx)),
 		uintptr(unsafe.Pointer(&cy)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return win.SIZE{Cx: int32(cx), Cy: int32(cy)}, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return win.SIZE{}, hr
 	}
+	return win.SIZE{Cx: int32(cx), Cy: int32(cy)}, nil
 }

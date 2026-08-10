@@ -86,12 +86,10 @@ func (me *IFileOperation) Advise(fops *IFileOperationProgressSink) (uint32, erro
 		me.Ppvt(),
 		fops.Ppvt(),
 		uintptr(unsafe.Pointer(&cookie)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return cookie, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return cookie, nil
 }
 
 // [ApplyPropertiesToItem] method.

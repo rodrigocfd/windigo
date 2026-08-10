@@ -48,11 +48,10 @@ func (me *IDXGIAdapter) CheckInterfaceSupport(pInterfaceName *co.GUID) (int, err
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(pInterfaceName)),
 		uintptr(unsafe.Pointer(&umdVersion)))
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(umdVersion), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(umdVersion), nil
 }
 
 // [EnumOutputs] method.

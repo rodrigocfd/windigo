@@ -56,12 +56,10 @@ func (me *IDXGISurface) Map(flags codxgi.DXGI_MAP) (DXGI_MAPPED_RECT, error) {
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&lockedRect)),
 		uintptr(flags))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return lockedRect, nil
-	} else {
-		return DXGI_MAPPED_RECT{}, hr
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return DXGI_MAPPED_RECT{}, nil
 	}
+	return lockedRect, nil
 }
 
 // [Unmap] method.

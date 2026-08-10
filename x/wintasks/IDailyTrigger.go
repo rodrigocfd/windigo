@@ -48,12 +48,10 @@ func (me *IDailyTrigger) GetDaysInterval() (int, error) {
 		utl.Vt[_IDailyTriggerVt](me.Ppvt()).Get_DaysInterval,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&days)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(days), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(days), nil
 }
 
 // [get_RandomDelay] method.

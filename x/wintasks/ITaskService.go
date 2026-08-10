@@ -102,12 +102,10 @@ func (me *ITaskService) GetHighestVersion() (int, error) {
 		utl.Vt[_ITaskServiceVt](me.Ppvt()).Get_HighestVersion,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&version)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(version), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(version), nil
 }
 
 // [get_TargetServer] method.

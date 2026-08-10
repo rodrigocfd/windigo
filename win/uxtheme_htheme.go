@@ -201,7 +201,7 @@ func (hTheme HTHEME) GetThemeSysColorBrush(colorId co.TMT) (HBRUSH, error) {
 		dll.Uxtheme.Load(&_uxtheme_GetThemeSysColorBrush, "GetThemeSysColorBrush"),
 		uintptr(hTheme),
 		uintptr(colorId))
-	if hr := co.HRESULT(ret); ret == 0 && hr != co.HRESULT_S_OK {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return HBRUSH(0), co.HRESULT_E_FAIL // no info is given on error
 	}
 	return HBRUSH(ret), nil

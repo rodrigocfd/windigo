@@ -74,12 +74,10 @@ func (me *IWICPalette) GetColorCount() (int, error) {
 		utl.Vt[_IWICPaletteVt](me.Ppvt()).GetColorCount,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&count)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(count), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(count), nil
 }
 
 // [HasAlpha] method.

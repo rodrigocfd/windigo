@@ -175,12 +175,10 @@ func (me *ITaskSettings) GetPriority() (int, error) {
 		utl.Vt[_ITaskSettingsVt](me.Ppvt()).Get_Priority,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&priority)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(priority), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(priority), nil
 }
 
 // [get_RestartCount] method.
@@ -192,12 +190,10 @@ func (me *ITaskSettings) GetRestartCount() (int, error) {
 		utl.Vt[_ITaskSettingsVt](me.Ppvt()).Get_RestartCount,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&priority)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(priority), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(priority), nil
 }
 
 // [get_RestartInterval] method.

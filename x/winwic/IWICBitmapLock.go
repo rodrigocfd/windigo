@@ -51,12 +51,10 @@ func (me *IWICBitmapLock) GetDataPointer() ([]byte, error) {
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&szBuf)),
 		uintptr(unsafe.Pointer(&pData)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return unsafe.Slice(pData, szBuf), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, hr
 	}
+	return unsafe.Slice(pData, szBuf), nil
 }
 
 // [GetSize] method.
@@ -69,12 +67,10 @@ func (me *IWICBitmapLock) GetSize() (win.SIZE, error) {
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&cx)),
 		uintptr(unsafe.Pointer(&cy)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return win.SIZE{Cx: int32(cx), Cy: int32(cy)}, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return win.SIZE{}, hr
 	}
+	return win.SIZE{Cx: int32(cx), Cy: int32(cy)}, nil
 }
 
 // [GetStride] method.
@@ -86,10 +82,8 @@ func (me *IWICBitmapLock) GetStride() (int, error) {
 		utl.Vt[_IWICBitmapLockVt](me.Ppvt()).GetStride,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&stride)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(stride), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(stride), nil
 }

@@ -61,12 +61,10 @@ func (me *IDXGIOutput) FindClosestMatchingMode(
 		uintptr(unsafe.Pointer(pModeToMatch)),
 		uintptr(unsafe.Pointer(&closestMatch)),
 		utl.OlePpvtOrNil(concernedDevice))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return closestMatch, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return DXGI_MODE_DESC{}, hr
 	}
+	return closestMatch, nil
 }
 
 // [GetDesc] method.
@@ -104,12 +102,10 @@ func (me *IDXGIOutput) GetDisplayModeList(
 		uintptr(flags),
 		uintptr(unsafe.Pointer(&numModes)),
 		uintptr(unsafe.Pointer(&desc[0])))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return desc, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, hr
 	}
+	return desc, nil
 }
 
 // [GetDisplaySurfaceData] method.

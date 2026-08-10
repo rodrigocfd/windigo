@@ -59,12 +59,10 @@ func (me *IDispatch) GetIDsOfNames(
 		uintptr(uint32(nParams)),
 		uintptr(lcid),
 		uintptr(unsafe.Pointer(&memberIds[0])))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return memberIds, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, hr
 	}
+	return memberIds, nil
 }
 
 // [GetTypeInfo] method.
@@ -102,12 +100,10 @@ func (me *IDispatch) GetTypeInfoCount() (int, error) {
 		utl.Vt[utl.IDispatchVt](me.Ppvt()).GetTypeInfoCount,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&pctInfo)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(pctInfo), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(pctInfo), nil
 }
 
 // [Invoke] method.

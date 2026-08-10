@@ -88,12 +88,10 @@ func (me *IPicture) GetHeight() (int, error) {
 		utl.Vt[_IPictureVt](me.Ppvt()).Get_Height,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&cy)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(cy), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(cy), nil
 }
 
 // [get_hPal] method.
@@ -137,12 +135,10 @@ func (me *IPicture) GetWidth() (int, error) {
 		utl.Vt[_IPictureVt](me.Ppvt()).Get_Width,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&cx)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(cx), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(cx), nil
 }
 
 // [PictureChanged] method.
@@ -205,13 +201,10 @@ func (me *IPicture) Render(
 		uintptr(srcSz.Cx),
 		uintptr(srcSz.Cy),
 		uintptr(unsafe.Pointer(&metafileBounds)))
-
-	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		hr = nil
-	} else {
-		metafileBounds = win.RECT{}
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return win.RECT{}, hr
 	}
-	return
+	return metafileBounds, nil
 }
 
 // [SaveAsFile] method.
@@ -225,12 +218,10 @@ func (me *IPicture) SaveAsFile(stream *win.IStream, saveCopy bool) (numBytesWrit
 		stream.Ppvt(),
 		utl.BoolToUintptr(saveCopy),
 		uintptr(unsafe.Pointer(&written32)))
-
-	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(written32), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(written32), nil
 }
 
 // [SelectPicture] method.
@@ -246,12 +237,10 @@ func (me *IPicture) SelectPicture(hdc win.HDC) (win.HDC, win.HBITMAP, error) {
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(&hdcOut)),
 		uintptr(unsafe.Pointer(&hBmp)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return hdcOut, hBmp, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return win.HDC(0), win.HBITMAP(0), hr
 	}
+	return hdcOut, hBmp, nil
 }
 
 // [set_hPal] method.

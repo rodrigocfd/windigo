@@ -20,12 +20,10 @@ func oleCallRetBstr(me interface{ Ppvt() uintptr }, pMethod uintptr) (string, er
 		pMethod,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&name)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return name.String(), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
+	return name.String(), nil
 }
 
 // Calls the COM method to set a BSTR.

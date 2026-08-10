@@ -71,12 +71,10 @@ func (me *IBindCtx) GetBindOptions() (BIND_OPTS3, error) {
 		utl.Vt[_IBindCtxVt](me.ppvt).GetBindOptions,
 		me.ppvt,
 		uintptr(unsafe.Pointer(&bo)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return bo, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return BIND_OPTS3{}, hr
 	}
+	return bo, nil
 }
 
 // [GetObjectParam] method.
@@ -177,11 +175,10 @@ func (me *IDataObject) GetCanonicalFormatEtc(pEtcIn *FORMATETC) (FORMATETC, erro
 		me.ppvt,
 		uintptr(unsafe.Pointer(pEtcIn)),
 		uintptr(unsafe.Pointer(&etcOut)))
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return etcOut, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return FORMATETC{}, hr
 	}
+	return etcOut, nil
 }
 
 // [GetData] method.
@@ -196,11 +193,10 @@ func (me *IDataObject) GetData(pEtc *FORMATETC) (STGMEDIUM, error) {
 		me.ppvt,
 		uintptr(unsafe.Pointer(pEtc)),
 		uintptr(unsafe.Pointer(&stg)))
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return stg, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return STGMEDIUM{}, hr
 	}
+	return stg, nil
 }
 
 // Calls [IDataObject.QueryGetData] to check whether it contains [HDROP]
@@ -483,12 +479,10 @@ func (me *ISequentialStream) Read(destBuf []byte) (numBytesRead int, hr error) {
 		uintptr(unsafe.Pointer(&destBuf[0])),
 		uintptr(uint32(len(destBuf))),
 		uintptr(unsafe.Pointer(&read32)))
-
-	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(read32), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(read32), nil
 }
 
 // [Write] method.
@@ -502,12 +496,10 @@ func (me *ISequentialStream) Write(data []byte) (numBytesWritten int, hr error) 
 		uintptr(unsafe.Pointer(&data[0])),
 		uintptr(uint32(len(data))),
 		uintptr(unsafe.Pointer(&written32)))
-
-	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(written32), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(written32), nil
 }
 
 // [IStream] COM interface.
@@ -567,12 +559,10 @@ func (me *IStream) CopyTo(
 		uintptr(uint64(numBytes)),
 		uintptr(unsafe.Pointer(&read64)),
 		uintptr(unsafe.Pointer(&written64)))
-
-	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(read64), int(written64), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, 0, hr
 	}
+	return int(read64), int(written64), nil
 }
 
 // [LockRegion] method.
@@ -611,12 +601,10 @@ func (me *IStream) Seek(displacement int, origin co.STREAM_SEEK) (newOffset int,
 		uintptr(int64(displacement)),
 		uintptr(origin),
 		uintptr(unsafe.Pointer(&newOff64)))
-
-	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(newOff64), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(newOff64), nil
 }
 
 // [SetSize] method.
@@ -643,12 +631,10 @@ func (me *IStream) Stat(flag co.STATFLAG) (STATSTG, error) {
 		me.ppvt,
 		uintptr(unsafe.Pointer(&stg)),
 		uintptr(flag))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return stg, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return STATSTG{}, hr
 	}
+	return stg, nil
 }
 
 // [UnlockRegion] method.

@@ -210,14 +210,13 @@ func (me *IShellFolder) ParseDisplayName(
 		uintptr(unsafe.Pointer(&chEaten)),
 		uintptr(unsafe.Pointer(&idl)),
 		uintptr(unsafe.Pointer(pSfgao)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pIdl := &idl
-		releaser.Add(pIdl)
-		return pIdl, *pSfgao, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, cosh.SFGAO(0), hr
 	}
+
+	pIdl := &idl
+	releaser.Add(pIdl)
+	return pIdl, *pSfgao, nil
 }
 
 // [SetNameOf] method.
@@ -241,12 +240,11 @@ func (me *IShellFolder) SetNameOf(
 		uintptr(wName.AllowEmpty(name)),
 		uintptr(flags),
 		uintptr(unsafe.Pointer(&idlChild)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pIdlChild := &idlChild
-		releaser.Add(pIdlChild)
-		return pIdlChild, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, hr
 	}
+
+	pIdlChild := &idlChild
+	releaser.Add(pIdlChild)
+	return pIdlChild, nil
 }

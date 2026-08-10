@@ -66,12 +66,10 @@ func (me *IShellLink) GetArguments() (string, error) {
 		me.Ppvt(),
 		uintptr(wBuf.Ptr()),
 		uintptr(int32(wBuf.Len())))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return wBuf.String(), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
+	return wBuf.String(), nil
 }
 
 // [GetDescription] method.
@@ -86,12 +84,10 @@ func (me *IShellLink) GetDescription() (string, error) {
 		me.Ppvt(),
 		uintptr(wBuf.Ptr()),
 		uintptr(int32(wBuf.Len())))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return wBuf.String(), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
+	return wBuf.String(), nil
 }
 
 // [GetHotkey] method.
@@ -116,12 +112,10 @@ func (me *IShellLink) GetIconLocation() (path string, index int, hr error) {
 		uintptr(wBuf.Ptr()),
 		uintptr(int32(wBuf.Len()-1)),
 		uintptr(unsafe.Pointer(&iconIndex)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return wBuf.String(), int(iconIndex), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", 0, hr
 	}
+	return wBuf.String(), int(iconIndex), nil
 }
 
 // [GetPath] method.
@@ -138,12 +132,10 @@ func (me *IShellLink) GetPath(pWfd *win.WIN32_FIND_DATA, flags cosh.SLGP) (strin
 		uintptr(int32(wBuf.Len()-1)),
 		uintptr(unsafe.Pointer(pWfd)),
 		uintptr(flags))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return wBuf.String(), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
+	return wBuf.String(), nil
 }
 
 // [GetShowCmd] method.
@@ -166,12 +158,10 @@ func (me *IShellLink) GetWorkingDirectory() (string, error) {
 		me.Ppvt(),
 		uintptr(wBuf.Ptr()),
 		uintptr(int32(wBuf.Len()-1)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return wBuf.String(), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
+	return wBuf.String(), nil
 }
 
 // [Resolve] method.

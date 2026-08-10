@@ -151,14 +151,13 @@ func (me *IShellItem) GetDisplayName(sigdnName cosh.SIGDN) (string, error) {
 		me.Ppvt(),
 		uintptr(sigdnName),
 		uintptr(unsafe.Pointer(&pv)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		defer win.HTASKMEM(pv).CoTaskMemFree()
-		name := wstr.DecodePtr((*uint16)(unsafe.Pointer(pv)))
-		return name, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
+
+	defer win.HTASKMEM(pv).CoTaskMemFree()
+	name := wstr.DecodePtr((*uint16)(unsafe.Pointer(pv)))
+	return name, nil
 }
 
 // [GetParent] method.

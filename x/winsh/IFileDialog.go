@@ -124,14 +124,13 @@ func (me *IFileDialog) GetFileName() (string, error) {
 		utl.Vt[_IFileDialogVt](me.Ppvt()).GetFileName,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&pv)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		defer win.HTASKMEM(pv).CoTaskMemFree()
-		name := wstr.DecodePtr((*uint16)(unsafe.Pointer(pv)))
-		return name, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return "", hr
 	}
+
+	defer win.HTASKMEM(pv).CoTaskMemFree()
+	name := wstr.DecodePtr((*uint16)(unsafe.Pointer(pv)))
+	return name, nil
 }
 
 // [GetFileTypeIndex] method.
@@ -143,12 +142,10 @@ func (me *IFileDialog) GetFileTypeIndex() (int, error) {
 		utl.Vt[_IFileDialogVt](me.Ppvt()).GetFileTypeIndex,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&idx)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(idx), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(idx), nil
 }
 
 // [GetFolder] method.

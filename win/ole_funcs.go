@@ -46,12 +46,10 @@ func CLSIDFromProgID(progId string) (co.CLSID, error) {
 		dll.Ole.Load(&_ole_CLSIDFromProgID, "CLSIDFromProgID"),
 		uintptr(wProgId.AllowEmpty(progId)),
 		uintptr(unsafe.Pointer(&guid)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return guid, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return co.CLSID{}, hr
 	}
+	return guid, nil
 }
 
 var _ole_CLSIDFromProgID *syscall.Proc

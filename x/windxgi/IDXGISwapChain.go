@@ -103,17 +103,17 @@ func (me *IDXGISwapChain) GetFullscreenState(
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&bFullScreen)),
 		uintptr(unsafe.Pointer(&ppvtQueried)))
-
-	if hr = co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		if bFullScreen.Ok() {
-			pObj := utl.OleNew[*IDXGIOutput](ppvtQueried, releaser)
-			return true, pObj, nil
-		} else {
-			return false, nil, nil
-		}
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return false, nil, hr
 	}
+
+	if bFullScreen.Ok() {
+		pObj := utl.OleNew[*IDXGIOutput](ppvtQueried, releaser)
+		return true, pObj, nil
+	} else {
+		return false, nil, nil
+	}
+
 }
 
 // [GetLastPresentCount] method.
@@ -125,12 +125,10 @@ func (me *IDXGISwapChain) GetLastPresentCount() (int, error) {
 		utl.Vt[_IDXGISwapChainVt](me.Ppvt()).GetLastPresentCount,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&c)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(c), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(c), nil
 }
 
 // [Present] method.

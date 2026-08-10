@@ -117,12 +117,10 @@ func (me *IWICBitmapDecoder) GetFrameCount() (int, error) {
 		utl.Vt[_IWICBitmapDecoderVt](me.Ppvt()).CopyPalette,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&count)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(count), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(count), nil
 }
 
 // [GetPreview] method.
@@ -163,10 +161,8 @@ func (me *IWICBitmapDecoder) QueryCapability(stream *win.IStream) (cowic.WICDEC_
 		me.Ppvt(),
 		stream.Ppvt(),
 		uintptr(unsafe.Pointer(&capability)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return cowic.WICDEC_CAP(capability), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return cowic.WICDEC_CAP(0), hr
 	}
+	return cowic.WICDEC_CAP(capability), nil
 }

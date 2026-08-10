@@ -77,12 +77,10 @@ func (me *IPropertyStore) GetAt(index int) (cosh.PROPERTYKEY, error) {
 		me.Ppvt(),
 		uintptr(uint32(index)),
 		uintptr(unsafe.Pointer(&key)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return key, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return cosh.PROPERTYKEY{}, hr
 	}
+	return key, nil
 }
 
 // [GetCount] method.
@@ -94,10 +92,8 @@ func (me *IPropertyStore) GetCount() (int, error) {
 		utl.Vt[_IPropertyStoreVt](me.Ppvt()).GetCount,
 		me.Ppvt(),
 		uintptr(unsafe.Pointer(&cProps)))
-
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		return int(cProps), nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return 0, hr
 	}
+	return int(cProps), nil
 }

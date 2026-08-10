@@ -446,13 +446,12 @@ func SHGetIDListFromObject(releaser *win.OleReleaser, obj *win.IUnknown) (*ITEMI
 		dll.Shell.Load(&_shell_SHGetIDListFromObject, "SHGetIDListFromObject"),
 		obj.Ppvt(),
 		uintptr(unsafe.Pointer(&idl)))
-	if hr := co.HRESULT(ret); hr == co.HRESULT_S_OK {
-		pIdl := &idl
-		releaser.Add(pIdl)
-		return pIdl, nil
-	} else {
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, hr
 	}
+	pIdl := &idl
+	releaser.Add(pIdl)
+	return pIdl, nil
 }
 
 var _shell_SHGetIDListFromObject *syscall.Proc
