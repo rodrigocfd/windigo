@@ -20,6 +20,27 @@ type ACCEL struct {
 	Cmd   uint16    // LOWORD(wParam) value.
 }
 
+// [CHANGEFILTERSTRUCT] struct.
+//
+// ⚠️ You must call [CURSORINFO.SetCbSize] to initialize the struct.
+//
+// Example:
+//
+//	var cfs win.CHANGEFILTERSTRUCT
+//	cfs.SetCbSize()
+//
+// [CHANGEFILTERSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-changefilterstruct
+type CHANGEFILTERSTRUCT struct {
+	cbSize    uint32
+	ExtStatus co.MSGFLTINFO
+}
+
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
+func (cfs *CHANGEFILTERSTRUCT) SetCbSize() {
+	cfs.cbSize = uint32(unsafe.Sizeof(*cfs))
+}
+
 // [COMPAREITEMSTRUCT] struct, with C memory layout.
 //
 // [COMPAREITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-compareitemstruct

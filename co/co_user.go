@@ -1161,6 +1161,29 @@ const (
 	MSGF_MENU      MSGF = 2
 )
 
+// [ChangeWindowMessageFilterEx] action.
+//
+// [ChangeWindowMessageFilterEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-changewindowmessagefilterex
+type MSGFLT uint32
+
+const (
+	MSGFLT_ALLOW    MSGFLT = 1
+	MSGFLT_DISALLOW MSGFLT = 2
+	MSGFLT_RESET    MSGFLT = 0
+)
+
+// [CHANGEFILTERSTRUCT] ExtStatus.
+//
+// [CHANGEFILTERSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-changefilterstruct
+type MSGFLTINFO uint32
+
+const (
+	MSGFLTINFO_NONE                     MSGFLTINFO = 0
+	MSGFLTINFO_ALLOWED_HIGHER           MSGFLTINFO = 3
+	MSGFLTINFO_ALREADYALLOWED_FORWND    MSGFLTINFO = 1
+	MSGFLTINFO_ALREADYDISALLOWED_FORWND MSGFLTINFO = 2
+)
+
 // [DRAWITEMSTRUCT] itemAction.
 //
 // [DRAWITEMSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-drawitemstruct

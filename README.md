@@ -1,11 +1,13 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/rodrigocfd/windigo.svg)](https://pkg.go.dev/github.com/rodrigocfd/windigo)
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/rodrigocfd/windigo?style=flat-square&color=03a7ed)](https://github.com/rodrigocfd/windigo)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/rodrigocfd/windigo/blob/master/LICENSE.md)
-[![Lines of code](https://img.shields.io/badge/LoC-58.3k-blue?style=flat-square)](https://github.com/rodrigocfd/windigo)
+[![Lines of code](https://img.shields.io/badge/LoC-58.4k-blue?style=flat-square)](https://github.com/rodrigocfd/windigo)
 
 # Windigo
 
 Win32 API and GUI in idiomatic Go.
+
+Handwritten since 2020.
 
 Windigo is designed to be familiar to C/C++ Win32 programmers, using the same concepts, and an API as close as possible to the original Win32 API. This allows most C/C++ Win32 tutorials and examples to be translated to Go.
 
@@ -28,11 +30,11 @@ Native FFI items currently implemented:
 | - | -: |
 | Handles | 32 |
 | Structs | 207 |
-| Functions | 691 |
+| Functions | 692 |
 | COM interfaces | 79 |
 | COM methods | 546 |
-| Const types | 426 |
-| Const values | 11,207 |
+| Const types | 428 |
+| Const values | 11,214 |
 
 ## Examples
 

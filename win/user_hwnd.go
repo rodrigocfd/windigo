@@ -219,6 +219,30 @@ func (hWnd HWND) BringWindowToTop() error {
 
 var _user_BringWindowToTop *syscall.Proc
 
+// [ChangeWindowMessageFilterEx] function.
+//
+// [ChangeWindowMessageFilterEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-changewindowmessagefilterex
+func (hWnd HWND) ChangeWindowMessageFilterEx(
+	message co.WM,
+	action co.MSGFLT,
+) (CHANGEFILTERSTRUCT, error) {
+	var cfs CHANGEFILTERSTRUCT
+	cfs.SetCbSize()
+
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_ChangeWindowMessageFilterEx, "ChangeWindowMessageFilterEx"),
+		uintptr(hWnd),
+		uintptr(message),
+		uintptr(action),
+		uintptr(unsafe.Pointer(&cfs)))
+	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
+		return CHANGEFILTERSTRUCT{}, wErr
+	}
+	return cfs, nil
+}
+
+var _user_ChangeWindowMessageFilterEx *syscall.Proc
+
 // [ChildWindowFromPoint] function.
 //
 // [ChildWindowFromPoint]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-childwindowfrompoint
