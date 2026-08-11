@@ -1930,6 +1930,19 @@ const (
 	TB_REQ_ENDTRACK      TB_REQ = 8
 )
 
+// [TRACKMOUSEEVENT] dwFlags.
+//
+// [TRACKMOUSEEVENT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-trackmouseevent
+type TME uint32
+
+const (
+	TME_CANCEL    TME = 0x8000_0000
+	TME_HOVER     TME = 0x0000_0001
+	TME_LEAVE     TME = 0x0000_0002
+	TME_NONCLIENT TME = 0x0000_0010
+	TME_QUERYTME  TME = 0x4000_0000
+)
+
 // [TrackPopupMenu] uFlags.
 //
 // [TrackPopupMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu

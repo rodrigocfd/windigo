@@ -1,7 +1,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/rodrigocfd/windigo.svg)](https://pkg.go.dev/github.com/rodrigocfd/windigo)
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/rodrigocfd/windigo?style=flat-square&color=03a7ed)](https://github.com/rodrigocfd/windigo)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/rodrigocfd/windigo/blob/master/LICENSE.md)
-[![Lines of code](https://img.shields.io/badge/LoC-58.5k-blue?style=flat-square)](https://github.com/rodrigocfd/windigo)
+[![Lines of code](https://img.shields.io/badge/LoC-58.6k-blue?style=flat-square)](https://github.com/rodrigocfd/windigo)
 
 # Windigo
 
@@ -29,12 +29,12 @@ Native FFI items currently implemented:
 | Native FFI item | Count |
 | - | -: |
 | Handles | 32 |
-| Structs | 210 |
-| Functions | 699 |
+| Structs | 211 |
+| Functions | 700 |
 | COM interfaces | 79 |
 | COM methods | 546 |
-| Const types | 430 |
-| Const values | 11,222 |
+| Const types | 431 |
+| Const values | 11,227 |
 
 ## Examples
 

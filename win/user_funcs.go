@@ -1007,6 +1007,18 @@ func SystemParametersInfo(
 
 var _user_SystemParametersInfoW *syscall.Proc
 
+// [TrackMouseEvent] function.
+//
+// [TrackMouseEvent]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackmouseevent
+func TrackMouseEvent(pEventTrack *TRACKMOUSEEVENT) error {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_TrackMouseEvent, "TrackMouseEvent"),
+		uintptr(unsafe.Pointer(pEventTrack)))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _user_TrackMouseEvent *syscall.Proc
+
 // [TranslateMessage] function.
 //
 // [TranslateMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translatemessage

@@ -827,8 +827,31 @@ type TITLEBARINFOEX struct {
 
 // Sets the internal cbSize field to the size of the struct, correctly
 // initializing it.
-func (tix *TITLEBARINFOEX) SetCbSize() {
-	tix.cbSize = uint32(unsafe.Sizeof(*tix))
+func (tme *TITLEBARINFOEX) SetCbSize() {
+	tme.cbSize = uint32(unsafe.Sizeof(*tme))
+}
+
+// [TRACKMOUSEEVENT] struct, with C memory layout.
+//
+// ⚠️ You must call [TRACKMOUSEEVENT.SetCbSize] to initialize the struct.
+//
+// Example:
+//
+//	var tme win.TRACKMOUSEEVENT
+//	tme.SetCbSize()
+//
+// [TRACKMOUSEEVENT]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-trackmouseevent
+type TRACKMOUSEEVENT struct {
+	cbSize      uint32
+	DwFlags     co.TME
+	HwndTrack   HWND
+	DwHoverTime uint32
+}
+
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
+func (tme *TRACKMOUSEEVENT) SetCbSize() {
+	tme.cbSize = uint32(unsafe.Sizeof(*tme))
 }
 
 // [WINDOWPLACEMENT] struct, with C memory layout.
