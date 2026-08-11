@@ -69,6 +69,17 @@ func FindWindow(className ClassName, title string) (HWND, bool) {
 
 var _user_FindWindowW *syscall.Proc
 
+// [GetActiveWindow] function.
+//
+// [GetActiveWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getactivewindow
+func GetActiveWindow() HWND {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_GetActiveWindow, "GetActiveWindow"))
+	return HWND(ret)
+}
+
+var _user_GetActiveWindow *syscall.Proc
+
 // [GetClipboardOwner] function.
 //
 // [GetClipboardOwner]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getclipboardowner
