@@ -1337,6 +1337,21 @@ func (hWnd HWND) SetForegroundWindow() bool {
 
 var _user_SetForegroundWindow *syscall.Proc
 
+// [SetLayeredWindowAttributes] function.
+//
+// [SetLayeredWindowAttributes: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setlayeredwindowattributes
+func (hWnd HWND) SetLayeredWindowAttributes(crKey COLORREF, bAlpha byte, flags co.LWA) error {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_SetLayeredWindowAttributes, "SetLayeredWindowAttributes"),
+		uintptr(hWnd),
+		uintptr(crKey),
+		uintptr(bAlpha),
+		uintptr(flags))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _user_SetLayeredWindowAttributes *syscall.Proc
+
 // [SetMenu] function.
 //
 // [SetMenu]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setmenu
