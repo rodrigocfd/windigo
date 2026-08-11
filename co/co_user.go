@@ -521,6 +521,20 @@ const (
 	FEEDBACK_OPT_RESET
 )
 
+// [FLASHWINFO] dwFlags.
+//
+// [FLASHWINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-flashwinfo
+type FLASHW uint32
+
+const (
+	FLASHW_STOP      FLASHW = 0
+	FLASHW_CAPTION   FLASHW = 0x0000_0001
+	FLASHW_TRAY      FLASHW = 0x0000_0002
+	FLASHW_ALL              = FLASHW_CAPTION | FLASHW_TRAY
+	FLASHW_TIMER     FLASHW = 0x0000_0004
+	FLASHW_TIMERNOFG FLASHW = 0x0000_000c
+)
+
 // [GetAncestor] gaFlags.
 //
 // [GetAncestor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getancestor

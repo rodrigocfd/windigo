@@ -304,6 +304,18 @@ func ExitWindowsEx(flags co.EXW, reason co.SHTDN) error {
 
 var _user_ExitWindowsEx *syscall.Proc
 
+// [FlashWindowEx] function.
+//
+// [FlashWindowEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-flashwindowex
+func FlashWindowEx(pFwi *FLASHWINFO) bool {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_FlashWindowEx, "FlashWindowEx"),
+		uintptr(unsafe.Pointer(pFwi)))
+	return ret != 0
+}
+
+var _user_FlashWindowEx *syscall.Proc
+
 // [GetAsyncKeyState] function.
 //
 // [GetAsyncKeyState]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getasynckeystate

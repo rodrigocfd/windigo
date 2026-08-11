@@ -485,6 +485,19 @@ func (hWnd HWND) ExStyle() (co.WS_EX, error) {
 	return co.WS_EX(exStyle), err
 }
 
+// [FlashWindow] function.
+//
+// [FlashWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-flashwindow
+func (hWnd HWND) FlashWindow(invert bool) bool {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_FlashWindow, "FlashWindow"),
+		uintptr(hWnd),
+		utl.BoolToUintptr(invert))
+	return ret != 0
+}
+
+var _user_FlashWindow *syscall.Proc
+
 // [GetAncestor] function.
 //
 // [GetAncestor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getancestor

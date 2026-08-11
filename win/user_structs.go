@@ -20,7 +20,7 @@ type ACCEL struct {
 	Cmd   uint16    // LOWORD(wParam) value.
 }
 
-// [CHANGEFILTERSTRUCT] struct.
+// [CHANGEFILTERSTRUCT] struct, with C memory layout.
 //
 // ⚠️ You must call [CURSORINFO.SetCbSize] to initialize the struct.
 //
@@ -238,6 +238,30 @@ type DRAWTEXTPARAMS struct {
 // initializing it.
 func (dtp *DRAWTEXTPARAMS) SetCbSize() {
 	dtp.cbSize = uint32(unsafe.Sizeof(*dtp))
+}
+
+// [FLASHWINFO] struct, with C memory layout.
+//
+// ⚠️ You must call [DRAWTEXTPARAMS.SetCbSize] to initialize the struct.
+//
+// Example:
+//
+//	var fwi win.FLASHWINFO
+//	fwi.SetCbSize()
+//
+// [FLASHWINFO]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-flashwinfo
+type FLASHWINFO struct {
+	cbSize    uint32
+	Hwnd      HWND
+	DwFlags   co.FLASHW
+	UCount    uint32
+	DwTimeout uint32
+}
+
+// Sets the internal cbSize field to the size of the struct, correctly
+// initializing it.
+func (fwi *FLASHWINFO) SetCbSize() {
+	fwi.cbSize = uint32(unsafe.Sizeof(*fwi))
 }
 
 // [GUITHREADINFO] struct, with C memory layout.

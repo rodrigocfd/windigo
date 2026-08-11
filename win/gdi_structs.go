@@ -174,7 +174,7 @@ func (bvh *BITMAPV5HEADER) SetBV5Size() {
 	bvh.bV5Size = uint32(unsafe.Sizeof(*bvh))
 }
 
-// [COLORREF] struct.
+// [COLORREF] struct, with C memory layout.
 //
 // Specifies an RGB color.
 //
