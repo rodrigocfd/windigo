@@ -874,6 +874,16 @@ const (
 	LSFW_UNLOCK LSFW = 2
 )
 
+// [GetLayeredWindowAttributes] dwFlags.
+//
+// [GetLayeredWindowAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getlayeredwindowattributes
+type LWA uint32
+
+const (
+	LWA_ALPHA    LWA = 0x0000_0002
+	LWA_COLORKEY LWA = 0x0000_0001
+)
+
 // [MapVirtualKey] uMapType.
 //
 // [MapVirtualKey]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mapvirtualkeyw

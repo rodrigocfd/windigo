@@ -235,8 +235,8 @@ func (hWnd HWND) ChangeWindowMessageFilterEx(
 		uintptr(message),
 		uintptr(action),
 		uintptr(unsafe.Pointer(&cfs)))
-	if wErr := co.ERROR(err); ret == 0 && wErr != co.ERROR_SUCCESS {
-		return CHANGEFILTERSTRUCT{}, wErr
+	if ret == 0 {
+		return CHANGEFILTERSTRUCT{}, co.ERROR(err)
 	}
 	return cfs, nil
 }
@@ -648,6 +648,28 @@ func (hWnd HWND) GetLastActivePopup() HWND {
 }
 
 var _user_GetLastActivePopup *syscall.Proc
+
+// [GetLayeredWindowAttributes] function.
+//
+// [GetLayeredWindowAttributes]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getlayeredwindowattributes
+func (hWnd HWND) GetLayeredWindowAttributes() (COLORREF, byte, co.LWA, error) {
+	var crKey COLORREF
+	var bAlpha byte
+	var dwFlags co.LWA
+
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_GetLayeredWindowAttributes, "GetLayeredWindowAttributes"),
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&crKey)),
+		uintptr(unsafe.Pointer(&bAlpha)),
+		uintptr(unsafe.Pointer(&dwFlags)))
+	if ret == 0 {
+		return COLORREF(0), 0, co.LWA(0), co.ERROR(err)
+	}
+	return crKey, bAlpha, dwFlags, nil
+}
+
+var _user_GetLayeredWindowAttributes *syscall.Proc
 
 // [GetMenu] function.
 //
