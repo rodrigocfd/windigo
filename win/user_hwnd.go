@@ -1155,6 +1155,23 @@ func (hWnd HWND) MonitorFromWindow(flags co.MONITOR) HMONITOR {
 
 var _user_MonitorFromWindow *syscall.Proc
 
+// [MoveWindow] function.
+//
+// [MoveWindow]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-movewindow
+func (hWnd HWND) MoveWindow(pos POINT, sz SIZE, repaint bool) error {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_MoveWindow, "MoveWindow"),
+		uintptr(hWnd),
+		uintptr(pos.X),
+		uintptr(pos.Y),
+		uintptr(sz.Cx),
+		uintptr(sz.Cy),
+		utl.BoolToUintptr(repaint))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _user_MoveWindow *syscall.Proc
+
 // [PhysicalToLogicalPointForPerMonitorDPI] function.
 //
 // [PhysicalToLogicalPointForPerMonitorDPI]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-physicaltologicalpointforpermonitordpi
