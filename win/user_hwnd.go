@@ -1058,6 +1058,18 @@ func (hWnd HWND) IsWindow() bool {
 
 var _user_IsWindow *syscall.Proc
 
+// [IsWindowVisible] function.
+//
+// [IsWindowVisible]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-iswindowvisible
+func (hWnd HWND) IsWindowVisible() bool {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_IsWindowVisible, "IsWindowVisible"),
+		uintptr(hWnd))
+	return ret != 0
+}
+
+var _user_IsWindowVisible *syscall.Proc
+
 // [KillTimer] function.
 //
 // The timer is started with [HWND.SetTimer].
