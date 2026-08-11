@@ -1070,6 +1070,18 @@ func (hWnd HWND) IsWindowVisible() bool {
 
 var _user_IsWindowVisible *syscall.Proc
 
+// [IsZoomed] function.
+//
+// [IsZoomed]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-iszoomed
+func (hWnd HWND) IsZoomed() bool {
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_IsZoomed, "IsZoomed"),
+		uintptr(hWnd))
+	return ret != 0
+}
+
+var _user_IsZoomed *syscall.Proc
+
 // [KillTimer] function.
 //
 // The timer is started with [HWND.SetTimer].
