@@ -42,6 +42,18 @@ func CommandLineToArgv(cmdLine string) ([]string, error) {
 
 var _shell_CommandLineToArgvW *syscall.Proc
 
+// [DragAcceptFiles] function.
+//
+// [DragAcceptFiles]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-dragacceptfiles
+func DragAcceptFiles(hWnd win.HWND, accept bool) {
+	_, _, _ = syscall.SyscallN(
+		dll.Shell.Load(&_shell_DragAcceptFiles, "DragAcceptFiles"),
+		uintptr(hWnd),
+		utl.BoolToUintptr(accept))
+}
+
+var _shell_DragAcceptFiles *syscall.Proc
+
 // [GetDpiForMonitor] function.
 //
 // [GetDpiForMonitor]: https://learn.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-getdpiformonitor
