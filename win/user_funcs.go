@@ -139,6 +139,28 @@ func CallWindowProc(prevWndFunc uintptr, hWnd HWND, msg co.WM, wParam WPARAM, lP
 
 var _user_CallWindowProcW *syscall.Proc
 
+// [ChangeDisplaySettingsExW] function.
+//
+// [ChangeDisplaySettingsExW]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-changedisplaysettingsexw
+func ChangeDisplaySettingsExW(
+	deviceName string,
+	pDevMode *DEVMODE,
+	flags co.CDS,
+	pVideoParms *VIDEOPARAMETERS,
+) co.DISP_CHANGE {
+	var wDeviceName wstr.BufEncoder
+	ret, _, _ := syscall.SyscallN(
+		dll.User.Load(&_user_ChangeDisplaySettingsExW, "ChangeDisplaySettingsExW"),
+		uintptr(wDeviceName.EmptyIsNil(deviceName)),
+		uintptr(unsafe.Pointer(pDevMode)),
+		0,
+		uintptr(flags),
+		uintptr(unsafe.Pointer(pVideoParms)))
+	return co.DISP_CHANGE(int32(ret))
+}
+
+var _user_ChangeDisplaySettingsExW *syscall.Proc
+
 // [ClipCursor] function.
 //
 // [ClipCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clipcursor

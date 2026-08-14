@@ -192,6 +192,26 @@ const (
 	CBS_LOWERCASE         CBS = 0x4000
 )
 
+// [ChangeDisplaySettingsExW] dwFlags.
+//
+// [ChangeDisplaySettingsExW]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-changedisplaysettingsexw
+type CDS uint32
+
+const (
+	CDS_NONE                 CDS = 0
+	CDS_UPDATEREGISTRY       CDS = 0x0000_0001
+	CDS_TEST                 CDS = 0x0000_0002
+	CDS_FULLSCREEN           CDS = 0x0000_0004
+	CDS_GLOBAL               CDS = 0x0000_0008
+	CDS_SET_PRIMARY          CDS = 0x0000_0010
+	CDS_VIDEOPARAMETERS      CDS = 0x0000_0020
+	CDS_ENABLE_UNSAFE_MODES  CDS = 0x0000_0100
+	CDS_DISABLE_UNSAFE_MODES CDS = 0x0000_0200
+	CDS_RESET                CDS = 0x4000_0000
+	CDS_RESET_EX             CDS = 0x2000_0000
+	CDS_NORESET              CDS = 0x1000_0000
+)
+
 // Clipboard [formats].
 //
 // [formats]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/standard-clipboard-formats
@@ -326,6 +346,22 @@ const (
 	DI_MASK        DI = 0x0001
 	DI_NOMIRROR    DI = 0x0010
 	DI_NORMAL      DI = 0x0003
+)
+
+// [ChangeDisplaySettingsExW] return value.
+//
+// [ChangeDisplaySettingsExW]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-changedisplaysettingsexw
+type DISP_CHANGE int32
+
+const (
+	DISP_CHANGE_SUCCESSFUL  DISP_CHANGE = 0  // The settings change was successful.
+	DISP_CHANGE_RESTART     DISP_CHANGE = 1  // The computer must be restarted for the graphics mode to work.
+	DISP_CHANGE_FAILED      DISP_CHANGE = -1 // The display driver failed the specified graphics mode.
+	DISP_CHANGE_BADMODE     DISP_CHANGE = -2 // The graphics mode is not supported.
+	DISP_CHANGE_NOTUPDATED  DISP_CHANGE = -3 // Unable to write settings to the registry.
+	DISP_CHANGE_BADFLAGS    DISP_CHANGE = -4 // An invalid set of flags was passed in.
+	DISP_CHANGE_BADPARAM    DISP_CHANGE = -5 // An invalid parameter was passed in. This can include an invalid flag or combination of flags.
+	DISP_CHANGE_BADDUALVIEW DISP_CHANGE = -6 // The settings change was unsuccessful because the system is DualView capable.
 )
 
 // [EnumDisplayDevices] flags.
@@ -2186,6 +2222,92 @@ const (
 	VK_NONAME              VK = 0xfc
 	VK_PA1                 VK = 0xfd
 	VK_OEM_CLEAR           VK = 0xfe
+)
+
+// [VIDEOPARAMETERS] dwCommand.
+//
+// [VIDEOPARAMETERS]: https://learn.microsoft.com/en-us/previous-versions/dd145196(v=vs.85)
+type VP_COMMAND uint32
+
+const (
+	VP_COMMAND_GET VP_COMMAND = 0x0001
+	VP_COMMAND_SET VP_COMMAND = 0x0002
+)
+
+// [VIDEOPARAMETERS] dwCPCommand.
+//
+// [VIDEOPARAMETERS]: https://learn.microsoft.com/en-us/previous-versions/dd145196(v=vs.85)
+type VP_CP_CMD uint32
+
+const (
+	VP_CP_CMD_ACTIVATE   VP_CP_CMD = 0x0001
+	VP_CP_CMD_DEACTIVATE VP_CP_CMD = 0x0002
+	VP_CP_CMD_CHANGE     VP_CP_CMD = 0x0004
+)
+
+// [VIDEOPARAMETERS] dwCPType.
+//
+// [VIDEOPARAMETERS]: https://learn.microsoft.com/en-us/previous-versions/dd145196(v=vs.85)
+type VP_CP_TYPE uint32
+
+const (
+	VP_CP_TYPE_APS_TRIGGER VP_CP_TYPE = 0x0001
+	VP_CP_TYPE_MACROVISION VP_CP_TYPE = 0x0002
+)
+
+// [VIDEOPARAMETERS] dwFlags.
+//
+// [VIDEOPARAMETERS]: https://learn.microsoft.com/en-us/previous-versions/dd145196(v=vs.85)
+type VP_FLAGS uint32
+
+const (
+	VP_FLAGS_TV_MODE      VP_FLAGS = 0x0001
+	VP_FLAGS_TV_STANDARD  VP_FLAGS = 0x0002
+	VP_FLAGS_FLICKER      VP_FLAGS = 0x0004
+	VP_FLAGS_OVERSCAN     VP_FLAGS = 0x0008
+	VP_FLAGS_MAX_UNSCALED VP_FLAGS = 0x0010
+	VP_FLAGS_POSITION     VP_FLAGS = 0x0020
+	VP_FLAGS_BRIGHTNESS   VP_FLAGS = 0x0040
+	VP_FLAGS_CONTRAST     VP_FLAGS = 0x0080
+	VP_FLAGS_COPYPROTECT  VP_FLAGS = 0x0100
+)
+
+// [VIDEOPARAMETERS] dwMode.
+//
+// [VIDEOPARAMETERS]: https://learn.microsoft.com/en-us/previous-versions/dd145196(v=vs.85)
+type VP_MODE uint32
+
+const (
+	VP_MODE_WIN_GRAPHICS VP_MODE = 0x0001
+	VP_MODE_TV_PLAYBACK  VP_MODE = 0x0002
+)
+
+// [VIDEOPARAMETERS] dwTVStandard.
+//
+// [VIDEOPARAMETERS]: https://learn.microsoft.com/en-us/previous-versions/dd145196(v=vs.85)
+type VP_TV uint32
+
+const (
+	VP_TV_STANDARD_NTSC_M   VP_TV = 0x0001
+	VP_TV_STANDARD_NTSC_M_J VP_TV = 0x0002
+	VP_TV_STANDARD_PAL_B    VP_TV = 0x0004
+	VP_TV_STANDARD_PAL_D    VP_TV = 0x0008
+	VP_TV_STANDARD_PAL_H    VP_TV = 0x0010
+	VP_TV_STANDARD_PAL_I    VP_TV = 0x0020
+	VP_TV_STANDARD_PAL_M    VP_TV = 0x0040
+	VP_TV_STANDARD_PAL_N    VP_TV = 0x0080
+	VP_TV_STANDARD_SECAM_B  VP_TV = 0x0100
+	VP_TV_STANDARD_SECAM_D  VP_TV = 0x0200
+	VP_TV_STANDARD_SECAM_G  VP_TV = 0x0400
+	VP_TV_STANDARD_SECAM_H  VP_TV = 0x0800
+	VP_TV_STANDARD_SECAM_K  VP_TV = 0x1000
+	VP_TV_STANDARD_SECAM_K1 VP_TV = 0x2000
+	VP_TV_STANDARD_SECAM_L  VP_TV = 0x4000
+	VP_TV_STANDARD_WIN_VGA  VP_TV = 0x8000
+	VP_TV_STANDARD_NTSC_433 VP_TV = 0x0001_0000
+	VP_TV_STANDARD_PAL_G    VP_TV = 0x0002_0000
+	VP_TV_STANDARD_PAL_60   VP_TV = 0x0004_0000
+	VP_TV_STANDARD_SECAM_L1 VP_TV = 0x0008_0000
 )
 
 // [WM_ACTIVATE] activation state.

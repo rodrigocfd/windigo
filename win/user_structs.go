@@ -854,6 +854,47 @@ func (tme *TRACKMOUSEEVENT) SetCbSize() {
 	tme.cbSize = uint32(unsafe.Sizeof(*tme))
 }
 
+// [VIDEOPARAMETERS] struct.
+//
+// ⚠️ You must call [VIDEOPARAMETERS.SetGuid] to initialize the struct.
+//
+// Example:
+//
+//	var vp win.VIDEOPARAMETERS
+//	vp.SetGuid()
+//
+// [VIDEOPARAMETERS]: https://learn.microsoft.com/en-us/previous-versions/dd145196(v=vs.85)
+type VIDEOPARAMETERS struct {
+	guid                  co.GUID
+	dwOffset              uint32
+	DwCommand             co.VP_COMMAND
+	DwFlags               co.VP_FLAGS
+	DwMode                co.VP_MODE
+	DwTVStandard          co.VP_TV
+	DwAvailableModes      co.VP_MODE
+	DwAvailableTVStandard co.VP_TV
+	DwFlickerFilter       uint32
+	DwOverScanX           uint32
+	DwOverScanY           uint32
+	DwMaxUnscaledX        uint32
+	DwMaxUnscaledY        uint32
+	DwPositionX           uint32
+	DwPositionY           uint32
+	DwBrightness          uint32
+	DwContrast            uint32
+	DwCPType              co.VP_CP_TYPE
+	DwCPCommand           co.VP_CP_CMD
+	DwCPStandard          uint32
+	DwCPKey               uint32
+	BCP_APSTriggerBits    uint32
+	BOEMCopyProtection    [256]uint8
+}
+
+// Sets the internal guid field of the struct, correctly initializing it.
+func (vp *VIDEOPARAMETERS) SetGuid() {
+	vp.guid = co.GUID{0x02c62061, 0x1097, 0x11d1, [8]byte{0x92, 0x0f, 0x00, 0xa0, 0x24, 0xdf, 0x15, 0x6e}}
+}
+
 // [WINDOWPLACEMENT] struct, with C memory layout.
 //
 // ⚠️ You must call [WINDOWPLACEMENT.SetLength] to initialize the struct.
