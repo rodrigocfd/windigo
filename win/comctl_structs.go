@@ -312,7 +312,7 @@ type NMDATETIMEFORMAT struct {
 	Nmhdr      NMHDR
 	PszFormat  *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
 	St         SYSTEMTIME
-	PszDisplay *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr].
+	pszDisplay *uint16
 	szDisplay  [64]uint16
 }
 
@@ -321,6 +321,7 @@ func (dtf *NMDATETIMEFORMAT) SzDisplay() string {
 }
 func (dtf *NMDATETIMEFORMAT) SetSzDisplay(val string) {
 	wstr.EncodeToBuf(dtf.szDisplay[:], val)
+	dtf.pszDisplay = &dtf.szDisplay[0]
 }
 
 // [NMDATETIMEFORMATQUERY] struct, with C memory layout.
