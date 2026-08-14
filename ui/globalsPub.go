@@ -3,8 +3,12 @@
 package ui
 
 import (
+	"fmt"
+	"runtime"
+
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/win"
+	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // Any window.
@@ -86,6 +90,47 @@ func Dpi(x, y int) (int, int) {
 	return DpiX(x), DpiY(y)
 }
 
+// Syntactic sugar to [win.TaskDialogIndirect] to display a message box with
+// information about the program itself, an "about box".
+//
+// Program information is retrieved from resource with [win.VersionLoad].
+//
+// Panics on error.
+//
+// Example:
+//
+//	var wndOwner ui.Parent // initialized somewhere
+//	const ICO_MAIN = 101
+//
+//	ui.MsgAbout(wndOwner, ICO_MAIN)
+func MsgAbout(wnd Parent, iconId uint16) {
+	var caption, firstLine string
+	ver, err := win.VersionLoad("")
+	if err != nil { // no version information
+		exePath, _ := win.HINSTANCE(0).GetModuleFileName()
+		caption = win.PathGetFileName(exePath) // simply get EXE name
+	} else {
+		caption = fmt.Sprintf("%s %d.%d.%d",
+			ver.ProductName, ver.Version[0], ver.Version[1], ver.Version[2])
+		firstLine = ver.LegalCopyright + "\n\n"
+	}
+
+	var stats runtime.MemStats
+	runtime.ReadMemStats(&stats)
+
+	body := fmt.Sprintf(
+		"%s"+
+			"Compiler: %s\n"+
+			"GC cycles: %d\n"+
+			"Alloc: %s\n"+
+			"Next GC: %s\n"+
+			"Frees: %d",
+		firstLine, runtime.Version(),
+		stats.NumGC, wstr.FmtBytes(int(stats.HeapAlloc)), wstr.FmtBytes(int(stats.NextGC)), stats.Frees)
+
+	msgBuild(wnd, "About", caption, body, win.TdcIconId(iconId), "", false)
+}
+
 // Syntactic sugar to [win.TaskDialogIndirect] to display a message box
 // indicating an error.
 //
@@ -102,7 +147,7 @@ func Dpi(x, y int) (int, int) {
 //		"Here goes the text",
 //	)
 func MsgError(wnd Parent, title, caption, body string) {
-	msgBuild(wnd, title, caption, body, co.TDICON_ERROR, "", false)
+	msgBuild(wnd, title, caption, body, win.TdcIconTdi(co.TDICON_ERROR), "", false)
 }
 
 // Syntactic sugar to [win.TaskDialogIndirect] to display a message box
@@ -121,7 +166,7 @@ func MsgError(wnd Parent, title, caption, body string) {
 //		"Here goes the text",
 //	)
 func MsgWarn(wnd Parent, title, caption, body string) {
-	msgBuild(wnd, title, caption, body, co.TDICON_WARNING, "", false)
+	msgBuild(wnd, title, caption, body, win.TdcIconTdi(co.TDICON_WARNING), "", false)
 }
 
 // Syntactic sugar to [win.TaskDialogIndirect] to display a message box
@@ -140,7 +185,7 @@ func MsgWarn(wnd Parent, title, caption, body string) {
 //		"Here goes the text",
 //	)
 func MsgOk(wnd Parent, title, caption, body string) {
-	msgBuild(wnd, title, caption, body, co.TDICON_INFORMATION, "", false)
+	msgBuild(wnd, title, caption, body, win.TdcIconTdi(co.TDICON_INFORMATION), "", false)
 }
 
 // Syntactic sugar to [win.TaskDialogIndirect] to display a message box prompting
@@ -165,13 +210,13 @@ func MsgOk(wnd Parent, title, caption, body string) {
 //		// ...
 //	}
 func MsgOkCancel(wnd Parent, title, caption, body, okText string) bool {
-	return msgBuild(wnd, title, caption, body, co.TDICON_WARNING, okText, true) == co.ID_OK
+	return msgBuild(wnd, title, caption, body, win.TdcIconTdi(co.TDICON_WARNING), okText, true) == co.ID_OK
 }
 
 func msgBuild(
 	wnd Parent,
 	title, caption, body string,
-	icon co.TDICON,
+	icon win.TdcIcon,
 	okText string,
 	hasCancel bool,
 ) co.ID {
@@ -195,13 +240,19 @@ func msgBuild(
 		commonButtons = co.TDCBF_OK
 	}
 
+	var hInst win.HINSTANCE
+	if _, isIconId := icon.Id(); isIconId {
+		hInst, _ = win.GetModuleHandle("") // icon loaded from resource requires own HINSTANCE
+	}
+
 	ret, err := win.TaskDialogIndirect(
 		&win.TASKDIALOGCONFIG{
 			HwndParent:      hParent,
+			HInstance:       hInst,
 			WindowTitle:     title,
 			MainInstruction: caption,
 			Content:         body,
-			HMainIcon:       win.TdcIconTdi(icon),
+			HMainIcon:       icon,
 			CommonButtons:   commonButtons,
 			Flags:           co.TDF_ALLOW_DIALOG_CANCELLATION | co.TDF_POSITION_RELATIVE_TO_WINDOW,
 			Buttons:         buttons,
