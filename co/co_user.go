@@ -474,6 +474,18 @@ const (
 	EDD_GET_DEVICE_INTERFACE_NAME EDD = 0x0000_0001
 )
 
+// [EnumDisplaySettings] iModeNum. Originally has ENUM prefix and SETTINGS
+// suffix.
+//
+// [EnumDisplaySettings]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaysettingsw
+type ENUM_SETTINGS uint32
+
+const (
+	ENUM_SETTINGS_CURRENT  ENUM_SETTINGS = 0xffff_ffff // Retrieve the current settings for the display device.
+	ENUM_SETTINGS_REGISTRY ENUM_SETTINGS = 0xffff_fffe // Retrieve the settings for the display device that are currently stored in the registry.
+	ENUM_SETTINGS_ALL      ENUM_SETTINGS = 0xffff_fff0 // Doesn't exist natively; will list all modes.
+)
+
 // Edit control [styles].
 //
 // [styles]: https://learn.microsoft.com/en-us/windows/win32/controls/edit-control-styles
