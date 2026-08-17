@@ -7,7 +7,7 @@
 
 Win32 API and GUI in idiomatic Go.
 
-Handwritten since 2020.
+Handwritten since 2019.
 
 Windigo is designed to be familiar to C/C++ Win32 programmers, using the same concepts, and an API as close as possible to the original Win32 API. This allows most C/C++ Win32 tutorials and examples to be translated to Go.
 
@@ -30,11 +30,11 @@ Native FFI items currently implemented:
 | - | -: |
 | Handles | 32 |
 | Structs | 211 |
-| Functions | 704 |
+| Functions | 705 |
 | COM interfaces | 80 |
 | COM methods | 548 |
-| Const types | 440 |
-| Const values | 11,289 |
+| Const types | 441 |
+| Const values | 11,291 |
 
 ## Examples
 

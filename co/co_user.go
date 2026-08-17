@@ -474,10 +474,21 @@ const (
 	EDD_GET_DEVICE_INTERFACE_NAME EDD = 0x0000_0001
 )
 
-// [EnumDisplaySettings] iModeNum. Originally has ENUM prefix and SETTINGS
-// suffix.
+// [EnumDisplaySettingsEx] dwFlags.
+//
+// [EnumDisplaySettingsEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaysettingsexw
+type EDS uint32
+
+const (
+	EDS_RAWMODE     EDS = 0x0000_0002
+	EDS_ROTATEDMODE EDS = 0x0000_0004
+)
+
+// [EnumDisplaySettings] and [EnumDisplaySettingsEx] iModeNum. Originally has
+// ENUM prefix and SETTINGS suffix.
 //
 // [EnumDisplaySettings]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaysettingsw
+// [EnumDisplaySettingsEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaysettingsexw
 type ENUM_SETTINGS uint32
 
 const (

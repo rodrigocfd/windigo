@@ -285,6 +285,48 @@ func EnumDisplaySettings(deviceName string, modeOut co.ENUM_SETTINGS) []DEVMODE 
 
 var _user_EnumDisplaySettingsW *syscall.Proc
 
+// [EnumDisplaySettingsEx] function.
+//
+// If modeOut is co.ENUM_SETTINGS_ALL, the function will iterate over all modes
+// and return them all.
+//
+// [EnumDisplaySettingsEx]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaysettingsexw
+func EnumDisplaySettingsEx(deviceName string, modeOut co.ENUM_SETTINGS, flags co.EDS) []DEVMODE {
+	var wDeviceName wstr.BufEncoder
+	modes := make([]DEVMODE, 0) // to be returned
+	var modeNum uint32
+
+	var dm DEVMODE // buffer to receive each iteration
+	dm.SetDmSize()
+
+	for {
+		if modeOut == co.ENUM_SETTINGS_CURRENT || modeOut == co.ENUM_SETTINGS_REGISTRY {
+			modeNum = uint32(modeOut)
+		}
+
+		// Ignore errors: only fails with modeNum out-of-bounds, which never happens here.
+		ret, _, _ := syscall.SyscallN(
+			dll.User.Load(&_user_EnumDisplaySettingsExW, "EnumDisplaySettingsExW"),
+			uintptr(wDeviceName.EmptyIsNil(deviceName)),
+			uintptr(modeNum),
+			uintptr(unsafe.Pointer(&dm)),
+			uintptr(flags))
+		if ret == 0 {
+			break
+		}
+		modes = append(modes, dm)
+
+		if modeOut == co.ENUM_SETTINGS_CURRENT || modeOut == co.ENUM_SETTINGS_REGISTRY {
+			break
+		}
+
+		modeNum++
+	}
+	return modes
+}
+
+var _user_EnumDisplaySettingsExW *syscall.Proc
+
 // [EnumThreadWindows] function.
 //
 // [EnumThreadWindows]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumthreadwindows
