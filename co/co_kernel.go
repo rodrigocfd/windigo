@@ -1450,8 +1450,9 @@ const (
 	VER_SUITE_NT_WORKSTATION       VER_SUITE = 0x000_0001
 )
 
-// [WaitForSingleObject] return value.
+// [MsgWaitForMultipleObjects] and [WaitForSingleObject] return value.
 //
+// [MsgWaitForMultipleObjects]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-msgwaitformultipleobjects
 // [WaitForSingleObject]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 type WAIT uint32
 

@@ -831,6 +831,30 @@ func MapVirtualKey(code co.VK, mapType co.MAPVK) uint32 {
 
 var _user_MapVirtualKeyW *syscall.Proc
 
+// [MsgWaitForMultipleObjects] function.
+//
+// [MsgWaitForMultipleObjects]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-msgwaitformultipleobjects
+func MsgWaitForMultipleObjects(
+	handles []HANDLE,
+	waitAll bool,
+	timeout Timeout,
+	wakeMask co.QS,
+) (co.WAIT, error) {
+	ret, _, err := syscall.SyscallN(
+		dll.User.Load(&_user_MsgWaitForMultipleObjects, "MsgWaitForMultipleObjects"),
+		uintptr(uint32(len(handles))),
+		uintptr(unsafe.Pointer(&handles[0])),
+		utl.BoolToUintptr(waitAll),
+		uintptr(timeout.raw()),
+		uintptr(wakeMask))
+	if co.WAIT(ret) == co.WAIT_FAILED {
+		return co.WAIT_FAILED, co.ERROR(err)
+	}
+	return co.WAIT(ret), nil
+}
+
+var _user_MsgWaitForMultipleObjects *syscall.Proc
+
 // [OffsetRect] function.
 //
 // [OffsetRect]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-offsetrect
