@@ -7,7 +7,7 @@
 
 Win32 API and GUI in idiomatic Go.
 
-Handwritten since 2019.
+Handwritten since 2019. LLM-generated PRs are **not** welcome.
 
 Windigo is designed to be familiar to C/C++ Win32 programmers, using the same concepts, and an API as close as possible to the original Win32 API. This allows most C/C++ Win32 tutorials and examples to be translated to Go.
 
