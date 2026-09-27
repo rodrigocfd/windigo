@@ -118,6 +118,47 @@ func (nid *NOTIFYICONDATA) SetSzInfoTitle(val string) {
 	wstr.EncodeToBuf(nid.szInfoTitle[:], val)
 }
 
+// Retrieves the uVersion member, which shares storage with uTimeout.
+func (nid *NOTIFYICONDATA) UVersion() uint32 {
+	return nid.uVersion
+}
+
+// Sets the uVersion member, which shares storage with uTimeout. Used with
+// [cosh.NIM_SETVERSION] to choose how the icon behaves: 3 is
+// NOTIFYICON_VERSION, 4 is NOTIFYICON_VERSION_4.
+//
+// Version 4 is required to receive, among others, NIN_BALLOONUSERCLICK when
+// the user clicks a balloon notification. With it, the standard tooltip is
+// shown only if [cosh.NIF_SHOWTIP] is set in UFlags.
+//
+// Example:
+//
+//	var nid winsh.NOTIFYICONDATA
+//	nid.SetCbSize()
+//	nid.HWnd = hWnd
+//	nid.UID = 1
+//	nid.SetUVersion(4) // NOTIFYICON_VERSION_4
+//	winsh.Shell_NotifyIcon(cosh.NIM_SETVERSION, &nid)
+func (nid *NOTIFYICONDATA) SetUVersion(val uint32) {
+	nid.uVersion = val
+}
+
+// Retrieves the uTimeout member, which shares storage with uVersion.
+//
+// Deprecated as of Windows Vista, where the timeout is taken from the
+// system's accessibility settings.
+func (nid *NOTIFYICONDATA) UTimeout() uint32 {
+	return nid.uVersion
+}
+
+// Sets the uTimeout member, which shares storage with uVersion.
+//
+// Deprecated as of Windows Vista, where the timeout is taken from the
+// system's accessibility settings.
+func (nid *NOTIFYICONDATA) SetUTimeout(val uint32) {
+	nid.uVersion = val
+}
+
 // [NOTIFYICONIDENTIFIER] struct, with C memory layout.
 //
 // ⚠️ You must call [NOTIFYICONIDENTIFIER.SetCbSize] to initialize the struct.

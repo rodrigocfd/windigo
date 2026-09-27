@@ -8,7 +8,6 @@ import (
 
 	"github.com/rodrigocfd/windigo/co"
 	"github.com/rodrigocfd/windigo/win"
-	"github.com/rodrigocfd/windigo/wstr"
 )
 
 // Any window.
@@ -126,7 +125,7 @@ func MsgAbout(wnd Parent, iconId uint16) {
 			"Next GC: %s\n"+
 			"Frees: %d",
 		firstLine, runtime.Version(),
-		stats.NumGC, wstr.FmtBytes(int(stats.HeapAlloc)), wstr.FmtBytes(int(stats.NextGC)), stats.Frees)
+		stats.NumGC, fmtBytes(stats.HeapAlloc), fmtBytes(stats.NextGC), stats.Frees)
 
 	msgBuild(wnd, "About", caption, body, win.TdcIconId(iconId), "", false)
 }
