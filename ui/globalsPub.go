@@ -126,7 +126,7 @@ func MsgAbout(wnd Parent, iconId uint16) {
 			"Next GC: %s\n"+
 			"Frees: %d",
 		firstLine, runtime.Version(),
-		stats.NumGC, wstr.FmtBytes(int(stats.HeapAlloc)), wstr.FmtBytes(int(stats.NextGC)), stats.Frees)
+		stats.NumGC, wstr.FmtBytes(stats.HeapAlloc), wstr.FmtBytes(stats.NextGC), stats.Frees)
 
 	msgBuild(wnd, "About", caption, body, win.TdcIconId(iconId), "", false)
 }
