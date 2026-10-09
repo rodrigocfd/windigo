@@ -56,7 +56,9 @@ func (il *ITEMIDLIST) Release() {
 
 // [NOTIFYICONDATA] struct, with C memory layout.
 //
-// ⚠️ You must call [NOTIFYICONDATA.SetCbSize] to initialize the struct.
+// ⚠️ You must call [NOTIFYICONDATA.SetCbSize] to initialize the struct. Beyond
+// cbSize field, this method also sets UVersion to the recommended
+// [cosh.NID_VER_VISTA] value.
 //
 // Example:
 //
@@ -75,7 +77,7 @@ type NOTIFYICONDATA struct {
 	DwState          cosh.NIS // State of the icon.
 	DwStateMask      cosh.NIS // Specifies which bits of DwState are retrieved of modified.
 	szInfo           [256]uint16
-	uVersion         uint32
+	UVersion         cosh.NID_VER // Which version of Shell notification should be used. For Windows Vista and later, prefer [cosh.NID_VER_VISTA].
 	szInfoTitle      [64]uint16
 	DwInfoFlags      cosh.NIIF // Modifies the behavior of the balloon notification.
 	GuidItem         co.GUID   // A registered [co.GUID] that identifies the icon, overriding UID. Requires [co.NIF_GUID] in UFlags.
@@ -86,6 +88,7 @@ type NOTIFYICONDATA struct {
 // initializing it.
 func (nid *NOTIFYICONDATA) SetCbSize() {
 	nid.cbSize = uint32(unsafe.Sizeof(*nid))
+	nid.UVersion = cosh.NID_VER_VISTA
 }
 
 // Retrieves the text of the icon tooltip.

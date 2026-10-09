@@ -426,6 +426,17 @@ const (
 	NIS_SHAREDICON NIS = 0x0000_0002
 )
 
+// [NOTIFYICONDATA] uVersion.
+//
+// [NOTIFYICONDATA]: https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
+type NID_VER uint32
+
+const (
+	NID_VER_LEGACY NID_VER = 0 // Legacy behavior for applications targeting Windows 2000 and below.
+	NID_VER_2000   NID_VER = 3 // Windows 2000 behavior.
+	NID_VER_VISTA  NID_VER = 4 // Modern behavior introduced in Windows Vista. Recommended for new programs.
+)
+
 // [PROCESS_DPI_AWARENESS] enumeration. Originally has PROCESS prefix.
 //
 // [PROCESS_DPI_AWARENESS]: https://learn.microsoft.com/en-us/windows/win32/api/shellscalingapi/ne-shellscalingapi-process_dpi_awareness
