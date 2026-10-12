@@ -56,6 +56,31 @@ func (ad *DXGI_ADAPTER_DESC1) SetDescription(val string) {
 	wstr.EncodeToBuf(ad.description[:], val)
 }
 
+// [DXGI_ADAPTER_DESC2] struct, with C memory layout.
+//
+// [DXGI_ADAPTER_DESC2]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_adapter_desc2
+type DXGI_ADAPTER_DESC2 struct {
+	description                   [128]uint16
+	VendorId                      uint32
+	DeviceId                      uint32
+	SubSysId                      uint32
+	Revision                      uint32
+	DedicatedVideoMemory          uint
+	DedicatedSystemMemory         uint
+	SharedSystemMemory            uint
+	AdapterLuid                   co.LUID
+	Flags                         codxgi.DXGI_ADAPTER_FLAG
+	GraphicsPreemptionGranularity codxgi.DXGI_GRAPHICS_PREEMPTION
+	ComputePreemptionGranularity  codxgi.DXGI_COMPUTE_PREEMPTION
+}
+
+func (ad *DXGI_ADAPTER_DESC2) Description() string {
+	return wstr.DecodeSlice(ad.description[:])
+}
+func (ad *DXGI_ADAPTER_DESC2) SetDescription(val string) {
+	wstr.EncodeToBuf(ad.description[:], val)
+}
+
 // [DXGI_FRAME_STATISTICS] struct, with C memory layout.
 //
 // [DXGI_FRAME_STATISTICS]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_frame_statistics)
