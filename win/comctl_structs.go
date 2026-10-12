@@ -1100,19 +1100,6 @@ func (tci *TCITEM) SetPszText(val []uint16) {
 	tci.pszText = &val[0]
 }
 
-// [TBBUTTON] struct, with C memory layout.
-//
-// [TBBUTTON]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tbbutton
-type TBBUTTON struct {
-	IBitmap   int32 // With multiple image lists, HIWORD is the image list index.
-	IdCommand int32
-	FsState   co.TBSTATE
-	FsStyle   co.BTNS
-	bReserved [6]uint8 // This padding is 2 in 32-bit environments.
-	DwData    uintptr
-	IString   *uint16 // Convert to/from string with [wstr.DecodePtr] and [wstr.EncodeToPtr]; can also be the index in the string list.
-}
-
 // [TVINSERTSTRUCT] struct, with C memory layout.
 //
 // [TVINSERTSTRUCT]: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-tvinsertstructw
