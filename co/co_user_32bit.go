@@ -1,4 +1,4 @@
-//go:build windows
+//go:build windows && (386 || arm)
 
 package co
 
