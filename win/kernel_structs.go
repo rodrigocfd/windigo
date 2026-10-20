@@ -417,7 +417,7 @@ type OVERLAPPED struct {
 	Internal     uintptr
 	InternalHigh uintptr
 	Pointer      uintptr
-	HEvent       uintptr // HEVENT
+	HEvent       HANDLE // HEVENT
 }
 
 // [PACKAGE_ID] struct, with C memory layout.

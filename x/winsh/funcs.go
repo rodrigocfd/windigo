@@ -247,7 +247,7 @@ func SHCreateShellItemArray(
 	releaser *win.OleReleaser,
 	pidlParent *ITEMIDLIST,
 	parent *IShellFolder,
-	pidlChildren []*ITEMIDLIST,
+	pidlChildren ...*ITEMIDLIST,
 ) (*IShellItemArray, error) {
 	var ppvtQueried uintptr
 
@@ -257,7 +257,7 @@ func SHCreateShellItemArray(
 	}
 
 	var pidlChildrenObjsPtr *ITEMIDLIST
-	if pidlChildren != nil {
+	if len(pidlChildren) > 0 {
 		pidlChildrenObjs := make([]ITEMIDLIST, 0, len(pidlChildren))
 		for _, pidl := range pidlChildren {
 			pidlChildrenObjs = append(pidlChildrenObjs, *pidl)
