@@ -56,11 +56,16 @@ func (me *IDXGIDevice2) OfferResources(
 	priority codxgi.DXGI_OFFER_RESOURCE_PRIORITY,
 	resources ...*IDXGIResource,
 ) error {
+	resPpvts := make([]uintptr, 0, len(resources))
+	for _, r := range resources {
+		resPpvts = append(resPpvts, r.Ppvt())
+	}
+
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IDXGIDevice2Vt](me.Ppvt()).OfferResources,
 		me.Ppvt(),
 		uintptr(uint32(len(resources))),
-		uintptr(unsafe.Pointer(&resources[0])),
+		uintptr(unsafe.Pointer(&resPpvts[0])),
 		uintptr(priority))
 	return utl.HresultToError(ret)
 }
@@ -69,20 +74,26 @@ func (me *IDXGIDevice2) OfferResources(
 //
 // [ReclaimResources]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgidevice2-reclaimresources
 func (me *IDXGIDevice2) ReclaimResources(resources ...*IDXGIResource) ([]bool, error) {
-	discardedBuf := make([]win.BOOL, len(resources))
+	resPpvts := make([]uintptr, 0, len(resources))
+	for _, r := range resources {
+		resPpvts = append(resPpvts, r.Ppvt())
+	}
+
+	boolsBuf := make([]win.BOOL, len(resources))
+
 	ret, _, _ := syscall.SyscallN(
 		utl.Vt[_IDXGIDevice2Vt](me.Ppvt()).ReclaimResources,
 		me.Ppvt(),
 		uintptr(uint32(len(resources))),
-		uintptr(unsafe.Pointer(&resources[0])),
-		uintptr(unsafe.Pointer(&discardedBuf[0])))
+		uintptr(unsafe.Pointer(&resPpvts[0])),
+		uintptr(unsafe.Pointer(&boolsBuf[0])))
 	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
 		return nil, hr
 	}
 
 	discarded := make([]bool, 0, len(resources))
-	for _, disc := range discardedBuf {
-		discarded = append(discarded, disc.Ok())
+	for _, b := range boolsBuf {
+		discarded = append(discarded, b.Ok())
 	}
 	return discarded, nil
 }
