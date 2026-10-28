@@ -869,6 +869,51 @@ func MAKEWORD(lo, hi uint8) uint16 {
 	return utl.Make16(lo, hi)
 }
 
+// [QueryPerformanceCounter] function.
+//
+// Example:
+//
+//	freq, _ := win.QueryPerformanceFrequency()
+//	startTicks, _ := win.QueryPerformanceCounter()
+//
+//	win.Sleep(1 * time.Second)
+//
+//	endTicks, _ := win.QueryPerformanceCounter()
+//
+//	elapsedTicks := endTicks - startTicks
+//	microseconds := elapsedTicks * 1_000_000 / freq
+//	println("Milliseconds:", microseconds/1000)
+//
+// [QueryPerformanceCounter]: https://learn.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter
+func QueryPerformanceCounter() (int64, error) {
+	var perfCount int64
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_QueryPerformanceCounter, "QueryPerformanceCounter"),
+		uintptr(unsafe.Pointer(&perfCount)))
+	if ret == 0 {
+		return 0, co.ERROR(err)
+	}
+	return perfCount, nil
+}
+
+var _kernel_QueryPerformanceCounter *syscall.Proc
+
+// [QueryPerformanceFrequency] function.
+//
+// [QueryPerformanceFrequency]: https://learn.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancefrequency
+func QueryPerformanceFrequency() (int64, error) {
+	var freq int64
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_QueryPerformanceFrequency, "QueryPerformanceFrequency"),
+		uintptr(unsafe.Pointer(&freq)))
+	if ret == 0 {
+		return 0, co.ERROR(err)
+	}
+	return freq, nil
+}
+
+var _kernel_QueryPerformanceFrequency *syscall.Proc
+
 // [SetConsoleTitle] function.
 //
 // [SetConsoleTitle]: https://learn.microsoft.com/en-us/windows/console/setconsoletitle
