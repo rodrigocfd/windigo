@@ -132,6 +132,45 @@ type DXGI_MODE_DESC struct {
 	Scaling          codxgi.DXGI_MODE_SCALING
 }
 
+// [DXGI_OUTDUPL_DESC] struct, with C memory layout.
+//
+// [DXGI_OUTDUPL_DESC]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_outdupl_desc
+type DXGI_OUTDUPL_DESC struct {
+	ModeDesc                   DXGI_MODE_DESC
+	Rotation                   codxgi.DXGI_MODE_ROTATION
+	DesktopImageInSystemMemory win.BOOL
+}
+
+// [DXGI_OUTDUPL_FRAME_INFO] struct, with C memory layout.
+//
+// [DXGI_OUTDUPL_FRAME_INFO]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_outdupl_frame_info
+type DXGI_OUTDUPL_FRAME_INFO struct {
+	LastPresentTime           int64
+	LastMouseUpdateTime       int64
+	AccumulatedFrames         uint32
+	RectsCoalesced            win.BOOL
+	ProtectedContentMaskedOut win.BOOL
+	PointerPosition           DXGI_OUTDUPL_POINTER_POSITION
+	TotalMetadataBufferSize   uint32
+	PointerShapeBufferSize    uint32
+}
+
+// [DXGI_OUTDUPL_MOVE_RECT] struct, with C memory layout.
+//
+// [DXGI_OUTDUPL_MOVE_RECT]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_outdupl_move_rect
+type DXGI_OUTDUPL_MOVE_RECT struct {
+	SourcePoint     win.POINT
+	DestinationRect win.RECT
+}
+
+// [DXGI_OUTDUPL_POINTER_POSITION] struct, with C memory layout.
+//
+// [DXGI_OUTDUPL_POINTER_POSITION]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ns-dxgi1_2-dxgi_outdupl_pointer_position
+type DXGI_OUTDUPL_POINTER_POSITION struct {
+	Position win.POINT
+	Visible  win.BOOL
+}
+
 // [DXGI_OUTPUT_DESC] struct, with C memory layout.
 //
 // [DXGI_OUTPUT_DESC]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_output_desc
