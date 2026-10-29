@@ -107,3 +107,105 @@ func (me *IDXGIFactory2) IsWindowedStereoEnabled() bool {
 		me.Ppvt())
 	return ret != 0
 }
+
+// [RegisterOcclusionStatusEvent] method.
+//
+// Paired with [IDXGIFactory2.UnregisterStereoStatus].
+//
+// [RegisterOcclusionStatusEvent]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-registerocclusionstatusevent
+func (me *IDXGIFactory2) RegisterOcclusionStatusEvent(hEvent win.HANDLE) (uint32, error) {
+	var cookie uint32
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IDXGIFactory2Vt](me.Ppvt()).RegisterOcclusionStatusEvent,
+		me.Ppvt(),
+		uintptr(hEvent),
+		uintptr(unsafe.Pointer(&cookie)))
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return 0, hr
+	}
+	return cookie, nil
+}
+
+// [RegisterOcclusionStatusWindow] method.
+//
+// Paired with [IDXGIFactory2.UnregisterOcclusionStatus].
+//
+// [RegisterOcclusionStatusWindow]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-registerocclusionstatuswindow
+func (me *IDXGIFactory2) RegisterOcclusionStatusWindow(hWnd win.HWND, msg co.WM) (uint32, error) {
+	var cookie uint32
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IDXGIFactory2Vt](me.Ppvt()).RegisterOcclusionStatusWindow,
+		me.Ppvt(),
+		uintptr(hWnd),
+		uintptr(msg),
+		uintptr(unsafe.Pointer(&cookie)))
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return 0, hr
+	}
+	return cookie, nil
+}
+
+// [RegisterStereoStatusEvent] method.
+//
+// Paired with [IDXGIFactory2.UnregisterStereoStatus].
+//
+// [RegisterStereoStatusEvent]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-registerstereostatusevent
+func (me *IDXGIFactory2) RegisterStereoStatusEvent(hEvent win.HANDLE) (uint32, error) {
+	var cookie uint32
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IDXGIFactory2Vt](me.Ppvt()).RegisterStereoStatusEvent,
+		me.Ppvt(),
+		uintptr(hEvent),
+		uintptr(unsafe.Pointer(&cookie)))
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return 0, hr
+	}
+	return cookie, nil
+}
+
+// [RegisterStereoStatusWindow] method.
+//
+// Paired with [IDXGIFactory2.UnregisterStereoStatus].
+//
+// [RegisterStereoStatusWindow]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-registerstereostatuswindow
+func (me *IDXGIFactory2) RegisterStereoStatusWindow(hWnd win.HWND, msg co.WM) (uint32, error) {
+	var cookie uint32
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IDXGIFactory2Vt](me.Ppvt()).RegisterStereoStatusWindow,
+		me.Ppvt(),
+		uintptr(hWnd),
+		uintptr(msg),
+		uintptr(unsafe.Pointer(&cookie)))
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return 0, hr
+	}
+	return cookie, nil
+}
+
+// [UnregisterOcclusionStatus] method.
+//
+// Paired with [IDXGIFactory2.RegisterOcclusionStatusEvent] or
+// [IDXGIFactory2.RegisterStereoStatusWindow].
+//
+// [UnregisterOcclusionStatus]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-unregisterocclusionstatus
+func (me *IDXGIFactory2) UnregisterOcclusionStatus(cookie uint32) error {
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IDXGIFactory2Vt](me.Ppvt()).UnregisterOcclusionStatus,
+		me.Ppvt(),
+		uintptr(cookie))
+	return utl.HresultToError(ret)
+}
+
+// [UnregisterStereoStatus] method.
+//
+// Paired with [IDXGIFactory2.RegisterStereoStatusEvent] or
+// [IDXGIFactory2.RegisterStereoStatusWindow].
+//
+// [UnregisterStereoStatus]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-unregisterstereostatus
+func (me *IDXGIFactory2) UnregisterStereoStatus(cookie uint32) error {
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IDXGIFactory2Vt](me.Ppvt()).UnregisterStereoStatus,
+		me.Ppvt(),
+		uintptr(cookie))
+	return utl.HresultToError(ret)
+}
