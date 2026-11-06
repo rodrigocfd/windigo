@@ -1082,6 +1082,13 @@ func (me *Vec[T]) Append(elems ...T) {
 // Appends numElems copies of elem, increasing the buffer size if needed.
 //
 // Panics if numElems is negative.
+//
+// Example:
+//
+//	bigNums := win.NewVec[win.POINT]()
+//	defer bigNums.Free()
+//
+//	bigNums.AppendN(5, win.POINT{X: 10, Y: 20})
 func (me *Vec[T]) AppendN(numElems int, elem T) {
 	me.Reserve(me.inUse + numElems)
 	for i := 0; i < numElems; i++ {
@@ -1100,6 +1107,13 @@ func (me *Vec[T]) Clear() {
 }
 
 // Releases the allocated heap memory, if any.
+//
+// If you don't call this method, you'll have a memory leak.
+//
+// Example:
+//
+//	pts := win.NewVec[win.POINT]()
+//	defer pts.Free()
 func (me *Vec[T]) Free() {
 	if me.data != nil {
 		hHeap, _ := GetProcessHeap()
@@ -1109,13 +1123,16 @@ func (me *Vec[T]) Free() {
 	}
 }
 
-// Returns a pointer the element at the given position.
+// Returns a pointer to the element at the given position.
 //
 // If the buffer is changed for whathever reason – like by adding an element or
 // reserving more space –, this pointer will be no longer valid.
 //
-// Does not perform bounds check. Panics if index is negative.
+// Panics if index is out of bounds.
 func (me *Vec[T]) Get(index int) *T {
+	if index < 0 || index >= me.inUse {
+		panic(fmt.Sprintf("Index out of bounds: %d.", index))
+	}
 	return &me.data[index]
 }
 
