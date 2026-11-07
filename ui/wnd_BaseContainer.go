@@ -47,7 +47,7 @@ func (me *_BaseContainer) clearMessages() {
 
 func (me *_BaseContainer) uiThread(fun func()) {
 	pPack := &_ThreadPack{fun}
-	utl.PtrCache.Add(unsafe.Pointer(pPack))
+	utl.PtrCache.Add(unsafe.Pointer(pPack)) // will be deleted in defaultMessageHandlers()
 
 	hWndRoot, _ := me.hWnd.GetAncestor(co.GA_ROOTOWNER)
 	hWndRoot.SendMessage(_WM_UI_THREAD,

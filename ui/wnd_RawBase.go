@@ -115,8 +115,9 @@ func (me *_RawBase) delegateFocusToFirstChild() error {
 	return nil
 }
 
-var _wndProcCallback uintptr
+var _wndProcCallback uintptr // WNDPROC cached pointer.
 
+// Implements the static WNDPROC once, or returns the cached pointer.
 func wndProcCallback() uintptr {
 	if _wndProcCallback == 0 {
 		_wndProcCallback = syscall.NewCallback(
@@ -128,7 +129,7 @@ func wndProcCallback() uintptr {
 					cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
 					pMe = (*_RawBase)(unsafe.Pointer(cs.LpCreateParams))
 					pMe.hWnd = hWnd
-					utl.PtrCache.Add(unsafe.Pointer(pMe)) // released in WM_NCDESTROY
+					utl.PtrCache.Add(unsafe.Pointer(pMe)) // deleted in WM_NCDESTROY
 					hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 				}
 

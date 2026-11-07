@@ -34,7 +34,6 @@ func (me *_DlgBase) createDialogParam(hInst win.HINSTANCE, hParent win.HWND) {
 	if me.hWnd != 0 {
 		panic("Cannot create dialog twice.")
 	}
-	dlgProcCallback()
 
 	// The hWnd member is saved in WM_INITDIALOG processing in dlgProc.
 	_, err := hInst.CreateDialogParam(win.ResIdInt(me.dlgId), hParent, dlgProcCallback(),
@@ -75,8 +74,9 @@ func (me *_DlgBase) setIcon(hInst win.HINSTANCE, iconId uint16) error {
 	return nil
 }
 
-var _dlgProcCallback uintptr
+var _dlgProcCallback uintptr // DLGPROC cached pointer.
 
+// Implements the static DLGPROC once, or returns the cached pointer.
 func dlgProcCallback() uintptr {
 	if _dlgProcCallback == 0 {
 		_dlgProcCallback = syscall.NewCallback(
@@ -87,7 +87,7 @@ func dlgProcCallback() uintptr {
 				if uMsg == co.WM_INITDIALOG && pMe == nil { // prevent from init twice
 					pMe = (*_DlgBase)(unsafe.Pointer(lParam))
 					pMe.hWnd = hDlg
-					utl.PtrCache.Add(unsafe.Pointer(pMe)) // released in WM_NCDESTROY
+					utl.PtrCache.Add(unsafe.Pointer(pMe)) // deleted in WM_NCDESTROY
 					hDlg.SetWindowLongPtr(co.GWLP_DWLP_USER, uintptr(unsafe.Pointer(pMe)))
 				}
 
