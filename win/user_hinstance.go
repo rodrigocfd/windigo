@@ -149,7 +149,24 @@ var _user_LoadAcceleratorsW *syscall.Proc
 
 // [LoadCursor] function.
 //
-// Cursors loaded from resources are shared, and don't need to be deleted.
+// ⚠️ You must defer [HCURSOR.DestroyCursor], except for:
+//
+//   - system cursors like [co.IDC_ARROW];
+//   - cursors loaded from resources.
+//
+// Example:
+//
+// Loading a system cursor:
+//
+//	hCurCross, _ := win.HINSTANCE(0).
+//		LoadCursor(win.CursorResIdc(co.IDC_CROSS))
+//
+// Loading a cursor from resource:
+//
+//	const ID_CURSOR_FOO uint16 = 101
+//	hInst, _ := win.GetModuleHandle("")
+//	hCurFoo, _ := hInst.
+//		LoadCursor(win.CursorResId(ID_CURSOR_FOO))
 //
 // [LoadCursor]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadcursorw
 func (hInst HINSTANCE) LoadCursor(cursorName CursorRes) (HCURSOR, error) {
@@ -174,8 +191,9 @@ var _user_LoadCursorW *syscall.Proc
 //
 // Loading an icon from the resource:
 //
+//	const ID_ICON_FOO uint16 = 101
 //	hInst, _ := win.GetModuleHandle("")
-//	hIco, _ := hInst.LoadIcon(win.IconResId(101))
+//	hIco, _ := hInst.LoadIcon(win.IconResId(ID_ICON_FOO))
 //
 // [LoadIcon]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadiconw
 func (hInst HINSTANCE) LoadIcon(iconName IconRes) (HICON, error) {

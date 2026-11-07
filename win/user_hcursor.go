@@ -12,6 +12,8 @@ import (
 
 // Handle to a [cursor].
 //
+// Usually created with [HINSTANCE.LoadCursor].
+//
 // [cursor]: https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types#hcursor
 type HCURSOR HANDLE
 
