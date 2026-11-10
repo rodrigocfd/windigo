@@ -9,27 +9,27 @@ import (
 
 // Dialog-based control.
 type _DlgControl struct {
-	_DlgBase
-	ctrlId uint16
+	dlgBase _DlgBase
+	ctrlId  uint16
 }
 
 // Constructor.
 func newControlDlg(parent Parent, opts *VarOptsControlDlg) *_DlgControl {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &_DlgControl{
-		_DlgBase: newBaseDlg(opts.dlgId),
-		ctrlId:   opts.ctrlId,
+		dlgBase: newBaseDlg(opts.dlgId),
+		ctrlId:  opts.ctrlId,
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		hInst, _ := parent.Hwnd().HInstance()
-		me.createDialogParam(hInst, parent.Hwnd())
-		me.hWnd.SetWindowLongPtr(co.GWLP_ID, uintptr(opts.ctrlId)) // give the control its ID
+		me.dlgBase.createDialogParam(hInst, parent.Hwnd())
+		me.dlgBase.base.hWnd.SetWindowLongPtr(co.GWLP_ID, uintptr(opts.ctrlId)) // give the control its ID
 		if opts.ownerTab == nil {
-			me.hWnd.SetWindowPos(win.HWND(0), opts.position, win.SIZE{},
+			me.dlgBase.base.hWnd.SetWindowPos(win.HWND(0), opts.position, win.SIZE{},
 				co.SWP_NOZORDER|co.SWP_NOSIZE)
 		}
-		parent.base().layout.Add(parent, me.hWnd, opts.layout)
+		parent.base().layout.Add(parent, me.dlgBase.base.hWnd, opts.layout)
 	})
 
 	me.defaultMessageHandlers(opts.ownerTab)
@@ -37,16 +37,16 @@ func newControlDlg(parent Parent, opts *VarOptsControlDlg) *_DlgControl {
 }
 
 func (me *_DlgControl) defaultMessageHandlers(ownerTab *Tab) {
-	me._DlgBase._BaseContainer.defaultMessageHandlers()
+	me.dlgBase.base.defaultMessageHandlers()
 
 	if ownerTab != nil { // we are a Tab container
-		me.beforeUserEvents.wmCreateOrInitdialog(func() {
-			ownerTab.resizeChildContainer(me.hWnd) // must run right before our childrens'
+		me.dlgBase.base.beforeUserEvents.wmCreateOrInitdialog(func() {
+			ownerTab.resizeChildContainer(me.dlgBase.base.hWnd) // must run right before our childrens'
 		})
 	}
 
-	me.userEvents.WmNcPaint(func(p WmNcPaint) {
-		paintThemedBorders(me.hWnd, p)
+	me.dlgBase.base.userEvents.WmNcPaint(func(p WmNcPaint) {
+		paintThemedBorders(me.dlgBase.base.hWnd, p)
 	})
 }
 

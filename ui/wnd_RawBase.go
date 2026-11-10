@@ -15,13 +15,13 @@ import (
 
 // Base to all windows created with CreateWindowEx.
 type _RawBase struct {
-	_BaseContainer
+	base _BaseContainer
 }
 
 // Constructor.
 func newBaseRaw() _RawBase {
 	return _RawBase{
-		_BaseContainer: newBaseContainer(_WNDTY_RAW),
+		base: newBaseContainer(_WNDTY_RAW),
 	}
 }
 
@@ -90,7 +90,7 @@ func (me *_RawBase) createWindow(
 	hMenu win.HMENU,
 	hInst win.HINSTANCE,
 ) {
-	if me.hWnd != 0 {
+	if me.base.hWnd != 0 {
 		panic("Cannot create window twice.")
 	}
 
@@ -103,10 +103,10 @@ func (me *_RawBase) createWindow(
 	}
 }
 
-func (me *_RawBase) delegateFocusToFirstChild() error {
-	if hFocus := win.GetFocus(); hFocus == me.hWnd {
+func (me *_RawBase) delegateFocusToFirstChild() error { // called in WM_SETFOCUS
+	if hFocus := win.GetFocus(); hFocus == me.base.hWnd {
 		// https://stackoverflow.com/a/2835220
-		hFirstChild, err := me.hWnd.GetWindow(co.GW_CHILD)
+		hFirstChild, err := me.base.hWnd.GetWindow(co.GW_CHILD)
 		if err != nil {
 			return err
 		}
@@ -128,7 +128,7 @@ func wndProcCallback() uintptr {
 				if uMsg == co.WM_NCCREATE && pMe == nil { // prevent from init twice
 					cs := (*win.CREATESTRUCT)(unsafe.Pointer(lParam))
 					pMe = (*_RawBase)(unsafe.Pointer(cs.LpCreateParams))
-					pMe.hWnd = hWnd
+					pMe.base.hWnd = hWnd
 					utl.PtrCache.Add(unsafe.Pointer(pMe)) // deleted in WM_NCDESTROY
 					hWnd.SetWindowLongPtr(co.GWLP_USERDATA, uintptr(unsafe.Pointer(pMe)))
 				}
@@ -141,21 +141,21 @@ func wndProcCallback() uintptr {
 
 				// Execute before-user closures, keep track if at least one was executed.
 				msg := Wm{uMsg, wParam, lParam}
-				atLeastOneBeforeUser := pMe.beforeUserEvents.processAll(msg)
+				atLeastOneBeforeUser := pMe.base.beforeUserEvents.processAll(msg)
 
 				// Execute user closure, if any.
-				userRet, hasUserRet := pMe.userEvents.processLast(msg)
+				userRet, hasUserRet := pMe.base.userEvents.processLast(msg)
 
 				// Execute post-user closures, keep track if at least one was executed.
-				atLeastOneAfterUser := pMe.afterUserEvents.processAll(msg)
+				atLeastOneAfterUser := pMe.base.afterUserEvents.processAll(msg)
 
 				switch uMsg {
 				case co.WM_CREATE:
-					pMe.removeWmCreateInitdialog() // will release all memory in these closures
+					pMe.base.removeWmCreateInitdialog() // will release all memory in these closures
 				case co.WM_NCDESTROY: // always check
 					hWnd.SetWindowLongPtr(co.GWLP_USERDATA, 0)
-					pMe.hWnd = win.HWND(0)
-					pMe.clearMessages()
+					pMe.base.hWnd = win.HWND(0)
+					pMe.base.clearMessages()
 					utl.PtrCache.Delete(unsafe.Pointer(pMe))
 				}
 

@@ -9,7 +9,7 @@ import (
 
 // Raw main application window.
 type _RawMain struct {
-	_RawBase
+	rawBase         _RawBase
 	opts            *VarOptsMain
 	hChildPrevFocus win.HWND
 }
@@ -17,7 +17,7 @@ type _RawMain struct {
 // Constructor.
 func newMainRaw(opts *VarOptsMain) *_RawMain {
 	me := &_RawMain{
-		_RawBase:        newBaseRaw(),
+		rawBase:         newBaseRaw(),
 		opts:            opts,
 		hChildPrevFocus: win.HWND(0),
 	}
@@ -26,7 +26,7 @@ func newMainRaw(opts *VarOptsMain) *_RawMain {
 }
 
 func (me *_RawMain) runAsMain(hInst win.HINSTANCE) int {
-	atom := me.registerClass(hInst, me.opts.className, me.opts.classStyle,
+	atom := me.rawBase.registerClass(hInst, me.opts.className, me.opts.classStyle,
 		me.opts.classIconId, me.opts.classBrush, me.opts.classCursor)
 
 	rcWnd := win.RECT{ // client area, will be adjusted to size with title bar and borders
@@ -58,28 +58,28 @@ func (me *_RawMain) runAsMain(hInst win.HINSTANCE) int {
 	rcWnd.Right = rcWnd.Left + szAdjusted.Cx
 	rcWnd.Bottom = rcWnd.Top + szAdjusted.Cy
 
-	me.createWindow(me.opts.exStyle, atom, me.opts.title, me.opts.style,
+	me.rawBase.createWindow(me.opts.exStyle, atom, me.opts.title, me.opts.style,
 		win.POINT{X: rcWnd.Left, Y: rcWnd.Top},
 		win.SIZE{Cx: rcWnd.Right - rcWnd.Left, Cy: rcWnd.Bottom - rcWnd.Top},
 		win.HWND(0), me.opts.menu, hInst)
 
-	me.hWnd.ShowWindow(me.opts.cmdShow)
-	me.hWnd.UpdateWindow()
+	me.rawBase.base.hWnd.ShowWindow(me.opts.cmdShow)
+	me.rawBase.base.hWnd.UpdateWindow()
 
 	accelTable := me.opts.accelTable
 	processDlgMsgs := me.opts.processDlgMsgs
 	me.opts = nil
-	return me.runMainLoop(accelTable, processDlgMsgs)
+	return me.rawBase.base.runMainLoop(accelTable, processDlgMsgs)
 }
 
 func (me *_RawMain) defaultMessageHandlers() {
-	me._RawBase._BaseContainer.defaultMessageHandlers()
+	me.rawBase.base.defaultMessageHandlers()
 
-	me.beforeUserEvents.wm(co.WM_ACTIVATE, func(rawP Wm) {
+	me.rawBase.base.beforeUserEvents.wm(co.WM_ACTIVATE, func(rawP Wm) {
 		p := WmActivate{rawP}
 		if !p.IsMinimized() { // https://devblogs.microsoft.com/oldnewthing/20140521-00/?p=943
 			if p.Event() == co.WA_INACTIVE {
-				if hCurFocus := win.GetFocus(); hCurFocus != 0 && me.hWnd.IsChild(hCurFocus) {
+				if hCurFocus := win.GetFocus(); hCurFocus != 0 && me.rawBase.base.hWnd.IsChild(hCurFocus) {
 					me.hChildPrevFocus = hCurFocus // save previously focused control
 				}
 			} else if me.hChildPrevFocus != 0 {
@@ -88,11 +88,11 @@ func (me *_RawMain) defaultMessageHandlers() {
 		}
 	})
 
-	me.beforeUserEvents.wm(co.WM_SETFOCUS, func(_ Wm) {
-		me.delegateFocusToFirstChild()
+	me.rawBase.base.beforeUserEvents.wm(co.WM_SETFOCUS, func(_ Wm) {
+		me.rawBase.delegateFocusToFirstChild()
 	})
 
-	me.userEvents.WmNcDestroy(func() {
+	me.rawBase.base.userEvents.WmNcDestroy(func() {
 		win.PostQuitMessage(0)
 	})
 }

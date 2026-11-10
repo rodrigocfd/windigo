@@ -9,7 +9,7 @@ import (
 
 // Raw modal window.
 type _RawModal struct {
-	_RawBase
+	rawBase               _RawBase
 	parent                Parent
 	opts                  *VarOptsModal
 	hChildPrevFocusParent win.HWND
@@ -17,7 +17,7 @@ type _RawModal struct {
 
 func newModalRaw(parent Parent, opts *VarOptsModal) *_RawModal {
 	me := &_RawModal{
-		_RawBase:              newBaseRaw(),
+		rawBase:               newBaseRaw(),
 		parent:                parent,
 		opts:                  opts,
 		hChildPrevFocusParent: win.HWND(0),
@@ -28,7 +28,7 @@ func newModalRaw(parent Parent, opts *VarOptsModal) *_RawModal {
 
 func (me *_RawModal) showModal() {
 	hInst, _ := me.parent.Hwnd().HInstance()
-	atom := me.registerClass(hInst, me.opts.className, me.opts.classStyle,
+	atom := me.rawBase.registerClass(hInst, me.opts.className, me.opts.classStyle,
 		me.opts.classIconId, me.opts.classBrush, me.opts.classCursor)
 
 	me.hChildPrevFocusParent = win.GetFocus()
@@ -48,26 +48,26 @@ func (me *_RawModal) showModal() {
 		Y: rcParent.Top + (rcParent.Bottom-rcParent.Top)/2 - me.opts.size.Cy/2,
 	}
 
-	me.createWindow(me.opts.exStyle, atom, me.opts.title, me.opts.style, ptWnd,
+	me.rawBase.createWindow(me.opts.exStyle, atom, me.opts.title, me.opts.style, ptWnd,
 		win.SIZE{Cx: rcWnd.Right - rcWnd.Left, Cy: rcWnd.Bottom - rcWnd.Top},
 		me.parent.Hwnd(), win.HMENU(0), hInst)
 
 	processDlgMsgs := me.opts.processDlgMsgs
 	me.opts = nil
-	me.runModalLoop(processDlgMsgs)
+	me.rawBase.base.runModalLoop(processDlgMsgs)
 }
 
 func (me *_RawModal) defaultMessageHandlers() {
-	me._RawBase._BaseContainer.defaultMessageHandlers()
+	me.rawBase.base.defaultMessageHandlers()
 
-	me.beforeUserEvents.wm(co.WM_SETFOCUS, func(_ Wm) {
-		me.delegateFocusToFirstChild()
+	me.rawBase.base.beforeUserEvents.wm(co.WM_SETFOCUS, func(_ Wm) {
+		me.rawBase.delegateFocusToFirstChild()
 	})
 
-	me.userEvents.WmClose(func() {
-		hParent, _ := me.hWnd.GetWindow(co.GW_OWNER)
-		hParent.EnableWindow(true) // re-enable parent
-		me.hWnd.DestroyWindow()    // then destroy modal
+	me.rawBase.base.userEvents.WmClose(func() {
+		hParent, _ := me.rawBase.base.hWnd.GetWindow(co.GW_OWNER)
+		hParent.EnableWindow(true)           // re-enable parent
+		me.rawBase.base.hWnd.DestroyWindow() // then destroy modal
 		if me.hChildPrevFocusParent != 0 {
 			me.hChildPrevFocusParent.SetFocus() // this focus could be set on WM_DESTROY as well
 		}

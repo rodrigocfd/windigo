@@ -51,9 +51,9 @@ func (me *Control) Parent() Parent {
 // Note that this handle is initially zero, existing only after window creation.
 func (me *Control) Hwnd() win.HWND {
 	if me.raw != nil {
-		return me.raw.hWnd
+		return me.raw.rawBase.base.hWnd
 	} else {
-		return me.dlg.hWnd
+		return me.dlg.dlgBase.base.hWnd
 	}
 }
 
@@ -97,9 +97,9 @@ func (me *Control) On() *WindowEvents {
 	}
 
 	if me.raw != nil {
-		return &me.raw.userEvents
+		return &me.raw.rawBase.base.userEvents
 	} else {
-		return &me.dlg.userEvents
+		return &me.dlg.dlgBase.base.userEvents
 	}
 }
 
@@ -129,17 +129,17 @@ func (me *Control) On() *WindowEvents {
 // [WNDPROC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nc-winuser-wndproc
 func (me *Control) UiThread(fun func()) {
 	if me.raw != nil {
-		me.raw.uiThread(fun)
+		me.raw.rawBase.base.uiThread(fun)
 	} else {
-		me.dlg.uiThread(fun)
+		me.dlg.dlgBase.base.uiThread(fun)
 	}
 }
 
 // Implements [Parent].
 func (me *Control) base() *_BaseContainer {
 	if me.raw != nil {
-		return &me.raw._BaseContainer
+		return &me.raw.rawBase.base
 	} else {
-		return &me.dlg._BaseContainer
+		return &me.dlg.dlgBase.base
 	}
 }

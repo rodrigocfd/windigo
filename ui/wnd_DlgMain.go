@@ -9,7 +9,7 @@ import (
 
 // Dialog-based main application window.
 type _DlgMain struct {
-	_DlgBase
+	dlgBase      _DlgBase
 	iconId       uint16
 	accelTableId uint16
 }
@@ -17,7 +17,7 @@ type _DlgMain struct {
 // Constructor.
 func newMainDlg(opts *VarOptsMainDlg) *_DlgMain {
 	me := &_DlgMain{
-		_DlgBase:     newBaseDlg(opts.dlgId),
+		dlgBase:      newBaseDlg(opts.dlgId),
 		iconId:       opts.iconId,
 		accelTableId: opts.accelTableId,
 	}
@@ -26,10 +26,10 @@ func newMainDlg(opts *VarOptsMainDlg) *_DlgMain {
 }
 
 func (me *_DlgMain) runAsMain(hInst win.HINSTANCE) int {
-	me.createDialogParam(hInst, win.HWND(0))
+	me.dlgBase.createDialogParam(hInst, win.HWND(0))
 
 	if me.iconId != 0 {
-		me.setIcon(hInst, me.iconId)
+		me.dlgBase.setIcon(hInst, me.iconId)
 	}
 
 	var hAccel win.HACCEL
@@ -41,18 +41,18 @@ func (me *_DlgMain) runAsMain(hInst win.HINSTANCE) int {
 		}
 	}
 
-	me.hWnd.ShowWindow(co.SW_SHOW)
-	return me.runMainLoop(hAccel, true)
+	me.dlgBase.base.hWnd.ShowWindow(co.SW_SHOW)
+	return me.dlgBase.base.runMainLoop(hAccel, true)
 }
 
 func (me *_DlgMain) defaultMessageHandlers() {
-	me._DlgBase._BaseContainer.defaultMessageHandlers()
+	me.dlgBase.base.defaultMessageHandlers()
 
-	me.userEvents.WmClose(func() {
-		me.hWnd.DestroyWindow()
+	me.dlgBase.base.userEvents.WmClose(func() {
+		me.dlgBase.base.hWnd.DestroyWindow()
 	})
 
-	me.userEvents.WmNcDestroy(func() {
+	me.dlgBase.base.userEvents.WmNcDestroy(func() {
 		win.PostQuitMessage(0)
 	})
 }

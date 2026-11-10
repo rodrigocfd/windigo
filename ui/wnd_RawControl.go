@@ -9,25 +9,25 @@ import (
 
 // Raw window control.
 type _RawControl struct {
-	_RawBase
-	ctrlId uint16
+	rawBase _RawBase
+	ctrlId  uint16
 }
 
 // Constructor.
 func newControlRaw(parent Parent, opts *VarOptsControl) *_RawControl {
 	setUniqueCtrlId(&opts.ctrlId)
 	me := &_RawControl{
-		_RawBase: newBaseRaw(),
-		ctrlId:   opts.ctrlId,
+		rawBase: newBaseRaw(),
+		ctrlId:  opts.ctrlId,
 	}
 
 	parent.base().beforeUserEvents.wmCreateOrInitdialog(func() {
 		hInst, _ := parent.Hwnd().HInstance()
-		atom := me.registerClass(hInst, opts.className, opts.classStyle,
+		atom := me.rawBase.registerClass(hInst, opts.className, opts.classStyle,
 			0, opts.classBrush, opts.classCursor)
-		me.createWindow(opts.exStyle, atom, "", opts.style,
+		me.rawBase.createWindow(opts.exStyle, atom, "", opts.style,
 			opts.position, opts.size, parent.Hwnd(), win.HMENU(opts.ctrlId), hInst)
-		parent.base().layout.Add(parent, me.hWnd, opts.layout)
+		parent.base().layout.Add(parent, me.rawBase.base.hWnd, opts.layout)
 	})
 
 	me.defaultMessageHandlers(opts.ownerTab)
@@ -35,16 +35,16 @@ func newControlRaw(parent Parent, opts *VarOptsControl) *_RawControl {
 }
 
 func (me *_RawControl) defaultMessageHandlers(ownerTab *Tab) {
-	me._RawBase._BaseContainer.defaultMessageHandlers()
+	me.rawBase.base.defaultMessageHandlers()
 
 	if ownerTab != nil { // we are a Tab container
-		me.beforeUserEvents.wmCreateOrInitdialog(func() {
-			ownerTab.resizeChildContainer(me.hWnd) // must run right before our childrens'
+		me.rawBase.base.beforeUserEvents.wmCreateOrInitdialog(func() {
+			ownerTab.resizeChildContainer(me.rawBase.base.hWnd) // must run right before our childrens'
 		})
 	}
 
-	me.userEvents.WmNcPaint(func(p WmNcPaint) {
-		paintThemedBorders(me.hWnd, p)
+	me.rawBase.base.userEvents.WmNcPaint(func(p WmNcPaint) {
+		paintThemedBorders(me.rawBase.base.hWnd, p)
 	})
 }
 
