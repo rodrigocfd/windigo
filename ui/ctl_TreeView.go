@@ -95,13 +95,15 @@ func NewTreeViewDlg(parent Parent, ctrlId uint16, layout LAY) *TreeView {
 }
 
 func (me *TreeView) defaultMessageHandlers(parent Parent) {
-	parent.base().afterUserEvents.wmNotify(me.ctrlId, co.TVN_DELETEITEM, func(p unsafe.Pointer) {
+	parent.base().afterUserEvents.wmNotify(me.ctrlId, co.TVN_DELETEITEM, func(p unsafe.Pointer) bool {
 		nmtv := (*win.NMTREEVIEW)(p)
 		delete(me.itemsData, nmtv.ItemOld.HItem)
+		return true
 	})
 
-	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
+	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) bool {
 		me.iconCache16.Release()
+		return true
 	})
 }
 

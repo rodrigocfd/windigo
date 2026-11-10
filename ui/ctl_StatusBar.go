@@ -76,12 +76,14 @@ func NewStatusBar(parent Parent, opts *VarOptsStatusBar) *StatusBar {
 		me.addParts(opts.parts)
 	})
 
-	parent.base().beforeUserEvents.wm(co.WM_SIZE, func(p Wm) {
+	parent.base().beforeUserEvents.wm(co.WM_SIZE, func(p Wm) bool {
 		me.resizeToFitParent(WmSize{p})
+		return true
 	})
 
-	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
+	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) bool {
 		me.iconCache16.Release()
+		return true
 	})
 
 	return me

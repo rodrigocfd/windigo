@@ -12,12 +12,12 @@ import (
 type (
 	_StorageMsgLib struct { // ordinary WM messages
 		id  co.WM
-		fun func(p Wm)
+		fun func(p Wm) bool
 	}
 	_StorageNfyLib struct { // WM_NOTIFY
 		idFrom uint16
 		code   co.NM
-		fun    func(p unsafe.Pointer)
+		fun    func(p unsafe.Pointer) bool
 	}
 )
 
@@ -63,15 +63,17 @@ func (me *_WindowLibEvents) processAll(p Wm) (atLeastOne bool) {
 		hdr := (*win.NMHDR)(pHdr)
 		for _, obj := range me.nfys {
 			if obj.idFrom == uint16(hdr.IdFrom) && obj.code == co.NM(hdr.Code) {
-				obj.fun(pHdr)
-				atLeastOne = true
+				if obj.fun(pHdr) { // this message signalled a "processed" return
+					atLeastOne = true
+				}
 			}
 		}
 	default:
 		for _, obj := range me.msgs {
 			if obj.id == p.Msg {
-				obj.fun(p)
-				atLeastOne = true
+				if obj.fun(p) { // this message signalled a "processed" return
+					atLeastOne = true
+				}
 			}
 		}
 	}
@@ -82,10 +84,10 @@ func (me *_WindowLibEvents) wmCreateOrInitdialog(fun func()) {
 	me.inits = append(me.inits, fun)
 }
 
-func (me *_WindowLibEvents) wm(id co.WM, fun func(p Wm)) {
+func (me *_WindowLibEvents) wm(id co.WM, fun func(p Wm) bool) {
 	me.msgs = append(me.msgs, _StorageMsgLib{id, fun})
 }
 
-func (me *_WindowLibEvents) wmNotify(idFrom uint16, code co.NM, fun func(p unsafe.Pointer)) {
+func (me *_WindowLibEvents) wmNotify(idFrom uint16, code co.NM, fun func(p unsafe.Pointer) bool) {
 	me.nfys = append(me.nfys, _StorageNfyLib{idFrom, code, fun})
 }

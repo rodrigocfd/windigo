@@ -14,8 +14,9 @@ const _WM_UI_THREAD co.WM = 0xbfff // Internal message to run closures from anot
 
 // Base to raw and dialog container windows.
 type _BaseContainer struct {
-	hWnd   win.HWND
-	layout _Layout
+	hWnd         win.HWND
+	layout       _Layout
+	isWaitCursor bool
 
 	beforeUserEvents _WindowLibEvents
 	userEvents       WindowEvents
@@ -25,8 +26,9 @@ type _BaseContainer struct {
 // Constructor.
 func newBaseContainer(wndTy _WNDTY) _BaseContainer {
 	return _BaseContainer{
-		hWnd:   win.HWND(0),
-		layout: newLayout(),
+		hWnd:         win.HWND(0),
+		layout:       newLayout(),
+		isWaitCursor: false,
 
 		beforeUserEvents: newEventsWindowLib(),
 		userEvents:       newEventsWindow(wndTy),
@@ -54,19 +56,40 @@ func (me *_BaseContainer) uiThread(fun func()) {
 		win.WPARAM(_WM_UI_THREAD), win.LPARAM(unsafe.Pointer(pPack)))
 }
 
+func (me *_BaseContainer) setWaitCursor(isWait bool) {
+	idc := co.IDC_ARROW
+	if isWait {
+		idc = co.IDC_WAIT
+	}
+	hCur, _ := win.HINSTANCE(0).LoadCursor(win.CursorResIdc(idc))
+	hCur.SetCursor()
+	me.isWaitCursor = isWait
+}
+
 type _ThreadPack struct{ fun func() }
 
 func (me *_BaseContainer) defaultMessageHandlers() {
-	me.beforeUserEvents.wm(_WM_UI_THREAD, func(p Wm) {
+	me.beforeUserEvents.wm(_WM_UI_THREAD, func(p Wm) bool {
 		if p.WParam == win.WPARAM(_WM_UI_THREAD) { // additional safety check
 			pPack := (*_ThreadPack)(unsafe.Pointer(p.LParam))
 			utl.PtrCache.Delete(unsafe.Pointer(pPack)) // now GC will be able to collect it
 			pPack.fun()
+			return true
 		}
+		return false
 	})
 
-	me.beforeUserEvents.wm(co.WM_SIZE, func(p Wm) {
+	me.beforeUserEvents.wm(co.WM_SIZE, func(p Wm) bool {
 		me.layout.Rearrange(WmSize{p})
+		return true
+	})
+
+	me.beforeUserEvents.wm(co.WM_SETCURSOR, func(_ Wm) bool {
+		if me.isWaitCursor {
+			me.setWaitCursor(true)
+			return true
+		}
+		return false
 	})
 }
 

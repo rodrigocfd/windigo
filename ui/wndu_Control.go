@@ -50,11 +50,7 @@ func (me *Control) Parent() Parent {
 //
 // Note that this handle is initially zero, existing only after window creation.
 func (me *Control) Hwnd() win.HWND {
-	if me.raw != nil {
-		return me.raw.rawBase.base.hWnd
-	} else {
-		return me.dlg.dlgBase.base.hWnd
-	}
+	return me.base().hWnd
 }
 
 // Returns the control ID, unique within the same Parent.
@@ -95,12 +91,7 @@ func (me *Control) On() *WindowEvents {
 	if me.Hwnd() != 0 {
 		panic("Cannot add event handling after the window has been created.")
 	}
-
-	if me.raw != nil {
-		return &me.raw.rawBase.base.userEvents
-	} else {
-		return &me.dlg.dlgBase.base.userEvents
-	}
+	return &me.base().userEvents
 }
 
 // This method is analog to [SendMessage] (synchronous), but intended to be
@@ -128,11 +119,7 @@ func (me *Control) On() *WindowEvents {
 // [SendMessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessagew
 // [WNDPROC]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nc-winuser-wndproc
 func (me *Control) UiThread(fun func()) {
-	if me.raw != nil {
-		me.raw.rawBase.base.uiThread(fun)
-	} else {
-		me.dlg.dlgBase.base.uiThread(fun)
-	}
+	me.base().uiThread(fun)
 }
 
 // Implements [Parent].

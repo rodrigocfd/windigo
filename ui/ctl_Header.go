@@ -94,7 +94,7 @@ func (me *Header) assignToListView(hHeader win.HWND) {
 }
 
 func (me *Header) defaultMessageHandlers(parent Parent) {
-	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
+	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) bool {
 		kinds := []co.HDSIL{co.HDSIL_NORMAL, co.HDSIL_STATE}
 		for _, kind := range kinds {
 			h, _ := me.hWnd.SendMessage(co.HDM_GETIMAGELIST, win.WPARAM(kind), 0)
@@ -103,6 +103,7 @@ func (me *Header) defaultMessageHandlers(parent Parent) {
 				win.HIMAGELIST(h).Destroy()
 			}
 		}
+		return true
 	})
 }
 

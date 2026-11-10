@@ -44,12 +44,13 @@ func NewToolbar(parent Parent, opts *VarOptsToolbar) *Toolbar {
 }
 
 func (me *Toolbar) defaultMessageHandlers(parent Parent) {
-	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) {
+	parent.base().afterUserEvents.wm(co.WM_DESTROY, func(_ Wm) bool {
 		h, _ := me.hWnd.SendMessage(co.TB_GETIMAGELIST, 0, 0)
 		if h != 0 {
 			me.hWnd.SendMessage(co.TB_SETIMAGELIST, 0, 0)
 			win.HIMAGELIST(h).Destroy()
 		}
+		return true
 	})
 }
 

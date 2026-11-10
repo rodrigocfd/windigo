@@ -75,21 +75,25 @@ func (me *_RawMain) runAsMain(hInst win.HINSTANCE) int {
 func (me *_RawMain) defaultMessageHandlers() {
 	me.rawBase.base.defaultMessageHandlers()
 
-	me.rawBase.base.beforeUserEvents.wm(co.WM_ACTIVATE, func(rawP Wm) {
+	me.rawBase.base.beforeUserEvents.wm(co.WM_ACTIVATE, func(rawP Wm) bool {
 		p := WmActivate{rawP}
 		if !p.IsMinimized() { // https://devblogs.microsoft.com/oldnewthing/20140521-00/?p=943
 			if p.Event() == co.WA_INACTIVE {
 				if hCurFocus := win.GetFocus(); hCurFocus != 0 && me.rawBase.base.hWnd.IsChild(hCurFocus) {
 					me.hChildPrevFocus = hCurFocus // save previously focused control
+					return true
 				}
 			} else if me.hChildPrevFocus != 0 {
 				me.hChildPrevFocus.SetFocus() // put focus back
+				return true
 			}
 		}
+		return false
 	})
 
-	me.rawBase.base.beforeUserEvents.wm(co.WM_SETFOCUS, func(_ Wm) {
+	me.rawBase.base.beforeUserEvents.wm(co.WM_SETFOCUS, func(_ Wm) bool {
 		me.rawBase.delegateFocusToFirstChild()
+		return true
 	})
 
 	me.rawBase.base.userEvents.WmNcDestroy(func() {

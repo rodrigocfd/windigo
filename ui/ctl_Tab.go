@@ -136,17 +136,21 @@ func (me *Tab) defaultMessageHandlers(parent Parent, titles []string, selTab int
 		me.Item(selTab).Select() // must run after all containers are created and resized
 	})
 
-	parent.base().beforeUserEvents.wmNotify(me.ctrlId, co.TCN_SELCHANGE, func(_ unsafe.Pointer) {
+	parent.base().beforeUserEvents.wmNotify(me.ctrlId, co.TCN_SELCHANGE, func(_ unsafe.Pointer) bool {
 		if selTab, ok := me.ItemSelected(); ok {
 			me.displayContent(selTab.Index())
+			return true
 		}
+		return false
 	})
 
 	if resizable { // when the Tab itself is resized, we resize the container as well
-		parent.base().beforeUserEvents.wm(co.WM_SIZE, func(_ Wm) {
+		parent.base().beforeUserEvents.wm(co.WM_SIZE, func(_ Wm) bool {
 			if selTab, ok := me.ItemSelected(); ok {
 				me.resizeChildContainer(selTab.Child().Hwnd())
+				return true
 			}
+			return false
 		})
 	}
 }
