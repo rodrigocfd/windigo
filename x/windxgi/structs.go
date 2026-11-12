@@ -171,6 +171,15 @@ type DXGI_OUTDUPL_POINTER_POSITION struct {
 	Visible  win.BOOL
 }
 
+// [DXGI_OUTDUPL_POINTER_SHAPE_INFO] struct, with C memory layout.
+type DXGI_OUTDUPL_POINTER_SHAPE_INFO struct {
+	Type    codxgi.DXGI_OUTDUPL_POINTER_SHAPE_TYPE
+	Width   uint32
+	Height  uint32
+	Pitch   uint32
+	HotSpot win.POINT
+}
+
 // [DXGI_OUTPUT_DESC] struct, with C memory layout.
 //
 // [DXGI_OUTPUT_DESC]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_output_desc

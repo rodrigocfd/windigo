@@ -288,6 +288,17 @@ const (
 	DXGI_OFFER_RESOURCE_PRIORITY_HIGH
 )
 
+// [DXGI_OUTDUPL_POINTER_SHAPE_TYPE] enumeration.
+//
+// [DXGI_OUTDUPL_POINTER_SHAPE_TYPE]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ne-dxgi1_2-dxgi_outdupl_pointer_shape_type
+type DXGI_OUTDUPL_POINTER_SHAPE_TYPE uint32
+
+const (
+	DXGI_OUTDUPL_POINTER_SHAPE_TYPE_MONOCHROME   DXGI_OUTDUPL_POINTER_SHAPE_TYPE = 0x1
+	DXGI_OUTDUPL_POINTER_SHAPE_TYPE_COLOR        DXGI_OUTDUPL_POINTER_SHAPE_TYPE = 0x2
+	DXGI_OUTDUPL_POINTER_SHAPE_TYPE_MASKED_COLOR DXGI_OUTDUPL_POINTER_SHAPE_TYPE = 0x4
+)
+
 // [DXGI_PRESENT] enumeration.
 //
 // [DXGI_PRESENT]: https://learn.microsoft.com/en-us/windows/win32/direct3ddxgi/dxgi-present

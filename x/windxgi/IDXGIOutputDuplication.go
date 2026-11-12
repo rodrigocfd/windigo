@@ -133,3 +133,59 @@ func (me *IDXGIOutputDuplication) GetFrameMoveRects() ([]DXGI_OUTDUPL_MOVE_RECT,
 		}
 	}
 }
+
+// [GetFramePointerShape] method.
+//
+// [GetFramePointerShape]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgioutputduplication-getframepointershape
+func (me *IDXGIOutputDuplication) GetFramePointerShape() ([]byte, error) {
+	var reqBytes uint32
+	var shapeInfo DXGI_OUTDUPL_POINTER_SHAPE_INFO
+
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IDXGIOutputDuplicationVt](me.Ppvt()).GetFramePointerShape,
+		me.Ppvt(),
+		0,
+		uintptr(unsafe.Pointer(&reqBytes)),
+		uintptr(unsafe.Pointer(&shapeInfo)))
+	if hr := co.HRESULT(ret); hr.Failed() && hr != codxgi.HRESULT_DXGI_ERROR_MORE_DATA {
+		return nil, hr
+	} else if reqBytes == 0 {
+		return []byte{}, nil
+	}
+
+	shapeBuf := make([]byte, reqBytes) // buffer for the cursor image
+	ret, _, _ = syscall.SyscallN(
+		utl.Vt[_IDXGIOutputDuplicationVt](me.Ppvt()).GetFramePointerShape,
+		me.Ppvt(),
+		uintptr(len(shapeBuf)),
+		uintptr(unsafe.Pointer(&reqBytes)),
+		uintptr(unsafe.Pointer(&shapeInfo)))
+	if hr := co.HRESULT(ret); hr != co.HRESULT_S_OK {
+		return nil, hr
+	}
+
+	shapeBuf = shapeBuf[:reqBytes] // keep only the actual returned data
+	return shapeBuf, nil
+}
+
+// [MapDesktopSurface] method.
+//
+// [MapDesktopSurface]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgioutputduplication-mapdesktopsurface
+func (me *IDXGIOutputDuplication) MapDesktopSurface() (DXGI_MAPPED_RECT, error) {
+	return utl.OleCallReturnStruct[DXGI_MAPPED_RECT](me,
+		utl.Vt[_IDXGIOutputDuplicationVt](me.Ppvt()).MapDesktopSurface)
+}
+
+// [ReleaseFrame] method.
+//
+// [ReleaseFrame]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgioutputduplication-releaseframe
+func (me *IDXGIOutputDuplication) ReleaseFrame() error {
+	return utl.OleCallWithoutParms(me, utl.Vt[_IDXGIOutputDuplicationVt](me.Ppvt()).ReleaseFrame)
+}
+
+// [UnMapDesktopSurface] method.
+//
+// [UnMapDesktopSurface]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgioutputduplication-unmapdesktopsurface
+func (me *IDXGIOutputDuplication) UnMapDesktopSurface() error {
+	return utl.OleCallWithoutParms(me, utl.Vt[_IDXGIOutputDuplicationVt](me.Ppvt()).UnMapDesktopSurface)
+}
