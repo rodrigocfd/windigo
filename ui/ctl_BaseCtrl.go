@@ -30,11 +30,15 @@ func newBaseCtrl(ctrlId uint16) _BaseCtrl {
 // Returns the underlying HWND handle of this window.
 //
 // Note that this handle is initially zero, existing only after window creation.
+//
+// Implements [Window].
 func (me *_BaseCtrl) Hwnd() win.HWND {
 	return me.hWnd
 }
 
-// Returns the control ID, unique within the same Parent.
+// Returns the control ID, unique within the same [Parent].
+//
+// Implements [ChildControl].
 func (me *_BaseCtrl) CtrlId() uint16 {
 	return me.ctrlId
 }
@@ -43,6 +47,8 @@ func (me *_BaseCtrl) CtrlId() uint16 {
 // the borders correctly in some undefined controls, like buttons.
 //
 // Otherwise, calls [win.HWND.SetFocus].
+//
+// Implements [ChildControl].
 //
 // [WM_NEXTDLGCTL]: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-nextdlgctl
 func (me *_BaseCtrl) Focus() {

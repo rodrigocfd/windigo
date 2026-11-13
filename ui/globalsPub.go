@@ -222,7 +222,7 @@ func msgBuild(
 ) co.ID {
 	var hParent win.HWND
 	if wnd != nil {
-		hParent = wnd.Hwnd()
+		hParent, _ = wnd.Hwnd().GetAncestor(co.GA_ROOT) // if a control, will return its parent
 	}
 
 	var commonButtons co.TDCBF
