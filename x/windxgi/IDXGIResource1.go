@@ -62,18 +62,18 @@ func (me *IDXGIResource1) CreateSharedHandle(
 	return handle, nil
 }
 
-// // [CreateSubresourceSurface] method.
-// //
-// // [CreateSubresourceSurface]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiresource1-createsubresourcesurface
-// func (me *IDXGIResource1) CreateSubresourceSurface(
-// 	releaser *win.OleReleaser,
-// 	index int,
-// ) (*IDXGISurface2, error) {
-// 	var ppvtQueried uintptr
-// 	ret, _, _ := syscall.SyscallN(
-// 		utl.Vt[_IDXGIResource1Vt](me.Ppvt()).CreateSubresourceSurface,
-// 		me.Ppvt(),
-// 		uintptr(uint32(index)),
-// 		uintptr(unsafe.Pointer(&ppvtQueried)))
-// 	return utl.OleNewIfOk[*IDXGISurface2](ret, ppvtQueried, releaser)
-// }
+// [CreateSubresourceSurface] method.
+//
+// [CreateSubresourceSurface]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiresource1-createsubresourcesurface
+func (me *IDXGIResource1) CreateSubresourceSurface(
+	releaser *win.OleReleaser,
+	index int,
+) (*IDXGISurface2, error) {
+	var ppvtQueried uintptr
+	ret, _, _ := syscall.SyscallN(
+		utl.Vt[_IDXGIResource1Vt](me.Ppvt()).CreateSubresourceSurface,
+		me.Ppvt(),
+		uintptr(uint32(index)),
+		uintptr(unsafe.Pointer(&ppvtQueried)))
+	return utl.OleNewIfOk[*IDXGISurface2](ret, ppvtQueried, releaser)
+}
