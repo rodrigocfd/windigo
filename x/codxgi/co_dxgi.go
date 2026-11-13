@@ -24,6 +24,7 @@ var (
 	IID_IDXGIOutput            = co.IID(co.GUID{0xae02eedb, 0xc735, 0x4690, [8]byte{0x8d, 0x52, 0x5a, 0x8d, 0xc2, 0x02, 0x13, 0xaa}})
 	IID_IDXGIOutputDuplication = co.IID(co.GUID{0x191cfac3, 0xa341, 0x470d, [8]byte{0xb2, 0x6e, 0xa8, 0x64, 0xf4, 0x28, 0x31, 0x9c}})
 	IID_IDXGIResource          = co.IID(co.GUID{0x035f3ab4, 0x482e, 0x4e50, [8]byte{0xb4, 0x1f, 0x8a, 0x7f, 0x8b, 0xd8, 0x96, 0x0b}})
+	IID_IDXGIResource1         = co.IID(co.GUID{0x30961379, 0x4609, 0x4a41, [8]byte{0x99, 0x8e, 0x54, 0xfe, 0x56, 0x7e, 0xe0, 0xc1}})
 	IID_IDXGISurface           = co.IID(co.GUID{0xcafcb56c, 0x6ac3, 0x4889, [8]byte{0xbf, 0x47, 0x9e, 0x23, 0xbb, 0xd2, 0x60, 0xec}})
 	IID_IDXGISurface1          = co.IID(co.GUID{0x4ae63092, 0x6327, 0x4c1b, [8]byte{0x80, 0xae, 0xbf, 0xe1, 0x2e, 0xa3, 0x2b, 0x86}})
 	IID_IDXGISwapChain         = co.IID(co.GUID{0x310d36a0, 0xd2e7, 0x4c0a, [8]byte{0xaa, 0x04, 0x6a, 0x9d, 0x23, 0xb8, 0x88, 0x6a}})
@@ -351,6 +352,20 @@ const (
 	DXGI_SCALING_STRETCH              DXGI_SCALING = 0
 	DXGI_SCALING_NONE                 DXGI_SCALING = 1
 	DXGI_SCALING_ASPECT_RATIO_STRETCH DXGI_SCALING = 2
+)
+
+// [DXGI_SHARED] access flags.
+//
+// [DXGI_SHARED]: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgiresource1-createsharedhandle
+type DXGI_SHARED uint32
+
+const (
+	DXGI_SHARED_READ                       = DXGI_SHARED(co.GENERIC_READ)    // Same as [co.GENERIC_READ].
+	DXGI_SHARED_WRITE                      = DXGI_SHARED(co.GENERIC_WRITE)   // Same as [co.GENERIC_WRITE].
+	DXGI_SHARED_EXECUTE                    = DXGI_SHARED(co.GENERIC_EXECUTE) // Same as [co.GENERIC_EXECUTE].
+	DXGI_SHARED_ALL                        = DXGI_SHARED(co.GENERIC_ALL)     // Same as [co.GENERIC_ALL].
+	DXGI_SHARED_RESOURCE_READ  DXGI_SHARED = 0x8000_0000
+	DXGI_SHARED_RESOURCE_WRITE DXGI_SHARED = 1
 )
 
 // [DXGI_SWAP_CHAIN_FLAG] enumeration.
