@@ -415,6 +415,21 @@ flowchart BT
     win --> wstr
 ```
 
+## Tests
+
+Windigo has a few tests which can be ran with:
+
+```
+go test ./...
+```
+
+The [`go vet`](https://pkg.go.dev/cmd/vet) tool can be used, but you'll get a lot of false positives. To have an accurate analysis, run:
+
+```bash
+go vet -composites=false -unsafeptr=false ./...
+```
+
+
 ## License
 
 Licensed under [MIT license](https://opensource.org/licenses/MIT), see [LICENSE.md](LICENSE.md) for details.
