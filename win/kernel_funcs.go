@@ -669,6 +669,25 @@ func GetSystemTimePreciseAsFileTime() FILETIME {
 
 var _kernel_GetSystemTimePreciseAsFileTime *syscall.Proc
 
+// [GetTempPath] function.
+//
+// [GetTempPath]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-gettemppathw
+func GetTempPath() (string, error) {
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
+
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GetTempPathW, "GetTempPathW"),
+		uintptr(uint32(wBuf.Len())),
+		uintptr(wBuf.Ptr()))
+	if ret == 0 {
+		return "", co.ERROR(err)
+	}
+	return wBuf.String(), nil
+}
+
+var _kernel_GetTempPathW *syscall.Proc
+
 // [GetTimeZoneInformation] function.
 //
 // [GetTimeZoneInformation]: https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation
