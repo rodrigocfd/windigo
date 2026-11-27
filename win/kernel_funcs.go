@@ -955,6 +955,19 @@ func QueryPerformanceFrequency() (int64, error) {
 
 var _kernel_QueryPerformanceFrequency *syscall.Proc
 
+// [RemoveDirectory] function.
+//
+// [RemoveDirectory]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw
+func RemoveDirectory(pathName string) error {
+	var wPathName wstr.BufEncoder
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_RemoveDirectoryW, "RemoveDirectoryW"),
+		uintptr(wPathName.EmptyIsNil(pathName)))
+	return utl.ZeroAsGetLastError(ret, err)
+}
+
+var _kernel_RemoveDirectoryW *syscall.Proc
+
 // [SetConsoleTitle] function.
 //
 // [SetConsoleTitle]: https://learn.microsoft.com/en-us/windows/console/setconsoletitle
