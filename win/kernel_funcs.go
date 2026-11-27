@@ -577,6 +577,28 @@ func GetLocalTime() SYSTEMTIME {
 
 var _kernel_GetLocalTime *syscall.Proc
 
+// [GetLongPathName] function.
+//
+// [GetLongPathName]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getlongpathnamew
+func GetLongPathName(shortPath string) (string, error) {
+	var wShortPath wstr.BufEncoder
+
+	var wBuf wstr.BufDecoder
+	wBuf.Alloc(wstr.BUF_MAX)
+
+	ret, _, err := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_GetLongPathNameW, "GetLongPathNameW"),
+		uintptr(wShortPath.AllowEmpty(shortPath)),
+		uintptr(wBuf.Ptr()),
+		uintptr(uint32(wBuf.Len())))
+	if ret == 0 {
+		return "", co.ERROR(err)
+	}
+	return wBuf.String(), nil
+}
+
+var _kernel_GetLongPathNameW *syscall.Proc
+
 // [GetNumberOfConsoleMouseButtons] function.
 //
 // [GetNumberOfConsoleMouseButtons]: https://learn.microsoft.com/en-us/windows/console/getnumberofconsolemousebuttons
