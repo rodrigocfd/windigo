@@ -40,6 +40,17 @@ func AllocConsole() error {
 
 var _kernel_AllocConsole *syscall.Proc
 
+// [AreFileApisANSI] function.
+//
+// [AreFileApisANSI]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-arefileapisansi
+func AreFileApisANSI() bool {
+	ret, _, _ := syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_AreFileApisANSI, "AreFileApisANSI"))
+	return ret != 0
+}
+
+var _kernel_AreFileApisANSI *syscall.Proc
+
 // [AttachConsole] function.
 //
 // [AttachConsole]: https://learn.microsoft.com/en-us/windows/console/attachconsole
@@ -993,6 +1004,26 @@ func SetCurrentDirectory(pathName string) error {
 }
 
 var _kernel_SetCurrentDirectoryW *syscall.Proc
+
+// [SetFileApisToANSI] function.
+//
+// [SetFileApisToANSI]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfileapistoansi
+func SetFileApisToANSI() {
+	_, _, _ = syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_SetFileApisToANSI, "SetFileApisToANSI"))
+}
+
+var _kernel_SetFileApisToANSI *syscall.Proc
+
+// [SetFileApisToOEM] function.
+//
+// [SetFileApisToOEM]: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfileapistooem
+func SetFileApisToOEM() {
+	_, _, _ = syscall.SyscallN(
+		dll.Kernel.Load(&_kernel_SetFileApisToOEM, "SetFileApisToOEM"))
+}
+
+var _kernel_SetFileApisToOEM *syscall.Proc
 
 // [SetThreadExecutionState] function.
 //
