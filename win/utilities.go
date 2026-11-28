@@ -876,14 +876,9 @@ func PathEnumDeepFunc(path string, fun func(fileInfo *PathEnumInfo) error) error
 }
 
 // Returns true if the given file or folder exists. Calls [GetFileAttributes].
-//
-// Panics on error.
 func PathExists(path string) bool {
 	attr, err := GetFileAttributes(path)
-	if err != nil {
-		panic(err)
-	}
-	return attr != co.FILE_ATTRIBUTE_INVALID
+	return err == nil && attr != co.FILE_ATTRIBUTE_INVALID
 }
 
 // Retrieves the file name of the path.
